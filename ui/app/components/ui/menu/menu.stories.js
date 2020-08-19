@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { Menu, MenuItem } from '.'
 import { action } from '@storybook/addon-actions'
+import { Menu, MenuItem } from '.'
 
 export default {
   title: 'Menu',

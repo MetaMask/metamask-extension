@@ -1,26 +1,26 @@
 import abi from 'human-standard-token-abi'
 import pify from 'pify'
+import ethUtil from 'ethereumjs-util'
+import log from 'loglevel'
 import getBuyEthUrl from '../../../app/scripts/lib/buy-eth-url'
 import { checksumAddress } from '../helpers/utils/util'
 import { calcTokenBalance, estimateGas } from '../pages/send/send.utils'
-import ethUtil from 'ethereumjs-util'
 import { fetchLocale, loadRelativeTimeFormatLocaleData } from '../helpers/utils/i18n-helper'
 import { getMethodDataAsync } from '../helpers/utils/transactions.util'
 import { fetchSymbolAndDecimals } from '../helpers/utils/token-util'
 import switchDirection from '../helpers/utils/switch-direction'
-import log from 'loglevel'
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../app/scripts/lib/enums'
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util'
 import { setCustomGasLimit } from '../ducks/gas/gas.duck'
 import txHelper from '../../lib/tx-helper'
 import { getEnvironmentType } from '../../../app/scripts/lib/util'
-import * as actionConstants from './actionConstants'
 import {
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
 } from '../selectors'
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account'
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask'
+import * as actionConstants from './actionConstants'
 
 let background = null
 let promisifiedBackground = null
@@ -46,7 +46,8 @@ export function tryUnlockMetamask (password) {
     return new Promise((resolve, reject) => {
       background.submitPassword(password, (error) => {
         if (error) {
-          return reject(error)
+          reject(error)
+          return
         }
 
         resolve()
@@ -61,7 +62,8 @@ export function tryUnlockMetamask (password) {
           background.verifySeedPhrase((err) => {
             if (err) {
               dispatch(displayWarning(err.message))
-              return reject(err)
+              reject(err)
+              return
             }
 
             resolve()
@@ -87,7 +89,8 @@ export function createNewVaultAndRestore (password, seed) {
     return new Promise((resolve, reject) => {
       background.createNewVaultAndRestore(password, seed, (err, _vault) => {
         if (err) {
-          return reject(err)
+          reject(err)
+          return
         }
         vault = _vault
         resolve()
@@ -146,7 +149,8 @@ export function submitPassword (password) {
   return new Promise((resolve, reject) => {
     background.submitPassword(password, (error) => {
       if (error) {
-        return reject(error)
+        reject(error)
+        return
       }
 
       resolve()
@@ -158,7 +162,8 @@ export function createNewVault (password) {
   return new Promise((resolve, reject) => {
     background.createNewVaultAndKeychain(password, (error) => {
       if (error) {
-        return reject(error)
+        reject(error)
+        return
       }
 
       resolve(true)
@@ -170,7 +175,8 @@ export function verifyPassword (password) {
   return new Promise((resolve, reject) => {
     background.verifyPassword(password, (error) => {
       if (error) {
-        return reject(error)
+        reject(error)
+        return
       }
 
       resolve(true)
@@ -182,7 +188,8 @@ export function verifySeedPhrase () {
   return new Promise((resolve, reject) => {
     background.verifySeedPhrase((error, seedWords) => {
       if (error) {
-        return reject(error)
+        reject(error)
+        return
       }
 
       resolve(seedWords)
@@ -228,7 +235,8 @@ export function fetchInfoToSync () {
       background.fetchInfoToSync((err, result) => {
         if (err) {
           dispatch(displayWarning(err.message))
-          return reject(err)
+          reject(err)
+          return
         }
         resolve(result)
       })
@@ -245,10 +253,11 @@ export function resetAccount () {
         dispatch(hideLoadingIndication())
         if (err) {
           dispatch(displayWarning(err.message))
-          return reject(err)
+          reject(err)
+          return
         }
 
-        log.info('Transaction history reset for ' + account)
+        log.info(`Transaction history reset for ${account}`)
         dispatch(showAccountsPage())
         resolve(account)
       })
@@ -264,9 +273,10 @@ export function removeAccount (address) {
       await new Promise((resolve, reject) => {
         background.removeAccount(address, (error, account) => {
           if (error) {
-            return reject(error)
+            reject(error)
+            return
           }
-          return resolve(account)
+          resolve(account)
         })
       })
       await forceUpdateMetamaskState(dispatch)
@@ -277,7 +287,7 @@ export function removeAccount (address) {
       dispatch(hideLoadingIndication())
     }
 
-    log.info('Account removed: ' + address)
+    log.info(`Account removed: ${address}`)
     dispatch(showAccountsPage())
   }
 }
@@ -395,11 +405,12 @@ export function unlockHardwareWalletAccount (index, deviceName, hdPath) {
         if (err) {
           log.error(err)
           dispatch(displayWarning(err.message))
-          return reject(err)
+          reject(err)
+          return
         }
 
         dispatch(hideLoadingIndication())
-        return resolve()
+        resolve()
       })
     })
   }
@@ -498,8 +509,7 @@ export function decryptMsgInline (decryptedMsgData) {
     }
 
     dispatch(updateMetamaskState(newState))
-    decryptedMsgData = newState.unapprovedDecryptMsgs[decryptedMsgData.metamaskId]
-    return decryptedMsgData
+    return newState.unapprovedDecryptMsgs[decryptedMsgData.metamaskId]
   }
 }
 
@@ -576,7 +586,7 @@ export function signTx (txData) {
   return (dispatch) => {
     global.ethQuery.sendTransaction(txData, (err) => {
       if (err) {
-        return dispatch(displayWarning(err.message))
+        dispatch(displayWarning(err.message))
       }
     })
     dispatch(showConfTxPage())
@@ -712,7 +722,7 @@ export function updateSendAmount (amount) {
 export function updateCustomNonce (value) {
   return {
     type: actionConstants.UPDATE_CUSTOM_NONCE,
-    value: value,
+    value,
   }
 }
 
@@ -776,7 +786,8 @@ const updateMetamaskStateFromBackground = () => {
   return new Promise((resolve, reject) => {
     background.getState((error, newState) => {
       if (error) {
-        return reject(error)
+        reject(error)
+        return
       }
 
       resolve(newState)
@@ -795,7 +806,8 @@ export function updateTransaction (txData) {
           dispatch(txError(err))
           dispatch(goHome())
           log.error(err.message)
-          return reject(err)
+          reject(err)
+          return
         }
 
         resolve(txData)
@@ -823,7 +835,8 @@ export function updateAndApproveTx (txData) {
           dispatch(txError(err))
           dispatch(goHome())
           log.error(err.message)
-          return reject(err)
+          reject(err)
+          return
         }
 
         resolve(txData)
@@ -975,7 +988,8 @@ export function cancelTx (txData) {
     return new Promise((resolve, reject) => {
       background.cancelTransaction(txData.id, (err) => {
         if (err) {
-          return reject(err)
+          reject(err)
+          return
         }
 
         resolve()
@@ -1006,7 +1020,8 @@ export function cancelTxs (txDataList) {
     const cancellations = txIds.map((id) => new Promise((resolve, reject) => {
       background.cancelTransaction(id, (err) => {
         if (err) {
-          return reject(err)
+          reject(err)
+          return
         }
 
         resolve()
@@ -1025,7 +1040,8 @@ export function cancelTxs (txDataList) {
     dispatch(hideLoadingIndication())
 
     if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-      return global.platform.closeCurrentWindow()
+      global.platform.closeCurrentWindow()
+
     }
   }
 }
@@ -1036,9 +1052,11 @@ export function markPasswordForgotten () {
       await new Promise((resolve, reject) => {
         return background.markPasswordForgotten((error) => {
           if (error) {
-            return reject(error)
+            reject(error)
+            return
           }
-          return resolve()
+          resolve()
+
         })
       })
     } finally {
@@ -1130,7 +1148,8 @@ const backgroundSetLocked = () => {
   return new Promise((resolve, reject) => {
     background.setLocked((error) => {
       if (error) {
-        return reject(error)
+        reject(error)
+        return
       }
       resolve()
     })
@@ -1220,7 +1239,8 @@ export function addPermittedAccount (origin, address) {
     await new Promise((resolve, reject) => {
       background.addPermittedAccount(origin, address, (error) => {
         if (error) {
-          return reject(error)
+          reject(error)
+          return
         }
         resolve()
       })
@@ -1234,7 +1254,8 @@ export function removePermittedAccount (origin, address) {
     await new Promise((resolve, reject) => {
       background.removePermittedAccount(origin, address, (error) => {
         if (error) {
-          return reject(error)
+          reject(error)
+          return
         }
         resolve()
       })
@@ -1264,7 +1285,8 @@ export function addToken (address, symbol, decimals, image) {
         dispatch(hideLoadingIndication())
         if (err) {
           dispatch(displayWarning(err.message))
-          return reject(err)
+          reject(err)
+          return
         }
         dispatch(updateTokens(tokens))
         resolve(tokens)
@@ -1281,7 +1303,8 @@ export function removeToken (address) {
         dispatch(hideLoadingIndication())
         if (err) {
           dispatch(displayWarning(err.message))
-          return reject(err)
+          reject(err)
+          return
         }
         dispatch(updateTokens(tokens))
         resolve(tokens)
@@ -1296,15 +1319,15 @@ export function addTokens (tokens) {
       return Promise.all(tokens.map(({ address, symbol, decimals }) => (
         dispatch(addToken(address, symbol, decimals))
       )))
-    } else {
-      return Promise.all(
-        Object
-          .entries(tokens)
-          .map(([_, { address, symbol, decimals }]) => (
-            dispatch(addToken(address, symbol, decimals))
-          )),
-      )
     }
+    return Promise.all(
+      Object
+        .entries(tokens)
+        .map(([_, { address, symbol, decimals }]) => (
+          dispatch(addToken(address, symbol, decimals))
+        )),
+    )
+
   }
 }
 
@@ -1319,7 +1342,8 @@ export function removeSuggestedTokens () {
         }
         dispatch(clearPendingTokens())
         if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-          return global.platform.closeCurrentWindow()
+          global.platform.closeCurrentWindow()
+          return
         }
         resolve(suggestedTokens)
       })
@@ -1357,7 +1381,8 @@ export function createCancelTransaction (txId, customGasPrice) {
       background.createCancelTransaction(txId, customGasPrice, (err, newState) => {
         if (err) {
           dispatch(displayWarning(err.message))
-          return reject(err)
+          reject(err)
+          return
         }
 
         const { currentNetworkTxList } = newState
@@ -1380,7 +1405,8 @@ export function createSpeedUpTransaction (txId, customGasPrice, customGasLimit) 
       background.createSpeedUpTransaction(txId, customGasPrice, customGasLimit, (err, newState) => {
         if (err) {
           dispatch(displayWarning(err.message))
-          return reject(err)
+          reject(err)
+          return
         }
 
         const { currentNetworkTxList } = newState
@@ -1402,7 +1428,8 @@ export function createRetryTransaction (txId, customGasPrice, customGasLimit) {
       background.createSpeedUpTransaction(txId, customGasPrice, customGasLimit, (err, newState) => {
         if (err) {
           dispatch(displayWarning(err.message))
-          return reject(err)
+          reject(err)
+          return
         }
 
         const { currentNetworkTxList } = newState
@@ -1504,7 +1531,6 @@ export function setRpcTarget (newRpc, chainId, ticker = 'ETH', nickname) {
     } catch (error) {
       log.error(error)
       dispatch(displayWarning('Had a problem changing networks!'))
-      return
     }
   }
 }
@@ -1517,7 +1543,8 @@ export function delRpcTarget (oldRpc) {
         if (err) {
           log.error(err)
           dispatch(displayWarning('Had a problem removing network!'))
-          return reject(err)
+          reject(err)
+          return
         }
         resolve()
       })
@@ -1541,7 +1568,7 @@ export function addToAddressBook (recipient, nickname = '', memo = '') {
       throw error
     }
     if (!set) {
-      return dispatch(displayWarning('Address book failed to update'))
+      dispatch(displayWarning('Address book failed to update'))
     }
   }
 }
@@ -1569,7 +1596,6 @@ export function hideNetworkDropdown () {
     type: actionConstants.NETWORK_DROPDOWN_CLOSE,
   }
 }
-
 
 export function showModal (payload) {
   return {
@@ -1688,21 +1714,22 @@ export function exportAccount (password, address) {
           log.error('Error in submitting password.')
           dispatch(hideLoadingIndication())
           dispatch(displayWarning('Incorrect Password.'))
-          return reject(err)
+          reject(err)
+          return
         }
         log.debug(`background.exportAccount`)
-        return background.exportAccount(address, function (err, result) {
+        background.exportAccount(address, function (err2, result) {
           dispatch(hideLoadingIndication())
 
-          if (err) {
-            log.error(err)
+          if (err2) {
+            log.error(err2)
             dispatch(displayWarning('Had a problem exporting the account.'))
-            return reject(err)
+            reject(err2)
+            return
           }
 
           dispatch(showPrivateKey(result))
-
-          return resolve(result)
+          resolve(result)
         })
       })
     })
@@ -1716,22 +1743,22 @@ export function exportAccounts (password, addresses) {
       background.submitPassword(password, function (err) {
         if (err) {
           log.error('Error in submitting password.')
-          return reject(err)
+          reject(err)
+          return
         }
         log.debug(`background.exportAccounts`)
-        const accountPromises = addresses.map((address) =>
-          new Promise(
-            (resolve, reject) => background.exportAccount(address, function (err, result) {
-              if (err) {
-                log.error(err)
-                dispatch(displayWarning('Had a problem exporting the account.'))
-                return reject(err)
-              }
-              return resolve(result)
-            }),
-          ),
-        )
-        return resolve(Promise.all(accountPromises))
+        const accountPromises = addresses.map((address) => new Promise(
+          (resolve2, reject2) => background.exportAccount(address, function (err2, result) {
+            if (err2) {
+              log.error(err2)
+              dispatch(displayWarning('Had a problem exporting the account.'))
+              reject2(err2)
+              return
+            }
+            resolve2(result)
+          }),
+        ))
+        resolve(Promise.all(accountPromises))
       })
     })
   }
@@ -1755,17 +1782,23 @@ export function setAccountLabel (account, label) {
 
         if (err) {
           dispatch(displayWarning(err.message))
-          return reject(err)
+          reject(err)
+          return
         }
 
         dispatch({
           type: actionConstants.SET_ACCOUNT_LABEL,
           value: { account, label },
         })
-
         resolve(account)
       })
     })
+  }
+}
+
+export function clearAccountDetails () {
+  return {
+    type: actionConstants.CLEAR_ACCOUNT_DETAILS,
   }
 }
 
@@ -1793,7 +1826,8 @@ export function setFeatureFlag (feature, activated, notificationType) {
         dispatch(hideLoadingIndication())
         if (err) {
           dispatch(displayWarning(err.message))
-          return reject(err)
+          reject(err)
+          return
         }
         dispatch(updateFeatureFlags(updatedFeatureFlags))
         notificationType && dispatch(showModal({ name: notificationType }))
@@ -1819,7 +1853,8 @@ export function setPreference (preference, value) {
 
         if (err) {
           dispatch(displayWarning(err.message))
-          return reject(err)
+          reject(err)
+          return
         }
 
         dispatch(updatePreferences(updatedPreferences))
@@ -1912,14 +1947,14 @@ export function setParticipateInMetaMetrics (val) {
         log.debug(err)
         if (err) {
           dispatch(displayWarning(err.message))
-          return reject(err)
+          reject(err)
+          return
         }
 
         dispatch({
           type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,
           value: val,
         })
-
         resolve([val, metaMetricsId])
       })
     })
@@ -1933,14 +1968,14 @@ export function setMetaMetricsSendCount (val) {
       background.setMetaMetricsSendCount(val, (err) => {
         if (err) {
           dispatch(displayWarning(err.message))
-          return reject(err)
+          reject(err)
+          return
         }
 
         dispatch({
           type: actionConstants.SET_METAMETRICS_SEND_COUNT,
           value: val,
         })
-
         resolve(val)
       })
     })
@@ -1954,7 +1989,7 @@ export function setUseBlockie (val) {
     background.setUseBlockie(val, (err) => {
       dispatch(hideLoadingIndication())
       if (err) {
-        return dispatch(displayWarning(err.message))
+        dispatch(displayWarning(err.message))
       }
     })
     dispatch({
@@ -1971,7 +2006,7 @@ export function setUseNonceField (val) {
     background.setUseNonceField(val, (err) => {
       dispatch(hideLoadingIndication())
       if (err) {
-        return dispatch(displayWarning(err.message))
+        dispatch(displayWarning(err.message))
       }
     })
     dispatch({
@@ -1988,7 +2023,7 @@ export function setUsePhishDetect (val) {
     background.setUsePhishDetect(val, (err) => {
       dispatch(hideLoadingIndication())
       if (err) {
-        return dispatch(displayWarning(err.message))
+        dispatch(displayWarning(err.message))
       }
     })
   }
@@ -2001,7 +2036,8 @@ export function setIpfsGateway (val) {
     background.setIpfsGateway(val, (err) => {
       dispatch(hideLoadingIndication())
       if (err) {
-        return dispatch(displayWarning(err.message))
+        dispatch(displayWarning(err.message))
+
       } else {
         dispatch({
           type: actionConstants.SET_IPFS_GATEWAY,
@@ -2022,7 +2058,8 @@ export function updateCurrentLocale (key) {
         background.setCurrentLocale(key, (err, textDirection) => {
           if (err) {
             dispatch(hideLoadingIndication())
-            return dispatch(displayWarning(err.message))
+            dispatch(displayWarning(err.message))
+            return
           }
           switchDirection(textDirection)
           dispatch(setCurrentLocale(key, localeMessages))
@@ -2086,9 +2123,10 @@ export function rejectPermissionsRequest (requestId) {
       background.rejectPermissionsRequest(requestId, (err) => {
         if (err) {
           dispatch(displayWarning(err.message))
-          return reject(err)
+          reject(err)
+          return
         }
-        return forceUpdateMetamaskState(dispatch)
+        forceUpdateMetamaskState(dispatch)
           .then(resolve)
           .catch(reject)
       })
@@ -2119,7 +2157,8 @@ export function setFirstTimeFlowType (type) {
     log.debug(`background.setFirstTimeFlowType`)
     background.setFirstTimeFlowType(type, (err) => {
       if (err) {
-        return dispatch(displayWarning(err.message))
+        dispatch(displayWarning(err.message))
+
       }
     })
     dispatch({
@@ -2147,7 +2186,8 @@ export function setLastActiveTime () {
   return (dispatch) => {
     background.setLastActiveTime((err) => {
       if (err) {
-        return dispatch(displayWarning(err.message))
+        dispatch(displayWarning(err.message))
+
       }
     })
   }
@@ -2201,9 +2241,7 @@ export function getContractMethodData (data = '') {
     return getMethodDataAsync(fourBytePrefix)
       .then(({ name, params }) => {
         dispatch(loadingMethodDataFinished())
-
         background.addKnownMethodData(fourBytePrefix, { name, params })
-
         return { name, params }
       })
   }
@@ -2236,7 +2274,6 @@ export function getTokenParams (tokenAddress) {
     dispatch(loadingTokenParamsStarted())
     log.debug(`loadingTokenParams`)
 
-
     return fetchSymbolAndDecimals(tokenAddress, existingTokens)
       .then(({ symbol, decimals }) => {
         dispatch(addToken(tokenAddress, symbol, Number(decimals)))
@@ -2252,9 +2289,10 @@ export function setSeedPhraseBackedUp (seedPhraseBackupState) {
       background.setSeedPhraseBackedUp(seedPhraseBackupState, (err) => {
         if (err) {
           dispatch(displayWarning(err.message))
-          return reject(err)
+          reject(err)
+          return
         }
-        return forceUpdateMetamaskState(dispatch)
+        forceUpdateMetamaskState(dispatch)
           .then(resolve)
           .catch(reject)
       })
@@ -2268,7 +2306,8 @@ export function initializeThreeBox () {
       background.initializeThreeBox((err) => {
         if (err) {
           dispatch(displayWarning(err.message))
-          return reject(err)
+          reject(err)
+          return
         }
         resolve()
       })
@@ -2282,7 +2321,8 @@ export function setShowRestorePromptToFalse () {
       background.setShowRestorePromptToFalse((err) => {
         if (err) {
           dispatch(displayWarning(err.message))
-          return reject(err)
+          reject(err)
+          return
         }
         resolve()
       })
@@ -2296,7 +2336,8 @@ export function turnThreeBoxSyncingOn () {
       background.turnThreeBoxSyncingOn((err) => {
         if (err) {
           dispatch(displayWarning(err.message))
-          return reject(err)
+          reject(err)
+          return
         }
         resolve()
       })
@@ -2310,7 +2351,8 @@ export function restoreFromThreeBox (accountAddress) {
       background.restoreFromThreeBox(accountAddress, (err) => {
         if (err) {
           dispatch(displayWarning(err.message))
-          return reject(err)
+          reject(err)
+          return
         }
         resolve()
       })
@@ -2324,7 +2366,8 @@ export function getThreeBoxLastUpdated () {
       background.getThreeBoxLastUpdated((err, lastUpdated) => {
         if (err) {
           dispatch(displayWarning(err.message))
-          return reject(err)
+          reject(err)
+          return
         }
         resolve(lastUpdated)
       })
@@ -2338,7 +2381,8 @@ export function setThreeBoxSyncingPermission (threeBoxSyncingAllowed) {
       background.setThreeBoxSyncingPermission(threeBoxSyncingAllowed, (err) => {
         if (err) {
           dispatch(displayWarning(err.message))
-          return reject(err)
+          reject(err)
+          return
         }
         resolve()
       })
@@ -2368,7 +2412,8 @@ export function getNextNonce () {
       background.getNextNonce(address, (err, nextNonce) => {
         if (err) {
           dispatch(displayWarning(err.message))
-          return reject(err)
+          reject(err)
+          return
         }
         dispatch(setNextNonce(nextNonce))
         resolve(nextNonce)
@@ -2411,7 +2456,6 @@ export function setCurrentWindowTab (currentWindowTab) {
     value: currentWindowTab,
   }
 }
-
 
 export function getCurrentWindowTab () {
   return async (dispatch) => {

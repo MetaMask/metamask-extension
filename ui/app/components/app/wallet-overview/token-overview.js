@@ -7,7 +7,6 @@ import Button from '../../ui/button'
 import Identicon from '../../ui/identicon'
 import CurrencyDisplay from '../../ui/currency-display'
 import { I18nContext } from '../../../contexts/i18n'
-import WalletOverview from './wallet-overview'
 import { SEND_ROUTE } from '../../../helpers/constants/routes'
 import { useMetricEvent } from '../../../hooks/useMetricEvent'
 import { useTokenTracker } from '../../../hooks/useTokenTracker'
@@ -15,6 +14,7 @@ import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount'
 import { getAssetImages } from '../../../selectors/selectors'
 import { updateSendToken } from '../../../store/actions'
 import PaperAirplane from '../../ui/icon/paper-airplane-icon'
+import WalletOverview from './wallet-overview'
 
 const TokenOverview = ({ className, token }) => {
   const dispatch = useDispatch()

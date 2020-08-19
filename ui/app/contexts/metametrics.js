@@ -20,7 +20,6 @@ import {
   sendCountIsTrackable,
 } from '../helpers/utils/metametrics.util'
 
-
 export const MetaMetricsContext = createContext(() => {
   captureException(
     Error(`MetaMetrics context function was called from a react node that is not a descendant of a MetaMetrics context provider`),
@@ -60,7 +59,7 @@ export function MetaMetricsProvider ({ children }) {
     const { eventOpts = {} } = config
     const { name = '' } = eventOpts
     const { currentPath: overrideCurrentPath = '' } = overrides
-    const isSendFlow = Boolean(name.match(/^send|^confirm/) || overrideCurrentPath.match(/send|confirm/))
+    const isSendFlow = Boolean(name.match(/^send|^confirm/u) || overrideCurrentPath.match(/send|confirm/u))
 
     if (participateInMetaMetrics || config.isOptIn) {
       return sendMetaMetricsEvent({
@@ -80,6 +79,8 @@ export function MetaMetricsProvider ({ children }) {
         ...overrides,
       })
     }
+
+    return undefined
   }, [
     network,
     environmentType,

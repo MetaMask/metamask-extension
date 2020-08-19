@@ -4,9 +4,10 @@ import { cloneDeep } from 'lodash'
 import nock from 'nock'
 import ethUtil from 'ethereumjs-util'
 import { obj as createThoughStream } from 'through2'
+import EthQuery from 'eth-query'
+import proxyquire from 'proxyquire'
 import firstTimeState from '../../localhostState'
 import createTxMeta from '../../../lib/createTxMeta'
-import EthQuery from 'eth-query'
 
 const threeBoxSpies = {
   init: sinon.stub(),
@@ -14,12 +15,11 @@ const threeBoxSpies = {
   turnThreeBoxSyncingOn: sinon.stub(),
   _registerUpdates: sinon.spy(),
 }
-import proxyquire from 'proxyquire'
 
 class ThreeBoxControllerMock {
   constructor () {
     this.store = {
-      subscribe: () => {},
+      subscribe: () => undefined,
       getState: () => ({}),
     }
     this.init = threeBoxSpies.init
@@ -78,7 +78,7 @@ const CUSTOM_RPC_URL = 'http://localhost:8545'
 describe('MetaMaskController', function () {
   let metamaskController
   const sandbox = sinon.createSandbox()
-  const noop = () => {}
+  const noop = () => undefined
 
   beforeEach(function () {
 
@@ -92,28 +92,28 @@ describe('MetaMaskController', function () {
 
     nock('https://api.infura.io')
       .persist()
-      .get(/.*/)
+      .get(/.*/u)
       .reply(200)
 
     nock('https://min-api.cryptocompare.com')
       .persist()
-      .get(/.*/)
+      .get(/.*/u)
       .reply(200, '{"JPY":12415.9}')
 
     metamaskController = new MetaMaskController({
       showUnapprovedTx: noop,
       showUnconfirmedMessage: noop,
       encryptor: {
-        encrypt: function (_, object) {
+        encrypt (_, object) {
           this.object = object
           return Promise.resolve('mock-encrypted')
         },
-        decrypt: function () {
+        decrypt () {
           return Promise.resolve(this.object)
         },
       },
       initState: cloneDeep(firstTimeState),
-      platform: { showTransactionNotification: () => {} },
+      platform: { showTransactionNotification: () => undefined, getVersion: () => 'foo' },
     })
     // disable diagnostics
     metamaskController.diagnostics = null
@@ -146,7 +146,7 @@ describe('MetaMaskController', function () {
     beforeEach(async function () {
       const password = 'a-fake-password'
       await metamaskController.createNewVaultAndRestore(password, TEST_SEED)
-      await metamaskController.importAccountWithStrategy('Private Key', [ importPrivkey ])
+      await metamaskController.importAccountWithStrategy('Private Key', [importPrivkey])
     })
 
     it('adds private key to keyrings in KeyringController', async function () {
@@ -306,9 +306,9 @@ describe('MetaMaskController', function () {
     it('should return the balance known by accountTracker', async function () {
       const accounts = {}
       const balance = '0x14ced5122ce0a000'
-      accounts[TEST_ADDRESS] = { balance: balance }
+      accounts[TEST_ADDRESS] = { balance }
 
-      metamaskController.accountTracker.store.putState({ accounts: accounts })
+      metamaskController.accountTracker.store.putState({ accounts })
 
       const gotten = await metamaskController.getBalance(TEST_ADDRESS)
 
@@ -323,7 +323,7 @@ describe('MetaMaskController', function () {
         callback(undefined, balance)
       })
 
-      metamaskController.accountTracker.store.putState({ accounts: accounts })
+      metamaskController.accountTracker.store.putState({ accounts })
 
       const gotten = await metamaskController.getBalance(TEST_ADDRESS, ethQuery)
 
@@ -367,7 +367,7 @@ describe('MetaMaskController', function () {
       address = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
       identities = {
         '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-          'address': address,
+          address,
           'name': 'Account 1',
         },
         '0xc42edfcc21ed14dda456aa0756c153f7985d8813': {
@@ -503,7 +503,6 @@ describe('MetaMaskController', function () {
       assert.equal(keyrings[0].unlockedAccount, accountToUnlock)
     })
 
-
     it('should call keyringController.addNewAccount', async function () {
       assert(metamaskController.keyringController.addNewAccount.calledOnce)
     })
@@ -523,7 +522,6 @@ describe('MetaMaskController', function () {
     it('should call preferencesController.setAccountLabel', async function () {
       assert(metamaskController.preferencesController.setAccountLabel.calledOnce)
     })
-
 
   })
 
@@ -684,7 +682,7 @@ describe('MetaMaskController', function () {
 
       msgParams = {
         'from': address,
-        'data': data,
+        data,
       }
 
       const promise = metamaskController.newUnsignedMessage(msgParams)
@@ -694,7 +692,7 @@ describe('MetaMaskController', function () {
       metamaskMsgs = metamaskController.messageManager.getUnapprovedMsgs()
       messages = metamaskController.messageManager.messages
       msgId = Object.keys(metamaskMsgs)[0]
-      messages[0].msgParams.metamaskId = parseInt(msgId)
+      messages[0].msgParams.metamaskId = parseInt(msgId, 10)
     })
 
     it('persists address from msg params', function () {
@@ -714,7 +712,7 @@ describe('MetaMaskController', function () {
     })
 
     it('rejects the message', function () {
-      const msgIdInt = parseInt(msgId)
+      const msgIdInt = parseInt(msgId, 10)
       metamaskController.cancelMessage(msgIdInt, noop)
       assert.equal(messages[0].status, 'rejected')
     })
@@ -744,7 +742,7 @@ describe('MetaMaskController', function () {
 
       msgParams = {
         'from': address,
-        'data': data,
+        data,
       }
 
       const promise = metamaskController.newUnsignedPersonalMessage(msgParams)
@@ -754,15 +752,14 @@ describe('MetaMaskController', function () {
       metamaskPersonalMsgs = metamaskController.personalMessageManager.getUnapprovedMsgs()
       personalMessages = metamaskController.personalMessageManager.messages
       msgId = Object.keys(metamaskPersonalMsgs)[0]
-      personalMessages[0].msgParams.metamaskId = parseInt(msgId)
+      personalMessages[0].msgParams.metamaskId = parseInt(msgId, 10)
     })
 
     it('errors with no from in msgParams', async function () {
-      const msgParams = {
-        'data': data,
-      }
       try {
-        await metamaskController.newUnsignedPersonalMessage(msgParams)
+        await metamaskController.newUnsignedPersonalMessage({
+          data,
+        })
         assert.fail('should have thrown')
       } catch (error) {
         assert.equal(error.message, 'MetaMask Message Signature: from field is required.')
@@ -786,7 +783,7 @@ describe('MetaMaskController', function () {
     })
 
     it('rejects the message', function () {
-      const msgIdInt = parseInt(msgId)
+      const msgIdInt = parseInt(msgId, 10)
       metamaskController.cancelPersonalMessage(msgIdInt, noop)
       assert.equal(personalMessages[0].status, 'rejected')
     })
@@ -819,7 +816,8 @@ describe('MetaMaskController', function () {
       const { promise, resolve } = deferredPromise()
       const streamTest = createThoughStream((chunk, _, cb) => {
         if (chunk.name !== 'phishing') {
-          return cb()
+          cb()
+          return
         }
         assert.equal(chunk.data.hostname, (new URL(phishingMessageSender.url)).hostname)
         resolve()

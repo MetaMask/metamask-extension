@@ -17,15 +17,14 @@ const { makeStringTransform } = require('browserify-transform-tools')
 
 const conf = require('rc')('metamask', {})
 
-const { createTask, composeParallel, composeSeries, runInChildProcess } = require('./task')
 const packageJSON = require('../../package.json')
+const { createTask, composeParallel, composeSeries, runInChildProcess } = require('./task')
 
 module.exports = createScriptTasks
 
-
 const dependencies = Object.keys((packageJSON && packageJSON.dependencies) || {})
 const materialUIDependencies = ['@material-ui/core']
-const reactDepenendencies = dependencies.filter((dep) => dep.match(/react/))
+const reactDepenendencies = dependencies.filter((dep) => dep.match(/react/u))
 const d3Dependencies = ['c3', 'd3']
 
 const externalDependenciesMap = {
@@ -62,8 +61,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
     core.prod,
   )
 
-  const dev = core.dev
-  const testDev = core.testDev
+  const { dev, testDev } = core
 
   const test = composeParallel(
     deps.background,
@@ -72,7 +70,6 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
   )
 
   return { prod, dev, testDev, test }
-
 
   function createTasksForBuildJsDeps ({ key, filename }) {
     return createTask(`scripts:deps:${key}`, bundleTask({
@@ -84,7 +81,6 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
     }))
   }
 
-
   function createTasksForBuildJsExtension ({ taskPrefix, devMode, testing }) {
     const standardBundles = [
       'background',
@@ -94,14 +90,12 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
 
     const standardSubtasks = standardBundles.map((filename) => {
       return createTask(`${taskPrefix}:${filename}`,
-        createBundleTaskForBuildJsExtensionNormal({ filename, devMode, testing }),
-      )
+        createBundleTaskForBuildJsExtensionNormal({ filename, devMode, testing }))
     })
     // inpage must be built before contentscript
     // because inpage bundle result is included inside contentscript
     const contentscriptSubtask = createTask(`${taskPrefix}:contentscript`,
-      createTaskForBuildJsExtensionContentscript({ devMode, testing }),
-    )
+      createTaskForBuildJsExtensionContentscript({ devMode, testing }))
 
     // task for initiating livereload
     const initiateLiveReload = async () => {
@@ -160,7 +154,6 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
     )
   }
 
-
   function bundleTask (opts) {
     let bundler
 
@@ -204,7 +197,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
         buildStream = buildStream
           .pipe(terser({
             mangle: {
-              reserved: [ 'MetamaskInpageProvider' ],
+              reserved: ['MetamaskInpageProvider'],
             },
             sourceMap: {
               content: true,
@@ -288,9 +281,9 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
 
     if (!opts.buildLib) {
       if (opts.devMode && opts.filename === 'ui.js') {
-        browserifyOpts['entries'] = ['./development/require-react-devtools.js', opts.filepath]
+        browserifyOpts.entries = ['./development/require-react-devtools.js', opts.filepath]
       } else {
-        browserifyOpts['entries'] = [opts.filepath]
+        browserifyOpts.entries = [opts.filepath]
       }
     }
 
@@ -349,9 +342,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
     return bundler
   }
 
-
 }
-
 
 function beep () {
   process.stdout.write('\x07')
@@ -365,13 +356,12 @@ function getEnvironment ({ devMode, test }) {
     return 'testing'
   } else if (process.env.CIRCLE_BRANCH === 'master') {
     return 'production'
-  } else if (/^Version-v(\d+)[.](\d+)[.](\d+)/.test(process.env.CIRCLE_BRANCH)) {
+  } else if ((/^Version-v(\d+)[.](\d+)[.](\d+)/u).test(process.env.CIRCLE_BRANCH)) {
     return 'release-candidate'
   } else if (process.env.CIRCLE_BRANCH === 'develop') {
     return 'staging'
   } else if (process.env.CIRCLE_PULL_REQUEST) {
     return 'pull-request'
-  } else {
-    return 'other'
   }
+  return 'other'
 }

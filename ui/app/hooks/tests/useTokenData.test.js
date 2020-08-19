@@ -1,6 +1,6 @@
-import { useTokenData } from '../useTokenData'
 import assert from 'assert'
 import { renderHook } from '@testing-library/react-hooks'
+import { useTokenData } from '../useTokenData'
 
 const tests = [
   {
@@ -65,9 +65,9 @@ const tests = [
 
 describe('useTokenData', function () {
   tests.forEach((test) => {
-    const testTitle = test.tokenData !== null
-      ? `should return properly decoded data with _value ${test.tokenData.params[1].value}`
-      : `should return null when no data provided`
+    const testTitle = test.tokenData === null
+      ? `should return null when no data provided`
+      : `should return properly decoded data with _value ${test.tokenData.params[1].value}`
     it(testTitle, function () {
       const { result } = renderHook(() => useTokenData(test.data))
       assert.deepEqual(result.current, test.tokenData)

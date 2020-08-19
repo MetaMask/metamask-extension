@@ -2,7 +2,6 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 import contractMap from 'eth-contract-metadata'
-import ConfirmTransactionBase from './confirm-transaction-base.component'
 import {
   clearConfirmTransaction,
 } from '../../ducks/confirm-transaction/confirm-transaction.duck'
@@ -38,6 +37,7 @@ import {
   transactionFeeSelector,
 } from '../../selectors'
 import { getMostRecentOverviewPage } from '../../ducks/history/history'
+import ConfirmTransactionBase from './confirm-transaction-base.component'
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
   return {
@@ -93,13 +93,10 @@ const mapStateToProps = (state, ownProps) => {
   const { balance } = accounts[fromAddress]
   const { name: fromName } = identities[fromAddress]
   const toAddress = propsToAddress || txParamsToAddress
-  const toName = identities[toAddress]
-    ? identities[toAddress].name
-    : (
-      casedContractMap[toAddress]
-        ? casedContractMap[toAddress].name
-        : shortenAddress(checksumAddress(toAddress))
-    )
+
+  const toName = identities[toAddress]?.name ||
+    casedContractMap[toAddress]?.name ||
+    shortenAddress(checksumAddress(toAddress))
 
   const checksummedAddress = checksumAddress(toAddress)
   const addressBookObject = addressBook[checksummedAddress]

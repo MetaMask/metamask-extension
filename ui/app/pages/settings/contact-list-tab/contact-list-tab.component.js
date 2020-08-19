@@ -1,15 +1,15 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ContactList from '../../../components/app/contact-list'
-import EditContact from './edit-contact'
-import AddContact from './add-contact'
-import ViewContact from './view-contact'
-import MyAccounts from './my-accounts'
 import {
   CONTACT_ADD_ROUTE,
   CONTACT_VIEW_ROUTE,
   CONTACT_MY_ACCOUNTS_ROUTE,
 } from '../../../helpers/constants/routes'
+import EditContact from './edit-contact'
+import AddContact from './add-contact'
+import ViewContact from './view-contact'
+import MyAccounts from './my-accounts'
 
 export default class ContactListTab extends Component {
   static contextTypes = {
@@ -30,7 +30,7 @@ export default class ContactListTab extends Component {
 
   renderAddresses () {
     const { addressBook, history, selectedAddress } = this.props
-    const contacts = addressBook.filter(({ name }) => !!name)
+    const contacts = addressBook.filter(({ name }) => Boolean(name))
     const nonContacts = addressBook.filter(({ name }) => !name)
 
     return (
@@ -121,6 +121,7 @@ export default class ContactListTab extends Component {
     } else if (!hideAddressBook && showingMyAccounts) {
       return (<MyAccounts />)
     }
+    return null
   }
 
   render () {

@@ -1,7 +1,7 @@
 import ObservableStore from 'obs-store'
-import { addInternalMethodPrefix } from './permissions'
 import { normalize as normalizeAddress } from 'eth-sig-util'
 import { isValidAddress, sha3, bufferToHex } from 'ethereumjs-util'
+import { addInternalMethodPrefix } from './permissions'
 
 export default class PreferencesController {
 
@@ -26,7 +26,7 @@ export default class PreferencesController {
    *
    */
   constructor (opts = {}) {
-    const initState = Object.assign({
+    const initState = {
       frequentRpcListDetail: [],
       accountTokens: {},
       assetImages: {},
@@ -61,8 +61,8 @@ export default class PreferencesController {
       metaMetricsSendCount: 0,
 
       // ENS decentralized website resolution
-      ipfsGateway: 'dweb.link',
-    }, opts.initState)
+      ipfsGateway: 'dweb.link', ...opts.initState,
+    }
 
     this.diagnostics = opts.diagnostics
     this.network = opts.network
@@ -152,7 +152,6 @@ export default class PreferencesController {
     this.store.updateState({ firstTimeFlowType: type })
   }
 
-
   getSuggestedTokens () {
     return this.store.getState().suggestedTokens
   }
@@ -178,7 +177,7 @@ export default class PreferencesController {
    * @param {string} methodData - Corresponding data method
    */
   addKnownMethodData (fourBytePrefix, methodData) {
-    const knownMethodData = this.store.getState().knownMethodData
+    const { knownMethodData } = this.store.getState()
     knownMethodData[fourBytePrefix] = methodData
     this.store.updateState({ knownMethodData })
   }
@@ -198,7 +197,7 @@ export default class PreferencesController {
     ) {
       const { type, options } = req.params
       switch (type) {
-        case 'ERC20':
+        case 'ERC20': {
           const result = await this._handleWatchAssetERC20(options)
           if (result instanceof Error) {
             end(result)
@@ -207,6 +206,7 @@ export default class PreferencesController {
             end()
           }
           return
+        }
         default:
           end(new Error(`Asset of type ${type} not supported`))
           return
@@ -214,7 +214,6 @@ export default class PreferencesController {
     }
 
     next()
-    return
   }
 
   /**
@@ -227,7 +226,7 @@ export default class PreferencesController {
     const textDirection = (['ar', 'dv', 'fa', 'he', 'ku'].includes(key)) ? 'rtl' : 'auto'
     this.store.updateState({
       currentLocale: key,
-      textDirection: textDirection,
+      textDirection,
     })
     return textDirection
   }
@@ -263,8 +262,8 @@ export default class PreferencesController {
    * @returns {string} - the address that was removed
    */
   removeAddress (address) {
-    const identities = this.store.getState().identities
-    const accountTokens = this.store.getState().accountTokens
+    const { identities } = this.store.getState()
+    const { accountTokens } = this.store.getState()
     if (!identities[address]) {
       throw new Error(`${address} can't be deleted cause it was not found`)
     }
@@ -281,7 +280,6 @@ export default class PreferencesController {
     return address
   }
 
-
   /**
    * Adds addresses to the identities object without removing identities
    *
@@ -289,8 +287,7 @@ export default class PreferencesController {
    *
    */
   addAddresses (addresses) {
-    const identities = this.store.getState().identities
-    const accountTokens = this.store.getState().accountTokens
+    const { identities, accountTokens } = this.store.getState()
     addresses.forEach((address) => {
       // skip if already exists
       if (identities[address]) {
@@ -419,7 +416,7 @@ export default class PreferencesController {
   async addToken (rawAddress, symbol, decimals, image) {
     const address = normalizeAddress(rawAddress)
     const newEntry = { address, symbol, decimals }
-    const tokens = this.store.getState().tokens
+    const { tokens } = this.store.getState()
     const assetImages = this.getAssetImages()
     const previousEntry = tokens.find((token) => {
       return token.address === address
@@ -444,7 +441,7 @@ export default class PreferencesController {
    *
    */
   removeToken (rawAddress) {
-    const tokens = this.store.getState().tokens
+    const { tokens } = this.store.getState()
     const assetImages = this.getAssetImages()
     const updatedTokens = tokens.filter((token) => token.address !== rawAddress)
     delete assetImages[rawAddress]
@@ -470,7 +467,7 @@ export default class PreferencesController {
    */
   setAccountLabel (account, label) {
     if (!account) {
-      throw new Error('setAccountLabel requires a valid address, got ' + String(account))
+      throw new Error(`setAccountLabel requires a valid address, got ${String(account)}`)
     }
     const address = normalizeAddress(account)
     const { identities } = this.store.getState()
@@ -491,7 +488,6 @@ export default class PreferencesController {
    *
    */
 
-
   updateRpc (newRpcDetails) {
     const rpcList = this.getFrequentRpcListDetail()
     const index = rpcList.findIndex((element) => {
@@ -508,6 +504,7 @@ export default class PreferencesController {
     }
     return Promise.resolve(rpcList)
   }
+
   /**
    * Adds custom RPC url to state.
    *
@@ -528,7 +525,8 @@ export default class PreferencesController {
     }
     if (url !== 'http://localhost:8545') {
       let checkedChainId
-      if (!!chainId && !Number.isNaN(parseInt(chainId))) {
+      // eslint-disable-next-line radix
+      if (Boolean(chainId) && !Number.isNaN(parseInt(chainId))) {
         checkedChainId = chainId
       }
       rpcList.push({ rpcUrl: url, chainId: checkedChainId, ticker, nickname, rpcPrefs })
@@ -686,8 +684,9 @@ export default class PreferencesController {
    *
    */
   _getTokenRelatedStates (selectedAddress) {
-    const accountTokens = this.store.getState().accountTokens
+    const { accountTokens } = this.store.getState()
     if (!selectedAddress) {
+      // eslint-disable-next-line no-param-reassign
       selectedAddress = this.store.getState().selectedAddress
     }
     const providerType = this.network.providerStore.getState().type

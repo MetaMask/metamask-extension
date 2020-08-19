@@ -1,7 +1,8 @@
+import punycode from 'punycode'
 import abi from 'human-standard-token-abi'
+import BigNumber from 'bignumber.js'
 import ethUtil from 'ethereumjs-util'
 import { DateTime } from 'luxon'
-import punycode from 'punycode'
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate (date, format = 'M/d/y \'at\' T') {
@@ -58,7 +59,7 @@ export function addressSummary (address, firstSegLength = 10, lastSegLength = 4,
   if (!includeHex) {
     checked = ethUtil.stripHexPrefix(checked)
   }
-  return checked ? checked.slice(0, firstSegLength) + '...' + checked.slice(checked.length - lastSegLength) : '...'
+  return checked ? `${checked.slice(0, firstSegLength)}...${checked.slice(checked.length - lastSegLength)}` : '...'
 }
 
 export function isValidAddress (address) {
@@ -75,7 +76,7 @@ export function isValidDomainName (address) {
     // Checks that the domain consists of at least one valid domain pieces separated by periods, followed by a tld
     // Each piece of domain name has only the characters a-z, 0-9, and a hyphen (but not at the start or end of chunk)
     // A chunk has minimum length of 1, but minimum tld is set to 2 for now (no 1-character tlds exist yet)
-    .match(/^(?:[a-z0-9](?:[-a-z0-9]*[a-z0-9])?\.)+[a-z0-9][-a-z0-9]*[a-z0-9]$/)
+    .match(/^(?:[a-z0-9](?:[-a-z0-9]*[a-z0-9])?\.)+[a-z0-9][-a-z0-9]*[a-z0-9]$/u)
   return match !== null
 }
 
@@ -102,10 +103,10 @@ export function parseBalance (balance) {
   let afterDecimal
   const wei = numericBalance(balance)
   const weiString = wei.toString()
-  const trailingZeros = /0+$/
+  const trailingZeros = /0+$/u
 
   const beforeDecimal = weiString.length > 18 ? weiString.slice(0, weiString.length - 18) : '0'
-  afterDecimal = ('000000000000000000' + wei).slice(-18).replace(trailingZeros, '')
+  afterDecimal = (`000000000000000000${wei}`).slice(-18).replace(trailingZeros, '')
   if (afterDecimal === '') {
     afterDecimal = '0'
   }
@@ -122,18 +123,18 @@ export function formatBalance (balance, decimalsToKeep, needsParse = true, ticke
   if (decimalsToKeep === undefined) {
     if (beforeDecimal === '0') {
       if (afterDecimal !== '0') {
-        const sigFigs = afterDecimal.match(/^0*(.{2})/) // default: grabs 2 most significant digits
+        const sigFigs = afterDecimal.match(/^0*(.{2})/u) // default: grabs 2 most significant digits
         if (sigFigs) {
           afterDecimal = sigFigs[0]
         }
-        formatted = '0.' + afterDecimal + ` ${ticker}`
+        formatted = `0.${afterDecimal} ${ticker}`
       }
     } else {
-      formatted = beforeDecimal + '.' + afterDecimal.slice(0, 3) + ` ${ticker}`
+      formatted = `${beforeDecimal}.${afterDecimal.slice(0, 3)} ${ticker}`
     }
   } else {
     afterDecimal += Array(decimalsToKeep).join('0')
-    formatted = beforeDecimal + '.' + afterDecimal.slice(0, decimalsToKeep) + ` ${ticker}`
+    formatted = `${beforeDecimal}.${afterDecimal.slice(0, decimalsToKeep)} ${ticker}`
   }
   return formatted
 }
@@ -176,12 +177,10 @@ export function shortenBalance (balance, decimalsToKeep = 1) {
     const stringBalance = convertedBalance.toString()
     if (stringBalance.split('.')[1].length > 3) {
       return convertedBalance.toFixed(3)
-    } else {
-      return stringBalance
     }
-  } else {
-    return convertedBalance.toFixed(decimalsToKeep)
+    return stringBalance
   }
+  return convertedBalance.toFixed(decimalsToKeep)
 }
 
 // Takes a BN and an ethereum currency name,
@@ -189,8 +188,9 @@ export function shortenBalance (balance, decimalsToKeep = 1) {
 export function normalizeToWei (amount, currency) {
   try {
     return amount.mul(bnTable.wei).div(bnTable[currency])
-  } catch (e) {}
-  return amount
+  } catch (e) {
+    return amount
+  }
 }
 
 export function normalizeEthStringToWei (str) {
@@ -218,7 +218,7 @@ export function normalizeNumberToWei (n, currency) {
 }
 
 export function isHex (str) {
-  return Boolean(str.match(/^(0x)?[0-9a-fA-F]+$/))
+  return Boolean(str.match(/^(0x)?[0-9a-fA-F]+$/u))
 }
 
 export function getContractAtAddress (tokenAddress) {
@@ -240,6 +240,7 @@ export function getRandomFileName () {
 }
 
 export function exportAsFile (filename, data, type = 'text/csv') {
+  // eslint-disable-next-line no-param-reassign
   filename = filename || getRandomFileName()
   // source: https://stackoverflow.com/a/33542499 by Ludovic Feltz
   const blob = new window.Blob([data], { type })
@@ -352,4 +353,19 @@ export function checkExistingAddresses (address, list = []) {
   }
 
   return list.some(matchesAddress)
+}
+
+/**
+ * Given a number and specified precision, returns that number in base 10 with a maximum of precision
+ * significant digits, but without any trailing zeros after the decimal point To be used when wishing
+ * to display only as much digits to the user as necessary
+ *
+ * @param {string | number | BigNumber} n - The number to format
+ * @param {number} precision - The maximum number of significant digits in the return value
+ * @returns {string} The number in decimal form, with <= precision significant digits and no decimal trailing zeros
+ */
+export function toPrecisionWithoutTrailingZeros (n, precision) {
+  return (new BigNumber(n))
+    .toPrecision(precision)
+    .replace(/(\.[0-9]*[1-9])0*|(\.0*)/u, '$1')
 }

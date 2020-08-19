@@ -3,14 +3,13 @@ import currencies from 'currency-formatter/currencies'
 import ethUtil from 'ethereumjs-util'
 import BigNumber from 'bignumber.js'
 
+import { unconfirmedTransactionsCountSelector } from '../../selectors'
 import {
   conversionUtil,
   addCurrencies,
   multiplyCurrencies,
   conversionGreaterThan,
 } from './conversion-util'
-
-import { unconfirmedTransactionsCountSelector } from '../../selectors'
 
 export function increaseLastGasPrice (lastGasPrice) {
   return ethUtil.addHexPrefix(multiplyCurrencies(lastGasPrice || '0x0', 1.1, {

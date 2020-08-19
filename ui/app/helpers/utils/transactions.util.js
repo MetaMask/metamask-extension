@@ -2,14 +2,13 @@ import ethUtil from 'ethereumjs-util'
 import MethodRegistry from 'eth-method-registry'
 import abi from 'human-standard-token-abi'
 import abiDecoder from 'abi-decoder'
+import log from 'loglevel'
 import {
   TRANSACTION_TYPE_CANCEL,
   TRANSACTION_STATUS_CONFIRMED,
 } from '../../../../app/scripts/controllers/transactions/enums'
 import { MESSAGE_TYPE } from '../../../../app/scripts/lib/enums'
 import { getEtherscanNetworkPrefix } from '../../../lib/etherscan-prefix-for-network'
-import fetchWithCache from './fetch-with-cache'
-
 import {
   TOKEN_METHOD_TRANSFER,
   TOKEN_METHOD_APPROVE,
@@ -26,8 +25,8 @@ import {
   CANCEL_ATTEMPT_ACTION_KEY,
   DEPOSIT_TRANSACTION_KEY,
 } from '../constants/transactions'
+import fetchWithCache from './fetch-with-cache'
 
-import log from 'loglevel'
 import { addCurrencies } from './conversion-util'
 
 abiDecoder.addABI(abi)
@@ -46,9 +45,8 @@ async function getMethodFrom4Byte (fourBytePrefix) {
 
   if (fourByteResponse.count === 1) {
     return fourByteResponse.results[0].text_signature
-  } else {
-    return null
   }
+  return null
 }
 let registry
 
@@ -142,9 +140,8 @@ export function getTransactionActionKey (transaction) {
       return DECRYPT_REQUEST_KEY
     } else if (type === MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY) {
       return ENCRYPTION_PUBLIC_KEY_REQUEST_KEY
-    } else {
-      return SIGNATURE_REQUEST_KEY
     }
+    return SIGNATURE_REQUEST_KEY
   }
 
   if (isConfirmDeployContract(transaction)) {
@@ -181,12 +178,12 @@ export function getLatestSubmittedTxWithNonce (transactions = [], nonce = '0x0')
     const { submittedTime, txParams: { nonce: currentNonce } = {} } = current
 
     if (currentNonce === nonce) {
-      return acc.submittedTime
-        ? submittedTime > acc.submittedTime ? current : acc
-        : current
-    } else {
-      return acc
+      if (!acc.submittedTime) {
+        return current
+      }
+      return submittedTime > acc.submittedTime ? current : acc
     }
+    return acc
   }, {})
 }
 
@@ -237,7 +234,7 @@ export function getStatusKey (transaction) {
  */
 export function getBlockExplorerUrlForTx (networkId, hash, rpcPrefs = {}) {
   if (rpcPrefs.blockExplorerUrl) {
-    return `${rpcPrefs.blockExplorerUrl.replace(/\/+$/, '')}/tx/${hash}`
+    return `${rpcPrefs.blockExplorerUrl.replace(/\/+$/u, '')}/tx/${hash}`
   }
   const prefix = getEtherscanNetworkPrefix(networkId)
   return `https://${prefix}etherscan.io/tx/${hash}`

@@ -74,7 +74,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
 
       await driver.waitUntilXWindowHandles(3)
-      const windowHandles = await driver.getAllWindowHandles()
+      windowHandles = await driver.getAllWindowHandles()
 
       extension = windowHandles[0]
       dapp = await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles)
@@ -108,7 +108,7 @@ describe('MetaMask', function () {
       assert.equal(await title.getText(), 'Signature Request')
       assert.equal(await name.getText(), 'Ether Mail')
       assert.equal(await origin.getText(), 'http://127.0.0.1:8080')
-      assert.equal(await address.getText(), publicAddress.slice(0, 8) + '...' + publicAddress.slice(publicAddress.length - 8))
+      assert.equal(await address.getText(), `${publicAddress.slice(0, 8)}...${publicAddress.slice(publicAddress.length - 8)}`)
     })
 
     it('signs the transaction', async function () {
@@ -124,11 +124,11 @@ describe('MetaMask', function () {
       await driver.clickElement(By.css('[data-testid="account-options-menu__account-details"]'))
       await driver.delay(regularDelayMs)
 
-      const addressInput = await driver.findElement(By.css('.qr-ellip-address'))
+      const addressInput = await driver.findElement(By.css('.readonly-input__input'))
       const newPublicAddress = await addressInput.getAttribute('value')
       const accountModal = await driver.findElement(By.css('span .modal'))
 
-      await driver.clickElement(By.css('.account-modal-close'))
+      await driver.clickElement(By.css('.account-modal__close'))
 
       await driver.wait(until.stalenessOf(accountModal))
       await driver.delay(regularDelayMs)

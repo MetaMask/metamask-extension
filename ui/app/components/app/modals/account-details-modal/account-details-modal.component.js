@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import AccountModalContainer from '../account-modal-container'
-import genAccountLink from '../../../../../lib/account-link.js'
+import getAccountLink from '../../../../../lib/account-link'
 import QrView from '../../../ui/qr-code'
 import EditableLabel from '../../../ui/editable-label'
 import Button from '../../../ui/button'
@@ -42,9 +42,9 @@ export default class AccountDetailsModal extends Component {
     }
 
     return (
-      <AccountModalContainer>
+      <AccountModalContainer className="account-details-modal">
         <EditableLabel
-          className="account-modal__name"
+          className="account-details-modal__name"
           defaultValue={name}
           onSubmit={(label) => setAccountLabel(address, label)}
         />
@@ -52,21 +52,21 @@ export default class AccountDetailsModal extends Component {
         <QrView
           Qr={{
             data: address,
-            network: network,
+            network,
           }}
         />
 
-        <div className="account-modal-divider" />
+        <div className="account-details-modal__divider" />
 
         <Button
           type="secondary"
-          className="account-modal__button"
+          className="account-details-modal__button"
           onClick={() => {
-            global.platform.openTab({ url: genAccountLink(address, network, rpcPrefs) })
+            global.platform.openTab({ url: getAccountLink(address, network, rpcPrefs) })
           }}
         >
           {rpcPrefs.blockExplorerUrl
-            ? this.context.t('blockExplorerView', [rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/)[1]])
+            ? this.context.t('blockExplorerView', [rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/u)[1]])
             : this.context.t('viewOnEtherscan')
           }
         </Button>
@@ -75,7 +75,7 @@ export default class AccountDetailsModal extends Component {
           ? (
             <Button
               type="secondary"
-              className="account-modal__button"
+              className="account-details-modal__button"
               onClick={() => showExportPrivateKeyModal()}
             >
               {this.context.t('exportPrivateKey')}

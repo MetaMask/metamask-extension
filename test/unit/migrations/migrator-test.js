@@ -3,37 +3,36 @@ import assert from 'assert'
 import { cloneDeep } from 'lodash'
 import Migrator from '../../../app/scripts/lib/migrator'
 import liveMigrations from '../../../app/scripts/migrations'
+import data from '../../../app/scripts/first-time-state'
 
 const stubMigrations = [
   {
     version: 1,
-    migrate: (data) => {
+    migrate: (state) => {
       // clone the data just like we do in migrations
-      const clonedData = cloneDeep(data)
+      const clonedData = cloneDeep(state)
       clonedData.meta.version = 1
       return Promise.resolve(clonedData)
     },
   },
   {
     version: 2,
-    migrate: (data) => {
-      const clonedData = cloneDeep(data)
+    migrate: (state) => {
+      const clonedData = cloneDeep(state)
       clonedData.meta.version = 2
       return Promise.resolve(clonedData)
     },
   },
   {
     version: 3,
-    migrate: (data) => {
-      const clonedData = cloneDeep(data)
+    migrate: (state) => {
+      const clonedData = cloneDeep(state)
       clonedData.meta.version = 3
       return Promise.resolve(clonedData)
     },
   },
 ]
 const versionedData = { meta: { version: 0 }, data: { hello: 'world' } }
-
-import data from '../../../app/scripts/first-time-state'
 
 const firstTimeState = {
   meta: { version: 0 },
@@ -50,12 +49,12 @@ describe('migrations', function () {
       migrationNumbers = fileNames
         .reduce((acc, filename) => {
           const name = filename.split('.')[0]
-          if (/^\d+$/.test(name)) {
+          if ((/^\d+$/u).test(name)) {
             acc.push(name)
           }
           return acc
         }, [])
-        .map((num) => parseInt(num))
+        .map((num) => parseInt(num, 10))
     })
 
     it('should include all migrations', function () {
@@ -70,12 +69,12 @@ describe('migrations', function () {
       const testNumbers = fileNames
         .reduce((acc, filename) => {
           const name = filename.split('-test.')[0]
-          if (/^\d+$/.test(name)) {
+          if ((/^\d+$/u).test(name)) {
             acc.push(name)
           }
           return acc
         }, [])
-        .map((num) => parseInt(num))
+        .map((num) => parseInt(num, 10))
 
       migrationNumbers.forEach((num) => {
         if (num >= 33) {
@@ -86,8 +85,8 @@ describe('migrations', function () {
   })
 
   describe('Migrator', function () {
-    const migrator = new Migrator({ migrations: stubMigrations })
     it('migratedData version should be version 3', async function () {
+      const migrator = new Migrator({ migrations: stubMigrations })
       const migratedData = await migrator.migrateData(versionedData)
       assert.equal(migratedData.meta.version, stubMigrations[2].version)
     })

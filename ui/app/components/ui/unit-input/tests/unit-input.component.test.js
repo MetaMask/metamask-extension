@@ -1,5 +1,5 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { shallow, mount } from 'enzyme'
 import sinon from 'sinon'
 import UnitInput from '../unit-input.component'

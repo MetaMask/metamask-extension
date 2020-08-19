@@ -36,7 +36,8 @@ export class PermissionsController {
       showPermissionRequest,
     } = {},
     restoredPermissions = {},
-    restoredState = {}) {
+    restoredState = {},
+  ) {
 
     // additional top-level store key set in _initializeMetadataStore
     this.store = new ObservableStore({
@@ -132,7 +133,7 @@ export class PermissionsController {
       const req = { method: 'eth_accounts' }
       const res = {}
       this.permissions.providerMiddlewareFunction(
-        { origin }, req, res, () => {}, _end,
+        { origin }, req, res, () => undefined, _end,
       )
 
       function _end () {
@@ -187,7 +188,7 @@ export class PermissionsController {
       const res = {}
 
       this.permissions.providerMiddlewareFunction(
-        domain, req, res, () => {}, _end,
+        domain, req, res, () => undefined, _end,
       )
 
       function _end (_err) {
@@ -334,7 +335,7 @@ export class PermissionsController {
       .filter((acc) => acc !== account)
 
     if (newPermittedAccounts.length === 0) {
-      this.removePermissionsFor({ [origin]: [ 'eth_accounts' ] })
+      this.removePermissionsFor({ [origin]: ['eth_accounts'] })
     } else {
 
       this.permissions.updateCaveatFor(

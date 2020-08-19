@@ -122,7 +122,6 @@ describe('App State', function () {
       type: actions.MODAL_CLOSE,
     })
 
-
     assert.equal(newState.modal.open, false)
     assert.equal(newState.modal.modalState.name, null)
   })
@@ -165,6 +164,23 @@ describe('App State', function () {
     assert.equal(state.accountDetail.accountExport, 'none') // default
     assert.equal(state.accountDetail.privateKey, '') // default
 
+  })
+
+  it('clears account details', function () {
+    const exportPrivKeyModal = {
+      accountDetail: {
+        subview: 'export',
+        accountExport: 'completed',
+        privateKey: 'a-priv-key',
+      },
+    }
+
+    const state = { ...metamaskState, appState: { ...exportPrivKeyModal } }
+    const newState = reduceApp(state, {
+      type: actions.CLEAR_ACCOUNT_DETAILS,
+    })
+
+    assert.deepStrictEqual(newState.accountDetail, {})
   })
 
   it('shoes account page', function () {

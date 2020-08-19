@@ -24,11 +24,11 @@ describe('migration #28', function () {
 
         const testTokens = [{ address: '0xa', symbol: 'A', decimals: 4 }, { address: '0xb', symbol: 'B', decimals: 4 }]
         assert.equal(newTokens.length, 0, 'tokens is expected to have the length of 0')
-        assert.equal(newAccountTokens['0x6d14']['mainnet'].length, 2, 'tokens for address is expected to have the length of 2')
-        assert.equal(newAccountTokens['0x3695']['mainnet'].length, 2, 'tokens for address is expected to have the length of 2')
+        assert.equal(newAccountTokens['0x6d14'].mainnet.length, 2, 'tokens for address is expected to have the length of 2')
+        assert.equal(newAccountTokens['0x3695'].mainnet.length, 2, 'tokens for address is expected to have the length of 2')
         assert.equal(Object.keys(newAccountTokens).length, 2, 'account tokens should be created for all identities')
-        assert.deepEqual(newAccountTokens['0x6d14']['mainnet'], testTokens, 'tokens for address should be the same than before')
-        assert.deepEqual(newAccountTokens['0x3695']['mainnet'], testTokens, 'tokens for address should be the same than before')
+        assert.deepEqual(newAccountTokens['0x6d14'].mainnet, testTokens, 'tokens for address should be the same than before')
+        assert.deepEqual(newAccountTokens['0x3695'].mainnet, testTokens, 'tokens for address should be the same than before')
         done()
       })
       .catch(done)

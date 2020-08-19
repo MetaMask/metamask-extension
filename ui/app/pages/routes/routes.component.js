@@ -265,16 +265,16 @@ export default class Routes extends Component {
   }
 
   toggleMetamaskActive () {
-    if (!this.props.isUnlocked) {
+    if (this.props.isUnlocked) {
+      // currently active: deactivate
+      this.props.lockMetaMask()
+    } else {
       // currently inactive: redirect to password box
       const passwordBox = document.querySelector('input[type=password]')
       if (!passwordBox) {
         return
       }
       passwordBox.focus()
-    } else {
-      // currently active: deactivate
-      this.props.lockMetaMask()
     }
   }
 

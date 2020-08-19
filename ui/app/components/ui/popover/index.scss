@@ -33,10 +33,9 @@
       align-items: center;
       justify-content: space-between;
 
-      @extend %font;
+      @include H4;
 
       font-weight: bold;
-      font-size: 18px;
       line-height: 25px;
       padding-bottom: 8px;
 
@@ -52,10 +51,8 @@
     }
 
     &__subtitle {
-      @extend %font;
+      @include H6;
 
-      font-weight: normal;
-      font-size: 14px;
       line-height: 20px;
     }
 

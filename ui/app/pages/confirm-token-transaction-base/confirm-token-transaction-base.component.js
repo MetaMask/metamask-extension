@@ -89,12 +89,11 @@ export default class ConfirmTokenTransactionBase extends Component {
 
     if (typeof contractExchangeRate === 'undefined') {
       return formatCurrency(fiatTransactionTotal, currentCurrency)
-    } else {
-      const fiatTransactionAmount = this.getFiatTransactionAmount()
-      const fiatTotal = addFiat(fiatTransactionAmount, fiatTransactionTotal)
-      const roundedFiatTotal = roundExponential(fiatTotal)
-      return formatCurrency(roundedFiatTotal, currentCurrency)
     }
+    const fiatTransactionAmount = this.getFiatTransactionAmount()
+    const fiatTotal = addFiat(fiatTransactionAmount, fiatTransactionTotal)
+    const roundedFiatTotal = roundExponential(fiatTotal)
+    return formatCurrency(roundedFiatTotal, currentCurrency)
   }
 
   render () {

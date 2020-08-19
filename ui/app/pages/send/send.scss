@@ -1,3 +1,5 @@
+@import './send-content/send-gas-row/send-gas-row';
+
 .send {
   &__header {
     position: relative;
@@ -6,18 +8,18 @@
     padding: 14px 0 3px 0;
 
     .page-container__title {
-      @extend %h4;
+      @include H4;
 
       text-align: center;
     }
 
     .page-container__header-close-text {
-      @extend %link;
-
       font-size: 1rem;
       line-height: 1.1875rem;
       position: absolute;
       right: 1rem;
+      top: 6px;
+      width: min-content;
     }
   }
 
@@ -48,13 +50,13 @@
       overflow-y: auto;
 
       &__link {
-        @extend %link;
         @extend %row-nowrap;
 
         padding: 1rem;
         font-size: 1rem;
         border-bottom: 1px solid $alto;
         align-items: center;
+        justify-content: flex-start;
       }
 
       &__back-caret {
@@ -76,13 +78,12 @@
       @extend %col-nowrap;
 
       &__load-more {
-        @extend %link;
-
         font-size: 0.75rem;
         line-height: 1.0625rem;
         padding: 0.5rem;
         text-align: center;
         border-bottom: 1px solid $alto;
+        justify-content: flex-start;
       }
     }
 
@@ -91,7 +92,7 @@
     }
 
     &__group-label {
-      @extend %h8;
+      @include H8;
 
       background-color: $Grey-000;
       color: $Grey-600;
@@ -136,7 +137,7 @@
       }
 
       &__subtitle {
-        @extend %h8;
+        @include H8;
 
         color: $Grey-500;
       }
@@ -186,7 +187,7 @@
     }
 
     &__input {
-      @extend %h6;
+      @include H6;
 
       flex: 1 1 auto;
       width: 0;

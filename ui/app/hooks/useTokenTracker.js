@@ -3,7 +3,6 @@ import TokenTracker from '@metamask/eth-token-tracker'
 import { useSelector } from 'react-redux'
 import { getCurrentNetwork, getSelectedAddress } from '../selectors'
 
-
 export function useTokenTracker (tokens) {
   const network = useSelector(getCurrentNetwork)
   const userAddress = useSelector(getSelectedAddress)
@@ -13,14 +12,14 @@ export function useTokenTracker (tokens) {
   const [error, setError] = useState(null)
   const tokenTracker = useRef(null)
 
-  const updateBalances = useCallback((tokensWithBalances) => {
-    setTokensWithBalances(tokensWithBalances)
+  const updateBalances = useCallback((tokenWithBalances) => {
+    setTokensWithBalances(tokenWithBalances)
     setLoading(false)
     setError(null)
   }, [])
 
-  const showError = useCallback((error) => {
-    setError(error)
+  const showError = useCallback((err) => {
+    setError(err)
     setLoading(false)
   }, [])
 
@@ -56,7 +55,6 @@ export function useTokenTracker (tokens) {
   useEffect(() => {
     return teardownTracker
   }, [teardownTracker])
-
 
   // Effect to set loading state and initialize tracker when values change
   useEffect(() => {

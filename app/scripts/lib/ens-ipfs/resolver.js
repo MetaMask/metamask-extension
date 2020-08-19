@@ -1,9 +1,9 @@
 import namehash from 'eth-ens-namehash'
 import Eth from 'ethjs-query'
 import EthContract from 'ethjs-contract'
+import contentHash from 'content-hash'
 import registryAbi from './contracts/registry'
 import resolverAbi from './contracts/resolver'
-import contentHash from 'content-hash'
 
 export default async function resolveEnsToIpfsContentId ({ provider, name }) {
   const eth = new Eth(provider)
@@ -36,7 +36,7 @@ export default async function resolveEnsToIpfsContentId ({ provider, name }) {
       decodedContentHash = contentHash.helpers.cidV0ToV1Base32(decodedContentHash)
     }
 
-    return { type: type, hash: decodedContentHash }
+    return { type, hash: decodedContentHash }
   }
   if (isLegacyResolver[0]) {
     // lookup content id

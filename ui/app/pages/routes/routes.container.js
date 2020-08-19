@@ -7,7 +7,6 @@ import {
   getPreferences,
   submittedPendingTransactionsSelector,
 } from '../../selectors'
-import Routes from './routes.component'
 import {
   hideSidebar,
   lockMetamask,
@@ -16,6 +15,7 @@ import {
   setMouseUserState,
 } from '../../store/actions'
 import { pageChanged } from '../../ducks/history/history'
+import Routes from './routes.component'
 
 function mapStateToProps (state) {
   const { appState } = state

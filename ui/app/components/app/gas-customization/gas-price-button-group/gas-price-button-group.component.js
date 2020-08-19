@@ -4,7 +4,6 @@ import ButtonGroup from '../../../ui/button-group'
 import Button from '../../../ui/button'
 import { GAS_ESTIMATE_TYPES } from '../../../../helpers/constants/common'
 
-
 const GAS_OBJECT_PROPTYPES_SHAPE = {
   gasEstimateType: PropTypes.oneOf(Object.values(GAS_ESTIMATE_TYPES)).isRequired,
   feeInPrimaryCurrency: PropTypes.string,
@@ -89,18 +88,18 @@ export default class GasPriceButtonGroup extends Component {
     } = this.props
 
     return (
-      !buttonDataLoading
-        ? (
+      buttonDataLoading
+        ? <div className={`${buttonPropsAndFlags.className}__loading-container`}>{this.context.t('loading')}</div>
+        : (
           <ButtonGroup
             className={buttonPropsAndFlags.className}
             defaultActiveButtonIndex={defaultActiveButtonIndex}
             newActiveButtonIndex={newActiveButtonIndex}
             noButtonActiveByDefault={noButtonActiveByDefault}
           >
-            { gasButtonInfo.map((obj, index) => this.renderButton(obj, buttonPropsAndFlags, index)) }
+            {gasButtonInfo.map((obj, index) => this.renderButton(obj, buttonPropsAndFlags, index))}
           </ButtonGroup>
         )
-        : <div className={`${buttonPropsAndFlags.className}__loading-container`}>{ this.context.t('loading') }</div>
     )
   }
 }

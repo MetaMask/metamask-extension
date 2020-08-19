@@ -1,9 +1,9 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes'
-import SendFooter from '../send-footer.component.js'
+import SendFooter from '../send-footer.component'
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer'
 
 describe('SendFooter Component', function () {
@@ -18,7 +18,7 @@ describe('SendFooter Component', function () {
   const historySpies = {
     push: sinon.spy(),
   }
-  const MOCK_EVENT = { preventDefault: () => {} }
+  const MOCK_EVENT = { preventDefault: () => undefined }
 
   before(function () {
     sinon.spy(SendFooter.prototype, 'onCancel')
@@ -82,7 +82,6 @@ describe('SendFooter Component', function () {
       assert.equal(historySpies.push.getCall(0).args[0], 'mostRecentOverviewPage')
     })
   })
-
 
   describe('formShouldBeDisabled()', function () {
     const config = {

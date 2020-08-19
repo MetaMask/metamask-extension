@@ -731,7 +731,7 @@ export function getMethodName (camelCase) {
   }
 
   return camelCase
-    .replace(/([a-z])([A-Z])/g, '$1 $2')
-    .replace(/([A-Z])([a-z])/g, ' $1$2')
-    .replace(/ +/g, ' ')
+    .replace(/([a-z])([A-Z])/ug, '$1 $2')
+    .replace(/([A-Z])([a-z])/ug, ' $1$2')
+    .replace(/ +/ug, ' ')
 }

@@ -158,7 +158,7 @@ export default class Home extends PureComponent {
           threeBoxLastUpdated && showRestorePrompt
             ? (
               <HomeNotification
-                descriptionText={t('restoreWalletPreferences', [ formatDate(threeBoxLastUpdated, 'M/d/y') ])}
+                descriptionText={t('restoreWalletPreferences', [formatDate(threeBoxLastUpdated, 'M/d/y')])}
                 acceptText={t('restore')}
                 ignoreText={t('noThanks')}
                 infoText={t('dataBackupFoundInfo')}
@@ -179,6 +179,7 @@ export default class Home extends PureComponent {
       </MultipleNotifications>
     )
   }
+
   renderPopover = () => {
     const { setConnectedStatusPopoverHasBeenShown } = this.props
     const { t } = this.context

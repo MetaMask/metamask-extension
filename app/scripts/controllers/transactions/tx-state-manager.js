@@ -1,9 +1,10 @@
 import EventEmitter from 'safe-event-emitter'
 import ObservableStore from 'obs-store'
 import log from 'loglevel'
-import { generateHistoryEntry, replayHistory, snapshotFromTxMeta } from './lib/tx-state-history-helpers'
 import createId from '../../lib/random-id'
+import { generateHistoryEntry, replayHistory, snapshotFromTxMeta } from './lib/tx-state-history-helpers'
 import { getFinalStates, normalizeTxParams } from './lib/util'
+
 /**
   TransactionStateManager is responsible for the state of a transaction and
   storing the transaction
@@ -31,9 +32,8 @@ export default class TransactionStateManager extends EventEmitter {
     super()
 
     this.store = new ObservableStore(
-      Object.assign({
-        transactions: [],
-      }, initState))
+      { transactions: [], ...initState },
+    )
     this.txHistoryLimit = txHistoryLimit
     this.getNetwork = getNetwork
   }
@@ -47,13 +47,13 @@ export default class TransactionStateManager extends EventEmitter {
     if (netId === 'loading') {
       throw new Error('MetaMask is having trouble connecting to the network')
     }
-    return Object.assign({
+    return {
       id: createId(),
       time: (new Date()).getTime(),
       status: 'unapproved',
       metamaskNetworkId: netId,
-      loadingDefaults: true,
-    }, opts)
+      loadingDefaults: true, ...opts,
+    }
   }
 
   /**
@@ -164,10 +164,10 @@ export default class TransactionStateManager extends EventEmitter {
       txMeta.txParams = this.normalizeAndValidateTxParams(txMeta.txParams)
     }
 
-    this.once(`${txMeta.id}:signed`, function () {
+    this.once(`${txMeta.id}:signed`, () => {
       this.removeAllListeners(`${txMeta.id}:rejected`)
     })
-    this.once(`${txMeta.id}:rejected`, function () {
+    this.once(`${txMeta.id}:rejected`, () => {
       this.removeAllListeners(`${txMeta.id}:signed`)
     })
     // initialize history
@@ -178,7 +178,7 @@ export default class TransactionStateManager extends EventEmitter {
 
     const transactions = this.getFullTxList()
     const txCount = transactions.length
-    const txHistoryLimit = this.txHistoryLimit
+    const { txHistoryLimit } = this
 
     // checks if the length of the tx history is
     // longer then desired persistence limit
@@ -202,6 +202,7 @@ export default class TransactionStateManager extends EventEmitter {
     this._saveTxList(transactions)
     return txMeta
   }
+
   /**
     @param {number} txId
     @returns {Object} - the txMeta who matches the given id if none found
@@ -241,7 +242,6 @@ export default class TransactionStateManager extends EventEmitter {
     this._saveTxList(txList)
   }
 
-
   /**
     merges txParams obj onto txMeta.txParams
     use extend to ensure that all fields are filled
@@ -262,6 +262,7 @@ export default class TransactionStateManager extends EventEmitter {
     if (typeof txParams.data === 'undefined') {
       delete txParams.data
     }
+    // eslint-disable-next-line no-param-reassign
     txParams = normalizeTxParams(txParams, false)
     this.validateTxParams(txParams)
     return txParams
@@ -325,6 +326,7 @@ export default class TransactionStateManager extends EventEmitter {
     })
     return filteredTxList
   }
+
   /**
 
     @param {string} key - the key to check
@@ -339,9 +341,8 @@ export default class TransactionStateManager extends EventEmitter {
     return txList.filter((txMeta) => {
       if (key in txMeta.txParams) {
         return filter(txMeta.txParams[key])
-      } else {
-        return filter(txMeta[key])
       }
+      return filter(txMeta[key])
     })
   }
 
@@ -372,6 +373,7 @@ export default class TransactionStateManager extends EventEmitter {
   setTxStatusUnapproved (txId) {
     this._setTxStatus(txId, 'unapproved')
   }
+
   /**
     should update the status of the tx to 'approved'.
     @param {number} txId - the txMeta Id
@@ -416,7 +418,6 @@ export default class TransactionStateManager extends EventEmitter {
     this._setTxStatus(txId, 'dropped')
   }
 
-
   /**
     should update the status of the tx to 'failed'.
     and put the error on the txMeta
@@ -424,7 +425,7 @@ export default class TransactionStateManager extends EventEmitter {
     @param {erroObject} err - error object
   */
   setTxStatusFailed (txId, err) {
-    const error = !err ? new Error('Internal metamask failure') : err
+    const error = err || new Error('Internal metamask failure')
 
     const txMeta = this.getTx(txId)
     txMeta.err = {

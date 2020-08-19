@@ -11,7 +11,6 @@ import { shortenAddress } from '../../../../helpers/utils/util'
 import AccountMismatchWarning from '../../../ui/account-mismatch-warning/account-mismatch-warning.component'
 import { useI18nContext } from '../../../../hooks/useI18nContext'
 
-
 export default function ConfirmPageContainerHeader ({
   onEdit,
   showEdit,
@@ -30,8 +29,22 @@ export default function ConfirmPageContainerHeader ({
   return (
     <div className="confirm-page-container-header">
       <div className="confirm-page-container-header__row">
-        { !showAccountInHeader
+        { showAccountInHeader
           ? (
+            <div className="confirm-page-container-header__address-container">
+              <div className="confirm-page-container-header__address-identicon">
+                <Identicon
+                  address={accountAddress}
+                  diameter={24}
+                />
+              </div>
+              <div className="confirm-page-container-header__address">
+                { shortenAddress(accountAddress) }
+              </div>
+              <AccountMismatchWarning address={accountAddress} />
+            </div>
+          )
+          : (
             <div
               className="confirm-page-container-header__back-button-container"
               style={{
@@ -49,24 +62,6 @@ export default function ConfirmPageContainerHeader ({
               </span>
             </div>
           )
-          : null
-        }
-        { showAccountInHeader
-          ? (
-            <div className="confirm-page-container-header__address-container">
-              <div className="confirm-page-container-header__address-identicon">
-                <Identicon
-                  address={accountAddress}
-                  diameter={24}
-                />
-              </div>
-              <div className="confirm-page-container-header__address">
-                { shortenAddress(accountAddress) }
-              </div>
-              <AccountMismatchWarning address={accountAddress} />
-            </div>
-          )
-          : null
         }
         { !isFullScreen && <NetworkDisplay /> }
       </div>

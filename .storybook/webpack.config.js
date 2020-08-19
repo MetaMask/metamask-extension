@@ -29,11 +29,13 @@ module.exports = {
     ],
   },
   plugins: [
-    new CopyWebpackPlugin([
-      {
-        from: path.join('node_modules', '@fortawesome', 'fontawesome-free', 'webfonts'),
-        to: path.join('fonts', 'fontawesome'),
-      },
-    ]),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: path.join('node_modules', '@fortawesome', 'fontawesome-free', 'webfonts'),
+          to: path.join('fonts', 'fontawesome'),
+        },
+      ],
+    }),
   ],
 }

@@ -6,17 +6,17 @@ import Identicon from '../../../../components/ui/identicon'
 import Copy from '../../../../components/ui/icon/copy-icon.component'
 import Button from '../../../../components/ui/button/button.component'
 
-import Tooltip from '../../../../components/ui/tooltip-v2'
+import Tooltip from '../../../../components/ui/tooltip'
 import { useI18nContext } from '../../../../hooks/useI18nContext'
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard'
 
 function quadSplit (address) {
   return (
-    '0x ' +
-    address
-      .slice(2)
-      .match(/.{1,4}/g)
-      .join(' ')
+    `0x ${
+      address
+        .slice(2)
+        .match(/.{1,4}/ug)
+        .join(' ')}`
   )
 }
 

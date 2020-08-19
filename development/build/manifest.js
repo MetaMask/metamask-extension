@@ -7,7 +7,6 @@ const { createTask, composeSeries } = require('./task')
 
 module.exports = createManifestTasks
 
-
 const scriptsToExcludeFromBackgroundDevBuild = {
   'bg-libs.js': true,
 }

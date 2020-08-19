@@ -1,5 +1,5 @@
-import * as reactRedux from 'react-redux'
 import assert from 'assert'
+import * as reactRedux from 'react-redux'
 import { renderHook } from '@testing-library/react-hooks'
 import sinon from 'sinon'
 import transactions from '../../../../test/data/transaction-data.json'
@@ -11,9 +11,9 @@ import * as i18nhooks from '../useI18nContext'
 import { getMessage } from '../../helpers/utils/i18n-helper'
 import messages from '../../../../app/_locales/en/messages.json'
 
-
 const expectedResults = [
-  { title: 'Send ETH',
+  {
+    title: 'Send ETH',
     category: 'send',
     subtitle: 'To: 0xffe5...1a97',
     subtitleContainsOrigin: false,
@@ -23,8 +23,10 @@ const expectedResults = [
     recipientAddress: '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
     secondaryCurrency: '-1 ETH',
     isPending: false,
-    status: 'confirmed' },
-  { title: 'Send ETH',
+    status: 'confirmed',
+  },
+  {
+    title: 'Send ETH',
     category: 'send',
     subtitle: 'To: 0x0ccc...8848',
     subtitleContainsOrigin: false,
@@ -34,8 +36,10 @@ const expectedResults = [
     recipientAddress: '0x0ccc8aeeaf5ce790f3b448325981a143fdef8848',
     secondaryCurrency: '-2 ETH',
     isPending: false,
-    status: 'confirmed' },
-  { title: 'Send ETH',
+    status: 'confirmed',
+  },
+  {
+    title: 'Send ETH',
     category: 'send',
     subtitle: 'To: 0xffe5...1a97',
     subtitleContainsOrigin: false,
@@ -45,8 +49,10 @@ const expectedResults = [
     recipientAddress: '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
     secondaryCurrency: '-2 ETH',
     isPending: false,
-    status: 'confirmed' },
-  { title: 'Receive',
+    status: 'confirmed',
+  },
+  {
+    title: 'Receive',
     category: 'receive',
     subtitle: 'From: 0x31b9...4523',
     subtitleContainsOrigin: false,
@@ -56,8 +62,10 @@ const expectedResults = [
     recipientAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     secondaryCurrency: '18.75 ETH',
     isPending: false,
-    status: 'confirmed' },
-  { title: 'Receive',
+    status: 'confirmed',
+  },
+  {
+    title: 'Receive',
     category: 'receive',
     subtitle: 'From: 0x9eca...a149',
     subtitleContainsOrigin: false,
@@ -67,8 +75,10 @@ const expectedResults = [
     recipientAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     secondaryCurrency: '0 ETH',
     isPending: false,
-    status: 'confirmed' },
-  { title: 'Receive',
+    status: 'confirmed',
+  },
+  {
+    title: 'Receive',
     category: 'receive',
     subtitle: 'From: 0xee01...febb',
     subtitleContainsOrigin: false,
@@ -78,7 +88,8 @@ const expectedResults = [
     recipientAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     secondaryCurrency: '1 ETH',
     isPending: false,
-    status: 'confirmed' },
+    status: 'confirmed',
+  },
 ]
 
 let useSelector, useI18nContext, useTokenFiatAmount
@@ -105,9 +116,8 @@ describe('useTransactionDisplayData', function () {
         return 'ETH'
       } else if (selector === getCurrentCurrency) {
         return 'ETH'
-      } else {
-        return null
       }
+      return null
     })
   })
   transactions.forEach((transactionGroup, idx) => {

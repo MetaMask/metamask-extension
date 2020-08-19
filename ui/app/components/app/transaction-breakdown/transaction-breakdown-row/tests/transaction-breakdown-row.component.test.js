@@ -1,5 +1,5 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { shallow } from 'enzyme'
 import TransactionBreakdownRow from '../transaction-breakdown-row.component'
 import Button from '../../../../ui/button'
@@ -27,7 +27,7 @@ describe('TransactionBreakdownRow Component', function () {
         title="test"
         className="test-class"
       >
-        <Button onClick={() => {}} >Button</Button>
+        <Button onClick={() => undefined} >Button</Button>
       </TransactionBreakdownRow>,
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     )

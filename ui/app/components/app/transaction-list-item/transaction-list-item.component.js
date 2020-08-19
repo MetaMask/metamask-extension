@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import { useHistory } from 'react-router-dom'
 import ListItem from '../../ui/list-item'
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData'
 import Preloader from '../../ui/icon/preloader'
@@ -10,7 +11,6 @@ import { useRetryTransaction } from '../../../hooks/useRetryTransaction'
 import Button from '../../ui/button'
 import Tooltip from '../../ui/tooltip'
 import TransactionListItemDetails from '../transaction-list-item-details'
-import { useHistory } from 'react-router-dom'
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes'
 import {
   TRANSACTION_CATEGORY_SIGNATURE_REQUEST,
@@ -25,7 +25,6 @@ import TransactionStatus from '../transaction-status/transaction-status.componen
 import TransactionIcon from '../transaction-icon'
 import { useTransactionTimeRemaining } from '../../../hooks/useTransactionTimeRemaining'
 import IconWithLabel from '../../ui/icon-with-label'
-
 
 export default function TransactionListItem ({ transactionGroup, isEarliestNonce = false }) {
   const t = useI18nContext()
@@ -54,7 +53,6 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
 
   const timeRemaining = useTransactionTimeRemaining(isPending, isEarliestNonce, submittedTime, gasPrice)
 
-
   const isSignatureReq = category === TRANSACTION_CATEGORY_SIGNATURE_REQUEST
   const isApproval = category === TRANSACTION_CATEGORY_APPROVAL
   const isUnapproved = status === UNAPPROVED_STATUS
@@ -72,7 +70,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
   }, [isUnapproved, history, id])
 
   const cancelButton = useMemo(() => {
-    const cancelButton = (
+    const btn = (
       <Button
         onClick={cancelTransaction}
         rounded
@@ -86,13 +84,15 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
       return null
     }
 
-    return !cancelEnabled ? (
-      <Tooltip title={t('notEnoughGas')}>
-        <div>
-          {cancelButton}
-        </div>
-      </Tooltip>
-    ) : cancelButton
+    return cancelEnabled
+      ? btn
+      : (
+        <Tooltip title={t('notEnoughGas')} position="bottom">
+          <div>
+            {btn}
+          </div>
+        </Tooltip>
+      )
 
   }, [isPending, t, isUnapproved, cancelEnabled, cancelTransaction, hasCancelled])
 

@@ -146,7 +146,7 @@ const getBorderedThemeInputProps = ({
     disableUnderline: true,
     classes: {
       root: inputRoot,
-      input: input,
+      input,
       focused: inputFocused,
     },
     inputProps: {

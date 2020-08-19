@@ -1,11 +1,11 @@
+import assert from 'assert'
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Provider } from 'react-redux'
-import assert from 'assert'
 import sinon from 'sinon'
 import configureStore from 'redux-mock-store'
 import { mount } from 'enzyme'
-import ConfirmRemoveAccount from '../index'
+import ConfirmRemoveAccount from '..'
 
 describe('Confirm Remove Account', function () {
   let wrapper
@@ -25,7 +25,6 @@ describe('Confirm Remove Account', function () {
       name: 'Account 1',
     },
   }
-
 
   const mockStore = configureStore()
   const store = mockStore(state)

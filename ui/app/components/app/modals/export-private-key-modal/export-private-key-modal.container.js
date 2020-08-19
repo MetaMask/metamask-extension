@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { exportAccount, hideWarning, showModal, hideModal } from '../../../../store/actions'
+import { exportAccount, hideWarning, showModal, hideModal, clearAccountDetails } from '../../../../store/actions'
 import { getSelectedIdentity } from '../../../../selectors'
 import ExportPrivateKeyModal from './export-private-key-modal.component'
 
@@ -32,6 +32,7 @@ function mapDispatchToProps (dispatch) {
     },
     showAccountDetailModal: () => dispatch(showModal({ name: 'ACCOUNT_DETAILS' })),
     hideModal: () => dispatch(hideModal()),
+    clearAccountDetails: () => dispatch(clearAccountDetails()),
   }
 }
 

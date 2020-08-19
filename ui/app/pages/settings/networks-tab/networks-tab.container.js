@@ -1,4 +1,3 @@
-import NetworksTab from './networks-tab.component'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
@@ -10,6 +9,7 @@ import {
   editRpc,
   showModal,
 } from '../../../store/actions'
+import NetworksTab from './networks-tab.component'
 import { defaultNetworksData } from './networks-tab.constants'
 
 const defaultNetworks = defaultNetworksData.map((network) => ({ ...network, viewOnly: true }))
@@ -36,7 +36,7 @@ const mapStateToProps = (state) => {
     }
   })
 
-  const networksToRender = [ ...defaultNetworks, ...frequentRpcNetworkListDetails ]
+  const networksToRender = [...defaultNetworks, ...frequentRpcNetworkListDetails]
   let selectedNetwork = networksToRender.find((network) => network.rpcUrl === networksTabSelectedRpcUrl) || {}
   const networkIsSelected = Boolean(selectedNetwork.rpcUrl)
 

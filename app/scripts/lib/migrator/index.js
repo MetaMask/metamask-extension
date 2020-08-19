@@ -46,6 +46,7 @@ export default class Migrator extends EventEmitter {
           throw new Error('Migrator - Migration did not update version number correctly')
         }
         // accept the migration as good
+        // eslint-disable-next-line no-param-reassign
         versionedData = migratedData
       } catch (err) {
         // rewrite error message to add context without clobbering stack

@@ -1,0 +1,102 @@
+.fee-card {
+  border-radius: 8px;
+  border: 1px solid $Grey-100;
+  width: 100%;
+  margin-top: auto;
+  margin-bottom: 8px;
+
+  @include H7;
+
+  &__main {
+    padding: 16px 16px 12px 16px;
+  }
+
+  &__row-header {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+    justify-content: space-between;
+
+    @media screen and (min-width: 576px) {
+      @include H6;
+    }
+
+    &:first-of-type {
+      margin-top: 0;
+    }
+
+    div {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  &__row-header-text {
+    font-weight: bold;
+    margin-right: 8px;
+    cursor: pointer;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+
+  &__row-label {
+    display: flex;
+    align-items: center;
+
+    img {
+      height: 10px;
+      width: 10px;
+      margin-left: 4px;
+      cursor: pointer;
+    }
+  }
+
+  &__row-text {
+    margin-right: 8px;
+  }
+
+  &__row-fee {
+    margin-right: 4px;
+  }
+
+  &__link {
+    color: $Blue-500;
+    cursor: pointer;
+  }
+
+  &__total-box {
+    border-top: 1px solid $Grey-100;
+    padding: 12px 16px 16px 16px;
+  }
+
+  &__total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+  }
+
+  &__total-secondary {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    font-weight: bold;
+    color: $Grey-500;
+    margin-top: 4px;
+  }
+
+  &__row-header-secondary {
+    color: $Grey-500;
+    margin-right: 20px;
+  }
+
+  &__row-header-primary {
+    font-weight: bold;
+    color: $Grey-500;
+  }
+}

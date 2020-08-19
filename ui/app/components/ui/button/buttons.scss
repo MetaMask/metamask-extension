@@ -10,11 +10,10 @@ $hover-red-primary: #c72837;
 $hover-orange: #ffd3b5;
 $warning-light-orange: #f8b588;
 
-%button {
-  @include h6;
+.button {
+  @include H6;
 
   font-weight: 500;
-  font-family: Roboto, Arial;
   line-height: 1.25rem;
   padding: 0.75rem 1rem;
   display: flex;
@@ -31,41 +30,6 @@ $warning-light-orange: #f8b588;
     opacity: 0.5;
     pointer-events: none;
   }
-}
-
-%link {
-  @include h4;
-
-  color: $Blue-500;
-  line-height: 1.25rem;
-  cursor: pointer;
-  background-color: transparent;
-
-  &:hover {
-    color: $Blue-400;
-  }
-
-  &:active {
-    color: $Blue-600;
-  }
-
-  &--disabled,
-  &[disabled] {
-    cursor: auto;
-    opacity: 1;
-    pointer-events: none;
-    color: $hover-secondary;
-  }
-}
-
-%small-link {
-  @extend %link;
-
-  @include h6;
-}
-
-.button {
-  @extend %button;
 
   &__icon {
     display: flex;
@@ -203,7 +167,28 @@ $warning-light-orange: #f8b588;
 }
 
 .btn-link {
-  @extend %link;
+  @include H4;
+
+  color: $Blue-500;
+  line-height: 1.25rem;
+  cursor: pointer;
+  background-color: transparent;
+
+  &:hover {
+    color: $Blue-400;
+  }
+
+  &:active {
+    color: $Blue-600;
+  }
+
+  &--disabled,
+  &[disabled] {
+    cursor: auto;
+    opacity: 1;
+    pointer-events: none;
+    color: $hover-secondary;
+  }
 }
 
 .btn--large {
@@ -249,7 +234,6 @@ button.primary {
   box-shadow: 0 3px 6px rgba(247, 134, 28, 0.36);
   color: $white;
   font-size: 1.1em;
-  font-family: Roboto;
   text-transform: uppercase;
 }
 

@@ -1,6 +1,6 @@
 const { promises: fs } = require('fs')
-const Koa = require('koa')
 const path = require('path')
+const Koa = require('koa')
 
 const CURRENT_STATE_KEY = '__CURRENT__'
 const DEFAULT_STATE_KEY = '__DEFAULT__'
@@ -44,7 +44,7 @@ class FixtureServer {
       return
     }
 
-    return new Promise((resolve, reject) => {
+    await new Promise((resolve, reject) => {
       this._server.close()
       this._server.once('error', reject)
       this._server.once('close', resolve)

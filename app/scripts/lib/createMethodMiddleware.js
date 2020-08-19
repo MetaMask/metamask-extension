@@ -14,7 +14,7 @@ export default function createMethodMiddleware ({ origin, sendMetrics }) {
   return function methodMiddleware (req, res, next, end) {
     switch (req.method) {
 
-      case 'metamask_logInjectedWeb3Usage':
+      case 'metamask_logInjectedWeb3Usage': {
 
         const { action, name } = req.params[0]
 
@@ -32,6 +32,7 @@ export default function createMethodMiddleware ({ origin, sendMetrics }) {
 
         res.result = true
         break
+      }
 
       default:
         return next()

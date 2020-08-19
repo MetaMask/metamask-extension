@@ -12,12 +12,11 @@ function capitalizeFirstLetter (string) {
 
 async function start () {
 
-  const GITHUB_COMMENT_TOKEN = process.env.GITHUB_COMMENT_TOKEN
-  const CIRCLE_PULL_REQUEST = process.env.CIRCLE_PULL_REQUEST
+  const { GITHUB_COMMENT_TOKEN, CIRCLE_PULL_REQUEST } = process.env
   console.log('CIRCLE_PULL_REQUEST', CIRCLE_PULL_REQUEST)
-  const CIRCLE_SHA1 = process.env.CIRCLE_SHA1
+  const { CIRCLE_SHA1 } = process.env
   console.log('CIRCLE_SHA1', CIRCLE_SHA1)
-  const CIRCLE_BUILD_NUM = process.env.CIRCLE_BUILD_NUM
+  const { CIRCLE_BUILD_NUM } = process.env
   console.log('CIRCLE_BUILD_NUM', CIRCLE_BUILD_NUM)
 
   if (!CIRCLE_PULL_REQUEST) {
@@ -58,7 +57,7 @@ async function start () {
     `dep viz: ${depVizLink}`,
     `<a href="${allArtifactsUrl}">all artifacts</a>`,
   ]
-  const hiddenContent = `<ul>` + contentRows.map((row) => `<li>${row}</li>`).join('\n') + `</ul>`
+  const hiddenContent = `<ul>${contentRows.map((row) => `<li>${row}</li>`).join('\n')}</ul>`
   const exposedContent = `Builds ready [${SHORT_SHA1}]`
   const artifactsBody = `<details><summary>${exposedContent}</summary>${hiddenContent}</details>`
 
@@ -81,10 +80,7 @@ async function start () {
   const summaryPlatform = 'chrome'
   const summaryPage = 'home'
   let commentBody
-  if (!benchmarkResults[summaryPlatform]) {
-    console.log(`No results for ${summaryPlatform} found; skipping benchmark`)
-    commentBody = artifactsBody
-  } else {
+  if (benchmarkResults[summaryPlatform]) {
     try {
       const summaryPageLoad = Math.round(parseFloat(benchmarkResults[summaryPlatform][summaryPage].average.load))
       const summaryPageLoadMarginOfError = Math.round(parseFloat(benchmarkResults[summaryPlatform][summaryPage].marginOfError.load))
@@ -147,6 +143,9 @@ async function start () {
       console.error(`Error constructing benchmark results: '${error}'`)
       commentBody = artifactsBody
     }
+  } else {
+    console.log(`No results for ${summaryPlatform} found; skipping benchmark`)
+    commentBody = artifactsBody
   }
 
   const JSON_PAYLOAD = JSON.stringify({ body: commentBody })

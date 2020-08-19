@@ -20,7 +20,6 @@ import {
   APPROVED_STATUS,
 } from '../../../helpers/constants/transactions'
 
-
 const ICON_MAP = {
   [TRANSACTION_CATEGORY_APPROVAL]: Approve,
   [TRANSACTION_CATEGORY_INTERACTION]: Interaction,

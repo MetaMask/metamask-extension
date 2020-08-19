@@ -1,12 +1,11 @@
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
 import React from 'react'
-import AssetListItem from '../asset-list-item'
 import { useSelector } from 'react-redux'
+import AssetListItem from '../asset-list-item'
 import { getSelectedAddress } from '../../../selectors'
 import { useI18nContext } from '../../../hooks/useI18nContext'
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount'
-
 
 export default function TokenCell ({
   address,

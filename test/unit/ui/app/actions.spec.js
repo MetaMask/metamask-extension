@@ -12,14 +12,14 @@ import * as actions from '../../../../ui/app/store/actions'
 import MetaMaskController from '../../../../app/scripts/metamask-controller'
 import firstTimeState from '../../localhostState'
 
-const provider = createTestProviderTools({ scaffold: {} }).provider
+const { provider } = createTestProviderTools({ scaffold: {} })
 const middleware = [thunk]
 const defaultState = { metamask: {} }
 const mockStore = (state = defaultState) => configureStore(middleware)(state)
 
 describe('Actions', function () {
 
-  const noop = () => {}
+  const noop = () => undefined
 
   const currentNetworkId = '42'
 
@@ -32,16 +32,17 @@ describe('Actions', function () {
   beforeEach(async function () {
 
     metamaskController = new MetaMaskController({
+      platform: { getVersion: () => 'foo' },
       provider,
       keyringController: new KeyringController({}),
       showUnapprovedTx: noop,
       showUnconfirmedMessage: noop,
       encryptor: {
-        encrypt: function (_, object) {
+        encrypt (_, object) {
           this.object = object
           return Promise.resolve('mock-encrypted')
         },
-        decrypt: function () {
+        decrypt () {
           return Promise.resolve(this.object)
         },
       },
@@ -55,7 +56,7 @@ describe('Actions', function () {
 
     await metamaskController.createNewVaultAndRestore(password, TEST_SEED)
 
-    await metamaskController.importAccountWithStrategy('Private Key', [ importPrivkey ])
+    await metamaskController.importAccountWithStrategy('Private Key', [importPrivkey])
 
     background = metamaskController.getApi()
 
@@ -96,7 +97,6 @@ describe('Actions', function () {
         { type: 'HIDE_LOADING_INDICATION' },
       ]
 
-
       submitPasswordSpy = sinon.stub(background, 'submitPassword')
 
       submitPasswordSpy.callsFake((_, callback) => {
@@ -113,8 +113,8 @@ describe('Actions', function () {
 
     it('displays warning error and unlock failed when verifySeed fails', async function () {
       const store = mockStore()
-      const displayWarningError = [ { type: 'DISPLAY_WARNING', value: 'error' } ]
-      const unlockFailedError = [ { type: 'UNLOCK_FAILED', value: 'error' } ]
+      const displayWarningError = [{ type: 'DISPLAY_WARNING', value: 'error' }]
+      const unlockFailedError = [{ type: 'UNLOCK_FAILED', value: 'error' }]
 
       verifySeedPhraseSpy = sinon.stub(background, 'verifySeedPhrase')
       verifySeedPhraseSpy.callsFake((callback) => {
@@ -337,9 +337,9 @@ describe('Actions', function () {
 
       importAccountWithStrategySpy = sinon.spy(background, 'importAccountWithStrategy')
 
-      const importPrivkey = 'c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3'
-
-      await store.dispatch(actions.importNewAccount('Private Key', [ importPrivkey ]))
+      await store.dispatch(actions.importNewAccount('Private Key', [
+        'c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3',
+      ]))
       assert(importAccountWithStrategySpy.calledOnce)
     })
 
@@ -572,7 +572,7 @@ describe('Actions', function () {
       metamaskMsgs = metamaskController.messageManager.getUnapprovedMsgs()
       messages = metamaskController.messageManager.messages
       msgId = Object.keys(metamaskMsgs)[0]
-      messages[0].msgParams.metamaskId = parseInt(msgId)
+      messages[0].msgParams.metamaskId = parseInt(msgId, 10)
     })
 
     afterEach(function () {
@@ -625,7 +625,7 @@ describe('Actions', function () {
       metamaskMsgs = metamaskController.personalMessageManager.getUnapprovedMsgs()
       personalMessages = metamaskController.personalMessageManager.messages
       msgId = Object.keys(metamaskMsgs)[0]
-      personalMessages[0].msgParams.metamaskId = parseInt(msgId)
+      personalMessages[0].msgParams.metamaskId = parseInt(msgId, 10)
     })
 
     afterEach(function () {
@@ -713,7 +713,7 @@ describe('Actions', function () {
       messages = metamaskController.typedMessageManager.getUnapprovedMsgs()
       typedMessages = metamaskController.typedMessageManager.messages
       msgId = Object.keys(messages)[0]
-      typedMessages[0].msgParams.metamaskId = parseInt(msgId)
+      typedMessages[0].msgParams.metamaskId = parseInt(msgId, 10)
     })
 
     afterEach(function () {
@@ -860,7 +860,7 @@ describe('Actions', function () {
       'value': '0x0',
     }
 
-    const txData = { id: '1', status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: txParams }
+    const txData = { id: '1', status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams }
 
     beforeEach(async function () {
       await metamaskController.txController.txStateManager.addTx(txData)

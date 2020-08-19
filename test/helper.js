@@ -5,7 +5,6 @@ import Adapter from 'enzyme-adapter-react-16'
 import log from 'loglevel'
 import { JSDOM } from 'jsdom'
 
-
 nock.disableNetConnect()
 nock.enableNetConnect('localhost')
 
@@ -80,7 +79,7 @@ require('abortcontroller-polyfill/dist/polyfill-patch-fetch')
 window.localStorage = {}
 
 // override metamask-logo
-window.requestAnimationFrame = () => {}
+window.requestAnimationFrame = () => undefined
 
 // crypto.getRandomValues
 if (!window.crypto) {

@@ -11,6 +11,7 @@
 export default function getBuyEthUrl ({ network, address, service }) {
   // default service by network if not specified
   if (!service) {
+    // eslint-disable-next-line no-param-reassign
     service = getDefaultServiceForNetwork(network)
   }
 

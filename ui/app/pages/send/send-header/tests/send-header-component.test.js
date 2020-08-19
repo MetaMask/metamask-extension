@@ -1,8 +1,8 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import SendHeader from '../send-header.component.js'
+import SendHeader from '../send-header.component'
 import PageContainerHeader from '../../../../components/ui/page-container/page-container-header'
 
 describe('SendHeader Component', function () {

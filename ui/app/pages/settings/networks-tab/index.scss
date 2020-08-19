@@ -96,7 +96,6 @@
   }
 
   &__network-form-label {
-    font-family: Roboto;
     font-style: normal;
     font-weight: normal;
     font-size: 14px;
@@ -177,7 +176,6 @@
 
   &__networks-list-name {
     margin-left: 11px;
-    font-family: Roboto;
     font-style: normal;
     font-weight: normal;
     font-size: 16px;
@@ -186,6 +184,11 @@
 
     &:hover {
       cursor: pointer;
+    }
+
+    svg {
+      margin-left: 10px;
+      padding-top: 3px;
     }
   }
 
@@ -215,6 +218,11 @@
   &__networks-list-name--selected {
     font-weight: bold;
     color: #000;
+  }
+
+  &__networks-list-name--disabled {
+    font-weight: 300;
+    color: #cdcdcd;
   }
 }
 

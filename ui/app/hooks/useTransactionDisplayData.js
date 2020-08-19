@@ -2,11 +2,8 @@ import { useSelector } from 'react-redux'
 import { getKnownMethodData } from '../selectors/selectors'
 import { getTransactionActionKey, getStatusKey } from '../helpers/utils/transactions.util'
 import { camelCaseToCapitalize } from '../helpers/utils/common.util'
-import { useI18nContext } from './useI18nContext'
-import { useTokenFiatAmount } from './useTokenFiatAmount'
 import { PRIMARY, SECONDARY } from '../helpers/constants/common'
 import { getTokenToAddress } from '../helpers/utils/token-util'
-import { useUserPreferencedCurrency } from './useUserPreferencedCurrency'
 import { formatDateWithYearContext, shortenAddress, stripHttpSchemes } from '../helpers/utils/util'
 import {
   CONTRACT_INTERACTION_KEY,
@@ -24,10 +21,13 @@ import {
   PENDING_STATUS_HASH,
   TOKEN_CATEGORY_HASH,
 } from '../helpers/constants/transactions'
+import { getTokens } from '../ducks/metamask/metamask'
+import { useI18nContext } from './useI18nContext'
+import { useTokenFiatAmount } from './useTokenFiatAmount'
+import { useUserPreferencedCurrency } from './useUserPreferencedCurrency'
 import { useCurrencyDisplay } from './useCurrencyDisplay'
 import { useTokenDisplayValue } from './useTokenDisplayValue'
 import { useTokenData } from './useTokenData'
-import { getTokens } from '../ducks/metamask/metamask'
 
 /**
  * @typedef {Object} TransactionDisplayData
@@ -84,7 +84,7 @@ export function useTransactionDisplayData (transactionGroup) {
   // transfers, we pass an additional argument to these hooks that will be
   // false for non-token transactions. This additional argument forces the
   // hook to return null
-  const token = isTokenCategory && knownTokens.find((token) => token.address === recipientAddress)
+  const token = isTokenCategory && knownTokens.find(({ address }) => address === recipientAddress)
   const tokenData = useTokenData(initialTransaction?.txParams?.data, isTokenCategory)
   const tokenDisplayValue = useTokenDisplayValue(initialTransaction?.txParams?.data, token, isTokenCategory)
   const tokenFiatAmount = useTokenFiatAmount(token?.address, tokenDisplayValue, token?.symbol)
@@ -99,7 +99,7 @@ export function useTransactionDisplayData (transactionGroup) {
   // 3. Deposit
   // 4. Site interaction
   // 5. Approval
-  if (transactionCategory == null) {
+  if (transactionCategory === null || transactionCategory === undefined) {
     category = TRANSACTION_CATEGORY_SIGNATURE_REQUEST
     title = t('signatureRequest')
     subtitle = origin

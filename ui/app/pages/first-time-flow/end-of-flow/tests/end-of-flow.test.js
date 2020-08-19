@@ -1,9 +1,9 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import sinon from 'sinon'
 import { mountWithRouter } from '../../../../../../test/lib/render-helpers'
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes'
-import EndOfFlowScreen from '../index'
+import EndOfFlowScreen from '..'
 
 describe('End of Flow Screen', function () {
   let wrapper

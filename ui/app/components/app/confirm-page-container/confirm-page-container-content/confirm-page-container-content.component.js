@@ -2,10 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { Tabs, Tab } from '../../../ui/tabs'
-import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.'
 import ErrorMessage from '../../../ui/error-message'
 import { PageContainerFooter } from '../../../ui/page-container'
-
+import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.'
 
 export default class ConfirmPageContainerContent extends Component {
   static propTypes = {
@@ -40,9 +39,9 @@ export default class ConfirmPageContainerContent extends Component {
 
     if (detailsComponent && dataComponent) {
       return this.renderTabs()
-    } else {
-      return detailsComponent || dataComponent
     }
+    return detailsComponent || dataComponent
+
   }
 
   renderTabs () {

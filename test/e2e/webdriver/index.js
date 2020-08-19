@@ -1,8 +1,8 @@
 const { Browser } = require('selenium-webdriver')
+const fetchMockResponses = require('../../data/fetch-mocks.json')
 const Driver = require('./driver')
 const ChromeDriver = require('./chrome')
 const FirefoxDriver = require('./firefox')
-const fetchMockResponses = require('../../data/fetch-mocks.json')
 
 async function buildWebDriver ({ responsive, port } = {}) {
   const browser = process.env.SELENIUM_BROWSER
@@ -37,16 +37,16 @@ async function buildBrowserWebDriver (browser, webDriverOptions) {
 
 async function setupFetchMocking (driver) {
   // define fetchMocking script, to be evaluated in the browser
-  function fetchMocking (fetchMockResponses) {
+  function fetchMocking (mockResponses) {
     window.origFetch = window.fetch.bind(window)
     window.fetch = async (...args) => {
       const url = args[0]
       if (url.match(/^http(s)?:\/\/ethgasstation\.info\/json\/ethgasAPI.*/u)) {
-        return { json: async () => clone(fetchMockResponses.ethGasBasic) }
+        return { json: async () => clone(mockResponses.ethGasBasic) }
       } else if (url.match(/http(s?):\/\/ethgasstation\.info\/json\/predictTable.*/u)) {
-        return { json: async () => clone(fetchMockResponses.ethGasPredictTable) }
-      } else if (url.match(/chromeextensionmm/)) {
-        return { json: async () => clone(fetchMockResponses.metametrics) }
+        return { json: async () => clone(mockResponses.ethGasPredictTable) }
+      } else if (url.match(/chromeextensionmm/u)) {
+        return { json: async () => clone(mockResponses.metametrics) }
       }
       return window.origFetch(...args)
     }

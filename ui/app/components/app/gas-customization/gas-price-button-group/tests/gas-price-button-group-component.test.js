@@ -1,7 +1,7 @@
-import React from 'react'
 import assert from 'assert'
-import shallow from '../../../../../../lib/shallow-with-context'
+import React from 'react'
 import sinon from 'sinon'
+import shallow from '../../../../../../lib/shallow-with-context'
 import GasPriceButtonGroup from '../gas-price-button-group.component'
 
 import ButtonGroup from '../../../../ui/button-group'
@@ -41,11 +41,11 @@ describe('GasPriceButtonGroup Component', function () {
       showCheck: true,
     }
 
-    mockButtonPropsAndFlags = Object.assign({}, {
+    mockButtonPropsAndFlags = {
       className: mockGasPriceButtonGroupProps.className,
       handleGasPriceSelection: mockGasPriceButtonGroupProps.handleGasPriceSelection,
       showCheck: mockGasPriceButtonGroupProps.showCheck,
-    })
+    }
 
     sinon.spy(GasPriceButtonGroup.prototype, 'renderButton')
     sinon.spy(GasPriceButtonGroup.prototype, 'renderButtonContent')
@@ -77,12 +77,12 @@ describe('GasPriceButtonGroup Component', function () {
       assert.equal(noButtonActiveByDefault, true)
     })
 
-    function renderButtonArgsTest (i, mockButtonPropsAndFlags) {
+    function renderButtonArgsTest (i, mockPropsAndFlags) {
       assert.deepEqual(
         GasPriceButtonGroup.prototype.renderButton.getCall(i).args,
         [
-          Object.assign({}, mockGasPriceButtonGroupProps.gasButtonInfo[i]),
-          mockButtonPropsAndFlags,
+          { ...mockGasPriceButtonGroupProps.gasButtonInfo[i] },
+          mockPropsAndFlags,
           i,
         ],
       )
@@ -109,7 +109,7 @@ describe('GasPriceButtonGroup Component', function () {
     beforeEach(function () {
       GasPriceButtonGroup.prototype.renderButtonContent.resetHistory()
       const renderButtonResult = GasPriceButtonGroup.prototype.renderButton(
-        Object.assign({}, mockGasPriceButtonGroupProps.gasButtonInfo[0]),
+        { ...mockGasPriceButtonGroupProps.gasButtonInfo[0] },
         mockButtonPropsAndFlags,
       )
       wrappedRenderButtonResult = shallow(renderButtonResult)
@@ -224,7 +224,6 @@ describe('GasPriceButtonGroup Component', function () {
       const wrappedRenderButtonContentResult = shallow(renderButtonContentResult)
       assert.equal(wrappedRenderButtonContentResult.children().length, 5)
     })
-
 
     it('should render no elements if all args passed', function () {
       const renderButtonContentResult = GasPriceButtonGroup.prototype.renderButtonContent({}, {})

@@ -1,11 +1,11 @@
 /**
  * @file The entry point for the web extension singleton process.
  */
-
-
 // these need to run before anything else
+/* eslint-disable import/first,import/order */
 import './lib/freezeGlobals'
 import setupFetchDebugging from './lib/setupFetchDebugging'
+/* eslint-enable import/order */
 
 setupFetchDebugging()
 
@@ -17,16 +17,16 @@ import pump from 'pump'
 import debounce from 'debounce-stream'
 import log from 'loglevel'
 import extension from 'extensionizer'
-import ReadOnlyNetworkStore from './lib/network-store'
-import LocalStore from './lib/local-store'
 import storeTransform from 'obs-store/lib/transform'
 import asStream from 'obs-store/lib/asStream'
-import ExtensionPlatform from './platforms/extension'
-import Migrator from './lib/migrator'
-import migrations from './migrations'
 import PortStream from 'extension-port-stream'
+import migrations from './migrations'
+import Migrator from './lib/migrator'
+import ExtensionPlatform from './platforms/extension'
+import LocalStore from './lib/local-store'
+import ReadOnlyNetworkStore from './lib/network-store'
 import createStreamSink from './lib/createStreamSink'
-import NotificationManager from './lib/notification-manager.js'
+import NotificationManager from './lib/notification-manager'
 import MetamaskController from './metamask-controller'
 import rawFirstTimeState from './first-time-state'
 import setupSentry from './lib/setupSentry'
@@ -39,9 +39,10 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
 } from './lib/enums'
+/* eslint-enable import/first */
 
 // METAMASK_TEST_CONFIG is used in e2e tests to set the default network to localhost
-const firstTimeState = Object.assign({}, rawFirstTimeState, global.METAMASK_TEST_CONFIG)
+const firstTimeState = { ...rawFirstTimeState, ...global.METAMASK_TEST_CONFIG }
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
@@ -327,7 +328,7 @@ function setupController (initState, initLangCode) {
     const isMetaMaskInternalProcess = metamaskInternalProcessHash[processName]
 
     if (metamaskBlockedPorts.includes(remotePort.name)) {
-      return false
+      return
     }
 
     if (isMetaMaskInternalProcess) {
@@ -406,11 +407,11 @@ function setupController (initState, initLangCode) {
   function updateBadge () {
     let label = ''
     const unapprovedTxCount = controller.txController.getUnapprovedTxCount()
-    const unapprovedMsgCount = controller.messageManager.unapprovedMsgCount
-    const unapprovedPersonalMsgCount = controller.personalMessageManager.unapprovedPersonalMsgCount
-    const unapprovedDecryptMsgCount = controller.decryptMessageManager.unapprovedDecryptMsgCount
-    const unapprovedEncryptionPublicKeyMsgCount = controller.encryptionPublicKeyManager.unapprovedEncryptionPublicKeyMsgCount
-    const unapprovedTypedMessagesCount = controller.typedMessageManager.unapprovedTypedMessagesCount
+    const { unapprovedMsgCount } = controller.messageManager
+    const { unapprovedPersonalMsgCount } = controller.personalMessageManager
+    const { unapprovedDecryptMsgCount } = controller.decryptMessageManager
+    const { unapprovedEncryptionPublicKeyMsgCount } = controller.encryptionPublicKeyManager
+    const { unapprovedTypedMessagesCount } = controller.typedMessageManager
     const pendingPermissionRequests = Object.keys(controller.permissionsController.permissions.state.permissionsRequests).length
     const waitingForUnlockCount = controller.appStateController.waitingForUnlock.length
     const count = unapprovedTxCount + unapprovedMsgCount + unapprovedPersonalMsgCount + unapprovedDecryptMsgCount + unapprovedEncryptionPublicKeyMsgCount +

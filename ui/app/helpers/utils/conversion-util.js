@@ -25,7 +25,7 @@ import BigNumber from 'bignumber.js'
 
 import ethUtil, { stripHexPrefix } from 'ethereumjs-util'
 
-const BN = ethUtil.BN
+const { BN } = ethUtil
 
 // Big Number Constants
 const BIG_NUMBER_WEI_MULTIPLIER = new BigNumber('1000000000000000000')
@@ -99,7 +99,7 @@ const converter = ({
   }
 
   if (fromCurrency !== toCurrency) {
-    if (conversionRate == null) {
+    if (conversionRate === null || conversionRate === undefined) {
       throw new Error(`Converting from ${fromCurrency} to ${toCurrency} requires a conversionRate, but one was not provided`)
     }
     let rate = toBigNumber.dec(conversionRate)

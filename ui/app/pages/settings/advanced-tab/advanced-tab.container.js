@@ -1,4 +1,3 @@
-import AdvancedTab from './advanced-tab.component'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
@@ -14,6 +13,7 @@ import {
   setIpfsGateway,
 } from '../../../store/actions'
 import { getPreferences } from '../../../selectors'
+import AdvancedTab from './advanced-tab.component'
 
 export const mapStateToProps = (state) => {
   const { appState: { warning }, metamask } = state

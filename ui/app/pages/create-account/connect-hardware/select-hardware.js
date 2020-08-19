@@ -133,7 +133,6 @@ export default class SelectHardware extends Component {
     )
   }
 
-
   scrollToTutorial = () => {
     if (this.referenceNode) {
       this.referenceNode.scrollIntoView({ behavior: 'smooth' })

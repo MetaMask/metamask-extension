@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import * as actions from '../../../store/actions'
 import FileInput from 'react-simple-file-input'
+import * as actions from '../../../store/actions'
 import { getMetaMaskAccounts } from '../../../selectors'
 import Button from '../../../components/ui/button'
 import { getMostRecentOverviewPage } from '../../../ducks/history/history'
@@ -101,12 +101,13 @@ class JsonImportSubview extends Component {
 
     if (!fileContents) {
       const message = this.context.t('needImportFile')
-      return displayWarning(message)
+      displayWarning(message)
+      return
     }
 
     const password = this.inputRef.current.value
 
-    importNewJsonAccount([ fileContents, password ])
+    importNewJsonAccount([fileContents, password])
       .then(({ selectedAddress }) => {
         if (selectedAddress) {
           history.push(mostRecentOverviewPage)

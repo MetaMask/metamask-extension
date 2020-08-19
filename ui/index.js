@@ -3,14 +3,14 @@ import log from 'loglevel'
 import { clone } from 'lodash'
 import React from 'react'
 import { render } from 'react-dom'
-import Root from './app/pages'
-import * as actions from './app/store/actions'
-import configureStore from './app/store/store'
-import txHelper from './lib/tx-helper'
 import { getEnvironmentType } from '../app/scripts/lib/util'
 import { ALERT_TYPES } from '../app/scripts/controllers/alert'
 import { SENTRY_STATE } from '../app/scripts/lib/setupSentry'
 import { ENVIRONMENT_TYPE_POPUP } from '../app/scripts/lib/enums'
+import Root from './app/pages'
+import * as actions from './app/store/actions'
+import configureStore from './app/store/store'
+import txHelper from './lib/tx-helper'
 import { fetchLocale, loadRelativeTimeFormatLocaleData } from './app/helpers/utils/i18n-helper'
 import switchDirection from './app/helpers/utils/switch-direction'
 import { getPermittedAccountsForCurrentTab, getSelectedAddress } from './app/selectors'
@@ -28,7 +28,8 @@ export default function launchMetamaskUi (opts, cb) {
   // check if we are unlocked first
   backgroundConnection.getState(function (err, metamaskState) {
     if (err) {
-      return cb(err)
+      cb(err)
+      return
     }
     startApp(metamaskState, backgroundConnection, opts)
       .then((store) => {
@@ -74,7 +75,7 @@ async function startApp (metamaskState, backgroundConnection, opts) {
   }
 
   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-    const origin = draftInitialState.activeTab.origin
+    const { origin } = draftInitialState.activeTab
     const permittedAccountsForCurrentTab = getPermittedAccountsForCurrentTab(draftInitialState)
     const selectedAddress = getSelectedAddress(draftInitialState)
     const unconnectedAccountAlertShownOrigins = getUnconnectedAccountAlertShown(draftInitialState)
@@ -111,8 +112,8 @@ async function startApp (metamaskState, backgroundConnection, opts) {
     }))
   }
 
-  backgroundConnection.on('update', function (metamaskState) {
-    store.dispatch(actions.updateMetamaskState(metamaskState))
+  backgroundConnection.on('update', function (state) {
+    store.dispatch(actions.updateMetamaskState(state))
   })
 
   // global metamask api - used by tooling
@@ -188,7 +189,8 @@ window.logStateString = function (cb) {
   const state = window.getCleanAppState()
   global.platform.getPlatformInfo((err, platform) => {
     if (err) {
-      return cb(err)
+      cb(err)
+      return
     }
     state.platform = platform
     const stateString = JSON.stringify(state, null, 2)

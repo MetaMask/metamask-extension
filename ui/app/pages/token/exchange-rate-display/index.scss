@@ -1,0 +1,26 @@
+.exchange-rate-display {
+  @include H6;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  color: $Black-100;
+
+  span {
+    margin-right: 4px;
+  }
+
+  &__bold {
+    font-weight: bold;
+  }
+
+  &__switch-arrows {
+    cursor: pointer;
+    margin-top: 2px;
+    transition: transform 0.5s ease-in-out;
+  }
+
+  &--white {
+    color: $white;
+  }
+}

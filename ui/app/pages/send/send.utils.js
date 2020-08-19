@@ -1,3 +1,5 @@
+import abi from 'ethereumjs-abi'
+import ethUtil from 'ethereumjs-util'
 import {
   addCurrencies,
   conversionUtil,
@@ -18,9 +20,6 @@ import {
   SIMPLE_GAS_COST,
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
 } from './send.constants'
-
-import abi from 'ethereumjs-abi'
-import ethUtil from 'ethereumjs-util'
 
 export {
   addGasBuffer,
@@ -69,7 +68,7 @@ function isBalanceSufficient ({
     {
       value: totalAmount,
       fromNumericBase: 'hex',
-      conversionRate: conversionRate,
+      conversionRate,
       fromCurrency: primaryCurrency,
     },
   )
@@ -238,6 +237,7 @@ async function estimateGas ({
 
   // if not, fall back to block gasLimit
   if (!blockGasLimit) {
+    // eslint-disable-next-line no-param-reassign
     blockGasLimit = MIN_GAS_LIMIT_HEX
   }
 
@@ -261,9 +261,9 @@ async function estimateGas ({
     if (simulationFailed) {
       const estimateWithBuffer = addGasBuffer(paramsForGasEstimate.gas, blockGasLimit, 1.5)
       return ethUtil.addHexPrefix(estimateWithBuffer)
-    } else {
-      throw error
     }
+    throw error
+
   }
 }
 
@@ -301,11 +301,11 @@ function addGasBuffer (initialGasLimitHex, blockGasLimitHex, bufferMultiplier = 
 
 function generateTokenTransferData ({ toAddress = '0x0', amount = '0x0', sendToken }) {
   if (!sendToken) {
-    return
+    return undefined
   }
   return TOKEN_TRANSFER_FUNCTION_SIGNATURE + Array.prototype.map.call(
     abi.rawEncode(['address', 'uint256'], [toAddress, ethUtil.addHexPrefix(amount)]),
-    (x) => ('00' + x.toString(16)).slice(-2),
+    (x) => (`00${x.toString(16)}`).slice(-2),
   ).join('')
 }
 
@@ -314,7 +314,7 @@ function getToAddressForGasUpdate (...addresses) {
 }
 
 function removeLeadingZeroes (str) {
-  return str.replace(/^0*(?=\d)/, '')
+  return str.replace(/^0*(?=\d)/u, '')
 }
 
 function ellipsify (text, first = 6, last = 4) {

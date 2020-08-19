@@ -1,9 +1,9 @@
 import assert from 'assert'
 import { renderHook } from '@testing-library/react-hooks'
-import { useUserPreferencedCurrency } from '../useUserPreferencedCurrency'
 import * as reactRedux from 'react-redux'
-import { getPreferences, getShouldShowFiat } from '../../selectors'
 import sinon from 'sinon'
+import { useUserPreferencedCurrency } from '../useUserPreferencedCurrency'
+import { getPreferences, getShouldShowFiat } from '../../selectors'
 
 const tests = [
   {
@@ -117,12 +117,10 @@ function getFakeUseSelector (state) {
       return state
     } else if (selector === getShouldShowFiat) {
       return state.showFiat
-    } else {
-      return state.nativeCurrency
     }
+    return state.nativeCurrency
   }
 }
-
 
 describe('useUserPreferencedCurrency', function () {
   tests.forEach(({ params: { type, ...otherParams }, state, result }) => {

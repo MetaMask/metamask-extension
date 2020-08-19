@@ -11,10 +11,8 @@ const rename = require('gulp-rename')
 const pump = pify(require('pump'))
 const { createTask } = require('./task')
 
-
 // scss compilation and autoprefixing tasks
 module.exports = createStyleTasks
-
 
 function createStyleTasks ({ livereload }) {
 
@@ -44,19 +42,18 @@ function createStyleTasks ({ livereload }) {
 
   return { prod, dev, lint }
 
-
   function createScssBuildTask ({ src, dest, devMode, pattern }) {
     return async function () {
       if (devMode) {
         watch(pattern, async (event) => {
-          await buildScss(devMode)
+          await buildScss()
           livereload.changed(event.path)
         })
       }
       await buildScss(devMode)
     }
 
-    async function buildScss (devMode) {
+    async function buildScss () {
       await pump(...[
         // pre-process
         gulp.src(src),
@@ -74,6 +71,5 @@ function createStyleTasks ({ livereload }) {
       ].filter(Boolean))
     }
   }
-
 
 }

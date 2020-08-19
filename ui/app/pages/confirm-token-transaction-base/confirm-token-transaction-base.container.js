@@ -1,7 +1,6 @@
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
-import ConfirmTokenTransactionBase from './confirm-token-transaction-base.component'
 import {
   contractExchangeRateSelector,
   transactionFeeSelector,
@@ -15,7 +14,7 @@ import {
   getTokenToAddress,
   getTokenValue,
 } from '../../helpers/utils/token-util'
-
+import ConfirmTokenTransactionBase from './confirm-token-transaction-base.component'
 
 const mapStateToProps = (state, ownProps) => {
   const { match: { params = {} } } = ownProps

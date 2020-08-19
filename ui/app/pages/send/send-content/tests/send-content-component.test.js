@@ -1,7 +1,7 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { shallow } from 'enzyme'
-import SendContent from '../send-content.component.js'
+import SendContent from '../send-content.component'
 
 import PageContainerContent from '../../../../components/ui/page-container/page-container-content.component'
 import SendAmountRow from '../send-amount-row/send-amount-row.container'
@@ -18,7 +18,7 @@ describe('SendContent Component', function () {
       <SendContent
         showHexData
       />,
-      { context: { t: (str) => str + '_t' } },
+      { context: { t: (str) => `${str}_t` } },
     )
   })
 

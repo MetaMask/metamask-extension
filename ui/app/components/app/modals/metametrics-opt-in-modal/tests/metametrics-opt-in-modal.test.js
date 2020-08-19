@@ -1,8 +1,8 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import sinon from 'sinon'
 import { mount } from 'enzyme'
-import MetaMetricsOptIn from '../index'
+import MetaMetricsOptIn from '..'
 
 describe('MetaMetrics Opt In', function () {
   let wrapper
@@ -17,7 +17,7 @@ describe('MetaMetrics Opt In', function () {
     wrapper = mount(
       <MetaMetricsOptIn.WrappedComponent {...props} />, {
         context: {
-          metricsEvent: () => {},
+          metricsEvent: () => undefined,
         },
       },
     )

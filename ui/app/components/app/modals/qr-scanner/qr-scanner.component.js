@@ -117,11 +117,11 @@ export default class QrScanner extends Component {
       const result = this.parseContent(content.text)
       if (!this.mounted) {
         return
-      } else if (result.type !== 'unknown') {
+      } else if (result.type === 'unknown') {
+        this.setState({ error: new Error(this.context.t('unknownQrCode')) })
+      } else {
         this.props.qrCodeDetected(result)
         this.stopAndClose()
-      } else {
-        this.setState({ error: new Error(this.context.t('unknownQrCode')) })
       }
     } catch (error) {
       if (!this.mounted) {
@@ -144,7 +144,6 @@ export default class QrScanner extends Component {
     // To parse other type of links
     // For ex. EIP-681 (https://eips.ethereum.org/EIPS/eip-681)
 
-
     // Ethereum address links - fox ex. ethereum:0x.....1111
     if (content.split('ethereum:').length > 1) {
 
@@ -160,7 +159,6 @@ export default class QrScanner extends Component {
     }
     return { type, values }
   }
-
 
   stopAndClose = () => {
     if (this.codeReader) {
@@ -248,7 +246,7 @@ export default class QrScanner extends Component {
                 display: ready === READY_STATE.READY ? 'block' : 'none',
               }}
             />
-            { ready !== READY_STATE.READY ? <Spinner color="#F7C06C" /> : null}
+            {ready === READY_STATE.READY ? null : <Spinner color="#F7C06C" />}
           </div>
         </div>
         <div className="qr-scanner__status">

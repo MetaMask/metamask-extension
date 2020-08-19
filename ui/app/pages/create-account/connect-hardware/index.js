@@ -3,10 +3,10 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import * as actions from '../../../store/actions'
 import { getMetaMaskAccounts } from '../../../selectors'
-import SelectHardware from './select-hardware'
-import AccountList from './account-list'
 import { formatBalance } from '../../../helpers/utils/util'
 import { getMostRecentOverviewPage } from '../../../ducks/history/history'
+import SelectHardware from './select-hardware'
+import AccountList from './account-list'
 
 class ConnectHardwareForm extends Component {
   state = {
@@ -29,24 +29,23 @@ class ConnectHardwareForm extends Component {
     this.setState({ accounts: newAccounts })
   }
 
-
   componentDidMount () {
     this.checkIfUnlocked()
   }
 
   async checkIfUnlocked () {
-    ['trezor', 'ledger'].forEach(async (device) => {
+    for (const device of ['trezor', 'ledger']) {
       const unlocked = await this.props.checkHardwareStatus(device, this.props.defaultHdPaths[device])
       if (unlocked) {
         this.setState({ unlocked: true })
         this.getPage(device, 0, this.props.defaultHdPaths[device])
       }
-    })
+    }
   }
 
   connectToHardwareWallet = (device) => {
     if (this.state.accounts.length) {
-      return null
+      return
     }
 
     // Default values
@@ -99,7 +98,6 @@ class ConnectHardwareForm extends Component {
             newState.selectedAccount = null
           }
 
-
           // Map accounts with balances
           newState.accounts = accounts.map((account) => {
             const normalizedAddress = account.address.toLowerCase()
@@ -148,7 +146,7 @@ class ConnectHardwareForm extends Component {
           eventOpts: {
             category: 'Accounts',
             action: 'Connected Hardware Wallet',
-            name: 'Connected Account with: ' + device,
+            name: `Connected Account with: ${device}`,
           },
         })
         history.push(mostRecentOverviewPage)

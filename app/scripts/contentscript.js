@@ -1,5 +1,5 @@
-import pump from 'pump'
 import querystring from 'querystring'
+import pump from 'pump'
 import LocalMessageDuplexStream from 'post-message-stream'
 import ObjectMultiplex from 'obj-multiplex'
 import extension from 'extensionizer'
@@ -10,7 +10,7 @@ const fs = require('fs')
 const path = require('path')
 
 const inpageContent = fs.readFileSync(path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js'), 'utf8')
-const inpageSuffix = '//# sourceURL=' + extension.runtime.getURL('inpage.js') + '\n'
+const inpageSuffix = `//# sourceURL=${extension.runtime.getURL('inpage.js')}\n`
 const inpageBundle = inpageContent + inpageSuffix
 
 // Eventually this streaming injection could be replaced with:
@@ -115,7 +115,7 @@ function forwardTrafficBetweenMuxers (channelName, muxA, muxB) {
 function logStreamDisconnectWarning (remoteLabel, err) {
   let warningMsg = `MetamaskContentscript - lost connection to ${remoteLabel}`
   if (err) {
-    warningMsg += '\n' + err.stack
+    warningMsg += `\n${err.stack}`
   }
   console.warn(warningMsg)
 }
@@ -136,12 +136,11 @@ function shouldInjectProvider () {
  * @returns {boolean} {@code true} - if the doctype is html or if none exists
  */
 function doctypeCheck () {
-  const doctype = window.document.doctype
+  const { doctype } = window.document
   if (doctype) {
     return doctype.name === 'html'
-  } else {
-    return true
   }
+  return true
 }
 
 /**
@@ -155,8 +154,8 @@ function doctypeCheck () {
  */
 function suffixCheck () {
   const prohibitedTypes = [
-    /\.xml$/,
-    /\.pdf$/,
+    /\.xml$/u,
+    /\.pdf$/u,
   ]
   const currentUrl = window.location.pathname
   for (let i = 0; i < prohibitedTypes.length; i++) {
@@ -202,7 +201,7 @@ function blockedDomainCheck () {
   let currentRegex
   for (let i = 0; i < blockedDomains.length; i++) {
     const blockedDomain = blockedDomains[i].replace('.', '\\.')
-    currentRegex = new RegExp(`(?:https?:\\/\\/)(?:(?!${blockedDomain}).)*$`)
+    currentRegex = new RegExp(`(?:https?:\\/\\/)(?:(?!${blockedDomain}).)*$`, 'u')
     if (!currentRegex.test(currentUrl)) {
       return true
     }
@@ -228,7 +227,7 @@ function redirectToPhishingWarning () {
 async function domIsReady () {
   // already loaded
   if (['interactive', 'complete'].includes(document.readyState)) {
-    return
+    return undefined
   }
   // wait for load
   return new Promise((resolve) => window.addEventListener('DOMContentLoaded', resolve, { once: true }))

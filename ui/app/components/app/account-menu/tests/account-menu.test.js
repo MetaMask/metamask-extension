@@ -1,10 +1,10 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import sinon from 'sinon'
 import configureMockStore from 'redux-mock-store'
-import { mountWithRouter } from '../../../../../../test/lib/render-helpers'
-import AccountMenu from '../index'
 import { Provider } from 'react-redux'
+import { mountWithRouter } from '../../../../../../test/lib/render-helpers'
+import AccountMenu from '..'
 
 describe('Account Menu', function () {
 

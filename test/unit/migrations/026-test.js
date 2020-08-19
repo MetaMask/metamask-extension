@@ -19,7 +19,7 @@ describe('migration #26', function () {
   it('should move the identities from KeyringController', function (done) {
     migration26.migrate(oldStorage)
       .then((newStorage) => {
-        const identities = newStorage.data.PreferencesController.identities
+        const { identities } = newStorage.data.PreferencesController
         assert.deepEqual(identities, {
           '0x1e77e2': { name: 'Test Account 1', address: '0x1e77e2' },
           '0x7e57e2': { name: 'Test Account 2', address: '0x7e57e2' },

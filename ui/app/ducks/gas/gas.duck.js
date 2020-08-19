@@ -194,8 +194,8 @@ async function queryEthGasStationPredictionTable () {
     'referrerPolicy': 'no-referrer-when-downgrade',
     'body': null,
     'method': 'GET',
-    'mode': 'cors' },
-  )
+    'mode': 'cors',
+  })
 }
 
 export function fetchBasicGasEstimates () {
@@ -323,20 +323,22 @@ async function fetchExternalBasicGasAndTimeEstimates (dispatch) {
 }
 
 function extrapolateY ({ higherY, lowerY, higherX, lowerX, xForExtrapolation }) {
+  /* eslint-disable no-param-reassign */
   higherY = new BigNumber(higherY, 10)
   lowerY = new BigNumber(lowerY, 10)
   higherX = new BigNumber(higherX, 10)
   lowerX = new BigNumber(lowerX, 10)
   xForExtrapolation = new BigNumber(xForExtrapolation, 10)
+  /* eslint-enable no-param-reassign */
   const slope = (higherY.minus(lowerY)).div(higherX.minus(lowerX))
   const newTimeEstimate = slope.times(higherX.minus(xForExtrapolation)).minus(higherY).negated()
 
   return Number(newTimeEstimate.toPrecision(10))
 }
 
-function getRandomArbitrary (min, max) {
-  min = new BigNumber(min, 10)
-  max = new BigNumber(max, 10)
+function getRandomArbitrary (minStr, maxStr) {
+  const min = new BigNumber(minStr, 10)
+  const max = new BigNumber(maxStr, 10)
   const random = new BigNumber(String(Math.random()), 10)
   return new BigNumber(random.times(max.minus(min)).plus(min)).toPrecision(10)
 }
@@ -399,29 +401,28 @@ export function fetchGasEstimates (blockTime) {
             const next = arr[i + 1]
             if (!next) {
               return [{ expectedWait, gasprice }]
-            } else {
-              const supplementalPrice = getRandomArbitrary(gasprice, next.gasprice)
-              const supplementalTime = extrapolateY({
-                higherY: next.expectedWait,
-                lowerY: expectedWait,
-                higherX: next.gasprice,
-                lowerX: gasprice,
-                xForExtrapolation: supplementalPrice,
-              })
-              const supplementalPrice2 = getRandomArbitrary(supplementalPrice, next.gasprice)
-              const supplementalTime2 = extrapolateY({
-                higherY: next.expectedWait,
-                lowerY: supplementalTime,
-                higherX: next.gasprice,
-                lowerX: supplementalPrice,
-                xForExtrapolation: supplementalPrice2,
-              })
-              return [
-                { expectedWait, gasprice },
-                { expectedWait: supplementalTime, gasprice: supplementalPrice },
-                { expectedWait: supplementalTime2, gasprice: supplementalPrice2 },
-              ]
             }
+            const supplementalPrice = getRandomArbitrary(gasprice, next.gasprice)
+            const supplementalTime = extrapolateY({
+              higherY: next.expectedWait,
+              lowerY: expectedWait,
+              higherX: next.gasprice,
+              lowerX: gasprice,
+              xForExtrapolation: supplementalPrice,
+            })
+            const supplementalPrice2 = getRandomArbitrary(supplementalPrice, next.gasprice)
+            const supplementalTime2 = extrapolateY({
+              higherY: next.expectedWait,
+              lowerY: supplementalTime,
+              higherX: next.gasprice,
+              lowerX: supplementalPrice,
+              xForExtrapolation: supplementalPrice2,
+            })
+            return [
+              { expectedWait, gasprice },
+              { expectedWait: supplementalTime, gasprice: supplementalPrice },
+              { expectedWait: supplementalTime2, gasprice: supplementalPrice2 },
+            ]
           }))
           const withOutliersRemoved = inliersByIQR(withSupplementalTimeEstimates.slice(0).reverse(), 'expectedWait').reverse()
           const timeMappedToSeconds = withOutliersRemoved.map(({ expectedWait, gasprice }) => {
@@ -441,8 +442,7 @@ export function fetchGasEstimates (blockTime) {
         })
       : Promise.resolve(priceAndTimeEstimates.length
         ? priceAndTimeEstimates
-        : loadLocalStorageData('GAS_API_ESTIMATES'),
-      )
+        : loadLocalStorageData('GAS_API_ESTIMATES'))
 
     return promiseToFetch.then((estimates) => {
       dispatch(setPricesAndTimeEstimates(estimates))
@@ -453,11 +453,11 @@ export function fetchGasEstimates (blockTime) {
 
 export function setCustomGasPriceForRetry (newPrice) {
   return (dispatch) => {
-    if (newPrice !== '0x0') {
-      dispatch(setCustomGasPrice(newPrice))
-    } else {
+    if (newPrice === '0x0') {
       const { fast } = loadLocalStorageData('BASIC_PRICE_ESTIMATES')
       dispatch(setCustomGasPrice(decGWEIToHexWEI(fast)))
+    } else {
+      dispatch(setCustomGasPrice(newPrice))
     }
   }
 }

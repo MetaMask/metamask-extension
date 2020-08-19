@@ -48,15 +48,18 @@ export const getMessage = (localeCode, localeMessages, key, substitutions) => {
 
   // perform substitutions
   if (hasSubstitutions) {
-    const parts = phrase.split(/(\$\d)/g)
+    const parts = phrase.split(/(\$\d)/ug)
 
     const substitutedParts = parts.map((part) => {
-      const subMatch = part.match(/\$(\d)/)
+      const subMatch = part.match(/\$(\d)/u)
       if (!subMatch) {
         return part
       }
       const substituteIndex = Number(subMatch[1]) - 1
-      if (substitutions[substituteIndex] == null && !missingSubstitutionErrors[localeCode]?.[key]) {
+      if (
+        (substitutions[substituteIndex] === null || substitutions[substituteIndex] === undefined) &&
+        !missingSubstitutionErrors[localeCode]?.[key]
+      ) {
         if (!missingSubstitutionErrors[localeCode]) {
           missingSubstitutionErrors[localeCode] = {}
         }

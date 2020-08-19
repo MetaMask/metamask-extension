@@ -1,5 +1,5 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { shallow } from 'enzyme'
 import CancelTransactionGasFee from '../cancel-transaction-gas-fee.component'
 import UserPreferencedCurrencyDisplay from '../../../../user-preferenced-currency-display'

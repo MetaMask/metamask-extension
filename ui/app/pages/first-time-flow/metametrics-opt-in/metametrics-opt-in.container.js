@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
-import MetaMetricsOptIn from './metametrics-opt-in.component'
 import { setParticipateInMetaMetrics } from '../../../store/actions'
 import { getFirstTimeFlowTypeRoute } from '../../../selectors'
+import MetaMetricsOptIn from './metametrics-opt-in.component'
 
 const firstTimeFlowTypeNameMap = {
   create: 'Selected Create New Wallet',
