@@ -1509,6 +1509,15 @@
   "supportCenter": {
     "message": "Visit our Support Center"
   },
+  "swapCheckingQuote": {
+    "message": "Checking $1..."
+  },
+  "swapFinalizing": {
+    "message": "Finalizing..."
+  },
+  "swapQuoteNofN": {
+    "message": "Quote $1 of $2"
+  },
   "switchNetworks": {
     "message": "Switch Networks"
   },
