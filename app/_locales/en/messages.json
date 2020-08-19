@@ -1559,6 +1559,18 @@
   "swapCustom": {
     "message": "custom"
   },
+  "swapErrorDescription": {
+    "message": "Your trade did not succeed. Please try again."
+  },
+  "swapEstimatedTime": {
+    "message": "Estimated time:"
+  },
+  "swapEstimatedTimeCalculating": {
+    "message": "Calculating..."
+  },
+  "swapEstimatedTimeFull": {
+    "message": "$1 $2"
+  },
   "swapFetchingTokens": {
     "message": "Fetching tokens..."
   },
@@ -1607,6 +1619,12 @@
   "swapNetworkFeesInfo": {
     "message": "This is the cost to process the swap on the Ethereum network. It’s also known as “gas” fees."
   },
+  "swapOnceTransactionHasProcess": {
+    "message": "Your $1 will be added to your account once this transaction has processed"
+  },
+  "swapProcessing": {
+    "message": "Processing..."
+  },
   "swapQuoteDetails": {
     "message": "Quote details"
   },
@@ -1651,6 +1669,18 @@
   },
   "swapStartSwapping": {
     "message": "Start swapping"
+  },
+  "swapSwapError": {
+    "message": "Swap failed"
+  },
+  "swapSwapErrorDescription": {
+    "message": "Your trade did not succeed. Please try again."
+  },
+  "swapTokenAvailable": {
+    "message": "Your $1 has been added to your account."
+  },
+  "swapTransactionComplete": {
+    "message": "Transaction complete"
   },
   "swapsAdvancedOptions": {
     "message": "Advanced Options"
