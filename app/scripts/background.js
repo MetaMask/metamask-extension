@@ -2,9 +2,12 @@
  * @file The entry point for the web extension singleton process.
  */
 // these need to run before anything else
-/* eslint-disable import/order */
+/* eslint-disable import/first,import/order */
 import './lib/freezeGlobals'
 import setupFetchDebugging from './lib/setupFetchDebugging'
+/* eslint-enable import/order */
+
+setupFetchDebugging()
 
 // polyfills
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
@@ -36,9 +39,7 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
 } from './lib/enums'
-/* eslint-enable import/order */
-
-setupFetchDebugging()
+/* eslint-enable import/first */
 
 // METAMASK_TEST_CONFIG is used in e2e tests to set the default network to localhost
 const firstTimeState = { ...rawFirstTimeState, ...global.METAMASK_TEST_CONFIG }

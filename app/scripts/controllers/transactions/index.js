@@ -6,7 +6,6 @@ import EthQuery from 'ethjs-query'
 import { ethErrors } from 'eth-json-rpc-errors'
 import abi from 'human-standard-token-abi'
 import abiDecoder from 'abi-decoder'
-
 import NonceTracker from 'nonce-tracker'
 import log from 'loglevel'
 import {
@@ -17,7 +16,6 @@ import {
   DEPLOY_CONTRACT_ACTION_KEY,
   CONTRACT_INTERACTION_KEY,
 } from '../../../../ui/app/helpers/constants/transactions'
-
 import cleanErrorStack from '../../lib/cleanErrorStack'
 import { hexToBn, bnToHex, BnMultiplyByFraction } from '../../lib/util'
 import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/helpers/constants/error-keys'
@@ -25,7 +23,6 @@ import TransactionStateManager from './tx-state-manager'
 import TxGasUtil from './tx-gas-utils'
 import PendingTransactionTracker from './pending-tx-tracker'
 import * as txUtils from './lib/util'
-
 import {
   TRANSACTION_TYPE_CANCEL,
   TRANSACTION_TYPE_RETRY,
@@ -137,7 +134,6 @@ export default class TransactionController extends EventEmitter {
       return 0
     }
     return integerChainId
-
   }
 
   /**

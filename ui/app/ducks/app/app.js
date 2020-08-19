@@ -50,7 +50,8 @@ export default function reduceApp (state = {}, action) {
     threeBoxLastUpdated: null,
     requestAccountTabs: {},
     openMetaMaskTabs: {},
-    currentWindowTab: {}, ...state,
+    currentWindowTab: {},
+    ...state,
   }
 
   switch (action.type) {

@@ -40,7 +40,6 @@ export default class AlertController {
   constructor (opts = {}) {
     const { initState, preferencesStore } = opts
     const state = {
-
       ...defaultState,
       ...initState,
       unconnectedAccountAlertShownOrigins: {},

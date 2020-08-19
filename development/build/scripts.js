@@ -364,5 +364,4 @@ function getEnvironment ({ devMode, test }) {
     return 'pull-request'
   }
   return 'other'
-
 }

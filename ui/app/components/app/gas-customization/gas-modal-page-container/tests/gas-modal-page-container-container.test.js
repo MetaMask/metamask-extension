@@ -179,7 +179,8 @@ describe('gas-modal-page-container container', function () {
         },
         {
           mockState: {
-            ...baseMockState, metamask: {
+            ...baseMockState,
+            metamask: {
               ...baseMockState.metamask,
               preferences: {
                 ...baseMockState.metamask.preferences,
@@ -203,7 +204,8 @@ describe('gas-modal-page-container container', function () {
         },
         {
           mockState: {
-            ...baseMockState, metamask: {
+            ...baseMockState,
+            metamask: {
               ...baseMockState.metamask,
               preferences: {
                 ...baseMockState.metamask.preferences,
@@ -223,7 +225,8 @@ describe('gas-modal-page-container container', function () {
         },
         {
           mockState: {
-            ...baseMockState, metamask: {
+            ...baseMockState,
+            metamask: {
               ...baseMockState.metamask,
               preferences: {
                 ...baseMockState.metamask.preferences,

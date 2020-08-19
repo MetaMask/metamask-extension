@@ -281,7 +281,8 @@ describe('send selectors', function () {
     it('should get the selected account balance if the send.from does not exist', function () {
       const editedMockState = {
         metamask: {
-          ...mockState.metamask, send: {
+          ...mockState.metamask,
+          send: {
             from: null,
           },
         },
@@ -309,7 +310,8 @@ describe('send selectors', function () {
     it('should return the current account if send.from does not exist', function () {
       const editedMockState = {
         metamask: {
-          ...mockState.metamask, send: {
+          ...mockState.metamask,
+          send: {
             from: null,
           },
         },

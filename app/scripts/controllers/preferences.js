@@ -214,7 +214,6 @@ export default class PreferencesController {
     }
 
     next()
-
   }
 
   /**

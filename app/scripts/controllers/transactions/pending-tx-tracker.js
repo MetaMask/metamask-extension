@@ -196,7 +196,6 @@ export default class PendingTransactionTracker extends EventEmitter {
 
     if (await this._checkIfTxWasDropped(txMeta)) {
       this.emit('tx:dropped', txId)
-
     }
   }
 

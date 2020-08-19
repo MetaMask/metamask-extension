@@ -153,7 +153,6 @@ export default class SendGasRow extends Component {
       return gasPriceButtonGroup
     }
     return gasFeeDisplay
-
   }
 
   render () {

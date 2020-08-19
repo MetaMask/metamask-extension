@@ -277,7 +277,6 @@ export function removeAccount (address) {
             return
           }
           resolve(account)
-
         })
       })
       await forceUpdateMetamaskState(dispatch)
@@ -412,7 +411,6 @@ export function unlockHardwareWalletAccount (index, deviceName, hdPath) {
 
         dispatch(hideLoadingIndication())
         resolve()
-
       })
     })
   }
@@ -589,7 +587,6 @@ export function signTx (txData) {
     global.ethQuery.sendTransaction(txData, (err) => {
       if (err) {
         dispatch(displayWarning(err.message))
-
       }
     })
     dispatch(showConfTxPage())
@@ -1534,7 +1531,6 @@ export function setRpcTarget (newRpc, chainId, ticker = 'ETH', nickname) {
     } catch (error) {
       log.error(error)
       dispatch(displayWarning('Had a problem changing networks!'))
-
     }
   }
 }
@@ -1573,7 +1569,6 @@ export function addToAddressBook (recipient, nickname = '', memo = '') {
     }
     if (!set) {
       dispatch(displayWarning('Address book failed to update'))
-
     }
   }
 }
@@ -1734,9 +1729,7 @@ export function exportAccount (password, address) {
           }
 
           dispatch(showPrivateKey(result))
-
           resolve(result)
-
         })
       })
     })
@@ -1763,11 +1756,9 @@ export function exportAccounts (password, addresses) {
               return
             }
             resolve2(result)
-
           }),
         ))
         resolve(Promise.all(accountPromises))
-
       })
     })
   }
@@ -1799,7 +1790,6 @@ export function setAccountLabel (account, label) {
           type: actionConstants.SET_ACCOUNT_LABEL,
           value: { account, label },
         })
-
         resolve(account)
       })
     })
@@ -1965,7 +1955,6 @@ export function setParticipateInMetaMetrics (val) {
           type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,
           value: val,
         })
-
         resolve([val, metaMetricsId])
       })
     })
@@ -1987,7 +1976,6 @@ export function setMetaMetricsSendCount (val) {
           type: actionConstants.SET_METAMETRICS_SEND_COUNT,
           value: val,
         })
-
         resolve(val)
       })
     })
@@ -2002,7 +1990,6 @@ export function setUseBlockie (val) {
       dispatch(hideLoadingIndication())
       if (err) {
         dispatch(displayWarning(err.message))
-
       }
     })
     dispatch({
@@ -2020,7 +2007,6 @@ export function setUseNonceField (val) {
       dispatch(hideLoadingIndication())
       if (err) {
         dispatch(displayWarning(err.message))
-
       }
     })
     dispatch({
@@ -2038,7 +2024,6 @@ export function setUsePhishDetect (val) {
       dispatch(hideLoadingIndication())
       if (err) {
         dispatch(displayWarning(err.message))
-
       }
     })
   }
@@ -2256,9 +2241,7 @@ export function getContractMethodData (data = '') {
     return getMethodDataAsync(fourBytePrefix)
       .then(({ name, params }) => {
         dispatch(loadingMethodDataFinished())
-
         background.addKnownMethodData(fourBytePrefix, { name, params })
-
         return { name, params }
       })
   }

@@ -32,7 +32,6 @@ export default class ExtensionStore {
       return undefined
     }
     return result
-
   }
 
   /**

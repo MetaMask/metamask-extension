@@ -94,7 +94,6 @@ export default class ConfirmTokenTransactionBase extends Component {
     const fiatTotal = addFiat(fiatTransactionAmount, fiatTransactionTotal)
     const roundedFiatTotal = roundExponential(fiatTotal)
     return formatCurrency(roundedFiatTotal, currentCurrency)
-
   }
 
   render () {

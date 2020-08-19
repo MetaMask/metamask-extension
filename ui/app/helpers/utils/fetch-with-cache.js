@@ -26,9 +26,9 @@ const fetchWithCache = async (url, fetchOptions = {}, { cacheRefreshTime = 36000
     return cachedResponse
   }
   fetchOptions.headers.set('Content-Type', 'application/json')
-  const _fetch = timeout ?
-    fetchWithTimeout({ timeout }) :
-    window.fetch
+  const _fetch = timeout
+    ? fetchWithTimeout({ timeout })
+    : window.fetch
   const response = await _fetch(url, {
     referrerPolicy: 'no-referrer-when-downgrade',
     body: null,
@@ -47,7 +47,6 @@ const fetchWithCache = async (url, fetchOptions = {}, { cacheRefreshTime = 36000
   cachedFetch[url] = cacheEntry
   saveLocalStorageData(cachedFetch, 'cachedFetch')
   return responseJson
-
 }
 
 export default fetchWithCache

@@ -118,7 +118,6 @@ describe('useTransactionDisplayData', function () {
         return 'ETH'
       }
       return null
-
     })
   })
   transactions.forEach((transactionGroup, idx) => {

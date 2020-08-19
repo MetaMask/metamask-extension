@@ -343,7 +343,6 @@ export default class TransactionStateManager extends EventEmitter {
         return filter(txMeta.txParams[key])
       }
       return filter(txMeta[key])
-
     })
   }
 

@@ -173,7 +173,6 @@ class NetworkDropdown extends Component {
           />
         </DropdownMenuItem>
       )
-
     })
   }
 

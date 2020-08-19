@@ -212,7 +212,6 @@ export function verifyUserPermission (config, props) {
     return true
   }
   return false
-
 }
 
 const trackableSendCounts = {

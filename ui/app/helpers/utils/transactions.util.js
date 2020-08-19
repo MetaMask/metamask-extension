@@ -47,7 +47,6 @@ async function getMethodFrom4Byte (fourBytePrefix) {
     return fourByteResponse.results[0].text_signature
   }
   return null
-
 }
 let registry
 
@@ -143,7 +142,6 @@ export function getTransactionActionKey (transaction) {
       return ENCRYPTION_PUBLIC_KEY_REQUEST_KEY
     }
     return SIGNATURE_REQUEST_KEY
-
   }
 
   if (isConfirmDeployContract(transaction)) {
@@ -186,7 +184,6 @@ export function getLatestSubmittedTxWithNonce (transactions = [], nonce = '0x0')
       return submittedTime > acc.submittedTime ? current : acc
     }
     return acc
-
   }, {})
 }
 

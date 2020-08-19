@@ -1,4 +1,9 @@
 import ObservableStore from 'obs-store'
+
+/* eslint-disable import/first,import/order */
+const Box = process.env.IN_TEST
+  ? require('../../../development/mock-3box')
+  : require('3box')
 /* eslint-enable import/order */
 
 import log from 'loglevel'
@@ -8,11 +13,7 @@ import Migrator from '../lib/migrator'
 import migrations from '../migrations'
 import createOriginMiddleware from '../lib/createOriginMiddleware'
 import createMetamaskMiddleware from './network/createMetamaskMiddleware'
-
-/* eslint-disable import/order */
-const Box = process.env.IN_TEST
-  ? require('../../../development/mock-3box')
-  : require('3box')
+/* eslint-enable import/first */
 
 const SYNC_TIMEOUT = 60 * 1000 // one minute
 
@@ -44,7 +45,6 @@ export default class ThreeBoxController {
           return [appKeyAddress]
         }
         return []
-
       },
       processPersonalMessage: async (msgParams) => {
         const accounts = await this.keyringController.getAccounts()

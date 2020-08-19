@@ -282,5 +282,4 @@ function normalizeMsgData (data) {
   }
   // data is unicode, convert to hex
   return ethUtil.bufferToHex(Buffer.from(data, 'utf8'))
-
 }

@@ -68,7 +68,6 @@ export const getMetaMaskAccounts = createSelector(
       ...selectedAccounts,
       [accountID]: account,
     }
-
   }, {}),
 )
 

@@ -101,7 +101,6 @@ export default class PersonalMessageManager extends EventEmitter {
             return
           default:
             reject(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
-
         }
       })
     })

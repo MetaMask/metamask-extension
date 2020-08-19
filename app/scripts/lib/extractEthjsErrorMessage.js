@@ -21,5 +21,4 @@ export default function extractEthjsErrorMessage (errorMessage) {
     return originalError
   }
   return errorMessage
-
 }

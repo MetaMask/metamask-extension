@@ -179,10 +179,8 @@ export function shortenBalance (balance, decimalsToKeep = 1) {
       return convertedBalance.toFixed(3)
     }
     return stringBalance
-
   }
   return convertedBalance.toFixed(decimalsToKeep)
-
 }
 
 // Takes a BN and an ethereum currency name,

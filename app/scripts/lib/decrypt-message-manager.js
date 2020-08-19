@@ -101,7 +101,6 @@ export default class DecryptMessageManager extends EventEmitter {
             return
           default:
             reject(new Error(`MetaMask Decryption: Unknown problem: ${JSON.stringify(msgParams)}`))
-
         }
       })
     })

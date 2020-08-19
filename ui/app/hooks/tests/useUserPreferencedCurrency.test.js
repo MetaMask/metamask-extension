@@ -119,7 +119,6 @@ function getFakeUseSelector (state) {
       return state.showFiat
     }
     return state.nativeCurrency
-
   }
 }
 

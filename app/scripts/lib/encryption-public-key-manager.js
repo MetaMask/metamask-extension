@@ -95,7 +95,6 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
             return
           default:
             reject(new Error(`MetaMask EncryptionPublicKey: Unknown problem: ${JSON.stringify(address)}`))
-
         }
       })
     })

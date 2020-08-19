@@ -125,13 +125,9 @@ export default class PermissionPageContainerContent extends PureComponent {
         ],
       )
     }
-    return t(
-      'connectTo',
-      [
-        this.getAccountDescriptor(selectedIdentities[0]),
-      ],
-    )
-
+    return t('connectTo', [
+      this.getAccountDescriptor(selectedIdentities[0]),
+    ])
   }
 
   render () {

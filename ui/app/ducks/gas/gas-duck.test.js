@@ -334,13 +334,7 @@ describe('Gas Duck', function () {
           safeLow: 15,
         })
 
-      await fetchBasicGasEstimates()(mockDistpatch, () => ({
-        gas: {
-
-          ...initState,
-
-        },
-      }))
+      await fetchBasicGasEstimates()(mockDistpatch, () => ({ gas: { ...initState } }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
         [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED }],
@@ -372,13 +366,7 @@ describe('Gas Duck', function () {
         .withArgs('BASIC_PRICE_ESTIMATES_LAST_RETRIEVED')
         .returns(2000000 - 1) // one second ago from "now"
 
-      await fetchBasicGasEstimates()(mockDistpatch, () => ({
-        gas: {
-
-          ...initState,
-
-        },
-      }))
+      await fetchBasicGasEstimates()(mockDistpatch, () => ({ gas: { ...initState } }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
         [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED }],
@@ -486,9 +474,7 @@ describe('Gas Duck', function () {
 
       await fetchBasicGasAndTimeEstimates()(mockDistpatch, () => ({
         gas: {
-
           ...initState,
-
         },
         metamask: { provider: { type: 'ropsten' } },
       }))
@@ -531,9 +517,7 @@ describe('Gas Duck', function () {
 
       await fetchBasicGasAndTimeEstimates()(mockDistpatch, () => ({
         gas: {
-
           ...initState,
-
         },
         metamask: { provider: { type: 'ropsten' } },
       }))
@@ -583,7 +567,6 @@ describe('Gas Duck', function () {
 
       await fetchGasEstimates(5)(mockDistpatch, () => ({
         gas: {
-
           ...initState,
           priceAndTimeEstimatesLastRetrieved: 1000000,
         },
@@ -621,7 +604,6 @@ describe('Gas Duck', function () {
 
       await fetchGasEstimates(5)(mockDistpatch, () => ({
         gas: {
-
           ...initState,
           priceAndTimeEstimatesLastRetrieved: Date.now(),
           priceAndTimeEstimates: [{
@@ -748,5 +730,4 @@ describe('Gas Duck', function () {
       )
     })
   })
-
 })

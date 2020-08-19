@@ -105,7 +105,8 @@ export default class ExtensionPlatform {
       })
     } catch (e) {
       cb(e)
-
+      // eslint-disable-next-line no-useless-return
+      return
     }
   }
 

@@ -125,7 +125,6 @@ function getSymbolNormal (value) {
     return SYMBOLS.SevenEighths
   }
   return SYMBOLS.Full
-
 }
 
 // get partial block char for value (right-adjusted)
@@ -146,5 +145,4 @@ function getSymbolNormalRight (value) {
     return SYMBOLS.Space
   }
   throw new Error('getSymbolNormalRight got unexpected result')
-
 }

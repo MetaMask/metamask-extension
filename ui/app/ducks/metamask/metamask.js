@@ -45,7 +45,8 @@ export default function reduceMetamask (state = {}, action) {
     knownMethodData: {},
     participateInMetaMetrics: null,
     metaMetricsSendCount: 0,
-    nextNonce: null, ...state,
+    nextNonce: null,
+    ...state,
   }
 
   switch (action.type) {

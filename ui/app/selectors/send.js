@@ -159,7 +159,6 @@ export function getTitleKey (state) {
     return 'sendTokens'
   }
   return 'sendETH'
-
 }
 
 export function isSendFormInError (state) {

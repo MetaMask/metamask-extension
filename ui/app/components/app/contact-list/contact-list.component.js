@@ -69,7 +69,6 @@ export default class ContactList extends PureComponent {
           return 0
         }
         return -1
-
       })
       .map(([letter, groupItems]) => (
         <RecipientGroup

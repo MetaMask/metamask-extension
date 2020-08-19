@@ -29,7 +29,6 @@ const getEnvironmentTypeMemo = memoize((url) => {
     return ENVIRONMENT_TYPE_NOTIFICATION
   }
   return ENVIRONMENT_TYPE_BACKGROUND
-
 })
 
 /**

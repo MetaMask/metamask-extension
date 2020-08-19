@@ -1112,10 +1112,10 @@ export default class MetamaskController extends EventEmitter {
   cancelMessage (msgId, cb) {
     const { messageManager } = this
     messageManager.rejectMsg(msgId)
-    if (cb && typeof cb === 'function') {
-      cb(null, this.getState())
-
+    if (!cb || typeof cb !== 'function') {
+      return
     }
+    cb(null, this.getState())
   }
 
   // personal_sign methods:
@@ -1171,10 +1171,10 @@ export default class MetamaskController extends EventEmitter {
   cancelPersonalMessage (msgId, cb) {
     const messageManager = this.personalMessageManager
     messageManager.rejectMsg(msgId)
-    if (cb && typeof cb === 'function') {
-      cb(null, this.getState())
-
+    if (!cb || typeof cb !== 'function') {
+      return
     }
+    cb(null, this.getState())
   }
 
   // eth_decrypt methods
@@ -1256,10 +1256,10 @@ export default class MetamaskController extends EventEmitter {
   cancelDecryptMessage (msgId, cb) {
     const messageManager = this.decryptMessageManager
     messageManager.rejectMsg(msgId)
-    if (cb && typeof cb === 'function') {
-      cb(null, this.getState())
-
+    if (!cb || typeof cb !== 'function') {
+      return
     }
+    cb(null, this.getState())
   }
 
   // eth_getEncryptionPublicKey methods
@@ -1314,10 +1314,10 @@ export default class MetamaskController extends EventEmitter {
   cancelEncryptionPublicKey (msgId, cb) {
     const messageManager = this.encryptionPublicKeyManager
     messageManager.rejectMsg(msgId)
-    if (cb && typeof cb === 'function') {
-      cb(null, this.getState())
-
+    if (!cb || typeof cb !== 'function') {
+      return
     }
+    cb(null, this.getState())
   }
 
   // eth_signTypedData methods
@@ -1375,10 +1375,10 @@ export default class MetamaskController extends EventEmitter {
   cancelTypedMessage (msgId, cb) {
     const messageManager = this.typedMessageManager
     messageManager.rejectMsg(msgId)
-    if (cb && typeof cb === 'function') {
-      cb(null, this.getState())
-
+    if (!cb || typeof cb !== 'function') {
+      return
     }
+    cb(null, this.getState())
   }
 
   //=============================================================================
@@ -1868,7 +1868,8 @@ export default class MetamaskController extends EventEmitter {
       return
     } catch (err) {
       cb(err)
-
+      // eslint-disable-next-line no-useless-return
+      return
     }
   }
 
@@ -1933,7 +1934,8 @@ export default class MetamaskController extends EventEmitter {
       return
     } catch (err) {
       cb(err)
-
+      // eslint-disable-next-line no-useless-return
+      return
     }
   }
 
@@ -1949,7 +1951,8 @@ export default class MetamaskController extends EventEmitter {
       return
     } catch (err) {
       cb(err)
-
+      // eslint-disable-next-line no-useless-return
+      return
     }
   }
 
@@ -1965,7 +1968,8 @@ export default class MetamaskController extends EventEmitter {
       return
     } catch (err) {
       cb(err)
-
+      // eslint-disable-next-line no-useless-return
+      return
     }
   }
 
@@ -1981,7 +1985,8 @@ export default class MetamaskController extends EventEmitter {
       return
     } catch (err) {
       cb(err)
-
+      // eslint-disable-next-line no-useless-return
+      return
     }
   }
 
@@ -1997,7 +2002,8 @@ export default class MetamaskController extends EventEmitter {
       return
     } catch (err) {
       cb(err)
-
+      // eslint-disable-next-line no-useless-return
+      return
     }
   }
 
@@ -2008,7 +2014,8 @@ export default class MetamaskController extends EventEmitter {
       return
     } catch (err) {
       cb(err)
-
+      // eslint-disable-next-line no-useless-return
+      return
     }
   }
 
@@ -2024,7 +2031,8 @@ export default class MetamaskController extends EventEmitter {
       return
     } catch (err) {
       cb(err)
-
+      // eslint-disable-next-line no-useless-return
+      return
     }
   }
 
@@ -2040,7 +2048,8 @@ export default class MetamaskController extends EventEmitter {
       return
     } catch (err) {
       cb(err)
-
+      // eslint-disable-next-line no-useless-return
+      return
     }
   }
 

@@ -267,7 +267,6 @@ function pairwise (fn) {
         return fn(value, value)
       }
       return fn(cache, value)
-
     } finally {
       cache = value
     }

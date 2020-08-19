@@ -141,7 +141,6 @@ function doctypeCheck () {
     return doctype.name === 'html'
   }
   return true
-
 }
 
 /**
