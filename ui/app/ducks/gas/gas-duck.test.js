@@ -406,7 +406,6 @@ describe('Gas Duck', function () {
 
       await fetchBasicGasAndTimeEstimates()(mockDistpatch, () => ({
         gas: {
-
           ...initState,
           basicPriceAndTimeEstimatesLastRetrieved: 1000000,
         },
