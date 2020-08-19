@@ -52,7 +52,7 @@ export function mountWithRouter (component, store = {}, pathname = '/') {
 
 export function renderWithProvider (component) {
 
-  const store = component.props.store
+  const { store } = component.props
 
   const Wrapper = () => (
     <Provider store={store}>
