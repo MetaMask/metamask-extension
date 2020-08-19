@@ -111,6 +111,7 @@ async function startApp (metamaskState, backgroundConnection, opts) {
       id: unapprovedTxsAll[0].id,
     }))
   }
+
   backgroundConnection.on('update', function (metamaskState) {
     store.dispatch(actions.updateMetamaskState(metamaskState))
   })
