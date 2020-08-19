@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 8.0.9 Wed Aug 19 2020
+
 ## 8.0.8 Fri Aug 14 2020
 - [#9211](https://github.com/MetaMask/metamask-extension/pull/9211): Fix Etherscan redirect on notification click
 - [#9237](https://github.com/MetaMask/metamask-extension/pull/9237): Reduce volume of web3 usage metrics
