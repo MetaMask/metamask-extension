@@ -255,7 +255,7 @@ export default class ConfirmTransactionBase extends Component {
               value={hexTransactionFee}
               headerText={notMainnetOrTest ? '' : 'Edit'}
               headerTextClassName={notMainnetOrTest ? '' : 'confirm-detail-row__header-text--edit'}
-              onHeaderClick={notMainnetOrTest ? null : this.handleEditGas}
+              onHeaderClick={notMainnetOrTest ? null : () => this.handleEditGas()}
               secondaryText={hideFiatConversion ? this.context.t('noConversionRateAvailable') : ''}
             />
             {advancedInlineGasShown || notMainnetOrTest
