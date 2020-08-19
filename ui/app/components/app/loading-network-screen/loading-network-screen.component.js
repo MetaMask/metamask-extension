@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import Spinner from '../../ui/spinner'
 import Button from '../../ui/button'
+import LoadingScreen from '../../ui/loading-screen'
 
 export default class LoadingNetworkScreen extends PureComponent {
   state = {
@@ -54,19 +54,6 @@ export default class LoadingNetworkScreen extends PureComponent {
     }
 
     return name
-  }
-
-  renderMessage = () => {
-    return <span>{ this.getConnectingLabel(this.props.loadingMessage) }</span>
-  }
-
-  renderLoadingScreenContent = () => {
-    return (
-      <div className="loading-overlay__screen-content">
-        <Spinner color="#F7C06C" />
-        {this.renderMessage()}
-      </div>
-    )
   }
 
   renderErrorScreenContent = () => {
@@ -129,18 +116,16 @@ export default class LoadingNetworkScreen extends PureComponent {
     const { lastSelectedProvider, setProviderType } = this.props
 
     return (
-      <div className="loading-overlay">
-        <div
-          className="page-container__header-close"
-          onClick={() => setProviderType(lastSelectedProvider || 'ropsten')}
-        />
-        <div className="loading-overlay__container">
-          { this.state.showErrorScreen
-            ? this.renderErrorScreenContent()
-            : this.renderLoadingScreenContent()
-          }
-        </div>
-      </div>
+      <LoadingScreen
+        header={(
+          <div
+            className="page-container__header-close"
+            onClick={() => setProviderType(lastSelectedProvider || 'ropsten')}
+          />
+        )}
+        showLoadingSpinner={!this.state.showErrorScreen}
+        loadingMessage={this.state.showErrorScreen ? this.renderErrorScreenContent() : this.getConnectingLabel(this.props.loadingMessage)}
+      />
     )
   }
 }
