@@ -3,6 +3,9 @@
 ## Current Develop Branch
 
 ## 8.0.9 Wed Aug 19 2020
+- [#9228](https://github.com/MetaMask/metamask-extension/pull/9228): Move transaction confirmation footer buttons to scrollable area
+- [#9256](https://github.com/MetaMask/metamask-extension/pull/9256): Handle non-String web3 property access
+- [#9266](https://github.com/MetaMask/metamask-extension/pull/9266): Use @metamask/controllers@2.0.5
 
 ## 8.0.8 Fri Aug 14 2020
 - [#9211](https://github.com/MetaMask/metamask-extension/pull/9211): Fix Etherscan redirect on notification click
