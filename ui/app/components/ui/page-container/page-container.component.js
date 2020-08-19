@@ -75,9 +75,9 @@ export default class PageContainer extends PureComponent {
       return contentComponent
     } else if (tabsComponent) {
       return this.renderActiveTabContent()
-    } else {
-      return null
     }
+    return null
+
   }
 
   render () {

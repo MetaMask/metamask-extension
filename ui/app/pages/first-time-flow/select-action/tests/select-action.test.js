@@ -2,7 +2,7 @@ import assert from 'assert'
 import React from 'react'
 import sinon from 'sinon'
 import { mountWithRouter } from '../../../../../../test/lib/render-helpers'
-import SelectAction from '../index'
+import SelectAction from '..'
 
 describe('Selection Action', function () {
   let wrapper

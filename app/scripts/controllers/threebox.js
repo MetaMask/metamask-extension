@@ -1,9 +1,4 @@
 import ObservableStore from 'obs-store'
-
-/* eslint-disable import/order */
-const Box = process.env.IN_TEST
-  ? require('../../../development/mock-3box')
-  : require('3box')
 /* eslint-enable import/order */
 
 import log from 'loglevel'
@@ -13,6 +8,11 @@ import Migrator from '../lib/migrator'
 import migrations from '../migrations'
 import createOriginMiddleware from '../lib/createOriginMiddleware'
 import createMetamaskMiddleware from './network/createMetamaskMiddleware'
+
+/* eslint-disable import/order */
+const Box = process.env.IN_TEST
+  ? require('../../../development/mock-3box')
+  : require('3box')
 
 const SYNC_TIMEOUT = 60 * 1000 // one minute
 
@@ -42,9 +42,9 @@ export default class ThreeBoxController {
         if (isUnlocked && accounts[0]) {
           const appKeyAddress = await this.keyringController.getAppKeyAddress(accounts[0], 'wallet://3box.metamask.io')
           return [appKeyAddress]
-        } else {
-          return []
         }
+        return []
+
       },
       processPersonalMessage: async (msgParams) => {
         const accounts = await this.keyringController.getAccounts()

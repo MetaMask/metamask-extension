@@ -24,7 +24,7 @@ describe('GasFeeDisplay Component', function () {
           showGasButtonGroup={propsMethodSpies.showCustomizeGasModal}
           onReset={propsMethodSpies.onReset}
         />
-      ), { context: { t: (str) => str + '_t' } })
+      ), { context: { t: (str) => `${str}_t` } })
     })
 
     afterEach(function () {

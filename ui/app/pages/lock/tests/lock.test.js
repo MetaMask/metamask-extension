@@ -2,7 +2,7 @@ import assert from 'assert'
 import React from 'react'
 import sinon from 'sinon'
 import { mountWithRouter } from '../../../../../test/lib/render-helpers'
-import Lock from '../index'
+import Lock from '..'
 
 describe('Lock', function () {
 

@@ -11,7 +11,6 @@ import {
   conversionGreaterThan,
 } from './conversion-util'
 
-
 export function increaseLastGasPrice (lastGasPrice) {
   return ethUtil.addHexPrefix(multiplyCurrencies(lastGasPrice || '0x0', 1.1, {
     multiplicandBase: 16,

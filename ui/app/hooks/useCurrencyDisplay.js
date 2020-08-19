@@ -61,6 +61,5 @@ export function useCurrencyDisplay (inputValue, { displayValue, prefix, numberOf
     suffix = opts.suffix || toCurrency.toUpperCase()
   }
 
-
-  return [`${prefix || ''}${value}${suffix ? ' ' + suffix : ''}`, { prefix, value, suffix }]
+  return [`${prefix || ''}${value}${suffix ? ` ${suffix}` : ''}`, { prefix, value, suffix }]
 }

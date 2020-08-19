@@ -57,7 +57,7 @@ async function start () {
     `dep viz: ${depVizLink}`,
     `<a href="${allArtifactsUrl}">all artifacts</a>`,
   ]
-  const hiddenContent = `<ul>` + contentRows.map((row) => `<li>${row}</li>`).join('\n') + `</ul>`
+  const hiddenContent = `<ul>${contentRows.map((row) => `<li>${row}</li>`).join('\n')}</ul>`
   const exposedContent = `Builds ready [${SHORT_SHA1}]`
   const artifactsBody = `<details><summary>${exposedContent}</summary>${hiddenContent}</details>`
 

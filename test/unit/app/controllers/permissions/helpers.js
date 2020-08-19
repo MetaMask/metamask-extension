@@ -26,6 +26,7 @@ export function grantPermissions (permController, origin, permissions) {
  * @return {Function} A convenient wrapper for the requestUserApproval function.
  */
 export function getRequestUserApprovalHelper (permController) {
+
   /**
    * Returns a request object that can be passed to requestUserApproval.
    *

@@ -14,13 +14,11 @@ const oldStorage = {
 
 const transactions = []
 
-
 while (transactions.length < 9) {
   transactions.push({ status: 'rejected' })
   transactions.push({ status: 'unapproved' })
   transactions.push({ status: 'approved' })
 }
-
 
 oldStorage.data.TransactionController.transactions = transactions
 

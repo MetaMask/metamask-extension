@@ -181,7 +181,6 @@ class AccountList extends Component {
 
 }
 
-
 AccountList.propTypes = {
   onPathChange: PropTypes.func.isRequired,
   selectedPath: PropTypes.string.isRequired,

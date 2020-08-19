@@ -32,7 +32,7 @@ export default class ConnectedAccountsList extends PureComponent {
         return new Error(
           `Warning: Failed prop type: '${propName}' of component '${componentName}' must be a boolean. Received: ${typeof props[propName]}`,
         )
-      } else if (props[propName] && !props['removePermittedAccount']) {
+      } else if (props[propName] && !props.removePermittedAccount) {
         return new Error(
           `Warning: Failed prop type: '${propName}' of component '${componentName}' requires prop 'removePermittedAccount'.`,
         )

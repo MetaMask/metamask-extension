@@ -56,7 +56,6 @@ while (transactions20.length < 20) {
   transactions20.push({ status })
 }
 
-
 storage.data.TransactionController.transactions = transactions
 
 describe('storage is migrated successfully and the proper transactions are remove from state', function () {

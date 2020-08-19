@@ -9,7 +9,6 @@ import '@formatjs/intl-relativetimeformat/polyfill'
 import { EventEmitter } from 'events'
 import PortStream from 'extension-port-stream'
 
-
 import extension from 'extensionizer'
 
 import Dnode from 'dnode'
@@ -151,7 +150,7 @@ function setupWeb3Connection (connectionStream) {
 function setupControllerConnection (connectionStream, cb) {
   const eventEmitter = new EventEmitter()
   const backgroundDnode = Dnode({
-    sendUpdate: function (state) {
+    sendUpdate (state) {
       eventEmitter.emit('update', state)
     },
   })

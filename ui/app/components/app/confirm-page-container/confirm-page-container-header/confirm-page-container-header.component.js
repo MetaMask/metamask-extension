@@ -11,7 +11,6 @@ import { shortenAddress } from '../../../../helpers/utils/util'
 import AccountMismatchWarning from '../../../ui/account-mismatch-warning/account-mismatch-warning.component'
 import { useI18nContext } from '../../../../hooks/useI18nContext'
 
-
 export default function ConfirmPageContainerHeader ({
   onEdit,
   showEdit,

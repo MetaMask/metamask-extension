@@ -1,13 +1,5 @@
 import { getHexGasTotal } from '../../../helpers/utils/confirm-tx.util'
 
-// path constants
-const STATUS_PATH = '/status'
-const GAS_PRICE_PATH = '/txParams/gasPrice'
-const GAS_LIMIT_PATH = '/txParams/gas'
-
-// op constants
-const REPLACE_OP = 'replace'
-
 import {
   TRANSACTION_TYPE_CANCEL,
   TRANSACTION_TYPE_RETRY,
@@ -29,6 +21,13 @@ import {
   DROPPED_STATUS,
 } from './transaction-activity-log.constants'
 
+// path constants
+const STATUS_PATH = '/status'
+const GAS_PRICE_PATH = '/txParams/gasPrice'
+const GAS_LIMIT_PATH = '/txParams/gas'
+
+// op constants
+const REPLACE_OP = 'replace'
 
 const eventPathsHash = {
   [STATUS_PATH]: true,

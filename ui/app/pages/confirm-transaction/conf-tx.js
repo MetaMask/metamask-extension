@@ -105,7 +105,7 @@ class ConfirmTxScreen extends Component {
     log.info(`rendering a combined ${unconfTxList.length} unconf msgs & txs`)
 
     return transactionId
-      ? unconfTxList.find(({ id }) => id + '' === transactionId)
+      ? unconfTxList.find(({ id }) => `${id}` === transactionId)
       : unconfTxList[index]
   }
 
@@ -195,7 +195,7 @@ class ConfirmTxScreen extends Component {
     let prevTx
 
     if (transactionId) {
-      prevTx = currentNetworkTxList.find(({ id }) => id + '' === transactionId)
+      prevTx = currentNetworkTxList.find(({ id }) => `${id}` === transactionId)
     } else {
       const { index: prevIndex, unapprovedTxs: prevUnapprovedTxs } = prevProps
       const prevUnconfTxList = txHelper(prevUnapprovedTxs, {}, {}, {}, network)

@@ -7,7 +7,7 @@ import {
   INITIALIZE_WELCOME_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
 } from '../../../../helpers/constants/routes'
-import FirstTimeFlowSwitch from '../index'
+import FirstTimeFlowSwitch from '..'
 
 describe('FirstTimeFlowSwitch', function () {
 

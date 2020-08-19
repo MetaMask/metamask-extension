@@ -20,7 +20,6 @@ import {
   sendCountIsTrackable,
 } from '../helpers/utils/metametrics.util'
 
-
 export const MetaMetricsContext = createContext(() => {
   captureException(
     Error(`MetaMetrics context function was called from a react node that is not a descendant of a MetaMetrics context provider`),

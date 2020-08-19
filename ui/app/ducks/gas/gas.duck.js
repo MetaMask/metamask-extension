@@ -194,8 +194,8 @@ async function queryEthGasStationPredictionTable () {
     'referrerPolicy': 'no-referrer-when-downgrade',
     'body': null,
     'method': 'GET',
-    'mode': 'cors' },
-  )
+    'mode': 'cors',
+  })
 }
 
 export function fetchBasicGasEstimates () {
@@ -442,8 +442,7 @@ export function fetchGasEstimates (blockTime) {
         })
       : Promise.resolve(priceAndTimeEstimates.length
         ? priceAndTimeEstimates
-        : loadLocalStorageData('GAS_API_ESTIMATES'),
-      )
+        : loadLocalStorageData('GAS_API_ESTIMATES'))
 
     return promiseToFetch.then((estimates) => {
       dispatch(setPricesAndTimeEstimates(estimates))

@@ -184,7 +184,7 @@ describe('Transaction Selectors', function () {
       const expectedResult = [
         {
           nonce: '0x0',
-          transactions: [ tx1 ],
+          transactions: [tx1],
           initialTransaction: tx1,
           primaryTransaction: tx1,
           hasRetried: false,
@@ -192,7 +192,7 @@ describe('Transaction Selectors', function () {
         },
         {
           nonce: '0x1',
-          transactions: [ tx2 ],
+          transactions: [tx2],
           initialTransaction: tx2,
           primaryTransaction: tx2,
           hasRetried: false,
@@ -273,7 +273,7 @@ describe('Transaction Selectors', function () {
       const expectedResult = [
         {
           nonce: submittedTx.txParams.nonce,
-          transactions: [ submittedTx ],
+          transactions: [submittedTx],
           initialTransaction: submittedTx,
           primaryTransaction: submittedTx,
           hasRetried: false,
@@ -281,7 +281,7 @@ describe('Transaction Selectors', function () {
         },
         {
           nonce: unapprovedTx.txParams.nonce,
-          transactions: [ unapprovedTx ],
+          transactions: [unapprovedTx],
           initialTransaction: unapprovedTx,
           primaryTransaction: unapprovedTx,
           hasRetried: false,
@@ -289,7 +289,7 @@ describe('Transaction Selectors', function () {
         },
         {
           nonce: approvedTx.txParams.nonce,
-          transactions: [ approvedTx ],
+          transactions: [approvedTx],
           initialTransaction: approvedTx,
           primaryTransaction: approvedTx,
           hasRetried: false,
@@ -305,7 +305,7 @@ describe('Transaction Selectors', function () {
       const expectedResult = [
         {
           nonce: confirmedTx.txParams.nonce,
-          transactions: [ confirmedTx ],
+          transactions: [confirmedTx],
           initialTransaction: confirmedTx,
           primaryTransaction: confirmedTx,
           hasRetried: false,
@@ -318,7 +318,7 @@ describe('Transaction Selectors', function () {
 
     it('submittedPendingTransactionsSelector', function () {
 
-      const expectedResult = [ submittedTx ]
+      const expectedResult = [submittedTx]
       assert.deepEqual(submittedPendingTransactionsSelector(state), expectedResult)
     })
   })

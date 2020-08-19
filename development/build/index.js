@@ -41,8 +41,7 @@ function defineAllTasks () {
         manifestTasks.dev,
         reload,
       ),
-    ),
-  )
+    ))
 
   // build for test development (livereload)
   createTask('testDev',
@@ -55,8 +54,7 @@ function defineAllTasks () {
         manifestTasks.testDev,
         reload,
       ),
-    ),
-  )
+    ))
 
   // build for prod release
   createTask('prod',
@@ -69,8 +67,7 @@ function defineAllTasks () {
         manifestTasks.prod,
       ),
       zip,
-    ),
-  )
+    ))
 
   // build for CI testing
   createTask('test',
@@ -82,8 +79,7 @@ function defineAllTasks () {
         staticTasks.prod,
         manifestTasks.test,
       ),
-    ),
-  )
+    ))
 
   // special build for minimal CI testing
   createTask('styles', styleTasks.prod)

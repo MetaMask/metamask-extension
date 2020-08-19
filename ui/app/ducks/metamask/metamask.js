@@ -2,7 +2,7 @@ import * as actionConstants from '../../store/actionConstants'
 import { ALERT_TYPES } from '../../../../app/scripts/controllers/alert'
 
 export default function reduceMetamask (state = {}, action) {
-  const metamaskState = Object.assign({
+  const metamaskState = {
     isInitialized: false,
     isUnlocked: false,
     isAccountMenuOpen: false,
@@ -45,8 +45,8 @@ export default function reduceMetamask (state = {}, action) {
     knownMethodData: {},
     participateInMetaMetrics: null,
     metaMetricsSendCount: 0,
-    nextNonce: null,
-  }, state)
+    nextNonce: null, ...state,
+  }
 
   switch (action.type) {
 
@@ -88,8 +88,8 @@ export default function reduceMetamask (state = {}, action) {
       const { account } = action.value
       const name = action.value.label
       const id = {}
-      id[account] = Object.assign({}, metamaskState.identities[account], { name })
-      const identities = Object.assign({}, metamaskState.identities, id)
+      id[account] = { ...metamaskState.identities[account], name }
+      const identities = { ...metamaskState.identities, ...id }
       return Object.assign(metamaskState, { identities })
     }
 
@@ -272,7 +272,7 @@ export default function reduceMetamask (state = {}, action) {
       let { currentNetworkTxList } = metamaskState
       currentNetworkTxList = currentNetworkTxList.map((tx) => {
         if (tx.id === txId) {
-          const newTx = Object.assign({}, tx)
+          const newTx = { ...tx }
           newTx.txParams = value
           return newTx
         }

@@ -207,10 +207,9 @@ export default class NetworkForm extends PureComponent {
 
   validateChainId = (chainId) => {
     // eslint-disable-next-line radix
-    this.setErrorTo('chainId', !!chainId && Number.isNaN(parseInt(chainId))
+    this.setErrorTo('chainId', Boolean(chainId) && Number.isNaN(parseInt(chainId))
       ? `${this.context.t('invalidInput')} chainId`
-      : '',
-    )
+      : '')
   }
 
   isValidWhenAppended = (url) => {

@@ -1,6 +1,4 @@
 // next version number
-const version = 28
-
 /*
 
 normalizes txParams on unconfirmed txs
@@ -8,10 +6,12 @@ normalizes txParams on unconfirmed txs
 */
 import { cloneDeep } from 'lodash'
 
+const version = 28
+
 export default {
   version,
 
-  migrate: async function (originalVersionedData) {
+  async migrate (originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     const state = versionedData.data

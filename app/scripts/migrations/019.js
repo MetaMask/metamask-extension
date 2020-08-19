@@ -1,6 +1,4 @@
 
-const version = 19
-
 /*
 
 This migration sets transactions as failed
@@ -10,10 +8,12 @@ whos nonce is too high
 
 import { cloneDeep } from 'lodash'
 
+const version = 19
+
 export default {
   version,
 
-  migrate: function (originalVersionedData) {
+  migrate (originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     try {
@@ -21,7 +21,7 @@ export default {
       const newState = transformState(state)
       versionedData.data = newState
     } catch (err) {
-      console.warn(`MetaMask Migration #${version}` + err.stack)
+      console.warn(`MetaMask Migration #${version}${err.stack}`)
     }
     return Promise.resolve(versionedData)
   },

@@ -2,7 +2,7 @@ import assert from 'assert'
 import React from 'react'
 import sinon from 'sinon'
 import { mount } from 'enzyme'
-import ConfirmDeleteNetwork from '../index'
+import ConfirmDeleteNetwork from '..'
 
 describe('Confirm Delete Network', function () {
   let wrapper

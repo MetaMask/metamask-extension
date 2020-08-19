@@ -366,7 +366,6 @@ export function setTransactionToConfirm (transactionId) {
       if (txParams.data) {
         const { data } = txParams
 
-
         const tokenData = getTokenData(data)
         dispatch(updateTokenData(tokenData))
 

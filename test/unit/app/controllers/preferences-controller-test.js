@@ -119,7 +119,6 @@ describe('preferences controller', function () {
         address: '0xda22le',
       })
 
-
       preferencesController.setAccountLabel('0xda22le', 'Dazzle')
       assert.deepEqual(preferencesController.store.getState().identities['0xda22le'], {
         name: 'Dazzle',
@@ -130,7 +129,7 @@ describe('preferences controller', function () {
 
   describe('getTokens', function () {
     it('should return an empty list initially', async function () {
-      preferencesController.setAddresses([ '0x7e57e2' ])
+      preferencesController.setAddresses(['0x7e57e2'])
       await preferencesController.setSelectedAddress('0x7e57e2')
 
       const tokens = preferencesController.getTokens()
@@ -144,7 +143,7 @@ describe('preferences controller', function () {
       const symbol = 'ABBR'
       const decimals = 5
 
-      preferencesController.setAddresses([ '0x7e57e2' ])
+      preferencesController.setAddresses(['0x7e57e2'])
       await preferencesController.setSelectedAddress('0x7e57e2')
       await preferencesController.addToken(address, symbol, decimals)
 
@@ -162,7 +161,7 @@ describe('preferences controller', function () {
       const symbol = 'ABBR'
       const decimals = 5
 
-      preferencesController.setAddresses([ '0x7e57e2' ])
+      preferencesController.setAddresses(['0x7e57e2'])
       await preferencesController.setSelectedAddress('0x7e57e2')
       await preferencesController.addToken(address, symbol, decimals)
 
@@ -241,7 +240,7 @@ describe('preferences controller', function () {
 
   describe('removeToken', function () {
     it('should remove the only token from its state', async function () {
-      preferencesController.setAddresses([ '0x7e57e2' ])
+      preferencesController.setAddresses(['0x7e57e2'])
       await preferencesController.setSelectedAddress('0x7e57e2')
       await preferencesController.addToken('0xa', 'A', 5)
       await preferencesController.removeToken('0xa')
@@ -251,7 +250,7 @@ describe('preferences controller', function () {
     })
 
     it('should remove a token from its state', async function () {
-      preferencesController.setAddresses([ '0x7e57e2' ])
+      preferencesController.setAddresses(['0x7e57e2'])
       await preferencesController.setSelectedAddress('0x7e57e2')
       await preferencesController.addToken('0xa', 'A', 4)
       await preferencesController.addToken('0xb', 'B', 5)

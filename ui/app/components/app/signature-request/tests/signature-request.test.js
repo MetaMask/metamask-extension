@@ -3,7 +3,6 @@ import React from 'react'
 import shallow from '../../../../../lib/shallow-with-context'
 import SignatureRequest from '../signature-request.component'
 
-
 describe('Signature Request Component', function () {
   describe('render', function () {
     const fromAddress = '0x123456789abcdef'

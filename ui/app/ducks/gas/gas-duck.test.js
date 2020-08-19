@@ -288,7 +288,7 @@ describe('Gas Duck', function () {
       }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
-        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED } ],
+        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED }],
       )
       assert.ok(
         window.fetch.getCall(0).args[0].startsWith('https://ethgasstation.info/json/ethgasAPI.json'),
@@ -296,7 +296,7 @@ describe('Gas Duck', function () {
       )
       assert.deepEqual(
         mockDistpatch.getCall(1).args,
-        [{ type: SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED, value: 2000000 } ],
+        [{ type: SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED, value: 2000000 }],
       )
       assert.deepEqual(
         mockDistpatch.getCall(2).args,
@@ -334,14 +334,16 @@ describe('Gas Duck', function () {
           safeLow: 15,
         })
 
-      await fetchBasicGasEstimates()(mockDistpatch, () => ({ gas: Object.assign(
-        {},
-        initState,
-        {},
-      ) }))
+      await fetchBasicGasEstimates()(mockDistpatch, () => ({
+        gas: {
+
+          ...initState,
+
+        },
+      }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
-        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED } ],
+        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED }],
       )
       assert.ok(window.fetch.notCalled)
       assert.deepEqual(
@@ -370,14 +372,16 @@ describe('Gas Duck', function () {
         .withArgs('BASIC_PRICE_ESTIMATES_LAST_RETRIEVED')
         .returns(2000000 - 1) // one second ago from "now"
 
-      await fetchBasicGasEstimates()(mockDistpatch, () => ({ gas: Object.assign(
-        {},
-        initState,
-        {},
-      ) }))
+      await fetchBasicGasEstimates()(mockDistpatch, () => ({
+        gas: {
+
+          ...initState,
+
+        },
+      }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
-        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED } ],
+        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED }],
       )
       assert.ok(
         window.fetch.getCall(0).args[0].startsWith('https://ethgasstation.info/json/ethgasAPI.json'),
@@ -385,7 +389,7 @@ describe('Gas Duck', function () {
       )
       assert.deepEqual(
         mockDistpatch.getCall(1).args,
-        [{ type: SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED, value: 2000000 } ],
+        [{ type: SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED, value: 2000000 }],
       )
       assert.deepEqual(
         mockDistpatch.getCall(2).args,
@@ -412,16 +416,17 @@ describe('Gas Duck', function () {
     it('should call fetch with the expected params', async function () {
       const mockDistpatch = sinon.spy()
 
-      await fetchBasicGasAndTimeEstimates()(mockDistpatch, () => ({ gas: Object.assign(
-        {},
-        initState,
-        { basicPriceAndTimeEstimatesLastRetrieved: 1000000 },
-      ),
-      metamask: { provider: { type: 'ropsten' } },
+      await fetchBasicGasAndTimeEstimates()(mockDistpatch, () => ({
+        gas: {
+
+          ...initState,
+          basicPriceAndTimeEstimatesLastRetrieved: 1000000,
+        },
+        metamask: { provider: { type: 'ropsten' } },
       }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
-        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED } ],
+        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED }],
       )
       assert.ok(
         window.fetch.getCall(0).args[0].startsWith('https://ethgasstation.info/json/ethgasAPI.json'),
@@ -430,7 +435,7 @@ describe('Gas Duck', function () {
 
       assert.deepEqual(
         mockDistpatch.getCall(1).args,
-        [{ type: SET_BASIC_API_ESTIMATES_LAST_RETRIEVED, value: 2000000 } ],
+        [{ type: SET_BASIC_API_ESTIMATES_LAST_RETRIEVED, value: 2000000 }],
       )
 
       assert.deepEqual(
@@ -479,16 +484,17 @@ describe('Gas Duck', function () {
           speed: 'mockSpeed',
         })
 
-      await fetchBasicGasAndTimeEstimates()(mockDistpatch, () => ({ gas: Object.assign(
-        {},
-        initState,
-        {},
-      ),
-      metamask: { provider: { type: 'ropsten' } },
+      await fetchBasicGasAndTimeEstimates()(mockDistpatch, () => ({
+        gas: {
+
+          ...initState,
+
+        },
+        metamask: { provider: { type: 'ropsten' } },
       }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
-        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED } ],
+        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED }],
       )
       assert.ok(window.fetch.notCalled)
 
@@ -523,16 +529,17 @@ describe('Gas Duck', function () {
         .withArgs('BASIC_GAS_AND_TIME_API_ESTIMATES_LAST_RETRIEVED')
         .returns(2000000 - 1) // one second ago from "now"
 
-      await fetchBasicGasAndTimeEstimates()(mockDistpatch, () => ({ gas: Object.assign(
-        {},
-        initState,
-        {},
-      ),
-      metamask: { provider: { type: 'ropsten' } },
+      await fetchBasicGasAndTimeEstimates()(mockDistpatch, () => ({
+        gas: {
+
+          ...initState,
+
+        },
+        metamask: { provider: { type: 'ropsten' } },
       }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
-        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED } ],
+        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED }],
       )
       assert.ok(
         window.fetch.getCall(0).args[0].startsWith('https://ethgasstation.info/json/ethgasAPI.json'),
@@ -541,7 +548,7 @@ describe('Gas Duck', function () {
 
       assert.deepEqual(
         mockDistpatch.getCall(1).args,
-        [{ type: SET_BASIC_API_ESTIMATES_LAST_RETRIEVED, value: 2000000 } ],
+        [{ type: SET_BASIC_API_ESTIMATES_LAST_RETRIEVED, value: 2000000 }],
       )
 
       assert.deepEqual(
@@ -574,16 +581,17 @@ describe('Gas Duck', function () {
     it('should call fetch with the expected params', async function () {
       const mockDistpatch = sinon.spy()
 
-      await fetchGasEstimates(5)(mockDistpatch, () => ({ gas: Object.assign(
-        {},
-        initState,
-        { priceAndTimeEstimatesLastRetrieved: 1000000 },
-      ),
-      metamask: { provider: { type: 'ropsten' } },
+      await fetchGasEstimates(5)(mockDistpatch, () => ({
+        gas: {
+
+          ...initState,
+          priceAndTimeEstimatesLastRetrieved: 1000000,
+        },
+        metamask: { provider: { type: 'ropsten' } },
       }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
-        [{ type: GAS_ESTIMATE_LOADING_STARTED } ],
+        [{ type: GAS_ESTIMATE_LOADING_STARTED }],
       )
       assert.ok(
         window.fetch.getCall(0).args[0].startsWith('https://ethgasstation.info/json/predictTable.json'),
@@ -611,10 +619,10 @@ describe('Gas Duck', function () {
     it('should not call fetch if the estimates were retrieved < 75000 ms ago', async function () {
       const mockDistpatch = sinon.spy()
 
-      await fetchGasEstimates(5)(mockDistpatch, () => ({ gas: Object.assign(
-        {},
-        initState,
-        {
+      await fetchGasEstimates(5)(mockDistpatch, () => ({
+        gas: {
+
+          ...initState,
           priceAndTimeEstimatesLastRetrieved: Date.now(),
           priceAndTimeEstimates: [{
             expectedTime: '10',
@@ -622,12 +630,11 @@ describe('Gas Duck', function () {
             gasprice: 50,
           }],
         },
-      ),
-      metamask: { provider: { type: 'ropsten' } },
+        metamask: { provider: { type: 'ropsten' } },
       }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
-        [{ type: GAS_ESTIMATE_LOADING_STARTED } ],
+        [{ type: GAS_ESTIMATE_LOADING_STARTED }],
       )
       assert.equal(window.fetch.callCount, 0)
 

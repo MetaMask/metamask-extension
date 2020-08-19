@@ -151,9 +151,9 @@ export default class SendGasRow extends Component {
       return advancedGasInputs
     } else if (gasButtonGroupShown) {
       return gasPriceButtonGroup
-    } else {
-      return gasFeeDisplay
     }
+    return gasFeeDisplay
+
   }
 
   render () {

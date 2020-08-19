@@ -104,7 +104,7 @@ async function getLocale (code) {
 async function writeLocale (code, locale) {
   try {
     const localeFilePath = getLocalePath(code)
-    return writeFile(localeFilePath, JSON.stringify(locale, null, 2) + '\n', 'utf8')
+    return writeFile(localeFilePath, `${JSON.stringify(locale, null, 2)}\n`, 'utf8')
   } catch (e) {
     if (e.code === 'ENOENT') {
       log.error('Locale file not found')
@@ -150,7 +150,7 @@ async function verifyLocale (code) {
 
   if (extraItems.length > 0) {
     if (fix) {
-      const newLocale = Object.assign({}, targetLocale)
+      const newLocale = { ...targetLocale }
       for (const item of extraItems) {
         delete newLocale[item]
       }
@@ -215,7 +215,7 @@ async function verifyEnglishLocale () {
   }
 
   if (unusedMessages.length > 0 && fix) {
-    const newLocale = Object.assign({}, englishLocale)
+    const newLocale = { ...englishLocale }
     for (const key of unusedMessages) {
       delete newLocale[key]
     }
@@ -243,7 +243,6 @@ async function * getFileContents (filenames) {
     yield readFile(filename, 'utf8')
   }
 }
-
 
 function compareLocalesForMissingItems ({ base, subject }) {
   return Object.keys(base).filter((key) => !subject[key])

@@ -144,7 +144,6 @@ export default class QrScanner extends Component {
     // To parse other type of links
     // For ex. EIP-681 (https://eips.ethereum.org/EIPS/eip-681)
 
-
     // Ethereum address links - fox ex. ethereum:0x.....1111
     if (content.split('ethereum:').length > 1) {
 
@@ -160,7 +159,6 @@ export default class QrScanner extends Component {
     }
     return { type, values }
   }
-
 
   stopAndClose = () => {
     if (this.codeReader) {

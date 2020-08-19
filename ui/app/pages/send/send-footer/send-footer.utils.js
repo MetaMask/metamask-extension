@@ -61,7 +61,7 @@ export function constructUpdatedTx ({
       data: (
         TOKEN_TRANSFER_FUNCTION_SIGNATURE + Array.prototype.map.call(
           ethAbi.rawEncode(['address', 'uint256'], [to, ethUtil.addHexPrefix(amount)]),
-          (x) => ('00' + x.toString(16)).slice(-2),
+          (x) => (`00${x.toString(16)}`).slice(-2),
         ).join('')
       ),
     }))

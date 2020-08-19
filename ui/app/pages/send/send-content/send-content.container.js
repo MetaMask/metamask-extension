@@ -12,7 +12,7 @@ function mapStateToProps (state) {
   const ownedAccounts = accountsWithSendEtherInfoSelector(state)
   const to = getSendTo(state)
   return {
-    isOwnedAccount: !!ownedAccounts.find(({ address }) => address.toLowerCase() === to.toLowerCase()),
+    isOwnedAccount: Boolean(ownedAccounts.find(({ address }) => address.toLowerCase() === to.toLowerCase())),
     contact: getAddressBookEntry(state, to),
     to,
   }

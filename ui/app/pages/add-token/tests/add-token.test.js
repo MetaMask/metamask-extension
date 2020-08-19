@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import sinon from 'sinon'
 import configureMockStore from 'redux-mock-store'
 import { mountWithRouter } from '../../../../../test/lib/render-helpers'
-import AddToken from '../index'
+import AddToken from '..'
 
 describe('Add Token', function () {
   let wrapper
@@ -57,7 +57,6 @@ describe('Add Token', function () {
       customAddress.simulate('change', event)
       assert.equal(wrapper.find('AddToken').instance().state.customAddress, tokenAddress)
     })
-
 
     it('edits token symbol', function () {
       const tokenSymbol = 'META'

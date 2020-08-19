@@ -17,7 +17,7 @@ export function mountWithRouter (component, store = {}, pathname = '/') {
     history: new MemoryRouter().history,
     route: {
       location: {
-        pathname: pathname,
+        pathname,
       },
       match: {},
     },

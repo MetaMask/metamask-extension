@@ -1,6 +1,7 @@
-const version = 39
 import { cloneDeep } from 'lodash'
 import ethUtil from 'ethereumjs-util'
+
+const version = 39
 
 const DAI_V1_CONTRACT_ADDRESS = '0x89d24A6b4CcB1B6fAA2625fE562bDD9a23260359'
 const DAI_V1_TOKEN_SYMBOL = 'DAI'
@@ -21,7 +22,7 @@ function isOldDai (token = {}) {
  */
 export default {
   version,
-  migrate: async function (originalVersionedData) {
+  async migrate (originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     const state = versionedData.data

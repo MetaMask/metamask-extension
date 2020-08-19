@@ -3,6 +3,7 @@ const { strict: assert } = require('assert')
 const { until, error: webdriverError } = require('selenium-webdriver')
 
 class Driver {
+
   /**
    * @param {!ThenableWebDriver} driver - A {@code WebDriver} instance
    * @param {string} browser - The type of browser this driver is controlling
@@ -61,8 +62,7 @@ class Driver {
           this.driver.wait(until.elementIsEnabled(element), this.timeout),
         )
         return acc
-      }, []),
-    )
+      }, []))
     return elements
   }
 
@@ -147,7 +147,7 @@ class Driver {
       }
     }
 
-    throw new Error('No window with title: ' + title)
+    throw new Error(`No window with title: ${title}`)
   }
 
   /**

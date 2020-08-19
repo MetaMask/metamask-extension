@@ -1,6 +1,4 @@
 
-const version = 22
-
 /*
 
 This migration adds submittedTime to the txMeta if it is not their
@@ -9,10 +7,12 @@ This migration adds submittedTime to the txMeta if it is not their
 
 import { cloneDeep } from 'lodash'
 
+const version = 22
+
 export default {
   version,
 
-  migrate: function (originalVersionedData) {
+  migrate (originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     try {
@@ -20,7 +20,7 @@ export default {
       const newState = transformState(state)
       versionedData.data = newState
     } catch (err) {
-      console.warn(`MetaMask Migration #${version}` + err.stack)
+      console.warn(`MetaMask Migration #${version}${err.stack}`)
     }
     return Promise.resolve(versionedData)
   },

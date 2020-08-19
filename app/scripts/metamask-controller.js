@@ -63,7 +63,6 @@ import accountImporter from './account-import-strategies'
 import selectChainId from './lib/select-chain-id'
 import seedPhraseVerifier from './lib/seed-phrase-verifier'
 
-
 import backgroundMetaMetricsEvent from './lib/background-metametrics'
 
 export default class MetamaskController extends EventEmitter {
@@ -274,7 +273,6 @@ export default class MetamaskController extends EventEmitter {
     this.encryptionPublicKeyManager = new EncryptionPublicKeyManager()
     this.typedMessageManager = new TypedMessageManager({ networkController: this.networkController })
 
-
     this.store.updateStructure({
       AppStateController: this.appStateController.store,
       TransactionController: this.txController.store,
@@ -407,7 +405,7 @@ export default class MetamaskController extends EventEmitter {
    */
   getState () {
     const { vault } = this.keyringController.store.getState()
-    const isInitialized = !!vault
+    const isInitialized = Boolean(vault)
 
     return {
       ...{ isInitialized },
@@ -929,7 +927,6 @@ export default class MetamaskController extends EventEmitter {
     return { ...keyState, identities }
   }
 
-
   //
   // Account Management
   //
@@ -1029,7 +1026,6 @@ export default class MetamaskController extends EventEmitter {
     return address
   }
 
-
   /**
    * Imports an account with the specified import strategy.
    * These are defined in app/scripts/account-import-strategies
@@ -1041,7 +1037,7 @@ export default class MetamaskController extends EventEmitter {
    */
   async importAccountWithStrategy (strategy, args) {
     const privateKey = await accountImporter.importAccount(strategy, args)
-    const keyring = await this.keyringController.addNewKeyring('Simple Key Pair', [ privateKey ])
+    const keyring = await this.keyringController.addNewKeyring('Simple Key Pair', [privateKey])
     const accounts = await keyring.getAccounts()
     // update accounts in preferences controller
     const allAccounts = await this.keyringController.getAccounts()
@@ -1118,7 +1114,7 @@ export default class MetamaskController extends EventEmitter {
     messageManager.rejectMsg(msgId)
     if (cb && typeof cb === 'function') {
       cb(null, this.getState())
-      return
+
     }
   }
 
@@ -1177,7 +1173,7 @@ export default class MetamaskController extends EventEmitter {
     messageManager.rejectMsg(msgId)
     if (cb && typeof cb === 'function') {
       cb(null, this.getState())
-      return
+
     }
   }
 
@@ -1262,7 +1258,7 @@ export default class MetamaskController extends EventEmitter {
     messageManager.rejectMsg(msgId)
     if (cb && typeof cb === 'function') {
       cb(null, this.getState())
-      return
+
     }
   }
 
@@ -1320,7 +1316,7 @@ export default class MetamaskController extends EventEmitter {
     messageManager.rejectMsg(msgId)
     if (cb && typeof cb === 'function') {
       cb(null, this.getState())
-      return
+
     }
   }
 
@@ -1381,7 +1377,7 @@ export default class MetamaskController extends EventEmitter {
     messageManager.rejectMsg(msgId)
     if (cb && typeof cb === 'function') {
       cb(null, this.getState())
-      return
+
     }
   }
 
@@ -1872,7 +1868,7 @@ export default class MetamaskController extends EventEmitter {
       return
     } catch (err) {
       cb(err)
-      return
+
     }
   }
 
@@ -1891,7 +1887,6 @@ export default class MetamaskController extends EventEmitter {
     this.networkController.setRpcTarget(rpcUrl, chainId, ticker, nickname, rpcPrefs)
     return rpcUrl
   }
-
 
   /**
    * A method for selecting a custom URL for an ethereum RPC provider.
@@ -1938,7 +1933,7 @@ export default class MetamaskController extends EventEmitter {
       return
     } catch (err) {
       cb(err)
-      return
+
     }
   }
 
@@ -1954,7 +1949,7 @@ export default class MetamaskController extends EventEmitter {
       return
     } catch (err) {
       cb(err)
-      return
+
     }
   }
 
@@ -1970,7 +1965,7 @@ export default class MetamaskController extends EventEmitter {
       return
     } catch (err) {
       cb(err)
-      return
+
     }
   }
 
@@ -1986,7 +1981,7 @@ export default class MetamaskController extends EventEmitter {
       return
     } catch (err) {
       cb(err)
-      return
+
     }
   }
 
@@ -2002,7 +1997,7 @@ export default class MetamaskController extends EventEmitter {
       return
     } catch (err) {
       cb(err)
-      return
+
     }
   }
 
@@ -2013,7 +2008,7 @@ export default class MetamaskController extends EventEmitter {
       return
     } catch (err) {
       cb(err)
-      return
+
     }
   }
 
@@ -2029,10 +2024,9 @@ export default class MetamaskController extends EventEmitter {
       return
     } catch (err) {
       cb(err)
-      return
+
     }
   }
-
 
   /**
    * A method for setting a user's current locale, affecting the language rendered.
@@ -2046,7 +2040,7 @@ export default class MetamaskController extends EventEmitter {
       return
     } catch (err) {
       cb(err)
-      return
+
     }
   }
 

@@ -12,14 +12,14 @@ import createInfuraClient from './createInfuraClient'
 import createJsonRpcClient from './createJsonRpcClient'
 import createLocalhostClient from './createLocalhostClient'
 
-const networks = { networkList: {} }
-
 import {
   RINKEBY,
   MAINNET,
   LOCALHOST,
   INFURA_PROVIDER_TYPES,
 } from './enums'
+
+const networks = { networkList: {} }
 
 const env = process.env.METAMASK_ENV
 const { METAMASK_DEBUG } = process.env
@@ -124,7 +124,7 @@ export default class NetworkController extends EventEmitter {
           this.setNetworkState('loading')
           return
         }
-        log.info('web3.getNetwork returned ' + network)
+        log.info(`web3.getNetwork returned ${network}`)
         this.setNetworkState(network, type)
       }
     })
@@ -212,7 +212,7 @@ export default class NetworkController extends EventEmitter {
     log.info('NetworkController - configureStandardProvider', rpcUrl)
     const networkClient = createJsonRpcClient({ rpcUrl })
     // hack to add a 'rpc' network with chainId
-    networks.networkList['rpc'] = {
+    networks.networkList.rpc = {
       chainId,
       rpcUrl,
       ticker: ticker || 'ETH',
@@ -222,7 +222,7 @@ export default class NetworkController extends EventEmitter {
     let settings = {
       network: chainId,
     }
-    settings = Object.assign(settings, networks.networkList['rpc'])
+    settings = Object.assign(settings, networks.networkList.rpc)
     this.networkConfig.putState(settings)
     this._setNetworkClient(networkClient)
   }

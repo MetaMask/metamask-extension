@@ -26,7 +26,6 @@ import TransactionIcon from '../transaction-icon'
 import { useTransactionTimeRemaining } from '../../../hooks/useTransactionTimeRemaining'
 import IconWithLabel from '../../ui/icon-with-label'
 
-
 export default function TransactionListItem ({ transactionGroup, isEarliestNonce = false }) {
   const t = useI18nContext()
   const history = useHistory()
@@ -53,7 +52,6 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
   } = useTransactionDisplayData(transactionGroup)
 
   const timeRemaining = useTransactionTimeRemaining(isPending, isEarliestNonce, submittedTime, gasPrice)
-
 
   const isSignatureReq = category === TRANSACTION_CATEGORY_SIGNATURE_REQUEST
   const isApproval = category === TRANSACTION_CATEGORY_APPROVAL

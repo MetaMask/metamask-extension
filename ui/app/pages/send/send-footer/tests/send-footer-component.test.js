@@ -83,7 +83,6 @@ describe('SendFooter Component', function () {
     })
   })
 
-
   describe('formShouldBeDisabled()', function () {
     const config = {
       'should return true if inError is truthy': {

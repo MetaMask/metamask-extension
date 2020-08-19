@@ -2,7 +2,7 @@ import assert from 'assert'
 import React from 'react'
 import sinon from 'sinon'
 import { mount } from 'enzyme'
-import RevealSeedPhrase from '../index'
+import RevealSeedPhrase from '..'
 
 describe('Reveal Seed Phrase', function () {
   let wrapper

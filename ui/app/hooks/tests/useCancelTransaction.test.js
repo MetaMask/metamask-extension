@@ -8,7 +8,6 @@ import { useCancelTransaction } from '../useCancelTransaction'
 import { showModal } from '../../store/actions'
 import { increaseLastGasPrice } from '../../helpers/utils/confirm-tx.util'
 
-
 describe('useCancelTransaction', function () {
   let useSelector
   const dispatch = sinon.spy()
@@ -64,7 +63,6 @@ describe('useCancelTransaction', function () {
     })
   })
 
-
   describe('when account has sufficient balance to cover gas', function () {
     before(function () {
       useSelector = sinon.stub(reactRedux, 'useSelector')
@@ -107,7 +105,6 @@ describe('useCancelTransaction', function () {
       useSelector.restore()
     })
   })
-
 
   after(function () {
     sinon.restore()

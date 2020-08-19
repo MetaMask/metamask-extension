@@ -15,7 +15,6 @@ import {
 } from '../../../helpers/constants/routes'
 import ContactListTab from './contact-list-tab.component'
 
-
 const mapStateToProps = (state, ownProps) => {
   const { location } = ownProps
   const { pathname } = location

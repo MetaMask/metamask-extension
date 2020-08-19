@@ -7,8 +7,6 @@ import { ethErrors } from 'eth-json-rpc-errors'
 import abi from 'human-standard-token-abi'
 import abiDecoder from 'abi-decoder'
 
-abiDecoder.addABI(abi)
-
 import NonceTracker from 'nonce-tracker'
 import log from 'loglevel'
 import {
@@ -35,6 +33,7 @@ import {
   TRANSACTION_STATUS_APPROVED,
 } from './enums'
 
+abiDecoder.addABI(abi)
 
 const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
 const MAX_MEMSTORE_TX_LIST_SIZE = 100 // Number of transactions (by unique nonces) to keep in memory
@@ -52,7 +51,6 @@ const MAX_MEMSTORE_TX_LIST_SIZE = 100 // Number of transactions (by unique nonce
       gas calculations and safety buffering
     <br>- nonceTracker
       calculating nonces
-
 
   @class
   @param {Object} - opts
@@ -137,9 +135,9 @@ export default class TransactionController extends EventEmitter {
     const integerChainId = parseInt(networkState)
     if (Number.isNaN(integerChainId)) {
       return 0
-    } else {
-      return integerChainId
     }
+    return integerChainId
+
   }
 
   /**
@@ -201,6 +199,7 @@ export default class TransactionController extends EventEmitter {
     const normalizedTxParams = txUtils.normalizeTxParams(txParams)
 
     txUtils.validateTxParams(normalizedTxParams)
+
     /**
     `generateTxMeta` adds the default txMeta properties to the passed object.
     These include the tx's `id`. As we use the id for determining order of
@@ -233,7 +232,7 @@ export default class TransactionController extends EventEmitter {
       }
     }
 
-    txMeta['origin'] = origin
+    txMeta.origin = origin
 
     const { transactionCategory, getCodeResponse } = await this._determineTransactionCategory(txParams)
     txMeta.transactionCategory = transactionCategory
@@ -497,7 +496,7 @@ export default class TransactionController extends EventEmitter {
     const txMeta = this.txStateManager.getTx(txId)
     // add network/chain id
     const chainId = this.getChainId()
-    const txParams = Object.assign({}, txMeta.txParams, { chainId })
+    const txParams = { ...txMeta.txParams, chainId }
     // sign tx
     const fromAddress = txParams.from
     const ethTx = new Transaction(txParams)
@@ -606,19 +605,25 @@ export default class TransactionController extends EventEmitter {
   //
   /** maps methods for convenience*/
   _mapMethods () {
+
     /** @returns {Object} - the state in transaction controller */
     this.getState = () => this.memStore.getState()
+
     /** @returns {string|number} - the network number stored in networkStore */
     this.getNetwork = () => this.networkStore.getState()
+
     /** @returns {string} - the user selected address */
     this.getSelectedAddress = () => this.preferencesStore.getState().selectedAddress
+
     /** @returns {array} - transactions whos status is unapproved */
     this.getUnapprovedTxCount = () => Object.keys(this.txStateManager.getUnapprovedTxList()).length
+
     /**
       @returns {number} - number of transactions that have the status submitted
       @param {string} account - hex prefixed account
     */
     this.getPendingTxCount = (account) => this.txStateManager.getPendingTransactions(account).length
+
     /** see txStateManager */
     this.getFilteredTxList = (opts) => this.txStateManager.getFilteredTxList(opts)
   }

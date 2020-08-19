@@ -1,6 +1,6 @@
 import assert from 'assert'
 import sinon from 'sinon'
-import NetworkController from '../../../app/scripts/controllers/network/index'
+import NetworkController from '../../../app/scripts/controllers/network'
 import TypedMessageManager from '../../../app/scripts/lib/typed-message-manager'
 
 describe('Typed Message Manager', function () {

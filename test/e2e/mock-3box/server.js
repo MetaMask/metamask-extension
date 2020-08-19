@@ -33,6 +33,6 @@ const server = http.createServer(requestHandler)
 server.listen(port, (err) => {
   if (err) {
     console.log('mock 3box server error: ', err)
-    return
+
   }
 })

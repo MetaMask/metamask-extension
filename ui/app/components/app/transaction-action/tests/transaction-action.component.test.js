@@ -7,7 +7,6 @@ import TransactionAction from '../transaction-action.component'
 describe('TransactionAction Component', function () {
   const t = (key) => key
 
-
   describe('Outgoing transaction', function () {
     beforeEach(function () {
       global.eth = {

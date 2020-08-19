@@ -1,6 +1,13 @@
 // need to make sure we aren't affected by overlapping namespaces
 // and that we dont affect the app with our namespace
 // mostly a fix for web3's BigNumber if AMD's "define" is defined...
+import log from 'loglevel'
+import LocalMessageDuplexStream from 'post-message-stream'
+import { initProvider } from '@metamask/inpage-provider'
+
+// TODO:deprecate:2020
+import setupWeb3 from './lib/setupWeb3'
+
 let __define
 
 /**
@@ -30,13 +37,6 @@ const restoreContextAfterImports = () => {
 
 cleanContextForImports()
 
-import log from 'loglevel'
-import LocalMessageDuplexStream from 'post-message-stream'
-import { initProvider } from '@metamask/inpage-provider'
-
-// TODO:deprecate:2020
-import setupWeb3 from './lib/setupWeb3'
-
 restoreContextAfterImports()
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
@@ -57,7 +57,6 @@ initProvider({
 
 // TODO:deprecate:2020
 // Setup web3
-
 
 if (typeof window.web3 !== 'undefined') {
   throw new Error(`MetaMask detected another web3.

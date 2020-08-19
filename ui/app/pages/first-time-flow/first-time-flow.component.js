@@ -58,7 +58,7 @@ export default class FirstTimeFlow extends PureComponent {
 
     if (isInitialized && !isUnlocked) {
       history.push(INITIALIZE_UNLOCK_ROUTE)
-      return
+
     }
   }
 

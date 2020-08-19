@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import configureMockStore from 'redux-mock-store'
 import { Provider } from 'react-redux'
 import { mountWithRouter } from '../../../../../../test/lib/render-helpers'
-import AccountMenu from '../index'
+import AccountMenu from '..'
 
 describe('Account Menu', function () {
 

@@ -2,7 +2,7 @@ import assert from 'assert'
 import React from 'react'
 import sinon from 'sinon'
 import { mount } from 'enzyme'
-import TransactionConfirmed from '../index'
+import TransactionConfirmed from '..'
 
 describe('Transaction Confirmed', function () {
   it('clicks ok to submit and hide modal', function () {

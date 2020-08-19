@@ -64,7 +64,7 @@ export function useTransactionTimeRemaining (
       captureException(error)
       return NaN
     }
-  }, [ currentGasPrice, gasPrices, estimatedTimes ])
+  }, [currentGasPrice, gasPrices, estimatedTimes])
 
   useEffect(() => {
     if (

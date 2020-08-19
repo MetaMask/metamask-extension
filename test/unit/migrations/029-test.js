@@ -22,7 +22,7 @@ describe('storage is migrated successfully where transactions that are submitted
     migration29.migrate(storage)
       .then((migratedData) => {
         const txs = migratedData.data.TransactionController.transactions
-        const [ txMeta1 ] = txs
+        const [txMeta1] = txs
         assert.equal(migratedData.meta.version, 29)
 
         assert.equal(txMeta1.status, 'failed', 'old tx is auto failed')

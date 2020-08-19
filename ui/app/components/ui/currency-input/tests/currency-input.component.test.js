@@ -137,7 +137,7 @@ describe('CurrencyInput Component', function () {
           />
         </Provider>,
         {
-          context: { t: (str) => str + '_t' },
+          context: { t: (str) => `${str}_t` },
           childContextTypes: { t: PropTypes.func },
         },
       )

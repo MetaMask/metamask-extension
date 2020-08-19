@@ -168,22 +168,18 @@ describe('gas-modal-page-container container', function () {
       const tests = [
         { mockState: baseMockState, expectedResult: baseExpectedResult, mockOwnProps: baseMockOwnProps },
         {
-          mockState: Object.assign({}, baseMockState, {
-            metamask: { ...baseMockState.metamask, balance: '0xfffffffffffffffffffff' },
-          }),
-          expectedResult: Object.assign({}, baseExpectedResult, { balance: '0xfffffffffffffffffffff', insufficientBalance: false }),
+          mockState: { ...baseMockState, metamask: { ...baseMockState.metamask, balance: '0xfffffffffffffffffffff' } },
+          expectedResult: { ...baseExpectedResult, balance: '0xfffffffffffffffffffff', insufficientBalance: false },
           mockOwnProps: baseMockOwnProps,
         },
         {
           mockState: baseMockState,
-          mockOwnProps: Object.assign({}, baseMockOwnProps, {
-            transaction: { id: 34, status: 'submitted' },
-          }),
-          expectedResult: Object.assign({}, baseExpectedResult, { isSpeedUp: true, transaction: { id: 34 } }),
+          mockOwnProps: { ...baseMockOwnProps, transaction: { id: 34, status: 'submitted' } },
+          expectedResult: { ...baseExpectedResult, isSpeedUp: true, transaction: { id: 34 } },
         },
         {
-          mockState: Object.assign({}, baseMockState, {
-            metamask: {
+          mockState: {
+            ...baseMockState, metamask: {
               ...baseMockState.metamask,
               preferences: {
                 ...baseMockState.metamask.preferences,
@@ -194,7 +190,7 @@ describe('gas-modal-page-container container', function () {
                 type: 'rinkeby',
               },
             },
-          }),
+          },
           mockOwnProps: baseMockOwnProps,
           expectedResult: {
             ...baseExpectedResult,
@@ -206,8 +202,8 @@ describe('gas-modal-page-container container', function () {
           },
         },
         {
-          mockState: Object.assign({}, baseMockState, {
-            metamask: {
+          mockState: {
+            ...baseMockState, metamask: {
               ...baseMockState.metamask,
               preferences: {
                 ...baseMockState.metamask.preferences,
@@ -218,7 +214,7 @@ describe('gas-modal-page-container container', function () {
                 type: 'rinkeby',
               },
             },
-          }),
+          },
           mockOwnProps: baseMockOwnProps,
           expectedResult: {
             ...baseExpectedResult,
@@ -226,8 +222,8 @@ describe('gas-modal-page-container container', function () {
           },
         },
         {
-          mockState: Object.assign({}, baseMockState, {
-            metamask: {
+          mockState: {
+            ...baseMockState, metamask: {
               ...baseMockState.metamask,
               preferences: {
                 ...baseMockState.metamask.preferences,
@@ -238,7 +234,7 @@ describe('gas-modal-page-container container', function () {
                 type: 'mainnet',
               },
             },
-          }),
+          },
           mockOwnProps: baseMockOwnProps,
           expectedResult: baseExpectedResult,
         },
@@ -404,7 +400,7 @@ describe('gas-modal-page-container container', function () {
     })
 
     it('should return the expected props when isConfirm is false', function () {
-      const result = mergeProps(Object.assign({}, stateProps, { isConfirm: false }), dispatchProps, ownProps)
+      const result = mergeProps({ ...stateProps, isConfirm: false }, dispatchProps, ownProps)
 
       assert.equal(result.isConfirm, false)
       assert.equal(result.someOtherStateProp, 'baz')
@@ -435,7 +431,7 @@ describe('gas-modal-page-container container', function () {
     })
 
     it('should dispatch the expected actions from obSubmit when isConfirm is false and isSpeedUp is true', function () {
-      const result = mergeProps(Object.assign({}, stateProps, { isSpeedUp: true, isConfirm: false }), dispatchProps, ownProps)
+      const result = mergeProps({ ...stateProps, isSpeedUp: true, isConfirm: false }, dispatchProps, ownProps)
 
       result.onSubmit()
 

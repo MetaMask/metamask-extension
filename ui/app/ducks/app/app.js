@@ -5,7 +5,7 @@ const SET_THREEBOX_LAST_UPDATED = 'metamask/app/SET_THREEBOX_LAST_UPDATED'
 
 export default function reduceApp (state = {}, action) {
   // default state
-  const appState = Object.assign({
+  const appState = {
     shouldClose: false,
     menuOpen: false,
     modal: {
@@ -50,8 +50,8 @@ export default function reduceApp (state = {}, action) {
     threeBoxLastUpdated: null,
     requestAccountTabs: {},
     openMetaMaskTabs: {},
-    currentWindowTab: {},
-  }, state)
+    currentWindowTab: {}, ...state,
+  }
 
   switch (action.type) {
     // dropdown methods
@@ -108,7 +108,6 @@ export default function reduceApp (state = {}, action) {
         qrCodeData: action.value,
       }
 
-
     // modal methods:
     case actionConstants.MODAL_OPEN: {
       const { name, ...modalProps } = action.payload
@@ -118,7 +117,7 @@ export default function reduceApp (state = {}, action) {
         modal: {
           open: true,
           modalState: {
-            name: name,
+            name,
             props: { ...modalProps },
           },
           previousModalState: { ...appState.modal.modalState },
@@ -209,17 +208,16 @@ export default function reduceApp (state = {}, action) {
           txId: null,
           warning: null,
         }
-      } else {
-        return {
-          ...appState,
-          // indicate notification should close
-          shouldClose: true,
-          warning: null,
-          txId: null,
-          accountDetail: {
-            subview: 'transactions',
-          },
-        }
+      }
+      return {
+        ...appState,
+        // indicate notification should close
+        shouldClose: true,
+        warning: null,
+        txId: null,
+        accountDetail: {
+          subview: 'transactions',
+        },
       }
 
     case actionConstants.TRANSACTION_ERROR:

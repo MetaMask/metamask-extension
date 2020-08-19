@@ -69,7 +69,7 @@ describe('GasPriceChart Component', function () {
       './gas-price-chart.utils.js': gasPriceChartUtilsSpies,
       'd3': {
         ...d3,
-        select: function (...args) {
+        select (...args) {
           const result = d3.select(...args)
           return result.empty()
             ? mockSelectReturn

@@ -249,7 +249,7 @@ export function getPermissionsForActiveTab (state) {
 export function getLastConnectedInfo (state) {
   const { permissionsHistory = {} } = state.metamask
   return Object.keys(permissionsHistory).reduce((acc, origin) => {
-    const ethAccountsHistory = JSON.parse(JSON.stringify(permissionsHistory[origin]['eth_accounts']))
+    const ethAccountsHistory = JSON.parse(JSON.stringify(permissionsHistory[origin].eth_accounts))
     return {
       ...acc,
       [origin]: ethAccountsHistory,

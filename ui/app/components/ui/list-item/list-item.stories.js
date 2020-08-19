@@ -69,7 +69,6 @@ export const pending = () => (
   />
 )
 
-
 export const approve = () => (
   <ListItem
     icon={<Approve color={okColor} size={28} />}

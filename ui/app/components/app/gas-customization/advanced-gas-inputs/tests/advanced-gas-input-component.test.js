@@ -2,7 +2,7 @@ import assert from 'assert'
 import React from 'react'
 import sinon from 'sinon'
 import { mount } from 'enzyme'
-import AdvancedTabContent from '../index'
+import AdvancedTabContent from '..'
 
 describe('Advanced Gas Inputs', function () {
   let wrapper, clock
@@ -29,7 +29,8 @@ describe('Advanced Gas Inputs', function () {
         context: {
           t: (str) => str,
         },
-      })
+      },
+    )
   })
 
   afterEach(function () {

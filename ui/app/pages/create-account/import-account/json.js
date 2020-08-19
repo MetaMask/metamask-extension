@@ -107,7 +107,7 @@ class JsonImportSubview extends Component {
 
     const password = this.inputRef.current.value
 
-    importNewJsonAccount([ fileContents, password ])
+    importNewJsonAccount([fileContents, password])
       .then(({ selectedAddress }) => {
         if (selectedAddress) {
           history.push(mostRecentOverviewPage)

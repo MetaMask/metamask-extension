@@ -1,6 +1,4 @@
 // next version number
-const version = 35
-
 /*
 
 Removes the deprecated 'seedWords' state
@@ -9,10 +7,12 @@ Removes the deprecated 'seedWords' state
 
 import { cloneDeep } from 'lodash'
 
+const version = 35
+
 export default {
   version,
 
-  migrate: async function (originalVersionedData) {
+  async migrate (originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     versionedData.data = transformState(versionedData.data)
