@@ -67,12 +67,3 @@ export const dangerPrimaryType = () => (
   </Button>
 )
 
-export const linkType = () => (
-  <Button
-    onClick={action('clicked')}
-    type="link"
-    disabled={boolean('disabled', false)}
-  >
-    {text('text', 'Click me')}
-  </Button>
-)

@@ -7,6 +7,7 @@ import Dialog from '../../../../components/ui/dialog'
 import ContactList from '../../../../components/app/contact-list'
 import RecipientGroup from '../../../../components/app/contact-list/recipient-group/recipient-group.component'
 import { ellipsify } from '../../send.utils'
+import Button from '../../../../components/ui/button'
 
 export default class AddRecipient extends Component {
 
@@ -147,13 +148,14 @@ export default class AddRecipient extends Component {
 
     return (
       <div className="send__select-recipient-wrapper__list">
-        <div
+        <Button
+          type="link"
           className="send__select-recipient-wrapper__list__link"
           onClick={() => this.setState({ isShowingTransfer: false })}
         >
           <div className="send__select-recipient-wrapper__list__back-caret" />
           { t('backToAll') }
-        </div>
+        </Button>
         <RecipientGroup
           label={t('myAccounts')}
           items={ownedAccounts}
@@ -177,12 +179,13 @@ export default class AddRecipient extends Component {
         >
           {
             (ownedAccounts && ownedAccounts.length > 1) && !query && (
-              <div
+              <Button
+                type="link"
                 className="send__select-recipient-wrapper__list__link"
                 onClick={() => this.setState({ isShowingTransfer: true })}
               >
                 { t('transferBetweenAccounts') }
-              </div>
+              </Button>
             )
           }
         </ContactList>

@@ -1,4 +1,5 @@
-@import './colors.scss';
-@import './deprecated-colors.scss';
-@import './typography.scss';
-@import './breakpoints.scss';
+@import 'breakpoints';
+@import 'colors';
+@import 'deprecated-colors';
+@import 'typography';
+@import 'z-index';

@@ -5,12 +5,6 @@
     color: $crimson;
   }
 
-  &__advanced-link {
-    @extend %small-link;
-
-    padding-left: 5px;
-  }
-
   &__rpc-save-button {
     align-self: flex-end;
     padding: 5px;
