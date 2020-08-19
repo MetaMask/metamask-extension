@@ -1730,10 +1730,10 @@
     web3 "^0.20.7"
     web3-provider-engine "^15.0.4"
 
-"@metamask/eslint-config@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/eslint-config/-/eslint-config-3.0.0.tgz#39c4275e440cfc690524d328a0bda8227bd69326"
-  integrity sha512-AYnNopj+K0YyWuCXY4mflgMQzIcm/Jc+HiXzBzY8SJ3fMlnBXjQjsbu0B78zxLR9HZ2uW9IrCj0VG7hMj1b4og==
+"@metamask/eslint-config@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@metamask/eslint-config/-/eslint-config-3.1.0.tgz#8412ddd3f660748598902fd8dbef6fadc060f25e"
+  integrity sha512-He/zV0Cb5W421mEQveaqSegLarONJbJPReJppQkwhi239PCE7j+6eRji/j2Unwq8TBuOlgQtqL49+dtvks+lPQ==
 
 "@metamask/eth-ledger-bridge-keyring@^0.2.6":
   version "0.2.6"
