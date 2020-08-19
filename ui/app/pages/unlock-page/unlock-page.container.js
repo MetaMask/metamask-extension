@@ -31,6 +31,7 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  // eslint-disable-next-line no-shadow
   const { markPasswordForgotten, tryUnlockMetamask, ...restDispatchProps } = dispatchProps
   const { history, onSubmit: ownPropsSubmit, ...restOwnProps } = ownProps
 

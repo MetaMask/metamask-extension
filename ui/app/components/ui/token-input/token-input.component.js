@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import ethUtil from 'ethereumjs-util'
 import UnitInput from '../unit-input'
 import CurrencyDisplay from '../currency-display'
 import { getWeiHexFromDecimalValue } from '../../../helpers/utils/conversions.util'
-import ethUtil from 'ethereumjs-util'
 import { conversionUtil, multiplyCurrencies } from '../../../helpers/utils/conversion-util'
 import { ETH } from '../../../helpers/constants/common'
 

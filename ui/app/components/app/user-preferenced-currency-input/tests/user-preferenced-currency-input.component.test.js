@@ -1,5 +1,5 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { shallow } from 'enzyme'
 import UserPreferencedCurrencyInput from '../user-preferenced-currency-input.component'
 import CurrencyInput from '../../../ui/currency-input'

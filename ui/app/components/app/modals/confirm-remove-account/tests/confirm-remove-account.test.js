@@ -1,7 +1,7 @@
+import assert from 'assert'
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Provider } from 'react-redux'
-import assert from 'assert'
 import sinon from 'sinon'
 import configureStore from 'redux-mock-store'
 import { mount } from 'enzyme'

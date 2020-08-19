@@ -1,5 +1,5 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import sinon from 'sinon'
 import { shallow } from 'enzyme'
 import AccountDetailsModal from '../account-details-modal'

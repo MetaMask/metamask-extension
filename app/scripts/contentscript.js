@@ -1,5 +1,5 @@
-import pump from 'pump'
 import querystring from 'querystring'
+import pump from 'pump'
 import LocalMessageDuplexStream from 'post-message-stream'
 import ObjectMultiplex from 'obj-multiplex'
 import extension from 'extensionizer'
@@ -136,7 +136,7 @@ function shouldInjectProvider () {
  * @returns {boolean} {@code true} - if the doctype is html or if none exists
  */
 function doctypeCheck () {
-  const doctype = window.document.doctype
+  const { doctype } = window.document
   if (doctype) {
     return doctype.name === 'html'
   } else {

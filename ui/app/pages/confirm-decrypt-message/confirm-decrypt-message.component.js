@@ -6,7 +6,7 @@ import classnames from 'classnames'
 import AccountListItem from '../../components/app/account-list-item'
 import Button from '../../components/ui/button'
 import Identicon from '../../components/ui/identicon'
-import Tooltip from '../../components/ui/tooltip-v2'
+import Tooltip from '../../components/ui/tooltip'
 import Copy from '../../components/ui/icon/copy-icon.component'
 
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../app/scripts/lib/enums'

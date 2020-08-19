@@ -53,7 +53,7 @@ describe('NetworkController', function () {
       it('should update provider.type', function () {
         networkController.initializeProvider(networkControllerProviderConfig)
         networkController.setProviderType('mainnet')
-        const type = networkController.getProviderConfig().type
+        const { type } = networkController.getProviderConfig()
         assert.equal(type, 'mainnet', 'provider type is updated')
       })
       it('should set the network to loading', function () {

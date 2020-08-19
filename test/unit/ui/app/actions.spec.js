@@ -12,7 +12,7 @@ import * as actions from '../../../../ui/app/store/actions'
 import MetaMaskController from '../../../../app/scripts/metamask-controller'
 import firstTimeState from '../../localhostState'
 
-const provider = createTestProviderTools({ scaffold: {} }).provider
+const { provider } = createTestProviderTools({ scaffold: {} })
 const middleware = [thunk]
 const defaultState = { metamask: {} }
 const mockStore = (state = defaultState) => configureStore(middleware)(state)
@@ -32,6 +32,7 @@ describe('Actions', function () {
   beforeEach(async function () {
 
     metamaskController = new MetaMaskController({
+      platform: { getVersion: () => 'foo' },
       provider,
       keyringController: new KeyringController({}),
       showUnapprovedTx: noop,
@@ -337,9 +338,9 @@ describe('Actions', function () {
 
       importAccountWithStrategySpy = sinon.spy(background, 'importAccountWithStrategy')
 
-      const importPrivkey = 'c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3'
-
-      await store.dispatch(actions.importNewAccount('Private Key', [ importPrivkey ]))
+      await store.dispatch(actions.importNewAccount('Private Key', [
+        'c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3',
+      ]))
       assert(importAccountWithStrategySpy.calledOnce)
     })
 
@@ -572,7 +573,7 @@ describe('Actions', function () {
       metamaskMsgs = metamaskController.messageManager.getUnapprovedMsgs()
       messages = metamaskController.messageManager.messages
       msgId = Object.keys(metamaskMsgs)[0]
-      messages[0].msgParams.metamaskId = parseInt(msgId)
+      messages[0].msgParams.metamaskId = parseInt(msgId, 10)
     })
 
     afterEach(function () {
@@ -625,7 +626,7 @@ describe('Actions', function () {
       metamaskMsgs = metamaskController.personalMessageManager.getUnapprovedMsgs()
       personalMessages = metamaskController.personalMessageManager.messages
       msgId = Object.keys(metamaskMsgs)[0]
-      personalMessages[0].msgParams.metamaskId = parseInt(msgId)
+      personalMessages[0].msgParams.metamaskId = parseInt(msgId, 10)
     })
 
     afterEach(function () {
@@ -713,7 +714,7 @@ describe('Actions', function () {
       messages = metamaskController.typedMessageManager.getUnapprovedMsgs()
       typedMessages = metamaskController.typedMessageManager.messages
       msgId = Object.keys(messages)[0]
-      typedMessages[0].msgParams.metamaskId = parseInt(msgId)
+      typedMessages[0].msgParams.metamaskId = parseInt(msgId, 10)
     })
 
     afterEach(function () {

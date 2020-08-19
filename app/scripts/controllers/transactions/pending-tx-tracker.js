@@ -137,7 +137,7 @@ export default class PendingTransactionTracker extends EventEmitter {
       return this.approveTransaction(txMeta.id)
     }
 
-    const rawTx = txMeta.rawTx
+    const { rawTx } = txMeta
     const txHash = await this.publishTransaction(rawTx)
 
     // Increment successful tries:

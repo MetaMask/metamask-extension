@@ -1,6 +1,6 @@
-import { NETWORK_TYPES } from '../helpers/constants/common'
 import { stripHexPrefix, addHexPrefix } from 'ethereumjs-util'
 import { createSelector } from 'reselect'
+import { NETWORK_TYPES } from '../helpers/constants/common'
 import {
   shortenAddress,
   checksumAddress,
@@ -78,7 +78,7 @@ export function getSelectedAddress (state) {
 
 export function getSelectedIdentity (state) {
   const selectedAddress = getSelectedAddress(state)
-  const identities = state.metamask.identities
+  const { identities } = state.metamask
 
   return identities[selectedAddress]
 }
@@ -88,7 +88,7 @@ export function getNumberOfAccounts (state) {
 }
 
 export function getNumberOfTokens (state) {
-  const tokens = state.metamask.tokens
+  const { tokens } = state.metamask
   return tokens ? tokens.length : 0
 }
 
@@ -157,7 +157,7 @@ export function getAssetImages (state) {
 }
 
 export function getAddressBook (state) {
-  const network = state.metamask.network
+  const { network } = state.metamask
   if (!state.metamask.addressBook[network]) {
     return []
   }

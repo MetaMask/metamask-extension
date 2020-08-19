@@ -9,6 +9,8 @@ import abiDecoder from 'abi-decoder'
 
 abiDecoder.addABI(abi)
 
+import NonceTracker from 'nonce-tracker'
+import log from 'loglevel'
 import {
   TOKEN_METHOD_APPROVE,
   TOKEN_METHOD_TRANSFER,
@@ -18,13 +20,13 @@ import {
   CONTRACT_INTERACTION_KEY,
 } from '../../../../ui/app/helpers/constants/transactions'
 
+import cleanErrorStack from '../../lib/cleanErrorStack'
+import { hexToBn, bnToHex, BnMultiplyByFraction } from '../../lib/util'
+import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/helpers/constants/error-keys'
 import TransactionStateManager from './tx-state-manager'
 import TxGasUtil from './tx-gas-utils'
 import PendingTransactionTracker from './pending-tx-tracker'
-import NonceTracker from 'nonce-tracker'
 import * as txUtils from './lib/util'
-import cleanErrorStack from '../../lib/cleanErrorStack'
-import log from 'loglevel'
 
 import {
   TRANSACTION_TYPE_CANCEL,
@@ -33,8 +35,6 @@ import {
   TRANSACTION_STATUS_APPROVED,
 } from './enums'
 
-import { hexToBn, bnToHex, BnMultiplyByFraction } from '../../lib/util'
-import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/helpers/constants/error-keys'
 
 const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
 const MAX_MEMSTORE_TX_LIST_SIZE = 100 // Number of transactions (by unique nonces) to keep in memory
@@ -133,6 +133,7 @@ export default class TransactionController extends EventEmitter {
    */
   getChainId () {
     const networkState = this.networkStore.getState()
+    // eslint-disable-next-line radix
     const integerChainId = parseInt(networkState)
     if (Number.isNaN(integerChainId)) {
       return 0
@@ -473,8 +474,8 @@ export default class TransactionController extends EventEmitter {
       // this is try-catch wrapped so that we can guarantee that the nonceLock is released
       try {
         this.txStateManager.setTxStatusFailed(txId, err)
-      } catch (err) {
-        log.error(err)
+      } catch (err2) {
+        log.error(err2)
       }
       // must set transaction to submitted/failed before releasing lock
       if (nonceLock) {
@@ -701,7 +702,7 @@ export default class TransactionController extends EventEmitter {
       TOKEN_METHOD_APPROVE,
       TOKEN_METHOD_TRANSFER,
       TOKEN_METHOD_TRANSFER_FROM,
-    ].find((tokenMethodName) => tokenMethodName === name && name.toLowerCase())
+    ].find((methodName) => methodName === name && name.toLowerCase())
 
     let result
     if (txParams.data && tokenMethodName) {
@@ -755,8 +756,7 @@ export default class TransactionController extends EventEmitter {
   _setupBlockTrackerListener () {
     let listenersAreActive = false
     const latestBlockHandler = this._onLatestBlock.bind(this)
-    const blockTracker = this.blockTracker
-    const txStateManager = this.txStateManager
+    const { blockTracker, txStateManager } = this
 
     txStateManager.on('tx:status-update', updateSubscription)
     updateSubscription()

@@ -32,7 +32,7 @@ function transformState (state) {
   const { TransactionController } = newState
   if (TransactionController && TransactionController.transactions) {
 
-    const transactions = newState.TransactionController.transactions
+    const { transactions } = newState.TransactionController
 
     newState.TransactionController.transactions = transactions.map((txMeta, _, txList) => {
       if (txMeta.status !== 'submitted') {
@@ -66,7 +66,7 @@ function transformState (state) {
 
 function getHighestContinuousFrom (txList, startPoint) {
   const nonces = txList.map((txMeta) => {
-    const nonce = txMeta.txParams.nonce
+    const { nonce } = txMeta.txParams
     return parseInt(nonce, 16)
   })
 
@@ -80,7 +80,7 @@ function getHighestContinuousFrom (txList, startPoint) {
 
 function getHighestNonce (txList) {
   const nonces = txList.map((txMeta) => {
-    const nonce = txMeta.txParams.nonce
+    const { nonce } = txMeta.txParams
     return parseInt(nonce || '0x0', 16)
   })
   const highestNonce = Math.max.apply(null, nonces)

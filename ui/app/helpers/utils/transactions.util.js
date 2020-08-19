@@ -2,14 +2,13 @@ import ethUtil from 'ethereumjs-util'
 import MethodRegistry from 'eth-method-registry'
 import abi from 'human-standard-token-abi'
 import abiDecoder from 'abi-decoder'
+import log from 'loglevel'
 import {
   TRANSACTION_TYPE_CANCEL,
   TRANSACTION_STATUS_CONFIRMED,
 } from '../../../../app/scripts/controllers/transactions/enums'
 import { MESSAGE_TYPE } from '../../../../app/scripts/lib/enums'
 import { getEtherscanNetworkPrefix } from '../../../lib/etherscan-prefix-for-network'
-import fetchWithCache from './fetch-with-cache'
-
 import {
   TOKEN_METHOD_TRANSFER,
   TOKEN_METHOD_APPROVE,
@@ -26,8 +25,9 @@ import {
   CANCEL_ATTEMPT_ACTION_KEY,
   DEPOSIT_TRANSACTION_KEY,
 } from '../constants/transactions'
+import fetchWithCache from './fetch-with-cache'
 
-import log from 'loglevel'
+
 import { addCurrencies } from './conversion-util'
 
 abiDecoder.addABI(abi)

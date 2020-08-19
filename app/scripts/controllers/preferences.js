@@ -1,7 +1,7 @@
 import ObservableStore from 'obs-store'
-import { addInternalMethodPrefix } from './permissions'
 import { normalize as normalizeAddress } from 'eth-sig-util'
 import { isValidAddress, sha3, bufferToHex } from 'ethereumjs-util'
+import { addInternalMethodPrefix } from './permissions'
 
 export default class PreferencesController {
 
@@ -178,7 +178,7 @@ export default class PreferencesController {
    * @param {string} methodData - Corresponding data method
    */
   addKnownMethodData (fourBytePrefix, methodData) {
-    const knownMethodData = this.store.getState().knownMethodData
+    const { knownMethodData } = this.store.getState()
     knownMethodData[fourBytePrefix] = methodData
     this.store.updateState({ knownMethodData })
   }
@@ -264,8 +264,8 @@ export default class PreferencesController {
    * @returns {string} - the address that was removed
    */
   removeAddress (address) {
-    const identities = this.store.getState().identities
-    const accountTokens = this.store.getState().accountTokens
+    const { identities } = this.store.getState()
+    const { accountTokens } = this.store.getState()
     if (!identities[address]) {
       throw new Error(`${address} can't be deleted cause it was not found`)
     }
@@ -290,8 +290,7 @@ export default class PreferencesController {
    *
    */
   addAddresses (addresses) {
-    const identities = this.store.getState().identities
-    const accountTokens = this.store.getState().accountTokens
+    const { identities, accountTokens } = this.store.getState()
     addresses.forEach((address) => {
       // skip if already exists
       if (identities[address]) {
@@ -420,7 +419,7 @@ export default class PreferencesController {
   async addToken (rawAddress, symbol, decimals, image) {
     const address = normalizeAddress(rawAddress)
     const newEntry = { address, symbol, decimals }
-    const tokens = this.store.getState().tokens
+    const { tokens } = this.store.getState()
     const assetImages = this.getAssetImages()
     const previousEntry = tokens.find((token) => {
       return token.address === address
@@ -445,7 +444,7 @@ export default class PreferencesController {
    *
    */
   removeToken (rawAddress) {
-    const tokens = this.store.getState().tokens
+    const { tokens } = this.store.getState()
     const assetImages = this.getAssetImages()
     const updatedTokens = tokens.filter((token) => token.address !== rawAddress)
     delete assetImages[rawAddress]
@@ -529,6 +528,7 @@ export default class PreferencesController {
     }
     if (url !== 'http://localhost:8545') {
       let checkedChainId
+      // eslint-disable-next-line radix
       if (!!chainId && !Number.isNaN(parseInt(chainId))) {
         checkedChainId = chainId
       }
@@ -687,7 +687,7 @@ export default class PreferencesController {
    *
    */
   _getTokenRelatedStates (selectedAddress) {
-    const accountTokens = this.store.getState().accountTokens
+    const { accountTokens } = this.store.getState()
     if (!selectedAddress) {
       // eslint-disable-next-line no-param-reassign
       selectedAddress = this.store.getState().selectedAddress

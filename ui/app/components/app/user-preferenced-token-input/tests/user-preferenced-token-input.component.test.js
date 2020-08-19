@@ -1,5 +1,5 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { shallow } from 'enzyme'
 import UserPreferencedTokenInput from '../user-preferenced-token-input.component'
 import TokenInput from '../../../ui/token-input'

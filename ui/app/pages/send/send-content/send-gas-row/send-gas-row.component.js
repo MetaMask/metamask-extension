@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import SendRowWrapper from '../send-row-wrapper'
-import GasFeeDisplay from './gas-fee-display/gas-fee-display.component'
 import GasPriceButtonGroup from '../../../../components/app/gas-customization/gas-price-button-group'
 import AdvancedGasInputs from '../../../../components/app/gas-customization/advanced-gas-inputs'
+import GasFeeDisplay from './gas-fee-display/gas-fee-display.component'
 
 export default class SendGasRow extends Component {
 

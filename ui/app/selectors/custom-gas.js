@@ -1,11 +1,9 @@
+import { addHexPrefix } from 'ethereumjs-util'
 import {
   conversionUtil,
   multiplyCurrencies,
   conversionGreaterThan,
 } from '../helpers/utils/conversion-util'
-import {
-  getCurrentCurrency, getIsMainnet, getPreferences,
-} from '.'
 import {
   formatCurrency,
 } from '../helpers/utils/confirm-tx.util'
@@ -18,9 +16,11 @@ import {
 import {
   calcGasTotal,
 } from '../pages/send/send.utils'
-import { addHexPrefix } from 'ethereumjs-util'
 
 import { GAS_ESTIMATE_TYPES } from '../helpers/constants/common'
+import {
+  getCurrentCurrency, getIsMainnet, getPreferences,
+} from '.'
 
 const NUMBER_OF_DECIMALS_SM_BTNS = 5
 
@@ -200,7 +200,7 @@ export function getRenderableBasicEstimateData (state, gasLimit) {
   const { showFiatInTestnets } = getPreferences(state)
   const isMainnet = getIsMainnet(state)
   const showFiat = (isMainnet || !!showFiatInTestnets)
-  const conversionRate = state.metamask.conversionRate
+  const { conversionRate } = state.metamask
   const currentCurrency = getCurrentCurrency(state)
   const {
     gas: {
@@ -255,7 +255,7 @@ export function getRenderableEstimateDataForSmallButtonsFromGWEI (state) {
   const isMainnet = getIsMainnet(state)
   const showFiat = (isMainnet || !!showFiatInTestnets)
   const gasLimit = state.metamask.send.gasLimit || getCustomGasLimit(state) || '0x5208'
-  const conversionRate = state.metamask.conversionRate
+  const { conversionRate } = state.metamask
   const currentCurrency = getCurrentCurrency(state)
   const {
     gas: {

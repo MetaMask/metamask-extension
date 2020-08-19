@@ -823,9 +823,9 @@ describe('permissions controller', function () {
 
     beforeEach(function () {
       identities = ALL_ACCOUNTS.reduce(
-        (identities, account) => {
-          identities[account] = {}
-          return identities
+        (identitiesAcc, account) => {
+          identitiesAcc[account] = {}
+          return identitiesAcc
         },
         {},
       )

@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { isEqual } from 'lodash'
-import { PermissionPageContainerContent } from '.'
 import { PageContainerFooter } from '../../ui/page-container'
 import PermissionsConnectFooter from '../permissions-connect-footer'
+import { PermissionPageContainerContent } from '.'
 
 export default class PermissionPageContainer extends Component {
 

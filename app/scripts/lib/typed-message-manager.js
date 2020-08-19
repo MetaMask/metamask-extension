@@ -1,12 +1,12 @@
 import EventEmitter from 'events'
-import ObservableStore from 'obs-store'
-import createId from './random-id'
 import assert from 'assert'
+import ObservableStore from 'obs-store'
 import { ethErrors } from 'eth-json-rpc-errors'
 import sigUtil from 'eth-sig-util'
 import { isValidAddress } from 'ethereumjs-util'
 import log from 'loglevel'
 import jsonschema from 'jsonschema'
+import createId from './random-id'
 import { MESSAGE_TYPE } from './enums'
 
 /**
@@ -164,7 +164,8 @@ export default class TypedMessageManager extends EventEmitter {
         const validation = jsonschema.validate(data, sigUtil.TYPED_MESSAGE_SCHEMA)
         assert.ok(data.primaryType in data.types, `Primary type of "${data.primaryType}" has no type definition.`)
         assert.equal(validation.errors.length, 0, 'Signing data must conform to EIP-712 schema. See https://git.io/fNtcx.')
-        const chainId = data.domain.chainId
+        const { chainId } = data.domain
+        // eslint-disable-next-line radix
         const activeChainId = parseInt(this.networkController.getNetworkState())
         chainId && assert.equal(chainId, activeChainId, `Provided chainId "${chainId}" must match the active chainId "${activeChainId}"`)
         break

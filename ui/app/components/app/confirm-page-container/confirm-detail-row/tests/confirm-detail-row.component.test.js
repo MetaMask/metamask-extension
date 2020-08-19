@@ -1,8 +1,8 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { shallow } from 'enzyme'
-import ConfirmDetailRow from '../confirm-detail-row.component'
 import sinon from 'sinon'
+import ConfirmDetailRow from '../confirm-detail-row.component'
 
 const propsMethodSpies = {
   onHeaderClick: sinon.spy(),

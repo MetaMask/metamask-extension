@@ -19,7 +19,7 @@ import { isExtensionUrl } from '../../../../helpers/utils/util'
 import Popover from '../../../ui/popover'
 import Button from '../../../ui/button'
 import Checkbox from '../../../ui/check-box'
-import Tooltip from '../../../ui/tooltip-v2'
+import Tooltip from '../../../ui/tooltip'
 import ConnectedAccountsList from '../../connected-accounts-list'
 import { useI18nContext } from '../../../../hooks/useI18nContext'
 

@@ -1,26 +1,26 @@
 import abi from 'human-standard-token-abi'
 import pify from 'pify'
+import ethUtil from 'ethereumjs-util'
+import log from 'loglevel'
 import getBuyEthUrl from '../../../app/scripts/lib/buy-eth-url'
 import { checksumAddress } from '../helpers/utils/util'
 import { calcTokenBalance, estimateGas } from '../pages/send/send.utils'
-import ethUtil from 'ethereumjs-util'
 import { fetchLocale, loadRelativeTimeFormatLocaleData } from '../helpers/utils/i18n-helper'
 import { getMethodDataAsync } from '../helpers/utils/transactions.util'
 import { fetchSymbolAndDecimals } from '../helpers/utils/token-util'
 import switchDirection from '../helpers/utils/switch-direction'
-import log from 'loglevel'
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../app/scripts/lib/enums'
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util'
 import { setCustomGasLimit } from '../ducks/gas/gas.duck'
 import txHelper from '../../lib/tx-helper'
 import { getEnvironmentType } from '../../../app/scripts/lib/util'
-import * as actionConstants from './actionConstants'
 import {
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
 } from '../selectors'
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account'
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask'
+import * as actionConstants from './actionConstants'
 
 let background = null
 let promisifiedBackground = null
@@ -1724,13 +1724,13 @@ export function exportAccount (password, address) {
           return
         }
         log.debug(`background.exportAccount`)
-        background.exportAccount(address, function (err, result) {
+        background.exportAccount(address, function (err2, result) {
           dispatch(hideLoadingIndication())
 
-          if (err) {
-            log.error(err)
+          if (err2) {
+            log.error(err2)
             dispatch(displayWarning('Had a problem exporting the account.'))
-            reject(err)
+            reject(err2)
             return
           }
 
@@ -1756,14 +1756,14 @@ export function exportAccounts (password, addresses) {
         }
         log.debug(`background.exportAccounts`)
         const accountPromises = addresses.map((address) => new Promise(
-          (resolve, reject) => background.exportAccount(address, function (err, result) {
-            if (err) {
-              log.error(err)
+          (resolve2, reject2) => background.exportAccount(address, function (err2, result) {
+            if (err2) {
+              log.error(err2)
               dispatch(displayWarning('Had a problem exporting the account.'))
-              reject(err)
+              reject2(err2)
               return
             }
-            resolve(result)
+            resolve2(result)
             return
           }),
         ))

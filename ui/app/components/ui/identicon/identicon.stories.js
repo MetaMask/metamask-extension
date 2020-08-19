@@ -1,7 +1,7 @@
 import React from 'react'
 import { text, boolean } from '@storybook/addon-knobs/react'
-import Identicon from './identicon.component'
 import { number } from '@storybook/addon-knobs'
+import Identicon from './identicon.component'
 
 export default { title: 'Identicon' }
 

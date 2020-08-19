@@ -1,15 +1,8 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { Switch, Route, matchPath } from 'react-router-dom'
-import TabBar from '../../components/app/tab-bar'
 import classnames from 'classnames'
-import SettingsTab from './settings-tab'
-import AlertsTab from './alerts-tab'
-import NetworksTab from './networks-tab'
-import AdvancedTab from './advanced-tab'
-import InfoTab from './info-tab'
-import SecurityTab from './security-tab'
-import ContactListTab from './contact-list-tab'
+import TabBar from '../../components/app/tab-bar'
 import {
   ALERTS_ROUTE,
   ADVANCED_ROUTE,
@@ -26,6 +19,13 @@ import {
   CONTACT_MY_ACCOUNTS_VIEW_ROUTE,
   CONTACT_MY_ACCOUNTS_EDIT_ROUTE,
 } from '../../helpers/constants/routes'
+import SettingsTab from './settings-tab'
+import AlertsTab from './alerts-tab'
+import NetworksTab from './networks-tab'
+import AdvancedTab from './advanced-tab'
+import InfoTab from './info-tab'
+import SecurityTab from './security-tab'
+import ContactListTab from './contact-list-tab'
 
 class SettingsPage extends PureComponent {
   static propTypes = {

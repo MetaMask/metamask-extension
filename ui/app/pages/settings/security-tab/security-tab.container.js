@@ -1,4 +1,3 @@
-import SecurityTab from './security-tab.component'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
@@ -7,6 +6,7 @@ import {
   setParticipateInMetaMetrics,
   setUsePhishDetect,
 } from '../../../store/actions'
+import SecurityTab from './security-tab.component'
 
 const mapStateToProps = (state) => {
   const { appState: { warning }, metamask } = state

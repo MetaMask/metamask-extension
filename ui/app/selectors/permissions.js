@@ -1,8 +1,8 @@
 import { forOwn } from 'lodash'
-import { getMetaMaskAccountsOrdered, getOriginOfCurrentTab, getSelectedAddress } from '.'
 import {
   CAVEAT_NAMES,
 } from '../../../app/scripts/controllers/permissions/enums'
+import { getMetaMaskAccountsOrdered, getOriginOfCurrentTab, getSelectedAddress } from '.'
 
 // selectors
 

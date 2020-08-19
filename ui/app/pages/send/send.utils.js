@@ -1,3 +1,5 @@
+import abi from 'ethereumjs-abi'
+import ethUtil from 'ethereumjs-util'
 import {
   addCurrencies,
   conversionUtil,
@@ -19,8 +21,6 @@ import {
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
 } from './send.constants'
 
-import abi from 'ethereumjs-abi'
-import ethUtil from 'ethereumjs-util'
 
 export {
   addGasBuffer,

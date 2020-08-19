@@ -1,3 +1,4 @@
+import { addHexPrefix } from 'ethereumjs-util'
 import {
   conversionRateSelector,
   currentCurrencySelector,
@@ -21,7 +22,6 @@ import {
 } from '../../helpers/utils/transactions.util'
 
 import { conversionUtil } from '../../helpers/utils/conversion-util'
-import { addHexPrefix } from 'ethereumjs-util'
 
 // Actions
 const createActionType = (action) => `metamask/confirm-transaction/${action}`

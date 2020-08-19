@@ -68,8 +68,8 @@ describe('Typed Message Manager', function () {
     typedMsgs = typedMessageManager.getUnapprovedMsgs()
     messages = typedMessageManager.messages
     msgId = Object.keys(typedMsgs)[0]
-    messages[0].msgParams.metamaskId = parseInt(msgId)
-    numberMsgId = parseInt(msgId)
+    messages[0].msgParams.metamaskId = parseInt(msgId, 10)
+    numberMsgId = parseInt(msgId, 10)
   })
 
   it('supports version 1 of signedTypedData', function () {

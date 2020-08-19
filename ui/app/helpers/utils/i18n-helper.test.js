@@ -1,7 +1,7 @@
-import { getMessage } from './i18n-helper'
+import assert from 'assert'
 import React from 'react'
 import { shallow } from 'enzyme'
-import assert from 'assert'
+import { getMessage } from './i18n-helper'
 
 describe('i18n helper', function () {
   const TEST_LOCALE_CODE = 'TEST_LOCALE_CODE'

@@ -1,6 +1,6 @@
 const { promises: fs } = require('fs')
-const { until, error: webdriverError } = require('selenium-webdriver')
 const { strict: assert } = require('assert')
+const { until, error: webdriverError } = require('selenium-webdriver')
 
 class Driver {
   /**

@@ -12,7 +12,7 @@ const Asset = () => {
   const tokens = useSelector(getTokens)
   const { asset } = useParams()
 
-  const token = tokens.find((token) => token.address === asset)
+  const token = tokens.find(({ address }) => address === asset)
 
   let content
   if (token) {

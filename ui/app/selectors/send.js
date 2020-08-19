@@ -1,4 +1,5 @@
 import abi from 'human-standard-token-abi'
+import { calcGasTotal } from '../pages/send/send.utils'
 import {
   accountsWithSendEtherInfoSelector,
   getAddressBook,
@@ -6,7 +7,6 @@ import {
   getTargetAccount,
   getAveragePriceEstimateInHexWEI,
 } from '.'
-import { calcGasTotal } from '../pages/send/send.utils'
 
 export function getBlockGasLimit (state) {
   return state.metamask.currentBlockGasLimit

@@ -1,9 +1,9 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { shallow } from 'enzyme'
-import CurrencyDisplay from '../currency-display.component'
 import sinon from 'sinon'
 import * as reactRedux from 'react-redux'
+import CurrencyDisplay from '../currency-display.component'
 
 describe('CurrencyDisplay Component', function () {
   beforeEach(function () {

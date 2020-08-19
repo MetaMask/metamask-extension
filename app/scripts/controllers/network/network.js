@@ -6,11 +6,11 @@ import EthQuery from 'eth-query'
 import JsonRpcEngine from 'json-rpc-engine'
 import providerFromEngine from 'eth-json-rpc-middleware/providerFromEngine'
 import log from 'loglevel'
+import { createSwappableProxy, createEventEmitterProxy } from 'swappable-obj-proxy'
 import createMetamaskMiddleware from './createMetamaskMiddleware'
 import createInfuraClient from './createInfuraClient'
 import createJsonRpcClient from './createJsonRpcClient'
 import createLocalhostClient from './createLocalhostClient'
-import { createSwappableProxy, createEventEmitterProxy } from 'swappable-obj-proxy'
 
 const networks = { networkList: {} }
 
@@ -22,7 +22,7 @@ import {
 } from './enums'
 
 const env = process.env.METAMASK_ENV
-const METAMASK_DEBUG = process.env.METAMASK_DEBUG
+const { METAMASK_DEBUG } = process.env
 
 let defaultProviderConfigType
 if (process.env.IN_TEST === 'true') {

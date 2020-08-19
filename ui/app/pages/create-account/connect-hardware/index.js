@@ -3,10 +3,10 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import * as actions from '../../../store/actions'
 import { getMetaMaskAccounts } from '../../../selectors'
-import SelectHardware from './select-hardware'
-import AccountList from './account-list'
 import { formatBalance } from '../../../helpers/utils/util'
 import { getMostRecentOverviewPage } from '../../../ducks/history/history'
+import SelectHardware from './select-hardware'
+import AccountList from './account-list'
 
 class ConnectHardwareForm extends Component {
   state = {

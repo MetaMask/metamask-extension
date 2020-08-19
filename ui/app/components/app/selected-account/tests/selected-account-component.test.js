@@ -1,5 +1,5 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { render } from 'enzyme'
 import SelectedAccount from '../selected-account.component'
 

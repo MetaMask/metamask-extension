@@ -1,11 +1,11 @@
 import { connect } from 'react-redux'
-import CurrencyInput from './currency-input.component'
 import { ETH } from '../../../helpers/constants/common'
 import {
   getSendMaxModeState,
   getIsMainnet,
   getPreferences,
 } from '../../../selectors'
+import CurrencyInput from './currency-input.component'
 
 const mapStateToProps = (state) => {
   const { metamask: { nativeCurrency, currentCurrency, conversionRate } } = state

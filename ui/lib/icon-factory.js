@@ -1,7 +1,7 @@
 let iconFactory
 import { isValidAddress } from 'ethereumjs-util'
-import { checksumAddress } from '../app/helpers/utils/util'
 import contractMap from 'eth-contract-metadata'
+import { checksumAddress } from '../app/helpers/utils/util'
 
 export default function iconFactoryGenerator (jazzicon) {
   if (!iconFactory) {

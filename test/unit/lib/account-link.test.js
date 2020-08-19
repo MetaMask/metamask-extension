@@ -1,5 +1,5 @@
-import getAccountLink from '../../../ui/lib/account-link'
 import assert from 'assert'
+import getAccountLink from '../../../ui/lib/account-link'
 
 describe('Account link', function () {
   describe('getAccountLink', function () {

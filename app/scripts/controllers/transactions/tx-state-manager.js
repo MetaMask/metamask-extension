@@ -1,8 +1,8 @@
 import EventEmitter from 'safe-event-emitter'
 import ObservableStore from 'obs-store'
 import log from 'loglevel'
-import { generateHistoryEntry, replayHistory, snapshotFromTxMeta } from './lib/tx-state-history-helpers'
 import createId from '../../lib/random-id'
+import { generateHistoryEntry, replayHistory, snapshotFromTxMeta } from './lib/tx-state-history-helpers'
 import { getFinalStates, normalizeTxParams } from './lib/util'
 /**
   TransactionStateManager is responsible for the state of a transaction and
@@ -178,7 +178,7 @@ export default class TransactionStateManager extends EventEmitter {
 
     const transactions = this.getFullTxList()
     const txCount = transactions.length
-    const txHistoryLimit = this.txHistoryLimit
+    const { txHistoryLimit } = this
 
     // checks if the length of the tx history is
     // longer then desired persistence limit

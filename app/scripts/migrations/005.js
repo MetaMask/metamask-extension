@@ -27,7 +27,7 @@ export default {
 }
 
 function selectSubstateForKeyringController (state) {
-  const config = state.config
+  const { config } = state
   const newState = {
     ...state,
     KeyringController: {

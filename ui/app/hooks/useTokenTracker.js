@@ -13,14 +13,14 @@ export function useTokenTracker (tokens) {
   const [error, setError] = useState(null)
   const tokenTracker = useRef(null)
 
-  const updateBalances = useCallback((tokensWithBalances) => {
-    setTokensWithBalances(tokensWithBalances)
+  const updateBalances = useCallback((tokenWithBalances) => {
+    setTokensWithBalances(tokenWithBalances)
     setLoading(false)
     setError(null)
   }, [])
 
-  const showError = useCallback((error) => {
-    setError(error)
+  const showError = useCallback((err) => {
+    setError(err)
     setLoading(false)
   }, [])
 

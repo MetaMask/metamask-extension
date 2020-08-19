@@ -31,7 +31,7 @@ function transformState (state) {
 
   const { TransactionController } = newState
   if (TransactionController && TransactionController.transactions) {
-    const transactions = newState.TransactionController.transactions
+    const { transactions } = newState.TransactionController
 
     if (transactions.length <= 40) {
       return newState

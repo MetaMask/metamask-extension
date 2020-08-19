@@ -114,7 +114,7 @@ export default class TransactionListItemDetails extends PureComponent {
 
     return cancelDisabled
       ? (
-        <Tooltip title={t('notEnoughGas')}>
+        <Tooltip title={t('notEnoughGas')} position="bottom">
           <div>
             <Button
               type="raised"

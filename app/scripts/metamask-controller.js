@@ -10,22 +10,35 @@ import pump from 'pump'
 import Dnode from 'dnode'
 import extension from 'extensionizer'
 import ObservableStore from 'obs-store'
-import ComposableObservableStore from './lib/ComposableObservableStore'
 import asStream from 'obs-store/lib/asStream'
-import AccountTracker from './lib/account-tracker'
 import RpcEngine from 'json-rpc-engine'
 import { debounce } from 'lodash'
 import createEngineStream from 'json-rpc-middleware-stream/engineStream'
 import createFilterMiddleware from 'eth-json-rpc-filters'
 import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager'
+import providerAsMiddleware from 'eth-json-rpc-middleware/providerAsMiddleware'
+import KeyringController from 'eth-keyring-controller'
+import { Mutex } from 'await-semaphore'
+import ethUtil from 'ethereumjs-util'
+import log from 'loglevel'
+import TrezorKeyring from 'eth-trezor-keyring'
+import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring'
+import EthQuery from 'eth-query'
+import nanoid from 'nanoid'
+import contractMap from 'eth-contract-metadata'
+import {
+  AddressBookController,
+  CurrencyRateController,
+  PhishingController,
+} from '@metamask/controllers'
+import ComposableObservableStore from './lib/ComposableObservableStore'
+import AccountTracker from './lib/account-tracker'
 import createLoggerMiddleware from './lib/createLoggerMiddleware'
 import createMethodMiddleware from './lib/createMethodMiddleware'
 import createOriginMiddleware from './lib/createOriginMiddleware'
 import createTabIdMiddleware from './lib/createTabIdMiddleware'
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware'
-import providerAsMiddleware from 'eth-json-rpc-middleware/providerAsMiddleware'
 import { setupMultiplex } from './lib/stream-utils'
-import KeyringController from 'eth-keyring-controller'
 import EnsController from './controllers/ens'
 import NetworkController from './controllers/network'
 import PreferencesController from './controllers/preferences'
@@ -48,23 +61,8 @@ import getRestrictedMethods from './controllers/permissions/restrictedMethods'
 import nodeify from './lib/nodeify'
 import accountImporter from './account-import-strategies'
 import selectChainId from './lib/select-chain-id'
-import { Mutex } from 'await-semaphore'
-import { version } from '../manifest/_base.json'
-import ethUtil from 'ethereumjs-util'
-
 import seedPhraseVerifier from './lib/seed-phrase-verifier'
-import log from 'loglevel'
-import TrezorKeyring from 'eth-trezor-keyring'
-import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring'
-import EthQuery from 'eth-query'
-import nanoid from 'nanoid'
-import contractMap from 'eth-contract-metadata'
 
-import {
-  AddressBookController,
-  CurrencyRateController,
-  PhishingController,
-} from '@metamask/controllers'
 
 import backgroundMetaMetricsEvent from './lib/background-metametrics'
 
@@ -81,15 +79,13 @@ export default class MetamaskController extends EventEmitter {
 
     this.sendUpdate = debounce(this.privateSendUpdate.bind(this), 200)
     this.opts = opts
+    this.platform = opts.platform
     const initState = opts.initState || {}
     this.recordFirstTimeInfo(initState)
 
     // this keeps track of how many "controllerStream" connections are open
     // the only thing that uses controller connections are open metamask UI instances
     this.activeControllerConnections = 0
-
-    // platform-specific api
-    this.platform = opts.platform
 
     this.getRequestAccountTabIds = opts.getRequestAccountTabIds
     this.getOpenMetamaskTabsIds = opts.getOpenMetamaskTabsIds
@@ -221,6 +217,7 @@ export default class MetamaskController extends EventEmitter {
       preferencesStore: this.preferencesController.store,
     })
 
+    const version = this.platform.getVersion()
     this.threeBoxController = new ThreeBoxController({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
@@ -335,6 +332,7 @@ export default class MetamaskController extends EventEmitter {
    * Constructor helper: initialize a provider.
    */
   initializeProvider () {
+    const version = this.platform.getVersion()
     const providerOpts = {
       static: {
         eth_syncing: false,
@@ -408,7 +406,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Object} - status
    */
   getState () {
-    const vault = this.keyringController.store.getState().vault
+    const { vault } = this.keyringController.store.getState()
     const isInitialized = !!vault
 
     return {
@@ -425,14 +423,16 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Object} - Object containing API functions.
    */
   getApi () {
-    const keyringController = this.keyringController
-    const networkController = this.networkController
-    const onboardingController = this.onboardingController
-    const alertController = this.alertController
-    const permissionsController = this.permissionsController
-    const preferencesController = this.preferencesController
-    const threeBoxController = this.threeBoxController
-    const txController = this.txController
+    const {
+      keyringController,
+      networkController,
+      onboardingController,
+      alertController,
+      permissionsController,
+      preferencesController,
+      threeBoxController,
+      txController,
+    } = this
 
     return {
       // etc
@@ -594,8 +594,8 @@ export default class MetamaskController extends EventEmitter {
         vault = await this.keyringController.fullUpdate()
       } else {
         vault = await this.keyringController.createNewVaultAndKeychain(password)
-        const accounts = await this.keyringController.getAccounts()
-        this.preferencesController.setAddresses(accounts)
+        const addresses = await this.keyringController.getAccounts()
+        this.preferencesController.setAddresses(addresses)
         this.selectFirstIdentity()
       }
       return vault
@@ -614,7 +614,7 @@ export default class MetamaskController extends EventEmitter {
     try {
       let accounts, lastBalance
 
-      const keyringController = this.keyringController
+      const { keyringController } = this
 
       // clear known identities
       this.preferencesController.setAddresses([])
@@ -711,9 +711,9 @@ export default class MetamaskController extends EventEmitter {
       Object.keys(accountTokens[address]).forEach((networkType) => {
         filteredAccountTokens[checksummedAddress][networkType] = networkType === 'mainnet'
           ? (
-            accountTokens[address][networkType].filter(({ address }) => {
-              const tokenAddress = ethUtil.toChecksumAddress(address)
-              return contractMap[tokenAddress] ? contractMap[tokenAddress].erc20 : true
+            accountTokens[address][networkType].filter(({ address: tokenAddress }) => {
+              const checksumAddress = ethUtil.toChecksumAddress(tokenAddress)
+              return contractMap[checksumAddress] ? contractMap[checksumAddress].erc20 : true
             })
           )
           : accountTokens[address][networkType]
@@ -746,7 +746,7 @@ export default class MetamaskController extends EventEmitter {
 
     // transactions
 
-    let transactions = this.txController.store.getState().transactions
+    let { transactions } = this.txController.store.getState()
     // delete tx for other accounts that we're not importing
     transactions = transactions.filter((tx) => {
       const checksummedTxFrom = ethUtil.toChecksumAddress(tx.txParams.from)
@@ -944,7 +944,7 @@ export default class MetamaskController extends EventEmitter {
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found')
     }
-    const keyringController = this.keyringController
+    const { keyringController } = this
     const oldAccounts = await keyringController.getAccounts()
     const keyState = await keyringController.addNewAccount(primaryKeyring)
     const newAccounts = await keyringController.getAccounts()
@@ -1114,7 +1114,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} msgId - The id of the message to cancel.
    */
   cancelMessage (msgId, cb) {
-    const messageManager = this.messageManager
+    const { messageManager } = this
     messageManager.rejectMsg(msgId)
     if (cb && typeof cb === 'function') {
       cb(null, this.getState())
@@ -1349,7 +1349,7 @@ export default class MetamaskController extends EventEmitter {
   async signTypedMessage (msgParams) {
     log.info('MetaMaskController - eth_signTypedData')
     const msgId = msgParams.metamaskId
-    const version = msgParams.version
+    const { version } = msgParams
     try {
       const cleanMsgParams = await this.typedMessageManager.approveMessage(msgParams)
 
@@ -1462,7 +1462,7 @@ export default class MetamaskController extends EventEmitter {
    */
   setupUntrustedCommunication (connectionStream, sender) {
     const { usePhishDetect } = this.preferencesController.store.getState()
-    const hostname = (new URL(sender.url)).hostname
+    const { hostname } = new URL(sender.url)
     // Check if new connection is blocked if phishing detection is on
     if (usePhishDetect && this.phishingController.test(hostname)) {
       log.debug('MetaMask - sending phishing warning for', hostname)
@@ -1601,8 +1601,7 @@ export default class MetamaskController extends EventEmitter {
   setupProviderEngine ({ origin, location, extensionId, tabId, isInternal = false }) {
     // setup json rpc engine stack
     const engine = new RpcEngine()
-    const provider = this.provider
-    const blockTracker = this.blockTracker
+    const { provider, blockTracker } = this
 
     // create filter polyfill middleware
     const filterMiddleware = createFilterMiddleware({ provider, blockTracker })
@@ -2058,6 +2057,7 @@ export default class MetamaskController extends EventEmitter {
    */
   recordFirstTimeInfo (initState) {
     if (!('firstTimeInfo' in initState)) {
+      const version = this.platform.getVersion()
       initState.firstTimeInfo = {
         version,
         date: Date.now(),

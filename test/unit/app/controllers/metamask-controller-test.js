@@ -4,9 +4,10 @@ import { cloneDeep } from 'lodash'
 import nock from 'nock'
 import ethUtil from 'ethereumjs-util'
 import { obj as createThoughStream } from 'through2'
+import EthQuery from 'eth-query'
+import proxyquire from 'proxyquire'
 import firstTimeState from '../../localhostState'
 import createTxMeta from '../../../lib/createTxMeta'
-import EthQuery from 'eth-query'
 
 const threeBoxSpies = {
   init: sinon.stub(),
@@ -14,7 +15,6 @@ const threeBoxSpies = {
   turnThreeBoxSyncingOn: sinon.stub(),
   _registerUpdates: sinon.spy(),
 }
-import proxyquire from 'proxyquire'
 
 class ThreeBoxControllerMock {
   constructor () {
@@ -113,7 +113,7 @@ describe('MetaMaskController', function () {
         },
       },
       initState: cloneDeep(firstTimeState),
-      platform: { showTransactionNotification: () => undefined },
+      platform: { showTransactionNotification: () => undefined, getVersion: () => 'foo' },
     })
     // disable diagnostics
     metamaskController.diagnostics = null
@@ -694,7 +694,7 @@ describe('MetaMaskController', function () {
       metamaskMsgs = metamaskController.messageManager.getUnapprovedMsgs()
       messages = metamaskController.messageManager.messages
       msgId = Object.keys(metamaskMsgs)[0]
-      messages[0].msgParams.metamaskId = parseInt(msgId)
+      messages[0].msgParams.metamaskId = parseInt(msgId, 10)
     })
 
     it('persists address from msg params', function () {
@@ -714,7 +714,7 @@ describe('MetaMaskController', function () {
     })
 
     it('rejects the message', function () {
-      const msgIdInt = parseInt(msgId)
+      const msgIdInt = parseInt(msgId, 10)
       metamaskController.cancelMessage(msgIdInt, noop)
       assert.equal(messages[0].status, 'rejected')
     })
@@ -754,15 +754,14 @@ describe('MetaMaskController', function () {
       metamaskPersonalMsgs = metamaskController.personalMessageManager.getUnapprovedMsgs()
       personalMessages = metamaskController.personalMessageManager.messages
       msgId = Object.keys(metamaskPersonalMsgs)[0]
-      personalMessages[0].msgParams.metamaskId = parseInt(msgId)
+      personalMessages[0].msgParams.metamaskId = parseInt(msgId, 10)
     })
 
     it('errors with no from in msgParams', async function () {
-      const msgParams = {
-        'data': data,
-      }
       try {
-        await metamaskController.newUnsignedPersonalMessage(msgParams)
+        await metamaskController.newUnsignedPersonalMessage({
+          'data': data,
+        })
         assert.fail('should have thrown')
       } catch (error) {
         assert.equal(error.message, 'MetaMask Message Signature: from field is required.')
@@ -786,7 +785,7 @@ describe('MetaMaskController', function () {
     })
 
     it('rejects the message', function () {
-      const msgIdInt = parseInt(msgId)
+      const msgIdInt = parseInt(msgId, 10)
       metamaskController.cancelPersonalMessage(msgIdInt, noop)
       assert.equal(personalMessages[0].status, 'rejected')
     })

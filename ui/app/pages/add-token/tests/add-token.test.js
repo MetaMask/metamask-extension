@@ -1,6 +1,6 @@
+import assert from 'assert'
 import React from 'react'
 import { Provider } from 'react-redux'
-import assert from 'assert'
 import sinon from 'sinon'
 import configureMockStore from 'redux-mock-store'
 import { mountWithRouter } from '../../../../../test/lib/render-helpers'

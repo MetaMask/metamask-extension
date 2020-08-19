@@ -1,4 +1,3 @@
-import Home from './home.component'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
@@ -23,6 +22,7 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../../app/scripts/lib/enums'
+import Home from './home.component'
 
 const mapStateToProps = (state) => {
   const { metamask, appState } = state

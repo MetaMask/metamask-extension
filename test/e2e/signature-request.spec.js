@@ -74,7 +74,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
 
       await driver.waitUntilXWindowHandles(3)
-      const windowHandles = await driver.getAllWindowHandles()
+      windowHandles = await driver.getAllWindowHandles()
 
       extension = windowHandles[0]
       dapp = await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles)

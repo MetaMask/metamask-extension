@@ -1,5 +1,5 @@
-import * as utils from './common.util'
 import assert from 'assert'
+import * as utils from './common.util'
 
 describe('Common utils', function () {
   describe('camelCaseToCapitalize', function () {

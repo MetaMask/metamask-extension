@@ -1,7 +1,7 @@
+import punycode from 'punycode'
 import abi from 'human-standard-token-abi'
 import ethUtil from 'ethereumjs-util'
 import { DateTime } from 'luxon'
-import punycode from 'punycode'
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate (date, format = 'M/d/y \'at\' T') {
