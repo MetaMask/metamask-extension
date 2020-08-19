@@ -4,6 +4,8 @@ import classnames from 'classnames'
 import { Tabs, Tab } from '../../../ui/tabs'
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.'
 import ErrorMessage from '../../../ui/error-message'
+import { PageContainerFooter } from '../../../ui/page-container'
+
 
 export default class ConfirmPageContainerContent extends Component {
   static propTypes = {
@@ -22,6 +24,15 @@ export default class ConfirmPageContainerContent extends Component {
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     titleComponent: PropTypes.node,
     warning: PropTypes.string,
+    // Footer
+    onCancelAll: PropTypes.func,
+    onCancel: PropTypes.func,
+    cancelText: PropTypes.string,
+    onSubmit: PropTypes.func,
+    submitText: PropTypes.string,
+    disabled: PropTypes.bool,
+    unapprovedTxCount: PropTypes.number,
+    rejectNText: PropTypes.string,
   }
 
   renderContent () {
@@ -66,6 +77,14 @@ export default class ConfirmPageContainerContent extends Component {
       detailsComponent,
       dataComponent,
       warning,
+      onCancelAll,
+      onCancel,
+      cancelText,
+      onSubmit,
+      submitText,
+      disabled,
+      unapprovedTxCount,
+      rejectNText,
     } = this.props
 
     return (
@@ -104,6 +123,21 @@ export default class ConfirmPageContainerContent extends Component {
             </div>
           )
         }
+        <PageContainerFooter
+          onCancel={onCancel}
+          cancelText={cancelText}
+          onSubmit={onSubmit}
+          submitText={submitText}
+          submitButtonType="confirm"
+          disabled={disabled}
+        >
+          {unapprovedTxCount > 1 && (
+            <a onClick={onCancelAll}>
+              {rejectNText}
+            </a>
+          )}
+        </PageContainerFooter>
+
       </div>
     )
   }

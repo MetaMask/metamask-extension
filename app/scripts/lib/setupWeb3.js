@@ -44,9 +44,10 @@ export default function setupWeb3 (log) {
       }
 
       if (shouldLogUsage) {
+        const name = stringifyKey(key)
         window.ethereum.request({
           method: 'metamask_logInjectedWeb3Usage',
-          params: [{ action: 'window.web3 get', name: key }],
+          params: [{ action: 'window.web3 get', name }],
         })
       }
 
@@ -54,11 +55,11 @@ export default function setupWeb3 (log) {
       return _web3[key]
     },
     set: (_web3, key, value) => {
-
+      const name = stringifyKey(key)
       if (shouldLogUsage) {
         window.ethereum.request({
           method: 'metamask_logInjectedWeb3Usage',
-          params: [{ action: 'window.web3 set', name: key }],
+          params: [{ action: 'window.web3 set', name }],
         })
       }
 
@@ -119,4 +120,16 @@ export default function setupWeb3 (log) {
 // reload the page
 function triggerReset () {
   global.location.reload()
+}
+
+/**
+ * Returns a "stringified" key. Keys that are already strings are returned
+ * unchanged, and any non-string values are returned as "typeof <type>".
+ *
+ * @param {any} key - The key to stringify
+ */
+function stringifyKey (key) {
+  return typeof key === 'string'
+    ? key
+    : `typeof ${typeof key}`
 }

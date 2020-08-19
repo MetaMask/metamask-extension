@@ -34,6 +34,7 @@ describe('SendGasRow Component', function () {
           }}
         />
       ), { context: { t: (str) => str + '_t', metricsEvent: () => ({}) } })
+      wrapper.setProps({ isMainnet: true })
     })
 
     afterEach(function () {
