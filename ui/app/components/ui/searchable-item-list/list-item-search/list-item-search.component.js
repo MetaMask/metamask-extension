@@ -4,75 +4,65 @@ import Fuse from 'fuse.js'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import TextField from '../../text-field'
 
-const generateFuseKeys = (keys) => {
-  const weight = 1 / keys.length
-  return keys.map((key) => ({ name: key, weight }))
-}
+const renderAdornment = () => (
+  <InputAdornment
+    position="start"
+    style={{ marginRight: '12px' }}
+  >
+    <img src="images/search.svg" />
+  </InputAdornment>
+)
 
-function usePrevious (value) {
+const usePrevious = (value) => {
   const ref = useRef()
   useEffect(() => {
     ref.current = value
-  })
+  }, [value])
   return ref.current
 }
-
-let fuse
 
 export default function ListItemSearch ({
   onSearch = null,
   error = '',
   listToSearch = [],
-  searchByKeys = [],
-  fuseSearchKeys = null,
+  fuseSearchKeys,
   searchPlaceholderText = '',
   defaultToAll = false,
 }) {
+  const fuseRef = useRef()
   const [searchQuery, setSearchQuery] = useState('')
 
   const handleSearch = (newSearchQuery) => {
     setSearchQuery(newSearchQuery)
-    const fuseSearchResult = fuse.search(newSearchQuery)
+    const fuseSearchResult = fuseRef.current.search(newSearchQuery)
     onSearch({
       searchQuery: newSearchQuery,
       results: defaultToAll && newSearchQuery === '' ? listToSearch : fuseSearchResult,
     })
   }
 
-  const didMountRef = useRef(false)
   useEffect(() => {
-    if (!didMountRef.current) {
-      didMountRef.current = true
-      fuse = new Fuse(listToSearch, {
+    if (!fuseRef.current) {
+      fuseRef.current = new Fuse(listToSearch, {
         shouldSort: true,
-        threshold: 0.1,
+        threshold: 0.45,
         location: 0,
         distance: 100,
         maxPatternLength: 32,
         minMatchCharLength: 1,
-        keys: fuseSearchKeys || generateFuseKeys(searchByKeys),
+        keys: fuseSearchKeys,
       })
     }
-  }, [ searchByKeys, fuseSearchKeys, listToSearch ])
+  }, [ fuseSearchKeys, listToSearch ])
 
-  const previous = usePrevious({ listToSearch }) || []
+  const previousListToSearch = usePrevious(listToSearch) || []
   useEffect(() => {
-    if (didMountRef.current && searchQuery && previous.listToSearch !== listToSearch) {
-      fuse.setCollection(listToSearch)
-      const fuseSearchResult = fuse.search(searchQuery)
+    if (fuseRef.current && searchQuery && previousListToSearch !== listToSearch) {
+      fuseRef.current.setCollection(listToSearch)
+      const fuseSearchResult = fuseRef.current.search(searchQuery)
       onSearch({ searchQuery, results: fuseSearchResult })
     }
-  }, [ listToSearch, searchQuery, onSearch, previous.listToSearch ])
-
-
-  const renderAdornment = () => (
-    <InputAdornment
-      position="start"
-      style={{ marginRight: '12px' }}
-    >
-      <img src="images/search.svg" />
-    </InputAdornment>
-  )
+  }, [ listToSearch, searchQuery, onSearch, previousListToSearch ])
 
   return (
     <TextField
@@ -93,8 +83,7 @@ ListItemSearch.propTypes = {
   onSearch: PropTypes.func,
   error: PropTypes.string,
   listToSearch: PropTypes.array.isRequired,
-  searchByKeys: PropTypes.arrayOf(PropTypes.string),
-  fuseSearchKeys: PropTypes.arrayOf(PropTypes.object),
+  fuseSearchKeys: PropTypes.arrayOf(PropTypes.object).isRequired,
   searchPlaceholderText: PropTypes.string,
   defaultToAll: PropTypes.bool,
 }

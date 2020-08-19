@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
-export default function SearchableItemList ({
+export default function ItemList ({
   results = [],
   onClickItem = null,
   Placeholder = null,
@@ -67,7 +67,7 @@ export default function SearchableItemList ({
     )
 }
 
-SearchableItemList.propTypes = {
+ItemList.propTypes = {
   results: PropTypes.arrayOf(PropTypes.shape({
     iconUrl: PropTypes.string,
     selected: PropTypes.bool,
