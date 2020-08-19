@@ -31,7 +31,8 @@ function defineAllTasks () {
   const { clean, reload, zip } = createEtcTasks({ livereload, browserPlatforms })
 
   // build for development (livereload)
-  createTask('dev',
+  createTask(
+    'dev',
     composeSeries(
       clean,
       styleTasks.dev,
@@ -41,10 +42,12 @@ function defineAllTasks () {
         manifestTasks.dev,
         reload,
       ),
-    ))
+    ),
+  )
 
   // build for test development (livereload)
-  createTask('testDev',
+  createTask(
+    'testDev',
     composeSeries(
       clean,
       styleTasks.dev,
@@ -54,10 +57,12 @@ function defineAllTasks () {
         manifestTasks.testDev,
         reload,
       ),
-    ))
+    ),
+  )
 
   // build for prod release
-  createTask('prod',
+  createTask(
+    'prod',
     composeSeries(
       clean,
       styleTasks.prod,
@@ -67,10 +72,12 @@ function defineAllTasks () {
         manifestTasks.prod,
       ),
       zip,
-    ))
+    ),
+  )
 
   // build for CI testing
-  createTask('test',
+  createTask(
+    'test',
     composeSeries(
       clean,
       styleTasks.prod,
@@ -79,7 +86,8 @@ function defineAllTasks () {
         staticTasks.prod,
         manifestTasks.test,
       ),
-    ))
+    ),
+  )
 
   // special build for minimal CI testing
   createTask('styles', styleTasks.prod)
