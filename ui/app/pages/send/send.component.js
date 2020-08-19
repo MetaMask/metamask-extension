@@ -14,7 +14,6 @@ import SendContent from './send-content'
 import SendFooter from './send-footer'
 import EnsInput from './send-content/add-recipient/ens-input'
 
-
 export default class SendTransactionScreen extends Component {
 
   static propTypes = {

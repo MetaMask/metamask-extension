@@ -26,7 +26,7 @@ export default class PreferencesController {
    *
    */
   constructor (opts = {}) {
-    const initState = Object.assign({
+    const initState = {
       frequentRpcListDetail: [],
       accountTokens: {},
       assetImages: {},
@@ -61,8 +61,8 @@ export default class PreferencesController {
       metaMetricsSendCount: 0,
 
       // ENS decentralized website resolution
-      ipfsGateway: 'dweb.link',
-    }, opts.initState)
+      ipfsGateway: 'dweb.link', ...opts.initState,
+    }
 
     this.diagnostics = opts.diagnostics
     this.network = opts.network
@@ -152,7 +152,6 @@ export default class PreferencesController {
     this.store.updateState({ firstTimeFlowType: type })
   }
 
-
   getSuggestedTokens () {
     return this.store.getState().suggestedTokens
   }
@@ -215,7 +214,6 @@ export default class PreferencesController {
     }
 
     next()
-    return
   }
 
   /**
@@ -228,7 +226,7 @@ export default class PreferencesController {
     const textDirection = (['ar', 'dv', 'fa', 'he', 'ku'].includes(key)) ? 'rtl' : 'auto'
     this.store.updateState({
       currentLocale: key,
-      textDirection: textDirection,
+      textDirection,
     })
     return textDirection
   }
@@ -281,7 +279,6 @@ export default class PreferencesController {
     }
     return address
   }
-
 
   /**
    * Adds addresses to the identities object without removing identities
@@ -470,7 +467,7 @@ export default class PreferencesController {
    */
   setAccountLabel (account, label) {
     if (!account) {
-      throw new Error('setAccountLabel requires a valid address, got ' + String(account))
+      throw new Error(`setAccountLabel requires a valid address, got ${String(account)}`)
     }
     const address = normalizeAddress(account)
     const { identities } = this.store.getState()
@@ -491,7 +488,6 @@ export default class PreferencesController {
    *
    */
 
-
   updateRpc (newRpcDetails) {
     const rpcList = this.getFrequentRpcListDetail()
     const index = rpcList.findIndex((element) => {
@@ -508,6 +504,7 @@ export default class PreferencesController {
     }
     return Promise.resolve(rpcList)
   }
+
   /**
    * Adds custom RPC url to state.
    *
@@ -529,7 +526,7 @@ export default class PreferencesController {
     if (url !== 'http://localhost:8545') {
       let checkedChainId
       // eslint-disable-next-line radix
-      if (!!chainId && !Number.isNaN(parseInt(chainId))) {
+      if (Boolean(chainId) && !Number.isNaN(parseInt(chainId))) {
         checkedChainId = chainId
       }
       rpcList.push({ rpcUrl: url, chainId: checkedChainId, ticker, nickname, rpcPrefs })

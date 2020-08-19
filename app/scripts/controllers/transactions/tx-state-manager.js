@@ -4,6 +4,7 @@ import log from 'loglevel'
 import createId from '../../lib/random-id'
 import { generateHistoryEntry, replayHistory, snapshotFromTxMeta } from './lib/tx-state-history-helpers'
 import { getFinalStates, normalizeTxParams } from './lib/util'
+
 /**
   TransactionStateManager is responsible for the state of a transaction and
   storing the transaction
@@ -31,9 +32,8 @@ export default class TransactionStateManager extends EventEmitter {
     super()
 
     this.store = new ObservableStore(
-      Object.assign({
-        transactions: [],
-      }, initState))
+      { transactions: [], ...initState },
+    )
     this.txHistoryLimit = txHistoryLimit
     this.getNetwork = getNetwork
   }
@@ -47,13 +47,13 @@ export default class TransactionStateManager extends EventEmitter {
     if (netId === 'loading') {
       throw new Error('MetaMask is having trouble connecting to the network')
     }
-    return Object.assign({
+    return {
       id: createId(),
       time: (new Date()).getTime(),
       status: 'unapproved',
       metamaskNetworkId: netId,
-      loadingDefaults: true,
-    }, opts)
+      loadingDefaults: true, ...opts,
+    }
   }
 
   /**
@@ -202,6 +202,7 @@ export default class TransactionStateManager extends EventEmitter {
     this._saveTxList(transactions)
     return txMeta
   }
+
   /**
     @param {number} txId
     @returns {Object} - the txMeta who matches the given id if none found
@@ -240,7 +241,6 @@ export default class TransactionStateManager extends EventEmitter {
     txList[index] = txMeta
     this._saveTxList(txList)
   }
-
 
   /**
     merges txParams obj onto txMeta.txParams
@@ -326,6 +326,7 @@ export default class TransactionStateManager extends EventEmitter {
     })
     return filteredTxList
   }
+
   /**
 
     @param {string} key - the key to check
@@ -340,9 +341,8 @@ export default class TransactionStateManager extends EventEmitter {
     return txList.filter((txMeta) => {
       if (key in txMeta.txParams) {
         return filter(txMeta.txParams[key])
-      } else {
-        return filter(txMeta[key])
       }
+      return filter(txMeta[key])
     })
   }
 
@@ -373,6 +373,7 @@ export default class TransactionStateManager extends EventEmitter {
   setTxStatusUnapproved (txId) {
     this._setTxStatus(txId, 'unapproved')
   }
+
   /**
     should update the status of the tx to 'approved'.
     @param {number} txId - the txMeta Id
@@ -416,7 +417,6 @@ export default class TransactionStateManager extends EventEmitter {
   setTxStatusDropped (txId) {
     this._setTxStatus(txId, 'dropped')
   }
-
 
   /**
     should update the status of the tx to 'failed'.

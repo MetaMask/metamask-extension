@@ -587,13 +587,13 @@ describe('TransactionStateManager', function () {
 
   describe('#_removeTx', function () {
     it('should remove the transaction from the storage', function () {
-      txStateManager._saveTxList([ { id: 1 } ])
+      txStateManager._saveTxList([{ id: 1 }])
       txStateManager._removeTx(1)
       assert.ok(!txStateManager.getFullTxList().length, 'txList should be empty')
     })
 
     it('should only remove the transaction with ID 1 from the storage', function () {
-      txStateManager._saveTxList([ { id: 1 }, { id: 2 } ])
+      txStateManager._saveTxList([{ id: 1 }, { id: 2 }])
       txStateManager._removeTx(1)
       assert.equal(txStateManager.getFullTxList()[0].id, 2, 'txList should have a id of 2')
     })

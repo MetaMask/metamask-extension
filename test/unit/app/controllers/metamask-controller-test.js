@@ -104,11 +104,11 @@ describe('MetaMaskController', function () {
       showUnapprovedTx: noop,
       showUnconfirmedMessage: noop,
       encryptor: {
-        encrypt: function (_, object) {
+        encrypt (_, object) {
           this.object = object
           return Promise.resolve('mock-encrypted')
         },
-        decrypt: function () {
+        decrypt () {
           return Promise.resolve(this.object)
         },
       },
@@ -146,7 +146,7 @@ describe('MetaMaskController', function () {
     beforeEach(async function () {
       const password = 'a-fake-password'
       await metamaskController.createNewVaultAndRestore(password, TEST_SEED)
-      await metamaskController.importAccountWithStrategy('Private Key', [ importPrivkey ])
+      await metamaskController.importAccountWithStrategy('Private Key', [importPrivkey])
     })
 
     it('adds private key to keyrings in KeyringController', async function () {
@@ -306,9 +306,9 @@ describe('MetaMaskController', function () {
     it('should return the balance known by accountTracker', async function () {
       const accounts = {}
       const balance = '0x14ced5122ce0a000'
-      accounts[TEST_ADDRESS] = { balance: balance }
+      accounts[TEST_ADDRESS] = { balance }
 
-      metamaskController.accountTracker.store.putState({ accounts: accounts })
+      metamaskController.accountTracker.store.putState({ accounts })
 
       const gotten = await metamaskController.getBalance(TEST_ADDRESS)
 
@@ -323,7 +323,7 @@ describe('MetaMaskController', function () {
         callback(undefined, balance)
       })
 
-      metamaskController.accountTracker.store.putState({ accounts: accounts })
+      metamaskController.accountTracker.store.putState({ accounts })
 
       const gotten = await metamaskController.getBalance(TEST_ADDRESS, ethQuery)
 
@@ -367,7 +367,7 @@ describe('MetaMaskController', function () {
       address = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
       identities = {
         '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-          'address': address,
+          address,
           'name': 'Account 1',
         },
         '0xc42edfcc21ed14dda456aa0756c153f7985d8813': {
@@ -503,7 +503,6 @@ describe('MetaMaskController', function () {
       assert.equal(keyrings[0].unlockedAccount, accountToUnlock)
     })
 
-
     it('should call keyringController.addNewAccount', async function () {
       assert(metamaskController.keyringController.addNewAccount.calledOnce)
     })
@@ -523,7 +522,6 @@ describe('MetaMaskController', function () {
     it('should call preferencesController.setAccountLabel', async function () {
       assert(metamaskController.preferencesController.setAccountLabel.calledOnce)
     })
-
 
   })
 
@@ -684,7 +682,7 @@ describe('MetaMaskController', function () {
 
       msgParams = {
         'from': address,
-        'data': data,
+        data,
       }
 
       const promise = metamaskController.newUnsignedMessage(msgParams)
@@ -744,7 +742,7 @@ describe('MetaMaskController', function () {
 
       msgParams = {
         'from': address,
-        'data': data,
+        data,
       }
 
       const promise = metamaskController.newUnsignedPersonalMessage(msgParams)
@@ -760,7 +758,7 @@ describe('MetaMaskController', function () {
     it('errors with no from in msgParams', async function () {
       try {
         await metamaskController.newUnsignedPersonalMessage({
-          'data': data,
+          data,
         })
         assert.fail('should have thrown')
       } catch (error) {

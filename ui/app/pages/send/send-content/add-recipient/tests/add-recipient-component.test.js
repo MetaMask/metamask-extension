@@ -37,7 +37,7 @@ describe('AddRecipient Component', function () {
         nonContacts={[{ address: '0x70F061544cC398520615B5d3e7A3BedD70cd4510', name: 'Fav 7' }]}
         contacts={[{ address: '0x60F061544cC398520615B5d3e7A3BedD70cd4510', name: 'Fav 6' }]}
       />
-    ), { context: { t: (str) => str + '_t' } })
+    ), { context: { t: (str) => `${str}_t` } })
     instance = wrapper.instance()
   })
 
@@ -93,7 +93,6 @@ describe('AddRecipient Component', function () {
 
       const xferLink = wrapper.find('.send__select-recipient-wrapper__list__link')
       assert.equal(xferLink.length, 1)
-
 
       const groups = wrapper.find('RecipientGroup')
       assert.equal(groups.shallow().find('.send__select-recipient-wrapper__group').length, 1)

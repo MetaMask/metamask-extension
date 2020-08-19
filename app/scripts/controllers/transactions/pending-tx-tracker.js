@@ -15,11 +15,11 @@ import EthQuery from 'ethjs-query'
     @param {function} config.getPendingTransactions a function for getting an array of transactions,
     @param {function} config.publishTransaction a async function for publishing raw transactions,
 
-
 @class
 */
 
 export default class PendingTransactionTracker extends EventEmitter {
+
   /**
    * We wait this many blocks before emitting a 'tx:dropped' event
    *
@@ -196,7 +196,6 @@ export default class PendingTransactionTracker extends EventEmitter {
 
     if (await this._checkIfTxWasDropped(txMeta)) {
       this.emit('tx:dropped', txId)
-      return
     }
   }
 

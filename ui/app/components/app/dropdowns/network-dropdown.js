@@ -135,45 +135,44 @@ class NetworkDropdown extends Component {
 
       if ((rpc === 'http://localhost:8545') || currentRpcTarget) {
         return null
-      } else {
-        const { chainId } = entry
-        return (
-          <DropdownMenuItem
-            key={`common${rpc}`}
-            closeMenu={() => this.props.hideNetworkDropdown()}
-            onClick={() => this.props.setRpcTarget(rpc, chainId, ticker, nickname)}
+      }
+      const { chainId } = entry
+      return (
+        <DropdownMenuItem
+          key={`common${rpc}`}
+          closeMenu={() => this.props.hideNetworkDropdown()}
+          onClick={() => this.props.setRpcTarget(rpc, chainId, ticker, nickname)}
+          style={{
+            fontSize: '16px',
+            lineHeight: '20px',
+            padding: '12px 0',
+          }}
+        >
+          {
+            currentRpcTarget
+              ? <i className="fa fa-check" />
+              : <div className="network-check__transparent">✓</div>
+          }
+          <i className="fa fa-question-circle fa-med menu-icon-circle" />
+          <span
+            className="network-name-item"
             style={{
-              fontSize: '16px',
-              lineHeight: '20px',
-              padding: '12px 0',
+              color: currentRpcTarget
+                ? '#ffffff'
+                : '#9b9b9b',
             }}
           >
-            {
-              currentRpcTarget
-                ? <i className="fa fa-check" />
-                : <div className="network-check__transparent">✓</div>
-            }
-            <i className="fa fa-question-circle fa-med menu-icon-circle" />
-            <span
-              className="network-name-item"
-              style={{
-                color: currentRpcTarget
-                  ? '#ffffff'
-                  : '#9b9b9b',
-              }}
-            >
-              {nickname || rpc}
-            </span>
-            <i
-              className="fa fa-times delete"
-              onClick={(e) => {
-                e.stopPropagation()
-                this.props.delRpcTarget(rpc)
-              }}
-            />
-          </DropdownMenuItem>
-        )
-      }
+            {nickname || rpc}
+          </span>
+          <i
+            className="fa fa-times delete"
+            onClick={(e) => {
+              e.stopPropagation()
+              this.props.delRpcTarget(rpc)
+            }}
+          />
+        </DropdownMenuItem>
+      )
     })
   }
 

@@ -36,7 +36,7 @@ export default async function resolveEnsToIpfsContentId ({ provider, name }) {
       decodedContentHash = contentHash.helpers.cidV0ToV1Base32(decodedContentHash)
     }
 
-    return { type: type, hash: decodedContentHash }
+    return { type, hash: decodedContentHash }
   }
   if (isLegacyResolver[0]) {
     // lookup content id

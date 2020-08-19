@@ -26,7 +26,6 @@ function delay (time) {
   return new Promise((resolve) => setTimeout(resolve, time))
 }
 
-
 function createEstimateGasMiddleware () {
   return createAsyncMiddleware(async (req, _, next) => {
     if (req.method === 'eth_estimateGas' && inTest) {

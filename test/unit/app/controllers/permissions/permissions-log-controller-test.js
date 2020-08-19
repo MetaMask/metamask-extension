@@ -310,7 +310,7 @@ describe('permissions log', function () {
       )
 
       // store the id of the current second entry
-      const nextFirstId = log[1]['id']
+      const nextFirstId = log[1].id
 
       // add one more entry to log, putting it over the limit
       lastId = nanoid()
@@ -356,7 +356,7 @@ describe('permissions log', function () {
       const req = RPC_REQUESTS.requestPermission(
         DOMAINS.a.origin, PERM_NAMES.test_method,
       )
-      const res = { result: [ PERMS.granted.test_method() ] }
+      const res = { result: [PERMS.granted.test_method()] }
 
       // noop => no response
       logMiddleware({ ...req }, { ...res }, noop)
@@ -384,7 +384,7 @@ describe('permissions log', function () {
         DOMAINS.a.origin, PERM_NAMES.test_method,
       )
       delete req.params
-      const res = { result: [ PERMS.granted.test_method() ] }
+      const res = { result: [PERMS.granted.test_method()] }
 
       // no params => no response
       logMiddleware({ ...req }, { ...res })
@@ -400,7 +400,7 @@ describe('permissions log', function () {
         DOMAINS.a.origin, PERM_NAMES.eth_accounts,
       )
       const res = {
-        result: [ PERMS.granted.eth_accounts(ACCOUNTS.a.permitted) ],
+        result: [PERMS.granted.eth_accounts(ACCOUNTS.a.permitted)],
       }
 
       logMiddleware({ ...req }, { ...res })
@@ -419,7 +419,7 @@ describe('permissions log', function () {
 
       clock.tick(1)
 
-      res.result = [ PERMS.granted.eth_accounts([ ACCOUNTS.a.permitted[0] ]) ]
+      res.result = [PERMS.granted.eth_accounts([ACCOUNTS.a.permitted[0]])]
 
       logMiddleware({ ...req }, { ...res })
 
@@ -438,7 +438,7 @@ describe('permissions log', function () {
         DOMAINS.a.origin, PERM_NAMES.eth_accounts,
       )
       const res = {
-        result: [ PERMS.granted.eth_accounts(ACCOUNTS.a.permitted) ],
+        result: [PERMS.granted.eth_accounts(ACCOUNTS.a.permitted)],
       }
       delete res.result[0].caveats
 
@@ -458,7 +458,7 @@ describe('permissions log', function () {
         DOMAINS.a.origin, PERM_NAMES.eth_accounts,
       )
       const res = {
-        result: [ PERMS.granted.eth_accounts(ACCOUNTS.a.permitted) ],
+        result: [PERMS.granted.eth_accounts(ACCOUNTS.a.permitted)],
       }
       res.result[0].caveats.push({ foo: 'bar' })
 
@@ -558,7 +558,7 @@ describe('permissions log', function () {
           DOMAINS.a.origin, PERM_NAMES.test_method,
         ),
         res: {
-          result: [ PERMS.granted.test_method() ],
+          result: [PERMS.granted.test_method()],
         },
       })
 
@@ -568,7 +568,7 @@ describe('permissions log', function () {
           DOMAINS.b.origin, PERM_NAMES.eth_accounts,
         ),
         res: {
-          result: [ PERMS.granted.eth_accounts(ACCOUNTS.b.permitted) ],
+          result: [PERMS.granted.eth_accounts(ACCOUNTS.b.permitted)],
         },
       })
 
@@ -616,7 +616,7 @@ describe('permissions log', function () {
           DOMAINS.a.origin, PERM_NAMES.test_method,
         ),
         res: {
-          result: [ PERMS.granted.test_method() ],
+          result: [PERMS.granted.test_method()],
         },
       })
 

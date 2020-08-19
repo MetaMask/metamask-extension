@@ -63,11 +63,10 @@ export const getMetaMaskAccounts = createSelector(
         },
 
       }
-    } else {
-      return {
-        ...selectedAccounts,
-        [accountID]: account,
-      }
+    }
+    return {
+      ...selectedAccounts,
+      [accountID]: account,
     }
   }, {}),
 )
@@ -119,7 +118,7 @@ export const getMetaMaskAccountsOrdered = createSelector(
   getMetaMaskAccounts,
   (keyrings, identities, accounts) => keyrings
     .reduce((list, keyring) => list.concat(keyring.accounts), [])
-    .filter((address) => !!identities[address])
+    .filter((address) => Boolean(identities[address]))
     .map((address) => ({ ...identities[address], ...accounts[address] })),
 )
 
@@ -180,7 +179,7 @@ export function accountsWithSendEtherInfoSelector (state) {
   const identities = getMetaMaskIdentities(state)
 
   const accountsWithSendEtherInfo = Object.entries(identities).map(([key, identity]) => {
-    return Object.assign({}, identity, accounts[key])
+    return { ...identity, ...accounts[key] }
   })
 
   return accountsWithSendEtherInfo
@@ -258,7 +257,7 @@ export function isEthereumNetwork (state) {
     GOERLI,
   } = NETWORK_TYPES
 
-  return [ KOVAN, MAINNET, RINKEBY, ROPSTEN, GOERLI].includes(networkType)
+  return [KOVAN, MAINNET, RINKEBY, ROPSTEN, GOERLI].includes(networkType)
 }
 
 export function getPreferences ({ metamask }) {

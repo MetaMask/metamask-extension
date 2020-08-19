@@ -26,6 +26,7 @@ const hexRe = /^[0-9A-Fa-f]+$/ug
  */
 
 export default class DecryptMessageManager extends EventEmitter {
+
   /**
    * Controller in charge of managing - storing, adding, removing, updating - DecryptMessage.
    *
@@ -100,7 +101,6 @@ export default class DecryptMessageManager extends EventEmitter {
             return
           default:
             reject(new Error(`MetaMask Decryption: Unknown problem: ${JSON.stringify(msgParams)}`))
-            return
         }
       })
     })
@@ -128,8 +128,8 @@ export default class DecryptMessageManager extends EventEmitter {
     const msgId = createId()
     const msgData = {
       id: msgId,
-      msgParams: msgParams,
-      time: time,
+      msgParams,
+      time,
       status: 'unapproved',
       type: MESSAGE_TYPE.ETH_DECRYPT,
     }

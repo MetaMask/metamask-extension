@@ -30,8 +30,8 @@ const seedPhraseVerifier = {
 
     const keyring = new Keyring(opts)
     const restoredAccounts = await keyring.getAccounts()
-    log.debug('Created accounts: ' + JSON.stringify(createdAccounts))
-    log.debug('Restored accounts: ' + JSON.stringify(restoredAccounts))
+    log.debug(`Created accounts: ${JSON.stringify(createdAccounts)}`)
+    log.debug(`Restored accounts: ${JSON.stringify(restoredAccounts)}`)
 
     if (restoredAccounts.length !== createdAccounts.length) {
       // this should not happen...
@@ -40,7 +40,7 @@ const seedPhraseVerifier = {
 
     for (let i = 0; i < restoredAccounts.length; i++) {
       if (restoredAccounts[i].toLowerCase() !== createdAccounts[i].toLowerCase()) {
-        throw new Error('Not identical accounts! Original: ' + createdAccounts[i] + ', Restored: ' + restoredAccounts[i])
+        throw new Error(`Not identical accounts! Original: ${createdAccounts[i]}, Restored: ${restoredAccounts[i]}`)
       }
     }
   },

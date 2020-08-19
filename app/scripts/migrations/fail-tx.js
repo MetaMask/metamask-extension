@@ -9,7 +9,7 @@ export default function failTxsThat (version, reason, condition) {
       const newState = transformState(state, condition, reason)
       versionedData.data = newState
     } catch (err) {
-      console.warn(`MetaMask Migration #${version}` + err.stack)
+      console.warn(`MetaMask Migration #${version}${err.stack}`)
     }
     return Promise.resolve(versionedData)
 

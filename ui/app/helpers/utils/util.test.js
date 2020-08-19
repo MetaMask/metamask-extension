@@ -356,7 +356,7 @@ describe('util', function () {
       { args: ['0.0', 9], result: '0' },
       { args: ['0.000000000000', 9], result: '0' },
       { args: ['1', 9], result: '1' },
-      { args: [1 ], result: '1' },
+      { args: [1], result: '1' },
       { args: ['1.0', 9], result: '1' },
       { args: ['1.000000000', 9], result: '1' },
       { args: ['000000001', 9], result: '1' },

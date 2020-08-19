@@ -10,7 +10,7 @@ const fs = require('fs')
 const path = require('path')
 
 const inpageContent = fs.readFileSync(path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js'), 'utf8')
-const inpageSuffix = '//# sourceURL=' + extension.runtime.getURL('inpage.js') + '\n'
+const inpageSuffix = `//# sourceURL=${extension.runtime.getURL('inpage.js')}\n`
 const inpageBundle = inpageContent + inpageSuffix
 
 // Eventually this streaming injection could be replaced with:
@@ -115,7 +115,7 @@ function forwardTrafficBetweenMuxers (channelName, muxA, muxB) {
 function logStreamDisconnectWarning (remoteLabel, err) {
   let warningMsg = `MetamaskContentscript - lost connection to ${remoteLabel}`
   if (err) {
-    warningMsg += '\n' + err.stack
+    warningMsg += `\n${err.stack}`
   }
   console.warn(warningMsg)
 }
@@ -139,9 +139,8 @@ function doctypeCheck () {
   const { doctype } = window.document
   if (doctype) {
     return doctype.name === 'html'
-  } else {
-    return true
   }
+  return true
 }
 
 /**

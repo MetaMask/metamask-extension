@@ -122,7 +122,6 @@ describe('App State', function () {
       type: actions.MODAL_CLOSE,
     })
 
-
     assert.equal(newState.modal.open, false)
     assert.equal(newState.modal.modalState.name, null)
   })

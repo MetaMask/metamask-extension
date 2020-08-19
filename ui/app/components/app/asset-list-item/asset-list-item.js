@@ -13,7 +13,6 @@ import { useMetricEvent } from '../../../hooks/useMetricEvent'
 import { updateSendToken } from '../../../store/actions'
 import { SEND_ROUTE } from '../../../helpers/constants/routes'
 
-
 const AssetListItem = ({
   className,
   'data-testid': dataTestId,

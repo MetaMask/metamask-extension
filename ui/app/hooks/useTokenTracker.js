@@ -3,7 +3,6 @@ import TokenTracker from '@metamask/eth-token-tracker'
 import { useSelector } from 'react-redux'
 import { getCurrentNetwork, getSelectedAddress } from '../selectors'
 
-
 export function useTokenTracker (tokens) {
   const network = useSelector(getCurrentNetwork)
   const userAddress = useSelector(getSelectedAddress)
@@ -56,7 +55,6 @@ export function useTokenTracker (tokens) {
   useEffect(() => {
     return teardownTracker
   }, [teardownTracker])
-
 
   // Effect to set loading state and initialize tracker when values change
   useEffect(() => {

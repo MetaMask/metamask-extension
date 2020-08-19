@@ -17,7 +17,7 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     nativeCurrency: getNativeCurrency(state),
-    showFiat: (isMainnet || !!showFiatInTestnets),
+    showFiat: (isMainnet || Boolean(showFiatInTestnets)),
     totalInHex,
     gas,
     gasPrice,

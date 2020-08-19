@@ -257,7 +257,7 @@ export function resetAccount () {
           return
         }
 
-        log.info('Transaction history reset for ' + account)
+        log.info(`Transaction history reset for ${account}`)
         dispatch(showAccountsPage())
         resolve(account)
       })
@@ -277,7 +277,6 @@ export function removeAccount (address) {
             return
           }
           resolve(account)
-          return
         })
       })
       await forceUpdateMetamaskState(dispatch)
@@ -288,7 +287,7 @@ export function removeAccount (address) {
       dispatch(hideLoadingIndication())
     }
 
-    log.info('Account removed: ' + address)
+    log.info(`Account removed: ${address}`)
     dispatch(showAccountsPage())
   }
 }
@@ -412,7 +411,6 @@ export function unlockHardwareWalletAccount (index, deviceName, hdPath) {
 
         dispatch(hideLoadingIndication())
         resolve()
-        return
       })
     })
   }
@@ -589,7 +587,6 @@ export function signTx (txData) {
     global.ethQuery.sendTransaction(txData, (err) => {
       if (err) {
         dispatch(displayWarning(err.message))
-        return
       }
     })
     dispatch(showConfTxPage())
@@ -725,7 +722,7 @@ export function updateSendAmount (amount) {
 export function updateCustomNonce (value) {
   return {
     type: actionConstants.UPDATE_CUSTOM_NONCE,
-    value: value,
+    value,
   }
 }
 
@@ -1044,7 +1041,7 @@ export function cancelTxs (txDataList) {
 
     if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
       global.platform.closeCurrentWindow()
-      return
+
     }
   }
 }
@@ -1059,7 +1056,7 @@ export function markPasswordForgotten () {
             return
           }
           resolve()
-          return
+
         })
       })
     } finally {
@@ -1322,15 +1319,15 @@ export function addTokens (tokens) {
       return Promise.all(tokens.map(({ address, symbol, decimals }) => (
         dispatch(addToken(address, symbol, decimals))
       )))
-    } else {
-      return Promise.all(
-        Object
-          .entries(tokens)
-          .map(([_, { address, symbol, decimals }]) => (
-            dispatch(addToken(address, symbol, decimals))
-          )),
-      )
     }
+    return Promise.all(
+      Object
+        .entries(tokens)
+        .map(([_, { address, symbol, decimals }]) => (
+          dispatch(addToken(address, symbol, decimals))
+        )),
+    )
+
   }
 }
 
@@ -1534,7 +1531,6 @@ export function setRpcTarget (newRpc, chainId, ticker = 'ETH', nickname) {
     } catch (error) {
       log.error(error)
       dispatch(displayWarning('Had a problem changing networks!'))
-      return
     }
   }
 }
@@ -1573,7 +1569,6 @@ export function addToAddressBook (recipient, nickname = '', memo = '') {
     }
     if (!set) {
       dispatch(displayWarning('Address book failed to update'))
-      return
     }
   }
 }
@@ -1601,7 +1596,6 @@ export function hideNetworkDropdown () {
     type: actionConstants.NETWORK_DROPDOWN_CLOSE,
   }
 }
-
 
 export function showModal (payload) {
   return {
@@ -1735,9 +1729,7 @@ export function exportAccount (password, address) {
           }
 
           dispatch(showPrivateKey(result))
-
           resolve(result)
-          return
         })
       })
     })
@@ -1764,11 +1756,9 @@ export function exportAccounts (password, addresses) {
               return
             }
             resolve2(result)
-            return
           }),
         ))
         resolve(Promise.all(accountPromises))
-        return
       })
     })
   }
@@ -1800,7 +1790,6 @@ export function setAccountLabel (account, label) {
           type: actionConstants.SET_ACCOUNT_LABEL,
           value: { account, label },
         })
-
         resolve(account)
       })
     })
@@ -1966,7 +1955,6 @@ export function setParticipateInMetaMetrics (val) {
           type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,
           value: val,
         })
-
         resolve([val, metaMetricsId])
       })
     })
@@ -1988,7 +1976,6 @@ export function setMetaMetricsSendCount (val) {
           type: actionConstants.SET_METAMETRICS_SEND_COUNT,
           value: val,
         })
-
         resolve(val)
       })
     })
@@ -2003,7 +1990,6 @@ export function setUseBlockie (val) {
       dispatch(hideLoadingIndication())
       if (err) {
         dispatch(displayWarning(err.message))
-        return
       }
     })
     dispatch({
@@ -2021,7 +2007,6 @@ export function setUseNonceField (val) {
       dispatch(hideLoadingIndication())
       if (err) {
         dispatch(displayWarning(err.message))
-        return
       }
     })
     dispatch({
@@ -2039,7 +2024,6 @@ export function setUsePhishDetect (val) {
       dispatch(hideLoadingIndication())
       if (err) {
         dispatch(displayWarning(err.message))
-        return
       }
     })
   }
@@ -2053,7 +2037,7 @@ export function setIpfsGateway (val) {
       dispatch(hideLoadingIndication())
       if (err) {
         dispatch(displayWarning(err.message))
-        return
+
       } else {
         dispatch({
           type: actionConstants.SET_IPFS_GATEWAY,
@@ -2174,7 +2158,7 @@ export function setFirstTimeFlowType (type) {
     background.setFirstTimeFlowType(type, (err) => {
       if (err) {
         dispatch(displayWarning(err.message))
-        return
+
       }
     })
     dispatch({
@@ -2203,7 +2187,7 @@ export function setLastActiveTime () {
     background.setLastActiveTime((err) => {
       if (err) {
         dispatch(displayWarning(err.message))
-        return
+
       }
     })
   }
@@ -2257,9 +2241,7 @@ export function getContractMethodData (data = '') {
     return getMethodDataAsync(fourBytePrefix)
       .then(({ name, params }) => {
         dispatch(loadingMethodDataFinished())
-
         background.addKnownMethodData(fourBytePrefix, { name, params })
-
         return { name, params }
       })
   }
@@ -2291,7 +2273,6 @@ export function getTokenParams (tokenAddress) {
 
     dispatch(loadingTokenParamsStarted())
     log.debug(`loadingTokenParams`)
-
 
     return fetchSymbolAndDecimals(tokenAddress, existingTokens)
       .then(({ symbol, decimals }) => {
@@ -2475,7 +2456,6 @@ export function setCurrentWindowTab (currentWindowTab) {
     value: currentWindowTab,
   }
 }
-
 
 export function getCurrentWindowTab () {
   return async (dispatch) => {

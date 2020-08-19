@@ -2,6 +2,7 @@ import EventEmitter from 'events'
 import ObservableStore from 'obs-store'
 
 export default class AppStateController extends EventEmitter {
+
   /**
    * @constructor
    * @param opts
@@ -18,11 +19,11 @@ export default class AppStateController extends EventEmitter {
     super()
 
     this.onInactiveTimeout = onInactiveTimeout || (() => undefined)
-    this.store = new ObservableStore(Object.assign({
+    this.store = new ObservableStore({
       timeoutMinutes: 0,
       connectedStatusPopoverHasBeenShown: true,
-      defaultHomeActiveTabName: null,
-    }, initState))
+      defaultHomeActiveTabName: null, ...initState,
+    })
     this.timer = null
 
     this.isUnlocked = isUnlocked

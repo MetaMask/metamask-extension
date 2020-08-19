@@ -32,20 +32,18 @@ const defaultState = {
  * alert related state
  */
 export default class AlertController {
+
   /**
    * @constructor
    * @param {AlertControllerOptions} [opts] - Controller configuration parameters
    */
   constructor (opts = {}) {
     const { initState, preferencesStore } = opts
-    const state = Object.assign(
-      {},
-      defaultState,
-      initState,
-      {
-        unconnectedAccountAlertShownOrigins: {},
-      },
-    )
+    const state = {
+      ...defaultState,
+      ...initState,
+      unconnectedAccountAlertShownOrigins: {},
+    }
     this.store = new ObservableStore(state)
 
     this.selectedAddress = preferencesStore.getState().selectedAddress

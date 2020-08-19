@@ -247,7 +247,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
           setDraggingSeedIndex={this.setDraggingSeedIndex}
           setHoveringIndex={this.setHoveringIndex}
           onDrop={this.onDrop}
-          droppable={!!word}
+          droppable={Boolean(word)}
         />
       )
     })

@@ -3,7 +3,7 @@ import React from 'react'
 import sinon from 'sinon'
 import { shallow } from 'enzyme'
 import MetaFoxLogo from '../../../ui/metafox-logo'
-import AppHeader from '../index'
+import AppHeader from '..'
 
 describe('App Header', function () {
   let wrapper

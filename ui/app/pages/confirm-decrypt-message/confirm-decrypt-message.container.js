@@ -17,7 +17,8 @@ import { getMostRecentOverviewPage } from '../../ducks/history/history'
 import ConfirmDecryptMessage from './confirm-decrypt-message.component'
 
 function mapStateToProps (state) {
-  const { confirmTransaction,
+  const {
+    confirmTransaction,
     metamask: { domainMetadata = {} },
   } = state
 
@@ -30,7 +31,7 @@ function mapStateToProps (state) {
   const fromAccount = getTargetAccountWithSendEtherInfo(state, from)
 
   return {
-    txData: txData,
+    txData,
     domainMetadata,
     fromAccount,
     requester: null,

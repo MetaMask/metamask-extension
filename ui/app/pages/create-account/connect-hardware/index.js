@@ -29,7 +29,6 @@ class ConnectHardwareForm extends Component {
     this.setState({ accounts: newAccounts })
   }
 
-
   componentDidMount () {
     this.checkIfUnlocked()
   }
@@ -99,7 +98,6 @@ class ConnectHardwareForm extends Component {
             newState.selectedAccount = null
           }
 
-
           // Map accounts with balances
           newState.accounts = accounts.map((account) => {
             const normalizedAddress = account.address.toLowerCase()
@@ -148,7 +146,7 @@ class ConnectHardwareForm extends Component {
           eventOpts: {
             category: 'Accounts',
             action: 'Connected Hardware Wallet',
-            name: 'Connected Account with: ' + device,
+            name: `Connected Account with: ${device}`,
           },
         })
         history.push(mostRecentOverviewPage)

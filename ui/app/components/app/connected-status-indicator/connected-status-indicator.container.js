@@ -12,7 +12,6 @@ import {
 } from '../../../selectors'
 import ConnectedStatusIndicator from './connected-status-indicator.component'
 
-
 const mapStateToProps = (state) => {
   const selectedAddress = getSelectedAddress(state)
   const addressConnectedDomainMap = getAddressConnectedDomainMap(state)

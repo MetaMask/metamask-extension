@@ -118,7 +118,6 @@ const tests = [
   },
 ]
 
-
 describe('useTokenDisplayValue', function () {
   tests.forEach((test, idx) => {
     describe(`when input is decimals: ${test.token.decimals} and value: ${test.tokenValue}`, function () {

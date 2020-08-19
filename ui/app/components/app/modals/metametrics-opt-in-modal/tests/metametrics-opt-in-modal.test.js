@@ -2,7 +2,7 @@ import assert from 'assert'
 import React from 'react'
 import sinon from 'sinon'
 import { mount } from 'enzyme'
-import MetaMetricsOptIn from '../index'
+import MetaMetricsOptIn from '..'
 
 describe('MetaMetrics Opt In', function () {
   let wrapper

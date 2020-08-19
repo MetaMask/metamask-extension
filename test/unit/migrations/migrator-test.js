@@ -49,7 +49,7 @@ describe('migrations', function () {
       migrationNumbers = fileNames
         .reduce((acc, filename) => {
           const name = filename.split('.')[0]
-          if (/^\d+$/u.test(name)) {
+          if ((/^\d+$/u).test(name)) {
             acc.push(name)
           }
           return acc
@@ -69,7 +69,7 @@ describe('migrations', function () {
       const testNumbers = fileNames
         .reduce((acc, filename) => {
           const name = filename.split('-test.')[0]
-          if (/^\d+$/u.test(name)) {
+          if ((/^\d+$/u).test(name)) {
             acc.push(name)
           }
           return acc

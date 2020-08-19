@@ -57,7 +57,7 @@ export default class NetworkDisplay extends Component {
       <div
         className={classnames('network-display__container', {
           'network-display__container--colored': colored,
-          ['network-display__container--' + networkClass]: colored && networkClass,
+          [`network-display__container--${networkClass}`]: colored && networkClass,
         })}
       >
         {

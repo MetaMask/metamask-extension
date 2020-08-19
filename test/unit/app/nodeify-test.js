@@ -4,7 +4,7 @@ import nodeify from '../../../app/scripts/lib/nodeify'
 describe('nodeify', function () {
   const obj = {
     foo: 'bar',
-    promiseFunc: function (a) {
+    promiseFunc (a) {
       const solution = this.foo + a
       return Promise.resolve(solution)
     },

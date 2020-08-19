@@ -121,5 +121,3 @@ const collectDrop = (connect, monitor) => {
 }
 
 export default DropTarget(SEEDWORD, seedTarget, collectDrop)(DragSource(SEEDWORD, seedSource, collectDrag)(DraggableSeed))
-
-

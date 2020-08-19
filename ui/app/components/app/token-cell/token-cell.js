@@ -7,7 +7,6 @@ import { getSelectedAddress } from '../../../selectors'
 import { useI18nContext } from '../../../hooks/useI18nContext'
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount'
 
-
 export default function TokenCell ({
   address,
   decimals,

@@ -16,7 +16,6 @@ import {
 } from '../../helpers/utils/token-util'
 import ConfirmTokenTransactionBase from './confirm-token-transaction-base.component'
 
-
 const mapStateToProps = (state, ownProps) => {
   const { match: { params = {} } } = ownProps
   const { id: paramsTransactionId } = params

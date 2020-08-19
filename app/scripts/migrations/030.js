@@ -1,6 +1,4 @@
 // next version number
-const version = 30
-
 /*
 
 removes invalid chaids from preferences and networkController for custom rpcs
@@ -9,10 +7,12 @@ removes invalid chaids from preferences and networkController for custom rpcs
 
 import { cloneDeep } from 'lodash'
 
+const version = 30
+
 export default {
   version,
 
-  migrate: async function (originalVersionedData) {
+  async migrate (originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     const state = versionedData.data
@@ -29,7 +29,7 @@ function transformState (state) {
     if (frequentRpcListDetail) {
       frequentRpcListDetail.forEach((rpc, index) => {
         // eslint-disable-next-line radix
-        if (!!rpc.chainId && Number.isNaN(parseInt(rpc.chainId))) {
+        if (Boolean(rpc.chainId) && Number.isNaN(parseInt(rpc.chainId))) {
           delete frequentRpcListDetail[index].chainId
         }
       })

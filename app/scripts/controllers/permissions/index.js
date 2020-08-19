@@ -36,7 +36,8 @@ export class PermissionsController {
       showPermissionRequest,
     } = {},
     restoredPermissions = {},
-    restoredState = {}) {
+    restoredState = {},
+  ) {
 
     // additional top-level store key set in _initializeMetadataStore
     this.store = new ObservableStore({
@@ -334,7 +335,7 @@ export class PermissionsController {
       .filter((acc) => acc !== account)
 
     if (newPermittedAccounts.length === 0) {
-      this.removePermissionsFor({ [origin]: [ 'eth_accounts' ] })
+      this.removePermissionsFor({ [origin]: ['eth_accounts'] })
     } else {
 
       this.permissions.updateCaveatFor(

@@ -12,11 +12,11 @@ import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard'
 
 function quadSplit (address) {
   return (
-    '0x ' +
-    address
-      .slice(2)
-      .match(/.{1,4}/ug)
-      .join(' ')
+    `0x ${
+      address
+        .slice(2)
+        .match(/.{1,4}/ug)
+        .join(' ')}`
   )
 }
 

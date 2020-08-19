@@ -132,7 +132,6 @@ export function getRenderableEthFee (estimate, gasLimit, numberOfDecimals = 9) {
   return formatETHFee(fee)
 }
 
-
 export function getRenderableConvertedCurrencyFee (estimate, gasLimit, convertedCurrency, conversionRate) {
   const value = conversionUtil(estimate, { fromNumericBase: 'dec', toNumericBase: 'hex' })
   const fee = basicPriceEstimateToETHTotal(value, gasLimit)
@@ -164,8 +163,8 @@ export function formatTimeEstimate (totalSeconds, greaterThanMax, lessThanMin) {
     symbol = '> '
   }
 
-  const formattedMin = `${minutes ? minutes + ' min' : ''}`
-  const formattedSec = `${seconds ? seconds + ' sec' : ''}`
+  const formattedMin = `${minutes ? `${minutes} min` : ''}`
+  const formattedSec = `${seconds ? `${seconds} sec` : ''}`
   const formattedCombined = formattedMin && formattedSec
     ? `${symbol}${formattedMin} ${formattedSec}`
     : symbol + [formattedMin, formattedSec].find((t) => t)
@@ -199,7 +198,7 @@ export function getRenderableBasicEstimateData (state, gasLimit) {
 
   const { showFiatInTestnets } = getPreferences(state)
   const isMainnet = getIsMainnet(state)
-  const showFiat = (isMainnet || !!showFiatInTestnets)
+  const showFiat = (isMainnet || Boolean(showFiatInTestnets))
   const { conversionRate } = state.metamask
   const currentCurrency = getCurrentCurrency(state)
   const {
@@ -253,7 +252,7 @@ export function getRenderableEstimateDataForSmallButtonsFromGWEI (state) {
 
   const { showFiatInTestnets } = getPreferences(state)
   const isMainnet = getIsMainnet(state)
-  const showFiat = (isMainnet || !!showFiatInTestnets)
+  const showFiat = (isMainnet || Boolean(showFiatInTestnets))
   const gasLimit = state.metamask.send.gasLimit || getCustomGasLimit(state) || '0x5208'
   const { conversionRate } = state.metamask
   const currentCurrency = getCurrentCurrency(state)

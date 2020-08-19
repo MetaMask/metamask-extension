@@ -4,7 +4,6 @@ import ButtonGroup from '../../../ui/button-group'
 import Button from '../../../ui/button'
 import { GAS_ESTIMATE_TYPES } from '../../../../helpers/constants/common'
 
-
 const GAS_OBJECT_PROPTYPES_SHAPE = {
   gasEstimateType: PropTypes.oneOf(Object.values(GAS_ESTIMATE_TYPES)).isRequired,
   feeInPrimaryCurrency: PropTypes.string,

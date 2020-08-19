@@ -4,7 +4,7 @@ import promiseToCallback from 'promise-to-callback'
 class AsyncWritableStream extends WritableStream {
 
   constructor (asyncWriteFn, _opts) {
-    const opts = Object.assign({ objectMode: true }, _opts)
+    const opts = { objectMode: true, ..._opts }
     super(opts)
     this._asyncWriteFn = asyncWriteFn
   }

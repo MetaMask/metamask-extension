@@ -104,7 +104,7 @@ export default class NetworksTab extends PureComponent {
 
     return (
       <div
-        key={'settings-network-list-item:' + rpcUrl}
+        key={`settings-network-list-item:${rpcUrl}`}
         className="networks-tab__networks-list-item"
         onClick={ () => {
           setNetworksTabAddMode(false)

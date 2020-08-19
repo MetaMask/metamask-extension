@@ -23,6 +23,7 @@ import { MESSAGE_TYPE } from './enums'
  */
 
 export default class EncryptionPublicKeyManager extends EventEmitter {
+
   /**
    * Controller in charge of managing - storing, adding, removing, updating - EncryptionPublicKey.
    *
@@ -94,7 +95,6 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
             return
           default:
             reject(new Error(`MetaMask EncryptionPublicKey: Unknown problem: ${JSON.stringify(address)}`))
-            return
         }
       })
     })
@@ -118,7 +118,7 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
     const msgData = {
       id: msgId,
       msgParams: address,
-      time: time,
+      time,
       status: 'unapproved',
       type: MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY,
     }

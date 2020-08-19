@@ -115,8 +115,8 @@ export default class MessageManager extends EventEmitter {
     const msgId = createId()
     const msgData = {
       id: msgId,
-      msgParams: msgParams,
-      time: time,
+      msgParams,
+      time,
       status: 'unapproved',
       type: MESSAGE_TYPE.ETH_SIGN,
     }
@@ -279,8 +279,7 @@ function normalizeMsgData (data) {
   if (data.slice(0, 2) === '0x') {
     // data is already hex
     return data
-  } else {
-    // data is unicode, convert to hex
-    return ethUtil.bufferToHex(Buffer.from(data, 'utf8'))
   }
+  // data is unicode, convert to hex
+  return ethUtil.bufferToHex(Buffer.from(data, 'utf8'))
 }

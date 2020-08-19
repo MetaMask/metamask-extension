@@ -28,6 +28,7 @@ const hexRe = /^[0-9A-Fa-f]+$/ug
  */
 
 export default class PersonalMessageManager extends EventEmitter {
+
   /**
    * Controller in charge of managing - storing, adding, removing, updating - PersonalMessage.
    *
@@ -100,7 +101,6 @@ export default class PersonalMessageManager extends EventEmitter {
             return
           default:
             reject(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
-            return
         }
       })
     })
@@ -128,8 +128,8 @@ export default class PersonalMessageManager extends EventEmitter {
     const msgId = createId()
     const msgData = {
       id: msgId,
-      msgParams: msgParams,
-      time: time,
+      msgParams,
+      time,
       status: 'unapproved',
       type: MESSAGE_TYPE.PERSONAL_SIGN,
     }

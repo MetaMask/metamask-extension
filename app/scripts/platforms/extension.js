@@ -105,6 +105,7 @@ export default class ExtensionPlatform {
       })
     } catch (e) {
       cb(e)
+      // eslint-disable-next-line no-useless-return
       return
     }
   }
@@ -210,10 +211,11 @@ export default class ExtensionPlatform {
       url,
       {
         'type': 'basic',
-        'title': title,
+        title,
         'iconUrl': extension.extension.getURL('../../images/icon-64.png'),
-        'message': message,
-      })
+        message,
+      },
+    )
   }
 
   _subscribeToNotificationClicked () {

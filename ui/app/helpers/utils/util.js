@@ -59,7 +59,7 @@ export function addressSummary (address, firstSegLength = 10, lastSegLength = 4,
   if (!includeHex) {
     checked = ethUtil.stripHexPrefix(checked)
   }
-  return checked ? checked.slice(0, firstSegLength) + '...' + checked.slice(checked.length - lastSegLength) : '...'
+  return checked ? `${checked.slice(0, firstSegLength)}...${checked.slice(checked.length - lastSegLength)}` : '...'
 }
 
 export function isValidAddress (address) {
@@ -106,7 +106,7 @@ export function parseBalance (balance) {
   const trailingZeros = /0+$/u
 
   const beforeDecimal = weiString.length > 18 ? weiString.slice(0, weiString.length - 18) : '0'
-  afterDecimal = ('000000000000000000' + wei).slice(-18).replace(trailingZeros, '')
+  afterDecimal = (`000000000000000000${wei}`).slice(-18).replace(trailingZeros, '')
   if (afterDecimal === '') {
     afterDecimal = '0'
   }
@@ -127,14 +127,14 @@ export function formatBalance (balance, decimalsToKeep, needsParse = true, ticke
         if (sigFigs) {
           afterDecimal = sigFigs[0]
         }
-        formatted = '0.' + afterDecimal + ` ${ticker}`
+        formatted = `0.${afterDecimal} ${ticker}`
       }
     } else {
-      formatted = beforeDecimal + '.' + afterDecimal.slice(0, 3) + ` ${ticker}`
+      formatted = `${beforeDecimal}.${afterDecimal.slice(0, 3)} ${ticker}`
     }
   } else {
     afterDecimal += Array(decimalsToKeep).join('0')
-    formatted = beforeDecimal + '.' + afterDecimal.slice(0, decimalsToKeep) + ` ${ticker}`
+    formatted = `${beforeDecimal}.${afterDecimal.slice(0, decimalsToKeep)} ${ticker}`
   }
   return formatted
 }
@@ -177,12 +177,10 @@ export function shortenBalance (balance, decimalsToKeep = 1) {
     const stringBalance = convertedBalance.toString()
     if (stringBalance.split('.')[1].length > 3) {
       return convertedBalance.toFixed(3)
-    } else {
-      return stringBalance
     }
-  } else {
-    return convertedBalance.toFixed(decimalsToKeep)
+    return stringBalance
   }
+  return convertedBalance.toFixed(decimalsToKeep)
 }
 
 // Takes a BN and an ethereum currency name,

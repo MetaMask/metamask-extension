@@ -25,11 +25,10 @@ class WebcamUtils {
         permissions: hasWebcamPermissions,
         environmentReady,
       }
-    } else {
-      const error = new Error('No webcam found')
-      error.type = 'NO_WEBCAM_FOUND'
-      throw error
     }
+    const error = new Error('No webcam found')
+    error.type = 'NO_WEBCAM_FOUND'
+    throw error
   }
 }
 

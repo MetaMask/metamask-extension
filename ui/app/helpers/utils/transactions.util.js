@@ -27,7 +27,6 @@ import {
 } from '../constants/transactions'
 import fetchWithCache from './fetch-with-cache'
 
-
 import { addCurrencies } from './conversion-util'
 
 abiDecoder.addABI(abi)
@@ -46,9 +45,8 @@ async function getMethodFrom4Byte (fourBytePrefix) {
 
   if (fourByteResponse.count === 1) {
     return fourByteResponse.results[0].text_signature
-  } else {
-    return null
   }
+  return null
 }
 let registry
 
@@ -142,9 +140,8 @@ export function getTransactionActionKey (transaction) {
       return DECRYPT_REQUEST_KEY
     } else if (type === MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY) {
       return ENCRYPTION_PUBLIC_KEY_REQUEST_KEY
-    } else {
-      return SIGNATURE_REQUEST_KEY
     }
+    return SIGNATURE_REQUEST_KEY
   }
 
   if (isConfirmDeployContract(transaction)) {
@@ -185,9 +182,8 @@ export function getLatestSubmittedTxWithNonce (transactions = [], nonce = '0x0')
         return current
       }
       return submittedTime > acc.submittedTime ? current : acc
-    } else {
-      return acc
     }
+    return acc
   }, {})
 }
 

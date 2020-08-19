@@ -30,12 +30,14 @@ const restoreContextAfterImports = () => {
 
 cleanContextForImports()
 
+/* eslint-disable import/first */
 import log from 'loglevel'
 import LocalMessageDuplexStream from 'post-message-stream'
 import { initProvider } from '@metamask/inpage-provider'
 
 // TODO:deprecate:2020
 import setupWeb3 from './lib/setupWeb3'
+/* eslint-enable import/first */
 
 restoreContextAfterImports()
 
@@ -57,7 +59,6 @@ initProvider({
 
 // TODO:deprecate:2020
 // Setup web3
-
 
 if (typeof window.web3 !== 'undefined') {
   throw new Error(`MetaMask detected another web3.

@@ -5,7 +5,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext'
 import { ADD_TOKEN_ROUTE } from '../../../helpers/constants/routes'
 import Button from '../../ui/button'
 
-
 export default function AddTokenButton () {
   const addTokenEvent = useMetricEvent({
     eventOpts: {

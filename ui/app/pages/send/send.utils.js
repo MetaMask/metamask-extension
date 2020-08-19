@@ -21,7 +21,6 @@ import {
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
 } from './send.constants'
 
-
 export {
   addGasBuffer,
   calcGasTotal,
@@ -69,7 +68,7 @@ function isBalanceSufficient ({
     {
       value: totalAmount,
       fromNumericBase: 'hex',
-      conversionRate: conversionRate,
+      conversionRate,
       fromCurrency: primaryCurrency,
     },
   )
@@ -262,9 +261,9 @@ async function estimateGas ({
     if (simulationFailed) {
       const estimateWithBuffer = addGasBuffer(paramsForGasEstimate.gas, blockGasLimit, 1.5)
       return ethUtil.addHexPrefix(estimateWithBuffer)
-    } else {
-      throw error
     }
+    throw error
+
   }
 }
 
@@ -306,7 +305,7 @@ function generateTokenTransferData ({ toAddress = '0x0', amount = '0x0', sendTok
   }
   return TOKEN_TRANSFER_FUNCTION_SIGNATURE + Array.prototype.map.call(
     abi.rawEncode(['address', 'uint256'], [toAddress, ethUtil.addHexPrefix(amount)]),
-    (x) => ('00' + x.toString(16)).slice(-2),
+    (x) => (`00${x.toString(16)}`).slice(-2),
   ).join('')
 }
 

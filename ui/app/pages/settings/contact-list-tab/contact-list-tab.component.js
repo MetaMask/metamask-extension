@@ -30,7 +30,7 @@ export default class ContactListTab extends Component {
 
   renderAddresses () {
     const { addressBook, history, selectedAddress } = this.props
-    const contacts = addressBook.filter(({ name }) => !!name)
+    const contacts = addressBook.filter(({ name }) => Boolean(name))
     const nonContacts = addressBook.filter(({ name }) => !name)
 
     return (

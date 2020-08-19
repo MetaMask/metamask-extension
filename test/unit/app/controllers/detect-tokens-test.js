@@ -22,7 +22,6 @@ describe('DetectTokensController', function () {
 
   beforeEach(async function () {
 
-
     nock('https://api.infura.io')
       .get(/.*/u)
       .reply(200)

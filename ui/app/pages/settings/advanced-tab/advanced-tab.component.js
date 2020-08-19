@@ -491,7 +491,7 @@ function addUrlProtocolPrefix (urlString) {
   if (!urlString.match(
     /(^http:\/\/)|(^https:\/\/)/u,
   )) {
-    return 'https://' + urlString
+    return `https://${urlString}`
   }
   return urlString
 }

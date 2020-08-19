@@ -26,7 +26,6 @@ export default class CancelTransaction extends PureComponent {
 
     if (transactionStatus !== SUBMITTED_STATUS) {
       showTransactionConfirmedModal()
-      return
     }
   }
 

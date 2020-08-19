@@ -5,7 +5,7 @@ import { TOKEN_TRANSFER_FUNCTION_SIGNATURE } from '../../send.constants'
 
 const stubs = {
   rawEncode: sinon.stub().callsFake((arr1, arr2) => {
-    return [ ...arr1, ...arr2 ]
+    return [...arr1, ...arr2]
   }),
 }
 

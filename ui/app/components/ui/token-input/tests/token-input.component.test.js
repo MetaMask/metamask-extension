@@ -32,7 +32,8 @@ describe('TokenInput Component', function () {
             }}
           />
         </Provider>,
-        { context: { t },
+        {
+          context: { t },
           childContextTypes: {
             t: PropTypes.func,
           },
@@ -66,7 +67,8 @@ describe('TokenInput Component', function () {
             tokenExchangeRates={{ '0x1': 2 }}
           />
         </Provider>,
-        { context: { t },
+        {
+          context: { t },
           childContextTypes: {
             t: PropTypes.func,
           },

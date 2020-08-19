@@ -38,11 +38,11 @@ describe('Actions', function () {
       showUnapprovedTx: noop,
       showUnconfirmedMessage: noop,
       encryptor: {
-        encrypt: function (_, object) {
+        encrypt (_, object) {
           this.object = object
           return Promise.resolve('mock-encrypted')
         },
-        decrypt: function () {
+        decrypt () {
           return Promise.resolve(this.object)
         },
       },
@@ -56,7 +56,7 @@ describe('Actions', function () {
 
     await metamaskController.createNewVaultAndRestore(password, TEST_SEED)
 
-    await metamaskController.importAccountWithStrategy('Private Key', [ importPrivkey ])
+    await metamaskController.importAccountWithStrategy('Private Key', [importPrivkey])
 
     background = metamaskController.getApi()
 
@@ -97,7 +97,6 @@ describe('Actions', function () {
         { type: 'HIDE_LOADING_INDICATION' },
       ]
 
-
       submitPasswordSpy = sinon.stub(background, 'submitPassword')
 
       submitPasswordSpy.callsFake((_, callback) => {
@@ -114,8 +113,8 @@ describe('Actions', function () {
 
     it('displays warning error and unlock failed when verifySeed fails', async function () {
       const store = mockStore()
-      const displayWarningError = [ { type: 'DISPLAY_WARNING', value: 'error' } ]
-      const unlockFailedError = [ { type: 'UNLOCK_FAILED', value: 'error' } ]
+      const displayWarningError = [{ type: 'DISPLAY_WARNING', value: 'error' }]
+      const unlockFailedError = [{ type: 'UNLOCK_FAILED', value: 'error' }]
 
       verifySeedPhraseSpy = sinon.stub(background, 'verifySeedPhrase')
       verifySeedPhraseSpy.callsFake((callback) => {
@@ -861,7 +860,7 @@ describe('Actions', function () {
       'value': '0x0',
     }
 
-    const txData = { id: '1', status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: txParams }
+    const txData = { id: '1', status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams }
 
     beforeEach(async function () {
       await metamaskController.txController.txStateManager.addTx(txData)

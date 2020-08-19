@@ -108,7 +108,7 @@ describe('MetaMask', function () {
       assert.equal(await title.getText(), 'Signature Request')
       assert.equal(await name.getText(), 'Ether Mail')
       assert.equal(await origin.getText(), 'http://127.0.0.1:8080')
-      assert.equal(await address.getText(), publicAddress.slice(0, 8) + '...' + publicAddress.slice(publicAddress.length - 8))
+      assert.equal(await address.getText(), `${publicAddress.slice(0, 8)}...${publicAddress.slice(publicAddress.length - 8)}`)
     })
 
     it('signs the transaction', async function () {

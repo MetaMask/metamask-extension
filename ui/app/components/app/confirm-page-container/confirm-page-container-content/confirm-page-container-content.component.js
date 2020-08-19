@@ -6,7 +6,6 @@ import ErrorMessage from '../../../ui/error-message'
 import { PageContainerFooter } from '../../../ui/page-container'
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.'
 
-
 export default class ConfirmPageContainerContent extends Component {
   static propTypes = {
     action: PropTypes.string,
@@ -40,9 +39,9 @@ export default class ConfirmPageContainerContent extends Component {
 
     if (detailsComponent && dataComponent) {
       return this.renderTabs()
-    } else {
-      return detailsComponent || dataComponent
     }
+    return detailsComponent || dataComponent
+
   }
 
   renderTabs () {

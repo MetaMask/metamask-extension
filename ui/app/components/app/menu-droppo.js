@@ -74,11 +74,11 @@ export default class MenuDroppoComponent extends Component {
 
     this.manageListeners()
 
-    const baseStyle = Object.assign(
-      { position: 'fixed' },
-      style,
-      { zIndex },
-    )
+    const baseStyle = {
+      position: 'fixed',
+      ...style,
+      zIndex,
+    }
 
     return (
       <div style={baseStyle} className={`menu-droppo-container ${containerClassName}`}>

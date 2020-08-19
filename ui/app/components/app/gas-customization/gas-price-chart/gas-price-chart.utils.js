@@ -127,7 +127,7 @@ export function setTickPosition (axis, n, newPosition, secondNewPosition) {
 /* eslint-disable babel/no-invalid-this */
 export function appendOrUpdateCircle ({ data, itemIndex, cx, cy, cssId, appendOnly }) {
   const circle = this.main
-    .select('.c3-selected-circles' + this.getTargetSelectorSuffix(data.id))
+    .select(`.c3-selected-circles${this.getTargetSelectorSuffix(data.id)}`)
     .selectAll(`.c3-selected-circle-${itemIndex}`)
 
   if (appendOnly || circle.empty()) {
@@ -182,7 +182,6 @@ export function setSelectedCircle ({
   )
 }
 
-
 export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimatedTimesMax) {
   const gasPricesMaxPadded = gasPricesMax + 1
   const chart = c3.generate({
@@ -216,8 +215,8 @@ export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimate
         tick: {
           values: [Math.floor(gasPrices[0]), Math.ceil(gasPricesMax)],
           outer: false,
-          format: function (val) {
-            return val + ' GWEI'
+          format (val) {
+            return `${val} GWEI`
           },
         },
         padding: { left: gasPricesMax / 50, right: gasPricesMax / 50 },
@@ -260,7 +259,7 @@ export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimate
       format: {
         title: (v) => v.toPrecision(4),
       },
-      contents: function (d) {
+      contents (d) {
         const titleFormat = this.config.tooltip_format_title
         let text
         d.forEach((el) => {
@@ -270,7 +269,7 @@ export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimate
         })
         return `${text}</table><div class='tooltip-arrow'></div>`
       },
-      position: function () {
+      position () {
         if (d3.select('#overlayed-circle').empty()) {
           return { top: -100, left: -100 }
         }
@@ -332,7 +331,7 @@ export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimate
       const tHeight = this.tooltip.property('offsetHeight')
       const position = this.config.tooltip_position.call(this, dataToShow, tWidth, tHeight, element)
       // Set tooltip
-      this.tooltip.style('top', position.top + 'px').style('left', position.left + 'px')
+      this.tooltip.style('top', `${position.top}px`).style('left', `${position.left}px`)
     }
   }
 

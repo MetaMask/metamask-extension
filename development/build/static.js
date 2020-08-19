@@ -9,7 +9,6 @@ const { createTask, composeSeries } = require('./task')
 
 module.exports = createStaticAssetTasks
 
-
 const copyTargets = [
   {
     src: `./app/_locales/`,

@@ -52,6 +52,7 @@ const customVariableNameIdMap = {
   [METAMETRICS_CUSTOM_GAS_CHANGED]: 1,
   [METAMETRICS_CUSTOM_ASSET_SELECTED]: 2,
 }
+
 /** ********************************************************** **/
 
 const METAMETRICS_CUSTOM_NETWORK = 'network'
@@ -182,7 +183,7 @@ function composeUrl (config) {
     uid = `&uid=${metaMetricsId.slice(2, 18)}`
   }
 
-  return [ base, e_c, e_a, e_n, cvar, action_name, urlref, dimensions, url, _id, rand, pv_id, uid, new_visit ].join('')
+  return [base, e_c, e_a, e_n, cvar, action_name, urlref, dimensions, url, _id, rand, pv_id, uid, new_visit].join('')
 }
 
 export function sendMetaMetricsEvent (config) {
@@ -209,9 +210,8 @@ export function verifyUserPermission (config, props) {
     return true
   } else if (allowSendMetrics && eventOpts.name === 'send') {
     return true
-  } else {
-    return false
   }
+  return false
 }
 
 const trackableSendCounts = {

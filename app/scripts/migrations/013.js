@@ -1,5 +1,3 @@
-const version = 13
-
 /*
 
 This migration modifies the network config from ambiguous 'testnet' to explicit 'ropsten'
@@ -8,10 +6,12 @@ This migration modifies the network config from ambiguous 'testnet' to explicit 
 
 import { cloneDeep } from 'lodash'
 
+const version = 13
+
 export default {
   version,
 
-  migrate: function (originalVersionedData) {
+  migrate (originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     try {
@@ -19,7 +19,7 @@ export default {
       const newState = transformState(state)
       versionedData.data = newState
     } catch (err) {
-      console.warn(`MetaMask Migration #${version}` + err.stack)
+      console.warn(`MetaMask Migration #${version}${err.stack}`)
     }
     return Promise.resolve(versionedData)
   },

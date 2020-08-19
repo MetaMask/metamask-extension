@@ -5,6 +5,7 @@ import ObservableStore from 'obs-store'
  * structure of child stores based on configuration
  */
 export default class ComposableObservableStore extends ObservableStore {
+
   /**
    * Create a new store
    *

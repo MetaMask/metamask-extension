@@ -222,7 +222,6 @@ export default class AddRecipient extends Component {
       )
     }
 
-
     if (toWarning) {
       return (
         <Dialog

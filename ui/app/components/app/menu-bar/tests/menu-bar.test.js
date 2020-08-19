@@ -3,7 +3,7 @@ import React from 'react'
 import { Provider } from 'react-redux'
 import configureStore from 'redux-mock-store'
 import { mountWithRouter } from '../../../../../../test/lib/render-helpers'
-import MenuBar from '../index'
+import MenuBar from '..'
 
 const initState = {
   activeTab: {},

@@ -95,13 +95,10 @@ export default class ConfirmTransaction extends Component {
       clearConfirmTransaction()
       getContractMethodData(data)
       setTransactionToConfirm(paramsTransactionId)
-      return
     } else if (prevProps.transactionId && !transactionId && !totalUnapprovedCount) {
       history.replace(mostRecentOverviewPage)
-      return
     } else if (prevProps.transactionId && transactionId && prevProps.transactionId !== transactionId) {
       history.replace(mostRecentOverviewPage)
-      return
     }
   }
 

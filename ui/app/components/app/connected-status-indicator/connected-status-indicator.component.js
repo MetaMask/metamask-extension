@@ -13,7 +13,7 @@ export default class ConnectedStatusIndicator extends Component {
   }
 
   static propTypes = {
-    status: PropTypes.oneOf([ STATUS_CONNECTED, STATUS_CONNECTED_TO_ANOTHER_ACCOUNT, STATUS_NOT_CONNECTED ]),
+    status: PropTypes.oneOf([STATUS_CONNECTED, STATUS_CONNECTED_TO_ANOTHER_ACCOUNT, STATUS_NOT_CONNECTED]),
     onClick: PropTypes.func,
   }
 

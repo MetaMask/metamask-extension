@@ -9,7 +9,6 @@ import AccountMismatchWarning from '../account-mismatch-warning/account-mismatch
 import { useI18nContext } from '../../../hooks/useI18nContext'
 import { DEFAULT_VARIANT, CARDS_VARIANT, FLAT_VARIANT } from './sender-to-recipient.constants'
 
-
 const variantHash = {
   [DEFAULT_VARIANT]: 'sender-to-recipient--default',
   [CARDS_VARIANT]: 'sender-to-recipient--cards',
@@ -160,7 +159,6 @@ RecipientWithAddress.propTypes = {
   assetImage: PropTypes.string,
   onRecipientClick: PropTypes.func,
 }
-
 
 function Arrow ({ variant }) {
   return variant === DEFAULT_VARIANT

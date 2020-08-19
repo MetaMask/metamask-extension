@@ -18,7 +18,6 @@ start().catch((error) => {
   process.exit(1)
 })
 
-
 async function start () {
   const targetFiles = [
     `background.js`,

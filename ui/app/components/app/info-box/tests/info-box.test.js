@@ -3,7 +3,7 @@ import React from 'react'
 import sinon from 'sinon'
 import { shallow } from 'enzyme'
 
-import InfoBox from '../index'
+import InfoBox from '..'
 
 describe('InfoBox', function () {
 

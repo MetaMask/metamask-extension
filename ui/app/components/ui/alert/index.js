@@ -19,7 +19,7 @@ class Alert extends Component {
 
   animateIn (msg) {
     this.setState({
-      msg: msg,
+      msg,
       visible: true,
       className: 'visible',
     })

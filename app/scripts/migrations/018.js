@@ -1,5 +1,3 @@
-const version = 18
-
 /*
 
 This migration updates "transaction state history" to diffs style
@@ -12,11 +10,12 @@ import {
   migrateFromSnapshotsToDiffs,
 } from '../controllers/transactions/lib/tx-state-history-helpers'
 
+const version = 18
 
 export default {
   version,
 
-  migrate: function (originalVersionedData) {
+  migrate (originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     try {
@@ -24,7 +23,7 @@ export default {
       const newState = transformState(state)
       versionedData.data = newState
     } catch (err) {
-      console.warn(`MetaMask Migration #${version}` + err.stack)
+      console.warn(`MetaMask Migration #${version}${err.stack}`)
     }
     return Promise.resolve(versionedData)
   },

@@ -36,7 +36,6 @@ import {
 import { showModal, setGasPrice, setGasLimit, setGasTotal, updateSendAmount } from '../../../../store/actions'
 import SendGasRow from './send-gas-row.component'
 
-
 export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(SendGasRow)
 
 function mapStateToProps (state) {

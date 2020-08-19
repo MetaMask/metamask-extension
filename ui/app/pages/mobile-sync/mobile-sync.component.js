@@ -29,7 +29,6 @@ export default class MobileSyncPage extends Component {
     keyrings: PropTypes.array,
   }
 
-
   state = {
     screen: PASSWORD_PROMPT_SCREEN,
     password: '',
@@ -199,7 +198,8 @@ export default class MobileSyncPage extends Component {
           } else {
             resolve()
           }
-        })
+        },
+      )
     })
   }
 
@@ -262,7 +262,6 @@ export default class MobileSyncPage extends Component {
       )
     })
   }
-
 
   componentWillUnmount () {
     this.clearTimeouts()

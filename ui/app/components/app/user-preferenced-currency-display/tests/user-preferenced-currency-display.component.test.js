@@ -7,7 +7,6 @@ import CurrencyDisplay from '../../../ui/currency-display'
 import * as currencyHook from '../../../../hooks/useCurrencyDisplay'
 import * as currencyPrefHook from '../../../../hooks/useUserPreferencedCurrency'
 
-
 describe('UserPreferencedCurrencyDisplay Component', function () {
   describe('rendering', function () {
     beforeEach(function () {

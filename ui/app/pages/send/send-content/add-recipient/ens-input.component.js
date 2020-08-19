@@ -10,7 +10,6 @@ import log from 'loglevel'
 import { ellipsify } from '../../send.utils'
 import { isValidDomainName, isValidAddress, isValidAddressHead } from '../../../../helpers/utils/util'
 
-
 // Local Constants
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 const ZERO_X_ERROR_ADDRESS = '0x'
@@ -187,7 +186,6 @@ export default class EnsInput extends Component {
     const { t } = this.context
     const { className, selectedAddress, selectedName, contact = {} } = this.props
     const name = contact.name || selectedName
-
 
     return (
       <div className={classnames('ens-input', className)}>

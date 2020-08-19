@@ -28,6 +28,7 @@ import { MESSAGE_TYPE } from './enums'
  */
 
 export default class TypedMessageManager extends EventEmitter {
+
   /**
    * Controller in charge of managing - storing, adding, removing, updating - TypedMessage.
    */
@@ -119,8 +120,8 @@ export default class TypedMessageManager extends EventEmitter {
     const msgId = createId()
     const msgData = {
       id: msgId,
-      msgParams: msgParams,
-      time: time,
+      msgParams,
+      time,
       status: 'unapproved',
       type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
     }

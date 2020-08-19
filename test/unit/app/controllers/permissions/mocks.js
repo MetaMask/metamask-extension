@@ -33,7 +33,7 @@ const keyringAccounts = deepFreeze([
   '0xcc74c7a59194e5d9268476955650d1e285be703c',
 ])
 
-const getKeyringAccounts = async () => [ ...keyringAccounts ]
+const getKeyringAccounts = async () => [...keyringAccounts]
 
 const getIdentities = () => {
   return keyringAccounts.reduce(
@@ -261,7 +261,8 @@ const PERMS = {
       return {
         eth_accounts: {
           caveats: CAVEATS.eth_accounts(accounts),
-        } }
+        },
+      }
     },
 
     /**
@@ -574,7 +575,7 @@ export const getters = deepFreeze({
       return {
         origin,
         method: 'wallet_requestPermissions',
-        params: [ PERMS.requests[permissionName]() ],
+        params: [PERMS.requests[permissionName]()],
       }
     },
 
@@ -590,7 +591,7 @@ export const getters = deepFreeze({
       return {
         origin,
         method: 'wallet_requestPermissions',
-        params: [ permissions ],
+        params: [permissions],
       }
     },
 

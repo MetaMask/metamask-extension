@@ -6,11 +6,12 @@ import { checkForError } from './util'
  * A wrapper around the extension's storage local API
  */
 export default class ExtensionStore {
+
   /**
    * @constructor
    */
   constructor () {
-    this.isSupported = !!(extension.storage.local)
+    this.isSupported = Boolean(extension.storage.local)
     if (!this.isSupported) {
       log.error('Storage local API not available.')
     }
@@ -29,9 +30,8 @@ export default class ExtensionStore {
     // if the object is empty, treat it as undefined
     if (isEmpty(result)) {
       return undefined
-    } else {
-      return result
     }
+    return result
   }
 
   /**

@@ -2,7 +2,7 @@ import assert from 'assert'
 import React from 'react'
 import sinon from 'sinon'
 import { shallow } from 'enzyme'
-import Alert from '../index'
+import Alert from '..'
 
 describe('Alert', function () {
   let wrapper

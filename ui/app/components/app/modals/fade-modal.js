@@ -22,14 +22,14 @@ const insertRule = (css) => {
 const insertKeyframesRule = (keyframes) => {
   // random name
   // eslint-disable-next-line no-plusplus
-  const name = 'anim_' + (++index) + (+new Date())
+  const name = `anim_${++index}${Number(new Date())}`
   let css = `@keyframes ${name} {`
 
   Object.keys(keyframes).forEach((key) => {
-    css += key + ' {'
+    css += `${key} {`
 
     Object.keys(keyframes[key]).forEach((property) => {
-      const part = ':' + keyframes[key][property] + ';'
+      const part = `:${keyframes[key][property]};`
       css += property + part
     })
 
@@ -179,15 +179,15 @@ class FadeModal extends Component {
 
     const { willHide } = this.state
     const { modalStyle } = this.props
-    const backdropStyle = Object.assign({}, {
+    const backdropStyle = {
       animationName: willHide ? animation.hideBackdropAnimation : animation.showBackdropAnimation,
-      animationTimingFunction: (willHide ? animation.hide : animation.show).animationTimingFunction,
-    }, this.props.backdropStyle)
-    const contentStyle = Object.assign({}, {
+      animationTimingFunction: (willHide ? animation.hide : animation.show).animationTimingFunction, ...this.props.backdropStyle,
+    }
+    const contentStyle = {
       animationDuration: (willHide ? animation.hide : animation.show).animationDuration,
       animationName: willHide ? animation.hideContentAnimation : animation.showContentAnimation,
-      animationTimingFunction: (willHide ? animation.hide : animation.show).animationTimingFunction,
-    }, this.props.contentStyle)
+      animationTimingFunction: (willHide ? animation.hide : animation.show).animationTimingFunction, ...this.props.contentStyle,
+    }
 
     const backdrop = this.props.backdrop
       ? (

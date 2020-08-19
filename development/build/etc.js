@@ -9,7 +9,6 @@ const { createTask, composeParallel } = require('./task')
 
 module.exports = createEtcTasks
 
-
 function createEtcTasks ({ browserPlatforms, livereload }) {
 
   const clean = createTask('clean', async function clean () {

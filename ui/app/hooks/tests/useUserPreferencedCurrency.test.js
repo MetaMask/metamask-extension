@@ -117,12 +117,10 @@ function getFakeUseSelector (state) {
       return state
     } else if (selector === getShouldShowFiat) {
       return state.showFiat
-    } else {
-      return state.nativeCurrency
     }
+    return state.nativeCurrency
   }
 }
-
 
 describe('useUserPreferencedCurrency', function () {
   tests.forEach(({ params: { type, ...otherParams }, state, result }) => {

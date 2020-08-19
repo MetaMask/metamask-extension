@@ -150,7 +150,7 @@ export default class MetaMetricsOptIn extends Component {
                   target="_blank"
                   rel="noopener noreferrer"
                 >{ t('gdprMessagePrivacyPolicy') }
-                </a> ])
+                </a>])
               }
             </div>
           </div>

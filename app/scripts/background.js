@@ -2,7 +2,7 @@
  * @file The entry point for the web extension singleton process.
  */
 // these need to run before anything else
-/* eslint-disable import/order */
+/* eslint-disable import/first,import/order */
 import './lib/freezeGlobals'
 import setupFetchDebugging from './lib/setupFetchDebugging'
 /* eslint-enable import/order */
@@ -39,9 +39,10 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
 } from './lib/enums'
+/* eslint-enable import/first */
 
 // METAMASK_TEST_CONFIG is used in e2e tests to set the default network to localhost
-const firstTimeState = Object.assign({}, rawFirstTimeState, global.METAMASK_TEST_CONFIG)
+const firstTimeState = { ...rawFirstTimeState, ...global.METAMASK_TEST_CONFIG }
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 

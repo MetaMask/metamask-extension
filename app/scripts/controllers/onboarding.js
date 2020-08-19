@@ -17,6 +17,7 @@ import log from 'loglevel'
  * state related to onboarding
  */
 export default class OnboardingController {
+
   /**
    * Creates a new controller instance
    *
@@ -26,13 +27,11 @@ export default class OnboardingController {
     const initialTransientState = {
       onboardingTabs: {},
     }
-    const initState = Object.assign(
-      {
-        seedPhraseBackedUp: true,
-      },
-      opts.initState,
-      initialTransientState,
-    )
+    const initState = {
+      seedPhraseBackedUp: true,
+      ...opts.initState,
+      ...initialTransientState,
+    }
     this.store = new ObservableStore(initState)
     this.preferencesController = opts.preferencesController
     this.completedOnboarding = this.preferencesController.store.getState().completedOnboarding
@@ -64,7 +63,7 @@ export default class OnboardingController {
       log.debug('Ignoring registerOnboarding; user already onboarded')
       return
     }
-    const onboardingTabs = Object.assign({}, this.store.getState().onboardingTabs)
+    const onboardingTabs = { ...this.store.getState().onboardingTabs }
     if (!onboardingTabs[location] || onboardingTabs[location] !== tabId) {
       log.debug(`Registering onboarding tab at location '${location}' with tabId '${tabId}'`)
       onboardingTabs[location] = tabId
