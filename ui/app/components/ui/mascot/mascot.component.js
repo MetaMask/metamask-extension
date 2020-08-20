@@ -75,8 +75,7 @@ export default class Mascot extends Component {
 
     if (lookAtTarget?.x && lookAtTarget?.y) {
       this.logo.lookAtAndRender(lookAtTarget)
-    }
-    if (lookAtDirection) {
+    } else if (lookAtDirection) {
       this.logo.lookAtAndRender(this.directionTargetMap[lookAtDirection])
     }
   }
@@ -87,11 +86,10 @@ export default class Mascot extends Component {
 
     if (lookAtDirection && prevDirection !== lookAtDirection) {
       this.logo.lookAtAndRender(this.directionTargetMap[lookAtDirection])
-    }
-    if (lookAtTarget?.x !== prevTarget?.x || lookAtTarget?.y !== prevTarget?.y) {
+    } else if (lookAtTarget?.x !== prevTarget?.x || lookAtTarget?.y !== prevTarget?.y) {
       this.logo.lookAtAndRender(lookAtTarget)
     }
-    if (prevFollowMouse !== followMouse) {
+    if (followMouse && (prevFollowMouse !== followMouse)) {
       this.unfollowMouse()
       followMouse && this.refollowMouse()
     }
