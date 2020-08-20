@@ -1,0 +1,145 @@
+.searchable-item-list {
+  background: $white;
+
+  &__search {
+    > div {
+      border: none;
+      border-bottom: 1px solid $Grey-100;
+      border-radius: 0;
+      height: 55px;
+
+      input {
+        @include H4;
+
+        color: $Black-100;
+      }
+    }
+  }
+
+  &__list-container {
+    display: flex;
+    flex-direction: column;
+    max-height: 330px;
+    overflow-y: scroll;
+    scrollbar-width: none;
+  }
+
+  &__item,
+  &__selected-item {
+    transition: 200ms ease-in-out;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    padding: 16px 12px;
+    box-sizing: border-box;
+    cursor: pointer;
+    border-top: 1px solid $Grey-100;
+    position: relative;
+
+    &:first-of-type {
+      border-top: none;
+    }
+
+    &:last-of-type {
+      border-bottom: 1px solid $Grey-100;
+    }
+
+    &:hover {
+      background: $Grey-000;
+    }
+
+    &--selected {
+      border: 2px solid $malibu-blue !important;
+    }
+
+    &--disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .identicon {
+      margin-right: 16px;
+    }
+  }
+
+  &__selected-item {
+    &:last-of-type {
+      border-bottom: none;
+    }
+  }
+
+  &__item-icon {
+    width: 34px;
+    height: 34px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    border-radius: 50%;
+    background-color: $white;
+    box-shadow: 0 2px 4px 0 rgba($black, 0.24);
+    margin-right: 8px;
+    flex: 0 0 auto;
+  }
+
+  &__primary-label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    min-width: 0;
+  }
+
+  &__item-name {
+    /*rtl:ignore*/
+    direction: ltr;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__labels {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    flex: 1;
+  }
+
+  &__item-labels {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 4px;
+  }
+
+  &__right-labels {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+  }
+
+  &__primary-label {
+    @include H5;
+
+    font-weight: bold;
+  }
+
+  &__secondary-label,
+  &__right-primary-label {
+    @include H6;
+
+    color: $Grey-500;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  &__right-secondary-label {
+    @include H6;
+
+    color: $Grey-500;
+    opacity: 0.5;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+}

@@ -1550,11 +1550,17 @@
   "swapBestQuote": {
     "message": "Best quote"
   },
+  "swapBuildQuotePlaceHolderText": {
+    "message": "No tokens available matching $1"
+  },
   "swapCheckingQuote": {
     "message": "Checking $1..."
   },
   "swapCustom": {
     "message": "custom"
+  },
+  "swapFetchingTokens": {
+    "message": "Fetching tokens..."
   },
   "swapFinalizing": {
     "message": "Finalizing..."
@@ -1621,6 +1627,9 @@
   },
   "swapReceivingHeaderInfo": {
     "message": "We search exchanges, aggregators and private market makers for the best deal."
+  },
+  "swapSearchForAToken": {
+    "message": "Search for a token"
   },
   "swapSelect": {
     "message": "Select"

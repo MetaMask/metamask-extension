@@ -1,9 +1,13 @@
 @import 'actionable-message/index';
+@import 'build-quote/index';
 @import 'countdown-timer/index';
+@import 'dropdown-input-pair/index';
+@import 'dropdown-search-list/index';
 @import 'exchange-rate-display/index';
 @import 'fee-card/index';
 @import 'intro-popup/index';
 @import 'loading-swaps-quotes/index';
+@import 'searchable-item-list/index';
 @import 'select-quote-popover/index';
 @import 'slippage-buttons/index';
 
@@ -50,5 +54,64 @@
     @media screen and (min-width: 576px) {
       width: 348px;
     }
+  }
+
+  &__dropdown-convert-to-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 32px;
+    margin-bottom: 12px;
+  }
+
+  &__dropdown-input-pair-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 100%;
+    margin-bottom: 12px;
+    flex: 1 1 auto;
+    max-height: 56px;
+  }
+
+  &__title,
+  &__input-label {
+    @include H5;
+
+    font-weight: bold;
+    color: $Black-100;
+    margin-top: 3px;
+  }
+
+  &__swap-arrows-row {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 16px;
+    padding-top: 24px;
+    position: relative;
+    height: 24px;
+    margin-bottom: 12px;
+  }
+
+  &__swap-arrows {
+    flex: 0 0 auto;
+    height: 16px;
+    width: 12px;
+    background-image: url(/images/icons/swap2.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+
+  &__max-button {
+    @include H7;
+
+    color: $Blue-500;
+    cursor: pointer;
+  }
+
+  &__dropdown-convert-to-header {
+    margin-top: 0;
   }
 }
