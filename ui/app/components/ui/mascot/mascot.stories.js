@@ -24,7 +24,7 @@ export default {
   title: 'Mascot',
 }
 
-export function Approve () {
+export function demo () {
   const [lookAtDirection, setLookAtDirection] = useState(null)
   const [followMouseMode, setFollowMouseMode] = useState(false)
   const [clickToLookMode, setClickToLookMode] = useState(false)
