@@ -3,7 +3,7 @@
     "message": "I have read and agree to the $1",
     "description": "$1 is the `terms` message"
   },
-  "agreeAffirm": {
+  "affirmAgree": {
     "message": "I Agree"
   },
   "eth_accounts": {
