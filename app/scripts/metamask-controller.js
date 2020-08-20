@@ -1,9 +1,3 @@
-/**
- * @file      The central metamask controller. Aggregates other controllers and exports an api.
- * @copyright Copyright (c) 2018 MetaMask
- * @license   MIT
- */
-
 import EventEmitter from 'events'
 
 import pump from 'pump'
