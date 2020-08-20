@@ -1,4 +1,10 @@
-@import 'fee-card/index';
-@import 'exchange-rate-display/index';
 @import 'actionable-message/index';
+@import 'exchange-rate-display/index';
+@import 'fee-card/index';
 @import 'loading-swaps-quotes/index';
+
+.swap {
+  &__content {
+    display: flex;
+  }
+}
