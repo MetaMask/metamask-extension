@@ -1,0 +1,9 @@
+.build-quote {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &__to-dropdown--max-height {
+    max-height: 210px;
+  }
+}
