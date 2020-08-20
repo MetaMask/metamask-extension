@@ -233,7 +233,7 @@ export default class SendTransactionScreen extends Component {
       network,
     } = this.props
 
-    const internalSearch = this.state.internalSearch
+    const { internalSearch } = this.state
 
     if (!query || internalSearch) {
       this.setState({ toError: '', toWarning: '' })
@@ -310,7 +310,7 @@ export default class SendTransactionScreen extends Component {
   }
 
   renderInput () {
-    const internalSearch = this.state.internalSearch
+    const { internalSearch } = this.state
     return (
       <EnsInput
         className="send__to-row"
