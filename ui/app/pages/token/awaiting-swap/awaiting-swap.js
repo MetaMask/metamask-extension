@@ -1,5 +1,5 @@
 import EventEmitter from 'events'
-import React, { useContext, useCallback, useRef } from 'react'
+import React, { useContext, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { I18nContext } from '../../../contexts/i18n'
 import Mascot from '../../../components/ui/mascot'
@@ -19,7 +19,7 @@ export default function AwaitingSwap ({
   const t = useContext(I18nContext)
   const animationEventEmitter = useRef(new EventEmitter())
 
-  const getHeader = useCallback(() => {
+  const getHeader = () => {
     if (swapError) {
       return t('swapSwapError')
     } else if (!swapComplete) {
@@ -27,9 +27,9 @@ export default function AwaitingSwap ({
     }
     return t('swapTransactionComplete')
 
-  }, [t, swapComplete, swapError])
+  }
 
-  const getStatusImage = useCallback(() => {
+  const getStatusImage = () => {
     if (swapError) {
       return <SwapFailureIcon />
     }
@@ -40,9 +40,9 @@ export default function AwaitingSwap ({
       return <PulseLoader />
     }
     return undefined
-  }, [swapError, swapComplete])
+  }
 
-  const getDescription = useCallback(() => {
+  const getDescription = () => {
     if (swapError) {
       return t('swapErrorDescription')
     }
@@ -53,7 +53,7 @@ export default function AwaitingSwap ({
       return t('swapTokenAvailable', [symbol])
     }
     return undefined
-  }, [t, swapError, swapComplete, symbol])
+  }
 
   return (
     <div className="awaiting-swap">
