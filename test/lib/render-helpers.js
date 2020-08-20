@@ -50,9 +50,7 @@ export function mountWithRouter (component, store = {}, pathname = '/') {
   return mount(<Wrapper />, createContext())
 }
 
-export function renderWithProvider (component) {
-
-  const { store } = component.props
+export function renderWithProvider (component, store) {
 
   const Wrapper = () => (
     <Provider store={store}>

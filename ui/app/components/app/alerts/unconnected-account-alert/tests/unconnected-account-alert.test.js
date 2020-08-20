@@ -115,7 +115,7 @@ describe('Unconnected Account Alert', function () {
 
     const store = configureMockStore()(mockState)
 
-    const { getByRole } = renderWithProvider(<UnconnectedAccountAlert store={store} />)
+    const { getByRole } = renderWithProvider(<UnconnectedAccountAlert />, store)
 
     const dontShowCheckbox = getByRole('checkbox')
 
@@ -127,7 +127,7 @@ describe('Unconnected Account Alert', function () {
   it('clicks dismiss button and calls dismissAlert action', function () {
     const store = configureMockStore()(mockState)
 
-    const { getByText } = renderWithProvider(<UnconnectedAccountAlert store={store} />)
+    const { getByText } = renderWithProvider(<UnconnectedAccountAlert />, store)
 
     const dismissButton = getByText(/dismiss/u)
     fireEvent.click(dismissButton)
@@ -140,7 +140,7 @@ describe('Unconnected Account Alert', function () {
 
     const store = configureMockStore([thunk])(mockState)
 
-    const { getByText, getByRole } = renderWithProvider(<UnconnectedAccountAlert store={store} />)
+    const { getByText, getByRole } = renderWithProvider(<UnconnectedAccountAlert />, store)
 
     const dismissButton = getByText(/dismiss/u)
     const dontShowCheckbox = getByRole('checkbox')
