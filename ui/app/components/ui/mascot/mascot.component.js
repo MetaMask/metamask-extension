@@ -3,20 +3,43 @@ import React, { createRef, Component } from 'react'
 import metamaskLogo from 'metamask-logo'
 import { debounce } from 'lodash'
 
+const directionTargetGenerator = ({ top, left, height, width }) => {
+  const horizontalMiddle = left + (width / 2)
+  const verticalMiddle = top + (height / 2)
+  return {
+    up: { x: horizontalMiddle, y: top - height },
+    down: { x: horizontalMiddle, y: top + (height * 2) },
+    left: { x: left - width, y: verticalMiddle },
+    right: { x: left + (width * 2), y: verticalMiddle },
+    middle: { x: horizontalMiddle, y: verticalMiddle },
+  }
+}
+
 export default class Mascot extends Component {
   static propTypes = {
     animationEventEmitter: PropTypes.object.isRequired,
     width: PropTypes.string,
     height: PropTypes.string,
+    followMouse: PropTypes.bool,
+    lookAtTarget: PropTypes.object,
+    lookAtDirection: PropTypes.oneOf(['up', 'down', 'left', 'right', 'middle']),
+  }
+
+  static defaultProps = {
+    width: '200',
+    height: '200',
+    followMouse: true,
+    lookAtTarget: {},
+    lookAtDirection: '',
   }
 
   constructor (props) {
     super(props)
 
-    const { width = '200', height = '200' } = props
+    const { width, height, followMouse } = props
 
     this.logo = metamaskLogo({
-      followMouse: true,
+      followMouse,
       pxNotRatio: true,
       width,
       height,
@@ -46,6 +69,30 @@ export default class Mascot extends Component {
 
   componentDidMount () {
     this.mascotContainer.current.appendChild(this.logo.container)
+    this.directionTargetMap = directionTargetGenerator(this.mascotContainer.current.getBoundingClientRect())
+
+    const { lookAtTarget, lookAtDirection } = this.props
+
+    if (lookAtTarget?.x && lookAtTarget?.y) {
+      this.logo.lookAtAndRender(lookAtTarget)
+    } else if (lookAtDirection) {
+      this.logo.lookAtAndRender(this.directionTargetMap[lookAtDirection])
+    }
+  }
+
+  componentDidUpdate (prevProps) {
+    const { lookAtTarget: prevTarget = {}, lookAtDirection: prevDirection = '', followMouse: prevFollowMouse } = prevProps
+    const { lookAtTarget = {}, followMouse, lookAtDirection } = this.props
+
+    if (lookAtDirection && prevDirection !== lookAtDirection) {
+      this.logo.lookAtAndRender(this.directionTargetMap[lookAtDirection])
+    } else if (lookAtTarget?.x !== prevTarget?.x || lookAtTarget?.y !== prevTarget?.y) {
+      this.logo.lookAtAndRender(lookAtTarget)
+    }
+    if (prevFollowMouse !== followMouse) {
+      this.unfollowMouse()
+      followMouse && this.refollowMouse()
+    }
   }
 
   componentWillUnmount () {
