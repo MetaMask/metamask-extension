@@ -1538,14 +1538,74 @@
   "swap": {
     "message": "Swap"
   },
+  "swapAmountReceived": {
+    "message": "Minimum amount received"
+  },
+  "swapAmountReceivedInfo": {
+    "message": "The exact amount you’ll receive depends on slippage"
+  },
+  "swapBestQuote": {
+    "message": "Best quote"
+  },
   "swapCheckingQuote": {
     "message": "Checking $1..."
   },
   "swapFinalizing": {
     "message": "Finalizing..."
   },
+  "swapMaxSlippage": {
+    "message": "Max slippage"
+  },
+  "swapMetaMaskFee": {
+    "message": "MetaMask Fee"
+  },
+  "swapMetaMaskFeeInfo": {
+    "message": "This fee helps us make MetaMask even better. The 'amount received' number includes this fee."
+  },
+  "swapNetworkFees": {
+    "message": "Network fees"
+  },
+  "swapNetworkFeesInfo": {
+    "message": "This is the cost to process the swap on the Ethereum network. It’s also known as “gas” fees."
+  },
+  "swapQuoteDetails": {
+    "message": "Quote details"
+  },
+  "swapQuoteDetailsSlippageInfo": {
+    "message": "If the price changes between when an order is placed and executed it’s called “slippage”. If slippage exceeds your max slippage setting your transaction will automatically cancel."
+  },
   "swapQuoteNofN": {
     "message": "Quote $1 of $2"
+  },
+  "swapQuoteSource": {
+    "message": "Quote Source"
+  },
+  "swapRate": {
+    "message": "Rate"
+  },
+  "swapReceiving": {
+    "message": "Receiving"
+  },
+  "swapReceivingHeaderInfo": {
+    "message": "We search exchanges, aggregators and private market makers for the best deal."
+  },
+  "swapSelect": {
+    "message": "Select"
+  },
+  "swapSelectAQuote": {
+    "message": "Select a quote"
+  },
+  "swapSelectQuotePopoverDescription": {
+    "message": "Below are all the quotes gathered from multiple liquidity sources."
+  },
+  "swapSource": {
+    "message": "Liquidity Source"
+  },
+  "swapSourceInfo": {
+    "message": "We search multiple liquidity sources (exchanges, aggregators and professional market makers) to find the best rates and lowest network fees."
+  },
+  "swapsBestQuote": {
+    "message": "Best Quote"
   },
   "swapsErrorFetchingQuotes": {
     "message": "Error fetching quotes"
