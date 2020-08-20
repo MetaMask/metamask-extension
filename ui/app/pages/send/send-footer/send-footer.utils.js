@@ -1,12 +1,7 @@
 import ethAbi from 'ethereumjs-abi'
 import ethUtil from 'ethereumjs-util'
 import { TOKEN_TRANSFER_FUNCTION_SIGNATURE } from '../send.constants'
-
-export function addHexPrefixToObjectValues (obj) {
-  return Object.keys(obj).reduce((newObj, key) => {
-    return { ...newObj, [key]: ethUtil.addHexPrefix(obj[key]) }
-  }, {})
-}
+import { addHexPrefixToObjectValues } from '../../../helpers/utils/util'
 
 export function constructTxParams ({ sendToken, data, to, amount, from, gas, gasPrice }) {
   const txParams = {
