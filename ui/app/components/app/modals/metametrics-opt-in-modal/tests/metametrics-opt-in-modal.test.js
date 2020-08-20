@@ -41,8 +41,8 @@ describe('MetaMetrics Opt In', function () {
   })
 
   it('passes true to setParticipateInMetaMetrics and hides modal', function (done) {
-    const iAgree = wrapper.find('.btn-primary.page-container__footer-button')
-    iAgree.simulate('click')
+    const affirmAgree = wrapper.find('.btn-primary.page-container__footer-button')
+    affirmAgree.simulate('click')
 
     setImmediate(() => {
       assert(props.setParticipateInMetaMetrics.calledOnce)

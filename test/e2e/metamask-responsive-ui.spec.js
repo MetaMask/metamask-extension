@@ -58,7 +58,7 @@ describe('MetaMask', function () {
       await driver.delay(largeDelayMs)
     })
 
-    it('clicks the "I agree" option on the metametrics opt-in screen', async function () {
+    it('clicks the "I Agree" option on the metametrics opt-in screen', async function () {
       await driver.clickElement(By.css('.btn-primary'))
       await driver.delay(largeDelayMs)
     })
