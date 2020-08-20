@@ -89,7 +89,7 @@ export default class Mascot extends Component {
     } else if (lookAtTarget?.x !== prevTarget?.x || lookAtTarget?.y !== prevTarget?.y) {
       this.logo.lookAtAndRender(lookAtTarget)
     }
-    if (followMouse && (prevFollowMouse !== followMouse)) {
+    if (prevFollowMouse !== followMouse) {
       this.unfollowMouse()
       followMouse && this.refollowMouse()
     }
