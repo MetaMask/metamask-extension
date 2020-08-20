@@ -3,6 +3,7 @@ import React from 'react'
 import sinon from 'sinon'
 import { mount } from 'enzyme'
 import MetaMetricsOptIn from '..'
+import messages from '../../../../../../../app/_locales/en/messages.json'
 
 describe('MetaMetrics Opt In', function () {
   let wrapper
@@ -18,6 +19,7 @@ describe('MetaMetrics Opt In', function () {
       <MetaMetricsOptIn.WrappedComponent {...props} />, {
         context: {
           metricsEvent: () => undefined,
+          t: (key) => messages[key].message,
         },
       },
     )
