@@ -1809,6 +1809,14 @@
     pump "^3.0.0"
     safe-event-emitter "^1.0.1"
 
+"@metamask/logo@^2.5.0":
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/@metamask/logo/-/logo-2.5.0.tgz#4d35bf9e427db66c0030d81b8faa0f5162d17f7a"
+  integrity sha512-SBgWhcbKj0+efpFVAHf5Jh7URGMhH3Os06sgmERui+dvgXMEIBrt2aEeGRXe1aKKRSOhruazHknpdLdqyEvNjA==
+  dependencies:
+    gl-mat4 "1.1.4"
+    gl-vec3 "1.0.3"
+
 "@metamask/test-dapp@^3.1.0":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@metamask/test-dapp/-/test-dapp-3.1.0.tgz#25560ff260bcf6611b30a26b09c915013576210c"
@@ -18043,14 +18051,6 @@ mersenne-twister@^1.0.1, mersenne-twister@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/mersenne-twister/-/mersenne-twister-1.1.0.tgz#f916618ee43d7179efcf641bec4531eb9670978a"
   integrity sha1-+RZhjuQ9cXnvz2Qb7EUx65Zwl4o=
-
-metamask-logo@^2.4.1:
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/metamask-logo/-/metamask-logo-2.4.1.tgz#7b51456358e2d8b4576a1487640b7da304ddae87"
-  integrity sha512-JPMCLs/p3RTL/pLpbofV69kPn/AKJrpIdtFBZd9d+3p3f/HydT9tply2SWBr+8RjnsUaNmUoaBBZilvlPzcTDg==
-  dependencies:
-    gl-mat4 "1.1.4"
-    gl-vec3 "1.0.3"
 
 methods@^1.1.1, methods@~1.1.2:
   version "1.1.2"
