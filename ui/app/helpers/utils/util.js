@@ -369,3 +369,41 @@ export function toPrecisionWithoutTrailingZeros (n, precision) {
     .toPrecision(precision)
     .replace(/(\.[0-9]*[1-9])0*|(\.0*)/u, '$1')
 }
+
+/**
+  * Given and object where all values are strings, returns the same object with all values
+  * now prefixed with '0x'
+  */
+export function addHexPrefixToObjectValues (obj) {
+  return Object.keys(obj).reduce((newObj, key) => {
+    return { ...newObj, [key]: ethUtil.addHexPrefix(obj[key]) }
+  }, {})
+}
+
+/**
+ * Given the standard set of information about a transaction, returns a transaction properly formatted for
+ * publishing via JSON RPC and web3
+ *
+ * @param {string|object|boolean} sendToken - Indicates whether or not the transaciton is a token transaction
+ * @param {string} data - A hex string containing the data to include in the transaction
+ * @param {string} to - A hex address of the tx recipient address
+ * @param {string} from - A hex address of the tx sender address
+ * @param {string} gas - A hex representation of the gas value for the transaction
+ * @param {string} gasPrice - A hex representation of the gas price for the transaction
+ * @returns {object} An object ready for submission to the blockchain, with all values appropriately hex prefixed
+ */
+export function constructTxParams ({ sendToken, data, to, amount, from, gas, gasPrice }) {
+  const txParams = {
+    data,
+    from,
+    value: '0',
+    gas,
+    gasPrice,
+  }
+
+  if (!sendToken) {
+    txParams.value = amount
+    txParams.to = to
+  }
+  return addHexPrefixToObjectValues(txParams)
+}

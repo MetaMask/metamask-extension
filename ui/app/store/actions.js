@@ -796,6 +796,37 @@ const updateMetamaskStateFromBackground = () => {
   })
 }
 
+export function estimateGasMethod ({
+  gasPrice,
+  blockGasLimit,
+  selectedAddress,
+  sendToken,
+  to,
+  value,
+  data,
+}) {
+  return estimateGas({
+    estimateGasMethod: promisifiedBackground.estimateGas,
+    blockGasLimit,
+    selectedAddress,
+    sendToken,
+    to,
+    value,
+    gasPrice,
+    data,
+  })
+}
+
+export async function estimateGasFromTxParams (txParams) {
+  const backgroundState = await updateMetamaskStateFromBackground()
+  const blockGasLimit = backgroundState.currentBlockGasLimit
+  return estimateGasMethod({
+    ...txParams,
+    selectedAddress: txParams.from,
+    blockGasLimit,
+  })
+}
+
 export function updateTransaction (txData) {
   return (dispatch) => {
     dispatch(showLoadingIndication())
