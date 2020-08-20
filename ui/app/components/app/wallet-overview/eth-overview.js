@@ -4,17 +4,18 @@ import { useDispatch, useSelector } from 'react-redux'
 import classnames from 'classnames'
 import { useHistory } from 'react-router-dom'
 
-import Button from '../../ui/button'
 import Identicon from '../../ui/identicon'
 import { I18nContext } from '../../../contexts/i18n'
-import { SEND_ROUTE } from '../../../helpers/constants/routes'
+import { SEND_ROUTE, BUILD_QUOTE_ROUTE } from '../../../helpers/constants/routes'
 import { useMetricEvent } from '../../../hooks/useMetricEvent'
 import Tooltip from '../../ui/tooltip'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 import { showModal } from '../../../store/actions'
 import { isBalanceCached, getSelectedAccount, getShouldShowFiat } from '../../../selectors/selectors'
-import PaperAirplane from '../../ui/icon/paper-airplane-icon'
+import SwapIcon from '../../ui/icon/swap-icon.component'
+import BuyIcon from '../../ui/icon/overview-buy-icon.component'
+import SendIcon from '../../ui/icon/overview-send-icon.component'
 import WalletOverview from './wallet-overview'
 
 const EthOverview = ({ className }) => {
@@ -32,6 +33,13 @@ const EthOverview = ({ className }) => {
       category: 'Navigation',
       action: 'Home',
       name: 'Clicked Deposit',
+    },
+  })
+  const convertEvent = useMetricEvent({
+    eventOpts: {
+      category: 'Navigation',
+      action: 'Home',
+      name: 'Clicked Convert: eth',
     },
   })
   const history = useHistory()
@@ -80,30 +88,43 @@ const EthOverview = ({ className }) => {
       )}
       buttons={(
         <>
-          <Button
-            type="primary"
-            className="eth-overview__button"
-            rounded
-            onClick={() => {
-              depositEvent()
-              dispatch(showModal({ name: 'DEPOSIT_ETHER' }))
-            }}
-          >
+          <div className="eth-overview__button">
+            <div
+              className="eth-overview__circle"
+              onClick={() => {
+                depositEvent()
+                dispatch(showModal({ name: 'DEPOSIT_ETHER' }))
+              }}
+            >
+              <BuyIcon />
+            </div>
             { t('buy') }
-          </Button>
-          <Button
-            type="secondary"
-            className="eth-overview__button"
-            rounded
-            icon={<PaperAirplane color="#037DD6" size={20} />}
-            onClick={() => {
-              sendEvent()
-              history.push(SEND_ROUTE)
-            }}
-            data-testid="eth-overview-send"
-          >
+          </div>
+          <div className="eth-overview__button">
+            <div
+              className="eth-overview__circle"
+              onClick={() => {
+                sendEvent()
+                history.push(SEND_ROUTE)
+              }}
+              data-testid="eth-overview-send"
+            >
+              <SendIcon />
+            </div>
             { t('send') }
-          </Button>
+          </div>
+          <div className="eth-overview__button">
+            <div
+              className="eth-overview__circle"
+              onClick={() => {
+                convertEvent()
+                history.push(BUILD_QUOTE_ROUTE)
+              }}
+            >
+              <SwapIcon />
+            </div>
+            { t('swap') }
+          </div>
         </>
       )}
       className={className}

@@ -1509,6 +1509,9 @@
   "supportCenter": {
     "message": "Visit our Support Center"
   },
+  "swap": {
+    "message": "Swap"
+  },
   "swapCheckingQuote": {
     "message": "Checking $1..."
   },
