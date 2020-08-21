@@ -3,6 +3,9 @@
     "message": "I have read and agree to the $1",
     "description": "$1 is the `terms` message"
   },
+  "affirmAgree": {
+    "message": "I Agree"
+  },
   "eth_accounts": {
     "message": "View the addresses of your permitted accounts (required)",
     "description": "The description for the `eth_accounts` permission"
