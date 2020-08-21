@@ -701,8 +701,8 @@ export default class TransactionController extends EventEmitter {
     let name
     try {
       name = data && hstInterface.parseTransaction({ data }).name
-    } catch (err) {
-      log.warn(`Failed to parse transaction data: ${data}`)
+    } catch (error) {
+      log.debug('Failed to parse transaction data.', error, data)
     }
 
     const tokenMethodName = [

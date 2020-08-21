@@ -32,7 +32,11 @@ import { addCurrencies } from './conversion-util'
 const hstInterface = new ethers.utils.Interface(abi)
 
 export function getTokenData (data) {
-  return data && hstInterface.parseTransaction({ data })
+  try {
+    return hstInterface.parseTransaction({ data })
+  } catch (_) {
+    return undefined
+  }
 }
 
 async function getMethodFrom4Byte (fourBytePrefix) {
