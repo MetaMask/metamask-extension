@@ -28,7 +28,6 @@ export default function DropdownInputPair ({
       <DropdownSearchList
         itemsToSearch={itemsToSearch}
         SearchListPlaceholder={SearchListPlaceholder}
-        searchListClassName="token__search-token"
         fuseSearchKeys={[{ name: 'name', weight: 0.499 }, { name: 'symbol', weight: 0.499 }, { name: 'address', weight: 0.002 }]}
         maxListItems={maxListItems}
         onOpen={open}

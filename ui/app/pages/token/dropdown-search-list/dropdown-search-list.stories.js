@@ -34,23 +34,6 @@ export const TokenSearchDropdown = () => {
       <DropdownSearchList
         startingItem={tokensToSearch[0]}
         itemsToSearch={tokensToSearch}
-        SearchListPlaceholder={({ searchQuery }) => (<div className="token__placeholder">{`No tokens available that match “${searchQuery}”.`}</div>)}
-        SelectedItemComponent={({ iconUrl, symbol }) => (
-          <div className="token__search-token">
-            <div className="searchable-item-list__item">
-              <div
-                className="searchable-item-list__item-icon"
-                style={{ backgroundImage: `url(${iconUrl})` }}
-              />
-              <div className="searchable-item-list__labels">
-                <div className="searchable-item-list__item-labels">
-                  <span className="searchable-item-list__primary-label">{ symbol }</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-        searchListClassName="token__search-token"
         searchPlaceholderText="Search for a token"
         fuseSearchKeys={[{ name: 'name', weight: 0.5 }, { name: 'symbol', weight: 0.5 }]}
         maxListItems={tokensToSearch.length}

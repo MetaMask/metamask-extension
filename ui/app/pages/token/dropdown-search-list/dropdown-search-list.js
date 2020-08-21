@@ -5,6 +5,7 @@ import { isEqual } from 'lodash'
 import { I18nContext } from '../../../contexts/i18n'
 import SearchableItemList from '../searchable-item-list'
 import PulseLoader from '../../../components/ui/pulse-loader'
+import UrlIcon from '../../../components/ui/url-icon'
 
 export default function DropdownSearchList ({
   searchListClassName = '',
@@ -55,12 +56,7 @@ export default function DropdownSearchList ({
           className={classnames('dropdown-search-list__selector-closed-container', selectorClosedClassName)}
         >
           <div className={classnames('dropdown-search-list__selector-closed')}>
-            {selectedItem?.iconUrl && (
-              <div
-                className="searchable-item-list__item-icon"
-                style={{ backgroundImage: `url(${selectedItem?.iconUrl})` }}
-              />
-            )}
+            {selectedItem?.iconUrl && (<UrlIcon url={selectedItem.iconUrl} />)}
             {!selectedItem?.iconUrl && <div className="dropdown-search-list__default-dropdown-icon" />}
             <div className="dropdown-search-list__labels">
               <div className="dropdown-search-list__item-labels">
@@ -73,7 +69,7 @@ export default function DropdownSearchList ({
               </div>
             </div>
           </div>
-          <i className="fa fa-caret-down fa-lg simple-dropdown__caret" />
+          <i className="fa fa-caret-down fa-lg dropdown-search-list__caret" />
         </div>
       )}
       {isOpen && (
