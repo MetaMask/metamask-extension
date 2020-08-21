@@ -31,6 +31,22 @@ import { addCurrencies } from './conversion-util'
 
 const hstInterface = new ethers.utils.Interface(abi)
 
+/**
+ * @typedef EthersContractCall
+ * @type object
+ * @property {any[]} args - The args/params to the function call.
+ * An array-like object with numerical and string indices.
+ * @property {string} name - The name of the function.
+ * @property {string} signature - The function signature.
+ * @property {string} sighash - The function signature hash.
+ * @property {EthersBigNumber} value - The ETH value associated with the call.
+ * @property {FunctionFragment} functionFragment - The Ethers function fragment
+ * representation of the function.
+ */
+
+/**
+ * @returns {EthersContractCall | undefined}
+ */
 export function getTokenData (data) {
   try {
     return hstInterface.parseTransaction({ data })
