@@ -185,8 +185,8 @@ const multiplyCurrencies = (a, b, options = {}) => {
     ...conversionOptions
   } = options
 
-  const bigNumberA = new BigNumber(String(a), multiplicandBase)
-  const bigNumberB = new BigNumber(String(b), multiplierBase)
+  const bigNumberA = new BigNumber(String(a).replace('0x-', '-0x'), multiplicandBase)
+  const bigNumberB = new BigNumber(String(b).replace('0x-', '-0x'), multiplierBase)
 
   const value = bigNumberA.times(bigNumberB)
 
