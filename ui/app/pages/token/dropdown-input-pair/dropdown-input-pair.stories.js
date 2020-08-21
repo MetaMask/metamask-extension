@@ -40,21 +40,6 @@ export const Basic = () => {
         defaultToAll
         onInputChange={(value) => setInputValue(value)}
         inputValue={inputValue}
-        SelectedItemComponent={({ iconUrl, symbol }) => (
-          <div className="token__search-token">
-            <div className="searchable-item-list__item">
-              <div
-                className="searchable-item-list__item-icon"
-                style={{ backgroundImage: `url(${iconUrl})` }}
-              />
-              <div className="searchable-item-list__labels">
-                <div className="searchable-item-list__item-labels">
-                  <span className="searchable-item-list__primary-label">{ symbol }</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       />
     </div>
   )

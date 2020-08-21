@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import Identicon from '../../../../components/ui/identicon'
+import UrlIcon from '../../../../components/ui/url-icon'
 
 export default function ItemList ({
   results = [],
@@ -12,7 +13,6 @@ export default function ItemList ({
   searchQuery = '',
   containerRef = null,
 }) {
-  console.log('results', results)
   return results.length === 0
     ? <Placeholder searchQuery={searchQuery} />
     : (
@@ -46,17 +46,14 @@ export default function ItemList ({
                     onClick={() => onClickItem && onClickItem(result)}
                     key={`searchable-item-list-item-${i}`}
                   >
-                    {iconUrl && (
-                      <div
-                        className="searchable-item-list__item-icon"
-                        style={{ backgroundImage: iconUrl && `url(${iconUrl})` }}
-                      />
-                    )}
+                    {iconUrl && (<UrlIcon url={iconUrl} />)}
                     {identiconAddress && (
-                      <Identicon
-                        address={identiconAddress}
-                        diameter={34}
-                      />
+                      <div className="searchable-item-list__identicon">
+                        <Identicon
+                          address={identiconAddress}
+                          diameter={34}
+                        />
+                      </div>
                     )}
                     {IconComponent && <IconComponent />}
                     <div className="searchable-item-list__labels">

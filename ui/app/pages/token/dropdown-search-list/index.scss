@@ -40,15 +40,12 @@
     &:hover {
       background: $Grey-000;
     }
+  }
 
-    .simple-dropdown__caret {
-      position: absolute;
-      right: 5px;
-    }
-
-    .token__search-token .searchable-item-list__item:last-of-type {
-      border-bottom: none;
-    }
+  &__caret {
+    position: absolute;
+    right: 5px;
+    color: $Grey-200;
   }
 
   &__selector-closed {
@@ -62,22 +59,6 @@
     justify-content: center;
     align-items: center;
     height: 60px;
-  }
-
-  .searchable-item-list {
-    &__list-container {
-      z-index: 1002;
-      position: relative;
-      background: white;
-    }
-
-    &__search {
-      z-index: 1001;
-    }
-
-    &__item--highlighted {
-      background: $Grey-000;
-    }
   }
 
   &__closed-primary-label {
@@ -143,10 +124,6 @@
     position: relative;
     z-index: 1;
     background: $white;
-
-    .identicon {
-      margin-right: 16px;
-    }
   }
 
   &__loading-item-text-container {
