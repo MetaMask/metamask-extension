@@ -137,14 +137,12 @@ export function calcTokenValue (value, decimals) {
   return new BigNumber(String(value)).times(multiplier)
 }
 
-export function getTokenValue (tokenParams = []) {
-  const valueData = tokenParams.find((param) => param.name === '_value')
-  return valueData && valueData.value
+export function getTokenValue (tokenData = {}) {
+  return tokenData?.args?.['_value']?.toString()
 }
 
-export function getTokenToAddress (tokenParams = []) {
-  const toAddressData = tokenParams.find((param) => param.name === '_to')
-  return toAddressData ? toAddressData.value : tokenParams[0].value
+export function getTokenToAddress (tokenData = {}) {
+  return tokenData?.args?.['_to']?.toString().toLowerCase()
 }
 
 /**

@@ -122,7 +122,7 @@ export function useTransactionDisplayData (transactionGroup) {
   } else if (transactionCategory === TOKEN_METHOD_TRANSFER_FROM || transactionCategory === TOKEN_METHOD_TRANSFER) {
     category = TRANSACTION_CATEGORY_SEND
     title = t('sendSpecifiedTokens', [token?.symbol || t('token')])
-    recipientAddress = getTokenToAddress(tokenData.params)
+    recipientAddress = getTokenToAddress(tokenData)
     subtitle = t('toAddress', [shortenAddress(recipientAddress)])
   } else if (transactionCategory === SEND_ETHER_ACTION_KEY) {
     category = TRANSACTION_CATEGORY_SEND

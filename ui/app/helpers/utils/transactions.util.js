@@ -1,7 +1,7 @@
 import ethUtil from 'ethereumjs-util'
 import MethodRegistry from 'eth-method-registry'
 import abi from 'human-standard-token-abi'
-import abiDecoder from 'abi-decoder'
+import { ethers } from 'ethers'
 import log from 'loglevel'
 import {
   TRANSACTION_TYPE_CANCEL,
@@ -29,10 +29,10 @@ import fetchWithCache from './fetch-with-cache'
 
 import { addCurrencies } from './conversion-util'
 
-abiDecoder.addABI(abi)
+const hstInterface = new ethers.utils.Interface(abi)
 
-export function getTokenData (data = '') {
-  return abiDecoder.decodeMethod(data)
+export function getTokenData (data) {
+  return data && hstInterface.parseTransaction({ data })
 }
 
 async function getMethodFrom4Byte (fourBytePrefix) {
