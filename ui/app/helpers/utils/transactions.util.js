@@ -34,7 +34,8 @@ const hstInterface = new ethers.utils.Interface(abi)
 export function getTokenData (data) {
   try {
     return hstInterface.parseTransaction({ data })
-  } catch (_) {
+  } catch (error) {
+    log.debug('Failed to parse transaction data.', error, data)
     return undefined
   }
 }
