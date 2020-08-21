@@ -1709,7 +1709,7 @@ export function exportAccount (password, address) {
 
     log.debug(`background.submitPassword`)
     return new Promise((resolve, reject) => {
-      background.submitPassword(password, function (err) {
+      background.verifyPassword(password, function (err) {
         if (err) {
           log.error('Error in submitting password.')
           dispatch(hideLoadingIndication())
