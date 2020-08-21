@@ -1144,10 +1144,10 @@ describe('Actions', function () {
   })
 
   describe('#exportAccount', function () {
-    let submitPasswordSpy, exportAccountSpy
+    let verifyPasswordSpy, exportAccountSpy
 
     afterEach(function () {
-      submitPasswordSpy.restore()
+      verifyPasswordSpy.restore()
       exportAccountSpy.restore()
     })
 
@@ -1159,11 +1159,11 @@ describe('Actions', function () {
         { type: 'SHOW_PRIVATE_KEY', value: '7ec73b91bb20f209a7ff2d32f542c3420b4fccf14abcc7840d2eff0ebcb18505' },
       ]
 
-      submitPasswordSpy = sinon.spy(background, 'submitPassword')
+      verifyPasswordSpy = sinon.spy(background, 'verifyPassword')
       exportAccountSpy = sinon.spy(background, 'exportAccount')
 
       await store.dispatch(actions.exportAccount(password, '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'))
-      assert(submitPasswordSpy.calledOnce)
+      assert(verifyPasswordSpy.calledOnce)
       assert(exportAccountSpy.calledOnce)
       assert.deepEqual(store.getActions(), expectedActions)
     })
@@ -1176,8 +1176,8 @@ describe('Actions', function () {
         { type: 'DISPLAY_WARNING', value: 'Incorrect Password.' },
       ]
 
-      submitPasswordSpy = sinon.stub(background, 'submitPassword')
-      submitPasswordSpy.callsFake((_, callback) => {
+      verifyPasswordSpy = sinon.stub(background, 'verifyPassword')
+      verifyPasswordSpy.callsFake((_, callback) => {
         callback(new Error('error'))
       })
 
