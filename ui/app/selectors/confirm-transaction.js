@@ -135,9 +135,9 @@ const tokenDecimalsSelector = createSelector(
   (tokenProps) => tokenProps && tokenProps.tokenDecimals,
 )
 
-const tokenDataParamsSelector = createSelector(
+const tokenDataArgsSelector = createSelector(
   tokenDataSelector,
-  (tokenData) => (tokenData && tokenData.params) || [],
+  (tokenData) => (tokenData && tokenData.args) || [],
 )
 
 const txParamsSelector = createSelector(
@@ -155,17 +155,17 @@ const TOKEN_PARAM_TO = '_to'
 const TOKEN_PARAM_VALUE = '_value'
 
 export const tokenAmountAndToAddressSelector = createSelector(
-  tokenDataParamsSelector,
+  tokenDataArgsSelector,
   tokenDecimalsSelector,
-  (params, tokenDecimals) => {
+  (args, tokenDecimals) => {
     let toAddress = ''
     let tokenAmount = 0
 
-    if (params && params.length) {
-      const toParam = params.find((param) => param.name === TOKEN_PARAM_TO)
-      const valueParam = params.find((param) => param.name === TOKEN_PARAM_VALUE)
-      toAddress = toParam ? toParam.value : params[0].value
-      const value = valueParam ? Number(valueParam.value) : Number(params[1].value)
+    if (args && args.length) {
+      const toParam = args[TOKEN_PARAM_TO]
+      const valueParam = args[TOKEN_PARAM_VALUE]
+      toAddress = toParam || args[0]
+      const value = valueParam ? valueParam.toNumber() : args[1].toNumber()
 
       if (tokenDecimals) {
         tokenAmount = calcTokenAmount(value, tokenDecimals).toNumber()
@@ -182,15 +182,15 @@ export const tokenAmountAndToAddressSelector = createSelector(
 )
 
 export const approveTokenAmountAndToAddressSelector = createSelector(
-  tokenDataParamsSelector,
+  tokenDataArgsSelector,
   tokenDecimalsSelector,
-  (params, tokenDecimals) => {
+  (args, tokenDecimals) => {
     let toAddress = ''
     let tokenAmount = 0
 
-    if (params && params.length) {
-      toAddress = params.find((param) => param.name === TOKEN_PARAM_SPENDER).value
-      const value = Number(params.find((param) => param.name === TOKEN_PARAM_VALUE).value)
+    if (args && args.length) {
+      toAddress = args[TOKEN_PARAM_SPENDER]
+      const value = args[TOKEN_PARAM_VALUE].toNumber()
 
       if (tokenDecimals) {
         tokenAmount = calcTokenAmount(value, tokenDecimals).toNumber()
@@ -207,15 +207,15 @@ export const approveTokenAmountAndToAddressSelector = createSelector(
 )
 
 export const sendTokenTokenAmountAndToAddressSelector = createSelector(
-  tokenDataParamsSelector,
+  tokenDataArgsSelector,
   tokenDecimalsSelector,
-  (params, tokenDecimals) => {
+  (args, tokenDecimals) => {
     let toAddress = ''
     let tokenAmount = 0
 
-    if (params && params.length) {
-      toAddress = params.find((param) => param.name === TOKEN_PARAM_TO).value
-      let value = Number(params.find((param) => param.name === TOKEN_PARAM_VALUE).value)
+    if (args && args.length) {
+      toAddress = args[TOKEN_PARAM_TO]
+      let value = args[TOKEN_PARAM_VALUE].toNumber()
 
       if (tokenDecimals) {
         value = calcTokenAmount(value, tokenDecimals).toNumber()

@@ -8,6 +8,15 @@ import {
   conversionRateSelector,
 } from '../confirm-transaction'
 
+const getEthersArrayLikeFromObj = (obj) => {
+  const arr = []
+  Object.keys(obj).forEach((key) => {
+    arr.push([obj[key]])
+    arr[key] = obj[key]
+  })
+  return arr
+}
+
 describe('Confirm Transaction Selector', function () {
 
   describe('unconfirmedTransactionsCountSelector', function () {
@@ -32,7 +41,6 @@ describe('Confirm Transaction Selector', function () {
     it('returns number of txs in unapprovedTxs state with the same network plus unapproved signing method counts', function () {
       assert.equal(unconfirmedTransactionsCountSelector(state), 4)
     })
-
   })
 
   describe('tokenAmountAndToAddressSelector', function () {
@@ -41,18 +49,10 @@ describe('Confirm Transaction Selector', function () {
       confirmTransaction: {
         tokenData: {
           name: 'transfer',
-          params: [
-            {
-              name: '_to',
-              value: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-              type: 'address',
-            },
-            {
-              name: '_value',
-              value: '1',
-              type: 'uint256',
-            },
-          ],
+          args: getEthersArrayLikeFromObj({
+            '_to': '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            '_value': { toNumber: () => '1' },
+          }),
         },
         tokenProps: {
           tokenDecimals: '2',
@@ -65,7 +65,6 @@ describe('Confirm Transaction Selector', function () {
       assert.deepEqual(tokenAmountAndToAddressSelector(state),
         { toAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc', tokenAmount: 0.01 })
     })
-
   })
 
   describe('approveTokenAmountAndToAddressSelector', function () {
@@ -74,18 +73,10 @@ describe('Confirm Transaction Selector', function () {
       confirmTransaction: {
         tokenData: {
           name: 'approve',
-          params: [
-            {
-              name: '_spender',
-              value: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-              type: 'address',
-            },
-            {
-              name: '_value',
-              value: '1',
-              type: 'uint256',
-            },
-          ],
+          args: getEthersArrayLikeFromObj({
+            '_spender': '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            '_value': { toNumber: () => '1' },
+          }),
         },
         tokenProps: {
           tokenDecimals: '2',
@@ -98,7 +89,6 @@ describe('Confirm Transaction Selector', function () {
       assert.deepEqual(approveTokenAmountAndToAddressSelector(state),
         { toAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc', tokenAmount: 0.01 })
     })
-
   })
 
   describe('sendTokenTokenAmountAndToAddressSelector', function () {
@@ -107,18 +97,10 @@ describe('Confirm Transaction Selector', function () {
       confirmTransaction: {
         tokenData: {
           name: 'transfer',
-          params: [
-            {
-              name: '_to',
-              value: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-              type: 'address',
-            },
-            {
-              name: '_value',
-              value: '1',
-              type: 'uint256',
-            },
-          ],
+          args: getEthersArrayLikeFromObj({
+            '_to': '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            '_value': { toNumber: () => '1' },
+          }),
         },
         tokenProps: {
           tokenDecimals: '2',

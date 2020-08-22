@@ -5,7 +5,7 @@ import Transaction from 'ethereumjs-tx'
 import EthQuery from 'ethjs-query'
 import { ethErrors } from 'eth-json-rpc-errors'
 import abi from 'human-standard-token-abi'
-import abiDecoder from 'abi-decoder'
+import { ethers } from 'ethers'
 import NonceTracker from 'nonce-tracker'
 import log from 'loglevel'
 import {
@@ -30,7 +30,7 @@ import {
   TRANSACTION_STATUS_APPROVED,
 } from './enums'
 
-abiDecoder.addABI(abi)
+const hstInterface = new ethers.utils.Interface(abi)
 
 const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
 const MAX_MEMSTORE_TX_LIST_SIZE = 100 // Number of transactions (by unique nonces) to keep in memory
@@ -698,7 +698,13 @@ export default class TransactionController extends EventEmitter {
   */
   async _determineTransactionCategory (txParams) {
     const { data, to } = txParams
-    const { name } = (data && abiDecoder.decodeMethod(data)) || {}
+    let name
+    try {
+      name = data && hstInterface.parseTransaction({ data }).name
+    } catch (error) {
+      log.debug('Failed to parse transaction data.', error, data)
+    }
+
     const tokenMethodName = [
       TOKEN_METHOD_APPROVE,
       TOKEN_METHOD_TRANSFER,

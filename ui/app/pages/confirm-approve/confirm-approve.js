@@ -8,8 +8,8 @@ import {
 } from '../../helpers/utils/transactions.util'
 import {
   calcTokenAmount,
-  getTokenToAddress,
-  getTokenValue,
+  getTokenAddressParam,
+  getTokenValueParam,
 } from '../../helpers/utils/token-util'
 import { useTokenTracker } from '../../hooks/useTokenTracker'
 import { getTokens } from '../../ducks/metamask/metamask'
@@ -54,8 +54,8 @@ export default function ConfirmApprove () {
   const tokenSymbol = currentToken?.symbol
   const decimals = Number(currentToken?.decimals)
   const tokenData = getTokenData(data)
-  const tokenValue = tokenData && getTokenValue(tokenData.params)
-  const toAddress = tokenData && getTokenToAddress(tokenData.params)
+  const tokenValue = getTokenValueParam(tokenData)
+  const toAddress = getTokenAddressParam(tokenData)
   const tokenAmount = tokenData && calcTokenAmount(tokenValue, decimals).toString(10)
 
   const [customPermissionAmount, setCustomPermissionAmount] = useState('')

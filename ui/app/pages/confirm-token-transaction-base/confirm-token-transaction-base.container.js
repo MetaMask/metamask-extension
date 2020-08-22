@@ -11,8 +11,8 @@ import {
 } from '../../helpers/utils/transactions.util'
 import {
   calcTokenAmount,
-  getTokenToAddress,
-  getTokenValue,
+  getTokenAddressParam,
+  getTokenValueParam,
 } from '../../helpers/utils/token-util'
 import ConfirmTokenTransactionBase from './confirm-token-transaction-base.component'
 
@@ -42,8 +42,8 @@ const mapStateToProps = (state, ownProps) => {
   const { decimals, symbol: tokenSymbol } = currentToken || {}
 
   const tokenData = getTokenData(data)
-  const tokenValue = tokenData && getTokenValue(tokenData.params)
-  const toAddress = tokenData && getTokenToAddress(tokenData.params)
+  const tokenValue = getTokenValueParam(tokenData)
+  const toAddress = getTokenAddressParam(tokenData)
   const tokenAmount = tokenData && calcTokenAmount(tokenValue, decimals).toNumber()
   const contractExchangeRate = contractExchangeRateSelector(state)
 

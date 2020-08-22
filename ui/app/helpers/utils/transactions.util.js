@@ -1,7 +1,7 @@
 import ethUtil from 'ethereumjs-util'
 import MethodRegistry from 'eth-method-registry'
 import abi from 'human-standard-token-abi'
-import abiDecoder from 'abi-decoder'
+import { ethers } from 'ethers'
 import log from 'loglevel'
 import {
   TRANSACTION_TYPE_CANCEL,
@@ -29,10 +29,31 @@ import fetchWithCache from './fetch-with-cache'
 
 import { addCurrencies } from './conversion-util'
 
-abiDecoder.addABI(abi)
+const hstInterface = new ethers.utils.Interface(abi)
 
-export function getTokenData (data = '') {
-  return abiDecoder.decodeMethod(data)
+/**
+ * @typedef EthersContractCall
+ * @type object
+ * @property {any[]} args - The args/params to the function call.
+ * An array-like object with numerical and string indices.
+ * @property {string} name - The name of the function.
+ * @property {string} signature - The function signature.
+ * @property {string} sighash - The function signature hash.
+ * @property {EthersBigNumber} value - The ETH value associated with the call.
+ * @property {FunctionFragment} functionFragment - The Ethers function fragment
+ * representation of the function.
+ */
+
+/**
+ * @returns {EthersContractCall | undefined}
+ */
+export function getTokenData (data) {
+  try {
+    return hstInterface.parseTransaction({ data })
+  } catch (error) {
+    log.debug('Failed to parse transaction data.', error, data)
+    return undefined
+  }
 }
 
 async function getMethodFrom4Byte (fourBytePrefix) {
