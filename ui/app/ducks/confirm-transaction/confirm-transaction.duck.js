@@ -368,7 +368,6 @@ export function setTransactionToConfirm (transactionId) {
 
         const tokenData = getTokenData(data)
         dispatch(updateTokenData(tokenData))
-
       }
 
       if (txParams.nonce) {

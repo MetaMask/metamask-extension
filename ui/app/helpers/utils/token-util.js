@@ -137,11 +137,11 @@ export function calcTokenValue (value, decimals) {
   return new BigNumber(String(value)).times(multiplier)
 }
 
-export function getTokenToAddress (tokenData = {}) {
+export function getTokenAddressParam (tokenData = {}) {
   return tokenData?.args?.[0]?.toString().toLowerCase()
 }
 
-export function getTokenValue (tokenData = {}) {
+export function getTokenValueParam (tokenData = {}) {
   return tokenData?.args?.[1]?.toString()
 }
 

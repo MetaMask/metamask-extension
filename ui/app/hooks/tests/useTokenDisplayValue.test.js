@@ -122,7 +122,7 @@ describe('useTokenDisplayValue', function () {
   tests.forEach((test, idx) => {
     describe(`when input is decimals: ${test.token.decimals} and value: ${test.tokenValue}`, function () {
       it(`should return ${test.displayValue} as displayValue`, function () {
-        const getTokenValueStub = sinon.stub(tokenUtil, 'getTokenValue')
+        const getTokenValueStub = sinon.stub(tokenUtil, 'getTokenValueParam')
         const getTokenDataStub = sinon.stub(txUtil, 'getTokenData')
         getTokenDataStub.callsFake(() => test.tokenData)
         getTokenValueStub.callsFake(() => test.tokenValue)
