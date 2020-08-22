@@ -137,12 +137,30 @@ export function calcTokenValue (value, decimals) {
   return new BigNumber(String(value)).times(multiplier)
 }
 
+/**
+ * Attempts to get the address parameter of the given token transaction data
+ * (i.e. function call) per the Human Standard Token ABI, in the following
+ * order:
+ *   - The '_to' parameter, if present
+ *   - The first parameter, if present
+ *
+ * @param {Object} tokenData - ethers Interface token data.
+ * @returns {string | undefined} A lowercase address string.
+ */
 export function getTokenAddressParam (tokenData = {}) {
-  return tokenData?.args?.[0]?.toString().toLowerCase()
+  const value = tokenData?.args?.['_to'] || tokenData?.args?.[0]
+  return value?.toString().toLowerCase()
 }
 
+/**
+ * Gets the '_value' parameter of the given token transaction data
+ * (i.e function call) per the Human Standard Token ABI, if present.
+ *
+ * @param {Object} tokenData - ethers Interface token data.
+ * @returns {string | undefined} A decimal string value.
+ */
 export function getTokenValueParam (tokenData = {}) {
-  return tokenData?.args?.[1]?.toString()
+  return tokenData?.args?.['_value']?.toString()
 }
 
 /**
