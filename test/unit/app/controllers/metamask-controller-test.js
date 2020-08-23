@@ -115,8 +115,7 @@ describe('MetaMaskController', function () {
       initState: cloneDeep(firstTimeState),
       platform: { showTransactionNotification: () => undefined, getVersion: () => 'foo' },
     })
-    // disable diagnostics
-    metamaskController.diagnostics = null
+
     // add sinon method spies
     sandbox.spy(metamaskController.keyringController, 'createNewVaultAndKeychain')
     sandbox.spy(metamaskController.keyringController, 'createNewVaultAndRestore')
