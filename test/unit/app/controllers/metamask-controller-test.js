@@ -196,6 +196,17 @@ describe('MetaMaskController', function () {
       assert(threeBoxSpies.init.calledOnce)
       assert(threeBoxSpies.turnThreeBoxSyncingOn.calledOnce)
     })
+
+    it('succeeds even if blockTracker or threeBoxController throw', async function () {
+      const throwErr = sinon.fake.throws('foo')
+      metamaskController.blockTracker.checkForLatestBlock = throwErr
+      metamaskController.threeBoxController.getThreeBoxSyncingState = throwErr
+      await metamaskController.submitPassword(password)
+      assert.ok(
+        throwErr.calledTwice,
+        'should have called checkForLatestBlock and getThreeBoxSyncingState',
+      )
+    })
   })
 
   describe('#createNewVaultAndKeychain', function () {
