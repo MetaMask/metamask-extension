@@ -1,7 +1,7 @@
 import assert from 'assert';
 import * as utils from './confirm-tx.util';
 
-const formattedCurrencyData = require('../../../../test/data/formatted-currency-data.json');
+const formatCurrencyData = require('../../../../test/data/format-currency-data.json');
 
 describe('Confirm Transaction utils', function () {
   describe('increaseLastGasPrice', function () {
@@ -142,7 +142,7 @@ describe('Confirm Transaction utils', function () {
 
   describe('formatCurrency', function () {
     it('should format USD values', function () {
-      formattedCurrencyData.forEach(({ code, formattedUSD }) => {
+      formatCurrencyData.forEach(({ code, formattedUSD }) => {
         const value = utils.formatCurrency('1234567.89', 'usd', code);
         if (code === 'bg' || code === 'es_419') {
           assert.ok(`${code} skipped`);
@@ -156,7 +156,7 @@ describe('Confirm Transaction utils', function () {
       });
     });
     it('should format EUR values', function () {
-      formattedCurrencyData.forEach(({ code, formattedEUR }) => {
+      formatCurrencyData.forEach(({ code, formattedEUR }) => {
         const value = utils.formatCurrency('1234567.89', 'eur', code);
         if (code === 'bg' || code === 'es_419') {
           assert.ok(`${code} skipped`);
