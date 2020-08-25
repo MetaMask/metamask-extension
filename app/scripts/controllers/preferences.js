@@ -64,7 +64,6 @@ export default class PreferencesController {
       ipfsGateway: 'dweb.link', ...opts.initState,
     }
 
-    this.diagnostics = opts.diagnostics
     this.network = opts.network
     this.store = new ObservableStore(initState)
     this.store.setMaxListeners(12)
@@ -327,11 +326,6 @@ export default class PreferencesController {
 
     // Identities are no longer present.
     if (Object.keys(newlyLost).length > 0) {
-
-      // Notify our servers:
-      if (this.diagnostics) {
-        this.diagnostics.reportOrphans(newlyLost)
-      }
 
       // store lost accounts
       Object.keys(newlyLost).forEach((key) => {
