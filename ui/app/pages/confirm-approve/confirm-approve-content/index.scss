@@ -141,7 +141,7 @@
       div {
         width: 22px;
         height: 2px;
-        background: #037dd6;
+        background: $primary-blue;
         position: absolute;
       }
 
@@ -157,7 +157,7 @@
     &__circle {
       width: 14px;
       height: 14px;
-      border: 2px solid #037dd6;
+      border: 2px solid $primary-blue;
       border-radius: 50%;
       background: white;
       position: absolute;
@@ -236,7 +236,7 @@
     font-size: 14px;
     line-height: 20px;
     font-weight: 500;
-    color: #037dd6;
+    color: $primary-blue;
   }
 
   &__medium-text,
@@ -262,7 +262,7 @@
   }
 
   &__small-blue-text {
-    color: #037dd6;
+    color: $primary-blue;
   }
 
   &__info-row {

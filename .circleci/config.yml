@@ -38,6 +38,9 @@ workflows:
       - test-unit-global:
           requires:
             - prep-deps
+      - validate-source-maps:
+          requires:
+            - prep-build
       - test-mozilla-lint:
           requires:
             - prep-deps
@@ -49,6 +52,7 @@ workflows:
             - test-lint-lockfile
             - test-unit
             - test-unit-global
+            - validate-source-maps
             - test-mozilla-lint
             - test-e2e-chrome
             - test-e2e-firefox
@@ -358,6 +362,18 @@ jobs:
       - run:
           name: test:unit:global
           command: yarn test:unit:global
+
+  validate-source-maps:
+    docker:
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Validate source maps
+          command: yarn validate-source-maps
+
   test-mozilla-lint:
     docker:
       - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88

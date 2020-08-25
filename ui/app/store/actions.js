@@ -168,7 +168,7 @@ export function createNewVault (password) {
 
 export function verifyPassword (password) {
   return new Promise((resolve, reject) => {
-    background.submitPassword(password, (error) => {
+    background.verifyPassword(password, (error) => {
       if (error) {
         return reject(error)
       }
@@ -193,7 +193,7 @@ export function verifySeedPhrase () {
 export function requestRevealSeedWords (password) {
   return async (dispatch) => {
     dispatch(showLoadingIndication())
-    log.debug(`background.submitPassword`)
+    log.debug(`background.verifyPassword`)
 
     try {
       await verifyPassword(password)
@@ -2190,7 +2190,8 @@ export function getContractMethodData (data = '') {
     const prefixedData = ethUtil.addHexPrefix(data)
     const fourBytePrefix = prefixedData.slice(0, 10)
     const { knownMethodData } = getState().metamask
-    if (knownMethodData && knownMethodData[fourBytePrefix] && Object.keys(knownMethodData[fourBytePrefix]).length !== 0) {
+
+    if ((knownMethodData && knownMethodData[fourBytePrefix] && Object.keys(knownMethodData[fourBytePrefix]).length !== 0) || fourBytePrefix === '0x') {
       return Promise.resolve(knownMethodData[fourBytePrefix])
     }
 

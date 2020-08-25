@@ -61,7 +61,7 @@ describe('Confirm Transaction Selector', function () {
       },
     }
 
-    it('returns calulcated token amount based on token value and token decimals and recipient address', function () {
+    it('returns calculated token amount based on token value and token decimals and recipient address', function () {
       assert.deepEqual(tokenAmountAndToAddressSelector(state),
         { toAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc', tokenAmount: 0.01 })
     })

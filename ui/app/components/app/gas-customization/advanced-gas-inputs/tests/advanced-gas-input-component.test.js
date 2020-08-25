@@ -74,7 +74,7 @@ describe('Advanced Gas Inputs', function () {
     assert.equal(props.updateCustomGasLimit.calledWith(21000), true)
   })
 
-  it('errors when insuffientBalance under gas price and gas limit', function () {
+  it('errors when insufficientBalance under gas price and gas limit', function () {
     wrapper.setProps({ insufficientBalance: true })
     const renderError = wrapper.find('.advanced-gas-inputs__gas-edit-row__error-text')
     assert.equal(renderError.length, 2)

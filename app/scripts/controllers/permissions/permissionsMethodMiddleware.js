@@ -4,7 +4,7 @@ import { ethErrors } from 'eth-json-rpc-errors'
 /**
  * Create middleware for handling certain methods and preprocessing permissions requests.
  */
-export default function createMethodMiddleware ({
+export default function createPermissionsMethodMiddleware ({
   addDomainMetadata,
   getAccounts,
   getUnlockPromise,
@@ -107,6 +107,7 @@ export default function createMethodMiddleware ({
     }
 
     // when this promise resolves, the response is on its way back
+    // eslint-disable-next-line callback-return
     await next()
 
     if (responseHandler) {

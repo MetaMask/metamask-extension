@@ -106,7 +106,7 @@ export function useTransactionDisplayData (transactionGroup) {
     subtitleContainsOrigin = true
   } else if (transactionCategory === TOKEN_METHOD_APPROVE) {
     category = TRANSACTION_CATEGORY_APPROVAL
-    title = t('approve')
+    title = t('approveSpendLimit', [token?.symbol || t('token')])
     subtitle = origin
     subtitleContainsOrigin = true
   } else if (transactionCategory === DEPLOY_CONTRACT_ACTION_KEY || transactionCategory === CONTRACT_INTERACTION_KEY) {

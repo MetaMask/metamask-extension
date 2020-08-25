@@ -103,7 +103,7 @@ describe('send utils', function () {
         expectedResult: false,
       },
     }
-    Object.entries(config).map(([description, obj]) => {
+    Object.entries(config).forEach(([description, obj]) => {
       it(description, function () {
         assert.equal(doesAmountErrorRequireUpdate(obj), obj.expectedResult)
       })
@@ -166,7 +166,7 @@ describe('send utils', function () {
         expectedResult: { amount: INSUFFICIENT_TOKENS_ERROR },
       },
     }
-    Object.entries(config).map(([description, obj]) => {
+    Object.entries(config).forEach(([description, obj]) => {
       it(description, function () {
         assert.deepEqual(getAmountErrorObject(obj), obj.expectedResult)
       })
@@ -190,7 +190,7 @@ describe('send utils', function () {
         expectedResult: { gasFee: null },
       },
     }
-    Object.entries(config).map(([description, obj]) => {
+    Object.entries(config).forEach(([description, obj]) => {
       it(description, function () {
         assert.deepEqual(getGasFeeErrorObject(obj), obj.expectedResult)
       })
@@ -198,7 +198,7 @@ describe('send utils', function () {
   })
 
   describe('calcTokenBalance()', function () {
-    it('should return the calculated token blance', function () {
+    it('should return the calculated token balance', function () {
       assert.equal(calcTokenBalance({
         sendToken: {
           address: '0x0',

@@ -17,7 +17,7 @@
   }
 
   &__dismiss-button {
-    background: #037dd6;
+    background: $primary-blue;
     color: white;
     height: 40px;
     width: 100px;
@@ -29,7 +29,7 @@
     margin-bottom: 16px;
     padding: 16px;
     font-size: 14px;
-    border: 1px solid #d73a49;
+    border: 1px solid $accent-red;
     background: #f8eae8;
     border-radius: 3px;
   }

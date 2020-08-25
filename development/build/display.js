@@ -15,7 +15,7 @@ const SYMBOLS = {
   Quarter: '▎',
   Eighth: '▏',
   RightHalf: '▐',
-  RightEigth: '▕',
+  RightEighth: '▕',
 }
 
 function setupTaskDisplay (taskEvents) {
@@ -47,7 +47,7 @@ function displayChart (data) {
   console.log(`\nbuild completed. task timeline:`)
 
   // build bars for bounds
-  data.map((entry, index) => {
+  data.forEach((entry, index) => {
     const [label, start, end] = entry
     const [start2, end2] = [start, end].map((value) => adjust(value, first, last, 40))
     const barString = barBuilder(start2, end2)
@@ -141,7 +141,7 @@ function getSymbolNormalRight (value) {
   } else if (rounded === 1 / 2) {
     return SYMBOLS.RightHalf
   } else if (rounded === 7 / 8) {
-    return SYMBOLS.RightEigth
+    return SYMBOLS.RightEighth
   } else if (rounded === 1) {
     return SYMBOLS.Space
   } else {

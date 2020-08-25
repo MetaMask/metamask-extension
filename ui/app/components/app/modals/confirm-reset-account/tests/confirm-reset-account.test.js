@@ -33,7 +33,7 @@ describe('Confirm Reset Account', function () {
     assert(props.hideModal.calledOnce)
   })
 
-  it('resets account and hidels modal when reset button is clicked', function (done) {
+  it('resets account and hides modal when reset button is clicked', function (done) {
     const reset = wrapper.find('.btn-danger.modal-container__footer-button')
     reset.simulate('click')
 

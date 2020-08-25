@@ -100,7 +100,7 @@ export default class TransactionStateManager extends EventEmitter {
   }
 
   /**
-    @returns {array} - the tx list whos status is unapproved
+    @returns {array} - the tx list whose status is unapproved
   */
   getUnapprovedTxList () {
     const txList = this.getTxsByMetaData('status', 'unapproved')
@@ -112,7 +112,7 @@ export default class TransactionStateManager extends EventEmitter {
 
   /**
     @param [address] {string} - hex prefixed address to sort the txMetas for [optional]
-    @returns {array} - the tx list whos status is approved if no address is provide
+    @returns {array} - the tx list whose status is approved if no address is provide
     returns all txMetas who's status is approved for the current network
   */
   getApprovedTransactions (address) {
@@ -125,7 +125,7 @@ export default class TransactionStateManager extends EventEmitter {
 
   /**
     @param [address] {string} - hex prefixed address to sort the txMetas for [optional]
-    @returns {array} - the tx list whos status is submitted if no address is provide
+    @returns {array} - the tx list whose status is submitted if no address is provide
     returns all txMetas who's status is submitted for the current network
   */
   getPendingTransactions (address) {
@@ -138,7 +138,7 @@ export default class TransactionStateManager extends EventEmitter {
 
   /**
     @param [address] {string} - hex prefixed address to sort the txMetas for [optional]
-    @returns {array} - the tx list whos status is confirmed if no address is provide
+    @returns {array} - the tx list whose status is confirmed if no address is provide
     returns all txMetas who's status is confirmed for the current network
   */
   getConfirmedTransactions (address) {
@@ -153,7 +153,7 @@ export default class TransactionStateManager extends EventEmitter {
     Adds the txMeta to the list of transactions in the store.
     if the list is over txHistoryLimit it will remove a transaction that
     is in its final state
-    it will allso add the key `history` to the txMeta with the snap shot of the original
+    it will also add the key `history` to the txMeta with the snap shot of the original
     object
     @param {Object} txMeta
     @returns {Object} - the txMeta
