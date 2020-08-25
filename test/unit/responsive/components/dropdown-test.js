@@ -1,4 +1,3 @@
-
 import assert from 'assert'
 import React from 'react'
 import configureMockStore from 'redux-mock-store'
