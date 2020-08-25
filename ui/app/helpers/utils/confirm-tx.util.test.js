@@ -1,6 +1,8 @@
 import assert from 'assert';
 import * as utils from './confirm-tx.util';
 
+const formattedCurrencyData = require('../../../../test/data/formatted-currency-data.json');
+
 describe('Confirm Transaction utils', function () {
   describe('increaseLastGasPrice', function () {
     it('should increase the gasPrice by 10%', function () {
@@ -140,8 +142,32 @@ describe('Confirm Transaction utils', function () {
 
   describe('formatCurrency', function () {
     it('should format USD values', function () {
-      const value = utils.formatCurrency('123.45', 'usd');
-      assert.strictEqual(value, '$123.45');
+      formattedCurrencyData.forEach(({ code, formattedUSD }) => {
+        const value = utils.formatCurrency('1234567.89', 'usd', code);
+        if (code === 'bg' || code === 'es_419') {
+          assert.ok(`${code} skipped`);
+        } else {
+          assert.equal(
+            value,
+            formattedUSD,
+            `USD ${code} formatted: ${formattedUSD}`,
+          );
+        }
+      });
+    });
+    it('should format EUR values', function () {
+      formattedCurrencyData.forEach(({ code, formattedEUR }) => {
+        const value = utils.formatCurrency('1234567.89', 'eur', code);
+        if (code === 'bg' || code === 'es_419') {
+          assert.ok(`${code} skipped`);
+        } else {
+          assert.equal(
+            value,
+            formattedEUR,
+            `EUR ${code} formatted: ${value} should be ${formattedEUR}`,
+          );
+        }
+      });
     });
   });
 });
