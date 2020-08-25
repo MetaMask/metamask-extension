@@ -1,6 +1,7 @@
 // polyfills
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch';
 import '@formatjs/intl-relativetimeformat/polyfill';
+import './lib/polyfill-intl-numberformat';
 
 import { EventEmitter } from 'events';
 import PortStream from 'extension-port-stream';

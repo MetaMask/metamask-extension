@@ -67,6 +67,9 @@ Object.assign(window, { fetch, Headers, Request, Response });
 
 require('abortcontroller-polyfill/dist/polyfill-patch-fetch');
 
+// Intl.NumberFormat
+require('../app/scripts/lib/polyfill-intl-numberformat');
+
 // localStorage
 window.localStorage = {
   removeItem: () => null,
