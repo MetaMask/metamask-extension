@@ -1,6 +1,6 @@
 import ethAbi from 'ethereumjs-abi'
-import ethUtil from 'ethereumjs-util'
 import { TOKEN_TRANSFER_FUNCTION_SIGNATURE } from '../send.constants'
+import { addHexPrefix } from '../../../../../app/scripts/lib/util'
 import { addHexPrefixToObjectValues } from '../../../helpers/utils/util'
 
 export function constructTxParams({
@@ -71,7 +71,7 @@ export function constructUpdatedTx({
             .call(
               ethAbi.rawEncode(
                 ['address', 'uint256'],
-                [to, ethUtil.addHexPrefix(amount)],
+                [to, addHexPrefix(amount)],
               ),
               (x) => `00${x.toString(16)}`.slice(-2),
             )

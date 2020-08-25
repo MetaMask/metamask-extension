@@ -1,5 +1,4 @@
 import abi from 'ethereumjs-abi'
-import ethUtil from 'ethereumjs-util'
 import {
   addCurrencies,
   conversionUtil,
@@ -10,6 +9,7 @@ import {
 } from '../../helpers/utils/conversion-util'
 
 import { calcTokenAmount } from '../../helpers/utils/token-util'
+import { addHexPrefix } from '../../../../app/scripts/lib/util'
 
 import {
   BASE_TOKEN_GAS_COST,
@@ -242,7 +242,7 @@ async function estimateGasForSend({
     blockGasLimit = MIN_GAS_LIMIT_HEX
   }
 
-  paramsForGasEstimate.gas = ethUtil.addHexPrefix(
+  paramsForGasEstimate.gas = addHexPrefix(
     multiplyCurrencies(blockGasLimit, 0.95, {
       multiplicandBase: 16,
       multiplierBase: 10,
@@ -259,7 +259,7 @@ async function estimateGasForSend({
       blockGasLimit,
       1.5,
     )
-    return ethUtil.addHexPrefix(estimateWithBuffer)
+    return addHexPrefix(estimateWithBuffer)
   } catch (error) {
     const simulationFailed =
       error.message.includes('Transaction execution error.') ||
@@ -272,7 +272,7 @@ async function estimateGasForSend({
         blockGasLimit,
         1.5,
       )
-      return ethUtil.addHexPrefix(estimateWithBuffer)
+      return addHexPrefix(estimateWithBuffer)
     }
     throw error
   }
@@ -336,7 +336,7 @@ function generateTokenTransferData({
       .call(
         abi.rawEncode(
           ['address', 'uint256'],
-          [toAddress, ethUtil.addHexPrefix(amount)],
+          [toAddress, addHexPrefix(amount)],
         ),
         (x) => `00${x.toString(16)}`.slice(-2),
       )

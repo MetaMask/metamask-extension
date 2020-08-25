@@ -1,8 +1,8 @@
-import ethUtil from 'ethereumjs-util'
 import MethodRegistry from 'eth-method-registry'
 import abi from 'human-standard-token-abi'
 import { ethers } from 'ethers'
 import log from 'loglevel'
+import { addHexPrefix } from '../../../../app/scripts/lib/util'
 import { getEtherscanNetworkPrefix } from '../../../lib/etherscan-prefix-for-network'
 import {
   TRANSACTION_CATEGORIES,
@@ -103,7 +103,7 @@ export async function getMethodDataAsync(fourBytePrefix) {
  * @returns {string} - The four-byte method signature
  */
 export function getFourBytePrefix(data = '') {
-  const prefixedData = ethUtil.addHexPrefix(data)
+  const prefixedData = addHexPrefix(data)
   const fourBytePrefix = prefixedData.slice(0, 10)
   return fourBytePrefix
 }
@@ -157,7 +157,7 @@ export function sumHexes(...args) {
     })
   })
 
-  return ethUtil.addHexPrefix(total)
+  return addHexPrefix(total)
 }
 
 /**

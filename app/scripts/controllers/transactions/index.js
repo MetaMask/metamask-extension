@@ -10,7 +10,12 @@ import NonceTracker from 'nonce-tracker'
 import log from 'loglevel'
 import BigNumber from 'bignumber.js'
 import cleanErrorStack from '../../lib/cleanErrorStack'
-import { hexToBn, bnToHex, BnMultiplyByFraction } from '../../lib/util'
+import {
+  hexToBn,
+  bnToHex,
+  BnMultiplyByFraction,
+  addHexPrefix,
+} from '../../lib/util'
 import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/helpers/constants/error-keys'
 import { getSwapsTokensReceivedFromTxMeta } from '../../../../ui/app/pages/swaps/swaps.util'
 import {
@@ -264,7 +269,7 @@ export default class TransactionController extends EventEmitter {
 
     // ensure value
     txMeta.txParams.value = txMeta.txParams.value
-      ? ethUtil.addHexPrefix(txMeta.txParams.value)
+      ? addHexPrefix(txMeta.txParams.value)
       : '0x0'
 
     this.addTx(txMeta)
@@ -324,7 +329,7 @@ export default class TransactionController extends EventEmitter {
     }
     const gasPrice = await this.query.gasPrice()
 
-    return ethUtil.addHexPrefix(gasPrice.toString(16))
+    return addHexPrefix(gasPrice.toString(16))
   }
 
   /**
@@ -365,7 +370,7 @@ export default class TransactionController extends EventEmitter {
 
     // add additional gas buffer to our estimation for safety
     const gasLimit = this.txGasUtil.addGasBuffer(
-      ethUtil.addHexPrefix(estimatedGasHex),
+      addHexPrefix(estimatedGasHex),
       blockGasLimit,
     )
     return { gasLimit, simulationFails }
@@ -501,7 +506,7 @@ export default class TransactionController extends EventEmitter {
       const customOrNonce =
         customNonceValue === 0 ? customNonceValue : customNonceValue || nonce
 
-      txMeta.txParams.nonce = ethUtil.addHexPrefix(customOrNonce.toString(16))
+      txMeta.txParams.nonce = addHexPrefix(customOrNonce.toString(16))
       // add nonce debugging information to txMeta
       txMeta.nonceDetails = nonceLock.nonceDetails
       if (customNonceValue) {
@@ -582,8 +587,8 @@ export default class TransactionController extends EventEmitter {
       txHash = await this.query.sendRawTransaction(rawTx)
     } catch (error) {
       if (error.message.toLowerCase().includes('known transaction')) {
-        txHash = ethUtil.sha3(ethUtil.addHexPrefix(rawTx)).toString('hex')
-        txHash = ethUtil.addHexPrefix(txHash)
+        txHash = ethUtil.sha3(addHexPrefix(rawTx)).toString('hex')
+        txHash = addHexPrefix(txHash)
       } else {
         throw error
       }

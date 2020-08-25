@@ -3,6 +3,7 @@ import abi from 'human-standard-token-abi'
 import BigNumber from 'bignumber.js'
 import ethUtil from 'ethereumjs-util'
 import { DateTime } from 'luxon'
+import { addHexPrefix } from '../../../../app/scripts/lib/util'
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
@@ -87,9 +88,7 @@ export function isValidAddress(address) {
   if (!address || address === '0x0000000000000000000000000000000000000000') {
     return false
   }
-  const prefixed = address.startsWith('0X')
-    ? address
-    : ethUtil.addHexPrefix(address)
+  const prefixed = addHexPrefix(address)
   return (
     (isAllOneCase(prefixed.slice(2)) && ethUtil.isValidAddress(prefixed)) ||
     ethUtil.isValidChecksumAddress(prefixed)
@@ -415,7 +414,7 @@ export function toPrecisionWithoutTrailingZeros(n, precision) {
  */
 export function addHexPrefixToObjectValues(obj) {
   return Object.keys(obj).reduce((newObj, key) => {
-    return { ...newObj, [key]: ethUtil.addHexPrefix(obj[key]) }
+    return { ...newObj, [key]: addHexPrefix(obj[key]) }
   }, {})
 }
 

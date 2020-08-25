@@ -1,8 +1,8 @@
-import ethUtil from 'ethereumjs-util'
 import {
   multiplyCurrencies,
   subtractCurrencies,
 } from '../../../../../helpers/utils/conversion-util'
+import { addHexPrefix } from '../../../../../../../app/scripts/lib/util'
 
 export function calcMaxAmount({ balance, gasTotal, sendToken, tokenBalance }) {
   const { decimals } = sendToken || {}
@@ -13,9 +13,7 @@ export function calcMaxAmount({ balance, gasTotal, sendToken, tokenBalance }) {
         toNumericBase: 'hex',
         multiplicandBase: 16,
       })
-    : subtractCurrencies(
-        ethUtil.addHexPrefix(balance),
-        ethUtil.addHexPrefix(gasTotal),
-        { toNumericBase: 'hex' },
-      )
+    : subtractCurrencies(addHexPrefix(balance), addHexPrefix(gasTotal), {
+        toNumericBase: 'hex',
+      })
 }
