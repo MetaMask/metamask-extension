@@ -7,6 +7,7 @@ on:
 
 jobs:
   CLABot:
+    if: github.event_name == 'pull_request_target' || contains(github.event.comment.html_url, '/pull/')
     runs-on: ubuntu-latest
     steps:
       - name: "CLA Signature Bot"
