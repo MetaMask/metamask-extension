@@ -32,8 +32,6 @@ Uncompressed builds can be found in `/dist`, compressed builds can be found in `
 
 Run tests with `yarn test`.
 
-You can also test with a continuously watching process, via `yarn watch`.
-
 You can run the linter by itself with `yarn lint`.
 
 ## Architecture
