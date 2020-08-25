@@ -1,5 +1,6 @@
-import { stripHexPrefix, addHexPrefix } from 'ethereumjs-util'
+import { stripHexPrefix } from 'ethereumjs-util'
 import { createSelector } from 'reselect'
+import { addHexPrefix } from '../../../app/scripts/lib/util'
 import { NETWORK_TYPES } from '../helpers/constants/common'
 import {
   shortenAddress,

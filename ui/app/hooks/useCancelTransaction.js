@@ -20,7 +20,7 @@ import { getConversionRate, getSelectedAccount } from '../selectors'
  */
 export function useCancelTransaction(transactionGroup) {
   const { primaryTransaction, initialTransaction } = transactionGroup
-  const gasPrice = primaryTransaction.txParams?.gasPrice
+  const gasPrice = primaryTransaction.txParams?.gasPrice < 0 ? 0 : primaryTransaction.txParams?.gasPrice
   const { id } = initialTransaction
   const dispatch = useDispatch()
   const selectedAccount = useSelector(getSelectedAccount)

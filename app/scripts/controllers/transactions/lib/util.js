@@ -1,4 +1,5 @@
-import { addHexPrefix, isValidAddress } from 'ethereumjs-util'
+import { isValidAddress } from 'ethereumjs-util'
+import { addHexPrefix } from '../../../lib/util'
 
 const normalizers = {
   from: (from) => addHexPrefix(from),

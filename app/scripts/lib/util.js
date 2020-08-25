@@ -178,7 +178,7 @@ const addHexPrefix = (str) => {
   }
 
   if (str.startsWith('-')) {
-    return `-0x${str}`
+    return str.replace('-', '-0x')
   }
 
   return `0x${str}`

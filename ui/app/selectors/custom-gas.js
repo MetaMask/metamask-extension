@@ -1,4 +1,4 @@
-import { addHexPrefix } from 'ethereumjs-util'
+import { addHexPrefix } from '../../../app/scripts/lib/util'
 import {
   conversionUtil,
   multiplyCurrencies,

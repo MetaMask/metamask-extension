@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { captureException } from '@sentry/browser'
-import { addHexPrefix } from 'ethereumjs-util'
+import { addHexPrefix } from '../../../../../../app/scripts/lib/util'
 import {
   hideModal,
   setGasLimit,
