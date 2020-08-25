@@ -6,13 +6,6 @@ import { MemoryRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { LegacyI18nProvider } from '../../ui/app/contexts/i18n'
 
-export function mountWithStore (component, store) {
-  const context = {
-    store,
-  }
-  return mount(component, { context })
-}
-
 export function mountWithRouter (component, store = {}, pathname = '/') {
 
   // Instantiate router context
