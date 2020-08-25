@@ -144,29 +144,21 @@ describe('Confirm Transaction utils', function () {
     it('should format USD values', function () {
       formatCurrencyData.forEach(({ code, formattedUSD }) => {
         const value = utils.formatCurrency('1234567.89', 'usd', code);
-        if (code === 'bg' || code === 'es_419') {
-          assert.ok(`${code} skipped`);
-        } else {
-          assert.equal(
-            value,
-            formattedUSD,
-            `USD ${code} formatted: ${formattedUSD}`,
-          );
-        }
+        assert.equal(
+          value,
+          formattedUSD,
+          `USD ${code} formatted: ${formattedUSD}`,
+        );
       });
     });
     it('should format EUR values', function () {
       formatCurrencyData.forEach(({ code, formattedEUR }) => {
         const value = utils.formatCurrency('1234567.89', 'eur', code);
-        if (code === 'bg' || code === 'es_419') {
-          assert.ok(`${code} skipped`);
-        } else {
-          assert.equal(
-            value,
-            formattedEUR,
-            `EUR ${code} formatted: ${value} should be ${formattedEUR}`,
-          );
-        }
+        assert.equal(
+          value,
+          formattedEUR,
+          `EUR ${code} formatted: ${value} should be ${formattedEUR}`,
+        );
       });
     });
   });
