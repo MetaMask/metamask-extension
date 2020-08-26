@@ -43,17 +43,6 @@
     font-weight: 900;
   }
 
-  &__tooltip-content {
-    background: white;
-    color: black;
-    box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
-    border-radius: 8px;
-  }
-
-  &__tooltip-arrow {
-    border-top-color: $white;
-  }
-
   &__error-text {
     @include H7;
 
@@ -108,10 +97,6 @@
       margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
     }
 
-    input[type=number] {
-      -moz-appearance: textfield; /* Firefox */
-    }
-
     &--danger {
       input {
         background: $Red-500;
@@ -124,5 +109,4 @@
       content: '%';
     }
   }
-
 }
