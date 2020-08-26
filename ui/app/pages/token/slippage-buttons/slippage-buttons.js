@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react'
+import PropTypes from 'prop-types'
+import classnames from 'classnames'
 import { useFocus } from '../../../hooks/useFocus'
 import { I18nContext } from '../../../contexts/i18n'
-import PropTypes from 'prop-types'
 import ButtonGroup from '../../../components/ui/button-group'
 import Button from '../../../components/ui/button'
 import InfoTooltip from '../../../components/ui/info-tooltip'
-import classnames from 'classnames'
 
 export default function SlippageButtons ({
   onSelect,
@@ -50,11 +50,13 @@ export default function SlippageButtons ({
             />
           </div>
           <ButtonGroup
-            className="slippage-buttons__buttons"
+            className="radio-button-group"
             disabled={false}
+            activeClass="radio-button-group radio-button--active"
             defaultActiveButtonIndex={1}
           >
             <Button
+              className="radio-button-group radio-button"
               onClick={() => {
                 setCustomValue(null)
                 setEnteringCustomValue(false)
@@ -64,6 +66,7 @@ export default function SlippageButtons ({
               1%
             </Button>
             <Button
+              className="radio-button-group radio-button"
               onClick={() => {
                 setCustomValue(null)
                 setEnteringCustomValue(false)
@@ -72,10 +75,19 @@ export default function SlippageButtons ({
             >
               2%
             </Button>
-            <Button onClick={() => setEnteringCustomValue(true)}>
+            <Button
+              className={classnames('radio-button-group radio-button', {
+                'radio-button--danger': errorText,
+              })}
+              onClick={() => setEnteringCustomValue(true)}
+            >
               {(enteringCustomValue
                 ? (
-                  <div className="slippage-buttons__custom-input">
+                  <div
+                    className={classnames('slippage-buttons__custom-input', {
+                      'slippage-buttons__custom-input--danger': errorText,
+                    })}
+                  >
                     <input
                       onChange={(event) => {
                         setCustomValue(event.target.value)
