@@ -51,7 +51,6 @@ export default function SlippageButtons ({
           </div>
           <ButtonGroup
             className="radio-button-group"
-            disabled={false}
             activeClass="radio-button-group radio-button--active"
             defaultActiveButtonIndex={1}
           >
@@ -76,7 +75,7 @@ export default function SlippageButtons ({
               2%
             </Button>
             <Button
-              className={classnames('radio-button-group radio-button', {
+              className={classnames('radio-button-group radio-button', 'slippage-buttons__custom-button', {
                 'radio-button--danger': errorText,
               })}
               onClick={() => setEnteringCustomValue(true)}
