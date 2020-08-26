@@ -72,6 +72,7 @@
       width: 24px;
       background: $Blue-300;
       color: white;
+      font-weight: inherit;
 
       &::-webkit-input-placeholder { /* WebKit, Blink, Edge */
         color: white;
@@ -111,6 +112,12 @@
       -moz-appearance: textfield; /* Firefox */
     }
 
+    &--danger {
+      input {
+        background: $Red-500;
+      }
+    }
+
     &::after {
       top: 2px;
       right: 0.5em;
@@ -118,41 +125,4 @@
     }
   }
 
-  &__buttons {
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    min-width: 186px;
-
-    .button-group {
-      &__button {
-        @include H7;
-
-        color: $Grey-700;
-        border: 1px solid $Grey-100;
-        border-radius: 25px;
-        height: 25px;
-        border-radius: 25px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: white;
-        flex: none;
-        margin-right: 8px;
-        min-width: 48px;
-
-        &:last-child {
-          border: 1px solid $Grey-100;
-          border-radius: 25px;
-          cursor: text;
-          width: 60px;
-        }
-
-        &--active {
-          background: $Blue-300;
-          color: white;
-        }
-      }
-    }
-  }
 }
