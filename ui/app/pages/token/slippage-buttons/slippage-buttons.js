@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useRef } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import { useFocus } from '../../../hooks/useFocus'
 import { I18nContext } from '../../../contexts/i18n'
 import ButtonGroup from '../../../components/ui/button-group'
 import Button from '../../../components/ui/button'
@@ -14,8 +13,7 @@ export default function SlippageButtons ({
   const [open, setOpen] = useState(false)
   const [customValue, setCustomValue] = useState(null)
   const [enteringCustomValue, setEnteringCustomValue] = useState(false)
-  const [inputRef, setInputFocus] = useFocus()
-  const [inputRefSet, setInputRefSet] = useState(false)
+  const inputRef = useRef(null)
 
   const errorText = customValue !== null && Number(customValue) < 0.5
     ? t('swapLowSlippageError')
@@ -23,11 +21,10 @@ export default function SlippageButtons ({
   const customValueText = customValue === null ? t('swapCustom') : customValue
 
   useEffect(() => {
-    if (inputRef?.current && !inputRefSet) {
-      setInputRefSet(true)
-      setInputFocus(inputRef)
+    if (inputRef?.current && enteringCustomValue && window.document.activeElement !== inputRef.current) {
+      inputRef.current.focus()
     }
-  }, [inputRef, inputRefSet, setInputFocus])
+  }, [inputRef, enteringCustomValue])
 
   return (
     <div className="slippage-buttons">
