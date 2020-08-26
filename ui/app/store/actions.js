@@ -1707,11 +1707,11 @@ export function exportAccount (password, address) {
   return function (dispatch) {
     dispatch(showLoadingIndication())
 
-    log.debug(`background.submitPassword`)
+    log.debug(`background.verifyPassword`)
     return new Promise((resolve, reject) => {
-      background.submitPassword(password, function (err) {
+      background.verifyPassword(password, function (err) {
         if (err) {
-          log.error('Error in submitting password.')
+          log.error('Error in verifying password.')
           dispatch(hideLoadingIndication())
           dispatch(displayWarning('Incorrect Password.'))
           reject(err)
