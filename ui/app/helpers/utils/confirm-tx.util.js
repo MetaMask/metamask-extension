@@ -105,11 +105,14 @@ export function formatCurrency(value, currencyCode, currentLocale) {
     // otherwise replace '_' in locale for '-' for consistency with browser API
     const locale =
       currentLocale === 'no' ? 'nb' : currentLocale.replace('_', '-');
-
-    return new Intl.NumberFormat(locale, {
+    const currencyOptions = {
       style: 'currency',
       currency: upperCaseCurrencyCode,
-    }).format(value);
+      currencyDisplay: 'narrowSymbol',
+    };
+    const currencyFormatter = new Intl.NumberFormat(locale, currencyOptions);
+
+    return currencyFormatter.format(value);
   }
 
   return value;

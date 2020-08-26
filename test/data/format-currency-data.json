@@ -1,7 +1,7 @@
 [
   {
     "code": "am",
-    "formattedUSD": "US$1,234,567.89",
+    "formattedUSD": "$1,234,567.89",
     "formattedEUR": "€1,234,567.89"
   },
   {
@@ -11,27 +11,27 @@
   },
   {
     "code": "bg",
-    "formattedUSD": "1 234 567,89 щ.д.",
+    "formattedUSD": "1 234 567,89 $",
     "formattedEUR": "1 234 567,89 €"
   },
   {
     "code": "bn",
-    "formattedUSD": "১২,৩৪,৫৬৭.৮৯ US$",
+    "formattedUSD": "১২,৩৪,৫৬৭.৮৯$",
     "formattedEUR": "১২,৩৪,৫৬৭.৮৯€"
   },
   {
     "code": "ca",
-    "formattedUSD": "1.234.567,89 USD",
+    "formattedUSD": "1.234.567,89 $",
     "formattedEUR": "1.234.567,89 €"
   },
   {
     "code": "cs",
-    "formattedUSD": "1 234 567,89 US$",
+    "formattedUSD": "1 234 567,89 $",
     "formattedEUR": "1 234 567,89 €"
   },
   {
     "code": "da",
-    "formattedUSD": "1.234.567,89 US$",
+    "formattedUSD": "1.234.567,89 $",
     "formattedEUR": "1.234.567,89 €"
   },
   {
@@ -51,12 +51,12 @@
   },
   {
     "code": "es",
-    "formattedUSD": "1.234.567,89 US$",
+    "formattedUSD": "1.234.567,89 $",
     "formattedEUR": "1.234.567,89 €"
   },
   {
     "code": "es_419",
-    "formattedUSD": "1.234.567,89 US$",
+    "formattedUSD": "1.234.567,89 $",
     "formattedEUR": "1.234.567,89 €"
   },
   {
@@ -81,12 +81,12 @@
   },
   {
     "code": "fr",
-    "formattedUSD": "1 234 567,89 $US",
+    "formattedUSD": "1 234 567,89 $",
     "formattedEUR": "1 234 567,89 €"
   },
   {
     "code": "gu",
-    "formattedUSD": "US$12,34,567.89",
+    "formattedUSD": "$12,34,567.89",
     "formattedEUR": "€12,34,567.89"
   },
   {
@@ -106,8 +106,8 @@
   },
   {
     "code": "hr",
-    "formattedUSD": "1.234.567,89 USD",
-    "formattedEUR": "1.234.567,89 EUR"
+    "formattedUSD": "1.234.567,89 $",
+    "formattedEUR": "1.234.567,89 €"
   },
   {
     "code": "ht",
@@ -116,17 +116,17 @@
   },
   {
     "code": "hu",
-    "formattedUSD": "1 234 567,89 USD",
-    "formattedEUR": "1 234 567,89 EUR"
+    "formattedUSD": "1 234 567,89 $",
+    "formattedEUR": "1 234 567,89 €"
   },
   {
     "code": "id",
-    "formattedUSD": "US$1.234.567,89",
+    "formattedUSD": "$1.234.567,89",
     "formattedEUR": "€1.234.567,89"
   },
   {
     "code": "it",
-    "formattedUSD": "1.234.567,89 USD",
+    "formattedUSD": "1.234.567,89 $",
     "formattedEUR": "1.234.567,89 €"
   },
   {
@@ -141,12 +141,12 @@
   },
   {
     "code": "ko",
-    "formattedUSD": "US$1,234,567.89",
+    "formattedUSD": "$1,234,567.89",
     "formattedEUR": "€1,234,567.89"
   },
   {
     "code": "lt",
-    "formattedUSD": "1 234 567,89 USD",
+    "formattedUSD": "1 234 567,89 $",
     "formattedEUR": "1 234 567,89 €"
   },
   {
@@ -166,17 +166,17 @@
   },
   {
     "code": "ms",
-    "formattedUSD": "USD 1,234,567.89",
+    "formattedUSD": "$1,234,567.89",
     "formattedEUR": "€1,234,567.89"
   },
   {
     "code": "nl",
-    "formattedUSD": "US$ 1.234.567,89",
+    "formattedUSD": "$ 1.234.567,89",
     "formattedEUR": "€ 1.234.567,89"
   },
   {
     "code": "no",
-    "formattedUSD": "USD 1 234 567,89",
+    "formattedUSD": "$ 1 234 567,89",
     "formattedEUR": "€ 1 234 567,89"
   },
   {
@@ -186,28 +186,28 @@
   },
   {
     "code": "pl",
-    "formattedUSD": "1 234 567,89 USD",
+    "formattedUSD": "1 234 567,89 $",
     "formattedEUR": "1 234 567,89 €"
   },
   {
     "code": "pt",
-    "formattedUSD": "US$ 1.234.567,89",
+    "formattedUSD": "$ 1.234.567,89",
     "formattedEUR": "€ 1.234.567,89"
   },
   {
     "code": "pt_BR",
-    "formattedUSD": "US$ 1.234.567,89",
+    "formattedUSD": "$ 1.234.567,89",
     "formattedEUR": "€ 1.234.567,89"
   },
   {
     "code": "pt_PT",
-    "formattedUSD": "1 234 567,89 US$",
+    "formattedUSD": "1 234 567,89 $",
     "formattedEUR": "1 234 567,89 €"
   },
   {
     "code": "ro",
-    "formattedUSD": "1.234.567,89 USD",
-    "formattedEUR": "1.234.567,89 EUR"
+    "formattedUSD": "1.234.567,89 $",
+    "formattedEUR": "1.234.567,89 €"
   },
   {
     "code": "ru",
@@ -216,7 +216,7 @@
   },
   {
     "code": "sk",
-    "formattedUSD": "1 234 567,89 USD",
+    "formattedUSD": "1 234 567,89 $",
     "formattedEUR": "1 234 567,89 €"
   },
   {
@@ -226,17 +226,17 @@
   },
   {
     "code": "sr",
-    "formattedUSD": "1.234.567,89 US$",
+    "formattedUSD": "1.234.567,89 $",
     "formattedEUR": "1.234.567,89 €"
   },
   {
     "code": "sv",
-    "formattedUSD": "1 234 567,89 US$",
+    "formattedUSD": "1 234 567,89 $",
     "formattedEUR": "1 234 567,89 €"
   },
   {
     "code": "sw",
-    "formattedUSD": "US$ 1,234,567.89",
+    "formattedUSD": "$ 1,234,567.89",
     "formattedEUR": "€ 1,234,567.89"
   },
   {
@@ -251,7 +251,7 @@
   },
   {
     "code": "th",
-    "formattedUSD": "US$1,234,567.89",
+    "formattedUSD": "$1,234,567.89",
     "formattedEUR": "€1,234,567.89"
   },
   {
@@ -261,22 +261,22 @@
   },
   {
     "code": "uk",
-    "formattedUSD": "1 234 567,89 USD",
-    "formattedEUR": "1 234 567,89 EUR"
+    "formattedUSD": "1 234 567,89 $",
+    "formattedEUR": "1 234 567,89 €"
   },
   {
     "code": "vi",
-    "formattedUSD": "1.234.567,89 US$",
+    "formattedUSD": "1.234.567,89 $",
     "formattedEUR": "1.234.567,89 €"
   },
   {
     "code": "zh_CN",
-    "formattedUSD": "US$1,234,567.89",
+    "formattedUSD": "$1,234,567.89",
     "formattedEUR": "€1,234,567.89"
   },
   {
     "code": "zh_TW",
-    "formattedUSD": "US$1,234,567.89",
+    "formattedUSD": "$1,234,567.89",
     "formattedEUR": "€1,234,567.89"
   }
 ]
