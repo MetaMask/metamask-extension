@@ -9,6 +9,7 @@ import networkMap from 'ethereum-ens-network-map'
 import log from 'loglevel'
 import { ellipsify } from '../../send.utils'
 import { isValidDomainName, isValidAddress, isValidAddressHead } from '../../../../helpers/utils/util'
+import { MAINNET_NETWORK_ID } from '../../../../../../app/scripts/controllers/network/enums'
 
 // Local Constants
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
@@ -78,6 +79,7 @@ export default class EnsInput extends Component {
   }
 
   lookupEnsName = (ensName) => {
+    const { network } = this.props
     const recipient = ensName.trim()
 
     log.info(`ENS attempting to resolve name: ${recipient}`)
@@ -93,7 +95,7 @@ export default class EnsInput extends Component {
       })
       .catch((reason) => {
         if (isValidDomainName(recipient) && reason.message === 'ENS name not defined.') {
-          this.props.updateEnsResolutionError(this.context.t('ensNotFoundOnCurrentNetwork'))
+          this.props.updateEnsResolutionError(network === MAINNET_NETWORK_ID ? this.context.t('noAddressForName') : this.context.t('ensNotFoundOnCurrentNetwork'))
         } else {
           log.error(reason)
           this.props.updateEnsResolutionError(reason.message)
