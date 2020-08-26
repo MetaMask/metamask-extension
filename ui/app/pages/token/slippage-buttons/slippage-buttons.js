@@ -11,14 +11,21 @@ export default function SlippageButtons ({
 }) {
   const t = useContext(I18nContext)
   const [open, setOpen] = useState(false)
-  const [customValue, setCustomValue] = useState(null)
+  const [customValue, setCustomValue] = useState('')
   const [enteringCustomValue, setEnteringCustomValue] = useState(false)
+  const [activeButtonIndex, setActiveButtonIndex] = useState(1)
   const inputRef = useRef(null)
 
-  const errorText = customValue !== null && Number(customValue) < 0.5
-    ? t('swapLowSlippageError')
-    : ''
-  const customValueText = customValue === null ? t('swapCustom') : customValue
+  let errorText = ''
+  if (customValue && Number(customValue) <= 0) {
+    errorText = t('swapSlippageTooLow')
+  } else if (customValue && Number(customValue) < 0.5) {
+    errorText = t('swapLowSlippageError')
+  } else if (customValue && Number(customValue) > 5) {
+    errorText = t('swapHighSlippageWarning')
+  }
+
+  const customValueText = customValue ? `${customValue}%` : t('swapCustom')
 
   useEffect(() => {
     if (inputRef?.current && enteringCustomValue && window.document.activeElement !== inputRef.current) {
@@ -50,11 +57,12 @@ export default function SlippageButtons ({
             className="radio-button-group"
             activeClass="radio-button-group radio-button--active"
             defaultActiveButtonIndex={1}
+            newActiveButtonIndex={activeButtonIndex}
           >
             <Button
               className="radio-button-group radio-button"
               onClick={() => {
-                setCustomValue(null)
+                setCustomValue('')
                 setEnteringCustomValue(false)
                 onSelect(1)
               }}
@@ -64,7 +72,7 @@ export default function SlippageButtons ({
             <Button
               className="radio-button-group radio-button"
               onClick={() => {
-                setCustomValue(null)
+                setCustomValue(undefined)
                 setEnteringCustomValue(false)
                 onSelect(2)
               }}
@@ -75,7 +83,10 @@ export default function SlippageButtons ({
               className={classnames('radio-button-group radio-button', 'slippage-buttons__custom-button', {
                 'radio-button--danger': errorText,
               })}
-              onClick={() => setEnteringCustomValue(true)}
+              onClick={() => {
+                setActiveButtonIndex(2)
+                setEnteringCustomValue(true)
+              }}
             >
               {(enteringCustomValue
                 ? (
@@ -90,8 +101,13 @@ export default function SlippageButtons ({
                         onSelect(event.target.value)
                       }}
                       type="number"
-                      placeholder="0"
+                      step="0.1"
                       ref={inputRef}
+                      onBlur={() => {
+                        setEnteringCustomValue(false)
+                        customValue === '' && setActiveButtonIndex(1)
+                      }}
+                      value={customValue}
                     />
                   </div>
                 )
