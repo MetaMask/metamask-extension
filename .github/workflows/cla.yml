@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "CLA Signature Bot"
-        uses: MetaMask/cla-signature-bot@v3.0.2
+        uses: MetaMask/cla-signature-bot@v3.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -20,5 +20,5 @@ jobs:
           # This branch can't have protections, commits are made directly to the specified branch.
           branch: 'cla-signatures'
           allowlist: dependabot
-          allowOrganizationMembers: true
+          allow-organization-members: true
           blockchain-storage-flag: false
