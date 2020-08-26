@@ -1707,7 +1707,7 @@ export function exportAccount (password, address) {
   return function (dispatch) {
     dispatch(showLoadingIndication())
 
-    log.debug(`background.submitPassword`)
+    log.debug(`background.verifyPassword`)
     return new Promise((resolve, reject) => {
       background.verifyPassword(password, function (err) {
         if (err) {
