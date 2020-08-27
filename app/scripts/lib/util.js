@@ -165,7 +165,7 @@ function isPrefixedFormattedHexString(value) {
 /**
  * Returns string with '0x' hex prefix
  *
- * @param {sring} str
+ * @param {string} str
  * @returns {string|Object}
  */
 const addHexPrefix = (str) => {
