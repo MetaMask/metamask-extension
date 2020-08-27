@@ -7,29 +7,42 @@ import Mascot from '../../../components/ui/mascot'
 import BackgroundAnimation from './background-animation'
 import AggregatorLogo from './aggregator-logo'
 
-const _aggregatorNames = ['totle', 'dexag', 'uniswap', 'paraswap', '0x', '1inch']
-const _locations = [
-  { x: -125, y: -75 },
-  { x: 30, y: -75 },
-  { x: -145, y: 0 },
-  { x: 50, y: 0 },
-  { x: -135, y: 46 },
-  { x: 40, y: 46 },
-]
+const AGGREGATOR_LOCATION_MAP = {
+  totle: { x: -125, y: -75 },
+  dexag: { x: 30, y: -75 },
+  uniswap: { x: -145, y: 0 },
+  paraswap: { x: 50, y: 0 },
+  '0x': { x: -135, y: 46 },
+  '1inch': { x: 40, y: 46 },
+}
+
+const AGGREGATOR_NAMES = Object.keys(AGGREGATOR_LOCATION_MAP)
+
+function getMascotTarget (quoteCount, centerPoint) {
+  const location = AGGREGATOR_LOCATION_MAP[AGGREGATOR_NAMES[quoteCount]]
+
+  if (!location || !centerPoint) {
+    return centerPoint ?? {}
+  }
+
+  return {
+    x: location.x + centerPoint.x + 47,
+    y: location.y + centerPoint.y + 20,
+  }
+}
 
 export default function LoadingSwapsQuotes ({
   loadingComplete,
   onDone,
 }) {
   const t = useContext(I18nContext)
-  const numberOfQuotes = Object.values(_aggregatorNames).length
+  const numberOfQuotes = Object.values(AGGREGATOR_NAMES).length
   const animationEventEmitter = useRef(new EventEmitter())
   const mascotContainer = useRef()
   const currentMascotContainer = mascotContainer.current
 
   const [quoteCount, updateQuoteCount] = useState(0)
-  const [aggregatorNames] = useState(shuffle(_aggregatorNames))
-  const [aggregatorNameLocationMap, setAggregatorNameLocationMap] = useState({})
+  const [aggregatorNames] = useState(shuffle(AGGREGATOR_NAMES))
   const [midPointTarget, setMidpointTarget] = useState(null)
 
   useEffect(() => {
@@ -52,25 +65,15 @@ export default function LoadingSwapsQuotes ({
     return function cleanup () {
       clearTimeout(quoteCountTimeout)
     }
-  }, [quoteCount, aggregatorNames, loadingComplete, onDone, numberOfQuotes, midPointTarget])
+  }, [quoteCount, loadingComplete, onDone, numberOfQuotes])
 
   useEffect(() => {
     if (currentMascotContainer) {
       const { top, left, width, height } = currentMascotContainer.getBoundingClientRect()
       const center = { x: left + (width / 2), y: top + (height / 2) }
       setMidpointTarget(center)
-      const newAggregatorNameLocationMap = _locations.reduce((acc, { x, y }, i) => ({
-        ...acc,
-        [_aggregatorNames[i]]: {
-          x: center.x + x + 47,
-          y: center.y + y + 20,
-          absoluteX: center.x + x,
-          absoluteY: center.y + y,
-        },
-      }), {})
-      setAggregatorNameLocationMap(newAggregatorNameLocationMap)
     }
-  }, [currentMascotContainer, aggregatorNames])
+  }, [currentMascotContainer])
 
   return (
     <div className="loading-swaps-quotes">
@@ -84,7 +87,7 @@ export default function LoadingSwapsQuotes ({
         <div
           className="loading-swaps-quotes__loading-bar"
           style={{
-            width: `${String((100 / numberOfQuotes) * quoteCount)}%`,
+            width: `${(100 / numberOfQuotes) * quoteCount}%`,
           }}
         />
       </div>
@@ -96,16 +99,16 @@ export default function LoadingSwapsQuotes ({
             width="90"
             height="90"
             followMouse={false}
-            lookAtTarget={aggregatorNameLocationMap[aggregatorNames[quoteCount]] || midPointTarget || {}}
+            lookAtTarget={getMascotTarget(quoteCount, midPointTarget)}
           />
         </div>
-        {currentMascotContainer && _aggregatorNames.map((aggName) => (
+        {currentMascotContainer && midPointTarget && AGGREGATOR_NAMES.map((aggName) => (
           <div
             className="loading-swaps-quotes__logo"
             style={{
-              opacity: aggName === aggregatorNames[quoteCount] ? 1 : 0,
-              top: aggregatorNameLocationMap[aggName]?.absoluteY,
-              left: aggregatorNameLocationMap[aggName]?.absoluteX,
+              opacity: aggName === AGGREGATOR_NAMES[quoteCount] ? 1 : 0,
+              top: AGGREGATOR_LOCATION_MAP[aggName]?.y + midPointTarget?.y ?? 0,
+              left: AGGREGATOR_LOCATION_MAP[aggName]?.x + midPointTarget?.x ?? 0,
             }}
             key={`aggregator-logo-${aggName}`}
           >
