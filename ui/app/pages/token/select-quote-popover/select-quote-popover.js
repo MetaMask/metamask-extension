@@ -20,23 +20,25 @@ const SelectQuotePopover = ({
 
   const [selectedAggId, setSelectedAggId] = useState(() => quoteDataRows.find(({ isBestQuote }) => isBestQuote).aggId)
   const [contentView, setContentView] = useState('sortList')
-  const [viewingAggId, setViewingAggId] = useState(() => quoteDataRows.find(({ isBestQuote }) => isBestQuote).aggId)
-
-  const selectedQuoteDataRow = quoteDataRows.find(({ aggId }) => aggId === viewingAggId)
+  const [viewingAgg, setViewingAgg] = useState(null)
 
   const onSubmitClick = useCallback(() => {
     onSubmit(selectedAggId)
     onClose()
   }, [selectedAggId, onClose, onSubmit])
 
-  const closeQuoteDetails = useCallback(() => setContentView('sortList'), [])
+  const closeQuoteDetails = useCallback(() => {
+    setViewingAgg(null)
+    setContentView('sortList')
+  }, [])
 
   const onRowClick = useCallback((aggId) => setSelectedAggId(aggId), [setSelectedAggId])
 
   const onCaretClick = useCallback((aggId) => {
+    const agg = quoteDataRows.find((quote) => quote.aggId === aggId)
     setContentView('quoteDetails')
-    setViewingAggId(aggId)
-  }, [])
+    setViewingAgg(agg)
+  }, [quoteDataRows])
 
   const CustomBackground = useCallback(() => (<div className="select-quote-popover__popover-bg" onClick={onClose} />), [onClose])
   const footer = (
@@ -84,9 +86,9 @@ const SelectQuotePopover = ({
             setSortColumn={setSortColumn}
           />
         )}
-        {contentView === 'quoteDetails' && (
+        {contentView === 'quoteDetails' && viewingAgg && (
           <QuoteDetails
-            {...selectedQuoteDataRow}
+            {...viewingAgg}
           />
         )}
       </Popover>
