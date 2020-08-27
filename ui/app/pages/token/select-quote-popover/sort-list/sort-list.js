@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import BigNumber from 'bignumber.js'
@@ -26,7 +26,7 @@ export default function SortList ({
   const t = useContext(I18nContext)
   const [noRowHover, setRowNowHover] = useState(false)
 
-  const onColumnHeaderClick = (nextSortColumn) => () => {
+  const onColumnHeaderClick = (nextSortColumn) => {
     if (nextSortColumn === sortColumn) {
       setSortDirection(sortDirection * -1)
     } else {
@@ -34,12 +34,13 @@ export default function SortList ({
     }
   }
 
-  const sortedRows = [...quoteDataRows].sort((rowDataA, rowDataB) => {
+  const sortedRows = useMemo(() => [...quoteDataRows].sort((rowDataA, rowDataB) => {
     if (sortColumn === 'liquiditySource') {
       return rowDataA[sortColumn] > rowDataB[sortColumn] ? sortDirection * -1 : sortDirection
     }
     return (new BigNumber(rowDataA[sortColumn])).gt(rowDataB[sortColumn]) ? sortDirection * -1 : sortDirection
-  })
+  }), [quoteDataRows, sortColumn, sortDirection])
+
   const selectedRow = sortedRows.findIndex(({ aggId }) => selectedAggId === aggId)
 
   return (
@@ -47,7 +48,7 @@ export default function SortList ({
       <div className="select-quote-popover__column-headers">
         <div
           className="select-quote-popover__column-header select-quote-popover__receiving"
-          onClick={onColumnHeaderClick('destinationTokenValue')}
+          onClick={() => onColumnHeaderClick('destinationTokenValue')}
         >
           <div className="select-quote-popover__receiving-header">
             <span className="select-quote-popover__receiving-symbol">{convertToSymbol}</span>
@@ -63,13 +64,13 @@ export default function SortList ({
         </div>
         <div
           className="select-quote-popover__column-header select-quote-popover__network-fees"
-          onClick={onColumnHeaderClick('rawNetworkFees')}
+          onClick={() => onColumnHeaderClick('rawNetworkFees')}
         >
           <div>{t('swapNetworkFees')}<ToggleArrows /></div>
         </div>
         <div
           className="select-quote-popover__column-header select-quote-popover__quote-source"
-          onClick={onColumnHeaderClick('liquiditySource')}
+          onClick={() => onColumnHeaderClick('liquiditySource')}
         >
           <>
             {t('swapQuoteSource')}
