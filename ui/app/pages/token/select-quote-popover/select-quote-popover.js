@@ -20,7 +20,7 @@ const SelectQuotePopover = ({
 
   const [selectedAggId, setSelectedAggId] = useState(() => quoteDataRows.find(({ isBestQuote }) => isBestQuote).aggId)
   const [contentView, setContentView] = useState('sortList')
-  const [viewingAggId, setViewingAggId] = useState(quoteDataRows.find(({ isBestQuote }) => isBestQuote).aggId)
+  const [viewingAggId, setViewingAggId] = useState(() => quoteDataRows.find(({ isBestQuote }) => isBestQuote).aggId)
 
   const selectedQuoteDataRow = quoteDataRows.find(({ aggId }) => aggId === viewingAggId)
 
