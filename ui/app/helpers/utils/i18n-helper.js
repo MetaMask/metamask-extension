@@ -154,6 +154,7 @@ async function loadRelativeTimeFormatLocaleData(localeCode) {
   ) {
     const localeData = await fetchRelativeTimeFormatData(languageTag);
     Intl.RelativeTimeFormat.__addLocaleData(localeData);
+    relativeTimeFormatLocaleData.add(languageTag);
   }
 }
 
