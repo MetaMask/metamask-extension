@@ -7,6 +7,8 @@ import Mascot from '../../../components/ui/mascot'
 import BackgroundAnimation from './background-animation'
 import AggregatorLogo from './aggregator-logo'
 
+// These locations reference where we want the top-left corner of the logo div to appear in relation to the
+// centre point of the fox
 const AGGREGATOR_LOCATION_MAP = {
   totle: { x: -125, y: -75 },
   dexag: { x: 30, y: -75 },
@@ -25,6 +27,9 @@ function getMascotTarget (quoteCount, centerPoint) {
     return centerPoint ?? {}
   }
 
+  // The aggregator logos are 94px x 40px. For the fox to look at the center of each logo, the target needs to be
+  // the coordinates for the centre point of the fox + the desired top and left coordinates of the logo + half
+  // the height and width of the logo.
   return {
     x: location.x + centerPoint.x + 47,
     y: location.y + centerPoint.y + 20,
@@ -50,12 +55,22 @@ export default function LoadingSwapsQuotes ({
 
   useEffect(() => {
     let timeoutLength
+
+    // The below logic simulates a sequential loading of the aggregator quotes, even though we are fetching them all with a single call.
+    // This is to give the user a sense of progress. The callback passed to `setTimeout` updates the quoteCount and therefore causes
+    // a new logo to be shown, the fox to look at that logo, the logo bar and aggregator name to update.
+
+    // If loading is complete and all logos + aggregator names have been shown, give the user 1.2 seconds to read the
+    // "Finalizing message" and prepare for the screen change
     if (quoteCount === numberOfQuotes && loadingComplete) {
-      timeoutLength = 1000
+      timeoutLength = 1200
     } else if (loadingComplete) {
-      timeoutLength = 300
+      // If loading is complete, but the quoteCount is not, we quickly display the remaining logos/names/fox looks. 0.5s each
+      timeoutLength = 500
     } else {
-      timeoutLength = 300 + Math.floor(Math.random() * 1200)
+      // If loading is not complete, we display remaining logos/names/fox looks at random intervals between 0.5s and 2s, to simulate the
+      // sort of loading a user would experience in most async scenarios
+      timeoutLength = 500 + Math.floor(Math.random() * 1500)
     }
     const quoteCountTimeout = setTimeout(() => {
       if (quoteCount < numberOfQuotes) {
