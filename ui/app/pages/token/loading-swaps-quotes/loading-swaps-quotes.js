@@ -43,7 +43,7 @@ export default function LoadingSwapsQuotes ({
   onDone,
 }) {
   const t = useContext(I18nContext)
-  const numberOfQuotes = Object.values(AGGREGATOR_NAMES).length
+  const numberOfQuotes = AGGREGATOR_NAMES.length
   const animationEventEmitter = useRef(new EventEmitter())
   const mascotContainer = useRef()
   const currentMascotContainer = mascotContainer.current
