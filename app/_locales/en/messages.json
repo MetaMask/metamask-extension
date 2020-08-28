@@ -1541,6 +1541,12 @@
   "swapQuoteNofN": {
     "message": "Quote $1 of $2"
   },
+  "swapsErrorFetchingQuotes": {
+    "message": "Error fetching quotes"
+  },
+  "swapsNoQuotesAvailable": {
+    "message": "No quotes available"
+  },
   "switchNetworks": {
     "message": "Switch Networks"
   },
