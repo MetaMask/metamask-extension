@@ -19,14 +19,17 @@ export default class SendContent extends Component {
     showHexData: PropTypes.bool,
     contact: PropTypes.object,
     isOwnedAccount: PropTypes.bool,
+    warning: PropTypes.string,
   }
 
   updateGas = (updateData) => this.props.updateGas(updateData)
 
   render () {
+    const { warning } = this.props
     return (
       <PageContainerContent>
         <div className="send-v2__form">
+          { warning && this.renderWarning() }
           { this.maybeRenderAddContact() }
           <SendAssetRow />
           <SendAmountRow updateGas={this.updateGas} />
@@ -58,6 +61,20 @@ export default class SendContent extends Component {
         onClick={showAddToAddressBookModal}
       >
         {t('newAccountDetectedDialogMessage')}
+      </Dialog>
+    )
+  }
+
+  renderWarning () {
+    const { t } = this.context
+    const { warning } = this.props
+
+    return (
+      <Dialog
+        type="warning"
+        className="send__error-dialog"
+      >
+        {t(warning)}
       </Dialog>
     )
   }

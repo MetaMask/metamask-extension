@@ -159,20 +159,6 @@ describe('AddRecipient Component', function () {
       assert.equal(dialog.length, 1)
     })
 
-    it('should render warning', function () {
-      wrapper.setProps({
-        addressBook: [],
-        query: 'yo',
-        toWarning: 'watchout',
-      })
-
-      const dialog = wrapper.find(Dialog)
-
-      assert.equal(dialog.props().type, 'warning')
-      assert.equal(dialog.props().children, 'watchout_t')
-      assert.equal(dialog.length, 1)
-    })
-
     it('should not render error when ens resolved', function () {
       wrapper.setProps({
         addressBook: [],

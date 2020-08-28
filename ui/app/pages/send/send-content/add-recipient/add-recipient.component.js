@@ -19,7 +19,6 @@ export default class AddRecipient extends Component {
     updateSendTo: PropTypes.func,
     ensResolution: PropTypes.string,
     toError: PropTypes.string,
-    toWarning: PropTypes.string,
     ensResolutionError: PropTypes.string,
     addressBookEntryName: PropTypes.string,
     contacts: PropTypes.array,
@@ -194,7 +193,7 @@ export default class AddRecipient extends Component {
   }
 
   renderDialogs () {
-    const { toError, toWarning, ensResolutionError, ensResolution } = this.props
+    const { toError, ensResolutionError, ensResolution } = this.props
     const { t } = this.context
     const contacts = this.searchForContacts()
     const recents = this.searchForRecents()
@@ -221,17 +220,6 @@ export default class AddRecipient extends Component {
           className="send__error-dialog"
         >
           {t(toError)}
-        </Dialog>
-      )
-    }
-
-    if (toWarning) {
-      return (
-        <Dialog
-          type="warning"
-          className="send__error-dialog"
-        >
-          {t(toWarning)}
         </Dialog>
       )
     }

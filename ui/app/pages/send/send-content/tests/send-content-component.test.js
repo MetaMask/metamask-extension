@@ -83,4 +83,16 @@ describe('SendContent Component', function () {
     assert(PageContainerContentChild.childAt(1).is(SendAssetRow))
     assert(PageContainerContentChild.childAt(1).find('send-v2__asset-dropdown__single-asset'), true)
   })
+
+  it('should render warning', function () {
+    wrapper.setProps({
+      warning: 'watchout',
+    })
+
+    const dialog = wrapper.find(Dialog).at(0)
+
+    assert.equal(dialog.props().type, 'warning')
+    assert.equal(dialog.props().children, 'watchout_t')
+    assert.equal(dialog.length, 1)
+  })
 })
