@@ -56,8 +56,8 @@
   },
   {
     "code": "es_419",
-    "formattedUSD": "1.234.567,89 $",
-    "formattedEUR": "1.234.567,89 €"
+    "formattedUSD": "$1,234,567.89",
+    "formattedEUR": "€1,234,567.89"
   },
   {
     "code": "et",

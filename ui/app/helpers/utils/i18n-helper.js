@@ -108,9 +108,44 @@ export async function fetchLocale(localeCode) {
   }
 }
 
+const numberFormatLocaleData = new Set();
+
+async function loadNumberFormatLocaleData(localeCode) {
+  const languageTag = localeCode.split('_')[0];
+  if (
+    Intl.NumberFormat &&
+    typeof Intl.NumberFormat.__addLocaleData === 'function' &&
+    !numberFormatLocaleData.has(languageTag)
+  ) {
+    const localeDataScript = await fetchNumberFormatLocaleData(languageTag);
+    if (!localeDataScript) {
+      return;
+    }
+    const localeDataRegex = `\\/\\* @generated \\*\\/
+\\/\\/ prettier-ignore
+if \\(Intl\\.NumberFormat && typeof Intl\\.NumberFormat\\.__addLocaleData === 'function'\\) {
+  Intl\\.NumberFormat\\.__addLocaleData\\((?<localeData>.*)
+\\)
+}$`;
+    const localeDataMatch = localeDataScript.match(localeDataRegex, 'm');
+    const localeData = localeDataMatch && JSON.parse(localeDataMatch[1]);
+    if (localeData) {
+      Intl.NumberFormat.__addLocaleData(localeData);
+      numberFormatLocaleData.add(languageTag);
+    }
+  }
+}
+
+async function fetchNumberFormatLocaleData(languageTag) {
+  const response = await window.fetch(
+    `./intl/${languageTag}/number-format-data.js`,
+  );
+  return await response.text();
+}
+
 const relativeTimeFormatLocaleData = new Set();
 
-export async function loadRelativeTimeFormatLocaleData(localeCode) {
+async function loadRelativeTimeFormatLocaleData(localeCode) {
   const languageTag = localeCode.split('_')[0];
   if (
     Intl.RelativeTimeFormat &&
@@ -127,4 +162,9 @@ async function fetchRelativeTimeFormatData(languageTag) {
     `./intl/${languageTag}/relative-time-format-data.json`,
   );
   return await response.json();
+}
+
+export async function loadFormatLocaleData(localeCode) {
+  await loadNumberFormatLocaleData(localeCode);
+  await loadRelativeTimeFormatLocaleData(localeCode);
 }

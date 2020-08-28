@@ -4,6 +4,10 @@ import Adapter from 'enzyme-adapter-react-16';
 import log from 'loglevel';
 import { JSDOM } from 'jsdom';
 
+// Intl.NumberFormat
+import '@formatjs/intl-numberformat/polyfill';
+import '@formatjs/intl-numberformat/locale-data/en';
+
 nock.disableNetConnect();
 nock.enableNetConnect('localhost');
 
@@ -66,9 +70,6 @@ const { Headers, Request, Response } = fetch;
 Object.assign(window, { fetch, Headers, Request, Response });
 
 require('abortcontroller-polyfill/dist/polyfill-patch-fetch');
-
-// Intl.NumberFormat
-require('../app/scripts/lib/polyfill-intl-numberformat');
 
 // localStorage
 window.localStorage = {

@@ -140,9 +140,33 @@ describe('Confirm Transaction utils', function () {
     });
   });
 
+  function loadLocaleCodePolyfill(code) {
+    const locale = code.replace('_', '-');
+    const languageTag = code.split('_')[0];
+    try {
+      // eslint-disable-next-line node/global-require, import/no-dynamic-require
+      require(`@formatjs/intl-numberformat/locale-data/${
+        locale === 'no' ? 'nb' : locale
+      }`);
+    } catch {
+      try {
+        // eslint-disable-next-line node/global-require, import/no-dynamic-require
+        require(`@formatjs/intl-numberformat/locale-data/${languageTag}`);
+      } catch {
+        console.debug(
+          `@formatjs/intl-numberformat/locale-data/${languageTag} missing`,
+        );
+      }
+      console.debug(
+        `@formatjs/intl-numberformat/locale-data/${locale} missing`,
+      );
+    }
+  }
+
   describe('formatCurrency', function () {
     it('should format USD values', function () {
       formatCurrencyData.forEach(({ code, formattedUSD }) => {
+        loadLocaleCodePolyfill(code);
         const value = utils.formatCurrency('1234567.89', 'usd', code);
         assert.equal(
           value,
@@ -153,6 +177,7 @@ describe('Confirm Transaction utils', function () {
     });
     it('should format EUR values', function () {
       formatCurrencyData.forEach(({ code, formattedEUR }) => {
+        loadLocaleCodePolyfill(code);
         const value = utils.formatCurrency('1234567.89', 'eur', code);
         assert.equal(
           value,
