@@ -20,8 +20,8 @@ const AGGREGATOR_LOCATION_MAP = {
 
 const AGGREGATOR_NAMES = Object.keys(AGGREGATOR_LOCATION_MAP)
 
-function getMascotTarget (quoteCount, centerPoint) {
-  const location = AGGREGATOR_LOCATION_MAP[AGGREGATOR_NAMES[quoteCount]]
+function getMascotTarget (aggregatorName, centerPoint) {
+  const location = AGGREGATOR_LOCATION_MAP[aggregatorName]
 
   if (!location || !centerPoint) {
     return centerPoint ?? {}
@@ -127,14 +127,14 @@ export default function LoadingSwapsQuotes ({
             width="90"
             height="90"
             followMouse={false}
-            lookAtTarget={getMascotTarget(quoteCount, midPointTarget)}
+            lookAtTarget={getMascotTarget(aggregatorNames[quoteCount], midPointTarget)}
           />
         </div>
-        {currentMascotContainer && midPointTarget && AGGREGATOR_NAMES.map((aggName) => (
+        {currentMascotContainer && midPointTarget && aggregatorNames.map((aggName) => (
           <div
             className="loading-swaps-quotes__logo"
             style={{
-              opacity: aggName === AGGREGATOR_NAMES[quoteCount] ? 1 : 0,
+              opacity: aggName === aggregatorNames[quoteCount] ? 1 : 0,
               top: AGGREGATOR_LOCATION_MAP[aggName]?.y + midPointTarget?.y ?? 0,
               left: AGGREGATOR_LOCATION_MAP[aggName]?.x + midPointTarget?.x ?? 0,
             }}
