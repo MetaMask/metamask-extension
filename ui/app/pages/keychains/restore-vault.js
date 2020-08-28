@@ -164,6 +164,9 @@ class RestoreVaultPage extends Component {
                   placeholder={t('seedPhrasePlaceholderPaste')}
                 />
               )}
+              <span className="error">
+                { seedPhraseError }
+              </span>
               <div className="import-account__checkbox-container" onClick={this.toggleShowSeedPhrase}>
                 <div
                   className="import-account__checkbox"
@@ -180,9 +183,6 @@ class RestoreVaultPage extends Component {
                 </span>
               </div>
             </div>
-            <span className="error">
-              { seedPhraseError }
-            </span>
             <TextField
               id="password"
               label={t('newPassword')}
