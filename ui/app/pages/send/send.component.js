@@ -324,26 +324,26 @@ export default class SendTransactionScreen extends Component {
   }
 
   renderAddRecipient () {
-    const { toError, toWarning } = this.state
-
+    const { toError } = this.state
     return (
       <AddRecipient
         updateGas={({ to, amount, data } = {}) => this.updateGas({ to, amount, data })}
         query={this.state.query}
         toError={toError}
-        toWarning={toWarning}
       />
     )
   }
 
   renderSendContent () {
     const { history, showHexData } = this.props
+    const { toWarning } = this.state
 
     return [
       <SendContent
         key="send-content"
         updateGas={({ to, amount, data } = {}) => this.updateGas({ to, amount, data })}
         showHexData={showHexData}
+        warning={toWarning}
       />,
       <SendFooter key="send-footer" history={history} />,
     ]
