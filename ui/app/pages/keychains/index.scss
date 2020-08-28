@@ -74,7 +74,7 @@
     line-height: 51px;
     margin-bottom: 10px;
   }
-  
+
   &__back-button {
     margin-bottom: 18px;
     color: #22232c;
@@ -83,7 +83,7 @@
     position: absolute;
     top: -25px;
   }
-  
+
   &__secret-phrase {
     height: 190px;
     width: 495px;
@@ -93,22 +93,22 @@
     padding: 17px;
     font-size: 16px;
   }
-  
+
   &__secret-phrase::placeholder {
     color: #9b9b9b;
     font-weight: 200;
   }
-  
+
   &__faq-link {
     font-size: 18px;
     line-height: 23px;
   }
-  
+
   &__selector-label {
     color: #1b344d;
     font-size: 16px;
   }
-  
+
   &__dropdown {
     width: 325px;
     border: 1px solid #cdcdcd;
@@ -124,20 +124,20 @@
     -moz-appearance: none;
     cursor: pointer;
   }
-  
+
   &__description-text {
     color: #757575;
     font-size: 18px;
     line-height: 23px;
     margin-top: 21px;
   }
-  
+
   &__input-wrapper {
     display: flex;
     flex-flow: column nowrap;
     margin-top: 30px;
   }
-  
+
   &__input-error-message {
     margin-top: 10px;
     width: 422px;
@@ -145,18 +145,18 @@
     font-size: 16px;
     line-height: 21px;
   }
-  
+
   &__input-label {
     margin-bottom: 9px;
     color: #1b344d;
     font-size: 18px;
     line-height: 23px;
   }
-  
+
   &__input-label__disabled {
     opacity: 0.5;
   }
-  
+
   &__input {
     width: 350px;
   }
@@ -199,7 +199,7 @@
   &__file-input {
     display: none;
   }
-  
+
   &__file-input-label {
     height: 53px;
     width: 148px;
@@ -213,13 +213,13 @@
     justify-content: center;
     cursor: pointer;
   }
-  
+
   &__file-picker-wrapper {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
   }
-  
+
   &__file-name {
     color: #000;
     font-size: 18px;
