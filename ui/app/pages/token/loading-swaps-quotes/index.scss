@@ -121,4 +121,14 @@
     -o-transition: width 0.5s linear;
     transition: width 0.5s linear;
   }
+
+  &__error {
+    @include H5;
+
+    font-weight: bold;
+    color: $Red-500;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
 }

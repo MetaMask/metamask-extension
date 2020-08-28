@@ -34,6 +34,7 @@ function getMascotTarget (quoteCount, centerPoint) {
 export default function LoadingSwapsQuotes ({
   aggregatorMetadata,
   loadingComplete,
+  loadingError,
   onDone,
 }) {
   const t = useContext(I18nContext)
@@ -45,6 +46,7 @@ export default function LoadingSwapsQuotes ({
   const [quoteCount, updateQuoteCount] = useState(0)
   const [aggregatorNames] = useState(shuffle(AGGREGATOR_NAMES))
   const [midPointTarget, setMidpointTarget] = useState(null)
+  const [doneCalled, setDoneCalled] = useState(false)
 
   useEffect(() => {
     let timeoutLength
@@ -59,6 +61,7 @@ export default function LoadingSwapsQuotes ({
       if (quoteCount < numberOfQuotes) {
         updateQuoteCount(quoteCount + 1)
       } else if (quoteCount === numberOfQuotes && loadingComplete) {
+        setDoneCalled(true)
         onDone()
       }
     }, timeoutLength)
@@ -78,20 +81,29 @@ export default function LoadingSwapsQuotes ({
 
   return (
     <div className="loading-swaps-quotes">
-      <div className="loading-swaps-quotes__quote-counter">
-        <span>{t('swapQuoteNofN', [quoteCount, numberOfQuotes])}</span>
-      </div>
-      <div className="loading-swaps-quotes__quote-name-check">
-        <span>{quoteCount === numberOfQuotes ? t('swapFinalizing') : t('swapCheckingQuote', [aggregatorNames[quoteCount]])}</span>
-      </div>
-      <div className="loading-swaps-quotes__loading-bar-container">
-        <div
-          className="loading-swaps-quotes__loading-bar"
-          style={{
-            width: `${(100 / numberOfQuotes) * quoteCount}%`,
-          }}
-        />
-      </div>
+      {!(loadingError && doneCalled) && (
+        <>
+          <div className="loading-swaps-quotes__quote-counter">
+            <span>{t('swapQuoteNofN', [quoteCount, numberOfQuotes])}</span>
+          </div>
+          <div className="loading-swaps-quotes__quote-name-check">
+            <span>{quoteCount === numberOfQuotes ? t('swapFinalizing') : t('swapCheckingQuote', [aggregatorNames[quoteCount]])}</span>
+          </div>
+          <div className="loading-swaps-quotes__loading-bar-container">
+            <div
+              className="loading-swaps-quotes__loading-bar"
+              style={{
+                width: `${(100 / numberOfQuotes) * quoteCount}%`,
+              }}
+            />
+          </div>
+        </>
+      )}
+      {loadingError && doneCalled && (
+        <div className="loading-swaps-quotes__error">
+          {t(loadingError)}
+        </div>
+      )}
       <div className="loading-swaps-quotes__animation">
         <BackgroundAnimation />
         <div className="loading-swaps-quotes__mascot-container" ref={mascotContainer}>
@@ -124,6 +136,7 @@ export default function LoadingSwapsQuotes ({
 LoadingSwapsQuotes.propTypes = {
   loadingComplete: PropTypes.bool.isRequired,
   onDone: PropTypes.func.isRequired,
+  loadingError: PropTypes.bool,
   aggregatorMetadata: PropTypes.arrayOf(PropTypes.shape({
     color: PropTypes.string,
     icon: PropTypes.string,
