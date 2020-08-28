@@ -10,10 +10,10 @@ import AggregatorLogo from './aggregator-logo'
 const AGGREGATOR_LOCATION_MAP = {
   totle: { x: -125, y: -75 },
   dexag: { x: 30, y: -75 },
-  uniswap: { x: -145, y: 0 },
+  airswap: { x: -145, y: 0 },
   paraswap: { x: 50, y: 0 },
-  '0x': { x: -135, y: 46 },
-  '1inch': { x: 40, y: 46 },
+  zeroExV1: { x: -135, y: 46 },
+  oneInch: { x: 40, y: 46 },
 }
 
 const AGGREGATOR_NAMES = Object.keys(AGGREGATOR_LOCATION_MAP)
@@ -32,6 +32,7 @@ function getMascotTarget (quoteCount, centerPoint) {
 }
 
 export default function LoadingSwapsQuotes ({
+  aggregatorMetadata,
   loadingComplete,
   onDone,
 }) {
@@ -112,7 +113,7 @@ export default function LoadingSwapsQuotes ({
             }}
             key={`aggregator-logo-${aggName}`}
           >
-            <AggregatorLogo aggregatorName={aggName} />
+            <AggregatorLogo aggregatorName={aggName} icon={aggregatorMetadata[aggName]?.icon} color={aggregatorMetadata[aggName]?.color} />
           </div>
         ))}
       </div>
@@ -123,4 +124,8 @@ export default function LoadingSwapsQuotes ({
 LoadingSwapsQuotes.propTypes = {
   loadingComplete: PropTypes.bool.isRequired,
   onDone: PropTypes.func.isRequired,
+  aggregatorMetadata: PropTypes.arrayOf(PropTypes.shape({
+    color: PropTypes.string,
+    icon: PropTypes.string,
+  })),
 }
