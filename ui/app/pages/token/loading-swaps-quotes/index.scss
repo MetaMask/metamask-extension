@@ -98,30 +98,11 @@
       justify-content: center;
       align-items: center;
     }
-  }
 
-  &__totle {
-    background: #283b4c;
-  }
-
-  &__dexag {
-    background: #13171f;
-  }
-
-  &__uniswap {
-    background: #272a2f;
-  }
-
-  &__paraswap {
-    background: #0058d4;
-  }
-
-  &__0x {
-    background: #000;
-  }
-
-  &__1inch {
-    background: #323232;
+    img {
+      width: 74px;
+      height: 30px;
+    }
   }
 
   &__loading-bar-container {
