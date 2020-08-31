@@ -44,18 +44,6 @@ module.exports = {
     'default-param-last': 'off',
     'require-atomic-updates': 'off',
     'import/no-unassigned-import': 'off',
-    'prefer-destructuring': ['error', {
-      'VariableDeclarator': {
-        'array': false,
-        'object': true,
-      },
-      'AssignmentExpression': {
-        'array': false,
-        'object': false,
-      },
-    }, {
-      'enforceForRenamedProperties': false,
-    }],
     'prefer-object-spread': 'error',
     'react/no-unused-prop-types': 'error',
     'react/no-unused-state': 'error',
