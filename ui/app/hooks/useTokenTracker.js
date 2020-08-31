@@ -1,7 +1,16 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import TokenTracker from '@metamask/eth-token-tracker'
 import { useSelector } from 'react-redux'
+import { isEqual } from 'lodash'
 import { getCurrentNetwork, getSelectedAddress } from '../selectors'
+
+const usePrevious = (value) => {
+  const ref = useRef()
+  useEffect(() => {
+    ref.current = value
+  })
+  return ref.current
+}
 
 export function useTokenTracker (tokens) {
   const network = useSelector(getCurrentNetwork)
@@ -56,6 +65,10 @@ export function useTokenTracker (tokens) {
     return teardownTracker
   }, [teardownTracker])
 
+  const previousTokens = usePrevious(tokens)
+  const previousUserAddress = usePrevious(userAddress)
+  const previousNetwork = usePrevious(network)
+
   // Effect to set loading state and initialize tracker when values change
   useEffect(() => {
     // This effect will only run initially and when:
@@ -64,23 +77,25 @@ export function useTokenTracker (tokens) {
     // 3. token list is updated and not equal to previous list
     // in any of these scenarios, we should indicate to the user that their token
     // values are in the process of updating by setting loading state.
-    setLoading(true)
+    if (!isEqual(tokens, previousTokens) || previousUserAddress !== userAddress || previousNetwork !== network) {
+      setLoading(true)
 
-    if (!userAddress || network === 'loading' || !global.ethereumProvider) {
-      // If we do not have enough information to build a TokenTracker, we exit early
-      // When the values above change, the effect will be restarted. We also teardown
-      // tracker because inevitably this effect will run again momentarily.
-      teardownTracker()
-      return
+      if (!userAddress || network === 'loading' || !global.ethereumProvider) {
+        // If we do not have enough information to build a TokenTracker, we exit early
+        // When the values above change, the effect will be restarted. We also teardown
+        // tracker because inevitably this effect will run again momentarily.
+        teardownTracker()
+        return
+      }
+
+      if (tokens.length === 0) {
+        // sets loading state to false and token list to empty
+        updateBalances([])
+      }
+
+      buildTracker(userAddress, tokens)
     }
-
-    if (tokens.length === 0) {
-      // sets loading state to false and token list to empty
-      updateBalances([])
-    }
-
-    buildTracker(userAddress, tokens)
-  }, [userAddress, teardownTracker, network, tokens, updateBalances, buildTracker])
+  }, [userAddress, previousUserAddress, teardownTracker, network, previousNetwork, tokens, previousTokens, updateBalances, buildTracker])
 
   return { loading, tokensWithBalances, error }
 }
