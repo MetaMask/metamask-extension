@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import BigNumber from 'bignumber.js'
 import classnames from 'classnames'
 import { calcTokenAmount } from '../../../helpers/utils/token-util'
+import { toPrecisionWithoutTrailingZeros } from '../../../helpers/utils/util'
 
 export default function ExchangeRateDisplay ({
   primaryTokenValue,
@@ -20,19 +21,31 @@ export default function ExchangeRateDisplay ({
   const primaryTokenAmount = calcTokenAmount(primaryTokenValue, primaryTokenDecimals)
   const secondaryTokenAmount = calcTokenAmount(secondaryTokenValue, secondaryTokenDecimals)
 
-  const conversionRateFromPrimaryToSecondary = (new BigNumber(secondaryTokenAmount)).div(primaryTokenAmount).round(6).toString(10)
-  const conversionRateFromSecondaryToPrimary = (new BigNumber(primaryTokenAmount)).div(secondaryTokenAmount).round(6).toString(10)
+  const conversionRateFromPrimaryToSecondary = (new BigNumber(secondaryTokenAmount)).div(primaryTokenAmount).round(9).toString(10)
+  const conversionRateFromSecondaryToPrimary = (new BigNumber(primaryTokenAmount)).div(secondaryTokenAmount).round(9).toString(10)
 
   const baseSymbol = showPrimaryToSecondary ? primaryTokenSymbol : secondaryTokenSymbol
   const ratiodSymbol = showPrimaryToSecondary ? secondaryTokenSymbol : primaryTokenSymbol
+
   const rate = showPrimaryToSecondary ? conversionRateFromPrimaryToSecondary : conversionRateFromSecondaryToPrimary
+  let rateToDisplay
+  let comparisonSymbol = '='
+
+  if ((new BigNumber(rate, 10).lt('0.00000001', 10))) {
+    rateToDisplay = '0.000000001'
+    comparisonSymbol = '<'
+  } else if ((new BigNumber(rate, 10).lt('0.000001', 10))) {
+    rateToDisplay = rate
+  } else {
+    rateToDisplay = toPrecisionWithoutTrailingZeros(rate, 9)
+  }
 
   return (
     <div className={classnames('exchange-rate-display', className)}>
       <span>1</span>
       <span className="exchange-rate-display__bold">{baseSymbol}</span>
-      <span>=</span>
-      <span>{rate}</span>
+      <span>{comparisonSymbol}</span>
+      <span>{rateToDisplay}</span>
       <span className="exchange-rate-display__bold">{ratiodSymbol}</span>
       <div
         className="exchange-rate-display__switch-arrows"

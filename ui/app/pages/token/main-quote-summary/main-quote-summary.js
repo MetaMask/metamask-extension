@@ -20,6 +20,16 @@ function getFontSizes (fontSizeScore) {
   return [24, 14]
 }
 
+function getLineHeight (fontSizeScore) {
+  if (fontSizeScore <= 11) {
+    return 32
+  }
+  if (fontSizeScore <= 16) {
+    return 26
+  }
+  return 18
+}
+
 function getFontSizeScore (amount, symbol) {
   const amountLength = amount.match(/\d+/gu).join('').length
   const symbolModifier = Math.min((amountLength + symbol.length) / 22, 1)
@@ -35,21 +45,23 @@ export default function MainQuoteSummary ({
   destinationSymbol,
   destinationDecimals,
 }) {
+
   const t = useContext(I18nContext)
 
-  const sourceAmount = calcTokenAmount(sourceValue, sourceDecimals)
+  const sourceAmount = toPrecisionWithoutTrailingZeros(calcTokenAmount(sourceValue, sourceDecimals).toString(10), 12)
   const destinationAmount = calcTokenAmount(destinationValue, destinationDecimals)
 
-  let amountToDisplay = toPrecisionWithoutTrailingZeros(destinationAmount, 9)
+  let amountToDisplay = toPrecisionWithoutTrailingZeros(destinationAmount, 12)
   if (amountToDisplay.match(/e[+-]/u)) {
     amountToDisplay = (new BigNumber(amountToDisplay)).toFixed()
   }
   const fontSizeScore = getFontSizeScore(amountToDisplay, destinationSymbol)
   const [numberFontSize, symbolFontSize] = getFontSizes(fontSizeScore)
+  const lineHeight = getLineHeight(fontSizeScore)
 
   let ellipsedAmountToDisplay = amountToDisplay
   if (fontSizeScore > 20) {
-    ellipsedAmountToDisplay = amountToDisplay.slice(0, amountToDisplay.length - (fontSizeScore - 20)) + '...'
+    ellipsedAmountToDisplay = `${amountToDisplay.slice(0, amountToDisplay.length - (fontSizeScore - 20))}...`
   }
 
   return (
@@ -78,9 +90,9 @@ export default function MainQuoteSummary ({
               disabled={ellipsedAmountToDisplay === amountToDisplay}
               theme="white"
             >
-              <span className="main-quote-summary__quote-large-number" style={{ fontSize: numberFontSize }}>{`${ellipsedAmountToDisplay}`}</span>
+              <span className="main-quote-summary__quote-large-number" style={{ fontSize: numberFontSize, lineHeight: `${lineHeight}px` }}>{`${ellipsedAmountToDisplay}`}</span>
             </Tooltip>
-            <span className="main-quote-summary__quote-large-symbol" style={{ fontSize: symbolFontSize }}>{`${destinationSymbol}`}</span>
+            <span className="main-quote-summary__quote-large-symbol" style={{ fontSize: symbolFontSize, lineHeight: `${lineHeight}px` }}>{`${destinationSymbol}`}</span>
           </div>
         </div>
         <div className="main-quote-summary__exchange-rate-container">
