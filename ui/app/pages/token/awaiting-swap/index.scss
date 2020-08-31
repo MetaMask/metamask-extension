@@ -35,6 +35,14 @@
     color: $Black-100;
     margin-top: 20px;
     font-style: italic;
+
+    > span {
+      display: flex;
+
+      .new-quote-countdown {
+        margin: 0;
+      }
+    }
   }
 
   &__view-on-etherscan {
@@ -43,5 +51,19 @@
     color: $Blue-500;
     margin-top: 24px;
     cursor: pointer;
+    transition: opacity 1s ease-in-out;
+  }
+
+  &__view-on-etherscan--invisible {
+    opacity: 0;
+  }
+
+  &__view-on-etherscan--visible {
+    opacity: 1;
+  }
+
+  &__amount-and-symbol {
+    color: $Black-100;
+    font-weight: bold;
   }
 }
