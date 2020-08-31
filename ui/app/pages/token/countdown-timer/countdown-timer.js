@@ -55,8 +55,8 @@ export default function CountdownTimer ({
 }) {
   const intervalRef = useRef()
   const t = useContext(I18nContext)
-  const [initialTimeStarted, setInitialTimeStarted] = useState(timeStarted || Date.now())
-  const [currentTime, setCurrentTime] = useState(Date.now())
+	  const [initialTimeStarted, setInitialTimeStarted] = useState(() => timeStarted || Date.now())
+  const [currentTime, setCurrentTime] = useState(() => Date.now())
   const initialTimer = getNewTimer(currentTime, timeStarted, timerBase)
   const [timer, setTimer] = useState(initialTimer)
 
