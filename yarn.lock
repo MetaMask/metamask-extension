@@ -2754,10 +2754,10 @@
   resolved "https://registry.yarnpkg.com/@yqrashawn/cfx-contract-metadata/-/cfx-contract-metadata-0.0.7.tgz#304472f418c770eb9908304c6dd95a31934dbfd0"
   integrity sha512-wVX6iwcoLLS+O5Un0ngint4qO+VKb+zwnUvpWu3LmBIWtexl+YTOMh8G746rkNlKkJyBi2ckQ8GlQo7mEfgumQ==
 
-"@yqrashawn/cfx-json-rpc-middleware@^4.4.4":
-  version "4.4.4"
-  resolved "https://registry.yarnpkg.com/@yqrashawn/cfx-json-rpc-middleware/-/cfx-json-rpc-middleware-4.4.4.tgz#a6a2c3fb1d0fe03067045be74009ab2ac17778d8"
-  integrity sha512-QqstQrDis4+KeNNg5/aYGemQJx8GHAJAfk7Mpi18fsSdOGaw+XEeKGbyF2diNtmDVdnCj6Diswc8p4QN4DysBg==
+"@yqrashawn/cfx-json-rpc-middleware@^4.4.5":
+  version "4.4.5"
+  resolved "https://registry.yarnpkg.com/@yqrashawn/cfx-json-rpc-middleware/-/cfx-json-rpc-middleware-4.4.5.tgz#e18561dd6605a1b70fdea83ad5ac9af903e06e91"
+  integrity sha512-H6IXvJhICnChr6Age5FoAzkqJOw9hqJNLl8KwSZ1eivEr9GJMI3SgpVIhBBohe++Bim+Zvh1nFEJ4zgQvE8rbQ==
   dependencies:
     btoa "^1.2.1"
     clone "^2.1.1"
