@@ -70,7 +70,14 @@
     "trailingComma": "es5"
   },
   "resolutions": {
-    "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.15",
+    "**/configstore/dot-prop": "^5.1.1",
+    "**/*/elliptic": "^6.5.3",
+    "**/knex/minimist": "^1.2.5",
+    "**/optimist/minimist": "^1.2.5",
+    "**/socketcluster/minimist": "^1.2.5",
+    "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.19",
+    "3box/ipfs/ipld-zcash/zcash-bitcore-lib/elliptic": "^6.5.3",
+    "ganache-core/lodash": "^4.17.19",
     "pubnub/superagent-proxy": "^2.0.0"
   },
   "dependencies": {
