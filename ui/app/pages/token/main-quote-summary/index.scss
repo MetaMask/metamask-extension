@@ -64,17 +64,20 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    padding: 40px 12px 12px;
+    padding: 12px;
+    margin-top: 4px;
   }
 
   &__bold {
     font-weight: 900;
   }
 
-  &__quote-small-white,
-  &__view-details {
+  &__quote-small-white {
+    white-space: nowrap;
+    width: 100%;
+    text-align: center;
     font-size: 14px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
   }
 
   &__quote-large {
@@ -96,7 +99,7 @@
     display: flex;
     align-items: flex-end;
     font-size: 32px;
-    line-height: 26px;
+    line-height: 32px;
   }
 
   &__quote-large-white {
