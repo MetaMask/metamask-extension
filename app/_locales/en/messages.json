@@ -1560,7 +1560,7 @@
     "message": "custom"
   },
   "swapErrorDescription": {
-    "message": "Your trade did not succeed. Please try again."
+    "message": "Your funds are safe and still available in your wallet."
   },
   "swapEstimatedTime": {
     "message": "Estimated time:"
@@ -1623,7 +1623,7 @@
     "message": "Your $1 will be added to your account once this transaction has processed"
   },
   "swapProcessing": {
-    "message": "Processing..."
+    "message": "Processing"
   },
   "swapQuoteDetails": {
     "message": "Quote details"
