@@ -23,40 +23,21 @@ export default function AwaitingSwap ({
   const t = useContext(I18nContext)
   const animationEventEmitter = useRef(new EventEmitter())
 
-  const getHeader = () => {
-    if (swapError) {
-      return t('swapSwapError')
-    } else if (!swapComplete) {
-      return t('swapProcessing')
-    }
-    return t('swapTransactionComplete')
+  let headerText = t('swapTransactionComplete')
+  let statusImage
+  let descriptionText
 
-  }
-
-  const getStatusImage = () => {
-    if (swapError) {
-      return <SwapFailureIcon />
-    }
-    if (swapComplete) {
-      return <SwapSuccessIcon />
-    }
-    if (!swapComplete) {
-      return <PulseLoader />
-    }
-    return undefined
-  }
-
-  const getDescription = () => {
-    if (swapError) {
-      return t('swapErrorDescription')
-    }
-    if (!swapComplete) {
-      return t('swapOnceTransactionHasProcess', [<span key="swapOnceTransactionHasProcess-1" className="awaiting-swap__amount-and-symbol">{symbol}</span>])
-    }
-    if (swapComplete) {
-      return t('swapTokenAvailable', [<span key="swapTokenAvailable-2" className="awaiting-swap__amount-and-symbol">{`${tokensReceived} ${symbol}`}</span>])
-    }
-    return undefined
+  if (swapError) {
+    headerText = t('swapSwapError')
+    statusImage = <SwapFailureIcon />
+    descriptionText = t('swapErrorDescription')
+  } else if (!swapComplete) {
+    headerText = t('swapProcessing')
+    statusImage = <PulseLoader />
+    descriptionText = t('swapOnceTransactionHasProcess', [<span key="swapOnceTransactionHasProcess-1" className="awaiting-swap__amount-and-symbol">{symbol}</span>])
+  } else if (swapComplete) {
+    statusImage = <SwapSuccessIcon />
+    descriptionText = t('swapTokenAvailable', [<span key="swapTokenAvailable-2" className="awaiting-swap__amount-and-symbol">{`${tokensReceived} ${symbol}`}</span>])
   }
 
   return (
@@ -70,13 +51,13 @@ export default function AwaitingSwap ({
       )
       }
       <div className="awaiting-swap__status-image">
-        {getStatusImage()}
+        {statusImage}
       </div>
       <div className="awaiting-swap__header">
-        {getHeader()}
+        {headerText}
       </div>
       <div className="awaiting-swap__main-descrption">
-        {getDescription()}
+        {descriptionText}
       </div>
       {!(swapComplete || swapError) && (
         <div className="awaiting-swap__time-estimate">
