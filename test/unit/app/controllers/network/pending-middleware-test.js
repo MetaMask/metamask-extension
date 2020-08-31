@@ -57,12 +57,16 @@ describe('PendingNonceMiddleware', function () {
       from: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
       gas: '0x5208',
       gasPrice: '0x1e8480',
+      storageLimit: '0x1e8480',
+      chainId: '0xbb7',
+      epochHeight: '0xa',
       hash:
         '0x2cc5a25744486f7383edebbf32003e5a66e18135799593d6b5cdd2bb43674f09',
       input: '0x',
       nonce: '0x4',
       to: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
       transactionIndex: null,
+      status: null,
       value: '0x0',
       v: '0x2c',
       r: '0x5f973e540f2d3c2f06d3725a626b75247593cb36477187ae07ecfe0a4db3cf57',
@@ -103,6 +107,7 @@ describe('PendingNonceMiddleware', function () {
       })
       console.log(coppy)
       */
+          console.log(res.result)
           assert.deepStrictEqual(
             res.result,
             spec,
