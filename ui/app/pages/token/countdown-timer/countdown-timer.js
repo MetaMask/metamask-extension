@@ -63,7 +63,7 @@ export default function CountdownTimer ({
   useEffect(() => {
     if (intervalRef.current === undefined) {
       intervalRef.current = setInterval(() => {
-        setTimer((_timer) => decreaseTimerByOne(_timer))
+        setTimer(decreaseTimerByOne)
       }, 1000)
     }
   }, [timer])
