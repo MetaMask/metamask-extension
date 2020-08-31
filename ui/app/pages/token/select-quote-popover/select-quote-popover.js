@@ -12,13 +12,14 @@ const SelectQuotePopover = ({
   onClose = null,
   onSubmit = null,
   convertToSymbol,
+  initialAggId,
 }) => {
   const t = useContext(I18nContext)
 
   const [sortDirection, setSortDirection] = useState(1)
-  const [sortColumn, setSortColumn] = useState('destinationTokenValue')
+  const [sortColumn, setSortColumn] = useState(null)
 
-  const [selectedAggId, setSelectedAggId] = useState(() => quoteDataRows.find(({ isBestQuote }) => isBestQuote).aggId)
+  const [selectedAggId, setSelectedAggId] = useState(initialAggId)
   const [contentView, setContentView] = useState('sortList')
   const [viewingAgg, setViewingAgg] = useState(null)
 
@@ -102,6 +103,7 @@ SelectQuotePopover.propTypes = {
   convertToSymbol: PropTypes.string,
   renderableData: PropTypes.array,
   quoteDataRows: PropTypes.arrayOf(QUOTE_DATA_ROWS_PROPTYPES_SHAPE),
+  initialAggId: PropTypes.string,
 }
 
 export default SelectQuotePopover
