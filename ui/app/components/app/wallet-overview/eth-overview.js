@@ -12,13 +12,16 @@ import Tooltip from '../../ui/tooltip'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 import { showModal } from '../../../store/actions'
-import { isBalanceCached, getSelectedAccount, getShouldShowFiat } from '../../../selectors/selectors'
+import { isBalanceCached, getSelectedAccount, getShouldShowFiat, getCurrentNetworkId } from '../../../selectors/selectors'
+import { getValueFromWeiHex } from '../../../helpers/utils/conversions.util'
 import SwapIcon from '../../ui/icon/swap-icon.component'
 import BuyIcon from '../../ui/icon/overview-buy-icon.component'
 import SendIcon from '../../ui/icon/overview-send-icon.component'
+import { setSwapsFromToken } from '../../../ducks/swaps/swaps'
+import { ETH_SWAPS_TOKEN_OBJECT } from '../../../helpers/constants/swaps'
 import WalletOverview from './wallet-overview'
 
-const EthOverview = ({ className }) => {
+const EthOverview = ({ className, setSwapToken }) => {
   const dispatch = useDispatch()
   const t = useContext(I18nContext)
   const sendEvent = useMetricEvent({
@@ -47,7 +50,7 @@ const EthOverview = ({ className }) => {
   const showFiat = useSelector(getShouldShowFiat)
   const selectedAccount = useSelector(getSelectedAccount)
   const { balance } = selectedAccount
-
+  const networkId = useSelector(getCurrentNetworkId)
   return (
     <WalletOverview
       balance={(
@@ -113,17 +116,32 @@ const EthOverview = ({ className }) => {
             </div>
             { t('send') }
           </div>
-          <div className="eth-overview__button">
-            <div
-              className="eth-overview__circle"
-              onClick={() => {
-                convertEvent()
-                history.push(BUILD_QUOTE_ROUTE)
-              }}
-            >
-              <SwapIcon />
-            </div>
-            { t('swap') }
+          <div
+            className={classnames('eth-overview__button', {
+              'eth-overview__button--disabled': networkId !== '1',
+            })}
+          >
+            <Tooltip title={t('onlyAvailableOnMainnet')} position="bottom" disabled={networkId === '1'}>
+              <>
+                <div
+                  className="eth-overview__circle"
+                  onClick={() => {
+                    if (networkId === '1') {
+                      convertEvent()
+                      setSwapToken && dispatch(setSwapsFromToken({
+                        ...ETH_SWAPS_TOKEN_OBJECT,
+                        balance,
+                        string: getValueFromWeiHex({ value: balance, numberOfDecimals: 4, toDenomination: 'ETH' }),
+                      }))
+                      history.push(BUILD_QUOTE_ROUTE)
+                    }
+                  }}
+                >
+                  <SwapIcon />
+                </div>
+                { t('swap') }
+              </>
+            </Tooltip>
           </div>
         </>
       )}
@@ -135,6 +153,7 @@ const EthOverview = ({ className }) => {
 
 EthOverview.propTypes = {
   className: PropTypes.string,
+  setSwapToken: PropTypes.bool,
 }
 
 EthOverview.defaultProps = {

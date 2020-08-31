@@ -93,6 +93,11 @@
 
     color: $Blue-500;
     cursor: pointer;
+
+    &--disabled {
+      opacity: 0.3;
+      cursor: auto;
+    }
   }
 
   &__button:last-of-type {
