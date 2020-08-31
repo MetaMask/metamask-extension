@@ -51,13 +51,6 @@
     }
   }
 
-  &__title {
-    padding: 0 5px 0 0;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
   &__subheading {
     grid-area: sub;
     font-size: 12px;
