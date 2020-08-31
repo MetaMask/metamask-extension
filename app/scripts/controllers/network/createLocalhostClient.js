@@ -14,6 +14,7 @@ export default createLocalhostClient
 function createLocalhostClient () {
   const fetchMiddleware = createFetchMiddleware({
     rpcUrl: 'http://localhost:12539',
+    appendMethod: true,
   })
   const blockProvider = providerFromMiddleware(fetchMiddleware)
   const blockTracker = new BlockTracker({

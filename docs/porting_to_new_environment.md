@@ -17,7 +17,7 @@ user's accounts, a connection to the blockchain, and the interaction with new
 Dapps.
 
 When a new site is visited, the WebExtension creates a new `ContentScript` in
-that page's context, which can be seen at `app/scripts/contentscript.js`. This
+that page's context, which can be seen at `app/scripts/portal-contentscript.js`. This
 script represents a per-page setup process, which creates the per-page `web3`
 api, connects it to the background script via the Port API (wrapped in a [stream
 abstraction](https://github.com/substack/stream-handbook)), and injected into
@@ -33,10 +33,13 @@ but you can also construct a provider per domain like this:
 const providerFromEngine = require('@yqrashawn/cfx-json-rpc-middleware/providerFromEngine')
 
 /**
-* returns a provider restricted to the requesting domain
-**/
-function incomingConnection (domain, getSiteMetadata) {
-  const engine = confluxPortalController.setupProviderEngine(domain, getSiteMetadata)
+ * returns a provider restricted to the requesting domain
+ **/
+function incomingConnection(domain, getSiteMetadata) {
+  const engine = confluxPortalController.setupProviderEngine(
+    domain,
+    getSiteMetadata
+  )
   const provider = providerFromEngine(engine)
   return provider
 }
@@ -72,7 +75,7 @@ we provide the
 [js-conflux-sdk](https://github.com/Conflux-Chain/js-conflux-sdk#readme) API
 over a series of streams between contexts. Once you understand how we create the
 [ConfluxportalInpageProvider](https://github.com/yqrashawn/conflux-portal-inpage-provider#readme)
-in the [inpage.js script](../app/scripts/inpage.js), you will be able to
+in the [portal-inpage.js script](../app/scripts/inpage.js), you will be able to
 understand how the
 [extension-port-stream](https://github.com/MetaMask/extension-port-stream) is
 just a thin wrapper around the [Port postMessage
@@ -113,7 +116,6 @@ WebCrypto API.
   storage.
 - decrypt(password, encryptedString) - Accepts the encrypted output of `encrypt`
   and returns a Promise of a restored `object` as it was encrypted.
-
 
 ##### Platform Options
 
@@ -174,15 +176,16 @@ ConfluxPortal controller constructor to start. It looks something like this:
 
 ```javascript
 const controller = new ConfluxPortalController({
-    // User confirmation callbacks:
-    showUnconfirmedMessage: triggerUi,
-    showUnapprovedTx: triggerUi,
-    // initial state
-    initState,
-    // platform specific api
-    platform,
+  // User confirmation callbacks:
+  showUnconfirmedMessage: triggerUi,
+  showUnapprovedTx: triggerUi,
+  // initial state
+  initState,
+  // platform specific api
+  platform,
 })
 ```
+
 Since `background.js` is essentially the Extension setup file, we can see it
 doing all the things specific to the extension platform:
 
@@ -203,6 +206,7 @@ wallet, it's providing an Conflux-enabled JavaScript context to websites.
 
 ConfluxPortal has two kinds of [duplex stream
 APIs](https://github.com/substack/stream-handbook#duplex) that it exposes:
+
 - [metamask.setupTrustedCommunication(connectionStream,
   originDomain)](https://github.com/Conflux-Chain/conflux-portal/blob/master/app/scripts/metamask-controller.js#L1725) -
   This stream is used to connect the user interface over a remote port, and may
@@ -223,7 +227,7 @@ three JS contexts just to let sites talk to our background process (site ->
 contentscript -> background).
 
 To see how we do that, you can refer to the [inpage
-script](https://github.com/Conflux-Chain/conflux-portal/blob/master/app/scripts/inpage.js)
+script](https://github.com/Conflux-Chain/conflux-portal/blob/master/app/scripts/portal-inpage.js)
 that we inject into every website. There you can see it creates a multiplex
 stream to the background, and uses it to initialize what we call the
 [ConfluxPortalInpageProvider](https://github.com/yqrashawn/conflux-portal-inpage-provider#readme),
@@ -232,8 +236,7 @@ which you can see stubs a few methods out, but mostly just passes calls to
 needed to create a web3-like API in a remote context, once you have a stream to
 ConfluxPortal available.
 
-In `inpage.js` you can see we create a [`postMessage
-Stream`](https://github.com/Conflux-Chain/conflux-portal/blob/develop/app/scripts/inpage.js#L50),
+In `portal-inpage.js` you can see we create a [`postMessage Stream`](https://github.com/Conflux-Chain/conflux-portal/blob/develop/app/scripts/inpage.js#L50),
 that's just a class we use to wrap WebExtension postMessage as streams, so we
 can reuse our favorite stream abstraction over the more irregular API surface of
 the WebExtension. In a new platform, you will probably need to construct this
