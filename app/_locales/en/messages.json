@@ -1546,7 +1546,8 @@
     "message": "Calculating..."
   },
   "swapEstimatedTimeFull": {
-    "message": "$1 $2"
+    "message": "$1 $2",
+    "description": "This message shows bolded swapEstimatedTime message, which is substited for $1, followed by either the estimated remaining transaction time in mm:ss, or the swapEstimatedTimeCalculating message, which are substituted for $2."
   },
   "swapFetchingTokens": {
     "message": "Fetching tokens..."
@@ -1597,7 +1598,8 @@
     "message": "This is the cost to process the swap on the Ethereum network. It’s also known as “gas” fees."
   },
   "swapOnceTransactionHasProcess": {
-    "message": "Your $1 will be added to your account once this transaction has processed"
+    "message": "Your $1 will be added to your account once this transaction has processed",
+    "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
   },
   "swapProcessing": {
     "message": "Processing"
@@ -1654,7 +1656,8 @@
     "message": "Your trade did not succeed. Please try again."
   },
   "swapTokenAvailable": {
-    "message": "Your $1 has been added to your account."
+    "message": "Your $1 has been added to your account.",
+    "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
   },
   "swapTransactionComplete": {
     "message": "Transaction complete"
