@@ -32,7 +32,7 @@ const CONNECTED_ROUTE = '/connected'
 const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts'
 const SWAP_ROUTE = '/swap'
 const BUILD_QUOTE_ROUTE = '/swap/build-quote'
-const VIEW_QUOTE_ROUTE = './swao/view-quote'
+const VIEW_QUOTE_ROUTE = './swap/view-quote'
 
 const INITIALIZE_ROUTE = '/initialize'
 const INITIALIZE_WELCOME_ROUTE = '/initialize/welcome'

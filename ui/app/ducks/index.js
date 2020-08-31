@@ -7,6 +7,7 @@ import appStateReducer from './app/app'
 import confirmTransactionReducer from './confirm-transaction/confirm-transaction.duck'
 import gasReducer from './gas/gas.duck'
 import { invalidCustomNetwork, unconnectedAccount } from './alerts'
+import swapsReducer from './swaps/swaps'
 import historyReducer from './history/history'
 
 export default combineReducers({
@@ -18,6 +19,7 @@ export default combineReducers({
   history: historyReducer,
   send: sendReducer,
   confirmTransaction: confirmTransactionReducer,
+  swaps: swapsReducer,
   gas: gasReducer,
   localeMessages: localeMessagesReducer,
 })
