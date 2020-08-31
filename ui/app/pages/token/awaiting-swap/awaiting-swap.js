@@ -19,6 +19,7 @@ export default function AwaitingSwap ({
   tokensReceived,
   submittedTime,
   transactionTimeRemaining,
+  rpcPrefs,
 }) {
   const t = useContext(I18nContext)
   const animationEventEmitter = useRef(new EventEmitter())
@@ -39,6 +40,8 @@ export default function AwaitingSwap ({
     statusImage = <SwapSuccessIcon />
     descriptionText = t('swapTokenAvailable', [<span key="swapTokenAvailable-2" className="awaiting-swap__amount-and-symbol">{`${tokensReceived} ${symbol}`}</span>])
   }
+
+  const blockExplorerUrl = getBlockExplorerUrlForTx(networkId, txHash, rpcPrefs)
 
   return (
     <div className="awaiting-swap">
@@ -74,9 +77,9 @@ export default function AwaitingSwap ({
           'awaiting-swap__view-on-etherscan--visible': txHash,
           'awaiting-swap__view-on-etherscan--invisible': !txHash,
         })}
-        onClick={() => global.platform.openTab({ url: getBlockExplorerUrlForTx(networkId, txHash) })}
+        onClick={() => global.platform.openTab({ url: blockExplorerUrl })}
       >
-        {t('viewOnEtherscan')}
+        {rpcPrefs.blockExplorerUrl ? t('viewOnCustomBlockExplorer') : t('viewOnEtherscan')}
       </div>
     </div>
   )
@@ -91,4 +94,5 @@ AwaitingSwap.propTypes = {
   submittedTime: PropTypes.number,
   transactionTimeRemaining: PropTypes.number,
   tokensReceived: PropTypes.string,
+  rpcPrefs: PropTypes.object,
 }
