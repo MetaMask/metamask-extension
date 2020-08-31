@@ -53,9 +53,10 @@ export default function CountdownTimer ({
   labelKey,
   infoTooltipLabelKey,
 }) {
-  const intervalRef = useRef()
   const t = useContext(I18nContext)
-	  const [initialTimeStarted, setInitialTimeStarted] = useState(() => timeStarted || Date.now())
+  const intervalRef = useRef()
+  const initialTimeStartedRef = useRef()
+
   const [currentTime, setCurrentTime] = useState(() => Date.now())
   const [timer, setTimer] = useState(() => getNewTimer(currentTime, timeStarted, timerBase))
 
@@ -65,12 +66,20 @@ export default function CountdownTimer ({
         setTimer(decreaseTimerByOne)
       }, 1000)
     }
-  }, [timer])
 
-  // Reset the timer if a new timeStarted is provided after the timer runs to '0:00'
+    return function cleanup () {
+      clearInterval(intervalRef.current)
+    }
+  }, [])
+
+  // Reset the timer that timer has hit '0:00' and the timeStarted prop has changed
   useEffect(() => {
-    if (timer === '0:00' && timeStarted !== initialTimeStarted) {
-      setInitialTimeStarted(timeStarted)
+    if (!initialTimeStartedRef.current) {
+      initialTimeStartedRef.current = timeStarted || Date.now()
+    }
+
+    if (timer === '0:00' && timeStarted !== initialTimeStartedRef.current) {
+      initialTimeStartedRef.current = timeStarted
       const newCurrentTime = Date.now()
       setCurrentTime(newCurrentTime)
       setTimer(getNewTimer(newCurrentTime, timeStarted, timerBase))
@@ -80,13 +89,7 @@ export default function CountdownTimer ({
         setTimer((_timer) => decreaseTimerByOne(_timer))
       }, 1000)
     }
-  }, [timeStarted, timer, initialTimeStarted, timerBase])
-
-  useEffect(() => {
-    return function cleanup () {
-      clearInterval(intervalRef.current)
-    }
-  }, [])
+  }, [timeStarted, timer, timerBase])
 
   return (
     <div className="countdown-timer">
