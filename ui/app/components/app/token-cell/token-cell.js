@@ -47,7 +47,7 @@ export default function TokenCell ({
       tokenSymbol={symbol}
       tokenDecimals={decimals}
       warning={warning}
-      primary={`${string || 0} ${symbol}`}
+      primary={`${string || 0}`}
       secondary={formattedFiat}
     />
 

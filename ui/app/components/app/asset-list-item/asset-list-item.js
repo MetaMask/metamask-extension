@@ -95,6 +95,7 @@ const AssetListItem = ({
       className={classnames('asset-list-item', className)}
       data-testid={dataTestId}
       title={primary}
+      subTitle={tokenSymbol}
       titleIcon={titleIcon}
       subtitle={<h3 title={secondary}>{secondary}</h3>}
       onClick={onClick}

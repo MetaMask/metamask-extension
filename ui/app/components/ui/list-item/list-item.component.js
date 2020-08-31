@@ -4,6 +4,7 @@ import classnames from 'classnames'
 
 export default function ListItem ({
   title,
+  subTitle,
   subtitle,
   onClick,
   children,
@@ -24,7 +25,10 @@ export default function ListItem ({
         </div>
       )}
       <div className="list-item__heading" title={title}>
-        <h2>{ title }</h2>
+        <h2 className="list-item__title">{ title }</h2>
+        {subTitle && (
+          <h2 className="list-item__subTitle">{ subTitle }</h2>
+        )}
         {titleIcon && (
           <div className="list-item__heading-wrap">
             {titleIcon}
@@ -57,6 +61,7 @@ export default function ListItem ({
 
 ListItem.propTypes = {
   title: PropTypes.string.isRequired,
+  subTitle: PropTypes.string,
   titleIcon: PropTypes.node,
   subtitle: PropTypes.node,
   children: PropTypes.node,
