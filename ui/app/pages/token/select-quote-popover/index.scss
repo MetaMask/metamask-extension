@@ -67,7 +67,7 @@
   }
 
   &__row {
-    @include H7;
+    @include H6;
 
     cursor: pointer;
     color: $black;
@@ -123,14 +123,33 @@
           color: $Grey-500;
         }
       }
+
+      .select-quote-popover__zero-slippage {
+        color: $white;
+      }
     }
   }
 
   &__receiving {
     display: flex;
     flex-direction: column;
-    font-weight: bold;
     width: 104px;
+  }
+
+  &__receiving-value {
+    display: flex;
+    align-items: center;
+
+    svg {
+      margin-right: 2px;
+    }
+  }
+
+  &__zero-slippage {
+    font-size: 12px;
+    line-height: 100%;
+    color: #6a737d;
+    font-weight: normal;
   }
 
   &__network-fees {

@@ -2,6 +2,7 @@ import React, { useState, useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import BigNumber from 'bignumber.js'
+import SunCheckIcon from '../../../../components/ui/icon/sun-check-icon.component'
 import { I18nContext } from '../../../../contexts/i18n'
 import { QUOTE_DATA_ROWS_PROPTYPES_SHAPE } from '../select-quote-popover-constants'
 import InfoTooltip from '../../../../components/ui/info-tooltip'
@@ -81,7 +82,7 @@ export default function SortList ({
       </div>
       <div className="select-quote-popover__rows">
         {
-          sortedRows.map(({ amountReceiving, networkFees, isBestQuote, quoteSource, aggId }, i) => (
+          sortedRows.map(({ destinationTokenValue, networkFees, isBestQuote, quoteSource, aggId }, i) => (
             <div
               className={classnames('select-quote-popover__row', {
                 'select-quote-popover__row--selected': selectedRow === i,
@@ -93,8 +94,11 @@ export default function SortList ({
               <div
                 className="select-quote-popover__receiving"
               >
-                <span>{amountReceiving}</span>
-                { isBestQuote && <span>{t('swapsBestQuote')}</span> }
+                <div className="select-quote-popover__receiving-value">
+                  {isBestQuote && <SunCheckIcon />}
+                  {destinationTokenValue}
+                </div>
+                { quoteSource === 'RFQ' && <span className="select-quote-popover__zero-slippage">{t('swapZeroSlippage')}</span> }
               </div>
               <div
                 className="select-quote-popover__network-fees"

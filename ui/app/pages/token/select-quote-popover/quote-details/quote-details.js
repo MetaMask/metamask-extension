@@ -55,7 +55,7 @@ const QuoteDetails = ({
           />
         </div>
         <div className="quote-details__detail-content">
-          {slippage}
+          {`${slippage}%`}
         </div>
       </div>
       <div className="quote-details__row">
