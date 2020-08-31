@@ -6,6 +6,7 @@ import { I18nContext } from '../../../contexts/i18n'
 import { calcTokenAmount } from '../../../helpers/utils/token-util'
 import { toPrecisionWithoutTrailingZeros } from '../../../helpers/utils/util'
 import Tooltip from '../../../components/ui/tooltip'
+import SunCheckIcon from '../../../components/ui/icon/sun-check-icon.component'
 import ExchangeRateDisplay from '../exchange-rate-display'
 import QuoteBackdrop from './quote-backdrop'
 
@@ -60,7 +61,10 @@ export default function MainQuoteSummary ({
       >
         <QuoteBackdrop withTopTab={isBestQuote} />
       </div>
-      <div className="main-quote-summary__best-quote">{isBestQuote && t('swapsBestQuote')}</div>
+      <div className="main-quote-summary__best-quote">
+        {isBestQuote && <SunCheckIcon />}
+        <span>{isBestQuote && t('swapsBestQuote')}</span>
+      </div>
       <div className="main-quote-summary__details">
         <div className="main-quote-summary__quote-details-top">
           <span className="main-quote-summary__quote-small-white">
