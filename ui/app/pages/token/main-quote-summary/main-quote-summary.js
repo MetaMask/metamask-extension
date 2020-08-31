@@ -30,6 +30,15 @@ function getLineHeight (fontSizeScore) {
   return 18
 }
 
+// Returns a numerical value based on the length of the two passed strings: amount and symbol.
+// The returned value equals the number of digits in the amount string plus a value calculated
+// from the length of the symbol string. The returned number will be passed to the getFontSizes function
+// to determine the font size to apply to the amount and symbol strings when rendered. The
+// desired maximum digits and letters to show in the ultimately rendered string is 20, and in
+// such cases there can also be ellipsis shown and a decimal, combinding for a rendered "string"
+// length of ~22. As the symbol will always have a smaller font size than the amount, the
+// additive value of the symbol length to the font size score is corrected based on the total
+// number of alphanumeric characters in both strings and the desired rendered length of 22.
 function getFontSizeScore (amount, symbol) {
   const amountLength = amount.match(/\d+/gu).join('').length
   const symbolModifier = Math.min((amountLength + symbol.length) / 22, 1)
