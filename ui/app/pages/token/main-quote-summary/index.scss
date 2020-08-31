@@ -3,10 +3,14 @@
   flex-flow: column;
   align-items: center;
   position: relative;
-  height: 179px;
+  height: 196px;
   width: 100%;
   margin-top: 24px;
   color: $white;
+
+  @media screen and (max-width: 576px) {
+    margin-top: 0;
+  }
 
   &__quote-backdrop-with-top-tab,
   &__quote-backdrop {
@@ -47,13 +51,17 @@
     padding-top: 6px;
     letter-spacing: 0.12px;
     min-height: 16px;
+
+    > span {
+      margin-left: 4px;
+    }
   }
 
   &__quote-details-top {
     height: 137px;
     display: flex;
     flex-flow: column;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
     width: 100%;
     padding: 40px 12px 12px;
