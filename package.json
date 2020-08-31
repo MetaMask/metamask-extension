@@ -62,11 +62,7 @@
     "generate:migration": "./development/generate-migration.sh"
   },
   "lint-staged": {
-    "*.{js,json}": [
-      "prettier-eslint --write",
-      "eslint",
-      "git add"
-    ]
+    "*.{js,json}": ["prettier-eslint --write", "eslint", "git add"]
   },
   "prettier": {
     "semi": false,
@@ -74,7 +70,14 @@
     "trailingComma": "es5"
   },
   "resolutions": {
-    "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.15",
+    "**/configstore/dot-prop": "^5.1.1",
+    "**/*/elliptic": "^6.5.3",
+    "**/knex/minimist": "^1.2.5",
+    "**/optimist/minimist": "^1.2.5",
+    "**/socketcluster/minimist": "^1.2.5",
+    "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.19",
+    "3box/ipfs/ipld-zcash/zcash-bitcore-lib/elliptic": "^6.5.3",
+    "ganache-core/lodash": "^4.17.19",
     "pubnub/superagent-proxy": "^2.0.0"
   },
   "dependencies": {
@@ -85,7 +88,7 @@
     "@sentry/browser": "^5.11.1",
     "@sentry/integrations": "^5.11.1",
     "@yqrashawn/cfx-contract-metadata": "^0.0.7",
-    "@yqrashawn/cfx-json-rpc-middleware": "^4.4.4",
+    "@yqrashawn/cfx-json-rpc-middleware": "^4.4.5",
     "@yqrashawn/conflux-portal-inpage-provider": "^4.0.9",
     "@zxing/library": "^0.8.0",
     "abi-decoder": "^1.2.0",

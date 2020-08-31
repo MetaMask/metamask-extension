@@ -2,31 +2,46 @@
 
 ## Current Develop Branch
 
+## 0.3.5 Mon Aug 31 2020
+
+- fix(tx-list): toLowerCase error when display contract creation tx (#210)
+- refactor: append method name to end of rpc url
+- fix(getTransactionByHash): response getTransactionByHash as defined in spec
+- fix: upgrade package to fix yarn audit error
+- fix: noisy warnning in console
+
 ## 0.3.4 Thu Jul 30 2020
+
 - fix: wrong chainId failing balance check (#204)
 
 ## 0.3.3 Mon Jul 27 2020
+
 - fix(add-recipient): remove ens error (#199)
 - fix(i18n): use only zh_CN zh_TW en (#200)
 
 ## 0.3.2 Thu Jul 23 2020
+
 - fix(permission): remove unused permissions (#195)
 
 ## 0.3.1 Sat Jul 18 2020
+
 - chore(deps): use new conflux local network lite @cfxjs/fullnode (#189)
 - docs(trans): Pontus -> Oceanus don't depends on time (#190)
 - chore: test with fullnode 0.6.0-rc3 (#191)
 - fix(contract-manager-api): add pagination query params (#192)
 
 ## 0.3.0 Wed Jul 15 2020
+
 - fix: sentry sourcemap upload (#181)
 - feat: update for new version of fullnode (#182)
 
 ## 0.2.4 Fri Jul 03 2020
+
 - feat(sign): support cfx_signTypedData_v4, change cfx_sign logic back (#176)
 - feat(jssdk): use js-conflux-sdk@0.11.0 (#177)
 
 ## 0.2.3 Tue Jun 30 2020
+
 - Fix: dockerfile, less build level (#147)
 - Add: format comments in dockerfile (#148)
 - Fix: reorder task (#149)
@@ -43,23 +58,27 @@
 - fix: remove ens error (#171)
 
 ## 0.2.2 Thu May 28 2020
+
 - Add: buildkite to speed up ci (#136)
 - Fix: buildkite invalid branch name
 - remove reent block tracker, use 'cfx_gasPrice' method to get gas price (#141)
 - Fix: sentry project name (#143)
 
 ## 0.2.1 Fri May 22 2020
+
 - modify decimal of balance (#129)
 - bugfix: check whether keyring is null (#131)
 - Fix: insufficientFunds error while sending token at send page with 0 CFX (#133)
 
 ## 0.2.0 Thu May 14 2020
+
 - Add: sponsor feature (#124)
 - Add: chinese trans in send and confirm page (#126)
 - Add: add cfx_checkBalanceAgainstTransaction method support
 - Add: seperate fee and collateral ui
 
 ## 0.1.9 Thu May 07 2020
+
 - Fix: firefox e2e back into all-test-pass
 - Add: cfx pontus warning
 - Add: ci cache yarn cache and node_modules
@@ -83,6 +102,7 @@
 ## 0.1.9 Thu May 07 2020
 
 ## 0.1.8 Mon Apr 27 2020
+
 - Version v0.1.7
 - Fix: firefox e2e test
 - Remove unused sinon sandboxes (#8063)
@@ -97,6 +117,7 @@
 - Fix: test-net token -> test token
 
 ## 0.1.7 Sun Apr 26 2020
+
 - Version v0.1.5
 - Add: update changelog
 - Fix: Main Conflux Network -> Conflux Main Network
@@ -118,12 +139,14 @@
 - Fix: react network proptype
 
 ## 0.1.6 Thu Apr 23 2020
+
 - Add: update changelog
 - Fix: Main Conflux Network -> Conflux Main Network
 - Fix: scan link, testnet scan link
 - Add: more i18n
 
 ## 0.1.5 Wed Apr 22 2020
+
 - Fix: don't count stroageLimit into total tx fee (#73)
 - Merge remote-tracking branch 'origin/master' into master->dev
 - Merge remote-tracking branch 'origin/master' into master->dev
@@ -141,10 +164,12 @@
 - Version v0.1.5
 
 ## 0.1.4 Fri Apr 17 2020
+
 - Fix: don't count stroageLimit into total tx fee (#73)
 - Add: new fc address
 
 ## 0.1.3 Thu Apr 16 2020
+
 - Version v0.1.0 RC (#64)
 - Add: upgrade multihashes (#67)
 - Add: changelog
@@ -188,16 +213,19 @@
 - Version v0.1.3
 
 ## 0.1.0 Fri Mar 27 2020
+
 - Sync Version v0.0.9 RC (#58) from master (#60)
 - new sign logic (#62)
 - Change logo, mail, faq, tos links (#63)
 
 ## 0.1.0 Fri Mar 27 2020
+
 - Sync Version v0.0.9 RC (#58) from master (#60)
 - new sign logic (#62)
 - Change logo, mail, faq, tos links (#63)
 
 ## 0.0.9 Thu Mar 12 2020
+
 - Version v0.0.7 (#43)
 - Version v0.0.5 (#33)
 - Version v0.0.6 (#38)
@@ -208,14 +236,17 @@
 - Fix: changelog.md (#50)
 - Fix e2e tests (#56)
 - Add rlp to support new version of testnet (#57)
+
 ## 0.0.9 Thu Mar 12 2020
 
 ## 0.0.8 Tue Feb 20 2020
+
 - update/cleanup packages (#46)
 - update readme.md (#45)
 - Fix: average estimate gas price unit (#47)
 
 ## 0.0.7 Tue Feb 17 2020
+
 - Fix: release file blob
 - Fix: circle ci artifact url
 - Docs: issue templates, codeowners, docs, support emails
@@ -304,12 +335,12 @@
 - Fix: settings network tab react dup key error
 - Fix: no need to pass benchmark test to release for now
 - Fix: speedup tx
-- Updating deprecated Etherscam link  (#7464)
+- Updating deprecated Etherscam link (#7464)
 - Use envify@4.1.0 (#7983)
 - Use eth-json-rpc-infura@4.0.2 (#7981)
 - Use eth-keyring-controller@5.5.0 (#7980)
 - Use gulp@4.0.2 (#7982)
-- Remove redundant eth-*-keyring versions from yarn.lock (#7984)
+- Remove redundant eth-\*-keyring versions from yarn.lock (#7984)
 - Fixes #5706 - Adds Dai/Sai to currency display (#7986)
 - Add: testnet to http://testnet-jsonrpc.conflux-chain.org:12537/
 - Fix: sign typed data
@@ -358,6 +389,7 @@
 - misc updates
 
 ## 0.0.6 Tue Feb 11 2020
+
 - Fix: release file blob
 - Fix: circle ci artifact url
 - Docs: issue templates, codeowners, docs, support emails
@@ -446,12 +478,12 @@
 - Fix: settings network tab react dup key error
 - Fix: no need to pass benchmark test to release for now
 - Fix: speedup tx
-- Updating deprecated Etherscam link  (#7464)
+- Updating deprecated Etherscam link (#7464)
 - Use envify@4.1.0 (#7983)
 - Use eth-json-rpc-infura@4.0.2 (#7981)
 - Use eth-keyring-controller@5.5.0 (#7980)
 - Use gulp@4.0.2 (#7982)
-- Remove redundant eth-*-keyring versions from yarn.lock (#7984)
+- Remove redundant eth-\*-keyring versions from yarn.lock (#7984)
 - Fixes #5706 - Adds Dai/Sai to currency display (#7986)
 - Add: testnet to http://testnet-jsonrpc.conflux-chain.org:12537/
 - Fix: sign typed data
@@ -463,6 +495,7 @@
 - Fix: use fc's balanceOf instead of stateOf, treat fc as a normal… (#37)
 
 ## 0.0.5 Mon Feb 10 2020
+
 - [#7912](https://github.com/MetaMask/metamask-extension/pull/7912): Disable import button for empty string/file
 - Fix: release file blob
 - Fix: circle ci artifact url
@@ -552,12 +585,12 @@
 - Fix: settings network tab react dup key error
 - Fix: no need to pass benchmark test to release for now
 - Fix: speedup tx
-- Updating deprecated Etherscam link  (#7464)
+- Updating deprecated Etherscam link (#7464)
 - Use envify@4.1.0 (#7983)
 - Use eth-json-rpc-infura@4.0.2 (#7981)
 - Use eth-keyring-controller@5.5.0 (#7980)
 - Use gulp@4.0.2 (#7982)
-- Remove redundant eth-*-keyring versions from yarn.lock (#7984)
+- Remove redundant eth-\*-keyring versions from yarn.lock (#7984)
 - Fixes #5706 - Adds Dai/Sai to currency display (#7986)
 - Add: testnet to http://testnet-jsonrpc.conflux-chain.org:12537/
 - Fix: sign typed data
@@ -566,6 +599,7 @@
 - Master => develop (#34)
 
 ## 0.0.4 Mon Jan 20 2020
+
 - [#7823](https://github.com/MetaMask/metamask-extension/pull/7823): Wait until element is clickable before clicking in e2e tests (#7823)
 - [#7833](https://github.com/MetaMask/metamask-extension/pull/7833): Fix prop types for SendGasRow component tests (#7833)
 - [#7835](https://github.com/MetaMask/metamask-extension/pull/7835): Clean up Migrator test cases (#7835)
@@ -597,6 +631,7 @@
 - [#7855](https://github.com/MetaMask/metamask-extension/pull/7855): Clean up "JSON File" import strategy test output (#7855)
 
 ## 0.0.3 Thu Feb 16 2020
+
 - remove preset default gas and default gas price in injected web3
 - injected conflux version of web3 is now ~window.confluxJS~
 - injected ~window.ethereum~ changed to ~window.conflux~
@@ -604,5 +639,6 @@
 - support skipped transaction
 
 ## 0.0.2 Fri Feb 10 2020
+
 - Some "Etherscan" to "ConfluxScan"
 - Get default gas price from json rpc

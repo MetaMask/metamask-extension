@@ -10,11 +10,11 @@ const fs = require('fs')
 const path = require('path')
 
 const inpageContent = fs.readFileSync(
-  path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js'),
+  path.join(__dirname, '..', '..', 'dist', 'chrome', 'portal-inpage.js'),
   'utf8'
 )
 const inpageSuffix =
-  '//# sourceURL=' + extension.runtime.getURL('inpage.js') + '\n'
+  '//# sourceURL=' + extension.runtime.getURL('portal-inpage.js') + '\n'
 const inpageBundle = inpageContent + inpageSuffix
 
 // Eventually this streaming injection could be replaced with:
@@ -64,10 +64,12 @@ async function start () {
 async function setupStreams () {
   // the transport-specific streams for communication between inpage and background
   const pageStream = new LocalMessageDuplexStream({
-    name: 'contentscript',
-    target: 'inpage',
+    name: 'portal-contentscript',
+    target: 'portal-inpage',
   })
-  const extensionPort = extension.runtime.connect({ name: 'contentscript' })
+  const extensionPort = extension.runtime.connect({
+    name: 'portal-contentscript',
+  })
   const extensionStream = new PortStream(extensionPort)
 
   // create and connect channel muxers
@@ -78,10 +80,10 @@ async function setupStreams () {
   extensionMux.setMaxListeners(25)
 
   pump(pageMux, pageStream, pageMux, (err) =>
-    logStreamDisconnectWarning('MetaMask Inpage Multiplex', err)
+    logStreamDisconnectWarning('ConfluxPortal Inpage Multiplex', err)
   )
   pump(extensionMux, extensionStream, extensionMux, (err) =>
-    logStreamDisconnectWarning('MetaMask Background Multiplex', err)
+    logStreamDisconnectWarning('ConfluxPortal Background Multiplex', err)
   )
 
   // forward communication across inpage-background for these channels only
@@ -102,7 +104,7 @@ function forwardTrafficBetweenMuxers (channelName, muxA, muxB) {
   const channelB = muxB.createStream(channelName)
   pump(channelA, channelB, channelA, (err) =>
     logStreamDisconnectWarning(
-      `MetaMask muxed traffic for channel "${channelName}" failed.`,
+      `ConfluxPortal muxed traffic for channel "${channelName}" failed.`,
       err
     )
   )
@@ -115,7 +117,7 @@ function forwardTrafficBetweenMuxers (channelName, muxA, muxB) {
  * @param {Error} err - Stream connection error
  */
 function logStreamDisconnectWarning (remoteLabel, err) {
-  let warningMsg = `MetamaskContentscript - lost connection to ${remoteLabel}`
+  let warningMsg = `ConfluxPortalContentscript - lost connection to ${remoteLabel}`
   if (err) {
     warningMsg += '\n' + err.stack
   }

@@ -48,8 +48,8 @@ log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
 // setup background connection
 const metamaskStream = new LocalMessageDuplexStream({
-  name: 'inpage',
-  target: 'contentscript',
+  name: 'portal-inpage',
+  target: 'portal-contentscript',
 })
 
 // compose the inpage provider

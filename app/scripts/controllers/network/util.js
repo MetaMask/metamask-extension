@@ -43,6 +43,9 @@ export function formatTxMetaForRpcResult (txMeta) {
     from: txMeta.txParams.from,
     gas: txMeta.txParams.gas,
     gasPrice: txMeta.txParams.gasPrice,
+    storageLimit: txMeta.txParams.storageLimit,
+    chainId: txMeta.txParams.chainId,
+    epochHeight: txMeta.txParams.epochHeight,
     hash: txMeta.hash,
     input: txMeta.txParams.data || '0x',
     nonce: txMeta.txParams.nonce,
@@ -50,6 +53,7 @@ export function formatTxMetaForRpcResult (txMeta) {
     transactionIndex: txMeta.txReceipt
       ? txMeta.txReceipt.transactionIndex
       : null,
+    status: txMeta.txReceipt ? txMeta.txReceipt.outcomeStatus : null,
     value: txMeta.txParams.value || '0x0',
     v: txMeta.v,
     r: txMeta.r,

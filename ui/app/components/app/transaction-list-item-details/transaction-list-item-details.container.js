@@ -9,7 +9,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const getNickName = (address) => {
     const entry = addressBook.find((contact) => {
-      return address.toLowerCase() === contact.address.toLowerCase()
+      return address && address.toLowerCase() === contact.address.toLowerCase()
     })
     return (entry && entry.name) || ''
   }
