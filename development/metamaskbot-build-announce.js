@@ -45,8 +45,8 @@ async function start () {
   const bundles = [
     'background',
     'ui',
-    'inpage',
-    'contentscript',
+    'portal-inpage',
+    'portal-contentscript',
     'ui-libs',
     'bg-libs',
     'phishing-detect',

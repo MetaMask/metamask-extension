@@ -8,7 +8,7 @@ const fsAsync = pify(fs)
 //
 // Utility to help check if sourcemaps are working
 //
-// searches `dist/chrome/inpage.js` for "new Error" statements
+// searches `dist/chrome/portal-inpage.js` for "new Error" statements
 // and prints their source lines using the sourcemaps.
 // if not working it may error or print minified garbage
 //
@@ -17,8 +17,8 @@ start().catch(console.error)
 
 async function start () {
   const targetFiles = [
-    `inpage.js`,
-    `contentscript.js`,
+    `portal-inpage.js`,
+    `portal-contentscript.js`,
     `ui.js`,
     `background.js`,
   ]

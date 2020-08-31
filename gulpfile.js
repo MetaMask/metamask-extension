@@ -401,8 +401,8 @@ gulp.task('lint-scss', function () {
 // build js
 
 const buildJsFiles = [
-  'inpage',
-  'contentscript',
+  'portal-inpage',
+  'portal-contentscript',
   'background',
   'ui',
   'phishing-detect',
@@ -468,8 +468,8 @@ function createTasksForBuildJsExtension ({
 }) {
   // inpage must be built before all other scripts:
   const rootDir = './app/scripts'
-  const nonInpageFiles = buildJsFiles.filter((file) => file !== 'inpage')
-  const buildPhase1 = ['inpage']
+  const nonInpageFiles = buildJsFiles.filter((file) => file !== 'portal-inpage')
+  const buildPhase1 = ['portal-inpage']
   const buildPhase2 = nonInpageFiles
   const destinations = browserPlatforms.map((platform) => `./dist/${platform}`)
   bundleTaskOpts = Object.assign(
@@ -605,7 +605,13 @@ function zipTask (target) {
   return () => {
     return gulp
       .src(`dist/${target}/**`)
-      .pipe(zip(`conflux-portal-${target}-${require('./app/manifest.json').version}.zip`))
+      .pipe(
+        zip(
+          `conflux-portal-${target}-${
+            require('./app/manifest.json').version
+          }.zip`
+        )
+      )
       .pipe(gulp.dest('builds'))
   }
 }
@@ -669,15 +675,24 @@ function generateBundler (opts, performBundle) {
     environment = 'development'
   } else if (opts.testing) {
     environment = 'testing'
-  } else if (process.env.CIRCLE_BRANCH === 'master' || process.env.BUILDKITE_BRANCH === 'master') {
+  } else if (
+    process.env.CIRCLE_BRANCH === 'master' ||
+    process.env.BUILDKITE_BRANCH === 'master'
+  ) {
     environment = 'production'
   } else if (
     /^Version-v(\d+)[.](\d+)[.](\d+)/.test(process.env.CIRCLE_BRANCH)
   ) {
     environment = 'release-candidate'
-  } else if (process.env.CIRCLE_BRANCH === 'develop' || process.env.BUILDKITE_BRANCH === 'develop') {
+  } else if (
+    process.env.CIRCLE_BRANCH === 'develop' ||
+    process.env.BUILDKITE_BRANCH === 'develop'
+  ) {
     environment = 'staging'
-  } else if (process.env.CIRCLE_PULL_REQUEST || process.env.BUILDKITE_PULL_REQUEST === 'true') {
+  } else if (
+    process.env.CIRCLE_PULL_REQUEST ||
+    process.env.BUILDKITE_PULL_REQUEST === 'true'
+  ) {
     environment = 'pull-request'
   } else {
     environment = 'other'
