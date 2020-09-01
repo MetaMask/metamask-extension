@@ -86,7 +86,7 @@ export default function CountdownTimer ({
 
       clearInterval(intervalRef.current)
       intervalRef.current = setInterval(() => {
-        setTimer((_timer) => decreaseTimerByOne(_timer))
+        setTimer(decreaseTimerByOne)
       }, 1000)
     }
   }, [timeStarted, timer, timerBase])
