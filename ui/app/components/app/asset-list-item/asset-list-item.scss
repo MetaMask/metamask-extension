@@ -1,4 +1,11 @@
 .asset-list-item {
+  &__token-value {
+    padding: 0 5px 0 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
   &__chevron-right {
     color: $Grey-500;
   }
