@@ -3,7 +3,10 @@ import { calcTokenValue } from '../../helpers/utils/token-util'
 import { constructTxParams } from '../../helpers/utils/util'
 import { decimalToHex } from '../../helpers/utils/conversions.util'
 import { estimateGasFromTxParams } from '../../store/actions'
-import { validateTxParams } from '../../../../app/scripts/controllers/transactions/lib/util'
+
+import fetchWithCache from '../../helpers/utils/fetch-with-cache'
+
+const CACHE_REFRESH_ONE_HOUR = 3600000
 
 // A high default that should cover any ERC-20 approve implementation
 const APPROVE_TX_GAS_DEFAULT = '0x1d4c0'
@@ -11,8 +14,18 @@ const APPROVE_TX_GAS_DEFAULT = '0x1d4c0'
 // A default value that should work for most metaswap trades, in case our api is missing this value
 const METASWAP_GAS_DEFAULT = 800000
 
-const TRADES_BASE_URL = 'https://metaswap-api.airswap-dev.codefi.network/trades?'
-const TOKENS_BASE_URL = 'https://metaswap-api.airswap-dev.codefi.network/tokens'
+const getBaseApi = function (isCustomNetwork, type) {
+  const environment = isCustomNetwork ? 'dev' : 'prod'
+
+  switch (type) {
+    case 'trade':
+      return `https://metaswap-api.airswap-${environment}.codefi.network/trades?`
+    case 'tokens':
+      return `https://metaswap-api.airswap-${environment}.codefi.network/tokens`
+    default:
+      return ''
+  }
+}
 
 const validHex = (string) => Boolean(string?.match(/^0x[A-Fa-f0-9]+$/u))
 const truthyString = (string) => Boolean(string?.length)
@@ -83,7 +96,7 @@ function validateData (validators, object) {
   return validators.every(({ property, type, validator }) => typeof object[property] === type && validator(object[property]))
 }
 
-export async function fetchTradesInfo ({ tokens, slippage, sourceToken, sourceDecimals, destinationToken, value, fromAddress }) {
+export async function fetchTradesInfo ({ sourceTokenInfo, destinationTokenInfo, slippage, sourceToken, sourceDecimals, destinationToken, value, fromAddress, exchangeList, isCustomNetwork }) {
   const urlParams = {
     destinationToken,
     sourceToken,
@@ -93,15 +106,13 @@ export async function fetchTradesInfo ({ tokens, slippage, sourceToken, sourceDe
     walletAddress: fromAddress,
   }
 
+  if (exchangeList) {
+    urlParams.exchangeList = exchangeList
+  }
+
   const queryString = new URLSearchParams(urlParams).toString()
-  const tradeURL = `${TRADES_BASE_URL}${queryString}`
-
-  const tradesResponseJSON = await window.fetch(tradeURL, { method: 'GET' })
-  const tradesResponse = await tradesResponseJSON.json()
-
-  const sourceTokenInfo = tokens.find(({ address }) => address === sourceToken)
-  const destinationTokenInfo = tokens.find(({ address }) => address === destinationToken)
-
+  const tradeURL = `${getBaseApi(isCustomNetwork, 'trade')}${queryString}`
+  const tradesResponse = await fetchWithCache(tradeURL, { method: 'GET' }, { cacheRefreshTime: 0, timeout: 15000 })
   const newQuotes = tradesResponse
     .filter((response) => validateData(QUOTE_VALIDATORS, response))
     .map((response) => ({
@@ -150,9 +161,8 @@ export async function quoteToTxParams (quote, gasPrice) {
   return { tradeTxParams, approveTxParams }
 }
 
-export async function fetchTokens () {
-  const response = await window.fetch(TOKENS_BASE_URL, { method: 'GET' })
-  const tokens = await response.json()
+export async function fetchTokens (isCustomNetwork) {
+  const tokens = await fetchWithCache(getBaseApi(isCustomNetwork, 'tokens'), { method: 'GET' }, { cacheRefreshTime: CACHE_REFRESH_ONE_HOUR })
   const filteredTokens = tokens.filter((token) => validateData(TOKEN_VALIDATORS, token))
   return filteredTokens
 }
