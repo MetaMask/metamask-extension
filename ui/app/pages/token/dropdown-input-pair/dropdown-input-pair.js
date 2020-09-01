@@ -34,6 +34,7 @@ export default function DropdownInputPair ({
   maxListItems,
   selectPlaceHolderText,
   loading,
+  hideItemIf,
 }) {
   const [isOpen, setIsOpen] = useState(false)
   const open = () => setIsOpen(true)
@@ -63,6 +64,7 @@ export default function DropdownInputPair ({
         selectPlaceHolderText={selectPlaceHolderText}
         selectorClosedClassName="dropdown-input-pair__selector--closed"
         loading={loading}
+        hideItemIf={hideItemIf}
         defaultToAll
       />
       {!isOpen && (
@@ -104,4 +106,5 @@ DropdownInputPair.propTypes = {
   maxListItems: PropTypes.number,
   selectPlaceHolderText: PropTypes.string,
   loading: PropTypes.bool,
+  hideItemIf: PropTypes.func,
 }

@@ -12,7 +12,9 @@ export default function ItemList ({
   maxListItems = 6,
   searchQuery = '',
   containerRef = null,
+  hideItemIf,
 }) {
+
   return results.length === 0
     ? <Placeholder searchQuery={searchQuery} />
     : (
@@ -26,6 +28,10 @@ export default function ItemList ({
           {
             results.slice(0, maxListItems)
               .map((result, i) => {
+                if (hideItemIf && hideItemIf(result)) {
+                  return null
+                }
+
                 const {
                   iconUrl,
                   identiconAddress,
@@ -93,4 +99,5 @@ ItemList.propTypes = {
   maxListItems: PropTypes.number,
   searchQuery: PropTypes.string,
   containerRef: PropTypes.shape({ current: PropTypes.instanceOf(window.Element) }),
+  hideItemIf: PropTypes.func,
 }
