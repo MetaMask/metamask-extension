@@ -3,6 +3,9 @@ import { constructTxParams } from '../../helpers/utils/util'
 import { decimalToHex } from '../../helpers/utils/conversions.util'
 import { estimateGasFromTxParams } from '../../store/actions'
 
+// A high default that should cover any ERC-20 approve implementation
+const APPROVE_TX_GAS_DEFAULT = '0x1d4c0'
+
 // A default value that should work for most metaswap trades, in case our api is missing this value
 const METASWAP_GAS_DEFAULT = 800000
 
@@ -64,7 +67,12 @@ export async function quoteToTxParams (quote, gasPrice) {
       from: approvalFrom,
       gasPrice,
     })
-    const approveGasEstimate = await estimateGasFromTxParams(approveTxParams)
+    let approveGasEstimate
+    try {
+      approveGasEstimate = await estimateGasFromTxParams(approveTxParams)
+    } catch (e) {
+      approveGasEstimate = APPROVE_TX_GAS_DEFAULT
+    }
 
     approveTxParams.gas = approveGasEstimate
   }
