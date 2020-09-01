@@ -22,6 +22,10 @@ const getBaseApi = function (isCustomNetwork, type) {
       return `https://metaswap-api.airswap-${environment}.codefi.network/trades?`
     case 'tokens':
       return `https://metaswap-api.airswap-${environment}.codefi.network/tokens`
+    case 'topAssets':
+      return `https://metaswap-api.airswap-${environment}.codefi.network/topAssets`
+    case 'aggregatorMetadata':
+      return `https://metaswap-api.airswap-${environment}.codefi.network/aggregatorMetadata`
     default:
       return ''
   }
@@ -89,6 +93,26 @@ const TOKEN_VALIDATORS = [
     property: 'decimals',
     type: 'number',
     validator: (number) => number >= 0 && number <= 36,
+  },
+]
+
+const TOP_ASSET_VALIDATORS = TOKEN_VALIDATORS.slice(0, 2)
+
+const AGGREGATOR_METADATA_VALIDATORS = [
+  {
+    property: 'color',
+    type: 'string',
+    validator: (string) => Boolean(string.match(/^#[A-Fa-f0-9]+$/u)),
+  },
+  {
+    property: 'title',
+    type: 'string',
+    validator: truthyString,
+  },
+  {
+    property: 'icon',
+    type: 'string',
+    validator: (string) => Boolean(string.match(/^data:image/u)),
   },
 ]
 
@@ -165,4 +189,21 @@ export async function fetchTokens (isCustomNetwork) {
   const tokens = await fetchWithCache(getBaseApi(isCustomNetwork, 'tokens'), { method: 'GET' }, { cacheRefreshTime: CACHE_REFRESH_ONE_HOUR })
   const filteredTokens = tokens.filter((token) => validateData(TOKEN_VALIDATORS, token))
   return filteredTokens
+}
+
+export async function fetchAggregatorMetadata (isCustomNetwork) {
+  const aggregators = await fetchWithCache(getBaseApi(isCustomNetwork, 'aggregatorMetadata'), { method: 'GET' }, { cacheRefreshTime: CACHE_REFRESH_ONE_HOUR })
+  const filteredAggregators = {}
+  for (const aggKey in aggregators) {
+    if (validateData(AGGREGATOR_METADATA_VALIDATORS, aggregators[aggKey])) {
+      filteredAggregators[aggKey] = aggregators[aggKey]
+    }
+  }
+  return filteredAggregators
+}
+
+export async function fetchTopAssets (isCustomNetwork) {
+  const response = await fetchWithCache(getBaseApi(isCustomNetwork, 'topAssets'), { method: 'GET' }, { cacheRefreshTime: CACHE_REFRESH_ONE_HOUR })
+  const filteredTopAssets = response.filter((asset) => validateData(TOP_ASSET_VALIDATORS, asset))
+  return filteredTopAssets
 }
