@@ -1,8 +1,28 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 import DropdownSearchList from '../dropdown-search-list'
 import TextField from '../../../components/ui/text-field'
 
+const characterWidthMap = {
+  '1': 5.86,
+  '2': 10.05,
+  '3': 10.45,
+  '4': 11.1,
+  '5': 10,
+  '6': 10.06,
+  '7': 9.17,
+  '8': 10.28,
+  '9': 10.06,
+  '0': 11.22,
+  '.': 4.55,
+}
+
+const getInputWidth = (value) => {
+  const valueString = String(value)
+  const charArray = valueString.split('')
+  return charArray.reduce((inputWidth, _char) => inputWidth + characterWidthMap[_char], 12)
+}
 export default function DropdownInputPair ({
   itemsToSearch = [],
   onInputChange = null,
@@ -18,10 +38,15 @@ export default function DropdownInputPair ({
   const [isOpen, setIsOpen] = useState(false)
   const open = () => setIsOpen(true)
   const close = () => setIsOpen(false)
+  const inputRef = useRef()
   const onTextFieldChange = (event) => {
     event.stopPropagation()
     onInputChange(event.target.value)
   }
+  const [applyTwoLineStyle, setApplyTwoLineStyle] = useState(null)
+  useEffect(() => {
+    setApplyTwoLineStyle((inputRef?.current?.getBoundingClientRect()?.width || 0) + getInputWidth(inputValue || '') > 137)
+  }, [inputValue, inputRef])
 
   return (
     <div className="dropdown-input-pair">
@@ -53,7 +78,16 @@ export default function DropdownInputPair ({
         />
       )}
       {
-        !isOpen && leftValue && <div className="dropdown-input-pair__left-value">≈ {leftValue}</div>
+        !isOpen && leftValue && (
+          <div
+            className={classnames('dropdown-input-pair__left-value', {
+              'dropdown-input-pair__left-value--two-lines': applyTwoLineStyle,
+            })}
+            ref={inputRef}
+          >
+            ≈ {leftValue}
+          </div>
+        )
       }
     </div>
   )
