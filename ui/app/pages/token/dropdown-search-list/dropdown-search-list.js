@@ -24,6 +24,7 @@ export default function DropdownSearchList ({
   loading,
   hideRightLabels,
   hideItemIf,
+  listContainerClassName,
 }) {
   const t = useContext(I18nContext)
   const [isOpen, setIsOpen] = useState(false)
@@ -111,6 +112,7 @@ export default function DropdownSearchList ({
             })}
             hideRightLabels={hideRightLabels}
             hideItemIf={hideItemIf}
+            listContainerClassName={listContainerClassName}
           />
           <div
             className="simple-dropdown__close-area"
@@ -146,4 +148,5 @@ DropdownSearchList.propTypes = {
   selectorClosedClassName: PropTypes.string,
   hideRightLabels: PropTypes.bool,
   hideItemIf: PropTypes.string,
+  listContainerClassName: PropTypes.string,
 }
