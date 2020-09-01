@@ -15,8 +15,10 @@ import {
   setShowRestorePromptToFalse,
   setConnectedStatusPopoverHasBeenShown,
   setDefaultHomeActiveTabName,
+  setSwapsWelcomeMessageHasBeenShown,
 } from '../../store/actions'
 import { setThreeBoxLastUpdated } from '../../ducks/app/app'
+import { getSwapsWelcomeMessageSeenStatus } from '../../ducks/swaps/swaps'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -64,6 +66,7 @@ const mapStateToProps = (state) => {
     totalUnapprovedCount,
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
+    swapsWelcomeMessageHasBeenShown: getSwapsWelcomeMessageSeenStatus(state),
   }
 }
 
@@ -84,6 +87,7 @@ const mapDispatchToProps = (dispatch) => ({
   setShowRestorePromptToFalse: () => dispatch(setShowRestorePromptToFalse()),
   setConnectedStatusPopoverHasBeenShown: () => dispatch(setConnectedStatusPopoverHasBeenShown()),
   onTabClick: (name) => dispatch(setDefaultHomeActiveTabName(name)),
+  setSwapsWelcomeMessageHasBeenShown: () => dispatch(setSwapsWelcomeMessageHasBeenShown()),
 })
 
 export default compose(

@@ -1530,6 +1530,24 @@
   "swapFinalizing": {
     "message": "Finalizing..."
   },
+  "swapIntroLearnMoreHeader": {
+    "message": "Want to learn more?"
+  },
+  "swapIntroLearnMoreLink": {
+    "message": "Learn more about MetaMask Swaps"
+  },
+  "swapIntroLiquiditySourcesLabel": {
+    "message": "Liquidity sources include:"
+  },
+  "swapIntroPopupSubTitle": {
+    "message": "MetaMask now aggregates multiple decentralized exchange aggregators and professional market makers to ensure you always get the best swap price with with the lowest network fees."
+  },
+  "swapIntroPopupTitle": {
+    "message": "Swap tokens in MetaMask! 🎉"
+  },
+  "swapLearnMoreContractsAuditReview": {
+    "message": "Review our official contracts audit"
+  },
   "swapMaxSlippage": {
     "message": "Max slippage"
   },
@@ -1580,6 +1598,9 @@
   },
   "swapSourceInfo": {
     "message": "We search multiple liquidity sources (exchanges, aggregators and professional market makers) to find the best rates and lowest network fees."
+  },
+  "swapStartSwapping": {
+    "message": "Start swapping"
   },
   "swapsBestQuote": {
     "message": "Best Quote"
