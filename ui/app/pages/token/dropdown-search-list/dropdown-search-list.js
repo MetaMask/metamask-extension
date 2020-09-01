@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useContext } from 'react'
+import React, { useState, useCallback, useEffect, useContext, useRef } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { isEqual } from 'lodash'
@@ -41,11 +41,19 @@ export default function DropdownSearchList ({
     }
   }, [isOpen, onOpen])
 
+  const prevExternallySelectedItemRef = useRef()
+  useEffect(() => {
+    prevExternallySelectedItemRef.current = externallySelectedItem
+  })
+  const prevExternallySelectedItem = prevExternallySelectedItemRef.current
+
   useEffect(() => {
     if (externallySelectedItem && !isEqual(externallySelectedItem, selectedItem)) {
       setSelectedItem(externallySelectedItem)
+    } else if (prevExternallySelectedItem && !externallySelectedItem) {
+      setSelectedItem(null)
     }
-  }, [externallySelectedItem, selectedItem])
+  }, [externallySelectedItem, selectedItem, prevExternallySelectedItem])
 
   return (
     <div
