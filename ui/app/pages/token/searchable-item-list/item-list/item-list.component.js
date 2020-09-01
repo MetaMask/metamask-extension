@@ -12,6 +12,7 @@ export default function ItemList ({
   maxListItems = 6,
   searchQuery = '',
   containerRef = null,
+  hideRightLabels,
   hideItemIf,
 }) {
 
@@ -67,7 +68,7 @@ export default function ItemList ({
                         {primaryLabel && <span className="searchable-item-list__primary-label">{ primaryLabel }</span>}
                         {secondaryLabel && <span className="searchable-item-list__secondary-label">{ secondaryLabel }</span>}
                       </div>
-                      {(rightPrimaryLabel || rightSecondaryLabel) && (
+                      {!hideRightLabels && (rightPrimaryLabel || rightSecondaryLabel) && (
                         <div className="searchable-item-list__right-labels">
                           {rightPrimaryLabel && <span className="searchable-item-list__right-primary-label">{ rightPrimaryLabel }</span>}
                           {rightSecondaryLabel && <span className="searchable-item-list__right-secondary-label">{ rightSecondaryLabel }</span>}
@@ -99,5 +100,6 @@ ItemList.propTypes = {
   maxListItems: PropTypes.number,
   searchQuery: PropTypes.string,
   containerRef: PropTypes.shape({ current: PropTypes.instanceOf(window.Element) }),
+  hideRightLabels: PropTypes.bool,
   hideItemIf: PropTypes.func,
 }

@@ -14,6 +14,7 @@ export default function SearchableItemList ({
   onClickItem,
   Placeholder,
   searchPlaceholderText,
+  hideRightLabels,
   hideItemIf,
 }) {
   const itemListRef = useRef()
@@ -42,6 +43,7 @@ export default function SearchableItemList ({
         listTitle={listTitle}
         maxListItems={maxListItems}
         containerRef={itemListRef}
+        hideRightLabels={hideRightLabels}
         hideItemIf={hideItemIf}
       />
     </div>
@@ -62,5 +64,6 @@ SearchableItemList.propTypes = {
   listTitle: PropTypes.string,
   defaultToAll: PropTypes.bool,
   maxListItems: PropTypes.number,
+  hideRightLabels: PropTypes.bool,
   hideItemIf: PropTypes.func,
 }
