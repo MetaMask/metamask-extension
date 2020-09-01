@@ -22,6 +22,7 @@ export default function DropdownSearchList ({
   externallySelectedItem,
   selectorClosedClassName,
   loading,
+  hideItemIf,
 }) {
   const t = useContext(I18nContext)
   const [isOpen, setIsOpen] = useState(false)
@@ -99,6 +100,7 @@ export default function DropdownSearchList ({
             className={classnames('dropdown-search-list__token-container', searchListClassName, {
               'dropdown-search-list--open': isOpen,
             })}
+            hideItemIf={hideItemIf}
           />
           <div
             className="simple-dropdown__close-area"
@@ -132,4 +134,5 @@ DropdownSearchList.propTypes = {
   loading: PropTypes.bool,
   selectPlaceHolderText: PropTypes.string,
   selectorClosedClassName: PropTypes.string,
+  hideItemIf: PropTypes.string,
 }
