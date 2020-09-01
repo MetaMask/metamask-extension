@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { action } from '@storybook/addon-actions'
-import { boolean, object } from '@storybook/addon-knobs/react'
+import { boolean } from '@storybook/addon-knobs/react'
 import classnames from 'classnames'
 import DropdownInputPair from '../dropdown-input-pair'
 import DropdownSearchList from '../dropdown-search-list'
@@ -34,9 +34,10 @@ export default {
 
 export const Default = () => {
   const [inputValue, onInputChange] = useState(null)
+  const [selectedFromToken, setSelectedFromToken] = useState(null)
   const formattedSwapFromFiatValue = `$${(Number(inputValue) * 4).toFixed(2)}`
   const loading = boolean('loading', false)
-
+  const selectedFromTokenIsNull = boolean('selectedFromTokenIsNull', false)
   return (
     <div style={{ height: '415px', width: '357px', border: '1px solid grey', paddingLeft: '24px', paddingRight: '24px', overflow: 'hidden' }}>
       <div className="build-quote">
@@ -49,14 +50,15 @@ export const Default = () => {
           </div>
         </div>
         <DropdownInputPair
-          onSelect={action('onFromSelect')}
           itemsToSearch={tokensToSearch}
           onInputChange={onInputChange}
           inputValue={inputValue}
           leftValue={formattedSwapFromFiatValue}
-          selectedItem={object('selectInputPairItem', null)}
+          onSelect={setSelectedFromToken}
+          selectedItem={selectedFromTokenIsNull ? null : selectedFromToken}
           maxListItems={30}
           loading={loading}
+          hideItemIf={(tokenListItem) => tokenListItem.decimals !== 18}
           selectPlaceHolderText="Select"
         />
         <div className="token__swap-arrows-row"><div className="token__swap-arrows" /></div>
@@ -65,7 +67,7 @@ export const Default = () => {
         </div>
         <DropdownSearchList
           itemsToSearch={tokensToSearch}
-          searchListClassName="build-quote__to-dropdown--max-height"
+          listContainerClassName="build-quote__to-dropdown--max-height"
           openSearchListClassName="token__search-token--open"
           searchPlaceholderText="Search for a token"
           fuseSearchKeys={[{ name: 'name', weight: 0.499 }, { name: 'symbol', weight: 0.499 }, { name: 'address', weight: 0.002 }]}
@@ -74,6 +76,7 @@ export const Default = () => {
           className={classnames('token__convert-to-list', { 'token__convert-to-list--loading': loading })}
           selectPlaceHolderText="Select a token"
           loading={loading}
+          hideRightLabels
           defaultToAll
         />
       </div>
