@@ -67,7 +67,7 @@ export default function DropdownSearchList ({
           className={classnames('dropdown-search-list__selector-closed-container', selectorClosedClassName)}
         >
           <div className={classnames('dropdown-search-list__selector-closed')}>
-            {selectedItem?.iconUrl && (<UrlIcon url={selectedItem.iconUrl} />)}
+            {selectedItem?.iconUrl && (<UrlIcon url={selectedItem.iconUrl} className="dropdown-search-list__selector-closed-icon" />)}
             {!selectedItem?.iconUrl && <div className="dropdown-search-list__default-dropdown-icon" />}
             <div className="dropdown-search-list__labels">
               <div className="dropdown-search-list__item-labels">

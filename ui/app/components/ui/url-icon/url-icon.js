@@ -7,10 +7,7 @@ export default function UrlIcon ({
   className,
 }) {
   return (
-    <div
-      className={classnames('url-icon', className)}
-      style={{ backgroundImage: `url(${url})` }}
-    />
+    <img className={classnames('url-icon', className)} src={url} />
   )
 }
 
