@@ -6,19 +6,19 @@ import UrlIcon from '../../../../components/ui/url-icon'
 
 export default function ItemList ({
   results = [],
-  onClickItem = null,
-  Placeholder = null,
-  listTitle = '',
+  onClickItem,
+  Placeholder,
+  listTitle,
   maxListItems = 6,
   searchQuery = '',
-  containerRef = null,
+  containerRef,
   hideRightLabels,
   hideItemIf,
   listContainerClassName,
 }) {
 
   return results.length === 0
-    ? <Placeholder searchQuery={searchQuery} />
+    ? Placeholder && <Placeholder searchQuery={searchQuery} />
     : (
       <div className="searchable-item-list">
         {listTitle && (
