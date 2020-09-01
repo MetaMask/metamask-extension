@@ -48,6 +48,13 @@
     display: flex;
     align-items: center;
     color: $Grey-500;
+
+    &--two-lines {
+      right: inherit;
+      left: 157px;
+      align-items: unset;
+      top: 38px;
+    }
   }
 
   &__selector--closed {
