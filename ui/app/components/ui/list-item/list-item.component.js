@@ -24,7 +24,7 @@ export default function ListItem ({
         </div>
       )}
       <div className="list-item__heading">
-        {React.isValidElement(title) ? title : <h2>{ title }</h2>}
+        {React.isValidElement(title) ? title : <h2 className="list-item__title">{ title }</h2>}
         {titleIcon && (
           <div className="list-item__heading-wrap">
             {titleIcon}
