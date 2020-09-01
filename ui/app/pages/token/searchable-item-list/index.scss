@@ -7,11 +7,33 @@
       border-bottom: 1px solid $Grey-100;
       border-radius: 0;
       height: 55px;
+      font-size: 12px;
 
       input {
-        @include H4;
+        @include H6;
 
-        color: $Black-100;
+        color: $Grey-500;
+        font-weight: bold;
+
+        &::-webkit-input-placeholder {
+          color: $Grey-500;
+          opacity: 1;
+        }
+
+        &:-moz-placeholder {
+          color: $Grey-500;
+          opacity: 1;
+        }
+
+        &::-moz-placeholder {
+          color: $Grey-500;
+          opacity: 1;
+        }
+
+        &::placeholder {
+          color: $Grey-500;
+          opacity: 1;
+        }
       }
     }
   }
@@ -29,11 +51,12 @@
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
-    padding: 16px 12px;
+    padding: 8px 12px;
     box-sizing: border-box;
     cursor: pointer;
     border-top: 1px solid $Grey-100;
     position: relative;
+    min-height: 50px;
 
     &:first-of-type {
       border-top: none;
@@ -57,15 +80,16 @@
     }
   }
 
-  &__identicon {
-    margin-right: 16px;
-  }
-
   &__primary-label {
     display: flex;
     flex-direction: row;
     align-items: center;
     min-width: 0;
+
+    @include H6;
+
+    line-height: 100%;
+    font-weight: bold;
   }
 
   &__item-name {
@@ -79,7 +103,7 @@
   &__labels {
     display: flex;
     justify-content: space-between;
-    width: 100%;
+    max-width: 237px;
     flex: 1;
   }
 
@@ -87,7 +111,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-left: 4px;
+    margin-left: 12px;
   }
 
   &__right-labels {
@@ -95,18 +119,15 @@
     flex-direction: column;
     justify-content: center;
     align-items: flex-end;
-  }
-
-  &__primary-label {
-    @include H5;
-
-    font-weight: bold;
+    max-width: 100%;
+    flex: 1 1 auto;
   }
 
   &__secondary-label,
   &__right-primary-label {
-    @include H6;
+    @include H7;
 
+    line-height: 100%;
     color: $Grey-500;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -114,8 +135,9 @@
   }
 
   &__right-secondary-label {
-    @include H6;
+    @include H7;
 
+    line-height: 100%;
     color: $Grey-500;
     opacity: 0.5;
     text-overflow: ellipsis;

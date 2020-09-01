@@ -56,9 +56,14 @@
     box-sizing: border-box;
     cursor: pointer;
     position: relative;
-    justify-content: center;
     align-items: center;
+    width: 100%;
     height: 60px;
+
+    .dropdown-search-list__item-labels {
+      width: 70%;
+    }
+  }
 
   &__selector-closed-icon {
     width: 34px;
@@ -69,7 +74,10 @@
     @include H4;
 
     color: $Black-100;
-    margin-left: 4px;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   &__search-list--open {
@@ -96,6 +104,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    margin-left: 6px;
   }
 
   &__select-default {
