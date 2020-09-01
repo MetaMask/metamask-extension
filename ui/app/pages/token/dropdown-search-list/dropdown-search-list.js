@@ -8,16 +8,16 @@ import PulseLoader from '../../../components/ui/pulse-loader'
 import UrlIcon from '../../../components/ui/url-icon'
 
 export default function DropdownSearchList ({
-  searchListClassName = '',
-  itemsToSearch = [],
+  searchListClassName,
+  itemsToSearch,
   selectPlaceHolderText,
-  fuseSearchKeys = [],
-  defaultToAll = false,
-  maxListItems = undefined,
-  onSelect = null,
-  startingItem = null,
-  onOpen = null,
-  onClose = null,
+  fuseSearchKeys,
+  defaultToAll,
+  maxListItems,
+  onSelect,
+  startingItem,
+  onOpen,
+  onClose,
   className = '',
   externallySelectedItem,
   selectorClosedClassName,
@@ -66,7 +66,7 @@ export default function DropdownSearchList ({
         <div
           className={classnames('dropdown-search-list__selector-closed-container', selectorClosedClassName)}
         >
-          <div className={classnames('dropdown-search-list__selector-closed')}>
+          <div className="dropdown-search-list__selector-closed">
             {selectedItem?.iconUrl && (<UrlIcon url={selectedItem.iconUrl} className="dropdown-search-list__selector-closed-icon" />)}
             {!selectedItem?.iconUrl && <div className="dropdown-search-list__default-dropdown-icon" />}
             <div className="dropdown-search-list__labels">

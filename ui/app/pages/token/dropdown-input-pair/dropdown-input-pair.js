@@ -25,11 +25,11 @@ const getInputWidth = (value) => {
 }
 export default function DropdownInputPair ({
   itemsToSearch = [],
-  onInputChange = null,
+  onInputChange,
   inputValue = null,
-  onSelect = null,
-  leftValue = '',
-  selectedItem = null,
+  onSelect,
+  leftValue,
+  selectedItem,
   SearchListPlaceholder,
   maxListItems,
   selectPlaceHolderText,
@@ -42,7 +42,7 @@ export default function DropdownInputPair ({
   const inputRef = useRef()
   const onTextFieldChange = (event) => {
     event.stopPropagation()
-    onInputChange(event.target.value)
+    onInputChange && onInputChange(event.target.value)
   }
   const [applyTwoLineStyle, setApplyTwoLineStyle] = useState(null)
   useEffect(() => {
@@ -76,7 +76,6 @@ export default function DropdownInputPair ({
           fullWidth
           margin="dense"
           value={ inputValue }
-          error=""
         />
       )}
       {
