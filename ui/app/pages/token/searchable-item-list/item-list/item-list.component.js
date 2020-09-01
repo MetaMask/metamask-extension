@@ -14,6 +14,7 @@ export default function ItemList ({
   containerRef = null,
   hideRightLabels,
   hideItemIf,
+  listContainerClassName,
 }) {
 
   return results.length === 0
@@ -25,7 +26,7 @@ export default function ItemList ({
             { listTitle }
           </div>
         )}
-        <div className="searchable-item-list__list-container" ref={containerRef}>
+        <div className={classnames('searchable-item-list__list-container', listContainerClassName)} ref={containerRef}>
           {
             results.slice(0, maxListItems)
               .map((result, i) => {
@@ -102,4 +103,5 @@ ItemList.propTypes = {
   containerRef: PropTypes.shape({ current: PropTypes.instanceOf(window.Element) }),
   hideRightLabels: PropTypes.bool,
   hideItemIf: PropTypes.func,
+  listContainerClassName: PropTypes.string,
 }

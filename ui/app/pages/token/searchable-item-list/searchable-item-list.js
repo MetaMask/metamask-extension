@@ -16,6 +16,7 @@ export default function SearchableItemList ({
   searchPlaceholderText,
   hideRightLabels,
   hideItemIf,
+  listContainerClassName,
 }) {
   const itemListRef = useRef()
 
@@ -45,6 +46,7 @@ export default function SearchableItemList ({
         containerRef={itemListRef}
         hideRightLabels={hideRightLabels}
         hideItemIf={hideItemIf}
+        listContainerClassName={listContainerClassName}
       />
     </div>
   )
@@ -66,4 +68,5 @@ SearchableItemList.propTypes = {
   maxListItems: PropTypes.number,
   hideRightLabels: PropTypes.bool,
   hideItemIf: PropTypes.func,
+  listContainerClassName: PropTypes.string,
 }
