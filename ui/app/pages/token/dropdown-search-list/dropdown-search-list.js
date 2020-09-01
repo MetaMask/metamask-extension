@@ -22,6 +22,7 @@ export default function DropdownSearchList ({
   externallySelectedItem,
   selectorClosedClassName,
   loading,
+  hideRightLabels,
   hideItemIf,
 }) {
   const t = useContext(I18nContext)
@@ -108,6 +109,7 @@ export default function DropdownSearchList ({
             className={classnames('dropdown-search-list__token-container', searchListClassName, {
               'dropdown-search-list--open': isOpen,
             })}
+            hideRightLabels={hideRightLabels}
             hideItemIf={hideItemIf}
           />
           <div
@@ -142,5 +144,6 @@ DropdownSearchList.propTypes = {
   loading: PropTypes.bool,
   selectPlaceHolderText: PropTypes.string,
   selectorClosedClassName: PropTypes.string,
+  hideRightLabels: PropTypes.bool,
   hideItemIf: PropTypes.string,
 }
