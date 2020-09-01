@@ -22,6 +22,7 @@ export default class AppStateController extends EventEmitter {
     this.store = new ObservableStore({
       timeoutMinutes: 0,
       connectedStatusPopoverHasBeenShown: true,
+      swapsWelcomeMessageHasBeenShown: false,
       defaultHomeActiveTabName: null, ...initState,
     })
     this.timer = null
@@ -107,6 +108,15 @@ export default class AppStateController extends EventEmitter {
   setConnectedStatusPopoverHasBeenShown () {
     this.store.updateState({
       connectedStatusPopoverHasBeenShown: true,
+    })
+  }
+
+  /**
+   * Record that the user has seen the swap screen welcome message
+   */
+  setSwapsWelcomeMessageHasBeenShown () {
+    this.store.updateState({
+      swapsWelcomeMessageHasBeenShown: true,
     })
   }
 

@@ -491,6 +491,7 @@ export default class MetamaskController extends EventEmitter {
       setLastActiveTime: nodeify(this.appStateController.setLastActiveTime, this.appStateController),
       setDefaultHomeActiveTabName: nodeify(this.appStateController.setDefaultHomeActiveTabName, this.appStateController),
       setConnectedStatusPopoverHasBeenShown: nodeify(this.appStateController.setConnectedStatusPopoverHasBeenShown, this.appStateController),
+      setSwapsWelcomeMessageHasBeenShown: nodeify(this.appStateController.setSwapsWelcomeMessageHasBeenShown, this.appStateController),
 
       // EnsController
       tryReverseResolveAddress: nodeify(this.ensController.reverseResolveAddress, this.ensController),

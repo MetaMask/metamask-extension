@@ -1,0 +1,51 @@
+.intro-popup {
+  &__liquidity-sources-label {
+    @include H7;
+
+    font-weight: bold;
+    margin-bottom: 2px;
+  }
+
+  &__learn-more-header {
+    @include H4;
+
+    font-weight: bold;
+    margin-bottom: 12px;
+    margin-top: 16px;
+  }
+
+  &__learn-more-link {
+    @include H6;
+
+    color: $Blue-500;
+    margin-bottom: 8px;
+  }
+
+  &__content {
+    margin-left: 24px;
+
+    > img {
+      width: 96%;
+      margin-left: -9px;
+    }
+  }
+
+  &__footer {
+    border-top: none;
+  }
+
+  &__button {
+    border-radius: 100px;
+    height: 44px;
+  }
+
+  &__source-logo-container {
+    width: 276px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 16px;
+    background: $Grey-000;
+    border-radius: 8px;
+  }
+}

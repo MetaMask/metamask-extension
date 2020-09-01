@@ -2204,6 +2204,16 @@ export function setConnectedStatusPopoverHasBeenShown () {
   }
 }
 
+export function setSwapsWelcomeMessageHasBeenShown () {
+  return () => {
+    background.setSwapsWelcomeMessageHasBeenShown((err) => {
+      if (err) {
+        throw new Error(err.message)
+      }
+    })
+  }
+}
+
 export function setAlertEnabledness (alertId, enabledness) {
   return async () => {
     await promisifiedBackground.setAlertEnabledness(alertId, enabledness)

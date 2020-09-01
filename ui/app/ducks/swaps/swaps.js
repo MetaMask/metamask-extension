@@ -41,3 +41,5 @@ export function clearSwapsState () {
 }
 
 export const getSwapsFromToken = (state) => state.swaps.fromToken
+
+export const getSwapsWelcomeMessageSeenStatus = (state) => state.metamask.swapsWelcomeMessageHasBeenShown
