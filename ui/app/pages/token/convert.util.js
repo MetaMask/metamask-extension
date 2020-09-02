@@ -75,7 +75,7 @@ const QUOTE_VALIDATORS = [
   {
     property: 'error',
     type: 'object',
-    validator: (error) => !error,
+    validator: (error) => error === null || typeof error === 'object',
   },
 ]
 
