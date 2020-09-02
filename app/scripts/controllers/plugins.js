@@ -579,11 +579,11 @@ class PluginsController extends EventEmitter {
 
     const apiList = approvedPermissions
       ? approvedPermissions.map(perm => {
-          const metamaskMethod = perm.match(/metamask_(.+)/)
-          return metamaskMethod
-            ? metamaskMethod[1]
-            : perm
-        })
+        const metamaskMethod = perm.match(/metamask_(.+)/)
+        return metamaskMethod
+          ? metamaskMethod[1]
+          : perm
+      })
       : []
 
     const onMetaMaskEvent = this._createMetaMaskEventListener(pluginName, apiList)
@@ -660,14 +660,44 @@ class PluginsController extends EventEmitter {
         WebSocket,
         Buffer,
         Date,
+        Int8Array,
+        Uint8Array,
+        Uint8ClampedArray,
+        Int16Array,
+        Uint16Array,
+        Int32Array,
+        Uint32Array,
+        Float32Array,
+        Float64Array,
+        BigInt64Array,
+        BigUint64Array,
+
+        // timers
+        clearTimeout,
+        setInterval,
+        clearInterval,
 
         window: {
           crypto,
           SubtleCrypto,
           setTimeout,
+          clearTimeout,
+          setInterval,
+          clearInterval,
           fetch,
           XMLHttpRequest,
           WebSocket,
+          Int8Array,
+          Uint8Array,
+          Uint8ClampedArray,
+          Int16Array,
+          Uint16Array,
+          Int32Array,
+          Uint32Array,
+          Float32Array,
+          Float64Array,
+          BigInt64Array,
+          BigUint64Array
         },
       })
       sessedPlugin()
