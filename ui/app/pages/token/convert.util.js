@@ -28,11 +28,11 @@ const getBaseApi = function (isCustomNetwork, type) {
     case 'aggregatorMetadata':
       return `https://metaswap-api.airswap-${environment}.codefi.network/aggregatorMetadata`
     default:
-      return ''
+      throw new Error('getBaseApi requires an api call type')
   }
 }
 
-const validHex = (string) => Boolean(string?.match(/^0x[A-Fa-f0-9]+$/u))
+const validHex = (string) => Boolean(string?.match(/^0x[a-f0-9]+$/u))
 const truthyString = (string) => Boolean(string?.length)
 const truthyDigitString = (string) => truthyString(string) && Boolean(string.match(/^\d+$/u))
 
@@ -183,7 +183,8 @@ export async function quoteToTxParams (quote, gasPrice) {
     let approveGasEstimate
     try {
       approveGasEstimate = await estimateGasFromTxParams(approveTxParams)
-    } catch (e) {
+    } catch (_error) {
+      log.warning('Gas estimation for approval transaction failed, using default value instead. Error:', _error)
       approveGasEstimate = APPROVE_TX_GAS_DEFAULT
     }
 
