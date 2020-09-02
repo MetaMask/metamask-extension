@@ -379,7 +379,7 @@ export function forgetDevice (deviceName) {
 export function connectHardware (deviceName, page, hdPath) {
   log.debug(`background.connectHardware`, deviceName, page, hdPath)
   return async (dispatch) => {
-    const capitalizedDeviceName = deviceName[0].toUpperCase() + deviceName.slice(1)
+    const capitalizedDeviceName = deviceName ? deviceName[0].toUpperCase() + deviceName.slice(1) : ''
     dispatch(showLoadingIndication(`Looking for your ${capitalizedDeviceName}...`))
 
     let accounts
