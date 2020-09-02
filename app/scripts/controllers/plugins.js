@@ -1,3 +1,5 @@
+/* global BigInt64Array, BigUint64Array */
+
 const ObservableStore = require('obs-store')
 const EventEmitter = require('safe-event-emitter')
 const extend = require('xtend')
@@ -645,14 +647,29 @@ class PluginsController extends EventEmitter {
     )
     Object.assign(ethereumProvider, apisToProvide)
 
+    // create safe timeouts, rounded to nears 100ms, min 100s
+    const rounding = 100
+    const safeSetTimeout = (fn, _delay = 0) => {
+      if (typeof fn !== 'function') {
+        throw new Error('setTimeout first argument must be a function')
+      }
+      const delay = Math.round(Math.max(100, _delay) / rounding) * rounding
+      return setTimeout(fn, delay)
+    }
+    const safeSetInterval = (fn, _delay = 0) => {
+      if (typeof fn !== 'function') {
+        throw new Error('setInterval first argument must be a function')
+      }
+      const delay = Math.round(Math.max(100, _delay) / rounding) * rounding
+      return setInterval(fn, delay)
+    }
+
     try {
-
-      const sessedPlugin = this.rootRealm.evaluate(sourceCode, {
-
+      const endowments = {
+        // snap-metamask bridge api
         wallet: ethereumProvider,
-        console, // Adding console for now for logging purposes.
-        BigInt,
-        setTimeout,
+        // various platform capabilities (danger)
+        console,
         crypto,
         SubtleCrypto,
         fetch,
@@ -660,6 +677,8 @@ class PluginsController extends EventEmitter {
         WebSocket,
         Buffer,
         Date,
+        // non-ses primordials
+        BigInt,
         Int8Array,
         Uint8Array,
         Uint8ClampedArray,
@@ -671,35 +690,17 @@ class PluginsController extends EventEmitter {
         Float64Array,
         BigInt64Array,
         BigUint64Array,
-
         // timers
+        setTimeout: safeSetTimeout,
         clearTimeout,
-        setInterval,
+        setInterval: safeSetInterval,
         clearInterval,
+      }
+      // add browser circular global refs
+      endowments.window = endowments
+      endowments.self = endowments
 
-        window: {
-          crypto,
-          SubtleCrypto,
-          setTimeout,
-          clearTimeout,
-          setInterval,
-          clearInterval,
-          fetch,
-          XMLHttpRequest,
-          WebSocket,
-          Int8Array,
-          Uint8Array,
-          Uint8ClampedArray,
-          Int16Array,
-          Uint16Array,
-          Int32Array,
-          Uint32Array,
-          Float32Array,
-          Float64Array,
-          BigInt64Array,
-          BigUint64Array
-        },
-      })
+      const sessedPlugin = this.rootRealm.evaluate(sourceCode, endowments)
       sessedPlugin()
     } catch (err) {
 
