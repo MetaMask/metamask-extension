@@ -34,9 +34,7 @@ module.exports = {
   ],
 
   globals: {
-    '$': 'readonly',
     document: 'readonly',
-    QUnit: 'readonly',
     window: 'readonly',
   },
 
