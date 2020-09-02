@@ -62,6 +62,21 @@ export default class NetworkController extends EventEmitter {
     this._blockTrackerProxy = null
   }
 
+  /**
+   * Sets the Infura project ID
+   *
+   * @param {string} projectId - The Infura project ID
+   * @throws {Error} if the project ID is not a valid string
+   * @return {void}
+   */
+  setInfuraProjectId (projectId) {
+    if (!projectId || typeof projectId !== 'string') {
+      throw new Error('Invalid Infura project ID')
+    }
+
+    this._infuraProjectId = projectId
+  }
+
   initializeProvider (providerParams) {
     this._baseProviderParams = providerParams
     const { type, rpcTarget, chainId, ticker, nickname } = this.providerStore.getState()
@@ -177,7 +192,7 @@ export default class NetworkController extends EventEmitter {
     // infura type-based endpoints
     const isInfura = INFURA_PROVIDER_TYPES.includes(type)
     if (isInfura) {
-      this._configureInfuraProvider(opts)
+      this._configureInfuraProvider(type, this._infuraProjectId)
     // other type-based rpc endpoints
     } else if (type === LOCALHOST) {
       this._configureLocalhostProvider()
@@ -189,10 +204,11 @@ export default class NetworkController extends EventEmitter {
     }
   }
 
-  _configureInfuraProvider ({ type }) {
+  _configureInfuraProvider (type, projectId) {
     log.info('NetworkController - configureInfuraProvider', type)
     const networkClient = createInfuraClient({
       network: type,
+      projectId,
     })
     this._setNetworkClient(networkClient)
     // setup networkConfig

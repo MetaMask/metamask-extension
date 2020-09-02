@@ -1,5 +1,4 @@
 import assert from 'assert'
-import nock from 'nock'
 import NetworkController from '../../../../../app/scripts/controllers/network'
 import { getNetworkDisplayName } from '../../../../../app/scripts/controllers/network/util'
 
@@ -12,16 +11,8 @@ describe('NetworkController', function () {
     }
 
     beforeEach(function () {
-      nock('https://rinkeby.infura.io')
-        .persist()
-        .post('/metamask')
-        .reply(200)
-
       networkController = new NetworkController()
-    })
-
-    afterEach(function () {
-      nock.cleanAll()
+      networkController.setInfuraProjectId('foo')
     })
 
     describe('#provider', function () {

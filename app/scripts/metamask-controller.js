@@ -97,6 +97,7 @@ export default class MetamaskController extends EventEmitter {
     // controller initialization order matters
 
     this.networkController = new NetworkController(initState.NetworkController)
+    this.networkController.setInfuraProjectId(opts.infuraProjectId)
 
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
