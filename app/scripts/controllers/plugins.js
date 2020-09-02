@@ -645,6 +645,19 @@ class PluginsController extends EventEmitter {
     )
     Object.assign(ethereumProvider, apisToProvide)
 
+    // create safe timeouts, rounded to nears 100ms, min 100s
+    const rounding = 100
+    const safeSetTimeout = (fn, _delay = 0) => {
+      if (typeof fn !== 'function') throw new Error('setTimeout first argument must be a function')
+      const delay = Math.round(Math.max(100, _delay) / rounding) * rounding
+      return setTimeout(fn, delay)
+    }
+    const safeSetInterval = (fn, _delay = 0) => {
+      if (typeof fn !== 'function') throw new Error('setInterval first argument must be a function')
+      const delay = Math.round(Math.max(100, _delay) / rounding) * rounding
+      return setInterval(fn, delay)
+    }
+
     try {
       const endowments = {
         // snap-metamask bridge api
@@ -672,9 +685,9 @@ class PluginsController extends EventEmitter {
         BigInt64Array,
         BigUint64Array,
         // timers
-        setTimeout,
+        setTimeout: safeSetTimeout,
         clearTimeout,
-        setInterval,
+        setInterval: safeSetInterval,
         clearInterval,
       }
       // add browser circular global refs
