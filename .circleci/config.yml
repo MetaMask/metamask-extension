@@ -9,7 +9,6 @@ workflows:
               only:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
       - prep-deps
-      - test-deps
       - prep-build:
           requires:
             - prep-deps
