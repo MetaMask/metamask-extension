@@ -476,12 +476,12 @@ describe('Actions', function () {
       const store = mockStore()
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', value: 'Looking for your Ledger...' },
         { type: 'DISPLAY_WARNING', value: 'error' },
       ]
 
       try {
-        await store.dispatch(actions.connectHardware())
+        await store.dispatch(actions.connectHardware('ledger'))
         assert.fail('Should have thrown error')
       } catch (_) {
         assert.deepEqual(store.getActions(), expectedActions)

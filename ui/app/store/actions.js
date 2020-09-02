@@ -2,6 +2,7 @@ import abi from 'human-standard-token-abi'
 import pify from 'pify'
 import ethUtil from 'ethereumjs-util'
 import log from 'loglevel'
+import { capitalize } from 'lodash'
 import getBuyEthUrl from '../../../app/scripts/lib/buy-eth-url'
 import { checksumAddress } from '../helpers/utils/util'
 import { calcTokenBalance, estimateGas } from '../pages/send/send.utils'
@@ -379,7 +380,7 @@ export function forgetDevice (deviceName) {
 export function connectHardware (deviceName, page, hdPath) {
   log.debug(`background.connectHardware`, deviceName, page, hdPath)
   return async (dispatch) => {
-    dispatch(showLoadingIndication())
+    dispatch(showLoadingIndication(`Looking for your ${capitalize(deviceName)}...`))
 
     let accounts
     try {

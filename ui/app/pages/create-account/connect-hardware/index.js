@@ -44,6 +44,7 @@ class ConnectHardwareForm extends Component {
   }
 
   connectToHardwareWallet = (device) => {
+    this.setState({ device })
     if (this.state.accounts.length) {
       return
     }
@@ -113,6 +114,8 @@ class ConnectHardwareForm extends Component {
         const errorMessage = e.message
         if (errorMessage === 'Window blocked') {
           this.setState({ browserSupported: false, error: null })
+        } else if (e.indexOf('U2F') > -1) {
+          this.setState({ error: 'U2F' })
         } else if (errorMessage !== 'Window closed' && errorMessage !== 'Popup closed') {
           this.setState({ error: errorMessage })
         }
@@ -171,12 +174,29 @@ class ConnectHardwareForm extends Component {
   }
 
   renderError () {
+    if (this.state.error === 'U2F') {
+      return (
+        <p
+          className="hw-connect__error"
+        >
+          {this.context.t('troubleConnectingToWallet', [this.state.device, (
+            // eslint-disable-next-line react/jsx-key
+            <a
+              href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hw-connect__link"
+              style={{ marginLeft: '5px', marginRight: '5px' }}
+            >
+              {this.context.t('walletConnectionGuide')}
+            </a>
+          )])}
+        </p>
+      )
+    }
     return this.state.error
       ? (
-        <span
-          className="error"
-          style={{ margin: '20px 20px 10px', display: 'block', textAlign: 'center' }}
-        >
+        <span className="hw-connect__error">
           {this.state.error}
         </span>
       )

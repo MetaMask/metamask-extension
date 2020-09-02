@@ -1764,5 +1764,12 @@
   "encryptionPublicKeyNotice": {
     "message": "$1 would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.",
     "description": "$1 is the web3 site name"
+  },
+  "troubleConnectingToWallet": {
+    "message": "We had trouble connecting to your $1, try reviewing $2 and try again.",
+    "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
+  },
+  "walletConnectionGuide": {
+    "message": "our hardware wallet connection guide"
   }
 }

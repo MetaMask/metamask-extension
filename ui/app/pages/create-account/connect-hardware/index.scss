@@ -128,6 +128,13 @@
     margin-bottom: 15px;
   }
 
+  &__error {
+    color: #f7861c;
+    margin: 20px 20px 10px;
+    display: block;
+    text-align: center;
+  }
+
   &__link {
     color: #2f9ae0;
   }
