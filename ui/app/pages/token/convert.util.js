@@ -1,3 +1,4 @@
+import log from 'loglevel'
 import { isValidAddress } from 'ethereumjs-util'
 import { calcTokenValue } from '../../helpers/utils/token-util'
 import { constructTxParams } from '../../helpers/utils/util'
@@ -116,8 +117,14 @@ const AGGREGATOR_METADATA_VALIDATORS = [
   },
 ]
 
-function validateData (validators, object) {
-  return validators.every(({ property, type, validator }) => typeof object[property] === type && validator(object[property]))
+function validateData (validators, object, urlUsed) {
+  return validators.every(({ property, type, validator }) => {
+    const valid = typeof object[property] === type && validator(object[property])
+    if (!valid) {
+      log.error(`response to GET ${urlUsed} invalid for property ${property}; value was:`, object[property])
+    }
+    return valid
+  })
 }
 
 export async function fetchTradesInfo ({ sourceTokenInfo, destinationTokenInfo, slippage, sourceToken, sourceDecimals, destinationToken, value, fromAddress, exchangeList, isCustomNetwork }) {
@@ -138,7 +145,7 @@ export async function fetchTradesInfo ({ sourceTokenInfo, destinationTokenInfo, 
   const tradeURL = `${getBaseApi(isCustomNetwork, 'trade')}${queryString}`
   const tradesResponse = await fetchWithCache(tradeURL, { method: 'GET' }, { cacheRefreshTime: 0, timeout: 15000 })
   const newQuotes = tradesResponse
-    .filter((response) => validateData(QUOTE_VALIDATORS, response))
+    .filter((response) => validateData(QUOTE_VALIDATORS, response, tradeURL))
     .map((response) => ({
       ...response,
       slippage,
@@ -186,16 +193,18 @@ export async function quoteToTxParams (quote, gasPrice) {
 }
 
 export async function fetchTokens (isCustomNetwork) {
-  const tokens = await fetchWithCache(getBaseApi(isCustomNetwork, 'tokens'), { method: 'GET' }, { cacheRefreshTime: CACHE_REFRESH_ONE_HOUR })
-  const filteredTokens = tokens.filter((token) => validateData(TOKEN_VALIDATORS, token))
+  const tokenUrl = getBaseApi(isCustomNetwork, 'tokens')
+  const tokens = await fetchWithCache(tokenUrl, { method: 'GET' }, { cacheRefreshTime: CACHE_REFRESH_ONE_HOUR })
+  const filteredTokens = tokens.filter((token) => validateData(TOKEN_VALIDATORS, token, tokenUrl))
   return filteredTokens
 }
 
 export async function fetchAggregatorMetadata (isCustomNetwork) {
-  const aggregators = await fetchWithCache(getBaseApi(isCustomNetwork, 'aggregatorMetadata'), { method: 'GET' }, { cacheRefreshTime: CACHE_REFRESH_ONE_HOUR })
+  const aggregatorMetadataUrl = getBaseApi(isCustomNetwork, 'aggregatorMetadata')
+  const aggregators = await fetchWithCache(aggregatorMetadataUrl, { method: 'GET' }, { cacheRefreshTime: CACHE_REFRESH_ONE_HOUR })
   const filteredAggregators = {}
   for (const aggKey in aggregators) {
-    if (validateData(AGGREGATOR_METADATA_VALIDATORS, aggregators[aggKey])) {
+    if (validateData(AGGREGATOR_METADATA_VALIDATORS, aggregators[aggKey], aggregatorMetadataUrl)) {
       filteredAggregators[aggKey] = aggregators[aggKey]
     }
   }
@@ -203,7 +212,8 @@ export async function fetchAggregatorMetadata (isCustomNetwork) {
 }
 
 export async function fetchTopAssets (isCustomNetwork) {
-  const response = await fetchWithCache(getBaseApi(isCustomNetwork, 'topAssets'), { method: 'GET' }, { cacheRefreshTime: CACHE_REFRESH_ONE_HOUR })
-  const filteredTopAssets = response.filter((asset) => validateData(TOP_ASSET_VALIDATORS, asset))
+  const topAssetsUrl = getBaseApi(isCustomNetwork, 'topAssets')
+  const response = await fetchWithCache(topAssetsUrl, { method: 'GET' }, { cacheRefreshTime: CACHE_REFRESH_ONE_HOUR })
+  const filteredTopAssets = response.filter((asset) => validateData(TOP_ASSET_VALIDATORS, asset, topAssetsUrl))
   return filteredTopAssets
 }
