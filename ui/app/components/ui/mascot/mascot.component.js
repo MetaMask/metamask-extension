@@ -30,7 +30,7 @@ export default class Mascot extends Component {
     height: '200',
     followMouse: true,
     lookAtTarget: {},
-    lookAtDirection: '',
+    lookAtDirection: null,
   }
 
   constructor (props) {
@@ -81,7 +81,7 @@ export default class Mascot extends Component {
   }
 
   componentDidUpdate (prevProps) {
-    const { lookAtTarget: prevTarget = {}, lookAtDirection: prevDirection = '', followMouse: prevFollowMouse } = prevProps
+    const { lookAtTarget: prevTarget = {}, lookAtDirection: prevDirection = null, followMouse: prevFollowMouse } = prevProps
     const { lookAtTarget = {}, followMouse, lookAtDirection } = this.props
 
     if (lookAtDirection && prevDirection !== lookAtDirection) {
