@@ -193,6 +193,8 @@ describe('MetaMask', function () {
       await restoreSeedLink.click()
       await driver.delay(regularDelayMs)
 
+      await driver.clickElement(By.css('.import-account__checkbox-container'))
+
       const seedTextArea = await driver.findElement(By.css('textarea'))
       await seedTextArea.sendKeys(testSeedPhrase)
       await driver.delay(regularDelayMs)
