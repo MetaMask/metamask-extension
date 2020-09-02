@@ -179,17 +179,18 @@ class ConnectHardwareForm extends Component {
         <p
           className="hw-connect__error"
         >
-          {this.context.t('troubleConnectingToWallet', [this.state.device])}
-          <a
-            href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hw-connect__link"
-            style={{ marginLeft: '5px', marginRight: '5px' }}
-          >
-            {this.context.t('walletConnectionGuide')}
-          </a>
-          {this.context.t('andTryAgain')}
+          {this.context.t('troubleConnectingToWallet', [this.state.device, (
+            // eslint-disable-next-line react/jsx-key
+            <a
+              href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hw-connect__link"
+              style={{ marginLeft: '5px', marginRight: '5px' }}
+            >
+              {this.context.t('walletConnectionGuide')}
+            </a>
+          )])}
         </p>
       )
     }
