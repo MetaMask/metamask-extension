@@ -2129,6 +2129,14 @@
     pump "^3.0.0"
     safe-event-emitter "^1.0.1"
 
+"@metamask/jazzicon@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/jazzicon/-/jazzicon-2.0.0.tgz#5615528e91c0fc5c9d79202d1f0954a7922525a0"
+  integrity sha512-7M+WSZWKcQAo0LEhErKf1z+D3YX0tEDAcGvcKbDyvDg34uvgeKR00mFNIYwAhdAS9t8YXxhxZgsrRBBg6X8UQg==
+  dependencies:
+    color "^0.11.3"
+    mersenne-twister "^1.1.0"
+
 "@metamask/logo@^2.5.0":
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/@metamask/logo/-/logo-2.5.0.tgz#4d35bf9e427db66c0030d81b8faa0f5162d17f7a"
@@ -15874,14 +15882,6 @@ jake@^10.6.1:
     chalk "^2.4.2"
     filelist "^1.0.1"
     minimatch "^3.0.4"
-
-jazzicon@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/jazzicon/-/jazzicon-2.0.0.tgz#a45f10f330ad529d054264759a9e4817292bb440"
-  integrity sha1-pF8Q8zCtUp0FQmR1mp5IFykrtEA=
-  dependencies:
-    color "^0.11.3"
-    mersenne-twister "^1.1.0"
 
 jed@1.1.1:
   version "1.1.1"
