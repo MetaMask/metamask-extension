@@ -15,7 +15,7 @@ import { isEqual } from 'lodash'
  * @returns {T}
  */
 export function useEqualityCheck (value, equalityFn = isEqual) {
-  const [computedValue, setComputedValue] = useState(() => value)
+  const [computedValue, setComputedValue] = useState(value)
 
   useLayoutEffect(() => {
     if (!equalityFn(value, computedValue)) {
