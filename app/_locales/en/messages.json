@@ -1592,6 +1592,9 @@
   "swapMetaMaskFeeInfo": {
     "message": "This fee helps us make MetaMask even better. The 'amount received' number includes this fee."
   },
+  "swapMinimumAmountReceivingInfoTooltip": {
+    "message": "This is the minimum amount you will receive. You may receive more depending on slippage."
+  },
   "swapNetworkFees": {
     "message": "Network fees"
   },
