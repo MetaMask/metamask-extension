@@ -18,7 +18,7 @@ export default function AwaitingSwap ({
   networkId,
   tokensReceived,
   submittedTime,
-  transactionTimeRemaining,
+  estimatedTransactionWaitTime,
   rpcPrefs,
 }) {
   const t = useContext(I18nContext)
@@ -66,8 +66,8 @@ export default function AwaitingSwap ({
         <div className="awaiting-swap__time-estimate">
           {t('swapEstimatedTimeFull', [
             <span className="bold" key="swapEstimatedTime-1">{t('swapEstimatedTime')}</span>,
-            transactionTimeRemaining || transactionTimeRemaining === 0
-              ? <CountdownTimer timeStarted={submittedTime} timerBase={transactionTimeRemaining} timeOnly />
+            estimatedTransactionWaitTime || estimatedTransactionWaitTime === 0
+              ? <CountdownTimer timeStarted={submittedTime} timerBase={estimatedTransactionWaitTime} timeOnly />
               : t('swapEstimatedTimeCalculating'),
           ])}
         </div>
@@ -89,10 +89,10 @@ AwaitingSwap.propTypes = {
   swapComplete: PropTypes.bool,
   swapError: PropTypes.bool,
   symbol: PropTypes.string.isRequired,
-  networkId: PropTypes.string,
-  txHash: PropTypes.string,
+  networkId: PropTypes.string.isRequired,
+  txHash: PropTypes.string.isRequired,
   submittedTime: PropTypes.number,
-  transactionTimeRemaining: PropTypes.number,
+  estimatedTransactionWaitTime: PropTypes.number,
   tokensReceived: PropTypes.string,
-  rpcPrefs: PropTypes.object,
+  rpcPrefs: PropTypes.object.isRequired,
 }
