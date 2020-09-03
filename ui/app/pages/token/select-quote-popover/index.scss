@@ -145,6 +145,12 @@
     }
   }
 
+  &__receiving-value-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   &__zero-slippage {
     font-size: 12px;
     line-height: 100%;

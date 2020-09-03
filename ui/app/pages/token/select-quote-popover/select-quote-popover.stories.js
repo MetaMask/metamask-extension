@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { action } from '@storybook/addon-actions'
-import { object, boolean } from '@storybook/addon-knobs/react'
+import { object } from '@storybook/addon-knobs/react'
+import Button from '../../../components/ui/button'
 import mockQuoteData from './mock-quote-data'
 import SelectQuotePopover from '.'
 
@@ -9,16 +10,20 @@ export default {
 }
 
 export const Default = () => {
+  const [showPopover, setShowPopover] = useState(false)
+
   return (
     <div>
-      {(boolean('shown select quote popover', false) && (
+      <Button onClick={() => setShowPopover(true)}>Open Popover</Button>
+      {showPopover && (
         <SelectQuotePopover
           quoteDataRows={object('quoteDataRows', mockQuoteData)}
-          onClose={action('close SelectQuotePopover')}
+          onClose={() => setShowPopover(false)}
           onSubmit={action('submit SelectQuotePopover')}
           convertToSymbol="DAI"
+          initialAggId="Agg4"
         />
-      ))}
+      )}
     </div>
   )
 }

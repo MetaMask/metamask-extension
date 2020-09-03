@@ -116,7 +116,7 @@ export default function SortList ({
               >
                 <div className="select-quote-popover__receiving-value">
                   {isBestQuote && <SunCheckIcon />}
-                  {destinationTokenValue}
+                  <div className="select-quote-popover__receiving-value-text">{destinationTokenValue}</div>
                 </div>
                 { quoteSource === 'RFQ' && <span className="select-quote-popover__zero-slippage">{t('swapZeroSlippage')}</span> }
               </div>
