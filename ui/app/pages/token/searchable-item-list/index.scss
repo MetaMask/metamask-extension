@@ -105,6 +105,11 @@
     justify-content: space-between;
     max-width: 237px;
     flex: 1;
+
+    -moz-animation: fadein 1s;
+    -webkit-animation: fadein 1s;
+    -o-animation: fadein 1s;
+    animation: fadein 1s;
   }
 
   &__item-labels {

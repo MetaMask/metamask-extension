@@ -4,7 +4,7 @@ import ItemList from './item-list'
 import ListItemSearch from './list-item-search'
 
 export default function SearchableItemList ({
-  className = '',
+  className,
   defaultToAll,
   fuseSearchKeys,
   itemSelectorError,
