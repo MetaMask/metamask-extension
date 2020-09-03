@@ -66,12 +66,12 @@ const SelectQuotePopover = ({
     <div className="select-quote-popover">
       <Popover
         title={contentView === 'quoteDetails' ? t('swapSelectAQuote') : t('swapQuoteDetails')}
-        subtitle={contentView === 'sortList' && t('swapSelectQuotePopoverDescription')}
+        subtitle={contentView === 'sortList' ? t('swapSelectQuotePopoverDescription') : null}
         onClose={onClose}
         CustomBackground={CustomBackground}
         className="select-quote-popover__popover-wrap"
         footerClassName="token__footer"
-        footer={contentView !== 'quoteDetails' && footer}
+        footer={contentView !== 'quoteDetails' ? footer : null}
         onBack={contentView === 'quoteDetails' ? closeQuoteDetails : null}
       >
         {contentView === 'sortList' && (
