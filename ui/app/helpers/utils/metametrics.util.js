@@ -4,6 +4,8 @@ import ethUtil from 'ethereumjs-util'
 
 const inDevelopment = process.env.METAMASK_DEBUG || process.env.IN_TEST
 
+export const segmentWriteKey = inDevelopment ? 1 : process.env.SEGMENT_WRITE_KEY ?? 2
+
 let projectId = process.env.METAMETRICS_PROJECT_ID
 if (!projectId) {
   projectId = inDevelopment ? 1 : 2

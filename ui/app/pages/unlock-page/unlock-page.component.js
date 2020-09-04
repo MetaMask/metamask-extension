@@ -10,6 +10,7 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 export default class UnlockPage extends Component {
   static contextTypes = {
     metricsEvent: PropTypes.func,
+    mixPanelTrack: PropTypes.func,
     t: PropTypes.func,
   }
 
@@ -65,6 +66,7 @@ export default class UnlockPage extends Component {
         },
         isNewVisit: true,
       })
+      this.context.mixPanelTrack('Unlocked MetaMask')
 
       if (newState.participateInMetaMetrics === null || newState.participateInMetaMetrics === undefined) {
         showOptInModal()

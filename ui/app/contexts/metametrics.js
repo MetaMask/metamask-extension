@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import { useHistory } from 'react-router-dom'
 import { captureException } from '@sentry/browser'
+import Analytics from 'analytics-node'
 
 import {
   getCurrentNetworkId,
@@ -18,13 +19,70 @@ import { getEnvironmentType } from '../../../app/scripts/lib/util'
 import {
   sendMetaMetricsEvent,
   sendCountIsTrackable,
+  segmentWriteKey,
 } from '../helpers/utils/metametrics.util'
+
+const analytics = new Analytics(segmentWriteKey)
 
 export const MetaMetricsContext = createContext(() => {
   captureException(
     Error(`MetaMetrics context function was called from a react node that is not a descendant of a MetaMetrics context provider`),
   )
 })
+
+export const MixPanelContext = createContext(() => {
+  captureException(
+    Error(`MixPanel context function was called from a react node that is not a descendant of a MetaMetrics context provider`),
+  )
+})
+
+export function MixPanelProvider ({ children }) {
+  const metaMetricsId = useSelector((state) => state.metamask.metaMetricsId)
+
+  const mixPanelEvent = (eventName, properties) => {
+    if (metaMetricsId) {
+      analytics.track({
+        event: eventName,
+        properties,
+        userId: metaMetricsId,
+      })
+    }
+  }
+
+  return (
+    <MixPanelContext.Provider value={mixPanelEvent}>
+      {children}
+    </MixPanelContext.Provider>
+  )
+}
+
+MixPanelProvider.propTypes = { children: PropTypes.node }
+
+export class LegacyMixPanelProvider extends Component {
+  static propTypes = {
+    children: PropTypes.node,
+  }
+
+  static defaultProps = {
+    children: undefined,
+  }
+
+  static contextType = MixPanelContext
+
+  static childContextTypes = {
+    mixPanelEvent: PropTypes.func,
+  }
+
+  getChildContext () {
+    return {
+      mixPanelEvent: this.context,
+    }
+  }
+
+  render () {
+    return this.props.children
+  }
+}
 
 export function MetaMetricsProvider ({ children }) {
   const txData = useSelector(txDataSelector) || {}
