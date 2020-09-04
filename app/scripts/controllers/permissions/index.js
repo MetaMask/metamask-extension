@@ -37,6 +37,7 @@ class PermissionsController {
     pluginsController, assetsController, accountsController,
     setupProvider, pluginRestrictedMethods, getApi, metamaskEventMethods,
     notifyDomain, notifyAllDomains, addPrompt,
+    getPrimaryHdKeyring,
   } = {},
   restoredState = {}
   ) {
@@ -58,6 +59,7 @@ class PermissionsController {
     this.pluginRestrictedMethods = pluginRestrictedMethods
     this.getApi = getApi
     this.metamaskEventMethods = metamaskEventMethods
+    this.getPrimaryHdKeyring = getPrimaryHdKeyring
   }
 
   //=============================================================================

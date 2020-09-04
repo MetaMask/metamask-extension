@@ -1,5 +1,6 @@
 
 const { ethErrors } = require('eth-json-rpc-errors')
+const { deriveKeyFromPath } = require('@metamask/key-tree')
 
 // ATTN: this list determines which internal API methods a plugin can actually use
 const pluginRestrictedMethodDescriptions = {
@@ -124,6 +125,24 @@ function getExternalRestrictedMethods (permissionsController, addPrompt) {
         const result = await addPrompt(`MetaMask Notice: ${requestor}`, req.params[0])
         res.result = result || true // JsonRpcEngine throws if no result or error
         end()
+      },
+    },
+
+    'wallet_getBip44Entropy_*': {
+      description: 'Control private keys for coin_type "$1"',
+      method: async (req, res, _next, end, _) => {
+        try {
+          const bip44Code = req.method.substr('wallet_plugin_'.length)
+          // TODO: validate that the bip44code is in the known table
+          const primaryKeyring = permissionsController.getPrimaryHdKeyring()
+          const multipath = `bip39:${primaryKeyring.mnemonic}/bip32:44'/bip32:${bip44Code}'`
+          const keyMaterial = deriveKeyFromPath(null, multipath)
+          res.result = keyMaterial.toString('base64')
+          return end()
+        } catch (err) {
+          res.error = err
+          return end(err)
+        }
       },
     },
 

@@ -5,6 +5,7 @@ const EventEmitter = require('safe-event-emitter')
 const extend = require('xtend')
 const { ethErrors, serializeError } = require('eth-json-rpc-errors')
 
+
 const {
   pluginRestrictedMethodDescriptions,
 } = require('./permissions/restrictedMethods')

@@ -21,18 +21,20 @@ const mapStateToProps = (state) => {
   const requestedPermissionsKeys = Object.keys(requestedPermissions)
   const permissionsDescriptions = getPermissionsDescriptions(state)
   const requestedPermissionsDescriptions = requestedPermissionsKeys.reduce((acc, requestedPermissionKey) => {
-    const isWildCardPermission = requestedPermissionKey.match(/([A-z0-9]+_[A-z0-9]+_)([A-z0-9:/.]+)/)
+    const requestedPermissionKeyParts = requestedPermissionKey.split('_')
+    // TODO we should check if this matches a wildcare permission in a better way
+    const isWildCardPermission = requestedPermissionKeyParts.length === 3
 
     let permissionDescription
 
     if (permissionsDescriptions[requestedPermissionKey]) {
       permissionDescription = permissionsDescriptions[requestedPermissionKey]
     } else if (isWildCardPermission) {
-      const wildCardPermissionType = isWildCardPermission[1]
-      const wildCardPermissionName = isWildCardPermission[2]
-      const wildCardPermissionDescription = permissionsDescriptions[wildCardPermissionType + '*']
+      const wildCardPermissionParameter = requestedPermissionKeyParts[2]
+      const wildCardPermissionFixedSegement = requestedPermissionKeyParts.slice(0, 2).join('_')
+      const wildCardPermissionDescription = permissionsDescriptions[`${wildCardPermissionFixedSegement}_*`]
       permissionDescription = wildCardPermissionDescription
-        .replace('$1', wildCardPermissionName)
+        .replace('$1', wildCardPermissionParameter)
     }
 
     return {
