@@ -39,7 +39,7 @@
     flex-flow: column;
     align-items: center;
     width: 310px;
-    z-index: 1;
+    position: relative;
   }
 
   &__best-quote {
