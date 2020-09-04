@@ -91,6 +91,13 @@ export default function CountdownTimer ({
     }
   }, [timeStarted, timer, timerBase])
 
+  let time
+  if (timeOnly) {
+    time = <div className="countdown-timer__time">{timer}</div>
+  } else if (labelKey) {
+    time = t(labelKey, [<div key="countdown-time-1" className="countdown-timer__time">{timer}</div>])
+  }
+
   return (
     <div className="countdown-timer">
       <div
@@ -98,15 +105,18 @@ export default function CountdownTimer ({
           'countdown-timer__timer-container--warning': warningTime && timeBelowWarningTime(timer, warningTime),
         })}
       >
-        {!timeOnly && labelKey && t(labelKey, [<div key="countdown-time-1" className="countdown-timer__time">{timer}</div>])}
-        {timeOnly && <div className="countdown-timer__time">{timer}</div>}
+        {time}
       </div>
-      {!timeOnly && infoTooltipLabelKey && (
-        <InfoTooltip
-          position="bottom"
-          contentText={t(infoTooltipLabelKey)}
-        />
-      )}
+      {
+        !timeOnly && infoTooltipLabelKey
+          ? (
+            <InfoTooltip
+              position="bottom"
+              contentText={t(infoTooltipLabelKey)}
+            />
+          )
+          : null
+      }
     </div>
   )
 }
