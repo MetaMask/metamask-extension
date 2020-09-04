@@ -18,10 +18,6 @@
     box-shadow: 0 10px 39px rgba(3, 125, 214, 0.15);
     border-radius: 8px;
     background: #fafcff;
-
-    @media screen and (max-width: 576px) {
-      width: 311px;
-    }
   }
 
   &__quote-backdrop-with-top-tab {
