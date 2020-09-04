@@ -1,6 +1,7 @@
 import log from 'loglevel'
 import BigNumber from 'bignumber.js'
 import contractMap from 'eth-contract-metadata'
+import { TOKEN_TRANSFER_LOG_TOPIC_HASH } from '../constants/contracts'
 import * as util from './util'
 import { conversionUtil, multiplyCurrencies } from './conversion-util'
 import { formatCurrency } from './confirm-tx.util'
@@ -200,3 +201,30 @@ export function getFormattedTokenFiatAmount (
   })
   return `${formatCurrency(currentTokenInFiat, currentCurrency)} ${currentCurrency.toUpperCase()}`
 }
+
+/**
+ * Given a transaction receipt for a contract transaction that involves a token transfer to a given account,
+ * returns the amount of tokens transferred.
+ *
+ * @param {object} [txReceipt] - The transaction receipt object, as can be found in any standard MetaMask txMeta object
+ * @param {string} tokenAddres - The hex address of the token being transferred
+ * @param {string} receiverAddress - The address of the account being transferred to
+ * @param {number} [tokenDecimals] - The decimals of the token being transfered
+ * @returns {string|null} The amount of tokens transferred as a decimal number
+ */
+export function getTokensRecivedFromTxReceipt (txReceipt, tokenAddress, receiverAddress, tokenDecimals) {
+  const txReceiptLogs = txReceipt?.logs
+  if (txReceiptLogs && txReceipt?.status !== '0x0') {
+    const tokenTransferLog = txReceiptLogs.find((txReceiptLog) => {
+      const isTokenTransfer = txReceiptLog.topics && txReceiptLog.topics[0] === TOKEN_TRANSFER_LOG_TOPIC_HASH
+      const isTransferFromGivenToken = txReceiptLog.address === tokenAddress
+      const isTransferToReceiverAddress = txReceiptLog.topics && txReceiptLog.topics[2] && txReceiptLog.topics[2].match(receiverAddress.slice(2))
+      return isTokenTransfer && isTransferFromGivenToken && isTransferToReceiverAddress
+    })
+    return tokenTransferLog
+      ? calcTokenAmount(tokenTransferLog.data, tokenDecimals).toString(10)
+      : null
+  }
+  return null
+}
+
