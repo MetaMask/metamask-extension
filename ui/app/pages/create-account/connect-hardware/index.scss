@@ -196,6 +196,17 @@
     margin: 0 auto 20px;
     display: flex;
   }
+
+  &__custom-input {
+    height: 54px;
+    width: 335px;
+    border: 1px solid $geyser;
+    border-radius: 4px;
+    background-color: $white;
+    color: $scorpion;
+    font-size: 16px;
+    padding: 0 20px;
+  }
 }
 
 .hw-account-list {
