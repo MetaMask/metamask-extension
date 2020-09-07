@@ -19,7 +19,7 @@ export default class ConfirmTokenTransactionBase extends Component {
   static propTypes = {
     tokenAddress: PropTypes.string,
     toAddress: PropTypes.string,
-    tokenAmount: PropTypes.number,
+    tokenAmount: PropTypes.string,
     tokenSymbol: PropTypes.string,
     fiatTransactionTotal: PropTypes.string,
     ethTransactionTotal: PropTypes.string,
@@ -29,7 +29,7 @@ export default class ConfirmTokenTransactionBase extends Component {
   }
 
   static defaultProps = {
-    tokenAmount: 0,
+    tokenAmount: '0',
   }
 
   getFiatTransactionAmount () {
@@ -46,7 +46,7 @@ export default class ConfirmTokenTransactionBase extends Component {
   renderSubtitleComponent () {
     const { contractExchangeRate, tokenAmount } = this.props
 
-    const decimalEthValue = (tokenAmount * contractExchangeRate) || 0
+    const decimalEthValue = (tokenAmount * contractExchangeRate) || '0'
     const hexWeiValue = getWeiHexFromDecimalValue({
       value: decimalEthValue,
       fromCurrency: ETH,

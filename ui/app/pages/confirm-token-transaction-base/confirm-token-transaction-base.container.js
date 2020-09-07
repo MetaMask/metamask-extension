@@ -44,7 +44,7 @@ const mapStateToProps = (state, ownProps) => {
   const tokenData = getTokenData(data)
   const tokenValue = getTokenValueParam(tokenData)
   const toAddress = getTokenAddressParam(tokenData)
-  const tokenAmount = tokenData && calcTokenAmount(tokenValue, decimals).toNumber()
+  const tokenAmount = tokenData && calcTokenAmount(tokenValue, decimals).toString()
   const contractExchangeRate = contractExchangeRateSelector(state)
 
   return {
