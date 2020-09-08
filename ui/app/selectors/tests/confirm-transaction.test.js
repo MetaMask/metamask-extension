@@ -51,7 +51,7 @@ describe('Confirm Transaction Selector', function () {
           name: 'transfer',
           args: getEthersArrayLikeFromObj({
             '_to': '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-            '_value': { toNumber: () => '1' },
+            '_value': { toString: () => '1' },
           }),
         },
         tokenProps: {
@@ -75,7 +75,7 @@ describe('Confirm Transaction Selector', function () {
           name: 'approve',
           args: getEthersArrayLikeFromObj({
             '_spender': '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-            '_value': { toNumber: () => '1' },
+            '_value': { toString: () => '1' },
           }),
         },
         tokenProps: {
@@ -99,7 +99,7 @@ describe('Confirm Transaction Selector', function () {
           name: 'transfer',
           args: getEthersArrayLikeFromObj({
             '_to': '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-            '_value': { toNumber: () => '1' },
+            '_value': { toString: () => '1' },
           }),
         },
         tokenProps: {
