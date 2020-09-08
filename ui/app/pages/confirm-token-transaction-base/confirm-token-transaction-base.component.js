@@ -27,14 +27,14 @@ const ConfirmTokenTransactionBase = ({
 
   const t = useContext(I18nContext)
   const hexWeiValue = useMemo(() => {
-    const decimalEthValue = tokenAmount !== '0' && contractExchangeRate
-      ? (
-        (new BigNumber(tokenAmount)).mul(new BigNumber(contractExchangeRate))
-      ).toFixed()
-      : '0'
+    if (tokenAmount === '0' || !contractExchangeRate) {
+      return '0'
+    }
 
     return getWeiHexFromDecimalValue({
-      value: decimalEthValue,
+      value: (
+        (new BigNumber(tokenAmount)).mul(new BigNumber(contractExchangeRate))
+      ).toFixed(),
       fromCurrency: ETH,
       fromDenomination: ETH,
     })

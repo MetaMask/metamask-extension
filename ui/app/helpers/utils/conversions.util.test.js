@@ -1,5 +1,17 @@
 import assert from 'assert'
+import { ETH } from '../constants/common'
 import * as utils from './conversions.util'
+
+describe('getWeiHexFromDecimalValue', function () {
+  it('should correctly convert 0 in ETH', function () {
+    const weiValue = utils.getWeiHexFromDecimalValue({
+      value: '0',
+      fromCurrency: ETH,
+      fromDenomination: ETH,
+    })
+    assert.equal(weiValue, '0')
+  })
+})
 
 describe('decETHToDecWEI', function () {
   it('should correctly convert 1 ETH to WEI', function () {
