@@ -1,8 +1,6 @@
 import assert from 'assert'
 import {
   unconfirmedTransactionsCountSelector,
-  tokenAmountAndToAddressSelector,
-  approveTokenAmountAndToAddressSelector,
   sendTokenTokenAmountAndToAddressSelector,
   contractExchangeRateSelector,
   conversionRateSelector,
@@ -43,54 +41,6 @@ describe('Confirm Transaction Selector', function () {
     })
   })
 
-  describe('tokenAmountAndToAddressSelector', function () {
-
-    const state = {
-      confirmTransaction: {
-        tokenData: {
-          name: 'transfer',
-          args: getEthersArrayLikeFromObj({
-            '_to': '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-            '_value': { toString: () => '1' },
-          }),
-        },
-        tokenProps: {
-          tokenDecimals: '2',
-          tokenSymbol: 'META',
-        },
-      },
-    }
-
-    it('returns calculated token amount based on token value and token decimals and recipient address', function () {
-      assert.deepEqual(tokenAmountAndToAddressSelector(state),
-        { toAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc', tokenAmount: 0.01 })
-    })
-  })
-
-  describe('approveTokenAmountAndToAddressSelector', function () {
-
-    const state = {
-      confirmTransaction: {
-        tokenData: {
-          name: 'approve',
-          args: getEthersArrayLikeFromObj({
-            '_spender': '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-            '_value': { toString: () => '1' },
-          }),
-        },
-        tokenProps: {
-          tokenDecimals: '2',
-          tokenSymbol: 'META',
-        },
-      },
-    }
-
-    it('returns token amount and recipient for approve token allocation spending', function () {
-      assert.deepEqual(approveTokenAmountAndToAddressSelector(state),
-        { toAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc', tokenAmount: 0.01 })
-    })
-  })
-
   describe('sendTokenTokenAmountAndToAddressSelector', function () {
 
     const state = {
@@ -111,7 +61,7 @@ describe('Confirm Transaction Selector', function () {
 
     it('returns token address and calculated token amount', function () {
       assert.deepEqual(sendTokenTokenAmountAndToAddressSelector(state),
-        { toAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc', tokenAmount: 0.01 })
+        { toAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc', tokenAmount: '0.01' })
     })
 
   })

@@ -122,9 +122,10 @@ export function hasUnconfirmedTransactions (state) {
 }
 
 export function roundExponential (value) {
+  const stringValue = String(value)
   const PRECISION = 4
-  const bigNumberValue = new BigNumber(String(value))
+  const bigNumberValue = new BigNumber(stringValue)
 
   // In JS, numbers with exponentials greater than 20 get displayed as an exponential.
-  return bigNumberValue.e > 20 ? Number(bigNumberValue.toPrecision(PRECISION)) : value
+  return bigNumberValue.e > 20 ? bigNumberValue.toPrecision(PRECISION) : stringValue
 }
