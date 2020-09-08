@@ -32,7 +32,10 @@ const CONNECTED_ROUTE = '/connected'
 const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts'
 const SWAPS_ROUTE = '/swaps'
 const BUILD_QUOTE_ROUTE = '/swaps/build-quote'
-const VIEW_QUOTE_ROUTE = './swaps/view-quote'
+const VIEW_QUOTE_ROUTE = '/swaps/view-quote'
+const LOADING_QUOTES_ROUTE = '/swaps/loading-quotes'
+const AWAITING_SWAP_ROUTE = '/swaps/awaiting-swap'
+const SWAPS_ERROR_ROUTE = '/swaps/swaps-error'
 
 const INITIALIZE_ROUTE = '/initialize'
 const INITIALIZE_WELCOME_ROUTE = '/initialize/welcome'
@@ -172,4 +175,7 @@ export {
   SWAPS_ROUTE,
   BUILD_QUOTE_ROUTE,
   VIEW_QUOTE_ROUTE,
+  LOADING_QUOTES_ROUTE,
+  AWAITING_SWAP_ROUTE,
+  SWAPS_ERROR_ROUTE,
 }

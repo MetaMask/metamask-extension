@@ -6,3 +6,5 @@ export const ETH_SWAPS_TOKEN_OBJECT = {
   decimals: 18,
   iconUrl: 'images/black-eth-logo.svg',
 }
+
+export const QUOTES_EXPIRED_ERROR = 'quotes-expired'
