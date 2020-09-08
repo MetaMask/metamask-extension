@@ -3,6 +3,8 @@
   flex-flow: column;
   justify-content: center;
   height: 100%;
+  padding-left: 32px;
+  padding-right: 32px;
 
   div {
     text-align: center;
@@ -39,6 +41,11 @@
     > span {
       display: flex;
     }
+  }
+
+  &__time-estimate-text {
+    margin-right: 2px;
+    font-weight: bold;
   }
 
   &__view-on-etherscan {

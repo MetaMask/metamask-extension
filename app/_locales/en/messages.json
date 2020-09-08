@@ -1572,6 +1572,18 @@
     "message": "$1 $2",
     "description": "This message shows bolded swapEstimatedTime message, which is substited for $1, followed by either the estimated remaining transaction time in mm:ss, or the swapEstimatedTimeCalculating message, which are substituted for $2."
   },
+  "swapFailedErrorDescription": {
+    "message": "Your funds are safe and still available in your wallet."
+  },
+  "swapFailedErrorTitle": {
+    "message": "Swap failed"
+  },
+  "swapFetchingQuotesErrorDescription": {
+    "message": "Hmmm... something went wrong. Try again, or if errors persist, contact customer support."
+  },
+  "swapFetchingQuotesErrorTitle": {
+    "message": "Error fetching quotes"
+  },
   "swapFetchingTokens": {
     "message": "Fetching tokens..."
   },
@@ -1641,6 +1653,18 @@
   },
   "swapQuoteSource": {
     "message": "Quote Source"
+  },
+  "swapQuotesExpiredErrorDescription": {
+    "message": "Please request new quotes to get the latest rates."
+  },
+  "swapQuotesExpiredErrorTitle": {
+    "message": "Quotes timeout"
+  },
+  "swapQuotesNotAvailableErrorDescription": {
+    "message": "Try adjusting the amount or slippage settings and try again."
+  },
+  "swapQuotesNotAvailableErrorTitle": {
+    "message": "No quotes available"
   },
   "swapRate": {
     "message": "Rate"

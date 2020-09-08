@@ -39,7 +39,6 @@ function getMascotTarget (aggregatorName, centerPoint) {
 export default function LoadingSwapsQuotes ({
   aggregatorMetadata,
   loadingComplete,
-  loadingError,
   onDone,
 }) {
   const t = useContext(I18nContext)
@@ -96,7 +95,7 @@ export default function LoadingSwapsQuotes ({
 
   return (
     <div className="loading-swaps-quotes">
-      {!(loadingError && doneCalled) && (
+      {!doneCalled && (
         <>
           <div className="loading-swaps-quotes__quote-counter">
             <span>{t('swapQuoteNofN', [quoteCount, numberOfQuotes])}</span>
@@ -113,11 +112,6 @@ export default function LoadingSwapsQuotes ({
             />
           </div>
         </>
-      )}
-      {loadingError && doneCalled && (
-        <div className="loading-swaps-quotes__error">
-          {t(loadingError)}
-        </div>
       )}
       <div className="loading-swaps-quotes__animation">
         <BackgroundAnimation />
@@ -151,7 +145,6 @@ export default function LoadingSwapsQuotes ({
 LoadingSwapsQuotes.propTypes = {
   loadingComplete: PropTypes.bool.isRequired,
   onDone: PropTypes.func.isRequired,
-  loadingError: PropTypes.bool,
   aggregatorMetadata: PropTypes.arrayOf(PropTypes.shape({
     color: PropTypes.string,
     icon: PropTypes.string,
