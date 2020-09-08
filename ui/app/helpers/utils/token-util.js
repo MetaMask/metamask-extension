@@ -218,7 +218,7 @@ export function getTokensRecivedFromTxReceipt (txReceipt, tokenAddress, receiver
     const tokenTransferLog = txReceiptLogs.find((txReceiptLog) => {
       const isTokenTransfer = txReceiptLog.topics && txReceiptLog.topics[0] === TOKEN_TRANSFER_LOG_TOPIC_HASH
       const isTransferFromGivenToken = txReceiptLog.address === tokenAddress
-      const isTransferToReceiverAddress = txReceiptLog.topics && txReceiptLog.topics[2] && txReceiptLog.topics[2].match(receiverAddress.slice(2))
+      const isTransferToReceiverAddress = txReceiptLog?.topics[2]?.match(receiverAddress.slice(2))
       return isTokenTransfer && isTransferFromGivenToken && isTransferToReceiverAddress
     })
     return tokenTransferLog
