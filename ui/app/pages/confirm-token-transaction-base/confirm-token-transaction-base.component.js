@@ -1,5 +1,7 @@
-import React, { Component } from 'react'
+import React, { useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
+import BigNumber from 'bignumber.js'
+import { I18nContext } from '../../contexts/i18n'
 import ConfirmTransactionBase from '../confirm-transaction-base'
 import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display'
 import {
@@ -11,30 +13,34 @@ import {
 import { getWeiHexFromDecimalValue } from '../../helpers/utils/conversions.util'
 import { ETH, PRIMARY } from '../../helpers/constants/common'
 
-export default class ConfirmTokenTransactionBase extends Component {
-  static contextTypes = {
-    t: PropTypes.func,
-  }
+const ConfirmTokenTransactionBase = ({
+  toAddress,
+  tokenAddress,
+  tokenAmount = '0',
+  tokenSymbol,
+  fiatTransactionTotal,
+  ethTransactionTotal,
+  contractExchangeRate,
+  conversionRate,
+  currentCurrency,
+}) => {
 
-  static propTypes = {
-    tokenAddress: PropTypes.string,
-    toAddress: PropTypes.string,
-    tokenAmount: PropTypes.string,
-    tokenSymbol: PropTypes.string,
-    fiatTransactionTotal: PropTypes.string,
-    ethTransactionTotal: PropTypes.string,
-    contractExchangeRate: PropTypes.number,
-    conversionRate: PropTypes.number,
-    currentCurrency: PropTypes.string,
-  }
+  const t = useContext(I18nContext)
+  const hexWeiValue = useMemo(() => {
+    const decimalEthValue = tokenAmount !== '0' && contractExchangeRate
+      ? (
+        (new BigNumber(tokenAmount)).mul(new BigNumber(contractExchangeRate))
+      ).toFixed()
+      : '0'
 
-  static defaultProps = {
-    tokenAmount: '0',
-  }
+    return getWeiHexFromDecimalValue({
+      value: decimalEthValue,
+      fromCurrency: ETH,
+      fromDenomination: ETH,
+    })
+  }, [tokenAmount, contractExchangeRate])
 
-  getFiatTransactionAmount () {
-    const { tokenAmount, currentCurrency, conversionRate, contractExchangeRate } = this.props
-
+  const getFiatTransactionAmount = () => {
     return convertTokenToFiat({
       value: tokenAmount,
       toCurrency: currentCurrency,
@@ -43,20 +49,11 @@ export default class ConfirmTokenTransactionBase extends Component {
     })
   }
 
-  renderSubtitleComponent () {
-    const { contractExchangeRate, tokenAmount } = this.props
-
-    const decimalEthValue = (tokenAmount * contractExchangeRate) || '0'
-    const hexWeiValue = getWeiHexFromDecimalValue({
-      value: decimalEthValue,
-      fromCurrency: ETH,
-      fromDenomination: ETH,
-    })
-
+  const renderSubtitleComponent = () => {
     return typeof contractExchangeRate === 'undefined'
       ? (
         <span>
-          { this.context.t('noConversionRateAvailable') }
+          { t('noConversionRateAvailable') }
         </span>
       ) : (
         <UserPreferencedCurrencyDisplay
@@ -68,8 +65,7 @@ export default class ConfirmTokenTransactionBase extends Component {
       )
   }
 
-  renderPrimaryTotalTextOverride () {
-    const { tokenAmount, tokenSymbol, ethTransactionTotal } = this.props
+  const renderPrimaryTotalTextOverride = () => {
     const tokensText = `${tokenAmount} ${tokenSymbol}`
 
     return (
@@ -84,39 +80,41 @@ export default class ConfirmTokenTransactionBase extends Component {
     )
   }
 
-  getSecondaryTotalTextOverride () {
-    const { fiatTransactionTotal, currentCurrency, contractExchangeRate } = this.props
-
+  const getSecondaryTotalTextOverride = () => {
     if (typeof contractExchangeRate === 'undefined') {
       return formatCurrency(fiatTransactionTotal, currentCurrency)
     }
-    const fiatTransactionAmount = this.getFiatTransactionAmount()
+
+    const fiatTransactionAmount = getFiatTransactionAmount()
     const fiatTotal = addFiat(fiatTransactionAmount, fiatTransactionTotal)
     const roundedFiatTotal = roundExponential(fiatTotal)
     return formatCurrency(roundedFiatTotal, currentCurrency)
   }
 
-  render () {
-    const {
-      toAddress,
-      tokenAddress,
-      tokenSymbol,
-      tokenAmount,
-      ...restProps
-    } = this.props
+  const tokensText = `${tokenAmount} ${tokenSymbol}`
 
-    const tokensText = `${tokenAmount} ${tokenSymbol}`
-
-    return (
-      <ConfirmTransactionBase
-        toAddress={toAddress}
-        identiconAddress={tokenAddress}
-        title={tokensText}
-        subtitleComponent={this.renderSubtitleComponent()}
-        primaryTotalTextOverride={this.renderPrimaryTotalTextOverride()}
-        secondaryTotalTextOverride={this.getSecondaryTotalTextOverride()}
-        {...restProps}
-      />
-    )
-  }
+  return (
+    <ConfirmTransactionBase
+      toAddress={toAddress}
+      identiconAddress={tokenAddress}
+      title={tokensText}
+      subtitleComponent={renderSubtitleComponent()}
+      primaryTotalTextOverride={renderPrimaryTotalTextOverride()}
+      secondaryTotalTextOverride={getSecondaryTotalTextOverride()}
+    />
+  )
 }
+
+ConfirmTokenTransactionBase.propTypes = {
+  tokenAddress: PropTypes.string,
+  toAddress: PropTypes.string,
+  tokenAmount: PropTypes.string,
+  tokenSymbol: PropTypes.string,
+  fiatTransactionTotal: PropTypes.string,
+  ethTransactionTotal: PropTypes.string,
+  contractExchangeRate: PropTypes.number,
+  conversionRate: PropTypes.number,
+  currentCurrency: PropTypes.string,
+}
+
+export default ConfirmTokenTransactionBase
