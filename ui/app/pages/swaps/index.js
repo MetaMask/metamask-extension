@@ -19,8 +19,8 @@ export default function Swap () {
   }, [dispatch])
 
   return (
-    <div className="token">
-      <div className="token__content">
+    <div className="swaps">
+      <div className="swaps__content">
         <Switch>
           <Route
             path={BUILD_QUOTE_ROUTE}

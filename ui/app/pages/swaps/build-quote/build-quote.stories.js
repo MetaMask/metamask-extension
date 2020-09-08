@@ -41,10 +41,10 @@ export const Default = () => {
   return (
     <div style={{ height: '415px', width: '357px', border: '1px solid grey', paddingLeft: '24px', paddingRight: '24px', overflow: 'hidden' }}>
       <div className="build-quote">
-        <div className="token__dropdown-input-pair-header">
-          <div className="token__input-label">Swap from</div>
+        <div className="swaps__dropdown-input-pair-header">
+          <div className="swaps__input-label">Swap from</div>
           <div
-            className="token__max-button"
+            className="swaps__max-button"
             onClick={action('clickedMax')}
           >Max
           </div>
@@ -61,19 +61,19 @@ export const Default = () => {
           hideItemIf={(tokenListItem) => tokenListItem.decimals !== 18}
           selectPlaceHolderText="Select"
         />
-        <div className="token__swap-arrows-row"><div className="token__swap-arrows" /></div>
-        <div className="token__dropdown-convert-to-header">
-          <div className="token__input-label">Swap to</div>
+        <div className="swaps__swap-arrows-row"><div className="swaps__swap-arrows" /></div>
+        <div className="swaps__dropdown-swap-to-header">
+          <div className="swaps__input-label">Swap to</div>
         </div>
         <DropdownSearchList
           itemsToSearch={tokensToSearch}
           listContainerClassName="build-quote__to-dropdown--max-height"
-          openSearchListClassName="token__search-token--open"
+          openSearchListClassName="swaps__search-token--open"
           searchPlaceholderText="Search for a token"
           fuseSearchKeys={[{ name: 'name', weight: 0.499 }, { name: 'symbol', weight: 0.499 }, { name: 'address', weight: 0.002 }]}
           maxListItems={30}
           onSelect={action('onToSelect')}
-          className={classnames('token__convert-to-list', { 'token__convert-to-list--loading': loading })}
+          className={classnames('swaps__swap-to-list', { 'swaps__swap-to-list--loading': loading })}
           selectPlaceHolderText="Select a token"
           loading={loading}
           hideRightLabels

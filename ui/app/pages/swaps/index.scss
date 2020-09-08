@@ -13,7 +13,7 @@
 @import 'select-quote-popover/index';
 @import 'slippage-buttons/index';
 
-.token {
+.swaps {
   display: flex;
   flex-flow: column;
   align-items: center;
@@ -58,7 +58,7 @@
     }
   }
 
-  &__dropdown-convert-to-header {
+  &__dropdown-swap-to-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -113,7 +113,7 @@
     cursor: pointer;
   }
 
-  &__dropdown-convert-to-header {
+  &__dropdown-swap-to-header {
     margin-top: 0;
   }
 }

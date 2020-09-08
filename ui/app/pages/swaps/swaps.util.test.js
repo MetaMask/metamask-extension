@@ -14,9 +14,9 @@ import {
   MOCK_TRADE_RESPONSE_2,
   AGGREGATOR_METADATA,
   TOP_ASSETS,
-} from './convert-util-test-constants'
+} from './swaps-util-test-constants'
 
-const convertUtils = proxyquire('./convert.util.js', {
+const swapsUtils = proxyquire('./swaps.util.js', {
   '../../store/actions': {
     estimateGasFromTxParams: () => Promise.resolve('0x8888'),
   },
@@ -59,9 +59,9 @@ const convertUtils = proxyquire('./convert.util.js', {
     },
   },
 })
-const { fetchTradesInfo, fetchTokens, quoteToTxParams, fetchAggregatorMetadata, fetchTopAssets } = convertUtils
+const { fetchTradesInfo, fetchTokens, quoteToTxParams, fetchAggregatorMetadata, fetchTopAssets } = swapsUtils
 
-describe('Convert Util', function () {
+describe('Swaps Util', function () {
   describe('fetchTradesInfo', function () {
     const expectedResult = [
       {

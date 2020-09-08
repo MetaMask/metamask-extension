@@ -11,7 +11,7 @@ const SelectQuotePopover = ({
   quoteDataRows = [],
   onClose = null,
   onSubmit = null,
-  convertToSymbol,
+  swapToSymbol,
   initialAggId,
 }) => {
   const t = useContext(I18nContext)
@@ -70,7 +70,7 @@ const SelectQuotePopover = ({
         onClose={onClose}
         CustomBackground={CustomBackground}
         className="select-quote-popover__popover-wrap"
-        footerClassName="token__footer"
+        footerClassName="swaps__footer"
         footer={contentView !== 'quoteDetails' ? footer : null}
         onBack={contentView === 'quoteDetails' ? closeQuoteDetails : null}
       >
@@ -80,7 +80,7 @@ const SelectQuotePopover = ({
             selectedAggId={selectedAggId}
             onSelect={onRowClick}
             onCaretClick={onCaretClick}
-            convertToSymbol={convertToSymbol}
+            swapToSymbol={swapToSymbol}
             sortDirection={sortDirection}
             setSortDirection={setSortDirection}
             sortColumn={sortColumn}
@@ -100,7 +100,7 @@ const SelectQuotePopover = ({
 SelectQuotePopover.propTypes = {
   onClose: PropTypes.func,
   onSubmit: PropTypes.func,
-  convertToSymbol: PropTypes.string,
+  swapToSymbol: PropTypes.string,
   renderableData: PropTypes.array,
   quoteDataRows: PropTypes.arrayOf(QUOTE_DATA_ROWS_PROPTYPES_SHAPE),
   initialAggId: PropTypes.string,

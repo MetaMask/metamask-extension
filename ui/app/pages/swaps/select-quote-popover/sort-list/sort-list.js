@@ -18,7 +18,7 @@ export default function SortList ({
   selectedAggId,
   onSelect,
   onCaretClick,
-  convertToSymbol,
+  swapToSymbol,
   sortDirection,
   setSortDirection,
   sortColumn,
@@ -72,7 +72,7 @@ export default function SortList ({
           onClick={() => onColumnHeaderClick('destinationTokenValue')}
         >
           <div className="select-quote-popover__receiving-header">
-            <span className="select-quote-popover__receiving-symbol">{convertToSymbol}</span>
+            <span className="select-quote-popover__receiving-symbol">{swapToSymbol}</span>
             <div className="select-quote-popover__receiving-label">
               <span>{t('swapReceiving')}</span>
               <InfoTooltip
@@ -161,7 +161,7 @@ SortList.propTypes = {
   selectedAggId: PropTypes.string.isRequired,
   onSelect: PropTypes.func.isRequired,
   onCaretClick: PropTypes.func.isRequired,
-  convertToSymbol: PropTypes.string.isRequired,
+  swapToSymbol: PropTypes.string.isRequired,
   quoteDataRows: PropTypes.arrayOf(QUOTE_DATA_ROWS_PROPTYPES_SHAPE).isRequired,
   sortDirection: PropTypes.number.isRequired,
   setSortDirection: PropTypes.func.isRequired,
