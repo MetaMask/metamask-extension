@@ -13,7 +13,7 @@ import ConnectedSites from '../connected-sites'
 import ConnectedAccounts from '../connected-accounts'
 import { Tabs, Tab } from '../../components/ui/tabs'
 import { EthOverview } from '../../components/app/wallet-overview'
-import SwapsIntroPopup from '../token/intro-popup'
+import SwapsIntroPopup from '../swaps/intro-popup'
 
 import {
   ASSET_ROUTE,
