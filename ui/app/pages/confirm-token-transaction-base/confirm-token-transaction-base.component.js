@@ -31,10 +31,12 @@ const ConfirmTokenTransactionBase = ({
       return '0'
     }
 
+    const decimalEthValue = (
+      (new BigNumber(tokenAmount)).mul(new BigNumber(contractExchangeRate))
+    ).toFixed()
+
     return getWeiHexFromDecimalValue({
-      value: (
-        (new BigNumber(tokenAmount)).mul(new BigNumber(contractExchangeRate))
-      ).toFixed(),
+      value: decimalEthValue,
       fromCurrency: ETH,
       fromDenomination: ETH,
     })
