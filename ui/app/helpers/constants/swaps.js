@@ -8,3 +8,6 @@ export const ETH_SWAPS_TOKEN_OBJECT = {
 }
 
 export const QUOTES_EXPIRED_ERROR = 'quotes-expired'
+export const SWAP_FAILED_ERROR = 'swap-failed-error'
+export const ERROR_FETCHING_QUOTES = 'error-fetching-quotes'
+export const QUOTES_NOT_AVAILABLE_ERROR = 'quotes-not-avilable'
