@@ -1578,6 +1578,9 @@
   "swapFinalizing": {
     "message": "Finalizing..."
   },
+  "swapGetQuotes": {
+    "message": "Get quotes"
+  },
   "swapHighSlippageWarning": {
     "message": "Your transaction may be frontrun"
   },
