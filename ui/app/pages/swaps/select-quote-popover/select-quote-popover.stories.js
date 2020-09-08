@@ -20,7 +20,7 @@ export const Default = () => {
           quoteDataRows={object('quoteDataRows', mockQuoteData)}
           onClose={() => setShowPopover(false)}
           onSubmit={action('submit SelectQuotePopover')}
-          convertToSymbol="DAI"
+          swapToSymbol="DAI"
           initialAggId="Agg4"
         />
       )}
