@@ -6,7 +6,7 @@ import IdleTimer from 'react-idle-timer'
 
 import FirstTimeFlow from '../first-time-flow'
 import SendTransactionScreen from '../send'
-import Swap from '../token'
+import Swaps from '../swaps'
 import ConfirmTransaction from '../confirm-transaction'
 import Sidebar from '../../components/app/sidebars'
 import Home from '../home'
@@ -49,7 +49,7 @@ import {
   RESTORE_VAULT_ROUTE,
   REVEAL_SEED_ROUTE,
   SEND_ROUTE,
-  SWAP_ROUTE,
+  SWAPS_ROUTE,
   SETTINGS_ROUTE,
   UNLOCK_ROUTE,
 } from '../../helpers/constants/routes'
@@ -124,7 +124,7 @@ export default class Routes extends Component {
         <Authenticated path={SETTINGS_ROUTE} component={Settings} />
         <Authenticated path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`} component={ConfirmTransaction} />
         <Authenticated path={SEND_ROUTE} component={SendTransactionScreen} exact />
-        <Authenticated path={SWAP_ROUTE} component={Swap} />
+        <Authenticated path={SWAPS_ROUTE} component={Swaps} />
         <Authenticated path={ADD_TOKEN_ROUTE} component={AddTokenPage} exact />
         <Authenticated path={CONFIRM_ADD_TOKEN_ROUTE} component={ConfirmAddTokenPage} exact />
         <Authenticated path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE} component={ConfirmAddSuggestedTokenPage} exact />
@@ -158,7 +158,7 @@ export default class Routes extends Component {
 
   onSwapsPage () {
     const { location } = this.props
-    return Boolean(matchPath(location.pathname, { path: SWAP_ROUTE, exact: false }))
+    return Boolean(matchPath(location.pathname, { path: SWAPS_ROUTE, exact: false }))
   }
 
   hideAppHeader () {
