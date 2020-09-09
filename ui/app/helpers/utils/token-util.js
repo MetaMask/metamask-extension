@@ -163,6 +163,11 @@ export function getTokenValueParam (tokenData = {}) {
   return tokenData?.args?.['_value']?.toString()
 }
 
+export function getTokenValue (tokenParams = []) {
+  const valueData = tokenParams.find((param) => param.name === '_value')
+  return valueData && valueData.value
+}
+
 /**
  * Get the token balance converted to fiat and formatted for display
  *

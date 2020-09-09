@@ -1,10 +1,17 @@
 .awaiting-swap {
-  display: flex;
-  flex-flow: column;
-  justify-content: center;
-  height: 100%;
-  padding-left: 32px;
-  padding-right: 32px;
+  display: 'flex';
+  flex-flow: 'column';
+  flex: 1;
+  width: '100%';
+
+  &__content {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    height: 100%;
+    padding-left: 32px;
+    padding-right: 32px;
+  }
 
   div {
     text-align: center;

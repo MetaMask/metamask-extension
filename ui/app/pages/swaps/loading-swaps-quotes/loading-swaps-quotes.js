@@ -6,6 +6,7 @@ import { I18nContext } from '../../../contexts/i18n'
 import Mascot from '../../../components/ui/mascot'
 import BackgroundAnimation from './background-animation'
 import AggregatorLogo from './aggregator-logo'
+import SwapsFooter from '../swaps-footer'
 
 // These locations reference where we want the top-left corner of the logo div to appear in relation to the
 // centre point of the fox
@@ -40,6 +41,7 @@ export default function LoadingSwapsQuotes ({
   aggregatorMetadata,
   loadingComplete,
   onDone,
+  onSubmit,
 }) {
   const t = useContext(I18nContext)
   const numberOfQuotes = AGGREGATOR_NAMES.length
@@ -95,49 +97,56 @@ export default function LoadingSwapsQuotes ({
 
   return (
     <div className="loading-swaps-quotes">
-      {!doneCalled && (
-        <>
-          <div className="loading-swaps-quotes__quote-counter">
-            <span>{t('swapQuoteNofN', [quoteCount, numberOfQuotes])}</span>
-          </div>
-          <div className="loading-swaps-quotes__quote-name-check">
-            <span>{quoteCount === numberOfQuotes ? t('swapFinalizing') : t('swapCheckingQuote', [aggregatorNames[quoteCount]])}</span>
-          </div>
-          <div className="loading-swaps-quotes__loading-bar-container">
-            <div
-              className="loading-swaps-quotes__loading-bar"
-              style={{
-                width: `${(100 / numberOfQuotes) * quoteCount}%`,
-              }}
+      <div className="loading-swaps-quotes__content">
+        {!doneCalled && (
+          <>
+            <div className="loading-swaps-quotes__quote-counter">
+              <span>{t('swapQuoteNofN', [quoteCount, numberOfQuotes])}</span>
+            </div>
+            <div className="loading-swaps-quotes__quote-name-check">
+              <span>{quoteCount === numberOfQuotes ? t('swapFinalizing') : t('swapCheckingQuote', [aggregatorNames[quoteCount]])}</span>
+            </div>
+            <div className="loading-swaps-quotes__loading-bar-container">
+              <div
+                className="loading-swaps-quotes__loading-bar"
+                style={{
+                  width: `${(100 / numberOfQuotes) * quoteCount}%`,
+                }}
+              />
+            </div>
+          </>
+        )}
+        <div className="loading-swaps-quotes__animation">
+          <BackgroundAnimation />
+          <div className="loading-swaps-quotes__mascot-container" ref={mascotContainer}>
+            <Mascot
+              animationEventEmitter={animationEventEmitter.current}
+              width="90"
+              height="90"
+              followMouse={false}
+              lookAtTarget={getMascotTarget(aggregatorNames[quoteCount], midPointTarget)}
             />
           </div>
-        </>
-      )}
-      <div className="loading-swaps-quotes__animation">
-        <BackgroundAnimation />
-        <div className="loading-swaps-quotes__mascot-container" ref={mascotContainer}>
-          <Mascot
-            animationEventEmitter={animationEventEmitter.current}
-            width="90"
-            height="90"
-            followMouse={false}
-            lookAtTarget={getMascotTarget(aggregatorNames[quoteCount], midPointTarget)}
-          />
+          {currentMascotContainer && midPointTarget && aggregatorNames.map((aggName) => (
+            <div
+              className="loading-swaps-quotes__logo"
+              style={{
+                opacity: aggName === aggregatorNames[quoteCount] ? 1 : 0,
+                top: AGGREGATOR_LOCATION_MAP[aggName]?.y + midPointTarget?.y ?? 0,
+                left: AGGREGATOR_LOCATION_MAP[aggName]?.x + midPointTarget?.x ?? 0,
+              }}
+              key={`aggregator-logo-${aggName}`}
+            >
+              <AggregatorLogo aggregatorName={aggName} icon={aggregatorMetadata[aggName]?.icon} color={aggregatorMetadata[aggName]?.color} />
+            </div>
+          ))}
         </div>
-        {currentMascotContainer && midPointTarget && aggregatorNames.map((aggName) => (
-          <div
-            className="loading-swaps-quotes__logo"
-            style={{
-              opacity: aggName === aggregatorNames[quoteCount] ? 1 : 0,
-              top: AGGREGATOR_LOCATION_MAP[aggName]?.y + midPointTarget?.y ?? 0,
-              left: AGGREGATOR_LOCATION_MAP[aggName]?.x + midPointTarget?.x ?? 0,
-            }}
-            key={`aggregator-logo-${aggName}`}
-          >
-            <AggregatorLogo aggregatorName={aggName} icon={aggregatorMetadata[aggName]?.icon} color={aggregatorMetadata[aggName]?.color} />
-          </div>
-        ))}
       </div>
+      <SwapsFooter
+        onSubmit={() => console.log('submit clicked')}
+        submitText={t('back')}
+        hideCancel
+      />
     </div>
   )
 }

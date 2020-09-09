@@ -11,14 +11,12 @@ import { getFormattedTokenFiatAmount } from '../helpers/utils/token-util'
  * @param {string} [tokenSymbol] - The token symbol
  * @return {string} - The formatted token amount in the user's chosen fiat currency
  */
-export function useTokenFiatAmount (tokenAddress, tokenAmount, tokenSymbol) {
+export function useTokenFiatAmount (tokenAddress, tokenAmount, tokenSymbol, overrideExchangeRate, overrideShouldShowFiat) {
   const contractExchangeRates = useSelector(getTokenExchangeRates)
   const conversionRate = useSelector(getConversionRate)
   const currentCurrency = useSelector(getCurrentCurrency)
   const showFiat = useSelector(getShouldShowFiat)
-
-  const tokenExchangeRate = contractExchangeRates[tokenAddress]
-
+  const tokenExchangeRate = overrideExchangeRate || contractExchangeRates[tokenAddress]
   const formattedFiat = useMemo(
     () => getFormattedTokenFiatAmount(
       tokenExchangeRate,
@@ -30,7 +28,7 @@ export function useTokenFiatAmount (tokenAddress, tokenAmount, tokenSymbol) {
     [tokenExchangeRate, conversionRate, currentCurrency, tokenAmount, tokenSymbol],
   )
 
-  if (!showFiat || currentCurrency.toUpperCase() === tokenSymbol) {
+  if ((!overrideShouldShowFiat && !showFiat) || currentCurrency.toUpperCase() === tokenSymbol) {
     return undefined
   }
 

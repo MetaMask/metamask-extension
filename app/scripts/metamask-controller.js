@@ -50,6 +50,7 @@ import TypedMessageManager from './lib/typed-message-manager'
 import TransactionController from './controllers/transactions'
 import TokenRatesController from './controllers/token-rates'
 import DetectTokensController from './controllers/detect-tokens'
+import SwapsController from './controllers/swaps'
 import { PermissionsController } from './controllers/permissions'
 import getRestrictedMethods from './controllers/permissions/restrictedMethods'
 import nodeify from './lib/nodeify'
@@ -267,6 +268,14 @@ export default class MetamaskController extends EventEmitter {
     this.encryptionPublicKeyManager = new EncryptionPublicKeyManager()
     this.typedMessageManager = new TypedMessageManager({ networkController: this.networkController })
 
+    this.swapsController = new SwapsController({
+      getBufferedGasLimit: this.txController.txGasUtil.getBufferedGasLimit.bind(this.txController.txGasUtil),
+      provider: this.networkController._provider,
+      getNetwork: this.networkController.getNetworkState.bind(this.networkController),
+      getProviderConfig: this.networkController.getProviderConfig.bind(this.networkController),
+      tokenRatesStore: this.tokenRatesController.store,
+    })
+
     this.store.updateStructure({
       AppStateController: this.appStateController.store,
       TransactionController: this.txController.store,
@@ -426,6 +435,7 @@ export default class MetamaskController extends EventEmitter {
       preferencesController,
       threeBoxController,
       txController,
+      swapsController,
     } = this
 
     return {
@@ -513,6 +523,7 @@ export default class MetamaskController extends EventEmitter {
       estimateGas: nodeify(this.estimateGas, this),
       getPendingNonce: nodeify(this.getPendingNonce, this),
       getNextNonce: nodeify(this.getNextNonce, this),
+      addUnapprovedTransaction: nodeify(txController.addUnapprovedTransaction, txController),
 
       // messageManager
       signMessage: nodeify(this.signMessage, this),
@@ -559,6 +570,29 @@ export default class MetamaskController extends EventEmitter {
       addPermittedAccount: nodeify(permissionsController.addPermittedAccount, permissionsController),
       removePermittedAccount: nodeify(permissionsController.removePermittedAccount, permissionsController),
       requestAccountsPermissionWithId: nodeify(permissionsController.requestAccountsPermissionWithId, permissionsController),
+
+      // swaps
+      fetchAndSetQuotes: nodeify(swapsController.fetchAndSetQuotes, swapsController),
+      setFetchParams: nodeify(swapsController.setFetchParams, swapsController),
+      setQuotes: nodeify(swapsController.setQuotes, swapsController),
+      setQuotesStatus: nodeify(swapsController.setQuotesStatus, swapsController),
+      setSelectedQuoteAggId: nodeify(swapsController.setSelectedQuoteAggId, swapsController),
+      resetSwapsState: nodeify(swapsController.resetSwapsState, swapsController),
+      setSwapsTokens: nodeify(swapsController.setSwapsTokens, swapsController),
+      setTradeTxParams: nodeify(swapsController.setTradeTxParams, swapsController),
+      setTradeTxParamsWithGasEstimate: nodeify(swapsController.setTradeTxParamsWithGasEstimate, swapsController),
+      setApproveTxParams: nodeify(swapsController.setApproveTxParams, swapsController),
+      setShowAwaitingSwapScreen: nodeify(swapsController.setShowAwaitingSwapScreen, swapsController),
+      setTradeTxId: nodeify(swapsController.setTradeTxId, swapsController),
+      setMaxMode: nodeify(swapsController.setMaxMode, swapsController),
+      setSwapsTxGasPrice: nodeify(swapsController.setSwapsTxGasPrice, swapsController),
+      setSwapsTxGasLimit: nodeify(swapsController.setSwapsTxGasLimit, swapsController),
+      safeRefetchQuotes: nodeify(swapsController.safeRefetchQuotes, swapsController),
+      stopPollingForQuotes: nodeify(swapsController.stopPollingForQuotes, swapsController),
+      setBackgoundSwapRouteState: nodeify(swapsController.setBackgoundSwapRouteState, swapsController),
+      resetPostFetchState: nodeify(swapsController.resetPostFetchState, swapsController),
+      setCustomApproveTxData: nodeify(swapsController.setCustomApproveTxData, swapsController),
+      setSwapsErrorKey: nodeify(swapsController.setSwapsErrorKey, swapsController),
     }
   }
 
