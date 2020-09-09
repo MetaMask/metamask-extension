@@ -32,7 +32,7 @@ const ConfirmTokenTransactionBase = ({
     }
 
     const decimalEthValue = (
-      (new BigNumber(tokenAmount)).mul(new BigNumber(contractExchangeRate))
+      (new BigNumber(tokenAmount)).times(new BigNumber(contractExchangeRate))
     ).toFixed()
 
     return getWeiHexFromDecimalValue({
