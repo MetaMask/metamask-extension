@@ -657,7 +657,9 @@ export default class PreferencesController {
   /**
    * Updates `accountTokens`, `tokens`, `accountHiddenTokens` and `hiddenTokens` of current account and network according to it.
    *
-   * @param {Array} tokens - Array of tokens to be updated.
+   * @param {array} tokens - Array of tokens to be updated.
+   * @param {array} assetImages - Array of assets objects related to assets added
+   * @param {array} hiddenTokens - Array of tokens hidden by user
    *
    */
   _updateAccountTokens(tokens, assetImages, hiddenTokens) {
