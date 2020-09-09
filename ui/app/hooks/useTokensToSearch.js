@@ -62,7 +62,6 @@ export function useTokensToSearch ({ providedTokens, swapsTokens: _swapsTokens, 
       setMemoizedTokenConversionRates(tokenConversionRates)
     }
   }, [memoizedTokenConversionRates, tokenConversionRates])
-
   const [memoizedTopTokens, setMemoizedTopTokens] = useState(topTokens)
   useEffect(() => {
     if (!isEqual(topTokens, memoizedTopTokens)) {

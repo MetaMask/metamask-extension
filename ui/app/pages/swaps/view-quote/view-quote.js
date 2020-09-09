@@ -1,4 +1,5 @@
-import React, { useState, useContext, useMemo, useEffect, useRef } from 'react'
+import React, { useState, useContext, useMemo, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import BigNumber from 'bignumber.js'
@@ -8,27 +9,23 @@ import SelectQuotePopover from '../select-quote-popover'
 
 import FeeCard from '../fee-card'
 import { setCustomGasLimit } from '../../../ducks/gas/gas.duck'
-import { getQuotes, getSelectedQuote, setSelectedQuoteAggId, getTradeTxParams, getApproveTxParams, getFetchParams, setBalanceError, getQuotesLastFetched, getBalanceError, getMaxMode, getCustomSwapsGas, getSwapsTradeTxParams } from '../../../ducks/swaps/swaps'
+import { getQuotes, getSelectedQuote, getApproveTxParams, getFetchParams, setBalanceError, getQuotesLastFetched, getBalanceError, getMaxMode, getCustomSwapsGas, getSwapsTradeTxParams } from '../../../ducks/swaps/swaps'
 import { conversionRateSelector, getSelectedAccount, getCurrentCurrency, getTokenExchangeRates } from '../../../selectors'
 import { toPrecisionWithoutTrailingZeros } from '../../../helpers/utils/util'
 import { getTokens } from '../../../ducks/metamask/metamask'
-import { showModal, setTradeTxParams, setApproveTxParams, safeRefetchQuotes, setSwapsTxGasLimit } from '../../../store/actions'
+import { safeRefetchQuotes, setSwapsTxGasLimit, setSelectedQuoteAggId, setSwapsErrorKey } from '../../../store/actions'
 import {
   BUILD_QUOTE_ROUTE,
   SWAPS_ERROR_ROUTE,
 } from '../../../helpers/constants/routes'
+
 import {
-  getTokenData,
-} from '../../../helpers/utils/transactions.util'
-import {
-  getTokenValue,
   calcTokenAmount,
   calcTokenValue,
 } from '../../../helpers/utils/token-util'
-import { hexToDecimal, getValueFromWeiHex, decimalToHex } from '../../../helpers/utils/conversions.util'
+import { decimalToHex } from '../../../helpers/utils/conversions.util'
 import MainQuoteSummary from '../main-quote-summary'
 import { calcGasTotal } from '../../send/send.utils'
-import { getCustomTxParamsData } from '../../confirm-approve/confirm-approve.util'
 import ActionableMessage from '../actionable-message'
 import { quotesToRenderableData, getRenderableGasFeesForQuote } from '../swaps.util'
 import { useTokenTracker } from '../../../hooks/useTokenTracker'
@@ -77,7 +74,6 @@ export default function ViewQuote ({ onSubmit, onCancel }) {
   const maxMode = useSelector(getMaxMode)
 
   const usedQuote = useSelector(getSelectedQuote)
-  const { decimals: toTokenDecimals, symbol: toTokenSymbol } = usedQuote.destinationTokenInfo
   const usedGasLimit = usedQuote?.gasEstimate || (`0x${decimalToHex(usedQuote?.averageGas || 0)}`)
   const maxGasLimit = customMaxGas || (`0x${decimalToHex(usedQuote?.maxGas || 0)}`)
   const gasTotalInWeiHex = calcGasTotal(usedGasLimit, gasPrice)
@@ -95,15 +91,6 @@ export default function ViewQuote ({ onSubmit, onCancel }) {
 
   const approveTxParams = useSelector(getApproveTxParams)
   const approveGas = approveTxParams?.gas
-  const approveData = getTokenData(approveTxParams?.data)
-  const approveValue = approveData && getTokenValue(approveData.params)
-  const approveAmount = approveValue && selectedFromToken?.decimals && calcTokenAmount(approveValue, selectedFromToken.decimals).toFixed(9)
-  const approveGasTotal = calcGasTotal(approveGas || '0x0', gasPrice)
-  const approveGasTotalInEth = getValueFromWeiHex({
-    value: approveGasTotal,
-    toDenomination: 'ETH',
-    numberOfDecimals: 4,
-  })
 
   // Manage fee and balance data
   const { feeinFiat, feeInEth } = getRenderableGasFeesForQuote(usedGasLimit, approveGas, gasPrice, currentCurrency, conversionRate)
@@ -226,7 +213,7 @@ export default function ViewQuote ({ onSubmit, onCancel }) {
           maxFeeRowText={t('swapMaxNetworkFees')}
           maxFeeRowLinkText={t('edit')}
           maxFeeRowInfoTooltipText={t('swapMaxNetworkFeeInfo')}
-          thirdRowText={t('swapThisWillAllowApprove', [<span className="view-quote__bold">{sourceTokenSymbol}</span>])}
+          thirdRowText={t('swapThisWillAllowApprove', [<span key="swaps-view-quote-approve-symbol-1" className="view-quote__bold">{sourceTokenSymbol}</span>])}
           thirdRowLinkText={t('swapEditLimit')}
           hideThirdRow={!approveTxParams || (balanceError && !warningHidden)}
           thirdRowInfoTooltipText={t('swapEnableDescription', [sourceTokenSymbol])}
@@ -236,10 +223,15 @@ export default function ViewQuote ({ onSubmit, onCancel }) {
         onSubmit={onSubmit}
         submitText={t('swap')}
         onCancel={onCancel}
-        disabled={((balanceError || tokenBalanceNeeded || ethBalanceNeeded) && !warningHidden && !(maxMode && sourceTokenSymbol === 'ETH'))}
+        disabled={!(maxMode && sourceTokenSymbol === 'ETH')}
         showTermsOfService
         showTopBorder
       />
     </div>
   )
+}
+
+ViewQuote.propTypes = {
+  onSubmit: PropTypes.func,
+  onCancel: PropTypes.func,
 }

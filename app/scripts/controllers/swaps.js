@@ -9,6 +9,11 @@ import { calcGasTotal } from '../../../ui/app/pages/send/send.utils'
 import { conversionUtil } from '../../../ui/app/helpers/utils/conversion-util'
 
 import { fetchTradesInfo } from '../../../ui/app/pages/swaps/swaps.util'
+import {
+  // QUOTES_EXPIRED_ERROR,
+  // ERROR_FETCHING_QUOTES,
+  QUOTES_NOT_AVAILABLE_ERROR,
+} from '../../../ui/app/helpers/constants/swaps'
 
 const METASWAP_ADDRESS = '0x9537C111Ea62a8dc39E99718140686f7aD856321'
 
@@ -79,7 +84,10 @@ export default class SwapsController {
     if (!fetchParams) {
       return null
     }
-    this.setQuotesStatus('')
+
+    if (newFetchParams) {
+      this.setSwapsErrorKey('')
+    }
     let newQuotes = await fetchTradesInfo(fetchParams)
     const quotesLastFetched = Date.now()
 
@@ -99,6 +107,7 @@ export default class SwapsController {
     }
 
     const { topAggId, isBest } = this._findTopQuoteAggId(newQuotes)
+
     let selectedAggId = swapsState.selectedAggId || topAggId
     if (isBest) {
       newQuotes[topAggId].isBestQuote = true
@@ -109,7 +118,7 @@ export default class SwapsController {
       newQuotes = await this.getAllQuotesWithGasEstimates(newQuotes)
 
       if (Object.values(newQuotes).length === 0) {
-        this.setQuotesStatus('notAvailable')
+        this.setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR)
       } else {
         const { topAggId: topAggIdAfterGasEstimates, isBest: isBestAfterGasEstimates } = this._findTopQuoteAggId(newQuotes)
         if (isBestAfterGasEstimates) {
@@ -135,7 +144,7 @@ export default class SwapsController {
     }
 
     if (newFetchParams) {
-      return newQuotes
+      return [newQuotes, selectedAggId]
     }
     return null
   }
@@ -311,22 +320,23 @@ export default class SwapsController {
   }
 
   _findTopQuoteAggId (quotes) {
+    // console.log('@@@ quotes', quotes)
     const tokenConversionRates = this.tokenRatesStore.getState().contractExchangeRates
-    const { swapsState: { customGasPrice = '0x1' } } = this.store.getState()
+    const { swapsState: { customGasPrice } } = this.store.getState()
 
-    if (!quotes?.length) {
+    if (!Object.values(quotes)?.length) {
       return {}
     }
 
     let topAggId = ''
-    let ethValueOfTradeForBestQuote = 0
+    let ethValueOfTradeForBestQuote = null
 
     Object.values(quotes).forEach((quote) => {
       const { destinationAmount = 0, destinationToken, trade, approvalNeeded, averageGas, gasEstimate, aggregator } = quote
-
+      // console.log('@@@ quote', quote)
       const tradeGasLimitForCalculation = gasEstimate ? (new BigNumber(gasEstimate, 16)) : (new BigNumber(averageGas, 10))
       const totalGasLimitForCalculation = tradeGasLimitForCalculation.plus(approvalNeeded?.gas || '0x0', 16).toString(16)
-      const gasTotalInWeiHex = calcGasTotal(totalGasLimitForCalculation, customGasPrice)
+      const gasTotalInWeiHex = calcGasTotal(totalGasLimitForCalculation, customGasPrice || '0x1')
       const totalEthCost = (new BigNumber(gasTotalInWeiHex, 16)).plus(trade.value, 10)
       const ethFee = conversionUtil(totalEthCost, {
         fromCurrency: 'ETH',
@@ -344,13 +354,13 @@ export default class SwapsController {
           .times(calcTokenAmount(destinationAmount, destinationToken.decimals || 18), 10)
           .minus(tokenConversionRate ? ethFee : 0, 10)
 
-      if (ethValueOfTrade.gt(ethValueOfTradeForBestQuote)) {
+      if (ethValueOfTradeForBestQuote === null || ethValueOfTrade.gt(ethValueOfTradeForBestQuote)) {
         topAggId = aggregator
         ethValueOfTradeForBestQuote = ethValueOfTrade
       }
     })
 
-    const isBest = (quotes[0]?.destinationToken?.symbol === 'ETH') || Boolean(tokenConversionRates[quotes[0]?.destinationToken])
+    const isBest = (quotes[topAggId]?.destinationTokenInfo?.symbol === 'ETH') || Boolean(tokenConversionRates[quotes[topAggId]?.destinationToken])
 
     return { topAggId, isBest }
   }

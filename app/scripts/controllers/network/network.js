@@ -240,6 +240,19 @@ export default class NetworkController extends EventEmitter {
     this._setProviderAndBlockTracker({ provider, blockTracker })
   }
 
+  _setNetworkClientTemp () {
+    const type = 'mainnet'
+    const { networkMiddleware } = createInfuraClient({
+      network: type,
+    })
+    const metamaskMiddleware = createMetamaskMiddleware(this._baseProviderParams)
+    const engine = new JsonRpcEngine()
+    engine.push(metamaskMiddleware)
+    engine.push(networkMiddleware)
+    const provider = providerFromEngine(engine)
+    return provider
+  }
+
   _setProviderAndBlockTracker ({ provider, blockTracker }) {
     // update or intialize proxies
     if (this._providerProxy) {

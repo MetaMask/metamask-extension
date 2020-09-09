@@ -2,7 +2,6 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { useHistory, useLocation } from 'react-router-dom'
 import BigNumber from 'bignumber.js'
-import { calcTokenAmount } from '../helpers/utils/token-util'
 
 import { LOADING_QUOTES_ROUTE, DEFAULT_ROUTE, ASSET_ROUTE, AWAITING_SWAP_ROUTE, BUILD_QUOTE_ROUTE, VIEW_QUOTE_ROUTE, SWAPS_ERROR_ROUTE } from '../helpers/constants/routes'
 import {
@@ -22,19 +21,33 @@ import {
   getMaxMode,
   setBalanceError,
   setSwapQuotesFetchStartTime,
-  getBestQuoteAggId,
-  getQuotes,
-  getCustomSwapsGas,
   getSwapsTradeTxParams,
   getSwapsErrorKey,
 } from '../ducks/swaps/swaps'
-import { setInitialGasEstimate, setSwapsErrorKey, resetSwapsPostFetchState, setTradeTxId, addUnapprovedTransaction, updateAndApproveTx, setQuotes, forceUpdateMetamaskState, updateTransaction, addToken, fetchAndSetQuotes, setTradeTxParams, setApproveTxParams, resetBackgroundSwapsState, setShowAwaitingSwapScreen, setTradeTxParamsWithGasEstimate, updateBlockTrackerListener, setQuotesStatus, estimateGasFromTxParams, stopPollingForQuotes, setBackgoundSwapRouteState } from '../store/actions'
+import {
+  setInitialGasEstimate,
+  setSwapsErrorKey,
+  resetSwapsPostFetchState,
+  setTradeTxId,
+  addUnapprovedTransaction,
+  updateAndApproveTx,
+  setQuotes,
+  forceUpdateMetamaskState,
+  updateTransaction,
+  addToken,
+  fetchAndSetQuotes,
+  resetBackgroundSwapsState,
+  setShowAwaitingSwapScreen,
+  setQuotesStatus,
+  stopPollingForQuotes,
+  setBackgoundSwapRouteState,
+} from '../store/actions'
 import { fetchTradesInfo } from '../pages/swaps/swaps.util'
-import { getTokenExchangeRates, getConversionRate } from '../selectors'
+import { getTokenExchangeRates } from '../selectors'
 import { calcGasTotal } from '../pages/send/send.utils'
 import { constructTxParams } from '../helpers/utils/util'
 
-import { decimalToHex, getValueFromWeiHex } from '../helpers/utils/conversions.util'
+import { decimalToHex } from '../helpers/utils/conversions.util'
 
 export function useSwapSubmitFunction ({
   maxSlippage,
@@ -44,14 +57,11 @@ export function useSwapSubmitFunction ({
   selectedFromToken,
   selectedToToken,
   balanceError,
-  conversionError,
   ethBalance,
   setSubmittingSwap,
   networkId,
   isCustomNetwork,
-  quotesStatus,
   isRetry,
-  fetchingQuotes,
   quotesRequestCancelledEvent,
 }) {
   const dispatch = useDispatch()
@@ -76,11 +86,6 @@ export function useSwapSubmitFunction ({
   const contractExchangeRates = useSelector(getTokenExchangeRates)
   const selectedQuote = useSelector(getSelectedQuote)
   const maxMode = useSelector(getMaxMode)
-  const quotes = useSelector(getQuotes)
-  const numberOfQuotes = quotes.length
-  const bestQuoteAggId = useSelector(getBestQuoteAggId)
-  const customMaxGas = useSelector(getCustomSwapsGas)
-  const conversionRate = useSelector(getConversionRate)
   const swapsErrorKey = useSelector(getSwapsErrorKey)
 
   const swapsTokens = useSelector(getSwapsTokens)
@@ -136,7 +141,6 @@ export function useSwapSubmitFunction ({
         gasPrice: tradeTxParams.gasPrice,
       })
     }
-    const destinationValue = calcTokenAmount(selectedQuote.destinationAmount, destinationTokenInfo.decimals || 18).toPrecision(8)
 
     if (approveTxParams) {
       const approveTxMeta = await dispatch(addUnapprovedTransaction(approveTxParams, 'metamask'))
@@ -196,7 +200,8 @@ export function useSwapSubmitFunction ({
 
     dispatch(setSwapFromToken(selectedFromToken))
     let newSwapsError = null
-    let newQuotes
+    let fetchedQuotes
+    let selectedAggId
     let revisedValue
     if (maxMode && sourceTokenInfo.symbol === 'ETH') {
       const totalGasLimitForCalculation = (new BigNumber(800000, 10)).plus(100000, 10).toString(16)
@@ -207,7 +212,7 @@ export function useSwapSubmitFunction ({
     try {
       const fetchStartTime = Date.now()
       dispatch(setSwapQuotesFetchStartTime(fetchStartTime))
-      const fetchedQuotes = await dispatch(fetchAndSetQuotes({
+      const result = await dispatch(fetchAndSetQuotes({
         sourceTokenInfo,
         destinationTokenInfo,
         slippage: maxSlippage,
@@ -222,19 +227,20 @@ export function useSwapSubmitFunction ({
         destinationTokenAddedForSwap,
         balanceError,
       }))
-      if (fetchedQuotes?.length === 0) {
+      fetchedQuotes = result[0]
+      selectedAggId = result[1]
+      if (Object.values(fetchedQuotes)?.length === 0) {
         newSwapsError = QUOTES_NOT_AVAILABLE_ERROR
       }
     } catch (e) {
-      console.log('e', e)
       newSwapsError = ERROR_FETCHING_QUOTES
     }
 
     if (newSwapsError) {
       dispatch(setSwapsErrorKey(newSwapsError))
     } else {
-      const bestQuote = fetchedQuotes.find((quote) => quote.isBestQuote)
-      dispatch(setInitialGasEstimate(bestQuote.aggregator, bestQuote.maxGas))
+      const newSelectedQuote = fetchedQuotes[selectedAggId]
+      dispatch(setInitialGasEstimate(selectedAggId, newSelectedQuote.maxGas))
     }
     dispatch(setFetchingQuotes(false))
 

@@ -2145,9 +2145,9 @@ export function setPendingTokens (pendingTokens) {
 
 export function fetchAndSetQuotes (fetchParams, fetchStartTime) {
   return async (dispatch) => {
-    const [quotes, responseTime] = await promisifiedBackground.fetchAndSetQuotes(fetchParams, fetchStartTime)
+    const [quotes, selectedAggId] = await promisifiedBackground.fetchAndSetQuotes(fetchParams, fetchStartTime)
     await forceUpdateMetamaskState(dispatch)
-    return [quotes, responseTime]
+    return [quotes, selectedAggId]
   }
 }
 
@@ -2316,7 +2316,7 @@ export function setSwapsErrorKey (errorKey) {
 
 export function setInitialGasEstimate (initialAggId, baseGasEstimate) {
   return async (dispatch) => {
-    await promisifiedBackground.setSwapsErrorKey(initialAggId, baseGasEstimate)
+    await promisifiedBackground.setInitialGasEstimate(initialAggId, baseGasEstimate)
     await forceUpdateMetamaskState(dispatch)
   }
 }

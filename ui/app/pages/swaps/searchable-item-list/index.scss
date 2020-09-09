@@ -1,5 +1,7 @@
 .searchable-item-list {
   background: $white;
+  width: 100%;
+  position: relative;
 
   &__search {
     > div {
@@ -41,7 +43,6 @@
   &__list-container {
     display: flex;
     flex-direction: column;
-    max-height: 330px;
     overflow-y: scroll;
   }
 
@@ -107,7 +108,6 @@
     -moz-animation: fadein 1s;
     -webkit-animation: fadein 1s;
     -o-animation: fadein 1s;
-    animation: fadein 1s;
   }
 
   &__item-labels {
@@ -150,7 +150,6 @@
 
   &__list-container {
     z-index: 1002;
-    position: relative;
     background: white;
   }
 

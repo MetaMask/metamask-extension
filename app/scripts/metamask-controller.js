@@ -231,6 +231,7 @@ export default class MetamaskController extends EventEmitter {
       signTransaction: this.keyringController.signTransaction.bind(this.keyringController),
       provider: this.provider,
       blockTracker: this.blockTracker,
+      gasProvider: this.networkController._setNetworkClientTemp.bind(this.networkController),
     })
     this.txController.on('newUnapprovedTx', () => opts.showUnapprovedTx())
 
@@ -291,6 +292,7 @@ export default class MetamaskController extends EventEmitter {
       PermissionsController: this.permissionsController.permissions,
       PermissionsMetadata: this.permissionsController.store,
       ThreeBoxController: this.threeBoxController.store,
+      SwapsController: this.swapsController.store,
     })
 
     this.memStore = new ComposableObservableStore(null, {
@@ -315,6 +317,7 @@ export default class MetamaskController extends EventEmitter {
       PermissionsController: this.permissionsController.permissions,
       PermissionsMetadata: this.permissionsController.store,
       ThreeBoxController: this.threeBoxController.store,
+      SwapsController: this.swapsController.store,
       // ENS Controller
       EnsController: this.ensController.store,
     })
@@ -593,6 +596,7 @@ export default class MetamaskController extends EventEmitter {
       resetPostFetchState: nodeify(swapsController.resetPostFetchState, swapsController),
       setCustomApproveTxData: nodeify(swapsController.setCustomApproveTxData, swapsController),
       setSwapsErrorKey: nodeify(swapsController.setSwapsErrorKey, swapsController),
+      setInitialGasEstimate: nodeify(swapsController.setInitialGasEstimate, swapsController),
     }
   }
 

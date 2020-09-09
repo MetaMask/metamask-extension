@@ -99,8 +99,8 @@ const TOKEN_VALIDATORS = [
   },
   {
     property: 'decimals',
-    type: 'number',
-    validator: (number) => number >= 0 && number <= 36,
+    type: 'string|number',
+    validator: (string) => Number(string) >= 0 && Number(string) <= 36,
   },
 ]
 
@@ -126,9 +126,11 @@ const AGGREGATOR_METADATA_VALIDATORS = [
 
 function validateData (validators, object, urlUsed) {
   return validators.every(({ property, type, validator }) => {
-    const valid = typeof object[property] === type && validator(object[property])
+    const types = type.split('|')
+
+    const valid = types.some((_type) => typeof object[property] === _type) && validator(object[property])
     if (!valid) {
-      log.error(`response to GET ${urlUsed} invalid for property ${property}; value was:`, object[property])
+      log.error(`response to GET ${urlUsed} invalid for property ${property}; value was:`, object[property], '| type was: ', typeof object[property])
     }
     return valid
   })
@@ -152,7 +154,7 @@ export async function fetchTradesInfo ({ sourceTokenInfo, destinationTokenInfo, 
   const tradeURL = `${getBaseApi(isCustomNetwork, 'trade')}${queryString}`
   const tradesResponse = await fetchWithCache(tradeURL, { method: 'GET' }, { cacheRefreshTime: 0, timeout: 15000 })
   const newQuotes = tradesResponse.reduce((aggIdTradeMap, quote) => {
-    if (!validateData(QUOTE_VALIDATORS, quote, tradeURL)) {
+    if (quote.trade && !quote.error && validateData(QUOTE_VALIDATORS, quote, tradeURL)) {
       const constructedTrade = constructTxParams({
         ...quote.trade,
         amount: decimalToHex(quote.trade.value),
@@ -247,8 +249,13 @@ export async function fetchAggregatorMetadata (isCustomNetwork) {
 export async function fetchTopAssets (isCustomNetwork) {
   const topAssetsUrl = getBaseApi(isCustomNetwork, 'topAssets')
   const response = await fetchWithCache(topAssetsUrl, { method: 'GET' }, { cacheRefreshTime: CACHE_REFRESH_ONE_HOUR })
-  const filteredTopAssets = response.filter((asset) => validateData(TOP_ASSET_VALIDATORS, asset, topAssetsUrl))
-  return filteredTopAssets
+  const topAssetsMap = response.reduce((_topAssetsMap, asset, index) => {
+    if (validateData(TOP_ASSET_VALIDATORS, asset, topAssetsUrl)) {
+      return { ..._topAssetsMap, [asset.address]: { index: String(index) } }
+    }
+    return _topAssetsMap
+  }, {})
+  return topAssetsMap
 }
 
 export async function fetchSwapsFeatureFlag (isCustomNetwork) {
