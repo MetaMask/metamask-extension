@@ -766,7 +766,11 @@ export default class MetamaskController extends EventEmitter {
   async submitPassword (password) {
     await this.keyringController.submitPassword(password)
 
-    await this.blockTracker.checkForLatestBlock()
+    try {
+      await this.blockTracker.checkForLatestBlock()
+    } catch (error) {
+      log.error('Error while unlocking extension.', error)
+    }
 
     try {
       const threeBoxSyncingAllowed = this.threeBoxController.getThreeBoxSyncingState()
@@ -778,7 +782,7 @@ export default class MetamaskController extends EventEmitter {
         this.threeBoxController.turnThreeBoxSyncingOn()
       }
     } catch (error) {
-      log.error(error)
+      log.error('Error while unlocking extension.', error)
     }
 
     return this.keyringController.fullUpdate()
