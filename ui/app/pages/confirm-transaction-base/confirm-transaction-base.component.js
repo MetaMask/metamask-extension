@@ -59,6 +59,7 @@ export default class ConfirmTransactionBase extends Component {
     toNickname: PropTypes.string,
     transactionStatus: PropTypes.string,
     txData: PropTypes.object,
+    domainMetadata: PropTypes.object,
     unapprovedTxCount: PropTypes.number,
     currentNetworkUnapprovedTxs: PropTypes.object,
     updateGasAndCalculate: PropTypes.func,
@@ -717,6 +718,8 @@ export default class ConfirmTransactionBase extends Component {
       transactionCategory,
       hideSenderToRecipient,
       showAccountInHeader,
+      txData,
+      domainMetadata,
     } = this.props
     const { submitting, submitError, submitWarning } = this.state
 
@@ -786,6 +789,8 @@ export default class ConfirmTransactionBase extends Component {
         onCancel={() => this.handleCancel()}
         onSubmit={() => this.handleSubmit()}
         hideSenderToRecipient={hideSenderToRecipient}
+        txData={txData}
+        domainMetadata={domainMetadata}
       />
     )
   }

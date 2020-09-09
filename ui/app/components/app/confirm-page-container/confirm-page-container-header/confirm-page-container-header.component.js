@@ -7,7 +7,8 @@ import {
 import { getEnvironmentType } from '../../../../../../app/scripts/lib/util'
 import NetworkDisplay from '../../network-display'
 import Identicon from '../../../ui/identicon'
-import { shortenAddress } from '../../../../helpers/utils/util'
+import OriginRow from '../../../ui/origin-row'
+import { shortenAddress, formatDate } from '../../../../helpers/utils/util'
 import AccountMismatchWarning from '../../../ui/account-mismatch-warning/account-mismatch-warning.component'
 import { useI18nContext } from '../../../../hooks/useI18nContext'
 
@@ -16,7 +17,10 @@ export default function ConfirmPageContainerHeader({
   showEdit,
   accountAddress,
   showAccountInHeader,
+  showOrigin,
   children,
+  txData,
+  domainMetadata,
 }) {
   const t = useI18nContext()
   const windowType = getEnvironmentType()
@@ -24,11 +28,16 @@ export default function ConfirmPageContainerHeader({
     windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
     windowType !== ENVIRONMENT_TYPE_POPUP
 
+  const formattedTimestamp = formatDate(txData.time, "HH:mm 'on' d MMM y")
+
   if (!showEdit && isFullScreen) {
     return null
   }
   return (
     <div className="confirm-page-container-header">
+      <div className="confirm-page-container-header__time">
+        {formattedTimestamp}
+      </div>
       <div className="confirm-page-container-header__row">
         {showAccountInHeader ? (
           <div className="confirm-page-container-header__address-container">
@@ -59,6 +68,9 @@ export default function ConfirmPageContainerHeader({
         {!isFullScreen && <NetworkDisplay />}
       </div>
       {children}
+      {showOrigin && (
+        <OriginRow origin={txData.origin} domainMetadata={domainMetadata} />
+      )}
     </div>
   )
 }
@@ -66,7 +78,10 @@ export default function ConfirmPageContainerHeader({
 ConfirmPageContainerHeader.propTypes = {
   accountAddress: PropTypes.string,
   showAccountInHeader: PropTypes.bool,
+  showOrigin: PropTypes.bool,
   showEdit: PropTypes.bool,
   onEdit: PropTypes.func,
   children: PropTypes.node,
+  txData: PropTypes.object,
+  domainMetadata: PropTypes.object,
 }

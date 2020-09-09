@@ -67,6 +67,12 @@
     z-index: 3;
   }
 
+  &__header__time {
+    z-index: 3;
+    font-size: 12px;
+    color: $dusty-gray;
+  }
+
   &__header__tip-container {
     width: 100%;
     display: flex;
@@ -150,11 +156,6 @@
     flex-flow: column;
     flex: 1 1 auto;
     height: 0;
-  }
-
-  &__request-info {
-    display: flex;
-    justify-content: center;
   }
 
   &__headline {

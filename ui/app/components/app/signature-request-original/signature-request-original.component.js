@@ -12,7 +12,9 @@ import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 import Identicon from '../../ui/identicon'
 import AccountListItem from '../account-list-item'
 import { conversionUtil } from '../../../helpers/utils/conversion-util'
+import { formatDate } from '../../../helpers/utils/util'
 import Button from '../../ui/button'
+import OriginRow from '../../ui/origin-row'
 
 export default class SignatureRequestOriginal extends Component {
   static contextTypes = {
@@ -34,6 +36,7 @@ export default class SignatureRequestOriginal extends Component {
     requesterAddress: PropTypes.string,
     sign: PropTypes.func.isRequired,
     txData: PropTypes.object.isRequired,
+    domainMetadata: PropTypes.object,
   }
 
   state = {
@@ -71,12 +74,17 @@ export default class SignatureRequestOriginal extends Component {
   }
 
   renderHeader = () => {
+    const { txData } = this.props
+    const formattedTimestamp = formatDate(txData.time, "HH:mm 'on' d MMM y")
     return (
       <div className="request-signature__header">
         <div className="request-signature__header-background" />
 
         <div className="request-signature__header__text">
           {this.context.t('sigRequest')}
+        </div>
+        <div className="request-signature__header__time">
+          {formattedTimestamp}
         </div>
 
         <div className="request-signature__header__tip-container">
@@ -148,16 +156,6 @@ export default class SignatureRequestOriginal extends Component {
     )
   }
 
-  renderRequestInfo = () => {
-    return (
-      <div className="request-signature__request-info">
-        <div className="request-signature__headline">
-          {this.context.t('yourSigRequested')}
-        </div>
-      </div>
-    )
-  }
-
   msgHexToText = (hex) => {
     try {
       const stripped = ethUtil.stripHexPrefix(hex)
@@ -196,7 +194,7 @@ export default class SignatureRequestOriginal extends Component {
     let rows
     let notice = `${this.context.t('youSign')}:`
 
-    const { txData } = this.props
+    const { txData, domainMetadata } = this.props
     const {
       type,
       msgParams: { data },
@@ -216,7 +214,10 @@ export default class SignatureRequestOriginal extends Component {
     return (
       <div className="request-signature__body">
         {this.renderAccountInfo()}
-        {this.renderRequestInfo()}
+        <OriginRow
+          origin={txData?.msgParams?.origin}
+          domainMetadata={domainMetadata}
+        />
         <div
           className={classnames('request-signature__notice', {
             'request-signature__warning': type === MESSAGE_TYPE.ETH_SIGN,

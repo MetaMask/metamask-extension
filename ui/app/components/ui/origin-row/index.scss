@@ -1,0 +1,29 @@
+.origin-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 17px 0 17px;
+  align-items: center;
+  height: 35px;
+
+  &__text {
+    height: 24px;
+    color: $tundora;
+    font-size: 14px;
+    line-height: 24px;
+    text-align: center;
+  }
+
+  &-item {
+    display: flex;
+    align-items: center;
+    height: 24px;
+  }
+
+  &-item__text {
+    margin-left: 5px;
+    font-size: 12px;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

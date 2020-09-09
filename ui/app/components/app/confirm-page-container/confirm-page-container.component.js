@@ -25,6 +25,8 @@ export default class ConfirmPageContainer extends Component {
     titleComponent: PropTypes.node,
     hideSenderToRecipient: PropTypes.bool,
     showAccountInHeader: PropTypes.bool,
+    txData: PropTypes.object,
+    domainMetadata: PropTypes.object,
     // Sender to Recipient
     fromAddress: PropTypes.string,
     fromName: PropTypes.string,
@@ -105,9 +107,12 @@ export default class ConfirmPageContainer extends Component {
       requestsWaitingText,
       hideSenderToRecipient,
       showAccountInHeader,
+      txData,
+      domainMetadata,
     } = this.props
     const renderAssetImage =
       contentComponent || (!contentComponent && !identiconAddress)
+    const showOrigin = txData?.origin && txData.origin !== 'metamask'
 
     return (
       <div className="page-container">
@@ -128,6 +133,9 @@ export default class ConfirmPageContainer extends Component {
           onEdit={() => onEdit()}
           showAccountInHeader={showAccountInHeader}
           accountAddress={fromAddress}
+          showOrigin={showOrigin}
+          txData={txData}
+          domainMetadata={domainMetadata}
         >
           {hideSenderToRecipient ? null : (
             <SenderToRecipient

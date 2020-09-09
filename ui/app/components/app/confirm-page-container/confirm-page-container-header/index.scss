@@ -3,6 +3,13 @@
   flex-direction: column;
   flex: 0 0 auto;
 
+  &__time {
+    font-size: 12px;
+    color: $dusty-gray;
+    margin-top: 2px;
+    text-align: center;
+  }
+
   &__row {
     display: flex;
     justify-content: space-between;

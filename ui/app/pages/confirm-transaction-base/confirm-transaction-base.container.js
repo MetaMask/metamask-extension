@@ -37,6 +37,7 @@ import {
   getUseNonceField,
   getPreferences,
   transactionFeeSelector,
+  getDomainMetadata,
 } from '../../selectors'
 import { getMostRecentOverviewPage } from '../../ducks/history/history'
 import ConfirmTransactionBase from './confirm-transaction-base.component'
@@ -188,6 +189,7 @@ const mapStateToProps = (state, ownProps) => {
     transactionCategory,
     nextNonce,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
+    domainMetadata: getDomainMetadata(state),
     isMainnet,
   }
 }
