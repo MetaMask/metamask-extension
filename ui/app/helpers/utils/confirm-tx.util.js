@@ -121,11 +121,17 @@ export function hasUnconfirmedTransactions (state) {
   return unconfirmedTransactionsCountSelector(state) > 0
 }
 
-export function roundExponential (value) {
-  const stringValue = String(value)
+/**
+ * Rounds the given decimal string to 4 significant digits.
+ *
+ * @param {string} decimalString - The base-ten number to round.
+ * @returns {string} The rounded number, or the original number if no
+ * rounding was necessary.
+ */
+export function roundExponential (decimalString) {
   const PRECISION = 4
-  const bigNumberValue = new BigNumber(stringValue)
+  const bigNumberValue = new BigNumber(decimalString)
 
   // In JS, numbers with exponentials greater than 20 get displayed as an exponential.
-  return bigNumberValue.e > 20 ? bigNumberValue.toPrecision(PRECISION) : stringValue
+  return bigNumberValue.e > 20 ? bigNumberValue.toPrecision(PRECISION) : decimalString
 }
