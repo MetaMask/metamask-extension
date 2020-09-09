@@ -13,7 +13,7 @@ import {
 import { getWeiHexFromDecimalValue } from '../../helpers/utils/conversions.util'
 import { ETH, PRIMARY } from '../../helpers/constants/common'
 
-const ConfirmTokenTransactionBase = ({
+export default function ConfirmTokenTransactionBase ({
   toAddress,
   tokenAddress,
   tokenAmount = '0',
@@ -23,9 +23,9 @@ const ConfirmTokenTransactionBase = ({
   contractExchangeRate,
   conversionRate,
   currentCurrency,
-}) => {
-
+}) {
   const t = useContext(I18nContext)
+
   const hexWeiValue = useMemo(() => {
     if (tokenAmount === '0' || !contractExchangeRate) {
       return '0'
@@ -42,56 +42,28 @@ const ConfirmTokenTransactionBase = ({
     })
   }, [tokenAmount, contractExchangeRate])
 
-  const getFiatTransactionAmount = () => {
-    return convertTokenToFiat({
+  const secondaryTotalTextOverride = useMemo(() => {
+    if (typeof contractExchangeRate === 'undefined') {
+      return formatCurrency(fiatTransactionTotal, currentCurrency)
+    }
+
+    const fiatTransactionAmount = convertTokenToFiat({
       value: tokenAmount,
       toCurrency: currentCurrency,
       conversionRate,
       contractExchangeRate,
     })
-  }
-
-  const renderSubtitleComponent = () => {
-    return typeof contractExchangeRate === 'undefined'
-      ? (
-        <span>
-          { t('noConversionRateAvailable') }
-        </span>
-      ) : (
-        <UserPreferencedCurrencyDisplay
-          value={hexWeiValue}
-          type={PRIMARY}
-          showEthLogo
-          hideLabel
-        />
-      )
-  }
-
-  const renderPrimaryTotalTextOverride = () => {
-    const tokensText = `${tokenAmount} ${tokenSymbol}`
-
-    return (
-      <div>
-        <span>{ `${tokensText} + ` }</span>
-        <img
-          src="/images/eth.svg"
-          height="18"
-        />
-        <span>{ ethTransactionTotal }</span>
-      </div>
-    )
-  }
-
-  const getSecondaryTotalTextOverride = () => {
-    if (typeof contractExchangeRate === 'undefined') {
-      return formatCurrency(fiatTransactionTotal, currentCurrency)
-    }
-
-    const fiatTransactionAmount = getFiatTransactionAmount()
     const fiatTotal = addFiat(fiatTransactionAmount, fiatTransactionTotal)
     const roundedFiatTotal = roundExponential(fiatTotal)
     return formatCurrency(roundedFiatTotal, currentCurrency)
-  }
+  },
+  [
+    currentCurrency,
+    conversionRate,
+    contractExchangeRate,
+    fiatTransactionTotal,
+    tokenAmount,
+  ])
 
   const tokensText = `${tokenAmount} ${tokenSymbol}`
 
@@ -100,9 +72,32 @@ const ConfirmTokenTransactionBase = ({
       toAddress={toAddress}
       identiconAddress={tokenAddress}
       title={tokensText}
-      subtitleComponent={renderSubtitleComponent()}
-      primaryTotalTextOverride={renderPrimaryTotalTextOverride()}
-      secondaryTotalTextOverride={getSecondaryTotalTextOverride()}
+      subtitleComponent={
+        contractExchangeRate === undefined
+          ? (
+            <span>
+              { t('noConversionRateAvailable') }
+            </span>
+          ) : (
+            <UserPreferencedCurrencyDisplay
+              value={hexWeiValue}
+              type={PRIMARY}
+              showEthLogo
+              hideLabel
+            />
+          )
+      }
+      primaryTotalTextOverride={(
+        <div>
+          <span>{ `${tokensText} + ` }</span>
+          <img
+            src="/images/eth.svg"
+            height="18"
+          />
+          <span>{ ethTransactionTotal }</span>
+        </div>
+      )}
+      secondaryTotalTextOverride={secondaryTotalTextOverride}
     />
   )
 }
@@ -118,5 +113,3 @@ ConfirmTokenTransactionBase.propTypes = {
   conversionRate: PropTypes.number,
   currentCurrency: PropTypes.string,
 }
-
-export default ConfirmTokenTransactionBase
