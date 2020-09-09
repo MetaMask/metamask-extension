@@ -326,3 +326,15 @@ export function getOriginOfCurrentTab (state) {
 export function getIpfsGateway (state) {
   return state.metamask.ipfsGateway
 }
+
+export function getCustomNetworkId (state) {
+  return state.metamask.settings?.network
+}
+
+export function getSwapsFeatureFlagStatus (state) {
+  return state.metamask.swapsFeatureFlagStatus
+}
+
+export function getSwapsFeatureFlagLastReceived (state) {
+  return state.metamask.swapsFeatureFlagLastReceived
+}

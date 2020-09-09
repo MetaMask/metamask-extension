@@ -855,6 +855,23 @@ export function updateTransaction (txData) {
   }
 }
 
+export function addUnapprovedTransaction (txParams, origin) {
+  log.debug('background.addUnapprovedTransaction')
+
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.addUnapprovedTransaction(txParams, origin, (err, txMeta) => {
+        if (err) {
+          dispatch(displayWarning(err.message))
+          reject(err)
+          return
+        }
+        resolve(txMeta)
+      })
+    })
+  }
+}
+
 export function updateAndApproveTx (txData) {
   return (dispatch) => {
     dispatch(showLoadingIndication())
@@ -2121,6 +2138,186 @@ export function setPendingTokens (pendingTokens) {
   return {
     type: actionConstants.SET_PENDING_TOKENS,
     payload: tokens,
+  }
+}
+
+// Swaps
+
+export function fetchAndSetQuotes (fetchParams, fetchStartTime) {
+  return async (dispatch) => {
+    const [quotes, responseTime] = await promisifiedBackground.fetchAndSetQuotes(fetchParams, fetchStartTime)
+    await forceUpdateMetamaskState(dispatch)
+    return [quotes, responseTime]
+  }
+}
+
+export function setQuotes (quotess) {
+  return async (dispatch) => {
+    const quotes = await promisifiedBackground.setQuotes(quotess)
+    await forceUpdateMetamaskState(dispatch)
+    return quotes
+  }
+}
+
+export function setQuotesStatus (quotesStatus) {
+  return async (dispatch) => {
+    const quotes = await promisifiedBackground.setQuotesStatus(quotesStatus)
+    await forceUpdateMetamaskState(dispatch)
+    return quotes
+  }
+}
+
+export function setFetchParams (fetchParams) {
+  return async (dispatch) => {
+    const newFetchParams = await promisifiedBackground.setFetchParams(fetchParams)
+    await forceUpdateMetamaskState(dispatch)
+    return newFetchParams
+  }
+}
+
+export function setSelectedQuoteAggId (aggId) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSelectedQuoteAggId(aggId)
+    await forceUpdateMetamaskState(dispatch)
+
+  }
+}
+
+export function setSwapsTokens (tokens) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSwapsTokens(tokens)
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function resetBackgroundSwapsState () {
+  return async (dispatch) => {
+    const id = await promisifiedBackground.resetSwapsState()
+    await forceUpdateMetamaskState(dispatch)
+    return id
+  }
+}
+
+export function setTradeTxParams (params) {
+  return async (dispatch) => {
+    const id = await promisifiedBackground.setTradeTxParams(params)
+    await forceUpdateMetamaskState(dispatch)
+    return id
+  }
+}
+
+export function setTradeTxParamsWithGasEstimate (params) {
+  return async (dispatch) => {
+    const id = await promisifiedBackground.setTradeTxParamsWithGasEstimate(params)
+    await forceUpdateMetamaskState(dispatch)
+    return id
+  }
+}
+
+export function setApproveTxParams (params) {
+  return async (dispatch) => {
+    const id = await promisifiedBackground.setApproveTxParams(params)
+    await forceUpdateMetamaskState(dispatch)
+    return id
+  }
+}
+
+export function setMaxMode (maxMode) {
+  return async (dispatch) => {
+    await promisifiedBackground.setMaxMode(maxMode)
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function setSwapsTxGasPrice (gasPrice) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSwapsTxGasPrice(gasPrice)
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function setSwapsTxGasLimit (gasLimit) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSwapsTxGasLimit(gasLimit, true)
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function setSwapsTxGasParams (gasLimit, gasPrice) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSwapsTxGasPrice(gasPrice)
+    await promisifiedBackground.setSwapsTxGasLimit(gasLimit, true)
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function setShowAwaitingSwapScreen (showAwaitingSwapScreen) {
+  return async (dispatch) => {
+    await promisifiedBackground.setShowAwaitingSwapScreen(showAwaitingSwapScreen)
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function setTradeTxId (tradeTxId) {
+  return async (dispatch) => {
+    await promisifiedBackground.setTradeTxId(tradeTxId)
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function updateBlockTrackerListener (listenActive) {
+  return async (dispatch) => {
+    await promisifiedBackground.updateBlockTrackerListener(listenActive)
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function safeRefetchQuotes () {
+  return async (dispatch) => {
+    await promisifiedBackground.safeRefetchQuotes()
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function stopPollingForQuotes () {
+  return async (dispatch) => {
+    await promisifiedBackground.stopPollingForQuotes()
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function setBackgoundSwapRouteState (routeState) {
+  return async (dispatch) => {
+    await promisifiedBackground.setBackgoundSwapRouteState(routeState)
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function resetSwapsPostFetchState () {
+  return async (dispatch) => {
+    await promisifiedBackground.resetPostFetchState()
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function setCustomApproveTxData (data) {
+  return async (dispatch) => {
+    await promisifiedBackground.setCustomApproveTxData(data)
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function setSwapsErrorKey (errorKey) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSwapsErrorKey(errorKey)
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function setInitialGasEstimate (initialAggId, baseGasEstimate) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSwapsErrorKey(initialAggId, baseGasEstimate)
+    await forceUpdateMetamaskState(dispatch)
   }
 }
 

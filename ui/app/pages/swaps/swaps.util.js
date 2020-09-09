@@ -1,11 +1,18 @@
 import log from 'loglevel'
+import BigNumber from 'bignumber.js'
+import abi from 'human-standard-token-abi'
 import { isValidAddress } from 'ethereumjs-util'
-import { calcTokenValue } from '../../helpers/utils/token-util'
-import { constructTxParams } from '../../helpers/utils/util'
-import { decimalToHex } from '../../helpers/utils/conversions.util'
+import { calcTokenValue, calcTokenAmount } from '../../helpers/utils/token-util'
+import { constructTxParams, toPrecisionWithoutTrailingZeros } from '../../helpers/utils/util'
+import { decimalToHex, getValueFromWeiHex } from '../../helpers/utils/conversions.util'
 import { estimateGasFromTxParams } from '../../store/actions'
-
+import { subtractCurrencies } from '../../helpers/utils/conversion-util'
+import { formatCurrency } from '../../helpers/utils/confirm-tx.util'
 import fetchWithCache from '../../helpers/utils/fetch-with-cache'
+
+import { calcGasTotal } from '../send/send.utils'
+
+const TOKEN_TRANSFER_LOG_TOPIC_HASH = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
 
 const CACHE_REFRESH_ONE_HOUR = 3600000
 
@@ -127,7 +134,7 @@ function validateData (validators, object, urlUsed) {
   })
 }
 
-export async function fetchTradesInfo ({ sourceTokenInfo, destinationTokenInfo, slippage, sourceToken, sourceDecimals, destinationToken, value, fromAddress, exchangeList, isCustomNetwork }) {
+export async function fetchTradesInfo ({ sourceTokenInfo, destinationTokenInfo, slippage, sourceToken, sourceDecimals, destinationToken, value, fromAddress, exchangeList, isCustomNetwork, gasPrice }) {
   const urlParams = {
     destinationToken,
     sourceToken,
@@ -144,14 +151,39 @@ export async function fetchTradesInfo ({ sourceTokenInfo, destinationTokenInfo, 
   const queryString = new URLSearchParams(urlParams).toString()
   const tradeURL = `${getBaseApi(isCustomNetwork, 'trade')}${queryString}`
   const tradesResponse = await fetchWithCache(tradeURL, { method: 'GET' }, { cacheRefreshTime: 0, timeout: 15000 })
-  const newQuotes = tradesResponse
-    .filter((response) => validateData(QUOTE_VALIDATORS, response, tradeURL))
-    .map((response) => ({
-      ...response,
-      slippage,
-      sourceTokenInfo,
-      destinationTokenInfo,
-    }))
+  const newQuotes = tradesResponse.reduce((aggIdTradeMap, quote) => {
+    if (!validateData(QUOTE_VALIDATORS, quote, tradeURL)) {
+      const constructedTrade = constructTxParams({
+        ...quote.trade,
+        amount: decimalToHex(quote.trade.value),
+        gas: `0x${decimalToHex(quote.maxGas)}`,
+        gasPrice,
+      })
+
+      let { approvalNeeded } = quote
+
+      if (approvalNeeded) {
+        approvalNeeded = constructTxParams({
+          ...approvalNeeded,
+          amount: '0x0',
+          gasPrice,
+        })
+      }
+
+      return {
+        ...aggIdTradeMap,
+        [quote.aggregator]: {
+          ...quote,
+          slippage,
+          sourceTokenInfo,
+          destinationTokenInfo,
+          trade: constructedTrade,
+          approvalNeeded,
+        },
+      }
+    }
+    return aggIdTradeMap
+  }, {})
 
   return newQuotes
 }
@@ -217,4 +249,137 @@ export async function fetchTopAssets (isCustomNetwork) {
   const response = await fetchWithCache(topAssetsUrl, { method: 'GET' }, { cacheRefreshTime: CACHE_REFRESH_ONE_HOUR })
   const filteredTopAssets = response.filter((asset) => validateData(TOP_ASSET_VALIDATORS, asset, topAssetsUrl))
   return filteredTopAssets
+}
+
+export async function fetchSwapsFeatureFlag (isCustomNetwork) {
+  const status = await fetchWithCache(getBaseApi(isCustomNetwork, 'featureFlag'), { method: 'GET' }, { cacheRefreshTime: 600000 })
+  return status?.active
+}
+
+export async function fetchTokenPrice (address) {
+  const query = `contract_addresses=${address}&vs_currencies=eth`
+
+  const prices = await fetchWithCache(`https://api.coingecko.com/api/v3/simple/token_price/ethereum?${query}`, { method: 'GET' }, { cacheRefreshTime: 60000 })
+  return prices && prices[address]?.eth
+}
+
+export async function fetchTokenBalance (address, userAddress) {
+  const tokenContract = global.eth.contract(abi).at(address)
+  const tokenBalancePromise = tokenContract
+    ? tokenContract.balanceOf(userAddress)
+    : Promise.resolve()
+  const usersToken = await tokenBalancePromise
+  return usersToken
+}
+
+export function getRenderableGasFeesForQuote (tradeGas, approveGas, gasPrice, currentCurrency, conversionRate) {
+  const totalGasLimitForCalculation = (new BigNumber(tradeGas, 16)).plus(approveGas || '0x0', 16).toString(16)
+  const gasTotalInWeiHex = calcGasTotal(totalGasLimitForCalculation, gasPrice)
+
+  const ethFee = getValueFromWeiHex({
+    value: gasTotalInWeiHex,
+    toDenomination: 'ETH',
+    numberOfDecimals: 6,
+  })
+  const rawNetworkFees = getValueFromWeiHex({
+    value: gasTotalInWeiHex,
+    toCurrency: currentCurrency,
+    conversionRate,
+    numberOfDecimals: 2,
+  })
+  const formattedNetworkFee = formatCurrency(rawNetworkFees, currentCurrency)
+  return {
+    rawNetworkFees,
+    rawEthFee: ethFee,
+    feeinFiat: formattedNetworkFee,
+    feeInEth: `${ethFee} ETH`,
+  }
+}
+
+export function quotesToRenderableData (quotes, gasPrice, conversionRate, currentCurrency, approveGas, tokenConversionRates, customGasLimit) {
+  return Object.values(quotes).map((quote) => {
+    const { destinationAmount = 0, sourceAmount = 0, sourceTokenInfo, destinationTokenInfo, slippage, aggType, aggregator, gasEstimate, averageGas } = quote
+    const sourceValue = calcTokenAmount(sourceAmount, sourceTokenInfo.decimals || 18).toString(10)
+    const destinationValue = calcTokenAmount(destinationAmount, destinationTokenInfo.decimals || 18).toPrecision(8)
+
+    const { feeinFiat, rawNetworkFees, rawEthFee } = getRenderableGasFeesForQuote(customGasLimit || gasEstimate || decimalToHex(averageGas || 800000), approveGas, gasPrice, currentCurrency, conversionRate)
+
+    const metaMaskFee = `0.875%`
+    const minimumAmountReceived = `${(new BigNumber(destinationValue)).times(((100 - slippage) / 100).toFixed(6))} ${destinationTokenInfo.symbol}`
+
+    const tokenConversionRate = tokenConversionRates[destinationTokenInfo.address]
+    const ethValueOfTrade = destinationTokenInfo.symbol === 'ETH'
+      ? calcTokenAmount(destinationAmount, destinationTokenInfo.decimals || 18).minus(rawEthFee, 10)
+      : (new BigNumber(tokenConversionRate || 0, 10))
+        .times(calcTokenAmount(destinationAmount, destinationTokenInfo.decimals || 18), 10)
+        .minus(rawEthFee, 10)
+
+    let liquiditySource
+    let renderedSlippage = slippage
+
+    if (aggType === 'AGG') {
+      liquiditySource = 'Aggregator'
+    } else if (aggType === 'RFQ') {
+      liquiditySource = 'Request for Quotation'
+      renderedSlippage = 0
+    } else if (aggType === 'DEX') {
+      liquiditySource = 'Decentralized exchange'
+    } else {
+      liquiditySource = 'Unknown'
+    }
+
+    return {
+      aggId: aggregator,
+      amountReceiving: `${destinationValue} ${destinationTokenInfo.symbol}`,
+      destinationTokenDecimals: destinationTokenInfo.decimals,
+      destinationTokenSymbol: destinationTokenInfo.symbol,
+      destinationTokenValue: destinationValue,
+      isBestQuote: quote.bestQuote,
+      liquiditySource,
+      metaMaskFee,
+      networkFees: feeinFiat,
+      quoteSource: aggType,
+      rawNetworkFees,
+      slippage: renderedSlippage,
+      sourceTokenDecimals: sourceTokenInfo.decimals,
+      sourceTokenSymbol: sourceTokenInfo.symbol,
+      sourceTokenValue: sourceValue,
+      ethValueOfTrade,
+      minimumAmountReceived,
+    }
+  })
+}
+
+export function getSwapsTokensReceivedFromTxMeta (tokenSymbol, txMeta, tokenAddress, accountAddress, tokenDecimals) {
+  if (tokenSymbol === 'ETH') {
+    if (!txMeta?.postTxBalance || !txMeta?.preTxBalance) {
+      return null
+    }
+    const ethReceived = subtractCurrencies(txMeta.postTxBalance, txMeta.preTxBalance, {
+      aBase: 16,
+      bBase: 16,
+      fromDenomination: 'WEI',
+      toDenomination: 'ETH',
+      fromNumericBase: 'BN',
+      toNumericBase: 'dec',
+      numberOfDecimals: 6,
+    })
+    return ethReceived
+  }
+  const txReceipt = txMeta?.txReceipt
+  const txReceiptLogs = txReceipt?.logs
+  if (txReceiptLogs && txReceipt?.status !== '0x0') {
+    const tokenTransferLog = txReceiptLogs.find((txReceiptLog) => {
+      const isTokenTransfer = txReceiptLog.topics && txReceiptLog.topics[0] === TOKEN_TRANSFER_LOG_TOPIC_HASH
+      const isTransferFromGivenToken = txReceiptLog.address === tokenAddress
+      const isTransferFromGivenAddress = txReceiptLog.topics && txReceiptLog.topics[2] && txReceiptLog.topics[2].match(accountAddress.slice(2))
+      return isTokenTransfer && isTransferFromGivenToken && isTransferFromGivenAddress
+    })
+    return tokenTransferLog
+      ? toPrecisionWithoutTrailingZeros(
+        calcTokenAmount(tokenTransferLog.data, tokenDecimals).toString(10), 6,
+      )
+      : ''
+  }
+  return null
 }

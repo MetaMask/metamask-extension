@@ -37,6 +37,8 @@ export function useTransactionTimeRemaining (
   isEarliestNonce,
   submittedTime,
   currentGasPrice,
+  forceAllow,
+  dontFormat,
 ) {
   // the following two selectors return the result of mapping over an array, as such they
   // will always be new objects and trigger effects. To avoid this, we use isEqual as the
@@ -68,8 +70,9 @@ export function useTransactionTimeRemaining (
 
   useEffect(() => {
     if (
-      isMainNet &&
-      transactionTimeFeatureActive &&
+      ((isMainNet &&
+      transactionTimeFeatureActive) ||
+      forceAllow) &&
       isPending &&
       isEarliestNonce &&
       !isNaN(initialTimeEstimate)
@@ -93,6 +96,7 @@ export function useTransactionTimeRemaining (
     isPending,
     submittedTime,
     initialTimeEstimate,
+    forceAllow,
   ])
 
   // there are numerous checks to determine if time should be displayed.
@@ -100,5 +104,5 @@ export function useTransactionTimeRemaining (
   // User is currently not on the mainnet
   // User does not have the transactionTime feature flag enabled
   // The transaction is not pending, or isn't the earliest nonce
-  return timeRemaining ? rtf.format(timeRemaining, 'minute') : undefined
+  return timeRemaining ? (dontFormat ? timeRemaining : rtf.format(timeRemaining, 'minute')) : undefined
 }
