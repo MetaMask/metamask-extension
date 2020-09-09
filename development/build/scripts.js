@@ -17,6 +17,7 @@ const { makeStringTransform } = require('browserify-transform-tools')
 
 const conf = require('rc')('metamask', {
   INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
+  SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
 })
 
 const packageJSON = require('../../package.json')
@@ -333,6 +334,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
           ? '00000000000000000000000000000000'
           : conf.INFURA_PROJECT_ID
       ),
+      SEGMENT_WRITE_KEY: opts.testing ? undefined : conf.SEGMENT_WRITE_KEY,
     }), {
       global: true,
     })
