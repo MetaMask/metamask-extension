@@ -35,6 +35,7 @@ export default function DropdownInputPair ({
   selectPlaceHolderText,
   loading,
   hideItemIf,
+  listContainerClassName,
 }) {
   const [isOpen, setIsOpen] = useState(false)
   const open = () => setIsOpen(true)
@@ -63,6 +64,7 @@ export default function DropdownInputPair ({
         externallySelectedItem={selectedItem}
         selectPlaceHolderText={selectPlaceHolderText}
         selectorClosedClassName="dropdown-input-pair__selector--closed"
+        listContainerClassName={listContainerClassName}
         loading={loading}
         hideItemIf={hideItemIf}
         defaultToAll
@@ -106,4 +108,5 @@ DropdownInputPair.propTypes = {
   selectPlaceHolderText: PropTypes.string,
   loading: PropTypes.bool,
   hideItemIf: PropTypes.func,
+  listContainerClassName: PropTypes.string,
 }

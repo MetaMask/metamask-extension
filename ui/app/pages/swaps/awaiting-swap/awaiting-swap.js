@@ -13,10 +13,10 @@ import {
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
 } from '../../../helpers/constants/swaps'
+import SwapsFooter from '../swaps-footer'
 import SwapFailureIcon from './swap-failure-icon'
 import SwapSuccessIcon from './swap-success-icon'
 import QuotesTimeoutIcon from './quotes-timeout-icon'
-import SwapsFooter from '../swaps-footer'
 
 export default function AwaitingSwap ({
   swapComplete,
@@ -29,6 +29,7 @@ export default function AwaitingSwap ({
   estimatedTransactionWaitTime,
   rpcPrefs,
   onSubmit,
+  submittingSwap,
 }) {
   const t = useContext(I18nContext)
   const animationEventEmitter = useRef(new EventEmitter())
@@ -117,7 +118,8 @@ export default function AwaitingSwap ({
       <SwapsFooter
         onSubmit={onSubmit}
         submitText={submitText}
-        hideCancel
+        disabled={submittingSwap}
+        hideCancel={errorKey !== QUOTES_EXPIRED_ERROR}
       />
     </div>
   )

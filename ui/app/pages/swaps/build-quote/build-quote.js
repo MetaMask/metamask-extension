@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useRef, useCallback } from 'react'
+import React, { useContext, useEffect, useState, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import classnames from 'classnames'
@@ -19,15 +19,15 @@ import {
   getTopAssets,
   getFetchParams,
 } from '../../../ducks/swaps/swaps'
-import { convertTokenToFiat, formatCurrency } from '../../../helpers/utils/confirm-tx.util'
 import { getValueFromWeiHex } from '../../../helpers/utils/conversions.util'
 import { calcTokenAmount } from '../../../helpers/utils/token-util'
 import { usePrevious } from '../../../hooks/usePrevious'
-import { useTokenTracker, useTokenFiatAmount } from '../../../hooks/useTokenTracker'
+import { useTokenTracker } from '../../../hooks/useTokenTracker'
+import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount'
 
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../helpers/constants/swaps'
 
-import { setTradeTxParams, setApproveTxParams, setQuotes, setMaxMode, resetSwapsPostFetchState } from '../../../store/actions'
+import { setMaxMode, resetSwapsPostFetchState } from '../../../store/actions'
 import { fetchTokenPrice, fetchTokenBalance } from '../swaps.util'
 import SwapsFooter from '../swaps-footer'
 
@@ -38,6 +38,7 @@ export default function BuildQuote ({
   onInputChange,
   ethBalance,
   setMaxSlippage,
+  maxSlippage,
   selectedAccountAddress,
   onSubmit,
 }) {
@@ -166,6 +167,7 @@ export default function BuildQuote ({
           loading={loading && (!tokensToSearch?.length || !topAssets || !Object.keys(topAssets).length)}
           selectPlaceHolderText="Select"
           hideItemIf={(item) => item.address === selectedToToken?.address}
+          listContainerClassName="build-quote__open-dropdown"
         />
         <div
           className={classnames('build-quote__balance-message', {
@@ -203,18 +205,23 @@ export default function BuildQuote ({
           loading={loading && (!tokensToSearch?.length || !topAssets || !Object.keys(topAssets).length)}
           externallySelectedItem={selectedToToken}
           hideItemIf={hideDropdownItemIf}
-          listContainerClassName="build-quote__to-dropdown"
+          listContainerClassName="build-quote__open-dropdown"
           hideRightLabels
           defaultToAll
 
         />
         <div className="build-quote__slippage-buttons-container">
-          <SlippageButtons onSelect={(newSlippage) => setMaxSlippage(newSlippage)} />
+          <SlippageButtons
+            onSelect={(newSlippage) => {
+              setMaxSlippage(newSlippage)
+            }}
+          />
         </div>
       </div>
       <SwapsFooter
         onSubmit={onSubmit}
         submitTextKey={t('swapGetQuotes')}
+        disabled={((!Number(inputValue) || !selectedToToken.address) || (Number(maxSlippage) === 0))}
         hideCancel
       />
     </div>
@@ -227,4 +234,5 @@ BuildQuote.propTypes = {
   ethBalance: PropTypes.string,
   setMaxSlippage: PropTypes.func,
   onSubmit: PropTypes.func,
+  selectedAccountAddress: PropTypes.string,
 }

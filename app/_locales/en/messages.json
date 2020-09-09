@@ -1,4 +1,7 @@
 {
+  "Done": {
+    "message": "Done"
+  },
   "about": {
     "message": "About"
   },
@@ -1524,6 +1527,12 @@
   "swapAmountReceivedInfo": {
     "message": "The exact amount you’ll receive depends on slippage"
   },
+  "swapApproveNeedMoreTokens": {
+    "message": "You need $1 more $2 to complete this Swap"
+  },
+  "swapBestQuote": {
+    "message": "Best quote"
+  },
   "swapBuildQuotePlaceHolderText": {
     "message": "No tokens available matching $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
@@ -1535,8 +1544,17 @@
   "swapCustom": {
     "message": "custom"
   },
+  "swapEditLimit": {
+    "message": "Edit limit"
+  },
+  "swapEnableDescription": {
+    "message": "This is a required transaction that allows $1 to be swapped. "
+  },
   "swapErrorDescription": {
     "message": "Your funds are safe and still available in your wallet."
+  },
+  "swapEstimatedNetworkFees": {
+    "message": "Estimated network fee"
   },
   "swapEstimatedTime": {
     "message": "Estimated time:"
@@ -1593,6 +1611,12 @@
   "swapLowSlippageError": {
     "message": "Transaction may fail, max slippage too low."
   },
+  "swapMaxNetworkFeeInfo": {
+    "message": "The Max network fee is the most you’ll pay to complete your transaction. The max fee amount helps us ensure that your Swap has the best chance of succeeding."
+  },
+  "swapMaxNetworkFees": {
+    "message": "Max network fee"
+  },
   "swapMaxSlippage": {
     "message": "Max slippage"
   },
@@ -1605,11 +1629,17 @@
   "swapMinimumAmountReceivingInfoTooltip": {
     "message": "This is the minimum amount you will receive. You may receive more depending on slippage."
   },
+  "swapNQuotesAvailable": {
+    "message": "$1 quotes available"
+  },
   "swapNetworkFees": {
     "message": "Network fees"
   },
   "swapNetworkFeesInfo": {
     "message": "This is the cost to process the swap on the Ethereum network. It’s also known as “gas” fees."
+  },
+  "swapNewQuoteIn": {
+    "message": "New quotes in $1"
   },
   "swapOnceTransactionHasProcess": {
     "message": "Your $1 will be added to your account once this transaction has processed",
@@ -1630,6 +1660,9 @@
   },
   "swapQuoteSource": {
     "message": "Quote Source"
+  },
+  "swapQuotesAreRefreshed": {
+    "message": "Quotes are refreshed often to reflect current market conditions."
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "Please request new quotes to get the latest rates."
@@ -1676,12 +1709,27 @@
   "swapSwapError": {
     "message": "Swap failed"
   },
+  "swapSwapErrorDescription": {
+    "message": "Your trade did not succeed. Please try again."
+  },
+  "swapSwapFrom": {
+    "message": "Swap from"
+  },
+  "swapSwapTo": {
+    "message": "Swap to"
+  },
+  "swapThisWillAllowApprove": {
+    "message": "This will allow $1 to be swapped."
+  },
   "swapTokenAvailable": {
     "message": "Your $1 has been added to your account.",
     "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
   },
   "swapTransactionComplete": {
     "message": "Transaction complete"
+  },
+  "swapYourTokenBalance": {
+    "message": "$1 $2 available to swap"
   },
   "swapsAdvancedOptions": {
     "message": "Advanced Options"
@@ -1695,6 +1743,12 @@
   },
   "swapsMaxSlippage": {
     "message": "Max slippage"
+  },
+  "swapsNoQuotesAvailable": {
+    "message": "No quotes available"
+  },
+  "swapsNotEnoughForTx": {
+    "message": "Not enough $1 to complete this transaction"
   },
   "switchNetworks": {
     "message": "Switch Networks"
@@ -1742,7 +1796,7 @@
     "message": "Terms of Use"
   },
   "termsOfService": {
-    "message": "Terms of Service"
+    "message": "Terms of service"
   },
   "testFaucet": {
     "message": "Test Faucet"
@@ -1955,8 +2009,5 @@
   },
   "yourSigRequested": {
     "message": "Your signature is being requested"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Zero gas price on speed up"
   }
 }

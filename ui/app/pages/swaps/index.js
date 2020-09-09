@@ -1,10 +1,10 @@
-import React, { useState, useContext, useEffect, useCallback, useRef } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Switch, Route, useLocation, useHistory, Redirect } from 'react-router-dom'
-import classnames from 'classnames'
 import BigNumber from 'bignumber.js'
-import { I18nContext } from '../../contexts/i18n'
 import { getSelectedAccount, getCurrentNetworkId } from '../../selectors/selectors'
+import { useTransactionTimeRemaining } from '../../hooks/useTransactionTimeRemaining'
+import { usePrevious } from '../../hooks/usePrevious'
 import {
   getFromToken,
   getToToken,
@@ -22,8 +22,6 @@ import {
   setAggregatorMetadata,
   getAggregatorMetadata,
   getQuotesStatus,
-  getQuotesFetchStartTime,
-  getMaxMode,
   getBackgoundSwapRouteState,
   getSwapsErrorKey,
 } from '../../ducks/swaps/swaps'
@@ -36,18 +34,15 @@ import {
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes'
 import {
-  QUOTES_EXPIRED_ERROR,
-  SWAP_FAILED_ERROR,
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
   ETH_SWAPS_TOKEN_OBJECT,
 } from '../../helpers/constants/swaps'
 
 import { fetchBasicGasAndTimeEstimates, fetchGasEstimates, resetCustomData } from '../../ducks/gas/gas.duck'
-import { resetBackgroundSwapsState, setSwapsTokens, setSwapsTxGasPrice, setQuotes, setMaxMode, removeToken, setBackgoundSwapRouteState } from '../../store/actions'
-import { getAveragePriceEstimateInHexWEI, currentNetworkTxListSelector, getCustomNetworkId } from '../../selectors'
+import { resetBackgroundSwapsState, setSwapsTokens, setSwapsTxGasPrice, setMaxMode, removeToken, setBackgoundSwapRouteState, setSwapsErrorKey } from '../../store/actions'
+import { getAveragePriceEstimateInHexWEI, currentNetworkTxListSelector, getCustomNetworkId, getRpcPrefsForCurrentProvider } from '../../selectors'
 import { useSwapSubmitFunction } from '../../hooks/useSwapSubmitFunction'
-import PageContainerFooter from '../../components/ui/page-container/page-container-footer'
 import { decGWEIToHexWEI, getValueFromWeiHex } from '../../helpers/utils/conversions.util'
 import SwapsFooter from './swaps-footer'
 import SwapsRouteContainer from './swaps-route-container'
@@ -63,11 +58,9 @@ export default function Swap () {
   const dispatch = useDispatch()
 
   const { pathname } = useLocation()
-  const isBuildQuoteRoute = pathname === BUILD_QUOTE_ROUTE
-  const isViewQuoteRoute = pathname === VIEW_QUOTE_ROUTE
-  const isLoadingQuoteRoute = pathname === LOADING_QUOTES_ROUTE
   const isAwaitingSwapRoute = pathname === AWAITING_SWAP_ROUTE
   const isSwapsErrorRoute = pathname === SWAPS_ERROR_ROUTE
+
   const routeState = useSelector(getBackgoundSwapRouteState)
 
   const tradeTxParams = useSelector(getTradeTxParams)
@@ -109,7 +102,7 @@ export default function Swap () {
   const networkId = useSelector(getCurrentNetworkId)
   const customNetworkId = useSelector(getCustomNetworkId)
   const isCustomNetwork = Boolean(customNetworkId)
-  const maxMode = useSelector(getMaxMode)
+  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider)
 
   const { destinationTokenAddedForSwap } = fetchParams || {}
 
@@ -130,7 +123,7 @@ export default function Swap () {
   const initialDataFetch = useCallback(() => {
     dispatch(fetchBasicGasAndTimeEstimates())
       .then((basicEstimates) => {
-        if (tradeTxParamsTo) {
+        if (tradeTxParamsTo || !customConvertGasPrice || customConvertGasPrice === '0x0') {
           dispatch(setSwapsTxGasPrice(decGWEIToHexWEI(basicEstimates.average)))
         }
         return basicEstimates.blockTime
@@ -139,7 +132,7 @@ export default function Swap () {
         dispatch(fetchGasEstimates(blockTime, true))
       })
 
-  }, [dispatch, tradeTxParamsTo])
+  }, [dispatch, tradeTxParamsTo, customConvertGasPrice])
 
   useEffect(() => {
     initialDataFetch()
@@ -177,15 +170,7 @@ export default function Swap () {
     : fetchParams?.sourceTokenInfo
   const selectedFromToken = useSelector(getFromToken) || fetchParamsFromToken || {}
 
-  const cancelAll = () => {
-    exitedSwapsEvent()
-    dispatch(clearSwapsState())
-    dispatch(resetBackgroundSwapsState())
-    history.push(DEFAULT_ROUTE)
-  }
-
   const [submittingSwap, setSubmittingSwap] = useState(false)
-  const [loadingQuotesDone, setLoadingQuotesDone] = useState(false)
 
   const quotesStatus = useSelector(getQuotesStatus)
   const swapsErrorKey = useSelector(getSwapsErrorKey)
@@ -207,13 +192,21 @@ export default function Swap () {
     isCustomNetwork,
     quotesStatus,
     fetchingQuotes,
-    quotesRequestCancelledEvent,
   })
   const onRetry = useSwapSubmitFunction({ isRetry: true })
 
   if (swapsErrorKey && !isSwapsErrorRoute) {
     history.push(SWAPS_ERROR_ROUTE)
   }
+
+  const [timeRemainingExpired, setTimeRemainingExpired] = useState(false)
+  const timeRemaining = useTransactionTimeRemaining(true, true, tradeTxData?.submittedTime, usedGasPrice, true, true)
+  const previousTimeRemaining = usePrevious(timeRemaining)
+  const timeRemainingIsNumber = (timeRemaining || timeRemaining === 0)
+  if (!timeRemainingIsNumber && (previousTimeRemaining || previousTimeRemaining === 0) && !timeRemainingExpired) {
+    setTimeRemainingExpired(true)
+  }
+  const usedTimeRemaining = timeRemaining * 1000 * 60
 
   return (
     <div className="swaps">
@@ -260,6 +253,7 @@ export default function Swap () {
                     setMaxMode={setMaxMode}
                     selectedAccountAddress={selectedAccountAddress}
                     onSubmit={onSubmit}
+                    maxSlippage={maxSlippage}
                   />
                 )
               }}
@@ -269,7 +263,13 @@ export default function Swap () {
               exact
               render={() => {
                 if (quotes.length) {
-                  return (<ViewQuote numberOfQuotes={quotes.length} setInputValue={setInputValue} onSubmit={onSubmit} onCancel={onRetry} />)
+                  return (
+                    <ViewQuote
+                      numberOfQuotes={quotes.length}
+                      onSubmit={onSubmit}
+                      onCancel={onRetry}
+                    />
+                  )
                 } else if (fetchParams) {
                   return <Redirect to={{ pathname: SWAPS_ERROR_ROUTE }} />
                 }
@@ -284,13 +284,14 @@ export default function Swap () {
                   return (
                     <AwaitingSwap
                       swapComplete={tradeConfirmed}
+                      errorKey={swapsErrorKey}
                       symbol={fetchParams?.destinationTokenInfo?.symbol}
-                      networkId={networkId}
                       txHash={tradeTxData?.hash}
+                      networkId={networkId}
                       tokensReceived={tokensReceived}
-                      tradeTxData={tradeTxData}
-                      usedGasPrice={usedGasPrice}
-                      submittingSwap={submittingSwap}
+                      submittedTime={tradeTxParams?.submittedTime}
+                      estimatedTransactionWaitTime={usedTimeRemaining}
+                      rpcPrefs={rpcPrefs}
                       onSubmit={onSubmit}
                     />
                   )
@@ -311,7 +312,7 @@ export default function Swap () {
                         await dispatch(setBackgoundSwapRouteState(''))
 
                         if (swapsErrorKey === ERROR_FETCHING_QUOTES || swapsErrorKey === QUOTES_NOT_AVAILABLE_ERROR) {
-                          setLoadingQuotesDone(true)
+                          dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR))
                           history.push(SWAPS_ERROR_ROUTE)
                         } else {
                           history.push(VIEW_QUOTE_ROUTE)
