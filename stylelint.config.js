@@ -1,4 +1,16 @@
 module.exports = {
+  ignoreFiles: [
+    '/app',
+    '/development',
+    '/dist',
+    '/docs',
+    '/fonts',
+    '/images',
+    '/node_modules',
+    '/notices',
+    '/test',
+  ],
+
   rules: {
     // stylelint-config-standard
 
