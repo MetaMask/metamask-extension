@@ -22,7 +22,7 @@ and used to do things like calculate gas of a tx.
 export default class TxGasUtil {
 
   constructor (provider) {
-    this.query = new EthQuery(provider)
+    this.query = new EthQuery(provider())
   }
 
   /**

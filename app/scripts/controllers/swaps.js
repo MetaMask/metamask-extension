@@ -200,6 +200,7 @@ export default class SwapsController {
   }
 
   async getAllQuotesWithGasEstimates (quotes) {
+    const isMetaSwapTestNet = this._isMetaSwapTestNet()
     const quoteGasData = await Promise.all(Object.values(quotes).map(async (quote) => {
       const { gasLimit, simulationFails } = await this.timedoutGasReturn({ ...quote.trade, gas: `0x${quote.maxGas.toString(16)}` })
       return [gasLimit, simulationFails, quote.aggregator]
@@ -212,7 +213,7 @@ export default class SwapsController {
           ...quotes[aggId],
           gasEstimate: gasLimit,
         }
-      } else if (quotes[aggId].approvalNeeded) {
+      } else if (quotes[aggId].approvalNeeded || isMetaSwapTestNet) {
         newQuotes[aggId] = quotes[aggId]
       }
     })
