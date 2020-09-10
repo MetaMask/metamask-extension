@@ -272,7 +272,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.swapsController = new SwapsController({
       getBufferedGasLimit: this.txController.txGasUtil.getBufferedGasLimit.bind(this.txController.txGasUtil),
-      provider: this.networkController._provider,
+      provider: this.provider,
       getNetwork: this.networkController.getNetworkState.bind(this.networkController),
       getProviderConfig: this.networkController.getProviderConfig.bind(this.networkController),
       tokenRatesStore: this.tokenRatesController.store,

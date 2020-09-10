@@ -7,13 +7,13 @@ import abi from 'human-standard-token-abi'
 import { calcTokenAmount } from '../../../ui/app/helpers/utils/token-util'
 import { calcGasTotal } from '../../../ui/app/pages/send/send.utils'
 import { conversionUtil } from '../../../ui/app/helpers/utils/conversion-util'
-
-import { fetchTradesInfo } from '../../../ui/app/pages/swaps/swaps.util'
 import {
+  ETH_SWAPS_TOKEN_ADDRESS, DEFAULT_ERC20_APPROVE_GAS,
   // QUOTES_EXPIRED_ERROR,
   // ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
 } from '../../../ui/app/helpers/constants/swaps'
+import { fetchTradesInfo } from '../../../ui/app/pages/swaps/swaps.util'
 
 const METASWAP_ADDRESS = '0x9537C111Ea62a8dc39E99718140686f7aD856321'
 
@@ -29,7 +29,8 @@ function getERC20Allowance (contractAddress, walletAddress, eth) {
   })
 }
 
-const INTERVAL = 50 * 1000
+// This is the amount of time to wait, after successfully fetching quotes and their gas estimates, before fetching for new quotes
+const QUOTE_POLLING_INTERVAL = 50 * 1000
 
 const initialState = {
   swapsState: {
@@ -55,8 +56,7 @@ const initialState = {
 export default class SwapsController {
 
   constructor ({ getBufferedGasLimit, provider, getProviderConfig, tokenRatesStore }) {
-    const initState = Object.assign(initialState)
-    this.store = new ObservableStore(initState)
+    this.store = new ObservableStore({ swapsState: { ...initialState.swapsState } })
 
     this.getBufferedGasLimit = getBufferedGasLimit
     this.tokenRatesStore = tokenRatesStore
@@ -67,10 +67,14 @@ export default class SwapsController {
     this.web3 = new Web3(provider)
   }
 
+  // TODO: remove before final merge
+  // The metaswap test net is added as a custom rpc with a chainId of 1. For the purposes of the test phase,
+  // If we have a custom rpcTarget with a chainId of 1, we regard it to be the metaswap test net.
   _isMetaSwapTestNet () {
     const providerConfig = this.getProviderConfig()
-    const isMetaSwapTestNet = providerConfig.chainId === '1' && providerConfig.rpcTarget.length > 0
-    return isMetaSwapTestNet
+    return (
+      providerConfig.chainId === '1' && providerConfig.rpcTarget.length > 0
+    )
   }
 
   async fetchAndSetQuotes (newFetchParams) {
@@ -92,16 +96,16 @@ export default class SwapsController {
     const quotesLastFetched = Date.now()
 
     let approvalNeeded = false
-    if (fetchParams.sourceToken !== '0x0000000000000000000000000000000000000000') {
+    if (fetchParams.sourceToken !== ETH_SWAPS_TOKEN_ADDRESS) {
       const allowance = await getERC20Allowance(fetchParams.sourceToken, fetchParams.fromAddress, this.web3.eth)
       approvalNeeded = !allowance.gt(0)
       if (!approvalNeeded) {
         newQuotes = mapValues(newQuotes, (quote) => ({ ...quote, approvalNeeded: null }))
       } else if (newFetchParams) {
-        const { gasLimit: approvalGas } = await this.timedoutGasReturn({ ...newQuotes[0].approvalNeeded, gas: '0x1d4c0' })
+        const { gasLimit: approvalGas } = await this.timedoutGasReturn({ ...newQuotes[0].approvalNeeded, gas: DEFAULT_ERC20_APPROVE_GAS })
         newQuotes = mapValues(newQuotes, (quote) => ({
           ...quote,
-          approvalNeeded: { ...quote.approvalNeeded, gas: approvalGas || '0x1d4c0' },
+          approvalNeeded: { ...quote.approvalNeeded, gas: approvalGas || DEFAULT_ERC20_APPROVE_GAS },
         }))
       }
     }
@@ -159,7 +163,7 @@ export default class SwapsController {
   pollForNewQuotes () {
     this.timeout = setTimeout(() => {
       this.fetchAndSetQuotes()
-    }, INTERVAL)
+    }, QUOTE_POLLING_INTERVAL)
   }
 
   stopPollingForQuotes () {
@@ -321,7 +325,6 @@ export default class SwapsController {
   }
 
   _findTopQuoteAggId (quotes) {
-    // console.log('@@@ quotes', quotes)
     const tokenConversionRates = this.tokenRatesStore.getState().contractExchangeRates
     const { swapsState: { customGasPrice } } = this.store.getState()
 
@@ -334,7 +337,6 @@ export default class SwapsController {
 
     Object.values(quotes).forEach((quote) => {
       const { destinationAmount = 0, destinationToken, trade, approvalNeeded, averageGas, gasEstimate, aggregator } = quote
-      // console.log('@@@ quote', quote)
       const tradeGasLimitForCalculation = gasEstimate ? (new BigNumber(gasEstimate, 16)) : (new BigNumber(averageGas, 10))
       const totalGasLimitForCalculation = tradeGasLimitForCalculation.plus(approvalNeeded?.gas || '0x0', 16).toString(16)
       const gasTotalInWeiHex = calcGasTotal(totalGasLimitForCalculation, customGasPrice || '0x1')

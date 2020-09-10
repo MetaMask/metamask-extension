@@ -199,9 +199,6 @@ export function useSwapSubmitFunction ({
     const destinationTokenInfo = swapsTokens?.find(({ address }) => address === toTokenAddress) || selectedToToken
 
     dispatch(setSwapFromToken(selectedFromToken))
-    let newSwapsError = null
-    let fetchedQuotes
-    let selectedAggId
     let revisedValue
     if (maxMode && sourceTokenInfo.symbol === 'ETH') {
       const totalGasLimitForCalculation = (new BigNumber(800000, 10)).plus(100000, 10).toString(16)
@@ -212,7 +209,7 @@ export function useSwapSubmitFunction ({
     try {
       const fetchStartTime = Date.now()
       dispatch(setSwapQuotesFetchStartTime(fetchStartTime))
-      const result = await dispatch(fetchAndSetQuotes({
+      const [fetchedQuotes, selectedAggId] = await dispatch(fetchAndSetQuotes({
         sourceTokenInfo,
         destinationTokenInfo,
         slippage: maxSlippage,
@@ -227,23 +224,17 @@ export function useSwapSubmitFunction ({
         destinationTokenAddedForSwap,
         balanceError,
       }))
-      fetchedQuotes = result[0]
-      selectedAggId = result[1]
       if (Object.values(fetchedQuotes)?.length === 0) {
-        newSwapsError = QUOTES_NOT_AVAILABLE_ERROR
+        dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR))
+      } else {
+        const newSelectedQuote = fetchedQuotes[selectedAggId]
+        dispatch(setInitialGasEstimate(selectedAggId, newSelectedQuote.maxGas))
       }
     } catch (e) {
-      newSwapsError = ERROR_FETCHING_QUOTES
+      dispatch(setSwapsErrorKey(ERROR_FETCHING_QUOTES))
     }
 
-    if (newSwapsError) {
-      dispatch(setSwapsErrorKey(newSwapsError))
-    } else {
-      const newSelectedQuote = fetchedQuotes[selectedAggId]
-      dispatch(setInitialGasEstimate(selectedAggId, newSelectedQuote.maxGas))
-    }
     dispatch(setFetchingQuotes(false))
-
   }
 
   if (isBuildQuoteRoute || (isSwapsErrorRoute && swapsErrorKey === QUOTES_EXPIRED_ERROR)) {
