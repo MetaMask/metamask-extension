@@ -317,6 +317,14 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
       throw new Error('Missing SENTRY_DSN environment variable')
     }
 
+    // When we're in the 'production' environment we will use a specific key only set in CI
+    // Otherwise we'll use the key from .metamaskrc or from the environment variable. If
+    // the value of SEGMENT_WRITE_KEY that we envify is undefined then no events will be tracked
+    // in the build. This is intentional so that developers can contribute to MetaMask without
+    // inflating event volume.
+    const SEGMENT_PROD_WRITE_KEY = opts.testing ? undefined : process.env.SEGMENT_PROD_WRITE_KEY
+    const SEGMENT_DEV_WRITE_KEY = opts.testing ? undefined : conf.SEGMENT_WRITE_KEY
+
     // Inject variables into bundle
     bundler.transform(envify({
       METAMASK_DEBUG: opts.devMode,
@@ -334,7 +342,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
           ? '00000000000000000000000000000000'
           : conf.INFURA_PROJECT_ID
       ),
-      SEGMENT_WRITE_KEY: opts.testing ? undefined : conf.SEGMENT_WRITE_KEY,
+      SEGMENT_WRITE_KEY: environment === 'production' ? SEGMENT_PROD_WRITE_KEY : SEGMENT_DEV_WRITE_KEY,
     }), {
       global: true,
     })
