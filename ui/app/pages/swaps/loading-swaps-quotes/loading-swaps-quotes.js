@@ -4,25 +4,27 @@ import PropTypes from 'prop-types'
 import { shuffle } from 'lodash'
 import { I18nContext } from '../../../contexts/i18n'
 import Mascot from '../../../components/ui/mascot'
+import SwapsFooter from '../swaps-footer'
 import BackgroundAnimation from './background-animation'
 import AggregatorLogo from './aggregator-logo'
-import SwapsFooter from '../swaps-footer'
 
 // These locations reference where we want the top-left corner of the logo div to appear in relation to the
 // centre point of the fox
-const AGGREGATOR_LOCATION_MAP = {
-  totle: { x: -125, y: -75 },
-  dexag: { x: 30, y: -75 },
-  airswap: { x: -145, y: 0 },
-  paraswap: { x: 50, y: 0 },
-  zeroExV1: { x: -135, y: 46 },
-  oneInch: { x: 40, y: 46 },
-}
+const AGGREGATOR_LOCATIONS = [
+  { x: -125, y: -75 },
+  { x: 30, y: -75 },
+  { x: -145, y: 0 },
+  { x: 50, y: 0 },
+  { x: -135, y: 46 },
+  { x: 40, y: 46 },
+]
+const randomLocations = shuffle([...AGGREGATOR_LOCATIONS])
+AGGREGATOR_LOCATIONS.push(randomLocations[0])
 
-const AGGREGATOR_NAMES = Object.keys(AGGREGATOR_LOCATION_MAP)
+const AGGREGATOR_NAMES = ['totle', 'dexag', 'airswap', 'paraswap', 'zeroExV1', 'oneInch', 'uniswap']
 
-function getMascotTarget (aggregatorName, centerPoint) {
-  const location = AGGREGATOR_LOCATION_MAP[aggregatorName]
+function getMascotTarget (aggregatorName, centerPoint, aggregatorLocationMap) {
+  const location = aggregatorLocationMap[aggregatorName]
 
   if (!location || !centerPoint) {
     return centerPoint ?? {}
@@ -51,6 +53,9 @@ export default function LoadingSwapsQuotes ({
 
   const [quoteCount, updateQuoteCount] = useState(0)
   const [aggregatorNames] = useState(shuffle(AGGREGATOR_NAMES))
+  const [aggregatorLocations] = useState(shuffle(AGGREGATOR_LOCATIONS))
+  const _aggregatorLocationMap = aggregatorNames.reduce((nameLocationMap, name, index) => ({ ...nameLocationMap, [name]: aggregatorLocations[index] }), {})
+  const [aggregatorLocationMap] = useState(_aggregatorLocationMap)
   const [midPointTarget, setMidpointTarget] = useState(null)
   const [doneCalled, setDoneCalled] = useState(false)
 
@@ -124,7 +129,7 @@ export default function LoadingSwapsQuotes ({
               width="90"
               height="90"
               followMouse={false}
-              lookAtTarget={getMascotTarget(aggregatorNames[quoteCount], midPointTarget)}
+              lookAtTarget={getMascotTarget(aggregatorNames[quoteCount], midPointTarget, aggregatorLocationMap)}
             />
           </div>
           {currentMascotContainer && midPointTarget && aggregatorNames.map((aggName) => (
@@ -132,8 +137,8 @@ export default function LoadingSwapsQuotes ({
               className="loading-swaps-quotes__logo"
               style={{
                 opacity: aggName === aggregatorNames[quoteCount] ? 1 : 0,
-                top: AGGREGATOR_LOCATION_MAP[aggName]?.y + midPointTarget?.y ?? 0,
-                left: AGGREGATOR_LOCATION_MAP[aggName]?.x + midPointTarget?.x ?? 0,
+                top: aggregatorLocationMap[aggName]?.y + midPointTarget?.y ?? 0,
+                left: aggregatorLocationMap[aggName]?.x + midPointTarget?.x ?? 0,
               }}
               key={`aggregator-logo-${aggName}`}
             >
