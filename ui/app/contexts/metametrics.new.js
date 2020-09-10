@@ -130,7 +130,6 @@ export function MetaMetricsProvider ({ children }) {
       // a config setting for this instead of trying to match the event name
       const isSendFlow = Boolean(event.match(/^send|^confirm/u))
       if (isSendFlow && !sendCountIsTrackable(metaMetricsSendCount + 1)) {
-        //
         excludeMetaMetricsId = true
       }
       const idTrait = excludeMetaMetricsId ? 'anonymousId' : 'userId'
