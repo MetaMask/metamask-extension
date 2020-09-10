@@ -1,5 +1,4 @@
 import assert from 'assert'
-import nock from 'nock'
 import sinon from 'sinon'
 import ObservableStore from 'obs-store'
 import contracts from 'eth-contract-metadata'
@@ -21,13 +20,9 @@ describe('DetectTokensController', function () {
   }
 
   beforeEach(async function () {
-
-    nock('https://api.infura.io')
-      .get(/.*/u)
-      .reply(200)
-
     keyringMemStore = new ObservableStore({ isUnlocked: false })
     network = new NetworkController()
+    network.setInfuraProjectId('foo')
     preferences = new PreferencesController({ network })
     preferences.setAddresses([
       '0x7e57e2',
@@ -39,7 +34,6 @@ describe('DetectTokensController', function () {
 
   after(function () {
     sandbox.restore()
-    nock.cleanAll()
   })
 
   it('should poll on correct interval', async function () {

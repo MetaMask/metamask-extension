@@ -47,6 +47,7 @@ describe('Actions', function () {
         },
       },
       initState: cloneDeep(firstTimeState),
+      infuraProjectId: 'foo',
     })
 
     metamaskController.threeBoxController = {

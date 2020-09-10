@@ -15,7 +15,9 @@ const pify = require('pify')
 const endOfStream = pify(require('end-of-stream'))
 const { makeStringTransform } = require('browserify-transform-tools')
 
-const conf = require('rc')('metamask', {})
+const conf = require('rc')('metamask', {
+  INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
+})
 
 const packageJSON = require('../../package.json')
 const { createTask, composeParallel, composeSeries, runInChildProcess } = require('./task')
@@ -326,6 +328,11 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
       ETH_GAS_STATION_API_KEY: process.env.ETH_GAS_STATION_API_KEY || '',
       CONF: opts.devMode ? conf : ({}),
       SENTRY_DSN: process.env.SENTRY_DSN,
+      INFURA_PROJECT_ID: conf.INFURA_PROJECT_ID || (
+        opts.testing
+          ? '00000000000000000000000000000000'
+          : undefined
+      ),
     }), {
       global: true,
     })
