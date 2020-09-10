@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "CLA Signature Bot"
-        uses: MetaMask/cla-signature-bot@v3.0.0
+        uses: MetaMask/cla-signature-bot@v3.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
