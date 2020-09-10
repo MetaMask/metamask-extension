@@ -1,14 +1,15 @@
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import contractMap from 'eth-contract-metadata'
 import BigNumber from 'bignumber.js'
-import { isEqual, shuffle } from 'lodash'
+import { shuffle } from 'lodash'
 import { getValueFromWeiHex } from '../helpers/utils/conversions.util'
 import { checksumAddress } from '../helpers/utils/util'
 import { getFormattedTokenFiatAmount, getUnFormattedTokenFiatAmount } from '../helpers/utils/token-util'
 import { getTokenExchangeRates, getConversionRate, getCurrentCurrency } from '../selectors'
 import { getSwapsTokens } from '../ducks/swaps/swaps'
 import { ETH_SWAPS_TOKEN_OBJECT } from '../helpers/constants/swaps'
+import { useEqualityCheck } from './useEqualityCheck'
 
 const tokenList = shuffle(Object.entries(contractMap)
   .map(([address, tokenData]) => ({ ...tokenData, address: address.toLowerCase() }))
@@ -56,18 +57,8 @@ function getRenderableTokenData (token, contractExchangeRates, conversionRate, c
 export function useTokensToSearch ({ providedTokens, swapsTokens: _swapsTokens, rawEthBalance, usersTokens = [], topTokens = {}, includeEth = true }) {
   const tokenConversionRates = useSelector(getTokenExchangeRates)
 
-  const [memoizedTokenConversionRates, setMemoizedTokenConversionRates] = useState(tokenConversionRates)
-  useEffect(() => {
-    if (!isEqual(tokenConversionRates, memoizedTokenConversionRates)) {
-      setMemoizedTokenConversionRates(tokenConversionRates)
-    }
-  }, [memoizedTokenConversionRates, tokenConversionRates])
-  const [memoizedTopTokens, setMemoizedTopTokens] = useState(topTokens)
-  useEffect(() => {
-    if (!isEqual(topTokens, memoizedTopTokens)) {
-      setMemoizedTopTokens(topTokens)
-    }
-  }, [memoizedTopTokens, topTokens])
+  const memoizedTokenConversionRates = useEqualityCheck(tokenConversionRates)
+  const memoizedTopTokens = useEqualityCheck(topTokens)
 
   const conversionRate = useSelector(getConversionRate)
   const currentCurrency = useSelector(getCurrentCurrency)
@@ -76,12 +67,7 @@ export function useTokensToSearch ({ providedTokens, swapsTokens: _swapsTokens, 
   if (!tokensToSearch.length && (providedTokens === undefined)) {
     tokensToSearch = tokenList
   }
-  const [memoizedTokensToSearch, setMemoizedTokensToSearch] = useState(tokensToSearch)
-  useEffect(() => {
-    if ((memoizedTokensToSearch.length !== tokensToSearch.length) || (!isEqual(memoizedTokensToSearch[0], tokensToSearch[0]))) {
-      setMemoizedTokensToSearch(tokensToSearch)
-    }
-  }, [memoizedTokensToSearch, tokensToSearch])
+  const memoizedTokensToSearch = useEqualityCheck(tokensToSearch)
 
   return useMemo(() => {
     const decEthBalance = getValueFromWeiHex({ value: rawEthBalance, numberOfDecimals: 4, toDenomination: 'ETH' })

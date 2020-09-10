@@ -2,8 +2,9 @@ import React, { useContext, useEffect, useState, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import classnames from 'classnames'
-import { uniqBy, isEqual } from 'lodash'
+import { uniqBy } from 'lodash'
 import { useTokensToSearch } from '../../../hooks/useTokensToSearch'
+import { useEqualityCheck } from '../../../hooks/useEqualityCheck'
 import { I18nContext } from '../../../contexts/i18n'
 import DropdownInputPair from '../dropdown-input-pair'
 import DropdownSearchList from '../dropdown-search-list'
@@ -57,12 +58,7 @@ export default function BuildQuote ({
 
   const { loading, tokensWithBalances } = useTokenTracker(tokens)
   const usersTokens = uniqBy([...tokensWithBalances, ...tokens], 'address')
-  const [memoizedUsersTokens, setMemoizedUsersTokens] = useState(usersTokens)
-  useEffect(() => {
-    if (!isEqual(usersTokens, memoizedUsersTokens)) {
-      setMemoizedUsersTokens(usersTokens)
-    }
-  }, [usersTokens, memoizedUsersTokens])
+  const memoizedUsersTokens = useEqualityCheck(usersTokens)
 
   useEffect(() => {
     if (fromToken?.address === ETH_SWAPS_TOKEN_OBJECT.address && (fromToken?.balance !== ethBalance)) {
