@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import contractMap from 'eth-contract-metadata'
 import BigNumber from 'bignumber.js'
-import { shuffle } from 'lodash'
+import { isEqual, shuffle } from 'lodash'
 import { getValueFromWeiHex } from '../helpers/utils/conversions.util'
 import { checksumAddress } from '../helpers/utils/util'
 import { getTokenFiatAmount } from '../helpers/utils/token-util'
@@ -51,8 +51,7 @@ export function getRenderableTokenData (token, contractExchangeRates, conversion
 }
 
 export function useTokensToSearch ({ providedTokens, rawEthBalance, usersTokens = [], topTokens = {}, onlyEth }) {
-  const tokenConversionRates = useSelector(getTokenExchangeRates)
-  const memoizedTokenConversionRates = useEqualityCheck(tokenConversionRates)
+  const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual)
   const conversionRate = useSelector(getConversionRate)
   const currentCurrency = useSelector(getCurrentCurrency)
 
@@ -75,7 +74,7 @@ export function useTokensToSearch ({ providedTokens, rawEthBalance, usersTokens 
     const decEthBalance = getValueFromWeiHex({ value: rawEthBalance, numberOfDecimals: 4, toDenomination: 'ETH' })
     const ethToken = getRenderableTokenData(
       { ...ETH_SWAPS_TOKEN_OBJECT, balance: rawEthBalance, string: decEthBalance },
-      memoizedTokenConversionRates,
+      tokenConversionRates,
       conversionRate,
       currentCurrency,
     )
@@ -88,7 +87,7 @@ export function useTokensToSearch ({ providedTokens, rawEthBalance, usersTokens 
       others: [],
     }
     memoizedTokensToSearch.forEach((token) => {
-      const renderableDataToken = getRenderableTokenData({ ...usersTokensAddressMap[token.address], ...token }, memoizedTokenConversionRates, conversionRate, currentCurrency)
+      const renderableDataToken = getRenderableTokenData({ ...usersTokensAddressMap[token.address], ...token }, tokenConversionRates, conversionRate, currentCurrency)
       if (usersTokensAddressMap[token.address] && ((renderableDataToken.symbol === 'ETH') || Number(renderableDataToken.balance ?? 0) !== 0)) {
         tokensToSearchBuckets.owned.push(renderableDataToken)
       } else if (memoizedTopTokens[token.address]) {
@@ -107,5 +106,5 @@ export function useTokensToSearch ({ providedTokens, rawEthBalance, usersTokens 
       ...tokensToSearchBuckets.top,
       ...tokensToSearchBuckets.others,
     ]
-  }, [memoizedTokensToSearch, rawEthBalance, usersTokens, memoizedTokenConversionRates, conversionRate, currentCurrency, memoizedTopTokens])
+  }, [memoizedTokensToSearch, rawEthBalance, usersTokens, tokenConversionRates, conversionRate, currentCurrency, memoizedTopTokens])
 }

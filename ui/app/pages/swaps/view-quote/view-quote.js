@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import BigNumber from 'bignumber.js'
+import { isEqual } from 'lodash'
 import { I18nContext } from '../../../contexts/i18n'
 import SelectQuotePopover from '../select-quote-popover'
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck'
@@ -40,31 +41,23 @@ export default function ViewQuote ({ onSubmit, onCancel }) {
   const dispatch = useDispatch()
   const t = useContext(I18nContext)
 
-  const _quotes = useSelector(getQuotes)
-  if (!Object.values(_quotes).length) {
+  const [dispatchedSafeRefetch, setDispatchedSafeRefetch] = useState(false)
+  const [selectQuotePopoverShown, setSelectQuotePopoverShown] = useState(false)
+  const [warningHidden, setWarningHidden] = useState(false)
+
+  const quotes = useSelector(getQuotes, isEqual)
+  if (!Object.values(quotes).length) {
     history.push(BUILD_QUOTE_ROUTE)
   }
 
   const quotesLastFetched = useSelector(getQuotesLastFetched)
-
-  // If the time since quotes were last fetched is greater than the desired time limit, make one attempt to refetch, otherwise treat quotes as expired and go to the error page
-  const currentTime = Date.now()
-  const timeSinceLastFetched = currentTime - quotesLastFetched
-  const [dispatchedSafeRefetch, setDispatchedSafeRefetch] = useState(false)
-  const quotesExpired = false
-  if (timeSinceLastFetched > 60000 && !dispatchedSafeRefetch) {
-    setDispatchedSafeRefetch(true)
-    dispatch(safeRefetchQuotes())
-  } else if (timeSinceLastFetched > 60000) {
-    dispatch(setSwapsErrorKey(QUOTES_EXPIRED_ERROR))
-    history.push(SWAPS_ERROR_ROUTE)
-  }
 
   // Select necessary data
   const tradeTxParams = useSelector(getSwapsTradeTxParams)
   const { gasPrice } = tradeTxParams || {}
   const customMaxGas = useSelector(getCustomSwapsGas)
   const tokenConversionRates = useSelector(getTokenExchangeRates)
+  const memoizedTokenConversionRates = useEqualityCheck(tokenConversionRates)
   const { balance: ethBalance } = useSelector(getSelectedAccount)
   const conversionRate = useSelector(conversionRateSelector)
   const currentCurrency = useSelector(getCurrentCurrency)
@@ -73,6 +66,8 @@ export default function ViewQuote ({ onSubmit, onCancel }) {
   const maxMode = useSelector(getMaxMode)
 
   const usedQuote = useSelector(getSelectedQuote)
+  const { isBestQuote } = usedQuote
+
   const usedGasLimit = usedQuote?.gasEstimate || (`0x${decimalToHex(usedQuote?.averageGas || 0)}`)
   const maxGasLimit = customMaxGas || (`0x${decimalToHex(usedQuote?.maxGas || 0)}`)
   const gasTotalInWeiHex = calcGasTotal(usedGasLimit, gasPrice)
@@ -91,7 +86,20 @@ export default function ViewQuote ({ onSubmit, onCancel }) {
   const approveTxParams = useSelector(getApproveTxParams)
   const approveGas = approveTxParams?.gas
 
-  // Manage fee and balance data
+  const renderablePopoverData = useMemo(() => {
+    return quotesToRenderableData(quotes, gasPrice, conversionRate, currentCurrency, approveGas, memoizedTokenConversionRates)
+  }, [quotes, gasPrice, conversionRate, currentCurrency, approveGas, memoizedTokenConversionRates])
+  const renderableDataForUsedQuote = renderablePopoverData.find((renderablePopoverDatum) => renderablePopoverDatum.aggId === usedQuote.aggregator)
+
+  const {
+    destinationTokenDecimals,
+    destinationTokenSymbol,
+    destinationTokenValue,
+    sourceTokenDecimals,
+    sourceTokenSymbol,
+    sourceTokenValue,
+  } = renderableDataForUsedQuote
+
   const { feeinFiat, feeInEth } = getRenderableGasFeesForQuote(usedGasLimit, approveGas, gasPrice, currentCurrency, conversionRate)
   const { feeinFiat: maxFeeInFiat, feeInEth: maxFeeInEth } = getRenderableGasFeesForQuote(maxGasLimit, approveGas, gasPrice, currentCurrency, conversionRate)
 
@@ -106,6 +114,7 @@ export default function ViewQuote ({ onSubmit, onCancel }) {
   const ethBalanceNeeded = insufficientEth
     ? toPrecisionWithoutTrailingZeros(ethCost.minus(ethBalance, 16).div('1000000000000000000', 10).toString(10), 6)
     : null
+
   useEffect(() => {
     if (insufficientTokens || insufficientEth) {
       dispatch(setBalanceError(true))
@@ -114,29 +123,17 @@ export default function ViewQuote ({ onSubmit, onCancel }) {
     }
   }, [insufficientTokens, insufficientEth, balanceError, dispatch])
 
-  // Memoize value
-  const quotes = useEqualityCheck(_quotes)
-  const memoizedTokenConversionRates = useEqualityCheck(tokenConversionRates)
-
-  // Get renderable data for popover and main quote details component
-  const renderablePopoverData = useMemo(() => {
-    return quotesToRenderableData(quotes, gasPrice, conversionRate, currentCurrency, approveGas, memoizedTokenConversionRates)
-  }, [quotes, gasPrice, conversionRate, currentCurrency, approveGas, memoizedTokenConversionRates])
-  const renderableDataForUsedQuote = renderablePopoverData.find((renderablePopoverDatum) => renderablePopoverDatum.aggId === usedQuote.aggregator)
-
-  const {
-    destinationTokenDecimals,
-    destinationTokenSymbol,
-    destinationTokenValue,
-    sourceTokenDecimals,
-    sourceTokenSymbol,
-    sourceTokenValue,
-    isBestQuote,
-  } = renderableDataForUsedQuote
-
-  // set local state
-  const [selectQuotePopoverShown, setSelectQuotePopoverShown] = useState(false)
-  const [warningHidden, setWarningHidden] = useState(false)
+  useEffect(() => {
+    const currentTime = Date.now()
+    const timeSinceLastFetched = currentTime - quotesLastFetched
+    if (timeSinceLastFetched > 60000 && !dispatchedSafeRefetch) {
+      setDispatchedSafeRefetch(true)
+      dispatch(safeRefetchQuotes())
+    } else if (timeSinceLastFetched > 60000) {
+      dispatch(setSwapsErrorKey(QUOTES_EXPIRED_ERROR))
+      history.push(SWAPS_ERROR_ROUTE)
+    }
+  }, [quotesLastFetched, dispatchedSafeRefetch, dispatch, history])
 
   return (
     <div className="view-quote">
@@ -162,14 +159,12 @@ export default function ViewQuote ({ onSubmit, onCancel }) {
             />
           )}
         </div>
-        {!quotesExpired && (
-          <CountdownTimer
-            timeStarted={quotesLastFetched}
-            warningTime="0:30"
-            infoTooltipLabelKey="swapQuotesAreRefreshed"
-            labelKey="swapNewQuoteIn"
-          />
-        )}
+        <CountdownTimer
+          timeStarted={quotesLastFetched}
+          warningTime="0:30"
+          infoTooltipLabelKey="swapQuotesAreRefreshed"
+          labelKey="swapNewQuoteIn"
+        />
         <MainQuoteSummary
           sourceValue={calcTokenValue(sourceTokenValue, sourceTokenDecimals)}
           sourceDecimals={sourceTokenDecimals}
