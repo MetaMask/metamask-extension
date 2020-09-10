@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react'
+import React, { useState, useEffect, useCallback, useRef, useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Switch, Route, useLocation, useHistory, Redirect } from 'react-router-dom'
 import BigNumber from 'bignumber.js'
+import { I18nContext } from '../../contexts/i18n'
 import { getSelectedAccount, getCurrentNetworkId } from '../../selectors/selectors'
 import { useTransactionTimeRemaining } from '../../hooks/useTransactionTimeRemaining'
 import { usePrevious } from '../../hooks/usePrevious'
@@ -44,8 +45,7 @@ import { resetBackgroundSwapsState, setSwapsTokens, setSwapsTxGasPrice, setMaxMo
 import { getAveragePriceEstimateInHexWEI, currentNetworkTxListSelector, getCustomNetworkId, getRpcPrefsForCurrentProvider } from '../../selectors'
 import { useSwapSubmitFunction } from '../../hooks/useSwapSubmitFunction'
 import { decGWEIToHexWEI, getValueFromWeiHex } from '../../helpers/utils/conversions.util'
-import SwapsFooter from './swaps-footer'
-import SwapsRouteContainer from './swaps-route-container'
+
 import { fetchTokens, fetchTopAssets, getSwapsTokensReceivedFromTxMeta, fetchAggregatorMetadata } from './swaps.util'
 import AwaitingSwap from './awaiting-swap'
 import LoadingQuote from './loading-swaps-quotes'
@@ -218,7 +218,11 @@ export default function Swap () {
           {!isAwaitingSwapRoute && (
             <div
               className="swaps__header-cancel"
-              onClick={cancelAll}
+              onClick={() => {
+                dispatch(clearSwapsState())
+                dispatch(resetBackgroundSwapsState())
+                history.push(DEFAULT_ROUTE)
+              }}
             >
               { t('cancel') }
             </div>
@@ -283,14 +287,11 @@ export default function Swap () {
                 if (swapsErrorKey) {
                   return (
                     <AwaitingSwap
-                      swapComplete={tradeConfirmed}
+                      swapComplete={false}
                       errorKey={swapsErrorKey}
                       symbol={fetchParams?.destinationTokenInfo?.symbol}
                       txHash={tradeTxData?.hash}
                       networkId={networkId}
-                      tokensReceived={tokensReceived}
-                      submittedTime={tradeTxParams?.submittedTime}
-                      estimatedTransactionWaitTime={usedTimeRemaining}
                       rpcPrefs={rpcPrefs}
                       onSubmit={onSubmit}
                     />
@@ -340,6 +341,8 @@ export default function Swap () {
                       tradeTxData={tradeTxData}
                       usedGasPrice={usedGasPrice}
                       submittingSwap={submittingSwap}
+                      submittedTime={tradeTxData?.submittedTime}
+                      estimatedTransactionWaitTime={usedTimeRemaining}
                       onSubmit={onSubmit}
                     />
                   )
