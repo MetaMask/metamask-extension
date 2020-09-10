@@ -37,33 +37,11 @@ export const MetaMetricsContext = createContext(() => {
 const PATHS_TO_CHECK = Object.keys(PATH_NAME_MAP)
 
 export function MetaMetricsProvider ({ children }) {
-  const txData = useSelector(txDataSelector) || {}
   const network = useSelector(getCurrentNetworkId)
-  const activeCurrency = useSelector(getSendToken)?.symbol
-  const accountType = useSelector(getAccountType)
-  const confirmTransactionOrigin = txData.origin
   const metaMetricsId = useSelector((state) => state.metamask.metaMetricsId)
   const participateInMetaMetrics = useSelector((state) => state.metamask.participateInMetaMetrics)
   const metaMetricsSendCount = useSelector((state) => state.metamask.metaMetricsSendCount)
-  const numberOfTokens = useSelector(getNumberOfTokens)
-  const numberOfAccounts = useSelector(getNumberOfAccounts)
   const location = useLocation()
-
-  const contextProperties = useMemo(() => ({
-    network,
-    active_currency: activeCurrency,
-    account_type: accountType,
-    dapp_url: confirmTransactionOrigin,
-    number_of_tokens: numberOfTokens,
-    number_of_accounts: numberOfAccounts,
-  }), [
-    network,
-    activeCurrency,
-    accountType,
-    confirmTransactionOrigin,
-    numberOfTokens,
-    numberOfAccounts,
-  ])
 
   /**
    * Anytime the location changes, track a page change with segment.
@@ -102,20 +80,19 @@ export function MetaMetricsProvider ({ children }) {
 
   /**
    * track a metametrics event using segment
-   * e.g metricsEvent({ event: 'Unlocked MetaMask', category: 'Navigation', include: ['network', 'number_of_tokens']})
+   * e.g metricsEvent({ event: 'Unlocked MetaMask', category: 'Navigation' })
    *
    * @param {object}   config - configuration object for the event to track
    * @param {string}   config.event - event name to track
    * @param {string}   config.category - category to associate event to
    * @param {boolean}  [config.isOptIn] - happened during opt in/out workflow
    * @param {object}   [config.properties] - object of custom values to track, snake_case
-   * @param {string[]} [config.include] - array of values available in this provider that can be included
    * @return {undefined}
    */
   const trackEvent = useCallback(
     (config = {}) => {
       console.log(config)
-      const { event, category, isOptIn = false, properties = {}, include = [] } = config
+      const { event, category, isOptIn = false, properties = {} } = config
       if (!event) {
         // Event name is required for tracking an event
         throw new Error('MetaMetrics trackEvent function must be provided a payload with an "event" key')
@@ -143,7 +120,6 @@ export function MetaMetricsProvider ({ children }) {
           event,
           properties: {
             ...properties,
-            ...pick(contextProperties, include),
             category,
             exclude_meta_metrics_id: excludeMetaMetricsId,
           },
@@ -151,7 +127,7 @@ export function MetaMetricsProvider ({ children }) {
             version: global.platform.getVersion(),
             environment: process.env.METAMASK_ENVIRONMENT,
             platform: getPlatform(),
-            network: contextProperties.network,
+            network,
             environment_type: getEnvironmentType(),
           },
         })
@@ -159,7 +135,7 @@ export function MetaMetricsProvider ({ children }) {
 
       return undefined
     }, [
-      contextProperties,
+      network,
       metaMetricsId,
       metaMetricsSendCount,
       participateInMetaMetrics,

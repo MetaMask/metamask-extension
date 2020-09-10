@@ -11,14 +11,13 @@ export function useMetricEvent (config = {}, overrides = {}) {
 
 /**
    * track a metametrics event using segment
-   * e.g metricsEvent({ event: 'Unlocked MetaMask', category: 'Navigation', include: ['network', 'number_of_tokens']})
+   * e.g metricsEvent({ event: 'Unlocked MetaMask', category: 'Navigation' })
    *
    * @param {object}   config - configuration object for the event to track
    * @param {string}   config.event - event name to track
    * @param {string}   config.category - category to associate event to
    * @param {boolean}  [config.isOptIn] - happened during opt in/out workflow
    * @param {object}   [config.properties] - object of custom values to track, snake_case
-   * @param {string[]} [config.include] - array of values available in this provider that can be included
    * @return {() => undefined} function to execute the tracking event
    */
 export function useNewMetricEvent (config) {
