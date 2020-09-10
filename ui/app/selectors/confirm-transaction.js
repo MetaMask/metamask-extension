@@ -160,12 +160,15 @@ export const sendTokenTokenAmountAndToAddressSelector = createSelector(
     let toAddress = ''
     let tokenAmount = '0'
 
+    // Token params here are ethers BigNumbers, which have a different
+    // interface than bignumber.js
     if (args && args.length) {
       toAddress = args[TOKEN_PARAM_TO]
       let value = args[TOKEN_PARAM_VALUE].toString()
 
       if (tokenDecimals) {
-        value = calcTokenAmount(value, tokenDecimals).toString()
+        // bignumber.js return value
+        value = calcTokenAmount(value, tokenDecimals).toFixed()
       }
 
       tokenAmount = roundExponential(value)
