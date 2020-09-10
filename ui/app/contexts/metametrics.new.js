@@ -105,7 +105,7 @@ export function MetaMetricsProvider ({ children }) {
    * @param {object}   config - configuration object for the event to track
    * @param {string}   config.event - event name to track
    * @param {string}   config.category - category to associate event to
-   * @param {boolean}  config.isOptIn - happened during opt in/out workflow
+   * @param {boolean}  [config.isOptIn] - happened during opt in/out workflow
    * @param {object}   config.properties - object of custom values to track, snake_case
    * @param {string[]} config.include - array of values available in this provider that can be included
    * @return {undefined}
