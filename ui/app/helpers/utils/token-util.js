@@ -168,50 +168,24 @@ export function getTokenValue (tokenParams = []) {
   return valueData && valueData.value
 }
 
-export function getUnFormattedTokenFiatAmount (
-  contractExchangeRate,
-  conversionRate,
-  currentCurrency,
-  tokenAmount,
-  tokenSymbol,
-) {
-  // If the conversionRate is 0 (i.e. unknown) or the contract exchange rate
-  // is currently unknown, the fiat amount cannot be calculated so it is not
-  // shown to the user
-  if (conversionRate <= 0 || !contractExchangeRate || tokenAmount === undefined) {
-    return undefined
-  }
-
-  const currentTokenToFiatRate = multiplyCurrencies(
-    contractExchangeRate,
-    conversionRate,
-  )
-  const currentTokenInFiat = conversionUtil(tokenAmount, {
-    fromNumericBase: 'dec',
-    fromCurrency: tokenSymbol,
-    toCurrency: currentCurrency.toUpperCase(),
-    numberOfDecimals: 2,
-    conversionRate: currentTokenToFiatRate,
-  })
-  return currentTokenInFiat
-}
-
 /**
- * Get the token balance converted to fiat and formatted for display
+ * Get the token balance converted to fiat and optionally formatted for display
  *
  * @param {number} [contractExchangeRate] - The exchange rate between the current token and the native currency
  * @param {number} conversionRate - The exchange rate between the current fiat currency and the native currency
  * @param {string} currentCurrency - The currency code for the user's chosen fiat currency
  * @param {string} [tokenAmount] - The current token balance
  * @param {string} [tokenSymbol] - The token symbol
- * @returns {string|undefined} The formatted token amount in the user's chosen fiat currency
+ * @param {boolean} [formatted] - Whether the return value should be formatted or not
+ * @returns {string|undefined} The token amount in the user's chosen fiat currency, optionally formatted and localize
  */
-export function getFormattedTokenFiatAmount (
+export function getTokenFiatAmount (
   contractExchangeRate,
   conversionRate,
   currentCurrency,
   tokenAmount,
   tokenSymbol,
+  formatted = true,
 ) {
   // If the conversionRate is 0 (i.e. unknown) or the contract exchange rate
   // is currently unknown, the fiat amount cannot be calculated so it is not
@@ -231,5 +205,7 @@ export function getFormattedTokenFiatAmount (
     numberOfDecimals: 2,
     conversionRate: currentTokenToFiatRate,
   })
-  return `${formatCurrency(currentTokenInFiat, currentCurrency)} ${currentCurrency.toUpperCase()}`
+  return formatted
+    ? `${formatCurrency(currentTokenInFiat, currentCurrency)} ${currentCurrency.toUpperCase()}`
+    : currentTokenInFiat
 }

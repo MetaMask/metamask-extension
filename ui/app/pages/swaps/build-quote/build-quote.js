@@ -69,7 +69,7 @@ export default function BuildQuote ({
     providedTokens: fromToken || fetchParamsFromToken ? [fromToken || fetchParamsFromToken] : [],
     rawEthBalance: ethBalance,
     usersTokens: memoizedUsersTokens,
-    includeEth: false,
+    onlyEth: (fromToken || fetchParamsFromToken)?.symbol === 'ETH,',
   })[0]
   const tokensToSearch = useTokensToSearch({
     rawEthBalance: ethBalance,

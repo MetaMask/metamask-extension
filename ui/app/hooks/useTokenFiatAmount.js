@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { getTokenExchangeRates, getConversionRate, getCurrentCurrency, getShouldShowFiat } from '../selectors'
-import { getFormattedTokenFiatAmount } from '../helpers/utils/token-util'
+import { getTokenFiatAmount } from '../helpers/utils/token-util'
 
 /**
  * Get the token balance converted to fiat and formatted for display
@@ -18,7 +18,7 @@ export function useTokenFiatAmount (tokenAddress, tokenAmount, tokenSymbol, over
   const showFiat = useSelector(getShouldShowFiat)
   const tokenExchangeRate = overrideExchangeRate || contractExchangeRates[tokenAddress]
   const formattedFiat = useMemo(
-    () => getFormattedTokenFiatAmount(
+    () => getTokenFiatAmount(
       tokenExchangeRate,
       conversionRate,
       currentCurrency,
