@@ -280,7 +280,7 @@ export async function fetchTokenBalance (address, userAddress) {
 }
 
 export function getRenderableGasFeesForQuote (tradeGas, approveGas, gasPrice, currentCurrency, conversionRate) {
-  const totalGasLimitForCalculation = (new BigNumber(tradeGas, 16)).plus(approveGas || '0x0', 16).toString(16)
+  const totalGasLimitForCalculation = (new BigNumber(tradeGas || '0x0', 16)).plus(approveGas || '0x0', 16).toString(16)
   const gasTotalInWeiHex = calcGasTotal(totalGasLimitForCalculation, gasPrice)
 
   const ethFee = getValueFromWeiHex({
@@ -305,11 +305,11 @@ export function getRenderableGasFeesForQuote (tradeGas, approveGas, gasPrice, cu
 
 export function quotesToRenderableData (quotes, gasPrice, conversionRate, currentCurrency, approveGas, tokenConversionRates, customGasLimit) {
   return Object.values(quotes).map((quote) => {
-    const { destinationAmount = 0, sourceAmount = 0, sourceTokenInfo, destinationTokenInfo, slippage, aggType, aggregator, gasEstimate, averageGas } = quote
+    const { destinationAmount = 0, sourceAmount = 0, sourceTokenInfo, destinationTokenInfo, slippage, aggType, aggregator, gasEstimateWithRefund, averageGas } = quote
     const sourceValue = calcTokenAmount(sourceAmount, sourceTokenInfo.decimals || 18).toString(10)
     const destinationValue = calcTokenAmount(destinationAmount, destinationTokenInfo.decimals || 18).toPrecision(8)
 
-    const { feeinFiat, rawNetworkFees, rawEthFee } = getRenderableGasFeesForQuote(customGasLimit || gasEstimate || decimalToHex(averageGas || 800000), approveGas, gasPrice, currentCurrency, conversionRate)
+    const { feeinFiat, rawNetworkFees, rawEthFee } = getRenderableGasFeesForQuote(customGasLimit || gasEstimateWithRefund || decimalToHex(averageGas || 800000), approveGas, gasPrice, currentCurrency, conversionRate)
 
     const metaMaskFee = `0.875%`
     const minimumAmountReceived = `${(new BigNumber(destinationValue)).times(((100 - slippage) / 100).toFixed(6))} ${destinationTokenInfo.symbol}`

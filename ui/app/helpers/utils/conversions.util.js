@@ -1,4 +1,5 @@
 import ethUtil from 'ethereumjs-util'
+import BigNumber from 'bignumber.js'
 import { ETH, GWEI, WEI } from '../constants/common'
 import { conversionUtil, addCurrencies, subtractCurrencies } from './conversion-util'
 
@@ -137,4 +138,14 @@ export function decETHToDecWEI (decEth) {
     fromDenomination: 'ETH',
     toDenomination: 'WEI',
   })
+}
+
+export function hexMax (...hexNumbers) {
+  let max = hexNumbers[0]
+  hexNumbers.slice(1).forEach((hexNumber) => {
+    if ((new BigNumber(hexNumber, 16)).gt(max, 16)) {
+      max = hexNumber
+    }
+  })
+  return max
 }

@@ -48,7 +48,7 @@ import { getTokenExchangeRates } from '../selectors'
 import { calcGasTotal } from '../pages/send/send.utils'
 import { constructTxParams } from '../helpers/utils/util'
 
-import { decimalToHex } from '../helpers/utils/conversions.util'
+import { decimalToHex, hexMax } from '../helpers/utils/conversions.util'
 
 export function useSwapSubmitFunction ({
   maxSlippage,
@@ -116,6 +116,10 @@ export function useSwapSubmitFunction ({
 
     setSubmittingSwap(true)
     let usedTradeTxParams = tradeTxParams
+
+    const estimatedGasLimitWithMultiplier = (new BigNumber(selectedQuote.gasEstimate || selectedQuote.averageGas || '0x0', 16).times(1.4, 10)).round(0).toString(16)
+    const maxGasLimit = hexMax((`0x${decimalToHex(selectedQuote?.maxGas || 0)}`), estimatedGasLimitWithMultiplier)
+    usedTradeTxParams.gas = maxGasLimit
 
     const totalGasLimitForCalculation = (new BigNumber(usedTradeTxParams.gas, 16)).plus(selectedQuote.approvalNeeded?.gas || '0x0', 16).toString(16)
     const gasTotalInWeiHex = calcGasTotal(totalGasLimitForCalculation, usedGasPrice)

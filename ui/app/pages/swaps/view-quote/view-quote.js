@@ -23,7 +23,7 @@ import {
   calcTokenAmount,
   calcTokenValue,
 } from '../../../helpers/utils/token-util'
-import { decimalToHex } from '../../../helpers/utils/conversions.util'
+import { decimalToHex, hexMax } from '../../../helpers/utils/conversions.util'
 import MainQuoteSummary from '../main-quote-summary'
 import { calcGasTotal } from '../../send/send.utils'
 import ActionableMessage from '../actionable-message'
@@ -68,8 +68,11 @@ export default function ViewQuote ({ onSubmit, onCancel }) {
   const usedQuote = useSelector(getSelectedQuote)
   const { isBestQuote } = usedQuote
 
-  const usedGasLimit = usedQuote?.gasEstimate || (`0x${decimalToHex(usedQuote?.averageGas || 0)}`)
-  const maxGasLimit = customMaxGas || (`0x${decimalToHex(usedQuote?.maxGas || 0)}`)
+  const usedGasLimit = usedQuote?.gasEstimateWithRefund || (`0x${decimalToHex(usedQuote?.averageGas || 0)}`)
+  const gasLimitForMax = usedQuote?.gasEstimate || (`0x${decimalToHex(usedQuote?.averageGas || 0)}`)
+  const usedGasLimitWithMultiplier = (new BigNumber(gasLimitForMax, 16).times(1.4, 10)).round(0).toString(16)
+  const maxGasLimit = customMaxGas || hexMax((`0x${decimalToHex(usedQuote?.maxGas || 0)}`), usedGasLimitWithMultiplier)
+
   const gasTotalInWeiHex = calcGasTotal(usedGasLimit, gasPrice)
 
   const fetchParams = useSelector(getFetchParams)
