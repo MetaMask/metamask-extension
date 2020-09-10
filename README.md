@@ -16,7 +16,8 @@ To learn how to contribute to the MetaMask project itself, visit our [Internal D
     - If you are using [nvm](https://github.com/creationix/nvm#installation) (recommended) running `nvm use` will automatically choose the right node version for you.
 - Install [Yarn](https://yarnpkg.com/en/docs/install)
 - Install dependencies: `yarn`
-- Copy the `.metamaskrc.dist` file to `.metamaskrc`, and replace the `INFURA_PROJECT_ID` value with your own personal [Infura Project ID](https://infura.io/docs).
+- Copy the `.metamaskrc.dist` file to `.metamaskrc`
+    - Replace the `INFURA_PROJECT_ID` value with your own personal [Infura Project ID](https://infura.io/docs).
 - Build the project to the `./dist/` folder with `yarn dist`.
 - Optionally, to start a development build (e.g. with logging and file watching) run `yarn start` instead.
     - To start the [React DevTools](https://github.com/facebook/react-devtools) and [Redux DevTools Extension](http://extension.remotedev.io)
