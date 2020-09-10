@@ -5,7 +5,7 @@ import BigNumber from 'bignumber.js'
 import { shuffle } from 'lodash'
 import { getValueFromWeiHex } from '../helpers/utils/conversions.util'
 import { checksumAddress } from '../helpers/utils/util'
-import { getFormattedTokenFiatAmount, getUnFormattedTokenFiatAmount } from '../helpers/utils/token-util'
+import { getTokenFiatAmount } from '../helpers/utils/token-util'
 import { getTokenExchangeRates, getConversionRate, getCurrentCurrency } from '../selectors'
 import { getSwapsTokens } from '../ducks/swaps/swaps'
 import { ETH_SWAPS_TOKEN_OBJECT } from '../helpers/constants/swaps'
@@ -15,28 +15,24 @@ const tokenList = shuffle(Object.entries(contractMap)
   .map(([address, tokenData]) => ({ ...tokenData, address: address.toLowerCase() }))
   .filter((tokenData) => Boolean(tokenData.erc20)))
 
-function getRenderableTokenData (token, contractExchangeRates, conversionRate, currentCurrency) {
+export function getRenderableTokenData (token, contractExchangeRates, conversionRate, currentCurrency) {
   const { symbol, name, address, iconUrl, string, balance, decimals } = token
 
-  const formattedFiat = ((token.symbol === 'ETH' || contractExchangeRates[address]) && string)
-    ? getFormattedTokenFiatAmount(
-      symbol === 'ETH' ? 1 : contractExchangeRates[address],
-      conversionRate,
-      currentCurrency,
-      string,
-      symbol,
-      true,
-    )
-    : ''
-  const rawFiat = ((token.symbol === 'ETH' || contractExchangeRates[address]) && string)
-    ? getUnFormattedTokenFiatAmount(
-      symbol === 'ETH' ? 1 : contractExchangeRates[address],
-      conversionRate,
-      currentCurrency,
-      string,
-      symbol,
-    )
-    : 0
+  const formattedFiat = getTokenFiatAmount(
+    symbol === 'ETH' ? 1 : contractExchangeRates[address],
+    conversionRate,
+    currentCurrency,
+    string,
+    symbol,
+  ) || ''
+  const rawFiat = getTokenFiatAmount(
+    symbol === 'ETH' ? 1 : contractExchangeRates[address],
+    conversionRate,
+    currentCurrency,
+    string,
+    symbol,
+    true,
+  ) || ''
 
   const usedIconUrl = iconUrl || (contractMap[checksumAddress(address)] && `images/contract/${contractMap[checksumAddress(address)].logo}`)
   return {
@@ -54,17 +50,23 @@ function getRenderableTokenData (token, contractExchangeRates, conversionRate, c
   }
 }
 
-export function useTokensToSearch ({ providedTokens, swapsTokens: _swapsTokens, rawEthBalance, usersTokens = [], topTokens = {}, includeEth = true }) {
+export function useTokensToSearch ({ providedTokens, rawEthBalance, usersTokens = [], topTokens = {}, onlyEth }) {
   const tokenConversionRates = useSelector(getTokenExchangeRates)
-
   const memoizedTokenConversionRates = useEqualityCheck(tokenConversionRates)
-  const memoizedTopTokens = useEqualityCheck(topTokens)
-
   const conversionRate = useSelector(getConversionRate)
   const currentCurrency = useSelector(getCurrentCurrency)
+
+  const memoizedTopTokens = useEqualityCheck(topTokens)
+
   const swapsTokens = useSelector(getSwapsTokens) || []
-  let tokensToSearch = providedTokens || _swapsTokens || swapsTokens
-  if (!tokensToSearch.length && (providedTokens === undefined)) {
+  let tokensToSearch
+  if (onlyEth) {
+    tokensToSearch = []
+  } else if (providedTokens) {
+    tokensToSearch = providedTokens
+  } else if (swapsTokens.length) {
+    tokensToSearch = swapsTokens
+  } else {
     tokensToSearch = tokenList
   }
   const memoizedTokensToSearch = useEqualityCheck(tokensToSearch)
@@ -81,7 +83,7 @@ export function useTokensToSearch ({ providedTokens, swapsTokens: _swapsTokens, 
     const usersTokensAddressMap = usersTokens.reduce((acc, token) => ({ ...acc, [token.address]: token }), {})
 
     const tokensToSearchBuckets = {
-      owned: includeEth ? [ethToken] : [],
+      owned: [ethToken],
       top: [],
       others: [],
     }
@@ -105,5 +107,5 @@ export function useTokensToSearch ({ providedTokens, swapsTokens: _swapsTokens, 
       ...tokensToSearchBuckets.top,
       ...tokensToSearchBuckets.others,
     ]
-  }, [memoizedTokensToSearch, rawEthBalance, usersTokens, memoizedTokenConversionRates, conversionRate, currentCurrency, memoizedTopTokens, includeEth])
+  }, [memoizedTokensToSearch, rawEthBalance, usersTokens, memoizedTokenConversionRates, conversionRate, currentCurrency, memoizedTopTokens])
 }
