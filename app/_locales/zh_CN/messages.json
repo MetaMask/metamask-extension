@@ -1248,7 +1248,7 @@
     "message": "警告：切勿向他人透露你的账户助记词。任何人一旦持有该账户助记词，即可取走你的 Ether。"
   },
   "secretPhrase": {
-    "message": "输入 12 个单词组成的账户助记词恢复你的账户。"
+    "message": "输入账户助记词恢复你的账户。"
   },
   "securityAndPrivacy": {
     "message": "安全与隐私"
@@ -1263,7 +1263,7 @@
     "message": "从剪贴板粘贴账户助记词"
   },
   "seedPhraseReq": {
-    "message": "账户助记词由 12 个单词组成"
+    "message": "账户助记词由 12、15、18、21 或 24 个单词组成"
   },
   "selectAHigherGasFee": {
     "message": "请选择价格稍高的天然气费，加快交易处理速度。*"
