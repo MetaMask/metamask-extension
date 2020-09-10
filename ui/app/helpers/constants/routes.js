@@ -64,7 +64,6 @@ const PATH_NAME_MAP = {
   [`${ASSET_ROUTE}/:asset`]: `Asset Page`,
   [SETTINGS_ROUTE]: 'Settings Page',
   [GENERAL_ROUTE]: 'General Settings Page',
-  [CONNECTIONS_ROUTE]: 'Connections Settings Page',
   [ADVANCED_ROUTE]: 'Advanced Settings Page',
   [SECURITY_ROUTE]: 'Security Settings Page',
   [ABOUT_US_ROUTE]: 'About Us Page',
