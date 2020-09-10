@@ -328,10 +328,10 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
       ETH_GAS_STATION_API_KEY: process.env.ETH_GAS_STATION_API_KEY || '',
       CONF: opts.devMode ? conf : ({}),
       SENTRY_DSN: process.env.SENTRY_DSN,
-      INFURA_PROJECT_ID: conf.INFURA_PROJECT_ID || (
+      INFURA_PROJECT_ID: (
         opts.testing
           ? '00000000000000000000000000000000'
-          : undefined
+          : conf.INFURA_PROJECT_ID
       ),
     }), {
       global: true,
