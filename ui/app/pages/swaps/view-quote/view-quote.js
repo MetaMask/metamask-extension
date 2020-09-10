@@ -135,6 +135,8 @@ export default function ViewQuote ({ onSubmit, onCancel }) {
     }
   }, [quotesLastFetched, dispatchedSafeRefetch, dispatch, history])
 
+  const showWarning = ((balanceError || tokenBalanceNeeded || ethBalanceNeeded) && !warningHidden && !(maxMode && sourceTokenSymbol === 'ETH'))
+
   return (
     <div className="view-quote">
       <div className="view-quote__content">
@@ -152,7 +154,7 @@ export default function ViewQuote ({ onSubmit, onCancel }) {
           />
         )}
         <div className="view-quote__insufficient-eth-warning-wrapper">
-          {((balanceError || tokenBalanceNeeded || ethBalanceNeeded) && !warningHidden && !(maxMode && sourceTokenSymbol === 'ETH')) && (
+          {showWarning && (
             <ActionableMessage
               message={t('swapApproveNeedMoreTokens', [<span key="swapApproveNeedMoreTokens-1" className="view-quote__bold">{tokenBalanceNeeded || ethBalanceNeeded}</span>, tokenBalanceNeeded && !(sourceTokenSymbol === 'ETH') ? sourceTokenSymbol : 'ETH'])}
               onClose={() => setWarningHidden(true)}

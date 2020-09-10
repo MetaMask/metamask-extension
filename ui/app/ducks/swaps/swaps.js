@@ -172,7 +172,7 @@ export default function reduceSwaps (state = {}, action) {
   }
 }
 
-export function setSwapFromToken (token) {
+export function setSwapsFromToken (token) {
   return {
     type: SET_FROM_TOKEN,
     value: token,

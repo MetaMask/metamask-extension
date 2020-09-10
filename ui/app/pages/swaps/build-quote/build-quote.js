@@ -12,7 +12,7 @@ import SlippageButtons from '../slippage-buttons'
 import { getTokens } from '../../../ducks/metamask/metamask'
 
 import {
-  setSwapFromToken,
+  setSwapsFromToken,
   setSwapToToken,
   getFromToken,
   getToToken,
@@ -62,7 +62,7 @@ export default function BuildQuote ({
 
   useEffect(() => {
     if (fromToken?.address === ETH_SWAPS_TOKEN_OBJECT.address && (fromToken?.balance !== ethBalance)) {
-      dispatch(setSwapFromToken({ ...fromToken, balance: ethBalance, string: getValueFromWeiHex({ value: ethBalance, numberOfDecimals: 4, toDenomination: 'ETH' }) }))
+      dispatch(setSwapsFromToken({ ...fromToken, balance: ethBalance, string: getValueFromWeiHex({ value: ethBalance, numberOfDecimals: 4, toDenomination: 'ETH' }) }))
     }
   }, [dispatch, fromToken, ethBalance])
   const selectedFromToken = useTokensToSearch({
@@ -120,11 +120,11 @@ export default function BuildQuote ({
             const balanceAsDecString = fetchedBalance.balance.toString(10)
             const balanceAsHexString = fetchedBalance.balance.toString(16)
             const userTokenBalance = calcTokenAmount(balanceAsDecString, token.decimals)
-            dispatch(setSwapFromToken({ ...token, string: userTokenBalance.toString(10), balance: balanceAsHexString }))
+            dispatch(setSwapsFromToken({ ...token, string: userTokenBalance.toString(10), balance: balanceAsHexString }))
           }
         })
     }
-    dispatch(setSwapFromToken(token))
+    dispatch(setSwapsFromToken(token))
     dispatch(setMaxMode(false))
     onInputChange(inputValue, token.string, token.decimals)
   }
@@ -225,6 +225,7 @@ export default function BuildQuote ({
 }
 
 BuildQuote.propTypes = {
+  maxSlippage: PropTypes.string,
   inputValue: PropTypes.string,
   onInputChange: PropTypes.func,
   ethBalance: PropTypes.string,

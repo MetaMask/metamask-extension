@@ -15,7 +15,7 @@ import {
   setApproveTxId,
   getFetchParams,
   setFetchingQuotes,
-  setSwapFromToken,
+  setSwapsFromToken,
   getSwapsTokens,
   getSelectedQuote,
   getMaxMode,
@@ -41,6 +41,7 @@ import {
   setQuotesStatus,
   stopPollingForQuotes,
   setBackgoundSwapRouteState,
+  setSelectedQuoteAggId,
 } from '../store/actions'
 import { fetchTradesInfo } from '../pages/swaps/swaps.util'
 import { getTokenExchangeRates } from '../selectors'
@@ -62,7 +63,6 @@ export function useSwapSubmitFunction ({
   networkId,
   isCustomNetwork,
   isRetry,
-  quotesRequestCancelledEvent,
 }) {
   const dispatch = useDispatch()
   const history = useHistory()
@@ -198,7 +198,8 @@ export function useSwapSubmitFunction ({
     const sourceTokenInfo = swapsTokens?.find(({ address }) => address === fromTokenAddress) || selectedFromToken
     const destinationTokenInfo = swapsTokens?.find(({ address }) => address === toTokenAddress) || selectedToToken
 
-    dispatch(setSwapFromToken(selectedFromToken))
+    dispatch(setSwapsFromToken(selectedFromToken))
+
     let revisedValue
     if (maxMode && sourceTokenInfo.symbol === 'ETH') {
       const totalGasLimitForCalculation = (new BigNumber(800000, 10)).plus(100000, 10).toString(16)
@@ -237,7 +238,15 @@ export function useSwapSubmitFunction ({
     dispatch(setFetchingQuotes(false))
   }
 
-  if (isBuildQuoteRoute || (isSwapsErrorRoute && swapsErrorKey === QUOTES_EXPIRED_ERROR)) {
+  if ((isSwapsErrorRoute && swapsErrorKey === QUOTES_EXPIRED_ERROR)) {
+    return () => {
+      dispatch(setSwapsErrorKey(''))
+      dispatch(setTradeTxId(null))
+      dispatch(setSelectedQuoteAggId(''))
+      return fetchQuotesAndSetQuoteState()
+    }
+  }
+  if (isBuildQuoteRoute) {
     return fetchQuotesAndSetQuoteState
   }
   if (isSwapsErrorRoute) {
@@ -251,7 +260,6 @@ export function useSwapSubmitFunction ({
   }
   if (isLoadingQuoteRoute) {
     return async () => {
-      quotesRequestCancelledEvent()
       await dispatch(setBackgoundSwapRouteState(''))
       dispatch(setQuotes([]))
       history.push(BUILD_QUOTE_ROUTE)
