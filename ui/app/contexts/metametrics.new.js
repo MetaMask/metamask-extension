@@ -20,7 +20,7 @@ import { getSendToken } from '../selectors/send'
 import {
   txDataSelector,
 } from '../selectors/confirm-transaction'
-import { getEnvironmentType } from '../../../app/scripts/lib/util'
+import { getEnvironmentType, getPlatform } from '../../../app/scripts/lib/util'
 import {
   sendCountIsTrackable,
   segment,
@@ -39,7 +39,6 @@ const PATHS_TO_CHECK = Object.keys(PATH_NAME_MAP)
 export function MetaMetricsProvider ({ children }) {
   const txData = useSelector(txDataSelector) || {}
   const network = useSelector(getCurrentNetworkId)
-  const environmentType = getEnvironmentType()
   const activeCurrency = useSelector(getSendToken)?.symbol
   const accountType = useSelector(getAccountType)
   const confirmTransactionOrigin = txData.origin
@@ -51,16 +50,13 @@ export function MetaMetricsProvider ({ children }) {
   const location = useLocation()
 
   const contextProperties = useMemo(() => ({
-    environment_type: environmentType,
     network,
     active_currency: activeCurrency,
     account_type: accountType,
     dapp_url: confirmTransactionOrigin,
     number_of_tokens: numberOfTokens,
     number_of_accounts: numberOfAccounts,
-    version: global.platform.getVersion(),
   }), [
-    environmentType,
     network,
     activeCurrency,
     accountType,
@@ -149,6 +145,13 @@ export function MetaMetricsProvider ({ children }) {
             ...pick(contextProperties, include),
             category,
             exclude_meta_metrics_id: excludeMetaMetricsId,
+          },
+          context: {
+            version: global.platform.getVersion(),
+            environment: process.env.METAMASK_ENVIRONMENT,
+            platform: getPlatform(),
+            network: contextProperties.network,
+            environment_type: getEnvironmentType(),
           },
         })
       }
