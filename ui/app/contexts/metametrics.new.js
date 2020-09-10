@@ -3,23 +3,17 @@
  * MetaMetrics is our own brand, and should remain aptly named regardless of the underlying
  * metrics system. This file implements Segment analytics tracking.
  */
-import React, { Component, createContext, useEffect, useCallback, useMemo } from 'react'
+import React, { Component, createContext, useEffect, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import { useLocation, matchPath } from 'react-router-dom'
 import { captureException, captureMessage } from '@sentry/browser'
 
-import { pick, omit } from 'lodash'
+import { omit } from 'lodash'
 import {
   getCurrentNetworkId,
-  getAccountType,
-  getNumberOfAccounts,
-  getNumberOfTokens,
 } from '../selectors/selectors'
-import { getSendToken } from '../selectors/send'
-import {
-  txDataSelector,
-} from '../selectors/confirm-transaction'
+
 import { getEnvironmentType, getPlatform } from '../../../app/scripts/lib/util'
 import {
   sendCountIsTrackable,
