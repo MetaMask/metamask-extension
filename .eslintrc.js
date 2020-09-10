@@ -18,6 +18,18 @@ module.exports = {
     },
   },
 
+  ignorePatterns: [
+    '!.eslintrc.js',
+    'node_modules/**',
+    'dist/**',
+    'builds/**',
+    'test-*/**',
+    'docs/**',
+    'coverage/',
+    'app/scripts/chromereload.js',
+    'app/vendor/**',
+  ],
+
   extends: [
     '@metamask/eslint-config',
     '@metamask/eslint-config/config/nodejs',
