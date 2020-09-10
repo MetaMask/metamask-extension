@@ -9,7 +9,7 @@ import PropTypes from 'prop-types'
 import { useLocation, matchPath } from 'react-router-dom'
 import { captureException, captureMessage } from '@sentry/browser'
 
-import { pick } from 'lodash'
+import { pick, omit } from 'lodash'
 import {
   getCurrentNetworkId,
   getAccountType,
@@ -86,7 +86,9 @@ export function MetaMetricsProvider ({ children }) {
           properties: {
             url,
             hash: location.hash,
-            params,
+            // We do not want to send addresses or accounts in any events
+            // Some routes include these as params.
+            params: omit(params, ['account', 'address']),
           },
         })
       } else if (location.pathname !== '/confirm-transaction') {
