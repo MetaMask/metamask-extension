@@ -50,13 +50,13 @@ export function MetaMetricsProvider ({ children }) {
       const idValue = metaMetricsId ?? METAMETRICS_ANONYMOUS_ID
       const match = matchPath(location.pathname, { path: PATHS_TO_CHECK, exact: true, strict: true })
       if (match) {
-        const { path, params, url } = match
+        const { path, params } = match
         const name = PATH_NAME_MAP[path]
         segment.page({
           [idTrait]: idValue,
           name,
           properties: {
-            url,
+            url: path,
             hash: location.hash,
             // We do not want to send addresses or accounts in any events
             // Some routes include these as params.
