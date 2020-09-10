@@ -3,10 +3,9 @@ import PropTypes from 'prop-types'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import BigNumber from 'bignumber.js'
-import { isEqual } from 'lodash'
 import { I18nContext } from '../../../contexts/i18n'
 import SelectQuotePopover from '../select-quote-popover'
-
+import { useEqualityCheck } from '../../../hooks/useEqualityCheck'
 import FeeCard from '../fee-card'
 import { setCustomGasLimit } from '../../../ducks/gas/gas.duck'
 import { getQuotes, getSelectedQuote, getApproveTxParams, getFetchParams, setBalanceError, getQuotesLastFetched, getBalanceError, getMaxMode, getCustomSwapsGas, getSwapsTradeTxParams } from '../../../ducks/swaps/swaps'
@@ -116,19 +115,8 @@ export default function ViewQuote ({ onSubmit, onCancel }) {
   }, [insufficientTokens, insufficientEth, balanceError, dispatch])
 
   // Memoize value
-  const [quotes, setLocalQuotes] = useState(_quotes)
-  useEffect(() => {
-    if (!isEqual(quotes, _quotes)) {
-      setLocalQuotes(_quotes)
-    }
-  }, [_quotes, quotes])
-
-  const [memoizedTokenConversionRates, setMemoizedTokenConversionRates] = useState(tokenConversionRates)
-  useEffect(() => {
-    if (!isEqual(tokenConversionRates, memoizedTokenConversionRates)) {
-      setMemoizedTokenConversionRates(tokenConversionRates)
-    }
-  }, [memoizedTokenConversionRates, tokenConversionRates])
+  const quotes = useEqualityCheck(_quotes)
+  const memoizedTokenConversionRates = useEqualityCheck(tokenConversionRates)
 
   // Get renderable data for popover and main quote details component
   const renderablePopoverData = useMemo(() => {
