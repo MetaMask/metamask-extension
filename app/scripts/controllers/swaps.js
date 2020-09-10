@@ -213,9 +213,12 @@ export default class SwapsController {
     const newQuotes = {}
     quoteGasData.forEach(([gasLimit, simulationFails, aggId]) => {
       if (gasLimit && !simulationFails) {
+        const maxGasMinusRefund = (new BigNumber(quotes[aggId].maxGas, 16)).minus(quotes[aggId].estimatedRefund || 0, 10).toString(16)
+        const gasEstimateWithRefund = (new BigNumber(maxGasMinusRefund, 16)).lt(gasLimit, 16) ? maxGasMinusRefund : gasLimit
         newQuotes[aggId] = {
           ...quotes[aggId],
           gasEstimate: gasLimit,
+          gasEstimateWithRefund,
         }
       } else if (quotes[aggId].approvalNeeded || isMetaSwapTestNet) {
         newQuotes[aggId] = quotes[aggId]
@@ -259,7 +262,10 @@ export default class SwapsController {
     const { gasLimit: newGasEstimate, simulationFails } = await this.timedoutGasReturn({ ...updatedQuotes[initialAggId].trade, gas: baseGasEstimate })
 
     if (newGasEstimate && !simulationFails) {
+      const maxGasMinusRefund = (new BigNumber(updatedQuotes[initialAggId].maxGas, 16)).minus(updatedQuotes[initialAggId].estimatedRefund || 0, 10).toString(16)
+      const gasEstimateWithRefund = (new BigNumber(maxGasMinusRefund, 16)).lt(newGasEstimate, 16) ? maxGasMinusRefund : newGasEstimate
       updatedQuotes[initialAggId].gasEstimate = newGasEstimate
+      updatedQuotes[initialAggId].gasEstimateWithRefund = gasEstimateWithRefund
     }
 
     this.store.updateState({ swapsState: { ...swapsState, quotes: updatedQuotes } })
