@@ -35,3 +35,41 @@
     }
   }
 }
+
+.radio-button-group {
+  .radio-button {
+    @include H7;
+
+    color: $Grey-700;
+    border: 1px solid $Grey-100;
+    background: $white;
+    border-radius: 25px;
+    height: 25px;
+    margin-right: 8px;
+    min-width: 48px;
+    padding: 0;
+
+    &--active {
+      font-weight: bold;
+      background: $Blue-300;
+      color: white;
+    }
+
+    &--danger {
+      border: 1px solid $Red-500;
+      color: $Red-500;
+      background: $white;
+    }
+
+
+    &:hover {
+      box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
+    };
+  }
+
+  .radio-button--active.radio-button--danger {
+    border: 1px solid $Red-500;
+    color: white;
+    background: $Red-500;
+  }
+}
