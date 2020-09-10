@@ -23,17 +23,33 @@ const APPROVE_TX_GAS_DEFAULT = '0x1d4c0'
 const METASWAP_GAS_DEFAULT = 800000
 
 const getBaseApi = function (isCustomNetwork, type) {
-  const environment = isCustomNetwork ? 'dev' : 'prod'
-
+  if (isCustomNetwork) {
+    switch (type) {
+      case 'trade':
+        return `https://metaswap-api.airswap-dev.codefi.network/trades?`
+      case 'tokens':
+        return `https://metaswap-api.airswap-dev.codefi.network/tokens`
+      case 'topAssets':
+        return `https://metaswap-api.airswap-dev.codefi.network/topAssets`
+      case 'featureFlag':
+        return `https://metaswap-api.airswap-dev.codefi.network/featureFlag`
+      case 'aggregatorMetadata':
+        return `https://metaswap-api.airswap-dev.codefi.network/aggregatorMetadata`
+      default:
+        throw new Error('getBaseApi requires an api call type')
+    }
+  }
   switch (type) {
     case 'trade':
-      return `https://metaswap-api.airswap-${environment}.codefi.network/trades?`
+      return `https://metaswap.codefi.network/api/trades?`
     case 'tokens':
-      return `https://metaswap-api.airswap-${environment}.codefi.network/tokens`
+      return `https://metaswap.codefi.network/api/tokens`
     case 'topAssets':
-      return `https://metaswap-api.airswap-${environment}.codefi.network/topAssets`
+      return `https://metaswap.codefi.network/api/topAssets`
+    case 'featureFlag':
+      return `https://metaswap.codefi.network/api/featureFlag`
     case 'aggregatorMetadata':
-      return `https://metaswap-api.airswap-${environment}.codefi.network/aggregatorMetadata`
+      return `https://metaswap.codefi.network/api/aggregatorMetadata`
     default:
       throw new Error('getBaseApi requires an api call type')
   }
