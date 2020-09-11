@@ -1960,12 +1960,6 @@
   "viewAccount": {
     "message": "View Account"
   },
-  "viewContact": {
-    "message": "View Contact"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "View at $1"
-  },
   "viewOnEtherscan": {
     "message": "View on Etherscan"
   },
