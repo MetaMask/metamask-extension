@@ -18,10 +18,15 @@ const AGGREGATOR_LOCATIONS = [
   { x: -135, y: 46 },
   { x: 40, y: 46 },
 ]
-const randomLocations = shuffle([...AGGREGATOR_LOCATIONS])
-AGGREGATOR_LOCATIONS.push(randomLocations[0])
 
-const AGGREGATOR_NAMES = ['totle', 'dexag', 'airswap', 'paraswap', 'zeroExV1', 'oneInch', 'uniswap']
+function getRandomLocations (numberOfLocations) {
+  const randomLocations = shuffle(AGGREGATOR_LOCATIONS)
+  if (numberOfLocations <= AGGREGATOR_LOCATIONS.length) {
+    return randomLocations.slice(0, numberOfLocations)
+  }
+  const numberOfExtraLocations = numberOfLocations - AGGREGATOR_LOCATIONS.length
+  return [...randomLocations, ...getRandomLocations(numberOfExtraLocations)]
+}
 
 function getMascotTarget (aggregatorName, centerPoint, aggregatorLocationMap) {
   const location = aggregatorLocationMap[aggregatorName]
@@ -46,15 +51,21 @@ export default function LoadingSwapsQuotes ({
   onSubmit,
 }) {
   const t = useContext(I18nContext)
-  const numberOfQuotes = AGGREGATOR_NAMES.length
   const animationEventEmitter = useRef(new EventEmitter())
+
+  const [aggregatorNames] = useState(() => shuffle(Object.keys(aggregatorMetadata)))
+  const numberOfQuotes = aggregatorNames.length
   const mascotContainer = useRef()
   const currentMascotContainer = mascotContainer.current
 
   const [quoteCount, updateQuoteCount] = useState(0)
-  const [aggregatorNames] = useState(shuffle(AGGREGATOR_NAMES))
-  const [aggregatorLocations] = useState(shuffle(AGGREGATOR_LOCATIONS))
-  const _aggregatorLocationMap = aggregatorNames.reduce((nameLocationMap, name, index) => ({ ...nameLocationMap, [name]: aggregatorLocations[index] }), {})
+  // is an array of randomized items from AGGREGATOR_LOCATIONS, containing numberOfQuotes number of items
+  // it is randomized so that the order in which the fox looks at locations is random
+  const [aggregatorLocations] = useState(() => getRandomLocations(numberOfQuotes))
+  const _aggregatorLocationMap = aggregatorNames.reduce((nameLocationMap, name, index) => ({
+    ...nameLocationMap,
+    [name]: aggregatorLocations[index],
+  }), {})
   const [aggregatorLocationMap] = useState(_aggregatorLocationMap)
   const [midPointTarget, setMidpointTarget] = useState(null)
   const [doneCalled, setDoneCalled] = useState(false)
@@ -109,7 +120,7 @@ export default function LoadingSwapsQuotes ({
               <span>{t('swapQuoteNofN', [quoteCount, numberOfQuotes])}</span>
             </div>
             <div className="loading-swaps-quotes__quote-name-check">
-              <span>{quoteCount === numberOfQuotes ? t('swapFinalizing') : t('swapCheckingQuote', [aggregatorNames[quoteCount]])}</span>
+              <span>{quoteCount === numberOfQuotes ? t('swapFinalizing') : t('swapCheckingQuote', [aggregatorMetadata[aggregatorNames[quoteCount]].title])}</span>
             </div>
             <div className="loading-swaps-quotes__loading-bar-container">
               <div
