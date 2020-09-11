@@ -26,10 +26,7 @@
   },
   "default_locale": "en",
   "background": {
-    "scripts": [
-      "bg-libs.js",
-      "background.js"
-    ],
+    "scripts": ["bg-libs.js", "background.js"],
     "persistent": true
   },
   "browser_action": {
@@ -47,24 +44,14 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "file://*/*",
-        "http://*/*",
-        "https://*/*"
-      ],
-      "js": [
-        "contentscript.js"
-      ],
+      "matches": ["file://*/*", "http://*/*", "https://*/*"],
+      "js": ["contentscript.js"],
       "run_at": "document_start",
       "all_frames": true
     },
     {
-      "matches": [
-        "*://connect.trezor.io/*/popup.html"
-      ],
-      "js": [
-        "vendor/trezor/content-script.js"
-      ]
+      "matches": ["*://connect.trezor.io/*/popup.html"],
+      "js": ["vendor/trezor/content-script.js"]
     }
   ],
   "permissions": [
@@ -78,16 +65,9 @@
     "*://*.eth/",
     "notifications"
   ],
-  "web_accessible_resources": [
-    "inpage.js",
-    "phishing.html"
-  ],
+  "web_accessible_resources": ["inpage.js", "phishing.html"],
   "externally_connectable": {
-    "matches": [
-      "https://metamask.io/*"
-    ],
-    "ids": [
-      "*"
-    ]
+    "matches": ["https://metamask.io/*"],
+    "ids": ["*"]
   }
 }
