@@ -148,8 +148,8 @@ export default function LoadingSwapsQuotes ({
         </div>
       </div>
       <SwapsFooter
-        onSubmit={() => console.log('submit clicked')}
         submitText={t('back')}
+        onSubmit={onSubmit}
         hideCancel
       />
     </div>
@@ -163,4 +163,5 @@ LoadingSwapsQuotes.propTypes = {
     color: PropTypes.string,
     icon: PropTypes.string,
   })),
+  onSubmit: PropTypes.func.isRequired,
 }

@@ -140,4 +140,6 @@ AwaitingSwap.propTypes = {
     ERROR_FETCHING_QUOTES,
     QUOTES_NOT_AVAILABLE_ERROR,
   ]),
+  onSubmit: PropTypes.func,
+  submittingSwap: PropTypes.bool,
 }
