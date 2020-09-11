@@ -2091,10 +2091,10 @@
     events "^2.0.0"
     hdkey "0.8.0"
 
-"@metamask/eth-token-tracker@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/eth-token-tracker/-/eth-token-tracker-3.0.0.tgz#16ad4820abd6603d745c8cdaf7c5a9ae60e6db02"
-  integrity sha512-UxYkmEMrUYb8wzsqEY8x6QeiW2955guR/aaalqfElI2rlDyvKJ1lIaAiT7y642vcqoyIGhqYG2aejeHDpifMbA==
+"@metamask/eth-token-tracker@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@metamask/eth-token-tracker/-/eth-token-tracker-3.0.1.tgz#36b89f39c2af2ac41aa600dcedd2341704d94484"
+  integrity sha512-vlSKnI27zMCbaDOAHG5apYXoZgO833GUOP6/gkkzuKNEE7QZZCMti/9U6DYfrE8QvgbWyt/RjZkF3cTXXjBhCA==
   dependencies:
     deep-equal "^1.1.0"
     eth-block-tracker "^4.4.2"
