@@ -14,7 +14,7 @@ import {
   getCurrentNetworkId,
 } from '../selectors/selectors'
 
-import { getEnvironmentType, getPlatform } from '../../../app/scripts/lib/util'
+import { getEnvironmentType } from '../../../app/scripts/lib/util'
 import {
   sendCountIsTrackable,
   segment,
