@@ -8,7 +8,8 @@ import { calcTokenAmount } from '../../../ui/app/helpers/utils/token-util'
 import { calcGasTotal } from '../../../ui/app/pages/send/send.utils'
 import { conversionUtil } from '../../../ui/app/helpers/utils/conversion-util'
 import {
-  ETH_SWAPS_TOKEN_ADDRESS, DEFAULT_ERC20_APPROVE_GAS,
+  ETH_SWAPS_TOKEN_ADDRESS,
+  DEFAULT_ERC20_APPROVE_GAS,
   // QUOTES_EXPIRED_ERROR,
   // ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
@@ -54,9 +55,15 @@ const initialState = {
 }
 
 export default class SwapsController {
-
-  constructor ({ getBufferedGasLimit, provider, getProviderConfig, tokenRatesStore }) {
-    this.store = new ObservableStore({ swapsState: { ...initialState.swapsState } })
+  constructor ({
+    getBufferedGasLimit,
+    provider,
+    getProviderConfig,
+    tokenRatesStore,
+  }) {
+    this.store = new ObservableStore({
+      swapsState: { ...initialState.swapsState },
+    })
 
     this.getBufferedGasLimit = getBufferedGasLimit
     this.tokenRatesStore = tokenRatesStore
@@ -72,9 +79,7 @@ export default class SwapsController {
   // If we have a custom rpcTarget with a chainId of 1, we regard it to be the metaswap test net.
   _isMetaSwapTestNet () {
     const providerConfig = this.getProviderConfig()
-    return (
-      providerConfig.chainId === '1' && providerConfig.rpcTarget.length > 0
-    )
+    return providerConfig.chainId === '1' && providerConfig.rpcTarget.length > 0
   }
 
   async fetchAndSetQuotes (newFetchParams) {
@@ -97,15 +102,30 @@ export default class SwapsController {
 
     let approvalNeeded = false
     if (fetchParams.sourceToken !== ETH_SWAPS_TOKEN_ADDRESS) {
-      const allowance = await getERC20Allowance(fetchParams.sourceToken, fetchParams.fromAddress, this.web3.eth)
+      const allowance = await getERC20Allowance(
+        fetchParams.sourceToken,
+        fetchParams.fromAddress,
+        this.web3.eth,
+      )
+
       approvalNeeded = !allowance.gt(0)
       if (!approvalNeeded) {
-        newQuotes = mapValues(newQuotes, (quote) => ({ ...quote, approvalNeeded: null }))
-      } else if (newFetchParams) {
-        const { gasLimit: approvalGas } = await this.timedoutGasReturn({ ...newQuotes[0].approvalNeeded, gas: DEFAULT_ERC20_APPROVE_GAS })
         newQuotes = mapValues(newQuotes, (quote) => ({
           ...quote,
-          approvalNeeded: { ...quote.approvalNeeded, gas: approvalGas || DEFAULT_ERC20_APPROVE_GAS },
+          approvalNeeded: null,
+        }))
+      } else if (newFetchParams) {
+        const { gasLimit: approvalGas } = await this.timedoutGasReturn({
+          ...newQuotes[0].approvalNeeded,
+          gas: DEFAULT_ERC20_APPROVE_GAS,
+        })
+
+        newQuotes = mapValues(newQuotes, (quote) => ({
+          ...quote,
+          approvalNeeded: {
+            ...quote.approvalNeeded,
+            gas: approvalGas || DEFAULT_ERC20_APPROVE_GAS,
+          },
         }))
       }
     }
@@ -117,14 +137,18 @@ export default class SwapsController {
       newQuotes[topAggId].isBestQuote = true
     }
 
-    // We can reduce time on the loading screen by only doing this after the loading screen and best quote have rendered
+    // We can reduce time on the loading screen by only doing this after the
+    // loading screen and best quote have rendered.
     if (!approvalNeeded && !newFetchParams?.balanceError) {
       newQuotes = await this.getAllQuotesWithGasEstimates(newQuotes)
 
       if (Object.values(newQuotes).length === 0) {
         this.setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR)
       } else {
-        const { topAggId: topAggIdAfterGasEstimates, isBest: isBestAfterGasEstimates } = this._findTopQuoteAggId(newQuotes)
+        const {
+          topAggId: topAggIdAfterGasEstimates,
+          isBest: isBestAfterGasEstimates,
+        } = this._findTopQuoteAggId(newQuotes)
         if (isBestAfterGasEstimates) {
           newQuotes[topAggId].isBestQuote = true
         }
@@ -134,7 +158,15 @@ export default class SwapsController {
       }
     }
 
-    this.store.updateState({ swapsState: { ...swapsState, quotes: newQuotes, fetchParams, quotesLastFetched, selectedAggId } })
+    this.store.updateState({
+      swapsState: {
+        ...swapsState,
+        quotes: newQuotes,
+        fetchParams,
+        quotesLastFetched,
+        selectedAggId,
+      },
+    })
 
     this.pollCount += 1
     if (this.pollCount < 4) {
@@ -205,16 +237,30 @@ export default class SwapsController {
 
   async getAllQuotesWithGasEstimates (quotes) {
     const isMetaSwapTestNet = this._isMetaSwapTestNet()
-    const quoteGasData = await Promise.all(Object.values(quotes).map(async (quote) => {
-      const { gasLimit, simulationFails } = await this.timedoutGasReturn({ ...quote.trade, gas: `0x${quote.maxGas.toString(16)}` })
-      return [gasLimit, simulationFails, quote.aggregator]
-    }))
+    const quoteGasData = await Promise.all(
+      Object.values(quotes).map(async (quote) => {
+        const { gasLimit, simulationFails } = await this.timedoutGasReturn({
+          ...quote.trade,
+          gas: `0x${quote.maxGas.toString(16)}`,
+        })
+        return [gasLimit, simulationFails, quote.aggregator]
+      }),
+    )
 
     const newQuotes = {}
     quoteGasData.forEach(([gasLimit, simulationFails, aggId]) => {
       if (gasLimit && !simulationFails) {
-        const maxGasMinusRefund = (new BigNumber(quotes[aggId].maxGas, 16)).minus(quotes[aggId].estimatedRefund || 0, 10).toString(16)
-        const gasEstimateWithRefund = (new BigNumber(maxGasMinusRefund, 16)).lt(gasLimit, 16) ? maxGasMinusRefund : gasLimit
+        const maxGasMinusRefund = new BigNumber(quotes[aggId].maxGas, 16)
+          .minus(quotes[aggId].estimatedRefund || 0, 10)
+          .toString(16)
+
+        const gasEstimateWithRefund = new BigNumber(maxGasMinusRefund, 16).lt(
+          gasLimit,
+          16,
+        )
+          ? maxGasMinusRefund
+          : gasLimit
+
         newQuotes[aggId] = {
           ...quotes[aggId],
           gasEstimate: gasLimit,
@@ -259,21 +305,43 @@ export default class SwapsController {
 
     const updatedQuotes = { ...swapsState.quotes }
 
-    const { gasLimit: newGasEstimate, simulationFails } = await this.timedoutGasReturn({ ...updatedQuotes[initialAggId].trade, gas: baseGasEstimate })
+    const {
+      gasLimit: newGasEstimate,
+      simulationFails,
+    } = await this.timedoutGasReturn({
+      ...updatedQuotes[initialAggId].trade,
+      gas: baseGasEstimate,
+    })
 
     if (newGasEstimate && !simulationFails) {
-      const maxGasMinusRefund = (new BigNumber(updatedQuotes[initialAggId].maxGas, 16)).minus(updatedQuotes[initialAggId].estimatedRefund || 0, 10).toString(16)
-      const gasEstimateWithRefund = (new BigNumber(maxGasMinusRefund, 16)).lt(newGasEstimate, 16) ? maxGasMinusRefund : newGasEstimate
+      const maxGasMinusRefund = new BigNumber(
+        updatedQuotes[initialAggId].maxGas,
+        16,
+      )
+        .minus(updatedQuotes[initialAggId].estimatedRefund || 0, 10)
+        .toString(16)
+
+      const gasEstimateWithRefund = new BigNumber(maxGasMinusRefund, 16).lt(
+        newGasEstimate,
+        16,
+      )
+        ? maxGasMinusRefund
+        : newGasEstimate
+
       updatedQuotes[initialAggId].gasEstimate = newGasEstimate
       updatedQuotes[initialAggId].gasEstimateWithRefund = gasEstimateWithRefund
     }
 
-    this.store.updateState({ swapsState: { ...swapsState, quotes: updatedQuotes } })
+    this.store.updateState({
+      swapsState: { ...swapsState, quotes: updatedQuotes },
+    })
   }
 
   setShowAwaitingSwapScreen (showAwaitingSwapScreen) {
     const { swapsState } = this.store.getState()
-    this.store.updateState({ swapsState: { ...swapsState, showAwaitingSwapScreen } })
+    this.store.updateState({
+      swapsState: { ...swapsState, showAwaitingSwapScreen },
+    })
   }
 
   setApproveTxId (approveTxId) {
@@ -298,17 +366,23 @@ export default class SwapsController {
 
   setSwapsTxGasPrice (gasPrice) {
     const { swapsState } = this.store.getState()
-    this.store.updateState({ swapsState: { ...swapsState, customGasPrice: gasPrice } })
+    this.store.updateState({
+      swapsState: { ...swapsState, customGasPrice: gasPrice },
+    })
   }
 
   setSwapsTxGasLimit (gasLimit) {
     const { swapsState } = this.store.getState()
-    this.store.updateState({ swapsState: { ...swapsState, customMaxGas: gasLimit } })
+    this.store.updateState({
+      swapsState: { ...swapsState, customMaxGas: gasLimit },
+    })
   }
 
   setCustomApproveTxData (data) {
     const { swapsState } = this.store.getState()
-    this.store.updateState({ swapsState: { ...swapsState, customApproveTxData: data } })
+    this.store.updateState({
+      swapsState: { ...swapsState, customApproveTxData: data },
+    })
   }
 
   setBackgoundSwapRouteState (routeState) {
@@ -319,20 +393,31 @@ export default class SwapsController {
   resetPostFetchState () {
     const { swapsState } = this.store.getState()
 
-    this.store.updateState({ swapsState: { ...initialState.swapsState, tokens: swapsState.tokens, fetchParams: swapsState.fetchParams } })
+    this.store.updateState({
+      swapsState: {
+        ...initialState.swapsState,
+        tokens: swapsState.tokens,
+        fetchParams: swapsState.fetchParams,
+      },
+    })
     clearTimeout(this.timeout)
   }
 
   resetSwapsState () {
     const { swapsState } = this.store.getState()
 
-    this.store.updateState({ swapsState: { ...initialState.swapsState, tokens: swapsState.tokens } })
+    this.store.updateState({
+      swapsState: { ...initialState.swapsState, tokens: swapsState.tokens },
+    })
     clearTimeout(this.timeout)
   }
 
   _findTopQuoteAggId (quotes) {
-    const tokenConversionRates = this.tokenRatesStore.getState().contractExchangeRates
-    const { swapsState: { customGasPrice } } = this.store.getState()
+    const tokenConversionRates = this.tokenRatesStore.getState()
+      .contractExchangeRates
+    const {
+      swapsState: { customGasPrice },
+    } = this.store.getState()
 
     if (!Object.values(quotes)?.length) {
       return {}
@@ -342,11 +427,29 @@ export default class SwapsController {
     let ethValueOfTradeForBestQuote = null
 
     Object.values(quotes).forEach((quote) => {
-      const { destinationAmount = 0, destinationToken, trade, approvalNeeded, averageGas, gasEstimate, aggregator } = quote
-      const tradeGasLimitForCalculation = gasEstimate ? (new BigNumber(gasEstimate, 16)) : (new BigNumber(averageGas, 10))
-      const totalGasLimitForCalculation = tradeGasLimitForCalculation.plus(approvalNeeded?.gas || '0x0', 16).toString(16)
-      const gasTotalInWeiHex = calcGasTotal(totalGasLimitForCalculation, customGasPrice || '0x1')
-      const totalEthCost = (new BigNumber(gasTotalInWeiHex, 16)).plus(trade.value, 10)
+      const {
+        destinationAmount = 0,
+        destinationToken,
+        trade,
+        approvalNeeded,
+        averageGas,
+        gasEstimate,
+        aggregator,
+      } = quote
+      const tradeGasLimitForCalculation = gasEstimate
+        ? new BigNumber(gasEstimate, 16)
+        : new BigNumber(averageGas, 10)
+      const totalGasLimitForCalculation = tradeGasLimitForCalculation
+        .plus(approvalNeeded?.gas || '0x0', 16)
+        .toString(16)
+      const gasTotalInWeiHex = calcGasTotal(
+        totalGasLimitForCalculation,
+        customGasPrice || '0x1',
+      )
+      const totalEthCost = new BigNumber(gasTotalInWeiHex, 16).plus(
+        trade.value,
+        10,
+      )
       const ethFee = conversionUtil(totalEthCost, {
         fromCurrency: 'ETH',
         fromDenomination: 'WEI',
@@ -357,21 +460,32 @@ export default class SwapsController {
 
       const tokenConversionRate = tokenConversionRates[destinationToken]
 
-      const ethValueOfTrade = destinationToken.symbol === 'ETH'
-        ? calcTokenAmount(destinationAmount, 18).minus(ethFee, 10)
-        : (new BigNumber(tokenConversionRate || 1, 10))
-          .times(calcTokenAmount(destinationAmount, destinationToken.decimals || 18), 10)
-          .minus(tokenConversionRate ? ethFee : 0, 10)
+      const ethValueOfTrade =
+        destinationToken.symbol === 'ETH'
+          ? calcTokenAmount(destinationAmount, 18).minus(ethFee, 10)
+          : new BigNumber(tokenConversionRate || 1, 10)
+            .times(
+              calcTokenAmount(
+                destinationAmount,
+                destinationToken.decimals || 18,
+              ),
+              10,
+            )
+            .minus(tokenConversionRate ? ethFee : 0, 10)
 
-      if (ethValueOfTradeForBestQuote === null || ethValueOfTrade.gt(ethValueOfTradeForBestQuote)) {
+      if (
+        ethValueOfTradeForBestQuote === null ||
+        ethValueOfTrade.gt(ethValueOfTradeForBestQuote)
+      ) {
         topAggId = aggregator
         ethValueOfTradeForBestQuote = ethValueOfTrade
       }
     })
 
-    const isBest = (quotes[topAggId]?.destinationTokenInfo?.symbol === 'ETH') || Boolean(tokenConversionRates[quotes[topAggId]?.destinationToken])
+    const isBest =
+      quotes[topAggId]?.destinationTokenInfo?.symbol === 'ETH' ||
+      Boolean(tokenConversionRates[quotes[topAggId]?.destinationToken])
 
     return { topAggId, isBest }
   }
-
 }
