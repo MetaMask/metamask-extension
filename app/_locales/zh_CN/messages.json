@@ -657,7 +657,7 @@
     "message": "交易费限制至少要 21000"
   },
   "gasPrice": {
-    "message": "交易费（GWEI）"
+    "message": "交易费价格（GWEI）"
   },
   "gasPriceExtremelyLow": {
     "message": "交易费价格极低"
