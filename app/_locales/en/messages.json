@@ -1729,6 +1729,9 @@
   "terms": {
     "message": "Terms of Use"
   },
+  "termsOfService": {
+    "message": "Terms of Service"
+  },
   "testFaucet": {
     "message": "Test Faucet"
   },
