@@ -484,7 +484,7 @@ export default class MetamaskController extends EventEmitter {
 
       // AddressController
       setAddressBook: nodeify(this.addressBookController.set, this.addressBookController),
-      removeFromAddressBook: this.addressBookController.delete.bind(this.addressBookController),
+      removeFromAddressBook: nodeify(this.addressBookController.delete, this.addressBookController),
 
       // AppStateController
       setLastActiveTime: nodeify(this.appStateController.setLastActiveTime, this.appStateController),
