@@ -3,7 +3,7 @@
  * MetaMetrics is our own brand, and should remain aptly named regardless of the underlying
  * metrics system. This file implements Segment analytics tracking.
  */
-import React, { Component, createContext, useEffect, useCallback } from 'react'
+import React, { useRef, Component, createContext, useEffect, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import { useLocation, matchPath, useRouteMatch } from 'react-router-dom'
@@ -47,17 +47,19 @@ function useSegmentContext () {
     version = `${version}-${process.env.METAMASK_ENVIRONMENT}`
   }
 
+  const page = match ? {
+    path: match.path,
+    title: PATH_NAME_MAP[match.path],
+    url: match.path,
+  } : undefined
+
   return {
     app: {
       version,
       name: 'MetaMask Extension',
     },
     locale,
-    page: {
-      path: match.path,
-      title: PATH_NAME_MAP[match],
-      url: match.path,
-    },
+    page,
     referrer,
     userAgent: window.navigator.userAgent,
   }
@@ -71,6 +73,9 @@ export function MetaMetricsProvider ({ children }) {
   const location = useLocation()
   const context = useSegmentContext()
 
+  // Used to prevent double tracking page calls
+  const previousMatch = useRef()
+
   /**
    * Anytime the location changes, track a page change with segment.
    * Previously we would manually track changes to history and keep a
@@ -78,12 +83,18 @@ export function MetaMetricsProvider ({ children }) {
    * which page the user is on and their navigation path.
    */
   useEffect(() => {
+    const environmentType = getEnvironmentType()
     if (location.pathname.startsWith('/initialize') || participateInMetaMetrics) {
       // Events that happen during initialization before the user opts into MetaMetrics will be anonymous
       const idTrait = metaMetricsId ? 'userId' : 'anonymousId'
       const idValue = metaMetricsId ?? METAMETRICS_ANONYMOUS_ID
       const match = matchPath(location.pathname, { path: PATHS_TO_CHECK, exact: true, strict: true })
-      if (match) {
+      if (
+        match &&
+        previousMatch.current !== match.path &&
+        // If we're in a popup or notification we don't want the initial home route to track
+        ((environmentType !== 'popup' && environmentType !== 'notification') || match.path !== '/')
+      ) {
         const { path, params } = match
         const name = PATH_NAME_MAP[path]
         segment.page({
@@ -94,7 +105,7 @@ export function MetaMetricsProvider ({ children }) {
             // Some routes include these as params.
             params: omit(params, ['account', 'address']),
             network,
-            environment_type: getEnvironmentType(),
+            environment_type: environmentType,
           },
           context,
         })
@@ -104,6 +115,7 @@ export function MetaMetricsProvider ({ children }) {
         // the contents of state.
         captureMessage(`${location.pathname} would have issued a page track event to segment, but no route match was found`)
       }
+      previousMatch.current = match?.path
     }
   }, [location, context, network, metaMetricsId, participateInMetaMetrics])
 
