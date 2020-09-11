@@ -61,28 +61,41 @@ export default function Swap () {
   const isAwaitingSwapRoute = pathname === AWAITING_SWAP_ROUTE
   const isSwapsErrorRoute = pathname === SWAPS_ERROR_ROUTE
 
-  const routeState = useSelector(getBackgoundSwapRouteState)
-
-  const tradeTxParams = useSelector(getTradeTxParams)
-  const tradeTxParamsTo = tradeTxParams?.to
   const fetchParams = useSelector(getFetchParams)
 
   const [inputValue, setInputValue] = useState(fetchParams?.value || null)
   const [maxSlippage, setMaxSlippage] = useState(fetchParams?.slippage || 2)
+  const [submittingSwap, setSubmittingSwap] = useState(false)
+  const [timeRemainingExpired, setTimeRemainingExpired] = useState(false)
 
+  const routeState = useSelector(getBackgoundSwapRouteState)
+  const tradeTxParams = useSelector(getTradeTxParams)
   const selectedAccount = useSelector(getSelectedAccount)
-  const { balance: ethBalance, address: selectedAccountAddress } = selectedAccount
   const quotes = useSelector(getQuotes)
-
   const averageGasEstimate = useSelector(getAveragePriceEstimateInHexWEI)
   const customConvertGasPrice = useSelector(getSwapsGasPrice)
-  const usedGasPrice = customConvertGasPrice || tradeTxParams?.gasPrice || averageGasEstimate
-
   const txList = useSelector(currentNetworkTxListSelector)
-
   const tradeTxId = useSelector(getTradeTxId)
   const approveTxId = useSelector(getApproveTxId)
+  const aggregatorMetadata = useSelector(getAggregatorMetadata)
+  const networkId = useSelector(getCurrentNetworkId)
+  const customNetworkId = useSelector(getCustomNetworkId)
+  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider)
+  const fetchingQuotes = useSelector(getFetchingQuotes)
+  const balanceError = useSelector(getBalanceError)
+  const selectedToToken = useSelector(getToToken) || fetchParams?.destinationTokenInfo || {}
+  const quotesStatus = useSelector(getQuotesStatus)
+  const swapsErrorKey = useSelector(getSwapsErrorKey)
 
+  const { balance: ethBalance, address: selectedAccountAddress } = selectedAccount
+  const fetchParamsFromToken = fetchParams?.sourceTokenInfo?.symbol === 'ETH'
+    ? { ...ETH_SWAPS_TOKEN_OBJECT, string: getValueFromWeiHex({ value: ethBalance, numberOfDecimals: 4, toDenomination: 'ETH' }), balance: ethBalance }
+    : fetchParams?.sourceTokenInfo
+  const selectedFromToken = useSelector(getFromToken) || fetchParamsFromToken || {}
+  const { destinationTokenAddedForSwap } = fetchParams || {}
+
+  const usedGasPrice = customConvertGasPrice || tradeTxParams?.gasPrice || averageGasEstimate
+  const tradeTxParamsTo = tradeTxParams?.to
   const approveTxData = approveTxId && txList.find(({ id }) => approveTxId === id)
   const tradeTxData = tradeTxId && txList.find(({ id }) => tradeTxId === id)
   const tokensReceived = tradeTxData?.txReceipt && getSwapsTokensReceivedFromTxMeta(
@@ -93,18 +106,10 @@ export default function Swap () {
     fetchParams?.destinationTokenInfo?.decimals,
   )
   const tradeConfirmed = tradeTxData?.status === 'confirmed'
-
   const approveError = approveTxData?.status === 'failed' || approveTxData?.txReceipt?.status === '0x0'
   const tradeError = tradeTxData?.status === 'failed' || tradeTxData?.txReceipt?.status === '0x0'
   const conversionError = approveError || tradeError
-
-  const aggregatorMetadata = useSelector(getAggregatorMetadata)
-  const networkId = useSelector(getCurrentNetworkId)
-  const customNetworkId = useSelector(getCustomNetworkId)
   const isCustomNetwork = Boolean(customNetworkId)
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider)
-
-  const { destinationTokenAddedForSwap } = fetchParams || {}
 
   const clearTemporaryTokenRef = useRef()
   useEffect(() => {
@@ -162,19 +167,6 @@ export default function Swap () {
     }
   }, [dispatch, isCustomNetwork])
 
-  const fetchingQuotes = useSelector(getFetchingQuotes)
-  const balanceError = useSelector(getBalanceError)
-  const selectedToToken = useSelector(getToToken) || fetchParams?.destinationTokenInfo || {}
-  const fetchParamsFromToken = fetchParams?.sourceTokenInfo?.symbol === 'ETH'
-    ? { ...ETH_SWAPS_TOKEN_OBJECT, string: getValueFromWeiHex({ value: ethBalance, numberOfDecimals: 4, toDenomination: 'ETH' }), balance: ethBalance }
-    : fetchParams?.sourceTokenInfo
-  const selectedFromToken = useSelector(getFromToken) || fetchParamsFromToken || {}
-
-  const [submittingSwap, setSubmittingSwap] = useState(false)
-
-  const quotesStatus = useSelector(getQuotesStatus)
-  const swapsErrorKey = useSelector(getSwapsErrorKey)
-
   const onSubmit = useSwapSubmitFunction({
     maxSlippage,
     inputValue,
@@ -199,7 +191,6 @@ export default function Swap () {
     history.push(SWAPS_ERROR_ROUTE)
   }
 
-  const [timeRemainingExpired, setTimeRemainingExpired] = useState(false)
   const timeRemaining = useTransactionTimeRemaining(true, true, tradeTxData?.submittedTime, usedGasPrice, true, true)
   const previousTimeRemaining = usePrevious(timeRemaining)
   const timeRemainingIsNumber = (timeRemaining || timeRemaining === 0)
