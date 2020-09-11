@@ -6,7 +6,7 @@
 import React, { Component, createContext, useEffect, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
-import { useLocation, matchPath } from 'react-router-dom'
+import { useLocation, matchPath, useRouteMatch } from 'react-router-dom'
 import { captureException, captureMessage } from '@sentry/browser'
 
 import { omit } from 'lodash'
@@ -21,6 +21,8 @@ import {
   METAMETRICS_ANONYMOUS_ID,
 } from '../helpers/utils/metametrics.util'
 import { PATH_NAME_MAP } from '../helpers/constants/routes'
+import { getCurrentLocale } from '../ducks/metamask/metamask'
+import { txDataSelector } from '../selectors'
 
 export const MetaMetricsContext = createContext(() => {
   captureException(
@@ -30,12 +32,39 @@ export const MetaMetricsContext = createContext(() => {
 
 const PATHS_TO_CHECK = Object.keys(PATH_NAME_MAP)
 
+function useSegmentContext () {
+  const match = useRouteMatch({ path: PATHS_TO_CHECK, exact: true, strict: true })
+  const locale = useSelector(getCurrentLocale)
+  const txData = useSelector(txDataSelector) || {}
+  const confirmTransactionOrigin = txData.origin
+
+  const referrer = confirmTransactionOrigin ? {
+    url: confirmTransactionOrigin,
+  } : undefined
+
+  return {
+    app: {
+      version: `${global.platform.getVersion()}-${process.env.METAMASK_ENVIRONMENT}`,
+      name: 'MetaMask Extension',
+    },
+    locale,
+    page: {
+      path: match.path,
+      title: PATH_NAME_MAP[match],
+      url: match.path,
+    },
+    referrer,
+    userAgent: window.navigator.userAgent,
+  }
+}
+
 export function MetaMetricsProvider ({ children }) {
   const network = useSelector(getCurrentNetworkId)
   const metaMetricsId = useSelector((state) => state.metamask.metaMetricsId)
   const participateInMetaMetrics = useSelector((state) => state.metamask.participateInMetaMetrics)
   const metaMetricsSendCount = useSelector((state) => state.metamask.metaMetricsSendCount)
   const location = useLocation()
+  const context = useSegmentContext()
 
   /**
    * Anytime the location changes, track a page change with segment.
@@ -56,12 +85,13 @@ export function MetaMetricsProvider ({ children }) {
           [idTrait]: idValue,
           name,
           properties: {
-            url: path,
-            hash: location.hash,
             // We do not want to send addresses or accounts in any events
             // Some routes include these as params.
             params: omit(params, ['account', 'address']),
+            network,
+            environment_type: getEnvironmentType(),
           },
+          context,
         })
       } else if (location.pathname !== '/confirm-transaction') {
         // We have more specific pages for each type of transaction confirmation
@@ -70,7 +100,7 @@ export function MetaMetricsProvider ({ children }) {
         captureMessage(`${location.pathname} would have issued a page track event to segment, but no route match was found`)
       }
     }
-  }, [location, metaMetricsId, participateInMetaMetrics])
+  }, [location, context, network, metaMetricsId, participateInMetaMetrics])
 
   /**
    * track a metametrics event using segment
@@ -117,20 +147,16 @@ export function MetaMetricsProvider ({ children }) {
           properties: {
             ...omit(properties, ['revenue', 'currency', 'value']),
             category,
+            network,
             exclude_meta_metrics_id: excludeMetaMetricsId,
           },
-          context: {
-            version: global.platform.getVersion(),
-            environment: process.env.METAMASK_ENVIRONMENT,
-            platform: getPlatform(),
-            network,
-            environment_type: getEnvironmentType(),
-          },
+          context,
         })
       }
 
       return undefined
     }, [
+      context,
       network,
       metaMetricsId,
       metaMetricsSendCount,
@@ -159,13 +185,14 @@ export class LegacyMetaMetricsProvider extends Component {
   static contextType = MetaMetricsContext
 
   static childContextTypes = {
-    // I think this has to be different than the old one so that there isn't confusion
+    // This has to be different than the type name for the old metametrics file
+    // using the same name would result in whichever was lower in the tree to be
+    // used.
     trackEvent: PropTypes.func,
   }
 
   getChildContext () {
     return {
-      // I think this has to be different than the old one so that there isn't confusion
       trackEvent: this.context,
     }
   }
