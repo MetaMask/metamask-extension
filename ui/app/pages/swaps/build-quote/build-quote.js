@@ -46,6 +46,8 @@ export default function BuildQuote ({
   const t = useContext(I18nContext)
   const dispatch = useDispatch()
 
+  const [fetchedTokenExchangeRate, setFetchedTokenExchangeRate] = useState(undefined)
+
   const balanceError = useSelector(getBalanceError)
   const fetchParams = useSelector(getFetchParams)
   const tokens = useSelector(getTokens)
@@ -60,11 +62,6 @@ export default function BuildQuote ({
   const usersTokens = uniqBy([...tokensWithBalances, ...tokens], 'address')
   const memoizedUsersTokens = useEqualityCheck(usersTokens)
 
-  useEffect(() => {
-    if (fromToken?.address === ETH_SWAPS_TOKEN_OBJECT.address && (fromToken?.balance !== ethBalance)) {
-      dispatch(setSwapsFromToken({ ...fromToken, balance: ethBalance, string: getValueFromWeiHex({ value: ethBalance, numberOfDecimals: 4, toDenomination: 'ETH' }) }))
-    }
-  }, [dispatch, fromToken, ethBalance])
   const selectedFromToken = useTokensToSearch({
     providedTokens: fromToken || fetchParamsFromToken ? [fromToken || fetchParamsFromToken] : [],
     rawEthBalance: ethBalance,
@@ -87,13 +84,6 @@ export default function BuildQuote ({
 
   const prevFromTokenString = usePrevious(fromTokenString)
 
-  useEffect(() => {
-    if (prevFromTokenString !== fromTokenString) {
-      onInputChange(inputValue, fromTokenString)
-    }
-  }, [onInputChange, prevFromTokenString, inputValue, fromTokenString])
-
-  const [fetchedTokenExchangeRate, setFetchedTokenExchangeRate] = useState(undefined)
   const convertFromFiatValue = useTokenFiatAmount(
     fromTokenAddress,
     inputValue || 0,
@@ -130,6 +120,18 @@ export default function BuildQuote ({
   }
   const onToSelect = useCallback((token) => dispatch(setSwapToToken(token)), [dispatch])
   const hideDropdownItemIf = useCallback((item) => item.address === fromTokenAddress, [fromTokenAddress])
+
+  useEffect(() => {
+    if (fromToken?.address === ETH_SWAPS_TOKEN_OBJECT.address && (fromToken?.balance !== ethBalance)) {
+      dispatch(setSwapsFromToken({ ...fromToken, balance: ethBalance, string: getValueFromWeiHex({ value: ethBalance, numberOfDecimals: 4, toDenomination: 'ETH' }) }))
+    }
+  }, [dispatch, fromToken, ethBalance])
+
+  useEffect(() => {
+    if (prevFromTokenString !== fromTokenString) {
+      onInputChange(inputValue, fromTokenString)
+    }
+  }, [onInputChange, prevFromTokenString, inputValue, fromTokenString])
 
   useEffect(() => {
     dispatch(resetSwapsPostFetchState())

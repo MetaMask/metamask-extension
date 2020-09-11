@@ -64,9 +64,12 @@ export default function ViewQuote ({ onSubmit, onCancel }) {
   const swapsTokens = useSelector(getTokens)
   const balanceError = useSelector(getBalanceError)
   const maxMode = useSelector(getMaxMode)
-
+  const fetchParams = useSelector(getFetchParams)
+  const approveTxParams = useSelector(getApproveTxParams)
   const usedQuote = useSelector(getSelectedQuote)
+
   const { isBestQuote } = usedQuote
+  const fetchParamsSourceToken = fetchParams?.sourceToken
 
   const usedGasLimit = usedQuote?.gasEstimateWithRefund || (`0x${decimalToHex(usedQuote?.averageGas || 0)}`)
   const gasLimitForMax = usedQuote?.gasEstimate || (`0x${decimalToHex(usedQuote?.averageGas || 0)}`)
@@ -74,9 +77,6 @@ export default function ViewQuote ({ onSubmit, onCancel }) {
   const maxGasLimit = customMaxGas || hexMax((`0x${decimalToHex(usedQuote?.maxGas || 0)}`), usedGasLimitWithMultiplier)
 
   const gasTotalInWeiHex = calcGasTotal(usedGasLimit, gasPrice)
-
-  const fetchParams = useSelector(getFetchParams)
-  const fetchParamsSourceToken = fetchParams?.sourceToken
 
   const { tokensWithBalances } = useTokenTracker(swapsTokens)
   const balanceToken = fetchParamsSourceToken === ETH_SWAPS_TOKEN_OBJECT.address
@@ -86,7 +86,6 @@ export default function ViewQuote ({ onSubmit, onCancel }) {
   const selectedFromToken = balanceToken || usedQuote.sourceTokenInfo
   const tokenBalance = tokensWithBalances?.length && calcTokenAmount(selectedFromToken.balance || '0x0', selectedFromToken.decimals).toFixed(9)
 
-  const approveTxParams = useSelector(getApproveTxParams)
   const approveGas = approveTxParams?.gas
 
   const renderablePopoverData = useMemo(() => {
