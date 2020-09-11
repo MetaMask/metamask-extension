@@ -42,9 +42,14 @@ function useSegmentContext () {
     url: confirmTransactionOrigin,
   } : undefined
 
+  let version = global.platform.getVersion()
+  if (process.env.METAMASK_ENVIRONMENT !== 'production') {
+    version = `${version}-${process.env.METAMASK_ENVIRONMENT}`
+  }
+
   return {
     app: {
-      version: `${global.platform.getVersion()}-${process.env.METAMASK_ENVIRONMENT}`,
+      version,
       name: 'MetaMask Extension',
     },
     locale,
