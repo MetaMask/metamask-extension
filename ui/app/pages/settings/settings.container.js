@@ -8,7 +8,6 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import { getMostRecentOverviewPage } from '../../ducks/history/history'
 
 import {
-  CONNECTIONS_ROUTE,
   ADVANCED_ROUTE,
   SECURITY_ROUTE,
   GENERAL_ROUTE,
@@ -27,7 +26,6 @@ import Settings from './settings.component'
 
 const ROUTES_TO_I18N_KEYS = {
   [GENERAL_ROUTE]: 'general',
-  [CONNECTIONS_ROUTE]: 'connections',
   [ADVANCED_ROUTE]: 'advanced',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
   [ABOUT_US_ROUTE]: 'about',
