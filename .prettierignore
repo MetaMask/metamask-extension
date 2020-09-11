@@ -1,0 +1,6 @@
+node_modules/**
+dist/**
+builds/**
+test-*/**
+coverage/
+app/vendor/**
