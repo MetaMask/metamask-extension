@@ -63,7 +63,7 @@ export default function Swap () {
                   </div>
                   <SwapsFooter
                     onSubmit={() => console.log('submit clicked')}
-                    submitTextKey="swapGetQuotes"
+                    submitText={t("swapGetQuotes")}
                     hideCancel
                   />
                 </div>
@@ -80,7 +80,7 @@ export default function Swap () {
                   </div>
                   <SwapsFooter
                     onSubmit={() => console.log('submit clicked')}
-                    submitTextKey="swap"
+                    submitText={t("swap")}
                     onCancel={() => console.log('cancel clicked')}
                     disabled
                     showTermsOfService

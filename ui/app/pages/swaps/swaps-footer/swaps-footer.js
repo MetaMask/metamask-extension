@@ -9,7 +9,7 @@ export default function SwapsFooter ({
   onCancel,
   hideCancel,
   onSubmit,
-  submitTextKey,
+  submitText,
   disabled,
   showTermsOfService,
   showTopBorder,
@@ -28,7 +28,7 @@ export default function SwapsFooter ({
           hideCancel={hideCancel}
           cancelText={t('back')}
           onSubmit={onSubmit}
-          submitText={t(submitTextKey)}
+          submitText={submitText}
           submitButtonType="confirm"
           footerClassName="swaps-footer__custom-page-container-footer-class"
           footerButtonClassName={classnames('swaps-footer__custom-page-container-footer-button-class', {
@@ -53,7 +53,7 @@ SwapsFooter.propTypes = {
   onCancel: PropTypes.func,
   hideCancel: PropTypes.bool,
   onSubmit: PropTypes.func,
-  submitTextKey: PropTypes.string,
+  submitText: PropTypes.string,
   disabled: PropTypes.bool,
   showTermsOfService: PropTypes.bool,
   showTopBorder: PropTypes.bool,
