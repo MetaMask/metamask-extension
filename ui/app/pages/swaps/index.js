@@ -63,7 +63,7 @@ export default function Swap () {
                   </div>
                   <SwapsFooter
                     onSubmit={() => console.log('submit clicked')}
-                    submitText={t("swapGetQuotes")}
+                    submitText={t('swapGetQuotes')}
                     hideCancel
                   />
                 </div>
@@ -75,12 +75,11 @@ export default function Swap () {
               render={() => (
                 <div style={{ display: 'flex', flexFlow: 'column', flex: 1, overflowWrap: 'break-word', width: '100%' }}>
                   <div style={{ display: 'flex', flex: 1 }}>
-                  Build quote
-                    <span>{JSON.stringify(fromToken, null, 2)}</span>
+                    View quote
                   </div>
                   <SwapsFooter
                     onSubmit={() => console.log('submit clicked')}
-                    submitText={t("swap")}
+                    submitText={t('swap')}
                     onCancel={() => console.log('cancel clicked')}
                     disabled
                     showTermsOfService
