@@ -1641,7 +1641,8 @@
     "message": "This is the cost to process the swap on the Ethereum network. It’s also known as “gas” fees."
   },
   "swapNewQuoteIn": {
-    "message": "New quotes in $1"
+    "message": "New quotes in $1",
+    "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
   },
   "swapOnceTransactionHasProcess": {
     "message": "Your $1 will be added to your account once this transaction has processed",
@@ -1731,7 +1732,8 @@
     "message": "Transaction complete"
   },
   "swapYourTokenBalance": {
-    "message": "$1 $2 available to swap"
+    "message": "$1 $2 available to swap",
+    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
   },
   "swapsAdvancedOptions": {
     "message": "Advanced Options"
@@ -1750,7 +1752,8 @@
     "message": "No quotes available"
   },
   "swapsNotEnoughForTx": {
-    "message": "Not enough $1 to complete this transaction"
+    "message": "Not enough $1 to complete this transaction",
+    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "switchNetworks": {
     "message": "Switch Networks"
