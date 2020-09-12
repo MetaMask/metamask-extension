@@ -100,19 +100,41 @@ export default class SwapsController {
     return providerConfig.chainId === '1' && providerConfig.rpcTarget.length > 0
   }
 
-  async fetchAndSetQuotes (newFetchParams) {
-    const { swapsState } = this.store.getState()
-    if (newFetchParams) {
-      clearTimeout(this.timeout)
-      this.pollCount = 0
-    }
+  // Once quotes are fetched, we poll for new ones to keep the quotes up to date. Market and aggregator contract conditions can change fast enough
+  // that quotes will no longer be available after 1 or 2 minutes. When fetchAndSetQuotes is first called it receives fetch parameters are stored in
+  // state. These stored parameters are used on subsequent calls made during polling.
+  // Note: we only want to do up to a maximum of three requests from polling. The logic that enforces that maximum is in the body of fetchAndSetQuotes
+  pollForNewQuotes () {
+    this.pollingTimeout = setTimeout(() => {
+      const { swapsState } = this.store.getState()
+      this.fetchAndSetQuotes(swapsState.fetchParams, true)
+    }, QUOTE_POLLING_INTERVAL)
+  }
 
-    const fetchParams = newFetchParams || swapsState.fetchParams
+  stopPollingForQuotes () {
+    clearTimeout(this.pollingTimeout)
+    this.setQuotes({})
+    this.setQuotesStatus('')
+    this.setQuotesLastFetched(null)
+  }
+
+  async fetchAndSetQuotes (fetchParams, isPolledRequest) {
     if (!fetchParams) {
       return null
     }
 
-    if (newFetchParams) {
+    const { swapsState } = this.store.getState()
+
+    // Every time we get a new request that is not from the polling, we reset the poll count so we can poll for up to three more sets of quotes with these new params.
+    if (!isPolledRequest) {
+      this.pollCount = 0
+    }
+
+    // If there are any pending poll requests, clear them so that they don't get call while this new fetch is in process
+    clearTimeout(this.pollingTimeout)
+
+
+    if (!isPolledRequest) {
       this.setSwapsErrorKey('')
     }
     let newQuotes = await fetchTradesInfo(fetchParams)
@@ -132,7 +154,7 @@ export default class SwapsController {
           ...quote,
           approvalNeeded: null,
         }))
-      } else if (newFetchParams) {
+      } else if (!isPolledRequest) {
         const { gasLimit: approvalGas } = await this.timedoutGasReturn({
           ...newQuotes[0].approvalNeeded,
           gas: DEFAULT_ERC20_APPROVE_GAS,
@@ -157,7 +179,7 @@ export default class SwapsController {
 
     // We can reduce time on the loading screen by only doing this after the
     // loading screen and best quote have rendered.
-    if (!approvalNeeded && !newFetchParams?.balanceError) {
+    if (!approvalRequired && !fetchParams?.balanceError) {
       newQuotes = await this.getAllQuotesWithGasEstimates(newQuotes)
 
       if (Object.values(newQuotes).length === 0) {
@@ -186,42 +208,26 @@ export default class SwapsController {
       },
     })
 
+    // We only want to do up to a maximum of three requests from polling.
     this.pollCount += 1
     if (this.pollCount < 4) {
-      clearTimeout(this.timeout)
       this.pollForNewQuotes()
     } else {
-      clearTimeout(this.timeout)
       this.resetPostFetchState()
       this.setQuotesStatus('expired')
       return null
     }
 
-    if (newFetchParams) {
-      return [newQuotes, selectedAggId]
-    }
-    return null
+    return [newQuotes, selectedAggId]
   }
 
   safeRefetchQuotes () {
     const { swapsState } = this.store.getState()
-    if (!this.timeout && swapsState.fetchParams) {
+    if (!this.pollingTimeout && swapsState.fetchParams) {
       this.fetchAndSetQuotes(swapsState.fetchParams)
     }
   }
 
-  pollForNewQuotes () {
-    this.timeout = setTimeout(() => {
-      this.fetchAndSetQuotes()
-    }, QUOTE_POLLING_INTERVAL)
-  }
-
-  stopPollingForQuotes () {
-    clearTimeout(this.timeout)
-    this.setQuotes({})
-    this.setQuotesStatus('')
-    this.setQuotesLastFetched(null)
-  }
 
   setFetchParams (fetchParams) {
     const { swapsState } = this.store.getState()
@@ -397,7 +403,7 @@ export default class SwapsController {
         fetchParams: swapsState.fetchParams,
       },
     })
-    clearTimeout(this.timeout)
+    clearTimeout(this.pollingTimeout)
   }
 
   resetSwapsState () {
@@ -406,7 +412,7 @@ export default class SwapsController {
     this.store.updateState({
       swapsState: { ...initialState.swapsState, tokens: swapsState.tokens },
     })
-    clearTimeout(this.timeout)
+    clearTimeout(this.pollingTimeout)
   }
 
   _findTopQuoteAggId (quotes) {
