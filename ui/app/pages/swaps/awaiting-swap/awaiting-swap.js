@@ -39,7 +39,7 @@ export default function AwaitingSwap ({
   let descriptionText
   let submitText
 
- t( if (errorKey === SWAP_FAILED_ERROR) {)
+  if (errorKey === SWAP_FAILED_ERROR) {
     headerText = t('swapFailedErrorTitle')
     descriptionText = t('swapFailedErrorDescription')
     submitText = t('tryAgain')
