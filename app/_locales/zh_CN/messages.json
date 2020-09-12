@@ -6,7 +6,7 @@
     "message": "版本、支持中心和联系方式。"
   },
   "acceleratingATransaction": {
-    "message": "* 设定更高交易费价格，可以加快交易完成进度，提高网络快速处理机率，但无法保证每次均能够实现提速。"
+    "message": "* 设定更高燃料价格，可以加快交易完成进度，提高网络快速处理机率，但无法保证每次均能够实现提速。"
   },
   "acceptTermsOfUse": {
     "message": "我已阅读并同意 $1"
@@ -51,7 +51,7 @@
     "message": "添加网络"
   },
   "addRecipient": {
-    "message": "添加接收人"
+    "message": "添加接收方"
   },
   "addSuggestedTokens": {
     "message": "添加推荐代币"
@@ -138,7 +138,7 @@
     "message": "尝试取消？"
   },
   "attemptToCancelDescription": {
-    "message": "确认提交该操作无法保证能够成功取消你的原始交易。如果取消成功，您将被收取上述交易费用。"
+    "message": "确认提交该操作无法保证能够成功取消你的原始交易。如取消成功，你将被收取上述交易费。"
   },
   "attemptingConnect": {
     "message": "正在尝试连接区块链。"
@@ -162,7 +162,7 @@
     "message": "返回"
   },
   "backToAll": {
-    "message": "恢复所有设置"
+    "message": "返回全部"
   },
   "backupApprovalInfo": {
     "message": "如果不慎丢失个人设备，忘记密码，或者需要重新安装 MetaMask，亦或是需在另一台设备上打开钱包，请使用该保密码恢复个人钱包数据。"
@@ -189,7 +189,7 @@
     "message": "通过 $1 查看账户"
   },
   "blockiesIdenticon": {
-    "message": "使用 Blockies Identicon"
+    "message": "使用 Blockies Identicon 图标头像"
   },
   "browserNotSupported": {
     "message": "你的浏览器不支持该功能…"
@@ -210,7 +210,7 @@
     "message": "使用 Wyre 购买 ETH"
   },
   "buyWithWyreDescription": {
-    "message": "您可以通过 Wyre 使用信用卡将 ETH 存入您的 MetaMask 账户。"
+    "message": "你可以通过 Wyre 使用信用卡将 ETH 存入你的 MetaMask 账户。"
   },
   "bytes": {
     "message": "字节"
@@ -222,7 +222,7 @@
     "message": "取消操作"
   },
   "cancellationGasFee": {
-    "message": "取消交易费"
+    "message": "取消交易费用"
   },
   "cancelled": {
     "message": "已取消"
@@ -390,7 +390,7 @@
     "message": "当前语言"
   },
   "customGas": {
-    "message": "自定义 Gas 交易费"
+    "message": "自定义燃料"
   },
   "customGasSubTitle": {
     "message": "提升费用可能会缩短处理时间，但不保证绝对有效。"
@@ -531,13 +531,13 @@
     "message": "不向任何任何人分享该账户助记词。"
   },
   "endOfFlowMessage5": {
-    "message": "谨防网络钓鱼！MetaMask 绝不会主动要求您提供个人账户助记词。"
+    "message": "谨防网络钓鱼！MetaMask 绝不会主动要求你提供个人账户助记词。"
   },
   "endOfFlowMessage6": {
     "message": "如果你需要再次备份账户助记词，请通过设置 -> 安全选项完成该操作。"
   },
   "endOfFlowMessage7": {
-    "message": "如果您仍存有疑问或发现任何可疑的地方，请发送电子邮件至 support@metamask.io 进行咨询。"
+    "message": "如果你仍存有疑问或发现任何可疑的地方，请发送电子邮件至 support@metamask.io 进行咨询。"
   },
   "endOfFlowMessage8": {
     "message": "MetaMask 无法恢复你的账户助记词。"
@@ -636,7 +636,7 @@
     "message": "忘记此设备"
   },
   "from": {
-    "message": "从"
+    "message": "发送方"
   },
   "fromAddress": {
     "message": "从：$1"
@@ -648,28 +648,28 @@
     "message": "功能类型"
   },
   "gasLimit": {
-    "message": "交易费限制"
+    "message": "燃料限制"
   },
   "gasLimitInfoModalContent": {
-    "message": "交易费限制是指你愿意花费的最大交易费数量。"
+    "message": "燃料限制是指你愿意花费的最大燃料数量。"
   },
   "gasLimitTooLow": {
-    "message": "交易费限制至少要 21000"
+    "message": "燃料限制至少要 21000"
   },
   "gasPrice": {
-    "message": "交易费价格（GWEI）"
+    "message": "燃料价格（GWEI）"
   },
   "gasPriceExtremelyLow": {
-    "message": "交易费价格极低"
+    "message": "燃料价格极低"
   },
   "gasPriceInfoModalContent": {
-    "message": "交易费价格规定了你愿意为每单位交易费支付的 Ether 数量。"
+    "message": "燃料价格规定了你愿意为每单位交易费支付的 Ether 数量。"
   },
   "gasPriceNoDenom": {
-    "message": "交易费价格"
+    "message": "燃料价格"
   },
   "gasUsed": {
-    "message": "已使用交易费"
+    "message": "燃料使用"
   },
   "gdprMessage": {
     "message": "这些数据是汇总的，因此，根据《GDPR 通用数据保护条例》(EU)2016/679，这些数据是匿名的。有关我们隐私惯例的更多信息，请参见我们的 $1。"
@@ -681,7 +681,7 @@
     "message": "通用"
   },
   "generalSettingsDescription": {
-    "message": "货币转换、主要价格单位、语言和 Blockies Identicon"
+    "message": "货币转换、主要价格单位、语言和 Blockies Identicon 图标头像"
   },
   "getEther": {
     "message": "获取 Ether"
@@ -762,7 +762,7 @@
     "message": "信息 & 帮助"
   },
   "initialTransactionConfirmed": {
-    "message": "您的首次交易已通过网络完成确认。请点击“确定”返回。"
+    "message": "你的初始交易已通过网络确认。请点击“确定”返回。"
   },
   "insufficientBalance": {
     "message": "余额不足。"
@@ -777,10 +777,10 @@
     "message": "无效地址"
   },
   "invalidAddressRecipient": {
-    "message": "接收人地址无效"
+    "message": "接收方地址无效"
   },
   "invalidAddressRecipientNotEthNetwork": {
-    "message": "非 ETH 网络，设置为小写"
+    "message": "非 ETH 网络，请使用小写"
   },
   "invalidBlockExplorerURL": {
     "message": "无效的区块浏览器 URL"
@@ -807,7 +807,7 @@
     "message": "JSON 文件"
   },
   "knownAddressRecipient": {
-    "message": "已知联系人地址。"
+    "message": "已知接收方地址。"
   },
   "knownTokenWarning": {
     "message": "此操作将编辑已经在你的钱包中列出的代币，有肯能被用来欺骗你。只有确定要更改这些代币的内容时，才通过此操作。"
@@ -825,7 +825,7 @@
     "message": "在添加新的账户之前，需要使用你的最后一个账户。"
   },
   "letsGoSetUp": {
-    "message": "好，立即开始设置！"
+    "message": "第一次，立即开始设置！"
   },
   "likeToAddTokens": {
     "message": "你想添加这些代币吗？"
@@ -834,7 +834,7 @@
     "message": "链接"
   },
   "liveGasPricePredictions": {
-    "message": "实时交易费价格预测"
+    "message": "实时燃料价格预测"
   },
   "loadMore": {
     "message": "加载更多"
@@ -897,7 +897,7 @@
     "message": "我的钱包账户"
   },
   "myWalletAccountsDescription": {
-    "message": "所有已创建的 MetaMask 账户将自动添加到该部分。"
+    "message": "所有创建的 MetaMask 账户将自动添加到此部分。"
   },
   "needEtherInWallet": {
     "message": "使用 MetaMask 与分布式应用交互，需要你的钱包里需要有 Ether。"
@@ -924,13 +924,13 @@
     "message": "新账户"
   },
   "newAccountDetectedDialogMessage": {
-    "message": "检测到新地址！请点击此处添加至您的地址簿。"
+    "message": "检测到新地址！点击添加至地址簿。"
   },
   "newAccountNumberName": {
     "message": "账户 $1"
   },
   "newContact": {
-    "message": "新增联系人"
+    "message": "新联系人"
   },
   "newContract": {
     "message": "新合约"
@@ -945,10 +945,10 @@
     "message": "第一次使用 MetaMask？"
   },
   "newTotal": {
-    "message": "新增合计"
+    "message": "新总额"
   },
   "newTransactionFee": {
-    "message": "新增交易费用"
+    "message": "新交易费用"
   },
   "next": {
     "message": "下一步"
@@ -993,7 +993,7 @@
     "message": "这是正确的账户吗？这与你钱包中当前选择的账户不同。"
   },
   "notEnoughGas": {
-    "message": "交易费不足"
+    "message": "燃料不足"
   },
   "ofTextNofM": {
     "message": "/"
@@ -1101,7 +1101,7 @@
     "message": "请注意个人账户助记词的安全。报告显示有多个网站企图伪造 MetaMask。MetaMask 绝不会要求你提供个人账户助记词！"
   },
   "protectYourKeysMessage2": {
-    "message": "请妥善保管你的账户助记词。如果您发现任何可疑的地方，或无法确认网络安全性，请发送电子邮件至 support@metamask.io 进行咨询"
+    "message": "请妥善保管你的账户助记词。如果你发现任何可疑的地方，或无法确认网络安全性，请发送电子邮件至 support@metamask.io 进行咨询"
   },
   "provide": {
     "message": "提供"
@@ -1137,7 +1137,7 @@
     "message": "拒绝全部"
   },
   "rejectTxsDescription": {
-    "message": "您将批量拒绝 $1 笔交易。"
+    "message": "你将批量拒绝 $1 笔交易。"
   },
   "rejectTxsN": {
     "message": "拒绝 $1 笔交易"
@@ -1170,7 +1170,7 @@
     "message": "重设账户"
   },
   "resetAccountDescription": {
-    "message": "重置账户将清除你的交易历史记录。这不会改变你账户中的余额，也不会要求您重新输入账户助记词。"
+    "message": "重置账户将清除你的交易历史记录。这不会改变你账户中的余额，也不会要求你重新输入账户助记词。"
   },
   "restore": {
     "message": "恢复"
@@ -1245,10 +1245,10 @@
     "message": "你的账户助记词可以帮助你轻松备份和恢复个人账户。"
   },
   "secretBackupPhraseWarning": {
-    "message": "警告：切勿向他人透露你的账户助记词。任何人一旦持有该账户助记词，即可取走你的 Ether。"
+    "message": "警告：切勿向他人透露你的账户助记词。任何人一旦持有该账户助记词，即可控制你的 Ether。"
   },
   "secretPhrase": {
-    "message": "输入账户助记词恢复你的账户。"
+    "message": "输入 12 个单词组成的账户助记词恢复你的账户。"
   },
   "securityAndPrivacy": {
     "message": "安全与隐私"
@@ -1293,7 +1293,7 @@
     "message": "选择语言区域"
   },
   "selectPathHelp": {
-    "message": "如果下列账户中没有您当前所持有的 Ledger 账户，请将路径切换至“Legacy (MEW / MyCrypto)”"
+    "message": "如果下列账户中没有你当前所持有的 Ledger 账户，请将路径切换至“Legacy (MEW / MyCrypto)”"
   },
   "selectType": {
     "message": "选择类型"
@@ -1317,10 +1317,10 @@
     "message": "发送代币"
   },
   "sentEther": {
-    "message": "Ether 已发送"
+    "message": "发送 Ether"
   },
   "sentTokens": {
-    "message": "已发送代币"
+    "message": "发送代币"
   },
   "separateEachWord": {
     "message": "用空格分隔每个单词"
@@ -1329,10 +1329,10 @@
     "message": "设置"
   },
   "showAdvancedGasInline": {
-    "message": "高级交易费控制"
+    "message": "高级燃料控制"
   },
   "showAdvancedGasInlineDescription": {
-    "message": "请选择该选项，直接在发送和确认页面显示交易费价格和限制管理。"
+    "message": "在发送和确认界面显示燃料价格和燃料限制设置选项。"
   },
   "showFiatConversionInTestnets": {
     "message": "在 Testnets 上显示兑换率"
@@ -1446,7 +1446,7 @@
     "message": "3. 开始使用 web3 站点和更多功能！"
   },
   "step3HardwareWalletMsg": {
-    "message": "使用您的硬件钱包，操作与以太坊账户制作相同。登录 dApps，发送 ETH ，购买和保存 ERC20 代币和诸如 CryptoKitties 等不可替代代币。"
+    "message": "使用你的硬件钱包，操作与以太坊账户制作相同。登录 dApps，发送 ETH ，购买和保存 ERC20 代币和诸如 CryptoKitties 等不可替代代币。"
   },
   "storePhrase": {
     "message": "通过如 1Password 等密码管理工具保存该账户助记词。"
@@ -1485,7 +1485,7 @@
     "message": "你可以使用个人移动设备同步个人账户与信息。打开 MetaMask 移动应用程序，进入“设置”选项，点击“通过浏览器扩展程序同步”"
   },
   "syncWithMobileDescNewUsers": {
-    "message": "如果您是首次启用 MetaMask 移动应用程序，请通过个人手机完成如下操作。"
+    "message": "如果你是首次启用 MetaMask 移动应用程序，请通过个人手机完成如下操作。"
   },
   "syncWithMobileScanThisCode": {
     "message": "使用 MetaMask 应用程序扫描代码"
@@ -1539,7 +1539,7 @@
     "message": "代币符号"
   },
   "total": {
-    "message": "总量"
+    "message": "总额"
   },
   "transaction": {
     "message": "交易"
@@ -1596,7 +1596,7 @@
     "message": "我们在连接你的  $1 遇到问题，尝试检查 $2 并重试。"
   },
   "troubleTokenBalances": {
-    "message": "我们无法加载您的代币余额。你可以查看它们"
+    "message": "我们无法加载你的代币余额。你可以查看它们"
   },
   "trustSiteApprovePermission": {
     "message": "你信任这个网站吗？授权即表示你允许 $1 提取你的 $2，并为你自动进行交易。"
@@ -1611,7 +1611,7 @@
     "message": "未批准"
   },
   "units": {
-    "message": "单位"
+    "message": "数量"
   },
   "unknown": {
     "message": "未知"
@@ -1623,7 +1623,7 @@
     "message": "哎呀！出问题了…"
   },
   "unknownNetwork": {
-    "message": "未知私有网络"
+    "message": "未知的私有网络"
   },
   "unknownQrCode": {
     "message": "错误：无法识别该二维码"
@@ -1656,7 +1656,7 @@
     "message": "可用于各种不同的客户端"
   },
   "userName": {
-    "message": "用户名"
+    "message": "名称"
   },
   "viewAccount": {
     "message": "查看账户"
@@ -1698,7 +1698,7 @@
     "message": "$1 / $2"
   },
   "yesLetsTry": {
-    "message": "没错。不妨一试"
+    "message": "是的，尝试下"
   },
   "youNeedToAllowCameraAccess": {
     "message": "需要开启相机访问权限，才能使用该功能。"
@@ -1713,6 +1713,6 @@
     "message": "正在请求你的签名"
   },
   "zeroGasPriceOnSpeedUpError": {
-    "message": "交易费价格加速上涨"
+    "message": "加速时无燃料价格"
   }
 }
