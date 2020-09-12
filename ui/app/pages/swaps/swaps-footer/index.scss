@@ -11,7 +11,7 @@
 
   @media screen and (max-width: 576px) {
     &--border {
-      .page-container__footer {
+      .swaps-footer__custom-page-container-footer-class {
         border-top: 1px solid #d2d8dd;
       }
     }
@@ -52,7 +52,7 @@
   &__buttons {
     @media screen and (max-width: 576px) {
       &--border {
-        .page-container__footer {
+        .swaps-footer__custom-page-container-footer-class {
           border-top: 1px solid #d2d8dd;
         }
       }
