@@ -121,5 +121,10 @@ AwaitingSwap.propTypes = {
   estimatedTransactionWaitTime: PropTypes.number,
   tokensReceived: PropTypes.string,
   rpcPrefs: PropTypes.object.isRequired,
-  errorKey: PropTypes.string,
+  errorKey: PropTypes.oneOf([
+    QUOTES_EXPIRED_ERROR,
+    SWAP_FAILED_ERROR,
+    ERROR_FETCHING_QUOTES,
+    QUOTES_NOT_AVAILABLE_ERROR,
+  ]),
 }
