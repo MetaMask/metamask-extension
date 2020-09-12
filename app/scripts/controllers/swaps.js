@@ -231,7 +231,6 @@ export default class SwapsController {
     }
   }
 
-
   setFetchParams (fetchParams) {
     const { swapsState } = this.store.getState()
     this.store.updateState({ swapsState: { ...swapsState, fetchParams } })
