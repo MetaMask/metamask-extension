@@ -30,6 +30,24 @@ function getERC20Allowance (contractAddress, walletAddress, eth) {
   })
 }
 
+function calculateGasEstimateWithRefund (maxGas, estimatedRefund, estimatedGas) {
+  const maxGasMinusRefund = new BigNumber(
+    maxGas,
+    16,
+  )
+    .minus(estimatedRefund || 0, 10)
+    .toString(16)
+
+  const gasEstimateWithRefund = new BigNumber(maxGasMinusRefund, 16).lt(
+    estimatedGas,
+    16,
+  )
+    ? maxGasMinusRefund
+    : estimatedGas
+
+  return gasEstimateWithRefund
+}
+
 // This is the amount of time to wait, after successfully fetching quotes and their gas estimates, before fetching for new quotes
 const QUOTE_POLLING_INTERVAL = 50 * 1000
 
@@ -250,16 +268,7 @@ export default class SwapsController {
     const newQuotes = {}
     quoteGasData.forEach(([gasLimit, simulationFails, aggId]) => {
       if (gasLimit && !simulationFails) {
-        const maxGasMinusRefund = new BigNumber(quotes[aggId].maxGas, 16)
-          .minus(quotes[aggId].estimatedRefund || 0, 10)
-          .toString(16)
-
-        const gasEstimateWithRefund = new BigNumber(maxGasMinusRefund, 16).lt(
-          gasLimit,
-          16,
-        )
-          ? maxGasMinusRefund
-          : gasLimit
+        const gasEstimateWithRefund = calculateGasEstimateWithRefund (quotes[aggId].maxGas, quotes[aggId].estimatedRefund, gasLimit)
 
         newQuotes[aggId] = {
           ...quotes[aggId],
@@ -314,19 +323,7 @@ export default class SwapsController {
     })
 
     if (newGasEstimate && !simulationFails) {
-      const maxGasMinusRefund = new BigNumber(
-        quoteToUpdate.maxGas,
-        16,
-      )
-        .minus(quoteToUpdate.estimatedRefund || 0, 10)
-        .toString(16)
-
-      const gasEstimateWithRefund = new BigNumber(maxGasMinusRefund, 16).lt(
-        newGasEstimate,
-        16,
-      )
-        ? maxGasMinusRefund
-        : newGasEstimate
+      const gasEstimateWithRefund = calculateGasEstimateWithRefund(quoteToUpdate.maxGas, quoteToUpdate.estimatedRefund, newGasEstimate)
 
       quoteToUpdate.gasEstimate = newGasEstimate
       quoteToUpdate.gasEstimateWithRefund = gasEstimateWithRefund
