@@ -133,14 +133,13 @@ export default class SwapsController {
     // If there are any pending poll requests, clear them so that they don't get call while this new fetch is in process
     clearTimeout(this.pollingTimeout)
 
-
     if (!isPolledRequest) {
       this.setSwapsErrorKey('')
     }
     let newQuotes = await fetchTradesInfo(fetchParams)
     const quotesLastFetched = Date.now()
 
-    let approvalNeeded = false
+    let approvalRequired = false
     if (fetchParams.sourceToken !== ETH_SWAPS_TOKEN_ADDRESS) {
       const allowance = await getERC20Allowance(
         fetchParams.sourceToken,
@@ -148,8 +147,12 @@ export default class SwapsController {
         this.web3.eth,
       )
 
-      approvalNeeded = !allowance.gt(0)
-      if (!approvalNeeded) {
+      // For a user to be able to swap a token, they need to have approved the MetaSwap contract to withdraw that token.
+      // getERC20Allowance() returns the amount of the token they have approved for withdrawal. If that amount is greater
+      // than 0, it means that approval has already occured and is not needed. Otherwise, for tokens to be swapped, a new
+      // call of the ERC-20 approve method is required.
+      approvalRequired = allowance.eq(0)
+      if (!approvalRequired) {
         newQuotes = mapValues(newQuotes, (quote) => ({
           ...quote,
           approvalNeeded: null,
