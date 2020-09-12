@@ -2,7 +2,7 @@ import Web3 from 'web3'
 import log from 'loglevel'
 import BigNumber from 'bignumber.js'
 import ObservableStore from 'obs-store'
-import { mapValues } from 'lodash'
+import { mapValues, cloneDeep } from 'lodash'
 import abi from 'human-standard-token-abi'
 import { calcTokenAmount } from '../../../ui/app/helpers/utils/token-util'
 import { calcGasTotal } from '../../../ui/app/pages/send/send.utils'
@@ -303,22 +303,22 @@ export default class SwapsController {
   async setInitialGasEstimate (initialAggId, baseGasEstimate) {
     const { swapsState } = this.store.getState()
 
-    const updatedQuotes = { ...swapsState.quotes }
+    const quoteToUpdate = cloneDeep(swapsState.quotes[initialAggId])
 
     const {
       gasLimit: newGasEstimate,
       simulationFails,
     } = await this.timedoutGasReturn({
-      ...updatedQuotes[initialAggId].trade,
+      ...quoteToUpdate.trade,
       gas: baseGasEstimate,
     })
 
     if (newGasEstimate && !simulationFails) {
       const maxGasMinusRefund = new BigNumber(
-        updatedQuotes[initialAggId].maxGas,
+        quoteToUpdate.maxGas,
         16,
       )
-        .minus(updatedQuotes[initialAggId].estimatedRefund || 0, 10)
+        .minus(quoteToUpdate.estimatedRefund || 0, 10)
         .toString(16)
 
       const gasEstimateWithRefund = new BigNumber(maxGasMinusRefund, 16).lt(
@@ -328,12 +328,12 @@ export default class SwapsController {
         ? maxGasMinusRefund
         : newGasEstimate
 
-      updatedQuotes[initialAggId].gasEstimate = newGasEstimate
-      updatedQuotes[initialAggId].gasEstimateWithRefund = gasEstimateWithRefund
+      quoteToUpdate.gasEstimate = newGasEstimate
+      quoteToUpdate.gasEstimateWithRefund = gasEstimateWithRefund
     }
 
     this.store.updateState({
-      swapsState: { ...swapsState, quotes: updatedQuotes },
+      swapsState: { ...swapsState, quotes: { ...swapsState.quotes, [initialAggId]: quoteToUpdate } },
     })
   }
 
