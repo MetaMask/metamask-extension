@@ -636,7 +636,7 @@
     "message": "忘记此设备"
   },
   "from": {
-    "message": "发送方"
+    "message": "从"
   },
   "fromAddress": {
     "message": "从：$1"
