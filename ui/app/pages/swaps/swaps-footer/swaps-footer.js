@@ -52,7 +52,7 @@ export default function SwapsFooter ({
 SwapsFooter.propTypes = {
   onCancel: PropTypes.func,
   hideCancel: PropTypes.bool,
-  onSubmit: PropTypes.func,
+  onSubmit: PropTypes.func.isRequired,
   submitText: PropTypes.string,
   disabled: PropTypes.bool,
   showTermsOfService: PropTypes.bool,
