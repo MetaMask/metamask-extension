@@ -1808,12 +1808,6 @@
   "transactionCreated": {
     "message": "Transaction created with a value of $1 at $2."
   },
-  "transactionDropped": {
-    "message": "Transaction dropped at $2."
-  },
-  "transactionError": {
-    "message": "Transaction Error. Exception thrown in contract code."
-  },
   "transactionErrorNoContract": {
     "message": "Trying to call a function on a non-contract address."
   },

@@ -39,28 +39,23 @@ export default function AwaitingSwap ({
     headerText = t('swapFailedErrorTitle')
     descriptionText = t('swapFailedErrorDescription')
     statusImage = <SwapFailureIcon />
-  }
-  if (errorKey === QUOTES_EXPIRED_ERROR) {
+  } else if (errorKey === QUOTES_EXPIRED_ERROR) {
     headerText = t('swapQuotesExpiredErrorTitle')
     descriptionText = t('swapQuotesExpiredErrorDescription')
     statusImage = <QuotesTimeoutIcon />
-  }
-  if (errorKey === ERROR_FETCHING_QUOTES) {
+  } else if (errorKey === ERROR_FETCHING_QUOTES) {
     headerText = t('swapFetchingQuotesErrorTitle')
     descriptionText = t('swapFetchingQuotesErrorDescription')
     statusImage = <SwapFailureIcon />
-  }
-  if (errorKey === QUOTES_NOT_AVAILABLE_ERROR) {
+  } else if (errorKey === QUOTES_NOT_AVAILABLE_ERROR) {
     headerText = t('swapQuotesNotAvailableErrorTitle')
     descriptionText = t('swapQuotesNotAvailableErrorDescription')
     statusImage = <SwapFailureIcon />
-  }
-  if (!errorKey && !swapComplete) {
+  } else if (!errorKey && !swapComplete) {
     headerText = t('swapProcessing')
     statusImage = <PulseLoader />
     descriptionText = t('swapOnceTransactionHasProcess', [<span key="swapOnceTransactionHasProcess-1" className="awaiting-swap__amount-and-symbol">{symbol}</span>])
-  }
-  if (!errorKey && swapComplete) {
+  } else if (!errorKey && swapComplete) {
     headerText = t('swapTransactionComplete')
     statusImage = <SwapSuccessIcon />
     descriptionText = t('swapTokenAvailable', [<span key="swapTokenAvailable-2" className="awaiting-swap__amount-and-symbol">{`${tokensReceived} ${symbol}`}</span>])
