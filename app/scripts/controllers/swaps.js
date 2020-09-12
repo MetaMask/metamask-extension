@@ -277,7 +277,7 @@ export default class SwapsController {
     const newQuotes = {}
     quoteGasData.forEach(([gasLimit, simulationFails, aggId]) => {
       if (gasLimit && !simulationFails) {
-        const gasEstimateWithRefund = calculateGasEstimateWithRefund (quotes[aggId].maxGas, quotes[aggId].estimatedRefund, gasLimit)
+        const gasEstimateWithRefund = calculateGasEstimateWithRefund(quotes[aggId].maxGas, quotes[aggId].estimatedRefund, gasLimit)
 
         newQuotes[aggId] = {
           ...quotes[aggId],
