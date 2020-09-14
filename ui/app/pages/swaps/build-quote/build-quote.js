@@ -66,8 +66,10 @@ export default function BuildQuote ({
     providedTokens: fromToken || fetchParamsFromToken ? [fromToken || fetchParamsFromToken] : [],
     rawEthBalance: ethBalance,
     usersTokens: memoizedUsersTokens,
-    onlyEth: (fromToken || fetchParamsFromToken)?.symbol === 'ETH,',
+    onlyEth: (fromToken || fetchParamsFromToken)?.symbol === 'ETH',
+    singleToken: true,
   })[0]
+
   const tokensToSearch = useTokensToSearch({
     rawEthBalance: ethBalance,
     usersTokens: memoizedUsersTokens,
@@ -88,8 +90,10 @@ export default function BuildQuote ({
     fromTokenAddress,
     inputValue || 0,
     fromTokenSymbol,
-    fromTokenSymbol === 'ETH' ? 1 : fetchedTokenExchangeRate,
-    true,
+    {
+      exchangeRate: fromTokenSymbol === 'ETH' ? 1 : fetchedTokenExchangeRate,
+      showFiat: true,
+    },
   )
 
   const onFromSelect = (token) => {
@@ -138,7 +142,7 @@ export default function BuildQuote ({
   }, [dispatch])
 
   return (
-    <div style="build-quote">
+    <div className="build-quote">
       <div className="build-quote__content">
         <div className="build-quote__dropdown-input-pair-header">
           <div className="build-quote__input-label">{t('swapSwapFrom')}</div>
@@ -218,8 +222,8 @@ export default function BuildQuote ({
       </div>
       <SwapsFooter
         onSubmit={onSubmit}
-        submitTextKey={t('swapGetQuotes')}
-        disabled={((!Number(inputValue) || !selectedToToken.address) || (Number(maxSlippage) === 0))}
+        submitText={t('swapGetQuotes')}
+        disabled={((!Number(inputValue) || !selectedToToken?.address) || (Number(maxSlippage) === 0))}
         hideCancel
       />
     </div>
@@ -227,7 +231,7 @@ export default function BuildQuote ({
 }
 
 BuildQuote.propTypes = {
-  maxSlippage: PropTypes.string,
+  maxSlippage: PropTypes.number,
   inputValue: PropTypes.string,
   onInputChange: PropTypes.func,
   ethBalance: PropTypes.string,

@@ -15,7 +15,7 @@ import { getTokenFiatAmount } from '../helpers/utils/token-util'
  * @property {boolean} overrides.showFiat If truthy, ensures the fiat value is shown even if the showFiat value from state is falsey
  * @return {string} - The formatted token amount in the user's chosen fiat currency
  */
-export function useTokenFiatAmount (tokenAddress, tokenAmount, tokenSymbol, overrides) {
+export function useTokenFiatAmount (tokenAddress, tokenAmount, tokenSymbol, overrides = {}) {
   const contractExchangeRates = useSelector(getTokenExchangeRates)
   const conversionRate = useSelector(getConversionRate)
   const currentCurrency = useSelector(getCurrentCurrency)

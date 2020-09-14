@@ -340,6 +340,11 @@ export const getSelectedQuote = (state) => {
   return quotes[selectedAggId]
 }
 
+export const getTopQuote = (state) => {
+  const { topAggId, quotes } = getSwapsState(state)
+  return quotes[topAggId]
+}
+
 export const getFetchingQuotes = (state) => state.swaps.fetchingQuotes
 
 export const getShowQuoteLoadingScreen = (state) => state.swaps.showQuoteLoadingScreen
@@ -347,8 +352,6 @@ export const getShowQuoteLoadingScreen = (state) => state.swaps.showQuoteLoading
 export const getBalanceError = (state) => state.swaps.balanceError
 
 export const getSwapsTokens = (state) => state.metamask.swapsState.tokens
-
-export const getUsedQuote = (state) => getSelectedQuote(state)
 
 export const getTopAssets = (state) => state.swaps.topAssets
 

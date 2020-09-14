@@ -10,8 +10,7 @@ import { conversionUtil } from '../../../ui/app/helpers/utils/conversion-util'
 import {
   ETH_SWAPS_TOKEN_ADDRESS,
   DEFAULT_ERC20_APPROVE_GAS,
-  // QUOTES_EXPIRED_ERROR,
-  // ERROR_FETCHING_QUOTES,
+  QUOTES_EXPIRED_ERROR,
   QUOTES_NOT_AVAILABLE_ERROR,
 } from '../../../ui/app/helpers/constants/swaps'
 import { fetchTradesInfo } from '../../../ui/app/pages/swaps/swaps.util'
@@ -30,9 +29,9 @@ function getERC20Allowance (contractAddress, walletAddress, eth) {
   })
 }
 
-function calculateGasEstimateWithRefund (maxGas, estimatedRefund, estimatedGas) {
+function calculateGasEstimateWithRefund (maxGas = 800000, estimatedRefund = 0, estimatedGas = 0) {
   const maxGasMinusRefund = new BigNumber(
-    maxGas,
+    maxGas || 800000,
     16,
   )
     .minus(estimatedRefund || 0, 10)
@@ -69,6 +68,8 @@ const initialState = {
     selectedAggId: null,
     customApproveTxData: '',
     errorKey: '',
+    topAggId: null,
+    routeState: '',
   },
 }
 
@@ -123,8 +124,6 @@ export default class SwapsController {
       return null
     }
 
-    const { swapsState } = this.store.getState()
-
     // Every time we get a new request that is not from the polling, we reset the poll count so we can poll for up to three more sets of quotes with these new params.
     if (!isPolledRequest) {
       this.pollCount = 0
@@ -159,7 +158,7 @@ export default class SwapsController {
         }))
       } else if (!isPolledRequest) {
         const { gasLimit: approvalGas } = await this.timedoutGasReturn({
-          ...newQuotes[0].approvalNeeded,
+          ...Object.values(newQuotes)[0].approvalNeeded,
           gas: DEFAULT_ERC20_APPROVE_GAS,
         })
 
@@ -173,9 +172,10 @@ export default class SwapsController {
       }
     }
 
-    const { topAggId, isBest } = this._findTopQuoteAggId(newQuotes)
+    const topAggIdData = this._findTopQuoteAggId(newQuotes)
+    let { topAggId } = topAggIdData
+    const { isBest } = topAggIdData
 
-    let selectedAggId = swapsState.selectedAggId || topAggId
     if (isBest) {
       newQuotes[topAggId].isBestQuote = true
     }
@@ -192,15 +192,18 @@ export default class SwapsController {
           topAggId: topAggIdAfterGasEstimates,
           isBest: isBestAfterGasEstimates,
         } = this._findTopQuoteAggId(newQuotes)
+        topAggId = topAggIdAfterGasEstimates
         if (isBestAfterGasEstimates) {
           newQuotes[topAggId].isBestQuote = true
-        }
-        if (!selectedAggId || !newQuotes[selectedAggId]) {
-          selectedAggId = topAggIdAfterGasEstimates
         }
       }
     }
 
+    const { swapsState } = this.store.getState()
+    let { selectedAggId } = swapsState
+    if (!newQuotes[selectedAggId]) {
+      selectedAggId = null
+    }
     this.store.updateState({
       swapsState: {
         ...swapsState,
@@ -208,6 +211,7 @@ export default class SwapsController {
         fetchParams,
         quotesLastFetched,
         selectedAggId,
+        topAggId,
       },
     })
 
@@ -217,11 +221,11 @@ export default class SwapsController {
       this.pollForNewQuotes()
     } else {
       this.resetPostFetchState()
-      this.setQuotesStatus('expired')
+      this.setSwapsErrorKey(QUOTES_EXPIRED_ERROR)
       return null
     }
 
-    return [newQuotes, selectedAggId]
+    return [newQuotes, topAggId]
   }
 
   safeRefetchQuotes () {
@@ -267,7 +271,7 @@ export default class SwapsController {
       Object.values(quotes).map(async (quote) => {
         const { gasLimit, simulationFails } = await this.timedoutGasReturn({
           ...quote.trade,
-          gas: `0x${quote.maxGas.toString(16)}`,
+          gas: `0x${(quote.maxGas || 800000).toString(16)}`,
         })
         return [gasLimit, simulationFails, quote.aggregator]
       }),
@@ -443,7 +447,7 @@ export default class SwapsController {
       } = quote
       const tradeGasLimitForCalculation = gasEstimate
         ? new BigNumber(gasEstimate, 16)
-        : new BigNumber(averageGas, 10)
+        : new BigNumber(averageGas || 800000, 10)
       const totalGasLimitForCalculation = tradeGasLimitForCalculation
         .plus(approvalNeeded?.gas || '0x0', 16)
         .toString(16)

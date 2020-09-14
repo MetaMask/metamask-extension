@@ -97,7 +97,7 @@ export default class Routes extends Component {
   }
 
   UNSAFE_componentWillMount () {
-    const { currentCurrency, pageChanged, setCurrentCurrencyToUSD, location: { pathname }, swapsQuotes, swapsFetchParams, showAwaitingSwapScreen } = this.props
+    const { currentCurrency, pageChanged, setCurrentCurrencyToUSD, location: { pathname }, swapsQuotes = {}, swapsFetchParams, showAwaitingSwapScreen } = this.props
 
     if (!currentCurrency) {
       setCurrentCurrencyToUSD()

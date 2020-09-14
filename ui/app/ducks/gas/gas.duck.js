@@ -374,11 +374,11 @@ function inliersByIQR (data, prop) {
   })
 }
 
-export function fetchGasEstimates (blockTime) {
+export function fetchGasEstimates (blockTime, overrideEthereumNetworkCheck) {
   return (dispatch, getState) => {
     const state = getState()
 
-    if (!isEthereumNetwork(state)) {
+    if (!isEthereumNetwork(state) && !overrideEthereumNetworkCheck) {
       return Promise.resolve(null)
     }
 

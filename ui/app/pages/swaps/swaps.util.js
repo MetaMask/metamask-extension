@@ -357,7 +357,7 @@ export function quotesToRenderableData (quotes, gasPrice, conversionRate, curren
       destinationTokenDecimals: destinationTokenInfo.decimals,
       destinationTokenSymbol: destinationTokenInfo.symbol,
       destinationTokenValue: destinationValue,
-      isBestQuote: quote.bestQuote,
+      isBestQuote: quote.isBestQuote,
       liquiditySource,
       metaMaskFee,
       networkFees: feeinFiat,

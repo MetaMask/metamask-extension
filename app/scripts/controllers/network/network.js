@@ -259,6 +259,7 @@ export default class NetworkController extends EventEmitter {
     const type = 'mainnet'
     const { networkMiddleware } = createInfuraClient({
       network: type,
+      projectId: this._infuraProjectId,
     })
     const metamaskMiddleware = createMetamaskMiddleware(this._baseProviderParams)
     const engine = new JsonRpcEngine()
