@@ -1,17 +1,13 @@
 import assert from 'assert'
 import React from 'react'
-import thunk from 'redux-thunk'
-import { Provider } from 'react-redux'
-import configureMockStore from 'redux-mock-store'
-import { mount } from 'enzyme'
 import sinon from 'sinon'
-import { MemoryRouter } from 'react-router-dom'
-
-import Identicon from '../../ui/identicon'
+import thunk from 'redux-thunk'
+import configureMockStore from 'redux-mock-store'
+import { screen, fireEvent } from '@testing-library/react'
+import render from '../../../../../test/lib/render-helpers'
 import TokenCell from '.'
 
 describe('Token Cell', function () {
-  let wrapper
 
   const state = {
     metamask: {
@@ -30,59 +26,58 @@ describe('Token Cell', function () {
     },
     appState: {
       sidebar: {
-        isOpen: true,
+        isOpen: false,
       },
     },
   }
 
-  const middlewares = [thunk]
-  const mockStore = configureMockStore(middlewares)
-  const store = mockStore(state)
+  const store = configureMockStore([thunk])(state)
 
-  let onClick
-
-  beforeEach(function () {
-    onClick = sinon.stub()
-    wrapper = mount(
-      <Provider store={store}>
-        <MemoryRouter>
-          <TokenCell
-            address="0xAnotherToken"
-            symbol="TEST"
-            string="5.000"
-            currentCurrency="usd"
-            image="./test-image"
-            onClick={onClick}
-          />
-        </MemoryRouter>
-      </Provider>,
-    )
-  })
+  const props = {
+    address: '0xAnotherToken',
+    decimals: 6,
+    symbol: 'TEST',
+    string: '5.000',
+    currentCurrency: 'usd',
+    image: 'test-image',
+    onClick: sinon.spy(),
+  }
 
   afterEach(function () {
     sinon.restore()
   })
 
-  it('renders Identicon with props from token cell', function () {
-    assert.equal(wrapper.find(Identicon).prop('address'), '0xAnotherToken')
-    assert.equal(wrapper.find(Identicon).prop('image'), './test-image')
-  })
+  it('renders token balance and symbol', function () {
+    const { getByText } = render(<TokenCell {...props} />, store)
 
-  it('renders token balance', function () {
-    assert.equal(wrapper.find('.asset-list-item__token-value').text(), '5.000')
-  })
+    const tokenAmount = getByText('5.000 TEST')
 
-  it('renders token symbol', function () {
-    assert.equal(wrapper.find('.asset-list-item__token-symbol').text(), 'TEST')
+    assert(tokenAmount)
   })
 
   it('renders converted fiat amount', function () {
-    assert.equal(wrapper.find('.list-item__subheading').text(), '$0.52 USD')
+    const { getByText } = render(<TokenCell {...props} />, store)
+
+    const tokenFiatAmount = getByText('$0.52 USD')
+
+    assert(tokenFiatAmount)
   })
 
-  it('calls onClick when clicked', function () {
-    assert.ok(!onClick.called)
-    wrapper.simulate('click')
-    assert.ok(onClick.called)
+  it('updates send token', function () {
+    const { getByRole } = render(<TokenCell {...props} />, store)
+
+    const sendTokenButton = getByRole('button')
+
+    fireEvent.click(sendTokenButton)
+
+    assert.deepEqual(store.getActions()[0],
+      {
+        type: 'UPDATE_SEND_TOKEN',
+        value: {
+          address: '0xAnotherToken',
+          decimals: 6,
+          symbol: 'TEST',
+        },
+      })
   })
 })

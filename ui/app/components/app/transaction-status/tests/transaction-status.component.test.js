@@ -1,80 +1,74 @@
 import assert from 'assert'
 import React from 'react'
-import { mount } from 'enzyme'
-import sinon from 'sinon'
-import * as i18nHook from '../../../../hooks/useI18nContext'
+import { screen, configure } from '@testing-library/react'
+import render from '../../../../../../test/lib/render-helpers'
 import TransactionStatus from '../transaction-status.component'
-import Tooltip from '../../../ui/tooltip'
 
 describe('TransactionStatus Component', function () {
-  before(function () {
-    sinon.stub(i18nHook, 'useI18nContext').returns((str) => str.toUpperCase())
-  })
 
   it('should render CONFIRMED properly', function () {
-    const wrapper = mount(
-      <TransactionStatus
-        status="confirmed"
-        date="June 1"
-      />,
-    )
+    const props = {
+      status: 'confirmed',
+      date: 'June 1',
+    }
 
-    assert.ok(wrapper)
-    assert.equal(wrapper.text(), 'June 1')
+    render(<TransactionStatus {...props} />)
+
+    const date = screen.getByText(props.date)
+    assert.ok(date)
   })
 
   it('should render PENDING properly when status is APPROVED', function () {
-    const wrapper = mount(
-      <TransactionStatus
-        status="approved"
-        isEarliestNonce
-        error={{ message: 'test-title' }}
-      />,
-    )
+    const props = {
+      status: 'approved',
+      isEarliestNonce: true,
+      error: { message: 'test-title' },
+    }
 
-    assert.ok(wrapper)
-    assert.equal(wrapper.text(), 'PENDING')
-    assert.equal(wrapper.find(Tooltip).props().title, 'test-title')
+    render(<TransactionStatus {...props} />)
+    configure({ testIdAttribute: 'data-original-title' })
+
+    const pendingText = screen.getByText(/pending/u)
+    const title = screen.getByTestId(props.error.message)
+
+    assert.ok(title)
+    assert.ok(pendingText)
+
   })
 
   it('should render PENDING properly', function () {
-    const wrapper = mount(
-      <TransactionStatus
-        date="June 1"
-        status="submitted"
-        isEarliestNonce
-      />,
-    )
+    const props = {
+      status: 'submitted',
+      date: 'June 1',
+      isEarliestNonce: true,
+    }
 
-    assert.ok(wrapper)
-    assert.equal(wrapper.text(), 'PENDING')
+    render(<TransactionStatus {...props} />)
+    const pending = screen.getByText(/pending/u)
+
+    assert.ok(pending)
   })
 
   it('should render QUEUED properly', function () {
-    const wrapper = mount(
-      <TransactionStatus
-        status="queued"
-      />,
-    )
+    const props = {
+      status: 'queued',
+    }
 
-    assert.ok(wrapper)
-    assert.ok(wrapper.find('.transaction-status--queued').length, 'queued className not found')
-    assert.equal(wrapper.text(), 'QUEUED')
+    render(<TransactionStatus {...props} />)
+    const queued = screen.getByText(/queued/u)
+
+    assert.ok(queued)
   })
 
   it('should render UNAPPROVED properly', function () {
-    const wrapper = mount(
-      <TransactionStatus
-        status="unapproved"
-      />,
-    )
+    const props = {
+      status: 'unapproved',
+    }
 
-    assert.ok(wrapper)
-    assert.ok(wrapper.find('.transaction-status--unapproved').length, 'unapproved className not found')
-    assert.equal(wrapper.text(), 'UNAPPROVED')
+    render(<TransactionStatus {...props} />)
+    const unapproved = screen.getByText(/unapproved/u)
+
+    assert.ok(unapproved)
   })
 
-  after(function () {
-    sinon.restore()
-  })
 })

@@ -5,6 +5,7 @@ import { mount } from 'enzyme'
 import { MemoryRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { LegacyI18nProvider } from '../../ui/app/contexts/i18n'
+import { LegacyMetaMetricsProvider } from '../../ui/app/contexts/metametrics'
 
 export function mountWithRouter (component, store = {}, pathname = '/') {
 
@@ -43,14 +44,26 @@ export function mountWithRouter (component, store = {}, pathname = '/') {
   return mount(<Wrapper />, createContext())
 }
 
-export function renderWithProvider (component, store) {
+export default function renderWithProvider (component, store) {
 
   const Wrapper = () => (
-    <Provider store={store}>
-      <LegacyI18nProvider>
-        { component }
-      </LegacyI18nProvider>
-    </Provider>
+    store ? (
+      <Provider store={store}>
+        <MemoryRouter initialEntries={['/']} initialIndex={0}>
+          <LegacyMetaMetricsProvider>
+            <LegacyI18nProvider>
+              { component }
+            </LegacyI18nProvider>
+          </LegacyMetaMetricsProvider>
+        </MemoryRouter>
+      </Provider>
+    ) : (
+      <LegacyMetaMetricsProvider>
+        <LegacyI18nProvider>
+          { component }
+        </LegacyI18nProvider>
+      </LegacyMetaMetricsProvider>
+    )
   )
 
   return render(<Wrapper />)

@@ -1,46 +1,47 @@
 import assert from 'assert'
 import React from 'react'
 import sinon from 'sinon'
-import { mount } from 'enzyme'
+import { screen, fireEvent } from '@testing-library/react'
+import configureMockStore from 'redux-mock-store'
+import thunk from 'redux-thunk'
+import * as actions from '../../../../../store/actions'
+import render from '../../../../../../../test/lib/render-helpers'
 import ConfirmResetAccount from '..'
 
 describe('Confirm Reset Account', function () {
-  let wrapper
 
-  const props = {
-    hideModal: sinon.spy(),
-    resetAccount: sinon.stub().resolves(),
-  }
-
-  beforeEach(function () {
-    wrapper = mount(
-      <ConfirmResetAccount.WrappedComponent {...props} />, {
-        context: {
-          t: (str) => str,
+  const mockState = {
+    metamask: {},
+    appState: {
+      modal: {
+        modalState: {
+          name: 'CONFIRM_RESET_ACCOUNT',
+          props: {},
         },
       },
-    )
+    },
+  }
+
+  it('render', function () {
+    const store = configureMockStore()(mockState)
+    render(<ConfirmResetAccount />, store)
+
+    const nevermindButton = screen.getByText(/nevermind/u)
+    fireEvent.click(nevermindButton)
+
+    assert.equal(store.getActions()[0].type, 'UI_MODAL_CLOSE')
   })
 
-  afterEach(function () {
-    props.hideModal.resetHistory()
+  it('removes', function () {
+    const store = configureMockStore([thunk])(mockState)
+
+    const resetAccountSpy = sinon.stub(actions, 'resetAccount').returns(() => Promise.resolve())
+    render(<ConfirmResetAccount />, store)
+
+    const resetButton = screen.getByText('[reset]')
+    fireEvent.click(resetButton)
+
+    assert(resetAccountSpy.calledOnce)
   })
 
-  it('hides modal when nevermind button is clicked', function () {
-    const nevermind = wrapper.find('.btn-default.modal-container__footer-button')
-    nevermind.simulate('click')
-
-    assert(props.hideModal.calledOnce)
-  })
-
-  it('resets account and hides modal when reset button is clicked', function (done) {
-    const reset = wrapper.find('.btn-danger.modal-container__footer-button')
-    reset.simulate('click')
-
-    setImmediate(() => {
-      assert(props.resetAccount.calledOnce)
-      assert(props.hideModal.calledOnce)
-      done()
-    })
-  })
 })

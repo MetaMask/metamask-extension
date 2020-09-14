@@ -1,81 +1,68 @@
 import assert from 'assert'
 import React from 'react'
-import PropTypes from 'prop-types'
-import { Provider } from 'react-redux'
 import sinon from 'sinon'
+import thunk from 'redux-thunk'
 import configureStore from 'redux-mock-store'
-import { mount } from 'enzyme'
+import { fireEvent } from '@testing-library/react'
+import * as actions from '../../../../../store/actions'
+import render from '../../../../../../../test/lib/render-helpers'
 import ConfirmRemoveAccount from '..'
 
 describe('Confirm Remove Account', function () {
-  let wrapper
+  const addressToRemove = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b'
 
   const state = {
     metamask: {
-
+      network: '101',
+    },
+    appState: {
+      modal: {
+        modalState: {
+          name: 'CONFIRM_REMOVE_ACCOUNT',
+          props: {
+            identity: {
+              name: 'Account 2',
+              address: addressToRemove,
+            },
+          },
+        },
+      },
     },
   }
 
   const props = {
     hideModal: sinon.spy(),
     removeAccount: sinon.stub().resolves(),
-    network: '101',
-    identity: {
-      address: '0xAddress',
-      name: 'Account 1',
-    },
   }
 
-  const mockStore = configureStore()
-  const store = mockStore(state)
-
-  beforeEach(function () {
-
-    wrapper = mount(
-      <Provider store={store} >
-        <ConfirmRemoveAccount.WrappedComponent {...props} />
-      </Provider>, {
-        context: {
-          t: (str) => str,
-          store,
-        },
-        childContextTypes: {
-          t: PropTypes.func,
-          store: PropTypes.object,
-        },
-      },
-    )
-  })
+  const store = configureStore([thunk])(state)
 
   afterEach(function () {
     props.hideModal.resetHistory()
   })
 
   it('nevermind', function () {
-    const nevermind = wrapper.find({ type: 'default' })
-    nevermind.simulate('click')
+    const { getByText } = render(
+      <ConfirmRemoveAccount {...props} />, store,
+    )
 
-    assert(props.hideModal.calledOnce)
+    const nevermindButton = getByText(/nevermind/u)
+    fireEvent.click(nevermindButton)
+
+    assert.equal(store.getActions()[0].type, 'UI_MODAL_CLOSE')
   })
 
-  it('remove', function (done) {
-    const remove = wrapper.find({ type: 'secondary' })
-    remove.simulate('click')
+  it('remove', function () {
+    const removeAccountSpy = sinon.stub(actions, 'removeAccount').returns(() => Promise.resolve())
 
-    assert(props.removeAccount.calledOnce)
-    assert.equal(props.removeAccount.getCall(0).args[0], props.identity.address)
+    const { getByText } = render(
+      <ConfirmRemoveAccount {...props} />, store,
+    )
 
-    setImmediate(() => {
-      assert(props.hideModal.calledOnce)
-      done()
-    })
+    const removeButton = getByText('[remove]')
+    fireEvent.click(removeButton)
 
+    assert.equal(removeAccountSpy.getCall(0).args[0], addressToRemove)
   })
 
-  it('closes', function () {
-    const close = wrapper.find('.modal-container__header-close')
-    close.simulate('click')
-
-    assert(props.hideModal.calledOnce)
-  })
 })

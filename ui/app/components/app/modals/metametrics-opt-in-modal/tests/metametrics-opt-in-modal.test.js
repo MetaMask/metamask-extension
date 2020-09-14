@@ -1,12 +1,22 @@
 import assert from 'assert'
 import React from 'react'
 import sinon from 'sinon'
-import { mount } from 'enzyme'
+import { screen, fireEvent } from '@testing-library/react'
+import configureMockStore from 'redux-mock-store'
+import thunk from 'redux-thunk'
+import render from '../../../../../../../test/lib/render-helpers'
+import * as actions from '../../../../../store/actions'
 import MetaMetricsOptIn from '..'
-import messages from '../../../../../../../app/_locales/en/messages.json'
 
 describe('MetaMetrics Opt In', function () {
-  let wrapper
+  const mockState = {
+    metamask: {},
+    appState: {
+      modal: {
+        modalState: {},
+      },
+    },
+  }
 
   const props = {
     setParticipateInMetaMetrics: sinon.stub().resolves(),
@@ -14,44 +24,33 @@ describe('MetaMetrics Opt In', function () {
     participateInMetaMetrics: null,
   }
 
-  beforeEach(function () {
-    wrapper = mount(
-      <MetaMetricsOptIn.WrappedComponent {...props} />, {
-        context: {
-          metricsEvent: () => undefined,
-          t: (key) => messages[key].message,
-        },
-      },
-    )
-  })
-
   afterEach(function () {
-    props.setParticipateInMetaMetrics.resetHistory()
-    props.hideModal.resetHistory()
+    sinon.restore()
   })
 
-  it('passes false to setParticipateInMetaMetrics and hides modal', function (done) {
-    const noThanks = wrapper.find('.btn-default.page-container__footer-button')
-    noThanks.simulate('click')
+  it('passes false to setParticipateInMetaMetrics when No Thanks is clicked', function () {
+    const store = configureMockStore([thunk])(mockState)
+    const metricsSpy = sinon.stub(actions, 'setParticipateInMetaMetrics').returns(() => Promise.resolve())
 
-    setImmediate(() => {
-      assert(props.setParticipateInMetaMetrics.calledOnce)
-      assert.equal(props.setParticipateInMetaMetrics.getCall(0).args[0], false)
-      assert(props.hideModal.calledOnce)
-      done()
-    })
+    render(<MetaMetricsOptIn {...props} />, store)
+
+    const noThanksButton = screen.getByText(/noThanks/u)
+    fireEvent.click(noThanksButton)
+
+    assert(metricsSpy.calledOnce)
+    assert(metricsSpy.calledWith(false))
   })
 
-  it('passes true to setParticipateInMetaMetrics and hides modal', function (done) {
-    const affirmAgree = wrapper.find('.btn-primary.page-container__footer-button')
-    affirmAgree.simulate('click')
+  it('passes true to setParticipateInMetaMetrics when Agree is clicked', function () {
+    const store = configureMockStore([thunk])(mockState)
+    const metricsSpy = sinon.stub(actions, 'setParticipateInMetaMetrics').returns(() => Promise.resolve())
 
-    setImmediate(() => {
-      assert(props.setParticipateInMetaMetrics.calledOnce)
-      assert.equal(props.setParticipateInMetaMetrics.getCall(0).args[0], true)
-      assert(props.hideModal.calledOnce)
-      done()
-    })
+    render(<MetaMetricsOptIn {...props} />, store)
+    const noThanksButton = screen.getByText(/affirmAgree/u)
+    fireEvent.click(noThanksButton)
+
+    assert(metricsSpy.calledOnce)
+    assert(metricsSpy.calledWith(true))
   })
 
 })

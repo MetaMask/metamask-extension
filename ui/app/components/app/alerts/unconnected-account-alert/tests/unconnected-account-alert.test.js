@@ -7,7 +7,7 @@ import thunk from 'redux-thunk'
 import { fireEvent } from '@testing-library/react'
 import configureMockStore from 'redux-mock-store'
 
-import { renderWithProvider } from '../../../../../../../test/lib/render-helpers'
+import render from '../../../../../../../test/lib/render-helpers'
 
 import * as actions from '../../../../../store/actions'
 import UnconnectedAccountAlert from '..'
@@ -115,7 +115,7 @@ describe('Unconnected Account Alert', function () {
 
     const store = configureMockStore()(mockState)
 
-    const { getByRole } = renderWithProvider(<UnconnectedAccountAlert />, store)
+    const { getByRole } = render(<UnconnectedAccountAlert />, store)
 
     const dontShowCheckbox = getByRole('checkbox')
 
@@ -127,7 +127,7 @@ describe('Unconnected Account Alert', function () {
   it('clicks dismiss button and calls dismissAlert action', function () {
     const store = configureMockStore()(mockState)
 
-    const { getByText } = renderWithProvider(<UnconnectedAccountAlert />, store)
+    const { getByText } = render(<UnconnectedAccountAlert />, store)
 
     const dismissButton = getByText(/dismiss/u)
     fireEvent.click(dismissButton)
@@ -140,7 +140,7 @@ describe('Unconnected Account Alert', function () {
 
     const store = configureMockStore([thunk])(mockState)
 
-    const { getByText, getByRole } = renderWithProvider(<UnconnectedAccountAlert />, store)
+    const { getByText, getByRole } = render(<UnconnectedAccountAlert />, store)
 
     const dismissButton = getByText(/dismiss/u)
     const dontShowCheckbox = getByRole('checkbox')

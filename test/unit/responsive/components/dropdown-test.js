@@ -3,7 +3,7 @@ import React from 'react'
 import configureMockStore from 'redux-mock-store'
 import { fireEvent } from '@testing-library/react'
 import sinon from 'sinon'
-import { renderWithProvider } from '../../../lib/render-helpers'
+import render from '../../../lib/render-helpers'
 import { Dropdown } from '../../../../ui/app/components/app/dropdowns/components/dropdown'
 
 describe('Dropdown components', function () {
@@ -29,7 +29,7 @@ describe('Dropdown components', function () {
 
     const onClickSpy = sinon.spy()
 
-    const { getByText } = renderWithProvider(
+    const { getByText } = render(
       <Dropdown {...props}>
         <li onClick={onClickSpy}>Item 1</li>
         <li onClick={onClickSpy}>Item 2</li>

@@ -1,99 +1,159 @@
 import assert from 'assert'
 import React from 'react'
-import sinon from 'sinon'
-import { shallow } from 'enzyme'
-import MetaFoxLogo from '../../../ui/metafox-logo'
+import configureMockStore from 'redux-mock-store'
+import render from '../../../../../../test/lib/render-helpers'
+import {
+  MAINNET,
+  ROPSTEN,
+  RINKEBY,
+  KOVAN,
+  GOERLI,
+  MAINNET_NETWORK_ID,
+  ROPSTEN_NETWORK_ID,
+  RINKEBY_NETWORK_ID,
+  KOVAN_NETWORK_ID,
+  GOERLI_NETWORK_ID,
+} from '../../../../../../app/scripts/controllers/network/enums'
 import AppHeader from '..'
 
 describe('App Header', function () {
-  let wrapper
 
-  const props = {
-    hideNetworkDropdown: sinon.spy(),
-    showNetworkDropdown: sinon.spy(),
-    toggleAccountMenu: sinon.spy(),
-    history: {
-      push: sinon.spy(),
-    },
-    network: 'test',
-    provider: {},
-    selectedAddress: '0xAddress',
-    disabled: false,
-    hideNetworkIndicator: false,
-    networkDropdownOpen: false,
-    isAccountMenuOpen: false,
-    isUnlocked: true,
-  }
-
-  beforeEach(function () {
-    wrapper = shallow(
-      <AppHeader.WrappedComponent {...props} />, {
-        context: {
-          t: (str) => str,
-          metricsEvent: () => undefined,
+  it('renders mainnet based off of provider type in state', function () {
+    const mockState = {
+      metamask: {
+        network: MAINNET_NETWORK_ID,
+        provider: {
+          type: MAINNET,
         },
       },
-    )
+      appState: {
+        networkDropdownOpen: false,
+      },
+    }
+
+    const store = configureMockStore()(mockState)
+
+    const { getByText } = render(<AppHeader />, store)
+
+    const network = getByText(/mainnet/u)
+
+    assert(network)
+
   })
 
-  afterEach(function () {
-    props.toggleAccountMenu.resetHistory()
+  it('renders ropsten based off of provider type in state', function () {
+    const mockState = {
+      metamask: {
+        network: ROPSTEN_NETWORK_ID,
+        provider: {
+          type: ROPSTEN,
+        },
+      },
+      appState: {
+        networkDropdownOpen: false,
+      },
+    }
+
+    const store = configureMockStore()(mockState)
+
+    const { getByText } = render(<AppHeader />, store)
+
+    const network = getByText(/ropsten/u)
+
+    assert(network)
+
   })
 
-  describe('App Header Logo', function () {
-    it('routes to default route when logo is clicked', function () {
-      const appLogo = wrapper.find(MetaFoxLogo)
-      appLogo.simulate('click')
-      assert(props.history.push.calledOnce)
-      assert.equal(props.history.push.getCall(0).args[0], '/')
-    })
+  it('renders rinkeby based off of provider type in state', function () {
+    const mockState = {
+      metamask: {
+        network: RINKEBY_NETWORK_ID,
+        provider: {
+          type: RINKEBY,
+        },
+      },
+      appState: {
+        networkDropdownOpen: false,
+      },
+    }
+
+    const store = configureMockStore()(mockState)
+
+    const { getByText } = render(<AppHeader />, store)
+
+    const network = getByText(/rinkeby/u)
+
+    assert(network)
+
   })
 
-  describe('Network', function () {
-    it('shows network dropdown when networkDropdownOpen is false', function () {
-      const network = wrapper.find({ network: 'test' })
+  it('renders kovan based off of provider type in state', function () {
+    const mockState = {
+      metamask: {
+        network: KOVAN_NETWORK_ID,
+        provider: {
+          type: KOVAN,
+        },
+      },
+      appState: {
+        networkDropdownOpen: false,
+      },
+    }
 
-      network.simulate('click', {
-        preventDefault: () => undefined,
-        stopPropagation: () => undefined,
-      })
+    const store = configureMockStore()(mockState)
 
-      assert(props.showNetworkDropdown.calledOnce)
-    })
+    const { getByText } = render(<AppHeader />, store)
 
-    it('hides network dropdown when networkDropdownOpen is true', function () {
-      wrapper.setProps({ networkDropdownOpen: true })
-      const network = wrapper.find({ network: 'test' })
+    const network = getByText(/kovan/u)
 
-      network.simulate('click', {
-        preventDefault: () => undefined,
-        stopPropagation: () => undefined,
-      })
+    assert(network)
 
-      assert(props.hideNetworkDropdown.calledOnce)
-    })
-
-    it('hides network indicator', function () {
-      wrapper.setProps({ hideNetworkIndicator: true })
-      const network = wrapper.find({ network: 'test' })
-      assert.equal(network.length, 0)
-    })
   })
 
-  describe('Account Menu', function () {
+  it('renders goerli based off of provider type in state', function () {
+    const mockState = {
+      metamask: {
+        network: GOERLI_NETWORK_ID,
+        provider: {
+          type: GOERLI,
+        },
+      },
+      appState: {
+        networkDropdownOpen: false,
+      },
+    }
 
-    it('toggles account menu', function () {
-      const accountMenu = wrapper.find('.account-menu__icon')
-      accountMenu.simulate('click')
-      assert(props.toggleAccountMenu.calledOnce)
-    })
+    const store = configureMockStore()(mockState)
 
-    it('does not toggle account menu when disabled', function () {
-      wrapper.setProps({ disabled: true })
-      const accountMenu = wrapper.find('.account-menu__icon')
-      accountMenu.simulate('click')
-      assert(props.toggleAccountMenu.notCalled)
-    })
+    const { getByText } = render(<AppHeader />, store)
+
+    const network = getByText(/goerli/u)
+
+    assert(network)
+
+  })
+
+  it('renders localhost based off of provider type in state', function () {
+    const mockState = {
+      metamask: {
+        network: 'test',
+        provider: {
+          type: 'other',
+        },
+      },
+      appState: {
+        networkDropdownOpen: true,
+      },
+    }
+
+    const store = configureMockStore()(mockState)
+
+    const { getByText } = render(<AppHeader />, store)
+
+    const network = getByText(/privateNetwork/u)
+
+    assert(network)
+
   })
 
 })

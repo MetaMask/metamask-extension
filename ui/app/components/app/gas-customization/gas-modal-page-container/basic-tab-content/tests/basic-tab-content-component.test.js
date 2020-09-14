@@ -1,87 +1,84 @@
 import assert from 'assert'
 import React from 'react'
-import shallow from '../../../../../../../lib/shallow-with-context'
+import render from '../../../../../../../../test/lib/render-helpers'
 import BasicTabContent from '../basic-tab-content.component'
-import GasPriceButtonGroup from '../../../gas-price-button-group'
-import Loading from '../../../../../ui/loading-screen'
 import { GAS_ESTIMATE_TYPES } from '../../../../../../helpers/constants/common'
 
-const mockGasPriceButtonGroupProps = {
-  buttonDataLoading: false,
-  className: 'gas-price-button-group',
-  gasButtonInfo: [
-    {
-      feeInPrimaryCurrency: '$0.52',
-      feeInSecondaryCurrency: '0.0048 ETH',
-      timeEstimate: '~ 1 min 0 sec',
-      priceInHexWei: '0xa1b2c3f',
-      gasEstimateType: GAS_ESTIMATE_TYPES.AVERAGE,
-    },
-    {
-      feeInPrimaryCurrency: '$0.39',
-      feeInSecondaryCurrency: '0.004 ETH',
-      timeEstimate: '~ 1 min 30 sec',
-      priceInHexWei: '0xa1b2c39',
-      gasEstimateType: GAS_ESTIMATE_TYPES.AVERAGE,
-    },
-    {
-      feeInPrimaryCurrency: '$0.30',
-      feeInSecondaryCurrency: '0.00354 ETH',
-      timeEstimate: '~ 2 min 1 sec',
-      priceInHexWei: '0xa1b2c30',
-      gasEstimateType: GAS_ESTIMATE_TYPES.AVERAGE,
-    },
-  ],
-  handleGasPriceSelection: (newPrice) => console.log('NewPrice: ', newPrice),
-  noButtonActiveByDefault: true,
-  showCheck: true,
-}
-
 describe('BasicTabContent Component', function () {
-  describe('render', function () {
-    let wrapper
+  let utils
 
-    beforeEach(function () {
-      wrapper = shallow((
-        <BasicTabContent
-          gasPriceButtonGroupProps={mockGasPriceButtonGroupProps}
-        />
-      ))
-    })
+  const slowProps = {
+    feeInPrimaryCurrency: '$0.30',
+    feeInSecondaryCurrency: '0.00354 ETH',
+    timeEstimate: '~ 2 min 1 sec',
+    priceInHexWei: '0xa1b2c30',
+    gasEstimateType: GAS_ESTIMATE_TYPES.SLOW,
+  }
 
-    it('should have a title', function () {
-      assert(wrapper.find('.basic-tab-content').childAt(0).hasClass('basic-tab-content__title'))
-    })
+  const averageProps = {
+    feeInPrimaryCurrency: '$0.39',
+    feeInSecondaryCurrency: '0.004 ETH',
+    timeEstimate: '~ 1 min 30 sec',
+    priceInHexWei: '0xa1b2c39',
+    gasEstimateType: GAS_ESTIMATE_TYPES.AVERAGE,
+  }
 
-    it('should render a GasPriceButtonGroup compenent', function () {
-      assert.equal(wrapper.find(GasPriceButtonGroup).length, 1)
-    })
+  const fastProps = {
+    feeInPrimaryCurrency: '$0.52',
+    feeInSecondaryCurrency: '0.0048 ETH',
+    timeEstimate: '~ 1 min 0 sec',
+    priceInHexWei: '0xa1b2c3f',
+    gasEstimateType: GAS_ESTIMATE_TYPES.FAST,
+  }
 
-    it('should pass correct props to GasPriceButtonGroup', function () {
-      const {
-        buttonDataLoading,
-        className,
-        gasButtonInfo,
-        handleGasPriceSelection,
-        noButtonActiveByDefault,
-        showCheck,
-      } = wrapper.find(GasPriceButtonGroup).props()
-      assert.equal(wrapper.find(GasPriceButtonGroup).length, 1)
-      assert.equal(buttonDataLoading, mockGasPriceButtonGroupProps.buttonDataLoading)
-      assert.equal(className, mockGasPriceButtonGroupProps.className)
-      assert.equal(noButtonActiveByDefault, mockGasPriceButtonGroupProps.noButtonActiveByDefault)
-      assert.equal(showCheck, mockGasPriceButtonGroupProps.showCheck)
-      assert.deepEqual(gasButtonInfo, mockGasPriceButtonGroupProps.gasButtonInfo)
-      assert.equal(JSON.stringify(handleGasPriceSelection), JSON.stringify(mockGasPriceButtonGroupProps.handleGasPriceSelection))
-    })
+  const props = {
+    gasPriceButtonGroupProps: {
+      loading: false,
+      gasButtonInfo: [
+        slowProps,
+        averageProps,
+        fastProps,
+      ],
+    },
+  }
 
-    it('should render a loading component instead of the GasPriceButtonGroup if gasPriceButtonGroupProps.loading is true', function () {
-      wrapper.setProps({
-        gasPriceButtonGroupProps: { ...mockGasPriceButtonGroupProps, loading: true },
-      })
+  beforeEach(function () {
+    utils = render(<BasicTabContent {...props} />)
+  })
 
-      assert.equal(wrapper.find(GasPriceButtonGroup).length, 0)
-      assert.equal(wrapper.find(Loading).length, 1)
-    })
+  it('render slow ', function () {
+    const slowButton = utils.getAllByRole('button')[0]
+    const slowTimeRemaining = utils.getByText(slowProps.timeEstimate)
+    const slowFee2ndCurrency = utils.getByText(slowProps.feeInSecondaryCurrency)
+    const slowFeePrimaryCurrency = utils.getByText(slowProps.feeInPrimaryCurrency)
+
+    assert(slowButton)
+    assert(slowTimeRemaining)
+    assert(slowFee2ndCurrency)
+    assert(slowFeePrimaryCurrency)
+  })
+
+  it('render average ', function () {
+    const averageButton = utils.getAllByRole('button')[1]
+    const averageTimeRemaining = utils.getByText(averageProps.timeEstimate)
+    const averageFee2ndCurrency = utils.getByText(averageProps.feeInSecondaryCurrency)
+    const averageFeePrimaryCurrency = utils.getByText(averageProps.feeInPrimaryCurrency)
+
+    assert(averageButton)
+    assert(averageTimeRemaining)
+    assert(averageFee2ndCurrency)
+    assert(averageFeePrimaryCurrency)
+  })
+
+  it('render fast ', function () {
+    const fastButton = utils.getAllByRole('button')[2]
+    const fastTimeRemaining = utils.getByText(fastProps.timeEstimate)
+    const fastFee2ndCurrency = utils.getByText(fastProps.feeInSecondaryCurrency)
+    const fastFeePrimaryCurrency = utils.getByText(fastProps.feeInPrimaryCurrency)
+
+    assert(fastButton)
+    assert(fastTimeRemaining)
+    assert(fastFee2ndCurrency)
+    assert(fastFeePrimaryCurrency)
   })
 })
