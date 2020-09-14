@@ -47,10 +47,18 @@ describe('Token Cell', function () {
     sinon.restore()
   })
 
-  it('renders token balance and symbol', function () {
+  it('renders token balance', function () {
     const { getByText } = render(<TokenCell {...props} />, store)
 
-    const tokenAmount = getByText('5.000 TEST')
+    const tokenAmount = getByText('5.000')
+
+    assert(tokenAmount)
+  })
+
+  it('renders token symbol', function () {
+    const { getByText } = render(<TokenCell {...props} />, store)
+
+    const tokenAmount = getByText('TEST')
 
     assert(tokenAmount)
   })
