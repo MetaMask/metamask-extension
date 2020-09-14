@@ -23,6 +23,7 @@ import {
   setSwapQuotesFetchStartTime,
   getSwapsTradeTxParams,
   getSwapsErrorKey,
+  getTopQuote,
 } from '../ducks/swaps/swaps'
 import {
   setInitialGasEstimate,
@@ -38,7 +39,6 @@ import {
   fetchAndSetQuotes,
   resetBackgroundSwapsState,
   setShowAwaitingSwapScreen,
-  setQuotesStatus,
   stopPollingForQuotes,
   setBackgoundSwapRouteState,
   setSelectedQuoteAggId,
@@ -84,7 +84,9 @@ export function useSwapSubmitFunction ({
   const approveTxParams = useSelector(getApproveTxParams)
   const fetchParams = useSelector(getFetchParams)
   const contractExchangeRates = useSelector(getTokenExchangeRates)
+  const topQuote = useSelector(getTopQuote)
   const selectedQuote = useSelector(getSelectedQuote)
+  const usedQuote = selectedQuote || topQuote
   const maxMode = useSelector(getMaxMode)
   const swapsErrorKey = useSelector(getSwapsErrorKey)
 
@@ -115,13 +117,13 @@ export function useSwapSubmitFunction ({
     dispatch(stopPollingForQuotes())
 
     setSubmittingSwap(true)
-    let usedTradeTxParams = tradeTxParams
+    let usedTradeTxParams = usedQuote.trade
 
-    const estimatedGasLimitWithMultiplier = (new BigNumber(selectedQuote.gasEstimate || selectedQuote.averageGas || '0x0', 16).times(1.4, 10)).round(0).toString(16)
-    const maxGasLimit = hexMax((`0x${decimalToHex(selectedQuote?.maxGas || 0)}`), estimatedGasLimitWithMultiplier)
+    const estimatedGasLimitWithMultiplier = (new BigNumber(usedQuote?.gasEstimate || usedQuote?.averageGas || '0x0', 16).times(1.4, 10)).round(0).toString(16)
+    const maxGasLimit = hexMax((`0x${decimalToHex(usedQuote?.maxGas || 0)}`), estimatedGasLimitWithMultiplier)
     usedTradeTxParams.gas = maxGasLimit
 
-    const totalGasLimitForCalculation = (new BigNumber(usedTradeTxParams.gas, 16)).plus(selectedQuote.approvalNeeded?.gas || '0x0', 16).toString(16)
+    const totalGasLimitForCalculation = (new BigNumber(usedTradeTxParams.gas, 16)).plus(usedQuote.approvalNeeded?.gas || '0x0', 16).toString(16)
     const gasTotalInWeiHex = calcGasTotal(totalGasLimitForCalculation, usedGasPrice)
     if (maxMode && sourceTokenInfo.symbol === 'ETH') {
       const revisedTradeValue = (new BigNumber(ethBalance, 16)).minus(gasTotalInWeiHex, 16).toString(10)
@@ -130,7 +132,7 @@ export function useSwapSubmitFunction ({
         destinationToken: destinationTokenInfo.address,
         slippage,
         value: revisedTradeValue,
-        exchangeList: selectedQuote.aggregator,
+        exchangeList: usedQuote.aggregator,
         fromAddress: selectedAccountAddress,
         timeout: 10000,
         networkId,
@@ -185,9 +187,8 @@ export function useSwapSubmitFunction ({
       decimals: toTokenDecimals,
       iconUrl: toTokenIconUrl,
     } = selectedToToken
-    await dispatch(setQuotesStatus(''))
-    history.push(LOADING_QUOTES_ROUTE)
     await dispatch(setBackgoundSwapRouteState('loading'))
+    history.push(LOADING_QUOTES_ROUTE)
     dispatch(setFetchingQuotes(true))
 
     let destinationTokenAddedForSwap = false
@@ -236,6 +237,7 @@ export function useSwapSubmitFunction ({
         dispatch(setInitialGasEstimate(selectedAggId, newSelectedQuote.maxGas))
       }
     } catch (e) {
+      console.log('e', e)
       dispatch(setSwapsErrorKey(ERROR_FETCHING_QUOTES))
     }
 
@@ -246,6 +248,7 @@ export function useSwapSubmitFunction ({
     return () => {
       dispatch(setSwapsErrorKey(''))
       dispatch(setTradeTxId(null))
+      dispatch(setFetchingQuotes(false))
       dispatch(setSelectedQuoteAggId(''))
       return fetchQuotesAndSetQuoteState()
     }
@@ -264,7 +267,10 @@ export function useSwapSubmitFunction ({
   }
   if (isLoadingQuoteRoute) {
     return async () => {
-      await dispatch(setBackgoundSwapRouteState(''))
+      await dispatch(resetSwapsPostFetchState())
+      await dispatch(setBackgoundSwapRouteState())
+      dispatch(setSwapsErrorKey(''))
+      dispatch(setFetchingQuotes(false))
       dispatch(setQuotes([]))
       history.push(BUILD_QUOTE_ROUTE)
     }

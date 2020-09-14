@@ -4,8 +4,6 @@ import { Switch, Route, useLocation, useHistory, Redirect } from 'react-router-d
 import BigNumber from 'bignumber.js'
 import { I18nContext } from '../../contexts/i18n'
 import { getSelectedAccount, getCurrentNetworkId } from '../../selectors/selectors'
-import { useTransactionTimeRemaining } from '../../hooks/useTransactionTimeRemaining'
-import { usePrevious } from '../../hooks/usePrevious'
 import {
   getFromToken,
   getToToken,
@@ -38,6 +36,7 @@ import {
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
   ETH_SWAPS_TOKEN_OBJECT,
+  SWAP_FAILED_ERROR,
 } from '../../helpers/constants/swaps'
 
 import { fetchBasicGasAndTimeEstimates, fetchGasEstimates, resetCustomData } from '../../ducks/gas/gas.duck'
@@ -66,7 +65,6 @@ export default function Swap () {
   const [inputValue, setInputValue] = useState(fetchParams?.value || null)
   const [maxSlippage, setMaxSlippage] = useState(fetchParams?.slippage || 2)
   const [submittingSwap, setSubmittingSwap] = useState(false)
-  const [timeRemainingExpired, setTimeRemainingExpired] = useState(false)
 
   const routeState = useSelector(getBackgoundSwapRouteState)
   const tradeTxParams = useSelector(getTradeTxParams)
@@ -85,7 +83,7 @@ export default function Swap () {
   const balanceError = useSelector(getBalanceError)
   const selectedToToken = useSelector(getToToken) || fetchParams?.destinationTokenInfo || {}
   const quotesStatus = useSelector(getQuotesStatus)
-  const swapsErrorKey = useSelector(getSwapsErrorKey)
+  let swapsErrorKey = useSelector(getSwapsErrorKey)
 
   const { balance: ethBalance, address: selectedAccountAddress } = selectedAccount
   const fetchParamsFromToken = fetchParams?.sourceTokenInfo?.symbol === 'ETH'
@@ -109,7 +107,11 @@ export default function Swap () {
   const approveError = approveTxData?.status === 'failed' || approveTxData?.txReceipt?.status === '0x0'
   const tradeError = tradeTxData?.status === 'failed' || tradeTxData?.txReceipt?.status === '0x0'
   const conversionError = approveError || tradeError
-  const isCustomNetwork = Boolean(customNetworkId)
+  const isCustomNetwork = Boolean(customNetworkId) || true
+
+  if (conversionError) {
+    swapsErrorKey = SWAP_FAILED_ERROR
+  }
 
   const clearTemporaryTokenRef = useRef()
   useEffect(() => {
@@ -183,21 +185,12 @@ export default function Swap () {
     networkId,
     isCustomNetwork,
     quotesStatus,
-    fetchingQuotes,
   })
-  const onRetry = useSwapSubmitFunction({ isRetry: true })
+  const onRetry = useSwapSubmitFunction({ isRetry: true, setSubmittingSwap })
 
   if (swapsErrorKey && !isSwapsErrorRoute) {
     history.push(SWAPS_ERROR_ROUTE)
   }
-
-  const timeRemaining = useTransactionTimeRemaining(true, true, tradeTxData?.submittedTime, usedGasPrice, true, true)
-  const previousTimeRemaining = usePrevious(timeRemaining)
-  const timeRemainingIsNumber = (timeRemaining || timeRemaining === 0)
-  if (!timeRemainingIsNumber && (previousTimeRemaining || previousTimeRemaining === 0) && !timeRemainingExpired) {
-    setTimeRemainingExpired(true)
-  }
-  const usedTimeRemaining = timeRemaining * 1000 * 60
 
   return (
     <div className="swaps">
@@ -257,10 +250,10 @@ export default function Swap () {
               path={VIEW_QUOTE_ROUTE}
               exact
               render={() => {
-                if (quotes.length) {
+                if (Object.values(quotes)?.length) {
                   return (
                     <ViewQuote
-                      numberOfQuotes={quotes.length}
+                      numberOfQuotes={Object.values(quotes)?.length}
                       onSubmit={onSubmit}
                       onCancel={onRetry}
                     />
@@ -285,6 +278,7 @@ export default function Swap () {
                       networkId={networkId}
                       rpcPrefs={rpcPrefs}
                       onSubmit={onSubmit}
+                      submittedTime={tradeTxData?.submittedTime}
                     />
                   )
                 }
@@ -311,7 +305,7 @@ export default function Swap () {
                         }
                       }}
                       aggregatorMetadata={aggregatorMetadata}
-                      onSubmit={onRetry}
+                      onSubmit={onSubmit}
                     />
                   )
                   : <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />
@@ -332,9 +326,8 @@ export default function Swap () {
                       tradeTxData={tradeTxData}
                       usedGasPrice={usedGasPrice}
                       submittingSwap={submittingSwap}
-                      submittedTime={tradeTxData?.submittedTime}
-                      estimatedTransactionWaitTime={usedTimeRemaining}
                       onSubmit={onSubmit}
+                      rpcPrefs={rpcPrefs}
                     />
                   )
                   : <Redirect to={{ pathname: DEFAULT_ROUTE }} />

@@ -1,8 +1,10 @@
 import EventEmitter from 'events'
-import React, { useContext, useRef } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { I18nContext } from '../../../contexts/i18n'
+import { useTransactionTimeRemaining } from '../../../hooks/useTransactionTimeRemaining'
+import { usePrevious } from '../../../hooks/usePrevious'
 import Mascot from '../../../components/ui/mascot'
 import PulseLoader from '../../../components/ui/pulse-loader'
 import { getBlockExplorerUrlForTx } from '../../../helpers/utils/transactions.util'
@@ -25,14 +27,16 @@ export default function AwaitingSwap ({
   txHash,
   networkId,
   tokensReceived,
-  submittedTime,
-  estimatedTransactionWaitTime,
   rpcPrefs,
   onSubmit,
   submittingSwap,
+  tradeTxData,
+  usedGasPrice,
 }) {
   const t = useContext(I18nContext)
   const animationEventEmitter = useRef(new EventEmitter())
+
+  const [timeRemainingExpired, setTimeRemainingExpired] = useState(false)
 
   let headerText
   let statusImage
@@ -71,6 +75,24 @@ export default function AwaitingSwap ({
     descriptionText = t('swapTokenAvailable', [<span key="swapTokenAvailable-2" className="awaiting-swap__amount-and-symbol">{`${tokensReceived} ${symbol}`}</span>])
   }
 
+  const timeRemaining = useTransactionTimeRemaining(true, true, tradeTxData?.submittedTime, usedGasPrice, true, true)
+  const estimatedTransactionWaitTime = timeRemaining * 1000 * 60
+  const previousEstimatedWaitTime = usePrevious(estimatedTransactionWaitTime)
+  const estimatedWaitIsNumber = typeof estimatedTransactionWaitTime === 'number' && !isNaN(estimatedTransactionWaitTime)
+  const previousEstimatedWaitIsNumber = typeof previousEstimatedWaitTime === 'number' && !isNaN(estimatedTransactionWaitTime)
+  if (!estimatedWaitIsNumber && previousEstimatedWaitIsNumber && !timeRemainingExpired) {
+    setTimeRemainingExpired(true)
+  }
+
+  let countdownText
+  if (estimatedWaitIsNumber && tradeTxData?.submittedTime) {
+    countdownText = <CountdownTimer timeStarted={tradeTxData?.submittedTime} timerBase={estimatedTransactionWaitTime} timeOnly />
+  } else if (timeRemainingExpired) {
+    countdownText = t('swapsAlmostDone')
+  } else {
+    countdownText = t('swapEstimatedTimeCalculating')
+  }
+
   const blockExplorerUrl = getBlockExplorerUrlForTx(networkId, txHash, rpcPrefs)
   const showBlockExplorterLink = blockExplorerUrl && (!errorKey || errorKey === SWAP_FAILED_ERROR)
 
@@ -93,13 +115,11 @@ export default function AwaitingSwap ({
         <div className="awaiting-swap__main-descrption">
           {descriptionText}
         </div>
-        {!(swapComplete || errorKey) && (
+        {!swapComplete && txHash && (
           <div className="awaiting-swap__time-estimate">
             {t('swapEstimatedTimeFull', [
               <span className="awaiting-swap__time-estimate-text" key="swapEstimatedTime-1">{t('swapEstimatedTime')}</span>,
-              estimatedTransactionWaitTime || estimatedTransactionWaitTime === 0
-                ? <CountdownTimer timeStarted={submittedTime} timerBase={estimatedTransactionWaitTime} timeOnly />
-                : t('swapEstimatedTimeCalculating'),
+              countdownText,
             ])}
           </div>
         )}
@@ -130,8 +150,6 @@ AwaitingSwap.propTypes = {
   symbol: PropTypes.string.isRequired,
   networkId: PropTypes.string.isRequired,
   txHash: PropTypes.string.isRequired,
-  submittedTime: PropTypes.number,
-  estimatedTransactionWaitTime: PropTypes.number,
   tokensReceived: PropTypes.string,
   rpcPrefs: PropTypes.object.isRequired,
   errorKey: PropTypes.oneOf([
@@ -142,4 +160,6 @@ AwaitingSwap.propTypes = {
   ]),
   onSubmit: PropTypes.func,
   submittingSwap: PropTypes.bool,
+  tradeTxData: PropTypes.object,
+  usedGasPrice: PropTypes.number,
 }

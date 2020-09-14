@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import contractMap from 'eth-contract-metadata'
 import BigNumber from 'bignumber.js'
@@ -24,6 +24,7 @@ export function getRenderableTokenData (token, contractExchangeRates, conversion
     currentCurrency,
     string,
     symbol,
+    true,
   ) || ''
   const rawFiat = getTokenFiatAmount(
     symbol === 'ETH' ? 1 : contractExchangeRates[address],
@@ -31,9 +32,8 @@ export function getRenderableTokenData (token, contractExchangeRates, conversion
     currentCurrency,
     string,
     symbol,
-    true,
+    false,
   ) || ''
-
   const usedIconUrl = iconUrl || (contractMap[checksumAddress(address)] && `images/contract/${contractMap[checksumAddress(address)].logo}`)
   return {
     ...token,
@@ -50,42 +50,47 @@ export function getRenderableTokenData (token, contractExchangeRates, conversion
   }
 }
 
-export function useTokensToSearch ({ providedTokens, rawEthBalance, usersTokens = [], topTokens = {}, onlyEth }) {
+export function useTokensToSearch ({ providedTokens, rawEthBalance, usersTokens = [], topTokens = {}, onlyEth, singleToken }) {
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual)
   const conversionRate = useSelector(getConversionRate)
   const currentCurrency = useSelector(getCurrentCurrency)
 
   const memoizedTopTokens = useEqualityCheck(topTokens)
+  const memoizedUsersToken = useEqualityCheck(usersTokens)
+
+  const decEthBalance = getValueFromWeiHex({ value: rawEthBalance, numberOfDecimals: 4, toDenomination: 'ETH' })
+  const [ethToken] = useState(() => getRenderableTokenData(
+    { ...ETH_SWAPS_TOKEN_OBJECT, balance: rawEthBalance, string: decEthBalance },
+    tokenConversionRates,
+    conversionRate,
+    currentCurrency,
+  ))
 
   const swapsTokens = useSelector(getSwapsTokens) || []
   let tokensToSearch
   if (onlyEth) {
-    tokensToSearch = []
-  } else if (providedTokens) {
+    tokensToSearch = [ethToken]
+  } else if (singleToken) {
     tokensToSearch = providedTokens
+  } else if (providedTokens) {
+    tokensToSearch = [ethToken, ...providedTokens]
   } else if (swapsTokens.length) {
-    tokensToSearch = swapsTokens
+    tokensToSearch = [ethToken, ...swapsTokens]
   } else {
-    tokensToSearch = tokenList
+    tokensToSearch = [ethToken, ...tokenList]
   }
   const memoizedTokensToSearch = useEqualityCheck(tokensToSearch)
 
   return useMemo(() => {
-    const decEthBalance = getValueFromWeiHex({ value: rawEthBalance, numberOfDecimals: 4, toDenomination: 'ETH' })
-    const ethToken = getRenderableTokenData(
-      { ...ETH_SWAPS_TOKEN_OBJECT, balance: rawEthBalance, string: decEthBalance },
-      tokenConversionRates,
-      conversionRate,
-      currentCurrency,
-    )
 
-    const usersTokensAddressMap = usersTokens.reduce((acc, token) => ({ ...acc, [token.address]: token }), {})
+    const usersTokensAddressMap = memoizedUsersToken.reduce((acc, token) => ({ ...acc, [token.address]: token }), {})
 
     const tokensToSearchBuckets = {
-      owned: [ethToken],
+      owned: singleToken ? [] : [ethToken],
       top: [],
       others: [],
     }
+
     memoizedTokensToSearch.forEach((token) => {
       const renderableDataToken = getRenderableTokenData({ ...usersTokensAddressMap[token.address], ...token }, tokenConversionRates, conversionRate, currentCurrency)
       if (usersTokensAddressMap[token.address] && ((renderableDataToken.symbol === 'ETH') || Number(renderableDataToken.balance ?? 0) !== 0)) {
@@ -106,5 +111,5 @@ export function useTokensToSearch ({ providedTokens, rawEthBalance, usersTokens 
       ...tokensToSearchBuckets.top,
       ...tokensToSearchBuckets.others,
     ]
-  }, [memoizedTokensToSearch, rawEthBalance, usersTokens, tokenConversionRates, conversionRate, currentCurrency, memoizedTopTokens])
+  }, [memoizedTokensToSearch, memoizedUsersToken, tokenConversionRates, conversionRate, currentCurrency, memoizedTopTokens, ethToken, singleToken])
 }

@@ -17,7 +17,7 @@ function getNewTimer (currentTime, timeStarted, timeBaseStart) {
 }
 
 function decreaseTimerByOne (timer) {
-  return timer - 1000
+  return Math.max(timer - 1000, 0)
 }
 
 function timeBelowWarningTime (timer, warningTime) {
@@ -71,7 +71,7 @@ export default function CountdownTimer ({
     }
   }, [timeStarted, timer, timerBase])
 
-  const formattedTimer = Duration.fromMillis(timer).toFormat('m:s')
+  const formattedTimer = Duration.fromMillis(timer).toFormat('m:ss')
   let time
   if (timeOnly) {
     time = <div className="countdown-timer__time">{formattedTimer}</div>

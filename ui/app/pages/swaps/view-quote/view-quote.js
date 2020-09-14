@@ -9,7 +9,7 @@ import SelectQuotePopover from '../select-quote-popover'
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck'
 import FeeCard from '../fee-card'
 import { setCustomGasLimit } from '../../../ducks/gas/gas.duck'
-import { getQuotes, getSelectedQuote, getApproveTxParams, getFetchParams, setBalanceError, getQuotesLastFetched, getBalanceError, getMaxMode, getCustomSwapsGas, getSwapsTradeTxParams } from '../../../ducks/swaps/swaps'
+import { getQuotes, getSelectedQuote, getApproveTxParams, getFetchParams, setBalanceError, getQuotesLastFetched, getBalanceError, getMaxMode, getCustomSwapsGas, getSwapsTradeTxParams, getTopQuote } from '../../../ducks/swaps/swaps'
 import { conversionRateSelector, getSelectedAccount, getCurrentCurrency, getTokenExchangeRates } from '../../../selectors'
 import { toPrecisionWithoutTrailingZeros } from '../../../helpers/utils/util'
 import { getTokens } from '../../../ducks/metamask/metamask'
@@ -66,7 +66,9 @@ export default function ViewQuote ({ onSubmit, onCancel }) {
   const maxMode = useSelector(getMaxMode)
   const fetchParams = useSelector(getFetchParams)
   const approveTxParams = useSelector(getApproveTxParams)
-  const usedQuote = useSelector(getSelectedQuote)
+  const selectedQuote = useSelector(getSelectedQuote)
+  const topQuote = useSelector(getTopQuote)
+  const usedQuote = selectedQuote || topQuote
 
   const { isBestQuote } = usedQuote
   const fetchParamsSourceToken = fetchParams?.sourceToken
@@ -182,13 +184,13 @@ export default function ViewQuote ({ onSubmit, onCancel }) {
         <div
           className="view-quote__view-other-button-container"
         >
-          <div className="view-quote__view-other-button">{t('swapNQuotesAvailable', [quotes.length])}<i className="fa fa-arrow-right" /></div>
+          <div className="view-quote__view-other-button">{t('swapNQuotesAvailable', [Object.values(quotes)?.length])}<i className="fa fa-arrow-right" /></div>
           <div
             className="view-quote__view-other-button-fade"
             onClick={() => {
               setSelectQuotePopoverShown(true)
             }}
-          >{t('swapNQuotesAvailable', [quotes.length])}<i className="fa fa-arrow-right" />
+          >{t('swapNQuotesAvailable', [Object.values(quotes)?.length])}<i className="fa fa-arrow-right" />
           </div>
         </div>
         <FeeCard
@@ -210,7 +212,7 @@ export default function ViewQuote ({ onSubmit, onCancel }) {
         onSubmit={onSubmit}
         submitText={t('swap')}
         onCancel={onCancel}
-        disabled={!(maxMode && sourceTokenSymbol === 'ETH')}
+        disabled={balanceError && !(maxMode && sourceTokenSymbol === 'ETH')}
         showTermsOfService
         showTopBorder
       />
