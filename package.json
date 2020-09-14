@@ -246,7 +246,7 @@
     "lockfile-lint": "^4.0.0",
     "mocha": "^7.2.0",
     "nock": "^9.0.14",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "node-sass": "^4.14.1",
     "nyc": "^15.0.0",
     "polyfill-crypto.getrandomvalues": "^1.0.0",
