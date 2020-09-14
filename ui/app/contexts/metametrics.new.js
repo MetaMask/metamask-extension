@@ -58,7 +58,7 @@ function useSegmentContext () {
       version,
       name: 'MetaMask Extension',
     },
-    locale,
+    locale: locale.replace('_', '-'),
     page,
     referrer,
     userAgent: window.navigator.userAgent,
@@ -135,7 +135,7 @@ export function MetaMetricsProvider ({ children }) {
    */
   const trackEvent = useCallback(
     (config = {}) => {
-      const { event, category, isOptIn = false, properties = {} } = config
+      const { event, category, isOptIn = false, properties = {}, revenue, value, currency } = config
       if (!event) {
         // Event name is required for tracking an event
         throw new Error('MetaMetrics trackEvent function must be provided a payload with an "event" key')
@@ -144,6 +144,7 @@ export function MetaMetricsProvider ({ children }) {
         // Category must be supplied for every tracking event
         throw new Error('MetaMetrics events must be provided a category')
       }
+      const environmentType = getEnvironmentType()
 
       let excludeMetaMetricsId = config.excludeMetaMetricsId ?? false
 
@@ -163,9 +164,12 @@ export function MetaMetricsProvider ({ children }) {
           event,
           properties: {
             ...omit(properties, ['revenue', 'currency', 'value']),
+            revenue,
+            value,
+            currency,
             category,
             network,
-            exclude_meta_metrics_id: excludeMetaMetricsId,
+            environment_type: environmentType,
           },
           context,
         })
