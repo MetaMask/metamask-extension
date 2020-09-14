@@ -2,7 +2,7 @@ import Web3 from 'web3'
 import log from 'loglevel'
 import BigNumber from 'bignumber.js'
 import ObservableStore from 'obs-store'
-import { mapValues, cloneDeep } from 'lodash'
+import { mapValues } from 'lodash'
 import abi from 'human-standard-token-abi'
 import { calcTokenAmount } from '../../../ui/app/helpers/utils/token-util'
 import { calcGasTotal } from '../../../ui/app/pages/send/send.utils'
@@ -266,6 +266,7 @@ export default class SwapsController {
   }
 
   async getAllQuotesWithGasEstimates (quotes) {
+    // TODO: remove isMetaSwapTestNet logic before final merge
     const isMetaSwapTestNet = this._isMetaSwapTestNet()
     const quoteGasData = await Promise.all(
       Object.values(quotes).map(async (quote) => {
@@ -288,8 +289,11 @@ export default class SwapsController {
           gasEstimateWithRefund,
         }
       } else if (quotes[aggId].approvalNeeded || isMetaSwapTestNet) {
+        // If gas estimation fails, but an ERC-20 approve is needed, then we do not add any estimate property to the quote object
+        // Such quotes will rely on the maxGas and averageGas properties from the api
         newQuotes[aggId] = quotes[aggId]
       }
+      // If gas estimation fails and no approval is needed, then we filter that quote out, so that it is not shown to the user
     })
 
     return newQuotes
@@ -324,7 +328,7 @@ export default class SwapsController {
   async setInitialGasEstimate (initialAggId, baseGasEstimate) {
     const { swapsState } = this.store.getState()
 
-    const quoteToUpdate = cloneDeep(swapsState.quotes[initialAggId])
+    const quoteToUpdate = { ...swapsState.quotes[initialAggId] }
 
     const {
       gasLimit: newGasEstimate,
