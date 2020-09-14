@@ -10439,10 +10439,10 @@ eth-json-rpc-middleware@^4.1.4, eth-json-rpc-middleware@^4.1.5, eth-json-rpc-mid
     pify "^3.0.0"
     safe-event-emitter "^1.0.1"
 
-eth-json-rpc-middleware@^5.0.2:
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/eth-json-rpc-middleware/-/eth-json-rpc-middleware-5.0.2.tgz#f8c2c3478e1b28bf85ed48209e543d6335420de2"
-  integrity sha512-Ezx+wphVQJbrkRSx3Z2EPQZa4JgzA0o0ZCPOdoGtYTTT0SpdzC4BnvafxMS7H2o+QsRcvOvOJmzu7hbf2eVR7w==
+eth-json-rpc-middleware@^5.0.3:
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/eth-json-rpc-middleware/-/eth-json-rpc-middleware-5.0.3.tgz#85ba10f0a1efd2523123823a934a7f3a9e41268f"
+  integrity sha512-NJo1xEPhoaxbIX8eRiCRTHODQkufohaN3icvEZKxb1I+hUb7Oxk0l4pWpocNu33sRi3y2q4Zouhpd5b12acGfw==
   dependencies:
     btoa "^1.2.1"
     clone "^2.1.1"
@@ -10453,9 +10453,9 @@ eth-json-rpc-middleware@^5.0.2:
     ethereumjs-tx "^1.3.7"
     ethereumjs-util "^5.1.2"
     ethereumjs-vm "^2.6.0"
-    fetch-ponyfill "^4.0.0"
     json-rpc-engine "^5.1.3"
     json-stable-stringify "^1.0.1"
+    node-fetch "^2.6.1"
     pify "^3.0.0"
     safe-event-emitter "^1.0.1"
 
