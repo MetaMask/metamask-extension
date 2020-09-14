@@ -96,7 +96,11 @@ export function MetaMetricsProvider ({ children }) {
         match &&
         previousMatch.current !== match.path &&
         // If we're in a popup or notification we don't want the initial home route to track
-        ((environmentType !== 'popup' && environmentType !== 'notification') || match.path !== '/')
+        !(
+          (environmentType === 'popup' || environmentType === 'notification')
+          && match.path === '/'
+          && previousMatch.current === undefined
+        )
       ) {
         const { path, params } = match
         const name = PATH_NAME_MAP[path]
