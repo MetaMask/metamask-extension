@@ -85,8 +85,8 @@ export function MetaMetricsProvider ({ children }) {
   useEffect(() => {
     const environmentType = getEnvironmentType()
     if (
-      (participateInMetaMetrics === null && location.pathname.startsWith('/initialize'))
-      || participateInMetaMetrics
+      (participateInMetaMetrics === null && location.pathname.startsWith('/initialize')) ||
+      participateInMetaMetrics
     ) {
       // Events that happen during initialization before the user opts into MetaMetrics will be anonymous
       const idTrait = metaMetricsId ? 'userId' : 'anonymousId'
@@ -97,9 +97,9 @@ export function MetaMetricsProvider ({ children }) {
         previousMatch.current !== match.path &&
         // If we're in a popup or notification we don't want the initial home route to track
         !(
-          (environmentType === 'popup' || environmentType === 'notification')
-          && match.path === '/'
-          && previousMatch.current === undefined
+          (environmentType === 'popup' || environmentType === 'notification') &&
+          match.path === '/' &&
+          previousMatch.current === undefined
         )
       ) {
         const { path, params } = match
