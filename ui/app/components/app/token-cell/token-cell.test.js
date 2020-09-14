@@ -3,7 +3,7 @@ import React from 'react'
 import sinon from 'sinon'
 import thunk from 'redux-thunk'
 import configureMockStore from 'redux-mock-store'
-import { screen, fireEvent } from '@testing-library/react'
+import { fireEvent } from '@testing-library/react'
 import render from '../../../../../test/lib/render-helpers'
 import TokenCell from '.'
 
