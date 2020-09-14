@@ -84,7 +84,10 @@ export function MetaMetricsProvider ({ children }) {
    */
   useEffect(() => {
     const environmentType = getEnvironmentType()
-    if (location.pathname.startsWith('/initialize') || participateInMetaMetrics) {
+    if (
+      (participateInMetaMetrics === null && location.pathname.startsWith('/initialize'))
+      || participateInMetaMetrics
+    ) {
       // Events that happen during initialization before the user opts into MetaMetrics will be anonymous
       const idTrait = metaMetricsId ? 'userId' : 'anonymousId'
       const idValue = metaMetricsId ?? METAMETRICS_ANONYMOUS_ID
