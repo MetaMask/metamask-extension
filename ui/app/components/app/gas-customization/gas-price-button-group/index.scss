@@ -219,6 +219,10 @@
     background: #f7fcff;
     border: 2px solid #2c8bdc;
 
+    &:first-child {
+      border: 2px solid #2c8bdc;
+    }
+
     .button-check-wrapper {
       height: 16px;
       width: 16px;
