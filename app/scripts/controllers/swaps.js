@@ -21,7 +21,7 @@ const METASWAP_ADDRESS = '0x9537C111Ea62a8dc39E99718140686f7aD856321'
 const MAX_GAS_LIMIT = 2500000
 
 // To ensure that our serves are not spammed if MetaMask is left idle, we limit the number of fetches for quotes that are made on timed intervals.
-// 3 seems to be an appropriate balance of giving users the time they need when metamask is not left idle, and turning polling off when it is.
+// 3 seems to be an appropriate balance of giving users the time they need when MetaMask is not left idle, and turning polling off when it is.
 const POLL_COUNT_LIMIT = 3
 
 function calculateGasEstimateWithRefund (maxGas = MAX_GAS_LIMIT, estimatedRefund = 0, estimatedGas = 0) {
