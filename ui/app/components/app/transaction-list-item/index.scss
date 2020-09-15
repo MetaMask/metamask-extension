@@ -29,6 +29,10 @@
       line-height: 1rem;
     }
 
+    & > .button:first-child {
+      margin-right: 6px;
+    }
+
     &:empty {
       padding-top: 0;
     }
