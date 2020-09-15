@@ -4,6 +4,7 @@
   align-items: center;
   flex: 1;
   width: 100%;
+  padding-top: 4px;
 
   &__content {
     display: flex;
@@ -106,18 +107,19 @@
     margin-top: 32px;
   }
 
-  &__open-dropdown {
-    max-height: 290px;
+  &__open-dropdown,
+  &__open-to-dropdown {
+    max-height: 330px;
     box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
     position: absolute;
     width: 100%;
-
-    @media screen and (max-width: 576px) {
-      max-height: 194px;
-    }
   }
 
-  &__to-dropdown--max-height {
-    max-height: 152px;
+  &__open-to-dropdown {
+    max-height: 194px;
+
+    @media screen and (min-width: 576px) {
+      max-height: 276px;
+    }
   }
 }

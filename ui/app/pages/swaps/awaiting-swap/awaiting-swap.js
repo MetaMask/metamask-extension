@@ -129,7 +129,7 @@ export default function AwaitingSwap ({
         <div className="awaiting-swap__main-descrption">
           {descriptionText}
         </div>
-        {!swapComplete && txHash && (
+        {!swapComplete && !errorKey && txHash && (
           <div className="awaiting-swap__time-estimate">
             {t('swapEstimatedTimeFull', [
               <span className="awaiting-swap__time-estimate-text" key="swapEstimatedTime-1">{t('swapEstimatedTime')}</span>,

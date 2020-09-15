@@ -97,6 +97,7 @@ export default function BuildQuote ({
     {
       showFiat: true,
     },
+    true
   )
   const swapFromEthFiatValue = useEthFiatAmount(inputValue || 0, { showFiat: true })
   const swapFromFiatValue = fromTokenSymbol === 'ETH'
@@ -223,7 +224,7 @@ export default function BuildQuote ({
           loading={loading && (!tokensToSearch?.length || !topAssets || !Object.keys(topAssets).length)}
           externallySelectedItem={selectedToToken}
           hideItemIf={hideDropdownItemIf}
-          listContainerClassName="build-quote__open-dropdown"
+          listContainerClassName="build-quote__open-to-dropdown"
           hideRightLabels
           defaultToAll
 

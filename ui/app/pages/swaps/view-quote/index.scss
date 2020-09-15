@@ -106,10 +106,11 @@
   }
 
   &__countdown-timer-container {
-    margin-top: 20px;
-    margin-bottom: -8px;
 
     @media screen and (max-width: 576px) {
+      margin-top: 12px;
+      margin-bottom: 16px;
+
       &--thin {
         margin-top: 8px;
         margin-bottom: 8px;
@@ -123,9 +124,12 @@
   }
 
   &__fee-card-container {
-    margin-top: 26px;
+    width: 100%;
+    margin-top: auto;
 
     @media screen and (max-width: 576px) {
+      margin-top: 0;
+
       &--thin {
         margin-top: 16px;
       }
