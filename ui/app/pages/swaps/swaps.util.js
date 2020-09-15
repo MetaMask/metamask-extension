@@ -152,7 +152,19 @@ function validateData (validators, object, urlUsed) {
   })
 }
 
-export async function fetchTradesInfo ({ sourceTokenInfo, destinationTokenInfo, slippage, sourceToken, sourceDecimals, destinationToken, value, fromAddress, exchangeList, isCustomNetwork, gasPrice }) {
+export async function fetchTradesInfo ({
+  sourceTokenInfo,
+  destinationTokenInfo,
+  slippage,
+  sourceToken,
+  sourceDecimals,
+  destinationToken,
+  value,
+  fromAddress,
+  exchangeList,
+  isCustomNetwork,
+  gasPrice,
+}) {
   const urlParams = {
     destinationToken,
     sourceToken,
