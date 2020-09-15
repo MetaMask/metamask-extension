@@ -2143,9 +2143,9 @@ export function setPendingTokens (pendingTokens) {
 
 // Swaps
 
-export function fetchAndSetQuotes (fetchParams, fetchStartTime) {
+export function fetchAndSetQuotes (fetchParams, fetchParamsMetaData) {
   return async (dispatch) => {
-    const [quotes, selectedAggId] = await promisifiedBackground.fetchAndSetQuotes(fetchParams, fetchStartTime)
+    const [quotes, selectedAggId] = await promisifiedBackground.fetchAndSetQuotes(fetchParams, fetchParamsMetaData)
     await forceUpdateMetamaskState(dispatch)
     return [quotes, selectedAggId]
   }
