@@ -161,7 +161,6 @@ export async function fetchTradesInfo ({
   fromAddress,
   exchangeList,
   isCustomNetwork,
-  gasPrice,
 }) {
   const urlParams = {
     destinationToken,
@@ -185,7 +184,6 @@ export async function fetchTradesInfo ({
         ...quote.trade,
         amount: decimalToHex(quote.trade.value),
         gas: `0x${decimalToHex(quote.maxGas)}`,
-        gasPrice,
       })
 
       let { approvalNeeded } = quote
@@ -193,7 +191,6 @@ export async function fetchTradesInfo ({
       if (approvalNeeded) {
         approvalNeeded = constructTxParams({
           ...approvalNeeded,
-          gasPrice,
         })
       }
 
@@ -211,43 +208,6 @@ export async function fetchTradesInfo ({
   }, {})
 
   return newQuotes
-}
-
-export async function quoteToTxParams (quote, gasPrice) {
-  const { approvalNeeded: approval, trade } = quote
-
-  const { data: tradeData, to: tradeTo, value: tradeValue, gas: tradeGas, from: tradeFrom } = trade
-  const tradeTxParams = constructTxParams({
-    data: tradeData,
-    to: tradeTo,
-    amount: decimalToHex(tradeValue),
-    from: tradeFrom,
-    gas: decimalToHex(tradeGas || METASWAP_GAS_DEFAULT),
-    gasPrice,
-  })
-
-  let approveTxParams
-  if (approval) {
-    const { data: approvalData, to: approvalTo, from: approvalFrom } = approval
-
-    approveTxParams = constructTxParams({
-      data: approvalData,
-      to: approvalTo,
-      amount: '0x0',
-      from: approvalFrom,
-      gasPrice,
-    })
-    let approveGasEstimate
-    try {
-      approveGasEstimate = await estimateGasFromTxParams(approveTxParams)
-    } catch (_error) {
-      log.warning('Gas estimation for approval transaction failed, using default value instead. Error:', _error)
-      approveGasEstimate = APPROVE_TX_GAS_DEFAULT
-    }
-
-    approveTxParams.gas = approveGasEstimate
-  }
-  return { tradeTxParams, approveTxParams }
 }
 
 export async function fetchTokens (isCustomNetwork) {
