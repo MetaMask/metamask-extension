@@ -61,6 +61,7 @@ export default function Swap () {
   const isSwapsErrorRoute = pathname === SWAPS_ERROR_ROUTE
 
   const fetchParams = useSelector(getFetchParams)
+  const { sourceTokenInfo = {}, destinationTokenInfo = {} } = fetchParams?.metaData || {}
 
   const [inputValue, setInputValue] = useState(fetchParams?.value || null)
   const [maxSlippage, setMaxSlippage] = useState(fetchParams?.slippage || 2)
@@ -81,14 +82,14 @@ export default function Swap () {
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider)
   const fetchingQuotes = useSelector(getFetchingQuotes)
   const balanceError = useSelector(getBalanceError)
-  const selectedToToken = useSelector(getToToken) || fetchParams?.destinationTokenInfo || {}
+  const selectedToToken = useSelector(getToToken) || destinationTokenInfo || {}
   const quotesStatus = useSelector(getQuotesStatus)
   let swapsErrorKey = useSelector(getSwapsErrorKey)
 
   const { balance: ethBalance, address: selectedAccountAddress } = selectedAccount
-  const fetchParamsFromToken = fetchParams?.sourceTokenInfo?.symbol === 'ETH'
+  const fetchParamsFromToken = sourceTokenInfo?.symbol === 'ETH'
     ? { ...ETH_SWAPS_TOKEN_OBJECT, string: getValueFromWeiHex({ value: ethBalance, numberOfDecimals: 4, toDenomination: 'ETH' }), balance: ethBalance }
-    : fetchParams?.sourceTokenInfo
+    : sourceTokenInfo
   const selectedFromToken = useSelector(getFromToken) || fetchParamsFromToken || {}
   const { destinationTokenAddedForSwap } = fetchParams || {}
 
@@ -97,11 +98,11 @@ export default function Swap () {
   const approveTxData = approveTxId && txList.find(({ id }) => approveTxId === id)
   const tradeTxData = tradeTxId && txList.find(({ id }) => tradeTxId === id)
   const tokensReceived = tradeTxData?.txReceipt && getSwapsTokensReceivedFromTxMeta(
-    fetchParams?.destinationTokenInfo?.symbol,
+    destinationTokenInfo?.symbol,
     tradeTxData,
-    fetchParams?.destinationTokenInfo?.address,
+    destinationTokenInfo?.address,
     selectedAccountAddress,
-    fetchParams?.destinationTokenInfo?.decimals,
+    destinationTokenInfo?.decimals,
   )
   const tradeConfirmed = tradeTxData?.status === 'confirmed'
   const approveError = approveTxData?.status === 'failed' || approveTxData?.txReceipt?.status === '0x0'
@@ -117,7 +118,7 @@ export default function Swap () {
   useEffect(() => {
     clearTemporaryTokenRef.current = () => {
       if (destinationTokenAddedForSwap && (!isAwaitingSwapRoute || conversionError)) {
-        dispatch(removeToken(fetchParams?.destinationTokenInfo?.address))
+        dispatch(removeToken(destinationTokenInfo?.address))
       }
     }
   }, [fetchParams, destinationTokenAddedForSwap, conversionError, dispatch, isAwaitingSwapRoute])
@@ -273,7 +274,7 @@ export default function Swap () {
                     <AwaitingSwap
                       swapComplete={false}
                       errorKey={swapsErrorKey}
-                      symbol={fetchParams?.destinationTokenInfo?.symbol}
+                      symbol={destinationTokenInfo?.symbol}
                       txHash={tradeTxData?.hash}
                       networkId={networkId}
                       rpcPrefs={rpcPrefs}
@@ -319,7 +320,7 @@ export default function Swap () {
                   ? (
                     <AwaitingSwap
                       swapComplete={tradeConfirmed}
-                      symbol={fetchParams?.destinationTokenInfo?.symbol}
+                      symbol={destinationTokenInfo?.symbol}
                       networkId={networkId}
                       txHash={tradeTxData?.hash}
                       tokensReceived={tokensReceived}

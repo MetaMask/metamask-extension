@@ -111,7 +111,8 @@ export function useSwapSubmitFunction ({
   }
 
   const signAndSendTransactions = async () => {
-    const { sourceTokenInfo = {}, destinationTokenInfo = {}, value: swapTokenValue, slippage } = fetchParams
+    const { metaData, value: swapTokenValue, slippage } = fetchParams
+    const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData
     history.push(AWAITING_SWAP_ROUTE)
 
     dispatch(stopPollingForQuotes())
@@ -137,6 +138,7 @@ export function useSwapSubmitFunction ({
         timeout: 10000,
         networkId,
         isCustomNetwork,
+        sourceDecimals: 18,
       })
       const tradeForGasEstimate = { ...revisedQuote.trade }
       delete tradeForGasEstimate.gas
@@ -215,19 +217,23 @@ export function useSwapSubmitFunction ({
     try {
       const fetchStartTime = Date.now()
       dispatch(setSwapQuotesFetchStartTime(fetchStartTime))
-      const [fetchedQuotes, selectedAggId] = await dispatch(fetchAndSetQuotes({
-        sourceTokenInfo,
-        destinationTokenInfo,
-        slippage: maxSlippage,
-        sourceToken: fromTokenAddress,
-        destinationToken: toTokenAddress,
-        value: revisedValue || inputValue,
-        fromAddress: selectedAccountAddress,
-        sourceDecimals: fromTokenDecimals,
-        isCustomNetwork,
-        destinationTokenAddedForSwap,
-        balanceError,
-      }))
+      const [fetchedQuotes, selectedAggId] = await dispatch(fetchAndSetQuotes(
+        {
+          slippage: maxSlippage,
+          sourceToken: fromTokenAddress,
+          destinationToken: toTokenAddress,
+          value: revisedValue || inputValue,
+          fromAddress: selectedAccountAddress,
+          isCustomNetwork,
+          destinationTokenAddedForSwap,
+          balanceError,
+          sourceDecimals: fromTokenDecimals,
+        },
+        {
+          sourceTokenInfo,
+          destinationTokenInfo,
+        },
+      ))
       if (Object.values(fetchedQuotes)?.length === 0) {
         dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR))
       } else {

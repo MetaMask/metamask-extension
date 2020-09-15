@@ -50,13 +50,14 @@ export default function BuildQuote ({
 
   const balanceError = useSelector(getBalanceError)
   const fetchParams = useSelector(getFetchParams)
+  const { sourceTokenInfo = {}, destinationTokenInfo = {} } = fetchParams?.metaData || {}
   const tokens = useSelector(getTokens)
   const topAssets = useSelector(getTopAssets)
   const fromToken = useSelector(getFromToken)
-  const toToken = useSelector(getToToken) || fetchParams?.destinationTokenInfo
-  const fetchParamsFromToken = fetchParams?.sourceTokenInfo?.symbol === 'ETH'
+  const toToken = useSelector(getToToken) || destinationTokenInfo
+  const fetchParamsFromToken = sourceTokenInfo?.symbol === 'ETH'
     ? { ...ETH_SWAPS_TOKEN_OBJECT, string: getValueFromWeiHex({ value: ethBalance, numberOfDecimals: 4, toDenomination: 'ETH' }), balance: ethBalance }
-    : fetchParams?.sourceTokenInfo
+    : sourceTokenInfo
 
   const { loading, tokensWithBalances } = useTokenTracker(tokens)
   const usersTokens = uniqBy([...tokensWithBalances, ...tokens], 'address')

@@ -153,8 +153,6 @@ function validateData (validators, object, urlUsed) {
 }
 
 export async function fetchTradesInfo ({
-  sourceTokenInfo,
-  destinationTokenInfo,
   slippage,
   sourceToken,
   sourceDecimals,
@@ -204,8 +202,6 @@ export async function fetchTradesInfo ({
         [quote.aggregator]: {
           ...quote,
           slippage,
-          sourceTokenInfo,
-          destinationTokenInfo,
           trade: constructedTrade,
           approvalNeeded,
         },

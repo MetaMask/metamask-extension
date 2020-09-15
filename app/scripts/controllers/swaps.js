@@ -101,7 +101,7 @@ export default class SwapsController {
   pollForNewQuotes () {
     this.pollingTimeout = setTimeout(() => {
       const { swapsState } = this.store.getState()
-      this.fetchAndSetQuotes(swapsState.fetchParams, true)
+      this.fetchAndSetQuotes(swapsState.fetchParams, swapsState.fetchParams.metaData, true)
     }, QUOTE_POLLING_INTERVAL)
   }
 
@@ -112,7 +112,7 @@ export default class SwapsController {
     this.setQuotesLastFetched(null)
   }
 
-  async fetchAndSetQuotes (fetchParams, isPolledRequest) {
+  async fetchAndSetQuotes (fetchParams, fetchParamsMetaData = {}, isPolledRequest) {
     if (!fetchParams) {
       return null
     }
@@ -200,7 +200,7 @@ export default class SwapsController {
       swapsState: {
         ...swapsState,
         quotes: newQuotes,
-        fetchParams,
+        fetchParams: { ...fetchParams, metaData: fetchParamsMetaData },
         quotesLastFetched,
         selectedAggId,
         topAggId,
