@@ -8,7 +8,7 @@ import Tooltip from '../../ui/tooltip'
 import CurrencyDisplay from '../../ui/currency-display'
 import { I18nContext } from '../../../contexts/i18n'
 import { SEND_ROUTE, BUILD_QUOTE_ROUTE } from '../../../helpers/constants/routes'
-import { useMetricEvent } from '../../../hooks/useMetricEvent'
+import { useMetricEvent, useNewMetricEvent } from '../../../hooks/useMetricEvent'
 import { useTokenTracker } from '../../../hooks/useTokenTracker'
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount'
 import { getAssetImages, getCurrentNetworkId } from '../../../selectors/selectors'
@@ -31,13 +31,6 @@ const TokenOverview = ({ className, token }) => {
       name: 'Clicked Send: Token',
     },
   })
-  const convertEvent = useMetricEvent({
-    eventOpts: {
-      category: 'Navigation',
-      action: 'Home',
-      name: 'Clicked Convert: token',
-    },
-  })
   const history = useHistory()
   const assetImages = useSelector(getAssetImages)
 
@@ -45,6 +38,7 @@ const TokenOverview = ({ className, token }) => {
   const balance = tokensWithBalances[0]?.string
   const formattedFiatBalance = useTokenFiatAmount(token.address, balance, token.symbol)
   const networkId = useSelector(getCurrentNetworkId)
+  const enteredSwapsEvent = useNewMetricEvent({ event: 'Swaps Opened', properties: { source: 'Token View', active_currency: token.symbol }, category: 'swaps' })
 
   return (
     <WalletOverview
@@ -87,7 +81,7 @@ const TokenOverview = ({ className, token }) => {
             Icon={SwapIcon}
             onClick={() => {
               if (networkId === '1') {
-                convertEvent()
+                enteredSwapsEvent()
                 dispatch(setSwapsFromToken({ ...token, iconUrl: assetImages[token.address] }))
                 history.push(BUILD_QUOTE_ROUTE)
               }

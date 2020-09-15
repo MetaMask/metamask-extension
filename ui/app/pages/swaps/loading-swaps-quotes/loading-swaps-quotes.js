@@ -52,6 +52,7 @@ export default function LoadingSwapsQuotes ({
   aggregatorMetadata,
   loadingComplete,
   onDone,
+  cancelEvent,
 }) {
   const t = useContext(I18nContext)
   const dispatch = useDispatch()
@@ -192,7 +193,10 @@ export default function LoadingSwapsQuotes ({
       </div>
       <SwapsFooter
         submitText={t('back')}
-        onSubmit={async () => await dispatch(navigateBackToBuildQuote(history))}
+        onSubmit={async () => {
+          cancelEvent()
+          await dispatch(navigateBackToBuildQuote(history))
+        }}
         hideCancel
       />
     </div>
@@ -206,4 +210,5 @@ LoadingSwapsQuotes.propTypes = {
     color: PropTypes.string,
     icon: PropTypes.string,
   })),
+  cancelEvent: PropTypes.func,
 }

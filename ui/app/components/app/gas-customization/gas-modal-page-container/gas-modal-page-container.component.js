@@ -2,14 +2,16 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import PageContainer from '../../../ui/page-container'
 import { Tabs, Tab } from '../../../ui/tabs'
+import { calcGasTotal } from '../../../../pages/send/send.utils'
 import AdvancedTabContent from './advanced-tab-content'
 import BasicTabContent from './basic-tab-content'
+import { sumHexWEIsToRenderableFiat } from './gas-modal-page-container.container'
 
 export default class GasModalPageContainer extends Component {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
-    mixPanelTrack: PropTypes.func,
+    trackEvent: PropTypes.func,
   }
 
   static propTypes = {
@@ -46,6 +48,10 @@ export default class GasModalPageContainer extends Component {
     disableSave: PropTypes.bool,
     isEthereumNetwork: PropTypes.bool,
     customGasLimitMessage: PropTypes.string,
+    customTotalSupplement: PropTypes.string,
+    isSwap: PropTypes.boolean,
+    value: PropTypes.string,
+    conversionRate: PropTypes.string,
   }
 
   state = {
@@ -211,6 +217,26 @@ export default class GasModalPageContainer extends Component {
                   action: 'Activity Log',
                   name: 'Saved "Speed Up"',
                 },
+              })
+            }
+            if (this.props.isSwap) {
+              const newSwapGasTotal = calcGasTotal(customModalGasLimitInHex, customModalGasPriceInHex)
+              let speedSet = ''
+              if (this.state.selectedTab === 'Basic') {
+                const { gasButtonInfo } = this.props.gasPriceButtonGroupProps
+                const selectedGasButtonInfo = gasButtonInfo.find(({ priceInHexWei }) => priceInHexWei === customModalGasPriceInHex)
+                speedSet = selectedGasButtonInfo?.gasEstimateType || ''
+              }
+
+              this.context.trackEvent({
+                event: 'Gas Fees Changed',
+                category: 'swaps',
+                properties: {
+                  speed_set: speedSet,
+                  gas_mode: this.state.selectedTab,
+                  gas_fees: sumHexWEIsToRenderableFiat([this.props.value, newSwapGasTotal, this.props.customTotalSupplement], 'usd', this.props.conversionRate)?.slice(1),
+                },
+                excludeMetaMetricsId: false,
               })
             }
             onSubmit(customModalGasLimitInHex, customModalGasPriceInHex, this.state.selectedTab, this.context.mixPanelTrack)

@@ -68,6 +68,18 @@ import {
 import { calcMaxAmount } from '../../../../pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.utils'
 import GasModalPageContainer from './gas-modal-page-container.component'
 
+export const sumHexWEIsToRenderableFiat = (hexWEIs, convertedCurrency, conversionRate) => {
+  const hexWEIsSum = hexWEIs.filter((n) => n).reduce(addHexes)
+  const ethTotal = ethTotalToConvertedCurrency(
+    getValueFromWeiHex({
+      value: hexWEIsSum, toCurrency: 'ETH', numberOfDecimals: 4,
+    }),
+    convertedCurrency,
+    conversionRate,
+  )
+  return formatCurrency(ethTotal, convertedCurrency)
+}
+
 const mapStateToProps = (state, ownProps) => {
   const { currentNetworkTxList, send } = state.metamask
   const { modalState: { props: modalProps } = {} } = state.appState.modal || {}
@@ -266,9 +278,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     tokenBalance,
     customGasLimit,
     transaction,
-    conversionRate,
-    value,
-    customTotalSupplement,
   } = stateProps
   const {
     hideGasButtonGroup: dispatchHideGasButtonGroup,
@@ -288,30 +297,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     ...otherDispatchProps,
     ...ownProps,
-    onSubmit: (gasLimit, gasPrice, tabName, analyticsEvent) => {
+    onSubmit: (gasLimit, gasPrice) => {
       if (isSwap) {
-        const newSwapGasTotal = calcGasTotal(gasLimit, gasPrice)
-        let speedSet = ''
-        if (tabName === 'Basic') {
-          const { gasButtonInfo } = gasPriceButtonGroupProps
-          const selectedGasButtonInfo = gasButtonInfo.find(
-            ({ priceInHexWei }) => priceInHexWei === gasPrice,
-          )
-          speedSet = selectedGasButtonInfo?.gasEstimateType || ''
-        }
-
         dispatchUpdateSwapTxGas(gasLimit, gasPrice)
         dispatchHideModal()
-
-        analyticsEvent('Gas Fees Changed', {
-          speed_set: speedSet,
-          gas_mode: tabName,
-          gas_fees: sumHexWEIsToRenderableFiat(
-            [value, newSwapGasTotal, customTotalSupplement],
-            'usd',
-            conversionRate,
-          ),
-        })
       } else if (isConfirm) {
         const updatedTx = {
           ...transaction,
@@ -388,18 +377,4 @@ function sumHexWEIsToRenderableEth (hexWEIs) {
 
 function subtractHexWEIsFromRenderableEth (aHexWEI, bHexWEI) {
   return formatETHFee(subtractHexWEIsToDec(aHexWEI, bHexWEI))
-}
-
-function sumHexWEIsToRenderableFiat (hexWEIs, convertedCurrency, conversionRate) {
-  const hexWEIsSum = hexWEIs.filter((n) => n).reduce(addHexes)
-  const ethTotal = ethTotalToConvertedCurrency(
-    getValueFromWeiHex({
-      value: hexWEIsSum,
-      toCurrency: 'ETH',
-      numberOfDecimals: 6,
-    }),
-    convertedCurrency,
-    conversionRate,
-  )
-  return formatCurrency(ethTotal, convertedCurrency)
 }
