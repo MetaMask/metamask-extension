@@ -392,7 +392,7 @@ export const getSwapsErrorKey = (state) => getSwapsState(state)?.errorKey
 export const getTradeTxParams = (state) => state.metamask.swapsState.tradeTxParams
 
 export const getApproveTxParams = (state) => {
-  const { approvalNeeded } = getSelectedQuote(state) || {}
+  const { approvalNeeded } = getSelectedQuote(state) || getTopQuote(state) || {}
 
   if (!approvalNeeded) {
     return null
