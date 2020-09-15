@@ -119,24 +119,22 @@ export default function LoadingSwapsQuotes ({
   return (
     <div className="loading-swaps-quotes">
       <div className="loading-swaps-quotes__content">
-        {!doneCalled && (
-          <>
-            <div className="loading-swaps-quotes__quote-counter">
-              <span>{t('swapQuoteNofN', [Math.min(quoteCount + 1, numberOfQuotes), numberOfQuotes])}</span>
-            </div>
-            <div className="loading-swaps-quotes__quote-name-check">
-              <span>{quoteCount === numberOfQuotes ? t('swapFinalizing') : t('swapCheckingQuote', [aggregatorMetadata[aggregatorNames[quoteCount]].title])}</span>
-            </div>
-            <div className="loading-swaps-quotes__loading-bar-container">
-              <div
-                className="loading-swaps-quotes__loading-bar"
-                style={{
-                  width: `${(100 / numberOfQuotes) * quoteCount}%`,
-                }}
-              />
-            </div>
-          </>
-        )}
+        <>
+          <div className="loading-swaps-quotes__quote-counter">
+            <span>{t('swapQuoteNofN', [Math.min(quoteCount + 1, numberOfQuotes), numberOfQuotes])}</span>
+          </div>
+          <div className="loading-swaps-quotes__quote-name-check">
+            <span>{quoteCount === numberOfQuotes ? t('swapFinalizing') : t('swapCheckingQuote', [aggregatorMetadata[aggregatorNames[quoteCount]].title])}</span>
+          </div>
+          <div className="loading-swaps-quotes__loading-bar-container">
+            <div
+              className="loading-swaps-quotes__loading-bar"
+              style={{
+                width: `${(100 / numberOfQuotes) * quoteCount}%`,
+              }}
+            />
+          </div>
+        </>
         <div className="loading-swaps-quotes__animation">
           <BackgroundAnimation />
           <div className="loading-swaps-quotes__mascot-container" ref={mascotContainer}>
