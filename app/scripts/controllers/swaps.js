@@ -1,4 +1,4 @@
-import Web3 from 'web3'
+import { ethers } from 'ethers'
 import log from 'loglevel'
 import BigNumber from 'bignumber.js'
 import ObservableStore from 'obs-store'
@@ -16,18 +16,6 @@ import {
 import { fetchTradesInfo } from '../../../ui/app/pages/swaps/swaps.util'
 
 const METASWAP_ADDRESS = '0x9537C111Ea62a8dc39E99718140686f7aD856321'
-
-function getERC20Allowance (contractAddress, walletAddress, eth) {
-  const contract = eth.contract(abi).at(contractAddress)
-  return new Promise((resolve, reject) => {
-    contract.allowance(walletAddress, METASWAP_ADDRESS, (error, result) => {
-      if (error) {
-        return reject(error)
-      }
-      return resolve(result)
-    })
-  })
-}
 
 function calculateGasEstimateWithRefund (maxGas = 800000, estimatedRefund = 0, estimatedGas = 0) {
   const maxGasMinusRefund = new BigNumber(
@@ -90,7 +78,7 @@ export default class SwapsController {
     this.pollCount = 0
     this.getProviderConfig = getProviderConfig
 
-    this.web3 = new Web3(provider)
+    this.ethersProvider = new ethers.providers.Web3Provider(provider)
   }
 
   // TODO: remove before final merge
@@ -140,14 +128,13 @@ export default class SwapsController {
 
     let approvalRequired = false
     if (fetchParams.sourceToken !== ETH_SWAPS_TOKEN_ADDRESS) {
-      const allowance = await getERC20Allowance(
+      const allowance = await this._getERC20Allowance(
         fetchParams.sourceToken,
         fetchParams.fromAddress,
-        this.web3.eth,
       )
 
       // For a user to be able to swap a token, they need to have approved the MetaSwap contract to withdraw that token.
-      // getERC20Allowance() returns the amount of the token they have approved for withdrawal. If that amount is greater
+      // _getERC20Allowance() returns the amount of the token they have approved for withdrawal. If that amount is greater
       // than 0, it means that approval has already occured and is not needed. Otherwise, for tokens to be swapped, a new
       // call of the ERC-20 approve method is required.
       approvalRequired = allowance.eq(0)
@@ -500,5 +487,12 @@ export default class SwapsController {
       Boolean(tokenConversionRates[quotes[topAggId]?.destinationToken])
 
     return { topAggId, isBest }
+  }
+
+  async _getERC20Allowance (contractAddress, walletAddress) {
+    const contract = new ethers.Contract(
+      contractAddress, abi, this.ethersProvider,
+    )
+    return await contract.allowance(walletAddress, METASWAP_ADDRESS)
   }
 }
