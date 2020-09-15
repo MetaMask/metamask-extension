@@ -28,7 +28,7 @@ import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount'
 
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../helpers/constants/swaps'
 
-import { setMaxMode, resetSwapsPostFetchState } from '../../../store/actions'
+import { setMaxMode, resetSwapsPostFetchState, removeToken } from '../../../store/actions'
 import { fetchTokenPrice, fetchTokenBalance } from '../swaps.util'
 import SwapsFooter from '../swaps-footer'
 
@@ -122,7 +122,16 @@ export default function BuildQuote ({
     dispatch(setMaxMode(false))
     onInputChange(inputValue, token.string, token.decimals)
   }
-  const onToSelect = useCallback((token) => dispatch(setSwapToToken(token)), [dispatch])
+
+  const { destinationTokenAddedForSwap } = fetchParams || {}
+  const { address: toAddress } = toToken || {}
+  const onToSelect = useCallback((token) => {
+    if (destinationTokenAddedForSwap && token.address !== toAddress) {
+      dispatch(removeToken(toAddress))
+    }
+    dispatch(setSwapToToken(token))
+  }, [dispatch, destinationTokenAddedForSwap, toAddress])
+
   const hideDropdownItemIf = useCallback((item) => item.address === fromTokenAddress, [fromTokenAddress])
 
   useEffect(() => {
