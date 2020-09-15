@@ -387,7 +387,7 @@
     "message": "Fel i ENS-namnregistrering"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS-namnet hittades inte i det aktuella nätverket. Prova att byta till Main Ethereum Network."
+    "message": "ENS-namnet hittades inte i det aktuella nätverket. Prova att byta till Ethereum Mainnet."
   },
   "enterAnAlias": {
     "message": "Ange ett alias"

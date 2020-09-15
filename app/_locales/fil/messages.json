@@ -210,7 +210,7 @@
     "message": "Kumokonekta sa Kovan Test Network"
   },
   "connectingToMainnet": {
-    "message": "Kumokonekta sa Main Ethereum Network"
+    "message": "Kumokonekta sa Ethereum Mainnet"
   },
   "connectingToRopsten": {
     "message": "Kumokonekta sa Ropsten Test Network"
@@ -366,7 +366,7 @@
     "message": "May error sa pagrerehistro ng ENS name"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "Hindi nakita ang ENS name sa kasalukuyang network. Subukang lumipat sa Main Ethereum Network."
+    "message": "Hindi nakita ang ENS name sa kasalukuyang network. Subukang lumipat sa Ethereum Mainnet."
   },
   "enterAnAlias": {
     "message": "Maglagay ng alias"

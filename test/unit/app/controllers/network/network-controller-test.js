@@ -88,7 +88,7 @@ describe('NetworkController', function () {
           expected: 'Kovan',
         }, {
           input: 'mainnet',
-          expected: 'Main Ethereum Network',
+          expected: 'Ethereum Mainnet',
         }, {
           input: 'goerli',
           expected: 'Goerli',
