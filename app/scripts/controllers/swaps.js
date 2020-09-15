@@ -412,7 +412,7 @@ export default class SwapsController {
       swapsState: { customGasPrice },
     } = this.store.getState()
 
-    if (!Object.values(quotes)?.length) {
+    if (!Object.values(quotes).length) {
       return {}
     }
 
