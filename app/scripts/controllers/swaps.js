@@ -36,7 +36,7 @@ function calculateGasEstimateWithRefund (maxGas = MAX_GAS_LIMIT, estimatedRefund
     estimatedGas,
     16,
   )
-    ? maxGasMinusRefund
+    ? maxGasMinusRefund.toString(16)
     : estimatedGas
 
   return gasEstimateWithRefund
