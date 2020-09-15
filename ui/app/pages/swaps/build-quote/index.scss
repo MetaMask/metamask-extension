@@ -1,13 +1,16 @@
 .build-quote {
-  display: 'flex';
-  flex-flow: 'column';
+  display: flex;
+  flex-flow: column;
+  align-items: center;
   flex: 1;
-  width: '100%';
+  width: 100%;
 
   &__content {
     display: flex;
     height: 100%;
     flex-direction: column;
+    padding-left: 24px;
+    padding-right: 24px;
   }
 
   &__content {
@@ -110,7 +113,7 @@
     width: 100%;
 
     @media screen and (max-width: 576px) {
-      max-height: 204px;
+      max-height: 194px;
     }
   }
 

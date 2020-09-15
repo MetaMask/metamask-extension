@@ -43,7 +43,13 @@ export default function DropdownInputPair ({
   const inputRef = useRef()
   const onTextFieldChange = (event) => {
     event.stopPropagation()
-    onInputChange && onInputChange(event.target.value)
+    const valueToUse = event.target.value === '.' ? '0.' : event.target.value
+    const regexp = /^\.\d+$|\d[0-9.]*$/u
+    if (!valueToUse || (regexp.test(valueToUse) && ((valueToUse.match(/\./ug)?.length ?? 0) <= 1))) {
+      onInputChange(valueToUse)
+    } else {
+      onInputChange(inputValue || '')
+    }
   }
   const [applyTwoLineStyle, setApplyTwoLineStyle] = useState(null)
   useEffect(() => {
@@ -71,8 +77,10 @@ export default function DropdownInputPair ({
       />
       {!isOpen && (
         <TextField
-          className="dropdown-input-pair__input"
-          type="number"
+          className={classnames('dropdown-input-pair__input', {
+            'dropdown-input-pair__two-line-input': applyTwoLineStyle,
+          })}
+          type="text"
           placeholder={ 0 }
           onChange={onTextFieldChange}
           fullWidth

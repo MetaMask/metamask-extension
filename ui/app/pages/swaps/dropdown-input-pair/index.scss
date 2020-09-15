@@ -43,7 +43,7 @@
     @include H7;
 
     position: absolute;
-    right: 20px;
+    right: 16px;
     height: 100%;
     display: flex;
     align-items: center;
@@ -53,7 +53,7 @@
       right: inherit;
       left: 157px;
       align-items: unset;
-      top: 38px;
+      top: 34px;
     }
   }
 
@@ -62,5 +62,15 @@
     width: 142px;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
+  }
+
+  &__two-line-input {
+    div {
+      align-items: flex-start;
+    }
+
+    input {
+      padding-top: 14px;
+    }
   }
 }

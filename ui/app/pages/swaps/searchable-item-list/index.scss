@@ -15,7 +15,7 @@
         @include H6;
 
         color: $Grey-500;
-        font-weight: bold;
+        line-height: 100%;
 
         &::-webkit-input-placeholder {
           color: $Grey-500;
@@ -78,6 +78,10 @@
       opacity: 0.4;
       pointer-events: none;
     }
+
+    > img {
+      margin-top: -2px;
+    }
   }
 
   &__primary-label {
@@ -90,6 +94,8 @@
 
     line-height: 100%;
     font-weight: bold;
+    padding-top: 4px;
+    padding-bottom: 3px;
   }
 
   &__item-name {
@@ -135,6 +141,11 @@
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    padding-bottom: 4px;
+  }
+
+  &__right-primary-label {
+    margin-top: 3px;
   }
 
   &__right-secondary-label {
@@ -159,5 +170,9 @@
 
   &__item--highlighted {
     background: $Grey-000;
+  }
+
+  &__identicon {
+    margin-top: -2px;
   }
 }

@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
 import { shuffle } from 'lodash'
 import { useHistory } from 'react-router-dom'
+import classnames from 'classnames'
 import { navigateBackToBuildQuote } from '../../../ducks/swaps/swaps'
 import { I18nContext } from '../../../contexts/i18n'
 import Mascot from '../../../components/ui/mascot'
@@ -121,7 +122,7 @@ export default function LoadingSwapsQuotes ({
         {!doneCalled && (
           <>
             <div className="loading-swaps-quotes__quote-counter">
-              <span>{t('swapQuoteNofN', [quoteCount, numberOfQuotes])}</span>
+              <span>{t('swapQuoteNofN', [Math.min(quoteCount + 1, numberOfQuotes), numberOfQuotes])}</span>
             </div>
             <div className="loading-swaps-quotes__quote-name-check">
               <span>{quoteCount === numberOfQuotes ? t('swapFinalizing') : t('swapCheckingQuote', [aggregatorMetadata[aggregatorNames[quoteCount]].title])}</span>
@@ -149,7 +150,9 @@ export default function LoadingSwapsQuotes ({
           </div>
           {currentMascotContainer && midPointTarget && aggregatorNames.map((aggName) => (
             <div
-              className="loading-swaps-quotes__logo"
+              className={classnames('loading-swaps-quotes__logo', {
+                'loading-swaps-quotes__logo--transition': aggName === aggregatorNames[quoteCount],
+              })}
               style={{
                 opacity: aggName === aggregatorNames[quoteCount] ? 1 : 0,
                 top: aggregatorLocationMap[aggName]?.y + midPointTarget?.y ?? 0,
