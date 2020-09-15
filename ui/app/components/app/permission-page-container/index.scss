@@ -1,12 +1,14 @@
 .permission-approval-container {
-  display: flex;
-  border: none;
-  box-shadow: none;
-  width: 100%;
-  margin-top: 2px;
-  height: 100%;
-  flex-direction: column;
-  justify-content: space-between;
+  &.page-container {
+    display: flex;
+    border: none;
+    box-shadow: none;
+    width: 100%;
+    margin-top: 2px;
+    height: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+  }
 
   @media screen and (min-width: 576px) {
     width: 426px;
