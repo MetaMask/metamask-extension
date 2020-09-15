@@ -74,7 +74,7 @@
     "message": "Připojuji se k Kovan Test Network"
   },
   "connectingToMainnet": {
-    "message": "Připojuji se k Main Ethereum Network"
+    "message": "Připojuji se k Ethereum Mainnet"
   },
   "connectingToRopsten": {
     "message": "Připojuji se k Ropsten Test Network"

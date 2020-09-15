@@ -378,7 +378,7 @@
     "message": "Fehler bei der ENS-Namensregistrierung"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS-Name wurde im aktuellen Netzwerk nicht gefunden. Versuchen Sie, zum Main Ethereum Network zu wechseln."
+    "message": "ENS-Name wurde im aktuellen Netzwerk nicht gefunden. Versuchen Sie, zum Ethereum Mainnet zu wechseln."
   },
   "enterAnAlias": {
     "message": "Ein Alias eingeben"

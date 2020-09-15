@@ -393,7 +393,7 @@
     "message": "Помилка у реєстрації ENS ім'я"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "Ім'я ENS не знайдено у даній мережі. Спробуйте перейти у Main Ethereum Network."
+    "message": "Ім'я ENS не знайдено у даній мережі. Спробуйте перейти у Ethereum Mainnet."
   },
   "enterAnAlias": {
     "message": "Введіть псевдонім"

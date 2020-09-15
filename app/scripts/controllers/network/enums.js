@@ -20,7 +20,7 @@ export const KOVAN_CHAIN_ID = '0x2a'
 export const ROPSTEN_DISPLAY_NAME = 'Ropsten'
 export const RINKEBY_DISPLAY_NAME = 'Rinkeby'
 export const KOVAN_DISPLAY_NAME = 'Kovan'
-export const MAINNET_DISPLAY_NAME = 'Main Ethereum Network'
+export const MAINNET_DISPLAY_NAME = 'Ethereum Mainnet'
 export const GOERLI_DISPLAY_NAME = 'Goerli'
 
 export const INFURA_PROVIDER_TYPES = [

@@ -392,7 +392,7 @@
     "message": "Connecting to Kovan Test Network"
   },
   "connectingToMainnet": {
-    "message": "Connecting to Main Ethereum Network"
+    "message": "Connecting to Ethereum Mainnet"
   },
   "connectingToRopsten": {
     "message": "Connecting to Ropsten Test Network"
@@ -582,7 +582,7 @@
     "message": "Error in ENS name registration"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS name not found on the current network. Try switching to Main Ethereum Network."
+    "message": "ENS name not found on the current network. Try switching to Ethereum Mainnet."
   },
   "enterAnAlias": {
     "message": "Enter an alias"
@@ -904,7 +904,7 @@
     "message": "Lock time is too great"
   },
   "mainnet": {
-    "message": "Main Ethereum Network"
+    "message": "Ethereum Mainnet"
   },
   "memorizePhrase": {
     "message": "Memorize this phrase."
@@ -1598,7 +1598,7 @@
     "message": "Transaction Time"
   },
   "showTransactionTimeDescription": {
-    "message": "Select this to display pending transaction time estimates in the activity tab while on the Main Ethereum Network. Note: estimates are approximations based on network conditions."
+    "message": "Select this to display pending transaction time estimates in the activity tab while on the Ethereum Mainnet. Note: estimates are approximations based on network conditions."
   },
   "transfer": {
     "message": "Transfer"
