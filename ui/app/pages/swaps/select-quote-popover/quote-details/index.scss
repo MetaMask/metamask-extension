@@ -51,6 +51,10 @@
     }
   }
 
+  &__light-grey {
+    color: #bbc0c5;
+  }
+
   &__row {
     height: 60px;
     padding-top: 16px;
@@ -59,6 +63,11 @@
     flex-flow: column;
     justify-content: center;
     border-top: 1px solid $Grey-100;
+
+    &--high {
+      min-height: 60px;
+      height: inherit;
+    }
   }
 
   .view-quote__conversion-rate-token-label {
@@ -76,5 +85,18 @@
 
   .info-tooltip {
     margin-left: 2px;
+  }
+
+  &--high {
+    min-height: 60px;
+    height: inherit;
+  }
+
+  &__font-small {
+    @include H7;
+  }
+
+  &__bold {
+    font-weight: bold;
   }
 }

@@ -281,7 +281,6 @@ export default class SwapsController {
       }
       // If gas estimation fails and no approval is needed, then we filter that quote out, so that it is not shown to the user
     })
-
     return newQuotes
   }
 
@@ -458,7 +457,6 @@ export default class SwapsController {
       })
 
       const tokenConversionRate = tokenConversionRates[destinationToken]
-
       const ethValueOfTrade =
         destinationToken.symbol === 'ETH'
           ? calcTokenAmount(destinationAmount, 18).minus(ethFee, 10)

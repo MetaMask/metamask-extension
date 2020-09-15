@@ -87,7 +87,14 @@ export default function SortList ({
           className="select-quote-popover__column-header select-quote-popover__network-fees"
           onClick={() => onColumnHeaderClick('rawNetworkFees')}
         >
-          <div>{t('swapNetworkFees')}<ToggleArrows /></div>
+          <div className="select-quote-popover__network-fees-header">
+            <span>{t('swapEstimatedNetworkFees')}</span>
+            <InfoTooltip
+              position="bottom"
+              contentText={t('swapEstimatedNetworkFeesInfo')}
+            />
+            <ToggleArrows />
+          </div>
         </div>
         <div
           className="select-quote-popover__column-header select-quote-popover__quote-source"
@@ -95,7 +102,7 @@ export default function SortList ({
         >
           <>
             {t('swapQuoteSource')}
-            <div><ToggleArrows /></div>
+            <div className="select-quote-popover__quote-source-toggle"><ToggleArrows /></div>
           </>
         </div>
         <div className="select-quote-popover__column-header select-quote-popover__caret-right" />
@@ -115,7 +122,7 @@ export default function SortList ({
                 className="select-quote-popover__receiving"
               >
                 <div className="select-quote-popover__receiving-value">
-                  {isBestQuote && <SunCheckIcon />}
+                  {isBestQuote && <SunCheckIcon reverseColors={selectedRow !== i} />}
                   <div className="select-quote-popover__receiving-value-text">{destinationTokenValue}</div>
                 </div>
                 { quoteSource === 'RFQ' && <span className="select-quote-popover__zero-slippage">{t('swapZeroSlippage')}</span> }

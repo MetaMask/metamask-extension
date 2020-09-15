@@ -1545,7 +1545,7 @@
     "message": "Minimum amount received"
   },
   "swapAmountReceivedInfo": {
-    "message": "The exact amount you’ll receive depends on slippage"
+    "message": "This is the minimum amount you will receive. You may receive more depending on slippage."
   },
   "swapApproveNeedMoreTokens": {
     "message": "You need $1 more $2 to complete this swap",
@@ -1556,7 +1556,7 @@
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
   "swapCheckingQuote": {
-    "message": "Checking $1...",
+    "message": "Checking $1",
     "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
   },
   "swapCustom": {
@@ -1571,8 +1571,14 @@
   "swapErrorDescription": {
     "message": "Your funds are safe and still available in your wallet."
   },
-  "swapEstimatedNetworkFees": {
+  "swapEstimatedNetworkFee": {
     "message": "Estimated network fee"
+  },
+  "swapEstimatedNetworkFees": {
+    "message": "Estimated network fees"
+  },
+  "swapEstimatedNetworkFeesInfo": {
+    "message": "This is an estimate of the network fee that will be used to complete your swap. The actual amount may change according to network conditions."
   },
   "swapEstimatedTime": {
     "message": "Estimated time:"
@@ -1602,11 +1608,14 @@
   "swapFinalizing": {
     "message": "Finalizing..."
   },
+  "swapGetNewQuotes": {
+    "message": "Get quotes"
+  },
   "swapGetQuotes": {
     "message": "Get quotes"
   },
   "swapHighSlippageWarning": {
-    "message": "Your transaction may be frontrun"
+    "message": "Slippage amount is very high. Make sure you know what you are doing!"
   },
   "swapIntroLearnMoreHeader": {
     "message": "Want to learn more?"
@@ -1618,10 +1627,10 @@
     "message": "Liquidity sources include:"
   },
   "swapIntroPopupSubTitle": {
-    "message": "Get the best prices on token swaps right inside your wallet. MetaMask now connects you to multiple decentralized exchange aggregators and professional market makers."
+    "message": "Get the best prices on token swaps right inside your wallet—MetaMask automatically compares prices across all available decentralized exchanges."
   },
   "swapIntroPopupTitle": {
-    "message": "Swap tokens in MetaMask! 🎉"
+    "message": "Token swapping is here!"
   },
   "swapLearnMoreContractsAuditReview": {
     "message": "Review our official contracts audit"
@@ -1630,7 +1639,7 @@
     "message": "Transaction may fail, max slippage too low."
   },
   "swapMaxNetworkFeeInfo": {
-    "message": "The Max network fee is the most you’ll pay to complete your transaction. The max fee amount helps us ensure that your Swap has the best chance of succeeding."
+    "message": "The \"max network fee\" is the most you’ll pay to complete your transaction. The max fee amount helps ensure your swap has the best chance of succeeding."
   },
   "swapMaxNetworkFees": {
     "message": "Max network fee"
@@ -1640,6 +1649,9 @@
   },
   "swapMetaMaskFee": {
     "message": "MetaMask Fee"
+  },
+  "swapMetaMaskFeeDescription": {
+    "message": "A service fee of 0.875% is automatically factored into each quote, which supports ongoing development to make MetaMask even better."
   },
   "swapMetaMaskFeeInfo": {
     "message": "This fee helps us make MetaMask even better. The 'amount received' number includes this fee."
@@ -1672,7 +1684,7 @@
     "message": "Quote details"
   },
   "swapQuoteDetailsSlippageInfo": {
-    "message": "If the price changes between when an order is placed and executed it’s called “slippage”. If slippage exceeds your max slippage setting your transaction will automatically cancel."
+    "message": "If the price changes between the time your order is placed and confirmed it’s called \"slippage\". Your Swap will automatically cancel if slippage exceeds your \"max slippage\" setting."
   },
   "swapQuoteNofN": {
     "message": "Quote $1 of $2",
@@ -1745,12 +1757,21 @@
   "swapTransactionComplete": {
     "message": "Transaction complete"
   },
+  "swapViewToken": {
+    "message": "View $1"
+  },
   "swapYourTokenBalance": {
     "message": "$1 $2 available to swap",
     "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
   },
+  "swapZeroSlippage": {
+    "message": "0% Slippage"
+  },
   "swapsAdvancedOptions": {
     "message": "Advanced Options"
+  },
+  "swapsAlmostDone": {
+    "message": "Almost done..."
   },
   "swapsBestQuote": {
     "message": "Best quote"

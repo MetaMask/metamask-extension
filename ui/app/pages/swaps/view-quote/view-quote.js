@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import BigNumber from 'bignumber.js'
 import { isEqual } from 'lodash'
+import classnames from 'classnames'
 import { I18nContext } from '../../../contexts/i18n'
 import SelectQuotePopover from '../select-quote-popover'
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck'
@@ -173,7 +174,7 @@ export default function ViewQuote () {
               dispatch(setCustomGasLimit(null))
               dispatch(setSwapsTxGasLimit(''))
             }}
-            convertToSymbol={destinationTokenSymbol}
+            swapToSymbol={destinationTokenSymbol}
             initialAggId={usedQuote.aggregator}
           />
         )}
@@ -185,12 +186,18 @@ export default function ViewQuote () {
             />
           )}
         </div>
-        <CountdownTimer
-          timeStarted={quotesLastFetched}
-          warningTime="0:30"
-          infoTooltipLabelKey="swapQuotesAreRefreshed"
-          labelKey="swapNewQuoteIn"
-        />
+        <div
+          className={classnames('view-quote__countdown-timer-container', {
+            'view-quote__countdown-timer-container--thin': showWarning,
+          })}
+        >
+          <CountdownTimer
+            timeStarted={quotesLastFetched}
+            warningTime="0:30"
+            infoTooltipLabelKey="swapQuotesAreRefreshed"
+            labelKey="swapNewQuoteIn"
+          />
+        </div>
         <MainQuoteSummary
           sourceValue={calcTokenValue(sourceTokenValue, sourceTokenDecimals)}
           sourceDecimals={sourceTokenDecimals}
@@ -212,20 +219,26 @@ export default function ViewQuote () {
           >{t('swapNQuotesAvailable', [Object.values(quotes).length])}<i className="fa fa-arrow-right" />
           </div>
         </div>
-        <FeeCard
-          secondaryFee={feeinFiat}
-          primaryFee={feeInEth}
-          secondaryMaxFee={maxFeeInFiat}
-          primaryMaxFee={maxFeeInEth}
-          feeRowText={t('swapEstimatedNetworkFees')}
-          maxFeeRowText={t('swapMaxNetworkFees')}
-          maxFeeRowLinkText={t('edit')}
-          maxFeeRowInfoTooltipText={t('swapMaxNetworkFeeInfo')}
-          thirdRowText={t('swapThisWillAllowApprove', [<span key="swaps-view-quote-approve-symbol-1" className="view-quote__bold">{sourceTokenSymbol}</span>])}
-          thirdRowLinkText={t('swapEditLimit')}
-          hideThirdRow={!approveTxParams || (balanceError && !warningHidden)}
-          thirdRowInfoTooltipText={t('swapEnableDescription', [sourceTokenSymbol])}
-        />
+        <div
+          className={classnames('view-quote__fee-card-container', {
+            'view-quote__fee-card-container--thin': showWarning,
+          })}
+        >
+          <FeeCard
+            secondaryFee={feeinFiat}
+            primaryFee={feeInEth}
+            secondaryMaxFee={maxFeeInFiat}
+            primaryMaxFee={maxFeeInEth}
+            feeRowText={t('swapEstimatedNetworkFee')}
+            maxFeeRowText={t('swapMaxNetworkFees')}
+            maxFeeRowLinkText={t('edit')}
+            maxFeeRowInfoTooltipText={t('swapMaxNetworkFeeInfo')}
+            thirdRowText={t('swapThisWillAllowApprove', [<span key="swaps-view-quote-approve-symbol-1" className="view-quote__bold">{sourceTokenSymbol}</span>])}
+            thirdRowLinkText={t('swapEditLimit')}
+            hideThirdRow={!approveTxParams || (balanceError && !warningHidden)}
+            thirdRowInfoTooltipText={t('swapEnableDescription', [sourceTokenSymbol])}
+          />
+        </div>
       </div>
       <SwapsFooter
         onSubmit={() => {

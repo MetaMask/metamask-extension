@@ -1,9 +1,9 @@
 .view-quote {
-  display: 'flex';
-  flex-flow: 'column';
+  display: flex;
+  flex-flow: column;
+  align-items: center;
   flex: 1;
-  overflow-wrap: 'break-word';
-  width: '100%';
+  width: 100%;
 
   &__content {
     display: flex;
@@ -11,6 +11,11 @@
     align-items: center;
     width: 311px;
     height: 100%;
+
+    @media screen and (max-width: 576px) {
+      overflow-y: scroll;
+      max-height: 388px;
+    }
   }
 
   @media screen and (min-width: 576px) {
@@ -87,6 +92,8 @@
   &__insufficient-eth-warning-wrapper {
     margin-top: 8px;
     width: 100%;
+    align-items: center;
+    justify-content: center;
 
     @media screen and (min-width: 576px) {
       min-height: 36px;
@@ -96,5 +103,32 @@
 
   &__bold {
     font-weight: bold;
+  }
+
+  &__countdown-timer-container {
+    margin-top: 20px;
+    margin-bottom: -8px;
+
+    @media screen and (max-width: 576px) {
+      &--thin {
+        margin-top: 8px;
+        margin-bottom: 8px;
+
+        > div {
+          margin-top: 0;
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+
+  &__fee-card-container {
+    margin-top: 26px;
+
+    @media screen and (max-width: 576px) {
+      &--thin {
+        margin-top: 16px;
+      }
+    }
   }
 }
