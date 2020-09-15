@@ -149,7 +149,7 @@ export function useSwapSubmitFunction ({
     }
 
     if (approveTxParams) {
-      const approveTxMeta = await dispatch(addUnapprovedTransaction(approveTxParams, 'metamask'))
+      const approveTxMeta = await dispatch(addUnapprovedTransaction({ ...approveTxParams, amount: '0x0' }, 'metamask'))
       dispatch(setApproveTxId(approveTxMeta.id))
       const finalApproveTxMeta = await (dispatch(updateTransaction({
         ...approveTxMeta,

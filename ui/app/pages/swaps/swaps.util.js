@@ -183,7 +183,6 @@ export async function fetchTradesInfo ({ sourceTokenInfo, destinationTokenInfo, 
       if (approvalNeeded) {
         approvalNeeded = constructTxParams({
           ...approvalNeeded,
-          amount: '0x0',
           gasPrice,
         })
       }
