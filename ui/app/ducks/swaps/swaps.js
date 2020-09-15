@@ -328,8 +328,6 @@ export const getMaxMode = (state) => state.metamask.swapsState.maxMode
 
 export const getQuotesLastFetched = (state) => state.metamask.swapsState.quotesLastFetched
 
-export const getQuotesStatus = (state) => state.metamask.swapsState.quotesStatus
-
 export const getQuotesFetchStartTime = (state) => state.metamask.quotesFetchStartTime
 
 export const getBackgoundSwapRouteState = (state) => state.metamask.swapsState.routeState

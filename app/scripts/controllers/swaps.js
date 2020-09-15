@@ -55,7 +55,6 @@ const initialState = {
     approveTxId: null,
     maxMode: false,
     quotesLastFetched: null,
-    quotesStatus: '',
     customMaxGas: '',
     customGasPrice: null,
     selectedAggId: null,
@@ -108,7 +107,6 @@ export default class SwapsController {
   stopPollingForQuotes () {
     clearTimeout(this.pollingTimeout)
     this.setQuotes({})
-    this.setQuotesStatus('')
     this.setQuotesLastFetched(null)
   }
 
