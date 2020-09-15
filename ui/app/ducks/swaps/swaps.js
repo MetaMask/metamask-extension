@@ -23,12 +23,14 @@ import { fetchTradesInfo } from '../../pages/swaps/swaps.util'
 import { calcGasTotal } from '../../pages/send/send.utils'
 import { decimalToHex, getValueFromWeiHex, hexMax, decGWEIToHexWEI } from '../../helpers/utils/conversions.util'
 import { constructTxParams } from '../../helpers/utils/util'
+import { calcTokenAmount } from '../../helpers/utils/token-util'
 import {
   getAveragePriceEstimateInHexWEI,
   getCurrentNetworkId,
   getCustomNetworkId,
   getSelectedAccount,
   getTokenExchangeRates,
+  conversionRateSelector as getConversionRate,
 } from '../../selectors'
 import {
   ERROR_FETCHING_QUOTES,
@@ -38,6 +40,7 @@ import {
 } from '../../helpers/constants/swaps'
 import { SWAP, SWAP_APPROVAL } from '../../helpers/constants/transactions'
 import { fetchBasicGasAndTimeEstimates, fetchGasEstimates } from '../gas/gas.duck'
+import { formatCurrency } from '../../helpers/utils/confirm-tx.util'
 
 const initialState = {
   aggregatorMetadata: null,
@@ -111,8 +114,6 @@ export const getApproveTxId = (state) => state.swaps.approveTxId
 
 export const getBalanceError = (state) => state.swaps.balanceError
 
-export const getFetchingQuotes = (state) => state.swaps.fetchingQuotes
-
 export const getFromToken = (state) => state.swaps.fromToken
 
 export const getSubmittingSwap = (state) => state.swaps.submittingSwap
@@ -122,6 +123,10 @@ export const getTopAssets = (state) => state.swaps.topAssets
 export const getToToken = (state) => state.swaps.toToken
 
 export const getMetaMaskFeeAmount = (state) => state.swaps.metamaskFeeAmount
+
+export const getFetchingQuotes = (state) => state.swaps.fetchingQuotes
+
+export const getQuotesFetchStartTime = (state) => state.swaps.quotesFetchStartTime
 
 // Background selectors
 
@@ -147,6 +152,8 @@ export const getSelectedQuote = (state) => {
 }
 
 export const getSwapsErrorKey = (state) => getSwapsState(state)?.errorKey
+
+export const getShowQuoteLoadingScreen = (state) => state.swaps.showQuoteLoadingScreen
 
 export const getSwapsTokens = (state) => state.metamask.swapsState.tokens
 
@@ -239,11 +246,12 @@ export const prepareForRetryGetQuotes = () => {
   }
 }
 
-export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage) => {
+export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage, metaMetricsEvent) => {
   return async (dispatch, getState) => {
     const state = getState()
     const fetchParams = getFetchParams(state)
     const selectedAccount = getSelectedAccount(state)
+    const balanceError = getBalanceError(state)
     const fetchParamsFromToken = fetchParams?.metaData?.sourceTokenInfo?.symbol === 'ETH' ?
       {
         ...ETH_SWAPS_TOKEN_OBJECT,
@@ -302,11 +310,30 @@ export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage) =>
       revisedValue = (new BigNumber(selectedAccount.balance, 16)).minus(gasTotalInWeiHex, 16).div('1000000000000000000').toString(10)
     }
 
+    metaMetricsEvent({
+      event: 'Quotes Requested',
+      category: 'swaps',
+      excludeMetaMetricsId: false,
+    })
+    metaMetricsEvent({
+      event: 'Quotes Requested',
+      category: 'swaps',
+      excludeMetaMetricsId: true,
+      properties: {
+        token_from: fromTokenSymbol,
+        token_from_amount: String(revisedValue || inputValue),
+        token_to: toTokenSymbol,
+        request_type: balanceError ? 'Quote' : 'Order',
+        slippage: maxSlippage,
+        custom_slippage: maxSlippage !== 2,
+        anonymizedData: true,
+      },
+    })
+
     try {
       const fetchStartTime = Date.now()
       dispatch(setQuotesFetchStartTime(fetchStartTime))
       const customNetworkId = getCustomNetworkId(state)
-      const balanceError = getBalanceError(state)
 
       const fetchAndSetQuotesPromise = dispatch(fetchAndSetQuotes(
         {
@@ -342,6 +369,31 @@ export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage) =>
         dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR))
       } else {
         const newSelectedQuote = fetchedQuotes[selectedAggId]
+
+        metaMetricsEvent({
+          event: 'Quotes Received',
+          category: 'swaps',
+          excludeMetaMetricsId: false,
+        })
+        metaMetricsEvent({
+          event: 'Quotes Received',
+          category: 'swaps',
+          excludeMetaMetricsId: true,
+          properties: {
+            token_from: fromTokenSymbol,
+            token_from_amount: String(revisedValue || inputValue),
+            token_to: toTokenSymbol,
+            token_to_amount: calcTokenAmount(newSelectedQuote.destinationAmount, newSelectedQuote.decimals || 18),
+            request_type: balanceError ? 'Quote' : 'Order',
+            slippage: maxSlippage,
+            custom_slippage: maxSlippage !== 2,
+            response_time: Date.now() - fetchStartTime,
+            best_quote_source: newSelectedQuote.aggregator,
+            available_quotes: Object.values(fetchedQuotes)?.length,
+            anonymizedData: true,
+          },
+        })
+
         dispatch(setInitialGasEstimate(selectedAggId, newSelectedQuote.maxGas))
       }
     } catch (e) {
@@ -352,7 +404,7 @@ export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage) =>
   }
 }
 
-export const signAndSendTransactions = (history) => {
+export const signAndSendTransactions = (history, metaMetricsEvent) => {
   return async (dispatch, getState) => {
     const state = getState()
     const customSwapsGas = getCustomSwapsGas(state)
@@ -418,6 +470,38 @@ export const signAndSendTransactions = (history) => {
         gasPrice: tradeTxParams.gasPrice,
       })
     }
+
+    const conversionRate = getConversionRate(state)
+    const destinationValue = calcTokenAmount(usedQuote.destinationAmount, destinationTokenInfo.decimals || 18).toPrecision(8)
+    const usedGasLimitEstimate = usedQuote?.gasEstimateWithRefund || (`0x${decimalToHex(usedQuote?.averageGas || 0)}`)
+    const totalGasLimitEstimate = (new BigNumber(usedGasLimitEstimate, 16)).plus(usedQuote.approvalNeeded?.gas || '0x0', 16).toString(16)
+    const gasEstimateTotalInEth = getValueFromWeiHex({
+      value: calcGasTotal(totalGasLimitEstimate, usedGasPrice),
+      toCurrency: 'usd',
+      conversionRate,
+      numberOfDecimals: 6,
+    })
+    const swapMetaData = {
+      token_from: sourceTokenInfo.symbol,
+      token_from_amount: String(swapTokenValue),
+      token_to: destinationTokenInfo.symbol,
+      token_to_amount: destinationValue,
+      slippage,
+      custom_slippage: slippage !== 2,
+      best_quote_source: getTopQuote(state)?.aggregator,
+      available_quotes: getQuotes(state)?.length,
+      other_quote_selected: usedQuote.aggregator !== getTopQuote(state)?.aggregator,
+      other_quote_selected_source: usedQuote.aggregator === getTopQuote(state)?.aggregator ? '' : usedQuote.aggregator,
+      gas_fees: formatCurrency(gasEstimateTotalInEth, 'usd')?.slice(1),
+    }
+
+    const metaMetricsConfig = {
+      event: 'Swap Started',
+      category: 'swaps',
+    }
+
+    metaMetricsEvent({ ...metaMetricsConfig, excludeMetaMetricsId: false })
+    metaMetricsEvent({ ...metaMetricsConfig, excludeMetaMetricsId: true, properties: swapMetaData })
 
     const approveTxParams = getApproveTxParams(state)
     if (approveTxParams) {

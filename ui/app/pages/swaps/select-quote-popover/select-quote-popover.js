@@ -13,6 +13,7 @@ const SelectQuotePopover = ({
   onSubmit = null,
   swapToSymbol,
   initialAggId,
+  onQuoteDetailsIsOpened,
 }) => {
   const t = useContext(I18nContext)
 
@@ -38,8 +39,9 @@ const SelectQuotePopover = ({
   const onCaretClick = useCallback((aggId) => {
     const agg = quoteDataRows.find((quote) => quote.aggId === aggId)
     setContentView('quoteDetails')
+    onQuoteDetailsIsOpened()
     setViewingAgg(agg)
-  }, [quoteDataRows])
+  }, [quoteDataRows, onQuoteDetailsIsOpened])
 
   const CustomBackground = useCallback(() => (<div className="select-quote-popover__popover-bg" onClick={onClose} />), [onClose])
   const footer = (
@@ -104,6 +106,7 @@ SelectQuotePopover.propTypes = {
   renderableData: PropTypes.array,
   quoteDataRows: PropTypes.arrayOf(QUOTE_DATA_ROWS_PROPTYPES_SHAPE),
   initialAggId: PropTypes.string,
+  onQuoteDetailsIsOpened: PropTypes.func,
 }
 
 export default SelectQuotePopover

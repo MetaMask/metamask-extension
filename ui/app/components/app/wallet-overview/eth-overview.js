@@ -7,7 +7,7 @@ import { useHistory } from 'react-router-dom'
 import Identicon from '../../ui/identicon'
 import { I18nContext } from '../../../contexts/i18n'
 import { SEND_ROUTE, BUILD_QUOTE_ROUTE } from '../../../helpers/constants/routes'
-import { useMetricEvent } from '../../../hooks/useMetricEvent'
+import { useMetricEvent, useNewMetricEvent } from '../../../hooks/useMetricEvent'
 import Tooltip from '../../ui/tooltip'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
@@ -39,19 +39,14 @@ const EthOverview = ({ className }) => {
       name: 'Clicked Deposit',
     },
   })
-  const convertEvent = useMetricEvent({
-    eventOpts: {
-      category: 'Navigation',
-      action: 'Home',
-      name: 'Clicked Convert: eth',
-    },
-  })
   const history = useHistory()
   const balanceIsCached = useSelector(isBalanceCached)
   const showFiat = useSelector(getShouldShowFiat)
   const selectedAccount = useSelector(getSelectedAccount)
   const { balance } = selectedAccount
   const networkId = useSelector(getCurrentNetworkId)
+  const enteredSwapsEvent = useNewMetricEvent({ event: 'Swaps Opened', properties: { source: 'Main View', active_currency: 'ETH' }, category: 'swaps' })
+
   return (
     <WalletOverview
       balance={(
@@ -118,7 +113,7 @@ const EthOverview = ({ className }) => {
             Icon={SwapIcon}
             onClick={() => {
               if (networkId === '1') {
-                convertEvent()
+                enteredSwapsEvent()
                 dispatch(setSwapsFromToken({
                   ...ETH_SWAPS_TOKEN_OBJECT,
                   balance,
@@ -134,7 +129,6 @@ const EthOverview = ({ className }) => {
               </Tooltip>
             )}
           />
-
         </>
       )}
       className={className}

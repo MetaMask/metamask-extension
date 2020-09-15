@@ -7,6 +7,7 @@ import { setSwapsFromToken } from '../../../ducks/swaps/swaps'
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../helpers/constants/swaps'
 import { I18nContext } from '../../../contexts/i18n'
 import { BUILD_QUOTE_ROUTE } from '../../../helpers/constants/routes'
+import { useNewMetricEvent } from '../../../hooks/useMetricEvent'
 import Button from '../../../components/ui/button'
 import Popover from '../../../components/ui/popover'
 import { getSelectedAccount } from '../../../selectors/selectors'
@@ -17,6 +18,10 @@ export default function IntroPopup ({ onClose }) {
   const t = useContext(I18nContext)
   const selectedAccount = useSelector(getSelectedAccount)
   const { balance } = selectedAccount
+  const enteredSwapsEvent = useNewMetricEvent({ event: 'Swaps Opened', properties: { source: 'Intro popup', active_currency: 'ETH' } })
+  const blogPostVisitedEvent = useNewMetricEvent({ event: 'Blog Post Visited ' })
+  const contractAuditVisitedEvent = useNewMetricEvent({ event: 'Contract Audit Visited' })
+  const productOverviewDismissedEvent = useNewMetricEvent({ event: 'Product Overview Dismissed' })
 
   return (
     <div className="intro-popup">
@@ -24,7 +29,10 @@ export default function IntroPopup ({ onClose }) {
         className="intro-popup__popover"
         title={t('swapIntroPopupTitle')}
         subtitle={t('swapIntroPopupSubTitle')}
-        onClose={onClose}
+        onClose={() => {
+          productOverviewDismissedEvent()
+          onClose()
+        }}
         footerClassName="intro-popup__footer"
         footer={(
           <Button
@@ -32,6 +40,7 @@ export default function IntroPopup ({ onClose }) {
             className="intro-popup__button"
             onClick={() => {
               onClose()
+              enteredSwapsEvent()
               dispatch(setSwapsFromToken({
                 ...ETH_SWAPS_TOKEN_OBJECT,
                 balance,
@@ -59,6 +68,7 @@ export default function IntroPopup ({ onClose }) {
             className="intro-popup__learn-more-link"
             onClick={() => {
               global.platform.openTab({ url: 'https://medium.com/metamask/introducing-metamask-swaps-84318c643785' })
+              blogPostVisitedEvent()
             }}
           >
             {t('swapIntroLearnMoreLink')}
@@ -67,6 +77,7 @@ export default function IntroPopup ({ onClose }) {
             className="intro-popup__learn-more-link"
             onClick={() => {
               global.platform.openTab({ url: 'https://diligence.consensys.net/audits/private/lsjipyllnw2/' })
+              contractAuditVisitedEvent()
             }}
           >
             {t('swapLearnMoreContractsAuditReview')}

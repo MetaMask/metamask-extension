@@ -1,4 +1,4 @@
-import React, { useState, useContext, useMemo, useEffect } from 'react'
+import React, { useState, useContext, useMemo, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import BigNumber from 'bignumber.js'
@@ -7,6 +7,8 @@ import classnames from 'classnames'
 import { I18nContext } from '../../../contexts/i18n'
 import SelectQuotePopover from '../select-quote-popover'
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck'
+import { useNewMetricEvent } from '../../../hooks/useMetricEvent'
+import { MetaMetricsContext } from '../../../contexts/metametrics.new'
 import FeeCard from '../fee-card'
 import { setCustomGasLimit } from '../../../ducks/gas/gas.duck'
 import {
@@ -76,6 +78,7 @@ export default function ViewQuote () {
   const history = useHistory()
   const dispatch = useDispatch()
   const t = useContext(I18nContext)
+  const metaMetricsEvent = useContext(MetaMetricsContext)
 
   const [dispatchedSafeRefetch, setDispatchedSafeRefetch] = useState(false)
   const [selectQuotePopoverShown, setSelectQuotePopoverShown] = useState(false)
@@ -286,36 +289,99 @@ export default function ViewQuote () {
     !allowedMaxModeSubmit
   )
 
-  const onFeeCardThirdRowClickHandler = () => dispatch(showModal({
-    name: 'EDIT_APPROVAL_PERMISSION',
-    decimals: selectedFromToken.decimals,
-    origin: 'MetaMask',
-    setCustomAmount: (newCustomPermissionAmount) => {
-      const customPermissionAmount = newCustomPermissionAmount === ''
-        ? originalApproveAmount
-        : newCustomPermissionAmount
-      const newData = getCustomTxParamsData(
-        approveTxParams.data,
-        { customPermissionAmount, decimals: selectedFromToken.decimals },
-      )
+  const numberOfQuotes = Object.values(quotes).length
+  const bestQuoteReviewedEventSent = useRef()
+  const eventObjectBase = {
+    token_from: sourceTokenSymbol,
+    token_from_amount: sourceTokenValue,
+    token_to: destinationTokenSymbol,
+    token_to_amount: destinationTokenValue,
+    request_type: fetchParams?.balanceError,
+    slippage: fetchParams?.slippage,
+    custom_slippage: fetchParams?.slippage !== 2,
+    response_time: fetchParams?.responseTime,
+    best_quote_source: topQuote?.aggregator,
+    available_quotes: numberOfQuotes,
+  }
 
-      if (customPermissionAmount?.length && approveTxParams.data !== newData) {
-        dispatch(setCustomApproveTxData(newData))
-      }
+  const anonymousAllAvailableQuotesOpened = useNewMetricEvent({
+    event: 'All Available Quotes Opened',
+    properties: {
+      ...eventObjectBase,
+      other_quote_selected: usedQuote?.aggregator !== topQuote?.aggregator,
+      other_quote_selected_source: usedQuote?.aggregator === topQuote?.aggregator ? null : usedQuote?.aggregator,
     },
-    tokenAmount: originalApproveAmount,
-    customTokenAmount: (
-      originalApproveAmount === approveAmount
-        ? null
-        : approveAmount
-    ),
-    tokenBalance,
-    tokenSymbol: selectedFromToken.symbol,
-    requiredMinimum: calcTokenAmount(
-      usedQuote.sourceAmount,
-      selectedFromToken.decimals,
-    ),
-  }))
+    excludeMetaMetricsId: true,
+    category: 'swaps',
+  })
+  const allAvailableQuotesOpened = useNewMetricEvent({ event: 'All Available Quotes Opened', excludeMetaMetricsId: false, category: 'swaps' })
+  const anonymousQuoteDetailsOpened = useNewMetricEvent({
+    event: 'Quote Details Opened',
+    properties: {
+      ...eventObjectBase,
+      other_quote_selected: usedQuote?.aggregator !== topQuote?.aggregator,
+      other_quote_selected_source: usedQuote?.aggregator === topQuote?.aggregator ? null : usedQuote?.aggregator,
+    },
+    excludeMetaMetricsId: true,
+    category: 'swaps',
+  })
+  const quoteDetailsOpened = useNewMetricEvent({ event: 'Quote Details Opened', excludeMetaMetricsId: false, category: 'swaps' })
+  const anonymousEditSpendLimitOpened = useNewMetricEvent({
+    event: 'Edit Spend Limit Opened',
+    properties: {
+      ...eventObjectBase,
+      custom_spend_limit_set: originalApproveAmount === approveAmount,
+      custom_spend_limit_amount: originalApproveAmount === approveAmount ? null : approveAmount,
+    },
+    excludeMetaMetricsId: true,
+    category: 'swaps',
+  })
+  const editSpendLimitOpened = useNewMetricEvent({ event: 'Edit Spend Limit Opened', excludeMetaMetricsId: false, category: 'swaps' })
+
+  const anonymousBestQuoteReviewedEvent = useNewMetricEvent({ event: 'Best Quote Reviewed', properties: { ...eventObjectBase, network_fees: feeInFiat }, excludeMetaMetricsId: true, category: 'swaps' })
+  const bestQuoteReviewedEvent = useNewMetricEvent({ event: 'Best Quote Reviewed', excludeMetaMetricsId: false, category: 'swaps' })
+  useEffect(() => {
+    if (!bestQuoteReviewedEventSent.current && [sourceTokenSymbol, sourceTokenValue, destinationTokenSymbol, destinationTokenValue, fetchParams, topQuote, numberOfQuotes, feeInFiat].every((dep) => dep !== null && dep !== undefined)) {
+      bestQuoteReviewedEventSent.current = true
+      bestQuoteReviewedEvent()
+      anonymousBestQuoteReviewedEvent()
+    }
+  }, [sourceTokenSymbol, sourceTokenValue, destinationTokenSymbol, destinationTokenValue, fetchParams, topQuote, numberOfQuotes, feeInFiat, bestQuoteReviewedEvent, anonymousBestQuoteReviewedEvent])
+
+  const onFeeCardThirdRowClickHandler = () => {
+    anonymousEditSpendLimitOpened()
+    editSpendLimitOpened()
+    dispatch(showModal({
+      name: 'EDIT_APPROVAL_PERMISSION',
+      decimals: selectedFromToken.decimals,
+      origin: 'MetaMask',
+      setCustomAmount: (newCustomPermissionAmount) => {
+        const customPermissionAmount = newCustomPermissionAmount === ''
+          ? originalApproveAmount
+          : newCustomPermissionAmount
+        const newData = getCustomTxParamsData(
+          approveTxParams.data,
+          { customPermissionAmount, decimals: selectedFromToken.decimals },
+        )
+
+        if (customPermissionAmount?.length && approveTxParams.data !== newData) {
+          dispatch(setCustomApproveTxData(newData))
+        }
+      },
+      tokenAmount: originalApproveAmount,
+      customTokenAmount: (
+        originalApproveAmount === approveAmount
+          ? null
+          : approveAmount
+      ),
+      tokenBalance,
+      tokenSymbol: selectedFromToken.symbol,
+      requiredMinimum: calcTokenAmount(
+        usedQuote.sourceAmount,
+        selectedFromToken.decimals,
+      ),
+    }))
+  }
 
   const onFeeCardMaxRowClickHandler = () => dispatch(showModal({
     name: 'CUSTOMIZE_GAS',
@@ -372,6 +438,10 @@ export default function ViewQuote () {
             }}
             swapToSymbol={destinationTokenSymbol}
             initialAggId={usedQuote.aggregator}
+            onQuoteDetailsIsOpened={() => {
+              anonymousQuoteDetailsOpened()
+              quoteDetailsOpened()
+            }}
           />
         )}
         <div className="view-quote__insufficient-eth-warning-wrapper">
@@ -422,6 +492,8 @@ export default function ViewQuote () {
           <div
             className="view-quote__view-other-button-fade"
             onClick={() => {
+              anonymousAllAvailableQuotesOpened()
+              allAvailableQuotesOpened()
               setSelectQuotePopoverShown(true)
             }}
           >
@@ -464,7 +536,7 @@ export default function ViewQuote () {
       <SwapsFooter
         onSubmit={() => {
           if (!balanceError) {
-            dispatch(signAndSendTransactions(history))
+            dispatch(signAndSendTransactions(history, metaMetricsEvent))
           } else if (destinationToken.symbol === 'ETH') {
             history.push(DEFAULT_ROUTE)
           } else {

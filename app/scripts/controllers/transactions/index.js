@@ -20,6 +20,7 @@ import {
 import cleanErrorStack from '../../lib/cleanErrorStack'
 import { hexToBn, bnToHex, BnMultiplyByFraction } from '../../lib/util'
 import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/helpers/constants/error-keys'
+import { getSwapsTokensReceivedFromTxMeta } from '../../../../ui/app/pages/swaps/swaps.util'
 import TransactionStateManager from './tx-state-manager'
 import TxGasUtil from './tx-gas-utils'
 import PendingTransactionTracker from './pending-tx-tracker'
@@ -30,6 +31,10 @@ import {
   TRANSACTION_TYPE_STANDARD,
   TRANSACTION_STATUS_APPROVED,
 } from './enums'
+
+const Analytics = require('analytics-node')
+
+const analytics = new Analytics('2RVxP95LPTEWYXfi8wioLD6NuVzdhnr2')
 
 const hstInterface = new ethers.utils.Interface(abi)
 
@@ -576,6 +581,24 @@ export default class TransactionController extends EventEmitter {
       if (txMeta.transactionCategory === SWAP) {
         const postTxBalance = await this.query.getBalance(txMeta.txParams.from)
         txMeta.postTxBalance = postTxBalance.toString(16)
+      }
+
+      if (txMeta.swapMetaData) {
+        const metametricsId = this.preferencesStore.getState().metaMetricsId
+        if (metametricsId && txMeta.swapMetaData && txReceipt.status !== '0x0') {
+          analytics.track({ event: 'Swap Completed', userId: metametricsId, excludeMetaMetricsId: false })
+          analytics.track({
+            event: 'Swap Completed', properties: {
+              ...txMeta.swapMetaData,
+              token_to_amount_received: getSwapsTokensReceivedFromTxMeta(txMeta.destinationTokenSymbol, txMeta, txMeta.destinationTokenAddress, txMeta.txParams.from, txMeta.destinationTokenDecimals),
+            },
+            anonymousId: '0x00000000000000000000',
+            excludeMetaMetricsId: true,
+          })
+        } else if (metametricsId && txMeta.swapMetaData) {
+          analytics.track({ event: 'Swap Failed', userId: metametricsId, excludeMetaMetricsId: false })
+          analytics.track({ event: 'Swap Failed', properties: { ...txMeta.swapMetaData }, anonymousId: '0x00000000000000000000', excludeMetaMetricsId: true })
+        }
       }
 
       this.txStateManager.updateTx(txMeta, 'transactions#confirmTransaction - add txReceipt')

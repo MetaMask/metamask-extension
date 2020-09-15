@@ -5,6 +5,15 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { useHistory } from 'react-router-dom'
 import { I18nContext } from '../../../contexts/i18n'
+import { useNewMetricEvent } from '../../../hooks/useMetricEvent'
+import { MetaMetricsContext } from '../../../contexts/metametrics.new'
+import { getCurrentCurrency, conversionRateSelector } from '../../../selectors'
+import {
+  getUsedQuote, getFetchParams, getApproveTxParams, getTradeTxParams,
+  fetchQuotesAndSetQuoteState,
+  navigateBackToBuildQuote,
+  prepareForRetryGetQuotes,
+} from '../../../ducks/swaps/swaps'
 import { useTransactionTimeRemaining } from '../../../hooks/useTransactionTimeRemaining'
 import { usePrevious } from '../../../hooks/usePrevious'
 import Mascot from '../../../components/ui/mascot'
@@ -18,12 +27,8 @@ import {
   QUOTES_NOT_AVAILABLE_ERROR,
 } from '../../../helpers/constants/swaps'
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes'
-import {
-  fetchQuotesAndSetQuoteState,
-  getDestinationTokenInfo,
-  navigateBackToBuildQuote,
-  prepareForRetryGetQuotes,
-} from '../../../ducks/swaps/swaps'
+
+import { getRenderableGasFeesForQuote } from '../swaps.util'
 import SwapsFooter from '../swaps-footer'
 import SwapFailureIcon from './swap-failure-icon'
 import SwapSuccessIcon from './swap-success-icon'
@@ -45,12 +50,45 @@ export default function AwaitingSwap ({
   maxSlippage,
 }) {
   const t = useContext(I18nContext)
+  const metaMetricsEvent = useContext(MetaMetricsContext)
   const history = useHistory()
   const dispatch = useDispatch()
   const animationEventEmitter = useRef(new EventEmitter())
 
-  const destinationToken = useSelector(getDestinationTokenInfo)
+  const fetchParams = useSelector(getFetchParams)
+  const destinationToken = fetchParams?.destinationTokenInfo
+  const usedQuote = useSelector(getUsedQuote)
+  const approveTxParams = useSelector(getApproveTxParams)
+  const tradeTxParams = useSelector(getTradeTxParams)
+  const currentCurrency = useSelector(getCurrentCurrency)
+  const conversionRate = useSelector(conversionRateSelector)
+
   const [timeRemainingExpired, setTimeRemainingExpired] = useState(false)
+  const [trackedQuotesExpiredEvent, setTrackedQuotesExpiredEvent] = useState(false)
+
+  let feeinFiat
+  if (usedQuote && tradeTxParams) {
+    const renderableGasFees = getRenderableGasFeesForQuote(usedQuote.gasEstimateWithRefund || usedQuote.averageGas, approveTxParams?.gas || '0x0', tradeTxParams.gasPrice, currentCurrency, conversionRate)
+    feeinFiat = renderableGasFees.feeinFiat?.slice(1)
+  }
+
+  const quotesExpiredEvent = useNewMetricEvent({
+    event: 'Quotes Timed Out',
+    excludeMetaMetricsId: true,
+    properties: {
+      token_from: fetchParams?.sourceTokenInfo?.symbol,
+      token_from_amount: fetchParams?.value,
+      token_to: fetchParams?.destinationTokenInfo?.symbol,
+      request_type: fetchParams?.balanceError ? 'Quote' : 'Order',
+      slippage: fetchParams?.slippage,
+      custom_slippage: fetchParams?.slippage === 2,
+      gas_fees: feeinFiat,
+    },
+  })
+  const anonymousQuotesExpiredEvent = useNewMetricEvent({
+    event: 'Quotes Timed Out',
+    excludeMetaMetricsId: false,
+  })
 
   const blockExplorerUrl = txHash && getBlockExplorerUrlForTx(
     networkId,
@@ -102,6 +140,12 @@ export default function AwaitingSwap ({
     descriptionText = t('swapQuotesExpiredErrorDescription')
     submitText = t('tryAgain')
     statusImage = <QuotesTimeoutIcon />
+
+    if (!trackedQuotesExpiredEvent) {
+      setTrackedQuotesExpiredEvent(true)
+      quotesExpiredEvent()
+      anonymousQuotesExpiredEvent()
+    }
   } else if (errorKey === ERROR_FETCHING_QUOTES) {
     headerText = t('swapFetchingQuotesErrorTitle')
     descriptionText = t('swapFetchingQuotesErrorDescription')
@@ -185,7 +229,7 @@ export default function AwaitingSwap ({
         onSubmit={async () => {
           if (errorKey === QUOTES_EXPIRED_ERROR) {
             dispatch(prepareForRetryGetQuotes())
-            await dispatch(fetchQuotesAndSetQuoteState(history, inputValue, maxSlippage))
+            await dispatch(fetchQuotesAndSetQuoteState(history, inputValue, maxSlippage, metaMetricsEvent))
           } else if (errorKey) {
             await dispatch(navigateBackToBuildQuote(history))
           } else if (destinationToken.symbol === 'ETH') {
