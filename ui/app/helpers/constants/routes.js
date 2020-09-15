@@ -115,6 +115,11 @@ const PATH_NAME_MAP = {
   [INITIALIZE_END_OF_FLOW_ROUTE]: 'End of Initialization Page',
   [INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE]: 'Initialization Confirm Seed Phrase Page',
   [INITIALIZE_METAMETRICS_OPT_IN_ROUTE]: 'MetaMetrics Opt In Page',
+  [BUILD_QUOTE_ROUTE]: 'Swaps Build Quote Page',
+  [VIEW_QUOTE_ROUTE]: 'Swaps View Quotes Page',
+  [LOADING_QUOTES_ROUTE]: 'Swaps Loading Quotes Page',
+  [AWAITING_SWAP_ROUTE]: 'Swaps Awaiting Swaps Page',
+  [SWAPS_ERROR_ROUTE]: 'Swaps Error Page',
 }
 
 export {
