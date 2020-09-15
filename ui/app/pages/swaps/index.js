@@ -20,7 +20,6 @@ import {
   getFetchParams,
   setAggregatorMetadata,
   getAggregatorMetadata,
-  getQuotesStatus,
   getBackgoundSwapRouteState,
   getSwapsErrorKey,
 } from '../../ducks/swaps/swaps'
@@ -83,7 +82,6 @@ export default function Swap () {
   const fetchingQuotes = useSelector(getFetchingQuotes)
   const balanceError = useSelector(getBalanceError)
   const selectedToToken = useSelector(getToToken) || destinationTokenInfo || {}
-  const quotesStatus = useSelector(getQuotesStatus)
   let swapsErrorKey = useSelector(getSwapsErrorKey)
 
   const { balance: ethBalance, address: selectedAccountAddress } = selectedAccount
@@ -185,7 +183,6 @@ export default function Swap () {
     setSubmittingSwap,
     networkId,
     isCustomNetwork,
-    quotesStatus,
   })
   const onRetry = useSwapSubmitFunction({ isRetry: true, setSubmittingSwap })
 
