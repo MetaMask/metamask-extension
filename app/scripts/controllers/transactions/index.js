@@ -21,6 +21,7 @@ import cleanErrorStack from '../../lib/cleanErrorStack'
 import { hexToBn, bnToHex, BnMultiplyByFraction } from '../../lib/util'
 import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/helpers/constants/error-keys'
 import { getSwapsTokensReceivedFromTxMeta } from '../../../../ui/app/pages/swaps/swaps.util'
+import { segment, METAMETRICS_ANONYMOUS_ID } from '../../lib/segment'
 import TransactionStateManager from './tx-state-manager'
 import TxGasUtil from './tx-gas-utils'
 import PendingTransactionTracker from './pending-tx-tracker'
@@ -31,10 +32,6 @@ import {
   TRANSACTION_TYPE_STANDARD,
   TRANSACTION_STATUS_APPROVED,
 } from './enums'
-
-const Analytics = require('analytics-node')
-
-const analytics = new Analytics('2RVxP95LPTEWYXfi8wioLD6NuVzdhnr2')
 
 const hstInterface = new ethers.utils.Interface(abi)
 
@@ -78,6 +75,8 @@ export default class TransactionController extends EventEmitter {
     this.blockTracker = opts.blockTracker
     this.signEthTx = opts.signTransaction
     this.inProcessOfSigning = new Set()
+    this.version = opts.version
+    this.currentLocale = opts.currentLocale
 
     this.memStore = new ObservableStore({})
     this.query = new EthQuery(this.provider)
@@ -584,20 +583,38 @@ export default class TransactionController extends EventEmitter {
       }
 
       if (txMeta.swapMetaData) {
+        const segmentContext = {
+          app: {
+            version: this.version,
+            name: 'MetaMask Extension',
+          },
+          locale: this.currentLocale.replace('_', '-'),
+          page: '/background-process',
+          userAgent: window.navigator.userAgent,
+        }
+
         const metametricsId = this.preferencesStore.getState().metaMetricsId
         if (metametricsId && txMeta.swapMetaData && txReceipt.status !== '0x0') {
-          analytics.track({ event: 'Swap Completed', userId: metametricsId, excludeMetaMetricsId: false })
-          analytics.track({
-            event: 'Swap Completed', properties: {
+          segment.track({ event: 'Swap Completed', userId: metametricsId, context: segmentContext })
+          segment.track({
+            event: 'Swap Completed',
+            properties: {
               ...txMeta.swapMetaData,
               token_to_amount_received: getSwapsTokensReceivedFromTxMeta(txMeta.destinationTokenSymbol, txMeta, txMeta.destinationTokenAddress, txMeta.txParams.from, txMeta.destinationTokenDecimals),
             },
-            anonymousId: '0x00000000000000000000',
+            context: segmentContext,
+            anonymousId: METAMETRICS_ANONYMOUS_ID,
             excludeMetaMetricsId: true,
           })
         } else if (metametricsId && txMeta.swapMetaData) {
-          analytics.track({ event: 'Swap Failed', userId: metametricsId, excludeMetaMetricsId: false })
-          analytics.track({ event: 'Swap Failed', properties: { ...txMeta.swapMetaData }, anonymousId: '0x00000000000000000000', excludeMetaMetricsId: true })
+          segment.track({ event: 'Swap Failed', userId: metametricsId, context: segmentContext })
+          segment.track({
+            event: 'Swap Failed',
+            roperties: { ...txMeta.swapMetaData },
+            anonymousId: METAMETRICS_ANONYMOUS_ID,
+            excludeMetaMetricsId: true,
+            context: segmentContext,
+          })
         }
       }
 

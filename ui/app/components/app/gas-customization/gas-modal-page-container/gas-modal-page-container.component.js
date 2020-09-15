@@ -236,7 +236,6 @@ export default class GasModalPageContainer extends Component {
                   gas_mode: this.state.selectedTab,
                   gas_fees: sumHexWEIsToRenderableFiat([this.props.value, newSwapGasTotal, this.props.customTotalSupplement], 'usd', this.props.conversionRate)?.slice(1),
                 },
-                excludeMetaMetricsId: false,
               })
             }
             onSubmit(customModalGasLimitInHex, customModalGasPriceInHex, this.state.selectedTab, this.context.mixPanelTrack)

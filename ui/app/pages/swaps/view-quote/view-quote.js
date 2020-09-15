@@ -314,7 +314,7 @@ export default function ViewQuote () {
     excludeMetaMetricsId: true,
     category: 'swaps',
   })
-  const allAvailableQuotesOpened = useNewMetricEvent({ event: 'All Available Quotes Opened', excludeMetaMetricsId: false, category: 'swaps' })
+  const allAvailableQuotesOpened = useNewMetricEvent({ event: 'All Available Quotes Opened', category: 'swaps' })
   const anonymousQuoteDetailsOpened = useNewMetricEvent({
     event: 'Quote Details Opened',
     properties: {
@@ -325,7 +325,7 @@ export default function ViewQuote () {
     excludeMetaMetricsId: true,
     category: 'swaps',
   })
-  const quoteDetailsOpened = useNewMetricEvent({ event: 'Quote Details Opened', excludeMetaMetricsId: false, category: 'swaps' })
+  const quoteDetailsOpened = useNewMetricEvent({ event: 'Quote Details Opened', category: 'swaps' })
   const anonymousEditSpendLimitOpened = useNewMetricEvent({
     event: 'Edit Spend Limit Opened',
     properties: {
@@ -336,10 +336,10 @@ export default function ViewQuote () {
     excludeMetaMetricsId: true,
     category: 'swaps',
   })
-  const editSpendLimitOpened = useNewMetricEvent({ event: 'Edit Spend Limit Opened', excludeMetaMetricsId: false, category: 'swaps' })
+  const editSpendLimitOpened = useNewMetricEvent({ event: 'Edit Spend Limit Opened', category: 'swaps' })
 
   const anonymousBestQuoteReviewedEvent = useNewMetricEvent({ event: 'Best Quote Reviewed', properties: { ...eventObjectBase, network_fees: feeInFiat }, excludeMetaMetricsId: true, category: 'swaps' })
-  const bestQuoteReviewedEvent = useNewMetricEvent({ event: 'Best Quote Reviewed', excludeMetaMetricsId: false, category: 'swaps' })
+  const bestQuoteReviewedEvent = useNewMetricEvent({ event: 'Best Quote Reviewed', category: 'swaps' })
   useEffect(() => {
     if (!bestQuoteReviewedEventSent.current && [sourceTokenSymbol, sourceTokenValue, destinationTokenSymbol, destinationTokenValue, fetchParams, topQuote, numberOfQuotes, feeInFiat].every((dep) => dep !== null && dep !== undefined)) {
       bestQuoteReviewedEventSent.current = true

@@ -114,7 +114,6 @@ export default function Swap () {
   const exitedSwapsEvent = useNewMetricEvent({
     event: 'Exited Swaps',
     category: 'swaps',
-    excludeMetaMetricsId: false,
   })
   const anonymousExitedSwapsEvent = useNewMetricEvent({
     event: 'Exited Swaps',
@@ -135,7 +134,6 @@ export default function Swap () {
   const quotesRequestCancelledEvent = useNewMetricEvent({
     event: 'Quotes Request Cancelled',
     category: 'swaps',
-    excludeMetaMetricsId: false,
   })
   const anonymousQuotesRequestCancelledEvent = useNewMetricEvent({
     event: 'Quotes Request Cancelled',

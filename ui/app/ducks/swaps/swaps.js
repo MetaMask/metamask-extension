@@ -313,7 +313,6 @@ export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage, me
     metaMetricsEvent({
       event: 'Quotes Requested',
       category: 'swaps',
-      excludeMetaMetricsId: false,
     })
     metaMetricsEvent({
       event: 'Quotes Requested',
@@ -373,7 +372,6 @@ export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage, me
         metaMetricsEvent({
           event: 'Quotes Received',
           category: 'swaps',
-          excludeMetaMetricsId: false,
         })
         metaMetricsEvent({
           event: 'Quotes Received',
@@ -500,7 +498,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       category: 'swaps',
     }
 
-    metaMetricsEvent({ ...metaMetricsConfig, excludeMetaMetricsId: false })
+    metaMetricsEvent({ ...metaMetricsConfig })
     metaMetricsEvent({ ...metaMetricsConfig, excludeMetaMetricsId: true, properties: swapMetaData })
 
     const approveTxParams = getApproveTxParams(state)
