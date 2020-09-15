@@ -17,15 +17,22 @@ import { fetchTradesInfo } from '../../../ui/app/pages/swaps/swaps.util'
 
 const METASWAP_ADDRESS = '0x9537C111Ea62a8dc39E99718140686f7aD856321'
 
-function calculateGasEstimateWithRefund (maxGas = 800000, estimatedRefund = 0, estimatedGas = 0) {
+// The MAX_GAS_LIMIT is a number that is higher than the maximum gas costs we have observed on any aggregator
+const MAX_GAS_LIMIT = 2500000
+
+// To ensure that our serves are not spammed if MetaMask is left idle, we limit the number of fetches for quotes that are made on timed intervals.
+// 3 seems to be an appropriate balance of giving users the time they need when metamask is not left idle, and turning polling off when it is.
+const POLL_COUNT_LIMIT = 3
+
+function calculateGasEstimateWithRefund (maxGas = MAX_GAS_LIMIT, estimatedRefund = 0, estimatedGas = 0) {
   const maxGasMinusRefund = new BigNumber(
-    maxGas || 800000,
+    maxGas,
     16,
   )
-    .minus(estimatedRefund || 0, 10)
+    .minus(estimatedRefund, 10)
     .toString(16)
 
-  const gasEstimateWithRefund = new BigNumber(maxGasMinusRefund, 16).lt(
+  const gasEstimateWithRefund = maxGasMinusRefund.lt(
     estimatedGas,
     16,
   )
@@ -41,7 +48,6 @@ const QUOTE_POLLING_INTERVAL = 50 * 1000
 const initialState = {
   swapsState: {
     quotes: {},
-    quoteStatus: '',
     fetchParams: null,
     tokens: null,
     showAwaitingSwapScreen: false,
@@ -50,7 +56,6 @@ const initialState = {
     maxMode: false,
     quotesLastFetched: null,
     quotesStatus: '',
-    balanceError: null,
     customMaxGas: '',
     customGasPrice: null,
     selectedAggId: null,
@@ -90,9 +95,9 @@ export default class SwapsController {
   }
 
   // Once quotes are fetched, we poll for new ones to keep the quotes up to date. Market and aggregator contract conditions can change fast enough
-  // that quotes will no longer be available after 1 or 2 minutes. When fetchAndSetQuotes is first called it receives fetch parameters are stored in
+  // that quotes will no longer be available after 1 or 2 minutes. When fetchAndSetQuotes is first called it, receives fetch that parameters are stored in
   // state. These stored parameters are used on subsequent calls made during polling.
-  // Note: we only want to do up to a maximum of three requests from polling. The logic that enforces that maximum is in the body of fetchAndSetQuotes
+  // Note: we stop polling after 3 requests, until new quotes are explicitly asked for. The logic that enforces that maximum is in the body of fetchAndSetQuotes
   pollForNewQuotes () {
     this.pollingTimeout = setTimeout(() => {
       const { swapsState } = this.store.getState()
@@ -204,7 +209,7 @@ export default class SwapsController {
 
     // We only want to do up to a maximum of three requests from polling.
     this.pollCount += 1
-    if (this.pollCount < 4) {
+    if (this.pollCount < POLL_COUNT_LIMIT + 1) {
       this.pollForNewQuotes()
     } else {
       this.resetPostFetchState()
