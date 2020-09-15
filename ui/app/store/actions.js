@@ -2159,22 +2159,6 @@ export function setQuotes (quotess) {
   }
 }
 
-export function setQuotesStatus (quotesStatus) {
-  return async (dispatch) => {
-    const quotes = await promisifiedBackground.setQuotesStatus(quotesStatus)
-    await forceUpdateMetamaskState(dispatch)
-    return quotes
-  }
-}
-
-export function setFetchParams (fetchParams) {
-  return async (dispatch) => {
-    const newFetchParams = await promisifiedBackground.setFetchParams(fetchParams)
-    await forceUpdateMetamaskState(dispatch)
-    return newFetchParams
-  }
-}
-
 export function setSelectedQuoteAggId (aggId) {
   return async (dispatch) => {
     await promisifiedBackground.setSelectedQuoteAggId(aggId)
@@ -2193,30 +2177,6 @@ export function setSwapsTokens (tokens) {
 export function resetBackgroundSwapsState () {
   return async (dispatch) => {
     const id = await promisifiedBackground.resetSwapsState()
-    await forceUpdateMetamaskState(dispatch)
-    return id
-  }
-}
-
-export function setTradeTxParams (params) {
-  return async (dispatch) => {
-    const id = await promisifiedBackground.setTradeTxParams(params)
-    await forceUpdateMetamaskState(dispatch)
-    return id
-  }
-}
-
-export function setTradeTxParamsWithGasEstimate (params) {
-  return async (dispatch) => {
-    const id = await promisifiedBackground.setTradeTxParamsWithGasEstimate(params)
-    await forceUpdateMetamaskState(dispatch)
-    return id
-  }
-}
-
-export function setApproveTxParams (params) {
-  return async (dispatch) => {
-    const id = await promisifiedBackground.setApproveTxParams(params)
     await forceUpdateMetamaskState(dispatch)
     return id
   }
@@ -2243,6 +2203,7 @@ export function setSwapsTxGasLimit (gasLimit) {
   }
 }
 
+// Will be used in a downstream branch/PR
 export function setSwapsTxGasParams (gasLimit, gasPrice) {
   return async (dispatch) => {
     await promisifiedBackground.setSwapsTxGasPrice(gasPrice)
@@ -2261,13 +2222,6 @@ export function setShowAwaitingSwapScreen (showAwaitingSwapScreen) {
 export function setTradeTxId (tradeTxId) {
   return async (dispatch) => {
     await promisifiedBackground.setTradeTxId(tradeTxId)
-    await forceUpdateMetamaskState(dispatch)
-  }
-}
-
-export function updateBlockTrackerListener (listenActive) {
-  return async (dispatch) => {
-    await promisifiedBackground.updateBlockTrackerListener(listenActive)
     await forceUpdateMetamaskState(dispatch)
   }
 }

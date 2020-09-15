@@ -576,15 +576,10 @@ export default class MetamaskController extends EventEmitter {
 
       // swaps
       fetchAndSetQuotes: nodeify(swapsController.fetchAndSetQuotes, swapsController),
-      setFetchParams: nodeify(swapsController.setFetchParams, swapsController),
       setQuotes: nodeify(swapsController.setQuotes, swapsController),
-      setQuotesStatus: nodeify(swapsController.setQuotesStatus, swapsController),
       setSelectedQuoteAggId: nodeify(swapsController.setSelectedQuoteAggId, swapsController),
       resetSwapsState: nodeify(swapsController.resetSwapsState, swapsController),
       setSwapsTokens: nodeify(swapsController.setSwapsTokens, swapsController),
-      setTradeTxParams: nodeify(swapsController.setTradeTxParams, swapsController),
-      setTradeTxParamsWithGasEstimate: nodeify(swapsController.setTradeTxParamsWithGasEstimate, swapsController),
-      setApproveTxParams: nodeify(swapsController.setApproveTxParams, swapsController),
       setShowAwaitingSwapScreen: nodeify(swapsController.setShowAwaitingSwapScreen, swapsController),
       setTradeTxId: nodeify(swapsController.setTradeTxId, swapsController),
       setMaxMode: nodeify(swapsController.setMaxMode, swapsController),

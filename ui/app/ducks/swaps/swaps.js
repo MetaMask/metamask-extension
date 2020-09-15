@@ -8,8 +8,6 @@ const SET_SELECTED_QUOTE = 'metamask/swaps/SET_SELECTED_QUOTE'
 const CLEAR_SWAPS_STATE = 'metamask/swaps/CLEAR_SWAPS_STATE'
 const SET_TRADE_TX_ID = 'metamask/swaps/SET_TRADE_TX_ID'
 const SET_APPROVE_TX_ID = 'metamask/swaps/SET_APPROVE_TX_ID'
-const SET_TRADE_TX_PARAMS = 'metamask/swaps/SET_TRADE_TX_PARAMS'
-const SET_APPROVE_TX_PARAMS = 'metamask/swaps/SET_APPROVE_TX_PARAMS'
 const SET_FETCHING_QUOTES = 'metamask/swaps/SET_FETCHING_QUOTES'
 const SET_SHOW_QUOTE_LOADING_SCREEN = 'metamask/swaps/SET_SHOW_QUOTE_LOADING_SCREEN'
 const SET_BALANCE_ERROR = 'metamask/swaps/SET_BALANCE_ERROR'
@@ -96,18 +94,6 @@ export default function reduceSwaps (state = {}, action) {
         approveTxId: action.value,
       }
 
-    case SET_TRADE_TX_PARAMS:
-      return {
-        ...swapsState,
-        tradeTxParams: action.value,
-      }
-
-    case SET_APPROVE_TX_PARAMS:
-      return {
-        ...swapsState,
-        approveTxParams: action.value,
-      }
-
     case SET_FETCHING_QUOTES:
       return {
         ...swapsState,
@@ -186,13 +172,6 @@ export function setSwapToToken (token) {
   }
 }
 
-export function setQuotes (quotes) {
-  return {
-    type: SET_QUOTES,
-    value: quotes,
-  }
-}
-
 export function setSubmittedApprovalId (id) {
   return {
     type: SET_SUBMITTED_APPROVAL_ID,
@@ -231,20 +210,6 @@ export function setApproveTxId (approveTxId) {
   return {
     type: SET_APPROVE_TX_ID,
     value: approveTxId,
-  }
-}
-
-export function setTradeTxParams (txParams) {
-  return {
-    type: SET_TRADE_TX_PARAMS,
-    value: txParams,
-  }
-}
-
-export function setApproveTxParams (txParams) {
-  return {
-    type: SET_APPROVE_TX_PARAMS,
-    value: txParams,
   }
 }
 

@@ -227,19 +227,9 @@ export default class SwapsController {
     }
   }
 
-  setFetchParams (fetchParams) {
-    const { swapsState } = this.store.getState()
-    this.store.updateState({ swapsState: { ...swapsState, fetchParams } })
-  }
-
   setQuotes (quotes) {
     const { swapsState } = this.store.getState()
     this.store.updateState({ swapsState: { ...swapsState, quotes } })
-  }
-
-  setQuotesStatus (quotesStatus) {
-    const { swapsState } = this.store.getState()
-    this.store.updateState({ swapsState: { ...swapsState, quotesStatus } })
   }
 
   setSelectedQuoteAggId (selectedAggId) {
