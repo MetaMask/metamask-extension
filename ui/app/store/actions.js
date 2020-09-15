@@ -827,9 +827,9 @@ export async function estimateGasFromTxParams (txParams) {
   })
 }
 
-export function updateTransaction (txData) {
+export function updateTransaction (txData, dontShowLoadingIndicator) {
   return (dispatch) => {
-    dispatch(showLoadingIndication())
+    !dontShowLoadingIndicator && dispatch(showLoadingIndication())
 
     return new Promise((resolve, reject) => {
       background.updateTransaction(txData, (err) => {
@@ -872,9 +872,9 @@ export function addUnapprovedTransaction (txParams, origin) {
   }
 }
 
-export function updateAndApproveTx (txData) {
+export function updateAndApproveTx (txData, dontShowLoadingIndicator) {
   return (dispatch) => {
-    dispatch(showLoadingIndication())
+    !dontShowLoadingIndicator && dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.updateAndApproveTransaction(txData, (err) => {
         dispatch(updateTransactionParams(txData.id, txData.txParams))
@@ -1326,9 +1326,9 @@ export function showConfTxPage ({ id } = {}) {
   }
 }
 
-export function addToken (address, symbol, decimals, image) {
+export function addToken (address, symbol, decimals, image, dontShowLoadingIndicator) {
   return (dispatch) => {
-    dispatch(showLoadingIndication())
+    !dontShowLoadingIndicator && dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.addToken(address, symbol, decimals, image, (err, tokens) => {
         dispatch(hideLoadingIndication())

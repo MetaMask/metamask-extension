@@ -376,7 +376,12 @@ export const getCustomSwapsGasPrice = (state) => state.metamask.swapsState.custo
 export const getBestQuoteAggId = (state) => state.swaps.bestQuoteAggId
 
 export const getSwapsTradeTxParams = (state) => {
-  const { trade = {} } = getSelectedQuote(state) || {}
+  const { selectedAggId, topAggId, quotes } = getSwapsState(state)
+  const usedQuote = selectedAggId ? quotes[selectedAggId] : quotes[topAggId]
+  if (!usedQuote) {
+    return null
+  }
+  const { trade } = usedQuote
   const gas = getCustomSwapsGas(state) || trade.gas
   const gasPrice = getCustomSwapsGasPrice(state) || trade.gasPrice
   return { ...trade, gas, gasPrice }
