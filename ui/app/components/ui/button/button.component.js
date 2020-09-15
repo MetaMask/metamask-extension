@@ -31,10 +31,10 @@ const Button = ({ type, submit, large, children, icon, rounded, className, ...bu
   // we know to be erroneous attributes for a link. We will likely want to extract Link
   // to its own component in the future.
   let Tag = 'button'
-  buttonProps.type = submit ? 'submit' : undefined
   if (type === 'link') {
     Tag = 'a'
-    delete buttonProps.type
+  } else if (submit) {
+    buttonProps.type = 'submit'
   }
   return (
     <Tag
