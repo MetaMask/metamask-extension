@@ -353,6 +353,27 @@
   "details": {
     "message": "详情"
   },
+  "disconnectAccount": {
+    "message": "取消授权"
+  },
+  "disconnectAll": {
+    "message": "取消所有授权"
+  },
+  "disconnectAllModalDescription": {
+    "message": "确定取消所有账户对所有网站的授权吗?"
+  },
+  "disconnectAccountModalDescription": {
+    "message": "确定取消账户 \"$1\" 对于该网站的授权吗?"
+  },
+  "disconnectAccountQuestion": {
+    "message": "确定取消授权吗?"
+  },
+  "disconnectFromThisAccount": {
+    "message": "确定取消该项目的授权吗?"
+  },
+  "disconnectAllAccountsQuestion": {
+    "message": "确定取消所有账户对所有网站的授权吗?"
+  },
   "directDepositEther": {
     "message": "直接存入 CFX"
   },
@@ -382,6 +403,9 @@
   },
   "contacts": {
     "message": " 联系人"
+  },
+  "contactsSettingsDescription": {
+    "message": "添加、编辑、移除、管理您的联系人"
   },
   "editContact": {
     "message": "编辑联系人"
@@ -552,6 +576,9 @@
   "hardwareWalletsMsg": {
     "message": "请选择希望用于 ConfluxPortal 的硬件钱包 (该功能尚未测试, 使用中可能会出现问题)"
   },
+  "haveReadAndAgree": {
+    "message": "我已阅读并同意"
+  },
   "havingTroubleConnecting": {
     "message": "连接出现问题？"
   },
@@ -574,12 +601,18 @@
   "history": {
     "message": "历史记录"
   },
+  "iagree": {
+    "message": "我同意"
+  },
   "import": {
     "message": "导入",
     "description": "Button to import an account from a selected file"
   },
   "importAccount": {
     "message": "导入账户"
+  },
+  "importAccountMsg": {
+    "message": "导入的账户不会与您最初创建的ConfluxPortal账户助记词关联。"
   },
   "importAccountSeedPhrase": {
     "message": "使用助记词导入账户"
@@ -695,7 +728,7 @@
     "message": "消息"
   },
   "metamaskDescription": {
-    "message": "ConfluxPortal 是安全的 Conflux 身份保险库"
+    "message": "连接 Conflux 和去中心化网络，我们很高兴与您见面。"
   },
   "metamaskVersion": {
     "message": "ConfluxPortal 版本"
@@ -800,6 +833,9 @@
   },
   "noConversionRateAvailable": {
     "message": "无可用兑换率"
+  },
+  "noThanks": {
+    "message": "不了，谢谢"
   },
   "noTransactions": {
     "message": "没有交易"
@@ -1368,7 +1404,7 @@
     "message": "欢迎回来！"
   },
   "welcome": {
-    "message": "欢迎使用 ConfluxPortal 测试版"
+    "message": "欢迎使用 ConfluxPortal"
   },
   "writePhrase": {
     "message": "请将该密语记录在纸上，并保存在安全的地方。如果希望提升信息安全性，请将信息记录在多张纸上，并分别保存在 2 - 3 个不同的地方。"

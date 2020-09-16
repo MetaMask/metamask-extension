@@ -294,14 +294,14 @@ export default class ImportWithSeedPhrase extends PureComponent {
             {termsChecked ? <i className="fa fa-check fa-2x" /> : null}
           </div>
           <span id="ftf-chk1-label" className="first-time-flow__checkbox-label">
-            I have read and agree to the&nbsp;
+            {this.context.t('haveReadAndAgree')}&nbsp;
             <a
               href="https://confluxnetwork.org/terms/"
               target="_blank"
               rel="noopener noreferrer"
             >
               <span className="first-time-flow__link-text">
-                {'Terms of Use'}
+                {this.context.t('terms')}
               </span>
             </a>
           </span>

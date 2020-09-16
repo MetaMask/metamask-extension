@@ -36,7 +36,7 @@ describe('Create Account Page', function () {
     assert.equal(props.history.push.getCall(0).args[0], '/new-account/import')
   })
 
-  it('clicks connect HD Wallet and routes to connect new account path', function () {
+  it.skip('clicks connect HD Wallet and routes to connect new account path', function () {
     const connectHdWallet = wrapper.find('.new-account__tabs__tab').at(2)
     connectHdWallet.simulate('click')
     assert.equal(props.history.push.getCall(0).args[0], '/new-account/connect')

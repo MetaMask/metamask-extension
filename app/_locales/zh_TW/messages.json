@@ -344,6 +344,27 @@
   "details": {
     "message": "詳情"
   },
+  "disconnectAccount": {
+    "message": "取消授權"
+  },
+  "disconnectAll": {
+    "message": "取消所有授權"
+  },
+  "disconnectAllModalDescription": {
+    "message": "確定取消所有賬戶對所有網站的授權嗎?"
+  },
+  "disconnectAccountModalDescription": {
+    "message": "確定取消賬戶 \"$1\" 對於該網站的授權嗎?"
+  },
+  "disconnectAccountQuestion": {
+    "message": "確定取消授權嗎?"
+  },
+  "disconnectFromThisAccount": {
+    "message": "確定取消該項目的授權嗎?"
+  },
+  "disconnectAllAccountsQuestion": {
+    "message": "確定取消所有賬戶對所有網站的授權嗎?"
+  },
   "directDepositEther": {
     "message": "直接存入CFX"
   },
@@ -370,6 +391,12 @@
   },
   "edit": {
     "message": "編輯"
+  },
+  "contacts": {
+    "message": " 聯系人"
+  },
+  "contactsSettingsDescription": {
+    "message": "添加、編輯、移除、管理您的聯系人"
   },
   "editContact": {
     "message": "編輯聯絡資訊"
@@ -530,6 +557,9 @@
   "hardwareWalletsMsg": {
     "message": "選擇要連線到 ConfluxPortal 的硬體錢包 (該功能尚未測試, 使用中可能會出現問題)"
   },
+  "haveReadAndAgree": {
+    "message": "我已閱讀並同意"
+  },
   "havingTroubleConnecting": {
     "message": "無法正確連線? (該功能尚未測試, 使用中可能會出現問題)"
   },
@@ -552,6 +582,9 @@
   "history": {
     "message": "紀錄"
   },
+  "iagree": {
+    "message": "我同意"
+  },
   "import": {
     "message": "匯入",
     "description": "Button to import an account from a selected file"
@@ -560,7 +593,7 @@
     "message": "匯入帳戶"
   },
   "importAccountMsg": {
-    "message": " 匯入的帳戶與您原有 ConfluxPortal 帳戶的助憶詞並無關聯。請查看與匯入帳戶相關的資料 "
+    "message": "導入的賬戶不會與您最初創建的ConfluxPortal賬戶助記詞關聯。"
   },
   "importAccountSeedPhrase": {
     "message": "利用助憶詞還原"
@@ -676,7 +709,7 @@
     "message": "訊息"
   },
   "metamaskDescription": {
-    "message": "ConfluxPortal 是安全的 Conflux 身份識別金庫"
+    "message": "連接 Conflux 和去中心化網絡，我們很高興與您見面。"
   },
   "metamaskVersion": {
     "message": "ConfluxPortal 版本"
@@ -784,6 +817,9 @@
   },
   "noConversionRateAvailable": {
     "message": "尚未有匯率比較值"
+  },
+  "noThanks": {
+    "message": "不了，謝謝"
   },
   "noTransactions": {
     "message": "尚未有交易"
