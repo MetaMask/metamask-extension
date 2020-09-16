@@ -286,7 +286,7 @@ describe('permissions log', function () {
       assert.equal(log.length, 0, 'log should be empty')
 
       const res = { foo: 'bar' }
-      const req1 = RPC_REQUESTS.wallet_sendDomainMetadata(
+      const req1 = RPC_REQUESTS.metamask_sendDomainMetadata(
         DOMAINS.c.origin,
         'foobar',
       )

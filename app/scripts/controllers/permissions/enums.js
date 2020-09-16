@@ -19,10 +19,15 @@ export const CAVEAT_TYPES = {
 }
 
 export const NOTIFICATION_NAMES = {
-  accountsChanged: 'wallet_accountsChanged',
+  accountsChanged: 'metamask_accountsChanged',
+  unlockStateChanged: 'metamask_unlockStateChanged',
+  chainChanged: 'metamask_chainChanged',
 }
 
-export const LOG_IGNORE_METHODS = ['wallet_sendDomainMetadata']
+export const LOG_IGNORE_METHODS = [
+  'wallet_registerOnboarding',
+  'wallet_watchAsset',
+]
 
 export const LOG_METHOD_TYPES = {
   restricted: 'restricted',
@@ -82,8 +87,9 @@ export const SAFE_METHODS = [
   'eth_submitWork',
   'eth_syncing',
   'eth_uninstallFilter',
-  'metamask_watchAsset',
-  'wallet_watchAsset',
   'eth_getEncryptionPublicKey',
   'eth_decrypt',
+  'metamask_watchAsset',
+  'wallet_watchAsset',
+  'metamask_getProviderState',
 ]

@@ -2115,18 +2115,16 @@
   resolved "https://registry.yarnpkg.com/@metamask/forwarder/-/forwarder-1.1.0.tgz#13829d8244bbf19ea658c0b20d21a77b67de0bdd"
   integrity sha512-Hggj4y0QIjDzKGTXzarhEPIQyFSB2bi2y6YLJNwaT4JmP30UB5Cj6gqoY0M4pj3QT57fzp0BUuGp7F/AUe28tw==
 
-"@metamask/inpage-provider@^6.1.0":
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/@metamask/inpage-provider/-/inpage-provider-6.3.0.tgz#92d965e20912c24adbf973efbd07dbf339547741"
-  integrity sha512-n7E06+8hWdYKmgJo84WFvgX6/BSqaOQEOMIrcbrP48LdkkZNEAChx6D8oUb2lYDQiWgahR+f20jsJoN4WmOjxw==
+"@metamask/inpage-provider@./metamask-inpage-provider-7.0.0.tgz":
+  version "7.0.0"
+  resolved "./metamask-inpage-provider-7.0.0.tgz#a2af6325639797848d781d4133c21000746f3d0c"
   dependencies:
     eth-rpc-errors "^2.1.1"
     fast-deep-equal "^2.0.1"
     is-stream "^2.0.0"
-    json-rpc-engine "^5.2.0"
+    json-rpc-engine "^6.1.0"
     json-rpc-middleware-stream "^2.1.1"
     obj-multiplex "^1.0.0"
-    obs-store "^4.0.3"
     pump "^3.0.0"
     safe-event-emitter "^1.0.1"
 
@@ -15221,7 +15219,7 @@ json-rpc-engine@^3.4.0, json-rpc-engine@^3.6.0:
     promise-to-callback "^1.0.0"
     safe-event-emitter "^1.0.1"
 
-json-rpc-engine@^5.2.0, json-rpc-engine@^5.3.0:
+json-rpc-engine@^5.3.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/json-rpc-engine/-/json-rpc-engine-5.3.0.tgz#7dc7291766b28766ebda33eb6d3f4c6301c44ff4"
   integrity sha512-+diJ9s8rxB+fbJhT7ZEf8r8spaLRignLd8jTgQ/h5JSGppAHGtNMZtCoabipCaleR1B3GTGxbXBOqhaJSGmPGQ==

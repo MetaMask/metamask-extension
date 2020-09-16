@@ -6,13 +6,9 @@ import sinon from 'sinon'
 import {
   METADATA_STORE_KEY,
   METADATA_CACHE_MAX_SIZE,
-  WALLET_PREFIX,
 } from '../../../../../app/scripts/controllers/permissions/enums'
 
-import {
-  PermissionsController,
-  addInternalMethodPrefix,
-} from '../../../../../app/scripts/controllers/permissions'
+import { PermissionsController } from '../../../../../app/scripts/controllers/permissions'
 
 import { getRequestUserApprovalHelper, grantPermissions } from './helpers'
 
@@ -187,7 +183,7 @@ describe('permissions controller', function () {
         assert.deepEqual(
           notifications[origin],
           [NOTIFICATIONS.removedAccounts()],
-          'origin should have single wallet_accountsChanged:[] notification',
+          'origin should have single metamask_accountsChanged:[] notification',
         )
       })
 
@@ -1325,9 +1321,16 @@ describe('permissions controller', function () {
     })
 
     it('notifyAccountsChanged records history and sends notification', async function () {
+      sinon.spy(permController, '_isUnlocked')
+
       permController.notifyAccountsChanged(
         DOMAINS.a.origin,
         ACCOUNTS.a.permitted,
+      )
+
+      assert.ok(
+        permController._isUnlocked.calledOnce,
+        '_isUnlocked should have been called once',
       )
 
       assert.ok(
@@ -1339,6 +1342,25 @@ describe('permissions controller', function () {
         notifications[DOMAINS.a.origin],
         [NOTIFICATIONS.newAccounts(ACCOUNTS.a.permitted)],
         'origin should have correct notification',
+      )
+    })
+
+    it('notifyAccountsChanged does nothing if _isUnlocked returns false', async function () {
+      permController._isUnlocked = sinon.fake.returns(false)
+
+      permController.notifyAccountsChanged(
+        DOMAINS.a.origin,
+        ACCOUNTS.a.permitted,
+      )
+
+      assert.ok(
+        permController._isUnlocked.calledOnce,
+        '_isUnlocked should have been called once',
+      )
+
+      assert.ok(
+        permController.permissionsLog.updateAccountsHistory.notCalled,
+        'permissionsLog.updateAccountsHistory should not have been called',
       )
     })
 
@@ -1603,12 +1625,6 @@ describe('permissions controller', function () {
         permController.pendingApprovalOrigins.has(origin),
         'pending approval origins should have expected item',
       )
-    })
-
-    it('addInternalMethodPrefix', function () {
-      const str = 'foo'
-      const res = addInternalMethodPrefix(str)
-      assert.equal(res, WALLET_PREFIX + str, 'should prefix correctly')
     })
   })
 })
