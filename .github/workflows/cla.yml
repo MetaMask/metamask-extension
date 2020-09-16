@@ -19,6 +19,6 @@ jobs:
           url-to-cladocument: 'https://metamask.io/cla.html'
           # This branch can't have protections, commits are made directly to the specified branch.
           branch: 'cla-signatures'
-          allowlist: 'dependabot[bot]'
+          allowlist: 'dependabot[bot],metamaskbot'
           allow-organization-members: true
           blockchain-storage-flag: false
