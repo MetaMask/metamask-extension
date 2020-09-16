@@ -161,7 +161,7 @@ export default class SwapsController {
       }
     }
 
-    const topAggIdData = this._findTopQuoteAggId(newQuotes)
+    const topAggIdData = await this._findTopQuoteAggId(newQuotes)
     let { topAggId } = topAggIdData
     const { isBest } = topAggIdData
 
@@ -397,7 +397,7 @@ export default class SwapsController {
     clearTimeout(this.pollingTimeout)
   }
 
-  _findTopQuoteAggId (quotes) {
+  async _findTopQuoteAggId (quotes) {
     const tokenConversionRates = this.tokenRatesStore.getState()
       .contractExchangeRates
     const {
@@ -406,6 +406,13 @@ export default class SwapsController {
 
     if (!Object.values(quotes).length) {
       return {}
+    }
+
+    let usedGasPrice = customGasPrice
+
+    if (!usedGasPrice) {
+      usedGasPrice = await this.ethersProvider.getGasPrice()
+      usedGasPrice = usedGasPrice.toString(16)
     }
 
     let topAggId = ''
@@ -429,7 +436,7 @@ export default class SwapsController {
         .toString(16)
       const gasTotalInWeiHex = calcGasTotal(
         totalGasLimitForCalculation,
-        customGasPrice || '0x1',
+        usedGasPrice,
       )
       const totalEthCost = new BigNumber(gasTotalInWeiHex, 16).plus(
         trade.value,
