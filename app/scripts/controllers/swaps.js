@@ -252,7 +252,7 @@ export default class SwapsController {
       Object.values(quotes).map(async (quote) => {
         const { gasLimit, simulationFails } = await this.timedoutGasReturn({
           ...quote.trade,
-          gas: `0x${(quote.maxGas || 800000).toString(16)}`,
+          gas: `0x${(quote.maxGas || MAX_GAS_LIMIT).toString(16)}`,
         })
         return [gasLimit, simulationFails, quote.aggregator]
       }),
@@ -371,13 +371,6 @@ export default class SwapsController {
     })
   }
 
-  setCustomApproveTxData (data) {
-    const { swapsState } = this.store.getState()
-    this.store.updateState({
-      swapsState: { ...swapsState, customApproveTxData: data },
-    })
-  }
-
   setBackgoundSwapRouteState (routeState) {
     const { swapsState } = this.store.getState()
     this.store.updateState({ swapsState: { ...swapsState, routeState } })
@@ -431,7 +424,7 @@ export default class SwapsController {
       } = quote
       const tradeGasLimitForCalculation = gasEstimate
         ? new BigNumber(gasEstimate, 16)
-        : new BigNumber(averageGas || 800000, 10)
+        : new BigNumber(averageGas || MAX_GAS_LIMIT, 10)
       const totalGasLimitForCalculation = tradeGasLimitForCalculation
         .plus(approvalNeeded?.gas || '0x0', 16)
         .toString(16)

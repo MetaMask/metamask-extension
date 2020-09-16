@@ -98,6 +98,14 @@ const QUOTE_VALIDATORS = [
     type: 'object',
     validator: (error) => error === null || typeof error === 'object',
   },
+  {
+    property: 'averageGas',
+    type: 'number',
+  },
+  {
+    property: 'maxGas',
+    type: 'number',
+  },
 ]
 
 const TOKEN_VALIDATORS = [
@@ -139,7 +147,7 @@ const AGGREGATOR_METADATA_VALIDATORS = [
 ]
 
 function validateData (validators, object, urlUsed) {
-  return validators.every(({ property, type, validator }) => {
+  return validators.every(({ property, type, validator = (identity) => identity }) => {
     const types = type.split('|')
 
     const valid = types.some((_type) => typeof object[property] === _type) && validator(object[property])

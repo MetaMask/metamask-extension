@@ -168,7 +168,7 @@ export function useSwapSubmitFunction ({
       destinationTokenSymbol: destinationTokenInfo.symbol,
       swapTokenValue,
     }, true)))
-    await dispatch(updateAndApproveTx(finalTradeTxMeta, 'metamask', true))
+    await dispatch(updateAndApproveTx(finalTradeTxMeta, true))
 
     await forceUpdateMetamaskState(dispatch)
     dispatch(setShowAwaitingSwapScreen(true))

@@ -292,7 +292,6 @@ export default class MetamaskController extends EventEmitter {
       PermissionsController: this.permissionsController.permissions,
       PermissionsMetadata: this.permissionsController.store,
       ThreeBoxController: this.threeBoxController.store,
-      SwapsController: this.swapsController.store,
     })
 
     this.memStore = new ComposableObservableStore(null, {
@@ -589,7 +588,6 @@ export default class MetamaskController extends EventEmitter {
       stopPollingForQuotes: nodeify(swapsController.stopPollingForQuotes, swapsController),
       setBackgoundSwapRouteState: nodeify(swapsController.setBackgoundSwapRouteState, swapsController),
       resetPostFetchState: nodeify(swapsController.resetPostFetchState, swapsController),
-      setCustomApproveTxData: nodeify(swapsController.setCustomApproveTxData, swapsController),
       setSwapsErrorKey: nodeify(swapsController.setSwapsErrorKey, swapsController),
       setInitialGasEstimate: nodeify(swapsController.setInitialGasEstimate, swapsController),
     }

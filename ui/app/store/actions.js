@@ -858,11 +858,10 @@ export function updateTransaction (txData, dontShowLoadingIndicator) {
 export function addUnapprovedTransaction (txParams, origin) {
   log.debug('background.addUnapprovedTransaction')
 
-  return (dispatch) => {
+  return () => {
     return new Promise((resolve, reject) => {
       background.addUnapprovedTransaction(txParams, origin, (err, txMeta) => {
         if (err) {
-          dispatch(displayWarning(err.message))
           reject(err)
           return
         }
@@ -2250,13 +2249,6 @@ export function setBackgoundSwapRouteState (routeState) {
 export function resetSwapsPostFetchState () {
   return async (dispatch) => {
     await promisifiedBackground.resetPostFetchState()
-    await forceUpdateMetamaskState(dispatch)
-  }
-}
-
-export function setCustomApproveTxData (data) {
-  return async (dispatch) => {
-    await promisifiedBackground.setCustomApproveTxData(data)
     await forceUpdateMetamaskState(dispatch)
   }
 }
