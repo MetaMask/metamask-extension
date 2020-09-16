@@ -1,6 +1,8 @@
 # Changelog
 
 ## Current Develop Branch
+
+## 0.3.7 Wed Sep 16 2020
 - fix: remove unused show incoming txs option (#224)
 - fix: more cn trans, remove hardware wallet tab, remove some doc (#226)
 - feat: new logo and primary color (#227)
