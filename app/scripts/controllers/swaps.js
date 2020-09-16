@@ -30,7 +30,6 @@ function calculateGasEstimateWithRefund (maxGas = MAX_GAS_LIMIT, estimatedRefund
     16,
   )
     .minus(estimatedRefund, 10)
-    .toString(16)
 
   const gasEstimateWithRefund = maxGasMinusRefund.lt(
     estimatedGas,
