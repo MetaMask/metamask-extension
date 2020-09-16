@@ -276,7 +276,7 @@
     "message": "டோக்கன்களை ஏற்றுகிறது ..."
   },
   "localhost": {
-    "message": "லோக்கல் ஹோஸ்ட் 8545"
+    "message": "லோக்கல் ஹோஸ்ட் 12537"
   },
   "lock": {
     "message": "வெளியேறு"
@@ -392,15 +392,6 @@
   },
   "connectingToMainnet": {
     "message": "முக்கிய எதெரியும் நெட்வொர்க் இணைக்கும்"
-  },
-  "connectingToRopsten": {
-    "message": "ரொப்ஸ்டென் டெஸ்ட் நெட்வொர்க்குடன் இணைக்கிறது"
-  },
-  "connectingToKovan": {
-    "message": "கோவன் டெஸ்ட் நெட்வொர்க்குடன் இணைத்தல்"
-  },
-  "connectingToRinkeby": {
-    "message": "ரிங்கெப்ய டெஸ்ட் நெட்வொர்க்குடன் இணைக்கிறது"
   },
   "save": {
     "message": "சேமி"

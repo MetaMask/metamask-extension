@@ -236,23 +236,11 @@
   "connectingTo": {
     "message": "Ühenduse loomine $1"
   },
-  "connectingToKovan": {
-    "message": "Ühendamine Kovani testvõrguga"
-  },
   "connectingToMainnet": {
     "message": "Ühenduse loomine peamise Etherumi võrguga"
   },
-  "connectingToRopsten": {
-    "message": "Ühendamine Ropsteni testvõrguga"
-  },
-  "connectingToRinkeby": {
-    "message": "Ühendamine Rinkeby testvõrguga"
-  },
   "connectingToLocalhost": {
-    "message": "Ühenduse loomine Localhost 8545"
-  },
-  "connectingToGoerli": {
-    "message": "Ühendamine Goerli testvõrguga"
+    "message": "Ühenduse loomine Localhost 12537"
   },
   "continueToWyre": {
     "message": "Ava Wyre"

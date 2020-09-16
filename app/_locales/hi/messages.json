@@ -236,23 +236,11 @@
   "connectingTo": {
     "message": "$1 से कनेक्ट हो रहा है"
   },
-  "connectingToKovan": {
-    "message": "कोवन टेस्ट नेटवर्क से जोड़ रहा है\n"
-  },
   "connectingToMainnet": {
     "message": "मुख्य Conflux नेटवर्क से कनेक्ट हो रहा है"
   },
-  "connectingToRopsten": {
-    "message": "रोपस्टेन टेस्ट नेटवर्क से कनेक्ट करना"
-  },
-  "connectingToRinkeby": {
-    "message": "Rinkeby टेस्ट नेटवर्क से कनेक्ट हो रहा है"
-  },
   "connectingToLocalhost": {
-    "message": "लोकलहोस्ट 8545 से जुड़ना "
-  },
-  "connectingToGoerli": {
-    "message": "गोर्ली टेस्ट नेटवर्क से  जोड़ रहा है"
+    "message": "लोकलहोस्ट 12537 से जुड़ना "
   },
   "continueToWyre": {
     "message": "Wyre को जारी रखें"
@@ -646,7 +634,7 @@
     "message": "और लोड करें"
   },
   "localhost": {
-    "message": "लोकलहोस्ट 8545"
+    "message": "लोकलहोस्ट 12537"
   },
   "lock": {
     "message": "लॉग आउट"

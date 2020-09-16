@@ -236,23 +236,11 @@
   "connectingTo": {
     "message": "ከ $1ጋር መገናኘት"
   },
-  "connectingToKovan": {
-    "message": "ከ Kovan የሙከራ አውታረ መረብ መገናኘት"
-  },
   "connectingToMainnet": {
     "message": "ከዋናው የ Conflux አውታረ መረብ ጋር መገናኘት"
   },
-  "connectingToRopsten": {
-    "message": "ከ Ropsten የሙከራ አውታረ መረብ ጋር በመገናኘት ላይ"
-  },
-  "connectingToRinkeby": {
-    "message": "ከ Rinkeby የሙከራ አውታረ መረብ ጋር በመገናኘት ላይ"
-  },
   "connectingToLocalhost": {
-    "message": "ከ Localhost 8545 ጋር መገናኘት"
-  },
-  "connectingToGoerli": {
-    "message": "ከ Goerli የሙከራ አውታረ መረብ ጋር መገናኘት"
+    "message": "ከ Localhost 12537 ጋር መገናኘት"
   },
   "continueToWyre": {
     "message": "ወደ Wyre ይቀጥሉ"

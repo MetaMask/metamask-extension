@@ -230,23 +230,11 @@
   "connectingTo": {
     "message": "Conectando a $1"
   },
-  "connectingToKovan": {
-    "message": "Conectando-se à Rede de Testes Kovan"
-  },
   "connectingToMainnet": {
     "message": "Conectando à rede principal Etherum"
   },
-  "connectingToRopsten": {
-    "message": "Conectando à Rede de Testes Ropsten"
-  },
-  "connectingToRinkeby": {
-    "message": "Conectando-se à rede de teste Rinkeby"
-  },
   "connectingToLocalhost": {
-    "message": "Conectando ao Localhost 8545"
-  },
-  "connectingToGoerli": {
-    "message": "Conectando à Rede de Teste da Goerli"
+    "message": "Conectando ao Localhost 12537"
   },
   "continueToWyre": {
     "message": "Continuar para Wyre"

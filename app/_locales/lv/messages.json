@@ -236,23 +236,11 @@
   "connectingTo": {
     "message": "Pieslēdzas $1"
   },
-  "connectingToKovan": {
-    "message": "Savienojas ar Kovan testa tīklu"
-  },
   "connectingToMainnet": {
     "message": "Savienojas ar galveno Conflux tīklu"
   },
-  "connectingToRopsten": {
-    "message": "Pieslēdzas Ropsten testa tīklam"
-  },
-  "connectingToRinkeby": {
-    "message": "Pieslēdzas Rinkeby testa tīklam"
-  },
   "connectingToLocalhost": {
-    "message": "Savienojas ar vietējo resursdatoru 8545"
-  },
-  "connectingToGoerli": {
-    "message": "Pieslēdzas Goerli testa tīklam"
+    "message": "Savienojas ar vietējo resursdatoru 12537"
   },
   "continueToWyre": {
     "message": "Pāriet uz Wyre"
@@ -645,7 +633,7 @@
     "message": "Ielādēt vairāk"
   },
   "localhost": {
-    "message": "Resursdators 8545"
+    "message": "Resursdators 12537"
   },
   "lock": {
     "message": "Izrakstīties"

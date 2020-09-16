@@ -233,23 +233,11 @@
   "connectingTo": {
     "message": "Forbinder til $1 "
   },
-  "connectingToKovan": {
-    "message": "Kobler til Kovan testnettverk"
-  },
   "connectingToMainnet": {
     "message": "Forbinder med hoved-Confluxnettverk "
   },
-  "connectingToRopsten": {
-    "message": "Kobler til Ropsten testnettverk"
-  },
-  "connectingToRinkeby": {
-    "message": "Kobler til Rinkeby Test Network "
-  },
   "connectingToLocalhost": {
-    "message": "Kobler til lokalvert 8545"
-  },
-  "connectingToGoerli": {
-    "message": "Oppretter forbindelse med Goerli Test Network"
+    "message": "Kobler til lokalvert 12537"
   },
   "continueToWyre": {
     "message": "Fortsett til Wyre "
@@ -639,7 +627,7 @@
     "message": "Last mer "
   },
   "localhost": {
-    "message": "Lokalvert 8545"
+    "message": "Lokalvert 12537"
   },
   "lock": {
     "message": "Logg ut "

@@ -236,23 +236,11 @@
   "connectingTo": {
     "message": "Povezovanje na $1"
   },
-  "connectingToKovan": {
-    "message": "Povezovanje na testno omrežje Kovan"
-  },
   "connectingToMainnet": {
     "message": "Povezovanje na glavno omrežje"
   },
-  "connectingToRopsten": {
-    "message": "Povezovanje na testno omrežje Ropsten"
-  },
-  "connectingToRinkeby": {
-    "message": "Povezovanje na testno omrežje Rinkeby"
-  },
   "connectingToLocalhost": {
-    "message": "Povezovanje na lokalnega gostitelja 8545 "
-  },
-  "connectingToGoerli": {
-    "message": "Povezovanje na testno omrežje Goerli"
+    "message": "Povezovanje na lokalnega gostitelja 12537 "
   },
   "continueToWyre": {
     "message": "Nadaljuj na Wyre"

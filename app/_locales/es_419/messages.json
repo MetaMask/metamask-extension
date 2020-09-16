@@ -233,23 +233,11 @@
   "connectingTo": {
     "message": "Conexión con $1"
   },
-  "connectingToKovan": {
-    "message": "Conexión con la red de prueba Kovan"
-  },
   "connectingToMainnet": {
     "message": "Conexión con la red principal de Conflux"
   },
-  "connectingToRopsten": {
-    "message": "Conexión con la red de prueba Ropsten"
-  },
-  "connectingToRinkeby": {
-    "message": "Conexión con la red de prueba Rinkeby"
-  },
   "connectingToLocalhost": {
-    "message": "Conexión con Localhost 8545"
-  },
-  "connectingToGoerli": {
-    "message": "Conexión con la red de prueba Goerli"
+    "message": "Conexión con Localhost 12537"
   },
   "continueToWyre": {
     "message": "Continuar a Wyre"

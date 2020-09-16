@@ -294,23 +294,14 @@
   "connectingTo": {
     "message": "Connecting to $1"
   },
-  "connectingToKovan": {
-    "message": "Connecting to Kovan Test Network"
-  },
   "connectingToMainnet": {
+    "message": "Connecting to Conflux Oceanus Network"
+  },
+  "connectingToTestnet": {
     "message": "Connecting to Conflux Test Network"
-  },
-  "connectingToRopsten": {
-    "message": "Connecting to Ropsten Test Network"
-  },
-  "connectingToRinkeby": {
-    "message": "Connecting to Rinkeby Test Network"
   },
   "connectingToLocalhost": {
     "message": "Connecting to Localhost 12539"
-  },
-  "connectingToGoerli": {
-    "message": "Connecting to Goerli Test Network"
   },
   "contacts": {
     "message": "Contacts"

@@ -236,23 +236,11 @@
   "connectingTo": {
     "message": "Свързване с $1"
   },
-  "connectingToKovan": {
-    "message": "Свързване с тестовата мрежа на Kovan"
-  },
   "connectingToMainnet": {
     "message": "Свързване с главната мрежа Conflux"
   },
-  "connectingToRopsten": {
-    "message": "Свързване с тестова мрежа Ropsten"
-  },
-  "connectingToRinkeby": {
-    "message": "Свързване с тестова мрежа на Rinkeby"
-  },
   "connectingToLocalhost": {
-    "message": "Свързване с Localhost 8545"
-  },
-  "connectingToGoerli": {
-    "message": "Свързване с тестова мрежа на Goerli"
+    "message": "Свързване с Localhost 12537"
   },
   "continueToWyre": {
     "message": "Продължете към Wyre"
@@ -645,7 +633,7 @@
     "message": "Зареди повече"
   },
   "localhost": {
-    "message": "Локален хост 8545"
+    "message": "Локален хост 12537"
   },
   "lock": {
     "message": "Излизане"

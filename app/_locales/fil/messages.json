@@ -212,23 +212,11 @@
   "connectingTo": {
     "message": "Kumokonekta sa $1"
   },
-  "connectingToKovan": {
-    "message": "Kumokonekta sa Kovan Test Network"
-  },
   "connectingToMainnet": {
     "message": "Kumokonekta sa Main Conflux Network"
   },
-  "connectingToRopsten": {
-    "message": "Kumokonekta sa Ropsten Test Network"
-  },
-  "connectingToRinkeby": {
-    "message": "Kumokonekta sa Rinkeby Test Network"
-  },
   "connectingToLocalhost": {
-    "message": "Kumokonekta sa Localhost 8545"
-  },
-  "connectingToGoerli": {
-    "message": "Kumokonekta sa Goerli Test Network"
+    "message": "Kumokonekta sa Localhost 12537"
   },
   "continueToWyre": {
     "message": "Magpatuloy sa Wyre"

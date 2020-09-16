@@ -224,23 +224,11 @@
   "connectingTo": {
     "message": "Verbindung mit $1 wird hergestellt"
   },
-  "connectingToKovan": {
-    "message": " Verbinde zum Kovan Testnetzwerk"
-  },
   "connectingToMainnet": {
     "message": "Verbinde zum Conflux Main Net"
   },
-  "connectingToRopsten": {
-    "message": " Verbinde zum Ropsten Testnetzwerk"
-  },
-  "connectingToRinkeby": {
-    "message": " Verbinde zum Rinkeby Testnetzwerk"
-  },
   "connectingToLocalhost": {
-    "message": "Verbindung mit Localhost 8545 herstellen"
-  },
-  "connectingToGoerli": {
-    "message": "Verbindung mit Goerli Test Network wird hergestellt"
+    "message": "Verbindung mit Localhost 12537 herstellen"
   },
   "continueToWyre": {
     "message": "Weiter zu Wyre"

@@ -236,23 +236,11 @@
   "connectingTo": {
     "message": "Kapcsolódás: $1"
   },
-  "connectingToKovan": {
-    "message": "Csatlakozás a Kovan teszthálózathoz"
-  },
   "connectingToMainnet": {
     "message": "Csatlakozás a fő Conflux hálózathoz"
   },
-  "connectingToRopsten": {
-    "message": "Csatlakozás a Ropsten teszthálózathoz"
-  },
-  "connectingToRinkeby": {
-    "message": "Kapcsolódás a Rinkeby Teszthálózathoz"
-  },
   "connectingToLocalhost": {
     "message": "Csatlakozás a Localhost 8645-höz"
-  },
-  "connectingToGoerli": {
-    "message": "Csatlakozás a Goerli teszthálózathoz"
   },
   "continueToWyre": {
     "message": "Tovább a Wyre-re"

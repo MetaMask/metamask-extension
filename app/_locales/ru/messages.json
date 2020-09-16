@@ -73,17 +73,8 @@
   "confirmPassword": {
     "message": "Подтвердите пароль"
   },
-  "connectingToKovan": {
-    "message": "Соединение с тестовой сетью Kovan"
-  },
   "connectingToMainnet": {
     "message": "Соединение с основной сетью Conflux"
-  },
-  "connectingToRopsten": {
-    "message": "Соединение с тестовой сетью Ropsten"
-  },
-  "connectingToRinkeby": {
-    "message": "Соединение с тестовой сетью Rinkeby"
   },
   "continueToCoinSwitch": {
     "message": "Продолжить в CoinSwitch"
@@ -687,10 +678,7 @@
     "message": "Подключение к $1"
   },
   "connectingToLocalhost": {
-    "message": "Подключение к Localhost:8545"
-  },
-  "connectingToGoerli": {
-    "message": "Подключение к тестовой сети Goerli"
+    "message": "Подключение к Localhost:12537"
   },
   "continueToWyre": {
     "message": "Продолжить на Wyre"

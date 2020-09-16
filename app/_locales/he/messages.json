@@ -236,23 +236,11 @@
   "connectingTo": {
     "message": "מתחבר ל- $1 "
   },
-  "connectingToKovan": {
-    "message": "מתחבר ל-Kovan Test Network"
-  },
   "connectingToMainnet": {
     "message": "מתחבר לרשת אתריום הראשית"
   },
-  "connectingToRopsten": {
-    "message": "מתחבר אל רשת בדיקה Ropsten "
-  },
-  "connectingToRinkeby": {
-    "message": "מתחבר ל- Rinkeby Test Network  "
-  },
   "connectingToLocalhost": {
-    "message": "מתחבר אל Localhost 8545"
-  },
-  "connectingToGoerli": {
-    "message": "מתחבר ל-Goerli Test Network"
+    "message": "מתחבר אל Localhost 12537"
   },
   "continueToWyre": {
     "message": "המשך ל-Wyre"

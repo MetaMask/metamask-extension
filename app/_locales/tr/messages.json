@@ -73,17 +73,8 @@
   "confirmPassword": {
     "message": "Şifreyi onayla"
   },
-  "connectingToKovan": {
-    "message": "Kovan Test Ağına bağlanıyor"
-  },
   "connectingToMainnet": {
     "message": "Main Conflux Ağına bağlanıyor"
-  },
-  "connectingToRopsten": {
-    "message": "Ropsten Test Ağına bağlanıyor"
-  },
-  "connectingToRinkeby": {
-    "message": "Rinkeby Test Ağına bağlanıyor"
   },
   "continueToCoinSwitch": {
     "message": "CoinSwitch'e devam et"

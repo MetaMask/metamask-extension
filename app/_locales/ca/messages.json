@@ -233,23 +233,11 @@
   "connectingTo": {
     "message": "Connectant a $1 "
   },
-  "connectingToKovan": {
-    "message": "Conectant a la xarxa de Kovan Test"
-  },
   "connectingToMainnet": {
     "message": "Connectant a Xarxa Principal Conflux"
   },
-  "connectingToRopsten": {
-    "message": "Connectant a la xarxa de test Ropsten"
-  },
-  "connectingToRinkeby": {
-    "message": "Connectant a la Xarxa de Prova Rinkeby"
-  },
   "connectingToLocalhost": {
-    "message": "Connectant al host local 8545"
-  },
-  "connectingToGoerli": {
-    "message": "Connectant a Xarxa de Prova Goerli"
+    "message": "Connectant al host local 12537"
   },
   "continueToWyre": {
     "message": "Continua a Wyre"
@@ -633,7 +621,7 @@
     "message": "Carregar Més"
   },
   "localhost": {
-    "message": "Host local 8545"
+    "message": "Host local 12537"
   },
   "lock": {
     "message": "Tanca la sessió"

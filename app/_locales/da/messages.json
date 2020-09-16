@@ -236,23 +236,11 @@
   "connectingTo": {
     "message": "Forbinder til $1"
   },
-  "connectingToKovan": {
-    "message": "Forbinder til Kovan Testnetværk"
-  },
   "connectingToMainnet": {
     "message": "Forbinder til dit Primære Conflux Netværk"
   },
-  "connectingToRopsten": {
-    "message": "Forbinder til Ropsten-testnetværk"
-  },
-  "connectingToRinkeby": {
-    "message": "Forbinder til Rinkeby-testnetværk"
-  },
   "connectingToLocalhost": {
-    "message": "Opretter forbindelse til Localhost 8545"
-  },
-  "connectingToGoerli": {
-    "message": "Opretter forbindelse til Goerli Testnetværk"
+    "message": "Opretter forbindelse til Localhost 12537"
   },
   "continueToWyre": {
     "message": "Fortsæt til Wyre"

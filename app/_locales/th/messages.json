@@ -94,9 +94,6 @@
   "connectingToMainnet": {
     "message": "เชื่อมต่อกับเครือข่าย Conflux หลัก"
   },
-  "connectingToRopsten": {
-    "message": "เชื่อมต่อกับเครือข่ายทดสอบ Ropsten"
-  },
   "continueToWyre": {
     "message": "ไปที่ Wyre"
   },

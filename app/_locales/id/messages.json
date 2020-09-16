@@ -236,23 +236,11 @@
   "connectingTo": {
     "message": "Menghubungkan ke $1"
   },
-  "connectingToKovan": {
-    "message": "Menyambung ke Jaringan Tes Kovan"
-  },
   "connectingToMainnet": {
     "message": "Menghubungkan ke Jaringan Conflux Utama"
   },
-  "connectingToRopsten": {
-    "message": "Menghubungkan ke Jaringan Uji Coba Ropsten "
-  },
-  "connectingToRinkeby": {
-    "message": "Menghubungkan ke Jaringan Uji Coba Rinkeby  "
-  },
   "connectingToLocalhost": {
-    "message": "Menghubungkan ke Localhost 8545"
-  },
-  "connectingToGoerli": {
-    "message": "Menghubungkan ke Jaringan Uji Coba Goerli"
+    "message": "Menghubungkan ke Localhost 12537"
   },
   "continueToWyre": {
     "message": "Lanjutkan ke Wyre"

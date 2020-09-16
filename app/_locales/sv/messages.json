@@ -230,23 +230,11 @@
   "connectingTo": {
     "message": "Ansluter till $1"
   },
-  "connectingToKovan": {
-    "message": "Ansluter till Kovans testnätverk"
-  },
   "connectingToMainnet": {
     "message": "Koppla till Confluxs huvudnätverk"
   },
-  "connectingToRopsten": {
-    "message": "Ansluter till Ropsten Test Network"
-  },
-  "connectingToRinkeby": {
-    "message": "Ansluter till Rinkeby Test Network"
-  },
   "connectingToLocalhost": {
-    "message": "Ansluter till Localhost 8545"
-  },
-  "connectingToGoerli": {
-    "message": "Ansluter till Goerli Test Network"
+    "message": "Ansluter till Localhost 12537"
   },
   "continueToWyre": {
     "message": "Fortsätt till Wyre"

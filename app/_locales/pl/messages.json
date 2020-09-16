@@ -233,23 +233,11 @@
   "connectingTo": {
     "message": "Łączenie z $1"
   },
-  "connectingToKovan": {
-    "message": "Łączenie z siecią testową Kovan"
-  },
   "connectingToMainnet": {
     "message": "Łączenie z główną siecią Conflux"
   },
-  "connectingToRopsten": {
-    "message": "Łączenie z siecią testową Ropsten"
-  },
-  "connectingToRinkeby": {
-    "message": "Łączenie z siecią testową Rinkeby"
-  },
   "connectingToLocalhost": {
-    "message": "Połączono z serwerem lokalnym 8545"
-  },
-  "connectingToGoerli": {
-    "message": "Łączenie z siecią testową Goerli"
+    "message": "Połączono z serwerem lokalnym 12537"
   },
   "continueToWyre": {
     "message": "Przejdź do Wyre"
@@ -646,7 +634,7 @@
     "message": "Załaduj więcej"
   },
   "localhost": {
-    "message": "Serwer lokalny 8545"
+    "message": "Serwer lokalny 12537"
   },
   "lock": {
     "message": "Wyloguj się"
