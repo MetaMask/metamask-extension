@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 8.0.10 Wed Sep 16 2020
+
 ## 8.0.9 Wed Aug 19 2020
 - [#9228](https://github.com/MetaMask/metamask-extension/pull/9228): Move transaction confirmation footer buttons to scrollable area
 - [#9256](https://github.com/MetaMask/metamask-extension/pull/9256): Handle non-String web3 property access
