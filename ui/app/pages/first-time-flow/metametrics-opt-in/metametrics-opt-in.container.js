@@ -9,9 +9,14 @@ const firstTimeFlowTypeNameMap = {
 }
 
 const mapStateToProps = (state) => {
-  const { firstTimeFlowType, participateInMetaMetrics } = state.metamask
+  const {
+    firstTimeFlowType,
+    participateInMetaMetrics,
+    currentLocale,
+  } = state.metamask
 
   return {
+    currentLocale,
     nextRoute: getFirstTimeFlowTypeRoute(state),
     firstTimeSelectionMetaMetricsName:
       firstTimeFlowTypeNameMap[firstTimeFlowType],

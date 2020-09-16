@@ -684,6 +684,9 @@
   "hardwareWalletsMsg": {
     "message": "Select a hardware wallet you'd like to use with ConfluxPortal"
   },
+  "haveReadAndAgree": {
+    "message": "I have read and agree to the"
+  },
   "havingTroubleConnecting": {
     "message": "Having trouble connecting?"
   },
@@ -705,6 +708,9 @@
   },
   "history": {
     "message": "History"
+  },
+  "iagree": {
+    "message": "I agree"
   },
   "import": {
     "message": "Import",

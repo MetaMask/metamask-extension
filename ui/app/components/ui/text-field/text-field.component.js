@@ -24,7 +24,7 @@ const styles = {
   materialFocused: {},
   materialUnderline: {
     '&:after': {
-      borderBottom: '2px solid #f7861c',
+      borderBottom: '2px solid #469CEA',
     },
   },
   materialError: {},

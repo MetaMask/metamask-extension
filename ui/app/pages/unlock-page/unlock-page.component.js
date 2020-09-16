@@ -110,7 +110,8 @@ export default class UnlockPage extends Component {
 
   renderSubmitButton () {
     const style = {
-      backgroundColor: '#f7861c',
+      background:
+        'linear-gradient(270deg, #7BEED2 0%, #46A0FA 64.86%, #4C64F3 98.01%), linear-gradient(0deg, #EDC76D, #EDC76D), #DFDFDF',
       color: 'white',
       marginTop: '20px',
       height: '60px',
@@ -144,10 +145,7 @@ export default class UnlockPage extends Component {
       <div className="unlock-page__container">
         <div className="unlock-page">
           <div className="unlock-page__mascot-container">
-            <img
-              height={128}
-              src="/images/icon-128.png"
-            />
+            <img height={128} src="/images/icon-128.png" />
             {/* <Mascot */}
             {/*   animationEventEmitter={this.animationEventEmitter} */}
             {/*   width="120" */}
