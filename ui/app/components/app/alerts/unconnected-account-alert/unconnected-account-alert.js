@@ -80,7 +80,8 @@ const UnconnectedAccountAlert = () => {
         <Button
           disabled={alertState === LOADING}
           onClick={onClose}
-          type="secondary"
+          type="primary"
+          rounded
           className="unconnected-account-alert__dismiss-button"
         >
           { t('dismiss') }
