@@ -3,6 +3,8 @@
 ## Current Develop Branch
 
 ## 8.0.10 Wed Sep 16 2020
+- [#9423](https://github.com/MetaMask/metamask-extension/pull/9423): Update default phishing list
+- [#9416](https://github.com/MetaMask/metamask-extension/pull/9416): Fix fetching a new phishing list on Firefox
 
 ## 8.0.9 Wed Aug 19 2020
 - [#9228](https://github.com/MetaMask/metamask-extension/pull/9228): Move transaction confirmation footer buttons to scrollable area
