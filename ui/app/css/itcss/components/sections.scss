@@ -1,7 +1,6 @@
 // Old scss, do not lint - clean up later
 /* stylelint-disable */
 
-
 /*
 App Sections
   TODO: Move into separate files.
@@ -26,7 +25,7 @@ textarea.twelve-word-phrase {
 .initialize-screen hr {
   width: 60px;
   margin: 12px;
-  border-color: #f7861c;
+  border-color: #469cea;
   border-style: solid;
 }
 
@@ -45,7 +44,7 @@ textarea.twelve-word-phrase {
 
 /* unlock */
 .error {
-  color: #f7861c;
+  color: #469cea;
   margin-bottom: 9px;
 }
 
@@ -67,7 +66,8 @@ textarea.twelve-word-phrase {
 .lock.unlocked {
   transform: scale(1);
   opacity: 1;
-  transition: opacity 500ms ease-out, transform 500ms ease-out, background 200ms ease-in;
+  transition: opacity 500ms ease-out, transform 500ms ease-out,
+    background 200ms ease-in;
 }
 
 .lock.locked .lock-top {
@@ -166,7 +166,7 @@ textarea.twelve-word-phrase {
 }
 
 .identity-copy.flex-column {
-  flex: .25 0 auto;
+  flex: 0.25 0 auto;
   justify-content: center;
 }
 
@@ -231,7 +231,7 @@ textarea.twelve-word-phrase {
   margin-bottom: 2px;
   font-size: 11px;
   text-rendering: geometricPrecision;
-  color: #f7861c;
+  color: #469cea;
 }
 
 .name-label:hover .edit-text {
@@ -239,7 +239,7 @@ textarea.twelve-word-phrase {
 }
 /* tx confirm */
 
-.unconftx-section input[type=password] {
+.unconftx-section input[type='password'] {
   height: 22px;
   padding: 2px;
   margin: 12px;
@@ -252,7 +252,7 @@ textarea.twelve-word-phrase {
 /* Ether Balance Widget */
 
 .ether-balance-amount {
-  color: #f7861c;
+  color: #469cea;
 }
 
 .ether-balance-label {
@@ -290,7 +290,7 @@ textarea.twelve-word-phrase {
   border-style: double;
   border-radius: 15px;
   border-width: 5px;
-  background: rgba(247, 134, 28, 1);
+  background: rgb(70, 156, 234);
   border-color: #f7f7f7;
 }
 
@@ -304,7 +304,7 @@ textarea.twelve-word-phrase {
 }
 
 .radio-titles {
-  color: rgba(247, 134, 28, 1);
+  color: rgb(70, 156, 234);
 }
 
 .eth-warning {
@@ -327,22 +327,22 @@ textarea.twelve-word-phrase {
   box-sizing: border-box;
   border: solid;
   border-color: transparent;
-  border-width: .5px;
+  border-width: 0.5px;
   border-radius: 2px;
 }
 
 .input-container:hover .buy-inputs {
   box-sizing: inherit;
   border: solid;
-  border-color: #f7861c;
-  border-width: .5px;
+  border-color: #469cea;
+  border-width: 0.5px;
   border-radius: 2px;
 }
 
 .buy-inputs:focus {
   border: solid;
-  border-color: #f7861c;
-  border-width: .5px;
+  border-color: #469cea;
+  border-width: 0.5px;
   border-radius: 2px;
 }
 
@@ -412,7 +412,8 @@ textarea.twelve-word-phrase {
   color: $white;
 }
 
-.qr-ellip-address, .ellip-address {
+.qr-ellip-address,
+.ellip-address {
   /*rtl:ignore*/
   direction: ltr;
   overflow: hidden;
@@ -426,7 +427,7 @@ textarea.twelve-word-phrase {
 
 .qr-message {
   font-size: 12px;
-  color: #f7861c;
+  color: #469cea;
 }
 
 div.message-container > div:first-child {

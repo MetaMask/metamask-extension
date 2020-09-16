@@ -162,7 +162,7 @@ class TokenList extends Component {
           <span
             className="hotFix"
             style={{
-              color: 'rgba(247, 134, 28, 1)',
+              color: 'rgb(70, 156, 234)',
               cursor: 'pointer',
             }}
             onClick={() => {
