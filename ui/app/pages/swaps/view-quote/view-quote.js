@@ -184,13 +184,13 @@ export default function ViewQuote ({ onSubmit, onCancel }) {
         <div
           className="view-quote__view-other-button-container"
         >
-          <div className="view-quote__view-other-button">{t('swapNQuotesAvailable', [Object.values(quotes)?.length])}<i className="fa fa-arrow-right" /></div>
+          <div className="view-quote__view-other-button">{t('swapNQuotesAvailable', [Object.values(quotes).length])}<i className="fa fa-arrow-right" /></div>
           <div
             className="view-quote__view-other-button-fade"
             onClick={() => {
               setSelectQuotePopoverShown(true)
             }}
-          >{t('swapNQuotesAvailable', [Object.values(quotes)?.length])}<i className="fa fa-arrow-right" />
+          >{t('swapNQuotesAvailable', [Object.values(quotes).length])}<i className="fa fa-arrow-right" />
           </div>
         </div>
         <FeeCard
