@@ -23,6 +23,7 @@ const MESSAGE_TYPE = {
   ETH_GET_ENCRYPTION_PUBLIC_KEY: 'eth_getEncryptionPublicKey',
   ETH_SIGN: 'eth_sign',
   ETH_SIGN_TYPED_DATA: 'eth_signTypedData',
+  GET_PROVIDER_STATE: 'metamask_getProviderState',
   LOG_WEB3_SHIM_USAGE: 'metamask_logWeb3ShimUsage',
   PERSONAL_SIGN: 'personal_sign',
   WATCH_ASSET: 'wallet_watchAsset',
