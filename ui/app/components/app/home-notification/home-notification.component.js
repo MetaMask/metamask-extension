@@ -66,7 +66,7 @@ export default class HomeNotification extends PureComponent {
                 animation="none"
                 position="top"
                 arrow
-                theme="info"
+                theme="tippy-tooltip-home"
               >
                 <img
                   alt=""

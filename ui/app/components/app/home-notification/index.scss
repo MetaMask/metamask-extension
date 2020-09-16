@@ -1,7 +1,11 @@
-.tippy-tooltip.info-theme {
-  background: rgba(36, 41, 46, 0.9);
-  color: $white;
-  border-radius: 8px;
+.tippy-tooltip {
+  // This looks weird, but its repeating the class name
+  // using interpolation for higher specificity.
+  &#{&}-home-theme {
+    background: rgba(36, 41, 46, 0.9);
+    color: $white;
+    border-radius: 8px;
+  }
 }
 
 .home-notification {
