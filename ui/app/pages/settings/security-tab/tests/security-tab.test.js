@@ -38,7 +38,7 @@ describe('Security Tab', function () {
     assert.equal(props.history.push.getCall(0).args[0], '/seed')
   })
 
-  it('toggles incoming txs', function () {
+  it.skip('toggles incoming txs', function () {
     const incomingTxs = wrapper.find({ type: 'checkbox' }).at(0)
     incomingTxs.simulate('click')
     assert(props.setShowIncomingTransactionsFeatureFlag.calledOnce)
