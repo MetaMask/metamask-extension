@@ -147,10 +147,10 @@ const AGGREGATOR_METADATA_VALIDATORS = [
 ]
 
 function validateData (validators, object, urlUsed) {
-  return validators.every(({ property, type, validator = (identity) => identity }) => {
+  return validators.every(({ property, type, validator }) => {
     const types = type.split('|')
 
-    const valid = types.some((_type) => typeof object[property] === _type) && validator(object[property])
+    const valid = types.some((_type) => typeof object[property] === _type) && (!validator || validator(object[property]))
     if (!valid) {
       log.error(`response to GET ${urlUsed} invalid for property ${property}; value was:`, object[property], '| type was: ', typeof object[property])
     }
