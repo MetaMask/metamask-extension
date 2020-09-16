@@ -5,7 +5,6 @@ import { isValidAddress } from 'ethereumjs-util'
 import { calcTokenValue, calcTokenAmount } from '../../helpers/utils/token-util'
 import { constructTxParams, toPrecisionWithoutTrailingZeros } from '../../helpers/utils/util'
 import { decimalToHex, getValueFromWeiHex } from '../../helpers/utils/conversions.util'
-import { estimateGasFromTxParams } from '../../store/actions'
 import { subtractCurrencies } from '../../helpers/utils/conversion-util'
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util'
 import fetchWithCache from '../../helpers/utils/fetch-with-cache'
@@ -15,12 +14,6 @@ import { calcGasTotal } from '../send/send.utils'
 const TOKEN_TRANSFER_LOG_TOPIC_HASH = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
 
 const CACHE_REFRESH_ONE_HOUR = 3600000
-
-// A high default that should cover any ERC-20 approve implementation
-const APPROVE_TX_GAS_DEFAULT = '0x1d4c0'
-
-// A default value that should work for most metaswap trades, in case our api is missing this value
-const METASWAP_GAS_DEFAULT = 800000
 
 const getBaseApi = function (isCustomNetwork, type) {
   if (isCustomNetwork) {
@@ -64,6 +57,11 @@ const QUOTE_VALIDATORS = [
     property: 'trade',
     type: 'object',
     validator: (trade) => trade && validHex(trade.data) && isValidAddress(trade.to) && isValidAddress(trade.from) && truthyString(trade.value),
+  },
+  {
+    property: 'approvalNeeded',
+    type: 'object',
+    validator: (approvalTx) => approvalTx && validHex(approvalTx.data) && isValidAddress(approvalTx.to) && isValidAddress(approvalTx.from),
   },
   {
     property: 'sourceAmount',
@@ -181,9 +179,11 @@ export async function fetchTradesInfo ({
   const newQuotes = tradesResponse.reduce((aggIdTradeMap, quote) => {
     if (quote.trade && !quote.error && validateData(QUOTE_VALIDATORS, quote, tradeURL)) {
       const constructedTrade = constructTxParams({
-        ...quote.trade,
+        to: quote.trade.to,
+        from: quote.trade.from,
+        data: quote.trade.data,
         amount: decimalToHex(quote.trade.value),
-        gas: `0x${decimalToHex(quote.maxGas)}`,
+        gas: decimalToHex(quote.maxGas),
       })
 
       let { approvalNeeded } = quote
