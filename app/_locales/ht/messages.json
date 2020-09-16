@@ -118,17 +118,8 @@
   "connect": {
     "message": "Konekte"
   },
-  "connectingToKovan": {
-    "message": "Konekte nan Kovan Tès Rezo a"
-  },
   "connectingToMainnet": {
     "message": "Konekte ak Prensipal Conflux Rezo a"
-  },
-  "connectingToRopsten": {
-    "message": "Konekte ak Ropsten Tès Rezo a"
-  },
-  "connectingToRinkeby": {
-    "message": "Konekte nan Rinkeby Tès Rezo a"
   },
   "continueToCoinSwitch": {
     "message": "Kontinye CoinSwitch"

@@ -236,23 +236,11 @@
   "connectingTo": {
     "message": "در حال اتصال به 1$1"
   },
-  "connectingToKovan": {
-    "message": "در حال اتصال به شبکه آزمایشی Kovan"
-  },
   "connectingToMainnet": {
     "message": "در حال اتصال به شبکه اصلی ایتریم"
   },
-  "connectingToRopsten": {
-    "message": "در حال اتصال به شبکه آزمایشی Ropsten"
-  },
-  "connectingToRinkeby": {
-    "message": "در حال اتصال به شبکه آزمایشی Rinkeby"
-  },
   "connectingToLocalhost": {
-    "message": "در حال اتصال با Localhost 8545"
-  },
-  "connectingToGoerli": {
-    "message": "در حال اتصال به شبکه آزمایشی Goerli "
+    "message": "در حال اتصال با Localhost 12537"
   },
   "continueToWyre": {
     "message": "ادامه به Wyre"
@@ -649,7 +637,7 @@
     "message": "بارگیری بیشتر"
   },
   "localhost": {
-    "message": "Localhost 8545 "
+    "message": "Localhost 12537 "
   },
   "lock": {
     "message": "خروج"

@@ -199,7 +199,12 @@ async function verifyEnglishLocale (fix = false) {
   }
 
   // never consider these messages as unused
-  const messageExceptions = ['appName', 'appDescription', 'restrictedMethods_eth_accounts', 'optionalChainId']
+  const messageExceptions = [
+    'appName',
+    'appDescription',
+    'restrictedMethods_eth_accounts',
+    'optionalChainId',
+  ]
 
   const englishMessages = Object.keys(englishLocale)
   const unusedMessages = englishMessages.filter(

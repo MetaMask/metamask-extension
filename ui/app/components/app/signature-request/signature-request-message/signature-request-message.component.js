@@ -14,26 +14,31 @@ export default class SignatureRequestMessage extends PureComponent {
   renderNode (data) {
     return (
       <div className="signature-request-message--node">
-        {Object.entries(data).map(([label, value], i) => (
-          <div
-            className={classnames('signature-request-message--node', {
-              'signature-request-message--node-leaf':
-                typeof value !== 'object' || value === null,
-            })}
-            key={i}
-          >
-            <span className="signature-request-message--node-label">
-              {label}:{' '}
-            </span>
-            {typeof value === 'object' && value !== null ? (
-              this.renderNode(value)
-            ) : (
-              <span className="signature-request-message--node-value">
-                {value}
+        {Object.entries(data).map(([label, value], i) => {
+          if (value === true || value === false) {
+            value = value.toString()
+          }
+          return (
+            <div
+              className={classnames('signature-request-message--node', {
+                'signature-request-message--node-leaf':
+                  typeof value !== 'object' || value === null,
+              })}
+              key={i}
+            >
+              <span className="signature-request-message--node-label">
+                {label}:{' '}
               </span>
-            )}
-          </div>
-        ))}
+              {typeof value === 'object' && value !== null ? (
+                this.renderNode(value)
+              ) : (
+                <span className="signature-request-message--node-value">
+                  {value}
+                </span>
+              )}
+            </div>
+          )
+        })}
       </div>
     )
   }

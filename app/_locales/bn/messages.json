@@ -236,23 +236,11 @@
   "connectingTo": {
     "message": " $1 এর সাথে সংযোগ করছে"
   },
-  "connectingToKovan": {
-    "message": "কোভান টেস্ট নেটওয়ার্কের সাথে সংযোগ করছে"
-  },
   "connectingToMainnet": {
     "message": "মুখ্য Conflux নেটওয়ার্কের সাথে সংযোগ করছে"
   },
-  "connectingToRopsten": {
-    "message": "রপস্টেন টেস্ট নেটওয়ার্কের সাথে সংযোগ করছে"
-  },
-  "connectingToRinkeby": {
-    "message": "রিঙ্কেবি টেস্ট নেটওয়ার্কের সাথে সংযোগ করছে"
-  },
   "connectingToLocalhost": {
-    "message": "লোকালহোস্ট 8545 এর সাথে সংযোগ করছে"
-  },
-  "connectingToGoerli": {
-    "message": "গোয়েরলি টেস্ট নেটওয়ার্কের সাথে সংযোগ করা হচ্ছে"
+    "message": "লোকালহোস্ট 12537 এর সাথে সংযোগ করছে"
   },
   "continueToWyre": {
     "message": "Wyre এ অবিরত রাখুন"
@@ -649,7 +637,7 @@
     "message": "আরও লোড করুন"
   },
   "localhost": {
-    "message": "লোকালহোস্ট 8545"
+    "message": "লোকালহোস্ট 12537"
   },
   "lock": {
     "message": "লগ আউট করুন"

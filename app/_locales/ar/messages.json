@@ -236,23 +236,11 @@
   "connectingTo": {
     "message": "جارِ الاتصال بـ $1"
   },
-  "connectingToKovan": {
-    "message": "الاتصال بشبكة اختبار Kovan"
-  },
   "connectingToMainnet": {
     "message": "جارِ الاتصال بشبكة إيثيريوم الرئيسية"
   },
-  "connectingToRopsten": {
-    "message": "جارِ الاتصال بشبكة اختبار Ropsten "
-  },
-  "connectingToRinkeby": {
-    "message": "جارِ الاتصال بشبكة اختبار Rinkeby "
-  },
   "connectingToLocalhost": {
-    "message": "جاري الاتصال بالمضيف المحلي 8545"
-  },
-  "connectingToGoerli": {
-    "message": "الاتصال بشبكة اختبار Goerli"
+    "message": "جاري الاتصال بالمضيف المحلي 12537"
   },
   "continueToWyre": {
     "message": "الاستمرار إلى Wyre"
@@ -642,7 +630,7 @@
     "message": "تحميل المزيد"
   },
   "localhost": {
-    "message": "المضيف المحلي 8545"
+    "message": "المضيف المحلي 12537"
   },
   "lock": {
     "message": "تسجيل الخروج"

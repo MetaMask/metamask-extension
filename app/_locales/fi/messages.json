@@ -233,23 +233,11 @@
   "connectingTo": {
     "message": "Yhdistetään summaan $1 "
   },
-  "connectingToKovan": {
-    "message": "Yhdistetään Kovanin koeverkkoon"
-  },
   "connectingToMainnet": {
     "message": "Yhdistetään Confluxin pääverkkoon"
   },
-  "connectingToRopsten": {
-    "message": "Yhdistetään Ropstenin koeverkkoon"
-  },
-  "connectingToRinkeby": {
-    "message": "Yhdistetään Rinkebyn koeverkkoon"
-  },
   "connectingToLocalhost": {
-    "message": "Yhdistetään kohteeseen Localhost 8545"
-  },
-  "connectingToGoerli": {
-    "message": "Yhdistetään Goerlin testiverkostoon"
+    "message": "Yhdistetään kohteeseen Localhost 12537"
   },
   "continueToWyre": {
     "message": "Jatka Wyreen"
@@ -646,7 +634,7 @@
     "message": "Lataa lisää"
   },
   "localhost": {
-    "message": "Paikallisjoukko 8545"
+    "message": "Paikallisjoukko 12537"
   },
   "lock": {
     "message": "Kirjaudu ulos"

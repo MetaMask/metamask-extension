@@ -187,7 +187,13 @@ export default class NetworkController extends EventEmitter {
     this.providerConfig = providerConfig
   }
 
-  async setProviderType (type, rpcTarget = '', ticker = 'CFX', nickname = '') {
+  async setProviderType (
+    type,
+    rpcTarget = '',
+    ticker = 'CFX',
+    nickname = '',
+    refreshChainId
+  ) {
     assert(
       type === MAINNET ||
         type === LOCALHOST ||
@@ -201,9 +207,18 @@ export default class NetworkController extends EventEmitter {
     // )
     this.setNetworkState('loading')
     rpcTarget = rpcTarget || RPC_URLS[type]
-    const { chainId } = rpcTarget
-      ? (await getStatus(rpcTarget).catch(() => {})) || { chainId: '0x0' }
-      : { chainId: '0x0' }
+
+    const { chainId } = await (async () => {
+      // update the providerConfig without chainId and get the chainId defered
+      if (refreshChainId) {
+        return rpcTarget
+          ? (await getStatus(rpcTarget).catch(() => {})) || { chainId: '0x0' }
+          : { chainId: '0x0' }
+      } else {
+        return { chainId: '0x0' }
+      }
+    })()
+
     const providerConfig = {
       type,
       rpcTarget,
@@ -212,6 +227,10 @@ export default class NetworkController extends EventEmitter {
       chainId: parseInt(chainId, 16),
     }
     this.providerConfig = providerConfig
+    if (!refreshChainId) {
+      this.setNetworkState('loading')
+      this.setProviderType(type, rpcTarget, ticker, nickname, true)
+    }
   }
 
   resetConnection () {

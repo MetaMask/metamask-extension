@@ -236,23 +236,11 @@
   "connectingTo": {
     "message": "Se conectează la $1"
   },
-  "connectingToKovan": {
-    "message": "Se conectează la rețeaua de test Kovan"
-  },
   "connectingToMainnet": {
     "message": "Se conectează la rețeaua Conflux principală"
   },
-  "connectingToRopsten": {
-    "message": "Se conectează la rețeaua de test Ropsten"
-  },
-  "connectingToRinkeby": {
-    "message": "Se conectează la Rețeaua de test Rinkeby"
-  },
   "connectingToLocalhost": {
-    "message": "Se conectează la localhost 8545"
-  },
-  "connectingToGoerli": {
-    "message": "Se conectează la rețeaua de test Goerli"
+    "message": "Se conectează la localhost 12537"
   },
   "continueToWyre": {
     "message": "Continuați la Wyre"

@@ -604,10 +604,7 @@ const initialize = () => {
       confluxJS.provider.sendAsync(
         {
           method: 'cfx_sign',
-          params: [
-            conflux.selectedAddress,
-            keccak256.digest(sampleData),
-          ],
+          params: [conflux.selectedAddress, keccak256.digest(sampleData)],
           from: conflux.selectedAddress,
         },
         (err, result) => {
@@ -638,6 +635,7 @@ const initialize = () => {
           Person: [
             { name: 'name', type: 'string' },
             { name: 'wallet', type: 'address' },
+            { name: 'happy', type: 'bool' },
           ],
           Mail: [
             { name: 'from', type: 'Person' },
@@ -654,10 +652,12 @@ const initialize = () => {
         },
         message: {
           from: {
+            happy: true,
             name: 'Cow',
             wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
           },
           to: {
+            happy: false,
             name: 'Bob',
             wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
           },

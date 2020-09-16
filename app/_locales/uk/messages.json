@@ -236,23 +236,11 @@
   "connectingTo": {
     "message": "Під'єднуємось до $1"
   },
-  "connectingToKovan": {
-    "message": "Підключення до тестової мережі Kovan"
-  },
   "connectingToMainnet": {
     "message": "З'єднуємось з Головною мережею Conflux"
   },
-  "connectingToRopsten": {
-    "message": "Під'єднуємось до Тестової мережі Ropsten"
-  },
-  "connectingToRinkeby": {
-    "message": "Під'єднуємось до тестової мережі Rinkeby"
-  },
   "connectingToLocalhost": {
-    "message": "Під'єднуємось до локального хосту 8545"
-  },
-  "connectingToGoerli": {
-    "message": "Підключення до тестової мережі Goerli"
+    "message": "Під'єднуємось до локального хосту 12537"
   },
   "continueToWyre": {
     "message": "Продовжити у Wyre"
@@ -649,7 +637,7 @@
     "message": "Завантажити більше"
   },
   "localhost": {
-    "message": "Локальний хост 8545"
+    "message": "Локальний хост 12537"
   },
   "lock": {
     "message": "Вийти"

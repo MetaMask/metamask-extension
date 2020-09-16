@@ -233,23 +233,11 @@
   "connectingTo": {
     "message": "Povezuje se na $1"
   },
-  "connectingToKovan": {
-    "message": "Povezuje se na test mrežu Kovan"
-  },
   "connectingToMainnet": {
     "message": "Povezuje se na glavnu Conflux mrežu"
   },
-  "connectingToRopsten": {
-    "message": "Povezuje se na Ropsten Test mrežu"
-  },
-  "connectingToRinkeby": {
-    "message": "Poezivanje na Rinkeby Test mrežu"
-  },
   "connectingToLocalhost": {
-    "message": "Povezuje se na lokalnog hosta 8545"
-  },
-  "connectingToGoerli": {
-    "message": "Povezuje se sa test mrežom Goerli "
+    "message": "Povezuje se na lokalnog hosta 12537"
   },
   "continueToWyre": {
     "message": "Nastavite ka Wyre"

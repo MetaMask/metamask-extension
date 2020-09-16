@@ -233,23 +233,11 @@
   "connectingTo": {
     "message": "Menyambungkan kepada $1"
   },
-  "connectingToKovan": {
-    "message": "Menyambungkan kepada Rangkaian Ujian Kovan"
-  },
   "connectingToMainnet": {
     "message": "Menyambung kepada Rangkaian Conflux Utama"
   },
-  "connectingToRopsten": {
-    "message": "Menyambungkan kepada Rangkaian Ujian Ropsten"
-  },
-  "connectingToRinkeby": {
-    "message": "Menyambung kepada Rangkaian Ujian Rinkeby"
-  },
   "connectingToLocalhost": {
-    "message": "Menyambung kepada Localhost 8545"
-  },
-  "connectingToGoerli": {
-    "message": "Menyambung kepada Rangkaian Ujian Goerli"
+    "message": "Menyambung kepada Localhost 12537"
   },
   "continueToWyre": {
     "message": "Teruskan ke Wyre"

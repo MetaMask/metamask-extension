@@ -236,23 +236,11 @@
   "connectingTo": {
     "message": "Jungiamasi prie $1"
   },
-  "connectingToKovan": {
-    "message": "Jungiamasi prie „Kovan“ bandomojo tinklo"
-  },
   "connectingToMainnet": {
     "message": "Jungiamasi prie pagrindinio „Conflux“ tinklo"
   },
-  "connectingToRopsten": {
-    "message": "Jungiamasi prie „Ropsten“ bandomojo tinklo"
-  },
-  "connectingToRinkeby": {
-    "message": "Jungiamasi prie „Rinkeby“ bandomojo tinklo"
-  },
   "connectingToLocalhost": {
-    "message": "Jungiamasi prie vietinio serverio 8545"
-  },
-  "connectingToGoerli": {
-    "message": "Jungiamasi prie „Goerli“ bandomojo tinklo"
+    "message": "Jungiamasi prie vietinio serverio 12537"
   },
   "continueToWyre": {
     "message": "Tęsti su „Wyre“"
@@ -649,7 +637,7 @@
     "message": "Įkelti daugiau"
   },
   "localhost": {
-    "message": "Vietinis serveris 8545"
+    "message": "Vietinis serveris 12537"
   },
   "lock": {
     "message": "Atsijungti"

@@ -233,23 +233,11 @@
   "connectingTo": {
     "message": "Σύνδεση με $1"
   },
-  "connectingToKovan": {
-    "message": "Σύνδεση στο Δοκιμαστικό Δίκτυο Kovan"
-  },
   "connectingToMainnet": {
     "message": "Σύνδεση στο Κύριο Δίκτυο Conflux"
   },
-  "connectingToRopsten": {
-    "message": "Σύνδεση με το Δίκτυο Δοκιμών Ropsten"
-  },
-  "connectingToRinkeby": {
-    "message": "Σύνδεση στο Δίκτυο Δοκιμών Rinkeby"
-  },
   "connectingToLocalhost": {
-    "message": "Σύνδεση στον Τοπικό Υπολογιστή 8545"
-  },
-  "connectingToGoerli": {
-    "message": "Σύνδεση στο Δίκτυο Δοκιμής Goerli "
+    "message": "Σύνδεση στον Τοπικό Υπολογιστή 12537"
   },
   "continueToWyre": {
     "message": "Συνεχίστε στο Wyre"
@@ -646,7 +634,7 @@
     "message": "Φόρτωση Περισσότερων"
   },
   "localhost": {
-    "message": "Τοπικός Υπολογιστής  8545"
+    "message": "Τοπικός Υπολογιστής  12537"
   },
   "lock": {
     "message": "Αποσύνδεση"

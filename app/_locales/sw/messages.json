@@ -230,23 +230,11 @@
   "connectingTo": {
     "message": "Inaunganisha kwenye $1"
   },
-  "connectingToKovan": {
-    "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Kovan"
-  },
   "connectingToMainnet": {
     "message": "Inaunganisha kwenye Mtandao Mkuu wa Conflux"
   },
-  "connectingToRopsten": {
-    "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Ropsten"
-  },
-  "connectingToRinkeby": {
-    "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Rinkeby"
-  },
   "connectingToLocalhost": {
-    "message": "Inaunganisha kwenye Localhost 8545"
-  },
-  "connectingToGoerli": {
-    "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Goerli"
+    "message": "Inaunganisha kwenye Localhost 12537"
   },
   "continueToWyre": {
     "message": "Endelea kwenye Wyre"

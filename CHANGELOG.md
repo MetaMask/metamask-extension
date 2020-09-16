@@ -2,6 +2,13 @@
 
 ## Current Develop Branch
 
+## 0.3.6 Wed Sep 16 2020
+
+- fix: network loading indicator (#216)
+- fix: remove index of other languages (#218)
+- fix: render boolean value in signature request message (#220)
+- fix: cors error sending request to scan on firefox (#217)
+
 ## 0.3.5 Mon Aug 31 2020
 
 - fix(tx-list): toLowerCase error when display contract creation tx (#210)

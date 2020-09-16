@@ -233,23 +233,11 @@
   "connectingTo": {
     "message": "$1에 연결"
   },
-  "connectingToKovan": {
-    "message": "Kovan 테스트넷 접속 중"
-  },
   "connectingToMainnet": {
     "message": "이더리움 메인넷 접속 중"
   },
-  "connectingToRopsten": {
-    "message": "Ropsten 테스트넷 접속 중"
-  },
-  "connectingToRinkeby": {
-    "message": "Rinkeby 테스트넷 접속 중"
-  },
   "connectingToLocalhost": {
-    "message": "로컬호스트 8545에 연결 중"
-  },
-  "connectingToGoerli": {
-    "message": "Goerli 테스트 네트워크에 연결하는 중"
+    "message": "로컬호스트 12537에 연결 중"
   },
   "continueToWyre": {
     "message": "Wyre로 계속 진행"
@@ -643,7 +631,7 @@
     "message": "더 많이 로딩"
   },
   "localhost": {
-    "message": "로컬호스트 8545"
+    "message": "로컬호스트 12537"
   },
   "lock": {
     "message": "로그아웃"

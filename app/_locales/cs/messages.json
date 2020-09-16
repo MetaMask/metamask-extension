@@ -70,17 +70,8 @@
   "confirmPassword": {
     "message": "Potvrdit heslo"
   },
-  "connectingToKovan": {
-    "message": "Připojuji se k Kovan Test Network"
-  },
   "connectingToMainnet": {
     "message": "Připojuji se k Main Conflux Network"
-  },
-  "connectingToRopsten": {
-    "message": "Připojuji se k Ropsten Test Network"
-  },
-  "connectingToRinkeby": {
-    "message": "Připojuji se k Rinkeby Test Network"
   },
   "continueToCoinSwitch": {
     "message": "Přejít na CoinSwitch"

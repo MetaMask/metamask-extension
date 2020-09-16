@@ -245,23 +245,14 @@
   "connectingTo": {
     "message": "連線到$1"
   },
-  "connectingToKovan": {
-    "message": "連線到 Kovan 測試網路"
-  },
   "connectingToMainnet": {
-    "message": "連線到主 Conflux 測試網路"
+    "message": "連線到主 Conflux Oceanus"
   },
-  "connectingToRopsten": {
-    "message": "連線到 Ropsten 測試網路"
-  },
-  "connectingToRinkeby": {
-    "message": "連線到 Rinkeby 測試網路"
+  "connectingToTestnet": {
+    "message": "連線到 Conflux Testnet"
   },
   "connectingToLocalhost": {
-    "message": "連接至本地主機 8545"
-  },
-  "connectingToGoerli": {
-    "message": "連接至 Goerli 測試網路"
+    "message": "連接至本地主機 12537"
   },
   "continueToWyre": {
     "message": "繼續至 Wyre"
