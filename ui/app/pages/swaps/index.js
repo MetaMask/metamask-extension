@@ -248,10 +248,10 @@ export default function Swap () {
               path={VIEW_QUOTE_ROUTE}
               exact
               render={() => {
-                if (Object.values(quotes)?.length) {
+                if (Object.values(quotes).length) {
                   return (
                     <ViewQuote
-                      numberOfQuotes={Object.values(quotes)?.length}
+                      numberOfQuotes={Object.values(quotes).length}
                       onSubmit={onSubmit}
                       onCancel={onRetry}
                     />
