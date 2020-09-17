@@ -20,7 +20,11 @@
     background: $primary-blue;
     color: white;
     height: 40px;
-    width: 100px !important;
+  .unconnected-account-alert__footer &__dismiss-button {
+    background: $primary-blue;
+    color: white;
+    height: 40px;
+    width: 100px;
     border: 0;
     border-radius: 100px;
   }
