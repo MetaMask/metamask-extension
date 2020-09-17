@@ -594,7 +594,7 @@ export default class TransactionController extends EventEmitter {
 
         const metametricsId = this.preferencesStore.getState().metaMetricsId
         if (metametricsId && txMeta.swapMetaData && txReceipt.status !== '0x0') {
-          segment.track({ event: 'Swap Completed', userId: metametricsId, context: segmentContext })
+          segment.track({ event: 'Swap Completed', userId: metametricsId, context: segmentContext, category: 'swaps' })
           segment.track({
             event: 'Swap Completed',
             properties: {
@@ -604,15 +604,17 @@ export default class TransactionController extends EventEmitter {
             context: segmentContext,
             anonymousId: METAMETRICS_ANONYMOUS_ID,
             excludeMetaMetricsId: true,
+            category: 'swaps'
           })
         } else if (metametricsId && txMeta.swapMetaData) {
-          segment.track({ event: 'Swap Failed', userId: metametricsId, context: segmentContext })
+          segment.track({ event: 'Swap Failed', userId: metametricsId, context: segmentContext, category: 'swaps' })
           segment.track({
             event: 'Swap Failed',
-            roperties: { ...txMeta.swapMetaData },
+            properties: { ...txMeta.swapMetaData },
             anonymousId: METAMETRICS_ANONYMOUS_ID,
             excludeMetaMetricsId: true,
             context: segmentContext,
+            category: 'swaps'
           })
         }
       }
