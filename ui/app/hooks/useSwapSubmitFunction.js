@@ -120,7 +120,7 @@ export function useSwapSubmitFunction ({
     setSubmittingSwap(true)
     let usedTradeTxParams = usedQuote.trade
 
-    const estimatedGasLimitWithMultiplier = (new BigNumber(usedQuote?.gasEstimate || usedQuote?.averageGas || '0x0', 16).times(1.4, 10)).round(0).toString(16)
+    const estimatedGasLimitWithMultiplier = (new BigNumber(usedQuote?.gasEstimate || decimalToHex(usedQuote?.averageGas || 0), 16).times(1.4, 10)).round(0).toString(16)
     const maxGasLimit = hexMax((`0x${decimalToHex(usedQuote?.maxGas || 0)}`), estimatedGasLimitWithMultiplier)
     usedTradeTxParams.gas = maxGasLimit
 
