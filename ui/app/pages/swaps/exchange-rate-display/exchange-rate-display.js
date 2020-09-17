@@ -16,7 +16,7 @@ export default function ExchangeRateDisplay ({
   className,
 }) {
   const [showPrimaryToSecondary, setShowPrimaryToSecondary] = useState(true)
-  const [arrowsRotation, setArrowRotation] = useState(0)
+  const [rotating, setRotating] = useState(false)
 
   const primaryTokenAmount = calcTokenAmount(primaryTokenValue, primaryTokenDecimals)
   const secondaryTokenAmount = calcTokenAmount(secondaryTokenValue, secondaryTokenDecimals)
@@ -48,12 +48,14 @@ export default function ExchangeRateDisplay ({
       <span>{rateToDisplay}</span>
       <span className="exchange-rate-display__bold">{ratiodSymbol}</span>
       <div
-        className="exchange-rate-display__switch-arrows"
+        className={classnames('exchange-rate-display__switch-arrows', {
+          'exchange-rate-display__switch-arrows-rotate': rotating,
+        })}
         onClick={() => {
           setShowPrimaryToSecondary(!showPrimaryToSecondary)
-          setArrowRotation(arrowsRotation + 360)
+          setRotating(true)
         }}
-        style={{ transform: `rotate(${arrowsRotation}deg)` }}
+        onAnimationEnd={() => setRotating(false)}
       >
         <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
