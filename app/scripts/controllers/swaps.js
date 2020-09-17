@@ -187,7 +187,7 @@ export default class SwapsController {
         const {
           topAggId: topAggIdAfterGasEstimates,
           isBest: isBestAfterGasEstimates,
-        } = this._findTopQuoteAggId(newQuotes)
+        } = await this._findTopQuoteAggId(newQuotes)
         topAggId = topAggIdAfterGasEstimates
         if (isBestAfterGasEstimates) {
           newQuotes[topAggId].isBestQuote = true
