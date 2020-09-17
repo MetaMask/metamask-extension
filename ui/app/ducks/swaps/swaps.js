@@ -310,6 +310,8 @@ export const getTopQuote = (state) => {
   return quotes[topAggId]
 }
 
+export const getUsedQuote = (state) => getSelectedQuote(state) || getTopQuote(state)
+
 export const getFetchingQuotes = (state) => state.swaps.fetchingQuotes
 
 export const getShowQuoteLoadingScreen = (state) => state.swaps.showQuoteLoadingScreen
