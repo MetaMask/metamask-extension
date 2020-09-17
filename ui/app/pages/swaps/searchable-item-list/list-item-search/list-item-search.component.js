@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import Fuse from 'fuse.js'
 import InputAdornment from '@material-ui/core/InputAdornment'
+import { usePrevious } from '../../../usePrevious'
 import TextField from '../../../../components/ui/text-field'
 import { usePrevious } from '../../../../hooks/usePrevious'
 
