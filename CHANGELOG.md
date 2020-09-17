@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 0.3.8 Thu Sep 17 2020
+
 - fix: default network is not testnet anymore (#230)
 
 ## 0.3.7 Wed Sep 16 2020
