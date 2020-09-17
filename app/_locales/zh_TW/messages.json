@@ -327,7 +327,7 @@
     "message": "小數點精度"
   },
   "defaultNetwork": {
-    "message": "預設CFX交易網路為測試網路"
+    "message": "預設網路為 Conflux Oceanus"
   },
   "delete": {
     "message": "刪除"
