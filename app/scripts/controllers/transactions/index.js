@@ -76,7 +76,6 @@ export default class TransactionController extends EventEmitter {
     this.signEthTx = opts.signTransaction
     this.inProcessOfSigning = new Set()
     this.version = opts.version
-    this.currentLocale = opts.currentLocale
 
     this.memStore = new ObservableStore({})
     this.query = new EthQuery(this.provider)
@@ -588,7 +587,7 @@ export default class TransactionController extends EventEmitter {
             version: this.version,
             name: 'MetaMask Extension',
           },
-          locale: this.currentLocale.replace('_', '-'),
+          locale: this.preferencesStore.getState().currentLocale.replace('_', '-'),
           page: '/background-process',
           userAgent: window.navigator.userAgent,
         }

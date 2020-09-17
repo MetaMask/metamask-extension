@@ -240,7 +240,6 @@ export default class MetamaskController extends EventEmitter {
       blockTracker: this.blockTracker,
       gasProvider: this.networkController._setNetworkClientTemp.bind(this.networkController),
       version: this.platform.getVersion(),
-      currentLocale: this.preferencesController.store.getState(),
     })
     this.txController.on('newUnapprovedTx', () => opts.showUnapprovedTx())
 
