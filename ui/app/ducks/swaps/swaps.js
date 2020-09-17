@@ -1,7 +1,6 @@
 // Actions
 const SET_FROM_TOKEN = 'metamask/swaps/SET_FROM_TOKEN'
 const SET_TO_TOKEN = 'metamask/swaps/SET_TO_TOKEN'
-const SET_QUOTES = 'metamask/swaps/SET_QUOTES'
 const SET_SUBMITTED_APPROVAL_ID = 'metamask/swaps/SET_SUBMITTED_APPROVAL_ID'
 const SET_CONVERSION_ID = 'metamask/swaps/SET_CONVERSION_ID'
 const SET_SELECTED_QUOTE = 'metamask/swaps/SET_SELECTED_QUOTE'
@@ -26,12 +25,8 @@ const emptyState = {
   submittedApprovalId: null,
   conversionId: null,
   selectedQuote: null,
-  gasPrice: null,
-  gasLimit: null,
   approveTxId: null,
   tradeTxId: null,
-  tradeTxParams: null,
-  approveTxParams: null,
   fetchingQuotes: false,
   showQuoteLoadingScreen: false,
   balanceError: false,
@@ -56,12 +51,6 @@ export default function reduceSwaps (state = {}, action) {
       return {
         ...swapsState,
         toToken: action.value,
-      }
-
-    case SET_QUOTES:
-      return {
-        ...swapsState,
-        quotes: action.value,
       }
 
     case SET_SUBMITTED_APPROVAL_ID:
@@ -172,27 +161,6 @@ export function setSwapToToken (token) {
   }
 }
 
-export function setSubmittedApprovalId (id) {
-  return {
-    type: SET_SUBMITTED_APPROVAL_ID,
-    value: id,
-  }
-}
-
-export function setConversionId (id) {
-  return {
-    type: SET_CONVERSION_ID,
-    value: id,
-  }
-}
-
-export function setSelectedQuote (quote) {
-  return {
-    type: SET_SELECTED_QUOTE,
-    value: quote,
-  }
-}
-
 export function clearSwapsState () {
   return {
     type: CLEAR_SWAPS_STATE,
@@ -220,13 +188,6 @@ export function setFetchingQuotes (fetchingQuotes) {
   }
 }
 
-export function setShowQuoteLoadingScreen (showQuoteLoadingScreen) {
-  return {
-    type: SET_SHOW_QUOTE_LOADING_SCREEN,
-    value: showQuoteLoadingScreen,
-  }
-}
-
 export function setBalanceError (balanceError) {
   return {
     type: SET_BALANCE_ERROR,
@@ -248,13 +209,6 @@ export function setTopAssets (topAssets) {
   }
 }
 
-export function setLoadingQuotesError (loadingQuotesError) {
-  return {
-    type: SET_LOADING_QUOTES_ERROR,
-    value: loadingQuotesError,
-  }
-}
-
 export function setAggregatorMetadata (aggregatorMetadata) {
   return {
     type: SET_AGGREGATOR_METADATA,
@@ -266,13 +220,6 @@ export function setSwapQuotesFetchStartTime (startTime) {
   return {
     type: SET_SWAP_QUOTES_FETCH_START_TIME,
     value: startTime,
-  }
-}
-
-export function setBestQuoteAggId (aggId) {
-  return {
-    type: SET_BEST_QUOTE_AGG_ID,
-    value: aggId,
   }
 }
 
@@ -288,13 +235,9 @@ export const getQuotes = (state) => state.metamask.swapsState.quotes
 
 export const getFetchParams = (state) => state.metamask.swapsState.fetchParams
 
-export const getSubmittedApprovalId = (state) => state.swaps.submittedApprovalId
-
 export const getConversionId = (state) => state.swaps.conversionId
 
 export const getSwapsGasPrice = (state) => state.swaps.gasPrice
-
-export const getSwapsGasLimit = (state) => state.swaps.gasLimit
 
 export const getTradeTxId = (state) => state.metamask.swapsState.tradeTxId
 
@@ -314,15 +257,11 @@ export const getUsedQuote = (state) => getSelectedQuote(state) || getTopQuote(st
 
 export const getFetchingQuotes = (state) => state.swaps.fetchingQuotes
 
-export const getShowQuoteLoadingScreen = (state) => state.swaps.showQuoteLoadingScreen
-
 export const getBalanceError = (state) => state.swaps.balanceError
 
 export const getSwapsTokens = (state) => state.metamask.swapsState.tokens
 
 export const getTopAssets = (state) => state.swaps.topAssets
-
-export const getLoadingQuotesError = (state) => state.swaps.loadingQuotesError
 
 export const getAggregatorMetadata = (state) => state.swaps.aggregatorMetadata
 
@@ -330,15 +269,11 @@ export const getMaxMode = (state) => state.metamask.swapsState.maxMode
 
 export const getQuotesLastFetched = (state) => state.metamask.swapsState.quotesLastFetched
 
-export const getQuotesFetchStartTime = (state) => state.metamask.quotesFetchStartTime
-
 export const getBackgoundSwapRouteState = (state) => state.metamask.swapsState.routeState
 
 export const getCustomSwapsGas = (state) => state.metamask.swapsState.customMaxGas
 
 export const getCustomSwapsGasPrice = (state) => state.metamask.swapsState.customGasPrice
-
-export const getBestQuoteAggId = (state) => state.swaps.bestQuoteAggId
 
 export const getSwapsTradeTxParams = (state) => {
   const { selectedAggId, topAggId, quotes } = getSwapsState(state)
