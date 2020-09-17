@@ -95,6 +95,7 @@ const UnconnectedAccountAlert = () => {
       title={isExtensionUrl(origin) ? t('currentExtension') : new URL(origin).host}
       subtitle={t('currentAccountNotConnected')}
       onClose={onClose}
+      className="unconnected-account-alert"
       contentClassName="unconnected-account-alert__content"
       footerClassName="unconnected-account-alert__footer"
       footer={footer}
