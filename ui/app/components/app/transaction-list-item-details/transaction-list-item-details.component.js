@@ -176,21 +176,27 @@ export default class TransactionListItemDetails extends PureComponent {
                 )
               }
               { this.renderCancel() }
-              <Tooltip title={justCopied ? t('copiedTransactionId') : t('copyTransactionId')}>
+              <Tooltip
+                wrapperClassName="transaction-list-item-details__header-button"
+                containerClassName="transaction-list-item-details__header-button-tooltip-container"
+                title={justCopied ? t('copiedTransactionId') : t('copyTransactionId')}
+              >
                 <Button
                   type="raised"
                   onClick={this.handleCopyTxId}
-                  className="transaction-list-item-details__header-button"
                   disabled={!hash}
                 >
                   <Copy size={10} color="#3098DC" />
                 </Button>
               </Tooltip>
-              <Tooltip title={blockExplorerUrl ? t('viewOnCustomBlockExplorer', [blockExplorerUrl]) : t('viewOnEtherscan')}>
+              <Tooltip
+                wrapperClassName="transaction-list-item-details__header-button"
+                containerClassName="transaction-list-item-details__header-button-tooltip-container"
+                title={blockExplorerUrl ? t('viewOnCustomBlockExplorer', [blockExplorerUrl]) : t('viewOnEtherscan')}
+              >
                 <Button
                   type="raised"
                   onClick={this.handleEtherscanClick}
-                  className="transaction-list-item-details__header-button"
                   disabled={!hash}
                 >
                   <img src="/images/arrow-popout.svg" />

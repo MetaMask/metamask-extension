@@ -19,6 +19,11 @@
   & &__header-button {
     font-size: 0.625rem;
 
+    &-tooltip-container {
+      display: flex !important;
+      height: 100%;
+    }
+
     &:not(:last-child) {
       margin-right: 8px;
     }
