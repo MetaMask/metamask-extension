@@ -391,7 +391,7 @@
     "message": "Decimals of Precision"
   },
   "defaultNetwork": {
-    "message": "The default network for CFX transactions is Test Net."
+    "message": "The default network is Conflux Oceanus."
   },
   "delete": {
     "message": "Delete"

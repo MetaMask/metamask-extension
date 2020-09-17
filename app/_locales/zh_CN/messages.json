@@ -336,7 +336,7 @@
     "message": "小数精度"
   },
   "defaultNetwork": {
-    "message": "默认Conflux交易网络为测试网。"
+    "message": "默认网络为 Conflux Oceanus。"
   },
   "delete": {
     "message": "删除"
