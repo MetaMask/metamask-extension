@@ -419,7 +419,7 @@ export default class SwapsController {
 
     if (!usedGasPrice) {
       usedGasPrice = await this.ethersProvider.getGasPrice()
-      usedGasPrice = usedGasPrice.toString(16)
+      usedGasPrice = usedGasPrice.toHexString()
     }
 
     let topAggId = ''
