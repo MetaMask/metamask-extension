@@ -126,6 +126,13 @@ export default class SwapsController {
       this.setSwapsErrorKey('')
     }
     let newQuotes = await fetchTradesInfo(fetchParams)
+
+    newQuotes = mapValues(newQuotes, (quote) => ({
+      ...quote,
+      sourceTokenInfo: fetchParamsMetaData.sourceTokenInfo,
+      destinationTokenInfo: fetchParamsMetaData.destinationTokenInfo,
+    }))
+
     const quotesLastFetched = Date.now()
 
     let approvalRequired = false
