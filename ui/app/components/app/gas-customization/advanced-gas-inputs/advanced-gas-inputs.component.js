@@ -101,12 +101,12 @@ export default class AdvancedGasInputs extends Component {
     return {}
   }
 
-  renderGasInput ({ value, onChange, errorComponent, errorType, label, title }) {
+  renderGasInput ({ value, onChange, errorComponent, errorType, label, tooltipTitle }) {
     return (
       <div className="advanced-gas-inputs__gas-edit-row">
         <div className="advanced-gas-inputs__gas-edit-row__label">
           { label }
-          <Tooltip title={title} position="top" arrow>
+          <Tooltip title={tooltipTitle} position="top" arrow>
             <i className="fa fa-info-circle" />
           </Tooltip>
         </div>
@@ -181,7 +181,7 @@ export default class AdvancedGasInputs extends Component {
       <div className="advanced-gas-inputs__gas-edit-rows">
         { this.renderGasInput({
           label: this.context.t('gasPrice'),
-          title: this.context.t('gasPriceInfoTooltipContent'),
+          tooltipTitle: this.context.t('gasPriceInfoTooltipContent'),
           value: this.state.gasPrice,
           onChange: this.onChangeGasPrice,
           errorComponent: gasPriceErrorComponent,
@@ -189,7 +189,7 @@ export default class AdvancedGasInputs extends Component {
         }) }
         { this.renderGasInput({
           label: this.context.t('gasLimit'),
-          title: this.context.t('gasLimitInfoTooltipContent'),
+          tooltipTitle: this.context.t('gasLimitInfoTooltipContent'),
           value: this.state.gasLimit,
           onChange: this.onChangeGasLimit,
           errorComponent: gasLimitErrorComponent,
