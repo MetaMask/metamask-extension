@@ -26,7 +26,6 @@ function logWeb3UsageHandler (
   { origin, sendMetrics },
 ) {
   const { action, name } = req.params[0]
-  console.log('LOGGING WEB3 USAGE FOR', origin)
 
   if (!recordedWeb3Usage[origin]) {
     recordedWeb3Usage[origin] = {}
