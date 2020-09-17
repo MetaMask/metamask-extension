@@ -171,7 +171,7 @@ export async function fetchTradesInfo ({
   const urlParams = {
     destinationToken,
     sourceToken,
-    sourceAmount: calcTokenValue(value, sourceDecimals),
+    sourceAmount: calcTokenValue(value, sourceDecimals).toString(10),
     slippage,
     timeout: 10000,
     walletAddress: fromAddress,
