@@ -96,10 +96,6 @@
     color: $scorpion;
     font-size: 12px;
 
-    @media screen and (max-width: $break-small) {
-      padding: 4px 21px;
-    }
-
     &__send-info,
     &__transaction-info,
     &__total-info,
@@ -139,7 +135,7 @@
       }
 
       &__value {
-        font-size: 14px;
+        font-size: 12px;
       }
     }
   }
