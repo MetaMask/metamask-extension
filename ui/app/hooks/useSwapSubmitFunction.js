@@ -241,7 +241,6 @@ export function useSwapSubmitFunction ({
         dispatch(setInitialGasEstimate(selectedAggId, newSelectedQuote.maxGas))
       }
     } catch (e) {
-      console.log('e', e)
       dispatch(setSwapsErrorKey(ERROR_FETCHING_QUOTES))
     }
 
