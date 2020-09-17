@@ -30,6 +30,7 @@ function calcTransactionTimeRemaining (initialTimeEstimate, submittedTime) {
  * @param {bool} isEarliestNonce   - is this transaction the earliest nonce in list
  * @param {number} submittedTime   - the timestamp for when the transaction was submitted
  * @param {number} currentGasPrice - gas price to use for calculation of time
+ * @param {boolean} dontFormat     - Whether the result should be be formatted, or just a number of minutes
  * @returns {string | undefined} i18n formatted string if applicable
  */
 export function useTransactionTimeRemaining (
