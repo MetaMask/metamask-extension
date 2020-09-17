@@ -448,7 +448,7 @@
   "gasLimit": {
     "message": "Ліміт газу"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "Ліміт газу – максимальна кількість одиниць газу, яку ви бажаєте витратити."
   },
   "gasLimitTooLow": {
@@ -463,11 +463,8 @@
   "gasPriceExtremelyLow": {
     "message": "Ціна газу дуже низька"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "Ціна на пальне визначає кількість Ether, яку ви готові заплатити за кожну одиницю пального."
-  },
-  "gasPriceNoDenom": {
-    "message": "Ціна Газу"
   },
   "general": {
     "message": "Загальні"

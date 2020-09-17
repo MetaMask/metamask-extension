@@ -414,7 +414,7 @@
   "gasLimit": {
     "message": "Limitasyon sa Gas"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "Ang limitasyon sa gas ay ang maximum na dami ng mga unit ng gas na handa kang gastusin."
   },
   "gasLimitTooLow": {
@@ -429,11 +429,8 @@
   "gasPriceExtremelyLow": {
     "message": "Napakababa ng Presyo ng Gas"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "Tinutukoy ng presyo ng gas ang halaga ng Ether na handa kang ibayad para sa bawat unit ng gas."
-  },
-  "gasPriceNoDenom": {
-    "message": "Presyo ng Gas"
   },
   "general": {
     "message": "Pangkalahatan"

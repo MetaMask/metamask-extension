@@ -378,9 +378,6 @@
   "gasPriceExtremelyLow": {
     "message": "Precio de Gas excesivamente bajo"
   },
-  "gasPriceNoDenom": {
-    "message": "Precio de Gas"
-  },
   "generalSettingsDescription": {
     "message": "Conversión de divisas, divisa principal, idioma, blockies identicon"
   },

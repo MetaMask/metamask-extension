@@ -439,7 +439,7 @@
   "gasLimit": {
     "message": "Limit paliva"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "Limit GAS je maximálne množstvo jednotiek GAS, ktoré ste ochotní minúť."
   },
   "gasLimitTooLow": {
@@ -454,11 +454,8 @@
   "gasPriceExtremelyLow": {
     "message": "Cena za GAS je mimoriadne nízka"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "Cena za GAS určuje množstvo Ether, ktoré ste ochotní zaplatiť za každú jednotku GAS."
-  },
-  "gasPriceNoDenom": {
-    "message": "Cena GAS"
   },
   "general": {
     "message": "Všeobecne"

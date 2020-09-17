@@ -445,7 +445,7 @@
   "gasLimit": {
     "message": "Όριο Καυσίμου"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "Το όριο αερίου είναι το μέγιστο ποσό μονάδων αερίου τι οποίες είστε διατεθειμένοι να δαπανήσετε."
   },
   "gasLimitTooLow": {
@@ -460,11 +460,8 @@
   "gasPriceExtremelyLow": {
     "message": "Τιμή Καυσίμου Εξαιρετικά Χαμηλή"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "Η τιμή καυσίμου καθορίζει το ποσό των Ether που είστε διατεθειμένοι να πληρώσετε για κάθε μονάδα καυσίμου."
-  },
-  "gasPriceNoDenom": {
-    "message": "Τιμή Gas"
   },
   "general": {
     "message": "Γενικά"

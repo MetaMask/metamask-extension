@@ -441,7 +441,7 @@
   "gasLimit": {
     "message": "Datakraftsgrense "
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "Datakraftgrense er det maksimale antall datakraft du er vilig til å benytte. "
   },
   "gasLimitTooLow": {
@@ -456,11 +456,8 @@
   "gasPriceExtremelyLow": {
     "message": "Datakraftspris ekstremt lav "
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "Datakraftpris angir mengden Ether du er villig til å betale for hver datakraftenhet."
-  },
-  "gasPriceNoDenom": {
-    "message": "Datakraft"
   },
   "general": {
     "message": "Generell"

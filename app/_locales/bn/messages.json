@@ -448,7 +448,7 @@
   "gasLimit": {
     "message": "গ্যাসের সীমা"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "গ্যাসের সীমা হল আপনি যে পরিমাণ গ্যাস খরচ করতে চান তার সর্বোচ্চ ইউনিটের পরিমাণ।"
   },
   "gasLimitTooLow": {
@@ -463,11 +463,8 @@
   "gasPriceExtremelyLow": {
     "message": "গ্যাসের মূল্য অত্যন্ত কম"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "গ্যাসের মূল্য আপনি প্রতি একক গ্যাসের জন্য যে পরিমাণ ইথার প্রদান করতে চান সেটি নির্দেশ করে।"
-  },
-  "gasPriceNoDenom": {
-    "message": "গ্যাসের মূল্য"
   },
   "general": {
     "message": "সাধারণ"

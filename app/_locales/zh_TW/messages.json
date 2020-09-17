@@ -445,7 +445,7 @@
   "gasLimit": {
     "message": "Gas 上限"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "Gas 上限代表願意為交易手續費所付出的最高總價"
   },
   "gasLimitTooLow": {
@@ -460,11 +460,8 @@
   "gasPriceExtremelyLow": {
     "message": "Gas 價格極低"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "Gas 價格代表願意為交易手續費付出的單位價格，價格越高交易處理速度越快"
-  },
-  "gasPriceNoDenom": {
-    "message": "Gas 價格"
   },
   "general": {
     "message": "一般"

@@ -445,7 +445,7 @@
   "gasLimit": {
     "message": "Limit gasa"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "Granica gasa je maksimalni iznos jedinica gasa koje ste voljni da potrošite."
   },
   "gasLimitTooLow": {
@@ -460,11 +460,8 @@
   "gasPriceExtremelyLow": {
     "message": "Cena gasa izuzetno niska"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "Cena gasa određuje količinu Ethera koju ste spremni da platite za svaku jedinicu gasa."
-  },
-  "gasPriceNoDenom": {
-    "message": "Cena gas-a"
   },
   "general": {
     "message": "Opšte"

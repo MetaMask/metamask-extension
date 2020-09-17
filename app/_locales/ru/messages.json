@@ -766,7 +766,7 @@
   "functionType": {
     "message": "Тип функции"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "Лимит газа - это максимальное количество единиц газа, которое вы готовы потратить."
   },
   "gasUsed": {
@@ -775,11 +775,8 @@
   "gasPriceExtremelyLow": {
     "message": "Цена на газ слишком низкая"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "Цена на газ указывает количество эфира, которое вы готовы платить за каждую единицу газа."
-  },
-  "gasPriceNoDenom": {
-    "message": "Цена на газ"
   },
   "general": {
     "message": "Основное"

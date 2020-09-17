@@ -432,7 +432,7 @@
   "gasLimit": {
     "message": "Had Gas"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "Had gas ialah jumlah maksimum unit gas yang anda sedia belanjakan."
   },
   "gasLimitTooLow": {
@@ -447,11 +447,8 @@
   "gasPriceExtremelyLow": {
     "message": "Harga Gas Teramat Rendah"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "Harga gas menentukan jumlah Ether yang anda sedia bayar untuk setiap unit gas."
-  },
-  "gasPriceNoDenom": {
-    "message": "Harga Gas"
   },
   "general": {
     "message": "Am"

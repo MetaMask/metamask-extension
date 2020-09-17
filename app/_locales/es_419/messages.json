@@ -445,7 +445,7 @@
   "gasLimit": {
     "message": "Limite de gas"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "El límite de gas es la cantidad máxima de unidades de gas que estás dispuesto a gastar."
   },
   "gasLimitTooLow": {
@@ -460,11 +460,8 @@
   "gasPriceExtremelyLow": {
     "message": "El precio del gas es extremadamente bajo"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "El precio del gas especifica la cantidad de Ethers que estás dispuesto a pagar por cada unidad de gas."
-  },
-  "gasPriceNoDenom": {
-    "message": "Precio del gas"
   },
   "generalSettingsDescription": {
     "message": "Conversión de moneda, moneda principal, idioma, blockies identicon"

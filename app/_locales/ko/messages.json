@@ -445,7 +445,7 @@
   "gasLimit": {
     "message": "가스 한도"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "가스 한도는 당신이 기꺼이 소비할 수 있는 가스의 최대 수량입니다."
   },
   "gasLimitTooLow": {
@@ -460,11 +460,8 @@
   "gasPriceExtremelyLow": {
     "message": "가스 가격 매우 낮음"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "가스 가격은 가스 1당 지불할 gwei 단위의 이더 수량을 명시합니다."
-  },
-  "gasPriceNoDenom": {
-    "message": "가스 가격"
   },
   "general": {
     "message": "일반"

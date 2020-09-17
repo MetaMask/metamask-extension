@@ -444,7 +444,7 @@
   "gasLimit": {
     "message": "Ograničenje goriva"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "Ograničenje za gorivo predstavlja najveći broj jedinica goriva koje ste spremi potrošiti."
   },
   "gasLimitTooLow": {
@@ -459,11 +459,8 @@
   "gasPriceExtremelyLow": {
     "message": "Iznimno niska cijena goriva"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "Cijena goriva odnosi se na vrijednost Ether koju ste spremni platiti za svaku jedinicu goriva."
-  },
-  "gasPriceNoDenom": {
-    "message": "Cijena goriva"
   },
   "general": {
     "message": "Opće"

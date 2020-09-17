@@ -444,7 +444,7 @@
   "gasLimit": {
     "message": "الحد الأقصى لوحدات جاس"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "حد عملة جاس هو الحد الأقصى لمقدار وحدات جاس التي ترغب في إنفاقها."
   },
   "gasLimitTooLow": {
@@ -459,11 +459,8 @@
   "gasPriceExtremelyLow": {
     "message": "سعر الجاس منخفض للغاية"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "يحدد سعر الغاز مقدار الإيثر الذي تكون على استعداد لدفعه لكل وحدة غاز."
-  },
-  "gasPriceNoDenom": {
-    "message": "سعر عملة جاس"
   },
   "general": {
     "message": "عام"
