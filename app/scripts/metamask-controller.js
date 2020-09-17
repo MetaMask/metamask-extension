@@ -28,7 +28,7 @@ import {
 import ComposableObservableStore from './lib/ComposableObservableStore'
 import AccountTracker from './lib/account-tracker'
 import createLoggerMiddleware from './lib/createLoggerMiddleware'
-import createMethodMiddleware from './lib/createMethodMiddleware'
+import createMethodMiddleware from './lib/rpc-method-middleware'
 import createOriginMiddleware from './lib/createOriginMiddleware'
 import createTabIdMiddleware from './lib/createTabIdMiddleware'
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware'
