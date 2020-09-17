@@ -441,7 +441,7 @@
   "gasLimit": {
     "message": "Límit de gas"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "El límit de gas és la màxima quantitat d'unitats de gas que estàs disposat a gastar."
   },
   "gasLimitTooLow": {
@@ -456,11 +456,8 @@
   "gasPriceExtremelyLow": {
     "message": "Preu del Gas Extremadament Baix"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "El preu del gas especifica la quantitat d'Ether que estàs disposat a pagar per cada unitat de gas."
-  },
-  "gasPriceNoDenom": {
-    "message": "Preu del Gas"
   },
   "generalSettingsDescription": {
     "message": "Conversió de divises, divisa principal, idioma, icones d'identificació única"

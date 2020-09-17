@@ -448,7 +448,7 @@
   "gasLimit": {
     "message": "محدوده گاز"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "محدوده گاز حد اکثر تعداد واحدات گاز است که میخواهید مصرف نمایید."
   },
   "gasLimitTooLow": {
@@ -463,11 +463,8 @@
   "gasPriceExtremelyLow": {
     "message": "قیمت گاز خیلی کم است"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "قیمت گاز مبلغ ایتر را که تصمیم پرداخت برای هر واحد گاز را داشته باشید، مشخص میکند."
-  },
-  "gasPriceNoDenom": {
-    "message": "قیمت گاز"
   },
   "general": {
     "message": "عمومی"

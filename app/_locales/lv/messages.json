@@ -444,7 +444,7 @@
   "gasLimit": {
     "message": "Gas robežvērtība"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "Gas robežvērtība ir maksimālais Gas vienību skaits, ko vēlaties tērēt."
   },
   "gasLimitTooLow": {
@@ -459,11 +459,8 @@
   "gasPriceExtremelyLow": {
     "message": "Ārkārtīgi zema Gas cena"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "Gas cena norāda Ether summu, ko vēlaties maksāt par katru Gas vienību."
-  },
-  "gasPriceNoDenom": {
-    "message": "Gas cena"
   },
   "general": {
     "message": "Vispārīgi"

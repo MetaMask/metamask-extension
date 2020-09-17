@@ -448,7 +448,7 @@
   "gasLimit": {
     "message": "Dujų apribojimas"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "Dujų apribojimas yra maksimalus dujų vienetų, kuriuos pageidaujate išleisti, skaičius."
   },
   "gasLimitTooLow": {
@@ -463,11 +463,8 @@
   "gasPriceExtremelyLow": {
     "message": "Dujų kaina ypatingai maža"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "Dujų kaina nurodo eterių sumą, kurią pageidaujate sumokėti už kiekvieną dujų vienetą."
-  },
-  "gasPriceNoDenom": {
-    "message": "Dujų kaina"
   },
   "general": {
     "message": "Bendra"

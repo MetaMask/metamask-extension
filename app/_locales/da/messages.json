@@ -444,7 +444,7 @@
   "gasLimit": {
     "message": "Gas-grænse"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "Gasgrænse er den maksimale mængde gasenheder, du er villig til at bruge."
   },
   "gasLimitTooLow": {
@@ -459,11 +459,8 @@
   "gasPriceExtremelyLow": {
     "message": "Ekstremt Lav Brændstofspris"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "Brændstofpris specificerer den mængde Ether, du er villig til at betale for hver brændstofenhed."
-  },
-  "gasPriceNoDenom": {
-    "message": "Brændstofpris"
   },
   "general": {
     "message": "Generelt"

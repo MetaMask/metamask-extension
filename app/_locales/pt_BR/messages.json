@@ -442,7 +442,7 @@
   "gasLimit": {
     "message": "Limite de Gás"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "O limite de gás é a quantidade máxima de unidades de gás que você está disposto a gastar."
   },
   "gasLimitTooLow": {
@@ -457,11 +457,8 @@
   "gasPriceExtremelyLow": {
     "message": "Preço de Gas extremamente baixo"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "O preço do gás especifica a quantidade de Ether que você está disposto a pagar por cada unidade de gás."
-  },
-  "gasPriceNoDenom": {
-    "message": "Preço do Gás"
   },
   "general": {
     "message": "Geral"

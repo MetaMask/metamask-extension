@@ -433,7 +433,7 @@
   "gasLimit": {
     "message": "Gaslimit"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "Die Gasgrenze ist die Höchstmenge an Gaseinheiten, die Sie auszugeben bereit sind."
   },
   "gasLimitTooLow": {
@@ -448,11 +448,8 @@
   "gasPriceExtremelyLow": {
     "message": "Gaspreis extrem niedrig"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "Der Gaspreis gibt die Menge Ether an, die Sie für jede Einheit Gas zu zahlen bereit sind."
-  },
-  "gasPriceNoDenom": {
-    "message": "Gaspreis"
   },
   "general": {
     "message": "Allgemein"

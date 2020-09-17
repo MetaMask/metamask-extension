@@ -14,7 +14,6 @@ import DepositEtherModal from './deposit-ether-modal'
 import AccountDetailsModal from './account-details-modal'
 import ExportPrivateKeyModal from './export-private-key-modal'
 import HideTokenConfirmationModal from './hide-token-confirmation-modal'
-import NotifcationModal from './notification-modal'
 import QRScanner from './qr-scanner'
 
 import ConfirmRemoveAccount from './confirm-remove-account'
@@ -202,30 +201,6 @@ const MODALS = {
     },
     contentStyle: {
       borderRadius: '8px',
-    },
-  },
-
-  GAS_PRICE_INFO_MODAL: {
-    contents: <NotifcationModal header="gasPriceNoDenom" message="gasPriceInfoModalContent" />,
-    mobileModalStyle: {
-      width: '95%',
-      top: getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
-    },
-    laptopModalStyle: {
-      width: '449px',
-      top: 'calc(33% + 45px)',
-    },
-  },
-
-  GAS_LIMIT_INFO_MODAL: {
-    contents: <NotifcationModal header="gasLimit" message="gasLimitInfoModalContent" />,
-    mobileModalStyle: {
-      width: '95%',
-      top: getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
-    },
-    laptopModalStyle: {
-      width: '449px',
-      top: 'calc(33% + 45px)',
     },
   },
 

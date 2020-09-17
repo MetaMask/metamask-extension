@@ -448,7 +448,7 @@
   "gasLimit": {
     "message": "የነዳጅ ገደብ"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "የነዳጅ ገደብ እርስዎ ወጪ ለማድረግ ዝግጁ የሆኑት ከፍተኛው የነዳጅ መጠን ማለት ነው።"
   },
   "gasLimitTooLow": {
@@ -463,11 +463,8 @@
   "gasPriceExtremelyLow": {
     "message": "የነዳጅ ዋጋ እጅግ በጣም ዝቅ ያለ ነው"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "የነዳጅ ዋጋ እርስዎ ለእያንዳንዱ የነዳጅ መጠን መክፈል የሚፈልጉትን የ Ether መጠን ይገልጻል።"
-  },
-  "gasPriceNoDenom": {
-    "message": "የነዳጅ ዋጋ"
   },
   "general": {
     "message": "አጠቃላይ"

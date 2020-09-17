@@ -448,7 +448,7 @@
   "gasLimit": {
     "message": "गैस की सीमा"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "गैस की सीमा गैस के यूनिट की अधिकतम राशि है जिसे आप खर्च करना चाहते हैं।"
   },
   "gasLimitTooLow": {
@@ -463,11 +463,8 @@
   "gasPriceExtremelyLow": {
     "message": "गैस मूल्य बहुत कम है"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "गैस की कीमत, उस ईथर की मात्रा को निर्दिष्ट करती है जिसे आप गैस की प्रत्येक इकाई के लिए भुगतान करने के इच्छुक हैं।"
-  },
-  "gasPriceNoDenom": {
-    "message": "गैस का मूल्य"
   },
   "general": {
     "message": "सामान्य"

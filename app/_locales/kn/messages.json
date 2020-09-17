@@ -448,7 +448,7 @@
   "gasLimit": {
     "message": "ಗ್ಯಾಸ್ ಮಿತಿ"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "ಗ್ಯಾಸ್‌ ಮಿತಿ ಎಂದರೆ ನೀವು ಖರ್ಚು ಮಾಡಲು ಸಿದ್ಧವಿರುವ ಗ್ಯಾಸ್‌ನ ಗರಿಷ್ಠ ಪ್ರಮಾಣ."
   },
   "gasLimitTooLow": {
@@ -463,11 +463,8 @@
   "gasPriceExtremelyLow": {
     "message": "ಗ್ಯಾಸ್ ದರವು ಅತ್ಯಂತ ಕಡಿಮೆಯಿದೆ"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "ಗ್ಯಾಸ್ ದರವು ಪ್ರತಿ ಯೂನಿಟ್ ಗ್ಯಾಸ್‌ಗೆ ನೀವು ಪಾವತಿಸಲು ಸಿದ್ಧವಿರುವ ಎಥರ್‌ನ ಪ್ರಮಾಣವನ್ನು ಸೂಚಿಸುತ್ತದೆ."
-  },
-  "gasPriceNoDenom": {
-    "message": "ಗ್ಯಾಸ್ ದರ"
   },
   "general": {
     "message": "ಸಾಮಾನ್ಯ"

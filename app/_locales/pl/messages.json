@@ -445,7 +445,7 @@
   "gasLimit": {
     "message": "Limit gazu"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "Limit gazu to maksymalna ilość jednostek gazu, którą jesteś skłonny użyć w transakcji."
   },
   "gasLimitTooLow": {
@@ -460,11 +460,8 @@
   "gasPriceExtremelyLow": {
     "message": "Bardzo niska cena gazu"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "Cena gazu to ilość kryptowaluty Ether, którą jesteś gotów zapłacić za każdą jednostkę gazu."
-  },
-  "gasPriceNoDenom": {
-    "message": "Cena gazu"
   },
   "general": {
     "message": "Ogólne"

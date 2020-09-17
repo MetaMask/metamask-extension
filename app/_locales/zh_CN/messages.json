@@ -445,7 +445,7 @@
   "functionType": {
     "message": "功能类型"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "天然气限制即您个人希望购买的最大单位数量。"
   },
   "gasLimitTooLow": {
@@ -457,11 +457,8 @@
   "gasPriceExtremelyLow": {
     "message": "天然气价格极低"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "天然气价格将详细列明每个付费天然气单位的以太币金额。"
-  },
-  "gasPriceNoDenom": {
-    "message": "天然气价格"
   },
   "general": {
     "message": "通用"
