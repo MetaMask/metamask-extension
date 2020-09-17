@@ -15,8 +15,14 @@ const recordedWeb3Usage = {}
  */
 
 /**
- * @param {Object} req - The JSON-RPC request object.
- * @param {Object} res - The JSON-RPC response object.
+ * @typedef {Object} LogWeb3UsageParam
+ * @property {string} action - The action taken (get or set).
+ * @property {string} name - The window.web3 property name subject to the action.
+ */
+
+/**
+ * @param {import('json-rpc-engine').JsonRpcRequest<[LogWeb3UsageParam]>} req - The JSON-RPC request object.
+ * @param {import('json-rpc-engine').JsonRpcResponse<boolean>} res - The JSON-RPC response object.
  * @param {Function} _next - The json-rpc-engine 'next' callback.
  * @param {Function} end - The json-rpc-engine 'end' callback.
  * @param {LogWeb3UsageOptions} options
