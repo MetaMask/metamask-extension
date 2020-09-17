@@ -22,7 +22,7 @@ const recordedWeb3Usage = {}
 
 /**
  * @param {import('json-rpc-engine').JsonRpcRequest<[LogWeb3UsageParam]>} req - The JSON-RPC request object.
- * @param {import('json-rpc-engine').JsonRpcResponse<boolean>} res - The JSON-RPC response object.
+ * @param {import('json-rpc-engine').JsonRpcResponse<true>} res - The JSON-RPC response object.
  * @param {Function} _next - The json-rpc-engine 'next' callback.
  * @param {Function} end - The json-rpc-engine 'end' callback.
  * @param {LogWeb3UsageOptions} options
