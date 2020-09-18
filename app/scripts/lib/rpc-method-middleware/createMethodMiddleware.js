@@ -1,5 +1,16 @@
 import handlers from './handlers'
 
+/**
+ * The purpose of this middleware is to create portable RPC method
+ * implementations that are decoupled from the rest of our background
+ * architecture.
+ * 
+ * Handlers consume functions that hook into the background, and only depend
+ * on their signatures, not e.g. controller internals.
+ * 
+ * Eventually, we'll want to extract this middleware into its own package.
+ */
+
 const handlerMap = handlers.reduce((map, handler) => {
   map.set(handler.methodName, handler.implementation)
   return map
