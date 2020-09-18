@@ -1,5 +1,12 @@
 import { MESSAGE_TYPE } from '../../enums'
 
+/**
+ * This RPC method is called by our inpage web3 proxy whenever window.web3 is
+ * accessed. We're collecting data on window.web3 usage so that we can warn
+ * website maintainers, and possibly our users, before we remove window.web3
+ * by November 16, 2020.
+ */
+
 const logWeb3Usage = {
   methodName: MESSAGE_TYPE.LOG_WEB3_USAGE,
   implementation: logWeb3UsageHandler,
