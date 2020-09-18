@@ -6,8 +6,8 @@ const handlerMap = handlers.reduce((map, handler) => {
 }, new Map())
 
 /**
- * Returns a middleware that implements the following RPC methods:
- * - metamask_logInjectedWeb3Usage
+ * Returns a middleware that implements the RPC methods defined in the handlers
+ * directory.
  *
  * The purpose of this middleware is to create portable RPC method
  * implementations that are decoupled from the rest of our background
