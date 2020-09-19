@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 0.3.9 Sat Sep 19 2020
+
 - fix: check sponsor info for all tokens (#233)
 
 ## 0.3.8 Thu Sep 17 2020
