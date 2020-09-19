@@ -25,7 +25,7 @@ import { storageToDrip as calcStorageTotal } from '../../helpers/utils/storage-u
 
 import abi from 'ethereumjs-abi'
 
-import { addHexPrefix, toChecksumAddress } from 'cfx-util'
+import { addHexPrefix } from 'cfx-util'
 
 export {
   addGasBuffer,
@@ -244,7 +244,6 @@ async function checkSponsorshipInfo ({
   gasPrice,
   storageLimit,
   checkSponsorshipInfoMethod,
-  trustedTokenMap,
 }) {
   const defaultRst = {
     isUserBalanceEnough: true,
@@ -252,10 +251,7 @@ async function checkSponsorshipInfo ({
     willUserPayTxFee: true,
   }
 
-  if (
-    !selectedToken ||
-    !(toChecksumAddress(selectedToken.address) in trustedTokenMap)
-  ) {
+  if (!selectedToken) {
     return defaultRst
   }
 

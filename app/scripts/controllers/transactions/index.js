@@ -315,8 +315,6 @@ class TransactionController extends EventEmitter {
     const {
       txParams: { gasPrice, gas, storageLimit, to, from },
     } = txMeta
-    const { trustedTokenMap = {} } = this.preferencesStore.getState()
-
 
     let sponsorshipInfo = {
       isBalanceEnough: true,
@@ -324,7 +322,7 @@ class TransactionController extends EventEmitter {
       willPayTxFee: true,
     }
 
-    if (to && ethUtil.toChecksumAddress(to) in trustedTokenMap) {
+    if (to) {
       sponsorshipInfo = await new Promise((resolve) => {
         this.query.checkBalanceAgainstTransaction(
           from,
@@ -460,7 +458,10 @@ class TransactionController extends EventEmitter {
   @param {Object} txMeta - the updated txMeta
   */
   async updateTransaction (txMeta) {
-    this.txStateManager.updateTx(await this.addTxSponsorshipInfo(txMeta), 'confTx: user updated transaction')
+    this.txStateManager.updateTx(
+      await this.addTxSponsorshipInfo(txMeta),
+      'confTx: user updated transaction'
+    )
   }
 
   /**

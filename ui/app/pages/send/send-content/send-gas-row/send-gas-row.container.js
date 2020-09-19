@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { isValidContractAddress, toChecksumAddress } from 'cfx-util'
+import { isValidContractAddress } from 'cfx-util'
 import {
   getSendTo,
   getConversionRate,
@@ -51,7 +51,6 @@ import {
   updateSponsorshipInfo,
 } from '../../../../store/actions'
 import {
-  getTrustedTokenMap,
   getAdvancedInlineGasShown,
   getCurrentEthBalance,
   getSelectedToken,
@@ -81,25 +80,19 @@ function mapStateToProps (state) {
   const isSimpleTx = !(
     selectedToken || isValidContractAddress(getSendTo(state))
   )
-  const trustedTokenMap = getTrustedTokenMap(state)
-  const isTrustedToken =
-    selectedToken && toChecksumAddress(selectedToken.address) in trustedTokenMap
 
-  let sponsorshipInfo = { willUserPayTxFee: true }
-  if (isTrustedToken) {
-    sponsorshipInfo = getSponsorshipInfo(state)
+  const sponsorshipInfo = getSponsorshipInfo(state) || {
+    willUserPayTxFee: true,
   }
 
   const { willUserPayTxFee } = sponsorshipInfo
 
   const insufficientBalance = !isBalanceSufficient({
     amount: getSelectedToken(state) ? '0x0' : getSendAmount(state),
-    gasTotal: isTrustedToken
-      ? calcGasTotal(
-        willUserPayTxFee ? gasLimit : '0',
-        willUserPayTxFee ? gasPrice : '0',
-      )
-      : gasTotal,
+    gasTotal: calcGasTotal(
+      willUserPayTxFee ? gasLimit : '0',
+      willUserPayTxFee ? gasPrice : '0'
+    ),
     balance,
     conversionRate,
   })
