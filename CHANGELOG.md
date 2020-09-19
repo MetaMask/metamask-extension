@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+- fix: check sponsor info for all tokens (#233)
+
 ## 0.3.8 Thu Sep 17 2020
 
 - fix: default network is not testnet anymore (#230)
