@@ -1537,9 +1537,9 @@ describe('MetaMask', function () {
       await driver.delay(50)
       await gasLimitInput.sendKeys('60001')
 
-      await driver.delay(1000)
-
+      await driver.delay(3000)
       await driver.clickElement(By.css('.page-container__footer-button'))
+      await driver.delay(3000)
       // await driver.wait(until.stalenessOf(gasModal))
 
       const gasAndCollateralFeeInEth = await driver.findElement(

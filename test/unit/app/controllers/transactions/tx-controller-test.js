@@ -444,11 +444,10 @@ describe('Transaction Controller', function () {
         history: [{}],
       }
 
-
       const txMetaWithDefaults = await txController.addTxSponsorshipInfo(txMeta)
 
       assert(
-        txMetaWithDefaults.isUserBalanceEnough,
+        !txMetaWithDefaults.isUserBalanceEnough,
         'should have added default sponsorship isUserBalanceEnough'
       )
       assert(

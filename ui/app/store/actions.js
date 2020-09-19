@@ -874,10 +874,7 @@ export function updateSponsorshipInfo ({
   gasPrice,
   storageLimit,
 }) {
-  return (dispatch, getState) => {
-    const {
-      metamask: { trustedTokenMap },
-    } = getState()
+  return (dispatch) => {
     dispatch(sponsorshipInfoLoadingStarted())
 
     return checkSponsorshipInfo({
@@ -886,7 +883,6 @@ export function updateSponsorshipInfo ({
       gasLimit,
       gasPrice,
       storageLimit,
-      trustedTokenMap,
       checkSponsorshipInfoMethod: background.checkBalanceAgainstTransaction,
     }).then((sponsorshipInfo) => {
       dispatch(setSponsorshipInfo(sponsorshipInfo))
@@ -2915,28 +2911,29 @@ export function getNetworkInfo (networks = []) {
     })
 
     const status = await Promise.all(
-      networks.map((rpcUrl) =>
-        new Promise((resolve) => {
-          fetch(rpcUrl, {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body,
-          })
-            .then((res) => {
-              if (res.ok) {
-                resolve(res.json())
-              }
-              throw new Error('request error, fallback to 0 chainId')
+      networks.map(
+        (rpcUrl) =>
+          new Promise((resolve) => {
+            fetch(rpcUrl, {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body,
             })
-            .catch(() => {
-              resolve({
-                chaindId: '0x0',
+              .then((res) => {
+                if (res.ok) {
+                  resolve(res.json())
+                }
+                throw new Error('request error, fallback to 0 chainId')
               })
-            })
-        })
+              .catch(() => {
+                resolve({
+                  chaindId: '0x0',
+                })
+              })
+          })
       )
     )
 

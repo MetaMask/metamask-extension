@@ -27,7 +27,7 @@ import {
   getQrCodeData,
   getSponsorshipInfo,
 } from './send.selectors'
-import { getTrustedTokenMap, getSelectedAddress, getAddressBook } from '../../selectors/selectors'
+import { getSelectedAddress, getAddressBook } from '../../selectors/selectors'
 import { getTokens } from './send-content/add-recipient/add-recipient.selectors'
 import {
   updateSendTo,
@@ -44,17 +44,12 @@ import { resetSendState, updateSendErrors } from '../../ducks/send/send.duck'
 import { fetchBasicGasEstimates } from '../../ducks/gas/gas.duck'
 import { calcGasTotal, calcStorageTotal } from './send.utils.js'
 import { isValidDomainName } from '../../helpers/utils/util'
-import { toChecksumAddress } from 'cfx-util'
 
 function mapStateToProps (state) {
   const selectedToken = getSelectedToken(state)
-  const trustedTokenMap = getTrustedTokenMap(state)
-  const isTrustedToken =
-        selectedToken && toChecksumAddress(selectedToken.address) in trustedTokenMap
 
-  let sponsorshipInfo = { willUserPayTxFee: true }
-  if (isTrustedToken) {
-    sponsorshipInfo = getSponsorshipInfo(state)
+  const sponsorshipInfo = getSponsorshipInfo(state) || {
+    willUserPayTxFee: true,
   }
   const { willUserPayTxFee } = sponsorshipInfo
   const gasTotal = getGasTotal(state)
