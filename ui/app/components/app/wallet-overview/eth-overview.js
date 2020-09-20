@@ -21,7 +21,7 @@ import { setSwapsFromToken } from '../../../ducks/swaps/swaps'
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../helpers/constants/swaps'
 import WalletOverview from './wallet-overview'
 
-const EthOverview = ({ className, setSwapToken }) => {
+const EthOverview = ({ className }) => {
   const dispatch = useDispatch()
   const t = useContext(I18nContext)
   const sendEvent = useMetricEvent({
@@ -128,7 +128,7 @@ const EthOverview = ({ className, setSwapToken }) => {
                   onClick={() => {
                     if (networkId === '1') {
                       convertEvent()
-                      setSwapToken && dispatch(setSwapsFromToken({
+                      dispatch(setSwapsFromToken({
                         ...ETH_SWAPS_TOKEN_OBJECT,
                         balance,
                         string: getValueFromWeiHex({ value: balance, numberOfDecimals: 4, toDenomination: 'ETH' }),
@@ -153,7 +153,6 @@ const EthOverview = ({ className, setSwapToken }) => {
 
 EthOverview.propTypes = {
   className: PropTypes.string,
-  setSwapToken: PropTypes.bool,
 }
 
 EthOverview.defaultProps = {
