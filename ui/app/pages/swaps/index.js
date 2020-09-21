@@ -113,13 +113,23 @@ export default function Swap () {
   }
 
   const clearTemporaryTokenRef = useRef()
-  useEffect(() => {
-    clearTemporaryTokenRef.current = () => {
-      if (destinationTokenAddedForSwap && (!isAwaitingSwapRoute || conversionError)) {
-        dispatch(removeToken(destinationTokenInfo?.address))
+  useEffect(
+    () => {
+      clearTemporaryTokenRef.current = () => {
+        if (destinationTokenAddedForSwap && (!isAwaitingSwapRoute || conversionError)) {
+          dispatch(removeToken(destinationTokenInfo?.address))
+        }
       }
-    }
-  }, [fetchParams, destinationTokenAddedForSwap, conversionError, dispatch, isAwaitingSwapRoute])
+    },
+    [
+      conversionError,
+      dispatch,
+      destinationTokenAddedForSwap,
+      destinationTokenInfo,
+      fetchParams,
+      isAwaitingSwapRoute,
+    ],
+  )
   useEffect(() => {
     return () => {
       clearTemporaryTokenRef.current()

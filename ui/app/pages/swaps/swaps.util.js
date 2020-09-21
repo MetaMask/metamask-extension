@@ -61,7 +61,15 @@ const QUOTE_VALIDATORS = [
   {
     property: 'approvalNeeded',
     type: 'object',
-    validator: (approvalTx) => approvalTx === null || approvalTx && validHex(approvalTx.data) && isValidAddress(approvalTx.to) && isValidAddress(approvalTx.from),
+    validator: (approvalTx) => (
+      approvalTx === null ||
+      (
+        approvalTx &&
+        validHex(approvalTx.data) &&
+        isValidAddress(approvalTx.to) &&
+        isValidAddress(approvalTx.from)
+      )
+    ),
   },
   {
     property: 'sourceAmount',
