@@ -1551,10 +1551,12 @@
     "message": "Best quote"
   },
   "swapBuildQuotePlaceHolderText": {
-    "message": "No tokens available matching $1"
+    "message": "No tokens available matching $1",
+    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
   "swapCheckingQuote": {
-    "message": "Checking $1..."
+    "message": "Checking $1...",
+    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
   },
   "swapCustom": {
     "message": "custom"
@@ -1649,7 +1651,8 @@
     "message": "If the price changes between when an order is placed and executed it’s called “slippage”. If slippage exceeds your max slippage setting your transaction will automatically cancel."
   },
   "swapQuoteNofN": {
-    "message": "Quote $1 of $2"
+    "message": "Quote $1 of $2",
+    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "Quote Source"
@@ -1801,12 +1804,6 @@
   "token": {
     "message": "Token"
   },
-  "tokenAlreadyAdded": {
-    "message": "Token has already been added."
-  },
-  "tokenContractAddress": {
-    "message": "Token Contract Address"
-  },
   "tokenOptions": {
     "message": "Token options"
   },
@@ -1917,9 +1914,6 @@
   },
   "urlExistsErrorMsg": {
     "message": "URL is already present in existing list of networks"
-  },
-  "usePhishingDetection": {
-    "message": "Use Phishing Detection"
   },
   "usePhishingDetectionDescription": {
     "message": "Display a warning for phishing domains targeting Ethereum users"
