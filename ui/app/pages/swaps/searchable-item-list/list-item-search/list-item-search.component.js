@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import Fuse from 'fuse.js'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import TextField from '../../../../components/ui/text-field'
+import { usePrevious } from '../../../../hooks/usePrevious'
 
 const renderAdornment = () => (
   <InputAdornment
@@ -12,14 +13,6 @@ const renderAdornment = () => (
     <img src="images/search.svg" />
   </InputAdornment>
 )
-
-const usePrevious = (value) => {
-  const ref = useRef()
-  useEffect(() => {
-    ref.current = value
-  }, [value])
-  return ref.current
-}
 
 export default function ListItemSearch ({
   onSearch,
