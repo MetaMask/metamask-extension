@@ -132,5 +132,9 @@
       right: 10px;
       color: $dusty-gray;
     }
+
+    &__custom-text {
+      @include H7;
+    }
   }
 }

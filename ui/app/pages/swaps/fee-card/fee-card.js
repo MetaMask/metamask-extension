@@ -1,51 +1,84 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import InfoTooltip from '../../../components/ui/info-tooltip'
 
 export default function FeeCard ({
-  onFeeRowClick = null,
   feeRowText,
-  feeRowLinkText = '',
   primaryFee,
-  secondaryFee = '',
-  onSecondRowClick = null,
-  secondRowText = '',
-  secondRowLinkText = '',
-  hideSecondRow = false,
+  secondaryFee,
+  thirdRowText,
+  thirdRowLinkText,
+  hideThirdRow = false,
+  onThirdRowClick,
+  thirdRowInfoTooltipText,
+  maxFeeRowInfoTooltipText,
+  primaryMaxFee,
+  secondaryMaxFee,
+  maxFeeRowText,
+  maxFeeRowLinkText,
+  onMaxRowClick,
 }) {
   return (
     <div className="fee-card">
       <div className="fee-card__main">
-        <div className="fee-card__row-header" onClick={() => onFeeRowClick && onFeeRowClick()}>
+        <div className="fee-card__row-header">
           <div>
-            <div className="fee-card__row-header-text">
+            <div className="fee-card__row-header-text--bold">
               {feeRowText}
             </div>
-            {onFeeRowClick && (
-              <div className="fee-card__link">
-                {feeRowLinkText}
-              </div>
-            )}
           </div>
           <div>
-            <div className="fee-card__row-header-secondary">
+            <div className="fee-card__row-header-secondary--bold">
               {primaryFee}
             </div>
             {secondaryFee && (
-              <div className="fee-card__row-header-primary">
+              <div className="fee-card__row-header-primary--bold">
                 {secondaryFee}
               </div>
             )}
           </div>
         </div>
-        {!hideSecondRow && secondRowText && (
-          <div className="fee-card__row">
+        <div className="fee-card__row-header" onClick={() => onMaxRowClick && onMaxRowClick()}>
+          <div>
+            <div className="fee-card__row-header-text">
+              {maxFeeRowText}
+            </div>
+            {onMaxRowClick && (
+              <div className="fee-card__link">
+                {maxFeeRowLinkText}
+              </div>
+            )}
+            <div className="fee-card__row-label">
+              <InfoTooltip
+                position="top"
+                contentText={maxFeeRowInfoTooltipText}
+              />
+            </div>
+          </div>
+          <div>
+            <div className="fee-card__row-header-secondary">
+              {primaryMaxFee}
+            </div>
+            {secondaryMaxFee && (
+              <div className="fee-card__row-header-primary">
+                {secondaryMaxFee}
+              </div>
+            )}
+          </div>
+        </div>
+        {!hideThirdRow && thirdRowText && (
+          <div className="fee-card__top-bordered-row">
             <div className="fee-card__row-label">
               <div className="fee-card__row-text">
-                {secondRowText}
+                {thirdRowText}
               </div>
-              {secondRowLinkText && (
-                <div className="fee-card__link" onClick={() => onSecondRowClick && onSecondRowClick()}>
-                  {secondRowLinkText}
+              <InfoTooltip
+                position="top"
+                contentText={thirdRowInfoTooltipText}
+              />
+              {thirdRowLinkText && (
+                <div className="fee-card__link" onClick={() => onThirdRowClick && onThirdRowClick()}>
+                  {thirdRowLinkText}
                 </div>
               )}
             </div>
@@ -57,13 +90,18 @@ export default function FeeCard ({
 }
 
 FeeCard.propTypes = {
-  onFeeRowClick: PropTypes.func,
   feeRowText: PropTypes.string.isRequired,
-  feeRowLinkText: PropTypes.string,
   primaryFee: PropTypes.string.isRequired,
   secondaryFee: PropTypes.string,
-  onSecondRowClick: PropTypes.func,
-  secondRowText: PropTypes.string,
-  secondRowLinkText: PropTypes.string,
-  hideSecondRow: PropTypes.bool,
+  thirdRowText: PropTypes.string,
+  thirdRowLinkText: PropTypes.string,
+  hideThirdRow: PropTypes.bool,
+  onThirdRowClick: PropTypes.func,
+  thirdRowInfoTooltipText: PropTypes.string,
+  primaryMaxFee: PropTypes.string.isRequired,
+  secondaryMaxFee: PropTypes.string,
+  maxFeeRowText: PropTypes.string.isRequired,
+  maxFeeRowLinkText: PropTypes.string,
+  onMaxRowClick: PropTypes.func,
+  maxFeeRowInfoTooltipText: PropTypes.string,
 }

@@ -28,21 +28,30 @@ import {
 import { conversionRateSelector, getSelectedAccount, getCurrentCurrency, getTokenExchangeRates } from '../../../selectors'
 import { toPrecisionWithoutTrailingZeros } from '../../../helpers/utils/util'
 import { getTokens } from '../../../ducks/metamask/metamask'
-import { safeRefetchQuotes, setSwapsTxGasLimit, setSelectedQuoteAggId, setSwapsErrorKey } from '../../../store/actions'
+import {
+  safeRefetchQuotes,
+  setCustomApproveTxData,
+  setSwapsTxGasLimit,
+  setSelectedQuoteAggId,
+  setSwapsErrorKey,
+  showModal,
+} from '../../../store/actions'
 import {
   ASSET_ROUTE,
   BUILD_QUOTE_ROUTE,
   DEFAULT_ROUTE,
   SWAPS_ERROR_ROUTE,
 } from '../../../helpers/constants/routes'
-
+import { getTokenData } from '../../../helpers/utils/transactions.util'
 import {
   calcTokenAmount,
   calcTokenValue,
+  getTokenValueParam,
 } from '../../../helpers/utils/token-util'
-import { decimalToHex, hexMax } from '../../../helpers/utils/conversions.util'
+import { decimalToHex, hexMax, hexToDecimal, getValueFromWeiHex } from '../../../helpers/utils/conversions.util'
 import MainQuoteSummary from '../main-quote-summary'
 import { calcGasTotal } from '../../send/send.utils'
+import { getCustomTxParamsData } from '../../confirm-approve/confirm-approve.util'
 import ActionableMessage from '../actionable-message'
 import { quotesToRenderableData, getRenderableGasFeesForQuote } from '../swaps.util'
 import { useTokenTracker } from '../../../hooks/useTokenTracker'
@@ -61,6 +70,7 @@ export default function ViewQuote () {
   const [dispatchedSafeRefetch, setDispatchedSafeRefetch] = useState(false)
   const [selectQuotePopoverShown, setSelectQuotePopoverShown] = useState(false)
   const [warningHidden, setWarningHidden] = useState(false)
+  const [originalApproveAmount, setOriginalApproveAmount] = useState(null)
 
   const quotes = useSelector(getQuotes, isEqual)
   if (!Object.values(quotes).length) {
@@ -105,7 +115,19 @@ export default function ViewQuote () {
   const selectedFromToken = balanceToken || usedQuote.sourceTokenInfo
   const tokenBalance = tokensWithBalances?.length && calcTokenAmount(selectedFromToken.balance || '0x0', selectedFromToken.decimals).toFixed(9)
 
+  const approveData = getTokenData(approveTxParams?.data)
+  const approveValue = approveData && getTokenValueParam(approveData)
+  const approveAmount = (
+    approveValue && (selectedFromToken?.decimals !== undefined) &&
+    calcTokenAmount(approveValue, selectedFromToken.decimals).toFixed(9)
+  )
   const approveGas = approveTxParams?.gas
+  const approveGasTotal = calcGasTotal(approveGas || '0x0', gasPrice)
+  const approveGasTotalInEth = getValueFromWeiHex({
+    value: approveGasTotal,
+    toDenomination: 'ETH',
+    numberOfDecimals: 4,
+  })
 
   const renderablePopoverData = useMemo(() => {
     return quotesToRenderableData(quotes, gasPrice, conversionRate, currentCurrency, approveGas, memoizedTokenConversionRates)
@@ -160,7 +182,65 @@ export default function ViewQuote () {
     }
   }, [quotesLastFetched, dispatchedSafeRefetch, dispatch, history])
 
-  const showWarning = ((balanceError || tokenBalanceNeeded || ethBalanceNeeded) && !warningHidden)
+  useEffect(() => {
+    if (!originalApproveAmount && approveAmount) {
+      setOriginalApproveAmount(approveAmount)
+    }
+  }, [originalApproveAmount, approveAmount])
+
+  const allowedMaxModeSubmit = maxMode && sourceTokenSymbol === 'ETH' && !insufficientEthForGas
+  const showWarning = (
+    (balanceError || tokenBalanceNeeded || ethBalanceNeeded) &&
+    !warningHidden &&
+    !allowedMaxModeSubmit
+  )
+
+  const onFeeCardThirdRowClickHandler = () => dispatch(showModal({
+    name: 'EDIT_APPROVAL_PERMISSION',
+    decimals: selectedFromToken.decimals,
+    origin: 'MetaMask',
+    setCustomAmount: (newCustomPermissionAmount) => {
+      const customPermissionAmount = newCustomPermissionAmount === ''
+        ? originalApproveAmount
+        : newCustomPermissionAmount
+      const newData = getCustomTxParamsData(
+        approveTxParams.data,
+        { customPermissionAmount, decimals: selectedFromToken.decimals },
+      )
+
+      if (customPermissionAmount?.length && approveTxParams.data !== newData) {
+        dispatch(setCustomApproveTxData(newData))
+      }
+    },
+    tokenAmount: originalApproveAmount,
+    customTokenAmount: (
+      originalApproveAmount === approveAmount
+        ? null
+        : approveAmount
+    ),
+    tokenBalance,
+    tokenSymbol: selectedFromToken.symbol,
+    requiredMinimum: calcTokenAmount(
+      usedQuote.sourceAmount,
+      selectedFromToken.decimals,
+    ),
+  }))
+
+  const onFeeCardMaxRowClickHandler = () => dispatch(showModal({
+    name: 'CUSTOMIZE_GAS',
+    txData: { txParams: { ...tradeTxParams, gas: maxGasLimit } },
+    isSwap: true,
+    customGasLimitMessage: approveGas ? t('extraApprovalGas', [hexToDecimal(approveGas)]) : '',
+    customTotalSupplement: approveGasTotal,
+    extraInfoRow: (
+      approveGas
+        ? {
+          label: t('approvalTxGasCost'),
+          value: t('amountInETH', [approveGasTotalInEth]),
+        }
+        : null
+    ),
+  }))
 
   return (
     <div className="view-quote">
@@ -225,6 +305,8 @@ export default function ViewQuote () {
           })}
         >
           <FeeCard
+            onThirdRowClick={onFeeCardThirdRowClickHandler}
+            onMaxRowClick={onFeeCardMaxRowClickHandler}
             secondaryFee={feeinFiat}
             primaryFee={feeInEth}
             secondaryMaxFee={maxFeeInFiat}

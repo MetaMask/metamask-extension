@@ -5,12 +5,14 @@ import Interaction from '../../ui/icon/interaction-icon.component'
 import Receive from '../../ui/icon/receive-icon.component'
 import Send from '../../ui/icon/send-icon.component'
 import Sign from '../../ui/icon/sign-icon.component'
+import Swap from '../../ui/icon/swap-icon-for-list.component'
 import {
   TRANSACTION_CATEGORY_APPROVAL,
   TRANSACTION_CATEGORY_SIGNATURE_REQUEST,
   TRANSACTION_CATEGORY_INTERACTION,
   TRANSACTION_CATEGORY_SEND,
   TRANSACTION_CATEGORY_RECEIVE,
+  TRANSACTION_CATEGORY_SWAP,
   UNAPPROVED_STATUS,
   FAILED_STATUS,
   REJECTED_STATUS,
@@ -26,6 +28,7 @@ const ICON_MAP = {
   [TRANSACTION_CATEGORY_SEND]: Send,
   [TRANSACTION_CATEGORY_SIGNATURE_REQUEST]: Sign,
   [TRANSACTION_CATEGORY_RECEIVE]: Receive,
+  [TRANSACTION_CATEGORY_SWAP]: Swap,
 }
 
 const FAIL_COLOR = '#D73A49'

@@ -9,6 +9,7 @@ export default class GasModalPageContainer extends Component {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
+    mixPanelTrack: PropTypes.func,
   }
 
   static propTypes = {
@@ -29,6 +30,7 @@ export default class GasModalPageContainer extends Component {
       newTotalEth: PropTypes.string,
       sendAmount: PropTypes.string,
       transactionFee: PropTypes.string,
+      extraInfoRow: PropTypes.shape({ label: PropTypes.string, value: PropTypes.string }),
     }),
     onSubmit: PropTypes.func,
     customModalGasPriceInHex: PropTypes.string,
@@ -43,9 +45,12 @@ export default class GasModalPageContainer extends Component {
     isRetry: PropTypes.bool,
     disableSave: PropTypes.bool,
     isEthereumNetwork: PropTypes.bool,
+    customGasLimitMessage: PropTypes.string,
   }
 
-  state = {}
+  state = {
+    selectedTab: 'Basic',
+  }
 
   componentDidMount () {
     const promise = this.props.hideBasic
@@ -84,6 +89,7 @@ export default class GasModalPageContainer extends Component {
         transactionFee,
       },
       isEthereumNetwork,
+      customGasLimitMessage,
     } = this.props
 
     return (
@@ -92,6 +98,7 @@ export default class GasModalPageContainer extends Component {
         updateCustomGasLimit={updateCustomGasLimit}
         customModalGasPriceInHex={customModalGasPriceInHex}
         customModalGasLimitInHex={customModalGasLimitInHex}
+        customGasLimitMessage={customGasLimitMessage}
         timeRemaining={currentTimeEstimate}
         transactionFee={transactionFee}
         gasChartProps={gasChartProps}
@@ -105,7 +112,7 @@ export default class GasModalPageContainer extends Component {
     )
   }
 
-  renderInfoRows (newTotalFiat, newTotalEth, sendAmount, transactionFee) {
+  renderInfoRows (newTotalFiat, newTotalEth, sendAmount, transactionFee, extraInfoRow) {
     return (
       <div className="gas-modal-content__info-row-wrapper">
         <div className="gas-modal-content__info-row">
@@ -117,6 +124,12 @@ export default class GasModalPageContainer extends Component {
             <span className="gas-modal-content__info-row__transaction-info__label">{this.context.t('transactionFee')}</span>
             <span className="gas-modal-content__info-row__transaction-info__value">{transactionFee}</span>
           </div>
+          {extraInfoRow && (
+            <div className="gas-modal-content__info-row__transaction-info">
+              <span className="gas-modal-content__info-row__transaction-info__label">{extraInfoRow.label}</span>
+              <span className="gas-modal-content__info-row__transaction-info__value">{extraInfoRow.value}</span>
+            </div>
+          )}
           <div className="gas-modal-content__info-row__total-info">
             <span className="gas-modal-content__info-row__total-info__label">{this.context.t('newTotal')}</span>
             <span className="gas-modal-content__info-row__total-info__value">{newTotalEth}</span>
@@ -138,6 +151,7 @@ export default class GasModalPageContainer extends Component {
         newTotalEth,
         sendAmount,
         transactionFee,
+        extraInfoRow,
       },
     } = this.props
 
@@ -157,12 +171,12 @@ export default class GasModalPageContainer extends Component {
     }
 
     return (
-      <Tabs>
+      <Tabs onTabClick={(tabName) => this.setState({ selectedTab: tabName })}>
         {tabsToRender.map(({ name, content }, i) => (
           <Tab name={name} key={`gas-modal-tab-${i}`}>
             <div className="gas-modal-content">
               { content }
-              { this.renderInfoRows(newTotalFiat, newTotalEth, sendAmount, transactionFee) }
+              { this.renderInfoRows(newTotalFiat, newTotalEth, sendAmount, transactionFee, extraInfoRow) }
             </div>
           </Tab>
         ))}
@@ -199,7 +213,7 @@ export default class GasModalPageContainer extends Component {
                 },
               })
             }
-            onSubmit(customModalGasLimitInHex, customModalGasPriceInHex)
+            onSubmit(customModalGasLimitInHex, customModalGasPriceInHex, this.state.selectedTab, this.context.mixPanelTrack)
           }}
           submitText={this.context.t('save')}
           headerCloseText={this.context.t('close')}

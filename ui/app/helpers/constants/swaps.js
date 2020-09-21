@@ -16,3 +16,5 @@ export const QUOTES_NOT_AVAILABLE_ERROR = 'quotes-not-avilable'
 
 // A gas value for ERC20 approve calls that should be sufficient for all ERC20 approve implementations
 export const DEFAULT_ERC20_APPROVE_GAS = '0x1d4c0'
+
+export const SWAPS_CONTRACT_ADDRESS = '0x9537c111ea62a8dc39e99718140686f7ad856321'

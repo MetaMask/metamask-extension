@@ -2180,6 +2180,13 @@ export function setMaxMode (maxMode) {
   }
 }
 
+export function setCustomApproveTxData (data) {
+  return async (dispatch) => {
+    await promisifiedBackground.setCustomApproveTxData(data)
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
 export function setSwapsTxGasPrice (gasPrice) {
   return async (dispatch) => {
     await promisifiedBackground.setSwapsTxGasPrice(gasPrice)

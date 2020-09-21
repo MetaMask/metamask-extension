@@ -376,6 +376,13 @@ export default class SwapsController {
     })
   }
 
+  setCustomApproveTxData (data) {
+    const { swapsState } = this.store.getState()
+    this.store.updateState({
+      swapsState: { ...swapsState, customApproveTxData: data },
+    })
+  }
+
   setBackgoundSwapRouteState (routeState) {
     const { swapsState } = this.store.getState()
     this.store.updateState({ swapsState: { ...swapsState, routeState } })

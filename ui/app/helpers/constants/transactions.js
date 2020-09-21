@@ -29,6 +29,9 @@ export const TOKEN_CATEGORY_HASH = {
   [TOKEN_METHOD_TRANSFER_FROM]: true,
 }
 
+export const SWAP = 'swap'
+export const SWAP_APPROVAL = 'swapApproval'
+
 export const INCOMING_TRANSACTION = 'incoming'
 
 export const SEND_ETHER_ACTION_KEY = 'sentEther'
@@ -50,3 +53,4 @@ export const TRANSACTION_CATEGORY_RECEIVE = 'receive'
 export const TRANSACTION_CATEGORY_INTERACTION = 'interaction'
 export const TRANSACTION_CATEGORY_APPROVAL = 'approval'
 export const TRANSACTION_CATEGORY_SIGNATURE_REQUEST = 'signature-request'
+export const TRANSACTION_CATEGORY_SWAP = 'swap'
