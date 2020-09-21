@@ -1,5 +1,5 @@
-const ganache = require('ganache-core')
 const { promisify } = require('util')
+const ganache = require('ganache-core')
 
 const defaultOptions = {
   blockTime: 2,
@@ -10,10 +10,9 @@ const defaultOptions = {
 }
 
 class Ganache {
-  async start (options) {
-    options = Object.assign({}, defaultOptions, options)
-
-    const port = options.port
+  async start (opts) {
+    const options = { ...defaultOptions, ...opts }
+    const { port } = options
     this._server = ganache.server(options)
 
     const listen = promisify(this._server.listen).bind(this._server)

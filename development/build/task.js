@@ -8,7 +8,6 @@ module.exports = { detectAndRunEntryTask, tasks, taskEvents, createTask, runTask
 
 const { setupTaskDisplay } = require('./display')
 
-
 function detectAndRunEntryTask () {
   // get requested task name and execute
   const taskName = process.argv[2]

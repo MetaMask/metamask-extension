@@ -6,13 +6,11 @@ import EthQuery from 'eth-query'
 import JsonRpcEngine from 'json-rpc-engine'
 import providerFromEngine from 'eth-json-rpc-middleware/providerFromEngine'
 import log from 'loglevel'
+import { createSwappableProxy, createEventEmitterProxy } from 'swappable-obj-proxy'
 import createMetamaskMiddleware from './createMetamaskMiddleware'
 import createInfuraClient from './createInfuraClient'
 import createJsonRpcClient from './createJsonRpcClient'
 import createLocalhostClient from './createLocalhostClient'
-import { createSwappableProxy, createEventEmitterProxy } from 'swappable-obj-proxy'
-
-const networks = { networkList: {} }
 
 import {
   RINKEBY,
@@ -21,8 +19,10 @@ import {
   INFURA_PROVIDER_TYPES,
 } from './enums'
 
+const networks = { networkList: {} }
+
 const env = process.env.METAMASK_ENV
-const METAMASK_DEBUG = process.env.METAMASK_DEBUG
+const { METAMASK_DEBUG } = process.env
 
 let defaultProviderConfigType
 if (process.env.IN_TEST === 'true') {
@@ -62,6 +62,21 @@ export default class NetworkController extends EventEmitter {
     this._blockTrackerProxy = null
   }
 
+  /**
+   * Sets the Infura project ID
+   *
+   * @param {string} projectId - The Infura project ID
+   * @throws {Error} if the project ID is not a valid string
+   * @return {void}
+   */
+  setInfuraProjectId (projectId) {
+    if (!projectId || typeof projectId !== 'string') {
+      throw new Error('Invalid Infura project ID')
+    }
+
+    this._infuraProjectId = projectId
+  }
+
   initializeProvider (providerParams) {
     this._baseProviderParams = providerParams
     const { type, rpcTarget, chainId, ticker, nickname } = this.providerStore.getState()
@@ -93,15 +108,15 @@ export default class NetworkController extends EventEmitter {
 
   setNetworkState (network, type) {
     if (network === 'loading') {
-      return this.networkStore.putState(network)
+      this.networkStore.putState(network)
+      return
     }
 
     // type must be defined
     if (!type) {
       return
     }
-    network = networks.networkList[type]?.chainId || network
-    return this.networkStore.putState(network)
+    this.networkStore.putState(networks.networkList[type]?.chainId || network)
   }
 
   isNetworkLoading () {
@@ -111,7 +126,8 @@ export default class NetworkController extends EventEmitter {
   lookupNetwork () {
     // Prevent firing when provider is not defined.
     if (!this._provider) {
-      return log.warn('NetworkController - lookupNetwork aborted due to missing provider')
+      log.warn('NetworkController - lookupNetwork aborted due to missing provider')
+      return
     }
     const { type } = this.providerStore.getState()
     const ethQuery = new EthQuery(this._provider)
@@ -120,9 +136,10 @@ export default class NetworkController extends EventEmitter {
       const currentNetwork = this.getNetworkState()
       if (initialNetwork === currentNetwork) {
         if (err) {
-          return this.setNetworkState('loading')
+          this.setNetworkState('loading')
+          return
         }
-        log.info('web3.getNetwork returned ' + network)
+        log.info(`web3.getNetwork returned ${network}`)
         this.setNetworkState(network, type)
       }
     })
@@ -175,7 +192,7 @@ export default class NetworkController extends EventEmitter {
     // infura type-based endpoints
     const isInfura = INFURA_PROVIDER_TYPES.includes(type)
     if (isInfura) {
-      this._configureInfuraProvider(opts)
+      this._configureInfuraProvider(type, this._infuraProjectId)
     // other type-based rpc endpoints
     } else if (type === LOCALHOST) {
       this._configureLocalhostProvider()
@@ -187,10 +204,11 @@ export default class NetworkController extends EventEmitter {
     }
   }
 
-  _configureInfuraProvider ({ type }) {
+  _configureInfuraProvider (type, projectId) {
     log.info('NetworkController - configureInfuraProvider', type)
     const networkClient = createInfuraClient({
       network: type,
+      projectId,
     })
     this._setNetworkClient(networkClient)
     // setup networkConfig
@@ -210,7 +228,7 @@ export default class NetworkController extends EventEmitter {
     log.info('NetworkController - configureStandardProvider', rpcUrl)
     const networkClient = createJsonRpcClient({ rpcUrl })
     // hack to add a 'rpc' network with chainId
-    networks.networkList['rpc'] = {
+    networks.networkList.rpc = {
       chainId,
       rpcUrl,
       ticker: ticker || 'ETH',
@@ -220,7 +238,7 @@ export default class NetworkController extends EventEmitter {
     let settings = {
       network: chainId,
     }
-    settings = Object.assign(settings, networks.networkList['rpc'])
+    settings = Object.assign(settings, networks.networkList.rpc)
     this.networkConfig.putState(settings)
     this._setNetworkClient(networkClient)
   }

@@ -62,10 +62,10 @@ async function profilePageLoad (pages, numSamples) {
     }
 
     const result = {
-      firstPaint: runResults.map((result) => result.paint['first-paint']),
-      domContentLoaded: runResults.map((result) => result.navigation[0] && result.navigation[0].domContentLoaded),
-      load: runResults.map((result) => result.navigation[0] && result.navigation[0].load),
-      domInteractive: runResults.map((result) => result.navigation[0] && result.navigation[0].domInteractive),
+      firstPaint: runResults.map((metrics) => metrics.paint['first-paint']),
+      domContentLoaded: runResults.map((metrics) => metrics.navigation[0] && metrics.navigation[0].domContentLoaded),
+      load: runResults.map((metrics) => metrics.navigation[0] && metrics.navigation[0].load),
+      domInteractive: runResults.map((metrics) => metrics.navigation[0] && metrics.navigation[0].domInteractive),
     }
 
     results[pageName] = {
@@ -92,17 +92,18 @@ async function isWritable (directory) {
 }
 
 async function getFirstParentDirectoryThatExists (directory) {
-  while (true) {
+  let nextDirectory = directory
+  for (;;) {
     try {
-      await fs.access(directory, fsConstants.F_OK)
-      return directory
+      await fs.access(nextDirectory, fsConstants.F_OK)
+      return nextDirectory
     } catch (error) {
       if (error.code !== 'ENOENT') {
         throw error
-      } else if (directory === path.dirname(directory)) {
+      } else if (nextDirectory === path.dirname(nextDirectory)) {
         throw new Error('Failed to find parent directory that exists')
       }
-      directory = path.dirname(directory)
+      nextDirectory = path.dirname(nextDirectory)
     }
   }
 }
@@ -117,7 +118,7 @@ async function main () {
   let existingParentDirectory
 
   while (args.length) {
-    if (/^(--pages|-p)$/i.test(args[0])) {
+    if ((/^(--pages|-p)$/u).test(args[0])) {
       if (args[1] === undefined) {
         throw new Error('Missing pages argument')
       }
@@ -128,7 +129,7 @@ async function main () {
         }
       }
       args.splice(0, 2)
-    } else if (/^(--samples|-s)$/i.test(args[0])) {
+    } else if ((/^(--samples|-s)$/u).test(args[0])) {
       if (args[1] === undefined) {
         throw new Error('Missing number of samples')
       }
@@ -137,7 +138,7 @@ async function main () {
         throw new Error(`Invalid 'samples' argument given: '${args[1]}'`)
       }
       args.splice(0, 2)
-    } else if (/^(--out|-o)$/i.test(args[0])) {
+    } else if ((/^(--out|-o)$/u).test(args[0])) {
       if (args[1] === undefined) {
         throw new Error('Missing output filename')
       }

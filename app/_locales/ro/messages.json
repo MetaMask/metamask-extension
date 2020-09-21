@@ -444,7 +444,7 @@
   "gasLimit": {
     "message": "Limită gas"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "Limita gaz este numărul maxim de unități de gaz pe care sunteți dispus(ă) să le cheltuiți."
   },
   "gasLimitTooLow": {
@@ -459,11 +459,8 @@
   "gasPriceExtremelyLow": {
     "message": "Prețul gaz este foarte scăzut"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "Prețul în gas indică suma Ether pe care doriți să o plătiți pentru fiecare unitate gas."
-  },
-  "gasPriceNoDenom": {
-    "message": "Preț gas"
   },
   "generalSettingsDescription": {
     "message": "Schimb valutar, moneda principală, limba, blockies identicon"

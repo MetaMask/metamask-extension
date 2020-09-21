@@ -1,8 +1,8 @@
 import assert from 'assert'
 import ObservableStore from 'obs-store'
+import sinon from 'sinon'
 import PreferencesController from '../../../../app/scripts/controllers/preferences'
 import { addInternalMethodPrefix } from '../../../../app/scripts/controllers/permissions'
-import sinon from 'sinon'
 
 describe('preferences controller', function () {
   let preferencesController
@@ -39,7 +39,7 @@ describe('preferences controller', function () {
         '0x7e57e2',
       ])
 
-      const accountTokens = preferencesController.store.getState().accountTokens
+      const { accountTokens } = preferencesController.store.getState()
 
       assert.deepEqual(accountTokens, {
         '0xda22le': {},
@@ -119,7 +119,6 @@ describe('preferences controller', function () {
         address: '0xda22le',
       })
 
-
       preferencesController.setAccountLabel('0xda22le', 'Dazzle')
       assert.deepEqual(preferencesController.store.getState().identities['0xda22le'], {
         name: 'Dazzle',
@@ -130,7 +129,7 @@ describe('preferences controller', function () {
 
   describe('getTokens', function () {
     it('should return an empty list initially', async function () {
-      preferencesController.setAddresses([ '0x7e57e2' ])
+      preferencesController.setAddresses(['0x7e57e2'])
       await preferencesController.setSelectedAddress('0x7e57e2')
 
       const tokens = preferencesController.getTokens()
@@ -144,7 +143,7 @@ describe('preferences controller', function () {
       const symbol = 'ABBR'
       const decimals = 5
 
-      preferencesController.setAddresses([ '0x7e57e2' ])
+      preferencesController.setAddresses(['0x7e57e2'])
       await preferencesController.setSelectedAddress('0x7e57e2')
       await preferencesController.addToken(address, symbol, decimals)
 
@@ -162,7 +161,7 @@ describe('preferences controller', function () {
       const symbol = 'ABBR'
       const decimals = 5
 
-      preferencesController.setAddresses([ '0x7e57e2' ])
+      preferencesController.setAddresses(['0x7e57e2'])
       await preferencesController.setSelectedAddress('0x7e57e2')
       await preferencesController.addToken(address, symbol, decimals)
 
@@ -241,7 +240,7 @@ describe('preferences controller', function () {
 
   describe('removeToken', function () {
     it('should remove the only token from its state', async function () {
-      preferencesController.setAddresses([ '0x7e57e2' ])
+      preferencesController.setAddresses(['0x7e57e2'])
       await preferencesController.setSelectedAddress('0x7e57e2')
       await preferencesController.addToken('0xa', 'A', 5)
       await preferencesController.removeToken('0xa')
@@ -251,7 +250,7 @@ describe('preferences controller', function () {
     })
 
     it('should remove a token from its state', async function () {
-      preferencesController.setAddresses([ '0x7e57e2' ])
+      preferencesController.setAddresses(['0x7e57e2'])
       await preferencesController.setSelectedAddress('0x7e57e2')
       await preferencesController.addToken('0xa', 'A', 4)
       await preferencesController.addToken('0xb', 'B', 5)
@@ -366,15 +365,13 @@ describe('preferences controller', function () {
   })
 
   describe('on watchAsset', function () {
-    let stubNext, stubEnd, stubHandleWatchAssetERC20, asy, req, res
+    let stubHandleWatchAssetERC20, asy, req, res
     const sandbox = sinon.createSandbox()
 
     beforeEach(function () {
       req = { params: {} }
       res = {}
-      asy = { next: () => {}, end: () => {} }
-      stubNext = sandbox.stub(asy, 'next')
-      stubEnd = sandbox.stub(asy, 'end').returns(0)
+      asy = { next: sandbox.spy(), end: sandbox.spy() }
       stubHandleWatchAssetERC20 = sandbox.stub(preferencesController, '_handleWatchAssetERC20')
     })
     after(function () {
@@ -382,40 +379,33 @@ describe('preferences controller', function () {
     })
 
     it('shouldn not do anything if method not corresponds', async function () {
-      const asy = { next: () => {}, end: () => {} }
-      const stubNext = sandbox.stub(asy, 'next')
-      const stubEnd = sandbox.stub(asy, 'end').returns(0)
       req.method = 'metamask'
       await preferencesController.requestWatchAsset(req, res, asy.next, asy.end)
-      sandbox.assert.notCalled(stubEnd)
-      sandbox.assert.called(stubNext)
+      sandbox.assert.notCalled(asy.end)
+      sandbox.assert.called(asy.next)
     })
     it('should do something if method is supported', async function () {
-      const asy = { next: () => {}, end: () => {} }
-      const stubNext = sandbox.stub(asy, 'next')
-      const stubEnd = sandbox.stub(asy, 'end').returns(0)
       req.method = 'metamask_watchAsset'
       req.params.type = 'someasset'
       await preferencesController.requestWatchAsset(req, res, asy.next, asy.end)
-      sandbox.assert.called(stubEnd)
-      sandbox.assert.notCalled(stubNext)
+      sandbox.assert.called(asy.end)
+      sandbox.assert.notCalled(asy.next)
       req.method = addInternalMethodPrefix('watchAsset')
       req.params.type = 'someasset'
       await preferencesController.requestWatchAsset(req, res, asy.next, asy.end)
-      sandbox.assert.calledTwice(stubEnd)
-      sandbox.assert.notCalled(stubNext)
+      sandbox.assert.calledTwice(asy.end)
+      sandbox.assert.notCalled(asy.next)
     })
     it('should through error if method is supported but asset type is not', async function () {
       req.method = 'metamask_watchAsset'
       req.params.type = 'someasset'
       await preferencesController.requestWatchAsset(req, res, asy.next, asy.end)
-      sandbox.assert.called(stubEnd)
+      sandbox.assert.called(asy.end)
       sandbox.assert.notCalled(stubHandleWatchAssetERC20)
-      sandbox.assert.notCalled(stubNext)
+      sandbox.assert.notCalled(asy.next)
       assert.deepEqual(res, {})
     })
     it('should trigger handle add asset if type supported', async function () {
-      const asy = { next: () => {}, end: () => {} }
       req.method = 'metamask_watchAsset'
       req.params.type = 'ERC20'
       await preferencesController.requestWatchAsset(req, res, asy.next, asy.end)
@@ -442,7 +432,7 @@ describe('preferences controller', function () {
       req.params.options = { address, symbol, decimals, image }
 
       sandbox.stub(preferencesController, '_validateERC20AssetParams').returns(true)
-      preferencesController.openPopup = async () => {}
+      preferencesController.openPopup = async () => undefined
 
       await preferencesController._handleWatchAssetERC20(req.params.options)
       const suggested = preferencesController.getSuggestedTokens()
@@ -478,46 +468,16 @@ describe('preferences controller', function () {
       assert.ok(assetImages[address], `set image correctly`)
     })
     it('should validate ERC20 asset correctly', async function () {
-      const validateSpy = sandbox.spy(preferencesController._validateERC20AssetParams)
-      try {
-        validateSpy({ rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABC', decimals: 0 })
-      } catch (e) {}
-      assert.equal(validateSpy.threw(), false, 'correct options object')
-      const validateSpyAddress = sandbox.spy(preferencesController._validateERC20AssetParams)
-      try {
-        validateSpyAddress({ symbol: 'ABC', decimals: 0 })
-      } catch (e) {}
-      assert.equal(validateSpyAddress.threw(), true, 'options object with no address')
-      const validateSpySymbol = sandbox.spy(preferencesController._validateERC20AssetParams)
-      try {
-        validateSpySymbol({ rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', decimals: 0 })
-      } catch (e) {}
-      assert.equal(validateSpySymbol.threw(), true, 'options object with no symbol')
-      const validateSpyDecimals = sandbox.spy(preferencesController._validateERC20AssetParams)
-      try {
-        validateSpyDecimals({ rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABC' })
-      } catch (e) {}
-      assert.equal(validateSpyDecimals.threw(), true, 'options object with no decimals')
-      const validateSpyInvalidSymbol = sandbox.spy(preferencesController._validateERC20AssetParams)
-      try {
-        validateSpyInvalidSymbol({ rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABCDEFGHI', decimals: 0 })
-      } catch (e) {}
-      assert.equal(validateSpyInvalidSymbol.threw(), true, 'options object with invalid symbol')
-      const validateSpyInvalidDecimals1 = sandbox.spy(preferencesController._validateERC20AssetParams)
-      try {
-        validateSpyInvalidDecimals1({ rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABCDEFGHI', decimals: -1 })
-      } catch (e) {}
-      assert.equal(validateSpyInvalidDecimals1.threw(), true, 'options object with decimals less than zero')
-      const validateSpyInvalidDecimals2 = sandbox.spy(preferencesController._validateERC20AssetParams)
-      try {
-        validateSpyInvalidDecimals2({ rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABCDEFGHI', decimals: 38 })
-      } catch (e) {}
-      assert.equal(validateSpyInvalidDecimals2.threw(), true, 'options object with decimals more than 36')
-      const validateSpyInvalidAddress = sandbox.spy(preferencesController._validateERC20AssetParams)
-      try {
-        validateSpyInvalidAddress({ rawAddress: '0x123', symbol: 'ABC', decimals: 0 })
-      } catch (e) {}
-      assert.equal(validateSpyInvalidAddress.threw(), true, 'options object with address invalid')
+      const validate = preferencesController._validateERC20AssetParams
+
+      assert.doesNotThrow(() => validate({ rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABC', decimals: 0 }))
+      assert.throws(() => validate({ symbol: 'ABC', decimals: 0 }), 'missing address should fail')
+      assert.throws(() => validate({ rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', decimals: 0 }), 'missing symbol should fail')
+      assert.throws(() => validate({ rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABC' }), 'missing decimals should fail')
+      assert.throws(() => validate({ rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABCDEFGHI', decimals: 0 }), 'invalid symbol should fail')
+      assert.throws(() => validate({ rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABC', decimals: -1 }), 'decimals < 0 should fail')
+      assert.throws(() => validate({ rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABC', decimals: 38 }), 'decimals > 36 should fail')
+      assert.throws(() => validate({ rawAddress: '0x123', symbol: 'ABC', decimals: 0 }), 'invalid address should fail')
     })
   })
 

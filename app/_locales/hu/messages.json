@@ -444,7 +444,7 @@
   "gasLimit": {
     "message": "Gáz határértéke"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "A gázkorlátozás az elkölthető gázegységek maximális mennyisége."
   },
   "gasLimitTooLow": {
@@ -459,11 +459,8 @@
   "gasPriceExtremelyLow": {
     "message": "Üzemanyag ár Különösen alacsony"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "A gáz ára meghatározza, hogy ön mennyi Ethert hajlandó fizetni minden egyes gázegységért."
-  },
-  "gasPriceNoDenom": {
-    "message": "Gázár"
   },
   "general": {
     "message": "Általános"

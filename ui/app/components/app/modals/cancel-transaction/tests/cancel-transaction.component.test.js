@@ -1,5 +1,5 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import CancelTransaction from '../cancel-transaction.component'
@@ -34,7 +34,7 @@ describe('CancelTransaction Component', function () {
         defaultNewGasPrice="0x3b9aca00"
         createCancelTransaction={createCancelTransactionSpy}
         hideModal={hideModalSpy}
-        showTransactionConfirmedModal={() => {}}
+        showTransactionConfirmedModal={() => undefined}
       />,
       { context: { t } },
     )

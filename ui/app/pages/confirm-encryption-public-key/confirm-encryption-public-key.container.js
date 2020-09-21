@@ -14,11 +14,12 @@ import {
 } from '../../selectors'
 
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck'
-import ConfirmEncryptionPublicKey from './confirm-encryption-public-key.component'
 import { getMostRecentOverviewPage } from '../../ducks/history/history'
+import ConfirmEncryptionPublicKey from './confirm-encryption-public-key.component'
 
 function mapStateToProps (state) {
-  const { confirmTransaction,
+  const {
+    confirmTransaction,
     metamask: { domainMetadata = {} },
   } = state
 
@@ -31,8 +32,8 @@ function mapStateToProps (state) {
   const fromAccount = getTargetAccountWithSendEtherInfo(state, from)
 
   return {
-    txData: txData,
-    domainMetadata: domainMetadata,
+    txData,
+    domainMetadata,
     fromAccount,
     requester: null,
     requesterAddress: null,

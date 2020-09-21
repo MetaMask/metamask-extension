@@ -1,12 +1,13 @@
-const version = 38
 import { cloneDeep } from 'lodash'
+
+const version = 38
 
 /**
  * The purpose of this migration is to assign all users to a test group for the fullScreenVsPopup a/b test
  */
 export default {
   version,
-  migrate: async function (originalVersionedData) {
+  async migrate (originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     const state = versionedData.data
@@ -19,17 +20,18 @@ function transformState (state) {
   const { ABTestController: ABTestControllerState = {} } = state
   const { abTests = {} } = ABTestControllerState
 
-  if (!abTests.fullScreenVsPopup) {
-    state = {
-      ...state,
-      ABTestController: {
-        ...ABTestControllerState,
-        abTests: {
-          ...abTests,
-          fullScreenVsPopup: 'control',
-        },
-      },
-    }
+  if (abTests.fullScreenVsPopup) {
+    return state
   }
-  return state
+
+  return {
+    ...state,
+    ABTestController: {
+      ...ABTestControllerState,
+      abTests: {
+        ...abTests,
+        fullScreenVsPopup: 'control',
+      },
+    },
+  }
 }

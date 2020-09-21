@@ -3,6 +3,11 @@
   z-index: 100;
   top: 58px;
   width: 320px;
+  border-radius: 4px;
+  background: rgba($black, 0.8);
+  box-shadow: rgba($black, 0.15) 0 2px 2px 2px;
+  min-width: 150px;
+  color: $white;
 
   @media screen and (max-width: 575px) {
     right: calc(((100vw - 100%) / 2) + 8px);
@@ -18,6 +23,62 @@
 
   @media screen and (min-width: 1281px) {
     right: calc((100vw - 65vw) / 2);
+  }
+
+  &__item {
+    padding: 18px;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    position: relative;
+    z-index: 201;
+
+    @media screen and (max-width: 575px) {
+      padding: 14px;
+    }
+
+    &--clickable {
+      cursor: pointer;
+
+      &:hover {
+        background-color: rgba($white, 0.05);
+      }
+
+      &:active {
+        background-color: rgba($white, 0.1);
+      }
+    }
+
+    &__icon {
+      height: 16px;
+      width: 16px;
+      margin-right: 14px;
+    }
+
+    &__text {
+      font-size: 16px;
+      line-height: 21px;
+    }
+
+    &__subtext {
+      font-size: 12px;
+      padding: 5px 0 0 30px;
+    }
+  }
+
+  &__divider {
+    background-color: $scorpion;
+    width: 100%;
+    height: 1px;
+  }
+
+  &__close-area {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 100;
   }
 
   &__icon {
@@ -77,6 +138,13 @@
     }
 
     .keyring-label {
+      z-index: 1;
+      font-size: 8px;
+      line-height: 8px;
+      border-radius: 10px;
+      padding: 4px;
+      text-align: center;
+      height: 15px;
       margin-top: 5px;
       margin-right: 10px;
       background-color: $dusty-gray;

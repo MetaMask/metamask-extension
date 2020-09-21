@@ -185,6 +185,11 @@
     &:hover {
       cursor: pointer;
     }
+
+    svg {
+      margin-left: 10px;
+      padding-top: 3px;
+    }
   }
 
   &__networks-list-arrow {
@@ -213,6 +218,11 @@
   &__networks-list-name--selected {
     font-weight: bold;
     color: #000;
+  }
+
+  &__networks-list-name--disabled {
+    font-weight: 300;
+    color: #cdcdcd;
   }
 }
 

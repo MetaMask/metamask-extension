@@ -1,8 +1,8 @@
 import { connect } from 'react-redux'
-import ConfirmAddToken from './confirm-add-token.component'
 
 import { addTokens, clearPendingTokens } from '../../store/actions'
 import { getMostRecentOverviewPage } from '../../ducks/history/history'
+import ConfirmAddToken from './confirm-add-token.component'
 
 const mapStateToProps = (state) => {
   const { metamask: { pendingTokens } } = state

@@ -1,8 +1,8 @@
-import React from 'react'
 import assert from 'assert'
-import shallow from '../../../../../../../lib/shallow-with-context'
+import React from 'react'
 import sinon from 'sinon'
-import AdvancedTabContent from '../advanced-tab-content.component.js'
+import shallow from '../../../../../../../lib/shallow-with-context'
+import AdvancedTabContent from '../advanced-tab-content.component'
 
 import GasPriceChart from '../../../gas-price-chart'
 import Loading from '../../../../../ui/loading-screen'

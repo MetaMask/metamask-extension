@@ -1,12 +1,13 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 import { SETTINGS_ROUTE } from '../../../helpers/constants/routes'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
-import classnames from 'classnames'
 import Button from '../../../components/ui/button'
-import NetworkForm from './network-form'
+import LockIcon from '../../../components/ui/lock-icon'
 import NetworkDropdownIcon from '../../../components/app/dropdowns/components/network-dropdown-icon'
+import NetworkForm from './network-form'
 
 export default class NetworksTab extends PureComponent {
   static contextTypes = {
@@ -103,7 +104,7 @@ export default class NetworksTab extends PureComponent {
 
     return (
       <div
-        key={'settings-network-list-item:' + rpcUrl}
+        key={`settings-network-list-item:${rpcUrl}`}
         className="networks-tab__networks-list-item"
         onClick={ () => {
           setNetworksTabAddMode(false)
@@ -117,9 +118,17 @@ export default class NetworksTab extends PureComponent {
         <div
           className={classnames('networks-tab__networks-list-name', {
             'networks-tab__networks-list-name--selected': displayNetworkListItemAsSelected,
+            'networks-tab__networks-list-name--disabled': currentProviderType !== 'rpc' && !displayNetworkListItemAsSelected,
           })}
         >
           { label || this.context.t(labelKey) }
+          { currentProviderType !== 'rpc' && (
+            <LockIcon
+              width="14px"
+              height="17px"
+              fill="#cdcdcd"
+            />
+          ) }
         </div>
         <div className="networks-tab__networks-list-arrow" />
       </div>

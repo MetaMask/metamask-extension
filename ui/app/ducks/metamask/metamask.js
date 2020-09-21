@@ -2,7 +2,7 @@ import * as actionConstants from '../../store/actionConstants'
 import { ALERT_TYPES } from '../../../../app/scripts/controllers/alert'
 
 export default function reduceMetamask (state = {}, action) {
-  const metamaskState = Object.assign({
+  const metamaskState = {
     isInitialized: false,
     isUnlocked: false,
     isAccountMenuOpen: false,
@@ -46,7 +46,8 @@ export default function reduceMetamask (state = {}, action) {
     participateInMetaMetrics: null,
     metaMetricsSendCount: 0,
     nextNonce: null,
-  }, state)
+    ...state,
+  }
 
   switch (action.type) {
 
@@ -84,13 +85,14 @@ export default function reduceMetamask (state = {}, action) {
         selectedAddress: action.value,
       }
 
-    case actionConstants.SET_ACCOUNT_LABEL:
-      const account = action.value.account
+    case actionConstants.SET_ACCOUNT_LABEL: {
+      const { account } = action.value
       const name = action.value.label
       const id = {}
-      id[account] = Object.assign({}, metamaskState.identities[account], { name })
-      const identities = Object.assign({}, metamaskState.identities, id)
+      id[account] = { ...metamaskState.identities[account], name }
+      const identities = { ...metamaskState.identities, ...id }
       return Object.assign(metamaskState, { identities })
+    }
 
     case actionConstants.SET_CURRENT_FIAT:
       return Object.assign(metamaskState, {
@@ -197,7 +199,7 @@ export default function reduceMetamask (state = {}, action) {
         },
       })
 
-    case actionConstants.UPDATE_SEND_TOKEN:
+    case actionConstants.UPDATE_SEND_TOKEN: {
       const newSend = {
         ...metamaskState.send,
         token: action.value,
@@ -225,6 +227,7 @@ export default function reduceMetamask (state = {}, action) {
       return Object.assign(metamaskState, {
         send: newSend,
       })
+    }
 
     case actionConstants.UPDATE_SEND_ENS_RESOLUTION:
       return {
@@ -265,12 +268,12 @@ export default function reduceMetamask (state = {}, action) {
         },
       }
 
-    case actionConstants.UPDATE_TRANSACTION_PARAMS:
+    case actionConstants.UPDATE_TRANSACTION_PARAMS: {
       const { id: txId, value } = action
       let { currentNetworkTxList } = metamaskState
       currentNetworkTxList = currentNetworkTxList.map((tx) => {
         if (tx.id === txId) {
-          const newTx = Object.assign({}, tx)
+          const newTx = { ...tx }
           newTx.txParams = value
           return newTx
         }
@@ -281,6 +284,7 @@ export default function reduceMetamask (state = {}, action) {
         ...metamaskState,
         currentNetworkTxList,
       }
+    }
 
     case actionConstants.SET_PARTICIPATE_IN_METAMETRICS:
       return {

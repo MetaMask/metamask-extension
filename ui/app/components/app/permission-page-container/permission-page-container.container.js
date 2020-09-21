@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
-import PermissionPageContainer from './permission-page-container.component'
 import { getMetaMaskIdentities } from '../../../selectors'
+import PermissionPageContainer from './permission-page-container.component'
 
 const mapStateToProps = (state, ownProps) => {
   const { selectedIdentities } = ownProps

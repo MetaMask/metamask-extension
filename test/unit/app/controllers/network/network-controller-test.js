@@ -1,27 +1,18 @@
 import assert from 'assert'
-import nock from 'nock'
 import NetworkController from '../../../../../app/scripts/controllers/network'
 import { getNetworkDisplayName } from '../../../../../app/scripts/controllers/network/util'
 
 describe('NetworkController', function () {
   describe('controller', function () {
     let networkController
-    const noop = () => {}
+    const noop = () => undefined
     const networkControllerProviderConfig = {
       getAccounts: noop,
     }
 
     beforeEach(function () {
-      nock('https://rinkeby.infura.io')
-        .persist()
-        .post('/metamask')
-        .reply(200)
-
       networkController = new NetworkController()
-    })
-
-    afterEach(function () {
-      nock.cleanAll()
+      networkController.setInfuraProjectId('foo')
     })
 
     describe('#provider', function () {
@@ -53,7 +44,7 @@ describe('NetworkController', function () {
       it('should update provider.type', function () {
         networkController.initializeProvider(networkControllerProviderConfig)
         networkController.setProviderType('mainnet')
-        const type = networkController.getProviderConfig().type
+        const { type } = networkController.getProviderConfig()
         assert.equal(type, 'mainnet', 'provider type is updated')
       })
       it('should set the network to loading', function () {
@@ -97,7 +88,7 @@ describe('NetworkController', function () {
           expected: 'Kovan',
         }, {
           input: 'mainnet',
-          expected: 'Main Ethereum Network',
+          expected: 'Ethereum Mainnet',
         }, {
           input: 'goerli',
           expected: 'Goerli',

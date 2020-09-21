@@ -1,3 +1,4 @@
+import { addHexPrefix } from 'ethereumjs-util'
 import {
   conversionRateSelector,
   currentCurrencySelector,
@@ -21,7 +22,6 @@ import {
 } from '../../helpers/utils/transactions.util'
 
 import { conversionUtil } from '../../helpers/utils/conversion-util'
-import { addHexPrefix } from 'ethereumjs-util'
 
 // Actions
 const createActionType = (action) => `metamask/confirm-transaction/${action}`
@@ -104,7 +104,7 @@ export default function reducer (state = initState, action = {}) {
         ...state,
         methodData: {},
       }
-    case UPDATE_TRANSACTION_AMOUNTS:
+    case UPDATE_TRANSACTION_AMOUNTS: {
       const { fiatTransactionAmount, ethTransactionAmount, hexTransactionAmount } = action.payload
       return {
         ...state,
@@ -112,7 +112,8 @@ export default function reducer (state = initState, action = {}) {
         ethTransactionAmount: ethTransactionAmount || state.ethTransactionAmount,
         hexTransactionAmount: hexTransactionAmount || state.hexTransactionAmount,
       }
-    case UPDATE_TRANSACTION_FEES:
+    }
+    case UPDATE_TRANSACTION_FEES: {
       const { fiatTransactionFee, ethTransactionFee, hexTransactionFee } = action.payload
       return {
         ...state,
@@ -120,7 +121,8 @@ export default function reducer (state = initState, action = {}) {
         ethTransactionFee: ethTransactionFee || state.ethTransactionFee,
         hexTransactionFee: hexTransactionFee || state.hexTransactionFee,
       }
-    case UPDATE_TRANSACTION_TOTALS:
+    }
+    case UPDATE_TRANSACTION_TOTALS: {
       const { fiatTransactionTotal, ethTransactionTotal, hexTransactionTotal } = action.payload
       return {
         ...state,
@@ -128,7 +130,8 @@ export default function reducer (state = initState, action = {}) {
         ethTransactionTotal: ethTransactionTotal || state.ethTransactionTotal,
         hexTransactionTotal: hexTransactionTotal || state.hexTransactionTotal,
       }
-    case UPDATE_TOKEN_PROPS:
+    }
+    case UPDATE_TOKEN_PROPS: {
       const { tokenSymbol = '', tokenDecimals = '' } = action.payload
       return {
         ...state,
@@ -138,6 +141,7 @@ export default function reducer (state = initState, action = {}) {
           tokenDecimals,
         },
       }
+    }
     case UPDATE_NONCE:
       return {
         ...state,
@@ -254,16 +258,14 @@ export function setFetchingData (isFetching) {
 }
 
 export function updateGasAndCalculate ({ gasLimit, gasPrice }) {
-  gasLimit = addHexPrefix(gasLimit)
-  gasPrice = addHexPrefix(gasPrice)
   return (dispatch, getState) => {
     const { confirmTransaction: { txData } } = getState()
     const newTxData = {
       ...txData,
       txParams: {
         ...txData.txParams,
-        gas: gasLimit,
-        gasPrice,
+        gas: addHexPrefix(gasLimit),
+        gasPrice: addHexPrefix(gasPrice),
       },
     }
 
@@ -364,10 +366,8 @@ export function setTransactionToConfirm (transactionId) {
       if (txParams.data) {
         const { data } = txParams
 
-
         const tokenData = getTokenData(data)
         dispatch(updateTokenData(tokenData))
-
       }
 
       if (txParams.nonce) {

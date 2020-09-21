@@ -1,5 +1,5 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import Button from '../../../button'
@@ -28,7 +28,7 @@ describe('Page Footer', function () {
   })
 
   it('should render a secondary footer inside page-container__footer when given children', function () {
-    const wrapper = shallow(
+    wrapper = shallow(
       <PageFooter>
         <div>Works</div>
       </PageFooter>,

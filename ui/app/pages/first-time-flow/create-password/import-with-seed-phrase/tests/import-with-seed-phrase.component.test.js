@@ -1,5 +1,5 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import ImportWithSeedPhrase from '../import-with-seed-phrase.component'
@@ -7,7 +7,7 @@ import ImportWithSeedPhrase from '../import-with-seed-phrase.component'
 function shallowRender (props = {}, context = {}) {
   return shallow(<ImportWithSeedPhrase {...props} />, {
     context: {
-      t: (str) => str + '_t',
+      t: (str) => `${str}_t`,
       metricsEvent: sinon.spy(),
       ...context,
     },

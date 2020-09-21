@@ -1,5 +1,6 @@
-const version = 42
 import { cloneDeep } from 'lodash'
+
+const version = 42
 
 /**
  * Initialize `connectedStatusPopoverHasBeenShown` to `false` if it hasn't yet been set,
@@ -7,7 +8,7 @@ import { cloneDeep } from 'lodash'
  */
 export default {
   version,
-  migrate: async function (originalVersionedData) {
+  async migrate (originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     const state = versionedData.data

@@ -1,6 +1,8 @@
 #!/usr/bin/env node
+const childProcess = require('child_process')
 const pify = require('pify')
-const exec = pify(require('child_process').exec, { multiArgs: true })
+
+const exec = pify(childProcess.exec, { multiArgs: true })
 const VERSION = require('../dist/chrome/manifest.json').version // eslint-disable-line import/no-unresolved
 
 start().catch(console.error)
@@ -25,12 +27,14 @@ async function start () {
 
   // check if version has artifacts or not
   const versionHasArtifacts = versionAlreadyExists && await checkIfVersionHasArtifacts()
-  if (!versionHasArtifacts) {
-    // upload sentry source and sourcemaps
-    await exec(`./development/sentry-upload-artifacts.sh --release ${VERSION}`)
-  } else {
+  if (versionHasArtifacts) {
     console.log(`Version "${VERSION}" already has artifacts on Sentry, skipping sourcemap upload`)
+    return
   }
+
+  // upload sentry source and sourcemaps
+  await exec(`./development/sentry-upload-artifacts.sh --release ${VERSION}`)
+
 }
 
 async function checkIfAuthWorks () {

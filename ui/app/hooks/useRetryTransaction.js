@@ -10,7 +10,6 @@ import {
 import { increaseLastGasPrice } from '../helpers/utils/confirm-tx.util'
 import { useMetricEvent } from './useMetricEvent'
 
-
 /**
  * Provides a reusable hook that, given a transactionGroup, will return
  * a method for beginning the retry process

@@ -243,6 +243,13 @@ export default class ImportWithSeedPhrase extends PureComponent {
               placeholder={t('seedPhrasePlaceholderPaste')}
             />
           )}
+          {
+            seedPhraseError && (
+              <span className="error">
+                { seedPhraseError }
+              </span>
+            )
+          }
           <div className="first-time-flow__checkbox-container" onClick={this.toggleShowSeedPhrase}>
             <div
               className="first-time-flow__checkbox"
@@ -259,13 +266,6 @@ export default class ImportWithSeedPhrase extends PureComponent {
             </span>
           </div>
         </div>
-        {
-          seedPhraseError && (
-            <span className="error">
-              { seedPhraseError }
-            </span>
-          )
-        }
         <TextField
           id="password"
           label={t('newPassword')}

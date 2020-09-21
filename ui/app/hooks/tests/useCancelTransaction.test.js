@@ -1,5 +1,5 @@
-import * as reactRedux from 'react-redux'
 import assert from 'assert'
+import * as reactRedux from 'react-redux'
 import { renderHook } from '@testing-library/react-hooks'
 import sinon from 'sinon'
 import transactions from '../../../../test/data/transaction-data.json'
@@ -7,7 +7,6 @@ import { getConversionRate, getSelectedAccount } from '../../selectors'
 import { useCancelTransaction } from '../useCancelTransaction'
 import { showModal } from '../../store/actions'
 import { increaseLastGasPrice } from '../../helpers/utils/confirm-tx.util'
-
 
 describe('useCancelTransaction', function () {
   let useSelector
@@ -32,6 +31,7 @@ describe('useCancelTransaction', function () {
             balance: '0x3',
           }
         }
+        return undefined
       })
     })
     transactions.forEach((transactionGroup) => {
@@ -45,7 +45,7 @@ describe('useCancelTransaction', function () {
       it(`should return a function that kicks off cancellation for id ${transactionId}`, function () {
         const { result } = renderHook(() => useCancelTransaction(transactionGroup))
         assert.equal(typeof result.current[1], 'function')
-        result.current[1]({ preventDefault: () => {}, stopPropagation: () => {} })
+        result.current[1]({ preventDefault: () => undefined, stopPropagation: () => undefined })
         assert.equal(
           dispatch.calledWith(
             showModal({
@@ -63,7 +63,6 @@ describe('useCancelTransaction', function () {
     })
   })
 
-
   describe('when account has sufficient balance to cover gas', function () {
     before(function () {
       useSelector = sinon.stub(reactRedux, 'useSelector')
@@ -75,6 +74,7 @@ describe('useCancelTransaction', function () {
             balance: '0x9C2007651B2500000',
           }
         }
+        return undefined
       })
     })
     transactions.forEach((transactionGroup) => {
@@ -88,7 +88,7 @@ describe('useCancelTransaction', function () {
       it(`should return a function that kicks off cancellation for id ${transactionId}`, function () {
         const { result } = renderHook(() => useCancelTransaction(transactionGroup))
         assert.equal(typeof result.current[1], 'function')
-        result.current[1]({ preventDefault: () => {}, stopPropagation: () => {} })
+        result.current[1]({ preventDefault: () => undefined, stopPropagation: () => undefined })
         assert.equal(
           dispatch.calledWith(
             showModal({
@@ -105,7 +105,6 @@ describe('useCancelTransaction', function () {
       useSelector.restore()
     })
   })
-
 
   after(function () {
     sinon.restore()

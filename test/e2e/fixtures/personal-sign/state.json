@@ -64,9 +64,7 @@
           "response": {
             "id": 1764280960,
             "jsonrpc": "2.0",
-            "result": [
-              "0x5cfe73b6021e818b776b421b1c4db2474086a7e1"
-            ]
+            "result": ["0x5cfe73b6021e818b776b421b1c4db2474086a7e1"]
           },
           "responseTime": 1594348332276,
           "success": true
@@ -142,9 +140,7 @@
         "http://127.0.0.1:8080": {
           "permissions": [
             {
-              "@context": [
-                "https://github.com/MetaMask/rpc-cap"
-              ],
+              "@context": ["https://github.com/MetaMask/rpc-cap"],
               "parentCapability": "eth_accounts",
               "id": "f55a1c15-ea48-4088-968e-63be474d42fa",
               "date": 1594348332268,
@@ -157,9 +153,7 @@
                 },
                 {
                   "type": "filterResponse",
-                  "value": [
-                    "0x5cfe73b6021e818b776b421b1c4db2474086a7e1"
-                  ],
+                  "value": ["0x5cfe73b6021e818b776b421b1c4db2474086a7e1"],
                   "name": "exposedAccounts"
                 }
               ]

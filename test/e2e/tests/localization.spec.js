@@ -20,7 +20,7 @@ describe('Localization', function () {
         await passwordField.sendKeys(Key.ENTER)
         const secondaryBalance = await driver.findElement(By.css('[data-testid="eth-overview__secondary-currency"]'))
         const secondaryBalanceText = await secondaryBalance.getText()
-        const [fiatAmount, fiatUnit] = secondaryBalanceText.trim().split(/\s+/)
+        const [fiatAmount, fiatUnit] = secondaryBalanceText.trim().split(/\s+/u)
         assert.ok(fiatAmount.startsWith('₱'))
         assert.equal(fiatUnit, 'PHP')
       },

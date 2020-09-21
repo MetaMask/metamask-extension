@@ -1,19 +1,18 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { debounce } from 'lodash'
 import {
   getAmountErrorObject,
   getGasFeeErrorObject,
   getToAddressForGasUpdate,
   doesAmountErrorRequireUpdate,
 } from './send.utils'
-import { debounce } from 'lodash'
 import { getToWarningObject, getToErrorObject } from './send-content/add-recipient/add-recipient'
 import SendHeader from './send-header'
 import AddRecipient from './send-content/add-recipient'
 import SendContent from './send-content'
 import SendFooter from './send-footer'
 import EnsInput from './send-content/add-recipient/ens-input'
-
 
 export default class SendTransactionScreen extends Component {
 
@@ -225,7 +224,8 @@ export default class SendTransactionScreen extends Component {
     } = this.props
 
     if (!query) {
-      return this.setState({ toError: '', toWarning: '' })
+      this.setState({ toError: '', toWarning: '' })
+      return
     }
 
     const toErrorObject = getToErrorObject(query, hasHexData, network)
@@ -324,26 +324,26 @@ export default class SendTransactionScreen extends Component {
   }
 
   renderAddRecipient () {
-    const { toError, toWarning } = this.state
-
+    const { toError } = this.state
     return (
       <AddRecipient
         updateGas={({ to, amount, data } = {}) => this.updateGas({ to, amount, data })}
         query={this.state.query}
         toError={toError}
-        toWarning={toWarning}
       />
     )
   }
 
   renderSendContent () {
     const { history, showHexData } = this.props
+    const { toWarning } = this.state
 
     return [
       <SendContent
         key="send-content"
         updateGas={({ to, amount, data } = {}) => this.updateGas({ to, amount, data })}
         showHexData={showHexData}
+        warning={toWarning}
       />,
       <SendFooter key="send-footer" history={history} />,
     ]

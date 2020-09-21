@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import Button from '../../ui/button'
 import RecipientGroup from './recipient-group/recipient-group.component'
 
 export default class ContactList extends PureComponent {
@@ -37,12 +38,13 @@ export default class ContactList extends PureComponent {
         />
         {
           showLoadMore && (
-            <div
+            <Button
+              type="link"
               className="send__select-recipient-wrapper__recent-group-wrapper__load-more"
               onClick={() => this.setState({ isShowingAllRecent: true })}
             >
               {t('loadMore')}
-            </div>
+            </Button>
           )
         }
       </div>
@@ -67,9 +69,8 @@ export default class ContactList extends PureComponent {
           return 1
         } else if (letter1 === letter2) {
           return 0
-        } else {
-          return -1
         }
+        return -1
       })
       .map(([letter, groupItems]) => (
         <RecipientGroup

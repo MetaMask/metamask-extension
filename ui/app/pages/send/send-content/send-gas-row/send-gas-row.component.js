@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import SendRowWrapper from '../send-row-wrapper'
-import GasFeeDisplay from './gas-fee-display/gas-fee-display.component'
 import GasPriceButtonGroup from '../../../../components/app/gas-customization/gas-price-button-group'
 import AdvancedGasInputs from '../../../../components/app/gas-customization/advanced-gas-inputs'
+import GasFeeDisplay from './gas-fee-display/gas-fee-display.component'
 
 export default class SendGasRow extends Component {
 
@@ -26,6 +26,7 @@ export default class SendGasRow extends Component {
     gasPrice: PropTypes.string,
     gasLimit: PropTypes.string,
     insufficientBalance: PropTypes.bool,
+    isMainnet: PropTypes.bool,
   }
 
   static contextTypes = {
@@ -35,7 +36,11 @@ export default class SendGasRow extends Component {
 
   renderAdvancedOptionsButton () {
     const { metricsEvent } = this.context
-    const { showCustomizeGasModal } = this.props
+    const { showCustomizeGasModal, isMainnet } = this.props
+    // Tests should behave in same way as mainnet, but are using Localhost
+    if (!isMainnet && !process.env.IN_TEST) {
+      return null
+    }
     return (
       <div
         className="advanced-gas-options-btn"
@@ -87,6 +92,7 @@ export default class SendGasRow extends Component {
       gasPrice,
       gasLimit,
       insufficientBalance,
+      isMainnet,
     } = this.props
     const { metricsEvent } = this.context
 
@@ -140,14 +146,13 @@ export default class SendGasRow extends Component {
         { this.renderAdvancedOptionsButton() }
       </div>
     )
-
-    if (advancedInlineGasShown) {
+    // Tests should behave in same way as mainnet, but are using Localhost
+    if (advancedInlineGasShown || (!isMainnet && !process.env.IN_TEST)) {
       return advancedGasInputs
     } else if (gasButtonGroupShown) {
       return gasPriceButtonGroup
-    } else {
-      return gasFeeDisplay
     }
+    return gasFeeDisplay
   }
 
   render () {

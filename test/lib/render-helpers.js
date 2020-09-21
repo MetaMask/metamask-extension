@@ -1,14 +1,10 @@
 import React from 'react'
+import { Provider } from 'react-redux'
+import { render } from '@testing-library/react'
 import { mount } from 'enzyme'
 import { MemoryRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
-
-export function mountWithStore (component, store) {
-  const context = {
-    store,
-  }
-  return mount(component, { context })
-}
+import { LegacyI18nProvider } from '../../ui/app/contexts/i18n'
 
 export function mountWithRouter (component, store = {}, pathname = '/') {
 
@@ -17,7 +13,7 @@ export function mountWithRouter (component, store = {}, pathname = '/') {
     history: new MemoryRouter().history,
     route: {
       location: {
-        pathname: pathname,
+        pathname,
       },
       match: {},
     },
@@ -27,7 +23,7 @@ export function mountWithRouter (component, store = {}, pathname = '/') {
     context: {
       router,
       t: (str) => str,
-      metricsEvent: () => {},
+      metricsEvent: () => undefined,
       store,
     },
     childContextTypes: {
@@ -45,4 +41,17 @@ export function mountWithRouter (component, store = {}, pathname = '/') {
   )
 
   return mount(<Wrapper />, createContext())
+}
+
+export function renderWithProvider (component, store) {
+
+  const Wrapper = () => (
+    <Provider store={store}>
+      <LegacyI18nProvider>
+        { component }
+      </LegacyI18nProvider>
+    </Provider>
+  )
+
+  return render(<Wrapper />)
 }

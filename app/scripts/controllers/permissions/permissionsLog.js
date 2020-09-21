@@ -113,10 +113,11 @@ export default class PermissionsLogController {
         // eth_requestAccounts is a special case; we need to extract the accounts
         // from it
         activityEntry = this.logRequest(req, isInternal)
-        requestedMethods = [ 'eth_accounts' ]
+        requestedMethods = ['eth_accounts']
       } else {
         // no-op
-        return next()
+        next()
+        return
       }
 
       // call next with a return handler for capturing the response
@@ -291,9 +292,9 @@ export default class PermissionsLogController {
     // eth_accounts requires special handling, because of information
     // we store about the accounts
     const existingEthAccountsEntry = (
-      history[origin] && history[origin]['eth_accounts']
+      history[origin] && history[origin].eth_accounts
     )
-    const newEthAccountsEntry = newEntries['eth_accounts']
+    const newEthAccountsEntry = newEntries.eth_accounts
 
     if (existingEthAccountsEntry && newEthAccountsEntry) {
 
@@ -305,7 +306,7 @@ export default class PermissionsLogController {
       )
 
       // merge old and new eth_accounts history entries
-      newOriginHistory['eth_accounts'] = {
+      newOriginHistory.eth_accounts = {
         lastApproved,
         accounts: {
           ...existingEthAccountsEntry.accounts,
@@ -363,7 +364,7 @@ export default class PermissionsLogController {
         }
       }
     }
-    return [ ...accounts ]
+    return [...accounts]
   }
 }
 

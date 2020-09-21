@@ -2,6 +2,7 @@ const assert = require('assert')
 const webdriver = require('selenium-webdriver')
 
 const { By, until } = webdriver
+const enLocaleMessages = require('../../app/_locales/en/messages.json')
 const {
   tinyDelayMs,
   regularDelayMs,
@@ -9,7 +10,6 @@ const {
 } = require('./helpers')
 const { buildWebDriver } = require('./webdriver')
 const Ganache = require('./ganache')
-const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
 const ganacheServer = new Ganache()
 
@@ -95,12 +95,12 @@ describe('MetaMask', function () {
     })
 
     it('gets the current accounts address', async function () {
-      const addressInput = await driver.findElement(By.css('.qr-ellip-address'))
+      const addressInput = await driver.findElement(By.css('.readonly-input__input'))
       publicAddress = await addressInput.getAttribute('value')
 
       const accountModal = await driver.findElement(By.css('span .modal'))
 
-      await driver.clickElement(By.css('.account-modal-close'))
+      await driver.clickElement(By.css('.account-modal__close'))
 
       await driver.wait(until.stalenessOf(accountModal))
       await driver.delay(regularDelayMs)
@@ -127,7 +127,7 @@ describe('MetaMask', function () {
       await driver.clickElement(By.css('#send'))
 
       const txStatus = await driver.findElement(By.css('#success'))
-      await driver.wait(until.elementTextMatches(txStatus, /Success/), 15000)
+      await driver.wait(until.elementTextMatches(txStatus, /Success/u), 15000)
     })
 
     it('switches back to MetaMask', async function () {
@@ -136,7 +136,7 @@ describe('MetaMask', function () {
 
     it('should have the correct amount of eth', async function () {
       const balances = await driver.findElements(By.css('.currency-display-component__text'))
-      await driver.wait(until.elementTextMatches(balances[0], /1/), 15000)
+      await driver.wait(until.elementTextMatches(balances[0], /1/u), 15000)
       const balance = await balances[0].getText()
 
       assert.equal(balance, '1')
@@ -193,7 +193,7 @@ describe('MetaMask', function () {
 
     it('should have the correct amount of eth', async function () {
       const balances = await driver.findElements(By.css('.currency-display-component__text'))
-      await driver.wait(until.elementTextMatches(balances[0], /1/), 15000)
+      await driver.wait(until.elementTextMatches(balances[0], /1/u), 15000)
       const balance = await balances[0].getText()
 
       assert.equal(balance, '1')

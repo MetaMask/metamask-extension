@@ -7,6 +7,9 @@
 @import './reset.scss';
 @import './design-system/index';
 @import './base-styles.scss';
+@import '../components/app/app-components';
+@import '../components/ui/ui-components';
+@import '../pages/pages';
 
 /*
   ITCSS
@@ -19,8 +22,10 @@
  */
 @import './itcss/settings/index';
 @import './itcss/tools/index';
-@import './itcss/objects/index';
 @import './itcss/components/index';
-@import './itcss/trumps/index';
-// Other imports
+
+/*
+  Third Party Library Styles
+*/
+@import '../../../node_modules/react-tippy/dist/tippy';
 @import '../../../node_modules/react-select/dist/react-select';

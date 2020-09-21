@@ -5,6 +5,8 @@
   overflow-y: auto;
   height: 100%;
   flex: 1;
+  display: flex;
+  flex-direction: column;
 
   &__error-container {
     padding: 0 16px 16px 16px;
@@ -71,5 +73,9 @@
     color: #8c8e94;
     text-transform: uppercase;
     margin: 0 8px;
+  }
+
+  .page-container__footer {
+    margin-top: auto;
   }
 }

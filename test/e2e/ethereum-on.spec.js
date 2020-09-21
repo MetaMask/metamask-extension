@@ -2,13 +2,13 @@ const assert = require('assert')
 const webdriver = require('selenium-webdriver')
 
 const { By, until } = webdriver
+const enLocaleMessages = require('../../app/_locales/en/messages.json')
 const {
   regularDelayMs,
   largeDelayMs,
 } = require('./helpers')
 const { buildWebDriver } = require('./webdriver')
 const Ganache = require('./ganache')
-const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
 const ganacheServer = new Ganache()
 
@@ -89,11 +89,11 @@ describe('MetaMask', function () {
     })
 
     it('gets the current accounts address', async function () {
-      const addressInput = await driver.findElement(By.css('.qr-ellip-address'))
+      const addressInput = await driver.findElement(By.css('.readonly-input__input'))
       publicAddress = await addressInput.getAttribute('value')
       const accountModal = await driver.findElement(By.css('span .modal'))
 
-      await driver.clickElement(By.css('.account-modal-close'))
+      await driver.clickElement(By.css('.account-modal__close'))
 
       await driver.wait(until.stalenessOf(accountModal))
       await driver.delay(regularDelayMs)

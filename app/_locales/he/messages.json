@@ -448,7 +448,7 @@
   "gasLimit": {
     "message": "הגבלת דלק"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "הגבלת דלק היא המספר המרבי של יחידות דלק שהנך מוכנ/ה להוציא."
   },
   "gasLimitTooLow": {
@@ -463,11 +463,8 @@
   "gasPriceExtremelyLow": {
     "message": "מחיר הדלק נמוך במיוחד"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "מחיר הדלק מציין את כמות האת'ר שהנך מוכנ/ה לשלם עבור כל יחידת דלק."
-  },
-  "gasPriceNoDenom": {
-    "message": "מחיר הדלק"
   },
   "general": {
     "message": "כללי"

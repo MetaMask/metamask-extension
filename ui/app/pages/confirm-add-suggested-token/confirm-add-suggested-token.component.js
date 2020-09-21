@@ -92,7 +92,7 @@ export default class ConfirmAddSuggestedToken extends Component {
             <div className="confirm-add-token__token-list">
               {
                 Object.entries(pendingTokens)
-                  .map(([ address, token ]) => {
+                  .map(([address, token]) => {
                     const { name, symbol, image } = token
 
                     return (

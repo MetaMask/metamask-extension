@@ -157,23 +157,35 @@ export default class ConfirmPageContainer extends Component {
               nonce={nonce}
               assetImage={assetImage}
               warning={warning}
+              onCancelAll={onCancelAll}
+              onCancel={onCancel}
+              cancelText={this.context.t('reject')}
+              onSubmit={onSubmit}
+              submitText={this.context.t('confirm')}
+              disabled={disabled}
+              unapprovedTxCount={unapprovedTxCount}
+              rejectNText={this.context.t('rejectTxsN', [unapprovedTxCount])}
             />
           )
         }
-        <PageContainerFooter
-          onCancel={() => onCancel()}
-          cancelText={this.context.t('reject')}
-          onSubmit={() => onSubmit()}
-          submitText={this.context.t('confirm')}
-          submitButtonType="confirm"
-          disabled={disabled}
-        >
-          {unapprovedTxCount > 1 && (
-            <a onClick={() => onCancelAll()}>
-              {this.context.t('rejectTxsN', [unapprovedTxCount])}
-            </a>
-          )}
-        </PageContainerFooter>
+        {
+          contentComponent && (
+            <PageContainerFooter
+              onCancel={onCancel}
+              cancelText={this.context.t('reject')}
+              onSubmit={onSubmit}
+              submitText={this.context.t('confirm')}
+              submitButtonType="confirm"
+              disabled={disabled}
+            >
+              {unapprovedTxCount > 1 && (
+                <a onClick={onCancelAll}>
+                  {this.context.t('rejectTxsN', [unapprovedTxCount])}
+                </a>
+              )}
+            </PageContainerFooter>
+          )
+        }
       </div>
     )
   }

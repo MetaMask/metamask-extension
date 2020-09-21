@@ -9,7 +9,7 @@ export default function failTxsThat (version, reason, condition) {
       const newState = transformState(state, condition, reason)
       versionedData.data = newState
     } catch (err) {
-      console.warn(`MetaMask Migration #${version}` + err.stack)
+      console.warn(`MetaMask Migration #${version}${err.stack}`)
     }
     return Promise.resolve(versionedData)
 
@@ -20,7 +20,7 @@ function transformState (state, condition, reason) {
   const newState = state
   const { TransactionController } = newState
   if (TransactionController && TransactionController.transactions) {
-    const transactions = TransactionController.transactions
+    const { transactions } = TransactionController
 
     newState.TransactionController.transactions = transactions.map((txMeta) => {
       if (!condition(txMeta)) {

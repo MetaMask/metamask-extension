@@ -1,5 +1,5 @@
-import { getPreferences, getShouldShowFiat, getNativeCurrency } from '../selectors'
 import { useSelector } from 'react-redux'
+import { getPreferences, getShouldShowFiat, getNativeCurrency } from '../selectors'
 import { PRIMARY, SECONDARY, ETH } from '../helpers/constants/common'
 
 /**

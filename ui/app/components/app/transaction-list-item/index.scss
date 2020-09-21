@@ -9,7 +9,7 @@
     color: $Grey-500;
   }
 
-  &--unconfirmed {
+  & &--unconfirmed {
     color: $Grey-500;
   }
 
@@ -27,6 +27,10 @@
       width: 75px;
       white-space: nowrap;
       line-height: 1rem;
+    }
+
+    & > .button:first-child {
+      margin-right: 6px;
     }
 
     &:empty {

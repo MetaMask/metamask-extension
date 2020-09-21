@@ -1,18 +1,17 @@
-import * as utils from './transactions.util'
 import assert from 'assert'
+import * as utils from './transactions.util'
 
 describe('Transactions utils', function () {
   describe('getTokenData', function () {
     it('should return token data', function () {
       const tokenData = utils.getTokenData('0xa9059cbb00000000000000000000000050a9d56c2b8ba9a5c7f2c08c3d26e0499f23a7060000000000000000000000000000000000000000000000000000000000004e20')
       assert.ok(tokenData)
-      const { name, params } = tokenData
+      const { name, args } = tokenData
       assert.equal(name, 'transfer')
-      const [to, value] = params
-      assert.equal(to.name, '_to')
-      assert.equal(to.type, 'address')
-      assert.equal(value.name, '_value')
-      assert.equal(value.type, 'uint256')
+      const to = args._to
+      const value = args._value.toString()
+      assert.equal(to, '0x50A9D56C2B8BA9A5c7f2C08C3d26E0499F23a706')
+      assert.equal(value, '20000')
     })
 
     it('should not throw errors when called without arguments', function () {

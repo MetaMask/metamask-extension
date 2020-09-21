@@ -1,0 +1,100 @@
+.new-account-import-disclaimer {
+  width: 120%;
+  background-color: #f4f9fc;
+  display: inline-block;
+  align-items: center;
+  padding: 20px 30px 20px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.new-account-import-form {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  padding: 0 30px 30px;
+
+  &__select-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 29px;
+    width: 100%;
+  }
+
+  &__select-label {
+    color: $scorpion;
+    font-size: 16px;
+    line-height: 21px;
+  }
+
+  &__select {
+    height: 54px;
+    width: 210px;
+    border: 1px solid #d2d8dd;
+    border-radius: 4px;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+
+    .Select-control,
+    .Select-control:hover {
+      height: 100%;
+      border: none;
+      box-shadow: none;
+
+      .Select-value {
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+
+  &__private-key-password-container {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  &__instruction {
+    color: $scorpion;
+    font-size: 16px;
+    line-height: 21px;
+    align-self: flex-start;
+  }
+
+  &__private-key {
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
+    margin-top: 34px;
+  }
+
+  &__input-password {
+    height: 54px;
+    width: 315px;
+    border: 1px solid $geyser;
+    border-radius: 4px;
+    background-color: $white;
+    margin-top: 16px;
+    color: $scorpion;
+    font-size: 16px;
+    padding: 0 20px;
+  }
+
+  &__json {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    margin-top: 29px;
+    width: 100%;
+  }
+
+  &__buttons {
+    margin-top: 39px;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+}

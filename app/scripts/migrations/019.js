@@ -1,6 +1,4 @@
 
-const version = 19
-
 /*
 
 This migration sets transactions as failed
@@ -10,10 +8,12 @@ whos nonce is too high
 
 import { cloneDeep } from 'lodash'
 
+const version = 19
+
 export default {
   version,
 
-  migrate: function (originalVersionedData) {
+  migrate (originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     try {
@@ -21,7 +21,7 @@ export default {
       const newState = transformState(state)
       versionedData.data = newState
     } catch (err) {
-      console.warn(`MetaMask Migration #${version}` + err.stack)
+      console.warn(`MetaMask Migration #${version}${err.stack}`)
     }
     return Promise.resolve(versionedData)
   },
@@ -32,7 +32,7 @@ function transformState (state) {
   const { TransactionController } = newState
   if (TransactionController && TransactionController.transactions) {
 
-    const transactions = newState.TransactionController.transactions
+    const { transactions } = newState.TransactionController
 
     newState.TransactionController.transactions = transactions.map((txMeta, _, txList) => {
       if (txMeta.status !== 'submitted') {
@@ -66,13 +66,13 @@ function transformState (state) {
 
 function getHighestContinuousFrom (txList, startPoint) {
   const nonces = txList.map((txMeta) => {
-    const nonce = txMeta.txParams.nonce
+    const { nonce } = txMeta.txParams
     return parseInt(nonce, 16)
   })
 
   let highest = startPoint
   while (nonces.includes(highest)) {
-    highest++
+    highest += 1
   }
 
   return highest
@@ -80,7 +80,7 @@ function getHighestContinuousFrom (txList, startPoint) {
 
 function getHighestNonce (txList) {
   const nonces = txList.map((txMeta) => {
-    const nonce = txMeta.txParams.nonce
+    const { nonce } = txMeta.txParams
     return parseInt(nonce || '0x0', 16)
   })
   const highestNonce = Math.max.apply(null, nonces)

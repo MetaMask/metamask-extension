@@ -121,7 +121,6 @@ export const unconfirmedTransactionsCountSelector = createSelector(
   },
 )
 
-
 export const currentCurrencySelector = (state) => state.metamask.currentCurrency
 export const conversionRateSelector = (state) => state.metamask.conversionRate
 
@@ -136,9 +135,9 @@ const tokenDecimalsSelector = createSelector(
   (tokenProps) => tokenProps && tokenProps.tokenDecimals,
 )
 
-const tokenDataParamsSelector = createSelector(
+const tokenDataArgsSelector = createSelector(
   tokenDataSelector,
-  (tokenData) => (tokenData && tokenData.params) || [],
+  (tokenData) => (tokenData && tokenData.args) || [],
 )
 
 const txParamsSelector = createSelector(
@@ -151,75 +150,25 @@ export const tokenAddressSelector = createSelector(
   (txParams) => txParams && txParams.to,
 )
 
-const TOKEN_PARAM_SPENDER = '_spender'
 const TOKEN_PARAM_TO = '_to'
 const TOKEN_PARAM_VALUE = '_value'
 
-export const tokenAmountAndToAddressSelector = createSelector(
-  tokenDataParamsSelector,
-  tokenDecimalsSelector,
-  (params, tokenDecimals) => {
-    let toAddress = ''
-    let tokenAmount = 0
-
-    if (params && params.length) {
-      const toParam = params.find((param) => param.name === TOKEN_PARAM_TO)
-      const valueParam = params.find((param) => param.name === TOKEN_PARAM_VALUE)
-      toAddress = toParam ? toParam.value : params[0].value
-      const value = valueParam ? Number(valueParam.value) : Number(params[1].value)
-
-      if (tokenDecimals) {
-        tokenAmount = calcTokenAmount(value, tokenDecimals).toNumber()
-      }
-
-      tokenAmount = roundExponential(tokenAmount)
-    }
-
-    return {
-      toAddress,
-      tokenAmount,
-    }
-  },
-)
-
-export const approveTokenAmountAndToAddressSelector = createSelector(
-  tokenDataParamsSelector,
-  tokenDecimalsSelector,
-  (params, tokenDecimals) => {
-    let toAddress = ''
-    let tokenAmount = 0
-
-    if (params && params.length) {
-      toAddress = params.find((param) => param.name === TOKEN_PARAM_SPENDER).value
-      const value = Number(params.find((param) => param.name === TOKEN_PARAM_VALUE).value)
-
-      if (tokenDecimals) {
-        tokenAmount = calcTokenAmount(value, tokenDecimals).toNumber()
-      }
-
-      tokenAmount = roundExponential(tokenAmount)
-    }
-
-    return {
-      toAddress,
-      tokenAmount,
-    }
-  },
-)
-
 export const sendTokenTokenAmountAndToAddressSelector = createSelector(
-  tokenDataParamsSelector,
+  tokenDataArgsSelector,
   tokenDecimalsSelector,
-  (params, tokenDecimals) => {
+  (args, tokenDecimals) => {
     let toAddress = ''
-    let tokenAmount = 0
+    let tokenAmount = '0'
 
-    if (params && params.length) {
-      toAddress = params.find((param) => param.name === TOKEN_PARAM_TO).value
-      let value = Number(params.find((param) => param.name === TOKEN_PARAM_VALUE).value)
+    // Token params here are ethers BigNumbers, which have a different
+    // interface than bignumber.js
+    if (args && args.length) {
+      toAddress = args[TOKEN_PARAM_TO]
+      let value = args[TOKEN_PARAM_VALUE].toString()
 
       if (tokenDecimals) {
-        value = calcTokenAmount(value, tokenDecimals).toNumber()
+        // bignumber.js return value
+        value = calcTokenAmount(value, tokenDecimals).toFixed()
       }
 
       tokenAmount = roundExponential(value)

@@ -1,12 +1,11 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { shallow } from 'enzyme'
+import sinon from 'sinon'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display.component'
 import CurrencyDisplay from '../../../ui/currency-display'
 import * as currencyHook from '../../../../hooks/useCurrencyDisplay'
 import * as currencyPrefHook from '../../../../hooks/useUserPreferencedCurrency'
-import sinon from 'sinon'
-
 
 describe('UserPreferencedCurrencyDisplay Component', function () {
   describe('rendering', function () {

@@ -1,1 +1,1 @@
-export { default } from './asset-list.js'
+export { default } from './asset-list'

@@ -1,12 +1,11 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import TransactionAction from '../transaction-action.component'
 
 describe('TransactionAction Component', function () {
   const t = (key) => key
-
 
   describe('Outgoing transaction', function () {
     beforeEach(function () {

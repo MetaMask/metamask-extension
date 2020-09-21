@@ -15,17 +15,19 @@ const pify = require('pify')
 const endOfStream = pify(require('end-of-stream'))
 const { makeStringTransform } = require('browserify-transform-tools')
 
-const conf = require('rc')('metamask', {})
+const conf = require('rc')('metamask', {
+  INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
+  SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
+})
 
-const { createTask, composeParallel, composeSeries, runInChildProcess } = require('./task')
 const packageJSON = require('../../package.json')
+const { createTask, composeParallel, composeSeries, runInChildProcess } = require('./task')
 
 module.exports = createScriptTasks
 
-
 const dependencies = Object.keys((packageJSON && packageJSON.dependencies) || {})
 const materialUIDependencies = ['@material-ui/core']
-const reactDepenendencies = dependencies.filter((dep) => dep.match(/react/))
+const reactDepenendencies = dependencies.filter((dep) => dep.match(/react/u))
 const d3Dependencies = ['c3', 'd3']
 
 const externalDependenciesMap = {
@@ -62,8 +64,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
     core.prod,
   )
 
-  const dev = core.dev
-  const testDev = core.testDev
+  const { dev, testDev } = core
 
   const test = composeParallel(
     deps.background,
@@ -72,7 +73,6 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
   )
 
   return { prod, dev, testDev, test }
-
 
   function createTasksForBuildJsDeps ({ key, filename }) {
     return createTask(`scripts:deps:${key}`, bundleTask({
@@ -84,7 +84,6 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
     }))
   }
 
-
   function createTasksForBuildJsExtension ({ taskPrefix, devMode, testing }) {
     const standardBundles = [
       'background',
@@ -94,14 +93,12 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
 
     const standardSubtasks = standardBundles.map((filename) => {
       return createTask(`${taskPrefix}:${filename}`,
-        createBundleTaskForBuildJsExtensionNormal({ filename, devMode, testing }),
-      )
+        createBundleTaskForBuildJsExtensionNormal({ filename, devMode, testing }))
     })
     // inpage must be built before contentscript
     // because inpage bundle result is included inside contentscript
     const contentscriptSubtask = createTask(`${taskPrefix}:contentscript`,
-      createTaskForBuildJsExtensionContentscript({ devMode, testing }),
-    )
+      createTaskForBuildJsExtensionContentscript({ devMode, testing }))
 
     // task for initiating livereload
     const initiateLiveReload = async () => {
@@ -160,7 +157,6 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
     )
   }
 
-
   function bundleTask (opts) {
     let bundler
 
@@ -204,7 +200,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
         buildStream = buildStream
           .pipe(terser({
             mangle: {
-              reserved: [ 'MetamaskInpageProvider' ],
+              reserved: ['MetamaskInpageProvider'],
             },
             sourceMap: {
               content: true,
@@ -288,9 +284,9 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
 
     if (!opts.buildLib) {
       if (opts.devMode && opts.filename === 'ui.js') {
-        browserifyOpts['entries'] = ['./development/require-react-devtools.js', opts.filepath]
+        browserifyOpts.entries = ['./development/require-react-devtools.js', opts.filepath]
       } else {
-        browserifyOpts['entries'] = [opts.filepath]
+        browserifyOpts.entries = [opts.filepath]
       }
     }
 
@@ -321,6 +317,14 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
       throw new Error('Missing SENTRY_DSN environment variable')
     }
 
+    // When we're in the 'production' environment we will use a specific key only set in CI
+    // Otherwise we'll use the key from .metamaskrc or from the environment variable. If
+    // the value of SEGMENT_WRITE_KEY that we envify is undefined then no events will be tracked
+    // in the build. This is intentional so that developers can contribute to MetaMask without
+    // inflating event volume.
+    const SEGMENT_PROD_WRITE_KEY = opts.testing ? undefined : process.env.SEGMENT_PROD_WRITE_KEY
+    const SEGMENT_DEV_WRITE_KEY = opts.testing ? undefined : conf.SEGMENT_WRITE_KEY
+
     // Inject variables into bundle
     bundler.transform(envify({
       METAMASK_DEBUG: opts.devMode,
@@ -333,6 +337,12 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
       ETH_GAS_STATION_API_KEY: process.env.ETH_GAS_STATION_API_KEY || '',
       CONF: opts.devMode ? conf : ({}),
       SENTRY_DSN: process.env.SENTRY_DSN,
+      INFURA_PROJECT_ID: (
+        opts.testing
+          ? '00000000000000000000000000000000'
+          : conf.INFURA_PROJECT_ID
+      ),
+      SEGMENT_WRITE_KEY: environment === 'production' ? SEGMENT_PROD_WRITE_KEY : SEGMENT_DEV_WRITE_KEY,
     }), {
       global: true,
     })
@@ -349,9 +359,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
     return bundler
   }
 
-
 }
-
 
 function beep () {
   process.stdout.write('\x07')
@@ -365,13 +373,12 @@ function getEnvironment ({ devMode, test }) {
     return 'testing'
   } else if (process.env.CIRCLE_BRANCH === 'master') {
     return 'production'
-  } else if (/^Version-v(\d+)[.](\d+)[.](\d+)/.test(process.env.CIRCLE_BRANCH)) {
+  } else if ((/^Version-v(\d+)[.](\d+)[.](\d+)/u).test(process.env.CIRCLE_BRANCH)) {
     return 'release-candidate'
   } else if (process.env.CIRCLE_BRANCH === 'develop') {
     return 'staging'
   } else if (process.env.CIRCLE_PULL_REQUEST) {
     return 'pull-request'
-  } else {
-    return 'other'
   }
+  return 'other'
 }

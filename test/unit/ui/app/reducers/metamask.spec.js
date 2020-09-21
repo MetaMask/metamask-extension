@@ -209,7 +209,8 @@ describe('MetaMask Reducers', function () {
   it('clears send', function () {
     const initStateSend = {
       send:
-      { gasLimit: null,
+      {
+        gasLimit: null,
         gasPrice: null,
         gasTotal: null,
         tokenBalance: null,
@@ -220,7 +221,8 @@ describe('MetaMask Reducers', function () {
         errors: {},
         maxModeOn: false,
         editingTransactionId: null,
-        toNickname: '' },
+        toNickname: '',
+      },
     }
 
     const sendState = {
@@ -239,7 +241,6 @@ describe('MetaMask Reducers', function () {
         editingTransactionId: 22,
       },
     }
-
 
     const state = reduceMetamask(sendState, {
       type: actionConstants.CLEAR_SEND,

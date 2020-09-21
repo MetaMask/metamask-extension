@@ -1,8 +1,8 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import AmountMaxButton from '../amount-max-button.component.js'
+import AmountMaxButton from '../amount-max-button.component'
 
 describe('AmountMaxButton Component', function () {
   let wrapper
@@ -13,7 +13,7 @@ describe('AmountMaxButton Component', function () {
     setMaxModeTo: sinon.spy(),
   }
 
-  const MOCK_EVENT = { preventDefault: () => {} }
+  const MOCK_EVENT = { preventDefault: () => undefined }
 
   before(function () {
     sinon.spy(AmountMaxButton.prototype, 'setMaxAmount')
@@ -32,8 +32,8 @@ describe('AmountMaxButton Component', function () {
       />
     ), {
       context: {
-        t: (str) => str + '_t',
-        metricsEvent: () => {},
+        t: (str) => `${str}_t`,
+        metricsEvent: () => undefined,
       },
     })
     instance = wrapper.instance()

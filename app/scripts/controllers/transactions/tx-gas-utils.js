@@ -1,6 +1,6 @@
 import EthQuery from 'ethjs-query'
-import { hexToBn, BnMultiplyByFraction, bnToHex } from '../../lib/util'
 import log from 'loglevel'
+import { hexToBn, BnMultiplyByFraction, bnToHex } from '../../lib/util'
 
 /**
  * Result of gas analysis, including either a gas estimate for a successful analysis, or
@@ -56,7 +56,7 @@ export default class TxGasUtil {
     @returns {string} - the estimated gas limit as a hex string
   */
   async estimateTxGas (txMeta) {
-    const txParams = txMeta.txParams
+    const { txParams } = txMeta
 
     // estimate tx gas requirements
     return await this.query.estimateGas(txParams)

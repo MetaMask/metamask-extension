@@ -40,7 +40,7 @@ export default class IncomingTransactionsController {
       })
     }
 
-    const initState = Object.assign({
+    const initState = {
       incomingTransactions: {},
       incomingTxLastFetchedBlocksByNetwork: {
         [ROPSTEN]: null,
@@ -48,8 +48,8 @@ export default class IncomingTransactionsController {
         [KOVAN]: null,
         [GOERLI]: null,
         [MAINNET]: null,
-      },
-    }, opts.initState)
+      }, ...opts.initState,
+    }
     this.store = new ObservableStore(initState)
 
     this.preferencesController.store.subscribe(pairwise((prevState, currState) => {
@@ -265,9 +265,8 @@ function pairwise (fn) {
       if (first) {
         first = false
         return fn(value, value)
-      } else {
-        return fn(cache, value)
       }
+      return fn(cache, value)
     } finally {
       cache = value
     }

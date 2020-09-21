@@ -5,7 +5,7 @@ const SET_THREEBOX_LAST_UPDATED = 'metamask/app/SET_THREEBOX_LAST_UPDATED'
 
 export default function reduceApp (state = {}, action) {
   // default state
-  const appState = Object.assign({
+  const appState = {
     shouldClose: false,
     menuOpen: false,
     modal: {
@@ -51,7 +51,8 @@ export default function reduceApp (state = {}, action) {
     requestAccountTabs: {},
     openMetaMaskTabs: {},
     currentWindowTab: {},
-  }, state)
+    ...state,
+  }
 
   switch (action.type) {
     // dropdown methods
@@ -108,9 +109,8 @@ export default function reduceApp (state = {}, action) {
         qrCodeData: action.value,
       }
 
-
     // modal methods:
-    case actionConstants.MODAL_OPEN:
+    case actionConstants.MODAL_OPEN: {
       const { name, ...modalProps } = action.payload
 
       return {
@@ -118,12 +118,13 @@ export default function reduceApp (state = {}, action) {
         modal: {
           open: true,
           modalState: {
-            name: name,
+            name,
             props: { ...modalProps },
           },
           previousModalState: { ...appState.modal.modalState },
         },
       }
+    }
 
     case actionConstants.MODAL_CLOSE:
       return {
@@ -134,6 +135,12 @@ export default function reduceApp (state = {}, action) {
           { modalState: { name: null, props: {} } },
           { previousModalState: appState.modal.modalState },
         ),
+      }
+
+    case actionConstants.CLEAR_ACCOUNT_DETAILS:
+      return {
+        ...appState,
+        accountDetail: {},
       }
 
     case actionConstants.FORGOT_PASSWORD:
@@ -202,17 +209,16 @@ export default function reduceApp (state = {}, action) {
           txId: null,
           warning: null,
         }
-      } else {
-        return {
-          ...appState,
-          // indicate notification should close
-          shouldClose: true,
-          warning: null,
-          txId: null,
-          accountDetail: {
-            subview: 'transactions',
-          },
-        }
+      }
+      return {
+        ...appState,
+        // indicate notification should close
+        shouldClose: true,
+        warning: null,
+        txId: null,
+        accountDetail: {
+          subview: 'transactions',
+        },
       }
 
     case actionConstants.TRANSACTION_ERROR:
@@ -232,7 +238,7 @@ export default function reduceApp (state = {}, action) {
         warning: '',
       }
 
-    case actionConstants.SET_HARDWARE_WALLET_DEFAULT_HD_PATH:
+    case actionConstants.SET_HARDWARE_WALLET_DEFAULT_HD_PATH: {
       const { device, path } = action.value
       const newDefaults = { ...appState.defaultHdPaths }
       newDefaults[device] = path
@@ -241,6 +247,7 @@ export default function reduceApp (state = {}, action) {
         ...appState,
         defaultHdPaths: newDefaults,
       }
+    }
 
     case actionConstants.SHOW_LOADING:
       return {

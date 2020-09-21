@@ -438,7 +438,7 @@
   "gasLimit": {
     "message": "Kikomo cha Gesi"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "Ukomo wa gesi ni kiwango cha juu kabisa cha cha vizio vya gesi ambavyo upo tayari kutumia."
   },
   "gasLimitTooLow": {
@@ -453,11 +453,8 @@
   "gasPriceExtremelyLow": {
     "message": "Bei ya Gesi Ipo Chini Kupita Kiasi"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "Bei ya gesi hubainisha kiwango cha Ether ambacho upo radhi kulipia kila kizio cha gesi."
-  },
-  "gasPriceNoDenom": {
-    "message": "Bei ya Gesi"
   },
   "general": {
     "message": "Jumla"

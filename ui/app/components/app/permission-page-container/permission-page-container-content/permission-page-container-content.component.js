@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import PermissionsConnectHeader from '../../permissions-connect-header'
-import Tooltip from '../../../ui/tooltip-v2'
+import Tooltip from '../../../ui/tooltip'
 import CheckBox from '../../../ui/check-box'
 
 export default class PermissionPageContainerContent extends PureComponent {
@@ -95,7 +95,7 @@ export default class PermissionPageContainerContent extends PureComponent {
               )
             }) }
             { selectedIdentities.length > 6
-              ? t('plusXMore', [ selectedIdentities.length - 6 ])
+              ? t('plusXMore', [selectedIdentities.length - 6])
               : null
             }
           </div>
@@ -115,23 +115,19 @@ export default class PermissionPageContainerContent extends PureComponent {
     } else if (allIdentitiesSelected) {
       return t(
         'connectToAll',
-        [ this.renderAccountTooltip(t('connectToAllAccounts')) ],
+        [this.renderAccountTooltip(t('connectToAllAccounts'))],
       )
     } else if (selectedIdentities.length > 1) {
       return t(
         'connectToMultiple',
         [
-          this.renderAccountTooltip(t('connectToMultipleNumberOfAccounts', [ selectedIdentities.length ])),
-        ],
-      )
-    } else {
-      return t(
-        'connectTo',
-        [
-          this.getAccountDescriptor(selectedIdentities[0]),
+          this.renderAccountTooltip(t('connectToMultipleNumberOfAccounts', [selectedIdentities.length])),
         ],
       )
     }
+    return t('connectTo', [
+      this.getAccountDescriptor(selectedIdentities[0]),
+    ])
   }
 
   render () {

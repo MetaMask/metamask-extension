@@ -1,14 +1,13 @@
+const { promises: fs } = require('fs')
 const gulp = require('gulp')
 const gulpZip = require('gulp-zip')
 const del = require('del')
-const { promises: fs } = require('fs')
 const pify = require('pify')
 const pump = pify(require('pump'))
 const baseManifest = require('../../app/manifest/_base.json')
 const { createTask, composeParallel } = require('./task')
 
 module.exports = createEtcTasks
-
 
 function createEtcTasks ({ browserPlatforms, livereload }) {
 

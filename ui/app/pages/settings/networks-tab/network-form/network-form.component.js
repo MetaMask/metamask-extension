@@ -206,15 +206,15 @@ export default class NetworkForm extends PureComponent {
   }
 
   validateChainId = (chainId) => {
-    this.setErrorTo('chainId', !!chainId && Number.isNaN(parseInt(chainId))
+    // eslint-disable-next-line radix
+    this.setErrorTo('chainId', Boolean(chainId) && Number.isNaN(parseInt(chainId))
       ? `${this.context.t('invalidInput')} chainId`
-      : '',
-    )
+      : '')
   }
 
   isValidWhenAppended = (url) => {
     const appendedRpc = `http://${url}`
-    return validUrl.isWebUri(appendedRpc) && !url.match(/^https?:\/\/$/)
+    return validUrl.isWebUri(appendedRpc) && !url.match(/^https?:\/\/$/u)
   }
 
   validateBlockExplorerURL = (url, stateKey) => {

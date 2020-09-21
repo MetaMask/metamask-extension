@@ -1,8 +1,8 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import sinon from 'sinon'
 import { mountWithRouter } from '../../../../../test/lib/render-helpers'
-import CreateAccountPage from '../index'
+import CreateAccountPage from '..'
 
 describe('Create Account Page', function () {
   let wrapper

@@ -1,7 +1,7 @@
 import React from 'react'
-import Tooltip from '../tooltip-v2'
 import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
+import Tooltip from '../tooltip'
 import { getSelectedAccount } from '../../../selectors'
 import InfoIcon from '../icon/info-icon.component'
 import { useI18nContext } from '../../../hooks/useI18nContext'

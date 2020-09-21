@@ -17,11 +17,12 @@ import {
   getBasicGasEstimateLoadingStatus,
   getRenderableEstimateDataForSmallButtonsFromGWEI,
   getDefaultActiveButtonIndex,
+  getIsMainnet,
 } from '../../../../selectors'
 import {
   isBalanceSufficient,
   calcGasTotal,
-} from '../../send.utils.js'
+} from '../../send.utils'
 import { calcMaxAmount } from '../send-amount-row/amount-max-button/amount-max-button.utils'
 import {
   showGasButtonGroup,
@@ -34,7 +35,6 @@ import {
 } from '../../../../ducks/gas/gas.duck'
 import { showModal, setGasPrice, setGasLimit, setGasTotal, updateSendAmount } from '../../../../store/actions'
 import SendGasRow from './send-gas-row.component'
-
 
 export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(SendGasRow)
 
@@ -74,6 +74,7 @@ function mapStateToProps (state) {
     maxModeOn: getSendMaxModeState(state),
     sendToken: getSendToken(state),
     tokenBalance: getTokenBalance(state),
+    isMainnet: getIsMainnet(state),
   }
 }
 

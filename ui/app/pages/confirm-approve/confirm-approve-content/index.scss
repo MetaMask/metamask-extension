@@ -19,10 +19,8 @@
     display: flex;
     flex-flow: column;
     align-items: center;
-    width: 390px;
+    max-width: 100%;
     font-style: normal;
-    padding-left: 24px;
-    padding-right: 24px;
   }
 
   &__card-wrapper {

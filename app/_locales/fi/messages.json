@@ -445,7 +445,7 @@
   "gasLimit": {
     "message": "Gas-raja"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "Polttoaineraja tarkoittaa suurinta mahdollista polttoainemäärää, jonka olet valmis kuluttamaan."
   },
   "gasLimitTooLow": {
@@ -460,11 +460,8 @@
   "gasPriceExtremelyLow": {
     "message": "Gas-hinta erittäin alhainen"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "Polttoaineen hinta määrittää Ether-määrän, jonka olet valmis maksamaan jokaisesta polttoaineyksiköstä."
-  },
-  "gasPriceNoDenom": {
-    "message": "Bensan hinta"
   },
   "general": {
     "message": "Yleistä"

@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
+import { MenuItem } from '../../ui/menu'
 import ConnectedAccountsListItem from './connected-accounts-list-item'
 import ConnectedAccountsListOptions from './connected-accounts-list-options'
-import { MenuItem } from '../../ui/menu'
 
 export default class ConnectedAccountsList extends PureComponent {
   static contextTypes = {
@@ -32,11 +32,12 @@ export default class ConnectedAccountsList extends PureComponent {
         return new Error(
           `Warning: Failed prop type: '${propName}' of component '${componentName}' must be a boolean. Received: ${typeof props[propName]}`,
         )
-      } else if (props[propName] && !props['removePermittedAccount']) {
+      } else if (props[propName] && !props.removePermittedAccount) {
         return new Error(
           `Warning: Failed prop type: '${propName}' of component '${componentName}' requires prop 'removePermittedAccount'.`,
         )
       }
+      return undefined
     },
   }
 
@@ -148,9 +149,9 @@ export default class ConnectedAccountsList extends PureComponent {
                       : null
                   }
                   action={
-                    address !== selectedAddress
-                      ? this.renderListItemAction(address)
-                      : null
+                    address === selectedAddress
+                      ? null
+                      : this.renderListItemAction(address)
                   }
                 />
               )

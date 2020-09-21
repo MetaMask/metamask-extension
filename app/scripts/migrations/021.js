@@ -1,5 +1,3 @@
-const version = 21
-
 /*
 
 This migration removes the BlackListController from disk state
@@ -8,10 +6,12 @@ This migration removes the BlackListController from disk state
 
 import { cloneDeep } from 'lodash'
 
+const version = 21
+
 export default {
   version,
 
-  migrate: function (originalVersionedData) {
+  migrate (originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     try {
@@ -19,7 +19,7 @@ export default {
       const newState = transformState(state)
       versionedData.data = newState
     } catch (err) {
-      console.warn(`MetaMask Migration #${version}` + err.stack)
+      console.warn(`MetaMask Migration #${version}${err.stack}`)
     }
     return Promise.resolve(versionedData)
   },

@@ -1,7 +1,7 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { shallow } from 'enzyme'
-import SendRowWrapper from '../send-row-wrapper.component.js'
+import SendRowWrapper from '../send-row-wrapper.component'
 
 import SendRowErrorMessage from '../send-row-error-message/send-row-error-message.container'
 

@@ -435,7 +435,7 @@
   "gasLimit": {
     "message": "Batas Gas"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "Limit Bensin adalah jumlah maksimal satuan bensin yang Anda bersedia gunakan."
   },
   "gasLimitTooLow": {
@@ -450,11 +450,8 @@
   "gasPriceExtremelyLow": {
     "message": "Harga Bensin Amat Rendah"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "Harga gas menentukan jumlah Ether yang bersedia Anda bayarkan untuk setiap unit gas."
-  },
-  "gasPriceNoDenom": {
-    "message": "Harga Bensin"
   },
   "general": {
     "message": "Umum"

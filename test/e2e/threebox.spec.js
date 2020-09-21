@@ -3,6 +3,7 @@ const webdriver = require('selenium-webdriver')
 const getPort = require('get-port')
 
 const { By, until } = webdriver
+const enLocaleMessages = require('../../app/_locales/en/messages.json')
 const {
   tinyDelayMs,
   regularDelayMs,
@@ -10,7 +11,6 @@ const {
 } = require('./helpers')
 const { buildWebDriver } = require('./webdriver')
 const Ganache = require('./ganache')
-const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
 const ganacheServer = new Ganache()
 
@@ -97,7 +97,7 @@ describe('MetaMask', function () {
 
       it('balance renders', async function () {
         const balance = await driver.findElement(By.css('[data-testid="wallet-balance"] .list-item__heading'))
-        await driver.wait(until.elementTextMatches(balance, /25\s*ETH/))
+        await driver.wait(until.elementTextMatches(balance, /25\s*ETH/u))
         await driver.delay(regularDelayMs)
       })
     })
@@ -203,7 +203,7 @@ describe('MetaMask', function () {
 
       it('balance renders', async function () {
         const balance = await driver2.findElement(By.css('[data-testid="wallet-balance"] .list-item__heading'))
-        await driver2.wait(until.elementTextMatches(balance, /25\s*ETH/))
+        await driver2.wait(until.elementTextMatches(balance, /25\s*ETH/u))
         await driver2.delay(regularDelayMs)
       })
     })

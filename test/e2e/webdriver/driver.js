@@ -1,8 +1,9 @@
 const { promises: fs } = require('fs')
-const { until, error: webdriverError } = require('selenium-webdriver')
 const { strict: assert } = require('assert')
+const { until, error: webdriverError } = require('selenium-webdriver')
 
 class Driver {
+
   /**
    * @param {!ThenableWebDriver} driver - A {@code WebDriver} instance
    * @param {string} browser - The type of browser this driver is controlling
@@ -61,8 +62,7 @@ class Driver {
           this.driver.wait(until.elementIsEnabled(element), this.timeout),
         )
         return acc
-      }, []),
-    )
+      }, []))
     return elements
   }
 
@@ -136,9 +136,8 @@ class Driver {
   }
 
   async switchToWindowWithTitle (title, windowHandles) {
-    if (!windowHandles) {
-      windowHandles = await this.driver.getAllWindowHandles()
-    }
+    // eslint-disable-next-line no-param-reassign
+    windowHandles = windowHandles || await this.driver.getAllWindowHandles()
 
     for (const handle of windowHandles) {
       await this.driver.switchTo().window(handle)
@@ -148,7 +147,7 @@ class Driver {
       }
     }
 
-    throw new Error('No window with title: ' + title)
+    throw new Error(`No window with title: ${title}`)
   }
 
   /**
@@ -158,6 +157,7 @@ class Driver {
    * @returns {Promise<void>}
    */
   async closeAllWindowHandlesExcept (exceptions, windowHandles) {
+    // eslint-disable-next-line no-param-reassign
     windowHandles = windowHandles || await this.driver.getAllWindowHandles()
 
     for (const handle of windowHandles) {
@@ -180,7 +180,9 @@ class Driver {
     await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, { encoding: 'base64' })
     const htmlSource = await this.driver.getPageSource()
     await fs.writeFile(`${filepathBase}-dom.html`, htmlSource)
-    const uiState = await this.driver.executeScript(() => window.getCleanAppState())
+    const uiState = await this.driver.executeScript(
+      () => window.getCleanAppState && window.getCleanAppState(),
+    )
     await fs.writeFile(`${filepathBase}-state.json`, JSON.stringify(uiState, null, 2))
   }
 

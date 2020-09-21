@@ -34,10 +34,11 @@
       font-size: 14px;
       color: #4eade7;
       position: absolute;
-      top: 16px;
+      top: 4px;
       right: 16px;
       cursor: pointer;
       overflow: hidden;
+      width: min-content;
     }
 
     &__title {
@@ -95,10 +96,6 @@
     color: $scorpion;
     font-size: 12px;
 
-    @media screen and (max-width: $break-small) {
-      padding: 4px 21px;
-    }
-
     &__send-info,
     &__transaction-info,
     &__total-info,
@@ -138,7 +135,7 @@
       }
 
       &__value {
-        font-size: 14px;
+        font-size: 12px;
       }
     }
   }

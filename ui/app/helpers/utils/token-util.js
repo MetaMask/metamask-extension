@@ -1,7 +1,7 @@
 import log from 'loglevel'
-import * as util from './util'
 import BigNumber from 'bignumber.js'
 import contractMap from 'eth-contract-metadata'
+import * as util from './util'
 import { conversionUtil, multiplyCurrencies } from './conversion-util'
 import { formatCurrency } from './confirm-tx.util'
 
@@ -23,6 +23,7 @@ async function getSymbolFromContract (tokenAddress) {
     return result[0]
   } catch (error) {
     log.warn(`symbol() call for token at address ${tokenAddress} resulted in error:`, error)
+    return undefined
   }
 }
 
@@ -35,6 +36,7 @@ async function getDecimalsFromContract (tokenAddress) {
     return decimalsBN && decimalsBN.toString()
   } catch (error) {
     log.warn(`decimals() call for token at address ${tokenAddress} resulted in error:`, error)
+    return undefined
   }
 }
 
@@ -135,14 +137,30 @@ export function calcTokenValue (value, decimals) {
   return new BigNumber(String(value)).times(multiplier)
 }
 
-export function getTokenValue (tokenParams = []) {
-  const valueData = tokenParams.find((param) => param.name === '_value')
-  return valueData && valueData.value
+/**
+ * Attempts to get the address parameter of the given token transaction data
+ * (i.e. function call) per the Human Standard Token ABI, in the following
+ * order:
+ *   - The '_to' parameter, if present
+ *   - The first parameter, if present
+ *
+ * @param {Object} tokenData - ethers Interface token data.
+ * @returns {string | undefined} A lowercase address string.
+ */
+export function getTokenAddressParam (tokenData = {}) {
+  const value = tokenData?.args?.['_to'] || tokenData?.args?.[0]
+  return value?.toString().toLowerCase()
 }
 
-export function getTokenToAddress (tokenParams = []) {
-  const toAddressData = tokenParams.find((param) => param.name === '_to')
-  return toAddressData ? toAddressData.value : tokenParams[0].value
+/**
+ * Gets the '_value' parameter of the given token transaction data
+ * (i.e function call) per the Human Standard Token ABI, if present.
+ *
+ * @param {Object} tokenData - ethers Interface token data.
+ * @returns {string | undefined} A decimal string value.
+ */
+export function getTokenValueParam (tokenData = {}) {
+  return tokenData?.args?.['_value']?.toString()
 }
 
 /**

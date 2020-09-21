@@ -26,7 +26,6 @@ const tokenTransactionFilter = ({
   },
 }) => !TOKEN_CATEGORY_HASH[transactionCategory]
 
-
 const getFilteredTransactionGroups = (transactionGroups, hideTokenTransactions, tokenAddress) => {
   if (hideTokenTransactions) {
     return transactionGroups.filter(tokenTransactionFilter)
@@ -72,10 +71,9 @@ export default function TransactionList ({ hideTokenTransactions, tokenAddress }
         .then(({ blockTime }) => fetchGasEstimates(blockTime))
     }
     prevState.current = { loaded: true, pendingTransactions, transactionTimeFeatureActive }
-  }, [fetchGasEstimates, fetchBasicGasAndTimeEstimates, transactionTimeFeatureActive, pendingTransactions ])
+  }, [fetchGasEstimates, fetchBasicGasAndTimeEstimates, transactionTimeFeatureActive, pendingTransactions])
 
   const viewMore = useCallback(() => setLimit((prev) => prev + PAGE_INCREMENT), [])
-
 
   const pendingLength = pendingTransactions.length
 

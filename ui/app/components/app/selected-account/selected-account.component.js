@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import copyToClipboard from 'copy-to-clipboard'
 import { shortenAddress, checksumAddress } from '../../../helpers/utils/util'
 
-import Tooltip from '../../ui/tooltip-v2.js'
+import Tooltip from '../../ui/tooltip'
 
 class SelectedAccount extends Component {
   state = {

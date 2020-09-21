@@ -1,16 +1,19 @@
 import ObservableStore from 'obs-store'
 
+/* eslint-disable import/first,import/order */
 const Box = process.env.IN_TEST
   ? require('../../../development/mock-3box')
   : require('3box')
+/* eslint-enable import/order */
 
 import log from 'loglevel'
-import migrations from '../migrations'
-import Migrator from '../lib/migrator'
 import JsonRpcEngine from 'json-rpc-engine'
 import providerFromEngine from 'eth-json-rpc-middleware/providerFromEngine'
-import createMetamaskMiddleware from './network/createMetamaskMiddleware'
+import Migrator from '../lib/migrator'
+import migrations from '../migrations'
 import createOriginMiddleware from '../lib/createOriginMiddleware'
+import createMetamaskMiddleware from './network/createMetamaskMiddleware'
+/* eslint-enable import/first */
 
 const SYNC_TIMEOUT = 60 * 1000 // one minute
 
@@ -33,16 +36,15 @@ export default class ThreeBoxController {
         if (origin !== '3Box') {
           return []
         }
-        const isUnlocked = getKeyringControllerState().isUnlocked
+        const { isUnlocked } = getKeyringControllerState()
 
         const accounts = await this.keyringController.getAccounts()
 
         if (isUnlocked && accounts[0]) {
           const appKeyAddress = await this.keyringController.getAppKeyAddress(accounts[0], 'wallet://3box.metamask.io')
           return [appKeyAddress]
-        } else {
-          return []
         }
+        return []
       },
       processPersonalMessage: async (msgParams) => {
         const accounts = await this.keyringController.getAccounts()
@@ -123,7 +125,7 @@ export default class ThreeBoxController {
       const threeBoxConfig = await Box.getConfig(this.address)
       backupExists = threeBoxConfig.spaces && threeBoxConfig.spaces.metamask
     } catch (e) {
-      if (e.message.match(/^Error: Invalid response \(404\)/)) {
+      if (e.message.match(/^Error: Invalid response \(404\)/u)) {
         backupExists = false
       } else {
         throw e

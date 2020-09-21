@@ -25,6 +25,8 @@ export default class ExportPrivateKeyModal extends Component {
     warning: PropTypes.node,
     showAccountDetailModal: PropTypes.func.isRequired,
     hideModal: PropTypes.func.isRequired,
+    hideWarning: PropTypes.func.isRequired,
+    clearAccountDetails: PropTypes.func.isRequired,
     previousModalState: PropTypes.string,
   }
 
@@ -32,6 +34,11 @@ export default class ExportPrivateKeyModal extends Component {
     password: '',
     privateKey: null,
     showWarning: true,
+  }
+
+  componentWillUnmount () {
+    this.props.clearAccountDetails()
+    this.props.hideWarning()
   }
 
   exportAccountAndGetPrivateKey = (password, address) => {
@@ -47,7 +54,7 @@ export default class ExportPrivateKeyModal extends Component {
 
   renderPasswordLabel (privateKey) {
     return (
-      <span className="private-key-password-label">
+      <span className="export-private-key-modal__password-label">
         {
           privateKey
             ? this.context.t('copyPrivateKey')
@@ -64,7 +71,7 @@ export default class ExportPrivateKeyModal extends Component {
       return (
         <input
           type="password"
-          className="private-key-password-input"
+          className="export-private-key-modal__password-input"
           onChange={(event) => this.setState({ password: event.target.value })}
         />
       )
@@ -72,8 +79,8 @@ export default class ExportPrivateKeyModal extends Component {
 
     return (
       <ReadOnlyInput
-        wrapperClass="private-key-password-display-wrapper"
-        inputClass="private-key-password-display-textarea"
+        wrapperClass="export-private-key-modal__password-display-wrapper"
+        inputClass="export-private-key-modal__password-display-textarea"
         textarea
         value={plainKey}
         onClick={() => copyToClipboard(plainKey)}
@@ -83,12 +90,12 @@ export default class ExportPrivateKeyModal extends Component {
 
   renderButtons (privateKey, address, hideModal) {
     return (
-      <div className="export-private-key-buttons">
+      <div className="export-private-key-modal__buttons">
         {!privateKey && (
           <Button
             type="default"
             large
-            className="export-private-key__button export-private-key__button--cancel"
+            className="export-private-key-modal__button export-private-key-modal__button--cancel"
             onClick={() => hideModal()}
           >
             {this.context.t('cancel')}
@@ -101,7 +108,7 @@ export default class ExportPrivateKeyModal extends Component {
                 onClick={() => hideModal()}
                 type="secondary"
                 large
-                className="export-private-key__button"
+                className="export-private-key-modal__button"
               >
                 {this.context.t('done')}
               </Button>
@@ -111,7 +118,7 @@ export default class ExportPrivateKeyModal extends Component {
                 onClick={() => this.exportAccountAndGetPrivateKey(this.state.password, address)}
                 type="secondary"
                 large
-                className="export-private-key__button"
+                className="export-private-key-modal__button"
                 disabled={!this.state.password}
               >
                 {this.context.t('confirm')}
@@ -139,28 +146,28 @@ export default class ExportPrivateKeyModal extends Component {
 
     return (
       <AccountModalContainer
+        className="export-private-key-modal"
         selectedIdentity={selectedIdentity}
         showBackButton={previousModalState === 'ACCOUNT_DETAILS'}
         backButtonAction={() => showAccountDetailModal()}
       >
-        <span className="account-name">{name}</span>
+        <span className="export-private-key-modal__account-name">{name}</span>
         <ReadOnlyInput
           wrapperClass="ellip-address-wrapper"
-          inputClass="qr-ellip-address ellip-address"
           value={checksumAddress(address)}
         />
-        <div className="account-modal-divider" />
-        <span className="modal-body-title">{this.context.t('showPrivateKeys')}</span>
-        <div className="private-key-password">
+        <div className="export-private-key-modal__divider" />
+        <span className="export-private-key-modal__body-title">{this.context.t('showPrivateKeys')}</span>
+        <div className="export-private-key-modal__password">
           {this.renderPasswordLabel(privateKey)}
           {this.renderPasswordInput(privateKey)}
           {
             (showWarning && warning)
-              ? <span className="private-key-password-error">{warning}</span>
+              ? <span className="export-private-key-modal__password--error">{warning}</span>
               : null
           }
         </div>
-        <div className="private-key-password-warning">{this.context.t('privateKeyWarning')}</div>
+        <div className="export-private-key-modal__password--warning">{this.context.t('privateKeyWarning')}</div>
         {this.renderButtons(privateKey, address, hideModal)}
       </AccountModalContainer>
     )

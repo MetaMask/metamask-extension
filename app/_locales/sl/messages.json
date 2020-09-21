@@ -445,7 +445,7 @@
   "functionType": {
     "message": "Vrsta funkcije"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "Omejitev plina je največja količina enot plina, ki ste jo pripravljeni porabiti."
   },
   "gasLimitTooLow": {
@@ -460,11 +460,8 @@
   "gasPriceExtremelyLow": {
     "message": "Gas Price zelo nizkek"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "Cena plina določa količino etra, ki ste ga pripravljeni plačati za vsako enoto plina."
-  },
-  "gasPriceNoDenom": {
-    "message": "Gas price"
   },
   "general": {
     "message": "Splošno"

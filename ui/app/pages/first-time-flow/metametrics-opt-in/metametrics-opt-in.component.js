@@ -88,7 +88,7 @@ export default class MetaMetricsOptIn extends Component {
               onCancel={() => {
                 setParticipateInMetaMetrics(false)
                   .then(() => {
-                    const promise = participateInMetaMetrics !== false
+                    const promise = participateInMetaMetrics === true
                       ? metricsEvent({
                         eventOpts: {
                           category: 'Onboarding',
@@ -105,12 +105,12 @@ export default class MetaMetricsOptIn extends Component {
                       })
                   })
               }}
-              cancelText="No Thanks"
+              cancelText={t('noThanks')}
               hideCancel={false}
               onSubmit={() => {
                 setParticipateInMetaMetrics(true)
                   .then(([_, metaMetricsId]) => {
-                    const promise = participateInMetaMetrics !== true
+                    const promise = participateInMetaMetrics === false
                       ? metricsEvent({
                         eventOpts: {
                           category: 'Onboarding',
@@ -138,7 +138,7 @@ export default class MetaMetricsOptIn extends Component {
                       })
                   })
               }}
-              submitText="I agree"
+              submitText={t('affirmAgree')}
               submitButtonType="primary"
               disabled={false}
             />
@@ -150,7 +150,7 @@ export default class MetaMetricsOptIn extends Component {
                   target="_blank"
                   rel="noopener noreferrer"
                 >{ t('gdprMessagePrivacyPolicy') }
-                </a> ])
+                </a>])
               }
             </div>
           </div>

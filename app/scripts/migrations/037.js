@@ -1,6 +1,7 @@
-const version = 37
 import { cloneDeep } from 'lodash'
 import { util } from '@metamask/controllers'
+
+const version = 37
 
 /**
  * The purpose of this migration is to update the address book state
@@ -9,7 +10,7 @@ import { util } from '@metamask/controllers'
  */
 export default {
   version,
-  migrate: async function (originalVersionedData) {
+  async migrate (originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     const state = versionedData.data

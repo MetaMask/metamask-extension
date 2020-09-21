@@ -2,6 +2,33 @@
 
 ## Current Develop Branch
 
+## 8.0.10 Wed Sep 16 2020
+- [#9423](https://github.com/MetaMask/metamask-extension/pull/9423): Update default phishing list
+- [#9416](https://github.com/MetaMask/metamask-extension/pull/9416): Fix fetching a new phishing list on Firefox
+
+## 8.0.9 Wed Aug 19 2020
+- [#9228](https://github.com/MetaMask/metamask-extension/pull/9228): Move transaction confirmation footer buttons to scrollable area
+- [#9256](https://github.com/MetaMask/metamask-extension/pull/9256): Handle non-String web3 property access
+- [#9266](https://github.com/MetaMask/metamask-extension/pull/9266): Use @metamask/controllers@2.0.5
+- [#9189](https://github.com/MetaMask/metamask-extension/pull/9189): Hide ETH Gas Station estimates on non-main network
+
+## 8.0.8 Fri Aug 14 2020
+- [#9211](https://github.com/MetaMask/metamask-extension/pull/9211): Fix Etherscan redirect on notification click
+- [#9237](https://github.com/MetaMask/metamask-extension/pull/9237): Reduce volume of web3 usage metrics
+- [#9227](https://github.com/MetaMask/metamask-extension/pull/9227): Permit all-caps addresses
+
+## 8.0.7 Fri Aug 07 2020
+- [#9065](https://github.com/MetaMask/metamask-extension/pull/9065): Change title of "Reveal Seed Words" page to "Reveal Seed Phrase"
+- [#8974](https://github.com/MetaMask/metamask-extension/pull/8974): Add tooltip to copy button for contacts and seed phrase
+- [#9063](https://github.com/MetaMask/metamask-extension/pull/9063): Fix broken UI upon failed password validation
+- [#9075](https://github.com/MetaMask/metamask-extension/pull/9075): Fix shifted popup notification when browser is in fullscreen on macOS
+- [#9085](https://github.com/MetaMask/metamask-extension/pull/9085): Support longer text in network dropdown
+- [#8873](https://github.com/MetaMask/metamask-extension/pull/8873): Fix onboarding bug where user can be asked to verify seed phrase twice
+- [#9104](https://github.com/MetaMask/metamask-extension/pull/9104): Replace "Email us" button with "Contact us" button
+- [#9137](https://github.com/MetaMask/metamask-extension/pull/9137): Fix bug where `accountsChanged` events stop after a dapp connection is closed.
+- [#9152](https://github.com/MetaMask/metamask-extension/pull/9152): Fix network name alignment
+- [#9144](https://github.com/MetaMask/metamask-extension/pull/9144): Add web3 usage metrics and prepare for web3 removal
+
 ## 8.0.6 Wed Jul 22 2020
 - [#9030](https://github.com/MetaMask/metamask-extension/pull/9030): Hide "delete" button when editing contact of wallet account
 - [#9031](https://github.com/MetaMask/metamask-extension/pull/9031): Fix crash upon removing contact

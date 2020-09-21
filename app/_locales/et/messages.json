@@ -444,7 +444,7 @@
   "gasLimit": {
     "message": "Gaasi ülemmäär"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "Gaasi ülemmäär on maksimaalne gaasiühikute hulk, mida olete nõus kulutama."
   },
   "gasLimitTooLow": {
@@ -459,11 +459,8 @@
   "gasPriceExtremelyLow": {
     "message": "Gaasi hind on äärmiselt madal"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "Gaasi hind näitab eetri hulka, mida olete nõus iga gaasiühiku eest tasuma."
-  },
-  "gasPriceNoDenom": {
-    "message": "Gaasi hind"
   },
   "general": {
     "message": "Üldine teave"

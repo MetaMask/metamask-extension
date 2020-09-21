@@ -1,11 +1,12 @@
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
-import ConfirmSendToken from './confirm-send-token.component'
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck'
 import { updateSend, showSendTokenPage } from '../../store/actions'
 import { conversionUtil } from '../../helpers/utils/conversion-util'
+import { getTokenValueParam, getTokenAddressParam } from '../../helpers/utils/token-util'
 import { sendTokenTokenAmountAndToAddressSelector } from '../../selectors'
+import ConfirmSendToken from './confirm-send-token.component'
 
 const mapStateToProps = (state) => {
   const { tokenAmount } = sendTokenTokenAmountAndToAddressSelector(state)
@@ -29,9 +30,8 @@ const mapDispatchToProps = (dispatch) => {
         } = {},
       } = txData
 
-      const { params = [] } = tokenData
-      const { value: to } = params[0] || {}
-      const { value: tokenAmountInDec } = params[1] || {}
+      const to = getTokenValueParam(tokenData)
+      const tokenAmountInDec = getTokenAddressParam(tokenData)
 
       const tokenAmountInHex = conversionUtil(tokenAmountInDec, {
         fromNumericBase: 'dec',

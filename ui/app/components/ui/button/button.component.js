@@ -25,22 +25,33 @@ const typeHash = {
   'first-time': CLASSNAME_FIRST_TIME,
 }
 
-const Button = ({ type, submit, large, children, icon, rounded, className, ...buttonProps }) => (
-  <button
-    type={submit ? 'submit' : undefined}
-    className={classnames(
-      'button',
-      typeHash[type] || CLASSNAME_DEFAULT,
-      large && CLASSNAME_LARGE,
-      rounded && CLASSNAME_ROUNDED,
-      className,
-    )}
-    { ...buttonProps }
-  >
-    {icon && <span className="button__icon">{icon}</span>}
-    { children }
-  </button>
-)
+const Button = ({ type, submit, large, children, icon, rounded, className, ...buttonProps }) => {
+  // To support using the Button component to render styled links that are semantic html
+  // we swap the html tag we use to render this component and delete any buttonProps that
+  // we know to be erroneous attributes for a link. We will likely want to extract Link
+  // to its own component in the future.
+  let Tag = 'button'
+  if (type === 'link') {
+    Tag = 'a'
+  } else if (submit) {
+    buttonProps.type = 'submit'
+  }
+  return (
+    <Tag
+      className={classnames(
+        'button',
+        typeHash[type] || CLASSNAME_DEFAULT,
+        large && CLASSNAME_LARGE,
+        rounded && CLASSNAME_ROUNDED,
+        className,
+      )}
+      { ...buttonProps }
+    >
+      {icon && <span className="button__icon">{icon}</span>}
+      { children }
+    </Tag>
+  )
+}
 
 Button.propTypes = {
   type: PropTypes.string,

@@ -14,12 +14,12 @@ export class Dropdown extends Component {
       useCssTransition,
     } = this.props
 
-    const innerStyleDefaults = Object.assign({
+    const innerStyleDefaults = {
       borderRadius: '4px',
       padding: '8px 16px',
       background: 'rgba(0, 0, 0, 0.8)',
-      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
-    }, innerStyle)
+      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px', ...innerStyle,
+    }
 
     return (
       <MenuDroppo
@@ -72,7 +72,7 @@ export class DropdownMenuItem extends Component {
           onClick()
           closeMenu()
         }}
-        style={Object.assign({
+        style={({
           listStyle: 'none',
           padding: '8px 0px',
           fontSize: '18px',
@@ -81,8 +81,8 @@ export class DropdownMenuItem extends Component {
           display: 'flex',
           justifyContent: 'flex-start',
           alignItems: 'center',
-          color: 'white',
-        }, style)}
+          color: 'white', ...style,
+        })}
       >
         {children}
       </li>

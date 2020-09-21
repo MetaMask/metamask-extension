@@ -32,7 +32,7 @@ function mapStateToProps (state) {
     isAccountMenuOpen,
     addressConnectedDomainMap: getAddressConnectedDomainMap(state),
     originOfCurrentTab: origin,
-    selectedAddress: selectedAddress,
+    selectedAddress,
     keyrings: getMetaMaskKeyrings(state),
     accounts,
     shouldShowAccountsSearch: accounts.length >= SHOW_SEARCH_ACCOUNTS_MIN_COUNT,

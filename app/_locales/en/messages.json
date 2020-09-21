@@ -3,6 +3,9 @@
     "message": "I have read and agree to the $1",
     "description": "$1 is the `terms` message"
   },
+  "affirmAgree": {
+    "message": "I Agree"
+  },
   "eth_accounts": {
     "message": "View the addresses of your permitted accounts (required)",
     "description": "The description for the `eth_accounts` permission"
@@ -389,7 +392,7 @@
     "message": "Connecting to Kovan Test Network"
   },
   "connectingToMainnet": {
-    "message": "Connecting to Main Ethereum Network"
+    "message": "Connecting to Ethereum Mainnet"
   },
   "connectingToRopsten": {
     "message": "Connecting to Ropsten Test Network"
@@ -410,7 +413,7 @@
     "message": "Add, edit, remove, and manage your contacts"
   },
   "contactUs": {
-    "message": "Contact us!"
+    "message": "Contact us"
   },
   "continueToWyre": {
     "message": "Continue to Wyre"
@@ -579,7 +582,7 @@
     "message": "Error in ENS name registration"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS name not found on the current network. Try switching to Main Ethereum Network."
+    "message": "ENS name not found on the current network. Try switching to Ethereum Mainnet."
   },
   "enterAnAlias": {
     "message": "Enter an alias"
@@ -682,7 +685,7 @@
   "gasLimit": {
     "message": "Gas Limit"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "Gas limit is the maximum amount of units of gas you are willing to spend."
   },
   "gasLimitTooLow": {
@@ -697,11 +700,8 @@
   "gasPriceExtremelyLow": {
     "message": "Gas Price Extremely Low"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "Gas price specifies the amount of Ether you are willing to pay for each unit of gas."
-  },
-  "gasPriceNoDenom": {
-    "message": "Gas Price"
   },
   "gdprMessage": {
     "message": "This data is aggregated and is therefore anonymous for the purposes of General Data Protection Regulation (EU) 2016/679. For more information in relation to our privacy practices, please see our $1.",
@@ -901,7 +901,7 @@
     "message": "Lock time is too great"
   },
   "mainnet": {
-    "message": "Main Ethereum Network"
+    "message": "Ethereum Mainnet"
   },
   "memorizePhrase": {
     "message": "Memorize this phrase."
@@ -1595,7 +1595,7 @@
     "message": "Transaction Time"
   },
   "showTransactionTimeDescription": {
-    "message": "Select this to display pending transaction time estimates in the activity tab while on the Main Ethereum Network. Note: estimates are approximations based on network conditions."
+    "message": "Select this to display pending transaction time estimates in the activity tab while on the Ethereum Mainnet. Note: estimates are approximations based on network conditions."
   },
   "transfer": {
     "message": "Transfer"
@@ -1761,5 +1761,12 @@
   "encryptionPublicKeyNotice": {
     "message": "$1 would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.",
     "description": "$1 is the web3 site name"
+  },
+  "troubleConnectingToWallet": {
+    "message": "We had trouble connecting to your $1, try reviewing $2 and try again.",
+    "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
+  },
+  "walletConnectionGuide": {
+    "message": "our hardware wallet connection guide"
   }
 }

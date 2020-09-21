@@ -1,4 +1,3 @@
-import ViewContact from './view-contact.component'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
@@ -11,11 +10,12 @@ import {
   CONTACT_MY_ACCOUNTS_ROUTE,
   CONTACT_MY_ACCOUNTS_VIEW_ROUTE,
 } from '../../../../helpers/constants/routes'
+import ViewContact from './view-contact.component'
 
 const mapStateToProps = (state, ownProps) => {
   const { location } = ownProps
   const { pathname } = location
-  const pathNameTail = pathname.match(/[^/]+$/)[0]
+  const pathNameTail = pathname.match(/[^/]+$/u)[0]
   const pathNameTailIsAddress = pathNameTail.includes('0x')
   const address = pathNameTailIsAddress ? pathNameTail.toLowerCase() : ownProps.match.params.id
 

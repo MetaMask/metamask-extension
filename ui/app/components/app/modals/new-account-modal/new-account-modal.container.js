@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
-import NewAccountModal from './new-account-modal.component'
 import * as actions from '../../../../store/actions'
+import NewAccountModal from './new-account-modal.component'
 
 function mapStateToProps (state) {
   return {

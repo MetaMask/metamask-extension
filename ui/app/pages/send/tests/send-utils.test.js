@@ -10,18 +10,19 @@ import {
 
 const stubs = {
   addCurrencies: sinon.stub().callsFake((a, b) => {
-    if (String(a).match(/^0x.+/)) {
-      a = Number(String(a).slice(2))
+    let [a1, b1] = [a, b]
+    if (String(a).match(/^0x.+/u)) {
+      a1 = Number(String(a).slice(2))
     }
-    if (String(b).match(/^0x.+/)) {
-      b = Number(String(b).slice(2))
+    if (String(b).match(/^0x.+/u)) {
+      b1 = Number(String(b).slice(2))
     }
-    return a + b
+    return a1 + b1
   }),
   conversionUtil: sinon.stub().callsFake((val) => parseInt(val, 16)),
   conversionGTE: sinon.stub().callsFake((obj1, obj2) => obj1.value >= obj2.value),
   multiplyCurrencies: sinon.stub().callsFake((a, b) => `${a}x${b}`),
-  calcTokenAmount: sinon.stub().callsFake((a, d) => 'calc:' + a + d),
+  calcTokenAmount: sinon.stub().callsFake((a, d) => `calc:${a}${d}`),
   rawEncode: sinon.stub().returns([16, 1100]),
   conversionGreaterThan: sinon.stub().callsFake((obj1, obj2) => obj1.value > obj2.value),
   conversionLessThan: sinon.stub().callsFake((obj1, obj2) => obj1.value < obj2.value),
@@ -69,7 +70,7 @@ describe('send utils', function () {
           toNumericBase: 'hex',
           multiplicandBase: 16,
           multiplierBase: 16,
-        } ],
+        }],
       )
     })
   })
@@ -294,8 +295,8 @@ describe('send utils', function () {
       to: '0xisContract',
       estimateGasMethod: sinon.stub().callsFake(
         ({ to }) => {
-          if (typeof to === 'string' && to.match(/willFailBecauseOf:/)) {
-            throw new Error(to.match(/:(.+)$/)[1])
+          if (typeof to === 'string' && to.match(/willFailBecauseOf:/u)) {
+            throw new Error(to.match(/:(.+)$/u)[1])
           }
           return { toString: (n) => `0xabc${n}` }
         },
@@ -311,7 +312,7 @@ describe('send utils', function () {
     beforeEach(function () {
       global.eth = {
         getCode: sinon.stub().callsFake(
-          (address) => Promise.resolve(address.match(/isContract/) ? 'not-0x' : '0x'),
+          (address) => Promise.resolve(address.match(/isContract/u) ? 'not-0x' : '0x'),
         ),
       }
     })
@@ -326,32 +327,32 @@ describe('send utils', function () {
       assert.equal(baseMockParams.estimateGasMethod.callCount, 1)
       assert.deepEqual(
         baseMockParams.estimateGasMethod.getCall(0).args[0],
-        Object.assign({ gasPrice: undefined, value: undefined }, baseExpectedCall),
+        { gasPrice: undefined, value: undefined, ...baseExpectedCall },
       )
       assert.equal(result, '0xabc16')
     })
 
     it('should call ethQuery.estimateGas with the expected params when initialGasLimitHex is lower than the upperGasLimit', async function () {
-      const result = await estimateGas(Object.assign({}, baseMockParams, { blockGasLimit: '0xbcd' }))
+      const result = await estimateGas({ ...baseMockParams, blockGasLimit: '0xbcd' })
       assert.equal(baseMockParams.estimateGasMethod.callCount, 1)
       assert.deepEqual(
         baseMockParams.estimateGasMethod.getCall(0).args[0],
-        Object.assign({ gasPrice: undefined, value: undefined }, baseExpectedCall, { gas: '0xbcdx0.95' }),
+        { gasPrice: undefined, value: undefined, ...baseExpectedCall, gas: '0xbcdx0.95' },
       )
       assert.equal(result, '0xabc16x1.5')
     })
 
     it('should call ethQuery.estimateGas with a value of 0x0 and the expected data and to if passed a sendToken', async function () {
-      const result = await estimateGas(Object.assign({ data: 'mockData', sendToken: { address: 'mockAddress' } }, baseMockParams))
+      const result = await estimateGas({ data: 'mockData', sendToken: { address: 'mockAddress' }, ...baseMockParams })
       assert.equal(baseMockParams.estimateGasMethod.callCount, 1)
       assert.deepEqual(
         baseMockParams.estimateGasMethod.getCall(0).args[0],
-        Object.assign({}, baseExpectedCall, {
-          gasPrice: undefined,
+        {
+          ...baseExpectedCall, gasPrice: undefined,
           value: '0x0',
           data: '0xa9059cbb104c',
           to: 'mockAddress',
-        }),
+        },
       )
       assert.equal(result, '0xabc16')
     })
@@ -370,46 +371,40 @@ describe('send utils', function () {
 
     it(`should return ${SIMPLE_GAS_COST} if ethQuery.getCode does not return '0x'`, async function () {
       assert.equal(baseMockParams.estimateGasMethod.callCount, 0)
-      const result = await estimateGas(Object.assign({}, baseMockParams, { to: '0x123' }))
+      const result = await estimateGas({ ...baseMockParams, to: '0x123' })
       assert.equal(result, SIMPLE_GAS_COST)
     })
 
     it(`should return ${SIMPLE_GAS_COST} if not passed a sendToken or truthy to address`, async function () {
       assert.equal(baseMockParams.estimateGasMethod.callCount, 0)
-      const result = await estimateGas(Object.assign({}, baseMockParams, { to: null }))
+      const result = await estimateGas({ ...baseMockParams, to: null })
       assert.equal(result, SIMPLE_GAS_COST)
     })
 
     it(`should not return ${SIMPLE_GAS_COST} if passed a sendToken`, async function () {
       assert.equal(baseMockParams.estimateGasMethod.callCount, 0)
-      const result = await estimateGas(Object.assign({}, baseMockParams, { to: '0x123', sendToken: { address: '0x0' } }))
+      const result = await estimateGas({ ...baseMockParams, to: '0x123', sendToken: { address: '0x0' } })
       assert.notEqual(result, SIMPLE_GAS_COST)
     })
 
     it(`should return ${BASE_TOKEN_GAS_COST} if passed a sendToken but no to address`, async function () {
-      const result = await estimateGas(Object.assign({}, baseMockParams, { to: null, sendToken: { address: '0x0' } }))
+      const result = await estimateGas({ ...baseMockParams, to: null, sendToken: { address: '0x0' } })
       assert.equal(result, BASE_TOKEN_GAS_COST)
     })
 
     it(`should return the adjusted blockGasLimit if it fails with a 'Transaction execution error.'`, async function () {
-      const result = await estimateGas(Object.assign({}, baseMockParams, {
-        to: 'isContract willFailBecauseOf:Transaction execution error.',
-      }))
+      const result = await estimateGas({ ...baseMockParams, to: 'isContract willFailBecauseOf:Transaction execution error.' })
       assert.equal(result, '0x64x0.95')
     })
 
     it(`should return the adjusted blockGasLimit if it fails with a 'gas required exceeds allowance or always failing transaction.'`, async function () {
-      const result = await estimateGas(Object.assign({}, baseMockParams, {
-        to: 'isContract willFailBecauseOf:gas required exceeds allowance or always failing transaction.',
-      }))
+      const result = await estimateGas({ ...baseMockParams, to: 'isContract willFailBecauseOf:gas required exceeds allowance or always failing transaction.' })
       assert.equal(result, '0x64x0.95')
     })
 
     it(`should reject other errors`, async function () {
       try {
-        await estimateGas(Object.assign({}, baseMockParams, {
-          to: 'isContract willFailBecauseOf:some other error',
-        }))
+        await estimateGas({ ...baseMockParams, to: 'isContract willFailBecauseOf:some other error' })
       } catch (err) {
         assert.equal(err.message, 'some other error')
       }

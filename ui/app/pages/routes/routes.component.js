@@ -98,11 +98,8 @@ export default class Routes extends Component {
     this.props.history.listen((locationObj, action) => {
       if (action === 'PUSH') {
         pageChanged(locationObj.pathname)
-        const url = `&url=${encodeURIComponent('http://www.metamask.io/metametrics' + locationObj.pathname)}`
         this.context.metricsEvent({}, {
-          currentPath: '',
-          pathname: locationObj.pathname,
-          url,
+          currentPath: locationObj.pathname,
           pageOpts: {
             hideDimensions: true,
           },
@@ -268,16 +265,16 @@ export default class Routes extends Component {
   }
 
   toggleMetamaskActive () {
-    if (!this.props.isUnlocked) {
+    if (this.props.isUnlocked) {
+      // currently active: deactivate
+      this.props.lockMetaMask()
+    } else {
       // currently inactive: redirect to password box
       const passwordBox = document.querySelector('input[type=password]')
       if (!passwordBox) {
         return
       }
       passwordBox.focus()
-    } else {
-      // currently active: deactivate
-      this.props.lockMetaMask()
     }
   }
 

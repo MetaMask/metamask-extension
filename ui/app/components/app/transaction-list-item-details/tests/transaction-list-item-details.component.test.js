@@ -1,5 +1,5 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { shallow } from 'enzyme'
 import TransactionListItemDetails from '../transaction-list-item-details.component'
 import Button from '../../../ui/button'
@@ -34,7 +34,7 @@ describe('TransactionListItemDetails Component', function () {
         title="Test Transaction Details"
         recipientAddress="0x1"
         senderAddress="0x2"
-        tryReverseResolveAddress={() => {}}
+        tryReverseResolveAddress={() => undefined}
         transactionGroup={transactionGroup}
         senderNickname="sender-nickname"
         recipientNickname="recipient-nickname"
@@ -77,7 +77,7 @@ describe('TransactionListItemDetails Component', function () {
       <TransactionListItemDetails
         recipientAddress="0x1"
         senderAddress="0x2"
-        tryReverseResolveAddress={() => {}}
+        tryReverseResolveAddress={() => undefined}
         transactionGroup={transactionGroup}
         showSpeedUp
         senderNickname="sender-nickname"
@@ -117,7 +117,7 @@ describe('TransactionListItemDetails Component', function () {
       <TransactionListItemDetails
         recipientAddress="0x1"
         senderAddress="0x2"
-        tryReverseResolveAddress={() => {}}
+        tryReverseResolveAddress={() => undefined}
         transactionGroup={transactionGroup}
         senderNickname="sender-nickname"
         recipientNickname="recipient-nickname"
@@ -159,7 +159,7 @@ describe('TransactionListItemDetails Component', function () {
       <TransactionListItemDetails
         recipientAddress="0x1"
         senderAddress="0x2"
-        tryReverseResolveAddress={() => {}}
+        tryReverseResolveAddress={() => undefined}
         transactionGroup={transactionGroup}
         senderNickname="sender-nickname"
         recipientNickname="recipient-nickname"

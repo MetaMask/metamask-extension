@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
-import AddToAddressBookModal from './add-to-addressbook-modal.component'
 import * as actions from '../../../../store/actions'
+import AddToAddressBookModal from './add-to-addressbook-modal.component'
 
 function mapStateToProps (state) {
   return {

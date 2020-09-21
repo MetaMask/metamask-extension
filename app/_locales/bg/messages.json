@@ -444,7 +444,7 @@
   "gasLimit": {
     "message": "Ограничение на газ"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "Ограничението за газ е максималното количество единици газ, което сте готови да похарчите."
   },
   "gasLimitTooLow": {
@@ -459,11 +459,8 @@
   "gasPriceExtremelyLow": {
     "message": "Цена на газа е изключително ниска"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "Цената на газа определя количеството етер, което сте готови да платите за всяка единица газ."
-  },
-  "gasPriceNoDenom": {
-    "message": "Цена на газа"
   },
   "general": {
     "message": "Общ"

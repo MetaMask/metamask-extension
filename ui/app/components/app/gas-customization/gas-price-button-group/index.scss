@@ -177,7 +177,7 @@
   }
 
   &__time-estimate {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 500;
     margin-top: 4px;
     color: $black;
@@ -218,6 +218,10 @@
   .button-group__button--active {
     background: #f7fcff;
     border: 2px solid #2c8bdc;
+
+    &:first-child {
+      border: 2px solid #2c8bdc;
+    }
 
     .button-check-wrapper {
       height: 16px;

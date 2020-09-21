@@ -14,7 +14,6 @@ import log from 'loglevel'
 import pify from 'pify'
 import Web3 from 'web3'
 import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi'
-import { bnToHex } from './util'
 import { MAINNET_NETWORK_ID, RINKEBY_NETWORK_ID, ROPSTEN_NETWORK_ID, KOVAN_NETWORK_ID } from '../controllers/network/enums'
 
 import {
@@ -23,6 +22,7 @@ import {
   SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN,
   SINGLE_CALL_BALANCES_ADDRESS_KOVAN,
 } from '../controllers/network/contract-addresses'
+import { bnToHex } from './util'
 
 export default class AccountTracker {
 
@@ -92,7 +92,7 @@ export default class AccountTracker {
    *
    */
   syncWithAddresses (addresses) {
-    const accounts = this.store.getState().accounts
+    const { accounts } = this.store.getState()
     const locals = Object.keys(accounts)
 
     const accountsToAdd = []
@@ -121,7 +121,7 @@ export default class AccountTracker {
    *
    */
   addAccounts (addresses) {
-    const accounts = this.store.getState().accounts
+    const { accounts } = this.store.getState()
     // add initial state for addresses
     addresses.forEach((address) => {
       accounts[address] = {}
@@ -142,7 +142,7 @@ export default class AccountTracker {
    *
    */
   removeAccount (addresses) {
-    const accounts = this.store.getState().accounts
+    const { accounts } = this.store.getState()
     // remove each state object
     addresses.forEach((address) => {
       delete accounts[address]
@@ -194,7 +194,7 @@ export default class AccountTracker {
    *
    */
   async _updateAccounts () {
-    const accounts = this.store.getState().accounts
+    const { accounts } = this.store.getState()
     const addresses = Object.keys(accounts)
     const currentNetwork = this.network.getNetworkState()
 
@@ -248,7 +248,7 @@ export default class AccountTracker {
    * @param {*} deployedContractAddress
    */
   async _updateAccountsViaBalanceChecker (addresses, deployedContractAddress) {
-    const accounts = this.store.getState().accounts
+    const { accounts } = this.store.getState()
     this.web3.setProvider(this._provider)
     const ethContract = this.web3.eth.contract(SINGLE_CALL_BALANCES_ABI).at(deployedContractAddress)
     const ethBalance = ['0x0']
@@ -256,7 +256,8 @@ export default class AccountTracker {
     ethContract.balances(addresses, ethBalance, (error, result) => {
       if (error) {
         log.warn(`MetaMask - Account Tracker single call balance fetch failed`, error)
-        return Promise.all(addresses.map(this._updateAccount.bind(this)))
+        Promise.all(addresses.map(this._updateAccount.bind(this)))
+        return
       }
       addresses.forEach((address, index) => {
         const balance = bnToHex(result[index])

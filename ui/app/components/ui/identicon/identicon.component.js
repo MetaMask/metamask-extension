@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import contractMap from 'eth-contract-metadata'
 
-import BlockieIdenticon from './blockieIdenticon'
 import { checksumAddress } from '../../../helpers/utils/util'
 import Jazzicon from '../jazzicon'
+import BlockieIdenticon from './blockieIdenticon'
 
 const getStyles = (diameter) => (
   {

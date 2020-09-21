@@ -1,5 +1,5 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import sinon from 'sinon'
 import { shallow } from 'enzyme'
 import AdvancedTab from '../advanced-tab.component'
@@ -10,10 +10,10 @@ describe('AdvancedTab Component', function () {
     const root = shallow(
       <AdvancedTab
         ipfsGateway=""
-        setAutoLockTimeLimit={() => {}}
-        setIpfsGateway={() => {}}
-        setShowFiatConversionOnTestnetsPreference={() => {}}
-        setThreeBoxSyncingPermission={() => {}}
+        setAutoLockTimeLimit={() => undefined}
+        setIpfsGateway={() => undefined}
+        setShowFiatConversionOnTestnetsPreference={() => undefined}
+        setThreeBoxSyncingPermission={() => undefined}
         threeBoxDisabled
         threeBoxSyncingAllowed={false}
       />,
@@ -33,9 +33,9 @@ describe('AdvancedTab Component', function () {
       <AdvancedTab
         ipfsGateway=""
         setAutoLockTimeLimit={setAutoLockTimeLimitSpy}
-        setIpfsGateway={() => {}}
-        setShowFiatConversionOnTestnetsPreference={() => {}}
-        setThreeBoxSyncingPermission={() => {}}
+        setIpfsGateway={() => undefined}
+        setShowFiatConversionOnTestnetsPreference={() => undefined}
+        setThreeBoxSyncingPermission={() => undefined}
         threeBoxDisabled
         threeBoxSyncingAllowed={false}
       />,

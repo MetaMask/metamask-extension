@@ -1,26 +1,21 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import configureMockStore from 'redux-mock-store'
-import thunk from 'redux-thunk'
+import { fireEvent } from '@testing-library/react'
 import sinon from 'sinon'
-import { mountWithStore } from '../../../lib/render-helpers'
+import { renderWithProvider } from '../../../lib/render-helpers'
 import { Dropdown } from '../../../../ui/app/components/app/dropdowns/components/dropdown'
 
-const mockState = {
-  metamask: {
-  },
-}
-
 describe('Dropdown components', function () {
-  let onClickOutside
-  let onClick
 
-  const createMockStore = configureMockStore([thunk])
+  const mockState = {
+    metamask: {},
+  }
 
-  const dropdownComponentProps = {
+  const props = {
     isOpen: true,
     zIndex: 11,
-    onClickOutside,
+    onClickOutside: sinon.spy(),
     style: {
       position: 'absolute',
       right: 0,
@@ -29,40 +24,22 @@ describe('Dropdown components', function () {
     innerStyle: {},
   }
 
-  let dropdownComponent
-  let store
-  let component
-  beforeEach(function () {
-    onClickOutside = sinon.spy()
-    onClick = sinon.spy()
-
-    store = createMockStore(mockState)
-    component = mountWithStore((
-      <Dropdown {...dropdownComponentProps}>
-        <style>
-          {
-            `
-              .drop-menu-item:hover { background:rgb(235, 235, 235); }
-              .drop-menu-item i { margin: 11px; }
-            `
-          }
-        </style>
-        <li onClick={onClick}>Item 1</li>
-        <li onClick={onClick}>Item 2</li>
-      </Dropdown>
-    ), store)
-    dropdownComponent = component
-  })
-
-  it('can render two items', function () {
-    const items = dropdownComponent.find('li')
-    assert.equal(items.length, 2)
-  })
-
   it('invokes click handler when item clicked', function () {
-    const items = dropdownComponent.find('li')
-    const node = items.at(0)
-    node.simulate('click')
-    assert.ok(onClick.calledOnce)
+    const store = configureMockStore()(mockState)
+
+    const onClickSpy = sinon.spy()
+
+    const { getByText } = renderWithProvider(
+      <Dropdown {...props}>
+        <li onClick={onClickSpy}>Item 1</li>
+        <li onClick={onClickSpy}>Item 2</li>
+      </Dropdown>, store,
+    )
+
+    const item1 = getByText(/Item 1/u)
+    fireEvent.click(item1)
+
+    assert.ok(onClickSpy.calledOnce)
   })
+
 })

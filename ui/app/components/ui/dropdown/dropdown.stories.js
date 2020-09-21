@@ -1,7 +1,7 @@
 import React from 'react'
 import { action } from '@storybook/addon-actions'
-import Dropdown from '.'
 import { boolean, select, text } from '@storybook/addon-knobs/react'
+import Dropdown from '.'
 
 export default {
   title: 'Dropdown',
@@ -12,13 +12,12 @@ const unnamedOptions = [...Array(10).keys()].map((index) => {
 })
 
 const namedOptions = unnamedOptions.map((option, index) => {
-  return Object.assign({}, option, { name: `Option ${index}` })
+  return { ...option, name: `Option ${index}` }
 })
 
 const namedOptionsWithVeryLongNames = unnamedOptions.map((option, index) => {
-  return Object.assign({}, option, { name: `Option ${index} with a very${', very'.repeat(index)} long name` })
+  return { ...option, name: `Option ${index} with a very${', very'.repeat(index)} long name` }
 })
-
 
 export const simple = () => (
   <Dropdown

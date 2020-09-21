@@ -2,16 +2,14 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import ConfirmTransactionBase from '../confirm-transaction-base'
-import ConfirmApproveContent from './confirm-approve-content'
-import { getCustomTxParamsData } from './confirm-approve.util'
 import { showModal } from '../../store/actions'
 import {
   getTokenData,
 } from '../../helpers/utils/transactions.util'
 import {
   calcTokenAmount,
-  getTokenToAddress,
-  getTokenValue,
+  getTokenAddressParam,
+  getTokenValueParam,
 } from '../../helpers/utils/token-util'
 import { useTokenTracker } from '../../hooks/useTokenTracker'
 import { getTokens } from '../../ducks/metamask/metamask'
@@ -21,6 +19,8 @@ import {
 } from '../../selectors/confirm-transaction'
 import { getCurrentCurrency, getDomainMetadata } from '../../selectors/selectors'
 import { currentNetworkTxListSelector } from '../../selectors/transactions'
+import { getCustomTxParamsData } from './confirm-approve.util'
+import ConfirmApproveContent from './confirm-approve-content'
 
 export default function ConfirmApprove () {
   const dispatch = useDispatch()
@@ -54,8 +54,8 @@ export default function ConfirmApprove () {
   const tokenSymbol = currentToken?.symbol
   const decimals = Number(currentToken?.decimals)
   const tokenData = getTokenData(data)
-  const tokenValue = tokenData && getTokenValue(tokenData.params)
-  const toAddress = tokenData && getTokenToAddress(tokenData.params)
+  const tokenValue = getTokenValueParam(tokenData)
+  const toAddress = getTokenAddressParam(tokenData)
   const tokenAmount = tokenData && calcTokenAmount(tokenValue, decimals).toString(10)
 
   const [customPermissionAmount, setCustomPermissionAmount] = useState('')
@@ -107,6 +107,7 @@ export default function ConfirmApprove () {
           showCustomizeGasModal={() => dispatch(showModal({ name: 'CUSTOMIZE_GAS', txData }))}
           showEditApprovalPermissionModal={
             ({
+              /* eslint-disable no-shadow */
               customTokenAmount,
               decimals,
               origin,
@@ -114,6 +115,7 @@ export default function ConfirmApprove () {
               tokenAmount,
               tokenBalance,
               tokenSymbol,
+              /* eslint-enable no-shadow */
             }) => dispatch(
               showModal({
                 name: 'EDIT_APPROVAL_PERMISSION',

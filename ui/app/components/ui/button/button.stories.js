@@ -1,7 +1,7 @@
 import React from 'react'
 import { action } from '@storybook/addon-actions'
-import Button from '.'
 import { text, boolean } from '@storybook/addon-knobs/react'
+import Button from '.'
 
 export default {
   title: 'Button',
@@ -67,12 +67,3 @@ export const dangerPrimaryType = () => (
   </Button>
 )
 
-export const linkType = () => (
-  <Button
-    onClick={action('clicked')}
-    type="link"
-    disabled={boolean('disabled', false)}
-  >
-    {text('text', 'Click me')}
-  </Button>
-)

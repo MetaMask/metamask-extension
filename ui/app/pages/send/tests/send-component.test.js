@@ -1,5 +1,5 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import proxyquire from 'proxyquire'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
@@ -63,12 +63,12 @@ describe('Send Component', function () {
         tokenBalance="mockTokenBalance"
         tokenContract={{ method: 'mockTokenMethod' }}
         updateAndSetGasLimit={propsMethodSpies.updateAndSetGasLimit}
-        qrCodeDetected={() => {}}
-        scanQrCode={() => {}}
-        updateSendEnsResolution={() => {}}
-        updateSendEnsResolutionError={() => {}}
+        qrCodeDetected={() => undefined}
+        scanQrCode={() => undefined}
+        updateSendEnsResolution={() => undefined}
+        updateSendEnsResolutionError={() => undefined}
         updateSendErrors={propsMethodSpies.updateSendErrors}
-        updateSendTo={() => {}}
+        updateSendTo={() => undefined}
         updateSendTokenBalance={propsMethodSpies.updateSendTokenBalance}
         resetSendState={propsMethodSpies.resetSendState}
         updateToNicknameIfNecessary={propsMethodSpies.updateToNicknameIfNecessary}

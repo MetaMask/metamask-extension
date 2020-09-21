@@ -1,6 +1,6 @@
-import { NETWORK_TYPES } from '../helpers/constants/common'
 import { stripHexPrefix, addHexPrefix } from 'ethereumjs-util'
 import { createSelector } from 'reselect'
+import { NETWORK_TYPES } from '../helpers/constants/common'
 import {
   shortenAddress,
   checksumAddress,
@@ -63,11 +63,10 @@ export const getMetaMaskAccounts = createSelector(
         },
 
       }
-    } else {
-      return {
-        ...selectedAccounts,
-        [accountID]: account,
-      }
+    }
+    return {
+      ...selectedAccounts,
+      [accountID]: account,
     }
   }, {}),
 )
@@ -78,7 +77,7 @@ export function getSelectedAddress (state) {
 
 export function getSelectedIdentity (state) {
   const selectedAddress = getSelectedAddress(state)
-  const identities = state.metamask.identities
+  const { identities } = state.metamask
 
   return identities[selectedAddress]
 }
@@ -88,7 +87,7 @@ export function getNumberOfAccounts (state) {
 }
 
 export function getNumberOfTokens (state) {
-  const tokens = state.metamask.tokens
+  const { tokens } = state.metamask
   return tokens ? tokens.length : 0
 }
 
@@ -119,7 +118,7 @@ export const getMetaMaskAccountsOrdered = createSelector(
   getMetaMaskAccounts,
   (keyrings, identities, accounts) => keyrings
     .reduce((list, keyring) => list.concat(keyring.accounts), [])
-    .filter((address) => !!identities[address])
+    .filter((address) => Boolean(identities[address]))
     .map((address) => ({ ...identities[address], ...accounts[address] })),
 )
 
@@ -157,7 +156,7 @@ export function getAssetImages (state) {
 }
 
 export function getAddressBook (state) {
-  const network = state.metamask.network
+  const { network } = state.metamask
   if (!state.metamask.addressBook[network]) {
     return []
   }
@@ -180,7 +179,7 @@ export function accountsWithSendEtherInfoSelector (state) {
   const identities = getMetaMaskIdentities(state)
 
   const accountsWithSendEtherInfo = Object.entries(identities).map(([key, identity]) => {
-    return Object.assign({}, identity, accounts[key])
+    return { ...identity, ...accounts[key] }
   })
 
   return accountsWithSendEtherInfo
@@ -258,7 +257,7 @@ export function isEthereumNetwork (state) {
     GOERLI,
   } = NETWORK_TYPES
 
-  return [ KOVAN, MAINNET, RINKEBY, ROPSTEN, GOERLI].includes(networkType)
+  return [KOVAN, MAINNET, RINKEBY, ROPSTEN, GOERLI].includes(networkType)
 }
 
 export function getPreferences ({ metamask }) {

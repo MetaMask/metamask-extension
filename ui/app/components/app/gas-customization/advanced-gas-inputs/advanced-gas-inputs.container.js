@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { showModal } from '../../../../store/actions'
 import {
   decGWEIToHexWEI,
   decimalToHex,
@@ -15,13 +14,6 @@ function convertGasLimitForInputs (gasLimitInHexWEI) {
   return parseInt(gasLimitInHexWEI, 16) || 0
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    showGasPriceInfoModal: () => dispatch(showModal({ name: 'GAS_PRICE_INFO_MODAL' })),
-    showGasLimitInfoModal: () => dispatch(showModal({ name: 'GAS_LIMIT_INFO_MODAL' })),
-  }
-}
-
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { customGasPrice, customGasLimit, updateCustomGasPrice, updateCustomGasLimit } = ownProps
   return {
@@ -35,4 +27,4 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   }
 }
 
-export default connect(null, mapDispatchToProps, mergeProps)(AdvancedGasInputs)
+export default connect(null, null, mergeProps)(AdvancedGasInputs)

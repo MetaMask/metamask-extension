@@ -123,9 +123,8 @@ function getSymbolNormal (value) {
     return SYMBOLS.ThreeQuarters
   } else if (rounded === 7 / 8) {
     return SYMBOLS.SevenEighths
-  } else {
-    return SYMBOLS.Full
   }
+  return SYMBOLS.Full
 }
 
 // get partial block char for value (right-adjusted)
@@ -144,7 +143,6 @@ function getSymbolNormalRight (value) {
     return SYMBOLS.RightEighth
   } else if (rounded === 1) {
     return SYMBOLS.Space
-  } else {
-    throw new Error('getSymbolNormalRight got unexpected result')
   }
+  throw new Error('getSymbolNormalRight got unexpected result')
 }

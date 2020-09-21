@@ -6,26 +6,25 @@ import './lib/freezeGlobals'
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
 import '@formatjs/intl-relativetimeformat/polyfill'
 
+import { EventEmitter } from 'events'
 import PortStream from 'extension-port-stream'
-import { getEnvironmentType } from './lib/util'
 
+import extension from 'extensionizer'
+
+import Dnode from 'dnode'
+import Eth from 'ethjs'
+import EthQuery from 'eth-query'
+import StreamProvider from 'web3-stream-provider'
+import log from 'loglevel'
+import launchMetaMaskUi from '../../ui'
+import { setupMultiplex } from './lib/stream-utils'
+import setupSentry from './lib/setupSentry'
+import ExtensionPlatform from './platforms/extension'
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
 } from './lib/enums'
-
-import extension from 'extensionizer'
-import ExtensionPlatform from './platforms/extension'
-
-import setupSentry from './lib/setupSentry'
-import { EventEmitter } from 'events'
-import Dnode from 'dnode'
-import Eth from 'ethjs'
-import EthQuery from 'eth-query'
-import launchMetaMaskUi from '../../ui'
-import StreamProvider from 'web3-stream-provider'
-import { setupMultiplex } from './lib/stream-utils.js'
-import log from 'loglevel'
+import { getEnvironmentType } from './lib/util'
 
 start().catch(log.error)
 
@@ -62,7 +61,8 @@ async function start () {
     const container = document.getElementById('app-content')
     initializeUi(tab, container, connectionStream, (err, store) => {
       if (err) {
-        return displayCriticalError(container, err)
+        displayCriticalError(container, err)
+        return
       }
 
       const state = store.getState()
@@ -102,7 +102,8 @@ async function queryCurrentActiveTab (windowType) {
 function initializeUi (activeTab, container, connectionStream, cb) {
   connectToAccountManager(connectionStream, (err, backgroundConnection) => {
     if (err) {
-      return cb(err)
+      cb(err)
+      return
     }
 
     launchMetaMaskUi({
@@ -149,7 +150,7 @@ function setupWeb3Connection (connectionStream) {
 function setupControllerConnection (connectionStream, cb) {
   const eventEmitter = new EventEmitter()
   const backgroundDnode = Dnode({
-    sendUpdate: function (state) {
+    sendUpdate (state) {
       eventEmitter.emit('update', state)
     },
   })

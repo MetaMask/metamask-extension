@@ -3,14 +3,13 @@ import currencies from 'currency-formatter/currencies'
 import ethUtil from 'ethereumjs-util'
 import BigNumber from 'bignumber.js'
 
+import { unconfirmedTransactionsCountSelector } from '../../selectors'
 import {
   conversionUtil,
   addCurrencies,
   multiplyCurrencies,
   conversionGreaterThan,
 } from './conversion-util'
-
-import { unconfirmedTransactionsCountSelector } from '../../selectors'
 
 export function increaseLastGasPrice (lastGasPrice) {
   return ethUtil.addHexPrefix(multiplyCurrencies(lastGasPrice || '0x0', 1.1, {
@@ -122,10 +121,17 @@ export function hasUnconfirmedTransactions (state) {
   return unconfirmedTransactionsCountSelector(state) > 0
 }
 
-export function roundExponential (value) {
+/**
+ * Rounds the given decimal string to 4 significant digits.
+ *
+ * @param {string} decimalString - The base-ten number to round.
+ * @returns {string} The rounded number, or the original number if no
+ * rounding was necessary.
+ */
+export function roundExponential (decimalString) {
   const PRECISION = 4
-  const bigNumberValue = new BigNumber(String(value))
+  const bigNumberValue = new BigNumber(decimalString)
 
   // In JS, numbers with exponentials greater than 20 get displayed as an exponential.
-  return bigNumberValue.e > 20 ? Number(bigNumberValue.toPrecision(PRECISION)) : value
+  return bigNumberValue.e > 20 ? bigNumberValue.toPrecision(PRECISION) : decimalString
 }
