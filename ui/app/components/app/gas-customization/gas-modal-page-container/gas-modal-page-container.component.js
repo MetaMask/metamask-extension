@@ -5,7 +5,9 @@ import { Tabs, Tab } from '../../../ui/tabs'
 import { calcGasTotal } from '../../../../pages/send/send.utils'
 import AdvancedTabContent from './advanced-tab-content'
 import BasicTabContent from './basic-tab-content'
-import { sumHexWEIsToRenderableFiat } from './gas-modal-page-container.container'
+import {
+  sumHexWEIsToRenderableFiat,
+} from '../../../../helpers/utils/conversions.util'
 
 export default class GasModalPageContainer extends Component {
   static contextTypes = {

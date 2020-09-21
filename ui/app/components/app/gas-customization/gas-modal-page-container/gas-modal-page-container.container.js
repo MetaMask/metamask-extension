@@ -56,6 +56,7 @@ import {
   decEthToConvertedCurrency as ethTotalToConvertedCurrency,
   hexWEIToDecGWEI,
   getValueFromWeiHex,
+  sumHexWEIsToRenderableFiat,
 } from '../../../../helpers/utils/conversions.util'
 import { getRenderableTimeEstimate } from '../../../../helpers/utils/gas-time-estimates.util'
 import {
@@ -67,18 +68,6 @@ import {
 } from '../../../../pages/send/send.utils'
 import { calcMaxAmount } from '../../../../pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.utils'
 import GasModalPageContainer from './gas-modal-page-container.component'
-
-export const sumHexWEIsToRenderableFiat = (hexWEIs, convertedCurrency, conversionRate) => {
-  const hexWEIsSum = hexWEIs.filter((n) => n).reduce(addHexes)
-  const ethTotal = ethTotalToConvertedCurrency(
-    getValueFromWeiHex({
-      value: hexWEIsSum, toCurrency: 'ETH', numberOfDecimals: 4,
-    }),
-    convertedCurrency,
-    conversionRate,
-  )
-  return formatCurrency(ethTotal, convertedCurrency)
-}
 
 const mapStateToProps = (state, ownProps) => {
   const { currentNetworkTxList, send } = state.metamask

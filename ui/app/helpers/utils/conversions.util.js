@@ -156,5 +156,16 @@ export function addHexes (aHexWEI, bHexWEI) {
     bBase: 16,
     toNumericBase: 'hex',
     numberOfDecimals: 6,
-  })
+}
+
+export function sumHexWEIsToRenderableFiat (hexWEIs, convertedCurrency, conversionRate) {
+  const hexWEIsSum = hexWEIs.filter((n) => n).reduce(addHexes)
+  const ethTotal = ethTotalToConvertedCurrency(
+    getValueFromWeiHex({
+      value: hexWEIsSum, toCurrency: 'ETH', numberOfDecimals: 4,
+    }),
+    convertedCurrency,
+    conversionRate,
+  )
+  return formatCurrency(ethTotal, convertedCurrency)
 }
