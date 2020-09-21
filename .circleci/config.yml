@@ -183,13 +183,13 @@ jobs:
 
   test-lint-shellcheck:
     docker:
-      - image: koalaman/shellcheck-alpine@sha256:169a51b086af0ab181e32801c15deb78944bb433d4f2c0a21cc30d4e60547065
+      - image: koalaman/shellcheck-alpine@sha256:35882cba254810c7de458528011e935ba2c4f3ebcb224275dfa7ebfa930ef294
     steps:
       - checkout
       - run: apk add --no-cache bash jq yarn
       - run:
-          name: Shellcheck Lint
-          command: yarn lint:shellcheck
+          name: ShellCheck Lint
+          command: ./development/shellcheck.sh
 
   test-lint-lockfile:
     docker:
