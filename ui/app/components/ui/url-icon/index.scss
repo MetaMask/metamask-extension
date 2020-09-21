@@ -13,6 +13,18 @@
 
   /* Safari and Chrome */
   -o-animation: fadein 1s;
+
+  &__fallback {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #bbc0c5;
+    flex: 0 1 auto;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding-top: 6px;
+  }
 }
 
 @keyframes fadein {
