@@ -1,39 +1,27 @@
 // Actions
 const SET_FROM_TOKEN = 'metamask/swaps/SET_FROM_TOKEN'
 const SET_TO_TOKEN = 'metamask/swaps/SET_TO_TOKEN'
-const SET_SUBMITTED_APPROVAL_ID = 'metamask/swaps/SET_SUBMITTED_APPROVAL_ID'
-const SET_CONVERSION_ID = 'metamask/swaps/SET_CONVERSION_ID'
-const SET_SELECTED_QUOTE = 'metamask/swaps/SET_SELECTED_QUOTE'
 const CLEAR_SWAPS_STATE = 'metamask/swaps/CLEAR_SWAPS_STATE'
 const SET_TRADE_TX_ID = 'metamask/swaps/SET_TRADE_TX_ID'
 const SET_APPROVE_TX_ID = 'metamask/swaps/SET_APPROVE_TX_ID'
 const SET_FETCHING_QUOTES = 'metamask/swaps/SET_FETCHING_QUOTES'
-const SET_SHOW_QUOTE_LOADING_SCREEN = 'metamask/swaps/SET_SHOW_QUOTE_LOADING_SCREEN'
 const SET_BALANCE_ERROR = 'metamask/swaps/SET_BALANCE_ERROR'
 const SET_SWAPS_TOKENS = 'metamask/swaps/SET_SWAPS_TOKENS'
 const SET_TOP_ASSETS = 'metamask/swaps/SET_TOP_ASSETS'
-const SET_LOADING_QUOTES_ERROR = 'metamask/swaps/SET_LOADING_QUOTES_ERROR'
 const SET_AGGREGATOR_METADATA = 'metamask/swaps/SET_AGGREGATOR_METADATA'
 const SET_SWAP_QUOTES_FETCH_START_TIME = 'metamask/swaps/SET_SWAP_QUOTES_FETCH_START_TIME'
-const SET_BEST_QUOTE_AGG_ID = 'metamask/swaps/SET_BEST_QUOTE_AGG_ID'
 
 const emptyState = {
   fromToken: null,
   toToken: null,
   quotes: [],
   swapsTokens: [],
-  submittedApprovalId: null,
-  conversionId: null,
-  selectedQuote: null,
   approveTxId: null,
   tradeTxId: null,
   fetchingQuotes: false,
-  showQuoteLoadingScreen: false,
   balanceError: false,
-  loadingQuotesError: null,
   aggregatorMetadata: null,
   quotesFetchStartTime: null,
-  bestQuoteAggId: null,
 }
 
 export default function reduceSwaps (state = {}, action) {
@@ -51,24 +39,6 @@ export default function reduceSwaps (state = {}, action) {
       return {
         ...swapsState,
         toToken: action.value,
-      }
-
-    case SET_SUBMITTED_APPROVAL_ID:
-      return {
-        ...swapsState,
-        submittedApprovalId: action.value,
-      }
-
-    case SET_CONVERSION_ID:
-      return {
-        ...swapsState,
-        conversionId: action.value,
-      }
-
-    case SET_SELECTED_QUOTE:
-      return {
-        ...swapsState,
-        selectedQuote: action.value,
       }
 
     case SET_TRADE_TX_ID:
@@ -89,12 +59,6 @@ export default function reduceSwaps (state = {}, action) {
         fetchingQuotes: action.value,
       }
 
-    case SET_SHOW_QUOTE_LOADING_SCREEN:
-      return {
-        ...swapsState,
-        showQuoteLoadingScreen: action.value,
-      }
-
     case SET_BALANCE_ERROR:
       return {
         ...swapsState,
@@ -113,12 +77,6 @@ export default function reduceSwaps (state = {}, action) {
         topAssets: action.value,
       }
 
-    case SET_LOADING_QUOTES_ERROR:
-      return {
-        ...swapsState,
-        loadingQuotesError: action.value,
-      }
-
     case SET_AGGREGATOR_METADATA:
       return {
         ...swapsState,
@@ -129,12 +87,6 @@ export default function reduceSwaps (state = {}, action) {
       return {
         ...swapsState,
         quotesFetchStartTime: action.value,
-      }
-
-    case SET_BEST_QUOTE_AGG_ID:
-      return {
-        ...swapsState,
-        bestQuoteAggId: action.value,
       }
 
     case CLEAR_SWAPS_STATE:
@@ -234,8 +186,6 @@ export const getSwapsWelcomeMessageSeenStatus = (state) => state.metamask.swapsW
 export const getQuotes = (state) => state.metamask.swapsState.quotes
 
 export const getFetchParams = (state) => state.metamask.swapsState.fetchParams
-
-export const getConversionId = (state) => state.swaps.conversionId
 
 export const getSwapsGasPrice = (state) => state.swaps.gasPrice
 
