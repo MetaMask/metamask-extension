@@ -71,7 +71,7 @@ const SelectQuotePopover = ({
         CustomBackground={CustomBackground}
         className="select-quote-popover__popover-wrap"
         footerClassName="swaps__footer"
-        footer={contentView !== 'quoteDetails' ? footer : null}
+        footer={contentView === 'quoteDetails' ? null : footer}
         onBack={contentView === 'quoteDetails' ? closeQuoteDetails : null}
       >
         {contentView === 'sortList' && (
