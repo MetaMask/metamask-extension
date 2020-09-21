@@ -54,7 +54,7 @@ export default function ItemList ({
                     onClick={() => onClickItem && onClickItem(result)}
                     key={`searchable-item-list-item-${i}`}
                   >
-                    {iconUrl && (<UrlIcon url={iconUrl} />)}
+                    {iconUrl && (<UrlIcon url={iconUrl} name={primaryLabel} />)}
                     {identiconAddress && (
                       <div className="searchable-item-list__identicon">
                         <Identicon
