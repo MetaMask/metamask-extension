@@ -21,6 +21,7 @@ export default class EditApprovalPermission extends PureComponent {
     tokenBalance: PropTypes.string,
     setCustomAmount: PropTypes.func,
     origin: PropTypes.string.isRequired,
+    requiredMinimum: PropTypes.instanceOf(BigNumber),
   }
 
   static contextTypes = {
@@ -163,7 +164,7 @@ export default class EditApprovalPermission extends PureComponent {
 
   validateSpendLimit () {
     const { t } = this.context
-    const { decimals } = this.props
+    const { decimals, requiredMinimum } = this.props
     const { selectedOptionIsUnlimited, customSpendLimit } = this.state
 
     if (selectedOptionIsUnlimited || !customSpendLimit) {
@@ -185,6 +186,13 @@ export default class EditApprovalPermission extends PureComponent {
     const maxTokenAmount = calcTokenAmount(MAX_UNSIGNED_256_INT, decimals)
     if (customSpendLimitNumber.greaterThan(maxTokenAmount)) {
       return t('spendLimitTooLarge')
+    }
+
+    if (
+      requiredMinimum !== undefined &&
+      customSpendLimitNumber.lessThan(requiredMinimum)
+    ) {
+      return t('spendLimitInsufficient')
     }
 
     return undefined

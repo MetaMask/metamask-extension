@@ -64,8 +64,9 @@ export default function LoadingSwapsQuotes ({
   const currentMascotContainer = mascotContainer.current
 
   const [quoteCount, updateQuoteCount] = useState(0)
-  // is an array of randomized items from AGGREGATOR_LOCATIONS, containing numberOfQuotes number of items
-  // it is randomized so that the order in which the fox looks at locations is random
+  // is an array of randomized items from AGGREGATOR_LOCATIONS, containing
+  // numberOfQuotes number of items it is randomized so that the order in
+  // which the fox looks at locations is random
   const [aggregatorLocations] = useState(() => getRandomLocations(numberOfQuotes))
   const _aggregatorLocationMap = aggregatorNames.reduce((nameLocationMap, name, index) => ({
     ...nameLocationMap,
@@ -117,31 +118,57 @@ export default function LoadingSwapsQuotes ({
   return (
     <div className="loading-swaps-quotes">
       <div className="loading-swaps-quotes__content">
-        <>
-          <div className="loading-swaps-quotes__quote-counter">
-            <span>{t('swapQuoteNofN', [Math.min(quoteCount + 1, numberOfQuotes), numberOfQuotes])}</span>
-          </div>
-          <div className="loading-swaps-quotes__quote-name-check">
-            <span>{quoteCount === numberOfQuotes ? t('swapFinalizing') : t('swapCheckingQuote', [aggregatorMetadata[aggregatorNames[quoteCount]].title])}</span>
-          </div>
-          <div className="loading-swaps-quotes__loading-bar-container">
-            <div
-              className="loading-swaps-quotes__loading-bar"
-              style={{
-                width: `${(100 / numberOfQuotes) * quoteCount}%`,
-              }}
-            />
-          </div>
-        </>
+        {!doneCalled && (
+          <>
+            <div className="loading-swaps-quotes__quote-counter">
+              <span>
+                {
+                  t('swapQuoteNofN', [
+                    Math.min(quoteCount + 1, numberOfQuotes),
+                    numberOfQuotes,
+                  ])
+                }
+              </span>
+            </div>
+            <div className="loading-swaps-quotes__quote-name-check">
+              <span>
+                {
+                  quoteCount === numberOfQuotes
+                    ? t('swapFinalizing')
+                    : t('swapCheckingQuote', [
+                      aggregatorMetadata[aggregatorNames[quoteCount]].title,
+                    ])
+                }
+              </span>
+            </div>
+            <div className="loading-swaps-quotes__loading-bar-container">
+              <div
+                className="loading-swaps-quotes__loading-bar"
+                style={{
+                  width: `${(100 / numberOfQuotes) * quoteCount}%`,
+                }}
+              />
+            </div>
+          </>
+        )}
         <div className="loading-swaps-quotes__animation">
           <BackgroundAnimation />
-          <div className="loading-swaps-quotes__mascot-container" ref={mascotContainer}>
+          <div
+            className="loading-swaps-quotes__mascot-container"
+            ref={mascotContainer}
+          >
             <Mascot
               animationEventEmitter={animationEventEmitter.current}
               width="90"
               height="90"
               followMouse={false}
-              lookAtTarget={getMascotTarget(aggregatorNames[quoteCount], midPointTarget, aggregatorLocationMap)}
+              lookAtTarget={
+                getMascotTarget(
+                  aggregatorNames[quoteCount],
+                  midPointTarget,
+                  aggregatorLocationMap,
+                )
+              }
             />
           </div>
           {currentMascotContainer && midPointTarget && aggregatorNames.map((aggName) => (
@@ -156,7 +183,11 @@ export default function LoadingSwapsQuotes ({
               }}
               key={`aggregator-logo-${aggName}`}
             >
-              <AggregatorLogo aggregatorName={aggName} icon={aggregatorMetadata[aggName]?.icon} color={aggregatorMetadata[aggName]?.color} />
+              <AggregatorLogo
+                aggregatorName={aggName}
+                icon={aggregatorMetadata[aggName]?.icon}
+                color={aggregatorMetadata[aggName]?.color}
+              />
             </div>
           ))}
         </div>

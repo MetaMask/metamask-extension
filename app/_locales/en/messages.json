@@ -114,6 +114,9 @@
   "amount": {
     "message": "Amount"
   },
+  "amountInEth": {
+    "message": "Displays an eth amount to the user. $1 is a decimal number"
+  },
   "amountWithColon": {
     "message": "Amount:"
   },
@@ -124,6 +127,9 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "approvalTxGasCost": {
+    "message": "Approval Tx Gas Cost"
   },
   "approve": {
     "message": "Approve spend limit"
@@ -638,6 +644,10 @@
   },
   "externalExtension": {
     "message": "External Extension"
+  },
+  "extraApprovalGas": {
+    "message": "+$1 approval gas",
+    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
   },
   "failed": {
     "message": "Failed"
@@ -1524,6 +1534,10 @@
   "swapAmountReceivedInfo": {
     "message": "This is the minimum amount you will receive. You may receive more depending on slippage."
   },
+  "swapApproval": {
+    "message": "Approve $1 for swaps",
+    "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
+  },
   "swapApproveNeedMoreTokens": {
     "message": "You need $1 more $2 to complete this swap",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
@@ -1730,6 +1744,10 @@
   "swapTokenAvailable": {
     "message": "Your $1 has been added to your account.",
     "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
+  },
+  "swapTokenToToken": {
+    "message": "Swap $1 to $2",
+    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
   "swapTransactionComplete": {
     "message": "Transaction complete"

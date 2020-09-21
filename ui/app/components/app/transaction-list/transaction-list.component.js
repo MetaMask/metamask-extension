@@ -13,11 +13,17 @@ import { useI18nContext } from '../../../hooks/useI18nContext'
 import TransactionListItem from '../transaction-list-item'
 import Button from '../../ui/button'
 import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions'
+import { SWAPS_CONTRACT_ADDRESS } from '../../../helpers/constants/swaps'
 
 const PAGE_INCREMENT = 10
 
 const getTransactionGroupRecipientAddressFilter = (recipientAddress) => {
-  return ({ initialTransaction: { txParams } }) => txParams && txParams.to === recipientAddress
+  return ({ initialTransaction: { txParams } }) => {
+    return txParams?.to === recipientAddress || (
+      txParams?.to === SWAPS_CONTRACT_ADDRESS &&
+      txParams.data.match(recipientAddress.slice(2))
+    )
+  }
 }
 
 const tokenTransactionFilter = ({
@@ -35,7 +41,7 @@ const getFilteredTransactionGroups = (transactionGroups, hideTokenTransactions, 
   return transactionGroups
 }
 
-export default function TransactionList ({ hideTokenTransactions, tokenAddress }) {
+export default function TransactionList ({ hideTokenTransactions, tokenAddress, ethTokenAddress }) {
   const [limit, setLimit] = useState(PAGE_INCREMENT)
   const t = useI18nContext()
 
@@ -88,7 +94,13 @@ export default function TransactionList ({ hideTokenTransactions, tokenAddress }
               </div>
               {
                 pendingTransactions.map((transactionGroup, index) => (
-                  <TransactionListItem isEarliestNonce={index === 0} transactionGroup={transactionGroup} key={`${transactionGroup.nonce}:${index}`} />
+                  <TransactionListItem
+                    tokenAddress={tokenAddress}
+                    ethTokenAddress={ethTokenAddress}
+                    isEarliestNonce={index === 0}
+                    transactionGroup={transactionGroup}
+                    key={`${transactionGroup.nonce}:${index}`}
+                  />
                 ))
               }
             </div>
@@ -107,7 +119,12 @@ export default function TransactionList ({ hideTokenTransactions, tokenAddress }
           {
             completedTransactions.length > 0
               ? completedTransactions.slice(0, limit).map((transactionGroup, index) => (
-                <TransactionListItem transactionGroup={transactionGroup} key={`${transactionGroup.nonce}:${limit + index - 10}`} />
+                <TransactionListItem
+                  tokenAddress={tokenAddress}
+                  ethTokenAddress={ethTokenAddress}
+                  transactionGroup={transactionGroup}
+                  key={`${transactionGroup.nonce}:${limit + index - 10}`}
+                />
               ))
               : (
                 <div className="transaction-list__empty">
@@ -129,6 +146,7 @@ export default function TransactionList ({ hideTokenTransactions, tokenAddress }
 TransactionList.propTypes = {
   hideTokenTransactions: PropTypes.bool,
   tokenAddress: PropTypes.string,
+  ethTokenAddress: PropTypes.string,
 }
 
 TransactionList.defaultProps = {

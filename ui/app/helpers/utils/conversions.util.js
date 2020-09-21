@@ -149,3 +149,12 @@ export function hexMax (...hexNumbers) {
   })
   return max
 }
+
+export function addHexes (aHexWEI, bHexWEI) {
+  return addCurrencies(aHexWEI, bHexWEI, {
+    aBase: 16,
+    bBase: 16,
+    toNumericBase: 'hex',
+    numberOfDecimals: 6,
+  })
+}
