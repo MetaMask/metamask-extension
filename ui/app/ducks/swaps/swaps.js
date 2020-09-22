@@ -7,6 +7,7 @@ const initialState = {
   fetchingQuotes: false,
   fromToken: null,
   quotesFetchStartTime: null,
+  submittingSwap: false,
   topAssets: null,
   toToken: null,
 }
@@ -34,6 +35,9 @@ const slice = createSlice({
     setQuotesFetchStartTime: (state, action) => {
       state.quotesFetchStartTime = action.payload
     },
+    setSubmittingSwap: (state, action) => {
+      state.submittingSwap = action.payload
+    },
     setTopAssets: (state, action) => {
       state.topAssets = action.payload
     },
@@ -57,6 +61,7 @@ const {
   setFetchingQuotes,
   setFromToken,
   setQuotesFetchStartTime,
+  setSubmittingSwap,
   setTopAssets,
   setToToken,
 } = actions
@@ -69,6 +74,7 @@ export {
   setFetchingQuotes,
   setFromToken as setSwapsFromToken,
   setQuotesFetchStartTime as setSwapQuotesFetchStartTime,
+  setSubmittingSwap,
   setTopAssets,
   setToToken as setSwapToToken,
 }
@@ -84,6 +90,8 @@ export const getBalanceError = (state) => state.swaps.balanceError
 export const getFetchingQuotes = (state) => state.swaps.fetchingQuotes
 
 export const getFromToken = (state) => state.swaps.fromToken
+
+export const getSubmittingSwap = (state) => state.swaps.submittingSwap
 
 export const getTopAssets = (state) => state.swaps.topAssets
 
