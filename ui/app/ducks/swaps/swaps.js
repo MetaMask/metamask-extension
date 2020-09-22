@@ -157,6 +157,8 @@ export const getUsedQuote = (state) => getSelectedQuote(state) || getTopQuote(st
 
 // Compound selectors
 
+export const getDestinationTokenInfo = (state) => getFetchParams(state)?.metadata?.destinationTokenInfo
+
 export const getSwapsTradeTxParams = (state) => {
   const { selectedAggId, topAggId, quotes } = getSwapsState(state)
   const usedQuote = selectedAggId ? quotes[selectedAggId] : quotes[topAggId]
