@@ -1,147 +1,76 @@
-// Actions
-const SET_FROM_TOKEN = 'metamask/swaps/SET_FROM_TOKEN'
-const SET_TO_TOKEN = 'metamask/swaps/SET_TO_TOKEN'
-const CLEAR_SWAPS_STATE = 'metamask/swaps/CLEAR_SWAPS_STATE'
-const SET_APPROVE_TX_ID = 'metamask/swaps/SET_APPROVE_TX_ID'
-const SET_FETCHING_QUOTES = 'metamask/swaps/SET_FETCHING_QUOTES'
-const SET_BALANCE_ERROR = 'metamask/swaps/SET_BALANCE_ERROR'
-const SET_TOP_ASSETS = 'metamask/swaps/SET_TOP_ASSETS'
-const SET_AGGREGATOR_METADATA = 'metamask/swaps/SET_AGGREGATOR_METADATA'
-const SET_SWAP_QUOTES_FETCH_START_TIME = 'metamask/swaps/SET_SWAP_QUOTES_FETCH_START_TIME'
+import { createSlice } from '@reduxjs/toolkit'
 
-const emptyState = {
-  fromToken: null,
-  toToken: null,
-  approveTxId: null,
-  fetchingQuotes: false,
-  balanceError: false,
+const initialState = {
   aggregatorMetadata: null,
+  approveTxId: null,
+  balanceError: false,
+  fetchingQuotes: false,
+  fromToken: null,
   quotesFetchStartTime: null,
+  topAssets: null,
+  toToken: null,
 }
 
-export default function reduceSwaps (state = {}, action) {
-  const swapsState = { ...emptyState, ...state }
+const slice = createSlice({
+  name: 'swaps',
+  initialState,
+  reducers: {
+    clearSwapsState: () => initialState,
+    setAggregatorMetadata: (state, action) => {
+      state.aggregatorMetadata = action.payload
+    },
+    setApproveTxId: (state, action) => {
+      state.approveTxId = action.payload
+    },
+    setBalanceError: (state, action) => {
+      state.balanceError = action.payload
+    },
+    setFetchingQuotes: (state, action) => {
+      state.fetchingQuotes = action.payload
+    },
+    setFromToken: (state, action) => {
+      state.fromToken = action.payload
+    },
+    setQuotesFetchStartTime: (state, action) => {
+      state.quotesFetchStartTime = action.payload
+    },
+    setTopAssets: (state, action) => {
+      state.topAssets = action.payload
+    },
+    setToToken: (state, action) => {
+      state.toToken = action.payload
+    },
+  },
+})
 
-  switch (action.type) {
+const { actions, reducer } = slice
 
-    case SET_FROM_TOKEN:
-      return {
-        ...swapsState,
-        fromToken: action.value,
-      }
+export default reducer
 
-    case SET_TO_TOKEN:
-      return {
-        ...swapsState,
-        toToken: action.value,
-      }
+// Actions / action-creators
 
-    case SET_APPROVE_TX_ID:
-      return {
-        ...swapsState,
-        approveTxId: action.value,
-      }
+const {
+  clearSwapsState,
+  setAggregatorMetadata,
+  setApproveTxId,
+  setBalanceError,
+  setFetchingQuotes,
+  setFromToken,
+  setQuotesFetchStartTime,
+  setTopAssets,
+  setToToken,
+} = actions
 
-    case SET_FETCHING_QUOTES:
-      return {
-        ...swapsState,
-        fetchingQuotes: action.value,
-      }
-
-    case SET_BALANCE_ERROR:
-      return {
-        ...swapsState,
-        balanceError: action.value,
-      }
-
-    case SET_TOP_ASSETS:
-      return {
-        ...swapsState,
-        topAssets: action.value,
-      }
-
-    case SET_AGGREGATOR_METADATA:
-      return {
-        ...swapsState,
-        aggregatorMetadata: action.value,
-      }
-
-    case SET_SWAP_QUOTES_FETCH_START_TIME:
-      return {
-        ...swapsState,
-        quotesFetchStartTime: action.value,
-      }
-
-    case CLEAR_SWAPS_STATE:
-      return {
-        ...emptyState,
-      }
-
-    default:
-      return swapsState
-  }
-}
-
-export function setSwapsFromToken (token) {
-  return {
-    type: SET_FROM_TOKEN,
-    value: token,
-  }
-}
-
-export function setSwapToToken (token) {
-  return {
-    type: SET_TO_TOKEN,
-    value: token,
-  }
-}
-
-export function clearSwapsState () {
-  return {
-    type: CLEAR_SWAPS_STATE,
-  }
-}
-
-export function setApproveTxId (approveTxId) {
-  return {
-    type: SET_APPROVE_TX_ID,
-    value: approveTxId,
-  }
-}
-
-export function setFetchingQuotes (fetchingQuotes) {
-  return {
-    type: SET_FETCHING_QUOTES,
-    value: fetchingQuotes,
-  }
-}
-
-export function setBalanceError (balanceError) {
-  return {
-    type: SET_BALANCE_ERROR,
-    value: balanceError,
-  }
-}
-
-export function setTopAssets (topAssets) {
-  return {
-    type: SET_TOP_ASSETS,
-    value: topAssets,
-  }
-}
-
-export function setAggregatorMetadata (aggregatorMetadata) {
-  return {
-    type: SET_AGGREGATOR_METADATA,
-    value: aggregatorMetadata,
-  }
-}
-
-export function setSwapQuotesFetchStartTime (startTime) {
-  return {
-    type: SET_SWAP_QUOTES_FETCH_START_TIME,
-    value: startTime,
-  }
+export {
+  clearSwapsState,
+  setAggregatorMetadata,
+  setApproveTxId,
+  setBalanceError,
+  setFetchingQuotes,
+  setFromToken as setSwapsFromToken,
+  setQuotesFetchStartTime as setSwapQuotesFetchStartTime,
+  setTopAssets,
+  setToToken as setSwapToToken,
 }
 
 // Selectors
