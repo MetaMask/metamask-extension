@@ -85,8 +85,6 @@ export const getFetchingQuotes = (state) => state.swaps.fetchingQuotes
 
 export const getFromToken = (state) => state.swaps.fromToken
 
-export const getSwapsGasPrice = (state) => state.swaps.gasPrice
-
 export const getTopAssets = (state) => state.swaps.topAssets
 
 export const getToToken = (state) => state.swaps.toToken

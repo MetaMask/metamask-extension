@@ -9,12 +9,12 @@ import {
   getToToken,
   getQuotes,
   clearSwapsState,
-  getSwapsGasPrice,
   getTradeTxId,
   getApproveTxId,
   getFetchingQuotes,
   setBalanceError,
   getBalanceError,
+  getCustomSwapsGasPrice,
   setTopAssets,
   getTradeTxParams,
   getFetchParams,
@@ -71,7 +71,7 @@ export default function Swap () {
   const selectedAccount = useSelector(getSelectedAccount)
   const quotes = useSelector(getQuotes)
   const averageGasEstimate = useSelector(getAveragePriceEstimateInHexWEI)
-  const customConvertGasPrice = useSelector(getSwapsGasPrice)
+  const customConvertGasPrice = useSelector(getCustomSwapsGasPrice)
   const txList = useSelector(currentNetworkTxListSelector)
   const tradeTxId = useSelector(getTradeTxId)
   const approveTxId = useSelector(getApproveTxId)
