@@ -2244,9 +2244,9 @@ export function stopPollingForQuotes () {
   }
 }
 
-export function setBackgoundSwapRouteState (routeState) {
+export function setBackgroundSwapRouteState (routeState) {
   return async (dispatch) => {
-    await promisifiedBackground.setBackgoundSwapRouteState(routeState)
+    await promisifiedBackground.setBackgroundSwapRouteState(routeState)
     await forceUpdateMetamaskState(dispatch)
   }
 }
