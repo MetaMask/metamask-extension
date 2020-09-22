@@ -7,7 +7,7 @@ import {
   fetchAndSetQuotes,
   forceUpdateMetamaskState,
   resetSwapsPostFetchState,
-  setBackgoundSwapRouteState,
+  setBackgroundSwapRouteState,
   setInitialGasEstimate,
   setSwapsErrorKey,
   setShowAwaitingSwapScreen,
@@ -125,7 +125,7 @@ export const getMetaMaskFeeAmount = (state) => state.swaps.metamaskFeeAmount
 
 const getSwapsState = (state) => state.metamask.swapsState
 
-export const getBackgoundSwapRouteState = (state) => state.metamask.swapsState.routeState
+export const getBackgroundSwapRouteState = (state) => state.metamask.swapsState.routeState
 
 export const getCustomSwapsGas = (state) => state.metamask.swapsState.customMaxGas
 
@@ -264,7 +264,7 @@ export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage) =>
       decimals: toTokenDecimals,
       iconUrl: toTokenIconUrl,
     } = selectedToToken
-    await dispatch(setBackgoundSwapRouteState('loading'))
+    await dispatch(setBackgroundSwapRouteState('loading'))
     history.push(LOADING_QUOTES_ROUTE)
     dispatch(setFetchingQuotes(true))
 

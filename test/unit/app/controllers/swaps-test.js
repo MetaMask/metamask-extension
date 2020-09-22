@@ -132,10 +132,46 @@ describe.only('SwapsController', function () {
         swapsController.setSwapsTokens(tokens)
         assert.deepStrictEqual(swapsController.store.getState().swapsState.tokens, tokens)
       })
+      it('should set show awaiting swap screen', function () {
+        const awaiting = true
+        swapsController.setShowAwaitingSwapScreen(awaiting)
+        assert.strictEqual(swapsController.store.getState().swapsState.showAwaitingSwapScreen, awaiting)
+      })
+      it('should set trade tx id', function () {
+        const tradeTxId = 'test'
+        swapsController.setTradeTxId(tradeTxId)
+        assert.strictEqual(swapsController.store.getState().swapsState.tradeTxId, tradeTxId)
+      })
+      it('should set max mode', function () {
+        const maxMode = true
+        swapsController.setMaxMode(maxMode)
+        assert.strictEqual(swapsController.store.getState().swapsState.maxMode, maxMode)
+      })
+      it('should set swaps tx gas price', function () {
+        const gasPrice = 1
+        swapsController.setSwapsTxGasPrice(gasPrice)
+        assert.deepStrictEqual(swapsController.store.getState().swapsState.customGasPrice, gasPrice)
+      })
+      it('should set swaps tx gas limit', function () {
+        const gasLimit = '1'
+        swapsController.setSwapsTxGasLimit(gasLimit)
+        assert.deepStrictEqual(swapsController.store.getState().swapsState.customMaxGas, gasLimit)
+      })
+      it('should set background swap route state', function () {
+        const routeState = 'test'
+        swapsController.setBackgroundSwapRouteState(routeState)
+        assert.deepStrictEqual(swapsController.store.getState().swapsState.routeState, routeState)
+      })
       it('should set swaps error key', function () {
         const errorKey = 'test'
         swapsController.setSwapsErrorKey(errorKey)
         assert.deepStrictEqual(swapsController.store.getState().swapsState.errorKey, errorKey)
+      })
+      it('should set initial gas estimate', function () {})
+      it('should set custom approve tx data', function () {
+        const data = 'test'
+        swapsController.setCustomApproveTxData(data)
+        assert.deepStrictEqual(swapsController.store.getState().swapsState.customApproveTxData, data)
       })
     })
 
@@ -206,7 +242,6 @@ describe.only('SwapsController', function () {
         const { swapsState } = swapsController.store.getState()
         assert.deepStrictEqual(swapsState.quotes, {})
         assert.strictEqual(swapsState.quotesLastFetched, null)
-
       })
     })
   })

@@ -383,7 +383,7 @@ export default class SwapsController {
     })
   }
 
-  setBackgoundSwapRouteState (routeState) {
+  setBackgroundSwapRouteState (routeState) {
     const { swapsState } = this.store.getState()
     this.store.updateState({ swapsState: { ...swapsState, routeState } })
   }

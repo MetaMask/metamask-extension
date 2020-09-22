@@ -586,7 +586,7 @@ export default class MetamaskController extends EventEmitter {
       setSwapsTxGasLimit: nodeify(swapsController.setSwapsTxGasLimit, swapsController),
       safeRefetchQuotes: nodeify(swapsController.safeRefetchQuotes, swapsController),
       stopPollingForQuotes: nodeify(swapsController.stopPollingForQuotes, swapsController),
-      setBackgoundSwapRouteState: nodeify(swapsController.setBackgoundSwapRouteState, swapsController),
+      setBackgroundSwapRouteState: nodeify(swapsController.setBackgroundSwapRouteState, swapsController),
       resetPostFetchState: nodeify(swapsController.resetPostFetchState, swapsController),
       setSwapsErrorKey: nodeify(swapsController.setSwapsErrorKey, swapsController),
       setInitialGasEstimate: nodeify(swapsController.setInitialGasEstimate, swapsController),

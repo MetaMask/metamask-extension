@@ -19,7 +19,7 @@ import {
   getFetchParams,
   setAggregatorMetadata,
   getAggregatorMetadata,
-  getBackgoundSwapRouteState,
+  getBackgroundSwapRouteState,
   getSwapsErrorKey,
   setMetamaskFeeAmount,
 } from '../../ducks/swaps/swaps'
@@ -39,7 +39,7 @@ import {
 } from '../../helpers/constants/swaps'
 
 import { fetchBasicGasAndTimeEstimates, fetchGasEstimates, resetCustomData } from '../../ducks/gas/gas.duck'
-import { resetBackgroundSwapsState, setSwapsTokens, setSwapsTxGasPrice, setMaxMode, removeToken, setBackgoundSwapRouteState, setSwapsErrorKey } from '../../store/actions'
+import { resetBackgroundSwapsState, setSwapsTokens, setSwapsTxGasPrice, setMaxMode, removeToken, setBackgroundSwapRouteState, setSwapsErrorKey } from '../../store/actions'
 import { getAveragePriceEstimateInHexWEI, currentNetworkTxListSelector, getCustomNetworkId, getRpcPrefsForCurrentProvider } from '../../selectors'
 import { decGWEIToHexWEI, getValueFromWeiHex } from '../../helpers/utils/conversions.util'
 
@@ -63,8 +63,9 @@ export default function Swap () {
 
   const [inputValue, setInputValue] = useState(fetchParams?.value || '')
   const [maxSlippage, setMaxSlippage] = useState(fetchParams?.slippage || 2)
+
   const submittingSwap = useSelector(getSubmittingSwap)
-  const routeState = useSelector(getBackgoundSwapRouteState)
+  const routeState = useSelector(getBackgroundSwapRouteState)
   const tradeTxParams = useSelector(getTradeTxParams)
   const selectedAccount = useSelector(getSelectedAccount)
   const quotes = useSelector(getQuotes)
@@ -284,7 +285,7 @@ export default function Swap () {
                     <LoadingQuote
                       loadingComplete={!fetchingQuotes}
                       onDone={async () => {
-                        await dispatch(setBackgoundSwapRouteState(''))
+                        await dispatch(setBackgroundSwapRouteState(''))
 
                         if (swapsErrorKey === ERROR_FETCHING_QUOTES || swapsErrorKey === QUOTES_NOT_AVAILABLE_ERROR) {
                           dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR))
