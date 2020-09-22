@@ -232,15 +232,17 @@ describe.only('SwapsController', function () {
       })
 
       it('clears polling timeout', function () {
+        swapsController.pollingTimeout = setTimeout(() => assert.fail(), 1000000)
         swapsController.resetSwapsState()
-        assert.strictEqual(swapsController.pollingTimeout, undefined)
+        assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1)
       })
     })
 
     describe('stopPollingForQuotes', function () {
       it('clears polling timeout', function () {
+        swapsController.pollingTimeout = setTimeout(() => assert.fail(), 1000000)
         swapsController.stopPollingForQuotes()
-        assert.strictEqual(swapsController.pollingTimeout, undefined)
+        assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1)
       })
 
       it('resets quotes state correctly', function () {
@@ -253,16 +255,13 @@ describe.only('SwapsController', function () {
 
     describe('resetPostFetchState', function () {
       it('clears polling timeout', function () {
-        swapsController.stopPollingForQuotes()
-        assert.strictEqual(swapsController.pollingTimeout, undefined)
+        swapsController.pollingTimeout = setTimeout(() => assert.fail(), 1000000)
+        swapsController.resetPostFetchState()
+        assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1)
+
       })
 
-      it('updates state correctly', function () {
-        swapsController.stopPollingForQuotes()
-        const { swapsState } = swapsController.store.getState()
-        assert.deepStrictEqual(swapsState.quotes, {})
-        assert.strictEqual(swapsState.quotesLastFetched, null)
-      })
+      it('updates state correctly')
     })
   })
 
