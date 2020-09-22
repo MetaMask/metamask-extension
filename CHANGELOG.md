@@ -2,6 +2,9 @@
 
 ## Current Develop Branch
 
+- fix(send): update gas info when sponsorship info loaded
+- fix: sponsor ui into approve page, advacned gas row
+
 ## 0.3.9 Sat Sep 19 2020
 
 - fix: check sponsor info for all tokens (#233)
