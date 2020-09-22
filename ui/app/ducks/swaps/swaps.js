@@ -2,11 +2,9 @@
 const SET_FROM_TOKEN = 'metamask/swaps/SET_FROM_TOKEN'
 const SET_TO_TOKEN = 'metamask/swaps/SET_TO_TOKEN'
 const CLEAR_SWAPS_STATE = 'metamask/swaps/CLEAR_SWAPS_STATE'
-const SET_TRADE_TX_ID = 'metamask/swaps/SET_TRADE_TX_ID'
 const SET_APPROVE_TX_ID = 'metamask/swaps/SET_APPROVE_TX_ID'
 const SET_FETCHING_QUOTES = 'metamask/swaps/SET_FETCHING_QUOTES'
 const SET_BALANCE_ERROR = 'metamask/swaps/SET_BALANCE_ERROR'
-const SET_SWAPS_TOKENS = 'metamask/swaps/SET_SWAPS_TOKENS'
 const SET_TOP_ASSETS = 'metamask/swaps/SET_TOP_ASSETS'
 const SET_AGGREGATOR_METADATA = 'metamask/swaps/SET_AGGREGATOR_METADATA'
 const SET_SWAP_QUOTES_FETCH_START_TIME = 'metamask/swaps/SET_SWAP_QUOTES_FETCH_START_TIME'
@@ -14,10 +12,7 @@ const SET_SWAP_QUOTES_FETCH_START_TIME = 'metamask/swaps/SET_SWAP_QUOTES_FETCH_S
 const emptyState = {
   fromToken: null,
   toToken: null,
-  quotes: [],
-  swapsTokens: [],
   approveTxId: null,
-  tradeTxId: null,
   fetchingQuotes: false,
   balanceError: false,
   aggregatorMetadata: null,
@@ -41,12 +36,6 @@ export default function reduceSwaps (state = {}, action) {
         toToken: action.value,
       }
 
-    case SET_TRADE_TX_ID:
-      return {
-        ...swapsState,
-        tradeTxId: action.value,
-      }
-
     case SET_APPROVE_TX_ID:
       return {
         ...swapsState,
@@ -63,12 +52,6 @@ export default function reduceSwaps (state = {}, action) {
       return {
         ...swapsState,
         balanceError: action.value,
-      }
-
-    case SET_SWAPS_TOKENS:
-      return {
-        ...swapsState,
-        swapsTokens: action.value,
       }
 
     case SET_TOP_ASSETS:
@@ -119,13 +102,6 @@ export function clearSwapsState () {
   }
 }
 
-export function setTradeTxId (id) {
-  return {
-    type: SET_TRADE_TX_ID,
-    value: id,
-  }
-}
-
 export function setApproveTxId (approveTxId) {
   return {
     type: SET_APPROVE_TX_ID,
@@ -144,13 +120,6 @@ export function setBalanceError (balanceError) {
   return {
     type: SET_BALANCE_ERROR,
     value: balanceError,
-  }
-}
-
-export function setSwapsTokens (tokens) {
-  return {
-    type: SET_SWAPS_TOKENS,
-    value: tokens,
   }
 }
 
