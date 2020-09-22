@@ -58,6 +58,7 @@ const mockInfoRowProps = {
   newTotalEth: 'mockNewTotalEth',
   sendAmount: 'mockSendAmount',
   transactionFee: 'mockTransactionFee',
+  sponsoredFee: 'mockSponsoredFee',
 }
 
 const GP = GasModalPageContainer.prototype
@@ -205,12 +206,14 @@ describe('GasModalPageContainer Component', function () {
         'mockNewTotalEth',
         'mockSendAmount',
         'mockTransactionFee',
+        'mockSponsoredFee',
       ])
       assert.deepEqual(GP.renderInfoRows.getCall(1).args, [
         'mockNewTotalFiat',
         'mockNewTotalEth',
         'mockSendAmount',
         'mockTransactionFee',
+        'mockSponsoredFee',
       ])
     })
 
@@ -269,21 +272,26 @@ describe('GasModalPageContainer Component', function () {
             'mockNewTotalFiat',
             ' mockNewTotalEth',
             ' mockSendAmount',
-            ' mockTransactionFee'
+            ' mockTransactionFee',
+            ' mockSponsoredFee'
           )
       )
 
       assert(renderedInfoRowsContainer.childAt(0).hasClass(baseClassName))
 
       const renderedInfoRows = renderedInfoRowsContainer.childAt(0).children()
-      assert.equal(renderedInfoRows.length, 4)
+      assert.equal(renderedInfoRows.length, 5)
       assert(renderedInfoRows.at(0).hasClass(`${baseClassName}__send-info`))
       assert(
         renderedInfoRows.at(1).hasClass(`${baseClassName}__transaction-info`)
       )
-      assert(renderedInfoRows.at(2).hasClass(`${baseClassName}__total-info`))
       assert(
-        renderedInfoRows.at(3).hasClass(`${baseClassName}__fiat-total-info`)
+        renderedInfoRows.at(2).hasClass(`${baseClassName}__transaction-info`)
+      )
+      assert(renderedInfoRows.at(2).hasClass(`${baseClassName}__sponsor-info`))
+      assert(renderedInfoRows.at(3).hasClass(`${baseClassName}__total-info`))
+      assert(
+        renderedInfoRows.at(4).hasClass(`${baseClassName}__fiat-total-info`)
       )
 
       assert.equal(renderedInfoRows.at(0).text(), 'sendAmount mockSendAmount')
@@ -291,8 +299,12 @@ describe('GasModalPageContainer Component', function () {
         renderedInfoRows.at(1).text(),
         'transactionFee mockTransactionFee'
       )
-      assert.equal(renderedInfoRows.at(2).text(), 'newTotal mockNewTotalEth')
-      assert.equal(renderedInfoRows.at(3).text(), 'mockNewTotalFiat')
+      assert.equal(
+        renderedInfoRows.at(2).text(),
+        'sponsoredFee mockSponsoredFee'
+      )
+      assert.equal(renderedInfoRows.at(3).text(), 'newTotal mockNewTotalEth')
+      assert.equal(renderedInfoRows.at(4).text(), 'mockNewTotalFiat')
     })
   })
 })

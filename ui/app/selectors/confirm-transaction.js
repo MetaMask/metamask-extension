@@ -295,48 +295,107 @@ export const transactionFeeSelector = function (state, txData) {
   const hexTransactionCollateral = getHexStorageTotal({
     storageLimit,
   })
-
   const hexTransactionFee = getHexGasTotal({
     gasLimit,
     gasPrice,
   })
+  const hexTransactionTotal = sumHexes(
+    value,
+    hexTransactionFee,
+    hexTransactionCollateral
+  )
 
-  const hexTransactionFeeCountSponsor = willUserPayTxFee ? hexTransactionFee : '0x0'
+  const hexSponsoredTransactionFee = willUserPayTxFee
+    ? '0x0'
+    : hexTransactionFee
 
-  const fiatTransactionFee = getTransactionFee({
-    value: hexTransactionFeeCountSponsor,
+  const hexSponsoredTransactionCollateral = willUserPayCollateral
+    ? '0x0'
+    : hexTransactionCollateral
+
+  const hexTransactionFeeCountSponsored = willUserPayTxFee
+    ? hexTransactionFee
+    : '0x0'
+  const hexTransactionCollateralCountSponsored = willUserPayCollateral
+    ? hexTransactionCollateral
+    : '0x0'
+
+  const fiatTransactionFeeCountSponsored = getTransactionFee({
+    value: hexTransactionFeeCountSponsored,
     fromCurrency: nativeCurrency,
     toCurrency: currentCurrency,
     numberOfDecimals: 2,
     conversionRate,
   })
-  const ethTransactionFee = getTransactionFee({
-    value: hexTransactionFeeCountSponsor,
+
+  const fiatTransactionCollateralCountSponsored = getTransactionFee({
+    value: hexTransactionCollateralCountSponsored,
+    fromCurrency: nativeCurrency,
+    toCurrency: currentCurrency,
+    numberOfDecimals: 2,
+    conversionRate,
+  })
+  const fiatTransactionTotal = addFiat(
+    fiatTransactionFeeCountSponsored,
+    fiatTransactionCollateralCountSponsored,
+    fiatTransactionAmount
+  )
+
+  const ethTransactionFeeCountSponsored = getTransactionFee({
+    value: hexTransactionFeeCountSponsored,
     fromCurrency: nativeCurrency,
     toCurrency: nativeCurrency,
     numberOfDecimals: 6,
     conversionRate,
   })
-
-  const fiatTransactionTotal = addFiat(
-    fiatTransactionFee,
-    fiatTransactionAmount
+  const ethTransactionCollateralCountSponsored = getTransactionFee({
+    value: hexTransactionCollateralCountSponsored,
+    fromCurrency: nativeCurrency,
+    toCurrency: nativeCurrency,
+    numberOfDecimals: 6,
+    conversionRate,
+  })
+  const ethTransactionTotal = addEth(
+    ethTransactionFeeCountSponsored,
+    ethTransactionCollateralCountSponsored,
+    ethTransactionAmount
   )
-  const ethTransactionTotal = addEth(ethTransactionFee, ethTransactionAmount)
-  const hexTransactionTotal = sumHexes(value, hexTransactionFeeCountSponsor)
+
+  const hexTransactionTotalCountSponsored = sumHexes(
+    value,
+    hexTransactionFeeCountSponsored,
+    hexTransactionCollateralCountSponsored
+  )
 
   return {
-    hexTransactionAmount: value,
     fiatTransactionAmount,
-    ethTransactionAmount,
-    hexTransactionFee: hexTransactionFeeCountSponsor,
-    hexTransactionCollateral: willUserPayCollateral ? hexTransactionCollateral : '0x0',
-    hexSponsoredTransactionFee: willUserPayTxFee ? '0x0' : hexTransactionFee,
-    hexSponsoredTransactionCollateral: willUserPayCollateral ? '0x0' : hexTransactionCollateral,
-    fiatTransactionFee,
-    ethTransactionFee,
+    fiatTransactionFeeCountSponsored,
+    fiatTransactionCollateralCountSponsored,
     fiatTransactionTotal,
-    ethTransactionTotal,
+
+    hexTransactionAmount: value,
+    hexTransactionFee,
+    hexTransactionCollateral,
     hexTransactionTotal,
+
+    hexSponsoredTransactionFee,
+    hexSponsoredTransactionCollateral,
+    hexSponsoredTransactionFeeAndCollateral: sumHexes(
+      hexSponsoredTransactionFee,
+      hexSponsoredTransactionCollateral
+    ),
+
+    hexTransactionFeeCountSponsored,
+    hexTransactionCollateralCountSponsored,
+    hexTransactionFeeAndCollateralCountSponsored: sumHexes(
+      hexTransactionFeeCountSponsored,
+      hexTransactionCollateralCountSponsored
+    ),
+    hexTransactionTotalCountSponsored,
+
+    ethTransactionAmount,
+    ethTransactionFeeCountSponsored,
+    ethTransactionCollateralCountSponsored,
+    ethTransactionTotal,
   }
 }

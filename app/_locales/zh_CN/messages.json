@@ -1166,6 +1166,9 @@
   "speedUpTransaction": {
     "message": "加速该交易操作"
   },
+  "sponsoredFee": {
+    "message": "代付费用"
+  },
   "switchNetworks": {
     "message": "切换网络"
   },

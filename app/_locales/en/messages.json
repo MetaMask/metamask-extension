@@ -214,7 +214,7 @@
     "message": "Your Browser is not supported..."
   },
   "builtInCalifornia": {
-    "message": "ConfluxPortal a fork of Metamask which is designed and built in California. It's alterd to use on Conflux network in Beijing."
+    "message": "ConfluxPortal a fork of Metamask which is designed and built in California. It's altered to use on Conflux network in Beijing."
   },
   "buyWithWyre": {
     "message": "We don't support Wyre"
@@ -1340,6 +1340,9 @@
   },
   "spendLimitInvalid": {
     "message": "Spend limit invalid; must be a positive number"
+  },
+  "sponsoredFee": {
+    "message": "Sponsored Fee"
   },
   "switchNetworks": {
     "message": "Switch Networks"

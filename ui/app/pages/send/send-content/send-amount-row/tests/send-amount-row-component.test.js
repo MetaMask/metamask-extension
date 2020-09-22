@@ -179,7 +179,7 @@ function shallowRenderSendAmountRow () {
       balance="mockBalance"
       conversionRate={7}
       convertedCurrency="mockConvertedCurrency"
-      gasTotal="mockGasTotal"
+      gasTotalCountSponsorshipInfo="mockGasTotal"
       inError={false}
       primaryCurrency="mockPrimaryCurrency"
       selectedToken={{ address: 'mockTokenAddress' }}
