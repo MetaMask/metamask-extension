@@ -12,6 +12,7 @@ import {
 
 import {
   getApproveTxParams,
+  getDestinationTokenInfo,
   navigateBackToBuildQuote,
   setApproveTxId,
   getFetchParams,
@@ -20,7 +21,6 @@ import {
   getSwapsTokens,
   getSelectedQuote,
   getMaxMode,
-  setBalanceError,
   setSwapQuotesFetchStartTime,
   getSwapsTradeTxParams,
   getSwapsErrorKey,
@@ -39,7 +39,6 @@ import {
   updateTransaction,
   addToken,
   fetchAndSetQuotes,
-  resetBackgroundSwapsState,
   setShowAwaitingSwapScreen,
   stopPollingForQuotes,
   setBackgoundSwapRouteState,
@@ -73,6 +72,7 @@ export function useSwapSubmitFunction ({
   const isSwapsErrorRoute = pathname === SWAPS_ERROR_ROUTE
   const isLoadingQuoteRoute = pathname === LOADING_QUOTES_ROUTE
 
+  const destinationToken = useSelector(getDestinationTokenInfo)
   const tradeTxParams = useSelector(getSwapsTradeTxParams)
   const approveTxParams = useSelector(getApproveTxParams)
   const fetchParams = useSelector(getFetchParams)
@@ -85,19 +85,12 @@ export function useSwapSubmitFunction ({
 
   const swapsTokens = useSelector(getSwapsTokens)
 
-  const goHome = () => {
-    dispatch(setBalanceError(false))
-    dispatch(resetBackgroundSwapsState())
-    dispatch(setSubmittingSwap(false))
-
-    history.push(DEFAULT_ROUTE)
-  }
-  const goToToken = () => {
-    dispatch(setBalanceError(false))
-    dispatch(resetBackgroundSwapsState())
-    dispatch(setSubmittingSwap(false))
-
-    history.push(`${ASSET_ROUTE}/${selectedToToken.address}`)
+  const goToOverviewPage = () => {
+    if (destinationToken.symbol === 'ETH') {
+      history.push(DEFAULT_ROUTE)
+      return
+    }
+    history.push(`${ASSET_ROUTE}/${destinationToken.address}`)
   }
 
   const signAndSendTransactions = async () => {
@@ -256,7 +249,7 @@ export function useSwapSubmitFunction ({
     return signAndSendTransactions
   }
   if ((isViewQuoteRoute && balanceError) || isAwaitingSwapRoute) {
-    return selectedToToken.symbol === 'ETH' ? goHome : goToToken
+    return goToOverviewPage
   }
   if (isLoadingQuoteRoute) {
     return async () => {
