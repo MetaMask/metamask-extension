@@ -144,55 +144,65 @@ export function setSwapQuotesFetchStartTime (startTime) {
   }
 }
 
-const getSwapsState = (state) => state.metamask.swapsState
-
-export const getFromToken = (state) => state.swaps.fromToken
-
-export const getToToken = (state) => state.swaps.toToken
-
-export const getSwapsWelcomeMessageSeenStatus = (state) => state.metamask.swapsWelcomeMessageHasBeenShown
-
-export const getQuotes = (state) => state.metamask.swapsState.quotes
-
-export const getFetchParams = (state) => state.metamask.swapsState.fetchParams
-
-export const getSwapsGasPrice = (state) => state.swaps.gasPrice
-
-export const getTradeTxId = (state) => state.metamask.swapsState.tradeTxId
-
-export const getApproveTxId = (state) => state.swaps.approveTxId
-
-export const getSelectedQuote = (state) => {
-  const { selectedAggId, quotes } = getSwapsState(state)
-  return quotes[selectedAggId]
-}
-
-export const getTopQuote = (state) => {
-  const { topAggId, quotes } = getSwapsState(state)
-  return quotes[topAggId]
-}
-
-export const getUsedQuote = (state) => getSelectedQuote(state) || getTopQuote(state)
-
-export const getFetchingQuotes = (state) => state.swaps.fetchingQuotes
-
-export const getBalanceError = (state) => state.swaps.balanceError
-
-export const getSwapsTokens = (state) => state.metamask.swapsState.tokens
-
-export const getTopAssets = (state) => state.swaps.topAssets
+// Selectors
 
 export const getAggregatorMetadata = (state) => state.swaps.aggregatorMetadata
 
-export const getMaxMode = (state) => state.metamask.swapsState.maxMode
+export const getApproveTxId = (state) => state.swaps.approveTxId
 
-export const getQuotesLastFetched = (state) => state.metamask.swapsState.quotesLastFetched
+export const getBalanceError = (state) => state.swaps.balanceError
+
+export const getFetchingQuotes = (state) => state.swaps.fetchingQuotes
+
+export const getFromToken = (state) => state.swaps.fromToken
+
+export const getSwapsGasPrice = (state) => state.swaps.gasPrice
+
+export const getTopAssets = (state) => state.swaps.topAssets
+
+export const getToToken = (state) => state.swaps.toToken
+
+// Background selectors
+
+const getSwapsState = (state) => state.metamask.swapsState
 
 export const getBackgoundSwapRouteState = (state) => state.metamask.swapsState.routeState
 
 export const getCustomSwapsGas = (state) => state.metamask.swapsState.customMaxGas
 
 export const getCustomSwapsGasPrice = (state) => state.metamask.swapsState.customGasPrice
+
+export const getFetchParams = (state) => state.metamask.swapsState.fetchParams
+
+export const getMaxMode = (state) => state.metamask.swapsState.maxMode
+
+export const getQuotes = (state) => state.metamask.swapsState.quotes
+
+export const getQuotesLastFetched = (state) => state.metamask.swapsState.quotesLastFetched
+
+export const getSelectedQuote = (state) => {
+  const { selectedAggId, quotes } = getSwapsState(state)
+  return quotes[selectedAggId]
+}
+
+export const getSwapsErrorKey = (state) => getSwapsState(state)?.errorKey
+
+export const getSwapsTokens = (state) => state.metamask.swapsState.tokens
+
+export const getSwapsWelcomeMessageSeenStatus = (state) => state.metamask.swapsWelcomeMessageHasBeenShown
+
+export const getTopQuote = (state) => {
+  const { topAggId, quotes } = getSwapsState(state)
+  return quotes[topAggId]
+}
+
+export const getTradeTxId = (state) => state.metamask.swapsState.tradeTxId
+
+export const getTradeTxParams = (state) => state.metamask.swapsState.tradeTxParams
+
+export const getUsedQuote = (state) => getSelectedQuote(state) || getTopQuote(state)
+
+// Compound selectors
 
 export const getSwapsTradeTxParams = (state) => {
   const { selectedAggId, topAggId, quotes } = getSwapsState(state)
@@ -205,10 +215,6 @@ export const getSwapsTradeTxParams = (state) => {
   const gasPrice = getCustomSwapsGasPrice(state) || trade.gasPrice
   return { ...trade, gas, gasPrice }
 }
-
-export const getSwapsErrorKey = (state) => getSwapsState(state)?.errorKey
-
-export const getTradeTxParams = (state) => state.metamask.swapsState.tradeTxParams
 
 export const getApproveTxParams = (state) => {
   const { approvalNeeded } = getSelectedQuote(state) || getTopQuote(state) || {}
