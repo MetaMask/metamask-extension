@@ -3,6 +3,7 @@ import sinon from 'sinon'
 import proxyquire from 'proxyquire'
 
 import { ethers } from 'ethers'
+import BigNumber from 'bignumber.js'
 import ObservableStore from 'obs-store'
 import { createTestProviderTools } from '../../../stub/provider'
 // import { fetchTradesInfo } from '../../../../ui/app/pages/swaps/swaps.util'
@@ -167,7 +168,26 @@ describe.only('SwapsController', function () {
         swapsController.setSwapsErrorKey(errorKey)
         assert.deepStrictEqual(swapsController.store.getState().swapsState.errorKey, errorKey)
       })
-      it('should set initial gas estimate', function () {})
+      it('should set initial gas estimate', async function () {
+        const initialAggId = TEST_AGG_ID
+        const baseGasEstimate = 10
+        const {
+          maxGas,
+          estimatedRefund,
+        } = MOCK_QUOTES[TEST_AGG_ID]
+
+        const { swapsState } = swapsController.store.getState()
+        // Set mock quotes in order to have data for the test agg
+        swapsController.store.updateState({ swapsState: { ...swapsState, quotes: MOCK_QUOTES } })
+
+        await swapsController.setInitialGasEstimate(initialAggId, baseGasEstimate)
+
+        const { gasLimit: bufferedGasLimit } = await swapsController.getBufferedGasLimit()
+        const { gasEstimate, gasEstimateWithRefund } = swapsController.store.getState().swapsState.quotes[initialAggId]
+        assert.strictEqual(gasEstimate, bufferedGasLimit)
+        assert.strictEqual(gasEstimateWithRefund, new BigNumber(maxGas, 10).minus(estimatedRefund, 10).toString(16))
+
+      })
       it('should set custom approve tx data', function () {
         const data = 'test'
         swapsController.setCustomApproveTxData(data)
