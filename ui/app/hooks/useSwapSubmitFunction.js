@@ -23,6 +23,7 @@ import {
   setSwapQuotesFetchStartTime,
   getSwapsTradeTxParams,
   getSwapsErrorKey,
+  setSubmittingSwap,
   getTopQuote,
 } from '../ducks/swaps/swaps'
 import {
@@ -59,7 +60,6 @@ export function useSwapSubmitFunction ({
   selectedToToken,
   balanceError,
   ethBalance,
-  setSubmittingSwap,
   networkId,
   isCustomNetwork,
   isRetry,
@@ -70,7 +70,7 @@ export function useSwapSubmitFunction ({
   const retry = () => {
     dispatch(resetSwapsPostFetchState())
     dispatch(setBalanceError(false))
-    setSubmittingSwap(false)
+    dispatch(setSubmittingSwap(false))
 
     history.push(BUILD_QUOTE_ROUTE)
   }
@@ -95,14 +95,14 @@ export function useSwapSubmitFunction ({
   const goHome = () => {
     dispatch(setBalanceError(false))
     dispatch(resetBackgroundSwapsState())
-    setSubmittingSwap(false)
+    dispatch(setSubmittingSwap(false))
 
     history.push(DEFAULT_ROUTE)
   }
   const goToToken = () => {
     dispatch(setBalanceError(false))
     dispatch(resetBackgroundSwapsState())
-    setSubmittingSwap(false)
+    dispatch(setSubmittingSwap(false))
 
     history.push(`${ASSET_ROUTE}/${selectedToToken.address}`)
   }
@@ -117,7 +117,7 @@ export function useSwapSubmitFunction ({
 
     dispatch(stopPollingForQuotes())
 
-    setSubmittingSwap(true)
+    dispatch(setSubmittingSwap(true))
     let usedTradeTxParams = usedQuote.trade
 
     const estimatedGasLimitWithMultiplier = (new BigNumber(usedQuote?.gasEstimate || decimalToHex(usedQuote?.averageGas || 0), 16).times(1.4, 10)).round(0).toString(16)
@@ -172,7 +172,7 @@ export function useSwapSubmitFunction ({
 
     await forceUpdateMetamaskState(dispatch)
     dispatch(setShowAwaitingSwapScreen(true))
-    setSubmittingSwap(false)
+    dispatch(setSubmittingSwap(false))
   }
 
   const fetchQuotesAndSetQuoteState = async () => {

@@ -15,6 +15,7 @@ import {
   setBalanceError,
   getBalanceError,
   getCustomSwapsGasPrice,
+  getSubmittingSwap,
   setTopAssets,
   getTradeTxParams,
   getFetchParams,
@@ -64,8 +65,7 @@ export default function Swap () {
 
   const [inputValue, setInputValue] = useState(fetchParams?.value || null)
   const [maxSlippage, setMaxSlippage] = useState(fetchParams?.slippage || 2)
-  const [submittingSwap, setSubmittingSwap] = useState(false)
-
+  const submittingSwap = useSelector(getSubmittingSwap)
   const routeState = useSelector(getBackgoundSwapRouteState)
   const tradeTxParams = useSelector(getTradeTxParams)
   const selectedAccount = useSelector(getSelectedAccount)
@@ -187,11 +187,10 @@ export default function Swap () {
     selectedToToken,
     balanceError,
     ethBalance,
-    setSubmittingSwap,
     networkId,
     isCustomNetwork,
   })
-  const onRetry = useSwapSubmitFunction({ isRetry: true, setSubmittingSwap })
+  const onRetry = useSwapSubmitFunction({ isRetry: true })
 
   if (swapsErrorKey && !isSwapsErrorRoute) {
     history.push(SWAPS_ERROR_ROUTE)
