@@ -36,6 +36,7 @@ export default class SendTransactionScreen extends Component {
     gasPrice: PropTypes.string,
     gasTotal: PropTypes.string,
     storageTotal: PropTypes.string,
+    sponsorshipInfoIsLoading: PropTypes.bool,
     hasHexData: PropTypes.bool,
     history: PropTypes.object,
     network: PropTypes.string,
@@ -100,6 +101,7 @@ export default class SendTransactionScreen extends Component {
       qrCodeData,
       qrCodeDetected,
       gasTotalCountSponsorshipInfo,
+      sponsorshipInfoIsLoading,
     } = this.props
 
     let updateGas = false
@@ -107,6 +109,7 @@ export default class SendTransactionScreen extends Component {
       from: { balance: prevBalance },
       gasTotal: prevGasTotal,
       storageTotal: prevStorageTotal,
+      sponsorshipInfoIsLoading: prevSponsorshipInfoIsLoading,
       tokenBalance: prevTokenBalance,
       network: prevNetwork,
       selectedToken: prevSelectedToken,
@@ -126,6 +129,8 @@ export default class SendTransactionScreen extends Component {
       prevTokenBalance,
       selectedToken,
       tokenBalance,
+      sponsorshipInfoIsLoading,
+      prevSponsorshipInfoIsLoading,
     })
 
     if (amountErrorRequiresUpdate) {
@@ -139,6 +144,7 @@ export default class SendTransactionScreen extends Component {
         selectedToken,
         tokenBalance,
       })
+      console.log('----', gasTotalCountSponsorshipInfo, amountErrorObject)
       const gasAndCollateralFeeErrorObject = selectedToken
         ? getGasFeeErrorObject({
           amountConversionRate,
@@ -149,7 +155,9 @@ export default class SendTransactionScreen extends Component {
           selectedToken,
         })
         : { gasAndCollateralFee: null }
-      updateSendErrors(Object.assign(amountErrorObject, gasAndCollateralFeeErrorObject))
+      updateSendErrors(
+        Object.assign(amountErrorObject, gasAndCollateralFeeErrorObject)
+      )
     }
 
     if (!uninitialized) {
@@ -232,7 +240,13 @@ export default class SendTransactionScreen extends Component {
   }
 
   validate (query) {
-    const { hasHexData, tokens, selectedToken, network, trustedTokenMap } = this.props
+    const {
+      hasHexData,
+      tokens,
+      selectedToken,
+      network,
+      trustedTokenMap,
+    } = this.props
 
     if (!query) {
       return this.setState({ toError: '', toWarning: '' })

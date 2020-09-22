@@ -8,6 +8,7 @@ import {
   getSendAmount,
   getSendFromBalance,
   getTokenBalance,
+  getSponsorshipInfo,
 } from '../../send.selectors'
 import { sendAmountIsInError } from './send-amount-row.selectors'
 import { getAmountErrorObject, getGasFeeErrorObject } from '../../send.utils'
@@ -18,12 +19,17 @@ import SendAmountRow from './send-amount-row.component'
 export default connect(mapStateToProps, mapDispatchToProps)(SendAmountRow)
 
 function mapStateToProps (state) {
+  const sponsorshipInfo = getSponsorshipInfo(state) || {
+    willUserPayTxFee: true,
+  }
+  const { willUserPayTxFee } = sponsorshipInfo
+  const gasTotal = getGasTotal(state)
   return {
+    gasTotalCountSponsorshipInfo: willUserPayTxFee ? gasTotal : '0',
     amount: getSendAmount(state),
     amountConversionRate: getAmountConversionRate(state),
     balance: getSendFromBalance(state),
     conversionRate: getConversionRate(state),
-    gasTotal: getGasTotal(state),
     inError: sendAmountIsInError(state),
     primaryCurrency: getPrimaryCurrency(state),
     selectedToken: getSelectedToken(state),

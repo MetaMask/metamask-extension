@@ -27,7 +27,11 @@ import {
   getQrCodeData,
   getSponsorshipInfo,
 } from './send.selectors'
-import { getSelectedAddress, getAddressBook } from '../../selectors/selectors'
+import {
+  getSelectedAddress,
+  getAddressBook,
+  getSponsorshipInfoIsLoading,
+} from '../../selectors/selectors'
 import { getTokens } from './send-content/add-recipient/add-recipient.selectors'
 import {
   updateSendTo,
@@ -67,7 +71,7 @@ function mapStateToProps (state) {
     storageLimit: getStorageLimit(state),
     gasLimit: getGasLimit(state),
     gasPrice: getGasPrice(state),
-    gasTotal,
+    sponsorshipInfoIsLoading: getSponsorshipInfoIsLoading(state),
     storageTotal: getStorageTotal(state),
     gasAndCollateralTotal: getGasAndCollateralTotal(state),
     network: getCurrentNetwork(state),

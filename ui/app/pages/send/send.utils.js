@@ -140,6 +140,16 @@ function getAmountErrorObject ({
   selectedToken,
   tokenBalance,
 }) {
+  console.log('getAmountErrorObject', {
+    amount,
+    amountConversionRate,
+    balance,
+    conversionRate,
+    gasTotal,
+    primaryCurrency,
+    selectedToken,
+    tokenBalance,
+  })
   let insufficientFunds = false
   if (gasTotal && conversionRate && !selectedToken) {
     insufficientFunds = !isBalanceSufficient({
@@ -222,17 +232,22 @@ function doesAmountErrorRequireUpdate ({
   prevTokenBalance,
   selectedToken,
   tokenBalance,
+  sponsorshipInfoIsLoading,
+  prevSponsorshipInfoIsLoading,
 }) {
   const balanceHasChanged = balance !== prevBalance
   const gasTotalHasChange = gasTotal !== prevGasTotal
   const storageTotalHasChange = storageTotal !== prevStorageTotal
   const tokenBalanceHasChanged =
     selectedToken && tokenBalance !== prevTokenBalance
+  const sponsorshipInfoIsLoadingChanged =
+    sponsorshipInfoIsLoading !== prevSponsorshipInfoIsLoading
   const amountErrorRequiresUpdate =
     balanceHasChanged ||
     gasTotalHasChange ||
     tokenBalanceHasChanged ||
-    storageTotalHasChange
+    storageTotalHasChange ||
+    sponsorshipInfoIsLoadingChanged
 
   return amountErrorRequiresUpdate
 }
