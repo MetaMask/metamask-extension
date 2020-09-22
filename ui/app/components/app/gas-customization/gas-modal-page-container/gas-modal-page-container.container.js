@@ -81,6 +81,8 @@ const mapStateToProps = (state, ownProps) => {
     ({ id }) => id === (transaction.id || txData.id)
   )
 
+  const { willUserPayTxFee, willUserPayCollateral } = txData
+
   const buttonDataLoading = getBasicGasEstimateLoadingStatus(state)
   const gasEstimatesLoading = getGasEstimatesLoadingStatus(state)
 
@@ -103,6 +105,11 @@ const mapStateToProps = (state, ownProps) => {
     customModalGasPriceInHex,
     customModalStorageLimitInHex
   )
+  const customGasTotalCountSponsoredFee = calcGasTotal(
+    willUserPayTxFee ? customModalGasLimitInHex : '0x0',
+    customModalGasPriceInHex,
+    willUserPayCollateral ? customModalStorageLimitInHex : '0x0'
+  )
 
   const gasButtonInfo = getRenderableBasicEstimateData(
     state,
@@ -115,7 +122,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const newTotalFiat = addHexWEIsToRenderableFiat(
     value,
-    customGasTotal,
+    customGasTotalCountSponsoredFee,
     currentCurrency,
     conversionRate
   )
@@ -136,17 +143,23 @@ const mapStateToProps = (state, ownProps) => {
 
   const newTotalEth = maxModeOn
     ? addHexWEIsToRenderableEth(balance, '0x0')
-    : addHexWEIsToRenderableEth(value, customGasTotal)
+    : addHexWEIsToRenderableEth(value, customGasTotalCountSponsoredFee)
 
   const sendAmount = maxModeOn
     ? subtractHexWEIsFromRenderableEth(balance, customGasTotal)
     : addHexWEIsToRenderableEth(value, '0x0')
 
+  const sponsoredFeeHex = calcGasTotal(
+    !willUserPayTxFee ? customModalGasLimitInHex : '0x0',
+    customModalGasPriceInHex,
+    !willUserPayCollateral ? customModalStorageLimitInHex : '0x0'
+  )
+
   const insufficientBalance = maxModeOn
     ? false
     : !isBalanceSufficient({
       amount: value,
-      gasTotal: customGasTotal,
+      gasTotal: customGasTotalCountSponsoredFee,
       balance,
       conversionRate,
     })
@@ -160,7 +173,9 @@ const mapStateToProps = (state, ownProps) => {
     customModalStorageLimitInHex,
     customGasPrice,
     customGasLimit: calcCustomGasOrStorageLimit(customModalGasLimitInHex),
-    customStorageLimit: calcCustomGasOrStorageLimit(customModalStorageLimitInHex),
+    customStorageLimit: calcCustomGasOrStorageLimit(
+      customModalStorageLimitInHex
+    ),
     customGasTotal,
     newTotalFiat,
     currentTimeEstimate: getRenderableTimeEstimate(
@@ -193,17 +208,12 @@ const mapStateToProps = (state, ownProps) => {
         currentCurrency,
         conversionRate
       ),
-      originalTotalEth: addHexWEIsToRenderableEth(
-        value,
-        customGasTotal
-      ),
+      originalTotalEth: addHexWEIsToRenderableEth(value, customGasTotal),
       newTotalFiat: showFiat ? newTotalFiat : '',
       newTotalEth,
-      transactionFee: addHexWEIsToRenderableEth(
-        '0x0',
-        customGasTotal
-      ),
+      transactionFee: addHexWEIsToRenderableEth('0x0', customGasTotal),
       sendAmount,
+      sponsoredFee: addHexWEIsToRenderableEth('0x0', sponsoredFeeHex),
     },
     transaction: txData || transaction,
     isSpeedUp: transaction.status === 'submitted',

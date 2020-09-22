@@ -15,7 +15,7 @@ export default class SendAmountRow extends Component {
     ]),
     balance: PropTypes.string,
     conversionRate: PropTypes.number,
-    gasTotal: PropTypes.string,
+    gasTotalCountSponsorshipInfo: PropTypes.string,
     inError: PropTypes.bool,
     primaryCurrency: PropTypes.string,
     selectedToken: PropTypes.object,
@@ -38,7 +38,7 @@ export default class SendAmountRow extends Component {
       amountConversionRate,
       balance,
       conversionRate,
-      gasTotal,
+      gasTotalCountSponsorshipInfo: gasTotal,
       primaryCurrency,
       selectedToken,
       tokenBalance,
@@ -105,7 +105,7 @@ export default class SendAmountRow extends Component {
   }
 
   render () {
-    const { gasTotal, inError } = this.props
+    const { gasTotalCountSponsorshipInfo: gasTotal, inError } = this.props
 
     return (
       <SendRowWrapper

@@ -64,6 +64,7 @@ describe('Send Component', function () {
         gasTotal="mockGasTotal"
         gasTotalCountSponsorshipInfo="mockGasTotalCountSponsorshipInfo"
         storageTotal="mockStorageTotal"
+        sponsorshipInfoIsLoading="mockSponsorshipInfoIsLoading"
         history={{ mockProp: 'history-abc' }}
         network="3"
         primaryCurrency="mockPrimaryCurrency"
@@ -168,6 +169,8 @@ describe('Send Component', function () {
             symbol: 'TST',
           },
           tokenBalance: 'mockTokenBalance',
+          sponsorshipInfoIsLoading: 'mockSponsorshipInfoIsLoading',
+          prevSponsorshipInfoIsLoading: undefined,
         }
       )
     })
@@ -216,10 +219,7 @@ describe('Send Component', function () {
           balance: 'balanceChanged',
         },
       })
-      assert.equal(
-        utilsMethodStubs.getGasFeeErrorObject.callCount,
-        1
-      )
+      assert.equal(utilsMethodStubs.getGasFeeErrorObject.callCount, 1)
       assert.deepEqual(
         utilsMethodStubs.getGasFeeErrorObject.getCall(0).args[0],
         {
@@ -242,10 +242,7 @@ describe('Send Component', function () {
       wrapper.instance().componentDidUpdate({
         from: { address: 'mockAddress', balance: 'mockBalance' },
       })
-      assert.equal(
-        utilsMethodStubs.getGasFeeErrorObject.callCount,
-        0
-      )
+      assert.equal(utilsMethodStubs.getGasFeeErrorObject.callCount, 0)
     })
 
     it('should not call getGasFeeErrorObject if doesAmountErrorRequireUpdate returns true but selectedToken is falsy', function () {
@@ -256,10 +253,7 @@ describe('Send Component', function () {
           balance: 'balanceChanged',
         },
       })
-      assert.equal(
-        utilsMethodStubs.getGasFeeErrorObject.callCount,
-        0
-      )
+      assert.equal(utilsMethodStubs.getGasFeeErrorObject.callCount, 0)
     })
 
     it('should call updateSendErrors with the expected params if selectedToken is falsy', function () {

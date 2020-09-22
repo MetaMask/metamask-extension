@@ -1547,7 +1547,7 @@ describe('MetaMask', function () {
           '.confirm-approve-content__transaction-details-content__secondary-fee'
         )
       )
-      assert.equal(await gasAndCollateralFeeInEth.getText(), '0.0006 CFX')
+      assert.equal(await gasAndCollateralFeeInEth.getText(), '0.0631 CFX')
     })
 
     it('edits the permission', async function () {
