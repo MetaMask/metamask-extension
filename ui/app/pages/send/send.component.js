@@ -144,7 +144,6 @@ export default class SendTransactionScreen extends Component {
         selectedToken,
         tokenBalance,
       })
-      console.log('----', gasTotalCountSponsorshipInfo, amountErrorObject)
       const gasAndCollateralFeeErrorObject = selectedToken
         ? getGasFeeErrorObject({
           amountConversionRate,

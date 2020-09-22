@@ -21,10 +21,7 @@ import {
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
 } from '../../helpers/constants/error-keys'
 import { getHexGasAndCollateralTotal } from '../../helpers/utils/confirm-tx.util'
-import {
-  isBalanceSufficient,
-  calcGasTotal,
-} from '../send/send.utils'
+import { isBalanceSufficient, calcGasTotal } from '../send/send.utils'
 import { conversionGreaterThan } from '../../helpers/utils/conversion-util'
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants'
 import {
@@ -122,9 +119,14 @@ const mapStateToProps = (state, ownProps) => {
   const {
     hexTransactionAmount,
     hexTransactionFee,
+    hexTransactionCollateral,
     hexTransactionTotal,
+
     hexSponsoredTransactionFee,
     hexSponsoredTransactionCollateral,
+    hexSponsoredTransactionFeeAndCollateral,
+    hexTransactionTotalCountSponsored,
+    hexTransactionFeeAndCollateralCountSponsored,
   } = transactionFeeSelector(state, transaction)
 
   if (transaction && transaction.simulationFails) {
@@ -140,7 +142,7 @@ const mapStateToProps = (state, ownProps) => {
     amount,
     gasTotal: calcGasTotal(
       willUserPayTxFee ? gasLimit : '0',
-      willUserPayTxFee ? gasPrice : '0',
+      willUserPayTxFee ? gasPrice : '0'
     ),
     balance,
     conversionRate,
@@ -172,6 +174,7 @@ const mapStateToProps = (state, ownProps) => {
     toNickname,
     hexTransactionAmount,
     hexTransactionFee,
+    hexTransactionCollateral,
     hexTransactionTotal,
     txData: fullTxData,
     tokenData,
@@ -197,6 +200,9 @@ const mapStateToProps = (state, ownProps) => {
     insufficientBalance,
     hexSponsoredTransactionFee,
     hexSponsoredTransactionCollateral,
+    hexSponsoredTransactionFeeAndCollateral,
+    hexTransactionTotalCountSponsored,
+    hexTransactionFeeAndCollateralCountSponsored,
     hideSubtitle: !isMainnet && !showFiatInTestnets,
     hideFiatConversion: !isMainnet && !showFiatInTestnets,
     metaMetricsSendCount,

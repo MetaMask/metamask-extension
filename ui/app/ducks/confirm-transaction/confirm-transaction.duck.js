@@ -269,7 +269,11 @@ export function setFetchingData (isFetching) {
   }
 }
 
-export function updateGasAndCollateralAndCalculate ({ gasLimit, gasPrice, storageLimit }) {
+export function updateGasAndCollateralAndCalculate ({
+  gasLimit,
+  gasPrice,
+  storageLimit,
+}) {
   storageLimit = addHexPrefix(storageLimit)
   gasLimit = addHexPrefix(gasLimit)
   gasPrice = addHexPrefix(gasPrice)
@@ -321,7 +325,12 @@ export function updateTxDataAndCalculate (txData) {
     dispatch(updateTxData(txData))
 
     const {
-      txParams: { value = '0x0', gas: gasLimit = '0x0', gasPrice = '0x0', storageLimit = '0x0' } = {},
+      txParams: {
+        value = '0x0',
+        gas: gasLimit = '0x0',
+        gasPrice = '0x0',
+        storageLimit = '0x0',
+      } = {},
     } = txData
 
     const fiatTransactionAmount = getValueFromWeiHex({

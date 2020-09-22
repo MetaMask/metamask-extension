@@ -1341,6 +1341,9 @@
   "spendLimitInvalid": {
     "message": "Spend limit invalid; must be a positive number"
   },
+  "sponsoredFee": {
+    "message": "Sponsored Fee"
+  },
   "switchNetworks": {
     "message": "Switch Networks"
   },

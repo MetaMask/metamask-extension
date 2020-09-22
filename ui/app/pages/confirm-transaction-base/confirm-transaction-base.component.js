@@ -47,7 +47,7 @@ export default class ConfirmTransactionBase extends Component {
     fromName: PropTypes.string,
     hexTransactionAmount: PropTypes.string,
     hexTransactionFee: PropTypes.string,
-    hexTransactionTotal: PropTypes.string,
+    hexTransactionCollateral: PropTypes.string,
     isTxReprice: PropTypes.bool,
     methodData: PropTypes.object,
     nonce: PropTypes.string,
@@ -108,7 +108,9 @@ export default class ConfirmTransactionBase extends Component {
     tryReverseResolveAddress: PropTypes.func.isRequired,
     hideSenderToRecipient: PropTypes.bool,
     showAccountInHeader: PropTypes.bool,
-    hexSponsoredTransactionFee: PropTypes.string,
+    hexTransactionTotalCountSponsored: PropTypes.string,
+    hexTransactionFeeAndCollateralCountSponsored: PropTypes.string,
+    hexSponsoredTransactionFeeAndCollateral: PropTypes.string,
   }
 
   state = {
@@ -161,7 +163,7 @@ export default class ConfirmTransactionBase extends Component {
     const {
       balance,
       conversionRate,
-      hexTransactionFee,
+      hexTransactionFeeAndCollateralCountSponsored,
       txData: { simulationFails, txParams: { value: amount } = {} } = {},
       customGasAndCollateral,
     } = this.props
@@ -170,7 +172,7 @@ export default class ConfirmTransactionBase extends Component {
       balance &&
       !isBalanceSufficient({
         amount,
-        gasTotal: hexTransactionFee || '0x0',
+        gasTotal: hexTransactionFeeAndCollateralCountSponsored || '0x0',
         balance,
         conversionRate,
       })
@@ -239,7 +241,8 @@ export default class ConfirmTransactionBase extends Component {
       primaryTotalTextOverride,
       // secondaryTotalTextOverride,
       hexTransactionFee,
-      hexTransactionTotal,
+      hexTransactionCollateral,
+      hexTransactionTotalCountSponsored,
       hideDetails,
       useNonceField,
       customNonceValue,
@@ -265,7 +268,7 @@ export default class ConfirmTransactionBase extends Component {
         <div className="confirm-page-container-content__details">
           <div className="confirm-page-container-content__gas-fee">
             <ConfirmDetailRow
-              label={ t('gasFee') }
+              label={t('gasFee')}
               type="fee"
               value={hexTransactionFee}
               primaryPrefix={this.renderSponsoredTxFee()}
@@ -313,9 +316,9 @@ export default class ConfirmTransactionBase extends Component {
             ) : null}
             {!isSimpleTx && (
               <ConfirmDetailRow
-                label={ t('storageFee') }
+                label={t('storageFee')}
                 type="collateral"
-                value={hexTransactionFee}
+                value={hexTransactionCollateral}
                 headerText={advancedInlineGasShown ? '' : 'Edit'}
                 headerTextClassName="confirm-detail-row__header-text--edit"
                 onHeaderClick={() =>
@@ -367,8 +370,8 @@ export default class ConfirmTransactionBase extends Component {
             }
           >
             <ConfirmDetailRow
-              label={ t('total') }
-              value={hexTransactionTotal}
+              label={t('total')}
+              value={hexTransactionTotalCountSponsored}
               primaryText={primaryTotalTextOverride}
               /* secondaryText={ */
               /*   hideFiatConversion */
@@ -376,7 +379,7 @@ export default class ConfirmTransactionBase extends Component {
               /*     : secondaryTotalTextOverride */
               /* } */
               secondaryText=""
-              headerText={ t('amountPlusGasFee') }
+              headerText={t('amountPlusGasFee')}
               headerTextClassName="confirm-detail-row__header-text--total"
               primaryValueTextColor="#2f9ae0"
             />
@@ -624,8 +627,8 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   renderSponsoredTxFee () {
-    const { hexSponsoredTransactionFee } = this.props
-    if (hexSponsoredTransactionFee === '0x0') {
+    const { hexSponsoredTransactionFeeAndCollateral } = this.props
+    if (hexSponsoredTransactionFeeAndCollateral === '0x0') {
       return <div></div>
     }
 
@@ -633,7 +636,7 @@ export default class ConfirmTransactionBase extends Component {
       <div style={{ display: 'flex', fontSize: '0.7rem', color: '#2F9AE0' }}>
         {`${this.context.t('alreadySponsoredByContract')}\u00a0`}
         <UserPreferencedCurrencyDisplay
-          value={hexSponsoredTransactionFee}
+          value={hexSponsoredTransactionFeeAndCollateral}
           type={PRIMARY}
           hideLabel
         />

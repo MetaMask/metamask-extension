@@ -29,6 +29,7 @@ export default class GasModalPageContainer extends Component {
       originalTotalEth: PropTypes.string,
       newTotalFiat: PropTypes.string,
       newTotalEth: PropTypes.string,
+      sponsoredFee: PropTypes.string,
     }),
     onSubmit: PropTypes.func,
     customModalGasPriceInHex: PropTypes.string,
@@ -105,7 +106,14 @@ export default class GasModalPageContainer extends Component {
     )
   }
 
-  renderInfoRows (newTotalFiat, newTotalEth, sendAmount, transactionFee) {
+  renderInfoRows (
+    newTotalFiat,
+    newTotalEth,
+    sendAmount,
+    transactionFee,
+    sponsoredFee
+  ) {
+    const zeroSponsoredFee = sponsoredFee === '0 CFX'
     return (
       <div className="gas-modal-content__info-row-wrapper">
         <div className="gas-modal-content__info-row">
@@ -125,6 +133,16 @@ export default class GasModalPageContainer extends Component {
               {transactionFee}
             </span>
           </div>
+          {!zeroSponsoredFee && (
+            <div className="gas-modal-content__info-row__transaction-info gas-modal-content__info-row__sponsor-info">
+              <span className="gas-modal-content__info-row__transaction-info__label gas-modal-content__info-row__sponsor-info__label">
+                {this.context.t('sponsoredFee')}
+              </span>
+              <span className="gas-modal-content__info-row__transaction-info__value gas-modal-content__info-row__sponsor-info__value">
+                {sponsoredFee}
+              </span>
+            </div>
+          )}
           <div className="gas-modal-content__info-row__total-info">
             <span className="gas-modal-content__info-row__total-info__label">
               {this.context.t('newTotal')}
@@ -147,7 +165,13 @@ export default class GasModalPageContainer extends Component {
     const {
       gasPriceButtonGroupProps,
       hideBasic,
-      infoRowProps: { newTotalFiat, newTotalEth, sendAmount, transactionFee },
+      infoRowProps: {
+        newTotalFiat,
+        newTotalEth,
+        sendAmount,
+        transactionFee,
+        sponsoredFee,
+      },
     } = this.props
 
     let tabsToRender = [
@@ -175,7 +199,8 @@ export default class GasModalPageContainer extends Component {
                 newTotalFiat,
                 newTotalEth,
                 sendAmount,
-                transactionFee
+                transactionFee,
+                sponsoredFee
               )}
             </div>
           </Tab>
@@ -214,7 +239,11 @@ export default class GasModalPageContainer extends Component {
                 },
               })
             }
-            onSubmit(customModalGasLimitInHex, customModalGasPriceInHex, customModalStorageLimitInHex)
+            onSubmit(
+              customModalGasLimitInHex,
+              customModalGasPriceInHex,
+              customModalStorageLimitInHex
+            )
           }}
           submitText={this.context.t('save')}
           headerCloseText={this.context.t('close')}
