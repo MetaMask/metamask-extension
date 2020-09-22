@@ -37,6 +37,7 @@ const mapStateToProps = (state) => {
     selectedAddress,
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
+    swapsState,
   } = metamask
   const accountBalance = getCurrentEthBalance(state)
   const { forgottenPassword, threeBoxLastUpdated } = appState
@@ -67,6 +68,9 @@ const mapStateToProps = (state) => {
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
     swapsWelcomeMessageHasBeenShown: getSwapsWelcomeMessageSeenStatus(state),
+    haveSwapsQuotes: Boolean(Object.values(swapsState?.quotes || {}).length),
+    swapsFetchParams: swapsState?.fetchParams,
+    showAwaitingSwapScreen: swapsState?.showAwaitingSwapScreen,
   }
 }
 

@@ -24,6 +24,9 @@ import {
   CONNECT_ROUTE,
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
+  AWAITING_SWAP_ROUTE,
+  BUILD_QUOTE_ROUTE,
+  VIEW_QUOTE_ROUTE,
 } from '../../helpers/constants/routes'
 
 const LEARN_MORE_URL = 'https://metamask.zendesk.com/hc/en-us/articles/360045129011-Intro-to-MetaMask-v8-extension'
@@ -57,6 +60,10 @@ export default class Home extends PureComponent {
     onTabClick: PropTypes.func.isRequired,
     setSwapsWelcomeMessageHasBeenShown: PropTypes.func.isRequired,
     swapsWelcomeMessageHasBeenShown: PropTypes.bool.isRequired,
+    haveSwapsQuotes: PropTypes.bool.isRequired,
+    showAwaitingSwapScreen: PropTypes.bool.isRequired,
+    swapsFetchParams: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired,
   }
 
   state = {
@@ -71,11 +78,21 @@ export default class Home extends PureComponent {
       suggestedTokens = {},
       totalUnapprovedCount,
       unconfirmedTransactionsCount,
+      haveSwapsQuotes,
+      location: { pathname },
+      showAwaitingSwapScreen,
+      swapsFetchParams,
     } = this.props
 
     this.setState({ mounted: true })
     if (isNotification && totalUnapprovedCount === 0) {
       global.platform.closeCurrentWindow()
+    } else if (showAwaitingSwapScreen && pathname !== AWAITING_SWAP_ROUTE) {
+      history.push(AWAITING_SWAP_ROUTE)
+    } else if (haveSwapsQuotes && pathname !== VIEW_QUOTE_ROUTE) {
+      history.push(VIEW_QUOTE_ROUTE)
+    } else if (!haveSwapsQuotes && swapsFetchParams && pathname !== BUILD_QUOTE_ROUTE) {
+      history.push(BUILD_QUOTE_ROUTE)
     } else if (firstPermissionsRequestId) {
       history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`)
     } else if (unconfirmedTransactionsCount > 0) {

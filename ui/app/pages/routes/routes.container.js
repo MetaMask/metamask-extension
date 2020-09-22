@@ -27,7 +27,6 @@ function mapStateToProps (state) {
     loadingMessage,
   } = appState
   const { autoLockTimeLimit = 0 } = getPreferences(state)
-  const { swapsState } = state.metamask
 
   return {
     sidebar,
@@ -46,9 +45,6 @@ function mapStateToProps (state) {
     providerId: getNetworkIdentifier(state),
     autoLockTimeLimit,
     hasPermissionsRequests: hasPermissionRequests(state),
-    swapsQuotes: swapsState?.quotes,
-    swapsFetchParams: swapsState?.fetchParams,
-    showAwaitingSwapScreen: swapsState?.showAwaitingSwapScreen,
   }
 }
 

@@ -52,9 +52,6 @@ import {
   SWAPS_ROUTE,
   SETTINGS_ROUTE,
   UNLOCK_ROUTE,
-  AWAITING_SWAP_ROUTE,
-  BUILD_QUOTE_ROUTE,
-  VIEW_QUOTE_ROUTE,
 } from '../../helpers/constants/routes'
 
 import { ENVIRONMENT_TYPE_NOTIFICATION, ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
@@ -86,9 +83,6 @@ export default class Routes extends Component {
     hasPermissionsRequests: PropTypes.bool,
     autoLockTimeLimit: PropTypes.number,
     pageChanged: PropTypes.func.isRequired,
-    swapsQuotes: PropTypes.object,
-    swapsFetchParams: PropTypes.object,
-    showAwaitingSwapScreen: PropTypes.bool,
   }
 
   static contextTypes = {
@@ -97,7 +91,7 @@ export default class Routes extends Component {
   }
 
   UNSAFE_componentWillMount () {
-    const { currentCurrency, pageChanged, setCurrentCurrencyToUSD, location: { pathname }, swapsQuotes = {}, swapsFetchParams, showAwaitingSwapScreen } = this.props
+    const { currentCurrency, pageChanged, setCurrentCurrencyToUSD } = this.props
 
     if (!currentCurrency) {
       setCurrentCurrencyToUSD()
@@ -114,14 +108,6 @@ export default class Routes extends Component {
         })
       }
     })
-
-    if (showAwaitingSwapScreen && pathname !== AWAITING_SWAP_ROUTE) {
-      this.props.history.push(AWAITING_SWAP_ROUTE)
-    } else if (Object.values(swapsQuotes)?.length && pathname !== VIEW_QUOTE_ROUTE) {
-      this.props.history.push(VIEW_QUOTE_ROUTE)
-    } else if (!Object.values(swapsQuotes)?.length && swapsFetchParams && pathname !== BUILD_QUOTE_ROUTE) {
-      this.props.history.push(BUILD_QUOTE_ROUTE)
-    }
   }
 
   renderRoutes () {
