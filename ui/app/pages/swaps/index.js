@@ -190,7 +190,6 @@ export default function Swap () {
     networkId,
     isCustomNetwork,
   })
-  const onRetry = useSwapSubmitFunction({ isRetry: true })
 
   if (swapsErrorKey && !isSwapsErrorRoute) {
     history.push(SWAPS_ERROR_ROUTE)
@@ -259,7 +258,6 @@ export default function Swap () {
                     <ViewQuote
                       numberOfQuotes={Object.values(quotes).length}
                       onSubmit={onSubmit}
-                      onCancel={onRetry}
                     />
                   )
                 } else if (fetchParams) {

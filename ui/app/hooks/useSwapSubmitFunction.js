@@ -12,6 +12,7 @@ import {
 
 import {
   getApproveTxParams,
+  navigateBackToBuildQuote,
   setApproveTxId,
   getFetchParams,
   setFetchingQuotes,
@@ -62,18 +63,10 @@ export function useSwapSubmitFunction ({
   ethBalance,
   networkId,
   isCustomNetwork,
-  isRetry,
 }) {
   const dispatch = useDispatch()
   const history = useHistory()
   const { pathname } = useLocation()
-  const retry = () => {
-    dispatch(resetSwapsPostFetchState())
-    dispatch(setBalanceError(false))
-    dispatch(setSubmittingSwap(false))
-
-    history.push(BUILD_QUOTE_ROUTE)
-  }
   const isBuildQuoteRoute = pathname === BUILD_QUOTE_ROUTE
   const isViewQuoteRoute = pathname === VIEW_QUOTE_ROUTE
   const isAwaitingSwapRoute = pathname === AWAITING_SWAP_ROUTE
@@ -105,9 +98,6 @@ export function useSwapSubmitFunction ({
     dispatch(setSubmittingSwap(false))
 
     history.push(`${ASSET_ROUTE}/${selectedToToken.address}`)
-  }
-  if (isRetry) {
-    return retry
   }
 
   const signAndSendTransactions = async () => {
@@ -260,7 +250,7 @@ export function useSwapSubmitFunction ({
     return fetchQuotesAndSetQuoteState
   }
   if (isSwapsErrorRoute) {
-    return retry
+    return async () => await dispatch(navigateBackToBuildQuote(history))
   }
   if (isViewQuoteRoute && (!balanceError || (maxMode && selectedFromToken?.symbol === 'ETH'))) {
     return signAndSendTransactions

@@ -9,7 +9,20 @@ import SelectQuotePopover from '../select-quote-popover'
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck'
 import FeeCard from '../fee-card'
 import { setCustomGasLimit } from '../../../ducks/gas/gas.duck'
-import { getQuotes, getSelectedQuote, getApproveTxParams, getFetchParams, setBalanceError, getQuotesLastFetched, getBalanceError, getMaxMode, getCustomSwapsGas, getSwapsTradeTxParams, getTopQuote } from '../../../ducks/swaps/swaps'
+import {
+  getQuotes,
+  getSelectedQuote,
+  getApproveTxParams,
+  getFetchParams,
+  setBalanceError,
+  getQuotesLastFetched,
+  getBalanceError,
+  getMaxMode,
+  getCustomSwapsGas,
+  getSwapsTradeTxParams,
+  getTopQuote,
+  navigateBackToBuildQuote,
+} from '../../../ducks/swaps/swaps'
 import { conversionRateSelector, getSelectedAccount, getCurrentCurrency, getTokenExchangeRates } from '../../../selectors'
 import { toPrecisionWithoutTrailingZeros } from '../../../helpers/utils/util'
 import { getTokens } from '../../../ducks/metamask/metamask'
@@ -36,7 +49,7 @@ import {
 import CountdownTimer from '../countdown-timer'
 import SwapsFooter from '../swaps-footer'
 
-export default function ViewQuote ({ onSubmit, onCancel }) {
+export default function ViewQuote ({ onSubmit }) {
   const history = useHistory()
   const dispatch = useDispatch()
   const t = useContext(I18nContext)
@@ -211,7 +224,7 @@ export default function ViewQuote ({ onSubmit, onCancel }) {
       <SwapsFooter
         onSubmit={onSubmit}
         submitText={t('swap')}
-        onCancel={onCancel}
+        onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}
         disabled={balanceError && !(maxMode && sourceTokenSymbol === 'ETH')}
         showTermsOfService
         showTopBorder
@@ -222,5 +235,4 @@ export default function ViewQuote ({ onSubmit, onCancel }) {
 
 ViewQuote.propTypes = {
   onSubmit: PropTypes.func,
-  onCancel: PropTypes.func,
 }

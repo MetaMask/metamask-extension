@@ -1,5 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+import { resetSwapsPostFetchState } from '../../store/actions'
+import { BUILD_QUOTE_ROUTE } from '../../helpers/constants/routes'
+
 const initialState = {
   aggregatorMetadata: null,
   approveTxId: null,
@@ -17,6 +20,11 @@ const slice = createSlice({
   initialState,
   reducers: {
     clearSwapsState: () => initialState,
+    navigatedBackToBuildQuote: (state) => {
+      state.approveTxId = null
+      state.balanceError = false
+      state.submittingSwap = false
+    },
     setAggregatorMetadata: (state, action) => {
       state.aggregatorMetadata = action.payload
     },
@@ -55,6 +63,7 @@ export default reducer
 
 const {
   clearSwapsState,
+  navigatedBackToBuildQuote,
   setAggregatorMetadata,
   setApproveTxId,
   setBalanceError,
@@ -77,6 +86,15 @@ export {
   setSubmittingSwap,
   setTopAssets,
   setToToken as setSwapToToken,
+}
+
+export const navigateBackToBuildQuote = (history) => {
+  return async (dispatch) => {
+    await dispatch(resetSwapsPostFetchState())
+    dispatch(navigatedBackToBuildQuote())
+
+    history.push(BUILD_QUOTE_ROUTE)
+  }
 }
 
 // Selectors
