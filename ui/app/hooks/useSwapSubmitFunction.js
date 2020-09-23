@@ -30,11 +30,9 @@ import {
 import {
   setInitialGasEstimate,
   setSwapsErrorKey,
-  resetSwapsPostFetchState,
   setTradeTxId,
   addUnapprovedTransaction,
   updateAndApproveTx,
-  setQuotes,
   forceUpdateMetamaskState,
   updateTransaction,
   addToken,
@@ -70,7 +68,6 @@ export function useSwapSubmitFunction ({
   const isViewQuoteRoute = pathname === VIEW_QUOTE_ROUTE
   const isAwaitingSwapRoute = pathname === AWAITING_SWAP_ROUTE
   const isSwapsErrorRoute = pathname === SWAPS_ERROR_ROUTE
-  const isLoadingQuoteRoute = pathname === LOADING_QUOTES_ROUTE
 
   const destinationToken = useSelector(getDestinationTokenInfo)
   const tradeTxParams = useSelector(getSwapsTradeTxParams)
@@ -250,16 +247,6 @@ export function useSwapSubmitFunction ({
   }
   if ((isViewQuoteRoute && balanceError) || isAwaitingSwapRoute) {
     return goToOverviewPage
-  }
-  if (isLoadingQuoteRoute) {
-    return async () => {
-      await dispatch(resetSwapsPostFetchState())
-      await dispatch(setBackgoundSwapRouteState())
-      dispatch(setSwapsErrorKey(''))
-      dispatch(setFetchingQuotes(false))
-      dispatch(setQuotes([]))
-      history.push(BUILD_QUOTE_ROUTE)
-    }
   }
   return null
 }

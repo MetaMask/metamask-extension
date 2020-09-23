@@ -2150,14 +2150,6 @@ export function fetchAndSetQuotes (fetchParams, fetchParamsMetaData) {
   }
 }
 
-export function setQuotes (quotess) {
-  return async (dispatch) => {
-    const quotes = await promisifiedBackground.setQuotes(quotess)
-    await forceUpdateMetamaskState(dispatch)
-    return quotes
-  }
-}
-
 export function setSelectedQuoteAggId (aggId) {
   return async (dispatch) => {
     await promisifiedBackground.setSelectedQuoteAggId(aggId)

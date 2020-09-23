@@ -307,7 +307,6 @@ export default function Swap () {
                         }
                       }}
                       aggregatorMetadata={aggregatorMetadata}
-                      onSubmit={onSubmit}
                     />
                   )
                   : <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />

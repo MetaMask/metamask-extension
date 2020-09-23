@@ -1,7 +1,10 @@
 import EventEmitter from 'events'
 import React, { useState, useEffect, useRef, useContext } from 'react'
+import { useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
 import { shuffle } from 'lodash'
+import { useHistory } from 'react-router-dom'
+import { navigateBackToBuildQuote } from '../../../ducks/swaps/swaps'
 import { I18nContext } from '../../../contexts/i18n'
 import Mascot from '../../../components/ui/mascot'
 import SwapsFooter from '../swaps-footer'
@@ -48,9 +51,10 @@ export default function LoadingSwapsQuotes ({
   aggregatorMetadata,
   loadingComplete,
   onDone,
-  onSubmit,
 }) {
   const t = useContext(I18nContext)
+  const dispatch = useDispatch()
+  const history = useHistory()
   const animationEventEmitter = useRef(new EventEmitter())
 
   const [aggregatorNames] = useState(() => shuffle(Object.keys(aggregatorMetadata)))
@@ -160,7 +164,7 @@ export default function LoadingSwapsQuotes ({
       </div>
       <SwapsFooter
         submitText={t('back')}
-        onSubmit={onSubmit}
+        onSubmit={async () => await dispatch(navigateBackToBuildQuote(history))}
         hideCancel
       />
     </div>
@@ -174,5 +178,4 @@ LoadingSwapsQuotes.propTypes = {
     color: PropTypes.string,
     icon: PropTypes.string,
   })),
-  onSubmit: PropTypes.func.isRequired,
 }
