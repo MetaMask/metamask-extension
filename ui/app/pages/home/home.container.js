@@ -68,9 +68,9 @@ const mapStateToProps = (state) => {
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
     swapsWelcomeMessageHasBeenShown: getSwapsWelcomeMessageSeenStatus(state),
-    haveSwapsQuotes: Boolean(Object.values(swapsState?.quotes || {}).length),
-    swapsFetchParams: swapsState?.fetchParams,
-    showAwaitingSwapScreen: swapsState?.showAwaitingSwapScreen,
+    haveSwapsQuotes: Boolean(Object.values(swapsState.quotes || {}).length),
+    swapsFetchParams: swapsState.fetchParams,
+    showAwaitingSwapScreen: swapsState.showAwaitingSwapScreen,
   }
 }
 
