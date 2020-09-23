@@ -107,13 +107,16 @@ export default class Home extends PureComponent {
       suggestedTokens,
       totalUnapprovedCount,
       unconfirmedTransactionsCount,
+      haveSwapsQuotes,
+      showAwaitingSwapScreen,
+      swapsFetchParams,
     },
     { mounted },
   ) {
     if (!mounted) {
       if (isNotification && totalUnapprovedCount === 0) {
         return { closing: true }
-      } else if (firstPermissionsRequestId || unconfirmedTransactionsCount > 0 || Object.keys(suggestedTokens).length > 0) {
+      } else if (firstPermissionsRequestId || unconfirmedTransactionsCount > 0 || Object.keys(suggestedTokens).length > 0 || showAwaitingSwapScreen || haveSwapsQuotes || swapsFetchParams) {
         return { redirecting: true }
       }
     }
