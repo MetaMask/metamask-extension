@@ -1,7 +1,4 @@
 {
-  "reject": {
-    "message": "Từ chối"
-  },
   "account": {
     "message": "Tài khoản"
   },
@@ -61,11 +58,11 @@
   "copiedExclamation": {
     "message": "Đã sao chép!"
   },
-  "copyToClipboard": {
-    "message": "Đã sao chép vào clipboard"
-  },
   "copyPrivateKey": {
     "message": "Đây là Khoá Bí Mật của bạn (nhấp vào để sao chép)"
+  },
+  "copyToClipboard": {
+    "message": "Đã sao chép vào clipboard"
   },
   "create": {
     "message": "Tạo"
@@ -249,6 +246,9 @@
   "recipientAddress": {
     "message": "Địa chỉ người nhận"
   },
+  "reject": {
+    "message": "Từ chối"
+  },
   "rejected": {
     "message": "Không chấp thuận/Bị từ chối"
   },
@@ -276,16 +276,16 @@
   "showPrivateKeys": {
     "message": "Hiển thị khóa cá nhân"
   },
+  "sigRequest": {
+    "message": "Yêu cầu chữ ký"
+  },
   "sign": {
     "message": "Ký nhận"
-  },
-  "signatureRequest": {
-    "message": "Yêu cầu chữ ký"
   },
   "signNotice": {
     "message": "Ký nhận vào tin nhắn này có thể gây nguy hiểm. Chỉ nên ký nhận tin nhắn từ những nguồn bạn hoàn toàn tin tưởng có thể dùng với tài khoản của bạn. Cách thức nguy hiểm này sẽ bị xóa trong phiên bản sắp tới."
   },
-  "sigRequest": {
+  "signatureRequest": {
     "message": "Yêu cầu chữ ký"
   },
   "testFaucet": {
@@ -316,10 +316,10 @@
   "viewAccount": {
     "message": "Xem tài khoản"
   },
-  "yourSigRequested": {
-    "message": "Chữ ký của bạn đang được yêu cầu"
-  },
   "youSign": {
     "message": "Bạn đang ký nhận"
+  },
+  "yourSigRequested": {
+    "message": "Chữ ký của bạn đang được yêu cầu"
   }
 }

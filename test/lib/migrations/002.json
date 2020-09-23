@@ -1,5 +1,4 @@
 {
-  "meta": { "version": 20 },
   "data": {
     "config": {},
     "NetworkController": {
@@ -9,7 +8,10 @@
       },
       "network": "1"
     },
-    "firstTimeInfo": { "version": "3.12.1", "date": 1517351427287 },
+    "firstTimeInfo": {
+      "version": "3.12.1",
+      "date": 1517351427287
+    },
     "NoticeController": {
       "noticesList": [
         {
@@ -1160,5 +1162,8 @@
       "conversionRate": 1112,
       "conversionDate": 1517351401
     }
+  },
+  "meta": {
+    "version": 20
   }
 }

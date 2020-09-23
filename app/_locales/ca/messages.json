@@ -1,13 +1,4 @@
 {
-  "chartOnlyAvailableEth": {
-    "message": "Mostra només els disponibles a les xarxes Ethereum."
-  },
-  "contractInteraction": {
-    "message": "Contractar Interacció"
-  },
-  "reject": {
-    "message": "Rebutja"
-  },
   "about": {
     "message": "Informació"
   },
@@ -38,20 +29,20 @@
   "activityLog": {
     "message": "registre d'activitat"
   },
+  "addAcquiredTokens": {
+    "message": "Afegeix les fitxes que has adquirit fent servir MetaMask"
+  },
+  "addAlias": {
+    "message": "Afegeix un àlies"
+  },
   "addNetwork": {
     "message": "Afegir Xarxa"
   },
   "addRecipient": {
     "message": "Afegeix un recipient"
   },
-  "advanced": {
-    "message": "Configuració avançada"
-  },
-  "advancedSettingsDescription": {
-    "message": "Accedeix a característiques de desenvolupador, descarrega Registres d'Estat, Reinicia el Compte, instal·la testnets i personalitza RPC"
-  },
-  "advancedOptions": {
-    "message": "Opcions Avançades"
+  "addSuggestedTokens": {
+    "message": "Afegir Fitxes Suggerides"
   },
   "addToAddressBook": {
     "message": "Afegir al llibre d'adreces"
@@ -59,20 +50,20 @@
   "addToAddressBookModalPlaceholder": {
     "message": "p. ex. John D."
   },
-  "addAlias": {
-    "message": "Afegeix un àlies"
-  },
   "addToken": {
     "message": "Afegir Fitxa"
   },
   "addTokens": {
     "message": "Afegeix tokens"
   },
-  "addSuggestedTokens": {
-    "message": "Afegir Fitxes Suggerides"
+  "advanced": {
+    "message": "Configuració avançada"
   },
-  "addAcquiredTokens": {
-    "message": "Afegeix les fitxes que has adquirit fent servir MetaMask"
+  "advancedOptions": {
+    "message": "Opcions Avançades"
+  },
+  "advancedSettingsDescription": {
+    "message": "Accedeix a característiques de desenvolupador, descarrega Registres d'Estat, Reinicia el Compte, instal·la testnets i personalitza RPC"
   },
   "amount": {
     "message": "Quantitat"
@@ -94,14 +85,14 @@
   "asset": {
     "message": "Actius"
   },
-  "attemptingConnect": {
-    "message": "Intentant conectar a blockchain."
-  },
   "attemptToCancel": {
     "message": "Estàs provant de cancel·lar?"
   },
   "attemptToCancelDescription": {
     "message": "Enviar aquesta temptativa no garanteix que la teva transacció original sigui cancel·lada. Si la temptativa de cancel·lació té èxit, se't carregarà la tarifa de transacció de més amunt."
+  },
+  "attemptingConnect": {
+    "message": "Intentant conectar a blockchain."
   },
   "attributions": {
     "message": "Atribucions"
@@ -121,11 +112,11 @@
   "backToAll": {
     "message": "Torna a Tot"
   },
-  "backupApprovalNotice": {
-    "message": "Fes una còpia de seguretat del teu codi Secret de Recuperació per mantenir el teu moneder i els teus fons segurs."
-  },
   "backupApprovalInfo": {
     "message": "Aquest codi secret es requereix per recuperar el teu moneder en cas que perdis el dispositiu, oblidis la teva contrasenya, hagis de reinstal·lar MetaMask, o vulguis accedir al teu moneder des d'un altre dispositiu."
+  },
+  "backupApprovalNotice": {
+    "message": "Fes una còpia de seguretat del teu codi Secret de Recuperació per mantenir el teu moneder i els teus fons segurs."
   },
   "backupNow": {
     "message": "Fer còpia de seguretat ara"
@@ -155,29 +146,17 @@
   "builtInCalifornia": {
     "message": "MetaMask ha estat dissenyat i desenvolupat a Califòrnia."
   },
-  "buyWithWyre": {
-    "message": "Compra ETH amb Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre et permet utilitzar una targeta de crèdit per dipositar ETH directe al teu compte MetaMask."
-  },
   "buyCoinSwitch": {
     "message": "Comprar a CoinSwitch"
   },
   "buyCoinSwitchExplainer": {
     "message": "CoinSwitch és la destinació número 1 per a canviar més de 300 criptomonedes al millor preu."
   },
-  "off": {
-    "message": "Desactivat"
+  "buyWithWyre": {
+    "message": "Compra ETH amb Wyre"
   },
-  "ok": {
-    "message": "D'acord"
-  },
-  "on": {
-    "message": "Activat"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Bloqueja l'URL d'Explorer (opcional)"
+  "buyWithWyreDescription": {
+    "message": "Wyre et permet utilitzar una targeta de crèdit per dipositar ETH directe al teu compte MetaMask."
   },
   "cancel": {
     "message": "Cancel·la"
@@ -194,20 +173,20 @@
   "chainId": {
     "message": "Cadena ID"
   },
+  "chartOnlyAvailableEth": {
+    "message": "Mostra només els disponibles a les xarxes Ethereum."
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Necessites fer servir MetaMask amb Google Chrome per a connectar-te al teu Moneder Hardware."
+  },
   "clickToRevealSeed": {
     "message": "Fes clic aquí per a revelar les paraules secretes"
   },
   "close": {
     "message": "Tanca"
   },
-  "chromeRequiredForHardwareWallets": {
-    "message": "Necessites fer servir MetaMask amb Google Chrome per a connectar-te al teu Moneder Hardware."
-  },
   "confirm": {
     "message": "Confirma"
-  },
-  "confirmed": {
-    "message": "Confirmat"
   },
   "confirmPassword": {
     "message": "Confirma la contrasenya"
@@ -215,71 +194,77 @@
   "confirmSecretBackupPhrase": {
     "message": "Confirma la teva frase de recuperació secreta"
   },
+  "confirmed": {
+    "message": "Confirmat"
+  },
   "congratulations": {
     "message": "Felicitats"
-  },
-  "connectHardwareWallet": {
-    "message": "Connectar Moneder Hardaware"
   },
   "connect": {
     "message": "Connecta"
   },
+  "connectHardwareWallet": {
+    "message": "Connectar Moneder Hardaware"
+  },
   "connectingTo": {
     "message": "Connectant a $1 "
-  },
-  "connectingToKovan": {
-    "message": "Conectant a la xarxa de Kovan Test"
-  },
-  "connectingToMainnet": {
-    "message": "Connectant a Xarxa Principal Ethereum"
-  },
-  "connectingToRopsten": {
-    "message": "Connectant a la xarxa de test Ropsten"
-  },
-  "connectingToRinkeby": {
-    "message": "Connectant a la Xarxa de Prova Rinkeby"
-  },
-  "connectingToLocalhost": {
-    "message": "Connectant al host local 8545"
   },
   "connectingToGoerli": {
     "message": "Connectant a Xarxa de Prova Goerli"
   },
-  "continueToWyre": {
-    "message": "Continua a Wyre"
+  "connectingToKovan": {
+    "message": "Conectant a la xarxa de Kovan Test"
+  },
+  "connectingToLocalhost": {
+    "message": "Connectant al host local 8545"
+  },
+  "connectingToMainnet": {
+    "message": "Connectant a Xarxa Principal Ethereum"
+  },
+  "connectingToRinkeby": {
+    "message": "Connectant a la Xarxa de Prova Rinkeby"
+  },
+  "connectingToRopsten": {
+    "message": "Connectant a la xarxa de test Ropsten"
   },
   "continueToCoinSwitch": {
     "message": "Continua a CoinSwitch"
   },
+  "continueToWyre": {
+    "message": "Continua a Wyre"
+  },
   "contractDeployment": {
     "message": "Desplegament de Contracte"
+  },
+  "contractInteraction": {
+    "message": "Contractar Interacció"
   },
   "copiedExclamation": {
     "message": "S'ha copiat!"
   },
-  "copyAddress": {
-    "message": "Copiar adreça al porta-retalls"
-  },
-  "copyTransactionId": {
-    "message": "Copia la ID de la transacció"
-  },
   "copiedTransactionId": {
     "message": "ID de transacció copiada"
   },
-  "copyToClipboard": {
-    "message": "Copia al porta-retalls"
+  "copyAddress": {
+    "message": "Copiar adreça al porta-retalls"
   },
   "copyPrivateKey": {
     "message": "Aquesta és la teva clau privada (fes clic per a copiar)"
   },
+  "copyToClipboard": {
+    "message": "Copia al porta-retalls"
+  },
+  "copyTransactionId": {
+    "message": "Copia la ID de la transacció"
+  },
   "create": {
     "message": "Crea"
   },
-  "createAccount": {
-    "message": "Crea "
-  },
   "createAWallet": {
     "message": "Crea un Moneder"
+  },
+  "createAccount": {
+    "message": "Crea "
   },
   "createPassword": {
     "message": "Crear Contrasenya"
@@ -296,17 +281,17 @@
   "customGasSubTitle": {
     "message": "Augmentar la tarifa pot disminuir els temps de processament, però això no està garantit."
   },
-  "customToken": {
-    "message": "Fitxa a Mida"
-  },
   "customRPC": {
     "message": "RPC a mida"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Els decimals han de ser al menys 0, i no més de 36."
+  "customToken": {
+    "message": "Fitxa a Mida"
   },
   "decimal": {
     "message": "Decimals de precisió"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Els decimals han de ser al menys 0, i no més de 36."
   },
   "defaultNetwork": {
     "message": "La xarxa per defecte per a les transaccions Ether és Main Net."
@@ -316,6 +301,12 @@
   },
   "deleteAccount": {
     "message": "Elimina el compte"
+  },
+  "deleteNetwork": {
+    "message": "Esborrar Xarxa?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Estàs segur que vols eliminar aquesta xarxa?"
   },
   "deposit": {
     "message": "Depòsit"
@@ -335,6 +326,9 @@
   "done": {
     "message": "Fet"
   },
+  "dontHaveAHardwareWallet": {
+    "message": "No tens una cartera de hardware?"
+  },
   "downloadGoogleChrome": {
     "message": "Descarrega Google Chrome"
   },
@@ -343,9 +337,6 @@
   },
   "downloadStateLogs": {
     "message": "Descarregar Registres d'Estat"
-  },
-  "dontHaveAHardwareWallet": {
-    "message": "No tens una cartera de hardware?"
   },
   "dropped": {
     "message": "Caigut"
@@ -358,6 +349,9 @@
   },
   "endOfFlowMessage1": {
     "message": "Has passat el test - mantingues la teva seedphrase segura, és la teva responsabilitat!"
+  },
+  "endOfFlowMessage10": {
+    "message": "Tot fet"
   },
   "endOfFlowMessage2": {
     "message": "Consells per a un emmagatzematge segur"
@@ -383,14 +377,11 @@
   "endOfFlowMessage9": {
     "message": "Més informació."
   },
-  "endOfFlowMessage10": {
-    "message": "Tot fet"
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "El nom ENS no s'ha trovat a la xarxa actual. Prova a cambiar a la xarxa principal d'Ethereum."
   },
   "ensRegistrationError": {
     "message": "Error al registre de nom ENS"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "El nom ENS no s'ha trovat a la xarxa actual. Prova a cambiar a la xarxa principal d'Ethereum."
   },
   "enterAnAlias": {
     "message": "Introdueix Àlies"
@@ -401,14 +392,14 @@
   "enterPasswordContinue": {
     "message": "Introdueix la contrasenya per continuar"
   },
+  "estimatedProcessingTimes": {
+    "message": "Temps de processament estimats"
+  },
   "ethereumPublicAddress": {
     "message": "Adreça Pública d'Ethereum"
   },
   "etherscanView": {
     "message": "Veure compte a Etherscan"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Temps de processament estimats"
   },
   "expandView": {
     "message": "Eixamplar Vista"
@@ -447,9 +438,6 @@
   "gasLimitTooLow": {
     "message": "El límit de gas ha de ser al menys 21000"
   },
-  "gasUsed": {
-    "message": "Gas utilitzat"
-  },
   "gasPrice": {
     "message": "Preu del Gas (GWEI)"
   },
@@ -458,6 +446,9 @@
   },
   "gasPriceInfoTooltipContent": {
     "message": "El preu del gas especifica la quantitat d'Ether que estàs disposat a pagar per cada unitat de gas."
+  },
+  "gasUsed": {
+    "message": "Gas utilitzat"
   },
   "generalSettingsDescription": {
     "message": "Conversió de divises, divisa principal, idioma, icones d'identificació única"
@@ -474,6 +465,9 @@
   },
   "getStarted": {
     "message": "Comença"
+  },
+  "goerli": {
+    "message": "Xarxa de test Goerli"
   },
   "happyToSeeYou": {
     "message": "Ens alegrem de veure't."
@@ -519,6 +513,9 @@
   "importAccountSeedPhrase": {
     "message": "Importa un Compte amb Phrase de Recuperació"
   },
+  "importUsingSeed": {
+    "message": "Importa utilitzant la frase de seeds del compte"
+  },
   "importWallet": {
     "message": "Importar Moneder"
   },
@@ -528,9 +525,6 @@
   "imported": {
     "message": "Importats",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "importUsingSeed": {
-    "message": "Importa utilitzant la frase de seeds del compte"
   },
   "infoHelp": {
     "message": "Informació i Ajuda"
@@ -553,11 +547,11 @@
   "invalidAddressRecipient": {
     "message": "L'adreça del recipient no és vàlida"
   },
-  "knownAddressRecipient": {
-    "message": "Adreça de contracte coneguda"
-  },
   "invalidAddressRecipientNotEthNetwork": {
     "message": "No hi ha xarxa ETH, posar en minúscules"
+  },
+  "invalidBlockExplorerURL": {
+    "message": "URL de Block Explorer"
   },
   "invalidInput": {
     "message": "Entrada no vàlida."
@@ -565,15 +559,15 @@
   "invalidRPC": {
     "message": "URL de RPC"
   },
-  "invalidBlockExplorerURL": {
-    "message": "URL de Block Explorer"
-  },
   "invalidSeedPhrase": {
     "message": "Frase de recuperació no vàlida"
   },
   "jsonFile": {
     "message": "Arxiu JSON",
     "description": "format for importing an account"
+  },
+  "knownAddressRecipient": {
+    "message": "Adreça de contracte coneguda"
   },
   "kovan": {
     "message": "Xarxa de Prova Kovan"
@@ -596,14 +590,14 @@
   "liveGasPricePredictions": {
     "message": "Prediccions del preu del gas en directe"
   },
+  "loadMore": {
+    "message": "Carregar Més"
+  },
   "loading": {
     "message": "S'està carregant..."
   },
   "loadingTokens": {
     "message": "Carregant els tokens..."
-  },
-  "loadMore": {
-    "message": "Carregar Més"
   },
   "localhost": {
     "message": "Host local 8545"
@@ -614,11 +608,11 @@
   "mainnet": {
     "message": "Xarxa Ethereum principal"
   },
-  "memorizePhrase": {
-    "message": "Memoritza aquesta frase"
-  },
   "memo": {
     "message": "notes"
+  },
+  "memorizePhrase": {
+    "message": "Memoritza aquesta frase"
   },
   "message": {
     "message": "Missatge"
@@ -632,6 +626,9 @@
   "mobileSyncText": {
     "message": "Si us plau, introdueix la teva contrasenya per confirmar que ets tu!"
   },
+  "mustSelectOne": {
+    "message": "Has de seleccionar "
+  },
   "myAccounts": {
     "message": "Els meus Comptes"
   },
@@ -640,9 +637,6 @@
   },
   "myWalletAccountsDescription": {
     "message": "Tots els teus comptes creats a MetaMask s'afegiran automàticament a aquesta secció."
-  },
-  "mustSelectOne": {
-    "message": "Has de seleccionar "
   },
   "needEtherInWallet": {
     "message": "Per a interactuar amb aplicacions descentralitzades fent servir MetaMask, necessitaràs Ether al teu moneder."
@@ -657,11 +651,11 @@
   "networkName": {
     "message": "Nom de la xarxa"
   },
-  "networks": {
-    "message": "Xarxes"
-  },
   "networkSettingsDescription": {
     "message": "Afegeix i edita xarxes RPC a mida"
+  },
+  "networks": {
+    "message": "Xarxes"
   },
   "nevermind": {
     "message": "No importa"
@@ -682,35 +676,14 @@
   "newContract": {
     "message": "Nou Contracte"
   },
-  "newPassword": {
-    "message": "Nova contrasenya (mínim 8 caràcters)"
-  },
   "newNetwork": {
     "message": "Nova Xarxa"
   },
+  "newPassword": {
+    "message": "Nova contrasenya (mínim 8 caràcters)"
+  },
   "newToMetaMask": {
     "message": "Nou a MetaMask?"
-  },
-  "noAlreadyHaveSeed": {
-    "message": "No, ja tinc una frase de recuperació."
-  },
-  "protectYourKeys": {
-    "message": "Protegeix les Teves Claus!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Vigila amb la teva frase de recuperació  —s'han documentat casos de llocs web que intenten imitar MetaMask. MetaMask mai no et demanarà la frase de recuperació!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Mantingues segura la teva frase. Si veus alguna cosa sospitosa, o no estàs segur d'un lloc web, envia un correu a support@metamask.io"
-  },
-  "rpcUrl": {
-    "message": "Nova URL de RPC"
-  },
-  "optionalChainId": {
-    "message": "Cadena ID (opcional)"
-  },
-  "optionalSymbol": {
-    "message": "Símbol (opcional)"
   },
   "newTotal": {
     "message": "Nou total"
@@ -724,23 +697,44 @@
   "noAddressForName": {
     "message": "No existeix cap adreça amb aquest nom."
   },
+  "noAlreadyHaveSeed": {
+    "message": "No, ja tinc una frase de recuperació."
+  },
   "noConversionRateAvailable": {
     "message": "No hi ha cap tarifa de conversió disponible"
   },
   "noTransactions": {
     "message": "No tens transaccions"
   },
-  "notEnoughGas": {
-    "message": "Gas Insuficient"
+  "noWebcamFound": {
+    "message": "No s'ha trovat la webcam del teu ordinador. Si us plau prova de nou."
   },
   "noWebcamFoundTitle": {
     "message": "Càmera web no trobada"
   },
-  "noWebcamFound": {
-    "message": "No s'ha trovat la webcam del teu ordinador. Si us plau prova de nou."
+  "notEnoughGas": {
+    "message": "Gas Insuficient"
   },
   "ofTextNofM": {
     "message": "de"
+  },
+  "off": {
+    "message": "Desactivat"
+  },
+  "ok": {
+    "message": "D'acord"
+  },
+  "on": {
+    "message": "Activat"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Bloqueja l'URL d'Explorer (opcional)"
+  },
+  "optionalChainId": {
+    "message": "Cadena ID (opcional)"
+  },
+  "optionalSymbol": {
+    "message": "Símbol (opcional)"
   },
   "orderOneHere": {
     "message": "Demana un Trezor o un Ledger i congela les teves inversions"
@@ -760,11 +754,11 @@
   "password": {
     "message": "Contrasenya"
   },
-  "passwordsDontMatch": {
-    "message": "Les contrasenyes no coincideixen"
-  },
   "passwordNotLongEnough": {
     "message": "La contrasenya no és prou llarga"
+  },
+  "passwordsDontMatch": {
+    "message": "Les contrasenyes no coincideixen"
   },
   "pastePrivateKey": {
     "message": "Enganxa la teva cadena clau privada aquí:",
@@ -795,11 +789,23 @@
   "privateNetwork": {
     "message": "Xarxa privada"
   },
+  "protectYourKeys": {
+    "message": "Protegeix les Teves Claus!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Vigila amb la teva frase de recuperació  —s'han documentat casos de llocs web que intenten imitar MetaMask. MetaMask mai no et demanarà la frase de recuperació!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Mantingues segura la teva frase. Si veus alguna cosa sospitosa, o no estàs segur d'un lloc web, envia un correu a support@metamask.io"
+  },
   "queue": {
     "message": "Cua"
   },
   "readdToken": {
     "message": "Pots tornar a afegir aquesta fitxa en el futur anant a \"Afegir fitxa\" al menu d'opcions dels teus comptes."
+  },
+  "readyToConnect": {
+    "message": "Estàs llest per a connectar?"
   },
   "recipientAddress": {
     "message": "Adreça del destinatari"
@@ -807,65 +813,23 @@
   "recipientAddressPlaceholder": {
     "message": "Cerca, adreça pública (0x), o ENS"
   },
+  "reject": {
+    "message": "Rebutja"
+  },
   "rejectAll": {
     "message": "Rebutja-ho tot"
-  },
-  "rejectTxsN": {
-    "message": "Rebutja les transaccions de $1"
   },
   "rejectTxsDescription": {
     "message": "Estàs a punt de refusar una tanda de $1 transaccions "
   },
+  "rejectTxsN": {
+    "message": "Rebutja les transaccions de $1"
+  },
   "rejected": {
     "message": "Rebutjat"
   },
-  "reset": {
-    "message": "Restableix"
-  },
-  "resetAccount": {
-    "message": "Reiniciar Compte"
-  },
-  "resetAccountDescription": {
-    "message": "Reiniciar el teu compte esborrarà el teu historial de transaccions."
-  },
-  "deleteNetwork": {
-    "message": "Esborrar Xarxa?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Estàs segur que vols eliminar aquesta xarxa?"
-  },
   "remindMeLater": {
     "message": "Recorda-m'ho més tard"
-  },
-  "restoreFromSeed": {
-    "message": "Restaurar compte?"
-  },
-  "restoreAccountWithSeed": {
-    "message": "Restaura el teu compte amb Frase de Recuperació"
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "peticions esperant ser reconegudes"
-  },
-  "required": {
-    "message": "Obligatori"
-  },
-  "restore": {
-    "message": "Restaura"
-  },
-  "revealSeedWords": {
-    "message": "Revelar Paraules de Recuperació"
-  },
-  "revealSeedWordsTitle": {
-    "message": "Frase de Recuperació"
-  },
-  "revealSeedWordsDescription": {
-    "message": "Si mai canvies el navegador o l'ordinador, necessitaràs aquesta frase de recuperació per accedir als teus comptes. Guarda-la a un lloc segur i secret."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "NO comparteixis aquesta frase amb ningú!"
-  },
-  "revealSeedWordsWarning": {
-    "message": "Aquestes paraules poden ser utilitzades per a robar tots els teus comptes."
   },
   "remove": {
     "message": "Suprimeix"
@@ -876,8 +840,44 @@
   "removeAccountDescription": {
     "message": "Aquest compte serà retirat del teu moneder. Si us plau, assegura't que tens la frase de recuperació original o la clau privada per a aquest compte importat abans de continuar. Pots importar o crear comptes novament des del desplegable de comptes."
   },
-  "readyToConnect": {
-    "message": "Estàs llest per a connectar?"
+  "requestsAwaitingAcknowledgement": {
+    "message": "peticions esperant ser reconegudes"
+  },
+  "required": {
+    "message": "Obligatori"
+  },
+  "reset": {
+    "message": "Restableix"
+  },
+  "resetAccount": {
+    "message": "Reiniciar Compte"
+  },
+  "resetAccountDescription": {
+    "message": "Reiniciar el teu compte esborrarà el teu historial de transaccions."
+  },
+  "restore": {
+    "message": "Restaura"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Restaura el teu compte amb Frase de Recuperació"
+  },
+  "restoreFromSeed": {
+    "message": "Restaurar compte?"
+  },
+  "revealSeedWords": {
+    "message": "Revelar Paraules de Recuperació"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Si mai canvies el navegador o l'ordinador, necessitaràs aquesta frase de recuperació per accedir als teus comptes. Guarda-la a un lloc segur i secret."
+  },
+  "revealSeedWordsTitle": {
+    "message": "Frase de Recuperació"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Aquestes paraules poden ser utilitzades per a robar tots els teus comptes."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "NO comparteixis aquesta frase amb ningú!"
   },
   "rinkeby": {
     "message": "Xarxa del test Rinkeby"
@@ -885,17 +885,11 @@
   "ropsten": {
     "message": "Xarxa de Prova Ropsten"
   },
-  "goerli": {
-    "message": "Xarxa de test Goerli"
+  "rpcUrl": {
+    "message": "Nova URL de RPC"
   },
   "save": {
     "message": "Desa"
-  },
-  "slow": {
-    "message": "Lent"
-  },
-  "slower": {
-    "message": "Més lent"
   },
   "saveAsCsvFile": {
     "message": "Guarda com a Arxiu CSV"
@@ -911,6 +905,9 @@
   },
   "searchResults": {
     "message": "Resultats de Cerca"
+  },
+  "searchTokens": {
+    "message": "Tokens per cercar"
   },
   "secretBackupPhrase": {
     "message": "Frase de recuperació secreta"
@@ -936,14 +933,29 @@
   "seedPhraseReq": {
     "message": "Les frases de recuperació tenen 12 paraules"
   },
+  "selectAHigherGasFee": {
+    "message": "Selecciona un preu de gas més alt per a accelerar el procès de la teva transacció.*"
+  },
+  "selectAnAccount": {
+    "message": "Selecciona un Compte"
+  },
+  "selectAnAccountHelp": {
+    "message": "Selecciona el compte que vols veure a MetaMask"
+  },
   "selectCurrency": {
     "message": "Selecciona divisa"
   },
   "selectEachPhrase": {
     "message": "Si us plau selecciona cada frase per a assegurar-te que és correcta."
   },
+  "selectHdPath": {
+    "message": "Selecciona Ruta HD"
+  },
   "selectLocale": {
     "message": "Selecciona Configuració Regional"
+  },
+  "selectPathHelp": {
+    "message": "Si no veus els teus comptes Ledger a sota, prova canviant la ruta a \"Legacy (MEW / MyCrypto)\""
   },
   "selectType": {
     "message": "Selecciona el tipus"
@@ -969,24 +981,6 @@
   "separateEachWord": {
     "message": "Separa cada paraula amb un sol espai"
   },
-  "searchTokens": {
-    "message": "Tokens per cercar"
-  },
-  "selectAnAccount": {
-    "message": "Selecciona un Compte"
-  },
-  "selectAnAccountHelp": {
-    "message": "Selecciona el compte que vols veure a MetaMask"
-  },
-  "selectAHigherGasFee": {
-    "message": "Selecciona un preu de gas més alt per a accelerar el procès de la teva transacció.*"
-  },
-  "selectHdPath": {
-    "message": "Selecciona Ruta HD"
-  },
-  "selectPathHelp": {
-    "message": "Si no veus els teus comptes Ledger a sota, prova canviant la ruta a \"Legacy (MEW / MyCrypto)\""
-  },
   "settings": {
     "message": "Configuració"
   },
@@ -1002,17 +996,23 @@
   "showFiatConversionInTestnetsDescription": {
     "message": "Selecciona aquest per mostrar conversió Fiat a Testnets"
   },
-  "showPrivateKeys": {
-    "message": "Mostrar Claus Privades"
-  },
   "showHexData": {
     "message": "Mostra les dades Hex"
   },
   "showHexDataDescription": {
     "message": "Selecciona això per a mostrar el camp de dades Hex a la pantalla d'enviament"
   },
+  "showPrivateKeys": {
+    "message": "Mostrar Claus Privades"
+  },
+  "sigRequest": {
+    "message": "Sol·licitud de Signatura"
+  },
   "sign": {
     "message": "Signar"
+  },
+  "signNotice": {
+    "message": "Signar aquest missatge pot tenir efectes secundaris perillosos. Signa només els missatges de llocs en els quals confiïs plenament amb la totalitat del teu compte. Aquest mètode perillós serà retirat en versions posteriors."
   },
   "signatureRequest": {
     "message": "Sol·licitud de Signatura"
@@ -1020,11 +1020,11 @@
   "signed": {
     "message": "Signat"
   },
-  "signNotice": {
-    "message": "Signar aquest missatge pot tenir efectes secundaris perillosos. Signa només els missatges de llocs en els quals confiïs plenament amb la totalitat del teu compte. Aquest mètode perillós serà retirat en versions posteriors."
+  "slow": {
+    "message": "Lent"
   },
-  "sigRequest": {
-    "message": "Sol·licitud de Signatura"
+  "slower": {
+    "message": "Més lent"
   },
   "somethingWentWrong": {
     "message": "Ui! Alguna cosa ha fallat."
@@ -1038,17 +1038,14 @@
   "speedUpTransaction": {
     "message": "Accelerar aquesta transacció"
   },
-  "switchNetworks": {
-    "message": "Intercanviar Xarxes"
+  "stateLogError": {
+    "message": "Error al recuperar els registres d'estat."
   },
   "stateLogs": {
     "message": "Registres d'estat"
   },
   "stateLogsDescription": {
     "message": "Els registres d'estat contenen les teves adreces de compte públiques i les transaccions enviades."
-  },
-  "stateLogError": {
-    "message": "Error al recuperar els registres d'estat."
   },
   "step1HardwareWallet": {
     "message": "1. Connectar Moneder Hardware"
@@ -1077,6 +1074,9 @@
   "supportCenter": {
     "message": "Visita el nostre Centre de Suport"
   },
+  "switchNetworks": {
+    "message": "Intercanviar Xarxes"
+  },
   "symbol": {
     "message": "Símbol"
   },
@@ -1086,8 +1086,11 @@
   "syncWithMobile": {
     "message": "Sincronitza amb el mòbil"
   },
-  "syncWithMobileTitle": {
-    "message": "Sincronitzar amb mòbil"
+  "syncWithMobileBeCareful": {
+    "message": "Assegura't que no hi ha ningú mirant la teva pantalla quan escanegis aquest codi"
+  },
+  "syncWithMobileComplete": {
+    "message": "Les teves dades s'han sincronitzat amb èxit. Disfruta de l'app mòbil de MetaMask!"
   },
   "syncWithMobileDesc": {
     "message": "Pots sincronitzar els teus comptes i la teva informació amb el teu dispositiu mòbil. Obre l'app mòbil de MetaTask, ves a \"Configuració\" i \"Sincronitzar desde l"
@@ -1098,11 +1101,8 @@
   "syncWithMobileScanThisCode": {
     "message": "Escaneja aquest codi amb la teva aplicació mòbil de MetaMask"
   },
-  "syncWithMobileBeCareful": {
-    "message": "Assegura't que no hi ha ningú mirant la teva pantalla quan escanegis aquest codi"
-  },
-  "syncWithMobileComplete": {
-    "message": "Les teves dades s'han sincronitzat amb èxit. Disfruta de l'app mòbil de MetaMask!"
+  "syncWithMobileTitle": {
+    "message": "Sincronitzar amb mòbil"
   },
   "terms": {
     "message": "Condicions d'ús"
@@ -1128,6 +1128,12 @@
   "transaction": {
     "message": "transacció"
   },
+  "transactionCancelAttempted": {
+    "message": "Intent de cancel·lació de transacció amb tarifa del gas d'$1 a $2 "
+  },
+  "transactionCancelSuccess": {
+    "message": "Transacció cancel·lada amb èxit per $2"
+  },
   "transactionConfirmed": {
     "message": "Transacció confirmada per $2."
   },
@@ -1137,35 +1143,29 @@
   "transactionDropped": {
     "message": "La transacció ha caigut a $2."
   },
-  "transactionSubmitted": {
-    "message": "Transacció enviada amb un preu del gas de $1 a $2."
-  },
-  "transactionResubmitted": {
-    "message": "Transacció reenviada amb tarifa del gas incrementada d'$1 a $2"
-  },
-  "transactionUpdated": {
-    "message": "Transacció actualitzada a $2."
-  },
-  "transactionErrored": {
-    "message": "La transacció ha tingut un error."
-  },
-  "transactionCancelAttempted": {
-    "message": "Intent de cancel·lació de transacció amb tarifa del gas d'$1 a $2 "
-  },
-  "transactionCancelSuccess": {
-    "message": "Transacció cancel·lada amb èxit per $2"
-  },
   "transactionError": {
     "message": "Error de Transacció. Excepció llançada en el codi de contracte."
   },
   "transactionErrorNoContract": {
     "message": "Provant d'invocar una funció o una adreça no contractada"
   },
+  "transactionErrored": {
+    "message": "La transacció ha tingut un error."
+  },
   "transactionFee": {
     "message": "Preu de la transacció"
   },
+  "transactionResubmitted": {
+    "message": "Transacció reenviada amb tarifa del gas incrementada d'$1 a $2"
+  },
+  "transactionSubmitted": {
+    "message": "Transacció enviada amb un preu del gas de $1 a $2."
+  },
   "transactionTime": {
     "message": "Temps de transacció"
+  },
+  "transactionUpdated": {
+    "message": "Transacció actualitzada a $2."
   },
   "transfer": {
     "message": "Transferència"
@@ -1195,17 +1195,17 @@
   "unknown": {
     "message": "Desconegut"
   },
+  "unknownCameraError": {
+    "message": "Hi ha hagut un error mentre intentaves accedir a la teva càmera"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Ups! Hi ha alguna cosa que no ha funcionat..."
+  },
   "unknownNetwork": {
     "message": "Xarxa privada desconeguda"
   },
   "unknownQrCode": {
     "message": "Error: No hem pogut identificar aquest codi QR"
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ups! Hi ha alguna cosa que no ha funcionat..."
-  },
-  "unknownCameraError": {
-    "message": "Hi ha hagut un error mentre intentaves accedir a la teva càmera"
   },
   "unlock": {
     "message": "Desbloqueja"
@@ -1228,9 +1228,6 @@
   "viewAccount": {
     "message": "Mostra el compte"
   },
-  "viewinExplorer": {
-    "message": "Mostra a Explorer"
-  },
   "viewContact": {
     "message": "Veure Contacte"
   },
@@ -1240,17 +1237,20 @@
   "viewOnEtherscan": {
     "message": "Veure a Etherscan"
   },
+  "viewinExplorer": {
+    "message": "Mostra a Explorer"
+  },
   "visitWebSite": {
     "message": "Visita el nostre lloc web"
   },
   "walletSeed": {
     "message": "Cartera de seeds"
   },
-  "welcomeBack": {
-    "message": "Benvingut de nou!"
-  },
   "welcome": {
     "message": "Benvingut a MetaMask"
+  },
+  "welcomeBack": {
+    "message": "Benvingut de nou!"
   },
   "writePhrase": {
     "message": "Escriu aquesta frase en un tros de paper i guarda'l en un lloc segur. Si vols més seguretat encara, escriu-la en diversos trossos de paper i guarda'ls cadascun a 2 - 3 llocs diferents."
@@ -1261,14 +1261,14 @@
   "youNeedToAllowCameraAccess": {
     "message": "Has de permetre l'accés a la càmera per fer servir aquesta característica."
   },
-  "yourSigRequested": {
-    "message": "Es necessita la teva firma"
-  },
   "youSign": {
     "message": "Estàs signant"
   },
   "yourPrivateSeedPhrase": {
     "message": "La teva frase privada de seeds"
+  },
+  "yourSigRequested": {
+    "message": "Es necessita la teva firma"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Gas a cost zero accelerant-se"

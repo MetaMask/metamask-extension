@@ -1,30 +1,5 @@
 {
-  "name": "__MSG_appName__",
-  "short_name": "__MSG_appName__",
-  "version": "8.0.10",
-  "manifest_version": 2,
   "author": "https://metamask.io",
-  "description": "__MSG_appDescription__",
-  "commands": {
-    "_execute_browser_action": {
-      "suggested_key": {
-        "windows": "Alt+Shift+M",
-        "mac": "Alt+Shift+M",
-        "chromeos": "Alt+Shift+M",
-        "linux": "Alt+Shift+M"
-      }
-    }
-  },
-  "icons": {
-    "16": "images/icon-16.png",
-    "19": "images/icon-19.png",
-    "32": "images/icon-32.png",
-    "38": "images/icon-38.png",
-    "64": "images/icon-64.png",
-    "128": "images/icon-128.png",
-    "512": "images/icon-512.png"
-  },
-  "default_locale": "en",
   "background": {
     "scripts": ["bg-libs.js", "background.js"],
     "persistent": true
@@ -42,6 +17,16 @@
     "default_title": "MetaMask",
     "default_popup": "popup.html"
   },
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "windows": "Alt+Shift+M",
+        "mac": "Alt+Shift+M",
+        "chromeos": "Alt+Shift+M",
+        "linux": "Alt+Shift+M"
+      }
+    }
+  },
   "content_scripts": [
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
@@ -54,6 +39,23 @@
       "js": ["vendor/trezor/content-script.js"]
     }
   ],
+  "default_locale": "en",
+  "description": "__MSG_appDescription__",
+  "externally_connectable": {
+    "matches": ["https://metamask.io/*"],
+    "ids": ["*"]
+  },
+  "icons": {
+    "16": "images/icon-16.png",
+    "19": "images/icon-19.png",
+    "32": "images/icon-32.png",
+    "38": "images/icon-38.png",
+    "64": "images/icon-64.png",
+    "128": "images/icon-128.png",
+    "512": "images/icon-512.png"
+  },
+  "manifest_version": 2,
+  "name": "__MSG_appName__",
   "permissions": [
     "storage",
     "unlimitedStorage",
@@ -65,9 +67,7 @@
     "*://*.eth/",
     "notifications"
   ],
-  "web_accessible_resources": ["inpage.js", "phishing.html"],
-  "externally_connectable": {
-    "matches": ["https://metamask.io/*"],
-    "ids": ["*"]
-  }
+  "short_name": "__MSG_appName__",
+  "version": "8.0.10",
+  "web_accessible_resources": ["inpage.js", "phishing.html"]
 }

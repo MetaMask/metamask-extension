@@ -1,17 +1,4 @@
 {
-  "chartOnlyAvailableEth": {
-    "message": "Tabellen är endast tillgänglig på Ethereum-nätverk."
-  },
-  "contractInteraction": {
-    "message": "Kontraktinteraktion"
-  },
-  "appName": {
-    "message": "MetaMask",
-    "description": "The name of the application"
-  },
-  "reject": {
-    "message": "Avvisa"
-  },
   "about": {
     "message": "Om"
   },
@@ -42,20 +29,20 @@
   "activityLog": {
     "message": "aktivitetslogg"
   },
+  "addAcquiredTokens": {
+    "message": "Lägg till de tokens du har skaffat med MetaMask"
+  },
+  "addAlias": {
+    "message": "Lägg till alias"
+  },
   "addNetwork": {
     "message": "Lägg till nätverk"
   },
   "addRecipient": {
     "message": "Lägg till mottagare"
   },
-  "advanced": {
-    "message": "Avancerat"
-  },
-  "advancedSettingsDescription": {
-    "message": "Åtkomst till verktyg för utvecklare, ladda ner loggar, återställ konto, upprätta testnätverk och skräddarsy RPC"
-  },
-  "advancedOptions": {
-    "message": "Avancerade alternativ"
+  "addSuggestedTokens": {
+    "message": "Lägg till föreslagna tokens"
   },
   "addToAddressBook": {
     "message": "Lägg till i adressbok"
@@ -63,20 +50,20 @@
   "addToAddressBookModalPlaceholder": {
     "message": "exempelvis John D."
   },
-  "addAlias": {
-    "message": "Lägg till alias"
-  },
   "addToken": {
     "message": "Lägg till token"
   },
   "addTokens": {
     "message": "Lägg till tokens"
   },
-  "addSuggestedTokens": {
-    "message": "Lägg till föreslagna tokens"
+  "advanced": {
+    "message": "Avancerat"
   },
-  "addAcquiredTokens": {
-    "message": "Lägg till de tokens du har skaffat med MetaMask"
+  "advancedOptions": {
+    "message": "Avancerade alternativ"
+  },
+  "advancedSettingsDescription": {
+    "message": "Åtkomst till verktyg för utvecklare, ladda ner loggar, återställ konto, upprätta testnätverk och skräddarsy RPC"
   },
   "amount": {
     "message": "Belopp"
@@ -84,6 +71,10 @@
   "appDescription": {
     "message": "En Ethereum-plånbok i din webbläsare",
     "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
   },
   "approve": {
     "message": "Godkänn"
@@ -94,14 +85,14 @@
   "asset": {
     "message": "Tillgång"
   },
-  "attemptingConnect": {
-    "message": "Försöker ansluta till blockkedja."
-  },
   "attemptToCancel": {
     "message": "Vill du försöka att avbryta?"
   },
   "attemptToCancelDescription": {
     "message": "Att godkänna detta avbrytningsförsök garanterar inte att din ursprungliga överföring avbryts. Om avbrytningsförsöket lyckas kommer du att debiteras överföringsavgiften som nämns ovan."
+  },
+  "attemptingConnect": {
+    "message": "Försöker ansluta till blockkedja."
   },
   "attributions": {
     "message": "Tillskrivningar"
@@ -121,11 +112,11 @@
   "backToAll": {
     "message": "Tillbaka till Alla"
   },
-  "backupApprovalNotice": {
-    "message": "Säkerhetskopiera din hemliga återställningskod för att se till att din plånbok och dina tillgångar är säkra."
-  },
   "backupApprovalInfo": {
     "message": "Den hemliga koden krävs för att komma åt din plånbok ifall du tappar bort din enhet, glömmer ditt lösenord, behöver installera om MetaMask eller om du vill komma åt din plånbok på en annan enhet."
+  },
+  "backupApprovalNotice": {
+    "message": "Säkerhetskopiera din hemliga återställningskod för att se till att din plånbok och dina tillgångar är säkra."
   },
   "backupNow": {
     "message": "Säkerhetskopiera nu"
@@ -155,29 +146,17 @@
   "builtInCalifornia": {
     "message": "MetaMask är skapat och utformat i Kalifornien."
   },
-  "buyWithWyre": {
-    "message": "Köp ETH med Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre låter dig använda ett kreditkort för att sätta in ETH direkt på ditt MetaMask-konto."
-  },
   "buyCoinSwitch": {
     "message": "Köp på CoinSwitch"
   },
   "buyCoinSwitchExplainer": {
     "message": "CoinSwitch är allt-i-ett-platsen för att växla mer än 300 kryptovalutor till bästa kurs."
   },
-  "off": {
-    "message": "Av"
+  "buyWithWyre": {
+    "message": "Köp ETH med Wyre"
   },
-  "ok": {
-    "message": "OK"
-  },
-  "on": {
-    "message": "På"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Block Explorer URL (valfritt)"
+  "buyWithWyreDescription": {
+    "message": "Wyre låter dig använda ett kreditkort för att sätta in ETH direkt på ditt MetaMask-konto."
   },
   "cancel": {
     "message": "Avbryt"
@@ -191,20 +170,20 @@
   "cancelled": {
     "message": "Avbruten"
   },
+  "chartOnlyAvailableEth": {
+    "message": "Tabellen är endast tillgänglig på Ethereum-nätverk."
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Du måste använda MetaMask på Google Chrome för att ansluta till din hårdvaruplånbok."
+  },
   "clickToRevealSeed": {
     "message": "Klicka här för att visa hemliga ord"
   },
   "close": {
     "message": "Stäng"
   },
-  "chromeRequiredForHardwareWallets": {
-    "message": "Du måste använda MetaMask på Google Chrome för att ansluta till din hårdvaruplånbok."
-  },
   "confirm": {
     "message": "Bekräfta"
-  },
-  "confirmed": {
-    "message": "Bekräftat"
   },
   "confirmPassword": {
     "message": "Bekräfta lösenord"
@@ -212,71 +191,77 @@
   "confirmSecretBackupPhrase": {
     "message": "Bekräfta din hemliga backup-fras"
   },
+  "confirmed": {
+    "message": "Bekräftat"
+  },
   "congratulations": {
     "message": "Gratulerar"
-  },
-  "connectHardwareWallet": {
-    "message": "Anslut hårdvaruplånbok"
   },
   "connect": {
     "message": "Ansluta"
   },
+  "connectHardwareWallet": {
+    "message": "Anslut hårdvaruplånbok"
+  },
   "connectingTo": {
     "message": "Ansluter till $1"
-  },
-  "connectingToKovan": {
-    "message": "Ansluter till Kovans testnätverk"
-  },
-  "connectingToMainnet": {
-    "message": "Koppla till Ethereums huvudnätverk"
-  },
-  "connectingToRopsten": {
-    "message": "Ansluter till Ropsten Test Network"
-  },
-  "connectingToRinkeby": {
-    "message": "Ansluter till Rinkeby Test Network"
-  },
-  "connectingToLocalhost": {
-    "message": "Ansluter till Localhost 8545"
   },
   "connectingToGoerli": {
     "message": "Ansluter till Goerli Test Network"
   },
-  "continueToWyre": {
-    "message": "Fortsätt till Wyre"
+  "connectingToKovan": {
+    "message": "Ansluter till Kovans testnätverk"
+  },
+  "connectingToLocalhost": {
+    "message": "Ansluter till Localhost 8545"
+  },
+  "connectingToMainnet": {
+    "message": "Koppla till Ethereums huvudnätverk"
+  },
+  "connectingToRinkeby": {
+    "message": "Ansluter till Rinkeby Test Network"
+  },
+  "connectingToRopsten": {
+    "message": "Ansluter till Ropsten Test Network"
   },
   "continueToCoinSwitch": {
     "message": "Fortsätt till CoinSwitch"
   },
+  "continueToWyre": {
+    "message": "Fortsätt till Wyre"
+  },
   "contractDeployment": {
     "message": "Kontraktplacering"
+  },
+  "contractInteraction": {
+    "message": "Kontraktinteraktion"
   },
   "copiedExclamation": {
     "message": "Kopierades!"
   },
-  "copyAddress": {
-    "message": "Kopiera adress till urklipp"
-  },
-  "copyTransactionId": {
-    "message": "Kopiera transaktions-ID"
-  },
   "copiedTransactionId": {
     "message": "Kopierade transaktions-ID"
   },
-  "copyToClipboard": {
-    "message": "Kopiera till Urklipp"
+  "copyAddress": {
+    "message": "Kopiera adress till urklipp"
   },
   "copyPrivateKey": {
     "message": "Det här är din privata nyckel (klicka för att kopiera)"
   },
+  "copyToClipboard": {
+    "message": "Kopiera till Urklipp"
+  },
+  "copyTransactionId": {
+    "message": "Kopiera transaktions-ID"
+  },
   "create": {
     "message": "Skapa"
   },
-  "createAccount": {
-    "message": "Skapa konto"
-  },
   "createAWallet": {
     "message": "Skapa en plånbok"
+  },
+  "createAccount": {
+    "message": "Skapa konto"
   },
   "createPassword": {
     "message": "Skapa lösenord"
@@ -293,17 +278,17 @@
   "customGasSubTitle": {
     "message": "Att öka avgiften kan minska behandlingstiden, men det är inte garanterat att göra det."
   },
-  "customToken": {
-    "message": "Anpassad token"
-  },
   "customRPC": {
     "message": "Anpassad RPC"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Decimalerna måste vara minst 0 och inte över 36."
+  "customToken": {
+    "message": "Anpassad token"
   },
   "decimal": {
     "message": "Decimalprecision"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Decimalerna måste vara minst 0 och inte över 36."
   },
   "defaultNetwork": {
     "message": "Standardnätverket för Ether-transaktioner är Main Net."
@@ -313,6 +298,12 @@
   },
   "deleteAccount": {
     "message": "Radera konto"
+  },
+  "deleteNetwork": {
+    "message": "Radera nätverk?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Är du säker på att du vill ta bort detta nätverk?"
   },
   "deposit": {
     "message": "Deposition"
@@ -332,6 +323,9 @@
   "done": {
     "message": "Klart"
   },
+  "dontHaveAHardwareWallet": {
+    "message": "Har du inte en hårdvaruplånbok?"
+  },
   "downloadGoogleChrome": {
     "message": "Ladda ner Google Chrome"
   },
@@ -340,9 +334,6 @@
   },
   "downloadStateLogs": {
     "message": "Ladda ner statusloggar"
-  },
-  "dontHaveAHardwareWallet": {
-    "message": "Har du inte en hårdvaruplånbok?"
   },
   "dropped": {
     "message": "Tappad"
@@ -355,6 +346,9 @@
   },
   "endOfFlowMessage1": {
     "message": "Du klarade testet. Håll din seed phrase hemlig, den är på ditt ansvar!"
+  },
+  "endOfFlowMessage10": {
+    "message": "Allt klart"
   },
   "endOfFlowMessage2": {
     "message": "Tips på säker förvaring"
@@ -380,14 +374,11 @@
   "endOfFlowMessage9": {
     "message": "Lär dig mer."
   },
-  "endOfFlowMessage10": {
-    "message": "Allt klart"
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ENS-namnet hittades inte i det aktuella nätverket. Prova att byta till Ethereum Mainnet."
   },
   "ensRegistrationError": {
     "message": "Fel i ENS-namnregistrering"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS-namnet hittades inte i det aktuella nätverket. Prova att byta till Ethereum Mainnet."
   },
   "enterAnAlias": {
     "message": "Ange ett alias"
@@ -398,14 +389,14 @@
   "enterPasswordContinue": {
     "message": "Ange lösenord för att fortsätta"
   },
+  "estimatedProcessingTimes": {
+    "message": "Uppskattade behandlingstider"
+  },
   "ethereumPublicAddress": {
     "message": "Ethereum offentlig adress"
   },
   "etherscanView": {
     "message": "Visa konto på Etherscan"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Uppskattade behandlingstider"
   },
   "expandView": {
     "message": "Expandera vy"
@@ -444,9 +435,6 @@
   "gasLimitTooLow": {
     "message": "Gasgräns måste vara minst 21 000"
   },
-  "gasUsed": {
-    "message": "Gas använd"
-  },
   "gasPrice": {
     "message": "Gas-pris (GWEI)"
   },
@@ -455,6 +443,9 @@
   },
   "gasPriceInfoTooltipContent": {
     "message": "Gaspriset anger den summa Ether som du är villig att betala för varje gasenhet."
+  },
+  "gasUsed": {
+    "message": "Gas använd"
   },
   "general": {
     "message": "Allmänt"
@@ -474,6 +465,9 @@
   },
   "getStarted": {
     "message": "Komma igång"
+  },
+  "goerli": {
+    "message": "Goerli testnätverk"
   },
   "happyToSeeYou": {
     "message": "Vi är glada att se dig."
@@ -522,6 +516,9 @@
   "importAccountSeedPhrase": {
     "message": "Importera konto med"
   },
+  "importUsingSeed": {
+    "message": "Importera med kontots seedfras"
+  },
   "importWallet": {
     "message": "Importera plånbok"
   },
@@ -531,9 +528,6 @@
   "imported": {
     "message": "Importerade",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "importUsingSeed": {
-    "message": "Importera med kontots seedfras"
   },
   "infoHelp": {
     "message": "Info och hjälp"
@@ -556,20 +550,17 @@
   "invalidAddressRecipient": {
     "message": "Mottagarens adress är ogiltig"
   },
-  "knownAddressRecipient": {
-    "message": "Känd kontraktadress."
-  },
   "invalidAddressRecipientNotEthNetwork": {
     "message": "Ej ETH-nätverk, ange med små bokstäver"
+  },
+  "invalidBlockExplorerURL": {
+    "message": "Ogiltig Block Explorer URL"
   },
   "invalidInput": {
     "message": "Ogiltigt input."
   },
   "invalidRPC": {
     "message": "Ogiltig RPC-URL"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Ogiltig Block Explorer URL"
   },
   "invalidSeedPhrase": {
     "message": "Ogiltig"
@@ -578,11 +569,11 @@
     "message": "JSON-fil",
     "description": "format for importing an account"
   },
+  "knownAddressRecipient": {
+    "message": "Känd kontraktadress."
+  },
   "kovan": {
     "message": "Kovan testnätverk"
-  },
-  "max": {
-    "message": "Maximalt"
   },
   "learnMore": {
     "message": "Läs mer"
@@ -602,20 +593,23 @@
   "liveGasPricePredictions": {
     "message": "Liveuppdaterad gaspris-förutsägelser"
   },
+  "loadMore": {
+    "message": "Ladda mer"
+  },
   "loading": {
     "message": "Läser in..."
   },
   "loadingTokens": {
     "message": "Laddar tokens..."
   },
-  "loadMore": {
-    "message": "Ladda mer"
-  },
   "lock": {
     "message": "Logga ut"
   },
   "mainnet": {
     "message": "Ethereums huvudnätverk"
+  },
+  "max": {
+    "message": "Maximalt"
   },
   "memorizePhrase": {
     "message": "Memorera denna fras."
@@ -632,6 +626,9 @@
   "mobileSyncText": {
     "message": "Var vänlig ange ditt lösenord för att bekräfta att det är du!"
   },
+  "mustSelectOne": {
+    "message": "Minst 1 token måste väljas."
+  },
   "myAccounts": {
     "message": "Mina konton"
   },
@@ -640,9 +637,6 @@
   },
   "myWalletAccountsDescription": {
     "message": "Alla dina MetaMask-skapade konton läggs automatiskt till i denna avdelning."
-  },
-  "mustSelectOne": {
-    "message": "Minst 1 token måste väljas."
   },
   "needEtherInWallet": {
     "message": "För att interagera med decentraliserade applikationer med MetaMask behöver du Ether i din plånbok."
@@ -657,11 +651,11 @@
   "networkName": {
     "message": "Nätverksnamn"
   },
-  "networks": {
-    "message": "Nätverk"
-  },
   "networkSettingsDescription": {
     "message": "Lägg till och redigera RPC-nätverk"
+  },
+  "networks": {
+    "message": "Nätverk"
   },
   "nevermind": {
     "message": "Strunt i det"
@@ -682,35 +676,14 @@
   "newContract": {
     "message": "Nytt kontrakt"
   },
-  "newPassword": {
-    "message": "Nytt lösenord (minst 8 tecken)"
-  },
   "newNetwork": {
     "message": "Nytt nätverk"
   },
+  "newPassword": {
+    "message": "Nytt lösenord (minst 8 tecken)"
+  },
   "newToMetaMask": {
     "message": "Ny på MetaMask?"
-  },
-  "noAlreadyHaveSeed": {
-    "message": "Nej, jag har redan en seed phrase"
-  },
-  "protectYourKeys": {
-    "message": "Skydda dina nycklar!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Var försiktig med din seedfras — det har rapporterats om hemsidor som försöker imitera MetaMask. MetaMask kommer aldrig fråga efter din seedfras!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Håll din fras i säkert förvar. Om du ser något misstänksamt eller om du är osäker på en hemsida, skicka ett e-postmeddelande till support@metamask.io."
-  },
-  "rpcUrl": {
-    "message": "Ny RPC-URL"
-  },
-  "optionalChainId": {
-    "message": "ChainID (frivilligt)"
-  },
-  "optionalSymbol": {
-    "message": "Symbol (frivillig)"
   },
   "newTotal": {
     "message": "Ny totalsumma"
@@ -724,23 +697,44 @@
   "noAddressForName": {
     "message": "Inga adresser har angetts för detta namn."
   },
+  "noAlreadyHaveSeed": {
+    "message": "Nej, jag har redan en seed phrase"
+  },
   "noConversionRateAvailable": {
     "message": "Ingen omräkningskurs tillgänglig"
   },
   "noTransactions": {
     "message": "Du har inga överföringar"
   },
-  "notEnoughGas": {
-    "message": "Inte tillräckligt med gas"
+  "noWebcamFound": {
+    "message": "Din dators webbkamera hittades inte. Vänligen försök igen."
   },
   "noWebcamFoundTitle": {
     "message": "Webbkamera hittades ej"
   },
-  "noWebcamFound": {
-    "message": "Din dators webbkamera hittades inte. Vänligen försök igen."
+  "notEnoughGas": {
+    "message": "Inte tillräckligt med gas"
   },
   "ofTextNofM": {
     "message": "av"
+  },
+  "off": {
+    "message": "Av"
+  },
+  "ok": {
+    "message": "OK"
+  },
+  "on": {
+    "message": "På"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (valfritt)"
+  },
+  "optionalChainId": {
+    "message": "ChainID (frivilligt)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (frivillig)"
   },
   "orderOneHere": {
     "message": "Beställ en Trezor eller Ledger och håll dina medel på is"
@@ -760,11 +754,11 @@
   "password": {
     "message": "Lösenord"
   },
-  "passwordsDontMatch": {
-    "message": "Lösenorden matchar inte"
-  },
   "passwordNotLongEnough": {
     "message": "Lösenordet är inte tillräckligt långt"
+  },
+  "passwordsDontMatch": {
+    "message": "Lösenorden matchar inte"
   },
   "pastePrivateKey": {
     "message": "Klistra in din privata nyckel här:",
@@ -798,11 +792,23 @@
   "privateNetwork": {
     "message": "Privat nätverk"
   },
+  "protectYourKeys": {
+    "message": "Skydda dina nycklar!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Var försiktig med din seedfras — det har rapporterats om hemsidor som försöker imitera MetaMask. MetaMask kommer aldrig fråga efter din seedfras!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Håll din fras i säkert förvar. Om du ser något misstänksamt eller om du är osäker på en hemsida, skicka ett e-postmeddelande till support@metamask.io."
+  },
   "queue": {
     "message": "Utskriftskö"
   },
   "readdToken": {
     "message": "Du kan lägga till denna token i framtiden genom att välja \"Lägg till token\" i kontots alternativmeny."
+  },
+  "readyToConnect": {
+    "message": "Redo att ansluta?"
   },
   "recents": {
     "message": "Senaste"
@@ -813,65 +819,23 @@
   "recipientAddressPlaceholder": {
     "message": "Sök, allmän adress (0x) eller ENS"
   },
+  "reject": {
+    "message": "Avvisa"
+  },
   "rejectAll": {
     "message": "Neka alla"
-  },
-  "rejectTxsN": {
-    "message": "Neka överföringar på $1"
   },
   "rejectTxsDescription": {
     "message": "Du håller på att massneka överföringar på $1."
   },
+  "rejectTxsN": {
+    "message": "Neka överföringar på $1"
+  },
   "rejected": {
     "message": "Nekad"
   },
-  "reset": {
-    "message": "Återställ"
-  },
-  "resetAccount": {
-    "message": "Återställ konto"
-  },
-  "resetAccountDescription": {
-    "message": "Återställning av ditt konto rensar din transaktionshistorik"
-  },
-  "deleteNetwork": {
-    "message": "Radera nätverk?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Är du säker på att du vill ta bort detta nätverk?"
-  },
   "remindMeLater": {
     "message": "Påminn mig senare"
-  },
-  "restoreFromSeed": {
-    "message": "Återställ konto?"
-  },
-  "restoreAccountWithSeed": {
-    "message": "Återställ ditt konto med seedphrase"
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "anrop som väntar på godkännande"
-  },
-  "required": {
-    "message": "Krävs"
-  },
-  "restore": {
-    "message": "Återställ"
-  },
-  "revealSeedWords": {
-    "message": "Visa seed-ord"
-  },
-  "revealSeedWordsTitle": {
-    "message": "Seed phrase"
-  },
-  "revealSeedWordsDescription": {
-    "message": "Om du någonsin byter webbläsare eller dator kommer du behöva denna"
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "DELA INTE frasen med någon!"
-  },
-  "revealSeedWordsWarning": {
-    "message": "De här orden kan användas för att stjäla alla dina konton."
   },
   "remove": {
     "message": "Ta bort"
@@ -882,8 +846,44 @@
   "removeAccountDescription": {
     "message": "Detta konto kommer att avlägsnas från din plånbok. Säkerställ att du har din ursprungliga seed phrase eller den privata nyckeln till detta importerade konto innan du fortsätter. Du kan importera eller skapa konton igen via kontots rullgardinsmeny."
   },
-  "readyToConnect": {
-    "message": "Redo att ansluta?"
+  "requestsAwaitingAcknowledgement": {
+    "message": "anrop som väntar på godkännande"
+  },
+  "required": {
+    "message": "Krävs"
+  },
+  "reset": {
+    "message": "Återställ"
+  },
+  "resetAccount": {
+    "message": "Återställ konto"
+  },
+  "resetAccountDescription": {
+    "message": "Återställning av ditt konto rensar din transaktionshistorik"
+  },
+  "restore": {
+    "message": "Återställ"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Återställ ditt konto med seedphrase"
+  },
+  "restoreFromSeed": {
+    "message": "Återställ konto?"
+  },
+  "revealSeedWords": {
+    "message": "Visa seed-ord"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Om du någonsin byter webbläsare eller dator kommer du behöva denna"
+  },
+  "revealSeedWordsTitle": {
+    "message": "Seed phrase"
+  },
+  "revealSeedWordsWarning": {
+    "message": "De här orden kan användas för att stjäla alla dina konton."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "DELA INTE frasen med någon!"
   },
   "rinkeby": {
     "message": "Rinkeby testnätverk"
@@ -891,17 +891,11 @@
   "ropsten": {
     "message": "Ropsten testnätverk"
   },
-  "goerli": {
-    "message": "Goerli testnätverk"
+  "rpcUrl": {
+    "message": "Ny RPC-URL"
   },
   "save": {
     "message": "Spara"
-  },
-  "slow": {
-    "message": "Långsamt"
-  },
-  "slower": {
-    "message": "Långsammare"
   },
   "saveAsCsvFile": {
     "message": "Spara som CSV-fil"
@@ -917,6 +911,9 @@
   },
   "searchResults": {
     "message": "Sökresultat"
+  },
+  "searchTokens": {
+    "message": "Sök tokens"
   },
   "secretBackupPhrase": {
     "message": "Hemlig återställningsfras"
@@ -942,14 +939,29 @@
   "seedPhraseReq": {
     "message": "Nyckelfraser är 12 ord långa."
   },
+  "selectAHigherGasFee": {
+    "message": "Välj en högre bränsleavgift för att accelerera transaktionsprocessen.*"
+  },
+  "selectAnAccount": {
+    "message": "Välj ett konto"
+  },
+  "selectAnAccountHelp": {
+    "message": "Välj konto att visa i MetaMask"
+  },
   "selectCurrency": {
     "message": "Välj valuta"
   },
   "selectEachPhrase": {
     "message": "Välj varje fras för att säkerställa att den är korrekt."
   },
+  "selectHdPath": {
+    "message": "Välj HD-sökväg"
+  },
   "selectLocale": {
     "message": "Välj plats"
+  },
+  "selectPathHelp": {
+    "message": "Om du inte ser dina befintliga Ledger-konton nedan, prova att byta sökväg till \"Legacy (MEW / MyCrypto)\""
   },
   "selectType": {
     "message": "Välj typ"
@@ -975,24 +987,6 @@
   "separateEachWord": {
     "message": "Lägg in ett mellanslag mellan varje ord"
   },
-  "searchTokens": {
-    "message": "Sök tokens"
-  },
-  "selectAnAccount": {
-    "message": "Välj ett konto"
-  },
-  "selectAnAccountHelp": {
-    "message": "Välj konto att visa i MetaMask"
-  },
-  "selectAHigherGasFee": {
-    "message": "Välj en högre bränsleavgift för att accelerera transaktionsprocessen.*"
-  },
-  "selectHdPath": {
-    "message": "Välj HD-sökväg"
-  },
-  "selectPathHelp": {
-    "message": "Om du inte ser dina befintliga Ledger-konton nedan, prova att byta sökväg till \"Legacy (MEW / MyCrypto)\""
-  },
   "settings": {
     "message": "Inställningar"
   },
@@ -1008,17 +1002,23 @@
   "showFiatConversionInTestnetsDescription": {
     "message": "Välj denna för att visa fiatomvandlingar på Testnätverk"
   },
-  "showPrivateKeys": {
-    "message": "Visa privata nycklar"
-  },
   "showHexData": {
     "message": "Visa hex-information"
   },
   "showHexDataDescription": {
     "message": "Välj detta för att visa hex-datafältet på sändarskärmen"
   },
+  "showPrivateKeys": {
+    "message": "Visa privata nycklar"
+  },
+  "sigRequest": {
+    "message": "Signaturförfrågan"
+  },
   "sign": {
     "message": "Signera"
+  },
+  "signNotice": {
+    "message": "Att signera det här meddelandet kan få farliga följder. Signera endast meddelanden från sidor du vågar anförtro hela ditt konto åt. Den här farliga metoden kommer att avlägsnas i kommande versioner."
   },
   "signatureRequest": {
     "message": "Signaturbegäran"
@@ -1026,11 +1026,11 @@
   "signed": {
     "message": "Signerat"
   },
-  "signNotice": {
-    "message": "Att signera det här meddelandet kan få farliga följder. Signera endast meddelanden från sidor du vågar anförtro hela ditt konto åt. Den här farliga metoden kommer att avlägsnas i kommande versioner."
+  "slow": {
+    "message": "Långsamt"
   },
-  "sigRequest": {
-    "message": "Signaturförfrågan"
+  "slower": {
+    "message": "Långsammare"
   },
   "somethingWentWrong": {
     "message": "Hoppsan! Något gick fel."
@@ -1044,17 +1044,14 @@
   "speedUpTransaction": {
     "message": "Snabba upp den här transaktionen"
   },
-  "switchNetworks": {
-    "message": "Växla nätverk"
+  "stateLogError": {
+    "message": "Fel vid inhämtande av statusloggar."
   },
   "stateLogs": {
     "message": "Statushistorik"
   },
   "stateLogsDescription": {
     "message": "Statusloggar innehåller dina publika kontoadresser och skickade transaktioner."
-  },
-  "stateLogError": {
-    "message": "Fel vid inhämtande av statusloggar."
   },
   "step1HardwareWallet": {
     "message": "1. Anslut hårdvaruplånbok"
@@ -1083,14 +1080,20 @@
   "supportCenter": {
     "message": "Besök vårt supportcenter"
   },
+  "switchNetworks": {
+    "message": "Växla nätverk"
+  },
   "symbolBetweenZeroTwelve": {
     "message": "Symbolen måste vara 11 tecken eller färre."
   },
   "syncWithMobile": {
     "message": "Synka med mobil"
   },
-  "syncWithMobileTitle": {
-    "message": "Synka med mobil"
+  "syncWithMobileBeCareful": {
+    "message": "Försäkra dig om att ingen tittar på din skärm när du skannar denna kod"
+  },
+  "syncWithMobileComplete": {
+    "message": "Din data har nu synkats. Ha det så kul med MetaMasks mobil-app!"
   },
   "syncWithMobileDesc": {
     "message": "Du kan nu synka dina konton och din information med din mobil-enhet. Öppna MetaMasks mobil-app, gå till \"Inställningar\" och tryck på \"Synka från webbläsartillägg\""
@@ -1101,11 +1104,8 @@
   "syncWithMobileScanThisCode": {
     "message": "Skanna den här koden med din MetaMask mobilapplikation"
   },
-  "syncWithMobileBeCareful": {
-    "message": "Försäkra dig om att ingen tittar på din skärm när du skannar denna kod"
-  },
-  "syncWithMobileComplete": {
-    "message": "Din data har nu synkats. Ha det så kul med MetaMasks mobil-app!"
+  "syncWithMobileTitle": {
+    "message": "Synka med mobil"
   },
   "terms": {
     "message": "Användarvillkor"
@@ -1134,6 +1134,12 @@
   "transaction": {
     "message": "överföring"
   },
+  "transactionCancelAttempted": {
+    "message": "Överföringsavbrott har försökt göras med gasavgift på $1 vid $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Överföringen avbröts vid $2"
+  },
   "transactionConfirmed": {
     "message": "Transaktionen bekräftad på $2."
   },
@@ -1143,35 +1149,29 @@
   "transactionDropped": {
     "message": "Transaktionen avbruten vid $2."
   },
-  "transactionSubmitted": {
-    "message": "Överföring angedd med gasavgift på $1 vid $2."
-  },
-  "transactionResubmitted": {
-    "message": "Transaktion skickad igen med gas-avgift ökad till $1 på $2"
-  },
-  "transactionUpdated": {
-    "message": "Transaktionen uppdaterades $2."
-  },
-  "transactionErrored": {
-    "message": "Transaktionen påträffade ett fel."
-  },
-  "transactionCancelAttempted": {
-    "message": "Överföringsavbrott har försökt göras med gasavgift på $1 vid $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Överföringen avbröts vid $2"
-  },
   "transactionError": {
     "message": "Överföringsfel. Undantag i kontraktskoden."
   },
   "transactionErrorNoContract": {
     "message": "Försöker åberopa en funktion på en icke-kontraktsadress."
   },
+  "transactionErrored": {
+    "message": "Transaktionen påträffade ett fel."
+  },
   "transactionFee": {
     "message": "Transaktionsavgift"
   },
+  "transactionResubmitted": {
+    "message": "Transaktion skickad igen med gas-avgift ökad till $1 på $2"
+  },
+  "transactionSubmitted": {
+    "message": "Överföring angedd med gasavgift på $1 vid $2."
+  },
   "transactionTime": {
     "message": "Transaktionstid"
+  },
+  "transactionUpdated": {
+    "message": "Transaktionen uppdaterades $2."
   },
   "transfer": {
     "message": "Överföring"
@@ -1201,17 +1201,17 @@
   "unknown": {
     "message": "okänt"
   },
+  "unknownCameraError": {
+    "message": "Ett fel inträffade när din kamera försökte användas. Försök igen..."
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Hoppsan! Något gick fel..."
+  },
   "unknownNetwork": {
     "message": "Okänt privatnätverk"
   },
   "unknownQrCode": {
     "message": "Fel: Vi kunde inte identifiera denna QR-kod"
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Hoppsan! Något gick fel..."
-  },
-  "unknownCameraError": {
-    "message": "Ett fel inträffade när din kamera försökte användas. Försök igen..."
   },
   "unlock": {
     "message": "Lås upp"
@@ -1234,9 +1234,6 @@
   "viewAccount": {
     "message": "Visa konto"
   },
-  "viewinExplorer": {
-    "message": "Visa i Utforskaren"
-  },
   "viewContact": {
     "message": "Visa kontakt"
   },
@@ -1246,17 +1243,20 @@
   "viewOnEtherscan": {
     "message": "Visa på Etherscan"
   },
+  "viewinExplorer": {
+    "message": "Visa i Utforskaren"
+  },
   "visitWebSite": {
     "message": "Besök vår hemsida"
   },
   "walletSeed": {
     "message": "Plånboksseed"
   },
-  "welcomeBack": {
-    "message": "Välkommen tillbaka!"
-  },
   "welcome": {
     "message": "Välkommen till MetaMask"
+  },
+  "welcomeBack": {
+    "message": "Välkommen tillbaka!"
   },
   "writePhrase": {
     "message": "Skriv ner den här frasen på ett papper och förvara den på en säker plats. Om du vill ha större säkerhet skriver du ner den på flera papperslappar och förvarar dem på två eller tre olika platser."
@@ -1267,14 +1267,14 @@
   "youNeedToAllowCameraAccess": {
     "message": "Du måste tillåta åtkomst till kameran för att använda den här funktionen."
   },
-  "yourSigRequested": {
-    "message": "En begäran om din signatur har skickats"
-  },
   "youSign": {
     "message": "Du signerar"
   },
   "yourPrivateSeedPhrase": {
     "message": "Din privata seedphrase"
+  },
+  "yourSigRequested": {
+    "message": "En begäran om din signatur har skickats"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Inget gaspris vid uppsnabbning"

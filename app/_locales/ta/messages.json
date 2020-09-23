@@ -1,9 +1,6 @@
 {
-  "approve": {
-    "message": "ஒப்புதல்"
-  },
-  "reject": {
-    "message": "நிராகரி"
+  "about": {
+    "message": "அறிமுகம்"
   },
   "account": {
     "message": "கணக்கு"
@@ -20,6 +17,9 @@
   "addTokens": {
     "message": "டோக்கன்களைச் சேர்"
   },
+  "advanced": {
+    "message": "மேம்பட்டவை"
+  },
   "amount": {
     "message": "தொகை"
   },
@@ -30,6 +30,9 @@
   "appName": {
     "message": "மேடமஸ்க் ",
     "description": "பயன்பாட்டின் பெயர்"
+  },
+  "approve": {
+    "message": "ஒப்புதல்"
   },
   "approved": {
     "message": "அங்கீகரிக்கப்பட்ட"
@@ -46,6 +49,9 @@
   "balance": {
     "message": "இருப்பு:"
   },
+  "basic": {
+    "message": "அடிப்படை"
+  },
   "blockiesIdenticon": {
     "message": "ப்ளாக்கிஸ் ஐடென்டிகோன் பயன்பாட்டு"
   },
@@ -58,20 +64,35 @@
   "buyCoinSwitchExplainer": {
     "message": "சிறந்த விகிதத்தில் 300 க்கும் அதிகமான cryptocurrencies ஐ பரிமாறிக்கொள்ள ஒரு நாணயமாற்று இலக்கு நாணயம் ஸ்விட்ச் ஆகும்."
   },
-  "ok": {
-    "message": "சரி"
-  },
   "cancel": {
     "message": "ரத்து செய்"
+  },
+  "close": {
+    "message": "மூடு"
   },
   "confirm": {
     "message": "உறுதிப்படுத்து"
   },
+  "confirmPassword": {
+    "message": "கடவுச்சொல்லை உறுதிப்படுத்துக"
+  },
   "confirmed": {
     "message": "உறுதி"
   },
-  "confirmPassword": {
-    "message": "கடவுச்சொல்லை உறுதிப்படுத்துக"
+  "connect": {
+    "message": "இணை"
+  },
+  "connectingToKovan": {
+    "message": "கோவன் டெஸ்ட் நெட்வொர்க்குடன் இணைத்தல்"
+  },
+  "connectingToMainnet": {
+    "message": "முக்கிய எதெரியும் நெட்வொர்க் இணைக்கும்"
+  },
+  "connectingToRinkeby": {
+    "message": "ரிங்கெப்ய டெஸ்ட் நெட்வொர்க்குடன் இணைக்கிறது"
+  },
+  "connectingToRopsten": {
+    "message": "ரொப்ஸ்டென் டெஸ்ட் நெட்வொர்க்குடன் இணைக்கிறது"
   },
   "continueToCoinSwitch": {
     "message": "நாணயம் மாறாமல் தொடர்க"
@@ -82,11 +103,11 @@
   "copiedExclamation": {
     "message": "நகலெடுக்கப்பட்டன!"
   },
-  "copyToClipboard": {
-    "message": "கிளிப்போர்டுக்கு நகலெடு"
-  },
   "copyPrivateKey": {
     "message": "இது உங்கள் தனிப்பட்ட விசை (நகலெடுக்க கிளிக் செய்யவும்)"
+  },
+  "copyToClipboard": {
+    "message": "கிளிப்போர்டுக்கு நகலெடு"
   },
   "create": {
     "message": "உருவாக்கு"
@@ -97,20 +118,23 @@
   "customGas": {
     "message": "எரிவாயுவைத் தனிப்பயனாக்குங்கள்"
   },
-  "customToken": {
-    "message": "தனிப்பயன் டோக்கன்"
-  },
   "customRPC": {
     "message": "விருப்ப RPC ஐ"
   },
-  "decimalsMustZerotoTen": {
-    "message": "தசமங்கள் குறைந்தபட்சம் 0, மற்றும் 36 க்கு மேல் இருக்க வேண்டும்."
+  "customToken": {
+    "message": "தனிப்பயன் டோக்கன்"
   },
   "decimal": {
     "message": "துல்லியத்தின் முடிவு"
   },
+  "decimalsMustZerotoTen": {
+    "message": "தசமங்கள் குறைந்தபட்சம் 0, மற்றும் 36 க்கு மேல் இருக்க வேண்டும்."
+  },
   "defaultNetwork": {
     "message": "எதிர் பரிவர்த்தனைகளுக்கான முன்னிருப்பு வலையமைப்பு முதன்மை நிகரமாகும்."
+  },
+  "delete": {
+    "message": "நீக்கு"
   },
   "deposit": {
     "message": "வைப்புத்தொகை"
@@ -142,12 +166,6 @@
   "enterPassword": {
     "message": "கடவுச்சொல்லை உள்ளிடவும்"
   },
-  "passwordNotLongEnough": {
-    "message": "கடவுச்சொல் போதாது"
-  },
-  "passwordsDontMatch": {
-    "message": "கடவுச்சொற்கள் பொருந்தாதே"
-  },
   "etherscanView": {
     "message": "Etherscan கணக்கைப் பார்க்கவும்"
   },
@@ -157,6 +175,9 @@
   "failed": {
     "message": "தோல்வி"
   },
+  "fast": {
+    "message": "வேகமான"
+  },
   "fiat": {
     "message": "FIAT",
     "description": "பரிமாற்ற வகை"
@@ -164,6 +185,9 @@
   "fileImportFail": {
     "message": "கோப்பு இறக்குமதி வேலை செய்யவில்லையா? இங்கே கிளிக் செய்யவும்!",
     "description": "JSON கோப்பில் பயனர் கணக்கை தங்கள் கணக்கை இறக்குமதி செய்ய உதவுகிறது"
+  },
+  "forgetDevice": {
+    "message": "இந்தச் சாதனத்தை அகற்று"
   },
   "from": {
     "message": "இருந்து"
@@ -184,6 +208,9 @@
     "message": "$ 1 க்கு ஒரு குழாய் இருந்து ஈதர் கிடைக்கும்$1",
     "description": "ஈத்தர் குழாய் ஐந்து பிணைய பெயர் காட்டுகிறது"
   },
+  "getStarted": {
+    "message": "தொடங்குக"
+  },
   "here": {
     "message": "இங்கே",
     "description": "இங்கே-கிளிக் செய்யவும்- மேலும் தகவலுக்கு (troubleTokenBalances செல்கிறது)"
@@ -193,6 +220,9 @@
   },
   "hideTokenPrompt": {
     "message": "டோக்கனை மறை?"
+  },
+  "history": {
+    "message": "வரலாறு"
   },
   "import": {
     "message": "இறக்குமதி செய்",
@@ -223,14 +253,14 @@
   "invalidAddressRecipient": {
     "message": "பெறுநர் முகவரி தவறானது"
   },
+  "invalidBlockExplorerURL": {
+    "message": "தவறான Block Explorer URI"
+  },
   "invalidInput": {
     "message": "தவறான உள்ளீடு.."
   },
   "invalidRPC": {
     "message": "தவறான RPC URI"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "தவறான Block Explorer URI"
   },
   "jsonFile": {
     "message": "JSON கோப்பு",
@@ -238,9 +268,6 @@
   },
   "kovan": {
     "message": "கோவன் டெஸ்ட் நெட்வொர்க்"
-  },
-  "max": {
-    "message": "மேக்ஸ்"
   },
   "learnMore": {
     "message": "மேலும் அறிக"
@@ -266,17 +293,20 @@
   "mainnet": {
     "message": "முதன்மை எதெரியும் நெட்வொர்க்"
   },
+  "max": {
+    "message": "மேக்ஸ்"
+  },
   "message": {
     "message": "செய்தி"
   },
   "metamaskDescription": {
     "message": "மேடமஸ்க் என்பது ஒரு பாதுகாப்பான அடையாள வால்ட் எதெரியும்"
   },
-  "myAccounts": {
-    "message": "எனது கணக்குகள்"
-  },
   "mustSelectOne": {
     "message": "குறைந்தது 1 டோக்கனை தேர்ந்தெடுக்க வேண்டும்."
+  },
+  "myAccounts": {
+    "message": "எனது கணக்குகள்"
   },
   "needEtherInWallet": {
     "message": "மேடமஸ்க் ஐ பயன்படுத்தி பரவலாக்கப்பட்ட பயன்பாடுகளுடன் தொடர்பு கொள்ள, உங்கள் பணப்பரிமாற்றத்தில் ஈதர் தேவை."
@@ -313,6 +343,27 @@
   "noTransactions": {
     "message": "பரிவர்த்தனைகள் இல்லை"
   },
+  "off": {
+    "message": "ஆஃப்"
+  },
+  "ok": {
+    "message": "சரி"
+  },
+  "on": {
+    "message": "இயக்கு"
+  },
+  "origin": {
+    "message": "அசல்"
+  },
+  "password": {
+    "message": "கடவுச்சொல்"
+  },
+  "passwordNotLongEnough": {
+    "message": "கடவுச்சொல் போதாது"
+  },
+  "passwordsDontMatch": {
+    "message": "கடவுச்சொற்கள் பொருந்தாதே"
+  },
   "pastePrivateKey": {
     "message": "இங்கே உங்கள் தனிப்பட்ட விசை சரத்தை ஒட்டுக:",
     "description": "ஒரு தனிப்பட்ட விசை ஒரு கணக்கை இறக்குமதி செய்ய"
@@ -333,26 +384,41 @@
   "privateNetwork": {
     "message": "தனியார் நெட்வொர்க்"
   },
+  "queue": {
+    "message": "வரிசை"
+  },
   "readdToken": {
     "message": "உங்கள் கணக்கு விருப்பங்கள் மெனுவில் \"டோக்கனைச் சேர்\" என்பதன் மூலம் நீங்கள் எதிர்காலத்தில் இந்த டோக்கனை மீண்டும் சேர்க்கலாம்."
   },
   "recipientAddress": {
     "message": "பெறுநர் முகவரி"
   },
+  "reject": {
+    "message": "நிராகரி"
+  },
   "rejected": {
     "message": "நிராகரிக்கப்பட்டது"
   },
-  "resetAccount": {
-    "message": "கணக்கை மீட்டமை"
+  "remove": {
+    "message": "அகற்று"
   },
-  "restoreFromSeed": {
-    "message": "விதை வாக்கியத்திலிருந்து மீட்கவும்"
+  "removeAccount": {
+    "message": "கணக்கை அகற்றுக"
   },
   "required": {
     "message": "தேவையான"
   },
-  "walletSeed": {
-    "message": "வால்ட் விதை"
+  "reset": {
+    "message": "மீட்டமை"
+  },
+  "resetAccount": {
+    "message": "கணக்கை மீட்டமை"
+  },
+  "restore": {
+    "message": "மீட்டமை"
+  },
+  "restoreFromSeed": {
+    "message": "விதை வாக்கியத்திலிருந்து மீட்கவும்"
   },
   "revealSeedWords": {
     "message": "விதை வார்த்தைகள் வெளிப்படுத்த"
@@ -366,23 +432,14 @@
   "ropsten": {
     "message": "ரொப்ஸ்டென் டெஸ்ட் நெட்வொர்க்"
   },
-  "connectingToMainnet": {
-    "message": "முக்கிய எதெரியும் நெட்வொர்க் இணைக்கும்"
-  },
-  "connectingToRopsten": {
-    "message": "ரொப்ஸ்டென் டெஸ்ட் நெட்வொர்க்குடன் இணைக்கிறது"
-  },
-  "connectingToKovan": {
-    "message": "கோவன் டெஸ்ட் நெட்வொர்க்குடன் இணைத்தல்"
-  },
-  "connectingToRinkeby": {
-    "message": "ரிங்கெப்ய டெஸ்ட் நெட்வொர்க்குடன் இணைக்கிறது"
-  },
   "save": {
     "message": "சேமி"
   },
   "search": {
     "message": "தேடல்"
+  },
+  "searchTokens": {
+    "message": "தேடல் டோக்கன்ஸ்"
   },
   "secretPhrase": {
     "message": "உங்கள் பெட்டகத்தை மீட்டெடுப்பதற்காக இங்கே உங்கள் ரகசிய பன்னிரண்டு வார்த்தை சொற்றொடரை உள்ளிடவும்."
@@ -405,35 +462,35 @@
   "sendTokens": {
     "message": "டோக்கன்களை அனுப்பவும்"
   },
-  "searchTokens": {
-    "message": "தேடல் டோக்கன்ஸ்"
-  },
   "settings": {
     "message": "அமைப்புகள்"
   },
   "showPrivateKeys": {
     "message": "தனிப்பட்ட விசைகளைக் காண்பி"
   },
+  "sigRequest": {
+    "message": "கையொப்பம் கோரிக்கை"
+  },
   "sign": {
     "message": "உள்நுழை"
-  },
-  "signed": {
-    "message": "கையொப்பமிடப்பட்ட"
   },
   "signNotice": {
     "message": "இந்த செய்தியில் கையொப்பமிடலாம் \nஆபத்தான பக்க விளைவுகள் இருக்கலாம். \n உங்கள் மொத்த கணக்கில் முழுமையாக நம்பக்கூடிய தளங்களில் செய்திகளை மட்டுமே கையொப்பமிடுங்கள். \n இந்த ஆபத்தான முறை எதிர்கால பதிப்பில் அகற்றப்படும்."
   },
-  "sigRequest": {
-    "message": "கையொப்பம் கோரிக்கை"
+  "signed": {
+    "message": "கையொப்பமிடப்பட்ட"
+  },
+  "slow": {
+    "message": "மெதுவான"
+  },
+  "stateLogError": {
+    "message": "மாநில பதிவுகளை மீட்டெடுப்பதில் பிழை."
   },
   "stateLogs": {
     "message": "மாநில பதிவுகள்"
   },
   "stateLogsDescription": {
     "message": "மாநில பதிவுகள் உங்கள் பொது கணக்கு முகவரிகள் மற்றும் பரிமாற்றங்களை அனுப்பியுள்ளன."
-  },
-  "stateLogError": {
-    "message": "மாநில பதிவுகளை மீட்டெடுப்பதில் பிழை."
   },
   "submitted": {
     "message": "சமர்ப்பிக்கப்பட்டது"
@@ -469,6 +526,9 @@
     "message": "உங்கள் டோக்கன் நிலுவைகளை ஏற்றுவதில் சிக்கல் ஏற்பட்டது. நீங்கள் அவர்களை பார்க்க முடியும்.",
     "description": "டோக்கன் நிலுவைகளை காண ஒரு இணைப்பு (இங்கே) தொடர்ந்து"
   },
+  "tryAgain": {
+    "message": "மீண்டும் முயல்க"
+  },
   "typePassword": {
     "message": "உங்கள் கடவுச்சொல்லை தட்டச்சு செய்யவும்"
   },
@@ -481,11 +541,17 @@
   "unknownNetwork": {
     "message": "அறியப்படாத தனியார் நெட்வொர்க்"
   },
+  "unlock": {
+    "message": "பூட்டைத் திற"
+  },
   "urlErrorMsg": {
     "message": "URI கள் சரியான HTTP / HTTPS முன்னொட்டு தேவை."
   },
   "usedByClients": {
     "message": "பல்வேறு வாடிக்கையாளர்கள் பல்வேறு பயன்படுத்திய"
+  },
+  "userName": {
+    "message": "பயனர்பெயர்"
   },
   "viewAccount": {
     "message": "கணக்கைப் பார்"
@@ -493,82 +559,16 @@
   "visitWebSite": {
     "message": "எங்கள் வலைத்தளத்தைப் பார்வையிடவும்"
   },
+  "walletSeed": {
+    "message": "வால்ட் விதை"
+  },
   "welcome": {
     "message": "மெட்டாமாஸ்க் பீட்டாவுக்கு வருக"
-  },
-  "yourSigRequested": {
-    "message": "உங்கள் கையொப்பம் கோரப்படுகிறது"
   },
   "youSign": {
     "message": "நீங்கள் கையெழுத்திடுகிறீர்கள்"
   },
-  "about": {
-    "message": "அறிமுகம்"
-  },
-  "advanced": {
-    "message": "மேம்பட்டவை"
-  },
-  "basic": {
-    "message": "அடிப்படை"
-  },
-  "off": {
-    "message": "ஆஃப்"
-  },
-  "on": {
-    "message": "இயக்கு"
-  },
-  "close": {
-    "message": "மூடு"
-  },
-  "connect": {
-    "message": "இணை"
-  },
-  "delete": {
-    "message": "நீக்கு"
-  },
-  "fast": {
-    "message": "வேகமான"
-  },
-  "forgetDevice": {
-    "message": "இந்தச் சாதனத்தை அகற்று"
-  },
-  "getStarted": {
-    "message": "தொடங்குக"
-  },
-  "history": {
-    "message": "வரலாறு"
-  },
-  "origin": {
-    "message": "அசல்"
-  },
-  "password": {
-    "message": "கடவுச்சொல்"
-  },
-  "queue": {
-    "message": "வரிசை"
-  },
-  "reset": {
-    "message": "மீட்டமை"
-  },
-  "restore": {
-    "message": "மீட்டமை"
-  },
-  "remove": {
-    "message": "அகற்று"
-  },
-  "removeAccount": {
-    "message": "கணக்கை அகற்றுக"
-  },
-  "slow": {
-    "message": "மெதுவான"
-  },
-  "tryAgain": {
-    "message": "மீண்டும் முயல்க"
-  },
-  "unlock": {
-    "message": "பூட்டைத் திற"
-  },
-  "userName": {
-    "message": "பயனர்பெயர்"
+  "yourSigRequested": {
+    "message": "உங்கள் கையொப்பம் கோரப்படுகிறது"
   }
 }

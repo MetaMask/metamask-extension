@@ -1,11 +1,4 @@
 {
-  "appName": {
-    "message": "MetaMask",
-    "description": "The name of the application"
-  },
-  "reject": {
-    "message": "తిరస్కరించు"
-  },
   "about": {
     "message": "గురించి"
   },
@@ -15,20 +8,15 @@
   "advanced": {
     "message": "ఆధునిక"
   },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
   "back": {
     "message": "వెనుకకు"
   },
   "basic": {
     "message": "ప్రాథమికం"
-  },
-  "off": {
-    "message": "ఆఫ్ అయ్యింది"
-  },
-  "ok": {
-    "message": "సరే"
-  },
-  "on": {
-    "message": "ఆన్ చేయి"
   },
   "cancel": {
     "message": "రద్దు చెయ్యి"
@@ -89,6 +77,15 @@
   "next": {
     "message": "తదుపరి"
   },
+  "off": {
+    "message": "ఆఫ్ అయ్యింది"
+  },
+  "ok": {
+    "message": "సరే"
+  },
+  "on": {
+    "message": "ఆన్ చేయి"
+  },
   "origin": {
     "message": "మూలం"
   },
@@ -98,11 +95,8 @@
   "queue": {
     "message": "క్రమ వరుస"
   },
-  "reset": {
-    "message": "రీసెట్ చేయి"
-  },
-  "restore": {
-    "message": "పునరుద్ధరించు"
+  "reject": {
+    "message": "తిరస్కరించు"
   },
   "remove": {
     "message": "తీసివేయి"
@@ -110,11 +104,14 @@
   "removeAccount": {
     "message": "ఖాతాను తీసివేయి"
   },
+  "reset": {
+    "message": "రీసెట్ చేయి"
+  },
+  "restore": {
+    "message": "పునరుద్ధరించు"
+  },
   "save": {
     "message": "సేవ్ చేయి"
-  },
-  "slow": {
-    "message": "నెమ్మదిగా"
   },
   "search": {
     "message": "శోధించు"
@@ -124,6 +121,9 @@
   },
   "settings": {
     "message": "సెట్టింగ్‌లు"
+  },
+  "slow": {
+    "message": "నెమ్మదిగా"
   },
   "tryAgain": {
     "message": "మళ్లీ ప్రయత్నించు"
