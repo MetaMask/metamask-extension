@@ -4,10 +4,14 @@ import {
   CONFIRMED_STATUS,
   PRIORITY_STATUS_HASH,
   PENDING_STATUS_HASH,
+  UNAPPROVED_STATUS,
+  INCOMING_TRANSACTION,
+  CANCELLED_STATUS,
 } from '../helpers/constants/transactions'
 import {
   TRANSACTION_TYPE_CANCEL,
   TRANSACTION_TYPE_RETRY,
+  TRANSACTION_TYPE_STANDARD,
 } from '../../../app/scripts/controllers/transactions/enums'
 import { hexToDecimal } from '../helpers/utils/conversions.util'
 import txHelper from '../../lib/tx-helper'
@@ -192,6 +196,115 @@ const mergeNonNonceTransactionGroups = (orderedTransactionGroups, nonNonceTransa
     insertTransactionGroupByTime(orderedTransactionGroups, transactionGroup)
   })
 }
+
+const incomingAndUnapprovedSelector = createSelector(
+  transactionsSelector,
+  (transactions) => transactions.filter((tx) => typeof tx.txParams.nonce === 'undefined' || tx.transactionCategory === INCOMING_TRANSACTION),
+)
+
+const outgoingTransactionsWithNonceSelector = createSelector(
+  transactionsSelector,
+  (transactions) => transactions.filter((tx) => typeof tx.txParams.nonce !== 'undefined' && tx.transactionCategory !== INCOMING_TRANSACTION),
+)
+
+/**
+ * WIP
+ */
+export const transactionsGroupedByNonceSelector = createSelector(
+  outgoingTransactionsWithNonceSelector,
+  (transactions = []) => {
+    // Use a Map to store groups by nonce in decimal format. This helps with ordering
+    const nonceMap = new Map()
+    // Rather than sorting the Map after we've grouped, keep an array of ordered nonces
+    // that we update as we iterate through transactions
+    const orderedNonces = []
+    transactions.forEach((transaction) => {
+      const { nonce } = transaction.txParams
+      const nonceNumber = Number(hexToDecimal(nonce))
+      const hasExistingGroup = nonceMap.has(nonceNumber)
+      const group = hasExistingGroup ? nonceMap.get(nonceNumber) : {
+        transactions: [],
+        hasRetried: false,
+        hasCancelled: false,
+        status: undefined,
+        category: undefined,
+        type: undefined,
+        oldestTransaction: undefined,
+        newestTransaction: undefined,
+        nonce: undefined,
+      }
+
+      if (!hasExistingGroup) {
+        // if this is the first time we've seen this nonce, insert it into the orderedNonces array
+        // in the proper location. To find the insertion point, starting from the earliest nonce,
+        // check if this transaction's nonce is lower. If it is lower, it should be inserted at this index
+        let nonceInsertionIndex = orderedNonces.findIndex((nonceA) => nonceNumber < nonceA)
+        // If we do not find a matching index, set insertion index equal to length of array
+        if (nonceInsertionIndex === -1) {
+          nonceInsertionIndex = orderedNonces.length
+        }
+        orderedNonces.splice(nonceInsertionIndex, 0, nonceNumber)
+      }
+
+      // Create a copy of the array to avoid mutating the original array
+      const transactionsClone = group.transactions.slice()
+
+      // First step is to figure out in which position the new transaction should be inserted into the array
+      let insertionIndex = 0
+
+      if (group.transactions.length > 0) {
+        // Find the first transaction in the array that occurred *after* our transaction
+        insertionIndex = group.transactions.findIndex((tx) => transaction.time < tx.time)
+        // If we don't find a matching index, we need to add to the end of the array
+        if (insertionIndex === -1) {
+          insertionIndex = group.transactions.length
+        }
+      }
+
+      transactionsClone.splice(insertionIndex, 0, transaction)
+
+      // Cancel transactions are simply new transactions with higher gas and zero send amount.
+      // In our UI we likely do not want to show this transaction as an individual entry, we'd
+      // want to show the most relevant original transaction, but with a UI treatment to indicate
+      // the cancellation.
+      const nonCancelledTxs = transactionsClone.filter((tx) => tx.type !== TRANSACTION_TYPE_CANCEL)
+
+      // Newest transaction should point to the latest retry or standard type transaction.
+      const newestTransaction = nonCancelledTxs[0] // Beneficial in the case of speed ups and retries
+
+      // Oldest transaction should point to the original standard type transaction
+      const oldestTransaction = nonCancelledTxs[nonCancelledTxs.length - 1] // Should be the original user intention
+
+      let { hasRetried } = group
+      let { hasCancelled } = group
+
+      let status = newestTransaction?.status ?? UNAPPROVED_STATUS
+
+      if (transaction.type === TRANSACTION_TYPE_RETRY) {
+        hasRetried = true
+      } else if (transaction.type === TRANSACTION_TYPE_CANCEL) {
+        hasCancelled = true
+        if (transaction.status === CONFIRMED_STATUS) {
+          status = CANCELLED_STATUS
+        }
+      }
+
+      nonceMap.set(nonce, {
+        nonce,
+        newestTransaction,
+        oldestTransaction,
+        hasCancelled,
+        hasRetried,
+        transactions: transactionsClone,
+        type: oldestTransaction?.type ?? TRANSACTION_TYPE_STANDARD,
+        status,
+        category: newestTransaction?.transactionCategory ?? transaction.transactionCategory,
+      })
+    })
+
+    return orderedNonces.map((nonce) => nonceMap.get(nonce))
+  },
+)
 
 /**
  * @name nonceSortedTransactionsSelector
