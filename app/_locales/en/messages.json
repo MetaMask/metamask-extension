@@ -1,7 +1,4 @@
 {
-  "Done": {
-    "message": "Done"
-  },
   "about": {
     "message": "About"
   },
@@ -1554,9 +1551,6 @@
     "message": "You need $1 more $2 to complete this swap",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
-  "swapBestQuote": {
-    "message": "Best quote"
-  },
   "swapBuildQuotePlaceHolderText": {
     "message": "No tokens available matching $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
@@ -1735,9 +1729,6 @@
   "swapSwapError": {
     "message": "Swap failed"
   },
-  "swapSwapErrorDescription": {
-    "message": "Your trade did not succeed. Please try again."
-  },
   "swapSwapFrom": {
     "message": "Swap from"
   },
@@ -1770,9 +1761,6 @@
   },
   "swapsMaxSlippage": {
     "message": "Max slippage"
-  },
-  "swapsNoQuotesAvailable": {
-    "message": "No quotes available"
   },
   "swapsNotEnoughForTx": {
     "message": "Not enough $1 to complete this transaction",
@@ -1824,7 +1812,7 @@
     "message": "Terms of Use"
   },
   "termsOfService": {
-    "message": "Terms of service"
+    "message": "Terms of Service"
   },
   "testFaucet": {
     "message": "Test Faucet"
