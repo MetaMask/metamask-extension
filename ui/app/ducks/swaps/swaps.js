@@ -2,26 +2,37 @@ import { createSlice } from '@reduxjs/toolkit'
 import BigNumber from 'bignumber.js'
 
 import {
+  addToken,
   addUnapprovedTransaction,
+  fetchAndSetQuotes,
   forceUpdateMetamaskState,
   resetSwapsPostFetchState,
+  setBackgoundSwapRouteState,
+  setInitialGasEstimate,
+  setSwapsErrorKey,
   setShowAwaitingSwapScreen,
   setTradeTxId,
   stopPollingForQuotes,
   updateAndApproveTx,
   updateTransaction,
 } from '../../store/actions'
-import { AWAITING_SWAP_ROUTE, BUILD_QUOTE_ROUTE } from '../../helpers/constants/routes'
+import { AWAITING_SWAP_ROUTE, BUILD_QUOTE_ROUTE, LOADING_QUOTES_ROUTE } from '../../helpers/constants/routes'
 import { fetchTradesInfo } from '../../pages/swaps/swaps.util'
 import { calcGasTotal } from '../../pages/send/send.utils'
-import { decimalToHex, hexMax } from '../../helpers/utils/conversions.util'
+import { decimalToHex, getValueFromWeiHex, hexMax } from '../../helpers/utils/conversions.util'
 import { constructTxParams } from '../../helpers/utils/util'
 import {
   getAveragePriceEstimateInHexWEI,
   getCurrentNetworkId,
   getCustomNetworkId,
   getSelectedAccount,
+  getTokenExchangeRates,
 } from '../../selectors'
+import {
+  ERROR_FETCHING_QUOTES,
+  QUOTES_NOT_AVAILABLE_ERROR,
+  ETH_SWAPS_TOKEN_OBJECT,
+} from '../../helpers/constants/swaps'
 
 const initialState = {
   aggregatorMetadata: null,
@@ -217,6 +228,106 @@ export const prepareForRetryGetQuotes = () => {
     // TODO: Ensure any fetch in progress is cancelled
     await dispatch(resetSwapsPostFetchState())
     dispatch(retriedGetQuotes())
+  }
+}
+
+export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage) => {
+  return async (dispatch, getState) => {
+    const state = getState()
+    const fetchParams = getFetchParams(state)
+    const selectedAccount = getSelectedAccount(state)
+    const fetchParamsFromToken = fetchParams?.metaData?.sourceTokenInfo?.symbol === 'ETH' ?
+      {
+        ...ETH_SWAPS_TOKEN_OBJECT,
+        string: getValueFromWeiHex({ value: selectedAccount.balance, numberOfDecimals: 4, toDenomination: 'ETH' }),
+        balance: selectedAccount.balance,
+      } :
+      fetchParams?.metaData?.sourceTokenInfo
+    const selectedFromToken = getFromToken(state) || fetchParamsFromToken || {}
+    const selectedToToken = getToToken(state) || fetchParams?.metaData?.destinationTokenInfo || {}
+    const {
+      address: fromTokenAddress,
+      symbol: fromTokenSymbol,
+      decimals: fromTokenDecimals,
+      iconUrl: fromTokenIconUrl,
+      balance: fromTokenBalance,
+    } = selectedFromToken
+    const {
+      address: toTokenAddress,
+      symbol: toTokenSymbol,
+      decimals: toTokenDecimals,
+      iconUrl: toTokenIconUrl,
+    } = selectedToToken
+    await dispatch(setBackgoundSwapRouteState('loading'))
+    history.push(LOADING_QUOTES_ROUTE)
+    dispatch(setFetchingQuotes(true))
+
+    const contractExchangeRates = getTokenExchangeRates(state)
+
+    let destinationTokenAddedForSwap = false
+    if (toTokenSymbol !== 'ETH' && !contractExchangeRates[toTokenAddress]) {
+      destinationTokenAddedForSwap = true
+      await dispatch(addToken(toTokenAddress, toTokenSymbol, toTokenDecimals, toTokenIconUrl, true))
+    }
+    if (fromTokenSymbol !== 'ETH' && !contractExchangeRates[fromTokenAddress] && fromTokenBalance && (new BigNumber(fromTokenBalance, 16)).gt(0)) {
+      dispatch(addToken(fromTokenAddress, fromTokenSymbol, fromTokenDecimals, fromTokenIconUrl, true))
+    }
+
+    const swapsTokens = getSwapsTokens(state)
+
+    const sourceTokenInfo = swapsTokens?.find(({ address }) => address === fromTokenAddress) || selectedFromToken
+    const destinationTokenInfo = swapsTokens?.find(({ address }) => address === toTokenAddress) || selectedToToken
+
+    dispatch(setFromToken(selectedFromToken))
+
+    const maxMode = getMaxMode(state)
+
+    let revisedValue
+    if (maxMode && sourceTokenInfo.symbol === 'ETH') {
+      const customConvertGasPrice = getCustomSwapsGasPrice(state)
+      const tradeTxParams = getTradeTxParams(state)
+      const averageGasEstimate = getAveragePriceEstimateInHexWEI(state)
+      const usedGasPrice = customConvertGasPrice || tradeTxParams?.gasPrice || averageGasEstimate
+
+      const totalGasLimitForCalculation = (new BigNumber(800000, 10)).plus(100000, 10).toString(16)
+      const gasTotalInWeiHex = calcGasTotal(totalGasLimitForCalculation, usedGasPrice)
+      revisedValue = (new BigNumber(selectedAccount.balance, 16)).minus(gasTotalInWeiHex, 16).div('1000000000000000000').toString(10)
+    }
+
+    try {
+      const fetchStartTime = Date.now()
+      dispatch(setQuotesFetchStartTime(fetchStartTime))
+      const customNetworkId = getCustomNetworkId(state)
+      const balanceError = getBalanceError(state)
+      const [fetchedQuotes, selectedAggId] = await dispatch(fetchAndSetQuotes(
+        {
+          slippage: maxSlippage,
+          sourceToken: fromTokenAddress,
+          destinationToken: toTokenAddress,
+          value: revisedValue || inputValue,
+          fromAddress: selectedAccount.address,
+          // TODO: what is going on here...
+          isCustomNetwork: Boolean(customNetworkId) || true,
+          destinationTokenAddedForSwap,
+          balanceError,
+          sourceDecimals: fromTokenDecimals,
+        },
+        {
+          sourceTokenInfo,
+          destinationTokenInfo,
+        },
+      ))
+      if (Object.values(fetchedQuotes)?.length === 0) {
+        dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR))
+      } else {
+        const newSelectedQuote = fetchedQuotes[selectedAggId]
+        dispatch(setInitialGasEstimate(selectedAggId, newSelectedQuote.maxGas))
+      }
+    } catch (e) {
+      dispatch(setSwapsErrorKey(ERROR_FETCHING_QUOTES))
+    }
+
+    dispatch(setFetchingQuotes(false))
   }
 }
 
