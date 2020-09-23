@@ -1,5 +1,4 @@
 import React, { useState, useContext, useMemo, useEffect } from 'react'
-import PropTypes from 'prop-types'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import BigNumber from 'bignumber.js'
@@ -19,16 +18,20 @@ import {
   getBalanceError,
   getMaxMode,
   getCustomSwapsGas,
+  getDestinationTokenInfo,
   getSwapsTradeTxParams,
   getTopQuote,
   navigateBackToBuildQuote,
+  signAndSendTransactions,
 } from '../../../ducks/swaps/swaps'
 import { conversionRateSelector, getSelectedAccount, getCurrentCurrency, getTokenExchangeRates } from '../../../selectors'
 import { toPrecisionWithoutTrailingZeros } from '../../../helpers/utils/util'
 import { getTokens } from '../../../ducks/metamask/metamask'
 import { safeRefetchQuotes, setSwapsTxGasLimit, setSelectedQuoteAggId, setSwapsErrorKey } from '../../../store/actions'
 import {
+  ASSET_ROUTE,
   BUILD_QUOTE_ROUTE,
+  DEFAULT_ROUTE,
   SWAPS_ERROR_ROUTE,
 } from '../../../helpers/constants/routes'
 
@@ -49,7 +52,7 @@ import {
 import CountdownTimer from '../countdown-timer'
 import SwapsFooter from '../swaps-footer'
 
-export default function ViewQuote ({ onSubmit }) {
+export default function ViewQuote () {
   const history = useHistory()
   const dispatch = useDispatch()
   const t = useContext(I18nContext)
@@ -131,6 +134,8 @@ export default function ViewQuote ({ onSubmit }) {
   const ethBalanceNeeded = insufficientEth
     ? toPrecisionWithoutTrailingZeros(ethCost.minus(ethBalance, 16).div('1000000000000000000', 10).toString(10), 6)
     : null
+
+  const destinationToken = useSelector(getDestinationTokenInfo)
 
   useEffect(() => {
     if (insufficientTokens || insufficientEth) {
@@ -222,7 +227,15 @@ export default function ViewQuote ({ onSubmit }) {
         />
       </div>
       <SwapsFooter
-        onSubmit={onSubmit}
+        onSubmit={() => {
+          if (!balanceError || (maxMode && selectedFromToken?.symbol === 'ETH')) {
+            dispatch(signAndSendTransactions())
+          } else if (destinationToken.symbol === 'ETH') {
+            history.push(DEFAULT_ROUTE)
+          } else {
+            history.push(`${ASSET_ROUTE}/${destinationToken.address}`)
+          }
+        }}
         submitText={t('swap')}
         onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}
         disabled={balanceError && !(maxMode && sourceTokenSymbol === 'ETH')}
@@ -231,8 +244,4 @@ export default function ViewQuote ({ onSubmit }) {
       />
     </div>
   )
-}
-
-ViewQuote.propTypes = {
-  onSubmit: PropTypes.func,
 }

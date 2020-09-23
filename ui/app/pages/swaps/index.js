@@ -12,7 +12,6 @@ import {
   getApproveTxId,
   getFetchingQuotes,
   setBalanceError,
-  getBalanceError,
   getCustomSwapsGasPrice,
   getSubmittingSwap,
   setTopAssets,
@@ -41,7 +40,6 @@ import {
 import { fetchBasicGasAndTimeEstimates, fetchGasEstimates, resetCustomData } from '../../ducks/gas/gas.duck'
 import { resetBackgroundSwapsState, setSwapsTokens, setSwapsTxGasPrice, setMaxMode, removeToken, setBackgoundSwapRouteState, setSwapsErrorKey } from '../../store/actions'
 import { getAveragePriceEstimateInHexWEI, currentNetworkTxListSelector, getCustomNetworkId, getRpcPrefsForCurrentProvider } from '../../selectors'
-import { useSwapSubmitFunction } from '../../hooks/useSwapSubmitFunction'
 import { decGWEIToHexWEI, getValueFromWeiHex } from '../../helpers/utils/conversions.util'
 
 import { fetchTokens, fetchTopAssets, getSwapsTokensReceivedFromTxMeta, fetchAggregatorMetadata } from './swaps.util'
@@ -79,7 +77,6 @@ export default function Swap () {
   const customNetworkId = useSelector(getCustomNetworkId)
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider)
   const fetchingQuotes = useSelector(getFetchingQuotes)
-  const balanceError = useSelector(getBalanceError)
   let swapsErrorKey = useSelector(getSwapsErrorKey)
 
   const { balance: ethBalance, address: selectedAccountAddress } = selectedAccount
@@ -176,13 +173,6 @@ export default function Swap () {
     }
   }, [dispatch, isCustomNetwork])
 
-  const onSubmit = useSwapSubmitFunction({
-    balanceError,
-    inputValue,
-    maxSlippage,
-    selectedFromToken,
-  })
-
   if (swapsErrorKey && !isSwapsErrorRoute) {
     history.push(SWAPS_ERROR_ROUTE)
   }
@@ -235,7 +225,6 @@ export default function Swap () {
                     setMaxSlippage={setMaxSlippage}
                     setMaxMode={setMaxMode}
                     selectedAccountAddress={selectedAccountAddress}
-                    onSubmit={onSubmit}
                     maxSlippage={maxSlippage}
                   />
                 )
@@ -249,7 +238,6 @@ export default function Swap () {
                   return (
                     <ViewQuote
                       numberOfQuotes={Object.values(quotes).length}
-                      onSubmit={onSubmit}
                     />
                   )
                 } else if (fetchParams) {
@@ -271,7 +259,6 @@ export default function Swap () {
                       txHash={tradeTxData?.hash}
                       networkId={networkId}
                       rpcPrefs={rpcPrefs}
-                      onSubmit={onSubmit}
                       submittedTime={tradeTxData?.submittedTime}
                     />
                   )
@@ -319,8 +306,9 @@ export default function Swap () {
                       tradeTxData={tradeTxData}
                       usedGasPrice={usedGasPrice}
                       submittingSwap={submittingSwap}
-                      onSubmit={onSubmit}
                       rpcPrefs={rpcPrefs}
+                      inputValue={inputValue}
+                      maxSlippage={maxSlippage}
                     />
                   )
                   : <Redirect to={{ pathname: DEFAULT_ROUTE }} />
