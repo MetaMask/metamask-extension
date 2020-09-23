@@ -1986,6 +1986,12 @@
   "viewAccount": {
     "message": "View Account"
   },
+  "viewContact": {
+    "message": "View Contact"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
   "viewOnEtherscan": {
     "message": "View on Etherscan"
   },
@@ -2031,5 +2037,8 @@
   },
   "yourSigRequested": {
     "message": "Your signature is being requested"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Zero gas price on speed up"
   }
 }
