@@ -7,23 +7,11 @@ import {
   TRANSACTION_TYPE_CANCEL,
   TRANSACTION_STATUS_CONFIRMED,
 } from '../../../../app/scripts/controllers/transactions/enums'
-import { MESSAGE_TYPE } from '../../../../app/scripts/lib/enums'
 import { getEtherscanNetworkPrefix } from '../../../lib/etherscan-prefix-for-network'
 import {
   TOKEN_METHOD_TRANSFER,
   TOKEN_METHOD_APPROVE,
   TOKEN_METHOD_TRANSFER_FROM,
-  SEND_ETHER_ACTION_KEY,
-  DEPLOY_CONTRACT_ACTION_KEY,
-  APPROVE_ACTION_KEY,
-  SEND_TOKEN_ACTION_KEY,
-  TRANSFER_FROM_ACTION_KEY,
-  SIGNATURE_REQUEST_KEY,
-  DECRYPT_REQUEST_KEY,
-  ENCRYPTION_PUBLIC_KEY_REQUEST_KEY,
-  CONTRACT_INTERACTION_KEY,
-  CANCEL_ATTEMPT_ACTION_KEY,
-  DEPOSIT_TRANSACTION_KEY,
 } from '../constants/transactions'
 import fetchWithCache from './fetch-with-cache'
 
@@ -109,11 +97,6 @@ export async function getMethodDataAsync (fourBytePrefix) {
   }
 }
 
-export function isConfirmDeployContract (txData = {}) {
-  const { txParams = {} } = txData
-  return !txParams.to
-}
-
 /**
  * Returns four-byte method signature from data
  *
@@ -138,56 +121,6 @@ export function isTokenMethodAction (transactionCategory) {
     TOKEN_METHOD_APPROVE,
     TOKEN_METHOD_TRANSFER_FROM,
   ].includes(transactionCategory)
-}
-
-/**
- * Returns the action of a transaction as a key to be passed into the translator.
- * @param {Object} transaction - txData object
- * @returns {string|undefined}
- */
-export function getTransactionActionKey (transaction) {
-  const { msgParams, type, transactionCategory } = transaction
-
-  if (transactionCategory === 'incoming') {
-    return DEPOSIT_TRANSACTION_KEY
-  }
-
-  if (type === 'cancel') {
-    return CANCEL_ATTEMPT_ACTION_KEY
-  }
-
-  if (msgParams) {
-    if (type === MESSAGE_TYPE.ETH_DECRYPT) {
-      return DECRYPT_REQUEST_KEY
-    } else if (type === MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY) {
-      return ENCRYPTION_PUBLIC_KEY_REQUEST_KEY
-    }
-    return SIGNATURE_REQUEST_KEY
-  }
-
-  if (isConfirmDeployContract(transaction)) {
-    return DEPLOY_CONTRACT_ACTION_KEY
-  }
-
-  const isTokenAction = isTokenMethodAction(transactionCategory)
-  const isNonTokenSmartContract = transactionCategory === CONTRACT_INTERACTION_KEY
-
-  if (isTokenAction || isNonTokenSmartContract) {
-    switch (transactionCategory) {
-      case TOKEN_METHOD_TRANSFER:
-        return SEND_TOKEN_ACTION_KEY
-      case TOKEN_METHOD_APPROVE:
-        return APPROVE_ACTION_KEY
-      case TOKEN_METHOD_TRANSFER_FROM:
-        return TRANSFER_FROM_ACTION_KEY
-      case CONTRACT_INTERACTION_KEY:
-        return CONTRACT_INTERACTION_KEY
-      default:
-        return undefined
-    }
-  } else {
-    return SEND_ETHER_ACTION_KEY
-  }
 }
 
 export function getLatestSubmittedTxWithNonce (transactions = [], nonce = '0x0') {
