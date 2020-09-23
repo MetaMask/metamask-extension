@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import classnames from 'classnames'
 import { uniqBy } from 'lodash'
+import { useHistory } from 'react-router-dom'
 import { useTokensToSearch } from '../../../hooks/useTokensToSearch'
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck'
 import { I18nContext } from '../../../contexts/i18n'
@@ -12,6 +13,7 @@ import SlippageButtons from '../slippage-buttons'
 import { getTokens } from '../../../ducks/metamask/metamask'
 
 import {
+  fetchQuotesAndSetQuoteState,
   setSwapsFromToken,
   setSwapToToken,
   getFromToken,
@@ -41,10 +43,10 @@ export default function BuildQuote ({
   setMaxSlippage,
   maxSlippage,
   selectedAccountAddress,
-  onSubmit,
 }) {
   const t = useContext(I18nContext)
   const dispatch = useDispatch()
+  const history = useHistory()
 
   const [fetchedTokenExchangeRate, setFetchedTokenExchangeRate] = useState(undefined)
 
@@ -231,7 +233,9 @@ export default function BuildQuote ({
         </div>
       </div>
       <SwapsFooter
-        onSubmit={onSubmit}
+        onSubmit={() => {
+          dispatch(fetchQuotesAndSetQuoteState(history, inputValue, maxSlippage))
+        }}
         submitText={t('swapGetQuotes')}
         disabled={((!Number(inputValue) || !selectedToToken?.address) || (Number(maxSlippage) === 0))}
         hideCancel
@@ -246,6 +250,5 @@ BuildQuote.propTypes = {
   onInputChange: PropTypes.func,
   ethBalance: PropTypes.string,
   setMaxSlippage: PropTypes.func,
-  onSubmit: PropTypes.func,
   selectedAccountAddress: PropTypes.string,
 }

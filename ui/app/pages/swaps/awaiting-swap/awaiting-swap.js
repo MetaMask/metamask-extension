@@ -1,7 +1,9 @@
 import EventEmitter from 'events'
 import React, { useContext, useRef, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import { useHistory } from 'react-router-dom'
 import { I18nContext } from '../../../contexts/i18n'
 import { useTransactionTimeRemaining } from '../../../hooks/useTransactionTimeRemaining'
 import { usePrevious } from '../../../hooks/usePrevious'
@@ -15,6 +17,13 @@ import {
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
 } from '../../../helpers/constants/swaps'
+import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes'
+import {
+  fetchQuotesAndSetQuoteState,
+  getDestinationTokenInfo,
+  navigateBackToBuildQuote,
+  prepareForRetryGetQuotes,
+} from '../../../ducks/swaps/swaps'
 import SwapsFooter from '../swaps-footer'
 import SwapFailureIcon from './swap-failure-icon'
 import SwapSuccessIcon from './swap-success-icon'
@@ -28,13 +37,18 @@ export default function AwaitingSwap ({
   networkId,
   tokensReceived,
   rpcPrefs,
-  onSubmit,
   submittingSwap,
   tradeTxData,
   usedGasPrice,
+  inputValue,
+  maxSlippage,
 }) {
   const t = useContext(I18nContext)
+  const history = useHistory()
+  const dispatch = useDispatch()
   const animationEventEmitter = useRef(new EventEmitter())
+
+  const destinationToken = useSelector(getDestinationTokenInfo)
 
   const [timeRemainingExpired, setTimeRemainingExpired] = useState(false)
 
@@ -136,7 +150,18 @@ export default function AwaitingSwap ({
         )}
       </div>
       <SwapsFooter
-        onSubmit={onSubmit}
+        onSubmit={async () => {
+          if (errorKey === QUOTES_EXPIRED_ERROR) {
+            dispatch(prepareForRetryGetQuotes())
+            await dispatch(fetchQuotesAndSetQuoteState(history, inputValue, maxSlippage))
+          } else if (errorKey) {
+            await dispatch(navigateBackToBuildQuote(history))
+          } else if (destinationToken.symbol === 'ETH') {
+            history.push(DEFAULT_ROUTE)
+          } else {
+            history.push(`${ASSET_ROUTE}/${destinationToken.address}`)
+          }
+        }}
         submitText={submitText}
         disabled={submittingSwap}
         hideCancel={errorKey !== QUOTES_EXPIRED_ERROR}
@@ -158,8 +183,9 @@ AwaitingSwap.propTypes = {
     ERROR_FETCHING_QUOTES,
     QUOTES_NOT_AVAILABLE_ERROR,
   ]),
-  onSubmit: PropTypes.func,
   submittingSwap: PropTypes.bool,
   tradeTxData: PropTypes.object,
   usedGasPrice: PropTypes.number,
+  inputValue: PropTypes.oneOf([PropTypes.number, PropTypes.string]),
+  maxSlippage: PropTypes.number,
 }
