@@ -63,7 +63,6 @@ export default class Home extends PureComponent {
     haveSwapsQuotes: PropTypes.bool.isRequired,
     showAwaitingSwapScreen: PropTypes.bool.isRequired,
     swapsFetchParams: PropTypes.object,
-    location: PropTypes.object.isRequired,
   }
 
   state = {
@@ -79,7 +78,6 @@ export default class Home extends PureComponent {
       totalUnapprovedCount,
       unconfirmedTransactionsCount,
       haveSwapsQuotes,
-      location: { pathname },
       showAwaitingSwapScreen,
       swapsFetchParams,
     } = this.props
@@ -87,11 +85,11 @@ export default class Home extends PureComponent {
     this.setState({ mounted: true })
     if (isNotification && totalUnapprovedCount === 0) {
       global.platform.closeCurrentWindow()
-    } else if (showAwaitingSwapScreen && pathname !== AWAITING_SWAP_ROUTE) {
+    } else if (showAwaitingSwapScreen) {
       history.push(AWAITING_SWAP_ROUTE)
-    } else if (haveSwapsQuotes && pathname !== VIEW_QUOTE_ROUTE) {
+    } else if (haveSwapsQuotes) {
       history.push(VIEW_QUOTE_ROUTE)
-    } else if (!haveSwapsQuotes && swapsFetchParams && pathname !== BUILD_QUOTE_ROUTE) {
+    } else if (swapsFetchParams) {
       history.push(BUILD_QUOTE_ROUTE)
     } else if (firstPermissionsRequestId) {
       history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`)
