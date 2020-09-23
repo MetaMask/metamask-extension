@@ -6,7 +6,6 @@ import { I18nContext } from '../../contexts/i18n'
 import { getSelectedAccount, getCurrentNetworkId } from '../../selectors/selectors'
 import {
   getFromToken,
-  getToToken,
   getQuotes,
   clearSwapsState,
   getTradeTxId,
@@ -81,7 +80,6 @@ export default function Swap () {
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider)
   const fetchingQuotes = useSelector(getFetchingQuotes)
   const balanceError = useSelector(getBalanceError)
-  const selectedToToken = useSelector(getToToken) || destinationTokenInfo || {}
   let swapsErrorKey = useSelector(getSwapsErrorKey)
 
   const { balance: ethBalance, address: selectedAccountAddress } = selectedAccount
@@ -179,15 +177,10 @@ export default function Swap () {
   }, [dispatch, isCustomNetwork])
 
   const onSubmit = useSwapSubmitFunction({
-    maxSlippage,
-    inputValue,
-    usedGasPrice,
-    selectedAccountAddress,
-    selectedFromToken,
-    selectedToToken,
     balanceError,
-    ethBalance,
-    isCustomNetwork,
+    inputValue,
+    maxSlippage,
+    selectedFromToken,
   })
 
   if (swapsErrorKey && !isSwapsErrorRoute) {
