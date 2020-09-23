@@ -187,7 +187,6 @@ export default function Swap () {
     selectedToToken,
     balanceError,
     ethBalance,
-    networkId,
     isCustomNetwork,
   })
 
