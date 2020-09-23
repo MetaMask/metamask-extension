@@ -62,7 +62,7 @@ export default class Home extends PureComponent {
     swapsWelcomeMessageHasBeenShown: PropTypes.bool.isRequired,
     haveSwapsQuotes: PropTypes.bool.isRequired,
     showAwaitingSwapScreen: PropTypes.bool.isRequired,
-    swapsFetchParams: PropTypes.object.isRequired,
+    swapsFetchParams: PropTypes.object,
     location: PropTypes.object.isRequired,
   }
 
