@@ -14,6 +14,7 @@ import {
   getApproveTxParams,
   getDestinationTokenInfo,
   navigateBackToBuildQuote,
+  prepareForRetryGetQuotes,
   setApproveTxId,
   getFetchParams,
   setFetchingQuotes,
@@ -40,7 +41,6 @@ import {
   setShowAwaitingSwapScreen,
   stopPollingForQuotes,
   setBackgoundSwapRouteState,
-  setSelectedQuoteAggId,
 } from '../store/actions'
 import { fetchTradesInfo } from '../pages/swaps/swaps.util'
 import { getTokenExchangeRates } from '../selectors'
@@ -229,10 +229,7 @@ export function useSwapSubmitFunction ({
 
   if ((isSwapsErrorRoute && swapsErrorKey === QUOTES_EXPIRED_ERROR)) {
     return () => {
-      dispatch(setSwapsErrorKey(''))
-      dispatch(setTradeTxId(null))
-      dispatch(setFetchingQuotes(false))
-      dispatch(setSelectedQuoteAggId(''))
+      dispatch(prepareForRetryGetQuotes())
       return fetchQuotesAndSetQuoteState()
     }
   }
