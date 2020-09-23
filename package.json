@@ -102,7 +102,7 @@
     "eth-ens-namehash": "^2.0.8",
     "eth-json-rpc-errors": "^2.0.2",
     "eth-json-rpc-filters": "^4.1.1",
-    "eth-json-rpc-infura": "^5.0.0",
+    "eth-json-rpc-infura": "^5.1.0",
     "eth-json-rpc-middleware": "^6.0.0",
     "eth-keyring-controller": "^6.1.0",
     "eth-method-registry": "^1.2.0",
