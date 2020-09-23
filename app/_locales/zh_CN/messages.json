@@ -650,6 +650,9 @@
   "gasLimit": {
     "message": "燃料限制"
   },
+  "gasLimitInfoTooltipContent": {
+    "message": "燃料限制是指你愿意花费的最燃料量单位。"
+  },
   "gasLimitTooLow": {
     "message": "燃料限制至少要 21000"
   },
@@ -658,6 +661,9 @@
   },
   "gasPriceExtremelyLow": {
     "message": "燃料价格极低"
+  },
+  "gasPriceInfoTooltipContent": {
+    "message": "燃料价格规定了你愿意为每单位燃料支付的 Ether 数量。"
   },
   "gasUsed": {
     "message": "燃料使用"
