@@ -1781,6 +1781,12 @@
   "token": {
     "message": "Token"
   },
+  "tokenAlreadyAdded": {
+    "message": "Token has already been added."
+  },
+  "tokenContractAddress": {
+    "message": "Token Contract Address"
+  },
   "tokenOptions": {
     "message": "Token options"
   },
@@ -1804,6 +1810,12 @@
   },
   "transactionCreated": {
     "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped at $2."
+  },
+  "transactionError": {
+    "message": "Transaction Error. Exception thrown in contract code."
   },
   "transactionErrorNoContract": {
     "message": "Trying to call a function on a non-contract address."
@@ -1892,6 +1904,9 @@
   "urlExistsErrorMsg": {
     "message": "URL is already present in existing list of networks"
   },
+  "usePhishingDetection": {
+    "message": "Use Phishing Detection"
+  },
   "usePhishingDetectionDescription": {
     "message": "Display a warning for phishing domains targeting Ethereum users"
   },
@@ -1919,6 +1934,9 @@
   "visitWebSite": {
     "message": "Visit our web site"
   },
+  "walletConnectionGuide": {
+    "message": "our hardware wallet connection guide"
+  },
   "walletSeed": {
     "message": "Seed phrase"
   },
@@ -1933,6 +1951,10 @@
   },
   "writePhrase": {
     "message": "Write this phrase on a piece of paper and store in a secure location. If you want even more security, write it down on multiple pieces of paper and store each in 2 - 3 different locations."
+  },
+  "xOfY": {
+    "message": "$1 of $2",
+    "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
   },
   "yesLetsTry": {
     "message": "Yes, let's try"
