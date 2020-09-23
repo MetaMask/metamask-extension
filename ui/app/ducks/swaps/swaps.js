@@ -26,6 +26,12 @@ const slice = createSlice({
       state.fetchingQuotes = false
       state.submittingSwap = false
     },
+    retriedGetQuotes: (state) => {
+      state.approveTxId = null
+      state.balanceError = false
+      state.fetchingQuotes = false
+      state.submittingSwap = false
+    },
     setAggregatorMetadata: (state, action) => {
       state.aggregatorMetadata = action.payload
     },
@@ -65,6 +71,7 @@ export default reducer
 const {
   clearSwapsState,
   navigatedBackToBuildQuote,
+  retriedGetQuotes,
   setAggregatorMetadata,
   setApproveTxId,
   setBalanceError,
@@ -96,6 +103,14 @@ export const navigateBackToBuildQuote = (history) => {
     dispatch(navigatedBackToBuildQuote())
 
     history.push(BUILD_QUOTE_ROUTE)
+  }
+}
+
+export const prepareForRetryGetQuotes = () => {
+  return async (dispatch) => {
+    // TODO: Ensure any fetch in progress is cancelled
+    await dispatch(resetSwapsPostFetchState())
+    dispatch(retriedGetQuotes())
   }
 }
 
