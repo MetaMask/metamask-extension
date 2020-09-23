@@ -1,7 +1,4 @@
 {
-  "reject": {
-    "message": "Rejeitar"
-  },
   "account": {
     "message": "Conta"
   },
@@ -73,11 +70,11 @@
   "copiedExclamation": {
     "message": "Copiado!"
   },
-  "copyToClipboard": {
-    "message": "Copiar para o clipboard"
-  },
   "copyPrivateKey": {
     "message": "Esta é a sua chave privada (carregue para copiar)"
+  },
+  "copyToClipboard": {
+    "message": "Copiar para o clipboard"
   },
   "create": {
     "message": "Criar"
@@ -91,11 +88,11 @@
   "customRPC": {
     "message": "Customizar RPC"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Decimais devem ser no mínimo 0 e não passar de 36."
-  },
   "decimal": {
     "message": "Precisão em Decimais"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Decimais devem ser no mínimo 0 e não passar de 36."
   },
   "defaultNetwork": {
     "message": "A rede pré definida para transações em Ether é a Main Net."
@@ -202,14 +199,14 @@
   "invalidAddressRecipient": {
     "message": "O endereço do destinatário é inválido "
   },
+  "invalidBlockExplorerURL": {
+    "message": "Block Explorer URI Inválido"
+  },
   "invalidInput": {
     "message": "Campo inválido."
   },
   "invalidRPC": {
     "message": "RPC URI Inválido"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Block Explorer URI Inválido"
   },
   "jsonFile": {
     "message": "Ficheiro JSON",
@@ -227,9 +224,6 @@
   "loadingTokens": {
     "message": "A carregar Tokens..."
   },
-  "unlock": {
-    "message": "Entrar"
-  },
   "lock": {
     "message": "Sair"
   },
@@ -242,11 +236,11 @@
   "metamaskDescription": {
     "message": "O MetaMask é um lugar seguro para guardar a sua identidade em em Ethereum."
   },
-  "myAccounts": {
-    "message": "As minhas contas"
-  },
   "mustSelectOne": {
     "message": "Deve escolher no mínimo 1 token."
+  },
+  "myAccounts": {
+    "message": "As minhas contas"
   },
   "needEtherInWallet": {
     "message": "Para interagir com applicações descentralizadas usando MetaMask tem de ter Ether na sua carteira."
@@ -309,17 +303,20 @@
   "recipientAddress": {
     "message": "Endereço do Destinatário"
   },
+  "reject": {
+    "message": "Rejeitar"
+  },
   "rejected": {
     "message": "Rejeitado"
+  },
+  "required": {
+    "message": "Necessário"
   },
   "resetAccount": {
     "message": "Reinicializar Conta"
   },
   "restoreFromSeed": {
     "message": "Restaurar a partir da frase seed"
-  },
-  "required": {
-    "message": "Necessário"
   },
   "revealSeedWords": {
     "message": "Revelar Palavras Seed"
@@ -366,16 +363,16 @@
   "showPrivateKeys": {
     "message": "Mostrar Chaves Privadas"
   },
+  "sigRequest": {
+    "message": "Pedido de Assinatura"
+  },
   "sign": {
     "message": "Assinar"
-  },
-  "signatureRequest": {
-    "message": "Pedido de Assinatura"
   },
   "signNotice": {
     "message": "Assinar esta mensagem pode ter \nefeitos laterais perigosos. Apenas assine mensagens de sites que \ntotalmente confia com a sua conta total.\n Este método perigoso será removido numa versão posterior."
   },
-  "sigRequest": {
+  "signatureRequest": {
     "message": "Pedido de Assinatura"
   },
   "stateLogs": {
@@ -418,6 +415,9 @@
   "unknownNetwork": {
     "message": "Rede Privada Desconhecida"
   },
+  "unlock": {
+    "message": "Entrar"
+  },
   "urlErrorMsg": {
     "message": "Links requerem o prefixo HTTP/HTTPS apropriado."
   },
@@ -433,10 +433,10 @@
   "welcome": {
     "message": "Bem-vindo ao MetaMask"
   },
-  "yourSigRequested": {
-    "message": "A sua assinatura está a ser pedida"
-  },
   "youSign": {
     "message": "Está a assinar"
+  },
+  "yourSigRequested": {
+    "message": "A sua assinatura está a ser pedida"
   }
 }

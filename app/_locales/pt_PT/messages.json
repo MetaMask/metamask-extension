@@ -1,11 +1,4 @@
 {
-  "appName": {
-    "message": "MetaMask",
-    "description": "The name of the application"
-  },
-  "reject": {
-    "message": "Rejeitar"
-  },
   "about": {
     "message": "Acerca de"
   },
@@ -18,20 +11,15 @@
   "amount": {
     "message": "Quantia"
   },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
   "back": {
     "message": "Anterior"
   },
   "basic": {
     "message": "Básico"
-  },
-  "off": {
-    "message": "Desativado"
-  },
-  "ok": {
-    "message": "OK"
-  },
-  "on": {
-    "message": "Ativado"
   },
   "cancel": {
     "message": "Cancelar"
@@ -108,6 +96,15 @@
   "next": {
     "message": "Seguinte"
   },
+  "off": {
+    "message": "Desativado"
+  },
+  "ok": {
+    "message": "OK"
+  },
+  "on": {
+    "message": "Ativado"
+  },
   "origin": {
     "message": "Origem"
   },
@@ -120,11 +117,8 @@
   "queue": {
     "message": "Fila"
   },
-  "reset": {
-    "message": "Repor"
-  },
-  "restore": {
-    "message": "Restaurar"
+  "reject": {
+    "message": "Rejeitar"
   },
   "remove": {
     "message": "Remover"
@@ -132,11 +126,14 @@
   "removeAccount": {
     "message": "Remover conta"
   },
+  "reset": {
+    "message": "Repor"
+  },
+  "restore": {
+    "message": "Restaurar"
+  },
   "save": {
     "message": "Guardar"
-  },
-  "slow": {
-    "message": "Lento"
   },
   "search": {
     "message": "Pesquisar"
@@ -146,6 +143,9 @@
   },
   "settings": {
     "message": "Definições"
+  },
+  "slow": {
+    "message": "Lento"
   },
   "tips": {
     "message": "Doações"

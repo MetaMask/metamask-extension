@@ -1,14 +1,4 @@
 {
-  "appName": {
-    "message": "MetaMask",
-    "description": "The name of the application"
-  },
-  "approve": {
-    "message": "Aprubahan"
-  },
-  "reject": {
-    "message": "Tanggihan"
-  },
   "accountDetails": {
     "message": "Detalye ng Account"
   },
@@ -24,6 +14,13 @@
   "appDescription": {
     "message": "Ethereum Browser Extension",
     "description": "Ang deskripsyon ng application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Aprubahan"
   },
   "attemptingConnect": {
     "message": "Sinusubukang kumonekta sa blockchain."
@@ -58,11 +55,11 @@
   "copiedExclamation": {
     "message": "Kinopya!"
   },
-  "copyToClipboard": {
-    "message": "Kinopya sa clipboard"
-  },
   "copyPrivateKey": {
     "message": "Ito ang iyong private key (i-click upang makopya)"
+  },
+  "copyToClipboard": {
+    "message": "Kinopya sa clipboard"
   },
   "create": {
     "message": "Gumawa"
@@ -213,6 +210,9 @@
   "recipientAddress": {
     "message": "Address ng Tatanggap"
   },
+  "reject": {
+    "message": "Tanggihan"
+  },
   "rejected": {
     "message": "Tinanggihan"
   },
@@ -234,14 +234,14 @@
   "showPrivateKeys": {
     "message": "Ipakita ang Private Keys"
   },
+  "sigRequest": {
+    "message": "Hiling na Signature"
+  },
   "sign": {
     "message": "I-sign"
   },
   "signNotice": {
     "message": "Ang pag-sign ng mensaheng ito ay maaring magdulot ng mapanganib na epekto. I-sign lamang ang mga mensahe mula sa mga site na pinagkakatiwalaan mo ng iyong account. Ang mapanganib na paraang ito ay aalisin sa isa sa mga susunod na bersyon. "
-  },
-  "sigRequest": {
-    "message": "Hiling na Signature"
   },
   "total": {
     "message": "Kabuuan"
@@ -265,10 +265,10 @@
   "viewAccount": {
     "message": "Tingnan ang Account"
   },
-  "yourSigRequested": {
-    "message": "Hinihiling ang iyong signature"
-  },
   "youSign": {
     "message": "Ikaw ay nagsa-sign"
+  },
+  "yourSigRequested": {
+    "message": "Hinihiling ang iyong signature"
   }
 }

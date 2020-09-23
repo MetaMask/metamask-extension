@@ -1,13 +1,4 @@
 {
-  "chartOnlyAvailableEth": {
-    "message": "チャートはEthereumネットワークでのみ利用可能です。"
-  },
-  "contractInteraction": {
-    "message": "コントラクトへのアクセス"
-  },
-  "reject": {
-    "message": "拒否"
-  },
   "aboutSettingsDescription": {
     "message": "バージョンやサポート、問合せ先など"
   },
@@ -35,20 +26,20 @@
   "activityLog": {
     "message": "アクティビティログ"
   },
+  "addAcquiredTokens": {
+    "message": "MetaMaskで獲得したトークンを追加する"
+  },
+  "addAlias": {
+    "message": "エイリアスを追加"
+  },
   "addNetwork": {
     "message": "ネットワーク追加"
   },
   "addRecipient": {
     "message": "受取人追加"
   },
-  "advanced": {
-    "message": "詳細"
-  },
-  "advancedSettingsDescription": {
-    "message": "開発者向け機能では、状態ログのダウンロード、アカウントリセットし、テストネットやカスタムRPCの設定が可能です。"
-  },
-  "advancedOptions": {
-    "message": "詳細設定"
+  "addSuggestedTokens": {
+    "message": "推奨トークンを追加"
   },
   "addToAddressBook": {
     "message": "アドレス帳に追加"
@@ -56,20 +47,20 @@
   "addToAddressBookModalPlaceholder": {
     "message": "例: John D"
   },
-  "addAlias": {
-    "message": "エイリアスを追加"
-  },
   "addToken": {
     "message": "トークンを追加"
   },
   "addTokens": {
     "message": "トークンを追加"
   },
-  "addSuggestedTokens": {
-    "message": "推奨トークンを追加"
+  "advanced": {
+    "message": "詳細"
   },
-  "addAcquiredTokens": {
-    "message": "MetaMaskで獲得したトークンを追加する"
+  "advancedOptions": {
+    "message": "詳細設定"
+  },
+  "advancedSettingsDescription": {
+    "message": "開発者向け機能では、状態ログのダウンロード、アカウントリセットし、テストネットやカスタムRPCの設定が可能です。"
   },
   "amount": {
     "message": "金額"
@@ -91,14 +82,14 @@
   "asset": {
     "message": "アセット"
   },
-  "attemptingConnect": {
-    "message": "ブロックチェーンに接続中"
-  },
   "attemptToCancel": {
     "message": "キャンセルを試みますか？"
   },
   "attemptToCancelDescription": {
     "message": "このキャンセルを送信しても、元のトランザクションがキャンセルされることは保証されません。キャンセルが成功した場合、上記の取引手数料が請求されます。"
+  },
+  "attemptingConnect": {
+    "message": "ブロックチェーンに接続中"
   },
   "attributions": {
     "message": "属性"
@@ -130,6 +121,9 @@
   "cancel": {
     "message": "キャンセル"
   },
+  "chartOnlyAvailableEth": {
+    "message": "チャートはEthereumネットワークでのみ利用可能です。"
+  },
   "confirm": {
     "message": "確認"
   },
@@ -142,14 +136,17 @@
   "contractDeployment": {
     "message": "コントラクトのデプロイ"
   },
+  "contractInteraction": {
+    "message": "コントラクトへのアクセス"
+  },
   "copiedExclamation": {
     "message": "コピー完了!"
   },
-  "copyToClipboard": {
-    "message": "クリップボードへコピー"
-  },
   "copyPrivateKey": {
     "message": "これはあなたの秘密鍵です(クリックでコピー)"
+  },
+  "copyToClipboard": {
+    "message": "クリップボードへコピー"
   },
   "create": {
     "message": "作成"
@@ -160,11 +157,11 @@
   "customGas": {
     "message": "ガスのカスタマイズ"
   },
-  "customToken": {
-    "message": "カスタムトークン"
-  },
   "customRPC": {
     "message": "カスタムRPC"
+  },
+  "customToken": {
+    "message": "カスタムトークン"
   },
   "decimal": {
     "message": "小数点桁数"
@@ -278,9 +275,6 @@
   "kovan": {
     "message": "Kovanテストネットワーク"
   },
-  "max": {
-    "message": "最大"
-  },
   "learnMore": {
     "message": "詳細"
   },
@@ -296,23 +290,23 @@
   "loadingTokens": {
     "message": "トークンをロード中..."
   },
-  "unlock": {
-    "message": "ログイン"
-  },
   "lock": {
     "message": "ログアウト"
   },
   "mainnet": {
     "message": "Ethereumメインネットワーク"
   },
+  "max": {
+    "message": "最大"
+  },
   "message": {
     "message": "メッセージ"
   },
-  "myAccounts": {
-    "message": "マイアカウント"
-  },
   "mustSelectOne": {
     "message": "一つ以上のトークンを選択してください。"
+  },
+  "myAccounts": {
+    "message": "マイアカウント"
   },
   "needEtherInWallet": {
     "message": "MetaMaskで分散型アプリケーションを使用するためには、このウォレットにEtherが必要です。"
@@ -337,14 +331,14 @@
   "newPassword": {
     "message": "新規パスワード(最低8文字)"
   },
-  "noAlreadyHaveSeed": {
-    "message": "すでにシードを持っています"
-  },
   "next": {
     "message": "次へ"
   },
   "noAddressForName": {
     "message": "この名前にはアドレスが設定されていません。"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "すでにシードを持っています"
   },
   "noTransactions": {
     "message": "トランザクションがありません。"
@@ -375,17 +369,20 @@
   "recipientAddress": {
     "message": "受取人アドレス"
   },
+  "reject": {
+    "message": "拒否"
+  },
   "rejected": {
     "message": "拒否されました"
+  },
+  "required": {
+    "message": "必要です。"
   },
   "resetAccount": {
     "message": "アカウントをリセット"
   },
   "restoreFromSeed": {
     "message": "パスフレーズから復元する"
-  },
-  "required": {
-    "message": "必要です。"
   },
   "revealSeedWords": {
     "message": "パスフレーズを表示"
@@ -405,6 +402,9 @@
   "searchResults": {
     "message": "検索結果"
   },
+  "searchTokens": {
+    "message": "トークンの検索"
+  },
   "selectCurrency": {
     "message": "通貨を選択"
   },
@@ -420,25 +420,22 @@
   "sendTokens": {
     "message": "トークンを送信"
   },
-  "searchTokens": {
-    "message": "トークンの検索"
-  },
   "settings": {
     "message": "設定"
   },
   "showPrivateKeys": {
     "message": "秘密鍵を表示"
   },
+  "sigRequest": {
+    "message": "署名リクエスト"
+  },
   "sign": {
     "message": "署名"
-  },
-  "signatureRequest": {
-    "message": "署名リクエスト"
   },
   "signNotice": {
     "message": "このメッセージへの署名は危険となる可能性があります。\n完全に信頼するサイトからのメッセージのみ、\nあなたのアカウントで署名して下さい。今後のバージョンでは、\nこの危険なメソッドは削除される予定です。"
   },
-  "sigRequest": {
+  "signatureRequest": {
     "message": "署名リクエスト"
   },
   "terms": {
@@ -472,6 +469,9 @@
   "unknownNetwork": {
     "message": "不明なプライベートネットワーク"
   },
+  "unlock": {
+    "message": "ログイン"
+  },
   "usedByClients": {
     "message": "様々なクライアントによって使用されています。"
   },
@@ -484,16 +484,16 @@
   "walletSeed": {
     "message": "ウォレットのパスフレーズ"
   },
-  "welcomeBack": {
-    "message": "おかえりなさい!"
-  },
   "welcome": {
     "message": "MetaMask ベータ版へようこそ!"
   },
-  "yourSigRequested": {
-    "message": "あなたの署名がリクエストされています。"
+  "welcomeBack": {
+    "message": "おかえりなさい!"
   },
   "youSign": {
     "message": "署名しています。"
+  },
+  "yourSigRequested": {
+    "message": "あなたの署名がリクエストされています。"
   }
 }

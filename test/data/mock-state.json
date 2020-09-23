@@ -1,4 +1,12 @@
 {
+  "appState": {
+    "gasIsLoading": false,
+    "currentView": {
+      "name": "accountDetail",
+      "detailView": null,
+      "context": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
+    }
+  },
   "metamask": {
     "featureFlags": {
       "showIncomingTransactions": true
@@ -1115,13 +1123,5 @@
         "origin": "tmashuang.github.io"
       }
     ]
-  },
-  "appState": {
-    "gasIsLoading": false,
-    "currentView": {
-      "name": "accountDetail",
-      "detailView": null,
-      "context": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
-    }
   }
 }

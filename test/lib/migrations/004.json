@@ -1,7 +1,4 @@
 {
-  "meta": {
-    "version": 4
-  },
   "data": {
     "seedWords": null,
     "fiatCurrency": "USD",
@@ -135,5 +132,8 @@
       }
     ],
     "gasMultiplier": 1
+  },
+  "meta": {
+    "version": 4
   }
 }
