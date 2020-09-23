@@ -141,7 +141,7 @@
     "message": "确认提交该操作无法保证能够成功取消你的原始交易。如取消成功，你将被收取上述交易费。"
   },
   "attemptingConnect": {
-    "message": "正在尝试连接区块链。"
+    "message": "正在尝试连接到区块链。"
   },
   "attributions": {
     "message": "来源"
@@ -351,13 +351,16 @@
     "message": "合约交互"
   },
   "copiedExclamation": {
-    "message": "已复制！"
+    "message": "已复制"
   },
   "copiedTransactionId": {
     "message": "交易 ID 复制成功"
   },
   "copyAddress": {
     "message": "复制地址到剪贴板"
+  },
+  "copyPrivateKey": {
+    "message": "这是你的私钥（点击复制）"
   },
   "copyToClipboard": {
     "message": "复制到剪贴板"
@@ -588,7 +591,7 @@
     "message": "栈："
   },
   "estimatedProcessingTimes": {
-    "message": "预估处理时间"
+    "message": "预计处理时间"
   },
   "eth_accounts": {
     "message": "查看你允许的账户的地址（必填）"
@@ -744,7 +747,7 @@
     "message": "使用账户助记词导入账户"
   },
   "importUsingSeed": {
-    "message": "使用帐号种子密语导入"
+    "message": "使用账户助记词导入"
   },
   "importWallet": {
     "message": "导入钱包"
@@ -861,7 +864,7 @@
     "message": "备忘"
   },
   "memorizePhrase": {
-    "message": "记住该密语。"
+    "message": "记住该账户助记词。"
   },
   "message": {
     "message": "消息"
@@ -1041,7 +1044,7 @@
     "message": "密码"
   },
   "passwordNotLongEnough": {
-    "message": "密码长度不够"
+    "message": "密码长度不足"
   },
   "passwordsDontMatch": {
     "message": "密码不匹配"
@@ -1173,7 +1176,7 @@
     "message": "恢复"
   },
   "restoreAccountWithSeed": {
-    "message": "使用种子密语恢复个人账户"
+    "message": "使用账户助记词恢复你的账户"
   },
   "restoreFromSeed": {
     "message": "从助记词还原"
@@ -1263,7 +1266,7 @@
     "message": "账户助记词由 12、15、18、21 或 24 个单词组成"
   },
   "selectAHigherGasFee": {
-    "message": "请选择价格稍高的天然气费，加快交易处理速度。*"
+    "message": "选择更高的交易费，提高交易处理速度。*"
   },
   "selectAccounts": {
     "message": "选择账户"
@@ -1272,10 +1275,10 @@
     "message": "全部选择"
   },
   "selectAnAccount": {
-    "message": "选择账户"
+    "message": "选择一个账户"
   },
   "selectAnAccountHelp": {
-    "message": "请通过 MetaMask 选择需要查看的账户"
+    "message": "选择在 MetaMask 中查看的账户"
   },
   "selectCurrency": {
     "message": "选择货币"
@@ -1368,7 +1371,7 @@
     "message": "签名"
   },
   "signNotice": {
-    "message": "签署此信息可能会产生危险的副作用。只有从你完全信任的网站用你的整个账户签署消息。这种危险的方法将在未来的版本中被删除。"
+    "message": "签署此消息可能会产生危险的副作用。 \n只从你完全信任的网站上签名。 这种危险的方法将在未来的版本中被移除。"
   },
   "signatureRequest": {
     "message": "请求签名"
@@ -1563,7 +1566,7 @@
     "message": "试图在一个非合约地址上调用一个函数。"
   },
   "transactionErrored": {
-    "message": "交易报错。"
+    "message": "交易出现错误。"
   },
   "transactionFee": {
     "message": "交易费"
