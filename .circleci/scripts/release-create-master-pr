@@ -44,7 +44,7 @@ install_github_cli
 printf '%s\n' "Creating a Pull Request to sync 'master' with 'develop'"
 
 if ! hub pull-request \
-    --message "Master => develop" --message 'Merge latest release back into develop' \
+    --message "refactor: Master => develop" --message 'Merge latest release back into develop' \
     --base "$CIRCLE_PROJECT_USERNAME:$base_branch" \
     --head "$CIRCLE_PROJECT_USERNAME:$CIRCLE_BRANCH";
 then

@@ -292,7 +292,7 @@ steps:
         limit: 2
     commands:
       - 'source .buildkite/scripts/pre'
-      - 'docker-run yarn test:e2e:chrome:parallel'
+      - 'docker-run yarn test:e2e:chrome:keytest'
       # - 'cpout test-artifacts || true'
     artifact_paths:
       - 'test-artifacts/**/*'
@@ -309,7 +309,7 @@ steps:
         limit: 2
     commands:
       - 'source .buildkite/scripts/pre'
-      - 'docker-run yarn test:e2e:firefox:parallel'
+      - 'docker-run yarn test:e2e:firefox:keytest'
       # - 'cpout test-artifacts || true'
     artifact_paths:
       - 'test-artifacts/**/*'

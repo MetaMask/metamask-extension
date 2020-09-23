@@ -86,12 +86,3 @@ fi
   #   'node test/e2e/mock-3box/server.js' \
   #   'yarn dapp' \
   #   'mocha test/e2e/threebox.spec'
-
-if [ "$BUILDKITE_STEP_KEY" = 'key-e2e-chrome' ] || [ "$BUILDKITE_STEP_KEY" = 'key-e2e-firefox' ]; then
-  concurrently --kill-others \
-               --names 'dapp,e2e' \
-               --prefix '[{time}][{name}]' \
-               --success first \
-               'yarn dapp' \
-               'mocha test/e2e/metamask-ui.spec' || exit 8
-fi
