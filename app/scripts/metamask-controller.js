@@ -575,7 +575,6 @@ export default class MetamaskController extends EventEmitter {
 
       // swaps
       fetchAndSetQuotes: nodeify(swapsController.fetchAndSetQuotes, swapsController),
-      setQuotes: nodeify(swapsController.setQuotes, swapsController),
       setSelectedQuoteAggId: nodeify(swapsController.setSelectedQuoteAggId, swapsController),
       resetSwapsState: nodeify(swapsController.resetSwapsState, swapsController),
       setSwapsTokens: nodeify(swapsController.setSwapsTokens, swapsController),
