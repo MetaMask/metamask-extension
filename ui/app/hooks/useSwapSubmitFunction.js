@@ -11,43 +11,26 @@ import {
 } from '../helpers/constants/swaps'
 
 import {
-  getApproveTxParams,
   getDestinationTokenInfo,
   navigateBackToBuildQuote,
   prepareForRetryGetQuotes,
-  setApproveTxId,
-  getFetchParams,
   setFetchingQuotes,
   setSwapsFromToken,
   getSwapsTokens,
-  getSelectedQuote,
   getMaxMode,
   setSwapQuotesFetchStartTime,
-  getSwapsTradeTxParams,
   getSwapsErrorKey,
-  setSubmittingSwap,
-  getTopQuote,
+  signAndSendTransactions,
 } from '../ducks/swaps/swaps'
 import {
   setInitialGasEstimate,
   setSwapsErrorKey,
-  setTradeTxId,
-  addUnapprovedTransaction,
-  updateAndApproveTx,
-  forceUpdateMetamaskState,
-  updateTransaction,
   addToken,
   fetchAndSetQuotes,
-  setShowAwaitingSwapScreen,
-  stopPollingForQuotes,
   setBackgoundSwapRouteState,
 } from '../store/actions'
-import { fetchTradesInfo } from '../pages/swaps/swaps.util'
 import { getTokenExchangeRates } from '../selectors'
 import { calcGasTotal } from '../pages/send/send.utils'
-import { constructTxParams } from '../helpers/utils/util'
-
-import { decimalToHex, hexMax } from '../helpers/utils/conversions.util'
 
 export function useSwapSubmitFunction ({
   maxSlippage,
@@ -58,7 +41,6 @@ export function useSwapSubmitFunction ({
   selectedToToken,
   balanceError,
   ethBalance,
-  networkId,
   isCustomNetwork,
 }) {
   const dispatch = useDispatch()
@@ -70,13 +52,7 @@ export function useSwapSubmitFunction ({
   const isSwapsErrorRoute = pathname === SWAPS_ERROR_ROUTE
 
   const destinationToken = useSelector(getDestinationTokenInfo)
-  const tradeTxParams = useSelector(getSwapsTradeTxParams)
-  const approveTxParams = useSelector(getApproveTxParams)
-  const fetchParams = useSelector(getFetchParams)
   const contractExchangeRates = useSelector(getTokenExchangeRates)
-  const topQuote = useSelector(getTopQuote)
-  const selectedQuote = useSelector(getSelectedQuote)
-  const usedQuote = selectedQuote || topQuote
   const maxMode = useSelector(getMaxMode)
   const swapsErrorKey = useSelector(getSwapsErrorKey)
 
@@ -88,71 +64,6 @@ export function useSwapSubmitFunction ({
       return
     }
     history.push(`${ASSET_ROUTE}/${destinationToken.address}`)
-  }
-
-  const signAndSendTransactions = async () => {
-    const { metaData, value: swapTokenValue, slippage } = fetchParams
-    const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData
-    history.push(AWAITING_SWAP_ROUTE)
-
-    dispatch(stopPollingForQuotes())
-
-    dispatch(setSubmittingSwap(true))
-    let usedTradeTxParams = usedQuote.trade
-
-    const estimatedGasLimitWithMultiplier = (new BigNumber(usedQuote?.gasEstimate || decimalToHex(usedQuote?.averageGas || 0), 16).times(1.4, 10)).round(0).toString(16)
-    const maxGasLimit = hexMax((`0x${decimalToHex(usedQuote?.maxGas || 0)}`), estimatedGasLimitWithMultiplier)
-    usedTradeTxParams.gas = maxGasLimit
-
-    const totalGasLimitForCalculation = (new BigNumber(usedTradeTxParams.gas, 16)).plus(usedQuote.approvalNeeded?.gas || '0x0', 16).toString(16)
-    const gasTotalInWeiHex = calcGasTotal(totalGasLimitForCalculation, usedGasPrice)
-    if (maxMode && sourceTokenInfo.symbol === 'ETH') {
-      const revisedTradeValue = (new BigNumber(ethBalance, 16)).minus(gasTotalInWeiHex, 16).toString(10)
-      const [revisedQuote] = await fetchTradesInfo({
-        sourceToken: sourceTokenInfo.address,
-        destinationToken: destinationTokenInfo.address,
-        slippage,
-        value: revisedTradeValue,
-        exchangeList: usedQuote.aggregator,
-        fromAddress: selectedAccountAddress,
-        timeout: 10000,
-        networkId,
-        isCustomNetwork,
-        sourceDecimals: 18,
-      })
-      const tradeForGasEstimate = { ...revisedQuote.trade }
-      delete tradeForGasEstimate.gas
-      usedTradeTxParams = constructTxParams({
-        ...revisedQuote.trade,
-        gas: decimalToHex(usedTradeTxParams.gas),
-        amount: decimalToHex(revisedQuote.trade.value),
-        gasPrice: tradeTxParams.gasPrice,
-      })
-    }
-
-    if (approveTxParams) {
-      const approveTxMeta = await dispatch(addUnapprovedTransaction({ ...approveTxParams, amount: '0x0' }, 'metamask'))
-      dispatch(setApproveTxId(approveTxMeta.id))
-      const finalApproveTxMeta = await (dispatch(updateTransaction({
-        ...approveTxMeta,
-        sourceTokenSymbol: sourceTokenInfo.symbol,
-      }, true)))
-      await dispatch(updateAndApproveTx(finalApproveTxMeta, true))
-    }
-
-    const tradeTxMeta = await dispatch(addUnapprovedTransaction(usedTradeTxParams, 'metamask'))
-    dispatch(setTradeTxId(tradeTxMeta.id))
-    const finalTradeTxMeta = await (dispatch(updateTransaction({
-      ...tradeTxMeta,
-      sourceTokenSymbol: sourceTokenInfo.symbol,
-      destinationTokenSymbol: destinationTokenInfo.symbol,
-      swapTokenValue,
-    }, true)))
-    await dispatch(updateAndApproveTx(finalTradeTxMeta, true))
-
-    await forceUpdateMetamaskState(dispatch)
-    dispatch(setShowAwaitingSwapScreen(true))
-    dispatch(setSubmittingSwap(false))
   }
 
   const fetchQuotesAndSetQuoteState = async () => {
@@ -240,7 +151,7 @@ export function useSwapSubmitFunction ({
     return async () => await dispatch(navigateBackToBuildQuote(history))
   }
   if (isViewQuoteRoute && (!balanceError || (maxMode && selectedFromToken?.symbol === 'ETH'))) {
-    return signAndSendTransactions
+    return async () => await dispatch(signAndSendTransactions())
   }
   if ((isViewQuoteRoute && balanceError) || isAwaitingSwapRoute) {
     return goToOverviewPage
