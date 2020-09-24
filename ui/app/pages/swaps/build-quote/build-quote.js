@@ -162,7 +162,7 @@ export default function BuildQuote ({
             className="build-quote__max-button"
             onClick={() => {
               dispatch(setMaxMode(true))
-              onInputChange(fromTokenAddress && fromTokenString === undefined ? null : fromTokenString, fromTokenString)
+              onInputChange(fromTokenString || '0', fromTokenString)
             }}
           >{t('max')}
           </div>
