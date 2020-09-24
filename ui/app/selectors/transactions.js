@@ -1,17 +1,17 @@
 import { createSelector } from 'reselect'
 import {
-  SUBMITTED_STATUS,
-  CONFIRMED_STATUS,
-  FAILED_STATUS,
   PRIORITY_STATUS_HASH,
   PENDING_STATUS_HASH,
 } from '../helpers/constants/transactions'
-import {
-  TRANSACTION_TYPE_CANCEL,
-  TRANSACTION_TYPE_RETRY,
-} from '../../../app/scripts/controllers/transactions/enums'
 import { hexToDecimal } from '../helpers/utils/conversions.util'
 import txHelper from '../../lib/tx-helper'
+import {
+  TRANSACTION_STATUS_CONFIRMED,
+  TRANSACTION_STATUS_FAILED,
+  TRANSACTION_STATUS_SUBMITTED,
+  TRANSACTION_TYPE_CANCEL,
+  TRANSACTION_TYPE_RETRY,
+} from '../../../shared/constants/transaction'
 import { getSelectedAddress } from '.'
 
 export const incomingTxListSelector = (state) => {
@@ -252,13 +252,13 @@ export const nonceSortedTransactionsSelector = createSelector(
         } = nonceProps
 
         const previousPrimaryIsNetworkFailure =
-          nonceProps.primaryTransaction.status === FAILED_STATUS &&
+          nonceProps.primaryTransaction.status === TRANSACTION_STATUS_FAILED &&
           nonceProps.primaryTransaction?.txReceipt?.status !== '0x0'
         const currentTransactionIsOnChainFailure =
           transaction?.txReceipt?.status === '0x0'
 
         if (
-          status === CONFIRMED_STATUS ||
+          status === TRANSACTION_STATUS_CONFIRMED ||
           currentTransactionIsOnChainFailure ||
           previousPrimaryIsNetworkFailure ||
           (txTime > primaryTxTime && status in PRIORITY_STATUS_HASH)
@@ -344,6 +344,6 @@ export const submittedPendingTransactionsSelector = createSelector(
   transactionsSelector,
   (transactions = []) =>
     transactions.filter(
-      (transaction) => transaction.status === SUBMITTED_STATUS,
+      (transaction) => transaction.status === TRANSACTION_STATUS_SUBMITTED,
     ),
 )

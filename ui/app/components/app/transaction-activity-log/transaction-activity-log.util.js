@@ -1,9 +1,6 @@
+import { TRANSACTION_TYPE_CANCEL, TRANSACTION_TYPE_RETRY } from '../../../../../shared/constants/transaction'
 import { getHexGasTotal } from '../../../helpers/utils/confirm-tx.util'
 
-import {
-  TRANSACTION_TYPE_CANCEL,
-  TRANSACTION_TYPE_RETRY,
-} from '../../../../../app/scripts/controllers/transactions/enums'
 import {
   // event constants
   TRANSACTION_CREATED_EVENT,

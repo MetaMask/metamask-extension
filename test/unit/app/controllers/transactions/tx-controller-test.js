@@ -5,20 +5,19 @@ import EthTx from 'ethereumjs-tx'
 import ObservableStore from 'obs-store'
 import sinon from 'sinon'
 import TransactionController from '../../../../../app/scripts/controllers/transactions'
-import { TRANSACTION_TYPE_RETRY } from '../../../../../app/scripts/controllers/transactions/enums'
-
-import {
-  TOKEN_METHOD_APPROVE,
-  TOKEN_METHOD_TRANSFER,
-  SEND_ETHER_ACTION_KEY,
-  DEPLOY_CONTRACT_ACTION_KEY,
-  CONTRACT_INTERACTION_KEY,
-} from '../../../../../ui/app/helpers/constants/transactions'
 
 import {
   createTestProviderTools,
   getTestAccounts,
 } from '../../../../stub/provider'
+import {
+  TRANSACTION_CATEGORY_CONTRACT_INTERACTION,
+  TRANSACTION_CATEGORY_DEPLOY_CONTRACT,
+  TRANSACTION_CATEGORY_SENT_ETHER,
+  TRANSACTION_CATEGORY_TOKEN_METHOD_APPROVE,
+  TRANSACTION_CATEGORY_TOKEN_METHOD_TRANSFER,
+  TRANSACTION_TYPE_RETRY,
+} from '../../../../../shared/constants/transaction'
 
 const noop = () => true
 const currentNetworkId = '42'
@@ -773,7 +772,7 @@ describe('Transaction Controller', function () {
         data: '',
       })
       assert.deepEqual(result, {
-        transactionCategory: SEND_ETHER_ACTION_KEY,
+        transactionCategory: TRANSACTION_CATEGORY_SENT_ETHER,
         getCodeResponse: null,
       })
     })
@@ -785,7 +784,7 @@ describe('Transaction Controller', function () {
           '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
       })
       assert.deepEqual(result, {
-        transactionCategory: TOKEN_METHOD_TRANSFER,
+        transactionCategory: TRANSACTION_CATEGORY_TOKEN_METHOD_TRANSFER,
         getCodeResponse: undefined,
       })
     })
@@ -797,7 +796,7 @@ describe('Transaction Controller', function () {
           '0x095ea7b30000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C9700000000000000000000000000000000000000000000000000000000000000005',
       })
       assert.deepEqual(result, {
-        transactionCategory: TOKEN_METHOD_APPROVE,
+        transactionCategory: TRANSACTION_CATEGORY_TOKEN_METHOD_APPROVE,
         getCodeResponse: undefined,
       })
     })
@@ -808,7 +807,7 @@ describe('Transaction Controller', function () {
         data: '0xabd',
       })
       assert.deepEqual(result, {
-        transactionCategory: DEPLOY_CONTRACT_ACTION_KEY,
+        transactionCategory: TRANSACTION_CATEGORY_DEPLOY_CONTRACT,
         getCodeResponse: undefined,
       })
     })
@@ -819,7 +818,7 @@ describe('Transaction Controller', function () {
         data: '0xabd',
       })
       assert.deepEqual(result, {
-        transactionCategory: SEND_ETHER_ACTION_KEY,
+        transactionCategory: TRANSACTION_CATEGORY_SENT_ETHER,
         getCodeResponse: '0x',
       })
     })
@@ -830,7 +829,7 @@ describe('Transaction Controller', function () {
         data: '0xabd',
       })
       assert.deepEqual(result, {
-        transactionCategory: SEND_ETHER_ACTION_KEY,
+        transactionCategory: TRANSACTION_CATEGORY_SENT_ETHER,
         getCodeResponse: null,
       })
     })
@@ -869,7 +868,7 @@ describe('Transaction Controller', function () {
         data: 'abd',
       })
       assert.deepEqual(result, {
-        transactionCategory: CONTRACT_INTERACTION_KEY,
+        transactionCategory: TRANSACTION_CATEGORY_CONTRACT_INTERACTION,
         getCodeResponse: '0x0a',
       })
     })
@@ -908,7 +907,7 @@ describe('Transaction Controller', function () {
         data: '',
       })
       assert.deepEqual(result, {
-        transactionCategory: CONTRACT_INTERACTION_KEY,
+        transactionCategory: TRANSACTION_CATEGORY_CONTRACT_INTERACTION,
         getCodeResponse: '0x0a',
       })
     })

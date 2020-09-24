@@ -12,20 +12,20 @@ import Button from '../../ui/button'
 import Tooltip from '../../ui/tooltip'
 import TransactionListItemDetails from '../transaction-list-item-details'
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes'
-import {
-  TRANSACTION_CATEGORY_SIGNATURE_REQUEST,
-  UNAPPROVED_STATUS,
-  TRANSACTION_CATEGORY_APPROVAL,
-  FAILED_STATUS,
-  DROPPED_STATUS,
-  REJECTED_STATUS,
-  TRANSACTION_CATEGORY_SWAP,
-} from '../../../helpers/constants/transactions'
 import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp'
 import TransactionStatus from '../transaction-status/transaction-status.component'
 import TransactionIcon from '../transaction-icon'
 import { useTransactionTimeRemaining } from '../../../hooks/useTransactionTimeRemaining'
 import IconWithLabel from '../../ui/icon-with-label'
+import {
+  TRANSACTION_GROUP_CATEGORY_APPROVAL,
+  TRANSACTION_GROUP_CATEGORY_SIGNATURE_REQUEST,
+  TRANSACTION_GROUP_CATEGORY_SWAP,
+  TRANSACTION_STATUS_DROPPED,
+  TRANSACTION_STATUS_FAILED,
+  TRANSACTION_STATUS_REJECTED,
+  TRANSACTION_STATUS_UNAPPROVED,
+} from '../../../../../shared/constants/transaction'
 
 export default function TransactionListItem({
   transactionGroup,
@@ -71,17 +71,20 @@ export default function TransactionListItem({
     gasPrice,
   )
 
-  const isSignatureReq = category === TRANSACTION_CATEGORY_SIGNATURE_REQUEST
-  const isApproval = category === TRANSACTION_CATEGORY_APPROVAL
-  const isUnapproved = displayedStatusKey === UNAPPROVED_STATUS
-  const isSwap = category === TRANSACTION_CATEGORY_SWAP
+  const isSignatureReq =
+    category === TRANSACTION_GROUP_CATEGORY_SIGNATURE_REQUEST
+  const isApproval = category === TRANSACTION_GROUP_CATEGORY_APPROVAL
+  const isUnapproved = status === TRANSACTION_STATUS_UNAPPROVED
+  const isSwap = category === TRANSACTION_GROUP_CATEGORY_SWAP
 
   const className = classnames('transaction-list-item', {
     'transaction-list-item--unconfirmed':
       isPending ||
-      [FAILED_STATUS, DROPPED_STATUS, REJECTED_STATUS].includes(
-        displayedStatusKey,
-      ),
+      [
+        TRANSACTION_STATUS_FAILED,
+        TRANSACTION_STATUS_DROPPED,
+        TRANSACTION_STATUS_REJECTED,
+      ].includes(displayedStatusKey),
   })
 
   const toggleShowDetails = useCallback(() => {
@@ -210,7 +213,7 @@ export default function TransactionListItem({
           senderAddress={senderAddress}
           recipientAddress={recipientAddress}
           onRetry={retryTransaction}
-          showRetry={status === FAILED_STATUS && !isSwap}
+          showRetry={status === TRANSACTION_STATUS_FAILED && !isSwap}
           showSpeedUp={shouldShowSpeedUp}
           isEarliestNonce={isEarliestNonce}
           onCancel={cancelTransaction}
