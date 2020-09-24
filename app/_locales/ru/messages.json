@@ -163,9 +163,6 @@
   "cancel": {
     "message": "Отмена"
   },
-  "cancelAttempt": {
-    "message": "Попытка отмены транзакции"
-  },
   "cancellationGasFee": {
     "message": "Комиссия за газ на отмену"
   },
@@ -329,9 +326,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Вы уверены, что хотите удалить эту сеть?"
-  },
-  "deposit": {
-    "message": "Пополнить"
   },
   "depositEther": {
     "message": "Пополнить Ether"
@@ -1023,9 +1017,6 @@
   },
   "sentEther": {
     "message": "Отправить Ether"
-  },
-  "sentTokens": {
-    "message": "Отправленные токены"
   },
   "separateEachWord": {
     "message": "Разделяйте каждое слово одним пробелом"

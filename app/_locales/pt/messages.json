@@ -97,9 +97,6 @@
   "defaultNetwork": {
     "message": "A rede pré definida para transações em Ether é a Main Net."
   },
-  "deposit": {
-    "message": "Depósito"
-  },
   "depositEther": {
     "message": "Depositar Ether"
   },

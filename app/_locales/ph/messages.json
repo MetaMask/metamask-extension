@@ -73,9 +73,6 @@
   "defaultNetwork": {
     "message": "Ang default network para sa Ether transactions ay ang Main Net."
   },
-  "deposit": {
-    "message": "Deposito"
-  },
   "depositEther": {
     "message": "I-deposito ang Ether"
   },
