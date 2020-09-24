@@ -11,6 +11,7 @@ import {
   setInitialGasEstimate,
   setSwapsErrorKey,
   setShowAwaitingSwapScreen,
+  setApproveTxId,
   setTradeTxId,
   stopPollingForQuotes,
   updateAndApproveTx,
@@ -65,9 +66,6 @@ const slice = createSlice({
     },
     setAggregatorMetadata: (state, action) => {
       state.aggregatorMetadata = action.payload
-    },
-    setApproveTxId: (state, action) => {
-      state.approveTxId = action.payload
     },
     setBalanceError: (state, action) => {
       state.balanceError = action.payload
@@ -190,7 +188,6 @@ const {
   navigatedBackToBuildQuote,
   retriedGetQuotes,
   setAggregatorMetadata,
-  setApproveTxId,
   setBalanceError,
   setFetchingQuotes,
   setFromToken,
@@ -203,7 +200,6 @@ const {
 export {
   clearSwapsState,
   setAggregatorMetadata,
-  setApproveTxId,
   setBalanceError,
   setFetchingQuotes,
   setFromToken as setSwapsFromToken,
