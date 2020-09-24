@@ -9,29 +9,27 @@ import { ethers } from 'ethers'
 import NonceTracker from 'nonce-tracker'
 import log from 'loglevel'
 import BigNumber from 'bignumber.js'
-import {
-  TOKEN_METHOD_APPROVE,
-  TOKEN_METHOD_TRANSFER,
-  TOKEN_METHOD_TRANSFER_FROM,
-  SEND_ETHER_ACTION_KEY,
-  DEPLOY_CONTRACT_ACTION_KEY,
-  CONTRACT_INTERACTION_KEY,
-  SWAP,
-} from '../../../../ui/app/helpers/constants/transactions'
 import cleanErrorStack from '../../lib/cleanErrorStack'
 import { hexToBn, bnToHex, BnMultiplyByFraction } from '../../lib/util'
 import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/helpers/constants/error-keys'
 import { getSwapsTokensReceivedFromTxMeta } from '../../../../ui/app/pages/swaps/swaps.util'
+import {
+  TRANSACTION_CATEGORY_CONTRACT_INTERACTION,
+  TRANSACTION_CATEGORY_DEPLOY_CONTRACT,
+  TRANSACTION_CATEGORY_SENT_ETHER,
+  TRANSACTION_CATEGORY_SWAP,
+  TRANSACTION_CATEGORY_TOKEN_METHOD_APPROVE,
+  TRANSACTION_CATEGORY_TOKEN_METHOD_TRANSFER,
+  TRANSACTION_CATEGORY_TOKEN_METHOD_TRANSFER_FROM,
+  TRANSACTION_STATUS_APPROVED,
+  TRANSACTION_TYPE_CANCEL,
+  TRANSACTION_TYPE_RETRY,
+  TRANSACTION_TYPE_STANDARD,
+} from '../../../../shared/constants/transaction'
 import TransactionStateManager from './tx-state-manager'
 import TxGasUtil from './tx-gas-utils'
 import PendingTransactionTracker from './pending-tx-tracker'
 import * as txUtils from './lib/util'
-import {
-  TRANSACTION_TYPE_CANCEL,
-  TRANSACTION_TYPE_RETRY,
-  TRANSACTION_TYPE_STANDARD,
-  TRANSACTION_STATUS_APPROVED,
-} from './enums'
 
 const hstInterface = new ethers.utils.Interface(abi)
 
@@ -312,7 +310,7 @@ export default class TransactionController extends EventEmitter {
       return {}
     } else if (
       txMeta.txParams.to &&
-      txMeta.transactionCategory === SEND_ETHER_ACTION_KEY
+      txMeta.transactionCategory === TRANSACTION_CATEGORY_SENT_ETHER
     ) {
       // if there's data in the params, but there's no contract code, it's not a valid transaction
       if (txMeta.txParams.data) {
@@ -527,7 +525,7 @@ export default class TransactionController extends EventEmitter {
   async publishTransaction (txId, rawTx) {
     const txMeta = this.txStateManager.getTx(txId)
     txMeta.rawTx = rawTx
-    if (txMeta.transactionCategory === SWAP) {
+    if (txMeta.transactionCategory === TRANSACTION_CATEGORY_SWAP) {
       const preTxBalance = await this.query.getBalance(txMeta.txParams.from)
       txMeta.preTxBalance = preTxBalance.toString(16)
     }
@@ -579,7 +577,7 @@ export default class TransactionController extends EventEmitter {
 
       this.txStateManager.updateTx(txMeta, 'transactions#confirmTransaction - add txReceipt')
 
-      if (txMeta.transactionCategory === SWAP) {
+      if (txMeta.transactionCategory === TRANSACTION_CATEGORY_SWAP) {
         const postTxBalance = await this.query.getBalance(txMeta.txParams.from)
         const latestTxMeta = this.txStateManager.getTx(txId)
 
@@ -726,16 +724,16 @@ export default class TransactionController extends EventEmitter {
     }
 
     const tokenMethodName = [
-      TOKEN_METHOD_APPROVE,
-      TOKEN_METHOD_TRANSFER,
-      TOKEN_METHOD_TRANSFER_FROM,
+      TRANSACTION_CATEGORY_TOKEN_METHOD_APPROVE,
+      TRANSACTION_CATEGORY_TOKEN_METHOD_TRANSFER,
+      TRANSACTION_CATEGORY_TOKEN_METHOD_TRANSFER_FROM,
     ].find((methodName) => methodName === name && name.toLowerCase())
 
     let result
     if (txParams.data && tokenMethodName) {
       result = tokenMethodName
     } else if (txParams.data && !to) {
-      result = DEPLOY_CONTRACT_ACTION_KEY
+      result = TRANSACTION_CATEGORY_DEPLOY_CONTRACT
     }
 
     let code
@@ -749,7 +747,7 @@ export default class TransactionController extends EventEmitter {
 
       const codeIsEmpty = !code || code === '0x' || code === '0x0'
 
-      result = codeIsEmpty ? SEND_ETHER_ACTION_KEY : CONTRACT_INTERACTION_KEY
+      result = codeIsEmpty ? TRANSACTION_CATEGORY_SENT_ETHER : TRANSACTION_CATEGORY_CONTRACT_INTERACTION
     }
 
     return { transactionCategory: result, getCodeResponse: code }

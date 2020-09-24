@@ -14,14 +14,14 @@ import {
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
 } from '../../helpers/constants/routes'
-import {
-  TOKEN_METHOD_TRANSFER,
-  TOKEN_METHOD_APPROVE,
-  TOKEN_METHOD_TRANSFER_FROM,
-  DEPLOY_CONTRACT_ACTION_KEY,
-  SEND_ETHER_ACTION_KEY,
-} from '../../helpers/constants/transactions'
 import { MESSAGE_TYPE } from '../../../../app/scripts/lib/enums'
+import {
+  TRANSACTION_CATEGORY_DEPLOY_CONTRACT,
+  TRANSACTION_CATEGORY_SENT_ETHER,
+  TRANSACTION_CATEGORY_TOKEN_METHOD_APPROVE,
+  TRANSACTION_CATEGORY_TOKEN_METHOD_TRANSFER,
+  TRANSACTION_CATEGORY_TOKEN_METHOD_TRANSFER_FROM,
+} from '../../../../shared/constants/transaction'
 
 export default class ConfirmTransactionSwitch extends Component {
   static propTypes = {
@@ -34,27 +34,27 @@ export default class ConfirmTransactionSwitch extends Component {
     } = this.props
     const { id, txParams: { data } = {}, transactionCategory } = txData
 
-    if (transactionCategory === DEPLOY_CONTRACT_ACTION_KEY) {
+    if (transactionCategory === TRANSACTION_CATEGORY_DEPLOY_CONTRACT) {
       const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_DEPLOY_CONTRACT_PATH}`
       return <Redirect to={{ pathname }} />
     }
 
-    if (transactionCategory === SEND_ETHER_ACTION_KEY) {
+    if (transactionCategory === TRANSACTION_CATEGORY_SENT_ETHER) {
       const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_SEND_ETHER_PATH}`
       return <Redirect to={{ pathname }} />
     }
 
     if (data) {
       switch (transactionCategory) {
-        case TOKEN_METHOD_TRANSFER: {
+        case TRANSACTION_CATEGORY_TOKEN_METHOD_TRANSFER: {
           const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_SEND_TOKEN_PATH}`
           return <Redirect to={{ pathname }} />
         }
-        case TOKEN_METHOD_APPROVE: {
+        case TRANSACTION_CATEGORY_TOKEN_METHOD_APPROVE: {
           const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_APPROVE_PATH}`
           return <Redirect to={{ pathname }} />
         }
-        case TOKEN_METHOD_TRANSFER_FROM: {
+        case TRANSACTION_CATEGORY_TOKEN_METHOD_TRANSFER_FROM: {
           const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_TRANSFER_FROM_PATH}`
           return <Redirect to={{ pathname }} />
         }

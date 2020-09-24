@@ -6,25 +6,27 @@ import { PRIMARY, SECONDARY } from '../helpers/constants/common'
 import { getTokenAddressParam } from '../helpers/utils/token-util'
 import { formatDateWithYearContext, shortenAddress, stripHttpSchemes } from '../helpers/utils/util'
 import {
-  CONTRACT_INTERACTION_KEY,
-  DEPLOY_CONTRACT_ACTION_KEY,
-  INCOMING_TRANSACTION,
-  TOKEN_METHOD_TRANSFER,
-  TOKEN_METHOD_TRANSFER_FROM,
-  SEND_ETHER_ACTION_KEY,
-  TRANSACTION_CATEGORY_APPROVAL,
-  TRANSACTION_CATEGORY_INTERACTION,
-  TRANSACTION_CATEGORY_RECEIVE,
-  TRANSACTION_CATEGORY_SEND,
-  TRANSACTION_CATEGORY_SIGNATURE_REQUEST,
-  TRANSACTION_CATEGORY_SWAP,
-  TOKEN_METHOD_APPROVE,
   PENDING_STATUS_HASH,
   TOKEN_CATEGORY_HASH,
-  SWAP,
-  SWAP_APPROVAL,
 } from '../helpers/constants/transactions'
 import { getTokens } from '../ducks/metamask/metamask'
+import {
+  TRANSACTION_CATEGORY_CONTRACT_INTERACTION,
+  TRANSACTION_CATEGORY_DEPLOY_CONTRACT,
+  TRANSACTION_CATEGORY_INCOMING,
+  TRANSACTION_CATEGORY_SENT_ETHER,
+  TRANSACTION_CATEGORY_SWAP,
+  TRANSACTION_CATEGORY_SWAP_APPROVAL,
+  TRANSACTION_CATEGORY_TOKEN_METHOD_APPROVE,
+  TRANSACTION_CATEGORY_TOKEN_METHOD_TRANSFER,
+  TRANSACTION_CATEGORY_TOKEN_METHOD_TRANSFER_FROM,
+  TRANSACTION_GROUP_CATEGORY_APPROVAL,
+  TRANSACTION_GROUP_CATEGORY_INTERACTION,
+  TRANSACTION_GROUP_CATEGORY_RECEIVE,
+  TRANSACTION_GROUP_CATEGORY_SEND,
+  TRANSACTION_GROUP_CATEGORY_SIGNATURE_REQUEST,
+  TRANSACTION_GROUP_CATEGORY_SWAP,
+} from '../../../shared/constants/transaction'
 import { useI18nContext } from './useI18nContext'
 import { useTokenFiatAmount } from './useTokenFiatAmount'
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency'
@@ -125,13 +127,13 @@ export function useTransactionDisplayData (transactionGroup) {
   // 7. Swap Approval
 
   if (transactionCategory === null || transactionCategory === undefined) {
-    category = TRANSACTION_CATEGORY_SIGNATURE_REQUEST
+    category = TRANSACTION_GROUP_CATEGORY_SIGNATURE_REQUEST
     title = t('signatureRequest')
     subtitle = origin
     subtitleContainsOrigin = true
 
-  } else if (transactionCategory === SWAP) {
-    category = TRANSACTION_CATEGORY_SWAP
+  } else if (transactionCategory === TRANSACTION_CATEGORY_SWAP) {
+    category = TRANSACTION_GROUP_CATEGORY_SWAP
     title = t('swapTokenToToken', [
       initialTransaction.sourceTokenSymbol,
       initialTransaction.destinationTokenSymbol,
@@ -145,38 +147,35 @@ export function useTransactionDisplayData (transactionGroup) {
     secondaryDisplayValue = swapTokenFiatAmount
     prefix = isViewingReceivedTokenFromSwap ? '+' : '-'
 
-  } else if (transactionCategory === SWAP_APPROVAL) {
-    category = TRANSACTION_CATEGORY_APPROVAL
+  } else if (transactionCategory === TRANSACTION_CATEGORY_SWAP_APPROVAL) {
+    category = TRANSACTION_GROUP_CATEGORY_APPROVAL
     title = t('swapApproval', [primaryTransaction.sourceTokenSymbol])
     subtitle = origin
     subtitleContainsOrigin = true
     primarySuffix = primaryTransaction.sourceTokenSymbol
-  } else if (transactionCategory === TOKEN_METHOD_APPROVE) {
-    category = TRANSACTION_CATEGORY_APPROVAL
+  } else if (transactionCategory === TRANSACTION_CATEGORY_TOKEN_METHOD_APPROVE) {
+    category = TRANSACTION_GROUP_CATEGORY_APPROVAL
     prefix = ''
     title = t('approveSpendLimit', [token?.symbol || t('token')])
     subtitle = origin
     subtitleContainsOrigin = true
-  } else if (transactionCategory === DEPLOY_CONTRACT_ACTION_KEY || transactionCategory === CONTRACT_INTERACTION_KEY) {
-    category = TRANSACTION_CATEGORY_INTERACTION
+  } else if (transactionCategory === TRANSACTION_CATEGORY_DEPLOY_CONTRACT || transactionCategory === TRANSACTION_CATEGORY_CONTRACT_INTERACTION) {
+    category = TRANSACTION_GROUP_CATEGORY_INTERACTION
     title = (methodData?.name && camelCaseToCapitalize(methodData.name)) || t(transactionCategory)
     subtitle = origin
     subtitleContainsOrigin = true
-
-  } else if (transactionCategory === INCOMING_TRANSACTION) {
-    category = TRANSACTION_CATEGORY_RECEIVE
+  } else if (transactionCategory === TRANSACTION_CATEGORY_INCOMING) {
+    category = TRANSACTION_GROUP_CATEGORY_RECEIVE
     title = t('receive')
     prefix = ''
     subtitle = t('fromAddress', [shortenAddress(senderAddress)])
-
-  } else if (transactionCategory === TOKEN_METHOD_TRANSFER_FROM || transactionCategory === TOKEN_METHOD_TRANSFER) {
-    category = TRANSACTION_CATEGORY_SEND
+  } else if (transactionCategory === TRANSACTION_CATEGORY_TOKEN_METHOD_TRANSFER_FROM || transactionCategory === TRANSACTION_CATEGORY_TOKEN_METHOD_TRANSFER) {
+    category = TRANSACTION_GROUP_CATEGORY_SEND
     title = t('sendSpecifiedTokens', [token?.symbol || t('token')])
     recipientAddress = getTokenAddressParam(tokenData)
     subtitle = t('toAddress', [shortenAddress(recipientAddress)])
-
-  } else if (transactionCategory === SEND_ETHER_ACTION_KEY) {
-    category = TRANSACTION_CATEGORY_SEND
+  } else if (transactionCategory === TRANSACTION_CATEGORY_SENT_ETHER) {
+    category = TRANSACTION_GROUP_CATEGORY_SEND
     title = t('sendETH')
     subtitle = t('toAddress', [shortenAddress(recipientAddress)])
   }
@@ -204,12 +203,12 @@ export function useTransactionDisplayData (transactionGroup) {
     date,
     subtitle,
     subtitleContainsOrigin,
-    primaryCurrency: transactionCategory === SWAP && isPending ? '' : primaryCurrency,
+    primaryCurrency: transactionCategory === TRANSACTION_CATEGORY_SWAP_APPROVAL && isPending ? '' : primaryCurrency,
     senderAddress,
     recipientAddress,
     secondaryCurrency: (
       (isTokenCategory && !tokenFiatAmount) ||
-      (transactionCategory === SWAP && !swapTokenFiatAmount)
+      (transactionCategory === TRANSACTION_CATEGORY_SWAP_APPROVAL && !swapTokenFiatAmount)
     ) ? undefined : secondaryCurrency,
     displayedStatusKey,
     isPending,

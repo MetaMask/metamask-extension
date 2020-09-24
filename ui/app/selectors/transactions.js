@@ -1,16 +1,11 @@
 import { createSelector } from 'reselect'
 import {
-  SUBMITTED_STATUS,
-  CONFIRMED_STATUS,
   PRIORITY_STATUS_HASH,
   PENDING_STATUS_HASH,
 } from '../helpers/constants/transactions'
-import {
-  TRANSACTION_TYPE_CANCEL,
-  TRANSACTION_TYPE_RETRY,
-} from '../../../app/scripts/controllers/transactions/enums'
 import { hexToDecimal } from '../helpers/utils/conversions.util'
 import txHelper from '../../lib/tx-helper'
+import { TRANSACTION_STATUS_CONFIRMED, TRANSACTION_STATUS_SUBMITTED, TRANSACTION_TYPE_CANCEL, TRANSACTION_TYPE_RETRY } from '../../../shared/constants/transaction'
 import {
   getSelectedAddress,
 } from '.'
@@ -230,7 +225,7 @@ export const nonceSortedTransactionsSelector = createSelector(
         if (status in PRIORITY_STATUS_HASH) {
           const { primaryTransaction: { time: primaryTxTime = 0 } = {} } = nonceProps
 
-          if (status === CONFIRMED_STATUS || txTime > primaryTxTime) {
+          if (status === TRANSACTION_STATUS_CONFIRMED || txTime > primaryTxTime) {
             nonceProps.primaryTransaction = transaction
           }
         }
@@ -301,6 +296,6 @@ export const nonceSortedCompletedTransactionsSelector = createSelector(
 export const submittedPendingTransactionsSelector = createSelector(
   transactionsSelector,
   (transactions = []) => (
-    transactions.filter((transaction) => transaction.status === SUBMITTED_STATUS)
+    transactions.filter((transaction) => transaction.status === TRANSACTION_STATUS_SUBMITTED)
   ),
 )

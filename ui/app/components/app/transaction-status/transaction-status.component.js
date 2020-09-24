@@ -3,18 +3,18 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import Tooltip from '../../ui/tooltip'
 
-import {
-  UNAPPROVED_STATUS,
-  REJECTED_STATUS,
-  SUBMITTED_STATUS,
-  CONFIRMED_STATUS,
-  FAILED_STATUS,
-  DROPPED_STATUS,
-  CANCELLED_STATUS,
-  APPROVED_STATUS,
-  SIGNED_STATUS,
-} from '../../../helpers/constants/transactions'
 import { useI18nContext } from '../../../hooks/useI18nContext'
+import {
+  TRANSACTION_GROUP_STATUS_CANCELLED,
+  TRANSACTION_STATUS_APPROVED,
+  TRANSACTION_STATUS_CONFIRMED,
+  TRANSACTION_STATUS_DROPPED,
+  TRANSACTION_STATUS_FAILED,
+  TRANSACTION_STATUS_REJECTED,
+  TRANSACTION_STATUS_SIGNED,
+  TRANSACTION_STATUS_SUBMITTED,
+  TRANSACTION_STATUS_UNAPPROVED,
+} from '../../../../../shared/constants/transaction'
 
 const QUEUED_PSEUDO_STATUS = 'queued'
 const PENDING_PSEUDO_STATUS = 'pending'
@@ -30,17 +30,17 @@ const PENDING_PSEUDO_STATUS = 'pending'
  * status label will be the date the transaction was finalized.
  */
 const pendingStatusHash = {
-  [SUBMITTED_STATUS]: PENDING_PSEUDO_STATUS,
-  [APPROVED_STATUS]: PENDING_PSEUDO_STATUS,
-  [SIGNED_STATUS]: PENDING_PSEUDO_STATUS,
+  [TRANSACTION_STATUS_SUBMITTED]: PENDING_PSEUDO_STATUS,
+  [TRANSACTION_STATUS_APPROVED]: PENDING_PSEUDO_STATUS,
+  [TRANSACTION_STATUS_SIGNED]: PENDING_PSEUDO_STATUS,
 }
 
 const statusToClassNameHash = {
-  [UNAPPROVED_STATUS]: 'transaction-status--unapproved',
-  [REJECTED_STATUS]: 'transaction-status--rejected',
-  [FAILED_STATUS]: 'transaction-status--failed',
-  [DROPPED_STATUS]: 'transaction-status--dropped',
-  [CANCELLED_STATUS]: 'transaction-status--cancelled',
+  [TRANSACTION_STATUS_UNAPPROVED]: 'transaction-status--unapproved',
+  [TRANSACTION_STATUS_REJECTED]: 'transaction-status--rejected',
+  [TRANSACTION_STATUS_FAILED]: 'transaction-status--failed',
+  [TRANSACTION_STATUS_DROPPED]: 'transaction-status--dropped',
+  [TRANSACTION_GROUP_STATUS_CANCELLED]: 'transaction-status--cancelled',
   [QUEUED_PSEUDO_STATUS]: 'transaction-status--queued',
   [PENDING_PSEUDO_STATUS]: 'transaction-status--pending',
 }
@@ -53,7 +53,7 @@ export default function TransactionStatus ({ status, date, error, isEarliestNonc
     statusKey = isEarliestNonce ? PENDING_PSEUDO_STATUS : QUEUED_PSEUDO_STATUS
   }
 
-  const statusText = statusKey === CONFIRMED_STATUS ? date : t(statusKey)
+  const statusText = statusKey === TRANSACTION_STATUS_CONFIRMED ? date : t(statusKey)
 
   return (
     <Tooltip
