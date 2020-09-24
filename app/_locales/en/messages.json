@@ -114,9 +114,6 @@
   "amount": {
     "message": "Amount"
   },
-  "amountInEth": {
-    "message": "Displays an eth amount to the user. $1 is a decimal number"
-  },
   "amountWithColon": {
     "message": "Amount:"
   },
@@ -1559,9 +1556,6 @@
   "swapEnableDescription": {
     "message": "This is a required transaction that allows $1 to be swapped. "
   },
-  "swapErrorDescription": {
-    "message": "Your funds are safe and still available in your wallet."
-  },
   "swapEstimatedNetworkFee": {
     "message": "Estimated network fee"
   },
@@ -1598,9 +1592,6 @@
   },
   "swapFinalizing": {
     "message": "Finalizing..."
-  },
-  "swapGetNewQuotes": {
-    "message": "Get quotes"
   },
   "swapGetQuotes": {
     "message": "Get quotes"
@@ -1644,21 +1635,12 @@
   "swapMetaMaskFeeDescription": {
     "message": "A service fee of 0.875% is automatically factored into each quote, which supports ongoing development to make MetaMask even better."
   },
-  "swapMetaMaskFeeInfo": {
-    "message": "This fee helps us make MetaMask even better. The 'amount received' number includes this fee."
-  },
   "swapMinimumAmountReceivingInfoTooltip": {
     "message": "This is the minimum amount you will receive. You may receive more depending on slippage."
   },
   "swapNQuotesAvailable": {
     "message": "$1 quotes available",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNetworkFees": {
-    "message": "Network fees"
-  },
-  "swapNetworkFeesInfo": {
-    "message": "This is the cost to process the swap on the Ethereum network. It’s also known as “gas” fees."
   },
   "swapNewQuoteIn": {
     "message": "New quotes in $1",
@@ -1728,9 +1710,6 @@
   },
   "swapStartSwapping": {
     "message": "Start swapping"
-  },
-  "swapSwapError": {
-    "message": "Swap failed"
   },
   "swapSwapFrom": {
     "message": "Swap from"
