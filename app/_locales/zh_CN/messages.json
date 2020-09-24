@@ -1445,13 +1445,10 @@
   "restrictedMethods_eth_accounts": {
     "message": "查看已选中账户的地址"
   },
-  "alreadySponsoredByContract": {
-    "message": " 已由合约代付"
-  },
   "optional": {
     "message": "可选"
   },
-  "amountPlusGasFee": {
-    "message": "交易量 + 燃气费"
+  "amountPlusGasFeePlusStorageFee": {
+    "message": "交易量 + (燃气费 + 存储费)"
   }
 }

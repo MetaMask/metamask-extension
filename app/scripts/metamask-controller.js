@@ -625,7 +625,10 @@ export default class MetamaskController extends EventEmitter {
       getFilteredTxList: nodeify(txController.getFilteredTxList, txController),
       isNonceTaken: nodeify(txController.isNonceTaken, txController),
       estimateGas: nodeify(this.estimateGas, this),
-      checkBalanceAgainstTransaction: nodeify(this.checkBalanceAgainstTransaction, this),
+      checkBalanceAgainstTransaction: nodeify(
+        this.checkBalanceAgainstTransaction,
+        this
+      ),
       getPendingNonce: nodeify(this.getPendingNonce, this),
       getNextNonce: nodeify(this.getNextNonce, this),
 
@@ -1756,9 +1759,6 @@ export default class MetamaskController extends EventEmitter {
    */
   setupControllerConnection (outStream) {
     const api = this.getApi()
-
-    // TODO: remove this when we add gas station
-    api.setFeatureFlag('advancedInlineGas', true)
 
     const dnode = Dnode(api)
     // report new active controller connection

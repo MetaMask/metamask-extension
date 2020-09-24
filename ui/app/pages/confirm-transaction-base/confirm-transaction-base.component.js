@@ -30,7 +30,7 @@ export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
     t: PropTypes.func,
     tOrKey: PropTypes.func.isRequired,
-    metricsEvent: PropTypes.func,
+    // metricsEvent: PropTypes.func,
   }
 
   static propTypes = {
@@ -71,7 +71,7 @@ export default class ConfirmTransactionBase extends Component {
     updateGasAndCollateralAndCalculte: PropTypes.func,
     customGasAndCollateral: PropTypes.object,
     // Component props
-    actionKey: PropTypes.string,
+    // actionKey: PropTypes.string,
     contentComponent: PropTypes.node,
     dataComponent: PropTypes.node,
     detailsComponent: PropTypes.node,
@@ -110,7 +110,7 @@ export default class ConfirmTransactionBase extends Component {
     showAccountInHeader: PropTypes.bool,
     hexTransactionTotalCountSponsored: PropTypes.string,
     hexTransactionFeeAndCollateralCountSponsored: PropTypes.string,
-    hexSponsoredTransactionFeeAndCollateral: PropTypes.string,
+    // hexSponsoredTransactionFeeAndCollateral: PropTypes.string,
   }
 
   state = {
@@ -209,24 +209,24 @@ export default class ConfirmTransactionBase extends Component {
     const {
       onEditGas,
       showCustomizeGasModal,
-      actionKey,
-      txData: { origin },
-      methodData = {},
+      // actionKey,
+      // txData: { origin },
+      // methodData = {},
     } = this.props
 
-    this.context.metricsEvent({
-      eventOpts: {
-        category: 'Transactions',
-        action: 'Confirm Screen',
-        name: 'User clicks "Edit" on gas',
-      },
-      customVariables: {
-        recipientKnown: null,
-        functionType:
-          actionKey || getMethodName(methodData.name) || 'contractInteraction',
-        origin,
-      },
-    })
+    // this.context.metricsEvent({
+    //   eventOpts: {
+    //     category: 'Transactions',
+    //     action: 'Confirm Screen',
+    //     name: 'User clicks "Edit" on gas',
+    //   },
+    //   customVariables: {
+    //     recipientKnown: null,
+    //     functionType:
+    //       actionKey || getMethodName(methodData.name) || 'contractInteraction',
+    //     origin,
+    //   },
+    // })
 
     if (onEditGas) {
       onEditGas()
@@ -271,8 +271,7 @@ export default class ConfirmTransactionBase extends Component {
               label={t('gasFee')}
               type="fee"
               value={hexTransactionFee}
-              primaryPrefix={this.renderSponsoredTxFee()}
-              headerText={advancedInlineGasShown ? '' : 'Edit'}
+              headerText={advancedInlineGasShown ? '' : t('advanced')}
               headerTextClassName="confirm-detail-row__header-text--edit"
               onHeaderClick={() =>
                 !advancedInlineGasShown && this.handleEditGas()
@@ -319,7 +318,7 @@ export default class ConfirmTransactionBase extends Component {
                 label={t('storageFee')}
                 type="collateral"
                 value={hexTransactionCollateral}
-                headerText={advancedInlineGasShown ? '' : 'Edit'}
+                headerText={advancedInlineGasShown ? '' : t('advanced')}
                 headerTextClassName="confirm-detail-row__header-text--edit"
                 onHeaderClick={() =>
                   !advancedInlineGasShown && this.handleEditGas()
@@ -379,7 +378,7 @@ export default class ConfirmTransactionBase extends Component {
               /*     : secondaryTotalTextOverride */
               /* } */
               secondaryText=""
-              headerText={t('amountPlusGasFee')}
+              headerText={t('amountPlusGasFeePlusStorageFee')}
               headerTextClassName="confirm-detail-row__header-text--total"
               primaryValueTextColor="#2f9ae0"
             />
@@ -466,24 +465,24 @@ export default class ConfirmTransactionBase extends Component {
       tokenData,
       tokenProps,
       onEdit,
-      actionKey,
-      txData: { origin },
-      methodData = {},
+      // actionKey,
+      // txData: { origin },
+      // methodData = {},
     } = this.props
 
-    this.context.metricsEvent({
-      eventOpts: {
-        category: 'Transactions',
-        action: 'Confirm Screen',
-        name: 'Edit Transaction',
-      },
-      customVariables: {
-        recipientKnown: null,
-        functionType:
-          actionKey || getMethodName(methodData.name) || 'contractInteraction',
-        origin,
-      },
-    })
+    // this.context.metricsEvent({
+    //   eventOpts: {
+    //     category: 'Transactions',
+    //     action: 'Confirm Screen',
+    //     name: 'Edit Transaction',
+    //   },
+    //   customVariables: {
+    //     recipientKnown: null,
+    //     functionType:
+    //       actionKey || getMethodName(methodData.name) || 'contractInteraction',
+    //     origin,
+    //   },
+    // })
 
     onEdit({ txData, tokenData, tokenProps })
   }
@@ -509,33 +508,33 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   handleCancel () {
-    const { metricsEvent } = this.context
+    // const { metricsEvent } = this.context
     const {
       onCancel,
       txData,
       cancelTransaction,
       history,
       clearConfirmTransaction,
-      actionKey,
-      txData: { origin },
-      methodData = {},
+      // actionKey,
+      // txData: { origin },
+      // methodData = {},
       updateCustomNonce,
     } = this.props
 
     this._removeBeforeUnload()
-    metricsEvent({
-      eventOpts: {
-        category: 'Transactions',
-        action: 'Confirm Screen',
-        name: 'Cancel',
-      },
-      customVariables: {
-        recipientKnown: null,
-        functionType:
-          actionKey || getMethodName(methodData.name) || 'contractInteraction',
-        origin,
-      },
-    })
+    // metricsEvent({
+    //   eventOpts: {
+    //     category: 'Transactions',
+    //     action: 'Confirm Screen',
+    //     name: 'Cancel',
+    //   },
+    //   customVariables: {
+    //     recipientKnown: null,
+    //     functionType:
+    //       actionKey || getMethodName(methodData.name) || 'contractInteraction',
+    //     origin,
+    //   },
+    // })
     updateCustomNonce('')
     if (onCancel) {
       onCancel(txData)
@@ -548,18 +547,18 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   handleSubmit () {
-    const { metricsEvent } = this.context
+    // const { metricsEvent } = this.context
     const {
-      txData: { origin },
+      // txData: { origin },
       sendTransaction,
       clearConfirmTransaction,
       txData,
       history,
       onSubmit,
-      actionKey,
+      // actionKey,
       metaMetricsSendCount = 0,
       setMetaMetricsSendCount,
-      methodData = {},
+      // methodData = {},
       updateCustomNonce,
     } = this.props
     const { submitting } = this.state
@@ -575,21 +574,21 @@ export default class ConfirmTransactionBase extends Component {
       },
       () => {
         this._removeBeforeUnload()
-        metricsEvent({
-          eventOpts: {
-            category: 'Transactions',
-            action: 'Confirm Screen',
-            name: 'Transaction Completed',
-          },
-          customVariables: {
-            recipientKnown: null,
-            functionType:
-              actionKey ||
-              getMethodName(methodData.name) ||
-              'contractInteraction',
-            origin,
-          },
-        })
+        // metricsEvent({
+        //   eventOpts: {
+        //     category: 'Transactions',
+        //     action: 'Confirm Screen',
+        //     name: 'Transaction Completed',
+        //   },
+        //   customVariables: {
+        //     recipientKnown: null,
+        //     functionType:
+        //       actionKey ||
+        //       getMethodName(methodData.name) ||
+        //       'contractInteraction',
+        //     origin,
+        //   },
+        // })
 
         setMetaMetricsSendCount(metaMetricsSendCount + 1).then(() => {
           if (onSubmit) {
@@ -623,25 +622,6 @@ export default class ConfirmTransactionBase extends Component {
           }
         })
       }
-    )
-  }
-
-  renderSponsoredTxFee () {
-    const { hexSponsoredTransactionFeeAndCollateral } = this.props
-    if (hexSponsoredTransactionFeeAndCollateral === '0x0') {
-      return <div></div>
-    }
-
-    return (
-      <div style={{ display: 'flex', fontSize: '0.7rem', color: '#2F9AE0' }}>
-        {`${this.context.t('alreadySponsoredByContract')}\u00a0`}
-        <UserPreferencedCurrencyDisplay
-          value={hexSponsoredTransactionFeeAndCollateral}
-          type={PRIMARY}
-          hideLabel
-        />
-        {`\u00a0CFX\u00a0`}
-      </div>
     )
   }
 
@@ -714,18 +694,18 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   _beforeUnload = () => {
-    const { txData: { origin, id } = {}, cancelTransaction } = this.props
-    const { metricsEvent } = this.context
-    metricsEvent({
-      eventOpts: {
-        category: 'Transactions',
-        action: 'Confirm Screen',
-        name: 'Cancel Tx Via Notification Close',
-      },
-      customVariables: {
-        origin,
-      },
-    })
+    const { txData: { /* origin, */ id } = {}, cancelTransaction } = this.props
+    // const { metricsEvent } = this.context
+    // metricsEvent({
+    //   eventOpts: {
+    //     category: 'Transactions',
+    //     action: 'Confirm Screen',
+    //     name: 'Cancel Tx Via Notification Close',
+    //   },
+    //   customVariables: {
+    //     origin,
+    //   },
+    // })
     cancelTransaction({ id })
   }
 
@@ -738,21 +718,21 @@ export default class ConfirmTransactionBase extends Component {
   componentDidMount () {
     const {
       toAddress,
-      txData: { origin } = {},
+      // txData: { origin } = {},
       getNextNonce,
       tryReverseResolveAddress,
     } = this.props
-    const { metricsEvent } = this.context
-    metricsEvent({
-      eventOpts: {
-        category: 'Transactions',
-        action: 'Confirm Screen',
-        name: 'Confirm: Started',
-      },
-      customVariables: {
-        origin,
-      },
-    })
+    // const { metricsEvent } = this.context
+    // metricsEvent({
+    //   eventOpts: {
+    //     category: 'Transactions',
+    //     action: 'Confirm Screen',
+    //     name: 'Confirm: Started',
+    //   },
+    //   customVariables: {
+    //     origin,
+    //   },
+    // })
 
     if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
       window.addEventListener('beforeunload', this._beforeUnload)

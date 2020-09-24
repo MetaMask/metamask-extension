@@ -44,6 +44,7 @@ class PreferencesController {
         featureFlags: {
           showIncomingTransactions: true,
           transactionTime: false,
+          advancedInlineGas: false,
         },
         knownMethodData: {},
         participateInMetaMetrics: null,
