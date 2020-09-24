@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
 import { getKnownMethodData } from '../selectors/selectors'
-import { getTransactionActionKey, getStatusKey } from '../helpers/utils/transactions.util'
+import { getStatusKey } from '../helpers/utils/transactions.util'
 import { camelCaseToCapitalize } from '../helpers/utils/common.util'
 import { PRIMARY, SECONDARY } from '../helpers/constants/common'
 import { getTokenAddressParam } from '../helpers/utils/token-util'
@@ -64,7 +64,6 @@ export function useTransactionDisplayData (transactionGroup) {
   // for smart contract interactions, methodData can be used to derive the name of the action being taken
   const methodData = useSelector((state) => getKnownMethodData(state, initialTransaction?.txParams?.data)) || {}
 
-  const actionKey = getTransactionActionKey(initialTransaction)
   const status = getStatusKey(primaryTransaction)
 
   const primaryValue = primaryTransaction.txParams?.value
@@ -111,7 +110,7 @@ export function useTransactionDisplayData (transactionGroup) {
     subtitleContainsOrigin = true
   } else if (transactionCategory === DEPLOY_CONTRACT_ACTION_KEY || transactionCategory === CONTRACT_INTERACTION_KEY) {
     category = TRANSACTION_CATEGORY_INTERACTION
-    title = (methodData?.name && camelCaseToCapitalize(methodData.name)) || (actionKey && t(actionKey)) || ''
+    title = (methodData?.name && camelCaseToCapitalize(methodData.name)) || t(transactionCategory)
     subtitle = origin
     subtitleContainsOrigin = true
   } else if (transactionCategory === INCOMING_TRANSACTION) {
