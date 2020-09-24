@@ -161,9 +161,6 @@
   "cancel": {
     "message": "Cancel·la"
   },
-  "cancelAttempt": {
-    "message": "Cancel·la l'intent"
-  },
   "cancellationGasFee": {
     "message": "Preu de cancel·lació del gas"
   },
@@ -307,9 +304,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Estàs segur que vols eliminar aquesta xarxa?"
-  },
-  "deposit": {
-    "message": "Depòsit"
   },
   "depositEther": {
     "message": "Diposita Ether"
@@ -968,9 +962,6 @@
   },
   "sentEther": {
     "message": "envia ether"
-  },
-  "sentTokens": {
-    "message": "fitxes enviades"
   },
   "separateEachWord": {
     "message": "Separa cada paraula amb un sol espai"

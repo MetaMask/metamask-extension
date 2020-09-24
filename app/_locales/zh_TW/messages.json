@@ -164,9 +164,6 @@
   "cancel": {
     "message": "取消"
   },
-  "cancelAttempt": {
-    "message": "嘗試取消"
-  },
   "cancellationGasFee": {
     "message": "需要的手續費"
   },
@@ -310,9 +307,6 @@
   },
   "deleteNetworkDescription": {
     "message": "你確定要刪除網路嗎？"
-  },
-  "deposit": {
-    "message": "存入"
   },
   "depositEther": {
     "message": "存入乙太幣"
@@ -969,9 +963,6 @@
   },
   "sentEther": {
     "message": "發送乙太幣"
-  },
-  "sentTokens": {
-    "message": "發送代幣"
   },
   "separateEachWord": {
     "message": "單詞之間請以空白間隔"

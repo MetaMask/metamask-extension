@@ -164,9 +164,6 @@
   "cancel": {
     "message": "Prekliči"
   },
-  "cancelAttempt": {
-    "message": "Prekliči poskus"
-  },
   "cancellationGasFee": {
     "message": "Preklicani znesek gas"
   },
@@ -310,9 +307,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Ali ste prepričani, da želite izbrisati to omrežje?"
-  },
-  "deposit": {
-    "message": "Vplačaj"
   },
   "depositEther": {
     "message": "Vplačilo ethra"
@@ -972,9 +966,6 @@
   },
   "sentEther": {
     "message": "poslani ether"
-  },
-  "sentTokens": {
-    "message": "poslani žetoni"
   },
   "separateEachWord": {
     "message": "Vsako besedo ločite z enim presledkom"

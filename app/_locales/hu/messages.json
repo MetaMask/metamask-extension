@@ -164,9 +164,6 @@
   "cancel": {
     "message": "Mégse"
   },
-  "cancelAttempt": {
-    "message": "Kísérlet megszakítása"
-  },
   "cancellationGasFee": {
     "message": "A törlés gázára"
   },
@@ -310,9 +307,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Biztosan törli ezt a hálózatot?"
-  },
-  "deposit": {
-    "message": "Befizetés"
   },
   "depositEther": {
     "message": "Ether befizetése"
@@ -983,9 +977,6 @@
   },
   "sentEther": {
     "message": "elküldött ether"
-  },
-  "sentTokens": {
-    "message": "elküldött érmék"
   },
   "separateEachWord": {
     "message": "Minden egyes szavat szóközzel válasszon el"

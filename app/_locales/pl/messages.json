@@ -164,9 +164,6 @@
   "cancel": {
     "message": "Anuluj"
   },
-  "cancelAttempt": {
-    "message": "Anuluj próbę"
-  },
   "cancellationGasFee": {
     "message": "Opłata za gaz za anulowanie"
   },
@@ -310,9 +307,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Czy na pewno chcesz usunąć tę sieć?"
-  },
-  "deposit": {
-    "message": "Zdeponuj"
   },
   "depositEther": {
     "message": "Zdeponuj Eter"
@@ -984,9 +978,6 @@
   },
   "sentEther": {
     "message": "wyślij eter"
-  },
-  "sentTokens": {
-    "message": "wysłane tokeny"
   },
   "separateEachWord": {
     "message": "Oddziel słowa pojedynczą spacją"

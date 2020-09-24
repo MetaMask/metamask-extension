@@ -164,9 +164,6 @@
   "cancel": {
     "message": "ביטול"
   },
-  "cancelAttempt": {
-    "message": "בטל ניסיון"
-  },
   "cancellationGasFee": {
     "message": "עמלת דלק עבור ביטול"
   },
@@ -310,9 +307,6 @@
   },
   "deleteNetworkDescription": {
     "message": "הנך בטוח/ה שברצונך למחוק רשת זו?"
-  },
-  "deposit": {
-    "message": "הפקדה"
   },
   "depositEther": {
     "message": "הפקדת את'ר"
@@ -984,9 +978,6 @@
   },
   "sentEther": {
     "message": "את'ר שנשלח"
-  },
-  "sentTokens": {
-    "message": "טוקנים שנשלחו"
   },
   "separateEachWord": {
     "message": "יש להפריד כל מילה עם רווח יחיד"

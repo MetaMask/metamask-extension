@@ -164,9 +164,6 @@
   "cancel": {
     "message": "إلغاء"
   },
-  "cancelAttempt": {
-    "message": "إلغاء المحاولة"
-  },
   "cancellationGasFee": {
     "message": "رسوم الإلغاء بعملة جاس"
   },
@@ -310,9 +307,6 @@
   },
   "deleteNetworkDescription": {
     "message": "هل أنت متأكد أنك تريد حذف هذه الشبكة؟"
-  },
-  "deposit": {
-    "message": "إيداع"
   },
   "depositEther": {
     "message": "إيداع عملة إيثير"
@@ -983,9 +977,6 @@
   },
   "sentEther": {
     "message": "أرسل عملة إيثير"
-  },
-  "sentTokens": {
-    "message": "العملات الرمزية المرسلة"
   },
   "separateEachWord": {
     "message": "افصل كل كلمة بمسافة واحدة"

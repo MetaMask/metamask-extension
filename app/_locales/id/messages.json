@@ -164,9 +164,6 @@
   "cancel": {
     "message": "Batal"
   },
-  "cancelAttempt": {
-    "message": "Batalkan Percobaan"
-  },
   "cancellationGasFee": {
     "message": "Pembatalan Biaya Gas"
   },
@@ -971,9 +968,6 @@
   },
   "sentEther": {
     "message": "kirim ether"
-  },
-  "sentTokens": {
-    "message": "token terkirim"
   },
   "separateEachWord": {
     "message": "Pisahkan setiap kata dengan spasi tunggal"

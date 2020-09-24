@@ -161,9 +161,6 @@
   "cancel": {
     "message": "Avbryt"
   },
-  "cancelAttempt": {
-    "message": "Avbryt försök"
-  },
   "cancellationGasFee": {
     "message": "Gasavgift för avbrytning"
   },
@@ -304,9 +301,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Är du säker på att du vill ta bort detta nätverk?"
-  },
-  "deposit": {
-    "message": "Deposition"
   },
   "depositEther": {
     "message": "Sätt in Ether"
@@ -974,9 +968,6 @@
   },
   "sentEther": {
     "message": "skickat ether"
-  },
-  "sentTokens": {
-    "message": "skickade tokens"
   },
   "separateEachWord": {
     "message": "Lägg in ett mellanslag mellan varje ord"

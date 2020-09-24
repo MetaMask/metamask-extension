@@ -226,9 +226,6 @@
   "cancel": {
     "message": "Annulla"
   },
-  "cancelAttempt": {
-    "message": "Tentativo di Annullamento"
-  },
   "cancellationGasFee": {
     "message": "Costo di Annullamento in Gas"
   },
@@ -466,9 +463,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Sei sicuro di voler eliminare questa rete?"
-  },
-  "deposit": {
-    "message": "Deposita"
   },
   "depositEther": {
     "message": "Deposita Ether"
@@ -1360,9 +1354,6 @@
   },
   "sentEther": {
     "message": "ether inviati"
-  },
-  "sentTokens": {
-    "message": "tokens inviati"
   },
   "separateEachWord": {
     "message": "Separa ogni parola con un solo spazio"

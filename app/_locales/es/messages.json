@@ -136,9 +136,6 @@
   "cancel": {
     "message": "Cancelar"
   },
-  "cancelAttempt": {
-    "message": "Intentar cancelar"
-  },
   "cancellationGasFee": {
     "message": "Comisión de Gas por cancelación"
   },
@@ -273,9 +270,6 @@
   },
   "deleteAccount": {
     "message": "Eliminar Cuenta"
-  },
-  "deposit": {
-    "message": "Depositar"
   },
   "depositEther": {
     "message": "Depositar Ether"
@@ -785,9 +779,6 @@
   },
   "sentEther": {
     "message": "se mandó ether"
-  },
-  "sentTokens": {
-    "message": "se mandaron tokens"
   },
   "separateEachWord": {
     "message": "Separar a cada palabra con un sólo espacio"

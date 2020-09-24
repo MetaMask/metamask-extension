@@ -164,9 +164,6 @@
   "cancel": {
     "message": "रद्द करें"
   },
-  "cancelAttempt": {
-    "message": "प्रयास रद्द करें"
-  },
   "cancellationGasFee": {
     "message": "रद्दीकरण गैस शुल्क"
   },
@@ -310,9 +307,6 @@
   },
   "deleteNetworkDescription": {
     "message": "क्या आप वाकई इस नेटवर्क को हटाना चाहते हैं?"
-  },
-  "deposit": {
-    "message": "जमा "
   },
   "depositEther": {
     "message": "Ether जमा करें"
@@ -987,9 +981,6 @@
   },
   "sentEther": {
     "message": "भेजे गए ether"
-  },
-  "sentTokens": {
-    "message": "भेजे गए टोकन"
   },
   "separateEachWord": {
     "message": "प्रत्येक शब्द को एक स्पेस से अलग करें"

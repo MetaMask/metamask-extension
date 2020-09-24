@@ -164,9 +164,6 @@
   "cancel": {
     "message": "لغو"
   },
-  "cancelAttempt": {
-    "message": "لغو تلاش"
-  },
   "cancellationGasFee": {
     "message": "لغو فیس گاز"
   },
@@ -310,9 +307,6 @@
   },
   "deleteNetworkDescription": {
     "message": "آیا مطمئن هستید که این شبکه حذف شود؟"
-  },
-  "deposit": {
-    "message": "سپرده"
   },
   "depositEther": {
     "message": "پرداخت ایتر"
@@ -990,9 +984,6 @@
   },
   "sentEther": {
     "message": "ایتر ارسال شد"
-  },
-  "sentTokens": {
-    "message": "رمزیاب های فرستاده شده"
   },
   "separateEachWord": {
     "message": "هر کلمه را با یک فاصله واحد جدا سازید"

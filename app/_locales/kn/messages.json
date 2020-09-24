@@ -164,9 +164,6 @@
   "cancel": {
     "message": "ರದ್ದುಮಾಡಿ"
   },
-  "cancelAttempt": {
-    "message": "ಪ್ರಯತ್ನವನ್ನು ರದ್ದುಪಡಿಸಿ"
-  },
   "cancellationGasFee": {
     "message": "ರದ್ದುಗೊಳಿಸುವ ಗ್ಯಾಸ್ ಶುಲ್ಕ"
   },
@@ -310,9 +307,6 @@
   },
   "deleteNetworkDescription": {
     "message": "ನೀವು ಈ ನೆಟ್‌ವರ್ಕ್ ಅನ್ನು ಖಚಿತವಾಗಿ ಅಳಿಸಲು ಬಯಸುತ್ತೀರಾ?"
-  },
-  "deposit": {
-    "message": "ಠೇವಣಿ"
   },
   "depositEther": {
     "message": "ಎಥರ್ ಠೇವಣಿ ಮಾಡಿ"
@@ -990,9 +984,6 @@
   },
   "sentEther": {
     "message": "ಕಳುಹಿಸಲಾದ ಎಥರ್"
-  },
-  "sentTokens": {
-    "message": "ಕಳುಹಿಸಲಾದ ಟೋಕನ್‌ಗಳು"
   },
   "separateEachWord": {
     "message": "ಒಂದು ಸ್ಪೇಸ್ ಮೂಲಕ ಪ್ರತಿ ಪದವನ್ನು ಬೇರ್ಪಡಿಸಿ"

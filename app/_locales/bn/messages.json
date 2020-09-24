@@ -164,9 +164,6 @@
   "cancel": {
     "message": "বাতিল করুন"
   },
-  "cancelAttempt": {
-    "message": "প্রচেষ্টা বাতিল করুন"
-  },
   "cancellationGasFee": {
     "message": "বাতিল করার গ্যাস ফী"
   },
@@ -310,9 +307,6 @@
   },
   "deleteNetworkDescription": {
     "message": "আপনি কি এই নেটওয়ার্কটি মোছার বিষয়ে নিশ্চিত?"
-  },
-  "deposit": {
-    "message": "জমা "
   },
   "depositEther": {
     "message": "ইথার জমা করুন"
@@ -990,9 +984,6 @@
   },
   "sentEther": {
     "message": "পাঠানো ইথার "
-  },
-  "sentTokens": {
-    "message": "টোকেনগুলি পাঠান"
   },
   "separateEachWord": {
     "message": "প্রতিটি শব্দকে একটি স্পেস দিয়ে আলাদা করুন"

@@ -146,7 +146,6 @@ export function useTransactionDisplayData (transactionGroup) {
     primaryDisplayValue = swapTokenValue
     secondaryDisplayValue = swapTokenFiatAmount
     prefix = isViewingReceivedTokenFromSwap ? '+' : '-'
-
   } else if (transactionCategory === TRANSACTION_CATEGORY_SWAP_APPROVAL) {
     category = TRANSACTION_GROUP_CATEGORY_APPROVAL
     title = t('swapApproval', [primaryTransaction.sourceTokenSymbol])
@@ -203,12 +202,12 @@ export function useTransactionDisplayData (transactionGroup) {
     date,
     subtitle,
     subtitleContainsOrigin,
-    primaryCurrency: transactionCategory === TRANSACTION_CATEGORY_SWAP_APPROVAL && isPending ? '' : primaryCurrency,
+    primaryCurrency: transactionCategory === TRANSACTION_CATEGORY_SWAP && isPending ? '' : primaryCurrency,
     senderAddress,
     recipientAddress,
     secondaryCurrency: (
       (isTokenCategory && !tokenFiatAmount) ||
-      (transactionCategory === TRANSACTION_CATEGORY_SWAP_APPROVAL && !swapTokenFiatAmount)
+      (transactionCategory === TRANSACTION_CATEGORY_SWAP && !swapTokenFiatAmount)
     ) ? undefined : secondaryCurrency,
     displayedStatusKey,
     isPending,

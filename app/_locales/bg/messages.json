@@ -164,9 +164,6 @@
   "cancel": {
     "message": "Отказ"
   },
-  "cancelAttempt": {
-    "message": "Отмяна на опита"
-  },
   "cancellationGasFee": {
     "message": "Такса в газ за анулиране "
   },
@@ -310,9 +307,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Наистина ли искате да изтриете тази мрежа?"
-  },
-  "deposit": {
-    "message": "Депозит"
   },
   "depositEther": {
     "message": "Депозирайте етер"
@@ -986,9 +980,6 @@
   },
   "sentEther": {
     "message": "изпратен етер"
-  },
-  "sentTokens": {
-    "message": "изпратени жетони"
   },
   "separateEachWord": {
     "message": "Отделете всяка дума с интервал"

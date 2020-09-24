@@ -164,9 +164,6 @@
   "cancel": {
     "message": "Tühista"
   },
-  "cancelAttempt": {
-    "message": "Tühista katse"
-  },
   "cancellationGasFee": {
     "message": "Tühistamise gaasitasu"
   },
@@ -310,9 +307,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Olete kindel, et soovite selle võrgu kustutada?"
-  },
-  "deposit": {
-    "message": "Sissemakse"
   },
   "depositEther": {
     "message": "Eetri sissemakse"
@@ -980,9 +974,6 @@
   },
   "sentEther": {
     "message": "saadetud eeter"
-  },
-  "sentTokens": {
-    "message": "saadetud load"
   },
   "separateEachWord": {
     "message": "Eraldage iga sõna ühe tühikuga"

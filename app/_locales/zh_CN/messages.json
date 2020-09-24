@@ -164,9 +164,6 @@
   "cancel": {
     "message": "取消"
   },
-  "cancelAttempt": {
-    "message": "取消操作"
-  },
   "cancellationGasFee": {
     "message": "取消天然气费"
   },
@@ -310,9 +307,6 @@
   },
   "deleteNetworkDescription": {
     "message": "您是否确认要删除该网络？"
-  },
-  "deposit": {
-    "message": "存入"
   },
   "depositEther": {
     "message": "存入 Ether"
@@ -972,9 +966,6 @@
   },
   "sentEther": {
     "message": "以太币已发送"
-  },
-  "sentTokens": {
-    "message": "代币已发送"
   },
   "separateEachWord": {
     "message": "用空格分隔每个单词"

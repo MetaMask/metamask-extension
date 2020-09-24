@@ -164,9 +164,6 @@
   "cancel": {
     "message": "Odustani"
   },
-  "cancelAttempt": {
-    "message": "Otkaži pokušaj"
-  },
   "cancellationGasFee": {
     "message": "Otkazivanje naknade za gorivo"
   },
@@ -310,9 +307,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Sigurno želite izbrisati ovu mrežu?"
-  },
-  "deposit": {
-    "message": "Polog"
   },
   "depositEther": {
     "message": "Položi Ether"
@@ -983,9 +977,6 @@
   },
   "sentEther": {
     "message": "pošalji ether"
-  },
-  "sentTokens": {
-    "message": "pošalji tokene"
   },
   "separateEachWord": {
     "message": "Odvojite pojedinačne riječi jednim razmakom"

@@ -158,9 +158,6 @@
   "cancel": {
     "message": "Ghairi"
   },
-  "cancelAttempt": {
-    "message": "Jaribio la Kubatilisha"
-  },
   "cancellationGasFee": {
     "message": "Ada ya Kubatilisha Gesi"
   },
@@ -304,9 +301,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Una uhakika unataka kufuta mtandao huu?"
-  },
-  "deposit": {
-    "message": "Fedha zilizopo kwenye akaunti"
   },
   "depositEther": {
     "message": "Weka Ether"
@@ -968,9 +962,6 @@
   },
   "sentEther": {
     "message": "ether iliyotumwa"
-  },
-  "sentTokens": {
-    "message": "vianzio vilivyotumwa"
   },
   "separateEachWord": {
     "message": "Tenganisha kila neno kwa nafasi moja"

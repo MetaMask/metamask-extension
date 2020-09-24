@@ -158,9 +158,6 @@
   "cancel": {
     "message": "Abbrechen"
   },
-  "cancelAttempt": {
-    "message": "Versuch abbrechen"
-  },
   "cancellationGasFee": {
     "message": "Stornierungs-Gasgebühr"
   },
@@ -301,9 +298,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Sind Sie sicher, dass Sie dieses Netzwerk löschen möchten?"
-  },
-  "deposit": {
-    "message": "Einzahlen"
   },
   "depositEther": {
     "message": "Ether einzahlen"
@@ -959,9 +953,6 @@
   },
   "sentEther": {
     "message": "Ether senden"
-  },
-  "sentTokens": {
-    "message": "gesendete Token"
   },
   "separateEachWord": {
     "message": "Trennen Sie die Wörter mit einem einzelnen Leerzeichen voneinander"

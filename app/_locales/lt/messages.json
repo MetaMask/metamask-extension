@@ -164,9 +164,6 @@
   "cancel": {
     "message": "Atšaukti"
   },
-  "cancelAttempt": {
-    "message": "Atšaukti mėginimą"
-  },
   "cancellationGasFee": {
     "message": "Dujų mokesčio atšaukimas"
   },
@@ -310,9 +307,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Ar tikrai norite panaikinti šį tinklą?"
-  },
-  "deposit": {
-    "message": "Indėlis"
   },
   "depositEther": {
     "message": "Įnešti eterių"
@@ -990,9 +984,6 @@
   },
   "sentEther": {
     "message": "siųsti eterių"
-  },
-  "sentTokens": {
-    "message": "išsiųsti žetonai"
   },
   "separateEachWord": {
     "message": "Kiekvieną žodį atskirkite viengubu tarpu"

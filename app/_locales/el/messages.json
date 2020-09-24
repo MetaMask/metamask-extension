@@ -161,9 +161,6 @@
   "cancel": {
     "message": "Ακύρωση"
   },
-  "cancelAttempt": {
-    "message": "Ακύρωση Προσπάθειας"
-  },
   "cancellationGasFee": {
     "message": "Ακύρωση Χρέωσης Αερίου"
   },
@@ -307,9 +304,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Θέλετε σίγουρα να διαγράψετε αυτό το δίκτυο;"
-  },
-  "deposit": {
-    "message": "Κατάθεση"
   },
   "depositEther": {
     "message": "Κατάθεση Ether"
@@ -987,9 +981,6 @@
   },
   "sentEther": {
     "message": "απεσταλμένα ether"
-  },
-  "sentTokens": {
-    "message": "αποστολή token"
   },
   "separateEachWord": {
     "message": "Διαχωρίστε κάθε λέξη με ένα μόνο κενό"

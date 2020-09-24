@@ -164,9 +164,6 @@
   "cancel": {
     "message": "Atcelt"
   },
-  "cancelAttempt": {
-    "message": "Atcelt mēģinājumu"
-  },
   "cancellationGasFee": {
     "message": "Atcelšanas maksājums par Gas"
   },
@@ -310,9 +307,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Vai tiešām vēlaties dzēst šo tīklu?"
-  },
-  "deposit": {
-    "message": "Iemaksa"
   },
   "depositEther": {
     "message": "Noguldīt Ether"
@@ -986,9 +980,6 @@
   },
   "sentEther": {
     "message": "nosūtītie ether"
-  },
-  "sentTokens": {
-    "message": "nosūtītie marķieri"
   },
   "separateEachWord": {
     "message": "Atdaliet katru vārdu ar vienu atstarpi"

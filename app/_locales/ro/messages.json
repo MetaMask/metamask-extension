@@ -164,9 +164,6 @@
   "cancel": {
     "message": "Anulare"
   },
-  "cancelAttempt": {
-    "message": "Anulare încercare"
-  },
   "cancellationGasFee": {
     "message": "Taxă de anulare în gaz"
   },
@@ -310,9 +307,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Sigur vreți să ștergeți această rețea?"
-  },
-  "deposit": {
-    "message": "Depunere"
   },
   "depositEther": {
     "message": "Depuneți Ether"
@@ -977,9 +971,6 @@
   },
   "sentEther": {
     "message": "trimiteți ether"
-  },
-  "sentTokens": {
-    "message": "tokenuri trimise"
   },
   "separateEachWord": {
     "message": "Despărțiți fiecare cuvânt cu un spațiu"
