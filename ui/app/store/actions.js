@@ -2217,6 +2217,13 @@ export function setTradeTxId (tradeTxId) {
   }
 }
 
+export function setApproveTxId (approveTxId) {
+  return async (dispatch) => {
+    await promisifiedBackground.setApproveTxId(approveTxId)
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
 export function safeRefetchQuotes () {
   return async (dispatch) => {
     await promisifiedBackground.safeRefetchQuotes()
