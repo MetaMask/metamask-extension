@@ -65,7 +65,7 @@ import {
 import { getRenderableTimeEstimate } from '../../../../helpers/utils/gas-time-estimates.util'
 import { formatETHFee } from '../../../../helpers/utils/formatters'
 import {
-  calcGasTotal,
+  calcGasAndCollateralTotal,
   isBalanceSufficient,
 } from '../../../../pages/send/send.utils'
 
@@ -100,12 +100,12 @@ const mapStateToProps = (state, ownProps) => {
   const customModalGasPriceInHex = getCustomGasPrice(state) || currentGasPrice
   const customModalGasLimitInHex =
     getCustomGasLimit(state) || currentGasLimit || '0x5208'
-  const customGasTotal = calcGasTotal(
+  const customGasAndCollateralTotal = calcGasAndCollateralTotal(
     customModalGasLimitInHex,
     customModalGasPriceInHex,
     customModalStorageLimitInHex
   )
-  const customGasTotalCountSponsoredFee = calcGasTotal(
+  const customGasAndCollateralTotalCountSponsoredFee = calcGasAndCollateralTotal(
     willUserPayTxFee ? customModalGasLimitInHex : '0x0',
     customModalGasPriceInHex,
     willUserPayCollateral ? customModalStorageLimitInHex : '0x0'
@@ -122,7 +122,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const newTotalFiat = addHexWEIsToRenderableFiat(
     value,
-    customGasTotalCountSponsoredFee,
+    customGasAndCollateralTotalCountSponsoredFee,
     currentCurrency,
     conversionRate
   )
@@ -143,13 +143,19 @@ const mapStateToProps = (state, ownProps) => {
 
   const newTotalEth = maxModeOn
     ? addHexWEIsToRenderableEth(balance, '0x0')
-    : addHexWEIsToRenderableEth(value, customGasTotalCountSponsoredFee)
+    : addHexWEIsToRenderableEth(
+      value,
+      customGasAndCollateralTotalCountSponsoredFee
+    )
 
   const sendAmount = maxModeOn
-    ? subtractHexWEIsFromRenderableEth(balance, customGasTotal)
+    ? subtractHexWEIsFromRenderableEth(
+      balance,
+      customGasAndCollateralTotalCountSponsoredFee
+    )
     : addHexWEIsToRenderableEth(value, '0x0')
 
-  const sponsoredFeeHex = calcGasTotal(
+  const sponsoredFeeHex = calcGasAndCollateralTotal(
     !willUserPayTxFee ? customModalGasLimitInHex : '0x0',
     customModalGasPriceInHex,
     !willUserPayCollateral ? customModalStorageLimitInHex : '0x0'
@@ -159,7 +165,7 @@ const mapStateToProps = (state, ownProps) => {
     ? false
     : !isBalanceSufficient({
       amount: value,
-      gasTotal: customGasTotalCountSponsoredFee,
+      gasTotal: customGasAndCollateralTotalCountSponsoredFee,
       balance,
       conversionRate,
     })
@@ -176,7 +182,7 @@ const mapStateToProps = (state, ownProps) => {
     customStorageLimit: calcCustomGasOrStorageLimit(
       customModalStorageLimitInHex
     ),
-    customGasTotal,
+    customGasAndCollateralTotal,
     newTotalFiat,
     currentTimeEstimate: getRenderableTimeEstimate(
       customGasPrice,
@@ -204,14 +210,20 @@ const mapStateToProps = (state, ownProps) => {
     infoRowProps: {
       originalTotalFiat: addHexWEIsToRenderableFiat(
         value,
-        customGasTotal,
+        customGasAndCollateralTotalCountSponsoredFee,
         currentCurrency,
         conversionRate
       ),
-      originalTotalEth: addHexWEIsToRenderableEth(value, customGasTotal),
+      originalTotalEth: addHexWEIsToRenderableEth(
+        value,
+        customGasAndCollateralTotalCountSponsoredFee
+      ),
       newTotalFiat: showFiat ? newTotalFiat : '',
       newTotalEth,
-      transactionFee: addHexWEIsToRenderableEth('0x0', customGasTotal),
+      transactionFee: addHexWEIsToRenderableEth(
+        '0x0',
+        customGasAndCollateralTotal
+      ),
       sendAmount,
       sponsoredFee: addHexWEIsToRenderableEth('0x0', sponsoredFeeHex),
     },
@@ -294,7 +306,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     insufficientBalance,
     maxModeOn,
     customGasPrice,
-    customGasTotal,
+    customGasAndCollateralTotal,
     balance,
     selectedToken,
     tokenBalance,
@@ -355,7 +367,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       if (maxModeOn) {
         dispatchSetAmountToMax({
           balance,
-          gasAndCollateralTotal: customGasTotal,
+          gasAndCollateralTotal: customGasAndCollateralTotal,
           selectedToken,
           tokenBalance,
         })

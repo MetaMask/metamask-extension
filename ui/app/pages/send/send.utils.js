@@ -140,16 +140,6 @@ function getAmountErrorObject ({
   selectedToken,
   tokenBalance,
 }) {
-  console.log('getAmountErrorObject', {
-    amount,
-    amountConversionRate,
-    balance,
-    conversionRate,
-    gasTotal,
-    primaryCurrency,
-    selectedToken,
-    tokenBalance,
-  })
   let insufficientFunds = false
   if (gasTotal && conversionRate && !selectedToken) {
     insufficientFunds = !isBalanceSufficient({

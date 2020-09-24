@@ -21,7 +21,10 @@ import {
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
 } from '../../helpers/constants/error-keys'
 import { getHexGasAndCollateralTotal } from '../../helpers/utils/confirm-tx.util'
-import { isBalanceSufficient, calcGasTotal } from '../send/send.utils'
+import {
+  isBalanceSufficient,
+  calcGasAndCollateralTotal,
+} from '../send/send.utils'
 import { conversionGreaterThan } from '../../helpers/utils/conversion-util'
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants'
 import {
@@ -84,6 +87,7 @@ const mapStateToProps = (state, ownProps) => {
     id: transactionId,
     transactionCategory,
     willUserPayTxFee,
+    willUserPayCollateral,
   } = txData
   const transaction =
     Object.values(unapprovedTxs).find(
@@ -140,9 +144,10 @@ const mapStateToProps = (state, ownProps) => {
 
   const insufficientBalance = !isBalanceSufficient({
     amount,
-    gasTotal: calcGasTotal(
+    gasTotal: calcGasAndCollateralTotal(
       willUserPayTxFee ? gasLimit : '0',
-      willUserPayTxFee ? gasPrice : '0'
+      willUserPayTxFee ? gasPrice : '0',
+      willUserPayCollateral ? storageLimit : '0'
     ),
     balance,
     conversionRate,

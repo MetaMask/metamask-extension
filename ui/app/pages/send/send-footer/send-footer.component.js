@@ -31,6 +31,7 @@ export default class SendFooter extends Component {
     gasEstimateType: PropTypes.string,
     gasIsLoading: PropTypes.bool,
     sponsorshipInfoIsLoading: PropTypes.bool,
+    insufficientBalance: PropTypes.bool,
   }
 
   static contextTypes = {
@@ -88,7 +89,16 @@ export default class SendFooter extends Component {
         to,
         unapprovedTxs,
       })
-      : sign({ data, selectedToken, to, amount, from, gas, gasPrice, storageLimit })
+      : sign({
+        data,
+        selectedToken,
+        to,
+        amount,
+        from,
+        gas,
+        gasPrice,
+        storageLimit,
+      })
 
     Promise.resolve(promise).then(() => {
       metricsEvent({
@@ -116,10 +126,12 @@ export default class SendFooter extends Component {
       gasLimit,
       gasIsLoading,
       sponsorshipInfoIsLoading,
+      insufficientBalance,
     } = this.props
     const missingTokenBalance = selectedToken && !tokenBalance
     const gasLimitTooLow = gasLimit < 5208 // 5208 is hex value of 21000, minimum gas limit
     const shouldBeDisabled =
+      insufficientBalance ||
       inError ||
       !gasTotal ||
       missingTokenBalance ||

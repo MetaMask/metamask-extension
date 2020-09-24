@@ -17,6 +17,7 @@ import { getMaxModeOn } from '../send-amount-row/amount-max-button/amount-max-bu
 import {
   isBalanceSufficient,
   calcGasTotal,
+  calcGasAndCollateralTotal,
   calcStorageTotal,
 } from '../../send.utils.js'
 import { calcMaxAmount } from '../send-amount-row/amount-max-button/amount-max-button.utils'
@@ -85,13 +86,14 @@ function mapStateToProps (state) {
     willUserPayTxFee: true,
   }
 
-  const { willUserPayTxFee } = sponsorshipInfo
+  const { willUserPayTxFee, willUserPayCollateral } = sponsorshipInfo
 
   const insufficientBalance = !isBalanceSufficient({
     amount: getSelectedToken(state) ? '0x0' : getSendAmount(state),
-    gasTotal: calcGasTotal(
+    gasTotal: calcGasAndCollateralTotal(
       willUserPayTxFee ? gasLimit : '0',
-      willUserPayTxFee ? gasPrice : '0'
+      willUserPayTxFee ? gasPrice : '0',
+      willUserPayCollateral ? storageLimit : '0'
     ),
     balance,
     conversionRate,

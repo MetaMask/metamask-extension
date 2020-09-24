@@ -23,14 +23,21 @@ import {
   getTokenBalance,
   getUnapprovedTxs,
   getSendErrors,
+  getSponsorshipInfo,
+  getConversionRate,
 } from '../send.selectors'
-import { getGasIsLoading, getSponsorshipInfoIsLoading } from '../../../selectors/selectors'
+import {
+  getGasIsLoading,
+  getSponsorshipInfoIsLoading,
+  getCurrentEthBalance,
+} from '../../../selectors/selectors'
 import { isSendFormInError } from './send-footer.selectors'
 import {
   addressIsNew,
   constructTxParams,
   constructUpdatedTx,
 } from './send-footer.utils'
+import { isBalanceSufficient, calcGasAndCollateralTotal } from '../send.utils'
 import {
   getRenderableEstimateDataForSmallButtonsFromGWEI,
   getDefaultActiveButtonIndex,
@@ -41,23 +48,47 @@ export default connect(mapStateToProps, mapDispatchToProps)(SendFooter)
 function mapStateToProps (state) {
   const gasButtonInfo = getRenderableEstimateDataForSmallButtonsFromGWEI(state)
   const gasPrice = getGasPrice(state)
+  const gasLimit = getGasLimit(state)
+  const storageLimit = getStorageLimit(state)
+
+  const conversionRate = getConversionRate(state)
+  const balance = getCurrentEthBalance(state)
   const activeButtonIndex = getDefaultActiveButtonIndex(gasButtonInfo, gasPrice)
   const gasEstimateType =
     activeButtonIndex >= 0
       ? gasButtonInfo[activeButtonIndex].gasEstimateType
       : 'custom'
 
+  const amount = getSendAmount(state)
+  const selectedToken = getSelectedToken(state)
+  const sponsorshipInfo = getSponsorshipInfo(state) || {
+    willUserPayTxFee: true,
+  }
+  const { willUserPayTxFee, willUserPayCollateral } = sponsorshipInfo
+
+  const insufficientBalance = !isBalanceSufficient({
+    amount: selectedToken ? '0x0' : amount,
+    gasTotal: calcGasAndCollateralTotal(
+      willUserPayTxFee ? gasLimit : '0',
+      willUserPayTxFee ? gasPrice : '0',
+      willUserPayCollateral ? storageLimit : '0'
+    ),
+    balance,
+    conversionRate,
+  })
+
   return {
-    amount: getSendAmount(state),
+    insufficientBalance,
+    amount,
     data: getSendHexData(state),
     editingTransactionId: getSendEditingTransactionId(state),
     from: getSendFromObject(state),
-    gasLimit: getGasLimit(state),
-    storageLimit: getStorageLimit(state),
-    gasPrice: getGasPrice(state),
+    gasLimit,
+    storageLimit,
+    gasPrice,
     gasTotal: getGasTotal(state),
     inError: isSendFormInError(state),
-    selectedToken: getSelectedToken(state),
+    selectedToken,
     to: getSendTo(state),
     toAccounts: getSendToAccounts(state),
     tokenBalance: getTokenBalance(state),
@@ -72,7 +103,16 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     clearSend: () => dispatch(clearSend()),
-    sign: ({ selectedToken, to, amount, from, gas, gasPrice, storageLimit, data }) => {
+    sign: ({
+      selectedToken,
+      to,
+      amount,
+      from,
+      gas,
+      gasPrice,
+      storageLimit,
+      data,
+    }) => {
       const txParams = constructTxParams({
         amount,
         data,
