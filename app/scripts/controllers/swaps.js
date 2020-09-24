@@ -466,7 +466,7 @@ export default class SwapsController {
             .times(
               calcTokenAmount(
                 destinationAmount,
-                destinationToken.decimals || 18,
+                destinationToken.decimals,
               ),
               10,
             )
