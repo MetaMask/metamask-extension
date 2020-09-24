@@ -367,6 +367,8 @@ export const getTxParams = (state, selectedTransaction = {}) => {
   const { txParams } = selectedTransaction
   return (
     txParams || {
+      willUserPayTxFee: true,
+      willUserPayCollateral: true,
       from: send.from,
       storageLimit: send.storageLimit || '0x0',
       gas: send.gasLimit || '0x5208',
