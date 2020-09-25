@@ -71,7 +71,7 @@ export function useTransactionTimeRemaining (
 
   useEffect(() => {
     if (
-      ((isMainNet &&
+      (isMainNet &&
       (transactionTimeFeatureActive || forceAllow)) &&
       isPending &&
       isEarliestNonce &&
