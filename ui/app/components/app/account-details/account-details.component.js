@@ -93,7 +93,7 @@ export default class AccountDetails extends Component {
           position="bottom"
           html={
             (
-              <AddressWarning warning={' ' + t('confluxAddressWarning')}>
+              <AddressWarning warning={' ' + t('confluxAddressWarningClip')}>
                 {hasCopied ? t('copiedExclamation') : t('copyToClipboard')}
               </AddressWarning>
             )

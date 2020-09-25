@@ -9,7 +9,7 @@ describe('MetaMask Browser Extension', function () {
       accounts: [
         {
           secretKey:
-          '0x6FDFA72C7DB5CF9CFF1563264EC84429BF34F133CDA285C8358FA5BAC0EB63F4',
+            '0x6FDFA72C7DB5CF9CFF1563264EC84429BF34F133CDA285C8358FA5BAC0EB63F4',
           balance: 25000000000000000000,
         },
       ],
@@ -17,8 +17,6 @@ describe('MetaMask Browser Extension', function () {
     await withFixtures(
       { fixtures: 'imported-account', ganacheOptions },
       async ({ driver }) => {
-        // debugger
-        // await sleep(3600000)
         const passwordField = await driver.findElement(By.css('#password'))
         await passwordField.sendKeys('correct horse battery staple')
         await passwordField.sendKeys(Key.ENTER)

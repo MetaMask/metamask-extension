@@ -468,17 +468,19 @@ describe('Send Component', function () {
     it('should validate when input changes', function () {
       const instance = wrapper.instance()
       instance.onRecipientInputChange(
-        '0x80F061544cC398520615B5d3e7A3BedD70cd4510'
+        '0x1Fa2889e80619495738B0262C6B17471F29d9Dc5'
       )
 
       assert.deepEqual(instance.state, {
-        query: '0x80F061544cC398520615B5d3e7A3BedD70cd4510',
+        hasAddressError: false,
+        query: '0x1Fa2889e80619495738B0262C6B17471F29d9Dc5',
         toError: null,
         toWarning: null,
+        validatingAddress: false,
       })
     })
 
-    it('should validate when input changes and has error', function () {
+    it('should validate when input changes and has error', async function () {
       wrapper.setProps({ network: '2999' })
       const instance = wrapper.instance()
       instance.onRecipientInputChange(
@@ -486,6 +488,7 @@ describe('Send Component', function () {
       )
 
       clock.tick(1001)
+      await new Promise((r) => setTimeout(r, 101))
       assert.deepEqual(instance.state, {
         query: '0x80F061544cC398520615B5d3e7a3BedD70cd4510',
         toError: 'invalidAddressRecipient',

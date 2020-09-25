@@ -66,7 +66,7 @@ export default class AccountDetailsModal extends Component {
             width: '90%',
           }}
         >
-          {' ' + t('confluxAddressWarning')}
+          {' ' + t('confluxAddressWarningModal')}
         </p>
 
         <div className="account-modal-divider" />

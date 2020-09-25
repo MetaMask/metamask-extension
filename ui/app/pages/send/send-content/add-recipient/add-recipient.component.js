@@ -98,7 +98,7 @@ export default class AddRecipient extends Component {
 
     let content
 
-    if (isValidAddress(query)) {
+    if (isValidAddress(query, 'account') || isValidAddress(query, 'contract')) {
       content = this.renderExplicitAddress(query)
     } else if (ensResolution) {
       content = this.renderExplicitAddress(

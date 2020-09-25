@@ -23,8 +23,14 @@
   "chartOnlyAvailableEth": {
     "message": "Chart only available on Conflux networks."
   },
-  "confluxAddressWarning": {
+  "confluxAddressWarningClip": {
     "message": "DO NOT transfer non-Conflux assets to this address to avoid assets lost."
+  },
+  "confluxAddressWarningModal": {
+    "message": "DO NOT transfer non-Conflux assets to this address to avoid assets lost."
+  },
+  "confluxAddressWarningSend": {
+    "message": "DO NOT transfer to non-ConfluxNetwork address to avoid assets lost."
   },
   "connectedSites": {
     "message": "Connected Sites"
@@ -761,6 +767,15 @@
   },
   "invalidAddressRecipient": {
     "message": "Recipient address is invalid"
+  },
+  "invalid0XAddressRecipient": {
+    "message": "Non-ConfluxNetwork address, Conflux Network wallet addresses begin with 0x1 or 0x8"
+  },
+  "invalidContractAddressRecipient": {
+    "message": "Non-ConfluxNetwork address, please double check"
+  },
+  "invalidChecksumAddressRecipient": {
+    "message": "Non-ConfluxNetwork address, try setting input to lowercase"
   },
   "knownAddressRecipient": {
     "message": "Known contract address."
