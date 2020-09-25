@@ -17,7 +17,7 @@ import {
   updateAndApproveTx,
   updateTransaction,
 } from '../../store/actions'
-import { AWAITING_SWAP_ROUTE, BUILD_QUOTE_ROUTE, LOADING_QUOTES_ROUTE } from '../../helpers/constants/routes'
+import { AWAITING_SWAP_ROUTE, BUILD_QUOTE_ROUTE, LOADING_QUOTES_ROUTE, SWAPS_ERROR_ROUTE } from '../../helpers/constants/routes'
 import { fetchTradesInfo } from '../../pages/swaps/swaps.util'
 import { calcGasTotal } from '../../pages/send/send.utils'
 import { decimalToHex, getValueFromWeiHex, hexMax } from '../../helpers/utils/conversions.util'
@@ -33,6 +33,7 @@ import {
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
   ETH_SWAPS_TOKEN_OBJECT,
+  SWAP_FAILED_ERROR,
 } from '../../helpers/constants/swaps'
 
 const initialState = {
@@ -337,7 +338,6 @@ export const signAndSendTransactions = (history) => {
     await dispatch(stopPollingForQuotes())
     history.push(AWAITING_SWAP_ROUTE)
 
-
     const usedQuote = getUsedQuote(state)
     let usedTradeTxParams = usedQuote.trade
 
@@ -358,6 +358,15 @@ export const signAndSendTransactions = (history) => {
     const selectedAccount = getSelectedAccount(state)
     if (maxMode && sourceTokenInfo.symbol === 'ETH') {
       const ethBalance = selectedAccount.balance
+
+      if ((new BigNumber(ethBalance, 16)).lte(gasTotalInWeiHex, 16)) {
+        // If somehow signAndSendTransactions was called when the users eth balance is less than the gas cost of a swap, an error has occured.
+        // The swap transaction should not be created.
+        dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR))
+        history.push(SWAPS_ERROR_ROUTE)
+        return
+      }
+
       const networkId = getCurrentNetworkId(state)
       const customNetworkId = getCustomNetworkId(state)
       const revisedTradeValue = (new BigNumber(ethBalance, 16)).minus(gasTotalInWeiHex, 16).toString(10)
