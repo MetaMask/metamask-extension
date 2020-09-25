@@ -23,6 +23,9 @@
   "chartOnlyAvailableEth": {
     "message": "Chart only available on Conflux networks."
   },
+  "confluxAddressWarning": {
+    "message": "DO NOT transfer non-Conflux assets to this address to avoid assets lost."
+  },
   "connectedSites": {
     "message": "Connected Sites"
   },
@@ -1076,7 +1079,7 @@
     "message": "Recipient Address"
   },
   "recipientAddressPlaceholder": {
-    "message": "Enter the address updated after April 9, 2020"
+    "message": "Search, public address (0x1 or 0x8)"
   },
   "rejectAll": {
     "message": "Reject All"

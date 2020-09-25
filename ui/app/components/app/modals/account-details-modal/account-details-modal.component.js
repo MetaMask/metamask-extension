@@ -30,6 +30,7 @@ export default class AccountDetailsModal extends Component {
       rpcPrefs,
     } = this.props
     const { name, address } = selectedIdentity
+    const { t } = this.context
 
     const keyring = keyrings.find((kr) => {
       return kr.accounts.includes(address)
@@ -55,6 +56,18 @@ export default class AccountDetailsModal extends Component {
             network: network,
           }}
         />
+
+        <p
+          style={{
+            color: 'red',
+            fontWeight: 'bold',
+            textAlign: 'center',
+            margin: 'auto',
+            width: '90%',
+          }}
+        >
+          {' ' + t('confluxAddressWarning')}
+        </p>
 
         <div className="account-modal-divider" />
 
