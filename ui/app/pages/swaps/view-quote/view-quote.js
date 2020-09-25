@@ -25,7 +25,12 @@ import {
   navigateBackToBuildQuote,
   signAndSendTransactions,
 } from '../../../ducks/swaps/swaps'
-import { conversionRateSelector, getSelectedAccount, getCurrentCurrency, getTokenExchangeRates } from '../../../selectors'
+import {
+  conversionRateSelector,
+  getSelectedAccount,
+  getCurrentCurrency,
+  getTokenExchangeRates,
+} from '../../../selectors'
 import { toPrecisionWithoutTrailingZeros } from '../../../helpers/utils/util'
 import { getTokens } from '../../../ducks/metamask/metamask'
 import {
@@ -48,7 +53,12 @@ import {
   calcTokenValue,
   getTokenValueParam,
 } from '../../../helpers/utils/token-util'
-import { decimalToHex, hexMax, hexToDecimal, getValueFromWeiHex } from '../../../helpers/utils/conversions.util'
+import {
+  decimalToHex,
+  hexMax,
+  hexToDecimal,
+  getValueFromWeiHex,
+} from '../../../helpers/utils/conversions.util'
 import MainQuoteSummary from '../main-quote-summary'
 import { calcGasTotal } from '../../send/send.utils'
 import { getCustomTxParamsData } from '../../confirm-approve/confirm-approve.util'
@@ -100,10 +110,27 @@ export default function ViewQuote () {
   const { isBestQuote } = usedQuote
   const fetchParamsSourceToken = fetchParams?.sourceToken
 
-  const usedGasLimit = usedQuote?.gasEstimateWithRefund || (`0x${decimalToHex(usedQuote?.averageGas || 0)}`)
-  const gasLimitForMax = usedQuote?.gasEstimate || (`0x${decimalToHex(usedQuote?.averageGas || 0)}`)
-  const usedGasLimitWithMultiplier = (new BigNumber(gasLimitForMax, 16).times(1.4, 10)).round(0).toString(16)
-  const maxGasLimit = customMaxGas || hexMax((`0x${decimalToHex(usedQuote?.maxGas || 0)}`), usedGasLimitWithMultiplier)
+  const usedGasLimit = (
+    usedQuote?.gasEstimateWithRefund ||
+    (`0x${decimalToHex(usedQuote?.averageGas || 0)}`)
+  )
+
+  const gasLimitForMax = (
+    usedQuote?.gasEstimate ||
+    (`0x${decimalToHex(usedQuote?.averageGas || 0)}`)
+  )
+
+  const usedGasLimitWithMultiplier = (new BigNumber(gasLimitForMax, 16)
+    .times(1.4, 10))
+    .round(0)
+    .toString(16)
+
+  const maxGasLimit = (customMaxGas ||
+    hexMax(
+      (`0x${decimalToHex(usedQuote?.maxGas || 0)}`),
+      usedGasLimitWithMultiplier,
+    )
+  )
 
   const gasTotalInWeiHex = calcGasTotal(usedGasLimit, gasPrice)
 
@@ -113,7 +140,13 @@ export default function ViewQuote () {
     : tokensWithBalances.find(({ address }) => address === fetchParamsSourceToken)
 
   const selectedFromToken = balanceToken || usedQuote.sourceTokenInfo
-  const tokenBalance = tokensWithBalances?.length && calcTokenAmount(selectedFromToken.balance || '0x0', selectedFromToken.decimals).toFixed(9)
+  const tokenBalance = (
+    tokensWithBalances?.length &&
+    calcTokenAmount(
+      selectedFromToken.balance || '0x0',
+      selectedFromToken.decimals,
+    ).toFixed(9)
+  )
 
   const approveData = getTokenData(approveTxParams?.data)
   const approveValue = approveData && getTokenValueParam(approveData)
@@ -130,9 +163,28 @@ export default function ViewQuote () {
   })
 
   const renderablePopoverData = useMemo(() => {
-    return quotesToRenderableData(quotes, gasPrice, conversionRate, currentCurrency, approveGas, memoizedTokenConversionRates)
-  }, [quotes, gasPrice, conversionRate, currentCurrency, approveGas, memoizedTokenConversionRates])
-  const renderableDataForUsedQuote = renderablePopoverData.find((renderablePopoverDatum) => renderablePopoverDatum.aggId === usedQuote.aggregator)
+    return quotesToRenderableData(
+      quotes,
+      gasPrice,
+      conversionRate,
+      currentCurrency,
+      approveGas,
+      memoizedTokenConversionRates,
+    )
+  }, [
+    quotes,
+    gasPrice,
+    conversionRate,
+    currentCurrency,
+    approveGas,
+    memoizedTokenConversionRates,
+  ])
+
+  const renderableDataForUsedQuote = renderablePopoverData.find(
+    (renderablePopoverDatum) => (
+      renderablePopoverDatum.aggId === usedQuote.aggregator
+    ),
+  )
 
   const {
     destinationTokenDecimals,
@@ -143,21 +195,53 @@ export default function ViewQuote () {
     sourceTokenValue,
   } = renderableDataForUsedQuote
 
-  const { feeInFiat, feeInEth } = getRenderableGasFeesForQuote(usedGasLimit, approveGas, gasPrice, currentCurrency, conversionRate)
-  const { feeInFiat: maxFeeInFiat, feeInEth: maxFeeInEth } = getRenderableGasFeesForQuote(maxGasLimit, approveGas, gasPrice, currentCurrency, conversionRate)
+  const { feeInFiat, feeInEth } = getRenderableGasFeesForQuote(
+    usedGasLimit,
+    approveGas,
+    gasPrice,
+    currentCurrency,
+    conversionRate,
+  )
+
+  const {
+    feeInFiat: maxFeeInFiat,
+    feeInEth: maxFeeInEth,
+  } = getRenderableGasFeesForQuote(
+    maxGasLimit,
+    approveGas,
+    gasPrice,
+    currentCurrency,
+    conversionRate,
+  )
 
   const tokenCost = (new BigNumber(usedQuote.sourceAmount))
-  const ethCost = (new BigNumber(usedQuote.trade.value || 0, 10)).plus((new BigNumber(gasTotalInWeiHex, 16)))
+  const ethCost = (new BigNumber(usedQuote.trade.value || 0, 10))
+    .plus((new BigNumber(gasTotalInWeiHex, 16)))
 
-  const insufficientTokens = (tokensWithBalances?.length || balanceError) && (tokenCost).gt(new BigNumber(selectedFromToken.balance || '0x0'))
-  const insufficientEth = maxMode && sourceTokenSymbol === 'ETH'
-    ? (new BigNumber(gasTotalInWeiHex, 16)).gte(new BigNumber(ethBalance || '0x0'))
-    : (ethCost).gt(new BigNumber(ethBalance || '0x0'))
+  const insufficientTokens = (
+    (tokensWithBalances?.length || balanceError) &&
+    (tokenCost).gt(new BigNumber(selectedFromToken.balance || '0x0'))
+  )
+
+  const insufficientEthForGas = (new BigNumber(gasTotalInWeiHex, 16))
+    .gt(new BigNumber(ethBalance || '0x0'))
+
+  const insufficientEth = (ethCost).gt(new BigNumber(ethBalance || '0x0'))
+
   const tokenBalanceNeeded = insufficientTokens
-    ? toPrecisionWithoutTrailingZeros(calcTokenAmount(tokenCost, selectedFromToken.decimals).minus(tokenBalance).toString(10), 6)
+    ? toPrecisionWithoutTrailingZeros(
+      calcTokenAmount(
+        tokenCost,
+        selectedFromToken.decimals,
+      ).minus(tokenBalance).toString(10), 6,
+    )
     : null
+
   const ethBalanceNeeded = insufficientEth
-    ? toPrecisionWithoutTrailingZeros(ethCost.minus(ethBalance, 16).div('1000000000000000000', 10).toString(10), 6)
+    ? toPrecisionWithoutTrailingZeros(
+      ethCost.minus(ethBalance, 16).div('1000000000000000000', 10).toString(10),
+      6,
+    )
     : null
 
   const destinationToken = useSelector(getDestinationTokenInfo)
@@ -188,7 +272,12 @@ export default function ViewQuote () {
     }
   }, [originalApproveAmount, approveAmount])
 
-  const allowedMaxModeSubmit = maxMode && sourceTokenSymbol === 'ETH' && !insufficientEthForGas
+  const allowedMaxModeSubmit = (
+    maxMode &&
+    sourceTokenSymbol === 'ETH' &&
+    !insufficientEthForGas
+  )
+
   const showWarning = (
     (balanceError || tokenBalanceNeeded || ethBalanceNeeded) &&
     !warningHidden &&
@@ -230,7 +319,11 @@ export default function ViewQuote () {
     name: 'CUSTOMIZE_GAS',
     txData: { txParams: { ...tradeTxParams, gas: maxGasLimit } },
     isSwap: true,
-    customGasLimitMessage: approveGas ? t('extraApprovalGas', [hexToDecimal(approveGas)]) : '',
+    customGasLimitMessage: (
+      approveGas
+        ? t('extraApprovalGas', [hexToDecimal(approveGas)])
+        : ''
+    ),
     customTotalSupplement: approveGasTotal,
     extraInfoRow: (
       approveGas
@@ -251,6 +344,18 @@ export default function ViewQuote () {
     </span>
   )
 
+  const actionableMessage = t('swapApproveNeedMoreTokens', [
+    <span
+      key="swapApproveNeedMoreTokens-1"
+      className="view-quote__bold"
+    >
+      {tokenBalanceNeeded || ethBalanceNeeded}
+    </span>,
+    tokenBalanceNeeded && !(sourceTokenSymbol === 'ETH')
+      ? sourceTokenSymbol
+      : 'ETH',
+  ])
+
   return (
     <div className="view-quote">
       <div className="view-quote__content">
@@ -270,7 +375,7 @@ export default function ViewQuote () {
         <div className="view-quote__insufficient-eth-warning-wrapper">
           {showWarning && (
             <ActionableMessage
-              message={t('swapApproveNeedMoreTokens', [<span key="swapApproveNeedMoreTokens-1" className="view-quote__bold">{tokenBalanceNeeded || ethBalanceNeeded}</span>, tokenBalanceNeeded && !(sourceTokenSymbol === 'ETH') ? sourceTokenSymbol : 'ETH'])}
+              message={actionableMessage}
               onClose={() => setWarningHidden(true)}
             />
           )}
@@ -299,13 +404,18 @@ export default function ViewQuote () {
         <div
           className="view-quote__view-other-button-container"
         >
-          <div className="view-quote__view-other-button">{t('swapNQuotesAvailable', [Object.values(quotes).length])}<i className="fa fa-arrow-right" /></div>
+          <div className="view-quote__view-other-button">
+            {t('swapNQuotesAvailable', [Object.values(quotes).length])}
+            <i className="fa fa-arrow-right" />
+          </div>
           <div
             className="view-quote__view-other-button-fade"
             onClick={() => {
               setSelectQuotePopoverShown(true)
             }}
-          >{t('swapNQuotesAvailable', [Object.values(quotes).length])}<i className="fa fa-arrow-right" />
+          >
+            {t('swapNQuotesAvailable', [Object.values(quotes).length])}
+            <i className="fa fa-arrow-right" />
           </div>
         </div>
         <div
