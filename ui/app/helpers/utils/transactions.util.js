@@ -197,10 +197,13 @@ export function getLatestSubmittedTxWithNonce (
 }
 
 export async function isSmartContractAddress (address) {
+  if (!ethUtil.isValidContractAddress(address)) {
+    return false
+  }
   let code
 
   try {
-    await global.eth.getCode(address)
+    code = await global.eth.getCode(address)
   } catch (err) {
     if (err && err.message.includes('does not exist')) {
       code = '0x'

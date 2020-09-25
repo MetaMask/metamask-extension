@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import copyToClipboard from 'copy-to-clipboard'
 import { addressSlicer, checksumAddress } from '../../../helpers/utils/util'
+import AddressWarning from '../../ui/address-warning'
 
 import Tooltip from '../../ui/tooltip-v2.js'
 
@@ -29,8 +30,14 @@ class SelectedAccount extends Component {
       <div className="selected-account">
         <Tooltip
           position="bottom"
-          title={
-            this.state.copied ? t('copiedExclamation') : t('copyToClipboard')
+          html={
+            (
+              <AddressWarning warning={' ' + t('confluxAddressWarningClip')}>
+                {this.state.copied
+                  ? t('copiedExclamation')
+                  : t('copyToClipboard')}
+              </AddressWarning>
+            )
           }
         >
           <div

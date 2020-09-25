@@ -14,9 +14,11 @@ export default class Tooltip extends PureComponent {
     title: null,
     trigger: 'mouseenter',
     wrapperClassName: '',
+    theme: 'dark',
   }
 
   static propTypes = {
+    theme: PropTypes.string,
     arrow: PropTypes.bool,
     children: PropTypes.node,
     containerClassName: PropTypes.string,
@@ -45,6 +47,7 @@ export default class Tooltip extends PureComponent {
       onHidden,
       wrapperClassName,
       style,
+      theme,
     } = this.props
 
     if (!title && !html) {
@@ -54,6 +57,7 @@ export default class Tooltip extends PureComponent {
     return (
       <div className={wrapperClassName}>
         <ReactTippy
+          theme={theme}
           html={html}
           className={containerClassName}
           disabled={disabled}

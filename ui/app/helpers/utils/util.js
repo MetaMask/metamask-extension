@@ -27,12 +27,7 @@ for (const currency in valueTable) {
 }
 
 export function isEthNetwork (netId) {
-  if (
-    !netId ||
-    netId === '0' ||
-    netId === '1' ||
-    netId === '2999'
-  ) {
+  if (!netId || netId === '0' || netId === '2' || netId === '2999') {
     return true
   }
 
@@ -74,24 +69,19 @@ export function isValidAddress (address, type) {
     return false
   }
 
+  if (!isAllOneCase(prefixed) && !ethUtil.isValidChecksumAddress(prefixed)) {
+    return false
+  }
+
   if (type === 'account') {
-    return (
-      (isAllOneCase(prefixed) && ethUtil.isValidAccountAddress(prefixed)) ||
-      ethUtil.isValidChecksumAddress(prefixed)
-    )
+    return ethUtil.isValidAccountAddress(prefixed)
   }
 
   if (type === 'contract') {
-    return (
-      (isAllOneCase(prefixed) && ethUtil.isValidContractAddress(prefixed)) ||
-      ethUtil.isValidChecksumAddress(prefixed)
-    )
+    return ethUtil.isValidContractAddress(prefixed)
   }
 
-  return (
-    (isAllOneCase(prefixed) && ethUtil.isValidAddress(prefixed)) ||
-    ethUtil.isValidChecksumAddress(prefixed)
-  )
+  return ethUtil.isValidAddress(prefixed)
 }
 
 export function isValidDomainName (address) {
@@ -265,7 +255,7 @@ export function getRandomFileName () {
   const charBank = [
     ...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
   ]
-  const fileNameLength = Math.floor((Math.random() * 7) + 6)
+  const fileNameLength = Math.floor(Math.random() * 7 + 6)
 
   for (let i = 0; i < fileNameLength; i++) {
     fileName += charBank[Math.floor(Math.random() * charBank.length)]

@@ -65,10 +65,12 @@ export default class SendTransactionScreen extends Component {
 
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    // metricsEvent: PropTypes.func,
   }
 
   state = {
+    hasAddressError: false,
+    validatingAddress: false,
     query: '',
     toError: null,
     toWarning: null,
@@ -251,26 +253,23 @@ export default class SendTransactionScreen extends Component {
       return this.setState({ toError: '', toWarning: '' })
     }
 
-    const toErrorObject = getToErrorObject(
-      query,
-      null,
-      hasHexData,
-      tokens,
-      selectedToken,
-      network
-    )
-    const toWarningObject = getToWarningObject(
-      query,
-      null,
-      tokens,
-      selectedToken,
-      trustedTokenMap
-    )
-
     this.setState({
-      toError: toErrorObject.to,
-      toWarning: toWarningObject.to,
+      ...this.state,
+      hasAddressError: false,
+      validatingAddress: true,
     })
+
+    Promise.all([
+      getToErrorObject(query, null, hasHexData, tokens, selectedToken, network),
+      getToWarningObject(query, null, tokens, selectedToken, trustedTokenMap),
+    ]).then(([toErrorObject, toWarningObject]) =>
+      this.setState({
+        hasAddressError: Boolean(toErrorObject && toErrorObject.to),
+        validatingAddress: false,
+        toError: toErrorObject.to,
+        toWarning: toWarningObject.to,
+      })
+    )
   }
 
   updateSendToken () {
@@ -330,7 +329,23 @@ export default class SendTransactionScreen extends Component {
       <div className="page-container">
         <SendHeader history={history} />
         {this.renderInput()}
+        {this.renderAddressWarning()}
         {content}
+      </div>
+    )
+  }
+
+  renderAddressWarning () {
+    const { to } = this.props
+    const { t } = this.context
+    const isContract = to && to.startsWith('0x8')
+    return (
+      <div
+        className="send__address-warning-row"
+        style={{ fontSize: isContract ? 'smaller' : 'unset' }}
+      >
+        {isContract && t('confluxContractAddressWarningSend')}
+        {!to && t('confluxAddressWarningSend')}
       </div>
     )
   }
@@ -340,13 +355,13 @@ export default class SendTransactionScreen extends Component {
       <EnsInput
         className="send__to-row"
         scanQrCode={(_) => {
-          this.context.metricsEvent({
-            eventOpts: {
-              category: 'Transactions',
-              action: 'Edit Screen',
-              name: 'Used QR scanner',
-            },
-          })
+          /* this.context.metricsEvent({ */
+          /*   eventOpts: { */
+          /*     category: 'Transactions', */
+          /*     action: 'Edit Screen', */
+          /*     name: 'Used QR scanner', */
+          /*   }, */
+          /* }) */
           this.props.scanQrCode()
         }}
         onChange={this.onRecipientInputChange}
@@ -362,14 +377,19 @@ export default class SendTransactionScreen extends Component {
   }
 
   renderAddRecipient () {
-    const { toError, toWarning } = this.state
+    const {
+      toError,
+      toWarning,
+      validatingAddress,
+      hasAddressError,
+    } = this.state
 
     return (
       <AddRecipient
         updateGas={({ to, amount, data } = {}) =>
           this.updateGas({ to, amount, data })
         }
-        query={this.state.query}
+        query={hasAddressError || validatingAddress ? '' : this.state.query}
         toError={toError}
         toWarning={toWarning}
       />

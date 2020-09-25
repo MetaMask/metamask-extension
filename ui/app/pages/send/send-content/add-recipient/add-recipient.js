@@ -1,16 +1,28 @@
 import {
   REQUIRED_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
+  INVALID_RECIPIENT_CHECKSUM_ERROR,
+  INVALID_RECIPIENT_0X_ERROR,
+  INVALID_RECIPIENT_CONTRACT_ERROR,
   KNOWN_RECIPIENT_ADDRESS_ERROR,
   INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
 } from '../../send.constants'
 
-import { isValidAddress, isEthNetwork } from '../../../../helpers/utils/util'
+import {
+  isAllOneCase,
+  isValidAddress,
+  isEthNetwork,
+} from '../../../../helpers/utils/util'
+import { isSmartContractAddress } from '../../../../helpers/utils/transactions.util'
 import { checkExistingAddresses } from '../../../add-token/util'
 
-import { toChecksumAddress } from 'cfx-util'
+import {
+  toChecksumAddress,
+  isValidChecksumAddress,
+  isValidAddress as ethUtilIsValidAddress,
+} from 'cfx-util'
 
-export function getToErrorObject (
+export async function getToErrorObject (
   to,
   toError = null,
   hasHexData = false,
@@ -22,9 +34,30 @@ export function getToErrorObject (
     if (!hasHexData) {
       toError = REQUIRED_ERROR
     }
-  } else if (!isValidAddress(to, network) && !toError) {
+  } else if (!ethUtilIsValidAddress(to) && !toError) {
     toError = isEthNetwork(network)
       ? INVALID_RECIPIENT_ADDRESS_ERROR
+      : INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR
+  } else if (!isAllOneCase(to) && !isValidChecksumAddress(to) && !toError) {
+    toError = isEthNetwork(network)
+      ? INVALID_RECIPIENT_CHECKSUM_ERROR
+      : INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR
+  } else if (
+    !isValidAddress(to, 'account') &&
+    !isValidAddress(to, 'contract') &&
+    !toError
+  ) {
+    toError = isEthNetwork(network)
+      ? INVALID_RECIPIENT_0X_ERROR
+      : INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR
+  } else if (
+    !isValidAddress(to, 'account') &&
+    isValidAddress(to, 'contract') &&
+    !(await isSmartContractAddress(to)) &&
+    !toError
+  ) {
+    toError = isEthNetwork(network)
+      ? INVALID_RECIPIENT_CONTRACT_ERROR
       : INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR
   }
 

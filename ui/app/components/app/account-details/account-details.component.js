@@ -4,6 +4,7 @@ import classnames from 'classnames'
 import Identicon from '../../ui/identicon'
 import Tooltip from '../../ui/tooltip-v2'
 import copyToClipboard from 'copy-to-clipboard'
+import AddressWarning from '../../ui/address-warning'
 
 export default class AccountDetails extends Component {
   static contextTypes = {
@@ -90,7 +91,13 @@ export default class AccountDetails extends Component {
         </div>
         <Tooltip
           position="bottom"
-          title={hasCopied ? t('copiedExclamation') : t('copyToClipboard')}
+          html={
+            (
+              <AddressWarning warning={' ' + t('confluxAddressWarningClip')}>
+                {hasCopied ? t('copiedExclamation') : t('copyToClipboard')}
+              </AddressWarning>
+            )
+          }
           wrapperClassName="account-details__tooltip"
         >
           <button

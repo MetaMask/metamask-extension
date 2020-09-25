@@ -22,7 +22,7 @@
     font-size: 24px;
     color: $black;
     margin-top: 8px;
-    margin-bottom: .9rem;
+    margin-bottom: 0.9rem;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -64,12 +64,11 @@
     flex: 0 0 auto;
 
     &__pressed {
-      background-color: $manatee,
+      background-color: $manatee;
     }
   }
 
   &__sidebar-close {
-
     @media screen and (max-width: 575px) {
       &::after {
         content: '\00D7';

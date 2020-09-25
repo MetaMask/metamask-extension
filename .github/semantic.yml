@@ -11,6 +11,7 @@ titleAndCommits: true
 # See: https://github.com/commitizen/conventional-commit-types/blob/v3.0.0/index.json
 # You can override the valid types
 types:
+  - Release
   - feat
   - fix
   - docs

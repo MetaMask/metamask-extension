@@ -218,6 +218,18 @@
   "chromeRequiredForHardwareWallets": {
     "message": "您需要通過 Google Chrome 瀏覽器使用 ConfluxPortal ，連接個人硬件錢包。(硬件錢包沒有經過充分測試, 使用中可能會遇到問題)"
   },
+  "confluxAddressWarningClip": {
+    "message": "請勿轉賬任何非 Conflux 網絡資產至該地址，否則資產可能丟失。"
+  },
+  "confluxAddressWarningModal": {
+    "message": "請勿轉賬任何非 Conflux 網絡資產至該地址，否則資產可能丟失。"
+  },
+  "confluxAddressWarningSend": {
+    "message": "請不要向非 Conflux 網絡地址轉賬，否則資產可能丟失。"
+  },
+  "confluxContractAddressWarningSend": {
+    "message": "該地址為 Conflux 網絡合約地址，非個人用戶"
+  },
   "confirm": {
     "message": "確認"
   },
@@ -902,7 +914,7 @@
     "message": "接收位址"
   },
   "recipientAddressPlaceholder": {
-    "message": "務必使用2020.4.9後更新的錢包地址"
+    "message": "查找、公用地址 (0x1 或 0x8)"
   },
   "rejectAll": {
     "message": "全部拒絕"
