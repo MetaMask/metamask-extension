@@ -27,6 +27,7 @@ import { calcTokenAmount } from '../../../helpers/utils/token-util'
 import { usePrevious } from '../../../hooks/usePrevious'
 import { useTokenTracker } from '../../../hooks/useTokenTracker'
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount'
+import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount'
 
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../helpers/constants/swaps'
 
@@ -89,18 +90,21 @@ export default function BuildQuote ({
 
   const prevFromTokenString = usePrevious(fromTokenString)
 
-  const convertFromFiatValue = useTokenFiatAmount(
+  const swapFromTokenFiatValue = useTokenFiatAmount(
     fromTokenAddress,
     inputValue || 0,
     fromTokenSymbol,
     {
-      exchangeRate: fromTokenSymbol === 'ETH' ? 1 : fetchedTokenExchangeRate,
       showFiat: true,
     },
   )
+  const swapFromEthFiatValue = useEthFiatAmount(inputValue || 0, { showFiat: true })
+  const swapFromFiatValue = fromTokenSymbol === 'ETH'
+    ? swapFromEthFiatValue
+    : swapFromTokenFiatValue
 
   const onFromSelect = (token) => {
-    if (token && !convertFromFiatValue && fetchedTokenExchangeRate !== null) {
+    if (token && !swapFromFiatValue && fetchedTokenExchangeRate !== null) {
       fetchTokenPrice(token.address)
         .then((rate) => {
           if (rate !== null && rate !== undefined) {
@@ -175,7 +179,7 @@ export default function BuildQuote ({
             onInputChange(value, fromTokenString, fromTokenDecimals)
           }}
           inputValue={inputValue}
-          leftValue={inputValue && convertFromFiatValue}
+          leftValue={inputValue && swapFromFiatValue}
           selectedItem={selectedFromToken}
           maxListItems={30}
           loading={loading && (!tokensToSearch?.length || !topAssets || !Object.keys(topAssets).length)}
