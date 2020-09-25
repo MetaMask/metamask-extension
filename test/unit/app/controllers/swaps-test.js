@@ -6,6 +6,7 @@ import { ethers } from 'ethers'
 import BigNumber from 'bignumber.js'
 import ObservableStore from 'obs-store'
 import { createTestProviderTools } from '../../../stub/provider'
+import { DEFAULT_ERC20_APPROVE_GAS } from '../../../../ui/app/helpers/constants/swaps'
 // import { fetchTradesInfo } from '../../../../ui/app/pages/swaps/swaps.util'
 
 const MOCK_FETCH_PARAMS = { slippage: 3, sourceToken: '0x6b175474e89094c44da98b954eedeac495271d0f', sourceDecimals: 18, destinationToken: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', value: '1000000000000000000', fromAddress: '0x7F18BB4Dd92CF2404C54CBa1A9BE4A1153bdb078', exchangeList: 'zeroExV1' }
@@ -204,12 +205,11 @@ describe.only('SwapsController', function () {
       it('calls fetchTradesInfo with the given fetchParams and returns the correct quotes', async function () {
         fetchTradesInfoStub.resolves(MOCK_QUOTES)
 
-        // Make it so approval is not requires
+        // Make it so approval is not required
         sinon.stub(swapsController, '_getERC20Allowance').resolves(ethers.BigNumber.from(1))
 
-        const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS)
+        const [newQuotes] = await swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS)
 
-        assert.strictEqual(topAggId, TEST_AGG_ID)
         assert.deepStrictEqual(newQuotes[TEST_AGG_ID], {
           ...MOCK_QUOTES[TEST_AGG_ID],
           sourceTokenInfo: undefined,
@@ -220,6 +220,61 @@ describe.only('SwapsController', function () {
         })
 
         assert.strictEqual(fetchTradesInfoStub.calledOnceWithExactly(MOCK_FETCH_PARAMS), true)
+      })
+
+      it('performs the allowance check', async function () {
+        fetchTradesInfoStub.resolves(MOCK_QUOTES)
+
+        // Make it so approval is not required
+        const allowanceStub = sinon.stub(swapsController, '_getERC20Allowance').resolves(ethers.BigNumber.from(1))
+
+        await swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS)
+
+        assert.strictEqual(allowanceStub.calledOnceWithExactly(MOCK_FETCH_PARAMS.sourceToken, MOCK_FETCH_PARAMS.fromAddress), true)
+      })
+
+      it('gets the gas limit if approval is required', async function () {
+        fetchTradesInfoStub.resolves(MOCK_QUOTES)
+
+        // Make it so approval is not required
+        sinon.stub(swapsController, '_getERC20Allowance').resolves(ethers.BigNumber.from(0))
+
+        const timedoutGasReturnResult = { gasLimit: 1000000 }
+        const timedoutGasReturnStub = sinon.stub(swapsController, 'timedoutGasReturn').resolves(timedoutGasReturnResult)
+
+        await swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS)
+
+        // Mocked quotes approvalNeeded is null, so it will only be called with the gas
+        assert.strictEqual(timedoutGasReturnStub.calledOnceWithExactly({ gas: DEFAULT_ERC20_APPROVE_GAS }), true)
+      })
+
+      it('marks the best quote', async function () {
+        fetchTradesInfoStub.resolves(MOCK_QUOTES)
+
+        // Make it so approval is not required
+        sinon.stub(swapsController, '_getERC20Allowance').resolves(ethers.BigNumber.from(1))
+
+        const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS)
+
+        assert.strictEqual(topAggId, TEST_AGG_ID)
+        assert.strictEqual(newQuotes[topAggId].isBestQuote, true)
+      })
+
+      it('selects the best quote', async function () {
+        const bestAggId = 'bestAggId'
+
+        // Clone the existing mock quote and increase destination amount
+        const bestQuote = { ...MOCK_QUOTES[TEST_AGG_ID], aggregator: bestAggId, destinationAmount: ethers.BigNumber.from(MOCK_QUOTES[TEST_AGG_ID].destinationAmount).add(1).toString() }
+        const quotes = { ...MOCK_QUOTES, [bestAggId]: bestQuote }
+        fetchTradesInfoStub.resolves(quotes)
+
+        // Make it so approval is not required
+        sinon.stub(swapsController, '_getERC20Allowance').resolves(ethers.BigNumber.from(1))
+
+        const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS)
+
+        assert.strictEqual(TEST_AGG_ID, topAggId)
+        assert.strictEqual(true, newQuotes[topAggId].isBestQuote)
       })
     })
 
