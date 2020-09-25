@@ -18,12 +18,12 @@
     display: flex;
   }
 
-  &__dropdown-convert-to-header {
+  &__dropdown-swap-to-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    margin-top: 32px;
+    margin-top: 0;
     margin-bottom: 12px;
   }
 
@@ -72,10 +72,6 @@
 
     color: $Blue-500;
     cursor: pointer;
-  }
-
-  &__dropdown-convert-to-header {
-    margin-top: 0;
   }
 
   &__balance-message {

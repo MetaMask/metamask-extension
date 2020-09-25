@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { action } from '@storybook/addon-actions'
 import { boolean } from '@storybook/addon-knobs/react'
-import classnames from 'classnames'
 import DropdownInputPair from '../dropdown-input-pair'
 import DropdownSearchList from '../dropdown-search-list'
 
@@ -41,10 +40,10 @@ export const Default = () => {
   return (
     <div style={{ height: '415px', width: '357px', border: '1px solid grey', paddingLeft: '24px', paddingRight: '24px', overflow: 'hidden' }}>
       <div className="build-quote">
-        <div className="swaps__dropdown-input-pair-header">
-          <div className="swaps__input-label">Swap from</div>
+        <div className="build-quote__dropdown-input-pair-header">
+          <div className="build-quote__input-label">Swap from</div>
           <div
-            className="swaps__max-button"
+            className="build-quote__max-button"
             onClick={action('clickedMax')}
           >Max
           </div>
@@ -61,19 +60,17 @@ export const Default = () => {
           hideItemIf={(tokenListItem) => tokenListItem.decimals !== 18}
           selectPlaceHolderText="Select"
         />
-        <div className="swaps__swap-arrows-row"><div className="swaps__swap-arrows" /></div>
-        <div className="swaps__dropdown-swap-to-header">
-          <div className="swaps__input-label">Swap to</div>
+        <div className="build-quote__swap-arrows-row"><div className="build-quote__swap-arrows" /></div>
+        <div className="build-quote__dropdown-swap-to-header">
+          <div className="build-quote__input-label">Swap to</div>
         </div>
         <DropdownSearchList
           itemsToSearch={tokensToSearch}
-          listContainerClassName="build-quote__to-dropdown--max-height"
-          openSearchListClassName="swaps__search-token--open"
+          listContainerClassName="build-quote__open-to-dropdown"
           searchPlaceholderText="Search for a token"
           fuseSearchKeys={[{ name: 'name', weight: 0.499 }, { name: 'symbol', weight: 0.499 }, { name: 'address', weight: 0.002 }]}
           maxListItems={30}
           onSelect={action('onToSelect')}
-          className={classnames('swaps__swap-to-list', { 'swaps__swap-to-list--loading': loading })}
           selectPlaceHolderText="Select a token"
           loading={loading}
           hideRightLabels

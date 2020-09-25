@@ -209,13 +209,12 @@ export default function BuildQuote ({
           }}
         ><div className="build-quote__swap-arrows" />
         </div>
-        <div className="build-quote__dropdown-convert-to-header">
+        <div className="build-quote__dropdown-swap-to-header">
           <div className="build-quote__input-label">{t('swapSwapTo')}</div>
         </div>
         <DropdownSearchList
           startingItem={selectedToToken}
           itemsToSearch={tokensToSearch}
-          openSearchListClassName="build-quote__search-token--open"
           searchPlaceholderText={t('swapSearchForAToken')}
           fuseSearchKeys={fuseSearchKeys}
           selectPlaceHolderText="Select a token"
