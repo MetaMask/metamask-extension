@@ -43,11 +43,16 @@ export default function DropdownInputPair ({
   const inputRef = useRef()
   const onTextFieldChange = (event) => {
     event.stopPropagation()
+    // Automatically prefix value with 0. if user begins typing .
     const valueToUse = event.target.value === '.' ? '0.' : event.target.value
+    // Regex that validates strings with only numbers and '.'
     const regexp = /^\.\d+$|\d[0-9.]*$/u
-    if (!valueToUse || (regexp.test(valueToUse) && ((valueToUse.match(/\./ug)?.length ?? 0) <= 1))) {
+    // If the value is not empty, contains only numbers and '.' and only has one '.', update input to match
+    if (valueToUse !== '' || (regexp.test(valueToUse) && ((valueToUse.match(/\./ug)?.length ?? 0) <= 1))) {
       onInputChange(valueToUse)
     } else {
+      // otherwise, use the previously set inputValue (effectively denying the user from inputting the last char)
+      // or an empty string if we do not yet have an inputValue
       onInputChange(inputValue || '')
     }
   }

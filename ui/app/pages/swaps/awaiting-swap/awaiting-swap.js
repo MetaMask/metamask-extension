@@ -129,6 +129,10 @@ export default function AwaitingSwap ({
         <div className="awaiting-swap__main-descrption">
           {descriptionText}
         </div>
+        {/**
+           * only show estimated time if the transaction has been accepted by the network (has a hash),
+           * the swap has not yet completed and there isn't an error.
+           */}
         {!swapComplete && !errorKey && txHash && (
           <div className="awaiting-swap__time-estimate">
             {t('swapEstimatedTimeFull', [
