@@ -32,6 +32,9 @@
   "confluxAddressWarningSend": {
     "message": "DO NOT transfer to non-ConfluxNetwork address to avoid assets lost."
   },
+  "confluxContractAddressWarningSend": {
+    "message": "ConfluxNetwork smart contract address, NOT user address"
+  },
   "connectedSites": {
     "message": "Connected Sites"
   },

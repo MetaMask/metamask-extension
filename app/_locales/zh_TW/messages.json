@@ -227,6 +227,9 @@
   "confluxAddressWarningSend": {
     "message": "請不要向非 Conflux 網絡地址轉賬，否則資產可能丟失。"
   },
+  "confluxContractAddressWarningSend": {
+    "message": "該地址為 Conflux 網絡合約地址，非個人用戶"
+  },
   "confirm": {
     "message": "確認"
   },

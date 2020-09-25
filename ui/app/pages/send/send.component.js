@@ -329,7 +329,23 @@ export default class SendTransactionScreen extends Component {
       <div className="page-container">
         <SendHeader history={history} />
         {this.renderInput()}
+        {this.renderAddressWarning()}
         {content}
+      </div>
+    )
+  }
+
+  renderAddressWarning () {
+    const { to } = this.props
+    const { t } = this.context
+    const isContract = to && to.startsWith('0x8')
+    return (
+      <div
+        className="send__address-warning-row"
+        style={{ fontSize: isContract ? 'smaller' : 'unset' }}
+      >
+        {isContract && t('confluxContractAddressWarningSend')}
+        {!to && t('confluxAddressWarningSend')}
       </div>
     )
   }
