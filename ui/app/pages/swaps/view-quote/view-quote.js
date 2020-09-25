@@ -127,8 +127,9 @@ export default function ViewQuote () {
   const ethCost = (new BigNumber(usedQuote.trade.value || 0, 10)).plus((new BigNumber(gasTotalInWeiHex, 16)))
 
   const insufficientTokens = (tokensWithBalances?.length || balanceError) && (tokenCost).gt(new BigNumber(selectedFromToken.balance || '0x0'))
-  const insufficientEthForGas = (new BigNumber(gasTotalInWeiHex, 16)).gt(new BigNumber(ethBalance || '0x0'))
-  const insufficientEth = (ethCost).gt(new BigNumber(ethBalance || '0x0'))
+  const insufficientEth = maxMode && sourceTokenSymbol === 'ETH'
+    ? (new BigNumber(gasTotalInWeiHex, 16)).gte(new BigNumber(ethBalance || '0x0'))
+    : (ethCost).gt(new BigNumber(ethBalance || '0x0'))
   const tokenBalanceNeeded = insufficientTokens
     ? toPrecisionWithoutTrailingZeros(calcTokenAmount(tokenCost, selectedFromToken.decimals).minus(tokenBalance).toString(10), 6)
     : null
@@ -158,8 +159,7 @@ export default function ViewQuote () {
     }
   }, [quotesLastFetched, dispatchedSafeRefetch, dispatch, history])
 
-  const allowedMaxModeSubmit = maxMode && sourceTokenSymbol === 'ETH' && !insufficientEthForGas
-  const showWarning = ((balanceError || tokenBalanceNeeded || ethBalanceNeeded) && !warningHidden && !allowedMaxModeSubmit)
+  const showWarning = ((balanceError || tokenBalanceNeeded || ethBalanceNeeded) && !warningHidden)
 
   return (
     <div className="view-quote">
@@ -230,7 +230,7 @@ export default function ViewQuote () {
       </div>
       <SwapsFooter
         onSubmit={() => {
-          if (!balanceError || allowedMaxModeSubmit) {
+          if (!balanceError) {
             dispatch(signAndSendTransactions(history))
           } else if (destinationToken.symbol === 'ETH') {
             history.push(DEFAULT_ROUTE)
@@ -240,7 +240,7 @@ export default function ViewQuote () {
         }}
         submitText={t('swap')}
         onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}
-        disabled={balanceError && !allowedMaxModeSubmit}
+        disabled={balanceError}
         showTermsOfService
         showTopBorder
       />
