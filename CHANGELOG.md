@@ -2,6 +2,15 @@
 
 ## Current Develop Branch
 
+## 0.3.11 Fri Sep 25 2020
+
+- ci: run key e2e test after other tests
+- ci: fix semantic error in release pr and master pr
+- feat: add address warning, replace send input placeholder
+- feat(send): check address in send component
+- feat: add send to smart contract warning
+- feat: add address warning
+
 ## 0.3.10 Tue Sep 22 2020
 
 - fix(send): update gas info when sponsorship info loaded
