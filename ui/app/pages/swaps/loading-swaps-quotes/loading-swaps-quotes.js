@@ -73,7 +73,6 @@ export default function LoadingSwapsQuotes ({
   }), {})
   const [aggregatorLocationMap] = useState(_aggregatorLocationMap)
   const [midPointTarget, setMidpointTarget] = useState(null)
-  const [doneCalled, setDoneCalled] = useState(false)
 
   useEffect(() => {
     let timeoutLength
@@ -98,7 +97,6 @@ export default function LoadingSwapsQuotes ({
       if (quoteCount < numberOfQuotes) {
         updateQuoteCount(quoteCount + 1)
       } else if (quoteCount === numberOfQuotes && loadingComplete) {
-        setDoneCalled(true)
         onDone()
       }
     }, timeoutLength)
