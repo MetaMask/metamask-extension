@@ -143,8 +143,8 @@ export default function ViewQuote () {
     sourceTokenValue,
   } = renderableDataForUsedQuote
 
-  const { feeinFiat, feeInEth } = getRenderableGasFeesForQuote(usedGasLimit, approveGas, gasPrice, currentCurrency, conversionRate)
-  const { feeinFiat: maxFeeInFiat, feeInEth: maxFeeInEth } = getRenderableGasFeesForQuote(maxGasLimit, approveGas, gasPrice, currentCurrency, conversionRate)
+  const { feeInFiat, feeInEth } = getRenderableGasFeesForQuote(usedGasLimit, approveGas, gasPrice, currentCurrency, conversionRate)
+  const { feeInFiat: maxFeeInFiat, feeInEth: maxFeeInEth } = getRenderableGasFeesForQuote(maxGasLimit, approveGas, gasPrice, currentCurrency, conversionRate)
 
   const tokenCost = (new BigNumber(usedQuote.sourceAmount))
   const ethCost = (new BigNumber(usedQuote.trade.value || 0, 10)).plus((new BigNumber(gasTotalInWeiHex, 16)))
@@ -242,6 +242,15 @@ export default function ViewQuote () {
     ),
   }))
 
+  const thirdRowTextComponent = (
+    <span
+      key="swaps-view-quote-approve-symbol-1"
+      className="view-quote__bold"
+    >
+      {sourceTokenSymbol}
+    </span>
+  )
+
   return (
     <div className="view-quote">
       <div className="view-quote__content">
@@ -305,20 +314,28 @@ export default function ViewQuote () {
           })}
         >
           <FeeCard
-            onThirdRowClick={onFeeCardThirdRowClickHandler}
-            onMaxRowClick={onFeeCardMaxRowClickHandler}
-            secondaryFee={feeinFiat}
-            primaryFee={feeInEth}
-            secondaryMaxFee={maxFeeInFiat}
-            primaryMaxFee={maxFeeInEth}
             feeRowText={t('swapEstimatedNetworkFee')}
-            maxFeeRowText={t('swapMaxNetworkFees')}
-            maxFeeRowLinkText={t('edit')}
-            maxFeeRowInfoTooltipText={t('swapMaxNetworkFeeInfo')}
-            thirdRowText={t('swapThisWillAllowApprove', [<span key="swaps-view-quote-approve-symbol-1" className="view-quote__bold">{sourceTokenSymbol}</span>])}
-            thirdRowLinkText={t('swapEditLimit')}
-            hideThirdRow={!approveTxParams || (balanceError && !warningHidden)}
-            thirdRowInfoTooltipText={t('swapEnableDescription', [sourceTokenSymbol])}
+            primaryFee={({
+              fee: feeInEth,
+              maxFee: maxFeeInEth,
+            })}
+            secondaryFee={({
+              fee: feeInFiat,
+              maxFee: maxFeeInFiat,
+            })}
+            maxFeeRow={({
+              text: t('swapMaxNetworkFees'),
+              linkText: t('edit'),
+              tooltipText: t('swapMaxNetworkFeeInfo'),
+              onClick: onFeeCardMaxRowClickHandler,
+            })}
+            thirdRow={({
+              text: t('swapThisWillAllowApprove', [thirdRowTextComponent]),
+              linkText: t('swapEditLimit'),
+              tooltipText: t('swapEnableDescription', [sourceTokenSymbol]),
+              onClick: onFeeCardThirdRowClickHandler,
+              hide: !approveTxParams || (balanceError && !warningHidden),
+            })}
           />
         </div>
       </div>
