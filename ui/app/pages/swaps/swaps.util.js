@@ -297,7 +297,7 @@ export function getRenderableGasFeesForQuote (tradeGas, approveGas, gasPrice, cu
   return {
     rawNetworkFees,
     rawEthFee: ethFee,
-    feeinFiat: formattedNetworkFee,
+    feeInFiat: formattedNetworkFee,
     feeInEth: `${ethFee} ETH`,
   }
 }
@@ -308,7 +308,22 @@ export function quotesToRenderableData (quotes, gasPrice, conversionRate, curren
     const sourceValue = calcTokenAmount(sourceAmount, sourceTokenInfo.decimals || 18).toString(10)
     const destinationValue = calcTokenAmount(destinationAmount, destinationTokenInfo.decimals || 18).toPrecision(8)
 
-    const { feeinFiat, rawNetworkFees, rawEthFee, feeInEth } = getRenderableGasFeesForQuote(customGasLimit || gasEstimateWithRefund || decimalToHex(averageGas || 800000), approveGas, gasPrice, currentCurrency, conversionRate)
+    const {
+      feeInFiat,
+      rawNetworkFees,
+      rawEthFee,
+      feeInEth,
+    } = getRenderableGasFeesForQuote(
+      (
+        customGasLimit ||
+        gasEstimateWithRefund ||
+        decimalToHex(averageGas || 800000)
+      ),
+      approveGas,
+      gasPrice,
+      currentCurrency,
+      conversionRate,
+    )
 
     const metaMaskFee = `0.875%`
     const slippageMultiplier = (new BigNumber(100 - slippage)).div(100)
@@ -345,8 +360,8 @@ export function quotesToRenderableData (quotes, gasPrice, conversionRate, curren
       liquiditySource,
       metaMaskFee,
       feeInEth,
-      detailedNetworkFees: `${feeInEth} (${feeinFiat})`,
-      networkFees: feeinFiat,
+      detailedNetworkFees: `${feeInEth} (${feeInFiat})`,
+      networkFees: feeInFiat,
       quoteSource: aggType,
       rawNetworkFees,
       slippage: renderedSlippage,

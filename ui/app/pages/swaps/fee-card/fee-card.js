@@ -6,17 +6,8 @@ export default function FeeCard ({
   feeRowText,
   primaryFee,
   secondaryFee,
-  thirdRowText,
-  thirdRowLinkText,
-  hideThirdRow = false,
-  onThirdRowClick,
-  thirdRowInfoTooltipText,
-  maxFeeRowInfoTooltipText,
-  primaryMaxFee,
-  secondaryMaxFee,
-  maxFeeRowText,
-  maxFeeRowLinkText,
-  onMaxRowClick,
+  thirdRow,
+  maxFeeRow,
 }) {
   return (
     <div className="fee-card">
@@ -29,58 +20,54 @@ export default function FeeCard ({
           </div>
           <div>
             <div className="fee-card__row-header-secondary--bold">
-              {primaryFee}
+              {primaryFee.fee}
             </div>
             {secondaryFee && (
               <div className="fee-card__row-header-primary--bold">
-                {secondaryFee}
+                {secondaryFee.fee}
               </div>
             )}
           </div>
         </div>
-        <div className="fee-card__row-header" onClick={() => onMaxRowClick && onMaxRowClick()}>
+        <div className="fee-card__row-header" onClick={() => maxFeeRow.onClick()}>
           <div>
             <div className="fee-card__row-header-text">
-              {maxFeeRowText}
+              {maxFeeRow.text}
             </div>
-            {onMaxRowClick && (
-              <div className="fee-card__link">
-                {maxFeeRowLinkText}
-              </div>
-            )}
+            <div className="fee-card__link">
+              {maxFeeRow.linkText}
+            </div>
             <div className="fee-card__row-label">
               <InfoTooltip
                 position="top"
-                contentText={maxFeeRowInfoTooltipText}
+                contentText={maxFeeRow.tooltipText}
               />
             </div>
           </div>
           <div>
             <div className="fee-card__row-header-secondary">
-              {primaryMaxFee}
+              {primaryFee.maxFee}
             </div>
-            {secondaryMaxFee && (
+            {secondaryFee?.maxFee !== undefined && (
               <div className="fee-card__row-header-primary">
-                {secondaryMaxFee}
+                {secondaryFee.maxFee}
               </div>
             )}
           </div>
         </div>
-        {!hideThirdRow && thirdRowText && (
+        {thirdRow && !thirdRow.hide && (
           <div className="fee-card__top-bordered-row">
             <div className="fee-card__row-label">
-              <div className="fee-card__row-text">
-                {thirdRowText}
+              <div className="fee-card__row-header-text">
+                {thirdRow.text}
+              </div>
+              <div className="fee-card__link" onClick={() => thirdRow.onClick()}>
+                {thirdRow.linkText}
               </div>
               <InfoTooltip
                 position="top"
-                contentText={thirdRowInfoTooltipText}
+                contentText={thirdRow.tooltipText}
               />
-              {thirdRowLinkText && (
-                <div className="fee-card__link" onClick={() => onThirdRowClick && onThirdRowClick()}>
-                  {thirdRowLinkText}
-                </div>
-              )}
             </div>
           </div>
         )}
@@ -91,17 +78,25 @@ export default function FeeCard ({
 
 FeeCard.propTypes = {
   feeRowText: PropTypes.string.isRequired,
-  primaryFee: PropTypes.string.isRequired,
-  secondaryFee: PropTypes.string,
-  thirdRowText: PropTypes.string,
-  thirdRowLinkText: PropTypes.string,
-  hideThirdRow: PropTypes.bool,
-  onThirdRowClick: PropTypes.func,
-  thirdRowInfoTooltipText: PropTypes.string,
-  primaryMaxFee: PropTypes.string.isRequired,
-  secondaryMaxFee: PropTypes.string,
-  maxFeeRowText: PropTypes.string.isRequired,
-  maxFeeRowLinkText: PropTypes.string,
-  onMaxRowClick: PropTypes.func,
-  maxFeeRowInfoTooltipText: PropTypes.string,
+  primaryFee: PropTypes.shape({
+    fee: PropTypes.string.isRequired,
+    maxFee: PropTypes.string.isRequired,
+  }).isRequired,
+  secondaryFee: PropTypes.shape({
+    fee: PropTypes.string.isRequired,
+    maxFee: PropTypes.string.isRequired,
+  }),
+  maxFeeRow: PropTypes.shape({
+    text: PropTypes.string.isRequired,
+    linkText: PropTypes.string.isRequired,
+    tooltipText: PropTypes.string.isRequired,
+    onClick: PropTypes.func.isRequired,
+  }).isRequired,
+  thirdRow: PropTypes.shape({
+    text: PropTypes.string.isRequired,
+    linkText: PropTypes.string.isRequired,
+    tooltipText: PropTypes.string.isRequired,
+    onClick: PropTypes.func.isRequired,
+    hide: PropTypes.bool.isRequired,
+  }),
 }
