@@ -231,7 +231,7 @@ export default function ViewQuote () {
       <SwapsFooter
         onSubmit={() => {
           if (!balanceError || allowedMaxModeSubmit) {
-            dispatch(signAndSendTransactions())
+            dispatch(signAndSendTransactions(history))
           } else if (destinationToken.symbol === 'ETH') {
             history.push(DEFAULT_ROUTE)
           } else {

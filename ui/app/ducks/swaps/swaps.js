@@ -43,7 +43,7 @@ const initialState = {
   fromToken: null,
   quotesFetchStartTime: null,
   submittingSwap: false,
-  topAssets: null,
+  topAssets: {},
   toToken: null,
 }
 
