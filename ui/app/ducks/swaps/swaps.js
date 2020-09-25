@@ -333,10 +333,10 @@ export const signAndSendTransactions = (history) => {
     const fetchParams = getFetchParams(state)
     const { metaData, value: swapTokenValue, slippage } = fetchParams
     const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData
+    dispatch(setSubmittingSwap(true))
+    await dispatch(stopPollingForQuotes())
     history.push(AWAITING_SWAP_ROUTE)
 
-    dispatch(stopPollingForQuotes())
-    dispatch(setSubmittingSwap(true))
 
     const usedQuote = getUsedQuote(state)
     let usedTradeTxParams = usedQuote.trade
