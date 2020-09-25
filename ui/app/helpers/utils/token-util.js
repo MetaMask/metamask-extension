@@ -177,7 +177,7 @@ export function getTokenValue (tokenParams = []) {
  * @param {string} [tokenAmount] - The current token balance
  * @param {string} [tokenSymbol] - The token symbol
  * @param {boolean} [formatted] - Whether the return value should be formatted or not
- * @param {boolean} [noSymbol] - Whether the result should contain the currency symbol
+ * @param {boolean} [hideCurrencySymbol] - excludes the currency symbol in the result if true
  * @returns {string|undefined} The token amount in the user's chosen fiat currency, optionally formatted and localize
  */
 export function getTokenFiatAmount (
@@ -187,7 +187,7 @@ export function getTokenFiatAmount (
   tokenAmount,
   tokenSymbol,
   formatted = true,
-  noSymbol,
+  hideCurrencySymbol = false,
 ) {
   // If the conversionRate is 0 (i.e. unknown) or the contract exchange rate
   // is currently unknown, the fiat amount cannot be calculated so it is not
@@ -208,7 +208,7 @@ export function getTokenFiatAmount (
     conversionRate: currentTokenToFiatRate,
   })
   let result
-  if (noSymbol) {
+  if (hideCurrencySymbol) {
     result = formatCurrency(currentTokenInFiat, currentCurrency)
   } else if (formatted) {
     result = `${formatCurrency(currentTokenInFiat, currentCurrency)} ${currentCurrency.toUpperCase()}`

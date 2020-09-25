@@ -33,7 +33,7 @@ export function useTokenFiatAmount (tokenAddress, tokenAmount, tokenSymbol, over
       true,
       hideCurrencySymbol,
     ),
-    [tokenExchangeRate, conversionRate, currentCurrency, tokenAmount, tokenSymbol],
+    [tokenExchangeRate, hideCurrencySymbol, conversionRate, currentCurrency, tokenAmount, tokenSymbol],
   )
 
   if (!showFiat || currentCurrency.toUpperCase() === tokenSymbol) {

@@ -97,7 +97,7 @@ export default function BuildQuote ({
     {
       showFiat: true,
     },
-    true
+    true,
   )
   const swapFromEthFiatValue = useEthFiatAmount(inputValue || 0, { showFiat: true })
   const swapFromFiatValue = fromTokenSymbol === 'ETH'
