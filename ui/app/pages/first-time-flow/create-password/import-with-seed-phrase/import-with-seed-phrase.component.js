@@ -1,4 +1,4 @@
-import { validateMnemonic } from 'bip39'
+import { ethers } from 'ethers'
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import TextField from '../../../../components/ui/text-field'
@@ -7,6 +7,8 @@ import {
   INITIALIZE_SELECT_ACTION_ROUTE,
   INITIALIZE_END_OF_FLOW_ROUTE,
 } from '../../../../helpers/constants/routes'
+
+const { isValidMnemonic } = ethers.utils
 
 export default class ImportWithSeedPhrase extends PureComponent {
   static contextTypes = {
@@ -62,7 +64,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
       const wordCount = parsedSeedPhrase.split(/\s/u).length
       if (wordCount % 3 !== 0 || wordCount > 24 || wordCount < 12) {
         seedPhraseError = this.context.t('seedPhraseReq')
-      } else if (!validateMnemonic(parsedSeedPhrase)) {
+      } else if (!isValidMnemonic(parsedSeedPhrase)) {
         seedPhraseError = this.context.t('invalidSeedPhrase')
       }
     }
