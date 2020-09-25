@@ -173,9 +173,11 @@ export default function Swap () {
     }
   }, [dispatch, isCustomNetwork])
 
-  if (swapsErrorKey && !isSwapsErrorRoute) {
-    history.push(SWAPS_ERROR_ROUTE)
-  }
+  useEffect(() => {
+    if (swapsErrorKey && !isSwapsErrorRoute) {
+      history.push(SWAPS_ERROR_ROUTE)
+    }
+  }, [swapsErrorKey, history, isSwapsErrorRoute])
 
   return (
     <div className="swaps">
