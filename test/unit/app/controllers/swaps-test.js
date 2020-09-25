@@ -264,7 +264,11 @@ describe.only('SwapsController', function () {
         const bestAggId = 'bestAggId'
 
         // Clone the existing mock quote and increase destination amount
-        const bestQuote = { ...MOCK_QUOTES[TEST_AGG_ID], aggregator: bestAggId, destinationAmount: ethers.BigNumber.from(MOCK_QUOTES[TEST_AGG_ID].destinationAmount).add(1).toString() }
+        const bestQuote = {
+          ...MOCK_QUOTES[TEST_AGG_ID],
+          aggregator: bestAggId,
+          destinationAmount: ethers.BigNumber.from(MOCK_QUOTES[TEST_AGG_ID].destinationAmount).add(1).toString(),
+        }
         const quotes = { ...MOCK_QUOTES, [bestAggId]: bestQuote }
         fetchTradesInfoStub.resolves(quotes)
 
