@@ -199,7 +199,6 @@ export default function ViewQuote () {
           destinationDecimals={destinationTokenDecimals}
           destinationSymbol={destinationTokenSymbol}
           isBestQuote={isBestQuote}
-          thin={(balanceError && !warningHidden)}
         />
         <div
           className="view-quote__view-other-button-container"
