@@ -313,10 +313,18 @@ describe.only('SwapsController', function () {
         swapsController.pollingTimeout = setTimeout(() => assert.fail(), 1000000)
         swapsController.resetPostFetchState()
         assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1)
-
       })
 
-      it('updates state correctly')
+      it('updates state correctly', function () {
+        const tokens = 'test'
+        const fetchParams = 'test'
+        swapsController.store.updateState({ swapsState: { tokens, fetchParams } })
+
+        swapsController.resetPostFetchState()
+
+        const { swapsState } = swapsController.store.getState()
+        assert.deepStrictEqual(swapsState, { ...EMPTY_INIT_STATE.swapsState, tokens, fetchParams })
+      })
     })
   })
 
