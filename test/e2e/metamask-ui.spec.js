@@ -279,7 +279,7 @@ describe('MetaMask', function () {
 
       const inputAddress = await driver.findElement(
         By.css(
-          'input[placeholder="Enter the address updated after April 9, 2020"]'
+          'input[placeholder="Search, public address (0x1 or 0x8)"]'
         )
       )
       await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
@@ -367,7 +367,7 @@ describe('MetaMask', function () {
 
       const inputAddress = await driver.findElement(
         By.css(
-          'input[placeholder="Enter the address updated after April 9, 2020"]'
+          'input[placeholder="Search, public address (0x1 or 0x8)"]'
         )
       )
       await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
@@ -421,7 +421,7 @@ describe('MetaMask', function () {
 
       const inputAddress = await driver.findElement(
         By.css(
-          'input[placeholder="Enter the address updated after April 9, 2020"]'
+          'input[placeholder="Search, public address (0x1 or 0x8)"]'
         )
       )
       await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
@@ -1193,7 +1193,7 @@ describe('MetaMask', function () {
 
       const inputAddress = await driver.findElement(
         By.css(
-          'input[placeholder="Enter the address updated after April 9, 2020"]'
+          'input[placeholder="Search, public address (0x1 or 0x8)"]'
         )
       )
       await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')

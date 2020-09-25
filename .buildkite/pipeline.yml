@@ -181,10 +181,10 @@ steps:
       - 'docker-build'
       - 'cpout .nyc_output'
       - 'cpout coverage .nyc_output'
+
     # artifact_paths:
     #   - ".nyc_output/**/*"
     #   - "coverage/**/*"
-
   - key: 'test-unit-global'
     label: ':mocha: unit test global'
     env:
@@ -245,7 +245,7 @@ steps:
       - 'source .buildkite/scripts/pre'
       - 'docker-run yarn test:e2e:chrome:parallel'
       # - 'cpout test-artifacts || true'
-    parallelism: 9
+    parallelism: 8
     artifact_paths:
       - 'test-artifacts/**/*'
 
@@ -261,7 +261,7 @@ steps:
       - 'source .buildkite/scripts/pre'
       - 'docker-run yarn test:e2e:firefox:parallel'
       # - 'cpout test-artifacts || true'
-    parallelism: 9
+    parallelism: 8
     artifact_paths:
       - 'test-artifacts/**/*'
 
@@ -282,10 +282,43 @@ steps:
 
   - wait
 
+  - key: 'key-e2e-chrome'
+    label: ':chrome: chrome e2e key test'
+    env:
+      'DOCKER_PULL_DEPENDS_TARGET': 'prep-build-test'
+    depends_on: 'prep-build-test'
+    retry:
+      automatic:
+        limit: 2
+    commands:
+      - 'source .buildkite/scripts/pre'
+      - 'docker-run yarn test:e2e:chrome:keytest'
+      # - 'cpout test-artifacts || true'
+    artifact_paths:
+      - 'test-artifacts/**/*'
+
+  - wait
+
+  - key: 'key-e2e-firefox'
+    label: ':firefox: firefox e2e key test'
+    env:
+      'DOCKER_PULL_DEPENDS_TARGET': 'prep-build-test'
+    depends_on: 'prep-build-test'
+    retry:
+      automatic:
+        limit: 2
+    commands:
+      - 'source .buildkite/scripts/pre'
+      - 'docker-run yarn test:e2e:firefox:keytest'
+      # - 'cpout test-artifacts || true'
+    artifact_paths:
+      - 'test-artifacts/**/*'
+
+  - wait
+
   - key: 'all-test-pass'
     label: ':white_check_mark:    all test pass'
     command: "echo 'all test pass'"
-
   # - key: 'prerelease'
   #   label: ':arrow_upper_right:    prerelease'
   #   env:

@@ -6,6 +6,7 @@ import {
   isValidAddress,
   // isValidAddressHead,
 } from '../../../../helpers/utils/util'
+import { isSmartContractAddress } from '../../../../helpers/utils/transactions.util'
 import { ellipsify } from '../../send.utils'
 
 // import { debounce } from 'lodash'
@@ -113,8 +114,12 @@ export default class EnsInput extends Component {
 
   onPaste = (event) => {
     event.clipboardData.items[0].getAsString((text) => {
-      if (isValidAddress(text)) {
+      if (isValidAddress(text, 'account')) {
         this.props.onPaste(text)
+      } else if (isValidAddress(text, 'contract')) {
+        isSmartContractAddress(text).then(
+          (rst) => rst && this.props.onPaste(text)
+        )
       }
     })
   }
@@ -150,8 +155,12 @@ export default class EnsInput extends Component {
     // if (isValidDomainName(input)) {
     //   // this.lookupEnsName(input)
     // } else
-    if (onValidAddressTyped && isValidAddress(input)) {
+    if (onValidAddressTyped && isValidAddress(input, 'account')) {
       onValidAddressTyped(input)
+    } else if (isValidAddress(input, 'contract')) {
+      isSmartContractAddress(input).then(
+        (rst) => rst && onValidAddressTyped(input)
+      )
     } else {
       updateEnsResolution('')
       updateEnsResolutionError('')
