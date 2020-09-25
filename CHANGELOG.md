@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 0.3.11 Fri Sep 25 2020
+
 - ci: run key e2e test after other tests
 - ci: fix semantic error in release pr and master pr
 - feat: add address warning, replace send input placeholder
