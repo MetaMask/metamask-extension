@@ -34,9 +34,20 @@ async function withFixtures (options, callback) {
   }
 }
 
+async function loadFixtures (options) {
+  return new Promise((resolve) => {
+    withFixtures(options, ({ driver }) => {
+      return new Promise((r) => {
+        resolve([driver, () => r()])
+      })
+    })
+  })
+}
+
 module.exports = {
   tinyDelayMs,
   regularDelayMs,
   largeDelayMs,
   withFixtures,
+  loadFixtures,
 }

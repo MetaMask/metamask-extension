@@ -84,14 +84,14 @@
           "testnet": []
         }
       },
-      "assetImages": {
-      },
+      "assetImages": {},
       "completedOnboarding": true,
       "currentAccountTab": "history",
       "currentLocale": "en",
       "featureFlags": {
-        "showIncomingTransactions": true,
-        "transactionTime": false
+        "showIncomingTransactions": false,
+        "transactionTime": false,
+        "advancedInlineGas": true
       },
       "firstTimeFlowType": "create",
       "forgottenPassword": false,
