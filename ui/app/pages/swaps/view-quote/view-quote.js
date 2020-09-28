@@ -394,18 +394,24 @@ export default function ViewQuote () {
             labelKey="swapNewQuoteIn"
           />
         </div>
-        <MainQuoteSummary
-          sourceValue={calcTokenValue(sourceTokenValue, sourceTokenDecimals)}
-          sourceDecimals={sourceTokenDecimals}
-          sourceSymbol={sourceTokenSymbol}
-          destinationValue={calcTokenValue(
-            destinationTokenValue,
-            destinationTokenDecimals,
-          )}
-          destinationDecimals={destinationTokenDecimals}
-          destinationSymbol={destinationTokenSymbol}
-          isBestQuote={isBestQuote}
-        />
+        <div
+          className={classnames('view-quote__main-quote-summary-container', {
+            'view-quote__main-quote-summary-container--thin': showWarning,
+          })}
+        >
+          <MainQuoteSummary
+            sourceValue={calcTokenValue(sourceTokenValue, sourceTokenDecimals)}
+            sourceDecimals={sourceTokenDecimals}
+            sourceSymbol={sourceTokenSymbol}
+            destinationValue={calcTokenValue(
+              destinationTokenValue,
+              destinationTokenDecimals,
+            )}
+            destinationDecimals={destinationTokenDecimals}
+            destinationSymbol={destinationTokenSymbol}
+            isBestQuote={isBestQuote}
+          />
+        </div>
         <div
           className="view-quote__view-other-button-container"
         >
@@ -426,6 +432,7 @@ export default function ViewQuote () {
         <div
           className={classnames('view-quote__fee-card-container', {
             'view-quote__fee-card-container--thin': showWarning,
+            'view-quote__fee-card-container--three-rows': approveTxParams && (!balanceError || warningHidden),
           })}
         >
           <FeeCard

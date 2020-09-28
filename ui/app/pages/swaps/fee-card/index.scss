@@ -2,13 +2,6 @@
   border-radius: 8px;
   border: 1px solid $Grey-100;
   width: 100%;
-  margin-top: 16px;
-  margin-bottom: 8px;
-
-  @media screen and (min-width: 576px) {
-    margin-top: auto;
-    margin-bottom: 0;
-  }
 
   @include H7;
 
@@ -96,7 +89,14 @@
   &__row-header-secondary,
   &__row-header-secondary--bold {
     color: $Grey-500;
+  }
+
+  &__row-header-secondary--bold {
     margin-right: 16px;
+  }
+
+  &__row-header-secondary {
+    margin-right: 12px;
   }
 
   &__row-header-primary,

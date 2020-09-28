@@ -4,6 +4,8 @@
   align-items: center;
   flex: 1;
   width: 100%;
+  padding-left: 20px;
+  padding-right: 20px;
 
   &__content {
     display: flex;
@@ -120,18 +122,41 @@
         }
       }
     }
+
+    @media screen and (min-width: 576px) {
+      &--thin {
+        margin-top: 6px;
+      }
+    }
   }
 
   &__fee-card-container {
     width: 100%;
     margin-top: auto;
+    margin-bottom: 8px;
+
+    @media screen and (max-width: 576px) {
+      margin-top: 16px;
+    }
+
+    @media screen and (min-width: 576px) {
+      margin-bottom: 0;
+
+      &--three-rows {
+        margin-bottom: -16px;
+      }
+    }
+  }
+
+  &__main-quote-summary-container {
+    margin-top: 24px;
 
     @media screen and (max-width: 576px) {
       margin-top: 0;
+    }
 
-      &--thin {
-        margin-top: 16px;
-      }
+    &--thin {
+      margin-top: 8px;
     }
   }
 }
