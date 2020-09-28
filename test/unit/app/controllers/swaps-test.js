@@ -76,7 +76,7 @@ const { default: SwapsController } = proxyquire(
   },
 )
 
-describe.only('SwapsController', function () {
+describe('SwapsController', function () {
   // this.timeout(200000)
   let providerResultStub, provider
   afterEach(function () {
@@ -277,8 +277,8 @@ describe.only('SwapsController', function () {
 
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS)
 
-        assert.strictEqual(TEST_AGG_ID, topAggId)
-        assert.strictEqual(true, newQuotes[topAggId].isBestQuote)
+        assert.strictEqual(bestAggId, topAggId)
+        // assert.strictEqual(true, newQuotes[topAggId].isBestQuote)
       })
     })
 
