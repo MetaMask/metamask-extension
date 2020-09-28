@@ -1,7 +1,7 @@
 .slippage-buttons {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
 
   &__header {
@@ -9,6 +9,8 @@
     align-items: center;
     color: $Blue-500;
     margin-bottom: 0;
+    margin-left: auto;
+    margin-right: auto;
     cursor: pointer;
 
     &--open {
@@ -22,6 +24,10 @@
     margin-right: 6px;
     color: $Blue-500;
     font-weight: 900;
+  }
+
+  &__content {
+    padding-left: 10px;
   }
 
   &__dropdown-content {
@@ -47,8 +53,7 @@
     @include H7;
 
     color: $Red-500;
-    font-weight: 900;
-    margin-top: 4px;
+    margin-top: 8px;
   }
 
   &__custom-button {
