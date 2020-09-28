@@ -331,7 +331,7 @@ export default function ViewQuote () {
       approveGas
         ? {
           label: t('approvalTxGasCost'),
-          value: t('amountInETH', [approveGasTotalInEth]),
+          value: t('amountInEth', [approveGasTotalInEth]),
         }
         : null
     ),
