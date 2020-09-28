@@ -177,7 +177,8 @@ export default function Swap () {
     if (swapsErrorKey && !isSwapsErrorRoute) {
       history.push(SWAPS_ERROR_ROUTE)
     }
-  }, [swapsErrorKey, history, isSwapsErrorRoute])
+  }, [history, swapsErrorKey, isSwapsErrorRoute])
+
 
   return (
     <div className="swaps">
