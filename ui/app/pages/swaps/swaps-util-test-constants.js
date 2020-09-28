@@ -2,10 +2,10 @@ export const TRADES_BASE_DEV_URL = 'https://metaswap-api.airswap-dev.codefi.netw
 export const TOKENS_BASE_DEV_URL = 'https://metaswap-api.airswap-dev.codefi.network/tokens'
 export const AGGREGATOR_METADATA_BASE_DEV_URL = 'https://metaswap-api.airswap-dev.codefi.network/aggregatorMetadata'
 export const TOP_ASSET_BASE_DEV_URL = 'https://metaswap-api.airswap-dev.codefi.network/topAssets'
-export const TRADES_BASE_PROD_URL = 'https://metaswap.codefi.network/api/trades?'
-export const TOKENS_BASE_PROD_URL = 'https://metaswap.codefi.network/api/tokens'
-export const AGGREGATOR_METADATA_BASE_PROD_URL = 'https://metaswap.codefi.network/api/aggregatorMetadata'
-export const TOP_ASSET_BASE_PROD_URL = 'https://metaswap.codefi.network/api/topAssets'
+export const TRADES_BASE_PROD_URL = 'https://api.metaswap.codefi.network/trades?'
+export const TOKENS_BASE_PROD_URL = 'https://api.metaswap.codefi.network/tokens'
+export const AGGREGATOR_METADATA_BASE_PROD_URL = 'https://api.metaswap.codefi.network/aggregatorMetadata'
+export const TOP_ASSET_BASE_PROD_URL = 'https://api.metaswap.codefi.network/topAssets'
 
 export const TOKENS = [
   { erc20: true, symbol: 'META', decimals: 18, address: '0x617b3f8050a0BD94b6b1da02B4384eE5B4DF13F4' },

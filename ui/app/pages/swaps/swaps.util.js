@@ -34,15 +34,15 @@ const getBaseApi = function (isCustomNetwork, type) {
   }
   switch (type) {
     case 'trade':
-      return `https://metaswap.codefi.network/api/trades?`
+      return `https://api.metaswap.codefi.network/trades?`
     case 'tokens':
-      return `https://metaswap.codefi.network/api/tokens`
+      return `https://api.metaswap.codefi.network/tokens`
     case 'topAssets':
-      return `https://metaswap.codefi.network/api/topAssets`
+      return `https://api.metaswap.codefi.network/topAssets`
     case 'featureFlag':
-      return `https://metaswap.codefi.network/api/featureFlag`
+      return `https://api.metaswap.codefi.network/featureFlag`
     case 'aggregatorMetadata':
-      return `https://metaswap.codefi.network/api/aggregatorMetadata`
+      return `https://api.metaswap.codefi.network/aggregatorMetadata`
     default:
       throw new Error('getBaseApi requires an api call type')
   }
