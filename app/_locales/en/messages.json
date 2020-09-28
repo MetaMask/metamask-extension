@@ -1530,7 +1530,7 @@
     "message": "If the price changes between the time your order is placed and confirmed it’s called “slippage”. Your swap will automatically cancel if slippage exceeds your “max slippage” setting."
   },
   "swapAmountReceived": {
-    "message": "Minimum amount received"
+    "message": "Guaranteed amount"
   },
   "swapAmountReceivedInfo": {
     "message": "This is the minimum amount you will receive. You may receive more depending on slippage."
@@ -1558,7 +1558,8 @@
     "message": "Edit limit"
   },
   "swapEnableDescription": {
-    "message": "This is a required transaction that allows $1 to be swapped. "
+    "message": "This is required and gives MetaMask permission to swap your $1.",
+    "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
   },
   "swapEstimatedNetworkFee": {
     "message": "Estimated network fee"
@@ -1625,7 +1626,7 @@
     "message": "Transaction may fail, max slippage too low."
   },
   "swapMaxNetworkFeeInfo": {
-    "message": "The \"max network fee\" is the most you’ll pay to complete your transaction. The max fee amount helps ensure your swap has the best chance of succeeding."
+    "message": "The Max network fee is the most you’ll pay to complete your transaction. The max fee helps ensure your Swap has the best chance of succeeding. MetaMask does not profit from network fees."
   },
   "swapMaxNetworkFees": {
     "message": "Max network fee"
@@ -1634,7 +1635,7 @@
     "message": "Max slippage"
   },
   "swapMetaMaskFee": {
-    "message": "MetaMask Fee"
+    "message": "MetaMask fee"
   },
   "swapMetaMaskFeeDescription": {
     "message": "A service fee of 0.875% is automatically factored into each quote, which supports ongoing development to make MetaMask even better."
@@ -1651,7 +1652,7 @@
     "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
   },
   "swapOnceTransactionHasProcess": {
-    "message": "Your $1 will be added to your account once this transaction has processed",
+    "message": "Your $1 will be added to your account once this transaction has processed.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
   },
   "swapProcessing": {
@@ -1707,7 +1708,7 @@
     "message": "Slippage must be greater than zero"
   },
   "swapSource": {
-    "message": "Liquidity Source"
+    "message": "Liquidity source"
   },
   "swapSourceInfo": {
     "message": "We search multiple liquidity sources (exchanges, aggregators and professional market makers) to find the best rates and lowest network fees."
