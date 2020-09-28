@@ -2201,7 +2201,6 @@ export function setSwapsTxGasLimit (gasLimit) {
   }
 }
 
-// Will be used in a downstream branch/PR
 export function setSwapsTxGasParams (gasLimit, gasPrice) {
   return async (dispatch) => {
     await promisifiedBackground.setSwapsTxGasPrice(gasPrice)
