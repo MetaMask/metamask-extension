@@ -5,12 +5,7 @@
   position: relative;
   height: 196px;
   width: 100%;
-  margin-top: 24px;
   color: $white;
-
-  @media screen and (max-width: 576px) {
-    margin-top: 0;
-  }
 
   &__quote-backdrop-with-top-tab,
   &__quote-backdrop {
