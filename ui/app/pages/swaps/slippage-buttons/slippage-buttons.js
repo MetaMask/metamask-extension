@@ -44,86 +44,88 @@ export default function SlippageButtons ({
         <div className="slippage-buttons__header-text">{t('swapsAdvancedOptions')}</div>
         {open ? <i className="fa fa-angle-up" /> : <i className="fa fa-angle-down" />}
       </div>
-      {open && (
-        <div className="slippage-buttons__dropdown-content">
-          <div className="slippage-buttons__buttons-prefix">
-            <div className="slippage-buttons__prefix-text">{t('swapsMaxSlippage')}</div>
-            <InfoTooltip
-              position="top"
-              contentText={t('swapAdvancedSlippageInfo')}
-            />
+      <div className="slippage-buttons__content">
+        {open && (
+          <div className="slippage-buttons__dropdown-content">
+            <div className="slippage-buttons__buttons-prefix">
+              <div className="slippage-buttons__prefix-text">{t('swapsMaxSlippage')}</div>
+              <InfoTooltip
+                position="top"
+                contentText={t('swapAdvancedSlippageInfo')}
+              />
+            </div>
+            <ButtonGroup
+              defaultActiveButtonIndex={1}
+              variant="radiogroup"
+              newActiveButtonIndex={activeButtonIndex}
+            >
+              <Button
+                onClick={() => {
+                  setCustomValue('')
+                  setEnteringCustomValue(false)
+                  setActiveButtonIndex(0)
+                  onSelect(1)
+                }}
+              >
+                1%
+              </Button>
+              <Button
+                onClick={() => {
+                  setCustomValue(undefined)
+                  setEnteringCustomValue(false)
+                  setActiveButtonIndex(1)
+                  onSelect(2)
+                }}
+              >
+                2%
+              </Button>
+              <Button
+                className={classnames('slippage-buttons__custom-button', {
+                  'radio-button--danger': errorText,
+                })}
+                onClick={() => {
+                  setActiveButtonIndex(2)
+                  setEnteringCustomValue(true)
+                }}
+              >
+                {(enteringCustomValue
+                  ? (
+                    <div
+                      className={classnames('slippage-buttons__custom-input', {
+                        'slippage-buttons__custom-input--danger': errorText,
+                      })}
+                    >
+                      <input
+                        onChange={(event) => {
+                          setCustomValue(event.target.value)
+                          onSelect(event.target.value)
+                        }}
+                        type="number"
+                        step="0.1"
+                        ref={setInputRef}
+                        onBlur={() => {
+                          setEnteringCustomValue(false)
+                          if (customValue === '' || customValue === '0') {
+                            setCustomValue(null)
+                            setActiveButtonIndex(1)
+                          }
+                        }}
+                        value={customValue}
+                      />
+                    </div>
+                  )
+                  : customValueText
+                )}
+              </Button>
+            </ButtonGroup>
           </div>
-          <ButtonGroup
-            defaultActiveButtonIndex={1}
-            variant="radiogroup"
-            newActiveButtonIndex={activeButtonIndex}
-          >
-            <Button
-              onClick={() => {
-                setCustomValue('')
-                setEnteringCustomValue(false)
-                setActiveButtonIndex(0)
-                onSelect(1)
-              }}
-            >
-              1%
-            </Button>
-            <Button
-              onClick={() => {
-                setCustomValue(undefined)
-                setEnteringCustomValue(false)
-                setActiveButtonIndex(1)
-                onSelect(2)
-              }}
-            >
-              2%
-            </Button>
-            <Button
-              className={classnames('slippage-buttons__custom-button', {
-                'radio-button--danger': errorText,
-              })}
-              onClick={() => {
-                setActiveButtonIndex(2)
-                setEnteringCustomValue(true)
-              }}
-            >
-              {(enteringCustomValue
-                ? (
-                  <div
-                    className={classnames('slippage-buttons__custom-input', {
-                      'slippage-buttons__custom-input--danger': errorText,
-                    })}
-                  >
-                    <input
-                      onChange={(event) => {
-                        setCustomValue(event.target.value)
-                        onSelect(event.target.value)
-                      }}
-                      type="number"
-                      step="0.1"
-                      ref={setInputRef}
-                      onBlur={() => {
-                        setEnteringCustomValue(false)
-                        if (customValue === '' || customValue === '0') {
-                          setCustomValue(null)
-                          setActiveButtonIndex(1)
-                        }
-                      }}
-                      value={customValue}
-                    />
-                  </div>
-                )
-                : customValueText
-              )}
-            </Button>
-          </ButtonGroup>
-        </div>
-      )}
-      {errorText && (
-        <div className="slippage-buttons__error-text">
-          { errorText }
-        </div>
-      )}
+        )}
+        {errorText && (
+          <div className="slippage-buttons__error-text">
+            { errorText }
+          </div>
+        )}
+      </div>
     </div>
   )
 }
