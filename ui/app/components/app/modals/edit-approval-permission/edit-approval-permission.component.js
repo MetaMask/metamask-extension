@@ -29,7 +29,8 @@ export default class EditApprovalPermission extends PureComponent {
   }
 
   state = {
-    customSpendLimit: this.props.customTokenAmount,
+    // This is used as a TextField value, which should be a string.
+    customSpendLimit: this.props.customTokenAmount || '',
     selectedOptionIsUnlimited: !this.props.customTokenAmount,
   }
 

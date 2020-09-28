@@ -147,6 +147,6 @@ DropdownSearchList.propTypes = {
   selectPlaceHolderText: PropTypes.string,
   selectorClosedClassName: PropTypes.string,
   hideRightLabels: PropTypes.bool,
-  hideItemIf: PropTypes.string,
+  hideItemIf: PropTypes.func,
   listContainerClassName: PropTypes.string,
 }

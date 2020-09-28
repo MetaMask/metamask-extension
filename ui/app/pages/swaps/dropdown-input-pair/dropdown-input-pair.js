@@ -26,7 +26,7 @@ const getInputWidth = (value) => {
 export default function DropdownInputPair ({
   itemsToSearch = [],
   onInputChange,
-  inputValue = null,
+  inputValue = '',
   onSelect,
   leftValue,
   selectedItem,
@@ -71,7 +71,7 @@ export default function DropdownInputPair ({
         onOpen={open}
         onClose={close}
         onSelect={onSelect}
-        className={isOpen && 'dropdown-input-pair__list--full-width'}
+        className={isOpen ? 'dropdown-input-pair__list--full-width' : ''}
         externallySelectedItem={selectedItem}
         selectPlaceHolderText={selectPlaceHolderText}
         selectorClosedClassName="dropdown-input-pair__selector--closed"
@@ -86,7 +86,7 @@ export default function DropdownInputPair ({
             'dropdown-input-pair__two-line-input': applyTwoLineStyle,
           })}
           type="text"
-          placeholder={ 0 }
+          placeholder="0"
           onChange={onTextFieldChange}
           fullWidth
           margin="dense"
@@ -112,7 +112,7 @@ export default function DropdownInputPair ({
 DropdownInputPair.propTypes = {
   itemsToSearch: PropTypes.array,
   onInputChange: PropTypes.func,
-  inputValue: PropTypes.number,
+  inputValue: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   onSelect: PropTypes.func,
   leftValue: PropTypes.string,
   selectedItem: PropTypes.object,
