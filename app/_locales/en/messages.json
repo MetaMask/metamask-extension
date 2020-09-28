@@ -1605,7 +1605,7 @@
     "message": "Liquidity sources include:"
   },
   "swapIntroPopupSubTitle": {
-    "message": "MetaMask now aggregates multiple decentralized exchange aggregators and professional market makers to ensure you always get the best swap price with with the lowest network fees."
+    "message": "Get the best prices on token swaps right inside your wallet. MetaMask now connects you to multiple decentralized exchange aggregators and professional market makers."
   },
   "swapIntroPopupTitle": {
     "message": "Swap tokens in MetaMask! 🎉"

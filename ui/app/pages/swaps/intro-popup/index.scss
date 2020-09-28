@@ -3,7 +3,12 @@
     @include H7;
 
     font-weight: bold;
-    margin-bottom: 2px;
+    margin-bottom: 6px;
+    color: $Black-100;
+
+    @media screen and (min-width: 576px) {
+      @include H6;
+    }
   }
 
   &__learn-more-header {
@@ -47,5 +52,19 @@
     padding: 20px 16px;
     background: $Grey-000;
     border-radius: 8px;
+
+    @media screen and (min-width: 576px) {
+      width: 412px;
+
+      img {
+        width: 364px;
+      }
+    }
+  }
+
+  &__popover {
+    @media screen and (min-width: 576px) {
+      width: 460px;
+    }
   }
 }

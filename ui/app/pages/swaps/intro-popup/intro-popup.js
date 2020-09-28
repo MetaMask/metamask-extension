@@ -21,6 +21,7 @@ export default function IntroPopup ({ onClose }) {
   return (
     <div className="intro-popup">
       <Popover
+        className="intro-popup__popover"
         title={t('swapIntroPopupTitle')}
         subtitle={t('swapIntroPopupSubTitle')}
         onClose={onClose}
