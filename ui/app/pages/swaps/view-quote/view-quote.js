@@ -83,9 +83,11 @@ export default function ViewQuote () {
   const [originalApproveAmount, setOriginalApproveAmount] = useState(null)
 
   const quotes = useSelector(getQuotes, isEqual)
-  if (!Object.values(quotes).length) {
-    history.push(BUILD_QUOTE_ROUTE)
-  }
+  useEffect(() => {
+    if (!Object.values(quotes).length) {
+      history.push(BUILD_QUOTE_ROUTE)
+    }
+  }, [history, quotes])
 
   const quotesLastFetched = useSelector(getQuotesLastFetched)
 
