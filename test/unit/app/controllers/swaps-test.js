@@ -41,7 +41,7 @@ const MOCK_QUOTES = {
    },
 }
 
-const MOCK_TOKEN_RATES_STORE = new ObservableStore({ contractExchangeRates: {} })
+const MOCK_TOKEN_RATES_STORE = new ObservableStore({ contractExchangeRates: { '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 2 } })
 
 const MOCK_GET_PROVIDER_CONFIG = () => ({ type: 'FAKE_NETWORK' })
 
@@ -68,7 +68,6 @@ const EMPTY_INIT_STATE = {
 }
 
 const fetchTradesInfoStub = sinon.stub()
-
 const { default: SwapsController } = proxyquire(
   '../../../../app/scripts/controllers/swaps',
   {
@@ -96,7 +95,12 @@ describe('SwapsController', function () {
   describe('constructor', function () {
     it('should setup correctly', function () {
 
-      const swapsController = new SwapsController({ getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT, provider, getProviderConfig: MOCK_GET_PROVIDER_CONFIG, tokenRatesStore: MOCK_TOKEN_RATES_STORE })
+      const swapsController = new SwapsController({
+        getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
+        provider,
+        getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
+        tokenRatesStore: MOCK_TOKEN_RATES_STORE,
+      })
       assert.deepStrictEqual(swapsController.store.getState(), EMPTY_INIT_STATE)
       assert.deepStrictEqual(swapsController.getBufferedGasLimit, MOCK_GET_BUFFERED_GAS_LIMIT)
       assert.strictEqual(swapsController.pollCount, 0)
@@ -206,6 +210,7 @@ describe('SwapsController', function () {
           ...MOCK_QUOTES[TEST_AGG_ID],
           sourceTokenInfo: undefined,
           destinationTokenInfo: undefined,
+          isBestQuote: true,
           // TODO: find a way to calculate these values dynamically
           gasEstimate: 2000000,
           gasEstimateWithRefund: '8cd8e',
@@ -249,7 +254,7 @@ describe('SwapsController', function () {
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS)
 
         assert.strictEqual(topAggId, TEST_AGG_ID)
-        // assert.strictEqual(newQuotes[topAggId].isBestQuote, true)
+        assert.strictEqual(newQuotes[topAggId].isBestQuote, true)
       })
 
       it('selects the best quote', async function () {
@@ -270,7 +275,19 @@ describe('SwapsController', function () {
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS)
 
         assert.strictEqual(bestAggId, topAggId)
-        // assert.strictEqual(true, newQuotes[topAggId].isBestQuote)
+        assert.strictEqual(true, newQuotes[topAggId].isBestQuote)
+      })
+
+      it('does not set isBestQuote if no convertion rate exists for destination token', async function () {
+        fetchTradesInfoStub.resolves(MOCK_QUOTES)
+
+        // Make it so approval is not required
+        sinon.stub(swapsController, '_getERC20Allowance').resolves(ethers.BigNumber.from(1))
+
+        swapsController.tokenRatesStore.updateState({ contractExchangeRates: { } })
+        const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS)
+
+        assert.strictEqual(undefined, newQuotes[topAggId].isBestQuote)
       })
     })
 
