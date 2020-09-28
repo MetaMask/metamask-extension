@@ -331,6 +331,7 @@ export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage) =>
 export const signAndSendTransactions = (history) => {
   return async (dispatch, getState) => {
     const state = getState()
+    const customSwapsGas = getCustomSwapsGas(state)
     const fetchParams = getFetchParams(state)
     const { metaData, value: swapTokenValue, slippage } = fetchParams
     const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData
@@ -343,7 +344,7 @@ export const signAndSendTransactions = (history) => {
 
     const estimatedGasLimit = new BigNumber(usedQuote?.gasEstimate || decimalToHex(usedQuote?.averageGas || 0), 16)
     const estimatedGasLimitWithMultiplier = estimatedGasLimit.times(1.4, 10).round(0).toString(16)
-    const maxGasLimit = hexMax((`0x${decimalToHex(usedQuote?.maxGas || 0)}`), estimatedGasLimitWithMultiplier)
+    const maxGasLimit = customSwapsGas || hexMax((`0x${decimalToHex(usedQuote?.maxGas || 0)}`), estimatedGasLimitWithMultiplier)
     usedTradeTxParams.gas = maxGasLimit
 
     const customConvertGasPrice = getCustomSwapsGasPrice(state)
