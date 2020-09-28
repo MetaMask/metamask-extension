@@ -29,7 +29,7 @@ const swapsUtils = proxyquire('./swaps.util.js', {
         return Promise.resolve(MOCK_TRADE_RESPONSE_1)
       }
       if (url.match(TRADES_BASE_PROD_URL)) {
-        assert.equal(url, 'https://metaswap.codefi.network/api/trades?destinationToken=0xE41d2489571d322189246DaFA5ebDe1F4699F498&sourceToken=0x617b3f8050a0BD94b6b1da02B4384eE5B4DF13F4&sourceAmount=2000000000000000000000000000000000000&slippage=3&timeout=10000&walletAddress=0xmockAddress')
+        assert.equal(url, 'https://api.metaswap.codefi.network/trades?destinationToken=0xE41d2489571d322189246DaFA5ebDe1F4699F498&sourceToken=0x617b3f8050a0BD94b6b1da02B4384eE5B4DF13F4&sourceAmount=2000000000000000000000000000000000000&slippage=3&timeout=10000&walletAddress=0xmockAddress')
         return Promise.resolve(MOCK_TRADE_RESPONSE_2)
       }
       if (url.match(TOKENS_BASE_DEV_URL)) {
