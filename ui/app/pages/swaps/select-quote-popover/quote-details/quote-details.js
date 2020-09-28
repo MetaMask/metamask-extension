@@ -1,6 +1,8 @@
 import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
+import { useSelector } from 'react-redux'
 import { I18nContext } from '../../../../contexts/i18n'
+import { getMetaMaskFeeAmount } from '../../../../ducks/swaps/swaps'
 import InfoTooltip from '../../../../components/ui/info-tooltip'
 import ExchangeRateDisplay from '../../exchange-rate-display'
 
@@ -16,6 +18,7 @@ const QuoteDetails = ({
   networkFees,
 }) => {
   const t = useContext(I18nContext)
+  const metaMaskFee = useSelector(getMetaMaskFeeAmount)
   return (
     <div className="quote-details">
       <div className="quote-details__row">
@@ -85,7 +88,7 @@ const QuoteDetails = ({
           {t('swapMetaMaskFee')}
         </div>
         <div className="quote-details__detail-content">
-          {t('swapMetaMaskFeeDescription')}
+          {t('swapMetaMaskFeeDescription', [metaMaskFee])}
         </div>
       </div>
     </div>

@@ -262,6 +262,11 @@ export async function fetchSwapsFeatureFlag (isCustomNetwork) {
   return status?.active
 }
 
+export async function fetchMetaMaskFeeAmount (isCustomNetwork) {
+  const response = await fetchWithCache(getBaseApi(isCustomNetwork, 'feeAmount'), { method: 'GET' }, { cacheRefreshTime: 600000 })
+  return response?.fee
+}
+
 export async function fetchTokenPrice (address) {
   const query = `contract_addresses=${address}&vs_currencies=eth`
 

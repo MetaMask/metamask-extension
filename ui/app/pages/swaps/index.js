@@ -21,6 +21,7 @@ import {
   getAggregatorMetadata,
   getBackgoundSwapRouteState,
   getSwapsErrorKey,
+  setMetamaskFeeAmount,
 } from '../../ducks/swaps/swaps'
 import {
   AWAITING_SWAP_ROUTE,
@@ -42,7 +43,7 @@ import { resetBackgroundSwapsState, setSwapsTokens, setSwapsTxGasPrice, setMaxMo
 import { getAveragePriceEstimateInHexWEI, currentNetworkTxListSelector, getCustomNetworkId, getRpcPrefsForCurrentProvider } from '../../selectors'
 import { decGWEIToHexWEI, getValueFromWeiHex } from '../../helpers/utils/conversions.util'
 
-import { fetchTokens, fetchTopAssets, getSwapsTokensReceivedFromTxMeta, fetchAggregatorMetadata } from './swaps.util'
+import { fetchTokens, fetchTopAssets, getSwapsTokensReceivedFromTxMeta, fetchAggregatorMetadata, fetchMetaMaskFeeAmount } from './swaps.util'
 import AwaitingSwap from './awaiting-swap'
 import LoadingQuote from './loading-swaps-quotes'
 import BuildQuote from './build-quote'
@@ -164,6 +165,11 @@ export default function Swap () {
     fetchAggregatorMetadata(isCustomNetwork)
       .then((newAggregatorMetadata) => {
         dispatch(setAggregatorMetadata(newAggregatorMetadata))
+      })
+
+    fetchMetaMaskFeeAmount(isCustomNetwork)
+      .then((metaMaskFeeAmount) => {
+        dispatch(setMetamaskFeeAmount(metaMaskFeeAmount))
       })
 
     return () => {
