@@ -1661,7 +1661,8 @@
     "message": "MetaMask fee"
   },
   "swapMetaMaskFeeDescription": {
-    "message": "A service fee of 0.875% is automatically factored into each quote, which supports ongoing development to make MetaMask even better."
+    "message": "A service fee of $1% is automatically factored into each quote, which supports ongoing development to make MetaMask even better.",
+    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapMinimumAmountReceivingInfoTooltip": {
     "message": "This is the minimum amount you will receive. You may receive more depending on slippage."

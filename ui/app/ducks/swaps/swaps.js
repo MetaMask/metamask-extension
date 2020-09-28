@@ -46,6 +46,7 @@ const initialState = {
   submittingSwap: false,
   topAssets: {},
   toToken: null,
+  metamaskFeeAmount: null,
 }
 
 const slice = createSlice({
@@ -89,6 +90,9 @@ const slice = createSlice({
     setToToken: (state, action) => {
       state.toToken = action.payload
     },
+    setMetamaskFeeAmount: (state, action) => {
+      state.metamaskFeeAmount = action.payload
+    },
   },
 })
 
@@ -113,6 +117,8 @@ export const getSubmittingSwap = (state) => state.swaps.submittingSwap
 export const getTopAssets = (state) => state.swaps.topAssets
 
 export const getToToken = (state) => state.swaps.toToken
+
+export const getMetaMaskFeeAmount = (state) => state.swaps.metamaskFeeAmount
 
 // Background selectors
 
@@ -196,6 +202,7 @@ const {
   setSubmittingSwap,
   setTopAssets,
   setToToken,
+  setMetamaskFeeAmount,
 } = actions
 
 export {
@@ -208,6 +215,7 @@ export {
   setSubmittingSwap,
   setTopAssets,
   setToToken as setSwapToToken,
+  setMetamaskFeeAmount,
 }
 
 export const navigateBackToBuildQuote = (history) => {
