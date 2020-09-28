@@ -209,7 +209,7 @@ export default function Swap () {
                   return <Redirect to={{ pathname: AWAITING_SWAP_ROUTE }} />
                 } else if (tradeTxData) {
                   return <Redirect to={{ pathname: SWAPS_ERROR_ROUTE }} />
-                } else if (routeState === 'loading') {
+                } else if (routeState === 'loading' && aggregatorMetadata) {
                   return <Redirect to={{ pathname: LOADING_QUOTES_ROUTE }} />
                 }
 
