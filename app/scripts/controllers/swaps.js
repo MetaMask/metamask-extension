@@ -27,7 +27,7 @@ const POLL_COUNT_LIMIT = 3
 function calculateGasEstimateWithRefund (maxGas = MAX_GAS_LIMIT, estimatedRefund = 0, estimatedGas = 0) {
   const maxGasMinusRefund = new BigNumber(
     maxGas,
-    16,
+    10,
   )
     .minus(estimatedRefund, 10)
 
