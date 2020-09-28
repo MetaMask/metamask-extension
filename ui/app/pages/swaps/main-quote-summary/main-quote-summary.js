@@ -123,10 +123,16 @@ export default function MainQuoteSummary ({
 
 MainQuoteSummary.propTypes = {
   isBestQuote: PropTypes.bool,
-  sourceValue: PropTypes.string.isRequired,
+  sourceValue: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.instanceOf(BigNumber),
+  ]).isRequired,
   sourceDecimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   sourceSymbol: PropTypes.string.isRequired,
-  destinationValue: PropTypes.string.isRequired,
+  destinationValue: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.instanceOf(BigNumber),
+  ]).isRequired,
   destinationDecimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   destinationSymbol: PropTypes.string.isRequired,
 }

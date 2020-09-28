@@ -107,7 +107,11 @@ export default function AwaitingSwap ({
     countdownText = t('swapEstimatedTimeCalculating')
   }
 
-  const blockExplorerUrl = getBlockExplorerUrlForTx(networkId, txHash, rpcPrefs)
+  const blockExplorerUrl = txHash && getBlockExplorerUrlForTx(
+    networkId,
+    txHash,
+    rpcPrefs,
+  )
   const showBlockExplorterLink = blockExplorerUrl && (!errorKey || errorKey === SWAP_FAILED_ERROR)
 
   return (
@@ -178,7 +182,7 @@ AwaitingSwap.propTypes = {
   swapComplete: PropTypes.bool,
   symbol: PropTypes.string.isRequired,
   networkId: PropTypes.string.isRequired,
-  txHash: PropTypes.string.isRequired,
+  txHash: PropTypes.string,
   tokensReceived: PropTypes.string,
   rpcPrefs: PropTypes.object.isRequired,
   errorKey: PropTypes.oneOf([
@@ -189,7 +193,7 @@ AwaitingSwap.propTypes = {
   ]),
   submittingSwap: PropTypes.bool,
   tradeTxData: PropTypes.object,
-  usedGasPrice: PropTypes.number,
-  inputValue: PropTypes.oneOf([PropTypes.number, PropTypes.string]),
+  usedGasPrice: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  inputValue: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   maxSlippage: PropTypes.number,
 }

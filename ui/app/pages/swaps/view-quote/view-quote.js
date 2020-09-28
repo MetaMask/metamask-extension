@@ -396,7 +396,10 @@ export default function ViewQuote () {
           sourceValue={calcTokenValue(sourceTokenValue, sourceTokenDecimals)}
           sourceDecimals={sourceTokenDecimals}
           sourceSymbol={sourceTokenSymbol}
-          destinationValue={calcTokenValue(destinationTokenValue, destinationTokenDecimals)}
+          destinationValue={calcTokenValue(
+            destinationTokenValue,
+            destinationTokenDecimals,
+          )}
           destinationDecimals={destinationTokenDecimals}
           destinationSymbol={destinationTokenSymbol}
           isBestQuote={isBestQuote}

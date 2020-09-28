@@ -67,10 +67,16 @@ export default function ExchangeRateDisplay ({
 }
 
 ExchangeRateDisplay.propTypes = {
-  primaryTokenValue: PropTypes.string.isRequired,
+  primaryTokenValue: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.instanceOf(BigNumber),
+  ]).isRequired,
   primaryTokenDecimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   primaryTokenSymbol: PropTypes.string.isRequired,
-  secondaryTokenValue: PropTypes.string.isRequired,
+  secondaryTokenValue: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.instanceOf(BigNumber),
+  ]).isRequired,
   secondaryTokenDecimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   secondaryTokenSymbol: PropTypes.string.isRequired,
   className: PropTypes.string,

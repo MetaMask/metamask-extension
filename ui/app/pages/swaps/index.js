@@ -60,7 +60,7 @@ export default function Swap () {
   const fetchParams = useSelector(getFetchParams)
   const { sourceTokenInfo = {}, destinationTokenInfo = {} } = fetchParams?.metaData || {}
 
-  const [inputValue, setInputValue] = useState(fetchParams?.value || null)
+  const [inputValue, setInputValue] = useState(fetchParams?.value || '')
   const [maxSlippage, setMaxSlippage] = useState(fetchParams?.slippage || 2)
   const submittingSwap = useSelector(getSubmittingSwap)
   const routeState = useSelector(getBackgoundSwapRouteState)

@@ -93,9 +93,15 @@ FeeCard.propTypes = {
     onClick: PropTypes.func.isRequired,
   }).isRequired,
   thirdRow: PropTypes.shape({
-    text: PropTypes.string.isRequired,
+    text: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.node,
+    ]).isRequired,
     linkText: PropTypes.string.isRequired,
-    tooltipText: PropTypes.string.isRequired,
+    tooltipText: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.node,
+    ]).isRequired,
     onClick: PropTypes.func.isRequired,
     hide: PropTypes.bool.isRequired,
   }),

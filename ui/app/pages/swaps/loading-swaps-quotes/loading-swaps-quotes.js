@@ -202,7 +202,7 @@ export default function LoadingSwapsQuotes ({
 LoadingSwapsQuotes.propTypes = {
   loadingComplete: PropTypes.bool.isRequired,
   onDone: PropTypes.func.isRequired,
-  aggregatorMetadata: PropTypes.arrayOf(PropTypes.shape({
+  aggregatorMetadata: PropTypes.objectOf(PropTypes.shape({
     color: PropTypes.string,
     icon: PropTypes.string,
   })),
