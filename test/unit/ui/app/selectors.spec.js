@@ -135,8 +135,15 @@ describe('Selectors', function () {
     assert.equal(gasIsLoading, false)
   })
 
+  it('#getStorageIsLoading', function () {
+    const storageIsLoading = selectors.getStorageIsLoading(mockState)
+    assert.equal(storageIsLoading, false)
+  })
+
   it('#getSponsorshipInfoIsLoading', function () {
-    const sponsorshipInfoIsLoading = selectors.getSponsorshipInfoIsLoading(mockState)
+    const sponsorshipInfoIsLoading = selectors.getSponsorshipInfoIsLoading(
+      mockState
+    )
     assert.equal(sponsorshipInfoIsLoading, false)
   })
 

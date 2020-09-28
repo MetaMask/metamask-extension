@@ -613,6 +613,10 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // txController
+      addTxSponsorshipInfo: nodeify(
+        txController.addTxSponsorshipInfo,
+        txController
+      ),
       cancelTransaction: nodeify(txController.cancelTransaction, txController),
       updateTransaction: nodeify(txController.updateTransaction, txController),
       updateAndApproveTransaction: nodeify(

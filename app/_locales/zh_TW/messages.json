@@ -509,7 +509,8 @@
     "message": "Storage 上限"
   },
   "storageLimitInfoModalContent": {
-    "message": "Storage 上限代表願意為交易手續費所付出的最高總價"
+    "message": "存儲費上限為 $1 CFX (存儲費 / 1024)，僅扣除實際使用部分的存儲費用，待存儲資源被釋放後將返還該筆費用。",
+    "description": "$1 為由 storageLimit 計算出來的需要抵押的 storage fee"
   },
   "gasLimit": {
     "message": "Gas 上限"
@@ -1401,5 +1402,8 @@
   },
   "restrictedMethods_eth_accounts": {
     "message": "查看已選中賬戶的地址"
+  },
+  "alreadySponsoredByContract": {
+    "message": " 已由合約代付"
   }
 }

@@ -28,6 +28,7 @@ import {
 } from '../send.selectors'
 import {
   getGasIsLoading,
+  getStorageIsLoading,
   getSponsorshipInfoIsLoading,
   getCurrentEthBalance,
 } from '../../../selectors/selectors'
@@ -96,6 +97,7 @@ function mapStateToProps (state) {
     sendErrors: getSendErrors(state),
     gasEstimateType,
     gasIsLoading: getGasIsLoading(state),
+    storageIsLoading: getStorageIsLoading(state),
     sponsorshipIsLoading: getSponsorshipInfoIsLoading(state),
   }
 }

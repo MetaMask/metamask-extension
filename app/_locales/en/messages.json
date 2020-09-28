@@ -620,7 +620,7 @@
     "message": "Storage Limit"
   },
   "storageLimitInfoModalContent": {
-    "message": "The storage fee limit is $1 CFX. The actual amount will be deducted from your account and will be returned once the occupied storage is released.",
+    "message": "The storage fee limit is $1 CFX (Storage Limit / 1024). The actual amount will be deducted from your account and will be returned once the occupied storage is released.",
     "description": "$1 is the storage collateral fee calculated from storageLimit"
   },
   "gasFee": {
@@ -1694,5 +1694,8 @@
   },
   "amountPlusGasFeePlusStorageFee": {
     "message": "Amount + (Gas Fee + Storage Fee)"
+  },
+  "alreadySponsoredByContract": {
+    "message": "Smart contract sponsored"
   }
 }

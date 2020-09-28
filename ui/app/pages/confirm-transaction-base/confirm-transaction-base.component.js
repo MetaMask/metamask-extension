@@ -90,8 +90,8 @@ export default class ConfirmTransactionBase extends Component {
     onEdit: PropTypes.func,
     onEditGas: PropTypes.func,
     onSubmit: PropTypes.func,
-    setMetaMetricsSendCount: PropTypes.func,
-    metaMetricsSendCount: PropTypes.number,
+    // setMetaMetricsSendCount: PropTypes.func,
+    // metaMetricsSendCount: PropTypes.number,
     subtitle: PropTypes.string,
     subtitleComponent: PropTypes.node,
     summaryComponent: PropTypes.node,
@@ -110,7 +110,10 @@ export default class ConfirmTransactionBase extends Component {
     showAccountInHeader: PropTypes.bool,
     hexTransactionTotalCountSponsored: PropTypes.string,
     hexTransactionFeeAndCollateralCountSponsored: PropTypes.string,
-    // hexSponsoredTransactionFeeAndCollateral: PropTypes.string,
+    hexSponsoredTransactionFeeAndCollateral: PropTypes.string,
+    showLoadingIndication: PropTypes.func,
+    hideLoadingIndication: PropTypes.func,
+    txMetaLoadingDefaults: PropTypes.bool,
   }
 
   state = {
@@ -127,7 +130,16 @@ export default class ConfirmTransactionBase extends Component {
       clearConfirmTransaction,
       nextNonce,
       customNonceValue,
+      txMetaLoadingDefaults,
+      showLoadingIndication,
+      hideLoadingIndication,
     } = this.props
+    if (txMetaLoadingDefaults && !prevProps.txMetaLoadingDefaults) {
+      showLoadingIndication()
+    }
+    if (!txMetaLoadingDefaults && prevProps.txMetaLoadingDefaults) {
+      hideLoadingIndication()
+    }
     const { transactionStatus: prevTxStatus } = prevProps
     const statusUpdated = transactionStatus !== prevTxStatus
     const txDroppedOrConfirmed =
@@ -243,6 +255,8 @@ export default class ConfirmTransactionBase extends Component {
       hexTransactionFee,
       hexTransactionCollateral,
       hexTransactionTotalCountSponsored,
+      hexTransactionFeeAndCollateralCountSponsored = '0x0',
+      hexSponsoredTransactionFeeAndCollateral,
       hideDetails,
       useNonceField,
       customNonceValue,
@@ -258,6 +272,13 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props
 
     const { t } = this.context
+    const hasSponsoredFee = hexSponsoredTransactionFeeAndCollateral !== '0x0'
+    const zeroTxFee = hexTransactionFeeAndCollateralCountSponsored === '0x0'
+    const gasHeaderVisible = advancedInlineGasShown || !zeroTxFee
+    const gasInputVisible = advancedInlineGasShown
+    const storageHeaderVisible =
+      !isSimpleTx && (advancedInlineGasShown || !zeroTxFee)
+    const storageInputVisible = !isSimpleTx && advancedInlineGasShown
 
     if (hideDetails) {
       return null
@@ -266,103 +287,146 @@ export default class ConfirmTransactionBase extends Component {
     return (
       detailsComponent || (
         <div className="confirm-page-container-content__details">
-          <div className="confirm-page-container-content__gas-fee">
-            <ConfirmDetailRow
-              label={t('gasFee')}
-              type="fee"
-              value={hexTransactionFee}
-              headerText={advancedInlineGasShown ? '' : t('advanced')}
-              headerTextClassName="confirm-detail-row__header-text--edit"
-              onHeaderClick={() =>
+          <div
+            style={{
+              visibility:
+                !advancedInlineGasShown || zeroTxFee ? 'visible' : 'hidden',
+              marginBottom: advancedInlineGasShown ? '-10px' : '0',
+            }}
+            className="confirm-page-container-content__details__header"
+          >
+            <div
+              style={{ visibility: zeroTxFee ? 'visible' : 'hidden' }}
+              className="confirm-page-container-content__details__header__sponsor-info"
+            >
+              <span className="confirm-page-container-content__details__header__sponsor-info__text">
+                {t('alreadySponsoredByContract')}
+              </span>
+              <UserPreferencedCurrencyDisplay
+                value={hexSponsoredTransactionFeeAndCollateral}
+                type={PRIMARY}
+                showEthLogo
+                ethLogoHeight="26"
+                hideLabel
+              />
+              <span className="confirm-page-container-content__details__header__sponsor-info__suffix">
+                CFX
+              </span>
+            </div>
+            <a
+              className="confirm-detail-row__header-text--edit"
+              style={{
+                visibility: advancedInlineGasShown ? 'hidden' : 'visible',
+              }}
+              onClick={(e) => {
+                e.preventDefault()
                 !advancedInlineGasShown && this.handleEditGas()
-              }
-              /* secondaryText={ */
-              /*   hideFiatConversion */
-              /*     ? t('noConversionRateAvailable') */
-              /*     : '' */
-              /* } */
-              secondaryText=""
-            />
-            {advancedInlineGasShown ? (
-              <AdvancedGasInputs
-                updateCustomGasPrice={(newGasPrice) =>
-                  updateGasAndCollateralAndCalculte({
-                    ...customGasAndCollateral,
-                    gasPrice: newGasPrice,
-                  })
-                }
-                updateCustomGasLimit={(newGasLimit) =>
-                  updateGasAndCollateralAndCalculte({
-                    ...customGasAndCollateral,
-                    gasLimit: newGasLimit,
-                  })
-                }
-                updateCustomStorageLimit={(newStorageLimit) =>
-                  updateGasAndCollateralAndCalculte({
-                    ...customGasAndCollateral,
-                    storageLimit: newStorageLimit,
-                  })
-                }
-                customGasPrice={customGasAndCollateral.gasPrice}
-                customGasLimit={customGasAndCollateral.gasLimit}
-                customStorageLimit={customGasAndCollateral.storageLimit}
-                insufficientBalance={insufficientBalance}
-                customPriceIsSafe
-                isSpeedUp={false}
-                isSimpleTx={isSimpleTx}
-                showInputType="fee"
-              />
-            ) : null}
-            {!isSimpleTx && (
-              <ConfirmDetailRow
-                label={t('storageFee')}
-                type="collateral"
-                value={hexTransactionCollateral}
-                headerText={advancedInlineGasShown ? '' : t('advanced')}
-                headerTextClassName="confirm-detail-row__header-text--edit"
-                onHeaderClick={() =>
-                  !advancedInlineGasShown && this.handleEditGas()
-                }
-                /* secondaryText={ */
-                /*   hideFiatConversion */
-                /*     ? t('noConversionRateAvailable') */
-                /*     : '' */
-                /* } */
-                secondaryText=""
-              />
-            )}
-            {advancedInlineGasShown ? (
-              <AdvancedGasInputs
-                key="collateral"
-                updateCustomGasPrice={(newGasPrice) =>
-                  updateGasAndCollateralAndCalculte({
-                    ...customGasAndCollateral,
-                    gasPrice: newGasPrice,
-                  })
-                }
-                updateCustomGasLimit={(newGasLimit) =>
-                  updateGasAndCollateralAndCalculte({
-                    ...customGasAndCollateral,
-                    gasLimit: newGasLimit,
-                  })
-                }
-                updateCustomStorageLimit={(newStorageLimit) =>
-                  updateGasAndCollateralAndCalculte({
-                    ...customGasAndCollateral,
-                    storageLimit: newStorageLimit,
-                  })
-                }
-                customGasPrice={customGasAndCollateral.gasPrice}
-                customGasLimit={customGasAndCollateral.gasLimit}
-                customStorageLimit={customGasAndCollateral.storageLimit}
-                insufficientBalance={insufficientBalance}
-                customPriceIsSafe
-                isSpeedUp={false}
-                isSimpleTx={isSimpleTx}
-                showInputType="collateral"
-              />
-            ) : null}
+              }}
+            >
+              {t('advanced')}
+            </a>
           </div>
+          {gasHeaderVisible && (
+            <div className="confirm-page-container-content__gas-fee">
+              {gasHeaderVisible && (
+                <ConfirmDetailRow
+                  label={t('gasFee')}
+                  type="fee"
+                  value={hexTransactionFee}
+                  /* headerText={advancedInlineGasShown ? '' : t('advanced')} */
+                  /* headerTextClassName="confirm-detail-row__header-text--edit" */
+                  /* onHeaderClick={() => */
+                  /*   !advancedInlineGasShown && this.handleEditGas() */
+                  /* } */
+                  /* secondaryText={ */
+                  /*   hideFiatConversion */
+                  /*     ? t('noConversionRateAvailable') */
+                  /*     : '' */
+                  /* } */
+                  secondaryText=""
+                />
+              )}
+              {gasInputVisible && (
+                <AdvancedGasInputs
+                  updateCustomGasPrice={(newGasPrice) =>
+                    updateGasAndCollateralAndCalculte({
+                      ...customGasAndCollateral,
+                      gasPrice: newGasPrice,
+                    })
+                  }
+                  updateCustomGasLimit={(newGasLimit) =>
+                    updateGasAndCollateralAndCalculte({
+                      ...customGasAndCollateral,
+                      gasLimit: newGasLimit,
+                    })
+                  }
+                  updateCustomStorageLimit={(newStorageLimit) =>
+                    updateGasAndCollateralAndCalculte({
+                      ...customGasAndCollateral,
+                      storageLimit: newStorageLimit,
+                    })
+                  }
+                  customGasPrice={customGasAndCollateral.gasPrice}
+                  customGasLimit={customGasAndCollateral.gasLimit}
+                  customStorageLimit={customGasAndCollateral.storageLimit}
+                  insufficientBalance={insufficientBalance}
+                  customPriceIsSafe
+                  isSpeedUp={false}
+                  isSimpleTx={isSimpleTx}
+                  showInputType="fee"
+                />
+              )}
+              {storageHeaderVisible && (
+                <ConfirmDetailRow
+                  label={t('storageFee')}
+                  type="collateral"
+                  value={hexTransactionCollateral}
+                  /* headerText={advancedInlineGasShown ? '' : t('advanced')} */
+                  /* headerTextClassName="confirm-detail-row__header-text--edit" */
+                  /* onHeaderClick={() => */
+                  /*   !advancedInlineGasShown && this.handleEditGas() */
+                  /* } */
+                  /* secondaryText={ */
+                  /*   hideFiatConversion */
+                  /*     ? t('noConversionRateAvailable') */
+                  /*     : '' */
+                  /* } */
+                  secondaryText=""
+                />
+              )}
+              {storageInputVisible && (
+                <AdvancedGasInputs
+                  key="collateral"
+                  updateCustomGasPrice={(newGasPrice) =>
+                    updateGasAndCollateralAndCalculte({
+                      ...customGasAndCollateral,
+                      gasPrice: newGasPrice,
+                    })
+                  }
+                  updateCustomGasLimit={(newGasLimit) =>
+                    updateGasAndCollateralAndCalculte({
+                      ...customGasAndCollateral,
+                      gasLimit: newGasLimit,
+                    })
+                  }
+                  updateCustomStorageLimit={(newStorageLimit) =>
+                    updateGasAndCollateralAndCalculte({
+                      ...customGasAndCollateral,
+                      storageLimit: newStorageLimit,
+                    })
+                  }
+                  customGasPrice={customGasAndCollateral.gasPrice}
+                  customGasLimit={customGasAndCollateral.gasLimit}
+                  customStorageLimit={customGasAndCollateral.storageLimit}
+                  insufficientBalance={insufficientBalance}
+                  customPriceIsSafe
+                  isSpeedUp={false}
+                  isSimpleTx={isSimpleTx}
+                  showInputType="collateral"
+                />
+              )}
+            </div>
+          )}
           <div
             className={
               useNonceField ? 'confirm-page-container-content__gas-fee' : null
@@ -370,6 +434,7 @@ export default class ConfirmTransactionBase extends Component {
           >
             <ConfirmDetailRow
               label={t('total')}
+              sponsored={hasSponsoredFee}
               value={hexTransactionTotalCountSponsored}
               primaryText={primaryTotalTextOverride}
               /* secondaryText={ */
@@ -556,8 +621,8 @@ export default class ConfirmTransactionBase extends Component {
       history,
       onSubmit,
       // actionKey,
-      metaMetricsSendCount = 0,
-      setMetaMetricsSendCount,
+      // metaMetricsSendCount = 0,
+      // setMetaMetricsSendCount,
       // methodData = {},
       updateCustomNonce,
     } = this.props
@@ -590,37 +655,37 @@ export default class ConfirmTransactionBase extends Component {
         //   },
         // })
 
-        setMetaMetricsSendCount(metaMetricsSendCount + 1).then(() => {
-          if (onSubmit) {
-            Promise.resolve(onSubmit(txData)).then(() => {
+        // setMetaMetricsSendCount(metaMetricsSendCount + 1).then(() => {
+        if (onSubmit) {
+          Promise.resolve(onSubmit(txData)).then(() => {
+            this.setState({
+              submitting: false,
+            })
+            updateCustomNonce('')
+          })
+        } else {
+          sendTransaction(txData)
+            .then(() => {
+              clearConfirmTransaction()
+              this.setState(
+                {
+                  submitting: false,
+                },
+                () => {
+                  history.push(DEFAULT_ROUTE)
+                  updateCustomNonce('')
+                }
+              )
+            })
+            .catch((error) => {
               this.setState({
                 submitting: false,
+                submitError: error.message,
               })
               updateCustomNonce('')
             })
-          } else {
-            sendTransaction(txData)
-              .then(() => {
-                clearConfirmTransaction()
-                this.setState(
-                  {
-                    submitting: false,
-                  },
-                  () => {
-                    history.push(DEFAULT_ROUTE)
-                    updateCustomNonce('')
-                  }
-                )
-              })
-              .catch((error) => {
-                this.setState({
-                  submitting: false,
-                  submitError: error.message,
-                })
-                updateCustomNonce('')
-              })
-          }
-        })
+        }
+        // })
       }
     )
   }
@@ -721,7 +786,12 @@ export default class ConfirmTransactionBase extends Component {
       // txData: { origin } = {},
       getNextNonce,
       tryReverseResolveAddress,
+      txMetaLoadingDefaults,
+      showLoadingIndication,
     } = this.props
+    if (txMetaLoadingDefaults) {
+      showLoadingIndication()
+    }
     // const { metricsEvent } = this.context
     // metricsEvent({
     //   eventOpts: {

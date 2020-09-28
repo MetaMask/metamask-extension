@@ -27,16 +27,17 @@ export default class SendFooter extends Component {
     tokenBalance: PropTypes.string,
     unapprovedTxs: PropTypes.object,
     update: PropTypes.func,
-    sendErrors: PropTypes.object,
-    gasEstimateType: PropTypes.string,
+    // sendErrors: PropTypes.object,
+    // gasEstimateType: PropTypes.string,
     gasIsLoading: PropTypes.bool,
+    storageIsLoading: PropTypes.bool,
     sponsorshipInfoIsLoading: PropTypes.bool,
     insufficientBalance: PropTypes.bool,
   }
 
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    // metricsEvent: PropTypes.func,
   }
 
   onCancel () {
@@ -63,9 +64,9 @@ export default class SendFooter extends Component {
       update,
       toAccounts,
       history,
-      gasEstimateType,
+      // gasEstimateType,
     } = this.props
-    const { metricsEvent } = this.context
+    // const { metricsEvent } = this.context
 
     // Should not be needed because submit should be disabled if there are errors.
     // const noErrors = !amountError && toError === null
@@ -101,16 +102,16 @@ export default class SendFooter extends Component {
       })
 
     Promise.resolve(promise).then(() => {
-      metricsEvent({
-        eventOpts: {
-          category: 'Transactions',
-          action: 'Edit Screen',
-          name: 'Complete',
-        },
-        customVariables: {
-          gasChanged: gasEstimateType,
-        },
-      })
+      // metricsEvent({
+      //   eventOpts: {
+      //     category: 'Transactions',
+      //     action: 'Edit Screen',
+      //     name: 'Complete',
+      //   },
+      //   customVariables: {
+      //     gasChanged: gasEstimateType,
+      //   },
+      // })
       history.push(CONFIRM_TRANSACTION_ROUTE)
     })
   }
@@ -125,6 +126,7 @@ export default class SendFooter extends Component {
       to,
       gasLimit,
       gasIsLoading,
+      storageIsLoading,
       sponsorshipInfoIsLoading,
       insufficientBalance,
     } = this.props
@@ -138,30 +140,31 @@ export default class SendFooter extends Component {
       !(data || to) ||
       gasLimitTooLow ||
       gasIsLoading ||
+      storageIsLoading ||
       sponsorshipInfoIsLoading
     return shouldBeDisabled
   }
 
-  componentDidUpdate (prevProps) {
-    const { inError, sendErrors } = this.props
-    const { metricsEvent } = this.context
-    if (!prevProps.inError && inError) {
-      const errorField = Object.keys(sendErrors).find((key) => sendErrors[key])
-      const errorMessage = sendErrors[errorField]
+  // componentDidUpdate(prevProps) {
+  //   const { inError, sendErrors } = this.props
+  //   // const { metricsEvent } = this.context
+  //   if (!prevProps.inError && inError) {
+  //     const errorField = Object.keys(sendErrors).find(key => sendErrors[key])
+  //     const errorMessage = sendErrors[errorField]
 
-      metricsEvent({
-        eventOpts: {
-          category: 'Transactions',
-          action: 'Edit Screen',
-          name: 'Error',
-        },
-        customVariables: {
-          errorField,
-          errorMessage,
-        },
-      })
-    }
-  }
+  //     metricsEvent({
+  //       eventOpts: {
+  //         category: 'Transactions',
+  //         action: 'Edit Screen',
+  //         name: 'Error',
+  //       },
+  //       customVariables: {
+  //         errorField,
+  //         errorMessage,
+  //       },
+  //     })
+  //   }
+  // }
 
   render () {
     return (

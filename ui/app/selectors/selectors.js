@@ -290,16 +290,20 @@ export function getCurrentEthBalance (state) {
   return getCurrentAccountWithSendEtherInfo(state).balance
 }
 
-export function getSponsorshipInfoIsLoading (state) {
-  return state.appState.sponsorshipInfoIsLoading
-}
-
 export function getTrustedTokenMap (state) {
   return state.metamask.trustedTokenMap
 }
 
 export function getGasIsLoading (state) {
   return state.appState.gasIsLoading
+}
+
+export function getStorageIsLoading (state) {
+  return state.appState.storageIsLoading
+}
+
+export function getSponsorshipInfoIsLoading (state) {
+  return state.appState.sponsorshipInfoIsLoading
 }
 
 export function getForceGasMin (state) {
@@ -645,4 +649,8 @@ export function getLastConnectedInfo (state) {
 
 export function getIpfsGateway (state) {
   return state.metamask.ipfsGateway
+}
+
+export function getLoadingInfo (state) {
+  return { isLoading: state.isLoading, loadingMessage: state.loadingMessage }
 }

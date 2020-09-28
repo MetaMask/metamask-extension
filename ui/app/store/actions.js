@@ -875,8 +875,8 @@ export function updateSponsorshipInfo ({
   storageLimit,
 }) {
   return (dispatch) => {
+    dispatch(showLoadingIndication())
     dispatch(sponsorshipInfoLoadingStarted())
-
     return checkSponsorshipInfo({
       selectedAddress,
       selectedToken,
@@ -884,11 +884,17 @@ export function updateSponsorshipInfo ({
       gasPrice,
       storageLimit,
       checkSponsorshipInfoMethod: background.checkBalanceAgainstTransaction,
-    }).then((sponsorshipInfo) => {
-      dispatch(setSponsorshipInfo(sponsorshipInfo))
-      dispatch(setCustomSponsorshipInfo(sponsorshipInfo))
-      dispatch(sponsorshipInfoLoadingFinished())
     })
+      .then((sponsorshipInfo) => {
+        dispatch(setSponsorshipInfo(sponsorshipInfo))
+        dispatch(setCustomSponsorshipInfo(sponsorshipInfo))
+        dispatch(sponsorshipInfoLoadingFinished())
+        dispatch(hideLoadingIndication())
+      })
+      .catch(() => {
+        dispatch(sponsorshipInfoLoadingFinished())
+        dispatch(hideLoadingIndication())
+      })
   }
 }
 
@@ -902,8 +908,10 @@ export function updateGasAndCollateralData ({
   data,
 }) {
   return (dispatch) => {
+    dispatch(showLoadingIndication())
     dispatch(gasLoadingStarted())
     dispatch(storageLoadingStarted())
+    dispatch(sponsorshipInfoLoadingStarted())
     return estimateGasAndCollateral({
       estimateGasAndCollateralMethod: background.estimateGas,
       blockGasLimit,
@@ -915,6 +923,7 @@ export function updateGasAndCollateralData ({
       data,
     })
       .then(({ gas, storageLimit }) => {
+        // dispatch(hideLoadingIndication())
         dispatch(setGasLimit(gas))
         dispatch(setStorageLimit(storageLimit))
         dispatch(setCustomGasLimit(gas))
@@ -944,6 +953,7 @@ export function updateGasAndCollateralData ({
         )
         dispatch(gasLoadingFinished())
         dispatch(storageLoadingFinished())
+        dispatch(hideLoadingIndication())
       })
   }
 }
@@ -1117,7 +1127,6 @@ const updateMetamaskStateFromBackground = () => {
 export function updateTransaction (txData) {
   return (dispatch) => {
     dispatch(showLoadingIndication())
-
     return new Promise((resolve, reject) => {
       background.updateTransaction(txData, (err) => {
         dispatch(updateTransactionParams(txData.id, txData.txParams))
@@ -2677,11 +2686,13 @@ export function getContractMethodData (data = '') {
       return Promise.resolve(knownMethodData[fourBytePrefix])
     }
 
+    dispatch(showLoadingIndication())
     dispatch(loadingMethoDataStarted())
     log.debug(`loadingMethodData`)
 
     return getMethodDataAsync(fourBytePrefix).then(({ name, params }) => {
       dispatch(loadingMethoDataFinished())
+      dispatch(hideLoadingIndication())
 
       background.addKnownMethodData(fourBytePrefix, { name, params })
 
@@ -2716,6 +2727,7 @@ export function getTokenParams (tokenAddress) {
       })
     }
 
+    dispatch(showLoadingIndication())
     dispatch(loadingTokenParamsStarted())
     log.debug(`loadingTokenParams`)
 
@@ -2726,6 +2738,7 @@ export function getTokenParams (tokenAddress) {
     ).then(({ symbol, decimals }) => {
       dispatch(addToken(tokenAddress, symbol, decimals))
       dispatch(loadingTokenParamsFinished())
+      dispatch(hideLoadingIndication())
     })
   }
 }

@@ -521,7 +521,7 @@
     "message": "存储上限"
   },
   "storageLimitInfoModalContent": {
-    "message": "存储费上限为 $1 CFX，仅扣除实际使用部分的存储费用，待存储资源被释放后将返还该笔费用。",
+    "message": "存储费上限为 $1 CFX (存储费 / 1024)，仅扣除实际使用部分的存储费用，待存储资源被释放后将返还该笔费用。",
     "description": "$1 为由 storageLimit 计算出来的需要抵押的 storage fee"
   },
   "gasFee": {
@@ -1450,5 +1450,8 @@
   },
   "amountPlusGasFeePlusStorageFee": {
     "message": "交易量 + (燃气费 + 存储费)"
+  },
+  "alreadySponsoredByContract": {
+    "message": " 已由合约代付"
   }
 }

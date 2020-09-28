@@ -1,5 +1,5 @@
 .confirm-detail-row {
-  padding: 14px 0;
+  padding: 8px 0;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -32,6 +32,11 @@
   &__primary {
     font-size: 1.5rem;
     justify-content: flex-end;
+    &.sponsored > div {
+      span:last-child {
+        color: #ff782c;
+      }
+    }
   }
 
   &__secondary {

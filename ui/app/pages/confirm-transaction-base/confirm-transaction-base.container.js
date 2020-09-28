@@ -11,10 +11,12 @@ import {
   cancelTxs,
   updateAndApproveTx,
   showModal,
-  setMetaMetricsSendCount,
+  // setMetaMetricsSendCount,
   updateTransaction,
   getNextNonce,
   tryReverseResolveAddress,
+  showLoadingIndication,
+  hideLoadingIndication,
 } from '../../store/actions'
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
@@ -102,6 +104,7 @@ const mapStateToProps = (state, ownProps) => {
     value: amount,
     data,
   } = (transaction && transaction.txParams) || txParams
+  const loadingDefaults = (transaction && transaction.loadingDefaults) || false
   const accounts = getMetaMaskAccounts(state)
   const assetImage = assetImages[txParamsToAddress]
 
@@ -171,6 +174,7 @@ const mapStateToProps = (state, ownProps) => {
     !(fullTxData.txParams.data || isValidContractAddress(toAddress))
 
   return {
+    txMetaLoadingDefaults: loadingDefaults,
     balance,
     fromAddress,
     fromName,
@@ -218,6 +222,12 @@ const mapStateToProps = (state, ownProps) => {
 
 export const mapDispatchToProps = (dispatch) => {
   return {
+    showLoadingIndication: () => {
+      dispatch(showLoadingIndication())
+    },
+    hideLoadingIndication: () => {
+      dispatch(hideLoadingIndication())
+    },
     tryReverseResolveAddress: (address) => {
       return dispatch(tryReverseResolveAddress(address))
     },
@@ -254,7 +264,7 @@ export const mapDispatchToProps = (dispatch) => {
     cancelAllTransactions: (txList) => dispatch(cancelTxs(txList)),
     sendTransaction: (txData) =>
       dispatch(updateAndApproveTx(customNonceMerge(txData))),
-    setMetaMetricsSendCount: (val) => dispatch(setMetaMetricsSendCount(val)),
+    // setMetaMetricsSendCount: val => dispatch(setMetaMetricsSendCount(val)),
     getNextNonce: () => dispatch(getNextNonce()),
   }
 }
