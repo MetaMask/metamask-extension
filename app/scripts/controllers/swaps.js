@@ -136,7 +136,7 @@ export default class SwapsController {
     const quotesLastFetched = Date.now()
 
     let approvalRequired = false
-    if (fetchParams.sourceToken !== ETH_SWAPS_TOKEN_ADDRESS) {
+    if (fetchParams.sourceToken !== ETH_SWAPS_TOKEN_ADDRESS && Object.values(newQuotes).length) {
       const allowance = await this._getERC20Allowance(
         fetchParams.sourceToken,
         fetchParams.fromAddress,
