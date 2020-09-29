@@ -38,6 +38,7 @@ export default function AwaitingSwap ({
   networkId,
   tokensReceived,
   rpcPrefs,
+  onCancel,
   submittingSwap,
   tradeTxData,
   usedGasPrice,
@@ -194,6 +195,7 @@ export default function AwaitingSwap ({
             history.push(`${ASSET_ROUTE}/${destinationToken.address}`)
           }
         }}
+        onCancel={onCancel}
         submitText={submitText}
         disabled={submittingSwap}
         hideCancel={errorKey !== QUOTES_EXPIRED_ERROR}
@@ -220,4 +222,5 @@ AwaitingSwap.propTypes = {
   usedGasPrice: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   inputValue: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   maxSlippage: PropTypes.number,
+  onCancel: PropTypes.func,
 }
