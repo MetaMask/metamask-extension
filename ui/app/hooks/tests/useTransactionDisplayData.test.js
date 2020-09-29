@@ -90,6 +90,19 @@ const expectedResults = [
     isPending: false,
     status: 'confirmed',
   },
+  {
+    title: 'Swap ETH to ABC',
+    category: 'swap',
+    subtitle: '',
+    subtitleContainsOrigin: false,
+    date: 'May 12',
+    primaryCurrency: '+1 ABC',
+    senderAddress: '0xee014609ef9e09776ac5fe00bdbfef57bcdefebb',
+    recipientAddress: '0xabca64466f257793eaa52fcfff5066894b76a149',
+    secondaryCurrency: undefined,
+    isPending: false,
+    status: 'confirmed',
+  },
 ]
 
 let useSelector, useI18nContext, useTokenFiatAmount
