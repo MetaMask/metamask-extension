@@ -148,7 +148,6 @@ const mapStateToProps = (state, ownProps) => {
     .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {})
   const unapprovedTxCount = valuesFor(currentNetworkUnapprovedTxs).length
 
-  console.log(willUserPayTxFee)
   const insufficientBalance = !isBalanceSufficient({
     amount,
     gasTotal: calcGasAndCollateralTotal(
