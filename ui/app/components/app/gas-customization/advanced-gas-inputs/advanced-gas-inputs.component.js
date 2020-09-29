@@ -25,6 +25,10 @@ export default class AdvancedGasInputs extends Component {
     showInputType: PropTypes.oneOf(['fee', 'collateral', 'all']),
   }
 
+  state = {
+    focused: false,
+  }
+
   constructor (props) {
     super(props)
     this.state = {
@@ -66,7 +70,13 @@ export default class AdvancedGasInputs extends Component {
   }
 
   changeStorageLimit = (e) => {
-    this.props.updateCustomStorageLimit(Number(e.target.value))
+    const { insufficientBalance } = this.props
+    const { errorType } = this.storageLimitError({
+      insufficientBalance,
+    })
+    if (errorType !== 'error') {
+      this.props.updateCustomStorageLimit(Number(e.target.value))
+    }
   }
 
   onChangeGasLimit = (e) => {
@@ -75,7 +85,16 @@ export default class AdvancedGasInputs extends Component {
   }
 
   changeGasLimit = (e) => {
-    this.props.updateCustomGasLimit(Number(e.target.value))
+    const { insufficientBalance } = this.props
+    const { gasLimit } = this.state
+    const { errorType } = this.gasLimitError({
+      insufficientBalance,
+      gasLimit,
+    })
+
+    if (errorType !== 'error') {
+      this.props.updateCustomGasLimit(Number(e.target.value))
+    }
   }
 
   onChangeGasPrice = (e) => {
@@ -84,7 +103,18 @@ export default class AdvancedGasInputs extends Component {
   }
 
   changeGasPrice = (e) => {
-    this.props.updateCustomGasPrice(Number(e.target.value))
+    const { insufficientBalance, customPriceIsSafe, isSpeedUp } = this.props
+    const { gasPrice } = this.state
+
+    const { errorType } = this.gasPriceError({
+      insufficientBalance,
+      customPriceIsSafe,
+      isSpeedUp,
+      gasPrice,
+    })
+    if (errorType !== 'error') {
+      this.props.updateCustomGasPrice(Number(e.target.value))
+    }
   }
 
   gasPriceError ({
@@ -154,6 +184,7 @@ export default class AdvancedGasInputs extends Component {
     infoOnClick,
     label,
   }) {
+    const { focused } = this.state
     return (
       <div className="advanced-gas-inputs__gas-edit-row">
         <div className="advanced-gas-inputs__gas-edit-row__label">
@@ -162,6 +193,8 @@ export default class AdvancedGasInputs extends Component {
         </div>
         <div className="advanced-gas-inputs__gas-edit-row__input-wrapper">
           <input
+            onFocus={() => this.setState({ focused: true })}
+            onBlur={() => this.setState({ focused: false })}
             className={classnames('advanced-gas-inputs__gas-edit-row__input', {
               'advanced-gas-inputs__gas-edit-row__input--error':
                 errorType === 'error',
@@ -169,7 +202,7 @@ export default class AdvancedGasInputs extends Component {
                 errorType === 'warning',
             })}
             type="number"
-            value={value}
+            value={focused && (value === 0 || value === '') ? '' : value}
             onChange={onChange}
           />
           <div
@@ -216,7 +249,8 @@ export default class AdvancedGasInputs extends Component {
       showInputType = 'all',
     } = this.props
     const showFee = showInputType === 'all' || showInputType === 'fee'
-    const showCollateral = (showInputType === 'all' || showInputType === 'collateral') && !isSimpleTx
+    const showCollateral =
+      (showInputType === 'all' || showInputType === 'collateral') && !isSimpleTx
 
     const { gasPrice, gasLimit } = this.state
 
@@ -263,30 +297,33 @@ export default class AdvancedGasInputs extends Component {
 
     return (
       <div className="advanced-gas-inputs__gas-edit-rows">
-        {showFee && this.renderGasOrStorageInput({
-          label: this.context.t('gasPrice'),
-          value: this.state.gasPrice,
-          onChange: this.onChangeGasPrice,
-          errorComponent: gasPriceErrorComponent,
-          errorType: gasPriceErrorType,
-          infoOnClick: showGasPriceInfoModal,
-        })}
-        {showFee && this.renderGasOrStorageInput({
-          label: this.context.t('gasLimit'),
-          value: this.state.gasLimit,
-          onChange: this.onChangeGasLimit,
-          errorComponent: gasLimitErrorComponent,
-          errorType: gasLimitErrorType,
-          infoOnClick: showGasLimitInfoModal,
-        })}
-        {showCollateral && this.renderGasOrStorageInput({
-          label: this.context.t('storageLimit'),
-          value: this.state.storageLimit,
-          onChange: this.onChangeStorageLimit,
-          errorComponent: storageLimitErrorComponent,
-          errorType: storageLimitErrorType,
-          infoOnClick: showStorageLimitInfoModal,
-        })}
+        {showFee &&
+          this.renderGasOrStorageInput({
+            label: this.context.t('gasPrice'),
+            value: this.state.gasPrice,
+            onChange: this.onChangeGasPrice,
+            errorComponent: gasPriceErrorComponent,
+            errorType: gasPriceErrorType,
+            infoOnClick: showGasPriceInfoModal,
+          })}
+        {showFee &&
+          this.renderGasOrStorageInput({
+            label: this.context.t('gasLimit'),
+            value: this.state.gasLimit,
+            onChange: this.onChangeGasLimit,
+            errorComponent: gasLimitErrorComponent,
+            errorType: gasLimitErrorType,
+            infoOnClick: showGasLimitInfoModal,
+          })}
+        {showCollateral &&
+          this.renderGasOrStorageInput({
+            label: this.context.t('storageLimit'),
+            value: this.state.storageLimit,
+            onChange: this.onChangeStorageLimit,
+            errorComponent: storageLimitErrorComponent,
+            errorType: storageLimitErrorType,
+            infoOnClick: showStorageLimitInfoModal,
+          })}
       </div>
     )
   }
