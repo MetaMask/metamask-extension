@@ -35,6 +35,7 @@ import {
   ETH_SWAPS_TOKEN_OBJECT,
   SWAP_FAILED_ERROR,
 } from '../../helpers/constants/swaps'
+import { SWAP, SWAP_APPROVAL } from '../../helpers/constants/transactions'
 
 const initialState = {
   aggregatorMetadata: null,
@@ -408,6 +409,7 @@ export const signAndSendTransactions = (history) => {
       dispatch(setApproveTxId(approveTxMeta.id))
       const finalApproveTxMeta = await (dispatch(updateTransaction({
         ...approveTxMeta,
+        transactionCategory: SWAP_APPROVAL,
         sourceTokenSymbol: sourceTokenInfo.symbol,
       }, true)))
       await dispatch(updateAndApproveTx(finalApproveTxMeta, true))
@@ -419,6 +421,7 @@ export const signAndSendTransactions = (history) => {
       ...tradeTxMeta,
       sourceTokenSymbol: sourceTokenInfo.symbol,
       destinationTokenSymbol: destinationTokenInfo.symbol,
+      transactionCategory: SWAP,
       swapTokenValue,
     }, true)))
     await dispatch(updateAndApproveTx(finalTradeTxMeta, true))
