@@ -268,6 +268,7 @@ export default function Swap () {
                       txHash={tradeTxData?.hash}
                       networkId={networkId}
                       rpcPrefs={rpcPrefs}
+                      onCancel={onRetry}
                       submittedTime={tradeTxData?.submittedTime}
                     />
                   )
