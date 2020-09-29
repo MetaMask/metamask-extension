@@ -178,16 +178,16 @@ export default class ThreeBoxController {
 
   async migrateBackedUpState (backedUpState) {
     const migrator = new Migrator({ migrations })
-
+    const { preferences, addressBook } = JSON.parse(backedUpState)
     const formattedStateBackup = {
-      PreferencesController: backedUpState.preferences,
-      AddressBookController: backedUpState.addressBook,
+      PreferencesController: preferences,
+      AddressBookController: addressBook,
     }
     const initialMigrationState = migrator.generateInitialState(formattedStateBackup)
     const migratedState = await migrator.migrateData(initialMigrationState)
     return {
-      preferences: migratedState.PreferencesController,
-      addressBook: migratedState.AddressBookController,
+      preferences: migratedState.data.PreferencesController,
+      addressBook: migratedState.data.AddressBookController,
     }
   }
 
@@ -198,8 +198,8 @@ export default class ThreeBoxController {
       addressBook,
     } = await this.migrateBackedUpState(backedUpState)
     this.store.updateState({ threeBoxLastUpdated: backedUpState.lastUpdated })
-    preferences && this.preferencesController.store.updateState(JSON.parse(preferences))
-    addressBook && this.addressBookController.update(JSON.parse(addressBook), true)
+    preferences && this.preferencesController.store.updateState(preferences)
+    addressBook && this.addressBookController.update(addressBook, true)
     this.setShowRestorePromptToFalse()
   }
 

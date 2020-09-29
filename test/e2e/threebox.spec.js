@@ -213,27 +213,26 @@ describe('MetaMask', function () {
         await driver2.clickElement(By.css('.home-notification__accept-button'))
       })
 
-      // TODO: Fix tests from here forward; they're using the wrong driver
       it('goes to the settings screen', async function () {
-        await driver.clickElement(By.css('.account-menu__icon'))
-        await driver.delay(regularDelayMs)
+        await driver2.clickElement(By.css('.account-menu__icon'))
+        await driver2.delay(regularDelayMs)
 
-        await driver.clickElement(By.xpath(`//div[contains(text(), 'Settings')]`))
+        await driver2.clickElement(By.xpath(`//div[contains(text(), 'Settings')]`))
       })
 
       it('finds the blockies toggle turned on', async function () {
-        await driver.delay(regularDelayMs)
-        const toggleLabel = await driver.findElement(By.css('.toggle-button__status'))
+        await driver2.delay(regularDelayMs)
+        const toggleLabel = await driver2.findElement(By.css('.toggle-button__status'))
         const toggleLabelText = await toggleLabel.getText()
         assert.equal(toggleLabelText, 'ON')
       })
 
       it('finds the restored address in the contact list', async function () {
-        await driver.clickElement(By.xpath(`//div[contains(text(), 'Contacts')]`))
-        await driver.delay(regularDelayMs)
+        await driver2.clickElement(By.xpath(`//div[contains(text(), 'Contacts')]`))
+        await driver2.delay(regularDelayMs)
 
-        await driver.findElement(By.xpath(`//div[contains(text(), 'Test User Name 11')]`))
-        await driver.delay(regularDelayMs)
+        await driver2.findElement(By.xpath(`//div[contains(text(), 'Test User Name 11')]`))
+        await driver2.delay(regularDelayMs)
       })
     })
   })
