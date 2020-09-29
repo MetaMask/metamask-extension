@@ -75,7 +75,7 @@ export function useTransactionDisplayData (transactionGroup, tokenAddress) {
     ({ address }) => address === tokenAddress,
   ) || {}
   const viewingSwapsReceivingToken = (
-    symbol === primaryTransaction.destinationTokenSymbol || (
+    (symbol && symbol === primaryTransaction.destinationTokenSymbol) || (
       tokenAddress === ETH_SWAPS_TOKEN_ADDRESS &&
       primaryTransaction.sourceTokenSymbol !== ETH_SWAPS_TOKEN_ADDRESS
     )

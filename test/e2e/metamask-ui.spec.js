@@ -115,6 +115,12 @@ describe('MetaMask', function () {
       await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`))
       await driver.delay(regularDelayMs)
     })
+
+    it('closes the swaps intro popup', async function () {
+      await driver.findElement(By.css(`.popover-header__subtitle`))
+      await driver.clickElement(By.css('.popover-header__button'))
+      await driver.delay(regularDelayMs)
+    })
   })
 
   describe('Show account information', function () {
@@ -217,7 +223,7 @@ describe('MetaMask', function () {
 
   describe('Send ETH from inside MetaMask using default gas', function () {
     it('starts a send transaction', async function () {
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Send')]`))
+      await driver.clickElement(By.css('[data-testid="eth-overview-send"]'))
       await driver.delay(regularDelayMs)
 
       const inputAddress = await driver.findElement(By.css('input[placeholder="Search, public address (0x), or ENS"]'))
@@ -281,7 +287,7 @@ describe('MetaMask', function () {
 
   describe('Send ETH from inside MetaMask using fast gas option', function () {
     it('starts a send transaction', async function () {
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Send')]`))
+      await driver.clickElement(By.css('[data-testid="eth-overview-send"]'))
       await driver.delay(regularDelayMs)
 
       const inputAddress = await driver.findElement(By.css('input[placeholder="Search, public address (0x), or ENS"]'))
@@ -320,7 +326,7 @@ describe('MetaMask', function () {
 
   describe('Send ETH from inside MetaMask using advanced gas modal', function () {
     it('starts a send transaction', async function () {
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Send')]`))
+      await driver.clickElement(By.css('[data-testid="eth-overview-send"]'))
       await driver.delay(regularDelayMs)
 
       const inputAddress = await driver.findElement(By.css('input[placeholder="Search, public address (0x), or ENS"]'))
@@ -842,7 +848,7 @@ describe('MetaMask', function () {
   describe('Send token from inside MetaMask', function () {
     let gasModal
     it('starts to send a transaction', async function () {
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Send')]`))
+      await driver.clickElement(By.css('[data-testid="eth-overview-send"]'))
       await driver.delay(regularDelayMs)
 
       const inputAddress = await driver.findElement(By.css('input[placeholder="Search, public address (0x), or ENS"]'))

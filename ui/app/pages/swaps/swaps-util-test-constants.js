@@ -2,10 +2,10 @@ export const TRADES_BASE_DEV_URL = 'https://metaswap-api.airswap-dev.codefi.netw
 export const TOKENS_BASE_DEV_URL = 'https://metaswap-api.airswap-dev.codefi.network/tokens'
 export const AGGREGATOR_METADATA_BASE_DEV_URL = 'https://metaswap-api.airswap-dev.codefi.network/aggregatorMetadata'
 export const TOP_ASSET_BASE_DEV_URL = 'https://metaswap-api.airswap-dev.codefi.network/topAssets'
-export const TRADES_BASE_PROD_URL = 'https://metaswap-api.airswap-prod.codefi.network/trades?'
-export const TOKENS_BASE_PROD_URL = 'https://metaswap-api.airswap-prod.codefi.network/tokens'
-export const AGGREGATOR_METADATA_BASE_PROD_URL = 'https://metaswap-api.airswap-prod.codefi.network/aggregatorMetadata'
-export const TOP_ASSET_BASE_PROD_URL = 'https://metaswap-api.airswap-prod.codefi.network/topAssets'
+export const TRADES_BASE_PROD_URL = 'https://metaswap.codefi.network/api/trades?'
+export const TOKENS_BASE_PROD_URL = 'https://metaswap.codefi.network/api/tokens'
+export const AGGREGATOR_METADATA_BASE_PROD_URL = 'https://metaswap.codefi.network/api/aggregatorMetadata'
+export const TOP_ASSET_BASE_PROD_URL = 'https://metaswap.codefi.network/api/topAssets'
 
 export const TOKENS = [
   { erc20: true, symbol: 'META', decimals: 18, address: '0x617b3f8050a0BD94b6b1da02B4384eE5B4DF13F4' },
@@ -37,12 +37,16 @@ export const MOCK_TRADE_RESPONSE_1 = [
     'destinationToken': TOKENS[1].address,
     'fetchTime': 553,
     'aggregator': 'zeroEx',
+    'averageGas': 1,
+    'maxGas': 10,
     'aggType': 'AGG',
     'approvalNeeded': { // the ethereum transaction data for the approval (if needed)
       'data': '0x095ea7b300000000000000000000000095e6f48254609a6ee006f7d493c8e5fb97094cef0000000000000000000000000000000000000000004a817c7ffffffdabf41c00',
       'to': '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-      'value': '0',
+      'amount': '0',
       'from': '0x2369267687A84ac7B494daE2f1542C40E37f4455',
+      'gas': '12',
+      'gasPrice': '34',
     },
   },
   {

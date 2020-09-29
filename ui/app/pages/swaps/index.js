@@ -179,7 +179,6 @@ export default function Swap () {
     }
   }, [history, swapsErrorKey, isSwapsErrorRoute])
 
-
   return (
     <div className="swaps">
       <div className="swaps__container">

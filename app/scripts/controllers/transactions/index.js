@@ -76,8 +76,9 @@ export default class TransactionController extends EventEmitter {
     this.memStore = new ObservableStore({})
     this.query = new EthQuery(this.provider)
 
+    // TODO: restore before swaps goes to production
     // this.txGasUtil = new TxGasUtil(this.provider)
-    this.txGasUtil = new TxGasUtil(opts.gasProvider)
+    this.txGasUtil = new TxGasUtil(process.env.IN_TEST ? this.provider : opts.gasProvider)
     this._mapMethods()
     this.txStateManager = new TransactionStateManager({
       initState: opts.initState,

@@ -84,6 +84,10 @@ describe('MetaMask', function () {
       await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.remindMeLater.message}')]`))
       await driver.delay(regularDelayMs)
 
+      await driver.findElement(By.css(`.popover-header__subtitle`))
+      await driver.clickElement(By.css('.popover-header__button'))
+      await driver.delay(regularDelayMs)
+
       await driver.clickElement(By.css('[data-testid="account-options-menu-button"]'))
       await driver.clickElement(By.css('[data-testid="account-options-menu__account-details"]'))
     })

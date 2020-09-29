@@ -26,7 +26,7 @@ export default class TxGasUtil {
     // This is a temporary measure to ensure the build works on testnet.
     // In particular, to ensure all estimates happen against mainnet, via
     // the provider created using _setNetworkClientTemp() of the network controller
-    this.query = new EthQuery(provider())
+    this.query = new EthQuery(typeof provider === 'function' ? provider() : provider)
   }
 
   /**
