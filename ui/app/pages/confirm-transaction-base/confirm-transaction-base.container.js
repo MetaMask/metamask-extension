@@ -88,13 +88,16 @@ const mapStateToProps = (state, ownProps) => {
     lastGasPrice,
     id: transactionId,
     transactionCategory,
-    willUserPayTxFee,
-    willUserPayCollateral,
   } = txData
+  let { willUserPayTxFee, willUserPayCollateral } = txData
   const transaction =
     Object.values(unapprovedTxs).find(
       ({ id }) => id === (transactionId || Number(paramsTransactionId))
     ) || {}
+  if (willUserPayTxFee === undefined) {
+    willUserPayTxFee = transaction.willUserPayTxFee
+    willUserPayCollateral = transaction.willUserPayCollateral
+  }
   const {
     from: fromAddress,
     to: txParamsToAddress,
@@ -145,6 +148,7 @@ const mapStateToProps = (state, ownProps) => {
     .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {})
   const unapprovedTxCount = valuesFor(currentNetworkUnapprovedTxs).length
 
+  console.log(willUserPayTxFee)
   const insufficientBalance = !isBalanceSufficient({
     amount,
     gasTotal: calcGasAndCollateralTotal(
@@ -174,6 +178,8 @@ const mapStateToProps = (state, ownProps) => {
     !(fullTxData.txParams.data || isValidContractAddress(toAddress))
 
   return {
+    willUserPayTxFee,
+    willUserPayCollateral,
     txMetaLoadingDefaults: loadingDefaults,
     balance,
     fromAddress,

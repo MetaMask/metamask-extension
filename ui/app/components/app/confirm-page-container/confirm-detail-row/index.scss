@@ -32,8 +32,15 @@
   &__primary {
     font-size: 1.5rem;
     justify-content: flex-end;
-    &.sponsored > div {
-      span:last-child {
+    & > div > img {
+      margin-right: 5px;
+    }
+    &.sponsored {
+      span.currency-display-component__text {
+        text-decoration: line-through;
+        text-decoration-color: #ff782c;
+      }
+      & > div span:last-child {
         color: #ff782c;
       }
     }

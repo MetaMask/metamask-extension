@@ -114,6 +114,8 @@ export default class ConfirmTransactionBase extends Component {
     showLoadingIndication: PropTypes.func,
     hideLoadingIndication: PropTypes.func,
     txMetaLoadingDefaults: PropTypes.bool,
+    willUserPayTxFee: PropTypes.bool,
+    willUserPayCollateral: PropTypes.bool,
   }
 
   state = {
@@ -269,6 +271,8 @@ export default class ConfirmTransactionBase extends Component {
       nextNonce,
       getNextNonce,
       isSimpleTx,
+      willUserPayTxFee = true,
+      willUserPayCollateral = true,
     } = this.props
 
     const { t } = this.context
@@ -328,24 +332,23 @@ export default class ConfirmTransactionBase extends Component {
           </div>
           {gasHeaderVisible && (
             <div className="confirm-page-container-content__gas-fee">
-              {gasHeaderVisible && (
-                <ConfirmDetailRow
-                  label={t('gasFee')}
-                  type="fee"
-                  value={hexTransactionFee}
-                  /* headerText={advancedInlineGasShown ? '' : t('advanced')} */
-                  /* headerTextClassName="confirm-detail-row__header-text--edit" */
-                  /* onHeaderClick={() => */
-                  /*   !advancedInlineGasShown && this.handleEditGas() */
-                  /* } */
-                  /* secondaryText={ */
-                  /*   hideFiatConversion */
-                  /*     ? t('noConversionRateAvailable') */
-                  /*     : '' */
-                  /* } */
-                  secondaryText=""
-                />
-              )}
+              <ConfirmDetailRow
+                sponsored={!willUserPayTxFee}
+                label={t('gasFee')}
+                type="fee"
+                value={hexTransactionFee}
+                /* headerText={advancedInlineGasShown ? '' : t('advanced')} */
+                /* headerTextClassName="confirm-detail-row__header-text--edit" */
+                /* onHeaderClick={() => */
+                /*   !advancedInlineGasShown && this.handleEditGas() */
+                /* } */
+                /* secondaryText={ */
+                /*   hideFiatConversion */
+                /*     ? t('noConversionRateAvailable') */
+                /*     : '' */
+                /* } */
+                secondaryText=""
+              />
               {gasInputVisible && (
                 <AdvancedGasInputs
                   updateCustomGasPrice={(newGasPrice) =>
@@ -378,6 +381,7 @@ export default class ConfirmTransactionBase extends Component {
               )}
               {storageHeaderVisible && (
                 <ConfirmDetailRow
+                  sponsored={!willUserPayCollateral}
                   label={t('storageFee')}
                   type="collateral"
                   value={hexTransactionCollateral}

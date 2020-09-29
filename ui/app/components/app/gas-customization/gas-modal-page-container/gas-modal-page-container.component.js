@@ -115,7 +115,7 @@ export default class GasModalPageContainer extends Component {
     sponsoredFee,
     sponsoredFeeHex
   ) {
-    const zeroSponsoredFee = sponsoredFeeHex === '0x0'
+    const zeroSponsoredFee = sponsoredFeeHex === '0'
     return (
       <div className="gas-modal-content__info-row-wrapper">
         <div className="gas-modal-content__info-row">
