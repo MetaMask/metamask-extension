@@ -77,10 +77,9 @@ export function useTransactionDisplayData (transactionGroup, tokenAddress) {
   const viewingSwapsReceivingToken = (
     (symbol && symbol === primaryTransaction.destinationTokenSymbol) || (
       tokenAddress === ETH_SWAPS_TOKEN_ADDRESS &&
-      primaryTransaction.sourceTokenSymbol !== ETH_SWAPS_TOKEN_ADDRESS
+      primaryTransaction.sourceTokenSymbol !== 'ETH'
     )
   )
-
   const primaryValue = primaryTransaction.txParams?.value
   let prefix = viewingSwapsReceivingToken ? '+' : '-'
   const date = formatDateWithYearContext(initialTransaction.time || 0)
@@ -230,7 +229,7 @@ export function useTransactionDisplayData (transactionGroup, tokenAddress) {
     recipientAddress,
     secondaryCurrency: (
       (isTokenCategory && !tokenFiatAmount) ||
-      (swapTokenValue && !swapTokenFiatAmount)
+      (transactionCategory === SWAP && !swapTokenFiatAmount)
     ) ? undefined : secondaryCurrency,
     status,
     isPending: status in PENDING_STATUS_HASH,

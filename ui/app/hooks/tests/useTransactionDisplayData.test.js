@@ -105,7 +105,7 @@ describe('useTransactionDisplayData', function () {
     useI18nContext.returns((key, variables) => getMessage('en', messages, key, variables))
     useSelector.callsFake((selector) => {
       if (selector === getTokens) {
-        return []
+        return [{ address: '0xabca64466f257793eaa52fcfff5066894b76a149', symbol: 'ABC', decimals: 18 }]
       } else if (selector === getPreferences) {
         return {
           useNativeCurrencyAsPrimaryCurrency: true,
@@ -123,36 +123,37 @@ describe('useTransactionDisplayData', function () {
   transactions.forEach((transactionGroup, idx) => {
     describe(`when called with group containing primaryTransaction id ${transactionGroup.primaryTransaction.id}`, function () {
       const expected = expectedResults[idx]
+      const tokenAddress = transactionGroup.primaryTransaction?.destinationTokenAddress
       it(`should return a title of ${expected.title}`, function () {
-        const { result } = renderHook(() => useTransactionDisplayData(transactionGroup))
+        const { result } = renderHook(() => useTransactionDisplayData(transactionGroup, tokenAddress))
         assert.equal(result.current.title, expected.title)
       })
       it(`should return a subtitle of ${expected.subtitle}`, function () {
-        const { result } = renderHook(() => useTransactionDisplayData(transactionGroup))
+        const { result } = renderHook(() => useTransactionDisplayData(transactionGroup, tokenAddress))
         assert.equal(result.current.subtitle, expected.subtitle)
       })
       it(`should return a category of ${expected.category}`, function () {
-        const { result } = renderHook(() => useTransactionDisplayData(transactionGroup))
+        const { result } = renderHook(() => useTransactionDisplayData(transactionGroup, tokenAddress))
         assert.equal(result.current.category, expected.category)
       })
       it(`should return a primaryCurrency of ${expected.primaryCurrency}`, function () {
-        const { result } = renderHook(() => useTransactionDisplayData(transactionGroup))
+        const { result } = renderHook(() => useTransactionDisplayData(transactionGroup, tokenAddress))
         assert.equal(result.current.primaryCurrency, expected.primaryCurrency)
       })
       it(`should return a secondaryCurrency of ${expected.secondaryCurrency}`, function () {
-        const { result } = renderHook(() => useTransactionDisplayData(transactionGroup))
+        const { result } = renderHook(() => useTransactionDisplayData(transactionGroup, tokenAddress))
         assert.equal(result.current.secondaryCurrency, expected.secondaryCurrency)
       })
       it(`should return a status of ${expected.status}`, function () {
-        const { result } = renderHook(() => useTransactionDisplayData(transactionGroup))
+        const { result } = renderHook(() => useTransactionDisplayData(transactionGroup, tokenAddress))
         assert.equal(result.current.status, expected.status)
       })
       it(`should return a recipientAddress of ${expected.recipientAddress}`, function () {
-        const { result } = renderHook(() => useTransactionDisplayData(transactionGroup))
+        const { result } = renderHook(() => useTransactionDisplayData(transactionGroup, tokenAddress))
         assert.equal(result.current.recipientAddress, expected.recipientAddress)
       })
       it(`should return a senderAddress of ${expected.senderAddress}`, function () {
-        const { result } = renderHook(() => useTransactionDisplayData(transactionGroup))
+        const { result } = renderHook(() => useTransactionDisplayData(transactionGroup, tokenAddress))
         assert.equal(result.current.senderAddress, expected.senderAddress)
       })
     })
