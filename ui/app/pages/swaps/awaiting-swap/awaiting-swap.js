@@ -1,5 +1,5 @@
 import EventEmitter from 'events'
-import React, { useContext, useRef, useState } from 'react'
+import React, { useContext, useRef, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
@@ -28,6 +28,7 @@ import SwapsFooter from '../swaps-footer'
 import SwapFailureIcon from './swap-failure-icon'
 import SwapSuccessIcon from './swap-success-icon'
 import QuotesTimeoutIcon from './quotes-timeout-icon'
+import ViewOnEtherScanLink from './view-on-ether-scan-link'
 
 export default function AwaitingSwap ({
   swapComplete,
@@ -49,19 +50,53 @@ export default function AwaitingSwap ({
   const animationEventEmitter = useRef(new EventEmitter())
 
   const destinationToken = useSelector(getDestinationTokenInfo)
-
   const [timeRemainingExpired, setTimeRemainingExpired] = useState(false)
+
+  const blockExplorerUrl = txHash && getBlockExplorerUrlForTx(
+    networkId,
+    txHash,
+    rpcPrefs,
+  )
+
+  const timeRemaining = useTransactionTimeRemaining(true, true, tradeTxData?.submittedTime, usedGasPrice, true, true)
+  const previousTimeRemaining = usePrevious(timeRemaining)
+  const timeRemainingIsNumber = typeof timeRemaining === 'number' && !isNaN(timeRemaining)
+  const previousTimeRemainingIsNumber = typeof previousTimeRemaining === 'number' && !isNaN(previousTimeRemaining)
+  const estimatedTransactionWaitTime = timeRemaining * 1000 * 60
+
+  useEffect(() => {
+    if (!timeRemainingIsNumber && previousTimeRemainingIsNumber && !timeRemainingExpired) {
+      setTimeRemainingExpired(true)
+    }
+  }, [timeRemainingIsNumber, previousTimeRemainingIsNumber, timeRemainingExpired])
+
+  let countdownText
+  if (!timeRemainingExpired && tradeTxData?.submittedTime) {
+    countdownText = <CountdownTimer timeStarted={tradeTxData?.submittedTime} timerBase={estimatedTransactionWaitTime} timeOnly />
+  } else if (tradeTxData?.submittedTime) {
+    countdownText = t('swapsAlmostDone')
+  } else {
+    countdownText = t('swapEstimatedTimeCalculating')
+  }
 
   let headerText
   let statusImage
   let descriptionText
   let submitText
+  let content
 
   if (errorKey === SWAP_FAILED_ERROR) {
     headerText = t('swapFailedErrorTitle')
     descriptionText = t('swapFailedErrorDescription')
     submitText = t('tryAgain')
     statusImage = <SwapFailureIcon />
+    content = blockExplorerUrl && (
+      <ViewOnEtherScanLink
+        txHash={txHash}
+        blockExplorerUrl={blockExplorerUrl}
+        isCustomBlockExplorerUrl={Boolean(rpcPrefs.blockExplorerUrl)}
+      />
+    )
   } else if (errorKey === QUOTES_EXPIRED_ERROR) {
     headerText = t('swapQuotesExpiredErrorTitle')
     descriptionText = t('swapQuotesExpiredErrorDescription')
@@ -78,41 +113,52 @@ export default function AwaitingSwap ({
     submitText = t('tryAgain')
     statusImage = <SwapFailureIcon />
   } else if (!errorKey && !swapComplete) {
+
+    /**
+     * only show estimated time if the transaction has a submitted time, the swap has
+     * not yet completed and there isn't an error. If the swap has not completed and
+     * there is no error, but also has no submitted time (has not yet been published),
+     * then we apply the invisible class to the time estimate div. This creates consistent
+     * spacing before and after display of the time estimate.
+     */
     headerText = t('swapProcessing')
     statusImage = <PulseLoader />
     submitText = t('close')
     descriptionText = t('swapOnceTransactionHasProcess', [<span key="swapOnceTransactionHasProcess-1" className="awaiting-swap__amount-and-symbol">{symbol}</span>])
+    content = (
+      <>
+        <div
+          className={classnames('awaiting-swap__time-estimate', {
+            'awaiting-swap__time-estimate--invisible': !tradeTxData?.submittedTime,
+          })}
+        >
+          {t('swapEstimatedTimeFull', [
+            <span className="awaiting-swap__time-estimate-text" key="swapEstimatedTime-1">{t('swapEstimatedTime')}</span>,
+            countdownText,
+          ])}
+        </div>
+        {blockExplorerUrl && (
+          <ViewOnEtherScanLink
+            txHash={txHash}
+            blockExplorerUrl={blockExplorerUrl}
+            isCustomBlockExplorerUrl={Boolean(rpcPrefs.blockExplorerUrl)}
+          />
+        )}
+      </>
+    )
   } else if (!errorKey && swapComplete) {
     headerText = t('swapTransactionComplete')
     statusImage = <SwapSuccessIcon />
     submitText = t('swapViewToken', [symbol])
-    descriptionText = t('swapTokenAvailable', [<span key="swapTokenAvailable-2" className="awaiting-swap__amount-and-symbol">{`${tokensReceived} ${symbol}`}</span>])
+    descriptionText = t('swapTokenAvailable', [<span key="swapTokenAvailable-2" className="awaiting-swap__amount-and-symbol">{`${tokensReceived || ''} ${symbol}`}</span>])
+    content = blockExplorerUrl && (
+      <ViewOnEtherScanLink
+        txHash={txHash}
+        blockExplorerUrl={blockExplorerUrl}
+        isCustomBlockExplorerUrl={Boolean(rpcPrefs.blockExplorerUrl)}
+      />
+    )
   }
-
-  const timeRemaining = useTransactionTimeRemaining(true, true, tradeTxData?.submittedTime, usedGasPrice, true, true)
-  const estimatedTransactionWaitTime = timeRemaining * 1000 * 60
-  const previousEstimatedWaitTime = usePrevious(estimatedTransactionWaitTime)
-  const estimatedWaitIsNumber = typeof estimatedTransactionWaitTime === 'number' && !isNaN(estimatedTransactionWaitTime)
-  const previousEstimatedWaitIsNumber = typeof previousEstimatedWaitTime === 'number' && !isNaN(estimatedTransactionWaitTime)
-  if (!estimatedWaitIsNumber && previousEstimatedWaitIsNumber && !timeRemainingExpired) {
-    setTimeRemainingExpired(true)
-  }
-
-  let countdownText
-  if (estimatedWaitIsNumber && tradeTxData?.submittedTime) {
-    countdownText = <CountdownTimer timeStarted={tradeTxData?.submittedTime} timerBase={estimatedTransactionWaitTime} timeOnly />
-  } else if (timeRemainingExpired) {
-    countdownText = t('swapsAlmostDone')
-  } else {
-    countdownText = t('swapEstimatedTimeCalculating')
-  }
-
-  const blockExplorerUrl = txHash && getBlockExplorerUrlForTx(
-    networkId,
-    txHash,
-    rpcPrefs,
-  )
-  const showBlockExplorterLink = blockExplorerUrl && (!errorKey || errorKey === SWAP_FAILED_ERROR)
 
   return (
     <div className="awaiting-swap">
@@ -133,29 +179,7 @@ export default function AwaitingSwap ({
         <div className="awaiting-swap__main-descrption">
           {descriptionText}
         </div>
-        {/**
-           * only show estimated time if the transaction has been accepted by the network (has a hash),
-           * the swap has not yet completed and there isn't an error.
-           */}
-        {!swapComplete && !errorKey && txHash && (
-          <div className="awaiting-swap__time-estimate">
-            {t('swapEstimatedTimeFull', [
-              <span className="awaiting-swap__time-estimate-text" key="swapEstimatedTime-1">{t('swapEstimatedTime')}</span>,
-              countdownText,
-            ])}
-          </div>
-        )}
-        {showBlockExplorterLink && (
-          <div
-            className={classnames('awaiting-swap__view-on-etherscan', {
-              'awaiting-swap__view-on-etherscan--visible': txHash,
-              'awaiting-swap__view-on-etherscan--invisible': !txHash,
-            })}
-            onClick={() => global.platform.openTab({ url: blockExplorerUrl })}
-          >
-            {rpcPrefs.blockExplorerUrl ? t('viewOnCustomBlockExplorer', [blockExplorerUrl]) : t('viewOnEtherscan')}
-          </div>
-        )}
+        {content}
       </div>
       <SwapsFooter
         onSubmit={async () => {
