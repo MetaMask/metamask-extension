@@ -14,9 +14,12 @@ describe('SendContent Component', function () {
   let wrapper
 
   beforeEach(function () {
-    wrapper = shallow(<SendContent showHexData />, {
-      context: { t: (str) => str + '_t' },
-    })
+    wrapper = shallow(
+      <SendContent showHexData fetchAddressTransactionCount={() => {}} />,
+      {
+        context: { t: (str) => str + '_t' },
+      }
+    )
   })
 
   describe('render', function () {

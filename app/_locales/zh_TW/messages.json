@@ -1397,6 +1397,9 @@
   "yourPrivateSeedPhrase": {
     "message": "您的助憶詞"
   },
+  "zeroAddressTxCount": {
+    "message": "該地址未發生過任何交易，請仔細核對"
+  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "加速的 Gas 價格為 0"
   },

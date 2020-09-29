@@ -42,6 +42,7 @@ export default function reduceMetamask (state = {}, action) {
         willUserPayTxFee: true,
         willUserPayCollateral: true,
         isUserBalanceEnough: false,
+        addressTransactionCount: 1,
       },
       coinOptions: {},
       useBlockie: false,
@@ -65,6 +66,11 @@ export default function reduceMetamask (state = {}, action) {
   )
 
   switch (action.type) {
+    case actions.SET_ADDRESS_TRANSACTION_COUNT:
+      return {
+        ...metamaskState,
+        send: { ...metamaskState.send, addressTransactionCount: action.value },
+      }
     case actions.UPDATE_METAMASK_STATE:
       return { ...metamaskState, ...action.value }
 
@@ -227,7 +233,6 @@ export default function reduceMetamask (state = {}, action) {
           ...action.value,
         },
       }
-
 
     case actions.UPDATE_SEND_TOKEN_BALANCE:
       return {

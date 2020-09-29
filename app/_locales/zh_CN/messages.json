@@ -1439,6 +1439,9 @@
   "yourPrivateSeedPhrase": {
     "message": "您的私有助记词"
   },
+  "zeroAddressTxCount": {
+    "message": "该地址未发生过任何交易，请仔细核对"
+  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "燃气价格加速上涨"
   },

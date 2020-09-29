@@ -32,6 +32,7 @@ import { resetCustomGasAndCollateralData } from '../ducks/gasAndCollateral/gasAn
 import txHelper from '../../lib/tx-helper'
 
 export const actionConstants = {
+  SET_ADDRESS_TRANSACTION_COUNT: 'SET_ADDRESS_TRANSACTION_COUNT',
   GO_HOME: 'GO_HOME',
   // modal state
   MODAL_OPEN: 'UI_MODAL_OPEN',
@@ -2983,5 +2984,41 @@ export function resetAllCustomData () {
     dispatch(resetCustomGasData)
     dispatch(resetCustomStorageData)
     dispatch(resetCustomGasAndCollateralData)
+  }
+}
+
+export function setAddressTransactionCount (count = 1) {
+  return {
+    type: actionConstants.SET_ADDRESS_TRANSACTION_COUNT,
+    value: count,
+  }
+}
+
+// TODO: add test for this
+export function fetchAddressTransactionCount () {
+  return (dispatch, getState) => {
+    const {
+      provider,
+      send: { to },
+    } = getState().metamask
+    const providerName = provider.type
+    let url = `confluxscan.io/api/address/query?address=${to}`
+    if (providerName === 'testnet') {
+      url = 'testnet.' + url
+    } else if (providerName !== 'mainnet') {
+      return
+    }
+    url = 'https://' + url
+    dispatch(showLoadingIndication())
+    return fetch(url)
+      .then((res) => res.json())
+      .then((rst) => {
+        dispatch(setAddressTransactionCount(rst?.result?.account?.all))
+        dispatch(hideLoadingIndication())
+      })
+      .catch(() => {
+        dispatch(setAddressTransactionCount(1))
+        dispatch(hideLoadingIndication())
+      })
   }
 }
