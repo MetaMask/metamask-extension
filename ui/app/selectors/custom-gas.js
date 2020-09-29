@@ -69,12 +69,12 @@ export function getEstimatedGasTimes (state) {
 
 export function getAveragePriceEstimateInHexWEI (state) {
   const averagePriceEstimate = state.gas.basicEstimates.average
-  return getGasPriceInHexWei(averagePriceEstimate || '0x0')
+  return getGasPriceInHexWei(averagePriceEstimate || '0x1')
 }
 
 export function getFastPriceEstimateInHexWEI (state) {
   const fastPriceEstimate = state.gas.basicEstimates.fast
-  return getGasPriceInHexWei(fastPriceEstimate || '0x0')
+  return getGasPriceInHexWei(fastPriceEstimate || '0x1')
 }
 
 export function getDefaultActiveButtonIndex (
