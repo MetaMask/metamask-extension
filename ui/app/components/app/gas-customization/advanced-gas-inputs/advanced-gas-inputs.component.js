@@ -65,6 +65,9 @@ export default class AdvancedGasInputs extends Component {
   }
 
   onChangeStorageLimit = (e) => {
+    if (e.target.value && e.target.value.startsWith('-')) {
+      e.target.value = e.target.value.slice(1)
+    }
     this.setState({ storageLimit: e.target.value })
     this.changeStorageLimit({ target: { value: e.target.value } })
   }
@@ -80,6 +83,9 @@ export default class AdvancedGasInputs extends Component {
   }
 
   onChangeGasLimit = (e) => {
+    if (e.target.value && e.target.value.startsWith('-')) {
+      e.target.value = e.target.value.slice(1)
+    }
     this.setState({ gasLimit: e.target.value })
     this.changeGasLimit({ target: { value: e.target.value } })
   }
@@ -98,6 +104,9 @@ export default class AdvancedGasInputs extends Component {
   }
 
   onChangeGasPrice = (e) => {
+    if (e.target.value && e.target.value.startsWith('-')) {
+      e.target.value = e.target.value.slice(1)
+    }
     this.setState({ gasPrice: e.target.value })
     this.changeGasPrice({ target: { value: e.target.value } })
   }
