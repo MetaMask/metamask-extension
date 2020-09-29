@@ -213,7 +213,6 @@ describe('MetaMask', function () {
         await driver2.clickElement(By.css('.home-notification__accept-button'))
       })
 
-      // TODO: Fix tests from here forward; they're using the wrong driver
       it('goes to the settings screen', async function () {
         await driver2.clickElement(By.css('.account-menu__icon'))
         await driver2.delay(regularDelayMs)
