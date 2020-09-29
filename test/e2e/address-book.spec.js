@@ -118,6 +118,12 @@ describe('MetaMask', function () {
       await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`))
       await driver.delay(regularDelayMs)
     })
+
+    it('closes the swaps intro popup', async function () {
+      await driver.findElement(By.css(`.popover-header__subtitle`))
+      await driver.clickElement(By.css('.popover-header__button'))
+      await driver.delay(regularDelayMs)
+    })
   })
 
   describe('Import seed phrase', function () {
@@ -161,7 +167,7 @@ describe('MetaMask', function () {
 
   describe('Adds an entry to the address book and sends eth to that address', function () {
     it('starts a send transaction', async function () {
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Send')]`))
+      await driver.clickElement(By.css('[data-testid="eth-overview-send"]'))
       await driver.delay(regularDelayMs)
 
       const inputAddress = await driver.findElement(By.css('input[placeholder="Search, public address (0x), or ENS"]'))
@@ -210,7 +216,7 @@ describe('MetaMask', function () {
 
   describe('Sends to an address book entry', function () {
     it('starts a send transaction by clicking address book entry', async function () {
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Send')]`))
+      await driver.clickElement(By.css('[data-testid="eth-overview-send"]'))
       await driver.delay(regularDelayMs)
 
       const recipientRowTitle = await driver.findElement(By.css('.send__select-recipient-wrapper__group-item__title'))

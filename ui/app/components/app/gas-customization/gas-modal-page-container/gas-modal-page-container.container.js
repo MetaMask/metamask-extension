@@ -382,7 +382,7 @@ function sumHexWEIsToRenderableEth (hexWEIs) {
   return formatETHFee(getValueFromWeiHex({
     value: hexWEIsSum,
     toCurrency: 'ETH',
-    numberOfDecimals: 4,
+    numberOfDecimals: 6,
   }))
 }
 
@@ -396,7 +396,7 @@ function sumHexWEIsToRenderableFiat (hexWEIs, convertedCurrency, conversionRate)
     getValueFromWeiHex({
       value: hexWEIsSum,
       toCurrency: 'ETH',
-      numberOfDecimals: 4,
+      numberOfDecimals: 6,
     }),
     convertedCurrency,
     conversionRate,

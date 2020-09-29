@@ -93,6 +93,12 @@ describe('Using MetaMask with an existing account', function () {
       await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`))
       await driver.delay(regularDelayMs)
     })
+
+    it('closes the swaps intro popup', async function () {
+      await driver.findElement(By.css(`.popover-header__subtitle`))
+      await driver.clickElement(By.css('.popover-header__button'))
+      await driver.delay(regularDelayMs)
+    })
   })
 
   describe('Show account information', function () {
@@ -186,7 +192,7 @@ describe('Using MetaMask with an existing account', function () {
 
   describe('Send ETH from inside MetaMask', function () {
     it('starts a send transaction', async function () {
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Send')]`))
+      await driver.clickElement(By.css('[data-testid="eth-overview-send"]'))
       await driver.delay(regularDelayMs)
 
       const inputAddress = await driver.findElement(By.css('input[placeholder="Search, public address (0x), or ENS"]'))

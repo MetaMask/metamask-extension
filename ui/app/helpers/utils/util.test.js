@@ -392,4 +392,21 @@ describe('util', function () {
       })
     })
   })
+
+  describe('addHexPrefixToObjectValues()', function () {
+    it('should return a new object with the same properties with a 0x prefix', function () {
+      assert.deepEqual(
+        util.addHexPrefixToObjectValues({
+          prop1: '0x123',
+          prop2: '456',
+          prop3: 'x',
+        }),
+        {
+          prop1: '0x123',
+          prop2: '0x456',
+          prop3: '0xx',
+        },
+      )
+    })
+  })
 })
