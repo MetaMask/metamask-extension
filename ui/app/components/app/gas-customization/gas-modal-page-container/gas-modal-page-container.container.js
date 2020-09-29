@@ -232,6 +232,7 @@ const mapStateToProps = (state, ownProps) => {
       ),
       sendAmount,
       sponsoredFee: addHexWEIsToRenderableEth('0x0', sponsoredFeeHex),
+      sponsoredFeeHex,
     },
     transaction: txData || transaction,
     isSpeedUp: transaction.status === 'submitted',
