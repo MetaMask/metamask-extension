@@ -2,7 +2,7 @@ const version = 42
 import { cloneDeep } from 'lodash'
 
 /**
- * PreferencesController.autoLogoutTimeLimit -> autoLockTimeLimit
+ * set PreferencesController.advancedInlineGas to false
  */
 export default {
   version,

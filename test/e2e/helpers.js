@@ -2,6 +2,7 @@ const path = require('path')
 const Ganache = require('./ganache')
 const FixtureServer = require('./fixture-server')
 const { buildWebDriver } = require('./webdriver')
+const { until } = require('selenium-webdriver')
 
 const tinyDelayMs = 200
 const regularDelayMs = tinyDelayMs * 2
@@ -34,6 +35,22 @@ async function withFixtures (options, callback) {
   }
 }
 
+async function waitUntilElementNotVisible (driver, element) {
+  try {
+    await driver.wait(until.elementIsNotVisible(element))
+  } catch (err) {
+    return
+  }
+}
+
+async function waitUntilClickableAndClick (element) {
+  try {
+    await element.click()
+  } catch (err) {
+    await waitUntilClickableAndClick(element)
+  }
+}
+
 async function loadFixtures (options) {
   return new Promise((resolve) => {
     withFixtures(options, ({ driver }) => {
@@ -50,4 +67,6 @@ module.exports = {
   largeDelayMs,
   withFixtures,
   loadFixtures,
+  waitUntilElementNotVisible,
+  waitUntilClickableAndClick,
 }

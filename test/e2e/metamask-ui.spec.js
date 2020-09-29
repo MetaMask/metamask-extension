@@ -2,15 +2,20 @@ const assert = require('assert')
 const webdriver = require('selenium-webdriver')
 
 const { By, Key, until } = webdriver
-const { tinyDelayMs, regularDelayMs, largeDelayMs } = require('./helpers')
-const { buildWebDriver } = require('./webdriver')
-const Ganache = require('./ganache')
-const enLocaleMessages = require('../../app/_locales/en/messages.json')
+const {
+  tinyDelayMs,
+  regularDelayMs,
+  largeDelayMs,
+  loadFixtures,
+  waitUntilElementNotVisible,
+  waitUntilClickableAndClick,
+} = require('./helpers')
 
-const ganacheServer = new Ganache({ genBlockInterval: 30 })
+const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
 describe('MetaMask', function () {
   let driver
+  let unloadFixtures
   let tokenAddress
 
   const testSeedPhrase =
@@ -20,17 +25,20 @@ describe('MetaMask', function () {
   this.bail(true)
 
   before(async function () {
-    await ganacheServer.start({
-      accounts: [
-        {
-          secretKey:
-            '0xA7C2DFA78CCA35B33EBC3728BD6229D18A64C95B38E364A9CCE05FF5F832E5D2',
-          balance: 100000000000000000000,
-        },
-      ],
+    const [d, u] = await loadFixtures({
+      fixtures: 'default-state',
+      ganacheOptions: {
+        accounts: [
+          {
+            secretKey:
+              '0xA7C2DFA78CCA35B33EBC3728BD6229D18A64C95B38E364A9CCE05FF5F832E5D2',
+            balance: 100000000000000000000,
+          },
+        ],
+      },
     })
-    const result = await buildWebDriver()
-    driver = result.driver
+    driver = d
+    unloadFixtures = u
   })
 
   afterEach(async function () {
@@ -50,8 +58,7 @@ describe('MetaMask', function () {
   })
 
   after(async function () {
-    await ganacheServer.quit()
-    await driver.quit()
+    await unloadFixtures()
   })
 
   describe('Going through the first time flow', function () {
@@ -278,9 +285,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
 
       const inputAddress = await driver.findElement(
-        By.css(
-          'input[placeholder="Search, public address (0x1 or 0x8)"]'
-        )
+        By.css('input[placeholder="Search, public address (0x1 or 0x8)"]')
       )
       await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
 
@@ -366,9 +371,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
 
       const inputAddress = await driver.findElement(
-        By.css(
-          'input[placeholder="Search, public address (0x1 or 0x8)"]'
-        )
+        By.css('input[placeholder="Search, public address (0x1 or 0x8)"]')
       )
       await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
 
@@ -420,9 +423,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
 
       const inputAddress = await driver.findElement(
-        By.css(
-          'input[placeholder="Search, public address (0x1 or 0x8)"]'
-        )
+        By.css('input[placeholder="Search, public address (0x1 or 0x8)"]')
       )
       await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
 
@@ -493,11 +494,11 @@ describe('MetaMask', function () {
       await driver.clickElement(By.xpath(`//div[contains(text(), 'Advanced')]`))
       await driver.delay(regularDelayMs)
 
-      await driver.clickElement(
-        By.css(
-          '[data-testid="advanced-setting-show-testnet-conversion"] .settings-page__content-item-col > div > div'
-        )
-      )
+      // await driver.clickElement(
+      //   By.css(
+      //     '[data-testid="advanced-setting-show-testnet-conversion"] .settings-page__content-item-col > div > div'
+      //   )
+      // )
 
       // const advancedGasTitle = await driver.findElement(
       //   By.xpath(`//span[contains(text(), 'Advanced gas controls')]`)
@@ -1192,9 +1193,7 @@ describe('MetaMask', function () {
       await driver.delay(1000)
 
       const inputAddress = await driver.findElement(
-        By.css(
-          'input[placeholder="Search, public address (0x1 or 0x8)"]'
-        )
+        By.css('input[placeholder="Search, public address (0x1 or 0x8)"]')
       )
       await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
 
@@ -1217,9 +1216,20 @@ describe('MetaMask', function () {
 
     it('transitions to the confirm screen', async function () {
       // await driver.wait(until.stalenessOf(gasModal))
+      await driver.delay(largeDelayMs)
+      const nextButton = await driver.findElement(
+        By.xpath(`//button[contains(text(), 'Next')]`)
+      )
+
+      await Promise.all([
+        driver.wait(until.elementIsVisible(nextButton)),
+        driver.wait(until.elementIsEnabled(nextButton)),
+      ])
+      await waitUntilElementNotVisible(By.className('loading-overlay'))
 
       // Continue to next screen
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Next')]`))
+      await waitUntilClickableAndClick(nextButton)
+      // await driver.clickElement(By.xpath(`//button[contains(text(), 'Next')]`))
       await driver.delay(regularDelayMs)
     })
 
@@ -1329,7 +1339,7 @@ describe('MetaMask', function () {
       const transactionAmounts = await driver.findElements(
         By.css('.currency-display-component__text')
       )
-      const transactionAmount = transactionAmounts[0]
+      const transactionAmount = transactionAmounts[1]
       assert(await transactionAmount.getText(), '1.5 TST')
 
       // Set the gas limit

@@ -89,6 +89,7 @@
       "currentAccountTab": "history",
       "currentLocale": "en",
       "featureFlags": {
+        "migratedAdvancedInlineGas": true,
         "showIncomingTransactions": false,
         "transactionTime": false,
         "advancedInlineGas": true
@@ -125,6 +126,6 @@
     }
   },
   "meta": {
-    "version": 41
+    "version": 42
   }
 }

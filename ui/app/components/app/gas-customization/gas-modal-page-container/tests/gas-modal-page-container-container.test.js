@@ -185,6 +185,7 @@ describe('gas-modal-page-container container', function () {
           originalTotalFiat: '22.52',
           sendAmount: '0.45036 CFX',
           sponsoredFee: '16.332986 CFX',
+          sponsoredFeeHex: 'e2aa6be443c7d956',
           transactionFee: '16.332986 CFX',
         },
         insufficientBalance: true,
