@@ -70,10 +70,13 @@ export default class SwapsController {
     provider,
     getProviderConfig,
     tokenRatesStore,
+    fetchTradesInfoStub,
   }) {
     this.store = new ObservableStore({
       swapsState: { ...initialState.swapsState },
     })
+
+    this.fetchTradesInfoStub = fetchTradesInfoStub
 
     this.getBufferedGasLimit = getBufferedGasLimit
     this.tokenRatesStore = tokenRatesStore
@@ -125,7 +128,8 @@ export default class SwapsController {
     if (!isPolledRequest) {
       this.setSwapsErrorKey('')
     }
-    let newQuotes = await fetchTradesInfo(fetchParams)
+    const _fetchTradesInfo = this.fetchTradesInfoStub || fetchTradesInfo
+    let newQuotes = await _fetchTradesInfo(fetchParams)
 
     newQuotes = mapValues(newQuotes, (quote) => ({
       ...quote,

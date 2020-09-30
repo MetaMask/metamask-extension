@@ -1,13 +1,12 @@
 import assert from 'assert'
 import sinon from 'sinon'
-import proxyquire from 'proxyquire'
 
 import { ethers } from 'ethers'
 import BigNumber from 'bignumber.js'
 import ObservableStore from 'obs-store'
 import { createTestProviderTools } from '../../../stub/provider'
 import { DEFAULT_ERC20_APPROVE_GAS } from '../../../../ui/app/helpers/constants/swaps'
-// import { fetchTradesInfo } from '../../../../ui/app/pages/swaps/swaps.util'
+import SwapsController from '../../../../app/scripts/controllers/swaps'
 
 const MOCK_FETCH_PARAMS = { slippage: 3, sourceToken: '0x6b175474e89094c44da98b954eedeac495271d0f', sourceDecimals: 18, destinationToken: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', value: '1000000000000000000', fromAddress: '0x7F18BB4Dd92CF2404C54CBa1A9BE4A1153bdb078', exchangeList: 'zeroExV1' }
 
@@ -69,12 +68,6 @@ const EMPTY_INIT_STATE = {
 
 const sandbox = sinon.createSandbox()
 const fetchTradesInfoStub = sandbox.stub()
-const { default: SwapsController } = proxyquire(
-  '../../../../app/scripts/controllers/swaps',
-  {
-    '../../../ui/app/pages/swaps/swaps.util': { fetchTradesInfo: fetchTradesInfoStub },
-  },
-)
 
 describe('SwapsController', function () {
   let provider
@@ -101,6 +94,7 @@ describe('SwapsController', function () {
         provider,
         getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
         tokenRatesStore: MOCK_TOKEN_RATES_STORE,
+        fetchTradesInfoStub,
       })
       assert.deepStrictEqual(swapsController.store.getState(), EMPTY_INIT_STATE)
       assert.deepStrictEqual(swapsController.getBufferedGasLimit, MOCK_GET_BUFFERED_GAS_LIMIT)
@@ -112,7 +106,7 @@ describe('SwapsController', function () {
   describe('API', function () {
     let swapsController
     beforeEach(function () {
-      swapsController = new SwapsController({ getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT, provider, getProviderConfig: MOCK_GET_PROVIDER_CONFIG, tokenRatesStore: MOCK_TOKEN_RATES_STORE })
+      swapsController = new SwapsController({ getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT, provider, getProviderConfig: MOCK_GET_PROVIDER_CONFIG, tokenRatesStore: MOCK_TOKEN_RATES_STORE, fetchTradesInfoStub })
     })
 
     describe('setters', function () {
