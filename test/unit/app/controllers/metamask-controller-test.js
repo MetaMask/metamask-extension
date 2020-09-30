@@ -32,6 +32,9 @@ class ThreeBoxControllerMock {
 const ExtensionizerMock = {
   runtime: {
     id: 'fake-extension-id',
+    onInstalled: {
+      addListener: () => undefined,
+    },
   },
 }
 
@@ -60,7 +63,6 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
 
 const MetaMaskController = proxyquire('../../../../app/scripts/metamask-controller', {
   './controllers/threebox': { default: ThreeBoxControllerMock },
-  'extensionizer': ExtensionizerMock,
   './lib/createLoggerMiddleware': { default: createLoggerMiddlewareMock },
 }).default
 
@@ -101,6 +103,7 @@ describe('MetaMaskController', function () {
       },
       initState: cloneDeep(firstTimeState),
       platform: { showTransactionNotification: () => undefined, getVersion: () => 'foo' },
+      extension: ExtensionizerMock,
       infuraProjectId: 'foo',
     })
 
