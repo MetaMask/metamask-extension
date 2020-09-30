@@ -74,6 +74,7 @@ export default class MetamaskController extends EventEmitter {
     this.opts = opts
     this.platform = opts.platform
     const initState = opts.initState || {}
+    const version = this.platform.getVersion()
     this.recordFirstTimeInfo(initState)
 
     // this keeps track of how many "controllerStream" connections are open
@@ -92,6 +93,12 @@ export default class MetamaskController extends EventEmitter {
 
     // lock to ensure only one vault created at once
     this.createVaultMutex = new Mutex()
+
+    extension.runtime.onInstalled.addListener((details) => {
+      if (details.reason === 'update' && version === '8.1.0') {
+        this.platform.openExtensionInBrowser()
+      }
+    })
 
     // next, we will initialize the controllers
     // controller initialization order matters
@@ -211,7 +218,6 @@ export default class MetamaskController extends EventEmitter {
       preferencesStore: this.preferencesController.store,
     })
 
-    const version = this.platform.getVersion()
     this.threeBoxController = new ThreeBoxController({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
