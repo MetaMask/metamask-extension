@@ -140,6 +140,7 @@ describe('SwapsController', function () {
           quotes,
         )
       })
+
       it('should set selected quote agg id', function () {
         const selectedAggId = 'test'
         swapsController.setSelectedQuoteAggId(selectedAggId)
@@ -148,6 +149,7 @@ describe('SwapsController', function () {
           selectedAggId,
         )
       })
+
       it('should set swaps tokens', function () {
         const tokens = []
         swapsController.setSwapsTokens(tokens)
@@ -156,6 +158,7 @@ describe('SwapsController', function () {
           tokens,
         )
       })
+
       it('should set show awaiting swap screen', function () {
         const awaiting = true
         swapsController.setShowAwaitingSwapScreen(awaiting)
@@ -164,6 +167,7 @@ describe('SwapsController', function () {
           awaiting,
         )
       })
+
       it('should set trade tx id', function () {
         const tradeTxId = 'test'
         swapsController.setTradeTxId(tradeTxId)
@@ -172,6 +176,7 @@ describe('SwapsController', function () {
           tradeTxId,
         )
       })
+
       it('should set max mode', function () {
         const maxMode = true
         swapsController.setMaxMode(maxMode)
@@ -180,6 +185,7 @@ describe('SwapsController', function () {
           maxMode,
         )
       })
+
       it('should set swaps tx gas price', function () {
         const gasPrice = 1
         swapsController.setSwapsTxGasPrice(gasPrice)
@@ -188,6 +194,7 @@ describe('SwapsController', function () {
           gasPrice,
         )
       })
+
       it('should set swaps tx gas limit', function () {
         const gasLimit = '1'
         swapsController.setSwapsTxGasLimit(gasLimit)
@@ -196,6 +203,7 @@ describe('SwapsController', function () {
           gasLimit,
         )
       })
+
       it('should set background swap route state', function () {
         const routeState = 'test'
         swapsController.setBackgroundSwapRouteState(routeState)
@@ -204,6 +212,7 @@ describe('SwapsController', function () {
           routeState,
         )
       })
+
       it('should set swaps error key', function () {
         const errorKey = 'test'
         swapsController.setSwapsErrorKey(errorKey)
@@ -212,6 +221,7 @@ describe('SwapsController', function () {
           errorKey,
         )
       })
+
       it('should set initial gas estimate', async function () {
         const initialAggId = TEST_AGG_ID
         const baseGasEstimate = 10
@@ -241,6 +251,7 @@ describe('SwapsController', function () {
           new BigNumber(maxGas, 10).minus(estimatedRefund, 10).toString(16),
         )
       })
+
       it('should set custom approve tx data', function () {
         const data = 'test'
         swapsController.setCustomApproveTxData(data)
