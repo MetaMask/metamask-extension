@@ -55,10 +55,20 @@ export default function IntroPopup ({ onClose }) {
           <div className="intro-popup__learn-more-header">
             {t('swapIntroLearnMoreHeader')}
           </div>
-          <div className="intro-popup__learn-more-link">
+          <div
+            className="intro-popup__learn-more-link"
+            onClick={() => {
+              global.platform.openTab({ url: 'https://medium.com/metamask/introducing-metamask-swaps-84318c643785' })
+            }}
+          >
             {t('swapIntroLearnMoreLink')}
           </div>
-          <div className="intro-popup__learn-more-link">
+          <div
+            className="intro-popup__learn-more-link"
+            onClick={() => {
+              global.platform.openTab({ url: 'https://diligence.consensys.net/audits/private/lsjipyllnw2/' })
+            }}
+          >
             {t('swapLearnMoreContractsAuditReview')}
           </div>
         </div>
