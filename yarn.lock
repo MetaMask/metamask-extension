@@ -47,6 +47,21 @@
     did-resolver "0.0.6"
     ipfs-did-document "^1.2.3"
 
+"@agoric/babel-standalone@^7.9.5":
+  version "7.9.5"
+  resolved "https://registry.yarnpkg.com/@agoric/babel-standalone/-/babel-standalone-7.9.5.tgz#1ca0c17844924199d31e49d6b67e8b2a629b8599"
+  integrity sha512-1Aa23oPuRi4kywUyZODo8zey9Gq2NpD2xUnNvgJLoT8orMQRlVOtvbG3JeHq5sjJERlF/q6csg4/P8t8/5IABA==
+
+"@agoric/make-hardener@^0.1.0":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@agoric/make-hardener/-/make-hardener-0.1.1.tgz#9b887da47aeec6637d9db4f0a92a4e740b8262bb"
+  integrity sha512-3emNc+yWJoFK5JMLoEFPs6rCzkntWQKxpR4gt3jaZYLKoUG4LrTmID3XNe8y40B6SJ3k/wLPodKa0ToQGlhrwQ==
+
+"@agoric/transform-module@^0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@agoric/transform-module/-/transform-module-0.4.1.tgz#9fb152364faf372e1bda535cb4ef89717724f57c"
+  integrity sha512-4TJJHXeXAWu1FCA7yXCAZmhBNoGTB/BEAe2pv+J2X8W/mJTr9b395OkDCSRMpzvmSshLfBx6wT0D7dqWIWEC1w==
+
 "@babel/code-frame@7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.0.0.tgz#06e2ab19bdb535385559aabb5ba59729482800f8"
@@ -8695,11 +8710,6 @@ deep-extend@^0.6.0, deep-extend@~0.6.0:
   version "0.6.0"
   resolved "https://registry.yarnpkg.com/deep-extend/-/deep-extend-0.6.0.tgz#c4fa7c95404a17a9c3e8ca7e1537312b736330ac"
   integrity sha512-LOHxIOaPYdHlJRtCQfDIVZtfw/ufM8+rVj649RIHzcm/vGwQRXFt6OPqIFWsm2XEMrNIEtWR64sY1LEKD2vAOA==
-
-deep-freeze-strict@1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/deep-freeze-strict/-/deep-freeze-strict-1.1.1.tgz#77d0583ca24a69be4bbd9ac2fae415d55523e5b0"
-  integrity sha1-d9BYPKJKab5LvZrC+uQV1VUj5bA=
 
 deep-is@^0.1.3, deep-is@~0.1.3:
   version "0.1.3"
@@ -24139,6 +24149,15 @@ servify@^0.1.12:
     express "^4.14.0"
     request "^2.79.0"
     xhr "^2.3.3"
+
+ses@^0.10.4:
+  version "0.10.4"
+  resolved "https://registry.yarnpkg.com/ses/-/ses-0.10.4.tgz#c1eb7235cd5e358679e134b14e4a5c305e3d60e3"
+  integrity sha512-vavaZvST9GCzz2zooEAXkHpwxeNOLOx8dwcxvS2pw+I9GL0Mhs4337kXnbTNWX10iqFgPVjBu+PQ2CQDOzq74Q==
+  dependencies:
+    "@agoric/babel-standalone" "^7.9.5"
+    "@agoric/make-hardener" "^0.1.0"
+    "@agoric/transform-module" "^0.4.1"
 
 sesify-tofu@^2.0.4:
   version "2.0.4"
