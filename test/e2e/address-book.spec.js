@@ -1,7 +1,12 @@
 const assert = require('assert')
 const { By, until } = require('selenium-webdriver')
 
-const { tinyDelayMs, regularDelayMs, largeDelayMs } = require('./helpers')
+const {
+  tinyDelayMs,
+  regularDelayMs,
+  largeDelayMs,
+  waitUntilClickableAndClick,
+} = require('./helpers')
 const { buildWebDriver } = require('./webdriver')
 const Ganache = require('./ganache')
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
@@ -241,8 +246,10 @@ describe('MetaMask', function () {
     })
 
     it('confirms the transaction', async function () {
-      await driver.clickElement(
-        By.xpath(`//button[contains(text(), 'Confirm')]`)
+      await waitUntilClickableAndClick(
+        await driver.findElement(
+          By.xpath(`//button[contains(text(), 'Confirm')]`)
+        )
       )
       await driver.delay(largeDelayMs * 2)
     })

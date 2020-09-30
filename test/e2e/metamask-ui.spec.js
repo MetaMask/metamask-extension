@@ -1125,8 +1125,10 @@ describe('MetaMask', function () {
       // await driver.clickElement(By.xpath(`//button[contains(text(), 'Save')]`))
       // await driver.delay(regularDelayMs)
 
-      await driver.clickElement(
-        By.xpath(`//button[contains(text(), 'Confirm')]`)
+      await waitUntilClickableAndClick(
+        await driver.findElement(
+          By.xpath(`//button[contains(text(), 'Confirm')]`)
+        )
       )
 
       await driver.switchToWindow(dapp)

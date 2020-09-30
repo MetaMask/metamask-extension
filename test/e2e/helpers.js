@@ -47,6 +47,7 @@ async function waitUntilClickableAndClick (element) {
   try {
     await element.click()
   } catch (err) {
+    await new Promise((resolve) => setTimeout(resolve, tinyDelayMs))
     await waitUntilClickableAndClick(element)
   }
 }
