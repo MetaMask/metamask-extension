@@ -523,6 +523,8 @@ export default class TransactionController extends EventEmitter {
   async publishTransaction (txId, rawTx) {
     const txMeta = this.txStateManager.getTx(txId)
     txMeta.rawTx = rawTx
+    const preTxBalance = await this.query.getBalance(txMeta.txParams.from)
+    txMeta.preTxBalance = preTxBalance
     this.txStateManager.updateTx(txMeta, 'transactions#publishTransaction')
     let txHash
     try {
@@ -567,6 +569,9 @@ export default class TransactionController extends EventEmitter {
         ...txReceipt,
         gasUsed,
       }
+
+      const postTxBalance = await this.query.getBalance(txMeta.txParams.from)
+      txMeta.postTxBalance = postTxBalance
 
       this.txStateManager.updateTx(txMeta, 'transactions#confirmTransaction - add txReceipt')
     } catch (err) {
