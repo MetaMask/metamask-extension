@@ -2,7 +2,6 @@ import EventEmitter from 'events'
 
 import pump from 'pump'
 import Dnode from 'dnode'
-import extension from 'extensionizer'
 import ObservableStore from 'obs-store'
 import asStream from 'obs-store/lib/asStream'
 import RpcEngine from 'json-rpc-engine'
@@ -73,6 +72,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.sendUpdate = debounce(this.privateSendUpdate.bind(this), 200)
     this.opts = opts
+    this.extension = opts.extension
     this.platform = opts.platform
     const initState = opts.initState || {}
     const version = this.platform.getVersion()
@@ -95,7 +95,7 @@ export default class MetamaskController extends EventEmitter {
     // lock to ensure only one vault created at once
     this.createVaultMutex = new Mutex()
 
-    extension.runtime.onInstalled.addListener((details) => {
+    this.extension.runtime.onInstalled.addListener((details) => {
       if (details.reason === 'update' && version === '8.1.0') {
         this.platform.openExtensionInBrowser()
       }
@@ -1583,7 +1583,7 @@ export default class MetamaskController extends EventEmitter {
       ? 'metamask'
       : (new URL(sender.url)).origin
     let extensionId
-    if (sender.id !== extension.runtime.id) {
+    if (sender.id !== this.extension.runtime.id) {
       extensionId = sender.id
     }
     let tabId

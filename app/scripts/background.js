@@ -240,6 +240,7 @@ function setupController (initState, initLangCode) {
     initLangCode,
     // platform specific api
     platform,
+    extension,
     getRequestAccountTabIds: () => {
       return requestAccountTabIds
     },
