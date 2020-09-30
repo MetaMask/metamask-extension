@@ -13,7 +13,9 @@ import {
   QUOTES_EXPIRED_ERROR,
   QUOTES_NOT_AVAILABLE_ERROR,
 } from '../../../ui/app/helpers/constants/swaps'
-import { fetchTradesInfo } from '../../../ui/app/pages/swaps/swaps.util'
+import {
+  fetchTradesInfo as defaultFetchTradesInfo,
+} from '../../../ui/app/pages/swaps/swaps.util'
 
 const METASWAP_ADDRESS = '0x9537C111Ea62a8dc39E99718140686f7aD856321'
 
@@ -70,13 +72,13 @@ export default class SwapsController {
     provider,
     getProviderConfig,
     tokenRatesStore,
-    fetchTradesInfoStub,
+    fetchTradesInfo = defaultFetchTradesInfo,
   }) {
     this.store = new ObservableStore({
       swapsState: { ...initialState.swapsState },
     })
 
-    this.fetchTradesInfoStub = fetchTradesInfoStub
+    this._fetchTradesInfo = fetchTradesInfo
 
     this.getBufferedGasLimit = getBufferedGasLimit
     this.tokenRatesStore = tokenRatesStore
@@ -128,8 +130,7 @@ export default class SwapsController {
     if (!isPolledRequest) {
       this.setSwapsErrorKey('')
     }
-    const _fetchTradesInfo = this.fetchTradesInfoStub || fetchTradesInfo
-    let newQuotes = await _fetchTradesInfo(fetchParams)
+    let newQuotes = await this._fetchTradesInfo(fetchParams)
 
     newQuotes = mapValues(newQuotes, (quote) => ({
       ...quote,
