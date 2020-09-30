@@ -11,9 +11,10 @@ import { formatCurrency } from '../helpers/utils/confirm-tx.util'
  * @param {object} [overrides] - A configuration object that allows the called to explicitly
  *                              ensure fiat is shown even if the property is not set in state.
  * @param {boolean} [overrides.showFiat] - If truthy, ensures the fiat value is shown even if the showFiat value from state is falsey
+ * @param {boolean} hideCurrencySymbol Indicates whether the returned formatted amount should include the trailing currency symbol
  * @return {string} - The formatted token amount in the user's chosen fiat currency
  */
-export function useEthFiatAmount (ethAmount, overrides = {}) {
+export function useEthFiatAmount (ethAmount, overrides = {}, hideCurrencySymbol) {
   const conversionRate = useSelector(getConversionRate)
   const currentCurrency = useSelector(getCurrentCurrency)
   const userPrefersShownFiat = useSelector(getShouldShowFiat)
@@ -27,5 +28,7 @@ export function useEthFiatAmount (ethAmount, overrides = {}) {
     return undefined
   }
 
-  return `${formatCurrency(formattedFiat, currentCurrency)} ${currentCurrency.toUpperCase()}`
+  return hideCurrencySymbol
+    ? formatCurrency(formattedFiat, currentCurrency)
+    : `${formatCurrency(formattedFiat, currentCurrency)} ${currentCurrency.toUpperCase()}`
 }
