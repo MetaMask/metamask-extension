@@ -105,7 +105,6 @@ export default function SortList ({
             <div className="select-quote-popover__quote-source-toggle"><ToggleArrows /></div>
           </>
         </div>
-        <div className="select-quote-popover__column-header select-quote-popover__caret-right" />
       </div>
       <div className="select-quote-popover__rows">
         {
