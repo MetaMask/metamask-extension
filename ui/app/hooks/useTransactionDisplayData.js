@@ -5,7 +5,6 @@ import { camelCaseToCapitalize } from '../helpers/utils/common.util'
 import { PRIMARY, SECONDARY } from '../helpers/constants/common'
 import { getTokenAddressParam } from '../helpers/utils/token-util'
 import { formatDateWithYearContext, shortenAddress, stripHttpSchemes } from '../helpers/utils/util'
-import { getSwapsTokensReceivedFromTxMeta } from '../pages/swaps/swaps.util'
 import {
   CONTRACT_INTERACTION_KEY,
   DEPLOY_CONTRACT_ACTION_KEY,
@@ -25,7 +24,6 @@ import {
   SWAP,
   SWAP_APPROVAL,
 } from '../helpers/constants/transactions'
-import { ETH_SWAPS_TOKEN_ADDRESS } from '../helpers/constants/swaps'
 import { getTokens } from '../ducks/metamask/metamask'
 import { useI18nContext } from './useI18nContext'
 import { useTokenFiatAmount } from './useTokenFiatAmount'
@@ -33,6 +31,8 @@ import { useUserPreferencedCurrency } from './useUserPreferencedCurrency'
 import { useCurrencyDisplay } from './useCurrencyDisplay'
 import { useTokenDisplayValue } from './useTokenDisplayValue'
 import { useTokenData } from './useTokenData'
+import { useSwappedTokenValue } from './useSwappedTokenValue'
+import { useCurrentAsset } from './useCurrentAsset'
 
 /**
  * @typedef {Object} TransactionDisplayData
@@ -57,7 +57,11 @@ import { useTokenData } from './useTokenData'
  * @param {Object} transactionGroup group of transactions
  * @return {TransactionDisplayData}
  */
-export function useTransactionDisplayData (transactionGroup, tokenAddress) {
+export function useTransactionDisplayData (transactionGroup) {
+  // To determine which primary currency to display for swaps transactions we need to be aware
+  // of which asset, if any, we are viewing at present
+  const currentAsset = useCurrentAsset()
+  console.log(currentAsset)
   const knownTokens = useSelector(getTokens)
   const t = useI18nContext()
   const { initialTransaction, primaryTransaction } = transactionGroup
@@ -71,17 +75,8 @@ export function useTransactionDisplayData (transactionGroup, tokenAddress) {
 
   const status = getStatusKey(primaryTransaction)
 
-  const { symbol, decimals } = knownTokens.find(
-    ({ address }) => address === tokenAddress,
-  ) || {}
-  const viewingSwapsReceivingToken = (
-    (symbol && symbol === primaryTransaction.destinationTokenSymbol) || (
-      tokenAddress === ETH_SWAPS_TOKEN_ADDRESS &&
-      primaryTransaction.sourceTokenSymbol !== 'ETH'
-    )
-  )
   const primaryValue = primaryTransaction.txParams?.value
-  let prefix = viewingSwapsReceivingToken ? '+' : '-'
+  let prefix = '-'
   const date = formatDateWithYearContext(initialTransaction.time || 0)
   let subtitle
   let subtitleContainsOrigin = false
@@ -104,26 +99,21 @@ export function useTransactionDisplayData (transactionGroup, tokenAddress) {
 
   const origin = stripHttpSchemes(initialTransaction.origin || initialTransaction.msgParams?.origin || '')
 
-  let swapTokenSuffix
+  // used to append to the primary display value. initialized to either token.symbol or undefined
+  // but can later be modified if dealing with a swap
+  let primarySuffix = isTokenCategory ? token?.symbol : undefined
+  // used to display the primary value of tx. initialized to either tokenDisplayValue or undefined
+  // but can later be modified if dealing with a swap
+  let primaryDisplayValue = isTokenCategory ? tokenDisplayValue : undefined
+  // used to display fiat amount of tx. initialized to either tokenFiatAmount or undefined
+  // but can later be modified if dealing with a swap
+  let secondaryDisplayValue = isTokenCategory ? tokenFiatAmount : undefined
+  // The transaction group category that will be used for rendering the icon in the activity list
   let category
+  // The primary title of the Tx that will be displayed in the activity list
   let title
-  const swapTokenValue = transactionCategory === SWAP && viewingSwapsReceivingToken
-    ? getSwapsTokensReceivedFromTxMeta(
-      primaryTransaction.destinationTokenSymbol,
-      initialTransaction,
-      tokenAddress,
-      senderAddress,
-      decimals,
-    )
-    : transactionCategory === SWAP && primaryTransaction.swapTokenValue
-  const _swapTokenFiatAmount = useTokenFiatAmount(
-    tokenAddress,
-    swapTokenValue || '',
-    symbol,
-  )
-  const swapTokenFiatAmount = (
-    swapTokenValue && viewingSwapsReceivingToken && _swapTokenFiatAmount
-  )
+
+  const { swapTokenValue, swapTokenFiatAmount, isViewingReceivedTokenFromSwap } = useSwappedTokenValue(transactionGroup, currentAsset)
 
   // There are seven types of transaction entries that are currently differentiated in the design
   // 1. Signature request
@@ -148,23 +138,24 @@ export function useTransactionDisplayData (transactionGroup, tokenAddress) {
     ])
     subtitle = origin
     subtitleContainsOrigin = true
-    swapTokenSuffix = viewingSwapsReceivingToken
-      ? symbol
+    primarySuffix = isViewingReceivedTokenFromSwap
+      ? currentAsset.symbol
       : primaryTransaction.sourceTokenSymbol
+    primaryDisplayValue = swapTokenValue
+    secondaryDisplayValue = swapTokenFiatAmount
+    prefix = isViewingReceivedTokenFromSwap ? '+' : '-'
 
   } else if (transactionCategory === SWAP_APPROVAL) {
     category = TRANSACTION_CATEGORY_APPROVAL
     title = t('swapApproval', [primaryTransaction.sourceTokenSymbol])
     subtitle = origin
     subtitleContainsOrigin = true
-    swapTokenSuffix = primaryTransaction.sourceTokenSymbol
-
+    primarySuffix = primaryTransaction.sourceTokenSymbol
   } else if (transactionCategory === TOKEN_METHOD_APPROVE) {
     category = TRANSACTION_CATEGORY_APPROVAL
     title = t('approveSpendLimit', [token?.symbol || t('token')])
     subtitle = origin
     subtitleContainsOrigin = true
-
   } else if (transactionCategory === DEPLOY_CONTRACT_ACTION_KEY || transactionCategory === CONTRACT_INTERACTION_KEY) {
     category = TRANSACTION_CATEGORY_INTERACTION
     title = (methodData?.name && camelCaseToCapitalize(methodData.name)) || t(transactionCategory)
@@ -192,14 +183,6 @@ export function useTransactionDisplayData (transactionGroup, tokenAddress) {
   const primaryCurrencyPreferences = useUserPreferencedCurrency(PRIMARY)
   const secondaryCurrencyPreferences = useUserPreferencedCurrency(SECONDARY)
 
-  const primaryDisplayValue = isTokenCategory
-    ? tokenDisplayValue
-    : (swapTokenValue || undefined)
-
-  const primarySuffix = isTokenCategory
-    ? token?.symbol
-    : swapTokenSuffix
-
   const [primaryCurrency] = useCurrencyDisplay(primaryValue, {
     prefix,
     displayValue: primaryDisplayValue,
@@ -207,14 +190,10 @@ export function useTransactionDisplayData (transactionGroup, tokenAddress) {
     ...primaryCurrencyPreferences,
   })
 
-  const secondaryDisplayValue = isTokenCategory
-    ? tokenFiatAmount
-    : (swapTokenFiatAmount || undefined)
-
   const [secondaryCurrency] = useCurrencyDisplay(primaryValue, {
     prefix,
     displayValue: secondaryDisplayValue,
-    hideLabel: Boolean(isTokenCategory || swapTokenValue),
+    hideLabel: isTokenCategory || Boolean(swapTokenValue),
     ...secondaryCurrencyPreferences,
   })
 

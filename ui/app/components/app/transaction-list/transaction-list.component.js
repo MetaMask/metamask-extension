@@ -52,7 +52,7 @@ const getFilteredTransactionGroups = (transactionGroups, hideTokenTransactions, 
   return transactionGroups
 }
 
-export default function TransactionList ({ hideTokenTransactions, tokenAddress, ethTokenAddress }) {
+export default function TransactionList ({ hideTokenTransactions, tokenAddress }) {
   const [limit, setLimit] = useState(PAGE_INCREMENT)
   const t = useI18nContext()
 
@@ -106,8 +106,6 @@ export default function TransactionList ({ hideTokenTransactions, tokenAddress, 
               {
                 pendingTransactions.map((transactionGroup, index) => (
                   <TransactionListItem
-                    tokenAddress={tokenAddress}
-                    ethTokenAddress={ethTokenAddress}
                     isEarliestNonce={index === 0}
                     transactionGroup={transactionGroup}
                     key={`${transactionGroup.nonce}:${index}`}
@@ -131,8 +129,6 @@ export default function TransactionList ({ hideTokenTransactions, tokenAddress, 
             completedTransactions.length > 0
               ? completedTransactions.slice(0, limit).map((transactionGroup, index) => (
                 <TransactionListItem
-                  tokenAddress={tokenAddress}
-                  ethTokenAddress={ethTokenAddress}
                   transactionGroup={transactionGroup}
                   key={`${transactionGroup.nonce}:${limit + index - 10}`}
                 />
@@ -157,7 +153,6 @@ export default function TransactionList ({ hideTokenTransactions, tokenAddress, 
 TransactionList.propTypes = {
   hideTokenTransactions: PropTypes.bool,
   tokenAddress: PropTypes.string,
-  ethTokenAddress: PropTypes.string,
 }
 
 TransactionList.defaultProps = {

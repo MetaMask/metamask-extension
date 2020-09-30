@@ -26,7 +26,7 @@ import TransactionIcon from '../transaction-icon'
 import { useTransactionTimeRemaining } from '../../../hooks/useTransactionTimeRemaining'
 import IconWithLabel from '../../ui/icon-with-label'
 
-export default function TransactionListItem ({ transactionGroup, isEarliestNonce = false, tokenAddress, ethTokenAddress }) {
+export default function TransactionListItem ({ transactionGroup, isEarliestNonce = false }) {
   const t = useI18nContext()
   const history = useHistory()
   const { hasCancelled } = transactionGroup
@@ -49,7 +49,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
     status,
     isPending,
     senderAddress,
-  } = useTransactionDisplayData(transactionGroup, tokenAddress || ethTokenAddress)
+  } = useTransactionDisplayData(transactionGroup)
 
   const timeRemaining = useTransactionTimeRemaining(isPending, isEarliestNonce, submittedTime, gasPrice)
 
@@ -174,6 +174,4 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
 TransactionListItem.propTypes = {
   transactionGroup: PropTypes.object.isRequired,
   isEarliestNonce: PropTypes.bool,
-  tokenAddress: PropTypes.string,
-  ethTokenAddress: PropTypes.string,
 }
