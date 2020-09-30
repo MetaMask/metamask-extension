@@ -94,7 +94,7 @@ describe('SwapsController', function () {
         provider,
         getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
         tokenRatesStore: MOCK_TOKEN_RATES_STORE,
-        fetchTradesInfoStub,
+        fetchTradesInfo: fetchTradesInfoStub,
       })
       assert.deepStrictEqual(swapsController.store.getState(), EMPTY_INIT_STATE)
       assert.deepStrictEqual(swapsController.getBufferedGasLimit, MOCK_GET_BUFFERED_GAS_LIMIT)
@@ -106,7 +106,13 @@ describe('SwapsController', function () {
   describe('API', function () {
     let swapsController
     beforeEach(function () {
-      swapsController = new SwapsController({ getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT, provider, getProviderConfig: MOCK_GET_PROVIDER_CONFIG, tokenRatesStore: MOCK_TOKEN_RATES_STORE, fetchTradesInfoStub })
+      swapsController = new SwapsController({
+        getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
+        provider,
+        getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
+        tokenRatesStore: MOCK_TOKEN_RATES_STORE,
+        fetchTradesInfo: fetchTradesInfoStub,
+      })
     })
 
     describe('setters', function () {
