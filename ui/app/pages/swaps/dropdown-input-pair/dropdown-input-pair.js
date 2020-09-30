@@ -48,7 +48,7 @@ export default function DropdownInputPair ({
     // Regex that validates strings with only numbers and '.'
     const regexp = /^\.\d+$|\d[0-9.]*$/u
     // If the value is not empty, contains only numbers and '.' and only has one '.', update input to match
-    if (valueToUse !== '' || (regexp.test(valueToUse) && ((valueToUse.match(/\./ug)?.length ?? 0) <= 1))) {
+    if (valueToUse !== '' && (regexp.test(valueToUse) && ((valueToUse.match(/\./ug)?.length ?? 0) <= 1))) {
       onInputChange(valueToUse)
     } else {
       // otherwise, use the previously set inputValue (effectively denying the user from inputting the last char)
