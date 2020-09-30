@@ -318,7 +318,7 @@ describe('SwapsController', function () {
       it('gets the gas limit if approval is required', async function () {
         fetchTradesInfoStub.resolves(MOCK_QUOTES)
 
-        // Make it so approval is not required
+        // Ensure approval is required
         sandbox
           .stub(swapsController, '_getERC20Allowance')
           .resolves(ethers.BigNumber.from(0))
@@ -380,11 +380,11 @@ describe('SwapsController', function () {
           MOCK_FETCH_PARAMS,
         )
 
-        assert.strictEqual(bestAggId, topAggId)
-        assert.strictEqual(true, newQuotes[topAggId].isBestQuote)
+        assert.strictEqual(topAggId, bestAggId)
+        assert.strictEqual(newQuotes[topAggId].isBestQuote, true)
       })
 
-      it('does not set isBestQuote if no convertion rate exists for destination token', async function () {
+      it('does not set isBestQuote if no conversion rate exists for destination token', async function () {
         fetchTradesInfoStub.resolves(MOCK_QUOTES)
 
         // Make it so approval is not required
@@ -399,7 +399,7 @@ describe('SwapsController', function () {
           MOCK_FETCH_PARAMS,
         )
 
-        assert.strictEqual(undefined, newQuotes[topAggId].isBestQuote)
+        assert.strictEqual(newQuotes[topAggId].isBestQuote, undefined)
       })
     })
 
