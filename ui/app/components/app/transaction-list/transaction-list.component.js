@@ -12,7 +12,7 @@ import * as actions from '../../../ducks/gas/gas.duck'
 import { useI18nContext } from '../../../hooks/useI18nContext'
 import TransactionListItem from '../transaction-list-item'
 import Button from '../../ui/button'
-import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions'
+import { TOKEN_CATEGORY_HASH, TRANSACTION_CATEGORY_SWAP } from '../../../helpers/constants/transactions'
 import { SWAPS_CONTRACT_ADDRESS } from '../../../helpers/constants/swaps'
 
 const PAGE_INCREMENT = 10
@@ -30,7 +30,18 @@ const tokenTransactionFilter = ({
   initialTransaction: {
     transactionCategory,
   },
-}) => !TOKEN_CATEGORY_HASH[transactionCategory]
+  primaryTransaction: {
+    destinationTokenSymbol,
+    sourceTokenSymbol,
+  },
+}) => {
+  if (TOKEN_CATEGORY_HASH[transactionCategory]) {
+    return false
+  } else if (transactionCategory === TRANSACTION_CATEGORY_SWAP) {
+    return destinationTokenSymbol === 'ETH' || sourceTokenSymbol === 'ETH'
+  }
+  return true
+}
 
 const getFilteredTransactionGroups = (transactionGroups, hideTokenTransactions, tokenAddress) => {
   if (hideTokenTransactions) {
