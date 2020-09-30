@@ -15,6 +15,7 @@ import {
   SEND_ETHER_ACTION_KEY,
   DEPLOY_CONTRACT_ACTION_KEY,
   CONTRACT_INTERACTION_KEY,
+  SWAP,
 } from '../../../../ui/app/helpers/constants/transactions'
 import cleanErrorStack from '../../lib/cleanErrorStack'
 import { hexToBn, bnToHex, BnMultiplyByFraction } from '../../lib/util'
@@ -523,8 +524,10 @@ export default class TransactionController extends EventEmitter {
   async publishTransaction (txId, rawTx) {
     const txMeta = this.txStateManager.getTx(txId)
     txMeta.rawTx = rawTx
-    const preTxBalance = await this.query.getBalance(txMeta.txParams.from)
-    txMeta.preTxBalance = preTxBalance.toString(16)
+    if (txMeta.transactionCategory === SWAP) {
+      const preTxBalance = await this.query.getBalance(txMeta.txParams.from)
+      txMeta.preTxBalance = preTxBalance.toString(16)
+    }
     this.txStateManager.updateTx(txMeta, 'transactions#publishTransaction')
     let txHash
     try {
@@ -570,8 +573,10 @@ export default class TransactionController extends EventEmitter {
         gasUsed,
       }
 
-      const postTxBalance = await this.query.getBalance(txMeta.txParams.from)
-      txMeta.postTxBalance = postTxBalance.toString(16)
+      if (txMeta.transactionCategory === SWAP) {
+        const postTxBalance = await this.query.getBalance(txMeta.txParams.from)
+        txMeta.postTxBalance = postTxBalance.toString(16)
+      }
 
       this.txStateManager.updateTx(txMeta, 'transactions#confirmTransaction - add txReceipt')
     } catch (err) {
