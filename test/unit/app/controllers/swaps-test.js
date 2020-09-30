@@ -67,7 +67,8 @@ const EMPTY_INIT_STATE = {
   },
 }
 
-const fetchTradesInfoStub = sinon.stub()
+const sandbox = sinon.createSandbox()
+const fetchTradesInfoStub = sandbox.stub()
 const { default: SwapsController } = proxyquire(
   '../../../../app/scripts/controllers/swaps',
   {
@@ -89,7 +90,7 @@ describe('SwapsController', function () {
   })
 
   afterEach(function () {
-    sinon.restore()
+    sandbox.restore()
   })
 
   describe('constructor', function () {
@@ -202,7 +203,7 @@ describe('SwapsController', function () {
         fetchTradesInfoStub.resolves(MOCK_QUOTES)
 
         // Make it so approval is not required
-        sinon.stub(swapsController, '_getERC20Allowance').resolves(ethers.BigNumber.from(1))
+        sandbox.stub(swapsController, '_getERC20Allowance').resolves(ethers.BigNumber.from(1))
 
         const [newQuotes] = await swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS)
 
@@ -223,7 +224,7 @@ describe('SwapsController', function () {
         fetchTradesInfoStub.resolves(MOCK_QUOTES)
 
         // Make it so approval is not required
-        const allowanceStub = sinon.stub(swapsController, '_getERC20Allowance').resolves(ethers.BigNumber.from(1))
+        const allowanceStub = sandbox.stub(swapsController, '_getERC20Allowance').resolves(ethers.BigNumber.from(1))
 
         await swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS)
 
@@ -234,10 +235,10 @@ describe('SwapsController', function () {
         fetchTradesInfoStub.resolves(MOCK_QUOTES)
 
         // Make it so approval is not required
-        sinon.stub(swapsController, '_getERC20Allowance').resolves(ethers.BigNumber.from(0))
+        sandbox.stub(swapsController, '_getERC20Allowance').resolves(ethers.BigNumber.from(0))
 
         const timedoutGasReturnResult = { gasLimit: 1000000 }
-        const timedoutGasReturnStub = sinon.stub(swapsController, 'timedoutGasReturn').resolves(timedoutGasReturnResult)
+        const timedoutGasReturnStub = sandbox.stub(swapsController, 'timedoutGasReturn').resolves(timedoutGasReturnResult)
 
         await swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS)
 
@@ -249,7 +250,7 @@ describe('SwapsController', function () {
         fetchTradesInfoStub.resolves(MOCK_QUOTES)
 
         // Make it so approval is not required
-        sinon.stub(swapsController, '_getERC20Allowance').resolves(ethers.BigNumber.from(1))
+        sandbox.stub(swapsController, '_getERC20Allowance').resolves(ethers.BigNumber.from(1))
 
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS)
 
@@ -270,7 +271,7 @@ describe('SwapsController', function () {
         fetchTradesInfoStub.resolves(quotes)
 
         // Make it so approval is not required
-        sinon.stub(swapsController, '_getERC20Allowance').resolves(ethers.BigNumber.from(1))
+        sandbox.stub(swapsController, '_getERC20Allowance').resolves(ethers.BigNumber.from(1))
 
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS)
 
@@ -282,7 +283,7 @@ describe('SwapsController', function () {
         fetchTradesInfoStub.resolves(MOCK_QUOTES)
 
         // Make it so approval is not required
-        sinon.stub(swapsController, '_getERC20Allowance').resolves(ethers.BigNumber.from(1))
+        sandbox.stub(swapsController, '_getERC20Allowance').resolves(ethers.BigNumber.from(1))
 
         swapsController.tokenRatesStore.updateState({ contractExchangeRates: { } })
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS)
