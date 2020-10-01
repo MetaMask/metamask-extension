@@ -195,6 +195,7 @@ export default class SwapsController {
         } = await this._findTopQuoteAggId(newQuotes)
         topAggId = topAggIdAfterGasEstimates
         if (isBestAfterGasEstimates) {
+          newQuotes = mapValues(newQuotes, (quote) => ({ ...quote, isBestQuote: false }))
           newQuotes[topAggId].isBestQuote = true
         }
       }
