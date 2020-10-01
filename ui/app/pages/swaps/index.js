@@ -57,6 +57,7 @@ export default function Swap () {
   const { pathname } = useLocation()
   const isAwaitingSwapRoute = pathname === AWAITING_SWAP_ROUTE
   const isSwapsErrorRoute = pathname === SWAPS_ERROR_ROUTE
+  const isLoadingQuotesRoute = pathname === LOADING_QUOTES_ROUTE
 
   const fetchParams = useSelector(getFetchParams)
   const { sourceTokenInfo = {}, destinationTokenInfo = {} } = fetchParams?.metaData || {}
@@ -166,6 +167,23 @@ export default function Swap () {
       history.push(SWAPS_ERROR_ROUTE)
     }
   }, [history, swapsErrorKey, isSwapsErrorRoute])
+
+  const beforeUnloadEventAddedRef = useRef()
+  useEffect(() => {
+    const fn = () => {
+      if (isLoadingQuotesRoute) {
+        dispatch(resetCustomData())
+        dispatch(clearSwapsState())
+        dispatch(resetBackgroundSwapsState())
+      }
+      return null
+    }
+    if (isLoadingQuotesRoute && !beforeUnloadEventAddedRef.current) {
+      beforeUnloadEventAddedRef.current = true
+      window.addEventListener('beforeunload', fn)
+    }
+    return () => window.removeEventListener('beforeunload', fn)
+  }, [isLoadingQuotesRoute])
 
   return (
     <div className="swaps">
