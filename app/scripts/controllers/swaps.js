@@ -440,6 +440,7 @@ export default class SwapsController {
       const {
         destinationAmount = 0,
         destinationToken,
+        destinationTokenInfo,
         trade,
         approvalNeeded,
         averageGas,
@@ -458,7 +459,7 @@ export default class SwapsController {
       )
       const totalEthCost = new BigNumber(gasTotalInWeiHex, 16).plus(
         trade.value,
-        10,
+        16,
       )
       const ethFee = conversionUtil(totalEthCost, {
         fromCurrency: 'ETH',
@@ -470,17 +471,17 @@ export default class SwapsController {
 
       const tokenConversionRate = tokenConversionRates[destinationToken]
       const ethValueOfTrade =
-        destinationToken.symbol === 'ETH'
+        destinationTokenInfo.symbol === 'ETH'
           ? calcTokenAmount(destinationAmount, 18).minus(ethFee, 10)
           : new BigNumber(tokenConversionRate || 1, 10)
             .times(
               calcTokenAmount(
                 destinationAmount,
-                destinationToken.decimals,
+                destinationTokenInfo.decimals,
               ),
               10,
             )
-            .minus(tokenConversionRate ? ethFee : 0, 10)
+            .minus(tokenConversionRate ? ethFee.toString(10) : 0, 10)
 
       if (
         ethValueOfTradeForBestQuote === null ||
