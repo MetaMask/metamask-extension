@@ -85,7 +85,7 @@ export default function AwaitingSwap ({
       gas_fees: feeinFiat,
     },
   })
-  const anonymousQuotesExpiredEvent = useNewMetricEvent({ event: 'Quotes Timed Out' })
+  const anonymousQuotesExpiredEvent = useNewMetricEvent({ event: 'Quotes Timed Out', category: 'swaps' })
 
   const blockExplorerUrl = txHash && getBlockExplorerUrlForTx(
     networkId,
