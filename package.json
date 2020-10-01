@@ -58,6 +58,8 @@
     "**/socketcluster/minimist": "^1.2.5",
     "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.19",
     "3box/ipfs/ipld-zcash/zcash-bitcore-lib/elliptic": "^6.5.3",
+    "3box/**/libp2p-crypto/node-forge": "^0.10.0",
+    "3box/**/libp2p-keychain/node-forge": "^0.10.0",
     "browserify-derequire/derequire": "^2.1.1",
     "ganache-core/lodash": "^4.17.19",
     "ganache-core/websocket": "^1.0.32"
