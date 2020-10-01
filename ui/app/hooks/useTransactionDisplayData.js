@@ -61,7 +61,6 @@ export function useTransactionDisplayData (transactionGroup) {
   // To determine which primary currency to display for swaps transactions we need to be aware
   // of which asset, if any, we are viewing at present
   const currentAsset = useCurrentAsset()
-  console.log(currentAsset)
   const knownTokens = useSelector(getTokens)
   const t = useI18nContext()
   const { initialTransaction, primaryTransaction } = transactionGroup

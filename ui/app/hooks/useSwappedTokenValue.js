@@ -4,6 +4,14 @@ import { getSwapsTokensReceivedFromTxMeta } from '../pages/swaps/swaps.util'
 import { useTokenFiatAmount } from './useTokenFiatAmount'
 
 /**
+ * @typedef {Object} SwappedTokenValue
+ * @property {string} swapTokenValue - a primary currency string formatted for display
+ * @property {string} swapTokenFiatAmount - a secondary currency string formatted for display
+ * @property {boolean} isViewingReceivedTokenFromSwap - true if user is on the asset page for the
+ *                                                      destination/received asset in a swap.
+ */
+
+/**
  * A SWAP transaction group's primaryTransaction contains details of the swap,
  * including the source (from) and destination (to) token type (ETH, DAI, etc..)
  * When viewing a non ETH asset page, we need to determine if that asset is the
@@ -12,6 +20,7 @@ import { useTokenFiatAmount } from './useTokenFiatAmount'
  * for that token (- 1000 DAI, for example, when swapping DAI for ETH).
  * @param {import('../selectors').transactionGroup} transactionGroup - Group of transactions by nonce
  * @param {import('./useTokenDisplayValue').Token} currentAsset - The current asset the user is looking at
+ * @returns {SwappedTokenValue}
  */
 export function useSwappedTokenValue (transactionGroup, currentAsset) {
   const { symbol, decimals, address } = currentAsset
