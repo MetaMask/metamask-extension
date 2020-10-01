@@ -177,9 +177,9 @@ export default function Swap () {
           {!isAwaitingSwapRoute && (
             <div
               className="swaps__header-cancel"
-              onClick={() => {
+              onClick={async () => {
                 dispatch(clearSwapsState())
-                dispatch(resetBackgroundSwapsState())
+                await dispatch(resetBackgroundSwapsState())
                 history.push(DEFAULT_ROUTE)
               }}
             >
