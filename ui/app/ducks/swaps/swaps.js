@@ -365,6 +365,23 @@ export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage, me
       const [[fetchedQuotes, selectedAggId]] = await Promise.all([fetchAndSetQuotesPromise, gasPriceFetchPromise])
 
       if (Object.values(fetchedQuotes)?.length === 0) {
+        metaMetricsEvent({
+          event: 'No Quotes Available',
+          category: 'swaps',
+        })
+        metaMetricsEvent({
+          event: 'No Quotes Available',
+          category: 'swaps',
+          excludeMetaMetricsId: true,
+          properties: {
+            token_from: fromTokenSymbol,
+            token_from_amount: String(revisedValue || inputValue),
+            token_to: toTokenSymbol,
+            request_type: balanceError ? 'Quote' : 'Order',
+            slippage: maxSlippage,
+            custom_slippage: maxSlippage !== 2,
+          },
+        })
         dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR))
       } else {
         const newSelectedQuote = fetchedQuotes[selectedAggId]
