@@ -19,7 +19,11 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setSpecialRPC: () => dispatch(updateAndSetCustomRpc('https://ganache-testnet.airswap-dev.codefi.network', '1', 'ETH', 'mainnet', {})),
+    setSpecialRPC: () => {
+      if (!process.env.IN_TEST) {
+        dispatch(updateAndSetCustomRpc('https://ganache-testnet.airswap-dev.codefi.network', '1', 'ETH', 'mainnet', {}))
+      }
+    },
   }
 }
 
