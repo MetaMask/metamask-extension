@@ -2,6 +2,9 @@ import ethUtil from 'ethereumjs-util'
 import BigNumber from 'bignumber.js'
 import { ETH, GWEI, WEI } from '../constants/common'
 import { conversionUtil, addCurrencies, subtractCurrencies } from './conversion-util'
+import {
+  formatCurrency,
+} from './confirm-tx.util'
 
 export function bnToHex (inputBn) {
   return ethUtil.addHexPrefix(inputBn.toString(16))
@@ -156,11 +159,12 @@ export function addHexes (aHexWEI, bHexWEI) {
     bBase: 16,
     toNumericBase: 'hex',
     numberOfDecimals: 6,
+  })
 }
 
 export function sumHexWEIsToRenderableFiat (hexWEIs, convertedCurrency, conversionRate) {
   const hexWEIsSum = hexWEIs.filter((n) => n).reduce(addHexes)
-  const ethTotal = ethTotalToConvertedCurrency(
+  const ethTotal = decEthToConvertedCurrency(
     getValueFromWeiHex({
       value: hexWEIsSum, toCurrency: 'ETH', numberOfDecimals: 4,
     }),
