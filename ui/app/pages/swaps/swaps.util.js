@@ -28,6 +28,8 @@ const getBaseApi = function (isCustomNetwork, type) {
         return `https://metaswap-api.airswap-dev.codefi.network/featureFlag`
       case 'aggregatorMetadata':
         return `https://metaswap-api.airswap-dev.codefi.network/aggregatorMetadata`
+      case 'feeAmount':
+        return `https://metaswap-api.airswap-dev.codefi.network/fee`
       default:
         throw new Error('getBaseApi requires an api call type')
     }
@@ -43,6 +45,8 @@ const getBaseApi = function (isCustomNetwork, type) {
       return `https://api.metaswap.codefi.network/featureFlag`
     case 'aggregatorMetadata':
       return `https://api.metaswap.codefi.network/aggregatorMetadata`
+    case 'feeAmount':
+      return `https://api.metaswap.codefi.network/fee`
     default:
       throw new Error('getBaseApi requires an api call type')
   }
