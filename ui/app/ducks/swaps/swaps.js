@@ -10,6 +10,7 @@ import {
   setBackgroundSwapRouteState,
   setInitialGasEstimate,
   setSwapsErrorKey,
+  setSwapsTxGasPrice,
   setShowAwaitingSwapScreen,
   setApproveTxId,
   setTradeTxId,
@@ -20,7 +21,7 @@ import {
 import { AWAITING_SWAP_ROUTE, BUILD_QUOTE_ROUTE, LOADING_QUOTES_ROUTE, SWAPS_ERROR_ROUTE } from '../../helpers/constants/routes'
 import { fetchTradesInfo } from '../../pages/swaps/swaps.util'
 import { calcGasTotal } from '../../pages/send/send.utils'
-import { decimalToHex, getValueFromWeiHex, hexMax } from '../../helpers/utils/conversions.util'
+import { decimalToHex, getValueFromWeiHex, hexMax, decGWEIToHexWEI } from '../../helpers/utils/conversions.util'
 import { constructTxParams } from '../../helpers/utils/util'
 import {
   getAveragePriceEstimateInHexWEI,
@@ -36,6 +37,7 @@ import {
   SWAP_FAILED_ERROR,
 } from '../../helpers/constants/swaps'
 import { SWAP, SWAP_APPROVAL } from '../../helpers/constants/transactions'
+import { fetchBasicGasAndTimeEstimates, fetchGasEstimates } from '../gas/gas.duck'
 
 const initialState = {
   aggregatorMetadata: null,
@@ -305,7 +307,8 @@ export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage) =>
       dispatch(setQuotesFetchStartTime(fetchStartTime))
       const customNetworkId = getCustomNetworkId(state)
       const balanceError = getBalanceError(state)
-      const [fetchedQuotes, selectedAggId] = await dispatch(fetchAndSetQuotes(
+
+      const fetchAndSetQuotesPromise = dispatch(fetchAndSetQuotes(
         {
           slippage: maxSlippage,
           sourceToken: fromTokenAddress,
@@ -323,6 +326,18 @@ export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage) =>
           destinationTokenInfo,
         },
       ))
+
+      const gasPriceFetchPromise = dispatch(fetchBasicGasAndTimeEstimates())
+        .then((basicEstimates) => {
+          dispatch(setSwapsTxGasPrice(decGWEIToHexWEI(basicEstimates.average)))
+          return basicEstimates.blockTime
+        })
+        .then((blockTime) => {
+          return dispatch(fetchGasEstimates(blockTime, true))
+        })
+
+      const [[fetchedQuotes, selectedAggId]] = await Promise.all([fetchAndSetQuotesPromise, gasPriceFetchPromise])
+
       if (Object.values(fetchedQuotes)?.length === 0) {
         dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR))
       } else {

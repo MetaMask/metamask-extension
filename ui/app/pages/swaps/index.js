@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef, useContext } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Switch, Route, useLocation, useHistory, Redirect } from 'react-router-dom'
 import BigNumber from 'bignumber.js'
@@ -38,10 +38,10 @@ import {
   SWAP_FAILED_ERROR,
 } from '../../helpers/constants/swaps'
 
-import { fetchBasicGasAndTimeEstimates, fetchGasEstimates, resetCustomData } from '../../ducks/gas/gas.duck'
-import { resetBackgroundSwapsState, setSwapsTokens, setSwapsTxGasPrice, setMaxMode, removeToken, setBackgroundSwapRouteState, setSwapsErrorKey } from '../../store/actions'
+import { resetCustomData } from '../../ducks/gas/gas.duck'
+import { resetBackgroundSwapsState, setSwapsTokens, setMaxMode, removeToken, setBackgroundSwapRouteState, setSwapsErrorKey } from '../../store/actions'
 import { getAveragePriceEstimateInHexWEI, currentNetworkTxListSelector, getCustomNetworkId, getRpcPrefsForCurrentProvider } from '../../selectors'
-import { decGWEIToHexWEI, getValueFromWeiHex } from '../../helpers/utils/conversions.util'
+import { getValueFromWeiHex } from '../../helpers/utils/conversions.util'
 
 import { fetchTokens, fetchTopAssets, getSwapsTokensReceivedFromTxMeta, fetchAggregatorMetadata, fetchMetaMaskFeeAmount } from './swaps.util'
 import AwaitingSwap from './awaiting-swap'
@@ -89,7 +89,6 @@ export default function Swap () {
   const { destinationTokenAddedForSwap } = fetchParams || {}
 
   const usedGasPrice = customConvertGasPrice || tradeTxParams?.gasPrice || averageGasEstimate
-  const tradeTxParamsTo = tradeTxParams?.to
   const approveTxData = approveTxId && txList.find(({ id }) => approveTxId === id)
   const tradeTxData = tradeTxId && txList.find(({ id }) => tradeTxId === id)
   const tokensReceived = tradeTxData?.txReceipt && getSwapsTokensReceivedFromTxMeta(
@@ -132,24 +131,6 @@ export default function Swap () {
       clearTemporaryTokenRef.current()
     }
   }, [])
-
-  const initialDataFetch = useCallback(() => {
-    dispatch(fetchBasicGasAndTimeEstimates())
-      .then((basicEstimates) => {
-        if (tradeTxParamsTo || !customConvertGasPrice || customConvertGasPrice === '0x0') {
-          dispatch(setSwapsTxGasPrice(decGWEIToHexWEI(basicEstimates.average)))
-        }
-        return basicEstimates.blockTime
-      })
-      .then((blockTime) => {
-        dispatch(fetchGasEstimates(blockTime, true))
-      })
-
-  }, [dispatch, tradeTxParamsTo, customConvertGasPrice])
-
-  useEffect(() => {
-    initialDataFetch()
-  }, [initialDataFetch])
 
   useEffect(() => {
     fetchTokens(isCustomNetwork)
