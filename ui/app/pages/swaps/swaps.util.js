@@ -389,7 +389,6 @@ export function getSwapsTokensReceivedFromTxMeta (tokenSymbol, txMeta, tokenAddr
       bBase: 16,
       fromDenomination: 'WEI',
       toDenomination: 'ETH',
-      fromNumericBase: 'hex',
       toNumericBase: 'dec',
       numberOfDecimals: 6,
     })
