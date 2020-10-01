@@ -44,6 +44,12 @@ const MOCK_QUOTES = {
     slippage: 3,
   },
 }
+const MOCK_FETCH_METADATA = {
+  destinationTokenInfo: {
+    symbol: 'FOO',
+    decimals: 18,
+  },
+}
 
 const MOCK_TOKEN_RATES_STORE = new ObservableStore({
   contractExchangeRates: { '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 2 },
@@ -278,12 +284,16 @@ describe('SwapsController', function () {
 
         const [newQuotes] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
+          MOCK_FETCH_METADATA,
         )
 
         assert.deepStrictEqual(newQuotes[TEST_AGG_ID], {
           ...MOCK_QUOTES[TEST_AGG_ID],
           sourceTokenInfo: undefined,
-          destinationTokenInfo: undefined,
+          destinationTokenInfo: {
+            symbol: 'FOO',
+            decimals: 18,
+          },
           isBestQuote: true,
           // TODO: find a way to calculate these values dynamically
           gasEstimate: 2000000,
@@ -304,7 +314,10 @@ describe('SwapsController', function () {
           .stub(swapsController, '_getERC20Allowance')
           .resolves(ethers.BigNumber.from(1))
 
-        await swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS)
+        await swapsController.fetchAndSetQuotes(
+          MOCK_FETCH_PARAMS,
+          MOCK_FETCH_METADATA,
+        )
 
         assert.strictEqual(
           allowanceStub.calledOnceWithExactly(
@@ -328,7 +341,10 @@ describe('SwapsController', function () {
           .stub(swapsController, 'timedoutGasReturn')
           .resolves(timedoutGasReturnResult)
 
-        await swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS)
+        await swapsController.fetchAndSetQuotes(
+          MOCK_FETCH_PARAMS,
+          MOCK_FETCH_METADATA,
+        )
 
         // Mocked quotes approvalNeeded is null, so it will only be called with the gas
         assert.strictEqual(
@@ -349,6 +365,7 @@ describe('SwapsController', function () {
 
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
+          MOCK_FETCH_METADATA,
         )
 
         assert.strictEqual(topAggId, TEST_AGG_ID)
@@ -378,6 +395,7 @@ describe('SwapsController', function () {
 
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
+          MOCK_FETCH_METADATA,
         )
 
         assert.strictEqual(topAggId, bestAggId)
@@ -397,6 +415,7 @@ describe('SwapsController', function () {
         })
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
+          MOCK_FETCH_METADATA,
         )
 
         assert.strictEqual(newQuotes[topAggId].isBestQuote, undefined)
