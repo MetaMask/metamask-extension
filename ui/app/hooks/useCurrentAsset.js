@@ -4,6 +4,12 @@ import { getTokens } from '../ducks/metamask/metamask'
 import { ASSET_ROUTE } from '../helpers/constants/routes'
 import { ETH_SWAPS_TOKEN_OBJECT } from '../helpers/constants/swaps'
 
+/**
+ * Returns a token object for the asset that is currently being viewed.
+ * Will return the ETH_SWAPS_TOKEN_OBJECT when the user is viewing either
+ * the primary, unfiltered, activity list or the ETH asset page.
+ * @returns {import('./useTokenDisplayValue').Token}
+ */
 export function useCurrentAsset () {
   // To determine which primary currency to display for swaps transactions we need to be aware
   // of which asset, if any, we are viewing at present
