@@ -197,13 +197,19 @@ export default function Swap () {
       })
 
     return () => {
-      exitedSwapsEvent()
-      anonymousExitedSwapsEvent()
       dispatch(resetCustomData())
       dispatch(clearSwapsState())
       dispatch(resetBackgroundSwapsState())
     }
-  }, [dispatch, isCustomNetwork, exitedSwapsEvent, anonymousExitedSwapsEvent])
+  }, [dispatch, isCustomNetwork])
+
+  useEffect(() => {
+    return () => {
+      exitedSwapsEvent()
+      anonymousExitedSwapsEvent()
+    }
+  }, [])
+
 
   useEffect(() => {
     if (swapsErrorKey && !isSwapsErrorRoute) {
