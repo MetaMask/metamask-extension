@@ -25,7 +25,7 @@ export default function SlippageButtons ({
     errorText = t('swapHighSlippageWarning')
   }
 
-  const customValueText = customValue ? `${customValue}%` : t('swapCustom')
+  const customValueText = customValue || t('swapCustom')
 
   useEffect(() => {
     if (inputRef && enteringCustomValue && window.document.activeElement !== inputRef) {
@@ -58,6 +58,9 @@ export default function SlippageButtons ({
               defaultActiveButtonIndex={1}
               variant="radiogroup"
               newActiveButtonIndex={activeButtonIndex}
+              className={
+                classnames('button-group', 'slippage-buttons__button-group')
+              }
             >
               <Button
                 onClick={() => {
@@ -80,7 +83,7 @@ export default function SlippageButtons ({
                 2%
               </Button>
               <Button
-                className={classnames('slippage-buttons__custom-button', {
+                className={classnames('slippage-buttons__button-group-custom-button', {
                   'radio-button--danger': errorText,
                 })}
                 onClick={() => {
@@ -116,6 +119,10 @@ export default function SlippageButtons ({
                   )
                   : customValueText
                 )}
+                {
+                  (customValue || enteringCustomValue) &&
+                  <div className="slippage-buttons__percentage-suffix">%</div>
+                }
               </Button>
             </ButtonGroup>
           </div>
