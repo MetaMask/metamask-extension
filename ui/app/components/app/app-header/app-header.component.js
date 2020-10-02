@@ -19,6 +19,7 @@ export default class AppHeader extends PureComponent {
     isUnlocked: PropTypes.bool,
     hideNetworkIndicator: PropTypes.bool,
     disabled: PropTypes.bool,
+    disableNetworkIndicator: PropTypes.bool,
     isAccountMenuOpen: PropTypes.bool,
   }
 
@@ -84,6 +85,7 @@ export default class AppHeader extends PureComponent {
       provider,
       isUnlocked,
       hideNetworkIndicator,
+      disableNetworkIndicator,
       disabled,
     } = this.props
 
@@ -104,7 +106,7 @@ export default class AppHeader extends PureComponent {
                     network={network}
                     provider={provider}
                     onClick={(event) => this.handleNetworkIndicatorClick(event)}
-                    disabled={disabled}
+                    disabled={disabled || disableNetworkIndicator}
                   />
                 </div>
               )
