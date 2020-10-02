@@ -8,42 +8,26 @@ workflows:
             branches:
               only:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
-      - prep-deps
       - test-deps
-      - prep-build:
-          requires:
-            - prep-deps
-      - prep-build-test:
-          requires:
-            - prep-deps
-      - prep-build-storybook:
-          requires:
-            - prep-deps
-      - test-lint:
-          requires:
-            - prep-deps
+      - prep-build
+      - prep-build-test
+      - prep-build-storybook
+      - test-lint
       - test-lint-shellcheck
-      - test-lint-lockfile:
-          requires:
-            - prep-deps
+      - test-lint-lockfile
       - test-e2e-chrome:
           requires:
             - prep-build-test
       - test-e2e-firefox:
           requires:
             - prep-build-test
-      - test-unit:
-          requires:
-            - prep-deps
-      - test-unit-global:
-          requires:
-            - prep-deps
+      - test-unit
+      - test-unit-global
       - validate-source-maps:
           requires:
             - prep-build
       - test-mozilla-lint:
           requires:
-            - prep-deps
             - prep-build
       - all-tests-pass:
           requires:
@@ -61,8 +45,6 @@ workflows:
             - prep-build-test
       - job-publish-prerelease:
           requires:
-            - prep-deps
-            - prep-build
             - benchmark
             - all-tests-pass
       - job-publish-release:
@@ -70,8 +52,6 @@ workflows:
             branches:
               only: master
           requires:
-            - prep-deps
-            - prep-build
             - all-tests-pass
       - job-publish-storybook:
           filters:
@@ -96,7 +76,7 @@ jobs:
             .circleci/scripts/release-bump-manifest-version
             .circleci/scripts/release-create-release-pr
 
-  prep-deps:
+  prep-build:
     docker:
       - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
@@ -109,19 +89,6 @@ jobs:
           name: Collect yarn install HAR logs
           command: |
             .circleci/scripts/collect-har-artifact.sh
-      - persist_to_workspace:
-          root: .
-          paths:
-          - node_modules
-          - build-artifacts
-
-  prep-build:
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
       - run:
           name: build:dist
           command: yarn dist
@@ -131,6 +98,8 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
+            - node_modules
+            - build-artifacts
             - dist
             - builds
 
@@ -139,8 +108,14 @@ jobs:
       - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - checkout
-      - attach_workspace:
-          at: .
+      - run:
+          name: Install deps
+          command: |
+            .circleci/scripts/deps-install.sh
+      - run:
+          name: Collect yarn install HAR logs
+          command: |
+            .circleci/scripts/collect-har-artifact.sh
       - run:
           name: Build extension for testing
           command: yarn build:test
@@ -150,6 +125,8 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
+            - node_modules
+            - build-artifacts
             - dist-test
 
   prep-build-storybook:
@@ -157,14 +134,22 @@ jobs:
       - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - checkout
-      - attach_workspace:
-          at: .
+      - run:
+          name: Install deps
+          command: |
+            .circleci/scripts/deps-install.sh
+      - run:
+          name: Collect yarn install HAR logs
+          command: |
+            .circleci/scripts/collect-har-artifact.sh
       - run:
           name: Build Storybook
           command: yarn storybook:build
       - persist_to_workspace:
           root: .
           paths:
+            - node_modules
+            - build-artifacts
             - .out
 
   test-lint:
@@ -172,14 +157,25 @@ jobs:
       - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - checkout
-      - attach_workspace:
-          at: .
+      - run:
+          name: Install deps
+          command: |
+            .circleci/scripts/deps-install.sh
+      - run:
+          name: Collect yarn install HAR logs
+          command: |
+            .circleci/scripts/collect-har-artifact.sh
       - run:
           name: Lint
           command: yarn lint
       - run:
           name: Verify locales
           command: yarn verify-locales --quiet
+      - persist_to_workspace:
+          root: .
+          paths:
+            - node_modules
+            - build-artifacts
 
   test-lint-shellcheck:
     docker:
@@ -196,11 +192,22 @@ jobs:
       - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - checkout
-      - attach_workspace:
-          at: .
+      - run:
+          name: Install deps
+          command: |
+            .circleci/scripts/deps-install.sh
+      - run:
+          name: Collect yarn install HAR logs
+          command: |
+            .circleci/scripts/collect-har-artifact.sh
       - run:
           name: lockfile-lint
           command: yarn lint:lockfile
+      - persist_to_workspace:
+          root: .
+          paths:
+            - node_modules
+            - build-artifacts
 
   test-deps:
     docker:
@@ -342,14 +349,22 @@ jobs:
       - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - checkout
-      - attach_workspace:
-          at: .
+      - run:
+          name: Install deps
+          command: |
+            .circleci/scripts/deps-install.sh
+      - run:
+          name: Collect yarn install HAR logs
+          command: |
+            .circleci/scripts/collect-har-artifact.sh
       - run:
           name: test:coverage
           command: yarn test:coverage
       - persist_to_workspace:
           root: .
           paths:
+            - node_modules
+            - build-artifacts
             - .nyc_output
             - coverage
   test-unit-global:
@@ -357,11 +372,22 @@ jobs:
       - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - checkout
-      - attach_workspace:
-          at: .
+      - run:
+          name: Install deps
+          command: |
+            .circleci/scripts/deps-install.sh
+      - run:
+          name: Collect yarn install HAR logs
+          command: |
+            .circleci/scripts/collect-har-artifact.sh
       - run:
           name: test:unit:global
           command: yarn test:unit:global
+      - persist_to_workspace:
+          root: .
+          paths:
+            - node_modules
+            - build-artifacts
 
   validate-source-maps:
     docker:
