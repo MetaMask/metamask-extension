@@ -19,6 +19,7 @@ import BuyIcon from '../../ui/icon/overview-buy-icon.component'
 import SendIcon from '../../ui/icon/overview-send-icon.component'
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps'
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../helpers/constants/swaps'
+import IconButton from '../../ui/icon-button'
 import WalletOverview from './wallet-overview'
 
 const EthOverview = ({ className }) => {
@@ -91,58 +92,49 @@ const EthOverview = ({ className }) => {
       )}
       buttons={(
         <>
-          <div className="eth-overview__button">
-            <div
-              className="eth-overview__circle"
-              onClick={() => {
-                depositEvent()
-                dispatch(showModal({ name: 'DEPOSIT_ETHER' }))
-              }}
-            >
-              <BuyIcon />
-            </div>
-            { t('buy') }
-          </div>
-          <div className="eth-overview__button">
-            <div
-              className="eth-overview__circle"
-              onClick={() => {
-                sendEvent()
-                history.push(SEND_ROUTE)
-              }}
-              data-testid="eth-overview-send"
-            >
-              <SendIcon />
-            </div>
-            { t('send') }
-          </div>
-          <div
-            className={classnames('eth-overview__button', {
-              'eth-overview__button--disabled': networkId !== '1',
-            })}
-          >
-            <Tooltip title={t('onlyAvailableOnMainnet')} position="bottom" disabled={networkId === '1'}>
-              <>
-                <div
-                  className="eth-overview__circle"
-                  onClick={() => {
-                    if (networkId === '1') {
-                      convertEvent()
-                      dispatch(setSwapsFromToken({
-                        ...ETH_SWAPS_TOKEN_OBJECT,
-                        balance,
-                        string: getValueFromWeiHex({ value: balance, numberOfDecimals: 4, toDenomination: 'ETH' }),
-                      }))
-                      history.push(BUILD_QUOTE_ROUTE)
-                    }
-                  }}
-                >
-                  <SwapIcon />
-                </div>
-                { t('swap') }
-              </>
-            </Tooltip>
-          </div>
+          <IconButton
+            className="eth-overview__button"
+            Icon={BuyIcon}
+            label={t('buy')}
+            onClick={() => {
+              depositEvent()
+              dispatch(showModal({ name: 'DEPOSIT_ETHER' }))
+            }}
+          />
+          <IconButton
+            className="eth-overview__button"
+            data-testid="eth-overview-send"
+            Icon={SendIcon}
+            label={t('send')}
+            onClick={() => {
+              sendEvent()
+              history.push(SEND_ROUTE)
+            }}
+          />
+
+          <IconButton
+            className="eth-overview__button"
+            disabled={networkId !== '1'}
+            Icon={SwapIcon}
+            onClick={() => {
+              if (networkId === '1') {
+                convertEvent()
+                dispatch(setSwapsFromToken({
+                  ...ETH_SWAPS_TOKEN_OBJECT,
+                  balance,
+                  string: getValueFromWeiHex({ value: balance, numberOfDecimals: 4, toDenomination: 'ETH' }),
+                }))
+                history.push(BUILD_QUOTE_ROUTE)
+              }
+            }}
+            label={ t('swap') }
+            tooltipRender={(contents) => (
+              <Tooltip title={t('onlyAvailableOnMainnet')} position="bottom" disabled={networkId === '1'}>
+                {contents}
+              </Tooltip>
+            )}
+          />
+
         </>
       )}
       className={className}
