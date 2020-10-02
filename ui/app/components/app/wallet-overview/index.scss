@@ -20,7 +20,7 @@
   &__buttons {
     display: flex;
     flex-direction: row;
-    height: 59px;
+    height: 68px;
     margin-bottom: 24px;
   }
 }
@@ -84,20 +84,7 @@
   }
 
   &__button {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     margin-right: 24px;
-
-    @include H7;
-
-    color: $Blue-500;
-    cursor: pointer;
-
-    &--disabled {
-      opacity: 0.3;
-      cursor: auto;
-    }
   }
 
   &__button:last-of-type {
@@ -144,29 +131,10 @@
   }
 
   &__button {
-    display: flex;
-    flex-direction: columns;
-    align-items: center;
     margin-right: 24px;
-
-    @include H7;
-
-    cursor: pointer;
-    color: $Blue-500;
   }
 
   &__button:last-of-type {
     margin-right: 0;
-  }
-
-  &__circle {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 36px;
-    width: 36px;
-    background: #037dd6;
-    border-radius: 18px;
-    margin-top: 6px;
   }
 }
