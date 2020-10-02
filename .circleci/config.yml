@@ -9,7 +9,6 @@ workflows:
               only:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
       - test-deps
-      - prep-build
       - prep-build-test
       - prep-build-storybook
       - test-lint
@@ -23,12 +22,8 @@ workflows:
             - prep-build-test
       - test-unit
       - test-unit-global
-      - validate-source-maps:
-          requires:
-            - prep-build
-      - test-mozilla-lint:
-          requires:
-            - prep-build
+      - validate-source-maps
+      - test-mozilla-lint
       - all-tests-pass:
           requires:
             - test-lint
@@ -75,33 +70,6 @@ jobs:
             .circleci/scripts/release-bump-changelog-version
             .circleci/scripts/release-bump-manifest-version
             .circleci/scripts/release-create-release-pr
-
-  prep-build:
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
-    steps:
-      - checkout
-      - run:
-          name: Install deps
-          command: |
-            .circleci/scripts/deps-install.sh
-      - run:
-          name: Collect yarn install HAR logs
-          command: |
-            .circleci/scripts/collect-har-artifact.sh
-      - run:
-          name: build:dist
-          command: yarn dist
-      - run:
-          name: build:debug
-          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
-      - persist_to_workspace:
-          root: .
-          paths:
-            - node_modules
-            - build-artifacts
-            - dist
-            - builds
 
   prep-build-test:
     docker:
@@ -394,22 +362,60 @@ jobs:
       - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - checkout
-      - attach_workspace:
-          at: .
+      - run:
+          name: Install deps
+          command: |
+            .circleci/scripts/deps-install.sh
+      - run:
+          name: Collect yarn install HAR logs
+          command: |
+            .circleci/scripts/collect-har-artifact.sh
+      - run:
+          name: build:dist
+          command: yarn dist
+      - run:
+          name: build:debug
+          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
       - run:
           name: Validate source maps
           command: yarn validate-source-maps
+      - persist_to_workspace:
+          root: .
+          paths:
+            - node_modules
+            - build-artifacts
+            - dist
+            - builds
 
   test-mozilla-lint:
     docker:
       - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - checkout
-      - attach_workspace:
-          at: .
+      - run:
+          name: Install deps
+          command: |
+            .circleci/scripts/deps-install.sh
+      - run:
+          name: Collect yarn install HAR logs
+          command: |
+            .circleci/scripts/collect-har-artifact.sh
+      - run:
+          name: build:dist
+          command: yarn dist
+      - run:
+          name: build:debug
+          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
       - run:
           name: test:mozilla-lint
           command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint
+      - persist_to_workspace:
+          root: .
+          paths:
+            - node_modules
+            - build-artifacts
+            - dist
+            - builds
 
   all-tests-pass:
     docker:
