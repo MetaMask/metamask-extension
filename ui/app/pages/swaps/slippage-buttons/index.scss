@@ -56,15 +56,28 @@
     margin-top: 8px;
   }
 
-  &__custom-button {
-    cursor: text;
+  &__button-group {
+
+    & &-custom-button {
+      cursor: text;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      min-width: 72px;
+      margin-right: 0;
+    }
   }
 
   &__custom-input {
+    display: flex;
+    justify-content: center;
+
     input {
       border: none;
-      width: 24px;
-      background: $Blue-300;
+      width: 64px;
+      text-align: center;
+      background: $Blue-500;
       color: white;
       font-weight: inherit;
 
@@ -107,11 +120,10 @@
         background: $Red-500;
       }
     }
+  }
 
-    &::after {
-      top: 2px;
-      right: 0.5em;
-      content: '%';
-    }
+  &__percentage-suffix {
+    position: absolute;
+    right: 5px;
   }
 }

@@ -50,9 +50,9 @@
     padding: 0;
 
     &--active {
-      font-weight: bold;
-      background: $Blue-300;
+      background: $Blue-500;
       color: white;
+      border: none;
     }
 
     &--danger {
@@ -60,7 +60,6 @@
       color: $Red-500;
       background: $white;
     }
-
 
     &:hover {
       box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
