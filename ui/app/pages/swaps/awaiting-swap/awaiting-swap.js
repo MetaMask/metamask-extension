@@ -56,7 +56,7 @@ export default function AwaitingSwap ({
   const animationEventEmitter = useRef(new EventEmitter())
 
   const fetchParams = useSelector(getFetchParams)
-  const destinationToken = fetchParams?.destinationTokenInfo
+  const { destinationTokenInfo, sourceTokenInfo } = fetchParams?.metaData || {}
   const usedQuote = useSelector(getUsedQuote)
   const approveTxParams = useSelector(getApproveTxParams)
   const tradeTxParams = useSelector(getTradeTxParams)
@@ -76,9 +76,9 @@ export default function AwaitingSwap ({
     event: 'Quotes Timed Out',
     excludeMetaMetricsId: true,
     properties: {
-      token_from: fetchParams?.sourceTokenInfo?.symbol,
+      token_from: sourceTokenInfo?.symbol,
       token_from_amount: fetchParams?.value,
-      token_to: fetchParams?.destinationTokenInfo?.symbol,
+      token_to: destinationTokenInfo?.symbol,
       request_type: fetchParams?.balanceError ? 'Quote' : 'Order',
       slippage: fetchParams?.slippage,
       custom_slippage: fetchParams?.slippage === 2,
@@ -229,10 +229,10 @@ export default function AwaitingSwap ({
             await dispatch(fetchQuotesAndSetQuoteState(history, inputValue, maxSlippage, metaMetricsEvent))
           } else if (errorKey) {
             await dispatch(navigateBackToBuildQuote(history))
-          } else if (destinationToken.symbol === 'ETH') {
+          } else if (destinationTokenInfo?.symbol === 'ETH') {
             history.push(DEFAULT_ROUTE)
           } else {
-            history.push(`${ASSET_ROUTE}/${destinationToken.address}`)
+            history.push(`${ASSET_ROUTE}/${destinationTokenInfo?.address}`)
           }
         }}
         onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}
