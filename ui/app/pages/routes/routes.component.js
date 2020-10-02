@@ -240,7 +240,8 @@ export default class Routes extends Component {
         { !this.hideAppHeader() && (
           <AppHeader
             hideNetworkIndicator={this.onInitializationUnlockPage()}
-            disabled={this.onConfirmPage() || this.onSwapsPage()}
+            disableNetworkIndicator={this.onSwapsPage()}
+            disabled={this.onConfirmPage()}
           />
         ) }
         <Sidebar
