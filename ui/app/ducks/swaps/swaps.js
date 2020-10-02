@@ -106,6 +106,11 @@ const { actions, reducer } = slice
 
 export default reducer
 
+// Pseudo Selectors -- Need implementation into redux/background
+// SWAPS_ENABLED=false yarn start to test
+// the name/path/etc we want here is all just roughed in, change at will
+export const getSwapsFeatureFlag = (state) => (state.swaps.enabled ?? process.env.SWAPS_ENABLED !== 'false')
+
 // Selectors
 
 export const getAggregatorMetadata = (state) => state.swaps.aggregatorMetadata

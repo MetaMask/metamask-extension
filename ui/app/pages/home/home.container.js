@@ -18,7 +18,7 @@ import {
   setSwapsWelcomeMessageHasBeenShown,
 } from '../../store/actions'
 import { setThreeBoxLastUpdated } from '../../ducks/app/app'
-import { getSwapsWelcomeMessageSeenStatus } from '../../ducks/swaps/swaps'
+import { getSwapsWelcomeMessageSeenStatus, getSwapsFeatureFlag } from '../../ducks/swaps/swaps'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -42,6 +42,7 @@ const mapStateToProps = (state) => {
   const accountBalance = getCurrentEthBalance(state)
   const { forgottenPassword, threeBoxLastUpdated } = appState
   const totalUnapprovedCount = getTotalUnapprovedCount(state)
+  const swapsEnabled = getSwapsFeatureFlag(state)
 
   const envType = getEnvironmentType()
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP
@@ -55,6 +56,7 @@ const mapStateToProps = (state) => {
   return {
     forgottenPassword,
     suggestedTokens,
+    swapsEnabled,
     unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),
     shouldShowSeedPhraseReminder: !seedPhraseBackedUp && (parseInt(accountBalance, 16) > 0 || tokens.length > 0),
     isPopup,
