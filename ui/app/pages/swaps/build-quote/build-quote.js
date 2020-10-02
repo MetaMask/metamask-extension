@@ -193,8 +193,8 @@ export default function BuildQuote ({
             'build-quote__balance-message--error': balanceError,
           })}
         >
-          {!balanceError && selectedFromToken && t('swapYourTokenBalance', [fromTokenString || '0', fromTokenSymbol])}
-          {balanceError && (
+          {!balanceError && fromTokenSymbol && t('swapYourTokenBalance', [fromTokenString || '0', fromTokenSymbol])}
+          {balanceError && fromTokenSymbol && (
             <div className="build-quite__insufficient-funds">
               <div className="build-quite__insufficient-funds-first">{t('swapsNotEnoughForTx', [fromTokenSymbol])}</div>
               <div className="build-quite__insufficient-funds-second">{t('swapYourTokenBalance', [fromTokenString || '0', fromTokenSymbol])}</div>
