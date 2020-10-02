@@ -22,7 +22,6 @@ import {
   getBackgroundSwapRouteState,
   getSwapsErrorKey,
   setMetamaskFeeAmount,
-  getQuotesFetchStartTime,
 } from '../../ducks/swaps/swaps'
 import {
   AWAITING_SWAP_ROUTE,
@@ -111,45 +110,6 @@ export default function Swap () {
     swapsErrorKey = SWAP_FAILED_ERROR
   }
 
-  const exitedSwapsEvent = useNewMetricEvent({
-    event: 'Exited Swaps',
-    category: 'swaps',
-  })
-  const anonymousExitedSwapsEvent = useNewMetricEvent({
-    event: 'Exited Swaps',
-    category: 'swaps',
-    excludeMetaMetricsId: true,
-    properties: {
-      token_from: fetchParams?.sourceTokenInfo?.symbol,
-      token_from_amount: fetchParams?.value,
-      request_type: fetchParams?.balanceError,
-      token_to: fetchParams?.destinationTokenInfo?.symbol,
-      slippage: fetchParams?.slippage,
-      custom_slippage: fetchParams?.slippage !== 2,
-      current_screen: pathname.match(/\/swap\/(.+)/u)[1],
-    },
-  })
-
-  const quotesFetchStartTime = useSelector(getQuotesFetchStartTime)
-  const quotesRequestCancelledEvent = useNewMetricEvent({
-    event: 'Quotes Request Cancelled',
-    category: 'swaps',
-  })
-  const anonymousQuotesRequestCancelledEvent = useNewMetricEvent({
-    event: 'Quotes Request Cancelled',
-    category: 'swaps',
-    excludeMetaMetricsId: true,
-    properties: {
-      token_from: fetchParams?.sourceTokenInfo?.symbol,
-      token_from_amount: fetchParams?.value,
-      request_type: fetchParams?.balanceError,
-      token_to: fetchParams?.destinationTokenInfo?.symbol,
-      slippage: fetchParams?.slippage,
-      custom_slippage: fetchParams?.slippage !== 2,
-      response_time: Date.now() - quotesFetchStartTime,
-    },
-  })
-
   const clearTemporaryTokenRef = useRef()
   useEffect(
     () => {
@@ -203,13 +163,37 @@ export default function Swap () {
     }
   }, [dispatch, isCustomNetwork])
 
+  const exitedSwapsEvent = useNewMetricEvent({
+    event: 'Exited Swaps',
+    category: 'swaps',
+  })
+  const anonymousExitedSwapsEvent = useNewMetricEvent({
+    event: 'Exited Swaps',
+    category: 'swaps',
+    excludeMetaMetricsId: true,
+    properties: {
+      token_from: fetchParams?.sourceTokenInfo?.symbol,
+      token_from_amount: fetchParams?.value,
+      request_type: fetchParams?.balanceError,
+      token_to: fetchParams?.destinationTokenInfo?.symbol,
+      slippage: fetchParams?.slippage,
+      custom_slippage: fetchParams?.slippage !== 2,
+      current_screen: pathname.match(/\/swaps\/(.+)/u)[1],
+    },
+  })
+  const exitEventRef = useRef()
   useEffect(() => {
-    return () => {
+    exitEventRef.current = () => {
       exitedSwapsEvent()
       anonymousExitedSwapsEvent()
     }
-  }, [])
+  })
 
+  useEffect(() => {
+    return () => {
+      exitEventRef.current()
+    }
+  }, [])
 
   useEffect(() => {
     if (swapsErrorKey && !isSwapsErrorRoute) {
@@ -345,10 +329,6 @@ export default function Swap () {
                         }
                       }}
                       aggregatorMetadata={aggregatorMetadata}
-                      cancelEvent={() => {
-                        quotesRequestCancelledEvent()
-                        anonymousQuotesRequestCancelledEvent()
-                      }}
                     />
                   )
                   : <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />

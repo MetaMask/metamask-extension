@@ -582,13 +582,21 @@ export default class TransactionController extends EventEmitter {
       }
 
       if (txMeta.swapMetaData) {
+        let version = global.platform.getVersion()
+        if (process.env.METAMASK_ENVIRONMENT !== 'production') {
+          version = `${version}-${process.env.METAMASK_ENVIRONMENT}`
+        }
         const segmentContext = {
           app: {
-            version: this.version,
+            version,
             name: 'MetaMask Extension',
           },
           locale: this.preferencesStore.getState().currentLocale.replace('_', '-'),
-          page: '/background-process',
+          page: {
+            path: '/background-process',
+            title: 'Background Process',
+            url: '/background-process',
+          },
           userAgent: window.navigator.userAgent,
         }
 
@@ -604,7 +612,7 @@ export default class TransactionController extends EventEmitter {
             context: segmentContext,
             anonymousId: METAMETRICS_ANONYMOUS_ID,
             excludeMetaMetricsId: true,
-            category: 'swaps'
+            category: 'swaps',
           })
         } else if (metametricsId && txMeta.swapMetaData) {
           segment.track({ event: 'Swap Failed', userId: metametricsId, context: segmentContext, category: 'swaps' })
@@ -614,7 +622,7 @@ export default class TransactionController extends EventEmitter {
             anonymousId: METAMETRICS_ANONYMOUS_ID,
             excludeMetaMetricsId: true,
             context: segmentContext,
-            category: 'swaps'
+            category: 'swaps',
           })
         }
       }
