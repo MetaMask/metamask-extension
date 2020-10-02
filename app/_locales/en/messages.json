@@ -1485,6 +1485,9 @@
   "speedUpTransaction": {
     "message": "Speed up this transaction"
   },
+  "spendLimitInsufficient": {
+    "message": "Spend limit insufficient"
+  },
   "spendLimitInvalid": {
     "message": "Spend limit invalid; must be a positive number"
   },
