@@ -105,7 +105,7 @@ export default function BuildQuote ({
     : swapFromTokenFiatValue
 
   const onFromSelect = (token) => {
-    if (token && !swapFromFiatValue && fetchedTokenExchangeRate !== null) {
+    if (token?.address && !swapFromFiatValue && fetchedTokenExchangeRate !== null) {
       fetchTokenPrice(token.address)
         .then((rate) => {
           if (rate !== null && rate !== undefined) {
@@ -115,7 +115,7 @@ export default function BuildQuote ({
     } else {
       setFetchedTokenExchangeRate(null)
     }
-    if (token && !memoizedUsersTokens.find((usersToken) => usersToken.address === token.address)) {
+    if (token?.address && !memoizedUsersTokens.find((usersToken) => usersToken.address === token.address)) {
       fetchTokenBalance(token.address, selectedAccountAddress)
         .then((fetchedBalance) => {
           if (fetchedBalance?.balance) {
@@ -128,7 +128,7 @@ export default function BuildQuote ({
     }
     dispatch(setSwapsFromToken(token))
     dispatch(setMaxMode(false))
-    onInputChange(inputValue, token.string, token.decimals)
+    onInputChange(token?.address ? inputValue : '', token.string, token.decimals)
   }
 
   const { destinationTokenAddedForSwap } = fetchParams || {}
