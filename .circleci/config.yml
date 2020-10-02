@@ -9,17 +9,12 @@ workflows:
               only:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
       - test-deps
-      - prep-build-test
       - prep-build-storybook
       - test-lint
       - test-lint-shellcheck
       - test-lint-lockfile
-      - test-e2e-chrome:
-          requires:
-            - prep-build-test
-      - test-e2e-firefox:
-          requires:
-            - prep-build-test
+      - test-e2e-chrome
+      - test-e2e-firefox
       - test-unit
       - test-unit-global
       - validate-source-maps
@@ -35,9 +30,7 @@ workflows:
             - test-mozilla-lint
             - test-e2e-chrome
             - test-e2e-firefox
-      - benchmark:
-          requires:
-            - prep-build-test
+      - benchmark
       - job-publish-prerelease:
           requires:
             - benchmark
@@ -70,32 +63,6 @@ jobs:
             .circleci/scripts/release-bump-changelog-version
             .circleci/scripts/release-bump-manifest-version
             .circleci/scripts/release-create-release-pr
-
-  prep-build-test:
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
-    steps:
-      - checkout
-      - run:
-          name: Install deps
-          command: |
-            .circleci/scripts/deps-install.sh
-      - run:
-          name: Collect yarn install HAR logs
-          command: |
-            .circleci/scripts/collect-har-artifact.sh
-      - run:
-          name: Build extension for testing
-          command: yarn build:test
-      - run:
-          name: Move test build to 'dist-test' to avoid conflict with production build
-          command: mv ./dist ./dist-test
-      - persist_to_workspace:
-          root: .
-          paths:
-            - node_modules
-            - build-artifacts
-            - dist-test
 
   prep-build-storybook:
     docker:
@@ -193,15 +160,27 @@ jobs:
       - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - checkout
-      - attach_workspace:
-          at: .
       - run:
-          name: Move test build to dist
-          command: mv ./dist-test ./dist
+          name: Install deps
+          command: |
+            .circleci/scripts/deps-install.sh
+      - run:
+          name: Collect yarn install HAR logs
+          command: |
+            .circleci/scripts/collect-har-artifact.sh
+      - run:
+          name: Build extension for testing
+          command: yarn build:test
       - run:
           name: test:e2e:chrome
           command: yarn test:e2e:chrome
           no_output_timeout: 20m
+      - persist_to_workspace:
+          root: .
+          paths:
+            - node_modules
+            - build-artifacts
+            - dist-test
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -212,17 +191,29 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install deps
+          command: |
+            .circleci/scripts/deps-install.sh
+      - run:
+          name: Collect yarn install HAR logs
+          command: |
+            .circleci/scripts/collect-har-artifact.sh
+      - run:
+          name: Build extension for testing
+          command: yarn build:test
+      - run:
           name: Install Firefox
           command: ./.circleci/scripts/firefox-install
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test ./dist
       - run:
           name: test:e2e:firefox
           command: yarn test:e2e:firefox
           no_output_timeout: 20m
+      - persist_to_workspace:
+          root: .
+          paths:
+            - node_modules
+            - build-artifacts
+            - dist-test
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -232,11 +223,17 @@ jobs:
       - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - checkout
-      - attach_workspace:
-          at: .
       - run:
-          name: Move test build to dist
-          command: mv ./dist-test ./dist
+          name: Install deps
+          command: |
+            .circleci/scripts/deps-install.sh
+      - run:
+          name: Collect yarn install HAR logs
+          command: |
+            .circleci/scripts/collect-har-artifact.sh
+      - run:
+          name: Build extension for testing
+          command: yarn build:test
       - run:
           name: Run page load benchmark
           command: yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json
@@ -246,6 +243,9 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
+            - node_modules
+            - build-artifacts
+            - dist-test
             - test-artifacts
 
   job-publish-prerelease:
