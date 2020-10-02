@@ -375,6 +375,7 @@ export const signAndSendTransactions = (history) => {
     const tradeTxParams = getTradeTxParams(state)
     const averageGasEstimate = getAveragePriceEstimateInHexWEI(state)
     const usedGasPrice = customConvertGasPrice || tradeTxParams?.gasPrice || averageGasEstimate
+    usedTradeTxParams.gasPrice = usedGasPrice
 
     const totalGasLimitForCalculation = (new BigNumber(usedTradeTxParams.gas, 16)).plus(usedQuote.approvalNeeded?.gas || '0x0', 16).toString(16)
     const gasTotalInWeiHex = calcGasTotal(totalGasLimitForCalculation, usedGasPrice)
