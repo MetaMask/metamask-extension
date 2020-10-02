@@ -3,11 +3,11 @@ import PropTypes from 'prop-types'
 import PageContainer from '../../../ui/page-container'
 import { Tabs, Tab } from '../../../ui/tabs'
 import { calcGasTotal } from '../../../../pages/send/send.utils'
-import AdvancedTabContent from './advanced-tab-content'
-import BasicTabContent from './basic-tab-content'
 import {
   sumHexWEIsToRenderableFiat,
 } from '../../../../helpers/utils/conversions.util'
+import AdvancedTabContent from './advanced-tab-content'
+import BasicTabContent from './basic-tab-content'
 
 export default class GasModalPageContainer extends Component {
   static contextTypes = {

@@ -1,12 +1,13 @@
 import EventEmitter from 'events'
 import React, { useState, useEffect, useRef, useContext } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import { shuffle } from 'lodash'
 import { useHistory } from 'react-router-dom'
 import classnames from 'classnames'
-import { navigateBackToBuildQuote } from '../../../ducks/swaps/swaps'
+import { navigateBackToBuildQuote, getFetchParams, getQuotesFetchStartTime } from '../../../ducks/swaps/swaps'
 import { I18nContext } from '../../../contexts/i18n'
+import { MetaMetricsContext } from '../../../contexts/metametrics.new'
 import Mascot from '../../../components/ui/mascot'
 import SwapsFooter from '../swaps-footer'
 import BackgroundAnimation from './background-animation'
@@ -52,12 +53,33 @@ export default function LoadingSwapsQuotes ({
   aggregatorMetadata,
   loadingComplete,
   onDone,
-  cancelEvent,
 }) {
   const t = useContext(I18nContext)
+  const metaMetricsEvent = useContext(MetaMetricsContext)
   const dispatch = useDispatch()
   const history = useHistory()
   const animationEventEmitter = useRef(new EventEmitter())
+
+  const fetchParams = useSelector(getFetchParams)
+  const quotesFetchStartTime = useSelector(getQuotesFetchStartTime)
+  const quotesRequestCancelledEventConfig = {
+    event: 'Quotes Request Cancelled',
+    category: 'swaps',
+  }
+  const anonymousQuotesRequestCancelledEventConfig = {
+    event: 'Quotes Request Cancelled',
+    category: 'swaps',
+    excludeMetaMetricsId: true,
+    properties: {
+      token_from: fetchParams?.sourceTokenInfo?.symbol,
+      token_from_amount: fetchParams?.value,
+      request_type: fetchParams?.balanceError,
+      token_to: fetchParams?.destinationTokenInfo?.symbol,
+      slippage: fetchParams?.slippage,
+      custom_slippage: fetchParams?.slippage !== 2,
+      response_time: Date.now() - quotesFetchStartTime,
+    },
+  }
 
   const [aggregatorNames] = useState(() => shuffle(Object.keys(aggregatorMetadata)))
   const numberOfQuotes = aggregatorNames.length
@@ -194,7 +216,8 @@ export default function LoadingSwapsQuotes ({
       <SwapsFooter
         submitText={t('back')}
         onSubmit={async () => {
-          cancelEvent()
+          metaMetricsEvent(quotesRequestCancelledEventConfig)
+          metaMetricsEvent(anonymousQuotesRequestCancelledEventConfig)
           await dispatch(navigateBackToBuildQuote(history))
         }}
         hideCancel
@@ -210,5 +233,4 @@ LoadingSwapsQuotes.propTypes = {
     color: PropTypes.string,
     icon: PropTypes.string,
   })),
-  cancelEvent: PropTypes.func,
 }

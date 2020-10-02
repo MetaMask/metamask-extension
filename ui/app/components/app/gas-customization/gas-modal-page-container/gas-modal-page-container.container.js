@@ -48,12 +48,8 @@ import {
 } from '../../../../selectors'
 
 import {
-  formatCurrency,
-} from '../../../../helpers/utils/confirm-tx.util'
-import {
   addHexes,
   subtractHexWEIsToDec,
-  decEthToConvertedCurrency as ethTotalToConvertedCurrency,
   hexWEIToDecGWEI,
   getValueFromWeiHex,
   sumHexWEIsToRenderableFiat,
