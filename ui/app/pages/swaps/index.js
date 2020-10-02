@@ -183,7 +183,7 @@ export default function Swap () {
       window.addEventListener('beforeunload', fn)
     }
     return () => window.removeEventListener('beforeunload', fn)
-  }, [isLoadingQuotesRoute])
+  }, [dispatch, isLoadingQuotesRoute])
 
   return (
     <div className="swaps">
