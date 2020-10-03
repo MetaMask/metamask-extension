@@ -15,7 +15,7 @@ import {
   getCustomSwapsGasPrice,
   getSubmittingSwap,
   setTopAssets,
-  getTradeTxParams,
+  getSwapsTradeTxParams,
   getFetchParams,
   setAggregatorMetadata,
   getAggregatorMetadata,
@@ -68,7 +68,7 @@ export default function Swap () {
 
   const submittingSwap = useSelector(getSubmittingSwap)
   const routeState = useSelector(getBackgroundSwapRouteState)
-  const tradeTxParams = useSelector(getTradeTxParams)
+  const tradeTxParams = useSelector(getSwapsTradeTxParams)
   const selectedAccount = useSelector(getSelectedAccount)
   const quotes = useSelector(getQuotes)
   const averageGasEstimate = useSelector(getAveragePriceEstimateInHexWEI)

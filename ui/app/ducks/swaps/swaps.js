@@ -39,6 +39,7 @@ import {
   SWAP_FAILED_ERROR,
 } from '../../helpers/constants/swaps'
 import { SWAP, SWAP_APPROVAL } from '../../helpers/constants/transactions'
+import { VALUE_TABLE } from '../../helpers/constants/common'
 import { fetchBasicGasAndTimeEstimates, fetchGasEstimates } from '../gas/gas.duck'
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util'
 
@@ -165,8 +166,6 @@ export const getTopQuote = (state) => {
 }
 
 export const getTradeTxId = (state) => state.metamask.swapsState.tradeTxId
-
-export const getTradeTxParams = (state) => state.metamask.swapsState.tradeTxParams
 
 export const getUsedQuote = (state) => getSelectedQuote(state) || getTopQuote(state)
 
@@ -301,7 +300,7 @@ export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage, me
     let revisedValue
     if (maxMode && sourceTokenInfo.symbol === 'ETH') {
       const customConvertGasPrice = getCustomSwapsGasPrice(state)
-      const tradeTxParams = getTradeTxParams(state)
+      const tradeTxParams = getSwapsTradeTxParams(state)
       const averageGasEstimate = getAveragePriceEstimateInHexWEI(state)
       const usedGasPrice = customConvertGasPrice || tradeTxParams?.gasPrice || averageGasEstimate
 
@@ -439,7 +438,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     usedTradeTxParams.gas = maxGasLimit
 
     const customConvertGasPrice = getCustomSwapsGasPrice(state)
-    const tradeTxParams = getTradeTxParams(state)
+    const tradeTxParams = getSwapsTradeTxParams(state)
     const averageGasEstimate = getAveragePriceEstimateInHexWEI(state)
     const usedGasPrice = customConvertGasPrice || tradeTxParams?.gasPrice || averageGasEstimate
     usedTradeTxParams.gasPrice = usedGasPrice
@@ -462,8 +461,8 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
 
       const networkId = getCurrentNetworkId(state)
       const customNetworkId = getCustomNetworkId(state)
-      const revisedTradeValue = (new BigNumber(ethBalance, 16)).minus(gasTotalInWeiHex, 16).toString(10)
-      const [revisedQuote] = await fetchTradesInfo({
+      const revisedTradeValue = (new BigNumber(ethBalance, 16)).minus(gasTotalInWeiHex, 16).div(VALUE_TABLE.WEI, 10).toString(10)
+      const revisedQuotes = await fetchTradesInfo({
         sourceToken: sourceTokenInfo.address,
         destinationToken: destinationTokenInfo.address,
         slippage,
@@ -476,8 +475,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
         isCustomNetwork: Boolean(customNetworkId) || true,
         sourceDecimals: 18,
       })
-      const tradeForGasEstimate = { ...revisedQuote.trade }
-      delete tradeForGasEstimate.gas
+      const revisedQuote = Object.values(revisedQuotes)[0]
       usedTradeTxParams = constructTxParams({
         ...revisedQuote.trade,
         gas: decimalToHex(usedTradeTxParams.gas),
