@@ -36,6 +36,7 @@ const VIEW_QUOTE_ROUTE = '/swaps/view-quote'
 const LOADING_QUOTES_ROUTE = '/swaps/loading-quotes'
 const AWAITING_SWAP_ROUTE = '/swaps/awaiting-swap'
 const SWAPS_ERROR_ROUTE = '/swaps/swaps-error'
+const SWAPS_MAINTENANCE_ROUTE = '/swaps/maintenance'
 
 const INITIALIZE_ROUTE = '/initialize'
 const INITIALIZE_WELCOME_ROUTE = '/initialize/welcome'
@@ -183,4 +184,5 @@ export {
   LOADING_QUOTES_ROUTE,
   AWAITING_SWAP_ROUTE,
   SWAPS_ERROR_ROUTE,
+  SWAPS_MAINTENANCE_ROUTE,
 }
