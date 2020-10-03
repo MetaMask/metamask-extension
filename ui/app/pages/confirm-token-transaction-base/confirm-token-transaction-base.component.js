@@ -75,7 +75,7 @@ export default class ConfirmTokenTransactionBase extends Component {
     const tokensText = `${tokenAmount} ${tokenSymbol}`
 
     return (
-      <div>
+      <div className="primary-total-with-plus">
         <span>{`${tokensText} + `}</span>
         <img src="/images/eth.svg" height="18" width="18" />
         <span>{ethTransactionTotal}</span>

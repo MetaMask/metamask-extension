@@ -94,7 +94,10 @@ const mapStateToProps = (state, ownProps) => {
     Object.values(unapprovedTxs).find(
       ({ id }) => id === (transactionId || Number(paramsTransactionId))
     ) || {}
-  if (willUserPayTxFee === undefined) {
+  if (
+    willUserPayTxFee === undefined ||
+    transaction.willUserPayTxFee !== undefined
+  ) {
     willUserPayTxFee = transaction.willUserPayTxFee
     willUserPayCollateral = transaction.willUserPayCollateral
   }

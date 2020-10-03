@@ -36,11 +36,11 @@
       margin-right: 5px;
     }
     &.sponsored {
-      span.currency-display-component__text {
+      &:not(.is-total) span.currency-display-component__text {
         text-decoration: line-through;
         text-decoration-color: #ff782c;
       }
-      & > div span:last-child {
+      & > div.primary-total-with-plus > span:last-child {
         color: #ff782c;
       }
     }

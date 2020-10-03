@@ -438,6 +438,7 @@ export default class ConfirmTransactionBase extends Component {
           >
             <ConfirmDetailRow
               label={t('total')}
+              isTotal
               sponsored={hasSponsoredFee}
               value={hexTransactionTotalCountSponsored}
               primaryText={primaryTotalTextOverride}

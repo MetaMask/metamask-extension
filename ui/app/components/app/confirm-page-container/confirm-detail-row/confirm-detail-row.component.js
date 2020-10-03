@@ -18,6 +18,7 @@ const ConfirmDetailRow = (props) => {
     // type = 'fee',
     primaryPrefix,
     primaryPrefixStyle = {},
+    isTotal,
   } = props
 
   return (
@@ -44,18 +45,20 @@ const ConfirmDetailRow = (props) => {
           )}
           {primaryText ? (
             <div
-              className={`confirm-detail-row__primary ${
-                sponsored ? 'sponsored' : ''
-              }`}
+              className={classnames('confirm-detail-row__primary ', {
+                sponsored,
+                'is-total': isTotal,
+              })}
               style={{ color: primaryValueTextColor }}
             >
               {primaryText}
             </div>
           ) : (
             <UserPreferencedCurrencyDisplay
-              className={`confirm-detail-row__primary ${
-                sponsored ? 'sponsored' : ''
-              }`}
+              className={classnames('confirm-detail-row__primary ', {
+                sponsored,
+                'is-total': isTotal,
+              })}
               type={PRIMARY}
               value={value}
               showEthLogo
@@ -82,6 +85,7 @@ const ConfirmDetailRow = (props) => {
 }
 
 ConfirmDetailRow.propTypes = {
+  isTotal: PropTypes.bool,
   headerText: PropTypes.string,
   headerTextClassName: PropTypes.string,
   label: PropTypes.string,
