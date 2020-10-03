@@ -65,7 +65,7 @@ export default class AdvancedGasInputs extends Component {
   }
 
   onChangeStorageLimit = (e) => {
-    if (e.target.value && e.target.value.startsWith('-')) {
+    if (typeof e.target.value === 'string' && e.target.value.startsWith('-')) {
       e.target.value = e.target.value.slice(1)
     }
     this.setState({ storageLimit: e.target.value })
@@ -104,7 +104,7 @@ export default class AdvancedGasInputs extends Component {
   }
 
   onChangeGasPrice = (e) => {
-    if (e.target.value && e.target.value.startsWith('-')) {
+    if (typeof e.target.value === 'string' && e.target.value.startsWith('-')) {
       e.target.value = e.target.value.slice(1)
     }
     this.setState({ gasPrice: e.target.value })
