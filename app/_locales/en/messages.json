@@ -15,13 +15,13 @@
     "message": "Chart only available on Conflux networks."
   },
   "confluxAddressWarningClip": {
-    "message": "DO NOT transfer non-Conflux assets to this address to avoid assets lost."
+    "message": "DO NOT transfer non-Conflux assets to this address to avoid permanent asset loss."
   },
   "confluxAddressWarningModal": {
-    "message": "DO NOT transfer non-Conflux assets to this address to avoid assets lost."
+    "message": "DO NOT transfer non-Conflux assets to this address to avoid permanent asset loss."
   },
   "confluxAddressWarningSend": {
-    "message": "DO NOT transfer to non-ConfluxNetwork address to avoid assets lost."
+    "message": "DO NOT transfer to non-ConfluxNetwork address to avoid permanent asset loss."
   },
   "confluxContractAddressWarningSend": {
     "message": "ConfluxNetwork smart contract address, NOT user address"
