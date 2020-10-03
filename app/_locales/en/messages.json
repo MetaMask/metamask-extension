@@ -954,6 +954,9 @@
   "metamaskDescription": {
     "message": "Connecting you to Ethereum and the Decentralized Web."
   },
+  "metamaskSwapsOfflineDescription": {
+    "message": "MetaMask Swaps is undergoing maintenance. Please check back later."
+  },
   "metamaskVersion": {
     "message": "MetaMask Version"
   },
@@ -1079,6 +1082,9 @@
   },
   "off": {
     "message": "Off"
+  },
+  "offlineForMaintenance": {
+    "message": "Offline for maintenance"
   },
   "ok": {
     "message": "Ok"

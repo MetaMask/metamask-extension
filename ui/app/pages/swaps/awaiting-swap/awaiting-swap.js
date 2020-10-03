@@ -25,6 +25,7 @@ import {
   SWAP_FAILED_ERROR,
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
+  OFFLINE_FOR_MAINTENANCE,
 } from '../../../helpers/constants/swaps'
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes'
 
@@ -121,7 +122,12 @@ export default function AwaitingSwap ({
   let submitText
   let content
 
-  if (errorKey === SWAP_FAILED_ERROR) {
+  if (errorKey === OFFLINE_FOR_MAINTENANCE) {
+    headerText = t('offlineForMaintenance')
+    descriptionText = t('metamaskSwapsOfflineDescription')
+    submitText = t('back')
+    statusImage = <SwapFailureIcon />
+  } else if (errorKey === SWAP_FAILED_ERROR) {
     headerText = t('swapFailedErrorTitle')
     descriptionText = t('swapFailedErrorDescription')
     submitText = t('tryAgain')
@@ -257,6 +263,7 @@ AwaitingSwap.propTypes = {
     SWAP_FAILED_ERROR,
     ERROR_FETCHING_QUOTES,
     QUOTES_NOT_AVAILABLE_ERROR,
+    OFFLINE_FOR_MAINTENANCE,
   ]),
   submittingSwap: PropTypes.bool,
   tradeTxData: PropTypes.object,

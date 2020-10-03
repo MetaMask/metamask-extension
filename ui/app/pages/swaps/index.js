@@ -22,6 +22,7 @@ import {
   getBackgroundSwapRouteState,
   getSwapsErrorKey,
   setMetamaskFeeAmount,
+  getSwapsFeatureFlag,
 } from '../../ducks/swaps/swaps'
 import {
   AWAITING_SWAP_ROUTE,
@@ -30,12 +31,14 @@ import {
   LOADING_QUOTES_ROUTE,
   SWAPS_ERROR_ROUTE,
   DEFAULT_ROUTE,
+  SWAPS_MAINTENANCE_ROUTE,
 } from '../../helpers/constants/routes'
 import {
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
   ETH_SWAPS_TOKEN_OBJECT,
   SWAP_FAILED_ERROR,
+  OFFLINE_FOR_MAINTENANCE,
 } from '../../helpers/constants/swaps'
 
 import { resetCustomData } from '../../ducks/gas/gas.duck'
@@ -44,6 +47,7 @@ import { getAveragePriceEstimateInHexWEI, currentNetworkTxListSelector, getCusto
 import { useNewMetricEvent } from '../../hooks/useMetricEvent'
 import { getValueFromWeiHex } from '../../helpers/utils/conversions.util'
 
+import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route'
 import { fetchTokens, fetchTopAssets, getSwapsTokensReceivedFromTxMeta, fetchAggregatorMetadata, fetchMetaMaskFeeAmount } from './swaps.util'
 import AwaitingSwap from './awaiting-swap'
 import LoadingQuote from './loading-swaps-quotes'
@@ -82,6 +86,7 @@ export default function Swap () {
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider)
   const fetchingQuotes = useSelector(getFetchingQuotes)
   let swapsErrorKey = useSelector(getSwapsErrorKey)
+  const swapsEnabled = useSelector(getSwapsFeatureFlag)
 
   const { balance: ethBalance, address: selectedAccountAddress } = selectedAccount
   const fetchParamsFromToken = sourceTokenInfo?.symbol === 'ETH'
@@ -242,7 +247,9 @@ export default function Swap () {
         </div>
         <div className="swaps__content">
           <Switch>
-            <Route
+            <FeatureToggledRoute
+              redirectRoute={SWAPS_MAINTENANCE_ROUTE}
+              flag={swapsEnabled}
               path={BUILD_QUOTE_ROUTE}
               exact
               render={() => {
@@ -273,7 +280,9 @@ export default function Swap () {
                 )
               }}
             />
-            <Route
+            <FeatureToggledRoute
+              redirectRoute={SWAPS_MAINTENANCE_ROUTE}
+              flag={swapsEnabled}
               path={VIEW_QUOTE_ROUTE}
               exact
               render={() => {
@@ -312,7 +321,9 @@ export default function Swap () {
 
               }}
             />
-            <Route
+            <FeatureToggledRoute
+              redirectRoute={SWAPS_MAINTENANCE_ROUTE}
+              flag={swapsEnabled}
               path={LOADING_QUOTES_ROUTE}
               exact
               render={() => {
@@ -334,6 +345,20 @@ export default function Swap () {
                     />
                   )
                   : <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />
+              }}
+            />
+            <Route
+              path={SWAPS_MAINTENANCE_ROUTE}
+              exact
+              render={() => {
+                return swapsEnabled === false ? (
+                  <AwaitingSwap
+                    errorKey={OFFLINE_FOR_MAINTENANCE}
+                    symbol=""
+                    networkId={networkId}
+                    rpcPrefs={rpcPrefs}
+                  />
+                ) : <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />
               }}
             />
             <Route
