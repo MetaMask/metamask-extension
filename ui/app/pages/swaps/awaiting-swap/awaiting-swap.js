@@ -9,7 +9,7 @@ import { useNewMetricEvent } from '../../../hooks/useMetricEvent'
 import { MetaMetricsContext } from '../../../contexts/metametrics.new'
 import { getCurrentCurrency, conversionRateSelector } from '../../../selectors'
 import {
-  getUsedQuote, getFetchParams, getApproveTxParams, getTradeTxParams,
+  getUsedQuote, getFetchParams, getApproveTxParams, getSwapsTradeTxParams,
   fetchQuotesAndSetQuoteState,
   navigateBackToBuildQuote,
   prepareForRetryGetQuotes,
@@ -59,7 +59,7 @@ export default function AwaitingSwap ({
   const { destinationTokenInfo, sourceTokenInfo } = fetchParams?.metaData || {}
   const usedQuote = useSelector(getUsedQuote)
   const approveTxParams = useSelector(getApproveTxParams)
-  const tradeTxParams = useSelector(getTradeTxParams)
+  const tradeTxParams = useSelector(getSwapsTradeTxParams)
   const currentCurrency = useSelector(getCurrentCurrency)
   const conversionRate = useSelector(conversionRateSelector)
 
