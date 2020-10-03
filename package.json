@@ -105,7 +105,7 @@
     "cfx-sig-util": ">=0.0.4",
     "cfx-util": ">=0.0.3",
     "cfx-wallet": ">=0.0.4",
-    "cfxjs-format": "^0.0.1",
+    "cfxjs-format": "^0.0.2",
     "classnames": "^2.2.6",
     "content-hash": "^2.5.0",
     "copy-to-clipboard": "^3.0.8",

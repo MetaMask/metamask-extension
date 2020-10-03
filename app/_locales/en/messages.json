@@ -502,6 +502,9 @@
   "endOfFlowMessage10": {
     "message": "All Done"
   },
+  "executed": {
+    "message": "Executed"
+  },
   "extensionId": {
     "message": "Extension ID: $1",
     "description": "$1 is a string of random letters that are the id of another extension connecting to ConfluxPortal"

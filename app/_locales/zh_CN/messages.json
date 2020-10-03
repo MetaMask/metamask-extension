@@ -479,6 +479,9 @@
   "estimatedProcessingTimes": {
     "message": "预估处理时间"
   },
+  "executed": {
+    "message": "已执行"
+  },
   "expandView": {
     "message": "展开视图"
   },

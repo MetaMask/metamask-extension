@@ -608,12 +608,16 @@ class TransactionController extends EventEmitter {
    * @param {number} txId - The tx's ID
    * @returns {Promise<void>}
    */
-  async confirmTransaction (txId, txReceipt) {
+  async confirmTransaction (txId, txReceipt, executedOnly) {
     // get the txReceipt before marking the transaction confirmed
     // to ensure the receipt is gotten before the ui revives the tx
     const txMeta = this.txStateManager.getTx(txId)
 
     if (!txMeta) {
+      return
+    }
+
+    if (executedOnly && txMeta.status === 'executed') {
       return
     }
 
@@ -638,8 +642,12 @@ class TransactionController extends EventEmitter {
       log.error(err)
     }
 
-    this.txStateManager.setTxStatusConfirmed(txId)
-    this._markNonceDuplicatesDropped(txId)
+    if (!executedOnly) {
+      this.txStateManager.setTxStatusConfirmed(txId)
+      this._markNonceDuplicatesDropped(txId)
+    } else {
+      this.txStateManager._setTxStatus(txId, 'executed')
+    }
   }
 
   /**
@@ -758,6 +766,9 @@ class TransactionController extends EventEmitter {
         'transactions/pending-tx-tracker#event: tx:warning'
       )
     })
+    this.pendingTxTracker.on('tx:executed', (txId, transactionReceipt) =>
+      this.confirmTransaction(txId, transactionReceipt, true)
+    )
     this.pendingTxTracker.on(
       'tx:failed',
       this.txStateManager.setTxStatusFailed.bind(this.txStateManager)

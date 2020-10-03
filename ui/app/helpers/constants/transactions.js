@@ -1,6 +1,7 @@
 export const UNAPPROVED_STATUS = 'unapproved'
 export const REJECTED_STATUS = 'rejected'
 export const APPROVED_STATUS = 'approved'
+export const EXECUTED_STATUS = 'executed'
 export const SIGNED_STATUS = 'signed'
 export const SUBMITTED_STATUS = 'submitted'
 export const CONFIRMED_STATUS = 'confirmed'

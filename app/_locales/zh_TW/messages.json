@@ -470,6 +470,9 @@
   "estimatedProcessingTimes": {
     "message": "預估處理時間"
   },
+  "executed": {
+    "message": "已執行"
+  },
   "expandView": {
     "message": "展開畫面"
   },
