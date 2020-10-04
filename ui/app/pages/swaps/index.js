@@ -22,6 +22,7 @@ import {
   getSwapsErrorKey,
   setMetamaskFeeAmount,
   getSwapsFeatureFlag,
+  prepareToLeaveSwaps,
 } from '../../ducks/swaps/swaps'
 import {
   AWAITING_SWAP_ROUTE,
@@ -40,7 +41,6 @@ import {
   OFFLINE_FOR_MAINTENANCE,
 } from '../../helpers/constants/swaps'
 
-import { resetCustomData } from '../../ducks/gas/gas.duck'
 import { resetBackgroundSwapsState, setSwapsTokens, setMaxMode, removeToken, setBackgroundSwapRouteState, setSwapsErrorKey } from '../../store/actions'
 import { getAveragePriceEstimateInHexWEI, currentNetworkTxListSelector, getCustomNetworkId, getRpcPrefsForCurrentProvider } from '../../selectors'
 import { useNewMetricEvent } from '../../hooks/useMetricEvent'
@@ -160,9 +160,7 @@ export default function Swap () {
       })
 
     return () => {
-      dispatch(resetCustomData())
-      dispatch(clearSwapsState())
-      dispatch(resetBackgroundSwapsState())
+      dispatch(prepareToLeaveSwaps())
     }
   }, [dispatch, isCustomNetwork])
 
@@ -209,9 +207,7 @@ export default function Swap () {
     const fn = () => {
       clearTemporaryTokenRef.current()
       if (isLoadingQuotesRoute) {
-        dispatch(resetCustomData())
-        dispatch(clearSwapsState())
-        dispatch(resetBackgroundSwapsState())
+        dispatch(prepareToLeaveSwaps())
       }
       return null
     }

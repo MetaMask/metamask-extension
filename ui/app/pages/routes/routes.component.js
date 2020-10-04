@@ -83,6 +83,7 @@ export default class Routes extends Component {
     hasPermissionsRequests: PropTypes.bool,
     autoLockTimeLimit: PropTypes.number,
     pageChanged: PropTypes.func.isRequired,
+    prepareToLeaveSwaps: PropTypes.func,
   }
 
   static contextTypes = {
@@ -203,6 +204,7 @@ export default class Routes extends Component {
       sidebar,
       submittedPendingTransactions,
       isMouseUser,
+      prepareToLeaveSwaps,
     } = this.props
     const isLoadingNetwork = network === 'loading'
     const loadMessage = (loadingMessage || isLoadingNetwork)
@@ -241,6 +243,12 @@ export default class Routes extends Component {
           <AppHeader
             hideNetworkIndicator={this.onInitializationUnlockPage()}
             disableNetworkIndicator={this.onSwapsPage()}
+            onClick={async () => {
+              if (this.onSwapsPage()) {
+                await prepareToLeaveSwaps()
+
+              }
+            }}
             disabled={this.onConfirmPage()}
           />
         ) }

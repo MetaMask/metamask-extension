@@ -15,6 +15,7 @@ import {
   setMouseUserState,
 } from '../../store/actions'
 import { pageChanged } from '../../ducks/history/history'
+import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps'
 import Routes from './routes.component'
 
 function mapStateToProps (state) {
@@ -56,6 +57,7 @@ function mapDispatchToProps (dispatch) {
     setMouseUserState: (isMouseUser) => dispatch(setMouseUserState(isMouseUser)),
     setLastActiveTime: () => dispatch(setLastActiveTime()),
     pageChanged: (path) => dispatch(pageChanged(path)),
+    prepareToLeaveSwaps: () => dispatch(prepareToLeaveSwaps()),
   }
 }
 
