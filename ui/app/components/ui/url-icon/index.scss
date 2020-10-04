@@ -15,15 +15,15 @@
   -o-animation: fadein 1s;
 
   &__fallback {
-    width: 34px;
-    height: 34px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     background: #bbc0c5;
     flex: 0 1 auto;
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding-top: 6px;
+    padding-top: 2px;
   }
 }
 
