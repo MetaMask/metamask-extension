@@ -16,6 +16,7 @@ import {
   stopPollingForQuotes,
   updateAndApproveTx,
   updateTransaction,
+  resetBackgroundSwapsState,
 } from '../../store/actions'
 import { AWAITING_SWAP_ROUTE, BUILD_QUOTE_ROUTE, LOADING_QUOTES_ROUTE, SWAPS_ERROR_ROUTE } from '../../helpers/constants/routes'
 import { fetchTradesInfo } from '../../pages/swaps/swaps.util'
@@ -38,7 +39,7 @@ import {
   SWAP_FAILED_ERROR,
 } from '../../helpers/constants/swaps'
 import { SWAP, SWAP_APPROVAL } from '../../helpers/constants/transactions'
-import { fetchBasicGasAndTimeEstimates, fetchGasEstimates } from '../gas/gas.duck'
+import { fetchBasicGasAndTimeEstimates, fetchGasEstimates, resetCustomData } from '../gas/gas.duck'
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util'
 
 const initialState = {
@@ -235,6 +236,15 @@ export const prepareForRetryGetQuotes = () => {
     // TODO: Ensure any fetch in progress is cancelled
     await dispatch(resetSwapsPostFetchState())
     dispatch(retriedGetQuotes())
+  }
+}
+
+export const prepareToLeaveSwaps = () => {
+  return async (dispatch) => {
+    dispatch(resetCustomData())
+    dispatch(clearSwapsState())
+    await dispatch(resetBackgroundSwapsState())
+
   }
 }
 
