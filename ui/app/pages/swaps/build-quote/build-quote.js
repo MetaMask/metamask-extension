@@ -65,7 +65,15 @@ export default function BuildQuote ({
     : sourceTokenInfo
 
   const { loading, tokensWithBalances } = useTokenTracker(tokens)
-  const usersTokens = uniqBy([...tokensWithBalances, ...tokens], 'address')
+
+  let fromTokenArray = []
+  // If the fromToken was set in a call to `onFromSelect` (see below), and that from token has a balance
+  // but is not in tokensWithBalances or tokens, then we want to add it to the usersTokens array so that
+  // the balance of the token can appear in the from token selection dropdown
+  if (fromToken?.symbol !== 'ETH' && fromToken?.balance) {
+    fromTokenArray = [fromToken]
+  }
+  const usersTokens = uniqBy([...tokensWithBalances, ...tokens, ...fromTokenArray], 'address')
   const memoizedUsersTokens = useEqualityCheck(usersTokens)
 
   const selectedFromToken = useTokensToSearch({
