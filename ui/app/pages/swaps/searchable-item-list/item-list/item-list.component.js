@@ -54,12 +54,12 @@ export default function ItemList ({
                     onClick={() => onClickItem && onClickItem(result)}
                     key={`searchable-item-list-item-${i}`}
                   >
-                    {iconUrl && (<UrlIcon url={iconUrl} name={primaryLabel} />)}
-                    {identiconAddress && (
+                    {(iconUrl || primaryLabel) && (<UrlIcon url={iconUrl} name={primaryLabel} />)}
+                    {!(iconUrl || primaryLabel) && identiconAddress && (
                       <div className="searchable-item-list__identicon">
                         <Identicon
                           address={identiconAddress}
-                          diameter={34}
+                          diameter={24}
                         />
                       </div>
                     )}
