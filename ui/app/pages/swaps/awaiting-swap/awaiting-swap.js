@@ -171,7 +171,7 @@ export default function AwaitingSwap ({
      */
     headerText = t('swapProcessing')
     statusImage = <PulseLoader />
-    submitText = t('close')
+    submitText = t('swapsViewInActivity')
     descriptionText = t('swapOnceTransactionHasProcess', [<span key="swapOnceTransactionHasProcess-1" className="awaiting-swap__amount-and-symbol">{symbol}</span>])
     content = (
       <>
