@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 8.1.0 Mon Oct 05 2020
+
 ## 8.0.10 Wed Sep 16 2020
 - [#9423](https://github.com/MetaMask/metamask-extension/pull/9423): Update default phishing list
 - [#9416](https://github.com/MetaMask/metamask-extension/pull/9416): Fix fetching a new phishing list on Firefox
