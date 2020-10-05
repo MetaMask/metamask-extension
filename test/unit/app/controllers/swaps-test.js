@@ -67,7 +67,6 @@ const EMPTY_INIT_STATE = {
     quotes: {},
     fetchParams: null,
     tokens: null,
-    showAwaitingSwapScreen: false,
     tradeTxId: null,
     approveTxId: null,
     maxMode: false,
@@ -138,15 +137,6 @@ describe('SwapsController', function () {
     })
 
     describe('setters', function () {
-      it('should set quotes', function () {
-        const quotes = {}
-        swapsController.setQuotes(quotes)
-        assert.deepStrictEqual(
-          swapsController.store.getState().swapsState.quotes,
-          quotes,
-        )
-      })
-
       it('should set selected quote agg id', function () {
         const selectedAggId = 'test'
         swapsController.setSelectedQuoteAggId(selectedAggId)
@@ -166,11 +156,10 @@ describe('SwapsController', function () {
       })
 
       it('should set show awaiting swap screen', function () {
-        const awaiting = true
-        swapsController.setShowAwaitingSwapScreen(awaiting)
+        swapsController.setBackgroundSwapRouteState('awaiting')
         assert.strictEqual(
-          swapsController.store.getState().swapsState.showAwaitingSwapScreen,
-          awaiting,
+          swapsController.store.getState().swapsState.routeState,
+          'awaiting',
         )
       })
 
