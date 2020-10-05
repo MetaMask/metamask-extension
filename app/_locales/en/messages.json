@@ -1755,6 +1755,18 @@
   "swapSwapTo": {
     "message": "Swap to"
   },
+  "swapAggregator": {
+    "message": "Aggregator"
+  },
+  "swapRequestForQuotation": {
+    "message": "Request for quotation"
+  },
+  "swapDecentralizedExchange": {
+    "message": "Decentralized exchange"
+  },
+  "swapUnknown": {
+    "message": "Unknown"
+  },
   "swapThisWillAllowApprove": {
     "message": "This will allow $1 to be swapped."
   },
