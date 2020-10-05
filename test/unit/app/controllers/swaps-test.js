@@ -155,14 +155,6 @@ describe('SwapsController', function () {
         )
       })
 
-      it('should set show awaiting swap screen', function () {
-        swapsController.setBackgroundSwapRouteState('awaiting')
-        assert.strictEqual(
-          swapsController.store.getState().swapsState.routeState,
-          'awaiting',
-        )
-      })
-
       it('should set trade tx id', function () {
         const tradeTxId = 'test'
         swapsController.setTradeTxId(tradeTxId)
