@@ -125,7 +125,7 @@ export default function AwaitingSwap ({
   if (errorKey === OFFLINE_FOR_MAINTENANCE) {
     headerText = t('offlineForMaintenance')
     descriptionText = t('metamaskSwapsOfflineDescription')
-    submitText = t('back')
+    submitText = t('close')
     statusImage = <SwapFailureIcon />
   } else if (errorKey === SWAP_FAILED_ERROR) {
     headerText = t('swapFailedErrorTitle')
@@ -231,7 +231,9 @@ export default function AwaitingSwap ({
       </div>
       <SwapsFooter
         onSubmit={async () => {
-          if (errorKey === QUOTES_EXPIRED_ERROR) {
+          if (errorKey === OFFLINE_FOR_MAINTENANCE) {
+            history.push(DEFAULT_ROUTE)
+          } else if (errorKey === QUOTES_EXPIRED_ERROR) {
             dispatch(prepareForRetryGetQuotes())
             await dispatch(fetchQuotesAndSetQuoteState(history, inputValue, maxSlippage, metaMetricsEvent))
           } else if (errorKey) {
