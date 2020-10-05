@@ -18,7 +18,3 @@ export const GAS_ESTIMATE_TYPES = {
   AVERAGE: 'AVERAGE',
   FAST: 'FAST',
 }
-
-export const VALUE_TABLE = {
-  WEI: '1000000000000000000',
-}
