@@ -1,7 +1,10 @@
 {
   "author": "https://metamask.io",
   "background": {
-    "scripts": ["bg-libs.js", "background.js"],
+    "scripts": [
+      "bg-libs.js",
+      "background.js"
+    ],
     "persistent": true
   },
   "browser_action": {
@@ -29,21 +32,35 @@
   },
   "content_scripts": [
     {
-      "matches": ["file://*/*", "http://*/*", "https://*/*"],
-      "js": ["contentscript.js"],
+      "matches": [
+        "file://*/*",
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "contentscript.js"
+      ],
       "run_at": "document_start",
       "all_frames": true
     },
     {
-      "matches": ["*://connect.trezor.io/*/popup.html"],
-      "js": ["vendor/trezor/content-script.js"]
+      "matches": [
+        "*://connect.trezor.io/*/popup.html"
+      ],
+      "js": [
+        "vendor/trezor/content-script.js"
+      ]
     }
   ],
   "default_locale": "en",
   "description": "__MSG_appDescription__",
   "externally_connectable": {
-    "matches": ["https://metamask.io/*"],
-    "ids": ["*"]
+    "matches": [
+      "https://metamask.io/*"
+    ],
+    "ids": [
+      "*"
+    ]
   },
   "icons": {
     "16": "images/icon-16.png",
@@ -69,5 +86,8 @@
   ],
   "short_name": "__MSG_appName__",
   "version": "8.1.0",
-  "web_accessible_resources": ["inpage.js", "phishing.html"]
+  "web_accessible_resources": [
+    "inpage.js",
+    "phishing.html"
+  ]
 }
