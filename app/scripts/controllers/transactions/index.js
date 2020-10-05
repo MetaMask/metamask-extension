@@ -365,6 +365,11 @@ export default class TransactionController extends EventEmitter {
       type: TRANSACTION_TYPE_CANCEL,
     })
 
+    if (originalTxMeta.transactionCategory === SWAP) {
+      newTxMeta.sourceTokenSymbol = originalTxMeta.sourceTokenSymbol
+      newTxMeta.destinationTokenSymbol = originalTxMeta.destinationTokenSymbol
+    }
+
     this.addTx(newTxMeta)
     await this.approveTransaction(newTxMeta.id)
     return newTxMeta
