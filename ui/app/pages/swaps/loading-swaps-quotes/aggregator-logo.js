@@ -13,7 +13,7 @@ function hexToRGB (hex, alpha) {
 export default function AggregatorLogo ({ icon, color }) {
   return (
     <div className="loading-swaps-quotes__logo">
-      <div style={{ background: color, boxShadow: `0 0 24px ${hexToRGB(color, 0.3)}` }}><img src={icon} /></div>
+      <div style={{ background: color, boxShadow: `0px 4px 20px ${hexToRGB(color, 0.25)}` }}><img src={icon} /></div>
     </div>
   )
 }
