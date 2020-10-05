@@ -11,7 +11,6 @@ import {
   setInitialGasEstimate,
   setSwapsErrorKey,
   setSwapsTxGasPrice,
-  setShowAwaitingSwapScreen,
   setApproveTxId,
   setTradeTxId,
   stopPollingForQuotes,
@@ -49,7 +48,6 @@ const initialState = {
   fetchingQuotes: false,
   fromToken: null,
   quotesFetchStartTime: null,
-  submittingSwap: false,
   topAssets: {},
   toToken: null,
   metamaskFeeAmount: null,
@@ -64,13 +62,11 @@ const slice = createSlice({
       state.approveTxId = null
       state.balanceError = false
       state.fetchingQuotes = false
-      state.submittingSwap = false
     },
     retriedGetQuotes: (state) => {
       state.approveTxId = null
       state.balanceError = false
       state.fetchingQuotes = false
-      state.submittingSwap = false
     },
     setAggregatorMetadata: (state, action) => {
       state.aggregatorMetadata = action.payload
@@ -86,9 +82,6 @@ const slice = createSlice({
     },
     setQuotesFetchStartTime: (state, action) => {
       state.quotesFetchStartTime = action.payload
-    },
-    setSubmittingSwap: (state, action) => {
-      state.submittingSwap = action.payload
     },
     setTopAssets: (state, action) => {
       state.topAssets = action.payload
@@ -120,8 +113,6 @@ export const getApproveTxId = (state) => state.swaps.approveTxId
 export const getBalanceError = (state) => state.swaps.balanceError
 
 export const getFromToken = (state) => state.swaps.fromToken
-
-export const getSubmittingSwap = (state) => state.swaps.submittingSwap
 
 export const getTopAssets = (state) => state.swaps.topAssets
 
@@ -212,7 +203,6 @@ const {
   setFetchingQuotes,
   setFromToken,
   setQuotesFetchStartTime,
-  setSubmittingSwap,
   setTopAssets,
   setToToken,
   setMetamaskFeeAmount,
@@ -225,7 +215,6 @@ export {
   setFetchingQuotes,
   setFromToken as setSwapsFromToken,
   setQuotesFetchStartTime as setSwapQuotesFetchStartTime,
-  setSubmittingSwap,
   setTopAssets,
   setToToken as setSwapToToken,
   setMetamaskFeeAmount,
@@ -429,7 +418,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     const fetchParams = getFetchParams(state)
     const { metaData, value: swapTokenValue, slippage } = fetchParams
     const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData
-    dispatch(setSubmittingSwap(true))
+    await dispatch(setBackgroundSwapRouteState('awaiting'))
     await dispatch(stopPollingForQuotes())
     history.push(AWAITING_SWAP_ROUTE)
 
@@ -548,7 +537,5 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     await dispatch(updateAndApproveTx(finalTradeTxMeta, true))
 
     await forceUpdateMetamaskState(dispatch)
-    dispatch(setShowAwaitingSwapScreen(true))
-    dispatch(setSubmittingSwap(false))
   }
 }

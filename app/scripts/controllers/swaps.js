@@ -51,7 +51,6 @@ const initialState = {
     quotes: {},
     fetchParams: null,
     tokens: null,
-    showAwaitingSwapScreen: false,
     tradeTxId: null,
     approveTxId: null,
     maxMode: false,
@@ -110,8 +109,6 @@ export default class SwapsController {
 
   stopPollingForQuotes () {
     clearTimeout(this.pollingTimeout)
-    this.setQuotes({})
-    this.setQuotesLastFetched(null)
   }
 
   async fetchAndSetQuotes (fetchParams, fetchParamsMetaData = {}, isPolledRequest) {
@@ -237,11 +234,6 @@ export default class SwapsController {
     }
   }
 
-  setQuotes (quotes) {
-    const { swapsState } = this.store.getState()
-    this.store.updateState({ swapsState: { ...swapsState, quotes } })
-  }
-
   setSelectedQuoteAggId (selectedAggId) {
     const { swapsState } = this.store.getState()
     this.store.updateState({ swapsState: { ...swapsState, selectedAggId } })
@@ -338,13 +330,6 @@ export default class SwapsController {
 
     this.store.updateState({
       swapsState: { ...swapsState, quotes: { ...swapsState.quotes, [initialAggId]: quoteToUpdate } },
-    })
-  }
-
-  setShowAwaitingSwapScreen (showAwaitingSwapScreen) {
-    const { swapsState } = this.store.getState()
-    this.store.updateState({
-      swapsState: { ...swapsState, showAwaitingSwapScreen },
     })
   }
 

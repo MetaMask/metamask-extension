@@ -2209,13 +2209,6 @@ export function setSwapsTxGasParams (gasLimit, gasPrice) {
   }
 }
 
-export function setShowAwaitingSwapScreen (showAwaitingSwapScreen) {
-  return async (dispatch) => {
-    await promisifiedBackground.setShowAwaitingSwapScreen(showAwaitingSwapScreen)
-    await forceUpdateMetamaskState(dispatch)
-  }
-}
-
 export function setTradeTxId (tradeTxId) {
   return async (dispatch) => {
     await promisifiedBackground.setTradeTxId(tradeTxId)

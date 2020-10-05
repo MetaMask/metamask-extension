@@ -13,7 +13,6 @@ import {
   getFetchingQuotes,
   setBalanceError,
   getCustomSwapsGasPrice,
-  getSubmittingSwap,
   setTopAssets,
   getSwapsTradeTxParams,
   getFetchParams,
@@ -70,7 +69,6 @@ export default function Swap () {
   const [inputValue, setInputValue] = useState(fetchParams?.value || '')
   const [maxSlippage, setMaxSlippage] = useState(fetchParams?.slippage || 2)
 
-  const submittingSwap = useSelector(getSubmittingSwap)
   const routeState = useSelector(getBackgroundSwapRouteState)
   const tradeTxParams = useSelector(getSwapsTradeTxParams)
   const selectedAccount = useSelector(getSelectedAccount)
@@ -330,7 +328,7 @@ export default function Swap () {
                 return aggregatorMetadata
                   ? (
                     <LoadingQuote
-                      loadingComplete={!fetchingQuotes}
+                      loadingComplete={!fetchingQuotes && Object.values(quotes).length}
                       onDone={async () => {
                         await dispatch(setBackgroundSwapRouteState(''))
 
@@ -365,7 +363,7 @@ export default function Swap () {
               path={AWAITING_SWAP_ROUTE}
               exact
               render={() => {
-                return submittingSwap || tradeTxData
+                return (routeState === 'awaiting') || tradeTxData
                   ? (
                     <AwaitingSwap
                       swapComplete={tradeConfirmed}
@@ -375,7 +373,7 @@ export default function Swap () {
                       tokensReceived={tokensReceived}
                       tradeTxData={tradeTxData}
                       usedGasPrice={usedGasPrice}
-                      submittingSwap={submittingSwap}
+                      submittingSwap={routeState === 'awaiting' && !(tradeConfirmed || conversionError)}
                       rpcPrefs={rpcPrefs}
                       inputValue={inputValue}
                       maxSlippage={maxSlippage}
