@@ -72,7 +72,7 @@ const mapStateToProps = (state) => {
     swapsWelcomeMessageHasBeenShown: getSwapsWelcomeMessageSeenStatus(state),
     haveSwapsQuotes: Boolean(Object.values(swapsState.quotes || {}).length),
     swapsFetchParams: swapsState.fetchParams,
-    showAwaitingSwapScreen: swapsState.showAwaitingSwapScreen,
+    showAwaitingSwapScreen: swapsState.routeState === 'awaiting',
   }
 }
 

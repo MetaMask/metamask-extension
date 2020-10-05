@@ -26,6 +26,7 @@ import {
   getTopQuote,
   navigateBackToBuildQuote,
   signAndSendTransactions,
+  getBackgroundSwapRouteState,
 } from '../../../ducks/swaps/swaps'
 import {
   conversionRateSelector,
@@ -48,6 +49,7 @@ import {
   BUILD_QUOTE_ROUTE,
   DEFAULT_ROUTE,
   SWAPS_ERROR_ROUTE,
+  AWAITING_SWAP_ROUTE,
 } from '../../../helpers/constants/routes'
 import { getTokenData } from '../../../helpers/utils/transactions.util'
 import {
@@ -85,12 +87,15 @@ export default function ViewQuote () {
   const [warningHidden, setWarningHidden] = useState(false)
   const [originalApproveAmount, setOriginalApproveAmount] = useState(null)
 
+  const routeState = useSelector(getBackgroundSwapRouteState)
   const quotes = useSelector(getQuotes, isEqual)
   useEffect(() => {
     if (!Object.values(quotes).length) {
       history.push(BUILD_QUOTE_ROUTE)
+    } else if (routeState === 'awaiting') {
+      history.push(AWAITING_SWAP_ROUTE)
     }
-  }, [history, quotes])
+  }, [history, quotes, routeState])
 
   const quotesLastFetched = useSelector(getQuotesLastFetched)
 
