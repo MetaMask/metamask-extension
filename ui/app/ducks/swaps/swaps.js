@@ -537,6 +537,9 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       sourceTokenSymbol: sourceTokenInfo.symbol,
       destinationTokenSymbol: destinationTokenInfo.symbol,
       transactionCategory: SWAP,
+      destinationTokenDecimals: destinationTokenInfo.decimals,
+      destinationTokenAddress: destinationTokenInfo.address,
+      swapMetaData,
       swapTokenValue,
     }, true)))
     await dispatch(updateAndApproveTx(finalTradeTxMeta, true))
