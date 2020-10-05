@@ -12,7 +12,7 @@ import Tooltip from '../../ui/tooltip'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 import { showModal } from '../../../store/actions'
-import { isBalanceCached, getSelectedAccount, getShouldShowFiat, getCurrentNetworkId } from '../../../selectors/selectors'
+import { isBalanceCached, getSelectedAccount, getShouldShowFiat, getCurrentNetworkId, getCurrentKeyring } from '../../../selectors/selectors'
 import { getValueFromWeiHex } from '../../../helpers/utils/conversions.util'
 import SwapIcon from '../../ui/icon/swap-icon.component'
 import BuyIcon from '../../ui/icon/overview-buy-icon.component'
@@ -40,6 +40,8 @@ const EthOverview = ({ className }) => {
     },
   })
   const history = useHistory()
+  const keyring = useSelector(getCurrentKeyring)
+  const hardwareWallet = keyring.type.search('Hardware') !== -1
   const balanceIsCached = useSelector(isBalanceCached)
   const showFiat = useSelector(getShouldShowFiat)
   const selectedAccount = useSelector(getSelectedAccount)
@@ -120,7 +122,11 @@ const EthOverview = ({ className }) => {
                     balance,
                     string: getValueFromWeiHex({ value: balance, numberOfDecimals: 4, toDenomination: 'ETH' }),
                   }))
-                  history.push(BUILD_QUOTE_ROUTE)
+                  if (hardwareWallet) {
+                    global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE)
+                  } else {
+                    history.push(BUILD_QUOTE_ROUTE)
+                  }
                 }
               }}
               label={ t('swap') }

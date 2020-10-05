@@ -11,9 +11,9 @@ import { SEND_ROUTE, BUILD_QUOTE_ROUTE } from '../../../helpers/constants/routes
 import { useMetricEvent, useNewMetricEvent } from '../../../hooks/useMetricEvent'
 import { useTokenTracker } from '../../../hooks/useTokenTracker'
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount'
-import { getAssetImages, getCurrentNetworkId } from '../../../selectors/selectors'
 import { updateSendToken } from '../../../store/actions'
 import { getSwapsFeatureFlag, setSwapsFromToken } from '../../../ducks/swaps/swaps'
+import { getAssetImages, getCurrentKeyring, getCurrentNetworkId } from '../../../selectors/selectors'
 
 import SwapIcon from '../../ui/icon/swap-icon.component'
 import SendIcon from '../../ui/icon/overview-send-icon.component'
@@ -34,6 +34,8 @@ const TokenOverview = ({ className, token }) => {
   const history = useHistory()
   const assetImages = useSelector(getAssetImages)
 
+  const keyring = useSelector(getCurrentKeyring)
+  const hardwareWallet = keyring.type.search('Hardware') !== -1
   const { tokensWithBalances } = useTokenTracker([token])
   const balance = tokensWithBalances[0]?.string
   const formattedFiatBalance = useTokenFiatAmount(token.address, balance, token.symbol)
@@ -85,7 +87,11 @@ const TokenOverview = ({ className, token }) => {
                 if (networkId === '1') {
                   enteredSwapsEvent()
                   dispatch(setSwapsFromToken({ ...token, iconUrl: assetImages[token.address] }))
-                  history.push(BUILD_QUOTE_ROUTE)
+                  if (hardwareWallet) {
+                    global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE)
+                  } else {
+                    history.push(BUILD_QUOTE_ROUTE)
+                  }
                 }
               }}
               label={ t('swap') }
