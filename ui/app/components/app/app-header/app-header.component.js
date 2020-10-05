@@ -99,7 +99,9 @@ export default class AppHeader extends PureComponent {
           <MetaFoxLogo
             unsetIconHeight
             onClick={async () => {
-              await onClick()
+              if (onClick) {
+                await onClick()
+              }
               history.push(DEFAULT_ROUTE)
             }}
           />
