@@ -204,6 +204,7 @@ export default function Swap () {
   const beforeUnloadEventAddedRef = useRef()
   useEffect(() => {
     const fn = () => {
+      clearTemporaryTokenRef.current()
       if (isLoadingQuotesRoute) {
         dispatch(resetCustomData())
         dispatch(clearSwapsState())
@@ -229,6 +230,7 @@ export default function Swap () {
             <div
               className="swaps__header-cancel"
               onClick={async () => {
+                clearTemporaryTokenRef.current()
                 dispatch(clearSwapsState())
                 await dispatch(resetBackgroundSwapsState())
                 history.push(DEFAULT_ROUTE)
