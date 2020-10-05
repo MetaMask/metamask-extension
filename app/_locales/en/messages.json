@@ -1799,6 +1799,9 @@
     "message": "Not enough $1 to complete this transaction",
     "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
+  "swapsViewInActivity": {
+    "message": "View in activity"
+  },
   "switchNetworks": {
     "message": "Switch Networks"
   },
