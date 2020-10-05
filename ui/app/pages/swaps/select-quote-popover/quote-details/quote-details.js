@@ -12,7 +12,7 @@ const QuoteDetails = ({
   sourceTokenSymbol,
   destinationTokenValue,
   destinationTokenSymbol,
-  liquiditySource,
+  liquiditySourceKey,
   minimumAmountReceived,
   feeInEth,
   networkFees,
@@ -79,7 +79,7 @@ const QuoteDetails = ({
           />
         </div>
         <div className="quote-details__detail-content">
-          {liquiditySource}
+          {t(liquiditySourceKey)}
         </div>
       </div>
       <div className="quote-details__row quote-details__row--high">
@@ -101,7 +101,7 @@ QuoteDetails.propTypes = {
   sourceTokenSymbol: PropTypes.string.isRequired,
   destinationTokenValue: PropTypes.string.isRequired,
   destinationTokenSymbol: PropTypes.string.isRequired,
-  liquiditySource: PropTypes.string.isRequired,
+  liquiditySourceKey: PropTypes.string.isRequired,
   minimumAmountReceived: PropTypes.string.isRequired,
   feeInEth: PropTypes.string.isRequired,
   networkFees: PropTypes.string.isRequired,

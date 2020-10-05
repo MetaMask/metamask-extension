@@ -345,18 +345,18 @@ export function quotesToRenderableData (quotes, gasPrice, conversionRate, curren
         .times(calcTokenAmount(destinationAmount, destinationTokenInfo.decimals || 18), 10)
         .minus(rawEthFee, 10)
 
-    let liquiditySource
+    let liquiditySourceKey
     let renderedSlippage = slippage
 
     if (aggType === 'AGG') {
-      liquiditySource = 'Aggregator'
+      liquiditySourceKey = 'swapAggregator'
     } else if (aggType === 'RFQ') {
-      liquiditySource = 'Request for Quotation'
+      liquiditySourceKey = 'swapRequestForQuotation'
       renderedSlippage = 0
     } else if (aggType === 'DEX') {
-      liquiditySource = 'Decentralized exchange'
+      liquiditySourceKey = 'swapDecentralizedExchange'
     } else {
-      liquiditySource = 'Unknown'
+      liquiditySourceKey = 'swapUnknown'
     }
 
     return {
@@ -366,7 +366,7 @@ export function quotesToRenderableData (quotes, gasPrice, conversionRate, curren
       destinationTokenSymbol: destinationTokenInfo.symbol,
       destinationTokenValue: destinationValue,
       isBestQuote: quote.isBestQuote,
-      liquiditySource,
+      liquiditySourceKey,
       metaMaskFee,
       feeInEth,
       detailedNetworkFees: `${feeInEth} (${feeInFiat})`,
