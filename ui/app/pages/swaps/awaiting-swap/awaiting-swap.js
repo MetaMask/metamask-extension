@@ -84,6 +84,7 @@ export default function AwaitingSwap ({
       custom_slippage: fetchParams?.slippage === 2,
       gas_fees: feeinFiat,
     },
+    category: 'swaps',
   })
   const anonymousQuotesExpiredEvent = useNewMetricEvent({ event: 'Quotes Timed Out', category: 'swaps' })
 
