@@ -143,6 +143,15 @@ export function decETHToDecWEI (decEth) {
   })
 }
 
+export function hexWEIToDecETH (hexWEI) {
+  return conversionUtil(hexWEI, {
+    fromNumericBase: 'hex',
+    toNumericBase: 'dec',
+    fromDenomination: 'WEI',
+    toDenomination: 'ETH',
+  })
+}
+
 export function hexMax (...hexNumbers) {
   let max = hexNumbers[0]
   hexNumbers.slice(1).forEach((hexNumber) => {

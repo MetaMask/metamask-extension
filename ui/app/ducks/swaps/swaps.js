@@ -21,7 +21,7 @@ import {
 import { AWAITING_SWAP_ROUTE, BUILD_QUOTE_ROUTE, LOADING_QUOTES_ROUTE, SWAPS_ERROR_ROUTE } from '../../helpers/constants/routes'
 import { fetchTradesInfo } from '../../pages/swaps/swaps.util'
 import { calcGasTotal } from '../../pages/send/send.utils'
-import { decimalToHex, getValueFromWeiHex, hexMax, decGWEIToHexWEI } from '../../helpers/utils/conversions.util'
+import { decimalToHex, getValueFromWeiHex, hexMax, decGWEIToHexWEI, hexWEIToDecETH } from '../../helpers/utils/conversions.util'
 import { constructTxParams } from '../../helpers/utils/util'
 import { calcTokenAmount } from '../../helpers/utils/token-util'
 import {
@@ -39,7 +39,6 @@ import {
   SWAP_FAILED_ERROR,
 } from '../../helpers/constants/swaps'
 import { SWAP, SWAP_APPROVAL } from '../../helpers/constants/transactions'
-import { VALUE_TABLE } from '../../helpers/constants/common'
 import { fetchBasicGasAndTimeEstimates, fetchGasEstimates } from '../gas/gas.duck'
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util'
 
@@ -461,12 +460,13 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
 
       const networkId = getCurrentNetworkId(state)
       const customNetworkId = getCustomNetworkId(state)
-      const revisedTradeValue = (new BigNumber(ethBalance, 16)).minus(gasTotalInWeiHex, 16).div(VALUE_TABLE.WEI, 10).toString(10)
+      const revisedTradeValueInHexWei = (new BigNumber(ethBalance, 16)).minus(gasTotalInWeiHex, 16).toString(16)
+      const revisedTradeValueInEth = hexWEIToDecETH(revisedTradeValueInHexWei)
       const revisedQuotes = await fetchTradesInfo({
         sourceToken: sourceTokenInfo.address,
         destinationToken: destinationTokenInfo.address,
         slippage,
-        value: revisedTradeValue,
+        value: revisedTradeValueInEth,
         exchangeList: usedQuote.aggregator,
         fromAddress: selectedAccount.address,
         timeout: 10000,
