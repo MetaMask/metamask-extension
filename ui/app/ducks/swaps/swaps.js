@@ -108,8 +108,6 @@ export const getSwapsFeatureFlag = (state) => (state.swaps.enabled ?? process.en
 
 export const getAggregatorMetadata = (state) => state.swaps.aggregatorMetadata
 
-export const getApproveTxId = (state) => state.swaps.approveTxId
-
 export const getBalanceError = (state) => state.swaps.balanceError
 
 export const getFromToken = (state) => state.swaps.fromToken
@@ -159,6 +157,8 @@ export const getTopQuote = (state) => {
   const { topAggId, quotes } = getSwapsState(state)
   return quotes[topAggId]
 }
+
+export const getApproveTxId = (state) => state.metamask.swapsState.approveTxId
 
 export const getTradeTxId = (state) => state.metamask.swapsState.tradeTxId
 
@@ -513,13 +513,19 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     const approveTxParams = getApproveTxParams(state)
     if (approveTxParams) {
       const approveTxMeta = await dispatch(addUnapprovedTransaction({ ...approveTxParams, amount: '0x0' }, 'metamask'))
-      dispatch(setApproveTxId(approveTxMeta.id))
+      await dispatch(setApproveTxId(approveTxMeta.id))
       const finalApproveTxMeta = await (dispatch(updateTransaction({
         ...approveTxMeta,
         transactionCategory: SWAP_APPROVAL,
         sourceTokenSymbol: sourceTokenInfo.symbol,
       }, true)))
-      await dispatch(updateAndApproveTx(finalApproveTxMeta, true))
+      try {
+        await dispatch(updateAndApproveTx(finalApproveTxMeta, true))
+      } catch (e) {
+        await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR))
+        history.push(SWAPS_ERROR_ROUTE)
+        return
+      }
     }
 
     const tradeTxMeta = await dispatch(addUnapprovedTransaction(usedTradeTxParams, 'metamask'))
@@ -534,7 +540,13 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       swapMetaData,
       swapTokenValue,
     }, true)))
-    await dispatch(updateAndApproveTx(finalTradeTxMeta, true))
+    try {
+      await dispatch(updateAndApproveTx(finalTradeTxMeta, true))
+    } catch (e) {
+      await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR))
+      history.push(SWAPS_ERROR_ROUTE)
+      return
+    }
 
     await forceUpdateMetamaskState(dispatch)
   }
