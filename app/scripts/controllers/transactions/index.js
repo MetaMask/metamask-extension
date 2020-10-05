@@ -582,7 +582,7 @@ export default class TransactionController extends EventEmitter {
       }
 
       if (txMeta.swapMetaData) {
-        let version = global.platform.getVersion()
+        let { version } = this.platform
         if (process.env.METAMASK_ENVIRONMENT !== 'production') {
           version = `${version}-${process.env.METAMASK_ENVIRONMENT}`
         }
