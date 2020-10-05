@@ -55,7 +55,7 @@ export default function SlippageButtons ({
               />
             </div>
             <ButtonGroup
-              defaultActiveButtonIndex={activeButtonIndex}
+              defaultActiveButtonIndex={activeButtonIndex === 2 && !customValue ? 1 : activeButtonIndex}
               variant="radiogroup"
               newActiveButtonIndex={activeButtonIndex}
               className={
