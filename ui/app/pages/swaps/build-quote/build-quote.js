@@ -205,11 +205,14 @@ export default function BuildQuote ({
         </div>
         <div
           className="build-quote__swap-arrows-row"
-          onClick={() => {
-            onToSelect(selectedFromToken)
-            onFromSelect(selectedToToken)
-          }}
-        ><div className="build-quote__swap-arrows" />
+        >
+          <div
+            className="build-quote__swap-arrows"
+            onClick={() => {
+              onToSelect(selectedFromToken)
+              onFromSelect(selectedToToken)
+            }}
+          />
         </div>
         <div className="build-quote__dropdown-swap-to-header">
           <div className="build-quote__input-label">{t('swapSwapTo')}</div>
