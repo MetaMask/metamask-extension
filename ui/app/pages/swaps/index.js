@@ -373,7 +373,7 @@ export default function Swap () {
                       tokensReceived={tokensReceived}
                       tradeTxData={tradeTxData}
                       usedGasPrice={usedGasPrice}
-                      submittingSwap={routeState === 'awaiting' && !(tradeConfirmed || conversionError)}
+                      submittingSwap={routeState === 'awaiting' && !(approveTxId || tradeTxId)}
                       rpcPrefs={rpcPrefs}
                       inputValue={inputValue}
                       maxSlippage={maxSlippage}
