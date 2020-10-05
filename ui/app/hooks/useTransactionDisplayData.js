@@ -73,6 +73,7 @@ export function useTransactionDisplayData (transactionGroup) {
   const methodData = useSelector((state) => getKnownMethodData(state, initialTransaction?.txParams?.data)) || {}
 
   const status = getStatusKey(primaryTransaction)
+  const isPending = status in PENDING_STATUS_HASH
 
   const primaryValue = primaryTransaction.txParams?.value
   let prefix = '-'
@@ -202,7 +203,7 @@ export function useTransactionDisplayData (transactionGroup) {
     date,
     subtitle,
     subtitleContainsOrigin,
-    primaryCurrency,
+    primaryCurrency: transactionCategory === SWAP && isPending ? '' : primaryCurrency,
     senderAddress,
     recipientAddress,
     secondaryCurrency: (
@@ -210,6 +211,6 @@ export function useTransactionDisplayData (transactionGroup) {
       (transactionCategory === SWAP && !swapTokenFiatAmount)
     ) ? undefined : secondaryCurrency,
     status,
-    isPending: status in PENDING_STATUS_HASH,
+    isPending,
   }
 }
