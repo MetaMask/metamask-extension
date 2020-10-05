@@ -46,12 +46,13 @@
     }
 
     &__name {
-      margin-left: 8px;
       margin-right: 8px;
+      min-width: 64px;
     }
 
     &__balance {
       color: #6a737d;
+      margin-left: 8px;
     }
   }
 
@@ -154,6 +155,15 @@
       border-radius: 4px;
       position: absolute;
     }
+  }
+
+  &__name-and-balance-container {
+    display: flex;
+    flex: 0 0 100%;
+    flex-flow: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin-left: 8px;
   }
 }
 

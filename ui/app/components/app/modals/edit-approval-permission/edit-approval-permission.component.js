@@ -65,8 +65,10 @@ export default class EditApprovalPermission extends PureComponent {
               address={address}
               diameter={32}
             />
-            <div className="edit-approval-permission__account-info__name">{ name }</div>
-            <div>{ t('balance') }</div>
+            <div className="edit-approval-permission__name-and-balance-container">
+              <div className="edit-approval-permission__account-info__name">{ name }</div>
+              <div>{ t('balance') }</div>
+            </div>
           </div>
           <div className="edit-approval-permission__account-info__balance">
             {`${Number(tokenBalance).toPrecision(9)} ${tokenSymbol}`}
