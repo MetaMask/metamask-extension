@@ -252,23 +252,6 @@ export default class NetworkController extends EventEmitter {
     this._setProviderAndBlockTracker({ provider, blockTracker })
   }
 
-  // A temporary function to create a provider that the always makes calls to mainnet
-  // even when on a different network.
-  // TODO: remove before merge of swaps branch to develop
-  _setNetworkClientTemp () {
-    const type = 'mainnet'
-    const { networkMiddleware } = createInfuraClient({
-      network: type,
-      projectId: this._infuraProjectId,
-    })
-    const metamaskMiddleware = createMetamaskMiddleware(this._baseProviderParams)
-    const engine = new JsonRpcEngine()
-    engine.push(metamaskMiddleware)
-    engine.push(networkMiddleware)
-    const provider = providerFromEngine(engine)
-    return provider
-  }
-
   _setProviderAndBlockTracker ({ provider, blockTracker }) {
     // update or intialize proxies
     if (this._providerProxy) {

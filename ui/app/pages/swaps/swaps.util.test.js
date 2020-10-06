@@ -1,16 +1,11 @@
 import { strict as assert } from 'assert'
 import proxyquire from 'proxyquire'
 import {
-  TRADES_BASE_DEV_URL,
-  TOKENS_BASE_DEV_URL,
-  AGGREGATOR_METADATA_BASE_DEV_URL,
-  TOP_ASSET_BASE_DEV_URL,
   TRADES_BASE_PROD_URL,
   TOKENS_BASE_PROD_URL,
   AGGREGATOR_METADATA_BASE_PROD_URL,
   TOP_ASSET_BASE_PROD_URL,
   TOKENS,
-  MOCK_TRADE_RESPONSE_1,
   MOCK_TRADE_RESPONSE_2,
   AGGREGATOR_METADATA,
   TOP_ASSETS,
@@ -23,34 +18,17 @@ const swapsUtils = proxyquire('./swaps.util.js', {
   '../../helpers/utils/fetch-with-cache': {
     default: (url, fetchObject) => {
       assert.equal(fetchObject.method, 'GET')
-      if (url.match(TRADES_BASE_DEV_URL)) {
-        assert.equal(url, 'https://metaswap-api.airswap-dev.codefi.network/trades?destinationToken=0xE41d2489571d322189246DaFA5ebDe1F4699F498&sourceToken=0x617b3f8050a0BD94b6b1da02B4384eE5B4DF13F4&sourceAmount=1000000000000000000000000000000000000&slippage=3&timeout=10000&walletAddress=0xmockAddress')
-
-        return Promise.resolve(MOCK_TRADE_RESPONSE_1)
-      }
       if (url.match(TRADES_BASE_PROD_URL)) {
         assert.equal(url, 'https://api.metaswap.codefi.network/trades?destinationToken=0xE41d2489571d322189246DaFA5ebDe1F4699F498&sourceToken=0x617b3f8050a0BD94b6b1da02B4384eE5B4DF13F4&sourceAmount=2000000000000000000000000000000000000&slippage=3&timeout=10000&walletAddress=0xmockAddress')
         return Promise.resolve(MOCK_TRADE_RESPONSE_2)
-      }
-      if (url.match(TOKENS_BASE_DEV_URL)) {
-        assert.equal(url, TOKENS_BASE_DEV_URL)
-        return Promise.resolve(TOKENS)
       }
       if (url.match(TOKENS_BASE_PROD_URL)) {
         assert.equal(url, TOKENS_BASE_PROD_URL)
         return Promise.resolve(TOKENS)
       }
-      if (url.match(AGGREGATOR_METADATA_BASE_DEV_URL)) {
-        assert.equal(url, AGGREGATOR_METADATA_BASE_DEV_URL)
-        return Promise.resolve(AGGREGATOR_METADATA)
-      }
       if (url.match(AGGREGATOR_METADATA_BASE_PROD_URL)) {
         assert.equal(url, AGGREGATOR_METADATA_BASE_PROD_URL)
         return Promise.resolve(AGGREGATOR_METADATA)
-      }
-      if (url.match(TOP_ASSET_BASE_DEV_URL)) {
-        assert.equal(url, TOP_ASSET_BASE_DEV_URL)
-        return Promise.resolve(TOP_ASSETS)
       }
       if (url.match(TOP_ASSET_BASE_PROD_URL)) {
         assert.equal(url, TOP_ASSET_BASE_PROD_URL)
@@ -101,22 +79,6 @@ describe('Swaps Util', function () {
         sourceAmount: '20000000000000000',
       },
     }
-    it('should fetch trade info', async function () {
-      const result = await fetchTradesInfo({
-        TOKENS,
-        slippage: '3',
-        sourceToken: TOKENS[0].address,
-        destinationToken: TOKENS[1].address,
-        value: '1000000000000000000',
-        fromAddress: '0xmockAddress',
-        sourceSymbol: TOKENS[0].symbol,
-        sourceDecimals: TOKENS[0].decimals,
-        isCustomNetwork: true,
-        sourceTokenInfo: { ...TOKENS[0] },
-        destinationTokenInfo: { ...TOKENS[1] },
-      })
-      assert.deepEqual(result, expectedResult1)
-    })
     it('should fetch trade info on prod', async function () {
       const result = await fetchTradesInfo({
         TOKENS,
@@ -127,7 +89,6 @@ describe('Swaps Util', function () {
         fromAddress: '0xmockAddress',
         sourceSymbol: TOKENS[0].symbol,
         sourceDecimals: TOKENS[0].decimals,
-        isCustomNetwork: false,
         sourceTokenInfo: { ...TOKENS[0] },
         destinationTokenInfo: { ...TOKENS[1] },
       })

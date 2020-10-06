@@ -94,14 +94,6 @@ export default class SwapsController {
     this._setupSwapsLivenessFetching()
   }
 
-  // TODO: remove before final merge
-  // The metaswap test net is added as a custom rpc with a chainId of 1. For the purposes of the test phase,
-  // If we have a custom rpcTarget with a chainId of 1, we regard it to be the metaswap test net.
-  _isMetaSwapTestNet () {
-    const providerConfig = this.getProviderConfig()
-    return providerConfig.chainId === '1' && providerConfig.rpcTarget.length > 0
-  }
-
   // Once quotes are fetched, we poll for new ones to keep the quotes up to date. Market and aggregator contract conditions can change fast enough
   // that quotes will no longer be available after 1 or 2 minutes. When fetchAndSetQuotes is first called it, receives fetch that parameters are stored in
   // state. These stored parameters are used on subsequent calls made during polling.
@@ -260,8 +252,6 @@ export default class SwapsController {
   }
 
   async getAllQuotesWithGasEstimates (quotes) {
-    // TODO: remove isMetaSwapTestNet logic before final merge
-    const isMetaSwapTestNet = this._isMetaSwapTestNet()
     const quoteGasData = await Promise.all(
       Object.values(quotes).map(async (quote) => {
         const { gasLimit, simulationFails } = await this.timedoutGasReturn({
@@ -282,7 +272,7 @@ export default class SwapsController {
           gasEstimate: gasLimit,
           gasEstimateWithRefund,
         }
-      } else if (quotes[aggId].approvalNeeded || isMetaSwapTestNet) {
+      } else if (quotes[aggId].approvalNeeded) {
         // If gas estimation fails, but an ERC-20 approve is needed, then we do not add any estimate property to the quote object
         // Such quotes will rely on the maxGas and averageGas properties from the api
         newQuotes[aggId] = quotes[aggId]

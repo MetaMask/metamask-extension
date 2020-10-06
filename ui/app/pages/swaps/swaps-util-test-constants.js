@@ -1,7 +1,3 @@
-export const TRADES_BASE_DEV_URL = 'https://metaswap-api.airswap-dev.codefi.network/trades?'
-export const TOKENS_BASE_DEV_URL = 'https://metaswap-api.airswap-dev.codefi.network/tokens'
-export const AGGREGATOR_METADATA_BASE_DEV_URL = 'https://metaswap-api.airswap-dev.codefi.network/aggregatorMetadata'
-export const TOP_ASSET_BASE_DEV_URL = 'https://metaswap-api.airswap-dev.codefi.network/topAssets'
 export const TRADES_BASE_PROD_URL = 'https://api.metaswap.codefi.network/trades?'
 export const TOKENS_BASE_PROD_URL = 'https://api.metaswap.codefi.network/tokens'
 export const AGGREGATOR_METADATA_BASE_PROD_URL = 'https://api.metaswap.codefi.network/aggregatorMetadata'
