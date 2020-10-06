@@ -261,7 +261,7 @@ export async function fetchTopAssets (isCustomNetwork) {
   return topAssetsMap
 }
 
-export async function fetchSwapsFeatureFlag (isCustomNetwork) {
+export async function fetchSwapsFeatureLiveness (isCustomNetwork) {
   const status = await fetchWithCache(getBaseApi(isCustomNetwork, 'featureFlag'), { method: 'GET' }, { cacheRefreshTime: 600000 })
   return status?.active
 }

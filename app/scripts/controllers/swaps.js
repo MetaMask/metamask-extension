@@ -15,6 +15,7 @@ import {
 } from '../../../ui/app/helpers/constants/swaps'
 import {
   fetchTradesInfo as defaultFetchTradesInfo,
+  fetchSwapsFeatureLiveness as defaultFetchSwapsFeatureLiveness,
 } from '../../../ui/app/pages/swaps/swaps.util'
 
 const METASWAP_ADDRESS = '0x9537C111Ea62a8dc39E99718140686f7aD856321'
@@ -62,6 +63,7 @@ const initialState = {
     errorKey: '',
     topAggId: null,
     routeState: '',
+    swapsFeatureIsLive: false,
   },
 }
 
@@ -72,12 +74,14 @@ export default class SwapsController {
     getProviderConfig,
     tokenRatesStore,
     fetchTradesInfo = defaultFetchTradesInfo,
+    fetchSwapsFeatureLiveness = defaultFetchSwapsFeatureLiveness,
   }) {
     this.store = new ObservableStore({
       swapsState: { ...initialState.swapsState },
     })
 
     this._fetchTradesInfo = fetchTradesInfo
+    this._fetchSwapsFeatureLiveness = fetchSwapsFeatureLiveness
 
     this.getBufferedGasLimit = getBufferedGasLimit
     this.tokenRatesStore = tokenRatesStore
@@ -86,6 +90,8 @@ export default class SwapsController {
     this.getProviderConfig = getProviderConfig
 
     this.ethersProvider = new ethers.providers.Web3Provider(provider)
+
+    this._setupSwapsLivenessFetching()
   }
 
   // TODO: remove before final merge
@@ -490,5 +496,93 @@ export default class SwapsController {
       contractAddress, abi, this.ethersProvider,
     )
     return await contract.allowance(walletAddress, METASWAP_ADDRESS)
+  }
+
+  /**
+   * Sets up the fetching of the swaps feature liveness flag from our API.
+   * Performs an initial fetch when called, then fetches on a 10-minute
+   * interval.
+   *
+   * If the browser goes offline, the interval is cleared and swaps are disabled
+   * until the value can be fetched again.
+   */
+  _setupSwapsLivenessFetching () {
+    const TEN_MINUTES_MS = 10 * 60 * 1000
+    let intervalId = null
+
+    const fetchAndSetupInterval = () => {
+      if (window.navigator.onLine && intervalId === null) {
+        // Set the interval first to prevent race condition between listener and
+        // initial call to this function.
+        intervalId = setInterval(this._fetchAndSetSwapsLiveness, TEN_MINUTES_MS)
+        this._fetchAndSetSwapsLiveness()
+      }
+    }
+
+    window.addEventListener('online', fetchAndSetupInterval)
+    window.addEventListener('offline', () => {
+      if (intervalId !== null) {
+        clearInterval(intervalId)
+        intervalId = null
+
+        const { swapsState } = this.store.getState()
+        if (swapsState.swapsFeatureIsLive) {
+          this.store.updateState({
+            swapsState: { ...swapsState, swapsFeatureIsLive: false },
+          })
+        }
+      }
+    })
+
+    fetchAndSetupInterval()
+  }
+
+  /**
+   * This function should only be called via _setupSwapsLivenessFetching.
+   *
+   * Attempts to fetch the swaps feature liveness flag from our API. Tries
+   * to fetch three times at 5-second intervals before giving up, in which
+   * case the value defaults to 'false'.
+   *
+   * Only updates state if the fetched/computed flag value differs from current
+   * state.
+   */
+  async _fetchAndSetSwapsLiveness () {
+    const { swapsState } = this.store.getState()
+    const { swapsFeatureIsLive: oldSwapsFeatureIsLive } = swapsState
+    let swapsFeatureIsLive = false
+    let successfullyFetched = false
+    let numAttempts = 0
+
+    const fetchAndIncrementNumAttempts = async () => {
+      try {
+        swapsFeatureIsLive = Boolean(await this._fetchSwapsFeatureLiveness())
+        successfullyFetched = true
+      } catch (err) {
+        log.error(err)
+        numAttempts += 1
+      }
+    }
+
+    await fetchAndIncrementNumAttempts()
+
+    // The loop conditions are modified by fetchAndIncrementNumAttempts.
+    // eslint-disable-next-line no-unmodified-loop-condition
+    while (!successfullyFetched && numAttempts < 3) {
+      await new Promise((resolve) => {
+        setTimeout(resolve, 5000) // 5 seconds
+      })
+      await fetchAndIncrementNumAttempts()
+    }
+
+    if (!successfullyFetched) {
+      log.error('Failed to fetch swaps feature flag 3 times. Setting to false and trying again next interval.')
+    }
+
+    if (swapsFeatureIsLive !== oldSwapsFeatureIsLive) {
+      this.store.updateState({
+        swapsState: { ...swapsState, swapsFeatureIsLive },
+      })
+    }
   }
 }

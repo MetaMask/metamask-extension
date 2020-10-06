@@ -18,7 +18,7 @@ import {
   setSwapsWelcomeMessageHasBeenShown,
 } from '../../store/actions'
 import { setThreeBoxLastUpdated } from '../../ducks/app/app'
-import { getSwapsWelcomeMessageSeenStatus, getSwapsFeatureFlag } from '../../ducks/swaps/swaps'
+import { getSwapsWelcomeMessageSeenStatus, getSwapsFeatureLiveness } from '../../ducks/swaps/swaps'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -42,7 +42,7 @@ const mapStateToProps = (state) => {
   const accountBalance = getCurrentEthBalance(state)
   const { forgottenPassword, threeBoxLastUpdated } = appState
   const totalUnapprovedCount = getTotalUnapprovedCount(state)
-  const swapsEnabled = getSwapsFeatureFlag(state)
+  const swapsEnabled = getSwapsFeatureLiveness(state)
 
   const envType = getEnvironmentType()
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP
