@@ -1538,6 +1538,9 @@
   "swapAdvancedSlippageInfo": {
     "message": "If the price changes between the time your order is placed and confirmed it’s called “slippage”. Your swap will automatically cancel if slippage exceeds your “max slippage” setting."
   },
+  "swapAggregator": {
+    "message": "Aggregator"
+  },
   "swapAmountReceived": {
     "message": "Guaranteed amount"
   },
@@ -1562,6 +1565,9 @@
   },
   "swapCustom": {
     "message": "custom"
+  },
+  "swapDecentralizedExchange": {
+    "message": "Decentralized exchange"
   },
   "swapEditLimit": {
     "message": "Edit limit"
@@ -1702,6 +1708,9 @@
   "swapReceiving": {
     "message": "Receiving"
   },
+  "swapRequestForQuotation": {
+    "message": "Request for quotation"
+  },
   "swapSearchForAToken": {
     "message": "Search for a token"
   },
@@ -1732,18 +1741,6 @@
   "swapSwapTo": {
     "message": "Swap to"
   },
-  "swapAggregator": {
-    "message": "Aggregator"
-  },
-  "swapRequestForQuotation": {
-    "message": "Request for quotation"
-  },
-  "swapDecentralizedExchange": {
-    "message": "Decentralized exchange"
-  },
-  "swapUnknown": {
-    "message": "Unknown"
-  },
   "swapThisWillAllowApprove": {
     "message": "This will allow $1 to be swapped."
   },
@@ -1757,6 +1754,9 @@
   },
   "swapTransactionComplete": {
     "message": "Transaction complete"
+  },
+  "swapUnknown": {
+    "message": "Unknown"
   },
   "swapViewToken": {
     "message": "View $1"
