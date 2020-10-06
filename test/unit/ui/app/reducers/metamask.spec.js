@@ -27,7 +27,7 @@ describe('MetaMask Reducers', function () {
       value: 'https://custom.rpc',
     })
 
-    assert.equal(state.provider.rpcTarget, 'https://custom.rpc')
+    assert.equal(state.provider.rpcUrl, 'https://custom.rpc')
   })
 
   it('sets provider type', function () {

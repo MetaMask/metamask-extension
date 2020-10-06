@@ -566,9 +566,6 @@
   "invalidBlockExplorerURL": {
     "message": "अमान्य Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "अमान्य इनपुट।"
-  },
   "invalidRPC": {
     "message": "अमान्य RPC URL"
   },
@@ -742,9 +739,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "एक्सप्लोरर यूआरएल ब्लॉक (वैकल्पिक)"
-  },
-  "optionalChainId": {
-    "message": "चैनआईडी (वैकल्पिक)"
   },
   "optionalSymbol": {
     "message": "सिम्बल (वैकल्पिक)"

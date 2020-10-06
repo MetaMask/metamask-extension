@@ -562,9 +562,6 @@
   "invalidBlockExplorerURL": {
     "message": "Nevaljani URL Block Explorer-a"
   },
-  "invalidInput": {
-    "message": "Nevaljani upis."
-  },
   "invalidRPC": {
     "message": "Nevaljani URL RPC-a"
   },
@@ -738,9 +735,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "Blokiraj Explorerov URL (neobavezno)"
-  },
-  "optionalChainId": {
-    "message": "Identifikacijska oznaka bloka (neobavezno)"
   },
   "optionalSymbol": {
     "message": "Simbol (neobavezno)"

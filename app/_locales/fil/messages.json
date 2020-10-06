@@ -523,9 +523,6 @@
   "invalidBlockExplorerURL": {
     "message": "Hindi valid ang Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Hindi valid ang input."
-  },
   "invalidRPC": {
     "message": "Hindi valid ang RPC URL"
   },
@@ -676,9 +673,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "Block Explorer URL (opsyonal)"
-  },
-  "optionalChainId": {
-    "message": "ChainID (opsyonal)"
   },
   "optionalSymbol": {
     "message": "Simbolo (opsyonal)"

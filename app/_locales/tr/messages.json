@@ -226,9 +226,6 @@
   "invalidBlockExplorerURL": {
     "message": "Geçersiz Block Explorer URI"
   },
-  "invalidInput": {
-    "message": "Geçersiz giriş."
-  },
   "invalidRPC": {
     "message": "Geçersiz RPC URI"
   },

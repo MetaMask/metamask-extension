@@ -566,9 +566,6 @@
   "invalidBlockExplorerURL": {
     "message": "Block Explorer URL نا معتبر"
   },
-  "invalidInput": {
-    "message": "ورودی نامعتبر."
-  },
   "invalidRPC": {
     "message": "RPC URL نا معتبر"
   },
@@ -745,9 +742,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "بلاک کردن مرورگر URL (انتخابی)"
-  },
-  "optionalChainId": {
-    "message": "آی دی زنجیره (انتخابی)"
   },
   "optionalSymbol": {
     "message": "سمبول (انتخابی)"

@@ -823,9 +823,6 @@
   "invalidBlockExplorerURL": {
     "message": "URI Block Explorer invalido"
   },
-  "invalidInput": {
-    "message": "Input non valido."
-  },
   "invalidIpfsGateway": {
     "message": "Portale IPFS non valido: il valore deve essere un URL valido"
   },
@@ -1061,9 +1058,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "URL del Block Explorer (opzionale)"
-  },
-  "optionalChainId": {
-    "message": "ChainID (opzionale)"
   },
   "optionalSymbol": {
     "message": "Simbolo (opzionale)"

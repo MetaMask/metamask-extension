@@ -1,6 +1,7 @@
 import ObservableStore from 'obs-store'
 import { normalize as normalizeAddress } from 'eth-sig-util'
 import { isValidAddress, sha3, bufferToHex } from 'ethereumjs-util'
+import { isPrefixedFormattedHexString } from '../lib/util'
 import { addInternalMethodPrefix } from './permissions'
 
 export default class PreferencesController {
@@ -478,10 +479,8 @@ export default class PreferencesController {
    * @param {string} chainId - Optional chainId of the selected network.
    * @param {string} ticker   - Optional ticker symbol of the selected network.
    * @param {string} nickname - Optional nickname of the selected network.
-   * @returns {Promise<array>} - Promise resolving to updated frequentRpcList.
    *
    */
-
   updateRpc (newRpcDetails) {
     const rpcList = this.getFrequentRpcListDetail()
     const index = rpcList.findIndex((element) => {
@@ -494,39 +493,38 @@ export default class PreferencesController {
       this.store.updateState({ frequentRpcListDetail: rpcList })
     } else {
       const { rpcUrl, chainId, ticker, nickname, rpcPrefs = {} } = newRpcDetails
-      return this.addToFrequentRpcList(rpcUrl, chainId, ticker, nickname, rpcPrefs)
+      this.addToFrequentRpcList(rpcUrl, chainId, ticker, nickname, rpcPrefs)
     }
-    return Promise.resolve(rpcList)
   }
 
   /**
    * Adds custom RPC url to state.
    *
-   * @param {string} url - The RPC url to add to frequentRpcList.
-   * @param {string} chainId - Optional chainId of the selected network.
-   * @param {string} ticker   - Optional ticker symbol of the selected network.
-   * @param {string} nickname - Optional nickname of the selected network.
-   * @returns {Promise<array>} - Promise resolving to updated frequentRpcList.
+   * @param {string} rpcUrl - The RPC url to add to frequentRpcList.
+   * @param {string} chainId - The chainId of the selected network.
+   * @param {string} [ticker] - Ticker symbol of the selected network.
+   * @param {string} [nickname] - Nickname of the selected network.
    *
    */
-  addToFrequentRpcList (url, chainId, ticker = 'ETH', nickname = '', rpcPrefs = {}) {
+  addToFrequentRpcList (rpcUrl, chainId, ticker = 'ETH', nickname = '', rpcPrefs = {}) {
+    if (rpcUrl === 'http://localhost:8545') {
+      return
+    }
+
     const rpcList = this.getFrequentRpcListDetail()
     const index = rpcList.findIndex((element) => {
-      return element.rpcUrl === url
+      return element.rpcUrl === rpcUrl
     })
     if (index !== -1) {
       rpcList.splice(index, 1)
     }
-    if (url !== 'http://localhost:8545') {
-      let checkedChainId
-      // eslint-disable-next-line radix
-      if (Boolean(chainId) && !Number.isNaN(parseInt(chainId))) {
-        checkedChainId = chainId
-      }
-      rpcList.push({ rpcUrl: url, chainId: checkedChainId, ticker, nickname, rpcPrefs })
+
+    if (!isPrefixedFormattedHexString(chainId)) {
+      throw new Error(`Invalid chainId: "${chainId}"`)
     }
+
+    rpcList.push({ rpcUrl, chainId, ticker, nickname, rpcPrefs })
     this.store.updateState({ frequentRpcListDetail: rpcList })
-    return Promise.resolve(rpcList)
   }
 
   /**

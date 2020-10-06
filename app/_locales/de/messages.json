@@ -554,9 +554,6 @@
   "invalidBlockExplorerURL": {
     "message": "Ungültige Block Explorer URI"
   },
-  "invalidInput": {
-    "message": "Ungültige Eingabe."
-  },
   "invalidRPC": {
     "message": "Ungültige RPC URI"
   },

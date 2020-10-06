@@ -1,8 +1,11 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import validUrl from 'valid-url'
+import BigNumber from 'bignumber.js'
 import TextField from '../../../../components/ui/text-field'
 import Button from '../../../../components/ui/button'
+import Tooltip from '../../../../components/ui/tooltip'
+import { isPrefixedFormattedHexString } from '../../../../../../app/scripts/lib/util'
 
 export default class NetworkForm extends PureComponent {
   static contextTypes = {
@@ -97,10 +100,17 @@ export default class NetworkForm extends PureComponent {
     const {
       networkName,
       rpcUrl,
-      chainId,
+      chainId: stateChainId,
       ticker,
       blockExplorerUrl,
     } = this.state
+
+    // Ensure chainId is a 0x-prefixed, lowercase hex string
+    let chainId = stateChainId.trim().toLowerCase()
+    if (!chainId.startsWith('0x')) {
+      chainId = `0x${(new BigNumber(chainId, 10)).toString(16)}`
+    }
+
     if (propsRpcUrl && rpcUrl !== propsRpcUrl) {
       editRpc(propsRpcUrl, rpcUrl, chainId, ticker, networkName, {
         blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
@@ -168,13 +178,30 @@ export default class NetworkForm extends PureComponent {
     )
   }
 
-  renderFormTextField (fieldKey, textFieldId, onChange, value, optionalTextFieldKey) {
+  renderFormTextField (fieldKey, textFieldId, onChange, value, optionalTextFieldKey, tooltipText) {
     const { errors } = this.state
     const { viewOnly } = this.props
 
     return (
       <div className="networks-tab__network-form-row">
-        <div className="networks-tab__network-form-label">{this.context.t(optionalTextFieldKey || fieldKey)}</div>
+        <div className="networks-tab__network-form-label">
+          <div className="networks-tab__network-form-label-text">
+            {this.context.t(optionalTextFieldKey || fieldKey)}
+          </div>
+          {
+            !viewOnly && tooltipText
+              ? (
+                <Tooltip
+                  position="top"
+                  title={tooltipText}
+                  wrapperClassName="networks-tab__network-form-label-tooltip"
+                >
+                  <i className="fa fa-info-circle" />
+                </Tooltip>
+              )
+              : null
+          }
+        </div>
         <TextField
           type="text"
           id={textFieldId}
@@ -205,11 +232,23 @@ export default class NetworkForm extends PureComponent {
     })
   }
 
-  validateChainId = (chainId) => {
-    // eslint-disable-next-line radix
-    this.setErrorTo('chainId', Boolean(chainId) && Number.isNaN(parseInt(chainId))
-      ? `${this.context.t('invalidInput')} chainId`
-      : '')
+  validateChainId = (chainIdArg = '') => {
+    const chainId = chainIdArg.trim()
+    let errorMessage = ''
+
+    if (chainId.startsWith('0x')) {
+      if (!(/^0x[0-9a-f]+$/ui).test(chainId)) {
+        errorMessage = this.context.t('invalidHexNumber')
+      } else if (!isPrefixedFormattedHexString(chainId)) {
+        errorMessage = this.context.t('invalidHexNumberLeadingZeros')
+      }
+    } else if (!(/^[0-9]+$/u).test(chainId)) {
+      errorMessage = this.context.t('invalidNumber')
+    } else if (chainId.startsWith('0')) {
+      errorMessage = this.context.t('invalidNumberLeadingZeros')
+    }
+
+    this.setErrorTo('chainId', errorMessage)
   }
 
   isValidWhenAppended = (url) => {
@@ -262,7 +301,13 @@ export default class NetworkForm extends PureComponent {
       errors,
     } = this.state
 
-    const isSubmitDisabled = viewOnly || this.stateIsUnchanged() || Object.values(errors).some((x) => x) || !rpcUrl
+    const isSubmitDisabled = (
+      viewOnly ||
+      this.stateIsUnchanged() ||
+      !rpcUrl ||
+      !chainId ||
+      Object.values(errors).some((x) => x)
+    )
     const deletable = !networksTabIsInAddMode && !isCurrentRpcTarget && !viewOnly
 
     return (
@@ -285,7 +330,8 @@ export default class NetworkForm extends PureComponent {
           'chainId',
           this.setStateWithValue('chainId', this.validateChainId),
           chainId,
-          'optionalChainId',
+          null,
+          t('networkSettingsChainIdDescription'),
         )}
         {this.renderFormTextField(
           'symbol',

@@ -566,9 +566,6 @@
   "invalidBlockExplorerURL": {
     "message": "無效的區塊鏈瀏覽器 URL"
   },
-  "invalidInput": {
-    "message": "輸入錯誤。"
-  },
   "invalidRPC": {
     "message": "無效的 RPC URI"
   },
@@ -736,9 +733,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "區塊鏈瀏覽器 URL（非必要）"
-  },
-  "optionalChainId": {
-    "message": "ChainID (可選)"
   },
   "optionalSymbol": {
     "message": "Symbol (可選)"

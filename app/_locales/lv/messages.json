@@ -562,9 +562,6 @@
   "invalidBlockExplorerURL": {
     "message": "Nederīgs Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Nederīga ievadītā vērtība."
-  },
   "invalidRPC": {
     "message": "Nederīgs RPC URL"
   },
@@ -741,9 +738,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "Bloķēt Explorer URL (pēc izvēles)"
-  },
-  "optionalChainId": {
-    "message": "ChainID (neobligāti)"
   },
   "optionalSymbol": {
     "message": "Simbols (neobligāti)"

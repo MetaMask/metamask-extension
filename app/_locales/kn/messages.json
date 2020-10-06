@@ -566,9 +566,6 @@
   "invalidBlockExplorerURL": {
     "message": "ಅಮಾನ್ಯವಾದ Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "ಅಮಾನ್ಯವಾದ ಇನ್‌ಪುಟ್."
-  },
   "invalidRPC": {
     "message": "ಅಮಾನ್ಯವಾದ RPC URL"
   },
@@ -745,9 +742,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "ಅನ್ವೇಷಕ URL ಅನ್ನು ನಿರ್ಬಂಧಿಸಿ (ಐಚ್ಛಿಕ)"
-  },
-  "optionalChainId": {
-    "message": "ಚೈನ್‌ಐಡಿ (ಐಚ್ಛಿಕ)"
   },
   "optionalSymbol": {
     "message": "ಚಿಹ್ನೆ (ಐಚ್ಛಿಕ)"

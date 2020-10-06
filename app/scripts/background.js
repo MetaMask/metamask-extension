@@ -97,7 +97,6 @@ initialize().catch(log.error)
  * @property {boolean} isInitialized - Whether the first vault has been created.
  * @property {boolean} isUnlocked - Whether the vault is currently decrypted and accounts are available for selection.
  * @property {boolean} isAccountMenuOpen - Represents whether the main account selection UI is currently displayed.
- * @property {string} rpcTarget - DEPRECATED - The URL of the current RPC provider.
  * @property {Object} identities - An object matching lower-case hex addresses to Identity objects with "address" and "name" (nickname) keys.
  * @property {Object} unapprovedTxs - An object mapping transaction hashes to unapproved transactions.
  * @property {Array} frequentRpcList - A list of frequently used RPCs, including custom user-provided ones.
@@ -110,7 +109,7 @@ initialize().catch(log.error)
  * @property {boolean} welcomeScreen - True if welcome screen should be shown.
  * @property {string} currentLocale - A locale string matching the user's preferred display language.
  * @property {Object} provider - The current selected network provider.
- * @property {string} provider.rpcTarget - The address for the RPC API, if using an RPC API.
+ * @property {string} provider.rpcUrl - The address for the RPC API, if using an RPC API.
  * @property {string} provider.type - An identifier for the type of network selected, allows MetaMask to use custom provider strategies for known networks.
  * @property {string} network - A stringified number of the current network ID.
  * @property {Object} accounts - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values.

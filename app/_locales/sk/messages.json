@@ -553,9 +553,6 @@
   "invalidBlockExplorerURL": {
     "message": "Neplatné Block Explorer URI"
   },
-  "invalidInput": {
-    "message": "Neplatný vstup."
-  },
   "invalidRPC": {
     "message": "Neplatné RPC URI"
   },
@@ -714,9 +711,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "Blokovať URL Explorera (voliteľné)"
-  },
-  "optionalChainId": {
-    "message": "ChainID (voliteľné)"
   },
   "optionalSymbol": {
     "message": "Symbol (voliteľné)"

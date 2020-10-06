@@ -196,9 +196,6 @@
   "invalidBlockExplorerURL": {
     "message": "Ongeldige Block Explorer URI"
   },
-  "invalidInput": {
-    "message": "Ongeldige invoer."
-  },
   "invalidRPC": {
     "message": "Ongeldige RPC-URI"
   },

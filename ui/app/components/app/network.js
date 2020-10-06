@@ -47,7 +47,7 @@ export default class Network extends Component {
     provider: PropTypes.shape({
       type: PropTypes.string,
       nickname: PropTypes.string,
-      rpcTarget: PropTypes.string,
+      rpcUrl: PropTypes.string,
     }).isRequired,
     disabled: PropTypes.bool,
     onClick: PropTypes.func.isRequired,
@@ -69,7 +69,7 @@ export default class Network extends Component {
     if (provider) {
       providerName = provider.type
       providerNick = provider.nickname || ''
-      providerUrl = provider.rpcTarget
+      providerUrl = provider.rpcUrl
     }
 
     switch (providerName) {

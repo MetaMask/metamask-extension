@@ -560,9 +560,6 @@
   "invalidBlockExplorerURL": {
     "message": "URL de Block Explorer inválida"
   },
-  "invalidInput": {
-    "message": "Entrada inválida."
-  },
   "invalidRPC": {
     "message": "URL de RPC inválida"
   },
@@ -733,9 +730,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "URL exploradora de blocos (opcional)"
-  },
-  "optionalChainId": {
-    "message": "ChainID (opcional)"
   },
   "optionalSymbol": {
     "message": "Símbolo (opcional)"

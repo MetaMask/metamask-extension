@@ -43,7 +43,7 @@ const mapStateToProps = (state) => {
   let networkDefaultedToProvider = false
   if (!networkIsSelected && !networksTabIsInAddMode) {
     selectedNetwork = networksToRender.find((network) => {
-      return network.rpcUrl === provider.rpcTarget || (network.providerType !== 'rpc' && network.providerType === provider.type)
+      return network.rpcUrl === provider.rpcUrl || (network.providerType !== 'rpc' && network.providerType === provider.type)
     }) || {}
     networkDefaultedToProvider = true
   }
@@ -54,7 +54,7 @@ const mapStateToProps = (state) => {
     networkIsSelected,
     networksTabIsInAddMode,
     providerType: provider.type,
-    providerUrl: provider.rpcTarget,
+    providerUrl: provider.rpcUrl,
     networkDefaultedToProvider,
   }
 }

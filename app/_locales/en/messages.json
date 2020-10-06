@@ -823,11 +823,34 @@
   "invalidBlockExplorerURL": {
     "message": "Invalid Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Invalid input."
+  "invalidCustomNetworkAlertContent1": {
+    "message": "The custom network '$1' is missing its chain ID.",
+    "description": "$1 is the name/identifier of the network."
+  },
+  "invalidCustomNetworkAlertContent2": {
+    "message": "To protect you from malicious or faulty network providers, chain IDs are now required for all custom networks."
+  },
+  "invalidCustomNetworkAlertContent3": {
+    "message": "Go to Settings > Network and enter the chain ID. You can find the chain IDs of most popular networks on $1.",
+    "description": "$1 is a link to https://chainid.network"
+  },
+  "invalidCustomNetworkAlertTitle": {
+    "message": "Invalid Custom Network"
+  },
+  "invalidHexNumber": {
+    "message": "Invalid hexadecimal number."
+  },
+  "invalidHexNumberLeadingZeros": {
+    "message": "Invalid hexadecimal number. Remove any leading zeros."
   },
   "invalidIpfsGateway": {
     "message": "Invalid IPFS Gateway: The value must be a valid URL"
+  },
+  "invalidNumber": {
+    "message": "Invalid number. Enter a decimal or hexadecimal number."
+  },
+  "invalidNumberLeadingZeros": {
+    "message": "Invalid number. Remove any leading zeros."
   },
   "invalidRPC": {
     "message": "Invalid RPC URL"
@@ -951,6 +974,9 @@
   "networkName": {
     "message": "Network Name"
   },
+  "networkSettingsChainIdDescription": {
+    "message": "The chain ID is used for signing transactions. Enter a decimal or hexadecimal number starting with '0x'."
+  },
   "networkSettingsDescription": {
     "message": "Add and edit custom RPC networks"
   },
@@ -1061,9 +1087,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "Block Explorer URL (optional)"
-  },
-  "optionalChainId": {
-    "message": "ChainID (optional)"
   },
   "optionalSymbol": {
     "message": "Symbol (optional)"

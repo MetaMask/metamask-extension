@@ -12,10 +12,10 @@ const mapStateToProps = (state) => {
     provider,
     network,
   } = state.metamask
-  const { rpcTarget, chainId, ticker, nickname, type } = provider
+  const { rpcUrl, chainId, ticker, nickname, type } = provider
 
   const setProviderArgs = type === 'rpc'
-    ? [rpcTarget, chainId, ticker, nickname]
+    ? [rpcUrl, chainId, ticker, nickname]
     : [provider.type]
 
   return {

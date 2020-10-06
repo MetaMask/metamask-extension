@@ -556,9 +556,6 @@
   "invalidBlockExplorerURL": {
     "message": "URL Block Explorer nevalid"
   },
-  "invalidInput": {
-    "message": "Intrare nevalidă."
-  },
   "invalidRPC": {
     "message": "URL RPC nevalid"
   },
@@ -732,9 +729,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "URL explorator bloc (opțional)"
-  },
-  "optionalChainId": {
-    "message": "ChainID (opțional)"
   },
   "optionalSymbol": {
     "message": "Simbol (opțional)"

@@ -22,7 +22,7 @@
 
   &-header {
     display: flex;
-    padding: 24px;
+    padding: 24px 24px 16px;
     flex-direction: column;
     background: white;
     position: relative;
@@ -37,7 +37,6 @@
 
       font-weight: bold;
       line-height: 25px;
-      padding-bottom: 8px;
 
       h2 {
         white-space: nowrap;
@@ -53,6 +52,7 @@
     &__subtitle {
       @include H6;
 
+      padding-top: 8px;
       line-height: 20px;
     }
 

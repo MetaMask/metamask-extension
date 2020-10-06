@@ -325,9 +325,6 @@
   "invalidBlockExplorerURL": {
     "message": "Block Explorer URI pa valab"
   },
-  "invalidInput": {
-    "message": "Sa ou rantre a pa valab"
-  },
   "invalidRPC": {
     "message": "RPC URI pa valab"
   },

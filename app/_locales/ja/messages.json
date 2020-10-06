@@ -265,9 +265,6 @@
   "invalidAddress": {
     "message": "アドレスが無効です。"
   },
-  "invalidInput": {
-    "message": "インプットが無効です。"
-  },
   "jsonFile": {
     "message": "JSONファイル",
     "description": "format for importing an account"

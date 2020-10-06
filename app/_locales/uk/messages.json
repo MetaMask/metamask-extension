@@ -566,9 +566,6 @@
   "invalidBlockExplorerURL": {
     "message": "Недійсний Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Неприпустимий ввід."
-  },
   "invalidRPC": {
     "message": "Недійсний RPC URL"
   },
@@ -745,9 +742,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "Блокувати Explorer URL (не обов'язково)"
-  },
-  "optionalChainId": {
-    "message": "ChainID (необов’язково)"
   },
   "optionalSymbol": {
     "message": "Символ (не обов'язково)"

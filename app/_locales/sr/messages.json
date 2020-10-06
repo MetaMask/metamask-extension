@@ -563,9 +563,6 @@
   "invalidBlockExplorerURL": {
     "message": "Nevažeći Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Nevažeći unos."
-  },
   "invalidRPC": {
     "message": "Nevažeći RPC URL"
   },
@@ -736,9 +733,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "Blokirajte URL Explorer-a (opciono)"
-  },
-  "optionalChainId": {
-    "message": "ChainID (opciono)"
   },
   "optionalSymbol": {
     "message": "Simbol (opciono)"

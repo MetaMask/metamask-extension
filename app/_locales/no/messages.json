@@ -553,9 +553,6 @@
   "invalidBlockExplorerURL": {
     "message": "Ugyldig Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Ugyldig inndata "
-  },
   "invalidRPC": {
     "message": "Ugyldig RPC URL"
   },
@@ -732,9 +729,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "Blokker Explorer URL (valgfritt)"
-  },
-  "optionalChainId": {
-    "message": "Blokkjede (vagfritt)"
   },
   "optionalSymbol": {
     "message": "Symbol (valgfritt)"

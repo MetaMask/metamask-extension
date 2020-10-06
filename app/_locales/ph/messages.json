@@ -154,9 +154,6 @@
   "invalidAddress": {
     "message": "Invalid ang address"
   },
-  "invalidInput": {
-    "message": "Invalid ang input."
-  },
   "loading": {
     "message": "Naglo-load..."
   },

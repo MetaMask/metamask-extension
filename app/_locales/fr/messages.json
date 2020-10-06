@@ -551,9 +551,6 @@
   "invalidBlockExplorerURL": {
     "message": "URL Block Explorer invalide"
   },
-  "invalidInput": {
-    "message": "Saisie non valide."
-  },
   "invalidIpfsGateway": {
     "message": "IPFS Gateway Invalide: la valeur doit être une URL valide"
   },
@@ -727,9 +724,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "Bloquer l'URL de l'explorateur (facultatif)"
-  },
-  "optionalChainId": {
-    "message": "ChainID (facultatif)"
   },
   "optionalSymbol": {
     "message": "Symbole (facultatif)"

@@ -566,9 +566,6 @@
   "invalidBlockExplorerURL": {
     "message": "অবৈধ Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "অবৈধ ইনপুট"
-  },
   "invalidRPC": {
     "message": "অবৈধ RPC URL"
   },
@@ -745,9 +742,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "এক্সপ্লোরার URL ব্লক করুন (ঐচ্ছিক)"
-  },
-  "optionalChainId": {
-    "message": "ChainID (ঐচ্ছিক)"
   },
   "optionalSymbol": {
     "message": "প্রতীক (ঐচ্ছিক)"

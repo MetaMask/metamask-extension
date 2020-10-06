@@ -13,7 +13,7 @@ const initialState = {
   NetworkController: {
     provider: {
       type: 'rpc',
-      rpcTarget: 'http://localhost:8545',
+      rpcUrl: 'http://localhost:8545',
     },
   },
 }

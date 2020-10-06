@@ -563,9 +563,6 @@
   "invalidBlockExplorerURL": {
     "message": "Μη έγκυρο Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Μη έγκυρη είσοδος."
-  },
   "invalidRPC": {
     "message": "Μη έγκυρο RPC URL"
   },
@@ -742,9 +739,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "Διεύθυνση URL Εξερευνητή Μπλοκ (προαιρετικό)"
-  },
-  "optionalChainId": {
-    "message": "Ταυτότητα Αλυσίδας (προαιρετικό)"
   },
   "optionalSymbol": {
     "message": "Σύμβολο (προαιρετικό)"

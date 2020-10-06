@@ -256,9 +256,6 @@
   "invalidBlockExplorerURL": {
     "message": "தவறான Block Explorer URI"
   },
-  "invalidInput": {
-    "message": "தவறான உள்ளீடு.."
-  },
   "invalidRPC": {
     "message": "தவறான RPC URI"
   },

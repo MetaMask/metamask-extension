@@ -559,9 +559,6 @@
   "invalidBlockExplorerURL": {
     "message": "Ugyldig Block Explorer-webadresse"
   },
-  "invalidInput": {
-    "message": "Ugyldigt input."
-  },
   "invalidRPC": {
     "message": "Ugyldig RPC-webadresse"
   },
@@ -729,9 +726,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "Blok-stifinder-URL (valgfrit)"
-  },
-  "optionalChainId": {
-    "message": "KædeID (valgfrit)"
   },
   "optionalSymbol": {
     "message": "Symbol (valgfrit)"

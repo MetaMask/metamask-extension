@@ -524,19 +524,19 @@ describe('MetaMaskController', function () {
   })
 
   describe('#setCustomRpc', function () {
-    let rpcTarget
+    let rpcUrl
 
     beforeEach(function () {
-      rpcTarget = metamaskController.setCustomRpc(CUSTOM_RPC_URL)
+      rpcUrl = metamaskController.setCustomRpc(CUSTOM_RPC_URL)
     })
 
     it('returns custom RPC that when called', async function () {
-      assert.equal(await rpcTarget, CUSTOM_RPC_URL)
+      assert.equal(await rpcUrl, CUSTOM_RPC_URL)
     })
 
     it('changes the network controller rpc', function () {
       const networkControllerState = metamaskController.networkController.store.getState()
-      assert.equal(networkControllerState.provider.rpcTarget, CUSTOM_RPC_URL)
+      assert.equal(networkControllerState.provider.rpcUrl, CUSTOM_RPC_URL)
     })
   })
 

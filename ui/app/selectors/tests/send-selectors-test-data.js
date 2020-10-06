@@ -3,7 +3,7 @@ const state = {
     'isInitialized': true,
     'isUnlocked': true,
     'featureFlags': { 'sendHexData': true },
-    'rpcTarget': 'https://rawtestrpc.metamask.io/',
+    'rpcUrl': 'https://rawtestrpc.metamask.io/',
     'identities': {
       '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
         'address': '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825',

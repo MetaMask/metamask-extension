@@ -566,9 +566,6 @@
   "invalidBlockExplorerURL": {
     "message": "ልክ ያልሆነ Block Explorer ዩአርኤል"
   },
-  "invalidInput": {
-    "message": "ልክ ያልሆነ ግቤት።"
-  },
   "invalidRPC": {
     "message": "ልክ ያልሆነ RPC ዩአርኤል"
   },
@@ -742,9 +739,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "ኤክስፕሎረር URL አግድ (አማራጭ)"
-  },
-  "optionalChainId": {
-    "message": "የሰንሰለት መለያ ቁጥር (አማራጭ)"
   },
   "optionalSymbol": {
     "message": "ምልክት (አማራጭ)"

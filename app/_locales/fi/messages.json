@@ -566,9 +566,6 @@
   "invalidBlockExplorerURL": {
     "message": "Virheellinen Block Explorer URL-osoite"
   },
-  "invalidInput": {
-    "message": "Virheellinen syötetty arvo."
-  },
   "invalidRPC": {
     "message": "Virheellinen RPC:n URL-osoite"
   },
@@ -742,9 +739,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "Estä Explorerin URL-osoite (valinnainen)"
-  },
-  "optionalChainId": {
-    "message": "Ketjun tunnus (valinnainen)"
   },
   "optionalSymbol": {
     "message": "Symboli (valinnainen)"

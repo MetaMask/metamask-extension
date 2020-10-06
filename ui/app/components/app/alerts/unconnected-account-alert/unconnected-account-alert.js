@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { ALERT_STATE } from '../../../../ducks/alerts'
 import {
-  ALERT_STATE,
   connectAccount,
   dismissAlert,
   dismissAndDisableAlert,

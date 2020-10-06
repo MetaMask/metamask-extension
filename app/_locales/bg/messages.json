@@ -562,9 +562,6 @@
   "invalidBlockExplorerURL": {
     "message": "Невалиден Block Explorer URL адрес"
   },
-  "invalidInput": {
-    "message": "Невалидно въвеждане."
-  },
   "invalidRPC": {
     "message": "Невалиден RPC URL адрес"
   },
@@ -741,9 +738,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "Блокиране на Explorer URL (по избор)"
-  },
-  "optionalChainId": {
-    "message": "ChainID (по избор)"
   },
   "optionalSymbol": {
     "message": "Символ (по избор)"

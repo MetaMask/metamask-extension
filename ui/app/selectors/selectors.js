@@ -9,9 +9,9 @@ import {
 import { getPermissionsRequestCount } from './permissions'
 
 export function getNetworkIdentifier (state) {
-  const { metamask: { provider: { type, nickname, rpcTarget } } } = state
+  const { metamask: { provider: { type, nickname, rpcUrl } } } = state
 
-  return nickname || rpcTarget || type
+  return nickname || rpcUrl || type
 }
 
 export function getCurrentKeyring (state) {
@@ -299,7 +299,7 @@ export const getBackgroundMetaMetricState = (state) => {
 
 export function getRpcPrefsForCurrentProvider (state) {
   const { frequentRpcListDetail, provider } = state.metamask
-  const selectRpcInfo = frequentRpcListDetail.find((rpcInfo) => rpcInfo.rpcUrl === provider.rpcTarget)
+  const selectRpcInfo = frequentRpcListDetail.find((rpcInfo) => rpcInfo.rpcUrl === provider.rpcUrl)
   const { rpcPrefs = {} } = selectRpcInfo || {}
   return rpcPrefs
 }

@@ -30,12 +30,10 @@
       "network": "5777",
       "provider": {
         "nickname": "",
-        "rpcTarget": "",
+        "rpcUrl": "",
+        "chainId": "0x1691",
         "ticker": "ETH",
         "type": "localhost"
-      },
-      "settings": {
-        "ticker": "ETH"
       }
     },
     "OnboardingController": {

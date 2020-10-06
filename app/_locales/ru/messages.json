@@ -595,9 +595,6 @@
   "invalidBlockExplorerURL": {
     "message": "Неверный Block Explorer URI"
   },
-  "invalidInput": {
-    "message": "Неверный ввод."
-  },
   "invalidRPC": {
     "message": "Неверный RPC URI"
   },
@@ -774,9 +771,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "URL блок-эксплорера  (необязательно)"
-  },
-  "optionalChainId": {
-    "message": "ID сети (необязательно)"
   },
   "optionalSymbol": {
     "message": "Символ  (необязательно)"

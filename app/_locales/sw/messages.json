@@ -553,9 +553,6 @@
   "invalidBlockExplorerURL": {
     "message": "Block Explorer URL batili"
   },
-  "invalidInput": {
-    "message": "Maandii si sahihi."
-  },
   "invalidRPC": {
     "message": "RPC URL batili"
   },
@@ -723,9 +720,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "URL ya Block Explorer URL (hiari)"
-  },
-  "optionalChainId": {
-    "message": "Utambulisho wa Mnyororo (hiari)"
   },
   "optionalSymbol": {
     "message": "Ishara (hiari)"

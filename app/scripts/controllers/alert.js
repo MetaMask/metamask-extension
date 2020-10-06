@@ -2,8 +2,11 @@ import ObservableStore from 'obs-store'
 
 /**
  * @typedef {Object} AlertControllerInitState
- * @property {Object} alertEnabledness - A map of any alerts that were suppressed keyed by alert ID, where the value
- *   is the timestamp of when the user suppressed the alert.
+ * @property {Object} alertEnabledness - A map of alerts IDs to booleans, where
+ * `true` indicates that the alert is enabled and shown, and `false` the opposite.
+ * @property {Object} unconnectedAccountAlertShownOrigins - A map of origin
+ * strings to booleans indicating whether the "switch to connected" alert has
+ * been shown (`true`) or otherwise (`false`).
  */
 
 /**
@@ -13,6 +16,8 @@ import ObservableStore from 'obs-store'
 
 export const ALERT_TYPES = {
   unconnectedAccount: 'unconnectedAccount',
+  // enumerated here but has no background state
+  invalidCustomNetwork: 'invalidCustomNetwork',
 }
 
 const defaultState = {
@@ -44,6 +49,7 @@ export default class AlertController {
       ...initState,
       unconnectedAccountAlertShownOrigins: {},
     }
+
     this.store = new ObservableStore(state)
 
     this.selectedAddress = preferencesStore.getState().selectedAddress

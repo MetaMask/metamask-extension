@@ -566,9 +566,6 @@
   "invalidBlockExplorerURL": {
     "message": "כתובת URL לא חוקית של Block Explorer"
   },
-  "invalidInput": {
-    "message": "קלט לא תקין."
-  },
   "invalidRPC": {
     "message": "כתובת URL לא חוקית של RPC"
   },
@@ -742,9 +739,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "חסום כתובת URL של אקספלורר (אופציונלי)"
-  },
-  "optionalChainId": {
-    "message": "ChainID (אופציונלי)"
   },
   "optionalSymbol": {
     "message": "סמל (אופציונלי)"

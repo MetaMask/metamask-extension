@@ -566,9 +566,6 @@
   "invalidBlockExplorerURL": {
     "message": "Netinkamas Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Netinkama įvestis."
-  },
   "invalidRPC": {
     "message": "Netinkamas RPC URL"
   },
@@ -745,9 +742,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "Blokuoti naršyklės URL (pasirinktinai)"
-  },
-  "optionalChainId": {
-    "message": "Grandinės ID (nebūtinas)"
   },
   "optionalSymbol": {
     "message": "Simbolis (nebūtinas)"

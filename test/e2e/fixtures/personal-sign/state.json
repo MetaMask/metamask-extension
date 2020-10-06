@@ -33,14 +33,12 @@
     "NetworkController": {
       "provider": {
         "nickname": "",
-        "rpcTarget": "",
+        "rpcUrl": "",
+        "chainId": "0x1691",
         "ticker": "ETH",
         "type": "localhost"
       },
-      "network": "5777",
-      "settings": {
-        "ticker": "ETH"
-      }
+      "network": "5777"
     },
     "OnboardingController": {
       "onboardingTabs": {},

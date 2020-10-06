@@ -549,9 +549,6 @@
   "invalidBlockExplorerURL": {
     "message": "URL Block Explorer tidak sah"
   },
-  "invalidInput": {
-    "message": "Input tidak sah."
-  },
   "invalidRPC": {
     "message": "URL RPC tidak sah"
   },
@@ -719,9 +716,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "Sekat URL Explorer (pilihan)"
-  },
-  "optionalChainId": {
-    "message": "ChainID (pilihan)"
   },
   "optionalSymbol": {
     "message": "Simbol (pilihan)"

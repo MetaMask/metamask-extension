@@ -566,9 +566,6 @@
   "invalidBlockExplorerURL": {
     "message": "Nieprawidłowe Block Explorer URI"
   },
-  "invalidInput": {
-    "message": "Nieprawidłowe dane."
-  },
   "invalidRPC": {
     "message": "Nieprawidłowe RPC URI"
   },
@@ -739,9 +736,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "Adres URL przeglądarki łańcucha bloków (opcjonalnie)"
-  },
-  "optionalChainId": {
-    "message": "Identyfikator łańcucha (opcjonalnie)"
   },
   "optionalSymbol": {
     "message": "Symbol (opcjonalnie)"

@@ -280,9 +280,6 @@
   "invalidBlockExplorerURL": {
     "message": "Block Explorer URI ไม่ถูกต้อง"
   },
-  "invalidInput": {
-    "message": "อินพุทไม่ถูกต้อง"
-  },
   "invalidRPC": {
     "message": "RPC URI ไม่ถูกต้อง"
   },

@@ -202,9 +202,6 @@
   "invalidBlockExplorerURL": {
     "message": "Block Explorer URI Inválido"
   },
-  "invalidInput": {
-    "message": "Campo inválido."
-  },
   "invalidRPC": {
     "message": "RPC URI Inválido"
   },

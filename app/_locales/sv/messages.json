@@ -556,9 +556,6 @@
   "invalidBlockExplorerURL": {
     "message": "Ogiltig Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Ogiltigt input."
-  },
   "invalidRPC": {
     "message": "Ogiltig RPC-URL"
   },
@@ -729,9 +726,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "Block Explorer URL (valfritt)"
-  },
-  "optionalChainId": {
-    "message": "ChainID (frivilligt)"
   },
   "optionalSymbol": {
     "message": "Symbol (frivillig)"

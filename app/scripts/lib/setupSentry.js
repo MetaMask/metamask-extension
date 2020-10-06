@@ -44,11 +44,6 @@ export const SENTRY_STATE = {
       type: true,
     },
     seedPhraseBackedUp: true,
-    settings: {
-      chainId: true,
-      ticker: true,
-      nickname: true,
-    },
     showRestorePrompt: true,
     threeBoxDisabled: true,
     threeBoxLastUpdated: true,

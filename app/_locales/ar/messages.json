@@ -562,9 +562,6 @@
   "invalidBlockExplorerURL": {
     "message": "غير صحيح Block Explorer رابط"
   },
-  "invalidInput": {
-    "message": "مدخل غير صحيح."
-  },
   "invalidRPC": {
     "message": "رابط آر بي سي غير صحيح"
   },
@@ -738,9 +735,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "العنوان الإلكتروني لمستكشف البلوكات (اختياري)"
-  },
-  "optionalChainId": {
-    "message": "هوية ChainID (اختياري)"
   },
   "optionalSymbol": {
     "message": "الرمز (اختياري)"

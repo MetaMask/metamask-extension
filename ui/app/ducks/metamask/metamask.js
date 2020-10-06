@@ -6,7 +6,7 @@ export default function reduceMetamask (state = {}, action) {
     isInitialized: false,
     isUnlocked: false,
     isAccountMenuOpen: false,
-    rpcTarget: 'https://rawtestrpc.metamask.io/',
+    rpcUrl: 'https://rawtestrpc.metamask.io/',
     identities: {},
     unapprovedTxs: {},
     frequentRpcList: [],
@@ -65,7 +65,7 @@ export default function reduceMetamask (state = {}, action) {
         ...metamaskState,
         provider: {
           type: 'rpc',
-          rpcTarget: action.value,
+          rpcUrl: action.value,
         },
       }
 
@@ -374,6 +374,8 @@ export default function reduceMetamask (state = {}, action) {
 export const getCurrentLocale = (state) => state.metamask.currentLocale
 
 export const getAlertEnabledness = (state) => state.metamask.alertEnabledness
+
+export const getInvalidCustomNetworkAlertEnabledness = (state) => getAlertEnabledness(state)[ALERT_TYPES.invalidCustomNetwork]
 
 export const getUnconnectedAccountAlertEnabledness = (state) => getAlertEnabledness(state)[ALERT_TYPES.unconnectedAccount]
 

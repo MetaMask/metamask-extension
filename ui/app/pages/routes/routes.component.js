@@ -256,7 +256,7 @@ export default class Routes extends Component {
         {
           isUnlocked
             ? (
-              <Alerts />
+              <Alerts history={this.props.history} />
             )
             : null
         }

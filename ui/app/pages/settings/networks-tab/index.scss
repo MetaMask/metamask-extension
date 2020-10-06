@@ -96,11 +96,22 @@
   }
 
   &__network-form-label {
+    display: flex;
+    align-items: center;
+  }
+
+  &__network-form-label-text {
+    font-family: Roboto;
     font-style: normal;
     font-weight: normal;
     font-size: 14px;
     line-height: 20px;
     color: #000;
+  }
+
+  &__network-form-label-tooltip {
+    margin-left: 5px;
+    font-size: 12px;
   }
 
   &__networks-list {

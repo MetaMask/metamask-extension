@@ -562,9 +562,6 @@
   "invalidBlockExplorerURL": {
     "message": "Helytelen Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Érvénytelen bevitel."
-  },
   "invalidRPC": {
     "message": "Helytelen RPC URL"
   },
@@ -738,9 +735,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "Explorer URL letiltása (nem kötelező)"
-  },
-  "optionalChainId": {
-    "message": "ChainID (nem kötelező)"
   },
   "optionalSymbol": {
     "message": "Szimbólum (opcionális)"

@@ -222,9 +222,6 @@
   "invalidBlockExplorerURL": {
     "message": "Neplatné Block Explorer URI"
   },
-  "invalidInput": {
-    "message": "Neplatný vstup."
-  },
   "invalidRPC": {
     "message": "Neplatné RPC URI"
   },

@@ -562,9 +562,6 @@
   "invalidBlockExplorerURL": {
     "message": "Vale Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Vigane sisend."
-  },
   "invalidRPC": {
     "message": "Vale RPC URL"
   },
@@ -735,9 +732,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "Blokeeri Exploreri URL (valikuline)"
-  },
-  "optionalChainId": {
-    "message": "ChainID (valikuline)"
   },
   "optionalSymbol": {
     "message": "Sümbol (valikuline)"

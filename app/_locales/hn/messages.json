@@ -202,9 +202,6 @@
   "invalidBlockExplorerURL": {
     "message": "अमान्य Block Explorer कै URI"
   },
-  "invalidInput": {
-    "message": "अमान्य इनपुट।"
-  },
   "invalidRPC": {
     "message": "अमान्य RPC कै URI"
   },

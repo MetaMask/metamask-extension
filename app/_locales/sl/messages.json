@@ -557,9 +557,6 @@
   "invalidBlockExplorerURL": {
     "message": "Neveljaven Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Neveljaven vnos."
-  },
   "invalidRPC": {
     "message": "Neveljaven RPC URL"
   },
@@ -730,9 +727,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "Blokiraj URL Explorerja (poljubno)"
-  },
-  "optionalChainId": {
-    "message": "ChainID (nezahtevano)"
   },
   "optionalSymbol": {
     "message": "Simbol (nezahtevano)"

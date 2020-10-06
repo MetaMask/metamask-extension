@@ -557,9 +557,6 @@
   "invalidBlockExplorerURL": {
     "message": "无效 Block Explorer URI"
   },
-  "invalidInput": {
-    "message": "无效输入."
-  },
   "invalidRPC": {
     "message": "无效 RPC URI"
   },
@@ -727,9 +724,6 @@
   },
   "optionalBlockExplorerUrl": {
     "message": "屏蔽管理器 URL（选填）"
-  },
-  "optionalChainId": {
-    "message": "ChainID（选填）"
   },
   "optionalSymbol": {
     "message": "符号（选填）"
