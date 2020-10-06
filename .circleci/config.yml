@@ -11,7 +11,7 @@ workflows:
               only:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
       - prep-deps
-      # - test-deps
+      - test-deps
       - prep-build:
           requires:
             - prep-deps
@@ -61,29 +61,29 @@ workflows:
       - benchmark:
           requires:
             - prep-build-test
-      # - job-publish-prerelease:
-      #     requires:
-      #       - prep-deps
-      #       - prep-build
-      #       - benchmark
-      #       - all-tests-pass
-      # - job-publish-release:
-      #     filters:
-      #       branches:
-      #         only: master
-      #     requires:
-      #       - prep-deps
-      #       - prep-build
-      #       - all-tests-pass
-      # - job-publish-storybook:
-      #     filters:
-      #       branches:
-      #         only: develop
-      #     requires:
-      #       - prep-build-storybook
-      # - coveralls-upload:
-      #     requires:
-      #       - test-unit
+      - job-publish-prerelease:
+          requires:
+            - prep-deps
+            - prep-build
+            - benchmark
+            - all-tests-pass
+      - job-publish-release:
+          filters:
+            branches:
+              only: master
+          requires:
+            - prep-deps
+            - prep-build
+            - all-tests-pass
+      - job-publish-storybook:
+          filters:
+            branches:
+              only: develop
+          requires:
+            - prep-build-storybook
+      - coveralls-upload:
+          requires:
+            - test-unit
 
 jobs:
   create_release_pull_request:
