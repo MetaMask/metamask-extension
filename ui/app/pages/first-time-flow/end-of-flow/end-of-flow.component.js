@@ -19,13 +19,10 @@ export default class EndOfFlowScreen extends PureComponent {
       location: PropTypes.string,
       tabId: PropTypes.number,
     }),
-    setSpecialRPC: PropTypes.func,
   }
 
   onComplete = async () => {
-    const { history, completionMetaMetricsName, onboardingInitiator, setSpecialRPC } = this.props
-
-    setSpecialRPC()
+    const { history, completionMetaMetricsName, onboardingInitiator } = this.props
 
     this.context.metricsEvent({
       eventOpts: {
