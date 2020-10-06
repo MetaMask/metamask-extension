@@ -596,6 +596,7 @@ export default class MetamaskController extends EventEmitter {
       setSwapsErrorKey: nodeify(swapsController.setSwapsErrorKey, swapsController),
       setInitialGasEstimate: nodeify(swapsController.setInitialGasEstimate, swapsController),
       setCustomApproveTxData: nodeify(swapsController.setCustomApproveTxData, swapsController),
+      setSwapsLiveness: nodeify(swapsController.setSwapsLiveness, swapsController),
     }
   }
 

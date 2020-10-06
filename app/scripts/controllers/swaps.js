@@ -389,6 +389,11 @@ export default class SwapsController {
     this.store.updateState({ swapsState: { ...swapsState, routeState } })
   }
 
+  setSwapsLiveness (swapsFeatureIsLive) {
+    const { swapsState } = this.store.getState()
+    this.store.updateState({ swapsState: { ...swapsState, swapsFeatureIsLive } })
+  }
+
   resetPostFetchState () {
     const { swapsState } = this.store.getState()
 
@@ -397,6 +402,7 @@ export default class SwapsController {
         ...initialState.swapsState,
         tokens: swapsState.tokens,
         fetchParams: swapsState.fetchParams,
+        swapsFeatureIsLive: swapsState.swapsFeatureIsLive,
       },
     })
     clearTimeout(this.pollingTimeout)
@@ -406,7 +412,7 @@ export default class SwapsController {
     const { swapsState } = this.store.getState()
 
     this.store.updateState({
-      swapsState: { ...initialState.swapsState, tokens: swapsState.tokens },
+      swapsState: { ...initialState.swapsState, tokens: swapsState.tokens, swapsFeatureIsLive: swapsState.swapsFeatureIsLive },
     })
     clearTimeout(this.pollingTimeout)
   }
@@ -531,9 +537,7 @@ export default class SwapsController {
 
         const { swapsState } = this.store.getState()
         if (swapsState.swapsFeatureIsLive) {
-          this.store.updateState({
-            swapsState: { ...swapsState, swapsFeatureIsLive: false },
-          })
+          this.setSwapsLiveness(false)
         }
       }
     })
@@ -584,9 +588,7 @@ export default class SwapsController {
     }
 
     if (swapsFeatureIsLive !== oldSwapsFeatureIsLive) {
-      this.store.updateState({
-        swapsState: { ...swapsState, swapsFeatureIsLive },
-      })
+      this.setSwapsLiveness(swapsFeatureIsLive)
     }
   }
 

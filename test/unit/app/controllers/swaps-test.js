@@ -456,8 +456,9 @@ describe('SwapsController', function () {
       it('updates state correctly', function () {
         const tokens = 'test'
         const fetchParams = 'test'
+        const swapsFeatureIsLive = false
         swapsController.store.updateState({
-          swapsState: { tokens, fetchParams },
+          swapsState: { tokens, fetchParams, swapsFeatureIsLive },
         })
 
         swapsController.resetPostFetchState()
@@ -467,6 +468,7 @@ describe('SwapsController', function () {
           ...EMPTY_INIT_STATE.swapsState,
           tokens,
           fetchParams,
+          swapsFeatureIsLive,
         })
       })
     })

@@ -2142,6 +2142,13 @@ export function setPendingTokens (pendingTokens) {
 
 // Swaps
 
+export function setSwapsLiveness (swapsFeatureIsLive) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSwapsLiveness(swapsFeatureIsLive)
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
 export function fetchAndSetQuotes (fetchParams, fetchParamsMetaData) {
   return async (dispatch) => {
     const [quotes, selectedAggId] = await promisifiedBackground.fetchAndSetQuotes(fetchParams, fetchParamsMetaData)
