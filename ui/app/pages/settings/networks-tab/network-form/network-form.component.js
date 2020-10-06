@@ -118,12 +118,12 @@ export default class NetworkForm extends PureComponent {
     }
 
     if (propsRpcUrl && rpcUrl !== propsRpcUrl) {
-      editRpc(propsRpcUrl, rpcUrl, chainId, ticker, networkName, {
+      await editRpc(propsRpcUrl, rpcUrl, chainId, ticker, networkName, {
         blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
         ...rpcPrefs,
       })
     } else {
-      setRpcTarget(rpcUrl, chainId, ticker, networkName, {
+      await setRpcTarget(rpcUrl, chainId, ticker, networkName, {
         blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
         ...rpcPrefs,
       })

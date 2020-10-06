@@ -63,7 +63,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setSelectedSettingsRpcUrl: (newRpcUrl) => dispatch(setSelectedSettingsRpcUrl(newRpcUrl)),
     setRpcTarget: (newRpc, chainId, ticker, nickname, rpcPrefs) => {
-      dispatch(updateAndSetCustomRpc(newRpc, chainId, ticker, nickname, rpcPrefs))
+      return dispatch(updateAndSetCustomRpc(newRpc, chainId, ticker, nickname, rpcPrefs))
     },
     showConfirmDeleteNetworkModal: ({ target, onConfirm }) => {
       return dispatch(showModal({ name: 'CONFIRM_DELETE_NETWORK', target, onConfirm }))
@@ -71,7 +71,7 @@ const mapDispatchToProps = (dispatch) => {
     displayWarning: (warning) => dispatch(displayWarning(warning)),
     setNetworksTabAddMode: (isInAddMode) => dispatch(setNetworksTabAddMode(isInAddMode)),
     editRpc: (oldRpc, newRpc, chainId, ticker, nickname, rpcPrefs) => {
-      dispatch(editRpc(oldRpc, newRpc, chainId, ticker, nickname, rpcPrefs))
+      return dispatch(editRpc(oldRpc, newRpc, chainId, ticker, nickname, rpcPrefs))
     },
   }
 }
