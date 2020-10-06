@@ -231,6 +231,7 @@ export default class MetamaskController extends EventEmitter {
       initState: initState.TransactionController || initState.TransactionManager,
       getPermittedAccounts: this.permissionsController.getAccounts.bind(this.permissionsController),
       networkStore: this.networkController.networkStore,
+      getCurrentChainId: this.networkController.getCurrentChainId.bind(this.networkController),
       preferencesStore: this.preferencesController.store,
       txHistoryLimit: 40,
       getNetwork: this.networkController.getNetworkState.bind(this),
@@ -382,6 +383,7 @@ export default class MetamaskController extends EventEmitter {
   createPublicConfigStore () {
     // subset of state for metamask inpage provider
     const publicConfigStore = new ObservableStore()
+    const { networkController } = this
 
     // setup memStore subscription hooks
     this.on('update', updatePublicConfigStore)
@@ -392,16 +394,17 @@ export default class MetamaskController extends EventEmitter {
     }
 
     function updatePublicConfigStore (memState) {
+      const chainId = networkController.getCurrentChainId()
       if (memState.network !== 'loading') {
-        publicConfigStore.putState(selectPublicState(memState))
+        publicConfigStore.putState(selectPublicState(chainId, memState))
       }
     }
 
-    function selectPublicState ({ isUnlocked, network }) {
+    function selectPublicState (chainId, { isUnlocked, network }) {
       return {
         isUnlocked,
-        chainId: network,
-        networkVersion: Number.parseInt(network, 16).toString(),
+        chainId,
+        networkVersion: network,
       }
     }
     return publicConfigStore

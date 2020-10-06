@@ -19,6 +19,7 @@ import { createTestProviderTools, getTestAccounts } from '../../../../stub/provi
 
 const noop = () => true
 const currentNetworkId = '42'
+const currentChainId = '0x2a'
 
 describe('Transaction Controller', function () {
   let txController, provider, providerResultStub, fromAccount
@@ -48,6 +49,7 @@ describe('Transaction Controller', function () {
         resolve()
       }),
       getPermittedAccounts: () => undefined,
+      getCurrentChainId: () => currentChainId,
     })
     txController.nonceTracker.getNonceLock = () => Promise.resolve({ nextNonce: 0, releaseLock: noop })
   })
@@ -334,7 +336,7 @@ describe('Transaction Controller', function () {
 
   describe('#getChainId', function () {
     it('returns 0 when the chainId is NaN', function () {
-      txController.networkStore = new ObservableStore(NaN)
+      txController.networkStore = new ObservableStore('loading')
       assert.equal(txController.getChainId(), 0)
     })
   })
