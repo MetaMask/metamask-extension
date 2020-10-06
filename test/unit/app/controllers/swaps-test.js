@@ -27,7 +27,7 @@ const MOCK_QUOTES = {
       value: '0x17647444f166000',
       gas: '0xe09c0',
       gasPrice: undefined,
-      to: '0x9537C111Ea62a8dc39E99718140686f7aD856321',
+      to: '0x016B4bf68d421147c06f1b8680602c5bf0Df91A8',
     },
     sourceAmount: '1000000000000000000000000000000000000',
     destinationAmount: '396493201125465',

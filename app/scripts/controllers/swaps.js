@@ -18,7 +18,7 @@ import {
   fetchSwapsFeatureLiveness as defaultFetchSwapsFeatureLiveness,
 } from '../../../ui/app/pages/swaps/swaps.util'
 
-const METASWAP_ADDRESS = '0x9537C111Ea62a8dc39E99718140686f7aD856321'
+const METASWAP_ADDRESS = '0x016B4bf68d421147c06f1b8680602c5bf0Df91A8'
 
 // The MAX_GAS_LIMIT is a number that is higher than the maximum gas costs we have observed on any aggregator
 const MAX_GAS_LIMIT = 2500000
