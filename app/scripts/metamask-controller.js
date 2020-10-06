@@ -231,6 +231,7 @@ export default class MetamaskController extends EventEmitter {
       initState: initState.TransactionController || initState.TransactionManager,
       getPermittedAccounts: this.permissionsController.getAccounts.bind(this.permissionsController),
       networkStore: this.networkController.networkStore,
+      getCurrentChainId: this.networkController.getCurrentChainId.bind(this.networkController),
       preferencesStore: this.preferencesController.store,
       txHistoryLimit: 40,
       getNetwork: this.networkController.getNetworkState.bind(this),

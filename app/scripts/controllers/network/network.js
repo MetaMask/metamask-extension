@@ -124,9 +124,7 @@ export default class NetworkController extends EventEmitter {
       return
     }
 
-    const { type, chainId: configChainId } = this.getProviderConfig()
-    const chainId = NETWORK_TYPE_TO_ID_MAP[type]?.chainId || configChainId
-
+    const chainId = this.getCurrentChainId()
     if (!chainId) {
       log.warn('NetworkController - lookupNetwork aborted due to missing chainId')
       this.setNetworkState('loading')
@@ -136,7 +134,7 @@ export default class NetworkController extends EventEmitter {
     // Ping the RPC endpoint so we can confirm that it works
     const ethQuery = new EthQuery(this._provider)
     const initialNetwork = this.getNetworkState()
-    ethQuery.sendAsync({ method: 'net_version' }, (err, _networkVersion) => {
+    ethQuery.sendAsync({ method: 'net_version' }, (err, networkVersion) => {
       const currentNetwork = this.getNetworkState()
       if (initialNetwork === currentNetwork) {
         if (err) {
@@ -145,9 +143,14 @@ export default class NetworkController extends EventEmitter {
         }
 
         // Now we set the network state to the chainId computed earlier
-        this.setNetworkState(chainId)
+        this.setNetworkState(networkVersion)
       }
     })
+  }
+
+  getCurrentChainId () {
+    const { type, chainId: configChainId } = this.getProviderConfig()
+    return NETWORK_TYPE_TO_ID_MAP[type]?.chainId || configChainId
   }
 
   setRpcTarget (rpcUrl, chainId, ticker = 'ETH', nickname = '', rpcPrefs) {

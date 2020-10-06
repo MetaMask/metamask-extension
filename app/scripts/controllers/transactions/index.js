@@ -69,6 +69,7 @@ export default class TransactionController extends EventEmitter {
   constructor (opts) {
     super()
     this.networkStore = opts.networkStore || new ObservableStore({})
+    this._getCurrentChainId = opts.getCurrentChainId
     this.preferencesStore = opts.preferencesStore || new ObservableStore({})
     this.provider = opts.provider
     this.getPermittedAccounts = opts.getPermittedAccounts
@@ -132,9 +133,9 @@ export default class TransactionController extends EventEmitter {
    */
   getChainId () {
     const networkState = this.networkStore.getState()
-    // eslint-disable-next-line radix
-    const integerChainId = parseInt(networkState)
-    if (Number.isNaN(integerChainId)) {
+    const chainId = this._getCurrentChainId()
+    const integerChainId = parseInt(chainId, 16)
+    if (networkState === 'loading' || Number.isNaN(integerChainId)) {
       return 0
     }
     return integerChainId
