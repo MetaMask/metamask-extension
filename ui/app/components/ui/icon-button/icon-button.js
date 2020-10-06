@@ -28,7 +28,7 @@ export default function IconButton ({ onClick, Icon, disabled, label, tooltipRen
 
 IconButton.propTypes = {
   onClick: PropTypes.func.isRequired,
-  Icon: PropTypes.element.isRequired,
+  Icon: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
   label: PropTypes.string.isRequired,
   tooltipRender: PropTypes.func,
