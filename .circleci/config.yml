@@ -4,6 +4,8 @@ workflows:
   test_and_release:
     jobs:
       - create_release_pull_request:
+          requires:
+            - prep-deps
           filters:
             branches:
               only:
