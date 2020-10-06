@@ -1,4 +1,5 @@
 {
+  "dummyChainId": "0x99",
   "ethGasBasic": {
     "average": 85,
     "fastestWait": 0.6,

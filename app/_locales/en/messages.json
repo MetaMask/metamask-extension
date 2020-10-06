@@ -574,6 +574,10 @@
   "endOfFlowMessage9": {
     "message": "Learn more."
   },
+  "endpointReturnedDifferentChainId": {
+    "message": "The endpoint returned a different chain ID: $1",
+    "description": "$1 is the return value of eth_chainId from an RPC endpoint"
+  },
   "ensNotFoundOnCurrentNetwork": {
     "message": "ENS name not found on the current network. Try switching to Ethereum Mainnet."
   },
@@ -652,6 +656,9 @@
   },
   "failed": {
     "message": "Failed"
+  },
+  "failedToFetchChainId": {
+    "message": "Could not fetch chain ID. Is your RPC URL correct?"
   },
   "failureMessage": {
     "message": "Something went wrong, and we were unable to complete the action"
@@ -989,7 +996,7 @@
     "message": "Network Name"
   },
   "networkSettingsChainIdDescription": {
-    "message": "The chain ID is used for signing transactions. Enter a decimal or hexadecimal number starting with '0x'."
+    "message": "The chain ID is used for signing transactions. It must match the chain ID returned by the network. Enter a decimal or hexadecimal number starting with '0x'."
   },
   "networkSettingsDescription": {
     "message": "Add and edit custom RPC networks"
