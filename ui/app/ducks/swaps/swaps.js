@@ -245,6 +245,15 @@ export const prepareToLeaveSwaps = () => {
   }
 }
 
+export const fetchAndSetSwapsGasPriceInfo = () => {
+  return async (dispatch) => {
+    const basicEstimates = await dispatch(fetchBasicGasAndTimeEstimates())
+    dispatch(setSwapsTxGasPrice(decGWEIToHexWEI(basicEstimates.average)))
+    await dispatch(fetchGasEstimates(basicEstimates.blockTime, true))
+
+  }
+}
+
 export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage, metaMetricsEvent) => {
   return async (dispatch, getState) => {
     const state = getState()
@@ -297,18 +306,6 @@ export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage, me
 
     const maxMode = getMaxMode(state)
 
-    let revisedValue
-    if (maxMode && sourceTokenInfo.symbol === 'ETH') {
-      const customConvertGasPrice = getCustomSwapsGasPrice(state)
-      const tradeTxParams = getSwapsTradeTxParams(state)
-      const averageGasEstimate = getAveragePriceEstimateInHexWEI(state)
-      const usedGasPrice = customConvertGasPrice || tradeTxParams?.gasPrice || averageGasEstimate
-
-      const totalGasLimitForCalculation = (new BigNumber(800000, 10)).plus(100000, 10).toString(16)
-      const gasTotalInWeiHex = calcGasTotal(totalGasLimitForCalculation, usedGasPrice)
-      revisedValue = (new BigNumber(selectedAccount.balance, 16)).minus(gasTotalInWeiHex, 16).div('1000000000000000000').toString(10)
-    }
-
     metaMetricsEvent({
       event: 'Quotes Requested',
       category: 'swaps',
@@ -319,7 +316,7 @@ export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage, me
       excludeMetaMetricsId: true,
       properties: {
         token_from: fromTokenSymbol,
-        token_from_amount: String(revisedValue || inputValue),
+        token_from_amount: String(inputValue),
         token_to: toTokenSymbol,
         request_type: balanceError ? 'Quote' : 'Order',
         slippage: maxSlippage,
@@ -338,7 +335,7 @@ export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage, me
           slippage: maxSlippage,
           sourceToken: fromTokenAddress,
           destinationToken: toTokenAddress,
-          value: revisedValue || inputValue,
+          value: inputValue,
           fromAddress: selectedAccount.address,
           // TODO: what is going on here...
           isCustomNetwork: Boolean(customNetworkId) || true,
@@ -347,19 +344,14 @@ export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage, me
           sourceDecimals: fromTokenDecimals,
         },
         {
+          maxMode,
           sourceTokenInfo,
           destinationTokenInfo,
+          accountBalance: selectedAccount.balance,
         },
       ))
 
-      const gasPriceFetchPromise = dispatch(fetchBasicGasAndTimeEstimates())
-        .then((basicEstimates) => {
-          dispatch(setSwapsTxGasPrice(decGWEIToHexWEI(basicEstimates.average)))
-          return basicEstimates.blockTime
-        })
-        .then((blockTime) => {
-          return dispatch(fetchGasEstimates(blockTime, true))
-        })
+      const gasPriceFetchPromise = dispatch(fetchAndSetSwapsGasPriceInfo())
 
       const [[fetchedQuotes, selectedAggId]] = await Promise.all([fetchAndSetQuotesPromise, gasPriceFetchPromise])
 
@@ -374,7 +366,7 @@ export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage, me
           excludeMetaMetricsId: true,
           properties: {
             token_from: fromTokenSymbol,
-            token_from_amount: String(revisedValue || inputValue),
+            token_from_amount: String(inputValue),
             token_to: toTokenSymbol,
             request_type: balanceError ? 'Quote' : 'Order',
             slippage: maxSlippage,
@@ -395,7 +387,7 @@ export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage, me
           excludeMetaMetricsId: true,
           properties: {
             token_from: fromTokenSymbol,
-            token_from_amount: String(revisedValue || inputValue),
+            token_from_amount: String(inputValue),
             token_to: toTokenSymbol,
             token_to_amount: calcTokenAmount(newSelectedQuote.destinationAmount, newSelectedQuote.decimals || 18),
             request_type: balanceError ? 'Quote' : 'Order',
