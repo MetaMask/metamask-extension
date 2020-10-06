@@ -12,7 +12,6 @@ describe('End of Flow Screen', function () {
     history: {
       push: sinon.spy(),
     },
-    setSpecialRPC: () => null,
   }
 
   beforeEach(function () {

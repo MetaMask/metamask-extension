@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { updateAndSetCustomRpc } from '../../../store/actions'
 import { getOnboardingInitiator } from '../../../selectors'
 import EndOfFlow from './end-of-flow.component'
 
@@ -17,14 +16,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setSpecialRPC: () => {
-      if (!process.env.IN_TEST) {
-        dispatch(updateAndSetCustomRpc('https://ganache-testnet.airswap-dev.codefi.network', '1', 'ETH', 'mainnet', {}))
-      }
-    },
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(EndOfFlow)
+export default connect(mapStateToProps)(EndOfFlow)
