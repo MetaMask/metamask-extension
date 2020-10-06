@@ -189,6 +189,10 @@ export default class SwapsController {
     if (!approvalRequired && !fetchParams?.balanceError) {
       newQuotes = await this.getAllQuotesWithGasEstimates(newQuotes)
 
+      if (fetchParamsMetaData.maxMode && fetchParams.sourceToken === ETH_SWAPS_TOKEN_ADDRESS) {
+        newQuotes = await this._modifyValuesForMaxEthMode(newQuotes, fetchParamsMetaData.accountBalance)
+      }
+
       if (Object.values(newQuotes).length === 0) {
         this.setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR)
       } else {
@@ -407,6 +411,11 @@ export default class SwapsController {
     clearTimeout(this.pollingTimeout)
   }
 
+  async _getEthersGasPrice () {
+    const ethersGasPrice = await this.ethersProvider.getGasPrice()
+    return ethersGasPrice.toHexString()
+  }
+
   async _findTopQuoteAggId (quotes) {
     const tokenConversionRates = this.tokenRatesStore.getState()
       .contractExchangeRates
@@ -418,12 +427,7 @@ export default class SwapsController {
       return {}
     }
 
-    let usedGasPrice = customGasPrice
-
-    if (!usedGasPrice) {
-      usedGasPrice = await this.ethersProvider.getGasPrice()
-      usedGasPrice = usedGasPrice.toHexString()
-    }
+    const usedGasPrice = customGasPrice || await this._getEthersGasPrice()
 
     let topAggId = ''
     let ethValueOfTradeForBestQuote = null
@@ -584,5 +588,41 @@ export default class SwapsController {
         swapsState: { ...swapsState, swapsFeatureIsLive },
       })
     }
+  }
+
+  async _modifyValuesForMaxEthMode (newQuotes, accountBalance) {
+    const {
+      swapsState: { customGasPrice },
+    } = this.store.getState()
+
+    const usedGasPrice = customGasPrice || await this._getEthersGasPrice()
+
+    const mappedNewQuotes = mapValues(newQuotes, (quote) => {
+      const oldSourceAmount = quote.sourceAmount
+
+      const gasTotalInWeiHex = calcGasTotal((new BigNumber(quote.maxGas, 10)).toString(16), usedGasPrice)
+      const newSourceAmount = (new BigNumber(accountBalance, 16)).minus(gasTotalInWeiHex, 16).toString(10)
+
+      const newOldRatio = (new BigNumber(newSourceAmount, 10)).div(oldSourceAmount, 10)
+      const oldNewDifference = (new BigNumber(oldSourceAmount, 10)).minus(newSourceAmount, 10)
+
+      const oldDestinationAmount = quote.destinationAmount
+      const newDestinationAmount = (new BigNumber(oldDestinationAmount, 10)).times(newOldRatio)
+
+      const oldValue = quote.trade.value
+      const newValue = (new BigNumber(oldValue, 16)).minus(oldNewDifference, 10)
+
+      return {
+        ...quote,
+        trade: {
+          ...quote.trade,
+          value: newValue,
+        },
+        destinationAmount: newDestinationAmount,
+        sourceAmount: newSourceAmount,
+      }
+    })
+
+    return mappedNewQuotes
   }
 }

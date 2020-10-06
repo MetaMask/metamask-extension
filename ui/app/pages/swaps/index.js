@@ -23,6 +23,7 @@ import {
   setMetamaskFeeAmount,
   getSwapsFeatureLiveness,
   prepareToLeaveSwaps,
+  fetchAndSetSwapsGasPriceInfo,
 } from '../../ducks/swaps/swaps'
 import {
   AWAITING_SWAP_ROUTE,
@@ -158,6 +159,8 @@ export default function Swap () {
       .then((metaMaskFeeAmount) => {
         dispatch(setMetamaskFeeAmount(metaMaskFeeAmount))
       })
+
+    dispatch(fetchAndSetSwapsGasPriceInfo())
 
     return () => {
       dispatch(prepareToLeaveSwaps())
