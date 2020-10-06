@@ -13,6 +13,7 @@ import {
   fetchQuotesAndSetQuoteState,
   navigateBackToBuildQuote,
   prepareForRetryGetQuotes,
+  prepareToLeaveSwaps,
 } from '../../../ducks/swaps/swaps'
 import { useTransactionTimeRemaining } from '../../../hooks/useTransactionTimeRemaining'
 import { usePrevious } from '../../../hooks/usePrevious'
@@ -232,6 +233,7 @@ export default function AwaitingSwap ({
       <SwapsFooter
         onSubmit={async () => {
           if (errorKey === OFFLINE_FOR_MAINTENANCE) {
+            await dispatch(prepareToLeaveSwaps())
             history.push(DEFAULT_ROUTE)
           } else if (errorKey === QUOTES_EXPIRED_ERROR) {
             dispatch(prepareForRetryGetQuotes())

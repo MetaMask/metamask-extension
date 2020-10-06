@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import BigNumber from 'bignumber.js'
+import log from 'loglevel'
 
 import {
   addToken,
@@ -17,9 +18,10 @@ import {
   updateAndApproveTx,
   updateTransaction,
   resetBackgroundSwapsState,
+  setSwapsLiveness,
 } from '../../store/actions'
-import { AWAITING_SWAP_ROUTE, BUILD_QUOTE_ROUTE, LOADING_QUOTES_ROUTE, SWAPS_ERROR_ROUTE } from '../../helpers/constants/routes'
-import { fetchTradesInfo } from '../../pages/swaps/swaps.util'
+import { AWAITING_SWAP_ROUTE, BUILD_QUOTE_ROUTE, LOADING_QUOTES_ROUTE, SWAPS_ERROR_ROUTE, SWAPS_MAINTENANCE_ROUTE } from '../../helpers/constants/routes'
+import { fetchTradesInfo, fetchSwapsFeatureLiveness } from '../../pages/swaps/swaps.util'
 import { calcGasTotal } from '../../pages/send/send.utils'
 import { decimalToHex, getValueFromWeiHex, hexMax, decGWEIToHexWEI, hexWEIToDecETH } from '../../helpers/utils/conversions.util'
 import { constructTxParams } from '../../helpers/utils/util'
@@ -256,6 +258,19 @@ export const fetchAndSetSwapsGasPriceInfo = () => {
 
 export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage, metaMetricsEvent) => {
   return async (dispatch, getState) => {
+    let swapsFeatureIsLive = false
+    try {
+      swapsFeatureIsLive = await fetchSwapsFeatureLiveness()
+    } catch (error) {
+      log.error('Failed to fetch Swaps liveness, defaulting to false.', error)
+    }
+    await dispatch(setSwapsLiveness(swapsFeatureIsLive))
+
+    if (!swapsFeatureIsLive) {
+      await history.push(SWAPS_MAINTENANCE_ROUTE)
+      return
+    }
+
     const state = getState()
     const fetchParams = getFetchParams(state)
     const selectedAccount = getSelectedAccount(state)
@@ -412,6 +427,19 @@ export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage, me
 
 export const signAndSendTransactions = (history, metaMetricsEvent) => {
   return async (dispatch, getState) => {
+    let swapsFeatureIsLive = false
+    try {
+      swapsFeatureIsLive = await fetchSwapsFeatureLiveness()
+    } catch (error) {
+      log.error('Failed to fetch Swaps liveness, defaulting to false.', error)
+    }
+    await dispatch(setSwapsLiveness(swapsFeatureIsLive))
+
+    if (!swapsFeatureIsLive) {
+      await history.push(SWAPS_MAINTENANCE_ROUTE)
+      return
+    }
+
     const state = getState()
     const customSwapsGas = getCustomSwapsGas(state)
     const fetchParams = getFetchParams(state)
