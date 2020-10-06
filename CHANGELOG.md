@@ -2,6 +2,33 @@
 
 ## Current Develop Branch
 
+## 8.1.0 Mon Oct 05 2020
+- [#9482](https://github.com/MetaMask/metamask-extension/pull/9482): Add MetaMask Swaps 🌻
+- [#9422](https://github.com/MetaMask/metamask-extension/pull/9422): Fix data backup feature (i.e. syncing with 3box)
+- [#9434](https://github.com/MetaMask/metamask-extension/pull/9434): Improve gas input UI by using tooltip instead of a modal to communicate gas data
+- [#9433](https://github.com/MetaMask/metamask-extension/pull/9433): Improve visual style and layout of the basic tab of the customize gas modal
+- [#9415](https://github.com/MetaMask/metamask-extension/pull/9415): Fix UI bug in token approval confirmation notifications
+- [#9414](https://github.com/MetaMask/metamask-extension/pull/9414): Update Wyre purchase URL
+- [#9411](https://github.com/MetaMask/metamask-extension/pull/9411): Rename 'Ethereum Main Network' in network selector to 'Etherum Mainnet'
+- [#9409](https://github.com/MetaMask/metamask-extension/pull/9409): Fix info tooltip on the alert settings screen when used in firefox
+- [#9406](https://github.com/MetaMask/metamask-extension/pull/9406): Fix UI bug in customize gas modal: shwo left border when the first button is selected
+- [#9395](https://github.com/MetaMask/metamask-extension/pull/9395): Correctly save new Contact Book addressed after editing them in 'Settings > Contact'
+- [#9293](https://github.com/MetaMask/metamask-extension/pull/9293): Improve Italian translations
+- [#9295](https://github.com/MetaMask/metamask-extension/pull/9295): Ensure the extension can be unlocked without network/internet access
+- [#9344](https://github.com/MetaMask/metamask-extension/pull/9344): Add messages to Ledger connection process
+- [#9329](https://github.com/MetaMask/metamask-extension/pull/9329): Hide seedphrase by default when restoring vault, and provide option for it to be shown
+- [#9333](https://github.com/MetaMask/metamask-extension/pull/9333): Ensure names of token symbols are shown when token amounts in the token list are long
+- [#9321](https://github.com/MetaMask/metamask-extension/pull/9321): Warn users when sending tokens to the token address
+- [#9288](https://github.com/MetaMask/metamask-extension/pull/9288): Fix bug that caused the accounts list to be empty after entering an incorrect password when attempting to export private key
+- [#9314](https://github.com/MetaMask/metamask-extension/pull/9314): Improve/fix error text for when ENS names are not found, on mainnet
+- [#9307](https://github.com/MetaMask/metamask-extension/pull/9307): Improve 'Contact Us' copy in settings
+- [#9283](https://github.com/MetaMask/metamask-extension/pull/9283): Fix capitalization of copy on MetaMetrics opt-in page
+- [#9269](https://github.com/MetaMask/metamask-extension/pull/9269): Add lock icon to default networks in the Settings network page, to indicate they are not editable
+- [#9189](https://github.com/MetaMask/metamask-extension/pull/9189): Hide gas price/speed estimate button, and link to advanced gas modal, in send flow on non-main network
+- [#9184](https://github.com/MetaMask/metamask-extension/pull/9184): Improve visual styling of back button in account modal
+- [#9152](https://github.com/MetaMask/metamask-extension/pull/9152): Fix vertical align of the network name in network dropdown button
+- [#9073](https://github.com/MetaMask/metamask-extension/pull/9073): Use new Euclid font throughout MetaMask
+
 ## 8.0.10 Wed Sep 16 2020
 - [#9423](https://github.com/MetaMask/metamask-extension/pull/9423): Update default phishing list
 - [#9416](https://github.com/MetaMask/metamask-extension/pull/9416): Fix fetching a new phishing list on Firefox
