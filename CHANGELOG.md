@@ -11,7 +11,7 @@
 - [#9411](https://github.com/MetaMask/metamask-extension/pull/9411): Rename 'Ethereum Main Network' in network selector to 'Etherum Mainnet'
 - [#9409](https://github.com/MetaMask/metamask-extension/pull/9409): Fix info tooltip on the alert settings screen when used in firefox
 - [#9406](https://github.com/MetaMask/metamask-extension/pull/9406): Fix UI bug in customize gas modal: shwo left border when the first button is selected
-- [#9395](https://github.com/MetaMask/metamask-extension/pull/9395): Correctly save new Contact Book addressed after editing them in 'Settings > Contact
+- [#9395](https://github.com/MetaMask/metamask-extension/pull/9395): Correctly save new Contact Book addressed after editing them in 'Settings > Contact'
 - [#9293](https://github.com/MetaMask/metamask-extension/pull/9293): Improve some Italian translations
 - [#9295](https://github.com/MetaMask/metamask-extension/pull/9295): Ensure the extension can be unlocked without network/internet access
 - [#9344](https://github.com/MetaMask/metamask-extension/pull/9344): Add messages to Ledger connection process
