@@ -22,7 +22,7 @@
 - [#9314](https://github.com/MetaMask/metamask-extension/pull/9314): Improve/fix error text for when ENS names are not found, on mainnet
 - [#9307](https://github.com/MetaMask/metamask-extension/pull/9307): Improve 'Contact Us' copy in settings
 - [#9283](https://github.com/MetaMask/metamask-extension/pull/9283): Fix capitalization of copy on MetaMetrics opt-in page
-- [#9269](https://github.com/MetaMask/metamask-extension/pull/9269): Add lock-icon to default networks in the Settings network page, to indicate they are not editable
+- [#9269](https://github.com/MetaMask/metamask-extension/pull/9269): Add lock icon to default networks in the Settings network page, to indicate they are not editable
 - [#9189](https://github.com/MetaMask/metamask-extension/pull/9189): Hide gas price/speed estimate button, and link to advanced gas modal, in send flow on non-main network
 - [#9184](https://github.com/MetaMask/metamask-extension/pull/9184): Improve visual styling of back button in account modal
 - [#9152](https://github.com/MetaMask/metamask-extension/pull/9152): Fix vertical align of the network name in network dropdown button
