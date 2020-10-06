@@ -47,6 +47,10 @@ async function setupFetchMocking (driver) {
         return { json: async () => clone(mockResponses.ethGasPredictTable) }
       } else if (url.match(/chromeextensionmm/u)) {
         return { json: async () => clone(mockResponses.metametrics) }
+      } else if (url.match(/^https:\/\/(api\.metaswap|.*airswap-dev)/u)) {
+        if (url.match(/featureFlag$/u)) {
+          return { json: async () => clone(mockResponses.swaps.featureFlag) }
+        }
       }
       return window.origFetch(...args)
     }

@@ -30,6 +30,13 @@ const CONNECT_ROUTE = '/connect'
 const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions'
 const CONNECTED_ROUTE = '/connected'
 const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts'
+const SWAPS_ROUTE = '/swaps'
+const BUILD_QUOTE_ROUTE = '/swaps/build-quote'
+const VIEW_QUOTE_ROUTE = '/swaps/view-quote'
+const LOADING_QUOTES_ROUTE = '/swaps/loading-quotes'
+const AWAITING_SWAP_ROUTE = '/swaps/awaiting-swap'
+const SWAPS_ERROR_ROUTE = '/swaps/swaps-error'
+const SWAPS_MAINTENANCE_ROUTE = '/swaps/maintenance'
 
 const INITIALIZE_ROUTE = '/initialize'
 const INITIALIZE_WELCOME_ROUTE = '/initialize/welcome'
@@ -109,6 +116,11 @@ const PATH_NAME_MAP = {
   [INITIALIZE_END_OF_FLOW_ROUTE]: 'End of Initialization Page',
   [INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE]: 'Initialization Confirm Seed Phrase Page',
   [INITIALIZE_METAMETRICS_OPT_IN_ROUTE]: 'MetaMetrics Opt In Page',
+  [BUILD_QUOTE_ROUTE]: 'Swaps Build Quote Page',
+  [VIEW_QUOTE_ROUTE]: 'Swaps View Quotes Page',
+  [LOADING_QUOTES_ROUTE]: 'Swaps Loading Quotes Page',
+  [AWAITING_SWAP_ROUTE]: 'Swaps Awaiting Swaps Page',
+  [SWAPS_ERROR_ROUTE]: 'Swaps Error Page',
 }
 
 export {
@@ -166,4 +178,11 @@ export {
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
   PATH_NAME_MAP,
+  SWAPS_ROUTE,
+  BUILD_QUOTE_ROUTE,
+  VIEW_QUOTE_ROUTE,
+  LOADING_QUOTES_ROUTE,
+  AWAITING_SWAP_ROUTE,
+  SWAPS_ERROR_ROUTE,
+  SWAPS_MAINTENANCE_ROUTE,
 }

@@ -2,7 +2,6 @@ import EventEmitter from 'events'
 
 import pump from 'pump'
 import Dnode from 'dnode'
-import extension from 'extensionizer'
 import ObservableStore from 'obs-store'
 import asStream from 'obs-store/lib/asStream'
 import RpcEngine from 'json-rpc-engine'
@@ -50,6 +49,7 @@ import TypedMessageManager from './lib/typed-message-manager'
 import TransactionController from './controllers/transactions'
 import TokenRatesController from './controllers/token-rates'
 import DetectTokensController from './controllers/detect-tokens'
+import SwapsController from './controllers/swaps'
 import { PermissionsController } from './controllers/permissions'
 import getRestrictedMethods from './controllers/permissions/restrictedMethods'
 import nodeify from './lib/nodeify'
@@ -71,8 +71,10 @@ export default class MetamaskController extends EventEmitter {
 
     this.sendUpdate = debounce(this.privateSendUpdate.bind(this), 200)
     this.opts = opts
+    this.extension = opts.extension
     this.platform = opts.platform
     const initState = opts.initState || {}
+    const version = this.platform.getVersion()
     this.recordFirstTimeInfo(initState)
 
     // this keeps track of how many "controllerStream" connections are open
@@ -91,6 +93,12 @@ export default class MetamaskController extends EventEmitter {
 
     // lock to ensure only one vault created at once
     this.createVaultMutex = new Mutex()
+
+    this.extension.runtime.onInstalled.addListener((details) => {
+      if (details.reason === 'update' && version === '8.1.0') {
+        this.platform.openExtensionInBrowser()
+      }
+    })
 
     // next, we will initialize the controllers
     // controller initialization order matters
@@ -210,7 +218,6 @@ export default class MetamaskController extends EventEmitter {
       preferencesStore: this.preferencesController.store,
     })
 
-    const version = this.platform.getVersion()
     this.threeBoxController = new ThreeBoxController({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
@@ -230,6 +237,7 @@ export default class MetamaskController extends EventEmitter {
       signTransaction: this.keyringController.signTransaction.bind(this.keyringController),
       provider: this.provider,
       blockTracker: this.blockTracker,
+      version: this.platform.getVersion(),
     })
     this.txController.on('newUnapprovedTx', () => opts.showUnapprovedTx())
 
@@ -266,6 +274,14 @@ export default class MetamaskController extends EventEmitter {
     this.decryptMessageManager = new DecryptMessageManager()
     this.encryptionPublicKeyManager = new EncryptionPublicKeyManager()
     this.typedMessageManager = new TypedMessageManager({ networkController: this.networkController })
+
+    this.swapsController = new SwapsController({
+      getBufferedGasLimit: this.txController.txGasUtil.getBufferedGasLimit.bind(this.txController.txGasUtil),
+      provider: this.provider,
+      getNetwork: this.networkController.getNetworkState.bind(this.networkController),
+      getProviderConfig: this.networkController.getProviderConfig.bind(this.networkController),
+      tokenRatesStore: this.tokenRatesController.store,
+    })
 
     this.store.updateStructure({
       AppStateController: this.appStateController.store,
@@ -306,6 +322,7 @@ export default class MetamaskController extends EventEmitter {
       PermissionsController: this.permissionsController.permissions,
       PermissionsMetadata: this.permissionsController.store,
       ThreeBoxController: this.threeBoxController.store,
+      SwapsController: this.swapsController.store,
       // ENS Controller
       EnsController: this.ensController.store,
     })
@@ -426,6 +443,7 @@ export default class MetamaskController extends EventEmitter {
       preferencesController,
       threeBoxController,
       txController,
+      swapsController,
     } = this
 
     return {
@@ -491,6 +509,7 @@ export default class MetamaskController extends EventEmitter {
       setLastActiveTime: nodeify(this.appStateController.setLastActiveTime, this.appStateController),
       setDefaultHomeActiveTabName: nodeify(this.appStateController.setDefaultHomeActiveTabName, this.appStateController),
       setConnectedStatusPopoverHasBeenShown: nodeify(this.appStateController.setConnectedStatusPopoverHasBeenShown, this.appStateController),
+      setSwapsWelcomeMessageHasBeenShown: nodeify(this.appStateController.setSwapsWelcomeMessageHasBeenShown, this.appStateController),
 
       // EnsController
       tryReverseResolveAddress: nodeify(this.ensController.reverseResolveAddress, this.ensController),
@@ -512,6 +531,7 @@ export default class MetamaskController extends EventEmitter {
       estimateGas: nodeify(this.estimateGas, this),
       getPendingNonce: nodeify(this.getPendingNonce, this),
       getNextNonce: nodeify(this.getNextNonce, this),
+      addUnapprovedTransaction: nodeify(txController.addUnapprovedTransaction, txController),
 
       // messageManager
       signMessage: nodeify(this.signMessage, this),
@@ -558,6 +578,25 @@ export default class MetamaskController extends EventEmitter {
       addPermittedAccount: nodeify(permissionsController.addPermittedAccount, permissionsController),
       removePermittedAccount: nodeify(permissionsController.removePermittedAccount, permissionsController),
       requestAccountsPermissionWithId: nodeify(permissionsController.requestAccountsPermissionWithId, permissionsController),
+
+      // swaps
+      fetchAndSetQuotes: nodeify(swapsController.fetchAndSetQuotes, swapsController),
+      setSelectedQuoteAggId: nodeify(swapsController.setSelectedQuoteAggId, swapsController),
+      resetSwapsState: nodeify(swapsController.resetSwapsState, swapsController),
+      setSwapsTokens: nodeify(swapsController.setSwapsTokens, swapsController),
+      setApproveTxId: nodeify(swapsController.setApproveTxId, swapsController),
+      setTradeTxId: nodeify(swapsController.setTradeTxId, swapsController),
+      setMaxMode: nodeify(swapsController.setMaxMode, swapsController),
+      setSwapsTxGasPrice: nodeify(swapsController.setSwapsTxGasPrice, swapsController),
+      setSwapsTxGasLimit: nodeify(swapsController.setSwapsTxGasLimit, swapsController),
+      safeRefetchQuotes: nodeify(swapsController.safeRefetchQuotes, swapsController),
+      stopPollingForQuotes: nodeify(swapsController.stopPollingForQuotes, swapsController),
+      setBackgroundSwapRouteState: nodeify(swapsController.setBackgroundSwapRouteState, swapsController),
+      resetPostFetchState: nodeify(swapsController.resetPostFetchState, swapsController),
+      setSwapsErrorKey: nodeify(swapsController.setSwapsErrorKey, swapsController),
+      setInitialGasEstimate: nodeify(swapsController.setInitialGasEstimate, swapsController),
+      setCustomApproveTxData: nodeify(swapsController.setCustomApproveTxData, swapsController),
+      setSwapsLiveness: nodeify(swapsController.setSwapsLiveness, swapsController),
     }
   }
 
@@ -1545,7 +1584,7 @@ export default class MetamaskController extends EventEmitter {
       ? 'metamask'
       : (new URL(sender.url)).origin
     let extensionId
-    if (sender.id !== extension.runtime.id) {
+    if (sender.id !== this.extension.runtime.id) {
       extensionId = sender.id
     }
     let tabId

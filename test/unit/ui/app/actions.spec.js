@@ -16,6 +16,13 @@ const { provider } = createTestProviderTools({ scaffold: {} })
 const middleware = [thunk]
 const defaultState = { metamask: {} }
 const mockStore = (state = defaultState) => configureStore(middleware)(state)
+const extensionMock = {
+  runtime: {
+    onInstalled: {
+      addListener: () => undefined,
+    },
+  },
+}
 
 describe('Actions', function () {
 
@@ -32,6 +39,7 @@ describe('Actions', function () {
   beforeEach(async function () {
 
     metamaskController = new MetaMaskController({
+      extension: extensionMock,
       platform: { getVersion: () => 'foo' },
       provider,
       keyringController: new KeyringController({}),

@@ -1,0 +1,120 @@
+.fee-card {
+  border-radius: 8px;
+  border: 1px solid $Grey-100;
+  width: 100%;
+
+  @include H7;
+
+  &__main {
+    padding: 16px 16px 12px 16px;
+  }
+
+  &__row-header {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+    justify-content: space-between;
+
+    &:first-of-type {
+      margin-top: 0;
+    }
+
+    div {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  &__row-header-text,
+  &__row-header-text--bold {
+    margin-right: 6px;
+    cursor: pointer;
+  }
+
+  &__row,
+  &__top-bordered-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+
+  &__top-bordered-row {
+    border-top: 1px solid #bbc0c5;
+    padding-top: 10px;
+  }
+
+  &__row-label {
+    display: flex;
+    align-items: center;
+
+    img {
+      height: 10px;
+      width: 10px;
+      margin-left: 4px;
+      cursor: pointer;
+    }
+  }
+
+  &__row-fee {
+    margin-right: 4px;
+  }
+
+  &__link {
+    color: $Blue-500;
+    cursor: pointer;
+  }
+
+  &__total-box {
+    border-top: 1px solid $Grey-100;
+    padding: 12px 16px 16px 16px;
+  }
+
+  &__total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+  }
+
+  &__total-secondary {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    font-weight: bold;
+    color: $Grey-500;
+    margin-top: 4px;
+  }
+
+  &__row-header-secondary,
+  &__row-header-secondary--bold {
+    color: $Grey-500;
+  }
+
+  &__row-header-secondary--bold {
+    margin-right: 16px;
+  }
+
+  &__row-header-secondary {
+    margin-right: 12px;
+  }
+
+  &__row-header-primary,
+  &__row-header-primary--bold {
+    color: $Grey-500;
+  }
+
+  &__row-header-text--bold,
+  &__row-header-secondary--bold,
+  &__row-header-primary--bold {
+    font-weight: bold;
+  }
+}
+
+.info-tooltip {
+  > div {
+    display: flex;
+    align-items: center;
+    margin-right: 4px;
+  }
+}

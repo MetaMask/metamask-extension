@@ -15,10 +15,13 @@ import {
   SEND_ETHER_ACTION_KEY,
   DEPLOY_CONTRACT_ACTION_KEY,
   CONTRACT_INTERACTION_KEY,
+  SWAP,
 } from '../../../../ui/app/helpers/constants/transactions'
 import cleanErrorStack from '../../lib/cleanErrorStack'
 import { hexToBn, bnToHex, BnMultiplyByFraction } from '../../lib/util'
 import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/helpers/constants/error-keys'
+import { getSwapsTokensReceivedFromTxMeta } from '../../../../ui/app/pages/swaps/swaps.util'
+import { segment, METAMETRICS_ANONYMOUS_ID } from '../../lib/segment'
 import TransactionStateManager from './tx-state-manager'
 import TxGasUtil from './tx-gas-utils'
 import PendingTransactionTracker from './pending-tx-tracker'
@@ -72,11 +75,12 @@ export default class TransactionController extends EventEmitter {
     this.blockTracker = opts.blockTracker
     this.signEthTx = opts.signTransaction
     this.inProcessOfSigning = new Set()
+    this.version = opts.version
 
     this.memStore = new ObservableStore({})
     this.query = new EthQuery(this.provider)
-    this.txGasUtil = new TxGasUtil(this.provider)
 
+    this.txGasUtil = new TxGasUtil(this.provider)
     this._mapMethods()
     this.txStateManager = new TransactionStateManager({
       initState: opts.initState,
@@ -359,6 +363,11 @@ export default class TransactionController extends EventEmitter {
       type: TRANSACTION_TYPE_CANCEL,
     })
 
+    if (originalTxMeta.transactionCategory === SWAP) {
+      newTxMeta.sourceTokenSymbol = originalTxMeta.sourceTokenSymbol
+      newTxMeta.destinationTokenSymbol = originalTxMeta.destinationTokenSymbol
+    }
+
     this.addTx(newTxMeta)
     await this.approveTransaction(newTxMeta.id)
     return newTxMeta
@@ -521,6 +530,10 @@ export default class TransactionController extends EventEmitter {
   async publishTransaction (txId, rawTx) {
     const txMeta = this.txStateManager.getTx(txId)
     txMeta.rawTx = rawTx
+    if (txMeta.transactionCategory === SWAP) {
+      const preTxBalance = await this.query.getBalance(txMeta.txParams.from)
+      txMeta.preTxBalance = preTxBalance.toString(16)
+    }
     this.txStateManager.updateTx(txMeta, 'transactions#publishTransaction')
     let txHash
     try {
@@ -564,6 +577,57 @@ export default class TransactionController extends EventEmitter {
       txMeta.txReceipt = {
         ...txReceipt,
         gasUsed,
+      }
+
+      if (txMeta.transactionCategory === SWAP) {
+        const postTxBalance = await this.query.getBalance(txMeta.txParams.from)
+        txMeta.postTxBalance = postTxBalance.toString(16)
+      }
+
+      if (txMeta.swapMetaData) {
+        let { version } = this.platform
+        if (process.env.METAMASK_ENVIRONMENT !== 'production') {
+          version = `${version}-${process.env.METAMASK_ENVIRONMENT}`
+        }
+        const segmentContext = {
+          app: {
+            version,
+            name: 'MetaMask Extension',
+          },
+          locale: this.preferencesStore.getState().currentLocale.replace('_', '-'),
+          page: {
+            path: '/background-process',
+            title: 'Background Process',
+            url: '/background-process',
+          },
+          userAgent: window.navigator.userAgent,
+        }
+
+        const metametricsId = this.preferencesStore.getState().metaMetricsId
+        if (metametricsId && txMeta.swapMetaData && txReceipt.status !== '0x0') {
+          segment.track({ event: 'Swap Completed', userId: metametricsId, context: segmentContext, category: 'swaps' })
+          segment.track({
+            event: 'Swap Completed',
+            properties: {
+              ...txMeta.swapMetaData,
+              token_to_amount_received: getSwapsTokensReceivedFromTxMeta(txMeta.destinationTokenSymbol, txMeta, txMeta.destinationTokenAddress, txMeta.txParams.from, txMeta.destinationTokenDecimals),
+            },
+            context: segmentContext,
+            anonymousId: METAMETRICS_ANONYMOUS_ID,
+            excludeMetaMetricsId: true,
+            category: 'swaps',
+          })
+        } else if (metametricsId && txMeta.swapMetaData) {
+          segment.track({ event: 'Swap Failed', userId: metametricsId, context: segmentContext, category: 'swaps' })
+          segment.track({
+            event: 'Swap Failed',
+            properties: { ...txMeta.swapMetaData },
+            anonymousId: METAMETRICS_ANONYMOUS_ID,
+            excludeMetaMetricsId: true,
+            context: segmentContext,
+            category: 'swaps',
+          })
+        }
       }
 
       this.txStateManager.updateTx(txMeta, 'transactions#confirmTransaction - add txReceipt')

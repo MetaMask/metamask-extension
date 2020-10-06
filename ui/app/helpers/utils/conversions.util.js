@@ -1,6 +1,10 @@
 import ethUtil from 'ethereumjs-util'
+import BigNumber from 'bignumber.js'
 import { ETH, GWEI, WEI } from '../constants/common'
 import { conversionUtil, addCurrencies, subtractCurrencies } from './conversion-util'
+import {
+  formatCurrency,
+} from './confirm-tx.util'
 
 export function bnToHex (inputBn) {
   return ethUtil.addHexPrefix(inputBn.toString(16))
@@ -137,4 +141,44 @@ export function decETHToDecWEI (decEth) {
     fromDenomination: 'ETH',
     toDenomination: 'WEI',
   })
+}
+
+export function hexWEIToDecETH (hexWEI) {
+  return conversionUtil(hexWEI, {
+    fromNumericBase: 'hex',
+    toNumericBase: 'dec',
+    fromDenomination: 'WEI',
+    toDenomination: 'ETH',
+  })
+}
+
+export function hexMax (...hexNumbers) {
+  let max = hexNumbers[0]
+  hexNumbers.slice(1).forEach((hexNumber) => {
+    if ((new BigNumber(hexNumber, 16)).gt(max, 16)) {
+      max = hexNumber
+    }
+  })
+  return max
+}
+
+export function addHexes (aHexWEI, bHexWEI) {
+  return addCurrencies(aHexWEI, bHexWEI, {
+    aBase: 16,
+    bBase: 16,
+    toNumericBase: 'hex',
+    numberOfDecimals: 6,
+  })
+}
+
+export function sumHexWEIsToRenderableFiat (hexWEIs, convertedCurrency, conversionRate) {
+  const hexWEIsSum = hexWEIs.filter((n) => n).reduce(addHexes)
+  const ethTotal = decEthToConvertedCurrency(
+    getValueFromWeiHex({
+      value: hexWEIsSum, toCurrency: 'ETH', numberOfDecimals: 4,
+    }),
+    convertedCurrency,
+    conversionRate,
+  )
+  return formatCurrency(ethTotal, convertedCurrency)
 }

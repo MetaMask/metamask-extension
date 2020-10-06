@@ -796,9 +796,40 @@ const updateMetamaskStateFromBackground = () => {
   })
 }
 
-export function updateTransaction (txData) {
+export function estimateGasMethod ({
+  gasPrice,
+  blockGasLimit,
+  selectedAddress,
+  sendToken,
+  to,
+  value,
+  data,
+}) {
+  return estimateGas({
+    estimateGasMethod: promisifiedBackground.estimateGas,
+    blockGasLimit,
+    selectedAddress,
+    sendToken,
+    to,
+    value,
+    gasPrice,
+    data,
+  })
+}
+
+export async function estimateGasFromTxParams (txParams) {
+  const backgroundState = await updateMetamaskStateFromBackground()
+  const blockGasLimit = backgroundState.currentBlockGasLimit
+  return estimateGasMethod({
+    ...txParams,
+    selectedAddress: txParams.from,
+    blockGasLimit,
+  })
+}
+
+export function updateTransaction (txData, dontShowLoadingIndicator) {
   return (dispatch) => {
-    dispatch(showLoadingIndication())
+    !dontShowLoadingIndicator && dispatch(showLoadingIndication())
 
     return new Promise((resolve, reject) => {
       background.updateTransaction(txData, (err) => {
@@ -824,9 +855,25 @@ export function updateTransaction (txData) {
   }
 }
 
-export function updateAndApproveTx (txData) {
+export function addUnapprovedTransaction (txParams, origin) {
+  log.debug('background.addUnapprovedTransaction')
+
+  return () => {
+    return new Promise((resolve, reject) => {
+      background.addUnapprovedTransaction(txParams, origin, (err, txMeta) => {
+        if (err) {
+          reject(err)
+          return
+        }
+        resolve(txMeta)
+      })
+    })
+  }
+}
+
+export function updateAndApproveTx (txData, dontShowLoadingIndicator) {
   return (dispatch) => {
-    dispatch(showLoadingIndication())
+    !dontShowLoadingIndicator && dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.updateAndApproveTransaction(txData, (err) => {
         dispatch(updateTransactionParams(txData.id, txData.txParams))
@@ -1278,9 +1325,9 @@ export function showConfTxPage ({ id } = {}) {
   }
 }
 
-export function addToken (address, symbol, decimals, image) {
+export function addToken (address, symbol, decimals, image, dontShowLoadingIndicator) {
   return (dispatch) => {
-    dispatch(showLoadingIndication())
+    !dontShowLoadingIndicator && dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.addToken(address, symbol, decimals, image, (err, tokens) => {
         dispatch(hideLoadingIndication())
@@ -2093,6 +2140,138 @@ export function setPendingTokens (pendingTokens) {
   }
 }
 
+// Swaps
+
+export function setSwapsLiveness (swapsFeatureIsLive) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSwapsLiveness(swapsFeatureIsLive)
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function fetchAndSetQuotes (fetchParams, fetchParamsMetaData) {
+  return async (dispatch) => {
+    const [quotes, selectedAggId] = await promisifiedBackground.fetchAndSetQuotes(fetchParams, fetchParamsMetaData)
+    await forceUpdateMetamaskState(dispatch)
+    return [quotes, selectedAggId]
+  }
+}
+
+export function setSelectedQuoteAggId (aggId) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSelectedQuoteAggId(aggId)
+    await forceUpdateMetamaskState(dispatch)
+
+  }
+}
+
+export function setSwapsTokens (tokens) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSwapsTokens(tokens)
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function resetBackgroundSwapsState () {
+  return async (dispatch) => {
+    const id = await promisifiedBackground.resetSwapsState()
+    await forceUpdateMetamaskState(dispatch)
+    return id
+  }
+}
+
+export function setMaxMode (maxMode) {
+  return async (dispatch) => {
+    await promisifiedBackground.setMaxMode(maxMode)
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function setCustomApproveTxData (data) {
+  return async (dispatch) => {
+    await promisifiedBackground.setCustomApproveTxData(data)
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function setSwapsTxGasPrice (gasPrice) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSwapsTxGasPrice(gasPrice)
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function setSwapsTxGasLimit (gasLimit) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSwapsTxGasLimit(gasLimit, true)
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function setSwapsTxGasParams (gasLimit, gasPrice) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSwapsTxGasPrice(gasPrice)
+    await promisifiedBackground.setSwapsTxGasLimit(gasLimit, true)
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function setTradeTxId (tradeTxId) {
+  return async (dispatch) => {
+    await promisifiedBackground.setTradeTxId(tradeTxId)
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function setApproveTxId (approveTxId) {
+  return async (dispatch) => {
+    await promisifiedBackground.setApproveTxId(approveTxId)
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function safeRefetchQuotes () {
+  return async (dispatch) => {
+    await promisifiedBackground.safeRefetchQuotes()
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function stopPollingForQuotes () {
+  return async (dispatch) => {
+    await promisifiedBackground.stopPollingForQuotes()
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function setBackgroundSwapRouteState (routeState) {
+  return async (dispatch) => {
+    await promisifiedBackground.setBackgroundSwapRouteState(routeState)
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function resetSwapsPostFetchState () {
+  return async (dispatch) => {
+    await promisifiedBackground.resetPostFetchState()
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function setSwapsErrorKey (errorKey) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSwapsErrorKey(errorKey)
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function setInitialGasEstimate (initialAggId, baseGasEstimate) {
+  return async (dispatch) => {
+    await promisifiedBackground.setInitialGasEstimate(initialAggId, baseGasEstimate)
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
 // Permissions
 
 export function requestAccountsPermissionWithId (origin) {
@@ -2197,6 +2376,16 @@ export function setLastActiveTime () {
 export function setConnectedStatusPopoverHasBeenShown () {
   return () => {
     background.setConnectedStatusPopoverHasBeenShown((err) => {
+      if (err) {
+        throw new Error(err.message)
+      }
+    })
+  }
+}
+
+export function setSwapsWelcomeMessageHasBeenShown () {
+  return () => {
+    background.setSwapsWelcomeMessageHasBeenShown((err) => {
       if (err) {
         throw new Error(err.message)
       }

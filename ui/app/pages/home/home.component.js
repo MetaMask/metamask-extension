@@ -13,6 +13,7 @@ import ConnectedSites from '../connected-sites'
 import ConnectedAccounts from '../connected-accounts'
 import { Tabs, Tab } from '../../components/ui/tabs'
 import { EthOverview } from '../../components/app/wallet-overview'
+import SwapsIntroPopup from '../swaps/intro-popup'
 
 import {
   ASSET_ROUTE,
@@ -23,6 +24,9 @@ import {
   CONNECT_ROUTE,
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
+  AWAITING_SWAP_ROUTE,
+  BUILD_QUOTE_ROUTE,
+  VIEW_QUOTE_ROUTE,
 } from '../../helpers/constants/routes'
 
 const LEARN_MORE_URL = 'https://metamask.zendesk.com/hc/en-us/articles/360045129011-Intro-to-MetaMask-v8-extension'
@@ -54,6 +58,12 @@ export default class Home extends PureComponent {
     connectedStatusPopoverHasBeenShown: PropTypes.bool,
     defaultHomeActiveTabName: PropTypes.string,
     onTabClick: PropTypes.func.isRequired,
+    setSwapsWelcomeMessageHasBeenShown: PropTypes.func.isRequired,
+    swapsWelcomeMessageHasBeenShown: PropTypes.bool.isRequired,
+    haveSwapsQuotes: PropTypes.bool.isRequired,
+    showAwaitingSwapScreen: PropTypes.bool.isRequired,
+    swapsFetchParams: PropTypes.object,
+    swapsEnabled: PropTypes.bool,
   }
 
   state = {
@@ -68,11 +78,20 @@ export default class Home extends PureComponent {
       suggestedTokens = {},
       totalUnapprovedCount,
       unconfirmedTransactionsCount,
+      haveSwapsQuotes,
+      showAwaitingSwapScreen,
+      swapsFetchParams,
     } = this.props
 
     this.setState({ mounted: true })
     if (isNotification && totalUnapprovedCount === 0) {
       global.platform.closeCurrentWindow()
+    } else if (showAwaitingSwapScreen) {
+      history.push(AWAITING_SWAP_ROUTE)
+    } else if (haveSwapsQuotes) {
+      history.push(VIEW_QUOTE_ROUTE)
+    } else if (swapsFetchParams) {
+      history.push(BUILD_QUOTE_ROUTE)
     } else if (firstPermissionsRequestId) {
       history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`)
     } else if (unconfirmedTransactionsCount > 0) {
@@ -89,13 +108,16 @@ export default class Home extends PureComponent {
       suggestedTokens,
       totalUnapprovedCount,
       unconfirmedTransactionsCount,
+      haveSwapsQuotes,
+      showAwaitingSwapScreen,
+      swapsFetchParams,
     },
     { mounted },
   ) {
     if (!mounted) {
       if (isNotification && totalUnapprovedCount === 0) {
         return { closing: true }
-      } else if (firstPermissionsRequestId || unconfirmedTransactionsCount > 0 || Object.keys(suggestedTokens).length > 0) {
+      } else if (firstPermissionsRequestId || unconfirmedTransactionsCount > 0 || Object.keys(suggestedTokens).length > 0 || showAwaitingSwapScreen || haveSwapsQuotes || swapsFetchParams) {
         return { redirecting: true }
       }
     }
@@ -235,6 +257,9 @@ export default class Home extends PureComponent {
       history,
       connectedStatusPopoverHasBeenShown,
       isPopup,
+      swapsWelcomeMessageHasBeenShown,
+      setSwapsWelcomeMessageHasBeenShown,
+      swapsEnabled,
     } = this.props
 
     if (forgottenPassword) {
@@ -248,6 +273,9 @@ export default class Home extends PureComponent {
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
         <Route path={CONNECTED_ACCOUNTS_ROUTE} component={ConnectedAccounts} exact />
         <div className="home__container">
+          {!swapsWelcomeMessageHasBeenShown && swapsEnabled ? (
+            <SwapsIntroPopup onClose={setSwapsWelcomeMessageHasBeenShown} />
+          ) : null}
           { isPopup && !connectedStatusPopoverHasBeenShown ? this.renderPopover() : null }
           <div className="home__main-view">
             <MenuBar />

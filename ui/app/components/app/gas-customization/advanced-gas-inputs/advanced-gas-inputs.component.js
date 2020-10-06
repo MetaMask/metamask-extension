@@ -17,6 +17,7 @@ export default class AdvancedGasInputs extends Component {
     insufficientBalance: PropTypes.bool,
     customPriceIsSafe: PropTypes.bool,
     isSpeedUp: PropTypes.bool,
+    customGasLimitMessage: PropTypes.string,
   }
 
   constructor (props) {
@@ -101,7 +102,7 @@ export default class AdvancedGasInputs extends Component {
     return {}
   }
 
-  renderGasInput ({ value, onChange, errorComponent, errorType, label, tooltipTitle }) {
+  renderGasInput ({ value, onChange, errorComponent, errorType, label, customMessageComponent, tooltipTitle }) {
     return (
       <div className="advanced-gas-inputs__gas-edit-row">
         <div className="advanced-gas-inputs__gas-edit-row__label">
@@ -140,7 +141,7 @@ export default class AdvancedGasInputs extends Component {
               <i className="fa fa-sm fa-angle-down" />
             </div>
           </div>
-          { errorComponent }
+          { errorComponent || customMessageComponent }
         </div>
       </div>
     )
@@ -151,6 +152,7 @@ export default class AdvancedGasInputs extends Component {
       insufficientBalance,
       customPriceIsSafe,
       isSpeedUp,
+      customGasLimitMessage,
     } = this.props
     const {
       gasPrice,
@@ -177,6 +179,14 @@ export default class AdvancedGasInputs extends Component {
       </div>
     ) : null
 
+    const gasLimitCustomMessageComponent = customGasLimitMessage
+      ? (
+        <div className="advanced-gas-inputs__gas-edit-row__custom-text">
+          { customGasLimitMessage }
+        </div>
+      )
+      : null
+
     return (
       <div className="advanced-gas-inputs__gas-edit-rows">
         { this.renderGasInput({
@@ -193,6 +203,7 @@ export default class AdvancedGasInputs extends Component {
           value: this.state.gasLimit,
           onChange: this.onChangeGasLimit,
           errorComponent: gasLimitErrorComponent,
+          customMessageComponent: gasLimitCustomMessageComponent,
           errorType: gasLimitErrorType,
         }) }
       </div>
