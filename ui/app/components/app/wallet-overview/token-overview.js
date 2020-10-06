@@ -14,6 +14,7 @@ import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount'
 import { updateSendToken } from '../../../store/actions'
 import { getSwapsFeatureLiveness, setSwapsFromToken } from '../../../ducks/swaps/swaps'
 import { getAssetImages, getCurrentKeyring, getCurrentNetworkId } from '../../../selectors/selectors'
+import { MAINNET_NETWORK_ID } from '../../../../../app/scripts/controllers/network/enums'
 
 import SwapIcon from '../../ui/icon/swap-icon.component'
 import SendIcon from '../../ui/icon/overview-send-icon.component'
@@ -81,10 +82,10 @@ const TokenOverview = ({ className, token }) => {
           {swapsEnabled ? (
             <IconButton
               className="token-overview__button"
-              disabled={networkId !== '1'}
+              disabled={networkId !== MAINNET_NETWORK_ID}
               Icon={SwapIcon}
               onClick={() => {
-                if (networkId === '1') {
+                if (networkId === MAINNET_NETWORK_ID) {
                   enteredSwapsEvent()
                   dispatch(setSwapsFromToken({ ...token, iconUrl: assetImages[token.address] }))
                   if (usingHardwareWallet) {
