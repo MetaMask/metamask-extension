@@ -12,7 +12,7 @@ import { useMetricEvent, useNewMetricEvent } from '../../../hooks/useMetricEvent
 import { useTokenTracker } from '../../../hooks/useTokenTracker'
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount'
 import { updateSendToken } from '../../../store/actions'
-import { getSwapsFeatureFlag, setSwapsFromToken } from '../../../ducks/swaps/swaps'
+import { getSwapsFeatureLiveness, setSwapsFromToken } from '../../../ducks/swaps/swaps'
 import { getAssetImages, getCurrentKeyring, getCurrentNetworkId } from '../../../selectors/selectors'
 
 import SwapIcon from '../../ui/icon/swap-icon.component'
@@ -41,7 +41,7 @@ const TokenOverview = ({ className, token }) => {
   const formattedFiatBalance = useTokenFiatAmount(token.address, balance, token.symbol)
   const networkId = useSelector(getCurrentNetworkId)
   const enteredSwapsEvent = useNewMetricEvent({ event: 'Swaps Opened', properties: { source: 'Token View', active_currency: token.symbol }, category: 'swaps' })
-  const swapsEnabled = useSelector(getSwapsFeatureFlag)
+  const swapsEnabled = useSelector(getSwapsFeatureLiveness)
 
   return (
     <WalletOverview

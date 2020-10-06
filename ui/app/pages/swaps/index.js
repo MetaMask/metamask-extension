@@ -21,7 +21,7 @@ import {
   getBackgroundSwapRouteState,
   getSwapsErrorKey,
   setMetamaskFeeAmount,
-  getSwapsFeatureFlag,
+  getSwapsFeatureLiveness,
   prepareToLeaveSwaps,
 } from '../../ducks/swaps/swaps'
 import {
@@ -84,7 +84,7 @@ export default function Swap () {
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider)
   const fetchingQuotes = useSelector(getFetchingQuotes)
   let swapsErrorKey = useSelector(getSwapsErrorKey)
-  const swapsEnabled = useSelector(getSwapsFeatureFlag)
+  const swapsEnabled = useSelector(getSwapsFeatureLiveness)
 
   const { balance: ethBalance, address: selectedAccountAddress } = selectedAccount
   const fetchParamsFromToken = sourceTokenInfo?.symbol === 'ETH'

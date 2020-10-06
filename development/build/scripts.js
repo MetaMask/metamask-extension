@@ -337,8 +337,6 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
       ETH_GAS_STATION_API_KEY: process.env.ETH_GAS_STATION_API_KEY || '',
       CONF: opts.devMode ? conf : ({}),
       SENTRY_DSN: process.env.SENTRY_DSN,
-      // Temporary for development of swaps. TODO: Remove this
-      SWAPS_ENABLED: process.env.SWAPS_ENABLED,
       INFURA_PROJECT_ID: (
         opts.testing
           ? '00000000000000000000000000000000'
