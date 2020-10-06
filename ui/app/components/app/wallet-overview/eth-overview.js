@@ -20,6 +20,7 @@ import SendIcon from '../../ui/icon/overview-send-icon.component'
 import { getSwapsFeatureLiveness, setSwapsFromToken } from '../../../ducks/swaps/swaps'
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../helpers/constants/swaps'
 import IconButton from '../../ui/icon-button'
+import { MAINNET_NETWORK_ID } from '../../../../../app/scripts/controllers/network/enums'
 import WalletOverview from './wallet-overview'
 
 const EthOverview = ({ className }) => {
@@ -112,10 +113,10 @@ const EthOverview = ({ className }) => {
           {swapsEnabled ? (
             <IconButton
               className="eth-overview__button"
-              disabled={networkId !== '1'}
+              disabled={networkId !== MAINNET_NETWORK_ID}
               Icon={SwapIcon}
               onClick={() => {
-                if (networkId === '1') {
+                if (networkId === MAINNET_NETWORK_ID) {
                   enteredSwapsEvent()
                   dispatch(setSwapsFromToken({
                     ...ETH_SWAPS_TOKEN_OBJECT,
