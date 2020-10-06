@@ -8,7 +8,7 @@
 - [#9433](https://github.com/MetaMask/metamask-extension/pull/9433): Improve visual style and layout of the basic tab of the customize gas modal
 - [#9415](https://github.com/MetaMask/metamask-extension/pull/9415): Fix UI bug in token approval confirmation notifications
 - [#9414](https://github.com/MetaMask/metamask-extension/pull/9414): Update Wyre purchase URL
-- [#9411](https://github.com/MetaMask/metamask-extension/pull/9411): Rename 'Ethereum Main Network' in network selector to Etherum Mainnet
+- [#9411](https://github.com/MetaMask/metamask-extension/pull/9411): Rename 'Ethereum Main Network' in network selector to 'Etherum Mainnet'
 - [#9409](https://github.com/MetaMask/metamask-extension/pull/9409): Fix info tooltip on the alert settings screen when used in firefox
 - [#9406](https://github.com/MetaMask/metamask-extension/pull/9406): Fix UI bug in customize gas modal: shwo left border when the first button is selected
 - [#9395](https://github.com/MetaMask/metamask-extension/pull/9395): Correctly save new Contact Book addressed after editing them in 'Settings > Contact
