@@ -7,10 +7,15 @@ import { addInternalMethodPrefix } from '../../../../app/scripts/controllers/per
 describe('preferences controller', function () {
   let preferencesController
   let network
+  const migrateAddressBookState = sinon.stub()
 
   beforeEach(function () {
     network = { providerStore: new ObservableStore({ type: 'mainnet' }) }
-    preferencesController = new PreferencesController({ network })
+    preferencesController = new PreferencesController({ migrateAddressBookState, network })
+  })
+
+  afterEach(function () {
+    sinon.restore()
   })
 
   describe('setAddresses', function () {
@@ -497,14 +502,20 @@ describe('preferences controller', function () {
   })
 
   describe('#updateRpc', function () {
-    it('should update the rpcDetails properly', function () {
+    it('should update the rpcDetails properly', async function () {
       preferencesController.store.updateState({ frequentRpcListDetail: [{}, { rpcUrl: 'test', chainId: '0x1' }, {}] })
-      preferencesController.updateRpc({ rpcUrl: 'test', chainId: '0x1' })
-      preferencesController.updateRpc({ rpcUrl: 'test/1', chainId: '0x1' })
-      preferencesController.updateRpc({ rpcUrl: 'test/2', chainId: '0x1' })
-      preferencesController.updateRpc({ rpcUrl: 'test/3', chainId: '0x1' })
+      await preferencesController.updateRpc({ rpcUrl: 'test', chainId: '0x1' })
+      await preferencesController.updateRpc({ rpcUrl: 'test/1', chainId: '0x1' })
+      await preferencesController.updateRpc({ rpcUrl: 'test/2', chainId: '0x1' })
+      await preferencesController.updateRpc({ rpcUrl: 'test/3', chainId: '0x1' })
       const list = preferencesController.getFrequentRpcListDetail()
       assert.deepEqual(list[1], { rpcUrl: 'test', chainId: '0x1' })
+    })
+
+    it('should migrate address book entries if chainId changes', async function () {
+      preferencesController.store.updateState({ frequentRpcListDetail: [{}, { rpcUrl: 'test', chainId: '1' }, {}] })
+      await preferencesController.updateRpc({ rpcUrl: 'test', chainId: '0x1' })
+      assert(migrateAddressBookState.calledWith('1', '0x1'))
     })
   })
 

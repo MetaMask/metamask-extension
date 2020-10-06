@@ -111,6 +111,7 @@ export default class MetamaskController extends EventEmitter {
       initLangCode: opts.initLangCode,
       openPopup: opts.openPopup,
       network: this.networkController,
+      migrateAddressBookState: this.migrateAddressBookState.bind(this),
     })
 
     this.appStateController = new AppStateController({
@@ -1878,6 +1879,38 @@ export default class MetamaskController extends EventEmitter {
         },
       },
     )
+  }
+
+  /**
+   * Migrate address book state from old to new chainId.
+   *
+   * Address book state is keyed by the `networkStore` state from the network controller. This value is set to the
+   * `networkId` for our built-in Infura networks, but it's set to the `chainId` for custom networks.
+   * When this `chainId` value is changed for custom RPC endpoints, we need to migrate any contacts stored under the
+   * old key to the new key.
+   *
+   * The `duplicate` parameter is used to specify that the contacts under the old key should not be removed. This is
+   * useful in the case where two RPC endpoints shared the same set of contacts, and we're not sure which one each
+   * contact belongs under. Duplicating the contacts under both keys is the only way to ensure they are not lost.
+   *
+   * @param {string} oldChainId - The old chainId
+   * @param {string} newChainId - The new chainId
+   * @param {boolean} [duplicate] - Whether to duplicate the addresses on both chainIds (default: false)
+   */
+  async migrateAddressBookState (oldChainId, newChainId, duplicate = false) {
+    const { addressBook } = this.addressBookController.state
+
+    if (!addressBook[oldChainId]) {
+      return
+    }
+
+    for (const address of Object.keys(addressBook[oldChainId])) {
+      const entry = addressBook[oldChainId][address]
+      this.addressBookController.set(address, entry.name, newChainId, entry.memo)
+      if (!duplicate) {
+        this.addressBookController.delete(oldChainId, address)
+      }
+    }
   }
 
   //=============================================================================

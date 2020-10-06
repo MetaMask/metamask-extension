@@ -7,10 +7,11 @@ describe('Typed Message Manager', function () {
   let typedMessageManager, msgParamsV1, msgParamsV3, typedMsgs, messages, msgId, numberMsgId
 
   const address = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
-  const networkController = new NetworkController()
-  sinon.stub(networkController, 'getNetworkState').returns('1')
 
-  beforeEach(function () {
+  beforeEach(async function () {
+    const networkController = new NetworkController()
+    sinon.stub(networkController, 'getNetworkState').returns('0x1')
+
     typedMessageManager = new TypedMessageManager({
       networkController,
     })
@@ -64,7 +65,7 @@ describe('Typed Message Manager', function () {
       }),
     }
 
-    typedMessageManager.addUnapprovedMessage(msgParamsV3, null, 'V3')
+    await typedMessageManager.addUnapprovedMessage(msgParamsV3, null, 'V3')
     typedMsgs = typedMessageManager.getUnapprovedMsgs()
     messages = typedMessageManager.messages
     msgId = Object.keys(typedMsgs)[0]
