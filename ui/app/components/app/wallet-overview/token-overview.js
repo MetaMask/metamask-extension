@@ -35,7 +35,7 @@ const TokenOverview = ({ className, token }) => {
   const assetImages = useSelector(getAssetImages)
 
   const keyring = useSelector(getCurrentKeyring)
-  const hardwareWallet = keyring.type.search('Hardware') !== -1
+  const usingHardwareWallet = keyring.type.search('Hardware') !== -1
   const { tokensWithBalances } = useTokenTracker([token])
   const balance = tokensWithBalances[0]?.string
   const formattedFiatBalance = useTokenFiatAmount(token.address, balance, token.symbol)
@@ -87,7 +87,7 @@ const TokenOverview = ({ className, token }) => {
                 if (networkId === '1') {
                   enteredSwapsEvent()
                   dispatch(setSwapsFromToken({ ...token, iconUrl: assetImages[token.address] }))
-                  if (hardwareWallet) {
+                  if (usingHardwareWallet) {
                     global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE)
                   } else {
                     history.push(BUILD_QUOTE_ROUTE)
