@@ -1281,7 +1281,9 @@ describe('MetaMask', function () {
       await chainIdInput.sendKeys(chainId)
 
       await driver.clickElement(By.css('.network-form__footer .btn-secondary'))
-      await driver.delay(largeDelayMs * 4)
+      await driver.findElement(
+        By.xpath(`//div[contains(text(), '${rpcUrl}')]`),
+      )
     })
 
     it(`creates second custom RPC entry`, async function () {
@@ -1307,7 +1309,9 @@ describe('MetaMask', function () {
       await chainIdInput.sendKeys(chainId)
 
       await driver.clickElement(By.css('.network-form__footer .btn-secondary'))
-      await driver.delay(largeDelayMs * 4)
+      await driver.findElement(
+        By.xpath(`//div[contains(text(), '${rpcUrl}')]`),
+      )
     })
 
     it('selects another provider', async function () {
