@@ -43,7 +43,7 @@ import {
 } from '../../helpers/constants/swaps'
 
 import { resetBackgroundSwapsState, setSwapsTokens, setMaxMode, removeToken, setBackgroundSwapRouteState, setSwapsErrorKey } from '../../store/actions'
-import { getFastPriceEstimateInHexWEI, currentNetworkTxListSelector, getCustomNetworkId, getRpcPrefsForCurrentProvider } from '../../selectors'
+import { getFastPriceEstimateInHexWEI, currentNetworkTxListSelector, getRpcPrefsForCurrentProvider } from '../../selectors'
 import { useNewMetricEvent } from '../../hooks/useMetricEvent'
 import { getValueFromWeiHex } from '../../helpers/utils/conversions.util'
 
@@ -81,7 +81,6 @@ export default function Swap () {
   const approveTxId = useSelector(getApproveTxId)
   const aggregatorMetadata = useSelector(getAggregatorMetadata)
   const networkId = useSelector(getCurrentNetworkId)
-  const customNetworkId = useSelector(getCustomNetworkId)
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider)
   const fetchingQuotes = useSelector(getFetchingQuotes)
   let swapsErrorKey = useSelector(getSwapsErrorKey)
@@ -108,7 +107,6 @@ export default function Swap () {
   const approveError = approveTxData?.status === 'failed' || approveTxData?.txReceipt?.status === '0x0'
   const tradeError = tradeTxData?.status === 'failed' || tradeTxData?.txReceipt?.status === '0x0'
   const conversionError = approveError || tradeError
-  const isCustomNetwork = Boolean(customNetworkId) || true
 
   if (conversionError) {
     swapsErrorKey = SWAP_FAILED_ERROR
@@ -139,23 +137,23 @@ export default function Swap () {
   }, [])
 
   useEffect(() => {
-    fetchTokens(isCustomNetwork)
+    fetchTokens()
       .then((tokens) => {
         dispatch(setSwapsTokens(tokens))
       })
       .catch((error) => console.error(error))
 
-    fetchTopAssets(isCustomNetwork)
+    fetchTopAssets()
       .then((topAssets) => {
         dispatch(setTopAssets(topAssets))
       })
 
-    fetchAggregatorMetadata(isCustomNetwork)
+    fetchAggregatorMetadata()
       .then((newAggregatorMetadata) => {
         dispatch(setAggregatorMetadata(newAggregatorMetadata))
       })
 
-    fetchMetaMaskFeeAmount(isCustomNetwork)
+    fetchMetaMaskFeeAmount()
       .then((metaMaskFeeAmount) => {
         dispatch(setMetamaskFeeAmount(metaMaskFeeAmount))
       })
@@ -165,7 +163,7 @@ export default function Swap () {
     return () => {
       dispatch(prepareToLeaveSwaps())
     }
-  }, [dispatch, isCustomNetwork])
+  }, [dispatch])
 
   const exitedSwapsEvent = useNewMetricEvent({
     event: 'Exited Swaps',

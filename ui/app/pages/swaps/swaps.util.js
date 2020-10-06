@@ -15,25 +15,7 @@ const TOKEN_TRANSFER_LOG_TOPIC_HASH = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f
 
 const CACHE_REFRESH_ONE_HOUR = 3600000
 
-const getBaseApi = function (isCustomNetwork, type) {
-  if (isCustomNetwork) {
-    switch (type) {
-      case 'trade':
-        return `https://metaswap-api.airswap-dev.codefi.network/trades?`
-      case 'tokens':
-        return `https://metaswap-api.airswap-dev.codefi.network/tokens`
-      case 'topAssets':
-        return `https://metaswap-api.airswap-dev.codefi.network/topAssets`
-      case 'featureFlag':
-        return `https://metaswap-api.airswap-dev.codefi.network/featureFlag`
-      case 'aggregatorMetadata':
-        return `https://metaswap-api.airswap-dev.codefi.network/aggregatorMetadata`
-      case 'feeAmount':
-        return `https://metaswap-api.airswap-dev.codefi.network/fee`
-      default:
-        throw new Error('getBaseApi requires an api call type')
-    }
-  }
+const getBaseApi = function (type) {
   switch (type) {
     case 'trade':
       return `https://api.metaswap.codefi.network/trades?`
@@ -178,7 +160,6 @@ export async function fetchTradesInfo ({
   value,
   fromAddress,
   exchangeList,
-  isCustomNetwork,
 }) {
   const urlParams = {
     destinationToken,
@@ -194,7 +175,7 @@ export async function fetchTradesInfo ({
   }
 
   const queryString = new URLSearchParams(urlParams).toString()
-  const tradeURL = `${getBaseApi(isCustomNetwork, 'trade')}${queryString}`
+  const tradeURL = `${getBaseApi('trade')}${queryString}`
   const tradesResponse = await fetchWithCache(tradeURL, { method: 'GET' }, { cacheRefreshTime: 0, timeout: 15000 })
   const newQuotes = tradesResponse.reduce((aggIdTradeMap, quote) => {
     if (quote.trade && !quote.error && validateData(QUOTE_VALIDATORS, quote, tradeURL)) {
@@ -230,15 +211,15 @@ export async function fetchTradesInfo ({
   return newQuotes
 }
 
-export async function fetchTokens (isCustomNetwork) {
-  const tokenUrl = getBaseApi(isCustomNetwork, 'tokens')
+export async function fetchTokens () {
+  const tokenUrl = getBaseApi('tokens')
   const tokens = await fetchWithCache(tokenUrl, { method: 'GET' }, { cacheRefreshTime: CACHE_REFRESH_ONE_HOUR })
   const filteredTokens = tokens.filter((token) => validateData(TOKEN_VALIDATORS, token, tokenUrl))
   return filteredTokens
 }
 
-export async function fetchAggregatorMetadata (isCustomNetwork) {
-  const aggregatorMetadataUrl = getBaseApi(isCustomNetwork, 'aggregatorMetadata')
+export async function fetchAggregatorMetadata () {
+  const aggregatorMetadataUrl = getBaseApi('aggregatorMetadata')
   const aggregators = await fetchWithCache(aggregatorMetadataUrl, { method: 'GET' }, { cacheRefreshTime: CACHE_REFRESH_ONE_HOUR })
   const filteredAggregators = {}
   for (const aggKey in aggregators) {
@@ -249,8 +230,8 @@ export async function fetchAggregatorMetadata (isCustomNetwork) {
   return filteredAggregators
 }
 
-export async function fetchTopAssets (isCustomNetwork) {
-  const topAssetsUrl = getBaseApi(isCustomNetwork, 'topAssets')
+export async function fetchTopAssets () {
+  const topAssetsUrl = getBaseApi('topAssets')
   const response = await fetchWithCache(topAssetsUrl, { method: 'GET' }, { cacheRefreshTime: CACHE_REFRESH_ONE_HOUR })
   const topAssetsMap = response.reduce((_topAssetsMap, asset, index) => {
     if (validateData(TOP_ASSET_VALIDATORS, asset, topAssetsUrl)) {
@@ -261,13 +242,13 @@ export async function fetchTopAssets (isCustomNetwork) {
   return topAssetsMap
 }
 
-export async function fetchSwapsFeatureLiveness (isCustomNetwork) {
-  const status = await fetchWithCache(getBaseApi(isCustomNetwork, 'featureFlag'), { method: 'GET' }, { cacheRefreshTime: 600000 })
+export async function fetchSwapsFeatureLiveness () {
+  const status = await fetchWithCache(getBaseApi('featureFlag'), { method: 'GET' }, { cacheRefreshTime: 600000 })
   return status?.active
 }
 
-export async function fetchMetaMaskFeeAmount (isCustomNetwork) {
-  const response = await fetchWithCache(getBaseApi(isCustomNetwork, 'feeAmount'), { method: 'GET' }, { cacheRefreshTime: 600000 })
+export async function fetchMetaMaskFeeAmount () {
+  const response = await fetchWithCache(getBaseApi('feeAmount'), { method: 'GET' }, { cacheRefreshTime: 600000 })
   return response?.fee
 }
 

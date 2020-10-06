@@ -37,8 +37,6 @@ describe('Transaction Controller', function () {
     blockTrackerStub.getLatestBlock = noop
     txController = new TransactionController({
       provider,
-      // TODO: remove before swaps merge to prod
-      gasProvider: () => provider,
       getGasPrice () {
         return '0xee6b2800'
       },
@@ -548,8 +546,6 @@ describe('Transaction Controller', function () {
       _blockTrackerStub.getLatestBlock = noop
       const _txController = new TransactionController({
         provider: _provider,
-        // TODO: remove before swaps merge to prod
-        gasProvider: () => _provider,
         getGasPrice () {
           return '0xee6b2800'
         },
@@ -582,8 +578,6 @@ describe('Transaction Controller', function () {
       _blockTrackerStub.getLatestBlock = noop
       const _txController = new TransactionController({
         provider: _provider,
-        // TODO: remove before swaps merge to prod
-        gasProvider: () => _provider,
         getGasPrice () {
           return '0xee6b2800'
         },

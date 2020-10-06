@@ -28,8 +28,6 @@ import { constructTxParams } from '../../helpers/utils/util'
 import { calcTokenAmount } from '../../helpers/utils/token-util'
 import {
   getFastPriceEstimateInHexWEI,
-  getCurrentNetworkId,
-  getCustomNetworkId,
   getSelectedAccount,
   getTokenExchangeRates,
   conversionRateSelector as getConversionRate,
@@ -251,7 +249,7 @@ export const fetchAndSetSwapsGasPriceInfo = () => {
   return async (dispatch) => {
     const basicEstimates = await dispatch(fetchBasicGasAndTimeEstimates())
     dispatch(setSwapsTxGasPrice(decGWEIToHexWEI(basicEstimates.fast)))
-    await dispatch(fetchGasEstimates(basicEstimates.blockTime, true))
+    await dispatch(fetchGasEstimates(basicEstimates.blockTime))
 
   }
 }
@@ -343,7 +341,6 @@ export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage, me
     try {
       const fetchStartTime = Date.now()
       dispatch(setQuotesFetchStartTime(fetchStartTime))
-      const customNetworkId = getCustomNetworkId(state)
 
       const fetchAndSetQuotesPromise = dispatch(fetchAndSetQuotes(
         {
@@ -352,8 +349,6 @@ export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage, me
           destinationToken: toTokenAddress,
           value: inputValue,
           fromAddress: selectedAccount.address,
-          // TODO: what is going on here...
-          isCustomNetwork: Boolean(customNetworkId) || true,
           destinationTokenAddedForSwap,
           balanceError,
           sourceDecimals: fromTokenDecimals,
@@ -479,8 +474,6 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
         return
       }
 
-      const networkId = getCurrentNetworkId(state)
-      const customNetworkId = getCustomNetworkId(state)
       const revisedTradeValueInHexWei = (new BigNumber(ethBalance, 16)).minus(gasTotalInWeiHex, 16).toString(16)
       const revisedTradeValueInEth = hexWEIToDecETH(revisedTradeValueInHexWei)
       const revisedQuotes = await fetchTradesInfo({
@@ -491,9 +484,6 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
         exchangeList: usedQuote.aggregator,
         fromAddress: selectedAccount.address,
         timeout: 10000,
-        networkId,
-        // TODO: what is going on here...
-        isCustomNetwork: Boolean(customNetworkId) || true,
         sourceDecimals: 18,
       })
       const revisedQuote = Object.values(revisedQuotes)[0]

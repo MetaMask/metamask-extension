@@ -22,11 +22,7 @@ and used to do things like calculate gas of a tx.
 export default class TxGasUtil {
 
   constructor (provider) {
-    // TODO: change back to simply passing the provider object before merge
-    // This is a temporary measure to ensure the build works on testnet.
-    // In particular, to ensure all estimates happen against mainnet, via
-    // the provider created using _setNetworkClientTemp() of the network controller
-    this.query = new EthQuery(typeof provider === 'function' ? provider() : provider)
+    this.query = new EthQuery(provider)
   }
 
   /**
