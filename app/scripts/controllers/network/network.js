@@ -142,7 +142,6 @@ export default class NetworkController extends EventEmitter {
           return
         }
 
-        // Now we set the network state to the chainId computed earlier
         this.setNetworkState(networkVersion)
       }
     })
