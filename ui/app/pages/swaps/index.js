@@ -43,7 +43,7 @@ import {
 } from '../../helpers/constants/swaps'
 
 import { resetBackgroundSwapsState, setSwapsTokens, setMaxMode, removeToken, setBackgroundSwapRouteState, setSwapsErrorKey } from '../../store/actions'
-import { getAveragePriceEstimateInHexWEI, currentNetworkTxListSelector, getCustomNetworkId, getRpcPrefsForCurrentProvider } from '../../selectors'
+import { getFastPriceEstimateInHexWEI, currentNetworkTxListSelector, getCustomNetworkId, getRpcPrefsForCurrentProvider } from '../../selectors'
 import { useNewMetricEvent } from '../../hooks/useMetricEvent'
 import { getValueFromWeiHex } from '../../helpers/utils/conversions.util'
 
@@ -74,7 +74,7 @@ export default function Swap () {
   const tradeTxParams = useSelector(getSwapsTradeTxParams)
   const selectedAccount = useSelector(getSelectedAccount)
   const quotes = useSelector(getQuotes)
-  const averageGasEstimate = useSelector(getAveragePriceEstimateInHexWEI)
+  const fastGasEstimate = useSelector(getFastPriceEstimateInHexWEI)
   const customConvertGasPrice = useSelector(getCustomSwapsGasPrice)
   const txList = useSelector(currentNetworkTxListSelector)
   const tradeTxId = useSelector(getTradeTxId)
@@ -94,7 +94,7 @@ export default function Swap () {
   const selectedFromToken = useSelector(getFromToken) || fetchParamsFromToken || {}
   const { destinationTokenAddedForSwap } = fetchParams || {}
 
-  const usedGasPrice = customConvertGasPrice || tradeTxParams?.gasPrice || averageGasEstimate
+  const usedGasPrice = customConvertGasPrice || tradeTxParams?.gasPrice || fastGasEstimate
   const approveTxData = approveTxId && txList.find(({ id }) => approveTxId === id)
   const tradeTxData = tradeTxId && txList.find(({ id }) => tradeTxId === id)
   const tokensReceived = tradeTxData?.txReceipt && getSwapsTokensReceivedFromTxMeta(

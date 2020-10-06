@@ -25,7 +25,7 @@ import { decimalToHex, getValueFromWeiHex, hexMax, decGWEIToHexWEI, hexWEIToDecE
 import { constructTxParams } from '../../helpers/utils/util'
 import { calcTokenAmount } from '../../helpers/utils/token-util'
 import {
-  getAveragePriceEstimateInHexWEI,
+  getFastPriceEstimateInHexWEI,
   getCurrentNetworkId,
   getCustomNetworkId,
   getSelectedAccount,
@@ -248,7 +248,7 @@ export const prepareToLeaveSwaps = () => {
 export const fetchAndSetSwapsGasPriceInfo = () => {
   return async (dispatch) => {
     const basicEstimates = await dispatch(fetchBasicGasAndTimeEstimates())
-    dispatch(setSwapsTxGasPrice(decGWEIToHexWEI(basicEstimates.average)))
+    dispatch(setSwapsTxGasPrice(decGWEIToHexWEI(basicEstimates.fast)))
     await dispatch(fetchGasEstimates(basicEstimates.blockTime, true))
 
   }
@@ -431,8 +431,8 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
 
     const customConvertGasPrice = getCustomSwapsGasPrice(state)
     const tradeTxParams = getSwapsTradeTxParams(state)
-    const averageGasEstimate = getAveragePriceEstimateInHexWEI(state)
-    const usedGasPrice = customConvertGasPrice || tradeTxParams?.gasPrice || averageGasEstimate
+    const fastGasEstimate = getFastPriceEstimateInHexWEI(state)
+    const usedGasPrice = customConvertGasPrice || tradeTxParams?.gasPrice || fastGasEstimate
     usedTradeTxParams.gasPrice = usedGasPrice
 
     const totalGasLimitForCalculation = (new BigNumber(usedTradeTxParams.gas, 16)).plus(usedQuote.approvalNeeded?.gas || '0x0', 16).toString(16)
