@@ -41,7 +41,7 @@ const EthOverview = ({ className }) => {
   })
   const history = useHistory()
   const keyring = useSelector(getCurrentKeyring)
-  const hardwareWallet = keyring.type.search('Hardware') !== -1
+  const usingHardwareWallet = keyring.type.search('Hardware') !== -1
   const balanceIsCached = useSelector(isBalanceCached)
   const showFiat = useSelector(getShouldShowFiat)
   const selectedAccount = useSelector(getSelectedAccount)
@@ -122,7 +122,7 @@ const EthOverview = ({ className }) => {
                     balance,
                     string: getValueFromWeiHex({ value: balance, numberOfDecimals: 4, toDenomination: 'ETH' }),
                   }))
-                  if (hardwareWallet) {
+                  if (usingHardwareWallet) {
                     global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE)
                   } else {
                     history.push(BUILD_QUOTE_ROUTE)
