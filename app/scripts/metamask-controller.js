@@ -383,7 +383,7 @@ export default class MetamaskController extends EventEmitter {
   createPublicConfigStore () {
     // subset of state for metamask inpage provider
     const publicConfigStore = new ObservableStore()
-    const networkController = this.networkController
+    const { networkController } = this
 
     // setup memStore subscription hooks
     this.on('update', updatePublicConfigStore)
