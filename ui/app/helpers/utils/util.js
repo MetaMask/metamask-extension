@@ -431,7 +431,7 @@ export async function jsonRpcRequest (rpcUrl, rpcMethod, rpcParams = []) {
     },
     cache: 'default',
   })
-    .json()
+    .then((httpResponse) => httpResponse.json())
 
   if (
     !jsonRpcResponse ||
