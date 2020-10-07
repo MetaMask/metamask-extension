@@ -1258,36 +1258,60 @@ describe('MetaMask', function () {
   })
 
   describe('Stores custom RPC history', function () {
-    const customRpcInfo = [
-      { rpcUrl: 'http://127.0.0.1:8545/1', chainId: '0x1' },
-      { rpcUrl: 'http://127.0.0.1:8545/2', chainId: '0x2' },
-      { rpcUrl: 'http://127.0.0.1:8545/3', chainId: '0x3' },
-      { rpcUrl: 'http://127.0.0.1:8545/4', chainId: '0x4' },
-    ]
+    it(`creates first custom RPC entry`, async function () {
+      const rpcUrl = 'http://127.0.0.1:8545/1'
+      const chainId = '0x539' // Ganache default, decimal 1337
 
-    customRpcInfo.forEach(({ rpcUrl, chainId }) => {
-      it(`creates custom RPC: '${rpcUrl}' with chainId '${chainId}'`, async function () {
-        await driver.clickElement(By.css('.network-name'))
-        await driver.delay(regularDelayMs)
+      await driver.clickElement(By.css('.network-name'))
+      await driver.delay(regularDelayMs)
 
-        await driver.clickElement(By.xpath(`//span[contains(text(), 'Custom RPC')]`))
-        await driver.delay(regularDelayMs)
+      await driver.clickElement(By.xpath(`//span[contains(text(), 'Custom RPC')]`))
+      await driver.delay(regularDelayMs)
 
-        await driver.findElement(By.css('.settings-page__sub-header-text'))
+      await driver.findElement(By.css('.settings-page__sub-header-text'))
 
-        const customRpcInputs = await driver.findElements(By.css('input[type="text"]'))
-        const rpcUrlInput = customRpcInputs[1]
-        const chainIdInput = customRpcInputs[2]
+      const customRpcInputs = await driver.findElements(By.css('input[type="text"]'))
+      const rpcUrlInput = customRpcInputs[1]
+      const chainIdInput = customRpcInputs[2]
 
-        await rpcUrlInput.clear()
-        await rpcUrlInput.sendKeys(rpcUrl)
+      await rpcUrlInput.clear()
+      await rpcUrlInput.sendKeys(rpcUrl)
 
-        await chainIdInput.clear()
-        await chainIdInput.sendKeys(chainId)
+      await chainIdInput.clear()
+      await chainIdInput.sendKeys(chainId)
 
-        await driver.clickElement(By.css('.network-form__footer .btn-secondary'))
-        await driver.delay(largeDelayMs * 2)
-      })
+      await driver.clickElement(By.css('.network-form__footer .btn-secondary'))
+      await driver.findElement(
+        By.xpath(`//div[contains(text(), '${rpcUrl}')]`),
+      )
+    })
+
+    it(`creates second custom RPC entry`, async function () {
+      const rpcUrl = 'http://127.0.0.1:8545/2'
+      const chainId = '0x539' // Ganache default, decimal 1337
+
+      await driver.clickElement(By.css('.network-name'))
+      await driver.delay(regularDelayMs)
+
+      await driver.clickElement(By.xpath(`//span[contains(text(), 'Custom RPC')]`))
+      await driver.delay(regularDelayMs)
+
+      await driver.findElement(By.css('.settings-page__sub-header-text'))
+
+      const customRpcInputs = await driver.findElements(By.css('input[type="text"]'))
+      const rpcUrlInput = customRpcInputs[1]
+      const chainIdInput = customRpcInputs[2]
+
+      await rpcUrlInput.clear()
+      await rpcUrlInput.sendKeys(rpcUrl)
+
+      await chainIdInput.clear()
+      await chainIdInput.sendKeys(chainId)
+
+      await driver.clickElement(By.css('.network-form__footer .btn-secondary'))
+      await driver.findElement(
+        By.xpath(`//div[contains(text(), '${rpcUrl}')]`),
+      )
     })
 
     it('selects another provider', async function () {
@@ -1305,7 +1329,7 @@ describe('MetaMask', function () {
       // only recent 3 are found and in correct order (most recent at the top)
       const customRpcs = await driver.findElements(By.xpath(`//span[contains(text(), 'http://127.0.0.1:8545/')]`))
 
-      assert.equal(customRpcs.length, customRpcInfo.length)
+      assert.equal(customRpcs.length, 2)
     })
 
     it('deletes a custom RPC', async function () {

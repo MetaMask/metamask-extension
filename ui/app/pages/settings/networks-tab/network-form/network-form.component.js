@@ -2,10 +2,12 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import validUrl from 'valid-url'
 import BigNumber from 'bignumber.js'
+import log from 'loglevel'
 import TextField from '../../../../components/ui/text-field'
 import Button from '../../../../components/ui/button'
 import Tooltip from '../../../../components/ui/tooltip'
 import { isPrefixedFormattedHexString } from '../../../../../../app/scripts/lib/util'
+import { jsonRpcRequest } from '../../../../helpers/utils/util'
 
 export default class NetworkForm extends PureComponent {
   static contextTypes = {
@@ -88,7 +90,7 @@ export default class NetworkForm extends PureComponent {
     this.setState({ rpcUrl, chainId, ticker, networkName, blockExplorerUrl, errors: {} })
   }
 
-  onSubmit = () => {
+  onSubmit = async () => {
     const {
       setRpcTarget,
       rpcUrl: propsRpcUrl,
@@ -111,13 +113,17 @@ export default class NetworkForm extends PureComponent {
       chainId = `0x${(new BigNumber(chainId, 10)).toString(16)}`
     }
 
+    if (!(await this.validateChainIdOnSubmit(chainId, rpcUrl))) {
+      return
+    }
+
     if (propsRpcUrl && rpcUrl !== propsRpcUrl) {
-      editRpc(propsRpcUrl, rpcUrl, chainId, ticker, networkName, {
+      await editRpc(propsRpcUrl, rpcUrl, chainId, ticker, networkName, {
         blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
         ...rpcPrefs,
       })
     } else {
-      setRpcTarget(rpcUrl, chainId, ticker, networkName, {
+      await setRpcTarget(rpcUrl, chainId, ticker, networkName, {
         blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
         ...rpcPrefs,
       })
@@ -249,6 +255,36 @@ export default class NetworkForm extends PureComponent {
     }
 
     this.setErrorTo('chainId', errorMessage)
+  }
+
+  validateChainIdOnSubmit = async (chainId, rpcUrl) => {
+    const { t } = this.context
+    let errorMessage
+    let endpointChainId
+    let providerError
+
+    try {
+      endpointChainId = await jsonRpcRequest(rpcUrl, 'eth_chainId')
+    } catch (err) {
+      log.warn('Failed to fetch the chainId from the endpoint.', err)
+      providerError = err
+    }
+
+    if (providerError || typeof endpointChainId !== 'string') {
+      errorMessage = t('failedToFetchChainId')
+    } else if (chainId !== endpointChainId) {
+      errorMessage = t('endpointReturnedDifferentChainId', [
+        endpointChainId.length <= 12
+          ? endpointChainId
+          : `${endpointChainId.slice(0, 9)}...`,
+      ])
+    }
+
+    if (errorMessage) {
+      this.setErrorTo('chainId', errorMessage)
+      return false
+    }
+    return true
   }
 
   isValidWhenAppended = (url) => {
