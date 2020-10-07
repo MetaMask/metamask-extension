@@ -1,8 +1,12 @@
+import { strict as assert } from 'assert'
 import ObservableStore from 'obs-store'
 import { normalize as normalizeAddress } from 'eth-sig-util'
 import { isValidAddress, sha3, bufferToHex } from 'ethereumjs-util'
+import ethers from 'ethers'
+import log from 'loglevel'
 import { isPrefixedFormattedHexString } from '../lib/util'
 import { addInternalMethodPrefix } from './permissions'
+import { NETWORK_TYPE_TO_ID_MAP } from './network/enums'
 
 export default class PreferencesController {
 
@@ -69,6 +73,7 @@ export default class PreferencesController {
     this.store = new ObservableStore(initState)
     this.store.setMaxListeners(12)
     this.openPopup = opts.openPopup
+    this.migrateAddressBookState = opts.migrateAddressBookState
     this._subscribeProviderType()
 
     global.setPreference = (key, value) => {
@@ -475,13 +480,15 @@ export default class PreferencesController {
   /**
    * updates custom RPC details
    *
-   * @param {string} url - The RPC url to add to frequentRpcList.
-   * @param {string} chainId - Optional chainId of the selected network.
-   * @param {string} ticker   - Optional ticker symbol of the selected network.
-   * @param {string} nickname - Optional nickname of the selected network.
+   * @param {Object} newRpcDetails - Options bag.
+   * @param {string} newRpcDetails.rpcUrl - The RPC url to add to frequentRpcList.
+   * @param {string} newRpcDetails.chainId - The chainId of the selected network.
+   * @param {string} [newRpcDetails.ticker] - Optional ticker symbol of the selected network.
+   * @param {string} [newRpcDetails.nickname] - Optional nickname of the selected network.
+   * @param {Object} [newRpcDetails.rpcPrefs] - Optional RPC preferences, such as the block explorer URL
    *
    */
-  updateRpc (newRpcDetails) {
+  async updateRpc (newRpcDetails) {
     const rpcList = this.getFrequentRpcListDetail()
     const index = rpcList.findIndex((element) => {
       return element.rpcUrl === newRpcDetails.rpcUrl
@@ -489,6 +496,44 @@ export default class PreferencesController {
     if (index > -1) {
       const rpcDetail = rpcList[index]
       const updatedRpc = { ...rpcDetail, ...newRpcDetails }
+      if (rpcDetail.chainId !== updatedRpc.chainId) {
+
+        // When the chainId is changed, associated address book entries should
+        // also be migrated. The address book entries are keyed by the `network` state,
+        // which for custom networks is the chainId with a fallback to the networkId
+        // if the chainId is not set.
+
+        let addressBookKey = rpcDetail.chainId
+        if (!addressBookKey) {
+          // We need to find the networkId to determine what these addresses were keyed by
+          const provider = new ethers.providers.JsonRpcProvider(rpcDetail.rpcUrl)
+          try {
+            addressBookKey = await provider.send('net_version')
+            assert(typeof addressBookKey === 'string')
+          } catch (error) {
+            log.debug(error)
+            log.warn(`Failed to get networkId from ${rpcDetail.rpcUrl}; skipping address book migration`)
+          }
+        }
+
+        // There is an edge case where two separate RPC endpoints are keyed by the same
+        // value. In this case, the contact book entries are duplicated so that they remain
+        // on both networks, since we don't know which network each contact is intended for.
+
+        let duplicate = false
+        const builtInProviderNetworkIds = Object.values(NETWORK_TYPE_TO_ID_MAP)
+          .map((ids) => ids.networkId)
+        const otherRpcEntries = rpcList
+          .filter((entry) => entry.rpcUrl !== newRpcDetails.rpcUrl)
+        if (
+          builtInProviderNetworkIds.includes(addressBookKey) ||
+          otherRpcEntries.some((entry) => entry.chainId === addressBookKey)
+        ) {
+          duplicate = true
+        }
+
+        this.migrateAddressBookState(addressBookKey, updatedRpc.chainId, duplicate)
+      }
       rpcList[index] = updatedRpc
       this.store.updateState({ frequentRpcListDetail: rpcList })
     } else {
@@ -504,6 +549,7 @@ export default class PreferencesController {
    * @param {string} chainId - The chainId of the selected network.
    * @param {string} [ticker] - Ticker symbol of the selected network.
    * @param {string} [nickname] - Nickname of the selected network.
+   * @param {Object} [rpcPrefs] - Optional RPC preferences, such as the block explorer URL
    *
    */
   addToFrequentRpcList (rpcUrl, chainId, ticker = 'ETH', nickname = '', rpcPrefs = {}) {
