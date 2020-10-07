@@ -150,18 +150,7 @@ const conversionUtil = (value, {
   value: value || '0',
 })
 
-const parseInput = (value) => {
-  const errorMessage = `Invalid BigNumber input: ${value}`
-
-  if (
-    value === null ||
-    value === undefined ||
-    value === '' ||
-    Array.isArray(value)
-  ) {
-    throw new Error(errorMessage)
-  }
-
+const prepareInput = (value) => {
   // We don't include 'number' here, because BigNumber will throw if passed
   // a number primitive it considers unsafe.
   if (
@@ -171,11 +160,7 @@ const parseInput = (value) => {
     return value
   }
 
-  const stringValue = String(value)
-  if (stringValue === '[object Object]') {
-    throw new Error(errorMessage)
-  }
-  return stringValue
+  return String(value)
 }
 
 const addCurrencies = (a, b, options = {}) => {
@@ -184,7 +169,7 @@ const addCurrencies = (a, b, options = {}) => {
     bBase,
     ...conversionOptions
   } = options
-  const value = (new BigNumber(parseInput(a), aBase)).add(parseInput(b), bBase)
+  const value = (new BigNumber(prepareInput(a), aBase)).add(prepareInput(b), bBase)
 
   return converter({
     value,
@@ -198,7 +183,7 @@ const subtractCurrencies = (a, b, options = {}) => {
     bBase,
     ...conversionOptions
   } = options
-  const value = (new BigNumber(parseInput(a), aBase)).minus(parseInput(b), bBase)
+  const value = (new BigNumber(prepareInput(a), aBase)).minus(prepareInput(b), bBase)
 
   return converter({
     value,
@@ -213,8 +198,8 @@ const multiplyCurrencies = (a, b, options = {}) => {
     ...conversionOptions
   } = options
 
-  const bigNumberA = new BigNumber(parseInput(a), multiplicandBase)
-  const bigNumberB = new BigNumber(parseInput(b), multiplierBase)
+  const bigNumberA = new BigNumber(prepareInput(a), multiplicandBase)
+  const bigNumberB = new BigNumber(prepareInput(b), multiplierBase)
 
   const value = bigNumberA.times(bigNumberB)
 
