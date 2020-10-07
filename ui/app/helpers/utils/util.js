@@ -418,7 +418,7 @@ export function constructTxParams ({ sendToken, data, to, amount, from, gas, gas
  * or throws an error in case of failure.
  */
 export async function jsonRpcRequest (rpcUrl, rpcMethod, rpcParams = []) {
-  const { error, result } = await window.fetch(rpcUrl, {
+  const jsonRpcResponse = await window.fetch(rpcUrl, {
     method: 'POST',
     body: JSON.stringify({
       id: Date.now().toString(),
@@ -432,6 +432,15 @@ export async function jsonRpcRequest (rpcUrl, rpcMethod, rpcParams = []) {
     cache: 'default',
   })
     .json()
+
+  if (
+    !jsonRpcResponse ||
+    Array.isArray(jsonRpcResponse) ||
+    typeof jsonRpcResponse !== 'object'
+  ) {
+    throw new Error(`RPC endpoint ${rpcUrl} returned non-object response.`)
+  }
+  const { error, result } = jsonRpcResponse
 
   if (error) {
     throw new Error(error?.message || error)
