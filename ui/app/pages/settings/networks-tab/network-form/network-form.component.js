@@ -266,7 +266,7 @@ export default class NetworkForm extends PureComponent {
     try {
       endpointChainId = await jsonRpcRequest(rpcUrl, 'eth_chainId')
     } catch (err) {
-      log.error(err)
+      log.warn('Failed to fetch the chainId from the endpoint.', err)
       providerError = err
     }
 
