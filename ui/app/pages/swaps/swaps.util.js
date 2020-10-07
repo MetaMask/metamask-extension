@@ -366,10 +366,16 @@ export function quotesToRenderableData (quotes, gasPrice, conversionRate, curren
 
 export function getSwapsTokensReceivedFromTxMeta (tokenSymbol, txMeta, tokenAddress, accountAddress, tokenDecimals) {
   if (tokenSymbol === 'ETH') {
-    if (!txMeta?.postTxBalance || !txMeta?.preTxBalance) {
+    if (!txMeta || !txMeta.postTxBalance || !txMeta.preTxBalance) {
       return null
     }
-    const ethReceived = subtractCurrencies(txMeta.postTxBalance, txMeta.preTxBalance, {
+    const gasCost = calcGasTotal(txMeta.txParams.gas, txMeta.txParams.gasPrice)
+    const preTxBalanceLessGasCost = subtractCurrencies(txMeta.preTxBalance, gasCost, {
+      aBase: 16,
+      bBase: 16,
+      toNumericBase: 'hex',
+    })
+    const ethReceived = subtractCurrencies(txMeta.postTxBalance, preTxBalanceLessGasCost, {
       aBase: 16,
       bBase: 16,
       fromDenomination: 'WEI',
