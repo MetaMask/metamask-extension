@@ -162,6 +162,8 @@ const parseInput = (value) => {
     throw new Error(errorMessage)
   }
 
+  // We don't include 'number' here, because BigNumber will throw if passed
+  // a number primitive it considers unsafe.
   if (
     typeof value === 'string' ||
     value instanceof BigNumber
