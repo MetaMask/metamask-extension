@@ -417,8 +417,8 @@ export function constructTxParams ({ sendToken, data, to, amount, from, gas, gas
  * @returns {Promise<unknown|undefined>} Returns the result of the RPC method call,
  * or throws an error in case of failure.
  */
-export function jsonRpcRequest (rpcUrl, rpcMethod, rpcParams = []) {
-  return window.fetch(rpcUrl, {
+export async function jsonRpcRequest (rpcUrl, rpcMethod, rpcParams = []) {
+  const { error, result } = await window.fetch(rpcUrl, {
     method: 'POST',
     body: JSON.stringify({
       id: Date.now().toString(),
@@ -431,11 +431,10 @@ export function jsonRpcRequest (rpcUrl, rpcMethod, rpcParams = []) {
     },
     cache: 'default',
   })
-    .then(async (httpResponse) => {
-      const { error, result } = await httpResponse.json()
-      if (error) {
-        throw new Error(error?.message || error)
-      }
-      return result
-    })
+    .json()
+
+  if (error) {
+    throw new Error(error?.message || error)
+  }
+  return result
 }
