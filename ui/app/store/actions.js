@@ -2265,9 +2265,9 @@ export function setSwapsErrorKey (errorKey) {
   }
 }
 
-export function setInitialGasEstimate (initialAggId, baseGasEstimate) {
+export function setInitialGasEstimate (initialAggId) {
   return async (dispatch) => {
-    await promisifiedBackground.setInitialGasEstimate(initialAggId, baseGasEstimate)
+    await promisifiedBackground.setInitialGasEstimate(initialAggId)
     await forceUpdateMetamaskState(dispatch)
   }
 }
