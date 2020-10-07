@@ -80,7 +80,6 @@ export default class Routes extends Component {
     isMouseUser: PropTypes.bool,
     setMouseUserState: PropTypes.func,
     providerId: PropTypes.string,
-    hasPermissionsRequests: PropTypes.bool,
     autoLockTimeLimit: PropTypes.number,
     pageChanged: PropTypes.func.isRequired,
     prepareToLeaveSwaps: PropTypes.func,
@@ -163,7 +162,7 @@ export default class Routes extends Component {
   }
 
   hideAppHeader () {
-    const { location, hasPermissionsRequests } = this.props
+    const { location } = this.props
 
     const isInitializing = Boolean(matchPath(location.pathname, {
       path: INITIALIZE_ROUTE, exact: false,
@@ -185,7 +184,7 @@ export default class Routes extends Component {
 
     const isHandlingPermissionsRequest = Boolean(matchPath(location.pathname, {
       path: CONNECT_ROUTE, exact: false,
-    })) || hasPermissionsRequests
+    }))
 
     return isHandlingPermissionsRequest
   }
