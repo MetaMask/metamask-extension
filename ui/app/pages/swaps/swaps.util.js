@@ -345,7 +345,7 @@ export function quotesToRenderableData (quotes, gasPrice, conversionRate, curren
       amountReceiving: `${destinationValue} ${destinationTokenInfo.symbol}`,
       destinationTokenDecimals: destinationTokenInfo.decimals,
       destinationTokenSymbol: destinationTokenInfo.symbol,
-      destinationTokenValue: destinationValue,
+      destinationTokenValue: formatSwapsValueForDisplay(destinationValue),
       isBestQuote: quote.isBestQuote,
       liquiditySourceKey,
       metaMaskFee,
@@ -401,4 +401,12 @@ export function getSwapsTokensReceivedFromTxMeta (tokenSymbol, txMeta, tokenAddr
       : ''
   }
   return null
+}
+
+export function formatSwapsValueForDisplay (destinationAmount) {
+  let amountToDisplay = toPrecisionWithoutTrailingZeros(destinationAmount, 12)
+  if (amountToDisplay.match(/e[+-]/u)) {
+    amountToDisplay = (new BigNumber(amountToDisplay)).toFixed()
+  }
+  return amountToDisplay
 }
