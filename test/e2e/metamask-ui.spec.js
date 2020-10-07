@@ -1260,7 +1260,7 @@ describe('MetaMask', function () {
   describe('Stores custom RPC history', function () {
     it(`creates first custom RPC entry`, async function () {
       const rpcUrl = 'http://127.0.0.1:8545/1'
-      const chainId = '0x99' // As specified in fetch mocks
+      const chainId = '0x539' // Ganache default, decimal 1337
 
       await driver.clickElement(By.css('.network-name'))
       await driver.delay(regularDelayMs)
@@ -1288,7 +1288,7 @@ describe('MetaMask', function () {
 
     it(`creates second custom RPC entry`, async function () {
       const rpcUrl = 'http://127.0.0.1:8545/2'
-      const chainId = '0x99' // As specified in fetch mocks
+      const chainId = '0x539' // Ganache default, decimal 1337
 
       await driver.clickElement(By.css('.network-name'))
       await driver.delay(regularDelayMs)
