@@ -407,3 +407,35 @@ export function constructTxParams ({ sendToken, data, to, amount, from, gas, gas
   }
   return addHexPrefixToObjectValues(txParams)
 }
+
+/**
+ * Makes a JSON RPC request to the given URL, with the given RPC method and params.
+ *
+ * @param {string} rpcUrl - The RPC endpoint URL to target.
+ * @param {string} rpcMethod - The RPC method to request.
+ * @param {Array<unknown>} rpcParams - The RPC method params.
+ * @returns {Promise<unknown|undefined>} Returns the result of the RPC method call,
+ * or throws an error in case of failure.
+ */
+export function jsonRpcRequest (rpcUrl, rpcMethod, rpcParams = []) {
+  return window.fetch(rpcUrl, {
+    method: 'POST',
+    body: JSON.stringify({
+      id: Date.now().toString(),
+      jsonrpc: '2.0',
+      method: rpcMethod,
+      params: rpcParams,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    cache: 'default',
+  })
+    .then(async (httpResponse) => {
+      const { error, result } = await httpResponse.json()
+      if (error) {
+        throw new Error(error?.message || error)
+      }
+      return result
+    })
+}

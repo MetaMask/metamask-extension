@@ -2,12 +2,12 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import validUrl from 'valid-url'
 import BigNumber from 'bignumber.js'
-import ethers from 'ethers'
 import log from 'loglevel'
 import TextField from '../../../../components/ui/text-field'
 import Button from '../../../../components/ui/button'
 import Tooltip from '../../../../components/ui/tooltip'
 import { isPrefixedFormattedHexString } from '../../../../../../app/scripts/lib/util'
+import { jsonRpcRequest } from '../../../../helpers/utils/util'
 
 export default class NetworkForm extends PureComponent {
   static contextTypes = {
@@ -264,8 +264,7 @@ export default class NetworkForm extends PureComponent {
     let providerError
 
     try {
-      const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
-      endpointChainId = await provider.send('eth_chainId')
+      endpointChainId = await jsonRpcRequest(rpcUrl, 'eth_chainId')
     } catch (err) {
       log.error(err)
       providerError = err
