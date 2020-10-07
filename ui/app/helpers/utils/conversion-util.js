@@ -150,17 +150,17 @@ const conversionUtil = (value, {
   value: value || '0',
 })
 
-const prepareInput = (value) => {
+const getBigNumberOperand = (value, base) => {
   // We don't include 'number' here, because BigNumber will throw if passed
   // a number primitive it considers unsafe.
   if (
     typeof value === 'string' ||
     value instanceof BigNumber
   ) {
-    return value
+    return new BigNumber(value, base)
   }
 
-  return String(value)
+  return new BigNumber(String(value), base)
 }
 
 const addCurrencies = (a, b, options = {}) => {
@@ -169,7 +169,7 @@ const addCurrencies = (a, b, options = {}) => {
     bBase,
     ...conversionOptions
   } = options
-  const value = (new BigNumber(prepareInput(a), aBase)).add(prepareInput(b), bBase)
+  const value = getBigNumberOperand(a, aBase).add(getBigNumberOperand(b, bBase))
 
   return converter({
     value,
@@ -183,7 +183,8 @@ const subtractCurrencies = (a, b, options = {}) => {
     bBase,
     ...conversionOptions
   } = options
-  const value = (new BigNumber(prepareInput(a), aBase)).minus(prepareInput(b), bBase)
+  const value = getBigNumberOperand(a, aBase)
+    .minus(getBigNumberOperand(b, bBase))
 
   return converter({
     value,
@@ -198,10 +199,8 @@ const multiplyCurrencies = (a, b, options = {}) => {
     ...conversionOptions
   } = options
 
-  const bigNumberA = new BigNumber(prepareInput(a), multiplicandBase)
-  const bigNumberB = new BigNumber(prepareInput(b), multiplierBase)
-
-  const value = bigNumberA.times(bigNumberB)
+  const value = getBigNumberOperand(a, multiplicandBase)
+    .times(getBigNumberOperand(b, multiplierBase))
 
   return converter({
     value,
