@@ -229,7 +229,11 @@ jobs:
           command: mv ./dist-test ./dist
       - run:
           name: test:e2e:chrome
-          command: yarn test:e2e:chrome
+          command: |
+            if .circleci/scripts/test-run-e2e
+            then
+              yarn test:e2e:chrome
+            fi
           no_output_timeout: 20m
       - store_artifacts:
           path: test-artifacts
@@ -250,7 +254,11 @@ jobs:
           command: mv ./dist-test ./dist
       - run:
           name: test:e2e:firefox
-          command: yarn test:e2e:firefox
+          command: |
+            if .circleci/scripts/test-run-e2e
+            then
+              yarn test:e2e:firefox
+            fi
           no_output_timeout: 20m
       - store_artifacts:
           path: test-artifacts
