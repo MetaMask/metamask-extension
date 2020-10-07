@@ -292,7 +292,17 @@ export default class SwapsController {
         resolve({ gasLimit: null, simulationFails: true })
       }, 5000)
 
-      this.getBufferedGasLimit({ txParams: tradeTxParams }, 1)
+      // Remove gas from params that will be passed to the `estimateGas` call
+      // Including it can cause the estimate to fail if the actual gas needed
+      // exceeds the passed gas
+      const tradeTxParamsForGasEstimate = {
+        data: tradeTxParams.data,
+        from: tradeTxParams.from,
+        to: tradeTxParams.to,
+        value: tradeTxParams.value,
+      }
+
+      this.getBufferedGasLimit({ txParams: tradeTxParamsForGasEstimate }, 1)
         .then(({ gasLimit, simulationFails }) => {
           if (!gasTimedOut) {
             clearTimeout(gasTimeout)
