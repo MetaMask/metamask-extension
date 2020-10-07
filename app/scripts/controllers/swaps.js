@@ -515,7 +515,7 @@ export default class SwapsController {
       if (window.navigator.onLine && intervalId === null) {
         // Set the interval first to prevent race condition between listener and
         // initial call to this function.
-        intervalId = setInterval(this._fetchAndSetSwapsLiveness, TEN_MINUTES_MS)
+        intervalId = setInterval(this._fetchAndSetSwapsLiveness.bind(this), TEN_MINUTES_MS)
         this._fetchAndSetSwapsLiveness()
       }
     }
