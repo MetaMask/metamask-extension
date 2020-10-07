@@ -72,8 +72,8 @@ export function useTransactionDisplayData (transactionGroup) {
   // for smart contract interactions, methodData can be used to derive the name of the action being taken
   const methodData = useSelector((state) => getKnownMethodData(state, initialTransaction?.txParams?.data)) || {}
 
-  const status = getStatusKey(primaryTransaction)
-  const isPending = status in PENDING_STATUS_HASH
+  const displayedStatusKey = getStatusKey(primaryTransaction)
+  const isPending = displayedStatusKey in PENDING_STATUS_HASH
 
   const primaryValue = primaryTransaction.txParams?.value
   let prefix = '-'
@@ -210,7 +210,7 @@ export function useTransactionDisplayData (transactionGroup) {
       (isTokenCategory && !tokenFiatAmount) ||
       (transactionCategory === SWAP && !swapTokenFiatAmount)
     ) ? undefined : secondaryCurrency,
-    status,
+    displayedStatusKey,
     isPending,
   }
 }

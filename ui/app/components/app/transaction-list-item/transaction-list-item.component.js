@@ -32,7 +32,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
   const { hasCancelled } = transactionGroup
   const [showDetails, setShowDetails] = useState(false)
 
-  const { initialTransaction: { id }, primaryTransaction: { err, submittedTime, gasPrice } } = transactionGroup
+  const { initialTransaction: { id }, primaryTransaction: { err, gasPrice, status, submittedTime } } = transactionGroup
   const [cancelEnabled, cancelTransaction] = useCancelTransaction(transactionGroup)
   const retryTransaction = useRetryTransaction(transactionGroup)
   const shouldShowSpeedUp = useShouldShowSpeedUp(transactionGroup, isEarliestNonce)
@@ -46,7 +46,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
     primaryCurrency,
     recipientAddress,
     secondaryCurrency,
-    status,
+    displayedStatusKey,
     isPending,
     senderAddress,
   } = useTransactionDisplayData(transactionGroup)
@@ -55,10 +55,10 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
 
   const isSignatureReq = category === TRANSACTION_CATEGORY_SIGNATURE_REQUEST
   const isApproval = category === TRANSACTION_CATEGORY_APPROVAL
-  const isUnapproved = status === UNAPPROVED_STATUS
+  const isUnapproved = displayedStatusKey === UNAPPROVED_STATUS
 
   const className = classnames('transaction-list-item', {
-    'transaction-list-item--unconfirmed': isPending || [FAILED_STATUS, DROPPED_STATUS, REJECTED_STATUS].includes(status),
+    'transaction-list-item--unconfirmed': isPending || [FAILED_STATUS, DROPPED_STATUS, REJECTED_STATUS].includes(displayedStatusKey),
   })
 
   const toggleShowDetails = useCallback(() => {
@@ -124,7 +124,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
             label={timeRemaining}
           />
         )}
-        icon={<TransactionIcon category={category} status={status} />}
+        icon={<TransactionIcon category={category} status={displayedStatusKey} />}
         subtitle={(
           <h3>
             <TransactionStatus
@@ -132,7 +132,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
               isEarliestNonce={isEarliestNonce}
               error={err}
               date={date}
-              status={status}
+              status={displayedStatusKey}
             />
             <span className={subtitleContainsOrigin ? 'transaction-list-item__origin' : 'transaction-list-item__address'} title={subtitle}>
               {subtitle}
