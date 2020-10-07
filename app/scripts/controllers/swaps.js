@@ -154,10 +154,7 @@ export default class SwapsController {
           approvalNeeded: null,
         }))
       } else if (!isPolledRequest) {
-        const { gasLimit: approvalGas } = await this.timedoutGasReturn({
-          ...Object.values(newQuotes)[0].approvalNeeded,
-          gas: DEFAULT_ERC20_APPROVE_GAS,
-        })
+        const { gasLimit: approvalGas } = await this.timedoutGasReturn(Object.values(newQuotes)[0].approvalNeeded)
 
         newQuotes = mapValues(newQuotes, (quote) => ({
           ...quote,
@@ -255,10 +252,7 @@ export default class SwapsController {
   async getAllQuotesWithGasEstimates (quotes) {
     const quoteGasData = await Promise.all(
       Object.values(quotes).map(async (quote) => {
-        const { gasLimit, simulationFails } = await this.timedoutGasReturn({
-          ...quote.trade,
-          gas: `0x${(quote.maxGas || MAX_GAS_LIMIT).toString(16)}`,
-        })
+        const { gasLimit, simulationFails } = await this.timedoutGasReturn(quote.trade)
         return [gasLimit, simulationFails, quote.aggregator]
       }),
     )
@@ -327,10 +321,7 @@ export default class SwapsController {
     const {
       gasLimit: newGasEstimate,
       simulationFails,
-    } = await this.timedoutGasReturn({
-      ...quoteToUpdate.trade,
-      gas: baseGasEstimate,
-    })
+    } = await this.timedoutGasReturn(quoteToUpdate.trade)
 
     if (newGasEstimate && !simulationFails) {
       const gasEstimateWithRefund = calculateGasEstimateWithRefund(quoteToUpdate.maxGas, quoteToUpdate.estimatedRefund, newGasEstimate)
