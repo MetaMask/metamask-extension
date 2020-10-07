@@ -5,7 +5,6 @@ import { ethers } from 'ethers'
 import BigNumber from 'bignumber.js'
 import ObservableStore from 'obs-store'
 import { createTestProviderTools } from '../../../stub/provider'
-import { DEFAULT_ERC20_APPROVE_GAS } from '../../../../ui/app/helpers/constants/swaps'
 import SwapsController from '../../../../app/scripts/controllers/swaps'
 
 const MOCK_FETCH_PARAMS = {
@@ -67,7 +66,6 @@ const MOCK_QUOTES_APPROVAL_REQUIRED = {
     error: null,
     sourceToken: '0x6b175474e89094c44da98b954eedeac495271d0f',
     destinationToken: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-    approvalNeeded: null,
     maxGas: 920000,
     averageGas: 312510,
     estimatedRefund: 343090,

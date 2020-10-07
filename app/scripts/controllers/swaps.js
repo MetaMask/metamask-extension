@@ -313,7 +313,7 @@ export default class SwapsController {
     })
   }
 
-  async setInitialGasEstimate (initialAggId, baseGasEstimate) {
+  async setInitialGasEstimate (initialAggId) {
     const { swapsState } = this.store.getState()
 
     const quoteToUpdate = { ...swapsState.quotes[initialAggId] }
