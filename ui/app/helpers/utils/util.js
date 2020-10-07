@@ -413,7 +413,7 @@ export function constructTxParams ({ sendToken, data, to, amount, from, gas, gas
  *
  * @param {string} rpcUrl - The RPC endpoint URL to target.
  * @param {string} rpcMethod - The RPC method to request.
- * @param {Array<unknown>} rpcParams - The RPC method params.
+ * @param {Array<unknown>} [rpcParams] - The RPC method params.
  * @returns {Promise<unknown|undefined>} Returns the result of the RPC method call,
  * or throws an error in case of failure.
  */
