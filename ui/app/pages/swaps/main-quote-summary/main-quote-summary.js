@@ -8,6 +8,7 @@ import { toPrecisionWithoutTrailingZeros } from '../../../helpers/utils/util'
 import Tooltip from '../../../components/ui/tooltip'
 import SunCheckIcon from '../../../components/ui/icon/sun-check-icon.component'
 import ExchangeRateDisplay from '../exchange-rate-display'
+import { formatSwapsValueForDisplay } from '../swaps.util'
 import QuoteBackdrop from './quote-backdrop'
 
 function getFontSizes (fontSizeScore) {
@@ -60,10 +61,7 @@ export default function MainQuoteSummary ({
   const sourceAmount = toPrecisionWithoutTrailingZeros(calcTokenAmount(sourceValue, sourceDecimals).toString(10), 12)
   const destinationAmount = calcTokenAmount(destinationValue, destinationDecimals)
 
-  let amountToDisplay = toPrecisionWithoutTrailingZeros(destinationAmount, 12)
-  if (amountToDisplay.match(/e[+-]/u)) {
-    amountToDisplay = (new BigNumber(amountToDisplay)).toFixed()
-  }
+  const amountToDisplay = formatSwapsValueForDisplay(destinationAmount)
   const fontSizeScore = getFontSizeScore(amountToDisplay, destinationSymbol)
   const [numberFontSize, symbolFontSize] = getFontSizes(fontSizeScore)
   const lineHeight = getLineHeight(fontSizeScore)
