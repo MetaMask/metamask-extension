@@ -3,7 +3,6 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import {
   getNetworkIdentifier,
-  hasPermissionRequests,
   getPreferences,
   submittedPendingTransactionsSelector,
 } from '../../selectors'
@@ -45,7 +44,6 @@ function mapStateToProps (state) {
     isMouseUser: state.appState.isMouseUser,
     providerId: getNetworkIdentifier(state),
     autoLockTimeLimit,
-    hasPermissionsRequests: hasPermissionRequests(state),
   }
 }
 
