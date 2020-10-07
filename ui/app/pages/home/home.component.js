@@ -86,11 +86,11 @@ export default class Home extends PureComponent {
     this.setState({ mounted: true })
     if (isNotification && totalUnapprovedCount === 0) {
       global.platform.closeCurrentWindow()
-    } else if (showAwaitingSwapScreen) {
+    } else if (!isNotification && showAwaitingSwapScreen) {
       history.push(AWAITING_SWAP_ROUTE)
-    } else if (haveSwapsQuotes) {
+    } else if (!isNotification && haveSwapsQuotes) {
       history.push(VIEW_QUOTE_ROUTE)
-    } else if (swapsFetchParams) {
+    } else if (!isNotification && swapsFetchParams) {
       history.push(BUILD_QUOTE_ROUTE)
     } else if (firstPermissionsRequestId) {
       history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`)
@@ -117,7 +117,18 @@ export default class Home extends PureComponent {
     if (!mounted) {
       if (isNotification && totalUnapprovedCount === 0) {
         return { closing: true }
-      } else if (firstPermissionsRequestId || unconfirmedTransactionsCount > 0 || Object.keys(suggestedTokens).length > 0 || showAwaitingSwapScreen || haveSwapsQuotes || swapsFetchParams) {
+      } else if (
+        firstPermissionsRequestId ||
+        unconfirmedTransactionsCount > 0 ||
+        Object.keys(suggestedTokens).length > 0 ||
+        (
+          !isNotification && (
+            showAwaitingSwapScreen ||
+            haveSwapsQuotes ||
+            swapsFetchParams
+          )
+        )
+      ) {
         return { redirecting: true }
       }
     }
