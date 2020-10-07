@@ -5,7 +5,6 @@ import { ethers } from 'ethers'
 import BigNumber from 'bignumber.js'
 import ObservableStore from 'obs-store'
 import { createTestProviderTools } from '../../../stub/provider'
-import { DEFAULT_ERC20_APPROVE_GAS } from '../../../../ui/app/helpers/constants/swaps'
 import SwapsController from '../../../../app/scripts/controllers/swaps'
 
 const MOCK_FETCH_PARAMS = {
@@ -42,6 +41,39 @@ const MOCK_QUOTES = {
     aggregator: TEST_AGG_ID,
     aggType: 'AGG',
     slippage: 3,
+  },
+}
+const MOCK_APPROVAL_NEEDED = {
+  'data': '0x095ea7b300000000000000000000000095e6f48254609a6ee006f7d493c8e5fb97094cef0000000000000000000000000000000000000000004a817c7ffffffdabf41c00',
+  'to': '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+  'amount': '0',
+  'from': '0x2369267687A84ac7B494daE2f1542C40E37f4455',
+  'gas': '12',
+  'gasPrice': '34',
+}
+const MOCK_QUOTES_APPROVAL_REQUIRED = {
+  [TEST_AGG_ID]: {
+    trade: {
+      data: '0x00',
+      from: '0x7F18BB4Dd92CF2404C54CBa1A9BE4A1153bdb078',
+      value: '0x17647444f166000',
+      gas: '0xe09c0',
+      gasPrice: undefined,
+      to: '0x016B4bf68d421147c06f1b8680602c5bf0Df91A8',
+    },
+    sourceAmount: '1000000000000000000000000000000000000',
+    destinationAmount: '396493201125465',
+    error: null,
+    sourceToken: '0x6b175474e89094c44da98b954eedeac495271d0f',
+    destinationToken: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    maxGas: 920000,
+    averageGas: 312510,
+    estimatedRefund: 343090,
+    fetchTime: 559,
+    aggregator: TEST_AGG_ID,
+    aggType: 'AGG',
+    slippage: 3,
+    approvalNeeded: MOCK_APPROVAL_NEEDED,
   },
 }
 const MOCK_FETCH_METADATA = {
@@ -311,7 +343,7 @@ describe('SwapsController', function () {
       })
 
       it('gets the gas limit if approval is required', async function () {
-        fetchTradesInfoStub.resolves(MOCK_QUOTES)
+        fetchTradesInfoStub.resolves(MOCK_QUOTES_APPROVAL_REQUIRED)
 
         // Ensure approval is required
         sandbox
@@ -330,9 +362,7 @@ describe('SwapsController', function () {
 
         // Mocked quotes approvalNeeded is null, so it will only be called with the gas
         assert.strictEqual(
-          timedoutGasReturnStub.calledOnceWithExactly({
-            gas: DEFAULT_ERC20_APPROVE_GAS,
-          }),
+          timedoutGasReturnStub.calledOnceWithExactly(MOCK_APPROVAL_NEEDED),
           true,
         )
       })

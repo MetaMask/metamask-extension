@@ -154,10 +154,7 @@ export default class SwapsController {
           approvalNeeded: null,
         }))
       } else if (!isPolledRequest) {
-        const { gasLimit: approvalGas } = await this.timedoutGasReturn({
-          ...Object.values(newQuotes)[0].approvalNeeded,
-          gas: DEFAULT_ERC20_APPROVE_GAS,
-        })
+        const { gasLimit: approvalGas } = await this.timedoutGasReturn(Object.values(newQuotes)[0].approvalNeeded)
 
         newQuotes = mapValues(newQuotes, (quote) => ({
           ...quote,
@@ -255,10 +252,7 @@ export default class SwapsController {
   async getAllQuotesWithGasEstimates (quotes) {
     const quoteGasData = await Promise.all(
       Object.values(quotes).map(async (quote) => {
-        const { gasLimit, simulationFails } = await this.timedoutGasReturn({
-          ...quote.trade,
-          gas: `0x${(quote.maxGas || MAX_GAS_LIMIT).toString(16)}`,
-        })
+        const { gasLimit, simulationFails } = await this.timedoutGasReturn(quote.trade)
         return [gasLimit, simulationFails, quote.aggregator]
       }),
     )
@@ -292,7 +286,17 @@ export default class SwapsController {
         resolve({ gasLimit: null, simulationFails: true })
       }, 5000)
 
-      this.getBufferedGasLimit({ txParams: tradeTxParams }, 1)
+      // Remove gas from params that will be passed to the `estimateGas` call
+      // Including it can cause the estimate to fail if the actual gas needed
+      // exceeds the passed gas
+      const tradeTxParamsForGasEstimate = {
+        data: tradeTxParams.data,
+        from: tradeTxParams.from,
+        to: tradeTxParams.to,
+        value: tradeTxParams.value,
+      }
+
+      this.getBufferedGasLimit({ txParams: tradeTxParamsForGasEstimate }, 1)
         .then(({ gasLimit, simulationFails }) => {
           if (!gasTimedOut) {
             clearTimeout(gasTimeout)
@@ -309,7 +313,7 @@ export default class SwapsController {
     })
   }
 
-  async setInitialGasEstimate (initialAggId, baseGasEstimate) {
+  async setInitialGasEstimate (initialAggId) {
     const { swapsState } = this.store.getState()
 
     const quoteToUpdate = { ...swapsState.quotes[initialAggId] }
@@ -317,10 +321,7 @@ export default class SwapsController {
     const {
       gasLimit: newGasEstimate,
       simulationFails,
-    } = await this.timedoutGasReturn({
-      ...quoteToUpdate.trade,
-      gas: baseGasEstimate,
-    })
+    } = await this.timedoutGasReturn(quoteToUpdate.trade)
 
     if (newGasEstimate && !simulationFails) {
       const gasEstimateWithRefund = calculateGasEstimateWithRefund(quoteToUpdate.maxGas, quoteToUpdate.estimatedRefund, newGasEstimate)
