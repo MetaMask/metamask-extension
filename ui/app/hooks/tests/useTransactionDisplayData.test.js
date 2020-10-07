@@ -26,7 +26,7 @@ const expectedResults = [
     recipientAddress: '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
     secondaryCurrency: '-1 ETH',
     isPending: false,
-    status: 'confirmed',
+    displayedStatusKey: 'confirmed',
   },
   {
     title: 'Send ETH',
@@ -39,7 +39,7 @@ const expectedResults = [
     recipientAddress: '0x0ccc8aeeaf5ce790f3b448325981a143fdef8848',
     secondaryCurrency: '-2 ETH',
     isPending: false,
-    status: 'confirmed',
+    displayedStatusKey: 'confirmed',
   },
   {
     title: 'Send ETH',
@@ -52,7 +52,7 @@ const expectedResults = [
     recipientAddress: '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
     secondaryCurrency: '-2 ETH',
     isPending: false,
-    status: 'confirmed',
+    displayedStatusKey: 'confirmed',
   },
   {
     title: 'Receive',
@@ -65,7 +65,7 @@ const expectedResults = [
     recipientAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     secondaryCurrency: '18.75 ETH',
     isPending: false,
-    status: 'confirmed',
+    displayedStatusKey: 'confirmed',
   },
   {
     title: 'Receive',
@@ -78,7 +78,7 @@ const expectedResults = [
     recipientAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     secondaryCurrency: '0 ETH',
     isPending: false,
-    status: 'confirmed',
+    displayedStatusKey: 'confirmed',
   },
   {
     title: 'Receive',
@@ -91,7 +91,7 @@ const expectedResults = [
     recipientAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     secondaryCurrency: '1 ETH',
     isPending: false,
-    status: 'confirmed',
+    displayedStatusKey: 'confirmed',
   },
   {
     title: 'Swap ETH to ABC',
@@ -104,7 +104,7 @@ const expectedResults = [
     recipientAddress: '0xabca64466f257793eaa52fcfff5066894b76a149',
     secondaryCurrency: undefined,
     isPending: false,
-    status: 'confirmed',
+    displayedStatusKey: 'confirmed',
   },
 ]
 
@@ -167,9 +167,9 @@ describe('useTransactionDisplayData', function () {
         const { result } = renderHookWithRouter(() => useTransactionDisplayData(transactionGroup), tokenAddress)
         assert.equal(result.current.secondaryCurrency, expected.secondaryCurrency)
       })
-      it(`should return a status of ${expected.status}`, function () {
+      it(`should return a displayedStatusKey of ${expected.displayedStatusKey}`, function () {
         const { result } = renderHookWithRouter(() => useTransactionDisplayData(transactionGroup), tokenAddress)
-        assert.equal(result.current.status, expected.status)
+        assert.equal(result.current.displayedStatusKey, expected.displayedStatusKey)
       })
       it(`should return a recipientAddress of ${expected.recipientAddress}`, function () {
         const { result } = renderHookWithRouter(() => useTransactionDisplayData(transactionGroup), tokenAddress)
