@@ -51,6 +51,8 @@ async function setupFetchMocking (driver) {
         if (url.match(/featureFlag$/u)) {
           return { json: async () => clone(mockResponses.swaps.featureFlag) }
         }
+      } else if (url.match(/http:\/\/127\.0\.0\.1:8545\/\d$/u)) {
+        return { json: async () => clone(mockResponses.dummyChainId) }
       }
       return window.origFetch(...args)
     }
