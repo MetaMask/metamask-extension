@@ -171,13 +171,7 @@ const parseInput = (value) => {
     return value
   }
 
-  let stringValue
-  if (typeof value?.toString === 'function') {
-    stringValue = value.toString()
-  } else {
-    stringValue = String(value)
-  }
-
+  const stringValue = String(value)
   if (stringValue === '[object Object]') {
     throw new Error(errorMessage)
   }
