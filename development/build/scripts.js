@@ -1,4 +1,3 @@
-const fs = require('fs')
 const gulp = require('gulp')
 const watch = require('gulp-watch')
 const source = require('vinyl-source-stream')
@@ -12,7 +11,6 @@ const sourcemaps = require('gulp-sourcemaps')
 const terser = require('gulp-terser-js')
 const pify = require('pify')
 const endOfStream = pify(require('end-of-stream'))
-const { makeStringTransform } = require('browserify-transform-tools')
 
 const conf = require('rc')('metamask', {
   INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
@@ -263,8 +261,6 @@ function createScriptTasks({ browserPlatforms, livereload }) {
       debug: true,
       fullPaths: opts.devMode,
     })
-
-    const bundleName = opts.filename.split('.')[0]
 
     if (!opts.buildLib) {
       if (opts.devMode && opts.filename === 'ui.js') {
