@@ -71,94 +71,80 @@ export default function SortList ({
           className="select-quote-popover__column-header select-quote-popover__receiving"
           onClick={() => onColumnHeaderClick('destinationTokenValue')}
         >
-          <div className="select-quote-popover__receiving-header">
-            <span className="select-quote-popover__receiving-symbol">{swapToSymbol}</span>
-            <div className="select-quote-popover__receiving-label">
-              <span>{t('swapReceiving')}</span>
-              <InfoTooltip
-                position="bottom"
-                contentText={t('swapReceivingInfoTooltip')}
-              />
-              <ToggleArrows />
-            </div>
-          </div>
-        </div>
-        <div
-          className="select-quote-popover__column-header select-quote-popover__network-fees"
-          onClick={() => onColumnHeaderClick('rawNetworkFees')}
-        >
-          <div className="select-quote-popover__network-fees-header">
-            <span>{t('swapEstimatedNetworkFees')}</span>
+          <span className="select-quote-popover__receiving-symbol">{swapToSymbol}</span>
+          <div className="select-quote-popover__receiving-label">
+            <span>{t('swapReceiving')}</span>
             <InfoTooltip
               position="bottom"
-              contentText={t('swapEstimatedNetworkFeesInfo')}
+              contentText={t('swapReceivingInfoTooltip')}
             />
             <ToggleArrows />
           </div>
         </div>
         <div
+          className="select-quote-popover__column-header select-quote-popover__network-fees select-quote-popover__network-fees-header"
+          onClick={() => onColumnHeaderClick('rawNetworkFees')}
+        >
+          <span>{t('swapEstimatedNetworkFees')}</span>
+          <InfoTooltip
+            position="bottom"
+            contentText={t('swapEstimatedNetworkFeesInfo')}
+          />
+          <ToggleArrows />
+        </div>
+        <div
           className="select-quote-popover__column-header select-quote-popover__quote-source"
           onClick={() => onColumnHeaderClick('liquiditySource')}
         >
-          <>
-            {t('swapQuoteSource')}
-            <div className="select-quote-popover__quote-source-toggle"><ToggleArrows /></div>
-          </>
+          {t('swapQuoteSource')}
+          <div className="select-quote-popover__quote-source-toggle"><ToggleArrows /></div>
         </div>
       </div>
-      <div className="select-quote-popover__rows">
-        {
-          sortedRows.map(({ destinationTokenValue, networkFees, isBestQuote, quoteSource, aggId }, i) => (
-            <div
-              className={classnames('select-quote-popover__row', {
-                'select-quote-popover__row--selected': selectedRow === i,
-                'select-quote-popover__row--no-hover': noRowHover,
-              })}
-              onClick={() => onSelect(aggId)}
-              key={`select-quote-popover-row-${i}`}
-            >
-              <div
-                className="select-quote-popover__receiving"
-              >
-                <div className="select-quote-popover__receiving-value">
-                  {isBestQuote && <SunCheckIcon reverseColors={selectedRow !== i} />}
-                  <div className="select-quote-popover__receiving-value-text" title={destinationTokenValue}>{destinationTokenValue}</div>
-                </div>
-                { quoteSource === 'RFQ' && <span className="select-quote-popover__zero-slippage">{t('swapZeroSlippage')}</span> }
+      {
+        sortedRows.map(({ destinationTokenValue, networkFees, isBestQuote, quoteSource, aggId }, i) => (
+          <div
+            className={classnames('select-quote-popover__row', {
+              'select-quote-popover__row--selected': selectedRow === i,
+              'select-quote-popover__row--no-hover': noRowHover,
+            })}
+            onClick={() => onSelect(aggId)}
+            key={`select-quote-popover-row-${i}`}
+          >
+            <div className="select-quote-popover__receiving" >
+              <div className="select-quote-popover__receiving-value">
+                {isBestQuote && <SunCheckIcon reverseColors={selectedRow !== i} />}
+                <div className="select-quote-popover__receiving-value-text" title={destinationTokenValue}>{destinationTokenValue}</div>
               </div>
+              { quoteSource === 'RFQ' && <span className="select-quote-popover__zero-slippage">{t('swapZeroSlippage')}</span> }
+            </div>
+            <div className="select-quote-popover__network-fees" >
+              {networkFees}
+            </div>
+            <div className="select-quote-popover__quote-source" >
               <div
-                className="select-quote-popover__network-fees"
+                className={classnames('select-quote-popover__quote-source-label', {
+                  'select-quote-popover__quote-source-label--green': quoteSource === 'AGG',
+                  'select-quote-popover__quote-source-label--orange': quoteSource === 'RFQ',
+                  'select-quote-popover__quote-source-label--blue': quoteSource === 'DEX',
+                })}
               >
-                {networkFees}
-              </div>
-              <div
-                className="select-quote-popover__quote-source"
-              >
-                <div
-                  className={classnames('select-quote-popover__quote-source-label', {
-                    'select-quote-popover__quote-source-label--green': quoteSource === 'AGG',
-                    'select-quote-popover__quote-source-label--orange': quoteSource === 'RFQ',
-                    'select-quote-popover__quote-source-label--blue': quoteSource === 'DEX',
-                  })}
-                >
-                  {quoteSource}
-                </div>
-              </div>
-              <div
-                className="select-quote-popover__caret-right"
-                onClick={(event) => {
-                  event.stopPropagation()
-                  onCaretClick(aggId)
-                }}
-                onMouseEnter={() => setRowNowHover(true)}
-                onMouseLeave={() => setRowNowHover(false)}
-              >
-                <i className="fa fa-angle-up" />
+                {quoteSource}
               </div>
             </div>
-          ))
-        }
-      </div>
+            <div
+              className="select-quote-popover__caret-right"
+              onClick={(event) => {
+                event.stopPropagation()
+                onCaretClick(aggId)
+              }}
+              onMouseEnter={() => setRowNowHover(true)}
+              onMouseLeave={() => setRowNowHover(false)}
+            >
+              <i className="fa fa-angle-up" />
+            </div>
+          </div>
+        ))
+      }
     </div>
   )
 }

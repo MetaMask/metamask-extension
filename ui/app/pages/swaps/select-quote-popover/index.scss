@@ -39,8 +39,20 @@
 
   &__sort-list {
     display: flex;
-    flex-flow: column;
+    flex-direction: column;
     align-items: center;
+  }
+
+  &__column-headers,
+  &__row {
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+    width: 100%;
+
+    > * + * {
+      margin-left: 8px;
+    }
   }
 
   &__column-headers {
@@ -48,20 +60,8 @@
 
     font-weight: bold;
     color: $Black-100;
-    display: flex;
-    align-items: center;
     height: 43px;
-    width: 100%;
-    padding-left: 20px;
     margin-bottom: 4px;
-
-    .select-quote-popover__receiving {
-      width: 96px;
-    }
-
-    .select-quote-popover__quote-source {
-      margin-right: 60px;
-    }
   }
 
   &__column-header {
@@ -69,24 +69,13 @@
     font-size: 12px;
   }
 
-  &__rows {
-    display: flex;
-    flex-flow: column;
-    align-items: center;
-    width: 100%;
-  }
-
   &__row {
     @include H6;
 
     cursor: pointer;
     color: $black;
-    display: flex;
-    align-items: center;
     height: 49px;
-    width: 100%;
     border-bottom: 1px solid $Grey-100;
-    padding-left: 20px;
     margin-bottom: 8px;
     border-radius: 8px;
     background: $Grey-000;
@@ -143,7 +132,37 @@
   &__receiving {
     display: flex;
     flex-direction: column;
-    width: 102px;
+    width: 88px;
+  }
+
+  &__network-fees {
+    width: 99px;
+  }
+
+  &__quote-source {
+    width: 28px;
+    display: flex;
+    align-items: flex-end;
+    margin-right: 3px;
+  }
+
+  &__caret-right {
+    color: $Grey-500;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    i {
+      transform: rotate(90deg);
+    }
+
+    &:hover {
+      border-radius: 8px;
+      background: white;
+      border: 1px solid $Blue-500;
+    }
   }
 
   &__receiving-value {
@@ -168,34 +187,14 @@
     font-weight: normal;
   }
 
-  &__network-fees {
-    width: 110px;
-  }
-
-  &__quote-source {
-    width: 28px;
-    display: flex;
-    align-items: flex-end;
-    margin-right: 18px;
-
-    @media screen and (min-width: 576px) {
-      margin-right: 36px;
-    }
-  }
-
   &__quote-source-toggle {
     margin-left: 2px;
     height: 12px;
   }
 
-  &__receiving-header {
-    display: flex;
-    flex-flow: column;
-  }
-
   &__network-fees-header {
     display: flex;
-    flex-flow: row;
+    flex-direction: row;
     align-items: flex-end;
 
     > span {
@@ -233,25 +232,6 @@
 
     > div {
       margin-left: 3px;
-    }
-  }
-
-  &__caret-right {
-    color: $Grey-500;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    i {
-      transform: rotate(90deg);
-    }
-
-    &:hover {
-      border-radius: 8px;
-      background: white;
-      border: 1px solid $Blue-500;
     }
   }
 
