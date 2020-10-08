@@ -117,8 +117,8 @@ export default class MetamaskController extends EventEmitter {
 
     // This depends on preferences controller state
     this.trackSegmentEvent = getTrackSegmentEvent(
+      this.platform.getVersion(),
       () => this.preferencesController.getParticipateInMetaMetrics(),
-      () => this.platform.getVersion(),
       () => {
         const {
           currentLocale = '',

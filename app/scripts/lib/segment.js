@@ -29,28 +29,26 @@ const segment = process.env.SEGMENT_WRITE_KEY
 /**
  * Returns a function for tracking Segment events.
  *
- * @property {Function} getParticipateInMetrics - A function that returns
+ * @param {string} metamaskVersion - The current version of the MetaMask
+ * extension.
+ * @param {Function} getParticipateInMetrics - A function that returns
  * whether the user participates in MetaMetrics.
- * @property {Function} getMetaMaskVersion - A function for getting the current
- * version of the MetaMask extension.
- * @property {Function} getMetricsState - A function for getting state relevant
+ * @param {Function} getMetricsState - A function for getting state relevant
  * to MetaMetrics/Segment.
  */
 export function getTrackSegmentEvent (
+  metamaskVersion,
   getParticipateInMetrics,
-  getMetaMaskVersion,
   getMetricsState,
 ) {
-  const getVersion = () => {
-    const metamaskVersion = getMetaMaskVersion()
-    return process.env.METAMASK_ENVIRONMENT === 'production'
-      ? metamaskVersion
-      : `${metamaskVersion}-${process.env.METAMASK_ENVIRONMENT}`
-  }
+  const version = process.env.METAMASK_ENVIRONMENT === 'production'
+    ? metamaskVersion
+    : `${metamaskVersion}-${process.env.METAMASK_ENVIRONMENT}`
 
   const segmentContext = {
     app: {
       name: 'MetaMask Extension',
+      version,
     },
     page: {
       path: '/background-process',
@@ -90,10 +88,6 @@ export function getTrackSegmentEvent (
       category,
       context: {
         ...segmentContext,
-        app: {
-          ...segmentContext.app,
-          version: getVersion(),
-        },
         locale: currentLocale.replace('_', '-'),
       },
       properties,
