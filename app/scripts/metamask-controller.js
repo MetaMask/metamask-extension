@@ -55,6 +55,7 @@ import getRestrictedMethods from './controllers/permissions/restrictedMethods'
 import nodeify from './lib/nodeify'
 import accountImporter from './account-import-strategies'
 import seedPhraseVerifier from './lib/seed-phrase-verifier'
+import { getTrackSegmentEvent } from './lib/segment'
 
 import backgroundMetaMetricsEvent from './lib/background-metametrics'
 
@@ -113,6 +114,19 @@ export default class MetamaskController extends EventEmitter {
       network: this.networkController,
       migrateAddressBookState: this.migrateAddressBookState.bind(this),
     })
+
+    // This depends on preferences controller state
+    this.trackSegmentEvent = getTrackSegmentEvent(
+      this.platform.getVersion(),
+      () => this.preferencesController.getParticipateInMetaMetrics(),
+      () => {
+        const {
+          currentLocale,
+          metaMetricsId,
+        } = this.preferencesController.getState()
+        return { currentLocale, metaMetricsId }
+      },
+    )
 
     this.appStateController = new AppStateController({
       addUnlockListener: this.on.bind(this, 'unlock'),
@@ -239,7 +253,8 @@ export default class MetamaskController extends EventEmitter {
       signTransaction: this.keyringController.signTransaction.bind(this.keyringController),
       provider: this.provider,
       blockTracker: this.blockTracker,
-      version: this.platform.getVersion(),
+      trackSegmentEvent: this.trackSegmentEvent,
+      getParticipateInMetrics: () => this.preferencesController.getParticipateInMetaMetrics(),
     })
     this.txController.on('newUnapprovedTx', () => opts.showUnapprovedTx())
 
