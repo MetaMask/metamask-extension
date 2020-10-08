@@ -8,6 +8,7 @@ import abi from 'human-standard-token-abi'
 import { ethers } from 'ethers'
 import NonceTracker from 'nonce-tracker'
 import log from 'loglevel'
+import BigNumber from 'bignumber.js'
 import {
   TOKEN_METHOD_APPROVE,
   TOKEN_METHOD_TRANSFER,
@@ -606,12 +607,23 @@ export default class TransactionController extends EventEmitter {
 
         const metametricsId = this.preferencesStore.getState().metaMetricsId
         if (metametricsId && txMeta.swapMetaData && txReceipt.status !== '0x0') {
+          const tokensReceived = getSwapsTokensReceivedFromTxMeta(
+            txMeta.destinationTokenSymbol,
+            txMeta,
+            txMeta.destinationTokenAddress,
+            txMeta.txParams.from,
+            txMeta.destinationTokenDecimals,
+          )
+          const quoteVsExecutionRatio = `${(new BigNumber(tokensReceived, 10))
+            .div(txMeta.swapMetaData?.['token_to_amount'], 10).times(100).round(2)}%`
+
           segment.track({ event: 'Swap Completed', userId: metametricsId, context: segmentContext, category: 'swaps' })
           segment.track({
             event: 'Swap Completed',
             properties: {
               ...txMeta.swapMetaData,
-              token_to_amount_received: getSwapsTokensReceivedFromTxMeta(txMeta.destinationTokenSymbol, txMeta, txMeta.destinationTokenAddress, txMeta.txParams.from, txMeta.destinationTokenDecimals),
+              token_to_amount_received: tokensReceived,
+              quote_vs_executionRatio: quoteVsExecutionRatio,
             },
             context: segmentContext,
             anonymousId: METAMETRICS_ANONYMOUS_ID,
