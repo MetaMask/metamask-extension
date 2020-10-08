@@ -95,9 +95,12 @@ export default function BuildQuote ({
     symbol: fromTokenSymbol,
     string: fromTokenString,
     decimals: fromTokenDecimals,
+    balance: rawFromTokenBalance,
   } = selectedFromToken || {}
 
-  const prevFromTokenString = usePrevious(fromTokenString)
+  const fromTokenBalance = rawFromTokenBalance && calcTokenAmount(rawFromTokenBalance, fromTokenDecimals).toString(10)
+
+  const prevFromTokenBalance = usePrevious(fromTokenBalance)
 
   const swapFromTokenFiatValue = useTokenFiatAmount(
     fromTokenAddress,
@@ -158,10 +161,10 @@ export default function BuildQuote ({
   }, [dispatch, fromToken, ethBalance])
 
   useEffect(() => {
-    if (prevFromTokenString !== fromTokenString) {
-      onInputChange(inputValue, fromTokenString)
+    if (prevFromTokenBalance !== fromTokenBalance) {
+      onInputChange(inputValue, fromTokenBalance)
     }
-  }, [onInputChange, prevFromTokenString, inputValue, fromTokenString])
+  }, [onInputChange, prevFromTokenBalance, inputValue, fromTokenBalance])
 
   useEffect(() => {
     dispatch(resetSwapsPostFetchState())
@@ -176,7 +179,7 @@ export default function BuildQuote ({
             className="build-quote__max-button"
             onClick={() => {
               dispatch(setMaxMode(true))
-              onInputChange(fromTokenString || '0', fromTokenString)
+              onInputChange(fromTokenBalance || '0', fromTokenBalance)
             }}
           >{t('max')}
           </div>
@@ -186,7 +189,7 @@ export default function BuildQuote ({
           itemsToSearch={tokensToSearch}
           onInputChange={(value) => {
             dispatch(setMaxMode(false))
-            onInputChange(value, fromTokenString, fromTokenDecimals)
+            onInputChange(value, fromTokenBalance)
           }}
           inputValue={inputValue}
           leftValue={inputValue && swapFromFiatValue}
