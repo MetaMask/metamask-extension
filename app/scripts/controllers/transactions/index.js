@@ -585,14 +585,13 @@ export default class TransactionController extends EventEmitter {
 
       this.txStateManager.updateTx(initialTxMeta, 'transactions#confirmTransaction - add txReceipt')
 
-      let txMeta
       if (initialTxMeta.transactionCategory === SWAP) {
-        txMeta = cloneDeep(initialTxMeta)
+        const txMeta = cloneDeep(initialTxMeta)
         const postTxBalance = await this.query.getBalance(txMeta.txParams.from)
         txMeta.postTxBalance = postTxBalance.toString(16)
+        this._trackSwapsMetrics(txMeta)
       }
 
-      this._trackSwapsMetrics(txMeta)
     } catch (err) {
       log.error(err)
     }
