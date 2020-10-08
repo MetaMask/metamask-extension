@@ -204,7 +204,7 @@ export default class TransactionListItemDetails extends PureComponent {
               </Tooltip>
               {
                 showRetry && (
-                  <Tooltip title={blockExplorerUrl ? t('viewOnCustomBlockExplorer', [blockExplorerUrl]) : t('retryTransaction')}>
+                  <Tooltip title={t('retryTransaction')}>
                     <Button
                       type="raised"
                       onClick={this.handleRetry}
