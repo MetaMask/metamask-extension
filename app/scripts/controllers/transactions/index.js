@@ -848,7 +848,7 @@ export default class TransactionController extends EventEmitter {
 
         const quoteVsExecutionRatio = `${
           (new BigNumber(tokensReceived, 10))
-            .div(txMeta.swapMetaData.token_to_amount ?? 1, 10)
+            .div(txMeta.swapMetaData.token_to_amount, 10)
             .times(100)
             .round(2)
         }%`
