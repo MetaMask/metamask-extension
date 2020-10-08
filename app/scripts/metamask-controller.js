@@ -123,7 +123,7 @@ export default class MetamaskController extends EventEmitter {
         const {
           currentLocale,
           metaMetricsId,
-        } = this.preferencesController.getState()
+        } = this.preferencesController.store.getState()
         return { currentLocale, metaMetricsId }
       },
     )
