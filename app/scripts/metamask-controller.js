@@ -115,7 +115,7 @@ export default class MetamaskController extends EventEmitter {
       migrateAddressBookState: this.migrateAddressBookState.bind(this),
     })
 
-    // This depends on the currentLocale from the preferences controller
+    // This depends on preferences controller state
     this.trackSegmentEvent = getTrackSegmentEvent(
       () => this.preferencesController.getParticipateInMetaMetrics(),
       () => this.platform.getVersion(),
