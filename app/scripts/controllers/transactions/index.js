@@ -580,18 +580,18 @@ export default class TransactionController extends EventEmitter {
         ...txReceipt,
         gasUsed,
       }
-
-      const txMeta = cloneDeep(initialTxMeta)
-
       this.txStateManager.setTxStatusConfirmed(txId)
       this._markNonceDuplicatesDropped(txId)
 
-      if (txMeta.transactionCategory === SWAP) {
+      this.txStateManager.updateTx(initialTxMeta, 'transactions#confirmTransaction - add txReceipt')
+
+      let txMeta
+      if (initialTxMeta.transactionCategory === SWAP) {
+        txMeta = cloneDeep(initialTxMeta)
         const postTxBalance = await this.query.getBalance(txMeta.txParams.from)
         txMeta.postTxBalance = postTxBalance.toString(16)
       }
 
-      this.txStateManager.updateTx(txMeta, 'transactions#confirmTransaction - add txReceipt')
       this._trackSwapsMetrics(txMeta)
     } catch (err) {
       log.error(err)
