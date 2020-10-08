@@ -121,8 +121,8 @@ export default class MetamaskController extends EventEmitter {
       () => this.preferencesController.getParticipateInMetaMetrics(),
       () => {
         const {
-          currentLocale = '',
-          metaMetricsId = '',
+          currentLocale,
+          metaMetricsId,
         } = this.preferencesController.getState()
         return { currentLocale, metaMetricsId }
       },
