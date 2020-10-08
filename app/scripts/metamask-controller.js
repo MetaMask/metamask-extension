@@ -1672,7 +1672,7 @@ export default class MetamaskController extends EventEmitter {
     }))
     engine.push(createMethodMiddleware({
       origin,
-      sendMetrics: this.sendBackgroundMetaMetrics.bind(this),
+      sendMetrics: this.trackSegmentEvent,
     }))
     // filter and subscription polyfills
     engine.push(filterMiddleware)
