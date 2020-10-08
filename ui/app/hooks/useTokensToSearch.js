@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import contractMap from 'eth-contract-metadata'
 import BigNumber from 'bignumber.js'
 import { isEqual, shuffle } from 'lodash'
-import { getValueFromWeiHex } from '../helpers/utils/conversions.util'
+import { getValueFromWeiHex, hexWEIToDecETH } from '../helpers/utils/conversions.util'
 import { checksumAddress } from '../helpers/utils/util'
 import { getTokenFiatAmount } from '../helpers/utils/token-util'
 import { getTokenExchangeRates, getConversionRate, getCurrentCurrency } from '../selectors'
@@ -60,7 +60,7 @@ export function useTokensToSearch ({ providedTokens, rawEthBalance, usersTokens 
 
   const decEthBalance = getValueFromWeiHex({ value: rawEthBalance, numberOfDecimals: 4, toDenomination: 'ETH' })
   const [ethToken] = useState(() => getRenderableTokenData(
-    { ...ETH_SWAPS_TOKEN_OBJECT, balance: rawEthBalance, string: decEthBalance },
+    { ...ETH_SWAPS_TOKEN_OBJECT, balance: hexWEIToDecETH(rawEthBalance), string: decEthBalance },
     tokenConversionRates,
     conversionRate,
     currentCurrency,

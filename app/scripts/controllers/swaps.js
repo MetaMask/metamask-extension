@@ -166,9 +166,9 @@ export default class SwapsController {
       }
     }
 
-    const topAggIdData = await this._findTopQuoteAggId(newQuotes)
-    let { topAggId } = topAggIdData
-    const { isBest } = topAggIdData
+    let topAggIdData
+    let topAggId
+    let isBest
 
     if (isBest) {
       newQuotes[topAggId].isBestQuote = true
@@ -181,6 +181,14 @@ export default class SwapsController {
 
       if (fetchParamsMetaData.maxMode && fetchParams.sourceToken === ETH_SWAPS_TOKEN_ADDRESS) {
         newQuotes = await this._modifyAndFilterValuesForMaxEthMode(newQuotes, fetchParamsMetaData.accountBalance)
+      }
+
+      topAggIdData = await this._findTopQuoteAggId(newQuotes)
+      topAggId = topAggIdData.topAggId
+      isBest = topAggIdData.isBest
+
+      if (isBest) {
+        newQuotes[topAggId].isBestQuote = true
       }
 
       if (Object.values(newQuotes).length === 0) {
@@ -196,6 +204,10 @@ export default class SwapsController {
           newQuotes[topAggId].isBestQuote = true
         }
       }
+    } else {
+      topAggIdData = await this._findTopQuoteAggId(newQuotes)
+      topAggId = topAggIdData.topAggId
+      isBest = topAggIdData.isBest
     }
 
     const { swapsState } = this.store.getState()
@@ -440,6 +452,7 @@ export default class SwapsController {
         averageGas,
         gasEstimate,
         aggregator,
+        originalTradeValue,
       } = quote
       const tradeGasLimitForCalculation = gasEstimate
         ? new BigNumber(gasEstimate, 16)
@@ -452,7 +465,7 @@ export default class SwapsController {
         usedGasPrice,
       )
       const totalEthCost = new BigNumber(gasTotalInWeiHex, 16).plus(
-        trade.value,
+        originalTradeValue || trade.value,
         16,
       )
       const ethFee = conversionUtil(totalEthCost, {
@@ -615,6 +628,7 @@ export default class SwapsController {
             value: ethUtil.addHexPrefix(newValue),
           },
           destinationAmount: newDestinationAmount,
+          originalTradeValue: oldValue,
           sourceAmount: newSourceAmount,
         }
       }

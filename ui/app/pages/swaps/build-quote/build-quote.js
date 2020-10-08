@@ -179,7 +179,7 @@ export default function BuildQuote ({
             className="build-quote__max-button"
             onClick={() => {
               dispatch(setMaxMode(true))
-              onInputChange(fromTokenBalance || '0', fromTokenBalance)
+              onInputChange(rawFromTokenBalance || '0', rawFromTokenBalance)
             }}
           >{t('max')}
           </div>
