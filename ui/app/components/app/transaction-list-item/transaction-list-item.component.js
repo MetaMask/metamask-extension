@@ -19,6 +19,7 @@ import {
   FAILED_STATUS,
   DROPPED_STATUS,
   REJECTED_STATUS,
+  TRANSACTION_CATEGORY_SWAP,
 } from '../../../helpers/constants/transactions'
 import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp'
 import TransactionStatus from '../transaction-status/transaction-status.component'
@@ -56,6 +57,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
   const isSignatureReq = category === TRANSACTION_CATEGORY_SIGNATURE_REQUEST
   const isApproval = category === TRANSACTION_CATEGORY_APPROVAL
   const isUnapproved = displayedStatusKey === UNAPPROVED_STATUS
+  const isSwap = category === TRANSACTION_CATEGORY_SWAP
 
   const className = classnames('transaction-list-item', {
     'transaction-list-item--unconfirmed': isPending || [FAILED_STATUS, DROPPED_STATUS, REJECTED_STATUS].includes(displayedStatusKey),
@@ -159,7 +161,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
           senderAddress={senderAddress}
           recipientAddress={recipientAddress}
           onRetry={retryTransaction}
-          showRetry={status === FAILED_STATUS}
+          showRetry={status === FAILED_STATUS && !isSwap}
           showSpeedUp={shouldShowSpeedUp}
           isEarliestNonce={isEarliestNonce}
           onCancel={cancelTransaction}
