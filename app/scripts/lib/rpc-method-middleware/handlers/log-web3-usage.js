@@ -49,7 +49,8 @@ function logWeb3UsageHandler (
     sendMetrics({
       event: `Website Accessed window.web3`,
       category: 'inpage_provider',
-      properties: { origin, action, web3Property: name },
+      properties: { action, web3Property: name },
+      referrerUrl: origin,
     })
   }
 
