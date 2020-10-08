@@ -62,8 +62,6 @@
     "3box/**/libp2p-crypto/node-forge": "^0.10.0",
     "3box/**/libp2p-keychain/node-forge": "^0.10.0",
     "browserify-derequire/derequire": "^2.1.1",
-    "ganache-core/lodash": "^4.17.19",
-    "ganache-core/websocket": "^1.0.32",
     "ethereumjs-wallet": "^0.6.4"
   },
   "dependencies": {
