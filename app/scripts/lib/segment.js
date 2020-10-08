@@ -26,6 +26,16 @@ const segment = process.env.SEGMENT_WRITE_KEY
   ? new Analytics(process.env.SEGMENT_WRITE_KEY, { flushAt })
   : segmentNoop
 
+/**
+ * Returns a function for tracking Segment events.
+ *
+ * @property {Function} getParticipateInMetrics - A function that returns
+ * whether the user participates in MetaMetrics.
+ * @property {Function} getMetaMaskVersion - A function for getting the current
+ * version of the MetaMask extension.
+ * @property {Function} getMetricsState - A function for getting state relevant
+ * to MetaMetrics/Segment.
+ */
 export function getTrackSegmentEvent (
   getParticipateInMetrics,
   getMetaMaskVersion,
@@ -50,9 +60,18 @@ export function getTrackSegmentEvent (
     userAgent: window.navigator.userAgent,
   }
 
+  /**
+   * Tracks a Segment event per the given arguments.
+   *
+   * @param {string} event - The event name.
+   * @param {string} category - The event category.
+   * @param {Object} [properties] - The event properties.
+   * @param {boolean} [anonymous] - `true` if the user's MetaMetrics id should
+   * not be included, and `false` otherwise. Default: `true`
+   */
   return function trackSegmentEvent ({
-    event = 'DEFAULT_SEGMENT_EVENT',
-    category = 'DEFAULT_SEGMENT_CATEGORY',
+    event,
+    category,
     properties = {},
     anonymous = true,
   }) {
@@ -63,8 +82,8 @@ export function getTrackSegmentEvent (
     const { currentLocale, metaMetricsId } = getMetricsState()
 
     const trackOptions = {
-      event,
-      category,
+      event: event || 'DEFAULT_SEGMENT_EVENT',
+      category: category || 'DEFAULT_SEGMENT_CATEGORY',
       context: {
         ...segmentContext,
         app: {
