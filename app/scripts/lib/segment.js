@@ -102,7 +102,7 @@ export function getTrackSegmentEvent (
     }
 
     if (referrerUrl) {
-      trackOptions.referrer = {
+      trackOptions.context.referrer = {
         url: referrerUrl,
       }
     }
