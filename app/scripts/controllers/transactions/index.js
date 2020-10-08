@@ -9,6 +9,7 @@ import { ethers } from 'ethers'
 import NonceTracker from 'nonce-tracker'
 import log from 'loglevel'
 import BigNumber from 'bignumber.js'
+import { cloneDeep } from 'lodash'
 import {
   TOKEN_METHOD_APPROVE,
   TOKEN_METHOD_TRANSFER,
@@ -562,9 +563,9 @@ export default class TransactionController extends EventEmitter {
   async confirmTransaction (txId, txReceipt) {
     // get the txReceipt before marking the transaction confirmed
     // to ensure the receipt is gotten before the ui revives the tx
-    const txMeta = this.txStateManager.getTx(txId)
+    const initialTxMeta = this.txStateManager.getTx(txId)
 
-    if (!txMeta) {
+    if (!initialTxMeta) {
       return
     }
 
@@ -575,10 +576,12 @@ export default class TransactionController extends EventEmitter {
         ? txReceipt.gasUsed
         : txReceipt.gasUsed.toString(16)
 
-      txMeta.txReceipt = {
+      initialTxMeta.txReceipt = {
         ...txReceipt,
         gasUsed,
       }
+
+      const txMeta = cloneDeep(initialTxMeta)
 
       this.txStateManager.setTxStatusConfirmed(txId)
       this._markNonceDuplicatesDropped(txId)
