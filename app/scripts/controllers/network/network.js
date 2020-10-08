@@ -21,7 +21,6 @@ import {
 } from './enums'
 
 const env = process.env.METAMASK_ENV
-const { METAMASK_DEBUG } = process.env
 
 let defaultProviderConfigType
 let defaultProviderChainId
@@ -29,7 +28,7 @@ if (process.env.IN_TEST === 'true') {
   defaultProviderConfigType = LOCALHOST
   // Decimal 5777, an arbitrary chain ID we use for testing
   defaultProviderChainId = '0x1691'
-} else if (METAMASK_DEBUG || env === 'test') {
+} else if (process.env.METAMASK_DEBUG || env === 'test') {
   defaultProviderConfigType = RINKEBY
 } else {
   defaultProviderConfigType = MAINNET
