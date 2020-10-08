@@ -47,7 +47,7 @@ function logWeb3UsageHandler (
     recordedWeb3Usage[origin][name] = true
 
     sendMetrics({
-      event: `window.web3 Usage`,
+      event: `Website Accessed window.web3`,
       category: 'inpage_provider',
       properties: { origin, action, web3Property: name },
     })
