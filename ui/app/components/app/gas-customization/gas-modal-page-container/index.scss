@@ -57,6 +57,10 @@
       display: none;
     }
 
+    &__tab {
+      margin-right: 0;
+    }
+
     &__tabs {
       margin-top: 0;
     }
@@ -68,11 +72,13 @@
 
       &:last-of-type {
         margin-right: 0;
+      
+      & button {
+        font-size: unset;
       }
 
-      &--selected {
+      &.tab--active button {
         color: $primary-blue;
-        border-bottom: 2px solid $primary-blue;
       }
     }
   }

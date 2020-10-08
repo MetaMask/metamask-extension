@@ -39,6 +39,10 @@
     color: $Blue-500;
   }
 
+  &__main-view &__tab button {
+    padding: 16px 8px;
+  }
+
   &__connect-status-text {
     display: flex;
     flex-direction: column;
