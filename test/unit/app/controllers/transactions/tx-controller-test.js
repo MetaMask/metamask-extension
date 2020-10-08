@@ -50,6 +50,7 @@ describe('Transaction Controller', function () {
       }),
       getPermittedAccounts: () => undefined,
       getCurrentChainId: () => currentChainId,
+      getParticipateInMetrics: () => false,
     })
     txController.nonceTracker.getNonceLock = () => Promise.resolve({ nextNonce: 0, releaseLock: noop })
   })
@@ -558,6 +559,7 @@ describe('Transaction Controller', function () {
           ethTx.sign(_fromAccount.key)
           resolve()
         }),
+        getParticipateInMetrics: () => false,
       })
       const result = await _txController._determineTransactionCategory({
         to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
@@ -590,6 +592,7 @@ describe('Transaction Controller', function () {
           ethTx.sign(_fromAccount.key)
           resolve()
         }),
+        getParticipateInMetrics: () => false,
       })
       const result = await _txController._determineTransactionCategory({
         to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
