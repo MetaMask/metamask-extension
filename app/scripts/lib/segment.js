@@ -75,6 +75,10 @@ export function getTrackSegmentEvent (
     properties = {},
     anonymous = true,
   }) {
+    if (!event || !category) {
+      throw new Error('Must specify event and category.')
+    }
+
     if (!getParticipateInMetrics()) {
       return
     }
@@ -82,8 +86,8 @@ export function getTrackSegmentEvent (
     const { currentLocale, metaMetricsId } = getMetricsState()
 
     const trackOptions = {
-      event: event || 'DEFAULT_SEGMENT_EVENT',
-      category: category || 'DEFAULT_SEGMENT_CATEGORY',
+      event,
+      category,
       context: {
         ...segmentContext,
         app: {
