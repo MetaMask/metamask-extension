@@ -64,14 +64,14 @@ export function getTrackSegmentEvent (
    * @param {string} event - The event name.
    * @param {string} category - The event category.
    * @param {Object} [properties] - The event properties.
-   * @param {boolean} [anonymous] - `true` if the user's MetaMetrics id should
+   * @param {boolean} [excludeMetaMetricsId] - `true` if the user's MetaMetrics id should
    * not be included, and `false` otherwise. Default: `true`
    */
   return function trackSegmentEvent ({
     event,
     category,
     properties = {},
-    anonymous = true,
+    excludeMetaMetricsId = true,
   }) {
     if (!event || !category) {
       throw new Error('Must specify event and category.')
@@ -93,9 +93,8 @@ export function getTrackSegmentEvent (
       properties,
     }
 
-    if (anonymous) {
+    if (excludeMetaMetricsId) {
       trackOptions.anonymousId = METAMETRICS_ANONYMOUS_ID
-      trackOptions.excludeMetaMetricsId = true
     } else {
       trackOptions.userId = metaMetricsId
     }

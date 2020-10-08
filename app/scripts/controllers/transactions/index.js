@@ -828,14 +828,14 @@ export default class TransactionController extends EventEmitter {
         this._trackSegmentEvent({
           event: 'Swap Failed',
           category: 'swaps',
-          anonymous: false,
+          excludeMetaMetricsId: false,
         })
 
         this._trackSegmentEvent({
           event: 'Swap Failed',
           properties: { ...txMeta.swapMetaData },
           category: 'swaps',
-          anonymous: true,
+          excludeMetaMetricsId: true,
         })
       } else {
         const tokensReceived = getSwapsTokensReceivedFromTxMeta(
@@ -856,7 +856,7 @@ export default class TransactionController extends EventEmitter {
         this._trackSegmentEvent({
           event: 'Swap Completed',
           category: 'swaps',
-          anonymous: false,
+          excludeMetaMetricsId: false,
         })
 
         this._trackSegmentEvent({
@@ -866,7 +866,7 @@ export default class TransactionController extends EventEmitter {
             token_to_amount_received: tokensReceived,
             quote_vs_executionRatio: quoteVsExecutionRatio,
           },
-          anonymous: true,
+          excludeMetaMetricsId: true,
         })
       }
     }
