@@ -861,6 +861,7 @@ export default class TransactionController extends EventEmitter {
 
         this._trackSegmentEvent({
           event: 'Swap Completed',
+          category: 'swaps',
           properties: {
             ...txMeta.swapMetaData,
             token_to_amount_received: tokensReceived,

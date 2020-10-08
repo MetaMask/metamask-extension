@@ -45,10 +45,12 @@ function logWeb3UsageHandler (
   }
   if (!recordedWeb3Usage[origin][name]) {
     recordedWeb3Usage[origin][name] = true
+
     sendMetrics({
-      action,
-      name,
-      customVariables: { origin },
+      event: `Website Accessed window.web3`,
+      category: 'inpage_provider',
+      properties: { action, web3Property: name },
+      referrerUrl: origin,
     })
   }
 

@@ -64,6 +64,7 @@ export function getTrackSegmentEvent (
    * @param {string} event - The event name.
    * @param {string} category - The event category.
    * @param {Object} [properties] - The event properties.
+   * @param {string} [referrerUrl] - The event's referrer URL, if relevant.
    * @param {boolean} [excludeMetaMetricsId] - `true` if the user's MetaMetrics id should
    * not be included, and `false` otherwise. Default: `true`
    */
@@ -72,6 +73,7 @@ export function getTrackSegmentEvent (
     category,
     properties = {},
     excludeMetaMetricsId = true,
+    referrerUrl,
   }) {
     if (!event || !category) {
       throw new Error('Must specify event and category.')
@@ -97,6 +99,12 @@ export function getTrackSegmentEvent (
       trackOptions.anonymousId = METAMETRICS_ANONYMOUS_ID
     } else {
       trackOptions.userId = metaMetricsId
+    }
+
+    if (referrerUrl) {
+      trackOptions.context.referrer = {
+        url: referrerUrl,
+      }
     }
 
     segment.track(trackOptions)
