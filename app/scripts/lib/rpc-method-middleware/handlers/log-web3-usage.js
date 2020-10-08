@@ -46,13 +46,10 @@ function logWeb3UsageHandler (
   if (!recordedWeb3Usage[origin][name]) {
     recordedWeb3Usage[origin][name] = true
 
-    // "action" is either "window.web3 get" or "window.web3 set"
-    const proxyAction = action.split(' ')[1]
-
     sendMetrics({
       event: `window.web3 Usage`,
       category: 'inpage_provider',
-      properties: { origin, action: proxyAction, web3Property: name },
+      properties: { origin, action, web3Property: name },
     })
   }
 
