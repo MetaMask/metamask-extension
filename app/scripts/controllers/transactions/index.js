@@ -569,7 +569,6 @@ export default class TransactionController extends EventEmitter {
     }
 
     try {
-
       // It seems that sometimes the numerical values being returned from
       // this.query.getTransactionReceipt are BN instances and not strings.
       const gasUsed = typeof txReceipt.gasUsed === 'string'
@@ -586,55 +585,8 @@ export default class TransactionController extends EventEmitter {
         txMeta.postTxBalance = postTxBalance.toString(16)
       }
 
-      if (this._getParticipateInMetrics() && txMeta.swapMetaData) {
-        if (txReceipt.status === '0x0') {
-          this._trackSegmentEvent({
-            event: 'Swap Failed',
-            category: 'swaps',
-            anonymous: false,
-          })
-
-          this._trackSegmentEvent({
-            event: 'Swap Failed',
-            properties: { ...txMeta.swapMetaData },
-            category: 'swaps',
-            anonymous: true,
-          })
-        } else {
-          const tokensReceived = getSwapsTokensReceivedFromTxMeta(
-            txMeta.destinationTokenSymbol,
-            txMeta,
-            txMeta.destinationTokenAddress,
-            txMeta.txParams.from,
-            txMeta.destinationTokenDecimals,
-          )
-
-          const quoteVsExecutionRatio = `${
-            (new BigNumber(tokensReceived, 10))
-              .div(txMeta.swapMetaData['token_to_amount'] ?? 1, 10)
-              .times(100)
-              .round(2)
-          }%`
-
-          this._trackSegmentEvent({
-            event: 'Swap Completed',
-            category: 'swaps',
-            anonymous: false,
-          })
-
-          this._trackSegmentEvent({
-            event: 'Swap Completed',
-            properties: {
-              ...txMeta.swapMetaData,
-              token_to_amount_received: tokensReceived,
-              quote_vs_executionRatio: quoteVsExecutionRatio,
-            },
-            anonymous: true,
-          })
-        }
-      }
-
       this.txStateManager.updateTx(txMeta, 'transactions#confirmTransaction - add txReceipt')
+      this._trackSwapsMetrics(txMeta)
     } catch (err) {
       log.error(err)
     }
@@ -870,4 +822,53 @@ export default class TransactionController extends EventEmitter {
     this.memStore.updateState({ unapprovedTxs, currentNetworkTxList })
   }
 
+  _trackSwapsMetrics (txMeta) {
+    if (this._getParticipateInMetrics() && txMeta.swapMetaData) {
+      if (txMeta.txReceipt.status === '0x0') {
+        this._trackSegmentEvent({
+          event: 'Swap Failed',
+          category: 'swaps',
+          anonymous: false,
+        })
+
+        this._trackSegmentEvent({
+          event: 'Swap Failed',
+          properties: { ...txMeta.swapMetaData },
+          category: 'swaps',
+          anonymous: true,
+        })
+      } else {
+        const tokensReceived = getSwapsTokensReceivedFromTxMeta(
+          txMeta.destinationTokenSymbol,
+          txMeta,
+          txMeta.destinationTokenAddress,
+          txMeta.txParams.from,
+          txMeta.destinationTokenDecimals,
+        )
+
+        const quoteVsExecutionRatio = `${
+          (new BigNumber(tokensReceived, 10))
+            .div(txMeta.swapMetaData.token_to_amount ?? 1, 10)
+            .times(100)
+            .round(2)
+        }%`
+
+        this._trackSegmentEvent({
+          event: 'Swap Completed',
+          category: 'swaps',
+          anonymous: false,
+        })
+
+        this._trackSegmentEvent({
+          event: 'Swap Completed',
+          properties: {
+            ...txMeta.swapMetaData,
+            token_to_amount_received: tokensReceived,
+            quote_vs_executionRatio: quoteVsExecutionRatio,
+          },
+          anonymous: true,
+        })
+      }
+    }
+  }
 }
