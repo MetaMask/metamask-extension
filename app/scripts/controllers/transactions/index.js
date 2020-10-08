@@ -580,6 +580,9 @@ export default class TransactionController extends EventEmitter {
         gasUsed,
       }
 
+      this.txStateManager.setTxStatusConfirmed(txId)
+      this._markNonceDuplicatesDropped(txId)
+
       if (txMeta.transactionCategory === SWAP) {
         const postTxBalance = await this.query.getBalance(txMeta.txParams.from)
         txMeta.postTxBalance = postTxBalance.toString(16)
@@ -590,9 +593,6 @@ export default class TransactionController extends EventEmitter {
     } catch (err) {
       log.error(err)
     }
-
-    this.txStateManager.setTxStatusConfirmed(txId)
-    this._markNonceDuplicatesDropped(txId)
   }
 
   /**
