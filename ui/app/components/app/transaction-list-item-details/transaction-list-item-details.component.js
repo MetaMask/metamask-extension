@@ -157,7 +157,7 @@ export default class TransactionListItemDetails extends PureComponent {
       onClose,
       recipientNickname,
     } = this.props
-    const { primaryTransaction: transaction } = transactionGroup
+    const { primaryTransaction: transaction, initialTransaction: { transactionCategory } } = transactionGroup
     const { hash } = transaction
 
     return (
@@ -253,6 +253,7 @@ export default class TransactionListItemDetails extends PureComponent {
             <div className="transaction-list-item-details__cards-container">
               <TransactionBreakdown
                 nonce={transactionGroup.initialTransaction.txParams.nonce}
+                transactionCategory={transactionCategory}
                 transaction={transaction}
                 primaryCurrency={primaryCurrency}
                 className="transaction-list-item-details__transaction-breakdown"
