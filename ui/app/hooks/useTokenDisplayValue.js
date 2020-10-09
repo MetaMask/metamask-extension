@@ -42,7 +42,7 @@ export function useTokenDisplayValue (transactionData, token, isTokenTransaction
       return null
     }
     const tokenValue = getTokenValueParam(tokenData)
-    return calcTokenAmount(tokenValue, token.decimals).toString()
+    return calcTokenAmount(tokenValue, token.decimals).toString(10)
   }, [shouldCalculateTokenValue, tokenData, token])
 
   return displayValue
