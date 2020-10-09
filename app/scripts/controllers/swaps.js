@@ -166,9 +166,7 @@ export default class SwapsController {
       }
     }
 
-    let topAggIdData
-    let topAggId
-    let isBest
+    let topAggId = null
 
     // We can reduce time on the loading screen by only doing this after the
     // loading screen and best quote have rendered.
@@ -178,29 +176,17 @@ export default class SwapsController {
       if (fetchParamsMetaData.maxMode && fetchParams.sourceToken === ETH_SWAPS_TOKEN_ADDRESS) {
         newQuotes = await this._modifyAndFilterValuesForMaxEthMode(newQuotes, fetchParamsMetaData.accountBalance)
       }
-
-      if (Object.values(newQuotes).length === 0) {
-        this.setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR)
-      } else {
-        const {
-          topAggId: topAggIdAfterModifications,
-          isBest: isBestAfterModifications,
-        } = await this._findTopQuoteAggId(newQuotes)
-        topAggId = topAggIdAfterModifications
-        isBest = isBestAfterModifications
-        if (isBestAfterModifications) {
-          newQuotes = mapValues(newQuotes, (quote) => ({ ...quote, isBestQuote: false }))
-          newQuotes[topAggId].isBestQuote = true
-        }
-      }
-    } else {
-      topAggIdData = await this._findTopQuoteAggId(newQuotes)
-      topAggId = topAggIdData.topAggId
-      isBest = topAggIdData.isBest
     }
 
-    if (isBest) {
-      newQuotes[topAggId].isBestQuote = true
+    if (Object.values(newQuotes).length === 0) {
+      this.setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR)
+    } else {
+      const topAggIdData = await this._findTopQuoteAggId(newQuotes)
+      topAggId = topAggIdData.topAggId
+
+      if (topAggIdData.isBest) {
+        newQuotes[topAggId].isBestQuote = true
+      }
     }
 
     const { swapsState } = this.store.getState()
@@ -208,6 +194,7 @@ export default class SwapsController {
     if (!newQuotes[selectedAggId]) {
       selectedAggId = null
     }
+
     this.store.updateState({
       swapsState: {
         ...swapsState,
