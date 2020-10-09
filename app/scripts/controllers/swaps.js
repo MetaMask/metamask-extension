@@ -196,7 +196,6 @@ export default class SwapsController {
     }
 
     if (isBest) {
-      newQuotes = mapValues(newQuotes, (quote) => ({ ...quote, isBestQuote: false }))
       newQuotes[topAggId].isBestQuote = true
     }
 
