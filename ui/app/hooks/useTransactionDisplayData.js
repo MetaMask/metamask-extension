@@ -153,6 +153,7 @@ export function useTransactionDisplayData (transactionGroup) {
     primarySuffix = primaryTransaction.sourceTokenSymbol
   } else if (transactionCategory === TOKEN_METHOD_APPROVE) {
     category = TRANSACTION_CATEGORY_APPROVAL
+    prefix = ''
     title = t('approveSpendLimit', [token?.symbol || t('token')])
     subtitle = origin
     subtitleContainsOrigin = true
