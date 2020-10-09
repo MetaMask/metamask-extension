@@ -202,9 +202,9 @@ export const nonceSortedTransactionsSelector = createSelector(
     const nonceToTransactionsMap = {}
 
     transactions.forEach((transaction) => {
-      const { txParams: { nonce } = {}, status, type, time: txTime, transactionCategory } = transaction
+      const { txParams: { nonce } = {}, status, type, time: txTime } = transaction
 
-      if (typeof nonce === 'undefined' || transactionCategory === 'incoming') {
+      if (typeof nonce === 'undefined' || type === 'incoming') {
         const transactionGroup = {
           transactions: [transaction],
           initialTransaction: transaction,
@@ -213,7 +213,7 @@ export const nonceSortedTransactionsSelector = createSelector(
           hasCancelled: false,
         }
 
-        if (transactionCategory === 'incoming') {
+        if (type === 'incoming') {
           incomingTransactionGroups.push(transactionGroup)
         } else {
           insertTransactionGroupByTime(unapprovedTransactionGroups, transactionGroup)

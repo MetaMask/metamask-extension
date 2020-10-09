@@ -14,7 +14,7 @@ import TransactionListItem from '../transaction-list-item'
 import Button from '../../ui/button'
 import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions'
 import { SWAPS_CONTRACT_ADDRESS } from '../../../helpers/constants/swaps'
-import { TRANSACTION_CATEGORY_SWAP } from '../../../../../shared/constants/transaction'
+import { TRANSACTION_TYPE_SWAP } from '../../../../../shared/constants/transaction'
 
 const PAGE_INCREMENT = 10
 
@@ -29,14 +29,14 @@ const getTransactionGroupRecipientAddressFilter = (recipientAddress) => {
 
 const tokenTransactionFilter = ({
   initialTransaction: {
-    transactionCategory,
+    type,
     destinationTokenSymbol,
     sourceTokenSymbol,
   },
 }) => {
-  if (TOKEN_CATEGORY_HASH[transactionCategory]) {
+  if (TOKEN_CATEGORY_HASH[type]) {
     return false
-  } else if (transactionCategory === TRANSACTION_CATEGORY_SWAP) {
+  } else if (type === TRANSACTION_TYPE_SWAP) {
     return destinationTokenSymbol === 'ETH' || sourceTokenSymbol === 'ETH'
   }
   return true

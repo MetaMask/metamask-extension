@@ -8,7 +8,7 @@ export const txMetaStub = {
       'metamaskNetworkId': '4',
       'status': 'unapproved',
       'time': 1572395156620,
-      'transactionCategory': 'sentEther',
+      'type': 'sentEther',
       'txParams': {
         'from': '0xf231d46dd78806e1dd93442cf33c7671f8538748',
         'gas': '0x5208',
@@ -16,7 +16,6 @@ export const txMetaStub = {
         'to': '0xf231d46dd78806e1dd93442cf33c7671f8538748',
         'value': '0x0',
       },
-      'type': 'standard',
     },
     [
       {
@@ -185,7 +184,7 @@ export const txMetaStub = {
   'status': 'submitted',
   'submittedTime': 1572395158570,
   'time': 1572395156620,
-  'transactionCategory': 'sentEther',
+  'type': 'sentEther',
   'txParams': {
     'from': '0xf231d46dd78806e1dd93442cf33c7671f8538748',
     'gas': '0x5208',
@@ -194,6 +193,5 @@ export const txMetaStub = {
     'to': '0xf231d46dd78806e1dd93442cf33c7671f8538748',
     'value': '0x0',
   },
-  'type': 'standard',
   'v': '0x2c',
 }

@@ -5,15 +5,19 @@ import { ethers } from 'ethers'
 import log from 'loglevel'
 import { getEtherscanNetworkPrefix } from '../../../lib/etherscan-prefix-for-network'
 import {
-  TRANSACTION_CATEGORY_TOKEN_METHOD_APPROVE,
-  TRANSACTION_CATEGORY_TOKEN_METHOD_TRANSFER,
-  TRANSACTION_CATEGORY_TOKEN_METHOD_TRANSFER_FROM,
+  TRANSACTION_TYPE_TOKEN_METHOD_APPROVE,
+  TRANSACTION_TYPE_TOKEN_METHOD_TRANSFER,
+  TRANSACTION_TYPE_TOKEN_METHOD_TRANSFER_FROM,
   TRANSACTION_STATUS_CONFIRMED,
   TRANSACTION_TYPE_CANCEL,
 } from '../../../../shared/constants/transaction'
 import fetchWithCache from './fetch-with-cache'
-
 import { addCurrencies } from './conversion-util'
+
+// Typedef aliases to avoid long import strings in params definitions
+/**
+ * @typedef {import('../../../../shared/constants/transaction').TransactionType} TransactionType
+ */
 
 const hstInterface = new ethers.utils.Interface(abi)
 
@@ -110,15 +114,15 @@ export function getFourBytePrefix (data = '') {
 /**
   * Given an transaction category, returns a boolean which indicates whether the transaction is calling an erc20 token method
   *
-  * @param {string} transactionCategory - The category of transaction being evaluated
+  * @param {TransactionType} type - The category of transaction being evaluated
   * @returns {boolean} - whether the transaction is calling an erc20 token method
   */
-export function isTokenMethodAction (transactionCategory) {
+export function isTokenMethodAction (type) {
   return [
-    TRANSACTION_CATEGORY_TOKEN_METHOD_TRANSFER,
-    TRANSACTION_CATEGORY_TOKEN_METHOD_APPROVE,
-    TRANSACTION_CATEGORY_TOKEN_METHOD_TRANSFER_FROM,
-  ].includes(transactionCategory)
+    TRANSACTION_TYPE_TOKEN_METHOD_TRANSFER,
+    TRANSACTION_TYPE_TOKEN_METHOD_APPROVE,
+    TRANSACTION_TYPE_TOKEN_METHOD_TRANSFER_FROM,
+  ].includes(type)
 }
 
 export function getLatestSubmittedTxWithNonce (transactions = [], nonce = '0x0') {

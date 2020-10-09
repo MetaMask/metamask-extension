@@ -594,7 +594,7 @@ describe('IncomingTransactionsController', function () {
           value: '0xf',
         },
         hash: '0xg',
-        transactionCategory: 'incoming',
+        type: 'incoming',
       })
     })
 
@@ -634,7 +634,7 @@ describe('IncomingTransactionsController', function () {
           value: '0xf',
         },
         hash: '0xg',
-        transactionCategory: 'incoming',
+        type: 'incoming',
       })
     })
   })

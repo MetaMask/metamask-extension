@@ -38,6 +38,9 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
   const retryTransaction = useRetryTransaction(transactionGroup)
   const shouldShowSpeedUp = useShouldShowSpeedUp(transactionGroup, isEarliestNonce)
 
+  const displayData = useTransactionDisplayData(transactionGroup)
+  console.log('TransactionListItem -> displayData', displayData)
+
   const {
     title,
     subtitle,
@@ -50,7 +53,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
     displayedStatusKey,
     isPending,
     senderAddress,
-  } = useTransactionDisplayData(transactionGroup)
+  } = displayData
 
   const timeRemaining = useTransactionTimeRemaining(isPending, isEarliestNonce, submittedTime, gasPrice)
 

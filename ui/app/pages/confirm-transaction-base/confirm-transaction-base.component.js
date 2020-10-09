@@ -90,7 +90,7 @@ export default class ConfirmTransactionBase extends Component {
     advancedInlineGasShown: PropTypes.bool,
     insufficientBalance: PropTypes.bool,
     hideFiatConversion: PropTypes.bool,
-    transactionCategory: PropTypes.string,
+    type: PropTypes.string,
     getNextNonce: PropTypes.func,
     nextNonce: PropTypes.number,
     tryReverseResolveAddress: PropTypes.func.isRequired,
@@ -658,7 +658,7 @@ export default class ConfirmTransactionBase extends Component {
       assetImage,
       warning,
       unapprovedTxCount,
-      transactionCategory,
+      type,
       hideSenderToRecipient,
       showAccountInHeader,
     } = this.props
@@ -670,8 +670,8 @@ export default class ConfirmTransactionBase extends Component {
 
     let functionType = getMethodName(name)
     if (!functionType) {
-      if (transactionCategory) {
-        functionType = t(transactionCategory) || transactionCategory
+      if (type) {
+        functionType = t(type) || type
       } else {
         functionType = t('contractInteraction')
       }

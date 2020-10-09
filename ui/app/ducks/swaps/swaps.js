@@ -39,7 +39,7 @@ import {
 } from '../../helpers/constants/swaps'
 import { fetchBasicGasAndTimeEstimates, fetchGasEstimates, resetCustomData } from '../gas/gas.duck'
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util'
-import { TRANSACTION_CATEGORY_SWAP, TRANSACTION_CATEGORY_SWAP_APPROVAL } from '../../../../shared/constants/transaction'
+import { TRANSACTION_TYPE_SWAP, TRANSACTION_TYPE_SWAP_APPROVAL } from '../../../../shared/constants/transaction'
 
 const initialState = {
   aggregatorMetadata: null,
@@ -490,7 +490,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       await dispatch(setApproveTxId(approveTxMeta.id))
       const finalApproveTxMeta = await (dispatch(updateTransaction({
         ...approveTxMeta,
-        transactionCategory: TRANSACTION_CATEGORY_SWAP_APPROVAL,
+        type: TRANSACTION_TYPE_SWAP_APPROVAL,
         sourceTokenSymbol: sourceTokenInfo.symbol,
       }, true)))
       try {
@@ -508,7 +508,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       ...tradeTxMeta,
       sourceTokenSymbol: sourceTokenInfo.symbol,
       destinationTokenSymbol: destinationTokenInfo.symbol,
-      transactionCategory: TRANSACTION_CATEGORY_SWAP,
+      type: TRANSACTION_TYPE_SWAP,
       destinationTokenDecimals: destinationTokenInfo.decimals,
       destinationTokenAddress: destinationTokenInfo.address,
       swapMetaData,

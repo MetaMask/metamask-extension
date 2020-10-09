@@ -5,6 +5,7 @@ import createId from '../lib/random-id'
 import { bnToHex } from '../lib/util'
 import fetchWithTimeout from '../lib/fetch-with-timeout'
 
+import { TRANSACTION_TYPE_INCOMING } from '../../../shared/constants/transaction'
 import {
   ROPSTEN,
   RINKEBY,
@@ -252,7 +253,7 @@ export default class IncomingTransactionsController {
         value: bnToHex(new BN(txMeta.value)),
       },
       hash: txMeta.hash,
-      transactionCategory: 'incoming',
+      type: TRANSACTION_TYPE_INCOMING,
     }
   }
 }
