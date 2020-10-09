@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import SendRowWrapper from '../send-row-wrapper'
-import GasFeeDisplay from './gas-fee-display/gas-fee-display.component'
-import GasPriceButtonGroup from '../../../../components/app/gas-customization/gas-price-button-group'
+// import GasFeeDisplay from './gas-fee-display/gas-fee-display.component'
+// import GasPriceButtonGroup from '../../../../components/app/gas-customization/gas-price-button-group'
 import AdvancedGasInputs from '../../../../components/app/gas-customization/advanced-gas-inputs'
 
 export default class SendGasRow extends Component {
@@ -10,10 +10,10 @@ export default class SendGasRow extends Component {
     isSimpleTx: PropTypes.bool,
     balance: PropTypes.string,
     gasAndCollateralFeeError: PropTypes.bool,
-    gasLoadingError: PropTypes.bool,
+    // gasLoadingError: PropTypes.bool,
     gasTotal: PropTypes.string,
-    storageTotal: PropTypes.string,
-    maxModeOn: PropTypes.bool,
+    // storageTotal: PropTypes.string,
+    // maxModeOn: PropTypes.bool,
     showCustomizeGasModal: PropTypes.func,
     selectedToken: PropTypes.object,
     setAmountToMax: PropTypes.func,
@@ -21,10 +21,10 @@ export default class SendGasRow extends Component {
     setGasLimit: PropTypes.func,
     setStorageLimit: PropTypes.func,
     tokenBalance: PropTypes.string,
-    gasPriceButtonGroupProps: PropTypes.object,
-    gasButtonGroupShown: PropTypes.bool,
+    // gasPriceButtonGroupProps: PropTypes.object,
+    // gasButtonGroupShown: PropTypes.bool,
     advancedInlineGasShown: PropTypes.bool,
-    resetGasButtons: PropTypes.func,
+    // resetGasButtons: PropTypes.func,
     gasPrice: PropTypes.string,
     gasLimit: PropTypes.string,
     storageLimit: PropTypes.string,
@@ -81,15 +81,15 @@ export default class SendGasRow extends Component {
   renderContent (showInputType = 'all') {
     const {
       isSimpleTx,
-      gasLoadingError,
-      gasTotal,
-      storageTotal,
-      showCustomizeGasModal,
-      gasPriceButtonGroupProps,
-      gasButtonGroupShown,
+      // gasLoadingError,
+      // gasTotal,
+      // storageTotal,
+      // showCustomizeGasModal,
+      // gasPriceButtonGroupProps,
+      // gasButtonGroupShown,
       advancedInlineGasShown,
-      maxModeOn,
-      resetGasButtons,
+      // maxModeOn,
+      // resetGasButtons,
       setGasPrice,
       setGasLimit,
       setStorageLimit,
@@ -98,46 +98,46 @@ export default class SendGasRow extends Component {
       storageLimit,
       insufficientBalance,
     } = this.props
-    const { metricsEvent } = this.context
+    // const { metricsEvent } = this.context
 
-    const gasPriceButtonGroup = (
-      <div>
-        <GasPriceButtonGroup
-          className="gas-price-button-group--small"
-          showCheck={false}
-          {...gasPriceButtonGroupProps}
-          handleGasPriceSelection={async (...args) => {
-            metricsEvent({
-              eventOpts: {
-                category: 'Transactions',
-                action: 'Edit Screen',
-                name: 'Changed Gas Button',
-              },
-            })
-            await gasPriceButtonGroupProps.handleGasPriceSelection(...args)
-            if (maxModeOn) {
-              this.setMaxAmount()
-            }
-          }}
-        />
-        {this.renderAdvancedOptionsButton()}
-      </div>
-    )
-    const gasAndCollateralFeeDisplay = (
-      <GasFeeDisplay
-        gasLoadingError={gasLoadingError}
-        gasTotal={gasTotal}
-        storageTotal={storageTotal}
-        gasAndCollateralTotal={gasTotal}
-        onReset={() => {
-          resetGasButtons()
-          if (maxModeOn) {
-            this.setMaxAmount()
-          }
-        }}
-        onClick={() => showCustomizeGasModal()}
-      />
-    )
+    // const gasPriceButtonGroup = (
+    //   <div>
+    //     <GasPriceButtonGroup
+    //       className="gas-price-button-group--small"
+    //       showCheck={false}
+    //       {...gasPriceButtonGroupProps}
+    //       handleGasPriceSelection={async (...args) => {
+    //         metricsEvent({
+    //           eventOpts: {
+    //             category: 'Transactions',
+    //             action: 'Edit Screen',
+    //             name: 'Changed Gas Button',
+    //           },
+    //         })
+    //         await gasPriceButtonGroupProps.handleGasPriceSelection(...args)
+    //         if (maxModeOn) {
+    //           this.setMaxAmount()
+    //         }
+    //       }}
+    //     />
+    //     {this.renderAdvancedOptionsButton()}
+    //   </div>
+    // )
+    // const gasAndCollateralFeeDisplay = (
+    //   <GasFeeDisplay
+    //     gasLoadingError={gasLoadingError}
+    //     gasTotal={gasTotal}
+    //     storageTotal={storageTotal}
+    //     gasAndCollateralTotal={gasTotal}
+    //     onReset={() => {
+    //       resetGasButtons()
+    //       if (maxModeOn) {
+    //         this.setMaxAmount()
+    //       }
+    //     }}
+    //     onClick={() => showCustomizeGasModal()}
+    //   />
+    // )
     const advancedGasInputs = (
       <div>
         <AdvancedGasInputs
@@ -165,10 +165,10 @@ export default class SendGasRow extends Component {
 
     if (advancedInlineGasShown) {
       return advancedGasInputs
-    } else if (gasButtonGroupShown) {
-      return gasPriceButtonGroup
-    } else {
-      return gasAndCollateralFeeDisplay
+      // } else if (gasButtonGroupShown) {
+      //   return gasPriceButtonGroup
+      // } else {
+      //   return gasAndCollateralFeeDisplay
     }
   }
 
@@ -178,6 +178,9 @@ export default class SendGasRow extends Component {
       isSimpleTx,
       advancedInlineGasShown,
     } = this.props
+    if (!advancedInlineGasShown) {
+      return <div></div>
+    }
 
     const gasFeeRow = (
       <SendRowWrapper

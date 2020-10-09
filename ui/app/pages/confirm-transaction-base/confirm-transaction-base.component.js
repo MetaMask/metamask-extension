@@ -30,7 +30,7 @@ export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
     t: PropTypes.func,
     tOrKey: PropTypes.func.isRequired,
-    metricsEvent: PropTypes.func,
+    // metricsEvent: PropTypes.func,
   }
 
   static propTypes = {
@@ -71,7 +71,7 @@ export default class ConfirmTransactionBase extends Component {
     updateGasAndCollateralAndCalculte: PropTypes.func,
     customGasAndCollateral: PropTypes.object,
     // Component props
-    actionKey: PropTypes.string,
+    // actionKey: PropTypes.string,
     contentComponent: PropTypes.node,
     dataComponent: PropTypes.node,
     detailsComponent: PropTypes.node,
@@ -90,8 +90,8 @@ export default class ConfirmTransactionBase extends Component {
     onEdit: PropTypes.func,
     onEditGas: PropTypes.func,
     onSubmit: PropTypes.func,
-    setMetaMetricsSendCount: PropTypes.func,
-    metaMetricsSendCount: PropTypes.number,
+    // setMetaMetricsSendCount: PropTypes.func,
+    // metaMetricsSendCount: PropTypes.number,
     subtitle: PropTypes.string,
     subtitleComponent: PropTypes.node,
     summaryComponent: PropTypes.node,
@@ -111,6 +111,11 @@ export default class ConfirmTransactionBase extends Component {
     hexTransactionTotalCountSponsored: PropTypes.string,
     hexTransactionFeeAndCollateralCountSponsored: PropTypes.string,
     hexSponsoredTransactionFeeAndCollateral: PropTypes.string,
+    showLoadingIndication: PropTypes.func,
+    hideLoadingIndication: PropTypes.func,
+    txMetaLoadingDefaults: PropTypes.bool,
+    willUserPayTxFee: PropTypes.bool,
+    willUserPayCollateral: PropTypes.bool,
   }
 
   state = {
@@ -127,7 +132,16 @@ export default class ConfirmTransactionBase extends Component {
       clearConfirmTransaction,
       nextNonce,
       customNonceValue,
+      txMetaLoadingDefaults,
+      showLoadingIndication,
+      hideLoadingIndication,
     } = this.props
+    if (txMetaLoadingDefaults && !prevProps.txMetaLoadingDefaults) {
+      showLoadingIndication()
+    }
+    if (!txMetaLoadingDefaults && prevProps.txMetaLoadingDefaults) {
+      hideLoadingIndication()
+    }
     const { transactionStatus: prevTxStatus } = prevProps
     const statusUpdated = transactionStatus !== prevTxStatus
     const txDroppedOrConfirmed =
@@ -209,24 +223,24 @@ export default class ConfirmTransactionBase extends Component {
     const {
       onEditGas,
       showCustomizeGasModal,
-      actionKey,
-      txData: { origin },
-      methodData = {},
+      // actionKey,
+      // txData: { origin },
+      // methodData = {},
     } = this.props
 
-    this.context.metricsEvent({
-      eventOpts: {
-        category: 'Transactions',
-        action: 'Confirm Screen',
-        name: 'User clicks "Edit" on gas',
-      },
-      customVariables: {
-        recipientKnown: null,
-        functionType:
-          actionKey || getMethodName(methodData.name) || 'contractInteraction',
-        origin,
-      },
-    })
+    // this.context.metricsEvent({
+    //   eventOpts: {
+    //     category: 'Transactions',
+    //     action: 'Confirm Screen',
+    //     name: 'User clicks "Edit" on gas',
+    //   },
+    //   customVariables: {
+    //     recipientKnown: null,
+    //     functionType:
+    //       actionKey || getMethodName(methodData.name) || 'contractInteraction',
+    //     origin,
+    //   },
+    // })
 
     if (onEditGas) {
       onEditGas()
@@ -243,6 +257,8 @@ export default class ConfirmTransactionBase extends Component {
       hexTransactionFee,
       hexTransactionCollateral,
       hexTransactionTotalCountSponsored,
+      hexTransactionFeeAndCollateralCountSponsored = '0x0',
+      hexSponsoredTransactionFeeAndCollateral,
       hideDetails,
       useNonceField,
       customNonceValue,
@@ -255,9 +271,18 @@ export default class ConfirmTransactionBase extends Component {
       nextNonce,
       getNextNonce,
       isSimpleTx,
+      willUserPayTxFee = true,
+      willUserPayCollateral = true,
     } = this.props
 
     const { t } = this.context
+    const hasSponsoredFee = hexSponsoredTransactionFeeAndCollateral !== '0x0'
+    const zeroTxFee = hexTransactionFeeAndCollateralCountSponsored === '0x0'
+    const gasHeaderVisible = advancedInlineGasShown || !zeroTxFee
+    const gasInputVisible = advancedInlineGasShown
+    const storageHeaderVisible =
+      !isSimpleTx && (advancedInlineGasShown || !zeroTxFee)
+    const storageInputVisible = !isSimpleTx && advancedInlineGasShown
 
     if (hideDetails) {
       return null
@@ -266,64 +291,57 @@ export default class ConfirmTransactionBase extends Component {
     return (
       detailsComponent || (
         <div className="confirm-page-container-content__details">
-          <div className="confirm-page-container-content__gas-fee">
-            <ConfirmDetailRow
-              label={t('gasFee')}
-              type="fee"
-              value={hexTransactionFee}
-              primaryPrefix={this.renderSponsoredTxFee()}
-              headerText={advancedInlineGasShown ? '' : 'Edit'}
-              headerTextClassName="confirm-detail-row__header-text--edit"
-              onHeaderClick={() =>
-                !advancedInlineGasShown && this.handleEditGas()
-              }
-              /* secondaryText={ */
-              /*   hideFiatConversion */
-              /*     ? t('noConversionRateAvailable') */
-              /*     : '' */
-              /* } */
-              secondaryText=""
-            />
-            {advancedInlineGasShown ? (
-              <AdvancedGasInputs
-                updateCustomGasPrice={(newGasPrice) =>
-                  updateGasAndCollateralAndCalculte({
-                    ...customGasAndCollateral,
-                    gasPrice: newGasPrice,
-                  })
-                }
-                updateCustomGasLimit={(newGasLimit) =>
-                  updateGasAndCollateralAndCalculte({
-                    ...customGasAndCollateral,
-                    gasLimit: newGasLimit,
-                  })
-                }
-                updateCustomStorageLimit={(newStorageLimit) =>
-                  updateGasAndCollateralAndCalculte({
-                    ...customGasAndCollateral,
-                    storageLimit: newStorageLimit,
-                  })
-                }
-                customGasPrice={customGasAndCollateral.gasPrice}
-                customGasLimit={customGasAndCollateral.gasLimit}
-                customStorageLimit={customGasAndCollateral.storageLimit}
-                insufficientBalance={insufficientBalance}
-                customPriceIsSafe
-                isSpeedUp={false}
-                isSimpleTx={isSimpleTx}
-                showInputType="fee"
+          <div
+            style={{
+              visibility:
+                !advancedInlineGasShown || zeroTxFee ? 'visible' : 'hidden',
+              marginBottom: advancedInlineGasShown ? '-10px' : '0',
+            }}
+            className="confirm-page-container-content__details__header"
+          >
+            <div
+              style={{ visibility: zeroTxFee ? 'visible' : 'hidden' }}
+              className="confirm-page-container-content__details__header__sponsor-info"
+            >
+              <span className="confirm-page-container-content__details__header__sponsor-info__text">
+                {t('alreadySponsoredByContract')}
+              </span>
+              <UserPreferencedCurrencyDisplay
+                value={hexSponsoredTransactionFeeAndCollateral}
+                type={PRIMARY}
+                showEthLogo
+                ethLogoHeight="26"
+                hideLabel
               />
-            ) : null}
-            {!isSimpleTx && (
+              <span className="confirm-page-container-content__details__header__sponsor-info__suffix">
+                CFX
+              </span>
+            </div>
+            <a
+              className="confirm-detail-row__header-text--edit"
+              style={{
+                visibility: advancedInlineGasShown ? 'hidden' : 'visible',
+              }}
+              onClick={(e) => {
+                e.preventDefault()
+                !advancedInlineGasShown && this.handleEditGas()
+              }}
+            >
+              {t('advanced')}
+            </a>
+          </div>
+          {gasHeaderVisible && (
+            <div className="confirm-page-container-content__gas-fee">
               <ConfirmDetailRow
-                label={t('storageFee')}
-                type="collateral"
-                value={hexTransactionCollateral}
-                headerText={advancedInlineGasShown ? '' : 'Edit'}
-                headerTextClassName="confirm-detail-row__header-text--edit"
-                onHeaderClick={() =>
-                  !advancedInlineGasShown && this.handleEditGas()
-                }
+                sponsored={!willUserPayTxFee}
+                label={t('gasFee')}
+                type="fee"
+                value={hexTransactionFee}
+                /* headerText={advancedInlineGasShown ? '' : t('advanced')} */
+                /* headerTextClassName="confirm-detail-row__header-text--edit" */
+                /* onHeaderClick={() => */
+                /*   !advancedInlineGasShown && this.handleEditGas() */
+                /* } */
                 /* secondaryText={ */
                 /*   hideFiatConversion */
                 /*     ? t('noConversionRateAvailable') */
@@ -331,39 +349,88 @@ export default class ConfirmTransactionBase extends Component {
                 /* } */
                 secondaryText=""
               />
-            )}
-            {advancedInlineGasShown ? (
-              <AdvancedGasInputs
-                key="collateral"
-                updateCustomGasPrice={(newGasPrice) =>
-                  updateGasAndCollateralAndCalculte({
-                    ...customGasAndCollateral,
-                    gasPrice: newGasPrice,
-                  })
-                }
-                updateCustomGasLimit={(newGasLimit) =>
-                  updateGasAndCollateralAndCalculte({
-                    ...customGasAndCollateral,
-                    gasLimit: newGasLimit,
-                  })
-                }
-                updateCustomStorageLimit={(newStorageLimit) =>
-                  updateGasAndCollateralAndCalculte({
-                    ...customGasAndCollateral,
-                    storageLimit: newStorageLimit,
-                  })
-                }
-                customGasPrice={customGasAndCollateral.gasPrice}
-                customGasLimit={customGasAndCollateral.gasLimit}
-                customStorageLimit={customGasAndCollateral.storageLimit}
-                insufficientBalance={insufficientBalance}
-                customPriceIsSafe
-                isSpeedUp={false}
-                isSimpleTx={isSimpleTx}
-                showInputType="collateral"
-              />
-            ) : null}
-          </div>
+              {gasInputVisible && (
+                <AdvancedGasInputs
+                  updateCustomGasPrice={(newGasPrice) =>
+                    updateGasAndCollateralAndCalculte({
+                      ...customGasAndCollateral,
+                      gasPrice: newGasPrice,
+                    })
+                  }
+                  updateCustomGasLimit={(newGasLimit) =>
+                    updateGasAndCollateralAndCalculte({
+                      ...customGasAndCollateral,
+                      gasLimit: newGasLimit,
+                    })
+                  }
+                  updateCustomStorageLimit={(newStorageLimit) =>
+                    updateGasAndCollateralAndCalculte({
+                      ...customGasAndCollateral,
+                      storageLimit: newStorageLimit,
+                    })
+                  }
+                  customGasPrice={customGasAndCollateral.gasPrice}
+                  customGasLimit={customGasAndCollateral.gasLimit}
+                  customStorageLimit={customGasAndCollateral.storageLimit}
+                  insufficientBalance={insufficientBalance}
+                  customPriceIsSafe
+                  isSpeedUp={false}
+                  isSimpleTx={isSimpleTx}
+                  showInputType="fee"
+                />
+              )}
+              {storageHeaderVisible && (
+                <ConfirmDetailRow
+                  sponsored={!willUserPayCollateral}
+                  label={t('storageFee')}
+                  type="collateral"
+                  value={hexTransactionCollateral}
+                  /* headerText={advancedInlineGasShown ? '' : t('advanced')} */
+                  /* headerTextClassName="confirm-detail-row__header-text--edit" */
+                  /* onHeaderClick={() => */
+                  /*   !advancedInlineGasShown && this.handleEditGas() */
+                  /* } */
+                  /* secondaryText={ */
+                  /*   hideFiatConversion */
+                  /*     ? t('noConversionRateAvailable') */
+                  /*     : '' */
+                  /* } */
+                  secondaryText=""
+                />
+              )}
+              {storageInputVisible && (
+                <AdvancedGasInputs
+                  key="collateral"
+                  updateCustomGasPrice={(newGasPrice) =>
+                    updateGasAndCollateralAndCalculte({
+                      ...customGasAndCollateral,
+                      gasPrice: newGasPrice,
+                    })
+                  }
+                  updateCustomGasLimit={(newGasLimit) =>
+                    updateGasAndCollateralAndCalculte({
+                      ...customGasAndCollateral,
+                      gasLimit: newGasLimit,
+                    })
+                  }
+                  updateCustomStorageLimit={(newStorageLimit) =>
+                    updateGasAndCollateralAndCalculte({
+                      ...customGasAndCollateral,
+                      storageLimit: newStorageLimit,
+                    })
+                  }
+                  customGasPrice={customGasAndCollateral.gasPrice}
+                  customGasLimit={customGasAndCollateral.gasLimit}
+                  customStorageLimit={customGasAndCollateral.storageLimit}
+                  insufficientBalance={insufficientBalance}
+                  customPriceIsSafe
+                  isSpeedUp={false}
+                  isSimpleTx={isSimpleTx}
+                  showInputType="collateral"
+                />
+              )}
+            </div>
+          )}
           <div
             className={
               useNonceField ? 'confirm-page-container-content__gas-fee' : null
@@ -371,6 +438,8 @@ export default class ConfirmTransactionBase extends Component {
           >
             <ConfirmDetailRow
               label={t('total')}
+              isTotal
+              sponsored={hasSponsoredFee}
               value={hexTransactionTotalCountSponsored}
               primaryText={primaryTotalTextOverride}
               /* secondaryText={ */
@@ -379,7 +448,7 @@ export default class ConfirmTransactionBase extends Component {
               /*     : secondaryTotalTextOverride */
               /* } */
               secondaryText=""
-              headerText={t('amountPlusGasFee')}
+              headerText={t('amountPlusGasFeePlusStorageFee')}
               headerTextClassName="confirm-detail-row__header-text--total"
               primaryValueTextColor="#2f9ae0"
             />
@@ -466,24 +535,24 @@ export default class ConfirmTransactionBase extends Component {
       tokenData,
       tokenProps,
       onEdit,
-      actionKey,
-      txData: { origin },
-      methodData = {},
+      // actionKey,
+      // txData: { origin },
+      // methodData = {},
     } = this.props
 
-    this.context.metricsEvent({
-      eventOpts: {
-        category: 'Transactions',
-        action: 'Confirm Screen',
-        name: 'Edit Transaction',
-      },
-      customVariables: {
-        recipientKnown: null,
-        functionType:
-          actionKey || getMethodName(methodData.name) || 'contractInteraction',
-        origin,
-      },
-    })
+    // this.context.metricsEvent({
+    //   eventOpts: {
+    //     category: 'Transactions',
+    //     action: 'Confirm Screen',
+    //     name: 'Edit Transaction',
+    //   },
+    //   customVariables: {
+    //     recipientKnown: null,
+    //     functionType:
+    //       actionKey || getMethodName(methodData.name) || 'contractInteraction',
+    //     origin,
+    //   },
+    // })
 
     onEdit({ txData, tokenData, tokenProps })
   }
@@ -509,33 +578,33 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   handleCancel () {
-    const { metricsEvent } = this.context
+    // const { metricsEvent } = this.context
     const {
       onCancel,
       txData,
       cancelTransaction,
       history,
       clearConfirmTransaction,
-      actionKey,
-      txData: { origin },
-      methodData = {},
+      // actionKey,
+      // txData: { origin },
+      // methodData = {},
       updateCustomNonce,
     } = this.props
 
     this._removeBeforeUnload()
-    metricsEvent({
-      eventOpts: {
-        category: 'Transactions',
-        action: 'Confirm Screen',
-        name: 'Cancel',
-      },
-      customVariables: {
-        recipientKnown: null,
-        functionType:
-          actionKey || getMethodName(methodData.name) || 'contractInteraction',
-        origin,
-      },
-    })
+    // metricsEvent({
+    //   eventOpts: {
+    //     category: 'Transactions',
+    //     action: 'Confirm Screen',
+    //     name: 'Cancel',
+    //   },
+    //   customVariables: {
+    //     recipientKnown: null,
+    //     functionType:
+    //       actionKey || getMethodName(methodData.name) || 'contractInteraction',
+    //     origin,
+    //   },
+    // })
     updateCustomNonce('')
     if (onCancel) {
       onCancel(txData)
@@ -548,18 +617,18 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   handleSubmit () {
-    const { metricsEvent } = this.context
+    // const { metricsEvent } = this.context
     const {
-      txData: { origin },
+      // txData: { origin },
       sendTransaction,
       clearConfirmTransaction,
       txData,
       history,
       onSubmit,
-      actionKey,
-      metaMetricsSendCount = 0,
-      setMetaMetricsSendCount,
-      methodData = {},
+      // actionKey,
+      // metaMetricsSendCount = 0,
+      // setMetaMetricsSendCount,
+      // methodData = {},
       updateCustomNonce,
     } = this.props
     const { submitting } = this.state
@@ -575,73 +644,54 @@ export default class ConfirmTransactionBase extends Component {
       },
       () => {
         this._removeBeforeUnload()
-        metricsEvent({
-          eventOpts: {
-            category: 'Transactions',
-            action: 'Confirm Screen',
-            name: 'Transaction Completed',
-          },
-          customVariables: {
-            recipientKnown: null,
-            functionType:
-              actionKey ||
-              getMethodName(methodData.name) ||
-              'contractInteraction',
-            origin,
-          },
-        })
+        // metricsEvent({
+        //   eventOpts: {
+        //     category: 'Transactions',
+        //     action: 'Confirm Screen',
+        //     name: 'Transaction Completed',
+        //   },
+        //   customVariables: {
+        //     recipientKnown: null,
+        //     functionType:
+        //       actionKey ||
+        //       getMethodName(methodData.name) ||
+        //       'contractInteraction',
+        //     origin,
+        //   },
+        // })
 
-        setMetaMetricsSendCount(metaMetricsSendCount + 1).then(() => {
-          if (onSubmit) {
-            Promise.resolve(onSubmit(txData)).then(() => {
+        // setMetaMetricsSendCount(metaMetricsSendCount + 1).then(() => {
+        if (onSubmit) {
+          Promise.resolve(onSubmit(txData)).then(() => {
+            this.setState({
+              submitting: false,
+            })
+            updateCustomNonce('')
+          })
+        } else {
+          sendTransaction(txData)
+            .then(() => {
+              clearConfirmTransaction()
+              this.setState(
+                {
+                  submitting: false,
+                },
+                () => {
+                  history.push(DEFAULT_ROUTE)
+                  updateCustomNonce('')
+                }
+              )
+            })
+            .catch((error) => {
               this.setState({
                 submitting: false,
+                submitError: error.message,
               })
               updateCustomNonce('')
             })
-          } else {
-            sendTransaction(txData)
-              .then(() => {
-                clearConfirmTransaction()
-                this.setState(
-                  {
-                    submitting: false,
-                  },
-                  () => {
-                    history.push(DEFAULT_ROUTE)
-                    updateCustomNonce('')
-                  }
-                )
-              })
-              .catch((error) => {
-                this.setState({
-                  submitting: false,
-                  submitError: error.message,
-                })
-                updateCustomNonce('')
-              })
-          }
-        })
+        }
+        // })
       }
-    )
-  }
-
-  renderSponsoredTxFee () {
-    const { hexSponsoredTransactionFeeAndCollateral } = this.props
-    if (hexSponsoredTransactionFeeAndCollateral === '0x0') {
-      return <div></div>
-    }
-
-    return (
-      <div style={{ display: 'flex', fontSize: '0.7rem', color: '#2F9AE0' }}>
-        {`${this.context.t('alreadySponsoredByContract')}\u00a0`}
-        <UserPreferencedCurrencyDisplay
-          value={hexSponsoredTransactionFeeAndCollateral}
-          type={PRIMARY}
-          hideLabel
-        />
-        {`\u00a0CFX\u00a0`}
-      </div>
     )
   }
 
@@ -714,18 +764,18 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   _beforeUnload = () => {
-    const { txData: { origin, id } = {}, cancelTransaction } = this.props
-    const { metricsEvent } = this.context
-    metricsEvent({
-      eventOpts: {
-        category: 'Transactions',
-        action: 'Confirm Screen',
-        name: 'Cancel Tx Via Notification Close',
-      },
-      customVariables: {
-        origin,
-      },
-    })
+    const { txData: { /* origin, */ id } = {}, cancelTransaction } = this.props
+    // const { metricsEvent } = this.context
+    // metricsEvent({
+    //   eventOpts: {
+    //     category: 'Transactions',
+    //     action: 'Confirm Screen',
+    //     name: 'Cancel Tx Via Notification Close',
+    //   },
+    //   customVariables: {
+    //     origin,
+    //   },
+    // })
     cancelTransaction({ id })
   }
 
@@ -738,21 +788,26 @@ export default class ConfirmTransactionBase extends Component {
   componentDidMount () {
     const {
       toAddress,
-      txData: { origin } = {},
+      // txData: { origin } = {},
       getNextNonce,
       tryReverseResolveAddress,
+      txMetaLoadingDefaults,
+      showLoadingIndication,
     } = this.props
-    const { metricsEvent } = this.context
-    metricsEvent({
-      eventOpts: {
-        category: 'Transactions',
-        action: 'Confirm Screen',
-        name: 'Confirm: Started',
-      },
-      customVariables: {
-        origin,
-      },
-    })
+    if (txMetaLoadingDefaults) {
+      showLoadingIndication()
+    }
+    // const { metricsEvent } = this.context
+    // metricsEvent({
+    //   eventOpts: {
+    //     category: 'Transactions',
+    //     action: 'Confirm Screen',
+    //     name: 'Confirm: Started',
+    //   },
+    //   customVariables: {
+    //     origin,
+    //   },
+    // })
 
     if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
       window.addEventListener('beforeunload', this._beforeUnload)

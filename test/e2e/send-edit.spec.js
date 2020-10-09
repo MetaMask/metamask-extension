@@ -2,15 +2,17 @@ const assert = require('assert')
 const webdriver = require('selenium-webdriver')
 
 const { By, Key } = webdriver
-const { tinyDelayMs, regularDelayMs, largeDelayMs } = require('./helpers')
-const { buildWebDriver } = require('./webdriver')
-const Ganache = require('./ganache')
+const {
+  tinyDelayMs,
+  regularDelayMs,
+  largeDelayMs,
+  loadFixtures,
+} = require('./helpers')
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
-
-const ganacheServer = new Ganache()
 
 describe('Using MetaMask with an existing account', function () {
   let driver
+  let unloadFixtures
 
   const testSeedPhrase =
     'forum vessel pink push lonely enact gentle tail admit parrot grunt dress'
@@ -19,17 +21,20 @@ describe('Using MetaMask with an existing account', function () {
   this.bail(true)
 
   before(async function () {
-    await ganacheServer.start({
-      accounts: [
-        {
-          secretKey:
-            '0x57ED903454DEC7321ABB1729A7A3BB0F39B617109F610A74F9B402AAEF955333',
-          balance: 25000000000000000000,
-        },
-      ],
+    const [d, u] = await loadFixtures({
+      fixtures: 'default-state',
+      ganacheOptions: {
+        accounts: [
+          {
+            secretKey:
+              '0x57ED903454DEC7321ABB1729A7A3BB0F39B617109F610A74F9B402AAEF955333',
+            balance: 25000000000000000000,
+          },
+        ],
+      },
     })
-    const result = await buildWebDriver()
-    driver = result.driver
+    driver = d
+    unloadFixtures = u
   })
 
   afterEach(async function () {
@@ -49,8 +54,7 @@ describe('Using MetaMask with an existing account', function () {
   })
 
   after(async function () {
-    await ganacheServer.quit()
-    await driver.quit()
+    await unloadFixtures()
   })
 
   describe('First time flow starting from an existing seed phrase', function () {
@@ -257,11 +261,11 @@ describe('Using MetaMask with an existing account', function () {
       const transactionAmount = transactionAmounts[0]
       assert.equal(await transactionAmount.getText(), '2.2')
 
-      const sponsorTxFee = transactionAmounts[1]
-      assert.equal(await sponsorTxFee.getText(), '0.0008')
+      const gasFee = transactionAmounts[2]
+      assert.equal(await gasFee.getText(), '0.0008')
 
-      const transactionFee = transactionAmounts[2]
-      assert.equal(await transactionFee.getText(), '2.2008')
+      const transactionTotal = transactionAmounts[3]
+      assert.equal(await transactionTotal.getText(), '2.2008')
     })
 
     it('confirms the transaction', async function () {

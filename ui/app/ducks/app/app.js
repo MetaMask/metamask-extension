@@ -41,6 +41,8 @@ export default function reduceApp (state = {}, action) {
       buyView: {},
       isMouseUser: false,
       gasIsLoading: false,
+      storageIsLoading: false,
+      sponsorshipInfoIsLoading: false,
       networkNonce: null,
       defaultHdPaths: {
         trezor: `m/44'/60'/0'/0`,

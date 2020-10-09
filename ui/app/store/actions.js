@@ -32,6 +32,7 @@ import { resetCustomGasAndCollateralData } from '../ducks/gasAndCollateral/gasAn
 import txHelper from '../../lib/tx-helper'
 
 export const actionConstants = {
+  SET_ADDRESS_TRANSACTION_COUNT: 'SET_ADDRESS_TRANSACTION_COUNT',
   GO_HOME: 'GO_HOME',
   // modal state
   MODAL_OPEN: 'UI_MODAL_OPEN',
@@ -875,8 +876,8 @@ export function updateSponsorshipInfo ({
   storageLimit,
 }) {
   return (dispatch) => {
+    dispatch(showLoadingIndication())
     dispatch(sponsorshipInfoLoadingStarted())
-
     return checkSponsorshipInfo({
       selectedAddress,
       selectedToken,
@@ -884,11 +885,17 @@ export function updateSponsorshipInfo ({
       gasPrice,
       storageLimit,
       checkSponsorshipInfoMethod: background.checkBalanceAgainstTransaction,
-    }).then((sponsorshipInfo) => {
-      dispatch(setSponsorshipInfo(sponsorshipInfo))
-      dispatch(setCustomSponsorshipInfo(sponsorshipInfo))
-      dispatch(sponsorshipInfoLoadingFinished())
     })
+      .then((sponsorshipInfo) => {
+        dispatch(setSponsorshipInfo(sponsorshipInfo))
+        dispatch(setCustomSponsorshipInfo(sponsorshipInfo))
+        dispatch(sponsorshipInfoLoadingFinished())
+        dispatch(hideLoadingIndication())
+      })
+      .catch(() => {
+        dispatch(sponsorshipInfoLoadingFinished())
+        dispatch(hideLoadingIndication())
+      })
   }
 }
 
@@ -902,8 +909,10 @@ export function updateGasAndCollateralData ({
   data,
 }) {
   return (dispatch) => {
+    dispatch(showLoadingIndication())
     dispatch(gasLoadingStarted())
     dispatch(storageLoadingStarted())
+    dispatch(sponsorshipInfoLoadingStarted())
     return estimateGasAndCollateral({
       estimateGasAndCollateralMethod: background.estimateGas,
       blockGasLimit,
@@ -915,6 +924,7 @@ export function updateGasAndCollateralData ({
       data,
     })
       .then(({ gas, storageLimit }) => {
+        // dispatch(hideLoadingIndication())
         dispatch(setGasLimit(gas))
         dispatch(setStorageLimit(storageLimit))
         dispatch(setCustomGasLimit(gas))
@@ -944,6 +954,7 @@ export function updateGasAndCollateralData ({
         )
         dispatch(gasLoadingFinished())
         dispatch(storageLoadingFinished())
+        dispatch(hideLoadingIndication())
       })
   }
 }
@@ -1117,7 +1128,6 @@ const updateMetamaskStateFromBackground = () => {
 export function updateTransaction (txData) {
   return (dispatch) => {
     dispatch(showLoadingIndication())
-
     return new Promise((resolve, reject) => {
       background.updateTransaction(txData, (err) => {
         dispatch(updateTransactionParams(txData.id, txData.txParams))
@@ -2677,11 +2687,13 @@ export function getContractMethodData (data = '') {
       return Promise.resolve(knownMethodData[fourBytePrefix])
     }
 
+    dispatch(showLoadingIndication())
     dispatch(loadingMethoDataStarted())
     log.debug(`loadingMethodData`)
 
     return getMethodDataAsync(fourBytePrefix).then(({ name, params }) => {
       dispatch(loadingMethoDataFinished())
+      dispatch(hideLoadingIndication())
 
       background.addKnownMethodData(fourBytePrefix, { name, params })
 
@@ -2716,6 +2728,7 @@ export function getTokenParams (tokenAddress) {
       })
     }
 
+    dispatch(showLoadingIndication())
     dispatch(loadingTokenParamsStarted())
     log.debug(`loadingTokenParams`)
 
@@ -2726,6 +2739,7 @@ export function getTokenParams (tokenAddress) {
     ).then(({ symbol, decimals }) => {
       dispatch(addToken(tokenAddress, symbol, decimals))
       dispatch(loadingTokenParamsFinished())
+      dispatch(hideLoadingIndication())
     })
   }
 }
@@ -2970,5 +2984,41 @@ export function resetAllCustomData () {
     dispatch(resetCustomGasData)
     dispatch(resetCustomStorageData)
     dispatch(resetCustomGasAndCollateralData)
+  }
+}
+
+export function setAddressTransactionCount (count = 1) {
+  return {
+    type: actionConstants.SET_ADDRESS_TRANSACTION_COUNT,
+    value: count,
+  }
+}
+
+// TODO: add test for this
+export function fetchAddressTransactionCount () {
+  return (dispatch, getState) => {
+    const {
+      provider,
+      send: { to },
+    } = getState().metamask
+    const providerName = provider.type
+    let url = `confluxscan.io/api/address/query?address=${to}`
+    if (providerName === 'testnet') {
+      url = 'testnet.' + url
+    } else if (providerName !== 'mainnet') {
+      return
+    }
+    url = 'https://' + url
+    dispatch(showLoadingIndication())
+    return fetch(url)
+      .then((res) => res.json())
+      .then((rst) => {
+        dispatch(setAddressTransactionCount(rst?.result?.account?.all))
+        dispatch(hideLoadingIndication())
+      })
+      .catch(() => {
+        dispatch(setAddressTransactionCount(1))
+        dispatch(hideLoadingIndication())
+      })
   }
 }

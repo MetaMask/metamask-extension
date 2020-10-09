@@ -152,7 +152,7 @@ describe('gas-modal-page-container container', function () {
       const baseExpectedResult = {
         balance: '0x0',
         isConfirm: true,
-        customGasTotal: 'aaaaaaa955555556',
+        customGasAndCollateralTotal: 'e2aa6be443c7d956',
         customGasPrice: 4.294967295,
         customGasLimit: 2863311530,
         customStorageLimit: 4132,
@@ -181,11 +181,12 @@ describe('gas-modal-page-container container', function () {
         infoRowProps: {
           newTotalEth: '0.45036 CFX',
           newTotalFiat: '22.52',
-          originalTotalEth: '12.748189 CFX',
-          originalTotalFiat: '637.41',
+          originalTotalEth: '0.45036 CFX',
+          originalTotalFiat: '22.52',
           sendAmount: '0.45036 CFX',
-          sponsoredFee: '12.297829 CFX',
-          transactionFee: '12.297829 CFX',
+          sponsoredFee: '16.332986 CFX',
+          sponsoredFeeHex: 'e2aa6be443c7d956',
+          transactionFee: '16.332986 CFX',
         },
         insufficientBalance: true,
         isSpeedUp: false,
@@ -360,7 +361,7 @@ describe('gas-modal-page-container container', function () {
       })
     })
 
-    describe('updateCustomGasLimit()', function () {
+    describe.skip('updateCustomGasLimit()', function () {
       it('should dispatch a setCustomGasLimit action', function () {
         mapDispatchToPropsObject.updateCustomGasLimit('0x10')
         assert(dispatchSpy.calledOnce)
@@ -369,7 +370,7 @@ describe('gas-modal-page-container container', function () {
       })
     })
 
-    describe('updateCustomStorageLimit()', function () {
+    describe.skip('updateCustomStorageLimit()', function () {
       it('should dispatch a setCustomStorageLimit action', function () {
         mapDispatchToPropsObject.updateCustomStorageLimit('0x10')
         assert(dispatchSpy.calledOnce)
@@ -538,7 +539,7 @@ describe('gas-modal-page-container container', function () {
       assert.equal(dispatchProps.hideGasButtonGroup.callCount, 0)
       assert.equal(dispatchProps.cancelAndClose.callCount, 0)
 
-      result.onSubmit('mockNewLimit', 'mockNewPrice')
+      result.onSubmit('mockNewLimit', 'mockNewPrice', 'mockNewStorageLimit')
 
       assert.equal(
         dispatchProps.updateConfirmTxGasAndCollateralAndCalculate.callCount,
@@ -548,6 +549,9 @@ describe('gas-modal-page-container container', function () {
       assert.deepEqual(dispatchProps.setGasData.getCall(0).args, [
         'mockNewLimit',
         'mockNewPrice',
+      ])
+      assert.deepEqual(dispatchProps.setStorageData.getCall(0).args, [
+        'mockNewStorageLimit',
       ])
       assert.equal(dispatchProps.hideGasButtonGroup.callCount, 1)
       assert.equal(dispatchProps.cancelAndClose.callCount, 1)

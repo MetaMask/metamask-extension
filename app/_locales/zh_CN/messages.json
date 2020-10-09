@@ -479,6 +479,9 @@
   "estimatedProcessingTimes": {
     "message": "预估处理时间"
   },
+  "executed": {
+    "message": "已执行"
+  },
   "expandView": {
     "message": "展开视图"
   },
@@ -521,7 +524,7 @@
     "message": "存储上限"
   },
   "storageLimitInfoModalContent": {
-    "message": "存储费上限为 $1 CFX，仅扣除实际使用部分的存储费用，待存储资源被释放后将返还该笔费用。",
+    "message": "存储费上限为 $1 CFX (存储费 / 1024)，仅扣除实际使用部分的存储费用，待存储资源被释放后将返还该笔费用。",
     "description": "$1 为由 storageLimit 计算出来的需要抵押的 storage fee"
   },
   "gasFee": {
@@ -1439,19 +1442,22 @@
   "yourPrivateSeedPhrase": {
     "message": "您的私有助记词"
   },
+  "zeroAddressTxCount": {
+    "message": "该地址未发生过任何交易，请仔细核对"
+  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "燃气价格加速上涨"
   },
   "restrictedMethods_eth_accounts": {
     "message": "查看已选中账户的地址"
   },
-  "alreadySponsoredByContract": {
-    "message": " 已由合约代付"
-  },
   "optional": {
     "message": "可选"
   },
-  "amountPlusGasFee": {
-    "message": "交易量 + 燃气费"
+  "amountPlusGasFeePlusStorageFee": {
+    "message": "交易量 + (燃气费 + 存储费)"
+  },
+  "alreadySponsoredByContract": {
+    "message": " 已由合约代付"
   }
 }

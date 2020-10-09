@@ -93,6 +93,7 @@ describe('SendFooter Component', function () {
         inError: true,
         expectedResult: true,
         gasIsLoading: false,
+        storageIsLoading: false,
         sponsorshipInfoIsLoading: false,
       },
       'should return true if gasTotal is falsy': {
@@ -100,6 +101,7 @@ describe('SendFooter Component', function () {
         gasTotal: false,
         expectedResult: true,
         gasIsLoading: false,
+        storageIsLoading: false,
         sponsorshipInfoIsLoading: false,
       },
       'should return true if to is truthy': {
@@ -108,6 +110,7 @@ describe('SendFooter Component', function () {
         gasTotal: false,
         expectedResult: true,
         gasIsLoading: false,
+        storageIsLoading: false,
         sponsorshipInfoIsLoading: false,
       },
       'should return true if selectedToken is truthy and tokenBalance is falsy': {
@@ -115,6 +118,7 @@ describe('SendFooter Component', function () {
         tokenBalance: null,
         expectedResult: true,
         gasIsLoading: false,
+        storageIsLoading: false,
         sponsorshipInfoIsLoading: false,
       },
       'should return true if gasIsLoading is truthy but all other params are falsy': {
@@ -124,6 +128,17 @@ describe('SendFooter Component', function () {
         tokenBalance: 0,
         expectedResult: true,
         gasIsLoading: true,
+        storageIsLoading: false,
+        sponsorshipInfoIsLoading: true,
+      },
+      'should return true if storageIsLoading is truthy but all other params are falsy': {
+        inError: false,
+        gasTotal: null,
+        selectedToken: null,
+        tokenBalance: 0,
+        expectedResult: true,
+        gasIsLoading: false,
+        storageIsLoading: true,
         sponsorshipInfoIsLoading: true,
       },
       'should return false if inError is false and all other params are truthy': {
@@ -133,6 +148,7 @@ describe('SendFooter Component', function () {
         tokenBalance: 123,
         expectedResult: false,
         gasIsLoading: false,
+        storageIsLoading: false,
         sponsorshipInfoIsLoading: false,
       },
     }

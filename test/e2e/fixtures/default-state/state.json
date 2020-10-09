@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "version": 42
+  },
+  "data": {
+    "config": {},
+    "PreferencesController": {
+      "featureFlags": {
+        "migratedAdvancedInlineGas": true,
+        "showIncomingTransactions": false,
+        "transactionTime": false,
+        "advancedInlineGas": true
+      }
+    }
+  }
+}

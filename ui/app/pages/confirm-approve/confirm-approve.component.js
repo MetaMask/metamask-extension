@@ -73,8 +73,10 @@ export default class ConfirmApprove extends Component {
       ? calcTokenAmount(tokenTrackerBalance, decimals).toString(10)
       : ''
 
-    const customData = customPermissionAmount
-      ? getCustomTxParamsData(data, { customPermissionAmount, decimals })
+    const customData = data
+      ? customPermissionAmount
+        ? getCustomTxParamsData(data, { customPermissionAmount, decimals })
+        : null
       : null
 
     return (

@@ -6168,22 +6168,22 @@ cfx-wallet@>=0.0.3, cfx-wallet@>=0.0.4:
     utf8 "^3.0.0"
     uuid "^3.3.2"
 
-cfxjs-format@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/cfxjs-format/-/cfxjs-format-0.0.1.tgz#5e9f40152f503dec4cb56916557aa38a8e8f6ca5"
-  integrity sha512-E826BCGDP4FGWF84jNZPno8An6tEYXTbAtI285BK/snxC7wKthjpcH51HCa+YSLtOMV7EUE/TlnOI9ybHENLOg==
+cfxjs-format@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/cfxjs-format/-/cfxjs-format-0.0.2.tgz#10c1518d4a8cf39ff7cb886a8c10ae96aa6df6c4"
+  integrity sha512-WTI2L9lm4dCbRkLigooE9eZipykq3dx92g+Uy7tdzYYOT0aOnnrhDE8nQf4cCdf0JqzyGDnzuTAm7xHy1haMiw==
   dependencies:
     bn.js "4.11.6"
-    cfxjs-schema "0.0.1"
+    cfxjs-schema "0.0.2"
     ethjs-util "0.1.3"
     is-hex-prefixed "1.0.0"
     number-to-bn "1.7.0"
     strip-hex-prefix "1.0.0"
 
-cfxjs-schema@0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/cfxjs-schema/-/cfxjs-schema-0.0.1.tgz#ec115aaf1b8ece7c87298cb7f285bdae3bea9cd1"
-  integrity sha512-yMqC3I5+Df9562GRTDYNoa89CIM0IOH4mSYdezTManyM9Gf2XpK1PtefcR9r04Z4bNDX4IAiwiSm/u+olcVWsw==
+cfxjs-schema@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/cfxjs-schema/-/cfxjs-schema-0.0.2.tgz#eeefb1eb67d43cd72388b9490b3b0e041447ac5c"
+  integrity sha512-WmSoz9+Aba7Bfw8myr1an7NEwJoikzhnXCoAhThJ2YXczdvreJkQXuAxvt7/+sZk3i+YXxDGHU2NT5bzLIL/GQ==
 
 "chai@>=1.9.2 <4.0.0":
   version "3.5.0"

@@ -492,6 +492,14 @@ describe('App State', function () {
     assert.equal(state.gasIsLoading, true)
   })
 
+  it('sets storage loading', function () {
+    const state = reduceApp(metamaskState, {
+      type: actions.STORAGE_LOADING_STARTED,
+    })
+
+    assert.equal(state.storageIsLoading, true)
+  })
+
   it('unsets gas loading', function () {
     const gasLoadingState = { gasIsLoading: true }
     const oldState = { ...metamaskState, ...gasLoadingState }

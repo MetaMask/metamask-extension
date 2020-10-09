@@ -262,3 +262,7 @@ export function transactionsSelector (state) {
 export function getQrCodeData (state) {
   return state.appState.qrCodeData
 }
+
+export function getAddressTransactionCount (state) {
+  return state.metamask.send.addressTransactionCount
+}

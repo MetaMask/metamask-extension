@@ -2,6 +2,30 @@
 
 ## Current Develop Branch
 
+## 0.4.0 Fri Oct 09 2020
+
+- feat: add simple gas feature back
+- fix: balance check when send cfx, data error when in approve pageca
+- fix: sponsor info in advanced gas modal
+- test: turn on advanced gas be default in e2e test
+- fix: typo
+- feat: new sponsor ui, more loading indication
+- feat: new CFX logo
+- feat: sponsor info in gas modal
+- fix: e2e test on gas ui change
+- feat: strike through sponsored gas fee
+- fix: default gas to 1e-9 instaed of 0 CU-cwphd3
+- fix: gas/collateral input to 0 when user delete all value
+- fix: advanced gas input, don't allow negative number
+- test: more robust e2e test
+- fix: unit test for advanced gas input negative number change
+- feat: check address tx count in send component
+- test: more robust e2e test
+- fix: total tx fee ui
+- fix: bug that can't adjust number input with button
+- fix: en i18n change CU-4hnyr9
+- feat: add executed tx status
+
 ## 0.3.11 Fri Sep 25 2020
 
 - ci: run key e2e test after other tests

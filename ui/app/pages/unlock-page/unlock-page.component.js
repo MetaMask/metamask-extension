@@ -9,7 +9,7 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 
 export default class UnlockPage extends Component {
   static contextTypes = {
-    metricsEvent: PropTypes.func,
+    // metricsEvent: PropTypes.func,
     t: PropTypes.func,
   }
 
@@ -19,8 +19,8 @@ export default class UnlockPage extends Component {
     onImport: PropTypes.func,
     onRestore: PropTypes.func,
     onSubmit: PropTypes.func,
-    forceUpdateMetamaskState: PropTypes.func,
-    showOptInModal: PropTypes.func,
+    // forceUpdateMetamaskState: PropTypes.func,
+    // showOptInModal: PropTypes.func,
   }
 
   state = {
@@ -45,7 +45,10 @@ export default class UnlockPage extends Component {
     event.stopPropagation()
 
     const { password } = this.state
-    const { onSubmit, forceUpdateMetamaskState, showOptInModal } = this.props
+    const {
+      onSubmit,
+      // forceUpdateMetamaskState /* showOptInModal */,
+    } = this.props
 
     if (password === '' || this.submitting) {
       return
@@ -56,36 +59,36 @@ export default class UnlockPage extends Component {
 
     try {
       await onSubmit(password)
-      const newState = await forceUpdateMetamaskState()
-      this.context.metricsEvent({
-        eventOpts: {
-          category: 'Navigation',
-          action: 'Unlock',
-          name: 'Success',
-        },
-        isNewVisit: true,
-      })
+      // const newState = await forceUpdateMetamaskState()
+      // this.context.metricsEvent({
+      //   eventOpts: {
+      //     category: 'Navigation',
+      //     action: 'Unlock',
+      //     name: 'Success',
+      //   },
+      //   isNewVisit: true,
+      // })
 
-      if (
-        newState.participateInMetaMetrics === null ||
-        newState.participateInMetaMetrics === undefined
-      ) {
-        showOptInModal()
-      }
+      // if (
+      //   newState.participateInMetaMetrics === null ||
+      //   newState.participateInMetaMetrics === undefined
+      // ) {
+      //   showOptInModal()
+      // }
     } catch ({ message }) {
       if (message === 'Incorrect password') {
-        const newState = await forceUpdateMetamaskState()
-        this.context.metricsEvent({
-          eventOpts: {
-            category: 'Navigation',
-            action: 'Unlock',
-            name: 'Incorrect Passowrd',
-          },
-          customVariables: {
-            numberOfTokens: newState.tokens.length,
-            numberOfAccounts: Object.keys(newState.accounts).length,
-          },
-        })
+        // const newState = await forceUpdateMetamaskState()
+        // this.context.metricsEvent({
+        //   eventOpts: {
+        //     category: 'Navigation',
+        //     action: 'Unlock',
+        //     name: 'Incorrect Passowrd',
+        //   },
+        //   customVariables: {
+        //     numberOfTokens: newState.tokens.length,
+        //     numberOfAccounts: Object.keys(newState.accounts).length,
+        //   },
+        // })
       }
 
       this.setState({ error: message })

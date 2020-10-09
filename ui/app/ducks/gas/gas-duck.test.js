@@ -164,6 +164,11 @@ describe('Gas Duck', function () {
     fakeLocalStorage.saveLocalStorageData = sinon.spy()
     global.fetch = sinon.stub().callsFake(fakeFetch)
     global.Date.now = () => 2000000
+    global.ethQuery = {
+      gasPrice (cb) {
+        cb(null, '0x3b9aca00')
+      },
+    }
   })
 
   afterEach(function () {
@@ -203,6 +208,9 @@ describe('Gas Duck', function () {
     basicPriceAndTimeEstimatesLastRetrieved: 0,
     basicPriceEstimatesLastRetrieved: 0,
   }
+
+  const SHOW_LOADING = 'SHOW_LOADING_INDICATION'
+  const HIDE_LOADING = 'HIDE_LOADING_INDICATION'
   const BASIC_GAS_ESTIMATE_LOADING_FINISHED =
     'metamask/gas/BASIC_GAS_ESTIMATE_LOADING_FINISHED'
   const BASIC_GAS_ESTIMATE_LOADING_STARTED =
@@ -385,6 +393,9 @@ describe('Gas Duck', function () {
         gas: { ...initState },
       }))
       assert.deepEqual(mockDistpatch.getCall(0).args, [
+        { type: SHOW_LOADING, value: undefined },
+      ])
+      assert.deepEqual(mockDistpatch.getCall(1).args, [
         { type: BASIC_GAS_ESTIMATE_LOADING_STARTED },
       ])
       assert.deepEqual(global.fetch.getCall(0).args, [
@@ -398,10 +409,10 @@ describe('Gas Duck', function () {
           mode: 'cors',
         },
       ])
-      assert.deepEqual(mockDistpatch.getCall(1).args, [
+      assert.deepEqual(mockDistpatch.getCall(2).args, [
         { type: SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED, value: 2000000 },
       ])
-      assert.deepEqual(mockDistpatch.getCall(2).args, [
+      assert.deepEqual(mockDistpatch.getCall(3).args, [
         {
           type: SET_BASIC_GAS_ESTIMATE_DATA,
           value: {
@@ -414,9 +425,10 @@ describe('Gas Duck', function () {
           },
         },
       ])
-      assert.deepEqual(mockDistpatch.getCall(3).args, [
+      assert.deepEqual(mockDistpatch.getCall(4).args, [
         { type: BASIC_GAS_ESTIMATE_LOADING_FINISHED },
       ])
+      assert.deepEqual(mockDistpatch.getCall(5).args, [{ type: HIDE_LOADING }])
     })
 
     it('should fetch recently retrieved estimates from local storage', async function () {
@@ -443,11 +455,15 @@ describe('Gas Duck', function () {
         },
         gas: { ...initState },
       }))
+
       assert.deepEqual(mockDistpatch.getCall(0).args, [
+        { type: SHOW_LOADING, value: undefined },
+      ])
+      assert.deepEqual(mockDistpatch.getCall(1).args, [
         { type: BASIC_GAS_ESTIMATE_LOADING_STARTED },
       ])
       assert.ok(global.fetch.notCalled)
-      assert.deepEqual(mockDistpatch.getCall(1).args, [
+      assert.deepEqual(mockDistpatch.getCall(2).args, [
         {
           type: SET_BASIC_GAS_ESTIMATE_DATA,
           value: {
@@ -460,9 +476,10 @@ describe('Gas Duck', function () {
           },
         },
       ])
-      assert.deepEqual(mockDistpatch.getCall(2).args, [
+      assert.deepEqual(mockDistpatch.getCall(3).args, [
         { type: BASIC_GAS_ESTIMATE_LOADING_FINISHED },
       ])
+      assert.deepEqual(mockDistpatch.getCall(4).args, [{ type: HIDE_LOADING }])
     })
 
     it('should fallback to network if retrieving estimates from local storage fails', async function () {
@@ -480,6 +497,9 @@ describe('Gas Duck', function () {
         gas: { ...initState },
       }))
       assert.deepEqual(mockDistpatch.getCall(0).args, [
+        { type: SHOW_LOADING, value: undefined },
+      ])
+      assert.deepEqual(mockDistpatch.getCall(1).args, [
         { type: BASIC_GAS_ESTIMATE_LOADING_STARTED },
       ])
       assert.deepEqual(global.fetch.getCall(0).args, [
@@ -493,10 +513,10 @@ describe('Gas Duck', function () {
           mode: 'cors',
         },
       ])
-      assert.deepEqual(mockDistpatch.getCall(1).args, [
+      assert.deepEqual(mockDistpatch.getCall(2).args, [
         { type: SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED, value: 2000000 },
       ])
-      assert.deepEqual(mockDistpatch.getCall(2).args, [
+      assert.deepEqual(mockDistpatch.getCall(3).args, [
         {
           type: SET_BASIC_GAS_ESTIMATE_DATA,
           value: {
@@ -509,9 +529,10 @@ describe('Gas Duck', function () {
           },
         },
       ])
-      assert.deepEqual(mockDistpatch.getCall(3).args, [
+      assert.deepEqual(mockDistpatch.getCall(4).args, [
         { type: BASIC_GAS_ESTIMATE_LOADING_FINISHED },
       ])
+      assert.deepEqual(mockDistpatch.getCall(5).args, [{ type: HIDE_LOADING }])
     })
   })
 
@@ -531,6 +552,9 @@ describe('Gas Duck', function () {
         },
       }))
       assert.deepEqual(mockDistpatch.getCall(0).args, [
+        { type: SHOW_LOADING, value: undefined },
+      ])
+      assert.deepEqual(mockDistpatch.getCall(1).args, [
         { type: BASIC_GAS_ESTIMATE_LOADING_STARTED },
       ])
       assert.deepEqual(global.fetch.getCall(0).args, [
@@ -545,11 +569,11 @@ describe('Gas Duck', function () {
         },
       ])
 
-      assert.deepEqual(mockDistpatch.getCall(1).args, [
+      assert.deepEqual(mockDistpatch.getCall(2).args, [
         { type: SET_BASIC_API_ESTIMATES_LAST_RETRIEVED, value: 2000000 },
       ])
 
-      assert.deepEqual(mockDistpatch.getCall(2).args, [
+      assert.deepEqual(mockDistpatch.getCall(3).args, [
         {
           type: SET_BASIC_GAS_ESTIMATE_DATA,
           value: {
@@ -567,9 +591,10 @@ describe('Gas Duck', function () {
           },
         },
       ])
-      assert.deepEqual(mockDistpatch.getCall(3).args, [
+      assert.deepEqual(mockDistpatch.getCall(4).args, [
         { type: BASIC_GAS_ESTIMATE_LOADING_FINISHED },
       ])
+      assert.deepEqual(mockDistpatch.getCall(5).args, [{ type: HIDE_LOADING }])
     })
 
     it('should fetch recently retrieved estimates from local storage', async function () {
@@ -602,11 +627,14 @@ describe('Gas Duck', function () {
         },
       }))
       assert.deepEqual(mockDistpatch.getCall(0).args, [
+        { type: SHOW_LOADING, value: undefined },
+      ])
+      assert.deepEqual(mockDistpatch.getCall(1).args, [
         { type: BASIC_GAS_ESTIMATE_LOADING_STARTED },
       ])
       assert.ok(global.fetch.notCalled)
 
-      assert.deepEqual(mockDistpatch.getCall(1).args, [
+      assert.deepEqual(mockDistpatch.getCall(2).args, [
         {
           type: SET_BASIC_GAS_ESTIMATE_DATA,
           value: {
@@ -624,7 +652,7 @@ describe('Gas Duck', function () {
           },
         },
       ])
-      assert.deepEqual(mockDistpatch.getCall(2).args, [
+      assert.deepEqual(mockDistpatch.getCall(3).args, [
         { type: BASIC_GAS_ESTIMATE_LOADING_FINISHED },
       ])
     })
@@ -644,6 +672,9 @@ describe('Gas Duck', function () {
         },
       }))
       assert.deepEqual(mockDistpatch.getCall(0).args, [
+        { type: SHOW_LOADING, value: undefined },
+      ])
+      assert.deepEqual(mockDistpatch.getCall(1).args, [
         { type: BASIC_GAS_ESTIMATE_LOADING_STARTED },
       ])
       assert.deepEqual(global.fetch.getCall(0).args, [
@@ -658,11 +689,11 @@ describe('Gas Duck', function () {
         },
       ])
 
-      assert.deepEqual(mockDistpatch.getCall(1).args, [
+      assert.deepEqual(mockDistpatch.getCall(2).args, [
         { type: SET_BASIC_API_ESTIMATES_LAST_RETRIEVED, value: 2000000 },
       ])
 
-      assert.deepEqual(mockDistpatch.getCall(2).args, [
+      assert.deepEqual(mockDistpatch.getCall(3).args, [
         {
           type: SET_BASIC_GAS_ESTIMATE_DATA,
           value: {
@@ -680,9 +711,10 @@ describe('Gas Duck', function () {
           },
         },
       ])
-      assert.deepEqual(mockDistpatch.getCall(3).args, [
+      assert.deepEqual(mockDistpatch.getCall(4).args, [
         { type: BASIC_GAS_ESTIMATE_LOADING_FINISHED },
       ])
+      assert.deepEqual(mockDistpatch.getCall(5).args, [{ type: HIDE_LOADING }])
     })
   })
 
@@ -723,7 +755,7 @@ describe('Gas Duck', function () {
       assert.equal(thirdDispatchCallType, SET_PRICE_AND_TIME_ESTIMATES)
       assert(
         priceAndTimeEstimateResult.length <
-          ((mockPredictTableResponse.length * 3) - 2)
+          mockPredictTableResponse.length * 3 - 2
       )
       assert(!priceAndTimeEstimateResult.find((d) => d.expectedTime > 100))
       assert(

@@ -8,6 +8,7 @@ import {
   UNAPPROVED_STATUS,
   REJECTED_STATUS,
   APPROVED_STATUS,
+  EXECUTED_STATUS,
   SIGNED_STATUS,
   SUBMITTED_STATUS,
   CONFIRMED_STATUS,
@@ -23,6 +24,7 @@ const statusToClassNameHash = {
   [APPROVED_STATUS]: 'transaction-status--approved',
   [SIGNED_STATUS]: 'transaction-status--signed',
   [SUBMITTED_STATUS]: 'transaction-status--submitted',
+  [EXECUTED_STATUS]: 'transaction-status--submitted',
   [CONFIRMED_STATUS]: 'transaction-status--confirmed',
   [FAILED_STATUS]: 'transaction-status--failed',
   [SKIPPED_STATUS]: 'transaction-status--skipped',
@@ -32,6 +34,7 @@ const statusToClassNameHash = {
 
 const statusToTextHash = {
   [SUBMITTED_STATUS]: 'pending',
+  [EXECUTED_STATUS]: 'executed',
 }
 
 export default class TransactionStatus extends PureComponent {
@@ -61,9 +64,10 @@ export default class TransactionStatus extends PureComponent {
           statusToClassNameHash[statusKey]
         )}
       >
-        {statusToTextHash[statusKey] === 'pending' ? (
-          <Spinner className="transaction-status__pending-spinner" />
-        ) : null}
+        {statusToTextHash[statusKey] === 'pending' ||
+        statusToTextHash[statusKey] === 'executed' ? (
+            <Spinner className="transaction-status__pending-spinner" />
+          ) : null}
         <Tooltip position="top" title={title}>
           {statusText}
         </Tooltip>
