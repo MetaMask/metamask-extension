@@ -143,7 +143,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
         )}
         rightContent={!isSignatureReq && !isApproval && (
           <>
-            <h2 className="transaction-list-item__primary-currency">{primaryCurrency}</h2>
+            <h2 title={primaryCurrency} className="transaction-list-item__primary-currency">{primaryCurrency}</h2>
             <h3 className="transaction-list-item__secondary-currency">{secondaryCurrency}</h3>
           </>
         )}
@@ -158,6 +158,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
           title={title}
           onClose={toggleShowDetails}
           transactionGroup={transactionGroup}
+          primaryCurrency={primaryCurrency}
           senderAddress={senderAddress}
           recipientAddress={recipientAddress}
           onRetry={retryTransaction}

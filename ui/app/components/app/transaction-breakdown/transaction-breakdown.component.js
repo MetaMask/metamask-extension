@@ -17,9 +17,10 @@ export default class TransactionBreakdown extends PureComponent {
     nativeCurrency: PropTypes.string,
     showFiat: PropTypes.bool,
     nonce: PropTypes.string,
+    primaryCurrency: PropTypes.string,
+    isTokenApprove: PropTypes.bool,
     gas: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     gasPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     gasUsed: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     totalInHex: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   }
@@ -30,7 +31,7 @@ export default class TransactionBreakdown extends PureComponent {
 
   render () {
     const { t } = this.context
-    const { gas, gasPrice, value, className, nonce, nativeCurrency, showFiat, totalInHex, gasUsed } = this.props
+    const { gas, gasPrice, primaryCurrency, className, nonce, nativeCurrency, showFiat, totalInHex, gasUsed, isTokenApprove } = this.props
     return (
       <div className={classnames('transaction-breakdown', className)}>
         <div className="transaction-breakdown__title">
@@ -47,12 +48,14 @@ export default class TransactionBreakdown extends PureComponent {
             )
           }
         </TransactionBreakdownRow>
-        <TransactionBreakdownRow title={t('amount')}>
-          <UserPreferencedCurrencyDisplay
-            className="transaction-breakdown__value"
-            type={PRIMARY}
-            value={value}
-          />
+        <TransactionBreakdownRow
+          title={
+            isTokenApprove
+              ? t('spendLimitAmount')
+              : t('amount')
+          }
+        >
+          <span className="transaction-breakdown__value">{primaryCurrency}</span>
         </TransactionBreakdownRow>
         <TransactionBreakdownRow
           title={`${t('gasLimit')} (${t('units')})`}
