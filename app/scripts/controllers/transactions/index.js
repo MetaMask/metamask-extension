@@ -589,6 +589,9 @@ export default class TransactionController extends EventEmitter {
         const txMeta = cloneDeep(initialTxMeta)
         const postTxBalance = await this.query.getBalance(txMeta.txParams.from)
         txMeta.postTxBalance = postTxBalance.toString(16)
+
+        this.txStateManager.updateTx(txMeta, 'transactions#confirmTransaction - add txReceipt')
+
         this._trackSwapsMetrics(txMeta)
       }
 
