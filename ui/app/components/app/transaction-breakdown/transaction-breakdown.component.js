@@ -20,7 +20,6 @@ export default class TransactionBreakdown extends PureComponent {
     primaryCurrency: PropTypes.string,
     gas: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     gasPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     gasUsed: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     totalInHex: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   }
@@ -31,7 +30,7 @@ export default class TransactionBreakdown extends PureComponent {
 
   render () {
     const { t } = this.context
-    const { gas, gasPrice, primaryCurrency, className, nonce, nativeCurrency, showFiat, totalInHex, gasUsed, isTokenMethodAction } = this.props
+    const { gas, gasPrice, primaryCurrency, className, nonce, nativeCurrency, showFiat, totalInHex, gasUsed } = this.props
     return (
       <div className={classnames('transaction-breakdown', className)}>
         <div className="transaction-breakdown__title">
