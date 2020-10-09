@@ -8,17 +8,16 @@ import Identicon from '../../ui/identicon'
 import { I18nContext } from '../../../contexts/i18n'
 import { SEND_ROUTE, BUILD_QUOTE_ROUTE } from '../../../helpers/constants/routes'
 import { useMetricEvent, useNewMetricEvent } from '../../../hooks/useMetricEvent'
+import { useSwapsEthToken } from '../../../hooks/useSwapsEthToken'
 import Tooltip from '../../ui/tooltip'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 import { showModal } from '../../../store/actions'
 import { isBalanceCached, getSelectedAccount, getShouldShowFiat, getCurrentNetworkId, getCurrentKeyring } from '../../../selectors/selectors'
-import { getValueFromWeiHex } from '../../../helpers/utils/conversions.util'
 import SwapIcon from '../../ui/icon/swap-icon.component'
 import BuyIcon from '../../ui/icon/overview-buy-icon.component'
 import SendIcon from '../../ui/icon/overview-send-icon.component'
 import { getSwapsFeatureLiveness, setSwapsFromToken } from '../../../ducks/swaps/swaps'
-import { ETH_SWAPS_TOKEN_OBJECT } from '../../../helpers/constants/swaps'
 import IconButton from '../../ui/icon-button'
 import { MAINNET_NETWORK_ID } from '../../../../../app/scripts/controllers/network/enums'
 import WalletOverview from './wallet-overview'
@@ -50,6 +49,7 @@ const EthOverview = ({ className }) => {
   const networkId = useSelector(getCurrentNetworkId)
   const enteredSwapsEvent = useNewMetricEvent({ event: 'Swaps Opened', properties: { source: 'Main View', active_currency: 'ETH' }, category: 'swaps' })
   const swapsEnabled = useSelector(getSwapsFeatureLiveness)
+  const swapsEthToken = useSwapsEthToken()
 
   return (
     <WalletOverview
@@ -118,11 +118,7 @@ const EthOverview = ({ className }) => {
               onClick={() => {
                 if (networkId === MAINNET_NETWORK_ID) {
                   enteredSwapsEvent()
-                  dispatch(setSwapsFromToken({
-                    ...ETH_SWAPS_TOKEN_OBJECT,
-                    balance,
-                    string: getValueFromWeiHex({ value: balance, numberOfDecimals: 4, toDenomination: 'ETH' }),
-                  }))
+                  dispatch(setSwapsFromToken(swapsEthToken))
                   if (usingHardwareWallet) {
                     global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE)
                   } else {
