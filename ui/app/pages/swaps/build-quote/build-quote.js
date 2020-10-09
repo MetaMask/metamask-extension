@@ -7,6 +7,7 @@ import { useHistory } from 'react-router-dom'
 import { MetaMetricsContext } from '../../../contexts/metametrics.new'
 import { useTokensToSearch } from '../../../hooks/useTokensToSearch'
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck'
+import { useSwapsEthToken } from '../../../hooks/useSwapsEthToken'
 import { I18nContext } from '../../../contexts/i18n'
 import DropdownInputPair from '../dropdown-input-pair'
 import DropdownSearchList from '../dropdown-search-list'
@@ -60,8 +61,9 @@ export default function BuildQuote ({
   const topAssets = useSelector(getTopAssets)
   const fromToken = useSelector(getFromToken)
   const toToken = useSelector(getToToken) || destinationTokenInfo
+  const swapsEthToken = useSwapsEthToken()
   const fetchParamsFromToken = sourceTokenInfo?.symbol === 'ETH'
-    ? { ...ETH_SWAPS_TOKEN_OBJECT, string: getValueFromWeiHex({ value: ethBalance, numberOfDecimals: 4, toDenomination: 'ETH' }), balance: ethBalance }
+    ? swapsEthToken
     : sourceTokenInfo
 
   const { loading, tokensWithBalances } = useTokenTracker(tokens)
@@ -77,14 +79,12 @@ export default function BuildQuote ({
 
   const selectedFromToken = useTokensToSearch({
     providedTokens: fromToken || fetchParamsFromToken ? [fromToken || fetchParamsFromToken] : [],
-    rawEthBalance: ethBalance,
     usersTokens: memoizedUsersTokens,
     onlyEth: (fromToken || fetchParamsFromToken)?.symbol === 'ETH',
     singleToken: true,
   })[0]
 
   const tokensToSearch = useTokensToSearch({
-    rawEthBalance: ethBalance,
     usersTokens: memoizedUsersTokens,
     topTokens: topAssets,
   })

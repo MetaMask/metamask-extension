@@ -1,27 +1,24 @@
 import React, { useContext } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import { getValueFromWeiHex } from '../../../helpers/utils/conversions.util'
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps'
-import { ETH_SWAPS_TOKEN_OBJECT } from '../../../helpers/constants/swaps'
 import { I18nContext } from '../../../contexts/i18n'
 import { BUILD_QUOTE_ROUTE } from '../../../helpers/constants/routes'
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent'
+import { useSwapsEthToken } from '../../../hooks/useSwapsEthToken'
 import Button from '../../../components/ui/button'
 import Popover from '../../../components/ui/popover'
-import { getSelectedAccount } from '../../../selectors/selectors'
 
 export default function IntroPopup ({ onClose }) {
   const dispatch = useDispatch(useDispatch)
   const history = useHistory()
   const t = useContext(I18nContext)
-  const selectedAccount = useSelector(getSelectedAccount)
-  const { balance } = selectedAccount
   const enteredSwapsEvent = useNewMetricEvent({ event: 'Swaps Opened', properties: { source: 'Intro popup', active_currency: 'ETH' }, category: 'swaps' })
   const blogPostVisitedEvent = useNewMetricEvent({ event: 'Blog Post Visited ', category: 'swaps' })
   const contractAuditVisitedEvent = useNewMetricEvent({ event: 'Contract Audit Visited', category: 'swaps' })
   const productOverviewDismissedEvent = useNewMetricEvent({ event: 'Product Overview Dismissed', category: 'swaps' })
+  const swapsEthToken = useSwapsEthToken()
 
   return (
     <div className="intro-popup">
@@ -41,11 +38,7 @@ export default function IntroPopup ({ onClose }) {
             onClick={() => {
               onClose()
               enteredSwapsEvent()
-              dispatch(setSwapsFromToken({
-                ...ETH_SWAPS_TOKEN_OBJECT,
-                balance,
-                string: getValueFromWeiHex({ value: balance, numberOfDecimals: 4, toDenomination: 'ETH' }),
-              }))
+              dispatch(setSwapsFromToken(swapsEthToken))
               history.push(BUILD_QUOTE_ROUTE)
             }}
           >

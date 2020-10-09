@@ -3,12 +3,11 @@ import { useSelector } from 'react-redux'
 import contractMap from 'eth-contract-metadata'
 import BigNumber from 'bignumber.js'
 import { isEqual, shuffle } from 'lodash'
-import { getValueFromWeiHex } from '../helpers/utils/conversions.util'
 import { checksumAddress } from '../helpers/utils/util'
 import { getTokenFiatAmount } from '../helpers/utils/token-util'
 import { getTokenExchangeRates, getConversionRate, getCurrentCurrency } from '../selectors'
 import { getSwapsTokens } from '../ducks/swaps/swaps'
-import { ETH_SWAPS_TOKEN_OBJECT } from '../helpers/constants/swaps'
+import { useSwapsEthToken } from './useSwapsEthToken'
 import { useEqualityCheck } from './useEqualityCheck'
 
 const tokenList = shuffle(Object.entries(contractMap)
@@ -50,7 +49,13 @@ export function getRenderableTokenData (token, contractExchangeRates, conversion
   }
 }
 
-export function useTokensToSearch ({ providedTokens, rawEthBalance, usersTokens = [], topTokens = {}, onlyEth, singleToken }) {
+export function useTokensToSearch ({
+  providedTokens,
+  usersTokens = [],
+  topTokens = {},
+  onlyEth,
+  singleToken,
+}) {
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual)
   const conversionRate = useSelector(getConversionRate)
   const currentCurrency = useSelector(getCurrentCurrency)
@@ -58,9 +63,9 @@ export function useTokensToSearch ({ providedTokens, rawEthBalance, usersTokens 
   const memoizedTopTokens = useEqualityCheck(topTokens)
   const memoizedUsersToken = useEqualityCheck(usersTokens)
 
-  const decEthBalance = getValueFromWeiHex({ value: rawEthBalance, numberOfDecimals: 4, toDenomination: 'ETH' })
+  const swapsEthToken = useSwapsEthToken()
   const [ethToken] = useState(() => getRenderableTokenData(
-    { ...ETH_SWAPS_TOKEN_OBJECT, balance: rawEthBalance, string: decEthBalance },
+    swapsEthToken,
     tokenConversionRates,
     conversionRate,
     currentCurrency,

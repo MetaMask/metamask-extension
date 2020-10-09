@@ -8,6 +8,7 @@ import { I18nContext } from '../../../contexts/i18n'
 import SelectQuotePopover from '../select-quote-popover'
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck'
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent'
+import { useSwapsEthToken } from '../../../hooks/useSwapsEthToken'
 import { MetaMetricsContext } from '../../../contexts/metametrics.new'
 import FeeCard from '../fee-card'
 import { setCustomGasLimit } from '../../../ducks/gas/gas.duck'
@@ -68,10 +69,7 @@ import { getCustomTxParamsData } from '../../confirm-approve/confirm-approve.uti
 import ActionableMessage from '../actionable-message'
 import { quotesToRenderableData, getRenderableGasFeesForQuote } from '../swaps.util'
 import { useTokenTracker } from '../../../hooks/useTokenTracker'
-import {
-  ETH_SWAPS_TOKEN_OBJECT,
-  QUOTES_EXPIRED_ERROR,
-} from '../../../helpers/constants/swaps'
+import { QUOTES_EXPIRED_ERROR } from '../../../helpers/constants/swaps'
 import CountdownTimer from '../countdown-timer'
 import SwapsFooter from '../swaps-footer'
 
@@ -143,8 +141,9 @@ export default function ViewQuote () {
   const gasTotalInWeiHex = calcGasTotal(maxGasLimit, gasPrice)
 
   const { tokensWithBalances } = useTokenTracker(swapsTokens)
-  const balanceToken = fetchParamsSourceToken === ETH_SWAPS_TOKEN_OBJECT.address
-    ? { ...ETH_SWAPS_TOKEN_OBJECT, balance: ethBalance }
+  const swapsEthToken = useSwapsEthToken()
+  const balanceToken = fetchParamsSourceToken === swapsEthToken.address
+    ? swapsEthToken
     : tokensWithBalances.find(({ address }) => address === fetchParamsSourceToken)
 
   const selectedFromToken = balanceToken || usedQuote.sourceTokenInfo
