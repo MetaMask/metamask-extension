@@ -31,7 +31,7 @@ import { getValueFromWeiHex, hexToDecimal } from '../helpers/utils/conversions.u
  * extends that object with `balance` and `balance` values of the same type as
  * in regular ERC-20 token objects, per the above description.
  *
- * @returns {SwapsEthToken} - The token object representation of the currently
+ * @returns {SwapsEthToken} The token object representation of the currently
  * selected account's ETH balance, as expected by the Swaps API.
  */
 export function useSwapsEthToken () {
