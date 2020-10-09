@@ -95,12 +95,6 @@ describe('MetaMask', function () {
         await driver.delay(regularDelayMs)
       })
 
-      it('closes the swaps intro popup', async function () {
-        await driver.findElement(By.css(`.popover-header__subtitle`))
-        await driver.clickElement(By.css('.popover-header__button'))
-        await driver.delay(regularDelayMs)
-      })
-
       it('balance renders', async function () {
         const balance = await driver.findElement(By.css('[data-testid="wallet-balance"] .list-item__heading'))
         await driver.wait(until.elementTextMatches(balance, /25\s*ETH/u))
@@ -204,12 +198,6 @@ describe('MetaMask', function () {
       it('clicks through the success screen', async function () {
         await driver2.findElement(By.xpath(`//div[contains(text(), 'Congratulations')]`))
         await driver2.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`))
-        await driver2.delay(regularDelayMs)
-      })
-
-      it('closes the swaps intro popup', async function () {
-        await driver2.findElement(By.css(`.popover-header__subtitle`))
-        await driver2.clickElement(By.css('.popover-header__button'))
         await driver2.delay(regularDelayMs)
       })
 

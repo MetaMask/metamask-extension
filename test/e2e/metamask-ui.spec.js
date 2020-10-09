@@ -115,12 +115,6 @@ describe('MetaMask', function () {
       await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`))
       await driver.delay(regularDelayMs)
     })
-
-    it('closes the swaps intro popup', async function () {
-      await driver.findElement(By.css(`.popover-header__subtitle`))
-      await driver.clickElement(By.css('.popover-header__button'))
-      await driver.delay(regularDelayMs)
-    })
   })
 
   describe('Show account information', function () {
