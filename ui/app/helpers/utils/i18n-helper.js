@@ -64,7 +64,7 @@ export const getMessage = (localeCode, localeMessages, key, substitutions) => {
           missingSubstitutionErrors[localeCode] = {}
         }
         missingSubstitutionErrors[localeCode][key] = true
-        const error = new Error(`Insufficient number of substitutions for message: '${phrase}'`)
+        const error = new Error(`Insufficient number of substitutions for key "${key}" with locale "${localeCode}"`)
         log.error(error)
         Sentry.captureException(error)
       }
