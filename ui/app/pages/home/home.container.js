@@ -74,7 +74,7 @@ const mapStateToProps = (state) => {
     haveSwapsQuotes: Boolean(Object.values(swapsState.quotes || {}).length),
     swapsFetchParams: swapsState.fetchParams,
     showAwaitingSwapScreen: swapsState.routeState === 'awaiting',
-    isMainNet: getIsMainnet(state),
+    isMainnet: getIsMainnet(state),
   }
 }
 
