@@ -101,7 +101,6 @@ const EMPTY_INIT_STATE = {
     tokens: null,
     tradeTxId: null,
     approveTxId: null,
-    maxMode: false,
     quotesLastFetched: null,
     customMaxGas: '',
     customGasPrice: null,
@@ -194,15 +193,6 @@ describe('SwapsController', function () {
         assert.strictEqual(
           swapsController.store.getState().swapsState.tradeTxId,
           tradeTxId,
-        )
-      })
-
-      it('should set max mode', function () {
-        const maxMode = true
-        swapsController.setMaxMode(maxMode)
-        assert.strictEqual(
-          swapsController.store.getState().swapsState.maxMode,
-          maxMode,
         )
       })
 

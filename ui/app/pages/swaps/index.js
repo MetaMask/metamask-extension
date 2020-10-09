@@ -42,7 +42,7 @@ import {
   OFFLINE_FOR_MAINTENANCE,
 } from '../../helpers/constants/swaps'
 
-import { resetBackgroundSwapsState, setSwapsTokens, setMaxMode, removeToken, setBackgroundSwapRouteState, setSwapsErrorKey } from '../../store/actions'
+import { resetBackgroundSwapsState, setSwapsTokens, removeToken, setBackgroundSwapRouteState, setSwapsErrorKey } from '../../store/actions'
 import { getFastPriceEstimateInHexWEI, currentNetworkTxListSelector, getRpcPrefsForCurrentProvider } from '../../selectors'
 import { useNewMetricEvent } from '../../hooks/useMetricEvent'
 import { getValueFromWeiHex } from '../../helpers/utils/conversions.util'
@@ -268,7 +268,6 @@ export default function Swap () {
                     onInputChange={onInputChange}
                     ethBalance={ethBalance}
                     setMaxSlippage={setMaxSlippage}
-                    setMaxMode={setMaxMode}
                     selectedAccountAddress={selectedAccountAddress}
                     maxSlippage={maxSlippage}
                   />

@@ -2180,13 +2180,6 @@ export function resetBackgroundSwapsState () {
   }
 }
 
-export function setMaxMode (maxMode) {
-  return async (dispatch) => {
-    await promisifiedBackground.setMaxMode(maxMode)
-    await forceUpdateMetamaskState(dispatch)
-  }
-}
-
 export function setCustomApproveTxData (data) {
   return async (dispatch) => {
     await promisifiedBackground.setCustomApproveTxData(data)

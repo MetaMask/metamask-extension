@@ -32,7 +32,7 @@ import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount'
 
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../helpers/constants/swaps'
 
-import { setMaxMode, resetSwapsPostFetchState, removeToken } from '../../../store/actions'
+import { resetSwapsPostFetchState, removeToken } from '../../../store/actions'
 import { fetchTokenPrice, fetchTokenBalance } from '../swaps.util'
 import SwapsFooter from '../swaps-footer'
 
@@ -139,7 +139,6 @@ export default function BuildQuote ({
         })
     }
     dispatch(setSwapsFromToken(token))
-    dispatch(setMaxMode(false))
     onInputChange(token?.address ? inputValue : '', token.string, token.decimals)
   }
 
@@ -154,6 +153,7 @@ export default function BuildQuote ({
 
   const hideDropdownItemIf = useCallback((item) => item.address === fromTokenAddress, [fromTokenAddress])
 
+  // If the eth balance changes while on build quote, we update the selected from token
   useEffect(() => {
     if (fromToken?.address === ETH_SWAPS_TOKEN_OBJECT.address && (fromToken?.balance !== ethBalance)) {
       dispatch(setSwapsFromToken({ ...fromToken, balance: ethBalance, string: getValueFromWeiHex({ value: ethBalance, numberOfDecimals: 4, toDenomination: 'ETH' }) }))
@@ -175,20 +175,18 @@ export default function BuildQuote ({
       <div className="build-quote__content">
         <div className="build-quote__dropdown-input-pair-header">
           <div className="build-quote__input-label">{t('swapSwapFrom')}</div>
-          <div
-            className="build-quote__max-button"
-            onClick={() => {
-              dispatch(setMaxMode(true))
-              onInputChange(fromTokenBalance || '0', fromTokenBalance)
-            }}
-          >{t('max')}
-          </div>
+          {fromTokenSymbol !== 'ETH' && (
+            <div
+              className="build-quote__max-button"
+              onClick={() => onInputChange(fromTokenBalance || '0', fromTokenBalance)}
+            >{t('max')}
+            </div>
+          )}
         </div>
         <DropdownInputPair
           onSelect={onFromSelect}
           itemsToSearch={tokensToSearch}
           onInputChange={(value) => {
-            dispatch(setMaxMode(false))
             onInputChange(value, fromTokenBalance)
           }}
           inputValue={inputValue}

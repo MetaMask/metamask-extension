@@ -3,7 +3,6 @@ import log from 'loglevel'
 import BigNumber from 'bignumber.js'
 import ObservableStore from 'obs-store'
 import { mapValues } from 'lodash'
-import ethUtil from 'ethereumjs-util'
 import abi from 'human-standard-token-abi'
 import { calcTokenAmount } from '../../../ui/app/helpers/utils/token-util'
 import { calcGasTotal } from '../../../ui/app/pages/send/send.utils'
@@ -55,7 +54,6 @@ const initialState = {
     tokens: null,
     tradeTxId: null,
     approveTxId: null,
-    maxMode: false,
     quotesLastFetched: null,
     customMaxGas: '',
     customGasPrice: null,
@@ -178,10 +176,6 @@ export default class SwapsController {
     // loading screen and best quote have rendered.
     if (!approvalRequired && !fetchParams?.balanceError) {
       newQuotes = await this.getAllQuotesWithGasEstimates(newQuotes)
-
-      if (fetchParamsMetaData.maxMode && fetchParams.sourceToken === ETH_SWAPS_TOKEN_ADDRESS) {
-        newQuotes = await this._modifyAndFilterValuesForMaxEthMode(newQuotes, fetchParamsMetaData.accountBalance)
-      }
 
       if (Object.values(newQuotes).length === 0) {
         this.setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR)
@@ -343,11 +337,6 @@ export default class SwapsController {
   setTradeTxId (tradeTxId) {
     const { swapsState } = this.store.getState()
     this.store.updateState({ swapsState: { ...swapsState, tradeTxId } })
-  }
-
-  setMaxMode (maxMode) {
-    const { swapsState } = this.store.getState()
-    this.store.updateState({ swapsState: { ...swapsState, maxMode } })
   }
 
   setQuotesLastFetched (quotesLastFetched) {
@@ -584,42 +573,4 @@ export default class SwapsController {
     }
   }
 
-  async _modifyAndFilterValuesForMaxEthMode (newQuotes, accountBalance) {
-    const {
-      swapsState: { customGasPrice },
-    } = this.store.getState()
-
-    const usedGasPrice = customGasPrice || await this._getEthersGasPrice()
-
-    const mappedNewQuotes = {}
-    Object.values(newQuotes).forEach((quote) => {
-      const oldSourceAmount = quote.sourceAmount
-
-      const gasTotalInWeiHex = calcGasTotal((new BigNumber(quote.maxGas, 10)).toString(16), usedGasPrice)
-      const newSourceAmount = (new BigNumber(accountBalance, 16)).minus(gasTotalInWeiHex, 16).toString(10)
-
-      const newOldRatio = (new BigNumber(newSourceAmount, 10)).div(oldSourceAmount, 10)
-      const oldNewDifference = (new BigNumber(oldSourceAmount, 10)).minus(newSourceAmount, 10).toString(10)
-
-      const oldDestinationAmount = quote.destinationAmount
-      const newDestinationAmount = (new BigNumber(oldDestinationAmount, 10)).times(newOldRatio).toString(10)
-
-      const oldValue = quote.trade.value
-      const newValue = (new BigNumber(oldValue, 16)).minus(oldNewDifference, 10).toString(16)
-
-      if ((new BigNumber(newSourceAmount, 10).gt(0))) {
-        mappedNewQuotes[quote.aggregator] = {
-          ...quote,
-          trade: {
-            ...quote.trade,
-            value: ethUtil.addHexPrefix(newValue),
-          },
-          destinationAmount: newDestinationAmount,
-          sourceAmount: newSourceAmount,
-        }
-      }
-    })
-
-    return mappedNewQuotes
-  }
 }
