@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import copyToClipboard from 'copy-to-clipboard'
 import {
   getBlockExplorerUrlForTx,
-  isTokenMethodAction,
 } from '../../../helpers/utils/transactions.util'
 import SenderToRecipient from '../../ui/sender-to-recipient'
 import { FLAT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants'
