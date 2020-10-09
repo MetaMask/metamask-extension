@@ -158,6 +158,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
           title={title}
           onClose={toggleShowDetails}
           transactionGroup={transactionGroup}
+          primaryCurrency={primaryCurrency}
           senderAddress={senderAddress}
           recipientAddress={recipientAddress}
           onRetry={retryTransaction}

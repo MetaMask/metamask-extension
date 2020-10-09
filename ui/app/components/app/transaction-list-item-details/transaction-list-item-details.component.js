@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import copyToClipboard from 'copy-to-clipboard'
 import {
   getBlockExplorerUrlForTx,
+  isTokenMethodAction,
 } from '../../../helpers/utils/transactions.util'
 import SenderToRecipient from '../../ui/sender-to-recipient'
 import { FLAT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants'
@@ -31,6 +32,7 @@ export default class TransactionListItemDetails extends PureComponent {
     showRetry: PropTypes.bool,
     isEarliestNonce: PropTypes.bool,
     cancelDisabled: PropTypes.bool,
+    primaryCurrency: PropTypes.string,
     transactionGroup: PropTypes.object,
     title: PropTypes.string.isRequired,
     onClose: PropTypes.func.isRequired,
@@ -143,6 +145,7 @@ export default class TransactionListItemDetails extends PureComponent {
     const { justCopied } = this.state
     const {
       transactionGroup,
+      primaryCurrency,
       showSpeedUp,
       showRetry,
       recipientEns,
@@ -252,6 +255,7 @@ export default class TransactionListItemDetails extends PureComponent {
               <TransactionBreakdown
                 nonce={transactionGroup.initialTransaction.txParams.nonce}
                 transaction={transaction}
+                primaryCurrency={primaryCurrency}
                 className="transaction-list-item-details__transaction-breakdown"
               />
               <TransactionActivityLog
