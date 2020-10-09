@@ -21,7 +21,7 @@ export default function SortList ({
   swapToSymbol,
   sortDirection,
   setSortDirection,
-  sortColumn,
+  sortColumn = null,
   setSortColumn,
 }) {
   const t = useContext(I18nContext)
@@ -171,6 +171,6 @@ SortList.propTypes = {
   quoteDataRows: PropTypes.arrayOf(QUOTE_DATA_ROWS_PROPTYPES_SHAPE).isRequired,
   sortDirection: PropTypes.number.isRequired,
   setSortDirection: PropTypes.func.isRequired,
-  sortColumn: PropTypes.string.isRequired,
+  sortColumn: PropTypes.string,
   setSortColumn: PropTypes.func.isRequired,
 }

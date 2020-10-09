@@ -324,7 +324,7 @@ export default function Swap () {
                 return aggregatorMetadata
                   ? (
                     <LoadingQuote
-                      loadingComplete={!fetchingQuotes && Object.values(quotes).length}
+                      loadingComplete={!fetchingQuotes && Boolean(Object.values(quotes).length)}
                       onDone={async () => {
                         await dispatch(setBackgroundSwapRouteState(''))
 
