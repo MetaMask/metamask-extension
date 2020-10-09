@@ -1,4 +1,5 @@
 import EventEmitter from 'safe-event-emitter'
+import Web3 from '../ConfluxWeb/index'
 import log from 'loglevel'
 import EthQuery from '../../ethjs-query'
 
@@ -24,6 +25,7 @@ class PendingTransactionTracker extends EventEmitter {
     super()
     this.droppedBuffer = {}
     this.query = new EthQuery(config.provider)
+    this.web3 = new Web3(config.provider)
     this.nonceTracker = config.nonceTracker
     this.getPendingTransactions = config.getPendingTransactions
     this.getCompletedTransactions = config.getCompletedTransactions
@@ -149,7 +151,7 @@ class PendingTransactionTracker extends EventEmitter {
     const txId = txMeta.id
 
     // Only check submitted txs
-    if (txMeta.status !== 'submitted') {
+    if (txMeta.status !== 'submitted' && txMeta.status !== 'executed') {
       return
     }
 
@@ -165,7 +167,8 @@ class PendingTransactionTracker extends EventEmitter {
       return
     }
     // *note to self* hard failure point
-    const transactionReceipt = await this.query.getTransactionReceipt(txHash)
+    const transactionReceipt =
+      txMeta.txReceipt || (await this.query.getTransactionReceipt(txHash))
 
     // status depends on data form cfx_getTransactionReceipt
     // getTransactionByHash has blockHash - mined
@@ -221,7 +224,14 @@ class PendingTransactionTracker extends EventEmitter {
         outcomeStatusErr.name = 'OutcomeStatusErr'
         this.emit('tx:failed', txId, outcomeStatusErr)
       } else if (epochNumber) {
-        this.emit('tx:confirmed', txId, transactionReceipt)
+        const risk = await this.web3.getConfirmationRiskByHash(
+          transactionReceipt.blockHash
+        )
+        if (risk && risk <= 1e-8) {
+          this.emit('tx:confirmed', txId, transactionReceipt)
+        } else {
+          this.emit('tx:executed', txId, transactionReceipt)
+        }
       }
     } catch (err) {
       txMeta.warning = {

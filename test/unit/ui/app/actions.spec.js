@@ -900,8 +900,10 @@ describe('Actions', function () {
       })
 
       const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
         { type: 'GAS_LOADING_STARTED' },
         { type: 'STORAGE_LOADING_STARTED' },
+        { type: 'SPONSORSHIP_INFO_LOADING_STARTED' },
         { type: 'UPDATE_GAS_LIMIT', value: '0x5208' },
         { type: 'UPDATE_STORAGE_LIMIT', value: '0x0' },
         { type: 'metamask/gas/SET_CUSTOM_GAS_LIMIT', value: '0x5208' },
@@ -909,6 +911,7 @@ describe('Actions', function () {
           type: 'metamask/storageLimit/SET_CUSTOM_STORAGE_LIMIT',
           value: '0x0',
         },
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
         { type: 'SPONSORSHIP_INFO_LOADING_STARTED' },
         {
           type: 'UPDATE_SEND_ERRORS',
@@ -917,23 +920,26 @@ describe('Actions', function () {
         { type: 'GAS_LOADING_FINISHED' },
         { type: 'STORAGE_LOADING_FINISHED' },
         {
-          'type': 'UPDATE_SPONSORSHIP_INFO',
-          'value': {
-            'isUserBalanceEnough': true,
-            'willUserPayTxFee': true,
-            'willUserPayCollateral': true,
+          type: 'UPDATE_SPONSORSHIP_INFO',
+          value: {
+            isUserBalanceEnough: true,
+            willUserPayTxFee: true,
+            willUserPayCollateral: true,
           },
         },
         {
-          'type': 'metamask/sponsorship/SET_SPONSORSHIP_INFO',
-          'value': {
-            'isUserBalanceEnough': true,
-            'willUserPayTxFee': true,
-            'willUserPayCollateral': true,
+          type: 'metamask/sponsorship/SET_SPONSORSHIP_INFO',
+          value: {
+            isUserBalanceEnough: true,
+            willUserPayTxFee: true,
+            willUserPayCollateral: true,
           },
         },
         {
-          'type': 'SPONSORSHIP_INFO_LOADING_FINISHED',
+          type: 'SPONSORSHIP_INFO_LOADING_FINISHED',
+        },
+        {
+          type: 'HIDE_LOADING_INDICATION',
         },
       ]
 

@@ -59,6 +59,7 @@ const mockInfoRowProps = {
   sendAmount: 'mockSendAmount',
   transactionFee: 'mockTransactionFee',
   sponsoredFee: 'mockSponsoredFee',
+  sponsoredFeeHex: 'mockSponsoredFeeHex',
 }
 
 const GP = GasModalPageContainer.prototype
@@ -207,6 +208,7 @@ describe('GasModalPageContainer Component', function () {
         'mockSendAmount',
         'mockTransactionFee',
         'mockSponsoredFee',
+        'mockSponsoredFeeHex',
       ])
       assert.deepEqual(GP.renderInfoRows.getCall(1).args, [
         'mockNewTotalFiat',
@@ -214,6 +216,7 @@ describe('GasModalPageContainer Component', function () {
         'mockSendAmount',
         'mockTransactionFee',
         'mockSponsoredFee',
+        'mockSponsoredFeeHex',
       ])
     })
 
@@ -273,7 +276,7 @@ describe('GasModalPageContainer Component', function () {
             ' mockNewTotalEth',
             ' mockSendAmount',
             ' mockTransactionFee',
-            ' mockSponsoredFee'
+            'mockSponsoredFee'
           )
       )
 
@@ -301,7 +304,7 @@ describe('GasModalPageContainer Component', function () {
       )
       assert.equal(
         renderedInfoRows.at(2).text(),
-        'sponsoredFee mockSponsoredFee'
+        'sponsoredFee-mockSponsoredFee'
       )
       assert.equal(renderedInfoRows.at(3).text(), 'newTotal mockNewTotalEth')
       assert.equal(renderedInfoRows.at(4).text(), 'mockNewTotalFiat')

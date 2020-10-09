@@ -11,17 +11,22 @@ import {
   cancelTxs,
   updateAndApproveTx,
   showModal,
-  setMetaMetricsSendCount,
+  // setMetaMetricsSendCount,
   updateTransaction,
   getNextNonce,
   tryReverseResolveAddress,
+  showLoadingIndication,
+  hideLoadingIndication,
 } from '../../store/actions'
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
 } from '../../helpers/constants/error-keys'
 import { getHexGasAndCollateralTotal } from '../../helpers/utils/confirm-tx.util'
-import { isBalanceSufficient, calcGasTotal } from '../send/send.utils'
+import {
+  isBalanceSufficient,
+  calcGasAndCollateralTotal,
+} from '../send/send.utils'
 import { conversionGreaterThan } from '../../helpers/utils/conversion-util'
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants'
 import {
@@ -83,12 +88,19 @@ const mapStateToProps = (state, ownProps) => {
     lastGasPrice,
     id: transactionId,
     transactionCategory,
-    willUserPayTxFee,
   } = txData
+  let { willUserPayTxFee, willUserPayCollateral } = txData
   const transaction =
     Object.values(unapprovedTxs).find(
       ({ id }) => id === (transactionId || Number(paramsTransactionId))
     ) || {}
+  if (
+    willUserPayTxFee === undefined ||
+    transaction.willUserPayTxFee !== undefined
+  ) {
+    willUserPayTxFee = transaction.willUserPayTxFee
+    willUserPayCollateral = transaction.willUserPayCollateral
+  }
   const {
     from: fromAddress,
     to: txParamsToAddress,
@@ -98,6 +110,7 @@ const mapStateToProps = (state, ownProps) => {
     value: amount,
     data,
   } = (transaction && transaction.txParams) || txParams
+  const loadingDefaults = (transaction && transaction.loadingDefaults) || false
   const accounts = getMetaMaskAccounts(state)
   const assetImage = assetImages[txParamsToAddress]
 
@@ -140,9 +153,10 @@ const mapStateToProps = (state, ownProps) => {
 
   const insufficientBalance = !isBalanceSufficient({
     amount,
-    gasTotal: calcGasTotal(
+    gasTotal: calcGasAndCollateralTotal(
       willUserPayTxFee ? gasLimit : '0',
-      willUserPayTxFee ? gasPrice : '0'
+      willUserPayTxFee ? gasPrice : '0',
+      willUserPayCollateral ? storageLimit : '0'
     ),
     balance,
     conversionRate,
@@ -166,6 +180,9 @@ const mapStateToProps = (state, ownProps) => {
     !(fullTxData.txParams.data || isValidContractAddress(toAddress))
 
   return {
+    willUserPayTxFee,
+    willUserPayCollateral,
+    txMetaLoadingDefaults: loadingDefaults,
     balance,
     fromAddress,
     fromName,
@@ -213,6 +230,12 @@ const mapStateToProps = (state, ownProps) => {
 
 export const mapDispatchToProps = (dispatch) => {
   return {
+    showLoadingIndication: () => {
+      dispatch(showLoadingIndication())
+    },
+    hideLoadingIndication: () => {
+      dispatch(hideLoadingIndication())
+    },
     tryReverseResolveAddress: (address) => {
       return dispatch(tryReverseResolveAddress(address))
     },
@@ -249,7 +272,7 @@ export const mapDispatchToProps = (dispatch) => {
     cancelAllTransactions: (txList) => dispatch(cancelTxs(txList)),
     sendTransaction: (txData) =>
       dispatch(updateAndApproveTx(customNonceMerge(txData))),
-    setMetaMetricsSendCount: (val) => dispatch(setMetaMetricsSendCount(val)),
+    // setMetaMetricsSendCount: val => dispatch(setMetaMetricsSendCount(val)),
     getNextNonce: () => dispatch(getNextNonce()),
   }
 }

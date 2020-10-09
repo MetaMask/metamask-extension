@@ -84,14 +84,15 @@
           "testnet": []
         }
       },
-      "assetImages": {
-      },
+      "assetImages": {},
       "completedOnboarding": true,
       "currentAccountTab": "history",
       "currentLocale": "en",
       "featureFlags": {
-        "showIncomingTransactions": true,
-        "transactionTime": false
+        "migratedAdvancedInlineGas": true,
+        "showIncomingTransactions": false,
+        "transactionTime": false,
+        "advancedInlineGas": true
       },
       "firstTimeFlowType": "create",
       "forgottenPassword": false,
@@ -125,6 +126,6 @@
     }
   },
   "meta": {
-    "version": 41
+    "version": 42
   }
 }

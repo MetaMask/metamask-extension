@@ -8,7 +8,7 @@ import BasicTabContent from './basic-tab-content'
 export default class GasModalPageContainer extends Component {
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    // metricsEvent: PropTypes.func,
   }
 
   static propTypes = {
@@ -30,6 +30,7 @@ export default class GasModalPageContainer extends Component {
       newTotalFiat: PropTypes.string,
       newTotalEth: PropTypes.string,
       sponsoredFee: PropTypes.string,
+      sponsoredFeeHex: PropTypes.string,
     }),
     onSubmit: PropTypes.func,
     customModalGasPriceInHex: PropTypes.string,
@@ -111,9 +112,10 @@ export default class GasModalPageContainer extends Component {
     newTotalEth,
     sendAmount,
     transactionFee,
-    sponsoredFee
+    sponsoredFee,
+    sponsoredFeeHex
   ) {
-    const zeroSponsoredFee = sponsoredFee === '0 CFX'
+    const zeroSponsoredFee = sponsoredFeeHex === '0'
     return (
       <div className="gas-modal-content__info-row-wrapper">
         <div className="gas-modal-content__info-row">
@@ -139,7 +141,7 @@ export default class GasModalPageContainer extends Component {
                 {this.context.t('sponsoredFee')}
               </span>
               <span className="gas-modal-content__info-row__transaction-info__value gas-modal-content__info-row__sponsor-info__value">
-                {sponsoredFee}
+                {`-${sponsoredFee}`}
               </span>
             </div>
           )}
@@ -171,6 +173,7 @@ export default class GasModalPageContainer extends Component {
         sendAmount,
         transactionFee,
         sponsoredFee,
+        sponsoredFeeHex,
       },
     } = this.props
 
@@ -200,7 +203,8 @@ export default class GasModalPageContainer extends Component {
                 newTotalEth,
                 sendAmount,
                 transactionFee,
-                sponsoredFee
+                sponsoredFee,
+                sponsoredFeeHex
               )}
             </div>
           </Tab>
@@ -217,7 +221,7 @@ export default class GasModalPageContainer extends Component {
       customModalGasLimitInHex,
       customModalStorageLimitInHex,
       disableSave,
-      isSpeedUp,
+      // isSpeedUp,
     } = this.props
 
     return (
@@ -230,15 +234,15 @@ export default class GasModalPageContainer extends Component {
           onCancel={() => cancelAndClose()}
           onClose={() => cancelAndClose()}
           onSubmit={() => {
-            if (isSpeedUp) {
-              this.context.metricsEvent({
-                eventOpts: {
-                  category: 'Navigation',
-                  action: 'Activity Log',
-                  name: 'Saved "Speed Up"',
-                },
-              })
-            }
+            /* if (isSpeedUp) { */
+            /*   this.context.metricsEvent({ */
+            /*     eventOpts: { */
+            /*       category: 'Navigation', */
+            /*       action: 'Activity Log', */
+            /*       name: 'Saved "Speed Up"', */
+            /*     }, */
+            /*   }) */
+            /* } */
             onSubmit(
               customModalGasLimitInHex,
               customModalGasPriceInHex,

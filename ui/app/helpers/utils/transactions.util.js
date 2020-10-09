@@ -235,13 +235,13 @@ export function sumHexes (...args) {
  */
 export function getStatusKey (transaction) {
   const {
-    txReceipt: { status: receiptStatus } = {},
+    txReceipt: { outcomeStatus: outcomeStatus } = {},
     type,
     status,
   } = transaction
 
   // There was an on-chain failure
-  if (receiptStatus === '0x0') {
+  if (outcomeStatus && outcomeStatus !== '0x0') {
     return 'failed'
   }
 

@@ -34,7 +34,7 @@ describe('Advanced Gas Inputs', function () {
   })
 
   it('wont update gasPrice in props before debounce', function () {
-    const event = { target: { value: 1 } }
+    const event = { target: { value: '1' } }
 
     wrapper
       .find('input')
@@ -46,7 +46,7 @@ describe('Advanced Gas Inputs', function () {
   })
 
   it('simulates onChange on gas price after debounce', function () {
-    const event = { target: { value: 1 } }
+    const event = { target: { value: '1' } }
 
     wrapper
       .find('input')
@@ -59,7 +59,7 @@ describe('Advanced Gas Inputs', function () {
   })
 
   it('wont update gasLimit in props before debounce', function () {
-    const event = { target: { value: 21000 } }
+    const event = { target: { value: '21000' } }
 
     wrapper
       .find('input')
@@ -71,7 +71,7 @@ describe('Advanced Gas Inputs', function () {
   })
 
   it('simulates onChange on gas limit after debounce', function () {
-    const event = { target: { value: 21000 } }
+    const event = { target: { value: '21000' } }
 
     wrapper
       .find('input')

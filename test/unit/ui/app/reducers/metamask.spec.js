@@ -267,6 +267,7 @@ describe('MetaMask Reducers', function () {
       to: '0xAddress',
       toNickname: '',
       maxModeOn: false,
+      addressTransactionCount: 1,
       amount: '0xAmount',
       memo: '0xMemo',
       errors: {},

@@ -1,6 +1,9 @@
 .currency-display-component {
   display: flex;
   align-items: center;
+  & > img {
+    margin-right: 5px;
+  }
 
   &__text {
     /*rtl:ignore*/

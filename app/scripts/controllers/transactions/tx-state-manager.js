@@ -113,7 +113,9 @@ class TransactionStateManager extends EventEmitter {
     if (address) {
       opts.from = address
     }
-    return this.getFilteredTxList(opts)
+    const pendings = this.getFilteredTxList(opts)
+    opts.status = 'executed'
+    return [...pendings, ...this.getFilteredTxList(opts)]
   }
 
   /**

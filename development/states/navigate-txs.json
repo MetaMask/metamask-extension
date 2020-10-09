@@ -264,6 +264,8 @@
     "buyView": {},
     "isMouseUser": true,
     "gasIsLoading": false,
+    "storageIsLoading": false,
+    "sponsorshipInfoIsLoading": false,
     "networkNonce": "0x92",
     "defaultHdPaths": {
       "trezor": "m/44'/60'/0'/0",

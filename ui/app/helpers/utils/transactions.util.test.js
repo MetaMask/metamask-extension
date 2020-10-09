@@ -29,7 +29,7 @@ describe('Transactions utils', function () {
           transaction: {
             status: 'confirmed',
             txReceipt: {
-              status: '0x0',
+              outcomeStatus: '0x1',
             },
           },
           expected: 'failed',
@@ -38,7 +38,7 @@ describe('Transactions utils', function () {
           transaction: {
             status: 'confirmed',
             txReceipt: {
-              status: '0x1',
+              outcomeStatus: '0x0',
             },
           },
           expected: 'confirmed',

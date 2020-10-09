@@ -6,6 +6,10 @@ import {
 } from '../../../lib/local-storage-helpers'
 import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util'
 import { isEthereumNetwork } from '../../selectors/selectors'
+import {
+  showLoadingIndication,
+  hideLoadingIndication,
+} from '../../store/actions'
 
 // Actions
 const BASIC_GAS_ESTIMATE_LOADING_FINISHED =
@@ -184,6 +188,7 @@ export function fetchBasicGasEstimates () {
       loadLocalStorageData('BASIC_PRICE_ESTIMATES_LAST_RETRIEVED') ||
       0
 
+    dispatch(showLoadingIndication())
     dispatch(basicGasEstimatesLoadingStarted())
 
     let basicEstimates
@@ -192,12 +197,12 @@ export function fetchBasicGasEstimates () {
     } else {
       const cachedBasicEstimates = loadLocalStorageData('BASIC_PRICE_ESTIMATES')
       basicEstimates =
-        cachedBasicEstimates ||
-        (await fetchExternalBasicGasEstimates(dispatch))
+        cachedBasicEstimates || (await fetchExternalBasicGasEstimates(dispatch))
     }
 
     dispatch(setBasicGasEstimateData(basicEstimates))
     dispatch(basicGasEstimatesLoadingFinished())
+    dispatch(hideLoadingIndication())
 
     return basicEstimates
   }
@@ -226,7 +231,11 @@ async function fetchExternalBasicGasEstimates (dispatch) {
   ])
 
   // const { result: estimateGasDrip } = await estimateGasResult.json()
-  const estimateGasGdripTimes10 = new BigNumber(estimateGasDrip, 16).times(10).div(1e9).toNumber() || 100
+  const estimateGasGdripTimes10 =
+    new BigNumber(estimateGasDrip, 16)
+      .times(10)
+      .div(1e9)
+      .toNumber() || 100
 
   const {
     safeLow: safeLowTimes10,
@@ -270,6 +279,7 @@ export function fetchBasicGasAndTimeEstimates () {
       loadLocalStorageData('BASIC_GAS_AND_TIME_API_ESTIMATES_LAST_RETRIEVED') ||
       0
 
+    dispatch(showLoadingIndication())
     dispatch(basicGasEstimatesLoadingStarted())
 
     let basicEstimates
@@ -286,6 +296,7 @@ export function fetchBasicGasAndTimeEstimates () {
 
     dispatch(setBasicGasEstimateData(basicEstimates))
     dispatch(basicGasEstimatesLoadingFinished())
+    dispatch(hideLoadingIndication())
     return basicEstimates
   }
 }
@@ -313,7 +324,11 @@ async function fetchExternalBasicGasAndTimeEstimates (dispatch) {
   ])
 
   // const { result: estimateGasDrip } = await estimateGasResult.json()
-  const estimateGasGdripTimes10 = new BigNumber(estimateGasDrip, 16).times(10).div(1e9).toNumber() || 100
+  const estimateGasGdripTimes10 =
+    new BigNumber(estimateGasDrip, 16)
+      .times(10)
+      .div(1e9)
+      .toNumber() || 100
 
   const {
     // average: averageTimes10,
@@ -411,8 +426,8 @@ function inliersByIQR (data, prop) {
     data.map((d) => (prop ? d[prop] : d))
   )
   const IQR = upperQuartile - lowerQuartile
-  const lowerBound = lowerQuartile - (1.5 * IQR)
-  const upperBound = upperQuartile + (1.5 * IQR)
+  const lowerBound = lowerQuartile - 1.5 * IQR
+  const upperBound = upperQuartile + 1.5 * IQR
   return data.filter((d) => {
     const value = prop ? d[prop] : d
     return value >= lowerBound && value <= upperBound

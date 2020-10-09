@@ -1,12 +1,12 @@
 .confirm-detail-row {
-  padding: 14px 0;
+  padding: 8px 0;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
 
   &__label {
-    font-size: .75rem;
+    font-size: 0.75rem;
     font-weight: 500;
     color: $scorpion;
     text-transform: uppercase;
@@ -21,8 +21,6 @@
   &__primary-group {
     display: flex;
     justify-content: flex-end;
-
-
   }
 
   &__primary-prefix {
@@ -34,6 +32,18 @@
   &__primary {
     font-size: 1.5rem;
     justify-content: flex-end;
+    & > div > img {
+      margin-right: 5px;
+    }
+    &.sponsored {
+      &:not(.is-total) span.currency-display-component__text {
+        text-decoration: line-through;
+        text-decoration-color: #ff782c;
+      }
+      & > div.primary-total-with-plus > span:last-child {
+        color: #ff782c;
+      }
+    }
   }
 
   &__secondary {
@@ -44,8 +54,8 @@
   }
 
   &__header-text {
-    font-size: .75rem;
-    text-transform: uppercase;
+    font-size: 0.75rem;
+    // text-transform: uppercase;
     margin-bottom: 6px;
     color: $scorpion;
 
@@ -55,7 +65,7 @@
     }
 
     &--total {
-      font-size: .625rem;
+      font-size: 0.625rem;
     }
   }
 
