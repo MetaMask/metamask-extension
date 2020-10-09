@@ -5,13 +5,13 @@ import { getValueFromWeiHex, hexToDecimal } from '../helpers/utils/conversions.u
 
 /**
  * @typedef {Object} SwapsEthToken
- * @property {string} symbol - the symbol for ETH, namely "ETH"
- * @property {string} name - the name of the ETH currency, "Ether"
- * @property {string} address - a substitute address for the metaswap-api to recognize the eth token
- * @property {string} decimals - the number of decimal places of divisibility of eth, 1 ETH is represented
- *  by 10^18 of its natural unit ( 1 Ether = 1,000,000,000,000,000,000 wei ). Hence, this will be 18.
- * @property {string} balance - the users ETH balance in decimal WEI
- * @property {string} string - the users ETH balance in decimal ETH
+ * @property {string} symbol - The symbol for ETH, namely "ETH"
+ * @property {string} name - The name of the ETH currency, "Ether"
+ * @property {string} address - A substitute address for the metaswap-api to
+ * recognize the ETH token
+ * @property {string} decimals - The number of ETH decimals, i.e. 18
+ * @property {string} balance - The user's ETH balance in decimal wei
+ * @property {string} string - The user's ETH balance in decimal ETH
  */
 
 /**
@@ -23,7 +23,7 @@ import { getValueFromWeiHex, hexToDecimal } from '../helpers/utils/conversions.u
  * set the standard properties for the token. The useSwapsEthToken hook extends that object with balance
  * and string values of the same type as found in ERC-20 token objects, as described above.
  *
- * @returns {object}
+ * @returns {SwapsEthToken}
  */
 export function useSwapsEthToken () {
   const selectedAccount = useSelector(getSelectedAccount)
