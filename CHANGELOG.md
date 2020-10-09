@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 0.4.0 Fri Oct 09 2020
+
 - feat: add simple gas feature back
 - fix: balance check when send cfx, data error when in approve pageca
 - fix: sponsor info in advanced gas modal
