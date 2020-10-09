@@ -1498,7 +1498,7 @@
   "speedUpTransaction": {
     "message": "Speed up this transaction"
   },
-  "spendingLimitAmount": {
+  "spendLimitAmount": {
     "message": "Spend limit amount"
   },
   "spendLimitInsufficient": {

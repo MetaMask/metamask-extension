@@ -51,7 +51,7 @@ export default class TransactionBreakdown extends PureComponent {
         <TransactionBreakdownRow
           title={
             isTokenApprove
-              ? t('spendingLimitAmount')
+              ? t('spendLimitAmount')
               : t('amount')
           }
         >
