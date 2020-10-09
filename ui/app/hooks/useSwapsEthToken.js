@@ -6,7 +6,7 @@ import { getValueFromWeiHex, hexToDecimal } from '../helpers/utils/conversions.u
 /**
  * @typedef {Object} SwapsEthToken
  * @property {string} symbol - the symbol for ETH, namely "ETH"
- * @property {string} name - the name of the eth current, "Ether"
+ * @property {string} name - the name of the ETH currency, "Ether"
  * @property {string} address - a substitute address for the metaswap-api to recognize the eth token
  * @property {string} decimals - the number of decimal places of divisibility of eth, 1 ETH is represented
  *  by 10^18 of its natural unit ( 1 Ether = 1,000,000,000,000,000,000 wei ). Hence, this will be 18.
