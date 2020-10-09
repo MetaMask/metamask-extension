@@ -164,33 +164,23 @@ export default class SwapsController {
       }
     }
 
-    let topAggIdData
-    let topAggId
-    let isBest
+    let topAggId = null
 
     // We can reduce time on the loading screen by only doing this after the
     // loading screen and best quote have rendered.
     if (!approvalRequired && !fetchParams?.balanceError) {
       newQuotes = await this.getAllQuotesWithGasEstimates(newQuotes)
-
-      if (Object.values(newQuotes).length === 0) {
-        this.setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR)
-      } else {
-        const {
-          topAggId: topAggIdAfterModifications,
-          isBest: isBestAfterModifications,
-        } = await this._findTopQuoteAggId(newQuotes)
-        topAggId = topAggIdAfterModifications
-        isBest = isBestAfterModifications
-      }
-    } else {
-      topAggIdData = await this._findTopQuoteAggId(newQuotes)
-      topAggId = topAggIdData.topAggId
-      isBest = topAggIdData.isBest
     }
 
-    if (isBest) {
-      newQuotes[topAggId].isBestQuote = true
+    if (Object.values(newQuotes).length === 0) {
+      this.setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR)
+    } else {
+      const topAggData = await this._findTopQuoteAggId(newQuotes)
+
+      if (topAggData.topAggId) {
+        topAggId = topAggData.topAggId
+        newQuotes[topAggId].isBestQuote = topAggData.isBest
+      }
     }
 
     const { swapsState } = this.store.getState()

@@ -404,7 +404,7 @@ describe('SwapsController', function () {
         assert.strictEqual(newQuotes[topAggId].isBestQuote, true)
       })
 
-      it('does not set isBestQuote if no conversion rate exists for destination token', async function () {
+      it('does not mark as best quote if no conversion rate exists for destination token', async function () {
         fetchTradesInfoStub.resolves(MOCK_QUOTES)
 
         // Make it so approval is not required
@@ -420,7 +420,7 @@ describe('SwapsController', function () {
           MOCK_FETCH_METADATA,
         )
 
-        assert.strictEqual(newQuotes[topAggId].isBestQuote, undefined)
+        assert.strictEqual(newQuotes[topAggId].isBestQuote, false)
       })
     })
 
