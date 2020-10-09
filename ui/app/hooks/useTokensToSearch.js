@@ -49,7 +49,13 @@ export function getRenderableTokenData (token, contractExchangeRates, conversion
   }
 }
 
-export function useTokensToSearch ({ providedTokens, usersTokens = [], topTokens = {}, onlyEth, singleToken }) {
+export function useTokensToSearch ({
+  providedTokens,
+  usersTokens = [],
+  topTokens = {},
+  onlyEth,
+  singleToken,
+}) {
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual)
   const conversionRate = useSelector(getConversionRate)
   const currentCurrency = useSelector(getCurrentCurrency)

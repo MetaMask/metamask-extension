@@ -79,14 +79,12 @@ export default function BuildQuote ({
 
   const selectedFromToken = useTokensToSearch({
     providedTokens: fromToken || fetchParamsFromToken ? [fromToken || fetchParamsFromToken] : [],
-    rawEthBalance: ethBalance,
     usersTokens: memoizedUsersTokens,
     onlyEth: (fromToken || fetchParamsFromToken)?.symbol === 'ETH',
     singleToken: true,
   })[0]
 
   const tokensToSearch = useTokensToSearch({
-    rawEthBalance: ethBalance,
     usersTokens: memoizedUsersTokens,
     topTokens: topAssets,
   })
