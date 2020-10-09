@@ -5,7 +5,6 @@ import { getValueFromWeiHex, hexToDecimal } from '../helpers/utils/conversions.u
 
 /**
  * @typedef {Object} SwapsEthToken
- * @property {string} decimals - a secondary currency string formatted for display
  * @property {string} symbol - the symbol for ETH, namely "ETH"
  * @property {string} name - the name of the eth current, "Ether"
  * @property {string} address - a substitute address for the metaswap-api to recognize the eth token
