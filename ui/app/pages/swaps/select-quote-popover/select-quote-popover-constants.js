@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 
 export const QUOTE_DATA_ROWS_PROPTYPES_SHAPE = PropTypes.shape({
-  aggregatorId: PropTypes.string.isRequired,
+  aggId: PropTypes.string.isRequired,
   amountReceiving: PropTypes.string.isRequired,
   destinationTokenDecimals: PropTypes.number.isRequired,
   destinationTokenSymbol: PropTypes.string.isRequired,

@@ -96,7 +96,7 @@ const QuoteDetails = ({
 }
 
 QuoteDetails.propTypes = {
-  slippage: PropTypes.string.isRequired,
+  slippage: PropTypes.number.isRequired,
   sourceTokenValue: PropTypes.string.isRequired,
   sourceTokenSymbol: PropTypes.string.isRequired,
   destinationTokenValue: PropTypes.string.isRequired,

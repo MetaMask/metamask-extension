@@ -171,6 +171,6 @@ SortList.propTypes = {
   quoteDataRows: PropTypes.arrayOf(QUOTE_DATA_ROWS_PROPTYPES_SHAPE).isRequired,
   sortDirection: PropTypes.number.isRequired,
   setSortDirection: PropTypes.func.isRequired,
-  sortColumn: PropTypes.string.isRequired,
+  sortColumn: PropTypes.oneOfType([null, PropTypes.string]).isRequired,
   setSortColumn: PropTypes.func.isRequired,
 }
