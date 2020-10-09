@@ -1686,9 +1686,6 @@
     "message": "A service fee of $1% is automatically factored into each quote, which supports ongoing development to make MetaMask even better.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
-  "swapMinimumAmountReceivingInfoTooltip": {
-    "message": "This is the minimum amount you will receive. You may receive more depending on slippage."
-  },
   "swapNQuotesAvailable": {
     "message": "$1 quotes available",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
@@ -1737,6 +1734,9 @@
   },
   "swapReceiving": {
     "message": "Receiving"
+  },
+  "swapReceivingInfoTooltip": {
+    "message": "This is an estimate. The exact amount depends on slippage."
   },
   "swapRequestForQuotation": {
     "message": "Request for quotation"

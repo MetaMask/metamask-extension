@@ -77,7 +77,7 @@ export default function SortList ({
               <span>{t('swapReceiving')}</span>
               <InfoTooltip
                 position="bottom"
-                contentText={t('swapMinimumAmountReceivingInfoTooltip')}
+                contentText={t('swapReceivingInfoTooltip')}
               />
               <ToggleArrows />
             </div>
