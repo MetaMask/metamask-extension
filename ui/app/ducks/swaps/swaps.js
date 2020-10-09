@@ -21,10 +21,9 @@ import {
   setSwapsLiveness,
 } from '../../store/actions'
 import { AWAITING_SWAP_ROUTE, BUILD_QUOTE_ROUTE, LOADING_QUOTES_ROUTE, SWAPS_ERROR_ROUTE, SWAPS_MAINTENANCE_ROUTE } from '../../helpers/constants/routes'
-import { fetchTradesInfo, fetchSwapsFeatureLiveness } from '../../pages/swaps/swaps.util'
+import { fetchSwapsFeatureLiveness } from '../../pages/swaps/swaps.util'
 import { calcGasTotal } from '../../pages/send/send.utils'
-import { decimalToHex, getValueFromWeiHex, hexMax, decGWEIToHexWEI, hexWEIToDecETH } from '../../helpers/utils/conversions.util'
-import { constructTxParams } from '../../helpers/utils/util'
+import { decimalToHex, getValueFromWeiHex, hexMax, decGWEIToHexWEI } from '../../helpers/utils/conversions.util'
 import { calcTokenAmount } from '../../helpers/utils/token-util'
 import {
   getFastPriceEstimateInHexWEI,
@@ -131,8 +130,6 @@ export const getCustomSwapsGas = (state) => state.metamask.swapsState.customMaxG
 export const getCustomSwapsGasPrice = (state) => state.metamask.swapsState.customGasPrice
 
 export const getFetchParams = (state) => state.metamask.swapsState.fetchParams
-
-export const getMaxMode = (state) => state.metamask.swapsState.maxMode
 
 export const getQuotes = (state) => state.metamask.swapsState.quotes
 
@@ -317,8 +314,6 @@ export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage, me
 
     dispatch(setFromToken(selectedFromToken))
 
-    const maxMode = getMaxMode(state)
-
     metaMetricsEvent({
       event: 'Quotes Requested',
       category: 'swaps',
@@ -354,7 +349,6 @@ export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage, me
           sourceDecimals: fromTokenDecimals,
         },
         {
-          maxMode,
           sourceTokenInfo,
           destinationTokenInfo,
           accountBalance: selectedAccount.balance,
@@ -445,7 +439,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     history.push(AWAITING_SWAP_ROUTE)
 
     const usedQuote = getUsedQuote(state)
-    let usedTradeTxParams = usedQuote.trade
+    const usedTradeTxParams = usedQuote.trade
 
     const estimatedGasLimit = new BigNumber(usedQuote?.gasEstimate || decimalToHex(usedQuote?.averageGas || 0), 16)
     const estimatedGasLimitWithMultiplier = estimatedGasLimit.times(1.4, 10).round(0).toString(16)
@@ -457,43 +451,6 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     const fastGasEstimate = getFastPriceEstimateInHexWEI(state)
     const usedGasPrice = customConvertGasPrice || tradeTxParams?.gasPrice || fastGasEstimate
     usedTradeTxParams.gasPrice = usedGasPrice
-
-    const totalGasLimitForCalculation = (new BigNumber(usedTradeTxParams.gas, 16)).plus(usedQuote.approvalNeeded?.gas || '0x0', 16).toString(16)
-    const gasTotalInWeiHex = calcGasTotal(totalGasLimitForCalculation, usedGasPrice)
-
-    const maxMode = getMaxMode(state)
-    const selectedAccount = getSelectedAccount(state)
-    if (maxMode && sourceTokenInfo.symbol === 'ETH') {
-      const ethBalance = selectedAccount.balance
-
-      if ((new BigNumber(ethBalance, 16)).lte(gasTotalInWeiHex, 16)) {
-        // If somehow signAndSendTransactions was called when the users eth balance is less than the gas cost of a swap, an error has occured.
-        // The swap transaction should not be created.
-        dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR))
-        history.push(SWAPS_ERROR_ROUTE)
-        return
-      }
-
-      const revisedTradeValueInHexWei = (new BigNumber(ethBalance, 16)).minus(gasTotalInWeiHex, 16).toString(16)
-      const revisedTradeValueInEth = hexWEIToDecETH(revisedTradeValueInHexWei)
-      const revisedQuotes = await fetchTradesInfo({
-        sourceToken: sourceTokenInfo.address,
-        destinationToken: destinationTokenInfo.address,
-        slippage,
-        value: revisedTradeValueInEth,
-        exchangeList: usedQuote.aggregator,
-        fromAddress: selectedAccount.address,
-        timeout: 10000,
-        sourceDecimals: 18,
-      })
-      const revisedQuote = Object.values(revisedQuotes)[0]
-      usedTradeTxParams = constructTxParams({
-        ...revisedQuote.trade,
-        gas: decimalToHex(usedTradeTxParams.gas),
-        amount: decimalToHex(revisedQuote.trade.value),
-        gasPrice: tradeTxParams.gasPrice,
-      })
-    }
 
     const conversionRate = getConversionRate(state)
     const destinationValue = calcTokenAmount(usedQuote.destinationAmount, destinationTokenInfo.decimals || 18).toPrecision(8)

@@ -19,7 +19,6 @@ import {
   setBalanceError,
   getQuotesLastFetched,
   getBalanceError,
-  getMaxMode,
   getCustomSwapsGas,
   getDestinationTokenInfo,
   getSwapsTradeTxParams,
@@ -110,7 +109,6 @@ export default function ViewQuote () {
   const currentCurrency = useSelector(getCurrentCurrency)
   const swapsTokens = useSelector(getTokens)
   const balanceError = useSelector(getBalanceError)
-  const maxMode = useSelector(getMaxMode)
   const fetchParams = useSelector(getFetchParams)
   const approveTxParams = useSelector(getApproveTxParams)
   const selectedQuote = useSelector(getSelectedQuote)
@@ -233,9 +231,6 @@ export default function ViewQuote () {
     (tokenCost).gt(new BigNumber(selectedFromToken.balance || '0x0'))
   )
 
-  const insufficientEthForGas = (new BigNumber(gasTotalInWeiHex, 16))
-    .gt(new BigNumber(ethBalance || '0x0'))
-
   const insufficientEth = (ethCost).gt(new BigNumber(ethBalance || '0x0'))
 
   const tokenBalanceNeeded = insufficientTokens
@@ -282,16 +277,9 @@ export default function ViewQuote () {
     }
   }, [originalApproveAmount, approveAmount])
 
-  const allowedMaxModeSubmit = (
-    maxMode &&
-    sourceTokenSymbol === 'ETH' &&
-    !insufficientEthForGas
-  )
-
   const showWarning = (
     (balanceError || tokenBalanceNeeded || ethBalanceNeeded) &&
-    !warningHidden &&
-    !allowedMaxModeSubmit
+    !warningHidden
   )
 
   const numberOfQuotes = Object.values(quotes).length
