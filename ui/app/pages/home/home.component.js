@@ -64,6 +64,7 @@ export default class Home extends PureComponent {
     showAwaitingSwapScreen: PropTypes.bool.isRequired,
     swapsFetchParams: PropTypes.object,
     swapsEnabled: PropTypes.bool,
+    isMainnet: PropTypes.bool,
   }
 
   state = {
@@ -271,6 +272,7 @@ export default class Home extends PureComponent {
       swapsWelcomeMessageHasBeenShown,
       setSwapsWelcomeMessageHasBeenShown,
       swapsEnabled,
+      isMainnet,
     } = this.props
 
     if (forgottenPassword) {
@@ -284,7 +286,7 @@ export default class Home extends PureComponent {
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
         <Route path={CONNECTED_ACCOUNTS_ROUTE} component={ConnectedAccounts} exact />
         <div className="home__container">
-          {!swapsWelcomeMessageHasBeenShown && swapsEnabled ? (
+          {!swapsWelcomeMessageHasBeenShown && swapsEnabled && isMainnet ? (
             <SwapsIntroPopup onClose={setSwapsWelcomeMessageHasBeenShown} />
           ) : null}
           { isPopup && !connectedStatusPopoverHasBeenShown ? this.renderPopover() : null }

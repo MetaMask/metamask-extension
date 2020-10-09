@@ -6,6 +6,7 @@ import {
   getCurrentEthBalance,
   getFirstPermissionRequest,
   getTotalUnapprovedCount,
+  getIsMainnet,
 } from '../../selectors'
 
 import {
@@ -73,6 +74,7 @@ const mapStateToProps = (state) => {
     haveSwapsQuotes: Boolean(Object.values(swapsState.quotes || {}).length),
     swapsFetchParams: swapsState.fetchParams,
     showAwaitingSwapScreen: swapsState.routeState === 'awaiting',
+    isMainnet: getIsMainnet(state),
   }
 }
 
