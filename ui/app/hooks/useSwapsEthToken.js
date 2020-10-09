@@ -31,7 +31,7 @@ export function useSwapsEthToken () {
 
   return {
     ...ETH_SWAPS_TOKEN_OBJECT,
-    balance: hexToDecimal(selectedAccount.balance),
+    balance: hexToDecimal(balance),
     string: getValueFromWeiHex({
       value: balance,
       numberOfDecimals: 4,
