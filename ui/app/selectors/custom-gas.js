@@ -71,9 +71,9 @@ export function getFastPriceEstimateInHexWEI (state) {
 }
 
 export function getDefaultActiveButtonIndex (gasButtonInfo, customGasPriceInHex, gasPrice) {
-  return gasButtonInfo.findIndex(({ priceInHexWei }) => {
-    return priceInHexWei === addHexPrefix(customGasPriceInHex || gasPrice)
-  })
+  return gasButtonInfo
+    .map(({ priceInHexWei }) => priceInHexWei)
+    .lastIndexOf(addHexPrefix(customGasPriceInHex || gasPrice))
 }
 
 export function getSafeLowEstimate (state) {
@@ -191,7 +191,7 @@ export function getGasPriceInHexWei (price) {
   return addHexPrefix(priceEstimateToWei(value))
 }
 
-export function getRenderableBasicEstimateData (state, gasLimit) {
+export function getRenderableBasicEstimateData (state, gasLimit, useFastestButtons) {
   if (getBasicGasEstimateLoadingStatus(state)) {
     return []
   }
@@ -210,39 +210,52 @@ export function getRenderableBasicEstimateData (state, gasLimit) {
         safeLowWait,
         avgWait,
         fastWait,
+        fastest,
+        fastestWait,
       },
     },
   } = state
 
-  return [
-    {
-      gasEstimateType: GAS_ESTIMATE_TYPES.SLOW,
-      feeInPrimaryCurrency: getRenderableEthFee(safeLow, gasLimit),
-      feeInSecondaryCurrency: showFiat
-        ? getRenderableConvertedCurrencyFee(safeLow, gasLimit, currentCurrency, conversionRate)
-        : '',
-      timeEstimate: safeLowWait && getRenderableTimeEstimate(safeLowWait),
-      priceInHexWei: getGasPriceInHexWei(safeLow),
-    },
-    {
-      gasEstimateType: GAS_ESTIMATE_TYPES.AVERAGE,
-      feeInPrimaryCurrency: getRenderableEthFee(average, gasLimit),
-      feeInSecondaryCurrency: showFiat
-        ? getRenderableConvertedCurrencyFee(average, gasLimit, currentCurrency, conversionRate)
-        : '',
-      timeEstimate: avgWait && getRenderableTimeEstimate(avgWait),
-      priceInHexWei: getGasPriceInHexWei(average),
-    },
-    {
-      gasEstimateType: GAS_ESTIMATE_TYPES.FAST,
-      feeInPrimaryCurrency: getRenderableEthFee(fast, gasLimit),
-      feeInSecondaryCurrency: showFiat
-        ? getRenderableConvertedCurrencyFee(fast, gasLimit, currentCurrency, conversionRate)
-        : '',
-      timeEstimate: fastWait && getRenderableTimeEstimate(fastWait),
-      priceInHexWei: getGasPriceInHexWei(fast),
-    },
-  ]
+  const slowEstimatData = {
+    gasEstimateType: GAS_ESTIMATE_TYPES.SLOW,
+    feeInPrimaryCurrency: getRenderableEthFee(safeLow, gasLimit),
+    feeInSecondaryCurrency: showFiat
+      ? getRenderableConvertedCurrencyFee(safeLow, gasLimit, currentCurrency, conversionRate)
+      : '',
+    timeEstimate: safeLowWait && getRenderableTimeEstimate(safeLowWait),
+    priceInHexWei: getGasPriceInHexWei(safeLow),
+  }
+  const averageEstimateData = {
+    gasEstimateType: GAS_ESTIMATE_TYPES.AVERAGE,
+    feeInPrimaryCurrency: getRenderableEthFee(average, gasLimit),
+    feeInSecondaryCurrency: showFiat
+      ? getRenderableConvertedCurrencyFee(average, gasLimit, currentCurrency, conversionRate)
+      : '',
+    timeEstimate: avgWait && getRenderableTimeEstimate(avgWait),
+    priceInHexWei: getGasPriceInHexWei(average),
+  }
+  const fastEstimatData = {
+    gasEstimateType: GAS_ESTIMATE_TYPES.FAST,
+    feeInPrimaryCurrency: getRenderableEthFee(fast, gasLimit),
+    feeInSecondaryCurrency: showFiat
+      ? getRenderableConvertedCurrencyFee(fast, gasLimit, currentCurrency, conversionRate)
+      : '',
+    timeEstimate: fastWait && getRenderableTimeEstimate(fastWait),
+    priceInHexWei: getGasPriceInHexWei(fast),
+  }
+  const fastestEstimateData = {
+    gasEstimateType: GAS_ESTIMATE_TYPES.FASTEST,
+    feeInPrimaryCurrency: getRenderableEthFee(fastest, gasLimit),
+    feeInSecondaryCurrency: showFiat
+      ? getRenderableConvertedCurrencyFee(fastest, gasLimit, currentCurrency, conversionRate)
+      : '',
+    timeEstimate: fastestWait && getRenderableTimeEstimate(fastestWait),
+    priceInHexWei: getGasPriceInHexWei(fastest),
+  }
+
+  return useFastestButtons
+    ? [averageEstimateData, fastEstimatData, fastestEstimateData]
+    : [slowEstimatData, averageEstimateData, fastEstimatData]
 }
 
 export function getRenderableEstimateDataForSmallButtonsFromGWEI (state) {

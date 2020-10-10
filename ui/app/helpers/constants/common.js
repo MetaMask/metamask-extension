@@ -17,4 +17,5 @@ export const GAS_ESTIMATE_TYPES = {
   SLOW: 'SLOW',
   AVERAGE: 'AVERAGE',
   FAST: 'FAST',
+  FASTEST: 'FASTEST',
 }

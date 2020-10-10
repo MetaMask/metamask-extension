@@ -74,6 +74,7 @@ const mapStateToProps = (state, ownProps) => {
     customGasLimitMessage = '',
     customTotalSupplement = '',
     extraInfoRow = null,
+    useFastestButtons = false,
   } = modalProps || {}
   const { transaction = {} } = ownProps
   const selectedTransaction = isSwap
@@ -97,7 +98,7 @@ const mapStateToProps = (state, ownProps) => {
   const customModalGasLimitInHex = getCustomGasLimit(state) || currentGasLimit || '0x5208'
   const customGasTotal = calcGasTotal(customModalGasLimitInHex, customModalGasPriceInHex)
 
-  const gasButtonInfo = getRenderableBasicEstimateData(state, customModalGasLimitInHex)
+  const gasButtonInfo = getRenderableBasicEstimateData(state, customModalGasLimitInHex, useFastestButtons)
 
   const currentCurrency = getCurrentCurrency(state)
   const conversionRate = getConversionRate(state)

@@ -394,6 +394,7 @@ export default function ViewQuote () {
         }
         : null
     ),
+    useFastestButtons: true,
   }))
 
   const thirdRowTextComponent = (
