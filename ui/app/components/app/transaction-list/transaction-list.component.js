@@ -29,8 +29,6 @@ const getTransactionGroupRecipientAddressFilter = (recipientAddress) => {
 const tokenTransactionFilter = ({
   initialTransaction: {
     transactionCategory,
-  },
-  primaryTransaction: {
     destinationTokenSymbol,
     sourceTokenSymbol,
   },

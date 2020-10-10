@@ -512,6 +512,8 @@
         "value": "0xde0b6b3a7640000"
       },
       "hash": "0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a",
+      "destinationTokenSymbol": "ABC",
+      "sourceTokenSymbol": "ETH",
       "transactionCategory": "swap"
     },
     "primaryTransaction": {

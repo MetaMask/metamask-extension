@@ -133,14 +133,14 @@ export function useTransactionDisplayData (transactionGroup) {
   } else if (transactionCategory === SWAP) {
     category = TRANSACTION_CATEGORY_SWAP
     title = t('swapTokenToToken', [
-      primaryTransaction.sourceTokenSymbol,
-      primaryTransaction.destinationTokenSymbol,
+      initialTransaction.sourceTokenSymbol,
+      initialTransaction.destinationTokenSymbol,
     ])
     subtitle = origin
     subtitleContainsOrigin = true
     primarySuffix = isViewingReceivedTokenFromSwap
       ? currentAsset.symbol
-      : primaryTransaction.sourceTokenSymbol
+      : initialTransaction.sourceTokenSymbol
     primaryDisplayValue = swapTokenValue
     secondaryDisplayValue = swapTokenFiatAmount
     prefix = isViewingReceivedTokenFromSwap ? '+' : '-'
