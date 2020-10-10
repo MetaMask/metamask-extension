@@ -1662,7 +1662,7 @@
     "message": "Liquidity sources include:"
   },
   "swapIntroPopupSubTitle": {
-    "message": "You can now swap tokens directly in your MetaMask wallet. MetaMask Swaps agglomerates multiple decentralized exchange aggregators, professional market makers, and individual DEXs to ensure MetaMask users always get the best price with the lowest network fees."
+    "message": "You can now swap tokens directly in your MetaMask wallet. MetaMask Swaps combines multiple decentralized exchange aggregators, professional market makers, and individual DEXs to ensure MetaMask users always get the best price with the lowest network fees."
   },
   "swapIntroPopupTitle": {
     "message": "Token swapping is here!"
