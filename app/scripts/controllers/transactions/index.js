@@ -9,7 +9,6 @@ import { ethers } from 'ethers'
 import NonceTracker from 'nonce-tracker'
 import log from 'loglevel'
 import BigNumber from 'bignumber.js'
-import { cloneDeep } from 'lodash'
 import {
   TOKEN_METHOD_APPROVE,
   TOKEN_METHOD_TRANSFER,
