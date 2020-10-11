@@ -52,6 +52,7 @@ import {
   SWAPS_ROUTE,
   SETTINGS_ROUTE,
   UNLOCK_ROUTE,
+  BUILD_QUOTE_ROUTE,
 } from '../../helpers/constants/routes'
 
 import { ENVIRONMENT_TYPE_NOTIFICATION, ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
@@ -161,6 +162,11 @@ export default class Routes extends Component {
     return Boolean(matchPath(location.pathname, { path: SWAPS_ROUTE, exact: false }))
   }
 
+  onSwapsBuildQuotePage () {
+    const { location } = this.props
+    return Boolean(matchPath(location.pathname, { path: BUILD_QUOTE_ROUTE, exact: false }))
+  }
+
   hideAppHeader () {
     const { location } = this.props
 
@@ -248,7 +254,7 @@ export default class Routes extends Component {
 
               }
             }}
-            disabled={this.onConfirmPage()}
+            disabled={this.onConfirmPage() || (this.onSwapsPage() && !this.onSwapsBuildQuotePage())}
           />
         ) }
         <Sidebar
