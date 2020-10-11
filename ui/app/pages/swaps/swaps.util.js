@@ -367,7 +367,7 @@ export function quotesToRenderableData (quotes, gasPrice, conversionRate, curren
 export function getSwapsTokensReceivedFromTxMeta (tokenSymbol, txMeta, tokenAddress, accountAddress, tokenDecimals) {
   const txReceipt = txMeta?.txReceipt
   if (tokenSymbol === 'ETH') {
-    if (!txMeta || !txMeta.postTxBalance || !txMeta.preTxBalance) {
+    if (!txReceipt || !txMeta || !txMeta.postTxBalance || !txMeta.preTxBalance) {
       return null
     }
     const gasCost = calcGasTotal(txReceipt.gasUsed, txMeta.txParams.gasPrice)
