@@ -153,6 +153,18 @@ export default function BuildQuote ({
 
   const hideDropdownItemIf = useCallback((item) => item.address === fromTokenAddress, [fromTokenAddress])
 
+  const tokensWithBalancesFromToken = tokensWithBalances.find((token) => token.address === fromToken?.address)
+  const previousTokensWithBalancesFromToken = usePrevious(tokensWithBalancesFromToken)
+
+  useEffect(() => {
+    const notEth = tokensWithBalancesFromToken?.address !== ETH_SWAPS_TOKEN_OBJECT.address
+    const addressesAreTheSame = tokensWithBalancesFromToken?.address === previousTokensWithBalancesFromToken?.address
+    const balanceHasChanged = tokensWithBalancesFromToken?.balance !== previousTokensWithBalancesFromToken?.balance
+    if (notEth && addressesAreTheSame && balanceHasChanged) {
+      dispatch(setSwapsFromToken({ ...fromToken, balance: tokensWithBalancesFromToken?.balance, string: tokensWithBalancesFromToken?.string }))
+    }
+  }, [dispatch, tokensWithBalancesFromToken, previousTokensWithBalancesFromToken, fromToken])
+
   // If the eth balance changes while on build quote, we update the selected from token
   useEffect(() => {
     if (fromToken?.address === ETH_SWAPS_TOKEN_OBJECT.address && (fromToken?.balance !== ethBalance)) {
