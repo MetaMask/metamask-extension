@@ -133,9 +133,9 @@ export default class TransactionController extends EventEmitter {
    *
    * @returns {number} The numerical chainId.
    */
-  getChainId () {
+  async getChainId () {
     const networkState = this.networkStore.getState()
-    const chainId = this._getCurrentChainId()
+    const chainId = await this._getCurrentChainId()
     const integerChainId = parseInt(chainId, 16)
     if (networkState === 'loading' || Number.isNaN(integerChainId)) {
       return 0
@@ -498,7 +498,7 @@ export default class TransactionController extends EventEmitter {
   async signTransaction (txId) {
     const txMeta = this.txStateManager.getTx(txId)
     // add network/chain id
-    const chainId = this.getChainId()
+    const chainId = await this.getChainId()
     const txParams = { ...txMeta.txParams, chainId }
     // sign tx
     const fromAddress = txParams.from

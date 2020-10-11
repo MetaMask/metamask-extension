@@ -57,9 +57,10 @@ export default class NetworkController extends EventEmitter {
       network: this.networkStore,
     })
 
-    // provider and block tracker
+    // provider, block tracker, and EthQuery
     this._provider = null
     this._blockTracker = null
+    this._query = null
 
     // provider and block tracker proxies - because the network changes
     this._providerProxy = null
@@ -116,26 +117,37 @@ export default class NetworkController extends EventEmitter {
     return this.getNetworkState() === 'loading'
   }
 
-  lookupNetwork () {
+  async lookupNetwork () {
     // Prevent firing when provider is not defined.
     if (!this._provider) {
       log.warn('NetworkController - lookupNetwork aborted due to missing provider')
       return
     }
 
+    const initialNetwork = this.getNetworkState()
+    let currentNetwork
+
     const { type } = this.getProviderConfig()
-    const chainId = this.getCurrentChainId()
+    const chainId = await this.getCurrentChainId()
+
+    currentNetwork = this.getNetworkState()
+    if (initialNetwork !== currentNetwork) {
+      return
+    }
+
     if (!chainId) {
       log.warn('NetworkController - lookupNetwork aborted due to missing chainId')
       this.setNetworkState('loading')
       return
     }
 
-    // Ping the RPC endpoint so we can confirm that it works
-    const ethQuery = new EthQuery(this._provider)
-    const initialNetwork = this.getNetworkState()
-    ethQuery.sendAsync({ method: 'net_version' }, (err, networkVersion) => {
-      const currentNetwork = this.getNetworkState()
+    // The net_version call performs two functions:
+    // 1. Ping the endpoint to confirm that it works, otherwise set the network
+    //    state to 'loading'. Our UI doesn't handle unresponsive endpoints well.
+    // 2. Get the network ID/version so that we can use it to set the network
+    //    state, which we do for legacy reasons.
+    this._query.sendAsync({ method: 'net_version' }, (err, networkVersion) => {
+      currentNetwork = this.getNetworkState()
       if (initialNetwork === currentNetwork) {
         if (err) {
           this.setNetworkState('loading')
@@ -151,9 +163,34 @@ export default class NetworkController extends EventEmitter {
     })
   }
 
-  getCurrentChainId () {
+  /**
+   * Gets the chain ID for the current network. Calls 'eth_chainId' for
+   * providers of type LOCALHOST, and retrieves the ID from constants or the
+   * provider config otherwise.
+   *
+   * @returns {Promise<string>} The chain ID for the current network.
+   */
+  async getCurrentChainId () {
     const { type, chainId: configChainId } = this.getProviderConfig()
-    return NETWORK_TYPE_TO_ID_MAP[type]?.chainId || configChainId
+    if (type !== LOCALHOST) {
+      return NETWORK_TYPE_TO_ID_MAP[type]?.chainId || configChainId
+    }
+
+    return new Promise((resolve) => {
+      const initialNetwork = this.getNetworkState()
+      this._query.sendAsync({ method: 'eth_chainId' }, (err, chainId) => {
+        const currentNetwork = this.getNetworkState()
+        if (initialNetwork !== currentNetwork) {
+          return resolve(null)
+        }
+
+        if (err) {
+          log.warn(err)
+          return resolve(null)
+        }
+        return resolve(chainId || null)
+      })
+    })
   }
 
   setRpcTarget (rpcUrl, chainId, ticker = 'ETH', nickname = '', rpcPrefs) {
@@ -168,9 +205,19 @@ export default class NetworkController extends EventEmitter {
   }
 
   async setProviderType (type, rpcUrl = '', ticker = 'ETH', nickname = '') {
-    assert.notEqual(type, 'rpc', `NetworkController - cannot call "setProviderType" with type 'rpc'. use "setRpcTarget"`)
-    assert(INFURA_PROVIDER_TYPES.includes(type) || type === LOCALHOST, `NetworkController - Unknown rpc type "${type}"`)
-    const { chainId } = NETWORK_TYPE_TO_ID_MAP[type]
+    assert.notEqual(
+      type, 'rpc',
+      `NetworkController - cannot call "setProviderType" with type 'rpc'. use "setRpcTarget"`,
+    )
+    assert(
+      INFURA_PROVIDER_TYPES.includes(type) || type === LOCALHOST,
+      `NetworkController - Unknown rpc type "${type}"`,
+    )
+
+    const chainId = type === LOCALHOST
+      ? null
+      : NETWORK_TYPE_TO_ID_MAP[type].chainId
+
     this.setProviderConfig({ type, rpcUrl, chainId, ticker, nickname })
   }
 
@@ -258,8 +305,9 @@ export default class NetworkController extends EventEmitter {
     } else {
       this._blockTrackerProxy = createEventEmitterProxy(blockTracker, { eventFilter: 'skipInternal' })
     }
-    // set new provider and blockTracker
+    // set new provider, blockTracker, and EthQuery
     this._provider = provider
     this._blockTracker = blockTracker
+    this._query = new EthQuery(provider)
   }
 }

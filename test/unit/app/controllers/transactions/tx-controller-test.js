@@ -336,9 +336,9 @@ describe('Transaction Controller', function () {
   })
 
   describe('#getChainId', function () {
-    it('returns 0 when the chainId is NaN', function () {
+    it('returns 0 when the chainId is NaN', async function () {
       txController.networkStore = new ObservableStore('loading')
-      assert.equal(txController.getChainId(), 0)
+      assert.equal(await txController.getChainId(), 0)
     })
   })
 

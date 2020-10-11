@@ -409,8 +409,8 @@ export default class MetamaskController extends EventEmitter {
       this.removeEventListener && this.removeEventListener('update', updatePublicConfigStore)
     }
 
-    function updatePublicConfigStore (memState) {
-      const chainId = networkController.getCurrentChainId()
+    async function updatePublicConfigStore (memState) {
+      const chainId = await networkController.getCurrentChainId()
       if (memState.network !== 'loading') {
         publicConfigStore.putState(selectPublicState(chainId, memState))
       }
