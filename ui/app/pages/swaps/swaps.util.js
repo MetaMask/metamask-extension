@@ -364,18 +364,27 @@ export function quotesToRenderableData (quotes, gasPrice, conversionRate, curren
   })
 }
 
-export function getSwapsTokensReceivedFromTxMeta (tokenSymbol, txMeta, tokenAddress, accountAddress, tokenDecimals) {
+export function getSwapsTokensReceivedFromTxMeta (tokenSymbol, txMeta, tokenAddress, accountAddress, tokenDecimals, approvalTxMeta) {
   const txReceipt = txMeta?.txReceipt
   if (tokenSymbol === 'ETH') {
     if (!txReceipt || !txMeta || !txMeta.postTxBalance || !txMeta.preTxBalance) {
       return null
     }
+
+    let approvalTxGasCost = '0x0'
+    if (approvalTxMeta && approvalTxMeta.txReceipt) {
+      approvalTxGasCost = calcGasTotal(approvalTxMeta.txReceipt.gasUsed, approvalTxMeta.txParams.gasPrice)
+    }
+
     const gasCost = calcGasTotal(txReceipt.gasUsed, txMeta.txParams.gasPrice)
-    const preTxBalanceLessGasCost = subtractCurrencies(txMeta.preTxBalance, gasCost, {
+    const totalGasCost = (new BigNumber(gasCost, 16)).plus(approvalTxGasCost, 16).toString(16)
+
+    const preTxBalanceLessGasCost = subtractCurrencies(txMeta.preTxBalance, totalGasCost, {
       aBase: 16,
       bBase: 16,
       toNumericBase: 'hex',
     })
+
     const ethReceived = subtractCurrencies(txMeta.postTxBalance, preTxBalanceLessGasCost, {
       aBase: 16,
       bBase: 16,
