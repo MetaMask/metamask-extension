@@ -245,7 +245,7 @@ export const prepareToLeaveSwaps = () => {
 export const fetchAndSetSwapsGasPriceInfo = () => {
   return async (dispatch) => {
     const basicEstimates = await dispatch(fetchBasicGasAndTimeEstimates())
-    dispatch(setSwapsTxGasPrice(decGWEIToHexWEI(basicEstimates.fast)))
+    dispatch(setSwapsTxGasPrice(decGWEIToHexWEI(basicEstimates.fastest)))
     await dispatch(fetchGasEstimates(basicEstimates.blockTime))
 
   }

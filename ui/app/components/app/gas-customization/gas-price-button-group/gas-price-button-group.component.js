@@ -35,6 +35,8 @@ export default class GasPriceButtonGroup extends Component {
       return this.context.t('average')
     } else if (gasEstimateType === GAS_ESTIMATE_TYPES.FAST) {
       return this.context.t('fast')
+    } else if (gasEstimateType === GAS_ESTIMATE_TYPES.FASTEST) {
+      return this.context.t('fastest')
     }
     throw new Error(`Unrecognized gas estimate type: ${gasEstimateType}`)
   }

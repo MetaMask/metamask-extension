@@ -669,6 +669,9 @@
   "faster": {
     "message": "Faster"
   },
+  "fastest": {
+    "message": "Fastest"
+  },
   "feeAssociatedRequest": {
     "message": "A fee is associated with this request."
   },
