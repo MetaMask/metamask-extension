@@ -14,7 +14,7 @@ import firstTimeState from '../../localhostState'
 
 const { provider } = createTestProviderTools({ scaffold: {} })
 const middleware = [thunk]
-const defaultState = { metamask: {} }
+const defaultState = { metamask: { provider: { chainId: '0x1' } } }
 const mockStore = (state = defaultState) => configureStore(middleware)(state)
 const extensionMock = {
   runtime: {
