@@ -22,7 +22,7 @@ const mapStateToProps = (state, ownProps) => {
   const contact = getAddressBookEntry(state, address) || state.metamask.identities[address]
   const { memo, name } = contact || {}
 
-  const chainId = state.metamask.network
+  const { chainId } = state.metamask.provider
 
   const showingMyAccounts = Boolean(pathname.match(CONTACT_MY_ACCOUNTS_EDIT_ROUTE))
 

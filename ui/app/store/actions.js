@@ -1605,7 +1605,7 @@ export function addToAddressBook (recipient, nickname = '', memo = '') {
   log.debug(`background.addToAddressBook`)
 
   return async (dispatch, getState) => {
-    const chainId = getState().metamask.network
+    const { chainId } = getState().metamask.provider
 
     let set
     try {
