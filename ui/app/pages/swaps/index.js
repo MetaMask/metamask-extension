@@ -102,6 +102,7 @@ export default function Swap () {
     destinationTokenInfo?.address,
     selectedAccountAddress,
     destinationTokenInfo?.decimals,
+    approveTxData,
   )
   const tradeConfirmed = tradeTxData?.status === 'confirmed'
   const approveError = approveTxData?.status === 'failed' || approveTxData?.txReceipt?.status === '0x0'
