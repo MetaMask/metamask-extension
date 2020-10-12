@@ -356,13 +356,13 @@ describe('migration #48', function () {
         AddressBookController: {
           addressBook: {
             '1': {
-              'address1-1': {
+              'address1': {
                 chainId: '1',
                 foo: 'bar',
               },
             },
             '0x2': {
-              'address0x2-1': {
+              'address2': {
                 chainId: '0x2',
                 foo: 'bar',
               },
@@ -382,13 +382,13 @@ describe('migration #48', function () {
       AddressBookController: {
         addressBook: {
           '0x1': {
-            'address1-1': {
+            'address1': {
               chainId: '0x1',
               foo: 'bar',
             },
           },
           '0x2': {
-            'address0x2-1': {
+            'address2': {
               chainId: '0x2',
               foo: 'bar',
             },
