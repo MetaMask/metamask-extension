@@ -20,18 +20,23 @@ import {
 
 const env = process.env.METAMASK_ENV
 
-let defaultProviderConfigType
+let defaultProviderConfigOpts
 if (process.env.IN_TEST === 'true') {
-  defaultProviderConfigType = 'rpc' // TODO:localhost
+  defaultProviderConfigOpts = {
+    type: 'rpc',
+    rpcUrl: 'http://localhost:8545',
+    chainId: '0x539',
+    nickname: 'Localhost 8545',
+  }
 } else if (process.env.METAMASK_DEBUG || env === 'test') {
-  defaultProviderConfigType = RINKEBY
+  defaultProviderConfigOpts = { type: RINKEBY }
 } else {
-  defaultProviderConfigType = MAINNET
+  defaultProviderConfigOpts = { type: MAINNET }
 }
 
 const defaultProviderConfig = {
-  type: defaultProviderConfigType,
   ticker: 'ETH',
+  ...defaultProviderConfigOpts,
 }
 
 export default class NetworkController extends EventEmitter {
