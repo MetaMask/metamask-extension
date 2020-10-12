@@ -20,7 +20,7 @@ const Tab = (props) => {
         className,
         {
           'tab--active': isActive,
-          [activeClassName]: isActive,
+          [activeClassName]: activeClassName && isActive,
         },
       )}
       data-testid={dataTestId}
