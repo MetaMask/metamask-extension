@@ -137,7 +137,10 @@ function mergeAddressBookKeys (addressBook, networkKey, chainIdKey) {
       })
 
       newEntries[address] = mergedEntry
-    } else {
+    } else if (
+      networkKeyEntries[address] &&
+      typeof networkKeyEntries[address] === 'object'
+    ) {
       // If there is no corresponding chainId entry, just use the networkId entry
       // directly
       newEntries[address] = networkKeyEntries[address]
