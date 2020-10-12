@@ -117,24 +117,28 @@ function mergeAddressBookKeys (addressBook, networkKey, chainIdKey) {
   // For the new entries, start by copying the existing entries for the chainId
   const newEntries = { ...addressBook[chainIdKey] }
 
-  // For each address of the old/network key entries
+  // For each address of the old/networkId key entries
   Object.keys(networkKeyEntries).forEach((address) => {
-    if (newEntries[address]) {
-      // Merge the corresponding chainId entry with the network entry
-      newEntries[address] = Object.keys(newEntries[address])
-        .reduce((mergedEntry, currentKey) => {
+    if (newEntries[address] && typeof newEntries[address] === 'object') {
+      const mergedEntry = {}
 
-          // Use non-empty value for the current key, if any
-          mergedEntry[currentKey] = (
-            newEntries[address][currentKey] ||
-            networkKeyEntries[address]?.[currentKey] ||
-            ''
-          )
+      // Collect all keys from both entries and merge the corresponding chainId
+      // entry with the networkId entry
+      new Set([
+        ...Object.keys(newEntries[address]),
+        ...Object.keys(networkKeyEntries[address] || {}),
+      ]).forEach((key) => {
+        // Use non-empty value for the current key, if any
+        mergedEntry[key] = (
+          newEntries[address][key] ||
+          networkKeyEntries[address]?.[key] ||
+          ''
+        )
+      })
 
-          return mergedEntry
-        }, {})
+      newEntries[address] = mergedEntry
     } else {
-      // If there is no corresponding chainId entry, just use the network entry
+      // If there is no corresponding chainId entry, just use the networkId entry
       // directly
       newEntries[address] = networkKeyEntries[address]
     }

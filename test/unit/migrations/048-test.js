@@ -412,6 +412,8 @@ describe('migration #48', function () {
               'address1': {
                 chainId: '2',
                 key2: 'kaplar',
+                key3: 'value3',
+                key4: null,
                 foo: 'bar',
               },
               'address2': {
@@ -424,7 +426,6 @@ describe('migration #48', function () {
                 chainId: '0x2',
                 key1: 'value1',
                 key2: 'value2',
-                key3: null,
                 foo: 'bar',
               },
               'address3': {
@@ -451,7 +452,8 @@ describe('migration #48', function () {
               chainId: '0x2',
               key1: 'value1',
               key2: 'value2',
-              key3: '',
+              key3: 'value3',
+              key4: '',
               foo: 'bar',
             },
             'address2': {
