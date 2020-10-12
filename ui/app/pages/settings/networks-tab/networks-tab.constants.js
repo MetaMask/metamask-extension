@@ -3,7 +3,6 @@ import {
   GOERLI_CHAIN_ID,
   KOVAN,
   KOVAN_CHAIN_ID,
-  LOCALHOST,
   MAINNET,
   MAINNET_CHAIN_ID,
   RINKEBY,
@@ -56,14 +55,6 @@ const defaultNetworksData = [
     rpcUrl: `https://kovan.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
     chainId: KOVAN_CHAIN_ID,
     ticker: 'ETH',
-    blockExplorerUrl: 'https://etherscan.io',
-  },
-  {
-    labelKey: LOCALHOST,
-    iconColor: 'white',
-    border: '1px solid #6A737D',
-    providerType: LOCALHOST,
-    rpcUrl: 'http://localhost:8545/',
     blockExplorerUrl: 'https://etherscan.io',
   },
 ]

@@ -34,7 +34,7 @@
         "rpcUrl": "",
         "chainId": "0x1691",
         "ticker": "ETH",
-        "type": "localhost"
+        "type": "rpc"
       }
     },
     "OnboardingController": {

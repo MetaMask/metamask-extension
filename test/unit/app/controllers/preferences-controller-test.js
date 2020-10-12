@@ -522,10 +522,27 @@ describe('preferences controller', function () {
   describe('adding and removing from frequentRpcListDetail', function () {
     it('should add custom RPC url to state', function () {
       preferencesController.addToFrequentRpcList('rpc_url', '0x1')
-      preferencesController.addToFrequentRpcList('http://localhost:8545', '0x1')
-      assert.deepEqual(preferencesController.store.getState().frequentRpcListDetail, [{ rpcUrl: 'rpc_url', chainId: '0x1', ticker: 'ETH', nickname: '', rpcPrefs: {} }])
+      assert.deepEqual(
+        preferencesController.store.getState().frequentRpcListDetail,
+        [{
+          rpcUrl: 'rpc_url',
+          chainId: '0x1',
+          ticker: 'ETH',
+          nickname: '',
+          rpcPrefs: {},
+        }],
+      )
       preferencesController.addToFrequentRpcList('rpc_url', '0x1')
-      assert.deepEqual(preferencesController.store.getState().frequentRpcListDetail, [{ rpcUrl: 'rpc_url', chainId: '0x1', ticker: 'ETH', nickname: '', rpcPrefs: {} }])
+      assert.deepEqual(
+        preferencesController.store.getState().frequentRpcListDetail,
+        [{
+          rpcUrl: 'rpc_url',
+          chainId: '0x1',
+          ticker: 'ETH',
+          nickname: '',
+          rpcPrefs: {},
+        }],
+      )
     })
 
     it('should throw if chainId is invalid', function () {

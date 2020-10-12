@@ -66,8 +66,8 @@ describe('Network Dropdown', function () {
       )
     })
 
-    it('renders 9 DropDownMenuItems ', function () {
-      assert.equal(wrapper.find(DropdownMenuItem).length, 9)
+    it('renders 8 DropDownMenuItems ', function () {
+      assert.equal(wrapper.find(DropdownMenuItem).length, 8)
     })
 
     it('checks background color for first NetworkDropdownIcon', function () {
@@ -95,12 +95,7 @@ describe('Network Dropdown', function () {
     })
 
     it('checks dropdown for frequestRPCList from state', function () {
-      assert.equal(wrapper.find(DropdownMenuItem).at(6).text(), '✓http://localhost:7546')
+      assert.equal(wrapper.find(DropdownMenuItem).at(6).text(), '✓http://localhost:7545')
     })
-
-    it('checks background color for seventh NetworkDropdownIcon', function () {
-      assert.equal(wrapper.find(NetworkDropdownIcon).at(6).prop('innerBorder'), '1px solid #9b9b9b')
-    })
-
   })
 })

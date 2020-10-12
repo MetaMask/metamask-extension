@@ -76,6 +76,7 @@ const TEST_ADDRESS_3 = '0xeb9e64b93097bc15f01f13eae97015c57ab64823'
 const TEST_SEED_ALT = 'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle'
 const TEST_ADDRESS_ALT = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
 const CUSTOM_RPC_URL = 'http://localhost:8545'
+const CUSTOM_RPC_CHAIN_ID = '0x539'
 
 describe('MetaMaskController', function () {
   let metamaskController
@@ -530,7 +531,10 @@ describe('MetaMaskController', function () {
     let rpcUrl
 
     beforeEach(function () {
-      rpcUrl = metamaskController.setCustomRpc(CUSTOM_RPC_URL)
+      rpcUrl = metamaskController.setCustomRpc(
+        CUSTOM_RPC_URL,
+        CUSTOM_RPC_CHAIN_ID,
+      )
     })
 
     it('returns custom RPC that when called', async function () {

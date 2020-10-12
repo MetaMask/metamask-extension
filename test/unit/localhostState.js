@@ -14,6 +14,7 @@ const initialState = {
     provider: {
       type: 'rpc',
       rpcUrl: 'http://localhost:8545',
+      chainId: '0x539',
     },
   },
 }
