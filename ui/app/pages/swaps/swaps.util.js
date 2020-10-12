@@ -365,11 +365,12 @@ export function quotesToRenderableData (quotes, gasPrice, conversionRate, curren
 }
 
 export function getSwapsTokensReceivedFromTxMeta (tokenSymbol, txMeta, tokenAddress, accountAddress, tokenDecimals) {
+  const txReceipt = txMeta?.txReceipt
   if (tokenSymbol === 'ETH') {
-    if (!txMeta || !txMeta.postTxBalance || !txMeta.preTxBalance) {
+    if (!txReceipt || !txMeta || !txMeta.postTxBalance || !txMeta.preTxBalance) {
       return null
     }
-    const gasCost = calcGasTotal(txMeta.txParams.gas, txMeta.txParams.gasPrice)
+    const gasCost = calcGasTotal(txReceipt.gasUsed, txMeta.txParams.gasPrice)
     const preTxBalanceLessGasCost = subtractCurrencies(txMeta.preTxBalance, gasCost, {
       aBase: 16,
       bBase: 16,
@@ -385,7 +386,6 @@ export function getSwapsTokensReceivedFromTxMeta (tokenSymbol, txMeta, tokenAddr
     })
     return ethReceived
   }
-  const txReceipt = txMeta?.txReceipt
   const txReceiptLogs = txReceipt?.logs
   if (txReceiptLogs && txReceipt?.status !== '0x0') {
     const tokenTransferLog = txReceiptLogs.find((txReceiptLog) => {

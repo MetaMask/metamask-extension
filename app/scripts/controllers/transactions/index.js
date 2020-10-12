@@ -9,7 +9,6 @@ import { ethers } from 'ethers'
 import NonceTracker from 'nonce-tracker'
 import log from 'loglevel'
 import BigNumber from 'bignumber.js'
-import { cloneDeep } from 'lodash'
 import {
   TOKEN_METHOD_APPROVE,
   TOKEN_METHOD_TRANSFER,
@@ -558,9 +557,9 @@ export default class TransactionController extends EventEmitter {
   async confirmTransaction (txId, txReceipt) {
     // get the txReceipt before marking the transaction confirmed
     // to ensure the receipt is gotten before the ui revives the tx
-    const initialTxMeta = this.txStateManager.getTx(txId)
+    const txMeta = this.txStateManager.getTx(txId)
 
-    if (!initialTxMeta) {
+    if (!txMeta) {
       return
     }
 
@@ -571,20 +570,24 @@ export default class TransactionController extends EventEmitter {
         ? txReceipt.gasUsed
         : txReceipt.gasUsed.toString(16)
 
-      initialTxMeta.txReceipt = {
+      txMeta.txReceipt = {
         ...txReceipt,
         gasUsed,
       }
       this.txStateManager.setTxStatusConfirmed(txId)
       this._markNonceDuplicatesDropped(txId)
 
-      this.txStateManager.updateTx(initialTxMeta, 'transactions#confirmTransaction - add txReceipt')
+      this.txStateManager.updateTx(txMeta, 'transactions#confirmTransaction - add txReceipt')
 
-      if (initialTxMeta.transactionCategory === SWAP) {
-        const txMeta = cloneDeep(initialTxMeta)
+      if (txMeta.transactionCategory === SWAP) {
         const postTxBalance = await this.query.getBalance(txMeta.txParams.from)
-        txMeta.postTxBalance = postTxBalance.toString(16)
-        this._trackSwapsMetrics(txMeta)
+        const latestTxMeta = this.txStateManager.getTx(txId)
+
+        latestTxMeta.postTxBalance = postTxBalance.toString(16)
+
+        this.txStateManager.updateTx(latestTxMeta, 'transactions#confirmTransaction - add postTxBalance')
+
+        this._trackSwapsMetrics(latestTxMeta)
       }
 
     } catch (err) {
