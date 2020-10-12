@@ -583,11 +583,15 @@ export default class TransactionController extends EventEmitter {
         const postTxBalance = await this.query.getBalance(txMeta.txParams.from)
         const latestTxMeta = this.txStateManager.getTx(txId)
 
+        const approvalTxMeta = latestTxMeta.approvalTxId
+          ? this.txStateManager.getTx(latestTxMeta.approvalTxId)
+          : null
+
         latestTxMeta.postTxBalance = postTxBalance.toString(16)
 
         this.txStateManager.updateTx(latestTxMeta, 'transactions#confirmTransaction - add postTxBalance')
 
-        this._trackSwapsMetrics(latestTxMeta)
+        this._trackSwapsMetrics(latestTxMeta, approvalTxMeta)
       }
 
     } catch (err) {
@@ -822,7 +826,7 @@ export default class TransactionController extends EventEmitter {
     this.memStore.updateState({ unapprovedTxs, currentNetworkTxList })
   }
 
-  _trackSwapsMetrics (txMeta) {
+  _trackSwapsMetrics (txMeta, approvalTxMeta) {
     if (this._getParticipateInMetrics() && txMeta.swapMetaData) {
       if (txMeta.txReceipt.status === '0x0') {
         this._trackSegmentEvent({
@@ -844,6 +848,7 @@ export default class TransactionController extends EventEmitter {
           txMeta.destinationTokenAddress,
           txMeta.txParams.from,
           txMeta.destinationTokenDecimals,
+          approvalTxMeta,
         )
 
         const quoteVsExecutionRatio = `${

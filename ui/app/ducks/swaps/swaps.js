@@ -484,11 +484,12 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     metaMetricsEvent({ ...metaMetricsConfig })
     metaMetricsEvent({ ...metaMetricsConfig, excludeMetaMetricsId: true, properties: swapMetaData })
 
+    let finalApproveTxMeta
     const approveTxParams = getApproveTxParams(state)
     if (approveTxParams) {
       const approveTxMeta = await dispatch(addUnapprovedTransaction({ ...approveTxParams, amount: '0x0' }, 'metamask'))
       await dispatch(setApproveTxId(approveTxMeta.id))
-      const finalApproveTxMeta = await (dispatch(updateTransaction({
+      finalApproveTxMeta = await (dispatch(updateTransaction({
         ...approveTxMeta,
         transactionCategory: SWAP_APPROVAL,
         sourceTokenSymbol: sourceTokenInfo.symbol,
@@ -513,6 +514,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       destinationTokenAddress: destinationTokenInfo.address,
       swapMetaData,
       swapTokenValue,
+      approvalTxId: finalApproveTxMeta?.id,
     }, true)))
     try {
       await dispatch(updateAndApproveTx(finalTradeTxMeta, true))

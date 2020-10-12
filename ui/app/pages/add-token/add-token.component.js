@@ -232,6 +232,7 @@ class AddToken extends Component {
           onChange={(e) => this.handleCustomAddressChange(e.target.value)}
           error={customAddressError}
           fullWidth
+          autoFocus
           margin="normal"
         />
         <TextField
