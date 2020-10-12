@@ -22,13 +22,15 @@ export default {
   },
 }
 
+const inTest = process.env.IN_TEST === 'true'
+
 function transformState (state = {}) {
   // 1. Delete NetworkController.settings
   delete state.NetworkController?.settings
 
   // 2. Migrate NetworkController.provider to Rinkeby or rename rpcTarget key
   const providerType = state.NetworkController?.provider?.type
-  if (providerType === 'rpc' || providerType === 'localhost') {
+  if (!inTest && (providerType === 'rpc' || providerType === 'localhost')) {
     state.NetworkController.provider = {
       type: 'rinkeby',
       rpcUrl: '',
