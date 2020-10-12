@@ -1,6 +1,5 @@
 import assert from 'assert'
 import sinon from 'sinon'
-import NetworkController from '../../../app/scripts/controllers/network'
 import TypedMessageManager from '../../../app/scripts/lib/typed-message-manager'
 
 describe('Typed Message Manager', function () {
@@ -9,11 +8,8 @@ describe('Typed Message Manager', function () {
   const address = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
 
   beforeEach(async function () {
-    const networkController = new NetworkController()
-    sinon.stub(networkController, 'getNetworkState').returns('0x1')
-
     typedMessageManager = new TypedMessageManager({
-      networkController,
+      getCurrentChainId: sinon.fake.returns('0x1'),
     })
 
     msgParamsV1 = {
