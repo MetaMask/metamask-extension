@@ -1,3 +1,4 @@
+import createAsyncMiddleware from 'json-rpc-engine/src/createAsyncMiddleware'
 import mergeMiddleware from 'json-rpc-engine/src/mergeMiddleware'
 import createFetchMiddleware from 'eth-json-rpc-middleware/fetch'
 import createBlockRefRewriteMiddleware from 'eth-json-rpc-middleware/block-ref-rewrite'
@@ -7,19 +8,33 @@ import createBlockTrackerInspectorMiddleware from 'eth-json-rpc-middleware/block
 import providerFromMiddleware from 'eth-json-rpc-middleware/providerFromMiddleware'
 import BlockTracker from 'eth-block-tracker'
 
+const inTest = process.env.IN_TEST === 'true'
+const blockTrackerOpts = inTest
+  ? { pollingInterval: 1000 }
+  : {}
+
 export default function createJsonRpcClient ({ rpcUrl, chainId }) {
   const fetchMiddleware = createFetchMiddleware({ rpcUrl })
   const blockProvider = providerFromMiddleware(fetchMiddleware)
-  const blockTracker = new BlockTracker({ provider: blockProvider })
+  const blockTracker = new BlockTracker({
+    ...blockTrackerOpts,
+    provider: blockProvider,
+  })
 
-  const networkMiddleware = mergeMiddleware([
+  const middlewares = [
     createChainIdMiddleware(chainId),
     createBlockRefRewriteMiddleware({ blockTracker }),
     createBlockCacheMiddleware({ blockTracker }),
     createInflightMiddleware(),
     createBlockTrackerInspectorMiddleware({ blockTracker }),
     fetchMiddleware,
-  ])
+  ]
+
+  if (inTest) {
+    middlewares.unshift(createEstimateGasDelayMiddleware())
+  }
+
+  const networkMiddleware = mergeMiddleware(middlewares)
   return { networkMiddleware, blockTracker }
 }
 
@@ -31,4 +46,17 @@ function createChainIdMiddleware (chainId) {
     }
     return next()
   }
+}
+
+/**
+ * For use in tests only.
+ * Adds a delay to `eth_estimateGas` calls.
+ */
+function createEstimateGasDelayMiddleware () {
+  return createAsyncMiddleware(async (req, _, next) => {
+    if (req.method === 'eth_estimateGas') {
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+    }
+    return next()
+  })
 }
