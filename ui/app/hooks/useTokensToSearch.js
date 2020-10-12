@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import contractMap from 'eth-contract-metadata'
 import BigNumber from 'bignumber.js'
@@ -64,34 +64,34 @@ export function useTokensToSearch ({
   const memoizedUsersToken = useEqualityCheck(usersTokens)
 
   const swapsEthToken = useSwapsEthToken()
-  const [ethToken] = useState(() => getRenderableTokenData(
+  const ethToken = getRenderableTokenData(
     swapsEthToken,
     tokenConversionRates,
     conversionRate,
     currentCurrency,
-  ))
+  )
+  const memoizedEthToken = useEqualityCheck(ethToken)
 
   const swapsTokens = useSelector(getSwapsTokens) || []
   let tokensToSearch
   if (onlyEth) {
-    tokensToSearch = [ethToken]
+    tokensToSearch = [memoizedEthToken]
   } else if (singleToken) {
     tokensToSearch = providedTokens
   } else if (providedTokens) {
-    tokensToSearch = [ethToken, ...providedTokens]
+    tokensToSearch = [memoizedEthToken, ...providedTokens]
   } else if (swapsTokens.length) {
-    tokensToSearch = [ethToken, ...swapsTokens]
+    tokensToSearch = [memoizedEthToken, ...swapsTokens]
   } else {
-    tokensToSearch = [ethToken, ...tokenList]
+    tokensToSearch = [memoizedEthToken, ...tokenList]
   }
   const memoizedTokensToSearch = useEqualityCheck(tokensToSearch)
-
   return useMemo(() => {
 
     const usersTokensAddressMap = memoizedUsersToken.reduce((acc, token) => ({ ...acc, [token.address]: token }), {})
 
     const tokensToSearchBuckets = {
-      owned: singleToken ? [] : [ethToken],
+      owned: singleToken ? [] : [memoizedEthToken],
       top: [],
       others: [],
     }
@@ -116,5 +116,5 @@ export function useTokensToSearch ({
       ...tokensToSearchBuckets.top,
       ...tokensToSearchBuckets.others,
     ]
-  }, [memoizedTokensToSearch, memoizedUsersToken, tokenConversionRates, conversionRate, currentCurrency, memoizedTopTokens, ethToken, singleToken])
+  }, [memoizedTokensToSearch, memoizedUsersToken, tokenConversionRates, conversionRate, currentCurrency, memoizedTopTokens, memoizedEthToken, singleToken])
 }
