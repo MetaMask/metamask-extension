@@ -218,9 +218,6 @@
   "connectingToKovan": {
     "message": "Savienojas ar Kovan testa tīklu"
   },
-  "connectingToLocalhost": {
-    "message": "Savienojas ar vietējo resursdatoru 8545"
-  },
   "connectingToMainnet": {
     "message": "Savienojas ar galveno Ethereum tīklu"
   },

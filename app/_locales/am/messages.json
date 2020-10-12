@@ -218,9 +218,6 @@
   "connectingToKovan": {
     "message": "ከ Kovan የሙከራ አውታረ መረብ መገናኘት"
   },
-  "connectingToLocalhost": {
-    "message": "ከ Localhost 8545 ጋር መገናኘት"
-  },
   "connectingToMainnet": {
     "message": "ከዋናው የ Ethereum አውታረ መረብ ጋር መገናኘት"
   },

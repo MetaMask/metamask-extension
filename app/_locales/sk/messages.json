@@ -212,9 +212,6 @@
   "connectingToKovan": {
     "message": "Připojuji se k Kovan Test Network"
   },
-  "connectingToLocalhost": {
-    "message": "Pripája sa k Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Připojuji se k Ethereum Mainnet"
   },

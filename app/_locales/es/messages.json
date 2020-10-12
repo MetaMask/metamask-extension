@@ -187,9 +187,6 @@
   "connectingToKovan": {
     "message": "Conectando a la red de test Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "Conectando to Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Conectando a la red principal de Ethereum (Main Net)"
   },

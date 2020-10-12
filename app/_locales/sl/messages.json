@@ -218,9 +218,6 @@
   "connectingToKovan": {
     "message": "Povezovanje na testno omrežje Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "Povezovanje na lokalnega gostitelja 8545 "
-  },
   "connectingToMainnet": {
     "message": "Povezovanje na glavno omrežje"
   },

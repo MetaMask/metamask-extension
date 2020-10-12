@@ -218,9 +218,6 @@
   "connectingToKovan": {
     "message": "Menyambungkan kepada Rangkaian Ujian Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "Menyambung kepada Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Menyambung kepada Rangkaian Ethereum Utama"
   },

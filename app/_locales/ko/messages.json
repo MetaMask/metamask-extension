@@ -215,9 +215,6 @@
   "connectingToKovan": {
     "message": "Kovan 테스트넷 접속 중"
   },
-  "connectingToLocalhost": {
-    "message": "로컬호스트 8545에 연결 중"
-  },
   "connectingToMainnet": {
     "message": "이더리움 메인넷 접속 중"
   },

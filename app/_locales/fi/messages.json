@@ -218,9 +218,6 @@
   "connectingToKovan": {
     "message": "Yhdistetään Kovanin koeverkkoon"
   },
-  "connectingToLocalhost": {
-    "message": "Yhdistetään kohteeseen Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Yhdistetään Ethereumin pääverkkoon"
   },

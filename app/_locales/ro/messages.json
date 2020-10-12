@@ -218,9 +218,6 @@
   "connectingToKovan": {
     "message": "Se conectează la rețeaua de test Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "Se conectează la localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Se conectează la rețeaua Ethereum principală"
   },

@@ -212,9 +212,6 @@
   "connectingToKovan": {
     "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "Inaunganisha kwenye Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Inaunganisha kwenye Mtandao Mkuu wa Ethereum"
   },

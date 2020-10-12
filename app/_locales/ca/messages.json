@@ -215,9 +215,6 @@
   "connectingToKovan": {
     "message": "Conectant a la xarxa de Kovan Test"
   },
-  "connectingToLocalhost": {
-    "message": "Connectant al host local 8545"
-  },
   "connectingToMainnet": {
     "message": "Connectant a Xarxa Principal Ethereum"
   },

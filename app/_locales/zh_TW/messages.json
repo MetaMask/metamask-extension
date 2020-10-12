@@ -218,9 +218,6 @@
   "connectingToKovan": {
     "message": "連線到 Kovan 測試網路"
   },
-  "connectingToLocalhost": {
-    "message": "連接至本地主機 8545"
-  },
   "connectingToMainnet": {
     "message": "連線到主 Ethereum 網路"
   },
