@@ -218,9 +218,6 @@
   "connectingToKovan": {
     "message": "Povezivanje na testnu mrežu Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "Povezivanje na Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Povezivanje na glavnu mrežu Ethereum"
   },

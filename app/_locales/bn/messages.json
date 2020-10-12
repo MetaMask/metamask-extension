@@ -218,9 +218,6 @@
   "connectingToKovan": {
     "message": "কোভান টেস্ট নেটওয়ার্কের সাথে সংযোগ করছে"
   },
-  "connectingToLocalhost": {
-    "message": "লোকালহোস্ট 8545 এর সাথে সংযোগ করছে"
-  },
   "connectingToMainnet": {
     "message": "মুখ্য Ethereum নেটওয়ার্কের সাথে সংযোগ করছে"
   },

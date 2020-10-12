@@ -218,9 +218,6 @@
   "connectingToKovan": {
     "message": "الاتصال بشبكة اختبار Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "جاري الاتصال بالمضيف المحلي 8545"
-  },
   "connectingToMainnet": {
     "message": "جارِ الاتصال بشبكة إيثيريوم الرئيسية"
   },

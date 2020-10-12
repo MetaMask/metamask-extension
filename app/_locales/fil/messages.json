@@ -197,9 +197,6 @@
   "connectingToKovan": {
     "message": "Kumokonekta sa Kovan Test Network"
   },
-  "connectingToLocalhost": {
-    "message": "Kumokonekta sa Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Kumokonekta sa Ethereum Mainnet"
   },

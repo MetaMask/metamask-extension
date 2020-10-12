@@ -153,11 +153,7 @@ export default class Network extends Component {
                 )
             }
             <div className="network-name">
-              {
-                providerName === 'localhost'
-                  ? t('localhost')
-                  : providerNick || t('privateNetwork')
-              }
+              {providerNick || t('privateNetwork')}
             </div>
           </NetworkIndicator>
         )

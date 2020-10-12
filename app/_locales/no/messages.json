@@ -215,9 +215,6 @@
   "connectingToKovan": {
     "message": "Kobler til Kovan testnettverk"
   },
-  "connectingToLocalhost": {
-    "message": "Kobler til lokalvert 8545"
-  },
   "connectingToMainnet": {
     "message": "Forbinder med hoved-Ethereumnettverk "
   },

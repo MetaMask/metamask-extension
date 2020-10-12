@@ -218,9 +218,6 @@
   "connectingToKovan": {
     "message": "מתחבר ל-Kovan Test Network"
   },
-  "connectingToLocalhost": {
-    "message": "מתחבר אל Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "מתחבר לרשת אתריום הראשית"
   },

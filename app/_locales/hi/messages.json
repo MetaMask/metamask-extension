@@ -218,9 +218,6 @@
   "connectingToKovan": {
     "message": "कोवन टेस्ट नेटवर्क से जोड़ रहा है\n"
   },
-  "connectingToLocalhost": {
-    "message": "लोकलहोस्ट 8545 से जुड़ना "
-  },
   "connectingToMainnet": {
     "message": "मुख्य Ethereum नेटवर्क से कनेक्ट हो रहा है"
   },

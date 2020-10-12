@@ -218,9 +218,6 @@
   "connectingToKovan": {
     "message": "Forbinder til Kovan Testnetværk"
   },
-  "connectingToLocalhost": {
-    "message": "Opretter forbindelse til Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Forbinder til dit Primære Ethereum Netværk"
   },

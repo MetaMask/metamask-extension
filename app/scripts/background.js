@@ -41,8 +41,7 @@ import {
 } from './lib/enums'
 /* eslint-enable import/first */
 
-// METAMASK_TEST_CONFIG is used in e2e tests to set the default network to localhost
-const firstTimeState = { ...rawFirstTimeState, ...global.METAMASK_TEST_CONFIG }
+const firstTimeState = { ...rawFirstTimeState }
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 

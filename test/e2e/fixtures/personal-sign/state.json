@@ -7,7 +7,7 @@
     "CachedBalancesController": {
       "cachedBalances": {
         "4": {},
-        "5777": {
+        "1337": {
           "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": "0x15af1d78b58c40000"
         }
       }
@@ -33,13 +33,13 @@
     },
     "NetworkController": {
       "provider": {
-        "nickname": "",
-        "rpcUrl": "",
-        "chainId": "0x1691",
+        "nickname": "Localhost 8545",
+        "rpcUrl": "http://localhost:8545",
+        "chainId": "0x539",
         "ticker": "ETH",
-        "type": "localhost"
+        "type": "rpc"
       },
-      "network": "5777"
+      "network": "1337"
     },
     "OnboardingController": {
       "onboardingTabs": {},

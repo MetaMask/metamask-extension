@@ -218,9 +218,6 @@
   "connectingToKovan": {
     "message": "در حال اتصال به شبکه آزمایشی Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "در حال اتصال با Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "در حال اتصال به شبکه اصلی ایتریم"
   },

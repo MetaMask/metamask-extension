@@ -212,9 +212,6 @@
   "connectingToKovan": {
     "message": "Conectando-se à Rede de Testes Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "Conectando ao Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Conectando à rede principal Etherum"
   },

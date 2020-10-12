@@ -218,9 +218,6 @@
   "connectingToKovan": {
     "message": "Csatlakozás a Kovan teszthálózathoz"
   },
-  "connectingToLocalhost": {
-    "message": "Csatlakozás a Localhost 8645-höz"
-  },
   "connectingToMainnet": {
     "message": "Csatlakozás a fő Ethereum hálózathoz"
   },

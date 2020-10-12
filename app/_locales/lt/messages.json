@@ -218,9 +218,6 @@
   "connectingToKovan": {
     "message": "Jungiamasi prie „Kovan“ bandomojo tinklo"
   },
-  "connectingToLocalhost": {
-    "message": "Jungiamasi prie vietinio serverio 8545"
-  },
   "connectingToMainnet": {
     "message": "Jungiamasi prie pagrindinio „Ethereum“ tinklo"
   },

@@ -218,9 +218,6 @@
   "connectingToKovan": {
     "message": "正在连接到Kovan测试网络"
   },
-  "connectingToLocalhost": {
-    "message": "正在连接 Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "正在连接到以太坊主网"
   },

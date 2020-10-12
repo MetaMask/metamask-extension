@@ -10,36 +10,33 @@ import EthQuery from 'eth-query'
 import createMetamaskMiddleware from './createMetamaskMiddleware'
 import createInfuraClient from './createInfuraClient'
 import createJsonRpcClient from './createJsonRpcClient'
-import createLocalhostClient from './createLocalhostClient'
 
 import {
   RINKEBY,
   MAINNET,
-  LOCALHOST,
   INFURA_PROVIDER_TYPES,
   NETWORK_TYPE_TO_ID_MAP,
 } from './enums'
 
 const env = process.env.METAMASK_ENV
 
-let defaultProviderConfigType
-let defaultProviderChainId
+let defaultProviderConfigOpts
 if (process.env.IN_TEST === 'true') {
-  defaultProviderConfigType = LOCALHOST
-  // Decimal 5777, an arbitrary chain ID we use for testing
-  defaultProviderChainId = '0x1691'
+  defaultProviderConfigOpts = {
+    type: 'rpc',
+    rpcUrl: 'http://localhost:8545',
+    chainId: '0x539',
+    nickname: 'Localhost 8545',
+  }
 } else if (process.env.METAMASK_DEBUG || env === 'test') {
-  defaultProviderConfigType = RINKEBY
+  defaultProviderConfigOpts = { type: RINKEBY }
 } else {
-  defaultProviderConfigType = MAINNET
+  defaultProviderConfigOpts = { type: MAINNET }
 }
 
 const defaultProviderConfig = {
-  type: defaultProviderConfigType,
   ticker: 'ETH',
-}
-if (defaultProviderChainId) {
-  defaultProviderConfig.chainId = defaultProviderChainId
+  ...defaultProviderConfigOpts,
 }
 
 export default class NetworkController extends EventEmitter {
@@ -169,7 +166,7 @@ export default class NetworkController extends EventEmitter {
 
   async setProviderType (type, rpcUrl = '', ticker = 'ETH', nickname = '') {
     assert.notEqual(type, 'rpc', `NetworkController - cannot call "setProviderType" with type 'rpc'. use "setRpcTarget"`)
-    assert(INFURA_PROVIDER_TYPES.includes(type) || type === LOCALHOST, `NetworkController - Unknown rpc type "${type}"`)
+    assert(INFURA_PROVIDER_TYPES.includes(type), `NetworkController - Unknown rpc type "${type}"`)
     const { chainId } = NETWORK_TYPE_TO_ID_MAP[type]
     this.setProviderConfig({ type, rpcUrl, chainId, ticker, nickname })
   }
@@ -205,9 +202,6 @@ export default class NetworkController extends EventEmitter {
     const isInfura = INFURA_PROVIDER_TYPES.includes(type)
     if (isInfura) {
       this._configureInfuraProvider(type, this._infuraProjectId)
-    // other type-based rpc endpoints
-    } else if (type === LOCALHOST) {
-      this._configureLocalhostProvider()
     // url-based rpc endpoints
     } else if (type === 'rpc') {
       this._configureStandardProvider(rpcUrl, chainId)
@@ -222,12 +216,6 @@ export default class NetworkController extends EventEmitter {
       network: type,
       projectId,
     })
-    this._setNetworkClient(networkClient)
-  }
-
-  _configureLocalhostProvider () {
-    log.info('NetworkController - configureLocalhostProvider')
-    const networkClient = createLocalhostClient()
     this._setNetworkClient(networkClient)
   }
 

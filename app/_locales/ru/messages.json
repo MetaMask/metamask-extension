@@ -217,9 +217,6 @@
   "connectingToKovan": {
     "message": "Соединение с тестовой сетью Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "Подключение к Localhost:8545"
-  },
   "connectingToMainnet": {
     "message": "Соединение с основной сетью Ethereum"
   },

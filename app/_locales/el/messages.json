@@ -215,9 +215,6 @@
   "connectingToKovan": {
     "message": "Σύνδεση στο Δοκιμαστικό Δίκτυο Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "Σύνδεση στον Τοπικό Υπολογιστή 8545"
-  },
   "connectingToMainnet": {
     "message": "Σύνδεση στο Κύριο Δίκτυο Ethereum"
   },

@@ -553,11 +553,8 @@ export default class PreferencesController {
    *
    */
   addToFrequentRpcList (rpcUrl, chainId, ticker = 'ETH', nickname = '', rpcPrefs = {}) {
-    if (rpcUrl === 'http://localhost:8545') {
-      return
-    }
-
     const rpcList = this.getFrequentRpcListDetail()
+
     const index = rpcList.findIndex((element) => {
       return element.rpcUrl === rpcUrl
     })

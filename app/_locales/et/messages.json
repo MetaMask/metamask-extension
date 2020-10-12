@@ -218,9 +218,6 @@
   "connectingToKovan": {
     "message": "Ühendamine Kovani testvõrguga"
   },
-  "connectingToLocalhost": {
-    "message": "Ühenduse loomine Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Ühenduse loomine peamise Etherumi võrguga"
   },

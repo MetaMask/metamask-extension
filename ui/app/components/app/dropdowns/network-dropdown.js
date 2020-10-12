@@ -101,10 +101,6 @@ class NetworkDropdown extends Component {
         provider.type === 'rpc' && rpcUrl === provider.rpcUrl
       )
 
-      if (rpcUrl === 'http://localhost:8545') {
-        return null
-      }
-
       return (
         <DropdownMenuItem
           key={`common${rpcUrl}`}
@@ -170,8 +166,6 @@ class NetworkDropdown extends Component {
       name = this.context.t('kovan')
     } else if (providerName === 'rinkeby') {
       name = this.context.t('rinkeby')
-    } else if (providerName === 'localhost') {
-      name = this.context.t('localhost')
     } else if (providerName === 'goerli') {
       name = this.context.t('goerli')
     } else {
@@ -337,29 +331,6 @@ class NetworkDropdown extends Component {
             }}
           >
             {this.context.t('goerli')}
-          </span>
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          key="default"
-          closeMenu={() => this.props.hideNetworkDropdown()}
-          onClick={() => this.handleClick('localhost')}
-          style={dropdownMenuItemStyle}
-        >
-          {
-            providerType === 'localhost'
-              ? <i className="fa fa-check" />
-              : <div className="network-check__transparent">✓</div>
-          }
-          <NetworkDropdownIcon isSelected={providerType === 'localhost'} innerBorder="1px solid #9b9b9b" />
-          <span
-            className="network-name-item"
-            style={{
-              color: providerType === 'localhost'
-                ? '#ffffff'
-                : '#9b9b9b',
-            }}
-          >
-            {this.context.t('localhost')}
           </span>
         </DropdownMenuItem>
         {this.renderCustomRpcList(rpcListDetail, this.props.provider)}

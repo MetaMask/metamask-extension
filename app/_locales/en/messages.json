@@ -340,9 +340,6 @@
   "connectingToKovan": {
     "message": "Connecting to Kovan Test Network"
   },
-  "connectingToLocalhost": {
-    "message": "Connecting to Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Connecting to Ethereum Mainnet"
   },
