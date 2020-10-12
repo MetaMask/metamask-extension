@@ -59,7 +59,7 @@ describe('migration #48', function () {
     })
   })
 
-  it('should delete NetworkController.provider if the type is "rpc"', async function () {
+  it('should migrate NetworkController.provider to Rinkeby if the type is "rpc"', async function () {
     const oldStorage = {
       meta: {},
       data: {
@@ -78,13 +78,21 @@ describe('migration #48', function () {
     assert.deepEqual(newStorage.data, {
       ...expectedPreferencesState,
       NetworkController: {
+        provider: {
+          type: 'rinkeby',
+          rpcUrl: '',
+          chainId: '0x4',
+          nickname: '',
+          rpcPrefs: {},
+          ticker: 'ETH',
+        },
         foo: 'bar',
       },
       foo: 'bar',
     })
   })
 
-  it('should delete NetworkController.provider if the type is "localhost"', async function () {
+  it('should migrate NetworkController.provider to Rinkeby if the type is "localhost"', async function () {
     const oldStorage = {
       meta: {},
       data: {
@@ -103,6 +111,14 @@ describe('migration #48', function () {
     assert.deepEqual(newStorage.data, {
       ...expectedPreferencesState,
       NetworkController: {
+        provider: {
+          type: 'rinkeby',
+          rpcUrl: '',
+          chainId: '0x4',
+          nickname: '',
+          rpcPrefs: {},
+          ticker: 'ETH',
+        },
         foo: 'bar',
       },
       foo: 'bar',

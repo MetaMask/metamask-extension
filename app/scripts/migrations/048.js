@@ -4,8 +4,8 @@ const version = 48
 
 /**
  * 1.  Delete NetworkController.settings
- * 2a. Delete NetworkController.provider if set to type 'rpc' or 'localhost'.
- *     It will be re-set to Mainnet on background initialization.
+ * 2a. Migrate NetworkController.provider to Rinkeby if set to type 'rpc' or
+ *     'localhost'.
  * 2b. Re-key provider.rpcTarget to provider.rpcUrl
  * 3.  Add localhost network to frequentRpcListDetail.
  * 4.  Delete CachedBalancesController.cachedBalances
@@ -25,10 +25,17 @@ function transformState (state = {}) {
   // 1. Delete NetworkController.settings
   delete state.NetworkController?.settings
 
-  // 2. Delete NetworkController.provider or rename rpcTarget key
+  // 2. Migrate NetworkController.provider to Rinkeby or rename rpcTarget key
   const providerType = state.NetworkController?.provider?.type
   if (providerType === 'rpc' || providerType === 'localhost') {
-    delete state.NetworkController.provider
+    state.NetworkController.provider = {
+      type: 'rinkeby',
+      rpcUrl: '',
+      chainId: '0x4',
+      nickname: '',
+      rpcPrefs: {},
+      ticker: 'ETH',
+    }
   } else if (state.NetworkController?.provider) {
     if ('rpcTarget' in state.NetworkController.provider) {
       const rpcUrl = state.NetworkController.provider.rpcTarget
