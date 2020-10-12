@@ -74,6 +74,7 @@ export default class TokenSearch extends Component {
         onChange={(e) => this.handleSearch(e.target.value)}
         error={error}
         fullWidth
+        autoFocus
         startAdornment={this.renderAdornment()}
       />
     )
