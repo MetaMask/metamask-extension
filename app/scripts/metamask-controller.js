@@ -290,7 +290,9 @@ export default class MetamaskController extends EventEmitter {
     this.personalMessageManager = new PersonalMessageManager()
     this.decryptMessageManager = new DecryptMessageManager()
     this.encryptionPublicKeyManager = new EncryptionPublicKeyManager()
-    this.typedMessageManager = new TypedMessageManager({ networkController: this.networkController })
+    this.typedMessageManager = new TypedMessageManager({
+      getCurrentChainId: this.networkController.getCurrentChainId.bind(this.networkController),
+    })
 
     this.swapsController = new SwapsController({
       getBufferedGasLimit: this.txController.txGasUtil.getBufferedGasLimit.bind(this.txController.txGasUtil),
