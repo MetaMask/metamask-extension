@@ -26,7 +26,7 @@ export default function createJsonRpcClient ({ rpcUrl, chainId }) {
     provider: blockProvider,
   })
 
-  const middlewares = [
+  const networkMiddleware = mergeMiddleware([
     ...getTestMiddlewares(),
     createChainIdMiddleware(chainId),
     createBlockRefRewriteMiddleware({ blockTracker }),
@@ -34,9 +34,8 @@ export default function createJsonRpcClient ({ rpcUrl, chainId }) {
     createInflightMiddleware(),
     createBlockTrackerInspectorMiddleware({ blockTracker }),
     fetchMiddleware,
-  ]
+  ])
 
-  const networkMiddleware = mergeMiddleware(middlewares)
   return { networkMiddleware, blockTracker }
 }
 
