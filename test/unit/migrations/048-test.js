@@ -1,6 +1,21 @@
 import { strict as assert } from 'assert'
 import migration48 from '../../../app/scripts/migrations/048'
 
+const localhostNetwork = {
+  rpcUrl: 'http://localhost:8545',
+  chainId: '0x539',
+  ticker: 'ETH',
+  nickname: 'Localhost 8545',
+  rpcPrefs: {},
+}
+const expectedPreferencesState = {
+  PreferencesController: {
+    frequentRpcListDetail: [{
+      ...localhostNetwork,
+    }],
+  },
+}
+
 describe('migration #48', function () {
   it('should update the version metadata', async function () {
     const oldStorage = {
@@ -34,6 +49,7 @@ describe('migration #48', function () {
 
     const newStorage = await migration48.migrate(oldStorage)
     assert.deepEqual(newStorage.data, {
+      ...expectedPreferencesState,
       NetworkController: {
         provider: {
           type: 'notRpc',
@@ -60,6 +76,7 @@ describe('migration #48', function () {
 
     const newStorage = await migration48.migrate(oldStorage)
     assert.deepEqual(newStorage.data, {
+      ...expectedPreferencesState,
       NetworkController: {
         foo: 'bar',
       },
@@ -67,7 +84,32 @@ describe('migration #48', function () {
     })
   })
 
-  it('should re-key NetworkController.provider.rpcTarget to rpcUrl if the type is not "rpc"', async function () {
+  it('should delete NetworkController.provider if the type is "localhost"', async function () {
+    const oldStorage = {
+      meta: {},
+      data: {
+        NetworkController: {
+          provider: {
+            type: 'localhost',
+            fizz: 'buzz',
+          },
+          foo: 'bar',
+        },
+        foo: 'bar',
+      },
+    }
+
+    const newStorage = await migration48.migrate(oldStorage)
+    assert.deepEqual(newStorage.data, {
+      ...expectedPreferencesState,
+      NetworkController: {
+        foo: 'bar',
+      },
+      foo: 'bar',
+    })
+  })
+
+  it('should re-key NetworkController.provider.rpcTarget to rpcUrl if the type is not "rpc" or "localhost"', async function () {
     const oldStorage = {
       meta: {},
       data: {
@@ -85,6 +127,7 @@ describe('migration #48', function () {
 
     const newStorage = await migration48.migrate(oldStorage)
     assert.deepEqual(newStorage.data, {
+      ...expectedPreferencesState,
       NetworkController: {
         foo: 'bar',
         provider: {
@@ -97,7 +140,7 @@ describe('migration #48', function () {
     })
   })
 
-  it('should do nothing if affected state does not exist', async function () {
+  it('should do nothing to NetworkController if affected state does not exist', async function () {
     const oldStorage = {
       meta: {},
       data: {
@@ -111,16 +154,39 @@ describe('migration #48', function () {
     }
 
     const newStorage = await migration48.migrate(oldStorage)
-    assert.deepEqual(oldStorage.data, newStorage.data)
+    assert.deepEqual(
+      { ...oldStorage.data, ...expectedPreferencesState },
+      { ...newStorage.data, ...expectedPreferencesState },
+    )
   })
 
-  it('should do nothing if state is empty', async function () {
+  it('should add frequentRpcListDetail item to beginning of list', async function () {
+    const existingList = [
+      { rpcUrl: 'foo', chainId: '0x1' },
+      { rpcUrl: 'bar', chainId: '0x2' },
+    ]
+
     const oldStorage = {
       meta: {},
-      data: {},
+      data: {
+        PreferencesController: {
+          frequentRpcListDetail: [
+            ...existingList,
+          ],
+        },
+        foo: 'bar',
+      },
     }
 
     const newStorage = await migration48.migrate(oldStorage)
-    assert.deepEqual(oldStorage.data, newStorage.data)
+    assert.deepEqual(newStorage.data, {
+      PreferencesController: {
+        frequentRpcListDetail: [
+          { ...localhostNetwork },
+          ...existingList,
+        ],
+      },
+      foo: 'bar',
+    })
   })
 })
