@@ -204,7 +204,6 @@ export default class MetamaskController extends EventEmitter {
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
       initState: initState.KeyringController,
-      getNetwork: this.networkController.getNetworkState.bind(this.networkController),
       encryptor: opts.encryptor || undefined,
     })
     this.keyringController.memStore.subscribe((s) => this._onKeyringControllerUpdate(s))
@@ -297,7 +296,6 @@ export default class MetamaskController extends EventEmitter {
     this.swapsController = new SwapsController({
       getBufferedGasLimit: this.txController.txGasUtil.getBufferedGasLimit.bind(this.txController.txGasUtil),
       provider: this.provider,
-      getNetwork: this.networkController.getNetworkState.bind(this.networkController),
       getProviderConfig: this.networkController.getProviderConfig.bind(this.networkController),
       tokenRatesStore: this.tokenRatesController.store,
     })

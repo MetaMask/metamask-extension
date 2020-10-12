@@ -4,13 +4,11 @@ import { getMostRecentOverviewPage } from '../../ducks/history/history'
 import NewAccountCreateForm from './new-account.component'
 
 const mapStateToProps = (state) => {
-  const { metamask: { network, selectedAddress, identities = {} } } = state
+  const { metamask: { identities = {} } } = state
   const numberOfExistingAccounts = Object.keys(identities).length
   const newAccountNumber = numberOfExistingAccounts + 1
 
   return {
-    network,
-    address: selectedAddress,
     newAccountNumber,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
   }

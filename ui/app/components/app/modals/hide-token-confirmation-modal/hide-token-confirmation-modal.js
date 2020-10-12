@@ -7,7 +7,6 @@ import Button from '../../../ui/button'
 
 function mapStateToProps (state) {
   return {
-    network: state.metamask.network,
     token: state.appState.modal.modalState.props.token,
     assetImages: state.metamask.assetImages,
   }
