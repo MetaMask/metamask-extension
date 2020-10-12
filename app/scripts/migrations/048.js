@@ -10,6 +10,7 @@ const version = 48
  * 3.  Add localhost network to frequentRpcListDetail.
  * 4.  Delete CachedBalancesController.cachedBalances
  * 5.  Convert transactions metamaskNetworkId to decimal if they are hex
+ * 6.  Convert address book keys from decimal to hex
  */
 export default {
   version,
@@ -87,5 +88,78 @@ function transformState (state = {}) {
     })
   }
 
+  // 6.  Convert address book keys from decimal to hex
+  const addressBook = state.AddressBookController?.addressBook || {}
+  Object.keys(addressBook).forEach((networkKey) => {
+    if ((/^\d+$/ui).test(networkKey)) {
+      const chainId = `0x${networkKey.toString(16)}`
+      updateChainIds(addressBook[networkKey], chainId)
+
+      if (addressBook[chainId]) {
+        mergeAddressBookKeys(addressBook, networkKey, chainId)
+      } else {
+        addressBook[chainId] = addressBook[networkKey]
+      }
+      delete addressBook[networkKey]
+    }
+  })
+
   return state
+}
+
+/**
+ * Merges the two given keys for the given address book in place.
+ *
+ * @returns {void}
+ */
+function mergeAddressBookKeys (addressBook, networkKey, chainIdKey) {
+  const networkKeyEntries = addressBook[networkKey] || {}
+  // For the new entries, start by copying the existing entries for the chainId
+  const newEntries = { ...addressBook[chainIdKey] }
+
+  // For each address of the old/networkId key entries
+  Object.keys(networkKeyEntries).forEach((address) => {
+    if (newEntries[address] && typeof newEntries[address] === 'object') {
+      const mergedEntry = {}
+
+      // Collect all keys from both entries and merge the corresponding chainId
+      // entry with the networkId entry
+      new Set([
+        ...Object.keys(newEntries[address]),
+        ...Object.keys(networkKeyEntries[address] || {}),
+      ]).forEach((key) => {
+        // Use non-empty value for the current key, if any
+        mergedEntry[key] = (
+          newEntries[address][key] ||
+          networkKeyEntries[address]?.[key] ||
+          ''
+        )
+      })
+
+      newEntries[address] = mergedEntry
+    } else if (
+      networkKeyEntries[address] &&
+      typeof networkKeyEntries[address] === 'object'
+    ) {
+      // If there is no corresponding chainId entry, just use the networkId entry
+      // directly
+      newEntries[address] = networkKeyEntries[address]
+    }
+  })
+
+  addressBook[chainIdKey] = newEntries
+}
+
+/**
+ * Updates the chainId key values to the given chainId in place for all values
+ * of the given networkEntries object.
+ *
+ * @returns {void}
+ */
+function updateChainIds (networkEntries, chainId) {
+  Object.values(networkEntries).forEach((entry) => {
+    if (entry && typeof entry === 'object') {
+      entry.chainId = chainId
+    }
+  })
 }

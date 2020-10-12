@@ -156,11 +156,11 @@ export function getAssetImages (state) {
 }
 
 export function getAddressBook (state) {
-  const { network } = state.metamask
-  if (!state.metamask.addressBook[network]) {
+  const { chainId } = state.metamask.provider
+  if (!state.metamask.addressBook[chainId]) {
     return []
   }
-  return Object.values(state.metamask.addressBook[network])
+  return Object.values(state.metamask.addressBook[chainId])
 }
 
 export function getAddressBookEntry (state, address) {
