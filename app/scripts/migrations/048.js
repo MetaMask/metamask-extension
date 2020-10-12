@@ -22,15 +22,22 @@ export default {
   },
 }
 
-const inTest = process.env.IN_TEST === 'true'
+const hexRegEx = (/^0x[0-9a-f]+$/ui)
+const chainIdRegEx = (/^0x[1-9a-f]+[0-9a-f]*$/ui)
 
 function transformState (state = {}) {
   // 1. Delete NetworkController.settings
   delete state.NetworkController?.settings
 
   // 2. Migrate NetworkController.provider to Rinkeby or rename rpcTarget key
-  const providerType = state.NetworkController?.provider?.type
-  if (!inTest && (providerType === 'rpc' || providerType === 'localhost')) {
+  const provider = state.NetworkController?.provider || {}
+  const isCustomRpcWithInvalidChainId = (
+    provider.type === 'rpc' && (
+      typeof provider.chainId !== 'string' ||
+      !chainIdRegEx.test(provider.chainId)
+    )
+  )
+  if (isCustomRpcWithInvalidChainId || provider.type === 'localhost') {
     state.NetworkController.provider = {
       type: 'rinkeby',
       rpcUrl: '',
@@ -72,7 +79,7 @@ function transformState (state = {}) {
       const metamaskNetworkId = transaction?.metamaskNetworkId
       if (
         typeof metamaskNetworkId === 'string' &&
-        (/^0x[0-9a-f]+$/ui).test(metamaskNetworkId)
+        hexRegEx.test(metamaskNetworkId)
       ) {
         transaction.metamaskNetworkId = parseInt(metamaskNetworkId, 16)
           .toString(10)

@@ -59,13 +59,14 @@ describe('migration #48', function () {
     })
   })
 
-  it('should migrate NetworkController.provider to Rinkeby if the type is "rpc"', async function () {
+  it('should migrate NetworkController.provider to Rinkeby if the type is "rpc" and the chainId is invalid (1)', async function () {
     const oldStorage = {
       meta: {},
       data: {
         NetworkController: {
           provider: {
             type: 'rpc',
+            chainId: 'foo',
             fizz: 'buzz',
           },
           foo: 'bar',
@@ -85,6 +86,71 @@ describe('migration #48', function () {
           nickname: '',
           rpcPrefs: {},
           ticker: 'ETH',
+        },
+        foo: 'bar',
+      },
+      foo: 'bar',
+    })
+  })
+
+  it('should migrate NetworkController.provider to Rinkeby if the type is "rpc" and the chainId is invalid (2)', async function () {
+    const oldStorage = {
+      meta: {},
+      data: {
+        NetworkController: {
+          provider: {
+            type: 'rpc',
+            chainId: '0x01',
+            fizz: 'buzz',
+          },
+          foo: 'bar',
+        },
+        foo: 'bar',
+      },
+    }
+
+    const newStorage = await migration48.migrate(oldStorage)
+    assert.deepEqual(newStorage.data, {
+      ...expectedPreferencesState,
+      NetworkController: {
+        provider: {
+          type: 'rinkeby',
+          rpcUrl: '',
+          chainId: '0x4',
+          nickname: '',
+          rpcPrefs: {},
+          ticker: 'ETH',
+        },
+        foo: 'bar',
+      },
+      foo: 'bar',
+    })
+  })
+
+  it('should not migrate NetworkController.provider to Rinkeby if the type is "rpc" and the chainId is valid', async function () {
+    const oldStorage = {
+      meta: {},
+      data: {
+        NetworkController: {
+          provider: {
+            type: 'rpc',
+            chainId: '0x1',
+            fizz: 'buzz',
+          },
+          foo: 'bar',
+        },
+        foo: 'bar',
+      },
+    }
+
+    const newStorage = await migration48.migrate(oldStorage)
+    assert.deepEqual(newStorage.data, {
+      ...expectedPreferencesState,
+      NetworkController: {
+        provider: {
+          type: 'rpc',
+          chainId: '0x1',
+          fizz: 'buzz',
         },
         foo: 'bar',
       },
