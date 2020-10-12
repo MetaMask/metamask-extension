@@ -189,4 +189,32 @@ describe('migration #48', function () {
       foo: 'bar',
     })
   })
+
+  it('should delete CachedBalancesController.cachedBalances', async function () {
+    const oldStorage = {
+      meta: {},
+      data: {
+        CachedBalancesController: {
+          cachedBalances: {
+            fizz: 'buzz',
+          },
+          bar: {
+            baz: 'buzz',
+          },
+        },
+        foo: 'bar',
+      },
+    }
+
+    const newStorage = await migration48.migrate(oldStorage)
+    assert.deepEqual(newStorage.data, {
+      ...expectedPreferencesState,
+      CachedBalancesController: {
+        bar: {
+          baz: 'buzz',
+        },
+      },
+      foo: 'bar',
+    })
+  })
 })

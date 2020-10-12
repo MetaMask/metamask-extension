@@ -8,6 +8,7 @@ const version = 48
  *     It will be re-set to Mainnet on background initialization.
  * 2b. Re-key provider.rpcTarget to provider.rpcUrl
  * 3.  Add localhost network to frequentRpcListDetail.
+ * 4.  Delete CachedBalancesController.cachedBalances
  */
 export default {
   version,
@@ -50,6 +51,9 @@ function transformState (state = {}) {
     nickname: 'Localhost 8545',
     rpcPrefs: {},
   })
+
+  // 4.  Delete CachedBalancesController.cachedBalances
+  delete state.CachedBalancesController?.cachedBalances
 
   return state
 }
