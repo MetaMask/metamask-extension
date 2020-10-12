@@ -9,6 +9,7 @@ const version = 48
  * 2b. Re-key provider.rpcTarget to provider.rpcUrl
  * 3.  Add localhost network to frequentRpcListDetail.
  * 4.  Delete CachedBalancesController.cachedBalances
+ * 5.  Convert transactions metamaskNetworkId to decimal if they are hex
  */
 export default {
   version,
@@ -61,6 +62,21 @@ function transformState (state = {}) {
 
   // 4.  Delete CachedBalancesController.cachedBalances
   delete state.CachedBalancesController?.cachedBalances
+
+  // 5.  Convert transactions metamaskNetworkId to decimal if they are hex
+  const transactions = state.TransactionController?.transactions
+  if (Array.isArray(transactions)) {
+    transactions.forEach((transaction) => {
+      const metamaskNetworkId = transaction?.metamaskNetworkId
+      if (
+        typeof metamaskNetworkId === 'string' &&
+        (/^0x[0-9a-f]+$/ui).test(metamaskNetworkId)
+      ) {
+        transaction.metamaskNetworkId = parseInt(metamaskNetworkId, 16)
+          .toString(10)
+      }
+    })
+  }
 
   return state
 }

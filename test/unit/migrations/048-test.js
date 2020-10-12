@@ -233,4 +233,53 @@ describe('migration #48', function () {
       foo: 'bar',
     })
   })
+
+  it('should convert hex transaction metamaskNetworkId values to decimal', async function () {
+    const oldStorage = {
+      meta: {},
+      data: {
+        TransactionController: {
+          transactions: [
+            { fizz: 'buzz' },
+            null,
+            undefined,
+            0,
+            '',
+            { foo: 'bar', metamaskNetworkId: '1' },
+            { foo: 'bar', metamaskNetworkId: '0x1' },
+            { foo: 'bar', metamaskNetworkId: 'kaplar' },
+            { foo: 'bar', metamaskNetworkId: '0X2a' },
+            { foo: 'bar', metamaskNetworkId: '3' },
+          ],
+          bar: {
+            baz: 'buzz',
+          },
+        },
+        foo: 'bar',
+      },
+    }
+
+    const newStorage = await migration48.migrate(oldStorage)
+    assert.deepEqual(newStorage.data, {
+      ...expectedPreferencesState,
+      TransactionController: {
+        transactions: [
+          { fizz: 'buzz' },
+          null,
+          undefined,
+          0,
+          '',
+          { foo: 'bar', metamaskNetworkId: '1' },
+          { foo: 'bar', metamaskNetworkId: '1' },
+          { foo: 'bar', metamaskNetworkId: 'kaplar' },
+          { foo: 'bar', metamaskNetworkId: '42' },
+          { foo: 'bar', metamaskNetworkId: '3' },
+        ],
+        bar: {
+          baz: 'buzz',
+        },
+      },
+      foo: 'bar',
+    })
+  })
 })
