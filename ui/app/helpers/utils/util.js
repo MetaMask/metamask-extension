@@ -34,7 +34,7 @@ Object.keys(valueTable).forEach((currency) => {
 })
 
 export function isEthNetwork (netId) {
-  if (!netId || netId === '1' || netId === '3' || netId === '4' || netId === '42' || netId === '5777') {
+  if (!netId || netId === '1' || netId === '3' || netId === '4' || netId === '42' || netId === '1337') {
     return true
   }
 
