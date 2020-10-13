@@ -57,12 +57,6 @@ export default class MetaMetricsOptIn extends Component {
                   Send anonymized click & pageview events
                 </div>
               </div>
-              <div className="metametrics-opt-in__row">
-                <i className="fa fa-check" />
-                <div className="metametrics-opt-in__row-description">
-                  Maintain a public aggregate dashboard to educate the community
-                </div>
-              </div>
               <div className="metametrics-opt-in__row metametrics-opt-in__break-row">
                 <i className="fa fa-times" />
                 <div className="metametrics-opt-in__row-description">
