@@ -120,7 +120,6 @@ export default class NetworkController extends EventEmitter {
       return
     }
 
-    const { type } = this.getProviderConfig()
     const chainId = this.getCurrentChainId()
     if (!chainId) {
       log.warn('NetworkController - lookupNetwork aborted due to missing chainId')
@@ -139,11 +138,7 @@ export default class NetworkController extends EventEmitter {
           return
         }
 
-        this.setNetworkState((
-          type === 'rpc'
-            ? chainId
-            : networkVersion
-        ))
+        this.setNetworkState(networkVersion)
       }
     })
   }
