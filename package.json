@@ -177,6 +177,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
+    "@babel/eslint-parser": "^7.11.5",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.10.4",
     "@babel/plugin-proposal-object-rest-spread": "^7.5.5",
@@ -198,7 +199,6 @@
     "@testing-library/react": "^10.4.8",
     "@testing-library/react-hooks": "^3.2.1",
     "addons-linter": "1.14.0",
-    "babel-eslint": "^10.1.0",
     "babel-loader": "^8.0.6",
     "babelify": "^10.0.0",
     "brfs": "^2.0.2",
