@@ -11,6 +11,7 @@ const version = 48
  * 4.  Delete CachedBalancesController.cachedBalances
  * 5.  Convert transactions metamaskNetworkId to decimal if they are hex
  * 6.  Convert address book keys from decimal to hex
+ * 7.  Delete localhost key in IncomingTransactionsController
  */
 export default {
   version,
@@ -103,6 +104,11 @@ function transformState (state = {}) {
       delete addressBook[networkKey]
     }
   })
+
+  // 7.  Delete localhost key in IncomingTransactionsController
+  delete state.IncomingTransactionsController
+    ?.incomingTxLastFetchedBlocksByNetwork
+    ?.localhost
 
   return state
 }
