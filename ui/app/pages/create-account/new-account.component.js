@@ -54,6 +54,7 @@ export default class NewAccountCreateForm extends Component {
             value={newAccountName}
             placeholder={defaultAccountName}
             onChange={(event) => this.setState({ newAccountName: event.target.value })}
+            autoFocus
           />
           <div className="new-account-create-form__buttons">
             <Button
