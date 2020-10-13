@@ -1,0 +1,44 @@
+diff --git a/node_modules/findup/index.js b/node_modules/findup/index.js
+index 1d1cb62..120b9e5 100644
+--- a/node_modules/findup/index.js
++++ b/node_modules/findup/index.js
+@@ -1,7 +1,7 @@
+ var fs   = require('fs'),
+   Path   = require('path'),
+   util   = require('util'),
+-  colors = require('colors'),
++  colors = require('colors/safe'),
+   EE     = require('events').EventEmitter,
+   fsExists = fs.exists ? fs.exists : Path.exists,
+   fsExistsSync = fs.existsSync ? fs.existsSync : Path.existsSync;
+@@ -34,18 +34,18 @@ function FindUp(dir, iterator, options, callback){
+ 
+   if(callback) {
+     this.on('found', function(dir){
+-      if(options.verbose) console.log(('found '+ dir ).green);
++      if (options.verbose) console.log(colors.green('found '+ dir ));
+       callback(null, dir);
+       self.stop();
+     });
+ 
+     this.on('end', function(){
+-      if(options.verbose) console.log('end'.grey);
++      if(options.verbose) console.log(colors.grey('end'));
+       if(!self.found) callback(new Error('not found'));
+     });
+ 
+     this.on('error', function(err){
+-      if(options.verbose) console.log('error'.red, err);
++      if (options.verbose) console.log(colors.red('error'), err);
+       callback(err);
+     });
+   }
+@@ -58,7 +58,7 @@ FindUp.prototype._find = function(dir, iterator, options, callback){
+   var self = this;
+ 
+   iterator(dir, function(exists){
+-    if(options.verbose) console.log(('traverse '+ dir).grey);
++    if (options.verbose) console.log(colors.grey('traverse '+ dir));
+     if(exists) {
+       self.found = true;
+       self.emit('found', dir);
