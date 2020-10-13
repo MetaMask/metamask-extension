@@ -858,6 +858,13 @@ export default class TransactionController extends EventEmitter {
             .round(2)
         }%`
 
+        const estimatedVsUsedGasRatio = `${
+          (new BigNumber(txMeta.txReceipt.gasUsed, 16))
+            .div(txMeta.swapMetaData.estimated_gas, 16)
+            .times(100)
+            .round(2)
+        }%`
+
         this._trackSegmentEvent({
           event: 'Swap Completed',
           category: 'swaps',
@@ -871,6 +878,7 @@ export default class TransactionController extends EventEmitter {
             ...txMeta.swapMetaData,
             token_to_amount_received: tokensReceived,
             quote_vs_executionRatio: quoteVsExecutionRatio,
+            estimated_vs_used_gasRatio: estimatedVsUsedGasRatio,
           },
           excludeMetaMetricsId: true,
         })

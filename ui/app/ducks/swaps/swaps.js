@@ -474,6 +474,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       other_quote_selected: usedQuote.aggregator !== getTopQuote(state)?.aggregator,
       other_quote_selected_source: usedQuote.aggregator === getTopQuote(state)?.aggregator ? '' : usedQuote.aggregator,
       gas_fees: formatCurrency(gasEstimateTotalInEth, 'usd')?.slice(1),
+      estimated_gas: estimatedGasLimit.toString(16),
     }
 
     const metaMetricsConfig = {
