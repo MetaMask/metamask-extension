@@ -575,4 +575,62 @@ describe('migration #48', function () {
       foo: 'bar',
     })
   })
+
+  it('should merge localhost token list into rpc token list', async function () {
+    const oldStorage = {
+      meta: {},
+      data: {
+        PreferencesController: {
+          accountTokens: {
+            address1: {
+              localhost: [
+                { address: '1', data1: 'stuff1' },
+                { address: '2', a: 'X', b: 'B' },
+              ],
+              rpc: [
+                { address: '2', a: 'A', c: 'C' },
+                { address: '3', data3: 'stuff3' },
+              ],
+              foo: [],
+            },
+            address2: {
+              localhost: [],
+              rpc: [],
+              foo: [],
+            },
+            address3: {},
+          },
+          bar: 'baz',
+        },
+        foo: 'bar',
+      },
+    }
+
+    const newStorage = await migration48.migrate(oldStorage)
+    assert.deepEqual(newStorage.data, {
+      PreferencesController: {
+        accountTokens: {
+          address1: {
+            rpc: [
+              { address: '1', data1: 'stuff1' },
+              { address: '2', a: 'A', b: 'B', c: 'C' },
+              { address: '3', data3: 'stuff3' },
+            ],
+            foo: [],
+          },
+          address2: {
+            rpc: [],
+            foo: [],
+          },
+          address3: {},
+        },
+        bar: 'baz',
+        // from other migration
+        frequentRpcListDetail: [{
+          ...localhostNetwork,
+        }],
+      },
+      foo: 'bar',
+    })
+  })
 })
