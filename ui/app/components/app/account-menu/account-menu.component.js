@@ -179,7 +179,7 @@ export default class AccountMenu extends Component {
 
       return (
         <div
-          className="account-menu__account menu__item--clickable"
+          className="account-menu__account account-menu__item--clickable"
           onClick={() => {
             this.context.metricsEvent({
               eventOpts: {
