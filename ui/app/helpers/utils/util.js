@@ -384,7 +384,7 @@ export function addHexPrefixToObjectValues (obj) {
  * Given the standard set of information about a transaction, returns a transaction properly formatted for
  * publishing via JSON RPC and web3
  *
- * @param {string|object|boolean} sendToken - Indicates whether or not the transaciton is a token transaction
+ * @param {boolean} [sendToken] - Indicates whether or not the transaciton is a token transaction
  * @param {string} data - A hex string containing the data to include in the transaction
  * @param {string} to - A hex address of the tx recipient address
  * @param {string} from - A hex address of the tx sender address
