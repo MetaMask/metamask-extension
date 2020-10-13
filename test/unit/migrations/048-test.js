@@ -518,4 +518,61 @@ describe('migration #48', function () {
       foo: 'bar',
     })
   })
+
+  it('should delete localhost key in IncomingTransactionsController', async function () {
+    const oldStorage = {
+      meta: {},
+      data: {
+        IncomingTransactionsController: {
+          incomingTxLastFetchedBlocksByNetwork: {
+            fizz: 'buzz',
+            localhost: {},
+          },
+          bar: 'baz',
+        },
+        foo: 'bar',
+      },
+    }
+
+    const newStorage = await migration48.migrate(oldStorage)
+    assert.deepEqual(newStorage.data, {
+      ...expectedPreferencesState,
+      IncomingTransactionsController: {
+        incomingTxLastFetchedBlocksByNetwork: {
+          fizz: 'buzz',
+        },
+        bar: 'baz',
+      },
+      foo: 'bar',
+    })
+  })
+
+  it('should not modify IncomingTransactionsController state if affected key is missing', async function () {
+    const oldStorage = {
+      meta: {},
+      data: {
+        IncomingTransactionsController: {
+          incomingTxLastFetchedBlocksByNetwork: {
+            fizz: 'buzz',
+            rpc: {},
+          },
+          bar: 'baz',
+        },
+        foo: 'bar',
+      },
+    }
+
+    const newStorage = await migration48.migrate(oldStorage)
+    assert.deepEqual(newStorage.data, {
+      ...expectedPreferencesState,
+      IncomingTransactionsController: {
+        incomingTxLastFetchedBlocksByNetwork: {
+          fizz: 'buzz',
+          rpc: {},
+        },
+        bar: 'baz',
+      },
+      foo: 'bar',
+    })
+  })
 })
