@@ -3,6 +3,9 @@
 //
 // run any task with "yarn build ${taskName}"
 //
+global.globalThis = global
+require('lavamoat-core/lib/ses.umd.js');
+lockdown()
 
 const livereload = require('gulp-livereload')
 const { createTask, composeSeries, composeParallel, detectAndRunEntryTask } = require('./task')

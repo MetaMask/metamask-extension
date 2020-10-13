@@ -1,0 +1,577 @@
+{
+  "debugInfo": {
+    "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/development/build/index.js": {
+      "moduleRecord": {
+        "content": "//\n// build task definitions\n//\n// run any task with \"yarn build ${taskName}\"\n//\n\nconst livereload = require('gulp-livereload')\nconst { createTask, composeSeries, composeParallel, detectAndRunEntryTask } = require('./task')\nconst createManifestTasks = require('./manifest')\nconst createScriptTasks = require('./scripts')\nconst createStyleTasks = require('./styles')\nconst createStaticAssetTasks = require('./static')\nconst createEtcTasks = require('./etc')\n\nconst browserPlatforms = [\n  'firefox',\n  'chrome',\n  'brave',\n  'opera',\n]\n\ndefineAllTasks()\ndetectAndRunEntryTask()\n\nfunction defineAllTasks () {\n\n  const staticTasks = createStaticAssetTasks({ livereload, browserPlatforms })\n  const manifestTasks = createManifestTasks({ browserPlatforms })\n  const styleTasks = createStyleTasks({ livereload })\n  const scriptTasks = createScriptTasks({ livereload, browserPlatforms })\n  const { clean, reload, zip } = createEtcTasks({ livereload, browserPlatforms })\n\n  // build for development (livereload)\n  createTask(\n    'dev',\n    composeSeries(\n      clean,\n      styleTasks.dev,\n      composeParallel(\n        scriptTasks.dev,\n        staticTasks.dev,\n        manifestTasks.dev,\n        reload,\n      ),\n    ),\n  )\n\n  // build for test development (livereload)\n  createTask(\n    'testDev',\n    composeSeries(\n      clean,\n      styleTasks.dev,\n      composeParallel(\n        scriptTasks.testDev,\n        staticTasks.dev,\n        manifestTasks.testDev,\n        reload,\n      ),\n    ),\n  )\n\n  // build for prod release\n  createTask(\n    'prod',\n    composeSeries(\n      clean,\n      styleTasks.prod,\n      composeParallel(\n        scriptTasks.prod,\n        staticTasks.prod,\n        manifestTasks.prod,\n      ),\n      zip,\n    ),\n  )\n\n  // build for CI testing\n  createTask(\n    'test',\n    composeSeries(\n      clean,\n      styleTasks.prod,\n      composeParallel(\n        scriptTasks.test,\n        staticTasks.prod,\n        manifestTasks.test,\n      ),\n    ),\n  )\n\n  // special build for minimal CI testing\n  createTask('styles', styleTasks.prod)\n\n}\n",
+        "file": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/development/build/index.js",
+        "importMap": {
+          "./etc": null,
+          "./manifest": null,
+          "./scripts": null,
+          "./static": null,
+          "./styles": null,
+          "./task": null,
+          "gulp-livereload": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/gulp-livereload/index.js"
+        },
+        "packageName": "<root>",
+        "specifier": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/development/build/index.js",
+        "type": "js"
+      }
+    },
+    "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/ansi-gray/index.js": {
+      "moduleRecord": {
+        "content": "/*!\n * ansi-gray <https://github.com/jonschlinkert/ansi-gray>\n *\n * Copyright (c) 2015, Jon Schlinkert.\n * Licensed under the MIT License.\n */\n\n'use strict';\n\nvar wrap = require('ansi-wrap');\n\nmodule.exports = function gray(message) {\n  return wrap(90, 39, message);\n};\n",
+        "file": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/ansi-gray/index.js",
+        "importMap": {
+          "ansi-wrap": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/ansi-wrap/index.js"
+        },
+        "packageName": "ansi-gray",
+        "packageVersion": "0.1.1",
+        "specifier": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/ansi-gray/index.js",
+        "type": "js"
+      }
+    },
+    "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/ansi-wrap/index.js": {
+      "moduleRecord": {
+        "content": "'use strict';\n\nmodule.exports = function(a, b, msg) {\n  return '\\u001b['+ a + 'm' + msg + '\\u001b[' + b + 'm';\n};\n",
+        "file": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/ansi-wrap/index.js",
+        "importMap": {
+        },
+        "packageName": "ansi-wrap",
+        "packageVersion": "0.1.0",
+        "specifier": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/ansi-wrap/index.js",
+        "type": "js"
+      }
+    },
+    "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/color-convert/index.js": {
+      "moduleRecord": {
+        "content": "var conversions = require('./conversions');\nvar route = require('./route');\n\nvar convert = {};\n\nvar models = Object.keys(conversions);\n\nfunction wrapRaw(fn) {\n\tvar wrappedFn = function (args) {\n\t\tif (args === undefined || args === null) {\n\t\t\treturn args;\n\t\t}\n\n\t\tif (arguments.length > 1) {\n\t\t\targs = Array.prototype.slice.call(arguments);\n\t\t}\n\n\t\treturn fn(args);\n\t};\n\n\t// preserve .conversion property if there is one\n\tif ('conversion' in fn) {\n\t\twrappedFn.conversion = fn.conversion;\n\t}\n\n\treturn wrappedFn;\n}\n\nfunction wrapRounded(fn) {\n\tvar wrappedFn = function (args) {\n\t\tif (args === undefined || args === null) {\n\t\t\treturn args;\n\t\t}\n\n\t\tif (arguments.length > 1) {\n\t\t\targs = Array.prototype.slice.call(arguments);\n\t\t}\n\n\t\tvar result = fn(args);\n\n\t\t// we're assuming the result is an array here.\n\t\t// see notice in conversions.js; don't use box types\n\t\t// in conversion functions.\n\t\tif (typeof result === 'object') {\n\t\t\tfor (var len = result.length, i = 0; i < len; i++) {\n\t\t\t\tresult[i] = Math.round(result[i]);\n\t\t\t}\n\t\t}\n\n\t\treturn result;\n\t};\n\n\t// preserve .conversion property if there is one\n\tif ('conversion' in fn) {\n\t\twrappedFn.conversion = fn.conversion;\n\t}\n\n\treturn wrappedFn;\n}\n\nmodels.forEach(function (fromModel) {\n\tconvert[fromModel] = {};\n\n\tObject.defineProperty(convert[fromModel], 'channels', {value: conversions[fromModel].channels});\n\tObject.defineProperty(convert[fromModel], 'labels', {value: conversions[fromModel].labels});\n\n\tvar routes = route(fromModel);\n\tvar routeModels = Object.keys(routes);\n\n\trouteModels.forEach(function (toModel) {\n\t\tvar fn = routes[toModel];\n\n\t\tconvert[fromModel][toModel] = wrapRounded(fn);\n\t\tconvert[fromModel][toModel].raw = wrapRaw(fn);\n\t});\n});\n\nmodule.exports = convert;\n",
+        "file": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/color-convert/index.js",
+        "importMap": {
+          "./conversions": null,
+          "./route": null
+        },
+        "packageName": "color-convert",
+        "packageVersion": "1.9.3",
+        "specifier": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/color-convert/index.js",
+        "type": "js"
+      }
+    },
+    "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/color-support/index.js": {
+      "globals": {
+        "process": "read"
+      },
+      "moduleRecord": {
+        "content": "// call it on itself so we can test the export val for basic stuff\nmodule.exports = colorSupport({ alwaysReturn: true }, colorSupport)\n\nfunction hasNone (obj, options) {\n  obj.level = 0\n  obj.hasBasic = false\n  obj.has256 = false\n  obj.has16m = false\n  if (!options.alwaysReturn) {\n    return false\n  }\n  return obj\n}\n\nfunction hasBasic (obj) {\n  obj.hasBasic = true\n  obj.has256 = false\n  obj.has16m = false\n  obj.level = 1\n  return obj\n}\n\nfunction has256 (obj) {\n  obj.hasBasic = true\n  obj.has256 = true\n  obj.has16m = false\n  obj.level = 2\n  return obj\n}\n\nfunction has16m (obj) {\n  obj.hasBasic = true\n  obj.has256 = true\n  obj.has16m = true\n  obj.level = 3\n  return obj\n}\n\nfunction colorSupport (options, obj) {\n  options = options || {}\n\n  obj = obj || {}\n\n  // if just requesting a specific level, then return that.\n  if (typeof options.level === 'number') {\n    switch (options.level) {\n      case 0:\n        return hasNone(obj, options)\n      case 1:\n        return hasBasic(obj)\n      case 2:\n        return has256(obj)\n      case 3:\n        return has16m(obj)\n    }\n  }\n\n  obj.level = 0\n  obj.hasBasic = false\n  obj.has256 = false\n  obj.has16m = false\n\n  if (typeof process === 'undefined' ||\n      !process ||\n      !process.stdout ||\n      !process.env ||\n      !process.platform) {\n    return hasNone(obj, options)\n  }\n\n  var env = options.env || process.env\n  var stream = options.stream || process.stdout\n  var term = options.term || env.TERM || ''\n  var platform = options.platform || process.platform\n\n  if (!options.ignoreTTY && !stream.isTTY) {\n    return hasNone(obj, options)\n  }\n\n  if (!options.ignoreDumb && term === 'dumb' && !env.COLORTERM) {\n    return hasNone(obj, options)\n  }\n\n  if (platform === 'win32') {\n    return hasBasic(obj)\n  }\n\n  if (env.TMUX) {\n    return has256(obj)\n  }\n\n  if (!options.ignoreCI && (env.CI || env.TEAMCITY_VERSION)) {\n    if (env.TRAVIS) {\n      return has256(obj)\n    } else {\n      return hasNone(obj, options)\n    }\n  }\n\n  // TODO: add more term programs\n  switch (env.TERM_PROGRAM) {\n    case 'iTerm.app':\n      var ver = env.TERM_PROGRAM_VERSION || '0.'\n      if (/^[0-2]\\./.test(ver)) {\n        return has256(obj)\n      } else {\n        return has16m(obj)\n      }\n\n    case 'HyperTerm':\n    case 'Hyper':\n      return has16m(obj)\n\n    case 'MacTerm':\n      return has16m(obj)\n\n    case 'Apple_Terminal':\n      return has256(obj)\n  }\n\n  if (/^xterm-256/.test(term)) {\n    return has256(obj)\n  }\n\n  if (/^screen|^xterm|^vt100|color|ansi|cygwin|linux/i.test(term)) {\n    return hasBasic(obj)\n  }\n\n  if (env.COLORTERM) {\n    return hasBasic(obj)\n  }\n\n  return hasNone(obj, options)\n}\n",
+        "file": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/color-support/index.js",
+        "importMap": {
+        },
+        "packageName": "color-support",
+        "packageVersion": "1.1.3",
+        "specifier": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/color-support/index.js",
+        "type": "js"
+      }
+    },
+    "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/duplexer/index.js": {
+      "builtin": [
+        "stream"
+      ],
+      "moduleRecord": {
+        "content": "var Stream = require(\"stream\")\nvar writeMethods = [\"write\", \"end\", \"destroy\"]\nvar readMethods = [\"resume\", \"pause\"]\nvar readEvents = [\"data\", \"close\"]\nvar slice = Array.prototype.slice\n\nmodule.exports = duplex\n\nfunction forEach (arr, fn) {\n    if (arr.forEach) {\n        return arr.forEach(fn)\n    }\n\n    for (var i = 0; i < arr.length; i++) {\n        fn(arr[i], i)\n    }\n}\n\nfunction duplex(writer, reader) {\n    var stream = new Stream()\n    var ended = false\n\n    forEach(writeMethods, proxyWriter)\n\n    forEach(readMethods, proxyReader)\n\n    forEach(readEvents, proxyStream)\n\n    reader.on(\"end\", handleEnd)\n\n    writer.on(\"drain\", function() {\n      stream.emit(\"drain\")\n    })\n\n    writer.on(\"error\", reemit)\n    reader.on(\"error\", reemit)\n\n    stream.writable = writer.writable\n    stream.readable = reader.readable\n\n    return stream\n\n    function proxyWriter(methodName) {\n        stream[methodName] = method\n\n        function method() {\n            return writer[methodName].apply(writer, arguments)\n        }\n    }\n\n    function proxyReader(methodName) {\n        stream[methodName] = method\n\n        function method() {\n            stream.emit(methodName)\n            var func = reader[methodName]\n            if (func) {\n                return func.apply(reader, arguments)\n            }\n            reader.emit(methodName)\n        }\n    }\n\n    function proxyStream(methodName) {\n        reader.on(methodName, reemit)\n\n        function reemit() {\n            var args = slice.call(arguments)\n            args.unshift(methodName)\n            stream.emit.apply(stream, args)\n        }\n    }\n\n    function handleEnd() {\n        if (ended) {\n            return\n        }\n        ended = true\n        var args = slice.call(arguments)\n        args.unshift(\"end\")\n        stream.emit.apply(stream, args)\n    }\n\n    function reemit(err) {\n        stream.emit(\"error\", err)\n    }\n}\n",
+        "file": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/duplexer/index.js",
+        "importMap": {
+          "stream": "stream"
+        },
+        "packageName": "duplexer",
+        "packageVersion": "0.1.1",
+        "specifier": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/duplexer/index.js",
+        "type": "js"
+      }
+    },
+    "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/escape-string-regexp/index.js": {
+      "moduleRecord": {
+        "content": "'use strict';\n\nvar matchOperatorsRe = /[|\\\\{}()[\\]^$+*?.]/g;\n\nmodule.exports = function (str) {\n\tif (typeof str !== 'string') {\n\t\tthrow new TypeError('Expected a string');\n\t}\n\n\treturn str.replace(matchOperatorsRe, '\\\\$&');\n};\n",
+        "file": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/escape-string-regexp/index.js",
+        "importMap": {
+        },
+        "packageName": "escape-string-regexp",
+        "packageVersion": "1.0.5",
+        "specifier": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/escape-string-regexp/index.js",
+        "type": "js"
+      }
+    },
+    "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/event-stream/index.js": {
+      "builtin": [
+        "stream.Stream",
+        "buffer.Buffer.isBuffer"
+      ],
+      "globals": {
+        "Buffer.concat": "read",
+        "Buffer.isBuffer": "read",
+        "console.error": "read",
+        "process.nextTick": "read",
+        "setImmediate": "read"
+      },
+      "moduleRecord": {
+        "content": "//filter will reemit the data if cb(err,pass) pass is truthy\n\n// reduce is more tricky\n// maybe we want to group the reductions or emit progress updates occasionally\n// the most basic reduce just emits one 'data' event after it has recieved 'end'\n\nvar Stream = require('stream').Stream\n  , es = exports\n  , through = require('through')\n  , from = require('from')\n  , duplex = require('duplexer')\n  , map = require('map-stream')\n  , pause = require('pause-stream')\n  , split = require('split')\n  , pipeline = require('stream-combiner')\n  , immediately = global.setImmediate || process.nextTick;\n\nes.Stream = Stream //re-export Stream from core\nes.through = through\nes.from = from\nes.duplex = duplex\nes.map = map\nes.pause = pause\nes.split = split\nes.pipeline = es.connect = es.pipe = pipeline\n// merge / concat\n//\n// combine multiple streams into a single stream.\n// will emit end only once\n\nes.concat = //actually this should be called concat\nes.merge = function (/*streams...*/) {\n  var toMerge = [].slice.call(arguments)\n  if (toMerge.length === 1 && (toMerge[0] instanceof Array)) {\n    toMerge = toMerge[0] //handle array as arguments object\n  }\n  var stream = new Stream()\n  stream.setMaxListeners(0) // allow adding more than 11 streams\n  var endCount = 0\n  stream.writable = stream.readable = true\n\n  if (toMerge.length) {\n    toMerge.forEach(function (e) {\n      e.pipe(stream, {end: false})\n      var ended = false\n      e.on('end', function () {\n        if(ended) return\n        ended = true\n        endCount ++\n        if(endCount == toMerge.length)\n          stream.emit('end')\n      })\n    })\n  } else {\n    process.nextTick(function () {\n      stream.emit('end')\n    })\n  }\n  \n  stream.write = function (data) {\n    this.emit('data', data)\n  }\n  stream.destroy = function () {\n    toMerge.forEach(function (e) {\n      if(e.destroy) e.destroy()\n    })\n  }\n  return stream\n}\n\n\n// writable stream, collects all events into an array\n// and calls back when 'end' occurs\n// mainly I'm using this to test the other functions\n\nes.writeArray = function (done) {\n  if ('function' !== typeof done)\n    throw new Error('function writeArray (done): done must be function')\n\n  var a = new Stream ()\n    , array = [], isDone = false\n  a.write = function (l) {\n    array.push(l)\n  }\n  a.end = function () {\n    isDone = true\n    done(null, array)\n  }\n  a.writable = true\n  a.readable = false\n  a.destroy = function () {\n    a.writable = a.readable = false\n    if(isDone) return\n    done(new Error('destroyed before end'), array)\n  }\n  return a\n}\n\n//return a Stream that reads the properties of an object\n//respecting pause() and resume()\n\nes.readArray = function (array) {\n  var stream = new Stream()\n    , i = 0\n    , paused = false\n    , ended = false\n\n  stream.readable = true\n  stream.writable = false\n\n  if(!Array.isArray(array))\n    throw new Error('event-stream.read expects an array')\n\n  stream.resume = function () {\n    if(ended) return\n    paused = false\n    var l = array.length\n    while(i < l && !paused && !ended) {\n      stream.emit('data', array[i++])\n    }\n    if(i == l && !ended)\n      ended = true, stream.readable = false, stream.emit('end')\n  }\n  process.nextTick(stream.resume)\n  stream.pause = function () {\n     paused = true\n  }\n  stream.destroy = function () {\n    ended = true\n    stream.emit('close')\n  }\n  return stream\n}\n\n//\n// readable (asyncFunction)\n// return a stream that calls an async function while the stream is not paused.\n//\n// the function must take: (count, callback) {...\n//\n\nes.readable =\nfunction (func, continueOnError) {\n  var stream = new Stream()\n    , i = 0\n    , paused = false\n    , ended = false\n    , reading = false\n\n  stream.readable = true\n  stream.writable = false\n\n  if('function' !== typeof func)\n    throw new Error('event-stream.readable expects async function')\n\n  stream.on('end', function () { ended = true })\n\n  function get (err, data) {\n\n    if(err) {\n      stream.emit('error', err)\n      if(!continueOnError) stream.emit('end')\n    } else if (arguments.length > 1)\n      stream.emit('data', data)\n\n    immediately(function () {\n      if(ended || paused || reading) return\n      try {\n        reading = true\n        func.call(stream, i++, function () {\n          reading = false\n          get.apply(null, arguments)\n        })\n      } catch (err) {\n        stream.emit('error', err)\n      }\n    })\n  }\n  stream.resume = function () {\n    paused = false\n    get()\n  }\n  process.nextTick(get)\n  stream.pause = function () {\n     paused = true\n  }\n  stream.destroy = function () {\n    stream.emit('end')\n    stream.emit('close')\n    ended = true\n  }\n  return stream\n}\n\n\n//\n// map sync\n//\n\nes.mapSync = function (sync) {\n  return es.through(function write(data) {\n    var mappedData\n    try {\n      mappedData = sync(data)\n    } catch (err) {\n      return this.emit('error', err)\n    }\n    if (mappedData !== undefined)\n      this.emit('data', mappedData)\n  })\n}\n\n//\n// log just print out what is coming through the stream, for debugging\n//\n\nes.log = function (name) {\n  return es.through(function (data) {\n    var args = [].slice.call(arguments)\n    if(name) console.error(name, data)\n    else     console.error(data)\n    this.emit('data', data)\n  })\n}\n\n\n//\n// child -- pipe through a child process\n//\n\nes.child = function (child) {\n\n  return es.duplex(child.stdin, child.stdout)\n\n}\n\n//\n// parse\n//\n// must be used after es.split() to ensure that each chunk represents a line\n// source.pipe(es.split()).pipe(es.parse())\n\nes.parse = function (options) {\n  var emitError = !!(options ? options.error : false)\n  return es.through(function (data) {\n    var obj\n    try {\n      if(data) //ignore empty lines\n        obj = JSON.parse(data.toString())\n    } catch (err) {\n      if (emitError)\n        return this.emit('error', err)\n      return console.error(err, 'attempting to parse:', data)\n    }\n    //ignore lines that where only whitespace.\n    if(obj !== undefined)\n      this.emit('data', obj)\n  })\n}\n//\n// stringify\n//\n\nes.stringify = function () {\n  var Buffer = require('buffer').Buffer\n  return es.mapSync(function (e){\n    return JSON.stringify(Buffer.isBuffer(e) ? e.toString() : e) + '\\n'\n  })\n}\n\n//\n// replace a string within a stream.\n//\n// warn: just concatenates the string and then does str.split().join().\n// probably not optimal.\n// for smallish responses, who cares?\n// I need this for shadow-npm so it's only relatively small json files.\n\nes.replace = function (from, to) {\n  return es.pipeline(es.split(from), es.join(to))\n}\n\n//\n// join chunks with a joiner. just like Array#join\n// also accepts a callback that is passed the chunks appended together\n// this is still supported for legacy reasons.\n//\n\nes.join = function (str) {\n\n  //legacy api\n  if('function' === typeof str)\n    return es.wait(str)\n\n  var first = true\n  return es.through(function (data) {\n    if(!first)\n      this.emit('data', str)\n    first = false\n    this.emit('data', data)\n    return true\n  })\n}\n\n\n//\n// wait. callback when 'end' is emitted, with all chunks appended as string.\n//\n\nes.wait = function (callback) {\n  var arr = []\n  return es.through(function (data) { arr.push(data) },\n    function () {\n      var body = Buffer.isBuffer(arr[0]) ? Buffer.concat(arr)\n        : arr.join('')\n      this.emit('data', body)\n      this.emit('end')\n      if(callback) callback(null, body)\n    })\n}\n\nes.pipeable = function () {\n  throw new Error('[EVENT-STREAM] es.pipeable is deprecated')\n}\n",
+        "file": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/event-stream/index.js",
+        "importMap": {
+          "buffer": "buffer",
+          "duplexer": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/duplexer/index.js",
+          "from": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/from/index.js",
+          "map-stream": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/map-stream/index.js",
+          "pause-stream": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/pause-stream/index.js",
+          "split": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/split/index.js",
+          "stream": "stream",
+          "stream-combiner": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/stream-combiner/index.js",
+          "through": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/through/index.js"
+        },
+        "packageName": "event-stream",
+        "packageVersion": "3.3.4",
+        "specifier": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/event-stream/index.js",
+        "type": "js"
+      }
+    },
+    "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/from/index.js": {
+      "builtin": [
+        "stream"
+      ],
+      "globals": {
+        "process.nextTick": "read"
+      },
+      "moduleRecord": {
+        "content": "\n'use strict';\n\nvar Stream = require('stream')\n\n// from\n//\n// a stream that reads from an source.\n// source may be an array, or a function.\n// from handles pause behaviour for you.\n\nmodule.exports =\nfunction from (source) {\n  if(Array.isArray(source)) {\n\t\tvar source_index = 0, source_len = source.length;\n    return from (function (i) {\n      if(source_index < source_len)\n        this.emit('data', source[source_index++])\n      else\n        this.emit('end')\n      return true\n    })\n  }\n  var s = new Stream(), i = 0\n  s.ended = false\n  s.started = false\n  s.readable = true\n  s.writable = false\n  s.paused = false\n  s.ended = false\n  s.pause = function () {\n    s.started = true\n    s.paused = true\n  }\n  function next () {\n    s.started = true\n    if(s.ended) return\n    while(!s.ended && !s.paused && source.call(s, i++, function () {\n      if(!s.ended && !s.paused)\n          process.nextTick(next);\n    }))\n      ;\n  }\n  s.resume = function () {\n    s.started = true\n    s.paused = false\n    next()\n  }\n  s.on('end', function () {\n    s.ended = true\n    s.readable = false\n    process.nextTick(s.destroy)\n  })\n  s.destroy = function () {\n    s.ended = true\n    s.emit('close') \n  }\n  /*\n    by default, the stream will start emitting at nextTick\n    if you want, you can pause it, after pipeing.\n    you can also resume before next tick, and that will also\n    work.\n  */\n  process.nextTick(function () {\n    if(!s.started) s.resume()\n  })\n  return s\n}\n",
+        "file": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/from/index.js",
+        "importMap": {
+          "stream": "stream"
+        },
+        "packageName": "from",
+        "packageVersion": "0.1.7",
+        "specifier": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/from/index.js",
+        "type": "js"
+      }
+    },
+    "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/gulp-livereload/index.js": {
+      "builtin": [
+        "path.relative"
+      ],
+      "moduleRecord": {
+        "content": "'use strict';\n\nvar es = require('event-stream');\nvar log = require('fancy-log');\nvar tinyLr = require('tiny-lr');\nvar relative = require('path').relative;\nvar _assign = require('lodash.assign');\nvar debug = require('debug')('gulp:livereload');\nvar magenta = require('chalk').magenta;\n\n/**\n * Global Options\n * port             Server Port\n * host             Server Host\n * basePath         base directory the path will be resolved to\n * start            start the server automatically\n * quiet            Enable/Disable debug logging\n * reloadPage       The page to reload upon issuing a full page reload\n */\nvar options = {\n    quiet: false,\n    reloadPage: 'index.html'\n};\n\n/**\n * Create a stream for telling\n * the livereload server about changes\n *\n * If opts isn't present then return\n *\n * @param {object|number} [opts]\n * @param [opts.port]     livereload server port\n * @param [opts.host]     livereload server host\n * @param [opts.basePath] base directory the path will be resolved to\n * @param [opts.start]    automatically start the server\n * @param [opts.quiet=false]\n */\n\nmodule.exports = exports = function(opts) {\n  options = _assign(options, opts);\n\n  var glr = es.map(function(file, done) {\n    var filePath = file.path;\n    exports.changed(filePath);\n    done(null, file);\n  });\n\n  if (options.start) exports.listen(options);\n\n  return glr;\n};\n\n// Note: This is a good way to directly set the settings once throughout\n// the program, a reference to the global options\nexports.options = options;\n\n// A way to grab or change the underlying server instance\nexports.server = undefined;\n\n/**\n * Express middleware\n *\n * A direct reference to the underlying servers middleware reference\n */\n\nexports.middleware = tinyLr.middleware;\n\n/**\n * Start the livereload server\n *\n * If opts isn't present the global is used, if opts is a number its used as\n * the port, otherwise as the config object\n *\n * @param {object|number} [opts]\n * @param [opts.port]     livereload server port\n * @param [opts.host]     livereload server host\n * @param [opts.basePath] base directory the path will be resolved to\n * @param [opts.start]    automatically start the server\n * @param [opts.quiet=false]\n * @param {function} [cb] callback\n */\n\nexports.listen = function(opts, cb) {\n  if (exports.server) return;\n\n  if (typeof opts === 'number') {\n    opts = { port: opts };\n  } else if (typeof opts === 'function') {\n    cb = opts;\n    opts = {};\n  }\n\n  options = _assign(options, opts);\n  exports.server = new tinyLr.Server(options);\n  exports.server.listen(options.port, options.host, function() {\n    debug('now listening on port %d', options.port);\n    if(typeof cb === 'function') cb.apply(exports.server, arguments);\n  });\n};\n\n/**\n * Instruct the server that a file has changed\n * and should be re-downloaded.\n *\n * The server must be running or this method will exit on error.\n * If an object is given the \"path\" property is used, otherwise\n * its a path string\n *\n * @param  {string|object} filePath\n */\n\nexports.changed = function (filePath) {\n  if (!exports.server) {\n    debug('no server listening, nothing notified.');\n    return;\n  }\n  if (typeof filePath === 'object') {\n    filePath = filePath.path;\n  }\n  if (options.basePath) {\n    filePath = '/' + relative(options.basePath, filePath);\n  }\n\n  exports.server.changed({ body: { files: [ filePath ] } });\n\n  if (!options.quiet) {\n    log(magenta(filePath) + ' reloaded.');\n  }\n};\n\n/**\n * Invoke a full page reload, including all assets\n *\n * Path to the page in use must be given, If filePath isn't provided then the filePath will be used\n * from the global config which is by default \"index.html\". The basePath will automatically be\n * applied to this\n *\n * * @param  {string} [filePath]\n */\nexports.reload = function(filePath) {\n    exports.changed(filePath || options.reloadPage);\n};\n",
+        "file": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/gulp-livereload/index.js",
+        "importMap": {
+          "chalk": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/gulp-livereload/node_modules/chalk/index.js",
+          "debug": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/gulp-livereload/node_modules/debug/src/index.js",
+          "event-stream": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/event-stream/index.js",
+          "fancy-log": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/gulp-livereload/node_modules/fancy-log/index.js",
+          "lodash.assign": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/lodash.assign/index.js",
+          "path": "path",
+          "tiny-lr": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/tiny-lr/src/index.js"
+        },
+        "packageName": "gulp-livereload",
+        "packageVersion": "4.0.0",
+        "specifier": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/gulp-livereload/index.js",
+        "type": "js"
+      }
+    },
+    "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/gulp-livereload/node_modules/ansi-styles/index.js": {
+      "moduleRecord": {
+        "content": "'use strict';\nconst colorConvert = require('color-convert');\n\nconst wrapAnsi16 = (fn, offset) => function () {\n\tconst code = fn.apply(colorConvert, arguments);\n\treturn `\\u001B[${code + offset}m`;\n};\n\nconst wrapAnsi256 = (fn, offset) => function () {\n\tconst code = fn.apply(colorConvert, arguments);\n\treturn `\\u001B[${38 + offset};5;${code}m`;\n};\n\nconst wrapAnsi16m = (fn, offset) => function () {\n\tconst rgb = fn.apply(colorConvert, arguments);\n\treturn `\\u001B[${38 + offset};2;${rgb[0]};${rgb[1]};${rgb[2]}m`;\n};\n\nfunction assembleStyles() {\n\tconst codes = new Map();\n\tconst styles = {\n\t\tmodifier: {\n\t\t\treset: [0, 0],\n\t\t\t// 21 isn't widely supported and 22 does the same thing\n\t\t\tbold: [1, 22],\n\t\t\tdim: [2, 22],\n\t\t\titalic: [3, 23],\n\t\t\tunderline: [4, 24],\n\t\t\tinverse: [7, 27],\n\t\t\thidden: [8, 28],\n\t\t\tstrikethrough: [9, 29]\n\t\t},\n\t\tcolor: {\n\t\t\tblack: [30, 39],\n\t\t\tred: [31, 39],\n\t\t\tgreen: [32, 39],\n\t\t\tyellow: [33, 39],\n\t\t\tblue: [34, 39],\n\t\t\tmagenta: [35, 39],\n\t\t\tcyan: [36, 39],\n\t\t\twhite: [37, 39],\n\t\t\tgray: [90, 39],\n\n\t\t\t// Bright color\n\t\t\tredBright: [91, 39],\n\t\t\tgreenBright: [92, 39],\n\t\t\tyellowBright: [93, 39],\n\t\t\tblueBright: [94, 39],\n\t\t\tmagentaBright: [95, 39],\n\t\t\tcyanBright: [96, 39],\n\t\t\twhiteBright: [97, 39]\n\t\t},\n\t\tbgColor: {\n\t\t\tbgBlack: [40, 49],\n\t\t\tbgRed: [41, 49],\n\t\t\tbgGreen: [42, 49],\n\t\t\tbgYellow: [43, 49],\n\t\t\tbgBlue: [44, 49],\n\t\t\tbgMagenta: [45, 49],\n\t\t\tbgCyan: [46, 49],\n\t\t\tbgWhite: [47, 49],\n\n\t\t\t// Bright color\n\t\t\tbgBlackBright: [100, 49],\n\t\t\tbgRedBright: [101, 49],\n\t\t\tbgGreenBright: [102, 49],\n\t\t\tbgYellowBright: [103, 49],\n\t\t\tbgBlueBright: [104, 49],\n\t\t\tbgMagentaBright: [105, 49],\n\t\t\tbgCyanBright: [106, 49],\n\t\t\tbgWhiteBright: [107, 49]\n\t\t}\n\t};\n\n\t// Fix humans\n\tstyles.color.grey = styles.color.gray;\n\n\tfor (const groupName of Object.keys(styles)) {\n\t\tconst group = styles[groupName];\n\n\t\tfor (const styleName of Object.keys(group)) {\n\t\t\tconst style = group[styleName];\n\n\t\t\tstyles[styleName] = {\n\t\t\t\topen: `\\u001B[${style[0]}m`,\n\t\t\t\tclose: `\\u001B[${style[1]}m`\n\t\t\t};\n\n\t\t\tgroup[styleName] = styles[styleName];\n\n\t\t\tcodes.set(style[0], style[1]);\n\t\t}\n\n\t\tObject.defineProperty(styles, groupName, {\n\t\t\tvalue: group,\n\t\t\tenumerable: false\n\t\t});\n\n\t\tObject.defineProperty(styles, 'codes', {\n\t\t\tvalue: codes,\n\t\t\tenumerable: false\n\t\t});\n\t}\n\n\tconst ansi2ansi = n => n;\n\tconst rgb2rgb = (r, g, b) => [r, g, b];\n\n\tstyles.color.close = '\\u001B[39m';\n\tstyles.bgColor.close = '\\u001B[49m';\n\n\tstyles.color.ansi = {\n\t\tansi: wrapAnsi16(ansi2ansi, 0)\n\t};\n\tstyles.color.ansi256 = {\n\t\tansi256: wrapAnsi256(ansi2ansi, 0)\n\t};\n\tstyles.color.ansi16m = {\n\t\trgb: wrapAnsi16m(rgb2rgb, 0)\n\t};\n\n\tstyles.bgColor.ansi = {\n\t\tansi: wrapAnsi16(ansi2ansi, 10)\n\t};\n\tstyles.bgColor.ansi256 = {\n\t\tansi256: wrapAnsi256(ansi2ansi, 10)\n\t};\n\tstyles.bgColor.ansi16m = {\n\t\trgb: wrapAnsi16m(rgb2rgb, 10)\n\t};\n\n\tfor (let key of Object.keys(colorConvert)) {\n\t\tif (typeof colorConvert[key] !== 'object') {\n\t\t\tcontinue;\n\t\t}\n\n\t\tconst suite = colorConvert[key];\n\n\t\tif (key === 'ansi16') {\n\t\t\tkey = 'ansi';\n\t\t}\n\n\t\tif ('ansi16' in suite) {\n\t\t\tstyles.color.ansi[key] = wrapAnsi16(suite.ansi16, 0);\n\t\t\tstyles.bgColor.ansi[key] = wrapAnsi16(suite.ansi16, 10);\n\t\t}\n\n\t\tif ('ansi256' in suite) {\n\t\t\tstyles.color.ansi256[key] = wrapAnsi256(suite.ansi256, 0);\n\t\t\tstyles.bgColor.ansi256[key] = wrapAnsi256(suite.ansi256, 10);\n\t\t}\n\n\t\tif ('rgb' in suite) {\n\t\t\tstyles.color.ansi16m[key] = wrapAnsi16m(suite.rgb, 0);\n\t\t\tstyles.bgColor.ansi16m[key] = wrapAnsi16m(suite.rgb, 10);\n\t\t}\n\t}\n\n\treturn styles;\n}\n\n// Make the export immutable\nObject.defineProperty(module, 'exports', {\n\tenumerable: true,\n\tget: assembleStyles\n});\n",
+        "file": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/gulp-livereload/node_modules/ansi-styles/index.js",
+        "importMap": {
+          "color-convert": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/color-convert/index.js"
+        },
+        "packageName": "ansi-styles",
+        "packageVersion": "3.2.1",
+        "specifier": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/gulp-livereload/node_modules/ansi-styles/index.js",
+        "type": "js"
+      }
+    },
+    "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/gulp-livereload/node_modules/chalk/index.js": {
+      "globals": {
+        "process.env.TERM": "read",
+        "process.platform": "read"
+      },
+      "moduleRecord": {
+        "content": "'use strict';\nconst escapeStringRegexp = require('escape-string-regexp');\nconst ansiStyles = require('ansi-styles');\nconst stdoutColor = require('supports-color').stdout;\n\nconst template = require('./templates.js');\n\nconst isSimpleWindowsTerm = process.platform === 'win32' && !(process.env.TERM || '').toLowerCase().startsWith('xterm');\n\n// `supportsColor.level` → `ansiStyles.color[name]` mapping\nconst levelMapping = ['ansi', 'ansi', 'ansi256', 'ansi16m'];\n\n// `color-convert` models to exclude from the Chalk API due to conflicts and such\nconst skipModels = new Set(['gray']);\n\nconst styles = Object.create(null);\n\nfunction applyOptions(obj, options) {\n\toptions = options || {};\n\n\t// Detect level if not set manually\n\tconst scLevel = stdoutColor ? stdoutColor.level : 0;\n\tobj.level = options.level === undefined ? scLevel : options.level;\n\tobj.enabled = 'enabled' in options ? options.enabled : obj.level > 0;\n}\n\nfunction Chalk(options) {\n\t// We check for this.template here since calling `chalk.constructor()`\n\t// by itself will have a `this` of a previously constructed chalk object\n\tif (!this || !(this instanceof Chalk) || this.template) {\n\t\tconst chalk = {};\n\t\tapplyOptions(chalk, options);\n\n\t\tchalk.template = function () {\n\t\t\tconst args = [].slice.call(arguments);\n\t\t\treturn chalkTag.apply(null, [chalk.template].concat(args));\n\t\t};\n\n\t\tObject.setPrototypeOf(chalk, Chalk.prototype);\n\t\tObject.setPrototypeOf(chalk.template, chalk);\n\n\t\tchalk.template.constructor = Chalk;\n\n\t\treturn chalk.template;\n\t}\n\n\tapplyOptions(this, options);\n}\n\n// Use bright blue on Windows as the normal blue color is illegible\nif (isSimpleWindowsTerm) {\n\tansiStyles.blue.open = '\\u001B[94m';\n}\n\nfor (const key of Object.keys(ansiStyles)) {\n\tansiStyles[key].closeRe = new RegExp(escapeStringRegexp(ansiStyles[key].close), 'g');\n\n\tstyles[key] = {\n\t\tget() {\n\t\t\tconst codes = ansiStyles[key];\n\t\t\treturn build.call(this, this._styles ? this._styles.concat(codes) : [codes], this._empty, key);\n\t\t}\n\t};\n}\n\nstyles.visible = {\n\tget() {\n\t\treturn build.call(this, this._styles || [], true, 'visible');\n\t}\n};\n\nansiStyles.color.closeRe = new RegExp(escapeStringRegexp(ansiStyles.color.close), 'g');\nfor (const model of Object.keys(ansiStyles.color.ansi)) {\n\tif (skipModels.has(model)) {\n\t\tcontinue;\n\t}\n\n\tstyles[model] = {\n\t\tget() {\n\t\t\tconst level = this.level;\n\t\t\treturn function () {\n\t\t\t\tconst open = ansiStyles.color[levelMapping[level]][model].apply(null, arguments);\n\t\t\t\tconst codes = {\n\t\t\t\t\topen,\n\t\t\t\t\tclose: ansiStyles.color.close,\n\t\t\t\t\tcloseRe: ansiStyles.color.closeRe\n\t\t\t\t};\n\t\t\t\treturn build.call(this, this._styles ? this._styles.concat(codes) : [codes], this._empty, model);\n\t\t\t};\n\t\t}\n\t};\n}\n\nansiStyles.bgColor.closeRe = new RegExp(escapeStringRegexp(ansiStyles.bgColor.close), 'g');\nfor (const model of Object.keys(ansiStyles.bgColor.ansi)) {\n\tif (skipModels.has(model)) {\n\t\tcontinue;\n\t}\n\n\tconst bgModel = 'bg' + model[0].toUpperCase() + model.slice(1);\n\tstyles[bgModel] = {\n\t\tget() {\n\t\t\tconst level = this.level;\n\t\t\treturn function () {\n\t\t\t\tconst open = ansiStyles.bgColor[levelMapping[level]][model].apply(null, arguments);\n\t\t\t\tconst codes = {\n\t\t\t\t\topen,\n\t\t\t\t\tclose: ansiStyles.bgColor.close,\n\t\t\t\t\tcloseRe: ansiStyles.bgColor.closeRe\n\t\t\t\t};\n\t\t\t\treturn build.call(this, this._styles ? this._styles.concat(codes) : [codes], this._empty, model);\n\t\t\t};\n\t\t}\n\t};\n}\n\nconst proto = Object.defineProperties(() => {}, styles);\n\nfunction build(_styles, _empty, key) {\n\tconst builder = function () {\n\t\treturn applyStyle.apply(builder, arguments);\n\t};\n\n\tbuilder._styles = _styles;\n\tbuilder._empty = _empty;\n\n\tconst self = this;\n\n\tObject.defineProperty(builder, 'level', {\n\t\tenumerable: true,\n\t\tget() {\n\t\t\treturn self.level;\n\t\t},\n\t\tset(level) {\n\t\t\tself.level = level;\n\t\t}\n\t});\n\n\tObject.defineProperty(builder, 'enabled', {\n\t\tenumerable: true,\n\t\tget() {\n\t\t\treturn self.enabled;\n\t\t},\n\t\tset(enabled) {\n\t\t\tself.enabled = enabled;\n\t\t}\n\t});\n\n\t// See below for fix regarding invisible grey/dim combination on Windows\n\tbuilder.hasGrey = this.hasGrey || key === 'gray' || key === 'grey';\n\n\t// `__proto__` is used because we must return a function, but there is\n\t// no way to create a function with a different prototype\n\tbuilder.__proto__ = proto; // eslint-disable-line no-proto\n\n\treturn builder;\n}\n\nfunction applyStyle() {\n\t// Support varags, but simply cast to string in case there's only one arg\n\tconst args = arguments;\n\tconst argsLen = args.length;\n\tlet str = String(arguments[0]);\n\n\tif (argsLen === 0) {\n\t\treturn '';\n\t}\n\n\tif (argsLen > 1) {\n\t\t// Don't slice `arguments`, it prevents V8 optimizations\n\t\tfor (let a = 1; a < argsLen; a++) {\n\t\t\tstr += ' ' + args[a];\n\t\t}\n\t}\n\n\tif (!this.enabled || this.level <= 0 || !str) {\n\t\treturn this._empty ? '' : str;\n\t}\n\n\t// Turns out that on Windows dimmed gray text becomes invisible in cmd.exe,\n\t// see https://github.com/chalk/chalk/issues/58\n\t// If we're on Windows and we're dealing with a gray color, temporarily make 'dim' a noop.\n\tconst originalDim = ansiStyles.dim.open;\n\tif (isSimpleWindowsTerm && this.hasGrey) {\n\t\tansiStyles.dim.open = '';\n\t}\n\n\tfor (const code of this._styles.slice().reverse()) {\n\t\t// Replace any instances already present with a re-opening code\n\t\t// otherwise only the part of the string until said closing code\n\t\t// will be colored, and the rest will simply be 'plain'.\n\t\tstr = code.open + str.replace(code.closeRe, code.open) + code.close;\n\n\t\t// Close the styling before a linebreak and reopen\n\t\t// after next line to fix a bleed issue on macOS\n\t\t// https://github.com/chalk/chalk/pull/92\n\t\tstr = str.replace(/\\r?\\n/g, `${code.close}$&${code.open}`);\n\t}\n\n\t// Reset the original `dim` if we changed it to work around the Windows dimmed gray issue\n\tansiStyles.dim.open = originalDim;\n\n\treturn str;\n}\n\nfunction chalkTag(chalk, strings) {\n\tif (!Array.isArray(strings)) {\n\t\t// If chalk() was called by itself or with a string,\n\t\t// return the string itself as a string.\n\t\treturn [].slice.call(arguments, 1).join(' ');\n\t}\n\n\tconst args = [].slice.call(arguments, 2);\n\tconst parts = [strings.raw[0]];\n\n\tfor (let i = 1; i < strings.length; i++) {\n\t\tparts.push(String(args[i - 1]).replace(/[{}\\\\]/g, '\\\\$&'));\n\t\tparts.push(String(strings.raw[i]));\n\t}\n\n\treturn template(chalk, parts.join(''));\n}\n\nObject.defineProperties(Chalk.prototype, styles);\n\nmodule.exports = Chalk(); // eslint-disable-line new-cap\nmodule.exports.supportsColor = stdoutColor;\nmodule.exports.default = module.exports; // For TypeScript\n",
+        "file": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/gulp-livereload/node_modules/chalk/index.js",
+        "importMap": {
+          "./templates.js": null,
+          "ansi-styles": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/gulp-livereload/node_modules/ansi-styles/index.js",
+          "escape-string-regexp": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/escape-string-regexp/index.js",
+          "supports-color": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/gulp-livereload/node_modules/supports-color/index.js"
+        },
+        "packageName": "chalk",
+        "packageVersion": "2.4.2",
+        "specifier": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/gulp-livereload/node_modules/chalk/index.js",
+        "type": "js"
+      }
+    },
+    "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/gulp-livereload/node_modules/debug/src/index.js": {
+      "globals": {
+        "process": "read"
+      },
+      "moduleRecord": {
+        "content": "\"use strict\";\n\n/**\n * Detect Electron renderer / nwjs process, which is node, but we should\n * treat as a browser.\n */\nif (typeof process === 'undefined' || process.type === 'renderer' || process.browser === true || process.__nwjs) {\n  module.exports = require('./browser.js');\n} else {\n  module.exports = require('./node.js');\n}\n\n",
+        "file": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/gulp-livereload/node_modules/debug/src/index.js",
+        "importMap": {
+          "./browser.js": null,
+          "./node.js": null
+        },
+        "packageName": "debug",
+        "packageVersion": "3.2.6",
+        "specifier": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/gulp-livereload/node_modules/debug/src/index.js",
+        "type": "js"
+      }
+    },
+    "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/gulp-livereload/node_modules/fancy-log/index.js": {
+      "globals": {
+        "console": "read",
+        "process.argv.indexOf": "read",
+        "process.stderr.write": "read",
+        "process.stdout.write": "read"
+      },
+      "moduleRecord": {
+        "content": "'use strict';\n/*\n  Initial code from https://github.com/gulpjs/gulp-util/blob/v3.0.6/lib/log.js\n */\nvar gray = require('ansi-gray');\nvar timestamp = require('time-stamp');\nvar supportsColor = require('color-support');\n\nfunction hasFlag(flag) {\n  return (process.argv.indexOf('--' + flag) !== -1);\n}\n\nfunction addColor(str) {\n  if (hasFlag('no-color')) {\n    return str;\n  }\n\n  if (hasFlag('color')) {\n    return gray(str);\n  }\n\n  if (supportsColor()) {\n    return gray(str);\n  }\n\n  return str;\n}\n\nfunction getTimestamp(){\n  return '['+addColor(timestamp('HH:mm:ss'))+']';\n}\n\nfunction log(){\n  var time = getTimestamp();\n  process.stdout.write(time + ' ');\n  console.log.apply(console, arguments);\n  return this;\n}\n\nfunction info(){\n  var time = getTimestamp();\n  process.stdout.write(time + ' ');\n  console.info.apply(console, arguments);\n  return this;\n}\n\nfunction dir(){\n  var time = getTimestamp();\n  process.stdout.write(time + ' ');\n  console.dir.apply(console, arguments);\n  return this;\n}\n\nfunction warn(){\n  var time = getTimestamp();\n  process.stderr.write(time + ' ');\n  console.warn.apply(console, arguments);\n  return this;\n}\n\nfunction error(){\n  var time = getTimestamp();\n  process.stderr.write(time + ' ');\n  console.error.apply(console, arguments);\n  return this;\n}\n\nmodule.exports = log;\nmodule.exports.info = info;\nmodule.exports.dir = dir;\nmodule.exports.warn = warn;\nmodule.exports.error = error;\n",
+        "file": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/gulp-livereload/node_modules/fancy-log/index.js",
+        "importMap": {
+          "ansi-gray": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/ansi-gray/index.js",
+          "color-support": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/color-support/index.js",
+          "time-stamp": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/time-stamp/index.js"
+        },
+        "packageName": "fancy-log",
+        "packageVersion": "1.3.2",
+        "specifier": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/gulp-livereload/node_modules/fancy-log/index.js",
+        "type": "js"
+      }
+    },
+    "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/gulp-livereload/node_modules/supports-color/index.js": {
+      "builtin": [
+        "os.release"
+      ],
+      "globals": {
+        "process.env": "read",
+        "process.platform": "read",
+        "process.stderr": "read",
+        "process.stdout": "read",
+        "process.versions.node.split": "read"
+      },
+      "moduleRecord": {
+        "content": "'use strict';\nconst os = require('os');\nconst hasFlag = require('has-flag');\n\nconst env = process.env;\n\nlet forceColor;\nif (hasFlag('no-color') ||\n\thasFlag('no-colors') ||\n\thasFlag('color=false')) {\n\tforceColor = false;\n} else if (hasFlag('color') ||\n\thasFlag('colors') ||\n\thasFlag('color=true') ||\n\thasFlag('color=always')) {\n\tforceColor = true;\n}\nif ('FORCE_COLOR' in env) {\n\tforceColor = env.FORCE_COLOR.length === 0 || parseInt(env.FORCE_COLOR, 10) !== 0;\n}\n\nfunction translateLevel(level) {\n\tif (level === 0) {\n\t\treturn false;\n\t}\n\n\treturn {\n\t\tlevel,\n\t\thasBasic: true,\n\t\thas256: level >= 2,\n\t\thas16m: level >= 3\n\t};\n}\n\nfunction supportsColor(stream) {\n\tif (forceColor === false) {\n\t\treturn 0;\n\t}\n\n\tif (hasFlag('color=16m') ||\n\t\thasFlag('color=full') ||\n\t\thasFlag('color=truecolor')) {\n\t\treturn 3;\n\t}\n\n\tif (hasFlag('color=256')) {\n\t\treturn 2;\n\t}\n\n\tif (stream && !stream.isTTY && forceColor !== true) {\n\t\treturn 0;\n\t}\n\n\tconst min = forceColor ? 1 : 0;\n\n\tif (process.platform === 'win32') {\n\t\t// Node.js 7.5.0 is the first version of Node.js to include a patch to\n\t\t// libuv that enables 256 color output on Windows. Anything earlier and it\n\t\t// won't work. However, here we target Node.js 8 at minimum as it is an LTS\n\t\t// release, and Node.js 7 is not. Windows 10 build 10586 is the first Windows\n\t\t// release that supports 256 colors. Windows 10 build 14931 is the first release\n\t\t// that supports 16m/TrueColor.\n\t\tconst osRelease = os.release().split('.');\n\t\tif (\n\t\t\tNumber(process.versions.node.split('.')[0]) >= 8 &&\n\t\t\tNumber(osRelease[0]) >= 10 &&\n\t\t\tNumber(osRelease[2]) >= 10586\n\t\t) {\n\t\t\treturn Number(osRelease[2]) >= 14931 ? 3 : 2;\n\t\t}\n\n\t\treturn 1;\n\t}\n\n\tif ('CI' in env) {\n\t\tif (['TRAVIS', 'CIRCLECI', 'APPVEYOR', 'GITLAB_CI'].some(sign => sign in env) || env.CI_NAME === 'codeship') {\n\t\t\treturn 1;\n\t\t}\n\n\t\treturn min;\n\t}\n\n\tif ('TEAMCITY_VERSION' in env) {\n\t\treturn /^(9\\.(0*[1-9]\\d*)\\.|\\d{2,}\\.)/.test(env.TEAMCITY_VERSION) ? 1 : 0;\n\t}\n\n\tif (env.COLORTERM === 'truecolor') {\n\t\treturn 3;\n\t}\n\n\tif ('TERM_PROGRAM' in env) {\n\t\tconst version = parseInt((env.TERM_PROGRAM_VERSION || '').split('.')[0], 10);\n\n\t\tswitch (env.TERM_PROGRAM) {\n\t\t\tcase 'iTerm.app':\n\t\t\t\treturn version >= 3 ? 3 : 2;\n\t\t\tcase 'Apple_Terminal':\n\t\t\t\treturn 2;\n\t\t\t// No default\n\t\t}\n\t}\n\n\tif (/-256(color)?$/i.test(env.TERM)) {\n\t\treturn 2;\n\t}\n\n\tif (/^screen|^xterm|^vt100|^vt220|^rxvt|color|ansi|cygwin|linux/i.test(env.TERM)) {\n\t\treturn 1;\n\t}\n\n\tif ('COLORTERM' in env) {\n\t\treturn 1;\n\t}\n\n\tif (env.TERM === 'dumb') {\n\t\treturn min;\n\t}\n\n\treturn min;\n}\n\nfunction getSupportLevel(stream) {\n\tconst level = supportsColor(stream);\n\treturn translateLevel(level);\n}\n\nmodule.exports = {\n\tsupportsColor: getSupportLevel,\n\tstdout: getSupportLevel(process.stdout),\n\tstderr: getSupportLevel(process.stderr)\n};\n",
+        "file": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/gulp-livereload/node_modules/supports-color/index.js",
+        "importMap": {
+          "has-flag": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/has-flag/index.js",
+          "os": "os"
+        },
+        "packageName": "supports-color",
+        "packageVersion": "5.5.0",
+        "specifier": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/gulp-livereload/node_modules/supports-color/index.js",
+        "type": "js"
+      }
+    },
+    "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/has-flag/index.js": {
+      "globals": {
+        "process.argv": "read"
+      },
+      "moduleRecord": {
+        "content": "'use strict';\nmodule.exports = (flag, argv) => {\n\targv = argv || process.argv;\n\tconst prefix = flag.startsWith('-') ? '' : (flag.length === 1 ? '-' : '--');\n\tconst pos = argv.indexOf(prefix + flag);\n\tconst terminatorPos = argv.indexOf('--');\n\treturn pos !== -1 && (terminatorPos === -1 ? true : pos < terminatorPos);\n};\n",
+        "file": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/has-flag/index.js",
+        "importMap": {
+        },
+        "packageName": "has-flag",
+        "packageVersion": "3.0.0",
+        "specifier": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/has-flag/index.js",
+        "type": "js"
+      }
+    },
+    "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/lodash.assign/index.js": {
+      "moduleRecord": {
+        "content": "/**\n * lodash (Custom Build) <https://lodash.com/>\n * Build: `lodash modularize exports=\"npm\" -o ./`\n * Copyright jQuery Foundation and other contributors <https://jquery.org/>\n * Released under MIT license <https://lodash.com/license>\n * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>\n * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors\n */\n\n/** Used as references for various `Number` constants. */\nvar MAX_SAFE_INTEGER = 9007199254740991;\n\n/** `Object#toString` result references. */\nvar argsTag = '[object Arguments]',\n    funcTag = '[object Function]',\n    genTag = '[object GeneratorFunction]';\n\n/** Used to detect unsigned integer values. */\nvar reIsUint = /^(?:0|[1-9]\\d*)$/;\n\n/**\n * A faster alternative to `Function#apply`, this function invokes `func`\n * with the `this` binding of `thisArg` and the arguments of `args`.\n *\n * @private\n * @param {Function} func The function to invoke.\n * @param {*} thisArg The `this` binding of `func`.\n * @param {Array} args The arguments to invoke `func` with.\n * @returns {*} Returns the result of `func`.\n */\nfunction apply(func, thisArg, args) {\n  switch (args.length) {\n    case 0: return func.call(thisArg);\n    case 1: return func.call(thisArg, args[0]);\n    case 2: return func.call(thisArg, args[0], args[1]);\n    case 3: return func.call(thisArg, args[0], args[1], args[2]);\n  }\n  return func.apply(thisArg, args);\n}\n\n/**\n * The base implementation of `_.times` without support for iteratee shorthands\n * or max array length checks.\n *\n * @private\n * @param {number} n The number of times to invoke `iteratee`.\n * @param {Function} iteratee The function invoked per iteration.\n * @returns {Array} Returns the array of results.\n */\nfunction baseTimes(n, iteratee) {\n  var index = -1,\n      result = Array(n);\n\n  while (++index < n) {\n    result[index] = iteratee(index);\n  }\n  return result;\n}\n\n/**\n * Creates a unary function that invokes `func` with its argument transformed.\n *\n * @private\n * @param {Function} func The function to wrap.\n * @param {Function} transform The argument transform.\n * @returns {Function} Returns the new function.\n */\nfunction overArg(func, transform) {\n  return function(arg) {\n    return func(transform(arg));\n  };\n}\n\n/** Used for built-in method references. */\nvar objectProto = Object.prototype;\n\n/** Used to check objects for own properties. */\nvar hasOwnProperty = objectProto.hasOwnProperty;\n\n/**\n * Used to resolve the\n * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)\n * of values.\n */\nvar objectToString = objectProto.toString;\n\n/** Built-in value references. */\nvar propertyIsEnumerable = objectProto.propertyIsEnumerable;\n\n/* Built-in method references for those with the same name as other `lodash` methods. */\nvar nativeKeys = overArg(Object.keys, Object),\n    nativeMax = Math.max;\n\n/** Detect if properties shadowing those on `Object.prototype` are non-enumerable. */\nvar nonEnumShadows = !propertyIsEnumerable.call({ 'valueOf': 1 }, 'valueOf');\n\n/**\n * Creates an array of the enumerable property names of the array-like `value`.\n *\n * @private\n * @param {*} value The value to query.\n * @param {boolean} inherited Specify returning inherited property names.\n * @returns {Array} Returns the array of property names.\n */\nfunction arrayLikeKeys(value, inherited) {\n  // Safari 8.1 makes `arguments.callee` enumerable in strict mode.\n  // Safari 9 makes `arguments.length` enumerable in strict mode.\n  var result = (isArray(value) || isArguments(value))\n    ? baseTimes(value.length, String)\n    : [];\n\n  var length = result.length,\n      skipIndexes = !!length;\n\n  for (var key in value) {\n    if ((inherited || hasOwnProperty.call(value, key)) &&\n        !(skipIndexes && (key == 'length' || isIndex(key, length)))) {\n      result.push(key);\n    }\n  }\n  return result;\n}\n\n/**\n * Assigns `value` to `key` of `object` if the existing value is not equivalent\n * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)\n * for equality comparisons.\n *\n * @private\n * @param {Object} object The object to modify.\n * @param {string} key The key of the property to assign.\n * @param {*} value The value to assign.\n */\nfunction assignValue(object, key, value) {\n  var objValue = object[key];\n  if (!(hasOwnProperty.call(object, key) && eq(objValue, value)) ||\n      (value === undefined && !(key in object))) {\n    object[key] = value;\n  }\n}\n\n/**\n * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.\n *\n * @private\n * @param {Object} object The object to query.\n * @returns {Array} Returns the array of property names.\n */\nfunction baseKeys(object) {\n  if (!isPrototype(object)) {\n    return nativeKeys(object);\n  }\n  var result = [];\n  for (var key in Object(object)) {\n    if (hasOwnProperty.call(object, key) && key != 'constructor') {\n      result.push(key);\n    }\n  }\n  return result;\n}\n\n/**\n * The base implementation of `_.rest` which doesn't validate or coerce arguments.\n *\n * @private\n * @param {Function} func The function to apply a rest parameter to.\n * @param {number} [start=func.length-1] The start position of the rest parameter.\n * @returns {Function} Returns the new function.\n */\nfunction baseRest(func, start) {\n  start = nativeMax(start === undefined ? (func.length - 1) : start, 0);\n  return function() {\n    var args = arguments,\n        index = -1,\n        length = nativeMax(args.length - start, 0),\n        array = Array(length);\n\n    while (++index < length) {\n      array[index] = args[start + index];\n    }\n    index = -1;\n    var otherArgs = Array(start + 1);\n    while (++index < start) {\n      otherArgs[index] = args[index];\n    }\n    otherArgs[start] = array;\n    return apply(func, this, otherArgs);\n  };\n}\n\n/**\n * Copies properties of `source` to `object`.\n *\n * @private\n * @param {Object} source The object to copy properties from.\n * @param {Array} props The property identifiers to copy.\n * @param {Object} [object={}] The object to copy properties to.\n * @param {Function} [customizer] The function to customize copied values.\n * @returns {Object} Returns `object`.\n */\nfunction copyObject(source, props, object, customizer) {\n  object || (object = {});\n\n  var index = -1,\n      length = props.length;\n\n  while (++index < length) {\n    var key = props[index];\n\n    var newValue = customizer\n      ? customizer(object[key], source[key], key, object, source)\n      : undefined;\n\n    assignValue(object, key, newValue === undefined ? source[key] : newValue);\n  }\n  return object;\n}\n\n/**\n * Creates a function like `_.assign`.\n *\n * @private\n * @param {Function} assigner The function to assign values.\n * @returns {Function} Returns the new assigner function.\n */\nfunction createAssigner(assigner) {\n  return baseRest(function(object, sources) {\n    var index = -1,\n        length = sources.length,\n        customizer = length > 1 ? sources[length - 1] : undefined,\n        guard = length > 2 ? sources[2] : undefined;\n\n    customizer = (assigner.length > 3 && typeof customizer == 'function')\n      ? (length--, customizer)\n      : undefined;\n\n    if (guard && isIterateeCall(sources[0], sources[1], guard)) {\n      customizer = length < 3 ? undefined : customizer;\n      length = 1;\n    }\n    object = Object(object);\n    while (++index < length) {\n      var source = sources[index];\n      if (source) {\n        assigner(object, source, index, customizer);\n      }\n    }\n    return object;\n  });\n}\n\n/**\n * Checks if `value` is a valid array-like index.\n *\n * @private\n * @param {*} value The value to check.\n * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.\n * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.\n */\nfunction isIndex(value, length) {\n  length = length == null ? MAX_SAFE_INTEGER : length;\n  return !!length &&\n    (typeof value == 'number' || reIsUint.test(value)) &&\n    (value > -1 && value % 1 == 0 && value < length);\n}\n\n/**\n * Checks if the given arguments are from an iteratee call.\n *\n * @private\n * @param {*} value The potential iteratee value argument.\n * @param {*} index The potential iteratee index or key argument.\n * @param {*} object The potential iteratee object argument.\n * @returns {boolean} Returns `true` if the arguments are from an iteratee call,\n *  else `false`.\n */\nfunction isIterateeCall(value, index, object) {\n  if (!isObject(object)) {\n    return false;\n  }\n  var type = typeof index;\n  if (type == 'number'\n        ? (isArrayLike(object) && isIndex(index, object.length))\n        : (type == 'string' && index in object)\n      ) {\n    return eq(object[index], value);\n  }\n  return false;\n}\n\n/**\n * Checks if `value` is likely a prototype object.\n *\n * @private\n * @param {*} value The value to check.\n * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.\n */\nfunction isPrototype(value) {\n  var Ctor = value && value.constructor,\n      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto;\n\n  return value === proto;\n}\n\n/**\n * Performs a\n * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)\n * comparison between two values to determine if they are equivalent.\n *\n * @static\n * @memberOf _\n * @since 4.0.0\n * @category Lang\n * @param {*} value The value to compare.\n * @param {*} other The other value to compare.\n * @returns {boolean} Returns `true` if the values are equivalent, else `false`.\n * @example\n *\n * var object = { 'a': 1 };\n * var other = { 'a': 1 };\n *\n * _.eq(object, object);\n * // => true\n *\n * _.eq(object, other);\n * // => false\n *\n * _.eq('a', 'a');\n * // => true\n *\n * _.eq('a', Object('a'));\n * // => false\n *\n * _.eq(NaN, NaN);\n * // => true\n */\nfunction eq(value, other) {\n  return value === other || (value !== value && other !== other);\n}\n\n/**\n * Checks if `value` is likely an `arguments` object.\n *\n * @static\n * @memberOf _\n * @since 0.1.0\n * @category Lang\n * @param {*} value The value to check.\n * @returns {boolean} Returns `true` if `value` is an `arguments` object,\n *  else `false`.\n * @example\n *\n * _.isArguments(function() { return arguments; }());\n * // => true\n *\n * _.isArguments([1, 2, 3]);\n * // => false\n */\nfunction isArguments(value) {\n  // Safari 8.1 makes `arguments.callee` enumerable in strict mode.\n  return isArrayLikeObject(value) && hasOwnProperty.call(value, 'callee') &&\n    (!propertyIsEnumerable.call(value, 'callee') || objectToString.call(value) == argsTag);\n}\n\n/**\n * Checks if `value` is classified as an `Array` object.\n *\n * @static\n * @memberOf _\n * @since 0.1.0\n * @category Lang\n * @param {*} value The value to check.\n * @returns {boolean} Returns `true` if `value` is an array, else `false`.\n * @example\n *\n * _.isArray([1, 2, 3]);\n * // => true\n *\n * _.isArray(document.body.children);\n * // => false\n *\n * _.isArray('abc');\n * // => false\n *\n * _.isArray(_.noop);\n * // => false\n */\nvar isArray = Array.isArray;\n\n/**\n * Checks if `value` is array-like. A value is considered array-like if it's\n * not a function and has a `value.length` that's an integer greater than or\n * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.\n *\n * @static\n * @memberOf _\n * @since 4.0.0\n * @category Lang\n * @param {*} value The value to check.\n * @returns {boolean} Returns `true` if `value` is array-like, else `false`.\n * @example\n *\n * _.isArrayLike([1, 2, 3]);\n * // => true\n *\n * _.isArrayLike(document.body.children);\n * // => true\n *\n * _.isArrayLike('abc');\n * // => true\n *\n * _.isArrayLike(_.noop);\n * // => false\n */\nfunction isArrayLike(value) {\n  return value != null && isLength(value.length) && !isFunction(value);\n}\n\n/**\n * This method is like `_.isArrayLike` except that it also checks if `value`\n * is an object.\n *\n * @static\n * @memberOf _\n * @since 4.0.0\n * @category Lang\n * @param {*} value The value to check.\n * @returns {boolean} Returns `true` if `value` is an array-like object,\n *  else `false`.\n * @example\n *\n * _.isArrayLikeObject([1, 2, 3]);\n * // => true\n *\n * _.isArrayLikeObject(document.body.children);\n * // => true\n *\n * _.isArrayLikeObject('abc');\n * // => false\n *\n * _.isArrayLikeObject(_.noop);\n * // => false\n */\nfunction isArrayLikeObject(value) {\n  return isObjectLike(value) && isArrayLike(value);\n}\n\n/**\n * Checks if `value` is classified as a `Function` object.\n *\n * @static\n * @memberOf _\n * @since 0.1.0\n * @category Lang\n * @param {*} value The value to check.\n * @returns {boolean} Returns `true` if `value` is a function, else `false`.\n * @example\n *\n * _.isFunction(_);\n * // => true\n *\n * _.isFunction(/abc/);\n * // => false\n */\nfunction isFunction(value) {\n  // The use of `Object#toString` avoids issues with the `typeof` operator\n  // in Safari 8-9 which returns 'object' for typed array and other constructors.\n  var tag = isObject(value) ? objectToString.call(value) : '';\n  return tag == funcTag || tag == genTag;\n}\n\n/**\n * Checks if `value` is a valid array-like length.\n *\n * **Note:** This method is loosely based on\n * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).\n *\n * @static\n * @memberOf _\n * @since 4.0.0\n * @category Lang\n * @param {*} value The value to check.\n * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.\n * @example\n *\n * _.isLength(3);\n * // => true\n *\n * _.isLength(Number.MIN_VALUE);\n * // => false\n *\n * _.isLength(Infinity);\n * // => false\n *\n * _.isLength('3');\n * // => false\n */\nfunction isLength(value) {\n  return typeof value == 'number' &&\n    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;\n}\n\n/**\n * Checks if `value` is the\n * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)\n * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)\n *\n * @static\n * @memberOf _\n * @since 0.1.0\n * @category Lang\n * @param {*} value The value to check.\n * @returns {boolean} Returns `true` if `value` is an object, else `false`.\n * @example\n *\n * _.isObject({});\n * // => true\n *\n * _.isObject([1, 2, 3]);\n * // => true\n *\n * _.isObject(_.noop);\n * // => true\n *\n * _.isObject(null);\n * // => false\n */\nfunction isObject(value) {\n  var type = typeof value;\n  return !!value && (type == 'object' || type == 'function');\n}\n\n/**\n * Checks if `value` is object-like. A value is object-like if it's not `null`\n * and has a `typeof` result of \"object\".\n *\n * @static\n * @memberOf _\n * @since 4.0.0\n * @category Lang\n * @param {*} value The value to check.\n * @returns {boolean} Returns `true` if `value` is object-like, else `false`.\n * @example\n *\n * _.isObjectLike({});\n * // => true\n *\n * _.isObjectLike([1, 2, 3]);\n * // => true\n *\n * _.isObjectLike(_.noop);\n * // => false\n *\n * _.isObjectLike(null);\n * // => false\n */\nfunction isObjectLike(value) {\n  return !!value && typeof value == 'object';\n}\n\n/**\n * Assigns own enumerable string keyed properties of source objects to the\n * destination object. Source objects are applied from left to right.\n * Subsequent sources overwrite property assignments of previous sources.\n *\n * **Note:** This method mutates `object` and is loosely based on\n * [`Object.assign`](https://mdn.io/Object/assign).\n *\n * @static\n * @memberOf _\n * @since 0.10.0\n * @category Object\n * @param {Object} object The destination object.\n * @param {...Object} [sources] The source objects.\n * @returns {Object} Returns `object`.\n * @see _.assignIn\n * @example\n *\n * function Foo() {\n *   this.a = 1;\n * }\n *\n * function Bar() {\n *   this.c = 3;\n * }\n *\n * Foo.prototype.b = 2;\n * Bar.prototype.d = 4;\n *\n * _.assign({ 'a': 0 }, new Foo, new Bar);\n * // => { 'a': 1, 'c': 3 }\n */\nvar assign = createAssigner(function(object, source) {\n  if (nonEnumShadows || isPrototype(source) || isArrayLike(source)) {\n    copyObject(source, keys(source), object);\n    return;\n  }\n  for (var key in source) {\n    if (hasOwnProperty.call(source, key)) {\n      assignValue(object, key, source[key]);\n    }\n  }\n});\n\n/**\n * Creates an array of the own enumerable property names of `object`.\n *\n * **Note:** Non-object values are coerced to objects. See the\n * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)\n * for more details.\n *\n * @static\n * @since 0.1.0\n * @memberOf _\n * @category Object\n * @param {Object} object The object to query.\n * @returns {Array} Returns the array of property names.\n * @example\n *\n * function Foo() {\n *   this.a = 1;\n *   this.b = 2;\n * }\n *\n * Foo.prototype.c = 3;\n *\n * _.keys(new Foo);\n * // => ['a', 'b'] (iteration order is not guaranteed)\n *\n * _.keys('hi');\n * // => ['0', '1']\n */\nfunction keys(object) {\n  return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);\n}\n\nmodule.exports = assign;\n",
+        "file": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/lodash.assign/index.js",
+        "importMap": {
+        },
+        "packageName": "lodash.assign",
+        "packageVersion": "4.2.0",
+        "specifier": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/lodash.assign/index.js",
+        "type": "js"
+      }
+    },
+    "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/map-stream/index.js": {
+      "builtin": [
+        "stream.Stream"
+      ],
+      "globals": {
+        "process.nextTick": "read"
+      },
+      "moduleRecord": {
+        "content": "//filter will reemit the data if cb(err,pass) pass is truthy\n\n// reduce is more tricky\n// maybe we want to group the reductions or emit progress updates occasionally\n// the most basic reduce just emits one 'data' event after it has recieved 'end'\n\n\nvar Stream = require('stream').Stream\n\n\n//create an event stream and apply function to each .write\n//emitting each response as data\n//unless it's an empty callback\n\nmodule.exports = function (mapper, opts) {\n\n  var stream = new Stream()\n    , self = this\n    , inputs = 0\n    , outputs = 0\n    , ended = false\n    , paused = false\n    , destroyed = false\n    , lastWritten = 0\n    , inNext = false\n\n  this.opts = opts || {};\n  var errorEventName = this.opts.failures ? 'failure' : 'error';\n\n  // Items that are not ready to be written yet (because they would come out of\n  // order) get stuck in a queue for later.\n  var writeQueue = {}\n\n  stream.writable = true\n  stream.readable = true\n\n  function queueData (data, number) {\n    var nextToWrite = lastWritten + 1\n\n    if (number === nextToWrite) {\n      // If it's next, and its not undefined write it\n      if (data !== undefined) {\n        stream.emit.apply(stream, ['data', data])\n      }\n      lastWritten ++\n      nextToWrite ++\n    } else {\n      // Otherwise queue it for later.\n      writeQueue[number] = data\n    }\n\n    // If the next value is in the queue, write it\n    if (writeQueue.hasOwnProperty(nextToWrite)) {\n      var dataToWrite = writeQueue[nextToWrite]\n      delete writeQueue[nextToWrite]\n      return queueData(dataToWrite, nextToWrite)\n    }\n\n    outputs ++\n    if(inputs === outputs) {\n      if(paused) paused = false, stream.emit('drain') //written all the incoming events\n      if(ended) end()\n    }\n  }\n\n  function next (err, data, number) {\n    if(destroyed) return\n    inNext = true\n\n    if (!err || self.opts.failures) {\n      queueData(data, number)\n    }\n\n    if (err) {\n      stream.emit.apply(stream, [ errorEventName, err ]);\n    }\n\n    inNext = false;\n  }\n\n  // Wrap the mapper function by calling its callback with the order number of\n  // the item in the stream.\n  function wrappedMapper (input, number, callback) {\n    return mapper.call(null, input, function(err, data){\n      callback(err, data, number)\n    })\n  }\n\n  stream.write = function (data) {\n    if(ended) throw new Error('map stream is not writable')\n    inNext = false\n    inputs ++\n\n    try {\n      //catch sync errors and handle them like async errors\n      var written = wrappedMapper(data, inputs, next)\n      paused = (written === false)\n      return !paused\n    } catch (err) {\n      //if the callback has been called syncronously, and the error\n      //has occured in an listener, throw it again.\n      if(inNext)\n        throw err\n      next(err)\n      return !paused\n    }\n  }\n\n  function end (data) {\n    //if end was called with args, write it, \n    ended = true //write will emit 'end' if ended is true\n    stream.writable = false\n    if(data !== undefined) {\n      return queueData(data, inputs)\n    } else if (inputs == outputs) { //wait for processing \n      stream.readable = false, stream.emit('end'), stream.destroy() \n    }\n  }\n\n  stream.end = function (data) {\n    if(ended) return\n    end()\n  }\n\n  stream.destroy = function () {\n    ended = destroyed = true\n    stream.writable = stream.readable = paused = false\n    process.nextTick(function () {\n      stream.emit('close')\n    })\n  }\n  stream.pause = function () {\n    paused = true\n  }\n\n  stream.resume = function () {\n    paused = false\n  }\n\n  return stream\n}\n\n\n\n\n",
+        "file": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/map-stream/index.js",
+        "importMap": {
+          "stream": "stream"
+        },
+        "packageName": "map-stream",
+        "packageVersion": "0.1.0",
+        "specifier": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/map-stream/index.js",
+        "type": "js"
+      }
+    },
+    "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/pause-stream/index.js": {
+      "moduleRecord": {
+        "content": "//through@2 handles this by default!\nmodule.exports = require('through')\n\n",
+        "file": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/pause-stream/index.js",
+        "importMap": {
+          "through": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/through/index.js"
+        },
+        "packageName": "pause-stream",
+        "packageVersion": "0.0.11",
+        "specifier": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/pause-stream/index.js",
+        "type": "js"
+      }
+    },
+    "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/split/index.js": {
+      "builtin": [
+        "string_decoder.StringDecoder"
+      ],
+      "moduleRecord": {
+        "content": "//filter will reemit the data if cb(err,pass) pass is truthy\n\n// reduce is more tricky\n// maybe we want to group the reductions or emit progress updates occasionally\n// the most basic reduce just emits one 'data' event after it has recieved 'end'\n\n\nvar through = require('through')\nvar Decoder = require('string_decoder').StringDecoder\n\nmodule.exports = split\n\n//TODO pass in a function to map across the lines.\n\nfunction split (matcher, mapper, options) {\n  var decoder = new Decoder()\n  var soFar = ''\n  var maxLength = options && options.maxLength;\n  if('function' === typeof matcher)\n    mapper = matcher, matcher = null\n  if (!matcher)\n    matcher = /\\r?\\n/\n\n  function emit(stream, piece) {\n    if(mapper) {\n      try {\n        piece = mapper(piece)\n      }\n      catch (err) {\n        return stream.emit('error', err)\n      }\n      if('undefined' !== typeof piece)\n        stream.queue(piece)\n    }\n    else\n      stream.queue(piece)\n  }\n\n  function next (stream, buffer) {\n    var pieces = ((soFar != null ? soFar : '') + buffer).split(matcher)\n    soFar = pieces.pop()\n\n    if (maxLength && soFar.length > maxLength)\n      stream.emit('error', new Error('maximum buffer reached'))\n\n    for (var i = 0; i < pieces.length; i++) {\n      var piece = pieces[i]\n      emit(stream, piece)\n    }\n  }\n\n  return through(function (b) {\n    next(this, decoder.write(b))\n  },\n  function () {\n    if(decoder.end)\n      next(this, decoder.end())\n    if(soFar != null)\n      emit(this, soFar)\n    this.queue(null)\n  })\n}\n\n",
+        "file": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/split/index.js",
+        "importMap": {
+          "string_decoder": "string_decoder",
+          "through": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/through/index.js"
+        },
+        "packageName": "split",
+        "packageVersion": "0.3.3",
+        "specifier": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/split/index.js",
+        "type": "js"
+      }
+    },
+    "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/stream-combiner/index.js": {
+      "moduleRecord": {
+        "content": "var duplexer = require('duplexer')\n\nmodule.exports = function () {\n\n  var streams = [].slice.call(arguments)\n    , first = streams[0]\n    , last = streams[streams.length - 1]\n    , thepipe = duplexer(first, last)\n\n  if(streams.length == 1)\n    return streams[0]\n  else if (!streams.length)\n    throw new Error('connect called with empty args')\n\n  //pipe all the streams together\n\n  function recurse (streams) {\n    if(streams.length < 2)\n      return\n    streams[0].pipe(streams[1])\n    recurse(streams.slice(1))  \n  }\n  \n  recurse(streams)\n \n  function onerror () {\n    var args = [].slice.call(arguments)\n    args.unshift('error')\n    thepipe.emit.apply(thepipe, args)\n  }\n  \n  //es.duplex already reemits the error from the first and last stream.\n  //add a listener for the inner streams in the pipeline.\n  for(var i = 1; i < streams.length - 1; i ++)\n    streams[i].on('error', onerror)\n\n  return thepipe\n}\n\n",
+        "file": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/stream-combiner/index.js",
+        "importMap": {
+          "duplexer": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/duplexer/index.js"
+        },
+        "packageName": "stream-combiner",
+        "packageVersion": "0.0.4",
+        "specifier": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/stream-combiner/index.js",
+        "type": "js"
+      }
+    },
+    "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/through/index.js": {
+      "builtin": [
+        "stream"
+      ],
+      "globals": {
+        "process.nextTick": "read"
+      },
+      "moduleRecord": {
+        "content": "var Stream = require('stream')\n\n// through\n//\n// a stream that does nothing but re-emit the input.\n// useful for aggregating a series of changing but not ending streams into one stream)\n\nexports = module.exports = through\nthrough.through = through\n\n//create a readable writable stream.\n\nfunction through (write, end, opts) {\n  write = write || function (data) { this.queue(data) }\n  end = end || function () { this.queue(null) }\n\n  var ended = false, destroyed = false, buffer = [], _ended = false\n  var stream = new Stream()\n  stream.readable = stream.writable = true\n  stream.paused = false\n\n//  stream.autoPause   = !(opts && opts.autoPause   === false)\n  stream.autoDestroy = !(opts && opts.autoDestroy === false)\n\n  stream.write = function (data) {\n    write.call(this, data)\n    return !stream.paused\n  }\n\n  function drain() {\n    while(buffer.length && !stream.paused) {\n      var data = buffer.shift()\n      if(null === data)\n        return stream.emit('end')\n      else\n        stream.emit('data', data)\n    }\n  }\n\n  stream.queue = stream.push = function (data) {\n//    console.error(ended)\n    if(_ended) return stream\n    if(data === null) _ended = true\n    buffer.push(data)\n    drain()\n    return stream\n  }\n\n  //this will be registered as the first 'end' listener\n  //must call destroy next tick, to make sure we're after any\n  //stream piped from here.\n  //this is only a problem if end is not emitted synchronously.\n  //a nicer way to do this is to make sure this is the last listener for 'end'\n\n  stream.on('end', function () {\n    stream.readable = false\n    if(!stream.writable && stream.autoDestroy)\n      process.nextTick(function () {\n        stream.destroy()\n      })\n  })\n\n  function _end () {\n    stream.writable = false\n    end.call(stream)\n    if(!stream.readable && stream.autoDestroy)\n      stream.destroy()\n  }\n\n  stream.end = function (data) {\n    if(ended) return\n    ended = true\n    if(arguments.length) stream.write(data)\n    _end() // will emit or queue\n    return stream\n  }\n\n  stream.destroy = function () {\n    if(destroyed) return\n    destroyed = true\n    ended = true\n    buffer.length = 0\n    stream.writable = stream.readable = false\n    stream.emit('close')\n    return stream\n  }\n\n  stream.pause = function () {\n    if(stream.paused) return\n    stream.paused = true\n    return stream\n  }\n\n  stream.resume = function () {\n    if(stream.paused) {\n      stream.paused = false\n      stream.emit('resume')\n    }\n    drain()\n    //may have become paused again,\n    //as drain emits 'data'.\n    if(!stream.paused)\n      stream.emit('drain')\n    return stream\n  }\n  return stream\n}\n\n",
+        "file": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/through/index.js",
+        "importMap": {
+          "stream": "stream"
+        },
+        "packageName": "through",
+        "packageVersion": "2.3.8",
+        "specifier": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/through/index.js",
+        "type": "js"
+      }
+    },
+    "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/time-stamp/index.js": {
+      "moduleRecord": {
+        "content": "/*!\n * time-stamp <https://github.com/jonschlinkert/time-stamp>\n *\n * Copyright (c) 2015-2017, Jon Schlinkert.\n * Released under the MIT License.\n */\n\n'use strict';\n\n/**\n * Parse the given pattern and return a formatted\n * timestamp.\n *\n * @param  {String} `pattern` Date pattern.\n * @param  {Date} `date` Date object.\n * @return {String}\n */\n\nmodule.exports = function(pattern, date) {\n  if (typeof pattern !== 'string') {\n    date = pattern;\n    pattern = 'YYYY:MM:DD';\n  }\n\n  if (!date) date = new Date();\n\n  function timestamp() {\n    var regex = /(?=(YYYY|YY|MM|DD|HH|mm|ss|ms))\\1([:\\/]*)/;\n    var match = regex.exec(pattern);\n\n    if (match) {\n      var increment = method(match[1]);\n      var val = '00' + String(date[increment[0]]() + (increment[2] || 0));\n      var res = val.slice(-increment[1]) + (match[2] || '');\n      pattern = pattern.replace(match[0], res);\n      timestamp();\n    }\n  }\n\n  timestamp(pattern);\n  return pattern;\n};\n\nfunction method(key) {\n  return ({\n    YYYY: ['getFullYear', 4],\n    YY: ['getFullYear', 2],\n    // getMonth is zero-based, thus the extra increment field\n    MM: ['getMonth', 2, 1],\n    DD: ['getDate', 2],\n    HH: ['getHours', 2],\n    mm: ['getMinutes', 2],\n    ss: ['getSeconds', 2],\n    ms: ['getMilliseconds', 3]\n  })[key];\n}\n",
+        "file": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/time-stamp/index.js",
+        "importMap": {
+        },
+        "packageName": "time-stamp",
+        "packageVersion": "1.1.0",
+        "specifier": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/time-stamp/index.js",
+        "type": "js"
+      }
+    },
+    "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/tiny-lr/node_modules/debug/src/index.js": {
+      "globals": {
+        "process": "read"
+      },
+      "moduleRecord": {
+        "content": "\"use strict\";\n\n/**\n * Detect Electron renderer / nwjs process, which is node, but we should\n * treat as a browser.\n */\nif (typeof process === 'undefined' || process.type === 'renderer' || process.browser === true || process.__nwjs) {\n  module.exports = require('./browser.js');\n} else {\n  module.exports = require('./node.js');\n}\n\n",
+        "file": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/tiny-lr/node_modules/debug/src/index.js",
+        "importMap": {
+          "./browser.js": null,
+          "./node.js": null
+        },
+        "packageName": "debug",
+        "packageVersion": "3.2.6",
+        "specifier": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/tiny-lr/node_modules/debug/src/index.js",
+        "type": "js"
+      }
+    },
+    "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/tiny-lr/src/index.js": {
+      "moduleRecord": {
+        "content": "'use strict';\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _server = require('./server');\n\nvar _server2 = _interopRequireDefault(_server);\n\nvar _client = require('./client');\n\nvar _client2 = _interopRequireDefault(_client);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar debug = require('debug')('tinylr');\n\n// Need to keep track of LR servers when notifying\nvar servers = [];\n\nexports.default = tinylr;\n\n// Expose Server / Client objects\n\ntinylr.Server = _server2.default;\ntinylr.Client = _client2.default;\n\n// and the middleware helpers\ntinylr.middleware = middleware;\ntinylr.changed = changed;\n\n// Main entry point\nfunction tinylr(opts) {\n  var srv = new _server2.default(opts);\n  servers.push(srv);\n  return srv;\n}\n\n// A facade to Server#handle\nfunction middleware(opts) {\n  var srv = new _server2.default(opts);\n  servers.push(srv);\n  return function tinylr(req, res, next) {\n    srv.handler(req, res, next);\n  };\n}\n\n// Changed helper, helps with notifying the server of a file change\nfunction changed(done) {\n  var files = [].slice.call(arguments);\n  if (typeof files[files.length - 1] === 'function') done = files.pop();\n  done = typeof done === 'function' ? done : function () {};\n  debug('Notifying %d servers - Files: ', servers.length, files);\n  servers.forEach(function (srv) {\n    var params = { params: { files: files } };\n    srv && srv.changed(params);\n  });\n  done();\n}\nmodule.exports = exports['default'];",
+        "file": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/tiny-lr/src/index.js",
+        "importMap": {
+          "./client": null,
+          "./server": null,
+          "debug": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/tiny-lr/node_modules/debug/src/index.js"
+        },
+        "packageName": "tiny-lr",
+        "packageVersion": "1.1.1",
+        "specifier": "/Users/Etienne/Desktop/metamask-stuff/metamask-extension/node_modules/tiny-lr/src/index.js",
+        "type": "js"
+      }
+    }
+  },
+  "resources": {
+    "ansi-gray": {
+      "packages": {
+        "ansi-wrap": true
+      }
+    },
+    "ansi-styles": {
+      "packages": {
+        "color-convert": true
+      }
+    },
+    "chalk": {
+      "globals": {
+        "process.env.TERM": true,
+        "process.platform": true
+      },
+      "packages": {
+        "ansi-styles": true,
+        "escape-string-regexp": true,
+        "supports-color": true
+      }
+    },
+    "color-support": {
+      "globals": {
+        "process": true
+      }
+    },
+    "debug": {
+      "globals": {
+        "process": true
+      }
+    },
+    "duplexer": {
+      "builtin": {
+        "stream": true
+      }
+    },
+    "event-stream": {
+      "builtin": {
+        "buffer.Buffer.isBuffer": true,
+        "stream.Stream": true
+      },
+      "globals": {
+        "Buffer.concat": true,
+        "Buffer.isBuffer": true,
+        "console.error": true,
+        "process.nextTick": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "duplexer": true,
+        "from": true,
+        "map-stream": true,
+        "pause-stream": true,
+        "split": true,
+        "stream-combiner": true,
+        "through": true
+      }
+    },
+    "fancy-log": {
+      "globals": {
+        "console": true,
+        "process.argv.indexOf": true,
+        "process.stderr.write": true,
+        "process.stdout.write": true
+      },
+      "packages": {
+        "ansi-gray": true,
+        "color-support": true,
+        "time-stamp": true
+      }
+    },
+    "from": {
+      "builtin": {
+        "stream": true
+      },
+      "globals": {
+        "process.nextTick": true
+      }
+    },
+    "gulp-livereload": {
+      "builtin": {
+        "path.relative": true
+      },
+      "packages": {
+        "chalk": true,
+        "debug": true,
+        "event-stream": true,
+        "fancy-log": true,
+        "lodash.assign": true,
+        "tiny-lr": true
+      }
+    },
+    "has-flag": {
+      "globals": {
+        "process.argv": true
+      }
+    },
+    "map-stream": {
+      "builtin": {
+        "stream.Stream": true
+      },
+      "globals": {
+        "process.nextTick": true
+      }
+    },
+    "pause-stream": {
+      "packages": {
+        "through": true
+      }
+    },
+    "split": {
+      "builtin": {
+        "string_decoder.StringDecoder": true
+      },
+      "packages": {
+        "through": true
+      }
+    },
+    "stream-combiner": {
+      "packages": {
+        "duplexer": true
+      }
+    },
+    "supports-color": {
+      "builtin": {
+        "os.release": true
+      },
+      "globals": {
+        "process.env": true,
+        "process.platform": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.versions.node.split": true
+      },
+      "packages": {
+        "has-flag": true
+      }
+    },
+    "through": {
+      "builtin": {
+        "stream": true
+      },
+      "globals": {
+        "process.nextTick": true
+      }
+    },
+    "tiny-lr": {
+      "packages": {
+        "debug": true
+      }
+    }
+  }
+}
