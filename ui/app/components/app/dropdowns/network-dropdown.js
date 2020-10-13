@@ -34,8 +34,8 @@ function mapDispatchToProps (dispatch) {
     setProviderType: (type) => {
       dispatch(actions.setProviderType(type))
     },
-    setRpcTarget: (target, network, ticker, nickname) => {
-      dispatch(actions.setRpcTarget(target, network, ticker, nickname))
+    setRpcTarget: (target, chainId, ticker, nickname) => {
+      dispatch(actions.setRpcTarget(target, chainId, ticker, nickname))
     },
     delRpcTarget: (target) => {
       dispatch(actions.delRpcTarget(target))
