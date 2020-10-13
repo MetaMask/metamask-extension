@@ -21,16 +21,17 @@
     }
   }
 
+  &__link-text {
+    width: max-content;
+    padding: 0;
+  }
+
   &__link-item {
     padding: 15px 0;
 
     @media screen and (max-width: 575px) {
       padding: 5px 0;
     }
-  }
-
-  &__link-text {
-    @extend %link;
   }
 
   &__version-number {

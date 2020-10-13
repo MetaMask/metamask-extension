@@ -31,7 +31,7 @@ function mapStateToProps (state) {
     ensResolution,
     addressBookEntryName,
     ensResolutionError: getSendEnsResolutionError(state),
-    contacts: addressBook.filter(({ name }) => !!name),
+    contacts: addressBook.filter(({ name }) => Boolean(name)),
     nonContacts: addressBook.filter(({ name }) => !name),
   }
 }

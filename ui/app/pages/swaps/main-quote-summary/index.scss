@@ -1,0 +1,109 @@
+.main-quote-summary {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  position: relative;
+  height: 196px;
+  width: 100%;
+  color: $white;
+
+  &__quote-backdrop-with-top-tab,
+  &__quote-backdrop {
+    position: absolute;
+    box-shadow: 0 10px 39px rgba(3, 125, 214, 0.15);
+    border-radius: 8px;
+    background: #fafcff;
+  }
+
+  &__quote-backdrop-with-top-tab {
+    width: 348px;
+    height: 215px;
+  }
+
+  &__quote-backdrop {
+    width: 310px;
+    height: 179.15px;
+  }
+
+  &__details {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    width: 310px;
+    position: relative;
+  }
+
+  &__best-quote {
+    @include H7;
+
+    font-weight: bold;
+    position: relative;
+    display: flex;
+    padding-top: 6px;
+    letter-spacing: 0.12px;
+    min-height: 16px;
+
+    > span {
+      margin-left: 4px;
+    }
+  }
+
+  &__quote-details-top {
+    height: 137px;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 12px;
+    margin-top: 4px;
+  }
+
+  &__bold {
+    font-weight: 900;
+  }
+
+  &__quote-small-white {
+    white-space: nowrap;
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 8px;
+    margin-top: 6px;
+  }
+
+  &__quote-large {
+    display: flex;
+    align-items: flex-end;
+  }
+
+  &__quote-large-number {
+    font-size: 40px;
+    line-height: 32px;
+    margin-right: 6px;
+  }
+
+  &__quote-large-symbol {
+    display: flex;
+    align-items: flex-end;
+    font-size: 32px;
+    line-height: 32px;
+  }
+
+  &__quote-large-white {
+    font-size: 40px;
+    text-overflow: ellipsis;
+    width: 295px;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  &__exchange-rate-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 287px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    height: 42px;
+  }
+}

@@ -1,5 +1,5 @@
-import { getTokenValue, calcTokenAmount } from '../helpers/utils/token-util'
 import { useMemo } from 'react'
+import { getTokenValueParam, calcTokenAmount } from '../helpers/utils/token-util'
 import { useTokenData } from './useTokenData'
 
 /**
@@ -34,15 +34,15 @@ export function useTokenDisplayValue (transactionData, token, isTokenTransaction
     // and a token object has been provided
     token &&
     // and we are able to parse the token details from the raw data
-    tokenData?.params?.length,
+    tokenData?.args?.length,
   )
 
   const displayValue = useMemo(() => {
     if (!shouldCalculateTokenValue) {
       return null
     }
-    const tokenValue = getTokenValue(tokenData.params)
-    return calcTokenAmount(tokenValue, token.decimals).toString()
+    const tokenValue = getTokenValueParam(tokenData)
+    return calcTokenAmount(tokenValue, token.decimals).toString(10)
   }, [shouldCalculateTokenValue, tokenData, token])
 
   return displayValue

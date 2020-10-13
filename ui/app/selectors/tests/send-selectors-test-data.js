@@ -3,7 +3,7 @@ const state = {
     'isInitialized': true,
     'isUnlocked': true,
     'featureFlags': { 'sendHexData': true },
-    'rpcTarget': 'https://rawtestrpc.metamask.io/',
+    'rpcUrl': 'https://rawtestrpc.metamask.io/',
     'identities': {
       '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
         'address': '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825',
@@ -30,6 +30,10 @@ const state = {
     'nativeCurrency': 'ETH',
     'frequentRpcList': [],
     'network': '3',
+    'provider': {
+      'type': 'testnet',
+      'chainId': '0x3',
+    },
     'accounts': {
       '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
         'code': '0x',
@@ -57,11 +61,11 @@ const state = {
       },
     },
     'addressBook': {
-      '3': {
+      '0x3': {
         '0x06195827297c7a80a443b6894d3bdb8824b43896': {
           'address': '0x06195827297c7a80a443b6894d3bdb8824b43896',
           'name': 'Address Book Account 1',
-          'chainId': '3',
+          'chainId': '0x3',
         },
       },
     },
@@ -150,9 +154,6 @@ const state = {
       },
     ],
     'selectedAddress': '0xd85a4b6a394794842887b8284293d69163007bbb',
-    'provider': {
-      'type': 'testnet',
-    },
     'send': {
       'gasLimit': '0xFFFF',
       'gasPrice': '0xaa',

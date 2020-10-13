@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { debounce } from 'lodash'
+import Tooltip from '../../../ui/tooltip'
 
 export default class AdvancedGasInputs extends Component {
   static contextTypes = {
@@ -16,8 +17,7 @@ export default class AdvancedGasInputs extends Component {
     insufficientBalance: PropTypes.bool,
     customPriceIsSafe: PropTypes.bool,
     isSpeedUp: PropTypes.bool,
-    showGasPriceInfoModal: PropTypes.func,
-    showGasLimitInfoModal: PropTypes.func,
+    customGasLimitMessage: PropTypes.string,
   }
 
   constructor (props) {
@@ -102,12 +102,14 @@ export default class AdvancedGasInputs extends Component {
     return {}
   }
 
-  renderGasInput ({ value, onChange, errorComponent, errorType, infoOnClick, label }) {
+  renderGasInput ({ value, onChange, errorComponent, errorType, label, customMessageComponent, tooltipTitle }) {
     return (
       <div className="advanced-gas-inputs__gas-edit-row">
         <div className="advanced-gas-inputs__gas-edit-row__label">
           { label }
-          <i className="fa fa-info-circle" onClick={infoOnClick} />
+          <Tooltip title={tooltipTitle} position="top" arrow>
+            <i className="fa fa-info-circle" />
+          </Tooltip>
         </div>
         <div className="advanced-gas-inputs__gas-edit-row__input-wrapper">
           <input
@@ -139,7 +141,7 @@ export default class AdvancedGasInputs extends Component {
               <i className="fa fa-sm fa-angle-down" />
             </div>
           </div>
-          { errorComponent }
+          { errorComponent || customMessageComponent }
         </div>
       </div>
     )
@@ -150,8 +152,7 @@ export default class AdvancedGasInputs extends Component {
       insufficientBalance,
       customPriceIsSafe,
       isSpeedUp,
-      showGasPriceInfoModal,
-      showGasLimitInfoModal,
+      customGasLimitMessage,
     } = this.props
     const {
       gasPrice,
@@ -178,23 +179,32 @@ export default class AdvancedGasInputs extends Component {
       </div>
     ) : null
 
+    const gasLimitCustomMessageComponent = customGasLimitMessage
+      ? (
+        <div className="advanced-gas-inputs__gas-edit-row__custom-text">
+          { customGasLimitMessage }
+        </div>
+      )
+      : null
+
     return (
       <div className="advanced-gas-inputs__gas-edit-rows">
         { this.renderGasInput({
           label: this.context.t('gasPrice'),
+          tooltipTitle: this.context.t('gasPriceInfoTooltipContent'),
           value: this.state.gasPrice,
           onChange: this.onChangeGasPrice,
           errorComponent: gasPriceErrorComponent,
           errorType: gasPriceErrorType,
-          infoOnClick: showGasPriceInfoModal,
         }) }
         { this.renderGasInput({
           label: this.context.t('gasLimit'),
+          tooltipTitle: this.context.t('gasLimitInfoTooltipContent'),
           value: this.state.gasLimit,
           onChange: this.onChangeGasLimit,
           errorComponent: gasLimitErrorComponent,
+          customMessageComponent: gasLimitCustomMessageComponent,
           errorType: gasLimitErrorType,
-          infoOnClick: showGasLimitInfoModal,
         }) }
       </div>
     )

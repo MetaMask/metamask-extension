@@ -1,9 +1,9 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import proxyquire from 'proxyquire'
 import sinon from 'sinon'
-import shallow from '../../../../../../lib/shallow-with-context'
 import * as d3 from 'd3'
+import shallow from '../../../../../../lib/shallow-with-context'
 
 function timeout (time) {
   return new Promise((resolve) => {
@@ -69,7 +69,7 @@ describe('GasPriceChart Component', function () {
       './gas-price-chart.utils.js': gasPriceChartUtilsSpies,
       'd3': {
         ...d3,
-        select: function (...args) {
+        select (...args) {
           const result = d3.select(...args)
           return result.empty()
             ? mockSelectReturn

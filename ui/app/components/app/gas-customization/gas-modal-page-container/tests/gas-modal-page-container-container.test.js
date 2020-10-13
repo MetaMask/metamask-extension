@@ -62,6 +62,7 @@ describe('gas-modal-page-container container', function () {
                 txData: {
                   id: 34,
                 },
+                extraInfoRow: { label: 'mockLabel', value: 'mockValue' },
               },
             },
           },
@@ -125,6 +126,9 @@ describe('gas-modal-page-container container', function () {
         currentTimeEstimate: '~1 min 11 sec',
         newTotalFiat: '637.41',
         blockTime: 12,
+        conversionRate: 50,
+        customGasLimitMessage: '',
+        customTotalSupplement: '',
         customModalGasLimitInHex: 'aaaaaaaa',
         customModalGasPriceInHex: 'ffffffff',
         customGasTotal: 'aaaaaaa955555556',
@@ -144,6 +148,7 @@ describe('gas-modal-page-container container', function () {
         gasEstimatesLoading: false,
         hideBasic: true,
         infoRowProps: {
+          extraInfoRow: { label: 'mockLabel', value: 'mockValue' },
           originalTotalFiat: '637.41',
           originalTotalEth: '12.748189 ETH',
           newTotalFiat: '637.41',
@@ -154,6 +159,7 @@ describe('gas-modal-page-container container', function () {
         insufficientBalance: true,
         isSpeedUp: false,
         isRetry: false,
+        isSwap: false,
         txId: 34,
         isEthereumNetwork: true,
         isMainnet: true,
@@ -163,26 +169,24 @@ describe('gas-modal-page-container container', function () {
         transaction: {
           id: 34,
         },
+        value: '0x640000000000000',
       }
       const baseMockOwnProps = { transaction: { id: 34 } }
       const tests = [
         { mockState: baseMockState, expectedResult: baseExpectedResult, mockOwnProps: baseMockOwnProps },
         {
-          mockState: Object.assign({}, baseMockState, {
-            metamask: { ...baseMockState.metamask, balance: '0xfffffffffffffffffffff' },
-          }),
-          expectedResult: Object.assign({}, baseExpectedResult, { balance: '0xfffffffffffffffffffff', insufficientBalance: false }),
+          mockState: { ...baseMockState, metamask: { ...baseMockState.metamask, balance: '0xfffffffffffffffffffff' } },
+          expectedResult: { ...baseExpectedResult, balance: '0xfffffffffffffffffffff', insufficientBalance: false },
           mockOwnProps: baseMockOwnProps,
         },
         {
           mockState: baseMockState,
-          mockOwnProps: Object.assign({}, baseMockOwnProps, {
-            transaction: { id: 34, status: 'submitted' },
-          }),
-          expectedResult: Object.assign({}, baseExpectedResult, { isSpeedUp: true, transaction: { id: 34 } }),
+          mockOwnProps: { ...baseMockOwnProps, transaction: { id: 34, status: 'submitted' } },
+          expectedResult: { ...baseExpectedResult, isSpeedUp: true, transaction: { id: 34 } },
         },
         {
-          mockState: Object.assign({}, baseMockState, {
+          mockState: {
+            ...baseMockState,
             metamask: {
               ...baseMockState.metamask,
               preferences: {
@@ -194,7 +198,7 @@ describe('gas-modal-page-container container', function () {
                 type: 'rinkeby',
               },
             },
-          }),
+          },
           mockOwnProps: baseMockOwnProps,
           expectedResult: {
             ...baseExpectedResult,
@@ -206,7 +210,8 @@ describe('gas-modal-page-container container', function () {
           },
         },
         {
-          mockState: Object.assign({}, baseMockState, {
+          mockState: {
+            ...baseMockState,
             metamask: {
               ...baseMockState.metamask,
               preferences: {
@@ -218,7 +223,7 @@ describe('gas-modal-page-container container', function () {
                 type: 'rinkeby',
               },
             },
-          }),
+          },
           mockOwnProps: baseMockOwnProps,
           expectedResult: {
             ...baseExpectedResult,
@@ -226,7 +231,8 @@ describe('gas-modal-page-container container', function () {
           },
         },
         {
-          mockState: Object.assign({}, baseMockState, {
+          mockState: {
+            ...baseMockState,
             metamask: {
               ...baseMockState.metamask,
               preferences: {
@@ -238,7 +244,7 @@ describe('gas-modal-page-container container', function () {
                 type: 'mainnet',
               },
             },
-          }),
+          },
           mockOwnProps: baseMockOwnProps,
           expectedResult: baseExpectedResult,
         },
@@ -404,7 +410,7 @@ describe('gas-modal-page-container container', function () {
     })
 
     it('should return the expected props when isConfirm is false', function () {
-      const result = mergeProps(Object.assign({}, stateProps, { isConfirm: false }), dispatchProps, ownProps)
+      const result = mergeProps({ ...stateProps, isConfirm: false }, dispatchProps, ownProps)
 
       assert.equal(result.isConfirm, false)
       assert.equal(result.someOtherStateProp, 'baz')
@@ -435,7 +441,7 @@ describe('gas-modal-page-container container', function () {
     })
 
     it('should dispatch the expected actions from obSubmit when isConfirm is false and isSpeedUp is true', function () {
-      const result = mergeProps(Object.assign({}, stateProps, { isSpeedUp: true, isConfirm: false }), dispatchProps, ownProps)
+      const result = mergeProps({ ...stateProps, isSpeedUp: true, isConfirm: false }, dispatchProps, ownProps)
 
       result.onSubmit()
 

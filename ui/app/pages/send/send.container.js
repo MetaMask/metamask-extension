@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import SendEther from './send.component'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 
@@ -44,11 +43,12 @@ import {
 } from '../../ducks/gas/gas.duck'
 import { getTokens } from '../../ducks/metamask/metamask'
 import {
-  calcGasTotal,
-} from './send.utils.js'
-import {
   isValidDomainName,
 } from '../../helpers/utils/util'
+import {
+  calcGasTotal,
+} from './send.utils'
+import SendEther from './send.component'
 
 function mapStateToProps (state) {
   const editingTransactionId = getSendEditingTransactionId(state)
@@ -90,9 +90,9 @@ function mapDispatchToProps (dispatch) {
       value,
       data,
     }) => {
-      !editingTransactionId
-        ? dispatch(updateGasData({ gasPrice, selectedAddress, sendToken, blockGasLimit, to, value, data }))
-        : dispatch(setGasTotal(calcGasTotal(gasLimit, gasPrice)))
+      editingTransactionId
+        ? dispatch(setGasTotal(calcGasTotal(gasLimit, gasPrice)))
+        : dispatch(updateGasData({ gasPrice, selectedAddress, sendToken, blockGasLimit, to, value, data }))
     },
     updateSendTokenBalance: ({ sendToken, tokenContract, address }) => {
       dispatch(updateSendTokenBalance({

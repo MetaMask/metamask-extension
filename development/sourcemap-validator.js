@@ -1,6 +1,6 @@
 const fs = require('fs')
-const { SourceMapConsumer } = require('source-map')
 const path = require('path')
+const { SourceMapConsumer } = require('source-map')
 const pify = require('pify')
 
 const fsAsync = pify(fs)
@@ -17,7 +17,6 @@ start().catch((error) => {
   console.error(error)
   process.exit(1)
 })
-
 
 async function start () {
   const targetFiles = [
@@ -49,7 +48,9 @@ async function validateSourcemapForFile ({ buildName }) {
   try {
     const filePath = path.join(__dirname, `/../dist/${platform}/`, `${buildName}`)
     rawBuild = await fsAsync.readFile(filePath, 'utf8')
-  } catch (err) {}
+  } catch (_) {
+    // empty
+  }
   if (!rawBuild) {
     throw new Error(`SourcemapValidator - failed to load source file for "${buildName}"`)
   }
@@ -58,12 +59,16 @@ async function validateSourcemapForFile ({ buildName }) {
   try {
     const filePath = path.join(__dirname, `/../dist/sourcemaps/`, `${buildName}.map`)
     rawSourceMap = await fsAsync.readFile(filePath, 'utf8')
-  } catch (err) {}
+  } catch (_) {
+    // empty
+  }
   // attempt to load in dev mode
   try {
     const filePath = path.join(__dirname, `/../dist/${platform}/`, `${buildName}.map`)
     rawSourceMap = await fsAsync.readFile(filePath, 'utf8')
-  } catch (err) {}
+  } catch (_) {
+    // empty
+  }
   if (!rawSourceMap) {
     throw new Error(`SourcemapValidator - failed to load sourcemaps for "${buildName}"`)
   }
@@ -85,7 +90,7 @@ async function validateSourcemapForFile ({ buildName }) {
   const matchesPerLine = buildLines.map((line) => indicesOf(targetString, line))
   matchesPerLine.forEach((matchIndices, lineIndex) => {
     matchIndices.forEach((matchColumn) => {
-      sampleCount++
+      sampleCount += 1
       const position = { line: lineIndex + 1, column: matchColumn }
       const result = consumer.originalPositionFor(position)
       // warn if source content is missing

@@ -1,9 +1,9 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
-import Sidebar from '../sidebar.component.js'
+import Sidebar from '../sidebar.component'
 
 import CustomizeGas from '../../gas-customization/gas-modal-page-container'
 

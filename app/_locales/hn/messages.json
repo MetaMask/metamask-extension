@@ -1,10 +1,4 @@
 {
-  "approve": {
-    "message": "मंजूर"
-  },
-  "reject": {
-    "message": "अस्वीकार"
-  },
   "account": {
     "message": "खाता"
   },
@@ -30,6 +24,9 @@
   "appName": {
     "message": "मेटामास्क/MetaMask",
     "description": "एप्लिकेशन का नाम"
+  },
+  "approve": {
+    "message": "मंजूर"
   },
   "attemptingConnect": {
     "message": "ब्लॉकचैन से कनेक्ट करने का प्रयास करना होगा।सब्र करे।"
@@ -73,11 +70,11 @@
   "copiedExclamation": {
     "message": "कॉपी कर दिया गया!"
   },
-  "copyToClipboard": {
-    "message": "क्लिपबोर्ड पर कॉपी करें"
-  },
   "copyPrivateKey": {
     "message": "यह आपकी निजी कुंजी है (कॉपी करने के लिए क्लिक करें)।"
+  },
+  "copyToClipboard": {
+    "message": "क्लिपबोर्ड पर कॉपी करें"
   },
   "create": {
     "message": "बनाएं"
@@ -91,11 +88,11 @@
   "customRPC": {
     "message": "कस्टम RPC"
   },
-  "decimalsMustZerotoTen": {
-    "message": "दशमलव कम से कम 0 होनी चाहिए, और 36 से अधिक नहीं होनी चाहिए।"
-  },
   "decimal": {
     "message": "दशमलव परिशुद्धता"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "दशमलव कम से कम 0 होनी चाहिए, और 36 से अधिक नहीं होनी चाहिए।"
   },
   "defaultNetwork": {
     "message": "ईथर लेनदेन के लिए डिफ़ॉल्ट नेटवर्क मुख्य नेट है।"
@@ -202,14 +199,11 @@
   "invalidAddressRecipient": {
     "message": "प्राप्तकर्ता का पता अमान्य है"
   },
-  "invalidInput": {
-    "message": "अमान्य इनपुट।"
+  "invalidBlockExplorerURL": {
+    "message": "अमान्य Block Explorer कै URI"
   },
   "invalidRPC": {
     "message": "अमान्य RPC कै URI"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "अमान्य Block Explorer कै URI"
   },
   "jsonFile": {
     "message": "JSON फ़ाइल",
@@ -230,9 +224,6 @@
   "localhost": {
     "message": "स्थानीयहोस्ट 8545"
   },
-  "unlock": {
-    "message": "लॉग इन करें"
-  },
   "lock": {
     "message": "लॉग आउट करें"
   },
@@ -245,11 +236,11 @@
   "metamaskDescription": {
     "message": "मेटामास्क इथीरियम के लिए एक सुरक्षित पहचान वॉल्ट है।"
   },
-  "myAccounts": {
-    "message": "मेरे खाते"
-  },
   "mustSelectOne": {
     "message": "कम से कम 1 टोकन का चयन करना आवश्यक है।"
+  },
+  "myAccounts": {
+    "message": "मेरे खाते"
   },
   "needEtherInWallet": {
     "message": "मेटामास्क का उपयोग करने वाले विकेन्द्रीकृत अनुप्रयोगों के साथ बातचीत करने के लिए, आपको अपने वॉलेट में ईथर की आवश्यकता होगी।"
@@ -312,17 +303,20 @@
   "recipientAddress": {
     "message": "प्राप्तकर्ता पता"
   },
+  "reject": {
+    "message": "अस्वीकार"
+  },
   "rejected": {
     "message": "अस्वीकृत"
+  },
+  "required": {
+    "message": "आवश्यक"
   },
   "resetAccount": {
     "message": "खाता रीसेट करें"
   },
   "restoreFromSeed": {
     "message": "बीज वाक्यांश से पुनर्स्थापित करें"
-  },
-  "required": {
-    "message": "आवश्यक"
   },
   "revealSeedWords": {
     "message": "बीज शब्द प्रकट करें"
@@ -369,14 +363,14 @@
   "showPrivateKeys": {
     "message": "निजी कुंजी दिखाएँ"
   },
+  "sigRequest": {
+    "message": "हस्ताक्षर अनुरोध"
+  },
   "sign": {
     "message": "हस्ताक्षर"
   },
   "signNotice": {
     "message": "इस संदेश पर हस्ताक्षर करने से \n साइड इफेक्ट हो सकते हैं। \n केवल अपने पूरे खाते के साथ पूरी तरह से भरोसेमंद \n साइटों से संदेश पर हस्ताक्षर करें। \n यह खतरनाक विधि भविष्य के संस्करण में निकाल दी जाएगी।"
-  },
-  "sigRequest": {
-    "message": "हस्ताक्षर अनुरोध"
   },
   "stateLogs": {
     "message": "स्थिति संदेश"
@@ -421,6 +415,9 @@
   "unknownNetwork": {
     "message": "अज्ञात निजी नेटवर्क"
   },
+  "unlock": {
+    "message": "लॉग इन करें"
+  },
   "urlErrorMsg": {
     "message": "URI-यूआरआई को उपयुक्त HTTP / HTTPS उपसर्ग की आवश्यकता होती है।"
   },
@@ -436,10 +433,10 @@
   "welcome": {
     "message": "मेटामास्क बीटा में आपका स्वागत है"
   },
-  "yourSigRequested": {
-    "message": "आपका हस्ताक्षर अनुरोध किया जा रहा है"
-  },
   "youSign": {
     "message": "आप हस्ताक्षर कर रहे हैं"
+  },
+  "yourSigRequested": {
+    "message": "आपका हस्ताक्षर अनुरोध किया जा रहा है"
   }
 }

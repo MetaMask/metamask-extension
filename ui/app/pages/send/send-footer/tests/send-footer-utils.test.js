@@ -5,7 +5,7 @@ import { TOKEN_TRANSFER_FUNCTION_SIGNATURE } from '../../send.constants'
 
 const stubs = {
   rawEncode: sinon.stub().callsFake((arr1, arr2) => {
-    return [ ...arr1, ...arr2 ]
+    return [...arr1, ...arr2]
   }),
 }
 
@@ -18,27 +18,9 @@ const {
   addressIsNew,
   constructTxParams,
   constructUpdatedTx,
-  addHexPrefixToObjectValues,
 } = sendUtils
 
 describe('send-footer utils', function () {
-
-  describe('addHexPrefixToObjectValues()', function () {
-    it('should return a new object with the same properties with a 0x prefix', function () {
-      assert.deepEqual(
-        addHexPrefixToObjectValues({
-          prop1: '0x123',
-          prop2: '456',
-          prop3: 'x',
-        }),
-        {
-          prop1: '0x123',
-          prop2: '0x456',
-          prop3: '0xx',
-        },
-      )
-    })
-  })
 
   describe('addressIsNew()', function () {
     it('should return false if the address exists in toAccounts', function () {

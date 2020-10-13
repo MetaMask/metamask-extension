@@ -1,6 +1,8 @@
 * text=auto
 CHANGELOG.md merge=union
 
+.metamaskrc.dist linguist-language=ini
+
 # Reviewing the lockfile contents is an important step in verifying that
 # we're using the dependencies we expect to be using
 package-lock.json linguist-generated=false

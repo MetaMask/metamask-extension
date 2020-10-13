@@ -1,7 +1,7 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { shallow } from 'enzyme'
-import SendRowErrorMessage from '../send-row-error-message.component.js'
+import SendRowErrorMessage from '../send-row-error-message.component'
 
 describe('SendRowErrorMessage Component', function () {
   let wrapper
@@ -13,7 +13,7 @@ describe('SendRowErrorMessage Component', function () {
           errors={{ error1: 'abc', error2: 'def' }}
           errorType="error3"
         />
-      ), { context: { t: (str) => str + '_t' } })
+      ), { context: { t: (str) => `${str}_t` } })
     })
 
     it('should render null if the passed errors do not contain an error of errorType', function () {

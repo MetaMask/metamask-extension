@@ -1,8 +1,8 @@
 import EventEmitter from 'events'
 import ObservableStore from 'obs-store'
 import { ethErrors } from 'eth-json-rpc-errors'
-import createId from './random-id'
 import log from 'loglevel'
+import createId from './random-id'
 import { MESSAGE_TYPE } from './enums'
 
 /**
@@ -23,6 +23,7 @@ import { MESSAGE_TYPE } from './enums'
  */
 
 export default class EncryptionPublicKeyManager extends EventEmitter {
+
   /**
    * Controller in charge of managing - storing, adding, removing, updating - EncryptionPublicKey.
    *
@@ -62,7 +63,8 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
   getUnapprovedMsgs () {
     return this.messages.filter((msg) => msg.status === 'unapproved')
       .reduce((result, msg) => {
-        result[msg.id] = msg; return result
+        result[msg.id] = msg
+        return result
       }, {})
   }
 
@@ -79,17 +81,20 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
   addUnapprovedMessageAsync (address, req) {
     return new Promise((resolve, reject) => {
       if (!address) {
-        return reject(new Error('MetaMask Message: address field is required.'))
+        reject(new Error('MetaMask Message: address field is required.'))
+        return
       }
       const msgId = this.addUnapprovedMessage(address, req)
       this.once(`${msgId}:finished`, (data) => {
         switch (data.status) {
           case 'received':
-            return resolve(data.rawData)
+            resolve(data.rawData)
+            return
           case 'rejected':
-            return reject(ethErrors.provider.userRejectedRequest('MetaMask EncryptionPublicKey: User denied message EncryptionPublicKey.'))
+            reject(ethErrors.provider.userRejectedRequest('MetaMask EncryptionPublicKey: User denied message EncryptionPublicKey.'))
+            return
           default:
-            return reject(new Error(`MetaMask EncryptionPublicKey: Unknown problem: ${JSON.stringify(address)}`))
+            reject(new Error(`MetaMask EncryptionPublicKey: Unknown problem: ${JSON.stringify(address)}`))
         }
       })
     })
@@ -113,7 +118,7 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
     const msgData = {
       id: msgId,
       msgParams: address,
-      time: time,
+      time,
       status: 'unapproved',
       type: MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY,
     }
@@ -243,7 +248,7 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
   _setMsgStatus (msgId, status) {
     const msg = this.getMsg(msgId)
     if (!msg) {
-      throw new Error('EncryptionPublicKeyManager - Message not found for id: "${msgId}".')
+      throw new Error(`EncryptionPublicKeyManager - Message not found for id: "${msgId}".`)
     }
     msg.status = status
     this._updateMsg(msg)

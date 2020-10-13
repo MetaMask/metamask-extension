@@ -49,7 +49,7 @@ describe('Selectors', function () {
         [
           {
             'address': '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-            'chainId': '4',
+            'chainId': '0x4',
             'isEns': false,
             'memo': '',
             'name': 'Address Book Account 1',

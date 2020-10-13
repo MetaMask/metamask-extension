@@ -2,6 +2,7 @@ const assert = require('assert')
 const webdriver = require('selenium-webdriver')
 
 const { By, until } = webdriver
+const enLocaleMessages = require('../../app/_locales/en/messages.json')
 const {
   tinyDelayMs,
   regularDelayMs,
@@ -9,7 +10,6 @@ const {
 } = require('./helpers')
 const { buildWebDriver } = require('./webdriver')
 const Ganache = require('./ganache')
-const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
 const ganacheServer = new Ganache()
 
@@ -95,7 +95,7 @@ describe('Using MetaMask with an existing account', function () {
 
   describe('Send ETH from inside MetaMask', function () {
     it('starts a send transaction', async function () {
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Send')]`))
+      await driver.clickElement(By.css('[data-testid="eth-overview-send"]'))
       await driver.delay(regularDelayMs)
 
       const inputAddress = await driver.findElement(By.css('input[placeholder="Search, public address (0x), or ENS"]'))
@@ -205,7 +205,7 @@ describe('Using MetaMask with an existing account', function () {
 
       const txValues = await driver.findElements(By.css('.transaction-list-item__primary-currency'))
       assert.equal(txValues.length, 1)
-      assert.ok(/-2.2\s*ETH/.test(await txValues[0].getText()))
+      assert.ok((/-2.2\s*ETH/u).test(await txValues[0].getText()))
     })
   })
 })

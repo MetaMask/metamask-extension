@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import Tooltip from '../../ui/tooltip-v2'
+import Tooltip from '../../ui/tooltip'
 
 import {
   UNAPPROVED_STATUS,

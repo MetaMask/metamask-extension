@@ -1,5 +1,5 @@
-const fs = require('fs-extra')
 const path = require('path')
+const fs = require('fs-extra')
 const watch = require('gulp-watch')
 const glob = require('fast-glob')
 
@@ -8,7 +8,6 @@ const locales = require('../../app/_locales/index.json')
 const { createTask, composeSeries } = require('./task')
 
 module.exports = createStaticAssetTasks
-
 
 const copyTargets = [
   {

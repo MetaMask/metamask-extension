@@ -1,6 +1,6 @@
+import assert from 'assert'
 import extension from 'extensionizer'
 import ethUtil from 'ethereumjs-util'
-import assert from 'assert'
 import BN from 'bn.js'
 import { memoize } from 'lodash'
 
@@ -27,9 +27,8 @@ const getEnvironmentTypeMemo = memoize((url) => {
     return ENVIRONMENT_TYPE_FULLSCREEN
   } else if (parsedUrl.pathname === '/notification.html') {
     return ENVIRONMENT_TYPE_NOTIFICATION
-  } else {
-    return ENVIRONMENT_TYPE_BACKGROUND
   }
+  return ENVIRONMENT_TYPE_BACKGROUND
 })
 
 /**
@@ -55,19 +54,19 @@ const getEnvironmentType = (url = window.location.href) => getEnvironmentTypeMem
  */
 const getPlatform = (_) => {
   const ua = window.navigator.userAgent
-  if (ua.search('Firefox') !== -1) {
-    return PLATFORM_FIREFOX
-  } else {
+  if (ua.search('Firefox') === -1) {
     if (window && window.chrome && window.chrome.ipcRenderer) {
       return PLATFORM_BRAVE
-    } else if (ua.search('Edge') !== -1) {
-      return PLATFORM_EDGE
-    } else if (ua.search('OPR') !== -1) {
-      return PLATFORM_OPERA
-    } else {
-      return PLATFORM_CHROME
     }
+    if (ua.search('Edge') !== -1) {
+      return PLATFORM_EDGE
+    }
+    if (ua.search('OPR') !== -1) {
+      return PLATFORM_OPERA
+    }
+    return PLATFORM_CHROME
   }
+  return PLATFORM_FIREFOX
 }
 
 /**
@@ -135,12 +134,12 @@ function BnMultiplyByFraction (targetBN, numerator, denominator) {
 /**
  * Returns an Error if extension.runtime.lastError is present
  * this is a workaround for the non-standard error object that's used
- * @returns {Error}
+ * @returns {Error|undefined}
  */
 function checkForError () {
-  const lastError = extension.runtime.lastError
+  const { lastError } = extension.runtime
   if (!lastError) {
-    return
+    return undefined
   }
   // if it quacks like an Error, its an Error
   if (lastError.stack && lastError.message) {
@@ -148,6 +147,21 @@ function checkForError () {
   }
   // repair incomplete error object (eg chromium v77)
   return new Error(lastError.message)
+}
+
+/**
+ * Checks whether the given value is a 0x-prefixed, non-zero, non-zero-padded,
+ * hexadecimal string.
+ *
+ * @param {any} value - The value to check.
+ * @returns {boolean} True if the value is a correctly formatted hex string,
+ * false otherwise.
+ */
+function isPrefixedFormattedHexString (value) {
+  if (typeof value !== 'string') {
+    return false
+  }
+  return (/^0x[1-9a-f]+[0-9a-f]*$/ui).test(value)
 }
 
 export {
@@ -158,4 +172,5 @@ export {
   bnToHex,
   BnMultiplyByFraction,
   checkForError,
+  isPrefixedFormattedHexString,
 }

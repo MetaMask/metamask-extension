@@ -1,12 +1,7 @@
 import ethAbi from 'ethereumjs-abi'
 import ethUtil from 'ethereumjs-util'
 import { TOKEN_TRANSFER_FUNCTION_SIGNATURE } from '../send.constants'
-
-export function addHexPrefixToObjectValues (obj) {
-  return Object.keys(obj).reduce((newObj, key) => {
-    return { ...newObj, [key]: ethUtil.addHexPrefix(obj[key]) }
-  }, {})
-}
+import { addHexPrefixToObjectValues } from '../../../helpers/utils/util'
 
 export function constructTxParams ({ sendToken, data, to, amount, from, gas, gasPrice }) {
   const txParams = {
@@ -55,15 +50,15 @@ export function constructUpdatedTx ({
   }
 
   if (sendToken) {
-    const data = TOKEN_TRANSFER_FUNCTION_SIGNATURE + Array.prototype.map.call(
-      ethAbi.rawEncode(['address', 'uint256'], [to, ethUtil.addHexPrefix(amount)]),
-      (x) => ('00' + x.toString(16)).slice(-2),
-    ).join('')
-
     Object.assign(editingTx.txParams, addHexPrefixToObjectValues({
       value: '0',
       to: sendToken.address,
-      data,
+      data: (
+        TOKEN_TRANSFER_FUNCTION_SIGNATURE + Array.prototype.map.call(
+          ethAbi.rawEncode(['address', 'uint256'], [to, ethUtil.addHexPrefix(amount)]),
+          (x) => (`00${x.toString(16)}`).slice(-2),
+        ).join('')
+      ),
     }))
   }
 

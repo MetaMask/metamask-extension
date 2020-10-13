@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import Select from 'react-select'
-import genAccountLink from '../../../../lib/account-link.js'
+import getAccountLink from '../../../../lib/account-link'
 import Button from '../../../components/ui/button'
 
 class AccountList extends Component {
@@ -101,7 +101,7 @@ class AccountList extends Component {
               </div>
               <a
                 className="hw-account-list__item__link"
-                href={genAccountLink(account.address, this.props.network)}
+                href={getAccountLink(account.address, this.props.network)}
                 target="_blank"
                 rel="noopener noreferrer"
                 title={this.context.t('etherscanView')}
@@ -180,7 +180,6 @@ class AccountList extends Component {
     }
 
 }
-
 
 AccountList.propTypes = {
   onPathChange: PropTypes.func.isRequired,

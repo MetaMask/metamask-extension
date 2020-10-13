@@ -1,12 +1,11 @@
-const version = 2
-
 import { cloneDeep } from 'lodash'
 
+const version = 2
 
 export default {
   version,
 
-  migrate: function (originalVersionedData) {
+  migrate (originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     try {
@@ -14,7 +13,9 @@ export default {
         versionedData.data.config.provider.type = 'rpc'
         versionedData.data.config.provider.rpcTarget = 'https://rpc.metamask.io/'
       }
-    } catch (e) {}
+    } catch (_) {
+      // empty
+    }
     return Promise.resolve(versionedData)
   },
 }

@@ -2,6 +2,7 @@ const assert = require('assert')
 const webdriver = require('selenium-webdriver')
 
 const { By, until } = webdriver
+const enLocaleMessages = require('../../app/_locales/en/messages.json')
 const {
   tinyDelayMs,
   regularDelayMs,
@@ -9,7 +10,6 @@ const {
 } = require('./helpers')
 const { buildWebDriver } = require('./webdriver')
 const Ganache = require('./ganache')
-const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
 const ganacheServer = new Ganache()
 
@@ -58,7 +58,7 @@ describe('MetaMask', function () {
       await driver.delay(largeDelayMs)
     })
 
-    it('clicks the "I agree" option on the metametrics opt-in screen', async function () {
+    it('clicks the "I Agree" option on the metametrics opt-in screen', async function () {
       await driver.clickElement(By.css('.btn-primary'))
       await driver.delay(largeDelayMs)
     })
@@ -144,6 +144,8 @@ describe('MetaMask', function () {
       await restoreSeedLink.click()
       await driver.delay(regularDelayMs)
 
+      await driver.clickElement(By.css('.import-account__checkbox-container'))
+
       const seedTextArea = await driver.findElement(By.css('textarea'))
       await seedTextArea.sendKeys(testSeedPhrase)
       await driver.delay(regularDelayMs)
@@ -167,14 +169,14 @@ describe('MetaMask', function () {
 
     it('balance renders', async function () {
       const balance = await driver.findElement(By.css('[data-testid="eth-overview__primary-currency"]'))
-      await driver.wait(until.elementTextMatches(balance, /100\s*ETH/))
+      await driver.wait(until.elementTextMatches(balance, /100\s*ETH/u))
       await driver.delay(regularDelayMs)
     })
   })
 
   describe('Send ETH from inside MetaMask', function () {
     it('starts to send a transaction', async function () {
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Send')]`))
+      await driver.clickElement(By.css('[data-testid="eth-overview-send"]'))
       await driver.delay(regularDelayMs)
 
       const inputAddress = await driver.findElement(By.css('input[placeholder="Search, public address (0x), or ENS"]'))
@@ -218,7 +220,7 @@ describe('MetaMask', function () {
       }, 10000)
 
       const txValues = await driver.findElement(By.css('.transaction-list-item__primary-currency'))
-      await driver.wait(until.elementTextMatches(txValues, /-1\s*ETH/), 10000)
+      await driver.wait(until.elementTextMatches(txValues, /-1\s*ETH/u), 10000)
     })
   })
 })

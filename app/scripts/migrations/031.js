@@ -1,6 +1,7 @@
 // next version number
-const version = 31
 import { cloneDeep } from 'lodash'
+
+const version = 31
 
 /*
   * The purpose of this migration is to properly set the completedOnboarding flag based on the state
@@ -9,7 +10,7 @@ import { cloneDeep } from 'lodash'
 export default {
   version,
 
-  migrate: async function (originalVersionedData) {
+  async migrate (originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     const state = versionedData.data

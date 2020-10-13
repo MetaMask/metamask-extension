@@ -1,13 +1,4 @@
 {
-  "chartOnlyAvailableEth": {
-    "message": "Το διάγραμμα είναι διαθέσιμο μόνο σε δίκτυα Ethereum."
-  },
-  "contractInteraction": {
-    "message": "Αλληλεπίδραση Σύμβασης"
-  },
-  "reject": {
-    "message": "Απόρριψη"
-  },
   "about": {
     "message": "Σχετικά με"
   },
@@ -38,20 +29,20 @@
   "activityLog": {
     "message": "αρχείο καταγραφής δραστηριότητας"
   },
+  "addAcquiredTokens": {
+    "message": "Προσθέστε τα token που αποκτήσατε χρησιμοποιώντας το MetaMask"
+  },
+  "addAlias": {
+    "message": "Προσθήκη ψευδωνύμου"
+  },
   "addNetwork": {
     "message": "Προσθήκη Δικτύου"
   },
   "addRecipient": {
     "message": "Προσθήκη Παραλήπτη"
   },
-  "advanced": {
-    "message": "Σύνθετες"
-  },
-  "advancedSettingsDescription": {
-    "message": "Αποκτήστε πρόσβαση στις λειτουργίες του προγραμματιστή, κατεβάστε Αρχεία Καταγραφών Καταστάσεων, Επαναφέρετε τον Λογαριασμό, εγκαταστήστε δοκιμαστικά δίκτυα και προσαρμοσμένα RPC"
-  },
-  "advancedOptions": {
-    "message": "Σύνθετες Επιλογές"
+  "addSuggestedTokens": {
+    "message": "Προσθέστε τα Προτεινόμενα Tokens"
   },
   "addToAddressBook": {
     "message": "Προσθήκη στο βιβλίο διευθύνσεων"
@@ -59,20 +50,20 @@
   "addToAddressBookModalPlaceholder": {
     "message": "π.χ. John D."
   },
-  "addAlias": {
-    "message": "Προσθήκη ψευδωνύμου"
-  },
   "addToken": {
     "message": "Προσθήκη Token"
   },
   "addTokens": {
     "message": "Προσθήκη Token"
   },
-  "addSuggestedTokens": {
-    "message": "Προσθέστε τα Προτεινόμενα Tokens"
+  "advanced": {
+    "message": "Σύνθετες"
   },
-  "addAcquiredTokens": {
-    "message": "Προσθέστε τα token που αποκτήσατε χρησιμοποιώντας το MetaMask"
+  "advancedOptions": {
+    "message": "Σύνθετες Επιλογές"
+  },
+  "advancedSettingsDescription": {
+    "message": "Αποκτήστε πρόσβαση στις λειτουργίες του προγραμματιστή, κατεβάστε Αρχεία Καταγραφών Καταστάσεων, Επαναφέρετε τον Λογαριασμό, εγκαταστήστε δοκιμαστικά δίκτυα και προσαρμοσμένα RPC"
   },
   "amount": {
     "message": "Ποσό"
@@ -94,14 +85,14 @@
   "asset": {
     "message": "Στοιχείο ενεργητικού"
   },
-  "attemptingConnect": {
-    "message": "Προσπάθεια σύνδεσης στην αλυσίδα μπλοκ."
-  },
   "attemptToCancel": {
     "message": "Προσπάθεια Ακύρωσης;"
   },
   "attemptToCancelDescription": {
     "message": "Η υποβολή αυτής της προσπάθειας δεν εγγυάται ότι η αρχική σας συναλλαγή θα ακυρωθεί. Αν η προσπάθεια ακύρωσης είναι επιτυχής, θα χρεωθείτε με το παραπάνω τέλος συναλλαγής."
+  },
+  "attemptingConnect": {
+    "message": "Προσπάθεια σύνδεσης στην αλυσίδα μπλοκ."
   },
   "attributions": {
     "message": "Αποδόσεις"
@@ -121,11 +112,11 @@
   "backToAll": {
     "message": "Πίσω σε Όλα"
   },
-  "backupApprovalNotice": {
-    "message": "Δημιουργήστε αντίγραφο ασφαλείας του κώδικα Μυστικής Αποκατάστασης για να διατηρήσετε ασφαλή το πορτοφόλι και τα χρήματά σας."
-  },
   "backupApprovalInfo": {
     "message": "Αυτός ο μυστικός κωδικός απαιτείται για ανάκτηση του πορτοφολιού σας σε περίπτωση που χάσετε τη συσκευή σας, ξεχάσετε τον κωδικό πρόσβασης, πρέπει να κάνετε επανεγκατάσταση του MetaMask, ή θέλετε να έχετε πρόσβαση στο πορτοφόλι σας από μια άλλη συσκευή."
+  },
+  "backupApprovalNotice": {
+    "message": "Δημιουργήστε αντίγραφο ασφαλείας του κώδικα Μυστικής Αποκατάστασης για να διατηρήσετε ασφαλή το πορτοφόλι και τα χρήματά σας."
   },
   "backupNow": {
     "message": "Δημιουργήστε αντίγραφο ασφαλείας τώρα"
@@ -155,29 +146,17 @@
   "builtInCalifornia": {
     "message": "Το MetaMask έχει σχεδιαστεί και αναπτυχθεί στην Καλιφόρνια."
   },
-  "buyWithWyre": {
-    "message": "Αγοράστε ETH με το Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Το Wyre σας επιτρέπει να χρησιμοποιήσετε μια πιστωτική κάρτα για να καταθέσετε ETH απευθείας στον λογαριασμό σας MetaTask."
-  },
   "buyCoinSwitch": {
     "message": "Αγοράστε στο  CoinSwitch"
   },
   "buyCoinSwitchExplainer": {
     "message": "Το CoinSwitch είναι ο προορισμός μιας στάσης για ανταλλαγή σε περισσότερα από 300 κρυπτονομίσματα στην καλύτερη ισοτιμία."
   },
-  "off": {
-    "message": "Ανενεργό"
+  "buyWithWyre": {
+    "message": "Αγοράστε ETH με το Wyre"
   },
-  "ok": {
-    "message": "Εντάξει"
-  },
-  "on": {
-    "message": "Ενεργό"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Διεύθυνση URL Εξερευνητή Μπλοκ (προαιρετικό)"
+  "buyWithWyreDescription": {
+    "message": "Το Wyre σας επιτρέπει να χρησιμοποιήσετε μια πιστωτική κάρτα για να καταθέσετε ETH απευθείας στον λογαριασμό σας MetaTask."
   },
   "cancel": {
     "message": "Ακύρωση"
@@ -194,20 +173,20 @@
   "chainId": {
     "message": "Αναγνωριστικό Αλυσίδας"
   },
+  "chartOnlyAvailableEth": {
+    "message": "Το διάγραμμα είναι διαθέσιμο μόνο σε δίκτυα Ethereum."
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Θα πρέπει να χρησιμοποιήσετε το MetaMask στο Google Chrome για να συνδεθείτε στο Πορτοφόλι Υλικού."
+  },
   "clickToRevealSeed": {
     "message": "Κάντε κλικ εδώ για να αποκαλύψετε μυστικές λέξεις"
   },
   "close": {
     "message": "Κλείσιμο"
   },
-  "chromeRequiredForHardwareWallets": {
-    "message": "Θα πρέπει να χρησιμοποιήσετε το MetaMask στο Google Chrome για να συνδεθείτε στο Πορτοφόλι Υλικού."
-  },
   "confirm": {
     "message": "Επιβεβαίωση"
-  },
-  "confirmed": {
-    "message": "Επιβεβαιωμένο"
   },
   "confirmPassword": {
     "message": "Επιβεβαίωση Κωδικού Πρόσβασης"
@@ -215,17 +194,23 @@
   "confirmSecretBackupPhrase": {
     "message": "Επιβεβαιώστε τη Μυστική Φράση Αντιγράφου Ασφαλείας"
   },
+  "confirmed": {
+    "message": "Επιβεβαιωμένο"
+  },
   "congratulations": {
     "message": "Συγχαρητήρια"
-  },
-  "connectHardwareWallet": {
-    "message": "Σύνδεση Πορτοφολιού Υλικού"
   },
   "connect": {
     "message": "Σύνδεση"
   },
+  "connectHardwareWallet": {
+    "message": "Σύνδεση Πορτοφολιού Υλικού"
+  },
   "connectingTo": {
     "message": "Σύνδεση με $1"
+  },
+  "connectingToGoerli": {
+    "message": "Σύνδεση στο Δίκτυο Δοκιμής Goerli "
   },
   "connectingToKovan": {
     "message": "Σύνδεση στο Δοκιμαστικό Δίκτυο Kovan"
@@ -233,53 +218,50 @@
   "connectingToMainnet": {
     "message": "Σύνδεση στο Κύριο Δίκτυο Ethereum"
   },
-  "connectingToRopsten": {
-    "message": "Σύνδεση με το Δίκτυο Δοκιμών Ropsten"
-  },
   "connectingToRinkeby": {
     "message": "Σύνδεση στο Δίκτυο Δοκιμών Rinkeby"
   },
-  "connectingToLocalhost": {
-    "message": "Σύνδεση στον Τοπικό Υπολογιστή 8545"
-  },
-  "connectingToGoerli": {
-    "message": "Σύνδεση στο Δίκτυο Δοκιμής Goerli "
-  },
-  "continueToWyre": {
-    "message": "Συνεχίστε στο Wyre"
+  "connectingToRopsten": {
+    "message": "Σύνδεση με το Δίκτυο Δοκιμών Ropsten"
   },
   "continueToCoinSwitch": {
     "message": "Συνέχεια με CoinSwitch"
   },
+  "continueToWyre": {
+    "message": "Συνεχίστε στο Wyre"
+  },
   "contractDeployment": {
     "message": "Ανάπτυξη Συμβολαίου"
+  },
+  "contractInteraction": {
+    "message": "Αλληλεπίδραση Σύμβασης"
   },
   "copiedExclamation": {
     "message": "Έγινε αντιγραφή!"
   },
-  "copyAddress": {
-    "message": "Αντιγράψτε τη διεύθυνση στο πρόχειρο"
-  },
-  "copyTransactionId": {
-    "message": "Αντιγραφή Ταυτότητας Συναλλαγής"
-  },
   "copiedTransactionId": {
     "message": "Αντιγράφηκε το Αναγνωριστικό Συναλλαγής"
   },
-  "copyToClipboard": {
-    "message": "Αντιγραφή στο πρόχειρο"
+  "copyAddress": {
+    "message": "Αντιγράψτε τη διεύθυνση στο πρόχειρο"
   },
   "copyPrivateKey": {
     "message": "Αυτό είναι το ιδιωτικό σας κλειδί (κάντε κλικ για αντιγραφή)"
   },
+  "copyToClipboard": {
+    "message": "Αντιγραφή στο πρόχειρο"
+  },
+  "copyTransactionId": {
+    "message": "Αντιγραφή Ταυτότητας Συναλλαγής"
+  },
   "create": {
     "message": "Δημιουργία"
   },
-  "createAccount": {
-    "message": "Δημιουργία Λογαριασμού"
-  },
   "createAWallet": {
     "message": "Δημιουργήστε ένα Πορτοφόλι"
+  },
+  "createAccount": {
+    "message": "Δημιουργία Λογαριασμού"
   },
   "createPassword": {
     "message": "Δημιουργία Κωδικού Πρόσβασης"
@@ -296,17 +278,17 @@
   "customGasSubTitle": {
     "message": "Η αύξηση των τελών μπορεί να μειώσει τους χρόνους επεξεργασίας, αλλά αυτό δεν είναι εγγυημένο."
   },
-  "customToken": {
-    "message": "Προσαρμοσμένο Token"
-  },
   "customRPC": {
     "message": "Προσαρμοσμένο RPC"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Τα δεκαδικά πρέπει να είναι τουλάχιστον 0 και όχι πάνω από 36."
+  "customToken": {
+    "message": "Προσαρμοσμένο Token"
   },
   "decimal": {
     "message": "Δεκαδικά Ψηφία Ακριβείας"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Τα δεκαδικά πρέπει να είναι τουλάχιστον 0 και όχι πάνω από 36."
   },
   "defaultNetwork": {
     "message": "Το προεπιλεγμένο δίκτυο για συναλλαγές Ether είναι το Main Net."
@@ -316,6 +298,12 @@
   },
   "deleteAccount": {
     "message": "Διαγραφή Λογαριασμού"
+  },
+  "deleteNetwork": {
+    "message": "Διαγραφή Δικτύου;"
+  },
+  "deleteNetworkDescription": {
+    "message": "Θέλετε σίγουρα να διαγράψετε αυτό το δίκτυο;"
   },
   "deposit": {
     "message": "Κατάθεση"
@@ -335,6 +323,9 @@
   "done": {
     "message": "Τέλος"
   },
+  "dontHaveAHardwareWallet": {
+    "message": "Δεν έχετε πορτοφόλι υλικού;"
+  },
   "downloadGoogleChrome": {
     "message": "Κατεβάστε το Google Chrome"
   },
@@ -343,9 +334,6 @@
   },
   "downloadStateLogs": {
     "message": "Λήψη Αρχείων Καταγραφής Κατάστασης"
-  },
-  "dontHaveAHardwareWallet": {
-    "message": "Δεν έχετε πορτοφόλι υλικού;"
   },
   "dropped": {
     "message": "Απορρίφθηκε"
@@ -358,6 +346,9 @@
   },
   "endOfFlowMessage1": {
     "message": "Περάσατε τη δοκιμή - κρατήστε τη φράση φύτρου σας ασφαλή, είναι δική σας ευθύνη!"
+  },
+  "endOfFlowMessage10": {
+    "message": "Όλα Έτοιμα"
   },
   "endOfFlowMessage2": {
     "message": "Συμβουλές για την ασφαλή αποθήκευσή του"
@@ -383,14 +374,11 @@
   "endOfFlowMessage9": {
     "message": "Μάθετε περισσότερα."
   },
-  "endOfFlowMessage10": {
-    "message": "Όλα Έτοιμα"
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "Το όνομα ENS δεν βρέθηκε στο τρέχον δίκτυο. Δοκιμάστε να μεταβείτε στο Κύριο Δίκτυο Ethereum."
   },
   "ensRegistrationError": {
     "message": "Σφάλμα στην καταχώριση ονόματος ENS"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Το όνομα ENS δεν βρέθηκε στο τρέχον δίκτυο. Δοκιμάστε να μεταβείτε στο Κύριο Δίκτυο Ethereum."
   },
   "enterAnAlias": {
     "message": "Δώστε ένα ψευδώνυμο"
@@ -401,14 +389,14 @@
   "enterPasswordContinue": {
     "message": "Πληκτρολογήστε τον κωδικό πρόσβασης για να συνεχίσετε"
   },
+  "estimatedProcessingTimes": {
+    "message": "Εκτιμώμενοι Χρόνοι Επεξεργασίας"
+  },
   "ethereumPublicAddress": {
     "message": "Δημόσια Διεύθυνση Ethereum"
   },
   "etherscanView": {
     "message": "Προβολή λογαριασμού στο Etherscan"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Εκτιμώμενοι Χρόνοι Επεξεργασίας"
   },
   "expandView": {
     "message": "Ανάπτυξη Προβολής"
@@ -445,14 +433,11 @@
   "gasLimit": {
     "message": "Όριο Καυσίμου"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "Το όριο αερίου είναι το μέγιστο ποσό μονάδων αερίου τι οποίες είστε διατεθειμένοι να δαπανήσετε."
   },
   "gasLimitTooLow": {
     "message": "Το όριο αερίου πρέπει να είναι τουλάχιστον 21000"
-  },
-  "gasUsed": {
-    "message": "Καύσιμο που Χρησιμοποιήθηκε"
   },
   "gasPrice": {
     "message": "Τιμή Αερίου (GWEI)"
@@ -460,11 +445,11 @@
   "gasPriceExtremelyLow": {
     "message": "Τιμή Καυσίμου Εξαιρετικά Χαμηλή"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "Η τιμή καυσίμου καθορίζει το ποσό των Ether που είστε διατεθειμένοι να πληρώσετε για κάθε μονάδα καυσίμου."
   },
-  "gasPriceNoDenom": {
-    "message": "Τιμή Gas"
+  "gasUsed": {
+    "message": "Καύσιμο που Χρησιμοποιήθηκε"
   },
   "general": {
     "message": "Γενικά"
@@ -484,6 +469,9 @@
   },
   "getStarted": {
     "message": "Έναρξη"
+  },
+  "goerli": {
+    "message": "Δοκιμαστικό Δίκτυο Goerli"
   },
   "happyToSeeYou": {
     "message": "Χαιρόμαστε που σας βλέπουμε."
@@ -532,6 +520,9 @@
   "importAccountSeedPhrase": {
     "message": "Εισαγωγή λογαριασμού με Φράση Φύτρου"
   },
+  "importUsingSeed": {
+    "message": "Εισαγωγή με χρήση φάσης σπόρου λογαριασμού"
+  },
   "importWallet": {
     "message": "Εισαγωγή Πορτοφολιού"
   },
@@ -541,9 +532,6 @@
   "imported": {
     "message": "Έγινε εισαγωγή",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "importUsingSeed": {
-    "message": "Εισαγωγή με χρήση φάσης σπόρου λογαριασμού"
   },
   "infoHelp": {
     "message": "Πληροφορίες & Βοήθεια"
@@ -566,20 +554,14 @@
   "invalidAddressRecipient": {
     "message": "Η διεύθυνση παραλήπτη δεν είναι έγκυρη"
   },
-  "knownAddressRecipient": {
-    "message": "Γνωστή διεύθυνση συμβολαίου."
-  },
   "invalidAddressRecipientNotEthNetwork": {
     "message": "Δίκτυο μη ETH, ρυθμίστε σε μικρούς χαρακτήρες"
   },
-  "invalidInput": {
-    "message": "Μη έγκυρη είσοδος."
+  "invalidBlockExplorerURL": {
+    "message": "Μη έγκυρο Block Explorer URL"
   },
   "invalidRPC": {
     "message": "Μη έγκυρο RPC URL"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Μη έγκυρο Block Explorer URL"
   },
   "invalidSeedPhrase": {
     "message": "Μη έγκυρη φράση φύτρου"
@@ -588,11 +570,11 @@
     "message": "Αρχείο JSON",
     "description": "format for importing an account"
   },
+  "knownAddressRecipient": {
+    "message": "Γνωστή διεύθυνση συμβολαίου."
+  },
   "kovan": {
     "message": "Δίκτυο Δοκιμής Kovan"
-  },
-  "max": {
-    "message": "Μέγ."
   },
   "learnMore": {
     "message": "Μάθε περισσότερα"
@@ -612,14 +594,14 @@
   "liveGasPricePredictions": {
     "message": "Ζωντανές Προβλέψεις Τιμής Καυσίμου"
   },
+  "loadMore": {
+    "message": "Φόρτωση Περισσότερων"
+  },
   "loading": {
     "message": "Φόρτωση..."
   },
   "loadingTokens": {
     "message": "Φόρτωση Tokens..."
-  },
-  "loadMore": {
-    "message": "Φόρτωση Περισσότερων"
   },
   "localhost": {
     "message": "Τοπικός Υπολογιστής  8545"
@@ -630,11 +612,14 @@
   "mainnet": {
     "message": "Κύριο Δίκτυο Ethereum"
   },
-  "memorizePhrase": {
-    "message": "Απομνημονεύστε αυτή τη φράση."
+  "max": {
+    "message": "Μέγ."
   },
   "memo": {
     "message": "σημείωμα"
+  },
+  "memorizePhrase": {
+    "message": "Απομνημονεύστε αυτή τη φράση."
   },
   "message": {
     "message": "Μήνυμα"
@@ -648,6 +633,9 @@
   "mobileSyncText": {
     "message": "Παρακαλούμε δώστε τον κωδικό πρόσβασής σας για να επιβεβαιώσετε ότι είστε εσείς!"
   },
+  "mustSelectOne": {
+    "message": "Πρέπει να επιλέξετε 1 τουλάχιστον διακριτικό."
+  },
   "myAccounts": {
     "message": "Οι Λογαριασμοί μου"
   },
@@ -656,9 +644,6 @@
   },
   "myWalletAccountsDescription": {
     "message": "Όλοι οι λογαριασμοί σας που έχετε δημιουργήσει στο MetaMask θα προστεθούν αυτόματα σε αυτήν την ενότητα."
-  },
-  "mustSelectOne": {
-    "message": "Πρέπει να επιλέξετε 1 τουλάχιστον διακριτικό."
   },
   "needEtherInWallet": {
     "message": "Για να αλληλεπιδράσετε με αποκεντρωμένες εφαρμογές χρησιμοποιώντας το MetaMask, θα χρειαστείτε Ether στο πορτοφόλι σας."
@@ -673,11 +658,11 @@
   "networkName": {
     "message": "Ονομασία Δικτύου"
   },
-  "networks": {
-    "message": "Δίκτυα"
-  },
   "networkSettingsDescription": {
     "message": "Προσθήκη και επεξεργασία προσαρμοσμένων δικτύων RPC"
+  },
+  "networks": {
+    "message": "Δίκτυα"
   },
   "nevermind": {
     "message": "Δεν πειράζει"
@@ -698,35 +683,14 @@
   "newContract": {
     "message": "Νέα Σύμβαση"
   },
-  "newPassword": {
-    "message": "Νέος Κωδικός Πρόσβασης (ελάχιστο 8 χαρακτήρες)"
-  },
   "newNetwork": {
     "message": "Νέο Δίκτυο"
   },
+  "newPassword": {
+    "message": "Νέος Κωδικός Πρόσβασης (ελάχιστο 8 χαρακτήρες)"
+  },
   "newToMetaMask": {
     "message": "Καινούριος στο MetaMask;"
-  },
-  "noAlreadyHaveSeed": {
-    "message": "Όχι, έχω ήδη μια φράση φύτρου"
-  },
-  "protectYourKeys": {
-    "message": "Προστατεύστε τα Κλειδιά Σας!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Να προσέχετε με τη φάση σπόρου. Υπάρχουν αναφορές για ιστότοπους που προσπαθούν να προσποιηθούν ότι είναι το MetaTask. Το MetaTask δεν θα σας ρωτήσει ποτέ για τη φάση σπόρου!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Κρατήστε τη φράση σας ασφαλή. Αν δείτε κάτι ύποπτο ή δεν είστε βέβαιοι για έναν ιστότοπο, στείλτε ένα email στο support@metamask.io"
-  },
-  "rpcUrl": {
-    "message": "Νέο RPC URL"
-  },
-  "optionalChainId": {
-    "message": "Ταυτότητα Αλυσίδας (προαιρετικό)"
-  },
-  "optionalSymbol": {
-    "message": "Σύμβολο (προαιρετικό)"
   },
   "newTotal": {
     "message": "Νέο Σύνολο"
@@ -740,23 +704,41 @@
   "noAddressForName": {
     "message": "Δεν έχει ορισθεί καμιά διεύθυνση γ' αυτό το όνομα."
   },
+  "noAlreadyHaveSeed": {
+    "message": "Όχι, έχω ήδη μια φράση φύτρου"
+  },
   "noConversionRateAvailable": {
     "message": "Δεν Υπάρχει Διαθέσιμη Ισοτιμία Μετατροπής"
   },
   "noTransactions": {
     "message": "Δεν έχετε καμιά συναλλαγή"
   },
-  "notEnoughGas": {
-    "message": "Δεν Υπάρχει Αρκετό Αέριο"
+  "noWebcamFound": {
+    "message": "Η κάμερα του υπολογιστή σας δεν βρέθηκε. Παρακαλούμε προσπαθήστε ξανά."
   },
   "noWebcamFoundTitle": {
     "message": "Η διαδικτυακή κάμερα δεν βρέθηκε"
   },
-  "noWebcamFound": {
-    "message": "Η κάμερα του υπολογιστή σας δεν βρέθηκε. Παρακαλούμε προσπαθήστε ξανά."
+  "notEnoughGas": {
+    "message": "Δεν Υπάρχει Αρκετό Αέριο"
   },
   "ofTextNofM": {
     "message": "από"
+  },
+  "off": {
+    "message": "Ανενεργό"
+  },
+  "ok": {
+    "message": "Εντάξει"
+  },
+  "on": {
+    "message": "Ενεργό"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Διεύθυνση URL Εξερευνητή Μπλοκ (προαιρετικό)"
+  },
+  "optionalSymbol": {
+    "message": "Σύμβολο (προαιρετικό)"
   },
   "orderOneHere": {
     "message": "Παραγγείλετε ένα Trezor ή Ledger και κρατήστε τα χρήματά σας σε παγωμένη αποθήκευση"
@@ -776,11 +758,11 @@
   "password": {
     "message": "Κωδικός πρόσβασης"
   },
-  "passwordsDontMatch": {
-    "message": "Οι κωδικοί πρόσβασης δεν ταιριάζουν"
-  },
   "passwordNotLongEnough": {
     "message": "Ο Κωδικός Πρόσβασης δεν είναι αρκετά μεγάλος"
+  },
+  "passwordsDontMatch": {
+    "message": "Οι κωδικοί πρόσβασης δεν ταιριάζουν"
   },
   "pastePrivateKey": {
     "message": "Επικολλήστε τη συμβολοσειρά ιδιωτικού κλειδιού εδώ:",
@@ -814,11 +796,23 @@
   "privateNetwork": {
     "message": "Ιδιωτικό Δίκτυο"
   },
+  "protectYourKeys": {
+    "message": "Προστατεύστε τα Κλειδιά Σας!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Να προσέχετε με τη φάση σπόρου. Υπάρχουν αναφορές για ιστότοπους που προσπαθούν να προσποιηθούν ότι είναι το MetaTask. Το MetaTask δεν θα σας ρωτήσει ποτέ για τη φάση σπόρου!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Κρατήστε τη φράση σας ασφαλή. Αν δείτε κάτι ύποπτο ή δεν είστε βέβαιοι για έναν ιστότοπο, στείλτε ένα email στο support@metamask.io"
+  },
   "queue": {
     "message": "Ουρά"
   },
   "readdToken": {
     "message": "Μπορείτε να προσθέσετε ξανά αυτό το διακριτικό στο μέλλον μεταβαίνοντας στο \"Πρόσθεση διακριτικού\" στο μενού επιλογών των λογαριασμών σας."
+  },
+  "readyToConnect": {
+    "message": "Έτοιμοι να Συνδεθείτε;"
   },
   "recents": {
     "message": "Πρόσφατα"
@@ -829,65 +823,23 @@
   "recipientAddressPlaceholder": {
     "message": "Αναζήτηση, δημόσια διεύθυνση (0x) ή ENS"
   },
+  "reject": {
+    "message": "Απόρριψη"
+  },
   "rejectAll": {
     "message": "Απόρριψη Όλων"
-  },
-  "rejectTxsN": {
-    "message": "Απορρίψτε τις συναλλαγές του $1"
   },
   "rejectTxsDescription": {
     "message": "Πρόκειται να απορρίψετε μαζικά $1 συναλλαγές."
   },
+  "rejectTxsN": {
+    "message": "Απορρίψτε τις συναλλαγές του $1"
+  },
   "rejected": {
     "message": "Απορρίφθηκε"
   },
-  "reset": {
-    "message": "Επαναφορά"
-  },
-  "resetAccount": {
-    "message": "Επαναφορά Λογαριασμού"
-  },
-  "resetAccountDescription": {
-    "message": "Με την επαναφορά του λογαριασμού σας εκκαθαρίζεται το ιστορικό των συναλλαγών σας."
-  },
-  "deleteNetwork": {
-    "message": "Διαγραφή Δικτύου;"
-  },
-  "deleteNetworkDescription": {
-    "message": "Θέλετε σίγουρα να διαγράψετε αυτό το δίκτυο;"
-  },
   "remindMeLater": {
     "message": "Θυμίστε μου αργότερα"
-  },
-  "restoreFromSeed": {
-    "message": "Επαναφορά λογαριασμού;"
-  },
-  "restoreAccountWithSeed": {
-    "message": "Επαναφέρετε τον Λογαριασμό σας με Φράση Επαναφοράς"
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "αιτήματα τα οποία αναμένουν να αναγνωριστούν"
-  },
-  "required": {
-    "message": "Απαιτείται"
-  },
-  "restore": {
-    "message": "Επαναφορά"
-  },
-  "revealSeedWords": {
-    "message": "Αποκάλυψη Λέξεων Φύτρου"
-  },
-  "revealSeedWordsTitle": {
-    "message": "Φράση Επαναφοράς "
-  },
-  "revealSeedWordsDescription": {
-    "message": "Εάν αλλάξετε ποτέ προγράμματα περιήγησης ή μετακινήσετε υπολογιστές, θα χρειαστείτε αυτήν τη φράση φύτρου για να αποκτήσετε πρόσβαση στους λογαριασμούς σας. Αποθηκεύστε την κάπου με ασφάλεια και μυστικότητα."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "ΜΗΝ ΜΟΙΡΑΣΤΕΙΤΕ αυτήν τη φράση με κανέναν!"
-  },
-  "revealSeedWordsWarning": {
-    "message": "Αυτές οι λέξεις μπορούν να χρησιμοποιηθούν για να κλαπούν όλοι οι λογαριασμοί σας."
   },
   "remove": {
     "message": "Κατάργηση"
@@ -898,8 +850,44 @@
   "removeAccountDescription": {
     "message": "Αυτός ο λογαριασμός θα καταργηθεί από το πορτοφόλι σας. Παρακαλούμε βεβαιωθείτε ότι έχετε την αρχική φράση επαναφοράς ή ιδιωτικό κλειδί για αυτόν τον εισαγόμενο λογαριασμό πριν συνεχίσετε. Μπορείτε να εισαγάγετε ή να δημιουργήσετε ξανά λογαριασμούς από το αναπτυσσόμενο μενού του λογαριασμού."
   },
-  "readyToConnect": {
-    "message": "Έτοιμοι να Συνδεθείτε;"
+  "requestsAwaitingAcknowledgement": {
+    "message": "αιτήματα τα οποία αναμένουν να αναγνωριστούν"
+  },
+  "required": {
+    "message": "Απαιτείται"
+  },
+  "reset": {
+    "message": "Επαναφορά"
+  },
+  "resetAccount": {
+    "message": "Επαναφορά Λογαριασμού"
+  },
+  "resetAccountDescription": {
+    "message": "Με την επαναφορά του λογαριασμού σας εκκαθαρίζεται το ιστορικό των συναλλαγών σας."
+  },
+  "restore": {
+    "message": "Επαναφορά"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Επαναφέρετε τον Λογαριασμό σας με Φράση Επαναφοράς"
+  },
+  "restoreFromSeed": {
+    "message": "Επαναφορά λογαριασμού;"
+  },
+  "revealSeedWords": {
+    "message": "Αποκάλυψη Λέξεων Φύτρου"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Εάν αλλάξετε ποτέ προγράμματα περιήγησης ή μετακινήσετε υπολογιστές, θα χρειαστείτε αυτήν τη φράση φύτρου για να αποκτήσετε πρόσβαση στους λογαριασμούς σας. Αποθηκεύστε την κάπου με ασφάλεια και μυστικότητα."
+  },
+  "revealSeedWordsTitle": {
+    "message": "Φράση Επαναφοράς "
+  },
+  "revealSeedWordsWarning": {
+    "message": "Αυτές οι λέξεις μπορούν να χρησιμοποιηθούν για να κλαπούν όλοι οι λογαριασμοί σας."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "ΜΗΝ ΜΟΙΡΑΣΤΕΙΤΕ αυτήν τη φράση με κανέναν!"
   },
   "rinkeby": {
     "message": "Δοκιμαστικό Δίκτυο Rinkeby"
@@ -907,17 +895,11 @@
   "ropsten": {
     "message": "Δίκτυο Δοκιμών Ropsten"
   },
-  "goerli": {
-    "message": "Δοκιμαστικό Δίκτυο Goerli"
+  "rpcUrl": {
+    "message": "Νέο RPC URL"
   },
   "save": {
     "message": "Αποθήκευση"
-  },
-  "slow": {
-    "message": "Αργά"
-  },
-  "slower": {
-    "message": "Πιο αργά"
   },
   "saveAsCsvFile": {
     "message": "Αποθηκεύστε ως Αρχείο CSV"
@@ -933,6 +915,9 @@
   },
   "searchResults": {
     "message": "Αποτελέσματα Αναζήτησης"
+  },
+  "searchTokens": {
+    "message": "Αναζήτηση Tokens"
   },
   "secretBackupPhrase": {
     "message": "Μυστική Φράση Αντιγράφου Ασφαλείας"
@@ -958,14 +943,29 @@
   "seedPhraseReq": {
     "message": "Οι φράσεις φύτρου έχουν μήκος 12 λέξεων"
   },
+  "selectAHigherGasFee": {
+    "message": "Επιλέξτε ένα μεγαλύτερο τέλος gas για να επιταχύνετε την επεξεργασία της συναλλαγής σας.*"
+  },
+  "selectAnAccount": {
+    "message": "Επιλέξτε Λογαριασμό"
+  },
+  "selectAnAccountHelp": {
+    "message": "Επιλέξτε τον λογαριασμό για προβολή στο MetaMask"
+  },
   "selectCurrency": {
     "message": "Επιλέξτε Νόμισμα"
   },
   "selectEachPhrase": {
     "message": "Παρακαλούμε επιλέξτε κάθε φράση, για να βεβαιωθείτε ότι είναι σωστή."
   },
+  "selectHdPath": {
+    "message": "Επιλέξτε Διαδρομή HD"
+  },
   "selectLocale": {
     "message": "Επιλέξτε Τοπικές Ρυθμίσεις"
+  },
+  "selectPathHelp": {
+    "message": "Εάν δεν βλέπετε τους υπάρχοντες λογαριασμούς σας Καθολικού παρακάτω, προσπαθήστε να αλλάξετε τις διαδρομές σε \"Legacy (MEW / MyCrypto)\""
   },
   "selectType": {
     "message": "Επιλέξτε Τύπο"
@@ -991,24 +991,6 @@
   "separateEachWord": {
     "message": "Διαχωρίστε κάθε λέξη με ένα μόνο κενό"
   },
-  "searchTokens": {
-    "message": "Αναζήτηση Tokens"
-  },
-  "selectAnAccount": {
-    "message": "Επιλέξτε Λογαριασμό"
-  },
-  "selectAnAccountHelp": {
-    "message": "Επιλέξτε τον λογαριασμό για προβολή στο MetaMask"
-  },
-  "selectAHigherGasFee": {
-    "message": "Επιλέξτε ένα μεγαλύτερο τέλος gas για να επιταχύνετε την επεξεργασία της συναλλαγής σας.*"
-  },
-  "selectHdPath": {
-    "message": "Επιλέξτε Διαδρομή HD"
-  },
-  "selectPathHelp": {
-    "message": "Εάν δεν βλέπετε τους υπάρχοντες λογαριασμούς σας Καθολικού παρακάτω, προσπαθήστε να αλλάξετε τις διαδρομές σε \"Legacy (MEW / MyCrypto)\""
-  },
   "settings": {
     "message": "Ρυθμίσεις"
   },
@@ -1024,17 +1006,23 @@
   "showFiatConversionInTestnetsDescription": {
     "message": "Επιλέξτε αυτό για εμφάνιση της μετατροπής παραστατικού χρήματος στο Testnets"
   },
-  "showPrivateKeys": {
-    "message": "Εμφάνιση Ιδιωτικών Κλειδιών"
-  },
   "showHexData": {
     "message": "Εμφάνιση Δεκαεξαδικών Δεδομένων"
   },
   "showHexDataDescription": {
     "message": "Επιλέξτε αυτό για να εμφανίσετε το πεδίο hex δεδομένων στην οθόνη αποστολής"
   },
+  "showPrivateKeys": {
+    "message": "Εμφάνιση Ιδιωτικών Κλειδιών"
+  },
+  "sigRequest": {
+    "message": "Αίτημα Υπογραφής"
+  },
   "sign": {
     "message": "Υπογραφή"
+  },
+  "signNotice": {
+    "message": "Η υπογραφή αυτού του μηνύματος μπορεί να έχει\nεπικίνδυνες παρενέργειες. Υπογράφετε μηνύματα μόνο από\nτοποθεσίες που εμπιστεύεστε πλήρως με ολόκληρο τον λογαριασμό σας.\n  Αυτή η επικίνδυνη μέθοδος θα καταργηθεί σε μια μελλοντική έκδοση."
   },
   "signatureRequest": {
     "message": "Αίτημα Υπογραφής"
@@ -1042,11 +1030,11 @@
   "signed": {
     "message": "Συνδεδεμένος"
   },
-  "signNotice": {
-    "message": "Η υπογραφή αυτού του μηνύματος μπορεί να έχει\nεπικίνδυνες παρενέργειες. Υπογράφετε μηνύματα μόνο από\nτοποθεσίες που εμπιστεύεστε πλήρως με ολόκληρο τον λογαριασμό σας.\n  Αυτή η επικίνδυνη μέθοδος θα καταργηθεί σε μια μελλοντική έκδοση."
+  "slow": {
+    "message": "Αργά"
   },
-  "sigRequest": {
-    "message": "Αίτημα Υπογραφής"
+  "slower": {
+    "message": "Πιο αργά"
   },
   "somethingWentWrong": {
     "message": "Ουπς! Κάτι πήγε στραβά."
@@ -1060,17 +1048,14 @@
   "speedUpTransaction": {
     "message": "Επιτάχυνση αυτής της συναλλαγής"
   },
-  "switchNetworks": {
-    "message": "Αλλαγή Δικτύων"
+  "stateLogError": {
+    "message": "Σφάλμα κατά την ανάκτηση αρχείων καταγραφής κατάστασης."
   },
   "stateLogs": {
     "message": "Αρχεία Καταγραφής Κατάστασης"
   },
   "stateLogsDescription": {
     "message": "Τα αρχεία καταγραφής κατάστασης περιέχουν τις διευθύνσεις του δημόσιου λογαριασμού σας και τις συναλλαγές οι οποίες έχουν αποσταλεί."
-  },
-  "stateLogError": {
-    "message": "Σφάλμα κατά την ανάκτηση αρχείων καταγραφής κατάστασης."
   },
   "step1HardwareWallet": {
     "message": "1. Συνδέστε το Πορτοφόλι Εξοπλισμού"
@@ -1099,6 +1084,9 @@
   "supportCenter": {
     "message": "Επισκεφθείτε το Κέντρο Υποστήριξής μας"
   },
+  "switchNetworks": {
+    "message": "Αλλαγή Δικτύων"
+  },
   "symbol": {
     "message": "Σύμβολο"
   },
@@ -1108,8 +1096,11 @@
   "syncWithMobile": {
     "message": "Συγχρονισμός με κινητό"
   },
-  "syncWithMobileTitle": {
-    "message": "Συγχρονισμός με κινητό"
+  "syncWithMobileBeCareful": {
+    "message": "Σιγουρευτείτε ότι κανένας δεν κοιτάζει στην οθόνη σας όταν κάνετε σάρωση αυτού του κωδικού"
+  },
+  "syncWithMobileComplete": {
+    "message": "Τα δεδομένα σας έχουν συγχρονιστεί με επιτυχία. Απολαύστε την εφαρμογή MetaMask για κινητά!"
   },
   "syncWithMobileDesc": {
     "message": "Μπορείτε να συγχρονίσετε τους λογαριασμούς και τις πληροφορίες σας με την κινητή συσκευή σας. Ανοίξτε την εφαρμογή MetaMask για κινητά, μεταβείτε στην ενότητα \"Ρυθμίσεις\" και πατήστε \"Συγχρονισμός από  Επέκταση Προγράμματος Περιήγησης\""
@@ -1120,11 +1111,8 @@
   "syncWithMobileScanThisCode": {
     "message": "Σαρώστε αυτόν τον κώδικα με την εφαρμογή MetaMask για κινητά"
   },
-  "syncWithMobileBeCareful": {
-    "message": "Σιγουρευτείτε ότι κανένας δεν κοιτάζει στην οθόνη σας όταν κάνετε σάρωση αυτού του κωδικού"
-  },
-  "syncWithMobileComplete": {
-    "message": "Τα δεδομένα σας έχουν συγχρονιστεί με επιτυχία. Απολαύστε την εφαρμογή MetaMask για κινητά!"
+  "syncWithMobileTitle": {
+    "message": "Συγχρονισμός με κινητό"
   },
   "terms": {
     "message": "Όροι Χρήσης"
@@ -1156,6 +1144,12 @@
   "transaction": {
     "message": "συναλλαγή"
   },
+  "transactionCancelAttempted": {
+    "message": "Έγινε προσπάθεια ακύρωσης συναλλαγής με τέλος gas του $1 σε $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Η συναλλαγή ακυρώθηκε με επιτυχία στα $2"
+  },
   "transactionConfirmed": {
     "message": "Η συναλλαγή επιβεβαιώθηκε στο $2."
   },
@@ -1165,35 +1159,29 @@
   "transactionDropped": {
     "message": "Η συναλλαγή υποχώρησε στα $2."
   },
-  "transactionSubmitted": {
-    "message": "Η συναλλαγή στάλθηκε με τέλος gas του $1 σε $2."
-  },
-  "transactionResubmitted": {
-    "message": "Η συναλλαγή υποβλήθηκε ξανά με το τέλος gas να  έχει αυξηθεί για $1 σε $2"
-  },
-  "transactionUpdated": {
-    "message": "Η συναλλαγή ενημερώθηκε σε $2."
-  },
-  "transactionErrored": {
-    "message": "Η συναλλαγή αντιμετώπισε ένα σφάλμα."
-  },
-  "transactionCancelAttempted": {
-    "message": "Έγινε προσπάθεια ακύρωσης συναλλαγής με τέλος gas του $1 σε $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Η συναλλαγή ακυρώθηκε με επιτυχία στα $2"
-  },
   "transactionError": {
     "message": "Σφάλμα συναλλαγής. Βρέθηκε εξαίρεση στον κωδικό της σύμβασης."
   },
   "transactionErrorNoContract": {
     "message": "Προσπάθεια κλήσης λειτουργίας σε διεύθυνση μη συμβολαίου."
   },
+  "transactionErrored": {
+    "message": "Η συναλλαγή αντιμετώπισε ένα σφάλμα."
+  },
   "transactionFee": {
     "message": "Χρέωση Συναλλαγής"
   },
+  "transactionResubmitted": {
+    "message": "Η συναλλαγή υποβλήθηκε ξανά με το τέλος gas να  έχει αυξηθεί για $1 σε $2"
+  },
+  "transactionSubmitted": {
+    "message": "Η συναλλαγή στάλθηκε με τέλος gas του $1 σε $2."
+  },
   "transactionTime": {
     "message": "Χρόνος Συναλλαγής"
+  },
+  "transactionUpdated": {
+    "message": "Η συναλλαγή ενημερώθηκε σε $2."
   },
   "transfer": {
     "message": "Μεταφορά"
@@ -1223,17 +1211,17 @@
   "unknown": {
     "message": "Άγνωστη"
   },
+  "unknownCameraError": {
+    "message": "Παρουσιάστηκε σφάλμα κατά την προσπάθεια πρόσβασης στην κάμερά σας. Παρακαλούμε προσπαθήστε πάλι..."
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Ουπς! Κάτι πήγε στραβά..."
+  },
   "unknownNetwork": {
     "message": "Άγνωστο Ιδιωτικό Δίκτυο"
   },
   "unknownQrCode": {
     "message": "Σφάλμα: Δεν μπορέσαμε να προσδιορίσουμε αυτόν τον κώδικα QR"
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ουπς! Κάτι πήγε στραβά..."
-  },
-  "unknownCameraError": {
-    "message": "Παρουσιάστηκε σφάλμα κατά την προσπάθεια πρόσβασης στην κάμερά σας. Παρακαλούμε προσπαθήστε πάλι..."
   },
   "unlock": {
     "message": "Ξεκλείδωμα"
@@ -1256,9 +1244,6 @@
   "viewAccount": {
     "message": "Προβολή λογαριασμού"
   },
-  "viewinExplorer": {
-    "message": "Προβολή στον Εξερευνητή"
-  },
   "viewContact": {
     "message": "Εμφάνιση Επαφής"
   },
@@ -1268,17 +1253,20 @@
   "viewOnEtherscan": {
     "message": "Προβολή στο Etherscan"
   },
+  "viewinExplorer": {
+    "message": "Προβολή στον Εξερευνητή"
+  },
   "visitWebSite": {
     "message": "Επισκεφθείτε τον ιστότοπό μας"
   },
   "walletSeed": {
     "message": "Σπόρος Πορτοφολιού"
   },
-  "welcomeBack": {
-    "message": "Καλώς Ήλθατε και Πάλι!"
-  },
   "welcome": {
     "message": "Καλώς ήλθατε στο MetaMask"
+  },
+  "welcomeBack": {
+    "message": "Καλώς Ήλθατε και Πάλι!"
   },
   "writePhrase": {
     "message": "Γράψτε αυτήν τη φάση σε ένα κομμάτι χαρτί και αποθηκεύστε την σε μια ασφαλή τοποθεσία. Εάν θέλετε ακόμη περισσότερη ασφάλεια, γράψτε την σε περισσότερα κομμάτια χαρτί και αποθηκεύστε καθένα από αυτά σε 2-3 διαφορετικές τοποθεσίες."
@@ -1289,14 +1277,14 @@
   "youNeedToAllowCameraAccess": {
     "message": "Πρέπει να επιτρέψετε πρόσβαση στην κάμερα για να χρησιμοποιήσετε αυτήν τη λειτουργία."
   },
-  "yourSigRequested": {
-    "message": "Ζητείται η υπογραφή σας"
-  },
   "youSign": {
     "message": "Υπογράφετε"
   },
   "yourPrivateSeedPhrase": {
     "message": "Η προσωπική σας φράση φύτρου"
+  },
+  "yourSigRequested": {
+    "message": "Ζητείται η υπογραφή σας"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Μηδενική τιμή καυσίμου κατά την επιτάχυνση"

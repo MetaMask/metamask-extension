@@ -1,5 +1,5 @@
 import { decimalToHex } from '../../helpers/utils/conversions.util'
-import { calcTokenValue } from '../../helpers/utils/token-util.js'
+import { calcTokenValue, getTokenAddressParam } from '../../helpers/utils/token-util'
 import { getTokenData } from '../../helpers/utils/transactions.util'
 
 export function getCustomTxParamsData (data, { customPermissionAmount, decimals }) {
@@ -10,7 +10,7 @@ export function getCustomTxParamsData (data, { customPermissionAmount, decimals 
   } else if (tokenData.name !== 'approve') {
     throw new Error(`Invalid data; should be 'approve' method, but instead is '${tokenData.name}'`)
   }
-  let spender = tokenData.params[0].value
+  let spender = getTokenAddressParam(tokenData)
   if (spender.startsWith('0x')) {
     spender = spender.substring(2)
   }

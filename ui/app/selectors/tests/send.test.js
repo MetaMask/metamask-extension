@@ -37,11 +37,11 @@ import {
 import mockState from './send-selectors-test-data'
 
 describe('send selectors', function () {
-  const tempGlobalEth = Object.assign({}, global.eth)
+  const tempGlobalEth = { ...global.eth }
   beforeEach(function () {
     global.eth = {
       contract: sinon.stub().returns({
-        at: (address) => 'mockAt:' + address,
+        at: (address) => `mockAt:${address}`,
       }),
     }
   })
@@ -217,9 +217,9 @@ describe('send selectors', function () {
     })
 
     it('should return null if send token is not set', function () {
-      const modifiedMetamaskState = Object.assign({}, mockState.metamask, { send: {} })
+      const modifiedMetamaskState = { ...mockState.metamask, send: {} }
       assert.equal(
-        getSendTokenContract(Object.assign({}, mockState, { metamask: modifiedMetamaskState })),
+        getSendTokenContract({ ...mockState, metamask: modifiedMetamaskState }),
         null,
       )
     })
@@ -280,11 +280,12 @@ describe('send selectors', function () {
 
     it('should get the selected account balance if the send.from does not exist', function () {
       const editedMockState = {
-        metamask: Object.assign({}, mockState.metamask, {
+        metamask: {
+          ...mockState.metamask,
           send: {
             from: null,
           },
-        }),
+        },
       }
       assert.equal(
         getSendFromBalance(editedMockState),
@@ -308,11 +309,12 @@ describe('send selectors', function () {
 
     it('should return the current account if send.from does not exist', function () {
       const editedMockState = {
-        metamask: Object.assign({}, mockState.metamask, {
+        metamask: {
+          ...mockState.metamask,
           send: {
             from: null,
           },
-        }),
+        },
       }
       assert.deepEqual(
         getSendFromObject(editedMockState),
@@ -380,7 +382,7 @@ describe('send selectors', function () {
           {
             address: '0x06195827297c7a80a443b6894d3bdb8824b43896',
             name: 'Address Book Account 1',
-            chainId: '3',
+            chainId: '0x3',
           },
         ],
       )
@@ -532,7 +534,8 @@ describe('send selectors', function () {
               editingTransactionId: true,
               token: {},
             }),
-          ), 'edit')
+          ), 'edit',
+        )
       })
 
       it('should return the correct key when getSendEditingTransactionId is falsy and getSendToken is truthy', function () {
@@ -543,7 +546,8 @@ describe('send selectors', function () {
               editingTransactionId: false,
               token: {},
             }),
-          ), 'sendTokens')
+          ), 'sendTokens',
+        )
       })
 
       it('should return the correct key when getSendEditingTransactionId is falsy and getSendToken is falsy', function () {
@@ -554,7 +558,8 @@ describe('send selectors', function () {
               editingTransactionId: false,
               token: null,
             }),
-          ), 'sendETH')
+          ), 'sendETH',
+        )
       })
     })
   })
@@ -571,7 +576,7 @@ describe('send selectors', function () {
       it('should return true if any of the values of the object returned by getSendErrors are truthy', function () {
         assert.equal(isSendFormInError(
           getSendMockState({
-            errors: [ true ],
+            errors: [true],
           }),
         ), true)
       })
@@ -584,7 +589,7 @@ describe('send selectors', function () {
         ), false)
         assert.equal(isSendFormInError(
           getSendMockState({
-            errors: [ false ],
+            errors: [false],
           }),
         ), false)
       })

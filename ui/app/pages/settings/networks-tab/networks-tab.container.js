@@ -1,4 +1,3 @@
-import NetworksTab from './networks-tab.component'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
@@ -10,6 +9,7 @@ import {
   editRpc,
   showModal,
 } from '../../../store/actions'
+import NetworksTab from './networks-tab.component'
 import { defaultNetworksData } from './networks-tab.constants'
 
 const defaultNetworks = defaultNetworksData.map((network) => ({ ...network, viewOnly: true }))
@@ -36,14 +36,14 @@ const mapStateToProps = (state) => {
     }
   })
 
-  const networksToRender = [ ...defaultNetworks, ...frequentRpcNetworkListDetails ]
+  const networksToRender = [...defaultNetworks, ...frequentRpcNetworkListDetails]
   let selectedNetwork = networksToRender.find((network) => network.rpcUrl === networksTabSelectedRpcUrl) || {}
   const networkIsSelected = Boolean(selectedNetwork.rpcUrl)
 
   let networkDefaultedToProvider = false
   if (!networkIsSelected && !networksTabIsInAddMode) {
     selectedNetwork = networksToRender.find((network) => {
-      return network.rpcUrl === provider.rpcTarget || (network.providerType !== 'rpc' && network.providerType === provider.type)
+      return network.rpcUrl === provider.rpcUrl || (network.providerType !== 'rpc' && network.providerType === provider.type)
     }) || {}
     networkDefaultedToProvider = true
   }
@@ -54,7 +54,7 @@ const mapStateToProps = (state) => {
     networkIsSelected,
     networksTabIsInAddMode,
     providerType: provider.type,
-    providerUrl: provider.rpcTarget,
+    providerUrl: provider.rpcUrl,
     networkDefaultedToProvider,
   }
 }
@@ -63,7 +63,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setSelectedSettingsRpcUrl: (newRpcUrl) => dispatch(setSelectedSettingsRpcUrl(newRpcUrl)),
     setRpcTarget: (newRpc, chainId, ticker, nickname, rpcPrefs) => {
-      dispatch(updateAndSetCustomRpc(newRpc, chainId, ticker, nickname, rpcPrefs))
+      return dispatch(updateAndSetCustomRpc(newRpc, chainId, ticker, nickname, rpcPrefs))
     },
     showConfirmDeleteNetworkModal: ({ target, onConfirm }) => {
       return dispatch(showModal({ name: 'CONFIRM_DELETE_NETWORK', target, onConfirm }))
@@ -71,7 +71,7 @@ const mapDispatchToProps = (dispatch) => {
     displayWarning: (warning) => dispatch(displayWarning(warning)),
     setNetworksTabAddMode: (isInAddMode) => dispatch(setNetworksTabAddMode(isInAddMode)),
     editRpc: (oldRpc, newRpc, chainId, ticker, nickname, rpcPrefs) => {
-      dispatch(editRpc(oldRpc, newRpc, chainId, ticker, nickname, rpcPrefs))
+      return dispatch(editRpc(oldRpc, newRpc, chainId, ticker, nickname, rpcPrefs))
     },
   }
 }

@@ -1,17 +1,4 @@
 {
-  "chartOnlyAvailableEth": {
-    "message": "ಎಥೆರಿಯಮ್ ನೆಟ್‌ವರ್ಕ್‌ಗಳಲ್ಲಿ ಮಾತ್ರವೇ ಚಾರ್ಟ್‌ಗಳು ಲಭ್ಯವಿರುತ್ತವೆ."
-  },
-  "contractInteraction": {
-    "message": "ಒಪ್ಪಂದದ ಸಂವಹನ"
-  },
-  "appName": {
-    "message": "MetaMask",
-    "description": "The name of the application"
-  },
-  "reject": {
-    "message": "ತಿರಸ್ಕರಿಸಿ"
-  },
   "about": {
     "message": "ಕುರಿತು"
   },
@@ -42,20 +29,20 @@
   "activityLog": {
     "message": "ಚಟುವಟಿಕೆ ಲಾಗ್"
   },
+  "addAcquiredTokens": {
+    "message": "MetaMask ಬಳಸಿಕೊಂಡು ನೀವು ಸ್ವಾಧೀನಪಡಿಸಿಕೊಂಡಿರುವ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
+  },
+  "addAlias": {
+    "message": "ಅಲಿಯಾಸ್ ಸೇರಿಸಿ"
+  },
   "addNetwork": {
     "message": "ನೆಟ್‌ವರ್ಕ್ ಸೇರಿಸಿ"
   },
   "addRecipient": {
     "message": "ಸ್ವೀಕೃತಿದಾರರನ್ನು ಸೇರಿಸಿ"
   },
-  "advanced": {
-    "message": "ಸುಧಾರಿತ"
-  },
-  "advancedSettingsDescription": {
-    "message": "ಡೆವಲಪರ್ ವೈಶಿಷ್ಟ್ಯಗಳನ್ನು ಪ್ರವೇಶಿಸಿ, ರಾಜ್ಯದ ಲಾಗ್‌ಗಳನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ, ಖಾತೆಯನ್ನು ಮರುಹೊಂದಿಸಿ, ಟೆಸ್ಟ್‌ನೆಟ್ಸ್‌ ಹೊಂದಿಸಿ ಮತ್ತು ಕಸ್ಟಮ್ RPC"
-  },
-  "advancedOptions": {
-    "message": "ಸುಧಾರಿತ ಆಯ್ಕೆಗಳು"
+  "addSuggestedTokens": {
+    "message": "ಸೂಚಿಸಲಾದ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
   },
   "addToAddressBook": {
     "message": "ವಿಳಾಸ ಪುಸ್ತಕಕ್ಕೆ ಸೇರಿಸಿ"
@@ -63,20 +50,20 @@
   "addToAddressBookModalPlaceholder": {
     "message": "ಉದಾ. ಜಾನ್ ಡಿ."
   },
-  "addAlias": {
-    "message": "ಅಲಿಯಾಸ್ ಸೇರಿಸಿ"
-  },
   "addToken": {
     "message": "ಟೋಕನ್ ಸೇರಿಸಿ"
   },
   "addTokens": {
     "message": "ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
   },
-  "addSuggestedTokens": {
-    "message": "ಸೂಚಿಸಲಾದ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
+  "advanced": {
+    "message": "ಸುಧಾರಿತ"
   },
-  "addAcquiredTokens": {
-    "message": "MetaMask ಬಳಸಿಕೊಂಡು ನೀವು ಸ್ವಾಧೀನಪಡಿಸಿಕೊಂಡಿರುವ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
+  "advancedOptions": {
+    "message": "ಸುಧಾರಿತ ಆಯ್ಕೆಗಳು"
+  },
+  "advancedSettingsDescription": {
+    "message": "ಡೆವಲಪರ್ ವೈಶಿಷ್ಟ್ಯಗಳನ್ನು ಪ್ರವೇಶಿಸಿ, ರಾಜ್ಯದ ಲಾಗ್‌ಗಳನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ, ಖಾತೆಯನ್ನು ಮರುಹೊಂದಿಸಿ, ಟೆಸ್ಟ್‌ನೆಟ್ಸ್‌ ಹೊಂದಿಸಿ ಮತ್ತು ಕಸ್ಟಮ್ RPC"
   },
   "amount": {
     "message": "ಮೊತ್ತ"
@@ -84,6 +71,10 @@
   "appDescription": {
     "message": "ನಿಮ್ಮ ಬ್ರೌಸರ್‌ನಲ್ಲಿರುವ ಎಥೆರಿಯಮ್ ವ್ಯಾಲೆಟ್",
     "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
   },
   "approve": {
     "message": "ಅನುಮೋದಿಸಿ"
@@ -94,14 +85,14 @@
   "asset": {
     "message": "ಆಸ್ತಿ"
   },
-  "attemptingConnect": {
-    "message": "ಬ್ಲಾಕ್‌ಚೈನ್‌ಗೆ ಸಂಪರ್ಕಿಸಲು ಪ್ರಯತ್ನಿಸಲಾಗುತ್ತಿದೆ."
-  },
   "attemptToCancel": {
     "message": "ರದ್ದುಗೊಳಿಸಲು ಪ್ರಯತ್ನಿಸುತ್ತಿರುವಿರಾ?"
   },
   "attemptToCancelDescription": {
     "message": "ಈ ಪ್ರಯತ್ನವನ್ನು ಸಲ್ಲಿಸುವುದರಿಂದ ನಿಮ್ಮ ಮೂಲ ವಹಿವಾಟು ರದ್ದುಗೊಳ್ಳುತ್ತದೆ ಎಂಬುದಾಗಿ ಖಾತ್ರಿಪಡಿಸಲಾಗುವುದಿಲ್ಲ. ರದ್ದು ಮಾಡುವ ಪ್ರಯತ್ನವು ಯಶಸ್ವಿಯಾದರೆ, ಮೇಲಿನ ವಹಿವಾಟು ಶುಲ್ಕವನ್ನು ನಿಮಗೆ ವಿಧಿಸಲಾಗುತ್ತದೆ."
+  },
+  "attemptingConnect": {
+    "message": "ಬ್ಲಾಕ್‌ಚೈನ್‌ಗೆ ಸಂಪರ್ಕಿಸಲು ಪ್ರಯತ್ನಿಸಲಾಗುತ್ತಿದೆ."
   },
   "attributions": {
     "message": "ಗುಣಲಕ್ಷಣಗಳು"
@@ -121,11 +112,11 @@
   "backToAll": {
     "message": "ಎಲ್ಲವನ್ನು ಹಿಂತಿರುಗಿಸಿ"
   },
-  "backupApprovalNotice": {
-    "message": "ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ ಮತ್ತು ನಿಧಿಗಳನ್ನು ಭದ್ರವಾಗಿರಿಸಲು ನಿಮ್ಮ ರಹಸ್ಯ ಮರುಪಡೆದುಕೊಳ್ಳುವಿಕೆಯ ಕೋಡ್ ಅನ್ನು ಬ್ಯಾಕಪ್ ಮಾಡಿ."
-  },
   "backupApprovalInfo": {
     "message": "ನಿಮ್ಮ ಸಾಧನವನ್ನು ನೀವು ಕಳೆದುಕೊಂಡಾಗ, ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಮರೆತರೆ, MetaMask ಅನ್ನು ಮರು-ಸ್ಥಾಪಿಸಲು ಅಥವಾ ಬೇರೊಂದು ಸಾಧನದಲ್ಲಿ ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ ಅನ್ನು ಪ್ರವೇಶಿಸಲು ಬಯಸಿದ ಸಂದರ್ಭದಲ್ಲಿ ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ ಅನ್ನು ಮರುಪಡೆದುಕೊಳ್ಳಲು ಈ ರಹಸ್ಯ ಕೋಡ್ ಅಗತ್ಯವಿರುತ್ತದೆ."
+  },
+  "backupApprovalNotice": {
+    "message": "ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ ಮತ್ತು ನಿಧಿಗಳನ್ನು ಭದ್ರವಾಗಿರಿಸಲು ನಿಮ್ಮ ರಹಸ್ಯ ಮರುಪಡೆದುಕೊಳ್ಳುವಿಕೆಯ ಕೋಡ್ ಅನ್ನು ಬ್ಯಾಕಪ್ ಮಾಡಿ."
   },
   "backupNow": {
     "message": "ಈಗ ಬ್ಯಾಕಪ್‌ ಮಾಡಿ"
@@ -155,32 +146,20 @@
   "builtInCalifornia": {
     "message": "MetaMask ಅನ್ನು ವಿನ್ಯಾಸಗೊಳಿಸಲಾಗಿದೆ ಮತ್ತು ಕ್ಯಾಲಿಫೋರ್ನಿಯಾದಲ್ಲಿ ನಿರ್ಮಿಸಲಾಗಿದೆ."
   },
-  "buyWithWyre": {
-    "message": "Wyre ನೊಂದಿಗೆ ETH ಖರೀದಿಸಿ"
-  },
-  "buyWithWyreDescription": {
-    "message": "ನಿಮ್ಮ MetaMask ಖಾತೆಗೆ ETH ಅನ್ನು ಜಮಾ ಮಾಡಲು ಕ್ರೆಡಿಟ್ ಕಾರ್ಡ್ ಬಳಸಲು Wyre ನಿಮಗೆ ಅನುಮತಿಸುತ್ತದೆ."
-  },
   "buyCoinSwitch": {
     "message": "ಕಾಯಿನ್‌ಸ್ವೀಚ್‌ನಲ್ಲಿ ಖರೀದಿಸಿ"
   },
   "buyCoinSwitchExplainer": {
     "message": "300 ಕ್ಕೂ ಹೆಚ್ಚು ಕ್ರಿಪ್ಟೋಕರೆನ್ಸಿಗಳನ್ನು ಉತ್ತಮ ದರದಲ್ಲಿ ವಿನಿಮಯ ಮಾಡಿಕೊಳ್ಳುವ ಒಂದು ತಾಣವೆಂದರೆ ಕಾಯಿನ್‌ಸ್ವಿಚ್ ಆಗಿದೆ."
   },
+  "buyWithWyre": {
+    "message": "Wyre ನೊಂದಿಗೆ ETH ಖರೀದಿಸಿ"
+  },
+  "buyWithWyreDescription": {
+    "message": "ನಿಮ್ಮ MetaMask ಖಾತೆಗೆ ETH ಅನ್ನು ಜಮಾ ಮಾಡಲು ಕ್ರೆಡಿಟ್ ಕಾರ್ಡ್ ಬಳಸಲು Wyre ನಿಮಗೆ ಅನುಮತಿಸುತ್ತದೆ."
+  },
   "bytes": {
     "message": "ಬೈಟ್‌ಗಳು"
-  },
-  "off": {
-    "message": "ಆಫ್"
-  },
-  "ok": {
-    "message": "ಸರಿ"
-  },
-  "on": {
-    "message": "ಆನ್‌"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "ಅನ್ವೇಷಕ URL ಅನ್ನು ನಿರ್ಬಂಧಿಸಿ (ಐಚ್ಛಿಕ)"
   },
   "cancel": {
     "message": "ರದ್ದುಮಾಡಿ"
@@ -197,20 +176,20 @@
   "chainId": {
     "message": "ಚೈನ್ ID"
   },
+  "chartOnlyAvailableEth": {
+    "message": "ಎಥೆರಿಯಮ್ ನೆಟ್‌ವರ್ಕ್‌ಗಳಲ್ಲಿ ಮಾತ್ರವೇ ಚಾರ್ಟ್‌ಗಳು ಲಭ್ಯವಿರುತ್ತವೆ."
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "ನಿಮ್ಮ ಹಾರ್ಡ್‌ವೇರ್ ವ್ಯಾಲೆಟ್‌ಗೆ ಸಂಪರ್ಕಪಡಿಸುವ ಸಲುವಾಗಿ Google Chrome ನಲ್ಲಿ ನಿಮಗೆ MetaMask ಅನ್ನು ಬಳಸುವ ಅಗತ್ಯವಿದೆ."
+  },
   "clickToRevealSeed": {
     "message": "ರಹಸ್ಯ ಪದಗಳನ್ನು ಬಹಿರಂಗಪಡಿಸಲು ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ"
   },
   "close": {
     "message": "ಮುಚ್ಚಿ"
   },
-  "chromeRequiredForHardwareWallets": {
-    "message": "ನಿಮ್ಮ ಹಾರ್ಡ್‌ವೇರ್ ವ್ಯಾಲೆಟ್‌ಗೆ ಸಂಪರ್ಕಪಡಿಸುವ ಸಲುವಾಗಿ Google Chrome ನಲ್ಲಿ ನಿಮಗೆ MetaMask ಅನ್ನು ಬಳಸುವ ಅಗತ್ಯವಿದೆ."
-  },
   "confirm": {
     "message": "ದೃಢೀಕರಿಸು"
-  },
-  "confirmed": {
-    "message": "ಖಚಿತಪಡಿಸಲಾಗಿದೆ"
   },
   "confirmPassword": {
     "message": "ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಖಚಿತಪಡಿಸಿ"
@@ -218,17 +197,23 @@
   "confirmSecretBackupPhrase": {
     "message": "ನಿಮ್ಮ ರಹಸ್ಯ ಬ್ಯಾಕಪ್ ಫ್ರೇಸ್ ಅನ್ನು ಖಚಿತಪಡಿಸಿ"
   },
+  "confirmed": {
+    "message": "ಖಚಿತಪಡಿಸಲಾಗಿದೆ"
+  },
   "congratulations": {
     "message": "ಅಭಿನಂದನೆಗಳು"
-  },
-  "connectHardwareWallet": {
-    "message": "ಹಾರ್ಡ್‌ವೆರ್ ವ್ಯಾಲೆಟ್‌‌ಗೆ ಸಂಪರ್ಕಪಡಿಸಿ"
   },
   "connect": {
     "message": "ಸಂಪರ್ಕಿಸು"
   },
+  "connectHardwareWallet": {
+    "message": "ಹಾರ್ಡ್‌ವೆರ್ ವ್ಯಾಲೆಟ್‌‌ಗೆ ಸಂಪರ್ಕಪಡಿಸಿ"
+  },
   "connectingTo": {
     "message": "$1 ಗೆ ಸಂಪರ್ಕಪಡಿಸಲಾಗುತ್ತಿದೆ"
+  },
+  "connectingToGoerli": {
+    "message": "Goerli ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
   },
   "connectingToKovan": {
     "message": "Kovan ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ "
@@ -236,53 +221,50 @@
   "connectingToMainnet": {
     "message": "ಮುಖ್ಯ ಎಥೆರಿಯಮ್ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
   },
-  "connectingToRopsten": {
-    "message": "Ropsten ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
-  },
   "connectingToRinkeby": {
     "message": "Rinkeby ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
   },
-  "connectingToLocalhost": {
-    "message": "ಲೋಕಲ್‌ಹೋಸ್ಟ್ 8545 ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
-  },
-  "connectingToGoerli": {
-    "message": "Goerli ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
-  },
-  "continueToWyre": {
-    "message": "Wyre ಗೆ ಮುಂದುವರಿಸಿ"
+  "connectingToRopsten": {
+    "message": "Ropsten ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
   },
   "continueToCoinSwitch": {
     "message": "CoinSwitch ಗೆ ಮುಂದುವರಿಸಿ"
   },
+  "continueToWyre": {
+    "message": "Wyre ಗೆ ಮುಂದುವರಿಸಿ"
+  },
   "contractDeployment": {
     "message": "ಒಪ್ಪಂದದ ನಿಯೋಜನೆ"
+  },
+  "contractInteraction": {
+    "message": "ಒಪ್ಪಂದದ ಸಂವಹನ"
   },
   "copiedExclamation": {
     "message": "ನಕಲಿಸಲಾಗಿದೆ!"
   },
-  "copyAddress": {
-    "message": "ವಿಳಾಸವನ್ನು ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ನಕಲಿಸಿ"
-  },
-  "copyTransactionId": {
-    "message": "ವ್ಯವಹಾರ ID ಅನ್ನು ನಕಲಿಸಿ"
-  },
   "copiedTransactionId": {
     "message": "ವ್ಯವಹಾರ ID ಅನ್ನು ನಕಲಿಸಲಾಗಿದೆ"
   },
-  "copyToClipboard": {
-    "message": "ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ನಕಲಿಸಿ"
+  "copyAddress": {
+    "message": "ವಿಳಾಸವನ್ನು ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ನಕಲಿಸಿ"
   },
   "copyPrivateKey": {
     "message": "ಇದು ನಿಮ್ಮ ಖಾಸಗಿ ಕೀ ಆಗಿದೆ (ನಕಲಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಿ)"
   },
+  "copyToClipboard": {
+    "message": "ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ನಕಲಿಸಿ"
+  },
+  "copyTransactionId": {
+    "message": "ವ್ಯವಹಾರ ID ಅನ್ನು ನಕಲಿಸಿ"
+  },
   "create": {
     "message": "ರಚಿಸಿ"
   },
-  "createAccount": {
-    "message": "ಖಾತೆಯನ್ನು ರಚಿಸಿ"
-  },
   "createAWallet": {
     "message": "ವ್ಯಾಲೆಟ್‌ ಅನ್ನು ರಚಿಸಿ"
+  },
+  "createAccount": {
+    "message": "ಖಾತೆಯನ್ನು ರಚಿಸಿ"
   },
   "createPassword": {
     "message": "ಪಾಸ್‌ವರ್ಡ್ ರಚಿಸಿ"
@@ -299,17 +281,17 @@
   "customGasSubTitle": {
     "message": "ಹೆಚ್ಚುತ್ತಿರುವ ಶುಲ್ಕವು ಪ್ರಕ್ರಿಯೆಗೊಳಿಸುವ ಸಮಯದಲ್ಲಿ ಕಡಿಮೆಯಾಗುತ್ತದೆ ಆದರೆ ಇದು ಖಚಿತವಾಗಿಲ್ಲ."
   },
-  "customToken": {
-    "message": "ಕಸ್ಟಮ್ ಟೋಕನ್"
-  },
   "customRPC": {
     "message": "ಕಸ್ಟಮ್ RPC"
   },
-  "decimalsMustZerotoTen": {
-    "message": "ದಶಮಾಂಶಗಳು ಕನಿಷ್ಟ 0 ಆಗಿರಬೇಕು ಮತ್ತು 36 ಕ್ಕಿಂತ ಹೆಚ್ಚಿರಬಾರದು"
+  "customToken": {
+    "message": "ಕಸ್ಟಮ್ ಟೋಕನ್"
   },
   "decimal": {
     "message": "ನಿಖರತೆಯ ದಶಮಾಂಶಗಳು"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "ದಶಮಾಂಶಗಳು ಕನಿಷ್ಟ 0 ಆಗಿರಬೇಕು ಮತ್ತು 36 ಕ್ಕಿಂತ ಹೆಚ್ಚಿರಬಾರದು"
   },
   "defaultNetwork": {
     "message": "ಎಥರ್ ವಹಿವಾಟುಗಳಿಗಾಗಿ ಡೀಫಾಲ್ಟ್ ನೆಟ್‌ವರ್ಕ್ ಪ್ರಮುಖವಾಗಿರುವ ನೆಟ್ ಆಗಿದೆ."
@@ -319,6 +301,12 @@
   },
   "deleteAccount": {
     "message": "ಖಾತೆಯನ್ನು ಅಳಿಸಿ"
+  },
+  "deleteNetwork": {
+    "message": "ನೆಟ್‌ವರ್ಕ್ ಅಳಿಸುವುದೇ?"
+  },
+  "deleteNetworkDescription": {
+    "message": "ನೀವು ಈ ನೆಟ್‌ವರ್ಕ್ ಅನ್ನು ಖಚಿತವಾಗಿ ಅಳಿಸಲು ಬಯಸುತ್ತೀರಾ?"
   },
   "deposit": {
     "message": "ಠೇವಣಿ"
@@ -338,6 +326,9 @@
   "done": {
     "message": "ಮುಗಿದಿದೆ"
   },
+  "dontHaveAHardwareWallet": {
+    "message": "ಹಾರ್ಡ್‌ವೇರ್ ವ್ಯಾಲೆಟ್‌ ಅನ್ನು ಹೊಂದಿಲ್ಲವೇ?"
+  },
   "downloadGoogleChrome": {
     "message": "Google Chrome ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ"
   },
@@ -346,9 +337,6 @@
   },
   "downloadStateLogs": {
     "message": "ರಾಜ್ಯದ ಲಾಗ್‌ಗಳನ್ನು  ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ"
-  },
-  "dontHaveAHardwareWallet": {
-    "message": "ಹಾರ್ಡ್‌ವೇರ್ ವ್ಯಾಲೆಟ್‌ ಅನ್ನು ಹೊಂದಿಲ್ಲವೇ?"
   },
   "dropped": {
     "message": "ಕೈಬಿಡಲಾಗಿದೆ"
@@ -361,6 +349,9 @@
   },
   "endOfFlowMessage1": {
     "message": "ನೀವು ಪರೀಕ್ಷೆಯನ್ನು ಪಾಸ್ ಮಾಡಿರುವಿರಿ - ನಿಮ್ಮ ಸೀಡ್‌ಫ್ರೇಸ್ ಸುರಕ್ಷಿತವಾಗಿರಿಸಿ, ಅದು ನಿಮ್ಮ ಜವಾಬ್ದಾರಿಯಾಗಿದೆ!"
+  },
+  "endOfFlowMessage10": {
+    "message": "ಎಲ್ಲಾ ಮುಗಿದಿದೆ"
   },
   "endOfFlowMessage2": {
     "message": "ಅದನ್ನು ಸುರಕ್ಷಿತವಾಗಿ ಸಂಗ್ರಹಿಸುವ ಸಲಹೆಗಳು"
@@ -386,14 +377,11 @@
   "endOfFlowMessage9": {
     "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ."
   },
-  "endOfFlowMessage10": {
-    "message": "ಎಲ್ಲಾ ಮುಗಿದಿದೆ"
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ಪ್ರಸ್ತುತ ನೆಟ್‌ವರ್ಕ್‌ನಲ್ಲಿ ENS ಹೆಸರು ಕಂಡುಬಂದಿಲ್ಲ. ಮುಖ್ಯವಾಗಿರುವ ಎಥೆರಿಯಮ್ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಬದಲಾಯಿಸಲು ಪ್ರಯತ್ನಿಸಿ."
   },
   "ensRegistrationError": {
     "message": "ENS ಹೆಸರಿನ ನೋಂದಣಿಯಲ್ಲಿ ದೋಷ"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ಪ್ರಸ್ತುತ ನೆಟ್‌ವರ್ಕ್‌ನಲ್ಲಿ ENS ಹೆಸರು ಕಂಡುಬಂದಿಲ್ಲ. ಮುಖ್ಯವಾಗಿರುವ ಎಥೆರಿಯಮ್ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಬದಲಾಯಿಸಲು ಪ್ರಯತ್ನಿಸಿ."
   },
   "enterAnAlias": {
     "message": "ಆಲಿಯಾಸ್ ಅನ್ನು ನಮೂದಿಸಿ"
@@ -404,14 +392,14 @@
   "enterPasswordContinue": {
     "message": "ಮುಂದುವರೆಯಲು ಪಾಸ್‌ವರ್ಡ್ ನಮೂದಿಸಿ"
   },
+  "estimatedProcessingTimes": {
+    "message": "ಅಂದಾಜು ಪ್ರಕ್ರಿಯೆ ಸಮಯ"
+  },
   "ethereumPublicAddress": {
     "message": "ಎಥೆರಿಯಮ್ ಸಾರ್ವಜನಿಕ ವಿಳಾಸ"
   },
   "etherscanView": {
     "message": "ಎಥರ್‌ಸ್ಕ್ಯಾನ್‌ನಲ್ಲಿ ಖಾತೆಯನ್ನು ವೀಕ್ಷಿಸಿ"
-  },
-  "estimatedProcessingTimes": {
-    "message": "ಅಂದಾಜು ಪ್ರಕ್ರಿಯೆ ಸಮಯ"
   },
   "expandView": {
     "message": "ವಿಸ್ತರಿಸಿದ ವೀಕ್ಷಣೆ"
@@ -448,14 +436,11 @@
   "gasLimit": {
     "message": "ಗ್ಯಾಸ್ ಮಿತಿ"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "ಗ್ಯಾಸ್‌ ಮಿತಿ ಎಂದರೆ ನೀವು ಖರ್ಚು ಮಾಡಲು ಸಿದ್ಧವಿರುವ ಗ್ಯಾಸ್‌ನ ಗರಿಷ್ಠ ಪ್ರಮಾಣ."
   },
   "gasLimitTooLow": {
     "message": "ಗ್ಯಾಸ್ ಮಿತಿಯು ಕನಿಷ್ಟ 21000 ಆಗಿರಬೇಕು"
-  },
-  "gasUsed": {
-    "message": "ಗ್ಯಾಸ್ ಬಳಸಲಾಗಿದೆ"
   },
   "gasPrice": {
     "message": "ಗ್ಯಾಸ್ ದರ (GWEI)"
@@ -463,11 +448,11 @@
   "gasPriceExtremelyLow": {
     "message": "ಗ್ಯಾಸ್ ದರವು ಅತ್ಯಂತ ಕಡಿಮೆಯಿದೆ"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "ಗ್ಯಾಸ್ ದರವು ಪ್ರತಿ ಯೂನಿಟ್ ಗ್ಯಾಸ್‌ಗೆ ನೀವು ಪಾವತಿಸಲು ಸಿದ್ಧವಿರುವ ಎಥರ್‌ನ ಪ್ರಮಾಣವನ್ನು ಸೂಚಿಸುತ್ತದೆ."
   },
-  "gasPriceNoDenom": {
-    "message": "ಗ್ಯಾಸ್ ದರ"
+  "gasUsed": {
+    "message": "ಗ್ಯಾಸ್ ಬಳಸಲಾಗಿದೆ"
   },
   "general": {
     "message": "ಸಾಮಾನ್ಯ"
@@ -487,6 +472,9 @@
   },
   "getStarted": {
     "message": "ಪ್ರಾರಂಭಗೊಂಡಿದೆ"
+  },
+  "goerli": {
+    "message": "Goerli ಪರೀಕ್ಷೆ ನೆಟ್‌ವರ್ಕ್"
   },
   "happyToSeeYou": {
     "message": "ನಿಮ್ಮನ್ನು ನೋಡಿ ನಮಗೆ ಸಂತೋಷವಾಗಿದೆ."
@@ -535,6 +523,9 @@
   "importAccountSeedPhrase": {
     "message": "ಸೀಡ್‌ ಫ್ರೇಸ್‌ನೊಂದಿಗೆ ಖಾತೆಯನ್ನು ಆಮದು ಮಾಡಿ"
   },
+  "importUsingSeed": {
+    "message": "ಸೀಡ್‌ ಫ್ರೇಸ್‌ ಖಾತೆಯನ್ನು ಬಳಸಿಕೊಂಡು ಆಮದು ಮಾಡಿ"
+  },
   "importWallet": {
     "message": "ವ್ಯಾಲೆಟ್ ಅನ್ನು ಆಮದು ಮಾಡಿ"
   },
@@ -544,9 +535,6 @@
   "imported": {
     "message": "ಆಮದುಮಾಡಲಾಗಿದೆ",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "importUsingSeed": {
-    "message": "ಸೀಡ್‌ ಫ್ರೇಸ್‌ ಖಾತೆಯನ್ನು ಬಳಸಿಕೊಂಡು ಆಮದು ಮಾಡಿ"
   },
   "infoHelp": {
     "message": "ಮಾಹಿತಿ & ಸಹಾಯ"
@@ -569,20 +557,14 @@
   "invalidAddressRecipient": {
     "message": "ಸ್ವೀಕೃತಿದಾರರ ವಿಳಾಸವು ಅಮಾನ್ಯವಾಗಿದೆ"
   },
-  "knownAddressRecipient": {
-    "message": "ತಿಳಿದಿರುವ ಒಪ್ಪಂದದ ವಿಳಾಸ."
-  },
   "invalidAddressRecipientNotEthNetwork": {
     "message": "ETH ನೆಟ್‌ವರ್ಕ್‌ಗಳಿಲ್ಲ, ಸಣ್ಣಕ್ಷರಕ್ಕೆ ಹೊಂದಿಸಲಾಗಿದೆ"
   },
-  "invalidInput": {
-    "message": "ಅಮಾನ್ಯವಾದ ಇನ್‌ಪುಟ್."
+  "invalidBlockExplorerURL": {
+    "message": "ಅಮಾನ್ಯವಾದ Block Explorer URL"
   },
   "invalidRPC": {
     "message": "ಅಮಾನ್ಯವಾದ RPC URL"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "ಅಮಾನ್ಯವಾದ Block Explorer URL"
   },
   "invalidSeedPhrase": {
     "message": "ಅಮಾನ್ಯವಾದ ಸೀಡ್ ಫ್ರೇಸ್"
@@ -591,11 +573,11 @@
     "message": "JSON ಫೈಲ್",
     "description": "format for importing an account"
   },
+  "knownAddressRecipient": {
+    "message": "ತಿಳಿದಿರುವ ಒಪ್ಪಂದದ ವಿಳಾಸ."
+  },
   "kovan": {
     "message": "Kovan ಪರೀಕ್ಷೆ ನೆಟ್‌ವರ್ಕ್"
-  },
-  "max": {
-    "message": "ಗರಿಷ್ಟ"
   },
   "learnMore": {
     "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
@@ -615,14 +597,14 @@
   "liveGasPricePredictions": {
     "message": "ಲೈವ್ ಗ್ಯಾಸ್ ಬೆಲೆಯ ಭವಿಷ್ಯಗಳು"
   },
+  "loadMore": {
+    "message": "ಇನ್ನಷ್ಟು ಲೋಡ್ ಮಾಡಿ"
+  },
   "loading": {
     "message": "ಲೋಡ್ ಆಗುತ್ತಿದೆ..."
   },
   "loadingTokens": {
     "message": "ಟೋಕನ್‌ಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ..."
-  },
-  "loadMore": {
-    "message": "ಇನ್ನಷ್ಟು ಲೋಡ್ ಮಾಡಿ"
   },
   "localhost": {
     "message": "ಲೋಕಲ್‌ಹೋಸ್ಟ್ 8545"
@@ -633,11 +615,14 @@
   "mainnet": {
     "message": "ಪ್ರಮುಖ ಎಥೆರಿಯಮ್ ನೆಟ್‌ವರ್ಕ್"
   },
-  "memorizePhrase": {
-    "message": "ಈ ಫ್ರೇಸ್ ಅನ್ನು ನೆನಪಿಡಿ."
+  "max": {
+    "message": "ಗರಿಷ್ಟ"
   },
   "memo": {
     "message": "ಮೆಮೊ"
+  },
+  "memorizePhrase": {
+    "message": "ಈ ಫ್ರೇಸ್ ಅನ್ನು ನೆನಪಿಡಿ."
   },
   "message": {
     "message": "ಸಂದೇಶ"
@@ -651,6 +636,9 @@
   "mobileSyncText": {
     "message": "ಇದು ನೀವೇ ಎಂಬುದನ್ನು ಖಚಿತಪಡಿಸಲು ದಯವಿಟ್ಟು ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ನಮೂದಿಸಿ!"
   },
+  "mustSelectOne": {
+    "message": "ಕನಿಷ್ಟ 1 ಟೋಕನ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಬೇಕು."
+  },
   "myAccounts": {
     "message": "ನನ್ನ ಖಾತೆಗಳು"
   },
@@ -659,9 +647,6 @@
   },
   "myWalletAccountsDescription": {
     "message": "ನಿಮ್ಮ MetaMask ರಚಿಸಿದ ಎಲ್ಲಾ ಖಾತೆಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಈ ವಿಭಾಗಕ್ಕೆ ಸೇರಿಸಲಾಗುತ್ತದೆ."
-  },
-  "mustSelectOne": {
-    "message": "ಕನಿಷ್ಟ 1 ಟೋಕನ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಬೇಕು."
   },
   "needEtherInWallet": {
     "message": "MetaMask ಬಳಸಿಕೊಂಡು ವಿಕೇಂದ್ರೀಕೃತ ಖಾತೆಗಳೊಂದಿಗೆ ಸಂವಹನ ನಡೆಸಲು, ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ನಲ್ಲಿ ನಿಮಗೆ ಎಥರ್ ಅಗತ್ಯವಿದೆ."
@@ -676,11 +661,11 @@
   "networkName": {
     "message": "ನೆಟ್‌ವರ್ಕ್ ಹೆಸರು"
   },
-  "networks": {
-    "message": "ನೆಟ್‌ವರ್ಕ್‌ಗಳು"
-  },
   "networkSettingsDescription": {
     "message": "ಕಸ್ಟಮ್ RPC ನೆಟ್‌ವರ್ಕ್‌ಗಳನ್ನು ಸೇರಿಸಿ ಮತ್ತು ಸಂಪಾದಿಸಿ"
+  },
+  "networks": {
+    "message": "ನೆಟ್‌ವರ್ಕ್‌ಗಳು"
   },
   "nevermind": {
     "message": "ಪರವಾಗಿಲ್ಲ"
@@ -701,35 +686,14 @@
   "newContract": {
     "message": "ಹೊಸ ಒಪ್ಪಂದ"
   },
-  "newPassword": {
-    "message": "ಹೊಸ ಪಾಸ್‌ವರ್ಡ್ (ಕನಿಷ್ಟ 8 ಅಕ್ಷರಗಳು)"
-  },
   "newNetwork": {
     "message": "ಹೊಸ ನೆಟ್‌ವರ್ಕ್"
   },
+  "newPassword": {
+    "message": "ಹೊಸ ಪಾಸ್‌ವರ್ಡ್ (ಕನಿಷ್ಟ 8 ಅಕ್ಷರಗಳು)"
+  },
   "newToMetaMask": {
     "message": "MetaMask ಗೆ ಹೊಸಬರೇ?"
-  },
-  "noAlreadyHaveSeed": {
-    "message": "ಇಲ್ಲ, ನಾನು ಈಗಾಗಲೇ ಸೀಡ್ ಫ್ರೇಸ್ ಅನ್ನು ಹೊಂದಿದ್ದೇನೆ"
-  },
-  "protectYourKeys": {
-    "message": "ನಿಮ್ಮ ಕೀಗಳನ್ನು ರಕ್ಷಿಸಿ!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "ನಿಮ್ಮ ಸೀಡ್ ಫ್ರೇಸ್‌ನೊಂದಿಗೆ ಜಾಗರೂಕರಾಗಿರಿ — MetaMask ಅನ್ನು ಅನುಕರಿಸಲು ಪ್ರಯತ್ನಿಸುತ್ತಿರುವ ವೆಬ್‌ಸೈಟ್‌ಗಳ ವರದಿಗಳಿವೆ. MetaMask ನಿಮ್ಮ ಸೀಡ್ ಫ್ರೇಸ್ ಅನ್ನು ಎಂದಿಗೂ ಕೇಳುವುದಿಲ್ಲ!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "ನಿಮ್ಮ ಫ್ರೇಸ್ ಅನ್ನು ಸುರಕ್ಷಿತವಾಗಿರಿಸಿ. ಏನಾದರೂ ಅನುಮಾನಾಸ್ಪದವಾಗಿರುವುದನ್ನು ಅಥವಾ ವೆಬ್‌ಸೈಟ್ ಕುರಿತು ನಿಮಗೆ ಅನಿಶ್ಚಿತತೆಯಿದ್ದರೆ, support@metamask.io ಗೆ ಇಮೇಲ್ ಮಾಡಿ"
-  },
-  "rpcUrl": {
-    "message": "ಹೊಸ RPC URL"
-  },
-  "optionalChainId": {
-    "message": "ಚೈನ್‌ಐಡಿ (ಐಚ್ಛಿಕ)"
-  },
-  "optionalSymbol": {
-    "message": "ಚಿಹ್ನೆ (ಐಚ್ಛಿಕ)"
   },
   "newTotal": {
     "message": "ಹೊಸ ಮೊತ್ತ"
@@ -743,23 +707,41 @@
   "noAddressForName": {
     "message": "ಈ ಹೆಸರಿಗೆ ಯಾವುದೇ ವಿಳಾಸವನ್ನು ಹೊಂದಿಸಲಾಗಿಲ್ಲ."
   },
+  "noAlreadyHaveSeed": {
+    "message": "ಇಲ್ಲ, ನಾನು ಈಗಾಗಲೇ ಸೀಡ್ ಫ್ರೇಸ್ ಅನ್ನು ಹೊಂದಿದ್ದೇನೆ"
+  },
   "noConversionRateAvailable": {
     "message": "ಯಾವುದೇ ಪರಿವರ್ತನೆ ದರ ಲಭ್ಯವಿಲ್ಲ"
   },
   "noTransactions": {
     "message": "ನೀವು ಯಾವುದೇ ವಹಿವಾಟುಗಳನ್ನು ಹೊಂದಿಲ್ಲ"
   },
-  "notEnoughGas": {
-    "message": "ಸಾಕಷ್ಟು ಗ್ಯಾಸ್ ಇಲ್ಲ"
+  "noWebcamFound": {
+    "message": "ನಿಮ್ಮ ಕಂಪ್ಯೂಟರ್‌ನ ವೆಬ್‌ಕ್ಯಾಮ್ ಕಂಡುಬಂದಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
   },
   "noWebcamFoundTitle": {
     "message": "ವೆಬ್‌ಕ್ಯಾಮ್ ಕಂಡುಬಂದಿಲ್ಲ"
   },
-  "noWebcamFound": {
-    "message": "ನಿಮ್ಮ ಕಂಪ್ಯೂಟರ್‌ನ ವೆಬ್‌ಕ್ಯಾಮ್ ಕಂಡುಬಂದಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+  "notEnoughGas": {
+    "message": "ಸಾಕಷ್ಟು ಗ್ಯಾಸ್ ಇಲ್ಲ"
   },
   "ofTextNofM": {
     "message": "ರಲ್ಲಿ"
+  },
+  "off": {
+    "message": "ಆಫ್"
+  },
+  "ok": {
+    "message": "ಸರಿ"
+  },
+  "on": {
+    "message": "ಆನ್‌"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "ಅನ್ವೇಷಕ URL ಅನ್ನು ನಿರ್ಬಂಧಿಸಿ (ಐಚ್ಛಿಕ)"
+  },
+  "optionalSymbol": {
+    "message": "ಚಿಹ್ನೆ (ಐಚ್ಛಿಕ)"
   },
   "orderOneHere": {
     "message": "ಟ್ರೆಜರ್ ಅಥವಾ ಲೆಡ್ಜರ್ ಅನ್ನು ಆರ್ಡರ್ ಮಾಡಿ ಮತ್ತು ನಿಮ್ಮ ನಿಧಿಗಳನ್ನು ಕೋಲ್ಡ್ ಸ್ಟೋರೇಜ್‌ನಲ್ಲಿರಿಸಿ"
@@ -779,11 +761,11 @@
   "password": {
     "message": "ಪಾಸ್‌ವರ್ಡ್"
   },
-  "passwordsDontMatch": {
-    "message": "ಪಾಸ್‌ವರ್ಡ್‌ಗಳು ಹೊಂದಾಣಿಕೆಯಾಗುತ್ತಿಲ್ಲ"
-  },
   "passwordNotLongEnough": {
     "message": "ಪಾಸ್‌ವರ್ಡ್ ಸಾಕಷ್ಟು ದೀರ್ಘವಾಗಿಲ್ಲ"
+  },
+  "passwordsDontMatch": {
+    "message": "ಪಾಸ್‌ವರ್ಡ್‌ಗಳು ಹೊಂದಾಣಿಕೆಯಾಗುತ್ತಿಲ್ಲ"
   },
   "pastePrivateKey": {
     "message": "ನಿಮ್ಮ ಖಾಸಗಿ ಪ್ರಮುಖ ಸ್ಟ್ರಿಂಗ್ ಅನ್ನು ಇಲ್ಲಿ ನಕಲಿಸಿ:",
@@ -817,11 +799,23 @@
   "privateNetwork": {
     "message": "ಖಾಸಗಿ ನೆಟ್‌ವರ್ಕ್"
   },
+  "protectYourKeys": {
+    "message": "ನಿಮ್ಮ ಕೀಗಳನ್ನು ರಕ್ಷಿಸಿ!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "ನಿಮ್ಮ ಸೀಡ್ ಫ್ರೇಸ್‌ನೊಂದಿಗೆ ಜಾಗರೂಕರಾಗಿರಿ — MetaMask ಅನ್ನು ಅನುಕರಿಸಲು ಪ್ರಯತ್ನಿಸುತ್ತಿರುವ ವೆಬ್‌ಸೈಟ್‌ಗಳ ವರದಿಗಳಿವೆ. MetaMask ನಿಮ್ಮ ಸೀಡ್ ಫ್ರೇಸ್ ಅನ್ನು ಎಂದಿಗೂ ಕೇಳುವುದಿಲ್ಲ!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "ನಿಮ್ಮ ಫ್ರೇಸ್ ಅನ್ನು ಸುರಕ್ಷಿತವಾಗಿರಿಸಿ. ಏನಾದರೂ ಅನುಮಾನಾಸ್ಪದವಾಗಿರುವುದನ್ನು ಅಥವಾ ವೆಬ್‌ಸೈಟ್ ಕುರಿತು ನಿಮಗೆ ಅನಿಶ್ಚಿತತೆಯಿದ್ದರೆ, support@metamask.io ಗೆ ಇಮೇಲ್ ಮಾಡಿ"
+  },
   "queue": {
     "message": "ಸರತಿ"
   },
   "readdToken": {
     "message": "ನಿಮ್ಮ ಖಾತೆಗಳ ಆಯ್ಕೆಗಳ ಮೆನುವಿನಲ್ಲಿ \"ಟೋಕನ್ ಸೇರಿಸು\" ಗೆ ಹೋಗುವ ಮೂಲಕ ನೀವು ಈ ಟೋಕನ್ ಅನ್ನು ಭವಿಷ್ಯದಲ್ಲಿ ಮರಳಿ ಸೇರಿಸಬಹುದು."
+  },
+  "readyToConnect": {
+    "message": "ಸಂಪರ್ಕಿಸಲು ಸಿದ್ಧವೇ?"
   },
   "recents": {
     "message": "ಇತ್ತೀಚಿನವುಗಳು"
@@ -832,65 +826,23 @@
   "recipientAddressPlaceholder": {
     "message": "ಸಾರ್ವಜನಿಕ ವಿಳಾಸ (0x) ಅಥವಾ ENS ಹುಡುಕಿ"
   },
+  "reject": {
+    "message": "ತಿರಸ್ಕರಿಸಿ"
+  },
   "rejectAll": {
     "message": "ಎಲ್ಲವನ್ನೂ ತಿರಸ್ಕರಿಸಿ"
-  },
-  "rejectTxsN": {
-    "message": "$1 ವಹಿವಾಟುಗಳನ್ನು ತಿರಸ್ಕರಿಸಿ"
   },
   "rejectTxsDescription": {
     "message": "ನೀವು $1 ವಹಿವಾಟುಗಳನ್ನು ಬ್ಯಾಚ್ ತಿರಸ್ಕರಿಸಲಿರುವಿರಿ."
   },
+  "rejectTxsN": {
+    "message": "$1 ವಹಿವಾಟುಗಳನ್ನು ತಿರಸ್ಕರಿಸಿ"
+  },
   "rejected": {
     "message": "ತಿರಸ್ಕರಿಸಲಾಗಿದೆ"
   },
-  "reset": {
-    "message": "ಮರುಹೊಂದಿಸು"
-  },
-  "resetAccount": {
-    "message": "ಖಾತೆಯನ್ನು ಮರುಹೊಂದಿಸಿ"
-  },
-  "resetAccountDescription": {
-    "message": "ನಿಮ್ಮ ಖಾತೆಯ ಮರುಹೊಂದಿಸುವಿಕೆಯು ನಿಮ್ಮ ವಹಿವಾಟು ಇತಿಹಾಸವನ್ನು ತೆರವುಗೊಳಿಸುತ್ತದೆ."
-  },
-  "deleteNetwork": {
-    "message": "ನೆಟ್‌ವರ್ಕ್ ಅಳಿಸುವುದೇ?"
-  },
-  "deleteNetworkDescription": {
-    "message": "ನೀವು ಈ ನೆಟ್‌ವರ್ಕ್ ಅನ್ನು ಖಚಿತವಾಗಿ ಅಳಿಸಲು ಬಯಸುತ್ತೀರಾ?"
-  },
   "remindMeLater": {
     "message": "ನನಗೆ ನಂತರ ನೆನಪಿಸು"
-  },
-  "restoreFromSeed": {
-    "message": "ಖಾತೆಯನ್ನು ಮರುಸ್ಥಾಪಿಸುವುದೇ?"
-  },
-  "restoreAccountWithSeed": {
-    "message": "ಸೀಡ್ ಫ್ರೇಸ್‌ನೊಂದಿಗೆ ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಮರುಸ್ಥಾಪಿಸಿ"
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "ಅಂಗೀಕರಿಸಲು ನಿರೀಕ್ಷಿಸುತ್ತಿರುವ ವಿನಂತಿಗಳು"
-  },
-  "required": {
-    "message": "ಅಗತ್ಯವಿದೆ"
-  },
-  "restore": {
-    "message": "ಮರುಸ್ಥಾಪನೆ"
-  },
-  "revealSeedWords": {
-    "message": "ಸೀಡ್ ವರ್ಡ್ಸ್ ಬಹಿರಂಗಪಡಿಸಿ"
-  },
-  "revealSeedWordsTitle": {
-    "message": "ಸೀಡ್ ಫ್ರೇಸ್"
-  },
-  "revealSeedWordsDescription": {
-    "message": "ನೀವು ಬ್ರೌಸರ್‌ಗಳನ್ನು ಬದಲಾಯಿಸಿದರೆ ಅಥವಾ ಕಂಪ್ಯೂಟರ್‌ಗಳನ್ನು ಸರಿಸಿದರೆ, ನಿಮ್ಮ ಖಾತೆಗಳನ್ನು ಪ್ರವೇಶಿಸಲು ನಿಮಗೆ ಈ ಸೀಡ್ ಫ್ರೇಸ್‌ಗಳ ಅಗತ್ಯವಿರುತ್ತದೆ. ಅವುಗಳನ್ನು ಎಲ್ಲಿಯಾದರೂ ಸುರಕ್ಷಿತವಾಗಿ ಮತ್ತು ರಹಸ್ಯವಾಗಿ ಉಳಿಸಿ."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "ಈ ಫ್ರೇಸ್ ಅನ್ನು ಯಾರೊಂದಿಗೂ ಹಂಚಿಕೊಳ್ಳಬೇಡಿ!"
-  },
-  "revealSeedWordsWarning": {
-    "message": "ಈ ಪದಗಳನ್ನು ನಿಮ್ಮ ಎಲ್ಲಾ ಖಾತೆಗಳನ್ನು ಕದಿಯಲು ಬಳಸಬಹುದು."
   },
   "remove": {
     "message": "ತೆಗೆದುಹಾಕು"
@@ -901,8 +853,44 @@
   "removeAccountDescription": {
     "message": "ಈ ಖಾತೆಯನ್ನು ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ನಿಂದ ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ. ದಯವಿಟ್ಟು ಮುಂದುವರಿಯುವ ಮೊದಲು ಈ ಆಮದು ಖಾತೆಗಾಗಿ ನೀವು ಸೀಡ್ ಫ್ರೇಸ್ ಅಥವಾ ಖಾಸಗಿ ಕೀಯನ್ನು ಹೊಂದಿರುವಿರಾ ಎಂಬುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ. ಖಾತೆಯ ಡ್ರಾಪ್-ಡೌನ್‌ನಿಂದ ನೀವು ಮತ್ತೆ ಖಾತೆಗಳನ್ನು ಆಮದು ಮಾಡಿಕೊಳ್ಳಬಹುದು ಅಥವಾ ರಚಿಸಬಹುದು."
   },
-  "readyToConnect": {
-    "message": "ಸಂಪರ್ಕಿಸಲು ಸಿದ್ಧವೇ?"
+  "requestsAwaitingAcknowledgement": {
+    "message": "ಅಂಗೀಕರಿಸಲು ನಿರೀಕ್ಷಿಸುತ್ತಿರುವ ವಿನಂತಿಗಳು"
+  },
+  "required": {
+    "message": "ಅಗತ್ಯವಿದೆ"
+  },
+  "reset": {
+    "message": "ಮರುಹೊಂದಿಸು"
+  },
+  "resetAccount": {
+    "message": "ಖಾತೆಯನ್ನು ಮರುಹೊಂದಿಸಿ"
+  },
+  "resetAccountDescription": {
+    "message": "ನಿಮ್ಮ ಖಾತೆಯ ಮರುಹೊಂದಿಸುವಿಕೆಯು ನಿಮ್ಮ ವಹಿವಾಟು ಇತಿಹಾಸವನ್ನು ತೆರವುಗೊಳಿಸುತ್ತದೆ."
+  },
+  "restore": {
+    "message": "ಮರುಸ್ಥಾಪನೆ"
+  },
+  "restoreAccountWithSeed": {
+    "message": "ಸೀಡ್ ಫ್ರೇಸ್‌ನೊಂದಿಗೆ ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಮರುಸ್ಥಾಪಿಸಿ"
+  },
+  "restoreFromSeed": {
+    "message": "ಖಾತೆಯನ್ನು ಮರುಸ್ಥಾಪಿಸುವುದೇ?"
+  },
+  "revealSeedWords": {
+    "message": "ಸೀಡ್ ವರ್ಡ್ಸ್ ಬಹಿರಂಗಪಡಿಸಿ"
+  },
+  "revealSeedWordsDescription": {
+    "message": "ನೀವು ಬ್ರೌಸರ್‌ಗಳನ್ನು ಬದಲಾಯಿಸಿದರೆ ಅಥವಾ ಕಂಪ್ಯೂಟರ್‌ಗಳನ್ನು ಸರಿಸಿದರೆ, ನಿಮ್ಮ ಖಾತೆಗಳನ್ನು ಪ್ರವೇಶಿಸಲು ನಿಮಗೆ ಈ ಸೀಡ್ ಫ್ರೇಸ್‌ಗಳ ಅಗತ್ಯವಿರುತ್ತದೆ. ಅವುಗಳನ್ನು ಎಲ್ಲಿಯಾದರೂ ಸುರಕ್ಷಿತವಾಗಿ ಮತ್ತು ರಹಸ್ಯವಾಗಿ ಉಳಿಸಿ."
+  },
+  "revealSeedWordsTitle": {
+    "message": "ಸೀಡ್ ಫ್ರೇಸ್"
+  },
+  "revealSeedWordsWarning": {
+    "message": "ಈ ಪದಗಳನ್ನು ನಿಮ್ಮ ಎಲ್ಲಾ ಖಾತೆಗಳನ್ನು ಕದಿಯಲು ಬಳಸಬಹುದು."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "ಈ ಫ್ರೇಸ್ ಅನ್ನು ಯಾರೊಂದಿಗೂ ಹಂಚಿಕೊಳ್ಳಬೇಡಿ!"
   },
   "rinkeby": {
     "message": "Rinkeby ಪರೀಕ್ಷೆ ನೆಟ್‌ವರ್ಕ್"
@@ -910,17 +898,11 @@
   "ropsten": {
     "message": "Ropsten ಪರೀಕ್ಷೆ ನೆಟ್‌ವರ್ಕ್"
   },
-  "goerli": {
-    "message": "Goerli ಪರೀಕ್ಷೆ ನೆಟ್‌ವರ್ಕ್"
+  "rpcUrl": {
+    "message": "ಹೊಸ RPC URL"
   },
   "save": {
     "message": "ಉಳಿಸು"
-  },
-  "slow": {
-    "message": "ನಿಧಾನ"
-  },
-  "slower": {
-    "message": "ನಿಧಾನ"
   },
   "saveAsCsvFile": {
     "message": "CSV ಫೈಲ್ ರೂಪದಲ್ಲಿ ಉಳಿಸಿ"
@@ -936,6 +918,9 @@
   },
   "searchResults": {
     "message": "ಹುಡುಕಾಟ ಫಲಿತಾಂಶಗಳು"
+  },
+  "searchTokens": {
+    "message": "ಟೋಕನ್‌ಗಳನ್ನು ಹುಡುಕಿ"
   },
   "secretBackupPhrase": {
     "message": "ರಹಸ್ಯ ಬ್ಯಾಕಪ್ ಫ್ರೇಸ್"
@@ -961,14 +946,29 @@
   "seedPhraseReq": {
     "message": "ಸೀಡ್ ಫ್ರೇಸ್‌ಗಳು 12 ಪದಗಳಷ್ಟು ದೀರ್ಘವಾಗಿವೆ"
   },
+  "selectAHigherGasFee": {
+    "message": "ನಿಮ್ಮ ವಹಿವಾಟಿನ ಪ್ರಕ್ರಿಯೆಯನ್ನು ಸುಧಾರಿಸಲು ಅಧಿಕ ಗ್ಯಾಸ್ ಶುಲ್ಕವನ್ನು ಆಯ್ಕೆಮಾಡಿ.*"
+  },
+  "selectAnAccount": {
+    "message": "ಖಾತೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"
+  },
+  "selectAnAccountHelp": {
+    "message": "MetaMask ನಲ್ಲಿ ವೀಕ್ಷಿಸಲು ಖಾತೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"
+  },
   "selectCurrency": {
     "message": "ಕರೆನ್ಸಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"
   },
   "selectEachPhrase": {
     "message": "ಅದು ಸರಿಯಾಗಿದೆಯೆ ಎಂಬುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಲು ದಯವಿಟ್ಟು ಪ್ರತಿ ಫ್ರೇಸ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ."
   },
+  "selectHdPath": {
+    "message": "HD ಪಾತ್ ಆಯ್ಕೆಮಾಡಿ"
+  },
   "selectLocale": {
     "message": "ಪ್ರದೇಶವನ್ನು ಆಯ್ಕೆಮಾಡಿ"
+  },
+  "selectPathHelp": {
+    "message": "ನಿಮ್ಮ ಅಸ್ತಿತ್ವದಲ್ಲಿರುವ ಲೆಡ್ಜರ್ ಖಾತೆಗಳನ್ನು ನೀವು ಕೆಳಗೆ ನೋಡದಿದ್ದರೆ, ಪಾತ್‌ಗಳನ್ನು \"ಲೆಗಸಿ (MEW / MyCrypto)\" ಗೆ ಬದಲಾಯಿಸಲು ಪ್ರಯತ್ನಿಸಿ"
   },
   "selectType": {
     "message": "ಪ್ರಕಾರವನ್ನು ಆಯ್ಕೆಮಾಡಿ"
@@ -994,24 +994,6 @@
   "separateEachWord": {
     "message": "ಒಂದು ಸ್ಪೇಸ್ ಮೂಲಕ ಪ್ರತಿ ಪದವನ್ನು ಬೇರ್ಪಡಿಸಿ"
   },
-  "searchTokens": {
-    "message": "ಟೋಕನ್‌ಗಳನ್ನು ಹುಡುಕಿ"
-  },
-  "selectAnAccount": {
-    "message": "ಖಾತೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"
-  },
-  "selectAnAccountHelp": {
-    "message": "MetaMask ನಲ್ಲಿ ವೀಕ್ಷಿಸಲು ಖಾತೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"
-  },
-  "selectAHigherGasFee": {
-    "message": "ನಿಮ್ಮ ವಹಿವಾಟಿನ ಪ್ರಕ್ರಿಯೆಯನ್ನು ಸುಧಾರಿಸಲು ಅಧಿಕ ಗ್ಯಾಸ್ ಶುಲ್ಕವನ್ನು ಆಯ್ಕೆಮಾಡಿ.*"
-  },
-  "selectHdPath": {
-    "message": "HD ಪಾತ್ ಆಯ್ಕೆಮಾಡಿ"
-  },
-  "selectPathHelp": {
-    "message": "ನಿಮ್ಮ ಅಸ್ತಿತ್ವದಲ್ಲಿರುವ ಲೆಡ್ಜರ್ ಖಾತೆಗಳನ್ನು ನೀವು ಕೆಳಗೆ ನೋಡದಿದ್ದರೆ, ಪಾತ್‌ಗಳನ್ನು \"ಲೆಗಸಿ (MEW / MyCrypto)\" ಗೆ ಬದಲಾಯಿಸಲು ಪ್ರಯತ್ನಿಸಿ"
-  },
   "settings": {
     "message": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
   },
@@ -1027,17 +1009,23 @@
   "showFiatConversionInTestnetsDescription": {
     "message": "Testnets ನಲ್ಲಿ ಫಿಯೆಟ್ ಪರಿವರ್ತನೆಯನ್ನು ತೋರಿಸಲು ಇದನ್ನು ಆಯ್ಕೆಮಾಡಿ"
   },
-  "showPrivateKeys": {
-    "message": "ಖಾಸಗಿ ಕೀಗಳನ್ನು ತೋರಿಸಿ"
-  },
   "showHexData": {
     "message": "ಹೆಕ್ಸ್ ಡೇಟಾವನ್ನು ತೋರಿಸಿ"
   },
   "showHexDataDescription": {
     "message": "ಕಳುಹಿಸುವ ಪರದೆಯಲ್ಲಿ ಹೆಕ್ಸ್ ಡೇಟಾ ಕ್ಷೇತ್ರವನ್ನು ತೋರಿಸಲು ಇದನ್ನು ಆಯ್ಕೆಮಾಡಿ"
   },
+  "showPrivateKeys": {
+    "message": "ಖಾಸಗಿ ಕೀಗಳನ್ನು ತೋರಿಸಿ"
+  },
+  "sigRequest": {
+    "message": "ಸಹಿಯ ವಿನಂತಿ"
+  },
   "sign": {
     "message": "ಸಹಿ"
+  },
+  "signNotice": {
+    "message": "ಈ ಸಂದೇಶಕ್ಕೆ ಸಹಿ ಮಾಡುವಿಕೆಯು \nಅಪಾಯಕಾರಿ ಅಡ್ಡಪರಿಣಾಮಗಳನ್ನು ಹೊಂದಿರಬಹುದು. ನಿಮ್ಮ ಸಂಪೂರ್ಣ ಖಾತೆಯೊಂದಿಗೆ ನೀವು ಸಂಪೂರ್ಣವಾಗಿ ನಂಬುವ ಸೈಟ್‌ಗಳಿಂದ\nಮಾತ್ರ ಸಂದೇಶಗಳಿಗೆ ಸಹಿ ಮಾಡಿ.\nಭವಿಷ್ಯದ ಆವೃತ್ತಿಯಲ್ಲಿ ಈ ಅಪಾಯಕಾರಿ ವಿಧಾನವನ್ನು ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ."
   },
   "signatureRequest": {
     "message": "ಸಹಿಯ ವಿನಂತಿ"
@@ -1045,11 +1033,11 @@
   "signed": {
     "message": "ಸಹಿ ಮಾಡಲಾಗಿದೆ"
   },
-  "signNotice": {
-    "message": "ಈ ಸಂದೇಶಕ್ಕೆ ಸಹಿ ಮಾಡುವಿಕೆಯು \nಅಪಾಯಕಾರಿ ಅಡ್ಡಪರಿಣಾಮಗಳನ್ನು ಹೊಂದಿರಬಹುದು. ನಿಮ್ಮ ಸಂಪೂರ್ಣ ಖಾತೆಯೊಂದಿಗೆ ನೀವು ಸಂಪೂರ್ಣವಾಗಿ ನಂಬುವ ಸೈಟ್‌ಗಳಿಂದ\nಮಾತ್ರ ಸಂದೇಶಗಳಿಗೆ ಸಹಿ ಮಾಡಿ.\nಭವಿಷ್ಯದ ಆವೃತ್ತಿಯಲ್ಲಿ ಈ ಅಪಾಯಕಾರಿ ವಿಧಾನವನ್ನು ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ."
+  "slow": {
+    "message": "ನಿಧಾನ"
   },
-  "sigRequest": {
-    "message": "ಸಹಿಯ ವಿನಂತಿ"
+  "slower": {
+    "message": "ನಿಧಾನ"
   },
   "somethingWentWrong": {
     "message": "ಓಹ್‌‍! ಏನೋ ತಪ್ಪಾಗಿದೆ."
@@ -1063,17 +1051,14 @@
   "speedUpTransaction": {
     "message": "ಈ ವಹಿವಾಟಿನ ವೇಗವನ್ನು ಹೆಚ್ಚಿಸಿ"
   },
-  "switchNetworks": {
-    "message": "ನೆಟ್‌ವರ್ಕ್‌ಗಳನ್ನು ಬದಲಾಯಿಸಿ"
+  "stateLogError": {
+    "message": "ರಾಜ್ಯದ ಲಾಗ್‌ಗಳನ್ನು ಹಿಂಪಡೆಯುವಲ್ಲಿ ದೋಷ."
   },
   "stateLogs": {
     "message": "ರಾಜ್ಯದ ಲಾಗ್‌ಗಳು"
   },
   "stateLogsDescription": {
     "message": "ರಾಜ್ಯದ ಲಾಗ್‌ಗಳು ನಿಮ್ಮ ಸಾರ್ವಜನಿಕ ಖಾತೆಯ ವಿಳಾಸಗಳು ಮತ್ತು ಕಳುಹಿಸಲಾದ ವಹಿವಾಟುಗಳನ್ನು ಹೊಂದಿರುತ್ತವೆ."
-  },
-  "stateLogError": {
-    "message": "ರಾಜ್ಯದ ಲಾಗ್‌ಗಳನ್ನು ಹಿಂಪಡೆಯುವಲ್ಲಿ ದೋಷ."
   },
   "step1HardwareWallet": {
     "message": "1. ಹಾರ್ಡ್‌ವೆರ್ ವ್ಯಾಲೆಟ್ ಸಂಪರ್ಕಪಡಿಸಿ"
@@ -1102,6 +1087,9 @@
   "supportCenter": {
     "message": "ನಮ್ಮ ಬೆಂಬಲ ಕೇಂದ್ರಕ್ಕೆ ಭೇಟಿ ಮಾಡಿ"
   },
+  "switchNetworks": {
+    "message": "ನೆಟ್‌ವರ್ಕ್‌ಗಳನ್ನು ಬದಲಾಯಿಸಿ"
+  },
   "symbol": {
     "message": "ಚಿಹ್ನೆ"
   },
@@ -1111,8 +1099,11 @@
   "syncWithMobile": {
     "message": "ಮೊಬೈಲ್‌ನೊಂದಿಗೆ ಸಿಂಕ್ ಮಾಡಿ"
   },
-  "syncWithMobileTitle": {
-    "message": "ಮೊಬೈಲ್‌ನೊಂದಿಗೆ ಸಿಂಕ್ ಮಾಡಿ"
+  "syncWithMobileBeCareful": {
+    "message": "ನೀವು ಈ ಕೋಡ್ ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡುತ್ತಿರುವಾಗ ಯಾರೂ ನಿಮ್ಮ ಪರದೆಯ ಕಡೆಗೆ ನೋಡುತ್ತಿಲ್ಲವೇ ಎಂಬುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ."
+  },
+  "syncWithMobileComplete": {
+    "message": "ನಿಮ್ಮ ಡೇಟಾ ಯಶಸ್ವಿಯಾಗಿ ಸಿಂಕ್ ಆಗಿದೆ. MetaMask ಮೊಬೈಲ್ ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು ಆನಂದಿಸಿ!"
   },
   "syncWithMobileDesc": {
     "message": "ನಿಮ್ಮ ಮೊಬೈಲ್ ಸಾಧನದೊಂದಿಗೆ ನಿಮ್ಮ ಖಾತೆಗಳು ಮತ್ತು ಮಾಹಿತಿಯನ್ನು ನೀವು ಸಿಂಕ್ ಮಾಡಬಹುದಾಗಿದೆ. MetaMask ಮೊಬೈಲ್ ಅಪ್ಲಿಕೇಶನ್ ತೆರೆಯಿರಿ, \"ಸೆಟ್ಟಿಂಗ್‌ಗಳಿಗೆ\" ಹೋಗಿ ಮತ್ತು \"ಬ್ರೌಸರ್ ವಿಸ್ತರಣೆಯಿಂದ ಸಿಂಕ್ ಮಾಡಿ\" ಟ್ಯಾಪ್ ಮಾಡಿ"
@@ -1123,11 +1114,8 @@
   "syncWithMobileScanThisCode": {
     "message": "ನಿಮ್ಮ MetaMask ಮೊಬೈಲ್ ಅಪ್ಲಿಕೇಶನ್ ಮೂಲಕ ಈ ಕೋಡ್ ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ"
   },
-  "syncWithMobileBeCareful": {
-    "message": "ನೀವು ಈ ಕೋಡ್ ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡುತ್ತಿರುವಾಗ ಯಾರೂ ನಿಮ್ಮ ಪರದೆಯ ಕಡೆಗೆ ನೋಡುತ್ತಿಲ್ಲವೇ ಎಂಬುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ."
-  },
-  "syncWithMobileComplete": {
-    "message": "ನಿಮ್ಮ ಡೇಟಾ ಯಶಸ್ವಿಯಾಗಿ ಸಿಂಕ್ ಆಗಿದೆ. MetaMask ಮೊಬೈಲ್ ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು ಆನಂದಿಸಿ!"
+  "syncWithMobileTitle": {
+    "message": "ಮೊಬೈಲ್‌ನೊಂದಿಗೆ ಸಿಂಕ್ ಮಾಡಿ"
   },
   "terms": {
     "message": "ಬಳಕೆಯ ನಿಯಮಗಳು"
@@ -1162,6 +1150,12 @@
   "transaction": {
     "message": "ವಹಿವಾಟು"
   },
+  "transactionCancelAttempted": {
+    "message": "$2 ನಲ್ಲಿ $1 ಗ್ಯಾಸ್ ಶುಲ್ಕದೊಂದಿಗೆ ವಹಿವಾಟಿನ ರದ್ದತಿಯನ್ನು ಪ್ರಯತ್ನಿಸಲಾಗಿದೆ"
+  },
+  "transactionCancelSuccess": {
+    "message": "ವಹಿವಾಟನ್ನು $2 ನಲ್ಲಿ ಯಶಸ್ವಿಯಾಗಿ ರದ್ದುಮಾಡಲಾಗಿದೆ"
+  },
   "transactionConfirmed": {
     "message": "$2 ಗೆ ವಹಿವಾಟನ್ನು ಖಚಿತಪಡಿಸಲಾಗಿದೆ."
   },
@@ -1171,35 +1165,29 @@
   "transactionDropped": {
     "message": "$2 ನಲ್ಲಿ ವಹಿವಾಟು ಕುಸಿದಿದೆ."
   },
-  "transactionSubmitted": {
-    "message": "ವಹಿವಾಟನ್ನು $2 ನಲ್ಲಿ $1 ಗ್ಯಾಸ್ ಶುಲ್ಕದೊಂದಿಗೆ ರಚಿಸಲಾಗಿದೆ."
-  },
-  "transactionResubmitted": {
-    "message": "$2 ನಲ್ಲಿ $1 ಗೆ ಏರಿದ ಗ್ಯಾಸ್ ಶುಲ್ಕದೊಂದಿಗೆ ವಹಿವಾಟನ್ನು ಮರುಸಲ್ಲಿಸಲಾಗಿದೆ"
-  },
-  "transactionUpdated": {
-    "message": "$2 ನಲ್ಲಿ ವಹಿವಾಟನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ."
-  },
-  "transactionErrored": {
-    "message": "ವಹಿವಾಟಿನಲ್ಲಿ ದೋಷ ಕಂಡುಬಂದಿದೆ."
-  },
-  "transactionCancelAttempted": {
-    "message": "$2 ನಲ್ಲಿ $1 ಗ್ಯಾಸ್ ಶುಲ್ಕದೊಂದಿಗೆ ವಹಿವಾಟಿನ ರದ್ದತಿಯನ್ನು ಪ್ರಯತ್ನಿಸಲಾಗಿದೆ"
-  },
-  "transactionCancelSuccess": {
-    "message": "ವಹಿವಾಟನ್ನು $2 ನಲ್ಲಿ ಯಶಸ್ವಿಯಾಗಿ ರದ್ದುಮಾಡಲಾಗಿದೆ"
-  },
   "transactionError": {
     "message": "ವಹಿವಾಟಿನ ದೋಷ. ಒಪ್ಪಂದದ ಕೋಡ್‌ನಲ್ಲಿ ವಿನಾಯಿತಿಯನ್ನು ನೀಡಲಾಗಿದೆ."
   },
   "transactionErrorNoContract": {
     "message": "ಒಪ್ಪಂದವಲ್ಲದ ವಿಳಾಸದಲ್ಲಿ ಕಾರ್ಯಕ್ಕೆ ಕರೆ ಮಾಡಲು ಪ್ರಯತ್ನಿಸಲಾಗುತ್ತಿದೆ."
   },
+  "transactionErrored": {
+    "message": "ವಹಿವಾಟಿನಲ್ಲಿ ದೋಷ ಕಂಡುಬಂದಿದೆ."
+  },
   "transactionFee": {
     "message": "ವಹಿವಾಟು ಶುಲ್ಕ"
   },
+  "transactionResubmitted": {
+    "message": "$2 ನಲ್ಲಿ $1 ಗೆ ಏರಿದ ಗ್ಯಾಸ್ ಶುಲ್ಕದೊಂದಿಗೆ ವಹಿವಾಟನ್ನು ಮರುಸಲ್ಲಿಸಲಾಗಿದೆ"
+  },
+  "transactionSubmitted": {
+    "message": "ವಹಿವಾಟನ್ನು $2 ನಲ್ಲಿ $1 ಗ್ಯಾಸ್ ಶುಲ್ಕದೊಂದಿಗೆ ರಚಿಸಲಾಗಿದೆ."
+  },
   "transactionTime": {
     "message": "ವಹಿವಾಟು ಸಮಯ"
+  },
+  "transactionUpdated": {
+    "message": "$2 ನಲ್ಲಿ ವಹಿವಾಟನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ."
   },
   "transfer": {
     "message": "ವರ್ಗಾಯಿಸಿ"
@@ -1229,17 +1217,17 @@
   "unknown": {
     "message": "ಅಪರಿಚಿತ"
   },
+  "unknownCameraError": {
+    "message": "ನಿಮ್ಮ ಕ್ಯಾಮರಾವನ್ನು ಪ್ರವೇಶಿಸಲು ಪ್ರಯತ್ನಿಸುವಾಗ ದೋಷ ಸಂಭವಿಸಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ..."
+  },
+  "unknownCameraErrorTitle": {
+    "message": "ಓಹ್! ಏನೋ ತಪ್ಪಾಗಿದೆ...."
+  },
   "unknownNetwork": {
     "message": "ಅಪರಿಚಿತ ಖಾಸಗಿ ನೆಟ್‌ವರ್ಕ್"
   },
   "unknownQrCode": {
     "message": "ದೋಷ: ನಮಗೆ ಆ QR ಕೋಡ್ ಅನ್ನು ಗುರುತಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
-  },
-  "unknownCameraErrorTitle": {
-    "message": "ಓಹ್! ಏನೋ ತಪ್ಪಾಗಿದೆ...."
-  },
-  "unknownCameraError": {
-    "message": "ನಿಮ್ಮ ಕ್ಯಾಮರಾವನ್ನು ಪ್ರವೇಶಿಸಲು ಪ್ರಯತ್ನಿಸುವಾಗ ದೋಷ ಸಂಭವಿಸಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ..."
   },
   "unlock": {
     "message": "ಅನ್‌ಲಾಕ್"
@@ -1262,9 +1250,6 @@
   "viewAccount": {
     "message": "ಖಾತೆಯನ್ನು ವೀಕ್ಷಿಸಿ"
   },
-  "viewinExplorer": {
-    "message": "ಎಕ್ಸ್‌ಪ್ಲೋರರ್‌ನಲ್ಲಿ ವೀಕ್ಷಿಸಿ"
-  },
   "viewContact": {
     "message": "ಸಂಪರ್ಕವನ್ನು ವೀಕ್ಷಿಸಿ"
   },
@@ -1274,17 +1259,20 @@
   "viewOnEtherscan": {
     "message": "ಎಥೆರ್‌ಸ್ಕ್ಯಾನ್‌ನಲ್ಲಿ ವೀಕ್ಷಿಸಿ"
   },
+  "viewinExplorer": {
+    "message": "ಎಕ್ಸ್‌ಪ್ಲೋರರ್‌ನಲ್ಲಿ ವೀಕ್ಷಿಸಿ"
+  },
   "visitWebSite": {
     "message": "ನಮ್ಮ ವೆಬ್ ಸೈಟ್ ಅನ್ನು ಭೇಟಿ ಮಾಡಿ"
   },
   "walletSeed": {
     "message": "ವ್ಯಾಲೆಟ್ ಸೀಡ್"
   },
-  "welcomeBack": {
-    "message": "ಮರಳಿ ಸ್ವಾಗತ!"
-  },
   "welcome": {
     "message": "MetaMask ಗೆ ಸ್ವಾಗತ"
+  },
+  "welcomeBack": {
+    "message": "ಮರಳಿ ಸ್ವಾಗತ!"
   },
   "writePhrase": {
     "message": "ಕಾಗದದ ತುಂಡಿನ ಮೇಲೆ ಈ ಫ್ರೇಸ್ ಅನ್ನು ಬರೆಯಿರಿ ಮತ್ತು ಸುರಕ್ಷಿತ ಸ್ಥಳದಲ್ಲಿರಿಸಿ. ನೀವು ಇನ್ನೂ ಹೆಚ್ಚಿನ ಸುರಕ್ಷತೆಯನ್ನು ಬಯಸಿದರೆ, ಹಲವು ಕಾಗದದ ತುಂಡುಗಳ ಮೇಲೆ ಬರೆಯಿರಿ ಮತ್ತು ಪ್ರತಿಯೊಂದನ್ನು 2 - 3 ವಿವಿಧ ಸ್ಥಳಗಳಲ್ಲಿ ಇರಿಸಿ."
@@ -1295,14 +1283,14 @@
   "youNeedToAllowCameraAccess": {
     "message": "ಈ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಬಳಸಲು ನೀವು ಕ್ಯಾಮರಾ ಪ್ರವೇಶವನ್ನು ಅನುಮತಿಸಬೇಕಾಗುತ್ತದೆ."
   },
-  "yourSigRequested": {
-    "message": "ನಿಮ್ಮ ಸಹಿಯನ್ನು ವಿನಂತಿಸಲಾಗಿದೆ"
-  },
   "youSign": {
     "message": "ನೀವು ಸಹಿ ಮಾಡುತ್ತಿರುವಿರಿ"
   },
   "yourPrivateSeedPhrase": {
     "message": "ನಿಮ್ಮ ಖಾಸಗಿ ಸೀಡ್ ಫ್ರೇಸ್"
+  },
+  "yourSigRequested": {
+    "message": "ನಿಮ್ಮ ಸಹಿಯನ್ನು ವಿನಂತಿಸಲಾಗಿದೆ"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "ವೇಗ ಹೆಚ್ಚಿಸುವುದಕ್ಕೆ ಶೂನ್ಯ ಗ್ಯಾಸ್ ಬೆಲೆ"

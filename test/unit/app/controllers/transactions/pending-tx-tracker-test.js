@@ -1,5 +1,5 @@
-import sinon from 'sinon'
 import { strict as assert } from 'assert'
+import sinon from 'sinon'
 import BN from 'bn.js'
 import PendingTransactionTracker from '../../../../../app/scripts/controllers/transactions/pending-tx-tracker'
 
@@ -147,15 +147,15 @@ describe('PendingTransactionTracker', function () {
         },
         nonceTracker: {
           getGlobalLock: async () => {
-            return { releaseLock: () => {} }
+            return { releaseLock: () => undefined }
           },
         },
         getPendingTransactions: () => txList,
         getCompletedTransactions: () => {
           return []
         },
-        publishTransaction: () => {},
-        confirmTransaction: () => {},
+        publishTransaction: () => undefined,
+        confirmTransaction: () => undefined,
       })
 
       const checkPendingTxStub = sinon.stub(pendingTxTracker, '_checkPendingTx').resolves()

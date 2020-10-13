@@ -47,8 +47,8 @@ export function formatTimeEstimate (totalSeconds, greaterThanMax, lessThanMin) {
     symbol = '> '
   }
 
-  const formattedMin = `${minutes ? minutes + ' min' : ''}`
-  const formattedSec = `${seconds ? seconds + ' sec' : ''}`
+  const formattedMin = `${minutes ? `${minutes} min` : ''}`
+  const formattedSec = `${seconds ? `${seconds} sec` : ''}`
   const formattedCombined = formattedMin && formattedSec
     ? `${symbol}${formattedMin} ${formattedSec}`
     : symbol + (formattedMin || formattedSec)

@@ -1,6 +1,7 @@
 /* eslint camelcase: 0 */
 
 import ethUtil from 'ethereumjs-util'
+import Analytics from 'analytics-node'
 
 const inDevelopment = process.env.METAMASK_DEBUG || process.env.IN_TEST
 
@@ -52,6 +53,7 @@ const customVariableNameIdMap = {
   [METAMETRICS_CUSTOM_GAS_CHANGED]: 1,
   [METAMETRICS_CUSTOM_ASSET_SELECTED]: 2,
 }
+
 /** ********************************************************** **/
 
 const METAMETRICS_CUSTOM_NETWORK = 'network'
@@ -71,6 +73,8 @@ const customDimensionsNameIdMap = {
   [METAMETRICS_CUSTOM_NUMBER_OF_TOKENS]: 10,
   [METAMETRICS_CUSTOM_VERSION]: 11,
 }
+
+export const METAMETRICS_ANONYMOUS_ID = '0x0000000000000000'
 
 function composeUrlRefParamAddition (previousPath, confirmTransactionOrigin) {
   const externalOrigin = confirmTransactionOrigin && confirmTransactionOrigin !== 'metamask'
@@ -157,26 +161,32 @@ function composeUrl (config) {
 
   const urlref = previousPath && composeUrlRefParamAddition(previousPath, confirmTransactionOrigin)
 
-  const dimensions = !pageOpts.hideDimensions ? composeCustomDimensionParamAddition({
-    network,
-    environmentType,
-    activeCurrency,
-    accountType,
-    version,
-    numberOfTokens: (customVariables && customVariables.numberOfTokens) || numberOfTokens,
-    numberOfAccounts: (customVariables && customVariables.numberOfAccounts) || numberOfAccounts,
-  }) : ''
+  const dimensions = pageOpts.hideDimensions
+    ? ''
+    : (
+      composeCustomDimensionParamAddition({
+        network,
+        environmentType,
+        activeCurrency,
+        accountType,
+        version,
+        numberOfTokens: (customVariables && customVariables.numberOfTokens) || numberOfTokens,
+        numberOfAccounts: (customVariables && customVariables.numberOfAccounts) || numberOfAccounts,
+      })
+    )
   const url = currentPath ? `&url=${encodeURIComponent(`${METAMETRICS_TRACKING_URL}${currentPath}`)}` : ''
   const _id = metaMetricsId && !excludeMetaMetricsId ? `&_id=${metaMetricsId.slice(2, 18)}` : ''
   const rand = `&rand=${String(Math.random()).slice(2)}`
   const pv_id = currentPath ? `&pv_id=${ethUtil.bufferToHex(ethUtil.sha3(currentPath)).slice(2, 8)}` : ''
-  const uid = metaMetricsId && !excludeMetaMetricsId
-    ? `&uid=${metaMetricsId.slice(2, 18)}`
-    : excludeMetaMetricsId
-      ? '&uid=0000000000000000'
-      : ''
 
-  return [ base, e_c, e_a, e_n, cvar, action_name, urlref, dimensions, url, _id, rand, pv_id, uid, new_visit ].join('')
+  let uid = ''
+  if (excludeMetaMetricsId) {
+    uid = '&uid=0000000000000000'
+  } else if (metaMetricsId) {
+    uid = `&uid=${metaMetricsId.slice(2, 18)}`
+  }
+
+  return [base, e_c, e_a, e_n, cvar, action_name, urlref, dimensions, url, _id, rand, pv_id, uid, new_visit].join('')
 }
 
 export function sendMetaMetricsEvent (config) {
@@ -203,9 +213,8 @@ export function verifyUserPermission (config, props) {
     return true
   } else if (allowSendMetrics && eventOpts.name === 'send') {
     return true
-  } else {
-    return false
   }
+  return false
 }
 
 const trackableSendCounts = {
@@ -226,3 +235,25 @@ const trackableSendCounts = {
 export function sendCountIsTrackable (sendCount) {
   return Boolean(trackableSendCounts[sendCount])
 }
+
+const flushAt = inDevelopment ? 1 : undefined
+
+const segmentNoop = {
+  track () {
+    // noop
+  },
+  page () {
+    // noop
+  },
+  identify () {
+    // noop
+  },
+}
+
+// We do not want to track events on development builds unless specifically
+// provided a SEGMENT_WRITE_KEY. This also holds true for test environments and
+// E2E, which is handled in the build process by never providing the SEGMENT_WRITE_KEY
+// which process.env.IN_TEST is true
+export const segment = process.env.SEGMENT_WRITE_KEY
+  ? new Analytics(process.env.SEGMENT_WRITE_KEY, { flushAt })
+  : segmentNoop

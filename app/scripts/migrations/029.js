@@ -1,6 +1,7 @@
 // next version number
-const version = 29
 import failTxsThat from './fail-tx'
+
+const version = 29
 
 // time
 const seconds = 1000

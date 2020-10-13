@@ -20,6 +20,7 @@ const GeckoDriverCommand = {
  * A wrapper around a {@code WebDriver} instance exposing Firefox-specific functionality
  */
 class FirefoxDriver {
+
   /**
    * Builds a {@link FirefoxDriver} instance
    * @param {{extensionPath: string}} options - the options for the build

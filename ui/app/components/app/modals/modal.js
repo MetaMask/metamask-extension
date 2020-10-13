@@ -9,11 +9,11 @@ import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
 
 // Modal Components
+import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container'
 import DepositEtherModal from './deposit-ether-modal'
 import AccountDetailsModal from './account-details-modal'
 import ExportPrivateKeyModal from './export-private-key-modal'
 import HideTokenConfirmationModal from './hide-token-confirmation-modal'
-import NotifcationModal from './notification-modal'
 import QRScanner from './qr-scanner'
 
 import ConfirmRemoveAccount from './confirm-remove-account'
@@ -24,7 +24,6 @@ import CancelTransaction from './cancel-transaction'
 import FadeModal from './fade-modal'
 import MetaMetricsOptInModal from './metametrics-opt-in-modal'
 import RejectTransactions from './reject-transactions'
-import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container'
 import ConfirmDeleteNetwork from './confirm-delete-network'
 import AddToAddressBookModal from './add-to-addressbook-modal'
 import EditApprovalPermission from './edit-approval-permission'
@@ -202,30 +201,6 @@ const MODALS = {
     },
     contentStyle: {
       borderRadius: '8px',
-    },
-  },
-
-  GAS_PRICE_INFO_MODAL: {
-    contents: <NotifcationModal header="gasPriceNoDenom" message="gasPriceInfoModalContent" />,
-    mobileModalStyle: {
-      width: '95%',
-      top: getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
-    },
-    laptopModalStyle: {
-      width: '449px',
-      top: 'calc(33% + 45px)',
-    },
-  },
-
-  GAS_LIMIT_INFO_MODAL: {
-    contents: <NotifcationModal header="gasLimit" message="gasLimitInfoModalContent" />,
-    mobileModalStyle: {
-      width: '95%',
-      top: getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
-    },
-    laptopModalStyle: {
-      width: '449px',
-      top: 'calc(33% + 45px)',
     },
   },
 

@@ -1,8 +1,13 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import validUrl from 'valid-url'
+import BigNumber from 'bignumber.js'
+import log from 'loglevel'
 import TextField from '../../../../components/ui/text-field'
 import Button from '../../../../components/ui/button'
+import Tooltip from '../../../../components/ui/tooltip'
+import { isPrefixedFormattedHexString } from '../../../../../../app/scripts/lib/util'
+import { jsonRpcRequest } from '../../../../helpers/utils/util'
 
 export default class NetworkForm extends PureComponent {
   static contextTypes = {
@@ -85,7 +90,7 @@ export default class NetworkForm extends PureComponent {
     this.setState({ rpcUrl, chainId, ticker, networkName, blockExplorerUrl, errors: {} })
   }
 
-  onSubmit = () => {
+  onSubmit = async () => {
     const {
       setRpcTarget,
       rpcUrl: propsRpcUrl,
@@ -97,17 +102,28 @@ export default class NetworkForm extends PureComponent {
     const {
       networkName,
       rpcUrl,
-      chainId,
+      chainId: stateChainId,
       ticker,
       blockExplorerUrl,
     } = this.state
+
+    // Ensure chainId is a 0x-prefixed, lowercase hex string
+    let chainId = stateChainId.trim().toLowerCase()
+    if (!chainId.startsWith('0x')) {
+      chainId = `0x${(new BigNumber(chainId, 10)).toString(16)}`
+    }
+
+    if (!(await this.validateChainIdOnSubmit(chainId, rpcUrl))) {
+      return
+    }
+
     if (propsRpcUrl && rpcUrl !== propsRpcUrl) {
-      editRpc(propsRpcUrl, rpcUrl, chainId, ticker, networkName, {
+      await editRpc(propsRpcUrl, rpcUrl, chainId, ticker, networkName, {
         blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
         ...rpcPrefs,
       })
     } else {
-      setRpcTarget(rpcUrl, chainId, ticker, networkName, {
+      await setRpcTarget(rpcUrl, chainId, ticker, networkName, {
         blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
         ...rpcPrefs,
       })
@@ -168,13 +184,30 @@ export default class NetworkForm extends PureComponent {
     )
   }
 
-  renderFormTextField (fieldKey, textFieldId, onChange, value, optionalTextFieldKey) {
+  renderFormTextField (fieldKey, textFieldId, onChange, value, optionalTextFieldKey, tooltipText) {
     const { errors } = this.state
     const { viewOnly } = this.props
 
     return (
       <div className="networks-tab__network-form-row">
-        <div className="networks-tab__network-form-label">{this.context.t(optionalTextFieldKey || fieldKey)}</div>
+        <div className="networks-tab__network-form-label">
+          <div className="networks-tab__network-form-label-text">
+            {this.context.t(optionalTextFieldKey || fieldKey)}
+          </div>
+          {
+            !viewOnly && tooltipText
+              ? (
+                <Tooltip
+                  position="top"
+                  title={tooltipText}
+                  wrapperClassName="networks-tab__network-form-label-tooltip"
+                >
+                  <i className="fa fa-info-circle" />
+                </Tooltip>
+              )
+              : null
+          }
+        </div>
         <TextField
           type="text"
           id={textFieldId}
@@ -205,16 +238,58 @@ export default class NetworkForm extends PureComponent {
     })
   }
 
-  validateChainId = (chainId) => {
-    this.setErrorTo('chainId', !!chainId && Number.isNaN(parseInt(chainId))
-      ? `${this.context.t('invalidInput')} chainId`
-      : '',
-    )
+  validateChainId = (chainIdArg = '') => {
+    const chainId = chainIdArg.trim()
+    let errorMessage = ''
+
+    if (chainId.startsWith('0x')) {
+      if (!(/^0x[0-9a-f]+$/ui).test(chainId)) {
+        errorMessage = this.context.t('invalidHexNumber')
+      } else if (!isPrefixedFormattedHexString(chainId)) {
+        errorMessage = this.context.t('invalidHexNumberLeadingZeros')
+      }
+    } else if (!(/^[0-9]+$/u).test(chainId)) {
+      errorMessage = this.context.t('invalidNumber')
+    } else if (chainId.startsWith('0')) {
+      errorMessage = this.context.t('invalidNumberLeadingZeros')
+    }
+
+    this.setErrorTo('chainId', errorMessage)
+  }
+
+  validateChainIdOnSubmit = async (chainId, rpcUrl) => {
+    const { t } = this.context
+    let errorMessage
+    let endpointChainId
+    let providerError
+
+    try {
+      endpointChainId = await jsonRpcRequest(rpcUrl, 'eth_chainId')
+    } catch (err) {
+      log.warn('Failed to fetch the chainId from the endpoint.', err)
+      providerError = err
+    }
+
+    if (providerError || typeof endpointChainId !== 'string') {
+      errorMessage = t('failedToFetchChainId')
+    } else if (chainId !== endpointChainId) {
+      errorMessage = t('endpointReturnedDifferentChainId', [
+        endpointChainId.length <= 12
+          ? endpointChainId
+          : `${endpointChainId.slice(0, 9)}...`,
+      ])
+    }
+
+    if (errorMessage) {
+      this.setErrorTo('chainId', errorMessage)
+      return false
+    }
+    return true
   }
 
   isValidWhenAppended = (url) => {
     const appendedRpc = `http://${url}`
-    return validUrl.isWebUri(appendedRpc) && !url.match(/^https?:\/\/$/)
+    return validUrl.isWebUri(appendedRpc) && !url.match(/^https?:\/\/$/u)
   }
 
   validateBlockExplorerURL = (url, stateKey) => {
@@ -262,7 +337,13 @@ export default class NetworkForm extends PureComponent {
       errors,
     } = this.state
 
-    const isSubmitDisabled = viewOnly || this.stateIsUnchanged() || Object.values(errors).some((x) => x) || !rpcUrl
+    const isSubmitDisabled = (
+      viewOnly ||
+      this.stateIsUnchanged() ||
+      !rpcUrl ||
+      !chainId ||
+      Object.values(errors).some((x) => x)
+    )
     const deletable = !networksTabIsInAddMode && !isCurrentRpcTarget && !viewOnly
 
     return (
@@ -285,7 +366,8 @@ export default class NetworkForm extends PureComponent {
           'chainId',
           this.setStateWithValue('chainId', this.validateChainId),
           chainId,
-          'optionalChainId',
+          null,
+          t('networkSettingsChainIdDescription'),
         )}
         {this.renderFormTextField(
           'symbol',

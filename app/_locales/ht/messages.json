@@ -20,17 +20,17 @@
   "activityLog": {
     "message": "aktivite ki fèt"
   },
+  "addAcquiredTokens": {
+    "message": "Ajoute tokens yo ou te achte lè l sèvi avèk MetaMask"
+  },
+  "addSuggestedTokens": {
+    "message": "Ajoute Token Yo Sikjere W"
+  },
   "addToken": {
     "message": "Ajoute Token"
   },
   "addTokens": {
     "message": "Ajoute Token"
-  },
-  "addSuggestedTokens": {
-    "message": "Ajoute Token Yo Sikjere W"
-  },
-  "addAcquiredTokens": {
-    "message": "Ajoute tokens yo ou te achte lè l sèvi avèk MetaMask"
   },
   "amount": {
     "message": "Kantite lajan"
@@ -49,14 +49,14 @@
   "approved": {
     "message": "Apwouve"
   },
-  "attemptingConnect": {
-    "message": "Eseye konekte nan blockchain."
-  },
   "attemptToCancel": {
     "message": "Eseye anile?"
   },
   "attemptToCancelDescription": {
     "message": "Soumèt tantativ sa a pa garanti ke yo pral anile tranzaksyon ou anile. Si tantativ anile an gen siksè, ou pral chaje frè yo tranzaksyon pi wo a."
+  },
+  "attemptingConnect": {
+    "message": "Eseye konekte nan blockchain."
   },
   "attributions": {
     "message": "Atribisyon"
@@ -82,9 +82,6 @@
   "buyCoinSwitchExplainer": {
     "message": "CoinSwitch se destinasyon nan yon sèl-Stop nan echanj plis pase 300 kriptoksèr nan pousantaj la pi byen."
   },
-  "ok": {
-    "message": "Oke"
-  },
   "cancel": {
     "message": "Anile"
   },
@@ -94,26 +91,26 @@
   "cancellationGasFee": {
     "message": "Anilasyon Gaz Chaj"
   },
-  "close": {
-    "message": "Fèmen"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Ou bezwen sèvi ak MetaMask sou Google Chrome yo nan lòd yo konekte sou Hardware Wallet."
   },
-  "confirm": {
-    "message": "Konfime"
+  "close": {
+    "message": "Fèmen"
   },
-  "confirmed": {
+  "confirm": {
     "message": "Konfime"
   },
   "confirmPassword": {
     "message": "Konfime Modpas"
   },
-  "connectHardwareWallet": {
-    "message": "Konekte Materyèl Wallet"
+  "confirmed": {
+    "message": "Konfime"
   },
   "connect": {
     "message": "Konekte"
+  },
+  "connectHardwareWallet": {
+    "message": "Konekte Materyèl Wallet"
   },
   "connectingToKovan": {
     "message": "Konekte nan Kovan Tès Rezo a"
@@ -121,11 +118,11 @@
   "connectingToMainnet": {
     "message": "Konekte ak Prensipal Ethereum Rezo a"
   },
-  "connectingToRopsten": {
-    "message": "Konekte ak Ropsten Tès Rezo a"
-  },
   "connectingToRinkeby": {
     "message": "Konekte nan Rinkeby Tès Rezo a"
+  },
+  "connectingToRopsten": {
+    "message": "Konekte ak Ropsten Tès Rezo a"
   },
   "continueToCoinSwitch": {
     "message": "Kontinye CoinSwitch"
@@ -139,11 +136,11 @@
   "copyAddress": {
     "message": "Kopi adrès clipboard"
   },
-  "copyToClipboard": {
-    "message": "Kopi clipboard"
-  },
   "copyPrivateKey": {
     "message": "Sa a se kle prive ou (klike pou ou kopye)"
+  },
+  "copyToClipboard": {
+    "message": "Kopi clipboard"
   },
   "create": {
     "message": "Kreye"
@@ -157,17 +154,17 @@
   "customGas": {
     "message": "Koutim Gaz"
   },
-  "customToken": {
-    "message": "Koutim Token"
-  },
   "customRPC": {
     "message": "Koutim RPC"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Desimal yo dwe omwen 0, epi pa dwe plis pase 36."
+  "customToken": {
+    "message": "Koutim Token"
   },
   "decimal": {
     "message": "Presizyon desimal la"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Desimal yo dwe omwen 0, epi pa dwe plis pase 36."
   },
   "defaultNetwork": {
     "message": "Dfo rezo a pou tranzaksyon Ether se Mainnet."
@@ -190,14 +187,14 @@
   "done": {
     "message": "Fini"
   },
+  "dontHaveAHardwareWallet": {
+    "message": "Pa gen yon materyèl bous?"
+  },
   "downloadGoogleChrome": {
     "message": "Telechaje Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Telechaje State Logs"
-  },
-  "dontHaveAHardwareWallet": {
-    "message": "Pa gen yon materyèl bous?"
   },
   "dropped": {
     "message": "Tonbe"
@@ -246,11 +243,11 @@
   "gasLimitTooLow": {
     "message": "Limit gaz dwe omwen 21000"
   },
-  "gasUsed": {
-    "message": "Gaz yo Itilize"
-  },
   "gasPrice": {
     "message": "Pri gaz (GWEI)"
+  },
+  "gasUsed": {
+    "message": "Gaz yo Itilize"
   },
   "getEther": {
     "message": "Jwenn Ether"
@@ -300,12 +297,12 @@
   "importAccountMsg": {
     "message": " Kont pòte pa pral asosye avèk orijinal ou te kreye nan kont MetaMask seed fraz. Aprann plis sou kont enpòte "
   },
+  "importUsingSeed": {
+    "message": "Pòte lè sèvi avèk seed fraz"
+  },
   "imported": {
     "message": "Pòte",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "importUsingSeed": {
-    "message": "Pòte lè sèvi avèk seed fraz"
   },
   "infoHelp": {
     "message": "Enfo & Èd"
@@ -325,14 +322,11 @@
   "invalidAddressRecipient": {
     "message": "Moun ki resevwa adrès la pa valab"
   },
-  "invalidInput": {
-    "message": "Sa ou rantre a pa valab"
+  "invalidBlockExplorerURL": {
+    "message": "Block Explorer URI pa valab"
   },
   "invalidRPC": {
     "message": "RPC URI pa valab"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Block Explorer URI pa valab"
   },
   "invalidSeedPhrase": {
     "message": "Seed fraz pa valab"
@@ -343,9 +337,6 @@
   },
   "kovan": {
     "message": "Kovan Tès Rezo"
-  },
-  "max": {
-    "message": "Maksimòm"
   },
   "learnMore": {
     "message": "Aprann plis"
@@ -371,6 +362,9 @@
   "mainnet": {
     "message": "Prensipal Ethereum Rezo a"
   },
+  "max": {
+    "message": "Maksimòm"
+  },
   "message": {
     "message": "Mesaje"
   },
@@ -380,11 +374,11 @@
   "metamaskVersion": {
     "message": "MetaMask Vèsyon"
   },
-  "myAccounts": {
-    "message": "Kont mwen"
-  },
   "mustSelectOne": {
     "message": "Ou dwe chwazi omwen 1 token."
+  },
+  "myAccounts": {
+    "message": "Kont mwen"
   },
   "needEtherInWallet": {
     "message": "Pou kominike avèk aplikasyon desantralize ou dwe itilize MetaMask, ou pral bezwen Ether nan Wallet ou."
@@ -427,11 +421,14 @@
   "noTransactions": {
     "message": "Pa gen tranzaksyon"
   },
+  "noWebcamFound": {
+    "message": "Nou pakay jwenn webcam òdinatè ou. Tanpri eseye ankò."
+  },
   "noWebcamFoundTitle": {
     "message": "Pa jwenn webcam"
   },
-  "noWebcamFound": {
-    "message": "Nou pakay jwenn webcam òdinatè ou. Tanpri eseye ankò."
+  "ok": {
+    "message": "Oke"
   },
   "orderOneHere": {
     "message": "Mete nan lòd on Trezor oswa Ledger epi kenbe lajan ou nan yon stòk frèt."
@@ -445,11 +442,11 @@
   "password": {
     "message": "Modpas"
   },
-  "passwordsDontMatch": {
-    "message": "Modpas pa matche"
-  },
   "passwordNotLongEnough": {
     "message": "Modpas pa lontan ase"
+  },
+  "passwordsDontMatch": {
+    "message": "Modpas pa matche"
   },
   "pastePrivateKey": {
     "message": "Kole fraz prive ou a la:",
@@ -486,6 +483,9 @@
   "readdToken": {
     "message": "Ou ka ajoute token sa aprè sa ankò ou prale nan  \"Ajoute token\" nan opsyon meni kont ou an."
   },
+  "readyToConnect": {
+    "message": "Pare pou konekte?"
+  },
   "recipientAddress": {
     "message": "Adrès pou resevwa"
   },
@@ -495,50 +495,14 @@
   "rejectAll": {
     "message": "Rejte Tout"
   },
-  "rejectTxsN": {
-    "message": "Rejete $ 1 tranzaksyon"
-  },
   "rejectTxsDescription": {
     "message": "Ou se sou rejte $ 1 yon anpil nan tranzaksyon yo."
   },
+  "rejectTxsN": {
+    "message": "Rejete $ 1 tranzaksyon"
+  },
   "rejected": {
     "message": "Rejete"
-  },
-  "reset": {
-    "message": "Repwograme"
-  },
-  "resetAccount": {
-    "message": "Repwograme Kont"
-  },
-  "resetAccountDescription": {
-    "message": "Repwograme kont a netwaye tranzaksyon ou yo."
-  },
-  "restoreFromSeed": {
-    "message": "Restore kont?"
-  },
-  "restoreAccountWithSeed": {
-    "message": "Retabli kont ou avèk yo Seed Fraz"
-  },
-  "required": {
-    "message": "Egzije"
-  },
-  "restore": {
-    "message": "Retabli"
-  },
-  "revealSeedWords": {
-    "message": "Revele Seed Mo Yo"
-  },
-  "revealSeedWordsTitle": {
-    "message": "Seed Fraz"
-  },
-  "revealSeedWordsDescription": {
-    "message": "Si ou pa janm chanje navigatè ou deplase òdinatè, ou pral bezwen fraz seed la pou ka gen aksè a kont ou. Sere yo on kote an sekirite e an sekrè."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "PA pataje fraz sa a avèk nenpòt moun!"
-  },
-  "revealSeedWordsWarning": {
-    "message": "Yo ka itilize mo sa pou vòlè kont ou."
   },
   "remove": {
     "message": "retire"
@@ -549,8 +513,41 @@
   "removeAccountDescription": {
     "message": "Kont sa a pral retire nan Wallet ou. Tanpri, asire ou ke ou gen orijinal fraz seed la oubyen kle prive pou rantre kont lan avan ou kontinye. Oubyen ou ka rantre kont ou ankò apati kont \"drop-down\" ou an."
   },
-  "readyToConnect": {
-    "message": "Pare pou konekte?"
+  "required": {
+    "message": "Egzije"
+  },
+  "reset": {
+    "message": "Repwograme"
+  },
+  "resetAccount": {
+    "message": "Repwograme Kont"
+  },
+  "resetAccountDescription": {
+    "message": "Repwograme kont a netwaye tranzaksyon ou yo."
+  },
+  "restore": {
+    "message": "Retabli"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Retabli kont ou avèk yo Seed Fraz"
+  },
+  "restoreFromSeed": {
+    "message": "Restore kont?"
+  },
+  "revealSeedWords": {
+    "message": "Revele Seed Mo Yo"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Si ou pa janm chanje navigatè ou deplase òdinatè, ou pral bezwen fraz seed la pou ka gen aksè a kont ou. Sere yo on kote an sekirite e an sekrè."
+  },
+  "revealSeedWordsTitle": {
+    "message": "Seed Fraz"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Yo ka itilize mo sa pou vòlè kont ou."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "PA pataje fraz sa a avèk nenpòt moun!"
   },
   "rinkeby": {
     "message": "Rinkeby Tès Rezo"
@@ -576,17 +573,32 @@
   "searchResults": {
     "message": "Rezilta rechèch"
   },
+  "searchTokens": {
+    "message": "Rechèch Tokens"
+  },
   "secretPhrase": {
     "message": "Antre fraz sekrè douz mo ou a pou w restore kòf ou a."
   },
   "seedPhraseReq": {
     "message": "Seed fraz yo se 12 long mo"
   },
+  "selectAnAccount": {
+    "message": "Chwazi yon kont"
+  },
+  "selectAnAccountHelp": {
+    "message": "Chwazi kont pou wè nan MetaMask"
+  },
   "selectCurrency": {
     "message": "Chwazi Lajan"
   },
+  "selectHdPath": {
+    "message": "Chwazi chemen HD"
+  },
   "selectLocale": {
     "message": "Chwazi Lokasyon"
+  },
+  "selectPathHelp": {
+    "message": "Si ou pa wè kont Ledger ou te genyen an anba a, eseye chanje chemen an \"Eritaj (MEW / MyCrypto)\""
   },
   "selectType": {
     "message": "Chwazi Kalite"
@@ -609,26 +621,8 @@
   "separateEachWord": {
     "message": "Separe chak mo ak yon sèl espas"
   },
-  "searchTokens": {
-    "message": "Rechèch Tokens"
-  },
-  "selectAnAccount": {
-    "message": "Chwazi yon kont"
-  },
-  "selectAnAccountHelp": {
-    "message": "Chwazi kont pou wè nan MetaMask"
-  },
-  "selectHdPath": {
-    "message": "Chwazi chemen HD"
-  },
-  "selectPathHelp": {
-    "message": "Si ou pa wè kont Ledger ou te genyen an anba a, eseye chanje chemen an \"Eritaj (MEW / MyCrypto)\""
-  },
   "settings": {
     "message": "Paramèt"
-  },
-  "showPrivateKeys": {
-    "message": "Montre Kle Prive"
   },
   "showHexData": {
     "message": "Montre Hex Data"
@@ -636,8 +630,17 @@
   "showHexDataDescription": {
     "message": "Pran sa pouw ka montre chan entèfas hex data a"
   },
+  "showPrivateKeys": {
+    "message": "Montre Kle Prive"
+  },
+  "sigRequest": {
+    "message": "Demann Siyati"
+  },
   "sign": {
     "message": "Siyen"
+  },
+  "signNotice": {
+    "message": "Lè w siyen mesaj sa a ka gen efè segondè ki \ndanjere. Sèlman \nsit mesaj ki soti nan sit ou konplètman fè konfyans ak tout kont ou. \n Metòd danjere sa yo pral retire nan yon vèsyon fiti. "
   },
   "signatureRequest": {
     "message": "Siyati Mande"
@@ -645,20 +648,14 @@
   "signed": {
     "message": "Te Siyen"
   },
-  "signNotice": {
-    "message": "Lè w siyen mesaj sa a ka gen efè segondè ki \ndanjere. Sèlman \nsit mesaj ki soti nan sit ou konplètman fè konfyans ak tout kont ou. \n Metòd danjere sa yo pral retire nan yon vèsyon fiti. "
-  },
-  "sigRequest": {
-    "message": "Demann Siyati"
-  },
   "speedUp": {
     "message": "pi vit"
   },
-  "stateLogsDescription": {
-    "message": "State logs gen adrès kont piblik ou yo epi tranzaksyon ou te voye yo."
-  },
   "stateLogError": {
     "message": "Erè nan retwouve State Logs yo."
+  },
+  "stateLogsDescription": {
+    "message": "State logs gen adrès kont piblik ou yo epi tranzaksyon ou te voye yo."
   },
   "step1HardwareWallet": {
     "message": "1. Konekte Materyèl bous"
@@ -714,14 +711,14 @@
   "transactionDropped": {
     "message": "Tranzaksyon ou te tonbe a $2."
   },
+  "transactionError": {
+    "message": "Erè tranzaksyon. Eksepsyon jete nan kòd kontra."
+  },
   "transactionSubmitted": {
     "message": "Tranzaksyon ou te soumèt a $2."
   },
   "transactionUpdated": {
     "message": "Tranzaksyon ou te aktyalize a $2."
-  },
-  "transactionError": {
-    "message": "Erè tranzaksyon. Eksepsyon jete nan kòd kontra."
   },
   "transfer": {
     "message": "Transfè"
@@ -745,17 +742,17 @@
   "unknown": {
     "message": "Enkoni"
   },
+  "unknownCameraError": {
+    "message": "Te gen yon erè pandan y ap eseye jwenn aksè nan kamera ou. Tanpri eseye ankò..."
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Ooops! Yon bagay te ale mal...."
+  },
   "unknownNetwork": {
     "message": "Rezo Prive Enkoni"
   },
   "unknownQrCode": {
     "message": "Erè: Nou pa t kapab idantifye QR kòd sa"
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ooops! Yon bagay te ale mal...."
-  },
-  "unknownCameraError": {
-    "message": "Te gen yon erè pandan y ap eseye jwenn aksè nan kamera ou. Tanpri eseye ankò..."
   },
   "unlock": {
     "message": "Debloke"
@@ -784,11 +781,11 @@
   "walletSeed": {
     "message": "Bous Seed"
   },
-  "welcomeBack": {
-    "message": "Bon Retou!"
-  },
   "welcome": {
     "message": "Byenveni nan MetaMask"
+  },
+  "welcomeBack": {
+    "message": "Bon Retou!"
   },
   "yesLetsTry": {
     "message": "Wi, ann eseye"
@@ -796,13 +793,13 @@
   "youNeedToAllowCameraAccess": {
     "message": "Ou bezwen bay kamera aksè pou sèvi ak fonksyon sa."
   },
-  "yourSigRequested": {
-    "message": "Yo mande siyati ou"
-  },
   "youSign": {
     "message": "Ou ap siyen kounya"
   },
   "yourPrivateSeedPhrase": {
     "message": "Seed fraz prive ou a"
+  },
+  "yourSigRequested": {
+    "message": "Yo mande siyati ou"
   }
 }

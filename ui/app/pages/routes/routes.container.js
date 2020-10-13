@@ -3,11 +3,9 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import {
   getNetworkIdentifier,
-  hasPermissionRequests,
   getPreferences,
   submittedPendingTransactionsSelector,
 } from '../../selectors'
-import Routes from './routes.component'
 import {
   hideSidebar,
   lockMetamask,
@@ -16,6 +14,8 @@ import {
   setMouseUserState,
 } from '../../store/actions'
 import { pageChanged } from '../../ducks/history/history'
+import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps'
+import Routes from './routes.component'
 
 function mapStateToProps (state) {
   const { appState } = state
@@ -44,7 +44,6 @@ function mapStateToProps (state) {
     isMouseUser: state.appState.isMouseUser,
     providerId: getNetworkIdentifier(state),
     autoLockTimeLimit,
-    hasPermissionsRequests: hasPermissionRequests(state),
   }
 }
 
@@ -56,6 +55,7 @@ function mapDispatchToProps (dispatch) {
     setMouseUserState: (isMouseUser) => dispatch(setMouseUserState(isMouseUser)),
     setLastActiveTime: () => dispatch(setLastActiveTime()),
     pageChanged: (path) => dispatch(pageChanged(path)),
+    prepareToLeaveSwaps: () => dispatch(prepareToLeaveSwaps()),
   }
 }
 

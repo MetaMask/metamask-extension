@@ -1,7 +1,4 @@
 {
-  "reject": {
-    "message": "Odmítnout"
-  },
   "account": {
     "message": "Účet"
   },
@@ -64,23 +61,23 @@
   "confirm": {
     "message": "Potvrdit"
   },
-  "confirmed": {
-    "message": "Potvrzeno"
-  },
   "confirmPassword": {
     "message": "Potvrdit heslo"
+  },
+  "confirmed": {
+    "message": "Potvrzeno"
   },
   "connectingToKovan": {
     "message": "Připojuji se k Kovan Test Network"
   },
   "connectingToMainnet": {
-    "message": "Připojuji se k Main Ethereum Network"
-  },
-  "connectingToRopsten": {
-    "message": "Připojuji se k Ropsten Test Network"
+    "message": "Připojuji se k Ethereum Mainnet"
   },
   "connectingToRinkeby": {
     "message": "Připojuji se k Rinkeby Test Network"
+  },
+  "connectingToRopsten": {
+    "message": "Připojuji se k Ropsten Test Network"
   },
   "continueToCoinSwitch": {
     "message": "Přejít na CoinSwitch"
@@ -91,11 +88,11 @@
   "copiedExclamation": {
     "message": "Zkopírováno!"
   },
-  "copyToClipboard": {
-    "message": "Kopírovat do schránky"
-  },
   "copyPrivateKey": {
     "message": "Toto je váš privátní klíč (kliknutím zkopírujte)"
+  },
+  "copyToClipboard": {
+    "message": "Kopírovat do schránky"
   },
   "create": {
     "message": "Vytvořit"
@@ -106,17 +103,17 @@
   "customGas": {
     "message": "Nastavit palivo"
   },
-  "customToken": {
-    "message": "Vlastní token"
-  },
   "customRPC": {
     "message": "Vlastní RPC"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Desetinných míst musí být od 0 do 36."
+  "customToken": {
+    "message": "Vlastní token"
   },
   "decimal": {
     "message": "Počet desetinných míst přesnosti"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Desetinných míst musí být od 0 do 36."
   },
   "defaultNetwork": {
     "message": "Výchozí síť pro Etherové transakce je Main Net."
@@ -222,14 +219,11 @@
   "invalidAddressRecipient": {
     "message": "Adresa příjemce je neplatná"
   },
-  "invalidInput": {
-    "message": "Neplatný vstup."
+  "invalidBlockExplorerURL": {
+    "message": "Neplatné Block Explorer URI"
   },
   "invalidRPC": {
     "message": "Neplatné RPC URI"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Neplatné Block Explorer URI"
   },
   "jsonFile": {
     "message": "JSON soubor",
@@ -250,9 +244,6 @@
   "loadingTokens": {
     "message": "Načítám tokeny..."
   },
-  "unlock": {
-    "message": "Přihlásit"
-  },
   "lock": {
     "message": "Odhlásit"
   },
@@ -262,11 +253,11 @@
   "metamaskDescription": {
     "message": "MetaMask je bezpečný osobní trezor pro Ethereum."
   },
-  "myAccounts": {
-    "message": "Moje účty"
-  },
   "mustSelectOne": {
     "message": "Musíte zvolit aspoň 1 token."
+  },
+  "myAccounts": {
+    "message": "Moje účty"
   },
   "needEtherInWallet": {
     "message": "Potřebujete Ether v peněžence, abyste mohli pomocí MetaMasku interagovat s decentralizovanými aplikacemi."
@@ -303,11 +294,11 @@
   "noTransactions": {
     "message": "Žádné transakce"
   },
-  "passwordsDontMatch": {
-    "message": "Hesla nejsou stejná"
-  },
   "passwordNotLongEnough": {
     "message": "Heslo není dost dlouhé"
+  },
+  "passwordsDontMatch": {
+    "message": "Hesla nejsou stejná"
   },
   "pastePrivateKey": {
     "message": "Vložte zde svůj privátní klíč:",
@@ -335,17 +326,20 @@
   "recipientAddress": {
     "message": "Adresa příjemce"
   },
+  "reject": {
+    "message": "Odmítnout"
+  },
   "rejected": {
     "message": "Odmítnuto"
+  },
+  "required": {
+    "message": "Povinné"
   },
   "resetAccount": {
     "message": "Resetovat účet"
   },
   "restoreFromSeed": {
     "message": "Obnovit z seed fráze"
-  },
-  "required": {
-    "message": "Povinné"
   },
   "revealSeedWords": {
     "message": "Zobrazit slova klíčové fráze"
@@ -358,6 +352,9 @@
   },
   "search": {
     "message": "Hledat"
+  },
+  "searchTokens": {
+    "message": "Hledat tokeny"
   },
   "secretPhrase": {
     "message": "Zadejte svých 12 slov tajné fráze k obnovení trezoru."
@@ -380,17 +377,20 @@
   "sendTokens": {
     "message": "Odeslat tokeny"
   },
-  "searchTokens": {
-    "message": "Hledat tokeny"
-  },
   "settings": {
     "message": "Nastavení"
   },
   "showPrivateKeys": {
     "message": "Zobrazit privátní klíče"
   },
+  "sigRequest": {
+    "message": "Požadavek podpisu"
+  },
   "sign": {
     "message": "Podepsat"
+  },
+  "signNotice": {
+    "message": "Podepsání zprávy může mít \nnebezpečný vedlejší učinek. Podepisujte zprávy pouze ze \nstránek, kterým plně důvěřujete celým svým účtem.\n Tato nebezpečná metoda bude odebrána v budoucí verzi. "
   },
   "signatureRequest": {
     "message": "Požadavek podpisu"
@@ -398,20 +398,14 @@
   "signed": {
     "message": "Podepsáno"
   },
-  "signNotice": {
-    "message": "Podepsání zprávy může mít \nnebezpečný vedlejší učinek. Podepisujte zprávy pouze ze \nstránek, kterým plně důvěřujete celým svým účtem.\n Tato nebezpečná metoda bude odebrána v budoucí verzi. "
-  },
-  "sigRequest": {
-    "message": "Požadavek podpisu"
+  "stateLogError": {
+    "message": "Chyba během získávání stavových protokolů."
   },
   "stateLogs": {
     "message": "Stavové protokoly"
   },
   "stateLogsDescription": {
     "message": "Stavové protokoly obsahují vaše veřejné adresy účtů a odeslané transakce."
-  },
-  "stateLogError": {
-    "message": "Chyba během získávání stavových protokolů."
   },
   "submitted": {
     "message": "Odesláno"
@@ -459,6 +453,9 @@
   "unknownNetwork": {
     "message": "Neznámá soukromá síť"
   },
+  "unlock": {
+    "message": "Přihlásit"
+  },
   "urlErrorMsg": {
     "message": "URI vyžadují korektní HTTP/HTTPS prefix."
   },
@@ -477,10 +474,10 @@
   "welcome": {
     "message": "Vítejte v MetaMask"
   },
-  "yourSigRequested": {
-    "message": "Je vyžadován váš podpis"
-  },
   "youSign": {
     "message": "Podepisujete"
+  },
+  "yourSigRequested": {
+    "message": "Je vyžadován váš podpis"
   }
 }

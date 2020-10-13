@@ -4,13 +4,13 @@ import { useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import SelectedAccount from '../selected-account'
 import ConnectedStatusIndicator from '../connected-status-indicator'
-import AccountOptionsMenu from './account-options-menu'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
 import { CONNECTED_ACCOUNTS_ROUTE } from '../../../helpers/constants/routes'
 import { useI18nContext } from '../../../hooks/useI18nContext'
 import { useMetricEvent } from '../../../hooks/useMetricEvent'
 import { getOriginOfCurrentTab } from '../../../selectors'
+import AccountOptionsMenu from './account-options-menu'
 
 export default function MenuBar () {
   const t = useI18nContext()

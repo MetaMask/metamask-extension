@@ -12,6 +12,7 @@ import ObservableStore from 'obs-store'
  * a cache of account balances in local storage
  */
 export default class CachedBalancesController {
+
   /**
    * Creates a new controller instance
    *
@@ -23,9 +24,7 @@ export default class CachedBalancesController {
     this.accountTracker = accountTracker
     this.getNetwork = getNetwork
 
-    const initState = Object.assign({
-      cachedBalances: {},
-    }, opts.initState)
+    const initState = { cachedBalances: {}, ...opts.initState }
     this.store = new ObservableStore(initState)
 
     this._registerUpdates()

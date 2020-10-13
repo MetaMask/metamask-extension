@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import SendContent from './send-content.component'
 import {
   getSendTo,
   accountsWithSendEtherInfoSelector,
@@ -7,12 +6,13 @@ import {
 } from '../../../selectors'
 
 import * as actions from '../../../store/actions'
+import SendContent from './send-content.component'
 
 function mapStateToProps (state) {
   const ownedAccounts = accountsWithSendEtherInfoSelector(state)
   const to = getSendTo(state)
   return {
-    isOwnedAccount: !!ownedAccounts.find(({ address }) => address.toLowerCase() === to.toLowerCase()),
+    isOwnedAccount: Boolean(ownedAccounts.find(({ address }) => address.toLowerCase() === to.toLowerCase())),
     contact: getAddressBookEntry(state, to),
     to,
   }

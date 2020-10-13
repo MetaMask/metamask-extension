@@ -1,6 +1,6 @@
+import assert from 'assert'
 import React from 'react'
 import PropTypes from 'prop-types'
-import assert from 'assert'
 import { shallow, mount } from 'enzyme'
 import sinon from 'sinon'
 import { Provider } from 'react-redux'
@@ -32,7 +32,8 @@ describe('TokenInput Component', function () {
             }}
           />
         </Provider>,
-        { context: { t },
+        {
+          context: { t },
           childContextTypes: {
             t: PropTypes.func,
           },
@@ -66,7 +67,8 @@ describe('TokenInput Component', function () {
             tokenExchangeRates={{ '0x1': 2 }}
           />
         </Provider>,
-        { context: { t },
+        {
+          context: { t },
           childContextTypes: {
             t: PropTypes.func,
           },

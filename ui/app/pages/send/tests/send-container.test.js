@@ -21,7 +21,7 @@ proxyquire('../send.container.js', {
       return () => ({})
     },
   },
-  'react-router-dom': { withRouter: () => {} },
+  'react-router-dom': { withRouter: () => undefined },
   'redux': { compose: (_, arg2) => () => arg2() },
   '../../store/actions': actionSpies,
   '../../ducks/send/send.duck': duckActionSpies,
@@ -67,7 +67,7 @@ describe('send container', function () {
       it('should dispatch an updateGasData action when editingTransactionId is falsy', function () {
         const { gasPrice, selectedAddress, sendToken, blockGasLimit, to, value, data } = mockProps
         mapDispatchToPropsObject.updateAndSetGasLimit(
-          Object.assign({}, mockProps, { editingTransactionId: false }),
+          { ...mockProps, editingTransactionId: false },
         )
         assert(dispatchSpy.calledOnce)
         assert.deepEqual(
@@ -85,7 +85,7 @@ describe('send container', function () {
       }
 
       it('should dispatch an action', function () {
-        mapDispatchToPropsObject.updateSendTokenBalance(Object.assign({}, mockProps))
+        mapDispatchToPropsObject.updateSendTokenBalance({ ...mockProps })
         assert(dispatchSpy.calledOnce)
         assert.deepEqual(
           actionSpies.updateSendTokenBalance.getCall(0).args[0],

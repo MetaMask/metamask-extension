@@ -1,8 +1,8 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import SendAmountRow from '../send-amount-row.component.js'
+import SendAmountRow from '../send-amount-row.component'
 
 import SendRowWrapper from '../../send-row-wrapper/send-row-wrapper.component'
 import AmountMaxButton from '../amount-max-button/amount-max-button.container'
@@ -158,9 +158,9 @@ function shallowRenderSendAmountRow () {
       updateGasFeeError={updateGasFeeError}
       updateSendAmount={updateSendAmount}
       updateSendAmountError={updateSendAmountError}
-      updateGas={() => {}}
+      updateGas={() => undefined}
     />
-  ), { context: { t: (str) => str + '_t' } })
+  ), { context: { t: (str) => `${str}_t` } })
   const instance = wrapper.instance()
   const updateAmount = sinon.spy(instance, 'updateAmount')
   const updateGas = sinon.spy(instance, 'updateGas')

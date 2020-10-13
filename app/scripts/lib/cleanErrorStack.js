@@ -4,7 +4,7 @@
  * @returns {Error} - Error with clean stack trace.
  */
 export default function cleanErrorStack (err) {
-  let name = err.name
+  let { name } = err
   name = (name === undefined) ? 'Error' : String(name)
 
   let msg = err.message
@@ -15,7 +15,7 @@ export default function cleanErrorStack (err) {
   } else if (msg === '') {
     err.stack = err.name
   } else {
-    err.stack = err.name + ': ' + err.message
+    err.stack = `${err.name}: ${err.message}`
   }
 
   return err

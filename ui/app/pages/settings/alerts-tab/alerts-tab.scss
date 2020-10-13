@@ -13,7 +13,11 @@
     height: 100%;
   }
 
-  &__body > :nth-child(1n) {
+  &__body > :first-child {
+    padding-left: 32px;
+  }
+
+  &__body > :nth-child(3n+4) {
     padding-left: 32px;
   }
 

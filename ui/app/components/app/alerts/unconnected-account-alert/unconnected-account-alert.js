@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { ALERT_STATE } from '../../../../ducks/alerts'
 import {
-  ALERT_STATE,
   connectAccount,
   dismissAlert,
   dismissAndDisableAlert,
@@ -19,7 +19,7 @@ import { isExtensionUrl } from '../../../../helpers/utils/util'
 import Popover from '../../../ui/popover'
 import Button from '../../../ui/button'
 import Checkbox from '../../../ui/check-box'
-import Tooltip from '../../../ui/tooltip-v2'
+import Tooltip from '../../../ui/tooltip'
 import ConnectedAccountsList from '../../connected-accounts-list'
 import { useI18nContext } from '../../../../hooks/useI18nContext'
 
@@ -80,7 +80,8 @@ const UnconnectedAccountAlert = () => {
         <Button
           disabled={alertState === LOADING}
           onClick={onClose}
-          type="secondary"
+          type="primary"
+          rounded
           className="unconnected-account-alert__dismiss-button"
         >
           { t('dismiss') }
@@ -94,6 +95,7 @@ const UnconnectedAccountAlert = () => {
       title={isExtensionUrl(origin) ? t('currentExtension') : new URL(origin).host}
       subtitle={t('currentAccountNotConnected')}
       onClose={onClose}
+      className="unconnected-account-alert"
       contentClassName="unconnected-account-alert__content"
       footerClassName="unconnected-account-alert__footer"
       footer={footer}

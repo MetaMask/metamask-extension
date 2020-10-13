@@ -1,13 +1,4 @@
 {
-  "chartOnlyAvailableEth": {
-    "message": "ቻርት የሚገኘው በ Ethereum አውታረ መረቦች ላይ ብቻ ነው።"
-  },
-  "contractInteraction": {
-    "message": "የግንኙነት ተግባቦት"
-  },
-  "reject": {
-    "message": "አይቀበሉ"
-  },
   "about": {
     "message": "ስለ"
   },
@@ -38,20 +29,20 @@
   "activityLog": {
     "message": "የእንቅስቃሴ ምዝግብ ማስታወሻ"
   },
+  "addAcquiredTokens": {
+    "message": "MetaMask በመጠቀም የገዟቸውን ተለዋጭ ስሞች ያክሉ"
+  },
+  "addAlias": {
+    "message": "ተለዋጭ ስም አክል"
+  },
   "addNetwork": {
     "message": "አውታረ መረብ አክል"
   },
   "addRecipient": {
     "message": "ተቀባይ አክል"
   },
-  "advanced": {
-    "message": "የላቀ"
-  },
-  "advancedSettingsDescription": {
-    "message": "አዘጋጅ ባህርያትን መድረስ፣ የስቴት መዛግብትን ማውረድ፣ መለያን ዳግም መሙላት፣ testnets እና ብጁ RPC አዋቅር።"
-  },
-  "advancedOptions": {
-    "message": "የላቁ አማራጮች"
+  "addSuggestedTokens": {
+    "message": "የተጠቆሙ ተለዋጭ ስሞችን አክል"
   },
   "addToAddressBook": {
     "message": "በአድራሻ መዝገብ ላይ አክል"
@@ -59,20 +50,20 @@
   "addToAddressBookModalPlaceholder": {
     "message": "ለምሳሌ፡ ጆን ዲ."
   },
-  "addAlias": {
-    "message": "ተለዋጭ ስም አክል"
-  },
   "addToken": {
     "message": "ተለዋጭ ስም አክል"
   },
   "addTokens": {
     "message": "ተለዋጭ ስሞችን አክል"
   },
-  "addSuggestedTokens": {
-    "message": "የተጠቆሙ ተለዋጭ ስሞችን አክል"
+  "advanced": {
+    "message": "የላቀ"
   },
-  "addAcquiredTokens": {
-    "message": "MetaMask በመጠቀም የገዟቸውን ተለዋጭ ስሞች ያክሉ"
+  "advancedOptions": {
+    "message": "የላቁ አማራጮች"
+  },
+  "advancedSettingsDescription": {
+    "message": "አዘጋጅ ባህርያትን መድረስ፣ የስቴት መዛግብትን ማውረድ፣ መለያን ዳግም መሙላት፣ testnets እና ብጁ RPC አዋቅር።"
   },
   "amount": {
     "message": "ሰርዝ "
@@ -94,14 +85,14 @@
   "asset": {
     "message": "ሐብት"
   },
-  "attemptingConnect": {
-    "message": "ከ blockchain ጋር ለመገናኘት መሞከር።"
-  },
   "attemptToCancel": {
     "message": "ለመሰረዝ ይሞክራሉ?"
   },
   "attemptToCancelDescription": {
     "message": "ይህን ሙከራ ማቅረብ የመጀመሪያው ግብይትዎ እንደሚሰረዝ ዋስትና አይሰጥም። የመሰረዝ ሙከራው ከተሳካ፣ ከላይ የተጠቀሰውን የግብይት ክፍያ እንዲከፍሉ ይደረጋሉ።"
+  },
+  "attemptingConnect": {
+    "message": "ከ blockchain ጋር ለመገናኘት መሞከር።"
   },
   "attributions": {
     "message": "አይነታ"
@@ -121,11 +112,11 @@
   "backToAll": {
     "message": "ወደ ሁሉም ተመለስ"
   },
-  "backupApprovalNotice": {
-    "message": "የቋትዎንና የገነዘብዎን ደህንነት ለማስጠበቅ ሚስጥራዊ የማስመለሻ ኮድዎን መጠባበቂያ ይያዙ።"
-  },
   "backupApprovalInfo": {
     "message": "መሳሪያዎ ቢጠፋ፣ የይለፍ ቃልዎን ቢረሱ፣ MetaMask እንደገና መጫን ቢያስፈልግዎ ወይም በሌላ መሳሪያ ወደ ቋትዎ ለመድረስ ቢፈልጉ ይህ ሚስጥራዊ ኮድ ቋትዎን መልሶ ለማግኘት ያስፈልጋል።"
+  },
+  "backupApprovalNotice": {
+    "message": "የቋትዎንና የገነዘብዎን ደህንነት ለማስጠበቅ ሚስጥራዊ የማስመለሻ ኮድዎን መጠባበቂያ ይያዙ።"
   },
   "backupNow": {
     "message": "አሁን መጠባበቂያ ያዝ"
@@ -155,32 +146,20 @@
   "builtInCalifornia": {
     "message": "MetaMask ካሊፎርኒያ ውስጥ ተዘጋጅቶ የተገነባ ነው።"
   },
-  "buyWithWyre": {
-    "message": "ETH በ Wyre ይግዙ"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre ክሬዲት ካርድ ተጠቅመው ETH በቀጥታ በ MetaMask መለያዎ ላይ እንዲያስቀምጡ ያስችልዎታል።"
-  },
   "buyCoinSwitch": {
     "message": "በ CoinSwitch ላይ ይግዙ"
   },
   "buyCoinSwitchExplainer": {
     "message": "CoinSwitch ከ300 በላይ ክሪፕቶ ከረንሲዎችን በጥሩ ዋጋ ለመመንዘር ባለ አንድ ማቆሚያ መዳረሻ ነው።"
   },
+  "buyWithWyre": {
+    "message": "ETH በ Wyre ይግዙ"
+  },
+  "buyWithWyreDescription": {
+    "message": "Wyre ክሬዲት ካርድ ተጠቅመው ETH በቀጥታ በ MetaMask መለያዎ ላይ እንዲያስቀምጡ ያስችልዎታል።"
+  },
   "bytes": {
     "message": "ባይት"
-  },
-  "off": {
-    "message": "አጥፋ"
-  },
-  "ok": {
-    "message": "እሺ"
-  },
-  "on": {
-    "message": "በርቷል"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "ኤክስፕሎረር URL አግድ (አማራጭ)"
   },
   "cancel": {
     "message": "ሰርዝ"
@@ -197,20 +176,20 @@
   "chainId": {
     "message": "የሰንሰለት መታወቂያ"
   },
+  "chartOnlyAvailableEth": {
+    "message": "ቻርት የሚገኘው በ Ethereum አውታረ መረቦች ላይ ብቻ ነው።"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "ከሃርድዌርዎ ቋት ጋር ለመገናኘት MetaMask በ Google Chrome ላይ መጠቀም አለብዎት።"
+  },
   "clickToRevealSeed": {
     "message": "ሚስጥራዊ ቃላትን ለመግለጽ እዚህ ጠቅ ያድርጉ"
   },
   "close": {
     "message": "ዝጋ"
   },
-  "chromeRequiredForHardwareWallets": {
-    "message": "ከሃርድዌርዎ ቋት ጋር ለመገናኘት MetaMask በ Google Chrome ላይ መጠቀም አለብዎት።"
-  },
   "confirm": {
     "message": "አረጋግጥ"
-  },
-  "confirmed": {
-    "message": "ተረጋግጧል"
   },
   "confirmPassword": {
     "message": "የይለፍ ቃል ያረጋግጡ"
@@ -218,17 +197,23 @@
   "confirmSecretBackupPhrase": {
     "message": "ሚስጥራዊ የመጠባበቂያ ምዕራፍዎን ያረጋግጡ"
   },
+  "confirmed": {
+    "message": "ተረጋግጧል"
+  },
   "congratulations": {
     "message": "እንኳን ደስ አለዎት"
-  },
-  "connectHardwareWallet": {
-    "message": "ከሃርድዌር ቋት ጋር ይገናኙ"
   },
   "connect": {
     "message": "ይገናኙ"
   },
+  "connectHardwareWallet": {
+    "message": "ከሃርድዌር ቋት ጋር ይገናኙ"
+  },
   "connectingTo": {
     "message": "ከ $1ጋር መገናኘት"
+  },
+  "connectingToGoerli": {
+    "message": "ከ Goerli የሙከራ አውታረ መረብ ጋር መገናኘት"
   },
   "connectingToKovan": {
     "message": "ከ Kovan የሙከራ አውታረ መረብ መገናኘት"
@@ -236,53 +221,50 @@
   "connectingToMainnet": {
     "message": "ከዋናው የ Ethereum አውታረ መረብ ጋር መገናኘት"
   },
-  "connectingToRopsten": {
-    "message": "ከ Ropsten የሙከራ አውታረ መረብ ጋር በመገናኘት ላይ"
-  },
   "connectingToRinkeby": {
     "message": "ከ Rinkeby የሙከራ አውታረ መረብ ጋር በመገናኘት ላይ"
   },
-  "connectingToLocalhost": {
-    "message": "ከ Localhost 8545 ጋር መገናኘት"
-  },
-  "connectingToGoerli": {
-    "message": "ከ Goerli የሙከራ አውታረ መረብ ጋር መገናኘት"
-  },
-  "continueToWyre": {
-    "message": "ወደ Wyre ይቀጥሉ"
+  "connectingToRopsten": {
+    "message": "ከ Ropsten የሙከራ አውታረ መረብ ጋር በመገናኘት ላይ"
   },
   "continueToCoinSwitch": {
     "message": "ወደ CoinSwitch ይቀጥሉ"
   },
+  "continueToWyre": {
+    "message": "ወደ Wyre ይቀጥሉ"
+  },
   "contractDeployment": {
     "message": "የኮንትራት ስምሪት"
+  },
+  "contractInteraction": {
+    "message": "የግንኙነት ተግባቦት"
   },
   "copiedExclamation": {
     "message": "ተቀድቷል"
   },
-  "copyAddress": {
-    "message": "አድራሻን ወደ ቅንጥብ ሰሌዳ ቅዳ"
-  },
-  "copyTransactionId": {
-    "message": "የግብይት መለያ ቁጥርን ቅዳ"
-  },
   "copiedTransactionId": {
     "message": "የተቀዳ የግብይት መለያ ቁጥር"
   },
-  "copyToClipboard": {
-    "message": "ወደ ቅንጥብ ሰሌዳ ገልብጥ"
+  "copyAddress": {
+    "message": "አድራሻን ወደ ቅንጥብ ሰሌዳ ቅዳ"
   },
   "copyPrivateKey": {
     "message": "የግል ቁልፍዎ ይህ ነው (ለመቅዳት ጠቅ ያድርጉ)"
   },
+  "copyToClipboard": {
+    "message": "ወደ ቅንጥብ ሰሌዳ ገልብጥ"
+  },
+  "copyTransactionId": {
+    "message": "የግብይት መለያ ቁጥርን ቅዳ"
+  },
   "create": {
     "message": "ፍጠር"
   },
-  "createAccount": {
-    "message": "መለያ ፍጠር"
-  },
   "createAWallet": {
     "message": "ቋት ፍጠር"
+  },
+  "createAccount": {
+    "message": "መለያ ፍጠር"
   },
   "createPassword": {
     "message": "የይለፍ ቃል ፍጠር"
@@ -299,17 +281,17 @@
   "customGasSubTitle": {
     "message": "ክፍያ መጨመር የመከወኛ ጊዜን ሊቀንስ ቢችልም ይህ ግን ዋስትና የለውም።"
   },
-  "customToken": {
-    "message": "ብጁ ተለዋጭ ስም"
-  },
   "customRPC": {
     "message": "ብጁ RPC"
   },
-  "decimalsMustZerotoTen": {
-    "message": "አስርዮሽ ቢያንስ 0 ቢበዛ ደግሞ 36 መሆን አለባቸው።"
+  "customToken": {
+    "message": "ብጁ ተለዋጭ ስም"
   },
   "decimal": {
     "message": "የትክክለኛነት አስርዮሽ"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "አስርዮሽ ቢያንስ 0 ቢበዛ ደግሞ 36 መሆን አለባቸው።"
   },
   "defaultNetwork": {
     "message": "የ Ether ግብይቶች ንቡር አውታረ መረብ Main Net ነው።"
@@ -319,6 +301,12 @@
   },
   "deleteAccount": {
     "message": "መለያን ሰርዝ"
+  },
+  "deleteNetwork": {
+    "message": "አውታረ መረብ ይሰረዝ?"
+  },
+  "deleteNetworkDescription": {
+    "message": "ይህን አውታረ መረብ ለመሰረዝ እንደሚፈልጉ እርግጠኛ ነዎት?"
   },
   "deposit": {
     "message": "ማጠራቀም"
@@ -338,6 +326,9 @@
   "done": {
     "message": "ተጠናቅቋል"
   },
+  "dontHaveAHardwareWallet": {
+    "message": "የሃርድዌር ቋት የለዎትም?"
+  },
   "downloadGoogleChrome": {
     "message": "Google Chrome አውርድ"
   },
@@ -346,9 +337,6 @@
   },
   "downloadStateLogs": {
     "message": "የስቴት መዛግብትን አውርድ"
-  },
-  "dontHaveAHardwareWallet": {
-    "message": "የሃርድዌር ቋት የለዎትም?"
   },
   "dropped": {
     "message": "የተጣለ"
@@ -361,6 +349,9 @@
   },
   "endOfFlowMessage1": {
     "message": "ፈተናውን አልፈዋል - የዘር ሐረግዎን ደህንነቱ በተጠበቀ መንገድ ያስቀምጡ፣ የእርስዎ ሃላፊነት ነው! "
+  },
+  "endOfFlowMessage10": {
+    "message": "ሁሉም ተጠናቅቋል"
   },
   "endOfFlowMessage2": {
     "message": "ደህንነቱ በተጠበቀ መንገድ የማከማቻ ፍንጮች"
@@ -386,14 +377,11 @@
   "endOfFlowMessage9": {
     "message": "ተጨማሪ ይማሩ"
   },
-  "endOfFlowMessage10": {
-    "message": "ሁሉም ተጠናቅቋል"
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "የ ENS ስም በአሁኑ ኔትወርክ ላይ አልተገኘም። ወደ ዋናው የ Ethereum አውታረ መረብ ለመቀየር ይሞክሩ።"
   },
   "ensRegistrationError": {
     "message": "በ ENS የስም ምዝገባ ላይ የተፈጠረ ስህተት"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "የ ENS ስም በአሁኑ ኔትወርክ ላይ አልተገኘም። ወደ ዋናው የ Ethereum አውታረ መረብ ለመቀየር ይሞክሩ።"
   },
   "enterAnAlias": {
     "message": "ተለዋጭ ስም ያስገቡ"
@@ -404,14 +392,14 @@
   "enterPasswordContinue": {
     "message": "ለመቀጠል የይለፍ ቃል ያስገቡ"
   },
+  "estimatedProcessingTimes": {
+    "message": "የሚገመት የክወና ጊዜያት"
+  },
   "ethereumPublicAddress": {
     "message": "Ethereum ሕዝባዊ አድራሻ"
   },
   "etherscanView": {
     "message": "መለያውን በ Etherscan ላይ ይመልከቱ"
-  },
-  "estimatedProcessingTimes": {
-    "message": "የሚገመት የክወና ጊዜያት"
   },
   "expandView": {
     "message": "እይታን ዘርጋ"
@@ -448,14 +436,11 @@
   "gasLimit": {
     "message": "የነዳጅ ገደብ"
   },
-  "gasLimitInfoModalContent": {
+  "gasLimitInfoTooltipContent": {
     "message": "የነዳጅ ገደብ እርስዎ ወጪ ለማድረግ ዝግጁ የሆኑት ከፍተኛው የነዳጅ መጠን ማለት ነው።"
   },
   "gasLimitTooLow": {
     "message": "የነዳጅ ገደብ ቢያንስ 21000 መሆን አለበት"
-  },
-  "gasUsed": {
-    "message": "ጥቅም ላይ የዋለ ነዳጅ"
   },
   "gasPrice": {
     "message": "የነዳጅ ዋጋ (GWEI)"
@@ -463,11 +448,11 @@
   "gasPriceExtremelyLow": {
     "message": "የነዳጅ ዋጋ እጅግ በጣም ዝቅ ያለ ነው"
   },
-  "gasPriceInfoModalContent": {
+  "gasPriceInfoTooltipContent": {
     "message": "የነዳጅ ዋጋ እርስዎ ለእያንዳንዱ የነዳጅ መጠን መክፈል የሚፈልጉትን የ Ether መጠን ይገልጻል።"
   },
-  "gasPriceNoDenom": {
-    "message": "የነዳጅ ዋጋ"
+  "gasUsed": {
+    "message": "ጥቅም ላይ የዋለ ነዳጅ"
   },
   "general": {
     "message": "አጠቃላይ"
@@ -487,6 +472,9 @@
   },
   "getStarted": {
     "message": "አስጀማሪ መመሪያ"
+  },
+  "goerli": {
+    "message": "የ Goerli የሙከራ አውታረ መረብ"
   },
   "happyToSeeYou": {
     "message": "እርስዎን በማየታችን ደስተኛ ነን።"
@@ -535,6 +523,9 @@
   "importAccountSeedPhrase": {
     "message": "መለያን በዘር ሐረግ አስመጣ"
   },
+  "importUsingSeed": {
+    "message": "የመለያ የዘር ሐረግ በመጠቀም ያስመጡ"
+  },
   "importWallet": {
     "message": "ቋት አስመጣ"
   },
@@ -544,9 +535,6 @@
   "imported": {
     "message": "ከውጭ የመጣ",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "importUsingSeed": {
-    "message": "የመለያ የዘር ሐረግ በመጠቀም ያስመጡ"
   },
   "infoHelp": {
     "message": "መረጃ እና እገዛ "
@@ -569,20 +557,14 @@
   "invalidAddressRecipient": {
     "message": "የተቀባይ አድራሻ ትክክል አይደለም"
   },
-  "knownAddressRecipient": {
-    "message": "የሚታወቅ የግንኙነት አድራሻ።"
-  },
   "invalidAddressRecipientNotEthNetwork": {
     "message": "ETH አውታረ መረብ አይደለም፣ ወደ ትናንሽ ፊደላት ቀይር"
   },
-  "invalidInput": {
-    "message": "ልክ ያልሆነ ግቤት።"
+  "invalidBlockExplorerURL": {
+    "message": "ልክ ያልሆነ Block Explorer ዩአርኤል"
   },
   "invalidRPC": {
     "message": "ልክ ያልሆነ RPC ዩአርኤል"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "ልክ ያልሆነ Block Explorer ዩአርኤል"
   },
   "invalidSeedPhrase": {
     "message": "የተሳሳተ የዘር ሐረግ"
@@ -591,11 +573,11 @@
     "message": "JSON ፋይል",
     "description": "format for importing an account"
   },
+  "knownAddressRecipient": {
+    "message": "የሚታወቅ የግንኙነት አድራሻ።"
+  },
   "kovan": {
     "message": "Kovan የሙከራ አውታረ መረብ"
-  },
-  "max": {
-    "message": "ከፍተኛ"
   },
   "learnMore": {
     "message": "የበለጠ ይወቁ"
@@ -615,14 +597,14 @@
   "liveGasPricePredictions": {
     "message": "ቀጥታ የነዳጅ ዋጋ ትንበያዎች"
   },
+  "loadMore": {
+    "message": "ተጨማሪ ጫን"
+  },
   "loading": {
     "message": "በመጫን ላይ…"
   },
   "loadingTokens": {
     "message": "ተለዋጭ ስሞችን በመጫን ላይ..."
-  },
-  "loadMore": {
-    "message": "ተጨማሪ ጫን"
   },
   "lock": {
     "message": "ዘግተህ ውጣ"
@@ -630,11 +612,14 @@
   "mainnet": {
     "message": "ዋነኛ የ Ethereum አውታረ መረብ "
   },
-  "memorizePhrase": {
-    "message": "ይህን ሐረግ ያስታውሱ።"
+  "max": {
+    "message": "ከፍተኛ"
   },
   "memo": {
     "message": "አጭር ማስታወሻ"
+  },
+  "memorizePhrase": {
+    "message": "ይህን ሐረግ ያስታውሱ።"
   },
   "message": {
     "message": "መልዕክት"
@@ -648,6 +633,9 @@
   "mobileSyncText": {
     "message": "እርስዎ መሆንዎትን ለማረጋገጥ እባከዎ የይለፍ ቃልዎን ያስገቡ!"
   },
+  "mustSelectOne": {
+    "message": "ቢያንስ 1 ተለዋጭ ስም መምረጥ አለብዎ።"
+  },
   "myAccounts": {
     "message": "የእኔ መለያዎች"
   },
@@ -656,9 +644,6 @@
   },
   "myWalletAccountsDescription": {
     "message": "በ MetaMask የተፈጠሩ መለያዎችዎ በሙሉ በራስ ሰር መንገድ ወደዚህ ክፍል ይታከላሉ።"
-  },
-  "mustSelectOne": {
-    "message": "ቢያንስ 1 ተለዋጭ ስም መምረጥ አለብዎ።"
   },
   "needEtherInWallet": {
     "message": "MetaMask በመጠቀም ያልተማከሉ መተግበሪያዎች ጋር ግንኙነት ለማድረግ፣ በቋትዎ ውስጥ Ether ያስፈልግዎታል።"
@@ -673,11 +658,11 @@
   "networkName": {
     "message": "የአውታረ መረብ ስም"
   },
-  "networks": {
-    "message": "አውታረ መረቦች"
-  },
   "networkSettingsDescription": {
     "message": "ብጁ የ RPC አውታረ መረቦችን አክልና አርትዕ"
+  },
+  "networks": {
+    "message": "አውታረ መረቦች"
   },
   "nevermind": {
     "message": "ምንም አይደል"
@@ -698,35 +683,14 @@
   "newContract": {
     "message": "አዲስ ኮንትራት"
   },
-  "newPassword": {
-    "message": "አዲስ የይለፍ ቃል (ቢያንስ 8 ቁምፊዎች)"
-  },
   "newNetwork": {
     "message": "አዲስ አውታረ መረብ"
   },
+  "newPassword": {
+    "message": "አዲስ የይለፍ ቃል (ቢያንስ 8 ቁምፊዎች)"
+  },
   "newToMetaMask": {
     "message": "ለ MetaMask አዲስ ነዎት?"
-  },
-  "noAlreadyHaveSeed": {
-    "message": "የለም፣ ቀደም ሲል ጀምሮ የዘር ሐረግ አለኝ"
-  },
-  "protectYourKeys": {
-    "message": "ቁልፎችዎን ይጠብቁ!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "ስለ ዘር ሐረግዎ ይጠንቀቁ - ራሳቸውን ከ MetaMask ጋር ለማመሳሰል የሚሞከሩ ድረ ገጾች እናሉ ሰምተናል። MetaMask በጭራሽ የዘር ሐረግዎን አይጠይቅዎትም!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "የሐረግዎን ደህንነት ይጠብቁ። ይም የሆነ አጠራጣሪ ነገር ካዩ ወይም ስለ አንድ ድረ ገጽ እርግጠኛ ካልሆኑ፣ እባክዎ ለ support@metamask.io ኢሜይል ይላኩ"
-  },
-  "rpcUrl": {
-    "message": "አዲስ የ RPC URL"
-  },
-  "optionalChainId": {
-    "message": "የሰንሰለት መለያ ቁጥር (አማራጭ)"
-  },
-  "optionalSymbol": {
-    "message": "ምልክት (አማራጭ)"
   },
   "newTotal": {
     "message": "አዲስ ድምር"
@@ -740,23 +704,41 @@
   "noAddressForName": {
     "message": "በዚህ ስም የተሞላ አድራሻ የለም።"
   },
+  "noAlreadyHaveSeed": {
+    "message": "የለም፣ ቀደም ሲል ጀምሮ የዘር ሐረግ አለኝ"
+  },
   "noConversionRateAvailable": {
     "message": "ምንም የልወጣ ተመን አይገኝም"
   },
   "noTransactions": {
     "message": "ግብይቶች የሉዎትም"
   },
-  "notEnoughGas": {
-    "message": "በቂ ነዳጅ የለም"
+  "noWebcamFound": {
+    "message": "የኮምፒዩተርዎ ካሜራ አልተገኘም። እባክዎ እንደገና ይሞክሩ።"
   },
   "noWebcamFoundTitle": {
     "message": "Webcam አልተገኘም"
   },
-  "noWebcamFound": {
-    "message": "የኮምፒዩተርዎ ካሜራ አልተገኘም። እባክዎ እንደገና ይሞክሩ።"
+  "notEnoughGas": {
+    "message": "በቂ ነዳጅ የለም"
   },
   "ofTextNofM": {
     "message": "ከ"
+  },
+  "off": {
+    "message": "አጥፋ"
+  },
+  "ok": {
+    "message": "እሺ"
+  },
+  "on": {
+    "message": "በርቷል"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "ኤክስፕሎረር URL አግድ (አማራጭ)"
+  },
+  "optionalSymbol": {
+    "message": "ምልክት (አማራጭ)"
   },
   "orderOneHere": {
     "message": "ትሬዞር ወይም ሌጀር በማዘዝ ገንዘብዎን በቀዝቃዛ ማስቀመጫ ውስጥ ያቆዩ"
@@ -776,11 +758,11 @@
   "password": {
     "message": "የይለፍ ቃል፦"
   },
-  "passwordsDontMatch": {
-    "message": "የይለፍ ቃላት ተመሳሳይ አይደሉም"
-  },
   "passwordNotLongEnough": {
     "message": "የይለፍ ቃሉ ርዝመት በቂ አይደለም"
+  },
+  "passwordsDontMatch": {
+    "message": "የይለፍ ቃላት ተመሳሳይ አይደሉም"
   },
   "pastePrivateKey": {
     "message": "የግል ቁልፍዎን ሕብረ ቁምፊ እዚህ ለጥፍ፡",
@@ -814,11 +796,23 @@
   "privateNetwork": {
     "message": "የግል አውታረ መረብ"
   },
+  "protectYourKeys": {
+    "message": "ቁልፎችዎን ይጠብቁ!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "ስለ ዘር ሐረግዎ ይጠንቀቁ - ራሳቸውን ከ MetaMask ጋር ለማመሳሰል የሚሞከሩ ድረ ገጾች እናሉ ሰምተናል። MetaMask በጭራሽ የዘር ሐረግዎን አይጠይቅዎትም!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "የሐረግዎን ደህንነት ይጠብቁ። ይም የሆነ አጠራጣሪ ነገር ካዩ ወይም ስለ አንድ ድረ ገጽ እርግጠኛ ካልሆኑ፣ እባክዎ ለ support@metamask.io ኢሜይል ይላኩ"
+  },
   "queue": {
     "message": "ወረፋ"
   },
   "readdToken": {
     "message": "በመለያ አማራጮችዎ ምናሌ ውስጥ ወደ “ተለዋጭ ስም አክል” በመግባት ለወደፊቱ ይህን ተለዋጭ ስም መልሰው ማከል ይችላሉ።"
+  },
+  "readyToConnect": {
+    "message": "ለመገናኘት ዝግጁ ነዎት?"
   },
   "recents": {
     "message": "የቅርብ ጊዜያት"
@@ -829,65 +823,23 @@
   "recipientAddressPlaceholder": {
     "message": "ፍለጋ፣ ለሕዝብ ክፍት የሆነ አድራሻ (0x), ወይም ENS"
   },
+  "reject": {
+    "message": "አይቀበሉ"
+  },
   "rejectAll": {
     "message": "ሁሉንም አትቀበል"
-  },
-  "rejectTxsN": {
-    "message": "$1ግብይቶችን አትቀበል"
   },
   "rejectTxsDescription": {
     "message": "$1ግብይቶችን በጅምላ ውድቅ ሊያደርጉ ነው።"
   },
+  "rejectTxsN": {
+    "message": "$1ግብይቶችን አትቀበል"
+  },
   "rejected": {
     "message": "ውድቅ የተደረገ"
   },
-  "reset": {
-    "message": "ዳግም አስጀምር"
-  },
-  "resetAccount": {
-    "message": "መለያን እንደገና ይሙሉ"
-  },
-  "resetAccountDescription": {
-    "message": "መለያዎን እንደገና መሙላት የግብይት ታሪዎን ያጠራል።"
-  },
-  "deleteNetwork": {
-    "message": "አውታረ መረብ ይሰረዝ?"
-  },
-  "deleteNetworkDescription": {
-    "message": "ይህን አውታረ መረብ ለመሰረዝ እንደሚፈልጉ እርግጠኛ ነዎት?"
-  },
   "remindMeLater": {
     "message": "ኋላ ላይ አስታውሰኝ"
-  },
-  "restoreFromSeed": {
-    "message": "መለያው ወደነበረበት ይመለስ?"
-  },
-  "restoreAccountWithSeed": {
-    "message": "መለያዎን በዘር ሐረግ ወደነበረበት ይመልሱ"
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "ማረጋገጫ የሚጠባበቁ ጥያቄዎች"
-  },
-  "required": {
-    "message": "የሚያስፈልግ"
-  },
-  "restore": {
-    "message": "እነበረበት መልስ"
-  },
-  "revealSeedWords": {
-    "message": "የዘር ቃላትን ይግለጹ"
-  },
-  "revealSeedWordsTitle": {
-    "message": "የዘር ሐረግ"
-  },
-  "revealSeedWordsDescription": {
-    "message": "ማሰሺያዎችን ከቀየሩ ወይም ኮምፒዩተሮቸን ከአንድ ቦታ ወደ ሌላ ቦታ ካንቀሳቀሱ፣ ወደ መለያዎችዎ ለመድረስ ይህ የዘር ሐረግ ያስፈልግዎታል። ደህንነቱና ሚስጥራዊነቱ በተጠበቀ ቦታ ያስቀምጧቸው።"
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "ይህን ሐረግ ለየትኛውም ሰው አያጋሩ!"
-  },
-  "revealSeedWordsWarning": {
-    "message": "እነዚህ ቃላት ሁሉንም መለያዎችዎን ለመስረቅ ሊውሉ ይችላሉ።"
   },
   "remove": {
     "message": "አስወግድ"
@@ -898,8 +850,44 @@
   "removeAccountDescription": {
     "message": "ይህ መለያ ከቋትዎ ይወገዳል። እባክዎ ከመቀጠልዎ በፊት የዚህ የመጣ መለያ የመጀመሪያው የዘር ሐረግ ወይም የግል ቁልፍ እንዳለዎት ያረጋግጡ። መለያዎችን ከመለያ ተቆልቋይ ማስመጣት ወይም መፍጠር ይችላሉ።"
   },
-  "readyToConnect": {
-    "message": "ለመገናኘት ዝግጁ ነዎት?"
+  "requestsAwaitingAcknowledgement": {
+    "message": "ማረጋገጫ የሚጠባበቁ ጥያቄዎች"
+  },
+  "required": {
+    "message": "የሚያስፈልግ"
+  },
+  "reset": {
+    "message": "ዳግም አስጀምር"
+  },
+  "resetAccount": {
+    "message": "መለያን እንደገና ይሙሉ"
+  },
+  "resetAccountDescription": {
+    "message": "መለያዎን እንደገና መሙላት የግብይት ታሪዎን ያጠራል።"
+  },
+  "restore": {
+    "message": "እነበረበት መልስ"
+  },
+  "restoreAccountWithSeed": {
+    "message": "መለያዎን በዘር ሐረግ ወደነበረበት ይመልሱ"
+  },
+  "restoreFromSeed": {
+    "message": "መለያው ወደነበረበት ይመለስ?"
+  },
+  "revealSeedWords": {
+    "message": "የዘር ቃላትን ይግለጹ"
+  },
+  "revealSeedWordsDescription": {
+    "message": "ማሰሺያዎችን ከቀየሩ ወይም ኮምፒዩተሮቸን ከአንድ ቦታ ወደ ሌላ ቦታ ካንቀሳቀሱ፣ ወደ መለያዎችዎ ለመድረስ ይህ የዘር ሐረግ ያስፈልግዎታል። ደህንነቱና ሚስጥራዊነቱ በተጠበቀ ቦታ ያስቀምጧቸው።"
+  },
+  "revealSeedWordsTitle": {
+    "message": "የዘር ሐረግ"
+  },
+  "revealSeedWordsWarning": {
+    "message": "እነዚህ ቃላት ሁሉንም መለያዎችዎን ለመስረቅ ሊውሉ ይችላሉ።"
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "ይህን ሐረግ ለየትኛውም ሰው አያጋሩ!"
   },
   "rinkeby": {
     "message": "Rinkeby የሙከራ አውታረ መረብ"
@@ -907,17 +895,11 @@
   "ropsten": {
     "message": "Ropsten የሙከራ አውታረ መረብ "
   },
-  "goerli": {
-    "message": "የ Goerli የሙከራ አውታረ መረብ"
+  "rpcUrl": {
+    "message": "አዲስ የ RPC URL"
   },
   "save": {
     "message": "አስቀምጥ"
-  },
-  "slow": {
-    "message": "ቀስ"
-  },
-  "slower": {
-    "message": "ዘገምተኛ"
   },
   "saveAsCsvFile": {
     "message": "እንደ CSV ፋይል አስቀምጥ"
@@ -933,6 +915,9 @@
   },
   "searchResults": {
     "message": "ውጤቶችን ፈልግ"
+  },
+  "searchTokens": {
+    "message": "ተለዋጭ ስሞችን ፈልግ"
   },
   "secretBackupPhrase": {
     "message": "ሚስጥራዊ የመጠባበቂያ ምዕራፍ"
@@ -958,14 +943,29 @@
   "seedPhraseReq": {
     "message": "የዘር ሐረጋት የ 12 ቃላት ርዝመት አላቸው"
   },
+  "selectAHigherGasFee": {
+    "message": "የግብይትዎን ክዋኔ ለማቀላጠፍ የበለጠ የነዳጅ ዋጋ ይምረጡ።*"
+  },
+  "selectAnAccount": {
+    "message": "መለያ ይምረጡ"
+  },
+  "selectAnAccountHelp": {
+    "message": "መለያውን በ MetaMask ለማየት ይምረጡ"
+  },
   "selectCurrency": {
     "message": "የገንዘብ ዓይነት ይምረጡ"
   },
   "selectEachPhrase": {
     "message": "እባክዎ እያንዳንዱን ሐረግ በመምረጥ ትክክለኛነቱን ያረጋግጡ።"
   },
+  "selectHdPath": {
+    "message": "የ HD ዱካ ይምረጡ"
+  },
   "selectLocale": {
     "message": "አካባቢ ይምረጡ"
+  },
+  "selectPathHelp": {
+    "message": "ነባር የሌጄር መለያዎችን ከታች ካላዩ፣ ዱካዎችን ወደ \"Legacy (MEW / MyCrypto)\" ለመቀየር ይሞክሩ"
   },
   "selectType": {
     "message": "ዓይነት ይምረጡ"
@@ -991,24 +991,6 @@
   "separateEachWord": {
     "message": "እያንዳንዱን ቃል በነጠላ ክፍት ቦታ ይለያዩ"
   },
-  "searchTokens": {
-    "message": "ተለዋጭ ስሞችን ፈልግ"
-  },
-  "selectAnAccount": {
-    "message": "መለያ ይምረጡ"
-  },
-  "selectAnAccountHelp": {
-    "message": "መለያውን በ MetaMask ለማየት ይምረጡ"
-  },
-  "selectAHigherGasFee": {
-    "message": "የግብይትዎን ክዋኔ ለማቀላጠፍ የበለጠ የነዳጅ ዋጋ ይምረጡ።*"
-  },
-  "selectHdPath": {
-    "message": "የ HD ዱካ ይምረጡ"
-  },
-  "selectPathHelp": {
-    "message": "ነባር የሌጄር መለያዎችን ከታች ካላዩ፣ ዱካዎችን ወደ \"Legacy (MEW / MyCrypto)\" ለመቀየር ይሞክሩ"
-  },
   "settings": {
     "message": "ቅንብሮች"
   },
@@ -1024,17 +1006,23 @@
   "showFiatConversionInTestnetsDescription": {
     "message": "በ Testnets ላይ ወጥ የሆነ ልወጣን ለማሳየት ይህን ይምረጡ"
   },
-  "showPrivateKeys": {
-    "message": "የግል ቁልፎችን አሳይ"
-  },
   "showHexData": {
     "message": "Hex ውሂብ አሳይ"
   },
   "showHexDataDescription": {
     "message": "በመላኪያ ማያ ላይ የ hex ውሂብ መስክን ለማሳየት ይህን ይምረጡ"
   },
+  "showPrivateKeys": {
+    "message": "የግል ቁልፎችን አሳይ"
+  },
+  "sigRequest": {
+    "message": "የፊርማ ጥያቄ"
+  },
   "sign": {
     "message": "ፈርም"
+  },
+  "signNotice": {
+    "message": "ይህን መልዕክት መፈረም አደገኛ ውጤቶች \nሊኖሩት ይችላሉ። በሙሉ መለያዎ ሙሉ በሙሉ ከሚያምኗቸው\nድረ ገጾች የሚመጡ መልዕክቶችን ብቻ ይፈርሙ።\nይህ አደገኛ ዘዴ ከወደፊት ስሪት ይወገዳል።"
   },
   "signatureRequest": {
     "message": "የፊርማ ጥያቄ"
@@ -1042,11 +1030,11 @@
   "signed": {
     "message": "ተፈርሟል"
   },
-  "signNotice": {
-    "message": "ይህን መልዕክት መፈረም አደገኛ ውጤቶች \nሊኖሩት ይችላሉ። በሙሉ መለያዎ ሙሉ በሙሉ ከሚያምኗቸው\nድረ ገጾች የሚመጡ መልዕክቶችን ብቻ ይፈርሙ።\nይህ አደገኛ ዘዴ ከወደፊት ስሪት ይወገዳል።"
+  "slow": {
+    "message": "ቀስ"
   },
-  "sigRequest": {
-    "message": "የፊርማ ጥያቄ"
+  "slower": {
+    "message": "ዘገምተኛ"
   },
   "somethingWentWrong": {
     "message": "ኤጭ! የሆነ ችግር ተፈጥሯል።"
@@ -1060,17 +1048,14 @@
   "speedUpTransaction": {
     "message": "ይህን ግብይት አፋጥን"
   },
-  "switchNetworks": {
-    "message": "አውታረ መረቦችን ቀያይር"
+  "stateLogError": {
+    "message": "የስቴት መዛግብትን መልሶ በማግኘት ሒደት የተፈጠረ ስህተት።"
   },
   "stateLogs": {
     "message": "የስቴት መዛግብት"
   },
   "stateLogsDescription": {
     "message": "ስቴት መዛግብት ይፋዊ የመለያ አድራሻዎትንና የተላኩ ግብይቶችን ይይዛሉ።"
-  },
-  "stateLogError": {
-    "message": "የስቴት መዛግብትን መልሶ በማግኘት ሒደት የተፈጠረ ስህተት።"
   },
   "step1HardwareWallet": {
     "message": "1. ከሃርድዌር ቋት ጋር ይገናኙ"
@@ -1099,6 +1084,9 @@
   "supportCenter": {
     "message": "የድጋፍ መስጫ ማዕከላችንን ይጎብኙ"
   },
+  "switchNetworks": {
+    "message": "አውታረ መረቦችን ቀያይር"
+  },
   "symbol": {
     "message": "ምልክት"
   },
@@ -1108,8 +1096,11 @@
   "syncWithMobile": {
     "message": "ከሞባይል ጋር አሳምር"
   },
-  "syncWithMobileTitle": {
-    "message": "ከሞባይል ጋር አሳምር"
+  "syncWithMobileBeCareful": {
+    "message": "ይህን ኮድ ስካን ሲያደርጉ ሌላ ሰው የእርስዎን ማያ እየተመለከተ አለመሆኑን ያረጋግጡ"
+  },
+  "syncWithMobileComplete": {
+    "message": "ውሂብዎ በሚገባ ተሳምሯል። በ MetaMask የሞባይል መተግበሪያ ይደሰቱ!"
   },
   "syncWithMobileDesc": {
     "message": "መለያዎችዎንና መረጃዎችዎን ከሞባይል መሳሪያዎ ጋር ያሳምሩ። የ MetaMask የሞባይል መተግበሪያን ይክፈቱ፣ ወደ \"ቅንብሮች\" ይሂዱና \"ከማሰሺያ ቅጥያ አሳምር\" የሚለውን ይንኩ"
@@ -1120,11 +1111,8 @@
   "syncWithMobileScanThisCode": {
     "message": "ይህን ኮድ በ MetaMask የሞባይል መተግበሪያዎ ስካን ያድርጉ"
   },
-  "syncWithMobileBeCareful": {
-    "message": "ይህን ኮድ ስካን ሲያደርጉ ሌላ ሰው የእርስዎን ማያ እየተመለከተ አለመሆኑን ያረጋግጡ"
-  },
-  "syncWithMobileComplete": {
-    "message": "ውሂብዎ በሚገባ ተሳምሯል። በ MetaMask የሞባይል መተግበሪያ ይደሰቱ!"
+  "syncWithMobileTitle": {
+    "message": "ከሞባይል ጋር አሳምር"
   },
   "terms": {
     "message": "የአጠቃቀም ደንቦች"
@@ -1159,6 +1147,12 @@
   "transaction": {
     "message": "ግብይት"
   },
+  "transactionCancelAttempted": {
+    "message": "ግብይት የመሰረዝ ሙከራ በነዳጅ ዋጋ $1በ $2ተደርጓል"
+  },
+  "transactionCancelSuccess": {
+    "message": "ግብይቱ በ$2ላይ በሚገባ ተሰርዟል"
+  },
   "transactionConfirmed": {
     "message": "ግብይት በ$2ተረጋግጧል።"
   },
@@ -1168,35 +1162,29 @@
   "transactionDropped": {
     "message": "ግብይት ወደ $2ዝቅ ብሏል።"
   },
-  "transactionSubmitted": {
-    "message": "ግብይቱ የቀረበው በነዳጅ ዋጋ $1በ$2ነው።"
-  },
-  "transactionResubmitted": {
-    "message": "ግብይቱ በድጋሚ ሲቀርብ የነዳጅ ክፍያ ወደ $1በ$2ጨምሯል"
-  },
-  "transactionUpdated": {
-    "message": "ግብይት የዘመነው በ $2ነው።"
-  },
-  "transactionErrored": {
-    "message": "ግብይቱ እንከን አጋጥሞታል።"
-  },
-  "transactionCancelAttempted": {
-    "message": "ግብይት የመሰረዝ ሙከራ በነዳጅ ዋጋ $1በ $2ተደርጓል"
-  },
-  "transactionCancelSuccess": {
-    "message": "ግብይቱ በ$2ላይ በሚገባ ተሰርዟል"
-  },
   "transactionError": {
     "message": "የግብይት ስህተት። በኮንትራት ኮድ የሚላኩ ልዩ ሁኔታዎች አሉ።"
   },
   "transactionErrorNoContract": {
     "message": "ከኮንትራት ውጭ ያለ አድራሻ ተግባር ለመደወል መሞከር።"
   },
+  "transactionErrored": {
+    "message": "ግብይቱ እንከን አጋጥሞታል።"
+  },
   "transactionFee": {
     "message": " የግብይት ክፍያ"
   },
+  "transactionResubmitted": {
+    "message": "ግብይቱ በድጋሚ ሲቀርብ የነዳጅ ክፍያ ወደ $1በ$2ጨምሯል"
+  },
+  "transactionSubmitted": {
+    "message": "ግብይቱ የቀረበው በነዳጅ ዋጋ $1በ$2ነው።"
+  },
   "transactionTime": {
     "message": "የግብይት ጊዜ"
+  },
+  "transactionUpdated": {
+    "message": "ግብይት የዘመነው በ $2ነው።"
   },
   "transfer": {
     "message": "ያስተላልፉ"
@@ -1226,17 +1214,17 @@
   "unknown": {
     "message": "ያልታወቀ"
   },
+  "unknownCameraError": {
+    "message": "ወደ ስልክዎ ለመድረስ ሲሞከር የተፈጠረ ስህተት አለ። እባክዎ እንደገና ይሞክሩ..."
+  },
+  "unknownCameraErrorTitle": {
+    "message": "ኤጭ! የሆነ ችግር ተፈጥሯል..."
+  },
   "unknownNetwork": {
     "message": "የማይታወቅ የግል አውታረ መረብ"
   },
   "unknownQrCode": {
     "message": "ስህተት፡ ያን የ QR ኮድ መለየት አልቻልንም"
-  },
-  "unknownCameraErrorTitle": {
-    "message": "ኤጭ! የሆነ ችግር ተፈጥሯል..."
-  },
-  "unknownCameraError": {
-    "message": "ወደ ስልክዎ ለመድረስ ሲሞከር የተፈጠረ ስህተት አለ። እባክዎ እንደገና ይሞክሩ..."
   },
   "unlock": {
     "message": "ክፈት"
@@ -1259,9 +1247,6 @@
   "viewAccount": {
     "message": "መለያን ይመልከቱ"
   },
-  "viewinExplorer": {
-    "message": "በኤክስፕሎረር ተመልከት"
-  },
   "viewContact": {
     "message": "ዕውቂያን ይመልከቱ"
   },
@@ -1271,17 +1256,20 @@
   "viewOnEtherscan": {
     "message": "በ Etherscan ላይ ይመልከቱ"
   },
+  "viewinExplorer": {
+    "message": "በኤክስፕሎረር ተመልከት"
+  },
   "visitWebSite": {
     "message": "ድረ ገጻችንን ይጎብኙ"
   },
   "walletSeed": {
     "message": "የቋት ዘር"
   },
-  "welcomeBack": {
-    "message": "እንኳን በደህና ተመለሱ"
-  },
   "welcome": {
     "message": "ወደ MetaMask እንኳን ደህና መጡ"
+  },
+  "welcomeBack": {
+    "message": "እንኳን በደህና ተመለሱ"
   },
   "writePhrase": {
     "message": "ይህን ሐረግ በቁራጭ ወረቀት ላይ ይጻፉና ደህንነቱ በተጠበቀ ቦታ ያስቀምጡት። የበለጠ ደህንነት ካስፈለገዎ፣ በተለያዩ ቁርጥራጭ ወረቀቶች ላይ ይጻፉትና እያንዳንዳንቸውን በ2-3 የተለያዩ ቦታዎች ያስቀምጡት።"
@@ -1292,14 +1280,14 @@
   "youNeedToAllowCameraAccess": {
     "message": "ይህን ባህርይ ለመጠቀም የካሜራን መድረስ መፍቀድ አለብዎት።"
   },
-  "yourSigRequested": {
-    "message": "ፊርማዎ እየተጠየቀ ነው"
-  },
   "youSign": {
     "message": "እየፈረሙ ነው"
   },
   "yourPrivateSeedPhrase": {
     "message": "የግል ዘር ሐረግዎ"
+  },
+  "yourSigRequested": {
+    "message": "ፊርማዎ እየተጠየቀ ነው"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "በስፒድ አፕ ላይ ዜሮ የነዳጅ ዋጋ"

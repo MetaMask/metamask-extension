@@ -3,7 +3,6 @@ import log from 'loglevel'
 import { normalize as normalizeAddress } from 'eth-sig-util'
 import ethUtil from 'ethereumjs-util'
 
-
 // By default, poll every 3 minutes
 const DEFAULT_INTERVAL = 180 * 1000
 
@@ -12,6 +11,7 @@ const DEFAULT_INTERVAL = 180 * 1000
  * rates based on a user's current token list
  */
 export default class TokenRatesController {
+
   /**
    * Creates a TokenRatesController
    *

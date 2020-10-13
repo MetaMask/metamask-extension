@@ -26,13 +26,13 @@ import {
   getRenderableEstimateDataForSmallButtonsFromGWEI,
   getDefaultActiveButtonIndex,
 } from '../../../selectors'
+import { getMostRecentOverviewPage } from '../../../ducks/history/history'
 import SendFooter from './send-footer.component'
 import {
   addressIsNew,
   constructTxParams,
   constructUpdatedTx,
 } from './send-footer.utils'
-import { getMostRecentOverviewPage } from '../../../ducks/history/history'
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendFooter)
 

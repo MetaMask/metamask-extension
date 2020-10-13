@@ -1,8 +1,8 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import sinon from 'sinon'
 import { mount } from 'enzyme'
-import SecurityTab from '../index'
+import SecurityTab from '..'
 
 describe('Security Tab', function () {
   let wrapper
@@ -28,7 +28,7 @@ describe('Security Tab', function () {
       <SecurityTab.WrappedComponent {...props} />, {
         context: {
           t: (str) => str,
-          metricsEvent: () => {},
+          metricsEvent: () => undefined,
         },
       },
     )

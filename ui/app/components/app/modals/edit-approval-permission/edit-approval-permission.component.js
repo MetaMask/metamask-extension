@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import log from 'loglevel'
+import classnames from 'classnames'
+import BigNumber from 'bignumber.js'
 import Modal from '../../modal'
 import Identicon from '../../../ui/identicon'
 import TextField from '../../../ui/text-field'
 import { calcTokenAmount } from '../../../../helpers/utils/token-util'
-import classnames from 'classnames'
-import BigNumber from 'bignumber.js'
 
 const MAX_UNSIGNED_256_INT = new BigNumber(2).pow(256).minus(1).toString(10)
 
@@ -21,6 +21,7 @@ export default class EditApprovalPermission extends PureComponent {
     tokenBalance: PropTypes.string,
     setCustomAmount: PropTypes.func,
     origin: PropTypes.string.isRequired,
+    requiredMinimum: PropTypes.instanceOf(BigNumber),
   }
 
   static contextTypes = {
@@ -28,7 +29,8 @@ export default class EditApprovalPermission extends PureComponent {
   }
 
   state = {
-    customSpendLimit: this.props.customTokenAmount,
+    // This is used as a TextField value, which should be a string.
+    customSpendLimit: this.props.customTokenAmount || '',
     selectedOptionIsUnlimited: !this.props.customTokenAmount,
   }
 
@@ -63,8 +65,10 @@ export default class EditApprovalPermission extends PureComponent {
               address={address}
               diameter={32}
             />
-            <div className="edit-approval-permission__account-info__name">{ name }</div>
-            <div>{ t('balance') }</div>
+            <div className="edit-approval-permission__name-and-balance-container">
+              <div className="edit-approval-permission__account-info__name">{ name }</div>
+              <div>{ t('balance') }</div>
+            </div>
           </div>
           <div className="edit-approval-permission__account-info__balance">
             {`${Number(tokenBalance).toPrecision(9)} ${tokenSymbol}`}
@@ -163,11 +167,11 @@ export default class EditApprovalPermission extends PureComponent {
 
   validateSpendLimit () {
     const { t } = this.context
-    const { decimals } = this.props
+    const { decimals, requiredMinimum } = this.props
     const { selectedOptionIsUnlimited, customSpendLimit } = this.state
 
     if (selectedOptionIsUnlimited || !customSpendLimit) {
-      return
+      return undefined
     }
 
     let customSpendLimitNumber
@@ -186,6 +190,15 @@ export default class EditApprovalPermission extends PureComponent {
     if (customSpendLimitNumber.greaterThan(maxTokenAmount)) {
       return t('spendLimitTooLarge')
     }
+
+    if (
+      requiredMinimum !== undefined &&
+      customSpendLimitNumber.lessThan(requiredMinimum)
+    ) {
+      return t('spendLimitInsufficient')
+    }
+
+    return undefined
   }
 
   render () {
@@ -202,7 +215,7 @@ export default class EditApprovalPermission extends PureComponent {
     return (
       <Modal
         onSubmit={() => {
-          setCustomAmount(!selectedOptionIsUnlimited ? customSpendLimit : '')
+          setCustomAmount(selectedOptionIsUnlimited ? '' : customSpendLimit)
           hideModal()
         }}
         submitText={t('save')}

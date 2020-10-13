@@ -3,10 +3,10 @@ import PropTypes from 'prop-types'
 import copyToClipboard from 'copy-to-clipboard'
 import classnames from 'classnames'
 
-import AccountListItem from '../send/account-list-item/account-list-item.component'
+import AccountListItem from '../../components/app/account-list-item'
 import Button from '../../components/ui/button'
 import Identicon from '../../components/ui/identicon'
-import Tooltip from '../../components/ui/tooltip-v2'
+import Tooltip from '../../components/ui/tooltip'
 import Copy from '../../components/ui/icon/copy-icon.component'
 
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../app/scripts/lib/enums'
@@ -119,7 +119,6 @@ export default class ConfirmDecryptMessage extends Component {
         <div className="request-decrypt-message__account-item">
           <AccountListItem
             account={fromAccount}
-            displayBalance={false}
           />
         </div>
       </div>
@@ -221,7 +220,7 @@ export default class ConfirmDecryptMessage extends Component {
             className="request-decrypt-message__message-text"
           >
             { !hasDecrypted && !hasError ? txData.msgParams.data : rawMessage }
-            { !hasError ? '' : errorMessage }
+            { hasError ? errorMessage : '' }
           </div>
           <div
             className={classnames({
@@ -237,10 +236,10 @@ export default class ConfirmDecryptMessage extends Component {
             })}
             onClick={(event) => {
               decryptMessageInline(txData, event).then((result) => {
-                if (!result.error) {
-                  this.setState({ hasDecrypted: true, rawMessage: result.rawData })
-                } else {
+                if (result.error) {
                   this.setState({ hasError: true, errorMessage: this.context.t('decryptInlineError', [result.error]) })
+                } else {
+                  this.setState({ hasDecrypted: true, rawMessage: result.rawData })
                 }
               })
             }}

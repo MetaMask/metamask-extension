@@ -1,11 +1,11 @@
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import TokenInput from './token-input.component'
 import {
   getIsMainnet,
   getTokenExchangeRates,
   getPreferences,
 } from '../../../selectors'
+import TokenInput from './token-input.component'
 
 const mapStateToProps = (state) => {
   const { metamask: { currentCurrency } } = state

@@ -1,14 +1,13 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import Identicon from '../identicon'
-import Tooltip from '../tooltip-v2'
 import copyToClipboard from 'copy-to-clipboard'
-import { DEFAULT_VARIANT, CARDS_VARIANT, FLAT_VARIANT } from './sender-to-recipient.constants'
+import Tooltip from '../tooltip'
+import Identicon from '../identicon'
 import { checksumAddress, shortenAddress } from '../../../helpers/utils/util'
 import AccountMismatchWarning from '../account-mismatch-warning/account-mismatch-warning.component'
 import { useI18nContext } from '../../../hooks/useI18nContext'
-
+import { DEFAULT_VARIANT, CARDS_VARIANT, FLAT_VARIANT } from './sender-to-recipient.constants'
 
 const variantHash = {
   [DEFAULT_VARIANT]: 'sender-to-recipient--default',
@@ -160,7 +159,6 @@ RecipientWithAddress.propTypes = {
   assetImage: PropTypes.string,
   onRecipientClick: PropTypes.func,
 }
-
 
 function Arrow ({ variant }) {
   return variant === DEFAULT_VARIANT

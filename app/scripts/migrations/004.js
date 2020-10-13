@@ -1,11 +1,11 @@
-const version = 4
-
 import { cloneDeep } from 'lodash'
+
+const version = 4
 
 export default {
   version,
 
-  migrate: function (versionedData) {
+  migrate (versionedData) {
     const safeVersionedData = cloneDeep(versionedData)
     safeVersionedData.meta.version = version
     try {
@@ -25,7 +25,9 @@ export default {
           break
         // No default
       }
-    } catch (_) {}
+    } catch (_) {
+      // empty
+    }
     return Promise.resolve(safeVersionedData)
   },
 }

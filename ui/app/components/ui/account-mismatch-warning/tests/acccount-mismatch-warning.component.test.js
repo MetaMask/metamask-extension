@@ -1,6 +1,6 @@
+import assert from 'assert'
 import React from 'react'
 import * as reactRedux from 'react-redux'
-import assert from 'assert'
 import sinon from 'sinon'
 import { shallow } from 'enzyme'
 import InfoIcon from '../../icon/info-icon.component'

@@ -4,7 +4,6 @@
   align-items: center;
   width: 100%;
   height: 100%;
-  font-family: Roboto;
   font-style: normal;
 
   &__identicon-wrapper {
@@ -20,11 +19,8 @@
     display: flex;
     flex-flow: column;
     align-items: center;
-    width: 390px;
-    font-family: Roboto;
+    max-width: 100%;
     font-style: normal;
-    padding-left: 24px;
-    padding-right: 24px;
   }
 
   &__card-wrapper {

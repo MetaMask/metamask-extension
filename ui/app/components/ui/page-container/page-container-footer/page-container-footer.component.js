@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 import Button from '../../button'
 
 export default class PageContainerFooter extends Component {
@@ -15,6 +16,8 @@ export default class PageContainerFooter extends Component {
     submitButtonType: PropTypes.string,
     hideCancel: PropTypes.bool,
     buttonSizeLarge: PropTypes.bool,
+    footerClassName: PropTypes.string,
+    footerButtonClassName: PropTypes.string,
   }
 
   static contextTypes = {
@@ -33,17 +36,19 @@ export default class PageContainerFooter extends Component {
       hideCancel,
       cancelButtonType,
       buttonSizeLarge = false,
+      footerClassName,
+      footerButtonClassName,
     } = this.props
 
     return (
-      <div className="page-container__footer">
+      <div className={classnames('page-container__footer', footerClassName)}>
 
         <footer>
           {!hideCancel && (
             <Button
               type={cancelButtonType || 'default'}
               large={buttonSizeLarge}
-              className="page-container__footer-button"
+              className={classnames('page-container__footer-button', footerButtonClassName)}
               onClick={(e) => onCancel(e)}
               data-testid="page-container-footer-cancel"
             >
@@ -54,7 +59,7 @@ export default class PageContainerFooter extends Component {
           <Button
             type={submitButtonType || 'secondary'}
             large={buttonSizeLarge}
-            className="page-container__footer-button"
+            className={classnames('page-container__footer-button', footerButtonClassName)}
             disabled={disabled}
             onClick={(e) => onSubmit(e)}
             data-testid="page-container-footer-next"

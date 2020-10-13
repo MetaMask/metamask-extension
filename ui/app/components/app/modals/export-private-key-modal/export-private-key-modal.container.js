@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { exportAccount, hideWarning, showModal, hideModal } from '../../../../store/actions'
+import { exportAccount, hideWarning, showModal, hideModal, clearAccountDetails } from '../../../../store/actions'
 import { getSelectedIdentity } from '../../../../selectors'
 import ExportPrivateKeyModal from './export-private-key-modal.component'
 
@@ -14,7 +14,6 @@ function mapStateToPropsFactory () {
     return {
       warning: state.appState.warning,
       privateKey: state.appState.accountDetail.privateKey,
-      network: state.metamask.network,
       selectedIdentity,
       previousModalState: state.appState.modal.previousModalState.name,
     }
@@ -32,6 +31,8 @@ function mapDispatchToProps (dispatch) {
     },
     showAccountDetailModal: () => dispatch(showModal({ name: 'ACCOUNT_DETAILS' })),
     hideModal: () => dispatch(hideModal()),
+    hideWarning: () => dispatch(hideWarning()),
+    clearAccountDetails: () => dispatch(clearAccountDetails()),
   }
 }
 

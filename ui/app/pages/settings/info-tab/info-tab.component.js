@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import Button from '../../../components/ui/button'
 
 export default class InfoTab extends PureComponent {
   state = {
@@ -19,71 +20,71 @@ export default class InfoTab extends PureComponent {
           { t('links') }
         </div>
         <div className="info-tab__link-item">
-          <a
+          <Button
+            type="link"
             href="https://metamask.io/privacy.html"
             target="_blank"
             rel="noopener noreferrer"
+            className="info-tab__link-text"
           >
-            <span className="info-tab__link-text">
-              { t('privacyMsg') }
-            </span>
-          </a>
+            { t('privacyMsg') }
+          </Button>
         </div>
         <div className="info-tab__link-item">
-          <a
+          <Button
+            type="link"
             href="https://metamask.io/terms.html"
             target="_blank"
             rel="noopener noreferrer"
+            className="info-tab__link-text"
           >
-            <span className="info-tab__link-text">
-              { t('terms') }
-            </span>
-          </a>
+            { t('terms') }
+          </Button>
         </div>
         <div className="info-tab__link-item">
-          <a
+          <Button
+            type="link"
             href="https://metamask.io/attributions.html"
             target="_blank"
             rel="noopener noreferrer"
+            className="info-tab__link-text"
           >
-            <span className="info-tab__link-text">
-              { t('attributions') }
-            </span>
-          </a>
+            { t('attributions') }
+          </Button>
         </div>
         <hr className="info-tab__separator" />
         <div className="info-tab__link-item">
-          <a
+          <Button
+            type="link"
             href="https://support.metamask.io"
             target="_blank"
             rel="noopener noreferrer"
+            className="info-tab__link-text"
           >
-            <span className="info-tab__link-text">
-              { t('supportCenter') }
-            </span>
-          </a>
+            { t('supportCenter') }
+          </Button>
         </div>
         <div className="info-tab__link-item">
-          <a
+          <Button
+            type="link"
             href="https://metamask.io/"
             target="_blank"
             rel="noopener noreferrer"
+            className="info-tab__link-text"
           >
-            <span className="info-tab__link-text">
-              { t('visitWebSite') }
-            </span>
-          </a>
+            { t('visitWebSite') }
+          </Button>
         </div>
         <div className="info-tab__link-item">
-          <a
+          <Button
+            type="link"
             href="https://metamask.zendesk.com/hc/en-us/requests/new"
             target="_blank"
             rel="noopener noreferrer"
+            className="info-tab__link-text"
           >
-            <span className="info-tab__link-text">
-              { t('contactUs') }
-            </span>
-          </a>
+            { t('contactUs') }
+          </Button>
         </div>
       </div>
     )

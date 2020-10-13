@@ -114,6 +114,12 @@
       border: 1px solid $orange;
     }
 
+    input[type="number"] {
+      -webkit-appearance: textfield;
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+
     input[type="number"]::-webkit-inner-spin-button {
       -webkit-appearance: none;
       -moz-appearance: none;
@@ -131,6 +137,10 @@
       top: 8px;
       right: 10px;
       color: $dusty-gray;
+    }
+
+    &__custom-text {
+      @include H7;
     }
   }
 }

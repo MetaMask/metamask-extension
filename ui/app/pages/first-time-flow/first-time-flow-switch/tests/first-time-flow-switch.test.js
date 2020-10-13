@@ -1,5 +1,5 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { mountWithRouter } from '../../../../../../test/lib/render-helpers'
 import {
   DEFAULT_ROUTE,
@@ -7,7 +7,7 @@ import {
   INITIALIZE_WELCOME_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
 } from '../../../../helpers/constants/routes'
-import FirstTimeFlowSwitch from '../index'
+import FirstTimeFlowSwitch from '..'
 
 describe('FirstTimeFlowSwitch', function () {
 

@@ -1,6 +1,4 @@
 // next version number
-const version = 28
-
 /*
 
 normalizes txParams on unconfirmed txs
@@ -8,10 +6,12 @@ normalizes txParams on unconfirmed txs
 */
 import { cloneDeep } from 'lodash'
 
+const version = 28
+
 export default {
   version,
 
-  migrate: async function (originalVersionedData) {
+  async migrate (originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     const state = versionedData.data
@@ -26,8 +26,7 @@ function transformState (state) {
 
   if (newState.PreferencesController) {
     if (newState.PreferencesController.tokens && newState.PreferencesController.identities) {
-      const identities = newState.PreferencesController.identities
-      const tokens = newState.PreferencesController.tokens
+      const { identities, tokens } = newState.PreferencesController
       newState.PreferencesController.accountTokens = {}
       Object.keys(identities).forEach((identity) => {
         newState.PreferencesController.accountTokens[identity] = { 'mainnet': tokens }

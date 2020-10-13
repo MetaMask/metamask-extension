@@ -1,5 +1,9 @@
-import assert from 'assert'
-import { getEnvironmentType, sufficientBalance } from '../../../app/scripts/lib/util'
+import { strict as assert } from 'assert'
+import {
+  getEnvironmentType,
+  sufficientBalance,
+  isPrefixedFormattedHexString,
+} from '../../../app/scripts/lib/util'
 
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -86,6 +90,77 @@ describe('app utils', function () {
 
       const result = sufficientBalance(tx, balance)
       assert.ok(!result, 'insufficient balance found.')
+    })
+  })
+
+  describe('isPrefixedFormattedHexString', function () {
+    it('should return true for valid hex strings', function () {
+      assert.equal(
+        isPrefixedFormattedHexString('0x1'), true,
+        'should return true',
+      )
+
+      assert.equal(
+        isPrefixedFormattedHexString('0xa'), true,
+        'should return true',
+      )
+
+      assert.equal(
+        isPrefixedFormattedHexString('0xabcd1123fae909aad87452'), true,
+        'should return true',
+      )
+    })
+
+    it('should return false for invalid hex strings', function () {
+      assert.equal(
+        isPrefixedFormattedHexString('0x'), false,
+        'should return false',
+      )
+
+      assert.equal(
+        isPrefixedFormattedHexString('0x0'), false,
+        'should return false',
+      )
+
+      assert.equal(
+        isPrefixedFormattedHexString('0x01'), false,
+        'should return false',
+      )
+
+      assert.equal(
+        isPrefixedFormattedHexString(' 0x1'), false,
+        'should return false',
+      )
+
+      assert.equal(
+        isPrefixedFormattedHexString('0x1 '), false,
+        'should return false',
+      )
+
+      assert.equal(
+        isPrefixedFormattedHexString('0x1afz'), false,
+        'should return false',
+      )
+
+      assert.equal(
+        isPrefixedFormattedHexString('z'), false,
+        'should return false',
+      )
+
+      assert.equal(
+        isPrefixedFormattedHexString(2), false,
+        'should return false',
+      )
+
+      assert.equal(
+        isPrefixedFormattedHexString(['0x1']), false,
+        'should return false',
+      )
+
+      assert.equal(
+        isPrefixedFormattedHexString(), false,
+        'should return false',
+      )
     })
   })
 })

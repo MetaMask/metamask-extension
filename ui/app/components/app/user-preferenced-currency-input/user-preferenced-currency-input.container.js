@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
-import UserPreferencedCurrencyInput from './user-preferenced-currency-input.component'
 import { getPreferences } from '../../../selectors'
+import UserPreferencedCurrencyInput from './user-preferenced-currency-input.component'
 
 const mapStateToProps = (state) => {
   const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state)

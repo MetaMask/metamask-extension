@@ -4,18 +4,23 @@ import { useDispatch, useSelector } from 'react-redux'
 import classnames from 'classnames'
 import { useHistory } from 'react-router-dom'
 
-import Button from '../../ui/button'
 import Identicon from '../../ui/identicon'
 import { I18nContext } from '../../../contexts/i18n'
-import WalletOverview from './wallet-overview'
-import { SEND_ROUTE } from '../../../helpers/constants/routes'
-import { useMetricEvent } from '../../../hooks/useMetricEvent'
-import Tooltip from '../../ui/tooltip-v2'
+import { SEND_ROUTE, BUILD_QUOTE_ROUTE } from '../../../helpers/constants/routes'
+import { useMetricEvent, useNewMetricEvent } from '../../../hooks/useMetricEvent'
+import { useSwapsEthToken } from '../../../hooks/useSwapsEthToken'
+import Tooltip from '../../ui/tooltip'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 import { showModal } from '../../../store/actions'
-import { isBalanceCached, getSelectedAccount, getShouldShowFiat } from '../../../selectors/selectors'
-import PaperAirplane from '../../ui/icon/paper-airplane-icon'
+import { isBalanceCached, getSelectedAccount, getShouldShowFiat, getCurrentNetworkId, getCurrentKeyring } from '../../../selectors/selectors'
+import SwapIcon from '../../ui/icon/swap-icon.component'
+import BuyIcon from '../../ui/icon/overview-buy-icon.component'
+import SendIcon from '../../ui/icon/overview-send-icon.component'
+import { getSwapsFeatureLiveness, setSwapsFromToken } from '../../../ducks/swaps/swaps'
+import IconButton from '../../ui/icon-button'
+import { MAINNET_NETWORK_ID } from '../../../../../app/scripts/controllers/network/enums'
+import WalletOverview from './wallet-overview'
 
 const EthOverview = ({ className }) => {
   const dispatch = useDispatch()
@@ -35,10 +40,16 @@ const EthOverview = ({ className }) => {
     },
   })
   const history = useHistory()
+  const keyring = useSelector(getCurrentKeyring)
+  const usingHardwareWallet = keyring.type.search('Hardware') !== -1
   const balanceIsCached = useSelector(isBalanceCached)
   const showFiat = useSelector(getShouldShowFiat)
   const selectedAccount = useSelector(getSelectedAccount)
   const { balance } = selectedAccount
+  const networkId = useSelector(getCurrentNetworkId)
+  const enteredSwapsEvent = useNewMetricEvent({ event: 'Swaps Opened', properties: { source: 'Main View', active_currency: 'ETH' }, category: 'swaps' })
+  const swapsEnabled = useSelector(getSwapsFeatureLiveness)
+  const swapsEthToken = useSwapsEthToken()
 
   return (
     <WalletOverview
@@ -80,30 +91,49 @@ const EthOverview = ({ className }) => {
       )}
       buttons={(
         <>
-          <Button
-            type="primary"
+          <IconButton
             className="eth-overview__button"
-            rounded
+            Icon={BuyIcon}
+            label={t('buy')}
             onClick={() => {
               depositEvent()
               dispatch(showModal({ name: 'DEPOSIT_ETHER' }))
             }}
-          >
-            { t('buy') }
-          </Button>
-          <Button
-            type="secondary"
+          />
+          <IconButton
             className="eth-overview__button"
-            rounded
-            icon={<PaperAirplane color="#037DD6" size={20} />}
+            data-testid="eth-overview-send"
+            Icon={SendIcon}
+            label={t('send')}
             onClick={() => {
               sendEvent()
               history.push(SEND_ROUTE)
             }}
-            data-testid="eth-overview-send"
-          >
-            { t('send') }
-          </Button>
+          />
+          {swapsEnabled ? (
+            <IconButton
+              className="eth-overview__button"
+              disabled={networkId !== MAINNET_NETWORK_ID}
+              Icon={SwapIcon}
+              onClick={() => {
+                if (networkId === MAINNET_NETWORK_ID) {
+                  enteredSwapsEvent()
+                  dispatch(setSwapsFromToken(swapsEthToken))
+                  if (usingHardwareWallet) {
+                    global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE)
+                  } else {
+                    history.push(BUILD_QUOTE_ROUTE)
+                  }
+                }
+              }}
+              label={ t('swap') }
+              tooltipRender={(contents) => (
+                <Tooltip title={t('onlyAvailableOnMainnet')} position="bottom" disabled={networkId === '1'}>
+                  {contents}
+                </Tooltip>
+              )}
+            />
+          ) : null}
         </>
       )}
       className={className}

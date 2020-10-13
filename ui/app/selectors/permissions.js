@@ -1,8 +1,8 @@
 import { forOwn } from 'lodash'
-import { getMetaMaskAccountsOrdered, getOriginOfCurrentTab, getSelectedAddress } from '.'
 import {
   CAVEAT_NAMES,
 } from '../../../app/scripts/controllers/permissions/enums'
+import { getMetaMaskAccountsOrdered, getOriginOfCurrentTab, getSelectedAddress } from '.'
 
 // selectors
 
@@ -249,7 +249,7 @@ export function getPermissionsForActiveTab (state) {
 export function getLastConnectedInfo (state) {
   const { permissionsHistory = {} } = state.metamask
   return Object.keys(permissionsHistory).reduce((acc, origin) => {
-    const ethAccountsHistory = JSON.parse(JSON.stringify(permissionsHistory[origin]['eth_accounts']))
+    const ethAccountsHistory = JSON.parse(JSON.stringify(permissionsHistory[origin].eth_accounts))
     return {
       ...acc,
       [origin]: ethAccountsHistory,
@@ -261,10 +261,10 @@ export function getPermissionsMetadataHostCounts (state) {
   const metadata = getPermissionDomainsMetadata(state)
   return Object.values(metadata).reduce((counts, { host }) => {
     if (host) {
-      if (!counts[host]) {
-        counts[host] = 1
-      } else {
+      if (counts[host]) {
         counts[host] += 1
+      } else {
+        counts[host] = 1
       }
     }
     return counts
@@ -283,8 +283,4 @@ export function getPermissionsRequestCount (state) {
 export function getFirstPermissionRequest (state) {
   const requests = getPermissionsRequests(state)
   return requests && requests[0] ? requests[0] : null
-}
-
-export function hasPermissionRequests (state) {
-  return Boolean(getFirstPermissionRequest(state))
 }

@@ -1,6 +1,6 @@
 import urlUtil from 'url'
 import extension from 'extensionizer'
-import resolveEnsToIpfsContentId from './resolver.js'
+import resolveEnsToIpfsContentId from './resolver'
 
 const supportedTopLevelDomains = ['eth']
 

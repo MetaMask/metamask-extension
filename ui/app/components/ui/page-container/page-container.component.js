@@ -41,7 +41,7 @@ export default class PageContainer extends PureComponent {
     const { tabsComponent } = this.props
 
     if (!tabsComponent) {
-      return
+      return null
     }
 
     const numberOfTabs = React.Children.count(tabsComponent.props.children)
@@ -75,9 +75,8 @@ export default class PageContainer extends PureComponent {
       return contentComponent
     } else if (tabsComponent) {
       return this.renderActiveTabContent()
-    } else {
-      return null
     }
+    return null
   }
 
   render () {

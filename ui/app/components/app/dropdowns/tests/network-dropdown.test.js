@@ -1,5 +1,5 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import { mountWithRouter } from '../../../../../../test/lib/render-helpers'
@@ -50,7 +50,8 @@ describe('Network Dropdown', function () {
           'type': 'test',
         },
         frequentRpcListDetail: [
-          { rpcUrl: 'http://localhost:7545' },
+          { chainId: '0x1a', rpcUrl: 'http://localhost:7545' },
+          { rpcUrl: 'http://localhost:7546' },
         ],
       },
       appState: {
@@ -65,12 +66,12 @@ describe('Network Dropdown', function () {
       )
     })
 
-    it('renders 7 DropDownMenuItems ', function () {
+    it('renders 8 DropDownMenuItems ', function () {
       assert.equal(wrapper.find(DropdownMenuItem).length, 8)
     })
 
     it('checks background color for first NetworkDropdownIcon', function () {
-      assert.equal(wrapper.find(NetworkDropdownIcon).at(0).prop('backgroundColor'), '#29B6AF') // Main Ethereum Network Teal
+      assert.equal(wrapper.find(NetworkDropdownIcon).at(0).prop('backgroundColor'), '#29B6AF') // Ethereum Mainnet Teal
     })
 
     it('checks background color for second NetworkDropdownIcon', function () {
@@ -93,13 +94,8 @@ describe('Network Dropdown', function () {
       assert.equal(wrapper.find(NetworkDropdownIcon).at(5).prop('innerBorder'), '1px solid #9b9b9b')
     })
 
-    it('checks dropdown for frequestRPCList from  state ', function () {
+    it('checks dropdown for frequestRPCList from state', function () {
       assert.equal(wrapper.find(DropdownMenuItem).at(6).text(), '✓http://localhost:7545')
     })
-
-    it('checks background color for seventh NetworkDropdownIcon', function () {
-      assert.equal(wrapper.find(NetworkDropdownIcon).at(6).prop('innerBorder'), '1px solid #9b9b9b')
-    })
-
   })
 })

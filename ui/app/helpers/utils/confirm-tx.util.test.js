@@ -1,5 +1,5 @@
-import * as utils from './confirm-tx.util'
 import assert from 'assert'
+import * as utils from './confirm-tx.util'
 
 describe('Confirm Transaction utils', function () {
   describe('increaseLastGasPrice', function () {

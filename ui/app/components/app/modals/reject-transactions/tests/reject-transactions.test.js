@@ -1,8 +1,8 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import sinon from 'sinon'
 import { mount } from 'enzyme'
-import RejectTransactionsModal from '../index'
+import RejectTransactionsModal from '..'
 
 describe('Reject Transactions Model', function () {
   let wrapper

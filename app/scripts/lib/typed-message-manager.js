@@ -1,12 +1,12 @@
 import EventEmitter from 'events'
-import ObservableStore from 'obs-store'
-import createId from './random-id'
 import assert from 'assert'
+import ObservableStore from 'obs-store'
 import { ethErrors } from 'eth-json-rpc-errors'
 import sigUtil from 'eth-sig-util'
 import { isValidAddress } from 'ethereumjs-util'
 import log from 'loglevel'
 import jsonschema from 'jsonschema'
+import createId from './random-id'
 import { MESSAGE_TYPE } from './enums'
 
 /**
@@ -28,12 +28,13 @@ import { MESSAGE_TYPE } from './enums'
  */
 
 export default class TypedMessageManager extends EventEmitter {
+
   /**
    * Controller in charge of managing - storing, adding, removing, updating - TypedMessage.
    */
-  constructor ({ networkController }) {
+  constructor ({ getCurrentChainId }) {
     super()
-    this.networkController = networkController
+    this._getCurrentChainId = getCurrentChainId
     this.memStore = new ObservableStore({
       unapprovedTypedMessages: {},
       unapprovedTypedMessagesCount: 0,
@@ -61,7 +62,8 @@ export default class TypedMessageManager extends EventEmitter {
   getUnapprovedMsgs () {
     return this.messages.filter((msg) => msg.status === 'unapproved')
       .reduce((result, msg) => {
-        result[msg.id] = msg; return result
+        result[msg.id] = msg
+        return result
       }, {})
   }
 
@@ -118,8 +120,8 @@ export default class TypedMessageManager extends EventEmitter {
     const msgId = createId()
     const msgData = {
       id: msgId,
-      msgParams: msgParams,
-      time: time,
+      msgParams,
+      time,
       status: 'unapproved',
       type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
     }
@@ -154,7 +156,7 @@ export default class TypedMessageManager extends EventEmitter {
         }, 'Signing data must be valid EIP-712 typed data.')
         break
       case 'V3':
-      case 'V4':
+      case 'V4': {
         assert.equal(typeof params.data, 'string', '"params.data" must be a string.')
         let data
         assert.doesNotThrow(() => {
@@ -163,10 +165,14 @@ export default class TypedMessageManager extends EventEmitter {
         const validation = jsonschema.validate(data, sigUtil.TYPED_MESSAGE_SCHEMA)
         assert.ok(data.primaryType in data.types, `Primary type of "${data.primaryType}" has no type definition.`)
         assert.equal(validation.errors.length, 0, 'Signing data must conform to EIP-712 schema. See https://git.io/fNtcx.')
-        const chainId = data.domain.chainId
-        const activeChainId = parseInt(this.networkController.getNetworkState())
-        chainId && assert.equal(chainId, activeChainId, `Provided chainId "${chainId}" must match the active chainId "${activeChainId}"`)
+        const { chainId } = data.domain
+        if (chainId) {
+          const activeChainId = parseInt(this._getCurrentChainId(), 16)
+          assert.ok(!Number.isNaN(activeChainId), `Cannot sign messages for chainId "${chainId}", because MetaMask is switching networks.`)
+          assert.equal(chainId, activeChainId, `Provided chainId "${chainId}" must match the active chainId "${activeChainId}"`)
+        }
         break
+      }
       default:
         assert.fail(`Unknown typed data version "${params.version}"`)
     }
@@ -291,7 +297,7 @@ export default class TypedMessageManager extends EventEmitter {
   _setMsgStatus (msgId, status) {
     const msg = this.getMsg(msgId)
     if (!msg) {
-      throw new Error('TypedMessageManager - Message not found for id: "${msgId}".')
+      throw new Error(`TypedMessageManager - Message not found for id: "${msgId}".`)
     }
     msg.status = status
     this._updateMsg(msg)

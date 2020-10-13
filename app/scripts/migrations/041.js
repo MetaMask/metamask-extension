@@ -1,12 +1,13 @@
-const version = 41
 import { cloneDeep } from 'lodash'
+
+const version = 41
 
 /**
  * PreferencesController.autoLogoutTimeLimit -> autoLockTimeLimit
  */
 export default {
   version,
-  migrate: async function (originalVersionedData) {
+  async migrate (originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     const state = versionedData.data

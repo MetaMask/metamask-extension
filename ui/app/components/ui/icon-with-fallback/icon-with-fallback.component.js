@@ -1,11 +1,14 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 
 export default class IconWithFallback extends PureComponent {
   static propTypes = {
     icon: PropTypes.string,
     name: PropTypes.string,
-    size: PropTypes.number.isRequired,
+    size: PropTypes.number,
+    className: PropTypes.string,
+    fallbackClassName: PropTypes.string,
   }
 
   static defaultProps = {
@@ -18,8 +21,8 @@ export default class IconWithFallback extends PureComponent {
   }
 
   render () {
-    const { icon, name, size } = this.props
-    const style = { height: `${size}px`, width: `${size}px` }
+    const { icon, name, size, className, fallbackClassName } = this.props
+    const style = size ? { height: `${size}px`, width: `${size}px` } : {}
 
     return !this.state.iconError && icon
       ? (
@@ -27,10 +30,11 @@ export default class IconWithFallback extends PureComponent {
           onError={() => this.setState({ iconError: true })}
           src={icon}
           style={style}
+          className={className}
         />
       )
       : (
-        <i className="icon-with-fallback__fallback">
+        <i className={classnames('icon-with-fallback__fallback', fallbackClassName)}>
           { name.length ? name.charAt(0).toUpperCase() : '' }
         </i>
       )

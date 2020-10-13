@@ -124,7 +124,6 @@ export default class SendAssetRow extends Component {
     )
   }
 
-
   renderAsset (token, insideDropdown = false) {
     const { address, symbol } = token
     const { t } = this.context

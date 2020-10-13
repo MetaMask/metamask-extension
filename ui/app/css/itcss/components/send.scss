@@ -2,7 +2,6 @@
   display: flex;
   flex-flow: column nowrap;
   z-index: 25;
-  font-family: Roboto;
 
   @media screen and (max-width: $break-small) {
     width: 100%;
@@ -76,7 +75,6 @@
     margin: 4px 0 20px;
     font-size: 16px;
     line-height: 22.4px;
-    font-family: Roboto;
   }
 
   .send-screen-gas-input {
@@ -186,7 +184,6 @@
   padding: 13px 19px;
   font-size: 16px;
   border-radius: 4px;
-  font-family: Roboto;
   font-weight: 500;
 }
 
@@ -316,7 +313,6 @@
   display: flex;
   flex-flow: column nowrap;
   z-index: 25;
-  font-family: Roboto;
 
   &__content {
     width: 498px;
@@ -407,7 +403,6 @@
     flex-flow: column nowrap;
     z-index: 25;
     align-items: center;
-    font-family: Roboto;
     position: relative;
 
     @media screen and (max-width: $break-small) {
@@ -588,7 +583,6 @@
 
   &__form-label {
     color: $scorpion;
-    font-family: Roboto;
     font-size: 16px;
     line-height: 22px;
     width: 95px;
@@ -602,7 +596,6 @@
     border: 1px solid $alto;
     border-radius: 4px;
     background-color: $white;
-    font-family: Roboto;
     line-height: 16px;
     font-size: 12px;
     color: $tundora;
@@ -745,7 +738,6 @@
       background-color: $white;
       color: $tundora;
       padding: 10px;
-      font-family: Roboto;
       font-size: 16px;
       line-height: 21px;
     }
@@ -763,14 +755,12 @@
       background-color: $white;
       color: $tundora;
       padding: 10px;
-      font-family: Roboto;
       font-size: 16px;
       line-height: 21px;
     }
   }
 
   &__amount-max {
-    font-family: Roboto;
     font-size: 12px;
     position: relative;
     display: inline-block;
@@ -873,7 +863,6 @@
     border-radius: 4px;
     background-color: #fff;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14);
-    font-family: Roboto;
     display: flex;
     flex-flow: column;
 
@@ -903,7 +892,6 @@
       content: '\00D7';
       font-size: 1.8em;
       color: $dusty-gray;
-      font-family: sans-serif;
       cursor: pointer;
       margin-right: 19.25px;
     }
@@ -1000,7 +988,6 @@
     &__title {
       height: 26px;
       color: $tundora;
-      font-family: Roboto;
       font-size: 20px;
       line-height: 26px;
       margin-top: 17px;
@@ -1010,7 +997,6 @@
       height: 38px;
       width: 314px;
       color: $tundora;
-      font-family: Roboto;
       font-size: 14px;
       line-height: 19px;
       margin-top: 17px;
@@ -1101,7 +1087,6 @@
   font-size: 1em;
   font-size: 14px;
   color: #2f9ae0;
-  font-family: Roboto;
 }
 
 .sliders-icon {

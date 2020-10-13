@@ -1,8 +1,8 @@
 import assert from 'assert'
 import { renderHook } from '@testing-library/react-hooks'
 import * as reactRedux from 'react-redux'
-import { useCurrencyDisplay } from '../useCurrencyDisplay'
 import sinon from 'sinon'
+import { useCurrencyDisplay } from '../useCurrencyDisplay'
 import { getCurrentCurrency, getNativeCurrency, getConversionRate } from '../../selectors'
 
 const tests = [
@@ -95,7 +95,6 @@ const tests = [
   },
 ]
 
-
 describe('useCurrencyDisplay', function () {
   tests.forEach(({ input: { value, ...restProps }, result }) => {
     describe(`when input is { value: ${value}, decimals: ${restProps.numberOfDecimals}, denomation: ${restProps.denomination} }`, function () {
@@ -108,9 +107,10 @@ describe('useCurrencyDisplay', function () {
         } else if (selector === getConversionRate) {
           return 280.45
         }
+        return undefined
       })
       const hookReturn = renderHook(() => useCurrencyDisplay(value, restProps))
-      const [ displayValue, parts ] = hookReturn.result.current
+      const [displayValue, parts] = hookReturn.result.current
       stub.restore()
       it(`should return ${result.displayValue} as displayValue`, function () {
         assert.equal(displayValue, result.displayValue)

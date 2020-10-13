@@ -3,7 +3,7 @@
 // TODO:deprecate:2020
 // Delete this file
 
-import 'web3/dist/web3.min.js'
+import 'web3/dist/web3.min'
 
 const shouldLogUsage = !([
   'docs.metamask.io',
@@ -47,7 +47,7 @@ export default function setupWeb3 (log) {
         const name = stringifyKey(key)
         window.ethereum.request({
           method: 'metamask_logInjectedWeb3Usage',
-          params: [{ action: 'window.web3 get', name }],
+          params: [{ action: 'get', name }],
         })
       }
 
@@ -59,7 +59,7 @@ export default function setupWeb3 (log) {
       if (shouldLogUsage) {
         window.ethereum.request({
           method: 'metamask_logInjectedWeb3Usage',
-          params: [{ action: 'window.web3 set', name }],
+          params: [{ action: 'set', name }],
         })
       }
 

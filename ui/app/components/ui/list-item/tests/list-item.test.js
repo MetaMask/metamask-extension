@@ -1,8 +1,8 @@
+import assert from 'assert'
 import { shallow } from 'enzyme'
 import React from 'react'
-import ListItem from '../list-item.component'
-import assert from 'assert'
 import Sinon from 'sinon'
+import ListItem from '../list-item.component'
 import Preloader from '../../icon/preloader/preloader-icon.component'
 import Send from '../../icon/send-icon.component'
 
@@ -39,9 +39,6 @@ describe('ListItem', function () {
   })
   it(`renders "${TITLE}" title`, function () {
     assert.equal(wrapper.find('.list-item__heading h2').text(), TITLE)
-  })
-  it('adds html title to heading element', function () {
-    assert.equal(wrapper.find('.list-item__heading').props().title, TITLE)
   })
   it(`renders "I am a list item" subtitle`, function () {
     assert.equal(wrapper.find('.list-item__subheading').text(), 'I am a list item')

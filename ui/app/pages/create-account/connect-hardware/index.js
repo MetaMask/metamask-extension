@@ -3,10 +3,10 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import * as actions from '../../../store/actions'
 import { getMetaMaskAccounts } from '../../../selectors'
-import SelectHardware from './select-hardware'
-import AccountList from './account-list'
 import { formatBalance } from '../../../helpers/utils/util'
 import { getMostRecentOverviewPage } from '../../../ducks/history/history'
+import SelectHardware from './select-hardware'
+import AccountList from './account-list'
 
 class ConnectHardwareForm extends Component {
   state = {
@@ -29,24 +29,24 @@ class ConnectHardwareForm extends Component {
     this.setState({ accounts: newAccounts })
   }
 
-
   componentDidMount () {
     this.checkIfUnlocked()
   }
 
   async checkIfUnlocked () {
-    ['trezor', 'ledger'].forEach(async (device) => {
+    for (const device of ['trezor', 'ledger']) {
       const unlocked = await this.props.checkHardwareStatus(device, this.props.defaultHdPaths[device])
       if (unlocked) {
         this.setState({ unlocked: true })
         this.getPage(device, 0, this.props.defaultHdPaths[device])
       }
-    })
+    }
   }
 
   connectToHardwareWallet = (device) => {
+    this.setState({ device })
     if (this.state.accounts.length) {
-      return null
+      return
     }
 
     // Default values
@@ -99,7 +99,6 @@ class ConnectHardwareForm extends Component {
             newState.selectedAccount = null
           }
 
-
           // Map accounts with balances
           newState.accounts = accounts.map((account) => {
             const normalizedAddress = account.address.toLowerCase()
@@ -115,6 +114,8 @@ class ConnectHardwareForm extends Component {
         const errorMessage = e.message
         if (errorMessage === 'Window blocked') {
           this.setState({ browserSupported: false, error: null })
+        } else if (e.indexOf('U2F') > -1) {
+          this.setState({ error: 'U2F' })
         } else if (errorMessage !== 'Window closed' && errorMessage !== 'Popup closed') {
           this.setState({ error: errorMessage })
         }
@@ -148,7 +149,7 @@ class ConnectHardwareForm extends Component {
           eventOpts: {
             category: 'Accounts',
             action: 'Connected Hardware Wallet',
-            name: 'Connected Account with: ' + device,
+            name: `Connected Account with: ${device}`,
           },
         })
         history.push(mostRecentOverviewPage)
@@ -173,12 +174,29 @@ class ConnectHardwareForm extends Component {
   }
 
   renderError () {
+    if (this.state.error === 'U2F') {
+      return (
+        <p
+          className="hw-connect__error"
+        >
+          {this.context.t('troubleConnectingToWallet', [this.state.device, (
+            // eslint-disable-next-line react/jsx-key
+            <a
+              href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hw-connect__link"
+              style={{ marginLeft: '5px', marginRight: '5px' }}
+            >
+              {this.context.t('walletConnectionGuide')}
+            </a>
+          )])}
+        </p>
+      )
+    }
     return this.state.error
       ? (
-        <span
-          className="error"
-          style={{ margin: '20px 20px 10px', display: 'block', textAlign: 'center' }}
-        >
+        <span className="hw-connect__error">
           {this.state.error}
         </span>
       )

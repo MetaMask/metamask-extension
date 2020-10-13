@@ -3,8 +3,11 @@ import { Dedupe, ExtraErrorData } from '@sentry/integrations'
 
 import extractEthjsErrorMessage from './extractEthjsErrorMessage'
 
+/* eslint-disable prefer-destructuring */
+// Destructuring breaks the inlining of the environment variables
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 const METAMASK_ENVIRONMENT = process.env.METAMASK_ENVIRONMENT
+/* eslint-enable prefer-destructuring */
 const SENTRY_DSN_DEV = 'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496'
 
 // This describes the subset of Redux state attached to errors sent to Sentry
@@ -45,11 +48,6 @@ export const SENTRY_STATE = {
       type: true,
     },
     seedPhraseBackedUp: true,
-    settings: {
-      chainId: true,
-      ticker: true,
-      nickname: true,
-    },
     showRestorePrompt: true,
     threeBoxDisabled: true,
     threeBoxLastUpdated: true,
@@ -72,7 +70,7 @@ export default function setupSentry ({ release, getState }) {
   let sentryTarget
 
   if (METAMASK_DEBUG) {
-    return
+    return undefined
   } else if (METAMASK_ENVIRONMENT === 'production') {
     if (!process.env.SENTRY_DSN) {
       throw new Error(`Missing SENTRY_DSN environment variable in production environment`)
@@ -122,13 +120,13 @@ export default function setupSentry ({ release, getState }) {
 function simplifyErrorMessages (report) {
   rewriteErrorMessages(report, (errorMessage) => {
     // simplify ethjs error messages
-    errorMessage = extractEthjsErrorMessage(errorMessage)
+    let simplifiedErrorMessage = extractEthjsErrorMessage(errorMessage)
     // simplify 'Transaction Failed: known transaction'
-    if (errorMessage.indexOf('Transaction Failed: known transaction') === 0) {
+    if (simplifiedErrorMessage.indexOf('Transaction Failed: known transaction') === 0) {
       // cut the hash from the error message
-      errorMessage = 'Transaction Failed: known transaction'
+      simplifiedErrorMessage = 'Transaction Failed: known transaction'
     }
-    return errorMessage
+    return simplifiedErrorMessage
   })
 }
 

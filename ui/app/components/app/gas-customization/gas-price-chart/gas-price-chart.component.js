@@ -8,7 +8,7 @@ import {
   hideDataUI,
   setTickPosition,
   handleMouseMove,
-} from './gas-price-chart.utils.js'
+} from './gas-price-chart.utils'
 
 export default class GasPriceChart extends Component {
   static contextTypes = {

@@ -3,9 +3,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
+import log from 'loglevel'
 import * as actions from '../../store/actions'
 import txHelper from '../../../lib/tx-helper'
-import log from 'loglevel'
 import SignatureRequest from '../../components/app/signature-request'
 import SignatureRequestOriginal from '../../components/app/signature-request-original'
 import Loading from '../../components/ui/loading-screen'
@@ -33,7 +33,6 @@ function mapStateToProps (state) {
     index: txId,
     warning: state.appState.warning,
     network: state.metamask.network,
-    provider: state.metamask.provider,
     currentCurrency: state.metamask.currentCurrency,
     blockGasLimit: state.metamask.currentBlockGasLimit,
     unapprovedMsgCount,
@@ -105,7 +104,7 @@ class ConfirmTxScreen extends Component {
     log.info(`rendering a combined ${unconfTxList.length} unconf msgs & txs`)
 
     return transactionId
-      ? unconfTxList.find(({ id }) => id + '' === transactionId)
+      ? unconfTxList.find(({ id }) => `${id}` === transactionId)
       : unconfTxList[index]
   }
 
@@ -195,7 +194,7 @@ class ConfirmTxScreen extends Component {
     let prevTx
 
     if (transactionId) {
-      prevTx = currentNetworkTxList.find(({ id }) => id + '' === transactionId)
+      prevTx = currentNetworkTxList.find(({ id }) => `${id}` === transactionId)
     } else {
       const { index: prevIndex, unapprovedTxs: prevUnapprovedTxs } = prevProps
       const prevUnconfTxList = txHelper(prevUnapprovedTxs, {}, {}, {}, network)

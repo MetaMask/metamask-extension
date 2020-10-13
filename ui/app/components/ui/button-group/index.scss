@@ -4,7 +4,6 @@
   align-items: center;
 
   &__button {
-    font-family: Roboto;
     font-size: 1rem;
     color: $tundora;
     border-style: solid;
@@ -34,5 +33,42 @@
     &:disabled {
       opacity: 0.5;
     }
+  }
+}
+
+.radio-button-group {
+  .radio-button {
+    @include H7;
+
+    color: $Grey-700;
+    border: 1px solid $Grey-100;
+    background: $white;
+    border-radius: 25px;
+    height: 25px;
+    margin-right: 8px;
+    min-width: 48px;
+    padding: 0;
+
+    &--active {
+      background: $Blue-500;
+      color: white;
+      border: none;
+    }
+
+    &--danger {
+      border: 1px solid $Red-500;
+      color: $Red-500;
+      background: $white;
+    }
+
+    &:hover {
+      box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
+    };
+  }
+
+  .radio-button--active.radio-button--danger {
+    border: 1px solid $Red-500;
+    color: white;
+    background: $Red-500;
   }
 }

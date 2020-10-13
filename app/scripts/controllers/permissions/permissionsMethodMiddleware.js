@@ -24,12 +24,13 @@ export default function createPermissionsMethodMiddleware ({
       // Intercepting eth_accounts requests for backwards compatibility:
       // The getAccounts call below wraps the rpc-cap middleware, and returns
       // an empty array in case of errors (such as 4100:unauthorized)
-      case 'eth_accounts':
+      case 'eth_accounts': {
 
         res.result = await getAccounts()
         return
+      }
 
-      case 'eth_requestAccounts':
+      case 'eth_requestAccounts': {
 
         if (isProcessingRequestAccounts) {
           res.error = ethErrors.rpc.resourceUnavailable(
@@ -73,19 +74,21 @@ export default function createPermissionsMethodMiddleware ({
         }
 
         return
+      }
 
       // custom method for getting metadata from the requesting domain,
       // sent automatically by the inpage provider when it's initialized
-      case 'wallet_sendDomainMetadata':
+      case 'wallet_sendDomainMetadata': {
 
         if (typeof req.domainMetadata?.name === 'string') {
           addDomainMetadata(req.origin, req.domainMetadata)
         }
         res.result = true
         return
+      }
 
       // register return handler to send accountsChanged notification
-      case 'wallet_requestPermissions':
+      case 'wallet_requestPermissions': {
 
         if ('eth_accounts' in req.params?.[0]) {
 
@@ -101,6 +104,7 @@ export default function createPermissionsMethodMiddleware ({
           }
         }
         break
+      }
 
       default:
         break

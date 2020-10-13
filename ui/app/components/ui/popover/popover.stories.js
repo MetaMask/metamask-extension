@@ -1,7 +1,7 @@
 import React from 'react'
-import Popover from './popover.component'
 import { text } from '@storybook/addon-knobs/react'
 import { action } from '@storybook/addon-actions'
+import Popover from './popover.component'
 
 const containerStyle = {
   width: 800,

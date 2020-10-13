@@ -1,5 +1,5 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import ConfirmSeedPhrase from '../confirm-seed-phrase/confirm-seed-phrase.component'
@@ -9,7 +9,7 @@ function shallowRender (props = {}, context = {}) {
     <ConfirmSeedPhrase {...props} />,
     {
       context: {
-        t: (str) => str + '_t',
+        t: (str) => `${str}_t`,
         ...context,
       },
     },
@@ -151,7 +151,6 @@ describe('ConfirmSeedPhrase Component', function () {
 
     const sorted = root.state().sortedSeedWords
     const seeds = root.find('.confirm-seed-phrase__seed-word--sorted')
-
 
     originalSeed.forEach((seed) => {
       const seedIndex = sorted.findIndex((s) => s === seed)

@@ -13,12 +13,13 @@ import {
   SEND_ETHER_ACTION_KEY,
   DEPLOY_CONTRACT_ACTION_KEY,
   CONTRACT_INTERACTION_KEY,
-} from '../../../../../ui/app/helpers/constants/transactions.js'
+} from '../../../../../ui/app/helpers/constants/transactions'
 
 import { createTestProviderTools, getTestAccounts } from '../../../../stub/provider'
 
 const noop = () => true
 const currentNetworkId = '42'
+const currentChainId = '0x2a'
 
 describe('Transaction Controller', function () {
   let txController, provider, providerResultStub, fromAccount
@@ -37,7 +38,7 @@ describe('Transaction Controller', function () {
     blockTrackerStub.getLatestBlock = noop
     txController = new TransactionController({
       provider,
-      getGasPrice: function () {
+      getGasPrice () {
         return '0xee6b2800'
       },
       networkStore: new ObservableStore(currentNetworkId),
@@ -47,7 +48,9 @@ describe('Transaction Controller', function () {
         ethTx.sign(fromAccount.key)
         resolve()
       }),
-      getPermittedAccounts: () => {},
+      getPermittedAccounts: () => undefined,
+      getCurrentChainId: () => currentChainId,
+      getParticipateInMetrics: () => false,
     })
     txController.nonceTracker.getNonceLock = () => Promise.resolve({ nextNonce: 0, releaseLock: noop })
   })
@@ -107,7 +110,6 @@ describe('Transaction Controller', function () {
       assert.equal(txController.nonceTracker.getConfirmedTransactions(address).length, 3)
     })
   })
-
 
   describe('#newUnapprovedTransaction', function () {
     let stub, txMeta, txParams
@@ -307,7 +309,7 @@ describe('Transaction Controller', function () {
       txController.addTx({ id: '1', status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }, noop)
       const rawTx = await txController.signTransaction('1')
       const ethTx = new EthTx(ethUtil.toBuffer(rawTx))
-      assert.equal(ethTx.getChainId(), parseInt(currentNetworkId))
+      assert.equal(ethTx.getChainId(), 42)
     })
   })
 
@@ -335,7 +337,7 @@ describe('Transaction Controller', function () {
 
   describe('#getChainId', function () {
     it('returns 0 when the chainId is NaN', function () {
-      txController.networkStore = new ObservableStore(NaN)
+      txController.networkStore = new ObservableStore('loading')
       assert.equal(txController.getChainId(), 0)
     })
   })
@@ -387,7 +389,7 @@ describe('Transaction Controller', function () {
         { id: 1, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
       ])
 
-      expectedTxParams = Object.assign({}, txParams, { gasPrice: '0xb' })
+      expectedTxParams = { ...txParams, gasPrice: '0xb' }
     })
 
     afterEach(function () {
@@ -453,7 +455,7 @@ describe('Transaction Controller', function () {
     })
 
     it('should ignore the error "Transaction Failed: known transaction" and be as usual', async function () {
-      providerResultStub['eth_sendRawTransaction'] = async (_, __, ___, end) => {
+      providerResultStub.eth_sendRawTransaction = async (_, __, ___, end) => {
         end('Transaction Failed: known transaction')
       }
       const rawTx = '0xf86204831e848082520894f231d46dd78806e1dd93442cf33c7671f853874880802ca05f973e540f2d3c2f06d3725a626b75247593cb36477187ae07ecfe0a4db3cf57a00259b52ee8c58baaa385fb05c3f96116e58de89bcc165cb3bfdfc708672fed8a'
@@ -547,7 +549,7 @@ describe('Transaction Controller', function () {
       _blockTrackerStub.getLatestBlock = noop
       const _txController = new TransactionController({
         provider: _provider,
-        getGasPrice: function () {
+        getGasPrice () {
           return '0xee6b2800'
         },
         networkStore: new ObservableStore(currentNetworkId),
@@ -557,6 +559,7 @@ describe('Transaction Controller', function () {
           ethTx.sign(_fromAccount.key)
           resolve()
         }),
+        getParticipateInMetrics: () => false,
       })
       const result = await _txController._determineTransactionCategory({
         to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
@@ -579,7 +582,7 @@ describe('Transaction Controller', function () {
       _blockTrackerStub.getLatestBlock = noop
       const _txController = new TransactionController({
         provider: _provider,
-        getGasPrice: function () {
+        getGasPrice () {
           return '0xee6b2800'
         },
         networkStore: new ObservableStore(currentNetworkId),
@@ -589,6 +592,7 @@ describe('Transaction Controller', function () {
           ethTx.sign(_fromAccount.key)
           resolve()
         }),
+        getParticipateInMetrics: () => false,
       })
       const result = await _txController._determineTransactionCategory({
         to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',

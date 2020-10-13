@@ -9,7 +9,7 @@ describe('CachedBalancesController', function () {
         getNetwork: () => Promise.resolve(17),
         accountTracker: {
           store: {
-            subscribe: () => {},
+            subscribe: () => undefined,
           },
         },
         initState: {
@@ -32,7 +32,7 @@ describe('CachedBalancesController', function () {
       const controller = new CachedBalancesController({
         accountTracker: {
           store: {
-            subscribe: () => {},
+            subscribe: () => undefined,
           },
         },
         initState: {
@@ -75,7 +75,7 @@ describe('CachedBalancesController', function () {
       const controller = new CachedBalancesController({
         accountTracker: {
           store: {
-            subscribe: () => {},
+            subscribe: () => undefined,
           },
         },
         initState: {

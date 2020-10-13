@@ -4,6 +4,8 @@ workflows:
   test_and_release:
     jobs:
       - create_release_pull_request:
+          requires:
+            - prep-deps
           filters:
             branches:
               only:
@@ -89,6 +91,8 @@ jobs:
       - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - checkout
+      - attach_workspace:
+          at: .
       - run:
           name: Create GitHub Pull Request for version
           command: |
@@ -183,13 +187,13 @@ jobs:
 
   test-lint-shellcheck:
     docker:
-      - image: koalaman/shellcheck-alpine@sha256:169a51b086af0ab181e32801c15deb78944bb433d4f2c0a21cc30d4e60547065
+      - image: koalaman/shellcheck-alpine@sha256:35882cba254810c7de458528011e935ba2c4f3ebcb224275dfa7ebfa930ef294
     steps:
       - checkout
       - run: apk add --no-cache bash jq yarn
       - run:
-          name: Shellcheck Lint
-          command: yarn lint:shellcheck
+          name: ShellCheck Lint
+          command: ./development/shellcheck.sh
 
   test-lint-lockfile:
     docker:
@@ -225,7 +229,11 @@ jobs:
           command: mv ./dist-test ./dist
       - run:
           name: test:e2e:chrome
-          command: yarn test:e2e:chrome
+          command: |
+            if .circleci/scripts/test-run-e2e
+            then
+              yarn test:e2e:chrome
+            fi
           no_output_timeout: 20m
       - store_artifacts:
           path: test-artifacts
@@ -246,7 +254,11 @@ jobs:
           command: mv ./dist-test ./dist
       - run:
           name: test:e2e:firefox
-          command: yarn test:e2e:firefox
+          command: |
+            if .circleci/scripts/test-run-e2e
+            then
+              yarn test:e2e:firefox
+            fi
           no_output_timeout: 20m
       - store_artifacts:
           path: test-artifacts

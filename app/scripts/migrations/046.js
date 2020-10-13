@@ -1,12 +1,13 @@
-const version = 46
 import { cloneDeep } from 'lodash'
+
+const version = 46
 
 /**
  * Delete {@code ABTestController} state
  */
 export default {
   version,
-  migrate: async function (originalVersionedData) {
+  async migrate (originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     const state = versionedData.data

@@ -64,7 +64,8 @@ export default class MessageManager extends EventEmitter {
   getUnapprovedMsgs () {
     return this.messages.filter((msg) => msg.status === 'unapproved')
       .reduce((result, msg) => {
-        result[msg.id] = msg; return result
+        result[msg.id] = msg
+        return result
       }, {})
   }
 
@@ -114,8 +115,8 @@ export default class MessageManager extends EventEmitter {
     const msgId = createId()
     const msgData = {
       id: msgId,
-      msgParams: msgParams,
-      time: time,
+      msgParams,
+      time,
       status: 'unapproved',
       type: MESSAGE_TYPE.ETH_SIGN,
     }
@@ -225,7 +226,7 @@ export default class MessageManager extends EventEmitter {
   _setMsgStatus (msgId, status) {
     const msg = this.getMsg(msgId)
     if (!msg) {
-      throw new Error('MessageManager - Message not found for id: "${msgId}".')
+      throw new Error(`MessageManager - Message not found for id: "${msgId}".`)
     }
     msg.status = status
     this._updateMsg(msg)
@@ -278,8 +279,7 @@ function normalizeMsgData (data) {
   if (data.slice(0, 2) === '0x') {
     // data is already hex
     return data
-  } else {
-    // data is unicode, convert to hex
-    return ethUtil.bufferToHex(Buffer.from(data, 'utf8'))
   }
+  // data is unicode, convert to hex
+  return ethUtil.bufferToHex(Buffer.from(data, 'utf8'))
 }

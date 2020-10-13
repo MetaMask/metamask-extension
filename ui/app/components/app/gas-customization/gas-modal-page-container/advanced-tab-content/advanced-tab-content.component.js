@@ -26,6 +26,7 @@ export default class AdvancedTabContent extends Component {
     customPriceIsSafe: PropTypes.bool,
     isSpeedUp: PropTypes.bool,
     isEthereumNetwork: PropTypes.bool,
+    customGasLimitMessage: PropTypes.string,
   }
 
   renderDataSummary (transactionFee, timeRemaining) {
@@ -65,6 +66,7 @@ export default class AdvancedTabContent extends Component {
       isSpeedUp,
       transactionFee,
       isEthereumNetwork,
+      customGasLimitMessage,
     } = this.props
 
     return (
@@ -80,15 +82,16 @@ export default class AdvancedTabContent extends Component {
               insufficientBalance={insufficientBalance}
               customPriceIsSafe={customPriceIsSafe}
               isSpeedUp={isSpeedUp}
+              customGasLimitMessage={customGasLimitMessage}
             />
           </div>
           { isEthereumNetwork
             ? (
               <div>
                 <div className="advanced-tab__fee-chart__title">{ t('liveGasPricePredictions') }</div>
-                {!gasEstimatesLoading
-                  ? <GasPriceChart {...gasChartProps} updateCustomGasPrice={this.onGasChartUpdate} />
-                  : <Loading />
+                {gasEstimatesLoading
+                  ? <Loading />
+                  : <GasPriceChart {...gasChartProps} updateCustomGasPrice={this.onGasChartUpdate} />
                 }
                 <div className="advanced-tab__fee-chart__speed-buttons">
                   <span>{ t('slower') }</span>

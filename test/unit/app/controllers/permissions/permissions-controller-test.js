@@ -170,7 +170,6 @@ describe('permissions controller', function () {
       let bAccounts = await permController.getAccounts(DOMAINS.b.origin)
       let cAccounts = await permController.getAccounts(DOMAINS.c.origin)
 
-
       assert.deepEqual(
         aAccounts, [ACCOUNTS.a.primary],
         'first origin should have correct accounts',
@@ -189,7 +188,7 @@ describe('permissions controller', function () {
       Object.keys(notifications).forEach((origin) => {
         assert.deepEqual(
           notifications[origin],
-          [ NOTIFICATIONS.removedAccounts() ],
+          [NOTIFICATIONS.removedAccounts()],
           'origin should have single wallet_accountsChanged:[] notification',
         )
       })
@@ -447,12 +446,12 @@ describe('permissions controller', function () {
       )
 
       await assert.doesNotThrow(
-        () => permController.validatePermittedAccounts([ keyringAccounts[0] ]),
+        () => permController.validatePermittedAccounts([keyringAccounts[0]]),
         'should not throw on single keyring account',
       )
 
       await assert.doesNotThrow(
-        () => permController.validatePermittedAccounts([ keyringAccounts[1] ]),
+        () => permController.validatePermittedAccounts([keyringAccounts[1]]),
         'should not throw on single keyring account',
       )
     })
@@ -655,7 +654,6 @@ describe('permissions controller', function () {
     })
   })
 
-
   describe('removeAllAccountPermissions', function () {
     let permController, notifications
 
@@ -823,9 +821,9 @@ describe('permissions controller', function () {
 
     beforeEach(function () {
       identities = ALL_ACCOUNTS.reduce(
-        (identities, account) => {
-          identities[account] = {}
-          return identities
+        (identitiesAcc, account) => {
+          identitiesAcc[account] = {}
+          return identitiesAcc
         },
         {},
       )
@@ -1284,7 +1282,7 @@ describe('permissions controller', function () {
 
       assert.deepEqual(
         notifications[DOMAINS.a.origin],
-        [ NOTIFICATIONS.newAccounts(ACCOUNTS.a.permitted) ],
+        [NOTIFICATIONS.newAccounts(ACCOUNTS.a.permitted)],
         'origin should have correct notification',
       )
     })

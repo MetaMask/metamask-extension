@@ -1,4 +1,3 @@
-import Settings from './settings.component'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
@@ -9,7 +8,6 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import { getMostRecentOverviewPage } from '../../ducks/history/history'
 
 import {
-  CONNECTIONS_ROUTE,
   ADVANCED_ROUTE,
   SECURITY_ROUTE,
   GENERAL_ROUTE,
@@ -24,10 +22,10 @@ import {
   CONTACT_MY_ACCOUNTS_EDIT_ROUTE,
   CONTACT_MY_ACCOUNTS_VIEW_ROUTE,
 } from '../../helpers/constants/routes'
+import Settings from './settings.component'
 
 const ROUTES_TO_I18N_KEYS = {
   [GENERAL_ROUTE]: 'general',
-  [CONNECTIONS_ROUTE]: 'connections',
   [ADVANCED_ROUTE]: 'advanced',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
   [ABOUT_US_ROUTE]: 'about',
@@ -42,7 +40,7 @@ const ROUTES_TO_I18N_KEYS = {
 const mapStateToProps = (state, ownProps) => {
   const { location } = ownProps
   const { pathname } = location
-  const pathNameTail = pathname.match(/[^/]+$/)[0]
+  const pathNameTail = pathname.match(/[^/]+$/u)[0]
 
   const isAddressEntryPage = pathNameTail.includes('0x')
   const isMyAccountsPage = pathname.match('my-accounts')

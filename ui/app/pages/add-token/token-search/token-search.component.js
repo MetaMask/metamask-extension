@@ -6,7 +6,7 @@ import InputAdornment from '@material-ui/core/InputAdornment'
 import TextField from '../../../components/ui/text-field'
 
 const contractList = Object.entries(contractMap)
-  .map(([address, tokenData]) => Object.assign({}, tokenData, { address }))
+  .map(([address, tokenData]) => ({ ...tokenData, address }))
   .filter((tokenData) => Boolean(tokenData.erc20))
 
 const fuse = new Fuse(contractList, {
@@ -74,6 +74,7 @@ export default class TokenSearch extends Component {
         onChange={(e) => this.handleSearch(e.target.value)}
         error={error}
         fullWidth
+        autoFocus
         startAdornment={this.renderAdornment()}
       />
     )

@@ -3,7 +3,7 @@
   justify-content: space-between;
   align-items: center;
   flex: 1;
-  height: 209px;
+  min-height: 209px;
   min-width: 0;
   padding-top: 10px;
   flex-direction: column;
@@ -20,7 +20,7 @@
   &__buttons {
     display: flex;
     flex-direction: row;
-    height: 44px;
+    height: 68px;
     margin-bottom: 24px;
   }
 }
@@ -84,7 +84,22 @@
   }
 
   &__button {
-    @extend %asset-buttons;
+    margin-right: 24px;
+  }
+
+  &__button:last-of-type {
+    margin-right: 0;
+  }
+
+  &__circle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 36px;
+    width: 36px;
+    background: #037dd6;
+    border-radius: 18px;
+    margin-top: 6px;
   }
 }
 
@@ -116,6 +131,10 @@
   }
 
   &__button {
-    @extend %asset-buttons;
+    margin-right: 24px;
+  }
+
+  &__button:last-of-type {
+    margin-right: 0;
   }
 }

@@ -12,20 +12,34 @@ import * as actions from '../../../ducks/gas/gas.duck'
 import { useI18nContext } from '../../../hooks/useI18nContext'
 import TransactionListItem from '../transaction-list-item'
 import Button from '../../ui/button'
-import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions'
+import { TOKEN_CATEGORY_HASH, TRANSACTION_CATEGORY_SWAP } from '../../../helpers/constants/transactions'
+import { SWAPS_CONTRACT_ADDRESS } from '../../../helpers/constants/swaps'
 
 const PAGE_INCREMENT = 10
 
 const getTransactionGroupRecipientAddressFilter = (recipientAddress) => {
-  return ({ initialTransaction: { txParams } }) => txParams && txParams.to === recipientAddress
+  return ({ initialTransaction: { txParams } }) => {
+    return txParams?.to === recipientAddress || (
+      txParams?.to === SWAPS_CONTRACT_ADDRESS &&
+      txParams.data.match(recipientAddress.slice(2))
+    )
+  }
 }
 
 const tokenTransactionFilter = ({
   initialTransaction: {
     transactionCategory,
+    destinationTokenSymbol,
+    sourceTokenSymbol,
   },
-}) => !TOKEN_CATEGORY_HASH[transactionCategory]
-
+}) => {
+  if (TOKEN_CATEGORY_HASH[transactionCategory]) {
+    return false
+  } else if (transactionCategory === TRANSACTION_CATEGORY_SWAP) {
+    return destinationTokenSymbol === 'ETH' || sourceTokenSymbol === 'ETH'
+  }
+  return true
+}
 
 const getFilteredTransactionGroups = (transactionGroups, hideTokenTransactions, tokenAddress) => {
   if (hideTokenTransactions) {
@@ -72,10 +86,9 @@ export default function TransactionList ({ hideTokenTransactions, tokenAddress }
         .then(({ blockTime }) => fetchGasEstimates(blockTime))
     }
     prevState.current = { loaded: true, pendingTransactions, transactionTimeFeatureActive }
-  }, [fetchGasEstimates, fetchBasicGasAndTimeEstimates, transactionTimeFeatureActive, pendingTransactions ])
+  }, [fetchGasEstimates, fetchBasicGasAndTimeEstimates, transactionTimeFeatureActive, pendingTransactions])
 
   const viewMore = useCallback(() => setLimit((prev) => prev + PAGE_INCREMENT), [])
-
 
   const pendingLength = pendingTransactions.length
 
@@ -90,7 +103,11 @@ export default function TransactionList ({ hideTokenTransactions, tokenAddress }
               </div>
               {
                 pendingTransactions.map((transactionGroup, index) => (
-                  <TransactionListItem isEarliestNonce={index === 0} transactionGroup={transactionGroup} key={`${transactionGroup.nonce}:${index}`} />
+                  <TransactionListItem
+                    isEarliestNonce={index === 0}
+                    transactionGroup={transactionGroup}
+                    key={`${transactionGroup.nonce}:${index}`}
+                  />
                 ))
               }
             </div>
@@ -109,7 +126,10 @@ export default function TransactionList ({ hideTokenTransactions, tokenAddress }
           {
             completedTransactions.length > 0
               ? completedTransactions.slice(0, limit).map((transactionGroup, index) => (
-                <TransactionListItem transactionGroup={transactionGroup} key={`${transactionGroup.nonce}:${limit + index - 10}`} />
+                <TransactionListItem
+                  transactionGroup={transactionGroup}
+                  key={`${transactionGroup.nonce}:${limit + index - 10}`}
+                />
               ))
               : (
                 <div className="transaction-list__empty">

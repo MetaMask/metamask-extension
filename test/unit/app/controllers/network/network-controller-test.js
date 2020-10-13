@@ -1,27 +1,19 @@
-import assert from 'assert'
-import nock from 'nock'
+import { strict as assert } from 'assert'
+import sinon from 'sinon'
 import NetworkController from '../../../../../app/scripts/controllers/network'
 import { getNetworkDisplayName } from '../../../../../app/scripts/controllers/network/util'
 
 describe('NetworkController', function () {
   describe('controller', function () {
     let networkController
-    const noop = () => {}
+    const noop = () => undefined
     const networkControllerProviderConfig = {
       getAccounts: noop,
     }
 
     beforeEach(function () {
-      nock('https://rinkeby.infura.io')
-        .persist()
-        .post('/metamask')
-        .reply(200)
-
       networkController = new NetworkController()
-    })
-
-    afterEach(function () {
-      nock.cleanAll()
+      networkController.setInfuraProjectId('foo')
     })
 
     describe('#provider', function () {
@@ -43,9 +35,9 @@ describe('NetworkController', function () {
 
     describe('#setNetworkState', function () {
       it('should update the network', function () {
-        networkController.setNetworkState(1, 'rpc')
+        networkController.setNetworkState('1')
         const networkState = networkController.getNetworkState()
-        assert.equal(networkState, 1, 'network is 1')
+        assert.equal(networkState, '1', 'network is 1')
       })
     })
 
@@ -53,14 +45,24 @@ describe('NetworkController', function () {
       it('should update provider.type', function () {
         networkController.initializeProvider(networkControllerProviderConfig)
         networkController.setProviderType('mainnet')
-        const type = networkController.getProviderConfig().type
+        const { type } = networkController.getProviderConfig()
         assert.equal(type, 'mainnet', 'provider type is updated')
       })
+
       it('should set the network to loading', function () {
         networkController.initializeProvider(networkControllerProviderConfig)
+
+        const spy = sinon.spy(networkController, 'setNetworkState')
         networkController.setProviderType('mainnet')
-        const loading = networkController.isNetworkLoading()
-        assert.ok(loading, 'network is loading')
+
+        assert.equal(
+          spy.callCount, 1,
+          'should have called setNetworkState 2 times',
+        )
+        assert.ok(
+          spy.calledOnceWithExactly('loading'),
+          'should have called with "loading" first',
+        )
       })
     })
   })
@@ -97,7 +99,7 @@ describe('NetworkController', function () {
           expected: 'Kovan',
         }, {
           input: 'mainnet',
-          expected: 'Main Ethereum Network',
+          expected: 'Ethereum Mainnet',
         }, {
           input: 'goerli',
           expected: 'Goerli',

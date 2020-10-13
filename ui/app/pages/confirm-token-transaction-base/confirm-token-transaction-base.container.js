@@ -1,7 +1,6 @@
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
-import ConfirmTokenTransactionBase from './confirm-token-transaction-base.component'
 import {
   contractExchangeRateSelector,
   transactionFeeSelector,
@@ -12,10 +11,10 @@ import {
 } from '../../helpers/utils/transactions.util'
 import {
   calcTokenAmount,
-  getTokenToAddress,
-  getTokenValue,
+  getTokenAddressParam,
+  getTokenValueParam,
 } from '../../helpers/utils/token-util'
-
+import ConfirmTokenTransactionBase from './confirm-token-transaction-base.component'
 
 const mapStateToProps = (state, ownProps) => {
   const { match: { params = {} } } = ownProps
@@ -43,9 +42,9 @@ const mapStateToProps = (state, ownProps) => {
   const { decimals, symbol: tokenSymbol } = currentToken || {}
 
   const tokenData = getTokenData(data)
-  const tokenValue = tokenData && getTokenValue(tokenData.params)
-  const toAddress = tokenData && getTokenToAddress(tokenData.params)
-  const tokenAmount = tokenData && calcTokenAmount(tokenValue, decimals).toNumber()
+  const tokenValue = getTokenValueParam(tokenData)
+  const toAddress = getTokenAddressParam(tokenData)
+  const tokenAmount = tokenData && calcTokenAmount(tokenValue, decimals).toFixed()
   const contractExchangeRate = contractExchangeRateSelector(state)
 
   return {

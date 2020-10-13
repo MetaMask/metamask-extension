@@ -29,7 +29,6 @@ export default class MobileSyncPage extends Component {
     keyrings: PropTypes.array,
   }
 
-
   state = {
     screen: PASSWORD_PROMPT_SCREEN,
     password: '',
@@ -131,7 +130,7 @@ export default class MobileSyncPage extends Component {
         const { channel, message } = data
         // handle message
         if (channel !== this.channelName || !message) {
-          return false
+          return
         }
 
         if (message.event === 'start-sync') {
@@ -173,8 +172,10 @@ export default class MobileSyncPage extends Component {
   chunkString (str, size) {
     const numChunks = Math.ceil(str.length / size)
     const chunks = new Array(numChunks)
-    for (let i = 0, o = 0; i < numChunks; ++i, o += size) {
+    for (let i = 0, o = 0; i < numChunks;) {
       chunks[i] = str.substr(o, size)
+      i += 1
+      o += size
     }
     return chunks
   }
@@ -192,18 +193,19 @@ export default class MobileSyncPage extends Component {
           storeInHistory: false,
         },
         (status, response) => {
-          if (!status.error) {
-            resolve()
-          } else {
+          if (status.error) {
             reject(response)
+          } else {
+            resolve()
           }
-        })
+        },
+      )
     })
   }
 
   async startSyncing () {
     if (this.syncing) {
-      return false
+      return
     }
     this.syncing = true
     this.setState({ syncing: true })
@@ -251,16 +253,15 @@ export default class MobileSyncPage extends Component {
           storeInHistory: false,
         },
         (status, response) => {
-          if (!status.error) {
-            resolve()
-          } else {
+          if (status.error) {
             reject(response)
+          } else {
+            resolve()
           }
         },
       )
     })
   }
-
 
   componentWillUnmount () {
     this.clearTimeouts()
@@ -369,7 +370,6 @@ export default class MobileSyncPage extends Component {
           {t('syncWithMobileScanThisCode')}
         </label>
         <div
-          className="div qr-wrapper"
           style={{
             display: 'flex',
             justifyContent: 'center',

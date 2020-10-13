@@ -2,14 +2,14 @@ import React, { Component } from 'react'
 import { Switch, Route, matchPath } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import NewAccountCreateForm from './new-account.container'
-import NewAccountImportForm from './import-account'
-import ConnectHardwareForm from './connect-hardware'
 import {
   NEW_ACCOUNT_ROUTE,
   IMPORT_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
 } from '../../helpers/constants/routes'
+import NewAccountCreateForm from './new-account.container'
+import NewAccountImportForm from './import-account'
+import ConnectHardwareForm from './connect-hardware'
 
 export default class CreateAccountPage extends Component {
   renderTabs () {

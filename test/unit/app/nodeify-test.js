@@ -4,7 +4,7 @@ import nodeify from '../../../app/scripts/lib/nodeify'
 describe('nodeify', function () {
   const obj = {
     foo: 'bar',
-    promiseFunc: function (a) {
+    promiseFunc (a) {
       const solution = this.foo + a
       return Promise.resolve(solution)
     },
@@ -16,9 +16,10 @@ describe('nodeify', function () {
       if (!err) {
         assert.equal(res, 'barbaz')
         done()
-      } else {
-        done(new Error(err.toString()))
+        return
       }
+
+      done(new Error(err.toString()))
     })
   })
 
@@ -37,7 +38,8 @@ describe('nodeify', function () {
     try {
       nodified((err, result) => {
         if (err) {
-          return done(new Error(`should not have thrown any error: ${err.message}`))
+          done(new Error(`should not have thrown any error: ${err.message}`))
+          return
         }
         assert.equal(42, result, 'got expected result')
       })
@@ -54,7 +56,8 @@ describe('nodeify', function () {
     try {
       nodified((err, result) => {
         if (result) {
-          return done(new Error('should not have returned any result'))
+          done(new Error('should not have returned any result'))
+          return
         }
         assert.ok(err, 'got expected error')
         assert.ok(err.message.includes('boom!'), 'got expected error message')

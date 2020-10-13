@@ -1,8 +1,8 @@
 import { connect } from 'react-redux'
-import AddToken from './add-token.component'
 
 import { setPendingTokens, clearPendingTokens } from '../../store/actions'
 import { getMostRecentOverviewPage } from '../../ducks/history/history'
+import AddToken from './add-token.component'
 
 const mapStateToProps = (state) => {
   const { metamask: { identities, tokens, pendingTokens } } = state

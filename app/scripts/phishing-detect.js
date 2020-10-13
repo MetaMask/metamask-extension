@@ -1,9 +1,9 @@
 import querystring from 'querystring'
-import dnode from 'dnode'
 import { EventEmitter } from 'events'
+import dnode from 'dnode'
 import PortStream from 'extension-port-stream'
 import extension from 'extensionizer'
-import { setupMultiplex } from './lib/stream-utils.js'
+import { setupMultiplex } from './lib/stream-utils'
 import { getEnvironmentType } from './lib/util'
 import ExtensionPlatform from './platforms/extension'
 

@@ -14,7 +14,7 @@ export default class SignatureRequestMessage extends PureComponent {
   renderNode (data) {
     return (
       <div className="signature-request-message--node">
-        {Object.entries(data).map(([ label, value ], i) => (
+        {Object.entries(data).map(([label, value], i) => (
           <div
             className={classnames('signature-request-message--node', {
               'signature-request-message--node-leaf': typeof value !== 'object' || value === null,
@@ -32,7 +32,6 @@ export default class SignatureRequestMessage extends PureComponent {
       </div>
     )
   }
-
 
   render () {
     const { data } = this.props

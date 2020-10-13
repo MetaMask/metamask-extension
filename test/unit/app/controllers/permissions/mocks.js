@@ -20,7 +20,7 @@ import {
  * - Immutable mock values like Ethereum accounts and expected states
  */
 
-export const noop = () => {}
+export const noop = () => undefined
 
 /**
  * Mock Permissions Controller and Middleware
@@ -33,7 +33,7 @@ const keyringAccounts = deepFreeze([
   '0xcc74c7a59194e5d9268476955650d1e285be703c',
 ])
 
-const getKeyringAccounts = async () => [ ...keyringAccounts ]
+const getKeyringAccounts = async () => [...keyringAccounts]
 
 const getIdentities = () => {
   return keyringAccounts.reduce(
@@ -108,6 +108,7 @@ export function getPermissionsMiddleware (permController, origin, extensionId) {
   return (req, res = {}, next = noop, end) => {
     return new Promise((resolve, reject) => {
 
+      // eslint-disable-next-line no-param-reassign
       end = end || _end
 
       middleware(req, res, next, end)
@@ -260,7 +261,8 @@ const PERMS = {
       return {
         eth_accounts: {
           caveats: CAVEATS.eth_accounts(accounts),
-        } }
+        },
+      }
     },
 
     /**
@@ -573,7 +575,7 @@ export const getters = deepFreeze({
       return {
         origin,
         method: 'wallet_requestPermissions',
-        params: [ PERMS.requests[permissionName]() ],
+        params: [PERMS.requests[permissionName]()],
       }
     },
 
@@ -589,7 +591,7 @@ export const getters = deepFreeze({
       return {
         origin,
         method: 'wallet_requestPermissions',
-        params: [ permissions ],
+        params: [permissions],
       }
     },
 

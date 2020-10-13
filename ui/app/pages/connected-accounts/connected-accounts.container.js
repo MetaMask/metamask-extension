@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import ConnectedAccounts from './connected-accounts.component'
 import {
   getAccountToConnectToActiveTab,
   getOrderedConnectedAccountsForActiveTab,
@@ -9,6 +8,7 @@ import {
 import { isExtensionUrl } from '../../helpers/utils/util'
 import { addPermittedAccount, removePermittedAccount, setSelectedAddress } from '../../store/actions'
 import { getMostRecentOverviewPage } from '../../ducks/history/history'
+import ConnectedAccounts from './connected-accounts.component'
 
 const mapStateToProps = (state) => {
   const { activeTab } = state

@@ -52,22 +52,30 @@ describe('custom-gas selectors', function () {
 
   describe('getEstimatedGasPrices', function () {
     it('should return price and time estimates', function () {
-      const mockState = { gas: { priceAndTimeEstimates: [
-        { gasprice: 12, somethingElse: 20 },
-        { gasprice: 22, expectedTime: 30 },
-        { gasprice: 32, somethingElse: 40 },
-      ] } }
+      const mockState = {
+        gas: {
+          priceAndTimeEstimates: [
+            { gasprice: 12, somethingElse: 20 },
+            { gasprice: 22, expectedTime: 30 },
+            { gasprice: 32, somethingElse: 40 },
+          ],
+        },
+      }
       assert.deepEqual(getEstimatedGasPrices(mockState), [12, 22, 32])
     })
   })
 
   describe('getEstimatedGasTimes', function () {
     it('should return price and time estimates', function () {
-      const mockState = { gas: { priceAndTimeEstimates: [
-        { somethingElse: 12, expectedTime: 20 },
-        { gasPrice: 22, expectedTime: 30 },
-        { somethingElse: 32, expectedTime: 40 },
-      ] } }
+      const mockState = {
+        gas: {
+          priceAndTimeEstimates: [
+            { somethingElse: 12, expectedTime: 20 },
+            { gasPrice: 22, expectedTime: 30 },
+            { somethingElse: 32, expectedTime: 40 },
+          ],
+        },
+      }
       assert.deepEqual(getEstimatedGasTimes(mockState), [20, 30, 40])
     })
   })
@@ -336,16 +344,69 @@ describe('custom-gas selectors', function () {
           },
         },
       },
+      {
+        expectedResult: [
+          {
+            gasEstimateType: 'AVERAGE',
+            feeInPrimaryCurrency: '0.000147 ETH',
+            feeInSecondaryCurrency: '$0.38',
+            priceInHexWei: '0x1a13b8600',
+            timeEstimate: '~10 min 6 sec',
+          },
+          {
+            gasEstimateType: 'FAST',
+            feeInSecondaryCurrency: '$0.54',
+            feeInPrimaryCurrency: '0.00021 ETH',
+            timeEstimate: '~6 min 36 sec',
+            priceInHexWei: '0x2540be400',
+          },
+          {
+            feeInPrimaryCurrency: '0.00042 ETH',
+            feeInSecondaryCurrency: '$1.07',
+            gasEstimateType: 'FASTEST',
+            priceInHexWei: '0x4a817c800',
+            timeEstimate: '~1 min',
+          },
+        ],
+        mockState: {
+          metamask: {
+            conversionRate: 2557.1,
+            currentCurrency: 'usd',
+            send: {
+              gasLimit: '0x5208',
+            },
+            preferences: {
+              showFiatInTestnets: true,
+            },
+            provider: {
+              type: 'mainnet',
+            },
+          },
+          gas: {
+            basicEstimates: {
+              blockTime: 14.16326530612245,
+              safeLow: 5,
+              safeLowWait: 13.2,
+              average: 7,
+              avgWait: 10.1,
+              fast: 10,
+              fastWait: 6.6,
+              fastest: 20,
+              fastestWait: 1.0,
+            },
+          },
+        },
+        useFastestButtons: true,
+      },
     ]
     it('should return renderable data about basic estimates', function () {
       tests.forEach((test) => {
         assert.deepEqual(
-          getRenderableBasicEstimateData(test.mockState, '0x5208'),
+          getRenderableBasicEstimateData(test.mockState, '0x5208', test.useFastestButtons),
           test.expectedResult,
         )
       })
     })
-
   })
 
   describe('getRenderableEstimateDataForSmallButtonsFromGWEI()', function () {

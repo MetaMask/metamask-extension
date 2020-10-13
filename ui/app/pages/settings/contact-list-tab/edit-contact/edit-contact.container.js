@@ -1,4 +1,3 @@
-import EditContact from './edit-contact.component'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
@@ -11,18 +10,19 @@ import {
   CONTACT_LIST_ROUTE,
 } from '../../../../helpers/constants/routes'
 import { addToAddressBook, removeFromAddressBook, setAccountLabel } from '../../../../store/actions'
+import EditContact from './edit-contact.component'
 
 const mapStateToProps = (state, ownProps) => {
   const { location } = ownProps
   const { pathname } = location
-  const pathNameTail = pathname.match(/[^/]+$/)[0]
+  const pathNameTail = pathname.match(/[^/]+$/u)[0]
   const pathNameTailIsAddress = pathNameTail.includes('0x')
   const address = pathNameTailIsAddress ? pathNameTail.toLowerCase() : ownProps.match.params.id
 
   const contact = getAddressBookEntry(state, address) || state.metamask.identities[address]
   const { memo, name } = contact || {}
 
-  const chainId = state.metamask.network
+  const { chainId } = state.metamask.provider
 
   const showingMyAccounts = Boolean(pathname.match(CONTACT_MY_ACCOUNTS_EDIT_ROUTE))
 

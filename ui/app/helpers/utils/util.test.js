@@ -307,7 +307,7 @@ describe('util', function () {
     describe('#getRandomFileName', function () {
       it('should only return a string containing alphanumeric characters', function () {
         const result = util.getRandomFileName()
-        assert(result.match(/^[a-zA-Z0-9]*$/g))
+        assert(result.match(/^[a-zA-Z0-9]*$/ug))
       })
 
       // 50 samples
@@ -346,6 +346,67 @@ describe('util', function () {
 
     it('should return false when the passed address is not in the passed list', function () {
       assert(util.checkExistingAddresses('b', tokenList) === false)
+    })
+  })
+
+  describe('toPrecisionWithoutTrailingZeros', function () {
+    const testData = [
+      { args: ['0', 9], result: '0' },
+      { args: [0, 9], result: '0' },
+      { args: ['0.0', 9], result: '0' },
+      { args: ['0.000000000000', 9], result: '0' },
+      { args: ['1', 9], result: '1' },
+      { args: [1], result: '1' },
+      { args: ['1.0', 9], result: '1' },
+      { args: ['1.000000000', 9], result: '1' },
+      { args: ['000000001', 9], result: '1' },
+      { args: ['000000001.0', 9], result: '1' },
+      { args: ['100000000', 9], result: '100000000' },
+      { args: ['100000000.00001', 9], result: '100000000' },
+      { args: ['100.00001', 9], result: '100.00001' },
+      { args: ['100.00001000', 9], result: '100.00001' },
+      { args: ['100.000010001', 9], result: '100.00001' },
+      { args: ['10.010101', 9], result: '10.010101' },
+      { args: ['0.1', 5], result: '0.1' },
+      { args: ['0.10', 5], result: '0.1' },
+      { args: ['0.1010', 5], result: '0.101' },
+      { args: ['0.01001', 5], result: '0.01001' },
+      { args: ['0.010010', 5], result: '0.01001' },
+      { args: ['0.010011', 5], result: '0.010011' },
+      { args: ['1.01005', 5], result: '1.0101' },
+      { args: ['1.000049', 5], result: '1' },
+      { args: ['1.00005', 5], result: '1.0001' },
+      { args: ['0.0000123456789', 9], result: '0.0000123456789' },
+      { args: ['1.0000123456789', 10], result: '1.000012346' },
+      { args: ['10000.0000012345679', 10], result: '10000' },
+      { args: ['1000000000000', 10], result: '1e+12' },
+      { args: ['1000050000000', 10], result: '1.00005e+12' },
+      { args: ['100000000000000000000', 10], result: '1e+20' },
+      { args: ['100005000000000000000', 10], result: '1.00005e+20' },
+      { args: ['100005000000000000000.0', 10], result: '1.00005e+20' },
+    ]
+
+    testData.forEach(({ args, result }) => {
+      it(`should return ${result} when passed number ${args[0]} and precision ${args[1]}`, function () {
+        assert.equal(util.toPrecisionWithoutTrailingZeros(...args), result)
+      })
+    })
+  })
+
+  describe('addHexPrefixToObjectValues()', function () {
+    it('should return a new object with the same properties with a 0x prefix', function () {
+      assert.deepEqual(
+        util.addHexPrefixToObjectValues({
+          prop1: '0x123',
+          prop2: '456',
+          prop3: 'x',
+        }),
+        {
+          prop1: '0x123',
+          prop2: '0x456',
+          prop3: '0xx',
+        },
+      )
     })
   })
 })

@@ -11,11 +11,13 @@ export default class ButtonGroup extends PureComponent {
     className: PropTypes.string,
     style: PropTypes.object,
     newActiveButtonIndex: PropTypes.number,
+    variant: PropTypes.oneOf(['radiogroup', 'default']),
   }
 
   static defaultProps = {
     className: 'button-group',
     defaultActiveButtonIndex: 0,
+    variant: 'default',
   }
 
   state = {
@@ -36,14 +38,21 @@ export default class ButtonGroup extends PureComponent {
   }
 
   renderButtons () {
-    const { children, disabled } = this.props
+    const { children, disabled, variant } = this.props
 
     return React.Children.map(children, (child, index) => {
       return child && (
         <button
+          role={variant === 'radiogroup' ? 'radio' : undefined}
+          aria-checked={index === this.state.activeButtonIndex}
           className={classnames(
             'button-group__button',
-            { 'button-group__button--active': index === this.state.activeButtonIndex },
+            child.props.className,
+            {
+              'radio-button': variant === 'radiogroup',
+              'button-group__button--active': index === this.state.activeButtonIndex,
+              'radio-button--active': variant === 'radiogroup' && index === this.state.activeButtonIndex,
+            },
           )}
           onClick={() => {
             this.handleButtonClick(index)
@@ -59,11 +68,12 @@ export default class ButtonGroup extends PureComponent {
   }
 
   render () {
-    const { className, style } = this.props
+    const { className, style, variant } = this.props
 
     return (
       <div
-        className={className}
+        className={classnames(className, { 'radio-button-group': variant === 'radiogroup' })}
+        role={variant === 'radiogroup' ? 'radiogroup' : undefined}
         style={style}
       >
         { this.renderButtons() }

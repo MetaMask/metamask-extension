@@ -6,7 +6,7 @@ import SendReducer, {
   updateSendErrors,
   showGasButtonGroup,
   hideGasButtonGroup,
-} from './send.duck.js'
+} from './send.duck'
 
 describe('Send Duck', function () {
   const mockState = {

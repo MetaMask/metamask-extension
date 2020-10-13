@@ -11,10 +11,11 @@ export default class MetaMetricsOptInModal extends Component {
 
   static contextTypes = {
     metricsEvent: PropTypes.func,
+    t: PropTypes.func,
   }
 
   render () {
-    const { metricsEvent } = this.context
+    const { metricsEvent, t } = this.context
     const { setParticipateInMetaMetrics, hideModal } = this.props
 
     return (
@@ -103,7 +104,7 @@ export default class MetaMetricsOptInModal extends Component {
                     hideModal()
                   })
               }}
-              cancelText="No Thanks"
+              cancelText={t('noThanks')}
               hideCancel={false}
               onSubmit={() => {
                 setParticipateInMetaMetrics(true)
@@ -119,7 +120,7 @@ export default class MetaMetricsOptInModal extends Component {
                     hideModal()
                   })
               }}
-              submitText="I agree"
+              submitText={t('affirmAgree')}
               submitButtonType="confirm"
               disabled={false}
             />

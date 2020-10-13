@@ -1,8 +1,8 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import sinon from 'sinon'
 import { mount } from 'enzyme'
-import UnlockPage from '../index'
+import UnlockPage from '..'
 
 describe('Unlock Page', function () {
   let wrapper
@@ -18,7 +18,6 @@ describe('Unlock Page', function () {
     forceUpdateMetamaskState: sinon.spy(),
     showOptInModal: sinon.spy(),
   }
-
 
   beforeEach(function () {
 

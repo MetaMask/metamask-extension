@@ -1,7 +1,8 @@
-import ObservableStore from 'obs-store'
 import EventEmitter from 'events'
+import ObservableStore from 'obs-store'
 
 export default class AppStateController extends EventEmitter {
+
   /**
    * @constructor
    * @param opts
@@ -15,16 +16,15 @@ export default class AppStateController extends EventEmitter {
       showUnlockRequest,
       preferencesStore,
     } = opts
-    const { preferences } = preferencesStore.getState()
-
     super()
 
-    this.onInactiveTimeout = onInactiveTimeout || (() => {})
-    this.store = new ObservableStore(Object.assign({
+    this.onInactiveTimeout = onInactiveTimeout || (() => undefined)
+    this.store = new ObservableStore({
       timeoutMinutes: 0,
       connectedStatusPopoverHasBeenShown: true,
-      defaultHomeActiveTabName: null,
-    }, initState))
+      swapsWelcomeMessageHasBeenShown: false,
+      defaultHomeActiveTabName: null, ...initState,
+    })
     this.timer = null
 
     this.isUnlocked = isUnlocked
@@ -40,6 +40,7 @@ export default class AppStateController extends EventEmitter {
       }
     })
 
+    const { preferences } = preferencesStore.getState()
     this._setInactiveTimeout(preferences.autoLockTimeLimit)
   }
 
@@ -107,6 +108,15 @@ export default class AppStateController extends EventEmitter {
   setConnectedStatusPopoverHasBeenShown () {
     this.store.updateState({
       connectedStatusPopoverHasBeenShown: true,
+    })
+  }
+
+  /**
+   * Record that the user has seen the swap screen welcome message
+   */
+  setSwapsWelcomeMessageHasBeenShown () {
+    this.store.updateState({
+      swapsWelcomeMessageHasBeenShown: true,
     })
   }
 

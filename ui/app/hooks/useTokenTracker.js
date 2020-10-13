@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import TokenTracker from '@metamask/eth-token-tracker'
 import { useSelector } from 'react-redux'
 import { getCurrentNetwork, getSelectedAddress } from '../selectors'
-
+import { useEqualityCheck } from './useEqualityCheck'
 
 export function useTokenTracker (tokens) {
   const network = useSelector(getCurrentNetwork)
@@ -12,15 +12,16 @@ export function useTokenTracker (tokens) {
   const [tokensWithBalances, setTokensWithBalances] = useState([])
   const [error, setError] = useState(null)
   const tokenTracker = useRef(null)
+  const memoizedTokens = useEqualityCheck(tokens)
 
-  const updateBalances = useCallback((tokensWithBalances) => {
-    setTokensWithBalances(tokensWithBalances)
+  const updateBalances = useCallback((tokenWithBalances) => {
+    setTokensWithBalances(tokenWithBalances)
     setLoading(false)
     setError(null)
   }, [])
 
-  const showError = useCallback((error) => {
-    setError(error)
+  const showError = useCallback((err) => {
+    setError(err)
     setLoading(false)
   }, [])
 
@@ -57,7 +58,6 @@ export function useTokenTracker (tokens) {
     return teardownTracker
   }, [teardownTracker])
 
-
   // Effect to set loading state and initialize tracker when values change
   useEffect(() => {
     // This effect will only run initially and when:
@@ -76,13 +76,13 @@ export function useTokenTracker (tokens) {
       return
     }
 
-    if (tokens.length === 0) {
+    if (memoizedTokens.length === 0) {
       // sets loading state to false and token list to empty
       updateBalances([])
     }
 
-    buildTracker(userAddress, tokens)
-  }, [userAddress, teardownTracker, network, tokens, updateBalances, buildTracker])
+    buildTracker(userAddress, memoizedTokens)
+  }, [userAddress, teardownTracker, network, memoizedTokens, updateBalances, buildTracker])
 
   return { loading, tokensWithBalances, error }
 }

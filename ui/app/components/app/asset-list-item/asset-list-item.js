@@ -1,18 +1,17 @@
 import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import { useDispatch } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import Identicon from '../../ui/identicon'
 import ListItem from '../../ui/list-item'
-import Tooltip from '../../ui/tooltip-v2'
+import Tooltip from '../../ui/tooltip'
 import InfoIcon from '../../ui/icon/info-icon.component'
 import Button from '../../ui/button'
 import { useI18nContext } from '../../../hooks/useI18nContext'
 import { useMetricEvent } from '../../../hooks/useMetricEvent'
-import { useDispatch } from 'react-redux'
 import { updateSendToken } from '../../../store/actions'
-import { useHistory } from 'react-router-dom'
 import { SEND_ROUTE } from '../../../helpers/constants/routes'
-
 
 const AssetListItem = ({
   className,
@@ -60,7 +59,7 @@ const AssetListItem = ({
     : null
 
   const sendTokenButton = useMemo(() => {
-    if (tokenAddress == null) {
+    if (tokenAddress === null || tokenAddress === undefined) {
       return null
     }
     return (
@@ -95,7 +94,12 @@ const AssetListItem = ({
     <ListItem
       className={classnames('asset-list-item', className)}
       data-testid={dataTestId}
-      title={primary}
+      title={(
+        <>
+          <h2 className="asset-list-item__token-value">{primary}</h2>
+          <h2 className="asset-list-item__token-symbol">{tokenSymbol}</h2>
+        </>
+      )}
       titleIcon={titleIcon}
       subtitle={<h3 title={secondary}>{secondary}</h3>}
       onClick={onClick}

@@ -1,8 +1,8 @@
-import React from 'react'
 import assert from 'assert'
-import shallow from '../../../../../../lib/shallow-with-context'
+import React from 'react'
 import sinon from 'sinon'
-import GasModalPageContainer from '../gas-modal-page-container.component.js'
+import shallow from '../../../../../../lib/shallow-with-context'
+import GasModalPageContainer from '../gas-modal-page-container.component'
 import timeout from '../../../../../../lib/test-timeout'
 
 import PageContainer from '../../../../ui/page-container'
@@ -56,6 +56,7 @@ const mockInfoRowProps = {
   newTotalEth: 'mockNewTotalEth',
   sendAmount: 'mockSendAmount',
   transactionFee: 'mockTransactionFee',
+  extraInfoRow: { label: 'mockLabel', value: 'mockValue' },
 }
 
 const GP = GasModalPageContainer.prototype
@@ -183,8 +184,8 @@ describe('GasModalPageContainer Component', function () {
 
       assert.equal(GP.renderInfoRows.callCount, 2)
 
-      assert.deepEqual(GP.renderInfoRows.getCall(0).args, ['mockNewTotalFiat', 'mockNewTotalEth', 'mockSendAmount', 'mockTransactionFee'])
-      assert.deepEqual(GP.renderInfoRows.getCall(1).args, ['mockNewTotalFiat', 'mockNewTotalEth', 'mockSendAmount', 'mockTransactionFee'])
+      assert.deepEqual(GP.renderInfoRows.getCall(0).args, ['mockNewTotalFiat', 'mockNewTotalEth', 'mockSendAmount', 'mockTransactionFee', { label: 'mockLabel', value: 'mockValue' }])
+      assert.deepEqual(GP.renderInfoRows.getCall(1).args, ['mockNewTotalFiat', 'mockNewTotalEth', 'mockSendAmount', 'mockTransactionFee', { label: 'mockLabel', value: 'mockValue' }])
     })
 
     it('should not render the basic tab if hideBasic is true', function () {

@@ -1,8 +1,8 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import sinon from 'sinon'
 import { mount } from 'enzyme'
-import ConfirmResetAccount from '../index'
+import ConfirmResetAccount from '..'
 
 describe('Confirm Reset Account', function () {
   let wrapper

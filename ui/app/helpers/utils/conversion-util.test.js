@@ -1,6 +1,6 @@
 import assert from 'assert'
-import { addCurrencies, conversionUtil } from './conversion-util'
 import BigNumber from 'bignumber.js'
+import { addCurrencies, conversionUtil } from './conversion-util'
 
 describe('conversion utils', function () {
   describe('addCurrencies()', function () {

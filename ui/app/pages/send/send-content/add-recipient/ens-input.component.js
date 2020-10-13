@@ -1,15 +1,15 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import { isValidDomainName, isValidAddress, isValidAddressHead } from '../../../../helpers/utils/util'
-import { ellipsify } from '../../send.utils'
 
 import { debounce } from 'lodash'
 import copyToClipboard from 'copy-to-clipboard/index'
 import ENS from 'ethjs-ens'
 import networkMap from 'ethereum-ens-network-map'
 import log from 'loglevel'
-
+import { ellipsify } from '../../send.utils'
+import { isValidDomainName, isValidAddress, isValidAddressHead } from '../../../../helpers/utils/util'
+import { MAINNET_NETWORK_ID } from '../../../../../../app/scripts/controllers/network/enums'
 
 // Local Constants
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
@@ -42,7 +42,7 @@ export default class EnsInput extends Component {
   }
 
   componentDidMount () {
-    const network = this.props.network
+    const { network } = this.props
     const networkHasEnsSupport = getNetworkEnsSupport(network)
     this.setState({ ensResolution: ZERO_ADDRESS })
 
@@ -78,8 +78,9 @@ export default class EnsInput extends Component {
     updateEnsResolutionError('')
   }
 
-  lookupEnsName = (recipient) => {
-    recipient = recipient.trim()
+  lookupEnsName = (ensName) => {
+    const { network } = this.props
+    const recipient = ensName.trim()
 
     log.info(`ENS attempting to resolve name: ${recipient}`)
     this.ens.lookup(recipient)
@@ -94,7 +95,7 @@ export default class EnsInput extends Component {
       })
       .catch((reason) => {
         if (isValidDomainName(recipient) && reason.message === 'ENS name not defined.') {
-          this.props.updateEnsResolutionError(this.context.t('ensNotFoundOnCurrentNetwork'))
+          this.props.updateEnsResolutionError(network === MAINNET_NETWORK_ID ? this.context.t('noAddressForName') : this.context.t('ensNotFoundOnCurrentNetwork'))
         } else {
           log.error(reason)
           this.props.updateEnsResolutionError(reason.message)
@@ -122,7 +123,7 @@ export default class EnsInput extends Component {
 
     if (!networkHasEnsSupport && !isValidAddress(input) && !isValidAddressHead(input)) {
       updateEnsResolution('')
-      updateEnsResolutionError(!networkHasEnsSupport ? 'Network does not support ENS' : '')
+      updateEnsResolutionError(networkHasEnsSupport ? '' : 'Network does not support ENS')
       return
     }
 
@@ -188,7 +189,6 @@ export default class EnsInput extends Component {
     const { className, selectedAddress, selectedName, contact = {} } = this.props
     const name = contact.name || selectedName
 
-
     return (
       <div className={classnames('ens-input', className)}>
         <div
@@ -236,7 +236,7 @@ export default class EnsInput extends Component {
     const { loadingEns, ensFailure, ensResolution, toError } = this.state
 
     if (toError) {
-      return
+      return null
     }
 
     if (loadingEns) {
@@ -269,6 +269,8 @@ export default class EnsInput extends Component {
         />
       )
     }
+
+    return null
   }
 }
 

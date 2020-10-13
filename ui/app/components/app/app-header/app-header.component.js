@@ -19,7 +19,9 @@ export default class AppHeader extends PureComponent {
     isUnlocked: PropTypes.bool,
     hideNetworkIndicator: PropTypes.bool,
     disabled: PropTypes.bool,
+    disableNetworkIndicator: PropTypes.bool,
     isAccountMenuOpen: PropTypes.bool,
+    onClick: PropTypes.func,
   }
 
   static contextTypes = {
@@ -84,7 +86,9 @@ export default class AppHeader extends PureComponent {
       provider,
       isUnlocked,
       hideNetworkIndicator,
+      disableNetworkIndicator,
       disabled,
+      onClick,
     } = this.props
 
     return (
@@ -94,7 +98,12 @@ export default class AppHeader extends PureComponent {
         <div className="app-header__contents">
           <MetaFoxLogo
             unsetIconHeight
-            onClick={() => history.push(DEFAULT_ROUTE)}
+            onClick={async () => {
+              if (onClick) {
+                await onClick()
+              }
+              history.push(DEFAULT_ROUTE)
+            }}
           />
           <div className="app-header__account-menu-container">
             {
@@ -104,7 +113,7 @@ export default class AppHeader extends PureComponent {
                     network={network}
                     provider={provider}
                     onClick={(event) => this.handleNetworkIndicatorClick(event)}
-                    disabled={disabled}
+                    disabled={disabled || disableNetworkIndicator}
                   />
                 </div>
               )

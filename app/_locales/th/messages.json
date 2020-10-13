@@ -1,7 +1,4 @@
 {
-  "reject": {
-    "message": "ปฏิเสธ"
-  },
   "about": {
     "message": "เกี่ยวกับ"
   },
@@ -61,9 +58,6 @@
   "buyCoinSwitchExplainer": {
     "message": "CoinSwitch เป็นจุดหมายปลายทางแบบครบวงจรในการแลกเปลี่ยนสกุลเงินมากกว่า 300 ครั้งในอัตราที่ดีที่สุด"
   },
-  "on": {
-    "message": "เปิด"
-  },
   "cancel": {
     "message": "ยกเลิก"
   },
@@ -94,11 +88,11 @@
   "connectingToRopsten": {
     "message": "เชื่อมต่อกับเครือข่ายทดสอบ Ropsten"
   },
-  "continueToWyre": {
-    "message": "ไปที่ Wyre"
-  },
   "continueToCoinSwitch": {
     "message": "ไปที่ CoinSwitch"
+  },
+  "continueToWyre": {
+    "message": "ไปที่ Wyre"
   },
   "contractDeployment": {
     "message": "การติดตั้งสัญญา"
@@ -106,20 +100,20 @@
   "copiedExclamation": {
     "message": "คัดลอกแล้ว!"
   },
-  "copyToClipboard": {
-    "message": "คัดลอกไปคลิปบอร์ด"
-  },
   "copyPrivateKey": {
     "message": "นี่คือคีย์ส่วนตัวของคุณ(กดเพื่อคัดลอก)"
+  },
+  "copyToClipboard": {
+    "message": "คัดลอกไปคลิปบอร์ด"
   },
   "create": {
     "message": "สร้าง"
   },
-  "createAccount": {
-    "message": "สร้างบัญชี"
-  },
   "createAWallet": {
     "message": "สร้าง Wallet"
+  },
+  "createAccount": {
+    "message": "สร้างบัญชี"
   },
   "currencyConversion": {
     "message": "การแปลงสกุลเงิน"
@@ -133,17 +127,20 @@
   "customRPC": {
     "message": "กำหนดค่า RPC เอง"
   },
-  "decimalsMustZerotoTen": {
-    "message": "จำนวนต้องมากกว่า 0 และไม่เกิน 36"
-  },
   "decimal": {
     "message": "ตำแหน่งของทศนิยม"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "จำนวนต้องมากกว่า 0 และไม่เกิน 36"
   },
   "defaultNetwork": {
     "message": "ค่าเริ่มต้นของเครือข่ายสำหรับทำรายการธุรกรรมอีเธอร์คือ Main Net"
   },
   "delete": {
     "message": "ลบ"
+  },
+  "deleteNetwork": {
+    "message": "ลบเครือข่าย?"
   },
   "deposit": {
     "message": "ฝาก"
@@ -163,14 +160,14 @@
   "done": {
     "message": "เสร็จสิ้น"
   },
+  "dontHaveAHardwareWallet": {
+    "message": "ไม่มี Hardware Wallet ใช่ไหม"
+  },
   "downloadSecretBackup": {
     "message": "ดาวน์โหลด Phrase แบ็คอัพลับนี้และเก็บรักษาไว้ให้ปลอดภัยในฮาร์ดดิสก์หรืออุปกรณ์เก็บข้อมูลภายนอกที่มีการเข้ารหัส"
   },
   "downloadStateLogs": {
     "message": "ดาวน์โหลดล็อกสถานะ"
-  },
-  "dontHaveAHardwareWallet": {
-    "message": "ไม่มี Hardware Wallet ใช่ไหม"
   },
   "edit": {
     "message": "แก้ไข"
@@ -280,14 +277,11 @@
   "invalidAddressRecipientNotEthNetwork": {
     "message": "ไม่ใช่เครือข่าย ETH ตั้งเป็นตัวพิมพ์เล็ก"
   },
-  "invalidInput": {
-    "message": "อินพุทไม่ถูกต้อง"
+  "invalidBlockExplorerURL": {
+    "message": "Block Explorer URI ไม่ถูกต้อง"
   },
   "invalidRPC": {
     "message": "RPC URI ไม่ถูกต้อง"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Block Explorer URI ไม่ถูกต้อง"
   },
   "jsonFile": {
     "message": "ไฟล์ JSON",
@@ -320,11 +314,11 @@
   "metamaskDescription": {
     "message": "MetaMask คือที่เก็บตัวตนนิรภัยสำหรับอีเธอเรียม"
   },
-  "myAccounts": {
-    "message": "บัญชีของฉัน"
-  },
   "mustSelectOne": {
     "message": "ต้องเลือกอย่างน้อย 1 โทเค็น"
+  },
+  "myAccounts": {
+    "message": "บัญชีของฉัน"
   },
   "needEtherInWallet": {
     "message": "คุณจะต้องมีอีเธอร์ในกระเป๋าเงินของคุณในการใช้งานกับแอพพลิเคชันแบบกระจายด้วย MetaMask"
@@ -336,11 +330,11 @@
   "negativeETH": {
     "message": "ไม่สามารถส่งอีเธอร์เป็นจำนวนติดลบได้"
   },
-  "networks": {
-    "message": "เครือข่าย"
-  },
   "networkSettingsDescription": {
     "message": "เพิ่มและแก้ไขเครือข่าย RPC แบบกำหนดเอง"
+  },
+  "networks": {
+    "message": "เครือข่าย"
   },
   "newAccount": {
     "message": "บัญชีใหม่"
@@ -373,6 +367,9 @@
   "noTransactions": {
     "message": "ยังไม่มีรายการธุรกรรม"
   },
+  "on": {
+    "message": "เปิด"
+  },
   "participateInMetaMetricsDescription": {
     "message": "เข้าร่วมใน MetaMetrics เพื่อช่วยเราในการพัฒนา MetaMask"
   },
@@ -402,23 +399,23 @@
   "recipientAddress": {
     "message": "แอดแดรสผู้รับ"
   },
+  "reject": {
+    "message": "ปฏิเสธ"
+  },
   "rejected": {
     "message": "ถูกปฏิเสธ"
-  },
-  "resetAccount": {
-    "message": "รีเซ็ตบัญชี"
-  },
-  "deleteNetwork": {
-    "message": "ลบเครือข่าย?"
   },
   "remindMeLater": {
     "message": "เตือนฉันภายหลัง"
   },
-  "restoreFromSeed": {
-    "message": "กู้คืนจากกลุ่มคำชีด"
-  },
   "required": {
     "message": "จำเป็น"
+  },
+  "resetAccount": {
+    "message": "รีเซ็ตบัญชี"
+  },
+  "restoreFromSeed": {
+    "message": "กู้คืนจากกลุ่มคำชีด"
   },
   "revealSeedWords": {
     "message": "เปิดเผยกลุ่มคำชีด"
@@ -435,9 +432,6 @@
   "save": {
     "message": "บันทึก"
   },
-  "slower": {
-    "message": "ช้าลง"
-  },
   "search": {
     "message": "ค้นหา"
   },
@@ -447,8 +441,14 @@
   "seedPhraseReq": {
     "message": "กลุ่มคำชีดมีความยาว 12 คำ"
   },
+  "selectAnAccount": {
+    "message": "เลือกบัญชี"
+  },
   "selectCurrency": {
     "message": "เลือกสกุลเงิน"
+  },
+  "selectHdPath": {
+    "message": "เลือกเส้นทาง HD"
   },
   "selectType": {
     "message": "เลือกประเภท"
@@ -465,12 +465,6 @@
   "sendTokens": {
     "message": "ส่งโทเค็น"
   },
-  "selectAnAccount": {
-    "message": "เลือกบัญชี"
-  },
-  "selectHdPath": {
-    "message": "เลือกเส้นทาง HD"
-  },
   "settings": {
     "message": "การตั้งค่า"
   },
@@ -480,8 +474,14 @@
   "showPrivateKeys": {
     "message": "แสดงคีย์ส่วนตัว"
   },
+  "sigRequest": {
+    "message": "ขอลายเซ็น"
+  },
   "sign": {
     "message": "เซ็นชื่อ"
+  },
+  "signNotice": {
+    "message": "การเซ็นชื่อในข้อความนี้อาจจะเป็นอันตรายได้ \nเซ็นชื่อเฉพาะข้อความจากแหล่งที่คุณไว้วางใจได้จริง ๆ เท่านั้น \nวิธีที่อันตรายนี้จะถูกลบออกในอนาคต"
   },
   "signatureRequest": {
     "message": "ขอลายเซ็น"
@@ -489,14 +489,8 @@
   "signed": {
     "message": "ลงชื่อแล้ว"
   },
-  "signNotice": {
-    "message": "การเซ็นชื่อในข้อความนี้อาจจะเป็นอันตรายได้ \nเซ็นชื่อเฉพาะข้อความจากแหล่งที่คุณไว้วางใจได้จริง ๆ เท่านั้น \nวิธีที่อันตรายนี้จะถูกลบออกในอนาคต"
-  },
-  "sigRequest": {
-    "message": "ขอลายเซ็น"
-  },
-  "switchNetworks": {
-    "message": "เปลี่ยนเครือข่าย"
+  "slower": {
+    "message": "ช้าลง"
   },
   "stateLogs": {
     "message": "บันทึกของสถานะ"
@@ -518,6 +512,9 @@
   },
   "supportCenter": {
     "message": "ไปที่ศูนย์สนับสนุนของเรา"
+  },
+  "switchNetworks": {
+    "message": "เปลี่ยนเครือข่าย"
   },
   "symbol": {
     "message": "เครื่องหมาย"
@@ -549,11 +546,11 @@
   "total": {
     "message": "รวม"
   },
-  "transactionDropped": {
-    "message": "ธุรกรรมถูกยกเลิกเมื่อ $2"
-  },
   "transactionCancelSuccess": {
     "message": "ยกเลิกธุรกรรมเรียบร้อยแล้วเมื่อ $2"
+  },
+  "transactionDropped": {
+    "message": "ธุรกรรมถูกยกเลิกเมื่อ $2"
   },
   "transferBetweenAccounts": {
     "message": "โอนระหว่างบัญชีของฉัน"
@@ -592,10 +589,10 @@
   "welcome": {
     "message": "ยินดีต้อนรับสู่ MetaMask เบต้า"
   },
-  "yourSigRequested": {
-    "message": "ลายเซ็นของคุณกำลังได้รับการร้องขอ"
-  },
   "youSign": {
     "message": "คุณกำลังเซ็นชื่อ"
+  },
+  "yourSigRequested": {
+    "message": "ลายเซ็นของคุณกำลังได้รับการร้องขอ"
   }
 }

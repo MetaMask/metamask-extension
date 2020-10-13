@@ -1,18 +1,15 @@
 import assert from 'assert'
 import sinon from 'sinon'
-import NetworkController from '../../../app/scripts/controllers/network/index'
 import TypedMessageManager from '../../../app/scripts/lib/typed-message-manager'
 
 describe('Typed Message Manager', function () {
   let typedMessageManager, msgParamsV1, msgParamsV3, typedMsgs, messages, msgId, numberMsgId
 
   const address = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
-  const networkController = new NetworkController()
-  sinon.stub(networkController, 'getNetworkState').returns('1')
 
-  beforeEach(function () {
+  beforeEach(async function () {
     typedMessageManager = new TypedMessageManager({
-      networkController,
+      getCurrentChainId: sinon.fake.returns('0x1'),
     })
 
     msgParamsV1 = {
@@ -64,12 +61,12 @@ describe('Typed Message Manager', function () {
       }),
     }
 
-    typedMessageManager.addUnapprovedMessage(msgParamsV3, null, 'V3')
+    await typedMessageManager.addUnapprovedMessage(msgParamsV3, null, 'V3')
     typedMsgs = typedMessageManager.getUnapprovedMsgs()
     messages = typedMessageManager.messages
     msgId = Object.keys(typedMsgs)[0]
-    messages[0].msgParams.metamaskId = parseInt(msgId)
-    numberMsgId = parseInt(msgId)
+    messages[0].msgParams.metamaskId = parseInt(msgId, 10)
+    numberMsgId = parseInt(msgId, 10)
   })
 
   it('supports version 1 of signedTypedData', function () {

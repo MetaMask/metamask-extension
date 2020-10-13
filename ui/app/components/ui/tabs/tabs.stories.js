@@ -1,7 +1,7 @@
 import React from 'react'
+import { text } from '@storybook/addon-knobs/react'
 import Tab from './tab/tab.component'
 import Tabs from './tabs.component'
-import { text } from '@storybook/addon-knobs/react'
 
 export default {
   title: 'Tabs',

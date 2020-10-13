@@ -1,7 +1,12 @@
+import { strict as assert } from 'assert'
 import ObservableStore from 'obs-store'
-import { addInternalMethodPrefix } from './permissions'
 import { normalize as normalizeAddress } from 'eth-sig-util'
 import { isValidAddress, sha3, bufferToHex } from 'ethereumjs-util'
+import ethers from 'ethers'
+import log from 'loglevel'
+import { isPrefixedFormattedHexString } from '../lib/util'
+import { addInternalMethodPrefix } from './permissions'
+import { NETWORK_TYPE_TO_ID_MAP } from './network/enums'
 
 export default class PreferencesController {
 
@@ -26,7 +31,7 @@ export default class PreferencesController {
    *
    */
   constructor (opts = {}) {
-    const initState = Object.assign({
+    const initState = {
       frequentRpcListDetail: [],
       accountTokens: {},
       assetImages: {},
@@ -61,14 +66,14 @@ export default class PreferencesController {
       metaMetricsSendCount: 0,
 
       // ENS decentralized website resolution
-      ipfsGateway: 'dweb.link',
-    }, opts.initState)
+      ipfsGateway: 'dweb.link', ...opts.initState,
+    }
 
-    this.diagnostics = opts.diagnostics
     this.network = opts.network
     this.store = new ObservableStore(initState)
     this.store.setMaxListeners(12)
     this.openPopup = opts.openPopup
+    this.migrateAddressBookState = opts.migrateAddressBookState
     this._subscribeProviderType()
 
     global.setPreference = (key, value) => {
@@ -152,7 +157,6 @@ export default class PreferencesController {
     this.store.updateState({ firstTimeFlowType: type })
   }
 
-
   getSuggestedTokens () {
     return this.store.getState().suggestedTokens
   }
@@ -178,7 +182,7 @@ export default class PreferencesController {
    * @param {string} methodData - Corresponding data method
    */
   addKnownMethodData (fourBytePrefix, methodData) {
-    const knownMethodData = this.store.getState().knownMethodData
+    const { knownMethodData } = this.store.getState()
     knownMethodData[fourBytePrefix] = methodData
     this.store.updateState({ knownMethodData })
   }
@@ -198,7 +202,7 @@ export default class PreferencesController {
     ) {
       const { type, options } = req.params
       switch (type) {
-        case 'ERC20':
+        case 'ERC20': {
           const result = await this._handleWatchAssetERC20(options)
           if (result instanceof Error) {
             end(result)
@@ -207,6 +211,7 @@ export default class PreferencesController {
             end()
           }
           return
+        }
         default:
           end(new Error(`Asset of type ${type} not supported`))
           return
@@ -214,7 +219,6 @@ export default class PreferencesController {
     }
 
     next()
-    return
   }
 
   /**
@@ -227,7 +231,7 @@ export default class PreferencesController {
     const textDirection = (['ar', 'dv', 'fa', 'he', 'ku'].includes(key)) ? 'rtl' : 'auto'
     this.store.updateState({
       currentLocale: key,
-      textDirection: textDirection,
+      textDirection,
     })
     return textDirection
   }
@@ -263,8 +267,8 @@ export default class PreferencesController {
    * @returns {string} - the address that was removed
    */
   removeAddress (address) {
-    const identities = this.store.getState().identities
-    const accountTokens = this.store.getState().accountTokens
+    const { identities } = this.store.getState()
+    const { accountTokens } = this.store.getState()
     if (!identities[address]) {
       throw new Error(`${address} can't be deleted cause it was not found`)
     }
@@ -281,7 +285,6 @@ export default class PreferencesController {
     return address
   }
 
-
   /**
    * Adds addresses to the identities object without removing identities
    *
@@ -289,8 +292,7 @@ export default class PreferencesController {
    *
    */
   addAddresses (addresses) {
-    const identities = this.store.getState().identities
-    const accountTokens = this.store.getState().accountTokens
+    const { identities, accountTokens } = this.store.getState()
     addresses.forEach((address) => {
       // skip if already exists
       if (identities[address]) {
@@ -330,11 +332,6 @@ export default class PreferencesController {
 
     // Identities are no longer present.
     if (Object.keys(newlyLost).length > 0) {
-
-      // Notify our servers:
-      if (this.diagnostics) {
-        this.diagnostics.reportOrphans(newlyLost)
-      }
 
       // store lost accounts
       Object.keys(newlyLost).forEach((key) => {
@@ -419,7 +416,7 @@ export default class PreferencesController {
   async addToken (rawAddress, symbol, decimals, image) {
     const address = normalizeAddress(rawAddress)
     const newEntry = { address, symbol, decimals }
-    const tokens = this.store.getState().tokens
+    const { tokens } = this.store.getState()
     const assetImages = this.getAssetImages()
     const previousEntry = tokens.find((token) => {
       return token.address === address
@@ -444,7 +441,7 @@ export default class PreferencesController {
    *
    */
   removeToken (rawAddress) {
-    const tokens = this.store.getState().tokens
+    const { tokens } = this.store.getState()
     const assetImages = this.getAssetImages()
     const updatedTokens = tokens.filter((token) => token.address !== rawAddress)
     delete assetImages[rawAddress]
@@ -470,7 +467,7 @@ export default class PreferencesController {
    */
   setAccountLabel (account, label) {
     if (!account) {
-      throw new Error('setAccountLabel requires a valid address, got ' + String(account))
+      throw new Error(`setAccountLabel requires a valid address, got ${String(account)}`)
     }
     const address = normalizeAddress(account)
     const { identities } = this.store.getState()
@@ -483,16 +480,15 @@ export default class PreferencesController {
   /**
    * updates custom RPC details
    *
-   * @param {string} url - The RPC url to add to frequentRpcList.
-   * @param {string} chainId - Optional chainId of the selected network.
-   * @param {string} ticker   - Optional ticker symbol of the selected network.
-   * @param {string} nickname - Optional nickname of the selected network.
-   * @returns {Promise<array>} - Promise resolving to updated frequentRpcList.
+   * @param {Object} newRpcDetails - Options bag.
+   * @param {string} newRpcDetails.rpcUrl - The RPC url to add to frequentRpcList.
+   * @param {string} newRpcDetails.chainId - The chainId of the selected network.
+   * @param {string} [newRpcDetails.ticker] - Optional ticker symbol of the selected network.
+   * @param {string} [newRpcDetails.nickname] - Optional nickname of the selected network.
+   * @param {Object} [newRpcDetails.rpcPrefs] - Optional RPC preferences, such as the block explorer URL
    *
    */
-
-
-  updateRpc (newRpcDetails) {
+  async updateRpc (newRpcDetails) {
     const rpcList = this.getFrequentRpcListDetail()
     const index = rpcList.findIndex((element) => {
       return element.rpcUrl === newRpcDetails.rpcUrl
@@ -500,41 +496,78 @@ export default class PreferencesController {
     if (index > -1) {
       const rpcDetail = rpcList[index]
       const updatedRpc = { ...rpcDetail, ...newRpcDetails }
+      if (rpcDetail.chainId !== updatedRpc.chainId) {
+
+        // When the chainId is changed, associated address book entries should
+        // also be migrated. The address book entries are keyed by the `network` state,
+        // which for custom networks is the chainId with a fallback to the networkId
+        // if the chainId is not set.
+
+        let addressBookKey = rpcDetail.chainId
+        if (!addressBookKey) {
+          // We need to find the networkId to determine what these addresses were keyed by
+          const provider = new ethers.providers.JsonRpcProvider(rpcDetail.rpcUrl)
+          try {
+            addressBookKey = await provider.send('net_version')
+            assert(typeof addressBookKey === 'string')
+          } catch (error) {
+            log.debug(error)
+            log.warn(`Failed to get networkId from ${rpcDetail.rpcUrl}; skipping address book migration`)
+          }
+        }
+
+        // There is an edge case where two separate RPC endpoints are keyed by the same
+        // value. In this case, the contact book entries are duplicated so that they remain
+        // on both networks, since we don't know which network each contact is intended for.
+
+        let duplicate = false
+        const builtInProviderNetworkIds = Object.values(NETWORK_TYPE_TO_ID_MAP)
+          .map((ids) => ids.networkId)
+        const otherRpcEntries = rpcList
+          .filter((entry) => entry.rpcUrl !== newRpcDetails.rpcUrl)
+        if (
+          builtInProviderNetworkIds.includes(addressBookKey) ||
+          otherRpcEntries.some((entry) => entry.chainId === addressBookKey)
+        ) {
+          duplicate = true
+        }
+
+        this.migrateAddressBookState(addressBookKey, updatedRpc.chainId, duplicate)
+      }
       rpcList[index] = updatedRpc
       this.store.updateState({ frequentRpcListDetail: rpcList })
     } else {
       const { rpcUrl, chainId, ticker, nickname, rpcPrefs = {} } = newRpcDetails
-      return this.addToFrequentRpcList(rpcUrl, chainId, ticker, nickname, rpcPrefs)
+      this.addToFrequentRpcList(rpcUrl, chainId, ticker, nickname, rpcPrefs)
     }
-    return Promise.resolve(rpcList)
   }
+
   /**
    * Adds custom RPC url to state.
    *
-   * @param {string} url - The RPC url to add to frequentRpcList.
-   * @param {string} chainId - Optional chainId of the selected network.
-   * @param {string} ticker   - Optional ticker symbol of the selected network.
-   * @param {string} nickname - Optional nickname of the selected network.
-   * @returns {Promise<array>} - Promise resolving to updated frequentRpcList.
+   * @param {string} rpcUrl - The RPC url to add to frequentRpcList.
+   * @param {string} chainId - The chainId of the selected network.
+   * @param {string} [ticker] - Ticker symbol of the selected network.
+   * @param {string} [nickname] - Nickname of the selected network.
+   * @param {Object} [rpcPrefs] - Optional RPC preferences, such as the block explorer URL
    *
    */
-  addToFrequentRpcList (url, chainId, ticker = 'ETH', nickname = '', rpcPrefs = {}) {
+  addToFrequentRpcList (rpcUrl, chainId, ticker = 'ETH', nickname = '', rpcPrefs = {}) {
     const rpcList = this.getFrequentRpcListDetail()
+
     const index = rpcList.findIndex((element) => {
-      return element.rpcUrl === url
+      return element.rpcUrl === rpcUrl
     })
     if (index !== -1) {
       rpcList.splice(index, 1)
     }
-    if (url !== 'http://localhost:8545') {
-      let checkedChainId
-      if (!!chainId && !Number.isNaN(parseInt(chainId))) {
-        checkedChainId = chainId
-      }
-      rpcList.push({ rpcUrl: url, chainId: checkedChainId, ticker, nickname, rpcPrefs })
+
+    if (!isPrefixedFormattedHexString(chainId)) {
+      throw new Error(`Invalid chainId: "${chainId}"`)
     }
+
+    rpcList.push({ rpcUrl, chainId, ticker, nickname, rpcPrefs })
     this.store.updateState({ frequentRpcListDetail: rpcList })
-    return Promise.resolve(rpcList)
   }
 
   /**
@@ -686,8 +719,9 @@ export default class PreferencesController {
    *
    */
   _getTokenRelatedStates (selectedAddress) {
-    const accountTokens = this.store.getState().accountTokens
+    const { accountTokens } = this.store.getState()
     if (!selectedAddress) {
+      // eslint-disable-next-line no-param-reassign
       selectedAddress = this.store.getState().selectedAddress
     }
     const providerType = this.network.providerStore.getState().type
