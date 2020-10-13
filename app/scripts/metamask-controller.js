@@ -168,7 +168,7 @@ export default class MetamaskController extends EventEmitter {
     this.accountTracker = new AccountTracker({
       provider: this.provider,
       blockTracker: this.blockTracker,
-      network: this.networkController,
+      getCurrentChainId: this.networkController.getCurrentChainId.bind(this.networkController),
     })
 
     // start and stop polling for balances based on activeControllerConnections

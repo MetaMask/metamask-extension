@@ -14,7 +14,7 @@ import log from 'loglevel'
 import pify from 'pify'
 import Web3 from 'web3'
 import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi'
-import { MAINNET_NETWORK_ID, RINKEBY_NETWORK_ID, ROPSTEN_NETWORK_ID, KOVAN_NETWORK_ID } from '../controllers/network/enums'
+import { MAINNET_CHAIN_ID, RINKEBY_CHAIN_ID, ROPSTEN_CHAIN_ID, KOVAN_CHAIN_ID } from '../controllers/network/enums'
 
 import {
   SINGLE_CALL_BALANCES_ADDRESS,
@@ -61,7 +61,7 @@ export default class AccountTracker {
     })
     // bind function for easier listener syntax
     this._updateForBlock = this._updateForBlock.bind(this)
-    this.network = opts.network
+    this.getCurrentChainId = opts.getCurrentChainId
 
     this.web3 = new Web3(this._provider)
   }
@@ -196,22 +196,23 @@ export default class AccountTracker {
   async _updateAccounts () {
     const { accounts } = this.store.getState()
     const addresses = Object.keys(accounts)
-    const currentNetwork = this.network.getNetworkState()
+    const chainId = this.getCurrentChainId()
 
-    switch (currentNetwork) {
-      case MAINNET_NETWORK_ID.toString():
+    // TODO: use chain ID
+    switch (chainId) {
+      case MAINNET_CHAIN_ID.toString():
         await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS)
         break
 
-      case RINKEBY_NETWORK_ID.toString():
+      case RINKEBY_CHAIN_ID.toString():
         await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_RINKEBY)
         break
 
-      case ROPSTEN_NETWORK_ID.toString():
+      case ROPSTEN_CHAIN_ID.toString():
         await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN)
         break
 
-      case KOVAN_NETWORK_ID.toString():
+      case KOVAN_CHAIN_ID.toString():
         await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_KOVAN)
         break
 
