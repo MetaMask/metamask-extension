@@ -3,6 +3,7 @@
     color: $Black-100;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 100px;
   }
 
   &__secondary-currency {
