@@ -26,7 +26,7 @@ export {
   calcGasTotal,
   calcTokenBalance,
   doesAmountErrorRequireUpdate,
-  estimateGas,
+  estimateGasForSend,
   generateTokenTransferData,
   getAmountErrorObject,
   getGasFeeErrorObject,
@@ -193,7 +193,7 @@ function doesAmountErrorRequireUpdate ({
   return amountErrorRequiresUpdate
 }
 
-async function estimateGas ({
+async function estimateGasForSend ({
   selectedAddress,
   sendToken,
   blockGasLimit = MIN_GAS_LIMIT_HEX,

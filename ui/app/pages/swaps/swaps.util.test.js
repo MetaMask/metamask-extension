@@ -12,9 +12,6 @@ import {
 } from './swaps-util-test-constants'
 
 const swapsUtils = proxyquire('./swaps.util.js', {
-  '../../store/actions': {
-    estimateGasFromTxParams: () => Promise.resolve('0x8888'),
-  },
   '../../helpers/utils/fetch-with-cache': {
     default: (url, fetchObject) => {
       assert.equal(fetchObject.method, 'GET')
