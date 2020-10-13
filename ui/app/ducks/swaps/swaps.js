@@ -474,6 +474,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       other_quote_selected: usedQuote.aggregator !== getTopQuote(state)?.aggregator,
       other_quote_selected_source: usedQuote.aggregator === getTopQuote(state)?.aggregator ? '' : usedQuote.aggregator,
       gas_fees: formatCurrency(gasEstimateTotalInEth, 'usd')?.slice(1),
+      estimated_gas: estimatedGasLimit,
     }
 
     const metaMetricsConfig = {
@@ -486,7 +487,8 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
 
     let finalApproveTxMeta
     const approveTxParams = getApproveTxParams(state)
-    if (approveTxParams) {
+    if (approveTxParams
+    ) {
       const approveTxMeta = await dispatch(addUnapprovedTransaction({ ...approveTxParams, amount: '0x0' }, 'metamask'))
       await dispatch(setApproveTxId(approveTxMeta.id))
       finalApproveTxMeta = await (dispatch(updateTransaction({
