@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
-import { addHexPrefix } from 'ethereumjs-util'
 import classnames from 'classnames'
 import { uniqBy } from 'lodash'
 import { useHistory } from 'react-router-dom'
@@ -133,9 +132,8 @@ export default function BuildQuote ({
         .then((fetchedBalance) => {
           if (fetchedBalance?.balance) {
             const balanceAsDecString = fetchedBalance.balance.toString(10)
-            const balanceAsHexString = addHexPrefix(fetchedBalance.balance.toString(16))
             const userTokenBalance = calcTokenAmount(balanceAsDecString, token.decimals)
-            dispatch(setSwapsFromToken({ ...token, string: userTokenBalance.toString(10), balance: balanceAsHexString }))
+            dispatch(setSwapsFromToken({ ...token, string: userTokenBalance.toString(10), balance: balanceAsDecString }))
           }
         })
     }
