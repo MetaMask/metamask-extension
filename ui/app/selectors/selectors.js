@@ -326,7 +326,3 @@ export function getOriginOfCurrentTab (state) {
 export function getIpfsGateway (state) {
   return state.metamask.ipfsGateway
 }
-
-export function getCustomNetworkId (state) {
-  return state.metamask.settings?.network
-}

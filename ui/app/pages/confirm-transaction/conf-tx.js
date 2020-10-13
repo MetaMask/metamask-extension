@@ -33,7 +33,6 @@ function mapStateToProps (state) {
     index: txId,
     warning: state.appState.warning,
     network: state.metamask.network,
-    provider: state.metamask.provider,
     currentCurrency: state.metamask.currentCurrency,
     blockGasLimit: state.metamask.currentBlockGasLimit,
     unapprovedMsgCount,
