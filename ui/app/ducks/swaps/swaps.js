@@ -487,8 +487,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
 
     let finalApproveTxMeta
     const approveTxParams = getApproveTxParams(state)
-    if (approveTxParams
-    ) {
+    if (approveTxParams) {
       const approveTxMeta = await dispatch(addUnapprovedTransaction({ ...approveTxParams, amount: '0x0' }, 'metamask'))
       await dispatch(setApproveTxId(approveTxMeta.id))
       finalApproveTxMeta = await (dispatch(updateTransaction({
