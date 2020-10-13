@@ -2,7 +2,12 @@
 
 ## Current Develop Branch
 
-## 8.1.0 Mon Oct 05 2020
+## 8.1.0 Tue Oct 13 2020
+- [#9565](https://github.com/MetaMask/metamask-extension/pull/9565): Ensure address book entries are shared between networks with the same chain ID
+- [#9552](https://github.com/MetaMask/metamask-extension/pull/9552): Fix `eth_signTypedData_v4` chain ID validation for non-default networks
+- [#9551](https://github.com/MetaMask/metamask-extension/pull/9551): Allow the "Localhost 8545" network to be edited, and require a chain ID to be specified for it
+- [#9491](https://github.com/MetaMask/metamask-extension/pull/9491): Validate custom network chain IDs against endpoint `eth_chainId` return values
+- [#9487](https://github.com/MetaMask/metamask-extension/pull/9487): Require chain IDs to be specified for custom networks
 - [#9482](https://github.com/MetaMask/metamask-extension/pull/9482): Add MetaMask Swaps 🌻
 - [#9422](https://github.com/MetaMask/metamask-extension/pull/9422): Fix data backup feature (i.e. syncing with 3box)
 - [#9434](https://github.com/MetaMask/metamask-extension/pull/9434): Improve gas input UI by using tooltip instead of a modal to communicate gas data
