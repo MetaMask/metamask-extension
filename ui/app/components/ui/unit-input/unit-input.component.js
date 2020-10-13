@@ -10,6 +10,7 @@ import { removeLeadingZeroes } from '../../../pages/send/send.utils'
  */
 export default class UnitInput extends PureComponent {
   static propTypes = {
+    autoFocus: PropTypes.bool,
     children: PropTypes.node,
     actionComponent: PropTypes.node,
     error: PropTypes.bool,
@@ -63,7 +64,7 @@ export default class UnitInput extends PureComponent {
   }
 
   render () {
-    const { error, placeholder, suffix, actionComponent, children, maxModeOn } = this.props
+    const { autoFocus, error, placeholder, suffix, actionComponent, children, maxModeOn } = this.props
     const { value } = this.state
 
     return (
@@ -85,6 +86,7 @@ export default class UnitInput extends PureComponent {
                 this.unitInput = ref
               }}
               disabled={maxModeOn}
+              autoFocus={autoFocus}
             />
             {
               suffix && (

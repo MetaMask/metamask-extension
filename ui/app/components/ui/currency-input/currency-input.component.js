@@ -148,6 +148,7 @@ export default class CurrencyInput extends PureComponent {
             onClick={this.swap}
           />
         )}
+        autoFocus
       >
         { this.renderConversionComponent() }
       </UnitInput>

@@ -136,6 +136,7 @@ export default class TokenInput extends PureComponent {
         suffix={token.symbol}
         onChange={this.handleChange}
         value={decimalValue}
+        autoFocus
       >
         { this.renderConversionComponent() }
       </UnitInput>
