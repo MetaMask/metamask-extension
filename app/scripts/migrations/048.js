@@ -12,6 +12,7 @@ const version = 48
  * 5.  Convert transactions metamaskNetworkId to decimal if they are hex
  * 6.  Convert address book keys from decimal to hex
  * 7.  Delete localhost key in IncomingTransactionsController
+ * 8.  Merge 'localhost' tokens into 'rpc' tokens
  */
 export default {
   version,
@@ -110,6 +111,25 @@ function transformState (state = {}) {
     ?.incomingTxLastFetchedBlocksByNetwork
     ?.localhost
 
+  // 8.  Merge 'localhost' tokens into 'rpc' tokens
+  const accountTokens = state.PreferencesController?.accountTokens
+  if (accountTokens) {
+    Object.keys(accountTokens).forEach((account) => {
+      const localhostTokens = accountTokens[account]?.localhost || []
+
+      if (localhostTokens.length > 0) {
+        const rpcTokens = accountTokens[account].rpc || []
+
+        if (rpcTokens.length > 0) {
+          accountTokens[account].rpc = mergeTokenArrays(localhostTokens, rpcTokens)
+        } else {
+          accountTokens[account].rpc = localhostTokens
+        }
+      }
+      delete accountTokens[account]?.localhost
+    })
+  }
+
   return state
 }
 
@@ -168,4 +188,37 @@ function updateChainIds (networkEntries, chainId) {
       entry.chainId = chainId
     }
   })
+}
+
+/**
+ * Merges the two given, non-empty arrays of token objects and returns a new
+ * array.
+ *
+ * @returns {Array<Object>}
+ */
+function mergeTokenArrays (localhostTokens, rpcTokens) {
+  const localhostTokensMap = tokenArrayToMap(localhostTokens)
+  const rpcTokensMap = tokenArrayToMap(rpcTokens)
+
+  const mergedTokens = []
+  new Set([
+    ...Object.keys(localhostTokensMap),
+    ...Object.keys(rpcTokensMap),
+  ]).forEach((tokenAddress) => {
+    mergedTokens.push({
+      ...localhostTokensMap[tokenAddress],
+      ...rpcTokensMap[tokenAddress],
+    })
+  })
+
+  return mergedTokens
+
+  function tokenArrayToMap (array) {
+    return array.reduce((map, token) => {
+      if (token?.address && typeof token?.address === 'string') {
+        map[token.address] = token
+      }
+      return map
+    }, {})
+  }
 }
