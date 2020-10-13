@@ -85,6 +85,9 @@
     grid-area: right;
     text-align: right;
     align-items: flex-end;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   @media (max-width: 575px) {
