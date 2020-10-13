@@ -57,3 +57,21 @@ export const NETWORK_TO_NAME_MAP = {
   [GOERLI_CHAIN_ID]: GOERLI_DISPLAY_NAME,
   [MAINNET_CHAIN_ID]: MAINNET_DISPLAY_NAME,
 }
+
+export const CHAIN_ID_TO_TYPE_MAP = Object.entries(NETWORK_TYPE_TO_ID_MAP)
+  .reduce(
+    (chainIdToTypeMap, [networkType, { chainId }]) => {
+      chainIdToTypeMap[chainId] = networkType
+      return chainIdToTypeMap
+    },
+    {},
+  )
+
+export const CHAIN_ID_TO_NETWORK_ID_MAP = Object.values(NETWORK_TYPE_TO_ID_MAP)
+  .reduce(
+    (chainIdToNetworkIdMap, { chainId, networkId }) => {
+      chainIdToNetworkIdMap[chainId] = networkId
+      return chainIdToNetworkIdMap
+    },
+    {},
+  )
