@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 8.1.1 Tue Oct 13 2020
+
 ## 8.1.0 Tue Oct 13 2020
 - [#9565](https://github.com/MetaMask/metamask-extension/pull/9565): Ensure address book entries are shared between networks with the same chain ID
 - [#9552](https://github.com/MetaMask/metamask-extension/pull/9552): Fix `eth_signTypedData_v4` chain ID validation for non-default networks
