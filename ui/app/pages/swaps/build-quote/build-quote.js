@@ -132,9 +132,8 @@ export default function BuildQuote ({
         .then((fetchedBalance) => {
           if (fetchedBalance?.balance) {
             const balanceAsDecString = fetchedBalance.balance.toString(10)
-            const balanceAsHexString = fetchedBalance.balance.toString(16)
             const userTokenBalance = calcTokenAmount(balanceAsDecString, token.decimals)
-            dispatch(setSwapsFromToken({ ...token, string: userTokenBalance.toString(10), balance: balanceAsHexString }))
+            dispatch(setSwapsFromToken({ ...token, string: userTokenBalance.toString(10), balance: balanceAsDecString }))
           }
         })
     }
