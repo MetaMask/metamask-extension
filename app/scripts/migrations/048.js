@@ -92,7 +92,7 @@ function transformState (state = {}) {
   const addressBook = state.AddressBookController?.addressBook || {}
   Object.keys(addressBook).forEach((networkKey) => {
     if ((/^\d+$/ui).test(networkKey)) {
-      const chainId = `0x${networkKey.toString(16)}`
+      const chainId = `0x${parseInt(networkKey, 10).toString(16)}`
       updateChainIds(addressBook[networkKey], chainId)
 
       if (addressBook[chainId]) {

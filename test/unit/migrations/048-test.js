@@ -237,8 +237,8 @@ describe('migration #48', function () {
 
     const newStorage = await migration48.migrate(oldStorage)
     assert.deepEqual(
-      { ...oldStorage.data, ...expectedPreferencesState },
-      { ...newStorage.data, ...expectedPreferencesState },
+      { ...expectedPreferencesState, ...oldStorage.data },
+      { ...expectedPreferencesState, ...newStorage.data },
     )
   })
 
@@ -361,6 +361,12 @@ describe('migration #48', function () {
                 foo: 'bar',
               },
             },
+            '100': {
+              'address1': {
+                chainId: '100',
+                foo: 'bar',
+              },
+            },
             '0x2': {
               'address2': {
                 chainId: '0x2',
@@ -384,6 +390,12 @@ describe('migration #48', function () {
           '0x1': {
             'address1': {
               chainId: '0x1',
+              foo: 'bar',
+            },
+          },
+          '0x64': {
+            'address1': {
+              chainId: '0x64',
               foo: 'bar',
             },
           },
