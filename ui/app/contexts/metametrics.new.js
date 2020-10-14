@@ -7,7 +7,7 @@ import React, { useRef, Component, createContext, useEffect, useCallback } from 
 import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import { useLocation, matchPath, useRouteMatch } from 'react-router-dom'
-import { captureException, captureMessage } from '@sentry/browser'
+import { captureException, captureMessage, Severity } from '@sentry/browser'
 
 import { omit } from 'lodash'
 import {
@@ -100,9 +100,11 @@ export function MetaMetricsProvider ({ children }) {
         // the contents of state.
         if (location.pathname !== '/confirm-transaction') {
           // Otherwise we are legitimately missing a matching route
-          // Ideally we'd include the details of match and previousMatch here, but breadcrumbs provides
-          // a fair bit of details that should be useful.
-          captureMessage(`Segment page tracking found unmatched route`, 'info')
+          captureMessage(`Segment page tracking found unmatched route`, {
+            level: Severity.Info,
+            previousMatch,
+            currentPath: location.pathname,
+          })
         }
       } else if (
         previousMatch.current !== match.path &&
