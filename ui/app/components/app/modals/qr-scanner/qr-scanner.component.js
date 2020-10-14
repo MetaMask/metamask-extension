@@ -104,15 +104,28 @@ export default class QrScanner extends Component {
   componentWillUnmount () {
     this.mounted = false
     clearTimeout(this.permissionChecker)
-    if (this.codeReader) {
-      this.codeReader.reset()
+    this.teardownCodeReader();
+  }
+
+  teardownCodeReader() {
+    if(this.codeReader) {
+      this.codeReader.reset();
+      this.codeReader.stop();
+      this.codeReader = null;
     }
   }
 
   initCamera = async () => {
+    // The `decodeFromInputVideoDevice` call prompts the browser to show
+    // the user the camera permission request.  We must then call it again
+    // once we receive permission so that the video displays.
+    // Removing this teardown will create 2 video streams in Firefox, one
+    // of which the user will not be able to remove without refreshing the page.
+    this.teardownCodeReader();
     this.codeReader = new BrowserQRCodeReader()
     try {
       await this.codeReader.getVideoInputDevices()
+      this.checkPermissions();
       const content = await this.codeReader.decodeFromInputVideoDevice(undefined, 'video')
       const result = this.parseContent(content.text)
       if (!this.mounted) {
@@ -162,7 +175,7 @@ export default class QrScanner extends Component {
 
   stopAndClose = () => {
     if (this.codeReader) {
-      this.codeReader.reset()
+      this.teardownCodeReader();
     }
     this.props.hideModal()
   }
@@ -170,7 +183,7 @@ export default class QrScanner extends Component {
   tryAgain = () => {
     clearTimeout(this.permissionChecker)
     if (this.codeReader) {
-      this.codeReader.reset()
+      this.teardownCodeReader()
     }
     this.setState(this.getInitialState(), () => {
       this.checkEnvironment()
