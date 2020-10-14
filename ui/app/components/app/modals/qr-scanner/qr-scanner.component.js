@@ -119,10 +119,11 @@ export default class QrScanner extends Component {
     // The `decodeFromInputVideoDevice` call prompts the browser to show
     // the user the camera permission request.  We must then call it again
     // once we receive permission so that the video displays.
-    // Removing this teardown will create 2 video streams in Firefox, one
-    // of which the user will not be able to remove without refreshing the page.
-    this.teardownCodeReader();
-    this.codeReader = new BrowserQRCodeReader()
+    // It's important to prevent this codeReader from being created twice;
+    // Firefox otherwise starts 2 video streams, one of which cannot be stopped
+    if(!this.codeReader) {
+      this.codeReader = new BrowserQRCodeReader()
+    }
     try {
       await this.codeReader.getVideoInputDevices()
       this.checkPermissions();
