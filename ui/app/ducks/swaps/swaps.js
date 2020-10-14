@@ -38,7 +38,7 @@ import {
   SWAP_FAILED_ERROR,
 } from '../../helpers/constants/swaps'
 import { SWAP, SWAP_APPROVAL } from '../../helpers/constants/transactions'
-import { fetchBasicGasAndTimeEstimates, fetchGasEstimates, resetCustomData } from '../gas/gas.duck'
+import { fetchBasicGasAndTimeEstimates, fetchGasEstimates, resetCustomGasState } from '../gas/gas.duck'
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util'
 
 const initialState = {
@@ -235,7 +235,7 @@ export const prepareForRetryGetQuotes = () => {
 
 export const prepareToLeaveSwaps = () => {
   return async (dispatch) => {
-    dispatch(resetCustomData())
+    dispatch(resetCustomGasState())
     dispatch(clearSwapsState())
     await dispatch(resetBackgroundSwapsState())
 
