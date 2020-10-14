@@ -209,7 +209,7 @@ export default function BuildQuote ({
           selectedItem={selectedFromToken}
           maxListItems={30}
           loading={loading && (!tokensToSearch?.length || !topAssets || !Object.keys(topAssets).length)}
-          selectPlaceHolderText="Select"
+          selectPlaceHolderText={t('swapSelect')}
           hideItemIf={(item) => item.address === selectedToToken?.address}
           listContainerClassName="build-quote__open-dropdown"
           autoFocus
@@ -246,7 +246,7 @@ export default function BuildQuote ({
           itemsToSearch={tokensToSearch}
           searchPlaceholderText={t('swapSearchForAToken')}
           fuseSearchKeys={fuseSearchKeys}
-          selectPlaceHolderText="Select a token"
+          selectPlaceHolderText={t('swapSelectAToken')}
           maxListItems={30}
           onSelect={onToSelect}
           loading={loading && (!tokensToSearch?.length || !topAssets || !Object.keys(topAssets).length)}

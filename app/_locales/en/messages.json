@@ -1784,6 +1784,9 @@
   "swapSelectAQuote": {
     "message": "Select a quote"
   },
+  "swapSelectAToken": {
+    "message": "Select a token"
+  },
   "swapSelectQuotePopoverDescription": {
     "message": "Below are all the quotes gathered from multiple liquidity sources."
   },
