@@ -514,8 +514,8 @@ export default function ViewQuote () {
               !approveTxParams || (balanceError && !warningHidden)
             }
             tokenApprovalTextComponent={tokenApprovalTextComponent}
-            sourceTokenSymbol={sourceTokenSymbol}
-            onFeeCardTokenApprovalClick={onFeeCardTokenApprovalClick}
+            tokenApprovalSourceTokenSymbol={sourceTokenSymbol}
+            onTokenApprovalClick={onFeeCardTokenApprovalClick}
           />
         </div>
       </div>

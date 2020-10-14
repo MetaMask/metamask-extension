@@ -9,8 +9,8 @@ export default function FeeCard ({
   hideTokenApprovalRow,
   onFeeCardMaxRowClick,
   tokenApprovalTextComponent,
-  sourceTokenSymbol,
-  onFeeCardTokenApprovalClick,
+  tokenApprovalSourceTokenSymbol,
+  onTokenApprovalClick,
 }) {
   const t = useContext(I18nContext)
 
@@ -66,12 +66,12 @@ export default function FeeCard ({
               <div className="fee-card__row-header-text">
                 {t('swapThisWillAllowApprove', [tokenApprovalTextComponent])}
               </div>
-              <div className="fee-card__link" onClick={() => onFeeCardTokenApprovalClick()}>
+              <div className="fee-card__link" onClick={() => onTokenApprovalClick()}>
                 {t('swapEditLimit')}
               </div>
               <InfoTooltip
                 position="top"
-                contentText={t('swapEnableDescription', [sourceTokenSymbol])}
+                contentText={t('swapEnableDescription', [tokenApprovalSourceTokenSymbol])}
               />
             </div>
           </div>
@@ -93,6 +93,6 @@ FeeCard.propTypes = {
   onFeeCardMaxRowClick: PropTypes.func.isRequired,
   hideTokenApprovalRow: PropTypes.bool.isRequired,
   tokenApprovalTextComponent: PropTypes.node,
-  sourceTokenSymbol: PropTypes.string,
-  onFeeCardTokenApprovalClick: PropTypes.func,
+  tokenApprovalSourceTokenSymbol: PropTypes.string,
+  onTokenApprovalClick: PropTypes.func,
 }
