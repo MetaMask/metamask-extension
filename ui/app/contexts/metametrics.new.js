@@ -7,7 +7,7 @@ import React, { useRef, Component, createContext, useEffect, useCallback } from 
 import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import { useLocation, matchPath, useRouteMatch } from 'react-router-dom'
-import { captureException, captureMessage, Severity } from '@sentry/browser'
+import { captureException, captureMessage } from '@sentry/browser'
 
 import { omit } from 'lodash'
 import {
