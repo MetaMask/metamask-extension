@@ -212,6 +212,7 @@ export default function BuildQuote ({
           selectPlaceHolderText="Select"
           hideItemIf={(item) => item.address === selectedToToken?.address}
           listContainerClassName="build-quote__open-dropdown"
+          autoFocus
         />
         <div
           className={classnames('build-quote__balance-message', {

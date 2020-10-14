@@ -36,6 +36,7 @@ export default function DropdownInputPair ({
   loading,
   hideItemIf,
   listContainerClassName,
+  autoFocus,
 }) {
   const [isOpen, setIsOpen] = useState(false)
   const open = () => setIsOpen(true)
@@ -91,7 +92,8 @@ export default function DropdownInputPair ({
           onChange={onTextFieldChange}
           fullWidth
           margin="dense"
-          value={ inputValue }
+          value={inputValue}
+          autoFocus={autoFocus}
         />
       )}
       {
@@ -123,4 +125,5 @@ DropdownInputPair.propTypes = {
   loading: PropTypes.bool,
   hideItemIf: PropTypes.func,
   listContainerClassName: PropTypes.string,
+  autoFocus: PropTypes.bool,
 }
