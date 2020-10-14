@@ -34,45 +34,71 @@ export default class MetaMetricsOptIn extends Component {
           <div className="metametrics-opt-in__body-graphic">
             <img src="images/metrics-chart.svg" />
           </div>
-          <div className="metametrics-opt-in__title">Help Us Improve MetaMask</div>
+          <div className="metametrics-opt-in__title">{t('metametricsHelpImproveMetaMask')}</div>
           <div className="metametrics-opt-in__body">
             <div className="metametrics-opt-in__description">
-             MetaMask would like to gather usage data to better understand how our users interact with the extension. This data
-             will be used to continually improve the usability and user experience of our product and the Ethereum ecosystem.
+              {t('metametricsOptInDescription')}
             </div>
             <div className="metametrics-opt-in__description">
-             MetaMask will..
+              {t('metametricsCommitmentsIntro')}
             </div>
 
             <div className="metametrics-opt-in__committments">
               <div className="metametrics-opt-in__row">
                 <i className="fa fa-check" />
                 <div className="metametrics-opt-in__row-description">
-                  Always allow you to opt-out via Settings
+                  {t('metametricsCommitmentsAllowOptOut')}
                 </div>
               </div>
               <div className="metametrics-opt-in__row">
                 <i className="fa fa-check" />
                 <div className="metametrics-opt-in__row-description">
-                  Send anonymized click & pageview events
+                  {t('metametricsCommitmentsSendAnonymizedEvents')}
                 </div>
               </div>
               <div className="metametrics-opt-in__row metametrics-opt-in__break-row">
                 <i className="fa fa-times" />
                 <div className="metametrics-opt-in__row-description">
-                  <span className="metametrics-opt-in__bold">Never</span> collect keys, addresses, transactions, balances, hashes, or any personal information
+                  {
+                    t(
+                      'metametricsCommitmentsNeverCollectKeysEtc',
+                      [(
+                        <span className="metametrics-opt-in__bold" key="neverCollectKeys">
+                          {t('metametricsCommitmentsBoldNever')}
+                        </span>
+                      )],
+                    )
+                  }
                 </div>
               </div>
               <div className="metametrics-opt-in__row">
                 <i className="fa fa-times" />
                 <div className="metametrics-opt-in__row-description">
-                  <span className="metametrics-opt-in__bold">Never</span> collect your full IP address
+                  {
+                    t(
+                      'metametricsCommitmentsNeverCollectIP',
+                      [(
+                        <span className="metametrics-opt-in__bold" key="neverCollectKeys">
+                          {t('metametricsCommitmentsBoldNever')}
+                        </span>
+                      )],
+                    )
+                  }
                 </div>
               </div>
               <div className="metametrics-opt-in__row">
                 <i className="fa fa-times" />
                 <div className="metametrics-opt-in__row-description">
-                  <span className="metametrics-opt-in__bold">Never</span> sell data for profit. Ever!
+                  {
+                    t(
+                      'metametricsCommitmentsNeverSellDataForProfit',
+                      [(
+                        <span className="metametrics-opt-in__bold" key="neverCollectKeys">
+                          {t('metametricsCommitmentsBoldNever')}
+                        </span>
+                      )],
+                    )
+                  }
                 </div>
               </div>
             </div>
