@@ -85,6 +85,8 @@
     grid-area: right;
     text-align: right;
     align-items: flex-end;
+    overflow: hidden;
+    white-space: nowrap;
   }
 
   @media (max-width: 575px) {
