@@ -3,13 +3,11 @@
 ## Current Develop Branch
 
 ## 8.1.1 Tue Oct 13 2020
-- [#9571](https://github.com/MetaMask/metamask-extension/pull/9571): Add data point to 'Swaps Completed' segment event: estimated vs used gas (#9571)
-- [#9586](https://github.com/MetaMask/metamask-extension/pull/9586): Hex prefix newly fetched token balances in build-quote (#9586)
+- [#9586](https://github.com/MetaMask/metamask-extension/pull/9586): Prevent build quote crash when swapping from non-tracked token with balance (#9586)
 - [#9592](https://github.com/MetaMask/metamask-extension/pull/9592): Remove commitment to maintain a public metrics dashboard (#9592)
 - [#9596](https://github.com/MetaMask/metamask-extension/pull/9596): Fix TypeError when `signTypedData` throws (#9596)
-- [#9591](https://github.com/MetaMask/metamask-extension/pull/9591): Fix FF overflow list-item right-content/primaryCurrency wrapper (#9591)
+- [#9591](https://github.com/MetaMask/metamask-extension/pull/9591): Fix Firefox overflow on transaction items with long amounts (#9591)
 - [#9601](https://github.com/MetaMask/metamask-extension/pull/9601): Update text content of invalid custom network alert (#9601)
-- [#9588](https://github.com/MetaMask/metamask-extension/pull/9588): Data consistency swaps token balance (#9588)
 - [#9575](https://github.com/MetaMask/metamask-extension/pull/9575): Ensure proper hover display for accounts in main menu (#9575)
 - [#9576](https://github.com/MetaMask/metamask-extension/pull/9576): Autofocus the appropriate text fields in the Create/Import/Hardware screen (#9576)
 - [#9581](https://github.com/MetaMask/metamask-extension/pull/9581): AutoFocus the from input on swaps screen (#9581)
