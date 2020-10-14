@@ -6,7 +6,7 @@ export const QUOTE_DATA_ROWS_PROPTYPES_SHAPE = PropTypes.shape({
   destinationTokenDecimals: PropTypes.number.isRequired,
   destinationTokenSymbol: PropTypes.string.isRequired,
   destinationTokenValue: PropTypes.string.isRequired,
-  isBestQuote: PropTypes.bool.isRequired,
+  isBestQuote: PropTypes.bool,
   liquiditySource: PropTypes.string.isRequired,
   metaMaskFee: PropTypes.string.isRequired,
   networkFees: PropTypes.string.isRequired,
