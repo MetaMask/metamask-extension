@@ -13855,7 +13855,7 @@ html-webpack-plugin@^4.0.0-beta.2:
     tapable "^1.1.0"
     util.promisify "1.0.0"
 
-htmlescape@^1.1.0, htmlescape@^1.1.1:
+htmlescape@^1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/htmlescape/-/htmlescape-1.1.1.tgz#3a03edc2214bca3b66424a3e7959349509cb0351"
   integrity sha1-OgPtwiFLyjtmQko+eVk0lQnLA1E=
@@ -16694,23 +16694,6 @@ lavamoat-tofu@^5.1.1:
     "@babel/parser" "^7.10.1"
     "@babel/traverse" "^7.10.1"
 
-lavamoat@^4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/lavamoat/-/lavamoat-4.1.1.tgz#48124f29f082faf4ccb1ea8b4c5569da884e8015"
-  integrity sha512-A+hzxgcZK9Y72H8M4a/6m2eEsOeCsVXsCkFjJ/Qp8VRsRpeyapWTFbRev0x5IknYr+6fcgFHY0PLKL/bQJUm+g==
-  dependencies:
-    "@babel/code-frame" "^7.10.4"
-    bindings "^1.5.0"
-    htmlescape "^1.1.1"
-    json-stable-stringify "^1.0.1"
-    lavamoat-core "^6.1.0"
-    lavamoat-tofu "^5.1.1"
-    merge-deep "^3.0.2"
-    node-gyp-build "^4.2.3"
-    object.fromentries "^2.0.2"
-    resolve "^1.17.0"
-    yargs "^15.3.1"
-
 lazy-cache@^0.2.3:
   version "0.2.7"
   resolved "https://registry.yarnpkg.com/lazy-cache/-/lazy-cache-0.2.7.tgz#7feddf2dcb6edb77d11ef1d117ab5ffdf0ab1b65"
@@ -19241,11 +19224,6 @@ node-forge@^0.10.0, node-forge@^0.7.1, node-forge@^0.7.5, node-forge@~0.7.6:
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-0.10.0.tgz#32dea2afb3e9926f02ee5ce8794902691a676bf3"
   integrity sha512-PPmu8eEeG9saEUvI97fm4OYxXVB6bFvyNTyiUOBichBpFG8A1Ljw3bY62+5oOjDEMHRnd0Y7HQ+x7uzxOzC6JA==
-
-node-gyp-build@^4.2.3:
-  version "4.2.3"
-  resolved "https://registry.yarnpkg.com/node-gyp-build/-/node-gyp-build-4.2.3.tgz#ce6277f853835f718829efb47db20f3e4d9c4739"
-  integrity sha512-MN6ZpzmfNCRM+3t57PTJHgHyw/h4OWnZ6mR8P5j/uZtqQr46RRuDE/P+g3n0YR/AiYXeWixZZzaip77gdICfRg==
 
 node-gyp-build@~3.7.0:
   version "3.7.0"
