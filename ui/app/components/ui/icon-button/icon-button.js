@@ -11,6 +11,7 @@ export default function IconButton ({ onClick, Icon, disabled, label, tooltipRen
       className={classNames('icon-button', className, { 'icon-button--disabled': disabled })}
       data-testid={props['data-testid'] ?? undefined}
       onClick={onClick}
+      disabled={disabled}
     >
       {renderWrapper(
         <>
