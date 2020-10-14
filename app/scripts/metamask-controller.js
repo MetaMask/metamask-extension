@@ -1414,7 +1414,7 @@ export default class MetamaskController extends EventEmitter {
     } catch (error) {
       log.info('MetaMaskController - eth_signTypedData failed.', error)
       this.typedMessageManager.errorMessage(msgId, error)
-      return undefined
+      throw error
     }
   }
 
