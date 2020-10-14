@@ -12,7 +12,7 @@ import {
   getUsedQuote,
   getFetchParams,
   getApproveTxParams,
-  getSwapsTradeTxParams,
+  getUsedSwapsGasPrice,
   fetchQuotesAndSetQuoteState,
   navigateBackToBuildQuote,
   prepareForRetryGetQuotes,
@@ -67,7 +67,7 @@ export default function AwaitingSwap({
   const { destinationTokenInfo, sourceTokenInfo } = fetchParams?.metaData || {}
   const usedQuote = useSelector(getUsedQuote)
   const approveTxParams = useSelector(getApproveTxParams)
-  const tradeTxParams = useSelector(getSwapsTradeTxParams)
+  const swapsGasPrice = useSelector(getUsedSwapsGasPrice)
   const currentCurrency = useSelector(getCurrentCurrency)
   const conversionRate = useSelector(conversionRateSelector)
 
@@ -77,14 +77,15 @@ export default function AwaitingSwap({
   )
 
   let feeinFiat
-  if (usedQuote && tradeTxParams) {
+
+  if (usedQuote && swapsGasPrice) {
     const renderableNetworkFees = getRenderableNetworkFeesForQuote(
       usedQuote.gasEstimateWithRefund || usedQuote.averageGas,
       approveTxParams?.gas || '0x0',
-      tradeTxParams.gasPrice,
+      swapsGasPrice,
       currentCurrency,
       conversionRate,
-      tradeTxParams.value,
+      usedQuote?.trade?.value,
       sourceTokenInfo?.symbol,
       usedQuote.sourceAmount,
     )

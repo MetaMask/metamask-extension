@@ -194,14 +194,12 @@ describe('GasModalPageContainer Component', function () {
         'mockNewTotalEth',
         'mockSendAmount',
         'mockTransactionFee',
-        { label: 'mockLabel', value: 'mockValue' },
       ])
       assert.deepEqual(GP.renderInfoRows.getCall(1).args, [
         'mockNewTotalFiat',
         'mockNewTotalEth',
         'mockSendAmount',
         'mockTransactionFee',
-        { label: 'mockLabel', value: 'mockValue' },
       ])
     })
 

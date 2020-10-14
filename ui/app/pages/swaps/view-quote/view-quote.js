@@ -22,7 +22,7 @@ import {
   getBalanceError,
   getCustomSwapsGas,
   getDestinationTokenInfo,
-  getSwapsTradeTxParams,
+  getUsedSwapsGasPrice,
   getTopQuote,
   navigateBackToBuildQuote,
   signAndSendTransactions,
@@ -101,8 +101,7 @@ export default function ViewQuote() {
   const quotesLastFetched = useSelector(getQuotesLastFetched)
 
   // Select necessary data
-  const tradeTxParams = useSelector(getSwapsTradeTxParams)
-  const { gasPrice, value: tradeValue } = tradeTxParams || {}
+  const gasPrice = useSelector(getUsedSwapsGasPrice)
   const customMaxGas = useSelector(getCustomSwapsGas)
   const tokenConversionRates = useSelector(getTokenExchangeRates)
   const memoizedTokenConversionRates = useEqualityCheck(tokenConversionRates)
@@ -116,6 +115,7 @@ export default function ViewQuote() {
   const selectedQuote = useSelector(getSelectedQuote)
   const topQuote = useSelector(getTopQuote)
   const usedQuote = selectedQuote || topQuote
+  const { value: tradeValue = '0x0' } = usedQuote?.trade?.value || {}
 
   const fetchParamsSourceToken = fetchParams?.sourceToken
 
@@ -454,9 +454,8 @@ export default function ViewQuote() {
   const onFeeCardMaxRowClick = () =>
     dispatch(
       showModal({
-        name: 'CUSTOMIZE_GAS',
-        txData: { txParams: { ...tradeTxParams, gas: maxGasLimit } },
-        isSwap: true,
+        name: 'CUSTOMIZE_METASWAP_GAS',
+        value: usedQuote.value,
         customGasLimitMessage: approveGas
           ? t('extraApprovalGas', [hexToDecimal(approveGas)])
           : '',
@@ -467,8 +466,8 @@ export default function ViewQuote() {
               value: t('amountInEth', [extraNetworkFeeTotalInEth]),
             }
           : null,
-        useFastestButtons: true,
-        minimumGasLimit: Number(hexToDecimal(nonCustomMaxGasLimit)),
+        initialGasPrice: gasPrice,
+        initialGasLimit: maxGasLimit,
       }),
     )
 
@@ -605,7 +604,7 @@ export default function ViewQuote() {
         }}
         submitText={t('swap')}
         onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}
-        disabled={balanceError}
+        disabled={balanceError || gasPrice === null || gasPrice === undefined}
         showTermsOfService
         showTopBorder
       />
