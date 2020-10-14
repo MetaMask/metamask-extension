@@ -38,8 +38,9 @@ const TokenOverview = ({ className, token }) => {
   const keyring = useSelector(getCurrentKeyring)
   const usingHardwareWallet = keyring.type.search('Hardware') !== -1
   const { tokensWithBalances } = useTokenTracker([token])
-  const balance = tokensWithBalances[0]?.string
-  const formattedFiatBalance = useTokenFiatAmount(token.address, balance, token.symbol)
+  const balanceToRender = tokensWithBalances[0]?.string
+  const balance = tokensWithBalances[0]?.balance
+  const formattedFiatBalance = useTokenFiatAmount(token.address, balanceToRender, token.symbol)
   const networkId = useSelector(getCurrentNetworkId)
   const enteredSwapsEvent = useNewMetricEvent({ event: 'Swaps Opened', properties: { source: 'Token View', active_currency: token.symbol }, category: 'swaps' })
   const swapsEnabled = useSelector(getSwapsFeatureLiveness)
@@ -50,7 +51,7 @@ const TokenOverview = ({ className, token }) => {
         <div className="token-overview__balance">
           <CurrencyDisplay
             className="token-overview__primary-balance"
-            displayValue={balance}
+            displayValue={balanceToRender}
             suffix={token.symbol}
           />
           {
@@ -87,7 +88,12 @@ const TokenOverview = ({ className, token }) => {
               onClick={() => {
                 if (networkId === MAINNET_NETWORK_ID) {
                   enteredSwapsEvent()
-                  dispatch(setSwapsFromToken({ ...token, iconUrl: assetImages[token.address] }))
+                  dispatch(setSwapsFromToken({
+                    ...token,
+                    iconUrl: assetImages[token.address],
+                    balance,
+                    string: balanceToRender,
+                  }))
                   if (usingHardwareWallet) {
                     global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE)
                   } else {

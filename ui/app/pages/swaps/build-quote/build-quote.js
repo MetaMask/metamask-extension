@@ -24,7 +24,7 @@ import {
   getTopAssets,
   getFetchParams,
 } from '../../../ducks/swaps/swaps'
-import { getValueFromWeiHex } from '../../../helpers/utils/conversions.util'
+import { getValueFromWeiHex, hexToDecimal } from '../../../helpers/utils/conversions.util'
 import { calcTokenAmount } from '../../../helpers/utils/token-util'
 import { usePrevious } from '../../../hooks/usePrevious'
 import { useTokenTracker } from '../../../hooks/useTokenTracker'
@@ -167,7 +167,11 @@ export default function BuildQuote ({
   // If the eth balance changes while on build quote, we update the selected from token
   useEffect(() => {
     if (fromToken?.address === ETH_SWAPS_TOKEN_OBJECT.address && (fromToken?.balance !== ethBalance)) {
-      dispatch(setSwapsFromToken({ ...fromToken, balance: ethBalance, string: getValueFromWeiHex({ value: ethBalance, numberOfDecimals: 4, toDenomination: 'ETH' }) }))
+      dispatch(setSwapsFromToken({
+        ...fromToken,
+        balance: hexToDecimal(ethBalance),
+        string: getValueFromWeiHex({ value: ethBalance, numberOfDecimals: 4, toDenomination: 'ETH' }),
+      }))
     }
   }, [dispatch, fromToken, ethBalance])
 
