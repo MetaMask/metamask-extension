@@ -75,6 +75,7 @@ const mapStateToProps = (state, ownProps) => {
     customTotalSupplement = '',
     extraInfoRow = null,
     useFastestButtons = false,
+    minimumGasLimit,
   } = modalProps || {}
   const { transaction = {} } = ownProps
   const selectedTransaction = isSwap
@@ -202,6 +203,7 @@ const mapStateToProps = (state, ownProps) => {
     conversionRate,
     value,
     customTotalSupplement,
+    minimumGasLimit,
   }
 }
 
@@ -264,6 +266,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     tokenBalance,
     customGasLimit,
     transaction,
+    minimumGasLimit = 21000,
   } = stateProps
   const {
     hideGasButtonGroup: dispatchHideGasButtonGroup,
@@ -333,7 +336,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     disableSave: (
       insufficientBalance ||
       (isSpeedUp && customGasPrice === 0) ||
-      customGasLimit < 21000
+      customGasLimit < minimumGasLimit
     ),
   }
 }

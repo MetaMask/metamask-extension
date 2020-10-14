@@ -27,6 +27,7 @@ export default class AdvancedTabContent extends Component {
     isSpeedUp: PropTypes.bool,
     isEthereumNetwork: PropTypes.bool,
     customGasLimitMessage: PropTypes.string,
+    minimumGasLimit: PropTypes.number,
   }
 
   renderDataSummary (transactionFee, timeRemaining) {
@@ -67,6 +68,7 @@ export default class AdvancedTabContent extends Component {
       transactionFee,
       isEthereumNetwork,
       customGasLimitMessage,
+      minimumGasLimit,
     } = this.props
 
     return (
@@ -83,6 +85,7 @@ export default class AdvancedTabContent extends Component {
               customPriceIsSafe={customPriceIsSafe}
               isSpeedUp={isSpeedUp}
               customGasLimitMessage={customGasLimitMessage}
+              minimumGasLimit={minimumGasLimit}
             />
           </div>
           { isEthereumNetwork

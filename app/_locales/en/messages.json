@@ -706,7 +706,7 @@
     "message": "Gas limit is the maximum amount of units of gas you are willing to spend."
   },
   "gasLimitTooLow": {
-    "message": "Gas limit must be at least 21000"
+    "message": "Gas limit must be at least $1"
   },
   "gasPrice": {
     "message": "Gas Price (GWEI)"
