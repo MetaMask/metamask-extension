@@ -92,16 +92,26 @@ export function MetaMetricsProvider ({ children }) {
       const idTrait = metaMetricsId ? 'userId' : 'anonymousId'
       const idValue = metaMetricsId ?? METAMETRICS_ANONYMOUS_ID
       const match = matchPath(location.pathname, { path: PATHS_TO_CHECK, exact: true, strict: true })
-      if (
-        match &&
+      // Start by checking for a missing match route. If this falls through to the else if, then we know we
+      // have a matched route for tracking.
+      if (!match) {
+        // We have more specific pages for each type of transaction confirmation
+        // The user lands on /confirm-transaction first, then is redirected based on
+        // the contents of state.
+        if (location.pathname !== '/confirm-transaction') {
+          // Otherwise we are legitimately missing a matching route
+          captureMessage(`Segment page tracking found unmatched route`, {
+            previousMatch,
+            currentPath: location.pathname,
+          })
+        }
+      } else if (
         previousMatch.current !== match.path &&
-        // If we're in a popup or notification we don't want the initial home route to track
-        !(
-          (environmentType === 'popup' || environmentType === 'notification') &&
-          match.path === '/' &&
-          previousMatch.current === undefined
-        )
+        !(environmentType === 'notification' && match.path === '/' && previousMatch.current === undefined)
       ) {
+        // When a notification window is open by a Dapp we do not want to track the initial home route load that can
+        // sometimes happen. To handle this we keep track of the previousMatch, and we skip the event track in the event
+        // that we are dealing with the initial load of the homepage
         const { path, params } = match
         const name = PATH_NAME_MAP[path]
         segment.page({
@@ -116,11 +126,6 @@ export function MetaMetricsProvider ({ children }) {
           },
           context,
         })
-      } else if (location.pathname !== '/confirm-transaction') {
-        // We have more specific pages for each type of transaction confirmation
-        // The user lands on /confirm-transaction first, then is redirected based on
-        // the contents of state.
-        captureMessage(`${location.pathname} would have issued a page track event to segment, but no route match was found`)
       }
       previousMatch.current = match?.path
     }
