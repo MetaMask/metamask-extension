@@ -421,20 +421,25 @@ export default class SwapsController {
         gasEstimate,
         aggregator,
       } = quote
+
       const tradeGasLimitForCalculation = gasEstimate
         ? new BigNumber(gasEstimate, 16)
         : new BigNumber(averageGas || MAX_GAS_LIMIT, 10)
+
       const totalGasLimitForCalculation = tradeGasLimitForCalculation
         .plus(approvalNeeded?.gas || '0x0', 16)
         .toString(16)
+
       const gasTotalInWeiHex = calcGasTotal(
         totalGasLimitForCalculation,
         usedGasPrice,
       )
+
       const totalEthCost = new BigNumber(gasTotalInWeiHex, 16).plus(
         trade.value,
         16,
       )
+
       const ethFee = conversionUtil(totalEthCost, {
         fromCurrency: 'ETH',
         fromDenomination: 'WEI',
