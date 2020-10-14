@@ -842,7 +842,7 @@
     "message": "Invalid Block Explorer URL"
   },
   "invalidCustomNetworkAlertContent1": {
-    "message": "The custom network '$1' is missing its chain ID.",
+    "message": "The chain ID for custom network '$1' has to be re-entered.",
     "description": "$1 is the name/identifier of the network."
   },
   "invalidCustomNetworkAlertContent2": {
