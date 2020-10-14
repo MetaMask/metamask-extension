@@ -11,6 +11,7 @@
 - [#9575](https://github.com/MetaMask/metamask-extension/pull/9575): Ensure proper hover display for accounts in main menu (#9575)
 - [#9576](https://github.com/MetaMask/metamask-extension/pull/9576): Autofocus the appropriate text fields in the Create/Import/Hardware screen (#9576)
 - [#9581](https://github.com/MetaMask/metamask-extension/pull/9581): AutoFocus the from input on swaps screen (#9581)
+- [#9602](https://github.com/MetaMask/metamask-extension/pull/9602): Prevent swap button from being focused when disabled (#9602)
 
 ## 8.1.0 Tue Oct 13 2020
 - [#9565](https://github.com/MetaMask/metamask-extension/pull/9565): Ensure address book entries are shared between networks with the same chain ID
