@@ -106,7 +106,7 @@ export function MetaMetricsProvider ({ children }) {
         }
       } else if (
         previousMatch.current !== match.path &&
-        (environmentType !== 'notification' || match.path !== '/' || previousMatch.current !== undefined)
+        !(environmentType === 'notification' && match.path === '/' && previousMatch.current === undefined)
       ) {
         // When a notification window is open by a Dapp we do not want to track the initial home route load that can
         // sometimes happen. To handle this we keep track of the previousMatch, and we skip the event track in the event
