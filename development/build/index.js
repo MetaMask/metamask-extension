@@ -4,7 +4,7 @@
 // run any task with "yarn build ${taskName}"
 //
 global.globalThis = global
-require('lavamoat-core/lib/ses.umd.js') // eslint-disable-line import/no-extraneous-dependencies
+require('lavamoat-core/lib/ses.umd.js')
 
 lockdown() // eslint-disable-line no-undef
 
