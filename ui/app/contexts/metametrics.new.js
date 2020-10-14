@@ -101,7 +101,6 @@ export function MetaMetricsProvider ({ children }) {
         if (location.pathname !== '/confirm-transaction') {
           // Otherwise we are legitimately missing a matching route
           captureMessage(`Segment page tracking found unmatched route`, {
-            level: Severity.Info,
             previousMatch,
             currentPath: location.pathname,
           })
