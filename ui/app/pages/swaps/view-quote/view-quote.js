@@ -340,7 +340,7 @@ export default function ViewQuote () {
     }
   }, [sourceTokenSymbol, sourceTokenValue, destinationTokenSymbol, destinationTokenValue, fetchParams, topQuote, numberOfQuotes, feeInFiat, bestQuoteReviewedEvent, anonymousBestQuoteReviewedEvent])
 
-  const onFeeCardThirdRowClickHandler = () => {
+  const onFeeCardTokenApprovalClick = () => {
     anonymousEditSpendLimitOpened()
     editSpendLimitOpened()
     dispatch(showModal({
@@ -375,7 +375,7 @@ export default function ViewQuote () {
     }))
   }
 
-  const onFeeCardMaxRowClickHandler = () => dispatch(showModal({
+  const onFeeCardMaxRowClick = () => dispatch(showModal({
     name: 'CUSTOMIZE_GAS',
     txData: { txParams: { ...tradeTxParams, gas: maxGasLimit } },
     isSwap: true,
@@ -396,7 +396,7 @@ export default function ViewQuote () {
     useFastestButtons: true,
   }))
 
-  const thirdRowTextComponent = (
+  const tokenApprovalTextComponent = (
     <span
       key="swaps-view-quote-approve-symbol-1"
       className="view-quote__bold"
@@ -501,7 +501,6 @@ export default function ViewQuote () {
           })}
         >
           <FeeCard
-            feeRowText={t('swapEstimatedNetworkFee')}
             primaryFee={({
               fee: feeInEth,
               maxFee: maxFeeInEth,
@@ -510,19 +509,13 @@ export default function ViewQuote () {
               fee: feeInFiat,
               maxFee: maxFeeInFiat,
             })}
-            maxFeeRow={({
-              text: t('swapMaxNetworkFees'),
-              linkText: t('edit'),
-              tooltipText: t('swapMaxNetworkFeeInfo'),
-              onClick: onFeeCardMaxRowClickHandler,
-            })}
-            thirdRow={({
-              text: t('swapThisWillAllowApprove', [thirdRowTextComponent]),
-              linkText: t('swapEditLimit'),
-              tooltipText: t('swapEnableDescription', [sourceTokenSymbol]),
-              onClick: onFeeCardThirdRowClickHandler,
-              hide: !approveTxParams || (balanceError && !warningHidden),
-            })}
+            onFeeCardMaxRowClick={onFeeCardMaxRowClick}
+            hideTokenApprovalRow={
+              !approveTxParams || (balanceError && !warningHidden)
+            }
+            tokenApprovalTextComponent={tokenApprovalTextComponent}
+            sourceTokenSymbol={sourceTokenSymbol}
+            onFeeCardTokenApprovalClick={onFeeCardTokenApprovalClick}
           />
         </div>
       </div>
