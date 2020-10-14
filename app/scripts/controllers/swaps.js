@@ -413,6 +413,7 @@ export default class SwapsController {
     Object.values(quotes).forEach((quote) => {
       const {
         destinationAmount = 0,
+        sourceAmount,
         destinationToken,
         destinationTokenInfo,
         trade,
@@ -457,20 +458,30 @@ export default class SwapsController {
             )
             .minus(tokenConversionRate ? ethFee.toString(10) : 0, 10)
 
+      const nonGasNetworkFee = trade.value - sourceAmount
+
+      ethValueSum += ethValueOfTrade
+      networkFeeSum += (gasTotalInWeiHex + nonGasNetworkFee)
+
+
       if (
         ethValueOfTradeForBestQuote === null ||
         ethValueOfTrade.gt(ethValueOfTradeForBestQuote)
       ) {
         topAggId = aggregator
         ethValueOfTradeForBestQuote = ethValueOfTrade
+        networkFeeForBestQuote = 
       }
     })
+
+    ethValueSum -= ethValueOfTradeForBestQuote / quotes.length - 1
+    networkFeeSum -= networkFeeForBestQuote
 
     const isBest =
       quotes[topAggId]?.destinationTokenInfo?.symbol === 'ETH' ||
       Boolean(tokenConversionRates[quotes[topAggId]?.destinationToken])
 
-    return { topAggId, isBest }
+    return { topAggId, isBest, averageReceivingSaving, averageNetworkFeeSavings }
   }
 
   async _getERC20Allowance (contractAddress, walletAddress) {
