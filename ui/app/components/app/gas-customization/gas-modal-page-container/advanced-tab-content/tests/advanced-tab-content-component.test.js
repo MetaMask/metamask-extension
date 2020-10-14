@@ -103,7 +103,7 @@ describe('AdvancedTabContent Component', function () {
       const renderDataSummaryArgs = AdvancedTabContent.prototype.renderDataSummary.getCall(
         0,
       ).args
-      assert.deepEqual(renderDataSummaryArgs, ['$0.25', 21500])
+      assert.deepEqual(renderDataSummaryArgs, ['$0.25', '21500'])
     })
   })
 

@@ -3,6 +3,10 @@ import BigNumber from 'bignumber.js'
 import log from 'loglevel'
 
 import {
+  loadLocalStorageData,
+  saveLocalStorageData,
+} from '../../../lib/local-storage-helpers'
+import {
   addToken,
   addUnapprovedTransaction,
   fetchAndSetQuotes,
@@ -27,7 +31,10 @@ import {
   SWAPS_ERROR_ROUTE,
   SWAPS_MAINTENANCE_ROUTE,
 } from '../../helpers/constants/routes'
-import { fetchSwapsFeatureLiveness } from '../../pages/swaps/swaps.util'
+import {
+  fetchSwapsFeatureLiveness,
+  fetchSwapsGasPrices,
+} from '../../pages/swaps/swaps.util'
 import { calcGasTotal } from '../../pages/send/send.utils'
 import {
   decimalToHex,
@@ -37,9 +44,9 @@ import {
   hexToDecimal,
   hexWEIToDecGWEI,
 } from '../../helpers/utils/conversions.util'
+import { conversionLessThan } from '../../helpers/utils/conversion-util'
 import { calcTokenAmount } from '../../helpers/utils/token-util'
 import {
-  getFastPriceEstimateInHexWEI,
   getSelectedAccount,
   getTokenExchangeRates,
   conversionRateSelector as getConversionRate,
@@ -51,13 +58,15 @@ import {
   SWAP_FAILED_ERROR,
   SWAPS_FETCH_ORDER_CONFLICT,
 } from '../../helpers/constants/swaps'
-import {
-  fetchBasicGasAndTimeEstimates,
-  fetchGasEstimates,
-  resetCustomGasState,
-} from '../gas/gas.duck'
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util'
 import { TRANSACTION_CATEGORIES } from '../../../../shared/constants/transaction'
+
+const GAS_PRICES_LOADING_STATES = {
+  INITIAL: 'INITIAL',
+  LOADING: 'LOADING',
+  FAILED: 'FAILED',
+  COMPLETED: 'COMPLETED',
+}
 
 const initialState = {
   aggregatorMetadata: null,
@@ -68,6 +77,14 @@ const initialState = {
   quotesFetchStartTime: null,
   topAssets: {},
   toToken: null,
+  customGas: {
+    price: null,
+    limit: null,
+    loading: GAS_PRICES_LOADING_STATES.INITIAL,
+    priceEstimates: {},
+    priceEstimatesLastRetrieved: 0,
+    fallBackPrice: null,
+  },
 }
 
 const slice = createSlice({
@@ -106,6 +123,27 @@ const slice = createSlice({
     setToToken: (state, action) => {
       state.toToken = action.payload
     },
+    swapCustomGasModalPriceEdited: (state, action) => {
+      state.customGas.price = action.payload
+    },
+    swapCustomGasModalLimitEdited: (state, action) => {
+      state.customGas.limit = action.payload
+    },
+    swapGasPriceEstimatesFetchStarted: (state) => {
+      state.customGas.loading = GAS_PRICES_LOADING_STATES.LOADING
+    },
+    swapGasPriceEstimatesFetchFailed: (state) => {
+      state.customGas.loading = GAS_PRICES_LOADING_STATES.FAILED
+    },
+    swapGasPriceEstimatesFetchCompleted: (state, action) => {
+      state.customGas.priceEstimates = action.payload.priceEstimates
+      state.customGas.loading = GAS_PRICES_LOADING_STATES.COMPLETED
+      state.customGas.priceEstimatesLastRetrieved =
+        action.payload.priceEstimatesLastRetrieved
+    },
+    retrievedFallbackSwapsGasPrice: (state, action) => {
+      state.customGas.fallBackPrice = action.payload
+    },
   },
 })
 
@@ -129,6 +167,49 @@ export const getFetchingQuotes = (state) => state.swaps.fetchingQuotes
 
 export const getQuotesFetchStartTime = (state) =>
   state.swaps.quotesFetchStartTime
+
+export const getSwapsCustomizationModalPrice = (state) =>
+  state.swaps.customGas.price
+
+export const getSwapsCustomizationModalLimit = (state) =>
+  state.swaps.customGas.limit
+
+export const swapGasPriceEstimateIsLoading = (state) =>
+  state.swaps.customGas.loading === GAS_PRICES_LOADING_STATES.LOADING
+
+export const swapGasEstimateLoadingHasFailed = (state) =>
+  state.swaps.customGas.loading === GAS_PRICES_LOADING_STATES.INITIAL
+
+export const getSwapGasPriceEstimateData = (state) =>
+  state.swaps.customGas.priceEstimates
+
+export const getSwapsPriceEstimatesLastRetrieved = (state) =>
+  state.swaps.customGas.priceEstimatesLastRetrieved
+
+export const getSwapsFallbackGasPrice = (state) =>
+  state.swaps.customGas.fallBackPrice
+
+export function shouldShowCustomPriceTooLowWarning(state) {
+  const { average } = getSwapGasPriceEstimateData(state)
+
+  const customGasPrice = getSwapsCustomizationModalPrice(state)
+
+  if (!customGasPrice || average === undefined) {
+    return false
+  }
+
+  const customPriceRisksSwapFailure = conversionLessThan(
+    {
+      value: customGasPrice,
+      fromNumericBase: 'hex',
+      fromDenomination: 'WEI',
+      toDenomination: 'GWEI',
+    },
+    { value: average, fromNumericBase: 'dec' },
+  )
+
+  return customPriceRisksSwapFailure
+}
 
 // Background selectors
 
@@ -185,17 +266,8 @@ export const getUsedQuote = (state) =>
 export const getDestinationTokenInfo = (state) =>
   getFetchParams(state)?.metaData?.destinationTokenInfo
 
-export const getSwapsTradeTxParams = (state) => {
-  const { selectedAggId, topAggId, quotes } = getSwapsState(state)
-  const usedQuote = selectedAggId ? quotes[selectedAggId] : quotes[topAggId]
-  if (!usedQuote) {
-    return null
-  }
-  const { trade } = usedQuote
-  const gas = getCustomSwapsGas(state) || trade.gas
-  const gasPrice = getCustomSwapsGasPrice(state) || trade.gasPrice
-  return { ...trade, gas, gasPrice }
-}
+export const getUsedSwapsGasPrice = (state) =>
+  getCustomSwapsGasPrice(state) || getSwapsFallbackGasPrice(state)
 
 export const getApproveTxParams = (state) => {
   const { approvalNeeded } = getSelectedQuote(state) || getTopQuote(state) || {}
@@ -215,6 +287,9 @@ const {
   clearSwapsState,
   navigatedBackToBuildQuote,
   retriedGetQuotes,
+  swapGasPriceEstimatesFetchCompleted,
+  swapGasPriceEstimatesFetchStarted,
+  swapGasPriceEstimatesFetchFailed,
   setAggregatorMetadata,
   setBalanceError,
   setFetchingQuotes,
@@ -222,6 +297,9 @@ const {
   setQuotesFetchStartTime,
   setTopAssets,
   setToToken,
+  swapCustomGasModalPriceEdited,
+  swapCustomGasModalLimitEdited,
+  retrievedFallbackSwapsGasPrice,
 } = actions
 
 export {
@@ -233,6 +311,8 @@ export {
   setQuotesFetchStartTime as setSwapQuotesFetchStartTime,
   setTopAssets,
   setToToken as setSwapToToken,
+  swapCustomGasModalPriceEdited,
+  swapCustomGasModalLimitEdited,
 }
 
 export const navigateBackToBuildQuote = (history) => {
@@ -255,7 +335,6 @@ export const prepareForRetryGetQuotes = () => {
 
 export const prepareToLeaveSwaps = () => {
   return async (dispatch) => {
-    dispatch(resetCustomGasState())
     dispatch(clearSwapsState())
     await dispatch(resetBackgroundSwapsState())
   }
@@ -263,9 +342,11 @@ export const prepareToLeaveSwaps = () => {
 
 export const fetchAndSetSwapsGasPriceInfo = () => {
   return async (dispatch) => {
-    const basicEstimates = await dispatch(fetchBasicGasAndTimeEstimates())
-    dispatch(setSwapsTxGasPrice(decGWEIToHexWEI(basicEstimates.fastest)))
-    await dispatch(fetchGasEstimates(basicEstimates.blockTime))
+    const basicEstimates = await dispatch(fetchMetaSwapsGasPriceEstimates())
+
+    if (basicEstimates?.fast) {
+      dispatch(setSwapsTxGasPrice(decGWEIToHexWEI(basicEstimates.fast)))
+    }
   }
 }
 
@@ -476,6 +557,7 @@ export const fetchQuotesAndSetQuoteState = (
       }
       // TODO: Check for any errors we should expect to occur in production, and report others to Sentry
       log.error(`Error fetching quotes: `, e)
+
       dispatch(setSwapsErrorKey(ERROR_FETCHING_QUOTES))
     }
 
@@ -507,6 +589,8 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     await dispatch(stopPollingForQuotes())
     history.push(AWAITING_SWAP_ROUTE)
 
+    const { fast: fastGasEstimate } = getSwapGasPriceEstimateData(state)
+
     const usedQuote = getUsedQuote(state)
     const usedTradeTxParams = usedQuote.trade
 
@@ -524,13 +608,9 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
         `0x${decimalToHex(usedQuote?.maxGas || 0)}`,
         estimatedGasLimitWithMultiplier,
       )
-    usedTradeTxParams.gas = maxGasLimit
 
-    const customConvertGasPrice = getCustomSwapsGasPrice(state)
-    const tradeTxParams = getSwapsTradeTxParams(state)
-    const fastGasEstimate = getFastPriceEstimateInHexWEI(state)
-    const usedGasPrice =
-      customConvertGasPrice || tradeTxParams?.gasPrice || fastGasEstimate
+    const usedGasPrice = getUsedSwapsGasPrice(state)
+    usedTradeTxParams.gas = maxGasLimit
     usedTradeTxParams.gasPrice = usedGasPrice
 
     const conversionRate = getConversionRate(state)
@@ -568,8 +648,8 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
           : usedQuote.aggregator,
       gas_fees: formatCurrency(gasEstimateTotalInEth, 'usd')?.slice(1),
       estimated_gas: estimatedGasLimit.toString(10),
-      suggested_gas_price: hexWEIToDecGWEI(usedGasPrice),
-      used_gas_price: hexWEIToDecGWEI(fastGasEstimate),
+      suggested_gas_price: fastGasEstimate,
+      used_gas_price: hexWEIToDecGWEI(usedGasPrice),
       average_savings: usedQuote.savings?.performance,
     }
 
@@ -643,5 +723,70 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     }
 
     await forceUpdateMetamaskState(dispatch)
+  }
+}
+
+export function fetchMetaSwapsGasPriceEstimates() {
+  return async (dispatch, getState) => {
+    const state = getState()
+    const priceEstimatesLastRetrieved = getSwapsPriceEstimatesLastRetrieved(
+      state,
+    )
+    const timeLastRetrieved =
+      priceEstimatesLastRetrieved ||
+      loadLocalStorageData('METASWAP_GAS_PRICE_ESTIMATES_LAST_RETRIEVED') ||
+      0
+
+    dispatch(swapGasPriceEstimatesFetchStarted())
+
+    let priceEstimates
+    try {
+      if (Date.now() - timeLastRetrieved > 30000) {
+        priceEstimates = await fetchSwapsGasPrices()
+      } else {
+        const cachedPriceEstimates = loadLocalStorageData(
+          'METASWAP_GAS_PRICE_ESTIMATES',
+        )
+        priceEstimates = cachedPriceEstimates || (await fetchSwapsGasPrices())
+      }
+    } catch (e) {
+      log.warn('Fetching swaps gas prices failed:', e)
+
+      if (!e.message?.match(/NetworkError|Fetch failed with status:/u)) {
+        throw e
+      }
+
+      dispatch(swapGasPriceEstimatesFetchFailed())
+
+      try {
+        const gasPrice = await global.ethQuery.gasPrice()
+        const gasPriceInDecGWEI = hexWEIToDecGWEI(gasPrice.toString(10))
+
+        dispatch(retrievedFallbackSwapsGasPrice(gasPriceInDecGWEI))
+        return null
+      } catch (networkGasPriceError) {
+        console.error(
+          `Failed to retrieve fallback gas price: `,
+          networkGasPriceError,
+        )
+        return null
+      }
+    }
+
+    const timeRetrieved = Date.now()
+
+    saveLocalStorageData(priceEstimates, 'METASWAP_GAS_PRICE_ESTIMATES')
+    saveLocalStorageData(
+      timeRetrieved,
+      'METASWAP_GAS_PRICE_ESTIMATES_LAST_RETRIEVED',
+    )
+
+    dispatch(
+      swapGasPriceEstimatesFetchCompleted({
+        priceEstimates,
+        priceEstimatesLastRetrieved: timeRetrieved,
+      }),
+    )
+    return priceEstimates
   }
 }

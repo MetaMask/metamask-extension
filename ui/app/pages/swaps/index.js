@@ -21,9 +21,8 @@ import {
   getApproveTxId,
   getFetchingQuotes,
   setBalanceError,
-  getCustomSwapsGasPrice,
   setTopAssets,
-  getSwapsTradeTxParams,
+  getUsedSwapsGasPrice,
   getFetchParams,
   setAggregatorMetadata,
   getAggregatorMetadata,
@@ -33,7 +32,6 @@ import {
   prepareToLeaveSwaps,
   fetchAndSetSwapsGasPriceInfo,
 } from '../../ducks/swaps/swaps'
-import { resetCustomGasState } from '../../ducks/gas/gas.duck'
 import {
   AWAITING_SWAP_ROUTE,
   BUILD_QUOTE_ROUTE,
@@ -59,7 +57,6 @@ import {
   setSwapsErrorKey,
 } from '../../store/actions'
 import {
-  getFastPriceEstimateInHexWEI,
   currentNetworkTxListSelector,
   getRpcPrefsForCurrentProvider,
 } from '../../selectors'
@@ -96,11 +93,9 @@ export default function Swap() {
   const [maxSlippage, setMaxSlippage] = useState(fetchParams?.slippage || 2)
 
   const routeState = useSelector(getBackgroundSwapRouteState)
-  const tradeTxParams = useSelector(getSwapsTradeTxParams)
+  const usedGasPrice = useSelector(getUsedSwapsGasPrice)
   const selectedAccount = useSelector(getSelectedAccount)
   const quotes = useSelector(getQuotes)
-  const fastGasEstimate = useSelector(getFastPriceEstimateInHexWEI)
-  const customConvertGasPrice = useSelector(getCustomSwapsGasPrice)
   const txList = useSelector(currentNetworkTxListSelector)
   const tradeTxId = useSelector(getTradeTxId)
   const approveTxId = useSelector(getApproveTxId)
@@ -131,8 +126,6 @@ export default function Swap() {
     useSelector(getFromToken) || fetchParamsFromToken || {}
   const { destinationTokenAddedForSwap } = fetchParams || {}
 
-  const usedGasPrice =
-    customConvertGasPrice || tradeTxParams?.gasPrice || fastGasEstimate
   const approveTxData =
     approveTxId && txList.find(({ id }) => approveTxId === id)
   const tradeTxData = tradeTxId && txList.find(({ id }) => tradeTxId === id)
@@ -197,7 +190,6 @@ export default function Swap() {
       dispatch(setAggregatorMetadata(newAggregatorMetadata))
     })
 
-    dispatch(resetCustomGasState())
     dispatch(fetchAndSetSwapsGasPriceInfo())
 
     return () => {
