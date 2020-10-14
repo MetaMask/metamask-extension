@@ -198,21 +198,20 @@ export default class AccountTracker {
     const addresses = Object.keys(accounts)
     const chainId = this.getCurrentChainId()
 
-    // TODO: use chain ID
     switch (chainId) {
-      case MAINNET_CHAIN_ID.toString():
+      case MAINNET_CHAIN_ID:
         await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS)
         break
 
-      case RINKEBY_CHAIN_ID.toString():
+      case RINKEBY_CHAIN_ID:
         await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_RINKEBY)
         break
 
-      case ROPSTEN_CHAIN_ID.toString():
+      case ROPSTEN_CHAIN_ID:
         await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN)
         break
 
-      case KOVAN_CHAIN_ID.toString():
+      case KOVAN_CHAIN_ID:
         await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_KOVAN)
         break
 
