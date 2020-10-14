@@ -166,7 +166,7 @@ export default function BuildQuote ({
 
   // If the eth balance changes while on build quote, we update the selected from token
   useEffect(() => {
-    if (fromToken?.address === ETH_SWAPS_TOKEN_OBJECT.address && (fromToken?.balance !== ethBalance)) {
+    if (fromToken?.address === ETH_SWAPS_TOKEN_OBJECT.address && (fromToken?.balance !== hexToDecimal(ethBalance))) {
       dispatch(setSwapsFromToken({
         ...fromToken,
         balance: hexToDecimal(ethBalance),
