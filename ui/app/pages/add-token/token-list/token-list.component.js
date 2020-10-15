@@ -37,30 +37,28 @@ export default class InfoBox extends Component {
             .map((_, i) => {
               const { logo, symbol, name, address } = results[i] || {}
               const tokenAlreadyAdded = checkExistingAddresses(address, tokens)
+              const onClick = () => !tokenAlreadyAdded && onToggleToken(results[i]);
 
-              return (
-                Boolean(logo || symbol || name) && (
+              return Boolean(logo || symbol || name) && (
+                <div
+                  className={classnames('token-list__token', {
+                    'token-list__token--selected': selectedTokens[address],
+                    'token-list__token--disabled': tokenAlreadyAdded,
+                  })}
+                  onClick={onClick}
+                  onKeyPress={event => event.key === "Enter" && onClick()}
+                  key={i}
+                  tabIndex="0"
+                >
                   <div
-                    className={classnames('token-list__token', {
-                      'token-list__token--selected': selectedTokens[address],
-                      'token-list__token--disabled': tokenAlreadyAdded,
-                    })}
-                    onClick={() =>
-                      !tokenAlreadyAdded && onToggleToken(results[i])
-                    }
-                    key={i}
+                    className="token-list__token-icon"
+                    style={{ backgroundImage: logo && `url(images/contract/${logo})` }}
                   >
-                    <div
-                      className="token-list__token-icon"
-                      style={{
-                        backgroundImage: logo && `url(images/contract/${logo})`,
-                      }}
-                    />
-                    <div className="token-list__token-data">
-                      <span className="token-list__token-name">{`${name} (${symbol})`}</span>
-                    </div>
                   </div>
-                )
+                  <div className="token-list__token-data">
+                    <span className="token-list__token-name">{ `${name} (${symbol})` }</span>
+                  </div>
+                </div>
               )
             })}
         </div>
