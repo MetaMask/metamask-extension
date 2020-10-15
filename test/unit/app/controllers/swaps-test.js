@@ -272,6 +272,19 @@ describe('SwapsController', function () {
       })
     })
 
+    describe('_findTopQuoteAndCalculateSavings', function () {
+      it('returns empty object if passed undefined or empty object', async function () {
+        assert.deepStrictEqual(
+          await swapsController._findTopQuoteAndCalculateSavings(),
+          {},
+        )
+        assert.deepStrictEqual(
+          await swapsController._findTopQuoteAndCalculateSavings({}),
+          {},
+        )
+      })
+    })
+
     describe('fetchAndSetQuotes', function () {
       it('returns null if fetchParams is not provided', async function () {
         const quotes = await swapsController.fetchAndSetQuotes(undefined)
@@ -302,6 +315,11 @@ describe('SwapsController', function () {
           // TODO: find a way to calculate these values dynamically
           gasEstimate: 2000000,
           gasEstimateWithRefund: '8cd8e',
+          savings: {
+            fees: '0',
+            performance: '0',
+            total: '0',
+          },
         })
 
         assert.strictEqual(

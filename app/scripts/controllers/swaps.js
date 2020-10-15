@@ -175,11 +175,12 @@ export default class SwapsController {
     if (Object.values(newQuotes).length === 0) {
       this.setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR)
     } else {
-      const topAggData = await this._findTopQuoteAggId(newQuotes)
+      const topQuoteData = await this._findTopQuoteAndCalculateSavings(newQuotes)
 
-      if (topAggData.topAggId) {
-        topAggId = topAggData.topAggId
-        newQuotes[topAggId].isBestQuote = topAggData.isBest
+      if (topQuoteData.topAggId) {
+        topAggId = topQuoteData.topAggId
+        newQuotes[topAggId].isBestQuote = topQuoteData.isBest
+        newQuotes[topAggId].savings = topQuoteData.savings
       }
     }
 
@@ -394,14 +395,15 @@ export default class SwapsController {
     return ethersGasPrice.toHexString()
   }
 
-  async _findTopQuoteAggId (quotes) {
+  async _findTopQuoteAndCalculateSavings (quotes = {}) {
     const tokenConversionRates = this.tokenRatesStore.getState()
       .contractExchangeRates
     const {
       swapsState: { customGasPrice },
     } = this.store.getState()
 
-    if (!Object.values(quotes).length) {
+    const numQuotes = Object.keys(quotes).length
+    if (!numQuotes) {
       return {}
     }
 
@@ -409,17 +411,22 @@ export default class SwapsController {
 
     let topAggId = ''
     let ethValueOfTradeForBestQuote = null
+    let ethFeeForBestQuote = null
+    let sumOfAllTradeValues = new BigNumber(0)
+    let sumOfAllEthFees = new BigNumber(0)
 
     Object.values(quotes).forEach((quote) => {
       const {
+        aggregator,
+        approvalNeeded,
+        averageGas,
         destinationAmount = 0,
         destinationToken,
         destinationTokenInfo,
-        trade,
-        approvalNeeded,
-        averageGas,
         gasEstimate,
-        aggregator,
+        sourceAmount,
+        sourceToken,
+        trade,
       } = quote
 
       const tradeGasLimitForCalculation = gasEstimate
@@ -435,12 +442,14 @@ export default class SwapsController {
         usedGasPrice,
       )
 
-      const totalEthCost = new BigNumber(gasTotalInWeiHex, 16).plus(
-        trade.value,
-        16,
-      )
+      // trade.value is a sum of different values depending on the transaction.
+      // It always includes any external fees charged by the quote source. In
+      // addition, if the source asset is ETH, trade.value includes the amount
+      // of swapped ETH.
+      const totalWeiCost = new BigNumber(gasTotalInWeiHex, 16)
+        .plus(trade.value, 16)
 
-      const ethFee = conversionUtil(totalEthCost, {
+      const totalEthCost = conversionUtil(totalWeiCost, {
         fromCurrency: 'ETH',
         fromDenomination: 'WEI',
         toDenomination: 'ETH',
@@ -448,10 +457,26 @@ export default class SwapsController {
         numberOfDecimals: 6,
       })
 
+      // The total fee is aggregator/exchange fees plus gas fees.
+      // If the swap is from ETH, subtract the sourceAmount from the total cost.
+      // Otherwise, the total fee is simply trade.value plus gas fees.
+      const ethFee = sourceToken === ETH_SWAPS_TOKEN_ADDRESS
+        ? conversionUtil(
+          totalWeiCost.minus(sourceAmount, 10), // sourceAmount is in wei
+          {
+            fromCurrency: 'ETH',
+            fromDenomination: 'WEI',
+            toDenomination: 'ETH',
+            fromNumericBase: 'BN',
+            numberOfDecimals: 6,
+          },
+        )
+        : totalEthCost
+
       const tokenConversionRate = tokenConversionRates[destinationToken]
       const ethValueOfTrade =
         destinationTokenInfo.symbol === 'ETH'
-          ? calcTokenAmount(destinationAmount, 18).minus(ethFee, 10)
+          ? calcTokenAmount(destinationAmount, 18).minus(totalEthCost, 10)
           : new BigNumber(tokenConversionRate || 1, 10)
             .times(
               calcTokenAmount(
@@ -460,7 +485,10 @@ export default class SwapsController {
               ),
               10,
             )
-            .minus(tokenConversionRate ? ethFee.toString(10) : 0, 10)
+            .minus(tokenConversionRate ? totalEthCost : 0, 10)
+
+      sumOfAllTradeValues = sumOfAllTradeValues.plus(ethValueOfTrade)
+      sumOfAllEthFees = sumOfAllEthFees.plus(ethFee)
 
       if (
         ethValueOfTradeForBestQuote === null ||
@@ -468,6 +496,7 @@ export default class SwapsController {
       ) {
         topAggId = aggregator
         ethValueOfTradeForBestQuote = ethValueOfTrade
+        ethFeeForBestQuote = ethFee
       }
     })
 
@@ -475,7 +504,33 @@ export default class SwapsController {
       quotes[topAggId]?.destinationTokenInfo?.symbol === 'ETH' ||
       Boolean(tokenConversionRates[quotes[topAggId]?.destinationToken])
 
-    return { topAggId, isBest }
+    let savings = null
+
+    if (isBest) {
+      savings = {}
+      // Performance and fee savings are calculated as:
+      //   valueForBestTrade - averageValueOfAllTrades
+      // Where the average is the statistical mean:
+      //   sumOfAllValues / numberOfValues
+      // Total savings are calculated as:
+      //   performanceSavings + feeSavings
+
+      savings.performance = ethValueOfTradeForBestQuote.minus(
+        sumOfAllTradeValues.dividedBy(numQuotes),
+        10,
+      )
+
+      savings.fees = ethFeeForBestQuote.minus(
+        sumOfAllEthFees.dividedBy(numQuotes),
+        10,
+      )
+
+      savings.total = savings.performance.plus(savings.fees, 10).toString(10)
+      savings.performance = savings.performance.toString(10)
+      savings.fees = savings.fees.toString(10)
+    }
+
+    return { topAggId, isBest, savings }
   }
 
   async _getERC20Allowance (contractAddress, walletAddress) {
