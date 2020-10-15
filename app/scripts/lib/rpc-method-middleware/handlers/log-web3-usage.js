@@ -50,7 +50,11 @@ function logWeb3UsageHandler (
       event: `Website Accessed window.web3`,
       category: 'inpage_provider',
       properties: { action, web3Property: name },
-      referrerUrl: origin,
+      additionalContext: {
+        referrer: {
+          url: origin,
+        },
+      },
     })
   }
 

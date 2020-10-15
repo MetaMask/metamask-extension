@@ -17,8 +17,8 @@ import {
 import { getEnvironmentType } from '../../../app/scripts/lib/util'
 import {
   sendMetaMetricsEvent,
-  sendCountIsTrackable,
 } from '../helpers/utils/metametrics.util'
+import { sendCountIsTrackable } from '../../../shared/modules/metametrics'
 
 export const MetaMetricsContext = createContext(() => {
   captureException(

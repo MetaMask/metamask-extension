@@ -24,6 +24,7 @@ import {
   CurrencyRateController,
   PhishingController,
 } from '@metamask/controllers'
+import { getTrackMetaMetricsEvent } from '../../shared/modules/metametrics'
 import ComposableObservableStore from './lib/ComposableObservableStore'
 import AccountTracker from './lib/account-tracker'
 import createLoggerMiddleware from './lib/createLoggerMiddleware'
@@ -55,7 +56,6 @@ import getRestrictedMethods from './controllers/permissions/restrictedMethods'
 import nodeify from './lib/nodeify'
 import accountImporter from './account-import-strategies'
 import seedPhraseVerifier from './lib/seed-phrase-verifier'
-import { getTrackSegmentEvent } from './lib/segment'
 
 import backgroundMetaMetricsEvent from './lib/background-metametrics'
 
@@ -116,16 +116,34 @@ export default class MetamaskController extends EventEmitter {
     })
 
     // This depends on preferences controller state
-    this.trackSegmentEvent = getTrackSegmentEvent(
+    this.trackSegmentEvent = getTrackMetaMetricsEvent(
       this.platform.getVersion(),
-      () => this.preferencesController.getParticipateInMetaMetrics(),
       () => {
+        const participateInMetaMetrics = this.preferencesController.getParticipateInMetaMetrics()
         const {
-          currentLocale,
           metaMetricsId,
+          currentLocale,
         } = this.preferencesController.store.getState()
-        return { currentLocale, metaMetricsId }
+        const chainId = this.networkController.getCurrentChainId()
+        const provider = this.networkController.getProviderConfig()
+        const network = provider.type === 'rpc' ? provider.rpcUrl : provider.type
+        return {
+          participateInMetaMetrics,
+          metaMetricsId,
+          environmentType: 'background-process',
+          chainId,
+          network,
+          context: {
+            page: {
+              path: '/background-process',
+              title: 'Background Process',
+              url: '/background-process',
+            },
+            locale: currentLocale.replace('_', '-'),
+          },
+        }
       },
+      false,
     )
 
     this.appStateController = new AppStateController({

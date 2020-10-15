@@ -14,6 +14,16 @@ export function getNetworkIdentifier (state) {
   return nickname || rpcUrl || type
 }
 
+export function getCurrentNetworkName (state) {
+  const { metamask: { provider } } = state
+  return provider.type === 'rpc' ? provider.rpcUrl : provider.type
+}
+
+export function getCurrentChainId (state) {
+  const { chainId } = state.metamask.provider
+  return chainId
+}
+
 export function getCurrentKeyring (state) {
   const identity = getSelectedIdentity(state)
 

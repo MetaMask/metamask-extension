@@ -1,7 +1,6 @@
 /* eslint camelcase: 0 */
 
 import ethUtil from 'ethereumjs-util'
-import Analytics from 'analytics-node'
 
 const inDevelopment = process.env.METAMASK_DEBUG || process.env.IN_TEST
 
@@ -73,8 +72,6 @@ const customDimensionsNameIdMap = {
   [METAMETRICS_CUSTOM_NUMBER_OF_TOKENS]: 10,
   [METAMETRICS_CUSTOM_VERSION]: 11,
 }
-
-export const METAMETRICS_ANONYMOUS_ID = '0x0000000000000000'
 
 function composeUrlRefParamAddition (previousPath, confirmTransactionOrigin) {
   const externalOrigin = confirmTransactionOrigin && confirmTransactionOrigin !== 'metamask'
@@ -217,43 +214,3 @@ export function verifyUserPermission (config, props) {
   return false
 }
 
-const trackableSendCounts = {
-  1: true,
-  10: true,
-  30: true,
-  50: true,
-  100: true,
-  250: true,
-  500: true,
-  1000: true,
-  2500: true,
-  5000: true,
-  10000: true,
-  25000: true,
-}
-
-export function sendCountIsTrackable (sendCount) {
-  return Boolean(trackableSendCounts[sendCount])
-}
-
-const flushAt = inDevelopment ? 1 : undefined
-
-const segmentNoop = {
-  track () {
-    // noop
-  },
-  page () {
-    // noop
-  },
-  identify () {
-    // noop
-  },
-}
-
-// We do not want to track events on development builds unless specifically
-// provided a SEGMENT_WRITE_KEY. This also holds true for test environments and
-// E2E, which is handled in the build process by never providing the SEGMENT_WRITE_KEY
-// which process.env.IN_TEST is true
-export const segment = process.env.SEGMENT_WRITE_KEY
-  ? new Analytics(process.env.SEGMENT_WRITE_KEY, { flushAt })
-  : segmentNoop
