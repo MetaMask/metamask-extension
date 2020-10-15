@@ -24,25 +24,30 @@ import {
 } from '../controllers/network/contract-addresses'
 import { bnToHex } from './util'
 
+/**
+ * This module is responsible for tracking any number of accounts and caching their current balances & transaction
+ * counts.
+ *
+ * It also tracks transaction hashes, and checks their inclusion status on each new block.
+ *
+ * @typedef {Object} AccountTracker
+ * @property {Object} store The stored object containing all accounts to track, as well as the current block's gas limit.
+ * @property {Object} store.accounts The accounts currently stored in this AccountTracker
+ * @property {string} store.currentBlockGasLimit A hex string indicating the gas limit of the current block
+ * @property {Object} _provider A provider needed to create the EthQuery instance used within this AccountTracker.
+ * @property {EthQuery} _query An EthQuery instance used to access account information from the blockchain
+ * @property {BlockTracker} _blockTracker A BlockTracker instance. Needed to ensure that accounts and their info updates
+ * when a new block is created.
+ * @property {Object} _currentBlockNumber Reference to a property on the _blockTracker: the number (i.e. an id) of the the current block
+ *
+ */
 export default class AccountTracker {
 
   /**
-   * This module is responsible for tracking any number of accounts and caching their current balances & transaction
-   * counts.
-   *
-   * It also tracks transaction hashes, and checks their inclusion status on each new block.
-   *
-   * @typedef {Object} AccountTracker
-   * @param {Object} opts - Initialize various properties of the class.
-   * @property {Object} store The stored object containing all accounts to track, as well as the current block's gas limit.
-   * @property {Object} store.accounts The accounts currently stored in this AccountTracker
-   * @property {string} store.currentBlockGasLimit A hex string indicating the gas limit of the current block
-   * @property {Object} _provider A provider needed to create the EthQuery instance used within this AccountTracker.
-   * @property {EthQuery} _query An EthQuery instance used to access account information from the blockchain
-   * @property {BlockTracker} _blockTracker A BlockTracker instance. Needed to ensure that accounts and their info updates
-   * when a new block is created.
-   * @property {Object} _currentBlockNumber Reference to a property on the _blockTracker: the number (i.e. an id) of the the current block
-   *
+   * @param {Object} opts - Options for initializing the controller
+   * @param {Object} opts.provider - An EIP-1193 provider instance that uses the current global network
+   * @param {Object} opts.blockTracker - A block tracker, which emits events for each new block
+   * @param {Function} opts.getCurrentChainId - A function that returns the `chainId` for the current global network
    */
   constructor (opts = {}) {
     const initState = {
