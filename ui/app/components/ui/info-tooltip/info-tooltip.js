@@ -12,6 +12,7 @@ const positionArrowClassMap = {
 export default function InfoTooltip ({
   contentText = '',
   position = '',
+  wide,
 }) {
   return (
     <div className="info-tooltip">
@@ -22,7 +23,7 @@ export default function InfoTooltip ({
         tooltipInnerClassName="info-tooltip__tooltip-content"
         tooltipArrowClassName={positionArrowClassMap[position]}
         html={contentText}
-        theme="tippy-tooltip-info"
+        theme={wide ? 'tippy-tooltip-wideInfo' : 'tippy-tooltip-info'}
       >
         <img src="images/mm-info-icon.svg" />
       </Tooltip>
@@ -33,4 +34,5 @@ export default function InfoTooltip ({
 InfoTooltip.propTypes = {
   contentText: PropTypes.string,
   position: PropTypes.oneOf(['top', 'left', 'bottom', 'right']),
+  wide: PropTypes.bool,
 }

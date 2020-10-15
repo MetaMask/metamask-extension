@@ -1643,6 +1643,10 @@
   "swapEstimatedNetworkFee": {
     "message": "Estimated network fee"
   },
+  "swapEstimatedNetworkFeeSummary": {
+    "message": "The “$1” is what we expect the actual fee to be. The exact amount depends on network conditions.",
+    "description": "$1 will be the translation of swapEstimatedNetworkFee, with the font bolded"
+  },
   "swapEstimatedNetworkFees": {
     "message": "Estimated network fees"
   },
@@ -1677,6 +1681,9 @@
   "swapFinalizing": {
     "message": "Finalizing..."
   },
+  "swapGasFeeSummary": {
+    "message": "The gas fee covers the cost of processing your swap and storing it on the Ethereum network. MetaMask does not profit from this fee."
+  },
   "swapGetQuotes": {
     "message": "Get quotes"
   },
@@ -1705,7 +1712,8 @@
     "message": "Transaction may fail, max slippage too low."
   },
   "swapMaxNetworkFeeInfo": {
-    "message": "The Max network fee is the most you’ll pay to complete your transaction. The max fee helps ensure your Swap has the best chance of succeeding. MetaMask does not profit from network fees."
+    "message": "“$1” is the most you’ll spend. When the network is volatile this can be a large amount.",
+    "description": "$1 will be the translation of swapMaxNetworkFees, with the font bolded"
   },
   "swapMaxNetworkFees": {
     "message": "Max network fee"
