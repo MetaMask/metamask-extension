@@ -17,6 +17,7 @@ describe('Advanced Gas Inputs', function () {
     insufficientBalance: false,
     customPriceIsSafe: true,
     isSpeedUp: false,
+    minimumGasLimit: 21000,
   }
 
   beforeEach(function () {
