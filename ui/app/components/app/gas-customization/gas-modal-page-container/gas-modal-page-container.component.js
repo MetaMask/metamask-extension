@@ -54,7 +54,7 @@ export default class GasModalPageContainer extends Component {
     isSwap: PropTypes.bool,
     value: PropTypes.string,
     conversionRate: PropTypes.string,
-    minimumGasLimit: PropTypes.number,
+    minimumGasLimit: PropTypes.number.isRequired,
   }
 
   state = {

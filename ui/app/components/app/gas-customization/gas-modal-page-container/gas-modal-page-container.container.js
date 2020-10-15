@@ -75,7 +75,7 @@ const mapStateToProps = (state, ownProps) => {
     customTotalSupplement = '',
     extraInfoRow = null,
     useFastestButtons = false,
-    minimumGasLimit,
+    minimumGasLimit = 21000,
   } = modalProps || {}
   const { transaction = {} } = ownProps
   const selectedTransaction = isSwap
@@ -266,7 +266,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     tokenBalance,
     customGasLimit,
     transaction,
-    minimumGasLimit = 21000,
+    minimumGasLimit,
   } = stateProps
   const {
     hideGasButtonGroup: dispatchHideGasButtonGroup,

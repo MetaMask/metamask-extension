@@ -18,7 +18,7 @@ export default class AdvancedGasInputs extends Component {
     customPriceIsSafe: PropTypes.bool,
     isSpeedUp: PropTypes.bool,
     customGasLimitMessage: PropTypes.string,
-    minimumGasLimit: PropTypes.number,
+    minimumGasLimit: PropTypes.number.isRequired,
   }
 
   constructor (props) {
@@ -85,7 +85,7 @@ export default class AdvancedGasInputs extends Component {
     return {}
   }
 
-  gasLimitError ({ insufficientBalance, gasLimit, minimumGasLimit = 21000 }) {
+  gasLimitError ({ insufficientBalance, gasLimit, minimumGasLimit }) {
     const { t } = this.context
 
     if (insufficientBalance) {

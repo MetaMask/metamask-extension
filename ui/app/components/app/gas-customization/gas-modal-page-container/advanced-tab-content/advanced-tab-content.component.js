@@ -27,7 +27,7 @@ export default class AdvancedTabContent extends Component {
     isSpeedUp: PropTypes.bool,
     isEthereumNetwork: PropTypes.bool,
     customGasLimitMessage: PropTypes.string,
-    minimumGasLimit: PropTypes.number,
+    minimumGasLimit: PropTypes.number.isRequired,
   }
 
   renderDataSummary (transactionFee, timeRemaining) {
