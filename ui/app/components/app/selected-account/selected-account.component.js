@@ -43,7 +43,7 @@ class SelectedAccount extends Component {
             this.state.copied ? t('copiedExclamation') : t('copyToClipboard')
           }
         >
-          <div
+          <button
             className="selected-account__clickable"
             onClick={() => {
               this.setState({ copied: true })
@@ -60,7 +60,7 @@ class SelectedAccount extends Component {
             <div className="selected-account__address">
               {shortenAddress(checksummedAddress)}
             </div>
-          </div>
+          </button>
         </Tooltip>
       </div>
     )
