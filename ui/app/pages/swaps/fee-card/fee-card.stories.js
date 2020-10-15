@@ -72,7 +72,7 @@ export const WithOnlyRequiredProps = () => {
           maxFee: text('primaryMaxFee', '2 ETH'),
         })}
         onFeeCardMaxRowClick={action('Clicked max fee row link')}
-        hideTokenApprovalRow={false}
+        hideTokenApprovalRow
       />
     </div>
   )
