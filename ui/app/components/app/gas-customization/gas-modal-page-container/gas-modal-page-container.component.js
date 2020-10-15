@@ -51,9 +51,9 @@ export default class GasModalPageContainer extends Component {
     isEthereumNetwork: PropTypes.bool,
     customGasLimitMessage: PropTypes.string,
     customTotalSupplement: PropTypes.string,
-    isSwap: PropTypes.boolean,
+    isSwap: PropTypes.bool,
     value: PropTypes.string,
-    conversionRate: PropTypes.string,
+    conversionRate: PropTypes.number,
   }
 
   state = {

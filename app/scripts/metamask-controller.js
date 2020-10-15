@@ -1414,7 +1414,7 @@ export default class MetamaskController extends EventEmitter {
     } catch (error) {
       log.info('MetaMaskController - eth_signTypedData failed.', error)
       this.typedMessageManager.errorMessage(msgId, error)
-      return undefined
+      throw error
     }
   }
 
@@ -1864,12 +1864,8 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<number>}
    */
   async getNextNonce (address) {
-    let nonceLock
-    try {
-      nonceLock = await this.txController.nonceTracker.getNonceLock(address)
-    } finally {
-      nonceLock.releaseLock()
-    }
+    const nonceLock = await this.txController.nonceTracker.getNonceLock(address)
+    nonceLock.releaseLock()
     return nonceLock.nextNonce
   }
 

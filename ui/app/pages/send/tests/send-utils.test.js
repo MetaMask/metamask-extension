@@ -45,7 +45,7 @@ const sendUtils = proxyquire('../send.utils.js', {
 
 const {
   calcGasTotal,
-  estimateGas,
+  estimateGasForSend,
   doesAmountErrorRequireUpdate,
   generateTokenTransferData,
   getAmountErrorObject,
@@ -288,7 +288,7 @@ describe('send utils', function () {
     })
   })
 
-  describe('estimateGas', function () {
+  describe('estimateGasForSend', function () {
     const baseMockParams = {
       blockGasLimit: '0x64',
       selectedAddress: 'mockAddress',
@@ -322,8 +322,8 @@ describe('send utils', function () {
       global.eth.getCode.resetHistory()
     })
 
-    it('should call ethQuery.estimateGas with the expected params', async function () {
-      const result = await sendUtils.estimateGas(baseMockParams)
+    it('should call ethQuery.estimateGasForSend with the expected params', async function () {
+      const result = await estimateGasForSend(baseMockParams)
       assert.equal(baseMockParams.estimateGasMethod.callCount, 1)
       assert.deepEqual(
         baseMockParams.estimateGasMethod.getCall(0).args[0],
@@ -332,8 +332,8 @@ describe('send utils', function () {
       assert.equal(result, '0xabc16')
     })
 
-    it('should call ethQuery.estimateGas with the expected params when initialGasLimitHex is lower than the upperGasLimit', async function () {
-      const result = await estimateGas({ ...baseMockParams, blockGasLimit: '0xbcd' })
+    it('should call ethQuery.estimateGasForSend with the expected params when initialGasLimitHex is lower than the upperGasLimit', async function () {
+      const result = await estimateGasForSend({ ...baseMockParams, blockGasLimit: '0xbcd' })
       assert.equal(baseMockParams.estimateGasMethod.callCount, 1)
       assert.deepEqual(
         baseMockParams.estimateGasMethod.getCall(0).args[0],
@@ -342,8 +342,8 @@ describe('send utils', function () {
       assert.equal(result, '0xabc16x1.5')
     })
 
-    it('should call ethQuery.estimateGas with a value of 0x0 and the expected data and to if passed a sendToken', async function () {
-      const result = await estimateGas({ data: 'mockData', sendToken: { address: 'mockAddress' }, ...baseMockParams })
+    it('should call ethQuery.estimateGasForSend with a value of 0x0 and the expected data and to if passed a sendToken', async function () {
+      const result = await estimateGasForSend({ data: 'mockData', sendToken: { address: 'mockAddress' }, ...baseMockParams })
       assert.equal(baseMockParams.estimateGasMethod.callCount, 1)
       assert.deepEqual(
         baseMockParams.estimateGasMethod.getCall(0).args[0],
@@ -357,10 +357,10 @@ describe('send utils', function () {
       assert.equal(result, '0xabc16')
     })
 
-    it('should call ethQuery.estimateGas without a recipient if the recipient is empty and data passed', async function () {
+    it('should call ethQuery.estimateGasForSend without a recipient if the recipient is empty and data passed', async function () {
       const data = 'mockData'
       const to = ''
-      const result = await estimateGas({ ...baseMockParams, data, to })
+      const result = await estimateGasForSend({ ...baseMockParams, data, to })
       assert.equal(baseMockParams.estimateGasMethod.callCount, 1)
       assert.deepEqual(
         baseMockParams.estimateGasMethod.getCall(0).args[0],
@@ -371,40 +371,40 @@ describe('send utils', function () {
 
     it(`should return ${SIMPLE_GAS_COST} if ethQuery.getCode does not return '0x'`, async function () {
       assert.equal(baseMockParams.estimateGasMethod.callCount, 0)
-      const result = await estimateGas({ ...baseMockParams, to: '0x123' })
+      const result = await estimateGasForSend({ ...baseMockParams, to: '0x123' })
       assert.equal(result, SIMPLE_GAS_COST)
     })
 
     it(`should return ${SIMPLE_GAS_COST} if not passed a sendToken or truthy to address`, async function () {
       assert.equal(baseMockParams.estimateGasMethod.callCount, 0)
-      const result = await estimateGas({ ...baseMockParams, to: null })
+      const result = await estimateGasForSend({ ...baseMockParams, to: null })
       assert.equal(result, SIMPLE_GAS_COST)
     })
 
     it(`should not return ${SIMPLE_GAS_COST} if passed a sendToken`, async function () {
       assert.equal(baseMockParams.estimateGasMethod.callCount, 0)
-      const result = await estimateGas({ ...baseMockParams, to: '0x123', sendToken: { address: '0x0' } })
+      const result = await estimateGasForSend({ ...baseMockParams, to: '0x123', sendToken: { address: '0x0' } })
       assert.notEqual(result, SIMPLE_GAS_COST)
     })
 
     it(`should return ${BASE_TOKEN_GAS_COST} if passed a sendToken but no to address`, async function () {
-      const result = await estimateGas({ ...baseMockParams, to: null, sendToken: { address: '0x0' } })
+      const result = await estimateGasForSend({ ...baseMockParams, to: null, sendToken: { address: '0x0' } })
       assert.equal(result, BASE_TOKEN_GAS_COST)
     })
 
     it(`should return the adjusted blockGasLimit if it fails with a 'Transaction execution error.'`, async function () {
-      const result = await estimateGas({ ...baseMockParams, to: 'isContract willFailBecauseOf:Transaction execution error.' })
+      const result = await estimateGasForSend({ ...baseMockParams, to: 'isContract willFailBecauseOf:Transaction execution error.' })
       assert.equal(result, '0x64x0.95')
     })
 
     it(`should return the adjusted blockGasLimit if it fails with a 'gas required exceeds allowance or always failing transaction.'`, async function () {
-      const result = await estimateGas({ ...baseMockParams, to: 'isContract willFailBecauseOf:gas required exceeds allowance or always failing transaction.' })
+      const result = await estimateGasForSend({ ...baseMockParams, to: 'isContract willFailBecauseOf:gas required exceeds allowance or always failing transaction.' })
       assert.equal(result, '0x64x0.95')
     })
 
     it(`should reject other errors`, async function () {
       try {
-        await estimateGas({ ...baseMockParams, to: 'isContract willFailBecauseOf:some other error' })
+        await estimateGasForSend({ ...baseMockParams, to: 'isContract willFailBecauseOf:some other error' })
       } catch (err) {
         assert.equal(err.message, 'some other error')
       }

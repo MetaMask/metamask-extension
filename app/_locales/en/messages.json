@@ -842,7 +842,7 @@
     "message": "Invalid Block Explorer URL"
   },
   "invalidCustomNetworkAlertContent1": {
-    "message": "The custom network '$1' is missing its chain ID.",
+    "message": "The chain ID for custom network '$1' has to be re-entered.",
     "description": "$1 is the name/identifier of the network."
   },
   "invalidCustomNetworkAlertContent2": {
@@ -966,6 +966,37 @@
   },
   "metamaskVersion": {
     "message": "MetaMask Version"
+  },
+  "metametricsCommitmentsAllowOptOut": {
+    "message": "Always allow you to opt-out via Settings"
+  },
+  "metametricsCommitmentsBoldNever": {
+    "message": "Never",
+    "description": "This string is localized separately from some of the commitments so that we can bold it"
+  },
+  "metametricsCommitmentsIntro": {
+    "message": "MetaMask will.."
+  },
+  "metametricsCommitmentsNeverCollectIP": {
+    "message": "$1 collect your full IP address",
+    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
+  },
+  "metametricsCommitmentsNeverCollectKeysEtc": {
+    "message": "$1 collect keys, addresses, transactions, balances, hashes, or any personal information",
+    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
+  },
+  "metametricsCommitmentsNeverSellDataForProfit": {
+    "message": "$1 sell data for profit. Ever!",
+    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
+  },
+  "metametricsCommitmentsSendAnonymizedEvents": {
+    "message": "Send anonymized click & pageview events"
+  },
+  "metametricsHelpImproveMetaMask": {
+    "message": "Help Us Improve MetaMask"
+  },
+  "metametricsOptInDescription": {
+    "message": "MetaMask would like to gather usage data to better understand how our users interact with the extension. This data will be used to continually improve the usability and user experience of our product and the Ethereum ecosystem."
   },
   "mobileSyncText": {
     "message": "Please enter your password to confirm it's you!"
@@ -1752,6 +1783,9 @@
   },
   "swapSelectAQuote": {
     "message": "Select a quote"
+  },
+  "swapSelectAToken": {
+    "message": "Select a token"
   },
   "swapSelectQuotePopoverDescription": {
     "message": "Below are all the quotes gathered from multiple liquidity sources."

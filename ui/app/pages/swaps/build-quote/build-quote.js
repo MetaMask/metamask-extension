@@ -24,7 +24,7 @@ import {
   getTopAssets,
   getFetchParams,
 } from '../../../ducks/swaps/swaps'
-import { getValueFromWeiHex } from '../../../helpers/utils/conversions.util'
+import { getValueFromWeiHex, hexToDecimal } from '../../../helpers/utils/conversions.util'
 import { calcTokenAmount } from '../../../helpers/utils/token-util'
 import { usePrevious } from '../../../hooks/usePrevious'
 import { useTokenTracker } from '../../../hooks/useTokenTracker'
@@ -132,9 +132,8 @@ export default function BuildQuote ({
         .then((fetchedBalance) => {
           if (fetchedBalance?.balance) {
             const balanceAsDecString = fetchedBalance.balance.toString(10)
-            const balanceAsHexString = fetchedBalance.balance.toString(16)
             const userTokenBalance = calcTokenAmount(balanceAsDecString, token.decimals)
-            dispatch(setSwapsFromToken({ ...token, string: userTokenBalance.toString(10), balance: balanceAsHexString }))
+            dispatch(setSwapsFromToken({ ...token, string: userTokenBalance.toString(10), balance: balanceAsDecString }))
           }
         })
     }
@@ -167,8 +166,12 @@ export default function BuildQuote ({
 
   // If the eth balance changes while on build quote, we update the selected from token
   useEffect(() => {
-    if (fromToken?.address === ETH_SWAPS_TOKEN_OBJECT.address && (fromToken?.balance !== ethBalance)) {
-      dispatch(setSwapsFromToken({ ...fromToken, balance: ethBalance, string: getValueFromWeiHex({ value: ethBalance, numberOfDecimals: 4, toDenomination: 'ETH' }) }))
+    if (fromToken?.address === ETH_SWAPS_TOKEN_OBJECT.address && (fromToken?.balance !== hexToDecimal(ethBalance))) {
+      dispatch(setSwapsFromToken({
+        ...fromToken,
+        balance: hexToDecimal(ethBalance),
+        string: getValueFromWeiHex({ value: ethBalance, numberOfDecimals: 4, toDenomination: 'ETH' }),
+      }))
     }
   }, [dispatch, fromToken, ethBalance])
 
@@ -206,9 +209,10 @@ export default function BuildQuote ({
           selectedItem={selectedFromToken}
           maxListItems={30}
           loading={loading && (!tokensToSearch?.length || !topAssets || !Object.keys(topAssets).length)}
-          selectPlaceHolderText="Select"
+          selectPlaceHolderText={t('swapSelect')}
           hideItemIf={(item) => item.address === selectedToToken?.address}
           listContainerClassName="build-quote__open-dropdown"
+          autoFocus
         />
         <div
           className={classnames('build-quote__balance-message', {
@@ -242,7 +246,7 @@ export default function BuildQuote ({
           itemsToSearch={tokensToSearch}
           searchPlaceholderText={t('swapSearchForAToken')}
           fuseSearchKeys={fuseSearchKeys}
-          selectPlaceHolderText="Select a token"
+          selectPlaceHolderText={t('swapSelectAToken')}
           maxListItems={30}
           onSelect={onToSelect}
           loading={loading && (!tokensToSearch?.length || !topAssets || !Object.keys(topAssets).length)}

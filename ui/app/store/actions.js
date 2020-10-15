@@ -5,7 +5,7 @@ import log from 'loglevel'
 import { capitalize } from 'lodash'
 import getBuyEthUrl from '../../../app/scripts/lib/buy-eth-url'
 import { checksumAddress } from '../helpers/utils/util'
-import { calcTokenBalance, estimateGas } from '../pages/send/send.utils'
+import { calcTokenBalance, estimateGasForSend } from '../pages/send/send.utils'
 import { fetchLocale, loadRelativeTimeFormatLocaleData } from '../helpers/utils/i18n-helper'
 import { getMethodDataAsync } from '../helpers/utils/transactions.util'
 import { fetchSymbolAndDecimals } from '../helpers/utils/token-util'
@@ -626,7 +626,7 @@ export function updateGasData ({
 }) {
   return (dispatch) => {
     dispatch(gasLoadingStarted())
-    return estimateGas({
+    return estimateGasForSend({
       estimateGasMethod: promisifiedBackground.estimateGas,
       blockGasLimit,
       selectedAddress,
@@ -793,37 +793,6 @@ const updateMetamaskStateFromBackground = () => {
 
       resolve(newState)
     })
-  })
-}
-
-export function estimateGasMethod ({
-  gasPrice,
-  blockGasLimit,
-  selectedAddress,
-  sendToken,
-  to,
-  value,
-  data,
-}) {
-  return estimateGas({
-    estimateGasMethod: promisifiedBackground.estimateGas,
-    blockGasLimit,
-    selectedAddress,
-    sendToken,
-    to,
-    value,
-    gasPrice,
-    data,
-  })
-}
-
-export async function estimateGasFromTxParams (txParams) {
-  const backgroundState = await updateMetamaskStateFromBackground()
-  const blockGasLimit = backgroundState.currentBlockGasLimit
-  return estimateGasMethod({
-    ...txParams,
-    selectedAddress: txParams.from,
-    blockGasLimit,
   })
 }
 

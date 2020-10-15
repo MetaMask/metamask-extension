@@ -38,7 +38,7 @@ import {
   SWAP_FAILED_ERROR,
 } from '../../helpers/constants/swaps'
 import { SWAP, SWAP_APPROVAL } from '../../helpers/constants/transactions'
-import { fetchBasicGasAndTimeEstimates, fetchGasEstimates, resetCustomData } from '../gas/gas.duck'
+import { fetchBasicGasAndTimeEstimates, fetchGasEstimates, resetCustomGasState } from '../gas/gas.duck'
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util'
 
 const initialState = {
@@ -235,7 +235,7 @@ export const prepareForRetryGetQuotes = () => {
 
 export const prepareToLeaveSwaps = () => {
   return async (dispatch) => {
-    dispatch(resetCustomData())
+    dispatch(resetCustomGasState())
     dispatch(clearSwapsState())
     await dispatch(resetBackgroundSwapsState())
 
@@ -474,6 +474,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       other_quote_selected: usedQuote.aggregator !== getTopQuote(state)?.aggregator,
       other_quote_selected_source: usedQuote.aggregator === getTopQuote(state)?.aggregator ? '' : usedQuote.aggregator,
       gas_fees: formatCurrency(gasEstimateTotalInEth, 'usd')?.slice(1),
+      estimated_gas: estimatedGasLimit.toString(16),
     }
 
     const metaMetricsConfig = {

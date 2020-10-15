@@ -88,7 +88,7 @@ describe('Account Menu', function () {
     })
 
     it('simulate click', function () {
-      const click = wrapper.find('.account-menu__account.menu__item--clickable')
+      const click = wrapper.find('.account-menu__account.account-menu__item--clickable')
       click.first().simulate('click')
 
       assert(props.showAccountDetail.calledOnce)

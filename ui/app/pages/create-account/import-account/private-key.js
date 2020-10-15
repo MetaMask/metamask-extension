@@ -91,6 +91,7 @@ class PrivateKeyImportView extends Component {
             onKeyPress={(e) => this.createKeyringOnEnter(e)}
             onChange={() => this.checkInputEmpty()}
             ref={this.inputRef}
+            autoFocus
           />
         </div>
         <div className="new-account-import-form__buttons">
