@@ -846,7 +846,7 @@ describe('MetaMask', function () {
     })
 
     it('displays the contract creation data', async function () {
-      await driver.clickElement(By.xpath(`//li[contains(text(), 'Data')]`))
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Data')]`))
       await driver.delay(regularDelayMs)
 
       await driver.findElement(By.xpath(`//div[contains(text(), '127.0.0.1')]`))
@@ -860,7 +860,7 @@ describe('MetaMask', function () {
       assert.ok(confirmDataText.includes('Bytes:'))
       assert.ok(confirmDataText.includes('675'))
 
-      await driver.clickElement(By.xpath(`//li[contains(text(), 'Details')]`))
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Details')]`))
       await driver.delay(regularDelayMs)
     })
 
