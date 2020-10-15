@@ -12,6 +12,7 @@
 - [#9576](https://github.com/MetaMask/metamask-extension/pull/9576): Autofocus the appropriate text fields in the Create/Import/Hardware screen (#9576)
 - [#9581](https://github.com/MetaMask/metamask-extension/pull/9581): AutoFocus the from input on swaps screen (#9581)
 - [#9602](https://github.com/MetaMask/metamask-extension/pull/9602): Prevent swap button from being focused when disabled (#9602)
+- [#9609](https://github.com/MetaMask/metamask-extension/pull/9609): Ensure swaps customize gas modal values are set correctly (#9609)
 
 ## 8.1.0 Tue Oct 13 2020
 - [#9565](https://github.com/MetaMask/metamask-extension/pull/9565): Ensure address book entries are shared between networks with the same chain ID
