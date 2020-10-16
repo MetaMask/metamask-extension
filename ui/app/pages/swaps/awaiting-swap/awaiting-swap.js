@@ -31,7 +31,7 @@ import {
 import { SUBMITTED_STATUS } from '../../../helpers/constants/transactions'
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes'
 
-import { getRenderableGasFeesForQuote } from '../swaps.util'
+import { getRenderableNetworkFeesForQuote } from '../swaps.util'
 import SwapsFooter from '../swaps-footer'
 import SwapFailureIcon from './swap-failure-icon'
 import SwapSuccessIcon from './swap-success-icon'
@@ -70,8 +70,17 @@ export default function AwaitingSwap ({
 
   let feeinFiat
   if (usedQuote && tradeTxParams) {
-    const renderableGasFees = getRenderableGasFeesForQuote(usedQuote.gasEstimateWithRefund || usedQuote.averageGas, approveTxParams?.gas || '0x0', tradeTxParams.gasPrice, currentCurrency, conversionRate)
-    feeinFiat = renderableGasFees.feeinFiat?.slice(1)
+    const renderableNetworkFees = getRenderableNetworkFeesForQuote(
+      usedQuote.gasEstimateWithRefund || usedQuote.averageGas,
+      approveTxParams?.gas || '0x0',
+      tradeTxParams.gasPrice,
+      currentCurrency,
+      conversionRate,
+      tradeTxParams.value,
+      sourceTokenInfo?.symbol,
+      usedQuote.sourceAmount,
+    )
+    feeinFiat = renderableNetworkFees.feeinFiat?.slice(1)
   }
 
   const quotesExpiredEvent = useNewMetricEvent({

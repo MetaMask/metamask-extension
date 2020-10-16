@@ -6,7 +6,8 @@ import { ETH_SWAPS_TOKEN_OBJECT } from '../../helpers/constants/swaps'
 import { calcTokenValue, calcTokenAmount } from '../../helpers/utils/token-util'
 import { constructTxParams, toPrecisionWithoutTrailingZeros } from '../../helpers/utils/util'
 import { decimalToHex, getValueFromWeiHex } from '../../helpers/utils/conversions.util'
-import { subtractCurrencies } from '../../helpers/utils/conversion-util'
+import { ETH_SWAPS_TOKEN_ADDRESS } from '../../helpers/constants/swaps'
+import { subtractCurrencies, conversionUtil } from '../../helpers/utils/conversion-util'
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util'
 import fetchWithCache from '../../helpers/utils/fetch-with-cache'
 
@@ -265,17 +266,62 @@ export async function fetchTokenBalance (address, userAddress) {
   return usersToken
 }
 
-export function getRenderableGasFeesForQuote (tradeGas, approveGas, gasPrice, currentCurrency, conversionRate) {
+export function getTotalEthCost (gasTotalInWeiHex, tradeValue, sourceAmount, sourceTokenAddress) {
+  const totalWeiCost = new BigNumber(gasTotalInWeiHex, 16)
+    .plus(tradeValue, 16)
+
+  const totalEthCost = conversionUtil(totalWeiCost, {
+    fromCurrency: 'ETH',
+    fromDenomination: 'WEI',
+    toDenomination: 'ETH',
+    fromNumericBase: 'BN',
+    numberOfDecimals: 6,
+  })
+
+  // The total fee is aggregator/exchange fees plus gas fees.
+  // If the swap is from ETH, subtract the sourceAmount from the total cost.
+  // Otherwise, the total fee is simply trade.value plus gas fees.
+  const ethFee = sourceTokenAddress === ETH_SWAPS_TOKEN_ADDRESS
+    ? conversionUtil(
+      totalWeiCost.minus(sourceAmount, 10), // sourceAmount is in wei
+      {
+        fromCurrency: 'ETH',
+        fromDenomination: 'WEI',
+        toDenomination: 'ETH',
+        fromNumericBase: 'BN',
+        numberOfDecimals: 6,
+      },
+    )
+    : totalEthCost
+
+  return ethFee
+}
+
+export function getRenderableNetworkFeesForQuote (
+  tradeGas,
+  approveGas,
+  gasPrice,
+  currentCurrency,
+  conversionRate,
+  tradeValue,
+  sourceSymbol,
+  sourceAmount,
+) {
   const totalGasLimitForCalculation = (new BigNumber(tradeGas || '0x0', 16)).plus(approveGas || '0x0', 16).toString(16)
   const gasTotalInWeiHex = calcGasTotal(totalGasLimitForCalculation, gasPrice)
 
+  const totalWeiCost = new BigNumber(gasTotalInWeiHex, 16)
+    .plus(tradeValue, 16)
+    .minus(sourceSymbol === 'ETH' ? sourceAmount : 0, 10)
+    .toString(16)
+
   const ethFee = getValueFromWeiHex({
-    value: gasTotalInWeiHex,
+    value: totalWeiCost,
     toDenomination: 'ETH',
     numberOfDecimals: 5,
   })
   const rawNetworkFees = getValueFromWeiHex({
-    value: gasTotalInWeiHex,
+    value: totalWeiCost,
     toCurrency: currentCurrency,
     conversionRate,
     numberOfDecimals: 2,
@@ -302,6 +348,7 @@ export function quotesToRenderableData (quotes, gasPrice, conversionRate, curren
       gasEstimateWithRefund,
       averageGas,
       fee,
+      trade,
     } = quote
     const sourceValue = calcTokenAmount(sourceAmount, sourceTokenInfo.decimals || 18).toString(10)
     const destinationValue = calcTokenAmount(destinationAmount, destinationTokenInfo.decimals || 18).toPrecision(8)
@@ -311,7 +358,7 @@ export function quotesToRenderableData (quotes, gasPrice, conversionRate, curren
       rawNetworkFees,
       rawEthFee,
       feeInEth,
-    } = getRenderableGasFeesForQuote(
+    } = getRenderableNetworkFeesForQuote(
       (
         gasEstimateWithRefund ||
         decimalToHex(averageGas || 800000)
@@ -320,6 +367,9 @@ export function quotesToRenderableData (quotes, gasPrice, conversionRate, curren
       gasPrice,
       currentCurrency,
       conversionRate,
+      trade.value,
+      sourceTokenInfo.symbol,
+      sourceAmount,
     )
 
     const slippageMultiplier = (new BigNumber(100 - slippage)).div(100)
