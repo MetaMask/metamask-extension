@@ -112,7 +112,7 @@ export function isCustomPriceSafe (state, averageIsSafe) {
   }
 
   if (safeMinimumPrice === null) {
-    return null
+    return false
   }
 
   const customPriceSafe = conversionGreaterThan(
