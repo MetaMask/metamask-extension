@@ -36,6 +36,10 @@ export default class FirstTimeFlow extends PureComponent {
     verifySeedPhrase: PropTypes.func,
   }
 
+  static contextTypes = {
+    trackEvent: PropTypes.func.isRequired,
+  }
+
   state = {
     seedPhrase: '',
     isImportedKeyring: false,
@@ -59,6 +63,12 @@ export default class FirstTimeFlow extends PureComponent {
     if (isInitialized && !isUnlocked) {
       history.push(INITIALIZE_UNLOCK_ROUTE)
     }
+
+    this.context.trackEvent({
+      event: 'Onboarding Started',
+      category: 'Onboarding',
+      isOptIn: true,
+    })
   }
 
   handleCreateNewAccount = async (password) => {

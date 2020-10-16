@@ -10,6 +10,7 @@ import TextField from '../../../../components/ui/text-field'
 export default class NewAccount extends PureComponent {
   static contextTypes = {
     metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
     t: PropTypes.func,
   }
 
@@ -99,6 +100,17 @@ export default class NewAccount extends PureComponent {
 
     try {
       await onSubmit(password)
+      this.context.trackEvent({
+        event: 'Onboarding Completed',
+        category: 'Onboarding',
+        isOptIn: true,
+        properties: {
+          new_wallet_created: true,
+        },
+        breadcrumb: {
+          id: 'onboarding-completed',
+        },
+      })
 
       this.context.metricsEvent({
         eventOpts: {

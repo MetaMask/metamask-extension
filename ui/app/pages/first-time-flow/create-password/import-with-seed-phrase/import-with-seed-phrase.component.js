@@ -14,6 +14,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   }
 
   static propTypes = {
@@ -126,11 +127,16 @@ export default class ImportWithSeedPhrase extends PureComponent {
 
     try {
       await onSubmit(password, this.parseSeedPhrase(seedPhrase))
-      this.context.metricsEvent({
-        eventOpts: {
-          category: 'Onboarding',
-          action: 'Import Seed Phrase',
-          name: 'Import Complete',
+      this.context.trackEvent({
+        event: 'Onboarding Completed',
+        category: 'Onboarding',
+        isOptIn: true,
+        breadcrumb: {
+          id: 'onboarding-completed',
+        },
+        properties: {
+          existing_wallet_imported: true,
+          seedphrase_imported: true,
         },
       })
 

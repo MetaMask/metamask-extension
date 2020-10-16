@@ -1,5 +1,6 @@
 import Analytics from 'analytics-node'
 import { merge, omit } from 'lodash'
+import { loadLocalStorageData, saveLocalStorageData } from '../../ui/lib/local-storage-helpers'
 
 const inDevelopment = process.env.METAMASK_DEBUG || process.env.IN_TEST
 
@@ -84,6 +85,12 @@ export const segment = process.env.SEGMENT_WRITE_KEY
  */
 
 /**
+ * @typedef {Object} MetaMetricsBreadCrumbSettings
+ * @property {string} id - a unique identifier for the breadcrumb trail
+ * @property {boolean} isComplete - if true, pulls breadcrumbs and combines into final payload
+ */
+
+/**
  * @typedef {Object} MetaMetricsEventPayload
  * @property {string}  event - event name to track
  * @property {string}  category - category to associate event to
@@ -93,8 +100,21 @@ export const segment = process.env.SEGMENT_WRITE_KEY
  * @property {string}  [currency] - ISO 4127 format currency for events with revenue, defaults to US dollars
  * @property {number}  [value] - Abstract "value" that this event has for MetaMask.
  * @property {boolean} [excludeMetaMetricsId] - whether to exclude the user's metametrics id for anonymity
+ * @property {MetaMetricsBreadCrumbSettings}  [breadcrumb] - used to track multiple payloads to the same event
  * @property {MetaMetricsEventContext} [additionalContext] - additional context to attach to event
  */
+
+/**
+ * Simple alias type for shortening future type signatures and preventing requirement to update
+ * in multiple places in the future.
+ * @typedef {(payload: MetaMetricsEventPayload) => Promise<never>} TrackMetaMetricsEventFn
+ */
+
+const breadcrumbs = new Map(loadLocalStorageData('METAMETRICS_BREADCRUMBS') ?? [])
+
+window.addEventListener('beforeunload', () => {
+  saveLocalStorageData([...breadcrumbs.entries()], 'METAMETRICS_BREADCRUMBS')
+})
 
 /**
  * Returns a function for tracking Segment events.
@@ -102,7 +122,7 @@ export const segment = process.env.SEGMENT_WRITE_KEY
  * @param {string} metamaskVersion - The current version of the MetaMask extension.
  * @param {() => MetaMetricsRequiredState} getDynamicState - A function returning required fields
  * @param {boolean} defaultMetaMetricsExclusion - Used to set the default state of exludeMetaMetricsId
- * @returns {(payload: MetaMetricsEventPayload) => Promise<never>} - function to track an event
+ * @returns {TrackMetaMetricsEventFn} - function to track an event
  */
 export function getTrackMetaMetricsEvent (
   metamaskVersion,
@@ -122,6 +142,7 @@ export function getTrackMetaMetricsEvent (
     currency,
     value,
     excludeMetaMetricsId: excludeId,
+    breadcrumb,
     additionalContext = {},
   }) {
     if (!event || !category) {
@@ -177,10 +198,22 @@ export function getTrackMetaMetricsEvent (
     if (excludeMetaMetricsId) {
       trackOptions.anonymousId = METAMETRICS_ANONYMOUS_ID
     } else {
-      trackOptions.userId = metaMetricsId
+      trackOptions.userId = isOptIn ? METAMETRICS_ANONYMOUS_ID : metaMetricsId
     }
 
-    segment.track(trackOptions)
+    if (breadcrumb?.id) {
+      const existingProperties = breadcrumbs.get(breadcrumb.id) ?? {}
+      const mergedProperties = merge(existingProperties, trackOptions.properties)
+      if (breadcrumb.isComplete) {
+        trackOptions.properties = mergedProperties
+        breadcrumbs.delete(breadcrumb.id)
+        segment.track(trackOptions)
+      } else {
+        breadcrumbs.set(breadcrumb.id, mergedProperties)
+      }
+    } else {
+      segment.track(trackOptions)
+    }
 
     /**
      * Some events will want to wait for the track before proceeding. Segment does
@@ -189,7 +222,7 @@ export function getTrackMetaMetricsEvent (
      * to ensure the event is at least queued in segment. This is how the .trackLink and
      * .trackForm functions on segment's analytics.js library behave.
      */
-    return Promise((resolve) => {
+    return new Promise((resolve) => {
       setTimeout(resolve, 100)
     })
   }

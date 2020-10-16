@@ -10,6 +10,7 @@ export default class EndOfFlowScreen extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   }
 
   static propTypes = {
@@ -29,6 +30,15 @@ export default class EndOfFlowScreen extends PureComponent {
         category: 'Onboarding',
         action: 'Onboarding Complete',
         name: completionMetaMetricsName,
+      },
+    })
+    this.context.trackEvent({
+      event: 'Onboarding Completed',
+      category: 'Onboarding',
+      isOptIn: true,
+      breadcrumb: {
+        id: 'onboarding-completed',
+        isComplete: true,
       },
     })
 
