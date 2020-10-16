@@ -231,7 +231,7 @@ export function getRenderableBasicEstimateData (state, gasLimit, useFastestButto
     },
   } = state
 
-  const slowEstimatData = {
+  const slowEstimateData = {
     gasEstimateType: GAS_ESTIMATE_TYPES.SLOW,
     feeInPrimaryCurrency: getRenderableEthFee(safeLow, gasLimit),
     feeInSecondaryCurrency: showFiat
@@ -249,7 +249,7 @@ export function getRenderableBasicEstimateData (state, gasLimit, useFastestButto
     timeEstimate: avgWait && getRenderableTimeEstimate(avgWait),
     priceInHexWei: getGasPriceInHexWei(average),
   }
-  const fastEstimatData = {
+  const fastEstimateData = {
     gasEstimateType: GAS_ESTIMATE_TYPES.FAST,
     feeInPrimaryCurrency: getRenderableEthFee(fast, gasLimit),
     feeInSecondaryCurrency: showFiat
@@ -269,8 +269,8 @@ export function getRenderableBasicEstimateData (state, gasLimit, useFastestButto
   }
 
   return useFastestButtons
-    ? [fastEstimatData, fastestEstimateData]
-    : [slowEstimatData, averageEstimateData, fastEstimatData]
+    ? [fastEstimateData, fastestEstimateData]
+    : [slowEstimateData, averageEstimateData, fastEstimateData]
 }
 
 export function getRenderableEstimateDataForSmallButtonsFromGWEI (state) {
