@@ -254,7 +254,7 @@ export function getRenderableBasicEstimateData (state, gasLimit, useFastestButto
   }
 
   return useFastestButtons
-    ? [averageEstimateData, fastEstimatData, fastestEstimateData]
+    ? [fastEstimatData, fastestEstimateData]
     : [slowEstimatData, averageEstimateData, fastEstimatData]
 }
 
