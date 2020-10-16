@@ -1,0 +1,61 @@
+diff --git a/node_modules/gulp-livereload/node_modules/chalk/index.js b/node_modules/gulp-livereload/node_modules/chalk/index.js
+index 1cc5fa8..e3838eb 100644
+--- a/node_modules/gulp-livereload/node_modules/chalk/index.js
++++ b/node_modules/gulp-livereload/node_modules/chalk/index.js
+@@ -48,12 +48,12 @@ function Chalk(options) {
+ }
+ 
+ // Use bright blue on Windows as the normal blue color is illegible
+-if (isSimpleWindowsTerm) {
+-	ansiStyles.blue.open = '\u001B[94m';
+-}
++// if (isSimpleWindowsTerm) {
++// 	ansiStyles.blue.open = '\u001B[94m';
++// }
+ 
+ for (const key of Object.keys(ansiStyles)) {
+-	ansiStyles[key].closeRe = new RegExp(escapeStringRegexp(ansiStyles[key].close), 'g');
++	// ansiStyles[key].closeRe = new RegExp(escapeStringRegexp(ansiStyles[key].close), 'g');
+ 
+ 	styles[key] = {
+ 		get() {
+@@ -69,7 +69,7 @@ styles.visible = {
+ 	}
+ };
+ 
+-ansiStyles.color.closeRe = new RegExp(escapeStringRegexp(ansiStyles.color.close), 'g');
++// ansiStyles.color.closeRe = new RegExp(escapeStringRegexp(ansiStyles.color.close), 'g');
+ for (const model of Object.keys(ansiStyles.color.ansi)) {
+ 	if (skipModels.has(model)) {
+ 		continue;
+@@ -91,7 +91,7 @@ for (const model of Object.keys(ansiStyles.color.ansi)) {
+ 	};
+ }
+ 
+-ansiStyles.bgColor.closeRe = new RegExp(escapeStringRegexp(ansiStyles.bgColor.close), 'g');
++// ansiStyles.bgColor.closeRe = new RegExp(escapeStringRegexp(ansiStyles.bgColor.close), 'g');
+ for (const model of Object.keys(ansiStyles.bgColor.ansi)) {
+ 	if (skipModels.has(model)) {
+ 		continue;
+@@ -181,9 +181,9 @@ function applyStyle() {
+ 	// see https://github.com/chalk/chalk/issues/58
+ 	// If we're on Windows and we're dealing with a gray color, temporarily make 'dim' a noop.
+ 	const originalDim = ansiStyles.dim.open;
+-	if (isSimpleWindowsTerm && this.hasGrey) {
+-		ansiStyles.dim.open = '';
+-	}
++	// if (isSimpleWindowsTerm && this.hasGrey) {
++	// 	ansiStyles.dim.open = '';
++	// }
+ 
+ 	for (const code of this._styles.slice().reverse()) {
+ 		// Replace any instances already present with a re-opening code
+@@ -198,7 +198,7 @@ function applyStyle() {
+ 	}
+ 
+ 	// Reset the original `dim` if we changed it to work around the Windows dimmed gray issue
+-	ansiStyles.dim.open = originalDim;
++	// ansiStyles.dim.open = originalDim;
+ 
+ 	return str;
+ }
