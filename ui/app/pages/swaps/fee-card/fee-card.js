@@ -22,30 +22,30 @@ export default function FeeCard ({
             <div className="fee-card__row-header-text--bold">
               {t('swapEstimatedNetworkFee')}
             </div>
-            <div className="fee-card__row-label fee-card__info-tooltip-container">
-              <InfoTooltip
-                position="top"
-                contentText={(
-                  <div className="fee-card__info-tooltip-content-container">
-                    <div>{ t('swapGasFeeSummary') }</div>
-                    <div>{ t('swapEstimatedNetworkFeeSummary', [
-                      <span className="fee-card__bold" key="fee-card-bold-1">
-                        { t('swapEstimatedNetworkFee') }
-                      </span>,
-                    ]) }
-                    </div>
-                    <div>{ t('swapMaxNetworkFeeInfo', [
-                      <span className="fee-card__bold" key="fee-card-bold-2">
-                        { t('swapMaxNetworkFees') }
-                      </span>,
-                    ]) }
-                    </div>
-                  </div>
-                )
-                }
-                wide
-              />
-            </div>
+            <InfoTooltip
+              position="top"
+              contentText={(
+                <>
+                  <p className="fee-card__info-tooltip-paragraph">{ t('swapGasFeeSummary') }</p>
+                  <p className="fee-card__info-tooltip-paragraph">{ t('swapEstimatedNetworkFeeSummary', [
+                    <span className="fee-card__bold" key="fee-card-bold-1">
+                      { t('swapEstimatedNetworkFee') }
+                    </span>,
+                  ]) }
+                  </p>
+                  <p className="fee-card__info-tooltip-paragraph">{ t('swapMaxNetworkFeeInfo', [
+                    <span className="fee-card__bold" key="fee-card-bold-2">
+                      { t('swapMaxNetworkFees') }
+                    </span>,
+                  ]) }
+                  </p>
+                </>
+              )
+              }
+              containerClassName="fee-card__info-tooltip-content-container"
+              wrapperClassName="fee-card__row-label fee-card__info-tooltip-container"
+              wide
+            />
           </div>
           <div>
             <div className="fee-card__row-header-secondary--bold">

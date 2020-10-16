@@ -60,23 +60,15 @@
     height: 10px;
     width: 10px;
     justify-content: center;
-
-    > div {
-      height: 10px;
-      justify-content: center;
-      width: 10px;
-      margin-top: 2px;
-    }
+    margin-top: 2px;
   }
 
-  &__info-tooltip-content-container {
-    > div {
-      margin-bottom: 8px;
-    }
+  &__info-tooltip-paragraph {
+    margin-bottom: 8px;
+  }
 
-    > div:last-of-type {
-      margin-bottom: 0;
-    }
+  &__info-tooltip-paragraph:last-of-type {
+    margin-bottom: 0;
   }
 
   &__row-fee {
