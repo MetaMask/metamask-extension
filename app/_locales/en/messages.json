@@ -706,6 +706,9 @@
     "message": "Gas limit is the maximum amount of units of gas you are willing to spend."
   },
   "gasLimitTooLow": {
+    "message": "Gas limit must be at least 21000"
+  },
+  "gasLimitTooLowWithDynamicFee": {
     "message": "Gas limit must be at least $1",
     "description": "$1 is the custom gas limit, in decimal."
   },

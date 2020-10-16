@@ -100,7 +100,7 @@ export default class AdvancedGasInputs extends Component {
       }
     } else if (gasLimit < minimumGasLimit) {
       return {
-        errorText: t('gasLimitTooLow', [minimumGasLimit]),
+        errorText: t('gasLimitTooLowWithDynamicFee', [minimumGasLimit]),
         errorType: 'error',
       }
     }
