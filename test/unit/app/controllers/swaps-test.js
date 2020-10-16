@@ -316,7 +316,7 @@ describe('SwapsController', function () {
           gasEstimate: 2000000,
           gasEstimateWithRefund: '8cd8e',
           savings: {
-            fees: '0',
+            fee: '0',
             performance: '0',
             total: '0',
           },
