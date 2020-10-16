@@ -62,6 +62,7 @@ import {
   calcGasTotal,
   isBalanceSufficient,
 } from '../../../../pages/send/send.utils'
+import { MIN_GAS_LIMIT_DEC } from '../../../../pages/send/send.constants'
 import { calcMaxAmount } from '../../../../pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.utils'
 import GasModalPageContainer from './gas-modal-page-container.component'
 
@@ -75,7 +76,7 @@ const mapStateToProps = (state, ownProps) => {
     customTotalSupplement = '',
     extraInfoRow = null,
     useFastestButtons = false,
-    minimumGasLimit = 21000,
+    minimumGasLimit = MIN_GAS_LIMIT_DEC,
   } = modalProps || {}
   const { transaction = {} } = ownProps
   const selectedTransaction = isSwap
