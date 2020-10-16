@@ -1,0 +1,19 @@
+{
+  "resources": {
+    "memoizee": {
+      "globals": {
+        "hasOwnProperty": true
+      }
+    },
+    "vinyl": {
+      "builtin": {
+        "util": true
+      }
+    },
+    "graceful-fs": {
+      "builtin": {
+        "stream.Stream": true
+      }
+    }
+  }
+}
