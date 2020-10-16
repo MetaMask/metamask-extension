@@ -18,34 +18,34 @@
     color: $Grey-500;
   }
 
-  &__source-row {
-    > span {
-      // Each of these spans can be half their container width minus the space
-      // needed for the token icon and the span margins
-      max-width: calc(50% - 13px);
-    }
+  &__source-row-value,
+  &__source-row-symbol {
+    // Each of these spans can be half their container width minus the space
+    // needed for the token icon and the span margins
+    max-width: calc(50% - 13px);
+  }
 
-    > span:first-of-type {
-      margin-right: 5px;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
 
-    > span:last-of-type {
-      margin-left: 5px;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
+  &__source-row-value {
+    margin-right: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &__source-row-symbol {
+    margin-left: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   &__destination-row {
     margin-top: 6px;
+  }
 
-    > span {
-      margin-left: 5px;
-    }
+  &__destination-row-symbol {
+    margin-left: 5px;
   }
 
   &__icon,

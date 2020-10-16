@@ -45,14 +45,19 @@ export default function MainQuoteSummary ({
       <div className="main-quote-summary__details">
         <div className="main-quote-summary__quote-details-top">
           <div className="main-quote-summary__source-row">
-            <span title={formatSwapsValueForDisplay(sourceAmount)}>{ formatSwapsValueForDisplay(sourceAmount) }</span>
+            <span
+              className="main-quote-summary__source-row-value"
+              title={formatSwapsValueForDisplay(sourceAmount)}
+            >
+              { formatSwapsValueForDisplay(sourceAmount) }
+            </span>
             <UrlIcon
               url={sourceIconUrl}
               className="main-quote-summary__icon"
               name={sourceSymbol}
               fallbackClassName="main-quote-summary__icon-fallback"
             />
-            <span title={sourceSymbol}>{ sourceSymbol }</span>
+            <span className=",main-quote-summary__source-row-symbol" title={sourceSymbol}>{ sourceSymbol }</span>
           </div>
           <img
             className="main-quote-summary__down-arrow"
@@ -65,7 +70,7 @@ export default function MainQuoteSummary ({
               name={destinationSymbol}
               fallbackClassName="main-quote-summary__icon-fallback"
             />
-            <span>{ destinationSymbol }</span>
+            <span className="main-quote-summary__destination-row-symbol">{ destinationSymbol }</span>
           </div>
           <div className="main-quote-summary__quote-large">
             <Tooltip
