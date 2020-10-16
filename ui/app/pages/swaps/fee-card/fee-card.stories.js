@@ -3,6 +3,15 @@ import { action } from '@storybook/addon-actions'
 import { text } from '@storybook/addon-knobs/react'
 import FeeCard from './fee-card'
 
+const tokenApprovalTextComponent = (
+  <span
+    key="swaps-view-quote-approve-symbol-1"
+    className="view-quote__bold"
+  >
+    ABC
+  </span>
+)
+
 const containerStyle = {
   width: '300px',
 }
@@ -24,19 +33,11 @@ export const WithAllProps = () => {
           fee: text('secondaryFee', '100 USD'),
           maxFee: text('secondaryMaxFee', '200 USD'),
         })}
-        maxFeeRow={({
-          text: text('maxFeeText', 'Max Fee'),
-          linkText: text('maxFeeLinkText', 'Edit'),
-          tooltipText: text('maxFeeTooltipText', 'Click here to edit.'),
-          onClick: action('Clicked max fee row link'),
-        })}
-        thirdRow={({
-          text: text('thirdRowText', 'Extra Option'),
-          linkText: text('thirdRowLinkText', 'Click Me'),
-          tooltipText: text('thirdRowTooltipText', 'Something happens if you click this'),
-          onClick: action('Clicked third row link'),
-          hide: false,
-        })}
+        onFeeCardMaxRowClick={action('Clicked max fee row link')}
+        tokenApprovalTextComponent={tokenApprovalTextComponent}
+        tokenApprovalSourceTokenSymbol="ABC"
+        onTokenApprovalClick={action('Clicked third row link')}
+        hideTokenApprovalRow={false}
       />
     </div>
   )
@@ -55,19 +56,8 @@ export const WithoutThirdRow = () => {
           fee: text('secondaryFee', '100 USD'),
           maxFee: text('secondaryMaxFee', '200 USD'),
         })}
-        maxFeeRow={({
-          text: text('maxFeeText', 'Max Fee'),
-          linkText: text('maxFeeLinkText', 'Edit'),
-          tooltipText: text('maxFeeTooltipText', 'Click here to edit.'),
-          onClick: action('Clicked max fee row link'),
-        })}
-        thirdRow={({
-          text: text('thirdRowText', 'Extra Option'),
-          linkText: text('thirdRowLinkText', 'Click Me'),
-          tooltipText: text('thirdRowTooltipText', 'Something happens if you click this'),
-          onClick: action('Clicked third row link'),
-          hide: true,
-        })}
+        onFeeCardMaxRowClick={action('Clicked max fee row link')}
+        hideTokenApprovalRow
       />
     </div>
   )
@@ -77,17 +67,12 @@ export const WithOnlyRequiredProps = () => {
   return (
     <div style={containerStyle}>
       <FeeCard
-        feeRowText={text('feeRowText', 'Network fees')}
         primaryFee={({
           fee: text('primaryFee', '1 ETH'),
           maxFee: text('primaryMaxFee', '2 ETH'),
         })}
-        maxFeeRow={({
-          text: text('maxFeeText', 'Max Fee'),
-          linkText: text('maxFeeLinkText', 'Edit'),
-          tooltipText: text('maxFeeTooltipText', 'Click here to edit.'),
-          onClick: action('Clicked max fee row link'),
-        })}
+        onFeeCardMaxRowClick={action('Clicked max fee row link')}
+        hideTokenApprovalRow
       />
     </div>
   )
