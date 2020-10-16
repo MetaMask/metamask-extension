@@ -23,7 +23,7 @@ import {
 import { AWAITING_SWAP_ROUTE, BUILD_QUOTE_ROUTE, LOADING_QUOTES_ROUTE, SWAPS_ERROR_ROUTE, SWAPS_MAINTENANCE_ROUTE } from '../../helpers/constants/routes'
 import { fetchSwapsFeatureLiveness } from '../../pages/swaps/swaps.util'
 import { calcGasTotal } from '../../pages/send/send.utils'
-import { decimalToHex, getValueFromWeiHex, hexMax, decGWEIToHexWEI, hexToDecimal } from '../../helpers/utils/conversions.util'
+import { decimalToHex, getValueFromWeiHex, hexMax, decGWEIToHexWEI, hexToDecimal, decEthToConvertedCurrency } from '../../helpers/utils/conversions.util'
 import { calcTokenAmount } from '../../helpers/utils/token-util'
 import {
   getFastPriceEstimateInHexWEI,
@@ -462,6 +462,13 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       conversionRate,
       numberOfDecimals: 6,
     })
+    const averageSavings = usedQuote.isBestQuote
+      ? decEthToConvertedCurrency(
+        usedQuote.savings?.total,
+        'usd',
+        conversionRate,
+      )
+      : null
     const swapMetaData = {
       token_from: sourceTokenInfo.symbol,
       token_from_amount: String(swapTokenValue),
@@ -475,6 +482,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       other_quote_selected_source: usedQuote.aggregator === getTopQuote(state)?.aggregator ? '' : usedQuote.aggregator,
       gas_fees: formatCurrency(gasEstimateTotalInEth, 'usd')?.slice(1),
       estimated_gas: estimatedGasLimit.toString(16),
+      average_savings: averageSavings,
     }
 
     const metaMetricsConfig = {
