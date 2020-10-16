@@ -92,7 +92,7 @@ describe('Advanced Gas Inputs', function () {
     assert.equal(renderError.length, 2)
 
     assert.equal(renderError.at(0).text(), 'zeroGasPriceOnSpeedUpError')
-    assert.equal(renderError.at(1).text(), 'gasLimitTooLow')
+    assert.equal(renderError.at(1).text(), 'gasLimitTooLowWithDynamicFee')
   })
 
   it('warns when custom gas price is too low', function () {
