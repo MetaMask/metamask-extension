@@ -16,18 +16,18 @@ class LoadingScreen extends Component {
 
   renderMessage () {
     const { loadingMessage } = this.props
-    if (isValidElement(loadingMessage)) {
-      return loadingMessage
+
+    if (!loadingMessage) {
+      return null
     }
-    return loadingMessage
-      ? <span>{loadingMessage}</span>
-      : null
+
+    return isValidElement(loadingMessage) ? loadingMessage : <span>{loadingMessage}</span>
   }
 
   render () {
     return (
       <div className="loading-overlay">
-        {this.props.header && this.props.header}
+        {this.props.header}
         <div className="loading-overlay__container">
           {this.props.showLoadingSpinner && <Spinner color="#F7C06C" className="loading-overlay__spinner" />}
           {this.renderMessage()}
