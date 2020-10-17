@@ -347,13 +347,6 @@ describe('custom-gas selectors', function () {
       {
         expectedResult: [
           {
-            gasEstimateType: 'AVERAGE',
-            feeInPrimaryCurrency: '0.000147 ETH',
-            feeInSecondaryCurrency: '$0.38',
-            priceInHexWei: '0x1a13b8600',
-            timeEstimate: '~10 min 6 sec',
-          },
-          {
             gasEstimateType: 'FAST',
             feeInSecondaryCurrency: '$0.54',
             feeInPrimaryCurrency: '0.00021 ETH',

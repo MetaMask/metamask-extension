@@ -158,7 +158,7 @@ const mapStateToProps = (state, ownProps) => {
     newTotalFiat,
     currentTimeEstimate,
     blockTime: getBasicGasEstimateBlockTime(state),
-    customPriceIsSafe: isCustomPriceSafe(state),
+    customPriceIsSafe: isCustomPriceSafe(state, isSwap),
     maxModeOn,
     gasPriceButtonGroupProps: {
       buttonDataLoading,

@@ -88,16 +88,31 @@ export function getSafeLowEstimate (state) {
   return safeLow
 }
 
-export function isCustomPriceSafe (state) {
+export function getAverageEstimate (state) {
+  const {
+    gas: {
+      basicEstimates: {
+        average,
+      },
+    },
+  } = state
+
+  return average
+}
+
+export function isCustomPriceSafe (state, averageIsSafe) {
   const safeLow = getSafeLowEstimate(state)
+  const average = getAverageEstimate(state)
+  const safeMinimumPrice = averageIsSafe ? average : safeLow
+
   const customGasPrice = getCustomGasPrice(state)
 
   if (!customGasPrice) {
     return true
   }
 
-  if (safeLow === null) {
-    return null
+  if (safeMinimumPrice === null) {
+    return false
   }
 
   const customPriceSafe = conversionGreaterThan(
@@ -107,7 +122,7 @@ export function isCustomPriceSafe (state) {
       fromDenomination: 'WEI',
       toDenomination: 'GWEI',
     },
-    { value: safeLow, fromNumericBase: 'dec' },
+    { value: safeMinimumPrice, fromNumericBase: 'dec' },
   )
 
   return customPriceSafe
@@ -216,7 +231,7 @@ export function getRenderableBasicEstimateData (state, gasLimit, useFastestButto
     },
   } = state
 
-  const slowEstimatData = {
+  const slowEstimateData = {
     gasEstimateType: GAS_ESTIMATE_TYPES.SLOW,
     feeInPrimaryCurrency: getRenderableEthFee(safeLow, gasLimit),
     feeInSecondaryCurrency: showFiat
@@ -234,7 +249,7 @@ export function getRenderableBasicEstimateData (state, gasLimit, useFastestButto
     timeEstimate: avgWait && getRenderableTimeEstimate(avgWait),
     priceInHexWei: getGasPriceInHexWei(average),
   }
-  const fastEstimatData = {
+  const fastEstimateData = {
     gasEstimateType: GAS_ESTIMATE_TYPES.FAST,
     feeInPrimaryCurrency: getRenderableEthFee(fast, gasLimit),
     feeInSecondaryCurrency: showFiat
@@ -254,8 +269,8 @@ export function getRenderableBasicEstimateData (state, gasLimit, useFastestButto
   }
 
   return useFastestButtons
-    ? [averageEstimateData, fastEstimatData, fastestEstimateData]
-    : [slowEstimatData, averageEstimateData, fastEstimatData]
+    ? [fastEstimateData, fastestEstimateData]
+    : [slowEstimateData, averageEstimateData, fastEstimateData]
 }
 
 export function getRenderableEstimateDataForSmallButtonsFromGWEI (state) {
