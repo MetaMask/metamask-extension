@@ -1620,6 +1620,9 @@
     "message": "You need $1 more $2 to complete this swap",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
+  "swapBetterQuoteAvailable": {
+    "message": "A better quote is available"
+  },
   "swapBuildQuotePlaceHolderText": {
     "message": "No tokens available matching $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
@@ -1726,8 +1729,8 @@
     "message": "We find the best price from the top liquidity sources, every time. A fee of $1% is automatically factored into each quote, which supports ongoing development to make MetaMask even better.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
-  "swapNQuotesAvailable": {
-    "message": "$1 quotes available",
+  "swapNQuotes": {
+    "message": "$1 quotes",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapNetworkFeeSummary": {
@@ -1788,6 +1791,10 @@
   "swapRequestForQuotation": {
     "message": "Request for quotation"
   },
+  "swapSaving": {
+    "message": "Saving $1 $2",
+    "description": "Tells the user their average savings for the selected best quote. $1 is replaced by a tilde sign, to shown approximation. $2 is replaced by the approximate amount of money the user will save, in fiat"
+  },
   "swapSearchForAToken": {
     "message": "Search for a token"
   },
@@ -1840,6 +1847,9 @@
   },
   "swapUnknown": {
     "message": "Unknown"
+  },
+  "swapUsingBestQuote": {
+    "message": "Using the best quote"
   },
   "swapViewToken": {
     "message": "View $1"
