@@ -497,13 +497,12 @@ export default function ViewQuote () {
           </div>
         </div>
         <div className="view-quote__metamask-rate">
-          <div className="view-quote__metamask-rate-text">{ t('swapQuoteIncludesRate', [metaMaskFee]) }</div>
-          <div className="view-quote__metamask-rate-info-icon">
-            <InfoTooltip
-              position="top"
-              contentText={t('swapMetaMaskFeeDescription', [metaMaskFee])}
-            />
-          </div>
+          <p className="view-quote__metamask-rate-text">{ t('swapQuoteIncludesRate', [metaMaskFee]) }</p>
+          <InfoTooltip
+            position="top"
+            contentText={t('swapMetaMaskFeeDescription', [metaMaskFee])}
+            wrapperClassName="view-quote__metamask-rate-info-icon"
+          />
         </div>
         <div
           className={classnames('view-quote__fee-card-container', {
