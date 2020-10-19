@@ -632,6 +632,10 @@ export default class SwapsController {
  * @returns {import('bignumber.js').BigNumber} The median of the sample.
  */
 function getMedian (values) {
+  if (!Array.isArray(values) || values.length === 0) {
+    throw new Error('Expected non-empty array param.')
+  }
+
   values.sort((a, b) => {
     if (a.equals(b)) {
       return 0
@@ -649,4 +653,8 @@ function getMedian (values) {
   return values[upperIndex]
     .plus(values[upperIndex - 1])
     .dividedBy(2)
+}
+
+export const utils = {
+  getMedian,
 }
