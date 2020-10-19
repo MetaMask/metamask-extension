@@ -161,6 +161,10 @@ export function getTrackMetaMetricsEvent (
     const trackOptions = {
       event,
       properties: {
+        // These values are omitted from properties because they have special meaning
+        // in segment. https://segment.com/docs/connections/spec/track/#properties.
+        // to avoid accidentally using these inappropriately, you must add them as top
+        // level properties on the event payload.
         ...omit(properties, ['revenue', 'currency', 'value']),
         revenue,
         value,
