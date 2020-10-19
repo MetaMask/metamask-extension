@@ -50,8 +50,8 @@
     "update-changelog": "./development/auto-changelog.sh",
     "generate:migration": "./development/generate-migration.sh",
     "lavamoat:parse": "lavamoat ./development/build/index.js --writeAutoConfig",
-    "lavamoat:exec:debug": "lavamoat ./development/build/index.js --debugMode",
-    "lavamoat:exec": "lavamoat ./development/build/index.js",
+    "lavamoat:exec:debug": "lavamoat ./development/build/index.js prod --debugMode",
+    "lavamoat:exec": "lavamoat ./development/build/index.js prod",
     "postinstall": "patch-package"
   },
   "resolutions": {
