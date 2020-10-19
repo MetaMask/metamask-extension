@@ -50,9 +50,10 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
     displayedStatusKey,
     isPending,
     senderAddress,
+    isSubmitted,
   } = useTransactionDisplayData(transactionGroup)
 
-  const timeRemaining = useTransactionTimeRemaining(isPending, isEarliestNonce, submittedTime, gasPrice)
+  const timeRemaining = useTransactionTimeRemaining(isSubmitted, isEarliestNonce, submittedTime, gasPrice)
 
   const isSignatureReq = category === TRANSACTION_CATEGORY_SIGNATURE_REQUEST
   const isApproval = category === TRANSACTION_CATEGORY_APPROVAL

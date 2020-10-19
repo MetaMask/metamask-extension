@@ -23,6 +23,7 @@ import {
   TOKEN_CATEGORY_HASH,
   SWAP,
   SWAP_APPROVAL,
+  SUBMITTED_STATUS,
 } from '../helpers/constants/transactions'
 import { getTokens } from '../ducks/metamask/metamask'
 import { useI18nContext } from './useI18nContext'
@@ -74,6 +75,7 @@ export function useTransactionDisplayData (transactionGroup) {
 
   const displayedStatusKey = getStatusKey(primaryTransaction)
   const isPending = displayedStatusKey in PENDING_STATUS_HASH
+  const isSubmitted = displayedStatusKey === SUBMITTED_STATUS
 
   const primaryValue = primaryTransaction.txParams?.value
   let prefix = '-'
@@ -213,5 +215,6 @@ export function useTransactionDisplayData (transactionGroup) {
     ) ? undefined : secondaryCurrency,
     displayedStatusKey,
     isPending,
+    isSubmitted,
   }
 }
