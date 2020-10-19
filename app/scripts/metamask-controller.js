@@ -121,8 +121,8 @@ export default class MetamaskController extends EventEmitter {
       () => {
         const participateInMetaMetrics = this.preferencesController.getParticipateInMetaMetrics()
         const {
-          metaMetricsId,
           currentLocale,
+          metaMetricsId,
         } = this.preferencesController.store.getState()
         const chainId = this.networkController.getCurrentChainId()
         const provider = this.networkController.getProviderConfig()

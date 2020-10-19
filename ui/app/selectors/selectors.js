@@ -166,7 +166,7 @@ export function getAssetImages (state) {
 }
 
 export function getAddressBook (state) {
-  const { chainId } = state.metamask.provider
+  const chainId = getCurrentChainId(state)
   if (!state.metamask.addressBook[chainId]) {
     return []
   }

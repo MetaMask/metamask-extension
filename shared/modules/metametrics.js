@@ -21,7 +21,7 @@ const segmentNoop = {
 
 /**
  * Used to determine whether or not to attach a user's metametrics id
- * to events that include on chain id. This helps to prevent identifying
+ * to events that include on-chain data. This helps to prevent identifying
  * a user by being able to trace their activity on etherscan/block exploring
  */
 const trackableSendCounts = {
@@ -46,7 +46,7 @@ export function sendCountIsTrackable (sendCount) {
 // We do not want to track events on development builds unless specifically
 // provided a SEGMENT_WRITE_KEY. This also holds true for test environments and
 // E2E, which is handled in the build process by never providing the SEGMENT_WRITE_KEY
-// which process.env.IN_TEST is true
+// when process.env.IN_TEST is truthy
 export const segment = process.env.SEGMENT_WRITE_KEY
   ? new Analytics(process.env.SEGMENT_WRITE_KEY, { flushAt })
   : segmentNoop
@@ -79,8 +79,7 @@ export const segment = process.env.SEGMENT_WRITE_KEY
  * @property {string} chainId - the chain id of the current network
  * @property {string} network - the name of the current network
  * @property {string} [metaMetricsSendCount] - number of transactions sent, used to add metametricsId
- *                                        - intermittently to events with onchain data attached to them
- *                                        - used to protect identity of users.
+ *  intermittently to events with onchain data attached to them used to protect identity of users.
  */
 
 /**
@@ -102,7 +101,7 @@ export const segment = process.env.SEGMENT_WRITE_KEY
  * @param {string} metamaskVersion - The current version of the MetaMask extension.
  * @param {() => MetaMetricsRequiredState} getDynamicState - A function returning required fields
  * @param {boolean} defaultMetaMetricsExclusion - Used to set the default state of exludeMetaMetricsId
- * @returns {(payload: MetaMetricsEventPayload) => Promise<never>} - function to track an event
+ * @returns {(payload: MetaMetricsEventPayload) => Promise<void>} - function to track an event
  */
 export function getTrackMetaMetricsEvent (
   metamaskVersion,
@@ -151,13 +150,13 @@ export function getTrackMetaMetricsEvent (
       return Promise.resolve()
     }
 
-    const context = merge({
+    const context = merge(providedContext, additionalContext, {
       app: {
         name: 'MetaMask Extension',
         version,
       },
       userAgent: window.navigator.userAgent,
-    }, providedContext, additionalContext)
+    })
 
     const trackOptions = {
       event,
