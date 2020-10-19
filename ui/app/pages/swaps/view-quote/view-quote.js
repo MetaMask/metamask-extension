@@ -22,6 +22,7 @@ import {
   getBalanceError,
   getCustomSwapsGas,
   getDestinationTokenInfo,
+  getMetaMaskFeeAmount,
   getSwapsTradeTxParams,
   getTopQuote,
   navigateBackToBuildQuote,
@@ -200,7 +201,6 @@ export default function ViewQuote () {
     sourceTokenDecimals,
     sourceTokenSymbol,
     sourceTokenValue,
-    metaMaskFee,
   } = renderableDataForUsedQuote
 
   const { feeInFiat, feeInEth } = getRenderableGasFeesForQuote(
@@ -340,6 +340,8 @@ export default function ViewQuote () {
       anonymousBestQuoteReviewedEvent()
     }
   }, [sourceTokenSymbol, sourceTokenValue, destinationTokenSymbol, destinationTokenValue, fetchParams, topQuote, numberOfQuotes, feeInFiat, bestQuoteReviewedEvent, anonymousBestQuoteReviewedEvent])
+
+  const metaMaskFee = useSelector(getMetaMaskFeeAmount)
 
   const onFeeCardTokenApprovalClick = () => {
     anonymousEditSpendLimitOpened()

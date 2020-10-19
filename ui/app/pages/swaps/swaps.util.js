@@ -315,7 +315,6 @@ export function quotesToRenderableData (quotes, gasPrice, conversionRate, curren
       conversionRate,
     )
 
-    const metaMaskFee = `0.875%`
     const slippageMultiplier = (new BigNumber(100 - slippage)).div(100)
     const minimumAmountReceived = (new BigNumber(destinationValue)).times(slippageMultiplier).toFixed(6)
 
@@ -348,7 +347,6 @@ export function quotesToRenderableData (quotes, gasPrice, conversionRate, curren
       destinationTokenValue: formatSwapsValueForDisplay(destinationValue),
       isBestQuote: quote.isBestQuote,
       liquiditySourceKey,
-      metaMaskFee,
       feeInEth,
       detailedNetworkFees: `${feeInEth} (${feeInFiat})`,
       networkFees: feeInFiat,
