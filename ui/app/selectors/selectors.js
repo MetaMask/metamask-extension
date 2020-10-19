@@ -15,7 +15,7 @@ export function getNetworkIdentifier (state) {
 }
 
 export function getCurrentNetworkName (state) {
-  const { metamask: { provider } } = state
+  const { provider } = state.metamask
   return provider.type === 'rpc' ? provider.rpcUrl : provider.type
 }
 
