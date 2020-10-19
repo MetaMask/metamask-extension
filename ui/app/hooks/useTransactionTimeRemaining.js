@@ -75,6 +75,7 @@ export function useTransactionTimeRemaining (
       (transactionTimeFeatureActive || forceAllow)) &&
       isPending &&
       isEarliestNonce &&
+      (typeof submittedTime === 'number' && !isNaN(submittedTime)) &&
       !isNaN(initialTimeEstimate)
     ) {
       clearInterval(interval.current)
