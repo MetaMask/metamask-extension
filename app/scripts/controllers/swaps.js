@@ -475,7 +475,7 @@ export default class SwapsController {
 
       const tokenConversionRate = tokenConversionRates[destinationToken]
       const ethValueOfTrade =
-        destinationTokenInfo.symbol === 'ETH'
+        destinationToken === ETH_SWAPS_TOKEN_ADDRESS
           ? calcTokenAmount(destinationAmount, 18).minus(totalEthCost, 10)
           : new BigNumber(tokenConversionRate || 1, 10)
             .times(
