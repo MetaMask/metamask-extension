@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 8.1.2 Mon Oct 19 2020
+
 ## 8.1.1 Tue Oct 13 2020
 - [#9586](https://github.com/MetaMask/metamask-extension/pull/9586): Prevent build quote crash when swapping from non-tracked token with balance (#9586)
 - [#9592](https://github.com/MetaMask/metamask-extension/pull/9592): Remove commitment to maintain a public metrics dashboard (#9592)
