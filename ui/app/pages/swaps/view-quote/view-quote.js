@@ -72,6 +72,7 @@ import { useTokenTracker } from '../../../hooks/useTokenTracker'
 import { QUOTES_EXPIRED_ERROR } from '../../../helpers/constants/swaps'
 import CountdownTimer from '../countdown-timer'
 import SwapsFooter from '../swaps-footer'
+import InfoTooltip from '../../../components/ui/info-tooltip'
 
 export default function ViewQuote () {
   const history = useHistory()
@@ -199,6 +200,7 @@ export default function ViewQuote () {
     sourceTokenDecimals,
     sourceTokenSymbol,
     sourceTokenValue,
+    metaMaskFee,
   } = renderableDataForUsedQuote
 
   const { feeInFiat, feeInEth } = getRenderableGasFeesForQuote(
@@ -493,6 +495,14 @@ export default function ViewQuote () {
             {t('swapNQuotesAvailable', [Object.values(quotes).length])}
             <i className="fa fa-arrow-right" />
           </div>
+        </div>
+        <div className="view-quote__metamask-rate">
+          <p className="view-quote__metamask-rate-text">{ t('swapQuoteIncludesRate', [metaMaskFee]) }</p>
+          <InfoTooltip
+            position="top"
+            contentText={t('swapMetaMaskFeeDescription', [metaMaskFee])}
+            wrapperClassName="view-quote__metamask-rate-info-icon"
+          />
         </div>
         <div
           className={classnames('view-quote__fee-card-container', {

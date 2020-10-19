@@ -13,6 +13,7 @@
     height: 100%;
     padding-left: 20px;
     padding-right: 20px;
+    justify-content: space-between;
 
     @media screen and (max-width: 576px) {
       overflow-y: auto;
@@ -38,16 +39,11 @@
 
   &__view-other-button-container {
     border-radius: 28px;
-    margin-top: 38px;
     width: 100%;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-
-    @media screen and (min-width: 576px) {
-      margin-top: auto;
-    }
   }
 
   &__view-other-button,
@@ -131,12 +127,8 @@
 
   &__fee-card-container {
     width: 100%;
-    margin-top: auto;
+    margin-top: 8px;
     margin-bottom: 8px;
-
-    @media screen and (max-width: 576px) {
-      margin-top: 16px;
-    }
 
     @media screen and (min-width: 576px) {
       margin-bottom: 0;
@@ -157,5 +149,20 @@
     &--thin {
       margin-top: 8px;
     }
+  }
+
+  &__metamask-rate {
+    display: flex;
+    margin-top: 8%;
+  }
+
+  &__metamask-rate-text {
+    @include H7;
+
+    color: $Grey-500;
+  }
+
+  &__metamask-rate-info-icon {
+    margin-left: 4px;
   }
 }

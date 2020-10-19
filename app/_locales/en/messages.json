@@ -1729,7 +1729,7 @@
     "message": "MetaMask fee"
   },
   "swapMetaMaskFeeDescription": {
-    "message": "A service fee of $1% is automatically factored into each quote, which supports ongoing development to make MetaMask even better.",
+    "message": "We find the best price from the top liquidity sources, every time. A fee of $1% is automatically factored into each quote, which supports ongoing development to make MetaMask even better.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesAvailable": {
@@ -1752,6 +1752,10 @@
   },
   "swapQuoteDetailsSlippageInfo": {
     "message": "If the price changes between the time your order is placed and confirmed it’s called \"slippage\". Your Swap will automatically cancel if slippage exceeds your \"max slippage\" setting."
+  },
+  "swapQuoteIncludesRate": {
+    "message": "Quote includes a $1% MetaMask fee",
+    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapQuoteNofN": {
     "message": "Quote $1 of $2",
