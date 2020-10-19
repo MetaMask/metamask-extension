@@ -1190,7 +1190,7 @@ describe('MetaMask', function () {
         ),
       )
 
-      await driver.clickElement(By.xpath(`//li[contains(text(), 'Details')]`))
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Details')]`))
       await driver.delay(regularDelayMs)
     })
 
