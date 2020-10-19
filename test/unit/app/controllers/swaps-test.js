@@ -848,7 +848,7 @@ function getMockQuotes () {
         'to': '0x881D40237659C251811CEC9c364ef91dC08D300C',
       },
       'sourceAmount': '10000000000000000000',
-      'destinationAmount': '25000000000000000000', //25e18
+      'destinationAmount': '25000000000000000000', // 25e18
       'error': null,
       'sourceToken': '0x6b175474e89094c44da98b954eedeac495271d0f',
       'destinationToken': '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
