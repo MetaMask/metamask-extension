@@ -26,7 +26,7 @@ function calcTransactionTimeRemaining (initialTimeEstimate, submittedTime) {
  * returns a string representing the number of minutes predicted for the transaction to be
  * completed. Only returns this prediction if the transaction is the earliest pending
  * transaction, and the feature flag for showing timing is enabled.
- * @param {bool} isPending         - is the transaction currently pending
+ * @param {bool} isSubmitted       - is the transaction currently in the 'submitted' state
  * @param {bool} isEarliestNonce   - is this transaction the earliest nonce in list
  * @param {number} submittedTime   - the timestamp for when the transaction was submitted
  * @param {number} currentGasPrice - gas price to use for calculation of time
@@ -34,7 +34,7 @@ function calcTransactionTimeRemaining (initialTimeEstimate, submittedTime) {
  * @returns {string | undefined} i18n formatted string if applicable
  */
 export function useTransactionTimeRemaining (
-  isPending,
+  isSubmitted,
   isEarliestNonce,
   submittedTime,
   currentGasPrice,
@@ -73,9 +73,8 @@ export function useTransactionTimeRemaining (
     if (
       (isMainNet &&
       (transactionTimeFeatureActive || forceAllow)) &&
-      isPending &&
+      isSubmitted &&
       isEarliestNonce &&
-      (typeof submittedTime === 'number' && !isNaN(submittedTime)) &&
       !isNaN(initialTimeEstimate)
     ) {
       clearInterval(interval.current)
@@ -94,10 +93,10 @@ export function useTransactionTimeRemaining (
     isMainNet,
     transactionTimeFeatureActive,
     isEarliestNonce,
-    isPending,
     submittedTime,
     initialTimeEstimate,
     forceAllow,
+    isSubmitted,
   ])
 
   // there are numerous checks to determine if time should be displayed.
