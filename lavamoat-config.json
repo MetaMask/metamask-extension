@@ -1412,7 +1412,7 @@
         "constants.O_WRONLY": true,
         "constants.hasOwnProperty": true,
         "fs": true,
-        "stream.Stream.call": true,
+        "stream.Stream": true,
         "util": true
       },
       "globals": {
@@ -1958,7 +1958,7 @@
     "memoizee": {
       "globals": {
         "clearTimeout": true,
-        "hasOwnProperty.call": true,
+        "hasOwnProperty": true,
         "setTimeout": true
       },
       "packages": {

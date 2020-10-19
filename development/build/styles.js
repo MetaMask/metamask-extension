@@ -1,7 +1,6 @@
 const pify = require('pify')
 const gulp = require('gulp')
 const sass = require('gulp-sass')
-sass.compiler = require('node-sass')
 const autoprefixer = require('gulp-autoprefixer')
 const gulpStylelint = require('gulp-stylelint')
 const watch = require('gulp-watch')

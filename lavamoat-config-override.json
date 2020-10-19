@@ -14,6 +14,55 @@
       "builtin": {
         "stream.Stream": true
       }
+    },
+    "node-sass": {
+     "native": true 
+    },
+    "colorette": {
+      "globals": {
+        "process": true
+      }
+    },
+    "@stylelint/postcss-css-in-js": {
+      "packages": {
+        "postcss-syntax": true,
+        "@babel/core": true
+      }
+    },
+    "@babel/core": {
+      "builtin": {
+        "fs": true,
+        "path": true
+      },
+      "packages": {
+        "gensync": true,
+        "resolve": true,
+        "debug": true,
+        "@babel/types": true
+      }
+    },
+    "@babel/types": {
+      "globals": {
+        "process": true
+      },
+      "packages": {
+        "lodash": true,
+        "to-fast-properties": true,
+        "@babel/helper-validator-identifier": true
+      }
+    },
+    "@babel/traverse": {
+      "packages": {
+        "@babel/types": true,
+        "debug": true,
+        "@babel/helper-split-export-declaration": true,
+        "lodash": true
+      }
+    },
+    "@babel/helper-split-export-declaration": {
+      "packages": {
+        "@babel/types": true
+      }
     }
   }
 }
