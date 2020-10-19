@@ -168,20 +168,6 @@
         "to-fast-properties": true
       }
     },
-    "@choojs/findup": {
-      "builtin": {
-        "events.EventEmitter": true,
-        "fs.access": true,
-        "fs.accessSync": true,
-        "fs.exists": true,
-        "fs.existsSync": true,
-        "path.join": true,
-        "util.inherits": true
-      },
-      "globals": {
-        "console.log": true
-      }
-    },
     "@gulp-sourcemaps/identity-map": {
       "packages": {
         "acorn": true,
@@ -806,6 +792,21 @@
         "process": true
       }
     },
+    "colors": {
+      "builtin": {
+        "os.release": true,
+        "util.inspect": true
+      },
+      "globals": {
+        "console.log": true,
+        "process.argv": true,
+        "process.env": true,
+        "process.platform": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.versions.node.split": true
+      }
+    },
     "combine-source-map": {
       "builtin": {
         "path.dirname": true,
@@ -919,7 +920,7 @@
     },
     "default-resolution": {
       "globals": {
-        "process.version": true
+        "process.version.match": true
       }
     },
     "define-properties": {
@@ -991,7 +992,7 @@
     },
     "domutils": {
       "globals": {
-        "hasOwnProperty": true
+        "hasOwnProperty.call": true
       },
       "packages": {
         "dom-serializer": true,
@@ -1319,6 +1320,23 @@
         "to-regex-range": true
       }
     },
+    "findup": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "fs.exists": true,
+        "fs.existsSync": true,
+        "path.exists": true,
+        "path.existsSync": true,
+        "path.join": true,
+        "util.inherits": true
+      },
+      "globals": {
+        "console.log": true
+      },
+      "packages": {
+        "colors": true
+      }
+    },
     "first-chunk-stream": {
       "builtin": {
         "util.inherits": true
@@ -1619,7 +1637,7 @@
         "constants.O_WRONLY": true,
         "constants.hasOwnProperty": true,
         "fs": true,
-        "stream.Stream": true,
+        "stream.Stream.call": true,
         "util": true
       },
       "globals": {
@@ -2200,7 +2218,7 @@
     "memoizee": {
       "globals": {
         "clearTimeout": true,
-        "hasOwnProperty": true,
+        "hasOwnProperty.call": true,
         "setTimeout": true
       },
       "packages": {
@@ -2974,7 +2992,7 @@
         "process.env.USERPROFILE": true
       },
       "packages": {
-        "@choojs/findup": true,
+        "findup": true,
         "postcss": true,
         "strip-json-comments": true
       }
@@ -3789,7 +3807,7 @@
       },
       "globals": {
         "Buffer": true,
-        "process.version": true
+        "process.version.match": true
       },
       "packages": {
         "http-parser-js": true,
