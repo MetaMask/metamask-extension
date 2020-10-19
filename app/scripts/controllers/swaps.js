@@ -502,7 +502,7 @@ export default class SwapsController {
     })
 
     const isBest =
-      quotes[topAggId]?.destinationTokenInfo?.symbol === 'ETH' ||
+      quotes[topAggId].destinationToken === ETH_SWAPS_TOKEN_ADDRESS ||
       Boolean(tokenConversionRates[quotes[topAggId]?.destinationToken])
 
     let savings = null
