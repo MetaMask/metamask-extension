@@ -29,39 +29,44 @@
         "@babel/core": true
       }
     },
-    "@babel/core": {
+    "stylelint": {
+      "packages": {
+        "@stylelint/postcss-css-in-js": true,
+        "postcss-html": true,
+        "postcss-scss": true,
+        "postcss-less": true
+      }
+    },
+    "htmlparser2": {
       "builtin": {
-        "fs": true,
-        "path": true
+        "events": true
       },
       "packages": {
-        "gensync": true,
-        "resolve": true,
-        "debug": true,
-        "@babel/types": true
+        "entities": true,
+        "inherits": true,
+        "domhandler": true,
+        "domelementtype": true
       }
     },
-    "@babel/types": {
-      "globals": {
-        "process": true
-      },
+    "domhandler": {
       "packages": {
-        "lodash": true,
-        "to-fast-properties": true,
-        "@babel/helper-validator-identifier": true
+        "domelementtype": true
       }
     },
-    "@babel/traverse": {
+    "postcss-html": {
       "packages": {
-        "@babel/types": true,
-        "debug": true,
-        "@babel/helper-split-export-declaration": true,
-        "lodash": true
+        "htmlparser2": true,
+        "postcss-syntax": true
       }
     },
-    "@babel/helper-split-export-declaration": {
+    "postcss-scss": {
       "packages": {
-        "@babel/types": true
+        "postcss": true
+      }
+    },
+    "postcss-less": {
+      "packages": {
+        "postcss": true
       }
     }
   }

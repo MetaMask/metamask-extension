@@ -279,7 +279,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
     }
 
     if (!activateSesify) {
-      browserifyOpts.plugin.push('browserify-derequire')
+      browserifyOpts.plugin.push(require('browserify-derequire'))
     }
 
     if (!opts.buildLib) {
@@ -291,18 +291,18 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
     }
 
     let bundler = browserify(browserifyOpts)
-      .transform('babelify')
+      .transform(require('babelify'))
       // Transpile any dependencies using the object spread/rest operator
       // because it is incompatible with `esprima`, which is used by `envify`
       // See https://github.com/jquery/esprima/issues/1927
-      .transform('babelify', {
+      .transform(require('babelify'), {
         only: [
           './**/node_modules/libp2p',
         ],
         global: true,
         plugins: ['@babel/plugin-proposal-object-rest-spread'],
       })
-      .transform('brfs')
+      .transform(require('brfs'))
 
     if (opts.buildLib) {
       bundler = bundler.require(opts.dependenciesToBundle)

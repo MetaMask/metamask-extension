@@ -9,11 +9,163 @@
         "@babel/highlight": true
       }
     },
+    "@babel/core": {
+      "builtin": {
+        "fs": true,
+        "path": true,
+        "url": true
+      },
+      "globals": {
+        "process.cwd": true,
+        "process.env.BABEL_ENV": true,
+        "process.env.NODE_ENV": true
+      },
+      "packages": {
+        "@babel/code-frame": true,
+        "@babel/generator": true,
+        "@babel/helper-module-transforms": true,
+        "@babel/helpers": true,
+        "@babel/parser": true,
+        "@babel/template": true,
+        "@babel/traverse": true,
+        "@babel/types": true,
+        "convert-source-map": true,
+        "debug": true,
+        "gensync": true,
+        "json5": true,
+        "lodash": true,
+        "resolve": true,
+        "semver": true,
+        "source-map": true
+      }
+    },
+    "@babel/generator": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "@babel/types": true,
+        "jsesc": true,
+        "source-map": true
+      }
+    },
+    "@babel/helper-function-name": {
+      "packages": {
+        "@babel/helper-get-function-arity": true,
+        "@babel/template": true,
+        "@babel/types": true
+      }
+    },
+    "@babel/helper-get-function-arity": {
+      "packages": {
+        "@babel/types": true
+      }
+    },
+    "@babel/helper-member-expression-to-functions": {
+      "packages": {
+        "@babel/types": true
+      }
+    },
+    "@babel/helper-module-imports": {
+      "builtin": {
+        "assert": true
+      },
+      "packages": {
+        "@babel/types": true
+      }
+    },
+    "@babel/helper-module-transforms": {
+      "builtin": {
+        "assert": true,
+        "path.basename": true,
+        "path.extname": true
+      },
+      "packages": {
+        "@babel/helper-module-imports": true,
+        "@babel/helper-replace-supers": true,
+        "@babel/helper-simple-access": true,
+        "@babel/helper-split-export-declaration": true,
+        "@babel/template": true,
+        "@babel/types": true,
+        "lodash": true
+      }
+    },
+    "@babel/helper-optimise-call-expression": {
+      "packages": {
+        "@babel/types": true
+      }
+    },
+    "@babel/helper-replace-supers": {
+      "packages": {
+        "@babel/helper-member-expression-to-functions": true,
+        "@babel/helper-optimise-call-expression": true,
+        "@babel/traverse": true,
+        "@babel/types": true
+      }
+    },
+    "@babel/helper-simple-access": {
+      "packages": {
+        "@babel/types": true
+      }
+    },
+    "@babel/helper-split-export-declaration": {
+      "packages": {
+        "@babel/types": true
+      }
+    },
+    "@babel/helpers": {
+      "packages": {
+        "@babel/template": true,
+        "@babel/traverse": true,
+        "@babel/types": true
+      }
+    },
     "@babel/highlight": {
       "packages": {
         "@babel/helper-validator-identifier": true,
         "chalk": true,
         "js-tokens": true
+      }
+    },
+    "@babel/parser": {
+      "globals": {
+        "BigInt": true
+      }
+    },
+    "@babel/template": {
+      "packages": {
+        "@babel/code-frame": true,
+        "@babel/parser": true,
+        "@babel/types": true
+      }
+    },
+    "@babel/traverse": {
+      "globals": {
+        "console.log": true,
+        "console.trace": true,
+        "process.env.NODE_ENV": true
+      },
+      "packages": {
+        "@babel/code-frame": true,
+        "@babel/generator": true,
+        "@babel/helper-function-name": true,
+        "@babel/helper-split-export-declaration": true,
+        "@babel/parser": true,
+        "@babel/types": true,
+        "debug": true,
+        "globals": true,
+        "lodash": true
+      }
+    },
+    "@babel/types": {
+      "globals": {
+        "console.trace": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "@babel/helper-validator-identifier": true,
+        "lodash": true,
+        "to-fast-properties": true
       }
     },
     "@gulp-sourcemaps/identity-map": {
@@ -259,6 +411,21 @@
         "postcss-value-parser": true
       }
     },
+    "babelify": {
+      "builtin": {
+        "path.extname": true,
+        "path.resolve": true,
+        "stream.PassThrough": true,
+        "stream.Transform": true,
+        "util": true
+      },
+      "globals": {
+        "Buffer.concat": true
+      },
+      "packages": {
+        "@babel/core": true
+      }
+    },
     "bach": {
       "builtin": {
         "assert.ok": true
@@ -331,6 +498,19 @@
         "to-regex": true
       }
     },
+    "brfs": {
+      "builtin": {
+        "fs.createReadStream": true,
+        "fs.readdir": true,
+        "path": true
+      },
+      "packages": {
+        "quote-stream": true,
+        "resolve": true,
+        "static-module": true,
+        "through2": true
+      }
+    },
     "browser-pack": {
       "builtin": {
         "fs.readFileSync": true,
@@ -399,6 +579,15 @@
         "syntax-error": true,
         "through2": true,
         "xtend": true
+      }
+    },
+    "browserify-derequire": {
+      "globals": {
+        "Buffer": true
+      },
+      "packages": {
+        "derequire": true,
+        "through2": true
       }
     },
     "browserify-transform-tools": {
@@ -689,6 +878,11 @@
         "es5-ext": true
       }
     },
+    "dash-ast": {
+      "builtin": {
+        "assert": true
+      }
+    },
     "debug": {
       "builtin": {
         "fs.SyncWriteStream": true,
@@ -755,6 +949,12 @@
       "packages": {
         "shasum": true,
         "through2": true
+      }
+    },
+    "derequire": {
+      "packages": {
+        "acorn": true,
+        "escope": true
       }
     },
     "detect-libc": {
@@ -870,6 +1070,24 @@
         "es6-symbol": true
       }
     },
+    "es6-map": {
+      "packages": {
+        "d": true,
+        "es5-ext": true,
+        "es6-iterator": true,
+        "es6-symbol": true,
+        "event-emitter": true
+      }
+    },
+    "es6-set": {
+      "packages": {
+        "d": true,
+        "es5-ext": true,
+        "es6-iterator": true,
+        "es6-symbol": true,
+        "event-emitter": true
+      }
+    },
     "es6-symbol": {
       "packages": {
         "d": true
@@ -883,9 +1101,36 @@
         "es6-symbol": true
       }
     },
+    "escodegen": {
+      "globals": {
+        "sourceMap.SourceNode": true
+      },
+      "packages": {
+        "estraverse": true,
+        "esutils": true,
+        "source-map": true
+      }
+    },
+    "escope": {
+      "builtin": {
+        "assert": true
+      },
+      "packages": {
+        "es6-map": true,
+        "es6-weak-map": true,
+        "esrecurse": true,
+        "estraverse": true
+      }
+    },
     "esprima": {
       "globals": {
         "define": true
+      }
+    },
+    "esrecurse": {
+      "packages": {
+        "estraverse": true,
+        "object-assign": true
       }
     },
     "event-emitter": {
@@ -1835,9 +2080,19 @@
         "isarray": true
       }
     },
+    "jsesc": {
+      "globals": {
+        "Buffer.isBuffer": true
+      }
+    },
     "json-stable-stringify": {
       "packages": {
         "jsonify": true
+      }
+    },
+    "json5": {
+      "globals": {
+        "console.warn": true
       }
     },
     "jsonfile": {
@@ -1910,8 +2165,7 @@
     },
     "lodash": {
       "globals": {
-        "define": true,
-        "keysIn": true
+        "define": true
       }
     },
     "log-symbols": {
@@ -1927,6 +2181,16 @@
     "lru-queue": {
       "packages": {
         "es5-ext": true
+      }
+    },
+    "magic-string": {
+      "globals": {
+        "Buffer": true,
+        "btoa": true,
+        "console.warn": true
+      },
+      "packages": {
+        "sourcemap-codec": true
       }
     },
     "make-iterator": {
@@ -1976,6 +2240,11 @@
         "arr-union": true,
         "clone-deep": true,
         "kind-of": true
+      }
+    },
+    "merge-source-map": {
+      "packages": {
+        "source-map": true
       }
     },
     "merge2": {
@@ -2244,6 +2513,15 @@
         "copy-descriptor": true,
         "define-property": true,
         "kind-of": true
+      }
+    },
+    "object-inspect": {
+      "builtin": {
+        "util.inspect": true
+      },
+      "globals": {
+        "BigInt": true,
+        "HTMLElement": true
       }
     },
     "object-visit": {
@@ -2542,6 +2820,15 @@
         "pump": true
       }
     },
+    "quote-stream": {
+      "globals": {
+        "Buffer": true
+      },
+      "packages": {
+        "buffer-equal": true,
+        "through2": true
+      }
+    },
     "randomatic": {
       "packages": {
         "is-number": true,
@@ -2764,6 +3051,21 @@
         "ret": true
       }
     },
+    "scope-analyzer": {
+      "builtin": {
+        "assert.ok": true,
+        "assert.strictEqual": true
+      },
+      "packages": {
+        "array-from": true,
+        "dash-ast": true,
+        "es6-map": true,
+        "es6-set": true,
+        "es6-symbol": true,
+        "estree-is-function": true,
+        "get-assigned-identifiers": true
+      }
+    },
     "semver": {
       "globals": {
         "console": true,
@@ -2923,6 +3225,11 @@
         "define": true
       }
     },
+    "sourcemap-codec": {
+      "globals": {
+        "define": true
+      }
+    },
     "specificity": {
       "globals": {
         "define": true
@@ -2941,6 +3248,11 @@
         "extend-shallow": true
       }
     },
+    "static-eval": {
+      "packages": {
+        "escodegen": true
+      }
+    },
     "static-extend": {
       "builtin": {
         "util.inherits": true
@@ -2948,6 +3260,24 @@
       "packages": {
         "define-property": true,
         "object-copy": true
+      }
+    },
+    "static-module": {
+      "packages": {
+        "acorn-node": true,
+        "concat-stream": true,
+        "convert-source-map": true,
+        "duplexer2": true,
+        "escodegen": true,
+        "has": true,
+        "magic-string": true,
+        "merge-source-map": true,
+        "object-inspect": true,
+        "readable-stream": true,
+        "scope-analyzer": true,
+        "shallow-copy": true,
+        "static-eval": true,
+        "through2": true
       }
     },
     "stream-combiner": {
@@ -3310,7 +3640,8 @@
         "path.normalize": true,
         "path.relative": true,
         "stream.PassThrough": true,
-        "stream.Stream": true
+        "stream.Stream": true,
+        "util.inspect.custom": true
       },
       "globals": {
         "process.cwd": true
