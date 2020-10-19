@@ -127,7 +127,7 @@
 
   &__fee-card-container {
     width: 100%;
-    margin-top: 8px;
+    margin-top: auto;
     margin-bottom: 8px;
 
     @media screen and (min-width: 576px) {
@@ -136,6 +136,10 @@
       &--three-rows {
         margin-bottom: -16px;
       }
+    }
+
+    &--thin {
+      margin-top: 8px;
     }
   }
 
@@ -164,5 +168,11 @@
 
   &__metamask-rate-info-icon {
     margin-left: 4px;
+  }
+
+  &__thin-swaps-footer {
+    @media screen and (min-width: 576px) {
+      height: 72px;
+    }
   }
 }

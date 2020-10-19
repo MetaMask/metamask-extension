@@ -73,7 +73,6 @@ import { useTokenTracker } from '../../../hooks/useTokenTracker'
 import { QUOTES_EXPIRED_ERROR } from '../../../helpers/constants/swaps'
 import CountdownTimer from '../countdown-timer'
 import SwapsFooter from '../swaps-footer'
-import InfoTooltip from '../../../components/ui/info-tooltip'
 
 export default function ViewQuote () {
   const history = useHistory()
@@ -99,6 +98,7 @@ export default function ViewQuote () {
   const quotesLastFetched = useSelector(getQuotesLastFetched)
 
   // Select necessary data
+  const metaMaskFee = useSelector(getMetaMaskFeeAmount)
   const tradeTxParams = useSelector(getSwapsTradeTxParams)
   const { gasPrice } = tradeTxParams || {}
   const customMaxGas = useSelector(getCustomSwapsGas)
@@ -341,8 +341,6 @@ export default function ViewQuote () {
     }
   }, [sourceTokenSymbol, sourceTokenValue, destinationTokenSymbol, destinationTokenValue, fetchParams, topQuote, numberOfQuotes, feeInFiat, bestQuoteReviewedEvent, anonymousBestQuoteReviewedEvent])
 
-  const metaMaskFee = useSelector(getMetaMaskFeeAmount)
-
   const onFeeCardTokenApprovalClick = () => {
     anonymousEditSpendLimitOpened()
     editSpendLimitOpened()
@@ -420,7 +418,7 @@ export default function ViewQuote () {
       ? sourceTokenSymbol
       : 'ETH',
   ])
-
+  console.log('*** quotes', quotes)
   return (
     <div className="view-quote">
       <div className="view-quote__content">
@@ -480,33 +478,6 @@ export default function ViewQuote () {
           />
         </div>
         <div
-          className="view-quote__view-other-button-container"
-        >
-          <div className="view-quote__view-other-button">
-            {t('swapNQuotesAvailable', [Object.values(quotes).length])}
-            <i className="fa fa-arrow-right" />
-          </div>
-          <div
-            className="view-quote__view-other-button-fade"
-            onClick={() => {
-              anonymousAllAvailableQuotesOpened()
-              allAvailableQuotesOpened()
-              setSelectQuotePopoverShown(true)
-            }}
-          >
-            {t('swapNQuotesAvailable', [Object.values(quotes).length])}
-            <i className="fa fa-arrow-right" />
-          </div>
-        </div>
-        <div className="view-quote__metamask-rate">
-          <p className="view-quote__metamask-rate-text">{ t('swapQuoteIncludesRate', [metaMaskFee]) }</p>
-          <InfoTooltip
-            position="top"
-            contentText={t('swapMetaMaskFeeDescription', [metaMaskFee])}
-            wrapperClassName="view-quote__metamask-rate-info-icon"
-          />
-        </div>
-        <div
           className={classnames('view-quote__fee-card-container', {
             'view-quote__fee-card-container--thin': showWarning,
             'view-quote__fee-card-container--three-rows': approveTxParams && (!balanceError || warningHidden),
@@ -528,6 +499,17 @@ export default function ViewQuote () {
             tokenApprovalTextComponent={tokenApprovalTextComponent}
             tokenApprovalSourceTokenSymbol={sourceTokenSymbol}
             onTokenApprovalClick={onFeeCardTokenApprovalClick}
+            metaMaskFee={metaMaskFee}
+            isBestQuote={isBestQuote}
+            numberOfQuotes={Object.values(quotes).length}
+            onQuotesClick={() => {
+              anonymousAllAvailableQuotesOpened()
+              allAvailableQuotesOpened()
+              setSelectQuotePopoverShown(true)
+            }}
+            savings={usedQuote?.savings}
+            conversionRate={conversionRate}
+            currentCurrency={currentCurrency}
           />
         </div>
       </div>
@@ -544,6 +526,7 @@ export default function ViewQuote () {
         submitText={t('swap')}
         onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}
         disabled={balanceError}
+        className={showWarning && 'view-quote__thin-swaps-footer'}
         showTermsOfService
         showTopBorder
       />

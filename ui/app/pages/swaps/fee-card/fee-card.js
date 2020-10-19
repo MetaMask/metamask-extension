@@ -1,7 +1,11 @@
 import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 import { I18nContext } from '../../../contexts/i18n'
 import InfoTooltip from '../../../components/ui/info-tooltip'
+import { decEthToConvertedCurrency } from '../../../helpers/utils/conversions.util'
+import { formatCurrency } from '../../../helpers/utils/confirm-tx.util'
+import PigIcon from './pig-icon'
 
 export default function FeeCard ({
   primaryFee,
@@ -11,11 +15,64 @@ export default function FeeCard ({
   tokenApprovalTextComponent,
   tokenApprovalSourceTokenSymbol,
   onTokenApprovalClick,
+  metaMaskFee,
+  savings,
+  isBestQuote,
+  numberOfQuotes,
+  onQuotesClick,
+  conversionRate,
+  currentCurrency,
 }) {
   const t = useContext(I18nContext)
 
+  const canDisplaySavings = isBestQuote && savings?.total
+
+  const savingAmount = canDisplaySavings
+    ? formatCurrency(decEthToConvertedCurrency(
+      savings.total,
+      currentCurrency,
+      conversionRate,
+    ), currentCurrency)
+    : null
+
   return (
     <div className="fee-card">
+      <div className="fee-card__savings-and-quotes-header">
+        <div className="fee-card__savings-and-quotes-header-first-part" />
+        <div
+          className={classnames('fee-card__savings-and-quotes-header-second-part', {
+            'fee-card__savings-and-quotes-header-second-part--top-border': !canDisplaySavings,
+          })}
+        />
+        <div className="fee-card__savings-and-quotes-header-third-part" />
+        {canDisplaySavings && (
+          <div className="fee-card__pig-icon-container">
+            <PigIcon />
+          </div>
+        )}
+        <div
+          className={classnames('fee-card__savings-and-quotes-row', {
+            'fee-card__savings-and-quotes-row--align-left': !canDisplaySavings,
+          })}
+        >
+          <div className="fee-card__savings-text">
+            {canDisplaySavings
+              ? t('swapSaving', [savingAmount])
+              : t('swapBetterQuoteAvailable')
+            }
+          </div>
+          <div className="fee-card__quote-link-container" onClick={onQuotesClick}>
+            <div className="fee-card__quote-link-text">
+              { t('swapNQuotes', [numberOfQuotes]) }
+            </div>
+            <div
+              className="fee-card__caret-right"
+            >
+              <i className="fa fa-angle-up" />
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="fee-card__main">
         <div className="fee-card__row-header">
           <div>
@@ -79,21 +136,36 @@ export default function FeeCard ({
           </div>
         </div>
         {!hideTokenApprovalRow && (
-          <div className="fee-card__top-bordered-row">
+          <div className="fee-card__row-header">
             <div className="fee-card__row-label">
               <div className="fee-card__row-header-text">
                 {t('swapThisWillAllowApprove', [tokenApprovalTextComponent])}
               </div>
-              <div className="fee-card__link" onClick={() => onTokenApprovalClick()}>
-                {t('swapEditLimit')}
+              <div className="fee-card__info-tooltip-container">
+                <InfoTooltip
+                  position="top"
+                  contentText={t('swapEnableDescription', [tokenApprovalSourceTokenSymbol])}
+                />
               </div>
-              <InfoTooltip
-                position="top"
-                contentText={t('swapEnableDescription', [tokenApprovalSourceTokenSymbol])}
-              />
+            </div>
+            <div className="fee-card__link" onClick={() => onTokenApprovalClick()}>
+              {t('swapEditLimit')}
             </div>
           </div>
         )}
+        <div className="fee-card__top-bordered-row">
+          <div className="fee-card__row-label">
+            <div className="fee-card__row-header-text">
+              {t('swapQuoteIncludesRate', [metaMaskFee])}
+            </div>
+            <div className="fee-card__info-tooltip-container">
+              <InfoTooltip
+                position="top"
+                contentText={t('swapMetaMaskFeeDescription')}
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -113,4 +185,11 @@ FeeCard.propTypes = {
   tokenApprovalTextComponent: PropTypes.node,
   tokenApprovalSourceTokenSymbol: PropTypes.string,
   onTokenApprovalClick: PropTypes.func,
+  metaMaskFee: PropTypes.string.isRequired,
+  savings: PropTypes.object,
+  isBestQuote: PropTypes.bool,
+  onQuotesClick: PropTypes.func.isRequired,
+  numberOfQuotes: PropTypes.number.isRequired,
+  conversionRate: PropTypes.number,
+  currentCurrency: PropTypes.string,
 }
