@@ -18,8 +18,9 @@ const MOCK_FETCH_PARAMS = {
 }
 
 const TEST_AGG_ID_1 = 'TEST_AGG_1'
-const TEST_AGG_ID_BEST = 'TEST_AGG_BEST'
 const TEST_AGG_ID_2 = 'TEST_AGG_2'
+const TEST_AGG_ID_BEST = 'TEST_AGG_BEST'
+const TEST_AGG_ID_APPROVAL = 'TEST_AGG_APPROVAL'
 
 const MOCK_APPROVAL_NEEDED = {
   'data': '0x095ea7b300000000000000000000000095e6f48254609a6ee006f7d493c8e5fb97094cef0000000000000000000000000000000000000000004a817c7ffffffdabf41c00',
@@ -31,7 +32,7 @@ const MOCK_APPROVAL_NEEDED = {
 }
 
 const MOCK_QUOTES_APPROVAL_REQUIRED = {
-  [TEST_AGG_ID_1]: {
+  [TEST_AGG_ID_APPROVAL]: {
     trade: {
       data: '0x00',
       from: '0x7F18BB4Dd92CF2404C54CBa1A9BE4A1153bdb078',
@@ -49,7 +50,7 @@ const MOCK_QUOTES_APPROVAL_REQUIRED = {
     averageGas: 312510,
     estimatedRefund: 343090,
     fetchTime: 559,
-    aggregator: TEST_AGG_ID_1,
+    aggregator: TEST_AGG_ID_APPROVAL,
     aggType: 'AGG',
     slippage: 3,
     approvalNeeded: MOCK_APPROVAL_NEEDED,
