@@ -315,7 +315,7 @@ export function quotesToRenderableData (quotes, gasPrice, conversionRate, curren
       conversionRate,
     )
 
-    const metaMaskFee = `0.875%`
+    const metaMaskFee = `0.875`
     const slippageMultiplier = (new BigNumber(100 - slippage)).div(100)
     const minimumAmountReceived = (new BigNumber(destinationValue)).times(slippageMultiplier).toFixed(6)
 
