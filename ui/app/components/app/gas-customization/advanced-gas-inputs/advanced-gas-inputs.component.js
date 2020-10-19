@@ -23,7 +23,7 @@ export default class AdvancedGasInputs extends Component {
   }
 
   static defaultProps = {
-    minimumGasLimit: MIN_GAS_LIMIT_DEC,
+    minimumGasLimit: Number(MIN_GAS_LIMIT_DEC),
   }
 
   constructor (props) {

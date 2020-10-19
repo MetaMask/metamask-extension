@@ -76,7 +76,7 @@ const mapStateToProps = (state, ownProps) => {
     customTotalSupplement = '',
     extraInfoRow = null,
     useFastestButtons = false,
-    minimumGasLimit = MIN_GAS_LIMIT_DEC,
+    minimumGasLimit = Number(MIN_GAS_LIMIT_DEC),
   } = modalProps || {}
   const { transaction = {} } = ownProps
   const selectedTransaction = isSwap
