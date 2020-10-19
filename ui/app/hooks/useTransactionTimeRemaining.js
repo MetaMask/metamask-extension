@@ -104,8 +104,10 @@ export function useTransactionTimeRemaining (
   // User is currently not on the mainnet
   // User does not have the transactionTime feature flag enabled
   // The transaction is not pending, or isn't the earliest nonce
-  const usedFormat = dontFormat
-    ? timeRemaining
-    : rtf.format(timeRemaining, 'minute')
-  return timeRemaining ? usedFormat : undefined
+  if (timeRemaining && dontFormat) {
+    return timeRemaining
+  } else if (timeRemaining) {
+    return rtf.format(timeRemaining, 'minute')
+  }
+  return undefined
 }
