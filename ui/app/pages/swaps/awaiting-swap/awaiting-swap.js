@@ -97,8 +97,9 @@ export default function AwaitingSwap ({
     rpcPrefs,
   )
 
+  const statusKey = tradeTxData && getStatusKey(tradeTxData)
   const timeRemaining = useTransactionTimeRemaining(
-    getStatusKey(tradeTxData) === SUBMITTED_STATUS,
+    statusKey === SUBMITTED_STATUS,
     true,
     tradeTxData?.submittedTime,
     usedGasPrice,
