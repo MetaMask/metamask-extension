@@ -275,7 +275,7 @@ export function getRenderableGasFeesForQuote (tradeGas, approveGas, gasPrice, cu
   const ethFee = getValueFromWeiHex({
     value: gasTotalInWeiHex,
     toDenomination: 'ETH',
-    numberOfDecimals: 6,
+    numberOfDecimals: 5,
   })
   const rawNetworkFees = getValueFromWeiHex({
     value: gasTotalInWeiHex,
