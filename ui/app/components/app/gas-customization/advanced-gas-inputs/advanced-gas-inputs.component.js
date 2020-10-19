@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { debounce } from 'lodash'
 import Tooltip from '../../../ui/tooltip'
+import { MIN_GAS_LIMIT_DEC } from '../../../../pages/send/send.constants'
 
 export default class AdvancedGasInputs extends Component {
   static contextTypes = {
@@ -18,6 +19,11 @@ export default class AdvancedGasInputs extends Component {
     customPriceIsSafe: PropTypes.bool,
     isSpeedUp: PropTypes.bool,
     customGasLimitMessage: PropTypes.string,
+    minimumGasLimit: PropTypes.number,
+  }
+
+  static defaultProps = {
+    minimumGasLimit: MIN_GAS_LIMIT_DEC,
   }
 
   constructor (props) {
@@ -84,7 +90,7 @@ export default class AdvancedGasInputs extends Component {
     return {}
   }
 
-  gasLimitError ({ insufficientBalance, gasLimit }) {
+  gasLimitError ({ insufficientBalance, gasLimit, minimumGasLimit }) {
     const { t } = this.context
 
     if (insufficientBalance) {
@@ -92,9 +98,9 @@ export default class AdvancedGasInputs extends Component {
         errorText: t('insufficientBalance'),
         errorType: 'error',
       }
-    } else if (gasLimit < 21000) {
+    } else if (gasLimit < minimumGasLimit) {
       return {
-        errorText: t('gasLimitTooLow'),
+        errorText: t('gasLimitTooLowWithDynamicFee', [minimumGasLimit]),
         errorType: 'error',
       }
     }
@@ -153,6 +159,7 @@ export default class AdvancedGasInputs extends Component {
       customPriceIsSafe,
       isSpeedUp,
       customGasLimitMessage,
+      minimumGasLimit,
     } = this.props
     const {
       gasPrice,
@@ -172,7 +179,7 @@ export default class AdvancedGasInputs extends Component {
     const {
       errorText: gasLimitErrorText,
       errorType: gasLimitErrorType,
-    } = this.gasLimitError({ insufficientBalance, gasLimit })
+    } = this.gasLimitError({ insufficientBalance, gasLimit, minimumGasLimit })
     const gasLimitErrorComponent = gasLimitErrorType ? (
       <div className={`advanced-gas-inputs__gas-edit-row__${gasLimitErrorType}-text`}>
         { gasLimitErrorText }

@@ -53,7 +53,8 @@ export default class GasModalPageContainer extends Component {
     customTotalSupplement: PropTypes.string,
     isSwap: PropTypes.bool,
     value: PropTypes.string,
-    conversionRate: PropTypes.number,
+    conversionRate: PropTypes.string,
+    minimumGasLimit: PropTypes.number.isRequired,
   }
 
   state = {
@@ -98,6 +99,7 @@ export default class GasModalPageContainer extends Component {
       },
       isEthereumNetwork,
       customGasLimitMessage,
+      minimumGasLimit,
     } = this.props
 
     return (
@@ -116,6 +118,7 @@ export default class GasModalPageContainer extends Component {
         isSpeedUp={isSpeedUp}
         isRetry={isRetry}
         isEthereumNetwork={isEthereumNetwork}
+        minimumGasLimit={minimumGasLimit}
       />
     )
   }

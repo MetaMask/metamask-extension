@@ -708,6 +708,10 @@
   "gasLimitTooLow": {
     "message": "Gas limit must be at least 21000"
   },
+  "gasLimitTooLowWithDynamicFee": {
+    "message": "Gas limit must be at least $1",
+    "description": "$1 is the custom gas limit, in decimal."
+  },
   "gasPrice": {
     "message": "Gas Price (GWEI)"
   },
