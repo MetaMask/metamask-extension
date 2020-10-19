@@ -115,8 +115,7 @@ export default class MetamaskController extends EventEmitter {
       migrateAddressBookState: this.migrateAddressBookState.bind(this),
     })
 
-    // This depends on preferences controller state
-    this.trackSegmentEvent = getTrackMetaMetricsEvent(
+    this.trackMetaMetricsEvent = getTrackMetaMetricsEvent(
       this.platform.getVersion(),
       () => {
         const participateInMetaMetrics = this.preferencesController.getParticipateInMetaMetrics()
@@ -270,7 +269,7 @@ export default class MetamaskController extends EventEmitter {
       signTransaction: this.keyringController.signTransaction.bind(this.keyringController),
       provider: this.provider,
       blockTracker: this.blockTracker,
-      trackSegmentEvent: this.trackSegmentEvent,
+      trackMetaMetricsEvent: this.trackMetaMetricsEvent,
       getParticipateInMetrics: () => this.preferencesController.getParticipateInMetaMetrics(),
     })
     this.txController.on('newUnapprovedTx', () => opts.showUnapprovedTx())
@@ -1689,7 +1688,7 @@ export default class MetamaskController extends EventEmitter {
     }))
     engine.push(createMethodMiddleware({
       origin,
-      sendMetrics: this.trackSegmentEvent,
+      sendMetrics: this.trackMetaMetricsEvent,
     }))
     // filter and subscription polyfills
     engine.push(filterMiddleware)

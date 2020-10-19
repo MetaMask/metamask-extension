@@ -14,7 +14,7 @@ export function getNetworkIdentifier (state) {
   return nickname || rpcUrl || type
 }
 
-export function getCurrentNetworkName (state) {
+export function getMetricsNetworkIdentifier (state) {
   const { provider } = state.metamask
   return provider.type === 'rpc' ? provider.rpcUrl : provider.type
 }

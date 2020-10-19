@@ -55,7 +55,7 @@ export const segment = process.env.SEGMENT_WRITE_KEY
  * We attach context to every meta metrics event that help to qualify our analytics.
  * This type has all optional values because it represents a returned object from a
  * method call. Ideally app and userAgent are defined on every event. This is confirmed
- * in the getTrackSegmentEvent function, but still provides the consumer a way to
+ * in the getTrackMetaMetricsEvent function, but still provides the consumer a way to
  * override these values if necessary.
  * @typedef {Object} MetaMetricsEventContext
  * @property {Object} [app]
@@ -112,7 +112,7 @@ export function getTrackMetaMetricsEvent (
     ? metamaskVersion
     : `${metamaskVersion}-${process.env.METAMASK_ENVIRONMENT}`
 
-  return function trackSegmentEvent ({
+  return function trackMetaMetricsEvent ({
     event,
     category,
     isOptIn,

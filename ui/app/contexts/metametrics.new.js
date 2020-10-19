@@ -14,7 +14,7 @@ import { omit } from 'lodash'
 import { getEnvironmentType } from '../../../app/scripts/lib/util'
 import { PATH_NAME_MAP } from '../helpers/constants/routes'
 import { getCurrentLocale } from '../ducks/metamask/metamask'
-import { getCurrentChainId, getCurrentNetworkName, txDataSelector } from '../selectors'
+import { getCurrentChainId, getMetricsNetworkIdentifier, txDataSelector } from '../selectors'
 import { getTrackMetaMetricsEvent, METAMETRICS_ANONYMOUS_ID, segment } from '../../../shared/modules/metametrics'
 
 export const MetaMetricsContext = createContext(() => {
@@ -54,7 +54,7 @@ export function MetaMetricsProvider ({ children }) {
   const metaMetricsSendCount = useSelector((state) => state.metamask.metaMetricsSendCount)
   const location = useLocation()
   const context = useSegmentContext()
-  const network = useSelector(getCurrentNetworkName)
+  const network = useSelector(getMetricsNetworkIdentifier)
   const chainId = useSelector(getCurrentChainId)
 
   /**
