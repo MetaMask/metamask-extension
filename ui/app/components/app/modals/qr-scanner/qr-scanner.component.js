@@ -5,7 +5,7 @@ import { BrowserQRCodeReader } from '@zxing/library'
 import { getEnvironmentType } from '../../../../../../app/scripts/lib/util'
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../../app/scripts/lib/enums'
 import Spinner from '../../../ui/spinner'
-import WebcamUtils from '../../../../../lib/webcam-utils'
+import WebcamUtils, { NoWebCamError } from '../../../../../lib/webcam-utils'
 import PageContainerFooter from '../../../ui/page-container/page-container-footer/page-container-footer.component'
 
 const READY_STATE = {
@@ -196,7 +196,7 @@ export default class QrScanner extends Component {
     const { error } = this.state
 
     let title, msg
-    if (error.type === 'NO_WEBCAM_FOUND') {
+    if (error.message === 'No webcam found') {
       title = t('noWebcamFoundTitle')
       msg = t('noWebcamFound')
     } else if (error.message === t('unknownQrCode')) {

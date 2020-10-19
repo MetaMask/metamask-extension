@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    // Allow checking JavaScript files
+    "allowJs": true,
+    // I mean, check JavaScript files for real
+    "checkJs": true,
+    // Do not generate any output files
+    "noEmit": true,
+    "target": "ESNext",
+    "jsx": "react",
+    "moduleResolution": "node"
+  },
+  "include": ["ui/**/*"],
+}
