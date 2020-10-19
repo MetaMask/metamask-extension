@@ -16,6 +16,7 @@
     padding: 16px 24px;
     opacity: 0.5;
     transition: opacity 200ms ease-in-out;
+    background-color: unset;
 
     @media screen and (min-width: 576px) {
       &:hover {
