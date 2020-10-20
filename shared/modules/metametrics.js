@@ -192,7 +192,7 @@ export function getTrackMetaMetricsEvent (
      * to ensure the event is at least queued in segment. This is how the .trackLink and
      * .trackForm functions on segment's analytics.js library behave.
      */
-    return Promise((resolve) => {
+    return new Promise((resolve) => {
       setTimeout(resolve, 100)
     })
   }
