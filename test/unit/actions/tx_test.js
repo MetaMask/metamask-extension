@@ -29,7 +29,7 @@ describe('tx confirmation screen', function () {
     it('creates COMPLETED_TX with the cancelled transaction ID', async function () {
       actions._setBackgroundConnection({
         approveTransaction (_, cb) {
-          cb('An error!')
+          cb(new Error('An error!'))
         },
         cancelTransaction (_, cb) {
           cb()

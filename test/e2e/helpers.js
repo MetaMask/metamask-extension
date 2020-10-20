@@ -33,7 +33,7 @@ async function withFixtures (options, callback) {
     const { driver } = await buildWebDriver(driverOptions)
     webDriver = driver
 
-    // eslint-disable-next-line callback-return
+    // eslint-disable-next-line node/callback-return,node/no-callback-literal
     await callback({
       driver,
     })
