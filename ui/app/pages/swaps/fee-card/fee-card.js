@@ -55,16 +55,16 @@ export default function FeeCard ({
             'fee-card__savings-and-quotes-row--align-left': !canDisplaySavings,
           })}
         >
-          <div className="fee-card__savings-text">
+          <p className="fee-card__savings-text">
             {canDisplaySavings
               ? t('swapSaving', [savingAmount])
               : t('swapBetterQuoteAvailable')
             }
-          </div>
+          </p>
           <div className="fee-card__quote-link-container" onClick={onQuotesClick}>
-            <div className="fee-card__quote-link-text">
+            <p className="fee-card__quote-link-text">
               { t('swapNQuotes', [numberOfQuotes]) }
-            </div>
+            </p>
             <div
               className="fee-card__caret-right"
             >
@@ -158,12 +158,11 @@ export default function FeeCard ({
             <div className="fee-card__row-header-text">
               {t('swapQuoteIncludesRate', [metaMaskFee])}
             </div>
-            <div className="fee-card__info-tooltip-container">
-              <InfoTooltip
-                position="top"
-                contentText={t('swapMetaMaskFeeDescription')}
-              />
-            </div>
+            <InfoTooltip
+              position="top"
+              contentText={t('swapMetaMaskFeeDescription', [metaMaskFee])}
+              wrapperClassName="fee-card__info-tooltip-container"
+            />
           </div>
         </div>
       </div>

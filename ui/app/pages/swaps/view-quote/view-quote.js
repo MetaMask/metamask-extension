@@ -418,7 +418,7 @@ export default function ViewQuote () {
       ? sourceTokenSymbol
       : 'ETH',
   ])
-  console.log('*** quotes', quotes)
+
   return (
     <div className="view-quote">
       <div className="view-quote__content">
