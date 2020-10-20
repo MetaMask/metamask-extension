@@ -36,7 +36,7 @@ export default function InfoTooltip ({
 }
 
 InfoTooltip.propTypes = {
-  contentText: PropTypes.string,
+  contentText: PropTypes.node,
   position: PropTypes.oneOf(['top', 'left', 'bottom', 'right']),
   wide: PropTypes.bool,
   containerClassName: PropTypes.string,
