@@ -126,6 +126,8 @@
     background: white;
     border-radius: 6px;
     min-height: 194px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__loading-item {
