@@ -396,14 +396,14 @@ export default class SwapsController {
    *  - ethFee
    *  - ethValueReceived
    *  - ethValueOfTrade
-   * 
+   *
    * In addition, adds the following properties to the best quote:
    *  - isBestQuote (boolean)
    *  - savings (Object)
    *   - fee (decimal string)
    *   - performance (decimal string)
    *   - total (decimal string)
-   * 
+   *
    * @param {Object} quotes - A set of quotes to be modified in-place.
    * @returns {string|null} The aggregator ID of the best quote, if any.
    */
@@ -507,14 +507,16 @@ export default class SwapsController {
           ? ethValueReceived.minus(totalEthCost, 10)
           : ethValueReceived.minus(tokenConversionRate ? totalEthCost : 0, 10)
 
+      // Collect values for savings calculation
+      allEthReceivedValues.push(ethValueReceived)
+      allEthFees.push(ethFee)
+
+      // Add the stringified values to the quote
       quote.ethFee = ethFee.toString(10)
       quote.ethValueReceived = ethValueReceived.toString(10)
       quote.ethValueOfTrade = ethValueOfTrade.toString(10)
 
-      // collect values for savings calculation
-      allEthReceivedValues.push(ethValueReceived)
-      allEthFees.push(ethFee)
-
+      // Update best quote
       if (
         ethTradeValueOfBestQuote === null ||
         ethValueOfTrade.gt(ethTradeValueOfBestQuote)
