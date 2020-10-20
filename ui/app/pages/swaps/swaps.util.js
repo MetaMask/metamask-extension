@@ -292,7 +292,7 @@ export function getRenderableGasFeesForQuote (tradeGas, approveGas, gasPrice, cu
   }
 }
 
-export function quotesToRenderableData (quotes, gasPrice, conversionRate, currentCurrency, approveGas, tokenConversionRates, customGasLimit) {
+export function quotesToRenderableData (quotes, gasPrice, conversionRate, currentCurrency, approveGas, tokenConversionRates) {
   return Object.values(quotes).map((quote) => {
     const { destinationAmount = 0, sourceAmount = 0, sourceTokenInfo, destinationTokenInfo, slippage, aggType, aggregator, gasEstimateWithRefund, averageGas } = quote
     const sourceValue = calcTokenAmount(sourceAmount, sourceTokenInfo.decimals || 18).toString(10)
@@ -305,7 +305,6 @@ export function quotesToRenderableData (quotes, gasPrice, conversionRate, curren
       feeInEth,
     } = getRenderableGasFeesForQuote(
       (
-        customGasLimit ||
         gasEstimateWithRefund ||
         decimalToHex(averageGas || 800000)
       ),
