@@ -708,6 +708,10 @@
   "gasLimitTooLow": {
     "message": "Gas limit must be at least 21000"
   },
+  "gasLimitTooLowWithDynamicFee": {
+    "message": "Gas limit must be at least $1",
+    "description": "$1 is the custom gas limit, in decimal."
+  },
   "gasPrice": {
     "message": "Gas Price (GWEI)"
   },
@@ -1643,6 +1647,10 @@
   "swapEstimatedNetworkFee": {
     "message": "Estimated network fee"
   },
+  "swapEstimatedNetworkFeeSummary": {
+    "message": "The “$1” is what we expect the actual fee to be. The exact amount depends on network conditions.",
+    "description": "$1 will be the translation of swapEstimatedNetworkFee, with the font bolded"
+  },
   "swapEstimatedNetworkFees": {
     "message": "Estimated network fees"
   },
@@ -1677,6 +1685,9 @@
   "swapFinalizing": {
     "message": "Finalizing..."
   },
+  "swapGasFeeSummary": {
+    "message": "The gas fee covers the cost of processing your swap and storing it on the Ethereum network. MetaMask does not profit from this fee."
+  },
   "swapGetQuotes": {
     "message": "Get quotes"
   },
@@ -1705,7 +1716,8 @@
     "message": "Transaction may fail, max slippage too low."
   },
   "swapMaxNetworkFeeInfo": {
-    "message": "The Max network fee is the most you’ll pay to complete your transaction. The max fee helps ensure your Swap has the best chance of succeeding. MetaMask does not profit from network fees."
+    "message": "“$1” is the most you’ll spend. When the network is volatile this can be a large amount.",
+    "description": "$1 will be the translation of swapMaxNetworkFees, with the font bolded"
   },
   "swapMaxNetworkFees": {
     "message": "Max network fee"
@@ -1717,7 +1729,7 @@
     "message": "MetaMask fee"
   },
   "swapMetaMaskFeeDescription": {
-    "message": "A service fee of $1% is automatically factored into each quote, which supports ongoing development to make MetaMask even better.",
+    "message": "We find the best price from the top liquidity sources, every time. A fee of $1% is automatically factored into each quote, which supports ongoing development to make MetaMask even better.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesAvailable": {
@@ -1740,6 +1752,10 @@
   },
   "swapQuoteDetailsSlippageInfo": {
     "message": "If the price changes between the time your order is placed and confirmed it’s called \"slippage\". Your Swap will automatically cancel if slippage exceeds your \"max slippage\" setting."
+  },
+  "swapQuoteIncludesRate": {
+    "message": "Quote includes a $1% MetaMask fee",
+    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapQuoteNofN": {
     "message": "Quote $1 of $2",

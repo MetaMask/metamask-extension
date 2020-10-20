@@ -19,7 +19,7 @@ import { useTransactionTimeRemaining } from '../../../hooks/useTransactionTimeRe
 import { usePrevious } from '../../../hooks/usePrevious'
 import Mascot from '../../../components/ui/mascot'
 import PulseLoader from '../../../components/ui/pulse-loader'
-import { getBlockExplorerUrlForTx } from '../../../helpers/utils/transactions.util'
+import { getBlockExplorerUrlForTx, getStatusKey } from '../../../helpers/utils/transactions.util'
 import CountdownTimer from '../countdown-timer'
 import {
   QUOTES_EXPIRED_ERROR,
@@ -28,6 +28,7 @@ import {
   QUOTES_NOT_AVAILABLE_ERROR,
   OFFLINE_FOR_MAINTENANCE,
 } from '../../../helpers/constants/swaps'
+import { SUBMITTED_STATUS } from '../../../helpers/constants/transactions'
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes'
 
 import { getRenderableGasFeesForQuote } from '../swaps.util'
@@ -96,7 +97,15 @@ export default function AwaitingSwap ({
     rpcPrefs,
   )
 
-  const timeRemaining = useTransactionTimeRemaining(true, true, tradeTxData?.submittedTime, usedGasPrice, true, true)
+  const statusKey = tradeTxData && getStatusKey(tradeTxData)
+  const timeRemaining = useTransactionTimeRemaining(
+    statusKey === SUBMITTED_STATUS,
+    true,
+    tradeTxData?.submittedTime,
+    usedGasPrice,
+    true,
+    true,
+  )
   const previousTimeRemaining = usePrevious(timeRemaining)
   const timeRemainingIsNumber = typeof timeRemaining === 'number' && !isNaN(timeRemaining)
   const previousTimeRemainingIsNumber = typeof previousTimeRemaining === 'number' && !isNaN(previousTimeRemaining)

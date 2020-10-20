@@ -27,6 +27,7 @@ const expectedResults = [
     secondaryCurrency: '-1 ETH',
     isPending: false,
     displayedStatusKey: 'confirmed',
+    isSubmitted: false,
   },
   {
     title: 'Send ETH',

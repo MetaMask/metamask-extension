@@ -22,6 +22,7 @@ import {
   getBalanceError,
   getCustomSwapsGas,
   getDestinationTokenInfo,
+  getMetaMaskFeeAmount,
   getSwapsTradeTxParams,
   getTopQuote,
   navigateBackToBuildQuote,
@@ -72,6 +73,7 @@ import { useTokenTracker } from '../../../hooks/useTokenTracker'
 import { QUOTES_EXPIRED_ERROR } from '../../../helpers/constants/swaps'
 import CountdownTimer from '../countdown-timer'
 import SwapsFooter from '../swaps-footer'
+import InfoTooltip from '../../../components/ui/info-tooltip'
 
 export default function ViewQuote () {
   const history = useHistory()
@@ -131,12 +133,11 @@ export default function ViewQuote () {
     .round(0)
     .toString(16)
 
-  const maxGasLimit = (customMaxGas ||
-    hexMax(
-      (`0x${decimalToHex(usedQuote?.maxGas || 0)}`),
-      usedGasLimitWithMultiplier,
-    )
+  const nonCustomMaxGasLimit = hexMax(
+    (`0x${decimalToHex(usedQuote?.maxGas || 0)}`),
+    usedGasLimitWithMultiplier,
   )
+  const maxGasLimit = customMaxGas || nonCustomMaxGasLimit
 
   const gasTotalInWeiHex = calcGasTotal(maxGasLimit, gasPrice)
 
@@ -340,6 +341,8 @@ export default function ViewQuote () {
     }
   }, [sourceTokenSymbol, sourceTokenValue, destinationTokenSymbol, destinationTokenValue, fetchParams, topQuote, numberOfQuotes, feeInFiat, bestQuoteReviewedEvent, anonymousBestQuoteReviewedEvent])
 
+  const metaMaskFee = useSelector(getMetaMaskFeeAmount)
+
   const onFeeCardTokenApprovalClick = () => {
     anonymousEditSpendLimitOpened()
     editSpendLimitOpened()
@@ -394,6 +397,7 @@ export default function ViewQuote () {
         : null
     ),
     useFastestButtons: true,
+    minimumGasLimit: Number(hexToDecimal(nonCustomMaxGasLimit)),
   }))
 
   const tokenApprovalTextComponent = (
@@ -493,6 +497,14 @@ export default function ViewQuote () {
             {t('swapNQuotesAvailable', [Object.values(quotes).length])}
             <i className="fa fa-arrow-right" />
           </div>
+        </div>
+        <div className="view-quote__metamask-rate">
+          <p className="view-quote__metamask-rate-text">{ t('swapQuoteIncludesRate', [metaMaskFee]) }</p>
+          <InfoTooltip
+            position="top"
+            contentText={t('swapMetaMaskFeeDescription', [metaMaskFee])}
+            wrapperClassName="view-quote__metamask-rate-info-icon"
+          />
         </div>
         <div
           className={classnames('view-quote__fee-card-container', {

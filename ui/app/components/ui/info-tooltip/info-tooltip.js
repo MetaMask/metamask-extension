@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 import Tooltip from '../tooltip'
 
 const positionArrowClassMap = {
@@ -12,17 +13,21 @@ const positionArrowClassMap = {
 export default function InfoTooltip ({
   contentText = '',
   position = '',
+  containerClassName,
+  wrapperClassName,
+  wide,
 }) {
   return (
     <div className="info-tooltip">
       <Tooltip
         interactive
         position={position}
-        containerClassName="info-tooltip__tooltip-container"
+        containerClassName={classnames('info-tooltip__tooltip-container', containerClassName)}
+        wrapperClassName={wrapperClassName}
         tooltipInnerClassName="info-tooltip__tooltip-content"
         tooltipArrowClassName={positionArrowClassMap[position]}
         html={contentText}
-        theme="tippy-tooltip-info"
+        theme={wide ? 'tippy-tooltip-wideInfo' : 'tippy-tooltip-info'}
       >
         <img src="images/mm-info-icon.svg" />
       </Tooltip>
@@ -33,4 +38,7 @@ export default function InfoTooltip ({
 InfoTooltip.propTypes = {
   contentText: PropTypes.string,
   position: PropTypes.oneOf(['top', 'left', 'bottom', 'right']),
+  wide: PropTypes.bool,
+  containerClassName: PropTypes.string,
+  wrapperClassName: PropTypes.string,
 }

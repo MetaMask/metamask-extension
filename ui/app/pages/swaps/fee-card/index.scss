@@ -27,7 +27,7 @@
 
   &__row-header-text,
   &__row-header-text--bold {
-    margin-right: 6px;
+    margin-right: 4px;
     cursor: pointer;
   }
 
@@ -54,6 +54,21 @@
       margin-left: 4px;
       cursor: pointer;
     }
+  }
+
+  &__info-tooltip-container {
+    height: 10px;
+    width: 10px;
+    justify-content: center;
+    margin-top: 2px;
+  }
+
+  &__info-tooltip-paragraph {
+    margin-bottom: 8px;
+  }
+
+  &__info-tooltip-paragraph:last-of-type {
+    margin-bottom: 0;
   }
 
   &__row-fee {
@@ -91,11 +106,8 @@
     color: $Grey-500;
   }
 
+  &__row-header-secondary,
   &__row-header-secondary--bold {
-    margin-right: 16px;
-  }
-
-  &__row-header-secondary {
     margin-right: 12px;
   }
 
@@ -107,6 +119,10 @@
   &__row-header-text--bold,
   &__row-header-secondary--bold,
   &__row-header-primary--bold {
+    font-weight: bold;
+  }
+
+  &__bold {
     font-weight: bold;
   }
 }
