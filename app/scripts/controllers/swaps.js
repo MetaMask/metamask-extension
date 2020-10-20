@@ -175,13 +175,7 @@ export default class SwapsController {
     if (Object.values(newQuotes).length === 0) {
       this.setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR)
     } else {
-      const topQuoteData = await this._findTopQuoteAndCalculateSavings(newQuotes)
-
-      if (topQuoteData.topAggId) {
-        topAggId = topQuoteData.topAggId
-        newQuotes[topAggId].isBestQuote = topQuoteData.isBest
-        newQuotes[topAggId].savings = topQuoteData.savings
-      }
+      topAggId = await this._addTopQuoteAndTradeData(newQuotes)
     }
 
     const { swapsState } = this.store.getState()
@@ -395,7 +389,25 @@ export default class SwapsController {
     return ethersGasPrice.toHexString()
   }
 
-  async _findTopQuoteAndCalculateSavings (quotes = {}) {
+  /**
+   * Calculates trade data in order to identify the best quotes and its savings.
+   * Modifies the passed-in quotes in place, adding the following decimal string
+   * properties:
+   *  - ethFee
+   *  - ethValueReceived
+   *  - ethValueOfTrade
+   * 
+   * In addition, adds the following properties to the best quote:
+   *  - isBestQuote (boolean)
+   *  - savings (Object)
+   *   - fee (decimal string)
+   *   - performance (decimal string)
+   *   - total (decimal string)
+   * 
+   * @param {Object} quotes - A set of quotes to be modified in-place.
+   * @returns {string|null} The aggregator ID of the best quote, if any.
+   */
+  async _addTopQuoteAndTradeData (quotes = {}) {
     const tokenConversionRates = this.tokenRatesStore.getState()
       .contractExchangeRates
     const {
@@ -409,10 +421,9 @@ export default class SwapsController {
 
     const usedGasPrice = customGasPrice || await this._getEthersGasPrice()
 
-    let topAggId = ''
+    let topAggId = null
     let ethTradeValueOfBestQuote = null
-    let ethFeeForBestQuote = null
-    const allEthTradeValues = []
+    const allEthReceivedValues = []
     const allEthFees = []
 
     Object.values(quotes).forEach((quote) => {
@@ -474,9 +485,11 @@ export default class SwapsController {
         : totalEthCost
 
       const tokenConversionRate = tokenConversionRates[destinationToken]
-      const ethValueOfTrade =
+
+      // This is how much we're getting of the destination asset, in ETH
+      const ethValueReceived =
         destinationToken === ETH_SWAPS_TOKEN_ADDRESS
-          ? calcTokenAmount(destinationAmount, 18).minus(totalEthCost, 10)
+          ? calcTokenAmount(destinationAmount, 18)
           : new BigNumber(tokenConversionRate || 1, 10)
             .times(
               calcTokenAmount(
@@ -485,10 +498,21 @@ export default class SwapsController {
               ),
               10,
             )
-            .minus(tokenConversionRate ? totalEthCost : 0, 10)
+
+      // This is the overall ETH value of the trade, given by subtracting the
+      // total cost of the swap in ETH from the ETH value of the received
+      // destination asset
+      const ethValueOfTrade =
+        destinationToken === ETH_SWAPS_TOKEN_ADDRESS
+          ? ethValueReceived.minus(totalEthCost, 10)
+          : ethValueReceived.minus(tokenConversionRate ? totalEthCost : 0, 10)
+
+      quote.ethFee = ethFee.toString(10)
+      quote.ethValueReceived = ethValueReceived.toString(10)
+      quote.ethValueOfTrade = ethValueOfTrade.toString(10)
 
       // collect values for savings calculation
-      allEthTradeValues.push(ethValueOfTrade)
+      allEthReceivedValues.push(ethValueReceived)
       allEthFees.push(ethFee)
 
       if (
@@ -497,29 +521,29 @@ export default class SwapsController {
       ) {
         topAggId = aggregator
         ethTradeValueOfBestQuote = ethValueOfTrade
-        ethFeeForBestQuote = ethFee
       }
     })
 
+    const topQuote = quotes[topAggId]
     const isBest =
-      quotes[topAggId].destinationToken === ETH_SWAPS_TOKEN_ADDRESS ||
-      Boolean(tokenConversionRates[quotes[topAggId]?.destinationToken])
-
-    let savings = null
+      topQuote.destinationToken === ETH_SWAPS_TOKEN_ADDRESS ||
+      Boolean(tokenConversionRates[topQuote?.destinationToken])
 
     if (isBest) {
-      savings = {}
+      const savings = {}
+
       // Performance savings are calculated as:
-      //   valueForBestTrade - medianValueOfAllTrades
-      savings.performance = ethTradeValueOfBestQuote.minus(
-        getMedian(allEthTradeValues),
-        10,
-      )
+      //   receivedValueForBestTrade - medianReceivedValueOfAllTrades
+      savings.performance = (new BigNumber(topQuote.ethValueReceived, 10))
+        .minus(
+          getMedian(allEthReceivedValues),
+          10,
+        )
 
       // Performance savings are calculated as:
       //   medianFeeOfAllTrades - feeForBestTrade
       savings.fee = getMedian(allEthFees).minus(
-        ethFeeForBestQuote,
+        topQuote.ethFee,
         10,
       )
 
@@ -527,9 +551,12 @@ export default class SwapsController {
       savings.total = savings.performance.plus(savings.fee, 10).toString(10)
       savings.performance = savings.performance.toString(10)
       savings.fee = savings.fee.toString(10)
+
+      topQuote.isBestQuote = isBest
+      topQuote.savings = savings
     }
 
-    return { topAggId, isBest, savings }
+    return topAggId
   }
 
   async _getERC20Allowance (contractAddress, walletAddress) {

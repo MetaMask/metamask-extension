@@ -253,14 +253,14 @@ describe('SwapsController', function () {
       })
     })
 
-    describe('_findTopQuoteAndCalculateSavings', function () {
+    describe('_addTopQuoteAndTradeData', function () {
       it('returns empty object if passed undefined or empty object', async function () {
         assert.deepStrictEqual(
-          await swapsController._findTopQuoteAndCalculateSavings(),
+          await swapsController._addTopQuoteAndTradeData(),
           {},
         )
         assert.deepStrictEqual(
-          await swapsController._findTopQuoteAndCalculateSavings({}),
+          await swapsController._addTopQuoteAndTradeData({}),
           {},
         )
       })
@@ -293,14 +293,17 @@ describe('SwapsController', function () {
             decimals: 18,
           },
           isBestQuote: true,
-          // TODO: find a way to calculate these values dynamically
-          gasEstimate: 2000000,
-          gasEstimateWithRefund: 'b8cae',
+          ethFee: '33554432',
+          ethValueOfTrade: '-33554382',
+          ethValueReceived: '50',
           savings: {
             fee: '0',
             performance: '6',
             total: '6',
           },
+          // TODO: find a way to calculate these values dynamically
+          gasEstimate: 2000000,
+          gasEstimateWithRefund: 'b8cae',
         })
 
         assert.strictEqual(
@@ -419,7 +422,10 @@ describe('SwapsController', function () {
           MOCK_FETCH_METADATA,
         )
 
-        assert.strictEqual(newQuotes[topAggId].isBestQuote, false)
+        assert.ok(
+          !newQuotes[topAggId].isBestQuote,
+          'should not have marked as best quote',
+        )
       })
     })
 
