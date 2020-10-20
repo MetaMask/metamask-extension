@@ -1,4 +1,4 @@
-import React, { Component, createContext, useEffect, useCallback, useState } from 'react'
+import React, { Component, createContext, useEffect, useCallback, useState, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import { useHistory } from 'react-router-dom'
@@ -15,10 +15,7 @@ import {
   txDataSelector,
 } from '../selectors/confirm-transaction'
 import { getEnvironmentType } from '../../../app/scripts/lib/util'
-import {
-  sendMetaMetricsEvent,
-} from '../helpers/utils/metametrics.util'
-import { sendCountIsTrackable } from '../../../shared/modules/metametrics'
+import { getTrackMetaMetricsEvent } from '../../../shared/modules/metametrics'
 
 export const MetaMetricsContext = createContext(() => {
   captureException(
@@ -44,7 +41,7 @@ export function MetaMetricsProvider ({ children }) {
     previousPath: '',
   }))
 
-  const { previousPath, currentPath } = state
+  const { currentPath } = state
 
   useEffect(() => {
     const unlisten = history.listen(() => setState((prevState) => ({
@@ -55,45 +52,65 @@ export function MetaMetricsProvider ({ children }) {
     return unlisten
   }, [history])
 
+  /**
+   * track a metametrics event
+   *
+   * @param {import('../../../shared/modules/metametrics').MetaMetricsEventPayload} - payload for event
+   * @returns undefined
+   */
+  const trackEvent = useMemo(() => {
+    const referrer = confirmTransactionOrigin ? { url: confirmTransactionOrigin } : undefined
+    const page = {
+      path: currentPath,
+    }
+    return getTrackMetaMetricsEvent(global.platform.getVersion(), () => ({
+      context: {
+        referrer,
+        page,
+      },
+      environmentType,
+      network,
+      participateInMetaMetrics,
+      metaMetricsId,
+      metaMetricsSendCount,
+    }))
+  }, [network, environmentType, participateInMetaMetrics, currentPath, confirmTransactionOrigin, metaMetricsId, metaMetricsSendCount])
+
   const metricsEvent = useCallback((config = {}, overrides = {}) => {
     const { eventOpts = {} } = config
-    const { name = '' } = eventOpts
-    const { currentPath: overrideCurrentPath = '' } = overrides
-    const isSendFlow = Boolean(name.match(/^send|^confirm/u) || overrideCurrentPath.match(/send|confirm/u))
 
-    if (participateInMetaMetrics || config.isOptIn) {
-      return sendMetaMetricsEvent({
-        network,
-        environmentType,
-        activeCurrency,
-        accountType,
-        confirmTransactionOrigin,
-        metaMetricsId,
-        numberOfTokens,
-        numberOfAccounts,
-        version: global.platform.getVersion(),
-        ...config,
-        previousPath,
-        currentPath,
-        excludeMetaMetricsId: isSendFlow && !sendCountIsTrackable(metaMetricsSendCount + 1),
-        ...overrides,
-      })
+    const additionalContext = {}
+
+    if (overrides.currentPath) {
+      additionalContext.page = {
+        path: currentPath,
+      }
     }
 
-    return undefined
+    return trackEvent({
+      event: eventOpts.name,
+      category: eventOpts.category,
+      isOptIn: config.isOptIn,
+      excludeMetaMetricsId: eventOpts.excludeMetaMetricsId ?? overrides.excludeMetaMetricsId ?? false,
+      metaMetricsId: config.metaMetricsId,
+      matomoEvent: true,
+      properties: {
+        action: eventOpts.action,
+        number_of_tokens: numberOfTokens,
+        number_of_accounts: numberOfAccounts,
+        active_currency: activeCurrency,
+        account_type: accountType,
+        is_new_visit: config.is_new_visit,
+        ...config.customVariables,
+      },
+    })
   }, [
-    network,
-    environmentType,
-    activeCurrency,
     accountType,
-    confirmTransactionOrigin,
-    participateInMetaMetrics,
-    previousPath,
-    metaMetricsId,
+    activeCurrency,
     numberOfTokens,
     numberOfAccounts,
     currentPath,
-    metaMetricsSendCount,
+    trackEvent,
   ])
 
   return (
