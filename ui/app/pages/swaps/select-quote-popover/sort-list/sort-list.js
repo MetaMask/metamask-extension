@@ -38,7 +38,7 @@ export default function SortList ({
   // This sort aims to do the following:
   // If there is no selected sort column, then the best quotes should be first in the list
   // If there is no selected sort column, then quotes that are not the best quotes should be in random order, after the first in the list
-  // If the sort column is 'liquiditySource', sort alphabetically by 'liquiditySource'
+  // If the sort column is 'quoteSource', sort alphabetically by 'quoteSource'
   // Otherwise, sort in either ascending or descending numerical order on the selected column
   const sortedRows = useMemo(() => {
     return [...quoteDataRows].sort((rowDataA, rowDataB) => {
@@ -51,7 +51,7 @@ export default function SortList ({
         const aHex = (new BigNumber(rowDataA.destinationTokenValue).toString(16))
         const bHex = (new BigNumber(rowDataB.destinationTokenValue).toString(16))
         return aHex[aHex.length - 1] < bHex[bHex.length - 1] ? -1 : 1
-      } else if (sortColumn === 'liquiditySource') {
+      } else if (sortColumn === 'quoteSource') {
         return rowDataA[sortColumn] > rowDataB[sortColumn]
           ? sortDirection * -1
           : sortDirection
@@ -94,7 +94,7 @@ export default function SortList ({
         </div>
         <div
           className="select-quote-popover__column-header select-quote-popover__quote-source"
-          onClick={() => onColumnHeaderClick('liquiditySource')}
+          onClick={() => onColumnHeaderClick('quoteSource')}
         >
           {t('swapQuoteSource')}
           <div className="select-quote-popover__quote-source-toggle"><ToggleArrows /></div>
