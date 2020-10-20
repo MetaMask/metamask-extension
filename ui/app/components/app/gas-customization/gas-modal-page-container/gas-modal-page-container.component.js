@@ -53,7 +53,7 @@ export default class GasModalPageContainer extends Component {
     customTotalSupplement: PropTypes.string,
     isSwap: PropTypes.bool,
     value: PropTypes.string,
-    conversionRate: PropTypes.string,
+    conversionRate: PropTypes.number,
     minimumGasLimit: PropTypes.number.isRequired,
   }
 
