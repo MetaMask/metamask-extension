@@ -127,6 +127,7 @@
 
   &__fee-card-container {
     width: 100%;
+    max-width: 311px;
     margin-top: auto;
     margin-bottom: 8px;
 
@@ -134,6 +135,7 @@
       margin-bottom: 0;
 
       &--three-rows {
+        margin-top: 24px;
         margin-bottom: -16px;
       }
     }
@@ -151,7 +153,7 @@
     }
 
     &--thin {
-      margin-top: 8px;
+      margin-top: 0;
     }
   }
 
