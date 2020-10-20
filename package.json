@@ -210,6 +210,7 @@
     "concurrently": "^5.2.0",
     "copy-webpack-plugin": "^6.0.3",
     "coveralls": "^3.0.0",
+    "cross-spawn": "^7.0.3",
     "css-loader": "^2.1.1",
     "del": "^3.0.0",
     "deps-dump": "^1.1.0",
