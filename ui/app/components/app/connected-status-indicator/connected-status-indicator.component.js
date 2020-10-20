@@ -19,7 +19,7 @@ export default class ConnectedStatusIndicator extends Component {
 
   static defaultProps = {
     status: STATUS_NOT_CONNECTED,
-    onClick: null,
+    onClick: undefined,
   }
 
   renderStatusCircle = () => {
