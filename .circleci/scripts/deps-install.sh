@@ -27,6 +27,3 @@ yarn --frozen-lockfile --ignore-scripts --har
 
 # for release
 (cd node_modules/@sentry/cli && yarn run install)
-
-# patch package
-yarn run postinstall
