@@ -119,7 +119,14 @@ export default function AwaitingSwap ({
 
   let countdownText
   if (timeRemainingIsNumber && !timeRemainingExpired && tradeTxData?.submittedTime) {
-    countdownText = <CountdownTimer timeStarted={tradeTxData?.submittedTime} timerBase={estimatedTransactionWaitTime} timeOnly />
+    countdownText = (
+      <CountdownTimer
+        key="countdown-timer"
+        timeStarted={tradeTxData?.submittedTime}
+        timerBase={estimatedTransactionWaitTime}
+        timeOnly
+      />
+    )
   } else if (tradeTxData?.submittedTime) {
     countdownText = t('swapsAlmostDone')
   } else {
