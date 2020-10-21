@@ -521,28 +521,35 @@ export default class SwapsController {
 
       savings = {}
 
-      const { ethValueOfQuote: medianEthValueOfQuote, ethFee: mediaEthFee } = getMedianEthValueQuote(Object.values(quotes))
+      const {
+        ethValueOfQuote: ethValueOfMedianQuote,
+        ethFee: medianEthFee,
+        metaMaskFeeInEth: medianMetaMaskFee,
+      } = getMedianEthValueQuote(Object.values(quotes))
 
-      const totalSavingsPreMetaMaskFee = ethValueOfBestQuote.minus(
-        medianEthValueOfQuote,
+      const ethValueOfMedianQuotePreMetaMaskFee = ethValueOfMedianQuote.plus(
+        medianMetaMaskFee,
         10,
       )
       // Total savings are calculated as:
       //   valueForBestTrade - medianValueOfAllTrades - metaMaskFeeForBestTrade
-      savings.total = totalSavingsPreMetaMaskFee.minus(
-        metaMaskFeeInEthForBestQuote,
+      savings.total = ethValueOfBestQuote.minus(
+        ethValueOfMedianQuotePreMetaMaskFee,
         10,
       )
 
       // Fee savings are calculated as:
       //   feeOfQuotesOfMedianValueOfAllTrades - feeForBestTrade
-      savings.fee = mediaEthFee.minus(
+      savings.fee = medianEthFee.minus(
         ethFeeForBestQuote,
         10,
       )
 
       // Performance savings are the total savings minus the fee savings
-      savings.performance = totalSavingsPreMetaMaskFee.minus(savings.fee, 10).toString(10)
+      savings.performance = savings.total
+        .minus(savings.fee, 10)
+        .plus(metaMaskFeeInEthForBestQuote)
+        .toString(10)
       savings.total = savings.total.toString(10)
       savings.fee = savings.fee.toString(10)
       savings.metaMaskFee = metaMaskFeeInEthForBestQuote.toString(10)
@@ -684,6 +691,9 @@ function getMedianEthValueQuote (quotes) {
       .dividedBy(2),
     ethFee: quotes[upperIndex].ethFee
       .plus(quotes[upperIndex - 1].ethFee)
+      .dividedBy(2),
+    metaMaskFeeInEth: quotes[upperIndex].metaMaskFeeInEth
+      .plus(quotes[upperIndex - 1].metaMaskFeeInEth)
       .dividedBy(2),
   }
 }
