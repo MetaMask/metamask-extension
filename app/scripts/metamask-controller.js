@@ -58,6 +58,7 @@ import accountImporter from './account-import-strategies'
 import seedPhraseVerifier from './lib/seed-phrase-verifier'
 
 import backgroundMetaMetricsEvent from './lib/background-metametrics'
+import { ENVIRONMENT_TYPE_BACKGROUND } from './lib/enums'
 
 export default class MetamaskController extends EventEmitter {
 
@@ -129,7 +130,7 @@ export default class MetamaskController extends EventEmitter {
         return {
           participateInMetaMetrics,
           metaMetricsId,
-          environmentType: 'background-process',
+          environmentType: ENVIRONMENT_TYPE_BACKGROUND,
           chainId,
           network,
           context: {

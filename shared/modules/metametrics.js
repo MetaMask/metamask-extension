@@ -1,9 +1,13 @@
 import Analytics from 'analytics-node'
-import { merge, omit } from 'lodash'
+import { omit, pick } from 'lodash'
 
-const inDevelopment = process.env.METAMASK_DEBUG || process.env.IN_TEST
-
-const flushAt = inDevelopment ? 1 : undefined
+// flushAt controls how many events are collected in the queue before they
+// are sent to segment. I recommend a queue size of one due to an issue with
+// detecting and flushing events in an extension beforeunload doesn't work in
+// a notification context. Because notification windows are opened and closed
+// in reaction to the very events we want to track, it is problematic to cache
+// at all.
+const flushAt = 1
 
 export const METAMETRICS_ANONYMOUS_ID = '0x0000000000000000'
 
@@ -57,13 +61,13 @@ export const segment = process.env.SEGMENT_WRITE_KEY
  * method call. Ideally app and userAgent are defined on every event. This is confirmed
  * in the getTrackMetaMetricsEvent function, but still provides the consumer a way to
  * override these values if necessary.
- * @typedef {Object} MetaMetricsEventContext
- * @property {Object} [app]
- * @property {string} [app.name] - the name of the application tracking the event
- * @property {string} [app.version] - the version of the application
- * @property {string} [userAgent] - the useragent string of the user
- * @property {string} [locale]    - the locale string for the user
- * @property {Object} [page]      - an object representing details of the current page
+ * @typedef {Object} MetaMetricsContext
+ * @property {Object} app
+ * @property {string} app.name - the name of the application tracking the event
+ * @property {string} app.version - the version of the application
+ * @property {string} userAgent - the useragent string of the user
+ * @property {string} locale    - the locale string for the user
+ * @property {Object} [page]     - an object representing details of the current page
  * @property {string} [page.path] - the path of the current page (e.g /home)
  * @property {string} [page.title] - the title of the current page (e.g 'home')
  * @property {string} [page.url]  - the fully qualified url of the current page
@@ -72,12 +76,25 @@ export const segment = process.env.SEGMENT_WRITE_KEY
  */
 
 /**
+ * page and referrer from the MetaMetricsContext are very dynamic in nature and may be
+ * provided as part of the initial context payload when creating the trackMetaMetricsEvent function,
+ * or at the event level when calling the trackMetaMetricsEvent function.
+ * @typedef {Pick<MetaMetricsContext, 'page' | 'referrer'>} MetaMetricsDynamicContext
+ */
+
+/**
+ * @typedef {import('../../app/scripts/lib/enums').EnvironmentType} EnvironmentType
+ */
+
+/**
  * @typedef {Object} MetaMetricsRequiredState
  * @property {bool} participateInMetaMetrics - has the user opted into metametrics
  * @property {string} [metaMetricsId] - the user's metaMetricsId, if they have opted in
- * @property {MetaMetricsEventContext} context - context about the event
+ * @property {MetaMetricsDynamicContext} context - context about the event
  * @property {string} chainId - the chain id of the current network
+ * @property {string} locale - the locale string of the current user
  * @property {string} network - the name of the current network
+ * @property {EnvironmentType} environmentType - environment that the event happened in
  * @property {string} [metaMetricsSendCount] - number of transactions sent, used to add metametricsId
  *  intermittently to events with onchain data attached to them used to protect identity of users.
  */
@@ -92,7 +109,7 @@ export const segment = process.env.SEGMENT_WRITE_KEY
  * @property {string}  [currency] - ISO 4127 format currency for events with revenue, defaults to US dollars
  * @property {number}  [value] - Abstract "value" that this event has for MetaMask.
  * @property {boolean} [excludeMetaMetricsId] - whether to exclude the user's metametrics id for anonymity
- * @property {MetaMetricsEventContext} [additionalContext] - additional context to attach to event
+ * @property {MetaMetricsDynamicContext} [eventContext] - additional context to attach to event
  */
 
 /**
@@ -121,7 +138,7 @@ export function getTrackMetaMetricsEvent (
     currency,
     value,
     excludeMetaMetricsId: excludeId,
-    additionalContext = {},
+    eventContext = {},
   }) {
     if (!event || !category) {
       throw new Error('Must specify event and category.')
@@ -132,6 +149,7 @@ export function getTrackMetaMetricsEvent (
       metaMetricsId,
       environmentType,
       chainId,
+      locale,
       network,
       metaMetricsSendCount,
     } = getDynamicState()
@@ -150,13 +168,17 @@ export function getTrackMetaMetricsEvent (
       return Promise.resolve()
     }
 
-    const context = merge(providedContext, additionalContext, {
+    /** @type {MetaMetricsContext} */
+    const context = {
       app: {
         name: 'MetaMask Extension',
         version,
       },
+      locale,
       userAgent: window.navigator.userAgent,
-    })
+      ...pick(providedContext, ['page', 'referrer']),
+      ...pick(eventContext, ['page', 'referrer']),
+    }
 
     const trackOptions = {
       event,
@@ -183,17 +205,17 @@ export function getTrackMetaMetricsEvent (
       trackOptions.userId = metaMetricsId
     }
 
-    segment.track(trackOptions)
-
-    /**
-     * Some events will want to wait for the track before proceeding. Segment does
-     * things a little differently depending on environment (flushing, vs batching)
-     * so the callback option on .track may behave oddly. It is safe to add a small timeout
-     * to ensure the event is at least queued in segment. This is how the .trackLink and
-     * .trackForm functions on segment's analytics.js library behave.
-     */
-    return new Promise((resolve) => {
-      setTimeout(resolve, 100)
+    return new Promise((resolve, reject) => {
+      // This is only safe to do because we are no longer batching events through segment.
+      // If flushAt is greater than one the callback won't be triggered until after a number
+      // of events have been queued equal to the flushAt value OR flushInterval passes. The
+      // default flushInterval is ten seconds
+      segment.track(trackOptions, (err) => {
+        if (err) {
+          return reject(err)
+        }
+        return resolve()
+      })
     })
   }
 }

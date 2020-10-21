@@ -27,7 +27,6 @@ const PATHS_TO_CHECK = Object.keys(PATH_NAME_MAP)
 
 function useSegmentContext () {
   const match = useRouteMatch({ path: PATHS_TO_CHECK, exact: true, strict: true })
-  const locale = useSelector(getCurrentLocale)
   const txData = useSelector(txDataSelector) || {}
   const confirmTransactionOrigin = txData.origin
 
@@ -42,7 +41,6 @@ function useSegmentContext () {
   } : undefined
 
   return {
-    locale: locale.replace('_', '-'),
     page,
     referrer,
   }
@@ -52,6 +50,7 @@ export function MetaMetricsProvider ({ children }) {
   const metaMetricsId = useSelector((state) => state.metamask.metaMetricsId)
   const participateInMetaMetrics = useSelector((state) => state.metamask.participateInMetaMetrics)
   const metaMetricsSendCount = useSelector((state) => state.metamask.metaMetricsSendCount)
+  const locale = useSelector(getCurrentLocale)
   const location = useLocation()
   const context = useSegmentContext()
   const network = useSelector(getMetricsNetworkIdentifier)
@@ -66,6 +65,7 @@ export function MetaMetricsProvider ({ children }) {
   const trackEvent = useMemo(() => {
     return getTrackMetaMetricsEvent(global.platform.getVersion(), () => ({
       context,
+      locale: locale.replace('_', '-'),
       environmentType: getEnvironmentType(),
       chainId,
       network,
@@ -73,7 +73,7 @@ export function MetaMetricsProvider ({ children }) {
       metaMetricsId,
       metaMetricsSendCount,
     }))
-  }, [network, participateInMetaMetrics, metaMetricsId, metaMetricsSendCount, chainId, context])
+  }, [network, participateInMetaMetrics, locale, metaMetricsId, metaMetricsSendCount, chainId, context])
 
   // Used to prevent double tracking page calls
   const previousMatch = useRef()
