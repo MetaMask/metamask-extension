@@ -13,6 +13,7 @@ const createStaticAssetTasks = require('./static')
 const createEtcTasks = require('./etc')
 // packages required dynamically via browserify configuration in dependencies
 require('loose-envify')
+require('@babel/plugin-proposal-object-rest-spread')
 
 const browserPlatforms = [
   'firefox',

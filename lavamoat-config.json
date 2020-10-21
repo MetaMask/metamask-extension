@@ -132,6 +132,18 @@
         "BigInt": true
       }
     },
+    "@babel/plugin-proposal-object-rest-spread": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-plugin-utils": true,
+        "@babel/plugin-syntax-object-rest-spread": true
+      }
+    },
+    "@babel/plugin-syntax-object-rest-spread": {
+      "packages": {
+        "@babel/helper-plugin-utils": true
+      }
+    },
     "@babel/template": {
       "packages": {
         "@babel/code-frame": true,
@@ -936,7 +948,7 @@
     },
     "default-resolution": {
       "globals": {
-        "process.version": true
+        "process.version.match": true
       }
     },
     "define-properties": {
@@ -1018,7 +1030,7 @@
     },
     "domutils": {
       "globals": {
-        "hasOwnProperty": true
+        "hasOwnProperty.call": true
       },
       "packages": {
         "dom-serializer": true,
@@ -1701,7 +1713,7 @@
         "constants.O_WRONLY": true,
         "constants.hasOwnProperty": true,
         "fs": true,
-        "stream.Stream": true,
+        "stream.Stream.call": true,
         "util": true
       },
       "globals": {
@@ -2310,7 +2322,7 @@
     "memoizee": {
       "globals": {
         "clearTimeout": true,
-        "hasOwnProperty": true,
+        "hasOwnProperty.call": true,
         "setTimeout": true
       },
       "packages": {
@@ -4021,7 +4033,7 @@
       },
       "globals": {
         "Buffer": true,
-        "process.version": true
+        "process.version.match": true
       },
       "packages": {
         "http-parser-js": true,

@@ -68,6 +68,11 @@
       "packages": {
         "postcss": true
       }
+    },
+    "module-deps": {
+      "packages": {
+        "loose-envify": true
+      }
     }
   }
 }
