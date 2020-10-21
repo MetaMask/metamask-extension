@@ -404,10 +404,10 @@ export default class SwapsController {
     const usedGasPrice = customGasPrice || await this._getEthersGasPrice()
 
     let topAggId = null
-    let ethTradeValueOfBestQuote = null
+    let tokenValueOfBestQuoteForSorting = null
+    let ethValueOfBestQuote = null
     let ethFeeForBestQuote = null
-    const allEthTradeValues = []
-    const allEthFees = []
+    let metaMaskFeeInEthForBestQuote = null
 
     Object.values(quotes).forEach((quote) => {
       const {
@@ -421,6 +421,7 @@ export default class SwapsController {
         sourceAmount,
         sourceToken,
         trade,
+        fee: metaMaskFee,
       } = quote
 
       const tradeGasLimitForCalculation = gasEstimate
@@ -468,33 +469,43 @@ export default class SwapsController {
         : totalEthCost
 
       const tokenConversionRate = tokenConversionRates[destinationToken]
-      const ethValueOfTrade =
+
+      const decimalAdjustedDestinationAmount = calcTokenAmount(destinationAmount, destinationTokenInfo.decimals)
+
+      const tokenValueOfQuoteForSorting =
         destinationToken === ETH_SWAPS_TOKEN_ADDRESS
-          ? calcTokenAmount(destinationAmount, 18).minus(totalEthCost, 10)
+          ? decimalAdjustedDestinationAmount.minus(totalEthCost, 10)
           : new BigNumber(tokenConversionRate || 1, 10)
-            .times(
-              calcTokenAmount(
-                destinationAmount,
-                destinationTokenInfo.decimals,
-              ),
-              10,
-            )
+            .times(decimalAdjustedDestinationAmount)
             .minus(tokenConversionRate ? totalEthCost : 0, 10)
 
-      // collect values for savings calculation
-      allEthTradeValues.push(ethValueOfTrade)
-      allEthFees.push(ethFee)
+      const ethValueOfQuote =
+        destinationToken === ETH_SWAPS_TOKEN_ADDRESS
+          ? decimalAdjustedDestinationAmount.minus(totalEthCost, 10)
+          : new BigNumber(tokenConversionRate || 0, 10)
+            .times(decimalAdjustedDestinationAmount)
+            .minus(tokenConversionRate ? totalEthCost : 0, 10)
 
-      quote.ethValueOfTrade = ethValueOfTrade
+      const metaMaskFeePercentage = (new BigNumber(metaMaskFee, 10))
+        .div(100)
+      const metaMaskFeeInTokens = decimalAdjustedDestinationAmount.times(metaMaskFeePercentage)
+      const metaMaskFeeInEth = destinationToken === ETH_SWAPS_TOKEN_ADDRESS
+        ? metaMaskFeeInTokens
+        : metaMaskFeeInTokens.times(tokenConversionRate || 0)
+
+      quote.ethValueOfQuote = ethValueOfQuote
       quote.ethFee = ethFee
+      quote.metaMaskFeeInEth = metaMaskFeeInEth
 
       if (
-        ethTradeValueOfBestQuote === null ||
-        ethValueOfTrade.gt(ethTradeValueOfBestQuote)
+        tokenValueOfBestQuoteForSorting === null ||
+        tokenValueOfQuoteForSorting.gt(tokenValueOfBestQuoteForSorting)
       ) {
         topAggId = aggregator
-        ethTradeValueOfBestQuote = ethValueOfTrade
+        tokenValueOfBestQuoteForSorting = tokenValueOfQuoteForSorting
         ethFeeForBestQuote = ethFee
+        ethValueOfBestQuote = ethValueOfQuote
+        metaMaskFeeInEthForBestQuote = metaMaskFeeInEth
       }
     })
 
@@ -504,16 +515,22 @@ export default class SwapsController {
 
     let savings = null
 
+    let newQuotes = quotes
+
     if (isBest) {
 
       savings = {}
 
-      const { ethValueOfTrade: medianEthValueOfTrade, ethFee: mediaEthFee } = getMedianEthTradeValueQuote(quotes)
+      const { ethValueOfQuote: medianEthValueOfQuote, ethFee: mediaEthFee } = getMedianEthValueQuote(Object.values(quotes))
 
+      const totalSavingsPreMetaMaskFee = ethValueOfBestQuote.minus(
+        medianEthValueOfQuote,
+        10,
+      )
       // Total savings are calculated as:
-      //   valueForBestTrade - medianValueOfAllTrades
-      savings.total = ethTradeValueOfBestQuote.minus(
-        medianEthValueOfTrade,
+      //   valueForBestTrade - medianValueOfAllTrades - metaMaskFeeForBestTrade
+      savings.total = totalSavingsPreMetaMaskFee.minus(
+        metaMaskFeeInEthForBestQuote,
         10,
       )
 
@@ -525,20 +542,22 @@ export default class SwapsController {
       )
 
       // Performance savings are the total savings minus the fee savings
-      savings.performance = savings.total.minus(savings.fee, 10).toString(10)
+      savings.performance = totalSavingsPreMetaMaskFee.minus(savings.fee, 10).toString(10)
       savings.total = savings.total.toString(10)
       savings.fee = savings.fee.toString(10)
+      savings.metaMaskFee = metaMaskFeeInEthForBestQuote.toString(10)
 
-      quotes[topAggId].isBestQuote = true
-      quotes[topAggId].savings = savings
+      newQuotes[topAggId].isBestQuote = true
+      newQuotes[topAggId].savings = savings
     }
 
-    quotes.forEach((quote) => {
-      quote.ethFee = quote.ethFee.toString(10)
-      quote.ethValueOfTrade = quote.ethValueOfTrade.toString(10)
-    })
+    newQuotes = mapValues(newQuotes, (quote) => ({
+      ...quote,
+      ethFee: quote.ethFee.toString(10),
+      ethValueOfQuote: quote.ethValueOfQuote.toString(10),
+    }))
 
-    return [topAggId, quotes]
+    return [topAggId, newQuotes]
   }
 
   async _getERC20Allowance (contractAddress, walletAddress) {
@@ -634,21 +653,21 @@ export default class SwapsController {
 }
 
 /**
- * Calculates the median ethValueOfTrade of a sample of quotes.
+ * Calculates the median ethValueOfQuote of a sample of quotes.
  *
- * @param {array} quotes - A sample of quote objects with ethValueOfTrade and ethFee properties
- * @returns {object} An object with the media ethValueOfTrade for all quotes, and the associated median ethFee.
+ * @param {array} quotes - A sample of quote objects with ethValueOfQuote and ethFee properties
+ * @returns {object} An object with the media ethValueOfQuote for all quotes, and the associated median ethFee.
  */
-function getMedianEthTradeValueQuote (quotes) {
+function getMedianEthValueQuote (quotes) {
   if (!Array.isArray(quotes) || quotes.length === 0) {
     throw new Error('Expected non-empty array param.')
   }
 
-  quotes.sort(({ ethValueOfTrade: ethValueOfTradeA }, { ethValueOfTrade: ethValueOfTradeB }) => {
-    if (ethValueOfTradeA.equals(ethValueOfTradeB)) {
+  quotes.sort(({ ethValueOfQuote: ethValueOfQuoteA }, { ethValueOfQuote: ethValueOfQuoteB }) => {
+    if (ethValueOfQuoteA.equals(ethValueOfQuoteB)) {
       return 0
     }
-    return ethValueOfTradeA.lessThan(ethValueOfTradeB) ? -1 : 1
+    return ethValueOfQuoteA.lessThan(ethValueOfQuoteB) ? -1 : 1
   })
 
   if (quotes.length % 2 === 1) {
@@ -660,15 +679,11 @@ function getMedianEthTradeValueQuote (quotes) {
   const upperIndex = quotes.length / 2
 
   return {
-    ethValueOfTrade: quotes[upperIndex].ethValueOfTrade
-      .plus(quotes[upperIndex - 1].ethValueOfTrade)
+    ethValueOfQuote: quotes[upperIndex].ethValueOfQuote
+      .plus(quotes[upperIndex - 1].ethValueOfQuote)
       .dividedBy(2),
     ethFee: quotes[upperIndex].ethFee
       .plus(quotes[upperIndex - 1].ethFee)
       .dividedBy(2),
   }
-}
-
-export const utils = {
-  getMedian,
 }
