@@ -63,8 +63,8 @@ export default class EnsInput extends Component {
       value,
     } = this.props
 
-    // Update the value in state if its prop value changes
-    if (input !== value) {
+    // Set the value of our input based on QR code provided by parent
+    if (input !== value && prevProps.value != value) {
       this.setState({ input: value })
     }
 
