@@ -253,14 +253,14 @@ describe('SwapsController', function () {
       })
     })
 
-    describe('_addTopQuoteAndTradeData', function () {
+    describe('_calculateSavingsData', function () {
       it('returns empty object if passed undefined or empty object', async function () {
         assert.deepStrictEqual(
-          await swapsController._addTopQuoteAndTradeData(),
+          await swapsController._calculateSavingsData(),
           {},
         )
         assert.deepStrictEqual(
-          await swapsController._addTopQuoteAndTradeData({}),
+          await swapsController._calculateSavingsData({}),
           {},
         )
       })

@@ -175,7 +175,7 @@ export default class SwapsController {
     if (Object.values(newQuotes).length === 0) {
       this.setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR)
     } else {
-      topAggId = await this._addTopQuoteAndTradeData(newQuotes)
+      [topAggId, newQuotes] = await this._calculateSavingsData(newQuotes)
     }
 
     const { swapsState } = this.store.getState()
@@ -390,7 +390,7 @@ export default class SwapsController {
   }
 
   /**
-   * Calculates trade data in order to identify the best quotes and its savings.
+   * Calculates data in order to identify the best quotes and its savings.
    * Modifies the passed-in quotes in place, adding the following decimal string
    * properties:
    *  - ethFee
@@ -405,9 +405,10 @@ export default class SwapsController {
    *   - total (decimal string)
    *
    * @param {Object} quotes - A set of quotes to be modified in-place.
-   * @returns {string|null} The aggregator ID of the best quote, if any.
+   * @returns {[string|null, Object]} The aggregator ID of the best quote, if any,
+   * and the quotes with the added savings data.
    */
-  async _addTopQuoteAndTradeData (quotes = {}) {
+  async _calculateSavingsData (quotes = {}) {
     const tokenConversionRates = this.tokenRatesStore.getState()
       .contractExchangeRates
     const {
@@ -558,7 +559,7 @@ export default class SwapsController {
       topQuote.savings = savings
     }
 
-    return topAggId
+    return [topAggId, quotes]
   }
 
   async _getERC20Allowance (contractAddress, walletAddress) {
