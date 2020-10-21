@@ -48,7 +48,6 @@ export default class SelectHardware extends Component {
           selected: this.state.selectedDevice === 'ledger',
         })}
         onClick={(_) => {
-          chrome.extension.getBackgroundPage().console.log('TEST!!!!')
           window.open('ledgerlive://bridge?appName=Ethereum')
           this.setState({ selectedDevice: 'ledger' })
         }}
