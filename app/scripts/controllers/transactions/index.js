@@ -76,7 +76,7 @@ export default class TransactionController extends EventEmitter {
     this.blockTracker = opts.blockTracker
     this.signEthTx = opts.signTransaction
     this.inProcessOfSigning = new Set()
-    this._trackSegmentEvent = opts.trackSegmentEvent
+    this._trackMetaMetricsEvent = opts.trackMetaMetricsEvent
     this._getParticipateInMetrics = opts.getParticipateInMetrics
 
     this.memStore = new ObservableStore({})
@@ -829,13 +829,13 @@ export default class TransactionController extends EventEmitter {
   _trackSwapsMetrics (txMeta, approvalTxMeta) {
     if (this._getParticipateInMetrics() && txMeta.swapMetaData) {
       if (txMeta.txReceipt.status === '0x0') {
-        this._trackSegmentEvent({
+        this._trackMetaMetricsEvent({
           event: 'Swap Failed',
           category: 'swaps',
           excludeMetaMetricsId: false,
         })
 
-        this._trackSegmentEvent({
+        this._trackMetaMetricsEvent({
           event: 'Swap Failed',
           properties: { ...txMeta.swapMetaData },
           category: 'swaps',
@@ -865,13 +865,13 @@ export default class TransactionController extends EventEmitter {
             .round(2)
         }%`
 
-        this._trackSegmentEvent({
+        this._trackMetaMetricsEvent({
           event: 'Swap Completed',
           category: 'swaps',
           excludeMetaMetricsId: false,
         })
 
-        this._trackSegmentEvent({
+        this._trackMetaMetricsEvent({
           event: 'Swap Completed',
           category: 'swaps',
           properties: {
