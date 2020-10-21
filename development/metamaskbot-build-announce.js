@@ -2,7 +2,7 @@
 const { promises: fs } = require('fs')
 const path = require('path')
 const fetch = require('node-fetch')
-const VERSION = require('../dist/chrome/manifest.json').version // eslint-disable-line import/no-unresolved,node/no-missing-require
+const VERSION = require('../dist/chrome/manifest.json').version // eslint-disable-line import/no-unresolved
 
 start().catch(console.error)
 

@@ -2079,10 +2079,10 @@
     web3 "^0.20.7"
     web3-provider-engine "^16.0.1"
 
-"@metamask/eslint-config@^4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/eslint-config/-/eslint-config-4.0.0.tgz#0c1461a49e6abc924baf23063d58050467d235dd"
-  integrity sha512-DYifRCG9N3SwacnMVQqMrQBW4eCQN6QoUpcYUMA8wQBnVwGQ3AbDNz9NOy2FST6JJvsPnc6E/i0myrS3tAKg0w==
+"@metamask/eslint-config@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@metamask/eslint-config/-/eslint-config-4.1.0.tgz#ace2357af2d9c7d04da40a337fc7f4a81a048921"
+  integrity sha512-oc4ONdFB1h2yxBebVj4ACYzGzArB8ZQKiFVNCDlYiTCyeQ/GR4+EUwg0KvlO33LlXCRbAhO3CX0nChbvIB8hEw==
 
 "@metamask/eth-ledger-bridge-keyring@^0.2.6":
   version "0.2.6"
