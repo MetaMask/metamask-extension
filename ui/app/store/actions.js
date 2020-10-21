@@ -2206,6 +2206,14 @@ export function stopPollingForQuotes () {
   }
 }
 
+export function abortFetches () {
+  return async (dispatch) => {
+    await promisifiedBackground.abortFetches()
+    // Is the following needed?
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
 export function setBackgroundSwapRouteState (routeState) {
   return async (dispatch) => {
     await promisifiedBackground.setBackgroundSwapRouteState(routeState)

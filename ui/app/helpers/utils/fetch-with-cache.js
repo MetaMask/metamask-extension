@@ -4,7 +4,7 @@ import {
 } from '../../../lib/local-storage-helpers'
 import fetchWithTimeout from '../../../../app/scripts/lib/fetch-with-timeout'
 
-const fetchWithCache = async (url, fetchOptions = {}, { cacheRefreshTime = 360000, timeout = 30000 } = {}) => {
+const fetchWithCache = async (url, fetchOptions = {}, { cacheRefreshTime = 360000, timeout = 30000 } = {}, signal = null) => {
   if (fetchOptions.body || (fetchOptions.method && fetchOptions.method !== 'GET')) {
     throw new Error('fetchWithCache only supports GET requests')
   }
@@ -27,7 +27,7 @@ const fetchWithCache = async (url, fetchOptions = {}, { cacheRefreshTime = 36000
   }
   fetchOptions.headers.set('Content-Type', 'application/json')
   const _fetch = timeout
-    ? fetchWithTimeout({ timeout })
+    ? fetchWithTimeout({ timeout }, signal)
     : window.fetch
   const response = await _fetch(url, {
     referrerPolicy: 'no-referrer-when-downgrade',
@@ -35,6 +35,7 @@ const fetchWithCache = async (url, fetchOptions = {}, { cacheRefreshTime = 36000
     method: 'GET',
     mode: 'cors',
     ...fetchOptions,
+    signal,
   })
   if (!response.ok) {
     throw new Error(`Fetch failed with status '${response.status}': '${response.statusText}'`)

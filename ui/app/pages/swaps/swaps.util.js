@@ -160,7 +160,7 @@ export async function fetchTradesInfo ({
   value,
   fromAddress,
   exchangeList,
-}) {
+}, signal) {
   const urlParams = {
     destinationToken,
     sourceToken,
@@ -176,7 +176,12 @@ export async function fetchTradesInfo ({
 
   const queryString = new URLSearchParams(urlParams).toString()
   const tradeURL = `${getBaseApi('trade')}${queryString}`
-  const tradesResponse = await fetchWithCache(tradeURL, { method: 'GET' }, { cacheRefreshTime: 0, timeout: 15000 })
+  const tradesResponse = await fetchWithCache(
+    tradeURL,
+    { method: 'GET' },
+    { cacheRefreshTime: 0, timeout: 15000 },
+    signal,
+  )
   const newQuotes = tradesResponse.reduce((aggIdTradeMap, quote) => {
     if (quote.trade && !quote.error && validateData(QUOTE_VALIDATORS, quote, tradeURL)) {
       const constructedTrade = constructTxParams({

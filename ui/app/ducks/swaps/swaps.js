@@ -19,6 +19,7 @@ import {
   updateTransaction,
   resetBackgroundSwapsState,
   setSwapsLiveness,
+  abortFetches,
 } from '../../store/actions'
 import { AWAITING_SWAP_ROUTE, BUILD_QUOTE_ROUTE, LOADING_QUOTES_ROUTE, SWAPS_ERROR_ROUTE, SWAPS_MAINTENANCE_ROUTE } from '../../helpers/constants/routes'
 import { fetchSwapsFeatureLiveness } from '../../pages/swaps/swaps.util'
@@ -217,7 +218,8 @@ export {
 
 export const navigateBackToBuildQuote = (history) => {
   return async (dispatch) => {
-    // TODO: Ensure any fetch in progress is cancelled
+    dispatch(abortFetches())
+
     await dispatch(resetSwapsPostFetchState())
     dispatch(navigatedBackToBuildQuote())
 
@@ -227,7 +229,8 @@ export const navigateBackToBuildQuote = (history) => {
 
 export const prepareForRetryGetQuotes = () => {
   return async (dispatch) => {
-    // TODO: Ensure any fetch in progress is cancelled
+    dispatch(abortFetches())
+
     await dispatch(resetSwapsPostFetchState())
     dispatch(retriedGetQuotes())
   }

@@ -90,6 +90,8 @@ export default class SwapsController {
 
     this.ethersProvider = new ethers.providers.Web3Provider(provider)
 
+    this.abortController = new window.AbortController()
+
     this._setupSwapsLivenessFetching()
   }
 
@@ -108,6 +110,13 @@ export default class SwapsController {
     clearTimeout(this.pollingTimeout)
   }
 
+  abortFetches () {
+    // Since all fetches using this controller use the single signal,
+    // Calling abort should cancel all running fetches
+    console.log('Aborting all requests!', this.abortController)
+    this.abortController.abort()
+  }
+
   async fetchAndSetQuotes (fetchParams, fetchParamsMetaData = {}, isPolledRequest) {
     if (!fetchParams) {
       return null
@@ -121,10 +130,15 @@ export default class SwapsController {
     // If there are any pending poll requests, clear them so that they don't get call while this new fetch is in process
     clearTimeout(this.pollingTimeout)
 
+    // Stop any in-flight requests to avoid timing conflicts
+    this.abortFetches()
+
+    const { signal } = this.controller
+
     if (!isPolledRequest) {
       this.setSwapsErrorKey('')
     }
-    let newQuotes = await this._fetchTradesInfo(fetchParams)
+    let newQuotes = await this._fetchTradesInfo(fetchParams, signal)
 
     newQuotes = mapValues(newQuotes, (quote) => ({
       ...quote,

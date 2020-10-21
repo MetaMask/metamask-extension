@@ -1,10 +1,10 @@
-const fetchWithTimeout = ({ timeout = 120000 } = {}) => {
+const fetchWithTimeout = ({ timeout = 120000 } = {}, signal = null) => {
   return async function _fetch (url, opts) {
     const abortController = new window.AbortController()
-    const abortSignal = abortController.signal
+
     const f = window.fetch(url, {
       ...opts,
-      signal: abortSignal,
+      signal: signal || abortController.signal,
     })
 
     const timer = setTimeout(() => abortController.abort(), timeout)
