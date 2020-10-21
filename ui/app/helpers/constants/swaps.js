@@ -14,6 +14,7 @@ export const SWAP_FAILED_ERROR = 'swap-failed-error'
 export const ERROR_FETCHING_QUOTES = 'error-fetching-quotes'
 export const QUOTES_NOT_AVAILABLE_ERROR = 'quotes-not-avilable'
 export const OFFLINE_FOR_MAINTENANCE = 'offline-for-maintenance'
+export const SWAPS_FETCH_ORDER_CONFLICT = 'swaps-fetch-order-conflict'
 
 // A gas value for ERC20 approve calls that should be sufficient for all ERC20 approve implementations
 export const DEFAULT_ERC20_APPROVE_GAS = '0x1d4c0'
