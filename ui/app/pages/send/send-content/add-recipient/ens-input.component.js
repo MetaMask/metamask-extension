@@ -33,6 +33,7 @@ export default class EnsInput extends Component {
     onReset: PropTypes.func,
     onValidAddressTyped: PropTypes.func,
     contact: PropTypes.object,
+    value: PropTypes.string,
   }
 
   state = {
@@ -53,16 +54,22 @@ export default class EnsInput extends Component {
     }
   }
 
-  // If an address is sent without a nickname, meaning not from ENS or from
-  // the user's own accounts, a default of a one-space string is used.
   componentDidUpdate (prevProps) {
     const {
       input,
     } = this.state
     const {
       network,
+      value,
     } = this.props
 
+    // Update the value in state if its prop value changes
+    if (input !== value) {
+      this.setState({ input: value })
+    }
+
+    // If an address is sent without a nickname, meaning not from ENS or from
+    // the user's own accounts, a default of a one-space string is used.
     if (prevProps.network !== network) {
       const provider = global.ethereumProvider
       this.ens = new ENS({ provider, network })
