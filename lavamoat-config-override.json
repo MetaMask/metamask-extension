@@ -77,6 +77,7 @@
     "@babel/core": {
       "packages": {
         "@babel/plugin-proposal-object-rest-spread": true,
+        "@babel/plugin-transform-runtime": true,
         "<root>": true
       }
     }

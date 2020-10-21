@@ -49,6 +49,16 @@
         "source-map": true
       }
     },
+    "@babel/helper-create-class-features-plugin": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-function-name": true,
+        "@babel/helper-member-expression-to-functions": true,
+        "@babel/helper-optimise-call-expression": true,
+        "@babel/helper-replace-supers": true,
+        "@babel/helper-split-export-declaration": true
+      }
+    },
     "@babel/helper-function-name": {
       "packages": {
         "@babel/helper-get-function-arity": true,
@@ -132,6 +142,19 @@
         "BigInt": true
       }
     },
+    "@babel/plugin-proposal-class-properties": {
+      "packages": {
+        "@babel/helper-create-class-features-plugin": true,
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-proposal-nullish-coalescing-operator": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-plugin-utils": true,
+        "@babel/plugin-syntax-nullish-coalescing-operator": true
+      }
+    },
     "@babel/plugin-proposal-object-rest-spread": {
       "packages": {
         "@babel/core": true,
@@ -139,7 +162,24 @@
         "@babel/plugin-syntax-object-rest-spread": true
       }
     },
+    "@babel/plugin-proposal-optional-chaining": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-plugin-utils": true,
+        "@babel/plugin-syntax-optional-chaining": true
+      }
+    },
+    "@babel/plugin-syntax-nullish-coalescing-operator": {
+      "packages": {
+        "@babel/helper-plugin-utils": true
+      }
+    },
     "@babel/plugin-syntax-object-rest-spread": {
+      "packages": {
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-syntax-optional-chaining": {
       "packages": {
         "@babel/helper-plugin-utils": true
       }
@@ -960,7 +1000,7 @@
     },
     "default-resolution": {
       "globals": {
-        "process.version": true
+        "process.version.match": true
       }
     },
     "define-properties": {
@@ -1042,7 +1082,7 @@
     },
     "domutils": {
       "globals": {
-        "hasOwnProperty": true
+        "hasOwnProperty.call": true
       },
       "packages": {
         "dom-serializer": true,
@@ -1725,7 +1765,7 @@
         "constants.O_WRONLY": true,
         "constants.hasOwnProperty": true,
         "fs": true,
-        "stream.Stream": true,
+        "stream.Stream.call": true,
         "util": true
       },
       "globals": {
@@ -2334,7 +2374,7 @@
     "memoizee": {
       "globals": {
         "clearTimeout": true,
-        "hasOwnProperty": true,
+        "hasOwnProperty.call": true,
         "setTimeout": true
       },
       "packages": {
@@ -4045,7 +4085,7 @@
       },
       "globals": {
         "Buffer": true,
-        "process.version": true
+        "process.version.match": true
       },
       "packages": {
         "http-parser-js": true,

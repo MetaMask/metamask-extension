@@ -15,6 +15,9 @@ const createEtcTasks = require('./etc')
 require('loose-envify')
 require('@babel/plugin-proposal-object-rest-spread')
 require('@babel/plugin-transform-runtime')
+require('@babel/plugin-proposal-class-properties')
+require('@babel/plugin-proposal-optional-chaining')
+require('@babel/plugin-proposal-nullish-coalescing-operator')
 
 const browserPlatforms = [
   'firefox',
