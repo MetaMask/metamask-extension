@@ -47,7 +47,11 @@ export default class SelectHardware extends Component {
         className={classnames('hw-connect__btn', {
           'selected': this.state.selectedDevice === 'ledger',
         })}
-        onClick={(_) => this.setState({ selectedDevice: 'ledger' })}
+        onClick={(_) => {
+          chrome.extension.getBackgroundPage().console.log('TEST!!!!')
+          window.open('ledgerlive://bridge?appName=Ethereum')
+          this.setState({ selectedDevice: 'ledger' })
+        }}
       >
         <img
           className="hw-connect__btn__img"
