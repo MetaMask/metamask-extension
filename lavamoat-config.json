@@ -49,6 +49,29 @@
         "source-map": true
       }
     },
+    "@babel/helper-annotate-as-pure": {
+      "packages": {
+        "@babel/types": true
+      }
+    },
+    "@babel/helper-builder-binary-assignment-operator-visitor": {
+      "packages": {
+        "@babel/helper-explode-assignable-expression": true,
+        "@babel/types": true
+      }
+    },
+    "@babel/helper-builder-react-jsx": {
+      "packages": {
+        "@babel/types": true,
+        "esutils": true
+      }
+    },
+    "@babel/helper-call-delegate": {
+      "packages": {
+        "@babel/helper-hoist-variables": true,
+        "@babel/types": true
+      }
+    },
     "@babel/helper-create-class-features-plugin": {
       "packages": {
         "@babel/core": true,
@@ -59,6 +82,18 @@
         "@babel/helper-split-export-declaration": true
       }
     },
+    "@babel/helper-define-map": {
+      "packages": {
+        "@babel/helper-function-name": true,
+        "@babel/types": true,
+        "lodash": true
+      }
+    },
+    "@babel/helper-explode-assignable-expression": {
+      "packages": {
+        "@babel/types": true
+      }
+    },
     "@babel/helper-function-name": {
       "packages": {
         "@babel/helper-get-function-arity": true,
@@ -67,6 +102,11 @@
       }
     },
     "@babel/helper-get-function-arity": {
+      "packages": {
+        "@babel/types": true
+      }
+    },
+    "@babel/helper-hoist-variables": {
       "packages": {
         "@babel/types": true
       }
@@ -105,6 +145,18 @@
         "@babel/types": true
       }
     },
+    "@babel/helper-regex": {
+      "packages": {
+        "lodash": true
+      }
+    },
+    "@babel/helper-remap-async-to-generator": {
+      "packages": {
+        "@babel/helper-annotate-as-pure": true,
+        "@babel/helper-wrap-function": true,
+        "@babel/types": true
+      }
+    },
     "@babel/helper-replace-supers": {
       "packages": {
         "@babel/helper-member-expression-to-functions": true,
@@ -120,6 +172,13 @@
     },
     "@babel/helper-split-export-declaration": {
       "packages": {
+        "@babel/types": true
+      }
+    },
+    "@babel/helper-wrap-function": {
+      "packages": {
+        "@babel/helper-function-name": true,
+        "@babel/template": true,
         "@babel/types": true
       }
     },
@@ -142,10 +201,30 @@
         "BigInt": true
       }
     },
+    "@babel/plugin-proposal-async-generator-functions": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-plugin-utils": true,
+        "@babel/helper-remap-async-to-generator": true,
+        "@babel/plugin-syntax-async-generators": true
+      }
+    },
     "@babel/plugin-proposal-class-properties": {
       "packages": {
         "@babel/helper-create-class-features-plugin": true,
         "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-proposal-dynamic-import": {
+      "packages": {
+        "@babel/helper-plugin-utils": true,
+        "@babel/plugin-syntax-dynamic-import": true
+      }
+    },
+    "@babel/plugin-proposal-json-strings": {
+      "packages": {
+        "@babel/helper-plugin-utils": true,
+        "@babel/plugin-syntax-json-strings": true
       }
     },
     "@babel/plugin-proposal-nullish-coalescing-operator": {
@@ -162,11 +241,44 @@
         "@babel/plugin-syntax-object-rest-spread": true
       }
     },
+    "@babel/plugin-proposal-optional-catch-binding": {
+      "packages": {
+        "@babel/helper-plugin-utils": true,
+        "@babel/plugin-syntax-optional-catch-binding": true
+      }
+    },
     "@babel/plugin-proposal-optional-chaining": {
       "packages": {
         "@babel/core": true,
         "@babel/helper-plugin-utils": true,
         "@babel/plugin-syntax-optional-chaining": true
+      }
+    },
+    "@babel/plugin-proposal-unicode-property-regex": {
+      "packages": {
+        "@babel/helper-plugin-utils": true,
+        "@babel/helper-regex": true,
+        "regexpu-core": true
+      }
+    },
+    "@babel/plugin-syntax-async-generators": {
+      "packages": {
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-syntax-dynamic-import": {
+      "packages": {
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-syntax-json-strings": {
+      "packages": {
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-syntax-jsx": {
+      "packages": {
+        "@babel/helper-plugin-utils": true
       }
     },
     "@babel/plugin-syntax-nullish-coalescing-operator": {
@@ -179,8 +291,216 @@
         "@babel/helper-plugin-utils": true
       }
     },
+    "@babel/plugin-syntax-optional-catch-binding": {
+      "packages": {
+        "@babel/helper-plugin-utils": true
+      }
+    },
     "@babel/plugin-syntax-optional-chaining": {
       "packages": {
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-transform-arrow-functions": {
+      "packages": {
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-transform-async-to-generator": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-module-imports": true,
+        "@babel/helper-plugin-utils": true,
+        "@babel/helper-remap-async-to-generator": true
+      }
+    },
+    "@babel/plugin-transform-block-scoped-functions": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-transform-block-scoping": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-plugin-utils": true,
+        "lodash": true
+      }
+    },
+    "@babel/plugin-transform-classes": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-annotate-as-pure": true,
+        "@babel/helper-define-map": true,
+        "@babel/helper-function-name": true,
+        "@babel/helper-optimise-call-expression": true,
+        "@babel/helper-plugin-utils": true,
+        "@babel/helper-replace-supers": true,
+        "@babel/helper-split-export-declaration": true,
+        "globals": true
+      }
+    },
+    "@babel/plugin-transform-computed-properties": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-transform-destructuring": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-transform-dotall-regex": {
+      "packages": {
+        "@babel/helper-plugin-utils": true,
+        "@babel/helper-regex": true,
+        "regexpu-core": true
+      }
+    },
+    "@babel/plugin-transform-duplicate-keys": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-transform-exponentiation-operator": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-builder-binary-assignment-operator-visitor": true,
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-transform-for-of": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-transform-function-name": {
+      "packages": {
+        "@babel/helper-function-name": true,
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-transform-literals": {
+      "packages": {
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-transform-member-expression-literals": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-transform-modules-amd": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-module-transforms": true,
+        "@babel/helper-plugin-utils": true,
+        "babel-plugin-dynamic-import-node": true
+      }
+    },
+    "@babel/plugin-transform-modules-commonjs": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-module-transforms": true,
+        "@babel/helper-plugin-utils": true,
+        "@babel/helper-simple-access": true,
+        "babel-plugin-dynamic-import-node": true
+      }
+    },
+    "@babel/plugin-transform-modules-systemjs": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-hoist-variables": true,
+        "@babel/helper-plugin-utils": true,
+        "babel-plugin-dynamic-import-node": true
+      }
+    },
+    "@babel/plugin-transform-modules-umd": {
+      "builtin": {
+        "path": true
+      },
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-module-transforms": true,
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-transform-named-capturing-groups-regex": {
+      "packages": {
+        "regexp-tree": true
+      }
+    },
+    "@babel/plugin-transform-new-target": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-transform-object-super": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-plugin-utils": true,
+        "@babel/helper-replace-supers": true
+      }
+    },
+    "@babel/plugin-transform-parameters": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-call-delegate": true,
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-transform-property-literals": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-transform-react-display-name": {
+      "builtin": {
+        "path": true
+      },
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-transform-react-jsx": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-builder-react-jsx": true,
+        "@babel/helper-plugin-utils": true,
+        "@babel/plugin-syntax-jsx": true
+      }
+    },
+    "@babel/plugin-transform-react-jsx-self": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-transform-react-jsx-source": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-transform-regenerator": {
+      "packages": {
+        "regenerator-transform": true
+      }
+    },
+    "@babel/plugin-transform-reserved-words": {
+      "packages": {
+        "@babel/core": true,
         "@babel/helper-plugin-utils": true
       }
     },
@@ -194,6 +514,113 @@
         "@babel/helper-plugin-utils": true,
         "resolve": true,
         "semver": true
+      }
+    },
+    "@babel/plugin-transform-shorthand-properties": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-transform-spread": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-transform-sticky-regex": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-plugin-utils": true,
+        "@babel/helper-regex": true
+      }
+    },
+    "@babel/plugin-transform-template-literals": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-transform-typeof-symbol": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-transform-unicode-regex": {
+      "packages": {
+        "@babel/helper-plugin-utils": true,
+        "@babel/helper-regex": true,
+        "regexpu-core": true
+      }
+    },
+    "@babel/preset-env": {
+      "globals": {
+        "console.log": true,
+        "console.warn": true,
+        "process.cwd": true,
+        "process.versions.node": true
+      },
+      "packages": {
+        "@babel/helper-module-imports": true,
+        "@babel/helper-plugin-utils": true,
+        "@babel/plugin-proposal-async-generator-functions": true,
+        "@babel/plugin-proposal-dynamic-import": true,
+        "@babel/plugin-proposal-json-strings": true,
+        "@babel/plugin-proposal-object-rest-spread": true,
+        "@babel/plugin-proposal-optional-catch-binding": true,
+        "@babel/plugin-proposal-unicode-property-regex": true,
+        "@babel/plugin-syntax-async-generators": true,
+        "@babel/plugin-syntax-dynamic-import": true,
+        "@babel/plugin-syntax-json-strings": true,
+        "@babel/plugin-syntax-object-rest-spread": true,
+        "@babel/plugin-syntax-optional-catch-binding": true,
+        "@babel/plugin-transform-arrow-functions": true,
+        "@babel/plugin-transform-async-to-generator": true,
+        "@babel/plugin-transform-block-scoped-functions": true,
+        "@babel/plugin-transform-block-scoping": true,
+        "@babel/plugin-transform-classes": true,
+        "@babel/plugin-transform-computed-properties": true,
+        "@babel/plugin-transform-destructuring": true,
+        "@babel/plugin-transform-dotall-regex": true,
+        "@babel/plugin-transform-duplicate-keys": true,
+        "@babel/plugin-transform-exponentiation-operator": true,
+        "@babel/plugin-transform-for-of": true,
+        "@babel/plugin-transform-function-name": true,
+        "@babel/plugin-transform-literals": true,
+        "@babel/plugin-transform-member-expression-literals": true,
+        "@babel/plugin-transform-modules-amd": true,
+        "@babel/plugin-transform-modules-commonjs": true,
+        "@babel/plugin-transform-modules-systemjs": true,
+        "@babel/plugin-transform-modules-umd": true,
+        "@babel/plugin-transform-named-capturing-groups-regex": true,
+        "@babel/plugin-transform-new-target": true,
+        "@babel/plugin-transform-object-super": true,
+        "@babel/plugin-transform-parameters": true,
+        "@babel/plugin-transform-property-literals": true,
+        "@babel/plugin-transform-regenerator": true,
+        "@babel/plugin-transform-reserved-words": true,
+        "@babel/plugin-transform-shorthand-properties": true,
+        "@babel/plugin-transform-spread": true,
+        "@babel/plugin-transform-sticky-regex": true,
+        "@babel/plugin-transform-template-literals": true,
+        "@babel/plugin-transform-typeof-symbol": true,
+        "@babel/plugin-transform-unicode-regex": true,
+        "@babel/types": true,
+        "browserslist": true,
+        "core-js-compat": true,
+        "invariant": true,
+        "js-levenshtein": true,
+        "semver": true
+      }
+    },
+    "@babel/preset-react": {
+      "packages": {
+        "@babel/helper-plugin-utils": true,
+        "@babel/plugin-transform-react-display-name": true,
+        "@babel/plugin-transform-react-jsx": true,
+        "@babel/plugin-transform-react-jsx-self": true,
+        "@babel/plugin-transform-react-jsx-source": true
       }
     },
     "@babel/template": {
@@ -922,6 +1349,11 @@
         "safe-buffer": true
       }
     },
+    "core-js-compat": {
+      "packages": {
+        "semver": true
+      }
+    },
     "core-util-is": {
       "globals": {
         "Buffer.isBuffer": true
@@ -1000,7 +1432,7 @@
     },
     "default-resolution": {
       "globals": {
-        "process.version": true
+        "process.version.match": true
       }
     },
     "define-properties": {
@@ -1082,7 +1514,7 @@
     },
     "domutils": {
       "globals": {
-        "hasOwnProperty": true
+        "hasOwnProperty.call": true
       },
       "packages": {
         "dom-serializer": true,
@@ -1765,7 +2197,7 @@
         "constants.O_WRONLY": true,
         "constants.hasOwnProperty": true,
         "fs": true,
-        "stream.Stream": true,
+        "stream.Stream.call": true,
         "util": true
       },
       "globals": {
@@ -2079,6 +2511,11 @@
         "xtend": true
       }
     },
+    "invariant": {
+      "globals": {
+        "process.env.NODE_ENV": true
+      }
+    },
     "is-absolute": {
       "packages": {
         "is-relative": true,
@@ -2374,7 +2811,7 @@
     "memoizee": {
       "globals": {
         "clearTimeout": true,
-        "hasOwnProperty": true,
+        "hasOwnProperty.call": true,
         "setTimeout": true
       },
       "packages": {
@@ -3104,6 +3541,20 @@
         "readable-stream": true
       }
     },
+    "regenerate": {
+      "globals": {
+        "define": true
+      }
+    },
+    "regenerator-transform": {
+      "builtin": {
+        "assert": true,
+        "util.inherits": true
+      },
+      "packages": {
+        "private": true
+      }
+    },
     "regex-cache": {
       "packages": {
         "is-equal-shallow": true
@@ -3113,6 +3564,25 @@
       "packages": {
         "extend-shallow": true,
         "safe-regex": true
+      }
+    },
+    "regexpu-core": {
+      "packages": {
+        "regenerate": true,
+        "regjsgen": true,
+        "regjsparser": true,
+        "unicode-match-property-ecmascript": true,
+        "unicode-match-property-value-ecmascript": true
+      }
+    },
+    "regjsgen": {
+      "globals": {
+        "define": true
+      }
+    },
+    "regjsparser": {
+      "globals": {
+        "regjsparser": "write"
       }
     },
     "remark": {
@@ -3849,6 +4319,12 @@
         "xtend": true
       }
     },
+    "unicode-match-property-ecmascript": {
+      "packages": {
+        "unicode-canonical-property-names-ecmascript": true,
+        "unicode-property-aliases-ecmascript": true
+      }
+    },
     "unified": {
       "packages": {
         "bail": true,
@@ -4085,7 +4561,7 @@
       },
       "globals": {
         "Buffer": true,
-        "process.version": true
+        "process.version.match": true
       },
       "packages": {
         "http-parser-js": true,
