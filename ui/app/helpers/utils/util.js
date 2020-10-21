@@ -1,4 +1,4 @@
-import punycode from 'punycode'
+import punycode from 'punycode/punycode'
 import abi from 'human-standard-token-abi'
 import BigNumber from 'bignumber.js'
 import ethUtil from 'ethereumjs-util'

@@ -1,4 +1,4 @@
-import punycode from 'punycode'
+import punycode from 'punycode/punycode'
 import ethUtil from 'ethereumjs-util'
 import ObservableStore from 'obs-store'
 import log from 'loglevel'
