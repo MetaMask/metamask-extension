@@ -1,6 +1,6 @@
 module.exports = {
   root: true,
-  parser: 'babel-eslint',
+  parser: '@babel/eslint-parser',
   parserOptions: {
     'sourceType': 'module',
     'ecmaVersion': 2017,
@@ -39,7 +39,7 @@ module.exports = {
   ],
 
   plugins: [
-    'babel',
+    '@babel',
     'react',
     'import',
   ],
@@ -82,10 +82,23 @@ module.exports = {
     }],
 
     'no-invalid-this': 'off',
-    'babel/no-invalid-this': 'error',
+    '@babel/no-invalid-this': 'error',
 
-    'babel/semi': ['error', 'never'],
+    '@babel/semi': ['error', 'never'],
     'mocha/no-setup-in-describe': 'off',
+    'node/no-process-env': 'off',
+
+    // TODO: re-enable these rules
+    'accessor-pairs': 'off',
+    'node/no-sync': 'off',
+    'node/no-deprecated-api': 'off',
+    'node/no-unpublished-import': 'off',
+    'node/no-unpublished-require': 'off',
+    'node/no-unsupported-features/node-builtins': 'off',
+    'node/no-path-concat': 'off',
+    'dot-notation': 'off',
+    'mocha/max-top-level-suites': 'off',
+    'node/no-callback-literal': 'off',
   },
 
   overrides: [{
@@ -108,7 +121,7 @@ module.exports = {
       'app/scripts/migrations/*.js',
     ],
     rules: {
-      'global-require': 'off',
+      'node/global-require': 'off',
     },
   }, {
     files: [
@@ -117,7 +130,7 @@ module.exports = {
     ],
     rules: {
       // Mocha will re-assign `this` in a test context
-      'babel/no-invalid-this': 'off',
+      '@babel/no-invalid-this': 'off',
     },
   }, {
     files: [
@@ -126,7 +139,8 @@ module.exports = {
       'test/helper.js',
     ],
     rules: {
-      'no-process-exit': 'off',
+      'node/no-process-exit': 'off',
+      'node/shebang': 'off',
     },
   }, {
     files: [

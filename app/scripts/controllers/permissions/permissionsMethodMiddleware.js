@@ -111,7 +111,7 @@ export default function createPermissionsMethodMiddleware ({
     }
 
     // when this promise resolves, the response is on its way back
-    // eslint-disable-next-line callback-return
+    // eslint-disable-next-line node/callback-return
     await next()
 
     if (responseHandler) {
