@@ -73,6 +73,12 @@
       "packages": {
         "loose-envify": true
       }
+    },
+    "@babel/core": {
+      "packages": {
+        "@babel/plugin-proposal-object-rest-spread": true,
+        "<root>": true
+      }
     }
   }
 }
