@@ -1608,30 +1608,6 @@
   "supportCenter": {
     "message": "Visit our Support Center"
   },
-  "swapReceivingNMoreTokens": {
-    "message": "Receiving $1 $2 more"
-  },
-  "swapReceivingNLessTokens": {
-    "message": "Receiving $1 $2 less"
-  },
-  "swapSavingsTooltipDescription": {
-    "message": "By analyzing multiple liquidity providers your $1 compared to searching a single source."
-  },
-  "swapSavingsAverageSavingsNote": {
-    "message": "average savings are about $1"
-  },
-  "swapSavingOnGas": {
-    "message": "Saving $1 ETH on gas fee"
-  },
-  "swapLosingOnGas": {
-    "message": "Losing $1 ETH on gas fee"
-  },
-  "swapMetaMaskFeeWithRate": {
-    "message": "MetaMask fee $1"
-  },
-  "swapAverageSavings": {
-    "message": "Average savings"
-  },
   "swap": {
     "message": "Swap"
   },
@@ -1654,6 +1630,12 @@
   "swapApproveNeedMoreTokens": {
     "message": "You need $1 more $2 to complete this swap",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
+  },
+  "swapAverageSavings": {
+    "message": "Average savings"
+  },
+  "swapBest": {
+    "message": "Best"
   },
   "swapBetterQuoteAvailable": {
     "message": "A better quote is available"
@@ -1747,6 +1729,9 @@
   "swapLearnMoreContractsAuditReview": {
     "message": "Review our official contracts audit"
   },
+  "swapLosingOnGas": {
+    "message": "Losing $1 ETH on gas fee"
+  },
   "swapLowSlippageError": {
     "message": "Transaction may fail, max slippage too low."
   },
@@ -1767,6 +1752,9 @@
     "message": "We find the best price from the top liquidity sources, every time. A fee of $1% is automatically factored into each quote, which supports ongoing development to make MetaMask even better.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
+  "swapMetaMaskFeeWithRate": {
+    "message": "MetaMask fee $1"
+  },
   "swapNQuotes": {
     "message": "$1 quotes",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
@@ -1779,11 +1767,11 @@
     "message": "Your $1 will be added to your account once this transaction has processed.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
   },
-  "swapProcessing": {
-    "message": "Processing"
-  },
   "swapOverallValue": {
     "message": "Overall value"
+  },
+  "swapProcessing": {
+    "message": "Processing"
   },
   "swapQuoteDetails": {
     "message": "Quote details"
@@ -1826,12 +1814,27 @@
   "swapReceivingInfoTooltip": {
     "message": "This is an estimate. The exact amount depends on slippage."
   },
+  "swapReceivingNLessTokens": {
+    "message": "Receiving $1 $2 less"
+  },
+  "swapReceivingNMoreTokens": {
+    "message": "Receiving $1 $2 more"
+  },
   "swapRequestForQuotation": {
     "message": "Request for quotation"
   },
   "swapSaving": {
     "message": "Saving $1 $2",
     "description": "Tells the user their average savings for the selected best quote. $1 is replaced by a tilde sign, to shown approximation. $2 is replaced by the approximate amount of money the user will save, in fiat"
+  },
+  "swapSavingOnGas": {
+    "message": "Saving $1 ETH on gas fee"
+  },
+  "swapSavingsAverageSavingsNote": {
+    "message": "average savings are about $1"
+  },
+  "swapSavingsTooltipDescription": {
+    "message": "By analyzing multiple liquidity providers your $1 compared to searching a single source."
   },
   "swapSearchForAToken": {
     "message": "Search for a token"
@@ -1901,9 +1904,6 @@
   },
   "swapsAlmostDone": {
     "message": "Almost done..."
-  },
-  "swapBest": {
-    "message": "Best"
   },
   "swapsBestQuote": {
     "message": "Best quote"

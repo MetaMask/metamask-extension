@@ -118,12 +118,16 @@ export default function SortList ({
             </div>
             <div className="select-quote-popover__overall-value" >
               {isBestQuote
-                ? <div className="select-quote-popover__overall-value-label">
+                ? (
+                  <div className="select-quote-popover__overall-value-label">
                     { t('swapBest') }
                   </div>
-                : <div className="select-quote-popover__overall-value-amount" >
+                )
+                : (
+                  <div className="select-quote-popover__overall-value-amount" >
                     { overallValue }
                   </div>
+                )
               }
             </div>
             <div

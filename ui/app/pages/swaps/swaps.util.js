@@ -292,8 +292,8 @@ export function getRenderableGasFeesForQuote (tradeGas, approveGas, gasPrice, cu
   }
 }
 
-export function quotesToRenderableData (quotes, gasPrice, conversionRate, currentCurrency, approveGas, tokenConversionRates) {
-  const bestQuote = Object.values(quotes).find(quote => quote.isBestQuote) || {}
+export function quotesToRenderableData (quotes, gasPrice, conversionRate, currentCurrency, approveGas) {
+  const bestQuote = Object.values(quotes).find((quote) => quote.isBestQuote) || {}
   const { ethValueOfQuote: ethValueOfBestQuote } = bestQuote
   return Object.values(quotes).map((quote) => {
     const { destinationAmount = 0, sourceAmount = 0, sourceTokenInfo, destinationTokenInfo, slippage, aggType, aggregator, gasEstimateWithRefund, averageGas } = quote
@@ -303,7 +303,6 @@ export function quotesToRenderableData (quotes, gasPrice, conversionRate, curren
     const {
       feeInFiat,
       rawNetworkFees,
-      rawEthFee,
       feeInEth,
     } = getRenderableGasFeesForQuote(
       (
@@ -318,8 +317,6 @@ export function quotesToRenderableData (quotes, gasPrice, conversionRate, curren
 
     const slippageMultiplier = (new BigNumber(100 - slippage)).div(100)
     const minimumAmountReceived = (new BigNumber(destinationValue)).times(slippageMultiplier).toFixed(6)
-
-    const tokenConversionRate = tokenConversionRates[destinationTokenInfo.address]
 
     const rawOverallValue = ethValueOfBestQuote
       ? (new BigNumber(quote.ethValueOfQuote, 10)).minus(ethValueOfBestQuote, 10).toString(10)
