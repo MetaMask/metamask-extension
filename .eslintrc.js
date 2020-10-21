@@ -98,7 +98,6 @@ module.exports = {
     'node/no-path-concat': 'off',
     'dot-notation': 'off',
     'mocha/max-top-level-suites': 'off',
-    'node/no-callback-literal': 'off',
   },
 
   overrides: [{
