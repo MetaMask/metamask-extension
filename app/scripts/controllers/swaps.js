@@ -85,6 +85,8 @@ export default class SwapsController {
     this.getBufferedGasLimit = getBufferedGasLimit
     this.tokenRatesStore = tokenRatesStore
 
+    this.indexOfNewestCallInFlight = 0
+
     this.pollCount = 0
     this.getProviderConfig = getProviderConfig
 
@@ -117,6 +119,8 @@ export default class SwapsController {
     this.abortController.abort()
   }
 
+
+
   async fetchAndSetQuotes (fetchParams, fetchParamsMetaData = {}, isPolledRequest) {
     if (!fetchParams) {
       return null
@@ -145,6 +149,9 @@ export default class SwapsController {
       sourceTokenInfo: fetchParamsMetaData.sourceTokenInfo,
       destinationTokenInfo: fetchParamsMetaData.destinationTokenInfo,
     }))
+
+    const indexOfCurrentCall = this.indexOfNewestCallInFlight + 1
+    this.indexOfNewestCallInFlight = indexOfCurrentCall
 
     const quotesLastFetched = Date.now()
 
@@ -203,6 +210,11 @@ export default class SwapsController {
     if (!newQuotes[selectedAggId]) {
       selectedAggId = null
     }
+
+    if (this.indexOfCurrentCall !== indexOfCurrentCall) {
+      return
+    }
+
     this.store.updateState({
       swapsState: {
         ...swapsState,
