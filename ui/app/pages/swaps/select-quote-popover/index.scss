@@ -139,8 +139,8 @@
     width: 99px;
   }
 
-  &__quote-source {
-    width: 28px;
+  &__overall-value {
+    width: 46px;
     display: flex;
     align-items: flex-end;
     margin-right: 3px;
@@ -187,7 +187,7 @@
     font-weight: normal;
   }
 
-  &__quote-source-toggle {
+  &__overall-value-toggle {
     margin-left: 2px;
     height: 12px;
   }
@@ -235,28 +235,22 @@
     }
   }
 
-  &__quote-source-label {
-    height: 18px;
+  &__overall-value-label {
+    height: 23px;
+    width: 46px;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: white;
+    color: $Green-500;
     border-radius: 5px;
     padding: 4px;
     font-size: 10px;
     font-weight: bold;
     padding-bottom: 2px;
+    background: white;
+  }
 
-    &--blue {
-      background: $Blue-300;
-    }
-
-    &--orange {
-      background: $Orange-400;
-    }
-
-    &--green {
-      background: $Green-500;
-    }
+  &__overall-value-amount {
+    color: $Red-500;
   }
 }

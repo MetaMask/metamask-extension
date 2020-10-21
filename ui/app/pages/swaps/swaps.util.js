@@ -4,7 +4,7 @@ import abi from 'human-standard-token-abi'
 import { isValidAddress } from 'ethereumjs-util'
 import { calcTokenValue, calcTokenAmount } from '../../helpers/utils/token-util'
 import { constructTxParams, toPrecisionWithoutTrailingZeros } from '../../helpers/utils/util'
-import { decimalToHex, getValueFromWeiHex } from '../../helpers/utils/conversions.util'
+import { decimalToHex, getValueFromWeiHex, decEthToConvertedCurrency } from '../../helpers/utils/conversions.util'
 import { subtractCurrencies } from '../../helpers/utils/conversion-util'
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util'
 import fetchWithCache from '../../helpers/utils/fetch-with-cache'
@@ -293,6 +293,8 @@ export function getRenderableGasFeesForQuote (tradeGas, approveGas, gasPrice, cu
 }
 
 export function quotesToRenderableData (quotes, gasPrice, conversionRate, currentCurrency, approveGas, tokenConversionRates) {
+  const bestQuote = Object.values(quotes).find(quote => quote.isBestQuote) || {}
+  const { ethValueOfQuote: ethValueOfBestQuote } = bestQuote
   return Object.values(quotes).map((quote) => {
     const { destinationAmount = 0, sourceAmount = 0, sourceTokenInfo, destinationTokenInfo, slippage, aggType, aggregator, gasEstimateWithRefund, averageGas } = quote
     const sourceValue = calcTokenAmount(sourceAmount, sourceTokenInfo.decimals || 18).toString(10)
@@ -318,11 +320,17 @@ export function quotesToRenderableData (quotes, gasPrice, conversionRate, curren
     const minimumAmountReceived = (new BigNumber(destinationValue)).times(slippageMultiplier).toFixed(6)
 
     const tokenConversionRate = tokenConversionRates[destinationTokenInfo.address]
-    const ethValueOfTrade = destinationTokenInfo.symbol === 'ETH'
-      ? calcTokenAmount(destinationAmount, destinationTokenInfo.decimals || 18).minus(rawEthFee, 10)
-      : (new BigNumber(tokenConversionRate || 0, 10))
-        .times(calcTokenAmount(destinationAmount, destinationTokenInfo.decimals || 18), 10)
-        .minus(rawEthFee, 10)
+
+    const rawOverallValue = ethValueOfBestQuote
+      ? (new BigNumber(quote.ethValueOfQuote, 10)).minus(ethValueOfBestQuote, 10).toString(10)
+      : null
+    const overallValue = rawOverallValue
+      ? formatCurrency(decEthToConvertedCurrency(
+        rawOverallValue,
+        currentCurrency,
+        conversionRate,
+      ), currentCurrency)
+      : null
 
     let liquiditySourceKey
     let renderedSlippage = slippage
@@ -355,8 +363,9 @@ export function quotesToRenderableData (quotes, gasPrice, conversionRate, curren
       sourceTokenDecimals: sourceTokenInfo.decimals,
       sourceTokenSymbol: sourceTokenInfo.symbol,
       sourceTokenValue: sourceValue,
-      ethValueOfTrade,
       minimumAmountReceived,
+      overallValue,
+      ethValueOfQuote: quote.ethValueOfQuote,
     }
   })
 }

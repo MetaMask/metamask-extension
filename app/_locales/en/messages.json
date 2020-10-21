@@ -1782,6 +1782,9 @@
   "swapProcessing": {
     "message": "Processing"
   },
+  "swapOverallValue": {
+    "message": "Overall value"
+  },
   "swapQuoteDetails": {
     "message": "Quote details"
   },
@@ -1898,6 +1901,9 @@
   },
   "swapsAlmostDone": {
     "message": "Almost done..."
+  },
+  "swapBest": {
+    "message": "Best"
   },
   "swapsBestQuote": {
     "message": "Best quote"

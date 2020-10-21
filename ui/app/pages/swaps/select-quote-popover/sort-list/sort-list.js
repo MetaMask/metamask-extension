@@ -51,10 +51,6 @@ export default function SortList ({
         const aHex = (new BigNumber(rowDataA.destinationTokenValue).toString(16))
         const bHex = (new BigNumber(rowDataB.destinationTokenValue).toString(16))
         return aHex[aHex.length - 1] < bHex[bHex.length - 1] ? -1 : 1
-      } else if (sortColumn === 'quoteSource') {
-        return rowDataA[sortColumn] > rowDataB[sortColumn]
-          ? sortDirection * -1
-          : sortDirection
       }
       return (new BigNumber(rowDataA[sortColumn])).gt(rowDataB[sortColumn])
         ? sortDirection * -1
@@ -93,15 +89,15 @@ export default function SortList ({
           <ToggleArrows />
         </div>
         <div
-          className="select-quote-popover__column-header select-quote-popover__quote-source"
-          onClick={() => onColumnHeaderClick('quoteSource')}
+          className="select-quote-popover__column-header select-quote-popover__overall-value"
+          onClick={() => onColumnHeaderClick('ethValueOfQuote')}
         >
-          {t('swapQuoteSource')}
-          <div className="select-quote-popover__quote-source-toggle"><ToggleArrows /></div>
+          {t('swapOverallValue')}
+          <div className="select-quote-popover__overall-value-toggle"><ToggleArrows /></div>
         </div>
       </div>
       {
-        sortedRows.map(({ destinationTokenValue, networkFees, isBestQuote, quoteSource, aggId }, i) => (
+        sortedRows.map(({ destinationTokenValue, networkFees, isBestQuote, quoteSource, aggId, overallValue }, i) => (
           <div
             className={classnames('select-quote-popover__row', {
               'select-quote-popover__row--selected': selectedRow === i,
@@ -120,16 +116,15 @@ export default function SortList ({
             <div className="select-quote-popover__network-fees" >
               {networkFees}
             </div>
-            <div className="select-quote-popover__quote-source" >
-              <div
-                className={classnames('select-quote-popover__quote-source-label', {
-                  'select-quote-popover__quote-source-label--green': quoteSource === 'AGG',
-                  'select-quote-popover__quote-source-label--orange': quoteSource === 'RFQ',
-                  'select-quote-popover__quote-source-label--blue': quoteSource === 'DEX',
-                })}
-              >
-                {quoteSource}
-              </div>
+            <div className="select-quote-popover__overall-value" >
+              {isBestQuote
+                ? <div className="select-quote-popover__overall-value-label">
+                    { t('swapBest') }
+                  </div>
+                : <div className="select-quote-popover__overall-value-amount" >
+                    { overallValue }
+                  </div>
+              }
             </div>
             <div
               className="select-quote-popover__caret-right"
