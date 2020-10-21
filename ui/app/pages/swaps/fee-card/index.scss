@@ -66,6 +66,11 @@
     color: $Blue-500;
   }
 
+  &__savings-text-container {
+    display: flex;
+    align-items: center;
+  }
+
   &__quote-link-container {
     display: flex;
     align-items: center;
@@ -144,7 +149,7 @@
     display: flex;
     align-items: center;
 
-    img {
+    svg {
       height: 10px;
       width: 10px;
       cursor: pointer;
@@ -155,11 +160,24 @@
     height: 10px;
     width: 10px;
     justify-content: center;
-    margin-top: 2px;
 
     div {
       display: flex !important;
       height: 10px;
+    }
+  }
+
+  &__savings-info-tooltip-container {
+    display: flex;
+    align-items: center;
+    opacity: 0.6;
+    margin-left: 4px;
+    margin-top: -2px;
+
+    svg {
+      height: 10px;
+      width: 10px;
+      cursor: pointer;
     }
   }
 
@@ -233,9 +251,68 @@
     font-family: Roboto, Helvetica, Arial, sans-serif;
     margin-right: -3.5px;
   }
+
+  &__savings-tooltip {
+    @include H7;
+
+    color: $Grey-500;
+  }
+
+  &__savings-tooltip-card {
+    width: 294.95068359375px;
+    border: 1px solid $Grey-100;
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    margin-top: 12px;
+  }
+
+  &__savings-tooltip-row,
+  &__savings-tooltip-total-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+
+  &__savings-tooltip-row:first-of-type {
+    margin-top: 0;
+  };
+
+  &__savings-tooltip-total-row {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid $Grey-100;
+  }
+
+  &__savings-tooltip-row-text,
+  &__savings-tooltip-total-row-text {
+    color: $Black-100;
+  }
+
+  &__savings-tooltip-number {
+    font-weight: bold;
+
+    &--green {
+      color: $Green-500;
+    }
+
+    &--red {
+      color: $Red-500;
+    }
+  }
+
+  &__savings-tooltip-total-row {
+    @include H6;
+
+    font-weight: bold;
+  }
 }
 
 .info-tooltip {
+  height: 10px;
+
   > div {
     display: flex;
     align-items: center;

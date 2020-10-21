@@ -7,6 +7,7 @@ import InfoTooltip from '../../../components/ui/info-tooltip'
 import { decEthToConvertedCurrency } from '../../../helpers/utils/conversions.util'
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util'
 import PigIcon from './pig-icon'
+import SavingsTooltip from './savings-tooltip'
 
 export default function FeeCard ({
   primaryFee,
@@ -24,6 +25,7 @@ export default function FeeCard ({
   conversionRate,
   currentCurrency,
   tokenConversionRate,
+  tokenSymbol,
 }) {
   const t = useContext(I18nContext)
 
@@ -67,7 +69,19 @@ export default function FeeCard ({
             'fee-card__savings-and-quotes-row--align-left': !shouldDisplaySavings,
           })}
         >
-          {savingsText && <p className="fee-card__savings-text">{ savingsText }</p>}
+          <div className="fee-card__savings-text-container">
+            {savingsText && <p className="fee-card__savings-text">{ savingsText }</p>}
+            {shouldDisplaySavings && (
+              <SavingsTooltip
+                savings={savings}
+                conversionRate={conversionRate}
+                currentCurrency={currentCurrency}
+                tokenConversionRate={tokenConversionRate}
+                tokenSymbol={tokenSymbol}
+                metaMaskFee={metaMaskFee}
+              />
+            )}
+          </div>
           <div className="fee-card__quote-link-container" onClick={onQuotesClick}>
             <p className="fee-card__quote-link-text">
               { t('swapNQuotes', [numberOfQuotes]) }
@@ -199,4 +213,5 @@ FeeCard.propTypes = {
   conversionRate: PropTypes.number,
   currentCurrency: PropTypes.string,
   tokenConversionRate: PropTypes.number,
+  tokenSymbol: PropTypes.string,
 }

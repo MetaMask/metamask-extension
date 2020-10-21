@@ -1027,6 +1027,10 @@
   "negativeETH": {
     "message": "Can not send negative amounts of ETH."
   },
+  "negativeSign": {
+    "message": "- $1",
+    "description": "Applies a negative sign to some sort of numeric text"
+  },
   "networkName": {
     "message": "Network Name"
   },
@@ -1199,6 +1203,10 @@
   "plusXMore": {
     "message": "+ $1 more",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
+  },
+  "positiveSign": {
+    "message": "+ $1",
+    "description": "Applies a positive sign to some sort of numeric text"
   },
   "prev": {
     "message": "Prev"
@@ -1599,6 +1607,30 @@
   },
   "supportCenter": {
     "message": "Visit our Support Center"
+  },
+  "swapReceivingNMoreTokens": {
+    "message": "Receiving $1 $2 more"
+  },
+  "swapReceivingNLessTokens": {
+    "message": "Receiving $1 $2 less"
+  },
+  "swapSavingsTooltipDescription": {
+    "message": "By analyzing multiple liquidity providers your $1 compared to searching a single source."
+  },
+  "swapSavingsAverageSavingsNote": {
+    "message": "average savings are about $1"
+  },
+  "swapSavingOnGas": {
+    "message": "Saving $1 ETH on gas fee"
+  },
+  "swapLosingOnGas": {
+    "message": "Losing $1 ETH on gas fee"
+  },
+  "swapMetaMaskFeeWithRate": {
+    "message": "MetaMask fee $1"
+  },
+  "swapAverageSavings": {
+    "message": "Average savings"
   },
   "swap": {
     "message": "Swap"

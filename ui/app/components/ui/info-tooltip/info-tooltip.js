@@ -16,7 +16,17 @@ export default function InfoTooltip ({
   containerClassName,
   wrapperClassName,
   wide,
+  extraWide,
+  color = '#b8b8b8',
 }) {
+  let theme = 'tippy-tooltip-info'
+  if (wide) {
+    theme = 'tippy-tooltip-wideInfo'
+  }
+  if (extraWide) {
+    theme = 'tippy-tooltip-extraWideInfo'
+  }
+
   return (
     <div className="info-tooltip">
       <Tooltip
@@ -27,9 +37,14 @@ export default function InfoTooltip ({
         tooltipInnerClassName="info-tooltip__tooltip-content"
         tooltipArrowClassName={positionArrowClassMap[position]}
         html={contentText}
-        theme={wide ? 'tippy-tooltip-wideInfo' : 'tippy-tooltip-info'}
+        theme={theme}
       >
-        <img src="images/mm-info-icon.svg" />
+        <svg viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M5 0C2.2 0 0 2.2 0 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 2c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.2-.7-.6.3-.8.7-.8zm.7 6H4.3V4.3h1.5V8z"
+            fill={color}
+          />
+        </svg>
       </Tooltip>
     </div>
   )
@@ -41,4 +56,6 @@ InfoTooltip.propTypes = {
   wide: PropTypes.bool,
   containerClassName: PropTypes.string,
   wrapperClassName: PropTypes.string,
+  extraWide: PropTypes.bool,
+  color: PropTypes.string,
 }

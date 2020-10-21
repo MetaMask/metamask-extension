@@ -98,6 +98,7 @@ export default function ViewQuote () {
   const quotesLastFetched = useSelector(getQuotesLastFetched)
 
   // Select necessary data
+  const destinationToken = useSelector(getDestinationTokenInfo)
   const metaMaskFee = useSelector(getMetaMaskFeeAmount)
   const tradeTxParams = useSelector(getSwapsTradeTxParams)
   const { gasPrice } = tradeTxParams || {}
@@ -248,8 +249,6 @@ export default function ViewQuote () {
       6,
     )
     : null
-
-  const destinationToken = useSelector(getDestinationTokenInfo)
 
   useEffect(() => {
     if (insufficientTokens || insufficientEth) {
@@ -515,6 +514,7 @@ export default function ViewQuote () {
                 ? 1
                 : memoizedTokenConversionRates[destinationToken.address]
             }
+            tokenSymbol={destinationTokenSymbol}
           />
         </div>
       </div>
