@@ -117,13 +117,11 @@ export const segment = process.env.SEGMENT_WRITE_KEY
  *
  * @param {string} metamaskVersion - The current version of the MetaMask extension.
  * @param {() => MetaMetricsRequiredState} getDynamicState - A function returning required fields
- * @param {boolean} defaultMetaMetricsExclusion - Used to set the default state of exludeMetaMetricsId
  * @returns {(payload: MetaMetricsEventPayload) => Promise<void>} - function to track an event
  */
 export function getTrackMetaMetricsEvent (
   metamaskVersion,
   getDynamicState,
-  defaultMetaMetricsExclusion = false,
 ) {
   const version = process.env.METAMASK_ENVIRONMENT === 'production'
     ? metamaskVersion
@@ -154,7 +152,7 @@ export function getTrackMetaMetricsEvent (
       metaMetricsSendCount,
     } = getDynamicState()
 
-    let excludeMetaMetricsId = excludeId ?? defaultMetaMetricsExclusion
+    let excludeMetaMetricsId = excludeId ?? false
 
     // This is carried over from the old implementation, and will likely need
     // to be updated to work with the new tracking plan. I think we should use

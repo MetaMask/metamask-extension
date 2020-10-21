@@ -143,7 +143,6 @@ export default class MetamaskController extends EventEmitter {
           },
         }
       },
-      false,
     )
 
     this.appStateController = new AppStateController({

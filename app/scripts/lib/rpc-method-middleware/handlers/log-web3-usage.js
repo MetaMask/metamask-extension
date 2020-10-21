@@ -55,6 +55,7 @@ function logWeb3UsageHandler (
           url: origin,
         },
       },
+      excludeMetaMetricsId: true,
     })
   }
 
