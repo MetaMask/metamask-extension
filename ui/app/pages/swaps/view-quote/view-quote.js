@@ -22,7 +22,6 @@ import {
   getBalanceError,
   getCustomSwapsGas,
   getDestinationTokenInfo,
-  getMetaMaskFeeAmount,
   getSwapsTradeTxParams,
   getTopQuote,
   navigateBackToBuildQuote,
@@ -341,7 +340,7 @@ export default function ViewQuote () {
     }
   }, [sourceTokenSymbol, sourceTokenValue, destinationTokenSymbol, destinationTokenValue, fetchParams, topQuote, numberOfQuotes, feeInFiat, bestQuoteReviewedEvent, anonymousBestQuoteReviewedEvent])
 
-  const metaMaskFee = useSelector(getMetaMaskFeeAmount)
+  const metaMaskFee = usedQuote.fee
 
   const onFeeCardTokenApprovalClick = () => {
     anonymousEditSpendLimitOpened()
