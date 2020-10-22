@@ -698,3 +698,7 @@ function getMedianEthValueQuote (quotes) {
       .dividedBy(2),
   }
 }
+
+export const utils = {
+  getMedianEthValueQuote,
+}
