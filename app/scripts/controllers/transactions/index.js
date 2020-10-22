@@ -860,7 +860,7 @@ export default class TransactionController extends EventEmitter {
 
         const estimatedVsUsedGasRatio = `${
           (new BigNumber(txMeta.txReceipt.gasUsed, 16))
-            .div(txMeta.swapMetaData.estimated_gas, 16)
+            .div(txMeta.swapMetaData.estimated_gas, 10)
             .times(100)
             .round(2)
         }%`
