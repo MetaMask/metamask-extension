@@ -63,17 +63,21 @@ export default class EnsInput extends Component {
       value,
     } = this.props
 
+    let newValue
+
     // Set the value of our input based on QR code provided by parent
     if (input !== value && prevProps.value !== value) {
-      this.setState({ input: value })
+      newValue = value
     }
 
-    // If an address is sent without a nickname, meaning not from ENS or from
-    // the user's own accounts, a default of a one-space string is used.
     if (prevProps.network !== network) {
       const provider = global.ethereumProvider
       this.ens = new ENS({ provider, network })
-      this.onChange({ target: { value: input } })
+      newValue = input
+    }
+
+    if (newValue !== undefined) {
+      this.onChange({ target: { value: newValue } })
     }
   }
 
