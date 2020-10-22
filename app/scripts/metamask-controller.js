@@ -2163,6 +2163,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   // TODO: Replace isClientOpen methods with `controllerConnectionChanged` events.
+  /* eslint-disable accessor-pairs */
   /**
    * A method for recording whether the MetaMask user interface is open or not.
    * @private
@@ -2172,6 +2173,7 @@ export default class MetamaskController extends EventEmitter {
     this._isClientOpen = open
     this.detectTokensController.isOpen = open
   }
+  /* eslint-enable accessor-pairs */
 
   /**
   * Creates RPC engine middleware for processing eth_signTypedData requests
