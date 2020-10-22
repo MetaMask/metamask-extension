@@ -134,7 +134,7 @@ export default function SavingsTooltip ({
       }
       containerClassName="fee-card__savings-info-tooltip-container"
       color="#037DD6"
-      extraWide
+      theme="extraWide"
     />
   )
 }
