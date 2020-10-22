@@ -15,12 +15,11 @@ export default function InfoTooltip ({
   position = '',
   containerClassName,
   wrapperClassName,
-  theme = 'normal',
+  theme,
   color = '#b8b8b8',
 }) {
 
-  const themeClassName = classnames({
-    'tippy-tooltip-info': theme === 'normal',
+  const themeClassName = classnames('tippy-tooltip-info', {
     'tippy-tooltip-wideInfo': theme === 'wide',
     'tippy-tooltip-extraWideInfo': theme === 'extraWide',
   })
