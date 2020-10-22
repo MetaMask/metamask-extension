@@ -592,17 +592,28 @@ export default class SwapsController {
         10,
       )
       // Total savings are calculated as:
-      //   valueForBestTrade - medianValueOfAllTrades - metaMaskFeeForBestTrade
+      //   (overall value of best trade) - (overall value of the median trade before fees are applied)
       savings.total = ethValueOfBestQuote.minus(
         ethValueOfMedianQuotePreMetaMaskFee,
         10,
       )
 
       // Fee savings are calculated as:
-      //   feeOfQuotesOfMedianValueOfAllTrades - feeForBestTrade
+      //   (fee for the median trade) - (fee for the best trade)
       savings.fee = medianEthFee.minus(ethFeeForBestQuote, 10)
 
-      // Performance savings are the total savings minus the fee savings
+      // Performance savings are calculated by:
+      //   Subtracting the network fee savings from the total savings and adding
+      //   the metamaskFee of the best quote.
+      // savings.performance is meant to be the eth value of the difference in
+      //   token received when choosing the best quote over the median. Because
+      //   savings.total is a comparison of overall value of the best quote after
+      //   fees have been extracted to overall balue of the media quote before
+      //   fees have been extracted, savings.performance needs to adjust for the
+      //   fee extracted from the best quote. Hence the addition of the
+      //   metaMaskFeeInEthForBestQuote. This ensures that
+      //   savings.total = savings.performance + savings.fee - savings.metaMaskFee
+      //   Each of these will be represented in the UI
       savings.performance = savings.total
         .minus(savings.fee, 10)
         .plus(metaMaskFeeInEthForBestQuote)
@@ -728,7 +739,7 @@ export default class SwapsController {
  * Calculates the median ethValueOfQuote of a sample of quotes.
  *
  * @param {array} quotes - A sample of quote objects with ethValueOfQuote and ethFee properties
- * @returns {object} An object with the media ethValueOfQuote for all quotes, and the associated median ethFee.
+ * @returns {object} An object with the media ethValueOfQuote for all quotes, and the associated median ethFee and metaMaskFeeInEth.
  */
 
 function getMedianEthValueQuote(quotes) {
