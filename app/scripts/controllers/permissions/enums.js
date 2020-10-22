@@ -121,4 +121,5 @@ export const SAFE_METHODS = [
   'cfx_decrypt',
   'cfx_getStatus',
   'cfx_getConfirmationRiskByHash',
+  'cfx_clientVersion',
 ]
