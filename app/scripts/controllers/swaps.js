@@ -619,6 +619,7 @@ export default class SwapsController {
       ...quote,
       ethFee: quote.ethFee.toString(10),
       ethValueOfQuote: quote.ethValueOfQuote.toString(10),
+      metaMaskFeeInEth: quote.metaMaskFeeInEth.toString(10),
     }))
 
     return [topAggId, newQuotes]
