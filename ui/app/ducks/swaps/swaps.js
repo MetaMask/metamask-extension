@@ -50,7 +50,6 @@ const initialState = {
   quotesFetchStartTime: null,
   topAssets: {},
   toToken: null,
-  metamaskFeeAmount: null,
 }
 
 const slice = createSlice({
@@ -89,9 +88,6 @@ const slice = createSlice({
     setToToken: (state, action) => {
       state.toToken = action.payload
     },
-    setMetamaskFeeAmount: (state, action) => {
-      state.metamaskFeeAmount = action.payload
-    },
   },
 })
 
@@ -110,8 +106,6 @@ export const getFromToken = (state) => state.swaps.fromToken
 export const getTopAssets = (state) => state.swaps.topAssets
 
 export const getToToken = (state) => state.swaps.toToken
-
-export const getMetaMaskFeeAmount = (state) => state.swaps.metamaskFeeAmount
 
 export const getFetchingQuotes = (state) => state.swaps.fetchingQuotes
 
@@ -200,7 +194,6 @@ const {
   setQuotesFetchStartTime,
   setTopAssets,
   setToToken,
-  setMetamaskFeeAmount,
 } = actions
 
 export {
@@ -212,7 +205,6 @@ export {
   setQuotesFetchStartTime as setSwapQuotesFetchStartTime,
   setTopAssets,
   setToToken as setSwapToToken,
-  setMetamaskFeeAmount,
 }
 
 export const navigateBackToBuildQuote = (history) => {

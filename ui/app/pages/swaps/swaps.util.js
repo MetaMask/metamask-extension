@@ -27,8 +27,6 @@ const getBaseApi = function (type) {
       return `https://api.metaswap.codefi.network/featureFlag`
     case 'aggregatorMetadata':
       return `https://api.metaswap.codefi.network/aggregatorMetadata`
-    case 'feeAmount':
-      return `https://api.metaswap.codefi.network/fee`
     default:
       throw new Error('getBaseApi requires an api call type')
   }
@@ -245,11 +243,6 @@ export async function fetchTopAssets () {
 export async function fetchSwapsFeatureLiveness () {
   const status = await fetchWithCache(getBaseApi('featureFlag'), { method: 'GET' }, { cacheRefreshTime: 600000 })
   return status?.active
-}
-
-export async function fetchMetaMaskFeeAmount () {
-  const response = await fetchWithCache(getBaseApi('feeAmount'), { method: 'GET' }, { cacheRefreshTime: 600000 })
-  return response?.fee
 }
 
 export async function fetchTokenPrice (address) {
