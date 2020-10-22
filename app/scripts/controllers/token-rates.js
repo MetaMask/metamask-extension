@@ -46,6 +46,7 @@ export default class TokenRatesController {
     this.store.putState({ contractExchangeRates })
   }
 
+  /* eslint-disable accessor-pairs */
   /**
    * @type {Object}
    */
@@ -68,6 +69,7 @@ export default class TokenRatesController {
     this._tokens = tokens
     this.updateExchangeRates()
   }
+  /* eslint-enable accessor-pairs */
 
   start (interval = DEFAULT_INTERVAL) {
     this._handle && clearInterval(this._handle)

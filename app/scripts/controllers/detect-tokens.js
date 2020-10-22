@@ -86,6 +86,7 @@ export default class DetectTokensController {
     this.interval = DEFAULT_INTERVAL
   }
 
+  /* eslint-disable accessor-pairs */
   /**
    * @type {Number}
    */
@@ -162,4 +163,5 @@ export default class DetectTokensController {
   get isActive () {
     return this.isOpen && this.isUnlocked
   }
+  /* eslint-enable accessor-pairs */
 }

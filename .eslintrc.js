@@ -89,7 +89,6 @@ module.exports = {
     'node/no-process-env': 'off',
 
     // TODO: re-enable these rules
-    'accessor-pairs': 'off',
     'node/no-sync': 'off',
     'node/no-unpublished-import': 'off',
     'node/no-unpublished-require': 'off',
