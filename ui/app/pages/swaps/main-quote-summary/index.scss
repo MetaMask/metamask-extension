@@ -18,6 +18,10 @@
     color: $Grey-500;
   }
 
+  &__source-row {
+    align-items: center;
+  }
+
   &__source-row-value,
   &__source-row-symbol {
     // Each of these spans can be half their container width minus the space
@@ -46,6 +50,7 @@
 
   &__destination-row-symbol {
     margin-left: 5px;
+    color: $Black-100;
   }
 
   &__icon,

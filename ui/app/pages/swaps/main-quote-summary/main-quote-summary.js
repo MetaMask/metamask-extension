@@ -57,7 +57,7 @@ export default function MainQuoteSummary ({
               name={sourceSymbol}
               fallbackClassName="main-quote-summary__icon-fallback"
             />
-            <span className=",main-quote-summary__source-row-symbol" title={sourceSymbol}>{ sourceSymbol }</span>
+            <span className="main-quote-summary__source-row-symbol" title={sourceSymbol}>{ sourceSymbol }</span>
           </div>
           <img
             className="main-quote-summary__down-arrow"
