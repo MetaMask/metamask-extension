@@ -1894,7 +1894,7 @@ export default class MetamaskController extends EventEmitter {
     const metamaskState = await this.getState()
     const additionalProperties = getBackgroundMetaMetricState(metamaskState)
 
-    this.trackSegmentEvent({
+    this.trackMetaMetricsEvent({
       event: name,
       category: 'Background',
       matomoEvent: true,
