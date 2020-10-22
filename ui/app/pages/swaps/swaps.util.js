@@ -2,6 +2,7 @@ import log from 'loglevel'
 import BigNumber from 'bignumber.js'
 import abi from 'human-standard-token-abi'
 import { isValidAddress } from 'ethereumjs-util'
+import { ETH_SWAPS_TOKEN_OBJECT } from '../../helpers/constants/swaps'
 import { calcTokenValue, calcTokenAmount } from '../../helpers/utils/token-util'
 import { constructTxParams, toPrecisionWithoutTrailingZeros } from '../../helpers/utils/util'
 import { decimalToHex, getValueFromWeiHex } from '../../helpers/utils/conversions.util'
@@ -212,7 +213,10 @@ export async function fetchTradesInfo ({
 export async function fetchTokens () {
   const tokenUrl = getBaseApi('tokens')
   const tokens = await fetchWithCache(tokenUrl, { method: 'GET' }, { cacheRefreshTime: CACHE_REFRESH_ONE_HOUR })
-  const filteredTokens = tokens.filter((token) => validateData(TOKEN_VALIDATORS, token, tokenUrl))
+  const filteredTokens = tokens.filter((token) => {
+    return validateData(TOKEN_VALIDATORS, token, tokenUrl) && (token.address !== ETH_SWAPS_TOKEN_OBJECT.address)
+  })
+  filteredTokens.push(ETH_SWAPS_TOKEN_OBJECT)
   return filteredTokens
 }
 
