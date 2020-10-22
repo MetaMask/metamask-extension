@@ -12,8 +12,10 @@ const flushAt = 1
 export const METAMETRICS_ANONYMOUS_ID = '0x0000000000000000'
 
 const segmentNoop = {
-  track () {
-    // noop
+  track (_, callback = () => undefined) {
+    // Need to call the callback so that environments without a segment id still
+    // resolve the promise from trackMetaMetricsEvent
+    return callback()
   },
   page () {
     // noop
