@@ -91,7 +91,6 @@ module.exports = {
     // TODO: re-enable these rules
     'accessor-pairs': 'off',
     'node/no-sync': 'off',
-    'node/no-deprecated-api': 'off',
     'node/no-unpublished-import': 'off',
     'node/no-unpublished-require': 'off',
     'node/no-unsupported-features/node-builtins': 'off',

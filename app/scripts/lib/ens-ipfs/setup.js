@@ -1,4 +1,3 @@
-import urlUtil from 'url'
 import extension from 'extensionizer'
 import resolveEnsToIpfsContentId from './resolver'
 
@@ -26,8 +25,7 @@ export default function setupEnsIpfsResolver ({ provider, getCurrentNetwork, get
       return
     }
     // parse ens name
-    const urlData = urlUtil.parse(url)
-    const { hostname: name, pathname, search, hash: fragment } = urlData
+    const { hostname: name, pathname, search, hash: fragment } = new URL(url)
     const domainParts = name.split('.')
     const topLevelDomain = domainParts[domainParts.length - 1]
     // if unsupported TLD, abort
