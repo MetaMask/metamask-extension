@@ -148,7 +148,7 @@ export function calcTokenValue (value, decimals) {
  * @returns {string | undefined} A lowercase address string.
  */
 export function getTokenAddressParam (tokenData = {}) {
-  const value = tokenData?.args?.['_to'] || tokenData?.args?.[0]
+  const value = tokenData?.args?._to || tokenData?.args?.[0]
   return value?.toString().toLowerCase()
 }
 
@@ -160,7 +160,7 @@ export function getTokenAddressParam (tokenData = {}) {
  * @returns {string | undefined} A decimal string value.
  */
 export function getTokenValueParam (tokenData = {}) {
-  return tokenData?.args?.['_value']?.toString()
+  return tokenData?.args?._value?.toString()
 }
 
 export function getTokenValue (tokenParams = []) {
