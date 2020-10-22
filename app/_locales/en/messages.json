@@ -1027,10 +1027,6 @@
   "negativeETH": {
     "message": "Can not send negative amounts of ETH."
   },
-  "negativeSign": {
-    "message": "- $1",
-    "description": "Applies a negative sign to some sort of numeric text"
-  },
   "networkName": {
     "message": "Network Name"
   },
@@ -1786,9 +1782,6 @@
   "swapQuoteNofN": {
     "message": "Quote $1 of $2",
     "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
-  },
-  "swapQuoteSource": {
-    "message": "Quote source"
   },
   "swapQuotesAreRefreshed": {
     "message": "Quotes are refreshed often to reflect current market conditions."
