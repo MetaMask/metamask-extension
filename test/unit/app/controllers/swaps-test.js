@@ -61,6 +61,7 @@ const MOCK_QUOTES_APPROVAL_REQUIRED = {
     aggType: 'AGG',
     slippage: 3,
     approvalNeeded: MOCK_APPROVAL_NEEDED,
+    fee: 1,
   },
 }
 
@@ -394,9 +395,13 @@ describe('SwapsController', function () {
           gasEstimateWithRefund: 'b8cae',
           savings: {
             fee: '0',
-            performance: '6',
-            total: '6',
+            metaMaskFee: '0.5',
+            performance: '6.06',
+            total: '5.56',
           },
+          ethFee: '33554432',
+          ethValueOfQuote: '-33554382',
+          metaMaskFeeInEth: '0.5',
         })
 
         assert.strictEqual(
@@ -515,7 +520,7 @@ describe('SwapsController', function () {
           MOCK_FETCH_METADATA,
         )
 
-        assert.strictEqual(newQuotes[topAggId].isBestQuote, false)
+        assert.strictEqual(newQuotes[topAggId].isBestQuote, undefined)
       })
     })
 
@@ -865,37 +870,66 @@ describe('SwapsController', function () {
   })
 
   describe('utils', function () {
-    describe('getMedian', function () {
-      const { getMedian } = utils
+    describe('getMedianEthValueQuote', function () {
+      const { getMedianEthValueQuote } = utils
 
       it('calculates median correctly with uneven sample', function () {
-        const values = [3, 2, 6].map((value) => new BigNumber(value))
-        const median = getMedian(values)
+        const values = [
+          { ethValueOfQuote: 3 },
+          { ethValueOfQuote: 2 },
+          { ethValueOfQuote: 6 },
+        ].map(({ ethValueOfQuote }) => ({
+          ethValueOfQuote: new BigNumber(ethValueOfQuote),
+        }))
+        const median = getMedianEthValueQuote(values)
 
-        assert.strictEqual(
-          median.toNumber(),
-          3,
-          'should have returned correct median',
+        assert.deepEqual(
+          median,
+          values[1],
+          'should have returned correct median quote object',
         )
       })
 
       it('calculates median correctly with even sample', function () {
-        const values = [3, 2, 2, 6].map((value) => new BigNumber(value))
-        const median = getMedian(values)
+        const expectedResult = {
+          ethValueOfQuote: new BigNumber(2.5),
+          ethFee: new BigNumber(20),
+          metaMaskFeeInEth: new BigNumber(6.5),
+        }
+        const values = [
+          { ethValueOfQuote: 3, ethFee: 10, metaMaskFeeInEth: 5 },
+          { ethValueOfQuote: 2, ethFee: 20, metaMaskFeeInEth: 3 },
+          { ethValueOfQuote: 2, ethFee: 30, metaMaskFeeInEth: 8 },
+          { ethValueOfQuote: 6, ethFee: 40, metaMaskFeeInEth: 6 },
+        ].map((quote) => ({
+          ethValueOfQuote: new BigNumber(quote.ethValueOfQuote),
+          ethFee: new BigNumber(quote.ethFee),
+          metaMaskFeeInEth: new BigNumber(quote.metaMaskFeeInEth),
+        }))
+        const median = getMedianEthValueQuote(values)
 
-        assert.strictEqual(
-          median.toNumber(),
-          2.5,
-          'should have returned correct median',
+        assert.deepEqual(
+          median,
+          expectedResult,
+          'should have returned correct median quote object',
         )
       })
 
       it('throws on empty or non-array sample', function () {
-        assert.throws(() => getMedian([]), 'should throw on empty array')
+        assert.throws(
+          () => getMedianEthValueQuote([]),
+          'should throw on empty array',
+        )
 
-        assert.throws(() => getMedian(), 'should throw on non-array param')
+        assert.throws(
+          () => getMedianEthValueQuote(),
+          'should throw on non-array param',
+        )
 
-        assert.throws(() => getMedian({}), 'should throw on non-array param')
+        assert.throws(
+          () => getMedianEthValueQuote({}),
+          'should throw on non-array param',
+        )
       })
     })
   })
@@ -934,6 +968,7 @@ function getMockQuotes() {
         symbol: 'USDC',
         decimals: 18,
       },
+      fee: 1,
     },
 
     [TEST_AGG_ID_BEST]: {
@@ -967,6 +1002,7 @@ function getMockQuotes() {
         symbol: 'USDC',
         decimals: 18,
       },
+      fee: 1,
     },
 
     [TEST_AGG_ID_2]: {
@@ -1000,6 +1036,7 @@ function getMockQuotes() {
         symbol: 'USDC',
         decimals: 18,
       },
+      fee: 1,
     },
   }
 }
