@@ -2,6 +2,7 @@ import { createSelector } from 'reselect'
 import {
   SUBMITTED_STATUS,
   CONFIRMED_STATUS,
+  FAILED_STATUS,
   PRIORITY_STATUS_HASH,
   PENDING_STATUS_HASH,
 } from '../helpers/constants/transactions'
@@ -206,6 +207,9 @@ export const nonceSortedTransactionsSelector = createSelector(
     const orderedNonces = []
     const nonceToTransactionsMap = {}
 
+    console.log("------------------------")
+    console.log('nonceSortedTransactionsSelector start; transactions', transactions);
+
     transactions.forEach((transaction) => {
       const { txParams: { nonce } = {}, status, type, time: txTime, transactionCategory } = transaction
 
@@ -228,7 +232,8 @@ export const nonceSortedTransactionsSelector = createSelector(
         insertTransactionByTime(nonceProps.transactions, transaction)
 
         if (status in PRIORITY_STATUS_HASH) {
-          const { primaryTransaction: { time: primaryTxTime = 0 } = {} } = nonceProps
+          // Accommodates for no primary transaction due to failure
+          const primaryTxTime = nonceProps?.primaryTransaction?.time ?? 0;
 
           if (status === CONFIRMED_STATUS || txTime > primaryTxTime) {
             nonceProps.primaryTransaction = transaction
@@ -251,11 +256,26 @@ export const nonceSortedTransactionsSelector = createSelector(
           nonceProps.hasCancelled = true
         }
       } else {
+        /*
+          Error:
+          {
+            message: "Error: [ethjs-rpc] rpc error with payload {\"id\":428016472614,\"jsonrpc\":\"2.0\",\"params\":[\"0xf8650a843b9aca00843b9aca00940bd88c9c99be119dbbcd493699bfbffab0904d6980802ca0f511cd1297503b5a670e9459a174eceb4a2b7786df212821873eb2302727a49ba05ac22d6732af3e21539a2cbb738f53ccac2477de1e5a2d2a389f46b88693432f\"],\"method\":\"eth_sendRawTransaction\"} [object Object]",
+​​​            rpc: {
+              code: -32000
+              message: "exceeds block gas limit"
+            }
+          }
+        */
+        let primaryTransaction = transaction
+        if(transaction.status === FAILED_STATUS && Boolean(transaction?.err?.message)) {
+          primaryTransaction = null;
+        }
+
         nonceToTransactionsMap[nonce] = {
           nonce,
           transactions: [transaction],
           initialTransaction: transaction,
-          primaryTransaction: transaction,
+          primaryTransaction,
           hasRetried: transaction.type === TRANSACTION_TYPE_RETRY,
           hasCancelled: transaction.type === TRANSACTION_TYPE_CANCEL,
         }
@@ -266,7 +286,11 @@ export const nonceSortedTransactionsSelector = createSelector(
 
     const orderedTransactionGroups = orderedNonces.map((nonce) => nonceToTransactionsMap[nonce])
     mergeNonNonceTransactionGroups(orderedTransactionGroups, incomingTransactionGroups)
-    return unapprovedTransactionGroups.concat(orderedTransactionGroups)
+    const returnValue = unapprovedTransactionGroups.concat(orderedTransactionGroups)
+
+    console.log('nonceSortedTransactionsSelector end; returnValue', returnValue);
+    
+    return returnValue;
   },
 )
 
