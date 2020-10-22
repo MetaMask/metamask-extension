@@ -94,7 +94,6 @@ module.exports = {
     'node/no-unpublished-import': 'off',
     'node/no-unpublished-require': 'off',
     'node/no-unsupported-features/node-builtins': 'off',
-    'dot-notation': 'off',
     'mocha/max-top-level-suites': 'off',
   },
 
