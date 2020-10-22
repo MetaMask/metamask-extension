@@ -66,14 +66,17 @@ export default class EnsInput extends Component {
     let newValue
 
     // Set the value of our input based on QR code provided by parent
-    if (input !== value && prevProps.value !== value) {
+    const newProvidedValue = input !== value && prevProps.value !== value
+    if (newProvidedValue) {
       newValue = value
     }
 
     if (prevProps.network !== network) {
       const provider = global.ethereumProvider
       this.ens = new ENS({ provider, network })
-      newValue = input
+      if (!newProvidedValue) {
+        newValue = input
+      }
     }
 
     if (newValue !== undefined) {
