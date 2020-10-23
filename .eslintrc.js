@@ -92,7 +92,6 @@ module.exports = {
     'node/no-sync': 'off',
     'node/no-unpublished-import': 'off',
     'node/no-unpublished-require': 'off',
-    'mocha/max-top-level-suites': 'off',
   },
 
   overrides: [{
