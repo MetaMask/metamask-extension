@@ -85,10 +85,6 @@
     width: 100%;
   }
 
-  &__bold {
-    font-weight: 900;
-  }
-
   &__quote-large {
     display: flex;
     align-items: flex-start;
@@ -99,13 +95,6 @@
   &__quote-large-number {
     font-size: 60px;
     line-height: 48px;
-  }
-
-  &__quote-large-symbol {
-    display: flex;
-    align-items: flex-end;
-    font-size: 32px;
-    line-height: 32px;
   }
 
   &__quote-large-white {
