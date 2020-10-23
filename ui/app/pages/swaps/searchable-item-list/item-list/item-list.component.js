@@ -47,11 +47,13 @@ export default function ItemList ({
                 } = result
                 return (
                   <div
+                    tabIndex="0"
                     className={classnames('searchable-item-list__item', {
                       'searchable-item-list__item--selected': selected,
                       'searchable-item-list__item--disabled': disabled,
                     })}
                     onClick={() => onClickItem && onClickItem(result)}
+                    onKeyUp={e => e.key === "Enter" && onClickItem && onClickItem(result)}
                     key={`searchable-item-list-item-${i}`}
                   >
                     {(iconUrl || primaryLabel) && (<UrlIcon url={iconUrl} name={primaryLabel} />)}
