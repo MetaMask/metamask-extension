@@ -61,9 +61,9 @@
   }
 
   &__header__text {
+    @include H3;
+
     color: #5b5d67;
-    font-size: 22px;
-    line-height: 29px;
     z-index: 3;
     text-align: center;
   }
@@ -97,14 +97,14 @@
   }
 
   &__account-text {
-    font-size: 14px;
+    @include H6;
   }
 
   &__account-item {
+    @include H7;
+
     height: 22px;
     background-color: $white;
-    line-height: 16px;
-    font-size: 12px;
     width: 124px;
 
     .account-list-item {
@@ -130,8 +130,9 @@
   }
 
   &__balance-text {
+    @include H6;
+
     text-align: right;
-    font-size: 14px;
   }
 
   &__balance-value {
@@ -153,8 +154,8 @@
   }
 
   &__notice {
-    font-size: 14px;
-    line-height: 19px;
+    @include H6;
+
     text-align: center;
     margin-top: 15px;
     margin-bottom: 11px;
@@ -171,7 +172,8 @@
     position: relative;
 
     &-text {
-      font-size: 0.7em;
+      @include H7;
+
       height: 115px;
     }
 
@@ -206,20 +208,21 @@
     }
 
     &-lock-text {
+      @include H7;
+
       width: 200px;
-      font-size: 0.75em;
       position: absolute;
       top: calc(50% + 5px);
       text-align: center;
       left: calc(50% - 100px);
       background-color: white;
-      line-height: 1em;
       border-radius: 3px;
     }
 
     &-copy {
+      @include H7;
+
       justify-content: space-evenly;
-      font-size: 0.75em;
       margin-left: 20px;
       margin-right: 20px;
       display: flex;
@@ -237,11 +240,12 @@
   }
 
   &__footer {
+    @include H4;
+
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 22px;
     position: relative;
     flex: 0 0 auto;
     border-top: 1px solid $geyser;

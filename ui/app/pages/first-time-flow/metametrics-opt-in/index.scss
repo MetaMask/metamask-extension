@@ -25,12 +25,10 @@
   }
 
   &__title {
+    @include H1;
+
     position: relative;
     margin-top: 20px;
-    font-style: normal;
-    font-weight: normal;
-    line-height: normal;
-    font-size: 42px;
   }
 
   &__body-graphic {
@@ -42,10 +40,8 @@
   }
 
   &__description {
-    font-style: normal;
-    font-weight: normal;
-    line-height: 21px;
-    font-size: 16px;
+    @include Paragraph;
+
     margin-top: 12px;
   }
 

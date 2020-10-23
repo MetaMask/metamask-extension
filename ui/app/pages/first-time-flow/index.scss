@@ -39,7 +39,8 @@
   }
 
   &__header {
-    font-size: 2.5rem;
+    @include H1;
+
     margin-bottom: 24px;
     color: black;
   }
@@ -63,15 +64,17 @@
   }
 
   &__textarea-label {
+    @include H4;
+
     margin-bottom: 9px;
     color: #1b344d;
-    font-size: 18px;
   }
 
   &__textarea {
+    @include Paragraph;
+
     /*rtl:ignore*/
     direction: ltr;
-    font-size: 1rem;
     border: 1px solid #cdcdcd;
     border-radius: 6px;
     background-color: #fff;
@@ -91,28 +94,14 @@
     margin-bottom: 20px;
   }
 
-  &__markdown {
-    border: 1px solid #979797;
-    border-radius: 8px;
-    background-color: $white;
-    height: 200px;
-    overflow-y: auto;
-    color: #757575;
-    font-size: 0.75rem;
-    line-height: 15px;
-    text-align: justify;
-    margin: 0;
-    padding: 16px 20px;
-    height: 30vh;
-  }
-
   &__text-block {
     margin-bottom: 24px;
     color: black;
 
     @media screen and (max-width: $break-small) {
+      @include H6;
+
       margin-bottom: 16px;
-      font-size: 0.875rem;
     }
   }
 
@@ -148,10 +137,8 @@
   }
 
   &__checkbox-label {
-    font-style: normal;
-    font-weight: normal;
-    line-height: normal;
-    font-size: 18px;
+    @include H4;
+
     color: #939090;
     margin-left: 18px;
   }
