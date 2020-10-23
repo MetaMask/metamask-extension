@@ -275,7 +275,7 @@ describe('Transaction Controller', function () {
       txController.newUnapprovedTransaction(txParams).catch((err) => {
         if (
           err.message ===
-          'MetaMask Tx Signature: User denied transaction signature.'
+          'ConfluxPortal Tx Signature: User denied transaction signature.'
         ) {
           done()
         } else {
