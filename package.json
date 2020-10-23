@@ -250,6 +250,7 @@
     "gulp-zip": "^4.0.0",
     "jsdom": "^11.2.0",
     "koa": "^2.7.0",
+    "lavamoat-core": "^6.1.0",
     "lockfile-lint": "^4.0.0",
     "mocha": "^7.2.0",
     "nock": "^9.0.14",
