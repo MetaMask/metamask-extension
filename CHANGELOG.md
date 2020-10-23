@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 0.4.1 Fri Oct 23 2020
+
 - ci: fix release message for semantic pr check (#254)
 - fix: add more knowntx error message (#255)
 - feat: support cfx_clientVersion rpc method (#256)
