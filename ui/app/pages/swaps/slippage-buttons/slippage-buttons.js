@@ -113,7 +113,7 @@ export default function SlippageButtons ({
                             setActiveButtonIndex(1)
                           }
                         }}
-                        value={customValue}
+                        value={customValue || ''}
                       />
                     </div>
                   )
