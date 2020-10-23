@@ -29,15 +29,16 @@ export default function DropdownSearchList ({
   const t = useContext(I18nContext)
   const [isOpen, setIsOpen] = useState(false)
   const [selectedItem, setSelectedItem] = useState(startingItem)
-  const close = () => {
+  const close = useCallback(() => {
     setIsOpen(false)
     onClose && onClose()
-  }
+  }, [onClose])
+
   const onClickItem = useCallback((item) => {
     onSelect && onSelect(item)
     setSelectedItem(item)
     close()
-  }, [onSelect])
+  }, [onSelect, close])
 
   const onClickSelector = useCallback(() => {
     if (!isOpen) {
