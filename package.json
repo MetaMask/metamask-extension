@@ -90,7 +90,7 @@
     "@sentry/browser": "^5.11.1",
     "@sentry/integrations": "^5.11.1",
     "@yqrashawn/cfx-contract-metadata": "^0.0.7",
-    "@yqrashawn/cfx-json-rpc-middleware": "^4.4.5",
+    "@yqrashawn/cfx-json-rpc-middleware": "^4.4.6",
     "@yqrashawn/conflux-portal-inpage-provider": "^4.0.9",
     "@zxing/library": "^0.8.0",
     "abi-decoder": "^1.2.0",
