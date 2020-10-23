@@ -298,7 +298,6 @@ export default function Swap () {
                     <AwaitingSwap
                       swapComplete={false}
                       errorKey={swapsErrorKey}
-                      symbol={destinationTokenInfo?.symbol}
                       txHash={tradeTxData?.hash}
                       networkId={networkId}
                       rpcPrefs={rpcPrefs}
@@ -345,7 +344,6 @@ export default function Swap () {
                 return swapsEnabled === false ? (
                   <AwaitingSwap
                     errorKey={OFFLINE_FOR_MAINTENANCE}
-                    symbol=""
                     networkId={networkId}
                     rpcPrefs={rpcPrefs}
                   />
@@ -360,7 +358,6 @@ export default function Swap () {
                   ? (
                     <AwaitingSwap
                       swapComplete={tradeConfirmed}
-                      symbol={destinationTokenInfo?.symbol}
                       networkId={networkId}
                       txHash={tradeTxData?.hash}
                       tokensReceived={tokensReceived}

@@ -23,7 +23,6 @@ export const swapNotComplete = () => (
         ERROR_FETCHING_QUOTES,
         QUOTES_NOT_AVAILABLE_ERROR,
       ], '')}
-      symbol="ABC"
       estimatedTime="2 minutes"
       networkId="1"
       txHash="0xnotATx"
@@ -45,7 +44,6 @@ export const swapComplete = () => (
         ERROR_FETCHING_QUOTES,
         QUOTES_NOT_AVAILABLE_ERROR,
       ], '')}
-      symbol="ABC"
       estimatedTime={null}
       tokensReceived={320.68}
       networkId="1"
@@ -66,7 +64,6 @@ export const swapError = () => (
         ERROR_FETCHING_QUOTES,
         QUOTES_NOT_AVAILABLE_ERROR,
       ], '')}
-      symbol="ABC"
       estimatedTime={null}
       networkId="1"
       txHash="0xnotATx"
