@@ -763,7 +763,7 @@ describe('MetaMask', function () {
 
   describe('Add a custom token from a dapp', function () {
     it('creates a new token', async function () {
-      const windowHandles = await driver.getAllWindowHandles()
+      let windowHandles = await driver.getAllWindowHandles()
       const extension = windowHandles[0]
       const dapp = windowHandles[1]
       await driver.delay(regularDelayMs * 2)
@@ -772,7 +772,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs * 2)
 
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Create Token')]`))
-      await driver.waitUntilXWindowHandles(3)
+      windowHandles = await driver.waitUntilXWindowHandles(3)
 
       const popup = windowHandles[2]
       await driver.switchToWindow(popup)
