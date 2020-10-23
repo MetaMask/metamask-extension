@@ -15,15 +15,15 @@
     align-items: flex-start;
 
     &__title {
+      @include H3;
+
       color: $white;
-      font-size: 24px;
-      line-height: 32px;
     }
 
     &__description {
+      @include Paragraph;
+
       color: $white;
-      font-size: 16px;
-      line-height: 22px;
       margin-top: 10px;
     }
 
@@ -114,13 +114,12 @@
       }
 
       &__title {
-        font-size: 20px;
-        line-height: 30px;
+        @include H4;
       }
 
       &__text {
-        font-size: 14px;
-        line-height: 22px;
+        @include H6;
+
         margin-top: 7px;
       }
     }
@@ -141,22 +140,5 @@
 
   &__deposit-button {
     width: 257px !important;
-  }
-
-  .simple-dropdown {
-    color: #5b5d67;
-    font-size: 16px;
-    line-height: 21px;
-    border: 1px solid #d8d8d8;
-    background-color: #fff;
-    text-align: center;
-    width: 100%;
-    height: 45px;
-    line-height: 44px;
-    font-weight: 300;
-  }
-
-  .simple-dropdown__selected {
-    text-align: center;
   }
 }

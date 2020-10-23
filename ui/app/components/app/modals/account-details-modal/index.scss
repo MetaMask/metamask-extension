@@ -1,7 +1,8 @@
 .account-details-modal {
   &__name {
+    @include H4;
+
     margin-top: 9px;
-    font-size: 20px;
   }
 
   & &__button {
@@ -18,8 +19,9 @@
   }
 
   & .qr-header {
+    @include H4;
+
     margin-top: 9px;
-    font-size: 20px;
   }
 
   & .qr-wrapper {

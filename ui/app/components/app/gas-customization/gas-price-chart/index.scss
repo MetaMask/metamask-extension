@@ -17,10 +17,10 @@
   .tick text,
   .c3-axis-x-label,
   .c3-axis-y-label {
-    font-style: normal;
-    font-weight: bold;
+    @include H9;
+
     line-height: normal;
-    font-size: 8px;
+    font-weight: bold;
     text-align: center;
     fill: #9a9ca6 !important;
   }
@@ -52,10 +52,9 @@
   }
 
   .custom-tooltip th {
-    font-style: normal;
+    @include H8;
+
     font-weight: 500;
-    line-height: normal;
-    font-size: 10px;
     text-align: center;
     padding: 3px;
     color: #fff;

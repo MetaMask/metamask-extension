@@ -1,8 +1,9 @@
 .export-private-key-modal {
   &__body-title {
+    @include H4;
+
     margin-top: 16px;
     margin-bottom: 16px;
-    font-size: 18px;
   }
 
   &__divider {
@@ -13,8 +14,9 @@
   }
 
   &__account-name {
+    @include H4;
+
     margin-top: 9px;
-    font-size: 20px;
   }
 
   &__password {
@@ -24,9 +26,9 @@
 
   &__password-label,
   &__password--error {
+    @include H6;
+
     color: $scorpion;
-    font-size: 14px;
-    line-height: 18px;
     margin-bottom: 10px;
   }
 
@@ -36,9 +38,9 @@
   }
 
   &__password-input {
+    @include Paragraph;
+
     padding: 10px 0 13px 17px;
-    font-size: 16px;
-    line-height: 21px;
     width: 291px;
     height: 44px;
   }
@@ -48,11 +50,11 @@
   }
 
   &__password--warning {
+    @include H7;
+
     border-radius: 8px;
     background-color: #fff6f6;
-    font-size: 12px;
     font-weight: 500;
-    line-height: 15px;
     color: $crimson;
     width: 292px;
     padding: 9px 15px;
@@ -67,9 +69,9 @@
   }
 
   &__password-display-textarea {
+    @include Paragraph;
+
     color: $crimson;
-    font-size: 16px;
-    line-height: 21px;
     border: none;
     height: 75px;
     width: 100%;

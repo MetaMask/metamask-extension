@@ -16,11 +16,12 @@
   }
 
   &__domain-info {
+    @include H7;
+
     display: flex;
     flex-direction: row;
     align-items: center;
     min-width: 0;
-    font-size: 12px;
   }
 
   &__domain-name {

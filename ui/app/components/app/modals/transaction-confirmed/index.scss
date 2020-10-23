@@ -1,14 +1,16 @@
 .transaction-confirmed {
   &__title {
-    font-size: 1.5rem;
+    @include H3;
+
     font-weight: 500;
     padding: 16px 0;
     text-align: center;
   }
 
   &__description {
+    @include H6;
+
     text-align: center;
-    font-size: 0.875rem;
   }
 
   &__content {

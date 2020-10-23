@@ -5,13 +5,14 @@
 
 
   &__tab {
+    @include Paragraph;
+
     display: flex;
     flex-flow: row nowrap;
     align-items: flex-start;
     min-width: 0;
     flex: 0 0 auto;
     box-sizing: border-box;
-    font-size: 16px;
     padding: 16px 24px;
     opacity: 0.5;
     transition: opacity 200ms ease-in-out;
@@ -27,7 +28,8 @@
     }
 
     @media screen and (max-width: 575px) {
-      font-size: 18px;
+      @include H4;
+
       padding: 24px;
       border-bottom: 1px solid $alto;
       opacity: 1;
@@ -41,8 +43,9 @@
         display: none;
 
         @media screen and (max-width: 575px) {
+          @include H6;
+
           display: block;
-          font-size: 14px;
           font-weight: 300;
           margin-top: 8px;
           min-height: 14px;

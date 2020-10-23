@@ -34,7 +34,7 @@
   }
 
   text-transform: uppercase;
-  font-weight: bold;
+  font-weight: 500;
 }
 
 .eth-overview {
@@ -54,9 +54,9 @@
   }
 
   &__primary-balance {
+    @include H2;
+
     color: $black;
-    font-size: 32px;
-    line-height: 45px;
     width: 100%;
     justify-content: center;
   }
@@ -71,15 +71,14 @@
   }
 
   &__cached-secondary-balance {
+    @include Paragraph;
+
     color: rgba(220, 153, 18, 0.6901960784313725);
-    font-size: 16px;
-    line-height: 23px;
   }
 
   &__secondary-balance {
-    font-size: 16px;
-    line-height: 23px;
-    font-weight: 400;
+    @include Paragraph;
+
     color: $Grey-400;
   }
 
@@ -116,17 +115,16 @@
   }
 
   &__primary-balance {
+    @include H2;
+
     color: $black;
-    font-size: 32px;
-    line-height: 45px;
     width: 100%;
     justify-content: center;
   }
 
   &__secondary-balance {
-    font-size: 16px;
-    line-height: 23px;
-    font-weight: 400;
+    @include H5;
+
     color: $Grey-400;
   }
 

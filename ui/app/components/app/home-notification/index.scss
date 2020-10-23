@@ -39,9 +39,8 @@
   }
 
   &__text {
-    font-style: normal;
-    font-weight: normal;
-    font-size: 12px;
+    @include H7;
+
     color: $white;
     margin-left: 10px;
     margin-right: 8px;
@@ -115,9 +114,8 @@
   }
 
   &__content {
-    font-style: normal;
-    font-weight: normal;
-    font-size: 12px;
+    @include H7;
+
     color: $white;
     text-align: left;
     display: inline-block;

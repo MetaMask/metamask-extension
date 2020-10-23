@@ -22,12 +22,13 @@
   }
 
   &__input {
+    @include H4;
+
     background: $white;
     border: 1px solid $Grey-100;
     box-sizing: border-box;
     border-radius: 8px;
     padding: 0.625rem 0.75rem;
-    font-size: 1.25rem;
     margin-top: 0.75rem;
 
     &::placeholder {
