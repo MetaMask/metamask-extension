@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 0.4.2 Fri Oct 23 2020
+
 ## 0.4.1 Fri Oct 23 2020
 
 - ci: fix release message for semantic pr check (#254)
