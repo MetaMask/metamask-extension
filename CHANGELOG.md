@@ -2,6 +2,12 @@
 
 ## Current Develop Branch
 
+- ci: fix release message for semantic pr check (#254)
+- fix: add more knowntx error message (#255)
+- feat: support cfx_clientVersion rpc method (#256)
+- feat: add params to req url in dev (#257)
+- fix: signature error CU-4ntggp (#253)
+
 ## 0.4.0 Fri Oct 09 2020
 
 - feat: add simple gas feature back
