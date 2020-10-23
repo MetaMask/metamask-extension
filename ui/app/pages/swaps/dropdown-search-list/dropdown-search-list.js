@@ -26,8 +26,7 @@ export default function DropdownSearchList ({
   hideItemIf,
   listContainerClassName,
 }) {
-
-  function close() {
+  const close = () => {
     setIsOpen(false)
     onClose && onClose()
   }
