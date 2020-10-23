@@ -461,25 +461,19 @@ export default function ViewQuote () {
             labelKey="swapNewQuoteIn"
           />
         </div>
-        <div
-          className={classnames('view-quote__main-quote-summary-container', {
-            'view-quote__main-quote-summary-container--thin': showWarning,
-          })}
-        >
-          <MainQuoteSummary
-            sourceValue={calcTokenValue(sourceTokenValue, sourceTokenDecimals)}
-            sourceDecimals={sourceTokenDecimals}
-            sourceSymbol={sourceTokenSymbol}
-            destinationValue={calcTokenValue(
-              destinationTokenValue,
-              destinationTokenDecimals,
-            )}
-            destinationDecimals={destinationTokenDecimals}
-            destinationSymbol={destinationTokenSymbol}
-            sourceIconUrl={sourceTokenIconUrl}
-            destinationIconUrl={destinationIconUrl}
-          />
-        </div>
+        <MainQuoteSummary
+          sourceValue={calcTokenValue(sourceTokenValue, sourceTokenDecimals)}
+          sourceDecimals={sourceTokenDecimals}
+          sourceSymbol={sourceTokenSymbol}
+          destinationValue={calcTokenValue(
+            destinationTokenValue,
+            destinationTokenDecimals,
+          )}
+          destinationDecimals={destinationTokenDecimals}
+          destinationSymbol={destinationTokenSymbol}
+          sourceIconUrl={sourceTokenIconUrl}
+          destinationIconUrl={destinationIconUrl}
+        />
         <div
           className="view-quote__view-other-button-container"
         >
