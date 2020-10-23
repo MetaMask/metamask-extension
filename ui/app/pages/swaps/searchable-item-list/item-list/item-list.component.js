@@ -54,7 +54,7 @@ export default function ItemList ({
                       'searchable-item-list__item--disabled': disabled,
                     })}
                     onClick={onClick}
-                    onKeyUp={e => e.key === "Enter" && onClick()}
+                    onKeyUp={(e) => e.key === 'Enter' && onClick()}
                     key={`searchable-item-list-item-${i}`}
                   >
                     {(iconUrl || primaryLabel) && (<UrlIcon url={iconUrl} name={primaryLabel} />)}

@@ -26,19 +26,18 @@ export default function DropdownSearchList ({
   hideItemIf,
   listContainerClassName,
 }) {
+  const t = useContext(I18nContext)
+  const [isOpen, setIsOpen] = useState(false)
+  const [selectedItem, setSelectedItem] = useState(startingItem)
   const close = () => {
     setIsOpen(false)
     onClose && onClose()
   }
-
-  const t = useContext(I18nContext)
-  const [isOpen, setIsOpen] = useState(false)
-  const [selectedItem, setSelectedItem] = useState(startingItem)
   const onClickItem = useCallback((item) => {
     onSelect && onSelect(item)
     setSelectedItem(item)
-    close();
-  }, [onClose, onSelect])
+    close()
+  }, [onSelect])
 
   const onClickSelector = useCallback(() => {
     if (!isOpen) {
@@ -65,7 +64,7 @@ export default function DropdownSearchList ({
     <button
       className={classnames('dropdown-search-list', className)}
       onClick={onClickSelector}
-      onKeyUp={e => e.key === 'Escape' && close()}
+      onKeyUp={(e) => e.key === 'Escape' && close()}
     >
       {!isOpen && (
         <div
