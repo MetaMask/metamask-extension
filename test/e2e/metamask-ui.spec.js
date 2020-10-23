@@ -772,9 +772,8 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs * 2)
 
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Create Token')]`))
-      await driver.delay(largeDelayMs)
+      windowHandles = await driver.waitUntilXWindowHandles(3)
 
-      windowHandles = await driver.getAllWindowHandles()
       const popup = windowHandles[2]
       await driver.switchToWindow(popup)
       await driver.delay(regularDelayMs)
