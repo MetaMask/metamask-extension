@@ -772,7 +772,7 @@
     "message": "Non-ConfluxNetwork address, please double check"
   },
   "invalidChecksumAddressRecipient": {
-    "message": "Non-ConfluxNetwork address, try setting input to lowercase"
+    "message": "Invalid address"
   },
   "knownAddressRecipient": {
     "message": "Known contract address."
