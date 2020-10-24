@@ -586,6 +586,9 @@
   "hexData": {
     "message": "16進位資料"
   },
+  "invalidHexData": {
+    "message": "十六進制數據格式錯誤"
+  },
   "hide": {
     "message": "隱藏"
   },

@@ -273,10 +273,14 @@ describe('Send Component', function () {
           balance: 'balanceChanged',
         },
       })
-      assert.equal(propsMethodSpies.updateSendErrors.callCount, 1)
+      assert.equal(propsMethodSpies.updateSendErrors.callCount, 2)
       assert.deepEqual(propsMethodSpies.updateSendErrors.getCall(0).args[0], {
+        hexData: null,
+      })
+      assert.deepEqual(propsMethodSpies.updateSendErrors.getCall(1).args[0], {
         amount: 'mockAmountError',
         gasAndCollateralFee: null,
+        hexData: null,
       })
     })
 
@@ -294,10 +298,14 @@ describe('Send Component', function () {
           balance: 'balanceChanged',
         },
       })
-      assert.equal(propsMethodSpies.updateSendErrors.callCount, 1)
+      assert.equal(propsMethodSpies.updateSendErrors.callCount, 2)
       assert.deepEqual(propsMethodSpies.updateSendErrors.getCall(0).args[0], {
+        hexData: null,
+      })
+      assert.deepEqual(propsMethodSpies.updateSendErrors.getCall(1).args[0], {
         amount: 'mockAmountError',
         gasAndCollateralFee: 'mockGasAndCollateralFeeError',
+        hexData: null,
       })
     })
 

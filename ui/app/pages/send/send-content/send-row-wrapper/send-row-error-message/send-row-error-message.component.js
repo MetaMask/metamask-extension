@@ -20,7 +20,10 @@ export default class SendRowErrorMessage extends Component {
     return errorMessage ? (
       <div
         className={classnames('send-v2__error', {
-          'send-v2__error-amount': (errorType === 'amount' || errorType === 'gasAndCollateralFee'),
+          'send-v2__error-amount':
+            errorType === 'amount' ||
+            errorType === 'gasAndCollateralFee' ||
+            errorType === 'hexData',
         })}
       >
         {this.context.t(errorMessage)}

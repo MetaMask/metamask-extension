@@ -604,6 +604,9 @@
   "hexData": {
     "message": "十六进制数据"
   },
+  "invalidHexData": {
+    "message": "十六进制数据格式错误"
+  },
   "hide": {
     "message": "隐藏"
   },

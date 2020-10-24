@@ -10,6 +10,7 @@ import {
 import { calcTokenAmount } from '../../helpers/utils/token-util'
 
 import {
+  INVALID_HEX_ERROR,
   BASE_TOKEN_GAS_COST,
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
@@ -37,6 +38,7 @@ export {
   checkSponsorshipInfo,
   estimateGasAndCollateral,
   generateTokenTransferData,
+  getHexDataErrorObject,
   getAmountErrorObject,
   getGasFeeErrorObject,
   getToAddressForGasUpdate,
@@ -128,6 +130,14 @@ function isTokenBalanceSufficient ({ amount = '0x0', tokenBalance, decimals }) {
   )
 
   return tokenBalanceIsSufficient
+}
+
+function getHexDataErrorObject (hexData) {
+  if (hexData && !(hexData === '' || /^[a-fA-F0-9]+$/.test(hexData))) {
+    return { hexData: INVALID_HEX_ERROR }
+  }
+
+  return { hexData: null }
 }
 
 function getAmountErrorObject ({

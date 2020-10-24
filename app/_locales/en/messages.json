@@ -703,6 +703,9 @@
   "hexData": {
     "message": "Hex Data"
   },
+  "invalidHexData": {
+    "message": "Invalid Hex Data"
+  },
   "hide": {
     "message": "Hide"
   },
