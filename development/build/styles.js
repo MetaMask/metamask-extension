@@ -54,22 +54,25 @@ function createStyleTasks ({ livereload }) {
     }
 
     async function buildScss () {
-      await pump(...[
-        // pre-process
-        gulp.src(src),
-        devMode && sourcemaps.init(),
-        sass().on('error', sass.logError),
-        devMode && sourcemaps.write(),
-        autoprefixer(),
-        // standard
-        gulp.dest(dest),
-        // right-to-left
-        rtlcss(),
-        rename({ suffix: '-rtl' }),
-        devMode && sourcemaps.write(),
-        gulp.dest(dest),
-      ].filter(Boolean))
+      await Promise.all([
+        buildScssPipeline(src, dest, devMode, false),
+        buildScssPipeline(src, dest, devMode, true),
+      ])
     }
   }
 
+}
+
+async function buildScssPipeline (src, dest, devMode, rtl) {
+  await pump(...[
+    // pre-process
+    gulp.src(src),
+    devMode && sourcemaps.init(),
+    sass().on('error', sass.logError),
+    autoprefixer(),
+    rtl && rtlcss(),
+    rtl && rename({ suffix: '-rtl' }),
+    devMode && sourcemaps.write(),
+    gulp.dest(dest),
+  ].filter(Boolean))
 }
