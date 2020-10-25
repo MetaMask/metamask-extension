@@ -83,7 +83,7 @@ export default class AdvancedGasInputs extends Component {
   }
 
   onChangeGasLimit = (e) => {
-    if (e.target.value && e.target.value.startsWith('-')) {
+    if (typeof e.target.value === 'string' && e.target.value.startsWith('-')) {
       e.target.value = e.target.value.slice(1)
     }
     this.setState({ gasLimit: e.target.value })
