@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 0.4.3 Sun Oct 25 2020
+
 ## 0.4.2 Fri Oct 23 2020
 
 ## 0.4.1 Fri Oct 23 2020

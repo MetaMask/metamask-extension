@@ -20,8 +20,8 @@ import { TESTNET, MAINNET, LOCALHOST } from './enums'
 
 import { getStatus } from './util'
 // const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
-const CONFLUX_MAINNET = 'http://wallet-mainnet-jsonrpc.conflux-chain.org:12537'
-const CONFLUX_TEST_NET = 'http://wallet-testnet-jsonrpc.conflux-chain.org:12537'
+const CONFLUX_MAINNET = 'http://wallet-main.confluxrpc.org'
+const CONFLUX_TEST_NET = 'http://wallet-test.confluxrpc.org'
 const RPC_URLS = {
   [TESTNET]: CONFLUX_TEST_NET,
   [MAINNET]: CONFLUX_MAINNET,

@@ -192,7 +192,7 @@ export default class AddRecipient extends Component {
     const contacts = this.searchForContacts()
     const recents = this.searchForRecents()
 
-    if (contacts.length || recents.length) {
+    if (contacts.length) {
       return null
     }
 
@@ -218,6 +218,10 @@ export default class AddRecipient extends Component {
           {t(toWarning)}
         </Dialog>
       )
+    }
+
+    if (recents.length) {
+      return null
     }
   }
 }
