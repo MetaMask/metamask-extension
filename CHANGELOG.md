@@ -4,9 +4,16 @@
 
 ## 0.4.3 Sun Oct 25 2020
 
-## 0.4.2 Fri Oct 23 2020
+- bug-fixes origin/pr/262 262 fix: qrcode info CU-4vuk4d
+- fix: turn off gas fee too low warning
+- feat: new rpc domain CU-4tuffb
+- fix: can't adjust gas limit with up/down arrow button
+- test: with latest fullnode
+- fix: validate user input hex data
+- fix(add-recipient): show recipient error even there's contacts and recents
+- fix: update missing zh-cn checksum error trans
 
-## 0.4.1 Fri Oct 23 2020
+## 0.4.2 Fri Oct 23 2020
 
 - ci: fix release message for semantic pr check (#254)
 - fix: add more knowntx error message (#255)
