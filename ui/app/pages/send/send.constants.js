@@ -39,6 +39,7 @@ const INVALID_RECIPIENT_ADDRESS_ERROR = 'invalidAddressRecipient'
 const INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR =
   'invalidAddressRecipientNotEthNetwork'
 const REQUIRED_ERROR = 'required'
+const INVALID_HEX_ERROR = 'invalidHexData'
 const KNOWN_RECIPIENT_ADDRESS_ERROR = 'knownAddressRecipient'
 
 const ONE_GWEI_IN_WEI_HEX = ethUtil.addHexPrefix(
@@ -57,6 +58,7 @@ const SIMPLE_STORAGE_COST = '0x0' // Hex for 0, cost of a simple send.
 export {
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
+  INVALID_HEX_ERROR,
   INVALID_RECIPIENT_CHECKSUM_ERROR,
   INVALID_RECIPIENT_0X_ERROR,
   INVALID_RECIPIENT_CONTRACT_ERROR,

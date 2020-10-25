@@ -586,6 +586,9 @@
   "hexData": {
     "message": "16進位資料"
   },
+  "invalidHexData": {
+    "message": "十六進制數據格式錯誤"
+  },
   "hide": {
     "message": "隱藏"
   },
@@ -650,6 +653,12 @@
   },
   "knownAddressRecipient": {
     "message": "已知合約位址"
+  },
+  "invalid0XAddressRecipient": {
+    "message": "地址不合法, Conflux 網絡上的錢包地址以 0x1 和 0x8 開頭"
+  },
+  "invalidContractAddressRecipient": {
+    "message": "地址不合法, 請二次確認您輸入的地址"
   },
   "invalidAddressRecipientNotEthNetwork": {
     "message": "非 CFX 網路，設定至小寫"

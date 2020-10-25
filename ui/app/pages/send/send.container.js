@@ -26,6 +26,8 @@ import {
   getTokenBalance,
   getQrCodeData,
   getSponsorshipInfo,
+  getSendHexData,
+  getSendErrors,
 } from './send.selectors'
 import {
   getSelectedAddress,
@@ -59,6 +61,7 @@ function mapStateToProps (state) {
   const gasTotal = getGasTotal(state)
 
   return {
+    sendErrors: getSendErrors(state),
     gasTotalCountSponsorshipInfo: willUserPayTxFee ? gasTotal : '0',
     willUserPayTxFee,
     addressBook: getAddressBook(state),
@@ -79,6 +82,7 @@ function mapStateToProps (state) {
     qrCodeData: getQrCodeData(state),
     selectedAddress: getSelectedAddress(state),
     selectedToken,
+    hexData: getSendHexData(state),
     showHexData: getSendHexDataFeatureFlagState(state),
     to: getSendTo(state),
     toNickname: getSendToNickname(state),

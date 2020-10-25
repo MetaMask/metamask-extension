@@ -17,7 +17,7 @@ describe('NetworkController', function () {
         .post('/metamask')
         .reply(200)
 
-      nock('http://wallet-mainnet-jsonrpc.conflux-chain.org:12537')
+      nock('http://wallet-main.confluxrpc.org')
         .persist()
         .post('/', (req) => req.method === 'cfx_getStatus')
         .reply(200, { result: { chainId: '0x0' } })

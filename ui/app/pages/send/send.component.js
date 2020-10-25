@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {
+  getHexDataErrorObject,
   getAmountErrorObject,
   getGasFeeErrorObject,
   getToAddressForGasUpdate,
@@ -61,6 +62,7 @@ export default class SendTransactionScreen extends Component {
     qrCodeDetected: PropTypes.func.isRequired,
     qrCodeData: PropTypes.object,
     trustedTokenMap: PropTypes.object,
+    hexData: PropTypes.string,
   }
 
   static contextTypes = {
@@ -104,6 +106,8 @@ export default class SendTransactionScreen extends Component {
       qrCodeDetected,
       gasTotalCountSponsorshipInfo,
       sponsorshipInfoIsLoading,
+      showHexData,
+      hexData,
     } = this.props
 
     let updateGas = false
@@ -117,9 +121,20 @@ export default class SendTransactionScreen extends Component {
       selectedToken: prevSelectedToken,
       to: prevTo,
       gasTotalCountSponsorshipInfo: prevGasTotalCountSponsorshipInfo,
+      sendErrors: prevSendErrors = {},
     } = prevProps
 
     const uninitialized = [prevBalance, prevGasTotal].every((n) => n === null)
+    const sendErrors = {}
+    let hexDataErrorRequiresUpdate = false
+
+    if (showHexData) {
+      const hexDataError = getHexDataErrorObject(hexData)
+      if (prevSendErrors.hexData !== hexDataError.hexData) {
+        Object.assign(sendErrors, hexDataError)
+        hexDataErrorRequiresUpdate = true
+      }
+    }
 
     const amountErrorRequiresUpdate = doesAmountErrorRequireUpdate({
       balance,
@@ -156,9 +171,15 @@ export default class SendTransactionScreen extends Component {
           selectedToken,
         })
         : { gasAndCollateralFee: null }
-      updateSendErrors(
-        Object.assign(amountErrorObject, gasAndCollateralFeeErrorObject)
+      Object.assign(
+        sendErrors,
+        amountErrorObject,
+        gasAndCollateralFeeErrorObject
       )
+    }
+
+    if (amountErrorRequiresUpdate || hexDataErrorRequiresUpdate) {
+      updateSendErrors(sendErrors)
     }
 
     if (!uninitialized) {

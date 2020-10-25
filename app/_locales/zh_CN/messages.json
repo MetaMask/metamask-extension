@@ -604,6 +604,9 @@
   "hexData": {
     "message": "十六进制数据"
   },
+  "invalidHexData": {
+    "message": "十六进制数据格式错误"
+  },
   "hide": {
     "message": "隐藏"
   },
@@ -664,6 +667,15 @@
     "message": "无效地址"
   },
   "invalidAddressRecipient": {
+    "message": "收款地址不合法"
+  },
+  "invalid0XAddressRecipient": {
+    "message": "地址不合法, Conflux 网络上的钱包地址以 0x1 和 0x8 开头"
+  },
+  "invalidContractAddressRecipient": {
+    "message": "地址不合法, 请二次确认您输入的地址"
+  },
+  "invalidChecksumAddressRecipient": {
     "message": "收款地址不合法"
   },
   "knownAddressRecipient": {

@@ -16,7 +16,7 @@ export default class AdvancedGasInputs extends Component {
     customGasLimit: PropTypes.number.isRequired,
     customStorageLimit: PropTypes.number.isRequired,
     insufficientBalance: PropTypes.bool,
-    customPriceIsSafe: PropTypes.bool,
+    // customPriceIsSafe: PropTypes.bool,
     isSimpleTx: PropTypes.bool,
     isSpeedUp: PropTypes.bool,
     showGasPriceInfoModal: PropTypes.func,
@@ -83,7 +83,7 @@ export default class AdvancedGasInputs extends Component {
   }
 
   onChangeGasLimit = (e) => {
-    if (e.target.value && e.target.value.startsWith('-')) {
+    if (typeof e.target.value === 'string' && e.target.value.startsWith('-')) {
       e.target.value = e.target.value.slice(1)
     }
     this.setState({ gasLimit: e.target.value })
@@ -112,12 +112,16 @@ export default class AdvancedGasInputs extends Component {
   }
 
   changeGasPrice = (e) => {
-    const { insufficientBalance, customPriceIsSafe, isSpeedUp } = this.props
+    const {
+      insufficientBalance,
+      // customPriceIsSafe,
+      isSpeedUp,
+    } = this.props
     const { gasPrice } = this.state
 
     const { errorType } = this.gasPriceError({
       insufficientBalance,
-      customPriceIsSafe,
+      // customPriceIsSafe,
       isSpeedUp,
       gasPrice,
     })
@@ -128,7 +132,7 @@ export default class AdvancedGasInputs extends Component {
 
   gasPriceError ({
     insufficientBalance,
-    customPriceIsSafe,
+    // customPriceIsSafe,
     isSpeedUp,
     gasPrice,
   }) {
@@ -144,12 +148,13 @@ export default class AdvancedGasInputs extends Component {
         errorText: t('zeroGasPriceOnSpeedUpError'),
         errorType: 'error',
       }
-    } else if (!customPriceIsSafe) {
-      return {
-        errorText: t('gasPriceExtremelyLow'),
-        errorType: 'warning',
-      }
     }
+    // else if (!customPriceIsSafe) {
+    //   return {
+    //     errorText: t('gasPriceExtremelyLow'),
+    //     errorType: 'warning',
+    //   }
+    // }
 
     return {}
   }
@@ -249,7 +254,7 @@ export default class AdvancedGasInputs extends Component {
   render () {
     const {
       insufficientBalance,
-      customPriceIsSafe,
+      // customPriceIsSafe,
       isSpeedUp,
       isSimpleTx,
       showGasPriceInfoModal,
@@ -268,7 +273,7 @@ export default class AdvancedGasInputs extends Component {
       errorType: gasPriceErrorType,
     } = this.gasPriceError({
       insufficientBalance,
-      customPriceIsSafe,
+      // customPriceIsSafe,
       isSpeedUp,
       gasPrice,
     })
