@@ -106,7 +106,7 @@ describe('Advanced Gas Inputs', function () {
     assert.equal(renderError.at(1).text(), 'gasLimitTooLow')
   })
 
-  it('warns when custom gas price is too low', function () {
+  it.skip('warns when custom gas price is too low', function () {
     wrapper.setProps({ customPriceIsSafe: false })
 
     const renderWarning = wrapper.find(
