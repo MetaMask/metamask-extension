@@ -1,6 +1,7 @@
 .dropdown-search-list {
   flex-flow: column;
   border: none;
+  background: unset;
 
   &__search-list-open {
     margin: 24px;
