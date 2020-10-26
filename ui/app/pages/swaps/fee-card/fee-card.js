@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
+import BigNumber from 'bignumber.js'
 import classnames from 'classnames'
 import { I18nContext } from '../../../contexts/i18n'
 import InfoTooltip from '../../../components/ui/info-tooltip'
@@ -22,18 +23,29 @@ export default function FeeCard ({
   onQuotesClick,
   conversionRate,
   currentCurrency,
+  tokenConversionRate,
 }) {
   const t = useContext(I18nContext)
 
-  const canDisplaySavings = isBestQuote && savings?.total
-
-  const savingAmount = canDisplaySavings
+  const savingAmount = isBestQuote && savings?.total
     ? formatCurrency(decEthToConvertedCurrency(
       savings.total,
       currentCurrency,
       conversionRate,
     ), currentCurrency)
     : null
+  const savingsIsPositive = savings?.total && (new BigNumber(savings.total, 10)).gt(0)
+
+  const shouldDisplaySavings = isBestQuote && tokenConversionRate && savingsIsPositive
+
+  let savingsText = ''
+  if (shouldDisplaySavings) {
+    savingsText = t('swapSaving', [savingAmount])
+  } else if (isBestQuote && tokenConversionRate) {
+    savingsText = t('swapUsingBestQuote')
+  } else if (savingsIsPositive && tokenConversionRate) {
+    savingsText = t('swapBetterQuoteAvailable')
+  }
 
   return (
     <div className="fee-card">
@@ -41,26 +53,21 @@ export default function FeeCard ({
         <div className="fee-card__savings-and-quotes-header-first-part" />
         <div
           className={classnames('fee-card__savings-and-quotes-header-second-part', {
-            'fee-card__savings-and-quotes-header-second-part--top-border': !canDisplaySavings,
+            'fee-card__savings-and-quotes-header-second-part--top-border': !shouldDisplaySavings,
           })}
         />
         <div className="fee-card__savings-and-quotes-header-third-part" />
-        {canDisplaySavings && (
+        {shouldDisplaySavings && (
           <div className="fee-card__pig-icon-container">
             <PigIcon />
           </div>
         )}
         <div
           className={classnames('fee-card__savings-and-quotes-row', {
-            'fee-card__savings-and-quotes-row--align-left': !canDisplaySavings,
+            'fee-card__savings-and-quotes-row--align-left': !shouldDisplaySavings,
           })}
         >
-          <p className="fee-card__savings-text">
-            {canDisplaySavings
-              ? t('swapSaving', [savingAmount])
-              : t('swapBetterQuoteAvailable')
-            }
-          </p>
+          {savingsText && <p className="fee-card__savings-text">{ savingsText }</p>}
           <div className="fee-card__quote-link-container" onClick={onQuotesClick}>
             <p className="fee-card__quote-link-text">
               { t('swapNQuotes', [numberOfQuotes]) }
@@ -191,4 +198,5 @@ FeeCard.propTypes = {
   numberOfQuotes: PropTypes.number.isRequired,
   conversionRate: PropTypes.number,
   currentCurrency: PropTypes.string,
+  tokenConversionRate: PropTypes.number,
 }

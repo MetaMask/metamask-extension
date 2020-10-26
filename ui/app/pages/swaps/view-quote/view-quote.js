@@ -510,6 +510,11 @@ export default function ViewQuote () {
             savings={usedQuote?.savings}
             conversionRate={conversionRate}
             currentCurrency={currentCurrency}
+            tokenConversionRate={
+              destinationTokenSymbol === 'ETH'
+                ? 1
+                : memoizedTokenConversionRates[destinationToken.address]
+            }
           />
         </div>
       </div>

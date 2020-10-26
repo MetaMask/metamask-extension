@@ -1848,6 +1848,9 @@
   "swapUnknown": {
     "message": "Unknown"
   },
+  "swapUsingBestQuote": {
+    "message": "Using the best quote"
+  },
   "swapViewToken": {
     "message": "View $1"
   },
