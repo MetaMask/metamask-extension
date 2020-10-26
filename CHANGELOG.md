@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 8.1.3 Mon Oct 26 2020
+
 ## 8.1.2 Mon Oct 19 2020
 - [#9608](https://github.com/MetaMask/metamask-extension/pull/9608): Ensure QR code scanner works
 - [#9624](https://github.com/MetaMask/metamask-extension/pull/9624): Help users avoid insufficient gas prices in swaps
