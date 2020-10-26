@@ -52,6 +52,7 @@ export default class AddContact extends PureComponent {
   validate = (address) => {
     const valid = isValidAddress(address)
     const validEnsAddress = isValidDomainName(address)
+
     if (valid || validEnsAddress || address === '') {
       this.setState({ error: '', ethAddress: address })
     } else {
@@ -73,6 +74,7 @@ export default class AddContact extends PureComponent {
           this.setState({ ensAddress: address, error: '', ensError: '' })
         }}
         updateEnsResolutionError={(message) => this.setState({ ensError: message })}
+        value={this.state.ethAddress || ''}
       />
     )
   }

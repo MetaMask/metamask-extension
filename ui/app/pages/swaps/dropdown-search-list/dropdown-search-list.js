@@ -29,12 +29,16 @@ export default function DropdownSearchList ({
   const t = useContext(I18nContext)
   const [isOpen, setIsOpen] = useState(false)
   const [selectedItem, setSelectedItem] = useState(startingItem)
+  const close = useCallback(() => {
+    setIsOpen(false)
+    onClose && onClose()
+  }, [onClose])
+
   const onClickItem = useCallback((item) => {
     onSelect && onSelect(item)
     setSelectedItem(item)
-    setIsOpen(false)
-    onClose && onClose()
-  }, [onClose, onSelect])
+    close()
+  }, [onSelect, close])
 
   const onClickSelector = useCallback(() => {
     if (!isOpen) {
@@ -58,9 +62,10 @@ export default function DropdownSearchList ({
   }, [externallySelectedItem, selectedItem, prevExternallySelectedItem])
 
   return (
-    <div
+    <button
       className={classnames('dropdown-search-list', className)}
       onClick={onClickSelector}
+      onKeyUp={(e) => e.key === 'Escape' && close()}
     >
       {!isOpen && (
         <div
@@ -124,7 +129,7 @@ export default function DropdownSearchList ({
           />
         </>
       )}
-    </div>
+    </button>
   )
 }
 

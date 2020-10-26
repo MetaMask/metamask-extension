@@ -24,6 +24,7 @@ import {
   CurrencyRateController,
   PhishingController,
 } from '@metamask/controllers'
+import { getTrackMetaMetricsEvent } from '../../shared/modules/metametrics'
 import ComposableObservableStore from './lib/ComposableObservableStore'
 import AccountTracker from './lib/account-tracker'
 import createLoggerMiddleware from './lib/createLoggerMiddleware'
@@ -55,9 +56,9 @@ import getRestrictedMethods from './controllers/permissions/restrictedMethods'
 import nodeify from './lib/nodeify'
 import accountImporter from './account-import-strategies'
 import seedPhraseVerifier from './lib/seed-phrase-verifier'
-import { getTrackSegmentEvent } from './lib/segment'
 
 import backgroundMetaMetricsEvent from './lib/background-metametrics'
+import { ENVIRONMENT_TYPE_BACKGROUND } from './lib/enums'
 
 export default class MetamaskController extends EventEmitter {
 
@@ -115,16 +116,32 @@ export default class MetamaskController extends EventEmitter {
       migrateAddressBookState: this.migrateAddressBookState.bind(this),
     })
 
-    // This depends on preferences controller state
-    this.trackSegmentEvent = getTrackSegmentEvent(
+    this.trackMetaMetricsEvent = getTrackMetaMetricsEvent(
       this.platform.getVersion(),
-      () => this.preferencesController.getParticipateInMetaMetrics(),
       () => {
+        const participateInMetaMetrics = this.preferencesController.getParticipateInMetaMetrics()
         const {
           currentLocale,
           metaMetricsId,
         } = this.preferencesController.store.getState()
-        return { currentLocale, metaMetricsId }
+        const chainId = this.networkController.getCurrentChainId()
+        const provider = this.networkController.getProviderConfig()
+        const network = provider.type === 'rpc' ? provider.rpcUrl : provider.type
+        return {
+          participateInMetaMetrics,
+          metaMetricsId,
+          environmentType: ENVIRONMENT_TYPE_BACKGROUND,
+          chainId,
+          network,
+          context: {
+            page: {
+              path: '/background-process',
+              title: 'Background Process',
+              url: '/background-process',
+            },
+            locale: currentLocale.replace('_', '-'),
+          },
+        }
       },
     )
 
@@ -252,7 +269,7 @@ export default class MetamaskController extends EventEmitter {
       signTransaction: this.keyringController.signTransaction.bind(this.keyringController),
       provider: this.provider,
       blockTracker: this.blockTracker,
-      trackSegmentEvent: this.trackSegmentEvent,
+      trackMetaMetricsEvent: this.trackMetaMetricsEvent,
       getParticipateInMetrics: () => this.preferencesController.getParticipateInMetaMetrics(),
     })
     this.txController.on('newUnapprovedTx', () => opts.showUnapprovedTx())
@@ -1671,7 +1688,7 @@ export default class MetamaskController extends EventEmitter {
     }))
     engine.push(createMethodMiddleware({
       origin,
-      sendMetrics: this.trackSegmentEvent,
+      sendMetrics: this.trackMetaMetricsEvent,
     }))
     // filter and subscription polyfills
     engine.push(filterMiddleware)
@@ -2146,6 +2163,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   // TODO: Replace isClientOpen methods with `controllerConnectionChanged` events.
+  /* eslint-disable accessor-pairs */
   /**
    * A method for recording whether the MetaMask user interface is open or not.
    * @private
@@ -2155,6 +2173,7 @@ export default class MetamaskController extends EventEmitter {
     this._isClientOpen = open
     this.detectTokensController.isOpen = open
   }
+  /* eslint-enable accessor-pairs */
 
   /**
   * Creates RPC engine middleware for processing eth_signTypedData requests

@@ -2,6 +2,7 @@ import log from 'loglevel'
 import BigNumber from 'bignumber.js'
 import abi from 'human-standard-token-abi'
 import { isValidAddress } from 'ethereumjs-util'
+import { ETH_SWAPS_TOKEN_OBJECT } from '../../helpers/constants/swaps'
 import { calcTokenValue, calcTokenAmount } from '../../helpers/utils/token-util'
 import { constructTxParams, toPrecisionWithoutTrailingZeros } from '../../helpers/utils/util'
 import { decimalToHex, getValueFromWeiHex } from '../../helpers/utils/conversions.util'
@@ -27,8 +28,6 @@ const getBaseApi = function (type) {
       return `https://api.metaswap.codefi.network/featureFlag`
     case 'aggregatorMetadata':
       return `https://api.metaswap.codefi.network/aggregatorMetadata`
-    case 'feeAmount':
-      return `https://api.metaswap.codefi.network/fee`
     default:
       throw new Error('getBaseApi requires an api call type')
   }
@@ -214,7 +213,10 @@ export async function fetchTradesInfo ({
 export async function fetchTokens () {
   const tokenUrl = getBaseApi('tokens')
   const tokens = await fetchWithCache(tokenUrl, { method: 'GET' }, { cacheRefreshTime: CACHE_REFRESH_ONE_HOUR })
-  const filteredTokens = tokens.filter((token) => validateData(TOKEN_VALIDATORS, token, tokenUrl))
+  const filteredTokens = tokens.filter((token) => {
+    return validateData(TOKEN_VALIDATORS, token, tokenUrl) && (token.address !== ETH_SWAPS_TOKEN_OBJECT.address)
+  })
+  filteredTokens.push(ETH_SWAPS_TOKEN_OBJECT)
   return filteredTokens
 }
 
@@ -245,11 +247,6 @@ export async function fetchTopAssets () {
 export async function fetchSwapsFeatureLiveness () {
   const status = await fetchWithCache(getBaseApi('featureFlag'), { method: 'GET' }, { cacheRefreshTime: 600000 })
   return status?.active
-}
-
-export async function fetchMetaMaskFeeAmount () {
-  const response = await fetchWithCache(getBaseApi('feeAmount'), { method: 'GET' }, { cacheRefreshTime: 600000 })
-  return response?.fee
 }
 
 export async function fetchTokenPrice (address) {
@@ -292,9 +289,20 @@ export function getRenderableGasFeesForQuote (tradeGas, approveGas, gasPrice, cu
   }
 }
 
-export function quotesToRenderableData (quotes, gasPrice, conversionRate, currentCurrency, approveGas, tokenConversionRates, customGasLimit) {
+export function quotesToRenderableData (quotes, gasPrice, conversionRate, currentCurrency, approveGas, tokenConversionRates) {
   return Object.values(quotes).map((quote) => {
-    const { destinationAmount = 0, sourceAmount = 0, sourceTokenInfo, destinationTokenInfo, slippage, aggType, aggregator, gasEstimateWithRefund, averageGas } = quote
+    const {
+      destinationAmount = 0,
+      sourceAmount = 0,
+      sourceTokenInfo,
+      destinationTokenInfo,
+      slippage,
+      aggType,
+      aggregator,
+      gasEstimateWithRefund,
+      averageGas,
+      fee,
+    } = quote
     const sourceValue = calcTokenAmount(sourceAmount, sourceTokenInfo.decimals || 18).toString(10)
     const destinationValue = calcTokenAmount(destinationAmount, destinationTokenInfo.decimals || 18).toPrecision(8)
 
@@ -305,7 +313,6 @@ export function quotesToRenderableData (quotes, gasPrice, conversionRate, curren
       feeInEth,
     } = getRenderableGasFeesForQuote(
       (
-        customGasLimit ||
         gasEstimateWithRefund ||
         decimalToHex(averageGas || 800000)
       ),
@@ -345,6 +352,7 @@ export function quotesToRenderableData (quotes, gasPrice, conversionRate, curren
       destinationTokenDecimals: destinationTokenInfo.decimals,
       destinationTokenSymbol: destinationTokenInfo.symbol,
       destinationTokenValue: formatSwapsValueForDisplay(destinationValue),
+      destinationIconUrl: destinationTokenInfo.iconUrl,
       isBestQuote: quote.isBestQuote,
       liquiditySourceKey,
       feeInEth,
@@ -356,8 +364,10 @@ export function quotesToRenderableData (quotes, gasPrice, conversionRate, curren
       sourceTokenDecimals: sourceTokenInfo.decimals,
       sourceTokenSymbol: sourceTokenInfo.symbol,
       sourceTokenValue: sourceValue,
+      sourceTokenIconUrl: sourceTokenInfo.iconUrl,
       ethValueOfTrade,
       minimumAmountReceived,
+      metaMaskFee: fee,
     }
   })
 }

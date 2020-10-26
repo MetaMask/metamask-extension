@@ -18,6 +18,17 @@ class SelectedAccount extends Component {
     selectedIdentity: PropTypes.object.isRequired,
   }
 
+  componentDidMount () {
+    this.copyTimeout = null
+  }
+
+  componentWillUnmount () {
+    if (this.copyTimeout) {
+      clearTimeout(this.copyTimeout)
+      this.copyTimeout = null
+    }
+  }
+
   render () {
     const { t } = this.context
     const { selectedIdentity } = this.props
@@ -34,7 +45,7 @@ class SelectedAccount extends Component {
             className="selected-account__clickable"
             onClick={() => {
               this.setState({ copied: true })
-              setTimeout(() => this.setState({ copied: false }), 3000)
+              this.copyTimeout = setTimeout(() => this.setState({ copied: false }), 3000)
               copyToClipboard(checksummedAddress)
             }}
           >

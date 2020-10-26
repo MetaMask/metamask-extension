@@ -56,7 +56,7 @@ export default class TokenSearch extends Component {
         position="start"
         style={{ marginRight: '12px' }}
       >
-        <img src="images/search.svg" />
+        <img src="images/search.svg" width="17" height="17" />
       </InputAdornment>
     )
   }

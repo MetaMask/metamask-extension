@@ -3,26 +3,70 @@
   flex-flow: column;
   align-items: center;
   position: relative;
-  height: 196px;
   width: 100%;
-  color: $white;
+  color: $Black-100;
 
-  &__quote-backdrop-with-top-tab,
-  &__quote-backdrop {
-    position: absolute;
-    box-shadow: 0 10px 39px rgba(3, 125, 214, 0.15);
-    border-radius: 8px;
-    background: #fafcff;
+  &__source-row,
+  &__destination-row {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+
+    @include H6;
+
+    color: $Grey-500;
   }
 
-  &__quote-backdrop-with-top-tab {
-    width: 348px;
-    height: 215px;
+  &__source-row {
+    align-items: center;
   }
 
-  &__quote-backdrop {
-    width: 310px;
-    height: 164px;
+  &__source-row-value,
+  &__source-row-symbol {
+    // Each of these spans can be half their container width minus the space
+    // needed for the token icon and the span margins
+    max-width: calc(50% - 13px);
+  }
+
+
+  &__source-row-value {
+    margin-right: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &__source-row-symbol {
+    margin-left: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &__destination-row {
+    margin-top: 6px;
+  }
+
+  &__destination-row-symbol {
+    margin-left: 5px;
+    color: $Black-100;
+  }
+
+  &__icon,
+  &__icon-fallback {
+    height: 16px;
+    width: 16px;
+  }
+
+  &__icon-fallback {
+    padding-top: 0;
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  &__down-arrow {
+    margin-top: 5px;
   }
 
   &__details {
@@ -33,62 +77,24 @@
     position: relative;
   }
 
-  &__best-quote {
-    @include H7;
-
-    font-weight: bold;
-    position: relative;
-    display: flex;
-    padding-top: 6px;
-    letter-spacing: 0.12px;
-    min-height: 16px;
-
-    > span {
-      margin-left: 4px;
-    }
-  }
-
   &__quote-details-top {
-    height: 94px;
     display: flex;
     flex-flow: column;
     justify-content: center;
     align-items: center;
     width: 100%;
-    padding: 12px;
-    padding-top: 2px;
-    margin-top: 4px;
-  }
-
-  &__bold {
-    font-weight: 900;
-  }
-
-  &__quote-small-white {
-    white-space: nowrap;
-    width: 100%;
-    text-align: center;
-    font-size: 14px;
-    margin-bottom: 8px;
-    margin-top: 6px;
   }
 
   &__quote-large {
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
+    margin-top: 8px;
+    height: 50px;
   }
 
   &__quote-large-number {
-    font-size: 40px;
-    line-height: 32px;
-    margin-right: 6px;
-  }
-
-  &__quote-large-symbol {
-    display: flex;
-    align-items: flex-end;
-    font-size: 32px;
-    line-height: 32px;
+    font-size: 60px;
+    line-height: 48px;
   }
 
   &__quote-large-white {
@@ -104,7 +110,10 @@
     justify-content: center;
     align-items: center;
     width: 287px;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    height: 42px;
+    margin-top: 14px;
+  }
+
+  &__exchange-rate-display {
+    color: $Grey-500;
   }
 }

@@ -124,10 +124,11 @@ class Driver {
 
   async waitUntilXWindowHandles (x, delayStep = 1000, timeout = 5000) {
     let timeElapsed = 0
+    let windowHandles = []
     while (timeElapsed <= timeout) {
-      const windowHandles = await this.driver.getAllWindowHandles()
+      windowHandles = await this.driver.getAllWindowHandles()
       if (windowHandles.length === x) {
-        return
+        return windowHandles
       }
       await this.delay(delayStep)
       timeElapsed += delayStep

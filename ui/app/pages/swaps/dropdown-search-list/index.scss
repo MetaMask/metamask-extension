@@ -1,6 +1,8 @@
 .dropdown-search-list {
   flex-flow: column;
   border: none;
+  background: unset;
+  padding: 0;
 
   &__search-list-open {
     margin: 24px;
@@ -126,6 +128,8 @@
     background: white;
     border-radius: 6px;
     min-height: 194px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__loading-item {

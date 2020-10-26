@@ -20,7 +20,6 @@ import {
   getAggregatorMetadata,
   getBackgroundSwapRouteState,
   getSwapsErrorKey,
-  setMetamaskFeeAmount,
   getSwapsFeatureLiveness,
   prepareToLeaveSwaps,
   fetchAndSetSwapsGasPriceInfo,
@@ -49,7 +48,7 @@ import { useNewMetricEvent } from '../../hooks/useMetricEvent'
 import { getValueFromWeiHex } from '../../helpers/utils/conversions.util'
 
 import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route'
-import { fetchTokens, fetchTopAssets, getSwapsTokensReceivedFromTxMeta, fetchAggregatorMetadata, fetchMetaMaskFeeAmount } from './swaps.util'
+import { fetchTokens, fetchTopAssets, getSwapsTokensReceivedFromTxMeta, fetchAggregatorMetadata } from './swaps.util'
 import AwaitingSwap from './awaiting-swap'
 import LoadingQuote from './loading-swaps-quotes'
 import BuildQuote from './build-quote'
@@ -153,11 +152,6 @@ export default function Swap () {
     fetchAggregatorMetadata()
       .then((newAggregatorMetadata) => {
         dispatch(setAggregatorMetadata(newAggregatorMetadata))
-      })
-
-    fetchMetaMaskFeeAmount()
-      .then((metaMaskFeeAmount) => {
-        dispatch(setMetamaskFeeAmount(metaMaskFeeAmount))
       })
 
     dispatch(resetCustomGasState())
@@ -304,7 +298,6 @@ export default function Swap () {
                     <AwaitingSwap
                       swapComplete={false}
                       errorKey={swapsErrorKey}
-                      symbol={destinationTokenInfo?.symbol}
                       txHash={tradeTxData?.hash}
                       networkId={networkId}
                       rpcPrefs={rpcPrefs}
@@ -351,7 +344,6 @@ export default function Swap () {
                 return swapsEnabled === false ? (
                   <AwaitingSwap
                     errorKey={OFFLINE_FOR_MAINTENANCE}
-                    symbol=""
                     networkId={networkId}
                     rpcPrefs={rpcPrefs}
                   />
@@ -366,7 +358,6 @@ export default function Swap () {
                   ? (
                     <AwaitingSwap
                       swapComplete={tradeConfirmed}
-                      symbol={destinationTokenInfo?.symbol}
                       networkId={networkId}
                       txHash={tradeTxData?.hash}
                       tokensReceived={tokensReceived}

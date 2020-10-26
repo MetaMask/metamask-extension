@@ -38,7 +38,7 @@ export default function ActionableMessage ({
 }
 
 ActionableMessage.propTypes = {
-  message: PropTypes.string.isRequired,
+  message: PropTypes.node.isRequired,
   primaryAction: PropTypes.shape({
     label: PropTypes.string,
     onClick: PropTypes.func,

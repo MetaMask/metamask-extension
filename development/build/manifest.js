@@ -1,4 +1,5 @@
 const { promises: fs } = require('fs')
+const path = require('path')
 const { merge, cloneDeep } = require('lodash')
 
 const baseManifest = require('../../app/manifest/_base.json')
@@ -16,11 +17,11 @@ function createManifestTasks ({ browserPlatforms }) {
   // merge base manifest with per-platform manifests
   const prepPlatforms = async () => {
     return Promise.all(browserPlatforms.map(async (platform) => {
-      const platformModifications = await readJson(`${__dirname}/../../app/manifest/${platform}.json`)
+      const platformModifications = await readJson(path.join(__dirname, '..', '..', 'app', 'manifest', `${platform}.json`))
       const result = merge(cloneDeep(baseManifest), platformModifications)
-      const dir = `./dist/${platform}`
+      const dir = path.join('.', 'dist', platform)
       await fs.mkdir(dir, { recursive: true })
-      await writeJson(result, `${dir}/manifest.json`)
+      await writeJson(result, path.join(dir, 'manifest.json'))
     }))
   }
 
@@ -75,10 +76,10 @@ function createManifestTasks ({ browserPlatforms }) {
   function createTaskForModifyManifestForEnvironment (transformFn) {
     return () => {
       return Promise.all(browserPlatforms.map(async (platform) => {
-        const path = `./dist/${platform}/manifest.json`
-        const manifest = await readJson(path)
+        const manifestPath = path.join('.', 'dist', platform, 'manifest.json')
+        const manifest = await readJson(manifestPath)
         transformFn(manifest)
-        await writeJson(manifest, path)
+        await writeJson(manifest, manifestPath)
       }))
     }
   }
@@ -86,11 +87,11 @@ function createManifestTasks ({ browserPlatforms }) {
 }
 
 // helper for reading and deserializing json from fs
-async function readJson (path) {
-  return JSON.parse(await fs.readFile(path, 'utf8'))
+async function readJson (file) {
+  return JSON.parse(await fs.readFile(file, 'utf8'))
 }
 
 // helper for serializing and writing json to fs
-async function writeJson (obj, path) {
-  return fs.writeFile(path, JSON.stringify(obj, null, 2))
+async function writeJson (obj, file) {
+  return fs.writeFile(file, JSON.stringify(obj, null, 2))
 }

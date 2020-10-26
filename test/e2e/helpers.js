@@ -10,7 +10,7 @@ const largeDelayMs = regularDelayMs * 2
 
 const dappPort = 8080
 
-async function withFixtures (options, callback) {
+async function withFixtures (options, testSuite) {
   const { dapp, fixtures, ganacheOptions, driverOptions, title } = options
   const fixtureServer = new FixtureServer()
   const ganacheServer = new Ganache()
@@ -33,8 +33,7 @@ async function withFixtures (options, callback) {
     const { driver } = await buildWebDriver(driverOptions)
     webDriver = driver
 
-    // eslint-disable-next-line callback-return
-    await callback({
+    await testSuite({
       driver,
     })
 
