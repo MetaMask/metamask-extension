@@ -40,7 +40,7 @@ export default function FeeCard ({
 
   let savingsText = ''
   if (shouldDisplaySavings) {
-    savingsText = t('swapSaving', [savingAmount])
+    savingsText = t('swapSaving', [<span key="savings-tilde" className="fee-card__tilde">~</span>, savingAmount])
   } else if (isBestQuote && tokenConversionRate) {
     savingsText = t('swapUsingBestQuote')
   } else if (savingsIsPositive && tokenConversionRate) {

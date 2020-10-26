@@ -1795,8 +1795,8 @@
     "message": "Request for quotation"
   },
   "swapSaving": {
-    "message": "Saving ~$1",
-    "description": "Tells the user their average savings for the selected best quote. $1 is replaced by the approximate amount of money the user will save, in fiat"
+    "message": "Saving $1 $2",
+    "description": "Tells the user their average savings for the selected best quote. $1 is replaced by a tilde sign, to shown approximation. $2 is replaced by the approximate amount of money the user will save, in fiat"
   },
   "swapSearchForAToken": {
     "message": "Search for a token"
