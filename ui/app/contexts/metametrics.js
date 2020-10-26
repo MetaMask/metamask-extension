@@ -9,6 +9,7 @@ import {
   getAccountType,
   getNumberOfAccounts,
   getNumberOfTokens,
+  getCurrentChainId,
 } from '../selectors/selectors'
 import { getSendToken } from '../selectors/send'
 import {
@@ -16,6 +17,7 @@ import {
 } from '../selectors/confirm-transaction'
 import { getEnvironmentType } from '../../../app/scripts/lib/util'
 import { getTrackMetaMetricsEvent } from '../../../shared/modules/metametrics'
+import { getCurrentLocale } from '../ducks/metamask/metamask'
 
 export const MetaMetricsContext = createContext(() => {
   captureException(
@@ -27,6 +29,8 @@ export function MetaMetricsProvider ({ children }) {
   const txData = useSelector(txDataSelector) || {}
   const network = useSelector(getCurrentNetworkId)
   const environmentType = getEnvironmentType()
+  const chainId = useSelector(getCurrentChainId)
+  const locale = useSelector(getCurrentLocale)
   const activeCurrency = useSelector(getSendToken)?.symbol
   const accountType = useSelector(getAccountType)
   const confirmTransactionOrigin = txData.origin
@@ -69,23 +73,17 @@ export function MetaMetricsProvider ({ children }) {
         page,
       },
       environmentType,
+      locale: locale.replace('_', '-'),
       network,
+      chainId,
       participateInMetaMetrics,
       metaMetricsId,
       metaMetricsSendCount,
     }))
-  }, [network, environmentType, participateInMetaMetrics, currentPath, confirmTransactionOrigin, metaMetricsId, metaMetricsSendCount])
+  }, [network, chainId, locale, environmentType, participateInMetaMetrics, currentPath, confirmTransactionOrigin, metaMetricsId, metaMetricsSendCount])
 
   const metricsEvent = useCallback((config = {}, overrides = {}) => {
     const { eventOpts = {} } = config
-
-    const additionalContext = {}
-
-    if (overrides.currentPath) {
-      additionalContext.page = {
-        path: currentPath,
-      }
-    }
 
     return trackEvent({
       event: eventOpts.name,
@@ -101,6 +99,11 @@ export function MetaMetricsProvider ({ children }) {
         active_currency: activeCurrency,
         account_type: accountType,
         is_new_visit: config.is_new_visit,
+        // the properties coming from this key will not match our standards for
+        // snake_case on properties, and they may be redundant and/or not in the
+        // proper location (origin not as a referrer, for example). This is a temporary
+        // solution to not lose data, and the entire event system will be reworked in
+        // forthcoming PRs to deprecate the old Matomo events in favor of the new schema.
         ...config.customVariables,
       },
     })
@@ -109,7 +112,6 @@ export function MetaMetricsProvider ({ children }) {
     activeCurrency,
     numberOfTokens,
     numberOfAccounts,
-    currentPath,
     trackEvent,
   ])
 
