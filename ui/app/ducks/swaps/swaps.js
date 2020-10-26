@@ -36,6 +36,7 @@ import {
   QUOTES_NOT_AVAILABLE_ERROR,
   ETH_SWAPS_TOKEN_OBJECT,
   SWAP_FAILED_ERROR,
+  SWAPS_FETCH_ORDER_CONFLICT,
 } from '../../helpers/constants/swaps'
 import { SWAP, SWAP_APPROVAL } from '../../helpers/constants/transactions'
 import { fetchBasicGasAndTimeEstimates, fetchGasEstimates, resetCustomGasState } from '../gas/gas.duck'
@@ -399,6 +400,10 @@ export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage, me
         dispatch(setInitialGasEstimate(selectedAggId))
       }
     } catch (e) {
+      // A newer swap request is running, so simply bail and let the newer request respond
+      if (e.message === SWAPS_FETCH_ORDER_CONFLICT) {
+        return
+      }
       dispatch(setSwapsErrorKey(ERROR_FETCHING_QUOTES))
     }
 

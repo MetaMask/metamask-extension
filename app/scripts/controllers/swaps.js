@@ -12,6 +12,7 @@ import {
   DEFAULT_ERC20_APPROVE_GAS,
   QUOTES_EXPIRED_ERROR,
   QUOTES_NOT_AVAILABLE_ERROR,
+  SWAPS_FETCH_ORDER_CONFLICT,
 } from '../../../ui/app/helpers/constants/swaps'
 import {
   fetchTradesInfo as defaultFetchTradesInfo,
@@ -88,6 +89,8 @@ export default class SwapsController {
     this.pollCount = 0
     this.getProviderConfig = getProviderConfig
 
+    this.indexOfNewestCallInFlight = 0
+
     this.ethersProvider = new ethers.providers.Web3Provider(provider)
 
     this._setupSwapsLivenessFetching()
@@ -124,6 +127,10 @@ export default class SwapsController {
     if (!isPolledRequest) {
       this.setSwapsErrorKey('')
     }
+
+    const indexOfCurrentCall = this.indexOfNewestCallInFlight + 1
+    this.indexOfNewestCallInFlight = indexOfCurrentCall
+
     let newQuotes = await this._fetchTradesInfo(fetchParams)
 
     newQuotes = mapValues(newQuotes, (quote) => ({
@@ -184,11 +191,18 @@ export default class SwapsController {
       }
     }
 
+    // If a newer call has been made, don't update state with old information
+    // Prevents timing conflicts between fetches
+    if (this.indexOfNewestCallInFlight !== indexOfCurrentCall) {
+      throw new Error(SWAPS_FETCH_ORDER_CONFLICT)
+    }
+
     const { swapsState } = this.store.getState()
     let { selectedAggId } = swapsState
     if (!newQuotes[selectedAggId]) {
       selectedAggId = null
     }
+
     this.store.updateState({
       swapsState: {
         ...swapsState,
