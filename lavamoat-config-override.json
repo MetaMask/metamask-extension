@@ -16,7 +16,7 @@
       }
     },
     "node-sass": {
-     "native": true 
+      "native": true
     },
     "colorette": {
       "globals": {
