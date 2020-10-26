@@ -5,7 +5,7 @@
   "scripts": {
     "start": "yarn build dev",
     "dist": "yarn build prod",
-    "build": "node development/build/index.js",
+    "build": "lavamoat development/build/index.js",
     "start:test": "yarn build testDev",
     "benchmark:chrome": "SELENIUM_BROWSER=chrome node test/e2e/benchmark.js",
     "benchmark:firefox": "SELENIUM_BROWSER=firefox node test/e2e/benchmark.js",
@@ -50,8 +50,6 @@
     "update-changelog": "./development/auto-changelog.sh",
     "generate:migration": "./development/generate-migration.sh",
     "lavamoat:parse": "lavamoat ./development/build/index.js --writeAutoConfig",
-    "lavamoat:exec:debug": "lavamoat ./development/build/index.js prod --debugMode",
-    "lavamoat:exec": "lavamoat ./development/build/index.js prod",
     "postinstall": "patch-package"
   },
   "resolutions": {
