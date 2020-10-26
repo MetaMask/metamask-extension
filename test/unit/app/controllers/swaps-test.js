@@ -119,7 +119,7 @@ describe('SwapsController', function () {
       // by default, all accounts are external accounts (not contracts)
       eth_getCode: '0x',
     }
-    provider = createTestProviderTools({ scaffold: providerResultStub })
+    provider = createTestProviderTools({ scaffold: providerResultStub, networkId: 1, chainId: 1 })
       .provider
   })
 
