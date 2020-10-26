@@ -198,6 +198,7 @@
     "@storybook/storybook-deployer": "^2.8.6",
     "@testing-library/react": "^10.4.8",
     "@testing-library/react-hooks": "^3.2.1",
+    "@types/react": "^16.9.53",
     "addons-linter": "1.14.0",
     "babel-loader": "^8.0.6",
     "babelify": "^10.0.0",

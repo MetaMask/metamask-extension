@@ -101,12 +101,6 @@ export default class Routes extends Component {
     this.props.history.listen((locationObj, action) => {
       if (action === 'PUSH') {
         pageChanged(locationObj.pathname)
-        this.context.metricsEvent({}, {
-          currentPath: locationObj.pathname,
-          pageOpts: {
-            hideDimensions: true,
-          },
-        })
       }
     })
   }

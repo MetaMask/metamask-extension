@@ -25,6 +25,7 @@ import {
   PhishingController,
 } from '@metamask/controllers'
 import { getTrackMetaMetricsEvent } from '../../shared/modules/metametrics'
+import { getBackgroundMetaMetricState } from '../../ui/app/selectors'
 import ComposableObservableStore from './lib/ComposableObservableStore'
 import AccountTracker from './lib/account-tracker'
 import createLoggerMiddleware from './lib/createLoggerMiddleware'
@@ -56,8 +57,6 @@ import getRestrictedMethods from './controllers/permissions/restrictedMethods'
 import nodeify from './lib/nodeify'
 import accountImporter from './account-import-strategies'
 import seedPhraseVerifier from './lib/seed-phrase-verifier'
-
-import backgroundMetaMetricsEvent from './lib/background-metametrics'
 import { ENVIRONMENT_TYPE_BACKGROUND } from './lib/enums'
 
 export default class MetamaskController extends EventEmitter {
@@ -1893,19 +1892,18 @@ export default class MetamaskController extends EventEmitter {
     }
 
     const metamaskState = await this.getState()
-    const version = this.platform.getVersion()
-    backgroundMetaMetricsEvent(
-      metamaskState,
-      version,
-      {
-        customVariables,
-        eventOpts: {
-          action,
-          category: 'Background',
-          name,
-        },
+    const additionalProperties = getBackgroundMetaMetricState(metamaskState)
+
+    this.trackMetaMetricsEvent({
+      event: name,
+      category: 'Background',
+      matomoEvent: true,
+      properties: {
+        action,
+        ...additionalProperties,
+        ...customVariables,
       },
-    )
+    })
   }
 
   /**
