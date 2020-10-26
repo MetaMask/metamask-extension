@@ -1749,7 +1749,8 @@
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapMetaMaskFeeWithRate": {
-    "message": "MetaMask fee $1"
+    "message": "MetaMask fee of $1 $2",
+    "description": "Tells the user what the metamask fee on their swap will be. $1 is a decimal amount of tokens, and $2 is a token symbol"
   },
   "swapNQuotes": {
     "message": "$1 quotes",
@@ -1820,14 +1821,11 @@
     "message": "Saving $1 $2",
     "description": "Tells the user their average savings for the selected best quote. $1 is replaced by a tilde sign, to shown approximation. $2 is replaced by the approximate amount of money the user will save, in fiat"
   },
+  "swapSavingDescription": {
+    "message": "Savings are calculated by comparing the best quote to the median quote."
+  },
   "swapSavingOnGas": {
     "message": "Saving $1 ETH on gas fee"
-  },
-  "swapSavingsAverageSavingsNote": {
-    "message": "average savings are about $1"
-  },
-  "swapSavingsTooltipDescription": {
-    "message": "By analyzing multiple liquidity providers your $1 compared to searching a single source."
   },
   "swapSearchForAToken": {
     "message": "Search for a token"

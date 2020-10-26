@@ -78,7 +78,6 @@ export default function FeeCard ({
                 currentCurrency={currentCurrency}
                 tokenConversionRate={tokenConversionRate}
                 tokenSymbol={tokenSymbol}
-                metaMaskFee={metaMaskFee}
               />
             )}
           </div>

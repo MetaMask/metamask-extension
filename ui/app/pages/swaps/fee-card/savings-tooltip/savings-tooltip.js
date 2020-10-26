@@ -20,7 +20,6 @@ export default function SavingsTooltip ({
   conversionRate,
   currentCurrency,
   tokenConversionRate,
-  metaMaskFee,
   tokenSymbol,
 }) {
   const t = useContext(I18nContext)
@@ -34,6 +33,7 @@ export default function SavingsTooltip ({
 
   const negativeSavingsMetaMaskFee = (new BigNumber(savings.metaMaskFee, 10)).times(-1, 10)
   const metaMaskFeeInFiat = formatSavings(negativeSavingsMetaMaskFee, currentCurrency, conversionRate)
+  const metaMaskFeeInTokens = (new BigNumber(savings.metaMaskFee)).div(tokenConversionRate, 10).round(6).toString(10)
 
   const totalSavingsInFiat = formatSavings(savings.total, currentCurrency, conversionRate)
   const totalSavingsIsPositive = (new BigNumber(savings.total)).gt(0)
@@ -67,68 +67,63 @@ export default function SavingsTooltip ({
       position="top"
       contentText={(
         <div className="fee-card__savings-tooltip">
-          <p className="fee-card__savings-tooltip-description">
-            { t('swapSavingsTooltipDescription', [
-              <span key="savings-note" className="fee-card__bold">{
-                t('swapSavingsAverageSavingsNote', [totalSavingsInFiat]) }
-              </span>,
-            ]) }
-          </p>
-          <div className="fee-card__savings-tooltip-card">
-            <div className="fee-card__savings-tooltip-row">
-              <span className="fee-card__savings-tooltip-row-text">{ tokenSavingsText }</span>
-              <span
-                className={classnames('fee-card__savings-tooltip-number', {
-                  'fee-card__savings-tooltip-number--green': tokenSavingsIsPositive,
-                  'fee-card__savings-tooltip-number--red': !tokenSavingsIsPositive,
-                })}
-              >
-                { tokenSavingsIsPositive
-                  ? t('positiveSign', [tokenSavingsInFiat])
-                  : tokenSavingsInFiat
-                }
-              </span>
-            </div>
-            <div className="fee-card__savings-tooltip-row">
-              <span className="fee-card__savings-tooltip-row-text">{ feeSavingsText }</span>
-              <span
-                className={classnames('fee-card__savings-tooltip-number', {
-                  'fee-card__savings-tooltip-number--green': feeSavingsIsPositive,
-                  'fee-card__savings-tooltip-number--red': !feeSavingsIsPositive,
-                })}
-              >
-                { feeSavingsIsPositive
-                  ? t('positiveSign', [feeSavingsInFiat])
-                  : feeSavingsInFiat
-                }
-              </span>
-            </div>
-            <div className="fee-card__savings-tooltip-row">
-              <span className="fee-card__savings-tooltip-row-text">{ t('swapMetaMaskFeeWithRate', [
-                <span key="metaMaskFee-2" className="fee-card__bold">{ metaMaskFee }</span>,
-              ]) }
-              </span>
-              <span
-                className={classnames('fee-card__savings-tooltip-number--red')}
-              >
-                { metaMaskFeeInFiat }
-              </span>
-            </div>
-            <div className="fee-card__savings-tooltip-total-row">
-              <span className="fee-card__savings-tooltip-total-row-text">{ t('swapAverageSavings') }</span>
-              <span
-                className={classnames('fee-card__savings-tooltip-number', {
-                  'fee-card__savings-tooltip-number--green': totalSavingsIsPositive,
-                  'fee-card__savings-tooltip-number--red': !totalSavingsIsPositive,
-                })}
-              >
-                { totalSavingsIsPositive
-                  ? t('positiveSign', [totalSavingsInFiat])
-                  : totalSavingsInFiat
-                }
-              </span>
-            </div>
+          <div className="fee-card__savings-tooltip-row">
+            <span className="fee-card__savings-tooltip-row-text">{ tokenSavingsText }</span>
+            <span
+              className={classnames('fee-card__savings-tooltip-number', {
+                'fee-card__savings-tooltip-number--green': tokenSavingsIsPositive,
+                'fee-card__savings-tooltip-number--grey': !tokenSavingsIsPositive,
+              })}
+            >
+              { tokenSavingsIsPositive
+                ? t('positiveSign', [tokenSavingsInFiat])
+                : tokenSavingsInFiat
+              }
+            </span>
           </div>
+          <div className="fee-card__savings-tooltip-row">
+            <span className="fee-card__savings-tooltip-row-text">{ feeSavingsText }</span>
+            <span
+              className={classnames('fee-card__savings-tooltip-number', {
+                'fee-card__savings-tooltip-number--green': feeSavingsIsPositive,
+                'fee-card__savings-tooltip-number--grey': !feeSavingsIsPositive,
+              })}
+            >
+              { feeSavingsIsPositive
+                ? t('positiveSign', [feeSavingsInFiat])
+                : feeSavingsInFiat
+              }
+            </span>
+          </div>
+          <div className="fee-card__savings-tooltip-row">
+            <span className="fee-card__savings-tooltip-row-text">{ t('swapMetaMaskFeeWithRate', [
+              <span key="metaMaskFee-1" className="fee-card__bold">{ metaMaskFeeInTokens }</span>,
+              <span key="metaMaskFee-2" className="fee-card__bold">{ tokenSymbol }</span>,
+            ]) }
+            </span>
+            <span
+              className={classnames('fee-card__savings-tooltip-number--grey')}
+            >
+              { metaMaskFeeInFiat }
+            </span>
+          </div>
+          <div className="fee-card__savings-tooltip-total-row">
+            <span className="fee-card__savings-tooltip-total-row-text">{ t('swapAverageSavings') }</span>
+            <span
+              className={classnames('fee-card__savings-tooltip-number', {
+                'fee-card__savings-tooltip-number--green': totalSavingsIsPositive,
+                'fee-card__savings-tooltip-number--grey': !totalSavingsIsPositive,
+              })}
+            >
+              { totalSavingsIsPositive
+                ? t('positiveSign', [totalSavingsInFiat])
+                : totalSavingsInFiat
+              }
+            </span>
+          </div>
+          <p className="fee-card__savings-tooltip-description">
+            { t('swapSavingDescription') }
+          </p>
         </div>
       )
       }
@@ -145,5 +140,4 @@ SavingsTooltip.propTypes = {
   currentCurrency: PropTypes.string,
   tokenConversionRate: PropTypes.number,
   tokenSymbol: PropTypes.string,
-  metaMaskFee: PropTypes.string,
 }

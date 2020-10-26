@@ -281,9 +281,15 @@
   };
 
   &__savings-tooltip-total-row {
+    @include H6;
+
+    font-weight: bold;
     margin-top: 12px;
     padding-top: 12px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
     border-top: 1px solid $Grey-100;
+    border-bottom: 1px solid $Grey-100;
   }
 
   &__savings-tooltip-row-text,
@@ -298,15 +304,12 @@
       color: $Green-500;
     }
 
-    &--red {
-      color: $Red-500;
+    &--grey {
+      color: $Grey-800;
     }
   }
 
   &__savings-tooltip-total-row {
-    @include H6;
-
-    font-weight: bold;
   }
 }
 
