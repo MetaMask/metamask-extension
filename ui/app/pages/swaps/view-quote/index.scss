@@ -44,13 +44,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 46px;
   }
 
   &__view-other-button,
   &__view-other-button-fade {
     display: flex;
     align-items: center;
+    margin-bottom: 16px;
     position: absolute;
 
     @include H7;
@@ -87,12 +87,10 @@
   }
 
   &__insufficient-eth-warning-wrapper {
+    margin-top: 8px;
     width: 100%;
     align-items: center;
     justify-content: center;
-    width: intrinsic;           /* Safari/WebKit uses a non-standard name */
-    width: max-content;
-    max-width: 340px;
 
     @media screen and (min-width: 576px) {
       min-height: 36px;
@@ -129,6 +127,7 @@
 
   &__fee-card-container {
     width: 100%;
+    margin-top: 8px;
     margin-bottom: 8px;
 
     @media screen and (min-width: 576px) {
@@ -140,8 +139,21 @@
     }
   }
 
+  &__main-quote-summary-container {
+    margin-top: 24px;
+
+    @media screen and (max-width: 576px) {
+      margin-top: 0;
+    }
+
+    &--thin {
+      margin-top: 8px;
+    }
+  }
+
   &__metamask-rate {
     display: flex;
+    margin-top: 8%;
   }
 
   &__metamask-rate-text {

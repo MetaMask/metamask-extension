@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import BigNumber from 'bignumber.js'
 import classnames from 'classnames'
 import { calcTokenAmount } from '../../../helpers/utils/token-util'
-import { formatSwapsValueForDisplay } from '../swaps.util'
+import { toPrecisionWithoutTrailingZeros } from '../../../helpers/utils/util'
 
 export default function ExchangeRateDisplay ({
   primaryTokenValue,
@@ -13,7 +13,6 @@ export default function ExchangeRateDisplay ({
   secondaryTokenDecimals = 18,
   secondaryTokenSymbol,
   arrowColor = 'black',
-  boldSymbols = true,
   className,
 }) {
   const [showPrimaryToSecondary, setShowPrimaryToSecondary] = useState(true)
@@ -38,16 +37,16 @@ export default function ExchangeRateDisplay ({
   } else if ((new BigNumber(rate, 10).lt('0.000001', 10))) {
     rateToDisplay = rate
   } else {
-    rateToDisplay = formatSwapsValueForDisplay(rate)
+    rateToDisplay = toPrecisionWithoutTrailingZeros(rate, 9)
   }
 
   return (
     <div className={classnames('exchange-rate-display', className)}>
       <span>1</span>
-      <span className={classnames({ 'exchange-rate-display__bold': boldSymbols })}>{baseSymbol}</span>
+      <span className="exchange-rate-display__bold">{baseSymbol}</span>
       <span>{comparisonSymbol}</span>
       <span>{rateToDisplay}</span>
-      <span className={classnames({ 'exchange-rate-display__bold': boldSymbols })}>{ratiodSymbol}</span>
+      <span className="exchange-rate-display__bold">{ratiodSymbol}</span>
       <div
         className={classnames('exchange-rate-display__switch-arrows', {
           'exchange-rate-display__switch-arrows-rotate': rotating,
@@ -84,5 +83,4 @@ ExchangeRateDisplay.propTypes = {
   secondaryTokenSymbol: PropTypes.string.isRequired,
   className: PropTypes.string,
   arrowColor: PropTypes.string,
-  boldSymbols: PropTypes.bool,
 }
