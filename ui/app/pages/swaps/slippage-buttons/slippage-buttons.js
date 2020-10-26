@@ -74,7 +74,7 @@ export default function SlippageButtons ({
               </Button>
               <Button
                 onClick={() => {
-                  setCustomValue(undefined)
+                  setCustomValue('')
                   setEnteringCustomValue(false)
                   setActiveButtonIndex(1)
                   onSelect(2)
@@ -108,8 +108,8 @@ export default function SlippageButtons ({
                         ref={setInputRef}
                         onBlur={() => {
                           setEnteringCustomValue(false)
-                          if (customValue === '' || customValue === '0') {
-                            setCustomValue(null)
+                          if (customValue === '0') {
+                            setCustomValue('')
                             setActiveButtonIndex(1)
                           }
                         }}
