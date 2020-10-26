@@ -2,6 +2,14 @@
 
 ## Current Develop Branch
 
+## 8.1.2 Mon Oct 19 2020
+- [#9608](https://github.com/MetaMask/metamask-extension/pull/9608): Ensure QR code scanner works
+- [#9624](https://github.com/MetaMask/metamask-extension/pull/9624): Help users avoid insufficient gas prices in swaps
+- [#9614](https://github.com/MetaMask/metamask-extension/pull/9614): Update swaps network fee tooltip
+- [#9623](https://github.com/MetaMask/metamask-extension/pull/9623): Prevent reducing the gas limit for swaps
+- [#9630](https://github.com/MetaMask/metamask-extension/pull/9630): Fix UI crash when trying to render estimated time remaining of non-submitted transaction
+- [#9633](https://github.com/MetaMask/metamask-extension/pull/9633): Update View Quote page to better represent the MetaMask fee
+
 ## 8.1.1 Tue Oct 13 2020
 - [#9586](https://github.com/MetaMask/metamask-extension/pull/9586): Prevent build quote crash when swapping from non-tracked token with balance (#9586)
 - [#9592](https://github.com/MetaMask/metamask-extension/pull/9592): Remove commitment to maintain a public metrics dashboard (#9592)
