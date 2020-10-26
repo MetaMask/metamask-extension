@@ -161,12 +161,6 @@ export default function ViewQuote () {
     calcTokenAmount(approveValue, selectedFromToken.decimals).toFixed(9)
   )
   const approveGas = approveTxParams?.gas
-  const approveGasTotal = calcGasTotal(approveGas || '0x0', gasPrice)
-  const approveGasTotalInEth = getValueFromWeiHex({
-    value: approveGasTotal,
-    toDenomination: 'ETH',
-    numberOfDecimals: 4,
-  })
 
   const renderablePopoverData = useMemo(() => {
     return quotesToRenderableData(
@@ -217,6 +211,7 @@ export default function ViewQuote () {
   const {
     feeInFiat: maxFeeInFiat,
     feeInEth: maxFeeInEth,
+    nonGasFee,
   } = getRenderableNetworkFeesForQuote(
     maxGasLimit,
     approveGas,
@@ -384,6 +379,26 @@ export default function ViewQuote () {
     }))
   }
 
+  const nonGasFeeIsPositive = (new BigNumber(nonGasFee, 16)).gt(0)
+  const approveGasTotal = calcGasTotal(approveGas || '0x0', gasPrice)
+  const extraNetworkFeeTotalInHexWEI = (new BigNumber(nonGasFee, 16))
+    .plus(approveGasTotal, 16)
+    .toString(16)
+  const extraNetworkFeeTotalInEth = getValueFromWeiHex({
+    value: extraNetworkFeeTotalInHexWEI,
+    toDenomination: 'ETH',
+    numberOfDecimals: 4,
+  })
+
+  let extraInfoRowLabel = ''
+  if (approveGas && nonGasFeeIsPositive) {
+    extraInfoRowLabel = t('approvalAndAggregatorTxFeeCost')
+  } else if (approveGas) {
+    extraInfoRowLabel = t('approvalTxGasCost')
+  } else if (nonGasFeeIsPositive) {
+    extraInfoRowLabel = t('aggregatorFeeCost')
+  }
+
   const onFeeCardMaxRowClick = () => dispatch(showModal({
     name: 'CUSTOMIZE_GAS',
     txData: { txParams: { ...tradeTxParams, gas: maxGasLimit } },
@@ -395,10 +410,10 @@ export default function ViewQuote () {
     ),
     customTotalSupplement: approveGasTotal,
     extraInfoRow: (
-      approveGas
+      extraInfoRowLabel
         ? {
-          label: t('approvalTxGasCost'),
-          value: t('amountInEth', [approveGasTotalInEth]),
+          label: extraInfoRowLabel,
+          value: t('amountInEth', [extraNetworkFeeTotalInEth]),
         }
         : null
     ),

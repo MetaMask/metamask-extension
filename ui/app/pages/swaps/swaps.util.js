@@ -284,6 +284,10 @@ export function getRenderableNetworkFeesForQuote (
     .minus(sourceSymbol === 'ETH' ? sourceAmount : 0, 10)
     .toString(16)
 
+  const nonGasFee = new BigNumber(totalWeiCost, 16)
+    .minus(gasTotalInWeiHex, 16)
+    .toString(16)
+
   const ethFee = getValueFromWeiHex({
     value: totalWeiCost,
     toDenomination: 'ETH',
@@ -301,6 +305,7 @@ export function getRenderableNetworkFeesForQuote (
     rawEthFee: ethFee,
     feeInFiat: formattedNetworkFee,
     feeInEth: `${ethFee} ETH`,
+    nonGasFee,
   }
 }
 
