@@ -61,9 +61,7 @@
     "3box/ipfs/ipld-zcash/zcash-bitcore-lib/elliptic": "^6.5.3",
     "3box/**/libp2p-crypto/node-forge": "^0.10.0",
     "3box/**/libp2p-keychain/node-forge": "^0.10.0",
-    "browserify-derequire/derequire": "^2.1.1",
-    "ganache-core/lodash": "^4.17.19",
-    "ganache-core/websocket": "^1.0.32"
+    "browserify-derequire/derequire": "^2.1.1"
   },
   "dependencies": {
     "3box": "^1.10.2",
@@ -229,8 +227,8 @@
     "fast-glob": "^3.2.2",
     "file-loader": "^1.1.11",
     "fs-extra": "^8.1.0",
-    "ganache-cli": "^6.9.1",
-    "ganache-core": "^2.10.2",
+    "ganache-cli": "^6.12.1",
+    "ganache-core": "^2.13.1",
     "geckodriver": "^1.19.1",
     "get-port": "^5.1.0",
     "gulp": "^4.0.2",
