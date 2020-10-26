@@ -21,7 +21,6 @@ require('@babel/plugin-proposal-nullish-coalescing-operator')
 require('@babel/preset-env')
 require('@babel/preset-react')
 
-
 const browserPlatforms = [
   'firefox',
   'chrome',

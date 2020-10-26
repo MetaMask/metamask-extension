@@ -279,6 +279,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
     }
 
     if (!activateSesify) {
+      /* eslint-disable-next-line global-require */
       browserifyOpts.plugin.push(require('browserify-derequire'))
     }
 
@@ -291,10 +292,12 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
     }
 
     let bundler = browserify(browserifyOpts)
+      // eslint-disable-next-line global-require
       .transform(require('babelify'))
       // Transpile any dependencies using the object spread/rest operator
       // because it is incompatible with `esprima`, which is used by `envify`
       // See https://github.com/jquery/esprima/issues/1927
+      // eslint-disable-next-line global-require
       .transform(require('babelify'), {
         only: [
           './**/node_modules/libp2p',
@@ -302,6 +305,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
         global: true,
         plugins: ['@babel/plugin-proposal-object-rest-spread'],
       })
+      // eslint-disable-next-line global-require
       .transform(require('brfs'))
 
     if (opts.buildLib) {

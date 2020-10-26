@@ -210,7 +210,7 @@ export function getAccountToConnectToActiveTab (state) {
 export function getOrderedConnectedAccountsForActiveTab (state) {
   const { activeTab, metamask: { permissionsHistory } } = state
 
-  const permissionsHistoryByAccount = permissionsHistory[activeTab.origin]?.['eth_accounts']?.accounts
+  const permissionsHistoryByAccount = permissionsHistory[activeTab.origin]?.eth_accounts?.accounts
   const orderedAccounts = getMetaMaskAccountsOrdered(state)
   const connectedAccounts = getPermittedAccountsForCurrentTab(state)
 
