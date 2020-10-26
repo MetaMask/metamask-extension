@@ -6,8 +6,8 @@ import { ETH_SWAPS_TOKEN_OBJECT } from '../../helpers/constants/swaps'
 import { calcTokenValue, calcTokenAmount } from '../../helpers/utils/token-util'
 import { constructTxParams, toPrecisionWithoutTrailingZeros } from '../../helpers/utils/util'
 import { decimalToHex, getValueFromWeiHex } from '../../helpers/utils/conversions.util'
-import { ETH_SWAPS_TOKEN_ADDRESS } from '../../helpers/constants/swaps'
-import { subtractCurrencies, conversionUtil } from '../../helpers/utils/conversion-util'
+
+import { subtractCurrencies } from '../../helpers/utils/conversion-util'
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util'
 import fetchWithCache from '../../helpers/utils/fetch-with-cache'
 
@@ -264,37 +264,6 @@ export async function fetchTokenBalance (address, userAddress) {
     : Promise.resolve()
   const usersToken = await tokenBalancePromise
   return usersToken
-}
-
-export function getTotalEthCost (gasTotalInWeiHex, tradeValue, sourceAmount, sourceTokenAddress) {
-  const totalWeiCost = new BigNumber(gasTotalInWeiHex, 16)
-    .plus(tradeValue, 16)
-
-  const totalEthCost = conversionUtil(totalWeiCost, {
-    fromCurrency: 'ETH',
-    fromDenomination: 'WEI',
-    toDenomination: 'ETH',
-    fromNumericBase: 'BN',
-    numberOfDecimals: 6,
-  })
-
-  // The total fee is aggregator/exchange fees plus gas fees.
-  // If the swap is from ETH, subtract the sourceAmount from the total cost.
-  // Otherwise, the total fee is simply trade.value plus gas fees.
-  const ethFee = sourceTokenAddress === ETH_SWAPS_TOKEN_ADDRESS
-    ? conversionUtil(
-      totalWeiCost.minus(sourceAmount, 10), // sourceAmount is in wei
-      {
-        fromCurrency: 'ETH',
-        fromDenomination: 'WEI',
-        toDenomination: 'ETH',
-        fromNumericBase: 'BN',
-        numberOfDecimals: 6,
-      },
-    )
-    : totalEthCost
-
-  return ethFee
 }
 
 export function getRenderableNetworkFeesForQuote (
