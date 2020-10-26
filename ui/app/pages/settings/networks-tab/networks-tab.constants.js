@@ -15,15 +15,6 @@ const defaultNetworksData = [
     ticker: 'CFX',
     blockExplorerUrl: 'https://confluxscan.io',
   },
-  // {
-  //   labelKey: 'mainnet',
-  //   iconColor: '#29B6AF',
-  //   providerType: 'mainnet',
-  //   rpcUrl: 'https://api.infura.io/v1/jsonrpc/mainnet',
-  //   chainId: '1',
-  //   ticker: 'ETH',
-  //   blockExplorerUrl: 'https://etherscan.io',
-  // },
   {
     labelKey: 'localhost',
     iconColor: 'white',

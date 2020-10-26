@@ -115,6 +115,11 @@ export default class NetworksTab extends PureComponent {
     const displayNetworkListItemAsSelected =
       listItemNetworkIsSelected || listItemNetworkIsCurrentProvider
 
+    const MAINNET_LANCHED =
+      new Date().getTime() >
+      new Date(
+        'Thu Oct 29 2020 00:10:00 GMT+0800 (China Standard Time)'
+      ).getTime()
     return (
       <div
         key={'settings-network-list-item:' + rpcUrl}
@@ -133,7 +138,10 @@ export default class NetworksTab extends PureComponent {
             'networks-tab__networks-list-name--selected': displayNetworkListItemAsSelected,
           })}
         >
-          {label || this.context.t(labelKey)}
+          {label ||
+            (MAINNET_LANCHED
+              ? this.context.t(labelKey).replace('Oceanus', 'Tethys')
+              : this.context.t(labelKey))}
         </div>
         <div className="networks-tab__networks-list-arrow" />
       </div>

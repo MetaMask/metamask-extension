@@ -12,7 +12,7 @@ export default getBuyEthUrl
  * network does not match any of the specified cases, or if no network is given, returns undefined.
  *
  */
-function getBuyEthUrl ({ network, amount, address, service, type }) {
+function getBuyEthUrl ({ network, /* amount, */ address, service, type }) {
   // default service by network if not specified
   if (type && !service) {
     service = getDefaultServiceForType(type)
@@ -22,25 +22,18 @@ function getBuyEthUrl ({ network, amount, address, service, type }) {
     service = getDefaultServiceForNetwork(network)
   }
 
+  const MAINNET_LANCHED =
+    new Date().getTime() >
+    new Date(
+      'Thu Oct 29 2020 00:10:00 GMT+0800 (China Standard Time)'
+    ).getTime()
   switch (service) {
     case 'conflux-main-faucet':
-      return `https://wallet.confluxscan.io/faucet/dev/ask?address=${address}`
+      return MAINNET_LANCHED
+        ? `https://confluxscan.io/sponsor`
+        : `https://wallet.confluxscan.io/faucet/dev/ask?address=${address}`
     case 'conflux-test-faucet':
       return `http://test-faucet.conflux-chain.org:18088/dev/ask?address=${address}`
-    case 'wyre':
-      return `https://pay.sendwyre.com/?dest=ethereum:${address}&destCurrency=ETH&accountId=AC-7AG3W4XH4N2&paymentMethod=debit-card`
-    case 'coinswitch':
-      return `https://metamask.coinswitch.co/?address=${address}&to=eth`
-    case 'coinbase':
-      return `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=CFX`
-    case 'metamask-faucet':
-      return 'https://faucet.metamask.io/'
-    case 'rinkeby-faucet':
-      return 'https://www.rinkeby.io/'
-    case 'kovan-faucet':
-      return 'https://github.com/kovan-testnet/faucet'
-    case 'goerli-faucet':
-      return 'https://goerli-faucet.slock.it/'
     default:
       throw new Error(`Unknown cryptocurrency exchange or faucet: "${service}"`)
   }
@@ -48,9 +41,11 @@ function getBuyEthUrl ({ network, amount, address, service, type }) {
 
 function getDefaultServiceForNetwork (network) {
   switch (network) {
-    case '0':
+    case '1029':
       return 'conflux-main-faucet'
-    case '1':
+    case '2':
+      return 'conflux-main-faucet'
+    case '0':
       return 'conflux-test-faucet'
     default:
       return

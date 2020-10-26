@@ -5,26 +5,9 @@ import createId from '../lib/random-id'
 import { bnToHex } from '../lib/util'
 // import fetchWithTimeout from '../lib/fetch-with-timeout'
 
-import {
-  MAINNET_CODE,
-  TESTNET_CODE,
-  // ROPSTEN_CODE,
-  // RINKEBY_CODE,
-  // KOVAN_CODE,
-  // GOERLI_CODE,
-  // ROPSTEN,
-  // RINKEBY,
-  // KOVAN,
-  // GOERLI,
-  MAINNET,
-  TESTNET,
-} from './network/enums'
+import { MAINNET_CODE, TESTNET_CODE, MAINNET, TESTNET } from './network/enums'
 
 const networkTypeToIdMap = {
-  // [ROPSTEN]: String(ROPSTEN_CODE),
-  // [RINKEBY]: String(RINKEBY_CODE),
-  // [KOVAN]: String(KOVAN_CODE),
-  // [GOERLI]: String(GOERLI_CODE),
   [MAINNET]: String(MAINNET_CODE),
   [TESTNET]: String(TESTNET_CODE),
 }
@@ -53,10 +36,6 @@ class IncomingTransactionsController {
       {
         incomingTransactions: {},
         incomingTxLastFetchedBlocksByNetwork: {
-          // [ROPSTEN]: null,
-          // [RINKEBY]: null,
-          // [KOVAN]: null,
-          // [GOERLI]: null,
           [MAINNET]: null,
           [TESTNET]: null,
         },
@@ -210,7 +189,7 @@ class IncomingTransactionsController {
   }
 
   async _fetchTxs (address, fromBlock, networkType) {
-    // const etherscanSubdomain = 'api'
+    // const confluxscanSubdomain = 'v1'
     const currentNetworkID = networkTypeToIdMap[networkType]
     // TODO: use confluxscan api
     // const supportedNetworkTypes = [/* ROPSTEN, RINKEBY, KOVAN, GOERLI, */ TESTNET, MAINNET]
@@ -220,9 +199,9 @@ class IncomingTransactionsController {
     // }
 
     // if (networkType !== MAINNET) {
-    //   etherscanSubdomain = `api-${networkType}`
+    //   confluxscanSubdomain = `api-${networkType}`
     // }
-    // const apiUrl = `https://${etherscanSubdomain}.etherscan.io`
+    // const apiUrl = `https://${confluxscanSubdomain}.etherscan.io`
     // let url = `${apiUrl}/api?module=account&action=txlist&address=${address}&tag=latest&page=1`
 
     // if (fromBlock) {

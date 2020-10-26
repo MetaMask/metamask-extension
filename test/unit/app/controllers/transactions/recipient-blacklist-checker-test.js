@@ -1,8 +1,6 @@
 import assert from 'assert'
 import recipientBlackListChecker from '../../../../../app/scripts/controllers/transactions/lib/recipient-blacklist-checker'
-import {
-  TESTNET_CODE,
-} from '../../../../../app/scripts/controllers/network/enums'
+import { TESTNET_CODE } from '../../../../../app/scripts/controllers/network/enums'
 import KeyringController from 'cfx-keyring-controller'
 
 describe('Recipient Blacklist Checker', function () {
@@ -35,7 +33,7 @@ describe('Recipient Blacklist Checker', function () {
     })
 
     it('fails on mainnet', function () {
-      const mainnetId = 1
+      const mainnetId = 2
       let callCount = 0
       publicAccounts.forEach((account) => {
         try {
@@ -50,7 +48,7 @@ describe('Recipient Blacklist Checker', function () {
     })
 
     it('fails for public account - uppercase', function () {
-      const mainnetId = 1
+      const mainnetId = 2
       const publicAccount = '0X1CDC8DCCFB521BD409E6C5326848CB128B223A81'
       try {
         recipientBlackListChecker.checkAccount(mainnetId, publicAccount)
@@ -61,7 +59,7 @@ describe('Recipient Blacklist Checker', function () {
     })
 
     it('fails for public account - lowercase', async function () {
-      const mainnetId = 1
+      const mainnetId = 2
       const publicAccount = '0x1cdc8dccfb521bd409e6c5326848cb128b223a81'
       try {
         await recipientBlackListChecker.checkAccount(mainnetId, publicAccount)

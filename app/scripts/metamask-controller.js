@@ -59,6 +59,7 @@ import log from 'loglevel'
 import TrezorKeyring from 'eth-trezor-keyring'
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring'
 import EthQuery from './eth-query'
+import { getStatus } from './controllers/network/util'
 
 import nanoid from 'nanoid'
 import {
@@ -69,7 +70,6 @@ import {
 } from 'gaba'
 
 import backEndMetaMetricsEvent from './lib/backend-metametrics'
-import { getStatus } from './controllers/network/util'
 
 export default class MetamaskController extends EventEmitter {
   /**
@@ -451,6 +451,26 @@ export default class MetamaskController extends EventEmitter {
   getState () {
     const vault = this.keyringController.store.getState().vault
     const isInitialized = !!vault
+    {
+      const MAINNET_LANCHED =
+        new Date().getTime() >
+        new Date(
+          'Thu Oct 29 2020 00:10:00 GMT+0800 (China Standard Time)'
+        ).getTime()
+      if (
+        MAINNET_LANCHED &&
+        !this.preferencesController.store.getState().tethysReset
+      ) {
+        getStatus('http://wallet-main.confluxrpc.org').then(({ chainId }) => {
+          if (chainId && chainId !== '0x405') {
+            this.txController.txStateManager._saveTxList([])
+            this.networkController.resetConnection()
+          } else {
+            this.preferencesController.store.updateState({ tethysReset: true })
+          }
+        })
+      }
+    }
 
     return {
       ...{ isInitialized },
