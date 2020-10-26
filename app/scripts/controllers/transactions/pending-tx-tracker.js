@@ -231,7 +231,7 @@ class PendingTransactionTracker extends EventEmitter {
         const risk = await this.query.getConfirmationRiskByHash(
           transactionReceipt.blockHash
         )
-        if (risk && parseRiskByte(risk).greaterThanOrEqualTo(1e-8)) {
+        if (risk && parseRiskByte(risk).lessThanOrEqualTo(1e-8)) {
           this.emit('tx:confirmed', txId, transactionReceipt)
         } else {
           this.emit('tx:executed', txId, transactionReceipt)
