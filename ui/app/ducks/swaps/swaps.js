@@ -402,8 +402,11 @@ export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage, me
     } catch (e) {
       // A newer swap request is running, so simply bail and let the newer request respond
       if (e.message === SWAPS_FETCH_ORDER_CONFLICT) {
+        log.debug(`Swap fetch order conflict detected; ignoring older request`)
         return
       }
+      // TODO: Check for any errors we should expect to occur in production, and report others to Sentry
+      log.error(`Error fetching quotes: `, e)
       dispatch(setSwapsErrorKey(ERROR_FETCHING_QUOTES))
     }
 
