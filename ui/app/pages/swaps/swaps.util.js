@@ -35,13 +35,18 @@ const getBaseApi = function (type) {
 
 const validHex = (string) => Boolean(string?.match(/^0x[a-f0-9]+$/u))
 const truthyString = (string) => Boolean(string?.length)
+const stringIsValidDecimalNumber = (string) => !isNaN(string) && string.match(/^[.0-9]+$/u) && !isNaN(parseFloat(string))
 const truthyDigitString = (string) => truthyString(string) && Boolean(string.match(/^\d+$/u))
 
 const QUOTE_VALIDATORS = [
   {
     property: 'trade',
     type: 'object',
-    validator: (trade) => trade && validHex(trade.data) && isValidAddress(trade.to) && isValidAddress(trade.from) && truthyString(trade.value),
+    validator: (trade) => trade &&
+      validHex(trade.data) &&
+      isValidAddress(trade.to) &&
+      isValidAddress(trade.from) &&
+      stringIsValidDecimalNumber(trade.value),
   },
   {
     property: 'approvalNeeded',
@@ -59,12 +64,12 @@ const QUOTE_VALIDATORS = [
   {
     property: 'sourceAmount',
     type: 'string',
-    validator: truthyDigitString,
+    validator: stringIsValidDecimalNumber,
   },
   {
     property: 'destinationAmount',
     type: 'string',
-    validator: truthyDigitString,
+    validator: stringIsValidDecimalNumber,
   },
   {
     property: 'sourceToken',
