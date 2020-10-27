@@ -65,7 +65,7 @@ function runInChildProcess (task) {
     await new Promise((resolve, reject) => {
       childProcess.once('close', (errCode) => {
         if (errCode !== 0) {
-          reject(new Error(`MetaMask build: runInChildProcess for task "${taskName}" encountered an error`))
+          reject(new Error(`MetaMask build: runInChildProcess for task "${taskName}" encountered an error ${errCode}`))
           return
         }
         resolve()
