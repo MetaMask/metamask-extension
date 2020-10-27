@@ -17,7 +17,7 @@
     "dapp-forwarder": "concurrently -k -n forwarder,dapp -p '[{time}][{name}]' 'yarn forwarder' 'yarn dapp'",
     "sendwithprivatedapp": "node development/static-server.js test/e2e/send-eth-with-private-key-test --port 8080",
     "test:unit": "mocha --exit --require test/env.js --require test/setup.js --recursive \"test/unit/**/*.js\" \"ui/app/**/*.test.js\"",
-    "test:unit:global": "mocha --exit --require test/env.js --require test/setup.js --recursive mocha test/unit-global/*",
+    "test:unit:global": "mocha --exit --require test/env.js --require test/setup.js --recursive test/unit-global/*",
     "test:unit:lax": "mocha --exit --require test/env.js --require test/setup.js --recursive \"test/unit/{,**/!(permissions)}/*.js\" \"ui/app/**/*.test.js\"",
     "test:unit:strict": "mocha --exit --require test/env.js --require test/setup.js --recursive \"test/unit/**/permissions/*.js\"",
     "test:unit:path": "mocha --exit --require test/env.js --require test/setup.js --recursive",
