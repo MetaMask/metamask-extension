@@ -1,8 +1,21 @@
 # Changelog
 
 ## Current Develop Branch
+- [#9612](https://github.com/MetaMask/metamask-extension/pull/9612): Update main-quote-summary designs/styles
 
 ## 8.1.3 Mon Oct 26 2020
+- [#9642](https://github.com/MetaMask/metamask-extension/pull/9642) Prevent excessive overflow from swap dropdowns
+- [#9658](https://github.com/MetaMask/metamask-extension/pull/9658): Fix sorting Quote Source column of quote sort list
+- [#9667](https://github.com/MetaMask/metamask-extension/pull/9667): Fix adding contact with QR code
+- [#9674](https://github.com/MetaMask/metamask-extension/pull/9674): Fix ENS resolution of `.eth` URLs with query strings
+- [#9691](https://github.com/MetaMask/metamask-extension/pull/9691): Bump @metamask/inpage-provider from 6.1.0 to 6.3.0
+- [#9700](https://github.com/MetaMask/metamask-extension/pull/9700): Provide image sizing so there's no jump when opening the swaps token search
+- [#9568](https://github.com/MetaMask/metamask-extension/pull/9568): Add ses lockdown to build system
+- [#9705](https://github.com/MetaMask/metamask-extension/pull/9705): Prevent memory leak from selected account copy tooltip
+- [#9671](https://github.com/MetaMask/metamask-extension/pull/9671): Prevent old fetches from polluting the swap state
+- [#9702](https://github.com/MetaMask/metamask-extension/pull/9702): Keyboard navigation for swaps dropdowns
+- [#9646](https://github.com/MetaMask/metamask-extension/pull/9646): Switch from Matomo to Segment
+- [#9726](https://github.com/MetaMask/metamask-extension/pull/9726): Fix fetching of swap quotes when initial network was testnet
 
 ## 8.1.2 Mon Oct 19 2020
 - [#9608](https://github.com/MetaMask/metamask-extension/pull/9608): Ensure QR code scanner works
