@@ -32,7 +32,7 @@ const mapStateToProps = (state) => {
       rpcUrl: rpc.rpcUrl,
       chainId: rpc.chainId,
       ticker: rpc.ticker,
-      blockExplorerUrl: (rpc.rpcPrefs && rpc.rpcPrefs.blockExplorerUrl) || '',
+      blockExplorerUrl: (rpc.rpcPrefs?.blockExplorerUrl) || '',
     }
   })
 

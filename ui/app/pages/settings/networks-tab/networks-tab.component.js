@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import { SETTINGS_ROUTE } from '../../../helpers/constants/routes'
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
@@ -20,7 +19,6 @@ export default class NetworksTab extends PureComponent {
 
   static propTypes = {
     editRpc: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
     networkIsSelected: PropTypes.bool,
     networksTabIsInAddMode: PropTypes.bool,
@@ -50,25 +48,12 @@ export default class NetworksTab extends PureComponent {
 
   renderSubHeader () {
     const {
-      networkIsSelected,
       setSelectedSettingsRpcUrl,
       setNetworksTabAddMode,
-      networksTabIsInAddMode,
-      networkDefaultedToProvider,
     } = this.props
 
     return (
       <div className="settings-page__sub-header">
-        <div
-          className="networks-tab__back-button"
-          onClick={(networkIsSelected && !networkDefaultedToProvider) || networksTabIsInAddMode
-            ? () => {
-              setNetworksTabAddMode(false)
-              setSelectedSettingsRpcUrl('')
-            }
-            : () => this.props.history.push(SETTINGS_ROUTE)
-          }
-        />
         <span className="settings-page__sub-header-text">{ this.context.t('networks') }</span>
         <div className="networks-tab__add-network-header-button-wrapper">
           <Button

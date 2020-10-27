@@ -14,27 +14,29 @@ import {
   CONTACT_LIST_ROUTE,
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
-  CONTACT_VIEW_ROUTE,
   CONTACT_MY_ACCOUNTS_ROUTE,
   CONTACT_MY_ACCOUNTS_EDIT_ROUTE,
   CONTACT_MY_ACCOUNTS_VIEW_ROUTE,
+  CONTACT_VIEW_ROUTE,
   GENERAL_ROUTE,
+  NETWORKS_ROUTE,
   SECURITY_ROUTE,
   SETTINGS_ROUTE,
 } from '../../helpers/constants/routes'
 import Settings from './settings.component'
 
 const ROUTES_TO_I18N_KEYS = {
-  [GENERAL_ROUTE]: 'general',
-  [ADVANCED_ROUTE]: 'advanced',
-  [SECURITY_ROUTE]: 'securityAndPrivacy',
   [ABOUT_US_ROUTE]: 'about',
+  [ADVANCED_ROUTE]: 'advanced',
   [ALERTS_ROUTE]: 'alerts',
-  [CONTACT_LIST_ROUTE]: 'contacts',
+  [GENERAL_ROUTE]: 'general',
   [CONTACT_ADD_ROUTE]: 'newContact',
   [CONTACT_EDIT_ROUTE]: 'editContact',
-  [CONTACT_VIEW_ROUTE]: 'viewContact',
+  [CONTACT_LIST_ROUTE]: 'contacts',
   [CONTACT_MY_ACCOUNTS_ROUTE]: 'myAccounts',
+  [CONTACT_VIEW_ROUTE]: 'viewContact',
+  [NETWORKS_ROUTE]: 'networks',
+  [SECURITY_ROUTE]: 'securityAndPrivacy',
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -51,7 +53,7 @@ const mapStateToProps = (state, ownProps) => {
   const isPopupView = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
   const pathnameI18nKey = ROUTES_TO_I18N_KEYS[pathname]
 
-  let backRoute
+  let backRoute = SETTINGS_ROUTE
   if (isMyAccountsPage && isAddressEntryPage) {
     backRoute = CONTACT_MY_ACCOUNTS_ROUTE
   } else if (isEditContactPage) {
@@ -60,8 +62,6 @@ const mapStateToProps = (state, ownProps) => {
     backRoute = `${CONTACT_MY_ACCOUNTS_VIEW_ROUTE}/${pathNameTail}`
   } else if (isAddressEntryPage || isMyAccountsPage || isAddContactPage) {
     backRoute = CONTACT_LIST_ROUTE
-  } else {
-    backRoute = SETTINGS_ROUTE
   }
 
   let initialBreadCrumbRoute
