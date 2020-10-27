@@ -270,7 +270,7 @@
     "message": "正在连接到 Conflux Testnet"
   },
   "connectingToLocalhost": {
-    "message": "正在连接 Localhost 12539"
+    "message": "正在连接 Localhost 12537"
   },
   "continueToWyre": {
     "message": "继续前往 Wyre"
@@ -734,7 +734,7 @@
     "message": "加载更多"
   },
   "localhost": {
-    "message": "Localhost 12539"
+    "message": "Localhost 12537"
   },
   "lock": {
     "message": "锁定"

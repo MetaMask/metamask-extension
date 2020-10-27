@@ -21,7 +21,7 @@ import { TESTNET, MAINNET, LOCALHOST } from './enums'
 // const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
 // TODO: add main net endpoint
 
-// const CONFLUX_MAINNET = 'http://localhost:12539/'
+// const CONFLUX_MAINNET = 'http://localhost:12537/'
 const CONFLUX_MAINNET = 'http://wallet-main.confluxrpc.org'
 const CONFLUX_TEST_NET = 'http://wallet-test.confluxrpc.org'
 

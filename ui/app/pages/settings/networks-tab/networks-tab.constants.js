@@ -19,10 +19,10 @@ const defaultNetworksData = [
     labelKey: 'localhost',
     iconColor: 'white',
     providerType: 'localhost',
-    rpcUrl: 'http://localhost:12539/',
+    rpcUrl: 'http://localhost:12537/',
     // border: '1px solid #6A737D',
     ticker: 'CFX',
-    blockExplorerUrl: 'https://confluxscan.io',
+    blockExplorerUrl: '',
   },
 ]
 

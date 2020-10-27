@@ -1108,10 +1108,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@cfxjs/fullnode@^1.2.0-rc.1":
-  version "1.2.0-rc.1"
-  resolved "https://registry.yarnpkg.com/@cfxjs/fullnode/-/fullnode-1.2.0-rc.1.tgz#03027c9d1718dd3039515cac3d95dc4929dd2421"
-  integrity sha512-K+v0Bp9wJ0pguoZlliUYfBhJ8EZiM7dxkXc4i7o3p2pvGKtMtCiB1+QMgZLS9PF9rOkbyfo6tbqCHOoxXGAnYw==
+"@cfxjs/fullnode@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@cfxjs/fullnode/-/fullnode-1.2.1.tgz#3d9b3c237c548879c6c28f163642f31504fca5fd"
+  integrity sha512-1FMwm9SBxSJya0f5nVoh2MK83VYKhdvKrbwxJ2ws2ECHJ6wWmt6WrooY51iKVatH1gKY7uDCBNeSPPlcOB3wpA==
   dependencies:
     cfx-util ">=0.0.2"
     cross-port-killer "^1.2.1"

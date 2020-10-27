@@ -95,7 +95,7 @@ class NetworkDropdown extends Component {
     }
 
     switch (rpcTarget) {
-      case 'http://localhost:12539':
+      case 'http://localhost:12537':
         return null
 
       default:
@@ -138,7 +138,7 @@ class NetworkDropdown extends Component {
       const currentRpcTarget =
         provider.type === 'rpc' && rpc === provider.rpcTarget
 
-      if (rpc === 'http://localhost:12539' || currentRpcTarget) {
+      if (rpc === 'http://localhost:12537' || currentRpcTarget) {
         return null
       } else {
         const chainId = entry.chainId
