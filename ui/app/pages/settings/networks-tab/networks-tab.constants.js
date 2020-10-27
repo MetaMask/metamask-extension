@@ -13,7 +13,7 @@ const defaultNetworksData = [
     providerType: 'testnet',
     rpcUrl: 'http://wallet-test.confluxrpc.org',
     ticker: 'CFX',
-    blockExplorerUrl: 'https://confluxscan.io',
+    blockExplorerUrl: 'https://testnet.confluxscan.io',
   },
   {
     labelKey: 'localhost',
