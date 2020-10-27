@@ -9,4 +9,5 @@ updates:
       interval: "daily"
     allow:
       - dependency-name: "@metamask/*"
+      - dependency-name: "eth-contract-metadata"
     versioning-strategy: "lockfile-only"
