@@ -10513,9 +10513,9 @@ eth-block-tracker@^4.4.2:
     safe-event-emitter "^1.0.1"
 
 eth-contract-metadata@^1.11.0, eth-contract-metadata@^1.16.0:
-  version "1.16.0"
-  resolved "https://registry.yarnpkg.com/eth-contract-metadata/-/eth-contract-metadata-1.16.0.tgz#a7d643795ba5318f86ce1aae9c4522888aa92d78"
-  integrity sha512-WnwYkkIl0RbDQgnV/4V6E8a84fVkP/qmYCUde1UKLQekOFeZXhs/7KgPBAWdZ7otJRo0bPQf4UjAOfESAV3gtw==
+  version "1.17.0"
+  resolved "https://registry.yarnpkg.com/eth-contract-metadata/-/eth-contract-metadata-1.17.0.tgz#96d4b056ac9a7175eeba091dbabd0713cfd4c703"
+  integrity sha512-vlw4OiW3+9J3kJfEtPCyiSW9fhdWTqrAhXcvdMY2CevGxbhvOd5Lz59DeWerSTV3IoSXttghDurPA76dAeTV+A==
 
 eth-ens-namehash@2.0.8, eth-ens-namehash@^2.0.8:
   version "2.0.8"
