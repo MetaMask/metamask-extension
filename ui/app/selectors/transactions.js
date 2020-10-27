@@ -232,19 +232,12 @@ export const nonceSortedTransactionsSelector = createSelector(
         insertTransactionByTime(nonceProps.transactions, transaction)
 
         const { primaryTransaction: { time: primaryTxTime = 0 } = {} } = nonceProps
-        if (status in PRIORITY_STATUS_HASH) {
-          if (status === CONFIRMED_STATUS || txTime > primaryTxTime) {
-            nonceProps.primaryTransaction = transaction
-          }
-        }
+        const transactionConfirmedOrNewer = status === CONFIRMED_STATUS || txTime > primaryTxTime
+        const previousPrimaryIsFailed = nonceProps.primaryTransaction?.status === FAILED_STATUS || nonceProps.primaryTransaction?.txReceipt?.status === '0x0'
 
-        // If the primary transaction is failed or this transaction newer, assign as primary
-        if (
-          (nonceProps.primaryTransaction.status === FAILED_STATUS && nonceProps.primaryTransaction?.txReceipt?.status === '0x0' && transaction.status !== FAILED_STATUS) ||
-          txTime > primaryTxTime
-          ) {
-          console.warn("Reassigning primary transaction!", transaction)
+        if ((status in PRIORITY_STATUS_HASH || previousPrimaryIsFailed) && transactionConfirmedOrNewer) {
           nonceProps.primaryTransaction = transaction
+          console.warn("Reassigning primary transaction! New: ", transaction, "; Old: ", nonceProps.primaryTransaction)
         }
         else {
           console.info("*Not* reassigning primary transaction", transaction)
