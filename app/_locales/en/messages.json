@@ -304,7 +304,7 @@
     "message": "Connecting to Conflux Test Network"
   },
   "connectingToLocalhost": {
-    "message": "Connecting to Localhost 12539"
+    "message": "Connecting to Localhost 12537"
   },
   "contacts": {
     "message": "Contacts"
@@ -861,7 +861,7 @@
     "message": "Load More"
   },
   "localhost": {
-    "message": "Localhost 12539"
+    "message": "Localhost 12537"
   },
   "lock": {
     "message": "Lock"

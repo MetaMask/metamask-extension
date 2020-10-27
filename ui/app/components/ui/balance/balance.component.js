@@ -52,6 +52,11 @@ export default class Balance extends PureComponent {
       )
     }
 
+    const MAINNET_LANCHED =
+      new Date().getTime() >
+      new Date(
+        'Thu Oct 29 2020 00:10:00 GMT+0800 (China Standard Time)'
+      ).getTime()
     return (
       <div
         className="flex-column balance-display"
@@ -67,19 +72,21 @@ export default class Balance extends PureComponent {
           type={PRIMARY}
           ethNumberOfDecimals={6}
         />
-        <Tooltip position="bottom" title={t('cfxTestWarning')}>
-          <div
-            style={{
-              display: 'flex',
-              marginLeft: '4px',
-            }}
-          >
-            <InfoCircle
-              color={selectedTokenAddress ? '#ffffff' : undefined}
-              width="16"
-            />
-          </div>
-        </Tooltip>
+        {!MAINNET_LANCHED && (
+          <Tooltip position="bottom" title={t('cfxTestWarning')}>
+            <div
+              style={{
+                display: 'flex',
+                marginLeft: '4px',
+              }}
+            >
+              <InfoCircle
+                color={selectedTokenAddress ? '#ffffff' : undefined}
+                width="16"
+              />
+            </div>
+          </Tooltip>
+        )}
         {showFiat && (
           <UserPreferencedCurrencyDisplay
             value={balanceValue}

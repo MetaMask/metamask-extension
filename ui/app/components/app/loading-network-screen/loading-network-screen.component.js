@@ -44,7 +44,15 @@ export default class LoadingNetworkScreen extends PureComponent {
     let name
 
     if (providerName === 'mainnet') {
+      const MAINNET_LANCHED =
+        new Date().getTime() >
+        new Date(
+          'Thu Oct 29 2020 00:10:00 GMT+0800 (China Standard Time)'
+        ).getTime()
       name = this.context.t('connectingToMainnet')
+      if (MAINNET_LANCHED) {
+        name = name.replace('Oceanus', 'Tethys')
+      }
     } else if (providerName === 'testnet') {
       name = this.context.t('connectingToTestnet')
     } else if (providerName === 'localhost') {

@@ -11,7 +11,12 @@ export default {
   @param {string} account
 */
 function checkAccount (networkId, account) {
-  const mainnetId = 1
+  const MAINNET_LANCHED =
+    new Date().getTime() >
+    new Date(
+      'Thu Oct 29 2020 00:10:00 GMT+0800 (China Standard Time)'
+    ).getTime()
+  const mainnetId = MAINNET_LANCHED ? 1029 : 2
   if (networkId !== mainnetId) {
     return
   }

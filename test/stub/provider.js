@@ -45,7 +45,7 @@ export function providerFromEngine (engine) {
 
 export function createTestProviderTools (opts = {}) {
   const networkClient = createJsonRpcClient({
-    rpcUrl: 'http://localhost:12539',
+    rpcUrl: 'http://localhost:12537',
   })
   const engine = createEngineForTestData()
   // handle provided hooks

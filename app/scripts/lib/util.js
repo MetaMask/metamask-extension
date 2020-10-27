@@ -2,6 +2,7 @@ import extension from 'extensionizer'
 import * as ethUtil from 'cfx-util'
 import assert from 'assert'
 import BN from 'bn.js'
+import BigNumber from 'bignumber.js'
 
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -165,6 +166,13 @@ function checkForError () {
   }
   // repair incomplete error object (eg chromium v77)
   return new Error(lastError.message)
+}
+
+const MAX_UINT_256 = new BigNumber(
+  '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
+)
+export function parseRiskByte (byte) {
+  return new BigNumber(byte).div(MAX_UINT_256)
 }
 
 export {

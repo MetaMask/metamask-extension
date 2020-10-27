@@ -1,7 +1,7 @@
 import EventEmitter from 'safe-event-emitter'
-import Web3 from '../ConfluxWeb/index'
 import log from 'loglevel'
 import EthQuery from '../../ethjs-query'
+import { parseRiskByte } from '../../lib/util'
 
 /**
 
@@ -25,7 +25,6 @@ class PendingTransactionTracker extends EventEmitter {
     super()
     this.droppedBuffer = {}
     this.query = new EthQuery(config.provider)
-    this.web3 = new Web3(config.provider)
     this.nonceTracker = config.nonceTracker
     this.getPendingTransactions = config.getPendingTransactions
     this.getCompletedTransactions = config.getCompletedTransactions
@@ -229,10 +228,10 @@ class PendingTransactionTracker extends EventEmitter {
         outcomeStatusErr.name = 'OutcomeStatusErr'
         this.emit('tx:failed', txId, outcomeStatusErr)
       } else if (epochNumber) {
-        const risk = await this.web3.getConfirmationRiskByHash(
+        const risk = await this.query.getConfirmationRiskByHash(
           transactionReceipt.blockHash
         )
-        if (risk && risk <= 1e-8) {
+        if (risk && parseRiskByte(risk).lessThanOrEqualTo(1e-8)) {
           this.emit('tx:confirmed', txId, transactionReceipt)
         } else {
           this.emit('tx:executed', txId, transactionReceipt)

@@ -9,8 +9,12 @@ const PLATFORM_EDGE = 'Edge'
 const PLATFORM_FIREFOX = 'Firefox'
 const PLATFORM_OPERA = 'Opera'
 
-const MAINNET_CHAIN_ID = '0x0'
-const TESTNET_CHAIN_ID = '0x1'
+// TODO: afterml
+const MAINNET_LANCHED =
+  new Date().getTime() >
+  new Date('Thu Oct 29 2020 00:10:00 GMT+0800 (China Standard Time)').getTime()
+const MAINNET_CHAIN_ID = MAINNET_LANCHED ? '0x405' : '0x2'
+const TESTNET_CHAIN_ID = '0x0'
 // const ROPSTEN_CHAIN_ID = '0x3'
 // const RINKEBY_CHAIN_ID = '0x4'
 // const KOVAN_CHAIN_ID = '0x2a'

@@ -375,7 +375,15 @@ class Routes extends Component {
     let name
 
     if (providerName === 'mainnet') {
-      name = this.context.t('connectingToMainnet')
+      name = this.context.t('connectingToMainnet').replace('Oceanus', 'Tethys')
+      const MAINNET_LANCHED =
+        new Date().getTime() >
+        new Date(
+          'Thu Oct 29 2020 00:10:00 GMT+0800 (China Standard Time)'
+        ).getTime()
+      if (MAINNET_LANCHED) {
+        name = name.replace('Oceanus', 'Tethys')
+      }
     } else if (providerName === 'testnet') {
       name = this.context.t('connectingToTestnet')
     } else {
@@ -392,7 +400,15 @@ class Routes extends Component {
     let name
 
     if (providerName === 'mainnet') {
+      const MAINNET_LANCHED =
+        new Date().getTime() >
+        new Date(
+          'Thu Oct 29 2020 00:10:00 GMT+0800 (China Standard Time)'
+        ).getTime()
       name = this.context.t('mainnet')
+      if (MAINNET_LANCHED) {
+        name = name.replace('Oceanus', 'Tethys')
+      }
     } else if (providerName === 'testnet') {
       name = this.context.t('testnet')
     } else if (providerName === 'localhost') {

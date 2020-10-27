@@ -51,7 +51,7 @@ describe('NetworkController', function () {
       it('should update the network', function () {
         networkController.setNetworkState(1, 'rpc')
         const networkState = networkController.getNetworkState()
-        assert.equal(networkState, 1, 'network is 1')
+        assert.equal(networkState, 2999, 'network is 2999')
       })
     })
 
@@ -73,7 +73,7 @@ describe('NetworkController', function () {
     it('getNetworkDisplayName should return the correct network name', function () {
       const tests = [
         {
-          input: 1,
+          input: 0,
           expected: 'Conflux Test Network',
         },
         // {
