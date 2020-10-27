@@ -279,13 +279,12 @@ export function getRenderableNetworkFeesForQuote (
   const totalGasLimitForCalculation = (new BigNumber(tradeGas || '0x0', 16)).plus(approveGas || '0x0', 16).toString(16)
   const gasTotalInWeiHex = calcGasTotal(totalGasLimitForCalculation, gasPrice)
 
-  const totalWeiCost = new BigNumber(gasTotalInWeiHex, 16)
-    .plus(tradeValue, 16)
+  const nonGasFee = new BigNumber(tradeValue, 16)
     .minus(sourceSymbol === 'ETH' ? sourceAmount : 0, 10)
     .toString(16)
 
-  const nonGasFee = new BigNumber(totalWeiCost, 16)
-    .minus(gasTotalInWeiHex, 16)
+  const totalWeiCost = new BigNumber(gasTotalInWeiHex, 16)
+    .plus(nonGasFee, 16)
     .toString(16)
 
   const ethFee = getValueFromWeiHex({
