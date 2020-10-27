@@ -156,6 +156,57 @@ function validateData (validators, object, urlUsed) {
   })
 }
 
+/**
+ * Defines the shape for the quote.trade properties that are used in swaps. This object resembles a valid transaction object
+ * that can be published to the blockchain, except that it does not include a gasPrice.
+ * @typedef {Object} SwapsQuoteTrade
+ * @property {string} data - A hex string containing the data to include in the transaction
+ * @property {string} to - A hex address of the tx recipient address
+ * @property {string} from - A hex address of the tx sender address
+ * @property {string} gas - A hex representation of the gas value for the transaction
+ * @property {string} value - A hex representation of the value to be sent with the transaction
+ */
+
+ /**
+  * Defines the shape for objects that contain metadata about swaps tokens.
+  * @typedef {Object} SwapsTokenInfoObject
+  * @property {string} address - A hex string containing the contract address of the token
+  * @property {string} symbol - A string of letters that identifies the token
+  * @property {string} decimals - The token's decimals. Determines the maximum exponent of ten into which the token can be divided
+  * @property {string} iconUrl - A url at which an icon representing the token is hosted
+  */
+
+/**
+ * Defines the shape for the SwapsQuote objects used in swaps
+ * @typedef {Object} SwapsQuote
+ * @property {string} data - A hex string containing the data to include in the transaction
+ * @property {string} to - A hex address of the tx recipient address
+ * @property {string} from - A hex address of the tx sender address
+ * @property {string} gas - A hex representation of the gas value for the transaction
+ * @property {string} gasPrice - A hex representation of the gas price for the transaction
+ * @property {SwapsQuoteTrade} trade - txParams, except for gas price, of the swap transaction that would execute this quote
+ * @property {SwapsQuoteTrade} approvalNeeded - txParams, except for gas price, of the transaction that would approve the
+ * swaps contract to transfer the current accounts tokens
+ * @property {string} sourceAmount - A decimal number, denominated in WEI, representing the amount of tokens that will be sent
+ * @property {string} destinationAmount -  A decimal number, denominated in WEI, representing the approximate amount of tokens that will be received
+ * @property {string} error - An error message describing why a trade is not possible for the aggregator
+ * @property {string} sourceToken - A hex string containing the contract address of the token to be sent
+ * @property {string} destinationToken - A hex string containing the contract address of the token to be received
+ * @property {number} maxGas - An estimate of the maximum gas that will have to be spent for this quote
+ * @property {number} averageGas - An estimate of the amount of gas that will be likely to be spent for this quote
+ * @property {number} estimatedRefund - An estimate of the amount of gas from the estimated gas limit that will be refunded to the user
+ * @property {number} fetchTime - The amount of time it took to retrieve this quote, in milliseconds
+ * @property {string} aggregator - A unique identifier of the aggregator that was the source of this quote
+ * @property {string} aggType - A label that described the aggregator that was the source of this quote
+ * @property {number} fee - The fee, as a percentage, that metamask will collect if this swap is completed
+ * @property {number} slippage - The maximum amount of slippage that the user can expect for this quote
+ * @property {SwapsTokenInfoObject} sourceTokenInfo - metadata about the token to be sent
+ * @property {SwapsTokenInfoObject} destinationTokenInfo - metadata about the token to be received
+ * @property {string} gasEstimate - An estimated amount of gas, in hex WEI, for the swap transaction. As determined by eth_estimateGas
+ * @property {string} gasEstimateWithRefund - gasEstimate subtract estimatedRefund
+ * @property {boolean} isBestQuote - indicates whether the quote has the best value for the user
+ */
+
 export async function fetchTradesInfo ({
   slippage,
   sourceToken,
