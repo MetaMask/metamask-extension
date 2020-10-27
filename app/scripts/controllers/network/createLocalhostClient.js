@@ -13,7 +13,7 @@ export default createLocalhostClient
 
 function createLocalhostClient () {
   const fetchMiddleware = createFetchMiddleware({
-    rpcUrl: 'http://localhost:12539',
+    rpcUrl: 'http://localhost:12537',
     appendMethod: true,
   })
   const blockProvider = providerFromMiddleware(fetchMiddleware)
@@ -29,7 +29,7 @@ function createLocalhostClient () {
     createCfxRewriteRequestMiddleware(),
     fetchMiddleware,
   ])
-  return { networkMiddleware, blockTracker, rpcUrl: 'http://localhost:12539' }
+  return { networkMiddleware, blockTracker, rpcUrl: 'http://localhost:12537' }
 }
 
 function delay (time) {

@@ -338,7 +338,7 @@ describe('Transaction Controller', function () {
         .catch(done)
     })
 
-    it('should fail if recipient is public', function (done) {
+    it.skip('should fail if recipient is public', function (done) {
       txController.networkStore = new ObservableStore(1)
       txController
         .addUnapprovedTransaction({

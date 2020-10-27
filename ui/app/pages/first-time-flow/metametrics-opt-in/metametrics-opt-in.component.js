@@ -158,7 +158,7 @@ export default class MetaMetricsOptIn extends Component {
               <div className="metametrics-opt-in__bottom-text">
                 这些数据是汇总数据，遵循《欧盟通用数据保护条例》（EU-2016/679），这些数据都是匿名的。想要了解有关我们隐私惯例的更多信息，请点击此处查看我们的
                 <a
-                  href="https://confluxnetwork.org/policy/"
+                  href="https://confluxnetwork.org/privacy/"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -301,7 +301,7 @@ export default class MetaMetricsOptIn extends Component {
               <div className="metametrics-opt-in__bottom-text">
                 這些數據是匯總數據，遵循《歐盟通用數據保護條例》（EU-2016/679），這些數據都是匿名的。想要了解有關我們隱私慣例的更多信息，請點擊此處查看我們的
                 <a
-                  href="https://confluxnetwork.org/policy/"
+                  href="https://confluxnetwork.org/privacy/"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -445,7 +445,7 @@ export default class MetaMetricsOptIn extends Component {
               more information in relation to our privacy practices, please see
               our&nbsp;
               <a
-                href="https://confluxnetwork.org/policy/"
+                href="https://confluxnetwork.org/privacy/"
                 target="_blank"
                 rel="noopener noreferrer"
               >

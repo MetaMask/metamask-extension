@@ -375,7 +375,7 @@
     "message": "確定取消該項目的授權嗎?"
   },
   "disconnectAllAccountsQuestion": {
-    "message": "確定取消所有賬戶對所有網站的授權嗎?"
+    "message": "取消所有賬戶授權?"
   },
   "directDepositEther": {
     "message": "直接存入CFX"
@@ -713,7 +713,7 @@
     "message": "載入更多"
   },
   "localhost": {
-    "message": "Localhost 12539"
+    "message": "Localhost 12537"
   },
   "lock": {
     "message": "鎖定"

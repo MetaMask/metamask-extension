@@ -89,8 +89,14 @@ export default class DepositEtherModal extends Component {
     // const { network, toWyre, toCoinSwitch, address, toFaucet } = this.props
     const { network, address, toFaucet } = this.props
 
-    // const isTestNetwork = ['1', '2', '3', '4', '42'].find((n) => n === network)
+    const isTestNetwork = ['0'].find((n) => n === network)
     const networkName = getNetworkDisplayName(network)
+
+    const MAINNET_LANCHED =
+      new Date().getTime() >
+      new Date(
+        'Thu Oct 29 2020 00:10:00 GMT+0800 (China Standard Time)'
+      ).getTime()
 
     return (
       <div className="page-container page-container--full-width page-container--full-height">
@@ -134,7 +140,7 @@ export default class DepositEtherModal extends Component {
               text: this.faucetRowText(networkName),
               buttonLabel: this.context.t('getEther'),
               onButtonClick: () => toFaucet({ network, address }),
-              /* hide: !isTestNetwork, */
+              hide: MAINNET_LANCHED ? !isTestNetwork : false,
             })}
             {/* {this.renderRow({ */}
             {/*   logo: ( */}

@@ -31,13 +31,19 @@ export default class TransactionActivityLog extends PureComponent {
   }
 
   handleActivityClick = (hash) => {
-    // const { primaryTransaction } = this.props
-    // const { metamaskNetworkId } = primaryTransaction
+    const { primaryTransaction } = this.props
+    const { metamaskNetworkId } = primaryTransaction
+    const prefix = prefixForNetwork(metamaskNetworkId)
+    const MAINNET_LANCHED =
+      new Date().getTime() >
+      new Date(
+        'Thu Oct 29 2020 00:10:00 GMT+0800 (China Standard Time)'
+      ).getTime()
+    const confluxscanUrl = `https://${prefix}confluxscan.io/${
+      MAINNET_LANCHED ? 'transaction' : 'transactiondetail'
+    }/${hash}`
 
-    // const prefix = prefixForNetwork(metamaskNetworkId)
-    const etherscanUrl = `https://confluxscan.io/transactionsdetail/${hash}`
-
-    global.platform.openWindow({ url: etherscanUrl })
+    global.platform.openWindow({ url: confluxscanUrl })
   }
 
   renderInlineRetry (index, activity) {

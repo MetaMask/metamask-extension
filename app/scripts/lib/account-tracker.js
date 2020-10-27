@@ -15,7 +15,6 @@ import Web3 from '../controllers/ConfluxWeb'
 import SINGLE_CALL_BALANCES_ABI from '../controllers/cfx-single-call-balance-checker-abi.js'
 
 import { bnToHex } from './util'
-// import { MAINNET_CODE, TESTNET_CODE } from '../controllers/network/enums'
 import { SINGLE_CALL_BALANCES_ADDRESS } from '../controllers/network/contract-addresses'
 
 class AccountTracker {
@@ -181,7 +180,6 @@ class AccountTracker {
   async _updateAccounts () {
     const accounts = this.store.getState().accounts
     const addresses = Object.keys(accounts)
-    // const currentNetwork = parseInt(this.network.getNetworkState())
 
     await this._updateAccountsViaBalanceChecker(
       addresses,

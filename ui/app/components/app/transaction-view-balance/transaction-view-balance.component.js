@@ -39,6 +39,11 @@ export default class TransactionViewBalance extends PureComponent {
     const { selectedToken, balance, balanceIsCached, showFiat } = this.props
     const { t } = this.context
 
+    const MAINNET_LANCHED =
+      new Date().getTime() >
+      new Date(
+        'Thu Oct 29 2020 00:10:00 GMT+0800 (China Standard Time)'
+      ).getTime()
     return selectedToken ? (
       <div className="transaction-view-balance__balance">
         <TokenBalance
@@ -74,16 +79,18 @@ export default class TransactionViewBalance extends PureComponent {
               ethNumberOfDecimals={6}
               hideTitle
             />
-            <Tooltip position="bottom" title={t('cfxTestWarning')}>
-              <div
-                style={{
-                  display: 'flex',
-                  marginLeft: '4px',
-                }}
-              >
-                <InfoCircle width="16" />
-              </div>
-            </Tooltip>
+            {!MAINNET_LANCHED && (
+              <Tooltip position="bottom" title={t('cfxTestWarning')}>
+                <div
+                  style={{
+                    display: 'flex',
+                    marginLeft: '4px',
+                  }}
+                >
+                  <InfoCircle width="16" />
+                </div>
+              </Tooltip>
+            )}
             {balanceIsCached ? (
               <span className="transaction-view-balance__cached-star">*</span>
             ) : null}

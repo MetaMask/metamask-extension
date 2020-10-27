@@ -262,10 +262,19 @@ export function getStatusKey (transaction) {
  * @param {Object} rpcPrefs
  */
 export function getBlockExplorerUrlForTx (networkId, hash, rpcPrefs = {}) {
+  const MAINNET_LANCHED =
+    new Date().getTime() >
+    new Date(
+      'Thu Oct 29 2020 00:10:00 GMT+0800 (China Standard Time)'
+    ).getTime()
   if (rpcPrefs.blockExplorerUrl) {
-    return `${rpcPrefs.blockExplorerUrl}/transactiondetail/${hash}`
+    return `${rpcPrefs.blockExplorerUrl}/${
+      MAINNET_LANCHED ? 'transaction' : 'transactiondetail'
+    }/${hash}`
   }
-  // eslint-disable-next-line no-unused-vars
+
   const prefix = prefixForNetwork(networkId)
-  return `https://${prefix}confluxscan.io/transactionsdetail/${hash}`
+  return `https://${prefix}confluxscan.io/${
+    MAINNET_LANCHED ? 'transaction' : 'transactionsdetail'
+  }/${hash}`
 }
