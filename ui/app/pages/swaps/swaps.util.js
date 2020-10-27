@@ -297,8 +297,8 @@ export function getRenderableGasFeesForQuote (tradeGas, approveGas, gasPrice, cu
 export function quotesToRenderableData (quotes, gasPrice, conversionRate, currentCurrency, approveGas, tokenConversionRates) {
   return Object.values(quotes).map((quote) => {
     const {
-      destinationAmount = 0,
-      sourceAmount = 0,
+      destinationAmount = '0',
+      sourceAmount = '0',
       sourceTokenInfo,
       destinationTokenInfo,
       slippage,
