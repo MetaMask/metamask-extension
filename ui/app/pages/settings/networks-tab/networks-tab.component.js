@@ -2,7 +2,10 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { SETTINGS_ROUTE } from '../../../helpers/constants/routes'
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_POPUP,
+} from '../../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 import Button from '../../../components/ui/button'
 import LockIcon from '../../../components/ui/lock-icon'
@@ -32,8 +35,13 @@ export default class NetworksTab extends PureComponent {
     networkDefaultedToProvider: PropTypes.bool,
   }
 
-  UNSAFE_componentWillMount () {
-    this.props.setSelectedSettingsRpcUrl(null)
+  state = {
+    isFullScreen: getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN,
+    isPopup: getEnvironmentType() === ENVIRONMENT_TYPE_POPUP,
+  }
+
+  componentWillUnmount () {
+    this.props.setSelectedSettingsRpcUrl('')
   }
 
   isCurrentPath (pathname) {
@@ -56,7 +64,7 @@ export default class NetworksTab extends PureComponent {
           onClick={(networkIsSelected && !networkDefaultedToProvider) || networksTabIsInAddMode
             ? () => {
               setNetworksTabAddMode(false)
-              setSelectedSettingsRpcUrl(null)
+              setSelectedSettingsRpcUrl('')
             }
             : () => this.props.history.push(SETTINGS_ROUTE)
           }
@@ -67,7 +75,7 @@ export default class NetworksTab extends PureComponent {
             type="secondary"
             onClick={(event) => {
               event.preventDefault()
-              setSelectedSettingsRpcUrl(null)
+              setSelectedSettingsRpcUrl('')
               setNetworksTabAddMode(true)
             }}
           >
@@ -167,7 +175,7 @@ export default class NetworksTab extends PureComponent {
     )
   }
 
-  renderNetworksTabContent () {
+  renderNetworksTabContent (isPopup) {
     const { t } = this.context
     const {
       setRpcTarget,
@@ -190,12 +198,12 @@ export default class NetworksTab extends PureComponent {
       providerUrl,
       networksToRender,
     } = this.props
+    const { isFullScreen } = this.state
 
-    const envIsPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-    const shouldRenderNetworkForm = networksTabIsInAddMode || !envIsPopup || (envIsPopup && !networkDefaultedToProvider)
+    const shouldRenderNetworkForm = networksTabIsInAddMode || !isPopup || (isPopup && !networkDefaultedToProvider)
 
     return (
-      <div className="networks-tab__content">
+      <>
         { this.renderNetworksList() }
         {
           shouldRenderNetworkForm
@@ -210,7 +218,7 @@ export default class NetworksTab extends PureComponent {
                 ticker={ticker}
                 onClear={() => {
                   setNetworksTabAddMode(false)
-                  setSelectedSettingsRpcUrl(null)
+                  setSelectedSettingsRpcUrl('')
                 }}
                 showConfirmDeleteNetworkModal={showConfirmDeleteNetworkModal}
                 viewOnly={viewOnly}
@@ -218,39 +226,42 @@ export default class NetworksTab extends PureComponent {
                 networksTabIsInAddMode={networksTabIsInAddMode}
                 rpcPrefs={rpcPrefs}
                 blockExplorerUrl={blockExplorerUrl}
-                cancelText={t('cancel')}
+                isFullScreen={isFullScreen}
               />
             )
             : null
         }
-      </div>
+      </>
     )
   }
 
   render () {
     const { setNetworksTabAddMode, setSelectedSettingsRpcUrl, networkIsSelected, networksTabIsInAddMode } = this.props
+    const { isFullScreen, isPopup } = this.state
 
     return (
       <div className="networks-tab__body">
-        {this.renderSubHeader()}
-        {this.renderNetworksTabContent()}
-        {!networkIsSelected && !networksTabIsInAddMode
-          ? (
-            <div className="networks-tab__add-network-button-wrapper">
-              <Button
-                type="primary"
-                onClick={(event) => {
-                  event.preventDefault()
-                  setSelectedSettingsRpcUrl(null)
-                  setNetworksTabAddMode(true)
-                }}
-              >
-                { this.context.t('addNetwork') }
-              </Button>
-            </div>
-          )
-          : null
-        }
+        {isFullScreen && this.renderSubHeader()}
+        <div className="networks-tab__content">
+          {this.renderNetworksTabContent(isPopup)}
+          {!networkIsSelected && !networksTabIsInAddMode
+            ? (
+              <div className="networks-tab__add-network-button-wrapper">
+                <Button
+                  type="primary"
+                  onClick={(event) => {
+                    event.preventDefault()
+                    setSelectedSettingsRpcUrl('')
+                    setNetworksTabAddMode(true)
+                  }}
+                >
+                  { this.context.t('addNetwork') }
+                </Button>
+              </div>
+            )
+            : null
+          }
+        </div>
       </div>
     )
   }

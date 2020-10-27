@@ -30,6 +30,7 @@ export default class NetworkForm extends PureComponent {
     blockExplorerUrl: PropTypes.string,
     rpcPrefs: PropTypes.object,
     rpcUrls: PropTypes.array,
+    isFullScreen: PropTypes.bool,
   }
 
   state = {
@@ -136,11 +137,12 @@ export default class NetworkForm extends PureComponent {
 
   onCancel = () => {
     const {
+      isFullScreen,
       networksTabIsInAddMode,
       onClear,
     } = this.props
 
-    if (networksTabIsInAddMode) {
+    if (networksTabIsInAddMode || !isFullScreen) {
       onClear()
     } else {
       this.resetForm()
@@ -327,6 +329,7 @@ export default class NetworkForm extends PureComponent {
       viewOnly,
       isCurrentRpcTarget,
       networksTabIsInAddMode,
+      isFullScreen,
     } = this.props
     const {
       networkName,
@@ -337,6 +340,8 @@ export default class NetworkForm extends PureComponent {
       errors,
     } = this.state
 
+    const deletable = !networksTabIsInAddMode && !isCurrentRpcTarget && !viewOnly
+
     const isSubmitDisabled = (
       viewOnly ||
       this.stateIsUnchanged() ||
@@ -344,7 +349,18 @@ export default class NetworkForm extends PureComponent {
       !chainId ||
       Object.values(errors).some((x) => x)
     )
-    const deletable = !networksTabIsInAddMode && !isCurrentRpcTarget && !viewOnly
+
+    // The secondary button is either the form cancel button, or a "back"
+    // button. It is never disabled in the popup, and sometimes disabled in
+    // the fullscreen UI.
+    const secondaryButtonDisabled = (
+      isFullScreen && (viewOnly || this.stateIsUnchanged())
+    )
+    const secondaryButtonMessageKey = (
+      !isFullScreen && viewOnly
+        ? 'back'
+        : 'cancel'
+    )
 
     return (
       <div className="networks-tab__network-form">
@@ -397,9 +413,9 @@ export default class NetworkForm extends PureComponent {
           <Button
             type="default"
             onClick={this.onCancel}
-            disabled={viewOnly || this.stateIsUnchanged()}
+            disabled={secondaryButtonDisabled}
           >
-            { t('cancel') }
+            {t(secondaryButtonMessageKey)}
           </Button>
           <Button
             type="secondary"

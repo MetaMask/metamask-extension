@@ -8,12 +8,9 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import { getMostRecentOverviewPage } from '../../ducks/history/history'
 
 import {
-  ADVANCED_ROUTE,
-  SECURITY_ROUTE,
-  GENERAL_ROUTE,
-  ALERTS_ROUTE,
   ABOUT_US_ROUTE,
-  SETTINGS_ROUTE,
+  ADVANCED_ROUTE,
+  ALERTS_ROUTE,
   CONTACT_LIST_ROUTE,
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
@@ -21,6 +18,9 @@ import {
   CONTACT_MY_ACCOUNTS_ROUTE,
   CONTACT_MY_ACCOUNTS_EDIT_ROUTE,
   CONTACT_MY_ACCOUNTS_VIEW_ROUTE,
+  GENERAL_ROUTE,
+  SECURITY_ROUTE,
+  SETTINGS_ROUTE,
 } from '../../helpers/constants/routes'
 import Settings from './settings.component'
 
