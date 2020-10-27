@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import { getKnownMethodData } from '../selectors/selectors'
 import { getStatusKey } from '../helpers/utils/transactions.util'
-import { camelCaseToCapitalize } from '../helpers/utils/common.util'
+import { camelCaseToCapitalize, removeDash } from '../helpers/utils/common.util'
 import { PRIMARY, SECONDARY } from '../helpers/constants/common'
 import { getTokenAddressParam } from '../helpers/utils/token-util'
 import { formatDateWithYearContext, shortenAddress, stripHttpSchemes } from '../helpers/utils/util'
@@ -143,7 +143,7 @@ export function useTransactionDisplayData (transactionGroup) {
     primarySuffix = isViewingReceivedTokenFromSwap
       ? currentAsset.symbol
       : initialTransaction.sourceTokenSymbol
-    primaryDisplayValue = swapTokenValue
+    primaryDisplayValue = removeDash(swapTokenValue)
     secondaryDisplayValue = swapTokenFiatAmount
     prefix = isViewingReceivedTokenFromSwap ? '+' : '-'
 
