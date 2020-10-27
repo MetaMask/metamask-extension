@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 0.5.0 Tue Oct 27 2020
+
 - docs: update changelog
 - fix: tx stay executed even already confirmed on scan
 - feat: new chainId
