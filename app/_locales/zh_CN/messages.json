@@ -384,7 +384,7 @@
     "message": "确定取消该项目的授权吗?"
   },
   "disconnectAllAccountsQuestion": {
-    "message": "确定取消所有账户对所有网站的授权吗?"
+    "message": "取消所有账户授权?"
   },
   "directDepositEther": {
     "message": "直接存入 CFX"
