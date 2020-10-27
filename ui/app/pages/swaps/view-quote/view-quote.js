@@ -223,7 +223,7 @@ export default function ViewQuote () {
   )
 
   const tokenCost = (new BigNumber(usedQuote.sourceAmount))
-  const ethCost = (new BigNumber(usedQuote.trade.value || 0, 10))
+  const ethCost = (new BigNumber(usedQuote.trade.value || '0x0', 16))
     .plus((new BigNumber(gasTotalInWeiHex, 16)))
 
   const insufficientTokens = (
