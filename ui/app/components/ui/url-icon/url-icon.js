@@ -7,14 +7,13 @@ export default function UrlIcon ({
   url,
   className,
   name,
-  fallbackClassName,
 }) {
   return (
     <IconWithFallback
       className={classnames('url-icon', className)}
       icon={url}
       name={name}
-      fallbackClassName={classnames('url-icon__fallback', fallbackClassName)}
+      fallbackClassName="url-icon__fallback"
     />
   )
 }
@@ -23,5 +22,4 @@ UrlIcon.propTypes = {
   url: PropTypes.string,
   className: PropTypes.string,
   name: PropTypes.string,
-  fallbackClassName: PropTypes.string,
 }
