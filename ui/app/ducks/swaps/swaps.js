@@ -23,7 +23,7 @@ import {
 import { AWAITING_SWAP_ROUTE, BUILD_QUOTE_ROUTE, LOADING_QUOTES_ROUTE, SWAPS_ERROR_ROUTE, SWAPS_MAINTENANCE_ROUTE } from '../../helpers/constants/routes'
 import { fetchSwapsFeatureLiveness } from '../../pages/swaps/swaps.util'
 import { calcGasTotal } from '../../pages/send/send.utils'
-import { decimalToHex, getValueFromWeiHex, hexMax, decGWEIToHexWEI, hexToDecimal, decEthToConvertedCurrency, hexWEIToDecGWEI } from '../../helpers/utils/conversions.util'
+import { decimalToHex, getValueFromWeiHex, hexMax, decGWEIToHexWEI, hexToDecimal, hexWEIToDecGWEI } from '../../helpers/utils/conversions.util'
 import { calcTokenAmount } from '../../helpers/utils/token-util'
 import {
   getFastPriceEstimateInHexWEI,
@@ -462,13 +462,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       conversionRate,
       numberOfDecimals: 6,
     })
-    const averageSavings = usedQuote.isBestQuote
-      ? decEthToConvertedCurrency(
-        usedQuote.savings?.total,
-        'usd',
-        conversionRate,
-      )
-      : null
+
     const swapMetaData = {
       token_from: sourceTokenInfo.symbol,
       token_from_amount: String(swapTokenValue),
@@ -484,7 +478,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       estimated_gas: estimatedGasLimit.toString(10),
       suggested_gas_price: hexWEIToDecGWEI(usedGasPrice),
       used_gas_price: hexWEIToDecGWEI(fastGasEstimate),
-      average_savings: averageSavings,
+      average_savings: usedQuote.savings?.performance,
     }
 
     const metaMetricsConfig = {
