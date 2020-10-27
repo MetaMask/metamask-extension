@@ -9,7 +9,6 @@
 - [#9667](https://github.com/MetaMask/metamask-extension/pull/9667): Fix adding contact with QR code
 - [#9674](https://github.com/MetaMask/metamask-extension/pull/9674): Fix ENS resolution of `.eth` URLs with query strings
 - [#9691](https://github.com/MetaMask/metamask-extension/pull/9691): Bump @metamask/inpage-provider from 6.1.0 to 6.3.0
-- Make the dropdown widgets for swaps keyboard accessible
 - [#9700](https://github.com/MetaMask/metamask-extension/pull/9700): Provide image sizing so there's no jump when opening the swaps token search
 - [#9568](https://github.com/MetaMask/metamask-extension/pull/9568): Add ses lockdown to build system
 - [#9705](https://github.com/MetaMask/metamask-extension/pull/9705): Prevent memory leak from selected account copy tooltip
