@@ -274,5 +274,7 @@ export function getBlockExplorerUrlForTx (networkId, hash, rpcPrefs = {}) {
   }
 
   const prefix = prefixForNetwork(networkId)
-  return `https://${prefix}confluxscan.io/{MAINNET_LANCHED ? 'transaction' : 'transactionsdetail'}/${hash}`
+  return `https://${prefix}confluxscan.io/${
+    MAINNET_LANCHED ? 'transaction' : 'transactionsdetail'
+  }/${hash}`
 }
