@@ -18,7 +18,7 @@ export default class InfoTab extends PureComponent {
         <div className="info-tab__link-header">{t('links')}</div>
         <div className="info-tab__link-item">
           <a
-            href="https://confluxnetwork.org/policy/"
+            href="https://confluxnetwork.org/privacy/"
             target="_blank"
             rel="noopener noreferrer"
           >
