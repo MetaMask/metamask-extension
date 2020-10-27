@@ -236,7 +236,7 @@ export const nonceSortedTransactionsSelector = createSelector(
         const previousPrimaryIsNetworkFailure = nonceProps.primaryTransaction.status === FAILED_STATUS && nonceProps.primaryTransaction?.txReceipt?.status !== '0x0';
         const currentTransactionIsOnChainFailure = transaction.txReceipt?.status === '0x0'
         
-        if (status === CONFIRMED_STATUS || currentTransactionIsOnChainFailure || previousPrimaryIsNetworkFailure || txTime > primaryTxTime) {
+        if (status === CONFIRMED_STATUS || currentTransactionIsOnChainFailure || previousPrimaryIsNetworkFailure || (txTime > primaryTxTime && status in PRIORITY_STATUS_HASH)) {
           nonceProps.primaryTransaction = transaction
           console.warn("Reassigning primary transaction! New: ", transaction, "; Old: ", nonceProps.primaryTransaction)
         }
