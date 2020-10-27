@@ -207,6 +207,9 @@ export const nonceSortedTransactionsSelector = createSelector(
     const orderedNonces = []
     const nonceToTransactionsMap = {}
 
+    console.log("----------------------------")
+    console.log("Transactions: ", transactions)
+
     transactions.forEach((transaction) => {
       const { txParams: { nonce } = {}, status, type, time: txTime, transactionCategory } = transaction
 
@@ -228,13 +231,23 @@ export const nonceSortedTransactionsSelector = createSelector(
         const nonceProps = nonceToTransactionsMap[nonce]
         insertTransactionByTime(nonceProps.transactions, transaction)
 
+        const { primaryTransaction: { time: primaryTxTime = 0 } = {} } = nonceProps
         if (status in PRIORITY_STATUS_HASH) {
-          // Accommodates for no primary transaction due to failure
-          const primaryTxTime = nonceProps?.primaryTransaction?.time ?? 0
-
           if (status === CONFIRMED_STATUS || txTime > primaryTxTime) {
             nonceProps.primaryTransaction = transaction
           }
+        }
+
+        // If the primary transaction is failed or this transaction newer, assign as primary
+        if (
+          (nonceProps.primaryTransaction.status === FAILED_STATUS && nonceProps.primaryTransaction?.txReceipt?.status === '0x0' && transaction.status !== FAILED_STATUS) ||
+          txTime > primaryTxTime
+          ) {
+          console.warn("Reassigning primary transaction!", transaction)
+          nonceProps.primaryTransaction = transaction
+        }
+        else {
+          console.info("*Not* reassigning primary transaction", transaction)
         }
 
         const { initialTransaction: { time: initialTxTime = 0 } = {} } = nonceProps
@@ -253,16 +266,18 @@ export const nonceSortedTransactionsSelector = createSelector(
           nonceProps.hasCancelled = true
         }
       } else {
-        let primaryTransaction = transaction
+        
+        /*
         if (transaction.status === FAILED_STATUS && Boolean(transaction?.err?.message)) {
-          primaryTransaction = null
+          
         }
+        */
 
         nonceToTransactionsMap[nonce] = {
           nonce,
           transactions: [transaction],
           initialTransaction: transaction,
-          primaryTransaction,
+          primaryTransaction: transaction,
           hasRetried: transaction.type === TRANSACTION_TYPE_RETRY,
           hasCancelled: transaction.type === TRANSACTION_TYPE_CANCEL,
         }
