@@ -409,4 +409,69 @@ describe('util', function () {
       )
     })
   })
+
+  describe('constructTxParams()', function () {
+    it('should return a new txParams object with data if there data is given', function () {
+      assert.deepEqual(
+        util.constructTxParams({
+          data: 'someData',
+          sendToken: undefined,
+          to: 'mockTo',
+          amount: 'mockAmount',
+          from: 'mockFrom',
+          gas: 'mockGas',
+          gasPrice: 'mockGasPrice',
+        }),
+        {
+          data: '0xsomeData',
+          to: '0xmockTo',
+          value: '0xmockAmount',
+          from: '0xmockFrom',
+          gas: '0xmockGas',
+          gasPrice: '0xmockGasPrice',
+        },
+      )
+    })
+
+    it('should return a new txParams object with value and to properties if there is no sendToken', function () {
+      assert.deepEqual(
+        util.constructTxParams({
+          sendToken: undefined,
+          to: 'mockTo',
+          amount: 'mockAmount',
+          from: 'mockFrom',
+          gas: 'mockGas',
+          gasPrice: 'mockGasPrice',
+        }),
+        {
+          data: undefined,
+          to: '0xmockTo',
+          value: '0xmockAmount',
+          from: '0xmockFrom',
+          gas: '0xmockGas',
+          gasPrice: '0xmockGasPrice',
+        },
+      )
+    })
+
+    it('should return a new txParams object without a to property and a 0 value if there is a sendToken', function () {
+      assert.deepEqual(
+        util.constructTxParams({
+          sendToken: { address: '0x0' },
+          to: 'mockTo',
+          amount: 'mockAmount',
+          from: 'mockFrom',
+          gas: 'mockGas',
+          gasPrice: 'mockGasPrice',
+        }),
+        {
+          data: undefined,
+          value: '0x0',
+          from: '0xmockFrom',
+          gas: '0xmockGas',
+          gasPrice: '0xmockGasPrice',
+        },
+      )
+    })
+  })
 })

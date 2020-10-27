@@ -390,9 +390,10 @@ export function addHexPrefixToObjectValues (obj) {
  * @param {string} from - A hex address of the tx sender address
  * @param {string} gas - A hex representation of the gas value for the transaction
  * @param {string} gasPrice - A hex representation of the gas price for the transaction
+ * @param {string} value - A hex number containing the value to be sent with the transaction
  * @returns {object} An object ready for submission to the blockchain, with all values appropriately hex prefixed
  */
-export function constructTxParams ({ sendToken, data, to, amount, from, gas, gasPrice }) {
+export function constructTxParams ({ sendToken, data, to, value, from, gas, gasPrice }) {
   const txParams = {
     data,
     from,
@@ -402,7 +403,7 @@ export function constructTxParams ({ sendToken, data, to, amount, from, gas, gas
   }
 
   if (!sendToken) {
-    txParams.value = amount
+    txParams.value = value
     txParams.to = to
   }
   return addHexPrefixToObjectValues(txParams)

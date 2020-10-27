@@ -182,7 +182,7 @@ export async function fetchTradesInfo ({
         to: quote.trade.to,
         from: quote.trade.from,
         data: quote.trade.data,
-        amount: decimalToHex(quote.trade.value),
+        value: decimalToHex(quote.trade.value),
         gas: decimalToHex(quote.maxGas),
       })
 

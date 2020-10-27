@@ -11,12 +11,14 @@ const actionSpies = {
   signTx: sinon.spy(),
   updateTransaction: sinon.spy(),
 }
-const utilsStubs = {
+const sendFooterUtilsStubs = {
   addressIsNew: sinon.stub().returns(true),
+  constructUpdatedTx: sinon.stub().returns('mockConstructedUpdatedTxParams'),
+}
+const utilsStubs = {
   constructTxParams: sinon.stub().returns({
     value: 'mockAmount',
   }),
-  constructUpdatedTx: sinon.stub().returns('mockConstructedUpdatedTxParams'),
 }
 
 proxyquire('../send-footer.container.js', {
@@ -46,7 +48,8 @@ proxyquire('../send-footer.container.js', {
     getRenderableEstimateDataForSmallButtonsFromGWEI: (s) => ([{ gasEstimateType: `mockGasEstimateType:${s}` }]),
     getDefaultActiveButtonIndex: () => 0,
   },
-  './send-footer.utils': utilsStubs,
+  './send-footer.utils': sendFooterUtilsStubs,
+  '../../../helpers/utils/util': utilsStubs,
 })
 
 describe('send-footer container', function () {

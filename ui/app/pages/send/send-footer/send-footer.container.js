@@ -27,10 +27,12 @@ import {
   getDefaultActiveButtonIndex,
 } from '../../../selectors'
 import { getMostRecentOverviewPage } from '../../../ducks/history/history'
+import {
+  constructTxParams,
+} from '../../../helpers/utils/util'
 import SendFooter from './send-footer.component'
 import {
   addressIsNew,
-  constructTxParams,
   constructUpdatedTx,
 } from './send-footer.utils'
 
@@ -72,7 +74,7 @@ function mapDispatchToProps (dispatch) {
     clearSend: () => dispatch(clearSend()),
     sign: ({ sendToken, to, amount, from, gas, gasPrice, data }) => {
       const txParams = constructTxParams({
-        amount,
+        value: amount,
         data,
         from,
         gas,

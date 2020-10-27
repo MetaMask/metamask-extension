@@ -3,23 +3,6 @@ import ethUtil from 'ethereumjs-util'
 import { TOKEN_TRANSFER_FUNCTION_SIGNATURE } from '../send.constants'
 import { addHexPrefixToObjectValues } from '../../../helpers/utils/util'
 
-export function constructTxParams ({ sendToken, data, to, amount, from, gas, gasPrice }) {
-  const txParams = {
-    data,
-    from,
-    value: '0',
-    gas,
-    gasPrice,
-  }
-
-  if (!sendToken) {
-    txParams.value = amount
-    txParams.to = to
-  }
-
-  return addHexPrefixToObjectValues(txParams)
-}
-
 export function constructUpdatedTx ({
   amount,
   data,
