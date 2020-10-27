@@ -232,10 +232,11 @@ export const nonceSortedTransactionsSelector = createSelector(
         insertTransactionByTime(nonceProps.transactions, transaction)
 
         const { primaryTransaction: { time: primaryTxTime = 0 } = {} } = nonceProps
-        const transactionConfirmedOrNewer = status === CONFIRMED_STATUS || txTime > primaryTxTime
-        const previousPrimaryIsFailed = nonceProps.primaryTransaction?.status === FAILED_STATUS || nonceProps.primaryTransaction?.txReceipt?.status === '0x0'
 
-        if ((status in PRIORITY_STATUS_HASH || previousPrimaryIsFailed) && transactionConfirmedOrNewer) {
+        const previousPrimaryIsNetworkFailure = nonceProps.primaryTransaction.status === FAILED_STATUS && nonceProps.primaryTransaction?.txReceipt?.status !== '0x0';
+        const currentTransactionIsOnChainFailure = transaction.txReceipt?.status === '0x0'
+        
+        if (status === CONFIRMED_STATUS || currentTransactionIsOnChainFailure || previousPrimaryIsNetworkFailure || txTime > primaryTxTime) {
           nonceProps.primaryTransaction = transaction
           console.warn("Reassigning primary transaction! New: ", transaction, "; Old: ", nonceProps.primaryTransaction)
         }
