@@ -6,6 +6,7 @@ import {
   getCurrentEthBalance,
   getDefaultActiveButtonIndex,
   getRenderableGasButtonData,
+  getUSDConversionRate,
 } from '../../../selectors'
 
 import {
@@ -118,8 +119,7 @@ const mapStateToProps = (state) => {
     insufficientBalance,
     customGasLimitMessage,
     customTotalSupplement,
-    conversionRate,
-    value,
+    usdConversionRate: getUSDConversionRate(state),
     disableSave: insufficientBalance,
   }
 }

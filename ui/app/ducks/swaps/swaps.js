@@ -49,7 +49,7 @@ import { calcTokenAmount } from '../../helpers/utils/token-util'
 import {
   getSelectedAccount,
   getTokenExchangeRates,
-  conversionRateSelector as getConversionRate,
+  getUSDConversionRate,
 } from '../../selectors'
 import {
   ERROR_FETCHING_QUOTES,
@@ -58,7 +58,6 @@ import {
   SWAP_FAILED_ERROR,
   SWAPS_FETCH_ORDER_CONFLICT,
 } from '../../helpers/constants/swaps'
-import { formatCurrency } from '../../helpers/utils/confirm-tx.util'
 import { TRANSACTION_CATEGORIES } from '../../../../shared/constants/transaction'
 
 const GAS_PRICES_LOADING_STATES = {
@@ -613,7 +612,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     usedTradeTxParams.gas = maxGasLimit
     usedTradeTxParams.gasPrice = usedGasPrice
 
-    const conversionRate = getConversionRate(state)
+    const usdConversionRate = getUSDConversionRate(state)
     const destinationValue = calcTokenAmount(
       usedQuote.destinationAmount,
       destinationTokenInfo.decimals || 18,
@@ -624,10 +623,10 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     const totalGasLimitEstimate = new BigNumber(usedGasLimitEstimate, 16)
       .plus(usedQuote.approvalNeeded?.gas || '0x0', 16)
       .toString(16)
-    const gasEstimateTotalInEth = getValueFromWeiHex({
+    const gasEstimateTotalInUSD = getValueFromWeiHex({
       value: calcGasTotal(totalGasLimitEstimate, usedGasPrice),
       toCurrency: 'usd',
-      conversionRate,
+      conversionRate: usdConversionRate,
       numberOfDecimals: 6,
     })
 
@@ -646,7 +645,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
         usedQuote.aggregator === getTopQuote(state)?.aggregator
           ? ''
           : usedQuote.aggregator,
-      gas_fees: formatCurrency(gasEstimateTotalInEth, 'usd')?.slice(1),
+      gas_fees: gasEstimateTotalInUSD,
       estimated_gas: estimatedGasLimit.toString(10),
       suggested_gas_price: fastGasEstimate,
       used_gas_price: hexWEIToDecGWEI(usedGasPrice),

@@ -7,7 +7,7 @@ import { useHistory } from 'react-router-dom'
 import { I18nContext } from '../../../contexts/i18n'
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent'
 import { MetaMetricsContext } from '../../../contexts/metametrics.new'
-import { getCurrentCurrency, conversionRateSelector } from '../../../selectors'
+import { getCurrentCurrency, getUSDConversionRate } from '../../../selectors'
 import {
   getUsedQuote,
   getFetchParams,
@@ -69,14 +69,14 @@ export default function AwaitingSwap({
   const approveTxParams = useSelector(getApproveTxParams)
   const swapsGasPrice = useSelector(getUsedSwapsGasPrice)
   const currentCurrency = useSelector(getCurrentCurrency)
-  const conversionRate = useSelector(conversionRateSelector)
+  const usdConversionRate = useSelector(getUSDConversionRate)
 
   const [timeRemainingExpired, setTimeRemainingExpired] = useState(false)
   const [trackedQuotesExpiredEvent, setTrackedQuotesExpiredEvent] = useState(
     false,
   )
 
-  let feeinFiat
+  let feeinUnformattedFiat
 
   if (usedQuote && swapsGasPrice) {
     const renderableNetworkFees = getRenderableNetworkFeesForQuote(
@@ -84,12 +84,12 @@ export default function AwaitingSwap({
       approveTxParams?.gas || '0x0',
       swapsGasPrice,
       currentCurrency,
-      conversionRate,
+      usdConversionRate,
       usedQuote?.trade?.value,
       sourceTokenInfo?.symbol,
       usedQuote.sourceAmount,
     )
-    feeinFiat = renderableNetworkFees.feeinFiat?.slice(1)
+    feeinUnformattedFiat = renderableNetworkFees.rawNetworkFees
   }
 
   const quotesExpiredEvent = useNewMetricEvent({
@@ -101,7 +101,7 @@ export default function AwaitingSwap({
       request_type: fetchParams?.balanceError ? 'Quote' : 'Order',
       slippage: fetchParams?.slippage,
       custom_slippage: fetchParams?.slippage === 2,
-      gas_fees: feeinFiat,
+      gas_fees: feeinUnformattedFiat,
     },
     category: 'swaps',
   })
