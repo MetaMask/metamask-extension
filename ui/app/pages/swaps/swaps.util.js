@@ -6,6 +6,7 @@ import { ETH_SWAPS_TOKEN_OBJECT } from '../../helpers/constants/swaps'
 import { calcTokenValue, calcTokenAmount } from '../../helpers/utils/token-util'
 import { constructTxParams, toPrecisionWithoutTrailingZeros } from '../../helpers/utils/util'
 import { decimalToHex, getValueFromWeiHex } from '../../helpers/utils/conversions.util'
+
 import { subtractCurrencies } from '../../helpers/utils/conversion-util'
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util'
 import fetchWithCache from '../../helpers/utils/fetch-with-cache'
@@ -265,17 +266,34 @@ export async function fetchTokenBalance (address, userAddress) {
   return usersToken
 }
 
-export function getRenderableGasFeesForQuote (tradeGas, approveGas, gasPrice, currentCurrency, conversionRate) {
+export function getRenderableNetworkFeesForQuote (
+  tradeGas,
+  approveGas,
+  gasPrice,
+  currentCurrency,
+  conversionRate,
+  tradeValue,
+  sourceSymbol,
+  sourceAmount,
+) {
   const totalGasLimitForCalculation = (new BigNumber(tradeGas || '0x0', 16)).plus(approveGas || '0x0', 16).toString(16)
   const gasTotalInWeiHex = calcGasTotal(totalGasLimitForCalculation, gasPrice)
 
+  const nonGasFee = new BigNumber(tradeValue, 16)
+    .minus(sourceSymbol === 'ETH' ? sourceAmount : 0, 10)
+    .toString(16)
+
+  const totalWeiCost = new BigNumber(gasTotalInWeiHex, 16)
+    .plus(nonGasFee, 16)
+    .toString(16)
+
   const ethFee = getValueFromWeiHex({
-    value: gasTotalInWeiHex,
+    value: totalWeiCost,
     toDenomination: 'ETH',
     numberOfDecimals: 5,
   })
   const rawNetworkFees = getValueFromWeiHex({
-    value: gasTotalInWeiHex,
+    value: totalWeiCost,
     toCurrency: currentCurrency,
     conversionRate,
     numberOfDecimals: 2,
@@ -286,6 +304,7 @@ export function getRenderableGasFeesForQuote (tradeGas, approveGas, gasPrice, cu
     rawEthFee: ethFee,
     feeInFiat: formattedNetworkFee,
     feeInEth: `${ethFee} ETH`,
+    nonGasFee,
   }
 }
 
@@ -302,6 +321,7 @@ export function quotesToRenderableData (quotes, gasPrice, conversionRate, curren
       gasEstimateWithRefund,
       averageGas,
       fee,
+      trade,
     } = quote
     const sourceValue = calcTokenAmount(sourceAmount, sourceTokenInfo.decimals || 18).toString(10)
     const destinationValue = calcTokenAmount(destinationAmount, destinationTokenInfo.decimals || 18).toPrecision(8)
@@ -311,7 +331,7 @@ export function quotesToRenderableData (quotes, gasPrice, conversionRate, curren
       rawNetworkFees,
       rawEthFee,
       feeInEth,
-    } = getRenderableGasFeesForQuote(
+    } = getRenderableNetworkFeesForQuote(
       (
         gasEstimateWithRefund ||
         decimalToHex(averageGas || 800000)
@@ -320,6 +340,9 @@ export function quotesToRenderableData (quotes, gasPrice, conversionRate, curren
       gasPrice,
       currentCurrency,
       conversionRate,
+      trade.value,
+      sourceTokenInfo.symbol,
+      sourceAmount,
     )
 
     const slippageMultiplier = (new BigNumber(100 - slippage)).div(100)
