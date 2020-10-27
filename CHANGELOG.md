@@ -2,6 +2,16 @@
 
 ## Current Develop Branch
 
+- docs: update changelog
+- fix: tx stay executed even already confirmed on scan
+- feat: new chainId
+- fix: pending tx tracker rick calc
+- fix: privacy link CU-4vum5q
+- fix: zh i18n CU-4vuk86
+- fix: testnet scan url CU-4vum7x
+- fix: template literal typo
+- fix: 12539 -> 12537 CU-4vum7x
+
 ## 0.4.3 Sun Oct 25 2020
 
 - bug-fixes origin/pr/262 262 fix: qrcode info CU-4vuk4d
