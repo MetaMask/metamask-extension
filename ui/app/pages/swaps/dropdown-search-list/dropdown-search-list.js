@@ -61,11 +61,20 @@ export default function DropdownSearchList ({
     }
   }, [externallySelectedItem, selectedItem, prevExternallySelectedItem])
 
+  const onKeyUp = (e) => {
+    if (e.key === 'Escape') {
+      close()
+    } else if (e.key === 'Enter') {
+      onClickSelector(e)
+    }
+  }
+
   return (
-    <button
+    <div
       className={classnames('dropdown-search-list', className)}
       onClick={onClickSelector}
-      onKeyUp={(e) => e.key === 'Escape' && close()}
+      onKeyUp={onKeyUp}
+      tabIndex="0"
     >
       {!isOpen && (
         <div
@@ -129,7 +138,7 @@ export default function DropdownSearchList ({
           />
         </>
       )}
-    </button>
+    </div>
   )
 }
 
