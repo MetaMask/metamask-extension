@@ -253,13 +253,6 @@ export const nonceSortedTransactionsSelector = createSelector(
           nonceProps.hasCancelled = true
         }
       } else {
-
-        /*
-        if (transaction.status === FAILED_STATUS && Boolean(transaction?.err?.message)) {
-
-        }
-        */
-
         nonceToTransactionsMap[nonce] = {
           nonce,
           transactions: [transaction],
