@@ -73,7 +73,7 @@ describe('NetworkController', function () {
     it('getNetworkDisplayName should return the correct network name', function () {
       const tests = [
         {
-          input: 0,
+          input: 1,
           expected: 'Conflux Test Network',
         },
         // {
