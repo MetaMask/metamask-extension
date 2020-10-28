@@ -1,19 +1,14 @@
 import { connect } from 'react-redux'
 import UserPreferencedCurrencyDisplay from './user-preferenced-currency-display.component'
-import { preferencesSelector, getIsMainnet } from '../../../selectors/selectors'
+import { getIsMainnet } from '../../../selectors/selectors'
 import { ETH, PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 
 const mapStateToProps = (state) => {
-  const {
-    useNativeCurrencyAsPrimaryCurrency,
-    showFiatInTestnets,
-  } = preferencesSelector(state)
-
   const isMainnet = getIsMainnet(state)
 
   return {
-    useNativeCurrencyAsPrimaryCurrency,
-    showFiatInTestnets,
+    useNativeCurrencyAsPrimaryCurrency: true,
+    showFiatInTestnets: false,
     isMainnet,
     nativeCurrency: state.metamask.nativeCurrency,
   }

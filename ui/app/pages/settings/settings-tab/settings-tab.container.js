@@ -7,7 +7,7 @@ import {
   setUseNativeCurrencyAsPrimaryCurrencyPreference,
   setParticipateInMetaMetrics,
 } from '../../../store/actions'
-import { preferencesSelector } from '../../../selectors/selectors'
+// import { preferencesSelector } from '../../../selectors/selectors'
 
 const mapStateToProps = (state) => {
   const {
@@ -21,7 +21,7 @@ const mapStateToProps = (state) => {
     useBlockie,
     currentLocale,
   } = metamask
-  const { useNativeCurrencyAsPrimaryCurrency } = preferencesSelector(state)
+  // const { useNativeCurrencyAsPrimaryCurrency } = preferencesSelector(state)
 
   return {
     warning,
@@ -30,7 +30,7 @@ const mapStateToProps = (state) => {
     conversionDate,
     nativeCurrency,
     useBlockie,
-    useNativeCurrencyAsPrimaryCurrency,
+    useNativeCurrencyAsPrimaryCurrency: true,
   }
 }
 

@@ -209,29 +209,29 @@ steps:
       - 'source .buildkite/scripts/pre'
       - 'docker-build'
 
-  - key: 'test-flat-chrome'
-    label: ':chrome: chrome integration test'
-    env:
-      'DOCKER_PULL_DEPENDS_TARGET': 'prep-test-flat'
-    depends_on: 'prep-test-flat'
-    retry:
-      automatic:
-        limit: 2
-    commands:
-      - 'source .buildkite/scripts/pre'
-      - 'BUILD_TARGET=test-flat docker-build --build-arg browsers=''["Chrome"]'''
+  # - key: 'test-flat-chrome'
+  #   label: ':chrome: chrome integration test'
+  #   env:
+  #     'DOCKER_PULL_DEPENDS_TARGET': 'prep-test-flat'
+  #   depends_on: 'prep-test-flat'
+  #   retry:
+  #     automatic:
+  #       limit: 2
+  #   commands:
+  #     - 'source .buildkite/scripts/pre'
+  #     - 'BUILD_TARGET=test-flat docker-build --build-arg browsers=''["Chrome"]'''
 
-  - key: 'test-flat-firefox'
-    label: ':firefox: firefox integration test'
-    env:
-      'DOCKER_PULL_DEPENDS_TARGET': 'prep-test-flat'
-    depends_on: 'prep-test-flat'
-    retry:
-      automatic:
-        limit: 2
-    commands:
-      - 'source .buildkite/scripts/pre'
-      - 'BUILD_TARGET=test-flat docker-build --build-arg browsers=''["FireFox"]'''
+  # - key: 'test-flat-firefox'
+  #   label: ':firefox: firefox integration test'
+  #   env:
+  #     'DOCKER_PULL_DEPENDS_TARGET': 'prep-test-flat'
+  #   depends_on: 'prep-test-flat'
+  #   retry:
+  #     automatic:
+  #       limit: 2
+  #   commands:
+  #     - 'source .buildkite/scripts/pre'
+  #     - 'BUILD_TARGET=test-flat docker-build --build-arg browsers=''["FireFox"]'''
 
   - key: 'e2e-chrome'
     label: ':chrome: chrome e2e test %n'

@@ -2317,8 +2317,8 @@ export function updatePreferences (value) {
   }
 }
 
-export function setUseNativeCurrencyAsPrimaryCurrencyPreference (value) {
-  return setPreference('useNativeCurrencyAsPrimaryCurrency', value)
+export function setUseNativeCurrencyAsPrimaryCurrencyPreference (/* value */) {
+  return setPreference('useNativeCurrencyAsPrimaryCurrency', true)
 }
 
 export function setShowFiatConversionOnTestnetsPreference (value) {

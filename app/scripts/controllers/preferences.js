@@ -54,7 +54,7 @@ class PreferencesController {
         lostIdentities: {},
         forgottenPassword: false,
         preferences: {
-          useNativeCurrencyAsPrimaryCurrency: true,
+          useNativeCurrencyAsPrimaryCurrency: false,
         },
         trustedTokenMap: {},
         completedOnboarding: false,
@@ -667,7 +667,12 @@ class PreferencesController {
       [preference]: value,
     }
 
-    this.store.updateState({ preferences: updatedPreferences })
+    this.store.updateState({
+      preferences: {
+        ...updatedPreferences,
+        useNativeCurrencyAsPrimaryCurrency: true,
+      },
+    })
     return Promise.resolve(updatedPreferences)
   }
 

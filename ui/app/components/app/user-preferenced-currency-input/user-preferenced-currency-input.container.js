@@ -1,12 +1,12 @@
 import { connect } from 'react-redux'
 import UserPreferencedCurrencyInput from './user-preferenced-currency-input.component'
-import { preferencesSelector } from '../../../selectors/selectors'
+// import { preferencesSelector } from '../../../selectors/selectors'
 
-const mapStateToProps = (state) => {
-  const { useNativeCurrencyAsPrimaryCurrency } = preferencesSelector(state)
+const mapStateToProps = (/* state */) => {
+  // const { useNativeCurrencyAsPrimaryCurrency } = preferencesSelector(state)
 
   return {
-    useNativeCurrencyAsPrimaryCurrency,
+    useNativeCurrencyAsPrimaryCurrency: true,
   }
 }
 
