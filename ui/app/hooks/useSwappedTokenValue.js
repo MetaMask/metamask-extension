@@ -34,6 +34,7 @@ export function useSwappedTokenValue (transactionGroup, currentAsset) {
       primaryTransaction.destinationTokenSymbol === 'ETH'
     )
   )
+
   const swapTokenValue = transactionCategory === SWAP && isViewingReceivedTokenFromSwap
     ? getSwapsTokensReceivedFromTxMeta(
       primaryTransaction.destinationTokenSymbol,
