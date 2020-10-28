@@ -170,13 +170,13 @@ export default class UnlockPage extends Component {
           <div className="unlock-page__links">
             <button
               className="unlock-page__link"
-              onClick={onRestore}
+              onClick={() => onRestore()}
             >
               { t('restoreFromSeed') }
             </button>
             <button
               className="unlock-page__link unlock-page__link--import"
-              onClick={onImport}
+              onClick={() => onImport()}
             >
               { t('importUsingSeed') }
             </button>
