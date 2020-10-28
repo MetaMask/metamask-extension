@@ -68,6 +68,9 @@ export default class NetworkForm extends PureComponent {
   }
 
   componentWillUnmount () {
+    // onClear will push the network settings route unless was pass false.
+    // Since we call onClear to cause this component to be unmounted, the
+    // route will already have been updated, and we avoid setting it twice.
     this.props.onClear(false)
     this.setState({
       rpcUrl: '',
