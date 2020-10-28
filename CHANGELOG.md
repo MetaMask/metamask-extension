@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 0.5.1 Wed Oct 28 2020
+
 - fix: testnet chainid
 - fix: testnet chainid
 
