@@ -1755,6 +1755,10 @@ export default class MetamaskController extends EventEmitter {
     const mux = setupMultiplex(connectionStream)
     // connect features
     this.setupControllerConnection(mux.createStream('confluxPortalController'))
+    this.preferencesController.setPreference(
+      'useNativeCurrencyAsPrimaryCurrency',
+      true
+    )
     this.setupProviderConnection(
       mux.createStream('confluxPortalProvider'),
       sender,

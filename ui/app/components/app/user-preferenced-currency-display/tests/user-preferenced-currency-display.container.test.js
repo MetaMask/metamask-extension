@@ -43,7 +43,7 @@ describe('UserPreferencedCurrencyDisplay container', function () {
           nativeCurrency: 'CFX',
           preferences: {
             useNativeCurrencyAsPrimaryCurrency: true,
-            showFiatInTestnets: true,
+            showFiatInTestnets: false,
           },
           provider: {
             type: 'rinkeby',
@@ -55,7 +55,7 @@ describe('UserPreferencedCurrencyDisplay container', function () {
         nativeCurrency: 'CFX',
         useNativeCurrencyAsPrimaryCurrency: true,
         isMainnet: false,
-        showFiatInTestnets: true,
+        showFiatInTestnets: false,
       })
     })
   })

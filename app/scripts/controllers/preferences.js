@@ -667,7 +667,12 @@ class PreferencesController {
       [preference]: value,
     }
 
-    this.store.updateState({ preferences: updatedPreferences })
+    this.store.updateState({
+      preferences: {
+        ...updatedPreferences,
+        useNativeCurrencyAsPrimaryCurrency: true,
+      },
+    })
     return Promise.resolve(updatedPreferences)
   }
 
