@@ -329,7 +329,6 @@ export default class NetworkForm extends PureComponent {
       viewOnly,
       isCurrentRpcTarget,
       networksTabIsInAddMode,
-      isFullScreen,
     } = this.props
     const {
       networkName,
@@ -343,23 +342,10 @@ export default class NetworkForm extends PureComponent {
     const deletable = !networksTabIsInAddMode && !isCurrentRpcTarget && !viewOnly
 
     const isSubmitDisabled = (
-      viewOnly ||
       this.stateIsUnchanged() ||
       !rpcUrl ||
       !chainId ||
       Object.values(errors).some((x) => x)
-    )
-
-    // The secondary button is either the form cancel button, or a "back"
-    // button. It is never disabled in the popup, and sometimes disabled in
-    // the fullscreen UI.
-    const secondaryButtonDisabled = (
-      isFullScreen && (viewOnly || this.stateIsUnchanged())
-    )
-    const secondaryButtonMessageKey = (
-      !isFullScreen && viewOnly
-        ? 'back'
-        : 'cancel'
     )
 
     return (
@@ -400,30 +386,34 @@ export default class NetworkForm extends PureComponent {
           'optionalBlockExplorerUrl',
         )}
         <div className="network-form__footer">
-          {
-            deletable && (
+          {!viewOnly && (
+            <>
+              {
+                deletable && (
+                  <Button
+                    type="danger"
+                    onClick={this.onDelete}
+                  >
+                    { t('delete') }
+                  </Button>
+                )
+              }
               <Button
-                type="danger"
-                onClick={this.onDelete}
+                type="default"
+                onClick={this.onCancel}
+                disabled={this.stateIsUnchanged()}
               >
-                { t('delete') }
+                {t('cancel')}
               </Button>
-            )
-          }
-          <Button
-            type="default"
-            onClick={this.onCancel}
-            disabled={secondaryButtonDisabled}
-          >
-            {t(secondaryButtonMessageKey)}
-          </Button>
-          <Button
-            type="secondary"
-            disabled={isSubmitDisabled}
-            onClick={this.onSubmit}
-          >
-            { t('save') }
-          </Button>
+              <Button
+                type="secondary"
+                disabled={isSubmitDisabled}
+                onClick={this.onSubmit}
+              >
+                { t('save') }
+              </Button>
+            </>
+          )}
         </div>
       </div>
     )
