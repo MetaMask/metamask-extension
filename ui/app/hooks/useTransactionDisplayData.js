@@ -115,7 +115,7 @@ export function useTransactionDisplayData (transactionGroup) {
   // The primary title of the Tx that will be displayed in the activity list
   let title
 
-  const { swapTokenValue, swapTokenFiatAmount, isViewingReceivedTokenFromSwap } = useSwappedTokenValue(transactionGroup, currentAsset)
+  const { swapTokenValue, isNegative, swapTokenFiatAmount, isViewingReceivedTokenFromSwap } = useSwappedTokenValue(transactionGroup, currentAsset)
 
   // There are seven types of transaction entries that are currently differentiated in the design
   // 1. Signature request
@@ -145,8 +145,13 @@ export function useTransactionDisplayData (transactionGroup) {
       : initialTransaction.sourceTokenSymbol
     primaryDisplayValue = swapTokenValue
     secondaryDisplayValue = swapTokenFiatAmount
-    prefix = isViewingReceivedTokenFromSwap ? '+' : '-'
-
+    if (isNegative) {
+      prefix = ''
+    } else if (isViewingReceivedTokenFromSwap) {
+      prefix = '+'
+    } else {
+      prefix = '-'
+    }
   } else if (transactionCategory === SWAP_APPROVAL) {
     category = TRANSACTION_CATEGORY_APPROVAL
     title = t('swapApproval', [primaryTransaction.sourceTokenSymbol])
