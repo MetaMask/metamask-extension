@@ -156,6 +156,7 @@
     @media screen and (max-width: 575px) {
       padding: 20px 23px 21px 17px;
       border-bottom: 1px solid #d8d8d8;
+      max-width: 351px;
     }
   }
 
@@ -199,6 +200,7 @@
       position: absolute;
       width: 24px;
       height: 24px;
+      margin: 0 5px;
 
       [dir='rtl'] & {
         transform: rotate(180deg);
