@@ -11,6 +11,7 @@ import {
   ABOUT_US_ROUTE,
   SETTINGS_ROUTE,
   NETWORKS_ROUTE,
+  NETWORKS_FORM_ROUTE,
   CONTACT_LIST_ROUTE,
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
@@ -202,6 +203,11 @@ class SettingsPage extends PureComponent {
         <Route
           exact
           path={NETWORKS_ROUTE}
+          component={NetworksTab}
+        />
+        <Route
+          exact
+          path={NETWORKS_FORM_ROUTE}
           component={NetworksTab}
         />
         <Route

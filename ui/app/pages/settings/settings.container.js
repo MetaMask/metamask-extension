@@ -19,6 +19,7 @@ import {
   CONTACT_MY_ACCOUNTS_VIEW_ROUTE,
   CONTACT_VIEW_ROUTE,
   GENERAL_ROUTE,
+  NETWORKS_FORM_ROUTE,
   NETWORKS_ROUTE,
   SECURITY_ROUTE,
   SETTINGS_ROUTE,
@@ -36,6 +37,7 @@ const ROUTES_TO_I18N_KEYS = {
   [CONTACT_MY_ACCOUNTS_ROUTE]: 'myAccounts',
   [CONTACT_VIEW_ROUTE]: 'viewContact',
   [NETWORKS_ROUTE]: 'networks',
+  [NETWORKS_FORM_ROUTE]: 'networks',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
 }
 
@@ -49,6 +51,7 @@ const mapStateToProps = (state, ownProps) => {
   const isAddContactPage = Boolean(pathname.match(CONTACT_ADD_ROUTE))
   const isEditContactPage = Boolean(pathname.match(CONTACT_EDIT_ROUTE))
   const isEditMyAccountsContactPage = Boolean(pathname.match(CONTACT_MY_ACCOUNTS_EDIT_ROUTE))
+  const isNetworksFormPage = Boolean(pathname.match(NETWORKS_FORM_ROUTE))
 
   const isPopupView = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
   const pathnameI18nKey = ROUTES_TO_I18N_KEYS[pathname]
@@ -62,6 +65,8 @@ const mapStateToProps = (state, ownProps) => {
     backRoute = `${CONTACT_MY_ACCOUNTS_VIEW_ROUTE}/${pathNameTail}`
   } else if (isAddressEntryPage || isMyAccountsPage || isAddContactPage) {
     backRoute = CONTACT_LIST_ROUTE
+  } else if (isNetworksFormPage) {
+    backRoute = NETWORKS_ROUTE
   }
 
   let initialBreadCrumbRoute

@@ -68,7 +68,7 @@ export default class NetworkForm extends PureComponent {
   }
 
   componentWillUnmount () {
-    this.props.onClear()
+    this.props.onClear(false)
     this.setState({
       rpcUrl: '',
       chainId: '',
