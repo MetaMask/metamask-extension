@@ -173,6 +173,10 @@
     font-size: 16px;
     line-height: 23px;
     color: #6a737d;
+    width: 70%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 
     &:hover {
       cursor: pointer;
