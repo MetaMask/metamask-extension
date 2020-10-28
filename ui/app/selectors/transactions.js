@@ -207,9 +207,6 @@ export const nonceSortedTransactionsSelector = createSelector(
     const orderedNonces = []
     const nonceToTransactionsMap = {}
 
-    console.log("----------------------------")
-    console.log("Transactions: ", transactions)
-
     transactions.forEach((transaction) => {
       const { txParams: { nonce } = {}, status, type, time: txTime, transactionCategory } = transaction
 
@@ -233,15 +230,11 @@ export const nonceSortedTransactionsSelector = createSelector(
 
         const { primaryTransaction: { time: primaryTxTime = 0 } = {} } = nonceProps
 
-        const previousPrimaryIsNetworkFailure = nonceProps.primaryTransaction.status === FAILED_STATUS && nonceProps.primaryTransaction?.txReceipt?.status !== '0x0';
+        const previousPrimaryIsNetworkFailure = nonceProps.primaryTransaction.status === FAILED_STATUS && nonceProps.primaryTransaction?.txReceipt?.status !== '0x0'
         const currentTransactionIsOnChainFailure = transaction?.txReceipt?.status === '0x0'
-        
+
         if (status === CONFIRMED_STATUS || currentTransactionIsOnChainFailure || previousPrimaryIsNetworkFailure || (txTime > primaryTxTime && status in PRIORITY_STATUS_HASH)) {
           nonceProps.primaryTransaction = transaction
-          console.warn("Reassigning primary transaction! New: ", transaction, "; Old: ", nonceProps.primaryTransaction)
-        }
-        else {
-          console.info("*Not* reassigning primary transaction", transaction)
         }
 
         const { initialTransaction: { time: initialTxTime = 0 } = {} } = nonceProps
@@ -260,10 +253,10 @@ export const nonceSortedTransactionsSelector = createSelector(
           nonceProps.hasCancelled = true
         }
       } else {
-        
+
         /*
         if (transaction.status === FAILED_STATUS && Boolean(transaction?.err?.message)) {
-          
+
         }
         */
 
