@@ -4,8 +4,7 @@
   align-items: center;
 
   &__button {
-    @include H5;
-
+    font-size: $font-size-h5;
     color: $tundora;
     border-style: solid;
     border-color: $alto;
