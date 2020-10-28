@@ -7,7 +7,6 @@ import ObservableStore from 'obs-store'
 import { ROPSTEN_NETWORK_ID, MAINNET_NETWORK_ID } from '../../../../app/scripts/controllers/network/enums'
 import { createTestProviderTools } from '../../../stub/provider'
 import SwapsController, { utils } from '../../../../app/scripts/controllers/swaps'
-import { getNetworkIdentifier } from '../../../../ui/app/selectors'
 
 const MOCK_FETCH_PARAMS = {
   slippage: 3,
