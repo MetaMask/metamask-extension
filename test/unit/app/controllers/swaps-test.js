@@ -4,6 +4,7 @@ import sinon from 'sinon'
 import { ethers } from 'ethers'
 import BigNumber from 'bignumber.js'
 import ObservableStore from 'obs-store'
+import { ROPSTEN_NETWORK_ID, MAINNET_NETWORK_ID } from '../../../../app/scripts/controllers/network/enums'
 import { createTestProviderTools } from '../../../stub/provider'
 import SwapsController, { utils } from '../../../../app/scripts/controllers/swaps'
 
@@ -75,6 +76,19 @@ const MOCK_GET_BUFFERED_GAS_LIMIT = async () => ({
   simulationFails: undefined,
 })
 
+function getMockNetworkController () {
+  return {
+    store: {
+      getState: () => {
+        return {
+          network: ROPSTEN_NETWORK_ID,
+        }
+      },
+    },
+    on: sinon.stub().withArgs('networkDidChange').callsArgAsync(1),
+  }
+}
+
 const EMPTY_INIT_STATE = {
   swapsState: {
     quotes: {},
@@ -104,6 +118,7 @@ describe('SwapsController', function () {
   const getSwapsController = () => {
     return new SwapsController({
       getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
+      networkController: getMockNetworkController(),
       provider,
       getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
       tokenRatesStore: MOCK_TOKEN_RATES_STORE,
@@ -139,6 +154,78 @@ describe('SwapsController', function () {
       assert.deepStrictEqual(
         swapsController.getProviderConfig,
         MOCK_GET_PROVIDER_CONFIG,
+      )
+    })
+
+    it('should replace ethers instance when network changes', function () {
+      const networkController = getMockNetworkController()
+      const swapsController = new SwapsController({
+        getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
+        networkController,
+        provider,
+        getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
+        tokenRatesStore: MOCK_TOKEN_RATES_STORE,
+        fetchTradesInfo: fetchTradesInfoStub,
+        fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
+      })
+      const currentEthersInstance = swapsController.ethersProvider
+      const onNetworkDidChange = networkController.on.getCall(0).args[1]
+
+      onNetworkDidChange(MAINNET_NETWORK_ID)
+
+      const newEthersInstance = swapsController.ethersProvider
+      assert.notStrictEqual(
+        currentEthersInstance,
+        newEthersInstance,
+        'Ethers provider should be replaced',
+      )
+    })
+
+    it('should not replace ethers instance when network changes to loading', function () {
+      const networkController = getMockNetworkController()
+      const swapsController = new SwapsController({
+        getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
+        networkController,
+        provider,
+        getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
+        tokenRatesStore: MOCK_TOKEN_RATES_STORE,
+        fetchTradesInfo: fetchTradesInfoStub,
+        fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
+      })
+      const currentEthersInstance = swapsController.ethersProvider
+      const onNetworkDidChange = networkController.on.getCall(0).args[1]
+
+      onNetworkDidChange('loading')
+
+      const newEthersInstance = swapsController.ethersProvider
+      assert.strictEqual(
+        currentEthersInstance,
+        newEthersInstance,
+        'Ethers provider should not be replaced',
+      )
+    })
+
+    it('should not replace ethers instance when network changes to the same network', function () {
+      const networkController = getMockNetworkController()
+      const swapsController = new SwapsController({
+        getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
+        networkController,
+        provider,
+        getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
+        tokenRatesStore: MOCK_TOKEN_RATES_STORE,
+        fetchTradesInfo: fetchTradesInfoStub,
+        fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
+      })
+      const currentEthersInstance = swapsController.ethersProvider
+      const onNetworkDidChange = networkController.on.getCall(0).args[1]
+
+      onNetworkDidChange(ROPSTEN_NETWORK_ID)
+
+      const newEthersInstance = swapsController.ethersProvider
+      assert.strictEqual(
+        currentEthersInstance,
+        newEthersInstance,
+        'Ethers provider should not be replaced',
       )
     })
   })

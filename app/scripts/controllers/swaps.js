@@ -18,7 +18,6 @@ import {
   fetchTradesInfo as defaultFetchTradesInfo,
   fetchSwapsFeatureLiveness as defaultFetchSwapsFeatureLiveness,
 } from '../../../ui/app/pages/swaps/swaps.util'
-import { MAINNET_CHAIN_ID } from './network/enums'
 
 const METASWAP_ADDRESS = '0x881d40237659c251811cec9c364ef91dc08d300c'
 
@@ -71,6 +70,7 @@ const initialState = {
 export default class SwapsController {
   constructor ({
     getBufferedGasLimit,
+    networkController,
     provider,
     getProviderConfig,
     tokenRatesStore,
@@ -92,8 +92,14 @@ export default class SwapsController {
 
     this.indexOfNewestCallInFlight = 0
 
-    // The chain ID is hard-coded as Mainnet because swaps is only used on Mainnet
-    this.ethersProvider = new ethers.providers.Web3Provider(provider, parseInt(MAINNET_CHAIN_ID, 16))
+    this.ethersProvider = new ethers.providers.Web3Provider(provider)
+    this._currentNetwork = networkController.store.getState().network
+    networkController.on('networkDidChange', (network) => {
+      if (network !== 'loading' && network !== this._currentNetwork) {
+        this._currentNetwork = network
+        this.ethersProvider = new ethers.providers.Web3Provider(provider)
+      }
+    })
 
     this._setupSwapsLivenessFetching()
   }
