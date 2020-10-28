@@ -238,7 +238,7 @@ export default class NetworksTab extends PureComponent {
           {this.renderNetworksTabContent()}
           {!isFullScreen && !shouldRenderNetworkForm
             ? (
-              <div className="networks-tab__add-network-button-wrapper">
+              <div className="networks-tab__networks-list-popup-footer">
                 <Button
                   type="primary"
                   onClick={(event) => {

@@ -100,26 +100,23 @@
     max-width: 343px;
 
     @media screen and (max-width: 575px) {
+      flex: 1;
+      overflow-y: auto;
       max-width: 100vw;
       width: 100vw;
     }
   }
 
-  &__add-network-button-wrapper {
-    display: none;
+  &__networks-list-popup-footer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-top: 23px;
+    padding-bottom: 23px;
+    border-top: 1px solid #d8d8d8;
 
-    @media screen and (max-width: 575px) {
-      width: 100%;
-      display: flex;
-      padding-top: 23px;
-      padding-bottom: 23px;
-      justify-content: center;
-      align-items: center;
-      border-top: 1px solid #d8d8d8;
-
-      .button {
-        width: 178px;
-      }
+    .button {
+      width: 178px;
     }
   }
 

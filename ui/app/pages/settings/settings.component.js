@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { Switch, Route, matchPath } from 'react-router-dom'
+import { Switch, Route, Redirect, matchPath } from 'react-router-dom'
 import classnames from 'classnames'
 import TabBar from '../../components/app/tab-bar'
 import {
@@ -35,7 +35,8 @@ class SettingsPage extends PureComponent {
     currentPath: PropTypes.string,
     history: PropTypes.object,
     isAddressEntryPage: PropTypes.bool,
-    isPopupView: PropTypes.bool,
+    isPopup: PropTypes.bool,
+    isFullScreen: PropTypes.bool,
     pathnameI18nKey: PropTypes.string,
     initialBreadCrumbRoute: PropTypes.string,
     breadCrumbTextKey: PropTypes.string,
@@ -86,13 +87,13 @@ class SettingsPage extends PureComponent {
 
   renderTitle () {
     const { t } = this.context
-    const { isPopupView, pathnameI18nKey, addressName } = this.props
+    const { isPopup, pathnameI18nKey, addressName } = this.props
 
     let titleText
 
-    if (isPopupView && addressName) {
+    if (isPopup && addressName) {
       titleText = addressName
-    } else if (pathnameI18nKey && isPopupView) {
+    } else if (pathnameI18nKey && isPopup) {
       titleText = t(pathnameI18nKey)
     } else {
       titleText = t('settings')
@@ -109,7 +110,7 @@ class SettingsPage extends PureComponent {
     const { t } = this.context
     const {
       currentPath,
-      isPopupView,
+      isPopup,
       isAddressEntryPage,
       pathnameI18nKey,
       addressName,
@@ -121,7 +122,7 @@ class SettingsPage extends PureComponent {
 
     let subheaderText
 
-    if (isPopupView && isAddressEntryPage) {
+    if (isPopup && isAddressEntryPage) {
       subheaderText = t('settings')
     } else if (initialBreadCrumbKey) {
       subheaderText = t(initialBreadCrumbKey)
@@ -178,6 +179,8 @@ class SettingsPage extends PureComponent {
   }
 
   renderContent () {
+    const { isFullScreen } = this.props
+
     return (
       <Switch>
         <Route
@@ -205,11 +208,9 @@ class SettingsPage extends PureComponent {
           path={NETWORKS_ROUTE}
           component={NetworksTab}
         />
-        <Route
-          exact
-          path={NETWORKS_FORM_ROUTE}
-          component={NetworksTab}
-        />
+        <Route exact path={NETWORKS_FORM_ROUTE}>
+          {isFullScreen ? <Redirect to={NETWORKS_ROUTE} /> : NetworksTab}
+        </Route>
         <Route
           exact
           path={SECURITY_ROUTE}

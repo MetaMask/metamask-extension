@@ -3,7 +3,10 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { getAddressBookEntryName } from '../../selectors'
 import { isValidAddress } from '../../helpers/utils/util'
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_FULLSCREEN,
+} from '../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import { getMostRecentOverviewPage } from '../../ducks/history/history'
 
@@ -53,7 +56,8 @@ const mapStateToProps = (state, ownProps) => {
   const isEditMyAccountsContactPage = Boolean(pathname.match(CONTACT_MY_ACCOUNTS_EDIT_ROUTE))
   const isNetworksFormPage = Boolean(pathname.match(NETWORKS_FORM_ROUTE))
 
-  const isPopupView = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+  const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+  const isFullScreen = getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN
   const pathnameI18nKey = ROUTES_TO_I18N_KEYS[pathname]
 
   let backRoute = SETTINGS_ROUTE
@@ -85,7 +89,8 @@ const mapStateToProps = (state, ownProps) => {
     isMyAccountsPage,
     backRoute,
     currentPath: pathname,
-    isPopupView,
+    isPopup,
+    isFullScreen,
     pathnameI18nKey,
     addressName,
     initialBreadCrumbRoute,
