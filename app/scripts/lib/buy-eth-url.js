@@ -45,7 +45,7 @@ function getDefaultServiceForNetwork (network) {
       return 'conflux-main-faucet'
     case '2':
       return 'conflux-main-faucet'
-    case '0':
+    case '1':
       return 'conflux-test-faucet'
     default:
       return

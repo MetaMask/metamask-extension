@@ -4,7 +4,7 @@ import { MAINNET_CHAIN_ID, TESTNET_CHAIN_ID } from './enums'
 const standardNetworkId = {
   '1029': MAINNET_CHAIN_ID,
   '2': MAINNET_CHAIN_ID,
-  '0': TESTNET_CHAIN_ID,
+  '1': TESTNET_CHAIN_ID,
 }
 
 function selectChainId (metamaskState) {

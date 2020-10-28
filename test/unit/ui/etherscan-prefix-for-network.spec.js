@@ -8,6 +8,6 @@ describe('Etherscan Network Prefix', function () {
   })
 
   it('returns empty string as a prefix for networkId of 1', function () {
-    assert.equal(etherscanNetworkPrefix(0), 'testnet.')
+    assert.equal(etherscanNetworkPrefix(1), 'testnet.')
   })
 })

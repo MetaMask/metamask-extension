@@ -65,7 +65,7 @@ export async function getStatus (rpcUrl) {
   if (!networkStatus) {
     throw new Error('ConfluxPortal - cfx_getStatus - network error')
   } else if (!networkStatus.result || !networkStatus.result.chainId) {
-    return { chainId: '0x0' }
+    return { chainId: '0x1' }
   } else {
     return networkStatus.result
   }
