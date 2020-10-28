@@ -9,9 +9,6 @@ export default function etherscanNetworkPrefix (network) {
       prefix = ''
       break
     case 1:
-      prefix = ''
-      break
-    case 0:
       prefix = 'testnet.'
       break
     default:

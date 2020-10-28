@@ -89,7 +89,7 @@ export default class DepositEtherModal extends Component {
     // const { network, toWyre, toCoinSwitch, address, toFaucet } = this.props
     const { network, address, toFaucet } = this.props
 
-    const isTestNetwork = ['0'].find((n) => n === network)
+    const isTestNetwork = ['1'].find((n) => n === network)
     const networkName = getNetworkDisplayName(network)
 
     const MAINNET_LANCHED =
