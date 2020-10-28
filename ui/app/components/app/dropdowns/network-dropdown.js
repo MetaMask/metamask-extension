@@ -7,7 +7,7 @@ import * as actions from '../../../store/actions'
 import {
   openAlert as displayInvalidCustomNetworkAlert,
 } from '../../../ducks/alerts/invalid-custom-network'
-import { NETWORKS_ROUTE } from '../../../helpers/constants/routes'
+import { NETWORKS_FORM_ROUTE } from '../../../helpers/constants/routes'
 import { isPrefixedFormattedHexString } from '../../../../../app/scripts/lib/util'
 import { Dropdown, DropdownMenuItem } from './components/dropdown'
 import NetworkDropdownIcon from './components/network-dropdown-icon'
@@ -338,7 +338,7 @@ class NetworkDropdown extends Component {
           closeMenu={() => this.props.hideNetworkDropdown()}
           onClick={() => {
             setNetworksTabAddMode(true)
-            this.props.history.push(NETWORKS_ROUTE)
+            this.props.history.push(NETWORKS_FORM_ROUTE)
           }}
           style={dropdownMenuItemStyle}
         >
