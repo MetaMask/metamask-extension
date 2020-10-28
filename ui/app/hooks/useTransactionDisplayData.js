@@ -147,7 +147,7 @@ export function useTransactionDisplayData (transactionGroup) {
     secondaryDisplayValue = swapTokenFiatAmount
     if (isNegative) {
       prefix = ''
-    } else if (isViewingReceivedTokenFromSwap && !isNegative) {
+    } else if (isViewingReceivedTokenFromSwap) {
       prefix = '+'
     } else {
       prefix = '-'
