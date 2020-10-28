@@ -16,6 +16,9 @@
 - [#9702](https://github.com/MetaMask/metamask-extension/pull/9702): Keyboard navigation for swaps dropdowns
 - [#9646](https://github.com/MetaMask/metamask-extension/pull/9646): Switch from Matomo to Segment
 - [#9726](https://github.com/MetaMask/metamask-extension/pull/9726): Fix fetching of swap quotes when initial network was testnet
+- [#9621](https://github.com/MetaMask/metamask-extension/pull/9621): Include aggregator fee as part of displayed network fees
+- [#9736](https://github.com/MetaMask/metamask-extension/pull/9736): Bump eth-contract-metadata from 1.16.0 to 1.17.0
+- [#9743](https://github.com/MetaMask/metamask-extension/pull/9743): Fix "+-" prefix on swap token amount
 
 ## 8.1.2 Mon Oct 19 2020
 - [#9608](https://github.com/MetaMask/metamask-extension/pull/9608): Ensure QR code scanner works
