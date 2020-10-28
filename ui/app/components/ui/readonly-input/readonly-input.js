@@ -9,6 +9,7 @@ export default function ReadOnlyInput (props) {
     value,
     textarea,
     onClick,
+    autoFocus = false,
   } = props
 
   const InputType = textarea ? 'textarea' : 'input'
@@ -21,6 +22,7 @@ export default function ReadOnlyInput (props) {
         readOnly
         onFocus={(event) => event.target.select()}
         onClick={onClick}
+        autoFocus={autoFocus}
       />
     </div>
   )
@@ -32,4 +34,5 @@ ReadOnlyInput.propTypes = {
   value: PropTypes.string,
   textarea: PropTypes.bool,
   onClick: PropTypes.func,
+  autoFocus: PropTypes.bool,
 }
