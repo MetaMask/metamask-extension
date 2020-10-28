@@ -226,10 +226,9 @@ export default class NetworksTab extends PureComponent {
     const {
       setNetworksTabAddMode,
       setSelectedSettingsRpcUrl,
-      networkIsSelected,
-      networksTabIsInAddMode,
       history,
       isFullScreen,
+      shouldRenderNetworkForm,
     } = this.props
 
     return (
@@ -237,7 +236,7 @@ export default class NetworksTab extends PureComponent {
         {isFullScreen && this.renderSubHeader()}
         <div className="networks-tab__content">
           {this.renderNetworksTabContent()}
-          {!networkIsSelected && !networksTabIsInAddMode
+          {!isFullScreen && !shouldRenderNetworkForm
             ? (
               <div className="networks-tab__add-network-button-wrapper">
                 <Button
