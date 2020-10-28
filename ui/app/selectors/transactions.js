@@ -2,6 +2,7 @@ import { createSelector } from 'reselect'
 import {
   SUBMITTED_STATUS,
   CONFIRMED_STATUS,
+  FAILED_STATUS,
   PRIORITY_STATUS_HASH,
   PENDING_STATUS_HASH,
 } from '../helpers/constants/transactions'
@@ -227,12 +228,13 @@ export const nonceSortedTransactionsSelector = createSelector(
         const nonceProps = nonceToTransactionsMap[nonce]
         insertTransactionByTime(nonceProps.transactions, transaction)
 
-        if (status in PRIORITY_STATUS_HASH) {
-          const { primaryTransaction: { time: primaryTxTime = 0 } = {} } = nonceProps
+        const { primaryTransaction: { time: primaryTxTime = 0 } = {} } = nonceProps
 
-          if (status === CONFIRMED_STATUS || txTime > primaryTxTime) {
-            nonceProps.primaryTransaction = transaction
-          }
+        const previousPrimaryIsNetworkFailure = nonceProps.primaryTransaction.status === FAILED_STATUS && nonceProps.primaryTransaction?.txReceipt?.status !== '0x0'
+        const currentTransactionIsOnChainFailure = transaction?.txReceipt?.status === '0x0'
+
+        if (status === CONFIRMED_STATUS || currentTransactionIsOnChainFailure || previousPrimaryIsNetworkFailure || (txTime > primaryTxTime && status in PRIORITY_STATUS_HASH)) {
+          nonceProps.primaryTransaction = transaction
         }
 
         const { initialTransaction: { time: initialTxTime = 0 } = {} } = nonceProps
