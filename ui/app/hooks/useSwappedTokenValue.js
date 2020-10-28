@@ -34,7 +34,6 @@ export function useSwappedTokenValue (transactionGroup, currentAsset) {
       primaryTransaction.destinationTokenSymbol === 'ETH'
     )
   )
-
   const swapTokenValue = transactionCategory === SWAP && isViewingReceivedTokenFromSwap
     ? getSwapsTokensReceivedFromTxMeta(
       primaryTransaction.destinationTokenSymbol,
@@ -44,6 +43,11 @@ export function useSwappedTokenValue (transactionGroup, currentAsset) {
       decimals,
     )
     : transactionCategory === SWAP && primaryTransaction.swapTokenValue
+
+  const isNegative = typeof swapTokenValue === 'string'
+    ? Math.sign(swapTokenValue) === -1
+    : false
+
   const _swapTokenFiatAmount = useTokenFiatAmount(
     address,
     swapTokenValue || '',
@@ -52,5 +56,5 @@ export function useSwappedTokenValue (transactionGroup, currentAsset) {
   const swapTokenFiatAmount = (
     swapTokenValue && isViewingReceivedTokenFromSwap && _swapTokenFiatAmount
   )
-  return { swapTokenValue, swapTokenFiatAmount, isViewingReceivedTokenFromSwap }
+  return { swapTokenValue, swapTokenFiatAmount, isViewingReceivedTokenFromSwap, isNegative }
 }
