@@ -236,7 +236,7 @@ export default function BuildQuote ({
               onToSelect(selectedFromToken)
               onFromSelect(selectedToToken)
             }}
-          ><img src="/images/icons/swap2.svg" alt="" width="12" height="16" />
+          ><img src="/images/icons/swap2.svg" alt={t('swapSwapSwitch')} width="12" height="16" />
           </button>
         </div>
         <div className="build-quote__dropdown-swap-to-header">
