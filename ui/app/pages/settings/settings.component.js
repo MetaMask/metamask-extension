@@ -128,7 +128,7 @@ class SettingsPage extends PureComponent {
       subheaderText = t(pathnameI18nKey || 'general')
     }
 
-    return !currentPath?.startsWith(NETWORKS_ROUTE) && (
+    return !currentPath.startsWith(NETWORKS_ROUTE) && (
       <div className="settings-page__subheader">
         <div
           className={classnames({ 'settings-page__subheader--link': initialBreadCrumbRoute })}
