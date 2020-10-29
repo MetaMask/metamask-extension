@@ -7,8 +7,13 @@ import * as actions from '../../../store/actions'
 import {
   openAlert as displayInvalidCustomNetworkAlert,
 } from '../../../ducks/alerts/invalid-custom-network'
-import { NETWORKS_ROUTE } from '../../../helpers/constants/routes'
-import { isPrefixedFormattedHexString } from '../../../../../app/scripts/lib/util'
+import {
+  NETWORKS_ROUTE,
+  NETWORKS_FORM_ROUTE,
+} from '../../../helpers/constants/routes'
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../app/scripts/lib/enums'
+import { getEnvironmentType, isPrefixedFormattedHexString } from '../../../../../app/scripts/lib/util'
+
 import { Dropdown, DropdownMenuItem } from './components/dropdown'
 import NetworkDropdownIcon from './components/network-dropdown-icon'
 
@@ -44,6 +49,9 @@ function mapDispatchToProps (dispatch) {
     setNetworksTabAddMode: (isInAddMode) => {
       dispatch(actions.setNetworksTabAddMode(isInAddMode))
     },
+    setSelectedSettingsRpcUrl: (url) => {
+      dispatch(actions.setSelectedSettingsRpcUrl(url))
+    },
     displayInvalidCustomNetworkAlert: (networkName) => {
       dispatch(displayInvalidCustomNetworkAlert(networkName))
     },
@@ -67,6 +75,7 @@ class NetworkDropdown extends Component {
     setRpcTarget: PropTypes.func.isRequired,
     hideNetworkDropdown: PropTypes.func.isRequired,
     setNetworksTabAddMode: PropTypes.func.isRequired,
+    setSelectedSettingsRpcUrl: PropTypes.func.isRequired,
     frequentRpcListDetail: PropTypes.array.isRequired,
     networkDropdownOpen: PropTypes.bool.isRequired,
     history: PropTypes.object.isRequired,
@@ -176,7 +185,11 @@ class NetworkDropdown extends Component {
   }
 
   render () {
-    const { provider: { type: providerType, rpcUrl: activeNetwork }, setNetworksTabAddMode } = this.props
+    const {
+      provider: { type: providerType, rpcUrl: activeNetwork },
+      setNetworksTabAddMode,
+      setSelectedSettingsRpcUrl,
+    } = this.props
     const rpcListDetail = this.props.frequentRpcListDetail
     const isOpen = this.props.networkDropdownOpen
     const dropdownMenuItemStyle = {
@@ -337,8 +350,13 @@ class NetworkDropdown extends Component {
         <DropdownMenuItem
           closeMenu={() => this.props.hideNetworkDropdown()}
           onClick={() => {
+            this.props.history.push(
+              getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN
+                ? NETWORKS_ROUTE
+                : NETWORKS_FORM_ROUTE,
+            )
+            setSelectedSettingsRpcUrl('')
             setNetworksTabAddMode(true)
-            this.props.history.push(NETWORKS_ROUTE)
           }}
           style={dropdownMenuItemStyle}
         >

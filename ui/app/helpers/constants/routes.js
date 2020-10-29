@@ -9,6 +9,7 @@ const SECURITY_ROUTE = '/settings/security'
 const ABOUT_US_ROUTE = '/settings/about-us'
 const ALERTS_ROUTE = '/settings/alerts'
 const NETWORKS_ROUTE = '/settings/networks'
+const NETWORKS_FORM_ROUTE = '/settings/networks/form'
 const CONTACT_LIST_ROUTE = '/settings/contact-list'
 const CONTACT_EDIT_ROUTE = '/settings/contact-list/edit-contact'
 const CONTACT_ADD_ROUTE = '/settings/contact-list/add-contact'
@@ -75,6 +76,7 @@ const PATH_NAME_MAP = {
   [ABOUT_US_ROUTE]: 'About Us Page',
   [ALERTS_ROUTE]: 'Alerts Settings Page',
   [NETWORKS_ROUTE]: 'Network Settings Page',
+  [NETWORKS_FORM_ROUTE]: 'Network Settings Page Form',
   [CONTACT_LIST_ROUTE]: 'Contact List Settings Page',
   [`${CONTACT_EDIT_ROUTE}/:address`]: 'Edit Contact Settings Page',
   [CONTACT_ADD_ROUTE]: 'Add Contact Settings Page',
@@ -172,6 +174,7 @@ export {
   CONTACT_MY_ACCOUNTS_VIEW_ROUTE,
   CONTACT_MY_ACCOUNTS_EDIT_ROUTE,
   NETWORKS_ROUTE,
+  NETWORKS_FORM_ROUTE,
   INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
   CONNECT_ROUTE,
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,

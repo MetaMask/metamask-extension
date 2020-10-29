@@ -34,7 +34,7 @@ class SettingsPage extends PureComponent {
     currentPath: PropTypes.string,
     history: PropTypes.object,
     isAddressEntryPage: PropTypes.bool,
-    isPopupView: PropTypes.bool,
+    isPopup: PropTypes.bool,
     pathnameI18nKey: PropTypes.string,
     initialBreadCrumbRoute: PropTypes.string,
     breadCrumbTextKey: PropTypes.string,
@@ -57,7 +57,7 @@ class SettingsPage extends PureComponent {
       >
         <div className="settings-page__header">
           {
-            currentPath !== SETTINGS_ROUTE && currentPath !== NETWORKS_ROUTE && (
+            currentPath !== SETTINGS_ROUTE && (
               <div
                 className="settings-page__back-button"
                 onClick={() => history.push(backRoute)}
@@ -85,13 +85,13 @@ class SettingsPage extends PureComponent {
 
   renderTitle () {
     const { t } = this.context
-    const { isPopupView, pathnameI18nKey, addressName } = this.props
+    const { isPopup, pathnameI18nKey, addressName } = this.props
 
     let titleText
 
-    if (isPopupView && addressName) {
+    if (isPopup && addressName) {
       titleText = addressName
-    } else if (pathnameI18nKey && isPopupView) {
+    } else if (pathnameI18nKey && isPopup) {
       titleText = t(pathnameI18nKey)
     } else {
       titleText = t('settings')
@@ -108,7 +108,7 @@ class SettingsPage extends PureComponent {
     const { t } = this.context
     const {
       currentPath,
-      isPopupView,
+      isPopup,
       isAddressEntryPage,
       pathnameI18nKey,
       addressName,
@@ -120,7 +120,7 @@ class SettingsPage extends PureComponent {
 
     let subheaderText
 
-    if (isPopupView && isAddressEntryPage) {
+    if (isPopup && isAddressEntryPage) {
       subheaderText = t('settings')
     } else if (initialBreadCrumbKey) {
       subheaderText = t(initialBreadCrumbKey)
@@ -128,7 +128,7 @@ class SettingsPage extends PureComponent {
       subheaderText = t(pathnameI18nKey || 'general')
     }
 
-    return currentPath !== NETWORKS_ROUTE && (
+    return !currentPath.startsWith(NETWORKS_ROUTE) && (
       <div className="settings-page__subheader">
         <div
           className={classnames({ 'settings-page__subheader--link': initialBreadCrumbRoute })}
@@ -200,7 +200,6 @@ class SettingsPage extends PureComponent {
           component={AlertsTab}
         />
         <Route
-          exact
           path={NETWORKS_ROUTE}
           component={NetworksTab}
         />

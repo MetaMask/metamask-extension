@@ -9,12 +9,23 @@ import {
   editRpc,
   showModal,
 } from '../../../store/actions'
+import { NETWORKS_FORM_ROUTE } from '../../../helpers/constants/routes'
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../app/scripts/lib/enums'
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 import NetworksTab from './networks-tab.component'
 import { defaultNetworksData } from './networks-tab.constants'
 
 const defaultNetworks = defaultNetworksData.map((network) => ({ ...network, viewOnly: true }))
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
+  const { location: { pathname } } = ownProps
+
+  const environmentType = getEnvironmentType()
+  const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN
+  const shouldRenderNetworkForm = (
+    isFullScreen || Boolean(pathname.match(NETWORKS_FORM_ROUTE))
+  )
+
   const {
     frequentRpcListDetail,
     provider,
@@ -32,7 +43,7 @@ const mapStateToProps = (state) => {
       rpcUrl: rpc.rpcUrl,
       chainId: rpc.chainId,
       ticker: rpc.ticker,
-      blockExplorerUrl: (rpc.rpcPrefs && rpc.rpcPrefs.blockExplorerUrl) || '',
+      blockExplorerUrl: (rpc.rpcPrefs?.blockExplorerUrl) || '',
     }
   })
 
@@ -56,6 +67,8 @@ const mapStateToProps = (state) => {
     providerType: provider.type,
     providerUrl: provider.rpcUrl,
     networkDefaultedToProvider,
+    isFullScreen,
+    shouldRenderNetworkForm,
   }
 }
 

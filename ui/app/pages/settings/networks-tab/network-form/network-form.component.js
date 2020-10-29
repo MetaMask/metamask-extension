@@ -30,6 +30,7 @@ export default class NetworkForm extends PureComponent {
     blockExplorerUrl: PropTypes.string,
     rpcPrefs: PropTypes.object,
     rpcUrls: PropTypes.array,
+    isFullScreen: PropTypes.bool,
   }
 
   state = {
@@ -67,7 +68,6 @@ export default class NetworkForm extends PureComponent {
   }
 
   componentWillUnmount () {
-    this.props.onClear()
     this.setState({
       rpcUrl: '',
       chainId: '',
@@ -76,6 +76,11 @@ export default class NetworkForm extends PureComponent {
       blockExplorerUrl: '',
       errors: {},
     })
+
+    // onClear will push the network settings route unless was pass false.
+    // Since we call onClear to cause this component to be unmounted, the
+    // route will already have been updated, and we avoid setting it twice.
+    this.props.onClear(false)
   }
 
   resetForm () {
@@ -136,11 +141,12 @@ export default class NetworkForm extends PureComponent {
 
   onCancel = () => {
     const {
+      isFullScreen,
       networksTabIsInAddMode,
       onClear,
     } = this.props
 
-    if (networksTabIsInAddMode) {
+    if (networksTabIsInAddMode || !isFullScreen) {
       onClear()
     } else {
       this.resetForm()
@@ -337,14 +343,14 @@ export default class NetworkForm extends PureComponent {
       errors,
     } = this.state
 
+    const deletable = !networksTabIsInAddMode && !isCurrentRpcTarget && !viewOnly
+
     const isSubmitDisabled = (
-      viewOnly ||
       this.stateIsUnchanged() ||
       !rpcUrl ||
       !chainId ||
       Object.values(errors).some((x) => x)
     )
-    const deletable = !networksTabIsInAddMode && !isCurrentRpcTarget && !viewOnly
 
     return (
       <div className="networks-tab__network-form">
@@ -384,30 +390,34 @@ export default class NetworkForm extends PureComponent {
           'optionalBlockExplorerUrl',
         )}
         <div className="network-form__footer">
-          {
-            deletable && (
+          {!viewOnly && (
+            <>
+              {
+                deletable && (
+                  <Button
+                    type="danger"
+                    onClick={this.onDelete}
+                  >
+                    { t('delete') }
+                  </Button>
+                )
+              }
               <Button
-                type="danger"
-                onClick={this.onDelete}
+                type="default"
+                onClick={this.onCancel}
+                disabled={this.stateIsUnchanged()}
               >
-                { t('delete') }
+                {t('cancel')}
               </Button>
-            )
-          }
-          <Button
-            type="default"
-            onClick={this.onCancel}
-            disabled={viewOnly || this.stateIsUnchanged()}
-          >
-            { t('cancel') }
-          </Button>
-          <Button
-            type="secondary"
-            disabled={isSubmitDisabled}
-            onClick={this.onSubmit}
-          >
-            { t('save') }
-          </Button>
+              <Button
+                type="secondary"
+                disabled={isSubmitDisabled}
+                onClick={this.onSubmit}
+              >
+                { t('save') }
+              </Button>
+            </>
+          )}
         </div>
       </div>
     )
