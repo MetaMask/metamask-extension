@@ -2,7 +2,7 @@
 
 .token-list {
   &__title {
-    font-size: 0.75rem;
+    @include H7;
   }
 
   &__tokens-container {

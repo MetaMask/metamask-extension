@@ -20,8 +20,9 @@
   }
 
   &__secret-words {
+    @include H4;
+
     width: 310px;
-    font-size: 1.25rem;
     text-align: center;
 
     &--hidden {
@@ -45,8 +46,9 @@
   }
 
   &__reveal-button {
+    @include H7;
+
     color: $white;
-    font-size: 0.75rem;
     font-weight: 500;
     text-transform: uppercase;
     margin-top: 8px;

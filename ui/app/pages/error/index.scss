@@ -8,15 +8,17 @@
   height: 100%;
 
   &__header {
+    @include H1;
+
     display: flex;
     justify-content: center;
-    font-size: 42px;
     padding: 10px 0;
     text-align: center;
   }
 
   &__subheader {
-    font-size: 19px;
+    @include H4;
+
     padding: 10px 0;
     width: 100%;
     max-width: 720px;
@@ -24,7 +26,8 @@
   }
 
   &__details {
-    font-size: 18px;
+    @include H4;
+
     overflow-y: auto;
     width: 100%;
     max-width: 720px;

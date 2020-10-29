@@ -58,7 +58,8 @@
     }
 
     @media screen and (max-width: 575px) {
-      font-size: 0.875rem;
+      @include H6;
+
       padding: 6px 18px;
     }
   }

@@ -1,10 +1,11 @@
 .currency-display {
+  @include Paragraph;
+
   height: 54px;
   border: 1px solid $alto;
   border-radius: 4px;
   background-color: $white;
   color: $scorpion;
-  font-size: 16px;
   padding: 8px 10px;
   position: relative;
 
@@ -13,18 +14,18 @@
   }
 
   &__input {
+    @include Paragraph;
+
     color: $scorpion;
-    font-size: 16px;
-    line-height: 22px;
     border: none;
     max-width: 22ch;
   }
 
   &__primary-currency {
+    @include Paragraph;
+
     color: $scorpion;
     font-weight: 400;
-    font-size: 16px;
-    line-height: 22px;
   }
 
   &__converted-row {
@@ -33,9 +34,9 @@
 
   &__converted-value,
   &__converted-currency {
+    @include H7;
+
     color: $dusty-gray;
-    font-size: 12px;
-    line-height: 12px;
   }
 
   &__input-wrapper {

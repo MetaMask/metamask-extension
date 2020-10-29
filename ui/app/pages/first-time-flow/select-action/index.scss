@@ -11,10 +11,8 @@
   }
 
   &__body-header {
-    font-style: normal;
-    font-weight: normal;
-    line-height: 39px;
-    font-size: 28px;
+    @include H3;
+
     text-align: center;
     margin-top: 65px;
     color: black;
@@ -58,20 +56,16 @@
   }
 
   &__button-text-big {
-    font-style: normal;
-    font-weight: normal;
-    line-height: 28px;
-    font-size: 20px;
+    @include H4;
+
     color: #000;
     margin-top: 12px;
     text-align: center;
   }
 
   &__button-text-small {
-    font-style: normal;
-    font-weight: normal;
-    line-height: 20px;
-    font-size: 14px;
+    @include H6;
+
     color: #7a7a7b;
     margin-top: 10px;
     text-align: center;

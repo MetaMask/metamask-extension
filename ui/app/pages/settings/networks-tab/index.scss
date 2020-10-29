@@ -84,6 +84,8 @@
     }
 
     &--warning {
+      @include H7;
+
       background-color: #fefae8;
       border: 1px solid #ffd33d;
       width: 93%;
@@ -91,7 +93,6 @@
       box-sizing: border-box;
       padding: 12px;
       margin: 12px 0;
-      font-size: 12px;
     }
   }
 
@@ -101,17 +102,15 @@
   }
 
   &__network-form-label-text {
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 14px;
-    line-height: 20px;
+    @include H6;
+
     color: #000;
   }
 
   &__network-form-label-tooltip {
+    @include H7;
+
     margin-left: 5px;
-    font-size: 12px;
   }
 
   &__networks-list {
@@ -148,7 +147,6 @@
     .button {
       width: 138px;
       padding: 10px;
-      line-height: 20px;
     }
 
     @media screen and (max-width: 575px) {
@@ -186,11 +184,9 @@
   }
 
   &__networks-list-name {
+    @include Paragraph;
+
     margin-left: 11px;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 16px;
-    line-height: 23px;
     color: #6a737d;
 
     &:hover {
