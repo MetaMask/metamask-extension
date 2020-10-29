@@ -324,7 +324,7 @@ describe('IncomingTransactionsController', function () {
         ])
         assert.fail('Update state should not have been called')
       } catch (error) {
-        assert(error.message === 'TIMEOUT', 'setState was not called')
+        assert(error.message === 'TIMEOUT', 'TIMEOUT error should be thrown')
       }
     })
 
@@ -362,7 +362,7 @@ describe('IncomingTransactionsController', function () {
         ])
         assert.fail('Update state should not have been called')
       } catch (error) {
-        assert(error.message === 'TIMEOUT', 'setState was not called')
+        assert(error.message === 'TIMEOUT', 'TIMEOUT error should be thrown')
       }
     })
 
@@ -402,7 +402,7 @@ describe('IncomingTransactionsController', function () {
         ])
         assert.fail('Update state should not have been called')
       } catch (error) {
-        assert(error.message === 'TIMEOUT', 'setState was not called')
+        assert(error.message === 'TIMEOUT', 'TIMEOUT error should be thrown')
       }
     })
 
