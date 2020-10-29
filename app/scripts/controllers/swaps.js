@@ -111,7 +111,7 @@ export default class SwapsController {
   pollForNewQuotes () {
     this.pollingTimeout = setTimeout(() => {
       const { swapsState } = this.store.getState()
-      this.fetchAndSetQuotes(swapsState.fetchParams, swapsState.fetchParams.metaData, true)
+      this.fetchAndSetQuotes(swapsState.fetchParams, swapsState.fetchParams?.metaData, true)
     }, QUOTE_POLLING_INTERVAL)
   }
 
