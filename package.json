@@ -130,6 +130,7 @@
     "jsonschema": "^1.2.4",
     "lodash": "^4.17.19",
     "loglevel": "^1.4.1",
+    "loose-envify": "^1.4.0",
     "luxon": "^1.24.1",
     "multihashes": "^0.4.12",
     "nanoid": "^2.1.6",
