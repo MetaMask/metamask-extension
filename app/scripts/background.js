@@ -29,7 +29,7 @@ import createStreamSink from './lib/createStreamSink'
 import NotificationManager from './lib/notification-manager'
 import MetamaskController from './metamask-controller'
 import rawFirstTimeState from './first-time-state'
-import setupSentry from './lib/setupSentry'
+// import setupSentry from './lib/setupSentry'
 import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code'
 import getObjStructure from './lib/getObjStructure'
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup'
@@ -50,8 +50,8 @@ const notificationManager = new NotificationManager()
 global.METAMASK_NOTIFIER = notificationManager
 
 // setup sentry error reporting
-const release = platform.getVersion()
-const sentry = setupSentry({ release })
+// const release = platform.getVersion()
+// const sentry = setupSentry({ release })
 
 let popupIsOpen = false
 let notificationIsOpen = false
@@ -174,18 +174,18 @@ async function loadStateFromPersistence() {
   if (versionedData && !versionedData.data) {
     // unable to recover, clear state
     versionedData = migrator.generateInitialState(firstTimeState)
-    sentry.captureMessage('MetaMask - Empty vault found - unable to recover')
+    // sentry.captureMessage('MetaMask - Empty vault found - unable to recover')
   }
 
   // report migration errors to sentry
-  migrator.on('error', (err) => {
-    // get vault structure without secrets
-    const vaultStructure = getObjStructure(versionedData)
-    sentry.captureException(err, {
-      // "extra" key is required by Sentry
-      extra: { vaultStructure },
-    })
-  })
+  // migrator.on('error', (err) => {
+  //   // get vault structure without secrets
+  //   const vaultStructure = getObjStructure(versionedData)
+  //   sentry.captureException(err, {
+  //     // "extra" key is required by Sentry
+  //     extra: { vaultStructure },
+  //   })
+  // })
 
   // migrate data
   versionedData = await migrator.migrateData(versionedData)

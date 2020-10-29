@@ -17,7 +17,7 @@ import StreamProvider from 'web3-stream-provider'
 import log from 'loglevel'
 import launchMetaMaskUi from '../../ui'
 import { setupMultiplex } from './lib/stream-utils'
-import setupSentry from './lib/setupSentry'
+// import setupSentry from './lib/setupSentry'
 import ExtensionPlatform from './platforms/extension'
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
@@ -32,11 +32,11 @@ async function start() {
   global.platform = new ExtensionPlatform()
 
   // setup sentry error reporting
-  const release = global.platform.getVersion()
-  setupSentry({
-    release,
-    getState: () => window.getSentryState?.() || {},
-  })
+  // const release = global.platform.getVersion()
+  // setupSentry({
+  //   release,
+  //   getState: () => window.getSentryState?.() || {},
+  // })
 
   // identify window type (popup, notification)
   const windowType = getEnvironmentType()
