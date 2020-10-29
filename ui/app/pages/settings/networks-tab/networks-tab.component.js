@@ -101,7 +101,9 @@ export default class NetworksTab extends PureComponent {
         onClick={() => {
           setNetworksTabAddMode(false)
           setSelectedSettingsRpcUrl(rpcUrl)
-          !isFullScreen && history.push(NETWORKS_FORM_ROUTE)
+          if (!isFullScreen) {
+            history.push(NETWORKS_FORM_ROUTE)
+          }
         }}
       >
         <NetworkDropdownIcon

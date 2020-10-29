@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { Switch, Route, Redirect, matchPath } from 'react-router-dom'
+import { Switch, Route, matchPath } from 'react-router-dom'
 import classnames from 'classnames'
 import TabBar from '../../components/app/tab-bar'
 import {
@@ -11,7 +11,6 @@ import {
   ABOUT_US_ROUTE,
   SETTINGS_ROUTE,
   NETWORKS_ROUTE,
-  NETWORKS_FORM_ROUTE,
   CONTACT_LIST_ROUTE,
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
@@ -36,7 +35,6 @@ class SettingsPage extends PureComponent {
     history: PropTypes.object,
     isAddressEntryPage: PropTypes.bool,
     isPopup: PropTypes.bool,
-    isFullScreen: PropTypes.bool,
     pathnameI18nKey: PropTypes.string,
     initialBreadCrumbRoute: PropTypes.string,
     breadCrumbTextKey: PropTypes.string,
@@ -130,7 +128,7 @@ class SettingsPage extends PureComponent {
       subheaderText = t(pathnameI18nKey || 'general')
     }
 
-    return currentPath !== NETWORKS_ROUTE && (
+    return !currentPath?.startsWith(NETWORKS_ROUTE) && (
       <div className="settings-page__subheader">
         <div
           className={classnames({ 'settings-page__subheader--link': initialBreadCrumbRoute })}
@@ -179,8 +177,6 @@ class SettingsPage extends PureComponent {
   }
 
   renderContent () {
-    const { isFullScreen } = this.props
-
     return (
       <Switch>
         <Route
@@ -204,13 +200,9 @@ class SettingsPage extends PureComponent {
           component={AlertsTab}
         />
         <Route
-          exact
           path={NETWORKS_ROUTE}
           component={NetworksTab}
         />
-        <Route exact path={NETWORKS_FORM_ROUTE}>
-          {isFullScreen ? <Redirect to={NETWORKS_ROUTE} /> : NetworksTab}
-        </Route>
         <Route
           exact
           path={SECURITY_ROUTE}
