@@ -428,7 +428,10 @@ describe('IncomingTransactionsController', function () {
       const updateStateCalled = waitUntilCalled(updateStateStub, incomingTransactionsController.store)
 
       const subscription = incomingTransactionsController.preferencesController.store.subscribe.getCall(1).args[0]
-      await subscription({ selectedAddress: MOCK_SELECTED_ADDRESS }) // first update is always skipped
+      // The incoming transactions controller will always skip the first event
+      // We need to call subscription twice to test the event handling
+      // TODO: stop skipping the first event
+      await subscription({ selectedAddress: MOCK_SELECTED_ADDRESS })
       await subscription({ selectedAddress: NEW_MOCK_SELECTED_ADDRESS })
       await updateStateCalled
 
@@ -494,7 +497,10 @@ describe('IncomingTransactionsController', function () {
       const updateStateCalled = waitUntilCalled(updateStateStub, incomingTransactionsController.store)
 
       const subscription = incomingTransactionsController.preferencesController.store.subscribe.getCall(1).args[0]
-      await subscription({ selectedAddress: MOCK_SELECTED_ADDRESS }) // first update is always skipped
+      // The incoming transactions controller will always skip the first event
+      // We need to call subscription twice to test the event handling
+      // TODO: stop skipping the first event
+      await subscription({ selectedAddress: MOCK_SELECTED_ADDRESS })
       await subscription({ selectedAddress: NEW_MOCK_SELECTED_ADDRESS })
 
       await updateStateCalled
