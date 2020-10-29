@@ -36,7 +36,7 @@
       @include H4;
 
       font-weight: bold;
-      line-height: 25px;
+      padding-bottom: 8px;
 
       h2 {
         white-space: nowrap;
@@ -51,9 +51,6 @@
 
     &__subtitle {
       @include H6;
-
-      padding-top: 8px;
-      line-height: 20px;
     }
 
     &__button {

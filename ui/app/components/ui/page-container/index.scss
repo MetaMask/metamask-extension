@@ -73,9 +73,10 @@
 
       a,
       a:hover {
+        @include H7;
+
         text-decoration: none;
         cursor: pointer;
-        font-size: 0.75rem;
         text-transform: uppercase;
         color: #2f9ae0;
       }
@@ -91,24 +92,24 @@
   }
 
   &__back-button {
+    @include Paragraph;
+
     color: #2f9ae0;
-    font-size: 1rem;
     cursor: pointer;
-    font-weight: 400;
   }
 
   &__title {
+    @include H2;
+
     color: $black;
-    font-size: 2rem;
     font-weight: 500;
-    line-height: 2rem;
     margin-right: 1.5rem;
   }
 
   &__subtitle {
+    @include H6;
+
     padding-top: 0.5rem;
-    line-height: initial;
-    font-size: 0.9rem;
     color: $gray;
   }
 
@@ -118,9 +119,10 @@
   }
 
   &__tab {
+    @include Paragraph;
+
     min-width: 5rem;
     color: $dusty-gray;
-    font-size: 1rem;
     border-bottom: none;
     margin-right: 16px;
 

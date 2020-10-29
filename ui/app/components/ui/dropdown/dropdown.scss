@@ -1,4 +1,6 @@
 .dropdown {
+  @include H6;
+
   appearance: none;
 
   // TODO: remove these after getting autoprefixer working in Storybook
@@ -11,7 +13,6 @@
   background-position: right 18px top 50%;
   background-color: white;
   padding: 8px 32px 8px 16px;
-  font-size: 14px;
 
   [dir='rtl'] & {
     background-position: left 18px top 50%;
