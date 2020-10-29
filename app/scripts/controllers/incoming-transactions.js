@@ -18,6 +18,13 @@ const fetch = fetchWithTimeout({
   timeout: 30000,
 })
 
+/**
+ * This controller is responsible for retrieving incoming transactions. Etherscan is polled once every block to check
+ * for new incoming transactions for the current selected account on the current network
+ *
+ * Note that only the built-in Infura networks are supported (i.e. anything in `INFURA_PROVIDER_TYPES`). We will not
+ * attempt to retrieve incoming transactions on any custom RPC endpoints.
+ */
 export default class IncomingTransactionsController {
 
   constructor (opts = {}) {
