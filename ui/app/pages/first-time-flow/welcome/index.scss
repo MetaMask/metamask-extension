@@ -17,7 +17,8 @@
   }
 
   &__header {
-    font-size: 28px;
+    @include H3;
+
     margin-bottom: 22px;
     margin-top: 50px;
     text-align: center;
@@ -27,7 +28,7 @@
     text-align: center;
 
     div {
-      font-size: 16px;
+      @include Paragraph;
     }
 
     @media screen and (max-width: 575px) {

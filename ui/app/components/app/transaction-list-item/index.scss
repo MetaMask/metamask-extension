@@ -6,7 +6,8 @@
   }
 
   &__secondary-currency {
-    font-size: 12px;
+    @include H7;
+
     margin-top: 4px;
     color: $Grey-500;
   }
@@ -24,11 +25,11 @@
     display: flex;
 
     .button {
-      font-size: 0.625rem;
+      @include H8;
+
       padding: 8px;
       width: 75px;
       white-space: nowrap;
-      line-height: 1rem;
     }
 
     & > .button:first-child {

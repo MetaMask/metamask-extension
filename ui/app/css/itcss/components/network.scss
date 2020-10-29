@@ -42,9 +42,10 @@
 }
 
 .network-indicator {
+  @include H8;
+
   display: flex;
   align-items: center;
-  font-size: 0.6em;
 
   &__down-arrow {
     height: 8px;
@@ -58,16 +59,16 @@
   }
 
   .fa-question-circle {
+    font-size: $font-size-paragraph;
     margin: 0 4px 0 6px;
-    font-size: 1rem;
     flex: 0 0 auto;
   }
 }
 
 .network-name {
+  @include H7;
+
   padding: 0 4px;
-  font-size: 12px;
-  line-height: 14px;
   flex: 1 1 auto;
   color: $tundora;
   font-weight: 500;
@@ -163,20 +164,20 @@
 }
 
 .network-dropdown-title {
+  @include H4;
+
   height: 25px;
   width: 120px;
   color: $white;
-  font-size: 18px;
-  line-height: 25px;
   text-align: center;
 }
 
 .network-dropdown-content {
+  @include H6;
+
   min-height: 36px;
   width: 265px;
   color: $dusty-gray;
-  font-size: 14px;
-  line-height: 18px;
 }
 
 .network-caret {

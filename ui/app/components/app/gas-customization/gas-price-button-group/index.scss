@@ -7,7 +7,8 @@
   padding-right: 20px;
 
   &__primary-currency {
-    font-size: 18px;
+    @include H4;
+
     height: 20.5px;
     margin-bottom: 7.5px;
   }
@@ -24,9 +25,10 @@
 
   .button-group__button,
   .button-group__button--active {
+    @include H7;
+
     height: 130px;
     max-width: 108px;
-    font-size: 12px;
     flex-direction: column;
     align-items: center;
     display: flex;
@@ -66,18 +68,18 @@
 .gas-price-button-group--small {
   display: flex;
   justify-content: stretch;
-  height: 54px;
+  min-height: 54px;
 
   @media screen and (max-width: $break-small) {
     max-width: 260px;
   }
 
   &__button-fiat-price {
-    font-size: 13px;
+    @include H6;
   }
 
   &__button-label {
-    font-size: 16px;
+    @include Paragraph;
   }
 
   &__label {
@@ -87,22 +89,22 @@
   }
 
   &__primary-currency {
-    font-size: 12px;
-    line-height: 12px;
+    @include H7;
+
     padding-bottom: 2px;
 
     @media screen and (max-width: 575px) {
-      font-size: 10px;
+      @include H8;
     }
   }
 
   &__secondary-currency {
-    font-size: 12px;
-    line-height: 12px;
+    @include H7;
+
     padding-bottom: 2px;
 
     @media screen and (max-width: 575px) {
-      font-size: 10px;
+      @include H8;
     }
   }
 
@@ -114,7 +116,7 @@
   .button-group__button--active {
     background: white;
     color: $scorpion;
-    padding: 0 4px;
+    padding: 4px;
 
     div {
       display: flex;
@@ -150,26 +152,28 @@
   width: 95%;
 
   &__button-fiat-price {
-    font-size: 13px;
+    @include H6;
   }
 
   &__button-label {
-    font-size: 16px;
+    @include Paragraph;
   }
 
   &__label {
+    @include H8;
+
     font-weight: 500;
-    font-size: 10px;
     text-transform: capitalize;
   }
 
   &__primary-currency {
-    font-size: 11px;
+    @include H7;
+
     margin-top: 3px;
   }
 
   &__secondary-currency {
-    font-size: 11px;
+    @include H7;
   }
 
   &__loading-container {
@@ -177,7 +181,8 @@
   }
 
   &__time-estimate {
-    font-size: 12px;
+    @include H7;
+
     font-weight: 500;
     margin-top: 4px;
     color: $black;
@@ -238,9 +243,10 @@
     }
 
     i {
+      @include H7;
+
       display: flex;
       color: $primary-blue;
-      font-size: 12px;
     }
   }
 }

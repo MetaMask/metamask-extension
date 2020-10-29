@@ -11,14 +11,15 @@
     width: 47.5%;
 
     &__label {
+      @include H7;
+
       color: #313b5e;
-      font-size: 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
 
       @media screen and (max-width: 576px) {
-        font-size: 10px;
+        @include H8;
       }
 
       .fa-info-circle {
@@ -32,12 +33,14 @@
     }
 
     &__error-text {
-      font-size: 12px;
+      @include H7;
+
       color: red;
     }
 
     &__warning-text {
-      font-size: 12px;
+      @include H7;
+
       color: orange;
     }
 
@@ -47,11 +50,12 @@
 
     &__input {
       /*rtl:ignore*/
+      @include Paragraph;
+
       direction: ltr;
       border: 1px solid $dusty-gray;
       border-radius: 4px;
       color: $mid-gray;
-      font-size: 16px;
       height: 24px;
       width: 100%;
       padding-left: 8px;
@@ -68,6 +72,8 @@
     }
 
     &__input-arrows {
+      @include H6;
+
       position: absolute;
       top: 7px;
 
@@ -80,7 +86,6 @@
       display: flex;
       flex-direction: column;
       color: #9b9b9b;
-      font-size: 0.8em;
       border-bottom-right-radius: 4px;
       cursor: pointer;
 
@@ -102,7 +107,7 @@
       }
 
       i {
-        font-size: 10px;
+        font-size: $font-size-h8;
       }
     }
 

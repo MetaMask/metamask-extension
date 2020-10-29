@@ -116,7 +116,6 @@ export default class SendGasRow extends Component {
             }
           }}
         />
-        { this.renderAdvancedOptionsButton() }
       </div>
     )
     const gasFeeDisplay = (
@@ -143,7 +142,6 @@ export default class SendGasRow extends Component {
           customPriceIsSafe
           isSpeedUp={false}
         />
-        { this.renderAdvancedOptionsButton() }
       </div>
     )
     // Tests should behave in same way as mainnet, but are using Localhost
@@ -156,16 +154,27 @@ export default class SendGasRow extends Component {
   }
 
   render () {
-    const { gasFeeError } = this.props
+    const { gasFeeError, gasButtonGroupShown, advancedInlineGasShown } = this.props
 
     return (
-      <SendRowWrapper
-        label={`${this.context.t('transactionFee')}:`}
-        showError={gasFeeError}
-        errorType="gasFee"
-      >
-        { this.renderContent() }
-      </SendRowWrapper>
+      <>
+        <SendRowWrapper
+          label={`${this.context.t('transactionFee')}:`}
+          showError={gasFeeError}
+          errorType="gasFee"
+        >
+          { this.renderContent() }
+        </SendRowWrapper>
+        {
+          gasButtonGroupShown || advancedInlineGasShown
+            ? (
+              <SendRowWrapper>
+                { this.renderAdvancedOptionsButton() }
+              </SendRowWrapper>
+            )
+            : null
+        }
+      </>
     )
   }
 

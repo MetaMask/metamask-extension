@@ -14,11 +14,10 @@
     }
 
     .page-container__header-close-text {
-      font-size: 1rem;
-      line-height: 1.1875rem;
+      @include H5;
+
       position: absolute;
       right: 1rem;
-      top: 6px;
       width: min-content;
     }
   }
@@ -50,10 +49,11 @@
       overflow-y: auto;
 
       &__link {
+        @include Paragraph;
+
         @extend %row-nowrap;
 
         padding: 1rem;
-        font-size: 1rem;
         border-bottom: 1px solid $alto;
         align-items: center;
         justify-content: flex-start;
@@ -78,8 +78,8 @@
       @extend %col-nowrap;
 
       &__load-more {
-        font-size: 0.75rem;
-        line-height: 1.0625rem;
+        @include H7;
+
         padding: 0.5rem;
         text-align: center;
         border-bottom: 1px solid $alto;
@@ -96,7 +96,6 @@
 
       background-color: $Grey-000;
       color: $Grey-600;
-      line-height: 0.875rem;
       padding: 0.5rem 1rem;
       border-bottom: 1px solid $alto;
 
@@ -131,8 +130,8 @@
       }
 
       &__title {
-        font-size: 0.875rem;
-        line-height: 1.25rem;
+        @include H6;
+
         color: $black;
       }
 
@@ -230,9 +229,8 @@
         &__input {
           @extend %col-nowrap;
 
-          font-size: 0.75rem;
-          line-height: 0.75rem;
-          font-weight: 400;
+          @include H7;
+
           color: $Blue-500;
         }
       }
@@ -241,13 +239,14 @@
 
   &__selected-input {
     &__title {
-      @extend %ellipsify;
+      @include H6;
 
-      font-size: 0.875rem;
+      @extend %ellipsify;
     }
 
     &__subtitle {
-      font-size: 0.75rem;
+      @include H7;
+
       color: $Grey-500;
       margin-top: 0.25rem;
     }

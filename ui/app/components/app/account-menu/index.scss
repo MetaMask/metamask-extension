@@ -56,12 +56,12 @@
     }
 
     &__text {
-      font-size: 16px;
-      line-height: 21px;
+      @include Paragraph;
     }
 
     &__subtext {
-      font-size: 12px;
+      @include H7;
+
       padding: 5px 0 0 30px;
     }
   }
@@ -98,13 +98,13 @@
   }
 
   &__lock-button {
+    @include H7;
+
     border: 1px solid $dusty-gray;
     background-color: transparent;
     color: $white;
     border-radius: 4px;
-    font-size: 12px;
-    line-height: 23px;
-    padding: 0 24px;
+    padding: 3.5px 24px;
   }
 
   &__item-icon {
@@ -138,9 +138,9 @@
     }
 
     .keyring-label {
+      @include H9;
+
       z-index: 1;
-      font-size: 8px;
-      line-height: 8px;
       border-radius: 10px;
       padding: 4px;
       text-align: center;
@@ -151,11 +151,14 @@
       color: $black;
       font-weight: normal;
       letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
     }
   }
 
   &__no-accounts {
-    font-size: 0.8em;
+    @include H6;
+
     padding: 16px 14px;
   }
 
@@ -215,8 +218,9 @@
   }
 
   &__name {
+    @include H4;
+
     color: $white;
-    font-size: 18px;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -224,13 +228,14 @@
   }
 
   &__balance {
+    @include H6;
+
     color: $dusty-gray;
-    font-size: 14px;
   }
 
   &__action {
-    font-size: 16px;
-    line-height: 18px;
+    @include Paragraph;
+
     cursor: pointer;
   }
 

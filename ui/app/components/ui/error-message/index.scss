@@ -1,10 +1,11 @@
 .error-message {
+  @include H7;
+
   min-height: 32px;
   border: 1px solid $monzo;
   color: $monzo;
   background: lighten($monzo, 56%);
   border-radius: 4px;
-  font-size: 0.75rem;
   display: flex;
   justify-content: flex-start;
   align-items: center;

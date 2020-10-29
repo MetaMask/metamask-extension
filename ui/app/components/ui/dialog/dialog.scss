@@ -1,6 +1,6 @@
 .dialog {
-  font-size: 0.75rem;
-  line-height: 1rem;
+  @include H7;
+
   padding: 1rem;
   border: 1px solid $black;
   box-sizing: border-box;

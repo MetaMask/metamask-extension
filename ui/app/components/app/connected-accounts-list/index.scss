@@ -8,15 +8,15 @@
   }
 
   &__account-name {
+    @include H6;
+
     display: inline;
     font-weight: bold;
-    font-size: 14px;
-    line-height: 20px;
   }
 
   %account-status-typography {
-    font-size: 12px;
-    line-height: 17px;
+    @include H7;
+
     padding-top: 4px;
   }
 
@@ -67,9 +67,9 @@
 
 .connected-accounts-options {
   &__button {
+    font-size: $font-size-h4;
     background: inherit;
     color: $Grey-500;
-    font-size: 22px;
   }
 }
 

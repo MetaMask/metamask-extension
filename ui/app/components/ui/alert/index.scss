@@ -4,10 +4,11 @@
   background-color: #33a4e7;
 
   .msg {
+    @include H7;
+
     width: 100%;
     display: block;
     color: white;
-    font-size: 12px;
     text-align: center;
   }
 }

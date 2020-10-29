@@ -2,25 +2,51 @@ import assert from 'assert'
 import sinon from 'sinon'
 import proxyquire from 'proxyquire'
 
-import { ROPSTEN, RINKEBY, KOVAN, GOERLI, MAINNET } from '../../../../app/scripts/controllers/network/enums'
+import {
+  GOERLI,
+  KOVAN,
+  MAINNET,
+  RINKEBY,
+  ROPSTEN,
+} from '../../../../app/scripts/controllers/network/enums'
 
 const IncomingTransactionsController = proxyquire('../../../../app/scripts/controllers/incoming-transactions', {
   '../lib/random-id': { default: () => 54321 },
 }).default
 
-describe('IncomingTransactionsController', function () {
-  const EMPTY_INIT_STATE = {
+const FAKE_NETWORK = 'FAKE_NETWORK'
+const MOCK_SELECTED_ADDRESS = '0x0101'
+
+function getEmptyInitState () {
+  return {
     incomingTransactions: {},
     incomingTxLastFetchedBlocksByNetwork: {
-      [ROPSTEN]: null,
-      [RINKEBY]: null,
-      [KOVAN]: null,
       [GOERLI]: null,
+      [KOVAN]: null,
       [MAINNET]: null,
+      [RINKEBY]: null,
+      [ROPSTEN]: null,
     },
   }
+}
 
-  const NON_EMPTY_INIT_STATE = {
+function getNonEmptyInitState () {
+  return {
+    incomingTransactions: {
+      '0x123456': { id: 777 },
+    },
+    incomingTxLastFetchedBlocksByNetwork: {
+      [GOERLI]: 1,
+      [KOVAN]: 2,
+      [MAINNET]: 3,
+      [RINKEBY]: 5,
+      [ROPSTEN]: 4,
+    },
+  }
+}
+
+function getNonEmptyInitStateWithFakeNetworkState () {
+  return {
     incomingTransactions: {
       '0x123456': { id: 777 },
     },
@@ -30,63 +56,62 @@ describe('IncomingTransactionsController', function () {
       [KOVAN]: 3,
       [GOERLI]: 5,
       [MAINNET]: 4,
+      [FAKE_NETWORK]: 1111,
     },
   }
+}
 
-  const NON_EMPTY_INIT_STATE_WITH_FAKE_NETWORK_STATE = {
-    incomingTransactions: {
-      '0x123456': { id: 777 },
+function getMockNetworkController (networkType = FAKE_NETWORK) {
+  return {
+    getProviderConfig: () => {
+      return { type: networkType }
     },
-    incomingTxLastFetchedBlocksByNetwork: {
-      [ROPSTEN]: 1,
-      [RINKEBY]: 2,
-      [KOVAN]: 3,
-      [GOERLI]: 5,
-      [MAINNET]: 4,
-      FAKE_NETWORK: 1111,
-    },
-  }
-
-  const MOCK_BLOCKTRACKER = {
-    addListener: sinon.spy(),
-    removeListener: sinon.spy(),
-    testProperty: 'fakeBlockTracker',
-    getCurrentBlock: () => '0xa',
-  }
-
-  const MOCK_NETWORK_CONTROLLER = {
-    getProviderConfig: () => ({ type: 'FAKE_NETWORK' }),
     on: sinon.spy(),
   }
+}
 
-  const MOCK_PREFERENCES_CONTROLLER = {
-    getSelectedAddress: sinon.stub().returns('0x0101'),
+function getMockPreferencesController ({ showIncomingTransactions = true } = {}) {
+  return {
+    getSelectedAddress: sinon.stub().returns(MOCK_SELECTED_ADDRESS),
     store: {
       getState: sinon.stub().returns({
         featureFlags: {
-          showIncomingTransactions: true,
+          showIncomingTransactions,
         },
       }),
       subscribe: sinon.spy(),
     },
   }
+}
+
+function getMockBlockTracker () {
+  return {
+    addListener: sinon.stub().callsArgWithAsync(1, '0xa'),
+    removeListener: sinon.spy(),
+    testProperty: 'fakeBlockTracker',
+    getCurrentBlock: () => '0xa',
+  }
+}
+
+describe('IncomingTransactionsController', function () {
+
+  afterEach(function () {
+    sinon.restore()
+  })
 
   describe('constructor', function () {
     it('should set up correct store, listeners and properties in the constructor', function () {
       const incomingTransactionsController = new IncomingTransactionsController({
-        blockTracker: MOCK_BLOCKTRACKER,
-        networkController: MOCK_NETWORK_CONTROLLER,
-        preferencesController: MOCK_PREFERENCES_CONTROLLER,
+        blockTracker: getMockBlockTracker(),
+        networkController: getMockNetworkController(),
+        preferencesController: getMockPreferencesController(),
         initState: {},
       })
       sinon.spy(incomingTransactionsController, '_update')
 
-      assert.deepEqual(incomingTransactionsController.blockTracker, MOCK_BLOCKTRACKER)
-      assert.deepEqual(incomingTransactionsController.networkController, MOCK_NETWORK_CONTROLLER)
-      assert.equal(incomingTransactionsController.preferencesController, MOCK_PREFERENCES_CONTROLLER)
       assert.equal(incomingTransactionsController.getCurrentNetwork(), 'FAKE_NETWORK')
 
-      assert.deepEqual(incomingTransactionsController.store.getState(), EMPTY_INIT_STATE)
+      assert.deepEqual(incomingTransactionsController.store.getState(), getEmptyInitState())
 
       assert(incomingTransactionsController.networkController.on.calledOnce)
       assert.equal(incomingTransactionsController.networkController.on.getCall(0).args[0], 'networkDidChange')
@@ -104,22 +129,22 @@ describe('IncomingTransactionsController', function () {
 
     it('should set the store to a provided initial state', function () {
       const incomingTransactionsController = new IncomingTransactionsController({
-        blockTracker: MOCK_BLOCKTRACKER,
-        networkController: MOCK_NETWORK_CONTROLLER,
-        preferencesController: MOCK_PREFERENCES_CONTROLLER,
-        initState: NON_EMPTY_INIT_STATE,
+        blockTracker: getMockBlockTracker(),
+        networkController: getMockNetworkController(),
+        preferencesController: getMockPreferencesController(),
+        initState: getNonEmptyInitState(),
       })
 
-      assert.deepEqual(incomingTransactionsController.store.getState(), NON_EMPTY_INIT_STATE)
+      assert.deepEqual(incomingTransactionsController.store.getState(), getNonEmptyInitState())
     })
   })
 
   describe('#start', function () {
     it('should set up a listener for the latest block', function () {
       const incomingTransactionsController = new IncomingTransactionsController({
-        blockTracker: MOCK_BLOCKTRACKER,
-        networkController: MOCK_NETWORK_CONTROLLER,
-        preferencesController: MOCK_PREFERENCES_CONTROLLER,
+        blockTracker: getMockBlockTracker(),
+        networkController: getMockNetworkController(),
+        preferencesController: getMockPreferencesController(),
         initState: {},
       })
       sinon.spy(incomingTransactionsController, '_update')
@@ -142,10 +167,10 @@ describe('IncomingTransactionsController', function () {
   describe('_getDataForUpdate', function () {
     it('should call fetchAll with the correct params when passed a new block number and the current network has no stored block', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
-        blockTracker: MOCK_BLOCKTRACKER,
-        networkController: MOCK_NETWORK_CONTROLLER,
-        preferencesController: MOCK_PREFERENCES_CONTROLLER,
-        initState: NON_EMPTY_INIT_STATE,
+        blockTracker: getMockBlockTracker(),
+        networkController: getMockNetworkController(),
+        preferencesController: getMockPreferencesController(),
+        initState: getNonEmptyInitState(),
       })
       incomingTransactionsController._fetchAll = sinon.stub().returns({})
 
@@ -160,10 +185,10 @@ describe('IncomingTransactionsController', function () {
 
     it('should call fetchAll with the correct params when passed a new block number but the current network has a stored block', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
-        blockTracker: MOCK_BLOCKTRACKER,
-        networkController: MOCK_NETWORK_CONTROLLER,
-        preferencesController: MOCK_PREFERENCES_CONTROLLER,
-        initState: NON_EMPTY_INIT_STATE_WITH_FAKE_NETWORK_STATE,
+        blockTracker: getMockBlockTracker(),
+        networkController: getMockNetworkController(),
+        preferencesController: getMockPreferencesController(),
+        initState: getNonEmptyInitStateWithFakeNetworkState(),
       })
       incomingTransactionsController._fetchAll = sinon.stub().returns({})
 
@@ -178,10 +203,10 @@ describe('IncomingTransactionsController', function () {
 
     it('should call fetchAll with the correct params when passed a new network type but no block info exists', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
-        blockTracker: MOCK_BLOCKTRACKER,
-        networkController: MOCK_NETWORK_CONTROLLER,
-        preferencesController: MOCK_PREFERENCES_CONTROLLER,
-        initState: NON_EMPTY_INIT_STATE_WITH_FAKE_NETWORK_STATE,
+        blockTracker: getMockBlockTracker(),
+        networkController: getMockNetworkController(),
+        preferencesController: getMockPreferencesController(),
+        initState: getNonEmptyInitStateWithFakeNetworkState(),
       })
       incomingTransactionsController._fetchAll = sinon.stub().returns({})
 
@@ -199,10 +224,10 @@ describe('IncomingTransactionsController', function () {
 
     it('should return the expected data', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
-        blockTracker: MOCK_BLOCKTRACKER,
-        networkController: MOCK_NETWORK_CONTROLLER,
-        preferencesController: MOCK_PREFERENCES_CONTROLLER,
-        initState: NON_EMPTY_INIT_STATE_WITH_FAKE_NETWORK_STATE,
+        blockTracker: getMockBlockTracker(),
+        networkController: getMockNetworkController(),
+        preferencesController: getMockPreferencesController(),
+        initState: getNonEmptyInitStateWithFakeNetworkState(),
       })
       incomingTransactionsController._fetchAll = sinon.stub().returns({
         latestIncomingTxBlockNumber: 444,
@@ -259,10 +284,10 @@ describe('IncomingTransactionsController', function () {
 
     it('should update state with correct blockhash and transactions when passed a truthy latestIncomingTxBlockNumber', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
-        blockTracker: MOCK_BLOCKTRACKER,
-        networkController: MOCK_NETWORK_CONTROLLER,
-        preferencesController: MOCK_PREFERENCES_CONTROLLER,
-        initState: NON_EMPTY_INIT_STATE,
+        blockTracker: getMockBlockTracker(),
+        networkController: getMockNetworkController(),
+        preferencesController: getMockPreferencesController(),
+        initState: getNonEmptyInitState(),
       })
       sinon.spy(incomingTransactionsController.store, 'updateState')
 
@@ -284,10 +309,10 @@ describe('IncomingTransactionsController', function () {
 
     it('should update state with correct blockhash and transactions when passed a falsy latestIncomingTxBlockNumber', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
-        blockTracker: MOCK_BLOCKTRACKER,
-        networkController: MOCK_NETWORK_CONTROLLER,
-        preferencesController: MOCK_PREFERENCES_CONTROLLER,
-        initState: NON_EMPTY_INIT_STATE,
+        blockTracker: getMockBlockTracker(),
+        networkController: getMockNetworkController(),
+        preferencesController: getMockPreferencesController(),
+        initState: getNonEmptyInitState(),
       })
       sinon.spy(incomingTransactionsController.store, 'updateState')
 
@@ -325,10 +350,10 @@ describe('IncomingTransactionsController', function () {
 
     it('should call fetch with the expected url when passed an address, block number and supported network', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
-        blockTracker: MOCK_BLOCKTRACKER,
-        networkController: MOCK_NETWORK_CONTROLLER,
-        preferencesController: MOCK_PREFERENCES_CONTROLLER,
-        initState: NON_EMPTY_INIT_STATE,
+        blockTracker: getMockBlockTracker(),
+        networkController: getMockNetworkController(),
+        preferencesController: getMockPreferencesController(),
+        initState: getNonEmptyInitState(),
       })
 
       await incomingTransactionsController._fetchTxs('0xfakeaddress', '789', ROPSTEN)
@@ -339,10 +364,10 @@ describe('IncomingTransactionsController', function () {
 
     it('should call fetch with the expected url when passed an address, block number and MAINNET', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
-        blockTracker: MOCK_BLOCKTRACKER,
-        networkController: MOCK_NETWORK_CONTROLLER,
-        preferencesController: MOCK_PREFERENCES_CONTROLLER,
-        initState: NON_EMPTY_INIT_STATE,
+        blockTracker: getMockBlockTracker(),
+        networkController: getMockNetworkController(),
+        preferencesController: getMockPreferencesController(),
+        initState: getNonEmptyInitState(),
       })
 
       await incomingTransactionsController._fetchTxs('0xfakeaddress', '789', MAINNET)
@@ -353,10 +378,10 @@ describe('IncomingTransactionsController', function () {
 
     it('should call fetch with the expected url when passed an address and supported network, but a falsy block number', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
-        blockTracker: MOCK_BLOCKTRACKER,
-        networkController: MOCK_NETWORK_CONTROLLER,
-        preferencesController: MOCK_PREFERENCES_CONTROLLER,
-        initState: NON_EMPTY_INIT_STATE,
+        blockTracker: getMockBlockTracker(),
+        networkController: getMockNetworkController(),
+        preferencesController: getMockPreferencesController(),
+        initState: getNonEmptyInitState(),
       })
 
       await incomingTransactionsController._fetchTxs('0xfakeaddress', null, ROPSTEN)
@@ -367,10 +392,10 @@ describe('IncomingTransactionsController', function () {
 
     it('should not fetch and return an empty object when passed an unsported network', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
-        blockTracker: MOCK_BLOCKTRACKER,
-        networkController: MOCK_NETWORK_CONTROLLER,
-        preferencesController: MOCK_PREFERENCES_CONTROLLER,
-        initState: NON_EMPTY_INIT_STATE,
+        blockTracker: getMockBlockTracker(),
+        networkController: getMockNetworkController(),
+        preferencesController: getMockPreferencesController(),
+        initState: getNonEmptyInitState(),
       })
 
       const result = await incomingTransactionsController._fetchTxs('0xfakeaddress', null, 'UNSUPPORTED_NETWORK')
@@ -381,10 +406,10 @@ describe('IncomingTransactionsController', function () {
 
     it('should return the results from the fetch call, plus the address and currentNetworkID, when passed an address, block number and supported network', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
-        blockTracker: MOCK_BLOCKTRACKER,
-        networkController: MOCK_NETWORK_CONTROLLER,
-        preferencesController: MOCK_PREFERENCES_CONTROLLER,
-        initState: NON_EMPTY_INIT_STATE,
+        blockTracker: getMockBlockTracker(),
+        networkController: getMockNetworkController(),
+        preferencesController: getMockPreferencesController(),
+        initState: getNonEmptyInitState(),
       })
 
       const result = await incomingTransactionsController._fetchTxs('0xfakeaddress', '789', ROPSTEN)
@@ -401,10 +426,10 @@ describe('IncomingTransactionsController', function () {
   describe('_processTxFetchResponse', function () {
     it('should return a null block number and empty tx array if status is 0', function () {
       const incomingTransactionsController = new IncomingTransactionsController({
-        blockTracker: MOCK_BLOCKTRACKER,
-        networkController: MOCK_NETWORK_CONTROLLER,
-        preferencesController: MOCK_PREFERENCES_CONTROLLER,
-        initState: NON_EMPTY_INIT_STATE,
+        blockTracker: getMockBlockTracker(),
+        networkController: getMockNetworkController(),
+        preferencesController: getMockPreferencesController(),
+        initState: getNonEmptyInitState(),
       })
 
       const result = incomingTransactionsController._processTxFetchResponse({
@@ -421,10 +446,10 @@ describe('IncomingTransactionsController', function () {
 
     it('should return a null block number and empty tx array if the passed result array is empty', function () {
       const incomingTransactionsController = new IncomingTransactionsController({
-        blockTracker: MOCK_BLOCKTRACKER,
-        networkController: MOCK_NETWORK_CONTROLLER,
-        preferencesController: MOCK_PREFERENCES_CONTROLLER,
-        initState: NON_EMPTY_INIT_STATE,
+        blockTracker: getMockBlockTracker(),
+        networkController: getMockNetworkController(),
+        preferencesController: getMockPreferencesController(),
+        initState: getNonEmptyInitState(),
       })
 
       const result = incomingTransactionsController._processTxFetchResponse({
@@ -441,10 +466,10 @@ describe('IncomingTransactionsController', function () {
 
     it('should return the expected block number and tx list when passed data from a successful fetch', function () {
       const incomingTransactionsController = new IncomingTransactionsController({
-        blockTracker: MOCK_BLOCKTRACKER,
-        networkController: MOCK_NETWORK_CONTROLLER,
-        preferencesController: MOCK_PREFERENCES_CONTROLLER,
-        initState: NON_EMPTY_INIT_STATE,
+        blockTracker: getMockBlockTracker(),
+        networkController: getMockNetworkController(),
+        preferencesController: getMockPreferencesController(),
+        initState: getNonEmptyInitState(),
       })
 
       incomingTransactionsController._normalizeTxFromEtherscan = (tx, currentNetworkID) => ({
@@ -560,10 +585,10 @@ describe('IncomingTransactionsController', function () {
   describe('_normalizeTxFromEtherscan', function () {
     it('should return the expected data when the tx is in error', function () {
       const incomingTransactionsController = new IncomingTransactionsController({
-        blockTracker: MOCK_BLOCKTRACKER,
-        networkController: MOCK_NETWORK_CONTROLLER,
-        preferencesController: MOCK_PREFERENCES_CONTROLLER,
-        initState: NON_EMPTY_INIT_STATE,
+        blockTracker: getMockBlockTracker(),
+        networkController: getMockNetworkController(),
+        preferencesController: getMockPreferencesController(),
+        initState: getNonEmptyInitState(),
       })
 
       const result = incomingTransactionsController._normalizeTxFromEtherscan({
@@ -600,10 +625,10 @@ describe('IncomingTransactionsController', function () {
 
     it('should return the expected data when the tx is not in error', function () {
       const incomingTransactionsController = new IncomingTransactionsController({
-        blockTracker: MOCK_BLOCKTRACKER,
-        networkController: MOCK_NETWORK_CONTROLLER,
-        preferencesController: MOCK_PREFERENCES_CONTROLLER,
-        initState: NON_EMPTY_INIT_STATE,
+        blockTracker: getMockBlockTracker(),
+        networkController: getMockNetworkController(),
+        preferencesController: getMockPreferencesController(),
+        initState: getNonEmptyInitState(),
       })
 
       const result = incomingTransactionsController._normalizeTxFromEtherscan({
