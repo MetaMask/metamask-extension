@@ -26,7 +26,7 @@ export default function FeeCard ({
               position="top"
               contentText={(
                 <>
-                  <p className="fee-card__info-tooltip-paragraph">{ t('swapGasFeeSummary') }</p>
+                  <p className="fee-card__info-tooltip-paragraph">{ t('swapNetworkFeeSummary') }</p>
                   <p className="fee-card__info-tooltip-paragraph">{ t('swapEstimatedNetworkFeeSummary', [
                     <span className="fee-card__bold" key="fee-card-bold-1">
                       { t('swapEstimatedNetworkFee') }

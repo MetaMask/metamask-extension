@@ -22,7 +22,6 @@ import {
   getBalanceError,
   getCustomSwapsGas,
   getDestinationTokenInfo,
-  getMetaMaskFeeAmount,
   getSwapsTradeTxParams,
   getTopQuote,
   navigateBackToBuildQuote,
@@ -68,7 +67,7 @@ import MainQuoteSummary from '../main-quote-summary'
 import { calcGasTotal } from '../../send/send.utils'
 import { getCustomTxParamsData } from '../../confirm-approve/confirm-approve.util'
 import ActionableMessage from '../actionable-message'
-import { quotesToRenderableData, getRenderableGasFeesForQuote } from '../swaps.util'
+import { quotesToRenderableData, getRenderableNetworkFeesForQuote } from '../swaps.util'
 import { useTokenTracker } from '../../../hooks/useTokenTracker'
 import { QUOTES_EXPIRED_ERROR } from '../../../helpers/constants/swaps'
 import CountdownTimer from '../countdown-timer'
@@ -100,7 +99,7 @@ export default function ViewQuote () {
 
   // Select necessary data
   const tradeTxParams = useSelector(getSwapsTradeTxParams)
-  const { gasPrice } = tradeTxParams || {}
+  const { gasPrice, value: tradeValue } = tradeTxParams || {}
   const customMaxGas = useSelector(getCustomSwapsGas)
   const tokenConversionRates = useSelector(getTokenExchangeRates)
   const memoizedTokenConversionRates = useEqualityCheck(tokenConversionRates)
@@ -163,12 +162,6 @@ export default function ViewQuote () {
     calcTokenAmount(approveValue, selectedFromToken.decimals).toFixed(9)
   )
   const approveGas = approveTxParams?.gas
-  const approveGasTotal = calcGasTotal(approveGas || '0x0', gasPrice)
-  const approveGasTotalInEth = getValueFromWeiHex({
-    value: approveGasTotal,
-    toDenomination: 'ETH',
-    numberOfDecimals: 4,
-  })
 
   const renderablePopoverData = useMemo(() => {
     return quotesToRenderableData(
@@ -203,23 +196,30 @@ export default function ViewQuote () {
     sourceTokenValue,
   } = renderableDataForUsedQuote
 
-  const { feeInFiat, feeInEth } = getRenderableGasFeesForQuote(
+  const { feeInFiat, feeInEth } = getRenderableNetworkFeesForQuote(
     usedGasLimit,
     approveGas,
     gasPrice,
     currentCurrency,
     conversionRate,
+    tradeValue,
+    sourceTokenSymbol,
+    usedQuote.sourceAmount,
   )
 
   const {
     feeInFiat: maxFeeInFiat,
     feeInEth: maxFeeInEth,
-  } = getRenderableGasFeesForQuote(
+    nonGasFee,
+  } = getRenderableNetworkFeesForQuote(
     maxGasLimit,
     approveGas,
     gasPrice,
     currentCurrency,
     conversionRate,
+    tradeValue,
+    sourceTokenSymbol,
+    usedQuote.sourceAmount,
   )
 
   const tokenCost = (new BigNumber(usedQuote.sourceAmount))
@@ -341,7 +341,7 @@ export default function ViewQuote () {
     }
   }, [sourceTokenSymbol, sourceTokenValue, destinationTokenSymbol, destinationTokenValue, fetchParams, topQuote, numberOfQuotes, feeInFiat, bestQuoteReviewedEvent, anonymousBestQuoteReviewedEvent])
 
-  const metaMaskFee = useSelector(getMetaMaskFeeAmount)
+  const metaMaskFee = usedQuote.fee
 
   const onFeeCardTokenApprovalClick = () => {
     anonymousEditSpendLimitOpened()
@@ -378,6 +378,26 @@ export default function ViewQuote () {
     }))
   }
 
+  const nonGasFeeIsPositive = (new BigNumber(nonGasFee, 16)).gt(0)
+  const approveGasTotal = calcGasTotal(approveGas || '0x0', gasPrice)
+  const extraNetworkFeeTotalInHexWEI = (new BigNumber(nonGasFee, 16))
+    .plus(approveGasTotal, 16)
+    .toString(16)
+  const extraNetworkFeeTotalInEth = getValueFromWeiHex({
+    value: extraNetworkFeeTotalInHexWEI,
+    toDenomination: 'ETH',
+    numberOfDecimals: 4,
+  })
+
+  let extraInfoRowLabel = ''
+  if (approveGas && nonGasFeeIsPositive) {
+    extraInfoRowLabel = t('approvalAndAggregatorTxFeeCost')
+  } else if (approveGas) {
+    extraInfoRowLabel = t('approvalTxGasCost')
+  } else if (nonGasFeeIsPositive) {
+    extraInfoRowLabel = t('aggregatorFeeCost')
+  }
+
   const onFeeCardMaxRowClick = () => dispatch(showModal({
     name: 'CUSTOMIZE_GAS',
     txData: { txParams: { ...tradeTxParams, gas: maxGasLimit } },
@@ -389,10 +409,10 @@ export default function ViewQuote () {
     ),
     customTotalSupplement: approveGasTotal,
     extraInfoRow: (
-      approveGas
+      extraInfoRowLabel
         ? {
-          label: t('approvalTxGasCost'),
-          value: t('amountInEth', [approveGasTotalInEth]),
+          label: extraInfoRowLabel,
+          value: t('amountInEth', [extraNetworkFeeTotalInEth]),
         }
         : null
     ),

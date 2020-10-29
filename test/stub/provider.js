@@ -31,6 +31,9 @@ export function createTestProviderTools (opts = {}) {
   // handle block tracker methods
   engine.push(providerAsMiddleware(GanacheCore.provider({
     mnemonic: getTestSeed(),
+    network_id: opts.networkId,
+    _chainId: opts.chainId,
+    _chainIdRpc: opts.chainId,
   })))
   // wrap in standard provider interface
   const provider = providerFromEngine(engine)

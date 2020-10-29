@@ -1,3 +1,5 @@
+import { ETH_SWAPS_TOKEN_OBJECT } from '../../helpers/constants/swaps'
+
 export const TRADES_BASE_PROD_URL = 'https://api.metaswap.codefi.network/trades?'
 export const TOKENS_BASE_PROD_URL = 'https://api.metaswap.codefi.network/tokens'
 export const AGGREGATOR_METADATA_BASE_PROD_URL = 'https://api.metaswap.codefi.network/aggregatorMetadata'
@@ -16,6 +18,7 @@ export const TOKENS = [
   { erc20: true, symbol: 'USDT', decimals: 6, address: '0xdAC17F958D2ee523a2206206994597C13D831ec7' },
   { erc20: true, symbol: 'WED', decimals: 18, address: '0x7848ae8F19671Dc05966dafBeFbBbb0308BDfAbD' },
   { erc20: true, symbol: 'WBTC', decimals: 8, address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599' },
+  ETH_SWAPS_TOKEN_OBJECT,
 ]
 
 export const MOCK_TRADE_RESPONSE_1 = [

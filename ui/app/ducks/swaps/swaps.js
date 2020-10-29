@@ -23,7 +23,7 @@ import {
 import { AWAITING_SWAP_ROUTE, BUILD_QUOTE_ROUTE, LOADING_QUOTES_ROUTE, SWAPS_ERROR_ROUTE, SWAPS_MAINTENANCE_ROUTE } from '../../helpers/constants/routes'
 import { fetchSwapsFeatureLiveness } from '../../pages/swaps/swaps.util'
 import { calcGasTotal } from '../../pages/send/send.utils'
-import { decimalToHex, getValueFromWeiHex, hexMax, decGWEIToHexWEI, hexToDecimal } from '../../helpers/utils/conversions.util'
+import { decimalToHex, getValueFromWeiHex, hexMax, decGWEIToHexWEI, hexToDecimal, hexWEIToDecGWEI } from '../../helpers/utils/conversions.util'
 import { calcTokenAmount } from '../../helpers/utils/token-util'
 import {
   getFastPriceEstimateInHexWEI,
@@ -36,6 +36,7 @@ import {
   QUOTES_NOT_AVAILABLE_ERROR,
   ETH_SWAPS_TOKEN_OBJECT,
   SWAP_FAILED_ERROR,
+  SWAPS_FETCH_ORDER_CONFLICT,
 } from '../../helpers/constants/swaps'
 import { SWAP, SWAP_APPROVAL } from '../../helpers/constants/transactions'
 import { fetchBasicGasAndTimeEstimates, fetchGasEstimates, resetCustomGasState } from '../gas/gas.duck'
@@ -50,7 +51,6 @@ const initialState = {
   quotesFetchStartTime: null,
   topAssets: {},
   toToken: null,
-  metamaskFeeAmount: null,
 }
 
 const slice = createSlice({
@@ -89,9 +89,6 @@ const slice = createSlice({
     setToToken: (state, action) => {
       state.toToken = action.payload
     },
-    setMetamaskFeeAmount: (state, action) => {
-      state.metamaskFeeAmount = action.payload
-    },
   },
 })
 
@@ -110,8 +107,6 @@ export const getFromToken = (state) => state.swaps.fromToken
 export const getTopAssets = (state) => state.swaps.topAssets
 
 export const getToToken = (state) => state.swaps.toToken
-
-export const getMetaMaskFeeAmount = (state) => state.swaps.metamaskFeeAmount
 
 export const getFetchingQuotes = (state) => state.swaps.fetchingQuotes
 
@@ -200,7 +195,6 @@ const {
   setQuotesFetchStartTime,
   setTopAssets,
   setToToken,
-  setMetamaskFeeAmount,
 } = actions
 
 export {
@@ -212,7 +206,6 @@ export {
   setQuotesFetchStartTime as setSwapQuotesFetchStartTime,
   setTopAssets,
   setToToken as setSwapToToken,
-  setMetamaskFeeAmount,
 }
 
 export const navigateBackToBuildQuote = (history) => {
@@ -407,6 +400,13 @@ export const fetchQuotesAndSetQuoteState = (history, inputValue, maxSlippage, me
         dispatch(setInitialGasEstimate(selectedAggId))
       }
     } catch (e) {
+      // A newer swap request is running, so simply bail and let the newer request respond
+      if (e.message === SWAPS_FETCH_ORDER_CONFLICT) {
+        log.debug(`Swap fetch order conflict detected; ignoring older request`)
+        return
+      }
+      // TODO: Check for any errors we should expect to occur in production, and report others to Sentry
+      log.error(`Error fetching quotes: `, e)
       dispatch(setSwapsErrorKey(ERROR_FETCHING_QUOTES))
     }
 
@@ -462,6 +462,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       conversionRate,
       numberOfDecimals: 6,
     })
+
     const swapMetaData = {
       token_from: sourceTokenInfo.symbol,
       token_from_amount: String(swapTokenValue),
@@ -474,7 +475,10 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       other_quote_selected: usedQuote.aggregator !== getTopQuote(state)?.aggregator,
       other_quote_selected_source: usedQuote.aggregator === getTopQuote(state)?.aggregator ? '' : usedQuote.aggregator,
       gas_fees: formatCurrency(gasEstimateTotalInEth, 'usd')?.slice(1),
-      estimated_gas: estimatedGasLimit.toString(16),
+      estimated_gas: estimatedGasLimit.toString(10),
+      suggested_gas_price: hexWEIToDecGWEI(usedGasPrice),
+      used_gas_price: hexWEIToDecGWEI(fastGasEstimate),
+      average_savings: usedQuote.savings?.performance,
     }
 
     const metaMetricsConfig = {

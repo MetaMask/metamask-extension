@@ -241,22 +241,23 @@ export default function BuildQuote ({
         <div className="build-quote__dropdown-swap-to-header">
           <div className="build-quote__input-label">{t('swapSwapTo')}</div>
         </div>
-        <DropdownSearchList
-          startingItem={selectedToToken}
-          itemsToSearch={tokensToSearch}
-          searchPlaceholderText={t('swapSearchForAToken')}
-          fuseSearchKeys={fuseSearchKeys}
-          selectPlaceHolderText={t('swapSelectAToken')}
-          maxListItems={30}
-          onSelect={onToSelect}
-          loading={loading && (!tokensToSearch?.length || !topAssets || !Object.keys(topAssets).length)}
-          externallySelectedItem={selectedToToken}
-          hideItemIf={hideDropdownItemIf}
-          listContainerClassName="build-quote__open-to-dropdown"
-          hideRightLabels
-          defaultToAll
-
-        />
+        <div className="dropdown-input-pair dropdown-input-pair__to">
+          <DropdownSearchList
+            startingItem={selectedToToken}
+            itemsToSearch={tokensToSearch}
+            searchPlaceholderText={t('swapSearchForAToken')}
+            fuseSearchKeys={fuseSearchKeys}
+            selectPlaceHolderText={t('swapSelectAToken')}
+            maxListItems={30}
+            onSelect={onToSelect}
+            loading={loading && (!tokensToSearch?.length || !topAssets || !Object.keys(topAssets).length)}
+            externallySelectedItem={selectedToToken}
+            hideItemIf={hideDropdownItemIf}
+            listContainerClassName="build-quote__open-to-dropdown"
+            hideRightLabels
+            defaultToAll
+          />
+        </div>
         <div className="build-quote__slippage-buttons-container">
           <SlippageButtons
             onSelect={(newSlippage) => {

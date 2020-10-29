@@ -31,7 +31,7 @@ import {
 import { SUBMITTED_STATUS } from '../../../helpers/constants/transactions'
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes'
 
-import { getRenderableGasFeesForQuote } from '../swaps.util'
+import { getRenderableNetworkFeesForQuote } from '../swaps.util'
 import SwapsFooter from '../swaps-footer'
 import SwapFailureIcon from './swap-failure-icon'
 import SwapSuccessIcon from './swap-success-icon'
@@ -41,7 +41,6 @@ import ViewOnEtherScanLink from './view-on-ether-scan-link'
 export default function AwaitingSwap ({
   swapComplete,
   errorKey,
-  symbol,
   txHash,
   networkId,
   tokensReceived,
@@ -71,8 +70,17 @@ export default function AwaitingSwap ({
 
   let feeinFiat
   if (usedQuote && tradeTxParams) {
-    const renderableGasFees = getRenderableGasFeesForQuote(usedQuote.gasEstimateWithRefund || usedQuote.averageGas, approveTxParams?.gas || '0x0', tradeTxParams.gasPrice, currentCurrency, conversionRate)
-    feeinFiat = renderableGasFees.feeinFiat?.slice(1)
+    const renderableNetworkFees = getRenderableNetworkFeesForQuote(
+      usedQuote.gasEstimateWithRefund || usedQuote.averageGas,
+      approveTxParams?.gas || '0x0',
+      tradeTxParams.gasPrice,
+      currentCurrency,
+      conversionRate,
+      tradeTxParams.value,
+      sourceTokenInfo?.symbol,
+      usedQuote.sourceAmount,
+    )
+    feeinFiat = renderableNetworkFees.feeinFiat?.slice(1)
   }
 
   const quotesExpiredEvent = useNewMetricEvent({
@@ -119,7 +127,14 @@ export default function AwaitingSwap ({
 
   let countdownText
   if (timeRemainingIsNumber && !timeRemainingExpired && tradeTxData?.submittedTime) {
-    countdownText = <CountdownTimer timeStarted={tradeTxData?.submittedTime} timerBase={estimatedTransactionWaitTime} timeOnly />
+    countdownText = (
+      <CountdownTimer
+        key="countdown-timer"
+        timeStarted={tradeTxData?.submittedTime}
+        timerBase={estimatedTransactionWaitTime}
+        timeOnly
+      />
+    )
   } else if (tradeTxData?.submittedTime) {
     countdownText = t('swapsAlmostDone')
   } else {
@@ -182,7 +197,7 @@ export default function AwaitingSwap ({
     headerText = t('swapProcessing')
     statusImage = <PulseLoader />
     submitText = t('swapsViewInActivity')
-    descriptionText = t('swapOnceTransactionHasProcess', [<span key="swapOnceTransactionHasProcess-1" className="awaiting-swap__amount-and-symbol">{symbol}</span>])
+    descriptionText = t('swapOnceTransactionHasProcess', [<span key="swapOnceTransactionHasProcess-1" className="awaiting-swap__amount-and-symbol">{destinationTokenInfo.symbol}</span>])
     content = (
       <>
         <div
@@ -207,8 +222,8 @@ export default function AwaitingSwap ({
   } else if (!errorKey && swapComplete) {
     headerText = t('swapTransactionComplete')
     statusImage = <SwapSuccessIcon />
-    submitText = t('swapViewToken', [symbol])
-    descriptionText = t('swapTokenAvailable', [<span key="swapTokenAvailable-2" className="awaiting-swap__amount-and-symbol">{`${tokensReceived || ''} ${symbol}`}</span>])
+    submitText = t('swapViewToken', [destinationTokenInfo.symbol])
+    descriptionText = t('swapTokenAvailable', [<span key="swapTokenAvailable-2" className="awaiting-swap__amount-and-symbol">{`${tokensReceived || ''} ${destinationTokenInfo.symbol}`}</span>])
     content = blockExplorerUrl && (
       <ViewOnEtherScanLink
         txHash={txHash}
@@ -266,7 +281,6 @@ export default function AwaitingSwap ({
 
 AwaitingSwap.propTypes = {
   swapComplete: PropTypes.bool,
-  symbol: PropTypes.string.isRequired,
   networkId: PropTypes.string.isRequired,
   txHash: PropTypes.string,
   tokensReceived: PropTypes.string,

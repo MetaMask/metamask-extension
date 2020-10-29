@@ -82,6 +82,9 @@
   "affirmAgree": {
     "message": "I Agree"
   },
+  "aggregatorFeeCost": {
+    "message": "Aggregator network fee"
+  },
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
   },
@@ -128,6 +131,9 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "approvalAndAggregatorTxFeeCost": {
+    "message": "Approval and aggregator network fee"
   },
   "approvalTxGasCost": {
     "message": "Approval Tx Gas Cost"
@@ -1685,9 +1691,6 @@
   "swapFinalizing": {
     "message": "Finalizing..."
   },
-  "swapGasFeeSummary": {
-    "message": "The gas fee covers the cost of processing your swap and storing it on the Ethereum network. MetaMask does not profit from this fee."
-  },
   "swapGetQuotes": {
     "message": "Get quotes"
   },
@@ -1735,6 +1738,9 @@
   "swapNQuotesAvailable": {
     "message": "$1 quotes available",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
+  },
+  "swapNetworkFeeSummary": {
+    "message": "The network fee covers the cost of processing your swap and storing it on the Ethereum network. MetaMask does not profit from this fee."
   },
   "swapNewQuoteIn": {
     "message": "New quotes in $1",

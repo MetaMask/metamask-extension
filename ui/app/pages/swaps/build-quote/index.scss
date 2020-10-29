@@ -118,4 +118,9 @@
       max-height: 276px;
     }
   }
+
+  /* Prevents the swaps "Swap to" field from overflowing */
+  .dropdown-input-pair__to .dropdown-search-list {
+    width: 100%;
+  }
 }

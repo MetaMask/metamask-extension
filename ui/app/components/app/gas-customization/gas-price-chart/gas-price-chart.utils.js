@@ -124,7 +124,7 @@ export function setTickPosition (axis, n, newPosition, secondNewPosition) {
     .style('visibility', 'visible')
 }
 
-/* eslint-disable babel/no-invalid-this */
+/* eslint-disable @babel/no-invalid-this */
 export function appendOrUpdateCircle ({ data, itemIndex, cx, cy, cssId, appendOnly }) {
   const circle = this.main
     .select(`.c3-selected-circles${this.getTargetSelectorSuffix(data.id)}`)
@@ -145,7 +145,7 @@ export function appendOrUpdateCircle ({ data, itemIndex, cx, cy, cssId, appendOn
       .attr('cy', cy)
   }
 }
-/* eslint-enable babel/no-invalid-this */
+/* eslint-enable @babel/no-invalid-this */
 
 export function setSelectedCircle ({
   chart,

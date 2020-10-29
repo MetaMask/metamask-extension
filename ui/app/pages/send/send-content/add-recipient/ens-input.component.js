@@ -33,6 +33,7 @@ export default class EnsInput extends Component {
     onReset: PropTypes.func,
     onValidAddressTyped: PropTypes.func,
     contact: PropTypes.object,
+    value: PropTypes.string,
   }
 
   state = {
@@ -53,20 +54,33 @@ export default class EnsInput extends Component {
     }
   }
 
-  // If an address is sent without a nickname, meaning not from ENS or from
-  // the user's own accounts, a default of a one-space string is used.
   componentDidUpdate (prevProps) {
     const {
       input,
     } = this.state
     const {
       network,
+      value,
     } = this.props
+
+    let newValue
+
+    // Set the value of our input based on QR code provided by parent
+    const newProvidedValue = input !== value && prevProps.value !== value
+    if (newProvidedValue) {
+      newValue = value
+    }
 
     if (prevProps.network !== network) {
       const provider = global.ethereumProvider
       this.ens = new ENS({ provider, network })
-      this.onChange({ target: { value: input } })
+      if (!newProvidedValue) {
+        newValue = input
+      }
+    }
+
+    if (newValue !== undefined) {
+      this.onChange({ target: { value: newValue } })
     }
   }
 

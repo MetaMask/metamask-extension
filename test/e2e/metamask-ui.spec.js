@@ -676,7 +676,7 @@ describe('MetaMask', function () {
       await driver.switchToWindow(extension)
       await driver.delay(largeDelayMs * 2)
 
-      await driver.findElements(By.css('.transaction-list-item'))
+      await driver.findElements(By.css('.transaction-list-item--unconfirmed'))
       const txListValue = await driver.findClickableElement(By.css('.transaction-list-item__primary-currency'))
       await driver.wait(until.elementTextMatches(txListValue, /-4\s*ETH/u), 10000)
       await txListValue.click()
@@ -772,9 +772,8 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs * 2)
 
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Create Token')]`))
-      await driver.delay(largeDelayMs)
+      windowHandles = await driver.waitUntilXWindowHandles(3)
 
-      windowHandles = await driver.getAllWindowHandles()
       const popup = windowHandles[2]
       await driver.switchToWindow(popup)
       await driver.delay(regularDelayMs)

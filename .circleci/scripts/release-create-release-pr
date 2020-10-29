@@ -45,6 +45,7 @@ install_github_cli
 printf '%s\n' "Creating a Pull Request for $version on GitHub"
 
 if ! hub pull-request \
+    --draft \
     --message "${CIRCLE_BRANCH/-/ } RC" --message ':package: :rocket:' \
     --base "$CIRCLE_PROJECT_USERNAME:$base_branch" \
     --head "$CIRCLE_PROJECT_USERNAME:$CIRCLE_BRANCH";
