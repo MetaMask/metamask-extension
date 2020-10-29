@@ -1,0 +1,26 @@
+diff --git a/node_modules/symbol-observable/lib/ponyfill.js b/node_modules/symbol-observable/lib/ponyfill.js
+index be68aca..81633df 100644
+--- a/node_modules/symbol-observable/lib/ponyfill.js
++++ b/node_modules/symbol-observable/lib/ponyfill.js
+@@ -5,19 +5,6 @@ Object.defineProperty(exports, "__esModule", {
+ });
+ exports['default'] = symbolObservablePonyfill;
+ function symbolObservablePonyfill(root) {
+-	var result;
+-	var _Symbol = root.Symbol;
+ 
+-	if (typeof _Symbol === 'function') {
+-		if (_Symbol.observable) {
+-			result = _Symbol.observable;
+-		} else {
+-			result = _Symbol('observable');
+-			_Symbol.observable = result;
+-		}
+-	} else {
+-		result = '@@observable';
+-	}
+-
+-	return result;
++	return '@@observable';
+ };
+\ No newline at end of file
