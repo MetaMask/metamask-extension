@@ -1893,7 +1893,7 @@ export default class MetamaskController extends EventEmitter {
     }
 
     const metamaskState = await this.getState()
-    const additionalProperties = getBackgroundMetaMetricState(metamaskState)
+    const additionalProperties = getBackgroundMetaMetricState({ metamask: metamaskState })
 
     this.trackMetaMetricsEvent({
       event: name,
