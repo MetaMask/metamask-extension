@@ -154,7 +154,7 @@ export default class SendGasRow extends Component {
   }
 
   render () {
-    const { gasFeeError, gasButtonGroupShown } = this.props
+    const { gasFeeError, gasButtonGroupShown, advancedInlineGasShown } = this.props
 
     return (
       <>
@@ -165,7 +165,15 @@ export default class SendGasRow extends Component {
         >
           { this.renderContent() }
         </SendRowWrapper>
-        {gasButtonGroupShown && <SendRowWrapper>{ this.renderAdvancedOptionsButton() }</SendRowWrapper>}
+        {
+          gasButtonGroupShown || advancedInlineGasShown
+            ? (
+              <SendRowWrapper>
+                { this.renderAdvancedOptionsButton() }
+              </SendRowWrapper>
+            )
+            : null
+        }
       </>
     )
   }
