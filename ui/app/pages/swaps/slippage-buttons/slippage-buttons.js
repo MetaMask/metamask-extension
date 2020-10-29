@@ -106,7 +106,7 @@ export default function SlippageButtons ({
                         type="number"
                         step="0.1"
                         ref={setInputRef}
-                        onBlur={() => {
+                        onblur={() => {
                           setEnteringCustomValue(false)
                           if (customValue === '0') {
                             setCustomValue('')
