@@ -1,5 +1,4 @@
 // Transaction Type is a MetaMask construct used internally
-// There are three types at present
 // 1. `'standard'` - A standard transaction, usually the first with a given nonce
 // 2. `'cancel'`   - A transaction submitted with the same nonce as a previous
 //                   transaction, a higher gas price and a zeroed out send amount.
@@ -13,7 +12,8 @@ export const TRANSACTION_TYPE_STANDARD = 'standard'
 export const TRANSACTION_TYPE_CANCEL = 'cancel'
 export const TRANSACTION_TYPE_RETRY = 'retry'
 
-// Transaction Status is a mix of Ethereum terminology and MetaMask construct
+// Transaction Status is a mix of Ethereum and MetaMask terminology, used
+// internally for transaction processing.
 // 1. `'unapproved'` - A new transaction that the user has not approved or rejected
 // 2. `'approved'`   - The user has approved the transaction in the MetaMask UI
 // 3. `'rejected'`   - The user has rejected the transaction in the MetaMask UI
@@ -30,8 +30,8 @@ export const TRANSACTION_STATUS_SUBMITTED = 'submitted'
 export const TRANSACTION_STATUS_FAILED = 'failed'
 export const TRANSACTION_STATUS_DROPPED = 'dropped'
 
-// Transaction Category is a MetaMask construct used internally
-// Used to categorize transactions by purpose for displaying information to the user
+// Transaction Category is a MetaMask construct used internally to
+// categorize transactions by purpose for displaying information to the user.
 // 1. `'tranfser'`            - A token transaction where the user is sending tokens that they
 //                              own to another address
 // 2. `'transferfrom'`        - A token transaction transferring tokens from an account that
@@ -59,7 +59,7 @@ export const TRANSACTION_CATEGORY_DEPLOY_CONTRACT = 'contractDeployment'
 export const TRANSACTION_CATEGORY_SWAP = 'swap'
 export const TRANSACTION_CATEGORY_SWAP_APPROVAL = 'swapApproval'
 
-// Transaction Group Status is a MetaMask construct to track status of groups
+// Transaction Group Status is a MetaMask construct to track the status of groups
 // of transactions.
 // 1. `'cancelled'` - A cancel type transaction in the group was confirmed
 // 2. `'pending'`   - The primaryTransaction of the group has a status that is one of:
