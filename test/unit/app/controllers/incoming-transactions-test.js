@@ -4,7 +4,7 @@ import proxyquire from 'proxyquire'
 import nock from 'nock'
 import { cloneDeep } from 'lodash'
 
-import waitUntilCalled from '../../../lib/waitUntilCalled'
+import waitUntilCalled from '../../../lib/wait-until-called'
 import {
   GOERLI,
   KOVAN,
