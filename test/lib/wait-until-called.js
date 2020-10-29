@@ -5,7 +5,7 @@
  * The stub that has been passed in will be setup to call the wrapped function
  * directly, then trigger the returned Promise to resolve.
  *
- * @param {Object} stub - A sinon stub of a function
+ * @param {import('sinon').stub} stub - A sinon stub of a function
  * @param {unknown} [wrappedThis] - The object the stubbed function was called on, if any (i.e. the `this` value)
  * @returns {Promise} A Promise that resolves when the stub has been called
  */
