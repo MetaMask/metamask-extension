@@ -114,7 +114,6 @@ export default function ViewQuote () {
   const topQuote = useSelector(getTopQuote)
   const usedQuote = selectedQuote || topQuote
 
-  const { isBestQuote } = usedQuote
   const fetchParamsSourceToken = fetchParams?.sourceToken
 
   const usedGasLimit = (
@@ -191,9 +190,11 @@ export default function ViewQuote () {
     destinationTokenDecimals,
     destinationTokenSymbol,
     destinationTokenValue,
+    destinationIconUrl,
     sourceTokenDecimals,
     sourceTokenSymbol,
     sourceTokenValue,
+    sourceTokenIconUrl,
   } = renderableDataForUsedQuote
 
   const { feeInFiat, feeInEth } = getRenderableNetworkFeesForQuote(
@@ -481,24 +482,19 @@ export default function ViewQuote () {
             labelKey="swapNewQuoteIn"
           />
         </div>
-        <div
-          className={classnames('view-quote__main-quote-summary-container', {
-            'view-quote__main-quote-summary-container--thin': showWarning,
-          })}
-        >
-          <MainQuoteSummary
-            sourceValue={calcTokenValue(sourceTokenValue, sourceTokenDecimals)}
-            sourceDecimals={sourceTokenDecimals}
-            sourceSymbol={sourceTokenSymbol}
-            destinationValue={calcTokenValue(
-              destinationTokenValue,
-              destinationTokenDecimals,
-            )}
-            destinationDecimals={destinationTokenDecimals}
-            destinationSymbol={destinationTokenSymbol}
-            isBestQuote={isBestQuote}
-          />
-        </div>
+        <MainQuoteSummary
+          sourceValue={calcTokenValue(sourceTokenValue, sourceTokenDecimals)}
+          sourceDecimals={sourceTokenDecimals}
+          sourceSymbol={sourceTokenSymbol}
+          destinationValue={calcTokenValue(
+            destinationTokenValue,
+            destinationTokenDecimals,
+          )}
+          destinationDecimals={destinationTokenDecimals}
+          destinationSymbol={destinationTokenSymbol}
+          sourceIconUrl={sourceTokenIconUrl}
+          destinationIconUrl={destinationIconUrl}
+        />
         <div
           className="view-quote__view-other-button-container"
         >
