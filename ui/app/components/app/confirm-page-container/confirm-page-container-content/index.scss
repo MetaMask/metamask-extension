@@ -23,18 +23,20 @@
   }
 
   &__data-box {
+    @include H7;
+
     background-color: #f9fafa;
     padding: 12px;
-    font-size: 0.75rem;
     margin-bottom: 16px;
     word-wrap: break-word;
     max-height: 200px;
     overflow-y: auto;
 
     &-label {
+      @include H7;
+
       text-transform: uppercase;
       padding: 8px 0 12px;
-      font-size: 12px;
     }
   }
 
@@ -61,7 +63,8 @@
   }
 
   &__function-type {
-    font-size: 0.875rem;
+    @include H6;
+
     font-weight: 500;
     text-transform: capitalize;
     color: $black;
@@ -69,7 +72,8 @@
   }
 
   &__tab {
-    font-size: 0.75rem;
+    @include H7;
+
     color: #8c8e94;
     text-transform: uppercase;
     margin: 0 8px;

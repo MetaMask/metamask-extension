@@ -16,29 +16,29 @@
   }
 
   &__symbol {
+    @include Paragraph;
+
     color: $tundora;
-    font-size: 16px;
-    line-height: 24px;
     text-align: center;
     margin-bottom: 7.5px;
   }
 
   &__title {
+    @include H3;
+
     height: 30px;
     width: 271.28px;
     color: $tundora;
-    font-size: 22px;
-    line-height: 30px;
     text-align: center;
     margin-bottom: 10.5px;
   }
 
   &__copy {
-    height: 41px;
+    @include Paragraph;
+
+    min-height: 41px;
     width: 318px;
     color: $scorpion;
-    font-size: 14px;
-    line-height: 18px;
     text-align: center;
   }
 

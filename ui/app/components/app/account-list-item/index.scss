@@ -7,7 +7,8 @@
   }
 
   &__account-name {
-    font-size: 16px;
+    @include Paragraph;
+
     margin-left: 8px;
   }
 

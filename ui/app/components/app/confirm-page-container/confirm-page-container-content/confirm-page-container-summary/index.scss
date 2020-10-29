@@ -10,9 +10,10 @@
   }
 
   &__action {
+    @include H7;
+
     text-transform: uppercase;
     color: $oslo-gray;
-    font-size: 0.75rem;
     padding: 3px 8px;
     border: 1px solid $oslo-gray;
     border-radius: 4px;
@@ -35,7 +36,8 @@
   }
 
   &__title-text {
-    font-size: 2.25rem;
+    @include H1;
+
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

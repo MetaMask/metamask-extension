@@ -4,16 +4,18 @@
   flex-direction: column;
 
   &__title {
+    @include H6;
+
     font-weight: 500;
-    font-size: 14px;
     color: #636778;
     margin-left: 12px;
   }
 
   h2 {
+    @include H6;
+
     flex: 1 1 0;
     text-align: left;
-    font-size: 0.8rem;
     border-bottom: 1px solid #d2d8dd;
     padding: 0.5rem;
     margin: 0;
@@ -35,9 +37,8 @@
   }
 
   &__type-title {
-    font-style: normal;
-    font-weight: normal;
-    font-size: 14px;
+    @include H6;
+
     margin-left: 12px;
     margin-top: 6px;
     margin-bottom: 10px;

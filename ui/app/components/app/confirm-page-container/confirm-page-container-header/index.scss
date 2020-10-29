@@ -23,10 +23,10 @@
   }
 
   &__back-button {
+    @include Paragraph;
+
     color: #2f9ae0;
-    font-size: 1rem;
     cursor: pointer;
-    font-weight: 400;
     padding-left: 5px;
   }
 
@@ -38,7 +38,8 @@
   }
 
   &__address {
+    @include H6;
+
     margin-left: 6px;
-    font-size: 14px;
   }
 }

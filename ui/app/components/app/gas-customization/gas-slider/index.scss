@@ -45,9 +45,10 @@
   }
 
   &__labels {
+    @include H7;
+
     display: flex;
     justify-content: space-between;
-    font-size: 12px;
     margin-top: -6px;
     color: $mid-gray;
   }

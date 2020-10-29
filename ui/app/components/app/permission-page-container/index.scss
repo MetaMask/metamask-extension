@@ -35,7 +35,6 @@
   &__title {
     @include H4;
 
-    line-height: 25px;
     text-align: center;
     margin-top: 32px;
     width: 100%;
@@ -67,7 +66,8 @@
       align-items: center;
 
       label {
-        font-size: 14px;
+        @include H6;
+
         margin-left: 16px;
         color: $Black-100;
       }
@@ -88,7 +88,6 @@
   &__permissions-header {
     @include H6;
 
-    line-height: 20px;
     color: #6a737d;
   }
 

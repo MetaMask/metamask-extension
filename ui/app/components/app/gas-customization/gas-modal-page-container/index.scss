@@ -31,7 +31,8 @@
     }
 
     &__header-close-text {
-      font-size: 14px;
+      @include H6;
+
       color: #4eade7;
       position: absolute;
       top: 4px;
@@ -42,10 +43,10 @@
     }
 
     &__title {
+      @include H5;
+
       color: $black;
-      font-size: 16px;
       font-weight: 500;
-      line-height: 16px;
       display: flex;
       justify-content: center;
       align-items: flex-start;
@@ -61,8 +62,9 @@
     }
 
     &__tab {
+      @include H6;
+
       width: 100%;
-      font-size: 14px;
 
       &:last-of-type {
         margin-right: 0;
@@ -88,13 +90,14 @@
 
   &__info-row,
   &__info-row--fade {
+    @include H7;
+
     width: 100%;
     background: $polar;
     padding: 15px 21px;
     display: flex;
     flex-flow: column;
     color: $scorpion;
-    font-size: 12px;
 
     &__send-info,
     &__transaction-info,
@@ -111,19 +114,20 @@
 
     &__total-info {
       &__label {
-        font-size: 16px;
+        @include Paragraph;
 
         @media screen and (max-width: $break-small) {
-          font-size: 14px;
+          @include H6;
         }
       }
 
       &__value {
-        font-size: 16px;
+        @include Paragraph;
+
         font-weight: bold;
 
         @media screen and (max-width: $break-small) {
-          font-size: 14px;
+          @include H6;
         }
       }
     }
@@ -131,11 +135,11 @@
     &__transaction-info,
     &__send-info {
       &__label {
-        font-size: 12px;
+        @include H7;
       }
 
       &__value {
-        font-size: 12px;
+        @include H6;
       }
     }
   }

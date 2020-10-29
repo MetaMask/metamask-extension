@@ -7,11 +7,12 @@
   padding: 12px;
 
   &__eth {
-    font-size: 1.5rem;
+    @include H3;
+
     font-weight: 500;
   }
 
   &__fiat {
-    font-size: 0.75rem;
+    @include H7;
   }
 }
