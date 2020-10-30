@@ -230,13 +230,14 @@ export default function BuildQuote ({
         <div
           className="build-quote__swap-arrows-row"
         >
-          <div
+          <button
             className="build-quote__swap-arrows"
             onClick={() => {
               onToSelect(selectedFromToken)
               onFromSelect(selectedToToken)
             }}
-          />
+          ><img src="/images/icons/swap2.svg" alt={t('swapSwapSwitch')} width="12" height="16" />
+          </button>
         </div>
         <div className="build-quote__dropdown-swap-to-header">
           <div className="build-quote__input-label">{t('swapSwapTo')}</div>

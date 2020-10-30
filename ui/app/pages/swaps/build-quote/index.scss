@@ -60,11 +60,8 @@
     flex: 0 0 auto;
     height: 16px;
     width: 12px;
-    background-image: url(/images/icons/swap2.svg);
-    background-size: contain;
-    background-repeat: no-repeat;
-    position: absolute;
     cursor: pointer;
+    background: unset;
   }
 
   &__max-button {

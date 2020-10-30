@@ -35,7 +35,7 @@ export default function SlippageButtons ({
 
   return (
     <div className="slippage-buttons">
-      <div
+      <button
         onClick={() => setOpen(!open)}
         className={classnames('slippage-buttons__header', {
           'slippage-buttons__header--open': open,
@@ -43,7 +43,7 @@ export default function SlippageButtons ({
       >
         <div className="slippage-buttons__header-text">{t('swapsAdvancedOptions')}</div>
         {open ? <i className="fa fa-angle-up" /> : <i className="fa fa-angle-down" />}
-      </div>
+      </button>
       <div className="slippage-buttons__content">
         {open && (
           <div className="slippage-buttons__dropdown-content">
