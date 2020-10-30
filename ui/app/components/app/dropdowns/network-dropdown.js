@@ -106,7 +106,7 @@ class NetworkDropdown extends Component {
 
     return reversedRpcListDetail.map((entry) => {
       const { rpcUrl, chainId, ticker = 'ETH', nickname = '' } = entry
-      const currentRpcTarget = (
+      const isCurrentRpcTarget = (
         provider.type === 'rpc' && rpcUrl === provider.rpcUrl
       )
 
@@ -128,15 +128,15 @@ class NetworkDropdown extends Component {
           }}
         >
           {
-            currentRpcTarget
+            isCurrentRpcTarget
               ? <i className="fa fa-check" />
               : <div className="network-check__transparent">✓</div>
           }
-          <i className="fa fa-question-circle fa-med menu-icon-circle" />
+          <NetworkDropdownIcon backgroundColor="#d6d9dc" isSelected={isCurrentRpcTarget} />
           <span
             className="network-name-item"
             style={{
-              color: currentRpcTarget
+              color: isCurrentRpcTarget
                 ? '#ffffff'
                 : '#9b9b9b',
             }}
@@ -144,7 +144,7 @@ class NetworkDropdown extends Component {
             {nickname || rpcUrl}
           </span>
           {
-            currentRpcTarget
+            isCurrentRpcTarget
               ? null
               : (
                 <i
