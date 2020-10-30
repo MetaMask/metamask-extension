@@ -42,9 +42,6 @@ function mapDispatchToProps (dispatch) {
     setRpcTarget: (target, chainId, ticker, nickname) => {
       dispatch(actions.setRpcTarget(target, chainId, ticker, nickname))
     },
-    delRpcTarget: (target) => {
-      dispatch(actions.delRpcTarget(target))
-    },
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
     setNetworksTabAddMode: (isInAddMode) => {
       dispatch(actions.setNetworksTabAddMode(isInAddMode))
@@ -54,6 +51,13 @@ function mapDispatchToProps (dispatch) {
     },
     displayInvalidCustomNetworkAlert: (networkName) => {
       dispatch(displayInvalidCustomNetworkAlert(networkName))
+    },
+    showConfirmDeleteNetworkModal: ({ target, onConfirm }) => {
+      return dispatch(actions.showModal({
+        name: 'CONFIRM_DELETE_NETWORK',
+        target,
+        onConfirm,
+      }))
     },
   }
 }
@@ -79,8 +83,8 @@ class NetworkDropdown extends Component {
     frequentRpcListDetail: PropTypes.array.isRequired,
     networkDropdownOpen: PropTypes.bool.isRequired,
     history: PropTypes.object.isRequired,
-    delRpcTarget: PropTypes.func.isRequired,
     displayInvalidCustomNetworkAlert: PropTypes.func.isRequired,
+    showConfirmDeleteNetworkModal: PropTypes.func.isRequired,
   }
 
   handleClick (newProviderType) {
@@ -151,7 +155,10 @@ class NetworkDropdown extends Component {
                   className="fa fa-times delete"
                   onClick={(e) => {
                     e.stopPropagation()
-                    this.props.delRpcTarget(rpcUrl)
+                    this.props.showConfirmDeleteNetworkModal({
+                      target: rpcUrl,
+                      onConfirm: () => undefined,
+                    })
                   }}
                 />
               )
