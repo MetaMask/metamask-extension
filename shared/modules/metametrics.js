@@ -72,7 +72,6 @@ export const segmentLegacy = process.env.SEGMENT_LEGACY_WRITE_KEY
  * @property {string} app.name - the name of the application tracking the event
  * @property {string} app.version - the version of the application
  * @property {string} userAgent - the useragent string of the user
- * @property {string} locale    - the locale string for the user
  * @property {Object} [page]     - an object representing details of the current page
  * @property {string} [page.path] - the path of the current page (e.g /home)
  * @property {string} [page.title] - the title of the current page (e.g 'home')
@@ -186,7 +185,6 @@ export function getTrackMetaMetricsEvent (
         name: 'MetaMask Extension',
         version,
       },
-      locale,
       userAgent: window.navigator.userAgent,
       ...pick(providedContext, ['page', 'referrer']),
       ...pick(eventContext, ['page', 'referrer']),
@@ -198,13 +196,16 @@ export function getTrackMetaMetricsEvent (
         // These values are omitted from properties because they have special meaning
         // in segment. https://segment.com/docs/connections/spec/track/#properties.
         // to avoid accidentally using these inappropriately, you must add them as top
-        // level properties on the event payload.
-        ...omit(properties, ['revenue', 'currency', 'value']),
+        // level properties on the event payload. We also exclude locale to prevent consumers
+        // from overwriting this context level property. We track it as a property
+        // because not all destinations map locale from context.
+        ...omit(properties, ['revenue', 'locale', 'currency', 'value']),
         revenue,
         value,
         currency,
         category,
         network,
+        locale,
         chain_id: chainId,
         environment_type: environmentType,
       },
