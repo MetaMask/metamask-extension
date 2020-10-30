@@ -1,7 +1,10 @@
 import assert from 'assert'
 import sinon from 'sinon'
 import proxyquire from 'proxyquire'
+import nock from 'nock'
+import { cloneDeep } from 'lodash'
 
+import waitUntilCalled from '../../../lib/wait-until-called'
 import {
   GOERLI,
   KOVAN,
@@ -93,10 +96,52 @@ function getMockBlockTracker () {
   }
 }
 
+/**
+ * A transaction object in the format returned by the Etherscan API.
+ *
+ * Note that this is not an exhaustive type definiton; only the properties we use are defined
+ *
+ * @typedef {Object} EtherscanTransaction
+ * @property {string} blockNumber - The number of the block this transaction was found in, in decimal
+ * @property {string} from - The hex-prefixed address of the sender
+ * @property {string} gas - The gas limit, in decimal WEI
+ * @property {string} gasPrice - The gas price, in decimal WEI
+ * @property {string} hash - The hex-prefixed transaction hash
+ * @property {string} isError - Whether the transaction was confirmed or failed (0 for confirmed, 1 for failed)
+ * @property {string} nonce - The transaction nonce, in decimal
+ * @property {string} timeStamp - The timestamp for the transaction, in seconds
+ * @property {string} to - The hex-prefixed address of the recipient
+ * @property {string} value - The amount of ETH sent in this transaction, in decimal WEI
+ */
+
+/**
+ * Returns a transaction object matching the expected format returned
+ * by the Etherscan API
+ *
+ * @param {string} [toAddress] - The hex-prefixed address of the recipient
+ * @param {number} [blockNumber] - The block number for the transaction
+ *  @returns {EtherscanTransaction}
+ */
+const getFakeEtherscanTransaction = (toAddress = MOCK_SELECTED_ADDRESS, blockNumber = 10) => {
+  return {
+    blockNumber: blockNumber.toString(),
+    from: '0xfake',
+    gas: '0',
+    gasPrice: '0',
+    hash: '0xfake',
+    isError: '0',
+    nonce: '100',
+    timeStamp: '16000000000000',
+    to: toAddress,
+    value: '0',
+  }
+}
+
 describe('IncomingTransactionsController', function () {
 
   afterEach(function () {
     sinon.restore()
+    nock.cleanAll()
   })
 
   describe('constructor', function () {
@@ -108,8 +153,6 @@ describe('IncomingTransactionsController', function () {
         initState: {},
       })
       sinon.spy(incomingTransactionsController, '_update')
-
-      assert.equal(incomingTransactionsController.getCurrentNetwork(), 'FAKE_NETWORK')
 
       assert.deepEqual(incomingTransactionsController.store.getState(), getEmptyInitState())
 
@@ -139,28 +182,449 @@ describe('IncomingTransactionsController', function () {
     })
   })
 
-  describe('#start', function () {
-    it('should set up a listener for the latest block', function () {
+  describe('update events', function () {
+    it('should set up a listener for the latest block', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: getMockBlockTracker(),
         networkController: getMockNetworkController(),
         preferencesController: getMockPreferencesController(),
         initState: {},
       })
-      sinon.spy(incomingTransactionsController, '_update')
 
       incomingTransactionsController.start()
 
       assert(incomingTransactionsController.blockTracker.addListener.calledOnce)
       assert.equal(incomingTransactionsController.blockTracker.addListener.getCall(0).args[0], 'latest')
-      const blockTrackerListenerCallback = incomingTransactionsController.blockTracker.addListener.getCall(0).args[1]
-      assert.equal(incomingTransactionsController._update.callCount, 0)
-      blockTrackerListenerCallback('0xabc')
-      assert.equal(incomingTransactionsController._update.callCount, 1)
-      assert.deepEqual(incomingTransactionsController._update.getCall(0).args[0], {
-        address: '0x0101',
-        newBlockNumberDec: 2748,
+    })
+
+    it('should update upon latest block when started and on supported network', async function () {
+      const incomingTransactionsController = new IncomingTransactionsController({
+        blockTracker: getMockBlockTracker(),
+        networkController: getMockNetworkController(ROPSTEN),
+        preferencesController: getMockPreferencesController(),
+        initState: getNonEmptyInitState(),
       })
+      const startBlock = getNonEmptyInitState().incomingTxLastFetchedBlocksByNetwork[ROPSTEN]
+      nock('https://api-ropsten.etherscan.io')
+        .get(`/api?module=account&action=txlist&address=${MOCK_SELECTED_ADDRESS}&tag=latest&page=1&startBlock=${startBlock}`)
+        .reply(
+          200,
+          JSON.stringify({
+            status: '1',
+            result: [getFakeEtherscanTransaction()],
+          }),
+        )
+      const updateStateStub = sinon.stub(incomingTransactionsController.store, 'updateState')
+      const updateStateCalled = waitUntilCalled(updateStateStub, incomingTransactionsController.store)
+
+      incomingTransactionsController.start()
+      await updateStateCalled
+
+      const actualState = incomingTransactionsController.store.getState()
+      const generatedTxId = actualState?.incomingTransactions?.['0xfake']?.id
+
+      const actualStateWithoutGenerated = cloneDeep(actualState)
+      delete actualStateWithoutGenerated?.incomingTransactions?.['0xfake']?.id
+
+      assert.ok(typeof generatedTxId === 'number' && generatedTxId > 0, 'Generated transaction ID should be a positive number')
+      assert.deepStrictEqual(
+        actualStateWithoutGenerated,
+        {
+          incomingTransactions: {
+            ...getNonEmptyInitState().incomingTransactions,
+            '0xfake': {
+              blockNumber: '10',
+              hash: '0xfake',
+              metamaskNetworkId: '3',
+              status: 'confirmed',
+              time: 16000000000000000,
+              transactionCategory: 'incoming',
+              txParams: {
+                from: '0xfake',
+                gas: '0x0',
+                gasPrice: '0x0',
+                nonce: '0x64',
+                to: '0x0101',
+                value: '0x0',
+              },
+            },
+          },
+          incomingTxLastFetchedBlocksByNetwork: {
+            ...getNonEmptyInitState().incomingTxLastFetchedBlocksByNetwork,
+            [ROPSTEN]: 11,
+          },
+        },
+        'State should have been updated after first block was received',
+      )
+    })
+
+    it('should update last block fetched when started and not on supported network', async function () {
+      const incomingTransactionsController = new IncomingTransactionsController({
+        blockTracker: getMockBlockTracker(),
+        networkController: getMockNetworkController(),
+        preferencesController: getMockPreferencesController(),
+        initState: getNonEmptyInitState(),
+      })
+      const updateStateStub = sinon.stub(incomingTransactionsController.store, 'updateState')
+      const updateStateCalled = waitUntilCalled(updateStateStub, incomingTransactionsController.store)
+
+      incomingTransactionsController.start()
+
+      await updateStateCalled
+
+      const state = incomingTransactionsController.store.getState()
+      assert.deepStrictEqual(
+        state,
+        {
+          incomingTransactions: {
+            ...getNonEmptyInitState().incomingTransactions,
+          },
+          incomingTxLastFetchedBlocksByNetwork: {
+            ...getNonEmptyInitState().incomingTxLastFetchedBlocksByNetwork,
+            [FAKE_NETWORK]: 11,
+          },
+        },
+        'Should update last block fetched',
+      )
+    })
+
+    it('should not update upon latest block when started and incoming transactions disabled', async function () {
+      const incomingTransactionsController = new IncomingTransactionsController({
+        blockTracker: getMockBlockTracker(),
+        networkController: getMockNetworkController(),
+        preferencesController: getMockPreferencesController({ showIncomingTransactions: false }),
+        initState: getNonEmptyInitState(),
+      })
+      // reply with a valid request for any supported network, so that this test has every opportunity to fail
+      for (const network of [GOERLI, KOVAN, MAINNET, RINKEBY, ROPSTEN]) {
+        nock(`https://api${network === MAINNET ? '' : `-${network.toLowerCase()}`}.etherscan.io`)
+          .get(/api.+/u)
+          .reply(
+            200,
+            JSON.stringify({
+              status: '1',
+              result: [getFakeEtherscanTransaction()],
+            }),
+          )
+      }
+      const updateStateStub = sinon.stub(incomingTransactionsController.store, 'updateState')
+      const updateStateCalled = waitUntilCalled(updateStateStub, incomingTransactionsController.store)
+      const putStateStub = sinon.stub(incomingTransactionsController.store, 'putState')
+      const putStateCalled = waitUntilCalled(putStateStub, incomingTransactionsController.store)
+
+      incomingTransactionsController.start()
+
+      try {
+        await Promise.race([
+          updateStateCalled,
+          putStateCalled,
+          new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('TIMEOUT')), 1000)
+          }),
+        ])
+        assert.fail('Update state should not have been called')
+      } catch (error) {
+        assert(error.message === 'TIMEOUT', 'TIMEOUT error should be thrown')
+      }
+    })
+
+    it('should not update upon latest block when not started', async function () {
+      const incomingTransactionsController = new IncomingTransactionsController({
+        blockTracker: getMockBlockTracker(),
+        networkController: getMockNetworkController(ROPSTEN),
+        preferencesController: getMockPreferencesController(),
+        initState: getNonEmptyInitState(),
+      })
+      // reply with a valid request for any supported network, so that this test has every opportunity to fail
+      for (const network of [GOERLI, KOVAN, MAINNET, RINKEBY, ROPSTEN]) {
+        nock(`https://api${network === MAINNET ? '' : `-${network.toLowerCase()}`}.etherscan.io`)
+          .get(/api.+/u)
+          .reply(
+            200,
+            JSON.stringify({
+              status: '1',
+              result: [getFakeEtherscanTransaction()],
+            }),
+          )
+      }
+      const updateStateStub = sinon.stub(incomingTransactionsController.store, 'updateState')
+      const updateStateCalled = waitUntilCalled(updateStateStub, incomingTransactionsController.store)
+      const putStateStub = sinon.stub(incomingTransactionsController.store, 'putState')
+      const putStateCalled = waitUntilCalled(putStateStub, incomingTransactionsController.store)
+
+      try {
+        await Promise.race([
+          updateStateCalled,
+          putStateCalled,
+          new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('TIMEOUT')), 1000)
+          }),
+        ])
+        assert.fail('Update state should not have been called')
+      } catch (error) {
+        assert(error.message === 'TIMEOUT', 'TIMEOUT error should be thrown')
+      }
+    })
+
+    it('should not update upon latest block when stopped', async function () {
+      const incomingTransactionsController = new IncomingTransactionsController({
+        blockTracker: getMockBlockTracker(),
+        networkController: getMockNetworkController(ROPSTEN),
+        preferencesController: getMockPreferencesController(),
+        initState: getNonEmptyInitState(),
+      })
+      // reply with a valid request for any supported network, so that this test has every opportunity to fail
+      for (const network of [GOERLI, KOVAN, MAINNET, RINKEBY, ROPSTEN]) {
+        nock(`https://api${network === MAINNET ? '' : `-${network.toLowerCase()}`}.etherscan.io`)
+          .get(/api.+/u)
+          .reply(
+            200,
+            JSON.stringify({
+              status: '1',
+              result: [getFakeEtherscanTransaction()],
+            }),
+          )
+      }
+      const updateStateStub = sinon.stub(incomingTransactionsController.store, 'updateState')
+      const updateStateCalled = waitUntilCalled(updateStateStub, incomingTransactionsController.store)
+      const putStateStub = sinon.stub(incomingTransactionsController.store, 'putState')
+      const putStateCalled = waitUntilCalled(putStateStub, incomingTransactionsController.store)
+
+      incomingTransactionsController.stop()
+
+      try {
+        await Promise.race([
+          updateStateCalled,
+          putStateCalled,
+          new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('TIMEOUT')), 1000)
+          }),
+        ])
+        assert.fail('Update state should not have been called')
+      } catch (error) {
+        assert(error.message === 'TIMEOUT', 'TIMEOUT error should be thrown')
+      }
+    })
+
+    it('should update when the selected address changes and on supported network', async function () {
+      const incomingTransactionsController = new IncomingTransactionsController({
+        blockTracker: getMockBlockTracker(),
+        networkController: getMockNetworkController(ROPSTEN),
+        preferencesController: getMockPreferencesController(),
+        initState: getNonEmptyInitState(),
+      })
+      const NEW_MOCK_SELECTED_ADDRESS = `${MOCK_SELECTED_ADDRESS}9`
+      const startBlock = getNonEmptyInitState().incomingTxLastFetchedBlocksByNetwork[ROPSTEN]
+      nock('https://api-ropsten.etherscan.io')
+        .get(`/api?module=account&action=txlist&address=${NEW_MOCK_SELECTED_ADDRESS}&tag=latest&page=1&startBlock=${startBlock}`)
+        .reply(
+          200,
+          JSON.stringify({
+            status: '1',
+            result: [getFakeEtherscanTransaction(NEW_MOCK_SELECTED_ADDRESS)],
+          }),
+        )
+      const updateStateStub = sinon.stub(incomingTransactionsController.store, 'updateState')
+      const updateStateCalled = waitUntilCalled(updateStateStub, incomingTransactionsController.store)
+
+      const subscription = incomingTransactionsController.preferencesController.store.subscribe.getCall(1).args[0]
+      // The incoming transactions controller will always skip the first event
+      // We need to call subscription twice to test the event handling
+      // TODO: stop skipping the first event
+      await subscription({ selectedAddress: MOCK_SELECTED_ADDRESS })
+      await subscription({ selectedAddress: NEW_MOCK_SELECTED_ADDRESS })
+      await updateStateCalled
+
+      const actualState = incomingTransactionsController.store.getState()
+      const generatedTxId = actualState?.incomingTransactions?.['0xfake']?.id
+
+      const actualStateWithoutGenerated = cloneDeep(actualState)
+      delete actualStateWithoutGenerated?.incomingTransactions?.['0xfake']?.id
+
+      assert.ok(typeof generatedTxId === 'number' && generatedTxId > 0, 'Generated transaction ID should be a positive number')
+      assert.deepStrictEqual(
+        actualStateWithoutGenerated,
+        {
+          incomingTransactions: {
+            ...getNonEmptyInitState().incomingTransactions,
+            '0xfake': {
+              blockNumber: '10',
+              hash: '0xfake',
+              metamaskNetworkId: '3',
+              status: 'confirmed',
+              time: 16000000000000000,
+              transactionCategory: 'incoming',
+              txParams: {
+                from: '0xfake',
+                gas: '0x0',
+                gasPrice: '0x0',
+                nonce: '0x64',
+                to: '0x01019',
+                value: '0x0',
+              },
+            },
+          },
+          incomingTxLastFetchedBlocksByNetwork: {
+            ...getNonEmptyInitState().incomingTxLastFetchedBlocksByNetwork,
+            [ROPSTEN]: 11,
+          },
+        },
+        'State should have been updated after first block was received',
+      )
+    })
+
+    it('should update last block fetched when selected address changes and not on supported network', async function () {
+      const incomingTransactionsController = new IncomingTransactionsController({
+        blockTracker: { ...getMockBlockTracker() },
+        networkController: getMockNetworkController(),
+        preferencesController: getMockPreferencesController(),
+        initState: getNonEmptyInitState(),
+      })
+      const NEW_MOCK_SELECTED_ADDRESS = `${MOCK_SELECTED_ADDRESS}9`
+      // reply with a valid request for any supported network, so that this test has every opportunity to fail
+      for (const network of [GOERLI, KOVAN, MAINNET, RINKEBY, ROPSTEN]) {
+        nock(`https://api${network === MAINNET ? '' : `-${network.toLowerCase()}`}.etherscan.io`)
+          .get(/api.+/u)
+          .reply(
+            200,
+            JSON.stringify({
+              status: '1',
+              result: [getFakeEtherscanTransaction(NEW_MOCK_SELECTED_ADDRESS)],
+            }),
+          )
+      }
+      const updateStateStub = sinon.stub(incomingTransactionsController.store, 'updateState')
+      const updateStateCalled = waitUntilCalled(updateStateStub, incomingTransactionsController.store)
+
+      const subscription = incomingTransactionsController.preferencesController.store.subscribe.getCall(1).args[0]
+      // The incoming transactions controller will always skip the first event
+      // We need to call subscription twice to test the event handling
+      // TODO: stop skipping the first event
+      await subscription({ selectedAddress: MOCK_SELECTED_ADDRESS })
+      await subscription({ selectedAddress: NEW_MOCK_SELECTED_ADDRESS })
+
+      await updateStateCalled
+
+      const state = incomingTransactionsController.store.getState()
+      assert.deepStrictEqual(
+        state,
+        {
+          incomingTransactions: {
+            ...getNonEmptyInitState().incomingTransactions,
+          },
+          incomingTxLastFetchedBlocksByNetwork: {
+            ...getNonEmptyInitState().incomingTxLastFetchedBlocksByNetwork,
+            [FAKE_NETWORK]: 11,
+          },
+        },
+        'Should update last block fetched',
+      )
+    })
+
+    it('should update when switching to a supported network', async function () {
+      const incomingTransactionsController = new IncomingTransactionsController({
+        blockTracker: getMockBlockTracker(),
+        networkController: getMockNetworkController(ROPSTEN),
+        preferencesController: getMockPreferencesController(),
+        initState: getNonEmptyInitState(),
+      })
+      const startBlock = getNonEmptyInitState().incomingTxLastFetchedBlocksByNetwork[ROPSTEN]
+      nock('https://api-ropsten.etherscan.io')
+        .get(`/api?module=account&action=txlist&address=${MOCK_SELECTED_ADDRESS}&tag=latest&page=1&startBlock=${startBlock}`)
+        .reply(
+          200,
+          JSON.stringify({
+            status: '1',
+            result: [getFakeEtherscanTransaction()],
+          }),
+        )
+      const updateStateStub = sinon.stub(incomingTransactionsController.store, 'updateState')
+      const updateStateCalled = waitUntilCalled(updateStateStub, incomingTransactionsController.store)
+
+      const subscription = incomingTransactionsController.networkController.on.getCall(0).args[1]
+      incomingTransactionsController.networkController = getMockNetworkController(ROPSTEN)
+      await subscription(ROPSTEN)
+      await updateStateCalled
+
+      const actualState = incomingTransactionsController.store.getState()
+      const generatedTxId = actualState?.incomingTransactions?.['0xfake']?.id
+
+      const actualStateWithoutGenerated = cloneDeep(actualState)
+      delete actualStateWithoutGenerated?.incomingTransactions?.['0xfake']?.id
+
+      assert.ok(typeof generatedTxId === 'number' && generatedTxId > 0, 'Generated transaction ID should be a positive number')
+      assert.deepStrictEqual(
+        actualStateWithoutGenerated,
+        {
+          incomingTransactions: {
+            ...getNonEmptyInitState().incomingTransactions,
+            '0xfake': {
+              blockNumber: '10',
+              hash: '0xfake',
+              metamaskNetworkId: '3',
+              status: 'confirmed',
+              time: 16000000000000000,
+              transactionCategory: 'incoming',
+              txParams: {
+                from: '0xfake',
+                gas: '0x0',
+                gasPrice: '0x0',
+                nonce: '0x64',
+                to: '0x0101',
+                value: '0x0',
+              },
+            },
+          },
+          incomingTxLastFetchedBlocksByNetwork: {
+            ...getNonEmptyInitState().incomingTxLastFetchedBlocksByNetwork,
+            [ROPSTEN]: 11,
+          },
+        },
+        'State should have been updated after first block was received',
+      )
+    })
+
+    it('should update last block fetched when switching to an unsupported network', async function () {
+      const incomingTransactionsController = new IncomingTransactionsController({
+        blockTracker: getMockBlockTracker(),
+        networkController: getMockNetworkController(),
+        preferencesController: getMockPreferencesController(),
+        initState: getNonEmptyInitState(),
+      })
+      // reply with a valid request for any supported network, so that this test has every opportunity to fail
+      for (const network of [GOERLI, KOVAN, MAINNET, RINKEBY, ROPSTEN]) {
+        nock(`https://api${network === MAINNET ? '' : `-${network.toLowerCase()}`}.etherscan.io`)
+          .get(/api.+/u)
+          .reply(
+            200,
+            JSON.stringify({
+              status: '1',
+              result: [getFakeEtherscanTransaction()],
+            }),
+          )
+      }
+      const updateStateStub = sinon.stub(incomingTransactionsController.store, 'updateState')
+      const updateStateCalled = waitUntilCalled(updateStateStub, incomingTransactionsController.store)
+
+      const subscription = incomingTransactionsController.networkController.on.getCall(0).args[1]
+      await subscription('SECOND_FAKE_NETWORK')
+
+      await updateStateCalled
+
+      const state = incomingTransactionsController.store.getState()
+      assert.deepStrictEqual(
+        state,
+        {
+          incomingTransactions: {
+            ...getNonEmptyInitState().incomingTransactions,
+          },
+          incomingTxLastFetchedBlocksByNetwork: {
+            ...getNonEmptyInitState().incomingTxLastFetchedBlocksByNetwork,
+            SECOND_FAKE_NETWORK: 11,
+          },
+        },
+        'Should update last block fetched',
+      )
     })
   })
 
