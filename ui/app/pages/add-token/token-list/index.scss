@@ -20,15 +20,15 @@
     box-sizing: border-box;
     border-radius: 10px;
     cursor: pointer;
-    border: 2px solid transparent;
+    border: 1px solid transparent;
     position: relative;
 
     &:hover {
-      border: 2px solid rgba($malibu-blue, 0.5);
+      border-color: rgba($malibu-blue, 0.5);
     }
 
     &--selected {
-      border: 2px solid $malibu-blue !important;
+      border-color: $malibu-blue !important;
     }
 
     &--disabled {

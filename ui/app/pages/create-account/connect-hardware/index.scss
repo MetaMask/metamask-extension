@@ -45,7 +45,7 @@
 
   &__btn {
     background: #fbfbfb;
-    border: 2px solid #e5e5e5;
+    border: 1px solid #e5e5e5;
     height: 100px;
     width: 150px;
     flex: 1;
@@ -61,7 +61,7 @@
   }
 
   &__btn.selected {
-    border: 2px solid #00a8ee;
+    border-color: #00a8ee;
     width: 149px;
   }
 

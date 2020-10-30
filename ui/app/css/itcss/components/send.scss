@@ -784,7 +784,7 @@
       width: 56px;
       height: 20px;
       position: absolute;
-      border: 2px solid #b0d7f2;
+      border: 1px solid #b0d7f2;
       border-radius: 6px;
       cursor: pointer;
       top: 0;
@@ -804,7 +804,7 @@
 
     input:checked + &__button {
       background-color: $primary-blue;
-      border: 2px solid $primary-blue;
+      border: 1px solid $primary-blue;
       color: #fff;
     }
   }

@@ -39,7 +39,7 @@ $warning-light-orange: #f8b588;
 
 .btn-secondary {
   color: $Blue-500;
-  border: 2px solid $hover-secondary;
+  border: 1px solid $hover-secondary;
   background-color: $white;
 
   &:hover {
@@ -60,7 +60,7 @@ $warning-light-orange: #f8b588;
 
 .btn-warning {
   color: $Orange-500;
-  border: 2px solid $hover-orange;
+  border: 1px solid $hover-orange;
   background-color: $white;
 
   &:hover {
@@ -81,7 +81,7 @@ $warning-light-orange: #f8b588;
 
 .btn-danger {
   color: $Red-500;
-  border: 2px solid $hover-red;
+  border: 1px solid $hover-red;
   background-color: $white;
 
   &:hover {
@@ -102,7 +102,7 @@ $warning-light-orange: #f8b588;
 
 .btn-danger-primary {
   color: $white;
-  border: 2px solid $Red-500;
+  border: 1px solid $Red-500;
   background-color: $Red-500;
 
   &:hover {
@@ -125,7 +125,7 @@ $warning-light-orange: #f8b588;
 
 .btn-default {
   color: $Grey-500;
-  border: 2px solid $hover-default;
+  border: 1px solid $hover-default;
 
   &:hover {
     border-color: $Grey-500;
@@ -145,7 +145,7 @@ $warning-light-orange: #f8b588;
 
 .btn-primary {
   color: $white;
-  border: 2px solid $Blue-500;
+  border: 1px solid $Blue-500;
   background-color: $Blue-500;
 
   &:hover {

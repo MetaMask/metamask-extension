@@ -54,7 +54,7 @@
   &__input {
     @include H4;
 
-    border: 2px solid $Grey-200;
+    border: 1px solid $Grey-200;
     border-radius: 6px;
     color: $Grey-800;
     padding: 0.875rem 1rem;
@@ -230,7 +230,7 @@
     justify-content: center;
     align-items: center;
     border-radius: 50%;
-    border-width: 2px;
+    border-width: 1px;
     background: $primary-blue;
     margin-right: 5px;
     cursor: pointer;

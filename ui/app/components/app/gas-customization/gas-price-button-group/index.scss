@@ -34,7 +34,7 @@
     display: flex;
     padding-top: 17px;
     border-radius: 4px;
-    border: 2px solid $spindle;
+    border-color: $spindle;
     background: $white;
     color: $scorpion;
 
@@ -52,7 +52,7 @@
   }
 
   .button-group__button--active {
-    border: 2px solid $primary-blue;
+    border-color: $primary-blue;
     color: $scorpion;
 
     i {
@@ -222,10 +222,10 @@
 
   .button-group__button--active {
     background: #f7fcff;
-    border: 2px solid #2c8bdc;
+    border-color: #2c8bdc;
 
     &:first-child {
-      border: 2px solid #2c8bdc;
+      border-color: #2c8bdc;
     }
 
     .button-check-wrapper {
