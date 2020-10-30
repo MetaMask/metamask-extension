@@ -83,7 +83,7 @@
     "@sentry/integrations": "^5.26.0",
     "@zxing/library": "^0.8.0",
     "abortcontroller-polyfill": "^1.4.0",
-    "analytics-node": "^3.4.0-beta.2",
+    "analytics-node": "^3.4.0-beta.3",
     "await-semaphore": "^0.1.1",
     "bignumber.js": "^4.1.0",
     "bn.js": "^4.11.7",
