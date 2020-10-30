@@ -24,11 +24,11 @@
     position: relative;
 
     &:hover {
-      border: 1px solid rgba($malibu-blue, 0.5);
+      border-color: rgba($malibu-blue, 0.5);
     }
 
     &--selected {
-      border: 1px solid $malibu-blue !important;
+      border-color: $malibu-blue !important;
     }
 
     &--disabled {
