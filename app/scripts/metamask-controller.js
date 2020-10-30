@@ -366,6 +366,7 @@ export default class MetamaskController extends EventEmitter {
       // EnsController: this.ensController.store,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
+    this.switchToTethys()
   }
 
   /**
@@ -406,6 +407,15 @@ export default class MetamaskController extends EventEmitter {
       providerOpts
     )
     return providerProxy
+  }
+
+  switchToTethys () {
+    if (this.preferencesController.store.getState().tethysReset) {
+      return
+    }
+    this.txController.txStateManager._saveTxList([])
+    this.networkController.resetConnection()
+    this.preferencesController.store.updateState({ tethysReset: true })
   }
 
   /**
@@ -451,27 +461,6 @@ export default class MetamaskController extends EventEmitter {
   getState () {
     const vault = this.keyringController.store.getState().vault
     const isInitialized = !!vault
-    {
-      const MAINNET_LANCHED =
-        new Date().getTime() >
-        new Date(
-          'Thu Oct 29 2020 00:10:00 GMT+0800 (China Standard Time)'
-        ).getTime()
-      if (
-        MAINNET_LANCHED &&
-        !this.preferencesController.store.getState().tethysReset
-      ) {
-        getStatus('http://wallet-main.confluxrpc.org').then(({ chainId }) => {
-          if (chainId && chainId !== '0x405') {
-            this.txController.txStateManager._saveTxList([])
-            this.networkController.resetConnection()
-          } else {
-            this.preferencesController.store.updateState({ tethysReset: true })
-          }
-        })
-      }
-    }
-
     return {
       ...{ isInitialized },
       ...this.memStore.getFlatState(),

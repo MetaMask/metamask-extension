@@ -187,15 +187,7 @@ class NetworkDropdown extends Component {
     let name
 
     if (providerName === 'mainnet') {
-      const MAINNET_LANCHED =
-        new Date().getTime() >
-        new Date(
-          'Thu Oct 29 2020 00:10:00 GMT+0800 (China Standard Time)'
-        ).getTime()
       name = this.context.t('mainnet')
-      if (MAINNET_LANCHED) {
-        name = name.replace('Oceanus', 'Tethys')
-      }
     } else if (providerName === 'testnet') {
       name = this.context.t('testnet')
     } else {
@@ -218,11 +210,6 @@ class NetworkDropdown extends Component {
       padding: '12px 0',
     }
 
-    const MAINNET_LANCHED =
-      new Date().getTime() >
-      new Date(
-        'Thu Oct 29 2020 00:10:00 GMT+0800 (China Standard Time)'
-      ).getTime()
     return (
       <Dropdown
         isOpen={isOpen}
@@ -255,9 +242,7 @@ class NetworkDropdown extends Component {
           </div>
           <div className="network-dropdown-divider" />
           <div className="network-dropdown-content">
-            {!MAINNET_LANCHED && this.context.t('defaultNetwork')}
-            {MAINNET_LANCHED &&
-              this.context.t('defaultNetwork').replace('Oceanus', 'Tethys')}
+            {this.context.t('defaultNetwork')}
           </div>
         </div>
         <DropdownMenuItem
@@ -281,9 +266,7 @@ class NetworkDropdown extends Component {
               color: providerType === 'mainnet' ? '#ffffff' : '#9b9b9b',
             }}
           >
-            {!MAINNET_LANCHED && this.context.t('mainnet')}
-            {MAINNET_LANCHED &&
-              this.context.t('mainnet').replace('Oceanus', 'Tethys')}
+            {this.context.t('mainnet')}
           </span>
         </DropdownMenuItem>
         <DropdownMenuItem

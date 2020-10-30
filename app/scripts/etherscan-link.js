@@ -1,23 +1,23 @@
-const createExplorerLink = function (hash) {
-  const MAINNET_LANCHED =
-    new Date().getTime() >
-    new Date(
-      'Thu Oct 29 2020 00:10:00 GMT+0800 (China Standard Time)'
-    ).getTime()
-  return `http://confluxscan.io/${
-    MAINNET_LANCHED ? 'transaction' : 'transactionsdetail'
-  }/${hash}`
+const createExplorerLink = function (hash, networkId) {
+  switch (networkId) {
+    case '1029':
+      return `http://confluxscan.io/transaction/${hash}`
+    case '1':
+      return `http://testnet.confluxscan.io/transaction/${hash}`
+    default:
+      return `http://confluxscan.io/transaction/${hash}`
+  }
 }
 
-const createAccountLink = function (address) {
-  const MAINNET_LANCHED =
-    new Date().getTime() >
-    new Date(
-      'Thu Oct 29 2020 00:10:00 GMT+0800 (China Standard Time)'
-    ).getTime()
-  return `http://confluxscan.io/${
-    MAINNET_LANCHED ? 'address' : 'accountdetail'
-  }/${address}`
+const createAccountLink = function (address, networkId) {
+  switch (networkId) {
+    case '1029':
+      return `http://confluxscan.io/address/${address}`
+    case '1':
+      return `http://testnet.confluxscan.io/address/${address}`
+    default:
+      return `http://confluxscan.io/address/${address}`
+  }
 }
 
 module.exports = {
