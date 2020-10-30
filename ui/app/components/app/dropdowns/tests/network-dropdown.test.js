@@ -91,7 +91,7 @@ describe('Network Dropdown', function () {
     })
 
     it('checks background color for sixth NetworkDropdownIcon', function () {
-      assert.equal(wrapper.find(NetworkDropdownIcon).at(5).prop('innerBorder'), '1px solid #9b9b9b')
+      assert.equal(wrapper.find(NetworkDropdownIcon).at(5).prop('backgroundColor'), '#d6d9dc') // "Custom network grey"
     })
 
     it('checks dropdown for frequestRPCList from state', function () {
