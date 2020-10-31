@@ -9,15 +9,18 @@ import {
   GOERLI,
   KOVAN,
   MAINNET,
+  MAINNET_CHAIN_ID,
   RINKEBY,
   ROPSTEN,
+  ROPSTEN_CHAIN_ID,
+  ROPSTEN_NETWORK_ID,
 } from '../../../../app/scripts/controllers/network/enums'
 
 const IncomingTransactionsController = proxyquire('../../../../app/scripts/controllers/incoming-transactions', {
   '../lib/random-id': { default: () => 54321 },
 }).default
 
-const FAKE_NETWORK = 'FAKE_NETWORK'
+const FAKE_CHAIN_ID = '0x1338'
 const MOCK_SELECTED_ADDRESS = '0x0101'
 
 function getEmptyInitState () {
@@ -48,27 +51,9 @@ function getNonEmptyInitState () {
   }
 }
 
-function getNonEmptyInitStateWithFakeNetworkState () {
+function getMockNetworkController (chainId = FAKE_CHAIN_ID) {
   return {
-    incomingTransactions: {
-      '0x123456': { id: 777 },
-    },
-    incomingTxLastFetchedBlocksByNetwork: {
-      [ROPSTEN]: 1,
-      [RINKEBY]: 2,
-      [KOVAN]: 3,
-      [GOERLI]: 5,
-      [MAINNET]: 4,
-      [FAKE_NETWORK]: 1111,
-    },
-  }
-}
-
-function getMockNetworkController (networkType = FAKE_NETWORK) {
-  return {
-    getProviderConfig: () => {
-      return { type: networkType }
-    },
+    getCurrentChainId: () => chainId,
     on: sinon.spy(),
   }
 }
@@ -164,7 +149,6 @@ describe('IncomingTransactionsController', function () {
       assert.equal(incomingTransactionsController._update.callCount, 1)
       assert.deepEqual(incomingTransactionsController._update.getCall(0).args[0], {
         address: '0x0101',
-        networkType: 'testNetworkType',
       })
 
       incomingTransactionsController._update.resetHistory()
@@ -200,7 +184,7 @@ describe('IncomingTransactionsController', function () {
     it('should update upon latest block when started and on supported network', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: getMockBlockTracker(),
-        networkController: getMockNetworkController(ROPSTEN),
+        networkController: getMockNetworkController(ROPSTEN_CHAIN_ID),
         preferencesController: getMockPreferencesController(),
         initState: getNonEmptyInitState(),
       })
@@ -258,34 +242,44 @@ describe('IncomingTransactionsController', function () {
       )
     })
 
-    it('should update last block fetched when started and not on supported network', async function () {
+    it('should not update upon latest block when started and not on supported network', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: getMockBlockTracker(),
         networkController: getMockNetworkController(),
         preferencesController: getMockPreferencesController(),
         initState: getNonEmptyInitState(),
       })
+      // reply with a valid request for any supported network, so that this test has every opportunity to fail
+      for (const network of [GOERLI, KOVAN, MAINNET, RINKEBY, ROPSTEN]) {
+        nock(`https://api${network === MAINNET ? '' : `-${network.toLowerCase()}`}.etherscan.io`)
+          .get(/api.+/u)
+          .reply(
+            200,
+            JSON.stringify({
+              status: '1',
+              result: [getFakeEtherscanTransaction()],
+            }),
+          )
+      }
       const updateStateStub = sinon.stub(incomingTransactionsController.store, 'updateState')
       const updateStateCalled = waitUntilCalled(updateStateStub, incomingTransactionsController.store)
+      const putStateStub = sinon.stub(incomingTransactionsController.store, 'putState')
+      const putStateCalled = waitUntilCalled(putStateStub, incomingTransactionsController.store)
 
       incomingTransactionsController.start()
 
-      await updateStateCalled
-
-      const state = incomingTransactionsController.store.getState()
-      assert.deepStrictEqual(
-        state,
-        {
-          incomingTransactions: {
-            ...getNonEmptyInitState().incomingTransactions,
-          },
-          incomingTxLastFetchedBlocksByNetwork: {
-            ...getNonEmptyInitState().incomingTxLastFetchedBlocksByNetwork,
-            [FAKE_NETWORK]: 11,
-          },
-        },
-        'Should update last block fetched',
-      )
+      try {
+        await Promise.race([
+          updateStateCalled,
+          putStateCalled,
+          new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('TIMEOUT')), 1000)
+          }),
+        ])
+        assert.fail('Update state should not have been called')
+      } catch (error) {
+        assert(error.message === 'TIMEOUT', 'TIMEOUT error should be thrown')
+      }
     })
 
     it('should not update upon latest block when started and incoming transactions disabled', async function () {
@@ -331,7 +325,7 @@ describe('IncomingTransactionsController', function () {
     it('should not update upon latest block when not started', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: getMockBlockTracker(),
-        networkController: getMockNetworkController(ROPSTEN),
+        networkController: getMockNetworkController(ROPSTEN_CHAIN_ID),
         preferencesController: getMockPreferencesController(),
         initState: getNonEmptyInitState(),
       })
@@ -369,7 +363,7 @@ describe('IncomingTransactionsController', function () {
     it('should not update upon latest block when stopped', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: getMockBlockTracker(),
-        networkController: getMockNetworkController(ROPSTEN),
+        networkController: getMockNetworkController(ROPSTEN_CHAIN_ID),
         preferencesController: getMockPreferencesController(),
         initState: getNonEmptyInitState(),
       })
@@ -409,7 +403,7 @@ describe('IncomingTransactionsController', function () {
     it('should update when the selected address changes and on supported network', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: getMockBlockTracker(),
-        networkController: getMockNetworkController(ROPSTEN),
+        networkController: getMockNetworkController(ROPSTEN_CHAIN_ID),
         preferencesController: getMockPreferencesController(),
         initState: getNonEmptyInitState(),
       })
@@ -473,7 +467,7 @@ describe('IncomingTransactionsController', function () {
       )
     })
 
-    it('should update last block fetched when selected address changes and not on supported network', async function () {
+    it('should not update when the selected address changes and not on supported network', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: { ...getMockBlockTracker() },
         networkController: getMockNetworkController(),
@@ -495,6 +489,8 @@ describe('IncomingTransactionsController', function () {
       }
       const updateStateStub = sinon.stub(incomingTransactionsController.store, 'updateState')
       const updateStateCalled = waitUntilCalled(updateStateStub, incomingTransactionsController.store)
+      const putStateStub = sinon.stub(incomingTransactionsController.store, 'putState')
+      const putStateCalled = waitUntilCalled(putStateStub, incomingTransactionsController.store)
 
       const subscription = incomingTransactionsController.preferencesController.store.subscribe.getCall(1).args[0]
       // The incoming transactions controller will always skip the first event
@@ -503,28 +499,24 @@ describe('IncomingTransactionsController', function () {
       await subscription({ selectedAddress: MOCK_SELECTED_ADDRESS })
       await subscription({ selectedAddress: NEW_MOCK_SELECTED_ADDRESS })
 
-      await updateStateCalled
-
-      const state = incomingTransactionsController.store.getState()
-      assert.deepStrictEqual(
-        state,
-        {
-          incomingTransactions: {
-            ...getNonEmptyInitState().incomingTransactions,
-          },
-          incomingTxLastFetchedBlocksByNetwork: {
-            ...getNonEmptyInitState().incomingTxLastFetchedBlocksByNetwork,
-            [FAKE_NETWORK]: 11,
-          },
-        },
-        'Should update last block fetched',
-      )
+      try {
+        await Promise.race([
+          updateStateCalled,
+          putStateCalled,
+          new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('TIMEOUT')), 1000)
+          }),
+        ])
+        assert.fail('Update state should not have been called')
+      } catch (error) {
+        assert(error.message === 'TIMEOUT', 'TIMEOUT error should be thrown')
+      }
     })
 
     it('should update when switching to a supported network', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: getMockBlockTracker(),
-        networkController: getMockNetworkController(ROPSTEN),
+        networkController: getMockNetworkController(ROPSTEN_CHAIN_ID),
         preferencesController: getMockPreferencesController(),
         initState: getNonEmptyInitState(),
       })
@@ -542,7 +534,7 @@ describe('IncomingTransactionsController', function () {
       const updateStateCalled = waitUntilCalled(updateStateStub, incomingTransactionsController.store)
 
       const subscription = incomingTransactionsController.networkController.on.getCall(0).args[1]
-      incomingTransactionsController.networkController = getMockNetworkController(ROPSTEN)
+      incomingTransactionsController.networkController = getMockNetworkController(ROPSTEN_CHAIN_ID)
       await subscription(ROPSTEN)
       await updateStateCalled
 
@@ -584,10 +576,11 @@ describe('IncomingTransactionsController', function () {
       )
     })
 
-    it('should update last block fetched when switching to an unsupported network', async function () {
+    it('should not update when switching to an unsupported network', async function () {
+      const networkController = getMockNetworkController(ROPSTEN_CHAIN_ID)
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: getMockBlockTracker(),
-        networkController: getMockNetworkController(),
+        networkController,
         preferencesController: getMockPreferencesController(),
         initState: getNonEmptyInitState(),
       })
@@ -605,26 +598,26 @@ describe('IncomingTransactionsController', function () {
       }
       const updateStateStub = sinon.stub(incomingTransactionsController.store, 'updateState')
       const updateStateCalled = waitUntilCalled(updateStateStub, incomingTransactionsController.store)
+      const putStateStub = sinon.stub(incomingTransactionsController.store, 'putState')
+      const putStateCalled = waitUntilCalled(putStateStub, incomingTransactionsController.store)
 
       const subscription = incomingTransactionsController.networkController.on.getCall(0).args[1]
-      await subscription('SECOND_FAKE_NETWORK')
 
-      await updateStateCalled
+      networkController.getCurrentChainId = () => FAKE_CHAIN_ID
+      await subscription()
 
-      const state = incomingTransactionsController.store.getState()
-      assert.deepStrictEqual(
-        state,
-        {
-          incomingTransactions: {
-            ...getNonEmptyInitState().incomingTransactions,
-          },
-          incomingTxLastFetchedBlocksByNetwork: {
-            ...getNonEmptyInitState().incomingTxLastFetchedBlocksByNetwork,
-            SECOND_FAKE_NETWORK: 11,
-          },
-        },
-        'Should update last block fetched',
-      )
+      try {
+        await Promise.race([
+          updateStateCalled,
+          putStateCalled,
+          new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('TIMEOUT')), 1000)
+          }),
+        ])
+        assert.fail('Update state should not have been called')
+      } catch (error) {
+        assert(error.message === 'TIMEOUT', 'TIMEOUT error should be thrown')
+      }
     })
   })
 
@@ -632,66 +625,53 @@ describe('IncomingTransactionsController', function () {
     it('should call fetchAll with the correct params when passed a new block number and the current network has no stored block', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: getMockBlockTracker(),
-        networkController: getMockNetworkController(),
+        networkController: getMockNetworkController(ROPSTEN_CHAIN_ID),
         preferencesController: getMockPreferencesController(),
-        initState: getNonEmptyInitState(),
+        initState: getEmptyInitState(),
       })
       incomingTransactionsController._fetchAll = sinon.stub().returns({})
 
-      await incomingTransactionsController._getDataForUpdate({ address: 'fakeAddress', newBlockNumberDec: 999 })
+      await incomingTransactionsController._getDataForUpdate({
+        address: 'fakeAddress',
+        chainId: ROPSTEN_CHAIN_ID,
+        newBlockNumberDec: 999,
+      })
 
       assert(incomingTransactionsController._fetchAll.calledOnce)
 
       assert.deepEqual(incomingTransactionsController._fetchAll.getCall(0).args, [
-        'fakeAddress', 999, 'FAKE_NETWORK',
+        'fakeAddress', 999, ROPSTEN_CHAIN_ID,
       ])
     })
 
     it('should call fetchAll with the correct params when passed a new block number but the current network has a stored block', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: getMockBlockTracker(),
-        networkController: getMockNetworkController(),
+        networkController: getMockNetworkController(ROPSTEN_CHAIN_ID),
         preferencesController: getMockPreferencesController(),
-        initState: getNonEmptyInitStateWithFakeNetworkState(),
-      })
-      incomingTransactionsController._fetchAll = sinon.stub().returns({})
-
-      await incomingTransactionsController._getDataForUpdate({ address: 'fakeAddress', newBlockNumberDec: 999 })
-
-      assert(incomingTransactionsController._fetchAll.calledOnce)
-
-      assert.deepEqual(incomingTransactionsController._fetchAll.getCall(0).args, [
-        'fakeAddress', 1111, 'FAKE_NETWORK',
-      ])
-    })
-
-    it('should call fetchAll with the correct params when passed a new network type but no block info exists', async function () {
-      const incomingTransactionsController = new IncomingTransactionsController({
-        blockTracker: getMockBlockTracker(),
-        networkController: getMockNetworkController(),
-        preferencesController: getMockPreferencesController(),
-        initState: getNonEmptyInitStateWithFakeNetworkState(),
+        initState: getNonEmptyInitState(),
       })
       incomingTransactionsController._fetchAll = sinon.stub().returns({})
 
       await incomingTransactionsController._getDataForUpdate({
         address: 'fakeAddress',
-        networkType: 'NEW_FAKE_NETWORK',
+        chainId: ROPSTEN_CHAIN_ID,
+        newBlockNumberDec: 999,
       })
 
       assert(incomingTransactionsController._fetchAll.calledOnce)
 
       assert.deepEqual(incomingTransactionsController._fetchAll.getCall(0).args, [
-        'fakeAddress', 10, 'NEW_FAKE_NETWORK',
+        'fakeAddress', 4, ROPSTEN_CHAIN_ID,
       ])
     })
 
     it('should return the expected data', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: getMockBlockTracker(),
-        networkController: getMockNetworkController(),
+        networkController: getMockNetworkController(ROPSTEN_CHAIN_ID),
         preferencesController: getMockPreferencesController(),
-        initState: getNonEmptyInitStateWithFakeNetworkState(),
+        initState: getNonEmptyInitState(),
       })
       incomingTransactionsController._fetchAll = sinon.stub().returns({
         latestIncomingTxBlockNumber: 444,
@@ -700,7 +680,7 @@ describe('IncomingTransactionsController', function () {
 
       const result = await incomingTransactionsController._getDataForUpdate({
         address: 'fakeAddress',
-        networkType: 'FAKE_NETWORK',
+        chainId: ROPSTEN_CHAIN_ID,
       })
 
       assert.deepEqual(result, {
@@ -710,15 +690,14 @@ describe('IncomingTransactionsController', function () {
           '0x123456': { id: 777 },
         },
         currentBlocksByNetwork: {
-          [ROPSTEN]: 1,
-          [RINKEBY]: 2,
-          [KOVAN]: 3,
-          [GOERLI]: 5,
-          [MAINNET]: 4,
-          FAKE_NETWORK: 1111,
+          [GOERLI]: 1,
+          [KOVAN]: 2,
+          [MAINNET]: 3,
+          [RINKEBY]: 5,
+          [ROPSTEN]: 4,
         },
-        fetchedBlockNumber: 1111,
-        network: 'FAKE_NETWORK',
+        fetchedBlockNumber: 4,
+        chainId: ROPSTEN_CHAIN_ID,
       })
     })
   })
@@ -730,15 +709,14 @@ describe('IncomingTransactionsController', function () {
         '0x123456': { id: 777, hash: '0x123456' },
       },
       currentBlocksByNetwork: {
-        [ROPSTEN]: 1,
-        [RINKEBY]: 2,
-        [KOVAN]: 3,
-        [GOERLI]: 5,
-        [MAINNET]: 4,
-        FAKE_NETWORK: 1111,
+        [GOERLI]: 1,
+        [KOVAN]: 2,
+        [MAINNET]: 3,
+        [RINKEBY]: 5,
+        [ROPSTEN]: 4,
       },
       fetchedBlockNumber: 1111,
-      network: 'FAKE_NETWORK',
+      chainId: ROPSTEN_CHAIN_ID,
     }
 
     const MOCK_INPUT_WITH_LASTEST = {
@@ -749,7 +727,7 @@ describe('IncomingTransactionsController', function () {
     it('should update state with correct blockhash and transactions when passed a truthy latestIncomingTxBlockNumber', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: getMockBlockTracker(),
-        networkController: getMockNetworkController(),
+        networkController: getMockNetworkController(ROPSTEN_CHAIN_ID),
         preferencesController: getMockPreferencesController(),
         initState: getNonEmptyInitState(),
       })
@@ -762,7 +740,7 @@ describe('IncomingTransactionsController', function () {
       assert.deepEqual(incomingTransactionsController.store.updateState.getCall(0).args[0], {
         incomingTxLastFetchedBlocksByNetwork: {
           ...MOCK_INPUT_WITH_LASTEST.currentBlocksByNetwork,
-          'FAKE_NETWORK': 445,
+          [ROPSTEN]: 445,
         },
         incomingTransactions: {
           '0x123456': { id: 777, hash: '0x123456' },
@@ -774,7 +752,7 @@ describe('IncomingTransactionsController', function () {
     it('should update state with correct blockhash and transactions when passed a falsy latestIncomingTxBlockNumber', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: getMockBlockTracker(),
-        networkController: getMockNetworkController(),
+        networkController: getMockNetworkController(ROPSTEN_CHAIN_ID),
         preferencesController: getMockPreferencesController(),
         initState: getNonEmptyInitState(),
       })
@@ -787,7 +765,7 @@ describe('IncomingTransactionsController', function () {
       assert.deepEqual(incomingTransactionsController.store.updateState.getCall(0).args[0], {
         incomingTxLastFetchedBlocksByNetwork: {
           ...MOCK_INPUT_WITH_LASTEST.currentBlocksByNetwork,
-          'FAKE_NETWORK': 1112,
+          [ROPSTEN]: 1112,
         },
         incomingTransactions: {
           '0x123456': { id: 777, hash: '0x123456' },
@@ -815,12 +793,12 @@ describe('IncomingTransactionsController', function () {
     it('should call fetch with the expected url when passed an address, block number and supported network', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: getMockBlockTracker(),
-        networkController: getMockNetworkController(),
+        networkController: getMockNetworkController(ROPSTEN_CHAIN_ID),
         preferencesController: getMockPreferencesController(),
         initState: getNonEmptyInitState(),
       })
 
-      await incomingTransactionsController._fetchTxs('0xfakeaddress', '789', ROPSTEN)
+      await incomingTransactionsController._fetchTxs('0xfakeaddress', '789', ROPSTEN_CHAIN_ID)
 
       assert(mockFetch.calledOnce)
       assert.equal(mockFetch.getCall(0).args[0], `https://api-${ROPSTEN}.etherscan.io/api?module=account&action=txlist&address=0xfakeaddress&tag=latest&page=1&startBlock=789`)
@@ -829,12 +807,12 @@ describe('IncomingTransactionsController', function () {
     it('should call fetch with the expected url when passed an address, block number and MAINNET', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: getMockBlockTracker(),
-        networkController: getMockNetworkController(),
+        networkController: getMockNetworkController(MAINNET_CHAIN_ID),
         preferencesController: getMockPreferencesController(),
         initState: getNonEmptyInitState(),
       })
 
-      await incomingTransactionsController._fetchTxs('0xfakeaddress', '789', MAINNET)
+      await incomingTransactionsController._fetchTxs('0xfakeaddress', '789', MAINNET_CHAIN_ID)
 
       assert(mockFetch.calledOnce)
       assert.equal(mockFetch.getCall(0).args[0], `https://api.etherscan.io/api?module=account&action=txlist&address=0xfakeaddress&tag=latest&page=1&startBlock=789`)
@@ -843,46 +821,32 @@ describe('IncomingTransactionsController', function () {
     it('should call fetch with the expected url when passed an address and supported network, but a falsy block number', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: getMockBlockTracker(),
-        networkController: getMockNetworkController(),
+        networkController: getMockNetworkController(ROPSTEN_CHAIN_ID),
         preferencesController: getMockPreferencesController(),
         initState: getNonEmptyInitState(),
       })
 
-      await incomingTransactionsController._fetchTxs('0xfakeaddress', null, ROPSTEN)
+      await incomingTransactionsController._fetchTxs('0xfakeaddress', null, ROPSTEN_CHAIN_ID)
 
       assert(mockFetch.calledOnce)
       assert.equal(mockFetch.getCall(0).args[0], `https://api-${ROPSTEN}.etherscan.io/api?module=account&action=txlist&address=0xfakeaddress&tag=latest&page=1`)
     })
 
-    it('should not fetch and return an empty object when passed an unsported network', async function () {
-      const incomingTransactionsController = new IncomingTransactionsController({
-        blockTracker: getMockBlockTracker(),
-        networkController: getMockNetworkController(),
-        preferencesController: getMockPreferencesController(),
-        initState: getNonEmptyInitState(),
-      })
-
-      const result = await incomingTransactionsController._fetchTxs('0xfakeaddress', null, 'UNSUPPORTED_NETWORK')
-
-      assert(mockFetch.notCalled)
-      assert.deepEqual(result, {})
-    })
-
     it('should return the results from the fetch call, plus the address and currentNetworkID, when passed an address, block number and supported network', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: getMockBlockTracker(),
-        networkController: getMockNetworkController(),
+        networkController: getMockNetworkController(ROPSTEN_CHAIN_ID),
         preferencesController: getMockPreferencesController(),
         initState: getNonEmptyInitState(),
       })
 
-      const result = await incomingTransactionsController._fetchTxs('0xfakeaddress', '789', ROPSTEN)
+      const result = await incomingTransactionsController._fetchTxs('0xfakeaddress', '789', ROPSTEN_CHAIN_ID)
 
       assert(mockFetch.calledOnce)
       assert.deepEqual(result, {
         someKey: 'someValue',
         address: '0xfakeaddress',
-        currentNetworkID: '3',
+        chainId: ROPSTEN_CHAIN_ID,
       })
     })
   })
@@ -891,7 +855,7 @@ describe('IncomingTransactionsController', function () {
     it('should return a null block number and empty tx array if status is 0', function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: getMockBlockTracker(),
-        networkController: getMockNetworkController(),
+        networkController: getMockNetworkController(ROPSTEN_CHAIN_ID),
         preferencesController: getMockPreferencesController(),
         initState: getNonEmptyInitState(),
       })
@@ -911,7 +875,7 @@ describe('IncomingTransactionsController', function () {
     it('should return a null block number and empty tx array if the passed result array is empty', function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: getMockBlockTracker(),
-        networkController: getMockNetworkController(),
+        networkController: getMockNetworkController(ROPSTEN_CHAIN_ID),
         preferencesController: getMockPreferencesController(),
         initState: getNonEmptyInitState(),
       })
@@ -931,21 +895,21 @@ describe('IncomingTransactionsController', function () {
     it('should return the expected block number and tx list when passed data from a successful fetch', function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: getMockBlockTracker(),
-        networkController: getMockNetworkController(),
+        networkController: getMockNetworkController(ROPSTEN_CHAIN_ID),
         preferencesController: getMockPreferencesController(),
         initState: getNonEmptyInitState(),
       })
 
-      incomingTransactionsController._normalizeTxFromEtherscan = (tx, currentNetworkID) => ({
+      incomingTransactionsController._normalizeTxFromEtherscan = (tx) => ({
         ...tx,
-        currentNetworkID,
+        currentNetworkID: ROPSTEN_NETWORK_ID,
         normalized: true,
       })
 
       const result = incomingTransactionsController._processTxFetchResponse({
         status: '1',
         address: '0xfakeaddress',
-        currentNetworkID: 'FAKE_NETWORK',
+        chainId: ROPSTEN_CHAIN_ID,
         result: [
           {
             hash: '0xabc123',
@@ -1009,7 +973,7 @@ describe('IncomingTransactionsController', function () {
             blockNumber: 5000,
             time: 9,
             normalized: true,
-            currentNetworkID: 'FAKE_NETWORK',
+            currentNetworkID: ROPSTEN_NETWORK_ID,
           },
           {
             hash: '0xabc123',
@@ -1019,7 +983,7 @@ describe('IncomingTransactionsController', function () {
             blockNumber: 5000,
             time: 10,
             normalized: true,
-            currentNetworkID: 'FAKE_NETWORK',
+            currentNetworkID: ROPSTEN_NETWORK_ID,
           },
           {
             hash: '0xabc12345',
@@ -1029,7 +993,7 @@ describe('IncomingTransactionsController', function () {
             blockNumber: 5001,
             time: 11,
             normalized: true,
-            currentNetworkID: 'FAKE_NETWORK',
+            currentNetworkID: ROPSTEN_NETWORK_ID,
           },
           {
             hash: '0xabc123456',
@@ -1039,7 +1003,7 @@ describe('IncomingTransactionsController', function () {
             blockNumber: 5001,
             time: 12,
             normalized: true,
-            currentNetworkID: 'FAKE_NETWORK',
+            currentNetworkID: ROPSTEN_NETWORK_ID,
           },
         ],
       })
@@ -1050,7 +1014,7 @@ describe('IncomingTransactionsController', function () {
     it('should return the expected data when the tx is in error', function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: getMockBlockTracker(),
-        networkController: getMockNetworkController(),
+        networkController: getMockNetworkController(ROPSTEN_CHAIN_ID),
         preferencesController: getMockPreferencesController(),
         initState: getNonEmptyInitState(),
       })
@@ -1066,12 +1030,12 @@ describe('IncomingTransactionsController', function () {
         to: '0xe',
         value: '15',
         hash: '0xg',
-      }, 'FAKE_NETWORK')
+      }, ROPSTEN_CHAIN_ID)
 
       assert.deepEqual(result, {
         blockNumber: 333,
         id: 54321,
-        metamaskNetworkId: 'FAKE_NETWORK',
+        metamaskNetworkId: ROPSTEN_NETWORK_ID,
         status: 'failed',
         time: 4444000,
         txParams: {
@@ -1090,7 +1054,7 @@ describe('IncomingTransactionsController', function () {
     it('should return the expected data when the tx is not in error', function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: getMockBlockTracker(),
-        networkController: getMockNetworkController(),
+        networkController: getMockNetworkController(ROPSTEN_CHAIN_ID),
         preferencesController: getMockPreferencesController(),
         initState: getNonEmptyInitState(),
       })
@@ -1106,12 +1070,12 @@ describe('IncomingTransactionsController', function () {
         to: '0xe',
         value: '15',
         hash: '0xg',
-      }, 'FAKE_NETWORK')
+      }, ROPSTEN_CHAIN_ID)
 
       assert.deepEqual(result, {
         blockNumber: 333,
         id: 54321,
-        metamaskNetworkId: 'FAKE_NETWORK',
+        metamaskNetworkId: ROPSTEN_NETWORK_ID,
         status: 'confirmed',
         time: 4444000,
         txParams: {
