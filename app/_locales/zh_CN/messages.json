@@ -6,7 +6,7 @@
     "message": "版本、技术支持中心和联系方式。"
   },
   "acceleratingATransaction": {
-    "message": "* 设定更高天燃气价格，加快交易完成进度，提高网络快速处理机率，但无法保证每次均能够实现提速。"
+    "message": "* 设定更高 Gas 价格，加快交易完成进度，提高网络快速处理机率，但无法保证每次均能够实现提速。"
   },
   "accessingYourCamera": {
     "message": "正在获取相机使用权限..."
@@ -39,7 +39,7 @@
     "message": "添加网络"
   },
   "addRecipient": {
-    "message": "添加收件人"
+    "message": "添加接受人"
   },
   "addSuggestedTokens": {
     "message": "添加推荐代币"
@@ -80,7 +80,7 @@
     "message": "批准"
   },
   "approved": {
-    "message": "批准"
+    "message": "已批准"
   },
   "asset": {
     "message": "资产"
@@ -150,7 +150,7 @@
     "message": "在CoinSwitch上购买"
   },
   "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch是以最优惠的价格交换超过300种加密货币的一站式目的地。"
+    "message": "CoinSwitch是以最优惠的价格交换超过300种加密货币的一站式平台。"
   },
   "buyWithWyre": {
     "message": "使用 Wyre 购买 ETH"
@@ -434,7 +434,7 @@
     "message": "功能类型"
   },
   "gasLimitInfoTooltipContent": {
-    "message": "天然气限制即您个人希望购买的最大单位数量。"
+    "message": "gasLimi 即您个人希望购买的最大单位数量。"
   },
   "gasLimitTooLow": {
     "message": "Gas Limit 至少要 21000"
@@ -586,7 +586,7 @@
     "message": "链接"
   },
   "liveGasPricePredictions": {
-    "message": "实时天然气价格预测"
+    "message": "实时 Gas 价格预测"
   },
   "loadMore": {
     "message": "加载更多"
@@ -699,13 +699,13 @@
     "message": "没有交易"
   },
   "noWebcamFound": {
-    "message": "找不到您的个人电脑网络摄像头。请重试。"
+    "message": "找不到您的个人电脑网络摄像头，请重试。"
   },
   "noWebcamFoundTitle": {
     "message": "未找到网络摄像头"
   },
   "notEnoughGas": {
-    "message": "天然气不足"
+    "message": "Gas 不足"
   },
   "ofTextNofM": {
     "message": "/"
@@ -929,7 +929,7 @@
     "message": "助记词为12个单词"
   },
   "selectAHigherGasFee": {
-    "message": "请选择价格稍高的天然气费，加快交易处理速度。*"
+    "message": "请选择价格稍高的Gas，加快交易处理速度。*"
   },
   "selectAnAccount": {
     "message": "选择账户"
@@ -941,7 +941,7 @@
     "message": "选择货币"
   },
   "selectEachPhrase": {
-    "message": "请选择每一个片语，以确保片语正确性。"
+    "message": "请选择每一个单词，以确保单词正确性。"
   },
   "selectHdPath": {
     "message": "选择 HD 路径"
@@ -965,7 +965,7 @@
     "message": "发送 ETH"
   },
   "sendTokens": {
-    "message": "发送 代币"
+    "message": "发送代币"
   },
   "sentEther": {
     "message": "以太币已发送"
@@ -980,10 +980,10 @@
     "message": "设置"
   },
   "showAdvancedGasInline": {
-    "message": "高级天然气控制"
+    "message": "高级Gas控制"
   },
   "showAdvancedGasInlineDescription": {
-    "message": "请选择该选项，直接在发送和确认页面显示天然气价格和限制管理。"
+    "message": "请选择该选项，直接在发送和确认页面显示Gas价格和限制管理。"
   },
   "showFiatConversionInTestnets": {
     "message": "在 Testnets 上显示兑换率"
@@ -1007,7 +1007,7 @@
     "message": "签名"
   },
   "signNotice": {
-    "message": "签署此消息可能会产生危险的副作用。 \n只从你完全信任的网站上签名。 这种危险的方法将在未来的版本中被移除。"
+    "message": "签署此消息可能会产生危险的副作用。 \n只从你完全信任的网站上签名。 未来的版本将移除这种危险的方法。"
   },
   "signatureRequest": {
     "message": "请求签名"
@@ -1058,7 +1058,7 @@
     "message": "3. 开始体验 dApps 和更多功能！"
   },
   "step3HardwareWalletMsg": {
-    "message": "使用您的硬件钱包，操作与以太坊账户制作相同。登录 dApps，发送 ETH ，购买和保存 ERC20 代币和诸如 CryptoKitties 等不可替代代币。"
+    "message": "使用您的硬件钱包，操作与以太坊账户制作相同。登录 dApps，发送 ETH ，购买和保存 ERC20 代币和非同质化代币如 CryptoKitties"
   },
   "storePhrase": {
     "message": "通过如 1Password 等密码管家保存该密语。"
@@ -1121,7 +1121,7 @@
     "message": "代币已经被添加."
   },
   "tokenContractAddress": {
-    "message": "代币联系人地址"
+    "message": "代币合约地址"
   },
   "tokenSymbol": {
     "message": "代币符号"
@@ -1133,7 +1133,7 @@
     "message": "交易"
   },
   "transactionCancelAttempted": {
-    "message": "在 $2 尝试取消交易，其天然气费为 $1"
+    "message": "在 $2 尝试取消交易，其 Gas 费为 $1"
   },
   "transactionCancelSuccess": {
     "message": "成功在 $2 取消交易单"
@@ -1150,7 +1150,7 @@
   "transactionError": {
     "message": "交易出错. 合约代码执行异常."
   },
-  "transactionErrorNoContract": {
+  "transactionErrorNo": {
     "message": "正在尝试调用非联系人地址功能。"
   },
   "transactionErrored": {
@@ -1160,10 +1160,10 @@
     "message": "交易费"
   },
   "transactionResubmitted": {
-    "message": "在 $2 重新提交的交易单，其天然气费增加至 $1"
+    "message": "在 $2 重新提交的交易单，其 Gas 费用增加至 $1"
   },
   "transactionSubmitted": {
-    "message": "在 $2 提交的交易单，其天然气费为 $1 。"
+    "message": "在 $2 提交的交易单，其 Gas 费用为 $1 。"
   },
   "transactionTime": {
     "message": "交易时间"
