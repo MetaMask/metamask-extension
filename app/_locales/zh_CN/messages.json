@@ -434,7 +434,7 @@
     "message": "功能类型"
   },
   "gasLimitInfoTooltipContent": {
-    "message": "gasLimi 即您个人希望购买的最大单位数量。"
+    "message": "gasLimit 即您个人希望付出的最大 Gas 数量。"
   },
   "gasLimitTooLow": {
     "message": "Gas Limit 至少要 21000"
@@ -929,7 +929,7 @@
     "message": "助记词为12个单词"
   },
   "selectAHigherGasFee": {
-    "message": "请选择价格稍高的Gas，加快交易处理速度。*"
+    "message": "请选择价格稍高的 Gas 费，以加快交易处理速度。*"
   },
   "selectAnAccount": {
     "message": "选择账户"
@@ -980,10 +980,10 @@
     "message": "设置"
   },
   "showAdvancedGasInline": {
-    "message": "高级Gas控制"
+    "message": "高级 Gas 控制"
   },
   "showAdvancedGasInlineDescription": {
-    "message": "请选择该选项，直接在发送和确认页面显示Gas价格和限制管理。"
+    "message": "请选择该选项，直接在发送和确认页面显示 Gas 价格和限制管理。"
   },
   "showFiatConversionInTestnets": {
     "message": "在 Testnets 上显示兑换率"
@@ -1150,7 +1150,7 @@
   "transactionError": {
     "message": "交易出错. 合约代码执行异常."
   },
-  "transactionErrorNo": {
+  "transactionErrorNoContract": {
     "message": "正在尝试调用非联系人地址功能。"
   },
   "transactionErrored": {
