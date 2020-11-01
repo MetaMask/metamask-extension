@@ -168,7 +168,7 @@
     "message": "取消操作"
   },
   "cancellationGasFee": {
-    "message": "取消天然气费"
+    "message": "取消 Gas 费"
   },
   "cancelled": {
     "message": "已取消"
@@ -440,13 +440,13 @@
     "message": "Gas Limit 至少要 21000"
   },
   "gasPriceExtremelyLow": {
-    "message": "天然气价格极低"
+    "message": "Gas 价格极低"
   },
   "gasPriceInfoTooltipContent": {
-    "message": "天然气价格将详细列明每个付费天然气单位的以太币金额。"
+    "message": "Gas 价格将详细列明每个付费 Gas 单位的以太币金额。"
   },
   "gasUsed": {
-    "message": "已使用天然气量"
+    "message": "已使用 Gas 量"
   },
   "general": {
     "message": "通用"
@@ -1272,6 +1272,6 @@
     "message": "正在请求你的签名"
   },
   "zeroGasPriceOnSpeedUpError": {
-    "message": "天然气价格加速上涨"
+    "message": "Gas 价格加速上涨"
   }
 }
