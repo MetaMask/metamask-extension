@@ -885,7 +885,7 @@ describe('SwapsController', function () {
 
         assert.deepEqual(
           median,
-          values[1],
+          values[0],
           'should have returned correct median quote object',
         )
       })

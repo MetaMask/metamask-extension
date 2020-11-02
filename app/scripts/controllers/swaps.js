@@ -741,11 +741,12 @@ export default class SwapsController {
  * @param {array} quotes - A sample of quote objects with ethValueOfQuote and ethFee properties
  * @returns {object} An object with the media ethValueOfQuote for all quotes, and the associated median ethFee and metaMaskFeeInEth.
  */
-
-function getMedianEthValueQuote(quotes) {
-  if (!Array.isArray(quotes) || quotes.length === 0) {
+function getMedianEthValueQuote(_quotes) {
+  if (!Array.isArray(_quotes) || _quotes.length === 0) {
     throw new Error('Expected non-empty array param.')
   }
+
+  const quotes = [..._quotes]
 
   quotes.sort(
     (
