@@ -1,4 +1,4 @@
-import '../../app/scripts/lib/freezeIntrinsics'
+import freezeIntrinsics from '../../app/scripts/lib/freezeIntrinsics'
 freezeIntrinsics()
 
 import assert from 'assert'
