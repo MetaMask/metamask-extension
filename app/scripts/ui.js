@@ -1,6 +1,4 @@
 
-import freezeIntrinsics from './lib/freezeIntrinsics'
-
 // polyfills
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
 import '@formatjs/intl-relativetimeformat/polyfill'
@@ -16,6 +14,7 @@ import EthQuery from 'eth-query'
 import StreamProvider from 'web3-stream-provider'
 import log from 'loglevel'
 import launchMetaMaskUi from '../../ui'
+import freezeIntrinsics from './lib/freezeIntrinsics'
 import { setupMultiplex } from './lib/stream-utils'
 import setupSentry from './lib/setupSentry'
 import ExtensionPlatform from './platforms/extension'
@@ -38,6 +37,7 @@ async function start() {
     getState: () => window.getSentryState?.() || {},
   })
 
+  // Should occur before anything else, but needs to occur after sentry init for now
   freezeIntrinsics()
 
   // identify window type (popup, notification)

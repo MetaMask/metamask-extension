@@ -2,7 +2,6 @@
  * @file The entry point for the web extension singleton process.
  */
 // these need to run before anything else
-import freezeIntrinsics from './lib/freezeIntrinsics'
 /* eslint-disable import/first,import/order */
 import setupFetchDebugging from './lib/setupFetchDebugging'
 /* eslint-enable import/order */
@@ -20,6 +19,7 @@ import extension from 'extensionizer'
 import storeTransform from 'obs-store/lib/transform'
 import asStream from 'obs-store/lib/asStream'
 import PortStream from 'extension-port-stream'
+import freezeIntrinsics from './lib/freezeIntrinsics'
 import migrations from './migrations'
 import Migrator from './lib/migrator'
 import ExtensionPlatform from './platforms/extension'
@@ -53,6 +53,7 @@ global.METAMASK_NOTIFIER = notificationManager
 const release = platform.getVersion()
 const sentry = setupSentry({ release })
 
+// Should occur before anything else, but needs to occur after sentry init for now
 freezeIntrinsics()
 
 let popupIsOpen = false
