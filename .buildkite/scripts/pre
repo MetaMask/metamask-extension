@@ -52,7 +52,6 @@ function docker-build {
          --progress=plain \
          --target=$target \
          $use_depends_as_cache \
-         --cache-from $latest_image \
          --build-arg BUILDKIT_INLINE_CACHE=1 \
          --build-arg BUILDKITE=\"$BUILDKITE\" \
          --build-arg BUILDKITE_BRANCH=\"$valid_branch\" \
@@ -66,7 +65,7 @@ function docker-build {
          ."
   eval $docker_build
   docker tag $image $latest_image
-  # time maybe_docker_push $latest_image
+  time maybe_docker_push $latest_image
 }
 
 function docker-run {

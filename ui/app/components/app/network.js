@@ -68,21 +68,12 @@ export default class Network extends Component {
       providerUrl = provider.rpcTarget
     }
 
-    const MAINNET_LANCHED =
-      new Date().getTime() >
-      new Date(
-        'Thu Oct 29 2020 00:10:00 GMT+0800 (China Standard Time)'
-      ).getTime()
     switch (providerName) {
       case 'mainnet':
         return (
           <NetworkIndicator
             disabled={disabled}
-            hoverText={
-              MAINNET_LANCHED
-                ? t('mainnet').replace('Oceanus', 'Tethys')
-                : t('mainnet')
-            }
+            hoverText={t('mainnet')}
             onClick={onClick}
             providerName={providerName}
           >
@@ -91,11 +82,7 @@ export default class Network extends Component {
               nonSelectBackgroundColor="#15afb2"
               loading={networkNumber === 'loading'}
             />
-            <div className="network-name">
-              {MAINNET_LANCHED
-                ? t('mainnet').replace('Oceanus', 'Tethys')
-                : t('mainnet')}
-            </div>
+            <div className="network-name">{t('mainnet')}</div>
           </NetworkIndicator>
         )
 

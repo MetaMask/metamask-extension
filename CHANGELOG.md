@@ -2,9 +2,16 @@
 
 ## Current Develop Branch
 
+## 0.5.3 Wed Oct 28 2020
+
+- fix: wrong CFX balance
+
+## 0.5.2 Wed Oct 28 2020
+
+- fix: set useNativeCurrencyAsPrimaryCurrency to false (#271)
+
 ## 0.5.1 Wed Oct 28 2020
 
-- fix: testnet chainid
 - fix: testnet chainid
 
 ## 0.5.0 Tue Oct 27 2020

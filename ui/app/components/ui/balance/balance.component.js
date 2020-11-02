@@ -5,13 +5,11 @@ import Identicon from '../identicon'
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 import { formatBalance } from '../../../helpers/utils/util'
-import Tooltip from '../tooltip-v2'
-import InfoCircle from '../info-circle'
 
 export default class Balance extends PureComponent {
-  static contextTypes = {
-    t: PropTypes.func.isRequired,
-  }
+  // static contextTypes = {
+  //   t: PropTypes.func.isRequired,
+  // }
 
   static propTypes = {
     account: PropTypes.object,
@@ -21,24 +19,15 @@ export default class Balance extends PureComponent {
     network: PropTypes.string,
     showFiat: PropTypes.bool,
     token: PropTypes.object,
-    selectedTokenAddress: PropTypes.string,
   }
 
   static defaultProps = {
     needsParse: true,
     showFiat: true,
-    selectedTokenAddress: null,
   }
 
   renderBalance () {
-    const {
-      account,
-      nativeCurrency,
-      needsParse,
-      showFiat,
-      selectedTokenAddress,
-    } = this.props
-    const { t } = this.context
+    const { account, nativeCurrency, needsParse, showFiat } = this.props
     const balanceValue = account && account.balance
     const formattedBalance = balanceValue
       ? formatBalance(balanceValue, 6, needsParse, nativeCurrency)
@@ -52,11 +41,6 @@ export default class Balance extends PureComponent {
       )
     }
 
-    const MAINNET_LANCHED =
-      new Date().getTime() >
-      new Date(
-        'Thu Oct 29 2020 00:10:00 GMT+0800 (China Standard Time)'
-      ).getTime()
     return (
       <div
         className="flex-column balance-display"
@@ -72,21 +56,6 @@ export default class Balance extends PureComponent {
           type={PRIMARY}
           ethNumberOfDecimals={6}
         />
-        {!MAINNET_LANCHED && (
-          <Tooltip position="bottom" title={t('cfxTestWarning')}>
-            <div
-              style={{
-                display: 'flex',
-                marginLeft: '4px',
-              }}
-            >
-              <InfoCircle
-                color={selectedTokenAddress ? '#ffffff' : undefined}
-                width="16"
-              />
-            </div>
-          </Tooltip>
-        )}
         {showFiat && (
           <UserPreferencedCurrencyDisplay
             value={balanceValue}

@@ -121,12 +121,7 @@ export default class NetworkController extends EventEmitter {
         ? networks.networkList[type].chainId
         : network
     if (type === MAINNET) {
-      const MAINNET_LANCHED =
-        new Date().getTime() >
-        new Date(
-          'Thu Oct 29 2020 00:10:00 GMT+0800 (China Standard Time)'
-        ).getTime()
-      network = MAINNET_LANCHED ? '1029' : '2'
+      network = '1029'
     } else if (type === TESTNET) {
       network = '1'
     }
@@ -234,14 +229,9 @@ export default class NetworkController extends EventEmitter {
     //   this._configureInfuraProvider(opts)
     // other type-based rpc endpoints
     if (type === MAINNET) {
-      const MAINNET_LANCHED =
-        new Date().getTime() >
-        new Date(
-          'Thu Oct 29 2020 00:10:00 GMT+0800 (China Standard Time)'
-        ).getTime()
       this._configureStandardProvider({
         rpcUrl: CONFLUX_MAINNET,
-        chainId: MAINNET_LANCHED ? 1029 : 2,
+        chainId: 1029,
         ticker: 'CFX',
         nickname: 'mainnet',
         type,
