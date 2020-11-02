@@ -1,3 +1,4 @@
+import './lib/freezeGlobals'
 import querystring from 'querystring'
 import pump from 'pump'
 import LocalMessageDuplexStream from 'post-message-stream'
