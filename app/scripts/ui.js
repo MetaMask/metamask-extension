@@ -37,6 +37,8 @@ async function start() {
     getState: () => window.getSentryState?.() || {},
   })
 
+  require('./lib/freezeGlobals')
+
   // identify window type (popup, notification)
   const windowType = getEnvironmentType()
 
