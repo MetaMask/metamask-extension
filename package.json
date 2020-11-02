@@ -5,7 +5,7 @@
   "scripts": {
     "start": "yarn build dev",
     "dist": "yarn build prod",
-    "build": "node development/build/index.js",
+    "build": "node --max_old_space_size=2048 development/build/index.js",
     "start:test": "yarn build testDev",
     "benchmark:chrome": "SELENIUM_BROWSER=chrome node test/e2e/benchmark.js",
     "benchmark:firefox": "SELENIUM_BROWSER=firefox node test/e2e/benchmark.js",
