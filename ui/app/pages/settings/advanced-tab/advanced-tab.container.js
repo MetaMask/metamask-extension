@@ -16,13 +16,12 @@ import { getPreferences } from '../../../selectors'
 import AdvancedTab from './advanced-tab.component'
 
 export const mapStateToProps = (state) => {
-  const { appState: { warning }, metamask } = state
   const {
-    featureFlags: {
-      sendHexData,
-      transactionTime,
-      advancedInlineGas,
-    } = {},
+    appState: { warning },
+    metamask,
+  } = state
+  const {
+    featureFlags: { sendHexData, transactionTime, advancedInlineGas } = {},
     threeBoxSyncingAllowed,
     threeBoxDisabled,
     useNonceField,
@@ -46,11 +45,15 @@ export const mapStateToProps = (state) => {
 
 export const mapDispatchToProps = (dispatch) => {
   return {
-    setHexDataFeatureFlag: (shouldShow) => dispatch(setFeatureFlag('sendHexData', shouldShow)),
+    setHexDataFeatureFlag: (shouldShow) =>
+      dispatch(setFeatureFlag('sendHexData', shouldShow)),
     displayWarning: (warning) => dispatch(displayWarning(warning)),
-    showResetAccountConfirmationModal: () => dispatch(showModal({ name: 'CONFIRM_RESET_ACCOUNT' })),
-    setAdvancedInlineGasFeatureFlag: (shouldShow) => dispatch(setFeatureFlag('advancedInlineGas', shouldShow)),
-    setTransactionTimeFeatureFlag: (shouldShow) => dispatch(setFeatureFlag('transactionTime', shouldShow)),
+    showResetAccountConfirmationModal: () =>
+      dispatch(showModal({ name: 'CONFIRM_RESET_ACCOUNT' })),
+    setAdvancedInlineGasFeatureFlag: (shouldShow) =>
+      dispatch(setFeatureFlag('advancedInlineGas', shouldShow)),
+    setTransactionTimeFeatureFlag: (shouldShow) =>
+      dispatch(setFeatureFlag('transactionTime', shouldShow)),
     setUseNonceField: (value) => dispatch(setUseNonceField(value)),
     setShowFiatConversionOnTestnetsPreference: (value) => {
       return dispatch(setShowFiatConversionOnTestnetsPreference(value))

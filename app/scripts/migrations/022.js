@@ -1,4 +1,3 @@
-
 /*
 
 This migration adds submittedTime to the txMeta if it is not their
@@ -12,7 +11,7 @@ const version = 22
 export default {
   version,
 
-  migrate (originalVersionedData) {
+  migrate(originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     try {
@@ -26,7 +25,7 @@ export default {
   },
 }
 
-function transformState (state) {
+function transformState(state) {
   const newState = state
   const { TransactionController } = newState
   if (TransactionController && TransactionController.transactions) {
@@ -36,7 +35,7 @@ function transformState (state) {
       if (txMeta.status !== 'submitted' || txMeta.submittedTime) {
         return txMeta
       }
-      txMeta.submittedTime = (new Date()).getTime()
+      txMeta.submittedTime = new Date().getTime()
       return txMeta
     })
   }

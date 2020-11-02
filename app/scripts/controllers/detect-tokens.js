@@ -6,20 +6,25 @@ import { MAINNET } from './network/enums'
 
 // By default, poll every 3 minutes
 const DEFAULT_INTERVAL = 180 * 1000
-const SINGLE_CALL_BALANCES_ADDRESS = '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39'
+const SINGLE_CALL_BALANCES_ADDRESS =
+  '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39'
 
 /**
  * A controller that polls for token exchange
  * rates based on a user's current token list
  */
 export default class DetectTokensController {
-
   /**
    * Creates a DetectTokensController
    *
    * @param {Object} [config] - Options to configure controller
    */
-  constructor ({ interval = DEFAULT_INTERVAL, preferences, network, keyringMemStore } = {}) {
+  constructor({
+    interval = DEFAULT_INTERVAL,
+    preferences,
+    network,
+    keyringMemStore,
+  } = {}) {
     this.preferences = preferences
     this.interval = interval
     this.network = network
@@ -29,7 +34,7 @@ export default class DetectTokensController {
   /**
    * For each token in eth-contract-metadata, find check selectedAddress balance.
    */
-  async detectNewTokens () {
+  async detectNewTokens() {
     if (!this.isActive) {
       return
     }
@@ -40,7 +45,10 @@ export default class DetectTokensController {
     const tokensToDetect = []
     this.web3.setProvider(this._network._provider)
     for (const contractAddress in contracts) {
-      if (contracts[contractAddress].erc20 && !(this.tokenAddresses.includes(contractAddress.toLowerCase()))) {
+      if (
+        contracts[contractAddress].erc20 &&
+        !this.tokenAddresses.includes(contractAddress.toLowerCase())
+      ) {
         tokensToDetect.push(contractAddress)
       }
     }
@@ -49,20 +57,29 @@ export default class DetectTokensController {
     try {
       result = await this._getTokenBalances(tokensToDetect)
     } catch (error) {
-      warn(`MetaMask - DetectTokensController single call balance fetch failed`, error)
+      warn(
+        `MetaMask - DetectTokensController single call balance fetch failed`,
+        error,
+      )
       return
     }
 
     tokensToDetect.forEach((tokenAddress, index) => {
       const balance = result[index]
       if (balance && !balance.isZero()) {
-        this._preferences.addToken(tokenAddress, contracts[tokenAddress].symbol, contracts[tokenAddress].decimals)
+        this._preferences.addToken(
+          tokenAddress,
+          contracts[tokenAddress].symbol,
+          contracts[tokenAddress].decimals,
+        )
       }
     })
   }
 
-  async _getTokenBalances (tokens) {
-    const ethContract = this.web3.eth.contract(SINGLE_CALL_BALANCES_ABI).at(SINGLE_CALL_BALANCES_ADDRESS)
+  async _getTokenBalances(tokens) {
+    const ethContract = this.web3.eth
+      .contract(SINGLE_CALL_BALANCES_ABI)
+      .at(SINGLE_CALL_BALANCES_ADDRESS)
     return new Promise((resolve, reject) => {
       ethContract.balances([this.selectedAddress], tokens, (error, result) => {
         if (error) {
@@ -78,7 +95,7 @@ export default class DetectTokensController {
    * in case of address change or user session initialization.
    *
    */
-  restartTokenDetection () {
+  restartTokenDetection() {
     if (!(this.isActive && this.selectedAddress)) {
       return
     }
@@ -90,7 +107,7 @@ export default class DetectTokensController {
   /**
    * @type {Number}
    */
-  set interval (interval) {
+  set interval(interval) {
     this._handle && clearInterval(this._handle)
     if (!interval) {
       return
@@ -104,7 +121,7 @@ export default class DetectTokensController {
    * In setter when selectedAddress is changed, detectNewTokens and restart polling
    * @type {Object}
    */
-  set preferences (preferences) {
+  set preferences(preferences) {
     if (!preferences) {
       return
     }
@@ -129,7 +146,7 @@ export default class DetectTokensController {
   /**
    * @type {Object}
    */
-  set network (network) {
+  set network(network) {
     if (!network) {
       return
     }
@@ -141,7 +158,7 @@ export default class DetectTokensController {
    * In setter when isUnlocked is updated to true, detectNewTokens and restart polling
    * @type {Object}
    */
-  set keyringMemStore (keyringMemStore) {
+  set keyringMemStore(keyringMemStore) {
     if (!keyringMemStore) {
       return
     }
@@ -160,7 +177,7 @@ export default class DetectTokensController {
    * Internal isActive state
    * @type {Object}
    */
-  get isActive () {
+  get isActive() {
     return this.isOpen && this.isUnlocked
   }
   /* eslint-enable accessor-pairs */

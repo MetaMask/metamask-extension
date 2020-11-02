@@ -11,7 +11,8 @@ describe('Transaction Confirmed', function () {
       hideModal: sinon.spy(),
     }
     const wrapper = mount(
-      <TransactionConfirmed.WrappedComponent {...props} />, {
+      <TransactionConfirmed.WrappedComponent {...props} />,
+      {
         context: {
           t: (str) => str,
         },

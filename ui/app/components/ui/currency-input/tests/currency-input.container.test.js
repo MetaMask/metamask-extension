@@ -45,7 +45,8 @@ describe('CurrencyInput container', function () {
       },
       // Test # 2
       {
-        comment: 'should return correct props when not in mainnet and showFiatInTestnets is false',
+        comment:
+          'should return correct props when not in mainnet and showFiatInTestnets is false',
         mockState: {
           metamask: {
             conversionRate: 280.45,
@@ -72,7 +73,8 @@ describe('CurrencyInput container', function () {
       },
       // Test # 3
       {
-        comment: 'should return correct props when not in mainnet and showFiatInTestnets is true',
+        comment:
+          'should return correct props when not in mainnet and showFiatInTestnets is true',
         mockState: {
           metamask: {
             conversionRate: 280.45,
@@ -99,7 +101,8 @@ describe('CurrencyInput container', function () {
       },
       // Test # 4
       {
-        comment: 'should return correct props when in mainnet and showFiatInTestnets is true',
+        comment:
+          'should return correct props when in mainnet and showFiatInTestnets is true',
         mockState: {
           metamask: {
             conversionRate: 280.45,
@@ -179,10 +182,19 @@ describe('CurrencyInput container', function () {
       },
     ]
 
-    tests.forEach(({ mock: { stateProps, dispatchProps, ownProps }, expected, comment }) => {
-      it(comment, function () {
-        assert.deepEqual(mergeProps(stateProps, dispatchProps, ownProps), expected)
-      })
-    })
+    tests.forEach(
+      ({
+        mock: { stateProps, dispatchProps, ownProps },
+        expected,
+        comment,
+      }) => {
+        it(comment, function () {
+          assert.deepEqual(
+            mergeProps(stateProps, dispatchProps, ownProps),
+            expected,
+          )
+        })
+      },
+    )
   })
 })

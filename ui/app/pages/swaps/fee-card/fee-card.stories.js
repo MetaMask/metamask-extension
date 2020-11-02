@@ -4,10 +4,7 @@ import { text } from '@storybook/addon-knobs/react'
 import FeeCard from './fee-card'
 
 const tokenApprovalTextComponent = (
-  <span
-    key="swaps-view-quote-approve-symbol-1"
-    className="view-quote__bold"
-  >
+  <span key="swaps-view-quote-approve-symbol-1" className="view-quote__bold">
     ABC
   </span>
 )
@@ -25,14 +22,14 @@ export const WithAllProps = () => {
     <div style={containerStyle}>
       <FeeCard
         feeRowText={text('feeRowText', 'Network fees')}
-        primaryFee={({
+        primaryFee={{
           fee: text('primaryFee', '1 ETH'),
           maxFee: text('primaryMaxFee', '2 ETH'),
-        })}
-        secondaryFee={({
+        }}
+        secondaryFee={{
           fee: text('secondaryFee', '100 USD'),
           maxFee: text('secondaryMaxFee', '200 USD'),
-        })}
+        }}
         onFeeCardMaxRowClick={action('Clicked max fee row link')}
         tokenApprovalTextComponent={tokenApprovalTextComponent}
         tokenApprovalSourceTokenSymbol="ABC"
@@ -48,14 +45,14 @@ export const WithoutThirdRow = () => {
     <div style={containerStyle}>
       <FeeCard
         feeRowText={text('feeRowText', 'Network fees')}
-        primaryFee={({
+        primaryFee={{
           fee: text('primaryFee', '1 ETH'),
           maxFee: text('primaryMaxFee', '2 ETH'),
-        })}
-        secondaryFee={({
+        }}
+        secondaryFee={{
           fee: text('secondaryFee', '100 USD'),
           maxFee: text('secondaryMaxFee', '200 USD'),
-        })}
+        }}
         onFeeCardMaxRowClick={action('Clicked max fee row link')}
         hideTokenApprovalRow
       />
@@ -67,10 +64,10 @@ export const WithOnlyRequiredProps = () => {
   return (
     <div style={containerStyle}>
       <FeeCard
-        primaryFee={({
+        primaryFee={{
           fee: text('primaryFee', '1 ETH'),
           maxFee: text('primaryMaxFee', '2 ETH'),
-        })}
+        }}
         onFeeCardMaxRowClick={action('Clicked max fee row link')}
         hideTokenApprovalRow
       />

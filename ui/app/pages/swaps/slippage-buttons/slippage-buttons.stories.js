@@ -8,8 +8,6 @@ export default {
 
 export const Default = () => (
   <div style={{ height: '200px', marginTop: '160px' }}>
-    <SlippageButtons
-      onSelect={action('slippage')}
-    />
+    <SlippageButtons onSelect={action('slippage')} />
   </div>
 )

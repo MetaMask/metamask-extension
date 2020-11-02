@@ -7,7 +7,6 @@ import { mountWithRouter } from '../../../../../../test/lib/render-helpers'
 import AccountMenu from '..'
 
 describe('Account Menu', function () {
-
   let wrapper
 
   const mockStore = {
@@ -41,15 +40,11 @@ describe('Account Menu', function () {
     keyrings: [
       {
         type: 'HD Key Tree',
-        accounts: [
-          '0xAdress',
-        ],
+        accounts: ['0xAdress'],
       },
       {
         type: 'Simple Key Pair',
-        accounts: [
-          '0xImportedAddress',
-        ],
+        accounts: ['0xImportedAddress'],
       },
     ],
     prevIsAccountMenuOpen: false,
@@ -60,14 +55,14 @@ describe('Account Menu', function () {
     history: {
       push: sinon.spy(),
     },
-
   }
 
   before(function () {
     wrapper = mountWithRouter(
       <Provider store={store}>
         <AccountMenu.WrappedComponent {...props} />
-      </Provider>, store,
+      </Provider>,
+      store,
     )
   })
 
@@ -83,12 +78,16 @@ describe('Account Menu', function () {
     })
 
     it('renders user preference currency display balance from account balance', function () {
-      const accountBalance = wrapper.find('.currency-display-component.account-menu__balance')
+      const accountBalance = wrapper.find(
+        '.currency-display-component.account-menu__balance',
+      )
       assert.equal(accountBalance.length, 2)
     })
 
     it('simulate click', function () {
-      const click = wrapper.find('.account-menu__account.account-menu__item--clickable')
+      const click = wrapper.find(
+        '.account-menu__account.account-menu__item--clickable',
+      )
       click.first().simulate('click')
 
       assert(props.showAccountDetail.calledOnce)
@@ -147,7 +146,6 @@ describe('Account Menu', function () {
   })
 
   describe('Connect Hardware Wallet', function () {
-
     let connectHardwareWallet
 
     it('renders import account item', function () {
@@ -158,12 +156,14 @@ describe('Account Menu', function () {
     it('calls toggle menu and push /new-account/connect route to history', function () {
       connectHardwareWallet.simulate('click')
       assert(props.toggleAccountMenu.calledOnce)
-      assert.equal(props.history.push.getCall(0).args[0], '/new-account/connect')
+      assert.equal(
+        props.history.push.getCall(0).args[0],
+        '/new-account/connect',
+      )
     })
   })
 
   describe('Info & Help', function () {
-
     let infoHelp
 
     it('renders import account item', function () {
@@ -179,7 +179,6 @@ describe('Account Menu', function () {
   })
 
   describe('Settings', function () {
-
     let settings
 
     it('renders import account item', function () {

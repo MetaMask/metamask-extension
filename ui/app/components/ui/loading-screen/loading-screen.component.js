@@ -14,22 +14,28 @@ class LoadingScreen extends Component {
     header: PropTypes.element,
   }
 
-  renderMessage () {
+  renderMessage() {
     const { loadingMessage } = this.props
 
     if (!loadingMessage) {
       return null
     }
 
-    return isValidElement(loadingMessage) ? loadingMessage : <span>{loadingMessage}</span>
+    return isValidElement(loadingMessage) ? (
+      loadingMessage
+    ) : (
+      <span>{loadingMessage}</span>
+    )
   }
 
-  render () {
+  render() {
     return (
       <div className="loading-overlay">
         {this.props.header}
         <div className="loading-overlay__container">
-          {this.props.showLoadingSpinner && <Spinner color="#F7C06C" className="loading-overlay__spinner" />}
+          {this.props.showLoadingSpinner && (
+            <Spinner color="#F7C06C" className="loading-overlay__spinner" />
+          )}
           {this.renderMessage()}
         </div>
       </div>

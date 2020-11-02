@@ -44,7 +44,8 @@ const getEnvironmentTypeMemo = memoize((url) => {
  * @param {string} [url] - the URL of the window
  * @returns {string} the environment ENUM
  */
-const getEnvironmentType = (url = window.location.href) => getEnvironmentTypeMemo(url)
+const getEnvironmentType = (url = window.location.href) =>
+  getEnvironmentTypeMemo(url)
 
 /**
  * Returns the platform (browser) where the extension is running.
@@ -80,10 +81,18 @@ const getPlatform = (_) => {
  * @returns {boolean} - Whether the balance is greater than or equal to the value plus the value of gas times gasPrice
  *
  */
-function sufficientBalance (txParams, hexBalance) {
+function sufficientBalance(txParams, hexBalance) {
   // validate hexBalance is a hex string
-  assert.equal(typeof hexBalance, 'string', 'sufficientBalance - hexBalance is not a hex string')
-  assert.equal(hexBalance.slice(0, 2), '0x', 'sufficientBalance - hexBalance is not a hex string')
+  assert.equal(
+    typeof hexBalance,
+    'string',
+    'sufficientBalance - hexBalance is not a hex string',
+  )
+  assert.equal(
+    hexBalance.slice(0, 2),
+    '0x',
+    'sufficientBalance - hexBalance is not a hex string',
+  )
 
   const balance = hexToBn(hexBalance)
   const value = hexToBn(txParams.value)
@@ -101,7 +110,7 @@ function sufficientBalance (txParams, hexBalance) {
  * @returns {string} - A '0x' prefixed hex string
  *
  */
-function bnToHex (inputBn) {
+function bnToHex(inputBn) {
   return ethUtil.addHexPrefix(inputBn.toString(16))
 }
 
@@ -112,7 +121,7 @@ function bnToHex (inputBn) {
  * @returns {Object} - A BN object
  *
  */
-function hexToBn (inputHex) {
+function hexToBn(inputHex) {
   return new BN(ethUtil.stripHexPrefix(inputHex), 16)
 }
 
@@ -125,7 +134,7 @@ function hexToBn (inputHex) {
  * @returns {BN} - The product of the multiplication
  *
  */
-function BnMultiplyByFraction (targetBN, numerator, denominator) {
+function BnMultiplyByFraction(targetBN, numerator, denominator) {
   const numBN = new BN(numerator)
   const denomBN = new BN(denominator)
   return targetBN.mul(numBN).div(denomBN)
@@ -136,7 +145,7 @@ function BnMultiplyByFraction (targetBN, numerator, denominator) {
  * this is a workaround for the non-standard error object that's used
  * @returns {Error|undefined}
  */
-function checkForError () {
+function checkForError() {
   const { lastError } = extension.runtime
   if (!lastError) {
     return undefined
@@ -157,11 +166,11 @@ function checkForError () {
  * @returns {boolean} True if the value is a correctly formatted hex string,
  * false otherwise.
  */
-function isPrefixedFormattedHexString (value) {
+function isPrefixedFormattedHexString(value) {
   if (typeof value !== 'string') {
     return false
   }
-  return (/^0x[1-9a-f]+[0-9a-f]*$/ui).test(value)
+  return /^0x[1-9a-f]+[0-9a-f]*$/iu.test(value)
 }
 
 export {

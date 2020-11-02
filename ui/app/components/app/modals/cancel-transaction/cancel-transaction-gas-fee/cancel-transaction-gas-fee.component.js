@@ -8,7 +8,7 @@ export default class CancelTransaction extends PureComponent {
     value: PropTypes.string,
   }
 
-  render () {
+  render() {
     const { value } = this.props
 
     return (

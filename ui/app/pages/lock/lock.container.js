@@ -5,7 +5,9 @@ import { lockMetamask } from '../../store/actions'
 import Lock from './lock.component'
 
 const mapStateToProps = (state) => {
-  const { metamask: { isUnlocked } } = state
+  const {
+    metamask: { isUnlocked },
+  } = state
 
   return {
     isUnlocked,

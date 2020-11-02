@@ -8,7 +8,7 @@ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 const ZERO_X_ERROR_ADDRESS = '0x'
 
 export default class EnsController {
-  constructor ({ ens, provider, networkStore } = {}) {
+  constructor({ ens, provider, networkStore } = {}) {
     const initState = {
       ensResolutionsByAddress: {},
     }
@@ -38,11 +38,11 @@ export default class EnsController {
     })
   }
 
-  reverseResolveAddress (address) {
+  reverseResolveAddress(address) {
     return this._reverseResolveAddress(ethUtil.toChecksumAddress(address))
   }
 
-  async _reverseResolveAddress (address) {
+  async _reverseResolveAddress(address) {
     if (!this._ens) {
       return undefined
     }
@@ -68,7 +68,10 @@ export default class EnsController {
       return undefined
     }
 
-    if (registeredAddress === ZERO_ADDRESS || registeredAddress === ZERO_X_ERROR_ADDRESS) {
+    if (
+      registeredAddress === ZERO_ADDRESS ||
+      registeredAddress === ZERO_X_ERROR_ADDRESS
+    ) {
       return undefined
     }
 
@@ -80,7 +83,7 @@ export default class EnsController {
     return domain
   }
 
-  _updateResolutionsByAddress (address, domain) {
+  _updateResolutionsByAddress(address, domain) {
     const oldState = this.store.getState()
     this.store.putState({
       ensResolutionsByAddress: {

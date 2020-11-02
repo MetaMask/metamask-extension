@@ -13,7 +13,7 @@ const version = 20
 export default {
   version,
 
-  migrate (originalVersionedData) {
+  migrate(originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     try {
@@ -27,10 +27,9 @@ export default {
   },
 }
 
-function transformState (state) {
+function transformState(state) {
   const newState = state
-  if ('metamask' in newState &&
-      !('firstTimeInfo' in newState.metamask)) {
+  if ('metamask' in newState && !('firstTimeInfo' in newState.metamask)) {
     newState.metamask.firstTimeInfo = {
       version: '3.12.0',
       date: Date.now(),
@@ -38,4 +37,3 @@ function transformState (state) {
   }
   return newState
 }
-

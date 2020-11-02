@@ -13,13 +13,11 @@ describe('Confirm Reset Account', function () {
   }
 
   beforeEach(function () {
-    wrapper = mount(
-      <ConfirmResetAccount.WrappedComponent {...props} />, {
-        context: {
-          t: (str) => str,
-        },
+    wrapper = mount(<ConfirmResetAccount.WrappedComponent {...props} />, {
+      context: {
+        t: (str) => str,
       },
-    )
+    })
   })
 
   afterEach(function () {
@@ -27,7 +25,9 @@ describe('Confirm Reset Account', function () {
   })
 
   it('hides modal when nevermind button is clicked', function () {
-    const nevermind = wrapper.find('.btn-default.modal-container__footer-button')
+    const nevermind = wrapper.find(
+      '.btn-default.modal-container__footer-button',
+    )
     nevermind.simulate('click')
 
     assert(props.hideModal.calledOnce)

@@ -28,15 +28,8 @@ export default class Tooltip extends PureComponent {
     interactive: PropTypes.bool,
     offset: PropTypes.number,
     onHidden: PropTypes.func,
-    position: PropTypes.oneOf([
-      'top',
-      'right',
-      'bottom',
-      'left',
-    ]),
-    size: PropTypes.oneOf([
-      'small', 'regular', 'big',
-    ]),
+    position: PropTypes.oneOf(['top', 'right', 'bottom', 'left']),
+    size: PropTypes.oneOf(['small', 'regular', 'big']),
     title: PropTypes.string,
     trigger: PropTypes.any,
     wrapperClassName: PropTypes.string,
@@ -44,7 +37,7 @@ export default class Tooltip extends PureComponent {
     theme: PropTypes.string,
   }
 
-  render () {
+  render() {
     const {
       arrow,
       children,
@@ -64,11 +57,7 @@ export default class Tooltip extends PureComponent {
     } = this.props
 
     if (!title && !html) {
-      return (
-        <div className={wrapperClassName}>
-          {children}
-        </div>
-      )
+      return <div className={wrapperClassName}>{children}</div>
     }
 
     return (

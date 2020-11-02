@@ -2,25 +2,34 @@ import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 import { Menu } from '../../../ui/menu'
 
-const ConnectedAccountsListOptions = ({ children, onShowOptions, onHideOptions, show }) => {
+const ConnectedAccountsListOptions = ({
+  children,
+  onShowOptions,
+  onHideOptions,
+  show,
+}) => {
   const [optionsButtonElement, setOptionsButtonElement] = useState(null)
 
   return (
     <>
-      <button className="fas fa-ellipsis-v connected-accounts-options__button" onClick={onShowOptions} ref={setOptionsButtonElement} />
-      {
-        show
-          ? (
-            <Menu
-              anchorElement={optionsButtonElement}
-              onHide={onHideOptions}
-              popperOptions={{ modifiers: [{ name: 'preventOverflow', options: { altBoundary: true } }] }}
-            >
-              { children }
-            </Menu>
-          )
-          : null
-      }
+      <button
+        className="fas fa-ellipsis-v connected-accounts-options__button"
+        onClick={onShowOptions}
+        ref={setOptionsButtonElement}
+      />
+      {show ? (
+        <Menu
+          anchorElement={optionsButtonElement}
+          onHide={onHideOptions}
+          popperOptions={{
+            modifiers: [
+              { name: 'preventOverflow', options: { altBoundary: true } },
+            ],
+          }}
+        >
+          {children}
+        </Menu>
+      ) : null}
     </>
   )
 }

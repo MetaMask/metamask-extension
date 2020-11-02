@@ -3,36 +3,34 @@ const mockKey = Buffer.alloc(32)
 let cacheVal
 
 const mockEncryptor = {
-
-  encrypt (_, dataObj) {
+  encrypt(_, dataObj) {
     cacheVal = dataObj
     return Promise.resolve(mockHex)
   },
 
-  decrypt () {
+  decrypt() {
     return Promise.resolve(cacheVal || {})
   },
 
-  encryptWithKey (key, dataObj) {
+  encryptWithKey(key, dataObj) {
     return this.encrypt(key, dataObj)
   },
 
-  decryptWithKey (key, text) {
+  decryptWithKey(key, text) {
     return this.decrypt(key, text)
   },
 
-  keyFromPassword () {
+  keyFromPassword() {
     return Promise.resolve(mockKey)
   },
 
-  generateSalt () {
+  generateSalt() {
     return 'WHADDASALT!'
   },
 
-  getRandomValues () {
+  getRandomValues() {
     return 'SOO RANDO!!!1'
   },
-
 }
 
 export default mockEncryptor

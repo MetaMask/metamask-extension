@@ -13,7 +13,7 @@ import {
 import { getWeiHexFromDecimalValue } from '../../helpers/utils/conversions.util'
 import { ETH, PRIMARY } from '../../helpers/constants/common'
 
-export default function ConfirmTokenTransactionBase ({
+export default function ConfirmTokenTransactionBase({
   toAddress,
   tokenAddress,
   tokenAmount = '0',
@@ -31,9 +31,9 @@ export default function ConfirmTokenTransactionBase ({
       return '0'
     }
 
-    const decimalEthValue = (
-      (new BigNumber(tokenAmount)).times(new BigNumber(contractExchangeRate))
-    ).toFixed()
+    const decimalEthValue = new BigNumber(tokenAmount)
+      .times(new BigNumber(contractExchangeRate))
+      .toFixed()
 
     return getWeiHexFromDecimalValue({
       value: decimalEthValue,
@@ -56,8 +56,7 @@ export default function ConfirmTokenTransactionBase ({
     const fiatTotal = addFiat(fiatTransactionAmount, fiatTransactionTotal)
     const roundedFiatTotal = roundExponential(fiatTotal)
     return formatCurrency(roundedFiatTotal, currentCurrency)
-  },
-  [
+  }, [
     currentCurrency,
     conversionRate,
     contractExchangeRate,
@@ -73,30 +72,24 @@ export default function ConfirmTokenTransactionBase ({
       identiconAddress={tokenAddress}
       title={tokensText}
       subtitleComponent={
-        contractExchangeRate === undefined
-          ? (
-            <span>
-              { t('noConversionRateAvailable') }
-            </span>
-          ) : (
-            <UserPreferencedCurrencyDisplay
-              value={hexWeiValue}
-              type={PRIMARY}
-              showEthLogo
-              hideLabel
-            />
-          )
-      }
-      primaryTotalTextOverride={(
-        <div>
-          <span>{ `${tokensText} + ` }</span>
-          <img
-            src="/images/eth.svg"
-            height="18"
+        contractExchangeRate === undefined ? (
+          <span>{t('noConversionRateAvailable')}</span>
+        ) : (
+          <UserPreferencedCurrencyDisplay
+            value={hexWeiValue}
+            type={PRIMARY}
+            showEthLogo
+            hideLabel
           />
-          <span>{ ethTransactionTotal }</span>
+        )
+      }
+      primaryTotalTextOverride={
+        <div>
+          <span>{`${tokensText} + `}</span>
+          <img src="/images/eth.svg" height="18" />
+          <span>{ethTransactionTotal}</span>
         </div>
-      )}
+      }
       secondaryTotalTextOverride={secondaryTotalTextOverride}
     />
   )

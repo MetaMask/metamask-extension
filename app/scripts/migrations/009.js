@@ -11,7 +11,7 @@ const version = 9
 export default {
   version,
 
-  migrate (originalVersionedData) {
+  migrate(originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     try {
@@ -25,7 +25,7 @@ export default {
   },
 }
 
-function transformState (state) {
+function transformState(state) {
   const newState = merge({}, state, {
     CurrencyController: {
       currentCurrency: state.currentFiat || state.fiatCurrency || 'USD',

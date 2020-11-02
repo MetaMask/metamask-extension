@@ -10,7 +10,7 @@ import createInfuraMiddleware from 'eth-json-rpc-infura'
 import BlockTracker from 'eth-block-tracker'
 import * as networkEnums from './enums'
 
-export default function createInfuraClient ({ network, projectId }) {
+export default function createInfuraClient({ network, projectId }) {
   const infuraMiddleware = createInfuraMiddleware({
     network,
     projectId,
@@ -32,7 +32,7 @@ export default function createInfuraClient ({ network, projectId }) {
   return { networkMiddleware, blockTracker }
 }
 
-function createNetworkAndChainIdMiddleware ({ network }) {
+function createNetworkAndChainIdMiddleware({ network }) {
   let chainId
   let netId
 

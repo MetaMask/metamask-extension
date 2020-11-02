@@ -14,7 +14,6 @@ const {
 } = proxyquire('../custom-gas', {})
 
 describe('custom-gas selectors', function () {
-
   describe('getCustomGasPrice()', function () {
     it('should return gas.customData.price', function () {
       const mockState = { gas: { customData: { price: 'mockPrice' } } }
@@ -45,8 +44,13 @@ describe('custom-gas selectors', function () {
 
   describe('getPriceAndTimeEstimates', function () {
     it('should return price and time estimates', function () {
-      const mockState = { gas: { priceAndTimeEstimates: 'mockPriceAndTimeEstimates' } }
-      assert.equal(getPriceAndTimeEstimates(mockState), 'mockPriceAndTimeEstimates')
+      const mockState = {
+        gas: { priceAndTimeEstimates: 'mockPriceAndTimeEstimates' },
+      }
+      assert.equal(
+        getPriceAndTimeEstimates(mockState),
+        'mockPriceAndTimeEstimates',
+      )
     })
   })
 
@@ -395,7 +399,11 @@ describe('custom-gas selectors', function () {
     it('should return renderable data about basic estimates', function () {
       tests.forEach((test) => {
         assert.deepEqual(
-          getRenderableBasicEstimateData(test.mockState, '0x5208', test.useFastestButtons),
+          getRenderableBasicEstimateData(
+            test.mockState,
+            '0x5208',
+            test.useFastestButtons,
+          ),
           test.expectedResult,
         )
       })
@@ -663,7 +671,5 @@ describe('custom-gas selectors', function () {
         )
       })
     })
-
   })
-
 })

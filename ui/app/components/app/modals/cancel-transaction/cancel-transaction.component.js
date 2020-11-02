@@ -21,7 +21,7 @@ export default class CancelTransaction extends PureComponent {
     busy: false,
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     const { transactionStatus, showTransactionConfirmedModal } = this.props
 
     if (transactionStatus !== SUBMITTED_STATUS) {
@@ -42,7 +42,7 @@ export default class CancelTransaction extends PureComponent {
     this.props.hideModal()
   }
 
-  render () {
+  render() {
     const { t } = this.context
     const { newGasFee } = this.props
     const { busy } = this.state
@@ -60,13 +60,13 @@ export default class CancelTransaction extends PureComponent {
       >
         <div>
           <div className="cancel-transaction__title">
-            { t('cancellationGasFee') }
+            {t('cancellationGasFee')}
           </div>
           <div className="cancel-transaction__cancel-transaction-gas-fee-container">
             <CancelTransactionGasFee value={newGasFee} />
           </div>
           <div className="cancel-transaction__description">
-            { t('attemptToCancelDescription') }
+            {t('attemptToCancelDescription')}
           </div>
         </div>
       </Modal>

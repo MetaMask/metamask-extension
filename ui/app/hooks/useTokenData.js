@@ -13,7 +13,7 @@ import { getTokenData } from '../helpers/utils/transactions.util'
  *                                         with a token.
  * @return {Object} - Decoded token data
  */
-export function useTokenData (transactionData, isTokenTransaction = true) {
+export function useTokenData(transactionData, isTokenTransaction = true) {
   return useMemo(() => {
     if (!isTokenTransaction || !transactionData) {
       return null

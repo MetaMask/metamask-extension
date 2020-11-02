@@ -10,7 +10,7 @@ export default class Lock extends PureComponent {
     lockMetamask: PropTypes.func,
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const { lockMetamask, isUnlocked, history } = this.props
 
     if (isUnlocked) {
@@ -20,7 +20,7 @@ export default class Lock extends PureComponent {
     }
   }
 
-  render () {
+  render() {
     return <Loading />
   }
 }

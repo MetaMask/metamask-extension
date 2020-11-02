@@ -26,14 +26,12 @@ describe('App Header', function () {
   }
 
   beforeEach(function () {
-    wrapper = shallow(
-      <AppHeader.WrappedComponent {...props} />, {
-        context: {
-          t: (str) => str,
-          metricsEvent: () => undefined,
-        },
+    wrapper = shallow(<AppHeader.WrappedComponent {...props} />, {
+      context: {
+        t: (str) => str,
+        metricsEvent: () => undefined,
       },
-    )
+    })
   })
 
   afterEach(function () {
@@ -81,7 +79,6 @@ describe('App Header', function () {
   })
 
   describe('Account Menu', function () {
-
     it('toggles account menu', function () {
       const accountMenu = wrapper.find('.account-menu__icon')
       accountMenu.simulate('click')
@@ -95,5 +92,4 @@ describe('App Header', function () {
       assert(props.toggleAccountMenu.notCalled)
     })
   })
-
 })

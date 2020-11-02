@@ -8,10 +8,7 @@ import {
   setAlertEnabledness,
   setSelectedAddress,
 } from '../../store/actions'
-import {
-  getOriginOfCurrentTab,
-  getSelectedAddress,
-} from '../../selectors'
+import { getOriginOfCurrentTab, getSelectedAddress } from '../../selectors'
 import { ALERT_STATE } from './enums'
 
 // Constants

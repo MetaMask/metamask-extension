@@ -7,7 +7,12 @@ import { MemoryRouter } from 'react-router-dom'
 import transactions from '../../../../test/data/transaction-data.json'
 import { useTransactionDisplayData } from '../useTransactionDisplayData'
 import * as useTokenFiatAmountHooks from '../useTokenFiatAmount'
-import { getPreferences, getShouldShowFiat, getNativeCurrency, getCurrentCurrency } from '../../selectors'
+import {
+  getPreferences,
+  getShouldShowFiat,
+  getNativeCurrency,
+  getCurrentCurrency,
+} from '../../selectors'
 import { getTokens } from '../../ducks/metamask/metamask'
 import * as i18nhooks from '../useI18nContext'
 import { getMessage } from '../../helpers/utils/i18n-helper'
@@ -112,7 +117,9 @@ const expectedResults = [
 let useSelector, useI18nContext, useTokenFiatAmount
 
 const renderHookWithRouter = (cb, tokenAddress) => {
-  const initialEntries = [tokenAddress ? `${ASSET_ROUTE}/${tokenAddress}` : DEFAULT_ROUTE]
+  const initialEntries = [
+    tokenAddress ? `${ASSET_ROUTE}/${tokenAddress}` : DEFAULT_ROUTE,
+  ]
   // eslint-disable-next-line
   const wrapper = ({ children }) => <MemoryRouter initialEntries={initialEntries}>{children}</MemoryRouter>
   return renderHook(cb, { wrapper })
@@ -121,15 +128,26 @@ const renderHookWithRouter = (cb, tokenAddress) => {
 describe('useTransactionDisplayData', function () {
   before(function () {
     useSelector = sinon.stub(reactRedux, 'useSelector')
-    useTokenFiatAmount = sinon.stub(useTokenFiatAmountHooks, 'useTokenFiatAmount')
+    useTokenFiatAmount = sinon.stub(
+      useTokenFiatAmountHooks,
+      'useTokenFiatAmount',
+    )
     useTokenFiatAmount.returns((tokenAddress) => {
       return tokenAddress ? '1 TST' : undefined
     })
     useI18nContext = sinon.stub(i18nhooks, 'useI18nContext')
-    useI18nContext.returns((key, variables) => getMessage('en', messages, key, variables))
+    useI18nContext.returns((key, variables) =>
+      getMessage('en', messages, key, variables),
+    )
     useSelector.callsFake((selector) => {
       if (selector === getTokens) {
-        return [{ address: '0xabca64466f257793eaa52fcfff5066894b76a149', symbol: 'ABC', decimals: 18 }]
+        return [
+          {
+            address: '0xabca64466f257793eaa52fcfff5066894b76a149',
+            symbol: 'ABC',
+            decimals: 18,
+          },
+        ]
       } else if (selector === getPreferences) {
         return {
           useNativeCurrencyAsPrimaryCurrency: true,
@@ -147,43 +165,76 @@ describe('useTransactionDisplayData', function () {
   transactions.forEach((transactionGroup, idx) => {
     describe(`when called with group containing primaryTransaction id ${transactionGroup.primaryTransaction.id}`, function () {
       const expected = expectedResults[idx]
-      const tokenAddress = transactionGroup.primaryTransaction?.destinationTokenAddress
+      const tokenAddress =
+        transactionGroup.primaryTransaction?.destinationTokenAddress
       it(`should return a title of ${expected.title}`, function () {
-        const { result } = renderHookWithRouter(() => useTransactionDisplayData(transactionGroup), tokenAddress)
+        const { result } = renderHookWithRouter(
+          () => useTransactionDisplayData(transactionGroup),
+          tokenAddress,
+        )
         assert.equal(result.current.title, expected.title)
       })
       it(`should return a subtitle of ${expected.subtitle}`, function () {
-        const { result } = renderHookWithRouter(() => useTransactionDisplayData(transactionGroup), tokenAddress)
+        const { result } = renderHookWithRouter(
+          () => useTransactionDisplayData(transactionGroup),
+          tokenAddress,
+        )
         assert.equal(result.current.subtitle, expected.subtitle)
       })
       it(`should return a category of ${expected.category}`, function () {
-        const { result } = renderHookWithRouter(() => useTransactionDisplayData(transactionGroup), tokenAddress)
+        const { result } = renderHookWithRouter(
+          () => useTransactionDisplayData(transactionGroup),
+          tokenAddress,
+        )
         assert.equal(result.current.category, expected.category)
       })
       it(`should return a primaryCurrency of ${expected.primaryCurrency}`, function () {
-        const { result } = renderHookWithRouter(() => useTransactionDisplayData(transactionGroup), tokenAddress)
+        const { result } = renderHookWithRouter(
+          () => useTransactionDisplayData(transactionGroup),
+          tokenAddress,
+        )
         assert.equal(result.current.primaryCurrency, expected.primaryCurrency)
       })
       it(`should return a secondaryCurrency of ${expected.secondaryCurrency}`, function () {
-        const { result } = renderHookWithRouter(() => useTransactionDisplayData(transactionGroup), tokenAddress)
-        assert.equal(result.current.secondaryCurrency, expected.secondaryCurrency)
+        const { result } = renderHookWithRouter(
+          () => useTransactionDisplayData(transactionGroup),
+          tokenAddress,
+        )
+        assert.equal(
+          result.current.secondaryCurrency,
+          expected.secondaryCurrency,
+        )
       })
       it(`should return a displayedStatusKey of ${expected.displayedStatusKey}`, function () {
-        const { result } = renderHookWithRouter(() => useTransactionDisplayData(transactionGroup), tokenAddress)
-        assert.equal(result.current.displayedStatusKey, expected.displayedStatusKey)
+        const { result } = renderHookWithRouter(
+          () => useTransactionDisplayData(transactionGroup),
+          tokenAddress,
+        )
+        assert.equal(
+          result.current.displayedStatusKey,
+          expected.displayedStatusKey,
+        )
       })
       it(`should return a recipientAddress of ${expected.recipientAddress}`, function () {
-        const { result } = renderHookWithRouter(() => useTransactionDisplayData(transactionGroup), tokenAddress)
+        const { result } = renderHookWithRouter(
+          () => useTransactionDisplayData(transactionGroup),
+          tokenAddress,
+        )
         assert.equal(result.current.recipientAddress, expected.recipientAddress)
       })
       it(`should return a senderAddress of ${expected.senderAddress}`, function () {
-        const { result } = renderHookWithRouter(() => useTransactionDisplayData(transactionGroup), tokenAddress)
+        const { result } = renderHookWithRouter(
+          () => useTransactionDisplayData(transactionGroup),
+          tokenAddress,
+        )
         assert.equal(result.current.senderAddress, expected.senderAddress)
       })
     })
   })
   it('should return an appropriate object', function () {
-    const { result } = renderHookWithRouter(() => useTransactionDisplayData(transactions[0]))
+    const { result } = renderHookWithRouter(() =>
+      useTransactionDisplayData(transactions[0]),
+    )
     assert.deepEqual(result.current, expectedResults[0])
   })
   after(function () {

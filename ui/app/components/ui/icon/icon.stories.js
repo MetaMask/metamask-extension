@@ -12,45 +12,26 @@ export default {
 }
 
 export const copy = () => (
-  <Copy
-    size={number('size', 40)}
-    color={color('color', '#2F80ED')}
-  />
+  <Copy size={number('size', 40)} color={color('color', '#2F80ED')} />
 )
 
 export const send = () => (
-  <Send
-    size={number('size', 40)}
-    color={color('color', '#2F80ED')}
-  />
+  <Send size={number('size', 40)} color={color('color', '#2F80ED')} />
 )
 
 export const receive = () => (
-  <Receive
-    size={number('size', 40)}
-    color={color('color', '#2F80ED')}
-  />
+  <Receive size={number('size', 40)} color={color('color', '#2F80ED')} />
 )
 
 export const siteInteraction = () => (
-  <Interaction
-    size={number('size', 40)}
-    color={color('color', '#2F80ED')}
-  />
+  <Interaction size={number('size', 40)} color={color('color', '#2F80ED')} />
 )
 
 export const approveSpendLimit = () => (
-  <Approve
-    size={number('size', 40)}
-    color={color('color', '#2F80ED')}
-  />
+  <Approve size={number('size', 40)} color={color('color', '#2F80ED')} />
 )
 
-export const preloader = () => (
-  <Preloader
-    size={number('size', 40)}
-  />
-)
+export const preloader = () => <Preloader size={number('size', 40)} />
 
 export const PaperAirplane = () => (
   <PaperAirplane color={color('color', '#2F80ED')} size={number('size', 40)} />

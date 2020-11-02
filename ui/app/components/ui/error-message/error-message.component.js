@@ -7,13 +7,8 @@ const ErrorMessage = (props, context) => {
 
   return (
     <div className="error-message">
-      <img
-        src="/images/alert-red.svg"
-        className="error-message__icon"
-      />
-      <div className="error-message__text">
-        { `ALERT: ${error}` }
-      </div>
+      <img src="/images/alert-red.svg" className="error-message__icon" />
+      <div className="error-message__text">{`ALERT: ${error}`}</div>
     </div>
   )
 }

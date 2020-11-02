@@ -7,13 +7,19 @@ describe('Personal sign', function () {
     const ganacheOptions = {
       accounts: [
         {
-          secretKey: '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
+          secretKey:
+            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
           balance: 25000000000000000000,
         },
       ],
     }
     await withFixtures(
-      { dapp: true, fixtures: 'personal-sign', ganacheOptions, title: this.test.title },
+      {
+        dapp: true,
+        fixtures: 'personal-sign',
+        ganacheOptions,
+        title: this.test.title,
+      },
       async ({ driver }) => {
         const passwordField = await driver.findElement(By.css('#password'))
         await passwordField.sendKeys('correct horse battery staple')
@@ -25,13 +31,20 @@ describe('Personal sign', function () {
         await driver.waitUntilXWindowHandles(3)
 
         const windowHandles = await driver.getAllWindowHandles()
-        await driver.switchToWindowWithTitle('MetaMask Notification', windowHandles)
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        )
 
-        const personalMessageRow = await driver.findElement(By.css('.request-signature__row-value'))
+        const personalMessageRow = await driver.findElement(
+          By.css('.request-signature__row-value'),
+        )
         const personalMessage = await personalMessageRow.getText()
         assert.equal(personalMessage, 'Example `personal_sign` message')
 
-        await driver.clickElement(By.css('[data-testid="request-signature__sign"]'))
+        await driver.clickElement(
+          By.css('[data-testid="request-signature__sign"]'),
+        )
 
         await driver.waitUntilXWindowHandles(2)
       },

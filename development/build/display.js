@@ -18,7 +18,7 @@ const SYMBOLS = {
   RightEighth: '▕',
 }
 
-function setupTaskDisplay (taskEvents) {
+function setupTaskDisplay(taskEvents) {
   const taskData = []
   taskEvents.on('start', ([name]) => {
     console.log(`Starting '${name}'...`)
@@ -32,7 +32,7 @@ function setupTaskDisplay (taskEvents) {
   })
 }
 
-function displayChart (data) {
+function displayChart(data) {
   // sort tasks by start time
   data.sort((a, b) => a[1] - b[1])
 
@@ -49,30 +49,32 @@ function displayChart (data) {
   // build bars for bounds
   data.forEach((entry, index) => {
     const [label, start, end] = entry
-    const [start2, end2] = [start, end].map((value) => adjust(value, first, last, 40))
+    const [start2, end2] = [start, end].map((value) =>
+      adjust(value, first, last, 40),
+    )
     const barString = barBuilder(start2, end2)
     const color = colors[index]
     const coloredBarString = colorize(color, barString)
     const duration = ((end - start) / 1e3).toFixed(1)
     console.log(coloredBarString, `${label} ${duration}s`)
   })
-
 }
 
-function colorize (color, string) {
-  const colorizer = (typeof chalk[color] === 'function') ? chalk[color] : chalk.hex(color)
+function colorize(color, string) {
+  const colorizer =
+    typeof chalk[color] === 'function' ? chalk[color] : chalk.hex(color)
   return colorizer(string)
 }
 
 // scale number within bounds
-function adjust (value, first, last, size) {
+function adjust(value, first, last, size) {
   const length = last - first
-  const result = (value - first) / length * size
+  const result = ((value - first) / length) * size
   return result
 }
 
 // draw bars
-function barBuilder (start, end) {
+function barBuilder(start, end) {
   const [spaceInt, spaceRest] = splitNumber(start)
   const barBodyLength = end - spaceInt
   let [barInt, barRest] = splitNumber(barBodyLength)
@@ -92,7 +94,7 @@ function barBuilder (start, end) {
 }
 
 // get integer and remainder
-function splitNumber (value = 0) {
+function splitNumber(value = 0) {
   const [int, rest = '0'] = value.toString().split('.')
   const int2 = parseInt(int, 10)
   const rest2 = parseInt(rest, 10) / Math.pow(10, rest.length)
@@ -100,11 +102,11 @@ function splitNumber (value = 0) {
 }
 
 // get partial block char for value (left-adjusted)
-function getSymbolNormal (value) {
+function getSymbolNormal(value) {
   // round to closest supported value
   const possibleValues = [0, 1 / 8, 1 / 4, 3 / 8, 1 / 2, 5 / 8, 3 / 4, 7 / 8, 1]
   const rounded = possibleValues.reduce((prev, curr) => {
-    return (Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev)
+    return Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev
   })
 
   if (rounded === 0) {
@@ -128,11 +130,11 @@ function getSymbolNormal (value) {
 }
 
 // get partial block char for value (right-adjusted)
-function getSymbolNormalRight (value) {
+function getSymbolNormalRight(value) {
   // round to closest supported value (not much :/)
   const possibleValues = [0, 1 / 2, 7 / 8, 1]
   const rounded = possibleValues.reduce((prev, curr) => {
-    return (Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev)
+    return Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev
   })
 
   if (rounded === 0) {

@@ -4,12 +4,14 @@ import { debounce } from 'lodash'
 import Identicon from '../../../../components/ui/identicon'
 import TextField from '../../../../components/ui/text-field'
 import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes'
-import { isValidAddress, isValidDomainName } from '../../../../helpers/utils/util'
+import {
+  isValidAddress,
+  isValidDomainName,
+} from '../../../../helpers/utils/util'
 import EnsInput from '../../../send/send-content/add-recipient/ens-input'
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer'
 
 export default class AddContact extends PureComponent {
-
   static contextTypes = {
     t: PropTypes.func,
   }
@@ -18,7 +20,8 @@ export default class AddContact extends PureComponent {
     addToAddressBook: PropTypes.func,
     history: PropTypes.object,
     scanQrCode: PropTypes.func,
-    qrCodeData: PropTypes.object, /* eslint-disable-line react/no-unused-prop-types */
+    qrCodeData:
+      PropTypes.object /* eslint-disable-line react/no-unused-prop-types */,
     qrCodeDetected: PropTypes.func,
   }
 
@@ -30,12 +33,12 @@ export default class AddContact extends PureComponent {
     ensError: '',
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.dValidate = debounce(this.validate, 1000)
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.qrCodeData) {
       if (nextProps.qrCodeData.type === 'address') {
         const scannedAddress = nextProps.qrCodeData.values.address.toLowerCase()
@@ -60,7 +63,7 @@ export default class AddContact extends PureComponent {
     }
   }
 
-  renderInput () {
+  renderInput() {
     return (
       <EnsInput
         className="send__to-row"
@@ -73,13 +76,15 @@ export default class AddContact extends PureComponent {
         updateEnsResolution={(address) => {
           this.setState({ ensAddress: address, error: '', ensError: '' })
         }}
-        updateEnsResolutionError={(message) => this.setState({ ensError: message })}
+        updateEnsResolutionError={(message) =>
+          this.setState({ ensError: message })
+        }
         value={this.state.ethAddress || ''}
       />
     )
   }
 
-  render () {
+  render() {
     const { t } = this.context
     const { history, addToAddressBook } = this.props
 
@@ -91,14 +96,14 @@ export default class AddContact extends PureComponent {
           <div className="address-book__view-contact__group">
             <Identicon address={this.state.ensAddress} diameter={60} />
             <div className="address-book__view-contact__group__value">
-              { this.state.ensAddress }
+              {this.state.ensAddress}
             </div>
           </div>
         )}
         <div className="address-book__add-contact__content">
           <div className="address-book__view-contact__group">
             <div className="address-book__view-contact__group__label">
-              { t('userName') }
+              {t('userName')}
             </div>
             <TextField
               type="text"
@@ -112,17 +117,24 @@ export default class AddContact extends PureComponent {
 
           <div className="address-book__view-contact__group">
             <div className="address-book__view-contact__group__label">
-              { t('ethereumPublicAddress') }
+              {t('ethereumPublicAddress')}
             </div>
-            { this.renderInput() }
-            { errorToRender && <div className="address-book__add-contact__error">{errorToRender}</div>}
+            {this.renderInput()}
+            {errorToRender && (
+              <div className="address-book__add-contact__error">
+                {errorToRender}
+              </div>
+            )}
           </div>
         </div>
         <PageContainerFooter
           cancelText={this.context.t('cancel')}
           disabled={Boolean(this.state.error)}
           onSubmit={async () => {
-            await addToAddressBook(this.state.ensAddress || this.state.ethAddress, this.state.newName)
+            await addToAddressBook(
+              this.state.ensAddress || this.state.ethAddress,
+              this.state.newName,
+            )
             history.push(CONTACT_LIST_ROUTE)
           }}
           onCancel={() => {

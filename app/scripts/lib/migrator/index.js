@@ -13,12 +13,11 @@ import EventEmitter from 'events'
  */
 
 export default class Migrator extends EventEmitter {
-
   /**
    * @constructor
    * @param {MigratorOptions} opts
    */
-  constructor (opts = {}) {
+  constructor(opts = {}) {
     super()
     const migrations = opts.migrations || []
     // sort migrations by version
@@ -26,11 +25,12 @@ export default class Migrator extends EventEmitter {
     // grab migration with highest version
     const lastMigration = this.migrations.slice(-1)[0]
     // use specified defaultVersion or highest migration version
-    this.defaultVersion = opts.defaultVersion || (lastMigration && lastMigration.version) || 0
+    this.defaultVersion =
+      opts.defaultVersion || (lastMigration && lastMigration.version) || 0
   }
 
   // run all pending migrations on meta in place
-  async migrateData (versionedData = this.generateInitialState()) {
+  async migrateData(versionedData = this.generateInitialState()) {
     // get all migrations that have not yet been run
     const pendingMigrations = this.migrations.filter(migrationIsPending)
 
@@ -42,8 +42,13 @@ export default class Migrator extends EventEmitter {
         if (!migratedData.data) {
           throw new Error('Migrator - migration returned empty data')
         }
-        if (migratedData.version !== undefined && migratedData.meta.version !== migration.version) {
-          throw new Error('Migrator - Migration did not update version number correctly')
+        if (
+          migratedData.version !== undefined &&
+          migratedData.meta.version !== migration.version
+        ) {
+          throw new Error(
+            'Migrator - Migration did not update version number correctly',
+          )
         }
         // accept the migration as good
         // eslint-disable-next-line no-param-reassign
@@ -69,7 +74,7 @@ export default class Migrator extends EventEmitter {
      * @param {Migration} migration
      * @returns {boolean}
      */
-    function migrationIsPending (migration) {
+    function migrationIsPending(migration) {
       return migration.version > versionedData.meta.version
     }
   }
@@ -79,7 +84,7 @@ export default class Migrator extends EventEmitter {
    * @param {Object} [data] - The data for the initial state
    * @returns {{meta: {version: number}, data: any}}
    */
-  generateInitialState (data) {
+  generateInitialState(data) {
     return {
       meta: {
         version: this.defaultVersion,
@@ -87,5 +92,4 @@ export default class Migrator extends EventEmitter {
       data,
     }
   }
-
 }

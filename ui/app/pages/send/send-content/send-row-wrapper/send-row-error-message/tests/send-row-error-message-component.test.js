@@ -8,12 +8,13 @@ describe('SendRowErrorMessage Component', function () {
 
   describe('render', function () {
     beforeEach(function () {
-      wrapper = shallow((
+      wrapper = shallow(
         <SendRowErrorMessage
           errors={{ error1: 'abc', error2: 'def' }}
           errorType="error3"
-        />
-      ), { context: { t: (str) => `${str}_t` } })
+        />,
+        { context: { t: (str) => `${str}_t` } },
+      )
     })
 
     it('should render null if the passed errors do not contain an error of errorType', function () {
@@ -22,7 +23,9 @@ describe('SendRowErrorMessage Component', function () {
     })
 
     it('should render an error message if the passed errors contain an error of errorType', function () {
-      wrapper.setProps({ errors: { error1: 'abc', error2: 'def', error3: 'xyz' } })
+      wrapper.setProps({
+        errors: { error1: 'abc', error2: 'def', error3: 'xyz' },
+      })
       assert.equal(wrapper.find('.send-v2__error').length, 1)
       assert.equal(wrapper.find('.send-v2__error').text(), 'xyz_t')
     })

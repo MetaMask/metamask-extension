@@ -4,7 +4,7 @@ import classnames from 'classnames'
 import { GWEI } from '../../../helpers/constants/common'
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay'
 
-export default function CurrencyDisplay ({
+export default function CurrencyDisplay({
   value,
   displayValue,
   'data-testid': dataTestId,
@@ -35,15 +35,16 @@ export default function CurrencyDisplay ({
       style={style}
       title={(!hideTitle && title) || null}
     >
-      { prefixComponent }
-      <span className="currency-display-component__text">{ parts.prefix }{ parts.value }</span>
-      {
-        parts.suffix && (
-          <span className="currency-display-component__suffix">
-            { parts.suffix }
-          </span>
-        )
-      }
+      {prefixComponent}
+      <span className="currency-display-component__text">
+        {parts.prefix}
+        {parts.value}
+      </span>
+      {parts.suffix && (
+        <span className="currency-display-component__suffix">
+          {parts.suffix}
+        </span>
+      )}
     </div>
   )
 }

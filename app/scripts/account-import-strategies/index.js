@@ -4,8 +4,7 @@ import importers from 'ethereumjs-wallet/thirdparty'
 import ethUtil from 'ethereumjs-util'
 
 const accountImporter = {
-
-  importAccount (strategy, args) {
+  importAccount(strategy, args) {
     try {
       const importer = this.strategies[strategy]
       const privateKeyHex = importer(...args)
@@ -43,10 +42,9 @@ const accountImporter = {
       return walletToPrivateKey(wallet)
     },
   },
-
 }
 
-function walletToPrivateKey (wallet) {
+function walletToPrivateKey(wallet) {
   const privateKeyBuffer = wallet.getPrivateKey()
   return ethUtil.bufferToHex(privateKeyBuffer)
 }

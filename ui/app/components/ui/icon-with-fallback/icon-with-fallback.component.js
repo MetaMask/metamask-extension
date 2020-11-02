@@ -20,23 +20,26 @@ export default class IconWithFallback extends PureComponent {
     iconError: false,
   }
 
-  render () {
+  render() {
     const { icon, name, size, className, fallbackClassName } = this.props
     const style = size ? { height: `${size}px`, width: `${size}px` } : {}
 
-    return !this.state.iconError && icon
-      ? (
-        <img
-          onError={() => this.setState({ iconError: true })}
-          src={icon}
-          style={style}
-          className={className}
-        />
-      )
-      : (
-        <i className={classnames('icon-with-fallback__fallback', fallbackClassName)}>
-          { name.length ? name.charAt(0).toUpperCase() : '' }
-        </i>
-      )
+    return !this.state.iconError && icon ? (
+      <img
+        onError={() => this.setState({ iconError: true })}
+        src={icon}
+        style={style}
+        className={className}
+      />
+    ) : (
+      <i
+        className={classnames(
+          'icon-with-fallback__fallback',
+          fallbackClassName,
+        )}
+      >
+        {name.length ? name.charAt(0).toUpperCase() : ''}
+      </i>
+    )
   }
 }

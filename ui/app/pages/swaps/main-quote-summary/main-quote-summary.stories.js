@@ -8,7 +8,14 @@ export default {
 
 export const BestQuote = () => {
   return (
-    <div style={{ width: '360px', height: '224px', border: '1px solid black', padding: '24px' }}>
+    <div
+      style={{
+        width: '360px',
+        height: '224px',
+        border: '1px solid black',
+        padding: '24px',
+      }}
+    >
       <MainQuoteSummary
         sourceValue={text('sourceValue', '2000000000000000000')}
         sourceDecimals={number('sourceDecimals', 18)}

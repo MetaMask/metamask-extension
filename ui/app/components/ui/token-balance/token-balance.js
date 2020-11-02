@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import CurrencyDisplay from '../currency-display'
 import { useTokenTracker } from '../../../hooks/useTokenTracker'
 
-export default function TokenBalance ({ className, token }) {
+export default function TokenBalance({ className, token }) {
   const { tokensWithBalances } = useTokenTracker([token])
 
   const { string, symbol } = tokensWithBalances[0] || {}

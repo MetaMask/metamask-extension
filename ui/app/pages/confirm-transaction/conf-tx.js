@@ -12,16 +12,14 @@ import Loading from '../../components/ui/loading-screen'
 import { getMostRecentOverviewPage } from '../../ducks/history/history'
 import { MESSAGE_TYPE } from '../../../../app/scripts/lib/enums'
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   const { metamask, appState } = state
   const {
     unapprovedMsgCount,
     unapprovedPersonalMsgCount,
     unapprovedTypedMessagesCount,
   } = metamask
-  const {
-    txId,
-  } = appState
+  const { txId } = appState
 
   return {
     identities: state.metamask.identities,
@@ -72,17 +70,21 @@ class ConfirmTxScreen extends Component {
     }).isRequired,
   }
 
-  getUnapprovedMessagesTotal () {
+  getUnapprovedMessagesTotal() {
     const {
       unapprovedMsgCount = 0,
       unapprovedPersonalMsgCount = 0,
       unapprovedTypedMessagesCount = 0,
     } = this.props
 
-    return unapprovedTypedMessagesCount + unapprovedMsgCount + unapprovedPersonalMsgCount
+    return (
+      unapprovedTypedMessagesCount +
+      unapprovedMsgCount +
+      unapprovedPersonalMsgCount
+    )
   }
 
-  getTxData () {
+  getTxData() {
     const {
       network,
       index,
@@ -108,16 +110,19 @@ class ConfirmTxScreen extends Component {
       : unconfTxList[index]
   }
 
-  signatureSelect (type, version) {
+  signatureSelect(type, version) {
     // Temporarily direct only v3 and v4 requests to new code.
-    if (type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA && (version === 'V3' || version === 'V4')) {
+    if (
+      type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA &&
+      (version === 'V3' || version === 'V4')
+    ) {
       return SignatureRequest
     }
 
     return SignatureRequestOriginal
   }
 
-  signMessage (msgData, event) {
+  signMessage(msgData, event) {
     log.info('conf-tx.js: signing message')
     const params = msgData.msgParams
     params.metamaskId = msgData.id
@@ -125,13 +130,13 @@ class ConfirmTxScreen extends Component {
     return this.props.dispatch(actions.signMsg(params))
   }
 
-  stopPropagation (event) {
+  stopPropagation(event) {
     if (event.stopPropagation) {
       event.stopPropagation()
     }
   }
 
-  signPersonalMessage (msgData, event) {
+  signPersonalMessage(msgData, event) {
     log.info('conf-tx.js: signing personal message')
     const params = msgData.msgParams
     params.metamaskId = msgData.id
@@ -139,7 +144,7 @@ class ConfirmTxScreen extends Component {
     return this.props.dispatch(actions.signPersonalMsg(params))
   }
 
-  signTypedMessage (msgData, event) {
+  signTypedMessage(msgData, event) {
     log.info('conf-tx.js: signing typed message')
     const params = msgData.msgParams
     params.metamaskId = msgData.id
@@ -147,25 +152,25 @@ class ConfirmTxScreen extends Component {
     return this.props.dispatch(actions.signTypedMsg(params))
   }
 
-  cancelMessage (msgData, event) {
+  cancelMessage(msgData, event) {
     log.info('canceling message')
     this.stopPropagation(event)
     return this.props.dispatch(actions.cancelMsg(msgData))
   }
 
-  cancelPersonalMessage (msgData, event) {
+  cancelPersonalMessage(msgData, event) {
     log.info('canceling personal message')
     this.stopPropagation(event)
     return this.props.dispatch(actions.cancelPersonalMsg(msgData))
   }
 
-  cancelTypedMessage (msgData, event) {
+  cancelTypedMessage(msgData, event) {
     log.info('canceling typed message')
     this.stopPropagation(event)
     return this.props.dispatch(actions.cancelTypedMsg(msgData))
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const {
       unapprovedTxs = {},
       history,
@@ -175,12 +180,16 @@ class ConfirmTxScreen extends Component {
     } = this.props
     const unconfTxList = txHelper(unapprovedTxs, {}, {}, {}, network)
 
-    if (unconfTxList.length === 0 && !send.to && this.getUnapprovedMessagesTotal() === 0) {
+    if (
+      unconfTxList.length === 0 &&
+      !send.to &&
+      this.getUnapprovedMessagesTotal() === 0
+    ) {
       history.push(mostRecentOverviewPage)
     }
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     const {
       unapprovedTxs = {},
       network,
@@ -205,33 +214,38 @@ class ConfirmTxScreen extends Component {
     const unconfTxList = txHelper(unapprovedTxs, {}, {}, {}, network)
 
     if (prevTx && prevTx.status === 'dropped') {
-      this.props.dispatch(actions.showModal({
-        name: 'TRANSACTION_CONFIRMED',
-        onSubmit: () => history.push(mostRecentOverviewPage),
-      }))
+      this.props.dispatch(
+        actions.showModal({
+          name: 'TRANSACTION_CONFIRMED',
+          onSubmit: () => history.push(mostRecentOverviewPage),
+        }),
+      )
 
       return
     }
 
-    if (unconfTxList.length === 0 && !send.to && this.getUnapprovedMessagesTotal() === 0) {
+    if (
+      unconfTxList.length === 0 &&
+      !send.to &&
+      this.getUnapprovedMessagesTotal() === 0
+    ) {
       this.props.history.push(mostRecentOverviewPage)
     }
   }
 
-  render () {
-    const {
-      currentCurrency,
-      blockGasLimit,
-    } = this.props
+  render() {
+    const { currentCurrency, blockGasLimit } = this.props
 
     const txData = this.getTxData() || {}
-    const { msgParams, type, msgParams: { version } } = txData
+    const {
+      msgParams,
+      type,
+      msgParams: { version },
+    } = txData
     log.debug('msgParams detected, rendering pending msg')
 
     if (!msgParams) {
-      return (
-        <Loading />
-      )
+      return <Loading />
     }
 
     const SigComponent = this.signatureSelect(type, version)
@@ -253,7 +267,4 @@ class ConfirmTxScreen extends Component {
   }
 }
 
-export default compose(
-  withRouter,
-  connect(mapStateToProps),
-)(ConfirmTxScreen)
+export default compose(withRouter, connect(mapStateToProps))(ConfirmTxScreen)

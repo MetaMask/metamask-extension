@@ -3,7 +3,7 @@ import * as actionConstants from '../../store/actionConstants'
 // actionConstants
 const SET_THREEBOX_LAST_UPDATED = 'metamask/app/SET_THREEBOX_LAST_UPDATED'
 
-export default function reduceApp (state = {}, action) {
+export default function reduceApp(state = {}, action) {
   // default state
   const appState = {
     shouldClose: false,
@@ -161,7 +161,7 @@ export default function reduceApp (state = {}, action) {
         warning: null,
       }
 
-      // accounts
+    // accounts
 
     case actionConstants.GO_HOME:
       return {
@@ -177,7 +177,9 @@ export default function reduceApp (state = {}, action) {
     case actionConstants.SHOW_ACCOUNT_DETAIL:
       return {
         ...appState,
-        forgottenPassword: appState.forgottenPassword ? !appState.forgottenPassword : null,
+        forgottenPassword: appState.forgottenPassword
+          ? !appState.forgottenPassword
+          : null,
         accountDetail: {
           subview: 'transactions',
           accountExport: 'none',
@@ -366,7 +368,7 @@ export default function reduceApp (state = {}, action) {
 }
 
 // Action Creators
-export function setThreeBoxLastUpdated (lastUpdated) {
+export function setThreeBoxLastUpdated(lastUpdated) {
   return {
     type: SET_THREEBOX_LAST_UPDATED,
     value: lastUpdated,

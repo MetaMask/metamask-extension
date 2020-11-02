@@ -17,7 +17,7 @@ const threeBoxSpies = {
 }
 
 class ThreeBoxControllerMock {
-  constructor () {
+  constructor() {
     this.store = {
       subscribe: () => undefined,
       getState: () => ({}),
@@ -61,19 +61,24 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
   next()
 }
 
-const MetaMaskController = proxyquire('../../../../app/scripts/metamask-controller', {
-  './controllers/threebox': { default: ThreeBoxControllerMock },
-  './lib/createLoggerMiddleware': { default: createLoggerMiddlewareMock },
-}).default
+const MetaMaskController = proxyquire(
+  '../../../../app/scripts/metamask-controller',
+  {
+    './controllers/threebox': { default: ThreeBoxControllerMock },
+    './lib/createLoggerMiddleware': { default: createLoggerMiddlewareMock },
+  },
+).default
 
 const currentNetworkId = '42'
 const DEFAULT_LABEL = 'Account 1'
 const DEFAULT_LABEL_2 = 'Account 2'
-const TEST_SEED = 'debris dizzy just program just float decrease vacant alarm reduce speak stadium'
+const TEST_SEED =
+  'debris dizzy just program just float decrease vacant alarm reduce speak stadium'
 const TEST_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
 const TEST_ADDRESS_2 = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b'
 const TEST_ADDRESS_3 = '0xeb9e64b93097bc15f01f13eae97015c57ab64823'
-const TEST_SEED_ALT = 'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle'
+const TEST_SEED_ALT =
+  'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle'
 const TEST_ADDRESS_ALT = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
 const CUSTOM_RPC_URL = 'http://localhost:8545'
 const CUSTOM_RPC_CHAIN_ID = '0x539'
@@ -84,7 +89,6 @@ describe('MetaMaskController', function () {
   const noop = () => undefined
 
   beforeEach(function () {
-
     nock('https://min-api.cryptocompare.com')
       .persist()
       .get(/.*/u)
@@ -94,23 +98,32 @@ describe('MetaMaskController', function () {
       showUnapprovedTx: noop,
       showUnconfirmedMessage: noop,
       encryptor: {
-        encrypt (_, object) {
+        encrypt(_, object) {
           this.object = object
           return Promise.resolve('mock-encrypted')
         },
-        decrypt () {
+        decrypt() {
           return Promise.resolve(this.object)
         },
       },
       initState: cloneDeep(firstTimeState),
-      platform: { showTransactionNotification: () => undefined, getVersion: () => 'foo' },
+      platform: {
+        showTransactionNotification: () => undefined,
+        getVersion: () => 'foo',
+      },
       extension: ExtensionizerMock,
       infuraProjectId: 'foo',
     })
 
     // add sinon method spies
-    sandbox.spy(metamaskController.keyringController, 'createNewVaultAndKeychain')
-    sandbox.spy(metamaskController.keyringController, 'createNewVaultAndRestore')
+    sandbox.spy(
+      metamaskController.keyringController,
+      'createNewVaultAndKeychain',
+    )
+    sandbox.spy(
+      metamaskController.keyringController,
+      'createNewVaultAndRestore',
+    )
   })
 
   afterEach(function () {
@@ -123,25 +136,32 @@ describe('MetaMaskController', function () {
       const password = 'a-fake-password'
       await metamaskController.createNewVaultAndRestore(password, TEST_SEED)
 
-      metamaskController.networkController._baseProviderParams.getAccounts((err, res) => {
-        assert.ifError(err)
-        assert.equal(res.length, 1)
-        assert.equal(res[0], '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc')
-      })
+      metamaskController.networkController._baseProviderParams.getAccounts(
+        (err, res) => {
+          assert.ifError(err)
+          assert.equal(res.length, 1)
+          assert.equal(res[0], '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc')
+        },
+      )
     })
   })
 
   describe('#importAccountWithStrategy', function () {
-    const importPrivkey = '4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553'
+    const importPrivkey =
+      '4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553'
 
     beforeEach(async function () {
       const password = 'a-fake-password'
       await metamaskController.createNewVaultAndRestore(password, TEST_SEED)
-      await metamaskController.importAccountWithStrategy('Private Key', [importPrivkey])
+      await metamaskController.importAccountWithStrategy('Private Key', [
+        importPrivkey,
+      ])
     })
 
     it('adds private key to keyrings in KeyringController', async function () {
-      const simpleKeyrings = metamaskController.keyringController.getKeyringsByType('Simple Key Pair')
+      const simpleKeyrings = metamaskController.keyringController.getKeyringsByType(
+        'Simple Key Pair',
+      )
       const privKeyBuffer = simpleKeyrings[0].wallets[0]._privKey
       const pubKeyBuffer = simpleKeyrings[0].wallets[0]._pubKey
       const addressBuffer = ethUtil.pubToAddress(pubKeyBuffer)
@@ -153,7 +173,10 @@ describe('MetaMaskController', function () {
 
     it('adds 1 account', async function () {
       const keyringAccounts = await metamaskController.keyringController.getAccounts()
-      assert.equal(keyringAccounts[keyringAccounts.length - 1], '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc')
+      assert.equal(
+        keyringAccounts[keyringAccounts.length - 1],
+        '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc',
+      )
     })
   })
 
@@ -171,15 +194,23 @@ describe('MetaMaskController', function () {
       metamaskController.preferencesController.addAddresses([fakeAddress])
       await metamaskController.submitPassword(password)
 
-      const identities = Object.keys(metamaskController.preferencesController.store.getState().identities)
+      const identities = Object.keys(
+        metamaskController.preferencesController.store.getState().identities,
+      )
       const addresses = await metamaskController.keyringController.getAccounts()
 
       identities.forEach((identity) => {
-        assert.ok(addresses.includes(identity), `addresses should include all IDs: ${identity}`)
+        assert.ok(
+          addresses.includes(identity),
+          `addresses should include all IDs: ${identity}`,
+        )
       })
 
       addresses.forEach((address) => {
-        assert.ok(identities.includes(address), `identities should include all Addresses: ${address}`)
+        assert.ok(
+          identities.includes(address),
+          `identities should include all Addresses: ${address}`,
+        )
       })
     })
 
@@ -210,7 +241,10 @@ describe('MetaMaskController', function () {
       await metamaskController.createNewVaultAndKeychain(password)
       await metamaskController.createNewVaultAndKeychain(password)
 
-      assert(metamaskController.keyringController.createNewVaultAndKeychain.calledOnce)
+      assert(
+        metamaskController.keyringController.createNewVaultAndKeychain
+          .calledOnce,
+      )
 
       selectStub.reset()
     })
@@ -224,10 +258,15 @@ describe('MetaMaskController', function () {
         return Promise.resolve('0x0')
       })
 
-      await metamaskController.createNewVaultAndRestore(password, TEST_SEED.slice(0, -1)).catch(() => null)
+      await metamaskController
+        .createNewVaultAndRestore(password, TEST_SEED.slice(0, -1))
+        .catch(() => null)
       await metamaskController.createNewVaultAndRestore(password, TEST_SEED)
 
-      assert(metamaskController.keyringController.createNewVaultAndRestore.calledTwice)
+      assert(
+        metamaskController.keyringController.createNewVaultAndRestore
+          .calledTwice,
+      )
     })
 
     it('should clear previous identities after vault restoration', async function () {
@@ -240,12 +279,12 @@ describe('MetaMaskController', function () {
       await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED)
       let endTime = Date.now()
 
-      const firstVaultIdentities = cloneDeep(metamaskController.getState().identities)
+      const firstVaultIdentities = cloneDeep(
+        metamaskController.getState().identities,
+      )
       assert.ok(
-        (
-          firstVaultIdentities[TEST_ADDRESS].lastSelected >= startTime &&
-          firstVaultIdentities[TEST_ADDRESS].lastSelected <= endTime
-        ),
+        firstVaultIdentities[TEST_ADDRESS].lastSelected >= startTime &&
+          firstVaultIdentities[TEST_ADDRESS].lastSelected <= endTime,
         `'${firstVaultIdentities[TEST_ADDRESS].lastSelected}' expected to be between '${startTime}' and '${endTime}'`,
       )
       delete firstVaultIdentities[TEST_ADDRESS].lastSelected
@@ -253,24 +292,32 @@ describe('MetaMaskController', function () {
         [TEST_ADDRESS]: { address: TEST_ADDRESS, name: DEFAULT_LABEL },
       })
 
-      await metamaskController.preferencesController.setAccountLabel(TEST_ADDRESS, 'Account Foo')
+      await metamaskController.preferencesController.setAccountLabel(
+        TEST_ADDRESS,
+        'Account Foo',
+      )
 
-      const labelledFirstVaultIdentities = cloneDeep(metamaskController.getState().identities)
+      const labelledFirstVaultIdentities = cloneDeep(
+        metamaskController.getState().identities,
+      )
       delete labelledFirstVaultIdentities[TEST_ADDRESS].lastSelected
       assert.deepEqual(labelledFirstVaultIdentities, {
         [TEST_ADDRESS]: { address: TEST_ADDRESS, name: 'Account Foo' },
       })
 
       startTime = Date.now()
-      await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED_ALT)
+      await metamaskController.createNewVaultAndRestore(
+        'foobar1337',
+        TEST_SEED_ALT,
+      )
       endTime = Date.now()
 
-      const secondVaultIdentities = cloneDeep(metamaskController.getState().identities)
+      const secondVaultIdentities = cloneDeep(
+        metamaskController.getState().identities,
+      )
       assert.ok(
-        (
-          secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected >= startTime &&
-          secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected <= endTime
-        ),
+        secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected >= startTime &&
+          secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected <= endTime,
         `'${secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected}' expected to be between '${startTime}' and '${endTime}'`,
       )
       delete secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected
@@ -295,7 +342,10 @@ describe('MetaMaskController', function () {
       await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED)
 
       const identities = cloneDeep(metamaskController.getState().identities)
-      assert.ok(identities[TEST_ADDRESS].lastSelected >= startTime && identities[TEST_ADDRESS].lastSelected <= Date.now())
+      assert.ok(
+        identities[TEST_ADDRESS].lastSelected >= startTime &&
+          identities[TEST_ADDRESS].lastSelected <= Date.now(),
+      )
       delete identities[TEST_ADDRESS].lastSelected
       assert.deepEqual(identities, {
         [TEST_ADDRESS]: { address: TEST_ADDRESS, name: DEFAULT_LABEL },
@@ -350,16 +400,20 @@ describe('MetaMaskController', function () {
   })
 
   describe('preferencesController', function () {
-
     it('defaults useBlockie to false', function () {
-      assert.equal(metamaskController.preferencesController.store.getState().useBlockie, false)
+      assert.equal(
+        metamaskController.preferencesController.store.getState().useBlockie,
+        false,
+      )
     })
 
     it('setUseBlockie to true', function () {
       metamaskController.setUseBlockie(true, noop)
-      assert.equal(metamaskController.preferencesController.store.getState().useBlockie, true)
+      assert.equal(
+        metamaskController.preferencesController.store.getState().useBlockie,
+        true,
+      )
     })
-
   })
 
   describe('#selectFirstIdentity', function () {
@@ -370,11 +424,11 @@ describe('MetaMaskController', function () {
       identities = {
         '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
           address,
-          'name': 'Account 1',
+          name: 'Account 1',
         },
         '0xc42edfcc21ed14dda456aa0756c153f7985d8813': {
-          'address': '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-          'name': 'Account 2',
+          address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+          name: 'Account 2',
         },
       }
       metamaskController.preferencesController.store.updateState({ identities })
@@ -393,12 +447,18 @@ describe('MetaMaskController', function () {
   })
 
   describe('connectHardware', function () {
-
     it('should throw if it receives an unknown device name', async function () {
       try {
-        await metamaskController.connectHardware('Some random device name', 0, `m/44/0'/0'`)
+        await metamaskController.connectHardware(
+          'Some random device name',
+          0,
+          `m/44/0'/0'`,
+        )
       } catch (e) {
-        assert.equal(e, 'Error: MetamaskController:getKeyringForDevice - Unknown device')
+        assert.equal(
+          e,
+          'Error: MetamaskController:getKeyringForDevice - Unknown device',
+        )
       }
     })
 
@@ -408,7 +468,10 @@ describe('MetaMaskController', function () {
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
         'Trezor Hardware',
       )
-      assert.equal(metamaskController.keyringController.addNewKeyring.getCall(0).args, 'Trezor Hardware')
+      assert.equal(
+        metamaskController.keyringController.addNewKeyring.getCall(0).args,
+        'Trezor Hardware',
+      )
       assert.equal(keyrings.length, 1)
     })
 
@@ -418,18 +481,26 @@ describe('MetaMaskController', function () {
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
         'Ledger Hardware',
       )
-      assert.equal(metamaskController.keyringController.addNewKeyring.getCall(0).args, 'Ledger Hardware')
+      assert.equal(
+        metamaskController.keyringController.addNewKeyring.getCall(0).args,
+        'Ledger Hardware',
+      )
       assert.equal(keyrings.length, 1)
     })
-
   })
 
   describe('checkHardwareStatus', function () {
     it('should throw if it receives an unknown device name', async function () {
       try {
-        await metamaskController.checkHardwareStatus('Some random device name', `m/44/0'/0'`)
+        await metamaskController.checkHardwareStatus(
+          'Some random device name',
+          `m/44/0'/0'`,
+        )
       } catch (e) {
-        assert.equal(e, 'Error: MetamaskController:getKeyringForDevice - Unknown device')
+        assert.equal(
+          e,
+          'Error: MetamaskController:getKeyringForDevice - Unknown device',
+        )
       }
     })
 
@@ -445,7 +516,10 @@ describe('MetaMaskController', function () {
       try {
         await metamaskController.forgetDevice('Some random device name')
       } catch (e) {
-        assert.equal(e, 'Error: MetamaskController:getKeyringForDevice - Unknown device')
+        assert.equal(
+          e,
+          'Error: MetamaskController:getKeyringForDevice - Unknown device',
+        )
       }
     })
 
@@ -472,10 +546,16 @@ describe('MetaMaskController', function () {
       windowOpenStub = sinon.stub(window, 'open')
       windowOpenStub.returns(noop)
 
-      addNewAccountStub = sinon.stub(metamaskController.keyringController, 'addNewAccount')
+      addNewAccountStub = sinon.stub(
+        metamaskController.keyringController,
+        'addNewAccount',
+      )
       addNewAccountStub.returns({})
 
-      getAccountsStub = sinon.stub(metamaskController.keyringController, 'getAccounts')
+      getAccountsStub = sinon.stub(
+        metamaskController.keyringController,
+        'getAccounts',
+      )
       // Need to return different address to mock the behavior of
       // adding a new account from the keyring
       getAccountsStub.onCall(0).returns(Promise.resolve(['0x1']))
@@ -485,8 +565,14 @@ describe('MetaMaskController', function () {
       sinon.spy(metamaskController.preferencesController, 'setAddresses')
       sinon.spy(metamaskController.preferencesController, 'setSelectedAddress')
       sinon.spy(metamaskController.preferencesController, 'setAccountLabel')
-      await metamaskController.connectHardware('trezor', 0, `m/44/0'/0'`).catch(() => null)
-      await metamaskController.unlockHardwareWalletAccount(accountToUnlock, 'trezor', `m/44/0'/0'`)
+      await metamaskController
+        .connectHardware('trezor', 0, `m/44/0'/0'`)
+        .catch(() => null)
+      await metamaskController.unlockHardwareWalletAccount(
+        accountToUnlock,
+        'trezor',
+        `m/44/0'/0'`,
+      )
     })
 
     afterEach(function () {
@@ -518,13 +604,16 @@ describe('MetaMaskController', function () {
     })
 
     it('should call preferencesController.setSelectedAddress', async function () {
-      assert(metamaskController.preferencesController.setSelectedAddress.calledOnce)
+      assert(
+        metamaskController.preferencesController.setSelectedAddress.calledOnce,
+      )
     })
 
     it('should call preferencesController.setAccountLabel', async function () {
-      assert(metamaskController.preferencesController.setAccountLabel.calledOnce)
+      assert(
+        metamaskController.preferencesController.setAccountLabel.calledOnce,
+      )
     })
-
   })
 
   describe('#setCustomRpc', function () {
@@ -551,7 +640,8 @@ describe('MetaMaskController', function () {
     let defaultMetaMaskCurrency
 
     beforeEach(function () {
-      defaultMetaMaskCurrency = metamaskController.currencyRateController.state.currentCurrency
+      defaultMetaMaskCurrency =
+        metamaskController.currencyRateController.state.currentCurrency
     })
 
     it('defaults to usd', function () {
@@ -560,7 +650,10 @@ describe('MetaMaskController', function () {
 
     it('sets currency to JPY', function () {
       metamaskController.setCurrentCurrency('JPY', noop)
-      assert.equal(metamaskController.currencyRateController.state.currentCurrency, 'JPY')
+      assert.equal(
+        metamaskController.currencyRateController.state.currentCurrency,
+        'JPY',
+      )
     })
   })
 
@@ -599,21 +692,45 @@ describe('MetaMaskController', function () {
 
   describe('#resetAccount', function () {
     it('wipes transactions from only the correct network id and with the selected address', async function () {
-      const selectedAddressStub = sinon.stub(metamaskController.preferencesController, 'getSelectedAddress')
-      const getNetworkstub = sinon.stub(metamaskController.txController.txStateManager, 'getNetwork')
+      const selectedAddressStub = sinon.stub(
+        metamaskController.preferencesController,
+        'getSelectedAddress',
+      )
+      const getNetworkstub = sinon.stub(
+        metamaskController.txController.txStateManager,
+        'getNetwork',
+      )
 
       selectedAddressStub.returns('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc')
       getNetworkstub.returns(42)
 
       metamaskController.txController.txStateManager._saveTxList([
-        createTxMeta({ id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' } }),
-        createTxMeta({ id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' } }),
+        createTxMeta({
+          id: 1,
+          status: 'unapproved',
+          metamaskNetworkId: currentNetworkId,
+          txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' },
+        }),
+        createTxMeta({
+          id: 1,
+          status: 'unapproved',
+          metamaskNetworkId: currentNetworkId,
+          txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' },
+        }),
         createTxMeta({ id: 2, status: 'rejected', metamaskNetworkId: '32' }),
-        createTxMeta({ id: 3, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams: { from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4' } }),
+        createTxMeta({
+          id: 3,
+          status: 'submitted',
+          metamaskNetworkId: currentNetworkId,
+          txParams: { from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4' },
+        }),
       ])
 
       await metamaskController.resetAccount()
-      assert.equal(metamaskController.txController.txStateManager.getTx(1), undefined)
+      assert.equal(
+        metamaskController.txController.txStateManager.getTx(1),
+        undefined,
+      )
     })
   })
 
@@ -625,10 +742,12 @@ describe('MetaMaskController', function () {
       sinon.stub(metamaskController.preferencesController, 'removeAddress')
       sinon.stub(metamaskController.accountTracker, 'removeAccount')
       sinon.stub(metamaskController.keyringController, 'removeAccount')
-      sinon.stub(metamaskController.permissionsController, 'removeAllAccountPermissions')
+      sinon.stub(
+        metamaskController.permissionsController,
+        'removeAllAccountPermissions',
+      )
 
       ret = await metamaskController.removeAccount(addressToRemove)
-
     })
 
     afterEach(function () {
@@ -639,16 +758,32 @@ describe('MetaMaskController', function () {
     })
 
     it('should call preferencesController.removeAddress', async function () {
-      assert(metamaskController.preferencesController.removeAddress.calledWith(addressToRemove))
+      assert(
+        metamaskController.preferencesController.removeAddress.calledWith(
+          addressToRemove,
+        ),
+      )
     })
     it('should call accountTracker.removeAccount', async function () {
-      assert(metamaskController.accountTracker.removeAccount.calledWith([addressToRemove]))
+      assert(
+        metamaskController.accountTracker.removeAccount.calledWith([
+          addressToRemove,
+        ]),
+      )
     })
     it('should call keyringController.removeAccount', async function () {
-      assert(metamaskController.keyringController.removeAccount.calledWith(addressToRemove))
+      assert(
+        metamaskController.keyringController.removeAccount.calledWith(
+          addressToRemove,
+        ),
+      )
     })
     it('should call permissionsController.removeAllAccountPermissions', async function () {
-      assert(metamaskController.permissionsController.removeAllAccountPermissions.calledWith(addressToRemove))
+      assert(
+        metamaskController.permissionsController.removeAllAccountPermissions.calledWith(
+          addressToRemove,
+        ),
+      )
     })
     it('should return address', async function () {
       assert.equal(ret, '0x1')
@@ -656,22 +791,21 @@ describe('MetaMaskController', function () {
   })
 
   describe('#setCurrentLocale', function () {
-
     it('checks the default currentLocale', function () {
-      const preferenceCurrentLocale = metamaskController.preferencesController.store.getState().currentLocale
+      const preferenceCurrentLocale = metamaskController.preferencesController.store.getState()
+        .currentLocale
       assert.equal(preferenceCurrentLocale, undefined)
     })
 
     it('sets current locale in preferences controller', function () {
       metamaskController.setCurrentLocale('ja', noop)
-      const preferenceCurrentLocale = metamaskController.preferencesController.store.getState().currentLocale
+      const preferenceCurrentLocale = metamaskController.preferencesController.store.getState()
+        .currentLocale
       assert.equal(preferenceCurrentLocale, 'ja')
     })
-
   })
 
   describe('#newUnsignedMessage', function () {
-
     let msgParams, metamaskMsgs, messages, msgId
 
     const address = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
@@ -683,10 +817,13 @@ describe('MetaMaskController', function () {
         return Promise.resolve('0x0')
       })
 
-      await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED_ALT)
+      await metamaskController.createNewVaultAndRestore(
+        'foobar1337',
+        TEST_SEED_ALT,
+      )
 
       msgParams = {
-        'from': address,
+        from: address,
         data,
       }
 
@@ -743,10 +880,13 @@ describe('MetaMaskController', function () {
         return Promise.resolve('0x0')
       })
 
-      await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED_ALT)
+      await metamaskController.createNewVaultAndRestore(
+        'foobar1337',
+        TEST_SEED_ALT,
+      )
 
       msgParams = {
-        'from': address,
+        from: address,
         data,
       }
 
@@ -767,7 +907,10 @@ describe('MetaMaskController', function () {
         })
         assert.fail('should have thrown')
       } catch (error) {
-        assert.equal(error.message, 'MetaMask Message Signature: from field is required.')
+        assert.equal(
+          error.message,
+          'MetaMask Message Signature: from field is required.',
+        )
       }
     })
 
@@ -794,14 +937,18 @@ describe('MetaMaskController', function () {
     })
 
     it('errors when signing a message', async function () {
-      await metamaskController.signPersonalMessage(personalMessages[0].msgParams)
+      await metamaskController.signPersonalMessage(
+        personalMessages[0].msgParams,
+      )
       assert.equal(metamaskPersonalMsgs[msgId].status, 'signed')
-      assert.equal(metamaskPersonalMsgs[msgId].rawSig, '0x6a1b65e2b8ed53cf398a769fad24738f9fbe29841fe6854e226953542c4b6a173473cb152b6b1ae5f06d601d45dd699a129b0a8ca84e78b423031db5baa734741b')
+      assert.equal(
+        metamaskPersonalMsgs[msgId].rawSig,
+        '0x6a1b65e2b8ed53cf398a769fad24738f9fbe29841fe6854e226953542c4b6a173473cb152b6b1ae5f06d601d45dd699a129b0a8ca84e78b423031db5baa734741b',
+      )
     })
   })
 
   describe('#setupUntrustedCommunication', function () {
-
     const mockTxParams = { from: TEST_ADDRESS }
 
     beforeEach(function () {
@@ -824,12 +971,18 @@ describe('MetaMaskController', function () {
           cb()
           return
         }
-        assert.equal(chunk.data.hostname, (new URL(phishingMessageSender.url)).hostname)
+        assert.equal(
+          chunk.data.hostname,
+          new URL(phishingMessageSender.url).hostname,
+        )
         resolve()
         cb()
       })
 
-      metamaskController.setupUntrustedCommunication(streamTest, phishingMessageSender)
+      metamaskController.setupUntrustedCommunication(
+        streamTest,
+        phishingMessageSender,
+      )
       await promise
       streamTest.end()
     })
@@ -855,22 +1008,23 @@ describe('MetaMaskController', function () {
         params: [{ ...mockTxParams }],
         method: 'eth_sendTransaction',
       }
-      streamTest.write({
-        name: 'provider',
-        data: message,
-      }, null, () => {
-        setTimeout(() => {
-          assert.deepStrictEqual(
-            loggerMiddlewareMock.requests[0],
-            {
+      streamTest.write(
+        {
+          name: 'provider',
+          data: message,
+        },
+        null,
+        () => {
+          setTimeout(() => {
+            assert.deepStrictEqual(loggerMiddlewareMock.requests[0], {
               ...message,
               origin: 'http://mycrypto.com',
               tabId: 456,
-            },
-          )
-          done()
-        })
-      })
+            })
+            done()
+          })
+        },
+      )
     })
 
     it('should add only origin to request if tabId not provided', function (done) {
@@ -893,21 +1047,22 @@ describe('MetaMaskController', function () {
         params: [{ ...mockTxParams }],
         method: 'eth_sendTransaction',
       }
-      streamTest.write({
-        name: 'provider',
-        data: message,
-      }, null, () => {
-        setTimeout(() => {
-          assert.deepStrictEqual(
-            loggerMiddlewareMock.requests[0],
-            {
+      streamTest.write(
+        {
+          name: 'provider',
+          data: message,
+        },
+        null,
+        () => {
+          setTimeout(() => {
+            assert.deepStrictEqual(loggerMiddlewareMock.requests[0], {
               ...message,
               origin: 'http://mycrypto.com',
-            },
-          )
-          done()
-        })
-      })
+            })
+            done()
+          })
+        },
+      )
     })
   })
 
@@ -947,7 +1102,6 @@ describe('MetaMaskController', function () {
   })
 
   describe('#_onKeyringControllerUpdate', function () {
-
     it('should do nothing if there are no keyrings in state', async function () {
       const syncAddresses = sinon.fake()
       const syncWithAddresses = sinon.fake()
@@ -978,9 +1132,11 @@ describe('MetaMaskController', function () {
 
       const oldState = metamaskController.getState()
       await metamaskController._onKeyringControllerUpdate({
-        keyrings: [{
-          accounts: ['0x1', '0x2'],
-        }],
+        keyrings: [
+          {
+            accounts: ['0x1', '0x2'],
+          },
+        ],
       })
 
       assert.deepEqual(syncAddresses.args, [[['0x1', '0x2']]])
@@ -1001,9 +1157,11 @@ describe('MetaMaskController', function () {
       const oldState = metamaskController.getState()
       await metamaskController._onKeyringControllerUpdate({
         isUnlocked: true,
-        keyrings: [{
-          accounts: ['0x1', '0x2'],
-        }],
+        keyrings: [
+          {
+            accounts: ['0x1', '0x2'],
+          },
+        ],
       })
 
       assert.deepEqual(syncAddresses.args, [[['0x1', '0x2']]])
@@ -1011,10 +1169,9 @@ describe('MetaMaskController', function () {
       assert.deepEqual(metamaskController.getState(), oldState)
     })
   })
-
 })
 
-function deferredPromise () {
+function deferredPromise() {
   let resolve
   const promise = new Promise((_resolve) => {
     resolve = _resolve

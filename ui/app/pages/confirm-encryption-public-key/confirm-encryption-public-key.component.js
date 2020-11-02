@@ -37,7 +37,9 @@ export default class ConfirmEncryptionPublicKey extends Component {
   }
 
   componentDidMount = () => {
-    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
+    if (
+      getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION
+    ) {
       window.addEventListener('beforeunload', this._beforeUnload)
     }
   }
@@ -65,7 +67,9 @@ export default class ConfirmEncryptionPublicKey extends Component {
   }
 
   _removeBeforeUnload = () => {
-    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
+    if (
+      getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION
+    ) {
       window.removeEventListener('beforeunload', this._beforeUnload)
     }
   }
@@ -76,7 +80,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
         <div className="request-encryption-public-key__header-background" />
 
         <div className="request-encryption-public-key__header__text">
-          { this.context.t('encryptionPublicKeyRequest') }
+          {this.context.t('encryptionPublicKeyRequest')}
         </div>
 
         <div className="request-encryption-public-key__header__tip-container">
@@ -93,13 +97,11 @@ export default class ConfirmEncryptionPublicKey extends Component {
     return (
       <div className="request-encryption-public-key__account">
         <div className="request-encryption-public-key__account-text">
-          { `${t('account')}:` }
+          {`${t('account')}:`}
         </div>
 
         <div className="request-encryption-public-key__account-item">
-          <AccountListItem
-            account={fromAccount}
-          />
+          <AccountListItem account={fromAccount} />
         </div>
       </div>
     )
@@ -108,7 +110,9 @@ export default class ConfirmEncryptionPublicKey extends Component {
   renderBalance = () => {
     const { conversionRate } = this.props
     const { t } = this.context
-    const { fromAccount: { balance } } = this.state
+    const {
+      fromAccount: { balance },
+    } = this.state
 
     const balanceInEther = conversionUtil(balance, {
       fromNumericBase: 'hex',
@@ -121,10 +125,10 @@ export default class ConfirmEncryptionPublicKey extends Component {
     return (
       <div className="request-encryption-public-key__balance">
         <div className="request-encryption-public-key__balance-text">
-          { `${t('balance')}:` }
+          {`${t('balance')}:`}
         </div>
         <div className="request-encryption-public-key__balance-value">
-          { `${balanceInEther} ETH` }
+          {`${balanceInEther} ETH`}
         </div>
       </div>
     )
@@ -135,10 +139,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
 
     return (
       <div className="request-encryption-public-key__request-icon">
-        <Identicon
-          diameter={40}
-          address={requesterAddress}
-        />
+        <Identicon diameter={40} address={requesterAddress} />
       </div>
     )
   }
@@ -146,9 +147,9 @@ export default class ConfirmEncryptionPublicKey extends Component {
   renderAccountInfo = () => {
     return (
       <div className="request-encryption-public-key__account-info">
-        { this.renderAccount() }
-        { this.renderRequestIcon() }
-        { this.renderBalance() }
+        {this.renderAccount()}
+        {this.renderRequestIcon()}
+        {this.renderBalance()}
       </div>
     )
   }
@@ -162,10 +163,8 @@ export default class ConfirmEncryptionPublicKey extends Component {
 
     return (
       <div className="request-encryption-public-key__body">
-        { this.renderAccountInfo() }
-        <div
-          className="request-encryption-public-key__visual"
-        >
+        {this.renderAccountInfo()}
+        <div className="request-encryption-public-key__visual">
           <section>
             {origin.icon ? (
               <img
@@ -177,10 +176,8 @@ export default class ConfirmEncryptionPublicKey extends Component {
                 {origin.name.charAt(0).toUpperCase()}
               </i>
             )}
-            <div
-              className="request-encryption-public-key__notice"
-            >
-              { notice }
+            <div className="request-encryption-public-key__notice">
+              {notice}
             </div>
           </section>
         </div>
@@ -219,7 +216,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
             history.push(mostRecentOverviewPage)
           }}
         >
-          { this.context.t('cancel') }
+          {this.context.t('cancel')}
         </Button>
         <Button
           type="secondary"
@@ -239,7 +236,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
             history.push(mostRecentOverviewPage)
           }}
         >
-          { t('provide') }
+          {t('provide')}
         </Button>
       </div>
     )
@@ -248,9 +245,9 @@ export default class ConfirmEncryptionPublicKey extends Component {
   render = () => {
     return (
       <div className="request-encryption-public-key__container">
-        { this.renderHeader() }
-        { this.renderBody() }
-        { this.renderFooter() }
+        {this.renderHeader()}
+        {this.renderBody()}
+        {this.renderFooter()}
       </div>
     )
   }

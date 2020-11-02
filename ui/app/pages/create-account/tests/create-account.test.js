@@ -17,9 +17,7 @@ describe('Create Account Page', function () {
   }
 
   before(function () {
-    wrapper = mountWithRouter(
-      <CreateAccountPage {...props} />,
-    )
+    wrapper = mountWithRouter(<CreateAccountPage {...props} />)
   })
 
   afterEach(function () {

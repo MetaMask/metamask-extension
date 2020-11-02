@@ -1,11 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const Approve = ({
-  className,
-  size,
-  color,
-}) => (
+const Approve = ({ className, size, color }) => (
   <svg
     className={className}
     width={size}

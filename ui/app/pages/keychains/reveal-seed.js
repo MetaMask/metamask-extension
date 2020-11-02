@@ -19,87 +19,97 @@ class RevealSeedPage extends Component {
     error: null,
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const passwordBox = document.getElementById('password-box')
     if (passwordBox) {
       passwordBox.focus()
     }
   }
 
-  handleSubmit (event) {
+  handleSubmit(event) {
     event.preventDefault()
     this.setState({ seedWords: null, error: null })
-    this.props.requestRevealSeedWords(this.state.password)
-      .then((seedWords) => this.setState({ seedWords, screen: REVEAL_SEED_SCREEN }))
+    this.props
+      .requestRevealSeedWords(this.state.password)
+      .then((seedWords) =>
+        this.setState({ seedWords, screen: REVEAL_SEED_SCREEN }),
+      )
       .catch((error) => this.setState({ error: error.message }))
   }
 
-  renderWarning () {
+  renderWarning() {
     return (
       <div className="page-container__warning-container">
-        <img className="page-container__warning-icon" src="images/warning.svg" alt="" />
+        <img
+          className="page-container__warning-icon"
+          src="images/warning.svg"
+          alt=""
+        />
         <div className="page-container__warning-message">
           <div className="page-container__warning-title">
             {this.context.t('revealSeedWordsWarningTitle')}
           </div>
-          <div>
-            {this.context.t('revealSeedWordsWarning')}
-          </div>
+          <div>{this.context.t('revealSeedWordsWarning')}</div>
         </div>
       </div>
     )
   }
 
-  renderContent () {
+  renderContent() {
     return this.state.screen === PASSWORD_PROMPT_SCREEN
       ? this.renderPasswordPromptContent()
       : this.renderRevealSeedContent()
   }
 
-  renderPasswordPromptContent () {
+  renderPasswordPromptContent() {
     const { t } = this.context
 
     return (
       <form onSubmit={(event) => this.handleSubmit(event)}>
-        <label className="input-label" htmlFor="password-box">{t('enterPasswordContinue')}</label>
+        <label className="input-label" htmlFor="password-box">
+          {t('enterPasswordContinue')}
+        </label>
         <div className="input-group">
           <input
             type="password"
             placeholder={t('password')}
             id="password-box"
             value={this.state.password}
-            onChange={(event) => this.setState({ password: event.target.value })}
-            className={classnames('form-control', { 'form-control--error': this.state.error })}
+            onChange={(event) =>
+              this.setState({ password: event.target.value })
+            }
+            className={classnames('form-control', {
+              'form-control--error': this.state.error,
+            })}
           />
         </div>
-        {
-          this.state.error && (
-            <div className="reveal-seed__error">
-              {this.state.error}
-            </div>
-          )}
+        {this.state.error && (
+          <div className="reveal-seed__error">{this.state.error}</div>
+        )}
       </form>
     )
   }
 
-  renderRevealSeedContent () {
+  renderRevealSeedContent() {
     const { t } = this.context
 
     return (
       <div>
-        <label className="reveal-seed__label">{t('yourPrivateSeedPhrase')}</label>
+        <label className="reveal-seed__label">
+          {t('yourPrivateSeedPhrase')}
+        </label>
         <ExportTextContainer text={this.state.seedWords} />
       </div>
     )
   }
 
-  renderFooter () {
+  renderFooter() {
     return this.state.screen === PASSWORD_PROMPT_SCREEN
       ? this.renderPasswordPromptFooter()
       : this.renderRevealSeedFooter()
   }
 
-  renderPasswordPromptFooter () {
+  renderPasswordPromptFooter() {
     return (
       <div className="page-container__footer">
         <footer>
@@ -107,7 +117,9 @@ class RevealSeedPage extends Component {
             type="default"
             large
             className="page-container__footer-button"
-            onClick={() => this.props.history.push(this.props.mostRecentOverviewPage)}
+            onClick={() =>
+              this.props.history.push(this.props.mostRecentOverviewPage)
+            }
           >
             {this.context.t('cancel')}
           </Button>
@@ -125,14 +137,16 @@ class RevealSeedPage extends Component {
     )
   }
 
-  renderRevealSeedFooter () {
+  renderRevealSeedFooter() {
     return (
       <div className="page-container__footer">
         <Button
           type="default"
           large
           className="page-container__footer-button"
-          onClick={() => this.props.history.push(this.props.mostRecentOverviewPage)}
+          onClick={() =>
+            this.props.history.push(this.props.mostRecentOverviewPage)
+          }
         >
           {this.context.t('close')}
         </Button>
@@ -140,7 +154,7 @@ class RevealSeedPage extends Component {
     )
   }
 
-  render () {
+  render() {
     return (
       <div className="page-container">
         <div className="page-container__header">
@@ -153,9 +167,7 @@ class RevealSeedPage extends Component {
         </div>
         <div className="page-container__content">
           {this.renderWarning()}
-          <div className="reveal-seed__content">
-            {this.renderContent()}
-          </div>
+          <div className="reveal-seed__content">{this.renderContent()}</div>
         </div>
         {this.renderFooter()}
       </div>
@@ -181,7 +193,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    requestRevealSeedWords: (password) => dispatch(requestRevealSeedWords(password)),
+    requestRevealSeedWords: (password) =>
+      dispatch(requestRevealSeedWords(password)),
   }
 }
 

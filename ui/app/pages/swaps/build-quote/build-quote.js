@@ -24,7 +24,10 @@ import {
   getTopAssets,
   getFetchParams,
 } from '../../../ducks/swaps/swaps'
-import { getValueFromWeiHex, hexToDecimal } from '../../../helpers/utils/conversions.util'
+import {
+  getValueFromWeiHex,
+  hexToDecimal,
+} from '../../../helpers/utils/conversions.util'
 import { calcTokenAmount } from '../../../helpers/utils/token-util'
 import { usePrevious } from '../../../hooks/usePrevious'
 import { useTokenTracker } from '../../../hooks/useTokenTracker'
@@ -37,9 +40,13 @@ import { resetSwapsPostFetchState, removeToken } from '../../../store/actions'
 import { fetchTokenPrice, fetchTokenBalance } from '../swaps.util'
 import SwapsFooter from '../swaps-footer'
 
-const fuseSearchKeys = [{ name: 'name', weight: 0.499 }, { name: 'symbol', weight: 0.499 }, { name: 'address', weight: 0.002 }]
+const fuseSearchKeys = [
+  { name: 'name', weight: 0.499 },
+  { name: 'symbol', weight: 0.499 },
+  { name: 'address', weight: 0.002 },
+]
 
-export default function BuildQuote ({
+export default function BuildQuote({
   inputValue,
   onInputChange,
   ethBalance,
@@ -52,33 +59,40 @@ export default function BuildQuote ({
   const history = useHistory()
   const metaMetricsEvent = useContext(MetaMetricsContext)
 
-  const [fetchedTokenExchangeRate, setFetchedTokenExchangeRate] = useState(undefined)
+  const [fetchedTokenExchangeRate, setFetchedTokenExchangeRate] = useState(
+    undefined,
+  )
 
   const balanceError = useSelector(getBalanceError)
   const fetchParams = useSelector(getFetchParams)
-  const { sourceTokenInfo = {}, destinationTokenInfo = {} } = fetchParams?.metaData || {}
+  const { sourceTokenInfo = {}, destinationTokenInfo = {} } =
+    fetchParams?.metaData || {}
   const tokens = useSelector(getTokens)
   const topAssets = useSelector(getTopAssets)
   const fromToken = useSelector(getFromToken)
   const toToken = useSelector(getToToken) || destinationTokenInfo
   const swapsEthToken = useSwapsEthToken()
-  const fetchParamsFromToken = sourceTokenInfo?.symbol === 'ETH'
-    ? swapsEthToken
-    : sourceTokenInfo
+  const fetchParamsFromToken =
+    sourceTokenInfo?.symbol === 'ETH' ? swapsEthToken : sourceTokenInfo
 
   const { loading, tokensWithBalances } = useTokenTracker(tokens)
 
   // If the fromToken was set in a call to `onFromSelect` (see below), and that from token has a balance
   // but is not in tokensWithBalances or tokens, then we want to add it to the usersTokens array so that
   // the balance of the token can appear in the from token selection dropdown
-  const fromTokenArray = fromToken?.symbol !== 'ETH' && fromToken?.balance
-    ? [fromToken]
-    : []
-  const usersTokens = uniqBy([...tokensWithBalances, ...tokens, ...fromTokenArray], 'address')
+  const fromTokenArray =
+    fromToken?.symbol !== 'ETH' && fromToken?.balance ? [fromToken] : []
+  const usersTokens = uniqBy(
+    [...tokensWithBalances, ...tokens, ...fromTokenArray],
+    'address',
+  )
   const memoizedUsersTokens = useEqualityCheck(usersTokens)
 
   const selectedFromToken = useTokensToSearch({
-    providedTokens: fromToken || fetchParamsFromToken ? [fromToken || fetchParamsFromToken] : [],
+    providedTokens:
+      fromToken || fetchParamsFromToken
+        ? [fromToken || fetchParamsFromToken]
+        : [],
     usersTokens: memoizedUsersTokens,
     onlyEth: (fromToken || fetchParamsFromToken)?.symbol === 'ETH',
     singleToken: true,
@@ -88,7 +102,9 @@ export default function BuildQuote ({
     usersTokens: memoizedUsersTokens,
     topTokens: topAssets,
   })
-  const selectedToToken = tokensToSearch.find(({ address }) => address === toToken?.address) || toToken
+  const selectedToToken =
+    tokensToSearch.find(({ address }) => address === toToken?.address) ||
+    toToken
 
   const {
     address: fromTokenAddress,
@@ -98,7 +114,9 @@ export default function BuildQuote ({
     balance: rawFromTokenBalance,
   } = selectedFromToken || {}
 
-  const fromTokenBalance = rawFromTokenBalance && calcTokenAmount(rawFromTokenBalance, fromTokenDecimals).toString(10)
+  const fromTokenBalance =
+    rawFromTokenBalance &&
+    calcTokenAmount(rawFromTokenBalance, fromTokenDecimals).toString(10)
 
   const prevFromTokenBalance = usePrevious(fromTokenBalance)
 
@@ -111,67 +129,127 @@ export default function BuildQuote ({
     },
     true,
   )
-  const swapFromEthFiatValue = useEthFiatAmount(inputValue || 0, { showFiat: true }, true)
-  const swapFromFiatValue = fromTokenSymbol === 'ETH'
-    ? swapFromEthFiatValue
-    : swapFromTokenFiatValue
+  const swapFromEthFiatValue = useEthFiatAmount(
+    inputValue || 0,
+    { showFiat: true },
+    true,
+  )
+  const swapFromFiatValue =
+    fromTokenSymbol === 'ETH' ? swapFromEthFiatValue : swapFromTokenFiatValue
 
   const onFromSelect = (token) => {
-    if (token?.address && !swapFromFiatValue && fetchedTokenExchangeRate !== null) {
-      fetchTokenPrice(token.address)
-        .then((rate) => {
-          if (rate !== null && rate !== undefined) {
-            setFetchedTokenExchangeRate(rate)
-          }
-        })
+    if (
+      token?.address &&
+      !swapFromFiatValue &&
+      fetchedTokenExchangeRate !== null
+    ) {
+      fetchTokenPrice(token.address).then((rate) => {
+        if (rate !== null && rate !== undefined) {
+          setFetchedTokenExchangeRate(rate)
+        }
+      })
     } else {
       setFetchedTokenExchangeRate(null)
     }
-    if (token?.address && !memoizedUsersTokens.find((usersToken) => usersToken.address === token.address)) {
-      fetchTokenBalance(token.address, selectedAccountAddress)
-        .then((fetchedBalance) => {
+    if (
+      token?.address &&
+      !memoizedUsersTokens.find(
+        (usersToken) => usersToken.address === token.address,
+      )
+    ) {
+      fetchTokenBalance(token.address, selectedAccountAddress).then(
+        (fetchedBalance) => {
           if (fetchedBalance?.balance) {
             const balanceAsDecString = fetchedBalance.balance.toString(10)
-            const userTokenBalance = calcTokenAmount(balanceAsDecString, token.decimals)
-            dispatch(setSwapsFromToken({ ...token, string: userTokenBalance.toString(10), balance: balanceAsDecString }))
+            const userTokenBalance = calcTokenAmount(
+              balanceAsDecString,
+              token.decimals,
+            )
+            dispatch(
+              setSwapsFromToken({
+                ...token,
+                string: userTokenBalance.toString(10),
+                balance: balanceAsDecString,
+              }),
+            )
           }
-        })
+        },
+      )
     }
     dispatch(setSwapsFromToken(token))
-    onInputChange(token?.address ? inputValue : '', token.string, token.decimals)
+    onInputChange(
+      token?.address ? inputValue : '',
+      token.string,
+      token.decimals,
+    )
   }
 
   const { destinationTokenAddedForSwap } = fetchParams || {}
   const { address: toAddress } = toToken || {}
-  const onToSelect = useCallback((token) => {
-    if (destinationTokenAddedForSwap && token.address !== toAddress) {
-      dispatch(removeToken(toAddress))
-    }
-    dispatch(setSwapToToken(token))
-  }, [dispatch, destinationTokenAddedForSwap, toAddress])
+  const onToSelect = useCallback(
+    (token) => {
+      if (destinationTokenAddedForSwap && token.address !== toAddress) {
+        dispatch(removeToken(toAddress))
+      }
+      dispatch(setSwapToToken(token))
+    },
+    [dispatch, destinationTokenAddedForSwap, toAddress],
+  )
 
-  const hideDropdownItemIf = useCallback((item) => item.address === fromTokenAddress, [fromTokenAddress])
+  const hideDropdownItemIf = useCallback(
+    (item) => item.address === fromTokenAddress,
+    [fromTokenAddress],
+  )
 
-  const tokensWithBalancesFromToken = tokensWithBalances.find((token) => token.address === fromToken?.address)
-  const previousTokensWithBalancesFromToken = usePrevious(tokensWithBalancesFromToken)
+  const tokensWithBalancesFromToken = tokensWithBalances.find(
+    (token) => token.address === fromToken?.address,
+  )
+  const previousTokensWithBalancesFromToken = usePrevious(
+    tokensWithBalancesFromToken,
+  )
 
   useEffect(() => {
-    const notEth = tokensWithBalancesFromToken?.address !== ETH_SWAPS_TOKEN_OBJECT.address
-    const addressesAreTheSame = tokensWithBalancesFromToken?.address === previousTokensWithBalancesFromToken?.address
-    const balanceHasChanged = tokensWithBalancesFromToken?.balance !== previousTokensWithBalancesFromToken?.balance
+    const notEth =
+      tokensWithBalancesFromToken?.address !== ETH_SWAPS_TOKEN_OBJECT.address
+    const addressesAreTheSame =
+      tokensWithBalancesFromToken?.address ===
+      previousTokensWithBalancesFromToken?.address
+    const balanceHasChanged =
+      tokensWithBalancesFromToken?.balance !==
+      previousTokensWithBalancesFromToken?.balance
     if (notEth && addressesAreTheSame && balanceHasChanged) {
-      dispatch(setSwapsFromToken({ ...fromToken, balance: tokensWithBalancesFromToken?.balance, string: tokensWithBalancesFromToken?.string }))
+      dispatch(
+        setSwapsFromToken({
+          ...fromToken,
+          balance: tokensWithBalancesFromToken?.balance,
+          string: tokensWithBalancesFromToken?.string,
+        }),
+      )
     }
-  }, [dispatch, tokensWithBalancesFromToken, previousTokensWithBalancesFromToken, fromToken])
+  }, [
+    dispatch,
+    tokensWithBalancesFromToken,
+    previousTokensWithBalancesFromToken,
+    fromToken,
+  ])
 
   // If the eth balance changes while on build quote, we update the selected from token
   useEffect(() => {
-    if (fromToken?.address === ETH_SWAPS_TOKEN_OBJECT.address && (fromToken?.balance !== hexToDecimal(ethBalance))) {
-      dispatch(setSwapsFromToken({
-        ...fromToken,
-        balance: hexToDecimal(ethBalance),
-        string: getValueFromWeiHex({ value: ethBalance, numberOfDecimals: 4, toDenomination: 'ETH' }),
-      }))
+    if (
+      fromToken?.address === ETH_SWAPS_TOKEN_OBJECT.address &&
+      fromToken?.balance !== hexToDecimal(ethBalance)
+    ) {
+      dispatch(
+        setSwapsFromToken({
+          ...fromToken,
+          balance: hexToDecimal(ethBalance),
+          string: getValueFromWeiHex({
+            value: ethBalance,
+            numberOfDecimals: 4,
+            toDenomination: 'ETH',
+          }),
+        }),
+      )
     }
   }, [dispatch, fromToken, ethBalance])
 
@@ -193,8 +271,11 @@ export default function BuildQuote ({
           {fromTokenSymbol !== 'ETH' && (
             <div
               className="build-quote__max-button"
-              onClick={() => onInputChange(fromTokenBalance || '0', fromTokenBalance)}
-            >{t('max')}
+              onClick={() =>
+                onInputChange(fromTokenBalance || '0', fromTokenBalance)
+              }
+            >
+              {t('max')}
             </div>
           )}
         </div>
@@ -208,7 +289,12 @@ export default function BuildQuote ({
           leftValue={inputValue && swapFromFiatValue}
           selectedItem={selectedFromToken}
           maxListItems={30}
-          loading={loading && (!tokensToSearch?.length || !topAssets || !Object.keys(topAssets).length)}
+          loading={
+            loading &&
+            (!tokensToSearch?.length ||
+              !topAssets ||
+              !Object.keys(topAssets).length)
+          }
           selectPlaceHolderText={t('swapSelect')}
           hideItemIf={(item) => item.address === selectedToToken?.address}
           listContainerClassName="build-quote__open-dropdown"
@@ -219,24 +305,40 @@ export default function BuildQuote ({
             'build-quote__balance-message--error': balanceError,
           })}
         >
-          {!balanceError && fromTokenSymbol && t('swapYourTokenBalance', [fromTokenString || '0', fromTokenSymbol])}
+          {!balanceError &&
+            fromTokenSymbol &&
+            t('swapYourTokenBalance', [
+              fromTokenString || '0',
+              fromTokenSymbol,
+            ])}
           {balanceError && fromTokenSymbol && (
             <div className="build-quite__insufficient-funds">
-              <div className="build-quite__insufficient-funds-first">{t('swapsNotEnoughForTx', [fromTokenSymbol])}</div>
-              <div className="build-quite__insufficient-funds-second">{t('swapYourTokenBalance', [fromTokenString || '0', fromTokenSymbol])}</div>
+              <div className="build-quite__insufficient-funds-first">
+                {t('swapsNotEnoughForTx', [fromTokenSymbol])}
+              </div>
+              <div className="build-quite__insufficient-funds-second">
+                {t('swapYourTokenBalance', [
+                  fromTokenString || '0',
+                  fromTokenSymbol,
+                ])}
+              </div>
             </div>
           )}
         </div>
-        <div
-          className="build-quote__swap-arrows-row"
-        >
+        <div className="build-quote__swap-arrows-row">
           <button
             className="build-quote__swap-arrows"
             onClick={() => {
               onToSelect(selectedFromToken)
               onFromSelect(selectedToToken)
             }}
-          ><img src="/images/icons/swap2.svg" alt={t('swapSwapSwitch')} width="12" height="16" />
+          >
+            <img
+              src="/images/icons/swap2.svg"
+              alt={t('swapSwapSwitch')}
+              width="12"
+              height="16"
+            />
           </button>
         </div>
         <div className="build-quote__dropdown-swap-to-header">
@@ -251,7 +353,12 @@ export default function BuildQuote ({
             selectPlaceHolderText={t('swapSelectAToken')}
             maxListItems={30}
             onSelect={onToSelect}
-            loading={loading && (!tokensToSearch?.length || !topAssets || !Object.keys(topAssets).length)}
+            loading={
+              loading &&
+              (!tokensToSearch?.length ||
+                !topAssets ||
+                !Object.keys(topAssets).length)
+            }
             externallySelectedItem={selectedToToken}
             hideItemIf={hideDropdownItemIf}
             listContainerClassName="build-quote__open-to-dropdown"
@@ -269,10 +376,21 @@ export default function BuildQuote ({
       </div>
       <SwapsFooter
         onSubmit={() => {
-          dispatch(fetchQuotesAndSetQuoteState(history, inputValue, maxSlippage, metaMetricsEvent))
+          dispatch(
+            fetchQuotesAndSetQuoteState(
+              history,
+              inputValue,
+              maxSlippage,
+              metaMetricsEvent,
+            ),
+          )
         }}
         submitText={t('swapGetQuotes')}
-        disabled={((!Number(inputValue) || !selectedToToken?.address) || (Number(maxSlippage) === 0))}
+        disabled={
+          !Number(inputValue) ||
+          !selectedToToken?.address ||
+          Number(maxSlippage) === 0
+        }
         hideCancel
       />
     </div>

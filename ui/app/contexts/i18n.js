@@ -3,7 +3,10 @@ import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 import { getMessage } from '../helpers/utils/i18n-helper'
 import { getCurrentLocale } from '../ducks/metamask/metamask'
-import { getCurrentLocaleMessages, getEnLocaleMessages } from '../ducks/locale/locale'
+import {
+  getCurrentLocaleMessages,
+  getEnLocaleMessages,
+} from '../ducks/locale/locale'
 
 export const I18nContext = createContext((key) => `[${key}]`)
 
@@ -13,17 +16,12 @@ export const I18nProvider = (props) => {
   const en = useSelector(getEnLocaleMessages)
 
   const t = useMemo(() => {
-    return (key, ...args) => (
+    return (key, ...args) =>
       getMessage(currentLocale, current, key, ...args) ||
       getMessage(currentLocale, en, key, ...args)
-    )
   }, [currentLocale, current, en])
 
-  return (
-    <I18nContext.Provider value={t}>
-      { props.children }
-    </I18nContext.Provider>
-  )
+  return <I18nContext.Provider value={t}>{props.children}</I18nContext.Provider>
 }
 
 I18nProvider.propTypes = {
@@ -49,13 +47,13 @@ export class LegacyI18nProvider extends Component {
     t: PropTypes.func,
   }
 
-  getChildContext () {
+  getChildContext() {
     return {
       t: this.context,
     }
   }
 
-  render () {
+  render() {
     return this.props.children
   }
 }

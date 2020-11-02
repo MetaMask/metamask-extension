@@ -1,6 +1,10 @@
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { getConversionRate, getCurrentCurrency, getShouldShowFiat } from '../selectors'
+import {
+  getConversionRate,
+  getCurrentCurrency,
+  getShouldShowFiat,
+} from '../selectors'
 import { decEthToConvertedCurrency } from '../helpers/utils/conversions.util'
 import { formatCurrency } from '../helpers/utils/confirm-tx.util'
 
@@ -14,7 +18,11 @@ import { formatCurrency } from '../helpers/utils/confirm-tx.util'
  * @param {boolean} hideCurrencySymbol Indicates whether the returned formatted amount should include the trailing currency symbol
  * @return {string} - The formatted token amount in the user's chosen fiat currency
  */
-export function useEthFiatAmount (ethAmount, overrides = {}, hideCurrencySymbol) {
+export function useEthFiatAmount(
+  ethAmount,
+  overrides = {},
+  hideCurrencySymbol,
+) {
   const conversionRate = useSelector(getConversionRate)
   const currentCurrency = useSelector(getCurrentCurrency)
   const userPrefersShownFiat = useSelector(getShouldShowFiat)
@@ -24,11 +32,19 @@ export function useEthFiatAmount (ethAmount, overrides = {}, hideCurrencySymbol)
     [conversionRate, currentCurrency, ethAmount],
   )
 
-  if (!showFiat || currentCurrency.toUpperCase() === 'ETH' || conversionRate <= 0 || ethAmount === undefined) {
+  if (
+    !showFiat ||
+    currentCurrency.toUpperCase() === 'ETH' ||
+    conversionRate <= 0 ||
+    ethAmount === undefined
+  ) {
     return undefined
   }
 
   return hideCurrencySymbol
     ? formatCurrency(formattedFiat, currentCurrency)
-    : `${formatCurrency(formattedFiat, currentCurrency)} ${currentCurrency.toUpperCase()}`
+    : `${formatCurrency(
+        formattedFiat,
+        currentCurrency,
+      )} ${currentCurrency.toUpperCase()}`
 }

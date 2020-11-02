@@ -13,7 +13,7 @@ const initState = {
 }
 
 // Reducer
-export default function reducer (state = initState, action) {
+export default function reducer(state = initState, action) {
   switch (action.type) {
     case OPEN_TO_DROPDOWN:
       return {
@@ -51,29 +51,29 @@ export default function reducer (state = initState, action) {
 }
 
 // Action Creators
-export function openToDropdown () {
+export function openToDropdown() {
   return { type: OPEN_TO_DROPDOWN }
 }
 
-export function closeToDropdown () {
+export function closeToDropdown() {
   return { type: CLOSE_TO_DROPDOWN }
 }
 
-export function showGasButtonGroup () {
+export function showGasButtonGroup() {
   return { type: SHOW_GAS_BUTTON_GROUP }
 }
 
-export function hideGasButtonGroup () {
+export function hideGasButtonGroup() {
   return { type: HIDE_GAS_BUTTON_GROUP }
 }
 
-export function updateSendErrors (errorObject) {
+export function updateSendErrors(errorObject) {
   return {
     type: UPDATE_SEND_ERRORS,
     value: errorObject,
   }
 }
 
-export function resetSendState () {
+export function resetSendState() {
   return { type: RESET_SEND_STATE }
 }

@@ -3,11 +3,7 @@ const webdriver = require('selenium-webdriver')
 
 const { By, until } = webdriver
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
-const {
-  tinyDelayMs,
-  regularDelayMs,
-  largeDelayMs,
-} = require('./helpers')
+const { tinyDelayMs, regularDelayMs, largeDelayMs } = require('./helpers')
 const { buildWebDriver } = require('./webdriver')
 const Ganache = require('./ganache')
 
@@ -16,7 +12,8 @@ const ganacheServer = new Ganache()
 describe('Using MetaMask with an existing account', function () {
   let driver
 
-  const testSeedPhrase = 'forum vessel pink push lonely enact gentle tail admit parrot grunt dress'
+  const testSeedPhrase =
+    'forum vessel pink push lonely enact gentle tail admit parrot grunt dress'
 
   this.timeout(0)
   this.bail(true)
@@ -25,7 +22,8 @@ describe('Using MetaMask with an existing account', function () {
     await ganacheServer.start({
       accounts: [
         {
-          secretKey: '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
+          secretKey:
+            '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
           balance: 25000000000000000000,
         },
       ],
@@ -39,7 +37,9 @@ describe('Using MetaMask with an existing account', function () {
       const errors = await driver.checkBrowserForConsoleErrors(driver)
       if (errors.length) {
         const errorReports = errors.map((err) => err.message)
-        const errorMessage = `Errors found in browser console:\n${errorReports.join('\n')}`
+        const errorMessage = `Errors found in browser console:\n${errorReports.join(
+          '\n',
+        )}`
         console.error(new Error(errorMessage))
       }
     }
@@ -56,12 +56,18 @@ describe('Using MetaMask with an existing account', function () {
   describe('First time flow starting from an existing seed phrase', function () {
     it('clicks the continue button on the welcome screen', async function () {
       await driver.findElement(By.css('.welcome-page__header'))
-      await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
+      await driver.clickElement(
+        By.xpath(
+          `//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`,
+        ),
+      )
       await driver.delay(largeDelayMs)
     })
 
     it('clicks the "Import Wallet" option', async function () {
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Import wallet')]`))
+      await driver.clickElement(
+        By.xpath(`//button[contains(text(), 'Import wallet')]`),
+      )
       await driver.delay(largeDelayMs)
     })
 
@@ -71,24 +77,36 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('imports a seed phrase', async function () {
-      const [seedTextArea] = await driver.findElements(By.css('input[placeholder="Paste seed phrase from clipboard"]'))
+      const [seedTextArea] = await driver.findElements(
+        By.css('input[placeholder="Paste seed phrase from clipboard"]'),
+      )
       await seedTextArea.sendKeys(testSeedPhrase)
       await driver.delay(regularDelayMs)
 
       const [password] = await driver.findElements(By.id('password'))
       await password.sendKeys('correct horse battery staple')
-      const [confirmPassword] = await driver.findElements(By.id('confirm-password'))
+      const [confirmPassword] = await driver.findElements(
+        By.id('confirm-password'),
+      )
       confirmPassword.sendKeys('correct horse battery staple')
 
       await driver.clickElement(By.css('.first-time-flow__terms'))
 
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Import')]`))
+      await driver.clickElement(
+        By.xpath(`//button[contains(text(), 'Import')]`),
+      )
       await driver.delay(regularDelayMs)
     })
 
     it('clicks through the success screen', async function () {
-      await driver.findElement(By.xpath(`//div[contains(text(), 'Congratulations')]`))
-      await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`))
+      await driver.findElement(
+        By.xpath(`//div[contains(text(), 'Congratulations')]`),
+      )
+      await driver.clickElement(
+        By.xpath(
+          `//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`,
+        ),
+      )
       await driver.delay(regularDelayMs)
     })
   })
@@ -98,7 +116,9 @@ describe('Using MetaMask with an existing account', function () {
       await driver.clickElement(By.css('[data-testid="eth-overview-send"]'))
       await driver.delay(regularDelayMs)
 
-      const inputAddress = await driver.findElement(By.css('input[placeholder="Search, public address (0x), or ENS"]'))
+      const inputAddress = await driver.findElement(
+        By.css('input[placeholder="Search, public address (0x), or ENS"]'),
+      )
       await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
 
       const inputAmount = await driver.findElement(By.css('.unit-input__input'))
@@ -110,7 +130,9 @@ describe('Using MetaMask with an existing account', function () {
 
       const gasModal = await driver.findElement(By.css('span .modal'))
 
-      const [gasPriceInput, gasLimitInput] = await driver.findElements(By.css('.advanced-gas-inputs__gas-edit-row__input'))
+      const [gasPriceInput, gasLimitInput] = await driver.findElements(
+        By.css('.advanced-gas-inputs__gas-edit-row__input'),
+      )
 
       await gasPriceInput.clear()
       await driver.delay(50)
@@ -135,7 +157,9 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('has correct value and fee on the confirm screen the transaction', async function () {
-      const transactionAmounts = await driver.findElements(By.css('.currency-display-component__text'))
+      const transactionAmounts = await driver.findElements(
+        By.css('.currency-display-component__text'),
+      )
       const transactionAmount = transactionAmounts[0]
       assert.equal(await transactionAmount.getText(), '1')
 
@@ -144,7 +168,9 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('edits the transaction', async function () {
-      await driver.clickElement(By.css('.confirm-page-container-header__back-button'))
+      await driver.clickElement(
+        By.css('.confirm-page-container-header__back-button'),
+      )
 
       await driver.delay(regularDelayMs)
 
@@ -159,7 +185,9 @@ describe('Using MetaMask with an existing account', function () {
 
       const gasModal = await driver.findElement(By.css('span .modal'))
 
-      const [gasPriceInput, gasLimitInput] = await driver.findElements(By.css('.advanced-gas-inputs__gas-edit-row__input'))
+      const [gasPriceInput, gasLimitInput] = await driver.findElements(
+        By.css('.advanced-gas-inputs__gas-edit-row__input'),
+      )
 
       await gasPriceInput.clear()
       await driver.delay(50)
@@ -183,7 +211,9 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('has correct updated value on the confirm screen the transaction', async function () {
-      const transactionAmounts = await driver.findElements(By.css('.currency-display-component__text'))
+      const transactionAmounts = await driver.findElements(
+        By.css('.currency-display-component__text'),
+      )
       const transactionAmount = transactionAmounts[0]
       assert.equal(await transactionAmount.getText(), '2.2')
 
@@ -192,20 +222,28 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('confirms the transaction', async function () {
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Confirm')]`))
+      await driver.clickElement(
+        By.xpath(`//button[contains(text(), 'Confirm')]`),
+      )
       await driver.delay(regularDelayMs)
     })
 
     it('finds the transaction in the transactions list', async function () {
       await driver.clickElement(By.css('[data-testid="home__activity-tab"]'))
       await driver.wait(async () => {
-        const confirmedTxes = await driver.findElements(By.css('.transaction-list__completed-transactions .transaction-list-item'))
+        const confirmedTxes = await driver.findElements(
+          By.css(
+            '.transaction-list__completed-transactions .transaction-list-item',
+          ),
+        )
         return confirmedTxes.length === 1
       }, 10000)
 
-      const txValues = await driver.findElements(By.css('.transaction-list-item__primary-currency'))
+      const txValues = await driver.findElements(
+        By.css('.transaction-list-item__primary-currency'),
+      )
       assert.equal(txValues.length, 1)
-      assert.ok((/-2.2\s*ETH/u).test(await txValues[0].getText()))
+      assert.ok(/-2.2\s*ETH/u.test(await txValues[0].getText()))
     })
   })
 })

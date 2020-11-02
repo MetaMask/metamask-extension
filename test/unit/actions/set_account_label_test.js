@@ -26,7 +26,9 @@ describe('SET_ACCOUNT_LABEL', function () {
     freeze(action)
 
     const resultingState = reducers(initialState, action)
-    assert.equal(resultingState.metamask.identities.foo.name, action.value.label)
+    assert.equal(
+      resultingState.metamask.identities.foo.name,
+      action.value.label,
+    )
   })
 })
-

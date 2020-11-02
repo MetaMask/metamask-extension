@@ -28,10 +28,8 @@ export default class ConfirmTransactionSwitch extends Component {
     txData: PropTypes.object,
   }
 
-  redirectToTransaction () {
-    const {
-      txData,
-    } = this.props
+  redirectToTransaction() {
+    const { txData } = this.props
     const { id, txParams: { data } = {}, transactionCategory } = txData
 
     if (transactionCategory === DEPLOY_CONTRACT_ACTION_KEY) {
@@ -69,7 +67,7 @@ export default class ConfirmTransactionSwitch extends Component {
     return <Redirect to={{ pathname }} />
   }
 
-  render () {
+  render() {
     const { txData } = this.props
     if (txData.txParams) {
       return this.redirectToTransaction()

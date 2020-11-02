@@ -9,7 +9,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
  *
  * @return {Function|undefined}
  */
-export function useTimeout (cb, delay, immediate = true) {
+export function useTimeout(cb, delay, immediate = true) {
   const saveCb = useRef()
   const [timeoutId, setTimeoutId] = useState(null)
 

@@ -18,57 +18,48 @@ const ConfirmDetailRow = (props) => {
 
   return (
     <div className="confirm-detail-row">
-      <div className="confirm-detail-row__label">
-        { label }
-      </div>
+      <div className="confirm-detail-row__label">{label}</div>
       <div className="confirm-detail-row__details">
-        {
-          headerText && (
-            <div
-              className={classnames('confirm-detail-row__header-text', headerTextClassName)}
-              onClick={() => onHeaderClick && onHeaderClick()}
-            >
-              { headerText }
-            </div>
-          )
-        }
-        {
-          primaryText
-            ? (
-              <div
-                className="confirm-detail-row__primary"
-                style={{ color: primaryValueTextColor }}
-              >
-                { primaryText }
-              </div>
-            ) : (
-              <UserPreferencedCurrencyDisplay
-                className="confirm-detail-row__primary"
-                type={PRIMARY}
-                value={value}
-                showEthLogo
-                ethLogoHeight="18"
-                style={{ color: primaryValueTextColor }}
-                hideLabel
-              />
-            )
-        }
-        {
-          secondaryText
-            ? (
-              <div className="confirm-detail-row__secondary">
-                { secondaryText }
-              </div>
-            ) : (
-              <UserPreferencedCurrencyDisplay
-                className="confirm-detail-row__secondary"
-                type={SECONDARY}
-                value={value}
-                showEthLogo
-                hideLabel
-              />
-            )
-        }
+        {headerText && (
+          <div
+            className={classnames(
+              'confirm-detail-row__header-text',
+              headerTextClassName,
+            )}
+            onClick={() => onHeaderClick && onHeaderClick()}
+          >
+            {headerText}
+          </div>
+        )}
+        {primaryText ? (
+          <div
+            className="confirm-detail-row__primary"
+            style={{ color: primaryValueTextColor }}
+          >
+            {primaryText}
+          </div>
+        ) : (
+          <UserPreferencedCurrencyDisplay
+            className="confirm-detail-row__primary"
+            type={PRIMARY}
+            value={value}
+            showEthLogo
+            ethLogoHeight="18"
+            style={{ color: primaryValueTextColor }}
+            hideLabel
+          />
+        )}
+        {secondaryText ? (
+          <div className="confirm-detail-row__secondary">{secondaryText}</div>
+        ) : (
+          <UserPreferencedCurrencyDisplay
+            className="confirm-detail-row__secondary"
+            type={SECONDARY}
+            value={value}
+            showEthLogo
+            hideLabel
+          />
+        )}
       </div>
     </div>
   )

@@ -29,7 +29,7 @@ export default class UnitInput extends PureComponent {
     value: this.props.value,
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     const { value: prevPropsValue } = prevProps
     const { value: propsValue } = this.props
     const { value: stateValue } = this.state
@@ -55,20 +55,31 @@ export default class UnitInput extends PureComponent {
     this.props.onChange(value)
   }
 
-  getInputWidth (value) {
+  getInputWidth(value) {
     const valueString = String(value)
     const valueLength = valueString.length || 1
     const decimalPointDeficit = valueString.match(/\./u) ? -0.5 : 0
     return `${valueLength + decimalPointDeficit + 0.5}ch`
   }
 
-  render () {
-    const { error, placeholder, suffix, actionComponent, children, maxModeOn } = this.props
+  render() {
+    const {
+      error,
+      placeholder,
+      suffix,
+      actionComponent,
+      children,
+      maxModeOn,
+    } = this.props
     const { value } = this.state
 
     return (
       <div
-        className={classnames('unit-input', { 'unit-input--error': error }, { 'unit-input__disabled': maxModeOn })}
+        className={classnames(
+          'unit-input',
+          { 'unit-input--error': error },
+          { 'unit-input__disabled': maxModeOn },
+        )}
         onClick={maxModeOn ? null : this.handleFocus}
       >
         <div className="unit-input__inputs">
@@ -76,7 +87,9 @@ export default class UnitInput extends PureComponent {
             <input
               type="number"
               dir="ltr"
-              className={classnames('unit-input__input', { 'unit-input__disabled': maxModeOn })}
+              className={classnames('unit-input__input', {
+                'unit-input__disabled': maxModeOn,
+              })}
               value={value}
               placeholder={placeholder}
               onChange={this.handleChange}
@@ -86,15 +99,9 @@ export default class UnitInput extends PureComponent {
               }}
               disabled={maxModeOn}
             />
-            {
-              suffix && (
-                <div className="unit-input__suffix">
-                  { suffix }
-                </div>
-              )
-            }
+            {suffix && <div className="unit-input__suffix">{suffix}</div>}
           </div>
-          { children }
+          {children}
         </div>
         {actionComponent}
       </div>

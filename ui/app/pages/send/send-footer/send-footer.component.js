@@ -4,7 +4,6 @@ import PageContainerFooter from '../../../components/ui/page-container/page-cont
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes'
 
 export default class SendFooter extends Component {
-
   static propTypes = {
     addToAddressBookIfNew: PropTypes.func,
     amount: PropTypes.string,
@@ -35,13 +34,13 @@ export default class SendFooter extends Component {
     metricsEvent: PropTypes.func,
   }
 
-  onCancel () {
+  onCancel() {
     const { clearSend, history, mostRecentOverviewPage } = this.props
     clearSend()
     history.push(mostRecentOverviewPage)
   }
 
-  async onSubmit (event) {
+  async onSubmit(event) {
     event.preventDefault()
     const {
       addToAddressBookIfNew,
@@ -74,43 +73,57 @@ export default class SendFooter extends Component {
     await addToAddressBookIfNew(to, toAccounts)
     const promise = editingTransactionId
       ? update({
-        amount,
-        data,
-        editingTransactionId,
-        from,
-        gas,
-        gasPrice,
-        sendToken,
-        to,
-        unapprovedTxs,
-      })
+          amount,
+          data,
+          editingTransactionId,
+          from,
+          gas,
+          gasPrice,
+          sendToken,
+          to,
+          unapprovedTxs,
+        })
       : sign({ data, sendToken, to, amount, from, gas, gasPrice })
 
-    Promise.resolve(promise)
-      .then(() => {
-        metricsEvent({
-          eventOpts: {
-            category: 'Transactions',
-            action: 'Edit Screen',
-            name: 'Complete',
-          },
-          customVariables: {
-            gasChanged: gasEstimateType,
-          },
-        })
-        history.push(CONFIRM_TRANSACTION_ROUTE)
+    Promise.resolve(promise).then(() => {
+      metricsEvent({
+        eventOpts: {
+          category: 'Transactions',
+          action: 'Edit Screen',
+          name: 'Complete',
+        },
+        customVariables: {
+          gasChanged: gasEstimateType,
+        },
       })
+      history.push(CONFIRM_TRANSACTION_ROUTE)
+    })
   }
 
-  formShouldBeDisabled () {
-    const { data, inError, sendToken, tokenBalance, gasTotal, to, gasLimit, gasIsLoading } = this.props
+  formShouldBeDisabled() {
+    const {
+      data,
+      inError,
+      sendToken,
+      tokenBalance,
+      gasTotal,
+      to,
+      gasLimit,
+      gasIsLoading,
+    } = this.props
     const missingTokenBalance = sendToken && !tokenBalance
     const gasLimitTooLow = gasLimit < 5208 // 5208 is hex value of 21000, minimum gas limit
-    const shouldBeDisabled = inError || !gasTotal || missingTokenBalance || !(data || to) || gasLimitTooLow || gasIsLoading
+    const shouldBeDisabled =
+      inError ||
+      !gasTotal ||
+      missingTokenBalance ||
+      !(data || to) ||
+      gasLimitTooLow ||
+      gasIsLoading
     return shouldBeDisabled
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     const { inError, sendErrors } = this.props
     const { metricsEvent } = this.context
     if (!prevProps.inError && inError) {
@@ -131,7 +144,7 @@ export default class SendFooter extends Component {
     }
   }
 
-  render () {
+  render() {
     return (
       <PageContainerFooter
         onCancel={() => this.onCancel()}
@@ -140,5 +153,4 @@ export default class SendFooter extends Component {
       />
     )
   }
-
 }

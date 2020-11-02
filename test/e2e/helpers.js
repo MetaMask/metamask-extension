@@ -10,7 +10,7 @@ const largeDelayMs = regularDelayMs * 2
 
 const dappPort = 8080
 
-async function withFixtures (options, testSuite) {
+async function withFixtures(options, testSuite) {
   const { dapp, fixtures, ganacheOptions, driverOptions, title } = options
   const fixtureServer = new FixtureServer()
   const ganacheServer = new Ganache()
@@ -22,7 +22,15 @@ async function withFixtures (options, testSuite) {
     await fixtureServer.start()
     await fixtureServer.loadState(path.join(__dirname, 'fixtures', fixtures))
     if (dapp) {
-      const dappDirectory = path.resolve(__dirname, '..', '..', 'node_modules', '@metamask', 'test-dapp', 'dist')
+      const dappDirectory = path.resolve(
+        __dirname,
+        '..',
+        '..',
+        'node_modules',
+        '@metamask',
+        'test-dapp',
+        'dist',
+      )
       dappServer = createStaticServer(dappDirectory)
       dappServer.listen(dappPort)
       await new Promise((resolve, reject) => {
@@ -41,7 +49,9 @@ async function withFixtures (options, testSuite) {
       const errors = await driver.checkBrowserForConsoleErrors(driver)
       if (errors.length) {
         const errorReports = errors.map((err) => err.message)
-        const errorMessage = `Errors found in browser console:\n${errorReports.join('\n')}`
+        const errorMessage = `Errors found in browser console:\n${errorReports.join(
+          '\n',
+        )}`
         throw new Error(errorMessage)
       }
     }

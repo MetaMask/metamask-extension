@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import classnames from 'classnames'
 
-export default function ReadOnlyInput (props) {
+export default function ReadOnlyInput(props) {
   const {
     wrapperClass = '',
     inputClass = '',

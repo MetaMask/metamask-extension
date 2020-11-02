@@ -16,7 +16,7 @@ const version = 48
  */
 export default {
   version,
-  async migrate (originalVersionedData) {
+  async migrate(originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     const state = versionedData.data
@@ -25,21 +25,19 @@ export default {
   },
 }
 
-const hexRegEx = (/^0x[0-9a-f]+$/ui)
-const chainIdRegEx = (/^0x[1-9a-f]+[0-9a-f]*$/ui)
+const hexRegEx = /^0x[0-9a-f]+$/iu
+const chainIdRegEx = /^0x[1-9a-f]+[0-9a-f]*$/iu
 
-function transformState (state = {}) {
+function transformState(state = {}) {
   // 1. Delete NetworkController.settings
   delete state.NetworkController?.settings
 
   // 2. Migrate NetworkController.provider to Rinkeby or rename rpcTarget key
   const provider = state.NetworkController?.provider || {}
-  const isCustomRpcWithInvalidChainId = (
-    provider.type === 'rpc' && (
-      typeof provider.chainId !== 'string' ||
-      !chainIdRegEx.test(provider.chainId)
-    )
-  )
+  const isCustomRpcWithInvalidChainId =
+    provider.type === 'rpc' &&
+    (typeof provider.chainId !== 'string' ||
+      !chainIdRegEx.test(provider.chainId))
   if (isCustomRpcWithInvalidChainId || provider.type === 'localhost') {
     state.NetworkController.provider = {
       type: 'rinkeby',
@@ -84,8 +82,10 @@ function transformState (state = {}) {
         typeof metamaskNetworkId === 'string' &&
         hexRegEx.test(metamaskNetworkId)
       ) {
-        transaction.metamaskNetworkId = parseInt(metamaskNetworkId, 16)
-          .toString(10)
+        transaction.metamaskNetworkId = parseInt(
+          metamaskNetworkId,
+          16,
+        ).toString(10)
       }
     })
   }
@@ -93,7 +93,7 @@ function transformState (state = {}) {
   // 6.  Convert address book keys from decimal to hex
   const addressBook = state.AddressBookController?.addressBook || {}
   Object.keys(addressBook).forEach((networkKey) => {
-    if ((/^\d+$/ui).test(networkKey)) {
+    if (/^\d+$/iu.test(networkKey)) {
       const chainId = `0x${parseInt(networkKey, 10).toString(16)}`
       updateChainIds(addressBook[networkKey], chainId)
 
@@ -108,8 +108,7 @@ function transformState (state = {}) {
 
   // 7.  Delete localhost key in IncomingTransactionsController
   delete state.IncomingTransactionsController
-    ?.incomingTxLastFetchedBlocksByNetwork
-    ?.localhost
+    ?.incomingTxLastFetchedBlocksByNetwork?.localhost
 
   // 8.  Merge 'localhost' tokens into 'rpc' tokens
   const accountTokens = state.PreferencesController?.accountTokens
@@ -121,7 +120,10 @@ function transformState (state = {}) {
         const rpcTokens = accountTokens[account].rpc || []
 
         if (rpcTokens.length > 0) {
-          accountTokens[account].rpc = mergeTokenArrays(localhostTokens, rpcTokens)
+          accountTokens[account].rpc = mergeTokenArrays(
+            localhostTokens,
+            rpcTokens,
+          )
         } else {
           accountTokens[account].rpc = localhostTokens
         }
@@ -138,7 +140,7 @@ function transformState (state = {}) {
  *
  * @returns {void}
  */
-function mergeAddressBookKeys (addressBook, networkKey, chainIdKey) {
+function mergeAddressBookKeys(addressBook, networkKey, chainIdKey) {
   const networkKeyEntries = addressBook[networkKey] || {}
   // For the new entries, start by copying the existing entries for the chainId
   const newEntries = { ...addressBook[chainIdKey] }
@@ -155,11 +157,8 @@ function mergeAddressBookKeys (addressBook, networkKey, chainIdKey) {
         ...Object.keys(networkKeyEntries[address] || {}),
       ]).forEach((key) => {
         // Use non-empty value for the current key, if any
-        mergedEntry[key] = (
-          newEntries[address][key] ||
-          networkKeyEntries[address]?.[key] ||
-          ''
-        )
+        mergedEntry[key] =
+          newEntries[address][key] || networkKeyEntries[address]?.[key] || ''
       })
 
       newEntries[address] = mergedEntry
@@ -182,7 +181,7 @@ function mergeAddressBookKeys (addressBook, networkKey, chainIdKey) {
  *
  * @returns {void}
  */
-function updateChainIds (networkEntries, chainId) {
+function updateChainIds(networkEntries, chainId) {
   Object.values(networkEntries).forEach((entry) => {
     if (entry && typeof entry === 'object') {
       entry.chainId = chainId
@@ -196,7 +195,7 @@ function updateChainIds (networkEntries, chainId) {
  *
  * @returns {Array<Object>}
  */
-function mergeTokenArrays (localhostTokens, rpcTokens) {
+function mergeTokenArrays(localhostTokens, rpcTokens) {
   const localhostTokensMap = tokenArrayToMap(localhostTokens)
   const rpcTokensMap = tokenArrayToMap(rpcTokens)
 
@@ -213,7 +212,7 @@ function mergeTokenArrays (localhostTokens, rpcTokens) {
 
   return mergedTokens
 
-  function tokenArrayToMap (array) {
+  function tokenArrayToMap(array) {
     return array.reduce((map, token) => {
       if (token?.address && typeof token?.address === 'string') {
         map[token.address] = token

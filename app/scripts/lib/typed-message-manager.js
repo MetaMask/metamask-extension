@@ -28,11 +28,10 @@ import { MESSAGE_TYPE } from './enums'
  */
 
 export default class TypedMessageManager extends EventEmitter {
-
   /**
    * Controller in charge of managing - storing, adding, removing, updating - TypedMessage.
    */
-  constructor ({ getCurrentChainId }) {
+  constructor({ getCurrentChainId }) {
     super()
     this._getCurrentChainId = getCurrentChainId
     this.memStore = new ObservableStore({
@@ -48,7 +47,7 @@ export default class TypedMessageManager extends EventEmitter {
    * @returns {number} - The number of 'unapproved' TypedMessages in this.messages
    *
    */
-  get unapprovedTypedMessagesCount () {
+  get unapprovedTypedMessagesCount() {
     return Object.keys(this.getUnapprovedMsgs()).length
   }
 
@@ -59,8 +58,9 @@ export default class TypedMessageManager extends EventEmitter {
    * this.messages
    *
    */
-  getUnapprovedMsgs () {
-    return this.messages.filter((msg) => msg.status === 'unapproved')
+  getUnapprovedMsgs() {
+    return this.messages
+      .filter((msg) => msg.status === 'unapproved')
       .reduce((result, msg) => {
         result[msg.id] = msg
         return result
@@ -77,7 +77,7 @@ export default class TypedMessageManager extends EventEmitter {
    * @returns {promise} - When the message has been signed or rejected
    *
    */
-  addUnapprovedMessageAsync (msgParams, req, version) {
+  addUnapprovedMessageAsync(msgParams, req, version) {
     return new Promise((resolve, reject) => {
       const msgId = this.addUnapprovedMessage(msgParams, req, version)
       this.once(`${msgId}:finished`, (data) => {
@@ -85,11 +85,23 @@ export default class TypedMessageManager extends EventEmitter {
           case 'signed':
             return resolve(data.rawSig)
           case 'rejected':
-            return reject(ethErrors.provider.userRejectedRequest('MetaMask Message Signature: User denied message signature.'))
+            return reject(
+              ethErrors.provider.userRejectedRequest(
+                'MetaMask Message Signature: User denied message signature.',
+              ),
+            )
           case 'errored':
-            return reject(new Error(`MetaMask Message Signature: ${data.error}`))
+            return reject(
+              new Error(`MetaMask Message Signature: ${data.error}`),
+            )
           default:
-            return reject(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+            return reject(
+              new Error(
+                `MetaMask Message Signature: Unknown problem: ${JSON.stringify(
+                  msgParams,
+                )}`,
+              ),
+            )
         }
       })
     })
@@ -105,18 +117,19 @@ export default class TypedMessageManager extends EventEmitter {
    * @returns {number} - The id of the newly created TypedMessage.
    *
    */
-  addUnapprovedMessage (msgParams, req, version) {
-
+  addUnapprovedMessage(msgParams, req, version) {
     msgParams.version = version
     if (req) {
       msgParams.origin = req.origin
     }
     this.validateParams(msgParams)
 
-    log.debug(`TypedMessageManager addUnapprovedMessage: ${JSON.stringify(msgParams)}`)
+    log.debug(
+      `TypedMessageManager addUnapprovedMessage: ${JSON.stringify(msgParams)}`,
+    )
 
     // create txData obj with parameters and meta data
-    const time = (new Date()).getTime()
+    const time = new Date().getTime()
     const msgId = createId()
     const msgData = {
       id: msgId,
@@ -138,8 +151,7 @@ export default class TypedMessageManager extends EventEmitter {
    * @param {Object} params - The params to validate
    *
    */
-  validateParams (params) {
-
+  validateParams(params) {
     assert.ok(params && typeof params === 'object', 'Params must be an object.')
     assert.ok('data' in params, 'Params must include a "data" field.')
     assert.ok('from' in params, 'Params must include a "from" field.')
@@ -157,19 +169,40 @@ export default class TypedMessageManager extends EventEmitter {
         break
       case 'V3':
       case 'V4': {
-        assert.equal(typeof params.data, 'string', '"params.data" must be a string.')
+        assert.equal(
+          typeof params.data,
+          'string',
+          '"params.data" must be a string.',
+        )
         let data
         assert.doesNotThrow(() => {
           data = JSON.parse(params.data)
         }, '"data" must be a valid JSON string.')
-        const validation = jsonschema.validate(data, sigUtil.TYPED_MESSAGE_SCHEMA)
-        assert.ok(data.primaryType in data.types, `Primary type of "${data.primaryType}" has no type definition.`)
-        assert.equal(validation.errors.length, 0, 'Signing data must conform to EIP-712 schema. See https://git.io/fNtcx.')
+        const validation = jsonschema.validate(
+          data,
+          sigUtil.TYPED_MESSAGE_SCHEMA,
+        )
+        assert.ok(
+          data.primaryType in data.types,
+          `Primary type of "${data.primaryType}" has no type definition.`,
+        )
+        assert.equal(
+          validation.errors.length,
+          0,
+          'Signing data must conform to EIP-712 schema. See https://git.io/fNtcx.',
+        )
         const { chainId } = data.domain
         if (chainId) {
           const activeChainId = parseInt(this._getCurrentChainId(), 16)
-          assert.ok(!Number.isNaN(activeChainId), `Cannot sign messages for chainId "${chainId}", because MetaMask is switching networks.`)
-          assert.equal(chainId, activeChainId, `Provided chainId "${chainId}" must match the active chainId "${activeChainId}"`)
+          assert.ok(
+            !Number.isNaN(activeChainId),
+            `Cannot sign messages for chainId "${chainId}", because MetaMask is switching networks.`,
+          )
+          assert.equal(
+            chainId,
+            activeChainId,
+            `Provided chainId "${chainId}" must match the active chainId "${activeChainId}"`,
+          )
         }
         break
       }
@@ -185,7 +218,7 @@ export default class TypedMessageManager extends EventEmitter {
    * @param {Message} msg - The TypedMessage to add to this.messages
    *
    */
-  addMsg (msg) {
+  addMsg(msg) {
     this.messages.push(msg)
     this._saveMsgList()
   }
@@ -198,7 +231,7 @@ export default class TypedMessageManager extends EventEmitter {
    * if no TypedMessage has that id.
    *
    */
-  getMsg (msgId) {
+  getMsg(msgId) {
     return this.messages.find((msg) => msg.id === msgId)
   }
 
@@ -211,7 +244,7 @@ export default class TypedMessageManager extends EventEmitter {
    * @returns {Promise<object>} - Promises the msgParams object with metamaskId removed.
    *
    */
-  approveMessage (msgParams) {
+  approveMessage(msgParams) {
     this.setMsgStatusApproved(msgParams.metamaskId)
     return this.prepMsgForSigning(msgParams)
   }
@@ -222,7 +255,7 @@ export default class TypedMessageManager extends EventEmitter {
    * @param {number} msgId - The id of the TypedMessage to approve.
    *
    */
-  setMsgStatusApproved (msgId) {
+  setMsgStatusApproved(msgId) {
     this._setMsgStatus(msgId, 'approved')
   }
 
@@ -234,7 +267,7 @@ export default class TypedMessageManager extends EventEmitter {
    * @param {buffer} rawSig - The raw data of the signature request
    *
    */
-  setMsgStatusSigned (msgId, rawSig) {
+  setMsgStatusSigned(msgId, rawSig) {
     const msg = this.getMsg(msgId)
     msg.rawSig = rawSig
     this._updateMsg(msg)
@@ -248,7 +281,7 @@ export default class TypedMessageManager extends EventEmitter {
    * @returns {Promise<object>} - Promises the msgParams with the metamaskId property removed
    *
    */
-  prepMsgForSigning (msgParams) {
+  prepMsgForSigning(msgParams) {
     delete msgParams.metamaskId
     delete msgParams.version
     return Promise.resolve(msgParams)
@@ -260,7 +293,7 @@ export default class TypedMessageManager extends EventEmitter {
    * @param {number} msgId - The id of the TypedMessage to reject.
    *
    */
-  rejectMsg (msgId) {
+  rejectMsg(msgId) {
     this._setMsgStatus(msgId, 'rejected')
   }
 
@@ -270,7 +303,7 @@ export default class TypedMessageManager extends EventEmitter {
    * @param {number} msgId - The id of the TypedMessage to error
    *
    */
-  errorMessage (msgId, error) {
+  errorMessage(msgId, error) {
     const msg = this.getMsg(msgId)
     msg.error = error
     this._updateMsg(msg)
@@ -294,10 +327,12 @@ export default class TypedMessageManager extends EventEmitter {
    * with the TypedMessage
    *
    */
-  _setMsgStatus (msgId, status) {
+  _setMsgStatus(msgId, status) {
     const msg = this.getMsg(msgId)
     if (!msg) {
-      throw new Error(`TypedMessageManager - Message not found for id: "${msgId}".`)
+      throw new Error(
+        `TypedMessageManager - Message not found for id: "${msgId}".`,
+      )
     }
     msg.status = status
     this._updateMsg(msg)
@@ -316,7 +351,7 @@ export default class TypedMessageManager extends EventEmitter {
    * id) in this.messages
    *
    */
-  _updateMsg (msg) {
+  _updateMsg(msg) {
     const index = this.messages.findIndex((message) => message.id === msg.id)
     if (index !== -1) {
       this.messages[index] = msg
@@ -331,11 +366,14 @@ export default class TypedMessageManager extends EventEmitter {
    * @fires 'updateBadge'
    *
    */
-  _saveMsgList () {
+  _saveMsgList() {
     const unapprovedTypedMessages = this.getUnapprovedMsgs()
-    const unapprovedTypedMessagesCount = Object.keys(unapprovedTypedMessages).length
-    this.memStore.updateState({ unapprovedTypedMessages, unapprovedTypedMessagesCount })
+    const unapprovedTypedMessagesCount = Object.keys(unapprovedTypedMessages)
+      .length
+    this.memStore.updateState({
+      unapprovedTypedMessages,
+      unapprovedTypedMessagesCount,
+    })
     this.emit('updateBadge')
   }
-
 }

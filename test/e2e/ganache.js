@@ -4,13 +4,14 @@ const ganache = require('ganache-core')
 const defaultOptions = {
   blockTime: 2,
   network_id: 1337,
-  mnemonic: 'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+  mnemonic:
+    'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
   port: 8545,
   vmErrorsOnRPCResponse: false,
 }
 
 class Ganache {
-  async start (opts) {
+  async start(opts) {
     const options = { ...defaultOptions, ...opts }
     const { port } = options
     this._server = ganache.server(options)
@@ -24,7 +25,7 @@ class Ganache {
     }
   }
 
-  async quit () {
+  async quit() {
     if (!this._server) {
       throw new Error('Server not running yet')
     }

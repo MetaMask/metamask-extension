@@ -15,14 +15,12 @@ describe('MetaMetrics Opt In', function () {
   }
 
   beforeEach(function () {
-    wrapper = mount(
-      <MetaMetricsOptIn.WrappedComponent {...props} />, {
-        context: {
-          metricsEvent: () => undefined,
-          t: (key) => messages[key].message,
-        },
+    wrapper = mount(<MetaMetricsOptIn.WrappedComponent {...props} />, {
+      context: {
+        metricsEvent: () => undefined,
+        t: (key) => messages[key].message,
       },
-    )
+    })
   })
 
   afterEach(function () {
@@ -43,7 +41,9 @@ describe('MetaMetrics Opt In', function () {
   })
 
   it('passes true to setParticipateInMetaMetrics and hides modal', function (done) {
-    const affirmAgree = wrapper.find('.btn-primary.page-container__footer-button')
+    const affirmAgree = wrapper.find(
+      '.btn-primary.page-container__footer-button',
+    )
     affirmAgree.simulate('click')
 
     setImmediate(() => {
@@ -53,5 +53,4 @@ describe('MetaMetrics Opt In', function () {
       done()
     })
   })
-
 })

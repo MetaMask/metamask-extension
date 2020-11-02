@@ -16,9 +16,7 @@ describe('Selection Action', function () {
   }
 
   beforeEach(function () {
-    wrapper = mountWithRouter(
-      <SelectAction.WrappedComponent {...props} />,
-    )
+    wrapper = mountWithRouter(<SelectAction.WrappedComponent {...props} />)
   })
 
   afterEach(function () {
@@ -27,7 +25,9 @@ describe('Selection Action', function () {
   })
 
   it('clicks import wallet to route to import FTF', function () {
-    const importWalletButton = wrapper.find('.btn-primary.first-time-flow__button').at(0)
+    const importWalletButton = wrapper
+      .find('.btn-primary.first-time-flow__button')
+      .at(0)
     importWalletButton.simulate('click')
 
     assert(props.setFirstTimeFlowType.calledOnce)
@@ -36,7 +36,9 @@ describe('Selection Action', function () {
   })
 
   it('clicks create wallet to route to create FTF ', function () {
-    const createWalletButton = wrapper.find('.btn-primary.first-time-flow__button').at(1)
+    const createWalletButton = wrapper
+      .find('.btn-primary.first-time-flow__button')
+      .at(1)
     createWalletButton.simulate('click')
 
     assert(props.setFirstTimeFlowType.calledOnce)

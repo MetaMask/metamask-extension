@@ -17,7 +17,7 @@ export default class FirstTimeFlowSwitch extends PureComponent {
     optInMetaMetrics: PropTypes.bool,
   }
 
-  render () {
+  render() {
     const {
       completedOnboarding,
       isInitialized,

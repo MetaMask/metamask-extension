@@ -8,7 +8,10 @@ describe('ConfirmTransactionBase Component', function () {
       assert.equal(getMethodName({}), '')
       assert.equal(getMethodName('confirm'), 'confirm')
       assert.equal(getMethodName('balanceOf'), 'balance Of')
-      assert.equal(getMethodName('ethToTokenSwapInput'), 'eth To Token Swap Input')
+      assert.equal(
+        getMethodName('ethToTokenSwapInput'),
+        'eth To Token Swap Input',
+      )
     })
   })
 })

@@ -11,7 +11,9 @@ const mapStateToProps = (state) => {
   }
 }
 
-const UserPreferencedTokenInputContainer = connect(mapStateToProps)(UserPreferencedTokenInput)
+const UserPreferencedTokenInputContainer = connect(mapStateToProps)(
+  UserPreferencedTokenInput,
+)
 
 UserPreferencedTokenInputContainer.propTypes = {
   token: PropTypes.shape({

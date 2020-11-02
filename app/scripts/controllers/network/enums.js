@@ -22,13 +22,7 @@ export const KOVAN_DISPLAY_NAME = 'Kovan'
 export const MAINNET_DISPLAY_NAME = 'Ethereum Mainnet'
 export const GOERLI_DISPLAY_NAME = 'Goerli'
 
-export const INFURA_PROVIDER_TYPES = [
-  ROPSTEN,
-  RINKEBY,
-  KOVAN,
-  MAINNET,
-  GOERLI,
-]
+export const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
 
 export const NETWORK_TYPE_TO_ID_MAP = {
   [ROPSTEN]: { networkId: ROPSTEN_NETWORK_ID, chainId: ROPSTEN_CHAIN_ID },
@@ -58,20 +52,16 @@ export const NETWORK_TO_NAME_MAP = {
   [MAINNET_CHAIN_ID]: MAINNET_DISPLAY_NAME,
 }
 
-export const CHAIN_ID_TO_TYPE_MAP = Object.entries(NETWORK_TYPE_TO_ID_MAP)
-  .reduce(
-    (chainIdToTypeMap, [networkType, { chainId }]) => {
-      chainIdToTypeMap[chainId] = networkType
-      return chainIdToTypeMap
-    },
-    {},
-  )
+export const CHAIN_ID_TO_TYPE_MAP = Object.entries(
+  NETWORK_TYPE_TO_ID_MAP,
+).reduce((chainIdToTypeMap, [networkType, { chainId }]) => {
+  chainIdToTypeMap[chainId] = networkType
+  return chainIdToTypeMap
+}, {})
 
-export const CHAIN_ID_TO_NETWORK_ID_MAP = Object.values(NETWORK_TYPE_TO_ID_MAP)
-  .reduce(
-    (chainIdToNetworkIdMap, { chainId, networkId }) => {
-      chainIdToNetworkIdMap[chainId] = networkId
-      return chainIdToNetworkIdMap
-    },
-    {},
-  )
+export const CHAIN_ID_TO_NETWORK_ID_MAP = Object.values(
+  NETWORK_TYPE_TO_ID_MAP,
+).reduce((chainIdToNetworkIdMap, { chainId, networkId }) => {
+  chainIdToNetworkIdMap[chainId] = networkId
+  return chainIdToNetworkIdMap
+}, {})

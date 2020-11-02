@@ -12,15 +12,15 @@ const flushAt = 1
 export const METAMETRICS_ANONYMOUS_ID = '0x0000000000000000'
 
 const segmentNoop = {
-  track (_, callback = () => undefined) {
+  track(_, callback = () => undefined) {
     // Need to call the callback so that environments without a segment id still
     // resolve the promise from trackMetaMetricsEvent
     return callback()
   },
-  page () {
+  page() {
     // noop
   },
-  identify () {
+  identify() {
     // noop
   },
 }
@@ -45,7 +45,7 @@ const trackableSendCounts = {
   25000: true,
 }
 
-export function sendCountIsTrackable (sendCount) {
+export function sendCountIsTrackable(sendCount) {
   return Boolean(trackableSendCounts[sendCount])
 }
 
@@ -130,15 +130,13 @@ export const segmentLegacy = process.env.SEGMENT_LEGACY_WRITE_KEY
  * @param {() => MetaMetricsRequiredState} getDynamicState - A function returning required fields
  * @returns {(payload: MetaMetricsEventPayload) => Promise<void>} - function to track an event
  */
-export function getTrackMetaMetricsEvent (
-  metamaskVersion,
-  getDynamicState,
-) {
-  const version = process.env.METAMASK_ENVIRONMENT === 'production'
-    ? metamaskVersion
-    : `${metamaskVersion}-${process.env.METAMASK_ENVIRONMENT}`
+export function getTrackMetaMetricsEvent(metamaskVersion, getDynamicState) {
+  const version =
+    process.env.METAMASK_ENVIRONMENT === 'production'
+      ? metamaskVersion
+      : `${metamaskVersion}-${process.env.METAMASK_ENVIRONMENT}`
 
-  return function trackMetaMetricsEvent ({
+  return function trackMetaMetricsEvent({
     event,
     category,
     isOptIn,
@@ -171,7 +169,11 @@ export function getTrackMetaMetricsEvent (
     // to be updated to work with the new tracking plan. I think we should use
     // a config setting for this instead of trying to match the event name
     const isSendFlow = Boolean(event.match(/^send|^confirm/u))
-    if (isSendFlow && metaMetricsSendCount && !sendCountIsTrackable(metaMetricsSendCount + 1)) {
+    if (
+      isSendFlow &&
+      metaMetricsSendCount &&
+      !sendCountIsTrackable(metaMetricsSendCount + 1)
+    ) {
       excludeMetaMetricsId = true
     }
 

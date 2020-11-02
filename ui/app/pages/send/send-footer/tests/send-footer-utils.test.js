@@ -14,33 +14,26 @@ const sendUtils = proxyquire('../send-footer.utils.js', {
     rawEncode: stubs.rawEncode,
   },
 })
-const {
-  addressIsNew,
-  constructTxParams,
-  constructUpdatedTx,
-} = sendUtils
+const { addressIsNew, constructTxParams, constructUpdatedTx } = sendUtils
 
 describe('send-footer utils', function () {
-
   describe('addressIsNew()', function () {
     it('should return false if the address exists in toAccounts', function () {
       assert.equal(
-        addressIsNew([
-          { address: '0xabc' },
-          { address: '0xdef' },
-          { address: '0xghi' },
-        ], '0xdef'),
+        addressIsNew(
+          [{ address: '0xabc' }, { address: '0xdef' }, { address: '0xghi' }],
+          '0xdef',
+        ),
         false,
       )
     })
 
     it('should return true if the address does not exists in toAccounts', function () {
       assert.equal(
-        addressIsNew([
-          { address: '0xabc' },
-          { address: '0xdef' },
-          { address: '0xghi' },
-        ], '0xxyz'),
+        addressIsNew(
+          [{ address: '0xabc' }, { address: '0xdef' }, { address: '0xghi' }],
+          '0xxyz',
+        ),
         true,
       )
     })
@@ -211,5 +204,4 @@ describe('send-footer utils', function () {
       })
     })
   })
-
 })

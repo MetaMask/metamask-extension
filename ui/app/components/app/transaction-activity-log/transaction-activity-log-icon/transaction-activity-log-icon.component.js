@@ -34,21 +34,13 @@ export default class TransactionActivityLogIcon extends PureComponent {
     eventKey: PropTypes.oneOf(Object.keys(imageHash)),
   }
 
-  render () {
+  render() {
     const { className, eventKey } = this.props
     const imagePath = imageHash[eventKey]
 
     return (
       <div className={classnames('transaction-activity-log-icon', className)}>
-        {
-          imagePath && (
-            <img
-              src={imagePath}
-              height={9}
-              width={9}
-            />
-          )
-        }
+        {imagePath && <img src={imagePath} height={9} width={9} />}
       </div>
     )
   }
