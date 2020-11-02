@@ -1,4 +1,5 @@
-import './lib/freezeGlobals'
+import freezeIntrinsics from './lib/freezeIntrinsics'
+freezeIntrinsics()
 import querystring from 'querystring'
 import pump from 'pump'
 import LocalMessageDuplexStream from 'post-message-stream'

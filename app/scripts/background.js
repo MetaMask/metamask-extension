@@ -2,6 +2,7 @@
  * @file The entry point for the web extension singleton process.
  */
 // these need to run before anything else
+import freezeIntrinsics from './lib/freezeIntrinsics'
 /* eslint-disable import/first,import/order */
 import setupFetchDebugging from './lib/setupFetchDebugging'
 /* eslint-enable import/order */
@@ -52,7 +53,7 @@ global.METAMASK_NOTIFIER = notificationManager
 const release = platform.getVersion()
 const sentry = setupSentry({ release })
 
-import './lib/freezeGlobals'
+freezeIntrinsics()
 
 let popupIsOpen = false
 let notificationIsOpen = false
