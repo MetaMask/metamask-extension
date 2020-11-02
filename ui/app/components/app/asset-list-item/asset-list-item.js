@@ -94,8 +94,10 @@ const AssetListItem = ({
       data-testid={dataTestId}
       title={(
         <button className="asset-list-item__token-button" onClick={onClick}>
-          <h2 className="asset-list-item__token-value">{primary}</h2>
-          <h2 className="asset-list-item__token-symbol">{tokenSymbol}</h2>
+            <h2>
+              <span className="asset-list-item__token-value">{primary}</span>
+              <span className="asset-list-item__token-symbol">{tokenSymbol}</span>
+            </h2>
         </button>
       )}
       titleIcon={titleIcon}
