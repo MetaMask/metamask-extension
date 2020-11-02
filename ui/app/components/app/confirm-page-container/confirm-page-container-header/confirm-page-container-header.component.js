@@ -11,7 +11,7 @@ import { shortenAddress } from '../../../../helpers/utils/util'
 import AccountMismatchWarning from '../../../ui/account-mismatch-warning/account-mismatch-warning.component'
 import { useI18nContext } from '../../../../hooks/useI18nContext'
 
-export default function ConfirmPageContainerHeader ({
+export default function ConfirmPageContainerHeader({
   onEdit,
   showEdit,
   accountAddress,
@@ -20,7 +20,8 @@ export default function ConfirmPageContainerHeader ({
 }) {
   const t = useI18nContext()
   const windowType = getEnvironmentType()
-  const isFullScreen = windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
+  const isFullScreen =
+    windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
     windowType !== ENVIRONMENT_TYPE_POPUP
 
   if (!showEdit && isFullScreen) {
@@ -29,43 +30,35 @@ export default function ConfirmPageContainerHeader ({
   return (
     <div className="confirm-page-container-header">
       <div className="confirm-page-container-header__row">
-        { showAccountInHeader
-          ? (
-            <div className="confirm-page-container-header__address-container">
-              <div className="confirm-page-container-header__address-identicon">
-                <Identicon
-                  address={accountAddress}
-                  diameter={24}
-                />
-              </div>
-              <div className="confirm-page-container-header__address">
-                { shortenAddress(accountAddress) }
-              </div>
-              <AccountMismatchWarning address={accountAddress} />
+        {showAccountInHeader ? (
+          <div className="confirm-page-container-header__address-container">
+            <div className="confirm-page-container-header__address-identicon">
+              <Identicon address={accountAddress} diameter={24} />
             </div>
-          )
-          : (
-            <div
-              className="confirm-page-container-header__back-button-container"
-              style={{
-                visibility: showEdit ? 'initial' : 'hidden',
-              }}
+            <div className="confirm-page-container-header__address">
+              {shortenAddress(accountAddress)}
+            </div>
+            <AccountMismatchWarning address={accountAddress} />
+          </div>
+        ) : (
+          <div
+            className="confirm-page-container-header__back-button-container"
+            style={{
+              visibility: showEdit ? 'initial' : 'hidden',
+            }}
+          >
+            <img src="/images/caret-left.svg" />
+            <span
+              className="confirm-page-container-header__back-button"
+              onClick={() => onEdit()}
             >
-              <img
-                src="/images/caret-left.svg"
-              />
-              <span
-                className="confirm-page-container-header__back-button"
-                onClick={() => onEdit()}
-              >
-                { t('edit') }
-              </span>
-            </div>
-          )
-        }
-        { !isFullScreen && <NetworkDisplay /> }
+              {t('edit')}
+            </span>
+          </div>
+        )}
+        {!isFullScreen && <NetworkDisplay />}
       </div>
-      { children }
+      {children}
     </div>
   )
 }

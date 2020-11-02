@@ -11,14 +11,12 @@ export default class InfoTab extends PureComponent {
     t: PropTypes.func,
   }
 
-  renderInfoLinks () {
+  renderInfoLinks() {
     const { t } = this.context
 
     return (
       <div className="settings-page__content-item settings-page__content-item--without-height">
-        <div className="info-tab__link-header">
-          { t('links') }
-        </div>
+        <div className="info-tab__link-header">{t('links')}</div>
         <div className="info-tab__link-item">
           <Button
             type="link"
@@ -27,7 +25,7 @@ export default class InfoTab extends PureComponent {
             rel="noopener noreferrer"
             className="info-tab__link-text"
           >
-            { t('privacyMsg') }
+            {t('privacyMsg')}
           </Button>
         </div>
         <div className="info-tab__link-item">
@@ -38,7 +36,7 @@ export default class InfoTab extends PureComponent {
             rel="noopener noreferrer"
             className="info-tab__link-text"
           >
-            { t('terms') }
+            {t('terms')}
           </Button>
         </div>
         <div className="info-tab__link-item">
@@ -49,7 +47,7 @@ export default class InfoTab extends PureComponent {
             rel="noopener noreferrer"
             className="info-tab__link-text"
           >
-            { t('attributions') }
+            {t('attributions')}
           </Button>
         </div>
         <hr className="info-tab__separator" />
@@ -61,7 +59,7 @@ export default class InfoTab extends PureComponent {
             rel="noopener noreferrer"
             className="info-tab__link-text"
           >
-            { t('supportCenter') }
+            {t('supportCenter')}
           </Button>
         </div>
         <div className="info-tab__link-item">
@@ -72,7 +70,7 @@ export default class InfoTab extends PureComponent {
             rel="noopener noreferrer"
             className="info-tab__link-text"
           >
-            { t('visitWebSite') }
+            {t('visitWebSite')}
           </Button>
         </div>
         <div className="info-tab__link-item">
@@ -83,14 +81,14 @@ export default class InfoTab extends PureComponent {
             rel="noopener noreferrer"
             className="info-tab__link-text"
           >
-            { t('contactUs') }
+            {t('contactUs')}
           </Button>
         </div>
       </div>
     )
   }
 
-  render () {
+  render() {
     const { t } = this.context
 
     return (
@@ -98,26 +96,21 @@ export default class InfoTab extends PureComponent {
         <div className="settings-page__content-row">
           <div className="settings-page__content-item settings-page__content-item--without-height">
             <div className="info-tab__logo-wrapper">
-              <img
-                src="images/info-logo.png"
-                className="info-tab__logo"
-              />
+              <img src="images/info-logo.png" className="info-tab__logo" />
             </div>
             <div className="info-tab__item">
               <div className="info-tab__version-header">
-                { t('metamaskVersion') }
+                {t('metamaskVersion')}
               </div>
               <div className="info-tab__version-number">
-                { this.state.version }
+                {this.state.version}
               </div>
             </div>
             <div className="info-tab__item">
-              <div className="info-tab__about">
-                { t('builtInCalifornia') }
-              </div>
+              <div className="info-tab__about">{t('builtInCalifornia')}</div>
             </div>
           </div>
-          { this.renderInfoLinks() }
+          {this.renderInfoLinks()}
         </div>
       </div>
     )

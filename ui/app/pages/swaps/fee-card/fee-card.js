@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { I18nContext } from '../../../contexts/i18n'
 import InfoTooltip from '../../../components/ui/info-tooltip'
 
-export default function FeeCard ({
+export default function FeeCard({
   primaryFee,
   secondaryFee,
   hideTokenApprovalRow,
@@ -24,23 +24,26 @@ export default function FeeCard ({
             </div>
             <InfoTooltip
               position="top"
-              contentText={(
+              contentText={
                 <>
-                  <p className="fee-card__info-tooltip-paragraph">{ t('swapNetworkFeeSummary') }</p>
-                  <p className="fee-card__info-tooltip-paragraph">{ t('swapEstimatedNetworkFeeSummary', [
-                    <span className="fee-card__bold" key="fee-card-bold-1">
-                      { t('swapEstimatedNetworkFee') }
-                    </span>,
-                  ]) }
+                  <p className="fee-card__info-tooltip-paragraph">
+                    {t('swapNetworkFeeSummary')}
                   </p>
-                  <p className="fee-card__info-tooltip-paragraph">{ t('swapMaxNetworkFeeInfo', [
-                    <span className="fee-card__bold" key="fee-card-bold-2">
-                      { t('swapMaxNetworkFees') }
-                    </span>,
-                  ]) }
+                  <p className="fee-card__info-tooltip-paragraph">
+                    {t('swapEstimatedNetworkFeeSummary', [
+                      <span className="fee-card__bold" key="fee-card-bold-1">
+                        {t('swapEstimatedNetworkFee')}
+                      </span>,
+                    ])}
+                  </p>
+                  <p className="fee-card__info-tooltip-paragraph">
+                    {t('swapMaxNetworkFeeInfo', [
+                      <span className="fee-card__bold" key="fee-card-bold-2">
+                        {t('swapMaxNetworkFees')}
+                      </span>,
+                    ])}
                   </p>
                 </>
-              )
               }
               containerClassName="fee-card__info-tooltip-content-container"
               wrapperClassName="fee-card__row-label fee-card__info-tooltip-container"
@@ -58,14 +61,15 @@ export default function FeeCard ({
             )}
           </div>
         </div>
-        <div className="fee-card__row-header" onClick={() => onFeeCardMaxRowClick()}>
+        <div
+          className="fee-card__row-header"
+          onClick={() => onFeeCardMaxRowClick()}
+        >
           <div>
             <div className="fee-card__row-header-text">
               {t('swapMaxNetworkFees')}
             </div>
-            <div className="fee-card__link">
-              {t('edit')}
-            </div>
+            <div className="fee-card__link">{t('edit')}</div>
           </div>
           <div>
             <div className="fee-card__row-header-secondary">
@@ -84,12 +88,17 @@ export default function FeeCard ({
               <div className="fee-card__row-header-text">
                 {t('swapThisWillAllowApprove', [tokenApprovalTextComponent])}
               </div>
-              <div className="fee-card__link" onClick={() => onTokenApprovalClick()}>
+              <div
+                className="fee-card__link"
+                onClick={() => onTokenApprovalClick()}
+              >
                 {t('swapEditLimit')}
               </div>
               <InfoTooltip
                 position="top"
-                contentText={t('swapEnableDescription', [tokenApprovalSourceTokenSymbol])}
+                contentText={t('swapEnableDescription', [
+                  tokenApprovalSourceTokenSymbol,
+                ])}
               />
             </div>
           </div>

@@ -2,7 +2,11 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import SenderToRecipient from '../../ui/sender-to-recipient'
 import { PageContainerFooter } from '../../ui/page-container'
-import { ConfirmPageContainerHeader, ConfirmPageContainerContent, ConfirmPageContainerNavigation } from '.'
+import {
+  ConfirmPageContainerHeader,
+  ConfirmPageContainerContent,
+  ConfirmPageContainerNavigation,
+} from '.'
 
 export default class ConfirmPageContainer extends Component {
   static contextTypes = {
@@ -58,7 +62,7 @@ export default class ConfirmPageContainer extends Component {
     disabled: PropTypes.bool,
   }
 
-  render () {
+  render() {
     const {
       showEdit,
       onEdit,
@@ -102,7 +106,8 @@ export default class ConfirmPageContainer extends Component {
       hideSenderToRecipient,
       showAccountInHeader,
     } = this.props
-    const renderAssetImage = contentComponent || (!contentComponent && !identiconAddress)
+    const renderAssetImage =
+      contentComponent || (!contentComponent && !identiconAddress)
 
     return (
       <div className="page-container">
@@ -124,68 +129,61 @@ export default class ConfirmPageContainer extends Component {
           showAccountInHeader={showAccountInHeader}
           accountAddress={fromAddress}
         >
-          { hideSenderToRecipient
-            ? null
-            : (
-              <SenderToRecipient
-                senderName={fromName}
-                senderAddress={fromAddress}
-                recipientName={toName}
-                recipientAddress={toAddress}
-                recipientEns={toEns}
-                recipientNickname={toNickname}
-                assetImage={renderAssetImage ? assetImage : undefined}
-              />
-            )
-          }
-        </ConfirmPageContainerHeader>
-        {
-          contentComponent || (
-            <ConfirmPageContainerContent
-              action={action}
-              title={title}
-              titleComponent={titleComponent}
-              subtitle={subtitle}
-              subtitleComponent={subtitleComponent}
-              hideSubtitle={hideSubtitle}
-              summaryComponent={summaryComponent}
-              detailsComponent={detailsComponent}
-              dataComponent={dataComponent}
-              errorMessage={errorMessage}
-              errorKey={errorKey}
-              identiconAddress={identiconAddress}
-              nonce={nonce}
-              assetImage={assetImage}
-              warning={warning}
-              onCancelAll={onCancelAll}
-              onCancel={onCancel}
-              cancelText={this.context.t('reject')}
-              onSubmit={onSubmit}
-              submitText={this.context.t('confirm')}
-              disabled={disabled}
-              unapprovedTxCount={unapprovedTxCount}
-              rejectNText={this.context.t('rejectTxsN', [unapprovedTxCount])}
+          {hideSenderToRecipient ? null : (
+            <SenderToRecipient
+              senderName={fromName}
+              senderAddress={fromAddress}
+              recipientName={toName}
+              recipientAddress={toAddress}
+              recipientEns={toEns}
+              recipientNickname={toNickname}
+              assetImage={renderAssetImage ? assetImage : undefined}
             />
-          )
-        }
-        {
-          contentComponent && (
-            <PageContainerFooter
-              onCancel={onCancel}
-              cancelText={this.context.t('reject')}
-              onSubmit={onSubmit}
-              submitText={this.context.t('confirm')}
-              submitButtonType="confirm"
-              disabled={disabled}
-            >
-              {unapprovedTxCount > 1 && (
-                <a onClick={onCancelAll}>
-                  {this.context.t('rejectTxsN', [unapprovedTxCount])}
-                </a>
-              )}
-            </PageContainerFooter>
-          )
-        }
+          )}
+        </ConfirmPageContainerHeader>
+        {contentComponent || (
+          <ConfirmPageContainerContent
+            action={action}
+            title={title}
+            titleComponent={titleComponent}
+            subtitle={subtitle}
+            subtitleComponent={subtitleComponent}
+            hideSubtitle={hideSubtitle}
+            summaryComponent={summaryComponent}
+            detailsComponent={detailsComponent}
+            dataComponent={dataComponent}
+            errorMessage={errorMessage}
+            errorKey={errorKey}
+            identiconAddress={identiconAddress}
+            nonce={nonce}
+            assetImage={assetImage}
+            warning={warning}
+            onCancelAll={onCancelAll}
+            onCancel={onCancel}
+            cancelText={this.context.t('reject')}
+            onSubmit={onSubmit}
+            submitText={this.context.t('confirm')}
+            disabled={disabled}
+            unapprovedTxCount={unapprovedTxCount}
+            rejectNText={this.context.t('rejectTxsN', [unapprovedTxCount])}
+          />
+        )}
+        {contentComponent && (
+          <PageContainerFooter
+            onCancel={onCancel}
+            cancelText={this.context.t('reject')}
+            onSubmit={onSubmit}
+            submitText={this.context.t('confirm')}
+            submitButtonType="confirm"
+            disabled={disabled}
+          >
+            {unapprovedTxCount > 1 && (
+              <a onClick={onCancelAll}>
+                {this.context.t('rejectTxsN', [unapprovedTxCount])}
+              </a>
+            )}
+          </PageContainerFooter>
+        )}
       </div>
     )
   }

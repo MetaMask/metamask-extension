@@ -2,7 +2,6 @@ import KeyringController from 'eth-keyring-controller'
 import log from 'loglevel'
 
 const seedPhraseVerifier = {
-
   /**
    * Verifies if the seed words can restore the accounts.
    *
@@ -15,8 +14,8 @@ const seedPhraseVerifier = {
    * @param {string} seedWords - The seed words to verify
    * @returns {Promise<void>} - Promises undefined
    *
-  */
-  async verifyAccounts (createdAccounts, seedWords) {
+   */
+  async verifyAccounts(createdAccounts, seedWords) {
     if (!createdAccounts || createdAccounts.length < 1) {
       throw new Error('No created accounts defined.')
     }
@@ -39,8 +38,12 @@ const seedPhraseVerifier = {
     }
 
     for (let i = 0; i < restoredAccounts.length; i++) {
-      if (restoredAccounts[i].toLowerCase() !== createdAccounts[i].toLowerCase()) {
-        throw new Error(`Not identical accounts! Original: ${createdAccounts[i]}, Restored: ${restoredAccounts[i]}`)
+      if (
+        restoredAccounts[i].toLowerCase() !== createdAccounts[i].toLowerCase()
+      ) {
+        throw new Error(
+          `Not identical accounts! Original: ${createdAccounts[i]}, Restored: ${restoredAccounts[i]}`,
+        )
       }
     }
   },

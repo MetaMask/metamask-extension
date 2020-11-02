@@ -67,14 +67,17 @@ import MainQuoteSummary from '../main-quote-summary'
 import { calcGasTotal } from '../../send/send.utils'
 import { getCustomTxParamsData } from '../../confirm-approve/confirm-approve.util'
 import ActionableMessage from '../actionable-message'
-import { quotesToRenderableData, getRenderableNetworkFeesForQuote } from '../swaps.util'
+import {
+  quotesToRenderableData,
+  getRenderableNetworkFeesForQuote,
+} from '../swaps.util'
 import { useTokenTracker } from '../../../hooks/useTokenTracker'
 import { QUOTES_EXPIRED_ERROR } from '../../../helpers/constants/swaps'
 import CountdownTimer from '../countdown-timer'
 import SwapsFooter from '../swaps-footer'
 import InfoTooltip from '../../../components/ui/info-tooltip'
 
-export default function ViewQuote () {
+export default function ViewQuote() {
   const history = useHistory()
   const dispatch = useDispatch()
   const t = useContext(I18nContext)
@@ -116,23 +119,20 @@ export default function ViewQuote () {
 
   const fetchParamsSourceToken = fetchParams?.sourceToken
 
-  const usedGasLimit = (
+  const usedGasLimit =
     usedQuote?.gasEstimateWithRefund ||
-    (`0x${decimalToHex(usedQuote?.averageGas || 0)}`)
-  )
+    `0x${decimalToHex(usedQuote?.averageGas || 0)}`
 
-  const gasLimitForMax = (
-    usedQuote?.gasEstimate ||
-    (`0x${decimalToHex(usedQuote?.averageGas || 0)}`)
-  )
+  const gasLimitForMax =
+    usedQuote?.gasEstimate || `0x${decimalToHex(usedQuote?.averageGas || 0)}`
 
-  const usedGasLimitWithMultiplier = (new BigNumber(gasLimitForMax, 16)
-    .times(1.4, 10))
+  const usedGasLimitWithMultiplier = new BigNumber(gasLimitForMax, 16)
+    .times(1.4, 10)
     .round(0)
     .toString(16)
 
   const nonCustomMaxGasLimit = hexMax(
-    (`0x${decimalToHex(usedQuote?.maxGas || 0)}`),
+    `0x${decimalToHex(usedQuote?.maxGas || 0)}`,
     usedGasLimitWithMultiplier,
   )
   const maxGasLimit = customMaxGas || nonCustomMaxGasLimit
@@ -141,25 +141,27 @@ export default function ViewQuote () {
 
   const { tokensWithBalances } = useTokenTracker(swapsTokens)
   const swapsEthToken = useSwapsEthToken()
-  const balanceToken = fetchParamsSourceToken === swapsEthToken.address
-    ? swapsEthToken
-    : tokensWithBalances.find(({ address }) => address === fetchParamsSourceToken)
+  const balanceToken =
+    fetchParamsSourceToken === swapsEthToken.address
+      ? swapsEthToken
+      : tokensWithBalances.find(
+          ({ address }) => address === fetchParamsSourceToken,
+        )
 
   const selectedFromToken = balanceToken || usedQuote.sourceTokenInfo
-  const tokenBalance = (
+  const tokenBalance =
     tokensWithBalances?.length &&
     calcTokenAmount(
       selectedFromToken.balance || '0x0',
       selectedFromToken.decimals,
     ).toFixed(9)
-  )
 
   const approveData = getTokenData(approveTxParams?.data)
   const approveValue = approveData && getTokenValueParam(approveData)
-  const approveAmount = (
-    approveValue && (selectedFromToken?.decimals !== undefined) &&
+  const approveAmount =
+    approveValue &&
+    selectedFromToken?.decimals !== undefined &&
     calcTokenAmount(approveValue, selectedFromToken.decimals).toFixed(9)
-  )
   const approveGas = approveTxParams?.gas
 
   const renderablePopoverData = useMemo(() => {
@@ -181,9 +183,8 @@ export default function ViewQuote () {
   ])
 
   const renderableDataForUsedQuote = renderablePopoverData.find(
-    (renderablePopoverDatum) => (
-      renderablePopoverDatum.aggId === usedQuote.aggregator
-    ),
+    (renderablePopoverDatum) =>
+      renderablePopoverDatum.aggId === usedQuote.aggregator,
   )
 
   const {
@@ -223,31 +224,34 @@ export default function ViewQuote () {
     usedQuote.sourceAmount,
   )
 
-  const tokenCost = (new BigNumber(usedQuote.sourceAmount))
-  const ethCost = (new BigNumber(usedQuote.trade.value || 0, 10))
-    .plus((new BigNumber(gasTotalInWeiHex, 16)))
-
-  const insufficientTokens = (
-    (tokensWithBalances?.length || balanceError) &&
-    (tokenCost).gt(new BigNumber(selectedFromToken.balance || '0x0'))
+  const tokenCost = new BigNumber(usedQuote.sourceAmount)
+  const ethCost = new BigNumber(usedQuote.trade.value || 0, 10).plus(
+    new BigNumber(gasTotalInWeiHex, 16),
   )
 
-  const insufficientEth = (ethCost).gt(new BigNumber(ethBalance || '0x0'))
+  const insufficientTokens =
+    (tokensWithBalances?.length || balanceError) &&
+    tokenCost.gt(new BigNumber(selectedFromToken.balance || '0x0'))
+
+  const insufficientEth = ethCost.gt(new BigNumber(ethBalance || '0x0'))
 
   const tokenBalanceNeeded = insufficientTokens
     ? toPrecisionWithoutTrailingZeros(
-      calcTokenAmount(
-        tokenCost,
-        selectedFromToken.decimals,
-      ).minus(tokenBalance).toString(10), 6,
-    )
+        calcTokenAmount(tokenCost, selectedFromToken.decimals)
+          .minus(tokenBalance)
+          .toString(10),
+        6,
+      )
     : null
 
   const ethBalanceNeeded = insufficientEth
     ? toPrecisionWithoutTrailingZeros(
-      ethCost.minus(ethBalance, 16).div('1000000000000000000', 10).toString(10),
-      6,
-    )
+        ethCost
+          .minus(ethBalance, 16)
+          .div('1000000000000000000', 10)
+          .toString(10),
+        6,
+      )
     : null
 
   const destinationToken = useSelector(getDestinationTokenInfo)
@@ -278,10 +282,8 @@ export default function ViewQuote () {
     }
   }, [originalApproveAmount, approveAmount])
 
-  const showWarning = (
-    (balanceError || tokenBalanceNeeded || ethBalanceNeeded) &&
-    !warningHidden
-  )
+  const showWarning =
+    (balanceError || tokenBalanceNeeded || ethBalanceNeeded) && !warningHidden
 
   const numberOfQuotes = Object.values(quotes).length
   const bestQuoteReviewedEventSent = useRef()
@@ -303,85 +305,135 @@ export default function ViewQuote () {
     properties: {
       ...eventObjectBase,
       other_quote_selected: usedQuote?.aggregator !== topQuote?.aggregator,
-      other_quote_selected_source: usedQuote?.aggregator === topQuote?.aggregator ? null : usedQuote?.aggregator,
+      other_quote_selected_source:
+        usedQuote?.aggregator === topQuote?.aggregator
+          ? null
+          : usedQuote?.aggregator,
     },
     excludeMetaMetricsId: true,
     category: 'swaps',
   })
-  const allAvailableQuotesOpened = useNewMetricEvent({ event: 'All Available Quotes Opened', category: 'swaps' })
+  const allAvailableQuotesOpened = useNewMetricEvent({
+    event: 'All Available Quotes Opened',
+    category: 'swaps',
+  })
   const anonymousQuoteDetailsOpened = useNewMetricEvent({
     event: 'Quote Details Opened',
     properties: {
       ...eventObjectBase,
       other_quote_selected: usedQuote?.aggregator !== topQuote?.aggregator,
-      other_quote_selected_source: usedQuote?.aggregator === topQuote?.aggregator ? null : usedQuote?.aggregator,
+      other_quote_selected_source:
+        usedQuote?.aggregator === topQuote?.aggregator
+          ? null
+          : usedQuote?.aggregator,
     },
     excludeMetaMetricsId: true,
     category: 'swaps',
   })
-  const quoteDetailsOpened = useNewMetricEvent({ event: 'Quote Details Opened', category: 'swaps' })
+  const quoteDetailsOpened = useNewMetricEvent({
+    event: 'Quote Details Opened',
+    category: 'swaps',
+  })
   const anonymousEditSpendLimitOpened = useNewMetricEvent({
     event: 'Edit Spend Limit Opened',
     properties: {
       ...eventObjectBase,
       custom_spend_limit_set: originalApproveAmount === approveAmount,
-      custom_spend_limit_amount: originalApproveAmount === approveAmount ? null : approveAmount,
+      custom_spend_limit_amount:
+        originalApproveAmount === approveAmount ? null : approveAmount,
     },
     excludeMetaMetricsId: true,
     category: 'swaps',
   })
-  const editSpendLimitOpened = useNewMetricEvent({ event: 'Edit Spend Limit Opened', category: 'swaps' })
+  const editSpendLimitOpened = useNewMetricEvent({
+    event: 'Edit Spend Limit Opened',
+    category: 'swaps',
+  })
 
-  const anonymousBestQuoteReviewedEvent = useNewMetricEvent({ event: 'Best Quote Reviewed', properties: { ...eventObjectBase, network_fees: feeInFiat }, excludeMetaMetricsId: true, category: 'swaps' })
-  const bestQuoteReviewedEvent = useNewMetricEvent({ event: 'Best Quote Reviewed', category: 'swaps' })
+  const anonymousBestQuoteReviewedEvent = useNewMetricEvent({
+    event: 'Best Quote Reviewed',
+    properties: { ...eventObjectBase, network_fees: feeInFiat },
+    excludeMetaMetricsId: true,
+    category: 'swaps',
+  })
+  const bestQuoteReviewedEvent = useNewMetricEvent({
+    event: 'Best Quote Reviewed',
+    category: 'swaps',
+  })
   useEffect(() => {
-    if (!bestQuoteReviewedEventSent.current && [sourceTokenSymbol, sourceTokenValue, destinationTokenSymbol, destinationTokenValue, fetchParams, topQuote, numberOfQuotes, feeInFiat].every((dep) => dep !== null && dep !== undefined)) {
+    if (
+      !bestQuoteReviewedEventSent.current &&
+      [
+        sourceTokenSymbol,
+        sourceTokenValue,
+        destinationTokenSymbol,
+        destinationTokenValue,
+        fetchParams,
+        topQuote,
+        numberOfQuotes,
+        feeInFiat,
+      ].every((dep) => dep !== null && dep !== undefined)
+    ) {
       bestQuoteReviewedEventSent.current = true
       bestQuoteReviewedEvent()
       anonymousBestQuoteReviewedEvent()
     }
-  }, [sourceTokenSymbol, sourceTokenValue, destinationTokenSymbol, destinationTokenValue, fetchParams, topQuote, numberOfQuotes, feeInFiat, bestQuoteReviewedEvent, anonymousBestQuoteReviewedEvent])
+  }, [
+    sourceTokenSymbol,
+    sourceTokenValue,
+    destinationTokenSymbol,
+    destinationTokenValue,
+    fetchParams,
+    topQuote,
+    numberOfQuotes,
+    feeInFiat,
+    bestQuoteReviewedEvent,
+    anonymousBestQuoteReviewedEvent,
+  ])
 
   const metaMaskFee = usedQuote.fee
 
   const onFeeCardTokenApprovalClick = () => {
     anonymousEditSpendLimitOpened()
     editSpendLimitOpened()
-    dispatch(showModal({
-      name: 'EDIT_APPROVAL_PERMISSION',
-      decimals: selectedFromToken.decimals,
-      origin: 'MetaMask',
-      setCustomAmount: (newCustomPermissionAmount) => {
-        const customPermissionAmount = newCustomPermissionAmount === ''
-          ? originalApproveAmount
-          : newCustomPermissionAmount
-        const newData = getCustomTxParamsData(
-          approveTxParams.data,
-          { customPermissionAmount, decimals: selectedFromToken.decimals },
-        )
+    dispatch(
+      showModal({
+        name: 'EDIT_APPROVAL_PERMISSION',
+        decimals: selectedFromToken.decimals,
+        origin: 'MetaMask',
+        setCustomAmount: (newCustomPermissionAmount) => {
+          const customPermissionAmount =
+            newCustomPermissionAmount === ''
+              ? originalApproveAmount
+              : newCustomPermissionAmount
+          const newData = getCustomTxParamsData(approveTxParams.data, {
+            customPermissionAmount,
+            decimals: selectedFromToken.decimals,
+          })
 
-        if (customPermissionAmount?.length && approveTxParams.data !== newData) {
-          dispatch(setCustomApproveTxData(newData))
-        }
-      },
-      tokenAmount: originalApproveAmount,
-      customTokenAmount: (
-        originalApproveAmount === approveAmount
-          ? null
-          : approveAmount
-      ),
-      tokenBalance,
-      tokenSymbol: selectedFromToken.symbol,
-      requiredMinimum: calcTokenAmount(
-        usedQuote.sourceAmount,
-        selectedFromToken.decimals,
-      ),
-    }))
+          if (
+            customPermissionAmount?.length &&
+            approveTxParams.data !== newData
+          ) {
+            dispatch(setCustomApproveTxData(newData))
+          }
+        },
+        tokenAmount: originalApproveAmount,
+        customTokenAmount:
+          originalApproveAmount === approveAmount ? null : approveAmount,
+        tokenBalance,
+        tokenSymbol: selectedFromToken.symbol,
+        requiredMinimum: calcTokenAmount(
+          usedQuote.sourceAmount,
+          selectedFromToken.decimals,
+        ),
+      }),
+    )
   }
 
-  const nonGasFeeIsPositive = (new BigNumber(nonGasFee, 16)).gt(0)
+  const nonGasFeeIsPositive = new BigNumber(nonGasFee, 16).gt(0)
   const approveGasTotal = calcGasTotal(approveGas || '0x0', gasPrice)
-  const extraNetworkFeeTotalInHexWEI = (new BigNumber(nonGasFee, 16))
+  const extraNetworkFeeTotalInHexWEI = new BigNumber(nonGasFee, 16)
     .plus(approveGasTotal, 16)
     .toString(16)
   const extraNetworkFeeTotalInEth = getValueFromWeiHex({
@@ -399,42 +451,35 @@ export default function ViewQuote () {
     extraInfoRowLabel = t('aggregatorFeeCost')
   }
 
-  const onFeeCardMaxRowClick = () => dispatch(showModal({
-    name: 'CUSTOMIZE_GAS',
-    txData: { txParams: { ...tradeTxParams, gas: maxGasLimit } },
-    isSwap: true,
-    customGasLimitMessage: (
-      approveGas
-        ? t('extraApprovalGas', [hexToDecimal(approveGas)])
-        : ''
-    ),
-    customTotalSupplement: approveGasTotal,
-    extraInfoRow: (
-      extraInfoRowLabel
-        ? {
-          label: extraInfoRowLabel,
-          value: t('amountInEth', [extraNetworkFeeTotalInEth]),
-        }
-        : null
-    ),
-    useFastestButtons: true,
-    minimumGasLimit: Number(hexToDecimal(nonCustomMaxGasLimit)),
-  }))
+  const onFeeCardMaxRowClick = () =>
+    dispatch(
+      showModal({
+        name: 'CUSTOMIZE_GAS',
+        txData: { txParams: { ...tradeTxParams, gas: maxGasLimit } },
+        isSwap: true,
+        customGasLimitMessage: approveGas
+          ? t('extraApprovalGas', [hexToDecimal(approveGas)])
+          : '',
+        customTotalSupplement: approveGasTotal,
+        extraInfoRow: extraInfoRowLabel
+          ? {
+              label: extraInfoRowLabel,
+              value: t('amountInEth', [extraNetworkFeeTotalInEth]),
+            }
+          : null,
+        useFastestButtons: true,
+        minimumGasLimit: Number(hexToDecimal(nonCustomMaxGasLimit)),
+      }),
+    )
 
   const tokenApprovalTextComponent = (
-    <span
-      key="swaps-view-quote-approve-symbol-1"
-      className="view-quote__bold"
-    >
+    <span key="swaps-view-quote-approve-symbol-1" className="view-quote__bold">
       {sourceTokenSymbol}
     </span>
   )
 
   const actionableMessage = t('swapApproveNeedMoreTokens', [
-    <span
-      key="swapApproveNeedMoreTokens-1"
-      className="view-quote__bold"
-    >
+    <span key="swapApproveNeedMoreTokens-1" className="view-quote__bold">
       {tokenBalanceNeeded || ethBalanceNeeded}
     </span>,
     tokenBalanceNeeded && !(sourceTokenSymbol === 'ETH')
@@ -495,9 +540,7 @@ export default function ViewQuote () {
           sourceIconUrl={sourceTokenIconUrl}
           destinationIconUrl={destinationIconUrl}
         />
-        <div
-          className="view-quote__view-other-button-container"
-        >
+        <div className="view-quote__view-other-button-container">
           <div className="view-quote__view-other-button">
             {t('swapNQuotesAvailable', [Object.values(quotes).length])}
             <i className="fa fa-arrow-right" />
@@ -515,7 +558,9 @@ export default function ViewQuote () {
           </div>
         </div>
         <div className="view-quote__metamask-rate">
-          <p className="view-quote__metamask-rate-text">{ t('swapQuoteIncludesRate', [metaMaskFee]) }</p>
+          <p className="view-quote__metamask-rate-text">
+            {t('swapQuoteIncludesRate', [metaMaskFee])}
+          </p>
           <InfoTooltip
             position="top"
             contentText={t('swapMetaMaskFeeDescription', [metaMaskFee])}
@@ -525,18 +570,19 @@ export default function ViewQuote () {
         <div
           className={classnames('view-quote__fee-card-container', {
             'view-quote__fee-card-container--thin': showWarning,
-            'view-quote__fee-card-container--three-rows': approveTxParams && (!balanceError || warningHidden),
+            'view-quote__fee-card-container--three-rows':
+              approveTxParams && (!balanceError || warningHidden),
           })}
         >
           <FeeCard
-            primaryFee={({
+            primaryFee={{
               fee: feeInEth,
               maxFee: maxFeeInEth,
-            })}
-            secondaryFee={({
+            }}
+            secondaryFee={{
               fee: feeInFiat,
               maxFee: maxFeeInFiat,
-            })}
+            }}
             onFeeCardMaxRowClick={onFeeCardMaxRowClick}
             hideTokenApprovalRow={
               !approveTxParams || (balanceError && !warningHidden)

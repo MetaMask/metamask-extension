@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
-export default function ActionableMessage ({
+export default function ActionableMessage({
   message = '',
   primaryAction = null,
   secondaryAction = null,
@@ -10,14 +10,15 @@ export default function ActionableMessage ({
 }) {
   return (
     <div className={classnames('actionable-message', className)}>
-      <div className="actionable-message__message">
-        {message}
-      </div>
+      <div className="actionable-message__message">{message}</div>
       {(primaryAction || secondaryAction) && (
         <div className="actionable-message__actions">
           {primaryAction && (
             <div
-              className={classnames('actionable-message__action', 'actionable-message__action--primary')}
+              className={classnames(
+                'actionable-message__action',
+                'actionable-message__action--primary',
+              )}
               onClick={primaryAction.onClick}
             >
               {primaryAction.label}
@@ -25,7 +26,10 @@ export default function ActionableMessage ({
           )}
           {secondaryAction && (
             <div
-              className={classnames('actionable-message__action', 'actionable-message__action--secondary')}
+              className={classnames(
+                'actionable-message__action',
+                'actionable-message__action--secondary',
+              )}
               onClick={secondaryAction.onClick}
             >
               {secondaryAction.label}

@@ -11,7 +11,7 @@
  * @param {unknown} [wrappedThis] - The object the stubbed function was called on, if any (i.e. the `this` value)
  * @returns {Promise} A Promise that resolves when the stub has been called
  */
-export default function waitUntilCalled (stub, wrappedThis = null) {
+export default function waitUntilCalled(stub, wrappedThis = null) {
   let wasCalled
   const stubHasBeenCalled = new Promise((resolve) => {
     wasCalled = resolve

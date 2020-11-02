@@ -29,11 +29,15 @@ export default class AppHeader extends PureComponent {
     metricsEvent: PropTypes.func,
   }
 
-  handleNetworkIndicatorClick (event) {
+  handleNetworkIndicatorClick(event) {
     event.preventDefault()
     event.stopPropagation()
 
-    const { networkDropdownOpen, showNetworkDropdown, hideNetworkDropdown } = this.props
+    const {
+      networkDropdownOpen,
+      showNetworkDropdown,
+      hideNetworkDropdown,
+    } = this.props
 
     if (networkDropdownOpen === false) {
       this.context.metricsEvent({
@@ -49,37 +53,42 @@ export default class AppHeader extends PureComponent {
     }
   }
 
-  renderAccountMenu () {
-    const { isUnlocked, toggleAccountMenu, selectedAddress, disabled, isAccountMenuOpen } = this.props
+  renderAccountMenu() {
+    const {
+      isUnlocked,
+      toggleAccountMenu,
+      selectedAddress,
+      disabled,
+      isAccountMenuOpen,
+    } = this.props
 
-    return isUnlocked && (
-      <div
-        className={classnames('account-menu__icon', {
-          'account-menu__icon--disabled': disabled,
-        })}
-        onClick={() => {
-          if (!disabled) {
-            !isAccountMenuOpen && this.context.metricsEvent({
-              eventOpts: {
-                category: 'Navigation',
-                action: 'Home',
-                name: 'Opened Main Menu',
-              },
-            })
-            toggleAccountMenu()
-          }
-        }}
-      >
-        <Identicon
-          address={selectedAddress}
-          diameter={32}
-          addBorder
-        />
-      </div>
+    return (
+      isUnlocked && (
+        <div
+          className={classnames('account-menu__icon', {
+            'account-menu__icon--disabled': disabled,
+          })}
+          onClick={() => {
+            if (!disabled) {
+              !isAccountMenuOpen &&
+                this.context.metricsEvent({
+                  eventOpts: {
+                    category: 'Navigation',
+                    action: 'Home',
+                    name: 'Opened Main Menu',
+                  },
+                })
+              toggleAccountMenu()
+            }
+          }}
+        >
+          <Identicon address={selectedAddress} diameter={32} addBorder />
+        </div>
+      )
     )
   }
 
-  render () {
+  render() {
     const {
       history,
       network,
@@ -93,7 +102,9 @@ export default class AppHeader extends PureComponent {
 
     return (
       <div
-        className={classnames('app-header', { 'app-header--back-drop': isUnlocked })}
+        className={classnames('app-header', {
+          'app-header--back-drop': isUnlocked,
+        })}
       >
         <div className="app-header__contents">
           <MetaFoxLogo
@@ -106,19 +117,17 @@ export default class AppHeader extends PureComponent {
             }}
           />
           <div className="app-header__account-menu-container">
-            {
-              !hideNetworkIndicator && (
-                <div className="app-header__network-component-wrapper">
-                  <NetworkIndicator
-                    network={network}
-                    provider={provider}
-                    onClick={(event) => this.handleNetworkIndicatorClick(event)}
-                    disabled={disabled || disableNetworkIndicator}
-                  />
-                </div>
-              )
-            }
-            { this.renderAccountMenu() }
+            {!hideNetworkIndicator && (
+              <div className="app-header__network-component-wrapper">
+                <NetworkIndicator
+                  network={network}
+                  provider={provider}
+                  onClick={(event) => this.handleNetworkIndicatorClick(event)}
+                  disabled={disabled || disableNetworkIndicator}
+                />
+              </div>
+            )}
+            {this.renderAccountMenu()}
           </div>
         </div>
       </div>

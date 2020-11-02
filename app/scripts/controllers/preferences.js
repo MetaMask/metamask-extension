@@ -9,7 +9,6 @@ import { addInternalMethodPrefix } from './permissions'
 import { NETWORK_TYPE_TO_ID_MAP } from './network/enums'
 
 export default class PreferencesController {
-
   /**
    *
    * @typedef {Object} PreferencesController
@@ -30,7 +29,7 @@ export default class PreferencesController {
    * @property {string} store.selectedAddress A hex string that matches the currently selected address in the app
    *
    */
-  constructor (opts = {}) {
+  constructor(opts = {}) {
     const initState = {
       frequentRpcListDetail: [],
       accountTokens: {},
@@ -66,7 +65,8 @@ export default class PreferencesController {
       metaMetricsSendCount: 0,
 
       // ENS decentralized website resolution
-      ipfsGateway: 'dweb.link', ...opts.initState,
+      ipfsGateway: 'dweb.link',
+      ...opts.initState,
     }
 
     this.network = opts.network
@@ -86,7 +86,7 @@ export default class PreferencesController {
    * Sets the {@code forgottenPassword} state property
    * @param {boolean} forgottenPassword - whether or not the user has forgotten their password
    */
-  setPasswordForgotten (forgottenPassword) {
+  setPasswordForgotten(forgottenPassword) {
     this.store.updateState({ forgottenPassword })
   }
 
@@ -96,7 +96,7 @@ export default class PreferencesController {
    * @param {boolean} val - Whether or not the user prefers blockie indicators
    *
    */
-  setUseBlockie (val) {
+  setUseBlockie(val) {
     this.store.updateState({ useBlockie: val })
   }
 
@@ -106,7 +106,7 @@ export default class PreferencesController {
    * @param {boolean} val - Whether or not the user prefers to set nonce
    *
    */
-  setUseNonceField (val) {
+  setUseNonceField(val) {
     this.store.updateState({ useNonceField: val })
   }
 
@@ -116,7 +116,7 @@ export default class PreferencesController {
    * @param {boolean} val - Whether or not the user prefers phishing domain protection
    *
    */
-  setUsePhishDetect (val) {
+  setUsePhishDetect(val) {
     this.store.updateState({ usePhishDetect: val })
   }
 
@@ -127,11 +127,16 @@ export default class PreferencesController {
    * @returns {string|null} - the string of the new metametrics id, or null if not set
    *
    */
-  setParticipateInMetaMetrics (bool) {
+  setParticipateInMetaMetrics(bool) {
     this.store.updateState({ participateInMetaMetrics: bool })
     let metaMetricsId = null
     if (bool && !this.store.getState().metaMetricsId) {
-      metaMetricsId = bufferToHex(sha3(String(Date.now()) + String(Math.round(Math.random() * Number.MAX_SAFE_INTEGER))))
+      metaMetricsId = bufferToHex(
+        sha3(
+          String(Date.now()) +
+            String(Math.round(Math.random() * Number.MAX_SAFE_INTEGER)),
+        ),
+      )
       this.store.updateState({ metaMetricsId })
     } else if (bool === false) {
       this.store.updateState({ metaMetricsId })
@@ -139,11 +144,11 @@ export default class PreferencesController {
     return metaMetricsId
   }
 
-  getParticipateInMetaMetrics () {
+  getParticipateInMetaMetrics() {
     return this.store.getState().participateInMetaMetrics
   }
 
-  setMetaMetricsSendCount (val) {
+  setMetaMetricsSendCount(val) {
     this.store.updateState({ metaMetricsSendCount: val })
   }
 
@@ -153,19 +158,19 @@ export default class PreferencesController {
    * @param {string} type - Indicates the type of first time flow - create or import - the user wishes to follow
    *
    */
-  setFirstTimeFlowType (type) {
+  setFirstTimeFlowType(type) {
     this.store.updateState({ firstTimeFlowType: type })
   }
 
-  getSuggestedTokens () {
+  getSuggestedTokens() {
     return this.store.getState().suggestedTokens
   }
 
-  getAssetImages () {
+  getAssetImages() {
     return this.store.getState().assetImages
   }
 
-  addSuggestedERC20Asset (tokenOpts) {
+  addSuggestedERC20Asset(tokenOpts) {
     this._validateERC20AssetParams(tokenOpts)
     const suggested = this.getSuggestedTokens()
     const { rawAddress, symbol, decimals, image } = tokenOpts
@@ -181,7 +186,7 @@ export default class PreferencesController {
    * @param {string} fourBytePrefix - Four-byte method signature
    * @param {string} methodData - Corresponding data method
    */
-  addKnownMethodData (fourBytePrefix, methodData) {
+  addKnownMethodData(fourBytePrefix, methodData) {
     const { knownMethodData } = this.store.getState()
     knownMethodData[fourBytePrefix] = methodData
     this.store.updateState({ knownMethodData })
@@ -195,7 +200,7 @@ export default class PreferencesController {
    * @param {Function} - next
    * @param {Function} - end
    */
-  async requestWatchAsset (req, res, next, end) {
+  async requestWatchAsset(req, res, next, end) {
     if (
       req.method === 'metamask_watchAsset' ||
       req.method === addInternalMethodPrefix('watchAsset')
@@ -227,8 +232,10 @@ export default class PreferencesController {
    * @param {string} key - he preferred language locale key
    *
    */
-  setCurrentLocale (key) {
-    const textDirection = (['ar', 'dv', 'fa', 'he', 'ku'].includes(key)) ? 'rtl' : 'auto'
+  setCurrentLocale(key) {
+    const textDirection = ['ar', 'dv', 'fa', 'he', 'ku'].includes(key)
+      ? 'rtl'
+      : 'auto'
     this.store.updateState({
       currentLocale: key,
       textDirection,
@@ -243,7 +250,7 @@ export default class PreferencesController {
    * @param {string[]} addresses - An array of hex addresses
    *
    */
-  setAddresses (addresses) {
+  setAddresses(addresses) {
     const oldIdentities = this.store.getState().identities
     const oldAccountTokens = this.store.getState().accountTokens
 
@@ -266,7 +273,7 @@ export default class PreferencesController {
    * @param {string} address - A hex address
    * @returns {string} - the address that was removed
    */
-  removeAddress (address) {
+  removeAddress(address) {
     const { identities } = this.store.getState()
     const { accountTokens } = this.store.getState()
     if (!identities[address]) {
@@ -291,7 +298,7 @@ export default class PreferencesController {
    * @param {string[]} addresses - An array of hex addresses
    *
    */
-  addAddresses (addresses) {
+  addAddresses(addresses) {
     const { identities, accountTokens } = this.store.getState()
     addresses.forEach((address) => {
       // skip if already exists
@@ -314,8 +321,7 @@ export default class PreferencesController {
    * @param {Array<string>} addresses - known to the vault.
    * @returns {Promise<string>} - selectedAddress the selected address.
    */
-  syncAddresses (addresses) {
-
+  syncAddresses(addresses) {
     if (!Array.isArray(addresses) || addresses.length === 0) {
       throw new Error('Expected non-empty array of addresses.')
     }
@@ -332,7 +338,6 @@ export default class PreferencesController {
 
     // Identities are no longer present.
     if (Object.keys(newlyLost).length > 0) {
-
       // store lost accounts
       Object.keys(newlyLost).forEach((key) => {
         lostIdentities[key] = newlyLost[key]
@@ -353,7 +358,7 @@ export default class PreferencesController {
     return selected
   }
 
-  removeSuggestedTokens () {
+  removeSuggestedTokens() {
     return new Promise((resolve) => {
       this.store.updateState({ suggestedTokens: {} })
       resolve({})
@@ -367,7 +372,7 @@ export default class PreferencesController {
    * @returns {Promise<void>} - Promise resolves with tokens
    *
    */
-  setSelectedAddress (_address) {
+  setSelectedAddress(_address) {
     const address = normalizeAddress(_address)
     this._updateTokens(address)
 
@@ -388,7 +393,7 @@ export default class PreferencesController {
    * @returns {string} - The hex address for the currently selected account
    *
    */
-  getSelectedAddress () {
+  getSelectedAddress() {
     return this.store.getState().selectedAddress
   }
 
@@ -413,7 +418,7 @@ export default class PreferencesController {
    * @returns {Promise<array>} - Promises the new array of AddedToken objects.
    *
    */
-  async addToken (rawAddress, symbol, decimals, image) {
+  async addToken(rawAddress, symbol, decimals, image) {
     const address = normalizeAddress(rawAddress)
     const newEntry = { address, symbol, decimals }
     const { tokens } = this.store.getState()
@@ -440,7 +445,7 @@ export default class PreferencesController {
    * @returns {Promise<array>} - The new array of AddedToken objects
    *
    */
-  removeToken (rawAddress) {
+  removeToken(rawAddress) {
     const { tokens } = this.store.getState()
     const assetImages = this.getAssetImages()
     const updatedTokens = tokens.filter((token) => token.address !== rawAddress)
@@ -455,7 +460,7 @@ export default class PreferencesController {
    * @returns {array} - The current array of AddedToken objects
    *
    */
-  getTokens () {
+  getTokens() {
     return this.store.getState().tokens
   }
 
@@ -465,9 +470,11 @@ export default class PreferencesController {
    * @param {string} label - the custom label for the account
    * @returns {Promise<string>}
    */
-  setAccountLabel (account, label) {
+  setAccountLabel(account, label) {
     if (!account) {
-      throw new Error(`setAccountLabel requires a valid address, got ${String(account)}`)
+      throw new Error(
+        `setAccountLabel requires a valid address, got ${String(account)}`,
+      )
     }
     const address = normalizeAddress(account)
     const { identities } = this.store.getState()
@@ -488,7 +495,7 @@ export default class PreferencesController {
    * @param {Object} [newRpcDetails.rpcPrefs] - Optional RPC preferences, such as the block explorer URL
    *
    */
-  async updateRpc (newRpcDetails) {
+  async updateRpc(newRpcDetails) {
     const rpcList = this.getFrequentRpcListDetail()
     const index = rpcList.findIndex((element) => {
       return element.rpcUrl === newRpcDetails.rpcUrl
@@ -497,7 +504,6 @@ export default class PreferencesController {
       const rpcDetail = rpcList[index]
       const updatedRpc = { ...rpcDetail, ...newRpcDetails }
       if (rpcDetail.chainId !== updatedRpc.chainId) {
-
         // When the chainId is changed, associated address book entries should
         // also be migrated. The address book entries are keyed by the `network` state,
         // which for custom networks is the chainId with a fallback to the networkId
@@ -506,13 +512,17 @@ export default class PreferencesController {
         let addressBookKey = rpcDetail.chainId
         if (!addressBookKey) {
           // We need to find the networkId to determine what these addresses were keyed by
-          const provider = new ethers.providers.JsonRpcProvider(rpcDetail.rpcUrl)
+          const provider = new ethers.providers.JsonRpcProvider(
+            rpcDetail.rpcUrl,
+          )
           try {
             addressBookKey = await provider.send('net_version')
             assert(typeof addressBookKey === 'string')
           } catch (error) {
             log.debug(error)
-            log.warn(`Failed to get networkId from ${rpcDetail.rpcUrl}; skipping address book migration`)
+            log.warn(
+              `Failed to get networkId from ${rpcDetail.rpcUrl}; skipping address book migration`,
+            )
           }
         }
 
@@ -521,10 +531,12 @@ export default class PreferencesController {
         // on both networks, since we don't know which network each contact is intended for.
 
         let duplicate = false
-        const builtInProviderNetworkIds = Object.values(NETWORK_TYPE_TO_ID_MAP)
-          .map((ids) => ids.networkId)
-        const otherRpcEntries = rpcList
-          .filter((entry) => entry.rpcUrl !== newRpcDetails.rpcUrl)
+        const builtInProviderNetworkIds = Object.values(
+          NETWORK_TYPE_TO_ID_MAP,
+        ).map((ids) => ids.networkId)
+        const otherRpcEntries = rpcList.filter(
+          (entry) => entry.rpcUrl !== newRpcDetails.rpcUrl,
+        )
         if (
           builtInProviderNetworkIds.includes(addressBookKey) ||
           otherRpcEntries.some((entry) => entry.chainId === addressBookKey)
@@ -532,7 +544,11 @@ export default class PreferencesController {
           duplicate = true
         }
 
-        this.migrateAddressBookState(addressBookKey, updatedRpc.chainId, duplicate)
+        this.migrateAddressBookState(
+          addressBookKey,
+          updatedRpc.chainId,
+          duplicate,
+        )
       }
       rpcList[index] = updatedRpc
       this.store.updateState({ frequentRpcListDetail: rpcList })
@@ -552,7 +568,13 @@ export default class PreferencesController {
    * @param {Object} [rpcPrefs] - Optional RPC preferences, such as the block explorer URL
    *
    */
-  addToFrequentRpcList (rpcUrl, chainId, ticker = 'ETH', nickname = '', rpcPrefs = {}) {
+  addToFrequentRpcList(
+    rpcUrl,
+    chainId,
+    ticker = 'ETH',
+    nickname = '',
+    rpcPrefs = {},
+  ) {
     const rpcList = this.getFrequentRpcListDetail()
 
     const index = rpcList.findIndex((element) => {
@@ -577,7 +599,7 @@ export default class PreferencesController {
    * @returns {Promise<array>} - Promise resolving to updated frequentRpcList.
    *
    */
-  removeFromFrequentRpcList (url) {
+  removeFromFrequentRpcList(url) {
     const rpcList = this.getFrequentRpcListDetail()
     const index = rpcList.findIndex((element) => {
       return element.rpcUrl === url
@@ -595,7 +617,7 @@ export default class PreferencesController {
    * @returns {array<array>} - An array of rpc urls.
    *
    */
-  getFrequentRpcListDetail () {
+  getFrequentRpcListDetail() {
     return this.store.getState().frequentRpcListDetail
   }
 
@@ -607,7 +629,7 @@ export default class PreferencesController {
    * @returns {Promise<object>} - Promises a new object; the updated featureFlags object.
    *
    */
-  setFeatureFlag (feature, activated) {
+  setFeatureFlag(feature, activated) {
     const currentFeatureFlags = this.store.getState().featureFlags
     const updatedFeatureFlags = {
       ...currentFeatureFlags,
@@ -626,7 +648,7 @@ export default class PreferencesController {
    * @param {boolean} value - Indicates whether or not the preference should be enabled or disabled.
    * @returns {Promise<object>} - Promises a new object; the updated preferences object.
    */
-  setPreference (preference, value) {
+  setPreference(preference, value) {
     const currentPreferences = this.getPreferences()
     const updatedPreferences = {
       ...currentPreferences,
@@ -641,7 +663,7 @@ export default class PreferencesController {
    * A getter for the `preferences` property
    * @returns {Object} - A key-boolean map of user-selected preferences.
    */
-  getPreferences () {
+  getPreferences() {
     return this.store.getState().preferences
   }
 
@@ -649,7 +671,7 @@ export default class PreferencesController {
    * Sets the completedOnboarding state to true, indicating that the user has completed the
    * onboarding process.
    */
-  completeOnboarding () {
+  completeOnboarding() {
     this.store.updateState({ completedOnboarding: true })
     return Promise.resolve(true)
   }
@@ -658,7 +680,7 @@ export default class PreferencesController {
    * A getter for the `ipfsGateway` property
    * @returns {string} - The current IPFS gateway domain
    */
-  getIpfsGateway () {
+  getIpfsGateway() {
     return this.store.getState().ipfsGateway
   }
 
@@ -667,7 +689,7 @@ export default class PreferencesController {
    * @param {string} domain - The new IPFS gateway domain
    * @returns {Promise<string>} - A promise of the update IPFS gateway domain
    */
-  setIpfsGateway (domain) {
+  setIpfsGateway(domain) {
     this.store.updateState({ ipfsGateway: domain })
     return Promise.resolve(domain)
   }
@@ -681,7 +703,7 @@ export default class PreferencesController {
    *
    *
    */
-  _subscribeProviderType () {
+  _subscribeProviderType() {
     this.network.providerStore.subscribe(() => {
       const { tokens } = this._getTokenRelatedStates()
       this.store.updateState({ tokens })
@@ -694,8 +716,12 @@ export default class PreferencesController {
    * @param {array} tokens - Array of tokens to be updated.
    *
    */
-  _updateAccountTokens (tokens, assetImages) {
-    const { accountTokens, providerType, selectedAddress } = this._getTokenRelatedStates()
+  _updateAccountTokens(tokens, assetImages) {
+    const {
+      accountTokens,
+      providerType,
+      selectedAddress,
+    } = this._getTokenRelatedStates()
     accountTokens[selectedAddress][providerType] = tokens
     this.store.updateState({ accountTokens, tokens, assetImages })
   }
@@ -706,7 +732,7 @@ export default class PreferencesController {
    * @param {string} selectedAddress - Account address to be updated with.
    *
    */
-  _updateTokens (selectedAddress) {
+  _updateTokens(selectedAddress) {
     const { tokens } = this._getTokenRelatedStates(selectedAddress)
     this.store.updateState({ tokens })
   }
@@ -718,7 +744,7 @@ export default class PreferencesController {
    * @returns {Object.<array, object, string, string>} - States to interact with tokens in `accountTokens`
    *
    */
-  _getTokenRelatedStates (selectedAddress) {
+  _getTokenRelatedStates(selectedAddress) {
     const { accountTokens } = this.store.getState()
     if (!selectedAddress) {
       // eslint-disable-next-line no-param-reassign
@@ -741,7 +767,7 @@ export default class PreferencesController {
    * @param {Promise} promise - Promise according to addition of ERC20 token
    *
    */
-  async _handleWatchAssetERC20 (options) {
+  async _handleWatchAssetERC20(options) {
     const { address, symbol, decimals, image } = options
     const rawAddress = address
     try {
@@ -752,7 +778,9 @@ export default class PreferencesController {
     const tokenOpts = { rawAddress, decimals, symbol, image }
     this.addSuggestedERC20Asset(tokenOpts)
     return this.openPopup().then(() => {
-      const tokenAddresses = this.getTokens().filter((token) => token.address === normalizeAddress(rawAddress))
+      const tokenAddresses = this.getTokens().filter(
+        (token) => token.address === normalizeAddress(rawAddress),
+      )
       return tokenAddresses.length > 0
     })
   }
@@ -765,17 +793,21 @@ export default class PreferencesController {
    * doesn't fulfill requirements
    *
    */
-  _validateERC20AssetParams (opts) {
+  _validateERC20AssetParams(opts) {
     const { rawAddress, symbol, decimals } = opts
     if (!rawAddress || !symbol || typeof decimals === 'undefined') {
-      throw new Error(`Cannot suggest token without address, symbol, and decimals`)
+      throw new Error(
+        `Cannot suggest token without address, symbol, and decimals`,
+      )
     }
     if (!(symbol.length < 7)) {
       throw new Error(`Invalid symbol ${symbol} more than six characters`)
     }
     const numDecimals = parseInt(decimals, 10)
     if (isNaN(numDecimals) || numDecimals > 36 || numDecimals < 0) {
-      throw new Error(`Invalid decimals ${decimals} must be at least 0, and not over 36`)
+      throw new Error(
+        `Invalid decimals ${decimals} must be at least 0, and not over 36`,
+      )
     }
     if (!isValidAddress(rawAddress)) {
       throw new Error(`Invalid address ${rawAddress}`)

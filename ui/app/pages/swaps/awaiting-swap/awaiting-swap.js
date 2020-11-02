@@ -9,7 +9,10 @@ import { useNewMetricEvent } from '../../../hooks/useMetricEvent'
 import { MetaMetricsContext } from '../../../contexts/metametrics.new'
 import { getCurrentCurrency, conversionRateSelector } from '../../../selectors'
 import {
-  getUsedQuote, getFetchParams, getApproveTxParams, getSwapsTradeTxParams,
+  getUsedQuote,
+  getFetchParams,
+  getApproveTxParams,
+  getSwapsTradeTxParams,
   fetchQuotesAndSetQuoteState,
   navigateBackToBuildQuote,
   prepareForRetryGetQuotes,
@@ -19,7 +22,10 @@ import { useTransactionTimeRemaining } from '../../../hooks/useTransactionTimeRe
 import { usePrevious } from '../../../hooks/usePrevious'
 import Mascot from '../../../components/ui/mascot'
 import PulseLoader from '../../../components/ui/pulse-loader'
-import { getBlockExplorerUrlForTx, getStatusKey } from '../../../helpers/utils/transactions.util'
+import {
+  getBlockExplorerUrlForTx,
+  getStatusKey,
+} from '../../../helpers/utils/transactions.util'
 import CountdownTimer from '../countdown-timer'
 import {
   QUOTES_EXPIRED_ERROR,
@@ -38,7 +44,7 @@ import SwapSuccessIcon from './swap-success-icon'
 import QuotesTimeoutIcon from './quotes-timeout-icon'
 import ViewOnEtherScanLink from './view-on-ether-scan-link'
 
-export default function AwaitingSwap ({
+export default function AwaitingSwap({
   swapComplete,
   errorKey,
   txHash,
@@ -66,7 +72,9 @@ export default function AwaitingSwap ({
   const conversionRate = useSelector(conversionRateSelector)
 
   const [timeRemainingExpired, setTimeRemainingExpired] = useState(false)
-  const [trackedQuotesExpiredEvent, setTrackedQuotesExpiredEvent] = useState(false)
+  const [trackedQuotesExpiredEvent, setTrackedQuotesExpiredEvent] = useState(
+    false,
+  )
 
   let feeinFiat
   if (usedQuote && tradeTxParams) {
@@ -97,13 +105,13 @@ export default function AwaitingSwap ({
     },
     category: 'swaps',
   })
-  const anonymousQuotesExpiredEvent = useNewMetricEvent({ event: 'Quotes Timed Out', category: 'swaps' })
+  const anonymousQuotesExpiredEvent = useNewMetricEvent({
+    event: 'Quotes Timed Out',
+    category: 'swaps',
+  })
 
-  const blockExplorerUrl = txHash && getBlockExplorerUrlForTx(
-    networkId,
-    txHash,
-    rpcPrefs,
-  )
+  const blockExplorerUrl =
+    txHash && getBlockExplorerUrlForTx(networkId, txHash, rpcPrefs)
 
   const statusKey = tradeTxData && getStatusKey(tradeTxData)
   const timeRemaining = useTransactionTimeRemaining(
@@ -115,18 +123,32 @@ export default function AwaitingSwap ({
     true,
   )
   const previousTimeRemaining = usePrevious(timeRemaining)
-  const timeRemainingIsNumber = typeof timeRemaining === 'number' && !isNaN(timeRemaining)
-  const previousTimeRemainingIsNumber = typeof previousTimeRemaining === 'number' && !isNaN(previousTimeRemaining)
+  const timeRemainingIsNumber =
+    typeof timeRemaining === 'number' && !isNaN(timeRemaining)
+  const previousTimeRemainingIsNumber =
+    typeof previousTimeRemaining === 'number' && !isNaN(previousTimeRemaining)
   const estimatedTransactionWaitTime = timeRemaining * 1000 * 60
 
   useEffect(() => {
-    if (!timeRemainingIsNumber && previousTimeRemainingIsNumber && !timeRemainingExpired) {
+    if (
+      !timeRemainingIsNumber &&
+      previousTimeRemainingIsNumber &&
+      !timeRemainingExpired
+    ) {
       setTimeRemainingExpired(true)
     }
-  }, [timeRemainingIsNumber, previousTimeRemainingIsNumber, timeRemainingExpired])
+  }, [
+    timeRemainingIsNumber,
+    previousTimeRemainingIsNumber,
+    timeRemainingExpired,
+  ])
 
   let countdownText
-  if (timeRemainingIsNumber && !timeRemainingExpired && tradeTxData?.submittedTime) {
+  if (
+    timeRemainingIsNumber &&
+    !timeRemainingExpired &&
+    tradeTxData?.submittedTime
+  ) {
     countdownText = (
       <CountdownTimer
         key="countdown-timer"
@@ -186,7 +208,6 @@ export default function AwaitingSwap ({
     submitText = t('tryAgain')
     statusImage = <SwapFailureIcon />
   } else if (!errorKey && !swapComplete) {
-
     /**
      * only show estimated time if the transaction has a submitted time, the swap has
      * not yet completed and there isn't an error. If the swap has not completed and
@@ -197,7 +218,14 @@ export default function AwaitingSwap ({
     headerText = t('swapProcessing')
     statusImage = <PulseLoader />
     submitText = t('swapsViewInActivity')
-    descriptionText = t('swapOnceTransactionHasProcess', [<span key="swapOnceTransactionHasProcess-1" className="awaiting-swap__amount-and-symbol">{destinationTokenInfo.symbol}</span>])
+    descriptionText = t('swapOnceTransactionHasProcess', [
+      <span
+        key="swapOnceTransactionHasProcess-1"
+        className="awaiting-swap__amount-and-symbol"
+      >
+        {destinationTokenInfo.symbol}
+      </span>,
+    ])
     content = (
       <>
         <div
@@ -206,7 +234,12 @@ export default function AwaitingSwap ({
           })}
         >
           {t('swapEstimatedTimeFull', [
-            <span className="awaiting-swap__time-estimate-text" key="swapEstimatedTime-1">{t('swapEstimatedTime')}</span>,
+            <span
+              className="awaiting-swap__time-estimate-text"
+              key="swapEstimatedTime-1"
+            >
+              {t('swapEstimatedTime')}
+            </span>,
             countdownText,
           ])}
         </div>
@@ -223,7 +256,14 @@ export default function AwaitingSwap ({
     headerText = t('swapTransactionComplete')
     statusImage = <SwapSuccessIcon />
     submitText = t('swapViewToken', [destinationTokenInfo.symbol])
-    descriptionText = t('swapTokenAvailable', [<span key="swapTokenAvailable-2" className="awaiting-swap__amount-and-symbol">{`${tokensReceived || ''} ${destinationTokenInfo.symbol}`}</span>])
+    descriptionText = t('swapTokenAvailable', [
+      <span
+        key="swapTokenAvailable-2"
+        className="awaiting-swap__amount-and-symbol"
+      >
+        {`${tokensReceived || ''} ${destinationTokenInfo.symbol}`}
+      </span>,
+    ])
     content = blockExplorerUrl && (
       <ViewOnEtherScanLink
         txHash={txHash}
@@ -243,15 +283,9 @@ export default function AwaitingSwap ({
             height="90"
           />
         )}
-        <div className="awaiting-swap__status-image">
-          {statusImage}
-        </div>
-        <div className="awaiting-swap__header">
-          {headerText}
-        </div>
-        <div className="awaiting-swap__main-descrption">
-          {descriptionText}
-        </div>
+        <div className="awaiting-swap__status-image">{statusImage}</div>
+        <div className="awaiting-swap__header">{headerText}</div>
+        <div className="awaiting-swap__main-descrption">{descriptionText}</div>
         {content}
       </div>
       <SwapsFooter
@@ -261,7 +295,14 @@ export default function AwaitingSwap ({
             history.push(DEFAULT_ROUTE)
           } else if (errorKey === QUOTES_EXPIRED_ERROR) {
             dispatch(prepareForRetryGetQuotes())
-            await dispatch(fetchQuotesAndSetQuoteState(history, inputValue, maxSlippage, metaMetricsEvent))
+            await dispatch(
+              fetchQuotesAndSetQuoteState(
+                history,
+                inputValue,
+                maxSlippage,
+                metaMetricsEvent,
+              ),
+            )
           } else if (errorKey) {
             await dispatch(navigateBackToBuildQuote(history))
           } else if (destinationTokenInfo?.symbol === 'ETH') {

@@ -11,21 +11,24 @@ const TIMER_BASE = 60000
 // If time has elapsed between `timeStarted` the time current time,
 // then that elapsed time will be subtracted from the timer before
 // rendering
-function getNewTimer (currentTime, timeStarted, timeBaseStart) {
+function getNewTimer(currentTime, timeStarted, timeBaseStart) {
   const timeAlreadyElapsed = currentTime - timeStarted
   return timeBaseStart - timeAlreadyElapsed
 }
 
-function decreaseTimerByOne (timer) {
+function decreaseTimerByOne(timer) {
   return Math.max(timer - 1000, 0)
 }
 
-function timeBelowWarningTime (timer, warningTime) {
+function timeBelowWarningTime(timer, warningTime) {
   const [warningTimeMinutes, warningTimeSeconds] = warningTime.split(':')
-  return timer <= ((Number(warningTimeMinutes) * 60) + Number(warningTimeSeconds)) * 1000
+  return (
+    timer <=
+    (Number(warningTimeMinutes) * 60 + Number(warningTimeSeconds)) * 1000
+  )
 }
 
-export default function CountdownTimer ({
+export default function CountdownTimer({
   timeStarted,
   timeOnly,
   timerBase = TIMER_BASE,
@@ -38,7 +41,9 @@ export default function CountdownTimer ({
   const initialTimeStartedRef = useRef()
 
   const [currentTime, setCurrentTime] = useState(() => Date.now())
-  const [timer, setTimer] = useState(() => getNewTimer(currentTime, timeStarted, timerBase))
+  const [timer, setTimer] = useState(() =>
+    getNewTimer(currentTime, timeStarted, timerBase),
+  )
 
   useEffect(() => {
     if (intervalRef.current === undefined) {
@@ -47,7 +52,7 @@ export default function CountdownTimer ({
       }, 1000)
     }
 
-    return function cleanup () {
+    return function cleanup() {
       clearInterval(intervalRef.current)
     }
   }, [])
@@ -76,28 +81,26 @@ export default function CountdownTimer ({
   if (timeOnly) {
     time = <div className="countdown-timer__time">{formattedTimer}</div>
   } else if (labelKey) {
-    time = t(labelKey, [<div key="countdown-time-1" className="countdown-timer__time">{formattedTimer}</div>])
+    time = t(labelKey, [
+      <div key="countdown-time-1" className="countdown-timer__time">
+        {formattedTimer}
+      </div>,
+    ])
   }
 
   return (
     <div className="countdown-timer">
       <div
         className={classnames('countdown-timer__timer-container', {
-          'countdown-timer__timer-container--warning': warningTime && timeBelowWarningTime(timer, warningTime),
+          'countdown-timer__timer-container--warning':
+            warningTime && timeBelowWarningTime(timer, warningTime),
         })}
       >
         {time}
       </div>
-      {
-        !timeOnly && infoTooltipLabelKey
-          ? (
-            <InfoTooltip
-              position="bottom"
-              contentText={t(infoTooltipLabelKey)}
-            />
-          )
-          : null
-      }
+      {!timeOnly && infoTooltipLabelKey ? (
+        <InfoTooltip position="bottom" contentText={t(infoTooltipLabelKey)} />
+      ) : null}
     </div>
   )
 }

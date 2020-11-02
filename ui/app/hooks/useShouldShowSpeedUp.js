@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
  * @param {Object} transactionGroup - the transaction group to check against
  * @param {boolean} isEarliestNonce - Whether this group is currently the earliest nonce
  */
-export function useShouldShowSpeedUp (transactionGroup, isEarliestNonce) {
+export function useShouldShowSpeedUp(transactionGroup, isEarliestNonce) {
   const { transactions, hasRetried } = transactionGroup
   const [earliestTransaction = {}] = transactions
   const { submittedTime } = earliestTransaction

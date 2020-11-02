@@ -24,11 +24,11 @@ export default class SelectHardware extends Component {
     return null
   }
 
-  renderConnectToTrezorButton () {
+  renderConnectToTrezorButton() {
     return (
       <button
         className={classnames('hw-connect__btn', {
-          'selected': this.state.selectedDevice === 'trezor',
+          selected: this.state.selectedDevice === 'trezor',
         })}
         onClick={(_) => this.setState({ selectedDevice: 'trezor' })}
       >
@@ -41,11 +41,11 @@ export default class SelectHardware extends Component {
     )
   }
 
-  renderConnectToLedgerButton () {
+  renderConnectToLedgerButton() {
     return (
       <button
         className={classnames('hw-connect__btn', {
-          'selected': this.state.selectedDevice === 'ledger',
+          selected: this.state.selectedDevice === 'ledger',
         })}
         onClick={(_) => this.setState({ selectedDevice: 'ledger' })}
       >
@@ -58,7 +58,7 @@ export default class SelectHardware extends Component {
     )
   }
 
-  renderButtons () {
+  renderButtons() {
     return (
       <>
         <div className="hw-connect__btn-wrapper">
@@ -78,19 +78,25 @@ export default class SelectHardware extends Component {
     )
   }
 
-  renderUnsupportedBrowser () {
+  renderUnsupportedBrowser() {
     return (
       <div className="new-external-account-form unsupported-browser">
         <div className="hw-connect">
-          <h3 className="hw-connect__title">{this.context.t('browserNotSupported')}</h3>
-          <p className="hw-connect__msg">{this.context.t('chromeRequiredForHardwareWallets')}</p>
+          <h3 className="hw-connect__title">
+            {this.context.t('browserNotSupported')}
+          </h3>
+          <p className="hw-connect__msg">
+            {this.context.t('chromeRequiredForHardwareWallets')}
+          </p>
         </div>
         <Button
           type="primary"
           large
-          onClick={() => global.platform.openTab({
-            url: 'https://google.com/chrome',
-          })}
+          onClick={() =>
+            global.platform.openTab({
+              url: 'https://google.com/chrome',
+            })
+          }
         >
           {this.context.t('downloadGoogleChrome')}
         </Button>
@@ -98,23 +104,29 @@ export default class SelectHardware extends Component {
     )
   }
 
-  renderHeader () {
+  renderHeader() {
     return (
       <div className="hw-connect__header">
-        <h3 className="hw-connect__header__title">{this.context.t('hardwareWallets')}</h3>
-        <p className="hw-connect__header__msg">{this.context.t('hardwareWalletsMsg')}</p>
+        <h3 className="hw-connect__header__title">
+          {this.context.t('hardwareWallets')}
+        </h3>
+        <p className="hw-connect__header__msg">
+          {this.context.t('hardwareWalletsMsg')}
+        </p>
       </div>
     )
   }
 
-  getAffiliateLinks () {
+  getAffiliateLinks() {
     const links = {
       trezor: `<a class='hw-connect__get-hw__link' href='https://shop.trezor.io/?a=metamask' target='_blank'>Trezor</a>`,
       ledger: `<a class='hw-connect__get-hw__link' href='https://www.ledger.com/products/ledger-nano-s?r=17c4991a03fa&tracker=MY_TRACKER' target='_blank'>Ledger</a>`,
     }
 
     const text = this.context.t('orderOneHere')
-    const response = text.replace('Trezor', links.trezor).replace('Ledger', links.ledger)
+    const response = text
+      .replace('Trezor', links.trezor)
+      .replace('Ledger', links.ledger)
 
     return (
       <div
@@ -124,10 +136,12 @@ export default class SelectHardware extends Component {
     )
   }
 
-  renderTrezorAffiliateLink () {
+  renderTrezorAffiliateLink() {
     return (
       <div className="hw-connect__get-hw">
-        <p className="hw-connect__get-hw__msg">{this.context.t('dontHaveAHardwareWallet')}</p>
+        <p className="hw-connect__get-hw__msg">
+          {this.context.t('dontHaveAHardwareWallet')}
+        </p>
         {this.getAffiliateLinks()}
       </div>
     )
@@ -139,16 +153,20 @@ export default class SelectHardware extends Component {
     }
   }
 
-  renderLearnMore () {
+  renderLearnMore() {
     return (
       <p className="hw-connect__learn-more" onClick={this.scrollToTutorial}>
         {this.context.t('learnMore')}
-        <img className="hw-connect__learn-more__arrow" src="images/caret-right.svg" alt="" />
+        <img
+          className="hw-connect__learn-more__arrow"
+          src="images/caret-right.svg"
+          alt=""
+        />
       </p>
     )
   }
 
-  renderTutorialSteps () {
+  renderTutorialSteps() {
     const steps = [
       {
         asset: 'hardware-wallet-step-1',
@@ -181,21 +199,33 @@ export default class SelectHardware extends Component {
           <div className="hw-connect" key={index}>
             <h3 className="hw-connect__title">{step.title}</h3>
             <p className="hw-connect__msg">{step.message}</p>
-            <img className="hw-connect__step-asset" src={`images/${step.asset}.svg`} {...step.dimensions} alt="" />
+            <img
+              className="hw-connect__step-asset"
+              src={`images/${step.asset}.svg`}
+              {...step.dimensions}
+              alt=""
+            />
           </div>
         ))}
       </div>
     )
   }
 
-  renderFooter () {
+  renderFooter() {
     return (
       <div className="hw-connect__footer">
-        <h3 className="hw-connect__footer__title">{this.context.t('readyToConnect')}</h3>
+        <h3 className="hw-connect__footer__title">
+          {this.context.t('readyToConnect')}
+        </h3>
         {this.renderButtons()}
         <p className="hw-connect__footer__msg">
           {this.context.t('havingTroubleConnecting')}
-          <a className="hw-connect__footer__link" href="https://support.metamask.io/" target="_blank" rel="noopener noreferrer">
+          <a
+            className="hw-connect__footer__link"
+            href="https://support.metamask.io/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {this.context.t('getHelp')}
           </a>
         </p>
@@ -203,7 +233,7 @@ export default class SelectHardware extends Component {
     )
   }
 
-  renderConnectScreen () {
+  renderConnectScreen() {
     return (
       <div className="new-external-account-form">
         {this.renderHeader()}
@@ -216,7 +246,7 @@ export default class SelectHardware extends Component {
     )
   }
 
-  render () {
+  render() {
     if (this.props.browserSupported) {
       return this.renderConnectScreen()
     }

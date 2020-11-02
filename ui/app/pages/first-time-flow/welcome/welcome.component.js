@@ -3,7 +3,10 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Mascot from '../../../components/ui/mascot'
 import Button from '../../../components/ui/button'
-import { INITIALIZE_CREATE_PASSWORD_ROUTE, INITIALIZE_SELECT_ACTION_ROUTE } from '../../../helpers/constants/routes'
+import {
+  INITIALIZE_CREATE_PASSWORD_ROUTE,
+  INITIALIZE_SELECT_ACTION_ROUTE,
+} from '../../../helpers/constants/routes'
 
 export default class Welcome extends PureComponent {
   static propTypes = {
@@ -16,13 +19,13 @@ export default class Welcome extends PureComponent {
     t: PropTypes.func,
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.animationEventEmitter = new EventEmitter()
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const { history, participateInMetaMetrics, welcomeScreenSeen } = this.props
 
     if (welcomeScreenSeen && participateInMetaMetrics !== null) {
@@ -36,7 +39,7 @@ export default class Welcome extends PureComponent {
     this.props.history.push(INITIALIZE_SELECT_ACTION_ROUTE)
   }
 
-  render () {
+  render() {
     const { t } = this.context
 
     return (
@@ -47,19 +50,17 @@ export default class Welcome extends PureComponent {
             width="125"
             height="125"
           />
-          <div className="welcome-page__header">
-            { t('welcome') }
-          </div>
+          <div className="welcome-page__header">{t('welcome')}</div>
           <div className="welcome-page__description">
-            <div>{ t('metamaskDescription') }</div>
-            <div>{ t('happyToSeeYou') }</div>
+            <div>{t('metamaskDescription')}</div>
+            <div>{t('happyToSeeYou')}</div>
           </div>
           <Button
             type="primary"
             className="first-time-flow__button"
             onClick={this.handleContinue}
           >
-            { t('getStarted') }
+            {t('getStarted')}
           </Button>
         </div>
       </div>

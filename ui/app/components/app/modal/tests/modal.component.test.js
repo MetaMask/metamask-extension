@@ -93,7 +93,10 @@ describe('Modal Component', function () {
     )
 
     assert.ok(wrapper.find('.modal-container__header'))
-    assert.equal(wrapper.find('.modal-container__header-text').text(), 'My Header')
+    assert.equal(
+      wrapper.find('.modal-container__header-text').text(),
+      'My Header',
+    )
     assert.equal(handleCancel.callCount, 0)
     assert.equal(handleSubmit.callCount, 0)
     wrapper.find('.modal-container__header-close').simulate('click')

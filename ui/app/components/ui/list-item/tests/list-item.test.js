@@ -41,19 +41,31 @@ describe('ListItem', function () {
     assert.equal(wrapper.find('.list-item__heading h2').text(), TITLE)
   })
   it(`renders "I am a list item" subtitle`, function () {
-    assert.equal(wrapper.find('.list-item__subheading').text(), 'I am a list item')
+    assert.equal(
+      wrapper.find('.list-item__subheading').text(),
+      'I am a list item',
+    )
   })
   it('attaches external className', function () {
     assert(wrapper.props().className.includes(CLASSNAME))
   })
   it('renders content on the right side of the list item', function () {
-    assert.equal(wrapper.find('.list-item__right-content p').text(), 'Content rendered to the right')
+    assert.equal(
+      wrapper.find('.list-item__right-content p').text(),
+      'Content rendered to the right',
+    )
   })
   it('renders content in the middle of the list item', function () {
-    assert.equal(wrapper.find('.list-item__mid-content p').text(), 'Content rendered in the middle')
+    assert.equal(
+      wrapper.find('.list-item__mid-content p').text(),
+      'Content rendered in the middle',
+    )
   })
   it('renders list item actions', function () {
-    assert.equal(wrapper.find('.list-item__actions button').text(), 'I am a button')
+    assert.equal(
+      wrapper.find('.list-item__actions button').text(),
+      'I am a button',
+    )
   })
   it('renders the title icon', function () {
     assert(wrapper.find(Preloader))

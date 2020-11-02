@@ -18,10 +18,14 @@ normalizes txParams on unconfirmed txs
 export default {
   version,
 
-  migrate: failTxsThat(version, 'Stuck in approved state for too long.', (txMeta) => {
-    const isApproved = txMeta.status === 'approved'
-    const createdTime = txMeta.submittedTime
-    const now = Date.now()
-    return isApproved && now - createdTime > unacceptableDelay
-  }),
+  migrate: failTxsThat(
+    version,
+    'Stuck in approved state for too long.',
+    (txMeta) => {
+      const isApproved = txMeta.status === 'approved'
+      const createdTime = txMeta.submittedTime
+      const now = Date.now()
+      return isApproved && now - createdTime > unacceptableDelay
+    },
+  ),
 }

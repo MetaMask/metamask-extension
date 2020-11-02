@@ -15,14 +15,13 @@ export default class ConfirmDeleteNetwork extends PureComponent {
   }
 
   handleDelete = () => {
-    this.props.delRpcTarget(this.props.target)
-      .then(() => {
-        this.props.onConfirm()
-        this.props.hideModal()
-      })
+    this.props.delRpcTarget(this.props.target).then(() => {
+      this.props.onConfirm()
+      this.props.hideModal()
+    })
   }
 
-  render () {
+  render() {
     const { t } = this.context
 
     return (

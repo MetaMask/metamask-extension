@@ -7,20 +7,14 @@ import {
   getSendMaxModeState,
   getBasicGasEstimateLoadingStatus,
 } from '../../../../../selectors'
-import {
-  updateSendAmount,
-  setMaxModeTo,
-} from '../../../../../store/actions'
-import {
-  updateSendErrors,
-} from '../../../../../ducks/send/send.duck'
+import { updateSendAmount, setMaxModeTo } from '../../../../../store/actions'
+import { updateSendErrors } from '../../../../../ducks/send/send.duck'
 import { calcMaxAmount } from './amount-max-button.utils'
 import AmountMaxButton from './amount-max-button.component'
 
 export default connect(mapStateToProps, mapDispatchToProps)(AmountMaxButton)
 
-function mapStateToProps (state) {
-
+function mapStateToProps(state) {
   return {
     balance: getSendFromBalance(state),
     buttonDataLoading: getBasicGasEstimateLoadingStatus(state),
@@ -31,7 +25,7 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     setAmountToMax: (maxAmountDataObject) => {
       dispatch(updateSendErrors({ amount: null }))

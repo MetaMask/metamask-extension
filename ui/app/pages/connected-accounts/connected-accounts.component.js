@@ -28,7 +28,7 @@ export default class ConnectedAccounts extends PureComponent {
     history: PropTypes.object.isRequired,
   }
 
-  render () {
+  render() {
     const {
       accountToConnect,
       activeTabOrigin,
@@ -44,14 +44,23 @@ export default class ConnectedAccounts extends PureComponent {
     } = this.props
     const { t } = this.context
 
-    const connectedAccountsDescription = connectedAccounts.length > 1
-      ? t('connectedAccountsDescriptionPlural', [connectedAccounts.length])
-      : t('connectedAccountsDescriptionSingular')
+    const connectedAccountsDescription =
+      connectedAccounts.length > 1
+        ? t('connectedAccountsDescriptionPlural', [connectedAccounts.length])
+        : t('connectedAccountsDescriptionSingular')
 
     return (
       <Popover
-        title={isActiveTabExtension ? t('currentExtension') : new URL(activeTabOrigin).host}
-        subtitle={connectedAccounts.length ? connectedAccountsDescription : t('connectedAccountsEmptyDescription')}
+        title={
+          isActiveTabExtension
+            ? t('currentExtension')
+            : new URL(activeTabOrigin).host
+        }
+        subtitle={
+          connectedAccounts.length
+            ? connectedAccountsDescription
+            : t('connectedAccountsEmptyDescription')
+        }
         onClose={() => history.push(mostRecentOverviewPage)}
         footerClassName="connected-accounts__footer"
         footer={<ConnectedAccountsPermissions permissions={permissions} />}

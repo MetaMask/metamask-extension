@@ -8,7 +8,8 @@ import ImportWithSeedPhrase from './import-with-seed-phrase.component'
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setSeedPhraseBackedUp: (seedPhraseBackupState) => dispatch(setSeedPhraseBackedUp(seedPhraseBackupState)),
+    setSeedPhraseBackedUp: (seedPhraseBackupState) =>
+      dispatch(setSeedPhraseBackedUp(seedPhraseBackupState)),
     initializeThreeBox: () => dispatch(initializeThreeBox()),
     completeOnboarding: () => dispatch(setCompletedOnboarding()),
   }

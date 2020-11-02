@@ -8,7 +8,7 @@ import UrlIcon from '../../../components/ui/url-icon'
 import ExchangeRateDisplay from '../exchange-rate-display'
 import { formatSwapsValueForDisplay } from '../swaps.util'
 
-function getFontSizesAndLineHeights (fontSizeScore) {
+function getFontSizesAndLineHeights(fontSizeScore) {
   if (fontSizeScore <= 9) {
     return [60, 48]
   }
@@ -18,7 +18,7 @@ function getFontSizesAndLineHeights (fontSizeScore) {
   return [26, 15]
 }
 
-export default function MainQuoteSummary ({
+export default function MainQuoteSummary({
   sourceValue,
   sourceSymbol,
   sourceDecimals,
@@ -28,13 +28,20 @@ export default function MainQuoteSummary ({
   destinationDecimals,
   destinationIconUrl,
 }) {
-
-  const sourceAmount = toPrecisionWithoutTrailingZeros(calcTokenAmount(sourceValue, sourceDecimals).toString(10), 12)
-  const destinationAmount = calcTokenAmount(destinationValue, destinationDecimals)
+  const sourceAmount = toPrecisionWithoutTrailingZeros(
+    calcTokenAmount(sourceValue, sourceDecimals).toString(10),
+    12,
+  )
+  const destinationAmount = calcTokenAmount(
+    destinationValue,
+    destinationDecimals,
+  )
 
   const amountToDisplay = formatSwapsValueForDisplay(destinationAmount)
   const amountDigitLength = amountToDisplay.match(/\d+/gu).join('').length
-  const [numberFontSize, lineHeight] = getFontSizesAndLineHeights(amountDigitLength)
+  const [numberFontSize, lineHeight] = getFontSizesAndLineHeights(
+    amountDigitLength,
+  )
   let ellipsedAmountToDisplay = amountToDisplay
   if (amountDigitLength > 20) {
     ellipsedAmountToDisplay = `${amountToDisplay.slice(0, 20)}...`
@@ -49,7 +56,7 @@ export default function MainQuoteSummary ({
               className="main-quote-summary__source-row-value"
               title={formatSwapsValueForDisplay(sourceAmount)}
             >
-              { formatSwapsValueForDisplay(sourceAmount) }
+              {formatSwapsValueForDisplay(sourceAmount)}
             </span>
             <UrlIcon
               url={sourceIconUrl}
@@ -57,7 +64,12 @@ export default function MainQuoteSummary ({
               name={sourceSymbol}
               fallbackClassName="main-quote-summary__icon-fallback"
             />
-            <span className="main-quote-summary__source-row-symbol" title={sourceSymbol}>{ sourceSymbol }</span>
+            <span
+              className="main-quote-summary__source-row-symbol"
+              title={sourceSymbol}
+            >
+              {sourceSymbol}
+            </span>
           </div>
           <img
             className="main-quote-summary__down-arrow"
@@ -70,7 +82,9 @@ export default function MainQuoteSummary ({
               name={destinationSymbol}
               fallbackClassName="main-quote-summary__icon-fallback"
             />
-            <span className="main-quote-summary__destination-row-symbol">{ destinationSymbol }</span>
+            <span className="main-quote-summary__destination-row-symbol">
+              {destinationSymbol}
+            </span>
           </div>
           <div className="main-quote-summary__quote-large">
             <Tooltip
@@ -80,7 +94,15 @@ export default function MainQuoteSummary ({
               disabled={ellipsedAmountToDisplay === amountToDisplay}
               theme="white"
             >
-              <span className="main-quote-summary__quote-large-number" style={{ fontSize: numberFontSize, lineHeight: `${lineHeight}px` }}>{`${ellipsedAmountToDisplay}`}</span>
+              <span
+                className="main-quote-summary__quote-large-number"
+                style={{
+                  fontSize: numberFontSize,
+                  lineHeight: `${lineHeight}px`,
+                }}
+              >
+                {`${ellipsedAmountToDisplay}`}
+              </span>
             </Tooltip>
           </div>
         </div>
@@ -113,7 +135,10 @@ MainQuoteSummary.propTypes = {
     PropTypes.string,
     PropTypes.instanceOf(BigNumber),
   ]).isRequired,
-  destinationDecimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  destinationDecimals: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
   destinationSymbol: PropTypes.string.isRequired,
   sourceIconUrl: PropTypes.string,
   destinationIconUrl: PropTypes.string,

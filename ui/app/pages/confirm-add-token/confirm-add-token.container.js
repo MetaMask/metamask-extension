@@ -5,7 +5,9 @@ import { getMostRecentOverviewPage } from '../../ducks/history/history'
 import ConfirmAddToken from './confirm-add-token.component'
 
 const mapStateToProps = (state) => {
-  const { metamask: { pendingTokens } } = state
+  const {
+    metamask: { pendingTokens },
+  } = state
   return {
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     pendingTokens,

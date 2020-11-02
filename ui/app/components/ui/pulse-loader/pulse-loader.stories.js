@@ -5,4 +5,4 @@ export default {
   title: 'PulseLoader',
 }
 
-export const common = () => (<PulseLoader />)
+export const common = () => <PulseLoader />

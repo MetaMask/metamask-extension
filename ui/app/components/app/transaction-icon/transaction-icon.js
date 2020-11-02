@@ -45,8 +45,7 @@ const COLOR_MAP = {
   [DROPPED_STATUS]: FAIL_COLOR,
 }
 
-export default function TransactionIcon ({ status, category }) {
-
+export default function TransactionIcon({ status, category }) {
   const color = COLOR_MAP[status] || OK_COLOR
 
   const Icon = ICON_MAP[category]

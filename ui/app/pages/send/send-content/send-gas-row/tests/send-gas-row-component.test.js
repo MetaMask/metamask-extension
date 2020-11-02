@@ -18,7 +18,7 @@ describe('SendGasRow Component', function () {
 
   describe('render', function () {
     beforeEach(function () {
-      wrapper = shallow((
+      wrapper = shallow(
         <SendGasRow
           conversionRate={20}
           convertedCurrency="mockConvertedCurrency"
@@ -32,8 +32,9 @@ describe('SendGasRow Component', function () {
             someGasPriceButtonGroupProp: 'foo',
             anotherGasPriceButtonGroupProp: 'bar',
           }}
-        />
-      ), { context: { t: (str) => `${str}_t`, metricsEvent: () => ({}) } })
+        />,
+        { context: { t: (str) => `${str}_t`, metricsEvent: () => ({}) } },
+      )
       wrapper.setProps({ isMainnet: true })
     })
 
@@ -47,11 +48,10 @@ describe('SendGasRow Component', function () {
     })
 
     it('should pass the correct props to SendRowWrapper', function () {
-      const {
-        label,
-        showError,
-        errorType,
-      } = wrapper.find(SendRowWrapper).first().props()
+      const { label, showError, errorType } = wrapper
+        .find(SendRowWrapper)
+        .first()
+        .props()
 
       assert.equal(label, 'transactionFee_t:')
       assert.equal(showError, true)
@@ -63,11 +63,11 @@ describe('SendGasRow Component', function () {
     })
 
     it('should render the GasFeeDisplay', function () {
-      const {
-        gasLoadingError,
-        gasTotal,
-        onReset,
-      } = wrapper.find(SendRowWrapper).first().childAt(0).props()
+      const { gasLoadingError, gasTotal, onReset } = wrapper
+        .find(SendRowWrapper)
+        .first()
+        .childAt(0)
+        .props()
       assert.equal(gasLoadingError, false)
       assert.equal(gasTotal, 'mockGasTotal')
       assert.equal(propsMethodSpies.resetGasButtons.callCount, 0)
@@ -84,8 +84,14 @@ describe('SendGasRow Component', function () {
       assert(gasPriceButtonGroup.is(GasPriceButtonGroup))
       assert(gasPriceButtonGroup.hasClass('gas-price-button-group--small'))
       assert.equal(gasPriceButtonGroup.props().showCheck, false)
-      assert.equal(gasPriceButtonGroup.props().someGasPriceButtonGroupProp, 'foo')
-      assert.equal(gasPriceButtonGroup.props().anotherGasPriceButtonGroupProp, 'bar')
+      assert.equal(
+        gasPriceButtonGroup.props().someGasPriceButtonGroupProp,
+        'foo',
+      )
+      assert.equal(
+        gasPriceButtonGroup.props().anotherGasPriceButtonGroupProp,
+        'bar',
+      )
     })
 
     it('should render an advanced options button if gasButtonGroupShown is true', function () {

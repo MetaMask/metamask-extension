@@ -30,7 +30,7 @@ export default class DepositEtherModal extends Component {
     this.props.showAccountDetailModal()
   }
 
-  renderRow ({
+  renderRow({
     logo,
     title,
     text,
@@ -50,16 +50,25 @@ export default class DepositEtherModal extends Component {
     return (
       <div className={className || 'deposit-ether-modal__buy-row'}>
         {onBackClick && showBackButton && (
-          <div className="deposit-ether-modal__buy-row__back" onClick={onBackClick}>
+          <div
+            className="deposit-ether-modal__buy-row__back"
+            onClick={onBackClick}
+          >
             <i className="fa fa-arrow-left cursor-pointer" />
           </div>
         )}
-        <div className="deposit-ether-modal__buy-row__logo-container">{logo}</div>
+        <div className="deposit-ether-modal__buy-row__logo-container">
+          {logo}
+        </div>
         <div className="deposit-ether-modal__buy-row__description">
           {!hideTitle && (
-            <div className="deposit-ether-modal__buy-row__description__title">{title}</div>
+            <div className="deposit-ether-modal__buy-row__description__title">
+              {title}
+            </div>
           )}
-          <div className="deposit-ether-modal__buy-row__description__text">{text}</div>
+          <div className="deposit-ether-modal__buy-row__description__text">
+            {text}
+          </div>
         </div>
         {!hideButton && (
           <div className="deposit-ether-modal__buy-row__button">
@@ -77,16 +86,14 @@ export default class DepositEtherModal extends Component {
     )
   }
 
-  render () {
+  render() {
     const { network, toWyre, toCoinSwitch, address, toFaucet } = this.props
 
     const isTestNetwork = ['3', '4', '5', '42'].find((n) => n === network)
     const networkName = getNetworkDisplayName(network)
 
     return (
-      <div
-        className="page-container page-container--full-width page-container--full-height"
-      >
+      <div className="page-container page-container--full-width page-container--full-height">
         <div className="page-container__header">
           <div className="page-container__title">
             {this.context.t('depositEther')}

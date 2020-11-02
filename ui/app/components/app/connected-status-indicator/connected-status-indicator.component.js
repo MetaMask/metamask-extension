@@ -13,7 +13,11 @@ export default class ConnectedStatusIndicator extends Component {
   }
 
   static propTypes = {
-    status: PropTypes.oneOf([STATUS_CONNECTED, STATUS_CONNECTED_TO_ANOTHER_ACCOUNT, STATUS_NOT_CONNECTED]),
+    status: PropTypes.oneOf([
+      STATUS_CONNECTED,
+      STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
+      STATUS_NOT_CONNECTED,
+    ]),
     onClick: PropTypes.func,
   }
 
@@ -28,9 +32,12 @@ export default class ConnectedStatusIndicator extends Component {
     return (
       <div
         className={classnames({
-          'connected-status-indicator__green-circle': status === STATUS_CONNECTED,
-          'connected-status-indicator__yellow-circle': status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
-          'connected-status-indicator__grey-circle': status === STATUS_NOT_CONNECTED,
+          'connected-status-indicator__green-circle':
+            status === STATUS_CONNECTED,
+          'connected-status-indicator__yellow-circle':
+            status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
+          'connected-status-indicator__grey-circle':
+            status === STATUS_NOT_CONNECTED,
         })}
       >
         <span className="connected-status-indicator__inner-circle" />
@@ -42,20 +49,22 @@ export default class ConnectedStatusIndicator extends Component {
     const { t } = this.context
     const { status } = this.props
 
-    const text = status === STATUS_CONNECTED
-      ? t('statusConnected')
-      : t('statusNotConnected')
+    const text =
+      status === STATUS_CONNECTED
+        ? t('statusConnected')
+        : t('statusNotConnected')
 
-    return (
-      <div className="connected-status-indicator__text">{ text }</div>
-    )
+    return <div className="connected-status-indicator__text">{text}</div>
   }
 
-  render () {
+  render() {
     return (
-      <button className="connected-status-indicator" onClick={this.props.onClick}>
-        { this.renderStatusCircle() }
-        { this.renderStatusText() }
+      <button
+        className="connected-status-indicator"
+        onClick={this.props.onClick}
+      >
+        {this.renderStatusCircle()}
+        {this.renderStatusText()}
       </button>
     )
   }

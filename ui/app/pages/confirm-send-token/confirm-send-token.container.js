@@ -4,7 +4,10 @@ import { withRouter } from 'react-router-dom'
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck'
 import { updateSend, showSendTokenPage } from '../../store/actions'
 import { conversionUtil } from '../../helpers/utils/conversion-util'
-import { getTokenValueParam, getTokenAddressParam } from '../../helpers/utils/token-util'
+import {
+  getTokenValueParam,
+  getTokenAddressParam,
+} from '../../helpers/utils/token-util'
 import { sendTokenTokenAmountAndToAddressSelector } from '../../selectors'
 import ConfirmSendToken from './confirm-send-token.component'
 
@@ -19,15 +22,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     editTransaction: ({ txData, tokenData, tokenProps }) => {
-
       const {
         id,
-        txParams: {
-          from,
-          to: tokenAddress,
-          gas: gasLimit,
-          gasPrice,
-        } = {},
+        txParams: { from, to: tokenAddress, gas: gasLimit, gasPrice } = {},
       } = txData
 
       const to = getTokenValueParam(tokenData)
@@ -38,20 +35,22 @@ const mapDispatchToProps = (dispatch) => {
         toNumericBase: 'hex',
       })
 
-      dispatch(updateSend({
-        from,
-        gasLimit,
-        gasPrice,
-        gasTotal: null,
-        to,
-        amount: tokenAmountInHex,
-        errors: { to: null, amount: null },
-        editingTransactionId: id && id.toString(),
-        token: {
-          ...tokenProps,
-          address: tokenAddress,
-        },
-      }))
+      dispatch(
+        updateSend({
+          from,
+          gasLimit,
+          gasPrice,
+          gasTotal: null,
+          to,
+          amount: tokenAmountInHex,
+          errors: { to: null, amount: null },
+          editingTransactionId: id && id.toString(),
+          token: {
+            ...tokenProps,
+            address: tokenAddress,
+          },
+        }),
+      )
       dispatch(clearConfirmTransaction())
       dispatch(showSendTokenPage())
     },

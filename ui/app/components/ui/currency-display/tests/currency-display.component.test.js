@@ -15,27 +15,27 @@ describe('CurrencyDisplay Component', function () {
     }))
   })
   it('should render text with a className', function () {
-    const wrapper = shallow((
+    const wrapper = shallow(
       <CurrencyDisplay
         displayValue="$123.45"
         className="currency-display"
         hideLabel
-      />
-    ))
+      />,
+    )
 
     assert.ok(wrapper.hasClass('currency-display'))
     assert.equal(wrapper.text(), '$123.45')
   })
 
   it('should render text with a prefix', function () {
-    const wrapper = shallow((
+    const wrapper = shallow(
       <CurrencyDisplay
         displayValue="$123.45"
         className="currency-display"
         prefix="-"
         hideLabel
-      />
-    ))
+      />,
+    )
 
     assert.ok(wrapper.hasClass('currency-display'))
     assert.equal(wrapper.text(), '-$123.45')

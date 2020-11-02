@@ -3,10 +3,7 @@ const path = require('path')
 const webdriver = require('selenium-webdriver')
 
 const { By, Key, until } = webdriver
-const {
-  regularDelayMs,
-  largeDelayMs,
-} = require('./helpers')
+const { regularDelayMs, largeDelayMs } = require('./helpers')
 const { buildWebDriver } = require('./webdriver')
 const Ganache = require('./ganache')
 const FixtureServer = require('./fixture-server')
@@ -25,7 +22,9 @@ describe('MetaMask', function () {
   before(async function () {
     await ganacheServer.start()
     await fixtureServer.start()
-    await fixtureServer.loadState(path.join(__dirname, 'fixtures', 'imported-account'))
+    await fixtureServer.loadState(
+      path.join(__dirname, 'fixtures', 'imported-account'),
+    )
     publicAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1'
     const result = await buildWebDriver()
     driver = result.driver
@@ -36,7 +35,9 @@ describe('MetaMask', function () {
       const errors = await driver.checkBrowserForConsoleErrors(driver)
       if (errors.length) {
         const errorReports = errors.map((err) => err.message)
-        const errorMessage = `Errors found in browser console:\n${errorReports.join('\n')}`
+        const errorMessage = `Errors found in browser console:\n${errorReports.join(
+          '\n',
+        )}`
         console.error(new Error(errorMessage))
       }
     }
@@ -69,7 +70,9 @@ describe('MetaMask', function () {
       await driver.openNewPage('http://127.0.0.1:8080/')
       await driver.delay(regularDelayMs)
 
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Connect')]`))
+      await driver.clickElement(
+        By.xpath(`//button[contains(text(), 'Connect')]`),
+      )
 
       await driver.delay(regularDelayMs)
 
@@ -77,15 +80,22 @@ describe('MetaMask', function () {
       windowHandles = await driver.getAllWindowHandles()
 
       extension = windowHandles[0]
-      dapp = await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles)
-      popup = windowHandles.find((handle) => handle !== extension && handle !== dapp)
+      dapp = await driver.switchToWindowWithTitle(
+        'E2E Test Dapp',
+        windowHandles,
+      )
+      popup = windowHandles.find(
+        (handle) => handle !== extension && handle !== dapp,
+      )
 
       await driver.switchToWindow(popup)
 
       await driver.delay(regularDelayMs)
 
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Next')]`))
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Connect')]`))
+      await driver.clickElement(
+        By.xpath(`//button[contains(text(), 'Connect')]`),
+      )
 
       await driver.waitUntilXWindowHandles(2)
       await driver.switchToWindow(dapp)
@@ -97,22 +107,39 @@ describe('MetaMask', function () {
 
       await driver.delay(regularDelayMs)
       windowHandles = await driver.getAllWindowHandles()
-      await driver.switchToWindowWithTitle('MetaMask Notification', windowHandles)
+      await driver.switchToWindowWithTitle(
+        'MetaMask Notification',
+        windowHandles,
+      )
       await driver.delay(regularDelayMs)
 
-      const title = await driver.findElement(By.css('.signature-request-content__title'))
-      const name = await driver.findElement(By.css('.signature-request-content__info--bolded'))
-      const content = await driver.findElements(By.css('.signature-request-content__info'))
+      const title = await driver.findElement(
+        By.css('.signature-request-content__title'),
+      )
+      const name = await driver.findElement(
+        By.css('.signature-request-content__info--bolded'),
+      )
+      const content = await driver.findElements(
+        By.css('.signature-request-content__info'),
+      )
       const origin = content[0]
       const address = content[1]
       assert.equal(await title.getText(), 'Signature Request')
       assert.equal(await name.getText(), 'Ether Mail')
       assert.equal(await origin.getText(), 'http://127.0.0.1:8080')
-      assert.equal(await address.getText(), `${publicAddress.slice(0, 8)}...${publicAddress.slice(publicAddress.length - 8)}`)
+      assert.equal(
+        await address.getText(),
+        `${publicAddress.slice(0, 8)}...${publicAddress.slice(
+          publicAddress.length - 8,
+        )}`,
+      )
     })
 
     it('signs the transaction', async function () {
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Sign')]`), 10000)
+      await driver.clickElement(
+        By.xpath(`//button[contains(text(), 'Sign')]`),
+        10000,
+      )
       await driver.delay(regularDelayMs)
 
       extension = windowHandles[0]
@@ -120,11 +147,17 @@ describe('MetaMask', function () {
     })
 
     it('gets the current accounts address', async function () {
-      await driver.clickElement(By.css('[data-testid="account-options-menu-button"]'))
-      await driver.clickElement(By.css('[data-testid="account-options-menu__account-details"]'))
+      await driver.clickElement(
+        By.css('[data-testid="account-options-menu-button"]'),
+      )
+      await driver.clickElement(
+        By.css('[data-testid="account-options-menu__account-details"]'),
+      )
       await driver.delay(regularDelayMs)
 
-      const addressInput = await driver.findElement(By.css('.readonly-input__input'))
+      const addressInput = await driver.findElement(
+        By.css('.readonly-input__input'),
+      )
       const newPublicAddress = await addressInput.getAttribute('value')
       const accountModal = await driver.findElement(By.css('span .modal'))
 

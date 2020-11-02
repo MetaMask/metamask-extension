@@ -23,12 +23,12 @@ const QuoteDetails = ({
         <div className="quote-details__detail-header">{t('swapRate')}</div>
         <div className="quote-details__detail-content">
           <ExchangeRateDisplay
-            primaryTokenValue={ sourceTokenValue }
-            primaryTokenDecimals={ 1 }
-            primaryTokenSymbol={ sourceTokenSymbol }
-            secondaryTokenValue={ destinationTokenValue }
-            secondaryTokenDecimals={ 1 }
-            secondaryTokenSymbol={ destinationTokenSymbol }
+            primaryTokenValue={sourceTokenValue}
+            primaryTokenDecimals={1}
+            primaryTokenSymbol={sourceTokenSymbol}
+            secondaryTokenValue={destinationTokenValue}
+            secondaryTokenDecimals={1}
+            secondaryTokenSymbol={destinationTokenSymbol}
           />
         </div>
       </div>
@@ -40,9 +40,7 @@ const QuoteDetails = ({
             contentText={t('swapQuoteDetailsSlippageInfo')}
           />
         </div>
-        <div className="quote-details__detail-content">
-          {`${slippage}%`}
-        </div>
+        <div className="quote-details__detail-content">{`${slippage}%`}</div>
       </div>
       <div className="quote-details__row">
         <div className="quote-details__detail-header">
@@ -53,7 +51,8 @@ const QuoteDetails = ({
           />
         </div>
         <div className="quote-details__detail-content">
-          <span>{minimumAmountReceived}</span><span className="quote-details__bold">{` ${destinationTokenSymbol}`}</span>
+          <span>{minimumAmountReceived}</span>
+          <span className="quote-details__bold">{` ${destinationTokenSymbol}`}</span>
         </div>
       </div>
       <div className="quote-details__row">
@@ -65,16 +64,14 @@ const QuoteDetails = ({
           />
         </div>
         <div className="quote-details__detail-content">
-          <span>{feeInEth}</span><span className="quote-details__light-grey">{` (${networkFees})`}</span>
+          <span>{feeInEth}</span>
+          <span className="quote-details__light-grey">{` (${networkFees})`}</span>
         </div>
       </div>
       <div className="quote-details__row">
         <div className="quote-details__detail-header">
           {t('swapSource')}
-          <InfoTooltip
-            position="bottom"
-            contentText={t('swapSourceInfo')}
-          />
+          <InfoTooltip position="bottom" contentText={t('swapSourceInfo')} />
         </div>
         <div className="quote-details__detail-content">
           {t(liquiditySourceKey)}
@@ -82,7 +79,10 @@ const QuoteDetails = ({
       </div>
       <div className="quote-details__row quote-details__row--high">
         <div className="quote-details__detail-header">
-          <img src="/images/logo/metamask-fox.svg" className="quote-details__metafox-logo" />
+          <img
+            src="/images/logo/metamask-fox.svg"
+            className="quote-details__metafox-logo"
+          />
           {t('swapMetaMaskFee')}
         </div>
         <div className="quote-details__detail-content">

@@ -1,4 +1,3 @@
-
 import assert from 'assert'
 import configureMockStore from 'redux-mock-store'
 import { mount } from 'enzyme'
@@ -21,14 +20,10 @@ const mockState = {
 
 describe('withModalProps', function () {
   it('should return a component wrapped with modal state props', function () {
-    const TestComponent = () => (
-      <div className="test">Testing</div>
-    )
+    const TestComponent = () => <div className="test">Testing</div>
     const WrappedComponent = withModalProps(TestComponent)
     const store = configureMockStore()(mockState)
-    const wrapper = mount(
-      <WrappedComponent store={store} />,
-    )
+    const wrapper = mount(<WrappedComponent store={store} />)
 
     assert.ok(wrapper)
     const testComponent = wrapper.find(TestComponent).at(0)

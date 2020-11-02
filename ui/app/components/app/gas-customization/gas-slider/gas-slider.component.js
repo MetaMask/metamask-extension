@@ -12,16 +12,8 @@ export default class GasSlider extends Component {
     min: PropTypes.number,
   }
 
-  render () {
-    const {
-      onChange,
-      lowLabel,
-      highLabel,
-      value,
-      step,
-      max,
-      min,
-    } = this.props
+  render() {
+    const { onChange, lowLabel, highLabel, value, step, max, min } = this.props
 
     return (
       <div className="gas-slider">

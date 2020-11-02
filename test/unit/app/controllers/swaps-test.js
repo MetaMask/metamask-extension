@@ -4,9 +4,14 @@ import sinon from 'sinon'
 import { ethers } from 'ethers'
 import BigNumber from 'bignumber.js'
 import ObservableStore from 'obs-store'
-import { ROPSTEN_NETWORK_ID, MAINNET_NETWORK_ID } from '../../../../app/scripts/controllers/network/enums'
+import {
+  ROPSTEN_NETWORK_ID,
+  MAINNET_NETWORK_ID,
+} from '../../../../app/scripts/controllers/network/enums'
 import { createTestProviderTools } from '../../../stub/provider'
-import SwapsController, { utils } from '../../../../app/scripts/controllers/swaps'
+import SwapsController, {
+  utils,
+} from '../../../../app/scripts/controllers/swaps'
 
 const MOCK_FETCH_PARAMS = {
   slippage: 3,
@@ -24,12 +29,13 @@ const TEST_AGG_ID_BEST = 'TEST_AGG_BEST'
 const TEST_AGG_ID_APPROVAL = 'TEST_AGG_APPROVAL'
 
 const MOCK_APPROVAL_NEEDED = {
-  'data': '0x095ea7b300000000000000000000000095e6f48254609a6ee006f7d493c8e5fb97094cef0000000000000000000000000000000000000000004a817c7ffffffdabf41c00',
-  'to': '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-  'amount': '0',
-  'from': '0x2369267687A84ac7B494daE2f1542C40E37f4455',
-  'gas': '12',
-  'gasPrice': '34',
+  data:
+    '0x095ea7b300000000000000000000000095e6f48254609a6ee006f7d493c8e5fb97094cef0000000000000000000000000000000000000000004a817c7ffffffdabf41c00',
+  to: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+  amount: '0',
+  from: '0x2369267687A84ac7B494daE2f1542C40E37f4455',
+  gas: '12',
+  gasPrice: '34',
 }
 
 const MOCK_QUOTES_APPROVAL_REQUIRED = {
@@ -76,7 +82,7 @@ const MOCK_GET_BUFFERED_GAS_LIMIT = async () => ({
   simulationFails: undefined,
 })
 
-function getMockNetworkController () {
+function getMockNetworkController() {
   return {
     store: {
       getState: () => {
@@ -134,8 +140,11 @@ describe('SwapsController', function () {
       // by default, all accounts are external accounts (not contracts)
       eth_getCode: '0x',
     }
-    provider = createTestProviderTools({ scaffold: providerResultStub, networkId: 1, chainId: 1 })
-      .provider
+    provider = createTestProviderTools({
+      scaffold: providerResultStub,
+      networkId: 1,
+      chainId: 1,
+    }).provider
   })
 
   afterEach(function () {
@@ -580,7 +589,6 @@ describe('SwapsController', function () {
     })
 
     describe('_setupSwapsLivenessFetching ', function () {
-
       let clock
       const EXPECTED_TIME = 600000
 
@@ -603,15 +611,11 @@ describe('SwapsController', function () {
         clock = sandbox.useFakeTimers()
         sandbox.spy(clock, 'setInterval')
 
-        sandbox.stub(
-          SwapsController.prototype,
-          '_fetchAndSetSwapsLiveness',
-        ).resolves(undefined)
+        sandbox
+          .stub(SwapsController.prototype, '_fetchAndSetSwapsLiveness')
+          .resolves(undefined)
 
-        sandbox.spy(
-          SwapsController.prototype,
-          '_setupSwapsLivenessFetching',
-        )
+        sandbox.spy(SwapsController.prototype, '_setupSwapsLivenessFetching')
 
         sandbox.spy(window, 'addEventListener')
       })
@@ -627,12 +631,8 @@ describe('SwapsController', function () {
           swapsController._setupSwapsLivenessFetching.calledOnce,
           'should have called _setupSwapsLivenessFetching once',
         )
-        assert.ok(
-          window.addEventListener.calledWith('online'),
-        )
-        assert.ok(
-          window.addEventListener.calledWith('offline'),
-        )
+        assert.ok(window.addEventListener.calledWith('online'))
+        assert.ok(window.addEventListener.calledWith('offline'))
         assert.ok(
           clock.setInterval.calledOnceWithExactly(
             sinon.match.func,
@@ -659,7 +659,8 @@ describe('SwapsController', function () {
           'should not have set an interval',
         )
         assert.strictEqual(
-          getLivenessState(), false,
+          getLivenessState(),
+          false,
           'swaps feature should be disabled',
         )
 
@@ -734,24 +735,21 @@ describe('SwapsController', function () {
           'should have called updateState once',
         )
         assert.strictEqual(
-          getLivenessState(), false,
+          getLivenessState(),
+          false,
           'swaps feature should be disabled',
         )
       })
     })
 
     describe('_fetchAndSetSwapsLiveness', function () {
-
       const getLivenessState = () => {
         return swapsController.store.getState().swapsState.swapsFeatureIsLive
       }
 
       beforeEach(function () {
         fetchSwapsFeatureLivenessStub.reset()
-        sandbox.stub(
-          SwapsController.prototype,
-          '_setupSwapsLivenessFetching',
-        )
+        sandbox.stub(SwapsController.prototype, '_setupSwapsLivenessFetching')
         swapsController = getSwapsController()
       })
 
@@ -763,7 +761,9 @@ describe('SwapsController', function () {
         fetchSwapsFeatureLivenessStub.resolves(true)
 
         assert.strictEqual(
-          getLivenessState(), false, 'liveness should be false on boot',
+          getLivenessState(),
+          false,
+          'liveness should be false on boot',
         )
 
         await swapsController._fetchAndSetSwapsLiveness()
@@ -773,7 +773,9 @@ describe('SwapsController', function () {
           'should have called fetch function once',
         )
         assert.strictEqual(
-          getLivenessState(), true, 'liveness should be true after call',
+          getLivenessState(),
+          true,
+          'liveness should be true after call',
         )
       })
 
@@ -782,7 +784,9 @@ describe('SwapsController', function () {
         sandbox.spy(swapsController.store, 'updateState')
 
         assert.strictEqual(
-          getLivenessState(), false, 'liveness should be false on boot',
+          getLivenessState(),
+          false,
+          'liveness should be false on boot',
         )
 
         await swapsController._fetchAndSetSwapsLiveness()
@@ -796,7 +800,9 @@ describe('SwapsController', function () {
           'should not have called store.updateState',
         )
         assert.strictEqual(
-          getLivenessState(), false, 'liveness should remain false after call',
+          getLivenessState(),
+          false,
+          'liveness should remain false after call',
         )
       })
 
@@ -806,7 +812,9 @@ describe('SwapsController', function () {
         sandbox.spy(swapsController.store, 'updateState')
 
         assert.strictEqual(
-          getLivenessState(), false, 'liveness should be false on boot',
+          getLivenessState(),
+          false,
+          'liveness should be false on boot',
         )
 
         swapsController._fetchAndSetSwapsLiveness()
@@ -821,7 +829,9 @@ describe('SwapsController', function () {
           'should not have called store.updateState',
         )
         assert.strictEqual(
-          getLivenessState(), false, 'liveness should remain false after call',
+          getLivenessState(),
+          false,
+          'liveness should remain false after call',
         )
       })
 
@@ -832,18 +842,23 @@ describe('SwapsController', function () {
         fetchSwapsFeatureLivenessStub.onCall(2).resolves(true)
 
         assert.strictEqual(
-          getLivenessState(), false, 'liveness should be false on boot',
+          getLivenessState(),
+          false,
+          'liveness should be false on boot',
         )
 
         swapsController._fetchAndSetSwapsLiveness()
         await clock.runAllAsync()
 
         assert.strictEqual(
-          fetchSwapsFeatureLivenessStub.callCount, 3,
+          fetchSwapsFeatureLivenessStub.callCount,
+          3,
           'should have called fetch function three times',
         )
         assert.strictEqual(
-          getLivenessState(), true, 'liveness should be true after call',
+          getLivenessState(),
+          true,
+          'liveness should be true after call',
         )
       })
     })
@@ -858,7 +873,8 @@ describe('SwapsController', function () {
         const median = getMedian(values)
 
         assert.strictEqual(
-          median.toNumber(), 3,
+          median.toNumber(),
+          3,
           'should have returned correct median',
         )
       })
@@ -868,129 +884,121 @@ describe('SwapsController', function () {
         const median = getMedian(values)
 
         assert.strictEqual(
-          median.toNumber(), 2.5,
+          median.toNumber(),
+          2.5,
           'should have returned correct median',
         )
       })
 
       it('throws on empty or non-array sample', function () {
-        assert.throws(
-          () => getMedian([]),
-          'should throw on empty array',
-        )
+        assert.throws(() => getMedian([]), 'should throw on empty array')
 
-        assert.throws(
-          () => getMedian(),
-          'should throw on non-array param',
-        )
+        assert.throws(() => getMedian(), 'should throw on non-array param')
 
-        assert.throws(
-          () => getMedian({}),
-          'should throw on non-array param',
-        )
+        assert.throws(() => getMedian({}), 'should throw on non-array param')
       })
     })
   })
 })
 
-function getMockQuotes () {
+function getMockQuotes() {
   return {
     [TEST_AGG_ID_1]: {
-      'trade': {
-        'from': '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc',
-        'value': '0x0',
-        'gas': '0x61a80', // 4e5
-        'to': '0x881D40237659C251811CEC9c364ef91dC08D300C',
+      trade: {
+        from: '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc',
+        value: '0x0',
+        gas: '0x61a80', // 4e5
+        to: '0x881D40237659C251811CEC9c364ef91dC08D300C',
       },
-      'sourceAmount': '10000000000000000000', // 10e18
-      'destinationAmount': '20000000000000000000', // 20e18
-      'error': null,
-      'sourceToken': '0x6b175474e89094c44da98b954eedeac495271d0f',
-      'destinationToken': '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-      'approvalNeeded': null,
-      'maxGas': 600000,
-      'averageGas': 120000,
-      'estimatedRefund': 80000,
-      'fetchTime': 607,
-      'aggregator': TEST_AGG_ID_1,
-      'aggType': 'AGG',
-      'slippage': 2,
-      'sourceTokenInfo': {
-        'address': '0x6b175474e89094c44da98b954eedeac495271d0f',
-        'symbol': 'DAI',
-        'decimals': 18,
-        'iconUrl': 'https://foo.bar/logo.png',
+      sourceAmount: '10000000000000000000', // 10e18
+      destinationAmount: '20000000000000000000', // 20e18
+      error: null,
+      sourceToken: '0x6b175474e89094c44da98b954eedeac495271d0f',
+      destinationToken: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      approvalNeeded: null,
+      maxGas: 600000,
+      averageGas: 120000,
+      estimatedRefund: 80000,
+      fetchTime: 607,
+      aggregator: TEST_AGG_ID_1,
+      aggType: 'AGG',
+      slippage: 2,
+      sourceTokenInfo: {
+        address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+        symbol: 'DAI',
+        decimals: 18,
+        iconUrl: 'https://foo.bar/logo.png',
       },
-      'destinationTokenInfo': {
-        'address': '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-        'symbol': 'USDC',
-        'decimals': 18,
+      destinationTokenInfo: {
+        address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        symbol: 'USDC',
+        decimals: 18,
       },
     },
 
     [TEST_AGG_ID_BEST]: {
-      'trade': {
-        'from': '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc',
-        'value': '0x0',
-        'gas': '0x61a80',
-        'to': '0x881D40237659C251811CEC9c364ef91dC08D300C',
+      trade: {
+        from: '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc',
+        value: '0x0',
+        gas: '0x61a80',
+        to: '0x881D40237659C251811CEC9c364ef91dC08D300C',
       },
-      'sourceAmount': '10000000000000000000',
-      'destinationAmount': '25000000000000000000', // 25e18
-      'error': null,
-      'sourceToken': '0x6b175474e89094c44da98b954eedeac495271d0f',
-      'destinationToken': '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-      'approvalNeeded': null,
-      'maxGas': 1100000,
-      'averageGas': 411000,
-      'estimatedRefund': 343090,
-      'fetchTime': 1003,
-      'aggregator': TEST_AGG_ID_BEST,
-      'aggType': 'AGG',
-      'slippage': 2,
-      'sourceTokenInfo': {
-        'address': '0x6b175474e89094c44da98b954eedeac495271d0f',
-        'symbol': 'DAI',
-        'decimals': 18,
-        'iconUrl': 'https://foo.bar/logo.png',
+      sourceAmount: '10000000000000000000',
+      destinationAmount: '25000000000000000000', // 25e18
+      error: null,
+      sourceToken: '0x6b175474e89094c44da98b954eedeac495271d0f',
+      destinationToken: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      approvalNeeded: null,
+      maxGas: 1100000,
+      averageGas: 411000,
+      estimatedRefund: 343090,
+      fetchTime: 1003,
+      aggregator: TEST_AGG_ID_BEST,
+      aggType: 'AGG',
+      slippage: 2,
+      sourceTokenInfo: {
+        address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+        symbol: 'DAI',
+        decimals: 18,
+        iconUrl: 'https://foo.bar/logo.png',
       },
-      'destinationTokenInfo': {
-        'address': '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-        'symbol': 'USDC',
-        'decimals': 18,
+      destinationTokenInfo: {
+        address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        symbol: 'USDC',
+        decimals: 18,
       },
     },
 
     [TEST_AGG_ID_2]: {
-      'trade': {
-        'from': '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc',
-        'value': '0x0',
-        'gas': '0x61a80',
-        'to': '0x881D40237659C251811CEC9c364ef91dC08D300C',
+      trade: {
+        from: '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc',
+        value: '0x0',
+        gas: '0x61a80',
+        to: '0x881D40237659C251811CEC9c364ef91dC08D300C',
       },
-      'sourceAmount': '10000000000000000000',
-      'destinationAmount': '22000000000000000000', // 22e18
-      'error': null,
-      'sourceToken': '0x6b175474e89094c44da98b954eedeac495271d0f',
-      'destinationToken': '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-      'approvalNeeded': null,
-      'maxGas': 368000,
-      'averageGas': 197000,
-      'estimatedRefund': 18205,
-      'fetchTime': 1354,
-      'aggregator': TEST_AGG_ID_2,
-      'aggType': 'AGG',
-      'slippage': 2,
-      'sourceTokenInfo': {
-        'address': '0x6b175474e89094c44da98b954eedeac495271d0f',
-        'symbol': 'DAI',
-        'decimals': 18,
-        'iconUrl': 'https://foo.bar/logo.png',
+      sourceAmount: '10000000000000000000',
+      destinationAmount: '22000000000000000000', // 22e18
+      error: null,
+      sourceToken: '0x6b175474e89094c44da98b954eedeac495271d0f',
+      destinationToken: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      approvalNeeded: null,
+      maxGas: 368000,
+      averageGas: 197000,
+      estimatedRefund: 18205,
+      fetchTime: 1354,
+      aggregator: TEST_AGG_ID_2,
+      aggType: 'AGG',
+      slippage: 2,
+      sourceTokenInfo: {
+        address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+        symbol: 'DAI',
+        decimals: 18,
+        iconUrl: 'https://foo.bar/logo.png',
       },
-      'destinationTokenInfo': {
-        'address': '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-        'symbol': 'USDC',
-        'decimals': 18,
+      destinationTokenInfo: {
+        address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        symbol: 'USDC',
+        decimals: 18,
       },
     },
   }

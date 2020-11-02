@@ -6,14 +6,14 @@ import SendHeader from './send-header.component'
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendHeader)
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     titleKey: getTitleKey(state),
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     clearSend: () => dispatch(clearSend()),
   }

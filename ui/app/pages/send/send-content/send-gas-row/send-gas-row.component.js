@@ -6,7 +6,6 @@ import AdvancedGasInputs from '../../../../components/app/gas-customization/adva
 import GasFeeDisplay from './gas-fee-display/gas-fee-display.component'
 
 export default class SendGasRow extends Component {
-
   static propTypes = {
     balance: PropTypes.string,
     gasFeeError: PropTypes.bool,
@@ -34,7 +33,7 @@ export default class SendGasRow extends Component {
     metricsEvent: PropTypes.func,
   }
 
-  renderAdvancedOptionsButton () {
+  renderAdvancedOptionsButton() {
     const { metricsEvent } = this.context
     const { showCustomizeGasModal, isMainnet } = this.props
     // Tests should behave in same way as mainnet, but are using Localhost
@@ -55,12 +54,12 @@ export default class SendGasRow extends Component {
           showCustomizeGasModal()
         }}
       >
-        { this.context.t('advancedOptions') }
+        {this.context.t('advancedOptions')}
       </div>
     )
   }
 
-  setMaxAmount () {
+  setMaxAmount() {
     const {
       balance,
       gasTotal,
@@ -77,7 +76,7 @@ export default class SendGasRow extends Component {
     })
   }
 
-  renderContent () {
+  renderContent() {
     const {
       gasLoadingError,
       gasTotal,
@@ -134,8 +133,12 @@ export default class SendGasRow extends Component {
     const advancedGasInputs = (
       <div>
         <AdvancedGasInputs
-          updateCustomGasPrice={(newGasPrice) => setGasPrice(newGasPrice, gasLimit)}
-          updateCustomGasLimit={(newGasLimit) => setGasLimit(newGasLimit, gasPrice)}
+          updateCustomGasPrice={(newGasPrice) =>
+            setGasPrice(newGasPrice, gasLimit)
+          }
+          updateCustomGasLimit={(newGasLimit) =>
+            setGasLimit(newGasLimit, gasPrice)
+          }
           customGasPrice={gasPrice}
           customGasLimit={gasLimit}
           insufficientBalance={insufficientBalance}
@@ -153,8 +156,12 @@ export default class SendGasRow extends Component {
     return gasFeeDisplay
   }
 
-  render () {
-    const { gasFeeError, gasButtonGroupShown, advancedInlineGasShown } = this.props
+  render() {
+    const {
+      gasFeeError,
+      gasButtonGroupShown,
+      advancedInlineGasShown,
+    } = this.props
 
     return (
       <>
@@ -163,19 +170,12 @@ export default class SendGasRow extends Component {
           showError={gasFeeError}
           errorType="gasFee"
         >
-          { this.renderContent() }
+          {this.renderContent()}
         </SendRowWrapper>
-        {
-          gasButtonGroupShown || advancedInlineGasShown
-            ? (
-              <SendRowWrapper>
-                { this.renderAdvancedOptionsButton() }
-              </SendRowWrapper>
-            )
-            : null
-        }
+        {gasButtonGroupShown || advancedInlineGasShown ? (
+          <SendRowWrapper>{this.renderAdvancedOptionsButton()}</SendRowWrapper>
+        ) : null}
       </>
     )
   }
-
 }

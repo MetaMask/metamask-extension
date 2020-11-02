@@ -46,19 +46,21 @@ for (const arg of process.argv.slice(2)) {
   }
 }
 
-main()
-  .catch((error) => {
-    log.error(error)
-    process.exit(1)
-  })
+main().catch((error) => {
+  log.error(error)
+  process.exit(1)
+})
 
-async function main () {
+async function main() {
   if (specifiedLocale) {
     log.info(`Verifying selected locale "${specifiedLocale}":\n`)
-    const locale = localeIndex.find((localeMeta) => localeMeta.code === specifiedLocale)
-    const failed = locale.code === 'en' ?
-      await verifyEnglishLocale() :
-      await verifyLocale(locale)
+    const locale = localeIndex.find(
+      (localeMeta) => localeMeta.code === specifiedLocale,
+    )
+    const failed =
+      locale.code === 'en'
+        ? await verifyEnglishLocale()
+        : await verifyLocale(locale)
     if (failed) {
       process.exit(1)
     }
@@ -81,11 +83,11 @@ async function main () {
   }
 }
 
-function getLocalePath (code) {
+function getLocalePath(code) {
   return path.resolve(__dirname, '..', 'app', '_locales', code, 'messages.json')
 }
 
-async function getLocale (code) {
+async function getLocale(code) {
   try {
     const localeFilePath = getLocalePath(code)
     const fileContents = await readFile(localeFilePath, 'utf8')
@@ -100,10 +102,14 @@ async function getLocale (code) {
   }
 }
 
-async function writeLocale (code, locale) {
+async function writeLocale(code, locale) {
   try {
     const localeFilePath = getLocalePath(code)
-    return writeFile(localeFilePath, `${JSON.stringify(locale, null, 2)}\n`, 'utf8')
+    return writeFile(
+      localeFilePath,
+      `${JSON.stringify(locale, null, 2)}\n`,
+      'utf8',
+    )
   } catch (e) {
     if (e.code === 'ENOENT') {
       log.error('Locale file not found')
@@ -114,15 +120,22 @@ async function writeLocale (code, locale) {
   }
 }
 
-async function verifyLocale (code) {
+async function verifyLocale(code) {
   const englishLocale = await getLocale('en')
   const targetLocale = await getLocale(code)
 
-  const extraItems = compareLocalesForMissingItems({ base: targetLocale, subject: englishLocale })
-  const missingItems = compareLocalesForMissingItems({ base: englishLocale, subject: targetLocale })
+  const extraItems = compareLocalesForMissingItems({
+    base: targetLocale,
+    subject: englishLocale,
+  })
+  const missingItems = compareLocalesForMissingItems({
+    base: englishLocale,
+    subject: targetLocale,
+  })
 
   const englishEntryCount = Object.keys(englishLocale).length
-  const coveragePercent = 100 * (englishEntryCount - missingItems.length) / englishEntryCount
+  const coveragePercent =
+    (100 * (englishEntryCount - missingItems.length)) / englishEntryCount
 
   if (extraItems.length) {
     console.log(`**${code}**: ${extraItems.length} unused messages`)
@@ -160,18 +173,20 @@ async function verifyLocale (code) {
   return false
 }
 
-async function verifyEnglishLocale () {
+async function verifyEnglishLocale() {
   const englishLocale = await getLocale('en')
-  const javascriptFiles = await findJavascriptFiles(path.resolve(__dirname, '..', 'ui'))
+  const javascriptFiles = await findJavascriptFiles(
+    path.resolve(__dirname, '..', 'ui'),
+  )
 
   // match "t(`...`)" because constructing message keys from template strings
   // prevents this script from finding the messages, and then inappropriately
   // deletes them
-  const templateStringRegex = /\bt\(`.*`\)/ug
+  const templateStringRegex = /\bt\(`.*`\)/gu
   const templateUsage = []
 
   // match the keys from the locale file
-  const keyRegex = /'(\w+)'|"(\w+)"/ug
+  const keyRegex = /'(\w+)'|"(\w+)"/gu
   const usedMessages = new Set()
   for await (const fileContents of getFileContents(javascriptFiles)) {
     for (const match of matchAll.call(fileContents, keyRegex)) {
@@ -189,8 +204,10 @@ async function verifyEnglishLocale () {
   const messageExceptions = ['appName', 'appDescription']
 
   const englishMessages = Object.keys(englishLocale)
-  const unusedMessages = englishMessages
-    .filter((message) => !messageExceptions.includes(message) && !usedMessages.has(message))
+  const unusedMessages = englishMessages.filter(
+    (message) =>
+      !messageExceptions.includes(message) && !usedMessages.has(message),
+  )
 
   if (unusedMessages.length) {
     console.log(`**en**: ${unusedMessages.length} unused messages`)
@@ -223,12 +240,14 @@ async function verifyEnglishLocale () {
   return true // failed === true
 }
 
-async function findJavascriptFiles (rootDir) {
+async function findJavascriptFiles(rootDir) {
   const javascriptFiles = []
   const contents = await readdir(rootDir, { withFileTypes: true })
   for (const file of contents) {
     if (file.isDirectory()) {
-      javascriptFiles.push(...(await findJavascriptFiles(path.join(rootDir, file.name))))
+      javascriptFiles.push(
+        ...(await findJavascriptFiles(path.join(rootDir, file.name))),
+      )
     } else if (file.isFile() && file.name.endsWith('.js')) {
       javascriptFiles.push(path.join(rootDir, file.name))
     }
@@ -236,12 +255,12 @@ async function findJavascriptFiles (rootDir) {
   return javascriptFiles
 }
 
-async function * getFileContents (filenames) {
+async function* getFileContents(filenames) {
   for (const filename of filenames) {
     yield readFile(filename, 'utf8')
   }
 }
 
-function compareLocalesForMissingItems ({ base, subject }) {
+function compareLocalesForMissingItems({ base, subject }) {
   return Object.keys(base).filter((key) => !subject[key])
 }

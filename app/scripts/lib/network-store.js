@@ -8,21 +8,21 @@ const FIXTURE_SERVER_URL = `http://${FIXTURE_SERVER_HOST}:${FIXTURE_SERVER_PORT}
  * A read-only network-based storage wrapper
  */
 export default class ReadOnlyNetworkStore {
-  constructor () {
+  constructor() {
     this._initialized = false
     this._initializing = this._init()
     this._state = undefined
   }
 
   /**
- * Declares this store as compatible with the current browser
- */
+   * Declares this store as compatible with the current browser
+   */
   isSupported = true
 
   /**
    * Initializes by loading state from the network
    */
-  async _init () {
+  async _init() {
     try {
       const response = await window.fetch(FIXTURE_SERVER_URL)
       if (response.ok) {
@@ -39,7 +39,7 @@ export default class ReadOnlyNetworkStore {
    * Returns state
    * @returns {Promise<object>}
    */
-  async get () {
+  async get() {
     if (!this._initialized) {
       await this._initializing
     }
@@ -51,7 +51,7 @@ export default class ReadOnlyNetworkStore {
    * @param {Object} state - The state to set
    * @returns {Promise<void>}
    */
-  async set (state) {
+  async set(state) {
     if (!this._initialized) {
       await this._initializing
     }

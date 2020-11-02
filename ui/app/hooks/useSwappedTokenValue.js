@@ -22,40 +22,44 @@ import { useTokenFiatAmount } from './useTokenFiatAmount'
  * @param {import('./useTokenDisplayValue').Token} currentAsset - The current asset the user is looking at
  * @returns {SwappedTokenValue}
  */
-export function useSwappedTokenValue (transactionGroup, currentAsset) {
+export function useSwappedTokenValue(transactionGroup, currentAsset) {
   const { symbol, decimals, address } = currentAsset
   const { primaryTransaction, initialTransaction } = transactionGroup
   const { transactionCategory } = initialTransaction
   const { from: senderAddress } = initialTransaction.txParams || {}
 
-  const isViewingReceivedTokenFromSwap = (
-    (currentAsset?.symbol === primaryTransaction.destinationTokenSymbol) || (
-      currentAsset.address === ETH_SWAPS_TOKEN_ADDRESS &&
-      primaryTransaction.destinationTokenSymbol === 'ETH'
-    )
-  )
+  const isViewingReceivedTokenFromSwap =
+    currentAsset?.symbol === primaryTransaction.destinationTokenSymbol ||
+    (currentAsset.address === ETH_SWAPS_TOKEN_ADDRESS &&
+      primaryTransaction.destinationTokenSymbol === 'ETH')
 
-  const swapTokenValue = transactionCategory === SWAP && isViewingReceivedTokenFromSwap
-    ? getSwapsTokensReceivedFromTxMeta(
-      primaryTransaction.destinationTokenSymbol,
-      initialTransaction,
-      address,
-      senderAddress,
-      decimals,
-    )
-    : transactionCategory === SWAP && primaryTransaction.swapTokenValue
+  const swapTokenValue =
+    transactionCategory === SWAP && isViewingReceivedTokenFromSwap
+      ? getSwapsTokensReceivedFromTxMeta(
+          primaryTransaction.destinationTokenSymbol,
+          initialTransaction,
+          address,
+          senderAddress,
+          decimals,
+        )
+      : transactionCategory === SWAP && primaryTransaction.swapTokenValue
 
-  const isNegative = typeof swapTokenValue === 'string'
-    ? Math.sign(swapTokenValue) === -1
-    : false
+  const isNegative =
+    typeof swapTokenValue === 'string'
+      ? Math.sign(swapTokenValue) === -1
+      : false
 
   const _swapTokenFiatAmount = useTokenFiatAmount(
     address,
     swapTokenValue || '',
     symbol,
   )
-  const swapTokenFiatAmount = (
+  const swapTokenFiatAmount =
     swapTokenValue && isViewingReceivedTokenFromSwap && _swapTokenFiatAmount
-  )
-  return { swapTokenValue, swapTokenFiatAmount, isViewingReceivedTokenFromSwap, isNegative }
+  return {
+    swapTokenValue,
+    swapTokenFiatAmount,
+    isViewingReceivedTokenFromSwap,
+    isNegative,
+  }
 }

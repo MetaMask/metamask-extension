@@ -1,6 +1,11 @@
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { getTokenExchangeRates, getConversionRate, getCurrentCurrency, getShouldShowFiat } from '../selectors'
+import {
+  getTokenExchangeRates,
+  getConversionRate,
+  getCurrentCurrency,
+  getShouldShowFiat,
+} from '../selectors'
 import { getTokenFiatAmount } from '../helpers/utils/token-util'
 
 /**
@@ -16,24 +21,39 @@ import { getTokenFiatAmount } from '../helpers/utils/token-util'
  * @param {boolean} hideCurrencySymbol Indicates whether the returned formatted amount should include the trailing currency symbol
  * @return {string} - The formatted token amount in the user's chosen fiat currency
  */
-export function useTokenFiatAmount (tokenAddress, tokenAmount, tokenSymbol, overrides = {}, hideCurrencySymbol) {
+export function useTokenFiatAmount(
+  tokenAddress,
+  tokenAmount,
+  tokenSymbol,
+  overrides = {},
+  hideCurrencySymbol,
+) {
   const contractExchangeRates = useSelector(getTokenExchangeRates)
   const conversionRate = useSelector(getConversionRate)
   const currentCurrency = useSelector(getCurrentCurrency)
   const userPrefersShownFiat = useSelector(getShouldShowFiat)
   const showFiat = overrides.showFiat ?? userPrefersShownFiat
-  const tokenExchangeRate = overrides.exchangeRate ?? contractExchangeRates[tokenAddress]
+  const tokenExchangeRate =
+    overrides.exchangeRate ?? contractExchangeRates[tokenAddress]
   const formattedFiat = useMemo(
-    () => getTokenFiatAmount(
+    () =>
+      getTokenFiatAmount(
+        tokenExchangeRate,
+        conversionRate,
+        currentCurrency,
+        tokenAmount,
+        tokenSymbol,
+        true,
+        hideCurrencySymbol,
+      ),
+    [
       tokenExchangeRate,
       conversionRate,
       currentCurrency,
       tokenAmount,
       tokenSymbol,
-      true,
       hideCurrencySymbol,
-    ),
-    [tokenExchangeRate, conversionRate, currentCurrency, tokenAmount, tokenSymbol, hideCurrencySymbol],
+    ],
   )
 
   if (!showFiat || currentCurrency.toUpperCase() === tokenSymbol) {

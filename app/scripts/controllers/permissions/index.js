@@ -24,8 +24,7 @@ import {
 } from './enums'
 
 export class PermissionsController {
-
-  constructor (
+  constructor(
     {
       getKeyringAccounts,
       getRestrictedMethods,
@@ -38,7 +37,6 @@ export class PermissionsController {
     restoredPermissions = {},
     restoredState = {},
   ) {
-
     // additional top-level store key set in _initializeMetadataStore
     this.store = new ObservableStore({
       [LOG_STORE_KEY]: restoredState[LOG_STORE_KEY] || [],
@@ -75,8 +73,7 @@ export class PermissionsController {
     })
   }
 
-  createMiddleware ({ origin, extensionId }) {
-
+  createMiddleware({ origin, extensionId }) {
     if (typeof origin !== 'string' || !origin.length) {
       throw new Error('Must provide non-empty string origin.')
     }
@@ -91,20 +88,26 @@ export class PermissionsController {
 
     engine.push(this.permissionsLog.createMiddleware())
 
-    engine.push(createPermissionsMethodMiddleware({
-      addDomainMetadata: this.addDomainMetadata.bind(this),
-      getAccounts: this.getAccounts.bind(this, origin),
-      getUnlockPromise: () => this._getUnlockPromise(true),
-      hasPermission: this.hasPermission.bind(this, origin),
-      notifyAccountsChanged: this.notifyAccountsChanged.bind(this, origin),
-      requestAccountsPermission: this._requestPermissions.bind(
-        this, { origin }, { eth_accounts: {} },
-      ),
-    }))
+    engine.push(
+      createPermissionsMethodMiddleware({
+        addDomainMetadata: this.addDomainMetadata.bind(this),
+        getAccounts: this.getAccounts.bind(this, origin),
+        getUnlockPromise: () => this._getUnlockPromise(true),
+        hasPermission: this.hasPermission.bind(this, origin),
+        notifyAccountsChanged: this.notifyAccountsChanged.bind(this, origin),
+        requestAccountsPermission: this._requestPermissions.bind(
+          this,
+          { origin },
+          { eth_accounts: {} },
+        ),
+      }),
+    )
 
-    engine.push(this.permissions.providerMiddlewareFunction.bind(
-      this.permissions, { origin },
-    ))
+    engine.push(
+      this.permissions.providerMiddlewareFunction.bind(this.permissions, {
+        origin,
+      }),
+    )
 
     return asMiddleware(engine)
   }
@@ -114,7 +117,7 @@ export class PermissionsController {
    * @param {string} origin - The requesting origin
    * @returns {Promise<string>} The permissions request ID
    */
-  async requestAccountsPermissionWithId (origin) {
+  async requestAccountsPermissionWithId(origin) {
     const id = nanoid()
     this._requestPermissions({ origin }, { eth_accounts: {} }, id)
     return id
@@ -127,16 +130,19 @@ export class PermissionsController {
    *
    * @param {string} origin - The origin string.
    */
-  getAccounts (origin) {
+  getAccounts(origin) {
     return new Promise((resolve, _) => {
-
       const req = { method: 'eth_accounts' }
       const res = {}
       this.permissions.providerMiddlewareFunction(
-        { origin }, req, res, () => undefined, _end,
+        { origin },
+        req,
+        res,
+        () => undefined,
+        _end,
       )
 
-      function _end () {
+      function _end() {
         if (res.error || !Array.isArray(res.result)) {
           resolve([])
         } else {
@@ -153,7 +159,7 @@ export class PermissionsController {
    * @param {string} permission - The permission to check for.
    * @returns {boolean} Whether the origin has the permission.
    */
-  hasPermission (origin, permission) {
+  hasPermission(origin, permission) {
     return Boolean(this.permissions.getPermission(origin, permission))
   }
 
@@ -162,7 +168,7 @@ export class PermissionsController {
    *
    * @returns {Object} identities
    */
-  _getIdentities () {
+  _getIdentities() {
     return this.preferences.getState().identities
   }
 
@@ -175,9 +181,8 @@ export class PermissionsController {
    * @returns {Promise<IOcapLdCapability[]>} A Promise that resolves with the
    * approved permissions, or rejects with an error.
    */
-  _requestPermissions (domain, permissions, id) {
+  _requestPermissions(domain, permissions, id) {
     return new Promise((resolve, reject) => {
-
       // rpc-cap assigns an id to the request if there is none, as expected by
       // requestUserApproval below
       const req = {
@@ -188,10 +193,14 @@ export class PermissionsController {
       const res = {}
 
       this.permissions.providerMiddlewareFunction(
-        domain, req, res, () => undefined, _end,
+        domain,
+        req,
+        res,
+        () => undefined,
+        _end,
       )
 
-      function _end (_err) {
+      function _end(_err) {
         const err = _err || res.error
         if (err) {
           reject(err)
@@ -211,8 +220,7 @@ export class PermissionsController {
    * @param {Object} approved - The request object approved by the user
    * @param {Array} accounts - The accounts to expose, if any
    */
-  async approvePermissionsRequest (approved, accounts) {
-
+  async approvePermissionsRequest(approved, accounts) {
     const { id } = approved.metadata
     const approval = this.pendingApprovals.get(id)
 
@@ -222,28 +230,29 @@ export class PermissionsController {
     }
 
     try {
-
       if (Object.keys(approved.permissions).length === 0) {
-
-        approval.reject(ethErrors.rpc.invalidRequest({
-          message: 'Must request at least one permission.',
-        }))
-
+        approval.reject(
+          ethErrors.rpc.invalidRequest({
+            message: 'Must request at least one permission.',
+          }),
+        )
       } else {
-
         // attempt to finalize the request and resolve it,
         // settings caveats as necessary
         approved.permissions = await this.finalizePermissionsRequest(
-          approved.permissions, accounts,
+          approved.permissions,
+          accounts,
         )
         approval.resolve(approved.permissions)
       }
     } catch (err) {
-
       // if finalization fails, reject the request
-      approval.reject(ethErrors.rpc.invalidRequest({
-        message: err.message, data: err,
-      }))
+      approval.reject(
+        ethErrors.rpc.invalidRequest({
+          message: err.message,
+          data: err,
+        }),
+      )
     }
 
     this._removePendingApproval(id)
@@ -256,7 +265,7 @@ export class PermissionsController {
    *
    * @param {string} id - The id of the request rejected by the user
    */
-  async rejectPermissionsRequest (id) {
+  async rejectPermissionsRequest(id) {
     const approval = this.pendingApprovals.get(id)
 
     if (!approval) {
@@ -277,8 +286,7 @@ export class PermissionsController {
    * @param {string} origin - The origin to expose the account to.
    * @param {string} account - The new account to expose.
    */
-  async addPermittedAccount (origin, account) {
-
+  async addPermittedAccount(origin, account) {
     const domains = this.permissions.getDomains()
     if (!domains[origin]) {
       throw new Error('Unrecognized domain')
@@ -294,7 +302,8 @@ export class PermissionsController {
     }
 
     this.permissions.updateCaveatFor(
-      origin, 'eth_accounts',
+      origin,
+      'eth_accounts',
       CAVEAT_NAMES.exposedAccounts,
       [...oldPermittedAccounts, account],
     )
@@ -315,8 +324,7 @@ export class PermissionsController {
    * @param {string} origin - The origin to remove the account from.
    * @param {string} account - The account to remove.
    */
-  async removePermittedAccount (origin, account) {
-
+  async removePermittedAccount(origin, account) {
     const domains = this.permissions.getDomains()
     if (!domains[origin]) {
       throw new Error('Unrecognized domain')
@@ -331,15 +339,16 @@ export class PermissionsController {
       throw new Error('Account is not permitted for origin')
     }
 
-    let newPermittedAccounts = oldPermittedAccounts
-      .filter((acc) => acc !== account)
+    let newPermittedAccounts = oldPermittedAccounts.filter(
+      (acc) => acc !== account,
+    )
 
     if (newPermittedAccounts.length === 0) {
       this.removePermissionsFor({ [origin]: ['eth_accounts'] })
     } else {
-
       this.permissions.updateCaveatFor(
-        origin, 'eth_accounts',
+        origin,
+        'eth_accounts',
         CAVEAT_NAMES.exposedAccounts,
         newPermittedAccounts,
       )
@@ -358,14 +367,19 @@ export class PermissionsController {
    *
    * @param {string} account - The account to remove.
    */
-  async removeAllAccountPermissions (account) {
+  async removeAllAccountPermissions(account) {
     this.validatePermittedAccounts([account])
 
     const domains = this.permissions.getDomains()
-    const connectedOrigins = Object.keys(domains)
-      .filter((origin) => this._getPermittedAccounts(origin).includes(account))
+    const connectedOrigins = Object.keys(domains).filter((origin) =>
+      this._getPermittedAccounts(origin).includes(account),
+    )
 
-    await Promise.all(connectedOrigins.map((origin) => this.removePermittedAccount(origin, account)))
+    await Promise.all(
+      connectedOrigins.map((origin) =>
+        this.removePermittedAccount(origin, account),
+      ),
+    )
   }
 
   /**
@@ -378,15 +392,13 @@ export class PermissionsController {
    * @param {string[]} requestedAccounts - The accounts to expose, if any.
    * @returns {Object} The finalized permissions request object.
    */
-  async finalizePermissionsRequest (requestedPermissions, requestedAccounts) {
-
+  async finalizePermissionsRequest(requestedPermissions, requestedAccounts) {
     const finalizedPermissions = cloneDeep(requestedPermissions)
     const finalizedAccounts = cloneDeep(requestedAccounts)
 
     const { eth_accounts: ethAccounts } = finalizedPermissions
 
     if (ethAccounts) {
-
       this.validatePermittedAccounts(finalizedAccounts)
 
       if (!ethAccounts.caveats) {
@@ -394,9 +406,11 @@ export class PermissionsController {
       }
 
       // caveat names are unique, and we will only construct this caveat here
-      ethAccounts.caveats = ethAccounts.caveats.filter((c) => (
-        c.name !== CAVEAT_NAMES.exposedAccounts && c.name !== CAVEAT_NAMES.primaryAccountOnly
-      ))
+      ethAccounts.caveats = ethAccounts.caveats.filter(
+        (c) =>
+          c.name !== CAVEAT_NAMES.exposedAccounts &&
+          c.name !== CAVEAT_NAMES.primaryAccountOnly,
+      )
 
       ethAccounts.caveats.push({
         type: CAVEAT_TYPES.limitResponseLength,
@@ -420,7 +434,7 @@ export class PermissionsController {
    *
    * @param {string[]} accounts - An array of addresses.
    */
-  validatePermittedAccounts (accounts) {
+  validatePermittedAccounts(accounts) {
     if (!Array.isArray(accounts) || accounts.length === 0) {
       throw new Error('Must provide non-empty array of account(s).')
     }
@@ -441,8 +455,7 @@ export class PermissionsController {
    * @param {string} origin - The origin of the domain to notify.
    * @param {Array<string>} newAccounts - The currently permitted accounts.
    */
-  notifyAccountsChanged (origin, newAccounts) {
-
+  notifyAccountsChanged(origin, newAccounts) {
     if (typeof origin !== 'string' || !origin) {
       throw new Error(`Invalid origin: '${origin}'`)
     }
@@ -459,9 +472,7 @@ export class PermissionsController {
     // if the accounts changed from the perspective of the dapp,
     // update "last seen" time for the origin and account(s)
     // exception: no accounts -> no times to update
-    this.permissionsLog.updateAccountsHistory(
-      origin, newAccounts,
-    )
+    this.permissionsLog.updateAccountsHistory(origin, newAccounts)
 
     // NOTE:
     // we don't check for accounts changing in the notifyAllDomains case,
@@ -478,14 +489,11 @@ export class PermissionsController {
    * @param {Object} domains { origin: [permissions] } - The map of domain
    * origins to permissions to remove.
    */
-  removePermissionsFor (domains) {
-
+  removePermissionsFor(domains) {
     Object.entries(domains).forEach(([origin, perms]) => {
-
       this.permissions.removePermissionsFor(
         origin,
         perms.map((methodName) => {
-
           if (methodName === 'eth_accounts') {
             this.notifyAccountsChanged(origin, [])
           }
@@ -499,7 +507,7 @@ export class PermissionsController {
   /**
    * Removes all known domains and their related permissions.
    */
-  clearPermissions () {
+  clearPermissions() {
     this.permissions.clearDomains()
     this._notifyAllDomains({
       method: NOTIFICATION_NAMES.accountsChanged,
@@ -517,8 +525,7 @@ export class PermissionsController {
    * @param {string} origin - The origin whose domain metadata to store.
    * @param {Object} metadata - The domain's metadata that will be stored.
    */
-  addDomainMetadata (origin, metadata) {
-
+  addDomainMetadata(origin, metadata) {
     const oldMetadataState = this.store.getState()[METADATA_STORE_KEY]
     const newMetadataState = { ...oldMetadataState }
 
@@ -541,7 +548,10 @@ export class PermissionsController {
       lastUpdated: Date.now(),
     }
 
-    if (!newMetadataState[origin].extensionId && !newMetadataState[origin].host) {
+    if (
+      !newMetadataState[origin].extensionId &&
+      !newMetadataState[origin].host
+    ) {
       newMetadataState[origin].host = new URL(origin).host
     }
 
@@ -557,8 +567,7 @@ export class PermissionsController {
    *
    * @param {Object} restoredState - The restored permissions controller state.
    */
-  _initializeMetadataStore (restoredState) {
-
+  _initializeMetadataStore(restoredState) {
     const metadataState = restoredState[METADATA_STORE_KEY] || {}
     const newMetadataState = this._trimDomainMetadata(metadataState)
 
@@ -574,8 +583,7 @@ export class PermissionsController {
    * @param {Object} metadataState - The metadata store state object to trim.
    * @returns {Object} The new metadata state object.
    */
-  _trimDomainMetadata (metadataState) {
-
+  _trimDomainMetadata(metadataState) {
     const newMetadataState = { ...metadataState }
     const origins = Object.keys(metadataState)
     const permissionsDomains = this.permissions.getDomains()
@@ -593,7 +601,7 @@ export class PermissionsController {
    * Replaces the existing domain metadata with the passed-in object.
    * @param {Object} newMetadataState - The new metadata to set.
    */
-  _setDomainMetadata (newMetadataState) {
+  _setDomainMetadata(newMetadataState) {
     this.store.updateState({ [METADATA_STORE_KEY]: newMetadataState })
   }
 
@@ -603,11 +611,10 @@ export class PermissionsController {
    * @param {string} origin - The origin to obtain permitted accounts for
    * @returns {Array<string>|null} The list of permitted accounts
    */
-  _getPermittedAccounts (origin) {
+  _getPermittedAccounts(origin) {
     const permittedAccounts = this.permissions
       .getPermission(origin, 'eth_accounts')
-      ?.caveats
-      ?.find((caveat) => caveat.name === CAVEAT_NAMES.exposedAccounts)
+      ?.caveats?.find((caveat) => caveat.name === CAVEAT_NAMES.exposedAccounts)
       ?.value
 
     return permittedAccounts || null
@@ -622,8 +629,7 @@ export class PermissionsController {
    *
    * @param {string} account - The newly selected account's address.
    */
-  async _handleAccountSelected (account) {
-
+  async _handleAccountSelected(account) {
     if (typeof account !== 'string') {
       throw new Error('Selected account should be a non-empty string.')
     }
@@ -631,20 +637,20 @@ export class PermissionsController {
     const domains = this.permissions.getDomains() || {}
     const connectedDomains = Object.entries(domains)
       .filter(([_, { permissions }]) => {
-        const ethAccounts = permissions.find((permission) => permission.parentCapability === 'eth_accounts')
-        const exposedAccounts = ethAccounts
-          ?.caveats
-          .find((caveat) => caveat.name === 'exposedAccounts')
-          ?.value
+        const ethAccounts = permissions.find(
+          (permission) => permission.parentCapability === 'eth_accounts',
+        )
+        const exposedAccounts = ethAccounts?.caveats.find(
+          (caveat) => caveat.name === 'exposedAccounts',
+        )?.value
         return exposedAccounts?.includes(account)
       })
       .map(([domain]) => domain)
 
     await Promise.all(
-      connectedDomains
-        .map(
-          (origin) => this._handleConnectedAccountSelected(origin),
-        ),
+      connectedDomains.map((origin) =>
+        this._handleConnectedAccountSelected(origin),
+      ),
     )
   }
 
@@ -656,7 +662,7 @@ export class PermissionsController {
    *
    * @param {string} origin - The origin
    */
-  async _handleConnectedAccountSelected (origin) {
+  async _handleConnectedAccountSelected(origin) {
     const permittedAccounts = await this.getAccounts(origin)
 
     this.notifyAccountsChanged(origin, permittedAccounts)
@@ -669,8 +675,7 @@ export class PermissionsController {
    * @param {Function} resolve - The function resolving the pending approval Promise.
    * @param {Function} reject - The function rejecting the pending approval Promise.
    */
-  _addPendingApproval (id, origin, resolve, reject) {
-
+  _addPendingApproval(id, origin, resolve, reject) {
     if (
       this.pendingApprovalOrigins.has(origin) ||
       this.pendingApprovals.has(id)
@@ -688,7 +693,7 @@ export class PermissionsController {
    * Removes the pending approval with the given id.
    * @param {string} id - The id of the pending approval to remove.
    */
-  _removePendingApproval (id) {
+  _removePendingApproval(id) {
     const { origin } = this.pendingApprovals.get(id)
     this.pendingApprovalOrigins.delete(origin)
     this.pendingApprovals.delete(id)
@@ -700,49 +705,52 @@ export class PermissionsController {
    *
    * @param {string} origin = The origin string representing the domain.
    */
-  _initializePermissions (restoredState) {
-
+  _initializePermissions(restoredState) {
     // these permission requests are almost certainly stale
     const initState = { ...restoredState, permissionsRequests: [] }
 
-    this.permissions = new RpcCap({
+    this.permissions = new RpcCap(
+      {
+        // Supports passthrough methods:
+        safeMethods: SAFE_METHODS,
 
-      // Supports passthrough methods:
-      safeMethods: SAFE_METHODS,
+        // optional prefix for internal methods
+        methodPrefix: WALLET_PREFIX,
 
-      // optional prefix for internal methods
-      methodPrefix: WALLET_PREFIX,
+        restrictedMethods: this._restrictedMethods,
 
-      restrictedMethods: this._restrictedMethods,
+        /**
+         * A promise-returning callback used to determine whether to approve
+         * permissions requests or not.
+         *
+         * Currently only returns a boolean, but eventually should return any
+         * specific parameters or amendments to the permissions.
+         *
+         * @param {string} req - The internal rpc-cap user request object.
+         */
+        requestUserApproval: async (req) => {
+          const {
+            metadata: { id, origin },
+          } = req
 
-      /**
-       * A promise-returning callback used to determine whether to approve
-       * permissions requests or not.
-       *
-       * Currently only returns a boolean, but eventually should return any
-       * specific parameters or amendments to the permissions.
-       *
-       * @param {string} req - The internal rpc-cap user request object.
-       */
-      requestUserApproval: async (req) => {
-        const { metadata: { id, origin } } = req
+          if (this.pendingApprovalOrigins.has(origin)) {
+            throw ethErrors.rpc.resourceUnavailable(
+              'Permissions request already pending; please wait.',
+            )
+          }
 
-        if (this.pendingApprovalOrigins.has(origin)) {
-          throw ethErrors.rpc.resourceUnavailable(
-            'Permissions request already pending; please wait.',
-          )
-        }
+          this._showPermissionRequest()
 
-        this._showPermissionRequest()
-
-        return new Promise((resolve, reject) => {
-          this._addPendingApproval(id, origin, resolve, reject)
-        })
+          return new Promise((resolve, reject) => {
+            this._addPendingApproval(id, origin, resolve, reject)
+          })
+        },
       },
-    }, initState)
+      initState,
+    )
   }
 }
 
-export function addInternalMethodPrefix (method) {
+export function addInternalMethodPrefix(method) {
   return WALLET_PREFIX + method
 }

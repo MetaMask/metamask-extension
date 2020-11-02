@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
-export default function ListItem ({
+export default function ListItem({
   title,
   subtitle,
   onClick,
@@ -17,39 +17,27 @@ export default function ListItem ({
   const primaryClassName = classnames('list-item', className)
 
   return (
-    <div className={primaryClassName} onClick={onClick} data-testid={dataTestId}>
-      {icon && (
-        <div className="list-item__icon">
-          {icon}
-        </div>
-      )}
+    <div
+      className={primaryClassName}
+      onClick={onClick}
+      data-testid={dataTestId}
+    >
+      {icon && <div className="list-item__icon">{icon}</div>}
       <div className="list-item__heading">
-        {React.isValidElement(title) ? title : <h2 className="list-item__title">{ title }</h2>}
+        {React.isValidElement(title) ? (
+          title
+        ) : (
+          <h2 className="list-item__title">{title}</h2>
+        )}
         {titleIcon && (
-          <div className="list-item__heading-wrap">
-            {titleIcon}
-          </div>
+          <div className="list-item__heading-wrap">{titleIcon}</div>
         )}
       </div>
-      {subtitle && (
-        <div className="list-item__subheading">
-          {subtitle}
-        </div>
-      )}
-      {children && (
-        <div className="list-item__actions">
-          { children }
-        </div>
-      )}
-      {midContent && (
-        <div className="list-item__mid-content">
-          {midContent}
-        </div>
-      )}
+      {subtitle && <div className="list-item__subheading">{subtitle}</div>}
+      {children && <div className="list-item__actions">{children}</div>}
+      {midContent && <div className="list-item__mid-content">{midContent}</div>}
       {rightContent && (
-        <div className="list-item__right-content">
-          {rightContent}
-        </div>
+        <div className="list-item__right-content">{rightContent}</div>
       )}
     </div>
   )

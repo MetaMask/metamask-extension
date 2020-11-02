@@ -14,7 +14,7 @@ import { isEqual } from 'lodash'
  * @param {(T, T) => boolean} equalityFn - A function to determine equality
  * @returns {T}
  */
-export function useEqualityCheck (value, equalityFn = isEqual) {
+export function useEqualityCheck(value, equalityFn = isEqual) {
   const [computedValue, setComputedValue] = useState(value)
 
   useLayoutEffect(() => {

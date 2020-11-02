@@ -23,7 +23,6 @@ import { MESSAGE_TYPE } from './enums'
  */
 
 export default class EncryptionPublicKeyManager extends EventEmitter {
-
   /**
    * Controller in charge of managing - storing, adding, removing, updating - EncryptionPublicKey.
    *
@@ -34,7 +33,7 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * @property {array} messages Holds all messages that have been created by this EncryptionPublicKeyManager
    *
    */
-  constructor () {
+  constructor() {
     super()
     this.memStore = new ObservableStore({
       unapprovedEncryptionPublicKeyMsgs: {},
@@ -49,7 +48,7 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * @returns {number} The number of 'unapproved' EncryptionPublicKeys in this.messages
    *
    */
-  get unapprovedEncryptionPublicKeyMsgCount () {
+  get unapprovedEncryptionPublicKeyMsgCount() {
     return Object.keys(this.getUnapprovedMsgs()).length
   }
 
@@ -60,8 +59,9 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * this.messages
    *
    */
-  getUnapprovedMsgs () {
-    return this.messages.filter((msg) => msg.status === 'unapproved')
+  getUnapprovedMsgs() {
+    return this.messages
+      .filter((msg) => msg.status === 'unapproved')
       .reduce((result, msg) => {
         result[msg.id] = msg
         return result
@@ -78,7 +78,7 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * @returns {Promise<Buffer>} The raw public key contents
    *
    */
-  addUnapprovedMessageAsync (address, req) {
+  addUnapprovedMessageAsync(address, req) {
     return new Promise((resolve, reject) => {
       if (!address) {
         reject(new Error('MetaMask Message: address field is required.'))
@@ -91,10 +91,20 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
             resolve(data.rawData)
             return
           case 'rejected':
-            reject(ethErrors.provider.userRejectedRequest('MetaMask EncryptionPublicKey: User denied message EncryptionPublicKey.'))
+            reject(
+              ethErrors.provider.userRejectedRequest(
+                'MetaMask EncryptionPublicKey: User denied message EncryptionPublicKey.',
+              ),
+            )
             return
           default:
-            reject(new Error(`MetaMask EncryptionPublicKey: Unknown problem: ${JSON.stringify(address)}`))
+            reject(
+              new Error(
+                `MetaMask EncryptionPublicKey: Unknown problem: ${JSON.stringify(
+                  address,
+                )}`,
+              ),
+            )
         }
       })
     })
@@ -110,10 +120,10 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * @returns {number} The id of the newly created EncryptionPublicKey.
    *
    */
-  addUnapprovedMessage (address, req) {
+  addUnapprovedMessage(address, req) {
     log.debug(`EncryptionPublicKeyManager addUnapprovedMessage: address`)
     // create txData obj with parameters and meta data
-    const time = (new Date()).getTime()
+    const time = new Date().getTime()
     const msgId = createId()
     const msgData = {
       id: msgId,
@@ -141,7 +151,7 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * @param {Message} msg The EncryptionPublicKey to add to this.messages
    *
    */
-  addMsg (msg) {
+  addMsg(msg) {
     this.messages.push(msg)
     this._saveMsgList()
   }
@@ -154,7 +164,7 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * if no EncryptionPublicKey has that id.
    *
    */
-  getMsg (msgId) {
+  getMsg(msgId) {
     return this.messages.find((msg) => msg.id === msgId)
   }
 
@@ -167,7 +177,7 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * @returns {Promise<object>} Promises the msgParams object with metamaskId removed.
    *
    */
-  approveMessage (msgParams) {
+  approveMessage(msgParams) {
     this.setMsgStatusApproved(msgParams.metamaskId)
     return this.prepMsgForEncryptionPublicKey(msgParams)
   }
@@ -178,7 +188,7 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * @param {number} msgId The id of the EncryptionPublicKey to approve.
    *
    */
-  setMsgStatusApproved (msgId) {
+  setMsgStatusApproved(msgId) {
     this._setMsgStatus(msgId, 'approved')
   }
 
@@ -190,7 +200,7 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * @param {buffer} rawData The raw data of the message request
    *
    */
-  setMsgStatusReceived (msgId, rawData) {
+  setMsgStatusReceived(msgId, rawData) {
     const msg = this.getMsg(msgId)
     msg.rawData = rawData
     this._updateMsg(msg)
@@ -204,7 +214,7 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * @returns {Promise<object>} Promises the msgParams with the metamaskId property removed
    *
    */
-  prepMsgForEncryptionPublicKey (msgParams) {
+  prepMsgForEncryptionPublicKey(msgParams) {
     delete msgParams.metamaskId
     return Promise.resolve(msgParams)
   }
@@ -215,7 +225,7 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * @param {number} msgId The id of the EncryptionPublicKey to reject.
    *
    */
-  rejectMsg (msgId) {
+  rejectMsg(msgId) {
     this._setMsgStatus(msgId, 'rejected')
   }
 
@@ -225,7 +235,7 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * @param {number} msgId The id of the TypedMessage to error
    *
    */
-  errorMessage (msgId, error) {
+  errorMessage(msgId, error) {
     const msg = this.getMsg(msgId)
     msg.error = error
     this._updateMsg(msg)
@@ -245,10 +255,12 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * with the EncryptionPublicKey
    *
    */
-  _setMsgStatus (msgId, status) {
+  _setMsgStatus(msgId, status) {
     const msg = this.getMsg(msgId)
     if (!msg) {
-      throw new Error(`EncryptionPublicKeyManager - Message not found for id: "${msgId}".`)
+      throw new Error(
+        `EncryptionPublicKeyManager - Message not found for id: "${msgId}".`,
+      )
     }
     msg.status = status
     this._updateMsg(msg)
@@ -267,7 +279,7 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * id) in this.messages
    *
    */
-  _updateMsg (msg) {
+  _updateMsg(msg) {
     const index = this.messages.findIndex((message) => message.id === msg.id)
     if (index !== -1) {
       this.messages[index] = msg
@@ -282,10 +294,15 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * @fires 'updateBadge'
    *
    */
-  _saveMsgList () {
+  _saveMsgList() {
     const unapprovedEncryptionPublicKeyMsgs = this.getUnapprovedMsgs()
-    const unapprovedEncryptionPublicKeyMsgCount = Object.keys(unapprovedEncryptionPublicKeyMsgs).length
-    this.memStore.updateState({ unapprovedEncryptionPublicKeyMsgs, unapprovedEncryptionPublicKeyMsgCount })
+    const unapprovedEncryptionPublicKeyMsgCount = Object.keys(
+      unapprovedEncryptionPublicKeyMsgs,
+    ).length
+    this.memStore.updateState({
+      unapprovedEncryptionPublicKeyMsgs,
+      unapprovedEncryptionPublicKeyMsgCount,
+    })
     this.emit('updateBadge')
   }
 }

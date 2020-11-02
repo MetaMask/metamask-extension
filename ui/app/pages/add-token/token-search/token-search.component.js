@@ -40,7 +40,7 @@ export default class TokenSearch extends Component {
     searchQuery: '',
   }
 
-  handleSearch (searchQuery) {
+  handleSearch(searchQuery) {
     this.setState({ searchQuery })
     const fuseSearchResult = fuse.search(searchQuery)
     const addressSearchResult = contractList.filter((token) => {
@@ -50,18 +50,15 @@ export default class TokenSearch extends Component {
     this.props.onSearch({ searchQuery, results })
   }
 
-  renderAdornment () {
+  renderAdornment() {
     return (
-      <InputAdornment
-        position="start"
-        style={{ marginRight: '12px' }}
-      >
+      <InputAdornment position="start" style={{ marginRight: '12px' }}>
         <img src="images/search.svg" width="17" height="17" />
       </InputAdornment>
     )
   }
 
-  render () {
+  render() {
     const { error } = this.props
     const { searchQuery } = this.state
 

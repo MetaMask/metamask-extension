@@ -11,7 +11,7 @@ const version = 5
 export default {
   version,
 
-  migrate (originalVersionedData) {
+  migrate(originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     try {
@@ -25,7 +25,7 @@ export default {
   },
 }
 
-function selectSubstateForKeyringController (state) {
+function selectSubstateForKeyringController(state) {
   const { config } = state
   const newState = {
     ...state,

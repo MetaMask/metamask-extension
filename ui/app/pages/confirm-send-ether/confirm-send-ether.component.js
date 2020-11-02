@@ -14,25 +14,27 @@ export default class ConfirmSendEther extends Component {
     txParams: PropTypes.object,
   }
 
-  handleEdit ({ txData }) {
+  handleEdit({ txData }) {
     const { editTransaction, history } = this.props
     editTransaction(txData)
     history.push(SEND_ROUTE)
   }
 
-  shouldHideData () {
+  shouldHideData() {
     const { txParams = {} } = this.props
     return !txParams.data
   }
 
-  render () {
+  render() {
     const hideData = this.shouldHideData()
 
     return (
       <ConfirmTransactionBase
         actionKey="confirm"
         hideData={hideData}
-        onEdit={(confirmTransactionData) => this.handleEdit(confirmTransactionData)}
+        onEdit={(confirmTransactionData) =>
+          this.handleEdit(confirmTransactionData)
+        }
       />
     )
   }

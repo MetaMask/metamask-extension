@@ -4,11 +4,20 @@ const spawn = require('cross-spawn')
 const tasks = {}
 const taskEvents = new EventEmitter()
 
-module.exports = { detectAndRunEntryTask, tasks, taskEvents, createTask, runTask, composeSeries, composeParallel, runInChildProcess }
+module.exports = {
+  detectAndRunEntryTask,
+  tasks,
+  taskEvents,
+  createTask,
+  runTask,
+  composeSeries,
+  composeParallel,
+  runInChildProcess,
+}
 
 const { setupTaskDisplay } = require('./display')
 
-function detectAndRunEntryTask () {
+function detectAndRunEntryTask() {
   // get requested task name and execute
   const taskName = process.argv[2]
   if (!taskName) {
@@ -19,7 +28,7 @@ function detectAndRunEntryTask () {
   runTask(taskName, { skipStats })
 }
 
-async function runTask (taskName, { skipStats } = {}) {
+async function runTask(taskName, { skipStats } = {}) {
   if (!(taskName in tasks)) {
     throw new Error(`MetaMask build: Unrecognized task name "${taskName}"`)
   }
@@ -30,16 +39,20 @@ async function runTask (taskName, { skipStats } = {}) {
   try {
     await tasks[taskName]()
   } catch (err) {
-    console.error(`MetaMask build: Encountered an error while running task "${taskName}".`)
+    console.error(
+      `MetaMask build: Encountered an error while running task "${taskName}".`,
+    )
     console.error(err)
     process.exit(1)
   }
   taskEvents.emit('complete')
 }
 
-function createTask (taskName, taskFn) {
+function createTask(taskName, taskFn) {
   if (taskName in tasks) {
-    throw new Error(`MetaMask build: task "${taskName}" already exists. Refusing to redefine`)
+    throw new Error(
+      `MetaMask build: task "${taskName}" already exists. Refusing to redefine`,
+    )
   }
   const task = instrumentForTaskStats(taskName, taskFn)
   task.taskName = taskName
@@ -47,24 +60,34 @@ function createTask (taskName, taskFn) {
   return task
 }
 
-function runInChildProcess (task) {
+function runInChildProcess(task) {
   const taskName = typeof task === 'string' ? task : task.taskName
   if (!taskName) {
-    throw new Error(`MetaMask build: runInChildProcess unable to identify task name`)
+    throw new Error(
+      `MetaMask build: runInChildProcess unable to identify task name`,
+    )
   }
   return instrumentForTaskStats(taskName, async () => {
     const childProcess = spawn('yarn', ['build', taskName, '--skip-stats'])
     // forward logs to main process
     // skip the first stdout event (announcing the process command)
     childProcess.stdout.once('data', () => {
-      childProcess.stdout.on('data', (data) => process.stdout.write(`${taskName}: ${data}`))
+      childProcess.stdout.on('data', (data) =>
+        process.stdout.write(`${taskName}: ${data}`),
+      )
     })
-    childProcess.stderr.on('data', (data) => process.stderr.write(`${taskName}: ${data}`))
+    childProcess.stderr.on('data', (data) =>
+      process.stderr.write(`${taskName}: ${data}`),
+    )
     // await end of process
     await new Promise((resolve, reject) => {
       childProcess.once('close', (errCode) => {
         if (errCode !== 0) {
-          reject(new Error(`MetaMask build: runInChildProcess for task "${taskName}" encountered an error`))
+          reject(
+            new Error(
+              `MetaMask build: runInChildProcess for task "${taskName}" encountered an error`,
+            ),
+          )
           return
         }
         resolve()
@@ -73,7 +96,7 @@ function runInChildProcess (task) {
   })
 }
 
-function instrumentForTaskStats (taskName, asyncFn) {
+function instrumentForTaskStats(taskName, asyncFn) {
   return async () => {
     const start = Date.now()
     taskEvents.emit('start', [taskName, start])
@@ -83,7 +106,7 @@ function instrumentForTaskStats (taskName, asyncFn) {
   }
 }
 
-function composeSeries (...subtasks) {
+function composeSeries(...subtasks) {
   return async () => {
     const realTasks = subtasks
     for (const subtask of realTasks) {
@@ -92,7 +115,7 @@ function composeSeries (...subtasks) {
   }
 }
 
-function composeParallel (...subtasks) {
+function composeParallel(...subtasks) {
   return async () => {
     const realTasks = subtasks
     await Promise.all(realTasks.map((subtask) => subtask()))

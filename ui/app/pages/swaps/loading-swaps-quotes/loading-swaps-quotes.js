@@ -5,7 +5,11 @@ import PropTypes from 'prop-types'
 import { shuffle } from 'lodash'
 import { useHistory } from 'react-router-dom'
 import classnames from 'classnames'
-import { navigateBackToBuildQuote, getFetchParams, getQuotesFetchStartTime } from '../../../ducks/swaps/swaps'
+import {
+  navigateBackToBuildQuote,
+  getFetchParams,
+  getQuotesFetchStartTime,
+} from '../../../ducks/swaps/swaps'
 import { I18nContext } from '../../../contexts/i18n'
 import { MetaMetricsContext } from '../../../contexts/metametrics.new'
 import Mascot from '../../../components/ui/mascot'
@@ -24,7 +28,7 @@ const AGGREGATOR_LOCATIONS = [
   { x: 40, y: 46 },
 ]
 
-function getRandomLocations (numberOfLocations) {
+function getRandomLocations(numberOfLocations) {
   const randomLocations = shuffle(AGGREGATOR_LOCATIONS)
   if (numberOfLocations <= AGGREGATOR_LOCATIONS.length) {
     return randomLocations.slice(0, numberOfLocations)
@@ -33,7 +37,7 @@ function getRandomLocations (numberOfLocations) {
   return [...randomLocations, ...getRandomLocations(numberOfExtraLocations)]
 }
 
-function getMascotTarget (aggregatorName, centerPoint, aggregatorLocationMap) {
+function getMascotTarget(aggregatorName, centerPoint, aggregatorLocationMap) {
   const location = aggregatorLocationMap[aggregatorName]
 
   if (!location || !centerPoint) {
@@ -49,7 +53,7 @@ function getMascotTarget (aggregatorName, centerPoint, aggregatorLocationMap) {
   }
 }
 
-export default function LoadingSwapsQuotes ({
+export default function LoadingSwapsQuotes({
   aggregatorMetadata,
   loadingComplete,
   onDone,
@@ -81,7 +85,9 @@ export default function LoadingSwapsQuotes ({
     },
   }
 
-  const [aggregatorNames] = useState(() => shuffle(Object.keys(aggregatorMetadata)))
+  const [aggregatorNames] = useState(() =>
+    shuffle(Object.keys(aggregatorMetadata)),
+  )
   const numberOfQuotes = aggregatorNames.length
   const mascotContainer = useRef()
   const currentMascotContainer = mascotContainer.current
@@ -90,11 +96,16 @@ export default function LoadingSwapsQuotes ({
   // is an array of randomized items from AGGREGATOR_LOCATIONS, containing
   // numberOfQuotes number of items it is randomized so that the order in
   // which the fox looks at locations is random
-  const [aggregatorLocations] = useState(() => getRandomLocations(numberOfQuotes))
-  const _aggregatorLocationMap = aggregatorNames.reduce((nameLocationMap, name, index) => ({
-    ...nameLocationMap,
-    [name]: aggregatorLocations[index],
-  }), {})
+  const [aggregatorLocations] = useState(() =>
+    getRandomLocations(numberOfQuotes),
+  )
+  const _aggregatorLocationMap = aggregatorNames.reduce(
+    (nameLocationMap, name, index) => ({
+      ...nameLocationMap,
+      [name]: aggregatorLocations[index],
+    }),
+    {},
+  )
   const [aggregatorLocationMap] = useState(_aggregatorLocationMap)
   const [midPointTarget, setMidpointTarget] = useState(null)
 
@@ -125,15 +136,20 @@ export default function LoadingSwapsQuotes ({
       }
     }, timeoutLength)
 
-    return function cleanup () {
+    return function cleanup() {
       clearTimeout(quoteCountTimeout)
     }
   }, [quoteCount, loadingComplete, onDone, numberOfQuotes])
 
   useEffect(() => {
     if (currentMascotContainer) {
-      const { top, left, width, height } = currentMascotContainer.getBoundingClientRect()
-      const center = { x: left + (width / 2), y: top + (height / 2) }
+      const {
+        top,
+        left,
+        width,
+        height,
+      } = currentMascotContainer.getBoundingClientRect()
+      const center = { x: left + width / 2, y: top + height / 2 }
       setMidpointTarget(center)
     }
   }, [currentMascotContainer])
@@ -144,23 +160,19 @@ export default function LoadingSwapsQuotes ({
         <>
           <div className="loading-swaps-quotes__quote-counter">
             <span>
-              {
-                t('swapQuoteNofN', [
-                  Math.min(quoteCount + 1, numberOfQuotes),
-                  numberOfQuotes,
-                ])
-              }
+              {t('swapQuoteNofN', [
+                Math.min(quoteCount + 1, numberOfQuotes),
+                numberOfQuotes,
+              ])}
             </span>
           </div>
           <div className="loading-swaps-quotes__quote-name-check">
             <span>
-              {
-                quoteCount === numberOfQuotes
-                  ? t('swapFinalizing')
-                  : t('swapCheckingQuote', [
+              {quoteCount === numberOfQuotes
+                ? t('swapFinalizing')
+                : t('swapCheckingQuote', [
                     aggregatorMetadata[aggregatorNames[quoteCount]].title,
-                  ])
-              }
+                  ])}
             </span>
           </div>
           <div className="loading-swaps-quotes__loading-bar-container">
@@ -183,34 +195,37 @@ export default function LoadingSwapsQuotes ({
               width="90"
               height="90"
               followMouse={false}
-              lookAtTarget={
-                getMascotTarget(
-                  aggregatorNames[quoteCount],
-                  midPointTarget,
-                  aggregatorLocationMap,
-                )
-              }
+              lookAtTarget={getMascotTarget(
+                aggregatorNames[quoteCount],
+                midPointTarget,
+                aggregatorLocationMap,
+              )}
             />
           </div>
-          {currentMascotContainer && midPointTarget && aggregatorNames.map((aggName) => (
-            <div
-              className={classnames('loading-swaps-quotes__logo', {
-                'loading-swaps-quotes__logo--transition': aggName === aggregatorNames[quoteCount],
-              })}
-              style={{
-                opacity: aggName === aggregatorNames[quoteCount] ? 1 : 0,
-                top: aggregatorLocationMap[aggName]?.y + midPointTarget?.y ?? 0,
-                left: aggregatorLocationMap[aggName]?.x + midPointTarget?.x ?? 0,
-              }}
-              key={`aggregator-logo-${aggName}`}
-            >
-              <AggregatorLogo
-                aggregatorName={aggName}
-                icon={aggregatorMetadata[aggName]?.icon}
-                color={aggregatorMetadata[aggName]?.color}
-              />
-            </div>
-          ))}
+          {currentMascotContainer &&
+            midPointTarget &&
+            aggregatorNames.map((aggName) => (
+              <div
+                className={classnames('loading-swaps-quotes__logo', {
+                  'loading-swaps-quotes__logo--transition':
+                    aggName === aggregatorNames[quoteCount],
+                })}
+                style={{
+                  opacity: aggName === aggregatorNames[quoteCount] ? 1 : 0,
+                  top:
+                    aggregatorLocationMap[aggName]?.y + midPointTarget?.y ?? 0,
+                  left:
+                    aggregatorLocationMap[aggName]?.x + midPointTarget?.x ?? 0,
+                }}
+                key={`aggregator-logo-${aggName}`}
+              >
+                <AggregatorLogo
+                  aggregatorName={aggName}
+                  icon={aggregatorMetadata[aggName]?.icon}
+                  color={aggregatorMetadata[aggName]?.color}
+                />
+              </div>
+            ))}
         </div>
       </div>
       <SwapsFooter
@@ -229,8 +244,10 @@ export default function LoadingSwapsQuotes ({
 LoadingSwapsQuotes.propTypes = {
   loadingComplete: PropTypes.bool.isRequired,
   onDone: PropTypes.func.isRequired,
-  aggregatorMetadata: PropTypes.objectOf(PropTypes.shape({
-    color: PropTypes.string,
-    icon: PropTypes.string,
-  })),
+  aggregatorMetadata: PropTypes.objectOf(
+    PropTypes.shape({
+      color: PropTypes.string,
+      icon: PropTypes.string,
+    }),
+  ),
 }

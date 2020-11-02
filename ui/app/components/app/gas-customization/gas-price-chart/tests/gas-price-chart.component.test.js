@@ -5,7 +5,7 @@ import sinon from 'sinon'
 import * as d3 from 'd3'
 import shallow from '../../../../../../lib/shallow-with-context'
 
-function timeout (time) {
+function timeout(time) {
   return new Promise((resolve) => {
     setTimeout(resolve, time)
   })
@@ -47,7 +47,9 @@ describe('GasPriceChart Component', function () {
       generateChart: sinon.stub().returns({ mockChart: true }),
       generateDataUIObj: sinon.spy(),
       getAdjacentGasPrices: sinon.spy(),
-      getCoordinateData: sinon.stub().returns({ x: 'mockCoordinateX', width: 'mockWidth' }),
+      getCoordinateData: sinon
+        .stub()
+        .returns({ x: 'mockCoordinateX', width: 'mockWidth' }),
       getNewXandTimeEstimate: sinon.spy(),
       handleChartUpdate: sinon.spy(),
       hideDataUI: sinon.spy(),
@@ -67,13 +69,11 @@ describe('GasPriceChart Component', function () {
 
     GasPriceChart = proxyquire('../gas-price-chart.component.js', {
       './gas-price-chart.utils.js': gasPriceChartUtilsSpies,
-      'd3': {
+      d3: {
         ...d3,
-        select (...args) {
+        select(...args) {
           const result = d3.select(...args)
-          return result.empty()
-            ? mockSelectReturn
-            : result
+          return result.empty() ? mockSelectReturn : result
         },
         event: {
           clientX: 'mockClientX',
@@ -118,12 +118,17 @@ describe('GasPriceChart Component', function () {
     it('should call handleChartUpdate with the correct props', function () {
       gasPriceChartUtilsSpies.handleChartUpdate.resetHistory()
       wrapper.instance().componentDidUpdate({ currentPrice: 7 })
-      assert.deepEqual(gasPriceChartUtilsSpies.handleChartUpdate.getCall(0).args, [{
-        chart: { mockChart: true },
-        gasPrices: [1.5, 2.5, 4, 8],
-        newPrice: 6,
-        cssId: '#set-circle',
-      }])
+      assert.deepEqual(
+        gasPriceChartUtilsSpies.handleChartUpdate.getCall(0).args,
+        [
+          {
+            chart: { mockChart: true },
+            gasPrices: [1.5, 2.5, 4, 8],
+            newPrice: 6,
+            cssId: '#set-circle',
+          },
+        ],
+      )
     })
 
     it('should not call handleChartUpdate if props.currentPrice has not changed', function () {
@@ -141,10 +146,22 @@ describe('GasPriceChart Component', function () {
       wrapper.instance().renderChart(testProps)
       await timeout(0)
       assert.equal(gasPriceChartUtilsSpies.setTickPosition.callCount, 4)
-      assert.deepEqual(gasPriceChartUtilsSpies.setTickPosition.getCall(0).args, ['y', 0, -5, 8])
-      assert.deepEqual(gasPriceChartUtilsSpies.setTickPosition.getCall(1).args, ['y', 1, -3, -5])
-      assert.deepEqual(gasPriceChartUtilsSpies.setTickPosition.getCall(2).args, ['x', 0, 3])
-      assert.deepEqual(gasPriceChartUtilsSpies.setTickPosition.getCall(3).args, ['x', 1, 3, -8])
+      assert.deepEqual(
+        gasPriceChartUtilsSpies.setTickPosition.getCall(0).args,
+        ['y', 0, -5, 8],
+      )
+      assert.deepEqual(
+        gasPriceChartUtilsSpies.setTickPosition.getCall(1).args,
+        ['y', 1, -3, -5],
+      )
+      assert.deepEqual(
+        gasPriceChartUtilsSpies.setTickPosition.getCall(2).args,
+        ['x', 0, 3],
+      )
+      assert.deepEqual(
+        gasPriceChartUtilsSpies.setTickPosition.getCall(3).args,
+        ['x', 1, 3, -8],
+      )
     })
 
     it('should call handleChartUpdate with the correct props', async function () {
@@ -152,12 +169,17 @@ describe('GasPriceChart Component', function () {
       gasPriceChartUtilsSpies.handleChartUpdate.resetHistory()
       wrapper.instance().renderChart(testProps)
       await timeout(0)
-      assert.deepEqual(gasPriceChartUtilsSpies.handleChartUpdate.getCall(0).args, [{
-        chart: { mockChart: true },
-        gasPrices: [1.5, 2.5, 4, 8],
-        newPrice: 6,
-        cssId: '#set-circle',
-      }])
+      assert.deepEqual(
+        gasPriceChartUtilsSpies.handleChartUpdate.getCall(0).args,
+        [
+          {
+            chart: { mockChart: true },
+            gasPrices: [1.5, 2.5, 4, 8],
+            newPrice: 6,
+            cssId: '#set-circle',
+          },
+        ],
+      )
     })
 
     it('should add three events to the chart', async function () {
@@ -186,7 +208,10 @@ describe('GasPriceChart Component', function () {
       assert.equal(gasPriceChartUtilsSpies.hideDataUI.callCount, 0)
       mouseoutEventArgs[1]()
       assert.equal(gasPriceChartUtilsSpies.hideDataUI.callCount, 1)
-      assert.deepEqual(gasPriceChartUtilsSpies.hideDataUI.getCall(0).args, [{ mockChart: true }, '#overlayed-circle'])
+      assert.deepEqual(gasPriceChartUtilsSpies.hideDataUI.getCall(0).args, [
+        { mockChart: true },
+        '#overlayed-circle',
+      ])
     })
 
     it('should updateCustomGasPrice on click', async function () {
@@ -199,7 +224,10 @@ describe('GasPriceChart Component', function () {
       assert.equal(propsMethodSpies.updateCustomGasPrice.callCount, 0)
       mouseoutEventArgs[1]()
       assert.equal(propsMethodSpies.updateCustomGasPrice.callCount, 1)
-      assert.equal(propsMethodSpies.updateCustomGasPrice.getCall(0).args[0], 'mockX')
+      assert.equal(
+        propsMethodSpies.updateCustomGasPrice.getCall(0).args[0],
+        'mockX',
+      )
     })
 
     it('should handle mousemove', async function () {
@@ -212,14 +240,19 @@ describe('GasPriceChart Component', function () {
       assert.equal(gasPriceChartUtilsSpies.handleMouseMove.callCount, 0)
       mouseoutEventArgs[1]()
       assert.equal(gasPriceChartUtilsSpies.handleMouseMove.callCount, 1)
-      assert.deepEqual(gasPriceChartUtilsSpies.handleMouseMove.getCall(0).args, [{
-        xMousePos: 'mockClientX',
-        chartXStart: 'mockCoordinateX',
-        chartWidth: 'mockWidth',
-        gasPrices: testProps.gasPrices,
-        estimatedTimes: testProps.estimatedTimes,
-        chart: { mockChart: true },
-      }])
+      assert.deepEqual(
+        gasPriceChartUtilsSpies.handleMouseMove.getCall(0).args,
+        [
+          {
+            xMousePos: 'mockClientX',
+            chartXStart: 'mockCoordinateX',
+            chartWidth: 'mockWidth',
+            gasPrices: testProps.gasPrices,
+            estimatedTimes: testProps.estimatedTimes,
+            chart: { mockChart: true },
+          },
+        ],
+      )
     })
   })
 })

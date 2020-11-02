@@ -5,7 +5,7 @@ import MetaMetricsOptIn from './metametrics-opt-in.component'
 
 const firstTimeFlowTypeNameMap = {
   create: 'Selected Create New Wallet',
-  'import': 'Selected Import Wallet',
+  import: 'Selected Import Wallet',
 }
 
 const mapStateToProps = (state) => {
@@ -13,14 +13,16 @@ const mapStateToProps = (state) => {
 
   return {
     nextRoute: getFirstTimeFlowTypeRoute(state),
-    firstTimeSelectionMetaMetricsName: firstTimeFlowTypeNameMap[firstTimeFlowType],
+    firstTimeSelectionMetaMetricsName:
+      firstTimeFlowTypeNameMap[firstTimeFlowType],
     participateInMetaMetrics,
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setParticipateInMetaMetrics: (val) => dispatch(setParticipateInMetaMetrics(val)),
+    setParticipateInMetaMetrics: (val) =>
+      dispatch(setParticipateInMetaMetrics(val)),
   }
 }
 

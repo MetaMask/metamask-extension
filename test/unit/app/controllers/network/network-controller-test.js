@@ -19,7 +19,8 @@ describe('NetworkController', function () {
     describe('#provider', function () {
       it('provider should be updatable without reassignment', function () {
         networkController.initializeProvider(networkControllerProviderConfig)
-        const providerProxy = networkController.getProviderAndBlockTracker().provider
+        const providerProxy = networkController.getProviderAndBlockTracker()
+          .provider
         assert.equal(providerProxy.test, undefined)
         providerProxy.setTarget({ test: true })
         assert.equal(providerProxy.test, true)
@@ -56,7 +57,8 @@ describe('NetworkController', function () {
         networkController.setProviderType('mainnet')
 
         assert.equal(
-          spy.callCount, 1,
+          spy.callCount,
+          1,
           'should have called setNetworkState 2 times',
         )
         assert.ok(
@@ -73,40 +75,52 @@ describe('NetworkController', function () {
         {
           input: '3',
           expected: 'Ropsten',
-        }, {
+        },
+        {
           input: '4',
           expected: 'Rinkeby',
-        }, {
+        },
+        {
           input: '42',
           expected: 'Kovan',
-        }, {
+        },
+        {
           input: '0x3',
           expected: 'Ropsten',
-        }, {
+        },
+        {
           input: '0x4',
           expected: 'Rinkeby',
-        }, {
+        },
+        {
           input: '0x2a',
           expected: 'Kovan',
-        }, {
+        },
+        {
           input: 'ropsten',
           expected: 'Ropsten',
-        }, {
+        },
+        {
           input: 'rinkeby',
           expected: 'Rinkeby',
-        }, {
+        },
+        {
           input: 'kovan',
           expected: 'Kovan',
-        }, {
+        },
+        {
           input: 'mainnet',
           expected: 'Ethereum Mainnet',
-        }, {
+        },
+        {
           input: 'goerli',
           expected: 'Goerli',
         },
       ]
 
-      tests.forEach(({ input, expected }) => assert.equal(getNetworkDisplayName(input), expected))
+      tests.forEach(({ input, expected }) =>
+        assert.equal(getNetworkDisplayName(input), expected),
+      )
     })
   })
 })

@@ -1,14 +1,22 @@
 import { decimalToHex } from '../../helpers/utils/conversions.util'
-import { calcTokenValue, getTokenAddressParam } from '../../helpers/utils/token-util'
+import {
+  calcTokenValue,
+  getTokenAddressParam,
+} from '../../helpers/utils/token-util'
 import { getTokenData } from '../../helpers/utils/transactions.util'
 
-export function getCustomTxParamsData (data, { customPermissionAmount, decimals }) {
+export function getCustomTxParamsData(
+  data,
+  { customPermissionAmount, decimals },
+) {
   const tokenData = getTokenData(data)
 
   if (!tokenData) {
     throw new Error('Invalid data')
   } else if (tokenData.name !== 'approve') {
-    throw new Error(`Invalid data; should be 'approve' method, but instead is '${tokenData.name}'`)
+    throw new Error(
+      `Invalid data; should be 'approve' method, but instead is '${tokenData.name}'`,
+    )
   }
   let spender = getTokenAddressParam(tokenData)
   if (spender.startsWith('0x')) {
@@ -19,10 +27,14 @@ export function getCustomTxParamsData (data, { customPermissionAmount, decimals 
   if (!signature || !tokenValue) {
     throw new Error('Invalid data')
   } else if (tokenValue.length !== 64) {
-    throw new Error('Invalid token value; should be exactly 64 hex digits long (u256)')
+    throw new Error(
+      'Invalid token value; should be exactly 64 hex digits long (u256)',
+    )
   }
 
-  let customPermissionValue = decimalToHex(calcTokenValue(customPermissionAmount, decimals))
+  let customPermissionValue = decimalToHex(
+    calcTokenValue(customPermissionAmount, decimals),
+  )
   if (customPermissionValue.length > 64) {
     throw new Error('Custom value is larger than u256')
   }

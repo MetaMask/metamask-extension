@@ -4,11 +4,23 @@ import { createPortal } from 'react-dom'
 import { usePopper } from 'react-popper'
 import classnames from 'classnames'
 
-const Menu = ({ anchorElement, children, className, onHide, popperOptions }) => {
+const Menu = ({
+  anchorElement,
+  children,
+  className,
+  onHide,
+  popperOptions,
+}) => {
   const [popperElement, setPopperElement] = useState(null)
-  const popoverContainerElement = useRef(document.getElementById('popover-content'))
+  const popoverContainerElement = useRef(
+    document.getElementById('popover-content'),
+  )
 
-  const { attributes, styles } = usePopper(anchorElement, popperElement, popperOptions)
+  const { attributes, styles } = usePopper(
+    anchorElement,
+    popperElement,
+    popperOptions,
+  )
 
   return createPortal(
     <>
@@ -19,7 +31,7 @@ const Menu = ({ anchorElement, children, className, onHide, popperOptions }) => 
         style={styles.popper}
         {...attributes.popper}
       >
-        { children }
+        {children}
       </div>
     </>,
     popoverContainerElement.current,

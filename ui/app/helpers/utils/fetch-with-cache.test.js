@@ -23,7 +23,9 @@ describe('Fetch with cache', function () {
       .get('/price')
       .reply(200, '{"average": 1}')
 
-    const response = await fetchWithCache('https://fetchwithcache.metamask.io/price')
+    const response = await fetchWithCache(
+      'https://fetchwithcache.metamask.io/price',
+    )
     assert.deepEqual(response, {
       average: 1,
     })
@@ -41,7 +43,9 @@ describe('Fetch with cache', function () {
       },
     })
 
-    const response = await fetchWithCache('https://fetchwithcache.metamask.io/price')
+    const response = await fetchWithCache(
+      'https://fetchwithcache.metamask.io/price',
+    )
     assert.deepEqual(response, {
       average: 1,
     })
@@ -59,7 +63,11 @@ describe('Fetch with cache', function () {
       },
     })
 
-    const response = await fetchWithCache('https://fetchwithcache.metamask.io/price', {}, { cacheRefreshTime: 123 })
+    const response = await fetchWithCache(
+      'https://fetchwithcache.metamask.io/price',
+      {},
+      { cacheRefreshTime: 123 },
+    )
     assert.deepEqual(response, {
       average: 3,
     })
@@ -72,7 +80,12 @@ describe('Fetch with cache', function () {
       .reply(200, '{"average": 4}')
 
     await assert.rejects(
-      () => fetchWithCache('https://fetchwithcache.metamask.io/price', {}, { timeout: 20 }),
+      () =>
+        fetchWithCache(
+          'https://fetchwithcache.metamask.io/price',
+          {},
+          { timeout: 20 },
+        ),
       { name: 'AbortError', message: 'Aborted' },
     )
   })
@@ -82,8 +95,8 @@ describe('Fetch with cache', function () {
       .get('/price')
       .reply(500, '{"average": 6}')
 
-    await assert.rejects(
-      () => fetchWithCache('https://fetchwithcache.metamask.io/price'),
+    await assert.rejects(() =>
+      fetchWithCache('https://fetchwithcache.metamask.io/price'),
     )
   })
 
@@ -92,8 +105,10 @@ describe('Fetch with cache', function () {
       .post('/price')
       .reply(200, '{"average": 7}')
 
-    await assert.rejects(
-      () => fetchWithCache('https://fetchwithcache.metamask.io/price', { method: 'POST' }),
+    await assert.rejects(() =>
+      fetchWithCache('https://fetchwithcache.metamask.io/price', {
+        method: 'POST',
+      }),
     )
   })
 
@@ -102,8 +117,8 @@ describe('Fetch with cache', function () {
       .get('/price')
       .reply(200, '{"average": 8}')
 
-    await assert.rejects(
-      () => fetchWithCache('https://fetchwithcache.metamask.io/price', { body: 1 }),
+    await assert.rejects(() =>
+      fetchWithCache('https://fetchwithcache.metamask.io/price', { body: 1 }),
     )
   })
 
@@ -113,7 +128,10 @@ describe('Fetch with cache', function () {
       .reply(200, '{"average": 9}')
 
     await assert.rejects(
-      () => fetchWithCache('https://fetchwithcache.metamask.io/price', { headers: { 'Content-Type': 'text/plain' } }),
+      () =>
+        fetchWithCache('https://fetchwithcache.metamask.io/price', {
+          headers: { 'Content-Type': 'text/plain' },
+        }),
       { message: 'fetchWithCache only supports JSON responses' },
     )
   })

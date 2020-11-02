@@ -11,18 +11,13 @@ import {
   sendAmountIsInError,
 } from '../../../../selectors'
 import { getAmountErrorObject, getGasFeeErrorObject } from '../../send.utils'
-import {
-  setMaxModeTo,
-  updateSendAmount,
-} from '../../../../store/actions'
-import {
-  updateSendErrors,
-} from '../../../../ducks/send/send.duck'
+import { setMaxModeTo, updateSendAmount } from '../../../../store/actions'
+import { updateSendErrors } from '../../../../ducks/send/send.duck'
 import SendAmountRow from './send-amount-row.component'
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendAmountRow)
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     amount: getSendAmount(state),
     balance: getSendFromBalance(state),
@@ -36,7 +31,7 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     setMaxModeTo: (bool) => dispatch(setMaxModeTo(bool)),
     updateSendAmount: (newAmount) => dispatch(updateSendAmount(newAmount)),

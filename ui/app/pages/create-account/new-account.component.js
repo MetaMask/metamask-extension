@@ -14,7 +14,7 @@ export default class NewAccountCreateForm extends Component {
     ]),
   }
 
-  render () {
+  render() {
     const { newAccountName, defaultAccountName } = this.state
     const { history, createAccount, mostRecentOverviewPage } = this.props
     const createClick = (_) => {
@@ -53,7 +53,9 @@ export default class NewAccountCreateForm extends Component {
             className="new-account-create-form__input"
             value={newAccountName}
             placeholder={defaultAccountName}
-            onChange={(event) => this.setState({ newAccountName: event.target.value })}
+            onChange={(event) =>
+              this.setState({ newAccountName: event.target.value })
+            }
             autoFocus
           />
           <div className="new-account-create-form__buttons">

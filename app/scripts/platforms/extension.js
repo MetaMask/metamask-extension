@@ -4,15 +4,14 @@ import { getEnvironmentType, checkForError } from '../lib/util'
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../lib/enums'
 
 export default class ExtensionPlatform {
-
   //
   // Public
   //
-  reload () {
+  reload() {
     extension.runtime.reload()
   }
 
-  openTab (options) {
+  openTab(options) {
     return new Promise((resolve, reject) => {
       extension.tabs.create(options, (newTab) => {
         const error = checkForError()
@@ -24,7 +23,7 @@ export default class ExtensionPlatform {
     })
   }
 
-  openWindow (options) {
+  openWindow(options) {
     return new Promise((resolve, reject) => {
       extension.windows.create(options, (newWindow) => {
         const error = checkForError()
@@ -36,7 +35,7 @@ export default class ExtensionPlatform {
     })
   }
 
-  focusWindow (windowId) {
+  focusWindow(windowId) {
     return new Promise((resolve, reject) => {
       extension.windows.update(windowId, { focused: true }, () => {
         const error = checkForError()
@@ -48,7 +47,7 @@ export default class ExtensionPlatform {
     })
   }
 
-  updateWindowPosition (windowId, left, top) {
+  updateWindowPosition(windowId, left, top) {
     return new Promise((resolve, reject) => {
       extension.windows.update(windowId, { left, top }, () => {
         const error = checkForError()
@@ -60,7 +59,7 @@ export default class ExtensionPlatform {
     })
   }
 
-  getLastFocusedWindow () {
+  getLastFocusedWindow() {
     return new Promise((resolve, reject) => {
       extension.windows.getLastFocused((windowObject) => {
         const error = checkForError()
@@ -72,17 +71,17 @@ export default class ExtensionPlatform {
     })
   }
 
-  closeCurrentWindow () {
+  closeCurrentWindow() {
     return extension.windows.getCurrent((windowDetails) => {
       return extension.windows.remove(windowDetails.id)
     })
   }
 
-  getVersion () {
+  getVersion() {
     return extension.runtime.getManifest().version
   }
 
-  openExtensionInBrowser (route = null, queryString = null) {
+  openExtensionInBrowser(route = null, queryString = null) {
     let extensionURL = extension.runtime.getURL('home.html')
 
     if (queryString) {
@@ -98,7 +97,7 @@ export default class ExtensionPlatform {
     }
   }
 
-  getPlatformInfo (cb) {
+  getPlatformInfo(cb) {
     try {
       extension.runtime.getPlatformInfo((platform) => {
         cb(null, platform)
@@ -110,20 +109,23 @@ export default class ExtensionPlatform {
     }
   }
 
-  showTransactionNotification (txMeta) {
+  showTransactionNotification(txMeta) {
     const { status, txReceipt: { status: receiptStatus } = {} } = txMeta
 
     if (status === 'confirmed') {
       // There was an on-chain failure
       receiptStatus === '0x0'
-        ? this._showFailedTransaction(txMeta, 'Transaction encountered an error.')
+        ? this._showFailedTransaction(
+            txMeta,
+            'Transaction encountered an error.',
+          )
         : this._showConfirmedTransaction(txMeta)
     } else if (status === 'failed') {
       this._showFailedTransaction(txMeta)
     }
   }
 
-  getAllWindows () {
+  getAllWindows() {
     return new Promise((resolve, reject) => {
       extension.windows.getAll((windows) => {
         const error = checkForError()
@@ -135,7 +137,7 @@ export default class ExtensionPlatform {
     })
   }
 
-  getActiveTabs () {
+  getActiveTabs() {
     return new Promise((resolve, reject) => {
       extension.tabs.query({ active: true }, (tabs) => {
         const error = checkForError()
@@ -147,7 +149,7 @@ export default class ExtensionPlatform {
     })
   }
 
-  currentTab () {
+  currentTab() {
     return new Promise((resolve, reject) => {
       extension.tabs.getCurrent((tab) => {
         const err = checkForError()
@@ -160,7 +162,7 @@ export default class ExtensionPlatform {
     })
   }
 
-  switchToTab (tabId) {
+  switchToTab(tabId) {
     return new Promise((resolve, reject) => {
       extension.tabs.update(tabId, { highlighted: true }, (tab) => {
         const err = checkForError()
@@ -173,7 +175,7 @@ export default class ExtensionPlatform {
     })
   }
 
-  closeTab (tabId) {
+  closeTab(tabId) {
     return new Promise((resolve, reject) => {
       extension.tabs.remove(tabId, () => {
         const err = checkForError()
@@ -186,8 +188,7 @@ export default class ExtensionPlatform {
     })
   }
 
-  _showConfirmedTransaction (txMeta) {
-
+  _showConfirmedTransaction(txMeta) {
     this._subscribeToNotificationClicked()
 
     const url = explorerLink(txMeta.hash, txMeta.metamaskNetworkId)
@@ -198,33 +199,31 @@ export default class ExtensionPlatform {
     this._showNotification(title, message, url)
   }
 
-  _showFailedTransaction (txMeta, errorMessage) {
-
+  _showFailedTransaction(txMeta, errorMessage) {
     const nonce = parseInt(txMeta.txParams.nonce, 16)
     const title = 'Failed transaction'
-    const message = `Transaction ${nonce} failed! ${errorMessage || txMeta.err.message}`
+    const message = `Transaction ${nonce} failed! ${
+      errorMessage || txMeta.err.message
+    }`
     this._showNotification(title, message)
   }
 
-  _showNotification (title, message, url) {
-    extension.notifications.create(
-      url,
-      {
-        'type': 'basic',
-        title,
-        'iconUrl': extension.extension.getURL('../../images/icon-64.png'),
-        message,
-      },
-    )
+  _showNotification(title, message, url) {
+    extension.notifications.create(url, {
+      type: 'basic',
+      title,
+      iconUrl: extension.extension.getURL('../../images/icon-64.png'),
+      message,
+    })
   }
 
-  _subscribeToNotificationClicked () {
+  _subscribeToNotificationClicked() {
     if (!extension.notifications.onClicked.hasListener(this._viewOnEtherscan)) {
       extension.notifications.onClicked.addListener(this._viewOnEtherscan)
     }
   }
 
-  _viewOnEtherscan (txId) {
+  _viewOnEtherscan(txId) {
     if (txId.startsWith('https://')) {
       extension.tabs.create({ url: txId })
     }

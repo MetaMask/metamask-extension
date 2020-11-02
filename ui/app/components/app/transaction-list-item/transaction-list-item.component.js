@@ -27,16 +27,27 @@ import TransactionIcon from '../transaction-icon'
 import { useTransactionTimeRemaining } from '../../../hooks/useTransactionTimeRemaining'
 import IconWithLabel from '../../ui/icon-with-label'
 
-export default function TransactionListItem ({ transactionGroup, isEarliestNonce = false }) {
+export default function TransactionListItem({
+  transactionGroup,
+  isEarliestNonce = false,
+}) {
   const t = useI18nContext()
   const history = useHistory()
   const { hasCancelled } = transactionGroup
   const [showDetails, setShowDetails] = useState(false)
 
-  const { initialTransaction: { id }, primaryTransaction: { err, gasPrice, status, submittedTime } } = transactionGroup
-  const [cancelEnabled, cancelTransaction] = useCancelTransaction(transactionGroup)
+  const {
+    initialTransaction: { id },
+    primaryTransaction: { err, gasPrice, status, submittedTime },
+  } = transactionGroup
+  const [cancelEnabled, cancelTransaction] = useCancelTransaction(
+    transactionGroup,
+  )
   const retryTransaction = useRetryTransaction(transactionGroup)
-  const shouldShowSpeedUp = useShouldShowSpeedUp(transactionGroup, isEarliestNonce)
+  const shouldShowSpeedUp = useShouldShowSpeedUp(
+    transactionGroup,
+    isEarliestNonce,
+  )
 
   const {
     title,
@@ -53,7 +64,12 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
     isSubmitted,
   } = useTransactionDisplayData(transactionGroup)
 
-  const timeRemaining = useTransactionTimeRemaining(isSubmitted, isEarliestNonce, submittedTime, gasPrice)
+  const timeRemaining = useTransactionTimeRemaining(
+    isSubmitted,
+    isEarliestNonce,
+    submittedTime,
+    gasPrice,
+  )
 
   const isSignatureReq = category === TRANSACTION_CATEGORY_SIGNATURE_REQUEST
   const isApproval = category === TRANSACTION_CATEGORY_APPROVAL
@@ -61,7 +77,11 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
   const isSwap = category === TRANSACTION_CATEGORY_SWAP
 
   const className = classnames('transaction-list-item', {
-    'transaction-list-item--unconfirmed': isPending || [FAILED_STATUS, DROPPED_STATUS, REJECTED_STATUS].includes(displayedStatusKey),
+    'transaction-list-item--unconfirmed':
+      isPending ||
+      [FAILED_STATUS, DROPPED_STATUS, REJECTED_STATUS].includes(
+        displayedStatusKey,
+      ),
   })
 
   const toggleShowDetails = useCallback(() => {
@@ -80,24 +100,28 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
         className="transaction-list-item__header-button"
         disabled={!cancelEnabled}
       >
-        { t('cancel') }
+        {t('cancel')}
       </Button>
     )
     if (hasCancelled || !isPending || isUnapproved) {
       return null
     }
 
-    return cancelEnabled
-      ? btn
-      : (
-        <Tooltip title={t('notEnoughGas')} position="bottom">
-          <div>
-            {btn}
-          </div>
-        </Tooltip>
-      )
-
-  }, [isPending, t, isUnapproved, cancelEnabled, cancelTransaction, hasCancelled])
+    return cancelEnabled ? (
+      btn
+    ) : (
+      <Tooltip title={t('notEnoughGas')} position="bottom">
+        <div>{btn}</div>
+      </Tooltip>
+    )
+  }, [
+    isPending,
+    t,
+    isUnapproved,
+    cancelEnabled,
+    cancelTransaction,
+    hasCancelled,
+  ])
 
   const speedUpButton = useMemo(() => {
     if (!shouldShowSpeedUp || !isPending || isUnapproved) {
@@ -110,7 +134,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
         onClick={retryTransaction}
         className="transaction-list-item-details__header-button"
       >
-        { t('speedUp') }
+        {t('speedUp')}
       </Button>
     )
   }, [shouldShowSpeedUp, isUnapproved, t, isPending, retryTransaction])
@@ -121,14 +145,20 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
         onClick={toggleShowDetails}
         className={className}
         title={title}
-        titleIcon={!isUnapproved && isPending && isEarliestNonce && (
-          <IconWithLabel
-            icon={<Preloader size={16} color="#D73A49" />}
-            label={timeRemaining}
-          />
-        )}
-        icon={<TransactionIcon category={category} status={displayedStatusKey} />}
-        subtitle={(
+        titleIcon={
+          !isUnapproved &&
+          isPending &&
+          isEarliestNonce && (
+            <IconWithLabel
+              icon={<Preloader size={16} color="#D73A49" />}
+              label={timeRemaining}
+            />
+          )
+        }
+        icon={
+          <TransactionIcon category={category} status={displayedStatusKey} />
+        }
+        subtitle={
           <h3>
             <TransactionStatus
               isPending={isPending}
@@ -137,17 +167,34 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
               date={date}
               status={displayedStatusKey}
             />
-            <span className={subtitleContainsOrigin ? 'transaction-list-item__origin' : 'transaction-list-item__address'} title={subtitle}>
+            <span
+              className={
+                subtitleContainsOrigin
+                  ? 'transaction-list-item__origin'
+                  : 'transaction-list-item__address'
+              }
+              title={subtitle}
+            >
               {subtitle}
             </span>
           </h3>
-        )}
-        rightContent={!isSignatureReq && !isApproval && (
-          <>
-            <h2 title={primaryCurrency} className="transaction-list-item__primary-currency">{primaryCurrency}</h2>
-            <h3 className="transaction-list-item__secondary-currency">{secondaryCurrency}</h3>
-          </>
-        )}
+        }
+        rightContent={
+          !isSignatureReq &&
+          !isApproval && (
+            <>
+              <h2
+                title={primaryCurrency}
+                className="transaction-list-item__primary-currency"
+              >
+                {primaryCurrency}
+              </h2>
+              <h3 className="transaction-list-item__secondary-currency">
+                {secondaryCurrency}
+              </h3>
+            </>
+          )
+        }
       >
         <div className="transaction-list-item__pending-actions">
           {speedUpButton}

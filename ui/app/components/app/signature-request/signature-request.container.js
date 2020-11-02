@@ -1,26 +1,24 @@
 import { connect } from 'react-redux'
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck'
-import {
-  accountsWithSendEtherInfoSelector,
-} from '../../../selectors'
+import { accountsWithSendEtherInfoSelector } from '../../../selectors'
 import { getAccountByAddress } from '../../../helpers/utils/util'
 import { MESSAGE_TYPE } from '../../../../../app/scripts/lib/enums'
 import SignatureRequest from './signature-request.component'
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     // not forwarded to component
     allAccounts: accountsWithSendEtherInfoSelector(state),
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
   }
 }
 
-function mergeProps (stateProps, dispatchProps, ownProps) {
+function mergeProps(stateProps, dispatchProps, ownProps) {
   const { allAccounts } = stateProps
   const {
     signPersonalMessage,
@@ -32,7 +30,10 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
     txData,
   } = ownProps
 
-  const { type, msgParams: { from } } = txData
+  const {
+    type,
+    msgParams: { from },
+  } = txData
 
   const fromAccount = getAccountByAddress(allAccounts, from)
 
@@ -60,4 +61,8 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(SignatureRequest)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps,
+)(SignatureRequest)

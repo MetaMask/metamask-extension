@@ -23,11 +23,11 @@ export default class Jazzicon extends PureComponent {
 
   container = createRef()
 
-  componentDidMount () {
+  componentDidMount() {
     this.appendJazzicon()
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     const { address: prevAddress, diameter: prevDiameter } = prevProps
     const { address, diameter } = this.props
 
@@ -37,7 +37,7 @@ export default class Jazzicon extends PureComponent {
     }
   }
 
-  removeExistingChildren () {
+  removeExistingChildren() {
     const { children } = this.container.current
 
     for (let i = 0; i < children.length; i++) {
@@ -45,21 +45,15 @@ export default class Jazzicon extends PureComponent {
     }
   }
 
-  appendJazzicon () {
+  appendJazzicon() {
     const { address, diameter } = this.props
     const image = iconFactory.iconForAddress(address, diameter)
     this.container.current.appendChild(image)
   }
 
-  render () {
+  render() {
     const { className, style } = this.props
 
-    return (
-      <div
-        className={className}
-        ref={this.container}
-        style={style}
-      />
-    )
+    return <div className={className} ref={this.container} style={style} />
   }
 }

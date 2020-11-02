@@ -28,7 +28,7 @@ export default class ContactListTab extends Component {
     showingMyAccounts: PropTypes.bool,
   }
 
-  renderAddresses () {
+  renderAddresses() {
     const { addressBook, history, selectedAddress } = this.props
     const contacts = addressBook.filter(({ name }) => Boolean(name))
     const nonContacts = addressBook.filter(({ name }) => !name)
@@ -47,7 +47,7 @@ export default class ContactListTab extends Component {
     )
   }
 
-  renderAddButton () {
+  renderAddButton() {
     const { history } = this.props
     return (
       <div
@@ -64,7 +64,7 @@ export default class ContactListTab extends Component {
     )
   }
 
-  renderMyAccountsButton () {
+  renderMyAccountsButton() {
     const { history } = this.props
     const { t } = this.context
     return (
@@ -74,10 +74,12 @@ export default class ContactListTab extends Component {
           history.push(CONTACT_MY_ACCOUNTS_ROUTE)
         }}
       >
-        <div className="address-book__my-accounts-button__header">{t('myWalletAccounts')}</div>
+        <div className="address-book__my-accounts-button__header">
+          {t('myWalletAccounts')}
+        </div>
         <div className="address-book__my-accounts-button__content">
           <div className="address-book__my-accounts-button__text">
-            { t('myWalletAccountsDescription') }
+            {t('myWalletAccountsDescription')}
           </div>
           <div className="address-book__my-accounts-button__caret" />
         </div>
@@ -85,8 +87,13 @@ export default class ContactListTab extends Component {
     )
   }
 
-  renderContactContent () {
-    const { viewingContact, editingContact, addingContact, showContactContent } = this.props
+  renderContactContent() {
+    const {
+      viewingContact,
+      editingContact,
+      addingContact,
+      showContactContent,
+    } = this.props
 
     if (!showContactContent) {
       return null
@@ -101,39 +108,41 @@ export default class ContactListTab extends Component {
       ContactContentComponent = AddContact
     }
 
-    return (ContactContentComponent && (
-      <div className="address-book-contact-content">
-        <ContactContentComponent />
-      </div>
-    ))
+    return (
+      ContactContentComponent && (
+        <div className="address-book-contact-content">
+          <ContactContentComponent />
+        </div>
+      )
+    )
   }
 
-  renderAddressBookContent () {
+  renderAddressBookContent() {
     const { hideAddressBook, showingMyAccounts } = this.props
 
     if (!hideAddressBook && !showingMyAccounts) {
       return (
         <div className="address-book">
-          { this.renderMyAccountsButton() }
-          { this.renderAddresses() }
+          {this.renderMyAccountsButton()}
+          {this.renderAddresses()}
         </div>
       )
     } else if (!hideAddressBook && showingMyAccounts) {
-      return (<MyAccounts />)
+      return <MyAccounts />
     }
     return null
   }
 
-  render () {
+  render() {
     const { addingContact } = this.props
 
     return (
       <div className="address-book-wrapper">
-        { this.renderAddressBookContent() }
-        { this.renderContactContent() }
+        {this.renderAddressBookContent()}
+        {this.renderContactContent()}
         {!addingContact && (
           <div className="address-book-add-button">
-            { this.renderAddButton() }
+            {this.renderAddButton()}
           </div>
         )}
       </div>

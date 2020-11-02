@@ -12,7 +12,10 @@ describe('useRetryTransaction', function () {
   describe('when transaction meets retry enabled criteria', function () {
     const dispatch = sinon.spy(() => Promise.resolve({ blockTime: 0 }))
     const trackEvent = sinon.spy()
-    const event = { preventDefault: () => undefined, stopPropagation: () => undefined }
+    const event = {
+      preventDefault: () => undefined,
+      stopPropagation: () => undefined,
+    }
 
     before(function () {
       sinon.stub(reactRedux, 'useDispatch').returns(dispatch)
@@ -35,14 +38,18 @@ describe('useRetryTransaction', function () {
     }
 
     it('retryTransaction function should track metrics', function () {
-      const { result } = renderHook(() => useRetryTransaction(retryEnabledTransaction, true))
+      const { result } = renderHook(() =>
+        useRetryTransaction(retryEnabledTransaction, true),
+      )
       const retry = result.current
       retry(event)
       assert.equal(trackEvent.calledOnce, true)
     })
 
     it('retryTransaction function should show retry sidebar', async function () {
-      const { result } = renderHook(() => useRetryTransaction(retryEnabledTransaction, true))
+      const { result } = renderHook(() =>
+        useRetryTransaction(retryEnabledTransaction, true),
+      )
       const retry = result.current
       await retry(event)
       const calls = dispatch.getCalls()

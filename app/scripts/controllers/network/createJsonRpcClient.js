@@ -9,16 +9,12 @@ import providerFromMiddleware from 'eth-json-rpc-middleware/providerFromMiddlewa
 import BlockTracker from 'eth-block-tracker'
 
 const inTest = process.env.IN_TEST === 'true'
-const blockTrackerOpts = inTest
-  ? { pollingInterval: 1000 }
-  : {}
+const blockTrackerOpts = inTest ? { pollingInterval: 1000 } : {}
 const getTestMiddlewares = () => {
-  return inTest
-    ? [createEstimateGasDelayTestMiddleware()]
-    : []
+  return inTest ? [createEstimateGasDelayTestMiddleware()] : []
 }
 
-export default function createJsonRpcClient ({ rpcUrl, chainId }) {
+export default function createJsonRpcClient({ rpcUrl, chainId }) {
   const fetchMiddleware = createFetchMiddleware({ rpcUrl })
   const blockProvider = providerFromMiddleware(fetchMiddleware)
   const blockTracker = new BlockTracker({
@@ -39,7 +35,7 @@ export default function createJsonRpcClient ({ rpcUrl, chainId }) {
   return { networkMiddleware, blockTracker }
 }
 
-function createChainIdMiddleware (chainId) {
+function createChainIdMiddleware(chainId) {
   return (req, res, next, end) => {
     if (req.method === 'eth_chainId') {
       res.result = chainId
@@ -53,7 +49,7 @@ function createChainIdMiddleware (chainId) {
  * For use in tests only.
  * Adds a delay to `eth_estimateGas` calls.
  */
-function createEstimateGasDelayTestMiddleware () {
+function createEstimateGasDelayTestMiddleware() {
   return createAsyncMiddleware(async (req, _, next) => {
     if (req.method === 'eth_estimateGas') {
       await new Promise((resolve) => setTimeout(resolve, 2000))

@@ -23,7 +23,9 @@ export const getMessage = (localeCode, localeMessages, key, substitutions) => {
   if (!localeMessages[key]) {
     if (localeCode === 'en') {
       if (!missingMessageErrors[key]) {
-        missingMessageErrors[key] = new Error(`Unable to find value of key "${key}" for locale "${localeCode}"`)
+        missingMessageErrors[key] = new Error(
+          `Unable to find value of key "${key}" for locale "${localeCode}"`,
+        )
         Sentry.captureException(missingMessageErrors[key])
         log.error(missingMessageErrors[key])
         if (process.env.IN_TEST === 'true') {
@@ -35,7 +37,9 @@ export const getMessage = (localeCode, localeMessages, key, substitutions) => {
         warned[localeCode] = {}
       }
       warned[localeCode][key] = true
-      log.warn(`Translator - Unable to find value of key "${key}" for locale "${localeCode}"`)
+      log.warn(
+        `Translator - Unable to find value of key "${key}" for locale "${localeCode}"`,
+      )
     }
     return null
   }
@@ -43,12 +47,17 @@ export const getMessage = (localeCode, localeMessages, key, substitutions) => {
   let phrase = entry.message
 
   const hasSubstitutions = Boolean(substitutions && substitutions.length)
-  const hasReactSubstitutions = hasSubstitutions &&
-    substitutions.some((element) => element !== null && (typeof element === 'function' || typeof element === 'object'))
+  const hasReactSubstitutions =
+    hasSubstitutions &&
+    substitutions.some(
+      (element) =>
+        element !== null &&
+        (typeof element === 'function' || typeof element === 'object'),
+    )
 
   // perform substitutions
   if (hasSubstitutions) {
-    const parts = phrase.split(/(\$\d)/ug)
+    const parts = phrase.split(/(\$\d)/gu)
 
     const substitutedParts = parts.map((part) => {
       const subMatch = part.match(/\$(\d)/u)
@@ -57,31 +66,38 @@ export const getMessage = (localeCode, localeMessages, key, substitutions) => {
       }
       const substituteIndex = Number(subMatch[1]) - 1
       if (
-        (substitutions[substituteIndex] === null || substitutions[substituteIndex] === undefined) &&
+        (substitutions[substituteIndex] === null ||
+          substitutions[substituteIndex] === undefined) &&
         !missingSubstitutionErrors[localeCode]?.[key]
       ) {
         if (!missingSubstitutionErrors[localeCode]) {
           missingSubstitutionErrors[localeCode] = {}
         }
         missingSubstitutionErrors[localeCode][key] = true
-        const error = new Error(`Insufficient number of substitutions for key "${key}" with locale "${localeCode}"`)
+        const error = new Error(
+          `Insufficient number of substitutions for key "${key}" with locale "${localeCode}"`,
+        )
         log.error(error)
         Sentry.captureException(error)
       }
       return substitutions[substituteIndex]
     })
 
-    phrase = hasReactSubstitutions
-      ? <span> { substitutedParts } </span>
-      : substitutedParts.join('')
+    phrase = hasReactSubstitutions ? (
+      <span> {substitutedParts} </span>
+    ) : (
+      substitutedParts.join('')
+    )
   }
 
   return phrase
 }
 
-export async function fetchLocale (localeCode) {
+export async function fetchLocale(localeCode) {
   try {
-    const response = await window.fetch(`./_locales/${localeCode}/messages.json`)
+    const response = await window.fetch(
+      `./_locales/${localeCode}/messages.json`,
+    )
     return await response.json()
   } catch (error) {
     log.error(`failed to fetch ${localeCode} locale because of ${error}`)
@@ -91,7 +107,7 @@ export async function fetchLocale (localeCode) {
 
 const relativeTimeFormatLocaleData = new Set()
 
-export async function loadRelativeTimeFormatLocaleData (localeCode) {
+export async function loadRelativeTimeFormatLocaleData(localeCode) {
   const languageTag = localeCode.split('_')[0]
   if (
     Intl.RelativeTimeFormat &&
@@ -103,7 +119,9 @@ export async function loadRelativeTimeFormatLocaleData (localeCode) {
   }
 }
 
-async function fetchRelativeTimeFormatData (languageTag) {
-  const response = await window.fetch(`./intl/${languageTag}/relative-time-format-data.json`)
+async function fetchRelativeTimeFormatData(languageTag) {
+  const response = await window.fetch(
+    `./intl/${languageTag}/relative-time-format-data.json`,
+  )
   return await response.json()
 }

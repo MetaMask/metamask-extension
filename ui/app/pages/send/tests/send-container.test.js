@@ -22,17 +22,15 @@ proxyquire('../send.container.js', {
     },
   },
   'react-router-dom': { withRouter: () => undefined },
-  'redux': { compose: (_, arg2) => () => arg2() },
+  redux: { compose: (_, arg2) => () => arg2() },
   '../../store/actions': actionSpies,
   '../../ducks/send/send.duck': duckActionSpies,
   './send.utils.js': {
     calcGasTotal: (gasLimit, gasPrice) => gasLimit + gasPrice,
   },
-
 })
 
 describe('send container', function () {
-
   describe('mapDispatchToProps()', function () {
     let dispatchSpy
     let mapDispatchToPropsObject
@@ -58,22 +56,33 @@ describe('send container', function () {
       it('should dispatch a setGasTotal action when editingTransactionId is truthy', function () {
         mapDispatchToPropsObject.updateAndSetGasLimit(mockProps)
         assert(dispatchSpy.calledOnce)
-        assert.equal(
-          actionSpies.setGasTotal.getCall(0).args[0],
-          '0x30x4',
-        )
+        assert.equal(actionSpies.setGasTotal.getCall(0).args[0], '0x30x4')
       })
 
       it('should dispatch an updateGasData action when editingTransactionId is falsy', function () {
-        const { gasPrice, selectedAddress, sendToken, blockGasLimit, to, value, data } = mockProps
-        mapDispatchToPropsObject.updateAndSetGasLimit(
-          { ...mockProps, editingTransactionId: false },
-        )
+        const {
+          gasPrice,
+          selectedAddress,
+          sendToken,
+          blockGasLimit,
+          to,
+          value,
+          data,
+        } = mockProps
+        mapDispatchToPropsObject.updateAndSetGasLimit({
+          ...mockProps,
+          editingTransactionId: false,
+        })
         assert(dispatchSpy.calledOnce)
-        assert.deepEqual(
-          actionSpies.updateGasData.getCall(0).args[0],
-          { gasPrice, selectedAddress, sendToken, blockGasLimit, to, value, data },
-        )
+        assert.deepEqual(actionSpies.updateGasData.getCall(0).args[0], {
+          gasPrice,
+          selectedAddress,
+          sendToken,
+          blockGasLimit,
+          to,
+          value,
+          data,
+        })
       })
     })
 
@@ -109,13 +118,8 @@ describe('send container', function () {
       it('should dispatch an action', function () {
         mapDispatchToPropsObject.resetSendState()
         assert(dispatchSpy.calledOnce)
-        assert.equal(
-          duckActionSpies.resetSendState.getCall(0).args.length,
-          0,
-        )
+        assert.equal(duckActionSpies.resetSendState.getCall(0).args.length, 0)
       })
     })
-
   })
-
 })

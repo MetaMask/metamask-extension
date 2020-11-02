@@ -4,7 +4,11 @@ import { getStatusKey } from '../helpers/utils/transactions.util'
 import { camelCaseToCapitalize } from '../helpers/utils/common.util'
 import { PRIMARY, SECONDARY } from '../helpers/constants/common'
 import { getTokenAddressParam } from '../helpers/utils/token-util'
-import { formatDateWithYearContext, shortenAddress, stripHttpSchemes } from '../helpers/utils/util'
+import {
+  formatDateWithYearContext,
+  shortenAddress,
+  stripHttpSchemes,
+} from '../helpers/utils/util'
 import {
   CONTRACT_INTERACTION_KEY,
   DEPLOY_CONTRACT_ACTION_KEY,
@@ -58,7 +62,7 @@ import { useCurrentAsset } from './useCurrentAsset'
  * @param {Object} transactionGroup group of transactions
  * @return {TransactionDisplayData}
  */
-export function useTransactionDisplayData (transactionGroup) {
+export function useTransactionDisplayData(transactionGroup) {
   // To determine which primary currency to display for swaps transactions we need to be aware
   // of which asset, if any, we are viewing at present
   const currentAsset = useCurrentAsset()
@@ -71,7 +75,10 @@ export function useTransactionDisplayData (transactionGroup) {
   const { from: senderAddress, to } = initialTransaction.txParams || {}
 
   // for smart contract interactions, methodData can be used to derive the name of the action being taken
-  const methodData = useSelector((state) => getKnownMethodData(state, initialTransaction?.txParams?.data)) || {}
+  const methodData =
+    useSelector((state) =>
+      getKnownMethodData(state, initialTransaction?.txParams?.data),
+    ) || {}
 
   const displayedStatusKey = getStatusKey(primaryTransaction)
   const isPending = displayedStatusKey in PENDING_STATUS_HASH
@@ -94,12 +101,27 @@ export function useTransactionDisplayData (transactionGroup) {
   // transfers, we pass an additional argument to these hooks that will be
   // false for non-token transactions. This additional argument forces the
   // hook to return null
-  const token = isTokenCategory && knownTokens.find(({ address }) => address === recipientAddress)
-  const tokenData = useTokenData(initialTransaction?.txParams?.data, isTokenCategory)
-  const tokenDisplayValue = useTokenDisplayValue(initialTransaction?.txParams?.data, token, isTokenCategory)
-  const tokenFiatAmount = useTokenFiatAmount(token?.address, tokenDisplayValue, token?.symbol)
+  const token =
+    isTokenCategory &&
+    knownTokens.find(({ address }) => address === recipientAddress)
+  const tokenData = useTokenData(
+    initialTransaction?.txParams?.data,
+    isTokenCategory,
+  )
+  const tokenDisplayValue = useTokenDisplayValue(
+    initialTransaction?.txParams?.data,
+    token,
+    isTokenCategory,
+  )
+  const tokenFiatAmount = useTokenFiatAmount(
+    token?.address,
+    tokenDisplayValue,
+    token?.symbol,
+  )
 
-  const origin = stripHttpSchemes(initialTransaction.origin || initialTransaction.msgParams?.origin || '')
+  const origin = stripHttpSchemes(
+    initialTransaction.origin || initialTransaction.msgParams?.origin || '',
+  )
 
   // used to append to the primary display value. initialized to either token.symbol or undefined
   // but can later be modified if dealing with a swap
@@ -115,7 +137,12 @@ export function useTransactionDisplayData (transactionGroup) {
   // The primary title of the Tx that will be displayed in the activity list
   let title
 
-  const { swapTokenValue, isNegative, swapTokenFiatAmount, isViewingReceivedTokenFromSwap } = useSwappedTokenValue(transactionGroup, currentAsset)
+  const {
+    swapTokenValue,
+    isNegative,
+    swapTokenFiatAmount,
+    isViewingReceivedTokenFromSwap,
+  } = useSwappedTokenValue(transactionGroup, currentAsset)
 
   // There are seven types of transaction entries that are currently differentiated in the design
   // 1. Signature request
@@ -131,7 +158,6 @@ export function useTransactionDisplayData (transactionGroup) {
     title = t('signatureRequest')
     subtitle = origin
     subtitleContainsOrigin = true
-
   } else if (transactionCategory === SWAP) {
     category = TRANSACTION_CATEGORY_SWAP
     title = t('swapTokenToToken', [
@@ -164,24 +190,29 @@ export function useTransactionDisplayData (transactionGroup) {
     title = t('approveSpendLimit', [token?.symbol || t('token')])
     subtitle = origin
     subtitleContainsOrigin = true
-  } else if (transactionCategory === DEPLOY_CONTRACT_ACTION_KEY || transactionCategory === CONTRACT_INTERACTION_KEY) {
+  } else if (
+    transactionCategory === DEPLOY_CONTRACT_ACTION_KEY ||
+    transactionCategory === CONTRACT_INTERACTION_KEY
+  ) {
     category = TRANSACTION_CATEGORY_INTERACTION
-    title = (methodData?.name && camelCaseToCapitalize(methodData.name)) || t(transactionCategory)
+    title =
+      (methodData?.name && camelCaseToCapitalize(methodData.name)) ||
+      t(transactionCategory)
     subtitle = origin
     subtitleContainsOrigin = true
-
   } else if (transactionCategory === INCOMING_TRANSACTION) {
     category = TRANSACTION_CATEGORY_RECEIVE
     title = t('receive')
     prefix = ''
     subtitle = t('fromAddress', [shortenAddress(senderAddress)])
-
-  } else if (transactionCategory === TOKEN_METHOD_TRANSFER_FROM || transactionCategory === TOKEN_METHOD_TRANSFER) {
+  } else if (
+    transactionCategory === TOKEN_METHOD_TRANSFER_FROM ||
+    transactionCategory === TOKEN_METHOD_TRANSFER
+  ) {
     category = TRANSACTION_CATEGORY_SEND
     title = t('sendSpecifiedTokens', [token?.symbol || t('token')])
     recipientAddress = getTokenAddressParam(tokenData)
     subtitle = t('toAddress', [shortenAddress(recipientAddress)])
-
   } else if (transactionCategory === SEND_ETHER_ACTION_KEY) {
     category = TRANSACTION_CATEGORY_SEND
     title = t('sendETH')
@@ -211,13 +242,15 @@ export function useTransactionDisplayData (transactionGroup) {
     date,
     subtitle,
     subtitleContainsOrigin,
-    primaryCurrency: transactionCategory === SWAP && isPending ? '' : primaryCurrency,
+    primaryCurrency:
+      transactionCategory === SWAP && isPending ? '' : primaryCurrency,
     senderAddress,
     recipientAddress,
-    secondaryCurrency: (
+    secondaryCurrency:
       (isTokenCategory && !tokenFiatAmount) ||
       (transactionCategory === SWAP && !swapTokenFiatAmount)
-    ) ? undefined : secondaryCurrency,
+        ? undefined
+        : secondaryCurrency,
     displayedStatusKey,
     isPending,
     isSubmitted,

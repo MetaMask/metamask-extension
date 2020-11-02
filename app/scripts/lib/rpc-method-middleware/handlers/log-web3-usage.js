@@ -34,10 +34,7 @@ const recordedWeb3Usage = {}
  * @param {Function} end - The json-rpc-engine 'end' callback.
  * @param {LogWeb3UsageOptions} options
  */
-function logWeb3UsageHandler (
-  req, res, _next, end,
-  { origin, sendMetrics },
-) {
+function logWeb3UsageHandler(req, res, _next, end, { origin, sendMetrics }) {
   const { action, name } = req.params[0]
 
   if (!recordedWeb3Usage[origin]) {

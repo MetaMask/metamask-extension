@@ -12,7 +12,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default compose(
-  withRouter,
-  connect(mapStateToProps),
-)(ViewContact)
+export default compose(withRouter, connect(mapStateToProps))(ViewContact)

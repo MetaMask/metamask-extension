@@ -5,21 +5,15 @@ const chrome = require('selenium-webdriver/chrome')
  * A wrapper around a {@code WebDriver} instance exposing Chrome-specific functionality
  */
 class ChromeDriver {
-  static async build ({ extensionPath, responsive, port }) {
-    const args = [
-      `load-extension=${extensionPath}`,
-    ]
+  static async build({ extensionPath, responsive, port }) {
+    const args = [`load-extension=${extensionPath}`]
     if (responsive) {
       args.push('--auto-open-devtools-for-tabs')
     }
-    const options = new chrome.Options()
-      .addArguments(args)
-    const builder = new Builder()
-      .forBrowser('chrome')
-      .setChromeOptions(options)
+    const options = new chrome.Options().addArguments(args)
+    const builder = new Builder().forBrowser('chrome').setChromeOptions(options)
     if (port) {
-      const service = new chrome.ServiceBuilder()
-        .setPort(port)
+      const service = new chrome.ServiceBuilder().setPort(port)
       builder.setChromeService(service)
     }
     const driver = builder.build()
@@ -36,7 +30,7 @@ class ChromeDriver {
    * @constructor
    * @param {!ThenableWebDriver} driver - a {@code WebDriver} instance
    */
-  constructor (driver) {
+  constructor(driver) {
     this._driver = driver
   }
 
@@ -45,7 +39,7 @@ class ChromeDriver {
    * @param {string} extensionName - the extension name
    * @returns {Promise<string|undefined>} - the extension ID
    */
-  async getExtensionIdByName (extensionName) {
+  async getExtensionIdByName(extensionName) {
     await this._driver.get('chrome://extensions')
     return await this._driver.executeScript(`
       const extensions = document.querySelector("extensions-manager").shadowRoot

@@ -4,7 +4,9 @@ import * as utils from './transactions.util'
 describe('Transactions utils', function () {
   describe('getTokenData', function () {
     it('should return token data', function () {
-      const tokenData = utils.getTokenData('0xa9059cbb00000000000000000000000050a9d56c2b8ba9a5c7f2c08c3d26e0499f23a7060000000000000000000000000000000000000000000000000000000000004e20')
+      const tokenData = utils.getTokenData(
+        '0xa9059cbb00000000000000000000000050a9d56c2b8ba9a5c7f2c08c3d26e0499f23a7060000000000000000000000000000000000000000000000000000000000004e20',
+      )
       assert.ok(tokenData)
       const { name, args } = tokenData
       assert.equal(name, 'transfer')
@@ -89,7 +91,10 @@ describe('Transactions utils', function () {
       ]
 
       tests.forEach(({ expected, networkId, hash, rpcPrefs }) => {
-        assert.equal(utils.getBlockExplorerUrlForTx(networkId, hash, rpcPrefs), expected)
+        assert.equal(
+          utils.getBlockExplorerUrlForTx(networkId, hash, rpcPrefs),
+          expected,
+        )
       })
     })
   })

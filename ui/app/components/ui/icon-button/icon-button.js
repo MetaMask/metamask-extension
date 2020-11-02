@@ -4,20 +4,28 @@ import classNames from 'classnames'
 
 const defaultRender = (inner) => inner
 
-export default function IconButton ({ onClick, Icon, disabled, label, tooltipRender, className, ...props }) {
+export default function IconButton({
+  onClick,
+  Icon,
+  disabled,
+  label,
+  tooltipRender,
+  className,
+  ...props
+}) {
   const renderWrapper = tooltipRender ?? defaultRender
   return (
     <button
-      className={classNames('icon-button', className, { 'icon-button--disabled': disabled })}
+      className={classNames('icon-button', className, {
+        'icon-button--disabled': disabled,
+      })}
       data-testid={props['data-testid'] ?? undefined}
       onClick={onClick}
       disabled={disabled}
     >
       {renderWrapper(
         <>
-          <div
-            className="icon-button__circle"
-          >
+          <div className="icon-button__circle">
             <Icon />
           </div>
           <span>{label}</span>

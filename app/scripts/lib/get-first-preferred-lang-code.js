@@ -2,16 +2,16 @@ import extension from 'extensionizer'
 import promisify from 'pify'
 import allLocales from '../../_locales/index.json'
 
-const getPreferredLocales = extension.i18n ? promisify(
-  extension.i18n.getAcceptLanguages,
-  { errorFirst: false },
-) : async () => []
+const getPreferredLocales = extension.i18n
+  ? promisify(extension.i18n.getAcceptLanguages, { errorFirst: false })
+  : async () => []
 
 // mapping some browsers return hyphen instead underscore in locale codes (e.g. zh_TW -> zh-tw)
 const existingLocaleCodes = {}
 allLocales.forEach((locale) => {
   if (locale && locale.code) {
-    existingLocaleCodes[locale.code.toLowerCase().replace('_', '-')] = locale.code
+    existingLocaleCodes[locale.code.toLowerCase().replace('_', '-')] =
+      locale.code
   }
 })
 
@@ -22,7 +22,7 @@ allLocales.forEach((locale) => {
  * @returns {Promise<string>} - Promises a locale code, either one from the user's preferred list that we have a translation for, or 'en'
  *
  */
-export default async function getFirstPreferredLangCode () {
+export default async function getFirstPreferredLangCode() {
   let userPreferredLocaleCodes
 
   try {
@@ -40,7 +40,9 @@ export default async function getFirstPreferredLangCode () {
 
   const firstPreferredLangCode = userPreferredLocaleCodes
     .map((code) => code.toLowerCase().replace('_', '-'))
-    .find((code) => Object.prototype.hasOwnProperty.call(existingLocaleCodes, code))
+    .find((code) =>
+      Object.prototype.hasOwnProperty.call(existingLocaleCodes, code),
+    )
 
   return existingLocaleCodes[firstPreferredLangCode] || 'en'
 }

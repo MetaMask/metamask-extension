@@ -35,17 +35,26 @@ describe('useCancelTransaction', function () {
       })
     })
     transactions.forEach((transactionGroup) => {
-      const originalGasPrice = transactionGroup.primaryTransaction.txParams?.gasPrice
-      const gasPrice = originalGasPrice && increaseLastGasPrice(originalGasPrice)
+      const originalGasPrice =
+        transactionGroup.primaryTransaction.txParams?.gasPrice
+      const gasPrice =
+        originalGasPrice && increaseLastGasPrice(originalGasPrice)
       const transactionId = transactionGroup.initialTransaction.id
       it(`should indicate account has insufficient funds to cover ${gasPrice} gas price`, function () {
-        const { result } = renderHook(() => useCancelTransaction(transactionGroup))
+        const { result } = renderHook(() =>
+          useCancelTransaction(transactionGroup),
+        )
         assert.equal(result.current[0], false)
       })
       it(`should return a function that kicks off cancellation for id ${transactionId}`, function () {
-        const { result } = renderHook(() => useCancelTransaction(transactionGroup))
+        const { result } = renderHook(() =>
+          useCancelTransaction(transactionGroup),
+        )
         assert.equal(typeof result.current[1], 'function')
-        result.current[1]({ preventDefault: () => undefined, stopPropagation: () => undefined })
+        result.current[1]({
+          preventDefault: () => undefined,
+          stopPropagation: () => undefined,
+        })
         assert.equal(
           dispatch.calledWith(
             showModal({
@@ -78,17 +87,26 @@ describe('useCancelTransaction', function () {
       })
     })
     transactions.forEach((transactionGroup) => {
-      const originalGasPrice = transactionGroup.primaryTransaction.txParams?.gasPrice
-      const gasPrice = originalGasPrice && increaseLastGasPrice(originalGasPrice)
+      const originalGasPrice =
+        transactionGroup.primaryTransaction.txParams?.gasPrice
+      const gasPrice =
+        originalGasPrice && increaseLastGasPrice(originalGasPrice)
       const transactionId = transactionGroup.initialTransaction.id
       it(`should indicate account has funds to cover ${gasPrice} gas price`, function () {
-        const { result } = renderHook(() => useCancelTransaction(transactionGroup))
+        const { result } = renderHook(() =>
+          useCancelTransaction(transactionGroup),
+        )
         assert.equal(result.current[0], true)
       })
       it(`should return a function that kicks off cancellation for id ${transactionId}`, function () {
-        const { result } = renderHook(() => useCancelTransaction(transactionGroup))
+        const { result } = renderHook(() =>
+          useCancelTransaction(transactionGroup),
+        )
         assert.equal(typeof result.current[1], 'function')
-        result.current[1]({ preventDefault: () => undefined, stopPropagation: () => undefined })
+        result.current[1]({
+          preventDefault: () => undefined,
+          stopPropagation: () => undefined,
+        })
         assert.equal(
           dispatch.calledWith(
             showModal({

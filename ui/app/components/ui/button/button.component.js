@@ -25,7 +25,16 @@ const typeHash = {
   'first-time': CLASSNAME_FIRST_TIME,
 }
 
-const Button = ({ type, submit, large, children, icon, rounded, className, ...buttonProps }) => {
+const Button = ({
+  type,
+  submit,
+  large,
+  children,
+  icon,
+  rounded,
+  className,
+  ...buttonProps
+}) => {
   // To support using the Button component to render styled links that are semantic html
   // we swap the html tag we use to render this component and delete any buttonProps that
   // we know to be erroneous attributes for a link. We will likely want to extract Link
@@ -45,10 +54,10 @@ const Button = ({ type, submit, large, children, icon, rounded, className, ...bu
         rounded && CLASSNAME_ROUNDED,
         className,
       )}
-      { ...buttonProps }
+      {...buttonProps}
     >
       {icon && <span className="button__icon">{icon}</span>}
-      { children }
+      {children}
     </Tag>
   )
 }

@@ -19,10 +19,7 @@ import {
   getDefaultActiveButtonIndex,
   getIsMainnet,
 } from '../../../../selectors'
-import {
-  isBalanceSufficient,
-  calcGasTotal,
-} from '../../send.utils'
+import { isBalanceSufficient, calcGasTotal } from '../../send.utils'
 import { calcMaxAmount } from '../send-amount-row/amount-max-button/amount-max-button.utils'
 import {
   showGasButtonGroup,
@@ -33,12 +30,22 @@ import {
   setCustomGasPrice,
   setCustomGasLimit,
 } from '../../../../ducks/gas/gas.duck'
-import { showModal, setGasPrice, setGasLimit, setGasTotal, updateSendAmount } from '../../../../store/actions'
+import {
+  showModal,
+  setGasPrice,
+  setGasLimit,
+  setGasTotal,
+  updateSendAmount,
+} from '../../../../store/actions'
 import SendGasRow from './send-gas-row.component'
 
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(SendGasRow)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps,
+)(SendGasRow)
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   const gasButtonInfo = getRenderableEstimateDataForSmallButtonsFromGWEI(state)
   const gasPrice = getGasPrice(state)
   const gasLimit = getGasLimit(state)
@@ -78,9 +85,10 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
-    showCustomizeGasModal: () => dispatch(showModal({ name: 'CUSTOMIZE_GAS', hideBasic: true })),
+    showCustomizeGasModal: () =>
+      dispatch(showModal({ name: 'CUSTOMIZE_GAS', hideBasic: true })),
     setGasPrice: (newPrice, gasLimit) => {
       dispatch(setGasPrice(newPrice))
       dispatch(setCustomGasPrice(newPrice))
@@ -104,7 +112,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-function mergeProps (stateProps, dispatchProps, ownProps) {
+function mergeProps(stateProps, dispatchProps, ownProps) {
   const { gasPriceButtonGroupProps } = stateProps
   const { gasButtonInfo } = gasPriceButtonGroupProps
   const {

@@ -40,13 +40,8 @@ const etherscanSupportedNetworks = [
 ]
 
 export default class IncomingTransactionsController {
-
-  constructor (opts = {}) {
-    const {
-      blockTracker,
-      networkController,
-      preferencesController,
-    } = opts
+  constructor(opts = {}) {
+    const { blockTracker, networkController, preferencesController } = opts
     this.blockTracker = blockTracker
     this.networkController = networkController
     this.preferencesController = preferencesController
@@ -68,38 +63,51 @@ export default class IncomingTransactionsController {
         [MAINNET]: null,
         [RINKEBY]: null,
         [ROPSTEN]: null,
-      }, ...opts.initState,
+      },
+      ...opts.initState,
     }
     this.store = new ObservableStore(initState)
 
-    this.preferencesController.store.subscribe(pairwise((prevState, currState) => {
-      const { featureFlags: { showIncomingTransactions: prevShowIncomingTransactions } = {} } = prevState
-      const { featureFlags: { showIncomingTransactions: currShowIncomingTransactions } = {} } = currState
+    this.preferencesController.store.subscribe(
+      pairwise((prevState, currState) => {
+        const {
+          featureFlags: {
+            showIncomingTransactions: prevShowIncomingTransactions,
+          } = {},
+        } = prevState
+        const {
+          featureFlags: {
+            showIncomingTransactions: currShowIncomingTransactions,
+          } = {},
+        } = currState
 
-      if (currShowIncomingTransactions === prevShowIncomingTransactions) {
-        return
-      }
+        if (currShowIncomingTransactions === prevShowIncomingTransactions) {
+          return
+        }
 
-      if (prevShowIncomingTransactions && !currShowIncomingTransactions) {
-        this.stop()
-        return
-      }
+        if (prevShowIncomingTransactions && !currShowIncomingTransactions) {
+          this.stop()
+          return
+        }
 
-      this.start()
-    }))
+        this.start()
+      }),
+    )
 
-    this.preferencesController.store.subscribe(pairwise(async (prevState, currState) => {
-      const { selectedAddress: prevSelectedAddress } = prevState
-      const { selectedAddress: currSelectedAddress } = currState
+    this.preferencesController.store.subscribe(
+      pairwise(async (prevState, currState) => {
+        const { selectedAddress: prevSelectedAddress } = prevState
+        const { selectedAddress: currSelectedAddress } = currState
 
-      if (currSelectedAddress === prevSelectedAddress) {
-        return
-      }
+        if (currSelectedAddress === prevSelectedAddress) {
+          return
+        }
 
-      await this._update({
-        address: currSelectedAddress,
-      })
-    }))
+        await this._update({
+          address: currSelectedAddress,
+        })
+      }),
+    )
 
     this.networkController.on('networkDidChange', async () => {
       const address = this.preferencesController.getSelectedAddress()
@@ -109,7 +117,7 @@ export default class IncomingTransactionsController {
     })
   }
 
-  start () {
+  start() {
     const { featureFlags = {} } = this.preferencesController.store.getState()
     const { showIncomingTransactions } = featureFlags
 
@@ -121,36 +129,45 @@ export default class IncomingTransactionsController {
     this.blockTracker.addListener('latest', this._onLatestBlock)
   }
 
-  stop () {
+  stop() {
     this.blockTracker.removeListener('latest', this._onLatestBlock)
   }
 
-  async _update ({ address, newBlockNumberDec } = {}) {
+  async _update({ address, newBlockNumberDec } = {}) {
     const chainId = this.networkController.getCurrentChainId()
     if (!etherscanSupportedNetworks.includes(chainId)) {
       return
     }
     try {
-      const dataForUpdate = await this._getDataForUpdate({ address, chainId, newBlockNumberDec })
+      const dataForUpdate = await this._getDataForUpdate({
+        address,
+        chainId,
+        newBlockNumberDec,
+      })
       this._updateStateWithNewTxData(dataForUpdate)
     } catch (err) {
       log.error(err)
     }
   }
 
-  async _getDataForUpdate ({ address, chainId, newBlockNumberDec } = {}) {
+  async _getDataForUpdate({ address, chainId, newBlockNumberDec } = {}) {
     const {
       incomingTransactions: currentIncomingTxs,
       incomingTxLastFetchedBlocksByNetwork: currentBlocksByNetwork,
     } = this.store.getState()
 
-    const lastFetchBlockByCurrentNetwork = currentBlocksByNetwork[CHAIN_ID_TO_TYPE_MAP[chainId]]
+    const lastFetchBlockByCurrentNetwork =
+      currentBlocksByNetwork[CHAIN_ID_TO_TYPE_MAP[chainId]]
     let blockToFetchFrom = lastFetchBlockByCurrentNetwork || newBlockNumberDec
     if (blockToFetchFrom === undefined) {
       blockToFetchFrom = parseInt(this.blockTracker.getCurrentBlock(), 16)
     }
 
-    const { latestIncomingTxBlockNumber, txs: newTxs } = await this._fetchAll(address, blockToFetchFrom, chainId)
+    const { latestIncomingTxBlockNumber, txs: newTxs } = await this._fetchAll(
+      address,
+      blockToFetchFrom,
+      chainId,
+    )
 
     return {
       latestIncomingTxBlockNumber,
@@ -162,7 +179,7 @@ export default class IncomingTransactionsController {
     }
   }
 
-  _updateStateWithNewTxData ({
+  _updateStateWithNewTxData({
     latestIncomingTxBlockNumber,
     newTxs,
     currentIncomingTxs,
@@ -189,15 +206,16 @@ export default class IncomingTransactionsController {
     })
   }
 
-  async _fetchAll (address, fromBlock, chainId) {
+  async _fetchAll(address, fromBlock, chainId) {
     const fetchedTxResponse = await this._fetchTxs(address, fromBlock, chainId)
     return this._processTxFetchResponse(fetchedTxResponse)
   }
 
-  async _fetchTxs (address, fromBlock, chainId) {
-    const etherscanSubdomain = chainId === MAINNET_CHAIN_ID
-      ? 'api'
-      : `api-${CHAIN_ID_TO_TYPE_MAP[chainId]}`
+  async _fetchTxs(address, fromBlock, chainId) {
+    const etherscanSubdomain =
+      chainId === MAINNET_CHAIN_ID
+        ? 'api'
+        : `api-${CHAIN_ID_TO_TYPE_MAP[chainId]}`
 
     const apiUrl = `https://${etherscanSubdomain}.etherscan.io`
     let url = `${apiUrl}/api?module=account&action=txlist&address=${address}&tag=latest&page=1`
@@ -215,7 +233,7 @@ export default class IncomingTransactionsController {
     }
   }
 
-  _processTxFetchResponse ({ status, result = [], address, chainId }) {
+  _processTxFetchResponse({ status, result = [], address, chainId }) {
     if (status === '1' && Array.isArray(result) && result.length > 0) {
       const remoteTxList = {}
       const remoteTxs = []
@@ -226,7 +244,11 @@ export default class IncomingTransactionsController {
         }
       })
 
-      const incomingTxs = remoteTxs.filter((tx) => tx.txParams.to && tx.txParams.to.toLowerCase() === address.toLowerCase())
+      const incomingTxs = remoteTxs.filter(
+        (tx) =>
+          tx.txParams.to &&
+          tx.txParams.to.toLowerCase() === address.toLowerCase(),
+      )
       incomingTxs.sort((a, b) => (a.time < b.time ? -1 : 1))
 
       let latestIncomingTxBlockNumber = null
@@ -234,7 +256,8 @@ export default class IncomingTransactionsController {
         if (
           tx.blockNumber &&
           (!latestIncomingTxBlockNumber ||
-            parseInt(latestIncomingTxBlockNumber, 10) < parseInt(tx.blockNumber, 10))
+            parseInt(latestIncomingTxBlockNumber, 10) <
+              parseInt(tx.blockNumber, 10))
         ) {
           latestIncomingTxBlockNumber = tx.blockNumber
         }
@@ -250,7 +273,7 @@ export default class IncomingTransactionsController {
     }
   }
 
-  _normalizeTxFromEtherscan (txMeta, chainId) {
+  _normalizeTxFromEtherscan(txMeta, chainId) {
     const time = parseInt(txMeta.timeStamp, 10) * 1000
     const status = txMeta.isError === '0' ? 'confirmed' : 'failed'
     return {
@@ -273,7 +296,7 @@ export default class IncomingTransactionsController {
   }
 }
 
-function pairwise (fn) {
+function pairwise(fn) {
   let first = true
   let cache
   return (value) => {

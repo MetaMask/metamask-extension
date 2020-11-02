@@ -18,9 +18,12 @@ describe('MetaMetricsOptIn', function () {
       metamask: {},
     })
     const wrapper = mountWithRouter(
-      <MetaMetricsOptIn.WrappedComponent {...props} />, store,
+      <MetaMetricsOptIn.WrappedComponent {...props} />,
+      store,
     )
-    const noThanksButton = wrapper.find('.btn-default.page-container__footer-button')
+    const noThanksButton = wrapper.find(
+      '.btn-default.page-container__footer-button',
+    )
     noThanksButton.simulate('click')
 
     assert.ok(props.setParticipateInMetaMetrics.calledOnceWithExactly(false))

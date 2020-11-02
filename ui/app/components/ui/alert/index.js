@@ -9,7 +9,7 @@ class Alert extends Component {
     className: '',
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (!this.props.visible && nextProps.visible) {
       this.animateIn(nextProps.msg)
     } else if (this.props.visible && !nextProps.visible) {
@@ -17,7 +17,7 @@ class Alert extends Component {
     }
   }
 
-  animateIn (msg) {
+  animateIn(msg) {
     this.setState({
       msg,
       visible: true,
@@ -25,7 +25,7 @@ class Alert extends Component {
     })
   }
 
-  animateOut () {
+  animateOut() {
     this.setState({
       msg: null,
       className: 'hidden',
@@ -34,10 +34,9 @@ class Alert extends Component {
     setTimeout((_) => {
       this.setState({ visible: false })
     }, 500)
-
   }
 
-  render () {
+  render() {
     if (this.state.visible) {
       return (
         <div className={classnames('global-alert', this.state.className)}>
@@ -51,7 +50,6 @@ class Alert extends Component {
 
 Alert.propTypes = {
   visible: PropTypes.bool.isRequired,
-  msg: PropTypes.string, /* eslint-disable-line react/no-unused-prop-types */
+  msg: PropTypes.string /* eslint-disable-line react/no-unused-prop-types */,
 }
 export default Alert
-

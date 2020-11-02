@@ -1,4 +1,3 @@
-
 /*
 
 This migration ensures that the from address in txParams is to lower case for
@@ -13,7 +12,7 @@ const version = 24
 export default {
   version,
 
-  async migrate (originalVersionedData) {
+  async migrate(originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     const state = versionedData.data
@@ -23,21 +22,23 @@ export default {
   },
 }
 
-function transformState (state) {
+function transformState(state) {
   const newState = state
   if (!newState.TransactionController) {
     return newState
   }
   const { transactions } = newState.TransactionController
-  newState.TransactionController.transactions = transactions.map((txMeta, _) => {
-    if (
-      txMeta.status === 'unapproved' &&
-      txMeta.txParams &&
-      txMeta.txParams.from
-    ) {
-      txMeta.txParams.from = txMeta.txParams.from.toLowerCase()
-    }
-    return txMeta
-  })
+  newState.TransactionController.transactions = transactions.map(
+    (txMeta, _) => {
+      if (
+        txMeta.status === 'unapproved' &&
+        txMeta.txParams &&
+        txMeta.txParams.from
+      ) {
+        txMeta.txParams.from = txMeta.txParams.from.toLowerCase()
+      }
+      return txMeta
+    },
+  )
   return newState
 }

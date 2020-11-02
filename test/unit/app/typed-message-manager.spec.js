@@ -3,7 +3,13 @@ import sinon from 'sinon'
 import TypedMessageManager from '../../../app/scripts/lib/typed-message-manager'
 
 describe('Typed Message Manager', function () {
-  let typedMessageManager, msgParamsV1, msgParamsV3, typedMsgs, messages, msgId, numberMsgId
+  let typedMessageManager,
+    msgParamsV1,
+    msgParamsV3,
+    typedMsgs,
+    messages,
+    msgId,
+    numberMsgId
 
   const address = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
 
@@ -16,47 +22,51 @@ describe('Typed Message Manager', function () {
       from: address,
       data: [
         { type: 'string', name: 'unit test', value: 'hello there' },
-        { type: 'uint32', name: 'A number, but not really a number', value: '$$$' },
+        {
+          type: 'uint32',
+          name: 'A number, but not really a number',
+          value: '$$$',
+        },
       ],
     }
 
     msgParamsV3 = {
       from: address,
       data: JSON.stringify({
-        'types': {
-          'EIP712Domain': [
-            { 'name': 'name', 'type': 'string' },
-            { 'name': 'version', 'type': 'string' },
-            { 'name': 'chainId', 'type': 'uint256' },
-            { 'name': 'verifyingContract', 'type': 'address' },
+        types: {
+          EIP712Domain: [
+            { name: 'name', type: 'string' },
+            { name: 'version', type: 'string' },
+            { name: 'chainId', type: 'uint256' },
+            { name: 'verifyingContract', type: 'address' },
           ],
-          'Person': [
-            { 'name': 'name', 'type': 'string' },
-            { 'name': 'wallet', 'type': 'address' },
+          Person: [
+            { name: 'name', type: 'string' },
+            { name: 'wallet', type: 'address' },
           ],
-          'Mail': [
-            { 'name': 'from', 'type': 'Person' },
-            { 'name': 'to', 'type': 'Person' },
-            { 'name': 'contents', 'type': 'string' },
+          Mail: [
+            { name: 'from', type: 'Person' },
+            { name: 'to', type: 'Person' },
+            { name: 'contents', type: 'string' },
           ],
         },
-        'primaryType': 'Mail',
-        'domain': {
-          'name': 'Ether Mainl',
-          'version': '1',
-          'chainId': 1,
-          'verifyingContract': '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+        primaryType: 'Mail',
+        domain: {
+          name: 'Ether Mainl',
+          version: '1',
+          chainId: 1,
+          verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
         },
-        'message': {
-          'from': {
-            'name': 'Cow',
-            'wallet': '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+        message: {
+          from: {
+            name: 'Cow',
+            wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
           },
-          'to': {
-            'name': 'Bob',
-            'wallet': '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+          to: {
+            name: 'Bob',
+            wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
           },
-          'contents': 'Hello, Bob!',
+          contents: 'Hello, Bob!',
         },
       }),
     }
@@ -109,5 +119,4 @@ describe('Typed Message Manager', function () {
     typedMessageManager.rejectMsg(numberMsgId)
     assert.equal(messages[0].status, 'rejected')
   })
-
 })

@@ -22,7 +22,8 @@ proxyquire('../add-recipient.container.js', {
     getSendEnsResolutionError: (s) => `mockSendEnsResolutionError:${s}`,
     getAddressBook: (s) => [{ name: `mockAddressBook:${s}` }],
     getAddressBookEntry: (s) => `mockAddressBookEntry:${s}`,
-    accountsWithSendEtherInfoSelector: (s) => `mockAccountsWithSendEtherInfoSelector:${s}`,
+    accountsWithSendEtherInfoSelector: (s) =>
+      `mockAccountsWithSendEtherInfoSelector:${s}`,
   },
   '../../../../store/actions': actionSpies,
 })
@@ -51,10 +52,10 @@ describe('add-recipient container', function () {
         mapDispatchToPropsObject.updateSendTo('mockTo', 'mockNickname')
         assert(dispatchSpy.calledOnce)
         assert(actionSpies.updateSendTo.calledOnce)
-        assert.deepEqual(
-          actionSpies.updateSendTo.getCall(0).args,
-          ['mockTo', 'mockNickname'],
-        )
+        assert.deepEqual(actionSpies.updateSendTo.getCall(0).args, [
+          'mockTo',
+          'mockNickname',
+        ])
       })
     })
   })

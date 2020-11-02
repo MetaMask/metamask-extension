@@ -7,7 +7,8 @@ import RevealSeedPhrase from '..'
 describe('Reveal Seed Phrase', function () {
   let wrapper
 
-  const TEST_SEED = 'debris dizzy just program just float decrease vacant alarm reduce speak stadium'
+  const TEST_SEED =
+    'debris dizzy just program just float decrease vacant alarm reduce speak stadium'
 
   const props = {
     history: {
@@ -19,14 +20,12 @@ describe('Reveal Seed Phrase', function () {
   }
 
   beforeEach(function () {
-    wrapper = mount(
-      <RevealSeedPhrase.WrappedComponent {...props} />, {
-        context: {
-          t: (str) => str,
-          metricsEvent: () => undefined,
-        },
+    wrapper = mount(<RevealSeedPhrase.WrappedComponent {...props} />, {
+      context: {
+        t: (str) => str,
+        metricsEvent: () => undefined,
       },
-    )
+    })
   })
 
   it('seed phrase', function () {

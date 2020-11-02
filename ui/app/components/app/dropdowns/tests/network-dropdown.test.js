@@ -27,9 +27,7 @@ describe('Network Dropdown', function () {
     const store = createMockStore(mockState)
 
     beforeEach(function () {
-      wrapper = mountWithRouter(
-        <NetworkDropdown store={store} />,
-      )
+      wrapper = mountWithRouter(<NetworkDropdown store={store} />)
     })
 
     it('checks for network droppo class', function () {
@@ -39,7 +37,6 @@ describe('Network Dropdown', function () {
     it('renders only one child when networkDropdown is false in state', function () {
       assert.equal(wrapper.children().length, 1)
     })
-
   })
 
   describe('NetworkDropdown in appState is true', function () {
@@ -47,7 +44,7 @@ describe('Network Dropdown', function () {
       metamask: {
         network: '1',
         provider: {
-          'type': 'test',
+          type: 'test',
         },
         frequentRpcListDetail: [
           { chainId: '0x1a', rpcUrl: 'http://localhost:7545' },
@@ -55,15 +52,13 @@ describe('Network Dropdown', function () {
         ],
       },
       appState: {
-        'networkDropdownOpen': true,
+        networkDropdownOpen: true,
       },
     }
     const store = createMockStore(mockState)
 
     beforeEach(function () {
-      wrapper = mountWithRouter(
-        <NetworkDropdown store={store} />,
-      )
+      wrapper = mountWithRouter(<NetworkDropdown store={store} />)
     })
 
     it('renders 8 DropDownMenuItems ', function () {
@@ -71,31 +66,52 @@ describe('Network Dropdown', function () {
     })
 
     it('checks background color for first NetworkDropdownIcon', function () {
-      assert.equal(wrapper.find(NetworkDropdownIcon).at(0).prop('backgroundColor'), '#29B6AF') // Ethereum Mainnet Teal
+      assert.equal(
+        wrapper.find(NetworkDropdownIcon).at(0).prop('backgroundColor'),
+        '#29B6AF',
+      ) // Ethereum Mainnet Teal
     })
 
     it('checks background color for second NetworkDropdownIcon', function () {
-      assert.equal(wrapper.find(NetworkDropdownIcon).at(1).prop('backgroundColor'), '#ff4a8d') // Ropsten Red
+      assert.equal(
+        wrapper.find(NetworkDropdownIcon).at(1).prop('backgroundColor'),
+        '#ff4a8d',
+      ) // Ropsten Red
     })
 
     it('checks background color for third NetworkDropdownIcon', function () {
-      assert.equal(wrapper.find(NetworkDropdownIcon).at(2).prop('backgroundColor'), '#7057ff') // Kovan Purple
+      assert.equal(
+        wrapper.find(NetworkDropdownIcon).at(2).prop('backgroundColor'),
+        '#7057ff',
+      ) // Kovan Purple
     })
 
     it('checks background color for fourth NetworkDropdownIcon', function () {
-      assert.equal(wrapper.find(NetworkDropdownIcon).at(3).prop('backgroundColor'), '#f6c343') // Rinkeby Yellow
+      assert.equal(
+        wrapper.find(NetworkDropdownIcon).at(3).prop('backgroundColor'),
+        '#f6c343',
+      ) // Rinkeby Yellow
     })
 
     it('checks background color for fifth NetworkDropdownIcon', function () {
-      assert.equal(wrapper.find(NetworkDropdownIcon).at(4).prop('backgroundColor'), '#3099f2') // Goerli Blue
+      assert.equal(
+        wrapper.find(NetworkDropdownIcon).at(4).prop('backgroundColor'),
+        '#3099f2',
+      ) // Goerli Blue
     })
 
     it('checks background color for sixth NetworkDropdownIcon', function () {
-      assert.equal(wrapper.find(NetworkDropdownIcon).at(5).prop('backgroundColor'), '#d6d9dc') // "Custom network grey"
+      assert.equal(
+        wrapper.find(NetworkDropdownIcon).at(5).prop('backgroundColor'),
+        '#d6d9dc',
+      ) // "Custom network grey"
     })
 
     it('checks dropdown for frequestRPCList from state', function () {
-      assert.equal(wrapper.find(DropdownMenuItem).at(6).text(), '✓http://localhost:7545')
+      assert.equal(
+        wrapper.find(DropdownMenuItem).at(6).text(),
+        '✓http://localhost:7545',
+      )
     })
   })
 })

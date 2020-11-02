@@ -3,7 +3,12 @@ import { useRef, useEffect, useState, useMemo } from 'react'
 import { isEqual } from 'lodash'
 import { captureException } from '@sentry/browser'
 import { hexWEIToDecGWEI } from '../helpers/utils/conversions.util'
-import { getEstimatedGasPrices, getEstimatedGasTimes, getFeatureFlags, getIsMainnet } from '../selectors'
+import {
+  getEstimatedGasPrices,
+  getEstimatedGasTimes,
+  getFeatureFlags,
+  getIsMainnet,
+} from '../selectors'
 import { getRawTimeEstimateData } from '../helpers/utils/gas-time-estimates.util'
 import { getCurrentLocale } from '../ducks/metamask/metamask'
 
@@ -13,12 +18,15 @@ import { getCurrentLocale } from '../ducks/metamask/metamask'
  * @param {number} submittedTime       - timestamp of when the tx was submitted
  * @return {number} minutes remaining
  */
-function calcTransactionTimeRemaining (initialTimeEstimate, submittedTime) {
-  const currentTime = (new Date()).getTime()
+function calcTransactionTimeRemaining(initialTimeEstimate, submittedTime) {
+  const currentTime = new Date().getTime()
   const timeElapsedSinceSubmission = (currentTime - submittedTime) / 1000
-  const timeRemainingOnEstimate = initialTimeEstimate - timeElapsedSinceSubmission
+  const timeRemainingOnEstimate =
+    initialTimeEstimate - timeElapsedSinceSubmission
 
-  const renderingTimeRemainingEstimate = Math.round(timeRemainingOnEstimate / 60)
+  const renderingTimeRemainingEstimate = Math.round(
+    timeRemainingOnEstimate / 60,
+  )
   return renderingTimeRemainingEstimate
 }
 
@@ -33,7 +41,7 @@ function calcTransactionTimeRemaining (initialTimeEstimate, submittedTime) {
  * @param {boolean} dontFormat     - Whether the result should be be formatted, or just a number of minutes
  * @returns {string | undefined} i18n formatted string if applicable
  */
-export function useTransactionTimeRemaining (
+export function useTransactionTimeRemaining(
   isSubmitted,
   isEarliestNonce,
   submittedTime,
@@ -53,15 +61,20 @@ export function useTransactionTimeRemaining (
   const featureFlags = useSelector(getFeatureFlags)
   const transactionTimeFeatureActive = featureFlags?.transactionTime
 
-  const rtf = new Intl.RelativeTimeFormat(locale.replace('_', '-'), { numeric: 'auto', style: 'narrow' })
+  const rtf = new Intl.RelativeTimeFormat(locale.replace('_', '-'), {
+    numeric: 'auto',
+    style: 'narrow',
+  })
 
   // Memoize this value so it can be used as a dependency in the effect below
   const initialTimeEstimate = useMemo(() => {
     const customGasPrice = Number(hexWEIToDecGWEI(currentGasPrice))
     try {
-      const {
-        newTimeEstimate,
-      } = getRawTimeEstimateData(customGasPrice, gasPrices, estimatedTimes)
+      const { newTimeEstimate } = getRawTimeEstimateData(
+        customGasPrice,
+        gasPrices,
+        estimatedTimes,
+      )
       return newTimeEstimate
     } catch (error) {
       captureException(error)
@@ -71,8 +84,8 @@ export function useTransactionTimeRemaining (
 
   useEffect(() => {
     if (
-      (isMainNet &&
-      (transactionTimeFeatureActive || forceAllow)) &&
+      isMainNet &&
+      (transactionTimeFeatureActive || forceAllow) &&
       isSubmitted &&
       isEarliestNonce &&
       !isNaN(initialTimeEstimate)

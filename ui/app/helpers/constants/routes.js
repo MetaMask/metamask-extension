@@ -43,7 +43,8 @@ const INITIALIZE_ROUTE = '/initialize'
 const INITIALIZE_WELCOME_ROUTE = '/initialize/welcome'
 const INITIALIZE_UNLOCK_ROUTE = '/initialize/unlock'
 const INITIALIZE_CREATE_PASSWORD_ROUTE = '/initialize/create-password'
-const INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE = '/initialize/create-password/import-with-seed-phrase'
+const INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE =
+  '/initialize/create-password/import-with-seed-phrase'
 const INITIALIZE_SELECT_ACTION_ROUTE = '/initialize/select-action'
 const INITIALIZE_SEED_PHRASE_ROUTE = '/initialize/seed-phrase'
 const INITIALIZE_BACKUP_SEED_PHRASE_ROUTE = '/initialize/backup-seed-phrase'
@@ -111,12 +112,16 @@ const PATH_NAME_MAP = {
   [INITIALIZE_WELCOME_ROUTE]: 'Install Welcome Page',
   [INITIALIZE_UNLOCK_ROUTE]: 'Initialization Unlock page',
   [INITIALIZE_CREATE_PASSWORD_ROUTE]: 'Initialization Create Password Page',
-  [INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE]: 'Initialization Import Account With Seed Phrase Page',
-  [INITIALIZE_SELECT_ACTION_ROUTE]: 'Initialization Choose Restore or New Account Page',
+  [INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE]:
+    'Initialization Import Account With Seed Phrase Page',
+  [INITIALIZE_SELECT_ACTION_ROUTE]:
+    'Initialization Choose Restore or New Account Page',
   [INITIALIZE_SEED_PHRASE_ROUTE]: 'Initialization Seed Phrase Page',
-  [INITIALIZE_BACKUP_SEED_PHRASE_ROUTE]: 'Initialization Backup Seed Phrase Page',
+  [INITIALIZE_BACKUP_SEED_PHRASE_ROUTE]:
+    'Initialization Backup Seed Phrase Page',
   [INITIALIZE_END_OF_FLOW_ROUTE]: 'End of Initialization Page',
-  [INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE]: 'Initialization Confirm Seed Phrase Page',
+  [INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE]:
+    'Initialization Confirm Seed Phrase Page',
   [INITIALIZE_METAMETRICS_OPT_IN_ROUTE]: 'MetaMetrics Opt In Page',
   [BUILD_QUOTE_ROUTE]: 'Swaps Build Quote Page',
   [VIEW_QUOTE_ROUTE]: 'Swaps View Quotes Page',

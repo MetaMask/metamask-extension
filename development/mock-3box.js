@@ -1,14 +1,14 @@
-function delay (time) {
+function delay(time) {
   return new Promise((resolve) => setTimeout(resolve, time))
 }
 
-async function loadFromMock3Box (key) {
+async function loadFromMock3Box(key) {
   const res = await window.fetch(`http://localhost:8889?key=${key}`)
   const text = await res.text()
   return text.length ? JSON.parse(text) : null
 }
 
-async function saveToMock3Box (key, newDataAtKey) {
+async function saveToMock3Box(key, newDataAtKey) {
   const res = await window.fetch('http://localhost:8889', {
     method: 'POST',
     body: JSON.stringify({
@@ -21,7 +21,7 @@ async function saveToMock3Box (key, newDataAtKey) {
 }
 
 class Mock3Box {
-  static openBox (address) {
+  static openBox(address) {
     this.address = address
     return Promise.resolve({
       onSyncDone: (cb) => {
@@ -39,11 +39,16 @@ class Mock3Box {
           private: {
             get: async (key) => {
               await delay(50)
-              const res = await loadFromMock3Box(`${this.address}-${this.spaceName}-${key}`)
+              const res = await loadFromMock3Box(
+                `${this.address}-${this.spaceName}-${key}`,
+              )
               return res
             },
             set: async (key, data) => {
-              await saveToMock3Box(`${this.address}-${this.spaceName}-${key}`, data)
+              await saveToMock3Box(
+                `${this.address}-${this.spaceName}-${key}`,
+                data,
+              )
               await delay(50)
               return null
             },
@@ -54,11 +59,9 @@ class Mock3Box {
     })
   }
 
-  static async getConfig (address) {
+  static async getConfig(address) {
     const backup = await loadFromMock3Box(`${address}-metamask-metamaskBackup`)
-    return backup
-      ? { spaces: { metamask: {} } }
-      : {}
+    return backup ? { spaces: { metamask: {} } } : {}
   }
 }
 

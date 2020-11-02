@@ -7,11 +7,16 @@ describe('txUtils', function () {
   let txUtils
 
   before(function () {
-    txUtils = new TxUtils(new Proxy({}, {
-      get: () => {
-        return () => undefined
-      },
-    }))
+    txUtils = new TxUtils(
+      new Proxy(
+        {},
+        {
+          get: () => {
+            return () => undefined
+          },
+        },
+      ),
+    )
   })
 
   describe('chain Id', function () {
@@ -53,7 +58,10 @@ describe('txUtils', function () {
       // const inputBn = hexToBn(inputHex)
       const outputBn = hexToBn(output)
       const expectedBn = hexToBn(inputHex)
-      assert.ok(outputBn.eq(expectedBn), 'returns the original estimatedGas value')
+      assert.ok(
+        outputBn.eq(expectedBn),
+        'returns the original estimatedGas value',
+      )
     })
 
     it('buffers up to recommend gas limit recommended ceiling', function () {
@@ -67,7 +75,11 @@ describe('txUtils', function () {
       // const inputBn = hexToBn(inputHex)
       // const outputBn = hexToBn(output)
       const expectedHex = bnToHex(ceilGasLimitBn)
-      assert.equal(output, expectedHex, 'returns the gas limit recommended ceiling value')
+      assert.equal(
+        output,
+        expectedHex,
+        'returns the gas limit recommended ceiling value',
+      )
     })
   })
 })

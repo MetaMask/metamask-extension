@@ -11,9 +11,7 @@ describe('Confirm Remove Account', function () {
   let wrapper
 
   const state = {
-    metamask: {
-
-    },
+    metamask: {},
   }
 
   const props = {
@@ -30,11 +28,11 @@ describe('Confirm Remove Account', function () {
   const store = mockStore(state)
 
   beforeEach(function () {
-
     wrapper = mount(
-      <Provider store={store} >
+      <Provider store={store}>
         <ConfirmRemoveAccount.WrappedComponent {...props} />
-      </Provider>, {
+      </Provider>,
+      {
         context: {
           t: (str) => str,
           store,
@@ -69,7 +67,6 @@ describe('Confirm Remove Account', function () {
       assert(props.hideModal.calledOnce)
       done()
     })
-
   })
 
   it('closes', function () {

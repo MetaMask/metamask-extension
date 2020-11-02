@@ -28,17 +28,23 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker.on('tx:warning', warningListener)
       await pendingTxTracker.resubmitPendingTxs('0x1')
 
-      assert.ok(getPendingTransactions.calledOnceWithExactly(), 'should call getPendingTransaction')
+      assert.ok(
+        getPendingTransactions.calledOnceWithExactly(),
+        'should call getPendingTransaction',
+      )
       assert.ok(resubmitTx.notCalled, 'should NOT call _resubmitTx')
       assert.ok(warningListener.notCalled, "should NOT emit 'tx:warning'")
     })
 
     it('should resubmit each pending transaction', async function () {
-      const getPendingTransactions = sinon.stub().returns([{
-        id: 1,
-      }, {
-        id: 2,
-      }])
+      const getPendingTransactions = sinon.stub().returns([
+        {
+          id: 1,
+        },
+        {
+          id: 2,
+        },
+      ])
       const pendingTxTracker = new PendingTransactionTracker({
         query: {
           getTransactionReceipt: sinon.stub(),
@@ -60,15 +66,20 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker.on('tx:warning', warningListener)
       await pendingTxTracker.resubmitPendingTxs('0x1')
 
-      assert.ok(getPendingTransactions.calledOnceWithExactly(), 'should call getPendingTransaction')
+      assert.ok(
+        getPendingTransactions.calledOnceWithExactly(),
+        'should call getPendingTransaction',
+      )
       assert.ok(resubmitTx.calledTwice, 'should call _resubmitTx')
       assert.ok(warningListener.notCalled, "should NOT emit 'tx:warning'")
     })
 
     it("should NOT emit 'tx:warning' for known failed resubmission", async function () {
-      const getPendingTransactions = sinon.stub().returns([{
-        id: 1,
-      }])
+      const getPendingTransactions = sinon.stub().returns([
+        {
+          id: 1,
+        },
+      ])
       const pendingTxTracker = new PendingTransactionTracker({
         query: {
           getTransactionReceipt: sinon.stub(),
@@ -84,21 +95,28 @@ describe('PendingTransactionTracker', function () {
         publishTransaction: sinon.spy(),
         confirmTransaction: sinon.spy(),
       })
-      const resubmitTx = sinon.stub(pendingTxTracker, '_resubmitTx').rejects({ message: 'known transaction' })
+      const resubmitTx = sinon
+        .stub(pendingTxTracker, '_resubmitTx')
+        .rejects({ message: 'known transaction' })
       const warningListener = sinon.spy()
 
       pendingTxTracker.on('tx:warning', warningListener)
       await pendingTxTracker.resubmitPendingTxs('0x1')
 
-      assert.ok(getPendingTransactions.calledOnceWithExactly(), 'should call getPendingTransaction')
+      assert.ok(
+        getPendingTransactions.calledOnceWithExactly(),
+        'should call getPendingTransaction',
+      )
       assert.ok(resubmitTx.calledOnce, 'should call _resubmitTx')
       assert.ok(warningListener.notCalled, "should NOT emit 'tx:warning'")
     })
 
     it("should emit 'tx:warning' for unknown failed resubmission", async function () {
-      const getPendingTransactions = sinon.stub().returns([{
-        id: 1,
-      }])
+      const getPendingTransactions = sinon.stub().returns([
+        {
+          id: 1,
+        },
+      ])
       const pendingTxTracker = new PendingTransactionTracker({
         query: {
           getTransactionReceipt: sinon.stub(),
@@ -114,13 +132,18 @@ describe('PendingTransactionTracker', function () {
         publishTransaction: sinon.spy(),
         confirmTransaction: sinon.spy(),
       })
-      const resubmitTx = sinon.stub(pendingTxTracker, '_resubmitTx').rejects({ message: 'who dis' })
+      const resubmitTx = sinon
+        .stub(pendingTxTracker, '_resubmitTx')
+        .rejects({ message: 'who dis' })
       const warningListener = sinon.spy()
 
       pendingTxTracker.on('tx:warning', warningListener)
       await pendingTxTracker.resubmitPendingTxs('0x1')
 
-      assert.ok(getPendingTransactions.calledOnceWithExactly(), 'should call getPendingTransaction')
+      assert.ok(
+        getPendingTransactions.calledOnceWithExactly(),
+        'should call getPendingTransaction',
+      )
       assert.ok(resubmitTx.calledOnce, 'should call _resubmitTx')
       assert.ok(warningListener.calledOnce, "should emit 'tx:warning'")
     })
@@ -130,7 +153,8 @@ describe('PendingTransactionTracker', function () {
     it('should call _checkPendingTx for each pending transaction', async function () {
       const txMeta = {
         id: 1,
-        hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+        hash:
+          '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
         status: 'signed',
         txParams: {
           from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
@@ -138,7 +162,8 @@ describe('PendingTransactionTracker', function () {
           value: '0xfffff',
         },
         history: [{}],
-        rawTx: '0xf86c808504a817c800827b0d940c62bb85faa3311a998d3aba8098c1235c564966880de0b6b3a7640000802aa08ff665feb887a25d4099e40e11f0fef93ee9608f404bd3f853dd9e84ed3317a6a02ec9d3d1d6e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
+        rawTx:
+          '0xf86c808504a817c800827b0d940c62bb85faa3311a998d3aba8098c1235c564966880de0b6b3a7640000802aa08ff665feb887a25d4099e40e11f0fef93ee9608f404bd3f853dd9e84ed3317a6a02ec9d3d1d6e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
       }
       const txList = [1, 2, 3].map((id) => ({ ...txMeta, id }))
       const pendingTxTracker = new PendingTransactionTracker({
@@ -158,13 +183,27 @@ describe('PendingTransactionTracker', function () {
         confirmTransaction: () => undefined,
       })
 
-      const checkPendingTxStub = sinon.stub(pendingTxTracker, '_checkPendingTx').resolves()
+      const checkPendingTxStub = sinon
+        .stub(pendingTxTracker, '_checkPendingTx')
+        .resolves()
       await pendingTxTracker.updatePendingTxs()
 
       assert.ok(checkPendingTxStub.calledThrice)
-      assert.ok(checkPendingTxStub.firstCall.calledWithExactly(sinon.match.has('id', 1)))
-      assert.ok(checkPendingTxStub.secondCall.calledWithExactly(sinon.match.has('id', 2)))
-      assert.ok(checkPendingTxStub.thirdCall.calledWithExactly(sinon.match.has('id', 3)))
+      assert.ok(
+        checkPendingTxStub.firstCall.calledWithExactly(
+          sinon.match.has('id', 1),
+        ),
+      )
+      assert.ok(
+        checkPendingTxStub.secondCall.calledWithExactly(
+          sinon.match.has('id', 2),
+        ),
+      )
+      assert.ok(
+        checkPendingTxStub.thirdCall.calledWithExactly(
+          sinon.match.has('id', 3),
+        ),
+      )
     })
   })
 
@@ -172,7 +211,8 @@ describe('PendingTransactionTracker', function () {
     it('should publish a new transaction', async function () {
       const txMeta = {
         id: 1,
-        hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+        hash:
+          '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
         status: 'signed',
         txParams: {
           from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
@@ -180,7 +220,8 @@ describe('PendingTransactionTracker', function () {
           value: '0xfffff',
         },
         history: [{}],
-        rawTx: '0xf86c808504a817c80086a02ec9d3d1d6e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
+        rawTx:
+          '0xf86c808504a817c80086a02ec9d3d1d6e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
       }
       const approveTransaction = sinon.spy()
       const publishTransaction = sinon.spy()
@@ -202,14 +243,21 @@ describe('PendingTransactionTracker', function () {
 
       await pendingTxTracker._resubmitTx(txMeta)
 
-      assert.ok(publishTransaction.calledOnceWithExactly(txMeta.rawTx), 'should call publish transaction with the rawTx')
-      assert.ok(approveTransaction.notCalled, 'should NOT try to approve transaction')
+      assert.ok(
+        publishTransaction.calledOnceWithExactly(txMeta.rawTx),
+        'should call publish transaction with the rawTx',
+      )
+      assert.ok(
+        approveTransaction.notCalled,
+        'should NOT try to approve transaction',
+      )
     })
 
     it('should publish the given transaction if more than 2**retryCount blocks have passed', async function () {
       const txMeta = {
         id: 1,
-        hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+        hash:
+          '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
         status: 'signed',
         txParams: {
           from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
@@ -217,7 +265,8 @@ describe('PendingTransactionTracker', function () {
           value: '0xfffff',
         },
         history: [{}],
-        rawTx: '0xf86c808504a817c800827b0d940c62bb85faa3311a996e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
+        rawTx:
+          '0xf86c808504a817c800827b0d940c62bb85faa3311a996e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
         retryCount: 4,
         firstRetryBlockNumber: '0x1',
       }
@@ -241,14 +290,21 @@ describe('PendingTransactionTracker', function () {
 
       await pendingTxTracker._resubmitTx(txMeta, '0x11' /* 16 */)
 
-      assert.ok(publishTransaction.calledOnceWithExactly(txMeta.rawTx), 'should try to publish transaction')
-      assert.ok(approveTransaction.notCalled, 'should NOT try to approve transaction')
+      assert.ok(
+        publishTransaction.calledOnceWithExactly(txMeta.rawTx),
+        'should try to publish transaction',
+      )
+      assert.ok(
+        approveTransaction.notCalled,
+        'should NOT try to approve transaction',
+      )
     })
 
     it('should NOT publish the given transaction if fewer than 2**retryCount blocks have passed', async function () {
       const txMeta = {
         id: 1,
-        hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+        hash:
+          '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
         status: 'signed',
         txParams: {
           from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
@@ -256,7 +312,8 @@ describe('PendingTransactionTracker', function () {
           value: '0xfffff',
         },
         history: [{}],
-        rawTx: '0xf86c808504a817c800827b0d940c62bb85faa3311a996e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
+        rawTx:
+          '0xf86c808504a817c800827b0d940c62bb85faa3311a996e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
         retryCount: 4,
         firstRetryBlockNumber: '0x1',
       }
@@ -280,8 +337,14 @@ describe('PendingTransactionTracker', function () {
 
       await pendingTxTracker._resubmitTx(txMeta, '0x5')
 
-      assert.ok(publishTransaction.notCalled, 'should NOT try to publish transaction')
-      assert.ok(approveTransaction.notCalled, 'should NOT try to approve transaction')
+      assert.ok(
+        publishTransaction.notCalled,
+        'should NOT try to publish transaction',
+      )
+      assert.ok(
+        approveTransaction.notCalled,
+        'should NOT try to approve transaction',
+      )
     })
 
     it('should call approveTransaction if the tx is not yet signed', async function () {
@@ -305,8 +368,14 @@ describe('PendingTransactionTracker', function () {
 
       await pendingTxTracker._resubmitTx({ id: 40 })
 
-      assert.ok(approveTransaction.calledOnceWithExactly(40), 'should call approveTransaction with the tx ID')
-      assert.ok(publishTransaction.notCalled, 'should NOT try to publish transaction')
+      assert.ok(
+        approveTransaction.calledOnceWithExactly(40),
+        'should call approveTransaction with the tx ID',
+      )
+      assert.ok(
+        publishTransaction.notCalled,
+        'should NOT try to publish transaction',
+      )
     })
   })
 
@@ -331,17 +400,20 @@ describe('PendingTransactionTracker', function () {
 
       pendingTxTracker.DROPPED_BUFFER_COUNT = 0
 
-      assert.ok(await pendingTxTracker._checkIfTxWasDropped({
-        id: 1,
-        hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
-        status: 'submitted',
-        txParams: {
-          from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
-          nonce: '0x1',
-          value: '0xfffff',
-        },
-        rawTx: '0xf86c808504a817c800827b0d940c62bba0ea0d00cc9789d0d7ff1f471d',
-      }))
+      assert.ok(
+        await pendingTxTracker._checkIfTxWasDropped({
+          id: 1,
+          hash:
+            '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+          status: 'submitted',
+          txParams: {
+            from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+            nonce: '0x1',
+            value: '0xfffff',
+          },
+          rawTx: '0xf86c808504a817c800827b0d940c62bba0ea0d00cc9789d0d7ff1f471d',
+        }),
+      )
     })
 
     it('should return false when the given nonce is the network nonce', async function () {
@@ -364,14 +436,16 @@ describe('PendingTransactionTracker', function () {
 
       const dropped = await pendingTxTracker._checkIfTxWasDropped({
         id: 1,
-        hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+        hash:
+          '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
         status: 'submitted',
         txParams: {
           from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
           nonce: '0x1',
           value: '0xfffff',
         },
-        rawTx: '0xf86c808504a89e84ed3317a6a02ec9d3d1d6e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
+        rawTx:
+          '0xf86c808504a89e84ed3317a6a02ec9d3d1d6e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
       })
 
       assert.ok(!dropped, 'should be false')
@@ -380,27 +454,34 @@ describe('PendingTransactionTracker', function () {
 
   describe('#_checkIfNonceIsTaken', function () {
     it('should return false if the given nonce is not taken', async function () {
-      const confirmedTxList = [{
-        id: 1,
-        hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
-        status: 'confirmed',
-        txParams: {
-          from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
-          nonce: '0x1',
-          value: '0xfffff',
+      const confirmedTxList = [
+        {
+          id: 1,
+          hash:
+            '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+          status: 'confirmed',
+          txParams: {
+            from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+            nonce: '0x1',
+            value: '0xfffff',
+          },
+          rawTx:
+            '0xf86c808504a817c800827b0d940c62bb85fa3320e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
         },
-        rawTx: '0xf86c808504a817c800827b0d940c62bb85fa3320e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
-      }, {
-        id: 2,
-        hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
-        status: 'confirmed',
-        txParams: {
-          from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
-          nonce: '0x2',
-          value: '0xfffff',
+        {
+          id: 2,
+          hash:
+            '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+          status: 'confirmed',
+          txParams: {
+            from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+            nonce: '0x2',
+            value: '0xfffff',
+          },
+          rawTx:
+            '0xf86c808507a6a02ec9d3d1d6e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
         },
-        rawTx: '0xf86c808507a6a02ec9d3d1d6e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
-      }]
+      ]
       const getCompletedTransactions = sinon.stub().returns(confirmedTxList)
       const pendingTxTracker = new PendingTransactionTracker({
         query: sinon.spy(),
@@ -423,32 +504,43 @@ describe('PendingTransactionTracker', function () {
         },
       })
 
-      assert.ok(getCompletedTransactions.calledOnceWithExactly('0x1678a085c290ebd122dc42cba69373b5953b831d'))
+      assert.ok(
+        getCompletedTransactions.calledOnceWithExactly(
+          '0x1678a085c290ebd122dc42cba69373b5953b831d',
+        ),
+      )
       assert.ok(!taken)
     })
 
     it('should return true if the nonce is taken', async function () {
-      const confirmedTxList = [{
-        id: 1,
-        hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
-        status: 'confirmed',
-        txParams: {
-          from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
-          nonce: '0x1',
-          value: '0xfffff',
+      const confirmedTxList = [
+        {
+          id: 1,
+          hash:
+            '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+          status: 'confirmed',
+          txParams: {
+            from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+            nonce: '0x1',
+            value: '0xfffff',
+          },
+          rawTx:
+            '0xf86c808504a817c80082ec9d3d1d6e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
         },
-        rawTx: '0xf86c808504a817c80082ec9d3d1d6e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
-      }, {
-        id: 2,
-        hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
-        status: 'confirmed',
-        txParams: {
-          from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
-          nonce: '0x2',
-          value: '0xfffff',
+        {
+          id: 2,
+          hash:
+            '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+          status: 'confirmed',
+          txParams: {
+            from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+            nonce: '0x2',
+            value: '0xfffff',
+          },
+          rawTx:
+            '0xf86c808504a817c800827b0d940c62bb760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
         },
-        rawTx: '0xf86c808504a817c800827b0d940c62bb760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
-      }]
+      ]
       const getCompletedTransactions = sinon.stub().returns(confirmedTxList)
       const pendingTxTracker = new PendingTransactionTracker({
         query: sinon.spy(),
@@ -471,7 +563,11 @@ describe('PendingTransactionTracker', function () {
         },
       })
 
-      assert.ok(getCompletedTransactions.calledOnceWithExactly('0x1678a085c290ebd122dc42cba69373b5953b831d'))
+      assert.ok(
+        getCompletedTransactions.calledOnceWithExactly(
+          '0x1678a085c290ebd122dc42cba69373b5953b831d',
+        ),
+      )
       assert.ok(taken)
     })
   })
@@ -480,7 +576,8 @@ describe('PendingTransactionTracker', function () {
     it("should emit 'tx:warning' if getTransactionReceipt rejects", async function () {
       const txMeta = {
         id: 1,
-        hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+        hash:
+          '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
         status: 'submitted',
         txParams: {
           from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
@@ -550,12 +647,12 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker.once('tx:failed', listeners.failed)
       pendingTxTracker.once('tx:warning', listeners.warning)
       await pendingTxTracker._checkPendingTx({
-        'status': 'confirmed',
-        'history': [{}],
-        'txParams': { 'nonce': '0x1' },
-        'id': '456',
-        'value': '0x01',
-        'hash': '0xbad',
+        status: 'confirmed',
+        history: [{}],
+        txParams: { nonce: '0x1' },
+        id: '456',
+        value: '0x01',
+        hash: '0xbad',
       })
 
       assert.ok(listeners.failed.notCalled, "should not emit 'tx:failed'")
@@ -595,28 +692,38 @@ describe('PendingTransactionTracker', function () {
         txParams: { from: '0x1678a085c290ebd122dc42cba69373b5953b831d' },
       })
 
-      assert.ok(listeners.failed.calledOnceWithExactly('2', sinon.match.instanceOf(Error)), "should pass txId to 'tx:failed' listener")
+      assert.ok(
+        listeners.failed.calledOnceWithExactly(
+          '2',
+          sinon.match.instanceOf(Error),
+        ),
+        "should pass txId to 'tx:failed' listener",
+      )
       assert.ok(listeners.confirmed.notCalled, "should not emit 'tx:confirmed'")
       assert.ok(listeners.dropped.notCalled, "should not emit 'tx:dropped'")
       assert.ok(listeners.warning.notCalled, "should not emit 'tx:warning'")
     })
 
     it("should emit 'tx:dropped' if another tx with the same nonce succeeds", async function () {
-      const txs = [{
-        'status': 'confirmed',
-        'history': [{}],
-        'txParams': { 'nonce': '0x1' },
-        'id': '456',
-        'value': '0x01',
-        'hash': '0xbad',
-      }, {
-        'status': 'submitted',
-        'history': [{}],
-        'txParams': { 'nonce': '0x1' },
-        'id': '123',
-        'value': '0x02',
-        'hash': '0x2a919d2512ec963f524bfd9730fb66b6d5a2e399d1dd957abb5e2b544a12644b',
-      }]
+      const txs = [
+        {
+          status: 'confirmed',
+          history: [{}],
+          txParams: { nonce: '0x1' },
+          id: '456',
+          value: '0x01',
+          hash: '0xbad',
+        },
+        {
+          status: 'submitted',
+          history: [{}],
+          txParams: { nonce: '0x1' },
+          id: '123',
+          value: '0x02',
+          hash:
+            '0x2a919d2512ec963f524bfd9730fb66b6d5a2e399d1dd957abb5e2b544a12644b',
+        },
+      ]
       const pendingTxTracker = new PendingTransactionTracker({
         query: {
           getTransactionReceipt: sinon.stub().resolves(null),
@@ -654,7 +761,8 @@ describe('PendingTransactionTracker', function () {
       const nonceBN = new BN(2)
       const txMeta = {
         id: 1,
-        hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+        hash:
+          '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
         status: 'submitted',
         txParams: {
           from: '0x1678a085c290ebd122dc42cba69373b5953b831d',

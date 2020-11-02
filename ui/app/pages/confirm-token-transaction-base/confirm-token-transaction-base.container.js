@@ -6,9 +6,7 @@ import {
   transactionFeeSelector,
 } from '../../selectors'
 import { getTokens } from '../../ducks/metamask/metamask'
-import {
-  getTokenData,
-} from '../../helpers/utils/transactions.util'
+import { getTokenData } from '../../helpers/utils/transactions.util'
 import {
   calcTokenAmount,
   getTokenAddressParam,
@@ -17,7 +15,9 @@ import {
 import ConfirmTokenTransactionBase from './confirm-token-transaction-base.component'
 
 const mapStateToProps = (state, ownProps) => {
-  const { match: { params = {} } } = ownProps
+  const {
+    match: { params = {} },
+  } = ownProps
   const { id: paramsTransactionId } = params
   const {
     confirmTransaction,
@@ -25,26 +25,31 @@ const mapStateToProps = (state, ownProps) => {
   } = state
 
   const {
-    txData: { id: transactionId, txParams: { to: tokenAddress, data } = {} } = {},
+    txData: {
+      id: transactionId,
+      txParams: { to: tokenAddress, data } = {},
+    } = {},
   } = confirmTransaction
 
-  const transaction = (
-    currentNetworkTxList.find(({ id }) => id === (Number(paramsTransactionId) ||
-    transactionId)) || {}
-  )
+  const transaction =
+    currentNetworkTxList.find(
+      ({ id }) => id === (Number(paramsTransactionId) || transactionId),
+    ) || {}
 
-  const {
-    ethTransactionTotal,
-    fiatTransactionTotal,
-  } = transactionFeeSelector(state, transaction)
+  const { ethTransactionTotal, fiatTransactionTotal } = transactionFeeSelector(
+    state,
+    transaction,
+  )
   const tokens = getTokens(state)
-  const currentToken = tokens && tokens.find(({ address }) => tokenAddress === address)
+  const currentToken =
+    tokens && tokens.find(({ address }) => tokenAddress === address)
   const { decimals, symbol: tokenSymbol } = currentToken || {}
 
   const tokenData = getTokenData(data)
   const tokenValue = getTokenValueParam(tokenData)
   const toAddress = getTokenAddressParam(tokenData)
-  const tokenAmount = tokenData && calcTokenAmount(tokenValue, decimals).toFixed()
+  const tokenAmount =
+    tokenData && calcTokenAmount(tokenValue, decimals).toFixed()
   const contractExchangeRate = contractExchangeRateSelector(state)
 
   return {

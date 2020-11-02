@@ -41,7 +41,7 @@ module.exports = {
     'plugin:react-hooks/recommended',
   ],
 
-  plugins: ['babel', 'react', 'import', 'prettier'],
+  plugins: ['@babel', 'react', 'import', 'prettier'],
 
   globals: {
     document: 'readonly',

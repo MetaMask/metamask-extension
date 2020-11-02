@@ -49,7 +49,7 @@ const statusHash = {
  * transactionCreated activity.
  * @returns {Array}
  */
-export function getActivities (transaction, isFirstTransaction = false) {
+export function getActivities(transaction, isFirstTransaction = false) {
   const {
     id,
     hash,
@@ -65,7 +65,10 @@ export function getActivities (transaction, isFirstTransaction = false) {
   const historyActivities = history.reduce((acc, base, index) => {
     // First history item should be transaction creation
     if (index === 0 && !Array.isArray(base) && base.txParams) {
-      const { time: timestamp, txParams: { value, gas = '0x0', gasPrice = '0x0' } = {} } = base
+      const {
+        time: timestamp,
+        txParams: { value, gas = '0x0', gasPrice = '0x0' } = {},
+      } = base
       // The cached gas limit and gas price are used to display the gas fee in the activity log. We
       // need to cache these values because the status update history events don't provide us with
       // the latest gas limit and gas price.
@@ -94,9 +97,16 @@ export function getActivities (transaction, isFirstTransaction = false) {
         if (path in eventPathsHash && op === REPLACE_OP) {
           switch (path) {
             case STATUS_PATH: {
-              const gasFee = cachedGasLimit === '0x0' && cachedGasPrice === '0x0'
-                ? getHexGasTotal({ gasLimit: paramsGasLimit, gasPrice: paramsGasPrice })
-                : getHexGasTotal({ gasLimit: cachedGasLimit, gasPrice: cachedGasPrice })
+              const gasFee =
+                cachedGasLimit === '0x0' && cachedGasPrice === '0x0'
+                  ? getHexGasTotal({
+                      gasLimit: paramsGasLimit,
+                      gasPrice: paramsGasPrice,
+                    })
+                  : getHexGasTotal({
+                      gasLimit: cachedGasLimit,
+                      gasPrice: cachedGasPrice,
+                    })
 
               if (value in statusHash) {
                 let eventKey = statusHash[value]
@@ -141,8 +151,10 @@ export function getActivities (transaction, isFirstTransaction = false) {
                 cachedGasPrice = value
               }
 
-              if (lastEventKey === TRANSACTION_SUBMITTED_EVENT ||
-                lastEventKey === TRANSACTION_RESUBMITTED_EVENT) {
+              if (
+                lastEventKey === TRANSACTION_SUBMITTED_EVENT ||
+                lastEventKey === TRANSACTION_RESUBMITTED_EVENT
+              ) {
                 lastEvent.value = getHexGasTotal({
                   gasLimit: cachedGasLimit,
                   gasPrice: cachedGasPrice,
@@ -173,7 +185,11 @@ export function getActivities (transaction, isFirstTransaction = false) {
   // If txReceipt.status is '0x0', that means that an on-chain error occurred for the transaction,
   // so we add an error entry to the Activity Log.
   return status === '0x0'
-    ? historyActivities.concat({ id, hash, eventKey: TRANSACTION_ERRORED_EVENT })
+    ? historyActivities.concat({
+        id,
+        hash,
+        eventKey: TRANSACTION_ERRORED_EVENT,
+      })
     : historyActivities
 }
 
@@ -186,11 +202,15 @@ export function getActivities (transaction, isFirstTransaction = false) {
  * @param {Array} activities - List of sorted activities generated from the getActivities function.
  * @returns {Array}
  */
-function filterSortedActivities (activities) {
+function filterSortedActivities(activities) {
   const filteredActivities = []
-  const hasConfirmedActivity = Boolean(activities.find(({ eventKey }) => (
-    eventKey === TRANSACTION_CONFIRMED_EVENT || eventKey === TRANSACTION_CANCEL_SUCCESS_EVENT
-  )))
+  const hasConfirmedActivity = Boolean(
+    activities.find(
+      ({ eventKey }) =>
+        eventKey === TRANSACTION_CONFIRMED_EVENT ||
+        eventKey === TRANSACTION_CANCEL_SUCCESS_EVENT,
+    ),
+  )
   let addedDroppedActivity = false
 
   activities.forEach((activity) => {
@@ -212,7 +232,7 @@ function filterSortedActivities (activities) {
  * @param {Array} transactions - Array of txMeta transaction objects.
  * @returns {Array}
  */
-export function combineTransactionHistories (transactions = []) {
+export function combineTransactionHistories(transactions = []) {
   if (!transactions.length) {
     return []
   }

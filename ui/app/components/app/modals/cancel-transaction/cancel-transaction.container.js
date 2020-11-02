@@ -11,7 +11,9 @@ const mapStateToProps = (state, ownProps) => {
   const { metamask } = state
   const { transactionId, originalGasPrice } = ownProps
   const { currentNetworkTxList } = metamask
-  const transaction = currentNetworkTxList.find(({ id }) => id === transactionId)
+  const transaction = currentNetworkTxList.find(
+    ({ id }) => id === transactionId,
+  )
   const transactionStatus = transaction ? transaction.status : ''
 
   const defaultNewGasPrice = ethUtil.addHexPrefix(
@@ -22,7 +24,10 @@ const mapStateToProps = (state, ownProps) => {
     }),
   )
 
-  const newGasFee = getHexGasTotal({ gasPrice: defaultNewGasPrice, gasLimit: '0x5208' })
+  const newGasFee = getHexGasTotal({
+    gasPrice: defaultNewGasPrice,
+    gasLimit: '0x5208',
+  })
 
   return {
     transactionId,
@@ -38,7 +43,8 @@ const mapDispatchToProps = (dispatch) => {
     createCancelTransaction: (txId, customGasPrice) => {
       return dispatch(createCancelTransaction(txId, customGasPrice))
     },
-    showTransactionConfirmedModal: () => dispatch(showModal({ name: 'TRANSACTION_CONFIRMED' })),
+    showTransactionConfirmedModal: () =>
+      dispatch(showModal({ name: 'TRANSACTION_CONFIRMED' })),
   }
 }
 
@@ -51,7 +57,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...restStateProps,
     ...restDispatchProps,
     ...ownProps,
-    createCancelTransaction: () => createCancelTransaction(transactionId, defaultNewGasPrice),
+    createCancelTransaction: () =>
+      createCancelTransaction(transactionId, defaultNewGasPrice),
   }
 }
 
