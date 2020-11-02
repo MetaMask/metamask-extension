@@ -1,4 +1,5 @@
-import '../../app/scripts/lib/freezeGlobals'
+import '../../app/scripts/lib/freezeIntrinsics'
+freezeIntrinsics()
 
 import assert from 'assert'
 
