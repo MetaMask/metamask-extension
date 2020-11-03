@@ -147,7 +147,7 @@ export default class NetworkForm extends PureComponent {
       chainId = `0x${new BigNumber(chainId, 10).toString(16)}`
     }
 
-    if (!(await this.validateChainIdOnSubmit(chainId, rpcUrl))) {
+    if (!(await this.validateChainIdOnSubmit(chainId, rpcUrl, stateChainId))) {
       return
     }
 
@@ -289,7 +289,7 @@ export default class NetworkForm extends PureComponent {
     this.setErrorTo('chainId', errorMessage)
   }
 
-  validateChainIdOnSubmit = async (chainId, rpcUrl) => {
+  validateChainIdOnSubmit = async (chainId, rpcUrl, enteredChainId = '') => {
     const { t } = this.context
     let errorMessage
     let endpointChainId
@@ -305,6 +305,17 @@ export default class NetworkForm extends PureComponent {
     if (providerError || typeof endpointChainId !== 'string') {
       errorMessage = t('failedToFetchChainId')
     } else if (chainId !== endpointChainId) {
+      if (enteredChainId && !enteredChainId.startsWith('0x')) {
+        try {
+          endpointChainId = new BigNumber(endpointChainId, 16).toString(10)
+        } catch (err) {
+          log.error(
+            'Failed to convert endpoint chain ID to decimal',
+            endpointChainId,
+          )
+        }
+      }
+
       errorMessage = t('endpointReturnedDifferentChainId', [
         endpointChainId.length <= 12
           ? endpointChainId
