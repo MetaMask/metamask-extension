@@ -167,7 +167,7 @@ export default class NetworkForm extends PureComponent {
       onClear()
     } else {
       this.setState({
-        chainId: this.getDisplayChainIdFromProps()
+        chainId: this.getDisplayChainIdFromProps(),
       })
     }
   }
@@ -407,7 +407,7 @@ export default class NetworkForm extends PureComponent {
           this.setStateWithValue('chainId', this.validateChainId),
           chainId,
           null,
-          t('networkSettingsChainIdDescription'),
+          viewOnly ? null : t('networkSettingsChainIdDescription'),
         )}
         {this.renderFormTextField(
           'symbol',
