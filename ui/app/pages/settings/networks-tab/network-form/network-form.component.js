@@ -141,13 +141,14 @@ export default class NetworkForm extends PureComponent {
       blockExplorerUrl,
     } = this.state
 
+    const formChainId = stateChainId.trim().toLowerCase()
     // Ensure chainId is a 0x-prefixed, lowercase hex string
-    let chainId = stateChainId.trim().toLowerCase()
+    let chainId = formChainId
     if (!chainId.startsWith('0x')) {
       chainId = `0x${new BigNumber(chainId, 10).toString(16)}`
     }
 
-    if (!(await this.validateChainIdOnSubmit(chainId, rpcUrl, stateChainId))) {
+    if (!(await this.validateChainIdOnSubmit(formChainId, chainId, rpcUrl))) {
       return
     }
 
@@ -289,7 +290,17 @@ export default class NetworkForm extends PureComponent {
     this.setErrorTo('chainId', errorMessage)
   }
 
-  validateChainIdOnSubmit = async (chainId, rpcUrl, enteredChainId = '') => {
+  /**
+   * Validates the chain ID by checking it against the `eth_chainId` return
+   * value from the given RPC URL.
+   * Assumes that all strings are non-empty and correctly formatted.
+   * 
+   * @param {string} formChainId - Non-empty, hex or decimal number string from
+   * the form.
+   * @param {string} parsedChainId - The parsed, hex string chain ID.
+   * @param {string} rpcUrl - The RPC URL from the form.
+   */
+  validateChainIdOnSubmit = async (formChainId, parsedChainId, rpcUrl) => {
     const { t } = this.context
     let errorMessage
     let endpointChainId
@@ -304,8 +315,8 @@ export default class NetworkForm extends PureComponent {
 
     if (providerError || typeof endpointChainId !== 'string') {
       errorMessage = t('failedToFetchChainId')
-    } else if (chainId !== endpointChainId) {
-      if (enteredChainId && !enteredChainId.startsWith('0x')) {
+    } else if (parsedChainId !== endpointChainId) {
+      if (!formChainId.startsWith('0x')) {
         try {
           endpointChainId = new BigNumber(endpointChainId, 16).toString(10)
         } catch (err) {
