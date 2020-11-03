@@ -40,6 +40,9 @@
 
   &__link {
     cursor: pointer;
+    background-color: unset;
+    color: unset;
+    font-size: unset;
 
     &--import {
       color: $ecstasy;

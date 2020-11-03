@@ -168,15 +168,15 @@ export default class UnlockPage extends Component {
           </form>
           {this.renderSubmitButton()}
           <div className="unlock-page__links">
-            <div className="unlock-page__link" onClick={() => onRestore()}>
+            <button className="unlock-page__link" onClick={() => onRestore()}>
               {t('restoreFromSeed')}
-            </div>
-            <div
+            </button>
+            <button
               className="unlock-page__link unlock-page__link--import"
               onClick={() => onImport()}
             >
               {t('importUsingSeed')}
-            </div>
+            </button>
           </div>
         </div>
       </div>
