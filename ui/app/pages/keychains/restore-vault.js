@@ -163,6 +163,7 @@ class RestoreVaultPage extends Component {
                   className="import-account__secret-phrase"
                   onChange={(e) => this.handleSeedPhraseChange(e.target.value)}
                   value={seedPhrase}
+                  autoFocus
                   placeholder={this.context.t('separateEachWord')}
                 />
               ) : (
@@ -171,6 +172,7 @@ class RestoreVaultPage extends Component {
                   type="password"
                   onChange={(e) => this.handleSeedPhraseChange(e.target.value)}
                   value={seedPhrase}
+                  autoFocus
                   placeholder={t('seedPhrasePlaceholderPaste')}
                 />
               )}
@@ -182,6 +184,7 @@ class RestoreVaultPage extends Component {
                 <div
                   className="import-account__checkbox"
                   tabIndex="0"
+                  id="seed-checkbox"
                   role="checkbox"
                   onKeyPress={this.toggleShowSeedPhrase}
                   aria-checked={showSeedPhrase}
@@ -189,12 +192,13 @@ class RestoreVaultPage extends Component {
                 >
                   {showSeedPhrase ? <i className="fa fa-check fa-2x" /> : null}
                 </div>
-                <span
+                <label
+                  htmlFor="seed-checkbox"
                   id="ftf-chk1-label"
                   className="import-account__checkbox-label"
                 >
                   {t('showSeedPhrase')}
-                </span>
+                </label>
               </div>
             </div>
             <TextField
