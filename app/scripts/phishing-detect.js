@@ -1,3 +1,9 @@
+import freezeIntrinsics from './lib/freezeIntrinsics' /* eslint-disable-line import/first,import/order */
+
+// Should occur before anything else
+freezeIntrinsics()
+
+/* eslint-disable import/first */
 import querystring from 'querystring'
 import { EventEmitter } from 'events'
 import dnode from 'dnode'
@@ -6,6 +12,7 @@ import extension from 'extensionizer'
 import { setupMultiplex } from './lib/stream-utils'
 import { getEnvironmentType } from './lib/util'
 import ExtensionPlatform from './platforms/extension'
+/* eslint-enable import/first */
 
 document.addEventListener('DOMContentLoaded', start)
 
