@@ -1,13 +1,23 @@
 import Analytics from 'analytics-node'
 import { omit, pick } from 'lodash'
 
-// flushAt controls how many events are collected in the queue before they
-// are sent to segment. I recommend a queue size of one due to an issue with
-// detecting and flushing events in an extension beforeunload doesn't work in
-// a notification context. Because notification windows are opened and closed
-// in reaction to the very events we want to track, it is problematic to cache
-// at all.
-const flushAt = 1
+// flushAt controls how many events are sent to segment at once. Segment
+// will hold onto a queue of events until it hits this number, then it sends
+// them as a batch. This setting defaults to 20, but that is too high for
+// notification workflows. We also cannot send each event as singular payloads
+// because it seems to bombard segment and potentially cause event loss.
+// I chose 5 here because it is sufficiently high enough to optimize our network
+// requests, while also being low enough to be reasonable.
+const flushAt = process.env.METAMASK_ENVIRONMENT === 'production' ? 5 : 1
+// flushInterval controls how frequently the queue is flushed to segment.
+// This happens regardless of the size of the queue. The default setting is
+// 10,000ms (10 seconds). This default is absurdly high for our typical user
+// flow through confirmations. I have chosen 10 ms here because it works really
+// well with our wrapped track function. The track function returns a promise
+// that is only fulfilled when it has been sent to segment. A 10 ms delay is
+// negligible to the user, but allows us to properly batch events that happen
+// in rapid succession.
+const flushInterval = 10
 
 export const METAMETRICS_ANONYMOUS_ID = '0x0000000000000000'
 
@@ -54,11 +64,11 @@ export function sendCountIsTrackable(sendCount) {
 // E2E, which is handled in the build process by never providing the SEGMENT_WRITE_KEY
 // when process.env.IN_TEST is truthy
 export const segment = process.env.SEGMENT_WRITE_KEY
-  ? new Analytics(process.env.SEGMENT_WRITE_KEY, { flushAt })
+  ? new Analytics(process.env.SEGMENT_WRITE_KEY, { flushAt, flushInterval })
   : segmentNoop
 
 export const segmentLegacy = process.env.SEGMENT_LEGACY_WRITE_KEY
-  ? new Analytics(process.env.SEGMENT_LEGACY_WRITE_KEY, { flushAt })
+  ? new Analytics(process.env.SEGMENT_LEGACY_WRITE_KEY, { flushAt, flushInterval })
   : segmentNoop
 
 /**
@@ -233,10 +243,7 @@ export function getTrackMetaMetricsEvent(metamaskVersion, getDynamicState) {
     }
 
     return new Promise((resolve, reject) => {
-      // This is only safe to do because we are no longer batching events through segment.
-      // If flushAt is greater than one the callback won't be triggered until after a number
-      // of events have been queued equal to the flushAt value OR flushInterval passes. The
-      // default flushInterval is ten seconds
+      // This is only safe to do because we have set an extremely low (10ms) flushInterval.
       const callback = (err) => {
         if (err) {
           return reject(err)
@@ -249,6 +256,7 @@ export function getTrackMetaMetricsEvent(metamaskVersion, getDynamicState) {
       } else {
         segment.track(trackOptions, callback)
       }
+
     })
   }
 }
