@@ -59,19 +59,31 @@ export function sendCountIsTrackable(sendCount) {
   return Boolean(trackableSendCounts[sendCount])
 }
 
+const isDevOrTestEnvironment = Boolean(
+  process.env.METAMASK_DEBUG || process.env.IN_TEST,
+)
+
+// This allows us to overwrite the metric destination for testing purposes
+const host = process.env.SEGMENT_HOST ?? undefined
+
 // We do not want to track events on development builds unless specifically
 // provided a SEGMENT_WRITE_KEY. This also holds true for test environments and
 // E2E, which is handled in the build process by never providing the SEGMENT_WRITE_KEY
 // when process.env.IN_TEST is truthy
 export const segment =
-  process.env.IN_TEST || !process.env.SEGMENT_WRITE_KEY
+  !process.env.SEGMENT_WRITE_KEY || (isDevOrTestEnvironment && !host)
     ? segmentNoop
-    : new Analytics(process.env.SEGMENT_WRITE_KEY, { flushAt, flushInterval })
+    : new Analytics(process.env.SEGMENT_WRITE_KEY, {
+        host,
+        flushAt,
+        flushInterval,
+      })
 
 export const segmentLegacy =
-  process.env.IN_TEST || !process.env.SEGMENT_LEGACY_WRITE_KEY
+  !process.env.SEGMENT_LEGACY_WRITE_KEY || (isDevOrTestEnvironment && !host)
     ? segmentNoop
     : new Analytics(process.env.SEGMENT_LEGACY_WRITE_KEY, {
+        host,
         flushAt,
         flushInterval,
       })
