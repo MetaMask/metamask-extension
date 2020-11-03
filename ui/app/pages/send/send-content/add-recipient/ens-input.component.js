@@ -47,7 +47,7 @@ export default class EnsInput extends Component {
     ensResolution: undefined,
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const { network, internalSearch } = this.props
     const networkHasEnsSupport = getNetworkEnsSupport(network)
     this.setState({ ensResolution: ZERO_ADDRESS })
@@ -141,7 +141,14 @@ export default class EnsInput extends Component {
   }
 
   onChange = (e) => {
-    const { network, onChange, updateEnsResolution, updateEnsResolutionError, onValidAddressTyped, internalSearch } = this.props
+    const {
+      network,
+      onChange,
+      updateEnsResolution,
+      updateEnsResolutionError,
+      onValidAddressTyped,
+      internalSearch,
+    } = this.props
     const input = e.target.value
     const networkHasEnsSupport = getNetworkEnsSupport(network)
 
@@ -158,7 +165,9 @@ export default class EnsInput extends Component {
       !isValidAddressHead(input)
     ) {
       updateEnsResolution('')
-      updateEnsResolutionError(networkHasEnsSupport ? '' : 'Network does not support ENS')
+      updateEnsResolutionError(
+        networkHasEnsSupport ? '' : 'Network does not support ENS',
+      )
       return null
     }
 

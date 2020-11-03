@@ -203,9 +203,11 @@ export function accountsWithSendEtherInfoSelector(state) {
   const accounts = getMetaMaskAccounts(state)
   const identities = getMetaMaskIdentities(state)
 
-  const accountsWithSendEtherInfo = Object.entries(identities).map(([key, identity]) => {
-    return { ...identity, ...accounts[key] }
-  }).sort((a, b) => a.name.localeCompare(b.name))
+  const accountsWithSendEtherInfo = Object.entries(identities)
+    .map(([key, identity]) => {
+      return { ...identity, ...accounts[key] }
+    })
+    .sort((a, b) => a.name.localeCompare(b.name))
 
   return accountsWithSendEtherInfo
 }
