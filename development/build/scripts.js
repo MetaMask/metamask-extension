@@ -373,7 +373,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
         INFURA_PROJECT_ID: opts.testing
           ? '00000000000000000000000000000000'
           : conf.INFURA_PROJECT_ID,
-        SEGMENT_HOST: conf.SEGMENT_HOST ? conf.SEGMENT_HOST : undefined,
+        SEGMENT_HOST: conf.SEGMENT_HOST,
         // When we're in the 'production' environment we will use a specific key only set in CI
         // Otherwise we'll use the key from .metamaskrc or from the environment variable. If
         // the value of SEGMENT_WRITE_KEY that we envify is undefined then no events will be tracked
