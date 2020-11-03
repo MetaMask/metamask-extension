@@ -63,16 +63,18 @@ export function sendCountIsTrackable(sendCount) {
 // provided a SEGMENT_WRITE_KEY. This also holds true for test environments and
 // E2E, which is handled in the build process by never providing the SEGMENT_WRITE_KEY
 // when process.env.IN_TEST is truthy
-export const segment = process.env.SEGMENT_WRITE_KEY
-  ? new Analytics(process.env.SEGMENT_WRITE_KEY, { flushAt, flushInterval })
-  : segmentNoop
+export const segment =
+  process.env.IN_TEST || !process.env.SEGMENT_WRITE_KEY
+    ? segmentNoop
+    : new Analytics(process.env.SEGMENT_WRITE_KEY, { flushAt, flushInterval })
 
-export const segmentLegacy = process.env.SEGMENT_LEGACY_WRITE_KEY
-  ? new Analytics(process.env.SEGMENT_LEGACY_WRITE_KEY, {
-      flushAt,
-      flushInterval,
-    })
-  : segmentNoop
+export const segmentLegacy =
+  process.env.IN_TEST || !process.env.SEGMENT_LEGACY_WRITE_KEY
+    ? segmentNoop
+    : new Analytics(process.env.SEGMENT_LEGACY_WRITE_KEY, {
+        flushAt,
+        flushInterval,
+      })
 
 /**
  * We attach context to every meta metrics event that help to qualify our analytics.
