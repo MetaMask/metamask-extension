@@ -68,7 +68,10 @@ export const segment = process.env.SEGMENT_WRITE_KEY
   : segmentNoop
 
 export const segmentLegacy = process.env.SEGMENT_LEGACY_WRITE_KEY
-  ? new Analytics(process.env.SEGMENT_LEGACY_WRITE_KEY, { flushAt, flushInterval })
+  ? new Analytics(process.env.SEGMENT_LEGACY_WRITE_KEY, {
+      flushAt,
+      flushInterval,
+    })
   : segmentNoop
 
 /**
@@ -256,7 +259,6 @@ export function getTrackMetaMetricsEvent(metamaskVersion, getDynamicState) {
       } else {
         segment.track(trackOptions, callback)
       }
-
     })
   }
 }
