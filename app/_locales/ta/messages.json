@@ -136,9 +136,6 @@
   "delete": {
     "message": "நீக்கு"
   },
-  "deposit": {
-    "message": "வைப்புத்தொகை"
-  },
   "depositEther": {
     "message": "வைப்புத்தொகை எதிர் "
   },

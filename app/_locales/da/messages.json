@@ -164,9 +164,6 @@
   "cancel": {
     "message": "Afbryd"
   },
-  "cancelAttempt": {
-    "message": "Annullér forsøg"
-  },
   "cancellationGasFee": {
     "message": "Gebyr for brændstofannullering"
   },
@@ -307,9 +304,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Er du sikker på, at du vil slette dette netværk?"
-  },
-  "deposit": {
-    "message": "Indbetal"
   },
   "depositEther": {
     "message": "Indbetal Ether"
@@ -965,9 +959,6 @@
   },
   "sentEther": {
     "message": "sendte ether"
-  },
-  "sentTokens": {
-    "message": "afsendte tokens"
   },
   "separateEachWord": {
     "message": "Separer hvert ord med et enkelt mellemrum"

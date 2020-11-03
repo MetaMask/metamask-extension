@@ -169,9 +169,6 @@
   "defaultNetwork": {
     "message": "デフォルトのEther送受信ネットワークはメインネットです。"
   },
-  "deposit": {
-    "message": "振込"
-  },
   "depositEther": {
     "message": "Etherを振込"
   },

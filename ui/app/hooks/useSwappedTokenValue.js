@@ -1,5 +1,5 @@
+import { TRANSACTION_CATEGORIES } from '../../../shared/constants/transaction'
 import { ETH_SWAPS_TOKEN_ADDRESS } from '../helpers/constants/swaps'
-import { SWAP } from '../helpers/constants/transactions'
 import { getSwapsTokensReceivedFromTxMeta } from '../pages/swaps/swaps.util'
 import { useTokenFiatAmount } from './useTokenFiatAmount'
 
@@ -12,7 +12,7 @@ import { useTokenFiatAmount } from './useTokenFiatAmount'
  */
 
 /**
- * A SWAP transaction group's primaryTransaction contains details of the swap,
+ * A Swap transaction group's primaryTransaction contains details of the swap,
  * including the source (from) and destination (to) token type (ETH, DAI, etc..)
  * When viewing a non ETH asset page, we need to determine if that asset is the
  * token that was received (destination) from the swap. In that circumstance we
@@ -34,7 +34,8 @@ export function useSwappedTokenValue(transactionGroup, currentAsset) {
       primaryTransaction.destinationTokenSymbol === 'ETH')
 
   const swapTokenValue =
-    transactionCategory === SWAP && isViewingReceivedTokenFromSwap
+    transactionCategory === TRANSACTION_CATEGORIES.SWAP &&
+    isViewingReceivedTokenFromSwap
       ? getSwapsTokensReceivedFromTxMeta(
           primaryTransaction.destinationTokenSymbol,
           initialTransaction,
@@ -42,7 +43,8 @@ export function useSwappedTokenValue(transactionGroup, currentAsset) {
           senderAddress,
           decimals,
         )
-      : transactionCategory === SWAP && primaryTransaction.swapTokenValue
+      : transactionCategory === TRANSACTION_CATEGORIES.SWAP &&
+        primaryTransaction.swapTokenValue
 
   const isNegative =
     typeof swapTokenValue === 'string'

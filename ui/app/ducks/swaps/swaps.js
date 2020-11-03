@@ -51,13 +51,13 @@ import {
   SWAP_FAILED_ERROR,
   SWAPS_FETCH_ORDER_CONFLICT,
 } from '../../helpers/constants/swaps'
-import { SWAP, SWAP_APPROVAL } from '../../helpers/constants/transactions'
 import {
   fetchBasicGasAndTimeEstimates,
   fetchGasEstimates,
   resetCustomGasState,
 } from '../gas/gas.duck'
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util'
+import { TRANSACTION_CATEGORIES } from '../../../../shared/constants/transaction'
 
 const initialState = {
   aggregatorMetadata: null,
@@ -599,7 +599,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
         updateTransaction(
           {
             ...approveTxMeta,
-            transactionCategory: SWAP_APPROVAL,
+            transactionCategory: TRANSACTION_CATEGORIES.SWAP_APPROVAL,
             sourceTokenSymbol: sourceTokenInfo.symbol,
           },
           true,
@@ -624,7 +624,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
           ...tradeTxMeta,
           sourceTokenSymbol: sourceTokenInfo.symbol,
           destinationTokenSymbol: destinationTokenInfo.symbol,
-          transactionCategory: SWAP,
+          transactionCategory: TRANSACTION_CATEGORIES.SWAP,
           destinationTokenDecimals: destinationTokenInfo.decimals,
           destinationTokenAddress: destinationTokenInfo.address,
           swapMetaData,

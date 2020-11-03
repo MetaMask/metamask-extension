@@ -13,15 +13,12 @@ import {
   TRANSACTION_ERROR_KEY,
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
 } from '../../helpers/constants/error-keys'
-import {
-  CONFIRMED_STATUS,
-  DROPPED_STATUS,
-} from '../../helpers/constants/transactions'
 import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common'
 import { hexToDecimal } from '../../helpers/utils/conversions.util'
 import AdvancedGasInputs from '../../components/app/gas-customization/advanced-gas-inputs'
 import TextField from '../../components/ui/text-field'
+import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction'
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -134,8 +131,8 @@ export default class ConfirmTransactionBase extends Component {
     } = prevProps
     const statusUpdated = transactionStatus !== prevTxStatus
     const txDroppedOrConfirmed =
-      transactionStatus === DROPPED_STATUS ||
-      transactionStatus === CONFIRMED_STATUS
+      transactionStatus === TRANSACTION_STATUSES.DROPPED ||
+      transactionStatus === TRANSACTION_STATUSES.CONFIRMED
 
     if (
       nextNonce !== prevNextNonce ||

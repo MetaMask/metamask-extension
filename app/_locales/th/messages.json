@@ -142,9 +142,6 @@
   "deleteNetwork": {
     "message": "ลบเครือข่าย?"
   },
-  "deposit": {
-    "message": "ฝาก"
-  },
   "depositEther": {
     "message": "การฝากอีเธอร์"
   },

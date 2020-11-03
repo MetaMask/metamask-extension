@@ -175,9 +175,14 @@ async function verifyLocale(code) {
 
 async function verifyEnglishLocale() {
   const englishLocale = await getLocale('en')
-  const javascriptFiles = await findJavascriptFiles(
+  const uiJSFiles = await findJavascriptFiles(
     path.resolve(__dirname, '..', 'ui'),
   )
+  const sharedJSFiles = await findJavascriptFiles(
+    path.resolve(__dirname, '..', 'shared'),
+  )
+
+  const javascriptFiles = sharedJSFiles.concat(uiJSFiles)
 
   // match "t(`...`)" because constructing message keys from template strings
   // prevents this script from finding the messages, and then inappropriately

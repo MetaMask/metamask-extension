@@ -158,9 +158,6 @@
   "cancel": {
     "message": "Zrušit"
   },
-  "cancelAttempt": {
-    "message": "Zrušiť pokus"
-  },
   "cancellationGasFee": {
     "message": "Storno poplatok za GAS"
   },
@@ -301,9 +298,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Naozaj chcete túto sieť odstrániť?"
-  },
-  "deposit": {
-    "message": "Vklad"
   },
   "depositEther": {
     "message": "Vložit Ether"
@@ -950,9 +944,6 @@
   },
   "sentEther": {
     "message": "poslaný ether"
-  },
-  "sentTokens": {
-    "message": "poslané tokeny"
   },
   "separateEachWord": {
     "message": "Každé slovo oddeľte jednou medzerou"

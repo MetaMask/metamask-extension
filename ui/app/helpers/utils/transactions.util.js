@@ -3,16 +3,12 @@ import MethodRegistry from 'eth-method-registry'
 import abi from 'human-standard-token-abi'
 import { ethers } from 'ethers'
 import log from 'loglevel'
-import {
-  TRANSACTION_TYPE_CANCEL,
-  TRANSACTION_STATUS_CONFIRMED,
-} from '../../../../app/scripts/controllers/transactions/enums'
 import { getEtherscanNetworkPrefix } from '../../../lib/etherscan-prefix-for-network'
 import {
-  TOKEN_METHOD_TRANSFER,
-  TOKEN_METHOD_APPROVE,
-  TOKEN_METHOD_TRANSFER_FROM,
-} from '../constants/transactions'
+  TRANSACTION_CATEGORIES,
+  TRANSACTION_STATUSES,
+  TRANSACTION_TYPES,
+} from '../../../../shared/constants/transaction'
 import fetchWithCache from './fetch-with-cache'
 
 import { addCurrencies } from './conversion-util'
@@ -120,9 +116,9 @@ export function getFourBytePrefix(data = '') {
  */
 export function isTokenMethodAction(transactionCategory) {
   return [
-    TOKEN_METHOD_TRANSFER,
-    TOKEN_METHOD_APPROVE,
-    TOKEN_METHOD_TRANSFER_FROM,
+    TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER,
+    TRANSACTION_CATEGORIES.TOKEN_METHOD_APPROVE,
+    TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER_FROM,
   ].includes(transactionCategory)
 }
 
@@ -184,8 +180,8 @@ export function getStatusKey(transaction) {
   }
 
   if (
-    status === TRANSACTION_STATUS_CONFIRMED &&
-    type === TRANSACTION_TYPE_CANCEL
+    status === TRANSACTION_STATUSES.CONFIRMED &&
+    type === TRANSACTION_TYPES.CANCEL
   ) {
     return 'cancelled'
   }

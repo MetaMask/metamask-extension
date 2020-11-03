@@ -34,11 +34,11 @@ import {
   QUOTES_NOT_AVAILABLE_ERROR,
   OFFLINE_FOR_MAINTENANCE,
 } from '../../../helpers/constants/swaps'
-import { SUBMITTED_STATUS } from '../../../helpers/constants/transactions'
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes'
 
 import { getRenderableNetworkFeesForQuote } from '../swaps.util'
 import SwapsFooter from '../swaps-footer'
+import { TRANSACTION_STATUSES } from '../../../../../shared/constants/transaction'
 import SwapFailureIcon from './swap-failure-icon'
 import SwapSuccessIcon from './swap-success-icon'
 import QuotesTimeoutIcon from './quotes-timeout-icon'
@@ -115,7 +115,7 @@ export default function AwaitingSwap({
 
   const statusKey = tradeTxData && getStatusKey(tradeTxData)
   const timeRemaining = useTransactionTimeRemaining(
-    statusKey === SUBMITTED_STATUS,
+    statusKey === TRANSACTION_STATUSES.SUBMITTED,
     true,
     tradeTxData?.submittedTime,
     usedGasPrice,

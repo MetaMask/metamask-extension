@@ -164,9 +164,6 @@
   "cancel": {
     "message": "Скасувати"
   },
-  "cancelAttempt": {
-    "message": "Відмінити спробу"
-  },
   "cancellationGasFee": {
     "message": "Вартість пального за скасування"
   },
@@ -307,9 +304,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Ви впевнені, що хочете видалити цю мережу?"
-  },
-  "deposit": {
-    "message": "Депозит"
   },
   "depositEther": {
     "message": "Депонувати Ether"
@@ -987,9 +981,6 @@
   },
   "sentEther": {
     "message": "надісланий ефір"
-  },
-  "sentTokens": {
-    "message": "надіслані токени"
   },
   "separateEachWord": {
     "message": "Відділіть кожне слово одним пробілом"

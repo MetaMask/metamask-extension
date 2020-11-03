@@ -94,9 +94,6 @@
   "defaultNetwork": {
     "message": "Het standaardnetwerk voor Ether-transacties is Main Net."
   },
-  "deposit": {
-    "message": "Storting"
-  },
   "depositEther": {
     "message": "Stort Ether"
   },

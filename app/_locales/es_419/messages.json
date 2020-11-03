@@ -161,9 +161,6 @@
   "cancel": {
     "message": "Cancelar"
   },
-  "cancelAttempt": {
-    "message": "Cancelar intento"
-  },
   "cancellationGasFee": {
     "message": "Tasa de cancelación de gas"
   },
@@ -304,9 +301,6 @@
   },
   "deleteNetworkDescription": {
     "message": "¿Estás seguro de que deseas borrar esta red?"
-  },
-  "deposit": {
-    "message": "Depósito"
   },
   "depositEther": {
     "message": "Depositar Ethers"
@@ -972,9 +966,6 @@
   },
   "sentEther": {
     "message": "Ethers enviados"
-  },
-  "sentTokens": {
-    "message": "tokens enviados"
   },
   "separateEachWord": {
     "message": "Separa cada palabra con un solo espacio"

@@ -85,9 +85,6 @@
   "cancel": {
     "message": "Anile"
   },
-  "cancelAttempt": {
-    "message": "Teste Anile"
-  },
   "cancellationGasFee": {
     "message": "Anilasyon Gaz Chaj"
   },
@@ -168,9 +165,6 @@
   },
   "defaultNetwork": {
     "message": "Dfo rezo a pou tranzaksyon Ether se Mainnet."
-  },
-  "deposit": {
-    "message": "Depo"
   },
   "depositEther": {
     "message": "Depo Ether"
@@ -614,9 +608,6 @@
   },
   "sentEther": {
     "message": "Voye ether"
-  },
-  "sentTokens": {
-    "message": "tokens deja voye"
   },
   "separateEachWord": {
     "message": "Separe chak mo ak yon sèl espas"

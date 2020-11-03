@@ -164,9 +164,6 @@
   "cancel": {
     "message": "Peruuta"
   },
-  "cancelAttempt": {
-    "message": "Peruuta yritys"
-  },
   "cancellationGasFee": {
     "message": "Peruutuksen gas-maksu"
   },
@@ -307,9 +304,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Haluatko varmasti poistaa tämän verkon?"
-  },
-  "deposit": {
-    "message": "Talleta"
   },
   "depositEther": {
     "message": "Talleta Etheriä"
@@ -984,9 +978,6 @@
   },
   "sentEther": {
     "message": "lähetä etheriä"
-  },
-  "sentTokens": {
-    "message": "lähetetyt poletit"
   },
   "separateEachWord": {
     "message": "Erottele sanat toisistaan yhdellä välilyönnillä"
