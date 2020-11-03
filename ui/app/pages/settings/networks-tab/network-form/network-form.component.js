@@ -35,7 +35,7 @@ export default class NetworkForm extends PureComponent {
 
   state = {
     rpcUrl: this.props.rpcUrl,
-    chainId: this.props.chainId,
+    chainId: this.getDisplayChainIdFromProps(),
     ticker: this.props.ticker,
     networkName: this.props.networkName,
     blockExplorerUrl: this.props.blockExplorerUrl,
@@ -49,7 +49,6 @@ export default class NetworkForm extends PureComponent {
     } = prevProps
     const {
       rpcUrl,
-      chainId,
       ticker,
       networkName,
       networksTabIsInAddMode,
@@ -68,7 +67,7 @@ export default class NetworkForm extends PureComponent {
     } else if (prevRpcUrl !== rpcUrl) {
       this.setState({
         rpcUrl,
-        chainId,
+        chainId: this.getDisplayChainIdFromProps(),
         ticker,
         networkName,
         blockExplorerUrl,
@@ -94,22 +93,35 @@ export default class NetworkForm extends PureComponent {
   }
 
   resetForm() {
-    const {
-      rpcUrl,
-      chainId,
-      ticker,
-      networkName,
-      blockExplorerUrl,
-    } = this.props
+    const { rpcUrl, ticker, networkName, blockExplorerUrl } = this.props
 
     this.setState({
       rpcUrl,
-      chainId,
+      chainId: this.getDisplayChainIdFromProps(),
       ticker,
       networkName,
       blockExplorerUrl,
       errors: {},
     })
+  }
+
+  /**
+   * Should be called the chainId is set from the props value.
+   * Ensures that the chainId is always displayed in decimal, even though
+   * it's stored in hexadecimal.
+   * @returns {string} The props chainId in decimal.
+   */
+  getDisplayChainIdFromProps() {
+    const { chainId: propsChainId } = this.props
+
+    if (
+      !propsChainId ||
+      typeof propsChainId !== 'string' ||
+      !propsChainId.startsWith('0x')
+    ) {
+      return propsChainId
+    }
+    return new BigNumber(propsChainId, 16).toString(10)
   }
 
   onSubmit = async () => {
@@ -153,6 +165,10 @@ export default class NetworkForm extends PureComponent {
 
     if (networksTabIsInAddMode) {
       onClear()
+    } else {
+      this.setState({
+        chainId: this.getDisplayChainIdFromProps()
+      })
     }
   }
 
@@ -178,13 +194,7 @@ export default class NetworkForm extends PureComponent {
   }
 
   stateIsUnchanged() {
-    const {
-      rpcUrl,
-      chainId,
-      ticker,
-      networkName,
-      blockExplorerUrl,
-    } = this.props
+    const { rpcUrl, ticker, networkName, blockExplorerUrl } = this.props
 
     const {
       rpcUrl: stateRpcUrl,
@@ -196,7 +206,7 @@ export default class NetworkForm extends PureComponent {
 
     return (
       stateRpcUrl === rpcUrl &&
-      stateChainId === chainId &&
+      stateChainId === this.getDisplayChainIdFromProps() &&
       stateTicker === ticker &&
       stateNetworkName === networkName &&
       stateBlockExplorerUrl === blockExplorerUrl
@@ -404,7 +414,7 @@ export default class NetworkForm extends PureComponent {
           'network-ticker',
           this.setStateWithValue('ticker'),
           ticker,
-          'optionalSymbol',
+          'optionalCurrencySymbol',
         )}
         {this.renderFormTextField(
           'blockExplorerUrl',
