@@ -733,7 +733,7 @@
   "optionalBlockExplorerUrl": {
     "message": "العنوان الإلكتروني لمستكشف البلوكات (اختياري)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "الرمز (اختياري)"
   },
   "orderOneHere": {

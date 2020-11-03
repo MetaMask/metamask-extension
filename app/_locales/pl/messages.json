@@ -734,7 +734,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Adres URL przeglądarki łańcucha bloków (opcjonalnie)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Symbol (opcjonalnie)"
   },
   "orderOneHere": {

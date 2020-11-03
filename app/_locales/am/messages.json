@@ -737,7 +737,7 @@
   "optionalBlockExplorerUrl": {
     "message": "ኤክስፕሎረር URL አግድ (አማራጭ)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "ምልክት (አማራጭ)"
   },
   "orderOneHere": {

@@ -733,7 +733,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Explorer URL letiltása (nem kötelező)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Szimbólum (opcionális)"
   },
   "orderOneHere": {
