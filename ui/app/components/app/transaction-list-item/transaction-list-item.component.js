@@ -18,13 +18,8 @@ import TransactionIcon from '../transaction-icon'
 import { useTransactionTimeRemaining } from '../../../hooks/useTransactionTimeRemaining'
 import IconWithLabel from '../../ui/icon-with-label'
 import {
-  TRANSACTION_GROUP_CATEGORY_APPROVAL,
-  TRANSACTION_GROUP_CATEGORY_SIGNATURE_REQUEST,
-  TRANSACTION_GROUP_CATEGORY_SWAP,
-  TRANSACTION_STATUS_DROPPED,
-  TRANSACTION_STATUS_FAILED,
-  TRANSACTION_STATUS_REJECTED,
-  TRANSACTION_STATUS_UNAPPROVED,
+  TRANSACTION_GROUP_CATEGORIES,
+  TRANSACTION_STATUSES,
 } from '../../../../../shared/constants/transaction'
 
 export default function TransactionListItem({
@@ -72,18 +67,18 @@ export default function TransactionListItem({
   )
 
   const isSignatureReq =
-    category === TRANSACTION_GROUP_CATEGORY_SIGNATURE_REQUEST
-  const isApproval = category === TRANSACTION_GROUP_CATEGORY_APPROVAL
-  const isUnapproved = status === TRANSACTION_STATUS_UNAPPROVED
-  const isSwap = category === TRANSACTION_GROUP_CATEGORY_SWAP
+    category === TRANSACTION_GROUP_CATEGORIES.SIGNATURE_REQUEST
+  const isApproval = category === TRANSACTION_GROUP_CATEGORIES.APPROVAL
+  const isUnapproved = status === TRANSACTION_STATUSES.UNAPPROVED
+  const isSwap = category === TRANSACTION_GROUP_CATEGORIES.SWAP
 
   const className = classnames('transaction-list-item', {
     'transaction-list-item--unconfirmed':
       isPending ||
       [
-        TRANSACTION_STATUS_FAILED,
-        TRANSACTION_STATUS_DROPPED,
-        TRANSACTION_STATUS_REJECTED,
+        TRANSACTION_STATUSES.FAILED,
+        TRANSACTION_STATUSES.DROPPED,
+        TRANSACTION_STATUSES.REJECTED,
       ].includes(displayedStatusKey),
   })
 
@@ -213,7 +208,7 @@ export default function TransactionListItem({
           senderAddress={senderAddress}
           recipientAddress={recipientAddress}
           onRetry={retryTransaction}
-          showRetry={status === TRANSACTION_STATUS_FAILED && !isSwap}
+          showRetry={status === TRANSACTION_STATUSES.FAILED && !isSwap}
           showSpeedUp={shouldShowSpeedUp}
           isEarliestNonce={isEarliestNonce}
           onCancel={cancelTransaction}

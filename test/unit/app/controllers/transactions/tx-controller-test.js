@@ -11,12 +11,8 @@ import {
   getTestAccounts,
 } from '../../../../stub/provider'
 import {
-  TRANSACTION_CATEGORY_CONTRACT_INTERACTION,
-  TRANSACTION_CATEGORY_DEPLOY_CONTRACT,
-  TRANSACTION_CATEGORY_SENT_ETHER,
-  TRANSACTION_CATEGORY_TOKEN_METHOD_APPROVE,
-  TRANSACTION_CATEGORY_TOKEN_METHOD_TRANSFER,
-  TRANSACTION_TYPE_RETRY,
+  TRANSACTION_CATEGORIES,
+  TRANSACTION_TYPES,
 } from '../../../../../shared/constants/transaction'
 
 const noop = () => true
@@ -627,7 +623,7 @@ describe('Transaction Controller', function () {
         { lastGasPrice, type },
         {
           lastGasPrice: '0xa',
-          type: TRANSACTION_TYPE_RETRY,
+          type: TRANSACTION_TYPES.RETRY,
         },
       )
     })
@@ -650,7 +646,7 @@ describe('Transaction Controller', function () {
         { lastGasPrice, type },
         {
           lastGasPrice: '0xa',
-          type: TRANSACTION_TYPE_RETRY,
+          type: TRANSACTION_TYPES.RETRY,
         },
       )
     })
@@ -772,7 +768,7 @@ describe('Transaction Controller', function () {
         data: '',
       })
       assert.deepEqual(result, {
-        transactionCategory: TRANSACTION_CATEGORY_SENT_ETHER,
+        transactionCategory: TRANSACTION_CATEGORIES.SENT_ETHER,
         getCodeResponse: null,
       })
     })
@@ -784,7 +780,7 @@ describe('Transaction Controller', function () {
           '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
       })
       assert.deepEqual(result, {
-        transactionCategory: TRANSACTION_CATEGORY_TOKEN_METHOD_TRANSFER,
+        transactionCategory: TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER,
         getCodeResponse: undefined,
       })
     })
@@ -796,7 +792,7 @@ describe('Transaction Controller', function () {
           '0x095ea7b30000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C9700000000000000000000000000000000000000000000000000000000000000005',
       })
       assert.deepEqual(result, {
-        transactionCategory: TRANSACTION_CATEGORY_TOKEN_METHOD_APPROVE,
+        transactionCategory: TRANSACTION_CATEGORIES.TOKEN_METHOD_APPROVE,
         getCodeResponse: undefined,
       })
     })
@@ -807,7 +803,7 @@ describe('Transaction Controller', function () {
         data: '0xabd',
       })
       assert.deepEqual(result, {
-        transactionCategory: TRANSACTION_CATEGORY_DEPLOY_CONTRACT,
+        transactionCategory: TRANSACTION_CATEGORIES.DEPLOY_CONTRACT,
         getCodeResponse: undefined,
       })
     })
@@ -818,7 +814,7 @@ describe('Transaction Controller', function () {
         data: '0xabd',
       })
       assert.deepEqual(result, {
-        transactionCategory: TRANSACTION_CATEGORY_SENT_ETHER,
+        transactionCategory: TRANSACTION_CATEGORIES.SENT_ETHER,
         getCodeResponse: '0x',
       })
     })
@@ -829,7 +825,7 @@ describe('Transaction Controller', function () {
         data: '0xabd',
       })
       assert.deepEqual(result, {
-        transactionCategory: TRANSACTION_CATEGORY_SENT_ETHER,
+        transactionCategory: TRANSACTION_CATEGORIES.SENT_ETHER,
         getCodeResponse: null,
       })
     })
@@ -868,7 +864,7 @@ describe('Transaction Controller', function () {
         data: 'abd',
       })
       assert.deepEqual(result, {
-        transactionCategory: TRANSACTION_CATEGORY_CONTRACT_INTERACTION,
+        transactionCategory: TRANSACTION_CATEGORIES.CONTRACT_INTERACTION,
         getCodeResponse: '0x0a',
       })
     })
@@ -907,7 +903,7 @@ describe('Transaction Controller', function () {
         data: '',
       })
       assert.deepEqual(result, {
-        transactionCategory: TRANSACTION_CATEGORY_CONTRACT_INTERACTION,
+        transactionCategory: TRANSACTION_CATEGORIES.CONTRACT_INTERACTION,
         getCodeResponse: '0x0a',
       })
     })

@@ -1,4 +1,4 @@
-import { TRANSACTION_TYPE_CANCEL, TRANSACTION_TYPE_RETRY } from '../../../../../shared/constants/transaction'
+import { TRANSACTION_TYPES } from '../../../../../shared/constants/transaction'
 import { getHexGasTotal } from '../../../helpers/utils/confirm-tx.util'
 
 import {
@@ -111,13 +111,13 @@ export function getActivities(transaction, isFirstTransaction = false) {
                 // If the status is 'submitted', we need to determine whether the event is a
                 // transaction retry or a cancellation attempt.
                 if (value === SUBMITTED_STATUS) {
-                  if (type === TRANSACTION_TYPE_RETRY) {
+                  if (type === TRANSACTION_TYPES.RETRY) {
                     eventKey = TRANSACTION_RESUBMITTED_EVENT
-                  } else if (type === TRANSACTION_TYPE_CANCEL) {
+                  } else if (type === TRANSACTION_TYPES.CANCEL) {
                     eventKey = TRANSACTION_CANCEL_ATTEMPTED_EVENT
                   }
                 } else if (value === CONFIRMED_STATUS) {
-                  if (type === TRANSACTION_TYPE_CANCEL) {
+                  if (type === TRANSACTION_TYPES.CANCEL) {
                     eventKey = TRANSACTION_CANCEL_SUCCESS_EVENT
                   }
                 }

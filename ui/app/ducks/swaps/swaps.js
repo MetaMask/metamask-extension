@@ -57,10 +57,7 @@ import {
   resetCustomGasState,
 } from '../gas/gas.duck'
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util'
-import {
-  TRANSACTION_CATEGORY_SWAP,
-  TRANSACTION_CATEGORY_SWAP_APPROVAL,
-} from '../../../../shared/constants/transaction'
+import { TRANSACTION_CATEGORIES } from '../../../../shared/constants/transaction'
 
 const initialState = {
   aggregatorMetadata: null,
@@ -602,7 +599,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
         updateTransaction(
           {
             ...approveTxMeta,
-            transactionCategory: TRANSACTION_CATEGORY_SWAP_APPROVAL,
+            transactionCategory: TRANSACTION_CATEGORIES.SWAP_APPROVAL,
             sourceTokenSymbol: sourceTokenInfo.symbol,
           },
           true,
@@ -627,7 +624,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
           ...tradeTxMeta,
           sourceTokenSymbol: sourceTokenInfo.symbol,
           destinationTokenSymbol: destinationTokenInfo.symbol,
-          transactionCategory: TRANSACTION_CATEGORY_SWAP,
+          transactionCategory: TRANSACTION_CATEGORIES.SWAP,
           destinationTokenDecimals: destinationTokenInfo.decimals,
           destinationTokenAddress: destinationTokenInfo.address,
           swapMetaData,

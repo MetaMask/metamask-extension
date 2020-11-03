@@ -6,11 +6,8 @@ import {
 import { hexToDecimal } from '../helpers/utils/conversions.util'
 import txHelper from '../../lib/tx-helper'
 import {
-  TRANSACTION_STATUS_CONFIRMED,
-  TRANSACTION_STATUS_FAILED,
-  TRANSACTION_STATUS_SUBMITTED,
-  TRANSACTION_TYPE_CANCEL,
-  TRANSACTION_TYPE_RETRY,
+  TRANSACTION_STATUSES,
+  TRANSACTION_TYPES,
 } from '../../../shared/constants/transaction'
 import { getSelectedAddress } from '.'
 
@@ -252,13 +249,14 @@ export const nonceSortedTransactionsSelector = createSelector(
         } = nonceProps
 
         const previousPrimaryIsNetworkFailure =
-          nonceProps.primaryTransaction.status === TRANSACTION_STATUS_FAILED &&
+          nonceProps.primaryTransaction.status ===
+            TRANSACTION_STATUSES.FAILED &&
           nonceProps.primaryTransaction?.txReceipt?.status !== '0x0'
         const currentTransactionIsOnChainFailure =
           transaction?.txReceipt?.status === '0x0'
 
         if (
-          status === TRANSACTION_STATUS_CONFIRMED ||
+          status === TRANSACTION_STATUSES.CONFIRMED ||
           currentTransactionIsOnChainFailure ||
           previousPrimaryIsNetworkFailure ||
           (txTime > primaryTxTime && status in PRIORITY_STATUS_HASH)
@@ -276,11 +274,11 @@ export const nonceSortedTransactionsSelector = createSelector(
           nonceProps.initialTransaction = transaction
         }
 
-        if (type === TRANSACTION_TYPE_RETRY) {
+        if (type === TRANSACTION_TYPES.RETRY) {
           nonceProps.hasRetried = true
         }
 
-        if (type === TRANSACTION_TYPE_CANCEL) {
+        if (type === TRANSACTION_TYPES.CANCEL) {
           nonceProps.hasCancelled = true
         }
       } else {
@@ -289,8 +287,8 @@ export const nonceSortedTransactionsSelector = createSelector(
           transactions: [transaction],
           initialTransaction: transaction,
           primaryTransaction: transaction,
-          hasRetried: transaction.type === TRANSACTION_TYPE_RETRY,
-          hasCancelled: transaction.type === TRANSACTION_TYPE_CANCEL,
+          hasRetried: transaction.type === TRANSACTION_TYPES.RETRY,
+          hasCancelled: transaction.type === TRANSACTION_TYPES.CANCEL,
         }
 
         insertOrderedNonce(orderedNonces, nonce)
@@ -344,6 +342,6 @@ export const submittedPendingTransactionsSelector = createSelector(
   transactionsSelector,
   (transactions = []) =>
     transactions.filter(
-      (transaction) => transaction.status === TRANSACTION_STATUS_SUBMITTED,
+      (transaction) => transaction.status === TRANSACTION_STATUSES.SUBMITTED,
     ),
 )

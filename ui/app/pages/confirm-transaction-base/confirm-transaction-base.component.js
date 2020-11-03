@@ -18,10 +18,7 @@ import { PRIMARY, SECONDARY } from '../../helpers/constants/common'
 import { hexToDecimal } from '../../helpers/utils/conversions.util'
 import AdvancedGasInputs from '../../components/app/gas-customization/advanced-gas-inputs'
 import TextField from '../../components/ui/text-field'
-import {
-  TRANSACTION_STATUS_CONFIRMED,
-  TRANSACTION_STATUS_DROPPED,
-} from '../../../../shared/constants/transaction'
+import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction'
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -134,8 +131,8 @@ export default class ConfirmTransactionBase extends Component {
     } = prevProps
     const statusUpdated = transactionStatus !== prevTxStatus
     const txDroppedOrConfirmed =
-      transactionStatus === TRANSACTION_STATUS_DROPPED ||
-      transactionStatus === TRANSACTION_STATUS_CONFIRMED
+      transactionStatus === TRANSACTION_STATUSES.DROPPED ||
+      transactionStatus === TRANSACTION_STATUSES.CONFIRMED
 
     if (
       nextNonce !== prevNextNonce ||

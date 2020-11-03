@@ -1,4 +1,4 @@
-import { TRANSACTION_CATEGORY_SWAP } from '../../../shared/constants/transaction'
+import { TRANSACTION_CATEGORIES } from '../../../shared/constants/transaction'
 import { ETH_SWAPS_TOKEN_ADDRESS } from '../helpers/constants/swaps'
 import { getSwapsTokensReceivedFromTxMeta } from '../pages/swaps/swaps.util'
 import { useTokenFiatAmount } from './useTokenFiatAmount'
@@ -34,7 +34,7 @@ export function useSwappedTokenValue(transactionGroup, currentAsset) {
       primaryTransaction.destinationTokenSymbol === 'ETH')
 
   const swapTokenValue =
-    transactionCategory === TRANSACTION_CATEGORY_SWAP &&
+    transactionCategory === TRANSACTION_CATEGORIES.SWAP &&
     isViewingReceivedTokenFromSwap
       ? getSwapsTokensReceivedFromTxMeta(
           primaryTransaction.destinationTokenSymbol,
@@ -43,7 +43,7 @@ export function useSwappedTokenValue(transactionGroup, currentAsset) {
           senderAddress,
           decimals,
         )
-      : transactionCategory === TRANSACTION_CATEGORY_SWAP &&
+      : transactionCategory === TRANSACTION_CATEGORIES.SWAP &&
         primaryTransaction.swapTokenValue
 
   const isNegative =

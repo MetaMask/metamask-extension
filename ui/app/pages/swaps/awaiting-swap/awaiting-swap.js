@@ -38,7 +38,7 @@ import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes'
 
 import { getRenderableNetworkFeesForQuote } from '../swaps.util'
 import SwapsFooter from '../swaps-footer'
-import { TRANSACTION_STATUS_SUBMITTED } from '../../../../../shared/constants/transaction'
+import { TRANSACTION_STATUSES } from '../../../../../shared/constants/transaction'
 import SwapFailureIcon from './swap-failure-icon'
 import SwapSuccessIcon from './swap-success-icon'
 import QuotesTimeoutIcon from './quotes-timeout-icon'
@@ -115,7 +115,7 @@ export default function AwaitingSwap({
 
   const statusKey = tradeTxData && getStatusKey(tradeTxData)
   const timeRemaining = useTransactionTimeRemaining(
-    statusKey === TRANSACTION_STATUS_SUBMITTED,
+    statusKey === TRANSACTION_STATUSES.SUBMITTED,
     true,
     tradeTxData?.submittedTime,
     usedGasPrice,
