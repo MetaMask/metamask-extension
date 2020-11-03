@@ -39,7 +39,9 @@
 
     color: #4d4d4d;
     border: none;
-    max-width: 22ch;
+    max-width: 15ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
     height: 16px;
 
     &__disabled {
