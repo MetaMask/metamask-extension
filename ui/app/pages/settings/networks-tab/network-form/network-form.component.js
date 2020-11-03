@@ -294,7 +294,7 @@ export default class NetworkForm extends PureComponent {
    * Validates the chain ID by checking it against the `eth_chainId` return
    * value from the given RPC URL.
    * Assumes that all strings are non-empty and correctly formatted.
-   * 
+   *
    * @param {string} formChainId - Non-empty, hex or decimal number string from
    * the form.
    * @param {string} parsedChainId - The parsed, hex string chain ID.
