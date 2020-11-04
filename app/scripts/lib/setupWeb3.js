@@ -3,6 +3,7 @@
 // TODO:deprecate:2020
 // Delete this file
 
+import web3Entitites from './web3-entities.json'
 import 'web3/dist/web3.min'
 
 const shouldLogUsage = ![
@@ -31,8 +32,84 @@ export default function setupWeb3(log) {
     value: web3.eth,
   })
 
+  // Setup logging of nested property usage
+  if (shouldLogUsage) {
+    const includedTopKeys = new Set([
+      'eth',
+      'db',
+      'shh',
+      'net',
+      'personal',
+      'bzz',
+      'version',
+    ])
+
+    Object.keys(web3).forEach((rawTopKey) => {
+      const topKey = stringifyKey(rawTopKey)
+      if (includedTopKeys.has(topKey)) {
+        const applyTrapKeys = new Map()
+        const getTrapKeys = new Map()
+
+        Object.keys(web3[topKey]).forEach((rawKey) => {
+          const key = stringifyKey(rawKey)
+          const path = `web3.${topKey}.${key}`
+
+          if (web3Entitites[path]) {
+            if (web3Entitites[path].type === 'function') {
+              applyTrapKeys.set(key, path)
+            } else {
+              getTrapKeys.set(key, path)
+            }
+          }
+        })
+
+        // Create apply traps for namespace functions
+        for (const [key, path] of applyTrapKeys) {
+          web3[topKey][key] = new Proxy(web3[topKey][key], {
+            apply: (...params) => {
+              window.ethereum.request({
+                method: 'metamask_logInjectedWeb3Usage',
+                params: [
+                  {
+                    action: 'apply',
+                    path,
+                  },
+                ],
+              })
+
+              // Call function normally
+              return Reflect.apply(...params)
+            },
+          })
+        }
+
+        // Create get trap for entire namespace
+        web3[topKey] = new Proxy(web3[topKey], {
+          get: (web3Prop, key, ...params) => {
+            const name = stringifyKey(key)
+
+            if (getTrapKeys.has(name)) {
+              window.ethereum.request({
+                method: 'metamask_logInjectedWeb3Usage',
+                params: [
+                  {
+                    action: 'get',
+                    path: getTrapKeys.get(name),
+                  },
+                ],
+              })
+            }
+
+            // return value normally
+            return Reflect.get(web3Prop, key, ...params)
+          },
+        })
+      }
+    })
+  }
+
   const web3Proxy = new Proxy(web3, {
-    get: (_web3, key) => {
+    get: (...params) => {
       // get the time of use
       lastTimeUsed = Date.now()
 
@@ -44,28 +121,8 @@ export default function setupWeb3(log) {
         hasBeenWarned = true
       }
 
-      if (shouldLogUsage) {
-        const name = stringifyKey(key)
-        window.ethereum.request({
-          method: 'metamask_logInjectedWeb3Usage',
-          params: [{ action: 'get', name }],
-        })
-      }
-
       // return value normally
-      return _web3[key]
-    },
-    set: (_web3, key, value) => {
-      const name = stringifyKey(key)
-      if (shouldLogUsage) {
-        window.ethereum.request({
-          method: 'metamask_logInjectedWeb3Usage',
-          params: [{ action: 'set', name }],
-        })
-      }
-
-      // set value normally
-      _web3[key] = value
+      return Reflect.get(...params)
     },
   })
 
