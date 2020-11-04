@@ -38,7 +38,6 @@ export default class FirstTimeFlow extends PureComponent {
 
   state = {
     seedPhrase: '',
-    isImportedKeyring: false,
   }
 
   componentDidMount() {
@@ -80,7 +79,6 @@ export default class FirstTimeFlow extends PureComponent {
 
     try {
       const vault = await createNewAccountFromSeed(password, seedPhrase)
-      this.setState({ isImportedKeyring: true })
       return vault
     } catch (error) {
       throw new Error(error.message)
@@ -101,7 +99,7 @@ export default class FirstTimeFlow extends PureComponent {
   }
 
   render() {
-    const { seedPhrase, isImportedKeyring } = this.state
+    const { seedPhrase } = this.state
     const { verifySeedPhrase } = this.props
 
     return (
@@ -132,7 +130,6 @@ export default class FirstTimeFlow extends PureComponent {
             render={(routeProps) => (
               <CreatePassword
                 {...routeProps}
-                isImportedKeyring={isImportedKeyring}
                 onCreateNewAccount={this.handleCreateNewAccount}
                 onCreateNewAccountFromSeed={this.handleImportWithSeedPhrase}
               />
