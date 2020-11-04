@@ -327,7 +327,7 @@ export default class NetworkForm extends PureComponent {
         try {
           endpointChainId = new BigNumber(endpointChainId, 16).toString(10)
         } catch (err) {
-          log.error(
+          log.warn(
             'Failed to convert endpoint chain ID to decimal',
             endpointChainId,
           )
