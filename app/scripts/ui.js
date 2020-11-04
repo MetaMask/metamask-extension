@@ -1,3 +1,9 @@
+// these need to run before anything else
+/* eslint-disable-next-line import/first,import/order */
+import freezeIntrinsics from './lib/freezeIntrinsics'
+
+freezeIntrinsics('ui')
+
 // polyfills
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
 import '@formatjs/intl-relativetimeformat/polyfill'
@@ -13,10 +19,7 @@ import EthQuery from 'eth-query'
 import StreamProvider from 'web3-stream-provider'
 import log from 'loglevel'
 import launchMetaMaskUi from '../../ui'
-import freezeIntrinsics from './lib/freezeIntrinsics'
 import { setupMultiplex } from './lib/stream-utils'
-import setupSentry from './lib/setupSentry'
-import ExtensionPlatform from './platforms/extension'
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
@@ -26,19 +29,6 @@ import { getEnvironmentType } from './lib/util'
 start().catch(log.error)
 
 async function start() {
-  // create platform global
-  global.platform = new ExtensionPlatform()
-
-  // setup sentry error reporting
-  const release = global.platform.getVersion()
-  setupSentry({
-    release,
-    getState: () => window.getSentryState?.() || {},
-  })
-
-  // Should occur before anything else, but needs to occur after sentry init for now
-  freezeIntrinsics()
-
   // identify window type (popup, notification)
   const windowType = getEnvironmentType()
 

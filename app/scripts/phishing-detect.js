@@ -1,4 +1,5 @@
-import freezeIntrinsics from './lib/freezeIntrinsics' /* eslint-disable-line import/first,import/order */
+/* eslint-disable-next-line import/first,import/order */
+import freezeIntrinsics from './lib/freezeIntrinsics'
 
 // Should occur before anything else
 freezeIntrinsics()

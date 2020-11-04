@@ -3,6 +3,10 @@
  */
 // these need to run before anything else
 /* eslint-disable import/first,import/order */
+import freezeIntrinsics from './lib/freezeIntrinsics'
+
+freezeIntrinsics('background')
+
 import setupFetchDebugging from './lib/setupFetchDebugging'
 /* eslint-enable import/order */
 
@@ -19,17 +23,14 @@ import extension from 'extensionizer'
 import storeTransform from 'obs-store/lib/transform'
 import asStream from 'obs-store/lib/asStream'
 import PortStream from 'extension-port-stream'
-import freezeIntrinsics from './lib/freezeIntrinsics'
 import migrations from './migrations'
 import Migrator from './lib/migrator'
-import ExtensionPlatform from './platforms/extension'
 import LocalStore from './lib/local-store'
 import ReadOnlyNetworkStore from './lib/network-store'
 import createStreamSink from './lib/createStreamSink'
 import NotificationManager from './lib/notification-manager'
 import MetamaskController from './metamask-controller'
 import rawFirstTimeState from './first-time-state'
-import setupSentry from './lib/setupSentry'
 import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code'
 import getObjStructure from './lib/getObjStructure'
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup'
@@ -45,16 +46,8 @@ const firstTimeState = { ...rawFirstTimeState }
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
-const platform = new ExtensionPlatform()
 const notificationManager = new NotificationManager()
 global.METAMASK_NOTIFIER = notificationManager
-
-// setup sentry error reporting
-const release = platform.getVersion()
-const sentry = setupSentry({ release })
-
-// Should occur before anything else, but needs to occur after sentry init for now
-freezeIntrinsics()
 
 let popupIsOpen = false
 let notificationIsOpen = false
