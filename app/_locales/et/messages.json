@@ -1270,9 +1270,6 @@
   "yourPrivateSeedPhrase": {
     "message": "Teie privaatne seemnefraas"
   },
-  "yourSigRequested": {
-    "message": "Taotletakse teie allkirja"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Null gaasihind kiirendamisel"
   }

@@ -1274,9 +1274,6 @@
   "yourPrivateSeedPhrase": {
     "message": "आपका निजी बीज वाक्यांश"
   },
-  "yourSigRequested": {
-    "message": "आपके हस्ताक्षर का अनुरोध किया जा रहा है"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "शून्य गैस की कीमत में तेजी"
   }

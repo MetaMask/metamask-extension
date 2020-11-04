@@ -1280,9 +1280,6 @@
   "yourPrivateSeedPhrase": {
     "message": "عبارت بازیاب شخصی شما"
   },
-  "yourSigRequested": {
-    "message": "امضاء شما درخواست میشود"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "قیمت صفر گاز بسوی سرعت"
   }

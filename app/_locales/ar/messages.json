@@ -1273,9 +1273,6 @@
   "yourPrivateSeedPhrase": {
     "message": "عبارة الأمان الشخصية الخاصة بك"
   },
-  "yourSigRequested": {
-    "message": "جاري طلب توقيعك"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "سعر الغاز صفر عند التعجيل"
   }

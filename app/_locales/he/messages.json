@@ -1274,9 +1274,6 @@
   "yourPrivateSeedPhrase": {
     "message": "ה-seed phrase הפרטי שלך"
   },
-  "yourSigRequested": {
-    "message": "נדרשת חתימתך"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "מחיר גז אפס על האצה"
   }

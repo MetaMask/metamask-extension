@@ -1237,9 +1237,6 @@
   "yourPrivateSeedPhrase": {
     "message": "Vaša súkromná seed fráza"
   },
-  "yourSigRequested": {
-    "message": "Je vyžadován váš podpis"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Nulová cena za GAS pri zrýchlení"
   }

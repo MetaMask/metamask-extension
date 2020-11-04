@@ -1258,9 +1258,6 @@
   "yourPrivateSeedPhrase": {
     "message": "Kirai chako kianzio cha binafsi"
   },
-  "yourSigRequested": {
-    "message": "Saini yako inaombwa"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Bei ya gesi sifuri kwenye kuongeza kasi"
   }

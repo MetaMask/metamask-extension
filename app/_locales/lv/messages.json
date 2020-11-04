@@ -1276,9 +1276,6 @@
   "yourPrivateSeedPhrase": {
     "message": "Jūsu privātā atkopšanas frāze"
   },
-  "yourSigRequested": {
-    "message": "Nepieciešams jūsu paraksts"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Gas nulles cena pie paātrinājuma"
   }
