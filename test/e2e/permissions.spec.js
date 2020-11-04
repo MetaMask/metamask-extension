@@ -3,7 +3,6 @@ const webdriver = require('selenium-webdriver')
 
 const { By, until } = webdriver
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
-const { TRANSACTION_STATUSES } = require('../../shared/constants/transaction')
 const { regularDelayMs, largeDelayMs } = require('./helpers')
 const { buildWebDriver } = require('./webdriver')
 const Ganache = require('./ganache')
@@ -42,7 +41,7 @@ describe('MetaMask', function () {
         console.error(new Error(errorMessage))
       }
     }
-    if (this.currentTest.state === TRANSACTION_STATUSES.FAILED) {
+    if (this.currentTest.state === 'failed') {
       await driver.verboseReportOnFailure(this.currentTest.title)
     }
   })
