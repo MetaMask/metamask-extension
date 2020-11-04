@@ -274,7 +274,7 @@ export default class NetworkForm extends PureComponent {
     })
   }
 
-  validateChainId = (chainIdArg = '') => {
+  validateChainIdOnChange = (chainIdArg = '') => {
     const chainId = chainIdArg.trim()
     let errorMessage = ''
 
@@ -429,7 +429,7 @@ export default class NetworkForm extends PureComponent {
         {this.renderFormTextField(
           'chainId',
           'chainId',
-          this.setStateWithValue('chainId', this.validateChainId),
+          this.setStateWithValue('chainId', this.validateChainIdOnChange),
           chainId,
           null,
           viewOnly ? null : t('networkSettingsChainIdDescription'),
