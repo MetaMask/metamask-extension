@@ -734,7 +734,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Блокувати Explorer URL (не обов'язково)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Символ (не обов'язково)"
   },
   "orderOneHere": {

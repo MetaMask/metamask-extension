@@ -716,7 +716,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Bloquer l'URL de l'explorateur (facultatif)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Symbole (facultatif)"
   },
   "orderOneHere": {

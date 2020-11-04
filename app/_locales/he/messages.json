@@ -731,7 +731,7 @@
   "optionalBlockExplorerUrl": {
     "message": "חסום כתובת URL של אקספלורר (אופציונלי)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "סמל (אופציונלי)"
   },
   "orderOneHere": {

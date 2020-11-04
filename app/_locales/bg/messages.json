@@ -730,7 +730,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Блокиране на Explorer URL (по избор)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Символ (по избор)"
   },
   "orderOneHere": {

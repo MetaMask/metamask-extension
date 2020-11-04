@@ -725,7 +725,7 @@
   "optionalBlockExplorerUrl": {
     "message": "區塊鏈瀏覽器 URL（非必要）"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Symbol (可選)"
   },
   "orderOneHere": {

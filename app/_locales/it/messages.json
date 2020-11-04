@@ -1050,7 +1050,7 @@
   "optionalBlockExplorerUrl": {
     "message": "URL del Block Explorer (opzionale)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Simbolo (opzionale)"
   },
   "orderOneHere": {

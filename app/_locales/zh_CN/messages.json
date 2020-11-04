@@ -716,7 +716,7 @@
   "optionalBlockExplorerUrl": {
     "message": "屏蔽管理器 URL（选填）"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "符号（选填）"
   },
   "orderOneHere": {

@@ -731,7 +731,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Διεύθυνση URL Εξερευνητή Μπλοκ (προαιρετικό)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Σύμβολο (προαιρετικό)"
   },
   "orderOneHere": {

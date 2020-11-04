@@ -711,7 +711,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Sekat URL Explorer (pilihan)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Simbol (pilihan)"
   },
   "orderOneHere": {

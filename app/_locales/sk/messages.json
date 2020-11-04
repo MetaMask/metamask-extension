@@ -703,7 +703,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Blokovať URL Explorera (voliteľné)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Symbol (voliteľné)"
   },
   "orderOneHere": {

@@ -734,7 +734,7 @@
   "optionalBlockExplorerUrl": {
     "message": "এক্সপ্লোরার URL ব্লক করুন (ঐচ্ছিক)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "প্রতীক (ঐচ্ছিক)"
   },
   "orderOneHere": {

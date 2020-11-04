@@ -730,7 +730,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Bloķēt Explorer URL (pēc izvēles)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Simbols (neobligāti)"
   },
   "orderOneHere": {

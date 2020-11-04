@@ -721,7 +721,7 @@
   "optionalBlockExplorerUrl": {
     "message": "URL explorator bloc (opțional)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Simbol (opțional)"
   },
   "orderOneHere": {

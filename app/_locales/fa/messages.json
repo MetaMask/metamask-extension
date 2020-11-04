@@ -734,7 +734,7 @@
   "optionalBlockExplorerUrl": {
     "message": "بلاک کردن مرورگر URL (انتخابی)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "سمبول (انتخابی)"
   },
   "orderOneHere": {

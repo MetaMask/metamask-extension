@@ -721,7 +721,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Blokker Explorer URL (valgfritt)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Symbol (valgfritt)"
   },
   "orderOneHere": {

@@ -727,7 +727,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Blokiraj Explorerov URL (neobavezno)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Simbol (neobavezno)"
   },
   "orderOneHere": {

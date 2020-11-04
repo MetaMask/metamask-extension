@@ -734,7 +734,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Blokuoti naršyklės URL (pasirinktinai)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Simbolis (nebūtinas)"
   },
   "orderOneHere": {

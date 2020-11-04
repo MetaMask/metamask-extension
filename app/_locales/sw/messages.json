@@ -712,7 +712,7 @@
   "optionalBlockExplorerUrl": {
     "message": "URL ya Block Explorer URL (hiari)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Ishara (hiari)"
   },
   "orderOneHere": {

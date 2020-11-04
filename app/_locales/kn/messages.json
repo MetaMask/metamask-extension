@@ -734,7 +734,7 @@
   "optionalBlockExplorerUrl": {
     "message": "ಅನ್ವೇಷಕ URL ಅನ್ನು ನಿರ್ಬಂಧಿಸಿ (ಐಚ್ಛಿಕ)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "ಚಿಹ್ನೆ (ಐಚ್ಛಿಕ)"
   },
   "orderOneHere": {

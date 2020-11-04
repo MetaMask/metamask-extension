@@ -718,7 +718,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Blok-stifinder-URL (valgfrit)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Symbol (valgfrit)"
   },
   "orderOneHere": {

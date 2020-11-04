@@ -35,7 +35,7 @@ export default class NetworkForm extends PureComponent {
 
   state = {
     rpcUrl: this.props.rpcUrl,
-    chainId: this.props.chainId,
+    chainId: this.getDisplayChainIdFromProps(),
     ticker: this.props.ticker,
     networkName: this.props.networkName,
     blockExplorerUrl: this.props.blockExplorerUrl,
@@ -49,7 +49,6 @@ export default class NetworkForm extends PureComponent {
     } = prevProps
     const {
       rpcUrl,
-      chainId,
       ticker,
       networkName,
       networksTabIsInAddMode,
@@ -68,7 +67,7 @@ export default class NetworkForm extends PureComponent {
     } else if (prevRpcUrl !== rpcUrl) {
       this.setState({
         rpcUrl,
-        chainId,
+        chainId: this.getDisplayChainIdFromProps(),
         ticker,
         networkName,
         blockExplorerUrl,
@@ -94,22 +93,38 @@ export default class NetworkForm extends PureComponent {
   }
 
   resetForm() {
-    const {
-      rpcUrl,
-      chainId,
-      ticker,
-      networkName,
-      blockExplorerUrl,
-    } = this.props
+    const { rpcUrl, ticker, networkName, blockExplorerUrl } = this.props
 
     this.setState({
       rpcUrl,
-      chainId,
+      chainId: this.getDisplayChainIdFromProps(),
       ticker,
       networkName,
       blockExplorerUrl,
       errors: {},
     })
+  }
+
+  /**
+   * Ensures that the chainId is always displayed in decimal, even though
+   * it's stored in hexadecimal.
+   *
+   * Should be called to get the chainId whenever props are used to set the
+   * component's state.
+   *
+   * @returns {string} The props chainId in decimal.
+   */
+  getDisplayChainIdFromProps() {
+    const { chainId: propsChainId } = this.props
+
+    if (
+      !propsChainId ||
+      typeof propsChainId !== 'string' ||
+      !propsChainId.startsWith('0x')
+    ) {
+      return propsChainId
+    }
+    return new BigNumber(propsChainId, 16).toString(10)
   }
 
   onSubmit = async () => {
@@ -129,13 +144,14 @@ export default class NetworkForm extends PureComponent {
       blockExplorerUrl,
     } = this.state
 
+    const formChainId = stateChainId.trim().toLowerCase()
     // Ensure chainId is a 0x-prefixed, lowercase hex string
-    let chainId = stateChainId.trim().toLowerCase()
+    let chainId = formChainId
     if (!chainId.startsWith('0x')) {
       chainId = `0x${new BigNumber(chainId, 10).toString(16)}`
     }
 
-    if (!(await this.validateChainIdOnSubmit(chainId, rpcUrl))) {
+    if (!(await this.validateChainIdOnSubmit(formChainId, chainId, rpcUrl))) {
       return
     }
 
@@ -153,6 +169,10 @@ export default class NetworkForm extends PureComponent {
 
     if (networksTabIsInAddMode) {
       onClear()
+    } else {
+      this.setState({
+        chainId: this.getDisplayChainIdFromProps(),
+      })
     }
   }
 
@@ -178,13 +198,7 @@ export default class NetworkForm extends PureComponent {
   }
 
   stateIsUnchanged() {
-    const {
-      rpcUrl,
-      chainId,
-      ticker,
-      networkName,
-      blockExplorerUrl,
-    } = this.props
+    const { rpcUrl, ticker, networkName, blockExplorerUrl } = this.props
 
     const {
       rpcUrl: stateRpcUrl,
@@ -196,7 +210,7 @@ export default class NetworkForm extends PureComponent {
 
     return (
       stateRpcUrl === rpcUrl &&
-      stateChainId === chainId &&
+      stateChainId === this.getDisplayChainIdFromProps() &&
       stateTicker === ticker &&
       stateNetworkName === networkName &&
       stateBlockExplorerUrl === blockExplorerUrl
@@ -260,7 +274,7 @@ export default class NetworkForm extends PureComponent {
     })
   }
 
-  validateChainId = (chainIdArg = '') => {
+  validateChainIdOnChange = (chainIdArg = '') => {
     const chainId = chainIdArg.trim()
     let errorMessage = ''
 
@@ -279,7 +293,17 @@ export default class NetworkForm extends PureComponent {
     this.setErrorTo('chainId', errorMessage)
   }
 
-  validateChainIdOnSubmit = async (chainId, rpcUrl) => {
+  /**
+   * Validates the chain ID by checking it against the `eth_chainId` return
+   * value from the given RPC URL.
+   * Assumes that all strings are non-empty and correctly formatted.
+   *
+   * @param {string} formChainId - Non-empty, hex or decimal number string from
+   * the form.
+   * @param {string} parsedChainId - The parsed, hex string chain ID.
+   * @param {string} rpcUrl - The RPC URL from the form.
+   */
+  validateChainIdOnSubmit = async (formChainId, parsedChainId, rpcUrl) => {
     const { t } = this.context
     let errorMessage
     let endpointChainId
@@ -294,7 +318,22 @@ export default class NetworkForm extends PureComponent {
 
     if (providerError || typeof endpointChainId !== 'string') {
       errorMessage = t('failedToFetchChainId')
-    } else if (chainId !== endpointChainId) {
+    } else if (parsedChainId !== endpointChainId) {
+      // Here, we are in an error state. The endpoint should always return a
+      // hexadecimal string. If the user entered a decimal string, we attempt
+      // to convert the endpoint's return value to decimal before rendering it
+      // in an error message in the form.
+      if (!formChainId.startsWith('0x')) {
+        try {
+          endpointChainId = new BigNumber(endpointChainId, 16).toString(10)
+        } catch (err) {
+          log.warn(
+            'Failed to convert endpoint chain ID to decimal',
+            endpointChainId,
+          )
+        }
+      }
+
       errorMessage = t('endpointReturnedDifferentChainId', [
         endpointChainId.length <= 12
           ? endpointChainId
@@ -394,17 +433,17 @@ export default class NetworkForm extends PureComponent {
         {this.renderFormTextField(
           'chainId',
           'chainId',
-          this.setStateWithValue('chainId', this.validateChainId),
+          this.setStateWithValue('chainId', this.validateChainIdOnChange),
           chainId,
           null,
-          t('networkSettingsChainIdDescription'),
+          viewOnly ? null : t('networkSettingsChainIdDescription'),
         )}
         {this.renderFormTextField(
           'symbol',
           'network-ticker',
           this.setStateWithValue('ticker'),
           ticker,
-          'optionalSymbol',
+          'optionalCurrencySymbol',
         )}
         {this.renderFormTextField(
           'blockExplorerUrl',

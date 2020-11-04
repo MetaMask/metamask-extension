@@ -731,7 +731,7 @@
   "optionalBlockExplorerUrl": {
     "message": "एक्सप्लोरर यूआरएल ब्लॉक (वैकल्पिक)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "सिम्बल (वैकल्पिक)"
   },
   "orderOneHere": {

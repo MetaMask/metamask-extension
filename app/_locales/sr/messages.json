@@ -725,7 +725,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Blokirajte URL Explorer-a (opciono)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Simbol (opciono)"
   },
   "orderOneHere": {

@@ -731,7 +731,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Estä Explorerin URL-osoite (valinnainen)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Symboli (valinnainen)"
   },
   "orderOneHere": {

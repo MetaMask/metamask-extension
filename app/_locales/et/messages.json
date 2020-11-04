@@ -724,7 +724,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Blokeeri Exploreri URL (valikuline)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Sümbol (valikuline)"
   },
   "orderOneHere": {

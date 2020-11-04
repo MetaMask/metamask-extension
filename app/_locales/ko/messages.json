@@ -728,7 +728,7 @@
   "optionalBlockExplorerUrl": {
     "message": "익스플로러 URL 차단 (선택 사항)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Symbol (선택)"
   },
   "orderOneHere": {

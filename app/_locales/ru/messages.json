@@ -763,7 +763,7 @@
   "optionalBlockExplorerUrl": {
     "message": "URL блок-эксплорера  (необязательно)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Символ  (необязательно)"
   },
   "orderOneHere": {
