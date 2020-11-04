@@ -36,6 +36,8 @@ const getBaseApi = function (type) {
       return `https://api.metaswap.codefi.network/featureFlag`
     case 'aggregatorMetadata':
       return `https://api.metaswap.codefi.network/aggregatorMetadata`
+    case 'gasPrices':
+      return `https://api.metaswap.codefi.network/gasPrices`
     default:
       throw new Error('getBaseApi requires an api call type')
   }
@@ -147,6 +149,27 @@ const AGGREGATOR_METADATA_VALIDATORS = [
     property: 'icon',
     type: 'string',
     validator: (string) => Boolean(string.match(/^data:image/u)),
+  },
+]
+
+const isValidDecimalNumber = (string) =>
+  !isNaN(string) && string.match(/^[.0-9]+$/u) && !isNaN(parseFloat(string))
+
+const SWAP_GAS_PRICE_VALIDATOR = [
+  {
+    property: 'SafeGasPrice',
+    type: 'string',
+    validator: isValidDecimalNumber,
+  },
+  {
+    property: 'ProposeGasPrice',
+    type: 'string',
+    validator: isValidDecimalNumber,
+  },
+  {
+    property: 'FastGasPrice',
+    type: 'string',
+    validator: isValidDecimalNumber,
   },
 ]
 
@@ -318,6 +341,36 @@ export async function fetchTokenBalance(address, userAddress) {
     : Promise.resolve()
   const usersToken = await tokenBalancePromise
   return usersToken
+}
+
+export async function fetchSwapsGasPrices() {
+  const gasPricesUrl = getBaseApi('gasPrices')
+  const response = await fetchWithCache(
+    gasPricesUrl,
+    { method: 'GET' },
+    { cacheRefreshTime: 15000 },
+  )
+  const responseIsValid = validateData(
+    SWAP_GAS_PRICE_VALIDATOR,
+    response,
+    gasPricesUrl,
+  )
+
+  if (!responseIsValid) {
+    throw new Error(`${gasPricesUrl} response is invalid`)
+  }
+
+  const {
+    SafeGasPrice: safeLow,
+    ProposeGasPrice: average,
+    FastGasPrice: fast,
+  } = response
+
+  return {
+    safeLow,
+    average,
+    fast,
+  }
 }
 
 export function getRenderableNetworkFeesForQuote(
