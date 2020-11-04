@@ -319,6 +319,10 @@ export default class NetworkForm extends PureComponent {
     if (providerError || typeof endpointChainId !== 'string') {
       errorMessage = t('failedToFetchChainId')
     } else if (parsedChainId !== endpointChainId) {
+      // Here, we are in an error state. The endpoint should always return a
+      // hexadecimal string. If the user entered a decimal string, we attempt
+      // to convert the endpoint's return value to decimal before rendering it
+      // in an error message in the form.
       if (!formChainId.startsWith('0x')) {
         try {
           endpointChainId = new BigNumber(endpointChainId, 16).toString(10)
