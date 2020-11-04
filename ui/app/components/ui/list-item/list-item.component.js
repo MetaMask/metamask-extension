@@ -24,7 +24,9 @@ export default function ListItem({
     >
       {icon && <div className="list-item__icon">{icon}</div>}
       <div className="list-item__heading">
-        {React.isValidElement(title) ? title : (
+        {React.isValidElement(title) ? (
+          title
+        ) : (
           <button onClick={onClick}>
             <h2 className="list-item__title">{title}</h2>
           </button>

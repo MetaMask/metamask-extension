@@ -860,7 +860,9 @@ describe('MetaMask', function () {
       assert.ok(confirmDataText.includes('Bytes:'))
       assert.ok(confirmDataText.includes('675'))
 
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Details')]`))
+      await driver.clickElement(
+        By.xpath(`//button[contains(text(), 'Details')]`),
+      )
       await driver.delay(regularDelayMs)
     })
 
@@ -1055,7 +1057,9 @@ describe('MetaMask', function () {
       )
       await driver.delay(regularDelayMs)
 
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Advanced')]`))
+      await driver.clickElement(
+        By.xpath(`//button[contains(text(), 'Advanced')]`),
+      )
       await driver.delay(tinyDelayMs)
 
       const [gasPriceInput, gasLimitInput] = await driver.findElements(
@@ -1097,7 +1101,9 @@ describe('MetaMask', function () {
     })
 
     it('picks the newly created Test token', async function () {
-      await driver.clickElement(By.xpath("//button[contains(text(), 'Custom Token')]"))
+      await driver.clickElement(
+        By.xpath("//button[contains(text(), 'Custom Token')]"),
+      )
       await driver.delay(regularDelayMs)
 
       const newTokenAddress = await driver.findElement(
@@ -1190,7 +1196,9 @@ describe('MetaMask', function () {
         ),
       )
 
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Details')]`))
+      await driver.clickElement(
+        By.xpath(`//button[contains(text(), 'Details')]`),
+      )
       await driver.delay(regularDelayMs)
     })
 
