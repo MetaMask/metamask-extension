@@ -42,6 +42,7 @@ import {
 } from './lib/enums'
 /* eslint-enable import/first */
 
+const { platform, sentry } = global
 const firstTimeState = { ...rawFirstTimeState }
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
