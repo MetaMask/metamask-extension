@@ -4,7 +4,7 @@ import ObservableStore from 'obs-store'
 export default class AppStateController extends EventEmitter {
   /**
    * @constructor
-   * @param opts
+   * @param {Object} opts
    */
   constructor(opts = {}) {
     const {

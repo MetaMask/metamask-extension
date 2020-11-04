@@ -48,16 +48,16 @@ const MAX_MEMSTORE_TX_LIST_SIZE = 100 // Number of transactions (by unique nonce
       calculating nonces
 
   @class
-  @param {Object} - opts
-  @param {Object}  opts.initState - initial transaction list default is an empty array
-  @param {Object}  opts.networkStore - an observable store for network number
-  @param {Object}  opts.blockTracker - An instance of eth-blocktracker
-  @param {Object}  opts.provider - A network provider.
-  @param {Function}  opts.signTransaction - function the signs an ethereumjs-tx
-  @param {Object}  opts.getPermittedAccounts - get accounts that an origin has permissions for
-  @param {Function}  opts.signTransaction - ethTx signer that returns a rawTx
-  @param {number}  [opts.txHistoryLimit] - number *optional* for limiting how many transactions are in state
-  @param {Object}  opts.preferencesStore
+  @param {Object} opts
+  @param {Object} opts.initState - initial transaction list default is an empty array
+  @param {Object} opts.networkStore - an observable store for network number
+  @param {Object} opts.blockTracker - An instance of eth-blocktracker
+  @param {Object} opts.provider - A network provider.
+  @param {Function} opts.signTransaction - function the signs an ethereumjs-tx
+  @param {Object} opts.getPermittedAccounts - get accounts that an origin has permissions for
+  @param {Function} opts.signTransaction - ethTx signer that returns a rawTx
+  @param {number} [opts.txHistoryLimit] - number *optional* for limiting how many transactions are in state
+  @param {Object} opts.preferencesStore
 */
 
 export default class TransactionController extends EventEmitter {
@@ -163,7 +163,7 @@ export default class TransactionController extends EventEmitter {
   /**
    * Add a new unapproved transaction to the pipeline
    *
-   * @returns {Promise<string>} - the hash of the transaction after being submitted to the network
+   * @returns {Promise<string>} the hash of the transaction after being submitted to the network
    * @param {Object} txParams - txParams for the transaction
    * @param {Object} opts - with the key origin to put the origin on the txMeta
    */
@@ -295,7 +295,7 @@ export default class TransactionController extends EventEmitter {
   /**
    * Adds the tx gas defaults: gas && gasPrice
    * @param {Object} txMeta - the txMeta object
-   * @returns {Promise<object>} - resolves with txMeta
+   * @returns {Promise<object>} resolves with txMeta
    */
   async addTxGasDefaults(txMeta, getCodeResponse) {
     const defaultGasPrice = await this._getDefaultGasPrice(txMeta)
@@ -539,7 +539,7 @@ export default class TransactionController extends EventEmitter {
   /**
     adds the chain id and signs the transaction and set the status to signed
     @param {number} txId - the tx's Id
-    @returns {string} - rawTx
+    @returns {string} rawTx
   */
   async signTransaction(txId) {
     const txMeta = this.txStateManager.getTx(txId)
@@ -681,22 +681,22 @@ export default class TransactionController extends EventEmitter {
   //
   /** maps methods for convenience*/
   _mapMethods() {
-    /** @returns {Object} - the state in transaction controller */
+    /** @returns {Object} the state in transaction controller */
     this.getState = () => this.memStore.getState()
 
-    /** @returns {string|number} - the network number stored in networkStore */
+    /** @returns {string|number} the network number stored in networkStore */
     this.getNetwork = () => this.networkStore.getState()
 
-    /** @returns {string} - the user selected address */
+    /** @returns {string} the user selected address */
     this.getSelectedAddress = () =>
       this.preferencesStore.getState().selectedAddress
 
-    /** @returns {array} - transactions whos status is unapproved */
+    /** @returns {Array} transactions whos status is unapproved */
     this.getUnapprovedTxCount = () =>
       Object.keys(this.txStateManager.getUnapprovedTxList()).length
 
     /**
-      @returns {number} - number of transactions that have the status submitted
+      @returns {number} number of transactions that have the status submitted
       @param {string} account - hex prefixed account
     */
     this.getPendingTxCount = (account) =>

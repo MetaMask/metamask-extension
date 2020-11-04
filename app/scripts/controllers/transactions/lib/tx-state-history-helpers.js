@@ -3,8 +3,8 @@ import { cloneDeep } from 'lodash'
 
 /**
   converts non-initial history entries into diffs
-  @param {array} longHistory
-  @returns {array}
+  @param {Array} longHistory
+  @returns {Array}
 */
 export function migrateFromSnapshotsToDiffs(longHistory) {
   return (
@@ -29,7 +29,7 @@ export function migrateFromSnapshotsToDiffs(longHistory) {
   @param {Object} previousState - the previous state of the object
   @param {Object} newState - the update object
   @param {string} [note] - a optional note for the state change
-  @returns {array}
+  @returns {Array}
 */
 export function generateHistoryEntry(previousState, newState, note) {
   const entry = jsonDiffer.compare(previousState, newState)

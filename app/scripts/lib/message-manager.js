@@ -28,11 +28,10 @@ export default class MessageManager extends EventEmitter {
    * Controller in charge of managing - storing, adding, removing, updating - Messages.
    *
    * @typedef {Object} MessageManager
-   * @param {Object} opts @deprecated
    * @property {Object} memStore The observable store where Messages are saved.
    * @property {Object} memStore.unapprovedMsgs A collection of all Messages in the 'unapproved' state
    * @property {number} memStore.unapprovedMsgCount The count of all Messages in this.memStore.unapprovedMsgs
-   * @property {array} messages Holds all messages that have been created by this MessageManager
+   * @property {Array} messages Holds all messages that have been created by this MessageManager
    *
    */
   constructor() {
@@ -47,7 +46,7 @@ export default class MessageManager extends EventEmitter {
   /**
    * A getter for the number of 'unapproved' Messages in this.messages
    *
-   * @returns {number} - The number of 'unapproved' Messages in this.messages
+   * @returns {number} The number of 'unapproved' Messages in this.messages
    *
    */
   get unapprovedMsgCount() {
@@ -57,7 +56,7 @@ export default class MessageManager extends EventEmitter {
   /**
    * A getter for the 'unapproved' Messages in this.messages
    *
-   * @returns {Object} - An index of Message ids to Messages, for all 'unapproved' Messages in this.messages
+   * @returns {Object} An index of Message ids to Messages, for all 'unapproved' Messages in this.messages
    *
    */
   getUnapprovedMsgs() {
@@ -74,8 +73,8 @@ export default class MessageManager extends EventEmitter {
    * new Message to this.messages, and to save the unapproved Messages from that list to this.memStore.
    *
    * @param {Object} msgParams - The params for the eth_sign call to be made after the message is approved.
-   * @param {Object} req (optional) The original request object possibly containing the origin
-   * @returns {promise} - after signature has been
+   * @param {Object} [req] - The original request object possibly containing the origin
+   * @returns {promise} after signature has been
    *
    */
   addUnapprovedMessageAsync(msgParams, req) {
@@ -110,8 +109,8 @@ export default class MessageManager extends EventEmitter {
    * new Message to this.messages, and to save the unapproved Messages from that list to this.memStore.
    *
    * @param {Object} msgParams - The params for the eth_sign call to be made after the message is approved.
-   * @param {Object} req (optional) The original request object where the origin may be specified
-   * @returns {number} - The id of the newly created message.
+   * @param {Object} [req] - The original request object where the origin may be specified
+   * @returns {number} The id of the newly created message.
    *
    */
   addUnapprovedMessage(msgParams, req) {
@@ -153,7 +152,7 @@ export default class MessageManager extends EventEmitter {
    * Returns a specified Message.
    *
    * @param {number} msgId - The id of the Message to get
-   * @returns {Message|undefined} - The Message with the id that matches the passed msgId, or undefined if no Message has that id.
+   * @returns {Message|undefined} The Message with the id that matches the passed msgId, or undefined if no Message has that id.
    *
    */
   getMsg(msgId) {
@@ -166,7 +165,7 @@ export default class MessageManager extends EventEmitter {
    *
    * @param {Object} msgParams - The msgParams to be used when eth_sign is called, plus data added by MetaMask.
    * @param {Object} msgParams.metamaskId Added to msgParams for tracking and identification within MetaMask.
-   * @returns {Promise<object>} - Promises the msgParams object with metamaskId removed.
+   * @returns {Promise<object>} Promises the msgParams object with metamaskId removed.
    *
    */
   approveMessage(msgParams) {
@@ -203,7 +202,7 @@ export default class MessageManager extends EventEmitter {
    * Removes the metamaskId property from passed msgParams and returns a promise which resolves the updated msgParams
    *
    * @param {Object} msgParams - The msgParams to modify
-   * @returns {Promise<object>} - Promises the msgParams with the metamaskId property removed
+   * @returns {Promise<object>} Promises the msgParams with the metamaskId property removed
    *
    */
   prepMsgForSigning(msgParams) {
@@ -281,7 +280,7 @@ export default class MessageManager extends EventEmitter {
  * A helper function that converts raw buffer data to a hex, or just returns the data if it is already formatted as a hex.
  *
  * @param {any} data - The buffer data to convert to a hex
- * @returns {string} - A hex string conversion of the buffer data
+ * @returns {string} A hex string conversion of the buffer data
  *
  */
 function normalizeMsgData(data) {

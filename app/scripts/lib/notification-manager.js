@@ -79,7 +79,7 @@ export default class NotificationManager {
    * Given an array of windows, returns the 'popup' that has been opened by MetaMask, or null if no such window exists.
    *
    * @private
-   * @param {array} windows - An array of objects containing data about the open MetaMask extension windows.
+   * @param {Array} windows - An array of objects containing data about the open MetaMask extension windows.
    *
    */
   _getPopupIn(windows) {

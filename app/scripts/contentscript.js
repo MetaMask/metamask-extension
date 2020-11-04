@@ -120,7 +120,7 @@ function logStreamDisconnectWarning(remoteLabel, err) {
 /**
  * Determines if the provider should be injected
  *
- * @returns {boolean} {@code true} - if the provider should be injected
+ * @returns {boolean} {@code true} Whether the provider should be injected
  */
 function shouldInjectProvider() {
   return (
@@ -134,7 +134,7 @@ function shouldInjectProvider() {
 /**
  * Checks the doctype of the current document if it exists
  *
- * @returns {boolean} {@code true} - if the doctype is html or if none exists
+ * @returns {boolean} {@code true} if the doctype is html or if none exists
  */
 function doctypeCheck() {
   const { doctype } = window.document
@@ -151,7 +151,7 @@ function doctypeCheck() {
  * that we should not inject the provider into. This check is indifferent of
  * query parameters in the location.
  *
- * @returns {boolean} - whether or not the extension of the current document is prohibited
+ * @returns {boolean} whether or not the extension of the current document is prohibited
  */
 function suffixCheck() {
   const prohibitedTypes = [/\.xml$/u, /\.pdf$/u]
@@ -167,7 +167,7 @@ function suffixCheck() {
 /**
  * Checks the documentElement of the current document
  *
- * @returns {boolean} {@code true} - if the documentElement is an html node or if none exists
+ * @returns {boolean} {@code true} if the documentElement is an html node or if none exists
  */
 function documentElementCheck() {
   const documentElement = document.documentElement.nodeName
@@ -180,7 +180,7 @@ function documentElementCheck() {
 /**
  * Checks if the current domain is blocked
  *
- * @returns {boolean} {@code true} - if the current domain is blocked
+ * @returns {boolean} {@code true} if the current domain is blocked
  */
 function blockedDomainCheck() {
   const blockedDomains = [

@@ -37,7 +37,7 @@ class ChromeDriver {
   /**
    * Returns the extension ID for the given extension name
    * @param {string} extensionName - the extension name
-   * @returns {Promise<string|undefined>} - the extension ID
+   * @returns {Promise<string|undefined>} the extension ID
    */
   async getExtensionIdByName(extensionName) {
     await this._driver.get('chrome://extensions')

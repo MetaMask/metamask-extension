@@ -10,7 +10,7 @@ import { isEqual } from 'lodash'
  * infrequently changes it's value. By default, uses isEqual from
  * lodash. This is typically only useful with objects and arrays.
  *
- * @param {T}                 value      - any value to check equality of
+ * @param {T} value - any value to check equality of
  * @param {(T, T) => boolean} equalityFn - A function to determine equality
  * @returns {T}
  */

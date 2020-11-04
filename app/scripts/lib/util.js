@@ -50,7 +50,7 @@ const getEnvironmentType = (url = window.location.href) =>
 /**
  * Returns the platform (browser) where the extension is running.
  *
- * @returns {string} - the platform ENUM
+ * @returns {string} the platform ENUM
  *
  */
 const getPlatform = (_) => {
@@ -74,11 +74,11 @@ const getPlatform = (_) => {
  * Checks whether a given balance of ETH, represented as a hex string, is sufficient to pay a value plus a gas fee
  *
  * @param {Object} txParams - Contains data about a transaction
- * @param {string} txParams.gas The gas for a transaction
- * @param {string} txParams.gasPrice The price per gas for the transaction
- * @param {string} txParams.value The value of ETH to send
+ * @param {string} txParams.gas - The gas for a transaction
+ * @param {string} txParams.gasPrice - The price per gas for the transaction
+ * @param {string} txParams.value - The value of ETH to send
  * @param {string} hexBalance - A balance of ETH represented as a hex string
- * @returns {boolean} - Whether the balance is greater than or equal to the value plus the value of gas times gasPrice
+ * @returns {boolean} Whether the balance is greater than or equal to the value plus the value of gas times gasPrice
  *
  */
 function sufficientBalance(txParams, hexBalance) {
@@ -107,7 +107,7 @@ function sufficientBalance(txParams, hexBalance) {
  * Converts a hex string to a BN object
  *
  * @param {string} inputHex - A number represented as a hex string
- * @returns {Object} - A BN object
+ * @returns {Object} A BN object
  *
  */
 function hexToBn(inputHex) {
@@ -120,7 +120,7 @@ function hexToBn(inputHex) {
  * @param {BN} targetBN - The number to multiply by a fraction
  * @param {number|string} numerator - The numerator of the fraction multiplier
  * @param {number|string} denominator - The denominator of the fraction multiplier
- * @returns {BN} - The product of the multiplication
+ * @returns {BN} The product of the multiplication
  *
  */
 function BnMultiplyByFraction(targetBN, numerator, denominator) {

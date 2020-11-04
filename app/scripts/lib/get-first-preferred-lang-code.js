@@ -19,7 +19,7 @@ allLocales.forEach((locale) => {
  * Returns a preferred language code, based on settings within the user's browser. If we have no translations for the
  * users preferred locales, 'en' is returned.
  *
- * @returns {Promise<string>} - Promises a locale code, either one from the user's preferred list that we have a translation for, or 'en'
+ * @returns {Promise<string>} Promises a locale code, either one from the user's preferred list that we have a translation for, or 'en'
  *
  */
 export default async function getFirstPreferredLangCode() {

@@ -486,8 +486,8 @@ export class PermissionsController {
    * Should only be called after confirming that the permissions exist, to
    * avoid sending unnecessary notifications.
    *
-   * @param {Object} domains { origin: [permissions] } - The map of domain
-   * origins to permissions to remove.
+   * @param {Object} domains - The map of domain origins to permissions to remove.
+   *                           e.g. { origin: [permissions] }
    */
   removePermissionsFor(domains) {
     Object.entries(domains).forEach(([origin, perms]) => {
@@ -703,7 +703,7 @@ export class PermissionsController {
    * A convenience method for retrieving a login object
    * or creating a new one if needed.
    *
-   * @param {string} origin = The origin string representing the domain.
+   * @param {string} origin - The origin string representing the domain.
    */
   _initializePermissions(restoredState) {
     // these permission requests are almost certainly stale

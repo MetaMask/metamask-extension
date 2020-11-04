@@ -96,7 +96,7 @@ export default class AccountTracker {
    * Once this AccountTracker's accounts are up to date with those referenced by the passed addresses, each
    * of these accounts are given an updated balance via EthQuery.
    *
-   * @param {array} address - The array of hex addresses for accounts with which this AccountTracker's accounts should be
+   * @param {Array} address - The array of hex addresses for accounts with which this AccountTracker's accounts should be
    * in sync
    *
    */
@@ -126,7 +126,7 @@ export default class AccountTracker {
    * Adds new addresses to track the balances of
    * given a balance as long this._currentBlockNumber is defined.
    *
-   * @param {array} addresses - An array of hex addresses of new accounts to track
+   * @param {Array} addresses - An array of hex addresses of new accounts to track
    *
    */
   addAccounts(addresses) {
@@ -147,7 +147,7 @@ export default class AccountTracker {
   /**
    * Removes accounts from being tracked
    *
-   * @param {array} an - array of hex addresses to stop tracking
+   * @param {Array} an - array of hex addresses to stop tracking
    *
    */
   removeAccount(addresses) {
@@ -199,7 +199,7 @@ export default class AccountTracker {
    * balanceChecker is deployed on main eth (test)nets and requires a single call
    * for all other networks, calls this._updateAccount for each account in this.store
    *
-   * @returns {Promise} - after all account balances updated
+   * @returns {Promise} after all account balances updated
    *
    */
   async _updateAccounts() {
@@ -246,7 +246,7 @@ export default class AccountTracker {
    *
    * @private
    * @param {string} address - A hex address of a the account to be updated
-   * @returns {Promise} - after the account balance is updated
+   * @returns {Promise} after the account balance is updated
    *
    */
   async _updateAccount(address) {

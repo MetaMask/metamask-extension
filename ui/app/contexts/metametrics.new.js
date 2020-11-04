@@ -87,7 +87,7 @@ export function MetaMetricsProvider({ children }) {
   /**
    * track a metametrics event
    *
-   * @param {import('../../../shared/modules/metametrics').MetaMetricsEventPayload} - payload for event
+   * @param {import('../../../shared/modules/metametrics').MetaMetricsEventPayload} payload - payload for event
    * @returns undefined
    */
   const trackEvent = useMemo(() => {

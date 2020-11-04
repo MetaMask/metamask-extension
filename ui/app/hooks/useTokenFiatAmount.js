@@ -14,7 +14,7 @@ import { getTokenFiatAmount } from '../helpers/utils/token-util'
  * @param {string} [tokenAddress] - The token address
  * @param {string} [tokenAmount] - The token balance
  * @param {string} [tokenSymbol] - The token symbol
- * @param {object} [overrides] - A configuration object that allows the caller to explicitly pass an exchange rate or
+ * @param {Object} [overrides] - A configuration object that allows the caller to explicitly pass an exchange rate or
  *                              ensure fiat is shown even if the property is not set in state.
  * @param {number} [overrides.exchangeRate] -  An exhchange rate to use instead of the one selected from state
  * @param {boolean} [overrides.showFiat] - If truthy, ensures the fiat value is shown even if the showFiat value from state is falsey

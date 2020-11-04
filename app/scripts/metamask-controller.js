@@ -498,7 +498,7 @@ export default class MetamaskController extends EventEmitter {
   /**
    * The metamask-state of the various controllers, made available to the UI
    *
-   * @returns {Object} - status
+   * @returns {Object} status
    */
   getState() {
     const { vault } = this.keyringController.store.getState()
@@ -515,7 +515,7 @@ export default class MetamaskController extends EventEmitter {
    * These functions are the interface for the UI.
    * The API object can be transmitted over a stream with dnode.
    *
-   * @returns {Object} - Object containing API functions.
+   * @returns {Object} Object containing API functions.
    */
   getApi() {
     const {
@@ -842,9 +842,8 @@ export default class MetamaskController extends EventEmitter {
    * A keychain, or keyring, controls many accounts with a single backup and signing strategy.
    * For example, a mnemonic phrase can generate many accounts, and is a keyring.
    *
-   * @param  {string} password
-   *
-   * @returns {Object} - vault
+   * @param {string} password
+   * @returns {Object} vault
    */
   async createNewVaultAndKeychain(password) {
     const releaseLock = await this.createVaultMutex.acquire()
@@ -867,8 +866,8 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * Create a new Vault and restore an existent keyring.
-   * @param  {} password
-   * @param  {} seed
+   * @param {string} password
+   * @param {string} seed
    */
   async createNewVaultAndRestore(password, seed) {
     const releaseLock = await this.createVaultMutex.acquire()
@@ -962,7 +961,7 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Collects all the information that we want to share
    * with the mobile client for syncing purposes
-   * @returns {Promise<Object>} - Parts of the state that we want to syncx
+   * @returns {Promise<Object>} Parts of the state that we want to syncx
    */
   async fetchInfoToSync() {
     // Preferences
@@ -1053,7 +1052,7 @@ export default class MetamaskController extends EventEmitter {
    * is up to date with known accounts once the vault is decrypted.
    *
    * @param {string} password - The user's password
-   * @returns {Promise<object>} - The keyringController update.
+   * @returns {Promise<object>} The keyringController update.
    */
   async submitPassword(password) {
     await this.keyringController.submitPassword(password)
@@ -1261,7 +1260,7 @@ export default class MetamaskController extends EventEmitter {
    *
    * Called when the first account is created and on unlocking the vault.
    *
-   * @returns {Promise<string>} - Seed phrase to be confirmed by the user.
+   * @returns {Promise<string>} Seed phrase to be confirmed by the user.
    */
   async verifySeedPhrase() {
     const primaryKeyring = this.keyringController.getKeyringsByType(
@@ -1293,7 +1292,7 @@ export default class MetamaskController extends EventEmitter {
    * Mostly used in development environments, when networks are restarted with
    * the same network ID.
    *
-   * @returns {Promise<string>} - The current selected address.
+   * @returns {Promise<string>} The current selected address.
    */
   async resetAccount() {
     const selectedAddress = this.preferencesController.getSelectedAddress()
@@ -1327,9 +1326,9 @@ export default class MetamaskController extends EventEmitter {
    * These are defined in app/scripts/account-import-strategies
    * Each strategy represents a different way of serializing an Ethereum key pair.
    *
-   * @param  {string} strategy - A unique identifier for an account import strategy.
-   * @param  {any} args - The data required by that strategy to import an account.
-   * @param  {Function} cb - A callback function called with a state update on success.
+   * @param {string} strategy - A unique identifier for an account import strategy.
+   * @param {any} args - The data required by that strategy to import an account.
+   * @param {Function} cb - A callback function called with a state update on success.
    */
   async importAccountWithStrategy(strategy, args) {
     const privateKey = await accountImporter.importAccount(strategy, args)
@@ -1369,7 +1368,7 @@ export default class MetamaskController extends EventEmitter {
    * information.
    *
    * @param {Object} msgParams - The params passed to eth_sign.
-   * @param {Function} cb = The callback function called with the signature.
+   * @param {Function} cb - The callback function called with the signature.
    */
   newUnsignedMessage(msgParams, req) {
     const promise = this.messageManager.addUnapprovedMessageAsync(
@@ -1384,8 +1383,8 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Signifies user intent to complete an eth_sign method.
    *
-   * @param  {Object} msgParams - The params passed to eth_call.
-   * @returns {Promise<Object>} - Full state update.
+   * @param {Object} msgParams - The params passed to eth_call.
+   * @returns {Promise<Object>} Full state update.
    */
   signMessage(msgParams) {
     log.info('MetaMaskController - signMessage')
@@ -1449,7 +1448,7 @@ export default class MetamaskController extends EventEmitter {
    * Triggers signing, and the callback function from newUnsignedPersonalMessage.
    *
    * @param {Object} msgParams - The params of the message to sign & return to the Dapp.
-   * @returns {Promise<Object>} - A full state update.
+   * @returns {Promise<Object>} A full state update.
    */
   signPersonalMessage(msgParams) {
     log.info('MetaMaskController - signPersonalMessage')
@@ -1507,7 +1506,7 @@ export default class MetamaskController extends EventEmitter {
    * Only decrypt message and don't touch transaction state
    *
    * @param {Object} msgParams - The params of the message to decrypt.
-   * @returns {Promise<Object>} - A full state update.
+   * @returns {Promise<Object>} A full state update.
    */
   async decryptMessageInline(msgParams) {
     log.info('MetaMaskController - decryptMessageInline')
@@ -1533,7 +1532,7 @@ export default class MetamaskController extends EventEmitter {
    * Triggers decrypt, and the callback function from newUnsignedDecryptMessage.
    *
    * @param {Object} msgParams - The params of the message to decrypt & return to the Dapp.
-   * @returns {Promise<Object>} - A full state update.
+   * @returns {Promise<Object>} A full state update.
    */
   async decryptMessage(msgParams) {
     log.info('MetaMaskController - decryptMessage')
@@ -1600,7 +1599,7 @@ export default class MetamaskController extends EventEmitter {
    * Triggers receiving, and the callback function from newUnsignedEncryptionPublicKey.
    *
    * @param {Object} msgParams - The params of the message to receive & return to the Dapp.
-   * @returns {Promise<Object>} - A full state update.
+   * @returns {Promise<Object>} A full state update.
    */
   async encryptionPublicKey(msgParams) {
     log.info('MetaMaskController - encryptionPublicKey')
@@ -1664,8 +1663,8 @@ export default class MetamaskController extends EventEmitter {
    * The method for a user approving a call to eth_signTypedData, per EIP 712.
    * Triggers the callback in newUnsignedTypedMessage.
    *
-   * @param  {Object} msgParams - The params passed to eth_signTypedData.
-   * @returns {Object|undefined} - Full state update.
+   * @param {Object} msgParams - The params passed to eth_signTypedData.
+   * @returns {Object} Full state update.
    */
   async signTypedMessage(msgParams) {
     log.info('MetaMaskController - eth_signTypedData')
@@ -1720,7 +1719,7 @@ export default class MetamaskController extends EventEmitter {
    * transaction.
    * @param {number} originalTxId - the id of the txMeta that you want to attempt to cancel
    * @param {string} [customGasPrice] - the hex value to use for the cancel transaction
-   * @returns {Object} - MetaMask state
+   * @returns {Object} MetaMask state
    */
   async createCancelTransaction(originalTxId, customGasPrice) {
     await this.txController.createCancelTransaction(
@@ -2022,7 +2021,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} origin - The connection's origin string.
    * @param {Object} options - Data associated with the connection
    * @param {Object} options.engine - The connection's JSON Rpc Engine
-   * @returns {string} - The connection's id (so that it can be deleted later)
+   * @returns {string} The connection's id (so that it can be deleted later)
    */
   addConnection(origin, { engine }) {
     if (origin === 'metamask') {
@@ -2265,7 +2264,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} chainId - The chainId of the selected network.
    * @param {string} ticker - The ticker symbol of the selected network.
    * @param {string} nickname - Optional nickname of the selected network.
-   * @returns {Promise<String>} - The RPC Target URL confirmed.
+   * @returns {Promise<String>} The RPC Target URL confirmed.
    */
   async updateAndSetCustomRpc(
     rpcUrl,
@@ -2297,7 +2296,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} chainId - The chainId of the selected network.
    * @param {string} ticker - The ticker symbol of the selected network.
    * @param {string} nickname - Optional nickname of the selected network.
-   * @returns {Promise<String>} - The RPC Target URL confirmed.
+   * @returns {Promise<String>} The RPC Target URL confirmed.
    */
   async setCustomRpc(
     rpcUrl,
@@ -2510,15 +2509,6 @@ export default class MetamaskController extends EventEmitter {
     this.detectTokensController.isOpen = open
   }
   /* eslint-enable accessor-pairs */
-
-  /**
-   * Creates RPC engine middleware for processing eth_signTypedData requests
-   *
-   * @param {Object} req - request object
-   * @param {Object} res - response object
-   * @param {Function} - next
-   * @param {Function} - end
-   */
 
   /**
    * Adds a domain to the PhishingController safelist

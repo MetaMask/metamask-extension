@@ -5,15 +5,15 @@
  * currency. It should return a single value.
  *
  * @param {(number | string | BN)} value - The value to convert.
- * @param {Object} [options] Options to specify details of the conversion
- * @param {string} [options.fromCurrency = 'ETH' | 'USD'] The currency of the passed value
- * @param {string} [options.toCurrency = 'ETH' | 'USD'] The desired currency of the result
- * @param {string} [options.fromNumericBase = 'hex' | 'dec' | 'BN'] The numeric basic of the passed value.
- * @param {string} [options.toNumericBase = 'hex' | 'dec' | 'BN'] The desired numeric basic of the result.
- * @param {string} [options.fromDenomination = 'WEI'] The denomination of the passed value
- * @param {string} [options.numberOfDecimals] The desired number of decimals in the result
- * @param {string} [options.roundDown] The desired number of decimals to round down to
- * @param {number} [options.conversionRate] The rate to use to make the fromCurrency -> toCurrency conversion
+ * @param {Object} [options] - Options to specify details of the conversion
+ * @param {string} [options.fromCurrency = 'ETH' | 'USD'] - The currency of the passed value
+ * @param {string} [options.toCurrency = 'ETH' | 'USD'] - The desired currency of the result
+ * @param {string} [options.fromNumericBase = 'hex' | 'dec' | 'BN'] - The numeric basic of the passed value.
+ * @param {string} [options.toNumericBase = 'hex' | 'dec' | 'BN'] - The desired numeric basic of the result.
+ * @param {string} [options.fromDenomination = 'WEI'] - The denomination of the passed value
+ * @param {string} [options.numberOfDecimals] - The desired number of decimals in the result
+ * @param {string} [options.roundDown] - The desired number of decimals to round down to
+ * @param {number} [options.conversionRate] - The rate to use to make the fromCurrency -> toCurrency conversion
  * @returns {(number | string | BN)}
  *
  * The utility passes value along with the options as a single object to the `converter` function.

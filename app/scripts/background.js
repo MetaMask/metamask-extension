@@ -139,7 +139,7 @@ initialize().catch(log.error)
 
 /**
  * Initializes the MetaMask controller, and sets up all platform configuration.
- * @returns {Promise} - Setup complete.
+ * @returns {Promise} Setup complete.
  */
 async function initialize() {
   const initState = await loadStateFromPersistence()
@@ -155,7 +155,7 @@ async function initialize() {
 /**
  * Loads any stored data, prioritizing the latest storage strategy.
  * Migrates that data schema in case it was last loaded on an older version.
- * @returns {Promise<MetaMaskState>} - Last data emitted from previous instance of MetaMask.
+ * @returns {Promise<MetaMaskState>} Last data emitted from previous instance of MetaMask.
  */
 async function loadStateFromPersistence() {
   // migrations
@@ -215,7 +215,7 @@ async function loadStateFromPersistence() {
  *
  * @param {Object} initState - The initial state to start the controller with, matches the state that is emitted from the controller.
  * @param {string} initLangCode - The region code for the language preferred by the current user.
- * @returns {Promise} - After setup is complete.
+ * @returns {Promise} After setup is complete.
  */
 function setupController(initState, initLangCode) {
   //
@@ -267,7 +267,7 @@ function setupController(initState, initLangCode) {
   /**
    * Assigns the given state to the versioned object (with metadata), and returns that.
    * @param {Object} state - The state object as emitted by the MetaMaskController.
-   * @returns {VersionedData} - The state object wrapped in an object that includes a metadata key.
+   * @returns {VersionedData} The state object wrapped in an object that includes a metadata key.
    */
   function versionifyData(state) {
     versionedData.data = state

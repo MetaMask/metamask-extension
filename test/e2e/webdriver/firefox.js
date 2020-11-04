@@ -79,7 +79,7 @@ class FirefoxDriver {
   /**
    * Installs the extension at the given path
    * @param {string} addonPath - the path to the unpacked extension or XPI
-   * @returns {Promise<string>} - the extension ID
+   * @returns {Promise<string>} the extension ID
    */
   async installExtension(addonPath) {
     const cmd = new Command(GeckoDriverCommand.INSTALL_ADDON)
@@ -91,7 +91,7 @@ class FirefoxDriver {
 
   /**
    * Returns the Internal UUID for the given extension
-   * @returns {Promise<string>} - the Internal UUID for the given extension
+   * @returns {Promise<string>} the Internal UUID for the given extension
    */
   async getInternalId() {
     await this._driver.get('about:debugging#addons')

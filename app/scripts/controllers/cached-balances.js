@@ -15,7 +15,7 @@ export default class CachedBalancesController {
   /**
    * Creates a new controller instance
    *
-   * @param {CachedBalancesOptions} [opts] Controller configuration parameters
+   * @param {CachedBalancesOptions} [opts] - Controller configuration parameters
    */
   constructor(opts = {}) {
     const { accountTracker, getNetwork } = opts

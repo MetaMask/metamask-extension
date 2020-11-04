@@ -37,7 +37,7 @@ export default class ComposableObservableStore extends ObservableStore {
    * Merges all child store state into a single object rather than
    * returning an object keyed by child store class name
    *
-   * @returns {Object} - Object containing merged child store state
+   * @returns {Object} Object containing merged child store state
    */
   getFlatState() {
     let flatState = {}

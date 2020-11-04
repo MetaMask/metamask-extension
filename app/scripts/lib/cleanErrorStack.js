@@ -1,7 +1,7 @@
 /**
  * Returns error without stack trace for better UI display
  * @param {Error} err - error
- * @returns {Error} - Error with clean stack trace.
+ * @returns {Error} Error with clean stack trace.
  */
 export default function cleanErrorStack(err) {
   let { name } = err

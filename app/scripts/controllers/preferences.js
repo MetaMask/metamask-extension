@@ -13,18 +13,18 @@ export default class PreferencesController {
    *
    * @typedef {Object} PreferencesController
    * @param {Object} opts - Overrides the defaults for the initial state of this.store
-   * @property {object} store The stored object containing a users preferences, stored in local storage
-   * @property {array} store.frequentRpcList A list of custom rpcs to provide the user
-   * @property {array} store.tokens The tokens the user wants display in their token lists
-   * @property {object} store.accountTokens The tokens stored per account and then per network type
-   * @property {object} store.assetImages Contains assets objects related to assets added
+   * @property {Object} store The stored object containing a users preferences, stored in local storage
+   * @property {Array} store.frequentRpcList A list of custom rpcs to provide the user
+   * @property {Array} store.tokens The tokens the user wants display in their token lists
+   * @property {Object} store.accountTokens The tokens stored per account and then per network type
+   * @property {Object} store.assetImages Contains assets objects related to assets added
    * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
    * @property {boolean} store.useNonceField The users preference for nonce field within the UI
-   * @property {object} store.featureFlags A key-boolean map, where keys refer to features and booleans to whether the
+   * @property {Object} store.featureFlags A key-boolean map, where keys refer to features and booleans to whether the
    * user wishes to see that feature.
    *
    * Feature flags can be set by the global function `setPreference(feature, enabled)`, and so should not expose any sensitive behavior.
-   * @property {object} store.knownMethodData Contains all data methods known by the user
+   * @property {Object} store.knownMethodData Contains all data methods known by the user
    * @property {string} store.currentLocale The preferred language locale key
    * @property {string} store.selectedAddress A hex string that matches the currently selected address in the app
    *
@@ -124,7 +124,7 @@ export default class PreferencesController {
    * Setter for the `participateInMetaMetrics` property
    *
    * @param {boolean} bool - Whether or not the user wants to participate in MetaMetrics
-   * @returns {string|null} - the string of the new metametrics id, or null if not set
+   * @returns {string|null} the string of the new metametrics id, or null if not set
    *
    */
   setParticipateInMetaMetrics(bool) {
@@ -195,10 +195,10 @@ export default class PreferencesController {
   /**
    * RPC engine middleware for requesting new asset added
    *
-   * @param req
-   * @param res
-   * @param {Function} - next
-   * @param {Function} - end
+   * @param {any} req
+   * @param {any} res
+   * @param {Function} next
+   * @param {Function} end
    */
   async requestWatchAsset(req, res, next, end) {
     if (
@@ -271,7 +271,7 @@ export default class PreferencesController {
    * Removes an address from state
    *
    * @param {string} address - A hex address
-   * @returns {string} - the address that was removed
+   * @returns {string} the address that was removed
    */
   removeAddress(address) {
     const { identities } = this.store.getState()
@@ -319,7 +319,7 @@ export default class PreferencesController {
    * Removes any unknown identities, and returns the resulting selected address.
    *
    * @param {Array<string>} addresses - known to the vault.
-   * @returns {Promise<string>} - selectedAddress the selected address.
+   * @returns {Promise<string>} selectedAddress the selected address.
    */
   syncAddresses(addresses) {
     if (!Array.isArray(addresses) || addresses.length === 0) {
@@ -369,7 +369,7 @@ export default class PreferencesController {
    * Setter for the `selectedAddress` property
    *
    * @param {string} _address - A new hex address for an account
-   * @returns {Promise<void>} - Promise resolves with tokens
+   * @returns {Promise<void>} Promise resolves with tokens
    *
    */
   setSelectedAddress(_address) {
@@ -390,7 +390,7 @@ export default class PreferencesController {
   /**
    * Getter for the `selectedAddress` property
    *
-   * @returns {string} - The hex address for the currently selected account
+   * @returns {string} The hex address for the currently selected account
    *
    */
   getSelectedAddress() {
@@ -414,8 +414,8 @@ export default class PreferencesController {
    *
    * @param {string} rawAddress - Hex address of the token contract. May or may not be a checksum address.
    * @param {string} symbol - The symbol of the token
-   * @param {number} decimals  - The number of decimals the token uses.
-   * @returns {Promise<array>} - Promises the new array of AddedToken objects.
+   * @param {number} decimals - The number of decimals the token uses.
+   * @returns {Promise<array>} Promises the new array of AddedToken objects.
    *
    */
   async addToken(rawAddress, symbol, decimals, image) {
@@ -442,7 +442,7 @@ export default class PreferencesController {
    * Removes a specified token from the tokens array.
    *
    * @param {string} rawAddress - Hex address of the token contract to remove.
-   * @returns {Promise<array>} - The new array of AddedToken objects
+   * @returns {Promise<array>} The new array of AddedToken objects
    *
    */
   removeToken(rawAddress) {
@@ -457,7 +457,7 @@ export default class PreferencesController {
   /**
    * A getter for the `tokens` property
    *
-   * @returns {array} - The current array of AddedToken objects
+   * @returns {Array} The current array of AddedToken objects
    *
    */
   getTokens() {
@@ -596,7 +596,7 @@ export default class PreferencesController {
    * Removes custom RPC url from state.
    *
    * @param {string} url - The RPC url to remove from frequentRpcList.
-   * @returns {Promise<array>} - Promise resolving to updated frequentRpcList.
+   * @returns {Promise<array>} Promise resolving to updated frequentRpcList.
    *
    */
   removeFromFrequentRpcList(url) {
@@ -614,7 +614,7 @@ export default class PreferencesController {
   /**
    * Getter for the `frequentRpcListDetail` property.
    *
-   * @returns {array<array>} - An array of rpc urls.
+   * @returns {array<array>} An array of rpc urls.
    *
    */
   getFrequentRpcListDetail() {
@@ -626,7 +626,7 @@ export default class PreferencesController {
    *
    * @param {string} feature - A key that corresponds to a UI feature.
    * @param {boolean} activated - Indicates whether or not the UI feature should be displayed
-   * @returns {Promise<object>} - Promises a new object; the updated featureFlags object.
+   * @returns {Promise<object>} Promises a new object; the updated featureFlags object.
    *
    */
   setFeatureFlag(feature, activated) {
@@ -646,7 +646,7 @@ export default class PreferencesController {
    * found in the settings page.
    * @param {string} preference - The preference to enable or disable.
    * @param {boolean} value - Indicates whether or not the preference should be enabled or disabled.
-   * @returns {Promise<object>} - Promises a new object; the updated preferences object.
+   * @returns {Promise<object>} Promises a new object; the updated preferences object.
    */
   setPreference(preference, value) {
     const currentPreferences = this.getPreferences()
@@ -661,7 +661,7 @@ export default class PreferencesController {
 
   /**
    * A getter for the `preferences` property
-   * @returns {Object} - A key-boolean map of user-selected preferences.
+   * @returns {Object} A key-boolean map of user-selected preferences.
    */
   getPreferences() {
     return this.store.getState().preferences
@@ -678,7 +678,7 @@ export default class PreferencesController {
 
   /**
    * A getter for the `ipfsGateway` property
-   * @returns {string} - The current IPFS gateway domain
+   * @returns {string} The current IPFS gateway domain
    */
   getIpfsGateway() {
     return this.store.getState().ipfsGateway
@@ -687,7 +687,7 @@ export default class PreferencesController {
   /**
    * A setter for the `ipfsGateway` property
    * @param {string} domain - The new IPFS gateway domain
-   * @returns {Promise<string>} - A promise of the update IPFS gateway domain
+   * @returns {Promise<string>} A promise of the update IPFS gateway domain
    */
   setIpfsGateway(domain) {
     this.store.updateState({ ipfsGateway: domain })
@@ -713,7 +713,7 @@ export default class PreferencesController {
   /**
    * Updates `accountTokens` and `tokens` of current account and network according to it.
    *
-   * @param {array} tokens - Array of tokens to be updated.
+   * @param {Array} tokens - Array of tokens to be updated.
    *
    */
   _updateAccountTokens(tokens, assetImages) {
@@ -740,8 +740,8 @@ export default class PreferencesController {
   /**
    * A getter for `tokens` and `accountTokens` related states.
    *
-   * @param {string} [selectedAddress] A new hex address for an account
-   * @returns {Object.<array, object, string, string>} - States to interact with tokens in `accountTokens`
+   * @param {string} [selectedAddress] - A new hex address for an account
+   * @returns {Object.<array, object, string, string>} States to interact with tokens in `accountTokens`
    *
    */
   _getTokenRelatedStates(selectedAddress) {
@@ -764,11 +764,11 @@ export default class PreferencesController {
   /**
    * Handle the suggestion of an ERC20 asset through `watchAsset`
    * *
-   * @param {Promise} promise - Promise according to addition of ERC20 token
+   * @param {Object} tokenMetadata - Token metadata
    *
    */
-  async _handleWatchAssetERC20(options) {
-    const { address, symbol, decimals, image } = options
+  async _handleWatchAssetERC20(tokenMetadata) {
+    const { address, symbol, decimals, image } = tokenMetadata
     const rawAddress = address
     try {
       this._validateERC20AssetParams({ rawAddress, symbol, decimals })
