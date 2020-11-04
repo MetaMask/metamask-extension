@@ -2,12 +2,14 @@ import assert from 'assert'
 import sinon from 'sinon'
 
 import { ethers } from 'ethers'
+import { mapValues, cloneDeep } from 'lodash'
 import BigNumber from 'bignumber.js'
 import ObservableStore from 'obs-store'
 import {
   ROPSTEN_NETWORK_ID,
   MAINNET_NETWORK_ID,
 } from '../../../../app/scripts/controllers/network/enums'
+import { ETH_SWAPS_TOKEN_ADDRESS } from '../../../../ui/app/helpers/constants/swaps'
 import { createTestProviderTools } from '../../../stub/provider'
 import SwapsController, {
   utils,
@@ -73,7 +75,10 @@ const MOCK_FETCH_METADATA = {
 }
 
 const MOCK_TOKEN_RATES_STORE = new ObservableStore({
-  contractExchangeRates: { '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 2 },
+  contractExchangeRates: {
+    '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 2,
+    '0x1111111111111111111111111111111111111111': 0.1,
+  },
 })
 
 const MOCK_GET_PROVIDER_CONFIG = () => ({ type: 'FAKE_NETWORK' })
@@ -351,15 +356,416 @@ describe('SwapsController', function () {
     })
 
     describe('_findTopQuoteAndCalculateSavings', function () {
+      let swapsController2
+
+      // These destination amounts are calculated using the following "pre-fee" amounts
+      // aggId1: 20.5
+      // aggId2: 20.4
+      // aggId3: 20.2
+      // aggId4: 20
+      // aggId5: 19.8
+      // aggId6: 19.5
+
+      const baseTestInput = {
+        aggId1: {
+          aggregator: 'aggId1',
+          approvalNeeded: null,
+          gasEstimate: '0x186a0',
+          destinationAmount: '20295000000000000000',
+          destinationToken: '0x1111111111111111111111111111111111111111',
+          destinationTokenInfo: { decimals: 18 },
+          sourceAmount: '10000000000000000000',
+          sourceToken: '0xsomeERC20TokenAddress',
+          trade: {
+            value: '0x0',
+          },
+          fee: 1,
+        },
+        aggId2: {
+          aggregator: 'aggId2',
+          approvalNeeded: null,
+          gasEstimate: '0x30d40',
+          destinationAmount: '20196000000000000000',
+          destinationToken: '0x1111111111111111111111111111111111111111',
+          destinationTokenInfo: { decimals: 18 },
+          sourceAmount: '10000000000000000000',
+          sourceToken: '0xsomeERC20TokenAddress',
+          trade: {
+            value: '0x0',
+          },
+          fee: 1,
+        },
+        aggId3: {
+          aggregator: 'aggId3',
+          approvalNeeded: null,
+          gasEstimate: '0x493e0',
+          destinationAmount: '19998000000000000000',
+          destinationToken: '0x1111111111111111111111111111111111111111',
+          destinationTokenInfo: { decimals: 18 },
+          sourceAmount: '10000000000000000000',
+          sourceToken: '0xsomeERC20TokenAddress',
+          trade: {
+            value: '0x0',
+          },
+          fee: 1,
+        },
+        aggId4: {
+          aggregator: 'aggId4',
+          approvalNeeded: null,
+          gasEstimate: '0x61a80',
+          destinationAmount: '19800000000000000000',
+          destinationToken: '0x1111111111111111111111111111111111111111',
+          destinationTokenInfo: { decimals: 18 },
+          sourceAmount: '10000000000000000000',
+          sourceToken: '0xsomeERC20TokenAddress',
+          trade: {
+            value: '0x0',
+          },
+          fee: 1,
+        },
+        aggId5: {
+          aggregator: 'aggId5',
+          approvalNeeded: null,
+          gasEstimate: '0x7a120',
+          destinationAmount: '19602000000000000000',
+          destinationToken: '0x1111111111111111111111111111111111111111',
+          destinationTokenInfo: { decimals: 18 },
+          sourceAmount: '10000000000000000000',
+          sourceToken: '0xsomeERC20TokenAddress',
+          trade: {
+            value: '0x0',
+          },
+          fee: 1,
+        },
+        aggId6: {
+          aggregator: 'aggId6',
+          approvalNeeded: null,
+          gasEstimate: '0x927c0',
+          destinationAmount: '19305000000000000000',
+          destinationToken: '0x1111111111111111111111111111111111111111',
+          destinationTokenInfo: { decimals: 18 },
+          sourceAmount: '10000000000000000000',
+          sourceToken: '0xsomeERC20TokenAddress',
+          trade: {
+            value: '0x0',
+          },
+          fee: 1,
+        },
+      }
+
+      const baseExpectedResultQuotes = {
+        aggId1: {
+          ...baseTestInput.aggId1,
+          isBestQuote: true,
+          ethFee: '0.01',
+          overallValueOfQuote: '2.0195',
+          metaMaskFeeInEth: '0.0205',
+          ethValueOfTokens: '2.0295',
+          savings: {
+            total: '0.0441',
+            performance: '0.0396',
+            fee: '0.025',
+            metaMaskFee: '0.0205',
+            medianMetaMaskFee: '0.0201',
+          },
+        },
+        aggId2: {
+          ...baseTestInput.aggId2,
+          ethFee: '0.02',
+          overallValueOfQuote: '1.9996',
+          metaMaskFeeInEth: '0.0204',
+          ethValueOfTokens: '2.0196',
+        },
+        aggId3: {
+          ...baseTestInput.aggId3,
+          ethFee: '0.03',
+          overallValueOfQuote: '1.9698',
+          metaMaskFeeInEth: '0.0202',
+          ethValueOfTokens: '1.9998',
+        },
+        aggId4: {
+          ...baseTestInput.aggId4,
+          ethFee: '0.04',
+          overallValueOfQuote: '1.94',
+          metaMaskFeeInEth: '0.02',
+          ethValueOfTokens: '1.98',
+        },
+        aggId5: {
+          ...baseTestInput.aggId5,
+          ethFee: '0.05',
+          overallValueOfQuote: '1.9102',
+          metaMaskFeeInEth: '0.0198',
+          ethValueOfTokens: '1.9602',
+        },
+        aggId6: {
+          ...baseTestInput.aggId6,
+          ethFee: '0.06',
+          overallValueOfQuote: '1.8705',
+          metaMaskFeeInEth: '0.0195',
+          ethValueOfTokens: '1.9305',
+        },
+      }
+
+      beforeEach(function () {
+        swapsController2 = getSwapsController()
+        const { swapsState } = swapsController2.store.getState()
+        swapsController2.store.updateState({
+          swapsState: { ...swapsState, customGasPrice: '0x174876e800' },
+        })
+      })
+
       it('returns empty object if passed undefined or empty object', async function () {
         assert.deepStrictEqual(
-          await swapsController._findTopQuoteAndCalculateSavings(),
+          await swapsController2._findTopQuoteAndCalculateSavings(),
           {},
         )
         assert.deepStrictEqual(
-          await swapsController._findTopQuoteAndCalculateSavings({}),
+          await swapsController2._findTopQuoteAndCalculateSavings({}),
           {},
         )
+      })
+
+      it('returns the top aggId and quotes with savings and fee values if passed necessary data and an even number of quotes', async function () {
+        const [
+          topAggId,
+          resultQuotes,
+        ] = await swapsController2._findTopQuoteAndCalculateSavings(
+          baseTestInput,
+        )
+        assert.equal(topAggId, 'aggId1')
+        assert.deepStrictEqual(resultQuotes, baseExpectedResultQuotes)
+      })
+
+      it('returns the top aggId and quotes with savings and fee values if passed necessary data and an odd number of quotes', async function () {
+        const testInput = cloneDeep(baseTestInput)
+        delete testInput.aggId6
+        const expectedResultQuotes = cloneDeep(baseExpectedResultQuotes)
+        delete expectedResultQuotes.aggId6
+        expectedResultQuotes.aggId1.savings = {
+          total: '0.0292',
+          performance: '0.0297',
+          fee: '0.02',
+          metaMaskFee: '0.0205',
+          medianMetaMaskFee: '0.0202',
+        }
+
+        const [
+          topAggId,
+          resultQuotes,
+        ] = await swapsController2._findTopQuoteAndCalculateSavings(testInput)
+        assert.equal(topAggId, 'aggId1')
+        assert.deepStrictEqual(resultQuotes, expectedResultQuotes)
+      })
+
+      it('returns the top aggId, without best quote flagged, and quotes with fee values if passed necessary data but no custom convert rate exists', async function () {
+        const testInput = mapValues(baseTestInput, (quote) => ({
+          ...quote,
+          destinationToken: '0xnoConversionRateExists',
+        }))
+        const expectedResultQuotes = {
+          aggId1: {
+            ...testInput.aggId1,
+            ethFee: '0.01',
+          },
+          aggId2: {
+            ...testInput.aggId2,
+            ethFee: '0.02',
+          },
+          aggId3: {
+            ...testInput.aggId3,
+            ethFee: '0.03',
+          },
+          aggId4: {
+            ...testInput.aggId4,
+            ethFee: '0.04',
+          },
+          aggId5: {
+            ...testInput.aggId5,
+            ethFee: '0.05',
+          },
+          aggId6: {
+            ...testInput.aggId6,
+            ethFee: '0.06',
+          },
+        }
+
+        const [
+          topAggId,
+          resultQuotes,
+        ] = await swapsController2._findTopQuoteAndCalculateSavings(testInput)
+        assert.equal(topAggId, 'aggId1')
+        assert.deepStrictEqual(resultQuotes, expectedResultQuotes)
+      })
+
+      it('returns the top aggId and quotes with savings and fee values if passed necessary data and the source token is ETH', async function () {
+        const testInput = mapValues(baseTestInput, (quote) => ({
+          ...quote,
+          sourceToken: ETH_SWAPS_TOKEN_ADDRESS,
+          destinationToken: '0x1111111111111111111111111111111111111111',
+          trade: { value: '0x8ac7230489e80000' },
+        }))
+        const expectedResultQuotes = {
+          aggId1: {
+            ...baseExpectedResultQuotes.aggId1,
+            sourceToken: ETH_SWAPS_TOKEN_ADDRESS,
+            destinationToken: '0x1111111111111111111111111111111111111111',
+            trade: { value: '0x8ac7230489e80000' },
+            overallValueOfQuote: '-7.9805',
+          },
+          aggId2: {
+            ...baseExpectedResultQuotes.aggId2,
+            sourceToken: ETH_SWAPS_TOKEN_ADDRESS,
+            destinationToken: '0x1111111111111111111111111111111111111111',
+            trade: { value: '0x8ac7230489e80000' },
+            overallValueOfQuote: '-8.0004',
+          },
+          aggId3: {
+            ...baseExpectedResultQuotes.aggId3,
+            sourceToken: ETH_SWAPS_TOKEN_ADDRESS,
+            destinationToken: '0x1111111111111111111111111111111111111111',
+            trade: { value: '0x8ac7230489e80000' },
+            overallValueOfQuote: '-8.0302',
+          },
+          aggId4: {
+            ...baseExpectedResultQuotes.aggId4,
+            sourceToken: ETH_SWAPS_TOKEN_ADDRESS,
+            destinationToken: '0x1111111111111111111111111111111111111111',
+            trade: { value: '0x8ac7230489e80000' },
+            overallValueOfQuote: '-8.06',
+          },
+          aggId5: {
+            ...baseExpectedResultQuotes.aggId5,
+            sourceToken: ETH_SWAPS_TOKEN_ADDRESS,
+            destinationToken: '0x1111111111111111111111111111111111111111',
+            trade: { value: '0x8ac7230489e80000' },
+            overallValueOfQuote: '-8.0898',
+          },
+          aggId6: {
+            ...baseExpectedResultQuotes.aggId6,
+            sourceToken: ETH_SWAPS_TOKEN_ADDRESS,
+            destinationToken: '0x1111111111111111111111111111111111111111',
+            trade: { value: '0x8ac7230489e80000' },
+            overallValueOfQuote: '-8.1295',
+          },
+        }
+
+        const [
+          topAggId,
+          resultQuotes,
+        ] = await swapsController2._findTopQuoteAndCalculateSavings(testInput)
+        assert.equal(topAggId, 'aggId1')
+        assert.deepStrictEqual(resultQuotes, expectedResultQuotes)
+      })
+
+      it('returns the top aggId and quotes with savings and fee values if passed necessary data and the source token is ETH and an ETH fee is included in the trade value of what would be the best quote', async function () {
+        const testInput = mapValues(baseTestInput, (quote) => ({
+          ...quote,
+          sourceToken: ETH_SWAPS_TOKEN_ADDRESS,
+          destinationToken: '0x1111111111111111111111111111111111111111',
+          trade: { value: '0x8ac7230489e80000' },
+        }))
+        // 0.04 ETH fee included in trade value
+        testInput.aggId1.trade.value = '0x8b553ece48ec0000'
+        const expectedResultQuotes = {
+          aggId1: {
+            ...baseExpectedResultQuotes.aggId1,
+            sourceToken: ETH_SWAPS_TOKEN_ADDRESS,
+            destinationToken: '0x1111111111111111111111111111111111111111',
+            trade: { value: '0x8b553ece48ec0000' },
+            overallValueOfQuote: '-8.0205',
+            ethFee: '0.05',
+          },
+          aggId2: {
+            ...baseExpectedResultQuotes.aggId2,
+            sourceToken: ETH_SWAPS_TOKEN_ADDRESS,
+            destinationToken: '0x1111111111111111111111111111111111111111',
+            trade: { value: '0x8ac7230489e80000' },
+            overallValueOfQuote: '-8.0004',
+            isBestQuote: true,
+            savings: {
+              total: '0.0243',
+              performance: '0.0297',
+              fee: '0.015',
+              metaMaskFee: '0.0204',
+              medianMetaMaskFee: '0.0201',
+            },
+          },
+          aggId3: {
+            ...baseExpectedResultQuotes.aggId3,
+            sourceToken: ETH_SWAPS_TOKEN_ADDRESS,
+            destinationToken: '0x1111111111111111111111111111111111111111',
+            trade: { value: '0x8ac7230489e80000' },
+            overallValueOfQuote: '-8.0302',
+          },
+          aggId4: {
+            ...baseExpectedResultQuotes.aggId4,
+            sourceToken: ETH_SWAPS_TOKEN_ADDRESS,
+            destinationToken: '0x1111111111111111111111111111111111111111',
+            trade: { value: '0x8ac7230489e80000' },
+            overallValueOfQuote: '-8.06',
+          },
+          aggId5: {
+            ...baseExpectedResultQuotes.aggId5,
+            sourceToken: ETH_SWAPS_TOKEN_ADDRESS,
+            destinationToken: '0x1111111111111111111111111111111111111111',
+            trade: { value: '0x8ac7230489e80000' },
+            overallValueOfQuote: '-8.0898',
+          },
+          aggId6: {
+            ...baseExpectedResultQuotes.aggId6,
+            sourceToken: ETH_SWAPS_TOKEN_ADDRESS,
+            destinationToken: '0x1111111111111111111111111111111111111111',
+            trade: { value: '0x8ac7230489e80000' },
+            overallValueOfQuote: '-8.1295',
+          },
+        }
+        delete expectedResultQuotes.aggId1.isBestQuote
+        delete expectedResultQuotes.aggId1.savings
+
+        const [
+          topAggId,
+          resultQuotes,
+        ] = await swapsController2._findTopQuoteAndCalculateSavings(testInput)
+        assert.equal(topAggId, 'aggId2')
+        assert.deepStrictEqual(resultQuotes, expectedResultQuotes)
+      })
+
+      it('returns the top aggId and quotes with savings and fee values if passed necessary data and the source token is not ETH and an ETH fee is included in the trade value of what would be the best quote', async function () {
+        const testInput = cloneDeep(baseTestInput)
+        // 0.04 ETH fee included in trade value
+        testInput.aggId1.trade.value = '0x8e1bc9bf040000'
+        const expectedResultQuotes = {
+          aggId1: {
+            ...baseExpectedResultQuotes.aggId1,
+            trade: { value: '0x8e1bc9bf040000' },
+            overallValueOfQuote: '1.9795',
+            ethFee: '0.05',
+          },
+          aggId2: {
+            ...baseExpectedResultQuotes.aggId2,
+            isBestQuote: true,
+            savings: {
+              total: '0.0243',
+              performance: '0.0297',
+              fee: '0.015',
+              metaMaskFee: '0.0204',
+              medianMetaMaskFee: '0.0201',
+            },
+          },
+          aggId3: baseExpectedResultQuotes.aggId3,
+          aggId4: baseExpectedResultQuotes.aggId4,
+          aggId5: baseExpectedResultQuotes.aggId5,
+          aggId6: baseExpectedResultQuotes.aggId6,
+        }
+        delete expectedResultQuotes.aggId1.isBestQuote
+        delete expectedResultQuotes.aggId1.savings
+
+        const [
+          topAggId,
+          resultQuotes,
+        ] = await swapsController2._findTopQuoteAndCalculateSavings(testInput)
+        assert.equal(topAggId, 'aggId2')
+        assert.deepStrictEqual(resultQuotes, expectedResultQuotes)
       })
     })
 
@@ -395,13 +801,15 @@ describe('SwapsController', function () {
           gasEstimateWithRefund: 'b8cae',
           savings: {
             fee: '0',
-            metaMaskFee: '0.5',
-            performance: '6.06',
-            total: '5.56',
+            metaMaskFee: '0.5050505050505050505',
+            performance: '6',
+            total: '5.4949494949494949495',
+            medianMetaMaskFee: '0.44444444444444444444',
           },
           ethFee: '33554432',
-          ethValueOfQuote: '-33554382',
-          metaMaskFeeInEth: '0.5',
+          overallValueOfQuote: '-33554382',
+          metaMaskFeeInEth: '0.5050505050505050505',
+          ethValueOfTokens: '50',
         })
 
         assert.strictEqual(
@@ -875,12 +1283,13 @@ describe('SwapsController', function () {
 
       it('calculates median correctly with uneven sample', function () {
         const values = [
-          { ethValueOfQuote: 3 },
-          { ethValueOfQuote: 2 },
-          { ethValueOfQuote: 6 },
-        ].map(({ ethValueOfQuote }) => ({
-          ethValueOfQuote: new BigNumber(ethValueOfQuote),
+          { overallValueOfQuote: 3 },
+          { overallValueOfQuote: 2 },
+          { overallValueOfQuote: 6 },
+        ].map(({ overallValueOfQuote }) => ({
+          overallValueOfQuote: new BigNumber(overallValueOfQuote),
         }))
+
         const median = getMedianEthValueQuote(values)
 
         assert.deepEqual(
@@ -892,19 +1301,40 @@ describe('SwapsController', function () {
 
       it('calculates median correctly with even sample', function () {
         const expectedResult = {
-          ethValueOfQuote: new BigNumber(2.5),
-          ethFee: new BigNumber(20),
-          metaMaskFeeInEth: new BigNumber(6.5),
+          ethFee: '20',
+          metaMaskFeeInEth: '6.5',
+          ethValueOfTokens: '0.25',
         }
         const values = [
-          { ethValueOfQuote: 3, ethFee: 10, metaMaskFeeInEth: 5 },
-          { ethValueOfQuote: 2, ethFee: 20, metaMaskFeeInEth: 3 },
-          { ethValueOfQuote: 2, ethFee: 30, metaMaskFeeInEth: 8 },
-          { ethValueOfQuote: 6, ethFee: 40, metaMaskFeeInEth: 6 },
+          {
+            overallValueOfQuote: 3,
+            ethFee: 10,
+            metaMaskFeeInEth: 5,
+            ethValueOfTokens: 0.3,
+          },
+          {
+            overallValueOfQuote: 2,
+            ethFee: 20,
+            metaMaskFeeInEth: 3,
+            ethValueOfTokens: 0.2,
+          },
+          {
+            overallValueOfQuote: 2,
+            ethFee: 30,
+            metaMaskFeeInEth: 8,
+            ethValueOfTokens: 0.2,
+          },
+          {
+            overallValueOfQuote: 6,
+            ethFee: 40,
+            metaMaskFeeInEth: 6,
+            ethValueOfTokens: 0.6,
+          },
         ].map((quote) => ({
-          ethValueOfQuote: new BigNumber(quote.ethValueOfQuote),
+          overallValueOfQuote: new BigNumber(quote.overallValueOfQuote),
           ethFee: new BigNumber(quote.ethFee),
           metaMaskFeeInEth: new BigNumber(quote.metaMaskFeeInEth),
+          ethValueOfTokens: new BigNumber(quote.ethValueOfTokens),
         }))
         const median = getMedianEthValueQuote(values)
 
