@@ -392,7 +392,7 @@ describe('Transaction Controller', function () {
         .catch((err) => {
           if (
             err.message ===
-            'MetaMask is having trouble connecting to the network'
+            'ConfluxPortal is having trouble connecting to the network'
           ) {
             done()
           } else {
