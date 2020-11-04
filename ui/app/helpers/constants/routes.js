@@ -1,6 +1,5 @@
 const DEFAULT_ROUTE = '/'
 const UNLOCK_ROUTE = '/unlock'
-const LOCK_ROUTE = '/lock'
 const ASSET_ROUTE = '/asset'
 const SETTINGS_ROUTE = '/settings'
 const GENERAL_ROUTE = '/settings/general'
@@ -68,7 +67,6 @@ const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH = '/encryption-public-key-request'
 const PATH_NAME_MAP = {
   [DEFAULT_ROUTE]: 'Home',
   [UNLOCK_ROUTE]: 'Unlock Page',
-  [LOCK_ROUTE]: 'Lock Page',
   [`${ASSET_ROUTE}/:asset`]: `Asset Page`,
   [SETTINGS_ROUTE]: 'Settings Page',
   [GENERAL_ROUTE]: 'General Settings Page',
@@ -135,7 +133,6 @@ export {
   ALERTS_ROUTE,
   ASSET_ROUTE,
   UNLOCK_ROUTE,
-  LOCK_ROUTE,
   SETTINGS_ROUTE,
   REVEAL_SEED_ROUTE,
   MOBILE_SYNC_ROUTE,

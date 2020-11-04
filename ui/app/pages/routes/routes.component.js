@@ -13,7 +13,6 @@ import Home from '../home'
 import Settings from '../settings'
 import Authenticated from '../../helpers/higher-order-components/authenticated'
 import Initialized from '../../helpers/higher-order-components/initialized'
-import Lock from '../lock'
 import PermissionsConnect from '../permissions-connect'
 import RestoreVaultPage from '../keychains/restore-vault'
 import RevealSeedConfirmation from '../keychains/reveal-seed'
@@ -43,7 +42,6 @@ import {
   DEFAULT_ROUTE,
   INITIALIZE_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
-  LOCK_ROUTE,
   MOBILE_SYNC_ROUTE,
   NEW_ACCOUNT_ROUTE,
   RESTORE_VAULT_ROUTE,
@@ -113,7 +111,6 @@ export default class Routes extends Component {
 
     const routes = (
       <Switch>
-        <Route path={LOCK_ROUTE} component={Lock} exact />
         <Route path={INITIALIZE_ROUTE} component={FirstTimeFlow} />
         <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
         <Initialized

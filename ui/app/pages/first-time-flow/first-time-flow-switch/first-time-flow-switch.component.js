@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { Redirect } from 'react-router-dom'
 import {
   DEFAULT_ROUTE,
-  LOCK_ROUTE,
   INITIALIZE_WELCOME_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
   INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
@@ -27,10 +26,6 @@ export default class FirstTimeFlowSwitch extends PureComponent {
 
     if (completedOnboarding) {
       return <Redirect to={{ pathname: DEFAULT_ROUTE }} />
-    }
-
-    if (isUnlocked) {
-      return <Redirect to={{ pathname: LOCK_ROUTE }} />
     }
 
     if (!isInitialized) {
