@@ -2331,10 +2331,10 @@
     gl-mat4 "1.1.4"
     gl-vec3 "1.0.3"
 
-"@metamask/test-dapp@^3.2.0":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@metamask/test-dapp/-/test-dapp-3.2.0.tgz#b0fb8b75519585b38fec8ecd527fa54257e6411d"
-  integrity sha512-FLhImScxbkI+SuhF7o9D3J2yxYUBTHrg+erlHqBA8lYZelSWDPczgGuIO8XzLIpj+p5a6BT6hM+0IFWmOP14mA==
+"@metamask/test-dapp@4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/test-dapp/-/test-dapp-4.0.0.tgz#dc9c5c089435da65c4ba708f141177b842fa444c"
+  integrity sha512-03nNWoCqRIILtSeMvXrsb96ko3tpA1chgP3+k2LEb21gAGvuPsfxaALMpNPkDPXwqKlqyzU59x2ksQMDAJsPhg==
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
