@@ -154,7 +154,7 @@ class PendingTransactionTracker extends EventEmitter {
     const txHash = txMeta.hash
     const txId = txMeta.id
 
-    // Only check submitted txs
+    // Only check submitted and executed txs
     if (txMeta.status !== 'submitted' && txMeta.status !== 'executed') {
       return
     }
@@ -246,7 +246,7 @@ class PendingTransactionTracker extends EventEmitter {
     }
   }
   /**
-    checks to see if if the tx's nonce has been used by another transaction
+    checks to see if the tx's nonce has been used by another transaction
     @param {Object} txMeta - txMeta object
     @param {Object} transactionReceipt - transactionReceipt object
     @emits tx:dropped

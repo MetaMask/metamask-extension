@@ -617,35 +617,34 @@ class TransactionController extends EventEmitter {
       return
     }
 
-    if (executedOnly && txMeta.status === 'executed') {
+    if (txMeta.status === 'executed' && executedOnly) {
       return
     }
-
-    try {
-      // It seems that sometimes the numerical values being returned from
-      // this.query.getTransactionReceipt are BN instances and not strings.
-      const gasUsed =
-        typeof txReceipt.gasUsed !== 'string'
-          ? txReceipt.gasUsed.toString(16)
-          : txReceipt.gasUsed
-
-      txMeta.txReceipt = {
-        ...txReceipt,
-        gasUsed,
-      }
-
-      this.txStateManager.updateTx(
-        txMeta,
-        'transactions#confirmTransaction - add txReceipt'
-      )
-    } catch (err) {
-      log.error(err)
-    }
-
-    if (!executedOnly) {
+    if (txMeta.status === 'executed' && !executedOnly) {
       this.txStateManager.setTxStatusConfirmed(txId)
       this._markNonceDuplicatesDropped(txId)
-    } else {
+    }
+    if (txMeta.status !== 'executed' && executedOnly) {
+      try {
+        // It seems that sometimes the numerical values being returned from
+        // this.query.getTransactionReceipt are BN instances and not strings.
+        const gasUsed =
+          typeof txReceipt.gasUsed !== 'string'
+            ? txReceipt.gasUsed.toString(16)
+            : txReceipt.gasUsed
+
+        txMeta.txReceipt = {
+          ...txReceipt,
+          gasUsed,
+        }
+
+        this.txStateManager.updateTx(
+          txMeta,
+          'transactions#confirmTransaction - add txReceipt'
+        )
+      } catch (err) {
+        log.error(err)
+      }
       this.txStateManager._setTxStatus(txId, 'executed')
     }
   }
