@@ -748,7 +748,7 @@ export default class ConfirmTransactionBase extends Component {
       if (transactionCategory) {
         functionType = t(transactionCategory) || transactionCategory
       } else {
-        functionType = t(TRANSACTION_CATEGORIES.CONTRACT_INTERACTION)
+        functionType = t('contractInteraction')
       }
     }
 

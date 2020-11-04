@@ -125,7 +125,6 @@ const renderHookWithRouter = (cb, tokenAddress) => {
   const initialEntries = [
     tokenAddress ? `${ASSET_ROUTE}/${tokenAddress}` : DEFAULT_ROUTE,
   ]
-  // eslint-disable-next-line
   const wrapper = ({ children }) => (
     <MemoryRouter initialEntries={initialEntries}>{children}</MemoryRouter>
   )
