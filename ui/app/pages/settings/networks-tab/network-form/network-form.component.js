@@ -106,9 +106,12 @@ export default class NetworkForm extends PureComponent {
   }
 
   /**
-   * Should be called the chainId is set from the props value.
    * Ensures that the chainId is always displayed in decimal, even though
    * it's stored in hexadecimal.
+   *
+   * Should be called to get the chainId whenever props are used to set the
+   * component's state.
+   *
    * @returns {string} The props chainId in decimal.
    */
   getDisplayChainIdFromProps() {
