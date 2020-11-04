@@ -6,6 +6,10 @@ import { bnToHex } from '../lib/util'
 import fetchWithTimeout from '../lib/fetch-with-timeout'
 
 import {
+  TRANSACTION_CATEGORIES,
+  TRANSACTION_STATUSES,
+} from '../../../shared/constants/transaction'
+import {
   CHAIN_ID_TO_NETWORK_ID_MAP,
   CHAIN_ID_TO_TYPE_MAP,
   GOERLI,
@@ -275,7 +279,10 @@ export default class IncomingTransactionsController {
 
   _normalizeTxFromEtherscan(txMeta, chainId) {
     const time = parseInt(txMeta.timeStamp, 10) * 1000
-    const status = txMeta.isError === '0' ? 'confirmed' : 'failed'
+    const status =
+      txMeta.isError === '0'
+        ? TRANSACTION_STATUSES.CONFIRMED
+        : TRANSACTION_STATUSES.FAILED
     return {
       blockNumber: txMeta.blockNumber,
       id: createId(),
@@ -291,7 +298,7 @@ export default class IncomingTransactionsController {
         value: bnToHex(new BN(txMeta.value)),
       },
       hash: txMeta.hash,
-      transactionCategory: 'incoming',
+      transactionCategory: TRANSACTION_CATEGORIES.INCOMING,
     }
   }
 }

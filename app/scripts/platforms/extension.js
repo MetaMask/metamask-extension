@@ -2,6 +2,7 @@ import extension from 'extensionizer'
 import { createExplorerLink as explorerLink } from '@metamask/etherscan-link'
 import { getEnvironmentType, checkForError } from '../lib/util'
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../lib/enums'
+import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction'
 
 export default class ExtensionPlatform {
   //
@@ -112,7 +113,7 @@ export default class ExtensionPlatform {
   showTransactionNotification(txMeta) {
     const { status, txReceipt: { status: receiptStatus } = {} } = txMeta
 
-    if (status === 'confirmed') {
+    if (status === TRANSACTION_STATUSES.CONFIRMED) {
       // There was an on-chain failure
       receiptStatus === '0x0'
         ? this._showFailedTransaction(
@@ -120,7 +121,7 @@ export default class ExtensionPlatform {
             'Transaction encountered an error.',
           )
         : this._showConfirmedTransaction(txMeta)
-    } else if (status === 'failed') {
+    } else if (status === TRANSACTION_STATUSES.FAILED) {
       this._showFailedTransaction(txMeta)
     }
   }

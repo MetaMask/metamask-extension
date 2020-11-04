@@ -11,6 +11,7 @@ import enLocale from '../../../../app/_locales/en/messages.json'
 import * as actions from '../../../../ui/app/store/actions'
 import MetaMaskController from '../../../../app/scripts/metamask-controller'
 import firstTimeState from '../../localhostState'
+import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction'
 
 const { provider } = createTestProviderTools({ scaffold: {} })
 const middleware = [thunk]
@@ -891,7 +892,7 @@ describe('Actions', function () {
 
     const txData = {
       id: '1',
-      status: 'unapproved',
+      status: TRANSACTION_STATUSES.UNAPPROVED,
       metamaskNetworkId: currentNetworkId,
       txParams,
     }

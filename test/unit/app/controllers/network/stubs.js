@@ -1,3 +1,9 @@
+import {
+  TRANSACTION_CATEGORIES,
+  TRANSACTION_STATUSES,
+  TRANSACTION_TYPES,
+} from '../../../../../shared/constants/transaction'
+
 export const txMetaStub = {
   firstRetryBlockNumber: '0x51a402',
   hash: '0x2cc5a25744486f7383edebbf32003e5a66e18135799593d6b5cdd2bb43674f09',
@@ -6,9 +12,9 @@ export const txMetaStub = {
       id: 405984854664302,
       loadingDefaults: true,
       metamaskNetworkId: '4',
-      status: 'unapproved',
+      status: TRANSACTION_STATUSES.UNAPPROVED,
       time: 1572395156620,
-      transactionCategory: 'sentEther',
+      transactionCategory: TRANSACTION_CATEGORIES.SENT_ETHER,
       txParams: {
         from: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
         gas: '0x5208',
@@ -16,7 +22,7 @@ export const txMetaStub = {
         to: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
         value: '0x0',
       },
-      type: 'standard',
+      type: TRANSACTION_TYPES.STANDARD,
     },
     [
       {
@@ -42,7 +48,7 @@ export const txMetaStub = {
         op: 'replace',
         path: '/status',
         timestamp: 1572395158240,
-        value: 'approved',
+        value: TRANSACTION_STATUSES.APPROVED,
       },
     ],
     [
@@ -108,7 +114,7 @@ export const txMetaStub = {
         op: 'replace',
         path: '/status',
         timestamp: 1572395158281,
-        value: 'signed',
+        value: TRANSACTION_STATUSES.SIGNED,
       },
       {
         op: 'add',
@@ -143,7 +149,7 @@ export const txMetaStub = {
         op: 'replace',
         path: '/status',
         timestamp: 1572395158576,
-        value: 'submitted',
+        value: TRANSACTION_STATUSES.SUBMITTED,
       },
     ],
     [
@@ -187,10 +193,10 @@ export const txMetaStub = {
   rawTx:
     '0xf86204831e848082520894f231d46dd78806e1dd93442cf33c7671f853874880802ca05f973e540f2d3c2f06d3725a626b75247593cb36477187ae07ecfe0a4db3cf57a00259b52ee8c58baaa385fb05c3f96116e58de89bcc165cb3bfdfc708672fed8a',
   s: '0x0259b52ee8c58baaa385fb05c3f96116e58de89bcc165cb3bfdfc708672fed8a',
-  status: 'submitted',
+  status: TRANSACTION_STATUSES.SUBMITTED,
   submittedTime: 1572395158570,
   time: 1572395156620,
-  transactionCategory: 'sentEther',
+  transactionCategory: TRANSACTION_CATEGORIES.SENT_ETHER,
   txParams: {
     from: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
     gas: '0x5208',
@@ -199,6 +205,6 @@ export const txMetaStub = {
     to: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
     value: '0x0',
   },
-  type: 'standard',
+  type: TRANSACTION_TYPES.STANDARD,
   v: '0x2c',
 }

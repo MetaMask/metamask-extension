@@ -1,5 +1,6 @@
 import assert from 'assert'
 import migration22 from '../../../app/scripts/migrations/022'
+import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction'
 
 const properTime = new Date().getTime()
 const storage = {
@@ -7,9 +8,9 @@ const storage = {
   data: {
     TransactionController: {
       transactions: [
-        { status: 'submitted' },
-        { status: 'submitted', submittedTime: properTime },
-        { status: 'confirmed' },
+        { status: TRANSACTION_STATUSES.SUBMITTED },
+        { status: TRANSACTION_STATUSES.SUBMITTED, submittedTime: properTime },
+        { status: TRANSACTION_STATUSES.CONFIRMED },
       ],
     },
   },

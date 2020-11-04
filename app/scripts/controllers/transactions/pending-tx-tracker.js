@@ -1,6 +1,7 @@
 import EventEmitter from 'safe-event-emitter'
 import log from 'loglevel'
 import EthQuery from 'ethjs-query'
+import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction'
 
 /**
 
@@ -168,7 +169,7 @@ export default class PendingTransactionTracker extends EventEmitter {
     const txId = txMeta.id
 
     // Only check submitted txs
-    if (txMeta.status !== 'submitted') {
+    if (txMeta.status !== TRANSACTION_STATUSES.SUBMITTED) {
       return
     }
 

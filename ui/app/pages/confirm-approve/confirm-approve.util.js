@@ -1,3 +1,4 @@
+import { TRANSACTION_CATEGORIES } from '../../../../shared/constants/transaction'
 import { decimalToHex } from '../../helpers/utils/conversions.util'
 import {
   calcTokenValue,
@@ -13,7 +14,7 @@ export function getCustomTxParamsData(
 
   if (!tokenData) {
     throw new Error('Invalid data')
-  } else if (tokenData.name !== 'approve') {
+  } else if (tokenData.name !== TRANSACTION_CATEGORIES.TOKEN_METHOD_APPROVE) {
     throw new Error(
       `Invalid data; should be 'approve' method, but instead is '${tokenData.name}'`,
     )

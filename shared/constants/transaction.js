@@ -32,7 +32,7 @@ export const TRANSACTION_TYPES = {
  * @property {'rejected'} REJECTED - The user has rejected the transaction in the
  *  MetaMask UI
  * @property {'signed'} SIGNED - The transaction has been signed
- * @property {'submitted'} SIGNED - The transaction has been submitted to network
+ * @property {'submitted'} SUBMITTED - The transaction has been submitted to network
  * @property {'failed'} FAILED - The transaction has failed for some reason
  * @property {'dropped'} DROPPED - The transaction was dropped due to a tx with same
  *  nonce being accepted

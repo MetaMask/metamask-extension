@@ -2,6 +2,10 @@ import assert from 'assert'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import sinon from 'sinon'
+import {
+  TRANSACTION_CATEGORIES,
+  TRANSACTION_STATUSES,
+} from '../../../../shared/constants/transaction'
 
 import ConfirmTransactionReducer, * as actions from './confirm-transaction.duck'
 
@@ -58,7 +62,7 @@ describe('Confirm Transaction Duck', function () {
         name: 'abcToken',
       },
       methodData: {
-        name: 'approve',
+        name: TRANSACTION_CATEGORIES.TOKEN_METHOD_APPROVE,
       },
       tokenProps: {
         tokenDecimals: '3',
@@ -503,7 +507,7 @@ describe('Confirm Transaction Duck', function () {
             loadingDefaults: false,
             metamaskNetworkId: '3',
             origin: 'faucet.metamask.io',
-            status: 'unapproved',
+            status: TRANSACTION_STATUSES.UNAPPROVED,
             time: 1530838113716,
           },
         },
@@ -537,7 +541,7 @@ describe('Confirm Transaction Duck', function () {
         loadingDefaults: false,
         metamaskNetworkId: '3',
         origin: 'faucet.metamask.io',
-        status: 'unapproved',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
         time: 1530838113716,
         txParams: {
           from: '0xc5ae6383e126f901dcb06131d97a88745bfa88d6',
@@ -609,7 +613,7 @@ describe('Confirm Transaction Duck', function () {
               loadingDefaults: false,
               metamaskNetworkId: '3',
               origin: 'faucet.metamask.io',
-              status: 'unapproved',
+              status: TRANSACTION_STATUSES.UNAPPROVED,
               time: 1530838113716,
               txParams: {
                 from: '0xc5ae6383e126f901dcb06131d97a88745bfa88d6',

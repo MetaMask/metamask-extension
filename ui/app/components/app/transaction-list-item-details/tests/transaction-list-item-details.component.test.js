@@ -6,13 +6,14 @@ import Button from '../../../ui/button'
 import SenderToRecipient from '../../../ui/sender-to-recipient'
 import TransactionBreakdown from '../../transaction-breakdown'
 import TransactionActivityLog from '../../transaction-activity-log'
+import { TRANSACTION_STATUSES } from '../../../../../../shared/constants/transaction'
 
 describe('TransactionListItemDetails Component', function () {
   it('should render properly', function () {
     const transaction = {
       history: [],
       id: 1,
-      status: 'confirmed',
+      status: TRANSACTION_STATUSES.CONFIRMED,
       txParams: {
         from: '0x1',
         gas: '0x5208',
@@ -53,7 +54,7 @@ describe('TransactionListItemDetails Component', function () {
     const transaction = {
       history: [],
       id: 1,
-      status: 'confirmed',
+      status: TRANSACTION_STATUSES.CONFIRMED,
       txParams: {
         from: '0x1',
         gas: '0x5208',
@@ -96,7 +97,7 @@ describe('TransactionListItemDetails Component', function () {
     const transaction = {
       history: [],
       id: 1,
-      status: 'confirmed',
+      status: TRANSACTION_STATUSES.CONFIRMED,
       txParams: {
         from: '0x1',
         gas: '0x5208',
@@ -137,7 +138,7 @@ describe('TransactionListItemDetails Component', function () {
     const transaction = {
       history: [],
       id: 1,
-      status: 'confirmed',
+      status: TRANSACTION_STATUSES.CONFIRMED,
       hash: '0xaa',
       txParams: {
         from: '0x1',

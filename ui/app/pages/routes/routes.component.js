@@ -58,6 +58,7 @@ import {
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
+import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction'
 
 export default class Routes extends Component {
   static propTypes = {
@@ -271,7 +272,7 @@ export default class Routes extends Component {
 
     const sidebarShouldClose =
       sidebarTransaction &&
-      !sidebarTransaction.status === 'failed' &&
+      !sidebarTransaction.status === TRANSACTION_STATUSES.FAILED &&
       !submittedPendingTransactions.find(
         ({ id }) => id === sidebarTransaction.id,
       )

@@ -1,4 +1,5 @@
 // next version number
+import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction'
 import failTxsThat from './fail-tx'
 
 const version = 29
@@ -22,7 +23,7 @@ export default {
     version,
     'Stuck in approved state for too long.',
     (txMeta) => {
-      const isApproved = txMeta.status === 'approved'
+      const isApproved = txMeta.status === TRANSACTION_STATUSES.APPROVED
       const createdTime = txMeta.submittedTime
       const now = Date.now()
       return isApproved && now - createdTime > unacceptableDelay

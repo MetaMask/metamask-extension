@@ -1,6 +1,7 @@
 import assert from 'assert'
 import sinon from 'sinon'
 import TypedMessageManager from '../../../app/scripts/lib/typed-message-manager'
+import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction'
 
 describe('Typed Message Manager', function () {
   let typedMessageManager,
@@ -89,7 +90,7 @@ describe('Typed Message Manager', function () {
   })
 
   it('adds to unapproved messages and sets status to unapproved', function () {
-    assert.equal(typedMsgs[msgId].status, 'unapproved')
+    assert.equal(typedMsgs[msgId].status, TRANSACTION_STATUSES.UNAPPROVED)
   })
 
   it('validates params', function () {
@@ -106,17 +107,17 @@ describe('Typed Message Manager', function () {
   it('approves messages', async function () {
     const messageMetaMaskId = messages[0].msgParams
     typedMessageManager.approveMessage(messageMetaMaskId)
-    assert.equal(messages[0].status, 'approved')
+    assert.equal(messages[0].status, TRANSACTION_STATUSES.APPROVED)
   })
 
   it('sets msg status to signed and adds a raw sig to message details', function () {
     typedMessageManager.setMsgStatusSigned(numberMsgId, 'raw sig')
-    assert.equal(messages[0].status, 'signed')
+    assert.equal(messages[0].status, TRANSACTION_STATUSES.SIGNED)
     assert.equal(messages[0].rawSig, 'raw sig')
   })
 
   it('rejects message', function () {
     typedMessageManager.rejectMsg(numberMsgId)
-    assert.equal(messages[0].status, 'rejected')
+    assert.equal(messages[0].status, TRANSACTION_STATUSES.REJECTED)
   })
 })

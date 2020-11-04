@@ -1,3 +1,5 @@
+import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction'
+
 const state = {
   metamask: {
     isInitialized: true,
@@ -168,7 +170,7 @@ const state = {
       4768706228115573: {
         id: 4768706228115573,
         time: 1487363153561,
-        status: 'unapproved',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
         gasMultiplier: 1,
         metamaskNetworkId: '3',
         txParams: {

@@ -11,6 +11,7 @@ import SignatureRequestOriginal from '../../components/app/signature-request-ori
 import Loading from '../../components/ui/loading-screen'
 import { getMostRecentOverviewPage } from '../../ducks/history/history'
 import { MESSAGE_TYPE } from '../../../../app/scripts/lib/enums'
+import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction'
 
 function mapStateToProps(state) {
   const { metamask, appState } = state
@@ -213,7 +214,7 @@ class ConfirmTxScreen extends Component {
 
     const unconfTxList = txHelper(unapprovedTxs, {}, {}, {}, network)
 
-    if (prevTx && prevTx.status === 'dropped') {
+    if (prevTx && prevTx.status === TRANSACTION_STATUSES.DROPPED) {
       this.props.dispatch(
         actions.showModal({
           name: 'TRANSACTION_CONFIRMED',

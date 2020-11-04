@@ -26,6 +26,7 @@ import {
 } from '@metamask/controllers'
 import { getTrackMetaMetricsEvent } from '../../shared/modules/metametrics'
 import { getBackgroundMetaMetricState } from '../../ui/app/selectors'
+import { TRANSACTION_STATUSES } from '../../shared/constants/transaction'
 import ComposableObservableStore from './lib/ComposableObservableStore'
 import AccountTracker from './lib/account-tracker'
 import createLoggerMiddleware from './lib/createLoggerMiddleware'
@@ -304,7 +305,10 @@ export default class MetamaskController extends EventEmitter {
     this.txController.on('newUnapprovedTx', () => opts.showUnapprovedTx())
 
     this.txController.on(`tx:status-update`, async (txId, status) => {
-      if (status === 'confirmed' || status === 'failed') {
+      if (
+        status === TRANSACTION_STATUSES.CONFIRMED ||
+        status === TRANSACTION_STATUSES.FAILED
+      ) {
         const txMeta = this.txController.txStateManager.getTx(txId)
         this.platform.showTransactionNotification(txMeta)
 
@@ -441,7 +445,10 @@ export default class MetamaskController extends EventEmitter {
       processEncryptionPublicKey: this.newRequestEncryptionPublicKey.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
       getPendingTransactionByHash: (hash) =>
-        this.txController.getFilteredTxList({ hash, status: 'submitted' })[0],
+        this.txController.getFilteredTxList({
+          hash,
+          status: TRANSACTION_STATUSES.SUBMITTED,
+        })[0],
     }
     const providerProxy = this.networkController.initializeProvider(
       providerOpts,

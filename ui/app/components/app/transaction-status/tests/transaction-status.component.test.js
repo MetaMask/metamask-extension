@@ -5,6 +5,7 @@ import sinon from 'sinon'
 import * as i18nHook from '../../../../hooks/useI18nContext'
 import TransactionStatus from '../transaction-status.component'
 import Tooltip from '../../../ui/tooltip'
+import { TRANSACTION_STATUSES } from '../../../../../../shared/constants/transaction'
 
 describe('TransactionStatus Component', function () {
   before(function () {

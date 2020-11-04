@@ -1,4 +1,9 @@
 import assert from 'assert'
+import {
+  TRANSACTION_CATEGORIES,
+  TRANSACTION_GROUP_STATUSES,
+  TRANSACTION_STATUSES,
+} from '../../../../shared/constants/transaction'
 import * as utils from './transactions.util'
 
 describe('Transactions utils', function () {
@@ -9,7 +14,7 @@ describe('Transactions utils', function () {
       )
       assert.ok(tokenData)
       const { name, args } = tokenData
-      assert.equal(name, 'transfer')
+      assert.equal(name, TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER)
       const to = args._to
       const value = args._value.toString()
       assert.equal(to, '0x50A9D56C2B8BA9A5c7f2C08C3d26E0499F23a706')
@@ -26,27 +31,27 @@ describe('Transactions utils', function () {
       const tests = [
         {
           transaction: {
-            status: 'confirmed',
+            status: TRANSACTION_STATUSES.CONFIRMED,
             txReceipt: {
               status: '0x0',
             },
           },
-          expected: 'failed',
+          expected: TRANSACTION_STATUSES.FAILED,
         },
         {
           transaction: {
-            status: 'confirmed',
+            status: TRANSACTION_STATUSES.CONFIRMED,
             txReceipt: {
               status: '0x1',
             },
           },
-          expected: 'confirmed',
+          expected: TRANSACTION_STATUSES.CONFIRMED,
         },
         {
           transaction: {
-            status: 'pending',
+            status: TRANSACTION_GROUP_STATUSES.PENDING,
           },
-          expected: 'pending',
+          expected: TRANSACTION_GROUP_STATUSES.PENDING,
         },
       ]
 

@@ -15,6 +15,10 @@ import {
   ROPSTEN_CHAIN_ID,
   ROPSTEN_NETWORK_ID,
 } from '../../../../app/scripts/controllers/network/enums'
+import {
+  TRANSACTION_CATEGORIES,
+  TRANSACTION_STATUSES,
+} from '../../../../shared/constants/transaction'
 
 const IncomingTransactionsController = proxyquire(
   '../../../../app/scripts/controllers/incoming-transactions',
@@ -266,9 +270,9 @@ describe('IncomingTransactionsController', function () {
               blockNumber: '10',
               hash: '0xfake',
               metamaskNetworkId: '3',
-              status: 'confirmed',
+              status: TRANSACTION_STATUSES.CONFIRMED,
               time: 16000000000000000,
-              transactionCategory: 'incoming',
+              transactionCategory: TRANSACTION_CATEGORIES.INCOMING,
               txParams: {
                 from: '0xfake',
                 gas: '0x0',
@@ -609,9 +613,9 @@ describe('IncomingTransactionsController', function () {
               blockNumber: '10',
               hash: '0xfake',
               metamaskNetworkId: '3',
-              status: 'confirmed',
+              status: TRANSACTION_STATUSES.CONFIRMED,
               time: 16000000000000000,
-              transactionCategory: 'incoming',
+              transactionCategory: TRANSACTION_CATEGORIES.INCOMING,
               txParams: {
                 from: '0xfake',
                 gas: '0x0',
@@ -763,9 +767,9 @@ describe('IncomingTransactionsController', function () {
               blockNumber: '10',
               hash: '0xfake',
               metamaskNetworkId: '3',
-              status: 'confirmed',
+              status: TRANSACTION_STATUSES.CONFIRMED,
               time: 16000000000000000,
-              transactionCategory: 'incoming',
+              transactionCategory: TRANSACTION_CATEGORIES.INCOMING,
               txParams: {
                 from: '0xfake',
                 gas: '0x0',
@@ -1340,7 +1344,7 @@ describe('IncomingTransactionsController', function () {
         blockNumber: 333,
         id: 54321,
         metamaskNetworkId: ROPSTEN_NETWORK_ID,
-        status: 'failed',
+        status: TRANSACTION_STATUSES.FAILED,
         time: 4444000,
         txParams: {
           from: '0xa',
@@ -1351,7 +1355,7 @@ describe('IncomingTransactionsController', function () {
           value: '0xf',
         },
         hash: '0xg',
-        transactionCategory: 'incoming',
+        transactionCategory: TRANSACTION_CATEGORIES.INCOMING,
       })
     })
 
@@ -1385,7 +1389,7 @@ describe('IncomingTransactionsController', function () {
         blockNumber: 333,
         id: 54321,
         metamaskNetworkId: ROPSTEN_NETWORK_ID,
-        status: 'confirmed',
+        status: TRANSACTION_STATUSES.CONFIRMED,
         time: 4444000,
         txParams: {
           from: '0xa',
@@ -1396,7 +1400,7 @@ describe('IncomingTransactionsController', function () {
           value: '0xf',
         },
         hash: '0xg',
-        transactionCategory: 'incoming',
+        transactionCategory: TRANSACTION_CATEGORIES.INCOMING,
       })
     })
   })

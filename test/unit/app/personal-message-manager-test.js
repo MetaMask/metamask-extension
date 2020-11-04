@@ -1,5 +1,6 @@
 import assert from 'assert'
 import PersonalMessageManager from '../../../app/scripts/lib/personal-message-manager'
+import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction'
 
 describe('Personal Message Manager', function () {
   let messageManager
@@ -18,7 +19,11 @@ describe('Personal Message Manager', function () {
 
   describe('#addMsg', function () {
     it('adds a Msg returned in getMsgList', function () {
-      const Msg = { id: 1, status: 'approved', metamaskNetworkId: 'unit test' }
+      const Msg = {
+        id: 1,
+        status: TRANSACTION_STATUSES.APPROVED,
+        metamaskNetworkId: 'unit test',
+      }
       messageManager.addMsg(Msg)
       const result = messageManager.messages
       assert.ok(Array.isArray(result))
@@ -31,7 +36,7 @@ describe('Personal Message Manager', function () {
     it('sets the Msg status to approved', function () {
       const Msg = {
         id: 1,
-        status: 'unapproved',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
         metamaskNetworkId: 'unit test',
       }
       messageManager.addMsg(Msg)
@@ -39,7 +44,7 @@ describe('Personal Message Manager', function () {
       const result = messageManager.messages
       assert.ok(Array.isArray(result))
       assert.equal(result.length, 1)
-      assert.equal(result[0].status, 'approved')
+      assert.equal(result[0].status, TRANSACTION_STATUSES.APPROVED)
     })
   })
 
@@ -47,7 +52,7 @@ describe('Personal Message Manager', function () {
     it('sets the Msg status to rejected', function () {
       const Msg = {
         id: 1,
-        status: 'unapproved',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
         metamaskNetworkId: 'unit test',
       }
       messageManager.addMsg(Msg)
@@ -55,7 +60,7 @@ describe('Personal Message Manager', function () {
       const result = messageManager.messages
       assert.ok(Array.isArray(result))
       assert.equal(result.length, 1)
-      assert.equal(result[0].status, 'rejected')
+      assert.equal(result[0].status, TRANSACTION_STATUSES.REJECTED)
     })
   })
 
@@ -63,12 +68,12 @@ describe('Personal Message Manager', function () {
     it('replaces the Msg with the same id', function () {
       messageManager.addMsg({
         id: '1',
-        status: 'unapproved',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
         metamaskNetworkId: 'unit test',
       })
       messageManager.addMsg({
         id: '2',
-        status: 'approved',
+        status: TRANSACTION_STATUSES.APPROVED,
         metamaskNetworkId: 'unit test',
       })
       messageManager._updateMsg({
@@ -86,17 +91,17 @@ describe('Personal Message Manager', function () {
     it('returns unapproved Msgs in a hash', function () {
       messageManager.addMsg({
         id: '1',
-        status: 'unapproved',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
         metamaskNetworkId: 'unit test',
       })
       messageManager.addMsg({
         id: '2',
-        status: 'approved',
+        status: TRANSACTION_STATUSES.APPROVED,
         metamaskNetworkId: 'unit test',
       })
       const result = messageManager.getUnapprovedMsgs()
       assert.equal(typeof result, 'object')
-      assert.equal(result['1'].status, 'unapproved')
+      assert.equal(result['1'].status, TRANSACTION_STATUSES.UNAPPROVED)
       assert.equal(result['2'], undefined)
     })
   })
@@ -105,16 +110,22 @@ describe('Personal Message Manager', function () {
     it('returns a Msg with the requested id', function () {
       messageManager.addMsg({
         id: '1',
-        status: 'unapproved',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
         metamaskNetworkId: 'unit test',
       })
       messageManager.addMsg({
         id: '2',
-        status: 'approved',
+        status: TRANSACTION_STATUSES.APPROVED,
         metamaskNetworkId: 'unit test',
       })
-      assert.equal(messageManager.getMsg('1').status, 'unapproved')
-      assert.equal(messageManager.getMsg('2').status, 'approved')
+      assert.equal(
+        messageManager.getMsg('1').status,
+        TRANSACTION_STATUSES.UNAPPROVED,
+      )
+      assert.equal(
+        messageManager.getMsg('2').status,
+        TRANSACTION_STATUSES.APPROVED,
+      )
     })
   })
 

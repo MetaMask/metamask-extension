@@ -6,6 +6,7 @@ all unapproved transactions
 */
 
 import { cloneDeep } from 'lodash'
+import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction'
 
 const version = 24
 
@@ -31,7 +32,7 @@ function transformState(state) {
   newState.TransactionController.transactions = transactions.map(
     (txMeta, _) => {
       if (
-        txMeta.status === 'unapproved' &&
+        txMeta.status === TRANSACTION_STATUSES.UNAPPROVED &&
         txMeta.txParams &&
         txMeta.txParams.from
       ) {

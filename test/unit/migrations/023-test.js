@@ -1,5 +1,6 @@
 import assert from 'assert'
 import migration23 from '../../../app/scripts/migrations/023'
+import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction'
 
 const storage = {
   meta: {},
@@ -14,18 +15,14 @@ const transactions = []
 const transactions40 = []
 const transactions20 = []
 
-const txStates = [
-  'unapproved',
-  'approved',
-  'signed',
-  'submitted',
-  'confirmed',
-  'rejected',
-  'failed',
-  'dropped',
-]
+const txStates = Object.values(TRANSACTION_STATUSES)
 
-const deletableTxStates = ['confirmed', 'rejected', 'failed', 'dropped']
+const deletableTxStates = [
+  TRANSACTION_STATUSES.CONFIRMED,
+  TRANSACTION_STATUSES.REJECTED,
+  TRANSACTION_STATUSES.FAILED,
+  TRANSACTION_STATUSES.DROPPED,
+]
 
 let nonDeletableCount = 0
 
