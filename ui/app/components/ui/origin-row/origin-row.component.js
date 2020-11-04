@@ -7,19 +7,19 @@ const OriginRow = (props) => {
   const txOriginMetadata = domainMetadata[origin]
   return (
     <div className="origin-row">
-      <div className="origin-row__text">
-        Origin:
-      </div>
-      { txOriginMetadata
-        ? (
-          <div className="origin-row-item">
-            <SiteIcon icon={ txOriginMetadata.icon } name={ txOriginMetadata.name } size={24} />
-            <div className="origin-row-item__text">{origin}</div>
-          </div>
-        )
-        : (
+      <div className="origin-row__text">Origin:</div>
+      {txOriginMetadata ? (
+        <div className="origin-row-item">
+          <SiteIcon
+            icon={txOriginMetadata.icon}
+            name={txOriginMetadata.name}
+            size={24}
+          />
           <div className="origin-row-item__text">{origin}</div>
-        ) }
+        </div>
+      ) : (
+        <div className="origin-row-item__text">{origin}</div>
+      )}
     </div>
   )
 }
