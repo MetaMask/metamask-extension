@@ -44,14 +44,12 @@ export default function setupWeb3(log) {
       'version',
     ])
 
-    Object.keys(web3).forEach((rawTopKey) => {
-      const topKey = stringifyKey(rawTopKey)
+    Object.keys(web3).forEach((topKey) => {
       if (includedTopKeys.has(topKey)) {
         const applyTrapKeys = new Map()
         const getTrapKeys = new Map()
 
-        Object.keys(web3[topKey]).forEach((rawKey) => {
-          const key = stringifyKey(rawKey)
+        Object.keys(web3[topKey]).forEach((key) => {
           const path = `web3.${topKey}.${key}`
 
           if (web3Entitites[path]) {
