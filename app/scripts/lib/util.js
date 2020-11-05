@@ -169,7 +169,7 @@ function isPrefixedFormattedHexString(value) {
  * @returns {string}
  */
 const addHexPrefix = (str) => {
-  if (typeof str !== 'string' || str.startsWith('0x')) {
+  if (typeof str !== 'string' || str.match(/^-?0x/u)) {
     return str
   }
 
