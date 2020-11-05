@@ -163,10 +163,10 @@ function isPrefixedFormattedHexString(value) {
 }
 
 /**
- * Returns string with '0x' hex prefix
+ * Prefixes a hex string with '0x' or '-0x' and returns it. Idempotent.
  *
- * @param {string} str
- * @returns {string}
+ * @param {string} str - The string to prefix.
+ * @returns {string} The prefixed string.
  */
 const addHexPrefix = (str) => {
   if (typeof str !== 'string' || str.match(/^-?0x/u)) {
