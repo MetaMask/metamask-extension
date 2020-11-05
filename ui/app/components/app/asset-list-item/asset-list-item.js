@@ -93,7 +93,11 @@ const AssetListItem = ({
       className={classnames('asset-list-item', className)}
       data-testid={dataTestId}
       title={
-        <button className="asset-list-item__token-button" onClick={onClick}>
+        <button
+          className="asset-list-item__token-button"
+          onClick={onClick}
+          title={`${primary} ${tokenSymbol || ''}`}
+        >
           <h2>
             <span className="asset-list-item__token-value">{primary}</span>
             <span className="asset-list-item__token-symbol">{tokenSymbol}</span>
