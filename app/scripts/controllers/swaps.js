@@ -555,7 +555,7 @@ export default class SwapsController {
       const overallValueOfQuoteForSorting =
         conversionRateForCalculations === undefined
           ? ethValueOfTokens
-          : ethValueOfTokens.minus(totalEthCost, 10)
+          : ethValueOfTokens.minus(ethFee, 10)
 
       quote.ethFee = ethFee.toString(10)
 
