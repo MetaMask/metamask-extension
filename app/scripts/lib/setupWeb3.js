@@ -115,10 +115,15 @@ export default function setupWeb3(log) {
     'isConnected',
     'setProvider',
     'reset',
+    'sha3',
     'toHex',
+    'toAscii',
     'fromAscii',
+    'toDecimal',
     'fromDecimal',
+    'fromWei',
     'toWei',
+    'toBigNumber',
     'isAddress',
   ]
 
