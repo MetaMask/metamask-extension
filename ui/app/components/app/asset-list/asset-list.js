@@ -47,7 +47,7 @@ const AssetList = ({ onClickAsset }) => {
     numberOfDecimals: secondaryNumberOfDecimals,
   } = useUserPreferencedCurrency(SECONDARY, { ethNumberOfDecimals: 4 })
 
-  const [primaryCurrencyDisplay] = useCurrencyDisplay(selectedAccountBalance, {
+  const [, primaryCurrencyProperties] = useCurrencyDisplay(selectedAccountBalance, {
     numberOfDecimals: primaryNumberOfDecimals,
     currency: primaryCurrency,
   })
@@ -65,7 +65,8 @@ const AssetList = ({ onClickAsset }) => {
       <AssetListItem
         onClick={() => onClickAsset(nativeCurrency)}
         data-testid="wallet-balance"
-        primary={primaryCurrencyDisplay}
+        primary={primaryCurrencyProperties.value}
+        tokenSymbol={primaryCurrencyProperties.suffix}
         secondary={showFiat ? secondaryCurrencyDisplay : undefined}
       />
       <TokenList
