@@ -11,11 +11,10 @@ export default class FirstTimeFlowSwitch extends PureComponent {
   static propTypes = {
     completedOnboarding: PropTypes.bool,
     isInitialized: PropTypes.bool,
-    isUnlocked: PropTypes.bool,
   }
 
   render() {
-    const { completedOnboarding, isInitialized, isUnlocked } = this.props
+    const { completedOnboarding, isInitialized } = this.props
 
     if (completedOnboarding) {
       return <Redirect to={{ pathname: DEFAULT_ROUTE }} />
