@@ -34,7 +34,7 @@ export default function setupWeb3(log) {
 
   // Setup logging of nested property usage
   if (shouldLogUsage) {
-    const includedTopKeys = new Set([
+    const includedTopKeys = [
       'eth',
       'db',
       'shh',
@@ -42,67 +42,65 @@ export default function setupWeb3(log) {
       'personal',
       'bzz',
       'version',
-    ])
+    ]
 
-    Object.keys(web3).forEach((topKey) => {
-      if (includedTopKeys.has(topKey)) {
-        const applyTrapKeys = new Map()
-        const getTrapKeys = new Map()
+    includedTopKeys.forEach((topKey) => {
+      const applyTrapKeys = new Map()
+      const getTrapKeys = new Map()
 
-        Object.keys(web3[topKey]).forEach((key) => {
-          const path = `web3.${topKey}.${key}`
+      Object.keys(web3[topKey]).forEach((key) => {
+        const path = `web3.${topKey}.${key}`
 
-          if (web3Entitites[path]) {
-            if (web3Entitites[path] === 'function') {
-              applyTrapKeys.set(key, path)
-            } else {
-              getTrapKeys.set(key, path)
-            }
+        if (web3Entitites[path]) {
+          if (web3Entitites[path] === 'function') {
+            applyTrapKeys.set(key, path)
+          } else {
+            getTrapKeys.set(key, path)
           }
-        })
-
-        // Create apply traps for namespace functions
-        for (const [key, path] of applyTrapKeys) {
-          web3[topKey][key] = new Proxy(web3[topKey][key], {
-            apply: (...params) => {
-              window.ethereum.request({
-                method: 'metamask_logInjectedWeb3Usage',
-                params: [
-                  {
-                    action: 'apply',
-                    path,
-                  },
-                ],
-              })
-
-              // Call function normally
-              return Reflect.apply(...params)
-            },
-          })
         }
+      })
 
-        // Create get trap for entire namespace
-        web3[topKey] = new Proxy(web3[topKey], {
-          get: (web3Prop, key, ...params) => {
-            const name = stringifyKey(key)
+      // Create apply traps for namespace functions
+      for (const [key, path] of applyTrapKeys) {
+        web3[topKey][key] = new Proxy(web3[topKey][key], {
+          apply: (...params) => {
+            window.ethereum.request({
+              method: 'metamask_logInjectedWeb3Usage',
+              params: [
+                {
+                  action: 'apply',
+                  path,
+                },
+              ],
+            })
 
-            if (getTrapKeys.has(name)) {
-              window.ethereum.request({
-                method: 'metamask_logInjectedWeb3Usage',
-                params: [
-                  {
-                    action: 'get',
-                    path: getTrapKeys.get(name),
-                  },
-                ],
-              })
-            }
-
-            // return value normally
-            return Reflect.get(web3Prop, key, ...params)
+            // Call function normally
+            return Reflect.apply(...params)
           },
         })
       }
+
+      // Create get trap for entire namespace
+      web3[topKey] = new Proxy(web3[topKey], {
+        get: (web3Prop, key, ...params) => {
+          const name = stringifyKey(key)
+
+          if (getTrapKeys.has(name)) {
+            window.ethereum.request({
+              method: 'metamask_logInjectedWeb3Usage',
+              params: [
+                {
+                  action: 'get',
+                  path: getTrapKeys.get(name),
+                },
+              ],
+            })
+          }
+
+          // return value normally
+          return Reflect.get(web3Prop, key, ...params)
+        },
+      })
     })
   }
 
