@@ -47,10 +47,13 @@ const AssetList = ({ onClickAsset }) => {
     numberOfDecimals: secondaryNumberOfDecimals,
   } = useUserPreferencedCurrency(SECONDARY, { ethNumberOfDecimals: 4 })
 
-  const [, primaryCurrencyProperties] = useCurrencyDisplay(selectedAccountBalance, {
-    numberOfDecimals: primaryNumberOfDecimals,
-    currency: primaryCurrency,
-  })
+  const [, primaryCurrencyProperties] = useCurrencyDisplay(
+    selectedAccountBalance,
+    {
+      numberOfDecimals: primaryNumberOfDecimals,
+      currency: primaryCurrency,
+    },
+  )
 
   const [secondaryCurrencyDisplay] = useCurrencyDisplay(
     selectedAccountBalance,
