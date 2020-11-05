@@ -12,6 +12,10 @@ const shouldLogUsage = ![
   'metamask.io',
 ].includes(window.location.hostname)
 
+/**
+ * To understand how we arrived at this implementation, please see:
+ * https://github.com/ethereum/web3.js/blob/0.20.7/DOCUMENTATION.md
+ */
 export default function setupWeb3(log) {
   // export web3 as a global, checking for usage
   let reloadInProgress = false
@@ -106,6 +110,40 @@ export default function setupWeb3(log) {
       })
     })
   }
+
+  const unEnumerableFunctionKeys = [
+    'isConnected',
+    'setProvider',
+    'reset',
+    'toHex',
+    'fromAscii',
+    'fromDecimal',
+    'toWei',
+    'isAddress',
+  ]
+
+  // apply-trap un-enumerable top-level functions
+  unEnumerableFunctionKeys.forEach((key) => {
+    // This type check is probably redundant, but we've been burned before.
+    if (typeof web3[key] === 'function') {
+      web3[key] = new Proxy(web3[key], {
+        apply: (...params) => {
+          window.ethereum.request({
+            method: 'metamask_logInjectedWeb3Usage',
+            params: [
+              {
+                action: 'apply',
+                path: `web3.${key}`,
+              },
+            ],
+          })
+
+          // Call function normally
+          return Reflect.apply(...params)
+        },
+      })
+    }
+  })
 
   const web3Proxy = new Proxy(web3, {
     get: (...params) => {
