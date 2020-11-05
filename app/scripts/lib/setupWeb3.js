@@ -34,6 +34,7 @@ export default function setupWeb3(log) {
 
   // Setup logging of nested property usage
   if (shouldLogUsage) {
+    // web3 namespaces with common and uncommon dapp actions
     const includedTopKeys = [
       'eth',
       'db',
@@ -44,6 +45,8 @@ export default function setupWeb3(log) {
       'version',
     ]
 
+    // For each top-level property, create appropriate Proxy traps for all of
+    // their properties
     includedTopKeys.forEach((topKey) => {
       const applyTrapKeys = new Map()
       const getTrapKeys = new Map()
@@ -60,7 +63,7 @@ export default function setupWeb3(log) {
         }
       })
 
-      // Create apply traps for namespace functions
+      // Create apply traps for function properties
       for (const [key, path] of applyTrapKeys) {
         web3[topKey][key] = new Proxy(web3[topKey][key], {
           apply: (...params) => {
@@ -80,7 +83,7 @@ export default function setupWeb3(log) {
         })
       }
 
-      // Create get trap for entire namespace
+      // Create get trap for non-function properties
       web3[topKey] = new Proxy(web3[topKey], {
         get: (web3Prop, key, ...params) => {
           const name = stringifyKey(key)
