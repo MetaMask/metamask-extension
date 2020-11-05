@@ -57,6 +57,10 @@
       display: none;
     }
 
+    &__tab {
+      margin-right: 0;
+    }
+
     &__tabs {
       margin-top: 0;
     }
@@ -70,9 +74,12 @@
         margin-right: 0;
       }
 
-      &--selected {
+      & button {
+        font-size: unset;
+      }
+
+      &.tab--active button {
         color: $primary-blue;
-        border-bottom: 2px solid $primary-blue;
       }
     }
   }

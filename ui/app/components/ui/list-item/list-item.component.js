@@ -27,7 +27,9 @@ export default function ListItem({
         {React.isValidElement(title) ? (
           title
         ) : (
-          <h2 className="list-item__title">{title}</h2>
+          <button onClick={onClick}>
+            <h2 className="list-item__title">{title}</h2>
+          </button>
         )}
         {titleIcon && (
           <div className="list-item__heading-wrap">{titleIcon}</div>

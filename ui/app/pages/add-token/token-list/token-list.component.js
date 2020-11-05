@@ -37,6 +37,8 @@ export default class InfoBox extends Component {
             .map((_, i) => {
               const { logo, symbol, name, address } = results[i] || {}
               const tokenAlreadyAdded = checkExistingAddresses(address, tokens)
+              const onClick = () =>
+                !tokenAlreadyAdded && onToggleToken(results[i])
 
               return (
                 Boolean(logo || symbol || name) && (
@@ -45,10 +47,10 @@ export default class InfoBox extends Component {
                       'token-list__token--selected': selectedTokens[address],
                       'token-list__token--disabled': tokenAlreadyAdded,
                     })}
-                    onClick={() =>
-                      !tokenAlreadyAdded && onToggleToken(results[i])
-                    }
+                    onClick={onClick}
+                    onKeyPress={(event) => event.key === 'Enter' && onClick()}
                     key={i}
+                    tabIndex="0"
                   >
                     <div
                       className="token-list__token-icon"

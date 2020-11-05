@@ -37,6 +37,8 @@
     padding: 6px 1px;
     border-radius: 10px;
     cursor: pointer;
+    width: 100%;
+    background-color: unset;
 
     &:hover {
       background-color: $Grey-000;

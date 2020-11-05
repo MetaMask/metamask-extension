@@ -25,7 +25,7 @@ const Tab = (props) => {
         onClick(tabIndex)
       }}
     >
-      {name}
+      <button>{name}</button>
     </li>
   )
 }

@@ -846,7 +846,7 @@ describe('MetaMask', function () {
     })
 
     it('displays the contract creation data', async function () {
-      await driver.clickElement(By.xpath(`//li[contains(text(), 'Data')]`))
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Data')]`))
       await driver.delay(regularDelayMs)
 
       await driver.findElement(By.xpath(`//div[contains(text(), '127.0.0.1')]`))
@@ -860,7 +860,9 @@ describe('MetaMask', function () {
       assert.ok(confirmDataText.includes('Bytes:'))
       assert.ok(confirmDataText.includes('675'))
 
-      await driver.clickElement(By.xpath(`//li[contains(text(), 'Details')]`))
+      await driver.clickElement(
+        By.xpath(`//button[contains(text(), 'Details')]`),
+      )
       await driver.delay(regularDelayMs)
     })
 
@@ -1055,7 +1057,9 @@ describe('MetaMask', function () {
       )
       await driver.delay(regularDelayMs)
 
-      await driver.clickElement(By.xpath(`//li[contains(text(), 'Advanced')]`))
+      await driver.clickElement(
+        By.xpath(`//button[contains(text(), 'Advanced')]`),
+      )
       await driver.delay(tinyDelayMs)
 
       const [gasPriceInput, gasLimitInput] = await driver.findElements(
@@ -1098,7 +1102,7 @@ describe('MetaMask', function () {
 
     it('picks the newly created Test token', async function () {
       await driver.clickElement(
-        By.xpath("//li[contains(text(), 'Custom Token')]"),
+        By.xpath("//button[contains(text(), 'Custom Token')]"),
       )
       await driver.delay(regularDelayMs)
 
@@ -1165,7 +1169,7 @@ describe('MetaMask', function () {
     })
 
     it('displays the token transfer data', async function () {
-      await driver.clickElement(By.xpath(`//li[contains(text(), 'Data')]`))
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Data')]`))
       await driver.delay(regularDelayMs)
 
       const functionType = await driver.findElement(
@@ -1192,7 +1196,9 @@ describe('MetaMask', function () {
         ),
       )
 
-      await driver.clickElement(By.xpath(`//li[contains(text(), 'Details')]`))
+      await driver.clickElement(
+        By.xpath(`//button[contains(text(), 'Details')]`),
+      )
       await driver.delay(regularDelayMs)
     })
 

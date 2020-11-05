@@ -77,6 +77,12 @@
     color: #8c8e94;
     text-transform: uppercase;
     margin: 0 8px;
+
+    & button {
+      font-size: unset;
+      color: #8c8e94;
+      text-transform: uppercase;
+    }
   }
 
   .page-container__footer {

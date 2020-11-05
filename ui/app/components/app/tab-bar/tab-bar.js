@@ -8,7 +8,7 @@ const TabBar = (props) => {
   return (
     <div className="tab-bar">
       {tabs.map(({ key, content, description }) => (
-        <div
+        <button
           key={key}
           className={classnames('tab-bar__tab pointer', {
             'tab-bar__tab--active': isActive(key, content),
@@ -22,7 +22,7 @@ const TabBar = (props) => {
             </div>
           </div>
           <div className="tab-bar__tab__caret" />
-        </div>
+        </button>
       ))}
     </div>
   )
