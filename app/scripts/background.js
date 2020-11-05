@@ -3,10 +3,7 @@
  */
 // these need to run before anything else
 /* eslint-disable import/first,import/order */
-import freezeIntrinsics from './lib/freezeIntrinsics'
-
-freezeIntrinsics('background')
-
+import './lib/freezeIntrinsicsBackground'
 import setupFetchDebugging from './lib/setupFetchDebugging'
 /* eslint-enable import/order */
 

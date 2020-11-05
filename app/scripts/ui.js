@@ -1,8 +1,6 @@
-// these need to run before anything else
-/* eslint-disable import/first,import/order */
-import freezeIntrinsics from './lib/freezeIntrinsics'
-
-freezeIntrinsics('ui')
+// Should be imported before anything else
+/* eslint-disable-next-line import/first,import/order */
+import './lib/freezeIntrinsicsUI'
 
 // polyfills
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'

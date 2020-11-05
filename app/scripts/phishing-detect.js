@@ -1,9 +1,6 @@
+// Should be imported before anything else
 /* eslint-disable-next-line import/first,import/order */
-import freezeIntrinsics from './lib/freezeIntrinsics'
-
-// Should occur before anything else
-freezeIntrinsics()
-
+import './lib/freezeIntrinsics'
 /* eslint-disable import/first */
 import querystring from 'querystring'
 import { EventEmitter } from 'events'
