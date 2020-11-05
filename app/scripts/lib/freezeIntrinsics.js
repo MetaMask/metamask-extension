@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/unambiguous
 global.globalThis = global // eslint-disable-line node/no-unsupported-features/es-builtins
 require('lavamoat-core/lib/ses.umd.js')
 
