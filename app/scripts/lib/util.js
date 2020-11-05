@@ -174,7 +174,7 @@ const addHexPrefix = (str) => {
     str.toLowerCase().startsWith('-0x') ||
     str.toLowerCase().startsWith('0x')
   ) {
-    return str.replace('0X', '0x')
+    return typeof str === 'string' ? str.replace('0X', '0x') : str
   }
 
   if (str.startsWith('-')) {
