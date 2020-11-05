@@ -111,7 +111,7 @@ export default function setupWeb3(log) {
     })
   }
 
-  const unEnumerableFunctionKeys = [
+  const topLevelFunctions = [
     'isConnected',
     'setProvider',
     'reset',
@@ -127,8 +127,8 @@ export default function setupWeb3(log) {
     'isAddress',
   ]
 
-  // apply-trap un-enumerable top-level functions
-  unEnumerableFunctionKeys.forEach((key) => {
+  // apply-trap top-level functions
+  topLevelFunctions.forEach((key) => {
     // This type check is probably redundant, but we've been burned before.
     if (typeof web3[key] === 'function') {
       web3[key] = new Proxy(web3[key], {
