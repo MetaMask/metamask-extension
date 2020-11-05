@@ -205,19 +205,17 @@ export default class SendTransactionScreen extends Component {
   }
 
   onRecipientInputChange = (query) => {
-    if (query) {
-      this.dValidate(query)
-    } else {
-      this.dValidate.cancel()
-      this.validate(query)
+    const { internalSearch } = this.state
+
+    if (!internalSearch) {
+      if (query) {
+        this.dValidate(query)
+      } else {
+        this.dValidate.cancel()
+        this.validate(query)
+      }
     }
 
-    this.setState({
-      query,
-    })
-  }
-
-  onInternalSearch = (query) => {
     this.setState({ query })
   }
 
@@ -319,9 +317,7 @@ export default class SendTransactionScreen extends Component {
           })
           this.props.scanQrCode()
         }}
-        onChange={
-          internalSearch ? this.onRecipientInputChange : this.onInternalSearch
-        }
+        onChange={this.onRecipientInputChange}
         onValidAddressTyped={(address) => this.props.updateSendTo(address, '')}
         onPaste={(text) => {
           this.props.updateSendTo(text) && this.updateGas()
