@@ -41,8 +41,7 @@ const mapStateToProps = (state, ownProps) => {
     transaction,
   )
   const tokens = getTokens(state)
-  const currentToken =
-    tokens?.find(({ address }) => tokenAddress === address)
+  const currentToken = tokens?.find(({ address }) => tokenAddress === address)
   const { decimals, symbol: tokenSymbol } = currentToken || {}
 
   const tokenData = getTokenData(data)
