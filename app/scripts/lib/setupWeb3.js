@@ -53,7 +53,7 @@ export default function setupWeb3(log) {
           const path = `web3.${topKey}.${key}`
 
           if (web3Entitites[path]) {
-            if (web3Entitites[path].type === 'function') {
+            if (web3Entitites[path] === 'function') {
               applyTrapKeys.set(key, path)
             } else {
               getTrapKeys.set(key, path)
