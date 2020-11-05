@@ -30,7 +30,7 @@ const mapDispatchToProps = (dispatch) => {
           to,
           amount,
           errors: { to: null, amount: null },
-          editingTransactionId: id && id.toString(),
+          editingTransactionId: id?.toString(),
         }),
       )
 

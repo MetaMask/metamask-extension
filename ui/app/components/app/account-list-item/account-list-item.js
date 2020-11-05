@@ -16,7 +16,7 @@ export default function AccountListItem({
   return (
     <div
       className={`account-list-item ${className}`}
-      onClick={() => handleClick && handleClick({ name, address, balance })}
+      onClick={() => handleClick?.({ name, address, balance })}
     >
       <div className="account-list-item__top-row">
         <Identicon

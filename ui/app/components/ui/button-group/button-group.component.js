@@ -63,7 +63,7 @@ export default class ButtonGroup extends PureComponent {
             )}
             onClick={() => {
               this.handleButtonClick(index)
-              child.props.onClick && child.props.onClick()
+              child.props.onClick?.()
             }}
             disabled={disabled || child.props.disabled}
             key={index}

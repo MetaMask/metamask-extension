@@ -21,7 +21,7 @@ export default class Sidebar extends Component {
       <div
         className="sidebar-overlay"
         onClick={() => {
-          onOverlayClose && onOverlayClose()
+          onOverlayClose?.()
           this.props.hideSidebar()
         }}
       />

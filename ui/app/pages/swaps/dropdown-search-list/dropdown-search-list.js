@@ -37,12 +37,12 @@ export default function DropdownSearchList({
   const [selectedItem, setSelectedItem] = useState(startingItem)
   const close = useCallback(() => {
     setIsOpen(false)
-    onClose && onClose()
+    onClose?.()
   }, [onClose])
 
   const onClickItem = useCallback(
     (item) => {
-      onSelect && onSelect(item)
+      onSelect?.(item)
       setSelectedItem(item)
       close()
     },
@@ -52,7 +52,7 @@ export default function DropdownSearchList({
   const onClickSelector = useCallback(() => {
     if (!isOpen) {
       setIsOpen(true)
-      onOpen && onOpen()
+      onOpen?.()
     }
   }, [isOpen, onOpen])
 
@@ -165,7 +165,7 @@ export default function DropdownSearchList({
             onClick={(event) => {
               event.stopPropagation()
               setIsOpen(false)
-              onClose && onClose()
+              onClose?.()
             }}
           />
         </>

@@ -44,7 +44,7 @@ const mapDispatchToProps = (dispatch) => {
           to,
           amount: tokenAmountInHex,
           errors: { to: null, amount: null },
-          editingTransactionId: id && id.toString(),
+          editingTransactionId: id?.toString(),
           token: {
             ...tokenProps,
             address: tokenAddress,
