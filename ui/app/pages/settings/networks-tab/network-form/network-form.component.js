@@ -198,7 +198,13 @@ export default class NetworkForm extends PureComponent {
   }
 
   stateIsUnchanged() {
-    const { rpcUrl, ticker, networkName, blockExplorerUrl } = this.props
+    const {
+      rpcUrl,
+      chainId: propsChainId,
+      ticker,
+      networkName,
+      blockExplorerUrl,
+    } = this.props
 
     const {
       rpcUrl: stateRpcUrl,
@@ -208,9 +214,17 @@ export default class NetworkForm extends PureComponent {
       blockExplorerUrl: stateBlockExplorerUrl,
     } = this.state
 
+    // These added conditions are in case the saved chainId is invalid, which
+    // was possible in versions <8.1 of the extension.
+    // Basically, we always want to be able to overwrite an invalid chain ID.
+    const chainIdIsUnchanged =
+      typeof propsChainId === 'string' &&
+      propsChainId.toLowerCase().startsWith('0x') &&
+      stateChainId === this.getDisplayChainIdFromProps()
+
     return (
       stateRpcUrl === rpcUrl &&
-      stateChainId === this.getDisplayChainIdFromProps() &&
+      chainIdIsUnchanged &&
       stateTicker === ticker &&
       stateNetworkName === networkName &&
       stateBlockExplorerUrl === blockExplorerUrl
