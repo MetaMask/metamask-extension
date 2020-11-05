@@ -21,7 +21,7 @@ import { getConversionRate, getSelectedAccount } from '../selectors'
 export function useCancelTransaction(transactionGroup) {
   const { primaryTransaction, initialTransaction } = transactionGroup
   const gasPrice =
-    parseInt(primaryTransaction.txParams?.gasPrice, 16) < 0
+    primaryTransaction.txParams?.gasPrice?.startsWith('-')
       ? '0x0'
       : primaryTransaction.txParams?.gasPrice
   const { id } = initialTransaction
