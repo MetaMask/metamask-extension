@@ -96,7 +96,7 @@ const AssetListItem = ({
         <button
           className="asset-list-item__token-button"
           onClick={onClick}
-          title={`${primary} ${tokenSymbol || ''}`}
+          title={`${primary} ${tokenSymbol}`}
         >
           <h2>
             <span className="asset-list-item__token-value">{primary}</span>
