@@ -3,6 +3,8 @@
 .send {
   &__header {
     position: relative;
+    display: flex;
+    justify-content: center;
     background-color: $Grey-000;
     border-bottom: none;
     padding: 14px 0 3px 0;
