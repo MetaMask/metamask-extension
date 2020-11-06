@@ -469,21 +469,16 @@ export async function jsonRpcRequest(rpcUrl, rpcMethod, rpcParams = []) {
   const headers = {
     'Content-Type': 'application/json',
   }
-
   // Convert basic auth URL component to Authorization header
   const authMatches = rpcUrl.match('(http[s]?)://(.+):(.+)@(.+)')
   // Confirm that we have matches, and a username and password
   if (authMatches && authMatches[2] && authMatches[3]) {
     // eslint-disable-next-line no-unused-vars
     const [_, protocol, username, password, remainderUrl] = authMatches
-
-    const encodedAuth = Buffer.from(`${username}:${password}`).toString(
-      'base64',
-    )
+    const encodedAuth = btoa(`${username}:${password}`)
     headers.Authorization = `Basic ${encodedAuth}`
     fetchUrl = `${protocol}://${remainderUrl}`
   }
-
   const jsonRpcResponse = await window
     .fetch(fetchUrl, {
       method: 'POST',
