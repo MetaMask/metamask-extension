@@ -65,9 +65,9 @@ initProvider({
 
 // setup web3
 
-if (typeof window.web3 !== 'undefined') {
-  log.warn(`MetaMask detected another web3.
-     MetaMask will not work reliably with another web3 extension.
+if (typeof window.ethereum !== 'undefined') {
+  log.warn(`MetaMask detected another ethereum provider.
+     MetaMask will not work reliably with another wallet present.
      This usually happens if you have two MetaMasks installed,
      or MetaMask and another web3 extension. Please remove one
      and try again.`)
@@ -77,7 +77,7 @@ if (typeof window.web3 !== 'undefined') {
   web3.setProvider = function () {
     log.debug('MetaMask - overrode web3.setProvider')
   }
-  log.debug('MetaMask - injected web3')
+  log.debug('MetaMask - injected provider')
 
   Object.defineProperty(window.ethereum, '_web3Ref', {
     enumerable: false,
