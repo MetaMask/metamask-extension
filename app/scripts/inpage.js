@@ -48,13 +48,7 @@ log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 //
 
 // setup background connection
-if (typeof window.ethereum !== 'undefined') {
-  log.warn(`MetaMask detected another ethereum provider.
-     MetaMask will not work reliably with another wallet present.
-     This usually happens if you have two MetaMasks installed,
-     or MetaMask and another web3 extension. Please remove one
-     and try again.`)
-} else {
+if (typeof window.ethereum === 'undefined') {
   const metamaskStream = new LocalMessageDuplexStream({
     name: 'inpage',
     target: 'contentscript',
@@ -63,17 +57,24 @@ if (typeof window.ethereum !== 'undefined') {
   initProvider({
     connectionStream: metamaskStream,
   })
+} else {
+  log.warn(`MetaMask detected another ethereum provider.
+     MetaMask will not work reliably with another wallet present.
+     This usually happens if you have two MetaMasks installed,
+     or MetaMask and another web3 extension. Please remove one
+     and try again.`)
 }
 
 // TODO:deprecate:2020
 // Setup web3
 
-if (typeof window.web3 !== 'undefined') {
+if (typeof window.web3 === 'undefined') {
+  setupWeb3(log)
+} else {
   log.warn(`MetaMask detected another web3 object.
      MetaMask will not work reliably with another web3 wallet present.
      This usually happens if you have two MetaMasks installed,
      or MetaMask and another web3 extension. Please remove one
      and try again.`)
-} else {
-  setupWeb3(log)
 }
+
