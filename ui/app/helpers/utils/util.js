@@ -475,7 +475,9 @@ export async function jsonRpcRequest(rpcUrl, rpcMethod, rpcParams = []) {
   if (authMatches && authMatches[2] && authMatches[3]) {
     // eslint-disable-next-line no-unused-vars
     const [_, protocol, username, password, remainderUrl] = authMatches
-    const encodedAuth = btoa(`${username}:${password}`)
+    const encodedAuth = Buffer.from(`${username}:${password}`).toString(
+      'base64',
+    )
     headers.Authorization = `Basic ${encodedAuth}`
     fetchUrl = `${protocol}://${remainderUrl}`
   }
