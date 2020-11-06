@@ -1282,19 +1282,37 @@ describe('SwapsController', function () {
       const { getMedianEthValueQuote } = utils
 
       it('calculates median correctly with uneven sample', function () {
+        const expectedResult = {
+          ethFee: '10',
+          metaMaskFeeInEth: '5',
+          ethValueOfTokens: '0.3',
+        }
         const values = [
-          { overallValueOfQuote: 3 },
-          { overallValueOfQuote: 2 },
-          { overallValueOfQuote: 6 },
-        ].map(({ overallValueOfQuote }) => ({
-          overallValueOfQuote: new BigNumber(overallValueOfQuote),
-        }))
+          {
+            overallValueOfQuote: '3',
+            ethFee: '10',
+            metaMaskFeeInEth: '5',
+            ethValueOfTokens: '0.3',
+          },
+          {
+            overallValueOfQuote: '2',
+            ethFee: '20',
+            metaMaskFeeInEth: '3',
+            ethValueOfTokens: '0.2',
+          },
+          {
+            overallValueOfQuote: '6',
+            ethFee: '40',
+            metaMaskFeeInEth: '6',
+            ethValueOfTokens: '0.6',
+          },
+        ]
 
         const median = getMedianEthValueQuote(values)
 
         assert.deepEqual(
           median,
-          values[0],
+          expectedResult,
           'should have returned correct median quote object',
         )
       })
@@ -1307,35 +1325,30 @@ describe('SwapsController', function () {
         }
         const values = [
           {
-            overallValueOfQuote: 3,
-            ethFee: 10,
-            metaMaskFeeInEth: 5,
-            ethValueOfTokens: 0.3,
+            overallValueOfQuote: '3',
+            ethFee: '10',
+            metaMaskFeeInEth: '5',
+            ethValueOfTokens: '0.3',
           },
           {
-            overallValueOfQuote: 2,
-            ethFee: 20,
-            metaMaskFeeInEth: 3,
-            ethValueOfTokens: 0.2,
+            overallValueOfQuote: '2',
+            ethFee: '20',
+            metaMaskFeeInEth: '3',
+            ethValueOfTokens: '0.2',
           },
           {
-            overallValueOfQuote: 2,
-            ethFee: 30,
-            metaMaskFeeInEth: 8,
-            ethValueOfTokens: 0.2,
+            overallValueOfQuote: '2',
+            ethFee: '30',
+            metaMaskFeeInEth: '8',
+            ethValueOfTokens: '0.2',
           },
           {
-            overallValueOfQuote: 6,
-            ethFee: 40,
-            metaMaskFeeInEth: 6,
-            ethValueOfTokens: 0.6,
+            overallValueOfQuote: '6',
+            ethFee: '40',
+            metaMaskFeeInEth: '6',
+            ethValueOfTokens: '0.6',
           },
-        ].map((quote) => ({
-          overallValueOfQuote: new BigNumber(quote.overallValueOfQuote),
-          ethFee: new BigNumber(quote.ethFee),
-          metaMaskFeeInEth: new BigNumber(quote.metaMaskFeeInEth),
-          ethValueOfTokens: new BigNumber(quote.ethValueOfTokens),
-        }))
+        ]
         const median = getMedianEthValueQuote(values)
 
         assert.deepEqual(

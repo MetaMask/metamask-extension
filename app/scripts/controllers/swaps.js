@@ -725,8 +725,8 @@ export default class SwapsController {
 /**
  * Calculates the median overallValueOfQuote of a sample of quotes.
  *
- * @param {array} quotes - A sample of quote objects with overallValueOfQuote and ethFee properties
- * @returns {object} An object with the media overallValueOfQuote for all quotes, and the associated median ethFee and metaMaskFeeInEth.
+ * @param {Array} quotes - A sample of quote objects with overallValueOfQuote, ethFee, and metaMaskFeeInEth  properties
+ * @returns {Object} An object with the overallValueOfQuote, ethFee, and metaMaskFeeInEth of the quote with the median overallValueOfQuote
  */
 function getMedianEthValueQuote(_quotes) {
   if (!Array.isArray(_quotes) || _quotes.length === 0) {
@@ -745,8 +745,13 @@ function getMedianEthValueQuote(_quotes) {
   })
 
   if (quotes.length % 2 === 1) {
-    // return middle value
-    return quotes[(quotes.length - 1) / 2]
+    // return middle values
+    const medianQuote = quotes[(quotes.length - 1) / 2]
+    return {
+      ethFee: medianQuote.ethFee,
+      metaMaskFeeInEth: medianQuote.metaMaskFeeInEth,
+      ethValueOfTokens: medianQuote.ethValueOfTokens,
+    }
   }
 
   // return mean of middle two values
@@ -754,15 +759,15 @@ function getMedianEthValueQuote(_quotes) {
 
   return {
     ethFee: new BigNumber(quotes[upperIndex].ethFee, 10)
-      .plus(quotes[upperIndex - 1].ethFee)
+      .plus(quotes[upperIndex - 1].ethFee, 10)
       .dividedBy(2)
       .toString(10),
     metaMaskFeeInEth: new BigNumber(quotes[upperIndex].metaMaskFeeInEth, 10)
-      .plus(quotes[upperIndex - 1].metaMaskFeeInEth)
+      .plus(quotes[upperIndex - 1].metaMaskFeeInEth, 10)
       .dividedBy(2)
       .toString(10),
     ethValueOfTokens: new BigNumber(quotes[upperIndex].ethValueOfTokens, 10)
-      .plus(quotes[upperIndex - 1].ethValueOfTokens)
+      .plus(quotes[upperIndex - 1].ethValueOfTokens, 10)
       .dividedBy(2)
       .toString(10),
   }
