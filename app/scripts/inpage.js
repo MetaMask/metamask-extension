@@ -71,20 +71,22 @@ if (typeof window.web3 !== 'undefined') {
      This usually happens if you have two MetaMasks installed,
      or MetaMask and another web3 extension. Please remove one
      and try again.`)
+} else {
+
+  const web3 = new Web3(window.ethereum)
+  web3.setProvider = function () {
+    log.debug('MetaMask - overrode web3.setProvider')
+  }
+  log.debug('MetaMask - injected web3')
+
+  Object.defineProperty(window.ethereum, '_web3Ref', {
+    enumerable: false,
+    writable: true,
+    configurable: true,
+    value: web3.eth,
+  })
+
+  // setup dapp auto reload AND proxy web3
+  setupDappAutoReload(web3, window.ethereum._publicConfigStore)
 }
 
-const web3 = new Web3(window.ethereum)
-web3.setProvider = function () {
-  log.debug('MetaMask - overrode web3.setProvider')
-}
-log.debug('MetaMask - injected web3')
-
-Object.defineProperty(window.ethereum, '_web3Ref', {
-  enumerable: false,
-  writable: true,
-  configurable: true,
-  value: web3.eth,
-})
-
-// setup dapp auto reload AND proxy web3
-setupDappAutoReload(web3, window.ethereum._publicConfigStore)
