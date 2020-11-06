@@ -7,7 +7,7 @@ const log = require('fancy-log')
 const { assign } = require('lodash')
 const watchify = require('watchify')
 const browserify = require('browserify')
-const envify = require('loose-envify/custom')
+const envify = require('envify/custom')
 const sourcemaps = require('gulp-sourcemaps')
 const sesify = require('sesify')
 const terser = require('gulp-terser-js')
@@ -27,6 +27,7 @@ const {
   createTask,
   composeParallel,
   composeSeries,
+  runInChildProcess,
 } = require('./task')
 
 module.exports = createScriptTasks
@@ -135,7 +136,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
     const allSubtasks = [
       ...standardSubtasks,
       contentscriptSubtask,
-    ]
+    ].map((subtask) => runInChildProcess(subtask))
     // const allSubtasks = [...standardSubtasks, contentscriptSubtask].map(subtask => (subtask))
     // make a parent task that runs each task in a child thread
     return composeParallel(initiateLiveReload, ...allSubtasks)
