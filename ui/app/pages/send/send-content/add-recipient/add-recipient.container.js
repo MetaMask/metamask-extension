@@ -23,14 +23,18 @@ function mapStateToProps(state) {
 
   const addressBook = getAddressBook(state)
 
+  const ownedAccounts = accountsWithSendEtherInfoSelector(state).sort((a, b) =>
+    a.name.localeCompare(b.name),
+  )
+
   return {
-    ownedAccounts: accountsWithSendEtherInfoSelector(state),
     addressBook,
-    ensResolution,
     addressBookEntryName,
-    ensResolutionError: getSendEnsResolutionError(state),
     contacts: addressBook.filter(({ name }) => Boolean(name)),
+    ensResolution,
+    ensResolutionError: getSendEnsResolutionError(state),
     nonContacts: addressBook.filter(({ name }) => !name),
+    ownedAccounts,
   }
 }
 
