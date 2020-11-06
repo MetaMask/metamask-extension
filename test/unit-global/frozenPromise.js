@@ -1,8 +1,5 @@
-import freezeIntrinsics from '../../app/scripts/lib/freezeIntrinsics'
-
 // Should occur before anything else
-freezeIntrinsics()
-
+import '../../app/scripts/lib/freezeIntrinsics'
 import assert from 'assert' /* eslint-disable-line import/first,import/order */
 
 describe('Promise global is immutable', function () {
