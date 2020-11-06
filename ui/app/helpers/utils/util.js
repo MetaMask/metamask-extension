@@ -465,26 +465,37 @@ export function constructTxParams({
  * or throws an error in case of failure.
  */
 export async function jsonRpcRequest(rpcUrl, rpcMethod, rpcParams = []) {
+  let fetchUrl = rpcUrl
   const headers = {
-    'Content-Type': 'application/json'
-  };
-  let matches = rpcUrl.match('(http[s]?):\/\/(.+):(.+)@(.+)');
-  if (matches && matches[2] && matches[3]) {
-    const encoded = Buffer.from(`${matches[1]}:${matches[2]}`).toString('base64');
-    headers['Authorization'] = `Basic ${encoded}`;
-    rpcUrl = `${matches[1]}://${matches[4]}`;
+    'Content-Type': 'application/json',
   }
-  const jsonRpcResponse = await window.fetch(rpcUrl, {
-    method: 'POST',
-    body: JSON.stringify({
-      id: Date.now().toString(),
-      jsonrpc: '2.0',
-      method: rpcMethod,
-      params: rpcParams,
-    }),
-    headers,
-    cache: 'default',
-  })
+
+  // Convert basic auth URL component to Authorization header
+  const authMatches = rpcUrl.match('(http[s]?)://(.+):(.+)@(.+)')
+  // Confirm that we have matches, and a username and password
+  if (authMatches && authMatches[2] && authMatches[3]) {
+    // eslint-disable-next-line no-unused-vars
+    const [_, protocol, username, password, remainderUrl] = authMatches
+
+    const encodedAuth = Buffer.from(`${username}:${password}`).toString(
+      'base64',
+    )
+    headers.Authorization = `Basic ${encodedAuth}`
+    fetchUrl = `${protocol}://${remainderUrl}`
+  }
+
+  const jsonRpcResponse = await window
+    .fetch(fetchUrl, {
+      method: 'POST',
+      body: JSON.stringify({
+        id: Date.now().toString(),
+        jsonrpc: '2.0',
+        method: rpcMethod,
+        params: rpcParams,
+      }),
+      headers,
+      cache: 'default',
+    })
     .then((httpResponse) => httpResponse.json())
 
   if (
