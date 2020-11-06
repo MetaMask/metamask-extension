@@ -7,6 +7,7 @@ import { CONFIRM_ADD_TOKEN_ROUTE } from '../../helpers/constants/routes'
 import TextField from '../../components/ui/text-field'
 import PageContainer from '../../components/ui/page-container'
 import { Tabs, Tab } from '../../components/ui/tabs'
+import { addHexPrefix } from '../../../../app/scripts/lib/util'
 import TokenList from './token-list'
 import TokenSearch from './token-search'
 
@@ -161,7 +162,7 @@ class AddToken extends Component {
     })
 
     const isValidAddress = ethUtil.isValidAddress(customAddress)
-    const standardAddress = ethUtil.addHexPrefix(customAddress).toLowerCase()
+    const standardAddress = addHexPrefix(customAddress).toLowerCase()
 
     switch (true) {
       case !isValidAddress:

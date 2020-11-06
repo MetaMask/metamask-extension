@@ -8,6 +8,7 @@ import EthQuery from 'eth-query'
 import proxyquire from 'proxyquire'
 import firstTimeState from '../../localhostState'
 import createTxMeta from '../../../lib/createTxMeta'
+import { addHexPrefix } from '../../../../app/scripts/lib/util'
 
 const threeBoxSpies = {
   init: sinon.stub(),
@@ -167,7 +168,7 @@ describe('MetaMaskController', function () {
       const addressBuffer = ethUtil.pubToAddress(pubKeyBuffer)
       const privKey = ethUtil.bufferToHex(privKeyBuffer)
       const pubKey = ethUtil.bufferToHex(addressBuffer)
-      assert.equal(privKey, ethUtil.addHexPrefix(importPrivkey))
+      assert.equal(privKey, addHexPrefix(importPrivkey))
       assert.equal(pubKey, '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc')
     })
 

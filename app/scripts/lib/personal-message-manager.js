@@ -3,6 +3,7 @@ import ObservableStore from 'obs-store'
 import ethUtil from 'ethereumjs-util'
 import { ethErrors } from 'eth-json-rpc-errors'
 import log from 'loglevel'
+import { addHexPrefix } from './util'
 import createId from './random-id'
 import { MESSAGE_TYPE } from './enums'
 
@@ -313,7 +314,7 @@ export default class PersonalMessageManager extends EventEmitter {
     try {
       const stripped = ethUtil.stripHexPrefix(data)
       if (stripped.match(hexRe)) {
-        return ethUtil.addHexPrefix(stripped)
+        return addHexPrefix(stripped)
       }
     } catch (e) {
       log.debug(`Message was not hex encoded, interpreting as utf8.`)

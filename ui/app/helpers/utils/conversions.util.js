@@ -1,6 +1,6 @@
-import ethUtil from 'ethereumjs-util'
 import BigNumber from 'bignumber.js'
 import { ETH, GWEI, WEI } from '../constants/common'
+import { addHexPrefix } from '../../../../app/scripts/lib/util'
 import {
   conversionUtil,
   addCurrencies,
@@ -9,7 +9,7 @@ import {
 import { formatCurrency } from './confirm-tx.util'
 
 export function bnToHex(inputBn) {
-  return ethUtil.addHexPrefix(inputBn.toString(16))
+  return addHexPrefix(inputBn.toString(16))
 }
 
 export function hexToDecimal(hexValue) {

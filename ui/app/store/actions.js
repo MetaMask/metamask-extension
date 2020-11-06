@@ -1,6 +1,5 @@
 import abi from 'human-standard-token-abi'
 import pify from 'pify'
-import ethUtil from 'ethereumjs-util'
 import log from 'loglevel'
 import { capitalize } from 'lodash'
 import getBuyEthUrl from '../../../app/scripts/lib/buy-eth-url'
@@ -17,7 +16,7 @@ import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../app/scripts/lib/enums'
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util'
 import { setCustomGasLimit } from '../ducks/gas/gas.duck'
 import txHelper from '../../lib/tx-helper'
-import { getEnvironmentType } from '../../../app/scripts/lib/util'
+import { getEnvironmentType, addHexPrefix } from '../../../app/scripts/lib/util'
 import {
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
@@ -791,12 +790,10 @@ export function signTokenTx(tokenAddress, toAddress, amount, txData) {
   return (dispatch) => {
     dispatch(showLoadingIndication())
     const token = global.eth.contract(abi).at(tokenAddress)
-    token
-      .transfer(toAddress, ethUtil.addHexPrefix(amount), txData)
-      .catch((err) => {
-        dispatch(hideLoadingIndication())
-        dispatch(displayWarning(err.message))
-      })
+    token.transfer(toAddress, addHexPrefix(amount), txData).catch((err) => {
+      dispatch(hideLoadingIndication())
+      dispatch(displayWarning(err.message))
+    })
     dispatch(showConfTxPage())
   }
 }
@@ -2495,7 +2492,7 @@ export function loadingMethodDataFinished() {
 
 export function getContractMethodData(data = '') {
   return (dispatch, getState) => {
-    const prefixedData = ethUtil.addHexPrefix(data)
+    const prefixedData = addHexPrefix(data)
     const fourBytePrefix = prefixedData.slice(0, 10)
     const { knownMethodData } = getState().metamask
 

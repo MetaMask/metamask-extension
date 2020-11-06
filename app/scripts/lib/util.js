@@ -104,17 +104,6 @@ function sufficientBalance(txParams, hexBalance) {
 }
 
 /**
- * Converts a BN object to a hex string with a '0x' prefix
- *
- * @param {BN} inputBn - The BN to convert to a hex string
- * @returns {string} - A '0x' prefixed hex string
- *
- */
-function bnToHex(inputBn) {
-  return ethUtil.addHexPrefix(inputBn.toString(16))
-}
-
-/**
  * Converts a hex string to a BN object
  *
  * @param {string} inputHex - A number represented as a hex string
@@ -173,13 +162,47 @@ function isPrefixedFormattedHexString(value) {
   return /^0x[1-9a-f]+[0-9a-f]*$/iu.test(value)
 }
 
+/**
+ * Prefixes a hex string with '0x' or '-0x' and returns it. Idempotent.
+ *
+ * @param {string} str - The string to prefix.
+ * @returns {string} The prefixed string.
+ */
+const addHexPrefix = (str) => {
+  if (typeof str !== 'string' || str.match(/^-?0x/u)) {
+    return str
+  }
+
+  if (str.match(/^-?0X/u)) {
+    return str.replace('0X', '0x')
+  }
+
+  if (str.startsWith('-')) {
+    return str.replace('-', '-0x')
+  }
+
+  return `0x${str}`
+}
+
+/**
+ * Converts a BN object to a hex string with a '0x' prefix
+ *
+ * @param {BN} inputBn - The BN to convert to a hex string
+ * @returns {string} - A '0x' prefixed hex string
+ *
+ */
+function bnToHex(inputBn) {
+  return addHexPrefix(inputBn.toString(16))
+}
+
 export {
   getPlatform,
   getEnvironmentType,
   sufficientBalance,
   hexToBn,
-  bnToHex,
   BnMultiplyByFraction,
   checkForError,
   isPrefixedFormattedHexString,
+  addHexPrefix,
+  bnToHex,
 }

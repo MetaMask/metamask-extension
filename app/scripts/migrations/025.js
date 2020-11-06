@@ -4,9 +4,8 @@
 normalizes txParams on unconfirmed txs
 
 */
-import ethUtil from 'ethereumjs-util'
-
 import { cloneDeep } from 'lodash'
+import { addHexPrefix } from '../lib/util'
 
 const version = 25
 
@@ -47,13 +46,13 @@ function transformState(state) {
 function normalizeTxParams(txParams) {
   // functions that handle normalizing of that key in txParams
   const whiteList = {
-    from: (from) => ethUtil.addHexPrefix(from).toLowerCase(),
-    to: () => ethUtil.addHexPrefix(txParams.to).toLowerCase(),
-    nonce: (nonce) => ethUtil.addHexPrefix(nonce),
-    value: (value) => ethUtil.addHexPrefix(value),
-    data: (data) => ethUtil.addHexPrefix(data),
-    gas: (gas) => ethUtil.addHexPrefix(gas),
-    gasPrice: (gasPrice) => ethUtil.addHexPrefix(gasPrice),
+    from: (from) => addHexPrefix(from).toLowerCase(),
+    to: () => addHexPrefix(txParams.to).toLowerCase(),
+    nonce: (nonce) => addHexPrefix(nonce),
+    value: (value) => addHexPrefix(value),
+    data: (data) => addHexPrefix(data),
+    gas: (gas) => addHexPrefix(gas),
+    gasPrice: (gasPrice) => addHexPrefix(gasPrice),
   }
 
   // apply only keys in the whiteList

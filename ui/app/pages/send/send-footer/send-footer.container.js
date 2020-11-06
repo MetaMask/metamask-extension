@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import ethUtil from 'ethereumjs-util'
 import {
   addToAddressBook,
   clearSend,
@@ -27,6 +26,7 @@ import {
   getDefaultActiveButtonIndex,
 } from '../../../selectors'
 import { getMostRecentOverviewPage } from '../../../ducks/history/history'
+import { addHexPrefix } from '../../../../../app/scripts/lib/util'
 import SendFooter from './send-footer.component'
 import {
   addressIsNew,
@@ -112,7 +112,7 @@ function mapDispatchToProps(dispatch) {
     },
 
     addToAddressBookIfNew: (newAddress, toAccounts, nickname = '') => {
-      const hexPrefixedAddress = ethUtil.addHexPrefix(newAddress)
+      const hexPrefixedAddress = addHexPrefix(newAddress)
       if (addressIsNew(toAccounts, hexPrefixedAddress)) {
         // TODO: nickname, i.e. addToAddressBook(recipient, nickname)
         dispatch(addToAddressBook(hexPrefixedAddress, nickname))
