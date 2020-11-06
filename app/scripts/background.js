@@ -452,7 +452,13 @@ async function triggerUi() {
   const currentlyActiveMetamaskTab = Boolean(
     tabs.find((tab) => openMetamaskTabsIDs[tab.id]),
   )
-  if (!popupIsOpen && !currentlyActiveMetamaskTab) {
+  // Vivaldi is not closing port connection on popup close, so popupIsOpen does not work correctly
+  // To be reviewed in the future if this behaviour is fixed - also the way we determine isVivaldi variable might change at some point
+  const isVivaldi =
+    tabs.length > 0 &&
+    tabs[0].extData &&
+    tabs[0].extData.indexOf('vivaldi_tab') > -1
+  if ((isVivaldi || !popupIsOpen) && !currentlyActiveMetamaskTab) {
     await notificationManager.showPopup()
   }
 }
