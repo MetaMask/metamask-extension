@@ -465,20 +465,26 @@ export function constructTxParams({
  * or throws an error in case of failure.
  */
 export async function jsonRpcRequest(rpcUrl, rpcMethod, rpcParams = []) {
-  const jsonRpcResponse = await window
-    .fetch(rpcUrl, {
-      method: 'POST',
-      body: JSON.stringify({
-        id: Date.now().toString(),
-        jsonrpc: '2.0',
-        method: rpcMethod,
-        params: rpcParams,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      cache: 'default',
-    })
+  const headers = {
+    'Content-Type': 'application/json'
+  };
+  let matches = rpcUrl.match('(http[s]?):\/\/(.+):(.+)@(.+)');
+  if (matches && matches[2] && matches[3]) {
+    const encoded = Buffer.from(`${matches[1]}:${matches[2]}`).toString('base64');
+    headers['Authorization'] = `Basic ${encoded}`;
+    rpcUrl = `${matches[1]}://${matches[4]}`;
+  }
+  const jsonRpcResponse = await window.fetch(rpcUrl, {
+    method: 'POST',
+    body: JSON.stringify({
+      id: Date.now().toString(),
+      jsonrpc: '2.0',
+      method: rpcMethod,
+      params: rpcParams,
+    }),
+    headers,
+    cache: 'default',
+  })
     .then((httpResponse) => httpResponse.json())
 
   if (
