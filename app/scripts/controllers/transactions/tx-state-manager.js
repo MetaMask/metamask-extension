@@ -16,7 +16,8 @@ import { getFinalStates, normalizeTxParams } from './lib/util'
   <br>   - `'approved'` the user has approved the tx
   <br>   - `'signed'` the tx is signed
   <br>   - `'submitted'` the tx is sent to a server
-  <br>   - `'confirmed'` the tx has been included in a block.
+  <br>   - `'executed'` the tx has been included in a block.
+  <br>   - `'confirmed'` the tx has a low risk.
   <br>   - `'failed'` the tx failed for some reason, included on tx data.
   <br>   - `'dropped'` the tx nonce was already used
   @param {Object} opts
@@ -472,7 +473,8 @@ class TransactionStateManager extends EventEmitter {
   //    - `'approved'` the user has approved the tx
   //    - `'signed'` the tx is signed
   //    - `'submitted'` the tx is sent to a server
-  //    - `'confirmed'` the tx has been included in a block.
+  //    - `'executed'` the tx has been included in a block.
+  //    - `'confirmed'` the tx has a low risk.
   //    - `'failed'` the tx failed for some reason, included on tx data.
   //    - `'dropped'` the tx nonce was already used
 

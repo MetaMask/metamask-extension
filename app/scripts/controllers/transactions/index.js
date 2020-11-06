@@ -590,7 +590,7 @@ class TransactionController extends EventEmitter {
     try {
       txHash = await this.query.sendRawTransaction(rawTx)
     } catch (error) {
-      if (error.message.toLowerCase().includes('known transaction')) {
+      if (error.message.toLowerCase().includes('tx already exist')) {
         txHash = ethUtil.keccak(ethUtil.addHexPrefix(rawTx)).toString('hex')
         txHash = ethUtil.addHexPrefix(txHash)
       } else {

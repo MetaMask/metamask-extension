@@ -86,6 +86,7 @@ class PendingTransactionTracker extends EventEmitter {
           errorMessage.includes('gateway timeout') ||
           errorMessage.includes('nonce too low') ||
           // cfx
+          errorMessage.includes('too stale nonce') ||
           errorMessage.includes('with same nonce already inserted') ||
           errorMessage.includes('discarded due to a too stale nonce') ||
           errorMessage.includes('tx already exist')
