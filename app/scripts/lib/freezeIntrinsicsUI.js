@@ -2,7 +2,7 @@ import ExtensionPlatform from '../platforms/extension'
 import setupSentry from './setupSentry'
 
 global.globalThis = global // eslint-disable-line node/no-unsupported-features/es-builtins
-require('lavamoat-core/lib/ses.umd.js')
+require('ses/dist/lockdown.cjs')
 
 // setup sentry error reporting first, SES is not compatible
 global.platform = new ExtensionPlatform()
