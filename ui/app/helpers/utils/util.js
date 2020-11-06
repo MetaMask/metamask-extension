@@ -473,7 +473,6 @@ export async function jsonRpcRequest(rpcUrl, rpcMethod, rpcParams = []) {
   const { origin, pathname, username, password } = new URL(rpcUrl)
   // URLs containing username and password needs special processing
   if (username && password) {
-    // eslint-disable-next-line no-unused-vars
     const encodedAuth = Buffer.from(`${username}:${password}`).toString(
       'base64',
     )
