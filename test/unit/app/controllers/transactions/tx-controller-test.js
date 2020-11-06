@@ -568,7 +568,7 @@ describe('Transaction Controller', function () {
           assert.equal(
             status,
             TRANSACTION_STATUSES.REJECTED,
-            'status should e rejected',
+            'status should be rejected',
           )
           assert.equal(txId, 0, 'id should e 0')
           done()
