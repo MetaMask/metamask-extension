@@ -9,7 +9,7 @@ const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
 const ganacheServer = new Ganache()
 
-describe('MetaMask', function () {
+describe('MetaMask', function() {
   let driver
 
   const testSeedPhrase =
@@ -18,7 +18,7 @@ describe('MetaMask', function () {
   this.timeout(0)
   this.bail(true)
 
-  before(async function () {
+  before(async function() {
     await ganacheServer.start({
       accounts: [
         {
@@ -32,11 +32,11 @@ describe('MetaMask', function () {
     driver = result.driver
   })
 
-  afterEach(async function () {
+  afterEach(async function() {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       const errors = await driver.checkBrowserForConsoleErrors(driver)
       if (errors.length) {
-        const errorReports = errors.map((err) => err.message)
+        const errorReports = errors.map(err => err.message)
         const errorMessage = `Errors found in browser console:\n${errorReports.join(
           '\n'
         )}`
@@ -48,13 +48,13 @@ describe('MetaMask', function () {
     }
   })
 
-  after(async function () {
+  after(async function() {
     await ganacheServer.quit()
     await driver.quit()
   })
 
-  describe('Going through the first time flow', function () {
-    it('clicks the continue button on the welcome screen', async function () {
+  describe('Going through the first time flow', function() {
+    it('clicks the continue button on the welcome screen', async function() {
       await driver.findElement(By.css('.welcome-page__header'))
       await driver.clickElement(
         By.xpath(
@@ -64,19 +64,19 @@ describe('MetaMask', function () {
       await driver.delay(largeDelayMs)
     })
 
-    it('clicks the "Create New Wallet" option', async function () {
+    it('clicks the "Create New Wallet" option', async function() {
       await driver.clickElement(
         By.xpath(`//button[contains(text(), 'Create a Wallet')]`)
       )
       await driver.delay(largeDelayMs)
     })
 
-    it('clicks the "I agree" option on the metametrics opt-in screen', async function () {
+    it('clicks the "I agree" option on the metametrics opt-in screen', async function() {
       await driver.clickElement(By.css('.btn-primary'))
       await driver.delay(largeDelayMs)
     })
 
-    it('accepts a secure password', async function () {
+    it('accepts a secure password', async function() {
       const passwordBox = await driver.findElement(
         By.css('.first-time-flow__form #create-password')
       )
@@ -95,7 +95,7 @@ describe('MetaMask', function () {
 
     let seedPhrase
 
-    it('reveals the seed phrase', async function () {
+    it('reveals the seed phrase', async function() {
       const byRevealButton = By.css(
         '.reveal-seed-phrase__secret-blocker .reveal-seed-phrase__reveal-button'
       )
@@ -117,7 +117,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
     })
 
-    async function clickWordAndWait (word) {
+    async function clickWordAndWait(word) {
       await driver.clickElement(
         By.css(
           `[data-testid="seed-phrase-sorted"] [data-testid="draggable-seed-${word}"]`
@@ -126,7 +126,7 @@ describe('MetaMask', function () {
       await driver.delay(tinyDelayMs)
     }
 
-    it('can retype the seed phrase', async function () {
+    it('can retype the seed phrase', async function() {
       const words = seedPhrase.split(' ')
 
       for (const word of words) {
@@ -139,7 +139,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
     })
 
-    it('clicks through the success screen', async function () {
+    it('clicks through the success screen', async function() {
       await driver.findElement(
         By.xpath(`//div[contains(text(), 'Congratulations')]`)
       )
@@ -152,8 +152,8 @@ describe('MetaMask', function () {
     })
   })
 
-  describe('Show account information', function () {
-    it('show account details dropdown menu', async function () {
+  describe('Show account information', function() {
+    it('show account details dropdown menu', async function() {
       await driver.clickElement(By.css('div.menu-bar__open-in-browser'))
       const options = await driver.findElements(
         By.css('div.menu.account-details-dropdown div.menu__item')
@@ -163,8 +163,8 @@ describe('MetaMask', function () {
     })
   })
 
-  describe('Import seed phrase', function () {
-    it('logs out of the vault', async function () {
+  describe('Import seed phrase', function() {
+    it('logs out of the vault', async function() {
       await driver.clickElement(By.css('.account-menu__icon'))
       await driver.delay(regularDelayMs)
 
@@ -176,7 +176,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
     })
 
-    it('imports seed phrase', async function () {
+    it('imports seed phrase', async function() {
       const restoreSeedLink = await driver.findClickableElement(
         By.css('.unlock-page__link--import')
       )
@@ -204,7 +204,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
     })
 
-    it('switches to localhost', async function () {
+    it('switches to localhost', async function() {
       await driver.clickElement(By.css('.network-name'))
       await driver.delay(regularDelayMs)
 
@@ -214,7 +214,7 @@ describe('MetaMask', function () {
       await driver.delay(largeDelayMs * 2)
     })
 
-    it('balance renders', async function () {
+    it('balance renders', async function() {
       const balance = await driver.findElement(
         By.css('.transaction-view-balance__primary-balance')
       )
@@ -223,8 +223,8 @@ describe('MetaMask', function () {
     })
   })
 
-  describe('Send ETH from inside MetaMask', function () {
-    it('starts to send a transaction', async function () {
+  describe('Send ETH from inside MetaMask', function() {
+    it('starts to send a transaction', async function() {
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Send')]`))
       await driver.delay(regularDelayMs)
 
@@ -241,7 +241,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
     })
 
-    it.skip('opens and closes the gas modal', async function () {
+    it.skip('opens and closes the gas modal', async function() {
       // Set the gas limit
       await driver.clickElement(By.css('.advanced-gas-options-btn'))
       await driver.delay(regularDelayMs)
@@ -253,20 +253,20 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
     })
 
-    it('clicks through to the confirm screen', async function () {
+    it('clicks through to the confirm screen', async function() {
       // Continue to next screen
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Next')]`))
       await driver.delay(regularDelayMs)
     })
 
-    it('confirms the transaction', async function () {
+    it('confirms the transaction', async function() {
       await driver.clickElement(
         By.xpath(`//button[contains(text(), 'Confirm')]`)
       )
       await driver.delay(largeDelayMs)
     })
 
-    it('finds the transaction in the transactions list', async function () {
+    it('finds the transaction in the transactions list', async function() {
       await driver.wait(async () => {
         const confirmedTxes = await driver.findElements(
           By.css(

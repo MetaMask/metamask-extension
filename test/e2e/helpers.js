@@ -8,7 +8,7 @@ const tinyDelayMs = 200
 const regularDelayMs = tinyDelayMs * 2
 const largeDelayMs = regularDelayMs * 2
 
-async function withFixtures (options, callback) {
+async function withFixtures(options, callback) {
   const { fixtures, ganacheOptions, driverOptions } = options
   const fixtureServer = new FixtureServer()
   const ganacheServer = new Ganache()
@@ -35,7 +35,7 @@ async function withFixtures (options, callback) {
   }
 }
 
-async function waitUntilElementNotVisible (driver, element) {
+async function waitUntilElementNotVisible(driver, element) {
   try {
     await driver.wait(until.elementIsNotVisible(element))
   } catch (err) {
@@ -43,19 +43,19 @@ async function waitUntilElementNotVisible (driver, element) {
   }
 }
 
-async function waitUntilClickableAndClick (element) {
+async function waitUntilClickableAndClick(element) {
   try {
     await element.click()
   } catch (err) {
-    await new Promise((resolve) => setTimeout(resolve, tinyDelayMs))
+    await new Promise(resolve => setTimeout(resolve, tinyDelayMs))
     await waitUntilClickableAndClick(element)
   }
 }
 
-async function loadFixtures (options) {
-  return new Promise((resolve) => {
+async function loadFixtures(options) {
+  return new Promise(resolve => {
     withFixtures(options, ({ driver }) => {
-      return new Promise((r) => {
+      return new Promise(r => {
         resolve([driver, () => r()])
       })
     })

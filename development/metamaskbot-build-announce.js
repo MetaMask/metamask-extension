@@ -6,11 +6,11 @@ const VERSION = require('../dist/chrome/manifest.json').version // eslint-disabl
 
 start().catch(console.error)
 
-function capitalizeFirstLetter (string) {
+function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
-async function start () {
+async function start() {
   const CIRCLE_PROJECT_USERNAME = process.env.CIRCLE_PROJECT_USERNAME
   const CIRCLE_PROJECT_REPONAME = process.env.CIRCLE_PROJECT_REPONAME
   const GITHUB_COMMENT_TOKEN = process.env.GITHUB_COMMENT_TOKEN
@@ -35,7 +35,7 @@ async function start () {
   // links to extension builds
   const platforms = ['chrome', 'firefox', 'opera']
   const buildLinks = platforms
-    .map((platform) => {
+    .map(platform => {
       const url = `${BUILD_LINK_BASE}/builds/conflux-portal-${platform}-${VERSION}.zip`
       return `<a href="${url}">${platform}</a>`
     })
@@ -52,7 +52,7 @@ async function start () {
     'phishing-detect',
   ]
   const bundleLinks = bundles
-    .map((bundle) => {
+    .map(bundle => {
       const url = `${BUILD_LINK_BASE}/build-artifacts/source-map-explorer/${bundle}.html`
       return `<a href="${url}">${bundle}</a>`
     })
@@ -72,7 +72,7 @@ async function start () {
     `<a href="${allArtifactsUrl}">all artifacts</a>`,
   ]
   const hiddenContent =
-    `<ul>` + contentRows.map((row) => `<li>${row}</li>`).join('\n') + `</ul>`
+    `<ul>` + contentRows.map(row => `<li>${row}</li>`).join('\n') + `</ul>`
   const exposedContent = `Builds ready [${SHORT_SHA1}]`
   const artifactsBody = `<details><summary>${exposedContent}</summary>${hiddenContent}</details>`
 
@@ -168,7 +168,7 @@ async function start () {
         benchmarkTableHeaders.push(`${capitalizeFirstLetter(measure)} (ms)`)
       }
       const benchmarkTableHeader = `<thead><tr>${benchmarkTableHeaders
-        .map((header) => `<th>${header}</th>`)
+        .map(header => `<th>${header}</th>`)
         .join('')}</tr></thead>`
       const benchmarkTableBody = `<tbody>${tableRows.join('')}</tbody>`
       const benchmarkTable = `<table>${benchmarkTableHeader}${benchmarkTableBody}</table>`

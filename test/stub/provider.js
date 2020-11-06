@@ -4,11 +4,11 @@ import scaffoldMiddleware from '@yqrashawn/cfx-json-rpc-middleware/scaffold'
 // import GanacheCore from 'ganache-core'
 import createJsonRpcClient from '../../app/scripts/controllers/network/createJsonRpcClient'
 
-export function getTestSeed () {
+export function getTestSeed() {
   return 'people carpet cluster attract ankle motor ozone mass dove original primary mask'
 }
 
-export function getTestAccounts () {
+export function getTestAccounts() {
   return [
     {
       address: '0x88bb7F89eB5e5b30D3e15a57C68DBe03C6aCCB21',
@@ -34,16 +34,16 @@ export function getTestAccounts () {
   ]
 }
 
-export function createEngineForTestData () {
+export function createEngineForTestData() {
   return new JsonRpcEngine()
 }
 
-export function providerFromEngine (engine) {
+export function providerFromEngine(engine) {
   const provider = { sendAsync: engine.handle.bind(engine) }
   return provider
 }
 
-export function createTestProviderTools (opts = {}) {
+export function createTestProviderTools(opts = {}) {
   const networkClient = createJsonRpcClient({
     rpcUrl: 'http://localhost:12537',
   })

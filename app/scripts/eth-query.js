@@ -13,8 +13,8 @@ EthQuery.prototype.getUncleByBlockNumberAndIndex = generateFnFor(
   'eth_getUncleByEpochNumberAndIndex'
 )
 
-function generateFnFor (methodName) {
-  return function () {
+function generateFnFor(methodName) {
+  return function() {
     const self = this
     const args = [].slice.call(arguments)
     const cb = args.pop()

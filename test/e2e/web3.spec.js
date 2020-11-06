@@ -6,13 +6,13 @@ const { regularDelayMs, largeDelayMs } = require('./helpers')
 const { buildWebDriver } = require('./webdriver')
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
-describe('Using MetaMask with an existing account', function () {
+describe('Using MetaMask with an existing account', function() {
   let driver
 
   const testSeedPhrase =
     'forum vessel pink push lonely enact gentle tail admit parrot grunt dress'
 
-  const button = async (x) => {
+  const button = async x => {
     const buttoncheck = x
     await buttoncheck.click()
     await driver.delay(largeDelayMs)
@@ -26,16 +26,16 @@ describe('Using MetaMask with an existing account', function () {
   this.timeout(0)
   this.bail(true)
 
-  before(async function () {
+  before(async function() {
     const result = await buildWebDriver()
     driver = result.driver
   })
 
-  afterEach(async function () {
+  afterEach(async function() {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       const errors = await driver.checkBrowserForConsoleErrors(driver)
       if (errors.length) {
-        const errorReports = errors.map((err) => err.message)
+        const errorReports = errors.map(err => err.message)
         const errorMessage = `Errors found in browser console:\n${errorReports.join(
           '\n'
         )}`
@@ -47,12 +47,12 @@ describe('Using MetaMask with an existing account', function () {
     }
   })
 
-  after(async function () {
+  after(async function() {
     await driver.quit()
   })
 
-  describe('First time flow starting from an existing seed phrase', function () {
-    it('clicks the continue button on the welcome screen', async function () {
+  describe('First time flow starting from an existing seed phrase', function() {
+    it('clicks the continue button on the welcome screen', async function() {
       await driver.findElement(By.css('.welcome-page__header'))
       await driver.clickElement(
         By.xpath(
@@ -62,19 +62,19 @@ describe('Using MetaMask with an existing account', function () {
       await driver.delay(largeDelayMs)
     })
 
-    it('clicks the "Import Wallet" option', async function () {
+    it('clicks the "Import Wallet" option', async function() {
       await driver.clickElement(
         By.xpath(`//button[contains(text(), 'Import Wallet')]`)
       )
       await driver.delay(largeDelayMs)
     })
 
-    it('clicks the "No thanks" option on the metametrics opt-in screen', async function () {
+    it('clicks the "No thanks" option on the metametrics opt-in screen', async function() {
       await driver.clickElement(By.css('.btn-default'))
       await driver.delay(largeDelayMs)
     })
 
-    it('imports a seed phrase', async function () {
+    it('imports a seed phrase', async function() {
       const [seedTextArea] = await driver.findElements(
         By.css('textarea.first-time-flow__textarea')
       )
@@ -96,7 +96,7 @@ describe('Using MetaMask with an existing account', function () {
       await driver.delay(regularDelayMs)
     })
 
-    it('clicks through the success screen', async function () {
+    it('clicks through the success screen', async function() {
       await driver.findElement(
         By.xpath(`//div[contains(text(), 'Congratulations')]`)
       )
@@ -109,8 +109,8 @@ describe('Using MetaMask with an existing account', function () {
     })
   })
 
-  describe('opens dapp', function () {
-    it('switches to mainnet', async function () {
+  describe('opens dapp', function() {
+    it('switches to mainnet', async function() {
       await driver.clickElement(By.css('.network-name'))
       await driver.delay(regularDelayMs)
 
@@ -120,7 +120,7 @@ describe('Using MetaMask with an existing account', function () {
       await driver.delay(largeDelayMs * 2)
     })
 
-    it('connects to dapp', async function () {
+    it('connects to dapp', async function() {
       await driver.openNewPage('http://127.0.0.1:8080/')
       await driver.delay(regularDelayMs)
 
@@ -139,7 +139,7 @@ describe('Using MetaMask with an existing account', function () {
         windowHandles
       )
       const dapp = windowHandles.find(
-        (handle) => handle !== extension && handle !== popup
+        handle => handle !== extension && handle !== popup
       )
 
       await driver.delay(regularDelayMs)
@@ -152,8 +152,8 @@ describe('Using MetaMask with an existing account', function () {
     })
   })
 
-  describe('testing web3 methods', function () {
-    it('testing hexa methods', async function () {
+  describe('testing web3 methods', function() {
+    it('testing hexa methods', async function() {
       const List = await driver.findClickableElements(
         By.className('hexaNumberMethods')
       )
@@ -173,7 +173,7 @@ describe('Using MetaMask with an existing account', function () {
       }
     })
 
-    it('testing booleanMethods', async function () {
+    it('testing booleanMethods', async function() {
       const List = await driver.findClickableElement(
         By.className('booleanMethods')
       )
@@ -193,7 +193,7 @@ describe('Using MetaMask with an existing account', function () {
       }
     })
 
-    it('testing  transactionMethods', async function () {
+    it('testing  transactionMethods', async function() {
       const List = await driver.findClickableElement(
         By.className('transactionMethods')
       )
@@ -218,7 +218,7 @@ describe('Using MetaMask with an existing account', function () {
           result.push(parseInt(parsedData.result.to, 16))
           result.push(parseInt(parsedData.result.value, 16))
 
-          result.forEach((value) => {
+          result.forEach(value => {
             assert.equal(typeof value === 'number', true)
           })
         } catch (err) {
@@ -228,7 +228,7 @@ describe('Using MetaMask with an existing account', function () {
       }
     })
 
-    it('testing blockMethods', async function () {
+    it('testing blockMethods', async function() {
       const List = await driver.findClickableElement(
         By.className('blockMethods')
       )
@@ -251,7 +251,7 @@ describe('Using MetaMask with an existing account', function () {
       }
     })
 
-    it('testing methods', async function () {
+    it('testing methods', async function() {
       const List = await driver.findClickableElement(By.className('methods'))
       let parsedData
       let result

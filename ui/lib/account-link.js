@@ -1,4 +1,4 @@
-export default function getAccountLink (address, network, rpcPrefs) {
+export default function getAccountLink(address, network, rpcPrefs) {
   if (rpcPrefs && rpcPrefs.blockExplorerUrl) {
     return `${rpcPrefs.blockExplorerUrl}/address/${address}`
   }

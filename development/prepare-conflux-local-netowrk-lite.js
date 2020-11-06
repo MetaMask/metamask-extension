@@ -6,6 +6,6 @@ server
   .then(async () => {
     await server.quit()
   })
-  .catch((err) => {
+  .catch(err => {
     console.error(err)
   })

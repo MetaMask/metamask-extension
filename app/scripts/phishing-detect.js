@@ -9,7 +9,7 @@ import ExtensionPlatform from './platforms/extension'
 
 document.addEventListener('DOMContentLoaded', start)
 
-function start () {
+function start() {
   const windowType = getEnvironmentType()
   const hash = window.location.hash.substring(1)
   const suspect = querystring.parse(hash)
@@ -38,15 +38,15 @@ function start () {
   )
 }
 
-function setupControllerConnection (connectionStream, cb) {
+function setupControllerConnection(connectionStream, cb) {
   const eventEmitter = new EventEmitter()
   const metaMaskControllerDnode = dnode({
-    sendUpdate (state) {
+    sendUpdate(state) {
       eventEmitter.emit('update', state)
     },
   })
   connectionStream.pipe(metaMaskControllerDnode).pipe(connectionStream)
-  metaMaskControllerDnode.once('remote', (backgroundConnection) =>
+  metaMaskControllerDnode.once('remote', backgroundConnection =>
     cb(null, backgroundConnection)
   )
 }

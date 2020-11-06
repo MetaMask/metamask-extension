@@ -10,13 +10,13 @@ const b = browserify()
 
 const writeStream = fs.createWriteStream(bundlePath)
 
-tests.forEach(function (fileName) {
+tests.forEach(function(fileName) {
   const filePath = path.join(__dirname, 'lib', fileName)
   console.log(`bundling test "${filePath}"`)
   b.add(filePath)
 })
 
-pump(b.bundle(), writeStream, (err) => {
+pump(b.bundle(), writeStream, err => {
   if (err) {
     throw err
   }

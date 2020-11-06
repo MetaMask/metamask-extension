@@ -4,7 +4,7 @@ const readInstalled = require('read-installed')
 
 const installScripts = ['preinstall', 'install', 'postinstall']
 
-readInstalled('./', { dev: true }, function (err, data) {
+readInstalled('./', { dev: true }, function(err, data) {
   if (err) {
     throw err
   }
@@ -14,7 +14,7 @@ readInstalled('./', { dev: true }, function (err, data) {
     const packageScripts = packageData.scripts || {}
     const scriptKeys = Reflect.ownKeys(packageScripts)
 
-    const hasInstallScript = installScripts.some((installKey) =>
+    const hasInstallScript = installScripts.some(installKey =>
       scriptKeys.includes(installKey)
     )
     if (!hasInstallScript) {

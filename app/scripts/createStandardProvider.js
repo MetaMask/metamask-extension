@@ -2,7 +2,7 @@ class StandardProvider {
   _isConnected
   _provider
 
-  constructor (provider) {
+  constructor(provider) {
     this._provider = provider
     this._subscribe()
     // indicate that we've connected, mostly just for standard compliance
@@ -11,7 +11,7 @@ class StandardProvider {
     })
   }
 
-  _onClose () {
+  _onClose() {
     if (this._isConnected === undefined || this._isConnected) {
       this._provider.emit('close', {
         code: 1011,
@@ -21,12 +21,12 @@ class StandardProvider {
     this._isConnected = false
   }
 
-  _onConnect () {
+  _onConnect() {
     !this._isConnected && this._provider.emit('connect')
     this._isConnected = true
   }
 
-  _subscribe () {
+  _subscribe() {
     this._provider.on('data', (error, { method, params }) => {
       if (!error && method === 'cfx_subscription') {
         this._provider.emit('notification', params.result)
@@ -41,7 +41,7 @@ class StandardProvider {
    * @param {string[]} params - Array of RPC method parameters
    * @returns {Promise<*>} Promise resolving to the result if successful
    */
-  send (method, params = []) {
+  send(method, params = []) {
     return new Promise((resolve, reject) => {
       try {
         this._provider.sendAsync(
@@ -63,7 +63,7 @@ class StandardProvider {
  * @param {Object} provider - Legacy provider to convert
  * @returns {Object} Standard provider
  */
-export default function createStandardProvider (provider) {
+export default function createStandardProvider(provider) {
   const standardProvider = new StandardProvider(provider)
   const sendLegacy = provider.send
   provider.send = (methodOrPayload, callbackOrArgs) => {

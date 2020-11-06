@@ -12,14 +12,14 @@ const fixtureServer = new FixtureServer()
 
 const ganacheServer = new Ganache()
 
-describe('MetaMask', function () {
+describe('MetaMask', function() {
   let driver
   let publicAddress
 
   this.timeout(0)
   this.bail(true)
 
-  before(async function () {
+  before(async function() {
     await ganacheServer.start()
     await fixtureServer.start()
     await fixtureServer.loadState(
@@ -30,11 +30,11 @@ describe('MetaMask', function () {
     driver = result.driver
   })
 
-  afterEach(async function () {
+  afterEach(async function() {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       const errors = await driver.checkBrowserForConsoleErrors(driver)
       if (errors.length) {
-        const errorReports = errors.map((err) => err.message)
+        const errorReports = errors.map(err => err.message)
         const errorMessage = `Errors found in browser console:\n${errorReports.join(
           '\n'
         )}`
@@ -46,19 +46,19 @@ describe('MetaMask', function () {
     }
   })
 
-  after(async function () {
+  after(async function() {
     await ganacheServer.quit()
     await fixtureServer.stop()
     await driver.quit()
   })
 
-  describe('successfuly signs typed data', function () {
+  describe('successfuly signs typed data', function() {
     let extension
     let popup
     let dapp
     let windowHandles
 
-    it('accepts the account password after lock', async function () {
+    it('accepts the account password after lock', async function() {
       await driver.delay(1000)
       const passwordField = await driver.findElement(By.id('password'))
       await passwordField.sendKeys('correct horse battery staple')
@@ -66,7 +66,7 @@ describe('MetaMask', function () {
       await driver.delay(largeDelayMs * 4)
     })
 
-    it('connects to the dapp', async function () {
+    it('connects to the dapp', async function() {
       await driver.openNewPage('http://127.0.0.1:8080/')
       await driver.delay(regularDelayMs)
 
@@ -85,7 +85,7 @@ describe('MetaMask', function () {
         windowHandles
       )
       popup = windowHandles.find(
-        (handle) => handle !== extension && handle !== dapp
+        handle => handle !== extension && handle !== dapp
       )
 
       await driver.switchToWindow(popup)
@@ -104,7 +104,7 @@ describe('MetaMask', function () {
       await driver.switchToWindow(dapp)
     })
 
-    it('creates a sign typed data signature request', async function () {
+    it('creates a sign typed data signature request', async function() {
       await driver.clickElement(
         By.xpath(`//button[contains(text(), 'Typed Sign')]`),
         10000
@@ -141,7 +141,7 @@ describe('MetaMask', function () {
       )
     })
 
-    it('signs the transaction', async function () {
+    it('signs the transaction', async function() {
       await driver.clickElement(
         By.xpath(`//button[contains(text(), 'Sign')]`),
         10000
@@ -152,7 +152,7 @@ describe('MetaMask', function () {
       await driver.switchToWindow(extension)
     })
 
-    it('gets the current accounts address', async function () {
+    it('gets the current accounts address', async function() {
       await driver.clickElement(By.css('.account-details__details-button'))
       await driver.delay(regularDelayMs)
 

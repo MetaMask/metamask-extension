@@ -9,7 +9,7 @@ const server = new Node({
   // const SEED = "ankle hedgehog attack fatal label blame shoe bulb subject negative cruise sick";
   // const PASSWORD = "11111111"
 
-;(async function () {
+;(async function() {
   await server
     .start({
       accounts: [
@@ -30,7 +30,7 @@ const server = new Node({
         },
       ],
     })
-    .catch((err) => {
+    .catch(err => {
       throw err
     })
 })()

@@ -4,7 +4,7 @@ const path = require('path')
 
 const fixtureServer = new FixtureServer()
 
-;(async function () {
+;(async function() {
   await fixtureServer.start()
   await fixtureServer.loadState(
     path.join(__dirname, 'fixtures', 'imported-account')
