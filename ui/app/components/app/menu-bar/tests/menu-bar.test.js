@@ -1,9 +1,9 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { Provider } from 'react-redux'
 import configureStore from 'redux-mock-store'
 import { mountWithRouter } from '../../../../../../test/lib/render-helpers'
-import MenuBar from '../index'
+import MenuBar from '..'
 
 const initState = {
   activeTab: {},
@@ -19,9 +19,7 @@ const initState = {
     keyrings: [
       {
         type: 'HD Key Tree',
-        accounts: [
-          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        ],
+        accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
       },
     ],
     frequentRpcListDetail: [],

@@ -2,10 +2,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 import contractMap from 'eth-contract-metadata'
-import ConfirmTransactionBase from './confirm-transaction-base.component'
-import {
-  clearConfirmTransaction,
-} from '../../ducks/confirm-transaction/confirm-transaction.duck'
+import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck'
 
 import {
   updateCustomNonce,
@@ -26,7 +23,11 @@ import { getHexGasTotal } from '../../helpers/utils/confirm-tx.util'
 import { isBalanceSufficient, calcGasTotal } from '../send/send.utils'
 import { conversionGreaterThan } from '../../helpers/utils/conversion-util'
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants'
-import { checksumAddress, shortenAddress, valuesFor } from '../../helpers/utils/util'
+import {
+  checksumAddress,
+  shortenAddress,
+  valuesFor,
+} from '../../helpers/utils/util'
 import {
   getAdvancedInlineGasShown,
   getCustomNonceValue,
@@ -38,6 +39,7 @@ import {
   transactionFeeSelector,
 } from '../../selectors'
 import { getMostRecentOverviewPage } from '../../ducks/history/history'
+import ConfirmTransactionBase from './confirm-transaction-base.component'
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
   return {
@@ -47,13 +49,20 @@ const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
 }, {})
 
 let customNonceValue = ''
-const customNonceMerge = (txData) => (customNonceValue ? ({
-  ...txData,
-  customNonceValue,
-}) : txData)
+const customNonceMerge = (txData) =>
+  customNonceValue
+    ? {
+        ...txData,
+        customNonceValue,
+      }
+    : txData
 
 const mapStateToProps = (state, ownProps) => {
-  const { toAddress: propsToAddress, customTxParamsData, match: { params = {} } } = ownProps
+  const {
+    toAddress: propsToAddress,
+    customTxParamsData,
+    match: { params = {} },
+  } = ownProps
   const { id: paramsTransactionId } = params
   const { showFiatInTestnets } = getPreferences(state)
   const isMainnet = getIsMainnet(state)
@@ -69,16 +78,17 @@ const mapStateToProps = (state, ownProps) => {
     metaMetricsSendCount,
     nextNonce,
   } = metamask
+  const { tokenData, txData, tokenProps, nonce } = confirmTransaction
   const {
-    tokenData,
-    txData,
-    tokenProps,
-    nonce,
-  } = confirmTransaction
-  const { txParams = {}, lastGasPrice, id: transactionId, transactionCategory } = txData
-  const transaction = Object.values(unapprovedTxs).find(
-    ({ id }) => id === (transactionId || Number(paramsTransactionId)),
-  ) || {}
+    txParams = {},
+    lastGasPrice,
+    id: transactionId,
+    transactionCategory,
+  } = txData
+  const transaction =
+    Object.values(unapprovedTxs).find(
+      ({ id }) => id === (transactionId || Number(paramsTransactionId)),
+    ) || {}
   const {
     from: fromAddress,
     to: txParamsToAddress,
@@ -93,13 +103,11 @@ const mapStateToProps = (state, ownProps) => {
   const { balance } = accounts[fromAddress]
   const { name: fromName } = identities[fromAddress]
   const toAddress = propsToAddress || txParamsToAddress
-  const toName = identities[toAddress]
-    ? identities[toAddress].name
-    : (
-      casedContractMap[toAddress]
-        ? casedContractMap[toAddress].name
-        : shortenAddress(checksumAddress(toAddress))
-    )
+
+  const toName =
+    identities[toAddress]?.name ||
+    casedContractMap[toAddress]?.name ||
+    shortenAddress(checksumAddress(toAddress))
 
   const checksummedAddress = checksumAddress(toAddress)
   const addressBookObject = addressBook[checksummedAddress]
@@ -174,12 +182,13 @@ const mapStateToProps = (state, ownProps) => {
     useNonceField: getUseNonceField(state),
     customNonceValue: getCustomNonceValue(state),
     insufficientBalance,
-    hideSubtitle: (!isMainnet && !showFiatInTestnets),
-    hideFiatConversion: (!isMainnet && !showFiatInTestnets),
+    hideSubtitle: !isMainnet && !showFiatInTestnets,
+    hideFiatConversion: !isMainnet && !showFiatInTestnets,
     metaMetricsSendCount,
     transactionCategory,
     nextNonce,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
+    isMainnet,
   }
 }
 
@@ -197,17 +206,25 @@ export const mapDispatchToProps = (dispatch) => {
       return dispatch(showModal({ name: 'TRANSACTION_CONFIRMED', onSubmit }))
     },
     showCustomizeGasModal: ({ txData, onSubmit, validate }) => {
-      return dispatch(showModal({ name: 'CUSTOMIZE_GAS', txData, onSubmit, validate }))
+      return dispatch(
+        showModal({ name: 'CUSTOMIZE_GAS', txData, onSubmit, validate }),
+      )
     },
     updateGasAndCalculate: (updatedTx) => {
       return dispatch(updateTransaction(updatedTx))
     },
-    showRejectTransactionsConfirmationModal: ({ onSubmit, unapprovedTxCount }) => {
-      return dispatch(showModal({ name: 'REJECT_TRANSACTIONS', onSubmit, unapprovedTxCount }))
+    showRejectTransactionsConfirmationModal: ({
+      onSubmit,
+      unapprovedTxCount,
+    }) => {
+      return dispatch(
+        showModal({ name: 'REJECT_TRANSACTIONS', onSubmit, unapprovedTxCount }),
+      )
     },
     cancelTransaction: ({ id }) => dispatch(cancelTx({ id })),
     cancelAllTransactions: (txList) => dispatch(cancelTxs(txList)),
-    sendTransaction: (txData) => dispatch(updateAndApproveTx(customNonceMerge(txData))),
+    sendTransaction: (txData) =>
+      dispatch(updateAndApproveTx(customNonceMerge(txData))),
     setMetaMetricsSendCount: (val) => dispatch(setMetaMetricsSendCount(val)),
     getNextNonce: () => dispatch(getNextNonce()),
   }
@@ -232,17 +249,19 @@ const getValidateEditGas = ({ balance, conversionRate, txData }) => {
       }
     }
 
-    const gasLimitTooLow = gasLimit && conversionGreaterThan(
-      {
-        value: MIN_GAS_LIMIT_DEC,
-        fromNumericBase: 'dec',
-        conversionRate,
-      },
-      {
-        value: gasLimit,
-        fromNumericBase: 'hex',
-      },
-    )
+    const gasLimitTooLow =
+      gasLimit &&
+      conversionGreaterThan(
+        {
+          value: MIN_GAS_LIMIT_DEC,
+          fromNumericBase: 'dec',
+          conversionRate,
+        },
+        {
+          value: gasLimit,
+          fromNumericBase: 'hex',
+        },
+      )
 
     if (gasLimitTooLow) {
       return {
@@ -266,18 +285,24 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...otherDispatchProps
   } = dispatchProps
 
-  const validateEditGas = getValidateEditGas({ balance, conversionRate, txData })
+  const validateEditGas = getValidateEditGas({
+    balance,
+    conversionRate,
+    txData,
+  })
 
   return {
     ...stateProps,
     ...otherDispatchProps,
     ...ownProps,
-    showCustomizeGasModal: () => dispatchShowCustomizeGasModal({
-      txData,
-      onSubmit: (customGas) => dispatchUpdateGasAndCalculate(customGas),
-      validate: validateEditGas,
-    }),
-    cancelAllTransactions: () => dispatchCancelAllTransactions(valuesFor(unapprovedTxs)),
+    showCustomizeGasModal: () =>
+      dispatchShowCustomizeGasModal({
+        txData,
+        onSubmit: (customGas) => dispatchUpdateGasAndCalculate(customGas),
+        validate: validateEditGas,
+      }),
+    cancelAllTransactions: () =>
+      dispatchCancelAllTransactions(valuesFor(unapprovedTxs)),
     updateGasAndCalculate: ({ gasLimit, gasPrice }) => {
       const updatedTx = {
         ...txData,

@@ -4,6 +4,8 @@ workflows:
   test_and_release:
     jobs:
       - create_release_pull_request:
+          requires:
+            - prep-deps
           filters:
             branches:
               only:
@@ -38,6 +40,9 @@ workflows:
       - test-unit-global:
           requires:
             - prep-deps
+      - validate-source-maps:
+          requires:
+            - prep-build
       - test-mozilla-lint:
           requires:
             - prep-deps
@@ -49,6 +54,7 @@ workflows:
             - test-lint-lockfile
             - test-unit
             - test-unit-global
+            - validate-source-maps
             - test-mozilla-lint
             - test-e2e-chrome
             - test-e2e-firefox
@@ -85,6 +91,8 @@ jobs:
       - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - checkout
+      - attach_workspace:
+          at: .
       - run:
           name: Create GitHub Pull Request for version
           command: |
@@ -114,6 +122,8 @@ jobs:
   prep-build:
     docker:
       - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    environment:
+      NODE_OPTIONS: --max_old_space_size=1024
     steps:
       - checkout
       - attach_workspace:
@@ -133,6 +143,8 @@ jobs:
   prep-build-test:
     docker:
       - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    environment:
+      NODE_OPTIONS: --max_old_space_size=1024
     steps:
       - checkout
       - attach_workspace:
@@ -179,13 +191,13 @@ jobs:
 
   test-lint-shellcheck:
     docker:
-      - image: koalaman/shellcheck-alpine@sha256:169a51b086af0ab181e32801c15deb78944bb433d4f2c0a21cc30d4e60547065
+      - image: koalaman/shellcheck-alpine@sha256:35882cba254810c7de458528011e935ba2c4f3ebcb224275dfa7ebfa930ef294
     steps:
       - checkout
       - run: apk add --no-cache bash jq yarn
       - run:
-          name: Shellcheck Lint
-          command: yarn lint:shellcheck
+          name: ShellCheck Lint
+          command: ./development/shellcheck.sh
 
   test-lint-lockfile:
     docker:
@@ -221,7 +233,11 @@ jobs:
           command: mv ./dist-test ./dist
       - run:
           name: test:e2e:chrome
-          command: yarn test:e2e:chrome
+          command: |
+            if .circleci/scripts/test-run-e2e
+            then
+              yarn test:e2e:chrome
+            fi
           no_output_timeout: 20m
       - store_artifacts:
           path: test-artifacts
@@ -242,7 +258,11 @@ jobs:
           command: mv ./dist-test ./dist
       - run:
           name: test:e2e:firefox
-          command: yarn test:e2e:firefox
+          command: |
+            if .circleci/scripts/test-run-e2e
+            then
+              yarn test:e2e:firefox
+            fi
           no_output_timeout: 20m
       - store_artifacts:
           path: test-artifacts
@@ -358,6 +378,18 @@ jobs:
       - run:
           name: test:unit:global
           command: yarn test:unit:global
+
+  validate-source-maps:
+    docker:
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Validate source maps
+          command: yarn validate-source-maps
+
   test-mozilla-lint:
     docker:
       - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88

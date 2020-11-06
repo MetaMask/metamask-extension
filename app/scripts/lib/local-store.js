@@ -9,8 +9,8 @@ export default class ExtensionStore {
   /**
    * @constructor
    */
-  constructor () {
-    this.isSupported = !!(extension.storage.local)
+  constructor() {
+    this.isSupported = Boolean(extension.storage.local)
     if (!this.isSupported) {
       log.error('Storage local API not available.')
     }
@@ -20,7 +20,7 @@ export default class ExtensionStore {
    * Returns all of the keys currently saved
    * @returns {Promise<*>}
    */
-  async get () {
+  async get() {
     if (!this.isSupported) {
       return undefined
     }
@@ -29,9 +29,8 @@ export default class ExtensionStore {
     // if the object is empty, treat it as undefined
     if (isEmpty(result)) {
       return undefined
-    } else {
-      return result
     }
+    return result
   }
 
   /**
@@ -39,7 +38,7 @@ export default class ExtensionStore {
    * @param {Object} state - The state to set
    * @returns {Promise<void>}
    */
-  async set (state) {
+  async set(state) {
     return this._set(state)
   }
 
@@ -48,8 +47,8 @@ export default class ExtensionStore {
    * @private
    * @returns {Object} - the key-value map from local storage
    */
-  _get () {
-    const local = extension.storage.local
+  _get() {
+    const { local } = extension.storage
     return new Promise((resolve, reject) => {
       local.get(null, (/** @type {any} */ result) => {
         const err = checkForError()
@@ -68,8 +67,8 @@ export default class ExtensionStore {
    * @returns {Promise<void>}
    * @private
    */
-  _set (obj) {
-    const local = extension.storage.local
+  _set(obj) {
+    const { local } = extension.storage
     return new Promise((resolve, reject) => {
       local.set(obj, () => {
         const err = checkForError()
@@ -88,6 +87,6 @@ export default class ExtensionStore {
  * @param {Object} obj - The object to check
  * @returns {boolean}
  */
-function isEmpty (obj) {
+function isEmpty(obj) {
   return Object.keys(obj).length === 0
 }

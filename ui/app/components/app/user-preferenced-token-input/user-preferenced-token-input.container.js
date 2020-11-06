@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import UserPreferencedTokenInput from './user-preferenced-token-input.component'
 import { getPreferences } from '../../../selectors'
+import UserPreferencedTokenInput from './user-preferenced-token-input.component'
 
 const mapStateToProps = (state) => {
   const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state)
@@ -11,7 +11,9 @@ const mapStateToProps = (state) => {
   }
 }
 
-const UserPreferencedTokenInputContainer = connect(mapStateToProps)(UserPreferencedTokenInput)
+const UserPreferencedTokenInputContainer = connect(mapStateToProps)(
+  UserPreferencedTokenInput,
+)
 
 UserPreferencedTokenInputContainer.propTypes = {
   token: PropTypes.shape({

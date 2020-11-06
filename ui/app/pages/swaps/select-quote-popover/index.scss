@@ -1,0 +1,262 @@
+@import 'quote-details/index';
+
+.select-quote-popover {
+  &__button {
+    border-radius: 100px;
+    height: 39px;
+    width: 140px;
+  }
+
+  &__popover-wrap {
+    height: 100%;
+
+    @media screen and (min-width: 576px) {
+      height: 620px;
+      width: 348px;
+    }
+
+    .popover-content {
+      height: 100%;
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+
+    .swaps__footer {
+      padding: 16px 24px;
+    }
+  }
+
+  &__popover-bg {
+    height: 100%;
+    width: 100%;
+    background: $Grey-100;
+    opacity: 1;
+
+    @media screen and (min-width: 576px) {
+      opacity: 0.5;
+    }
+  }
+
+  &__sort-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__column-headers,
+  &__row {
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+    width: 100%;
+
+    > * + * {
+      margin-left: 8px;
+    }
+  }
+
+  &__column-headers {
+    @include H8;
+
+    font-weight: bold;
+    color: $Black-100;
+    height: 43px;
+    margin-bottom: 4px;
+  }
+
+  &__column-header {
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  &__row {
+    @include H6;
+
+    cursor: pointer;
+    color: $black;
+    height: 49px;
+    border-bottom: 1px solid $Grey-100;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    background: $Grey-000;
+    padding-right: 12px;
+    border: none;
+
+    &:hover {
+      border: 1px solid $Blue-500;
+      width: 101%;
+      padding-right: 11px;
+      padding-left: 19.5px;
+    }
+
+    &--no-hover {
+      &:hover {
+        border: 1px solid $Grey-100;
+        width: 100%;
+        padding-right: 12px;
+        padding-left: 20px;
+      }
+    }
+
+    &--selected {
+      color: $white;
+      background: linear-gradient(90deg, $Blue-500 0%, $Blue-400 101.32%);
+      box-shadow: 0 10px 39px rgba(3, 125, 214, 0.15);
+      border-radius: 8px;
+      border-bottom: none;
+      border-top: none;
+      height: 64px;
+
+      &:hover {
+        background: linear-gradient(90deg, $Blue-500 0%, $Blue-400 101.32%);
+        width: 100%;
+        padding-left: 20px;
+        padding-right: 12px;
+        border: none;
+      }
+
+      .select-quote-popover__caret-right {
+        color: $white;
+
+        &:hover {
+          color: $Grey-500;
+        }
+      }
+
+      .select-quote-popover__zero-slippage {
+        color: $white;
+      }
+    }
+  }
+
+  &__receiving {
+    display: flex;
+    flex-direction: column;
+    width: 88px;
+  }
+
+  &__network-fees {
+    width: 99px;
+  }
+
+  &__quote-source {
+    width: 28px;
+    display: flex;
+    align-items: flex-end;
+    margin-right: 3px;
+  }
+
+  &__caret-right {
+    color: $Grey-500;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    i {
+      transform: rotate(90deg);
+    }
+
+    &:hover {
+      border-radius: 8px;
+      background: white;
+      border: 1px solid $Blue-500;
+    }
+  }
+
+  &__receiving-value {
+    display: flex;
+    align-items: center;
+
+    svg {
+      margin-right: 2px;
+    }
+  }
+
+  &__receiving-value-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__zero-slippage {
+    font-size: 12px;
+    line-height: 100%;
+    color: #6a737d;
+    font-weight: normal;
+  }
+
+  &__quote-source-toggle {
+    margin-left: 2px;
+    height: 12px;
+  }
+
+  &__network-fees-header {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+
+    > span {
+      width: 77px;
+    }
+
+    > div {
+      height: 12px;
+    }
+
+    > svg {
+      margin-bottom: 2px;
+    }
+  }
+
+
+  &__receiving-symbol {
+    color: $Grey-500;
+
+    > div {
+      width: 12px;
+      height: 12px;
+    }
+  }
+
+  &__receiving-label {
+    display: flex;
+    align-items: center;
+
+    img {
+      height: 10px;
+      width: 10px;
+      margin-top: 2px;
+    }
+
+    > div {
+      margin-left: 3px;
+    }
+  }
+
+  &__quote-source-label {
+    height: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    border-radius: 5px;
+    padding: 4px;
+    font-size: 10px;
+    font-weight: bold;
+    padding-bottom: 2px;
+
+    &--blue {
+      background: $Blue-300;
+    }
+
+    &--orange {
+      background: $Orange-400;
+    }
+
+    &--green {
+      background: $Green-500;
+    }
+  }
+}

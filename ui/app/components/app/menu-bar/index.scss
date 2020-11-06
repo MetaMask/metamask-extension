@@ -29,7 +29,8 @@
   }
 
   &__explorer-origin {
+    @include H7;
+
     color: $Grey-500;
-    font-size: 12px;
   }
 }

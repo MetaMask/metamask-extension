@@ -1,0 +1,8 @@
+.readonly-input {
+  &__input {
+    direction: ltr;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+  }
+}

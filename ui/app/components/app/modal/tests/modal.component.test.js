@@ -1,5 +1,5 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { mount, shallow } from 'enzyme'
 import sinon from 'sinon'
 import Modal from '../modal.component'
@@ -48,10 +48,10 @@ describe('Modal Component', function () {
   it('should render a modal with different button types', function () {
     const wrapper = shallow(
       <Modal
-        onCancel={() => {}}
+        onCancel={() => undefined}
         cancelText="Cancel"
         cancelType="secondary"
-        onSubmit={() => {}}
+        onSubmit={() => undefined}
         submitText="Submit"
         submitType="confirm"
       />,
@@ -66,9 +66,9 @@ describe('Modal Component', function () {
   it('should render a modal with children', function () {
     const wrapper = shallow(
       <Modal
-        onCancel={() => {}}
+        onCancel={() => undefined}
         cancelText="Cancel"
-        onSubmit={() => {}}
+        onSubmit={() => undefined}
         submitText="Submit"
       >
         <div className="test-child" />
@@ -93,7 +93,10 @@ describe('Modal Component', function () {
     )
 
     assert.ok(wrapper.find('.modal-container__header'))
-    assert.equal(wrapper.find('.modal-container__header-text').text(), 'My Header')
+    assert.equal(
+      wrapper.find('.modal-container__header-text').text(),
+      'My Header',
+    )
     assert.equal(handleCancel.callCount, 0)
     assert.equal(handleSubmit.callCount, 0)
     wrapper.find('.modal-container__header-close').simulate('click')

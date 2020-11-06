@@ -182,7 +182,9 @@ describe('util', function () {
     })
 
     it('should return 0.500 ETH', function () {
-      const input = new ethUtil.BN(ethInWei, 10).div(new ethUtil.BN('2', 10)).toJSON()
+      const input = new ethUtil.BN(ethInWei, 10)
+        .div(new ethUtil.BN('2', 10))
+        .toJSON()
       const result = util.formatBalance(input, 3)
       assert.equal(result, '0.500 ETH')
     })
@@ -233,7 +235,13 @@ describe('util', function () {
         Object.keys(valueTable).forEach((currency) => {
           const value = new ethUtil.BN(valueTable[currency], 10)
           const output = util.normalizeToWei(value, currency)
-          assert.equal(output.toString(10), valueTable.wei, `value of ${output.toString(10)} ${currency} should convert to ${oneEthBn}`)
+          assert.equal(
+            output.toString(10),
+            valueTable.wei,
+            `value of ${output.toString(
+              10,
+            )} ${currency} should convert to ${oneEthBn}`,
+          )
         })
       })
     })
@@ -279,27 +287,39 @@ describe('util', function () {
 
       it('should convert a ether number to the appropriate equivalent wei', function () {
         const result = util.normalizeNumberToWei(1.111, 'ether')
-        assert.equal(result.toString(10), '1111000000000000000', 'accepts decimals')
+        assert.equal(
+          result.toString(10),
+          '1111000000000000000',
+          'accepts decimals',
+        )
       })
     })
     describe('#isHex', function () {
       it('should return true when given a hex string', function () {
-        const result = util.isHex('c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2')
+        const result = util.isHex(
+          'c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2',
+        )
         assert(result)
       })
 
       it('should return false when given a non-hex string', function () {
-        const result = util.isHex('c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714imnotreal')
+        const result = util.isHex(
+          'c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714imnotreal',
+        )
         assert(!result)
       })
 
       it('should return false when given a string containing a non letter/number character', function () {
-        const result = util.isHex('c3ab8ff13720!8ad9047dd39466b3c%8974e592c2fa383d4a396071imnotreal')
+        const result = util.isHex(
+          'c3ab8ff13720!8ad9047dd39466b3c%8974e592c2fa383d4a396071imnotreal',
+        )
         assert(!result)
       })
 
       it('should return true when given a hex string with hex-prefix', function () {
-        const result = util.isHex('0xc3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2')
+        const result = util.isHex(
+          '0xc3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2',
+        )
         assert(result)
       })
     })
@@ -307,7 +327,7 @@ describe('util', function () {
     describe('#getRandomFileName', function () {
       it('should only return a string containing alphanumeric characters', function () {
         const result = util.getRandomFileName()
-        assert(result.match(/^[a-zA-Z0-9]*$/g))
+        assert(result.match(/^[a-zA-Z0-9]*$/gu))
       })
 
       // 50 samples
@@ -346,6 +366,67 @@ describe('util', function () {
 
     it('should return false when the passed address is not in the passed list', function () {
       assert(util.checkExistingAddresses('b', tokenList) === false)
+    })
+  })
+
+  describe('toPrecisionWithoutTrailingZeros', function () {
+    const testData = [
+      { args: ['0', 9], result: '0' },
+      { args: [0, 9], result: '0' },
+      { args: ['0.0', 9], result: '0' },
+      { args: ['0.000000000000', 9], result: '0' },
+      { args: ['1', 9], result: '1' },
+      { args: [1], result: '1' },
+      { args: ['1.0', 9], result: '1' },
+      { args: ['1.000000000', 9], result: '1' },
+      { args: ['000000001', 9], result: '1' },
+      { args: ['000000001.0', 9], result: '1' },
+      { args: ['100000000', 9], result: '100000000' },
+      { args: ['100000000.00001', 9], result: '100000000' },
+      { args: ['100.00001', 9], result: '100.00001' },
+      { args: ['100.00001000', 9], result: '100.00001' },
+      { args: ['100.000010001', 9], result: '100.00001' },
+      { args: ['10.010101', 9], result: '10.010101' },
+      { args: ['0.1', 5], result: '0.1' },
+      { args: ['0.10', 5], result: '0.1' },
+      { args: ['0.1010', 5], result: '0.101' },
+      { args: ['0.01001', 5], result: '0.01001' },
+      { args: ['0.010010', 5], result: '0.01001' },
+      { args: ['0.010011', 5], result: '0.010011' },
+      { args: ['1.01005', 5], result: '1.0101' },
+      { args: ['1.000049', 5], result: '1' },
+      { args: ['1.00005', 5], result: '1.0001' },
+      { args: ['0.0000123456789', 9], result: '0.0000123456789' },
+      { args: ['1.0000123456789', 10], result: '1.000012346' },
+      { args: ['10000.0000012345679', 10], result: '10000' },
+      { args: ['1000000000000', 10], result: '1e+12' },
+      { args: ['1000050000000', 10], result: '1.00005e+12' },
+      { args: ['100000000000000000000', 10], result: '1e+20' },
+      { args: ['100005000000000000000', 10], result: '1.00005e+20' },
+      { args: ['100005000000000000000.0', 10], result: '1.00005e+20' },
+    ]
+
+    testData.forEach(({ args, result }) => {
+      it(`should return ${result} when passed number ${args[0]} and precision ${args[1]}`, function () {
+        assert.equal(util.toPrecisionWithoutTrailingZeros(...args), result)
+      })
+    })
+  })
+
+  describe('addHexPrefixToObjectValues()', function () {
+    it('should return a new object with the same properties with a 0x prefix', function () {
+      assert.deepEqual(
+        util.addHexPrefixToObjectValues({
+          prop1: '0x123',
+          prop2: '456',
+          prop3: 'x',
+        }),
+        {
+          prop1: '0x123',
+          prop2: '0x456',
+          prop3: '0xx',
+        },
+      )
     })
   })
 })

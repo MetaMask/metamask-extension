@@ -8,15 +8,16 @@
  * network does not match any of the specified cases, or if no network is given, returns undefined.
  *
  */
-export default function getBuyEthUrl ({ network, address, service }) {
+export default function getBuyEthUrl({ network, address, service }) {
   // default service by network if not specified
   if (!service) {
+    // eslint-disable-next-line no-param-reassign
     service = getDefaultServiceForNetwork(network)
   }
 
   switch (service) {
     case 'wyre':
-      return `https://pay.sendwyre.com/?dest=ethereum:${address}&destCurrency=ETH&accountId=AC-7AG3W4XH4N2&paymentMethod=debit-card`
+      return `https://pay.sendwyre.com/purchase?dest=ethereum:${address}&destCurrency=ETH&accountId=AC-7AG3W4XH4N2&paymentMethod=debit-card`
     case 'coinswitch':
       return `https://metamask.coinswitch.co/?address=${address}&to=eth`
     case 'metamask-faucet':
@@ -32,7 +33,7 @@ export default function getBuyEthUrl ({ network, address, service }) {
   }
 }
 
-function getDefaultServiceForNetwork (network) {
+function getDefaultServiceForNetwork(network) {
   switch (network) {
     case '1':
       return 'wyre'
@@ -45,6 +46,8 @@ function getDefaultServiceForNetwork (network) {
     case '5':
       return 'goerli-faucet'
     default:
-      throw new Error(`No default cryptocurrency exchange or faucet for networkId: "${network}"`)
+      throw new Error(
+        `No default cryptocurrency exchange or faucet for networkId: "${network}"`,
+      )
   }
 }

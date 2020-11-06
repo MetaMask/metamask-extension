@@ -1,9 +1,9 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import sinon from 'sinon'
 import { shallow } from 'enzyme'
 import MetaFoxLogo from '../../../ui/metafox-logo'
-import AppHeader from '../index'
+import AppHeader from '..'
 
 describe('App Header', function () {
   let wrapper
@@ -26,14 +26,12 @@ describe('App Header', function () {
   }
 
   beforeEach(function () {
-    wrapper = shallow(
-      <AppHeader.WrappedComponent {...props} />, {
-        context: {
-          t: (str) => str,
-          metricsEvent: () => {},
-        },
+    wrapper = shallow(<AppHeader.WrappedComponent {...props} />, {
+      context: {
+        t: (str) => str,
+        metricsEvent: () => undefined,
       },
-    )
+    })
   })
 
   afterEach(function () {
@@ -54,8 +52,8 @@ describe('App Header', function () {
       const network = wrapper.find({ network: 'test' })
 
       network.simulate('click', {
-        preventDefault: () => {},
-        stopPropagation: () => {},
+        preventDefault: () => undefined,
+        stopPropagation: () => undefined,
       })
 
       assert(props.showNetworkDropdown.calledOnce)
@@ -66,8 +64,8 @@ describe('App Header', function () {
       const network = wrapper.find({ network: 'test' })
 
       network.simulate('click', {
-        preventDefault: () => {},
-        stopPropagation: () => {},
+        preventDefault: () => undefined,
+        stopPropagation: () => undefined,
       })
 
       assert(props.hideNetworkDropdown.calledOnce)
@@ -81,7 +79,6 @@ describe('App Header', function () {
   })
 
   describe('Account Menu', function () {
-
     it('toggles account menu', function () {
       const accountMenu = wrapper.find('.account-menu__icon')
       accountMenu.simulate('click')
@@ -95,5 +92,4 @@ describe('App Header', function () {
       assert(props.toggleAccountMenu.notCalled)
     })
   })
-
 })

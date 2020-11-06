@@ -2,19 +2,19 @@ import assert from 'assert'
 import migration41 from '../../../app/scripts/migrations/041'
 
 describe('migration #41', function () {
-
   it('should update the version metadata', function (done) {
     const oldStorage = {
-      'meta': {
-        'version': 40,
+      meta: {
+        version: 40,
       },
-      'data': {},
+      data: {},
     }
 
-    migration41.migrate(oldStorage)
+    migration41
+      .migrate(oldStorage)
       .then((newStorage) => {
         assert.deepEqual(newStorage.meta, {
-          'version': 41,
+          version: 41,
         })
         done()
       })
@@ -36,7 +36,8 @@ describe('migration #41', function () {
       },
     }
 
-    migration41.migrate(oldStorage)
+    migration41
+      .migrate(oldStorage)
       .then((newStorage) => {
         assert.deepEqual(newStorage.data, {
           PreferencesController: {
@@ -61,7 +62,8 @@ describe('migration #41', function () {
       },
     }
 
-    migration41.migrate(oldStorage)
+    migration41
+      .migrate(oldStorage)
       .then((newStorage) => {
         assert.deepEqual(newStorage.data, {
           foo: 'bar',
@@ -82,7 +84,8 @@ describe('migration #41', function () {
       },
     }
 
-    migration41.migrate(oldStorage)
+    migration41
+      .migrate(oldStorage)
       .then((newStorage) => {
         assert.deepEqual(newStorage.data, {
           PreferencesController: {

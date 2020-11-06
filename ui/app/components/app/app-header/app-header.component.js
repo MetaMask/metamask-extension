@@ -19,7 +19,9 @@ export default class AppHeader extends PureComponent {
     isUnlocked: PropTypes.bool,
     hideNetworkIndicator: PropTypes.bool,
     disabled: PropTypes.bool,
+    disableNetworkIndicator: PropTypes.bool,
     isAccountMenuOpen: PropTypes.bool,
+    onClick: PropTypes.func,
   }
 
   static contextTypes = {
@@ -27,11 +29,15 @@ export default class AppHeader extends PureComponent {
     metricsEvent: PropTypes.func,
   }
 
-  handleNetworkIndicatorClick (event) {
+  handleNetworkIndicatorClick(event) {
     event.preventDefault()
     event.stopPropagation()
 
-    const { networkDropdownOpen, showNetworkDropdown, hideNetworkDropdown } = this.props
+    const {
+      networkDropdownOpen,
+      showNetworkDropdown,
+      hideNetworkDropdown,
+    } = this.props
 
     if (networkDropdownOpen === false) {
       this.context.metricsEvent({
@@ -47,69 +53,81 @@ export default class AppHeader extends PureComponent {
     }
   }
 
-  renderAccountMenu () {
-    const { isUnlocked, toggleAccountMenu, selectedAddress, disabled, isAccountMenuOpen } = this.props
+  renderAccountMenu() {
+    const {
+      isUnlocked,
+      toggleAccountMenu,
+      selectedAddress,
+      disabled,
+      isAccountMenuOpen,
+    } = this.props
 
-    return isUnlocked && (
-      <div
-        className={classnames('account-menu__icon', {
-          'account-menu__icon--disabled': disabled,
-        })}
-        onClick={() => {
-          if (!disabled) {
-            !isAccountMenuOpen && this.context.metricsEvent({
-              eventOpts: {
-                category: 'Navigation',
-                action: 'Home',
-                name: 'Opened Main Menu',
-              },
-            })
-            toggleAccountMenu()
-          }
-        }}
-      >
-        <Identicon
-          address={selectedAddress}
-          diameter={32}
-          addBorder
-        />
-      </div>
+    return (
+      isUnlocked && (
+        <div
+          className={classnames('account-menu__icon', {
+            'account-menu__icon--disabled': disabled,
+          })}
+          onClick={() => {
+            if (!disabled) {
+              !isAccountMenuOpen &&
+                this.context.metricsEvent({
+                  eventOpts: {
+                    category: 'Navigation',
+                    action: 'Home',
+                    name: 'Opened Main Menu',
+                  },
+                })
+              toggleAccountMenu()
+            }
+          }}
+        >
+          <Identicon address={selectedAddress} diameter={32} addBorder />
+        </div>
+      )
     )
   }
 
-  render () {
+  render() {
     const {
       history,
       network,
       provider,
       isUnlocked,
       hideNetworkIndicator,
+      disableNetworkIndicator,
       disabled,
+      onClick,
     } = this.props
 
     return (
       <div
-        className={classnames('app-header', { 'app-header--back-drop': isUnlocked })}
+        className={classnames('app-header', {
+          'app-header--back-drop': isUnlocked,
+        })}
       >
         <div className="app-header__contents">
           <MetaFoxLogo
             unsetIconHeight
-            onClick={() => history.push(DEFAULT_ROUTE)}
+            onClick={async () => {
+              if (onClick) {
+                await onClick()
+              }
+              history.push(DEFAULT_ROUTE)
+            }}
           />
           <div className="app-header__account-menu-container">
-            {
-              !hideNetworkIndicator && (
-                <div className="app-header__network-component-wrapper">
-                  <NetworkIndicator
-                    network={network}
-                    provider={provider}
-                    onClick={(event) => this.handleNetworkIndicatorClick(event)}
-                    disabled={disabled}
-                  />
-                </div>
-              )
-            }
-            { this.renderAccountMenu() }
+            {!hideNetworkIndicator && (
+              <div className="app-header__network-component-wrapper">
+                <NetworkIndicator
+                  network={network}
+                  provider={provider}
+                  onClick={(event) => this.handleNetworkIndicatorClick(event)}
+                  disabled={disabled || disableNetworkIndicator}
+                />
+              </div>
+            )}
+            {this.renderAccountMenu()}
           </div>
         </div>
       </div>

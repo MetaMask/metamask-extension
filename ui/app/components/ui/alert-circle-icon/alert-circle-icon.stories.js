@@ -5,14 +5,6 @@ export default {
   title: 'AlertCircleIcon',
 }
 
-export const dangerCircleIcon = () => (
-  <AlertCircleIcon
-    type="danger"
-  />
-)
+export const dangerCircleIcon = () => <AlertCircleIcon type="danger" />
 
-export const warningCircleIcon = () => (
-  <AlertCircleIcon
-    type="warning"
-  />
-)
+export const warningCircleIcon = () => <AlertCircleIcon type="warning" />

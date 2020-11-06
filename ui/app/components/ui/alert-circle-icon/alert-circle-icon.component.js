@@ -18,9 +18,7 @@ export default class AlertCircleIcon extends Component {
     type: PropTypes.oneOf(Object.keys(typeConfig)).isRequired,
   }
 
-  render () {
-    return (
-      <CircleIcon { ...typeConfig[this.props.type] } />
-    )
+  render() {
+    return <CircleIcon {...typeConfig[this.props.type]} />
   }
 }

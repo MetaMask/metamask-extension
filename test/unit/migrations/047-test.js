@@ -4,15 +4,15 @@ import migration47 from '../../../app/scripts/migrations/047'
 describe('migration #47', function () {
   it('should update the version metadata', async function () {
     const oldStorage = {
-      'meta': {
-        'version': 46,
+      meta: {
+        version: 46,
       },
-      'data': {},
+      data: {},
     }
 
     const newStorage = await migration47.migrate(oldStorage)
     assert.deepEqual(newStorage.meta, {
-      'version': 47,
+      version: 47,
     })
   })
 

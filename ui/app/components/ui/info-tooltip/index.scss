@@ -1,0 +1,50 @@
+.info-tooltip {
+  img {
+    height: 12px;
+    width: 12px;
+  }
+}
+
+.tippy-popper[x-placement^=top] .tippy-tooltip-info-theme [x-arrow],
+.tippy-popper[x-placement^=top] .tippy-tooltip-wideInfo-theme [x-arrow] {
+  border-top-color: $white;
+}
+
+.tippy-popper[x-placement^=right] .tippy-tooltip-info-theme [x-arrow],
+.tippy-popper[x-placement^=right] .tippy-tooltip-wideInfo-theme [x-arrow] {
+  border-right-color: $white;
+}
+
+.tippy-popper[x-placement^=left] .tippy-tooltip-info-theme [x-arrow],
+.tippy-popper[x-placement^=left] .tippy-tooltip-wideInfo-theme [x-arrow] {
+  border-left-color: $white;
+}
+
+.tippy-popper[x-placement^=bottom] .tippy-tooltip-info-theme [x-arrow],
+.tippy-popper[x-placement^=bottom] .tippy-tooltip-wideInfo-theme [x-arrow] {
+  border-bottom-color: $white;
+}
+
+.tippy-tooltip {
+  &#{&}-info-theme,
+  &#{&}-wideInfo-theme {
+    background: white;
+    color: black;
+    box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
+    border-radius: 8px;
+    max-width: 203px;
+    padding: 16px;
+    padding-bottom: 15px;
+
+    .tippy-tooltip-content {
+      @include H7;
+
+      text-align: left;
+      color: $Grey-500;
+    }
+  }
+
+  &#{&}-wideInfo-theme {
+    max-width: 260px;
+  }
+}

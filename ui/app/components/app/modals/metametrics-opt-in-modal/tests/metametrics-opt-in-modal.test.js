@@ -1,8 +1,9 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import sinon from 'sinon'
 import { mount } from 'enzyme'
-import MetaMetricsOptIn from '../index'
+import MetaMetricsOptIn from '..'
+import messages from '../../../../../../../app/_locales/en/messages.json'
 
 describe('MetaMetrics Opt In', function () {
   let wrapper
@@ -14,13 +15,12 @@ describe('MetaMetrics Opt In', function () {
   }
 
   beforeEach(function () {
-    wrapper = mount(
-      <MetaMetricsOptIn.WrappedComponent {...props} />, {
-        context: {
-          metricsEvent: () => {},
-        },
+    wrapper = mount(<MetaMetricsOptIn.WrappedComponent {...props} />, {
+      context: {
+        metricsEvent: () => undefined,
+        t: (key) => messages[key].message,
       },
-    )
+    })
   })
 
   afterEach(function () {
@@ -41,8 +41,10 @@ describe('MetaMetrics Opt In', function () {
   })
 
   it('passes true to setParticipateInMetaMetrics and hides modal', function (done) {
-    const iAgree = wrapper.find('.btn-primary.page-container__footer-button')
-    iAgree.simulate('click')
+    const affirmAgree = wrapper.find(
+      '.btn-primary.page-container__footer-button',
+    )
+    affirmAgree.simulate('click')
 
     setImmediate(() => {
       assert(props.setParticipateInMetaMetrics.calledOnce)
@@ -51,5 +53,4 @@ describe('MetaMetrics Opt In', function () {
       done()
     })
   })
-
 })

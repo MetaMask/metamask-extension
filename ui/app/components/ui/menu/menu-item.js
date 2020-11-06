@@ -2,17 +2,24 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
-const MenuItem = ({ children, className, 'data-testid': dataTestId, iconClassName, onClick, subtitle }) => (
-  <button className={classnames('menu-item', className)} data-testid={dataTestId} onClick={onClick}>
-    {
-      iconClassName
-        ? (
-          <i className={classnames('menu-item__icon', iconClassName)} />
-        )
-        : null
-    }
+const MenuItem = ({
+  children,
+  className,
+  'data-testid': dataTestId,
+  iconClassName,
+  onClick,
+  subtitle,
+}) => (
+  <button
+    className={classnames('menu-item', className)}
+    data-testid={dataTestId}
+    onClick={onClick}
+  >
+    {iconClassName ? (
+      <i className={classnames('menu-item__icon', iconClassName)} />
+    ) : null}
     <span>{children}</span>
-    { subtitle }
+    {subtitle}
   </button>
 )
 

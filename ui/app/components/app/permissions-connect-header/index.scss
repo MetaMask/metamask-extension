@@ -26,16 +26,16 @@
   }
 
   &__title {
-    @extend %H3;
+    @include H3;
 
     text-align: center;
     color: $Black-100;
-    margin-top: 14px;
+    margin-top: 16px;
   }
 
   &__text,
   &__subtitle {
-    @extend %H6;
+    @include H6;
 
     text-align: center;
     color: $Grey-500;
@@ -45,6 +45,7 @@
     width: 100%;
     text-overflow: ellipsis;
     overflow: hidden;
+    margin-top: 8px;
 
     /*rtl:ignore*/
     direction: rtl;

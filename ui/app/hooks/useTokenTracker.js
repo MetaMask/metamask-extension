@@ -2,9 +2,9 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import TokenTracker from '@metamask/eth-token-tracker'
 import { useSelector } from 'react-redux'
 import { getCurrentNetwork, getSelectedAddress } from '../selectors'
+import { useEqualityCheck } from './useEqualityCheck'
 
-
-export function useTokenTracker (tokens) {
+export function useTokenTracker(tokens) {
   const network = useSelector(getCurrentNetwork)
   const userAddress = useSelector(getSelectedAddress)
 
@@ -12,15 +12,16 @@ export function useTokenTracker (tokens) {
   const [tokensWithBalances, setTokensWithBalances] = useState([])
   const [error, setError] = useState(null)
   const tokenTracker = useRef(null)
+  const memoizedTokens = useEqualityCheck(tokens)
 
-  const updateBalances = useCallback((tokensWithBalances) => {
-    setTokensWithBalances(tokensWithBalances)
+  const updateBalances = useCallback((tokenWithBalances) => {
+    setTokensWithBalances(tokenWithBalances)
     setLoading(false)
     setError(null)
   }, [])
 
-  const showError = useCallback((error) => {
-    setError(error)
+  const showError = useCallback((err) => {
+    setError(err)
     setLoading(false)
   }, [])
 
@@ -33,20 +34,23 @@ export function useTokenTracker (tokens) {
     }
   }, [])
 
-  const buildTracker = useCallback((address, tokenList) => {
-    // clear out previous tracker, if it exists.
-    teardownTracker()
-    tokenTracker.current = new TokenTracker({
-      userAddress: address,
-      provider: global.ethereumProvider,
-      tokens: tokenList,
-      pollingInterval: 8000,
-    })
+  const buildTracker = useCallback(
+    (address, tokenList) => {
+      // clear out previous tracker, if it exists.
+      teardownTracker()
+      tokenTracker.current = new TokenTracker({
+        userAddress: address,
+        provider: global.ethereumProvider,
+        tokens: tokenList,
+        pollingInterval: 8000,
+      })
 
-    tokenTracker.current.on('update', updateBalances)
-    tokenTracker.current.on('error', showError)
-    tokenTracker.current.updateBalances()
-  }, [updateBalances, showError, teardownTracker])
+      tokenTracker.current.on('update', updateBalances)
+      tokenTracker.current.on('error', showError)
+      tokenTracker.current.updateBalances()
+    },
+    [updateBalances, showError, teardownTracker],
+  )
 
   // Effect to remove the tracker when the component is removed from DOM
   // Do not overload this effect with additional dependencies. teardownTracker
@@ -56,7 +60,6 @@ export function useTokenTracker (tokens) {
   useEffect(() => {
     return teardownTracker
   }, [teardownTracker])
-
 
   // Effect to set loading state and initialize tracker when values change
   useEffect(() => {
@@ -76,13 +79,20 @@ export function useTokenTracker (tokens) {
       return
     }
 
-    if (tokens.length === 0) {
+    if (memoizedTokens.length === 0) {
       // sets loading state to false and token list to empty
       updateBalances([])
     }
 
-    buildTracker(userAddress, tokens)
-  }, [userAddress, teardownTracker, network, tokens, updateBalances, buildTracker])
+    buildTracker(userAddress, memoizedTokens)
+  }, [
+    userAddress,
+    teardownTracker,
+    network,
+    memoizedTokens,
+    updateBalances,
+    buildTracker,
+  ])
 
   return { loading, tokensWithBalances, error }
 }

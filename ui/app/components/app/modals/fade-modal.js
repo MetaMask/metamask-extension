@@ -5,7 +5,6 @@ let index = 0
 let extraSheet
 
 const insertRule = (css) => {
-
   if (!extraSheet) {
     // First time, create an extra stylesheet for adding rules
     extraSheet = document.createElement('style')
@@ -14,22 +13,22 @@ const insertRule = (css) => {
     extraSheet = extraSheet.sheet || extraSheet.styleSheet
   }
 
-  const index = (extraSheet.cssRules || extraSheet.rules).length
-  extraSheet.insertRule(css, index)
+  extraSheet.insertRule(css, (extraSheet.cssRules || extraSheet.rules).length)
 
   return extraSheet
 }
 
 const insertKeyframesRule = (keyframes) => {
   // random name
-  const name = 'anim_' + (++index) + (+new Date())
-  let css = '@' + 'keyframes ' + name + ' {'
+  // eslint-disable-next-line no-plusplus
+  const name = `anim_${++index}${Number(new Date())}`
+  let css = `@keyframes ${name} {`
 
   Object.keys(keyframes).forEach((key) => {
-    css += key + ' {'
+    css += `${key} {`
 
     Object.keys(keyframes[key]).forEach((property) => {
-      const part = ':' + keyframes[key][property] + ';'
+      const part = `:${keyframes[key][property]};`
       css += property + part
     })
 
@@ -88,11 +87,11 @@ const animation = {
 
 const endEvents = ['transitionend', 'animationend']
 
-function addEventListener (node, eventName, eventListener) {
+function addEventListener(node, eventName, eventListener) {
   node.addEventListener(eventName, eventListener, false)
 }
 
-function removeEventListener (node, eventName, eventListener) {
+function removeEventListener(node, eventName, eventListener) {
   node.removeEventListener(eventName, eventListener, false)
 }
 
@@ -133,8 +132,8 @@ class FadeModal extends Component {
   }
 
   static defaultProps = {
-    onShow: function () {},
-    onHide: function () {},
+    onShow: () => undefined,
+    onHide: () => undefined,
     keyboard: true,
     backdrop: true,
     closeOnClick: true,
@@ -172,33 +171,39 @@ class FadeModal extends Component {
     return this.state.hidden
   }
 
-  render () {
+  render() {
     if (this.state.hidden) {
       return null
     }
 
     const { willHide } = this.state
     const { modalStyle } = this.props
-    const backdropStyle = Object.assign({}, {
-      animationName: willHide ? animation.hideBackdropAnimation : animation.showBackdropAnimation,
-      animationTimingFunction: (willHide ? animation.hide : animation.show).animationTimingFunction,
-    }, this.props.backdropStyle)
-    const contentStyle = Object.assign({}, {
-      animationDuration: (willHide ? animation.hide : animation.show).animationDuration,
-      animationName: willHide ? animation.hideContentAnimation : animation.showContentAnimation,
-      animationTimingFunction: (willHide ? animation.hide : animation.show).animationTimingFunction,
-    }, this.props.contentStyle)
+    const backdropStyle = {
+      animationName: willHide
+        ? animation.hideBackdropAnimation
+        : animation.showBackdropAnimation,
+      animationTimingFunction: (willHide ? animation.hide : animation.show)
+        .animationTimingFunction,
+      ...this.props.backdropStyle,
+    }
+    const contentStyle = {
+      animationDuration: (willHide ? animation.hide : animation.show)
+        .animationDuration,
+      animationName: willHide
+        ? animation.hideContentAnimation
+        : animation.showContentAnimation,
+      animationTimingFunction: (willHide ? animation.hide : animation.show)
+        .animationTimingFunction,
+      ...this.props.contentStyle,
+    }
 
-    const backdrop = this.props.backdrop
-      ? (
-        <div
-          className="backdrop"
-          style={backdropStyle}
-          onClick={this.props.closeOnClick
-            ? this.handleBackdropClick
-            : null}
-        />
-      ) : undefined
+    const backdrop = this.props.backdrop ? (
+      <div
+        className="modal__backdrop"
+        style={backdropStyle}
+        onClick={this.props.closeOnClick ? this.handleBackdropClick : null}
+      />
+    ) : undefined
 
     if (willHide) {
       this.addTransitionListener(this.content, this.leave)
@@ -208,7 +213,7 @@ class FadeModal extends Component {
       <span>
         <div className="modal" style={modalStyle}>
           <div
-            className="content"
+            className="modal__content"
             ref={(el) => (this.content = el)}
             tabIndex="-1"
             style={contentStyle}
@@ -219,7 +224,6 @@ class FadeModal extends Component {
         {backdrop}
       </span>
     )
-
   }
 
   leave = () => {
@@ -243,9 +247,12 @@ class FadeModal extends Component {
       hidden: false,
     })
 
-    setTimeout(function () {
-      this.addTransitionListener(this.content, this.enter)
-    }.bind(this), 0)
+    setTimeout(
+      function () {
+        this.addTransitionListener(this.content, this.enter)
+      }.bind(this),
+      0,
+    )
   }
 
   hide = () => {
@@ -267,9 +274,10 @@ class FadeModal extends Component {
   }
 
   closeOnEsc = (event) => {
-    if (this.props.keyboard &&
-      (event.key === 'Escape' ||
-        event.keyCode === 27)) {
+    if (
+      this.props.keyboard &&
+      (event.key === 'Escape' || event.keyCode === 27)
+    ) {
       this.hide()
     }
   }

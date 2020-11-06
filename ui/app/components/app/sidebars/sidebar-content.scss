@@ -57,7 +57,7 @@
           max-width: 318px;
 
           &__time-estimate {
-            font-size: 12px;
+            @include H7;
           }
         }
       }

@@ -3,7 +3,7 @@
   justify-content: space-between;
   align-items: center;
   flex: 1;
-  height: 209px;
+  min-height: 209px;
   min-width: 0;
   padding-top: 10px;
   flex-direction: column;
@@ -20,7 +20,7 @@
   &__buttons {
     display: flex;
     flex-direction: row;
-    height: 44px;
+    height: 68px;
     margin-bottom: 24px;
   }
 }
@@ -34,7 +34,7 @@
   }
 
   text-transform: uppercase;
-  font-weight: bold;
+  font-weight: 500;
 }
 
 .eth-overview {
@@ -54,9 +54,9 @@
   }
 
   &__primary-balance {
+    @include H2;
+
     color: $black;
-    font-size: 32px;
-    line-height: 45px;
     width: 100%;
     justify-content: center;
   }
@@ -71,20 +71,34 @@
   }
 
   &__cached-secondary-balance {
+    @include Paragraph;
+
     color: rgba(220, 153, 18, 0.6901960784313725);
-    font-size: 16px;
-    line-height: 23px;
   }
 
   &__secondary-balance {
-    font-size: 16px;
-    line-height: 23px;
-    font-weight: 400;
+    @include Paragraph;
+
     color: $Grey-400;
   }
 
   &__button {
-    @extend %asset-buttons;
+    margin-right: 24px;
+  }
+
+  &__button:last-of-type {
+    margin-right: 0;
+  }
+
+  &__circle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 36px;
+    width: 36px;
+    background: #037dd6;
+    border-radius: 18px;
+    margin-top: 6px;
   }
 }
 
@@ -101,21 +115,24 @@
   }
 
   &__primary-balance {
+    @include H2;
+
     color: $black;
-    font-size: 32px;
-    line-height: 45px;
     width: 100%;
     justify-content: center;
   }
 
   &__secondary-balance {
-    font-size: 16px;
-    line-height: 23px;
-    font-weight: 400;
+    @include H5;
+
     color: $Grey-400;
   }
 
   &__button {
-    @extend %asset-buttons;
+    margin-right: 24px;
+  }
+
+  &__button:last-of-type {
+    margin-right: 0;
   }
 }

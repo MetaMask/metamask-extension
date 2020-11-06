@@ -6,9 +6,7 @@ import seedPhraseVerifier from '../../../app/scripts/lib/seed-phrase-verifier'
 import mockEncryptor from '../../lib/mock-encryptor'
 
 describe('SeedPhraseVerifier', function () {
-
   describe('verifyAccounts', function () {
-
     const password = 'passw0rd1'
     const hdKeyTree = 'HD Key Tree'
 
@@ -28,7 +26,6 @@ describe('SeedPhraseVerifier', function () {
     })
 
     it('should be able to verify created account with seed words', async function () {
-
       const createdAccounts = await primaryKeyring.getAccounts()
       assert.equal(createdAccounts.length, 1)
 
@@ -40,7 +37,6 @@ describe('SeedPhraseVerifier', function () {
     })
 
     it('should be able to verify created account (upper case) with seed words', async function () {
-
       const createdAccounts = await primaryKeyring.getAccounts()
       assert.equal(createdAccounts.length, 1)
 
@@ -54,7 +50,6 @@ describe('SeedPhraseVerifier', function () {
     })
 
     it('should be able to verify created account (lower case) with seed words', async function () {
-
       const createdAccounts = await primaryKeyring.getAccounts()
       assert.equal(createdAccounts.length, 1)
       const lowerCaseAccounts = [createdAccounts[0].toLowerCase()]
@@ -67,28 +62,31 @@ describe('SeedPhraseVerifier', function () {
     })
 
     it('should return error with good but different seed words', async function () {
-
       const createdAccounts = await primaryKeyring.getAccounts()
       assert.equal(createdAccounts.length, 1)
 
       await primaryKeyring.serialize()
-      const seedWords = 'debris dizzy just program just float decrease vacant alarm reduce speak stadium'
+      const seedWords =
+        'debris dizzy just program just float decrease vacant alarm reduce speak stadium'
 
       try {
         await seedPhraseVerifier.verifyAccounts(createdAccounts, seedWords)
         assert.fail('Should reject')
       } catch (err) {
-        assert.ok(err.message.indexOf('Not identical accounts!') >= 0, 'Wrong error message')
+        assert.ok(
+          err.message.indexOf('Not identical accounts!') >= 0,
+          'Wrong error message',
+        )
       }
     })
 
     it('should return error with undefined existing accounts', async function () {
-
       const createdAccounts = await primaryKeyring.getAccounts()
       assert.equal(createdAccounts.length, 1)
 
       await primaryKeyring.serialize()
-      const seedWords = 'debris dizzy just program just float decrease vacant alarm reduce speak stadium'
+      const seedWords =
+        'debris dizzy just program just float decrease vacant alarm reduce speak stadium'
 
       try {
         await seedPhraseVerifier.verifyAccounts(undefined, seedWords)
@@ -99,12 +97,12 @@ describe('SeedPhraseVerifier', function () {
     })
 
     it('should return error with empty accounts array', async function () {
-
       const createdAccounts = await primaryKeyring.getAccounts()
       assert.equal(createdAccounts.length, 1)
 
       await primaryKeyring.serialize()
-      const seedWords = 'debris dizzy just program just float decrease vacant alarm reduce speak stadium'
+      const seedWords =
+        'debris dizzy just program just float decrease vacant alarm reduce speak stadium'
 
       try {
         await seedPhraseVerifier.verifyAccounts([], seedWords)
@@ -115,7 +113,6 @@ describe('SeedPhraseVerifier', function () {
     })
 
     it('should be able to verify more than one created account with seed words', async function () {
-
       await keyringController.addNewAccount(primaryKeyring)
       await keyringController.addNewAccount(primaryKeyring)
 

@@ -12,7 +12,7 @@ const Asset = () => {
   const tokens = useSelector(getTokens)
   const { asset } = useParams()
 
-  const token = tokens.find((token) => token.address === asset)
+  const token = tokens.find(({ address }) => address === asset)
 
   let content
   if (token) {
@@ -22,11 +22,7 @@ const Asset = () => {
   } else {
     content = <Redirect to={{ pathname: DEFAULT_ROUTE }} />
   }
-  return (
-    <div className="main-container asset__container">
-      { content }
-    </div>
-  )
+  return <div className="main-container asset__container">{content}</div>
 }
 
 export default Asset

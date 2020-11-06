@@ -13,6 +13,7 @@ import ConnectedSites from '../connected-sites'
 import ConnectedAccounts from '../connected-accounts'
 import { Tabs, Tab } from '../../components/ui/tabs'
 import { EthOverview } from '../../components/app/wallet-overview'
+import SwapsIntroPopup from '../swaps/intro-popup'
 
 import {
   ASSET_ROUTE,
@@ -23,9 +24,13 @@ import {
   CONNECT_ROUTE,
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
+  AWAITING_SWAP_ROUTE,
+  BUILD_QUOTE_ROUTE,
+  VIEW_QUOTE_ROUTE,
 } from '../../helpers/constants/routes'
 
-const LEARN_MORE_URL = 'https://metamask.zendesk.com/hc/en-us/articles/360045129011-Intro-to-MetaMask-v8-extension'
+const LEARN_MORE_URL =
+  'https://metamask.zendesk.com/hc/en-us/articles/360045129011-Intro-to-MetaMask-v8-extension'
 
 export default class Home extends PureComponent {
   static contextTypes = {
@@ -54,13 +59,20 @@ export default class Home extends PureComponent {
     connectedStatusPopoverHasBeenShown: PropTypes.bool,
     defaultHomeActiveTabName: PropTypes.string,
     onTabClick: PropTypes.func.isRequired,
+    setSwapsWelcomeMessageHasBeenShown: PropTypes.func.isRequired,
+    swapsWelcomeMessageHasBeenShown: PropTypes.bool.isRequired,
+    haveSwapsQuotes: PropTypes.bool.isRequired,
+    showAwaitingSwapScreen: PropTypes.bool.isRequired,
+    swapsFetchParams: PropTypes.object,
+    swapsEnabled: PropTypes.bool,
+    isMainnet: PropTypes.bool,
   }
 
   state = {
     mounted: false,
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const {
       firstPermissionsRequestId,
       history,
@@ -68,11 +80,20 @@ export default class Home extends PureComponent {
       suggestedTokens = {},
       totalUnapprovedCount,
       unconfirmedTransactionsCount,
+      haveSwapsQuotes,
+      showAwaitingSwapScreen,
+      swapsFetchParams,
     } = this.props
 
     this.setState({ mounted: true })
     if (isNotification && totalUnapprovedCount === 0) {
       global.platform.closeCurrentWindow()
+    } else if (!isNotification && showAwaitingSwapScreen) {
+      history.push(AWAITING_SWAP_ROUTE)
+    } else if (!isNotification && haveSwapsQuotes) {
+      history.push(VIEW_QUOTE_ROUTE)
+    } else if (!isNotification && swapsFetchParams) {
+      history.push(BUILD_QUOTE_ROUTE)
     } else if (firstPermissionsRequestId) {
       history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`)
     } else if (unconfirmedTransactionsCount > 0) {
@@ -82,27 +103,36 @@ export default class Home extends PureComponent {
     }
   }
 
-  static getDerivedStateFromProps (
+  static getDerivedStateFromProps(
     {
       firstPermissionsRequestId,
       isNotification,
       suggestedTokens,
       totalUnapprovedCount,
       unconfirmedTransactionsCount,
+      haveSwapsQuotes,
+      showAwaitingSwapScreen,
+      swapsFetchParams,
     },
     { mounted },
   ) {
     if (!mounted) {
       if (isNotification && totalUnapprovedCount === 0) {
         return { closing: true }
-      } else if (firstPermissionsRequestId || unconfirmedTransactionsCount > 0 || Object.keys(suggestedTokens).length > 0) {
+      } else if (
+        firstPermissionsRequestId ||
+        unconfirmedTransactionsCount > 0 ||
+        Object.keys(suggestedTokens).length > 0 ||
+        (!isNotification &&
+          (showAwaitingSwapScreen || haveSwapsQuotes || swapsFetchParams))
+      ) {
         return { redirecting: true }
       }
     }
     return null
   }
 
-  componentDidUpdate (_, prevState) {
+  componentDidUpdate(_, prevState) {
     const {
       setupThreeBox,
       showRestorePrompt,
@@ -119,7 +149,7 @@ export default class Home extends PureComponent {
     }
   }
 
-  renderNotifications () {
+  renderNotifications() {
     const { t } = this.context
     const {
       history,
@@ -135,56 +165,52 @@ export default class Home extends PureComponent {
 
     return (
       <MultipleNotifications>
-        {
-          shouldShowSeedPhraseReminder
-            ? (
-              <HomeNotification
-                descriptionText={t('backupApprovalNotice')}
-                acceptText={t('backupNow')}
-                onAccept={() => {
-                  if (isPopup) {
-                    global.platform.openExtensionInBrowser(INITIALIZE_BACKUP_SEED_PHRASE_ROUTE)
-                  } else {
-                    history.push(INITIALIZE_BACKUP_SEED_PHRASE_ROUTE)
-                  }
-                }}
-                infoText={t('backupApprovalInfo')}
-                key="home-backupApprovalNotice"
-              />
-            )
-            : null
-        }
-        {
-          threeBoxLastUpdated && showRestorePrompt
-            ? (
-              <HomeNotification
-                descriptionText={t('restoreWalletPreferences', [ formatDate(threeBoxLastUpdated, 'M/d/y') ])}
-                acceptText={t('restore')}
-                ignoreText={t('noThanks')}
-                infoText={t('dataBackupFoundInfo')}
-                onAccept={() => {
-                  restoreFromThreeBox(selectedAddress)
-                    .then(() => {
-                      turnThreeBoxSyncingOn()
-                    })
-                }}
-                onIgnore={() => {
-                  setShowRestorePromptToFalse()
-                }}
-                key="home-privacyModeDefault"
-              />
-            )
-            : null
-        }
+        {shouldShowSeedPhraseReminder ? (
+          <HomeNotification
+            descriptionText={t('backupApprovalNotice')}
+            acceptText={t('backupNow')}
+            onAccept={() => {
+              if (isPopup) {
+                global.platform.openExtensionInBrowser(
+                  INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
+                )
+              } else {
+                history.push(INITIALIZE_BACKUP_SEED_PHRASE_ROUTE)
+              }
+            }}
+            infoText={t('backupApprovalInfo')}
+            key="home-backupApprovalNotice"
+          />
+        ) : null}
+        {threeBoxLastUpdated && showRestorePrompt ? (
+          <HomeNotification
+            descriptionText={t('restoreWalletPreferences', [
+              formatDate(threeBoxLastUpdated, 'M/d/y'),
+            ])}
+            acceptText={t('restore')}
+            ignoreText={t('noThanks')}
+            infoText={t('dataBackupFoundInfo')}
+            onAccept={() => {
+              restoreFromThreeBox(selectedAddress).then(() => {
+                turnThreeBoxSyncingOn()
+              })
+            }}
+            onIgnore={() => {
+              setShowRestorePromptToFalse()
+            }}
+            key="home-privacyModeDefault"
+          />
+        ) : null}
       </MultipleNotifications>
     )
   }
+
   renderPopover = () => {
     const { setConnectedStatusPopoverHasBeenShown } = this.props
     const { t } = this.context
     return (
       <Popover
-        title={ t('whatsThis') }
+        title={t('whatsThis')}
         onClose={setConnectedStatusPopoverHasBeenShown}
         className="home__connected-status-popover"
         showArrow
@@ -198,34 +224,30 @@ export default class Home extends PureComponent {
             </div>
           )
         }}
-        footer={(
+        footer={
           <>
-            <a
-              href={LEARN_MORE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              { t('learnMore') }
+            <a href={LEARN_MORE_URL} target="_blank" rel="noopener noreferrer">
+              {t('learnMore')}
             </a>
             <Button
               type="primary"
               onClick={setConnectedStatusPopoverHasBeenShown}
             >
-              { t('dismiss') }
+              {t('dismiss')}
             </Button>
           </>
-        )}
+        }
       >
         <main className="home__connect-status-text">
-          <div>{ t('metaMaskConnectStatusParagraphOne') }</div>
-          <div>{ t('metaMaskConnectStatusParagraphTwo') }</div>
-          <div>{ t('metaMaskConnectStatusParagraphThree') }</div>
+          <div>{t('metaMaskConnectStatusParagraphOne')}</div>
+          <div>{t('metaMaskConnectStatusParagraphTwo')}</div>
+          <div>{t('metaMaskConnectStatusParagraphThree')}</div>
         </main>
       </Popover>
     )
   }
 
-  render () {
+  render() {
     const { t } = this.context
     const {
       defaultHomeActiveTabName,
@@ -234,6 +256,10 @@ export default class Home extends PureComponent {
       history,
       connectedStatusPopoverHasBeenShown,
       isPopup,
+      swapsWelcomeMessageHasBeenShown,
+      setSwapsWelcomeMessageHasBeenShown,
+      swapsEnabled,
+      isMainnet,
     } = this.props
 
     if (forgottenPassword) {
@@ -245,15 +271,28 @@ export default class Home extends PureComponent {
     return (
       <div className="main-container">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
-        <Route path={CONNECTED_ACCOUNTS_ROUTE} component={ConnectedAccounts} exact />
+        <Route
+          path={CONNECTED_ACCOUNTS_ROUTE}
+          component={ConnectedAccounts}
+          exact
+        />
         <div className="home__container">
-          { isPopup && !connectedStatusPopoverHasBeenShown ? this.renderPopover() : null }
+          {!swapsWelcomeMessageHasBeenShown && swapsEnabled && isMainnet ? (
+            <SwapsIntroPopup onClose={setSwapsWelcomeMessageHasBeenShown} />
+          ) : null}
+          {isPopup && !connectedStatusPopoverHasBeenShown
+            ? this.renderPopover()
+            : null}
           <div className="home__main-view">
             <MenuBar />
             <div className="home__balance-wrapper">
               <EthOverview />
             </div>
-            <Tabs defaultActiveTabName={defaultHomeActiveTabName} onTabClick={onTabClick} tabsClassName="home__tabs">
+            <Tabs
+              defaultActiveTabName={defaultHomeActiveTabName}
+              onTabClick={onTabClick}
+              tabsClassName="home__tabs"
+            >
               <Tab
                 activeClassName="home__tab--active"
                 className="home__tab"
@@ -261,7 +300,9 @@ export default class Home extends PureComponent {
                 name={t('assets')}
               >
                 <AssetList
-                  onClickAsset={(asset) => history.push(`${ASSET_ROUTE}/${asset}`)}
+                  onClickAsset={(asset) =>
+                    history.push(`${ASSET_ROUTE}/${asset}`)
+                  }
                 />
               </Tab>
               <Tab
@@ -274,7 +315,7 @@ export default class Home extends PureComponent {
               </Tab>
             </Tabs>
           </div>
-          { this.renderNotifications() }
+          {this.renderNotifications()}
         </div>
       </div>
     )

@@ -1,0 +1,83 @@
+.currency-display {
+  @include Paragraph;
+
+  height: 54px;
+  border: 1px solid $alto;
+  border-radius: 4px;
+  background-color: $white;
+  color: $scorpion;
+  padding: 8px 10px;
+  position: relative;
+
+  &__primary-row {
+    display: flex;
+  }
+
+  &__input {
+    @include Paragraph;
+
+    color: $scorpion;
+    border: none;
+    max-width: 22ch;
+  }
+
+  &__primary-currency {
+    @include Paragraph;
+
+    color: $scorpion;
+    font-weight: 400;
+  }
+
+  &__converted-row {
+    display: flex;
+  }
+
+  &__converted-value,
+  &__converted-currency {
+    @include H7;
+
+    color: $dusty-gray;
+  }
+
+  &__input-wrapper {
+    position: relative;
+    display: flex;
+    flex: 1;
+    max-width: 100%;
+
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      display: none;
+    }
+
+    input[type="number"]:hover::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      display: none;
+    }
+  }
+
+  &__currency-symbol {
+    margin-top: 1px;
+    color: $scorpion;
+  }
+
+  .react-numeric-input {
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      display: none;
+    }
+
+    input[type="number"]:hover::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      display: none;
+    }
+  }
+}

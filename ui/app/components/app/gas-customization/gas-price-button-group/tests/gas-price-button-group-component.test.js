@@ -1,8 +1,9 @@
-import React from 'react'
 import assert from 'assert'
-import shallow from '../../../../../../lib/shallow-with-context'
+import React from 'react'
 import sinon from 'sinon'
+import shallow from '../../../../../../lib/shallow-with-context'
 import GasPriceButtonGroup from '../gas-price-button-group.component'
+import { GAS_ESTIMATE_TYPES } from '../../../../../helpers/constants/common'
 
 import ButtonGroup from '../../../../ui/button-group'
 
@@ -17,18 +18,21 @@ describe('GasPriceButtonGroup Component', function () {
       className: 'gas-price-button-group',
       gasButtonInfo: [
         {
+          gasEstimateType: GAS_ESTIMATE_TYPES.SLOW,
           feeInPrimaryCurrency: '$0.52',
           feeInSecondaryCurrency: '0.0048 ETH',
           timeEstimate: '~ 1 min 0 sec',
           priceInHexWei: '0xa1b2c3f',
         },
         {
+          gasEstimateType: GAS_ESTIMATE_TYPES.AVERAGE,
           feeInPrimaryCurrency: '$0.39',
           feeInSecondaryCurrency: '0.004 ETH',
           timeEstimate: '~ 1 min 30 sec',
           priceInHexWei: '0xa1b2c39',
         },
         {
+          gasEstimateType: GAS_ESTIMATE_TYPES.FAST,
           feeInPrimaryCurrency: '$0.30',
           feeInSecondaryCurrency: '0.00354 ETH',
           timeEstimate: '~ 2 min 1 sec',
@@ -41,20 +45,17 @@ describe('GasPriceButtonGroup Component', function () {
       showCheck: true,
     }
 
-    mockButtonPropsAndFlags = Object.assign({}, {
+    mockButtonPropsAndFlags = {
       className: mockGasPriceButtonGroupProps.className,
-      handleGasPriceSelection: mockGasPriceButtonGroupProps.handleGasPriceSelection,
+      handleGasPriceSelection:
+        mockGasPriceButtonGroupProps.handleGasPriceSelection,
       showCheck: mockGasPriceButtonGroupProps.showCheck,
-    })
+    }
 
     sinon.spy(GasPriceButtonGroup.prototype, 'renderButton')
     sinon.spy(GasPriceButtonGroup.prototype, 'renderButtonContent')
 
-    wrapper = shallow((
-      <GasPriceButtonGroup
-        {...mockGasPriceButtonGroupProps}
-      />
-    ))
+    wrapper = shallow(<GasPriceButtonGroup {...mockGasPriceButtonGroupProps} />)
   })
 
   afterEach(function () {
@@ -77,12 +78,12 @@ describe('GasPriceButtonGroup Component', function () {
       assert.equal(noButtonActiveByDefault, true)
     })
 
-    function renderButtonArgsTest (i, mockButtonPropsAndFlags) {
+    function renderButtonArgsTest(i, mockPropsAndFlags) {
       assert.deepEqual(
         GasPriceButtonGroup.prototype.renderButton.getCall(i).args,
         [
-          Object.assign({}, mockGasPriceButtonGroupProps.gasButtonInfo[i]),
-          mockButtonPropsAndFlags,
+          { ...mockGasPriceButtonGroupProps.gasButtonInfo[i] },
+          mockPropsAndFlags,
           i,
         ],
       )
@@ -108,10 +109,12 @@ describe('GasPriceButtonGroup Component', function () {
 
     beforeEach(function () {
       GasPriceButtonGroup.prototype.renderButtonContent.resetHistory()
-      const renderButtonResult = GasPriceButtonGroup.prototype.renderButton(
-        Object.assign({}, mockGasPriceButtonGroupProps.gasButtonInfo[0]),
-        mockButtonPropsAndFlags,
-      )
+      const renderButtonResult = wrapper
+        .instance()
+        .renderButton(
+          { ...mockGasPriceButtonGroupProps.gasButtonInfo[0] },
+          mockButtonPropsAndFlags,
+        )
       wrappedRenderButtonResult = shallow(renderButtonResult)
     })
 
@@ -120,30 +123,41 @@ describe('GasPriceButtonGroup Component', function () {
     })
 
     it('should call the correct method when clicked', function () {
-      assert.equal(mockGasPriceButtonGroupProps.handleGasPriceSelection.callCount, 0)
+      assert.equal(
+        mockGasPriceButtonGroupProps.handleGasPriceSelection.callCount,
+        0,
+      )
       wrappedRenderButtonResult.props().onClick()
-      assert.equal(mockGasPriceButtonGroupProps.handleGasPriceSelection.callCount, 1)
+      assert.equal(
+        mockGasPriceButtonGroupProps.handleGasPriceSelection.callCount,
+        1,
+      )
       assert.deepEqual(
         mockGasPriceButtonGroupProps.handleGasPriceSelection.getCall(0).args,
-        [mockGasPriceButtonGroupProps.gasButtonInfo[0].priceInHexWei],
+        [
+          mockGasPriceButtonGroupProps.gasButtonInfo[0].priceInHexWei,
+          mockGasPriceButtonGroupProps.gasButtonInfo[0].gasEstimateType,
+        ],
       )
     })
 
     it('should call this.renderButtonContent with the correct args', function () {
-      assert.equal(GasPriceButtonGroup.prototype.renderButtonContent.callCount, 1)
+      assert.equal(
+        GasPriceButtonGroup.prototype.renderButtonContent.callCount,
+        1,
+      )
       const {
         feeInPrimaryCurrency,
         feeInSecondaryCurrency,
         timeEstimate,
+        gasEstimateType,
       } = mockGasPriceButtonGroupProps.gasButtonInfo[0]
-      const {
-        showCheck,
-        className,
-      } = mockGasPriceButtonGroupProps
+      const { showCheck, className } = mockGasPriceButtonGroupProps
       assert.deepEqual(
         GasPriceButtonGroup.prototype.renderButtonContent.getCall(0).args,
         [
           {
+            gasEstimateType,
             feeInPrimaryCurrency,
             feeInSecondaryCurrency,
             timeEstimate,
@@ -159,76 +173,140 @@ describe('GasPriceButtonGroup Component', function () {
 
   describe('renderButtonContent', function () {
     it('should render a label if passed a gasEstimateType', function () {
-      const renderButtonContentResult = wrapper.instance().renderButtonContent({
-        gasEstimateType: 'SLOW',
-      }, {
-        className: 'someClass',
-      })
-      const wrappedRenderButtonContentResult = shallow(renderButtonContentResult)
-      assert.equal(wrappedRenderButtonContentResult.childAt(0).children().length, 1)
-      assert.equal(wrappedRenderButtonContentResult.find('.someClass__label').text(), 'slow')
+      const renderButtonContentResult = wrapper.instance().renderButtonContent(
+        {
+          gasEstimateType: 'SLOW',
+        },
+        {
+          className: 'someClass',
+        },
+      )
+      const wrappedRenderButtonContentResult = shallow(
+        renderButtonContentResult,
+      )
+      assert.equal(
+        wrappedRenderButtonContentResult.childAt(0).children().length,
+        1,
+      )
+      assert.equal(
+        wrappedRenderButtonContentResult.find('.someClass__label').text(),
+        'slow',
+      )
     })
 
     it('should render a feeInPrimaryCurrency if passed a feeInPrimaryCurrency', function () {
-      const renderButtonContentResult = GasPriceButtonGroup.prototype.renderButtonContent({
-        feeInPrimaryCurrency: 'mockFeeInPrimaryCurrency',
-      }, {
-        className: 'someClass',
-      })
-      const wrappedRenderButtonContentResult = shallow(renderButtonContentResult)
-      assert.equal(wrappedRenderButtonContentResult.childAt(0).children().length, 1)
-      assert.equal(wrappedRenderButtonContentResult.find('.someClass__primary-currency').text(), 'mockFeeInPrimaryCurrency')
+      const renderButtonContentResult = GasPriceButtonGroup.prototype.renderButtonContent(
+        {
+          feeInPrimaryCurrency: 'mockFeeInPrimaryCurrency',
+        },
+        {
+          className: 'someClass',
+        },
+      )
+      const wrappedRenderButtonContentResult = shallow(
+        renderButtonContentResult,
+      )
+      assert.equal(
+        wrappedRenderButtonContentResult.childAt(0).children().length,
+        1,
+      )
+      assert.equal(
+        wrappedRenderButtonContentResult
+          .find('.someClass__primary-currency')
+          .text(),
+        'mockFeeInPrimaryCurrency',
+      )
     })
 
     it('should render a feeInSecondaryCurrency if passed a feeInSecondaryCurrency', function () {
-      const renderButtonContentResult = GasPriceButtonGroup.prototype.renderButtonContent({
-        feeInSecondaryCurrency: 'mockFeeInSecondaryCurrency',
-      }, {
-        className: 'someClass',
-      })
-      const wrappedRenderButtonContentResult = shallow(renderButtonContentResult)
-      assert.equal(wrappedRenderButtonContentResult.childAt(0).children().length, 1)
-      assert.equal(wrappedRenderButtonContentResult.find('.someClass__secondary-currency').text(), 'mockFeeInSecondaryCurrency')
+      const renderButtonContentResult = GasPriceButtonGroup.prototype.renderButtonContent(
+        {
+          feeInSecondaryCurrency: 'mockFeeInSecondaryCurrency',
+        },
+        {
+          className: 'someClass',
+        },
+      )
+      const wrappedRenderButtonContentResult = shallow(
+        renderButtonContentResult,
+      )
+      assert.equal(
+        wrappedRenderButtonContentResult.childAt(0).children().length,
+        1,
+      )
+      assert.equal(
+        wrappedRenderButtonContentResult
+          .find('.someClass__secondary-currency')
+          .text(),
+        'mockFeeInSecondaryCurrency',
+      )
     })
 
     it('should render a timeEstimate if passed a timeEstimate', function () {
-      const renderButtonContentResult = GasPriceButtonGroup.prototype.renderButtonContent({
-        timeEstimate: 'mockTimeEstimate',
-      }, {
-        className: 'someClass',
-      })
-      const wrappedRenderButtonContentResult = shallow(renderButtonContentResult)
-      assert.equal(wrappedRenderButtonContentResult.childAt(0).children().length, 1)
-      assert.equal(wrappedRenderButtonContentResult.find('.someClass__time-estimate').text(), 'mockTimeEstimate')
+      const renderButtonContentResult = GasPriceButtonGroup.prototype.renderButtonContent(
+        {
+          timeEstimate: 'mockTimeEstimate',
+        },
+        {
+          className: 'someClass',
+        },
+      )
+      const wrappedRenderButtonContentResult = shallow(
+        renderButtonContentResult,
+      )
+      assert.equal(
+        wrappedRenderButtonContentResult.childAt(0).children().length,
+        1,
+      )
+      assert.equal(
+        wrappedRenderButtonContentResult
+          .find('.someClass__time-estimate')
+          .text(),
+        'mockTimeEstimate',
+      )
     })
 
     it('should render a check if showCheck is true', function () {
-      const renderButtonContentResult = GasPriceButtonGroup.prototype.renderButtonContent({}, {
-        className: 'someClass',
-        showCheck: true,
-      })
-      const wrappedRenderButtonContentResult = shallow(renderButtonContentResult)
+      const renderButtonContentResult = GasPriceButtonGroup.prototype.renderButtonContent(
+        {},
+        {
+          className: 'someClass',
+          showCheck: true,
+        },
+      )
+      const wrappedRenderButtonContentResult = shallow(
+        renderButtonContentResult,
+      )
       assert.equal(wrappedRenderButtonContentResult.find('.fa-check').length, 1)
     })
 
     it('should render all elements if all args passed', function () {
-      const renderButtonContentResult = wrapper.instance().renderButtonContent({
-        gasEstimateType: 'SLOW',
-        feeInPrimaryCurrency: 'mockFeeInPrimaryCurrency',
-        feeInSecondaryCurrency: 'mockFeeInSecondaryCurrency',
-        timeEstimate: 'mockTimeEstimate',
-      }, {
-        className: 'someClass',
-        showCheck: true,
-      })
-      const wrappedRenderButtonContentResult = shallow(renderButtonContentResult)
+      const renderButtonContentResult = wrapper.instance().renderButtonContent(
+        {
+          gasEstimateType: 'SLOW',
+          feeInPrimaryCurrency: 'mockFeeInPrimaryCurrency',
+          feeInSecondaryCurrency: 'mockFeeInSecondaryCurrency',
+          timeEstimate: 'mockTimeEstimate',
+        },
+        {
+          className: 'someClass',
+          showCheck: true,
+        },
+      )
+      const wrappedRenderButtonContentResult = shallow(
+        renderButtonContentResult,
+      )
       assert.equal(wrappedRenderButtonContentResult.children().length, 5)
     })
 
-
     it('should render no elements if all args passed', function () {
-      const renderButtonContentResult = GasPriceButtonGroup.prototype.renderButtonContent({}, {})
-      const wrappedRenderButtonContentResult = shallow(renderButtonContentResult)
+      const renderButtonContentResult = GasPriceButtonGroup.prototype.renderButtonContent(
+        {},
+        {},
+      )
+      const wrappedRenderButtonContentResult = shallow(
+        renderButtonContentResult,
+      )
       assert.equal(wrappedRenderButtonContentResult.children().length, 0)
     })
   })

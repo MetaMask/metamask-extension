@@ -1,5 +1,5 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import { mountWithRouter } from '../../../../../../test/lib/render-helpers'
@@ -27,9 +27,7 @@ describe('Network Dropdown', function () {
     const store = createMockStore(mockState)
 
     beforeEach(function () {
-      wrapper = mountWithRouter(
-        <NetworkDropdown store={store} />,
-      )
+      wrapper = mountWithRouter(<NetworkDropdown store={store} />)
     })
 
     it('checks for network droppo class', function () {
@@ -39,7 +37,6 @@ describe('Network Dropdown', function () {
     it('renders only one child when networkDropdown is false in state', function () {
       assert.equal(wrapper.children().length, 1)
     })
-
   })
 
   describe('NetworkDropdown in appState is true', function () {
@@ -47,59 +44,74 @@ describe('Network Dropdown', function () {
       metamask: {
         network: '1',
         provider: {
-          'type': 'test',
+          type: 'test',
         },
         frequentRpcListDetail: [
-          { rpcUrl: 'http://localhost:7545' },
+          { chainId: '0x1a', rpcUrl: 'http://localhost:7545' },
+          { rpcUrl: 'http://localhost:7546' },
         ],
       },
       appState: {
-        'networkDropdownOpen': true,
+        networkDropdownOpen: true,
       },
     }
     const store = createMockStore(mockState)
 
     beforeEach(function () {
-      wrapper = mountWithRouter(
-        <NetworkDropdown store={store} />,
-      )
+      wrapper = mountWithRouter(<NetworkDropdown store={store} />)
     })
 
-    it('renders 7 DropDownMenuItems ', function () {
+    it('renders 8 DropDownMenuItems ', function () {
       assert.equal(wrapper.find(DropdownMenuItem).length, 8)
     })
 
     it('checks background color for first NetworkDropdownIcon', function () {
-      assert.equal(wrapper.find(NetworkDropdownIcon).at(0).prop('backgroundColor'), '#29B6AF') // Main Ethereum Network Teal
+      assert.equal(
+        wrapper.find(NetworkDropdownIcon).at(0).prop('backgroundColor'),
+        '#29B6AF',
+      ) // Ethereum Mainnet Teal
     })
 
     it('checks background color for second NetworkDropdownIcon', function () {
-      assert.equal(wrapper.find(NetworkDropdownIcon).at(1).prop('backgroundColor'), '#ff4a8d') // Ropsten Red
+      assert.equal(
+        wrapper.find(NetworkDropdownIcon).at(1).prop('backgroundColor'),
+        '#ff4a8d',
+      ) // Ropsten Red
     })
 
     it('checks background color for third NetworkDropdownIcon', function () {
-      assert.equal(wrapper.find(NetworkDropdownIcon).at(2).prop('backgroundColor'), '#7057ff') // Kovan Purple
+      assert.equal(
+        wrapper.find(NetworkDropdownIcon).at(2).prop('backgroundColor'),
+        '#7057ff',
+      ) // Kovan Purple
     })
 
     it('checks background color for fourth NetworkDropdownIcon', function () {
-      assert.equal(wrapper.find(NetworkDropdownIcon).at(3).prop('backgroundColor'), '#f6c343') // Rinkeby Yellow
+      assert.equal(
+        wrapper.find(NetworkDropdownIcon).at(3).prop('backgroundColor'),
+        '#f6c343',
+      ) // Rinkeby Yellow
     })
 
     it('checks background color for fifth NetworkDropdownIcon', function () {
-      assert.equal(wrapper.find(NetworkDropdownIcon).at(4).prop('backgroundColor'), '#3099f2') // Goerli Blue
+      assert.equal(
+        wrapper.find(NetworkDropdownIcon).at(4).prop('backgroundColor'),
+        '#3099f2',
+      ) // Goerli Blue
     })
 
     it('checks background color for sixth NetworkDropdownIcon', function () {
-      assert.equal(wrapper.find(NetworkDropdownIcon).at(5).prop('innerBorder'), '1px solid #9b9b9b')
+      assert.equal(
+        wrapper.find(NetworkDropdownIcon).at(5).prop('backgroundColor'),
+        '#d6d9dc',
+      ) // "Custom network grey"
     })
 
-    it('checks dropdown for frequestRPCList from  state ', function () {
-      assert.equal(wrapper.find(DropdownMenuItem).at(6).text(), '✓http://localhost:7545')
+    it('checks dropdown for frequestRPCList from state', function () {
+      assert.equal(
+        wrapper.find(DropdownMenuItem).at(6).text(),
+        '✓http://localhost:7545',
+      )
     })
-
-    it('checks background color for seventh NetworkDropdownIcon', function () {
-      assert.equal(wrapper.find(NetworkDropdownIcon).at(6).prop('innerBorder'), '1px solid #9b9b9b')
-    })
-
   })
 })

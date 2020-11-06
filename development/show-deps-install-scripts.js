@@ -14,7 +14,9 @@ readInstalled('./', { dev: true }, function (err, data) {
     const packageScripts = packageData.scripts || {}
     const scriptKeys = Reflect.ownKeys(packageScripts)
 
-    const hasInstallScript = installScripts.some((installKey) => scriptKeys.includes(installKey))
+    const hasInstallScript = installScripts.some((installKey) =>
+      scriptKeys.includes(installKey),
+    )
     if (!hasInstallScript) {
       return
     }

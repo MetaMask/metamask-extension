@@ -1,9 +1,9 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import sinon from 'sinon'
 import { mountWithRouter } from '../../../../../../test/lib/render-helpers'
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes'
-import EndOfFlowScreen from '../index'
+import EndOfFlowScreen from '..'
 
 describe('End of Flow Screen', function () {
   let wrapper
@@ -12,13 +12,10 @@ describe('End of Flow Screen', function () {
     history: {
       push: sinon.spy(),
     },
-    completeOnboarding: sinon.spy(),
   }
 
   beforeEach(function () {
-    wrapper = mountWithRouter(
-      <EndOfFlowScreen.WrappedComponent {...props} />,
-    )
+    wrapper = mountWithRouter(<EndOfFlowScreen.WrappedComponent {...props} />)
   })
 
   it('renders', function () {
@@ -30,7 +27,6 @@ describe('End of Flow Screen', function () {
     endOfFlowButton.simulate('click')
 
     setImmediate(() => {
-      assert(props.completeOnboarding.calledOnce)
       assert(props.history.push.calledOnceWithExactly(DEFAULT_ROUTE))
       done()
     })

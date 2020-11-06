@@ -1,5 +1,4 @@
 const http = require('http')
-const url = require('url')
 
 const port = 8889
 
@@ -20,7 +19,9 @@ const requestHandler = (request, response) => {
       response.end('ok')
     })
   } else if (request.method === 'GET') {
-    const { key } = url.parse(request.url, true).query
+    const key = new URL(request.url, 'https://example.org/').searchParams.get(
+      'key',
+    )
     response.setHeader('Access-Control-Allow-Headers', '*')
     response.end(JSON.stringify(database[key] || ''))
   } else {
@@ -32,6 +33,6 @@ const server = http.createServer(requestHandler)
 
 server.listen(port, (err) => {
   if (err) {
-    return console.log('mock 3box server error: ', err)
+    console.log('mock 3box server error: ', err)
   }
 })

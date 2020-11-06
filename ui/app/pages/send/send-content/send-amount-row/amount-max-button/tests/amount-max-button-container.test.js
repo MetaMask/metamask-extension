@@ -29,15 +29,15 @@ proxyquire('../amount-max-button.container.js', {
     getSendMaxModeState: (s) => `mockMaxModeOn:${s}`,
     getBasicGasEstimateLoadingStatus: (s) => `mockButtonDataLoading:${s}`,
   },
-  './amount-max-button.utils.js': { calcMaxAmount: (mockObj) => mockObj.val + 1 },
+  './amount-max-button.utils.js': {
+    calcMaxAmount: (mockObj) => mockObj.val + 1,
+  },
   '../../../../../store/actions': actionSpies,
   '../../../../../ducks/send/send.duck': duckActionSpies,
 })
 
 describe('amount-max-button container', function () {
-
   describe('mapStateToProps()', function () {
-
     it('should map the correct properties to props', function () {
       assert.deepEqual(mapStateToProps('mockState'), {
         balance: 'mockBalance:mockState',
@@ -48,7 +48,6 @@ describe('amount-max-button container', function () {
         tokenBalance: 'mockTokenBalance:mockState',
       })
     })
-
   })
 
   describe('mapDispatchToProps()', function () {
@@ -65,15 +64,11 @@ describe('amount-max-button container', function () {
         mapDispatchToPropsObject.setAmountToMax({ val: 11, foo: 'bar' })
         assert(dispatchSpy.calledTwice)
         assert(duckActionSpies.updateSendErrors.calledOnce)
-        assert.deepEqual(
-          duckActionSpies.updateSendErrors.getCall(0).args[0],
-          { amount: null },
-        )
+        assert.deepEqual(duckActionSpies.updateSendErrors.getCall(0).args[0], {
+          amount: null,
+        })
         assert(actionSpies.updateSendAmount.calledOnce)
-        assert.equal(
-          actionSpies.updateSendAmount.getCall(0).args[0],
-          12,
-        )
+        assert.equal(actionSpies.updateSendAmount.getCall(0).args[0], 12)
       })
     })
 
@@ -81,13 +76,8 @@ describe('amount-max-button container', function () {
       it('should dispatch an action', function () {
         mapDispatchToPropsObject.setMaxModeTo('mockVal')
         assert(dispatchSpy.calledOnce)
-        assert.equal(
-          actionSpies.setMaxModeTo.getCall(0).args[0],
-          'mockVal',
-        )
+        assert.equal(actionSpies.setMaxModeTo.getCall(0).args[0], 'mockVal')
       })
     })
-
   })
-
 })

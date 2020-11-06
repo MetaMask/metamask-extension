@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-export default function PaperAirplane ({ size, className, color }) {
+export default function PaperAirplane({ size, className, color }) {
   return (
     <svg
       className={className}
@@ -30,4 +30,3 @@ PaperAirplane.propTypes = {
   size: PropTypes.number.isRequired,
   color: PropTypes.string,
 }
-

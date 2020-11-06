@@ -9,17 +9,19 @@ import {
   addFiat,
   addEth,
 } from '../helpers/utils/confirm-tx.util'
-import {
-  sumHexes,
-} from '../helpers/utils/transactions.util'
+import { sumHexes } from '../helpers/utils/transactions.util'
 import { getNativeCurrency } from '.'
 
 const unapprovedTxsSelector = (state) => state.metamask.unapprovedTxs
 const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs
-const unapprovedPersonalMsgsSelector = (state) => state.metamask.unapprovedPersonalMsgs
-const unapprovedDecryptMsgsSelector = (state) => state.metamask.unapprovedDecryptMsgs
-const unapprovedEncryptionPublicKeyMsgsSelector = (state) => state.metamask.unapprovedEncryptionPublicKeyMsgs
-const unapprovedTypedMessagesSelector = (state) => state.metamask.unapprovedTypedMessages
+const unapprovedPersonalMsgsSelector = (state) =>
+  state.metamask.unapprovedPersonalMsgs
+const unapprovedDecryptMsgsSelector = (state) =>
+  state.metamask.unapprovedDecryptMsgs
+const unapprovedEncryptionPublicKeyMsgsSelector = (state) =>
+  state.metamask.unapprovedEncryptionPublicKeyMsgs
+const unapprovedTypedMessagesSelector = (state) =>
+  state.metamask.unapprovedTypedMessages
 const networkSelector = (state) => state.metamask.network
 
 export const unconfirmedTransactionsListSelector = createSelector(
@@ -38,15 +40,16 @@ export const unconfirmedTransactionsListSelector = createSelector(
     unapprovedEncryptionPublicKeyMsgs = {},
     unapprovedTypedMessages = {},
     network,
-  ) => txHelper(
-    unapprovedTxs,
-    unapprovedMsgs,
-    unapprovedPersonalMsgs,
-    unapprovedDecryptMsgs,
-    unapprovedEncryptionPublicKeyMsgs,
-    unapprovedTypedMessages,
-    network,
-  ) || [],
+  ) =>
+    txHelper(
+      unapprovedTxs,
+      unapprovedMsgs,
+      unapprovedPersonalMsgs,
+      unapprovedDecryptMsgs,
+      unapprovedEncryptionPublicKeyMsgs,
+      unapprovedTypedMessages,
+      network,
+    ) || [],
 )
 
 export const unconfirmedTransactionsHashSelector = createSelector(
@@ -66,16 +69,19 @@ export const unconfirmedTransactionsHashSelector = createSelector(
     unapprovedTypedMessages = {},
     network,
   ) => {
-    const filteredUnapprovedTxs = Object.keys(unapprovedTxs).reduce((acc, address) => {
-      const { metamaskNetworkId } = unapprovedTxs[address]
-      const transactions = { ...acc }
+    const filteredUnapprovedTxs = Object.keys(unapprovedTxs).reduce(
+      (acc, address) => {
+        const { metamaskNetworkId } = unapprovedTxs[address]
+        const transactions = { ...acc }
 
-      if (metamaskNetworkId === network) {
-        transactions[address] = unapprovedTxs[address]
-      }
+        if (metamaskNetworkId === network) {
+          transactions[address] = unapprovedTxs[address]
+        }
 
-      return transactions
-    }, {})
+        return transactions
+      },
+      {},
+    )
 
     return {
       ...filteredUnapprovedTxs,
@@ -89,10 +95,14 @@ export const unconfirmedTransactionsHashSelector = createSelector(
 )
 
 const unapprovedMsgCountSelector = (state) => state.metamask.unapprovedMsgCount
-const unapprovedPersonalMsgCountSelector = (state) => state.metamask.unapprovedPersonalMsgCount
-const unapprovedDecryptMsgCountSelector = (state) => state.metamask.unapprovedDecryptMsgCount
-const unapprovedEncryptionPublicKeyMsgCountSelector = (state) => state.metamask.unapprovedEncryptionPublicKeyMsgCount
-const unapprovedTypedMessagesCountSelector = (state) => state.metamask.unapprovedTypedMessagesCount
+const unapprovedPersonalMsgCountSelector = (state) =>
+  state.metamask.unapprovedPersonalMsgCount
+const unapprovedDecryptMsgCountSelector = (state) =>
+  state.metamask.unapprovedDecryptMsgCount
+const unapprovedEncryptionPublicKeyMsgCountSelector = (state) =>
+  state.metamask.unapprovedEncryptionPublicKeyMsgCount
+const unapprovedTypedMessagesCountSelector = (state) =>
+  state.metamask.unapprovedTypedMessagesCount
 
 export const unconfirmedTransactionsCountSelector = createSelector(
   unapprovedTxsSelector,
@@ -111,16 +121,23 @@ export const unconfirmedTransactionsCountSelector = createSelector(
     unapprovedTypedMessagesCount = 0,
     network,
   ) => {
-    const filteredUnapprovedTxIds = Object.keys(unapprovedTxs).filter((txId) => {
-      const { metamaskNetworkId } = unapprovedTxs[txId]
-      return metamaskNetworkId === network
-    })
+    const filteredUnapprovedTxIds = Object.keys(unapprovedTxs).filter(
+      (txId) => {
+        const { metamaskNetworkId } = unapprovedTxs[txId]
+        return metamaskNetworkId === network
+      },
+    )
 
-    return filteredUnapprovedTxIds.length + unapprovedTypedMessagesCount + unapprovedMsgCount +
-      unapprovedPersonalMsgCount + unapprovedDecryptMsgCount + unapprovedEncryptionPublicKeyMsgCount
+    return (
+      filteredUnapprovedTxIds.length +
+      unapprovedTypedMessagesCount +
+      unapprovedMsgCount +
+      unapprovedPersonalMsgCount +
+      unapprovedDecryptMsgCount +
+      unapprovedEncryptionPublicKeyMsgCount
+    )
   },
 )
-
 
 export const currentCurrencySelector = (state) => state.metamask.currentCurrency
 export const conversionRateSelector = (state) => state.metamask.conversionRate
@@ -129,16 +146,17 @@ export const txDataSelector = (state) => state.confirmTransaction.txData
 const tokenDataSelector = (state) => state.confirmTransaction.tokenData
 const tokenPropsSelector = (state) => state.confirmTransaction.tokenProps
 
-const contractExchangeRatesSelector = (state) => state.metamask.contractExchangeRates
+const contractExchangeRatesSelector = (state) =>
+  state.metamask.contractExchangeRates
 
 const tokenDecimalsSelector = createSelector(
   tokenPropsSelector,
   (tokenProps) => tokenProps && tokenProps.tokenDecimals,
 )
 
-const tokenDataParamsSelector = createSelector(
+const tokenDataArgsSelector = createSelector(
   tokenDataSelector,
-  (tokenData) => (tokenData && tokenData.params) || [],
+  (tokenData) => (tokenData && tokenData.args) || [],
 )
 
 const txParamsSelector = createSelector(
@@ -151,75 +169,25 @@ export const tokenAddressSelector = createSelector(
   (txParams) => txParams && txParams.to,
 )
 
-const TOKEN_PARAM_SPENDER = '_spender'
 const TOKEN_PARAM_TO = '_to'
 const TOKEN_PARAM_VALUE = '_value'
 
-export const tokenAmountAndToAddressSelector = createSelector(
-  tokenDataParamsSelector,
-  tokenDecimalsSelector,
-  (params, tokenDecimals) => {
-    let toAddress = ''
-    let tokenAmount = 0
-
-    if (params && params.length) {
-      const toParam = params.find((param) => param.name === TOKEN_PARAM_TO)
-      const valueParam = params.find((param) => param.name === TOKEN_PARAM_VALUE)
-      toAddress = toParam ? toParam.value : params[0].value
-      const value = valueParam ? Number(valueParam.value) : Number(params[1].value)
-
-      if (tokenDecimals) {
-        tokenAmount = calcTokenAmount(value, tokenDecimals).toNumber()
-      }
-
-      tokenAmount = roundExponential(tokenAmount)
-    }
-
-    return {
-      toAddress,
-      tokenAmount,
-    }
-  },
-)
-
-export const approveTokenAmountAndToAddressSelector = createSelector(
-  tokenDataParamsSelector,
-  tokenDecimalsSelector,
-  (params, tokenDecimals) => {
-    let toAddress = ''
-    let tokenAmount = 0
-
-    if (params && params.length) {
-      toAddress = params.find((param) => param.name === TOKEN_PARAM_SPENDER).value
-      const value = Number(params.find((param) => param.name === TOKEN_PARAM_VALUE).value)
-
-      if (tokenDecimals) {
-        tokenAmount = calcTokenAmount(value, tokenDecimals).toNumber()
-      }
-
-      tokenAmount = roundExponential(tokenAmount)
-    }
-
-    return {
-      toAddress,
-      tokenAmount,
-    }
-  },
-)
-
 export const sendTokenTokenAmountAndToAddressSelector = createSelector(
-  tokenDataParamsSelector,
+  tokenDataArgsSelector,
   tokenDecimalsSelector,
-  (params, tokenDecimals) => {
+  (args, tokenDecimals) => {
     let toAddress = ''
-    let tokenAmount = 0
+    let tokenAmount = '0'
 
-    if (params && params.length) {
-      toAddress = params.find((param) => param.name === TOKEN_PARAM_TO).value
-      let value = Number(params.find((param) => param.name === TOKEN_PARAM_VALUE).value)
+    // Token params here are ethers BigNumbers, which have a different
+    // interface than bignumber.js
+    if (args && args.length) {
+      toAddress = args[TOKEN_PARAM_TO]
+      let value = args[TOKEN_PARAM_VALUE].toString()
 
       if (tokenDecimals) {
-        value = calcTokenAmount(value, tokenDecimals).toNumber()
+        // bignumber.js return value
+        value = calcTokenAmount(value, tokenDecimals).toFixed()
       }
 
       tokenAmount = roundExponential(value)
@@ -243,13 +211,23 @@ export const transactionFeeSelector = function (state, txData) {
   const conversionRate = conversionRateSelector(state)
   const nativeCurrency = getNativeCurrency(state)
 
-  const { txParams: { value = '0x0', gas: gasLimit = '0x0', gasPrice = '0x0' } = {} } = txData
+  const {
+    txParams: { value = '0x0', gas: gasLimit = '0x0', gasPrice = '0x0' } = {},
+  } = txData
 
   const fiatTransactionAmount = getValueFromWeiHex({
-    value, fromCurrency: nativeCurrency, toCurrency: currentCurrency, conversionRate, numberOfDecimals: 2,
+    value,
+    fromCurrency: nativeCurrency,
+    toCurrency: currentCurrency,
+    conversionRate,
+    numberOfDecimals: 2,
   })
   const ethTransactionAmount = getValueFromWeiHex({
-    value, fromCurrency: nativeCurrency, toCurrency: nativeCurrency, conversionRate, numberOfDecimals: 6,
+    value,
+    fromCurrency: nativeCurrency,
+    toCurrency: nativeCurrency,
+    conversionRate,
+    numberOfDecimals: 6,
   })
 
   const hexTransactionFee = getHexGasTotal({ gasLimit, gasPrice })
@@ -269,7 +247,10 @@ export const transactionFeeSelector = function (state, txData) {
     conversionRate,
   })
 
-  const fiatTransactionTotal = addFiat(fiatTransactionFee, fiatTransactionAmount)
+  const fiatTransactionTotal = addFiat(
+    fiatTransactionFee,
+    fiatTransactionAmount,
+  )
   const ethTransactionTotal = addEth(ethTransactionFee, ethTransactionAmount)
   const hexTransactionTotal = sumHexes(value, hexTransactionFee)
 

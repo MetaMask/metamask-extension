@@ -6,7 +6,7 @@ import InputAdornment from '@material-ui/core/InputAdornment'
 import TextField from '../../../components/ui/text-field'
 
 const contractList = Object.entries(contractMap)
-  .map(([address, tokenData]) => Object.assign({}, tokenData, { address }))
+  .map(([address, tokenData]) => ({ ...tokenData, address }))
   .filter((tokenData) => Boolean(tokenData.erc20))
 
 const fuse = new Fuse(contractList, {
@@ -40,7 +40,7 @@ export default class TokenSearch extends Component {
     searchQuery: '',
   }
 
-  handleSearch (searchQuery) {
+  handleSearch(searchQuery) {
     this.setState({ searchQuery })
     const fuseSearchResult = fuse.search(searchQuery)
     const addressSearchResult = contractList.filter((token) => {
@@ -50,18 +50,15 @@ export default class TokenSearch extends Component {
     this.props.onSearch({ searchQuery, results })
   }
 
-  renderAdornment () {
+  renderAdornment() {
     return (
-      <InputAdornment
-        position="start"
-        style={{ marginRight: '12px' }}
-      >
-        <img src="images/search.svg" />
+      <InputAdornment position="start" style={{ marginRight: '12px' }}>
+        <img src="images/search.svg" width="17" height="17" />
       </InputAdornment>
     )
   }
 
-  render () {
+  render() {
     const { error } = this.props
     const { searchQuery } = this.state
 
@@ -74,6 +71,7 @@ export default class TokenSearch extends Component {
         onChange={(e) => this.handleSearch(e.target.value)}
         error={error}
         fullWidth
+        autoFocus
         startAdornment={this.renderAdornment()}
       />
     )

@@ -1,0 +1,85 @@
+.tab-bar {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+
+  &__tab {
+    @include Paragraph;
+
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: flex-start;
+    min-width: 0;
+    flex: 0 0 auto;
+    box-sizing: border-box;
+    padding: 16px 24px;
+    opacity: 0.5;
+    transition: opacity 200ms ease-in-out;
+    background-color: unset;
+    text-align: start;
+
+    @media screen and (min-width: 576px) {
+      &:hover {
+        opacity: 0.4;
+      }
+
+      &:active {
+        opacity: 0.6;
+      }
+    }
+
+    @media screen and (max-width: 575px) {
+      @include H4;
+
+      padding: 24px;
+      border-bottom: 1px solid $alto;
+      opacity: 1;
+    }
+
+    &__content {
+      flex: 1 1 auto;
+      width: 0;
+
+      &__description {
+        display: none;
+
+        @media screen and (max-width: 575px) {
+          @include H6;
+
+          display: block;
+          font-weight: 300;
+          margin-top: 8px;
+          min-height: 14px;
+        }
+      }
+    }
+
+    &__caret {
+      display: none;
+
+      @media screen and (max-width: 575px) {
+        display: block;
+        background-image: url('/images/caret-right.svg');
+        width: 36px;
+        height: 36px;
+        opacity: 0.5;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+
+        [dir='rtl'] & {
+          transform: rotate(180deg);
+        }
+      }
+    }
+
+    &--active {
+      opacity: 1 !important;
+    }
+  }
+
+  &__grow-tab {
+    flex-grow: 1;
+  }
+}

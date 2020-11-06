@@ -1,0 +1,9 @@
+node_modules/**
+dist/**
+builds/**
+test-*/**
+coverage/
+app/vendor/**
+.nyc_output/**
+.vscode/**
+test/e2e/send-eth-with-private-key-test/**

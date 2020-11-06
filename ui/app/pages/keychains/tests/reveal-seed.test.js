@@ -1,5 +1,5 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import sinon from 'sinon'
 import { mount } from 'enzyme'
 import RevealSeedPage from '../reveal-seed'
@@ -12,13 +12,11 @@ describe('Reveal Seed Page', function () {
       },
       requestRevealSeedWords: sinon.stub().resolves(),
     }
-    const wrapper = mount(
-      <RevealSeedPage.WrappedComponent {...props} />, {
-        context: {
-          t: (str) => str,
-        },
+    const wrapper = mount(<RevealSeedPage.WrappedComponent {...props} />, {
+      context: {
+        t: (str) => str,
       },
-    )
+    })
 
     wrapper.find('form').simulate('submit')
     assert(props.requestRevealSeedWords.calledOnce)

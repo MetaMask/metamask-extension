@@ -1,19 +1,15 @@
 import { createSelector } from 'reselect'
 import {
-  SUBMITTED_STATUS,
-  CONFIRMED_STATUS,
   PRIORITY_STATUS_HASH,
   PENDING_STATUS_HASH,
 } from '../helpers/constants/transactions'
-import {
-  TRANSACTION_TYPE_CANCEL,
-  TRANSACTION_TYPE_RETRY,
-} from '../../../app/scripts/controllers/transactions/enums'
 import { hexToDecimal } from '../helpers/utils/conversions.util'
-import {
-  getSelectedAddress,
-} from '.'
 import txHelper from '../../lib/tx-helper'
+import {
+  TRANSACTION_STATUSES,
+  TRANSACTION_TYPES,
+} from '../../../shared/constants/transaction'
+import { getSelectedAddress } from '.'
 
 export const incomingTxListSelector = (state) => {
   const { showIncomingTransactions } = state.metamask.featureFlags
@@ -21,26 +17,33 @@ export const incomingTxListSelector = (state) => {
     return []
   }
 
-  const network = state.metamask.network
+  const { network } = state.metamask
   const selectedAddress = getSelectedAddress(state)
-  return Object.values(state.metamask.incomingTransactions)
-    .filter(({ metamaskNetworkId, txParams }) => (
-      txParams.to === selectedAddress && metamaskNetworkId === network
-    ))
+  return Object.values(state.metamask.incomingTransactions).filter(
+    ({ metamaskNetworkId, txParams }) =>
+      txParams.to === selectedAddress && metamaskNetworkId === network,
+  )
 }
 export const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs
-export const currentNetworkTxListSelector = (state) => state.metamask.currentNetworkTxList
-export const unapprovedPersonalMsgsSelector = (state) => state.metamask.unapprovedPersonalMsgs
-export const unapprovedDecryptMsgsSelector = (state) => state.metamask.unapprovedDecryptMsgs
-export const unapprovedEncryptionPublicKeyMsgsSelector = (state) => state.metamask.unapprovedEncryptionPublicKeyMsgs
-export const unapprovedTypedMessagesSelector = (state) => state.metamask.unapprovedTypedMessages
+export const currentNetworkTxListSelector = (state) =>
+  state.metamask.currentNetworkTxList
+export const unapprovedPersonalMsgsSelector = (state) =>
+  state.metamask.unapprovedPersonalMsgs
+export const unapprovedDecryptMsgsSelector = (state) =>
+  state.metamask.unapprovedDecryptMsgs
+export const unapprovedEncryptionPublicKeyMsgsSelector = (state) =>
+  state.metamask.unapprovedEncryptionPublicKeyMsgs
+export const unapprovedTypedMessagesSelector = (state) =>
+  state.metamask.unapprovedTypedMessages
 export const networkSelector = (state) => state.metamask.network
 
 export const selectedAddressTxListSelector = createSelector(
   getSelectedAddress,
   currentNetworkTxListSelector,
   (selectedAddress, transactions = []) => {
-    return transactions.filter(({ txParams }) => txParams.from === selectedAddress)
+    return transactions.filter(
+      ({ txParams }) => txParams.from === selectedAddress,
+    )
   },
 )
 
@@ -58,15 +61,16 @@ export const unapprovedMessagesSelector = createSelector(
     unapprovedEncryptionPublicKeyMsgs = {},
     unapprovedTypedMessages = {},
     network,
-  ) => txHelper(
-    {},
-    unapprovedMsgs,
-    unapprovedPersonalMsgs,
-    unapprovedDecryptMsgs,
-    unapprovedEncryptionPublicKeyMsgs,
-    unapprovedTypedMessages,
-    network,
-  ) || [],
+  ) =>
+    txHelper(
+      {},
+      unapprovedMsgs,
+      unapprovedPersonalMsgs,
+      unapprovedDecryptMsgs,
+      unapprovedEncryptionPublicKeyMsgs,
+      unapprovedTypedMessages,
+      network,
+    ) || [],
 )
 
 export const transactionSubSelector = createSelector(
@@ -83,8 +87,7 @@ export const transactionsSelector = createSelector(
   (subSelectorTxList = [], selectedAddressTxList = []) => {
     const txsToRender = selectedAddressTxList.concat(subSelectorTxList)
 
-    return txsToRender
-      .sort((a, b) => b.time - a.time)
+    return txsToRender.sort((a, b) => b.time - a.time)
   },
 )
 
@@ -160,7 +163,9 @@ const insertTransactionByTime = (transactions, transaction) => {
  * array of transactionGroups.
  */
 const insertTransactionGroupByTime = (transactionGroups, transactionGroup) => {
-  const { primaryTransaction: { time: groupToInsertTime } = {} } = transactionGroup
+  const {
+    primaryTransaction: { time: groupToInsertTime } = {},
+  } = transactionGroup
 
   let insertIndex = transactionGroups.length
 
@@ -187,7 +192,10 @@ const insertTransactionGroupByTime = (transactionGroups, transactionGroup) => {
  * @param {transactionGroup[]} nonNonceTransactionGroups - Array of transactionGroups not intended to be ordered by nonce,
  * but intended to be ordered by timestamp
  */
-const mergeNonNonceTransactionGroups = (orderedTransactionGroups, nonNonceTransactionGroups) => {
+const mergeNonNonceTransactionGroups = (
+  orderedTransactionGroups,
+  nonNonceTransactionGroups,
+) => {
   nonNonceTransactionGroups.forEach((transactionGroup) => {
     insertTransactionGroupByTime(orderedTransactionGroups, transactionGroup)
   })
@@ -207,7 +215,13 @@ export const nonceSortedTransactionsSelector = createSelector(
     const nonceToTransactionsMap = {}
 
     transactions.forEach((transaction) => {
-      const { txParams: { nonce } = {}, status, type, time: txTime, transactionCategory } = transaction
+      const {
+        txParams: { nonce } = {},
+        status,
+        type,
+        time: txTime,
+        transactionCategory,
+      } = transaction
 
       if (typeof nonce === 'undefined' || transactionCategory === 'incoming') {
         const transactionGroup = {
@@ -221,21 +235,38 @@ export const nonceSortedTransactionsSelector = createSelector(
         if (transactionCategory === 'incoming') {
           incomingTransactionGroups.push(transactionGroup)
         } else {
-          insertTransactionGroupByTime(unapprovedTransactionGroups, transactionGroup)
+          insertTransactionGroupByTime(
+            unapprovedTransactionGroups,
+            transactionGroup,
+          )
         }
       } else if (nonce in nonceToTransactionsMap) {
         const nonceProps = nonceToTransactionsMap[nonce]
         insertTransactionByTime(nonceProps.transactions, transaction)
 
-        if (status in PRIORITY_STATUS_HASH) {
-          const { primaryTransaction: { time: primaryTxTime = 0 } = {} } = nonceProps
+        const {
+          primaryTransaction: { time: primaryTxTime = 0 } = {},
+        } = nonceProps
 
-          if (status === CONFIRMED_STATUS || txTime > primaryTxTime) {
-            nonceProps.primaryTransaction = transaction
-          }
+        const previousPrimaryIsNetworkFailure =
+          nonceProps.primaryTransaction.status ===
+            TRANSACTION_STATUSES.FAILED &&
+          nonceProps.primaryTransaction?.txReceipt?.status !== '0x0'
+        const currentTransactionIsOnChainFailure =
+          transaction?.txReceipt?.status === '0x0'
+
+        if (
+          status === TRANSACTION_STATUSES.CONFIRMED ||
+          currentTransactionIsOnChainFailure ||
+          previousPrimaryIsNetworkFailure ||
+          (txTime > primaryTxTime && status in PRIORITY_STATUS_HASH)
+        ) {
+          nonceProps.primaryTransaction = transaction
         }
 
-        const { initialTransaction: { time: initialTxTime = 0 } = {} } = nonceProps
+        const {
+          initialTransaction: { time: initialTxTime = 0 } = {},
+        } = nonceProps
 
         // Used to display the transaction action, since we don't want to overwrite the action if
         // it was replaced with a cancel attempt transaction.
@@ -243,11 +274,11 @@ export const nonceSortedTransactionsSelector = createSelector(
           nonceProps.initialTransaction = transaction
         }
 
-        if (type === TRANSACTION_TYPE_RETRY) {
+        if (type === TRANSACTION_TYPES.RETRY) {
           nonceProps.hasRetried = true
         }
 
-        if (type === TRANSACTION_TYPE_CANCEL) {
+        if (type === TRANSACTION_TYPES.CANCEL) {
           nonceProps.hasCancelled = true
         }
       } else {
@@ -256,16 +287,21 @@ export const nonceSortedTransactionsSelector = createSelector(
           transactions: [transaction],
           initialTransaction: transaction,
           primaryTransaction: transaction,
-          hasRetried: transaction.type === TRANSACTION_TYPE_RETRY,
-          hasCancelled: transaction.type === TRANSACTION_TYPE_CANCEL,
+          hasRetried: transaction.type === TRANSACTION_TYPES.RETRY,
+          hasCancelled: transaction.type === TRANSACTION_TYPES.CANCEL,
         }
 
         insertOrderedNonce(orderedNonces, nonce)
       }
     })
 
-    const orderedTransactionGroups = orderedNonces.map((nonce) => nonceToTransactionsMap[nonce])
-    mergeNonNonceTransactionGroups(orderedTransactionGroups, incomingTransactionGroups)
+    const orderedTransactionGroups = orderedNonces.map(
+      (nonce) => nonceToTransactionsMap[nonce],
+    )
+    mergeNonNonceTransactionGroups(
+      orderedTransactionGroups,
+      incomingTransactionGroups,
+    )
     return unapprovedTransactionGroups.concat(orderedTransactionGroups)
   },
 )
@@ -278,9 +314,11 @@ export const nonceSortedTransactionsSelector = createSelector(
  */
 export const nonceSortedPendingTransactionsSelector = createSelector(
   nonceSortedTransactionsSelector,
-  (transactions = []) => (
-    transactions.filter(({ primaryTransaction }) => primaryTransaction.status in PENDING_STATUS_HASH)
-  ),
+  (transactions = []) =>
+    transactions.filter(
+      ({ primaryTransaction }) =>
+        primaryTransaction.status in PENDING_STATUS_HASH,
+    ),
 )
 
 /**
@@ -291,16 +329,19 @@ export const nonceSortedPendingTransactionsSelector = createSelector(
  */
 export const nonceSortedCompletedTransactionsSelector = createSelector(
   nonceSortedTransactionsSelector,
-  (transactions = []) => (
+  (transactions = []) =>
     transactions
-      .filter(({ primaryTransaction }) => !(primaryTransaction.status in PENDING_STATUS_HASH))
-      .reverse()
-  ),
+      .filter(
+        ({ primaryTransaction }) =>
+          !(primaryTransaction.status in PENDING_STATUS_HASH),
+      )
+      .reverse(),
 )
 
 export const submittedPendingTransactionsSelector = createSelector(
   transactionsSelector,
-  (transactions = []) => (
-    transactions.filter((transaction) => transaction.status === SUBMITTED_STATUS)
-  ),
+  (transactions = []) =>
+    transactions.filter(
+      (transaction) => transaction.status === TRANSACTION_STATUSES.SUBMITTED,
+    ),
 )

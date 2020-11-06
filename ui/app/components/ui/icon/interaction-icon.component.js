@@ -1,11 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const Interaction = ({
-  className,
-  size,
-  color,
-}) => (
+const Interaction = ({ className, size, color }) => (
   <svg
     className={className}
     width={size}

@@ -1,12 +1,14 @@
 .permission-approval-container {
-  display: flex;
-  border: none;
-  box-shadow: none;
-  width: 100%;
-  margin-top: 2px;
-  height: 100%;
-  flex-direction: column;
-  justify-content: space-between;
+  &.page-container {
+    display: flex;
+    border: none;
+    box-shadow: none;
+    width: 100%;
+    margin-top: 2px;
+    height: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+  }
 
   @media screen and (min-width: 576px) {
     width: 426px;
@@ -31,9 +33,8 @@
   }
 
   &__title {
-    @extend %H4;
+    @include H4;
 
-    line-height: 25px;
     text-align: center;
     margin-top: 32px;
     width: 100%;
@@ -65,7 +66,8 @@
       align-items: center;
 
       label {
-        font-size: 14px;
+        @include H6;
+
         margin-left: 16px;
         color: $Black-100;
       }
@@ -84,9 +86,8 @@
   }
 
   &__permissions-header {
-    @extend %H6;
+    @include H6;
 
-    line-height: 20px;
     color: #6a737d;
   }
 

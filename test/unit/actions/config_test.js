@@ -6,7 +6,7 @@ import * as actionConstants from '../../../ui/app/store/actionConstants'
 describe('config view actions', function () {
   const initialState = {
     metamask: {
-      rpcTarget: 'foo',
+      rpcUrl: 'foo',
       frequentRpcList: [],
     },
     appState: {
@@ -18,7 +18,7 @@ describe('config view actions', function () {
   freeze(initialState)
 
   describe('SET_RPC_TARGET', function () {
-    it('sets the state.metamask.rpcTarget property of the state to the action.value', function () {
+    it('sets the state.metamask.rpcUrl property of the state to the action.value', function () {
       const action = {
         type: actionConstants.SET_RPC_TARGET,
         value: 'foo',
@@ -26,7 +26,7 @@ describe('config view actions', function () {
 
       const result = reducers(initialState, action)
       assert.equal(result.metamask.provider.type, 'rpc')
-      assert.equal(result.metamask.provider.rpcTarget, 'foo')
+      assert.equal(result.metamask.provider.rpcUrl, 'foo')
     })
   })
 })

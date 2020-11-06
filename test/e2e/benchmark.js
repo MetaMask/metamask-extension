@@ -10,7 +10,7 @@ const { PAGES } = require('./webdriver/driver')
 const DEFAULT_NUM_SAMPLES = 20
 const ALL_PAGES = Object.values(PAGES)
 
-async function measurePage (pageName) {
+async function measurePage(pageName) {
   let metrics
   await withFixtures({ fixtures: 'imported-account' }, async ({ driver }) => {
     const passwordField = await driver.findElement(By.css('#password'))
@@ -24,7 +24,7 @@ async function measurePage (pageName) {
   return metrics
 }
 
-function calculateResult (calc) {
+function calculateResult(calc) {
   return (result) => {
     const calculatedResult = {}
     for (const key of Object.keys(result)) {
@@ -44,10 +44,13 @@ const standardDeviationResult = calculateResult((array) => {
   return Math.sqrt(calculateAverage(squareDiffs))
 })
 // 95% margin of error calculated using Student's t-distribution
-const calculateMarginOfError = (array) => ttest(array).confidence()[1] - calculateAverage(array)
-const marginOfErrorResult = calculateResult((array) => calculateMarginOfError(array))
+const calculateMarginOfError = (array) =>
+  ttest(array).confidence()[1] - calculateAverage(array)
+const marginOfErrorResult = calculateResult((array) =>
+  calculateMarginOfError(array),
+)
 
-async function profilePageLoad (pages, numSamples) {
+async function profilePageLoad(pages, numSamples) {
   const results = {}
   for (const pageName of pages) {
     const runResults = []
@@ -57,15 +60,30 @@ async function profilePageLoad (pages, numSamples) {
 
     if (runResults.some((result) => result.navigation.lenth > 1)) {
       throw new Error(`Multiple navigations not supported`)
-    } else if (runResults.some((result) => result.navigation[0].type !== 'navigate')) {
-      throw new Error(`Navigation type ${runResults.find((result) => result.navigation[0].type !== 'navigate').navigation[0].type} not supported`)
+    } else if (
+      runResults.some((result) => result.navigation[0].type !== 'navigate')
+    ) {
+      throw new Error(
+        `Navigation type ${
+          runResults.find((result) => result.navigation[0].type !== 'navigate')
+            .navigation[0].type
+        } not supported`,
+      )
     }
 
     const result = {
-      firstPaint: runResults.map((result) => result.paint['first-paint']),
-      domContentLoaded: runResults.map((result) => result.navigation[0] && result.navigation[0].domContentLoaded),
-      load: runResults.map((result) => result.navigation[0] && result.navigation[0].load),
-      domInteractive: runResults.map((result) => result.navigation[0] && result.navigation[0].domInteractive),
+      firstPaint: runResults.map((metrics) => metrics.paint['first-paint']),
+      domContentLoaded: runResults.map(
+        (metrics) =>
+          metrics.navigation[0] && metrics.navigation[0].domContentLoaded,
+      ),
+      load: runResults.map(
+        (metrics) => metrics.navigation[0] && metrics.navigation[0].load,
+      ),
+      domInteractive: runResults.map(
+        (metrics) =>
+          metrics.navigation[0] && metrics.navigation[0].domInteractive,
+      ),
     }
 
     results[pageName] = {
@@ -79,7 +97,7 @@ async function profilePageLoad (pages, numSamples) {
   return results
 }
 
-async function isWritable (directory) {
+async function isWritable(directory) {
   try {
     await fs.access(directory, fsConstants.W_OK)
     return true
@@ -91,23 +109,24 @@ async function isWritable (directory) {
   }
 }
 
-async function getFirstParentDirectoryThatExists (directory) {
-  while (true) {
+async function getFirstParentDirectoryThatExists(directory) {
+  let nextDirectory = directory
+  for (;;) {
     try {
-      await fs.access(directory, fsConstants.F_OK)
-      return directory
+      await fs.access(nextDirectory, fsConstants.F_OK)
+      return nextDirectory
     } catch (error) {
       if (error.code !== 'ENOENT') {
         throw error
-      } else if (directory === path.dirname(directory)) {
+      } else if (nextDirectory === path.dirname(nextDirectory)) {
         throw new Error('Failed to find parent directory that exists')
       }
-      directory = path.dirname(directory)
+      nextDirectory = path.dirname(nextDirectory)
     }
   }
 }
 
-async function main () {
+async function main() {
   const args = process.argv.slice(2)
 
   let pages = ['home']
@@ -117,7 +136,7 @@ async function main () {
   let existingParentDirectory
 
   while (args.length) {
-    if (/^(--pages|-p)$/i.test(args[0])) {
+    if (/^(--pages|-p)$/u.test(args[0])) {
       if (args[1] === undefined) {
         throw new Error('Missing pages argument')
       }
@@ -128,7 +147,7 @@ async function main () {
         }
       }
       args.splice(0, 2)
-    } else if (/^(--samples|-s)$/i.test(args[0])) {
+    } else if (/^(--samples|-s)$/u.test(args[0])) {
       if (args[1] === undefined) {
         throw new Error('Missing number of samples')
       }
@@ -137,14 +156,16 @@ async function main () {
         throw new Error(`Invalid 'samples' argument given: '${args[1]}'`)
       }
       args.splice(0, 2)
-    } else if (/^(--out|-o)$/i.test(args[0])) {
+    } else if (/^(--out|-o)$/u.test(args[0])) {
       if (args[1] === undefined) {
         throw new Error('Missing output filename')
       }
       outputPath = path.resolve(args[1])
       outputDirectory = path.dirname(outputPath)
-      existingParentDirectory = await getFirstParentDirectoryThatExists(outputDirectory)
-      if (!await isWritable(existingParentDirectory)) {
+      existingParentDirectory = await getFirstParentDirectoryThatExists(
+        outputDirectory,
+      )
+      if (!(await isWritable(existingParentDirectory))) {
         throw new Error(`Specified directory is not writable: '${args[1]}'`)
       }
       args.splice(0, 2)
@@ -165,8 +186,7 @@ async function main () {
   }
 }
 
-main()
-  .catch((e) => {
-    console.error(e)
-    process.exit(1)
-  })
+main().catch((e) => {
+  console.error(e)
+  process.exit(1)
+})

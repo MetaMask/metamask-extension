@@ -1,8 +1,8 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import sinon from 'sinon'
 import { shallow } from 'enzyme'
-import { DropdownMenuItem } from '../components/dropdown.js'
+import { DropdownMenuItem } from '../components/dropdown'
 
 describe('Dropdown', function () {
   let wrapper
@@ -15,8 +15,7 @@ describe('Dropdown', function () {
         onClick={onClickSpy}
         style={{ test: 'style' }}
         closeMenu={closeMenuSpy}
-      >
-      </DropdownMenuItem>,
+      />,
     )
   })
 
@@ -33,5 +32,4 @@ describe('Dropdown', function () {
     assert.equal(onClickSpy.callCount, 1)
     assert.equal(closeMenuSpy.callCount, 1)
   })
-
 })

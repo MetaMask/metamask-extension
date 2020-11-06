@@ -2,16 +2,12 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import ConfirmTransactionBase from '../confirm-transaction-base'
-import ConfirmApproveContent from './confirm-approve-content'
-import { getCustomTxParamsData } from './confirm-approve.util'
 import { showModal } from '../../store/actions'
-import {
-  getTokenData,
-} from '../../helpers/utils/transactions.util'
+import { getTokenData } from '../../helpers/utils/transactions.util'
 import {
   calcTokenAmount,
-  getTokenToAddress,
-  getTokenValue,
+  getTokenAddressParam,
+  getTokenValueParam,
 } from '../../helpers/utils/token-util'
 import { useTokenTracker } from '../../hooks/useTokenTracker'
 import { getTokens } from '../../ducks/metamask/metamask'
@@ -19,18 +15,20 @@ import {
   transactionFeeSelector,
   txDataSelector,
 } from '../../selectors/confirm-transaction'
-import { getCurrentCurrency, getDomainMetadata } from '../../selectors/selectors'
+import {
+  getCurrentCurrency,
+  getDomainMetadata,
+} from '../../selectors/selectors'
 import { currentNetworkTxListSelector } from '../../selectors/transactions'
+import { getCustomTxParamsData } from './confirm-approve.util'
+import ConfirmApproveContent from './confirm-approve-content'
 
-export default function ConfirmApprove () {
+export default function ConfirmApprove() {
   const dispatch = useDispatch()
   const { id: paramsTransactionId } = useParams()
   const {
     id: transactionId,
-    txParams: {
-      to: tokenAddress,
-      data,
-    } = {},
+    txParams: { to: tokenAddress, data } = {},
   } = useSelector(txDataSelector)
 
   const currentCurrency = useSelector(getCurrentCurrency)
@@ -38,15 +36,18 @@ export default function ConfirmApprove () {
   const domainMetadata = useSelector(getDomainMetadata)
   const tokens = useSelector(getTokens)
 
-  const transaction = (
-    currentNetworkTxList.find(({ id }) => id === (Number(paramsTransactionId) || transactionId)) || {}
+  const transaction =
+    currentNetworkTxList.find(
+      ({ id }) => id === (Number(paramsTransactionId) || transactionId),
+    ) || {}
+  const { ethTransactionTotal, fiatTransactionTotal } = useSelector((state) =>
+    transactionFeeSelector(state, transaction),
   )
-  const {
-    ethTransactionTotal,
-    fiatTransactionTotal,
-  } = useSelector((state) => transactionFeeSelector(state, transaction))
 
-  const currentToken = (tokens && tokens.find(({ address }) => tokenAddress === address)) || { address: tokenAddress }
+  const currentToken = (tokens &&
+    tokens.find(({ address }) => tokenAddress === address)) || {
+    address: tokenAddress,
+  }
 
   const { tokensWithBalances } = useTokenTracker([currentToken])
   const tokenTrackerBalance = tokensWithBalances[0]?.balance || ''
@@ -54,23 +55,21 @@ export default function ConfirmApprove () {
   const tokenSymbol = currentToken?.symbol
   const decimals = Number(currentToken?.decimals)
   const tokenData = getTokenData(data)
-  const tokenValue = tokenData && getTokenValue(tokenData.params)
-  const toAddress = tokenData && getTokenToAddress(tokenData.params)
-  const tokenAmount = tokenData && calcTokenAmount(tokenValue, decimals).toString(10)
+  const tokenValue = getTokenValueParam(tokenData)
+  const toAddress = getTokenAddressParam(tokenData)
+  const tokenAmount =
+    tokenData && calcTokenAmount(tokenValue, decimals).toString(10)
 
   const [customPermissionAmount, setCustomPermissionAmount] = useState('')
 
   const previousTokenAmount = useRef(tokenAmount)
 
-  useEffect(
-    () => {
-      if (customPermissionAmount && previousTokenAmount.current !== tokenAmount) {
-        setCustomPermissionAmount(tokenAmount)
-      }
-      previousTokenAmount.current = tokenAmount
-    },
-    [customPermissionAmount, tokenAmount],
-  )
+  useEffect(() => {
+    if (customPermissionAmount && previousTokenAmount.current !== tokenAmount) {
+      setCustomPermissionAmount(tokenAmount)
+    }
+    previousTokenAmount.current = tokenAmount
+  }, [customPermissionAmount, tokenAmount])
 
   const { origin } = transaction
   const formattedOrigin = origin
@@ -94,7 +93,7 @@ export default function ConfirmApprove () {
       identiconAddress={tokenAddress}
       showAccountInHeader
       title={tokensText}
-      contentComponent={(
+      contentComponent={
         <ConfirmApproveContent
           decimals={decimals}
           siteImage={siteImage}
@@ -104,17 +103,21 @@ export default function ConfirmApprove () {
           origin={formattedOrigin}
           tokenSymbol={tokenSymbol}
           tokenBalance={tokenBalance}
-          showCustomizeGasModal={() => dispatch(showModal({ name: 'CUSTOMIZE_GAS', txData }))}
-          showEditApprovalPermissionModal={
-            ({
-              customTokenAmount,
-              decimals,
-              origin,
-              setCustomAmount,
-              tokenAmount,
-              tokenBalance,
-              tokenSymbol,
-            }) => dispatch(
+          showCustomizeGasModal={() =>
+            dispatch(showModal({ name: 'CUSTOMIZE_GAS', txData }))
+          }
+          showEditApprovalPermissionModal={({
+            /* eslint-disable no-shadow */
+            customTokenAmount,
+            decimals,
+            origin,
+            setCustomAmount,
+            tokenAmount,
+            tokenBalance,
+            tokenSymbol,
+            /* eslint-enable no-shadow */
+          }) =>
+            dispatch(
               showModal({
                 name: 'EDIT_APPROVAL_PERMISSION',
                 customTokenAmount,
@@ -133,7 +136,7 @@ export default function ConfirmApprove () {
           ethTransactionTotal={ethTransactionTotal}
           fiatTransactionTotal={fiatTransactionTotal}
         />
-      )}
+      }
       hideSenderToRecipient
       customTxParamsData={customData}
     />

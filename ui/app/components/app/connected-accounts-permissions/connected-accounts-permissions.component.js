@@ -13,9 +13,11 @@ export default class ConnectedAccountsPermissions extends PureComponent {
   }
 
   static propTypes = {
-    permissions: PropTypes.arrayOf(PropTypes.shape({
-      key: PropTypes.string.isRequired,
-    })),
+    permissions: PropTypes.arrayOf(
+      PropTypes.shape({
+        key: PropTypes.string.isRequired,
+      }),
+    ),
   }
 
   state = {
@@ -28,7 +30,7 @@ export default class ConnectedAccountsPermissions extends PureComponent {
     }))
   }
 
-  render () {
+  render() {
     const { permissions } = this.props
     const { t } = this.context
     const { expanded } = this.state
@@ -39,7 +41,10 @@ export default class ConnectedAccountsPermissions extends PureComponent {
 
     return (
       <div className="connected-accounts-permissions">
-        <p className="connected-accounts-permissions__header" onClick={this.toggleExpanded}>
+        <p
+          className="connected-accounts-permissions__header"
+          onClick={this.toggleExpanded}
+        >
           <strong>{t('permissions')}</strong>
           <button
             className={classnames('fas', {
@@ -50,21 +55,31 @@ export default class ConnectedAccountsPermissions extends PureComponent {
           />
         </p>
         <div
-          className={classnames('connected-accounts-permissions__list-container', {
-            'connected-accounts-permissions__list-container--expanded': expanded,
-          })}
+          className={classnames(
+            'connected-accounts-permissions__list-container',
+            {
+              'connected-accounts-permissions__list-container--expanded': expanded,
+            },
+          )}
         >
           <p>{t('authorizedPermissions')}:</p>
           <ul className="connected-accounts-permissions__list">
             {permissions.map(({ key: permissionName }) => (
-              <li key={permissionName} className="connected-accounts-permissions__list-item">
-                <CheckBox checked disabled id={permissionName} className="connected-accounts-permissions__checkbox" />
+              <li
+                key={permissionName}
+                className="connected-accounts-permissions__list-item"
+              >
+                <CheckBox
+                  checked
+                  disabled
+                  id={permissionName}
+                  className="connected-accounts-permissions__checkbox"
+                />
                 <label htmlFor={permissionName}>{t(permissionName)}</label>
               </li>
             ))}
           </ul>
         </div>
-
       </div>
     )
   }

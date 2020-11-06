@@ -3,18 +3,24 @@ import log from 'loglevel'
 import { clone } from 'lodash'
 import React from 'react'
 import { render } from 'react-dom'
-import Root from './app/pages'
-import * as actions from './app/store/actions'
-import configureStore from './app/store/store'
-import txHelper from './lib/tx-helper'
 import { getEnvironmentType } from '../app/scripts/lib/util'
 import { ALERT_TYPES } from '../app/scripts/controllers/alert'
 import { SENTRY_STATE } from '../app/scripts/lib/setupSentry'
 import { ENVIRONMENT_TYPE_POPUP } from '../app/scripts/lib/enums'
-import { fetchLocale, loadRelativeTimeFormatLocaleData } from './app/helpers/utils/i18n-helper'
+import Root from './app/pages'
+import * as actions from './app/store/actions'
+import configureStore from './app/store/store'
+import txHelper from './lib/tx-helper'
+import {
+  fetchLocale,
+  loadRelativeTimeFormatLocaleData,
+} from './app/helpers/utils/i18n-helper'
 import switchDirection from './app/helpers/utils/switch-direction'
-import { getPermittedAccountsForCurrentTab, getSelectedAddress } from './app/selectors'
-import { ALERT_STATE } from './app/ducks/alerts/unconnected-account'
+import {
+  getPermittedAccountsForCurrentTab,
+  getSelectedAddress,
+} from './app/selectors'
+import { ALERT_STATE } from './app/ducks/alerts'
 import {
   getUnconnectedAccountAlertEnabledness,
   getUnconnectedAccountAlertShown,
@@ -22,23 +28,23 @@ import {
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn')
 
-export default function launchMetamaskUi (opts, cb) {
+export default function launchMetamaskUi(opts, cb) {
   const { backgroundConnection } = opts
   actions._setBackgroundConnection(backgroundConnection)
   // check if we are unlocked first
   backgroundConnection.getState(function (err, metamaskState) {
     if (err) {
-      return cb(err)
+      cb(err)
+      return
     }
-    startApp(metamaskState, backgroundConnection, opts)
-      .then((store) => {
-        setupDebuggingHelpers(store)
-        cb(null, store)
-      })
+    startApp(metamaskState, backgroundConnection, opts).then((store) => {
+      setupDebuggingHelpers(store)
+      cb(null, store)
+    })
   })
 }
 
-async function startApp (metamaskState, backgroundConnection, opts) {
+async function startApp(metamaskState, backgroundConnection, opts) {
   // parse opts
   if (!metamaskState.featureFlags) {
     metamaskState.featureFlags = {}
@@ -74,11 +80,17 @@ async function startApp (metamaskState, backgroundConnection, opts) {
   }
 
   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-    const origin = draftInitialState.activeTab.origin
-    const permittedAccountsForCurrentTab = getPermittedAccountsForCurrentTab(draftInitialState)
+    const { origin } = draftInitialState.activeTab
+    const permittedAccountsForCurrentTab = getPermittedAccountsForCurrentTab(
+      draftInitialState,
+    )
     const selectedAddress = getSelectedAddress(draftInitialState)
-    const unconnectedAccountAlertShownOrigins = getUnconnectedAccountAlertShown(draftInitialState)
-    const unconnectedAccountAlertIsEnabled = getUnconnectedAccountAlertEnabledness(draftInitialState)
+    const unconnectedAccountAlertShownOrigins = getUnconnectedAccountAlertShown(
+      draftInitialState,
+    )
+    const unconnectedAccountAlertIsEnabled = getUnconnectedAccountAlertEnabledness(
+      draftInitialState,
+    )
 
     if (
       origin &&
@@ -87,7 +99,9 @@ async function startApp (metamaskState, backgroundConnection, opts) {
       permittedAccountsForCurrentTab.length > 0 &&
       !permittedAccountsForCurrentTab.includes(selectedAddress)
     ) {
-      draftInitialState[ALERT_TYPES.unconnectedAccount] = { state: ALERT_STATE.OPEN }
+      draftInitialState[ALERT_TYPES.unconnectedAccount] = {
+        state: ALERT_STATE.OPEN,
+      }
       actions.setUnconnectedAccountAlertShown(origin)
     }
   }
@@ -106,13 +120,15 @@ async function startApp (metamaskState, backgroundConnection, opts) {
   )
   const numberOfUnapprivedTx = unapprovedTxsAll.length
   if (numberOfUnapprivedTx > 0) {
-    store.dispatch(actions.showConfTxPage({
-      id: unapprovedTxsAll[0].id,
-    }))
+    store.dispatch(
+      actions.showConfTxPage({
+        id: unapprovedTxsAll[0].id,
+      }),
+    )
   }
 
-  backgroundConnection.on('update', function (metamaskState) {
-    store.dispatch(actions.updateMetamaskState(metamaskState))
+  backgroundConnection.on('update', function (state) {
+    store.dispatch(actions.updateMetamaskState(state))
   })
 
   // global metamask api - used by tooling
@@ -129,12 +145,7 @@ async function startApp (metamaskState, backgroundConnection, opts) {
   }
 
   // start app
-  render(
-    <Root
-      store={store}
-    />,
-    opts.container,
-  )
+  render(<Root store={store} />, opts.container)
 
   return store
 }
@@ -151,22 +162,18 @@ async function startApp (metamaskState, backgroundConnection, opts) {
  * @param {Object} object - The object to mask
  * @param {Object<Object|boolean>} mask - The mask to apply to the object
  */
-function maskObject (object, mask) {
-  return Object.keys(object)
-    .reduce(
-      (state, key) => {
-        if (mask[key] === true) {
-          state[key] = object[key]
-        } else if (mask[key]) {
-          state[key] = maskObject(object[key], mask[key])
-        }
-        return state
-      },
-      {},
-    )
+function maskObject(object, mask) {
+  return Object.keys(object).reduce((state, key) => {
+    if (mask[key] === true) {
+      state[key] = object[key]
+    } else if (mask[key]) {
+      state[key] = maskObject(object[key], mask[key])
+    }
+    return state
+  }, {})
 }
 
-function setupDebuggingHelpers (store) {
+function setupDebuggingHelpers(store) {
   window.getCleanAppState = function () {
     const state = clone(store.getState())
     state.version = global.platform.getVersion()
@@ -188,7 +195,8 @@ window.logStateString = function (cb) {
   const state = window.getCleanAppState()
   global.platform.getPlatformInfo((err, platform) => {
     if (err) {
-      return cb(err)
+      cb(err)
+      return
     }
     state.platform = platform
     const stateString = JSON.stringify(state, null, 2)

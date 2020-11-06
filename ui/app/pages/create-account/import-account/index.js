@@ -3,9 +3,8 @@ import PropTypes from 'prop-types'
 import Select from 'react-select'
 
 // Subviews
-import JsonImportView from './json.js'
-
-import PrivateKeyImportView from './private-key.js'
+import JsonImportView from './json'
+import PrivateKeyImportView from './private-key'
 
 export default class AccountImportSubview extends Component {
   static contextTypes = {
@@ -14,14 +13,11 @@ export default class AccountImportSubview extends Component {
 
   state = {}
 
-  getMenuItemTexts () {
-    return [
-      this.context.t('privateKey'),
-      this.context.t('jsonFile'),
-    ]
+  getMenuItemTexts() {
+    return [this.context.t('privateKey'), this.context.t('jsonFile')]
   }
 
-  renderImportView () {
+  renderImportView() {
     const { type } = this.state
     const menuItems = this.getMenuItemTexts()
     const current = type || menuItems[0]
@@ -36,7 +32,7 @@ export default class AccountImportSubview extends Component {
     }
   }
 
-  render () {
+  render() {
     const menuItems = this.getMenuItemTexts()
     const { type } = this.state
 
@@ -51,7 +47,8 @@ export default class AccountImportSubview extends Component {
             }}
             onClick={() => {
               global.platform.openTab({
-                url: 'https://metamask.zendesk.com/hc/en-us/articles/360015289932',
+                url:
+                  'https://metamask.zendesk.com/hc/en-us/articles/360015289932',
               })
             }}
           >
@@ -67,10 +64,10 @@ export default class AccountImportSubview extends Component {
             name="import-type-select"
             clearable={false}
             value={type || menuItems[0]}
-            options={menuItems.map((type) => {
+            options={menuItems.map((text) => {
               return {
-                value: type,
-                label: type,
+                value: text,
+                label: text,
               }
             })}
             onChange={(opt) => {

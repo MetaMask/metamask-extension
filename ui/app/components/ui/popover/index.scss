@@ -22,7 +22,7 @@
 
   &-header {
     display: flex;
-    padding: 24px;
+    padding: 24px 24px 16px;
     flex-direction: column;
     background: white;
     position: relative;
@@ -33,10 +33,9 @@
       align-items: center;
       justify-content: space-between;
 
-      @extend %H4;
+      @include H4;
 
       font-weight: bold;
-      line-height: 25px;
       padding-bottom: 8px;
 
       h2 {
@@ -51,9 +50,7 @@
     }
 
     &__subtitle {
-      @extend %H6;
-
-      line-height: 20px;
+      @include H6;
     }
 
     &__button {

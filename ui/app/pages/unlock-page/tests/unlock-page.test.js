@@ -1,8 +1,8 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import sinon from 'sinon'
 import { mount } from 'enzyme'
-import UnlockPage from '../index'
+import UnlockPage from '..'
 
 describe('Unlock Page', function () {
   let wrapper
@@ -19,17 +19,12 @@ describe('Unlock Page', function () {
     showOptInModal: sinon.spy(),
   }
 
-
   beforeEach(function () {
-
-    wrapper = mount(
-      <UnlockPage.WrappedComponent{...props} />, {
-        context: {
-          t: (str) => str,
-        },
+    wrapper = mount(<UnlockPage.WrappedComponent {...props} />, {
+      context: {
+        t: (str) => str,
       },
-    )
-
+    })
   })
 
   after(function () {
@@ -58,7 +53,6 @@ describe('Unlock Page', function () {
 
     importSeedButton.simulate('click')
     assert(props.onImport.calledOnce)
-
   })
 
   it('clicks restore', function () {

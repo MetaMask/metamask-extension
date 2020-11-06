@@ -1,8 +1,8 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import sinon from 'sinon'
 import { mount } from 'enzyme'
-import TransactionConfirmed from '../index'
+import TransactionConfirmed from '..'
 
 describe('Transaction Confirmed', function () {
   it('clicks ok to submit and hide modal', function () {
@@ -11,7 +11,8 @@ describe('Transaction Confirmed', function () {
       hideModal: sinon.spy(),
     }
     const wrapper = mount(
-      <TransactionConfirmed.WrappedComponent {...props} />, {
+      <TransactionConfirmed.WrappedComponent {...props} />,
+      {
         context: {
           t: (str) => str,
         },

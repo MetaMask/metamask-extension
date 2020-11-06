@@ -1,18 +1,17 @@
 import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import { useDispatch } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import Identicon from '../../ui/identicon'
 import ListItem from '../../ui/list-item'
-import Tooltip from '../../ui/tooltip-v2'
+import Tooltip from '../../ui/tooltip'
 import InfoIcon from '../../ui/icon/info-icon.component'
 import Button from '../../ui/button'
 import { useI18nContext } from '../../../hooks/useI18nContext'
 import { useMetricEvent } from '../../../hooks/useMetricEvent'
-import { useDispatch } from 'react-redux'
 import { updateSendToken } from '../../../store/actions'
-import { useHistory } from 'react-router-dom'
 import { SEND_ROUTE } from '../../../helpers/constants/routes'
-
 
 const AssetListItem = ({
   className,
@@ -37,30 +36,26 @@ const AssetListItem = ({
       name: 'Clicked Send: Token',
     },
   })
-  const titleIcon = warning
-    ? (
-      <Tooltip
-        wrapperClassName="asset-list-item__warning-tooltip"
-        interactive
-        position="bottom"
-        html={warning}
-      >
-        <InfoIcon severity="warning" />
-      </Tooltip>
-    )
-    : null
+  const titleIcon = warning ? (
+    <Tooltip
+      wrapperClassName="asset-list-item__warning-tooltip"
+      interactive
+      position="bottom"
+      html={warning}
+    >
+      <InfoIcon severity="warning" />
+    </Tooltip>
+  ) : null
 
-  const midContent = warning
-    ? (
-      <>
-        <InfoIcon severity="warning" />
-        <div className="asset-list-item__warning">{warning}</div>
-      </>
-    )
-    : null
+  const midContent = warning ? (
+    <>
+      <InfoIcon severity="warning" />
+      <div className="asset-list-item__warning">{warning}</div>
+    </>
+  ) : null
 
   const sendTokenButton = useMemo(() => {
-    if (tokenAddress == null) {
+    if (tokenAddress === null || tokenAddress === undefined) {
       return null
     }
     return (
@@ -70,11 +65,13 @@ const AssetListItem = ({
         onClick={(e) => {
           e.stopPropagation()
           sendTokenEvent()
-          dispatch(updateSendToken({
-            address: tokenAddress,
-            decimals: tokenDecimals,
-            symbol: tokenSymbol,
-          }))
+          dispatch(
+            updateSendToken({
+              address: tokenAddress,
+              decimals: tokenDecimals,
+              symbol: tokenSymbol,
+            }),
+          )
           history.push(SEND_ROUTE)
         }}
       >
@@ -95,25 +92,36 @@ const AssetListItem = ({
     <ListItem
       className={classnames('asset-list-item', className)}
       data-testid={dataTestId}
-      title={primary}
+      title={
+        <button
+          className="asset-list-item__token-button"
+          onClick={onClick}
+          title={`${primary} ${tokenSymbol}`}
+        >
+          <h2>
+            <span className="asset-list-item__token-value">{primary}</span>
+            <span className="asset-list-item__token-symbol">{tokenSymbol}</span>
+          </h2>
+        </button>
+      }
       titleIcon={titleIcon}
       subtitle={<h3 title={secondary}>{secondary}</h3>}
       onClick={onClick}
-      icon={(
+      icon={
         <Identicon
           className={iconClassName}
           diameter={32}
           address={tokenAddress}
           image={tokenImage}
         />
-      )}
+      }
       midContent={midContent}
-      rightContent={(
+      rightContent={
         <>
           <i className="fas fa-chevron-right asset-list-item__chevron-right" />
           {sendTokenButton}
         </>
-      )}
+      }
     />
   )
 }

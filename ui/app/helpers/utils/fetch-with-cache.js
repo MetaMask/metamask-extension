@@ -4,8 +4,15 @@ import {
 } from '../../../lib/local-storage-helpers'
 import fetchWithTimeout from '../../../../app/scripts/lib/fetch-with-timeout'
 
-const fetchWithCache = async (url, fetchOptions = {}, { cacheRefreshTime = 360000, timeout = 30000 } = {}) => {
-  if (fetchOptions.body || (fetchOptions.method && fetchOptions.method !== 'GET')) {
+const fetchWithCache = async (
+  url,
+  fetchOptions = {},
+  { cacheRefreshTime = 360000, timeout = 30000 } = {},
+) => {
+  if (
+    fetchOptions.body ||
+    (fetchOptions.method && fetchOptions.method !== 'GET')
+  ) {
     throw new Error('fetchWithCache only supports GET requests')
   }
   if (!(fetchOptions.headers instanceof window.Headers)) {
@@ -24,30 +31,29 @@ const fetchWithCache = async (url, fetchOptions = {}, { cacheRefreshTime = 36000
   const { cachedResponse, cachedTime } = cachedFetch[url] || {}
   if (cachedResponse && currentTime - cachedTime < cacheRefreshTime) {
     return cachedResponse
-  } else {
-    fetchOptions.headers.set('Content-Type', 'application/json')
-    const _fetch = timeout ?
-      fetchWithTimeout({ timeout }) :
-      window.fetch
-    const response = await _fetch(url, {
-      referrerPolicy: 'no-referrer-when-downgrade',
-      body: null,
-      method: 'GET',
-      mode: 'cors',
-      ...fetchOptions,
-    })
-    if (!response.ok) {
-      throw new Error(`Fetch failed with status '${response.status}': '${response.statusText}'`)
-    }
-    const responseJson = await response.json()
-    const cacheEntry = {
-      cachedResponse: responseJson,
-      cachedTime: currentTime,
-    }
-    cachedFetch[url] = cacheEntry
-    saveLocalStorageData(cachedFetch, 'cachedFetch')
-    return responseJson
   }
+  fetchOptions.headers.set('Content-Type', 'application/json')
+  const _fetch = timeout ? fetchWithTimeout({ timeout }) : window.fetch
+  const response = await _fetch(url, {
+    referrerPolicy: 'no-referrer-when-downgrade',
+    body: null,
+    method: 'GET',
+    mode: 'cors',
+    ...fetchOptions,
+  })
+  if (!response.ok) {
+    throw new Error(
+      `Fetch failed with status '${response.status}': '${response.statusText}'`,
+    )
+  }
+  const responseJson = await response.json()
+  const cacheEntry = {
+    cachedResponse: responseJson,
+    cachedTime: currentTime,
+  }
+  cachedFetch[url] = cacheEntry
+  saveLocalStorageData(cachedFetch, 'cachedFetch')
+  return responseJson
 }
 
 export default fetchWithCache

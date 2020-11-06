@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
+import { MenuItem } from '../../ui/menu'
 import ConnectedAccountsListItem from './connected-accounts-list-item'
 import ConnectedAccountsListOptions from './connected-accounts-list-options'
-import { MenuItem } from '../../ui/menu'
 
 export default class ConnectedAccountsList extends PureComponent {
   static contextTypes = {
@@ -18,11 +18,13 @@ export default class ConnectedAccountsList extends PureComponent {
       address: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
     }),
-    connectedAccounts: PropTypes.arrayOf(PropTypes.shape({
-      address: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      lastActive: PropTypes.number,
-    })).isRequired,
+    connectedAccounts: PropTypes.arrayOf(
+      PropTypes.shape({
+        address: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+        lastActive: PropTypes.number,
+      }),
+    ).isRequired,
     connectAccount: PropTypes.func.isRequired,
     selectedAddress: PropTypes.string.isRequired,
     removePermittedAccount: PropTypes.func,
@@ -30,13 +32,16 @@ export default class ConnectedAccountsList extends PureComponent {
     shouldRenderListOptions: (props, propName, componentName) => {
       if (typeof props[propName] !== 'boolean') {
         return new Error(
-          `Warning: Failed prop type: '${propName}' of component '${componentName}' must be a boolean. Received: ${typeof props[propName]}`,
+          `Warning: Failed prop type: '${propName}' of component '${componentName}' must be a boolean. Received: ${typeof props[
+            propName
+          ]}`,
         )
-      } else if (props[propName] && !props['removePermittedAccount']) {
+      } else if (props[propName] && !props.removePermittedAccount) {
         return new Error(
           `Warning: Failed prop type: '${propName}' of component '${componentName}' requires prop 'removePermittedAccount'.`,
         )
       }
+      return undefined
     },
   }
 
@@ -62,7 +67,7 @@ export default class ConnectedAccountsList extends PureComponent {
     this.setState({ accountWithOptionsShown: address })
   }
 
-  renderUnconnectedAccount () {
+  renderUnconnectedAccount() {
     const { accountToConnect, connectAccount } = this.props
     const { t } = this.context
 
@@ -77,19 +82,19 @@ export default class ConnectedAccountsList extends PureComponent {
         address={address}
         name={`${name} (…${address.substr(-4, 4)})`}
         status={t('statusNotConnected')}
-        action={(
+        action={
           <a
             className="connected-accounts-list__account-status-link"
             onClick={() => connectAccount(accountToConnect.address)}
           >
             {t('connect')}
           </a>
-        )}
+        }
       />
     )
   }
 
-  renderListItemOptions (address) {
+  renderListItemOptions(address) {
     const { accountWithOptionsShown } = this.state
     const { t } = this.context
 
@@ -109,7 +114,7 @@ export default class ConnectedAccountsList extends PureComponent {
     )
   }
 
-  renderListItemAction (address) {
+  renderListItemAction(address) {
     const { t } = this.context
 
     return (
@@ -122,7 +127,7 @@ export default class ConnectedAccountsList extends PureComponent {
     )
   }
 
-  render () {
+  render() {
     const {
       connectedAccounts,
       selectedAddress,
@@ -134,28 +139,26 @@ export default class ConnectedAccountsList extends PureComponent {
       <>
         <main className="connected-accounts-list">
           {this.renderUnconnectedAccount()}
-          {
-            connectedAccounts.map(({ address, name }, index) => {
-              return (
-                <ConnectedAccountsListItem
-                  key={address}
-                  address={address}
-                  name={`${name} (…${address.substr(-4, 4)})`}
-                  status={index === 0 ? t('active') : null}
-                  options={
-                    shouldRenderListOptions
-                      ? this.renderListItemOptions(address)
-                      : null
-                  }
-                  action={
-                    address !== selectedAddress
-                      ? this.renderListItemAction(address)
-                      : null
-                  }
-                />
-              )
-            })
-          }
+          {connectedAccounts.map(({ address, name }, index) => {
+            return (
+              <ConnectedAccountsListItem
+                key={address}
+                address={address}
+                name={`${name} (…${address.substr(-4, 4)})`}
+                status={index === 0 ? t('active') : null}
+                options={
+                  shouldRenderListOptions
+                    ? this.renderListItemOptions(address)
+                    : null
+                }
+                action={
+                  address === selectedAddress
+                    ? null
+                    : this.renderListItemAction(address)
+                }
+              />
+            )
+          })}
         </main>
       </>
     )

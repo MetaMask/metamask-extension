@@ -15,7 +15,6 @@ import EthQuery from 'ethjs-query'
     @param {function} config.getPendingTransactions a function for getting an array of transactions,
     @param {function} config.publishTransaction a async function for publishing raw transactions,
 
-
 @class
 */
 
@@ -37,9 +36,9 @@ export default class PendingTransactionTracker extends EventEmitter {
    */
   droppedBlocksBufferByHash = new Map()
 
-  constructor (config) {
+  constructor(config) {
     super()
-    this.query = config.query || (new EthQuery(config.provider))
+    this.query = config.query || new EthQuery(config.provider)
     this.nonceTracker = config.nonceTracker
     this.getPendingTransactions = config.getPendingTransactions
     this.getCompletedTransactions = config.getCompletedTransactions
@@ -51,14 +50,18 @@ export default class PendingTransactionTracker extends EventEmitter {
   /**
     checks the network for signed txs and releases the nonce global lock if it is
   */
-  async updatePendingTxs () {
+  async updatePendingTxs() {
     // in order to keep the nonceTracker accurate we block it while updating pending transactions
     const nonceGlobalLock = await this.nonceTracker.getGlobalLock()
     try {
       const pendingTxs = this.getPendingTransactions()
-      await Promise.all(pendingTxs.map((txMeta) => this._checkPendingTx(txMeta)))
+      await Promise.all(
+        pendingTxs.map((txMeta) => this._checkPendingTx(txMeta)),
+      )
     } catch (err) {
-      log.error('PendingTransactionTracker - Error updating pending transactions')
+      log.error(
+        'PendingTransactionTracker - Error updating pending transactions',
+      )
       log.error(err)
     }
     nonceGlobalLock.releaseLock()
@@ -70,7 +73,7 @@ export default class PendingTransactionTracker extends EventEmitter {
    * @emits tx:warning
    * @returns {Promise<void>}
    */
-  async resubmitPendingTxs (blockNumber) {
+  async resubmitPendingTxs(blockNumber) {
     const pending = this.getPendingTransactions()
     if (!pending.length) {
       return
@@ -79,18 +82,20 @@ export default class PendingTransactionTracker extends EventEmitter {
       try {
         await this._resubmitTx(txMeta, blockNumber)
       } catch (err) {
-        const errorMessage = err.value?.message?.toLowerCase() || err.message.toLowerCase()
-        const isKnownTx = (
+        const errorMessage =
+          err.value?.message?.toLowerCase() || err.message.toLowerCase()
+        const isKnownTx =
           // geth
           errorMessage.includes('replacement transaction underpriced') ||
           errorMessage.includes('known transaction') ||
           // parity
           errorMessage.includes('gas price too low to replace') ||
-          errorMessage.includes('transaction with the same hash was already imported') ||
+          errorMessage.includes(
+            'transaction with the same hash was already imported',
+          ) ||
           // other
           errorMessage.includes('gateway timeout') ||
           errorMessage.includes('nonce too low')
-        )
         // ignore resubmit warnings, return early
         if (isKnownTx) {
           return
@@ -117,19 +122,22 @@ export default class PendingTransactionTracker extends EventEmitter {
    * @emits tx:retry
    * @private
    */
-  async _resubmitTx (txMeta, latestBlockNumber) {
+  async _resubmitTx(txMeta, latestBlockNumber) {
     if (!txMeta.firstRetryBlockNumber) {
       this.emit('tx:block-update', txMeta, latestBlockNumber)
     }
 
-    const firstRetryBlockNumber = txMeta.firstRetryBlockNumber || latestBlockNumber
-    const txBlockDistance = Number.parseInt(latestBlockNumber, 16) - Number.parseInt(firstRetryBlockNumber, 16)
+    const firstRetryBlockNumber =
+      txMeta.firstRetryBlockNumber || latestBlockNumber
+    const txBlockDistance =
+      Number.parseInt(latestBlockNumber, 16) -
+      Number.parseInt(firstRetryBlockNumber, 16)
 
     const retryCount = txMeta.retryCount || 0
 
     // Exponential backoff to limit retries at publishing
     if (txBlockDistance <= Math.pow(2, retryCount) - 1) {
-      return
+      return undefined
     }
 
     // Only auto-submit already-signed txs:
@@ -137,7 +145,7 @@ export default class PendingTransactionTracker extends EventEmitter {
       return this.approveTransaction(txMeta.id)
     }
 
-    const rawTx = txMeta.rawTx
+    const { rawTx } = txMeta
     const txHash = await this.publishTransaction(rawTx)
 
     // Increment successful tries:
@@ -155,7 +163,7 @@ export default class PendingTransactionTracker extends EventEmitter {
    * @emits tx:warning
    * @private
    */
-  async _checkPendingTx (txMeta) {
+  async _checkPendingTx(txMeta) {
     const txHash = txMeta.hash
     const txId = txMeta.id
 
@@ -167,7 +175,9 @@ export default class PendingTransactionTracker extends EventEmitter {
     // extra check in case there was an uncaught error during the
     // signature and submission process
     if (!txHash) {
-      const noTxHashErr = new Error('We had an error while submitting this transaction, please try again.')
+      const noTxHashErr = new Error(
+        'We had an error while submitting this transaction, please try again.',
+      )
       noTxHashErr.name = 'NoTxHashError'
       this.emit('tx:failed', txId, noTxHashErr)
 
@@ -196,7 +206,6 @@ export default class PendingTransactionTracker extends EventEmitter {
 
     if (await this._checkIfTxWasDropped(txMeta)) {
       this.emit('tx:dropped', txId)
-      return
     }
   }
 
@@ -207,8 +216,11 @@ export default class PendingTransactionTracker extends EventEmitter {
    * @returns {Promise<boolean>}
    * @private
    */
-  async _checkIfTxWasDropped (txMeta) {
-    const { hash: txHash, txParams: { nonce, from } } = txMeta
+  async _checkIfTxWasDropped(txMeta) {
+    const {
+      hash: txHash,
+      txParams: { nonce, from },
+    } = txMeta
     const networkNextNonce = await this.query.getTransactionCount(from)
 
     if (parseInt(nonce, 16) >= networkNextNonce.toNumber()) {
@@ -236,14 +248,16 @@ export default class PendingTransactionTracker extends EventEmitter {
    * @returns {Promise<boolean>}
    * @private
    */
-  async _checkIfNonceIsTaken (txMeta) {
+  async _checkIfNonceIsTaken(txMeta) {
     const address = txMeta.txParams.from
     const completed = this.getCompletedTransactions(address)
-    return completed.some((other) =>
+    return completed.some(
       // This is called while the transaction is in-flight, so it is possible that the
       // list of completed transactions now includes the transaction we were looking at
       // and if that is the case, don't consider the transaction to have taken its own nonce
-      !(other.id === txMeta.id) && other.txParams.nonce === txMeta.txParams.nonce,
+      (other) =>
+        !(other.id === txMeta.id) &&
+        other.txParams.nonce === txMeta.txParams.nonce,
     )
   }
 }

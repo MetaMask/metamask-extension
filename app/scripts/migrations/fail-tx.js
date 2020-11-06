@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash'
 
-export default function failTxsThat (version, reason, condition) {
+export default function failTxsThat(version, reason, condition) {
   return function (originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
@@ -9,18 +9,17 @@ export default function failTxsThat (version, reason, condition) {
       const newState = transformState(state, condition, reason)
       versionedData.data = newState
     } catch (err) {
-      console.warn(`MetaMask Migration #${version}` + err.stack)
+      console.warn(`MetaMask Migration #${version}${err.stack}`)
     }
     return Promise.resolve(versionedData)
-
   }
 }
 
-function transformState (state, condition, reason) {
+function transformState(state, condition, reason) {
   const newState = state
   const { TransactionController } = newState
   if (TransactionController && TransactionController.transactions) {
-    const transactions = TransactionController.transactions
+    const { transactions } = TransactionController
 
     newState.TransactionController.transactions = transactions.map((txMeta) => {
       if (!condition(txMeta)) {
@@ -38,4 +37,3 @@ function transformState (state, condition, reason) {
   }
   return newState
 }
-

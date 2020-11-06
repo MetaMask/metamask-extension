@@ -7,9 +7,9 @@ import { useState, useEffect, useRef, useCallback } from 'react'
  * @param {number}  delay   - delay in ms
  * @param {boolean}  [immediate]   - determines whether the timeout is invoked immediately
  *
- * @return {Function}
+ * @return {Function|undefined}
  */
-export function useTimeout (cb, delay, immediate = true) {
+export function useTimeout(cb, delay, immediate = true) {
   const saveCb = useRef()
   const [timeoutId, setTimeoutId] = useState(null)
 
@@ -19,7 +19,7 @@ export function useTimeout (cb, delay, immediate = true) {
 
   useEffect(() => {
     if (timeoutId !== 'start') {
-      return
+      return undefined
     }
 
     const id = setTimeout(() => {

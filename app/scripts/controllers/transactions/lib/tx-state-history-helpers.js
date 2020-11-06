@@ -6,10 +6,10 @@ import { cloneDeep } from 'lodash'
   @param {array} longHistory
   @returns {array}
 */
-export function migrateFromSnapshotsToDiffs (longHistory) {
+export function migrateFromSnapshotsToDiffs(longHistory) {
   return (
     longHistory
-    // convert non-initial history entries into diffs
+      // convert non-initial history entries into diffs
       .map((entry, index) => {
         if (index === 0) {
           return entry
@@ -31,7 +31,7 @@ export function migrateFromSnapshotsToDiffs (longHistory) {
   @param {string} [note] - a optional note for the state change
   @returns {array}
 */
-export function generateHistoryEntry (previousState, newState, note) {
+export function generateHistoryEntry(previousState, newState, note) {
   const entry = jsonDiffer.compare(previousState, newState)
   // Add a note to the first op, since it breaks if we append it to the entry
   if (entry[0]) {
@@ -48,9 +48,11 @@ export function generateHistoryEntry (previousState, newState, note) {
   Recovers previous txMeta state obj
   @returns {Object}
 */
-export function replayHistory (_shortHistory) {
+export function replayHistory(_shortHistory) {
   const shortHistory = cloneDeep(_shortHistory)
-  return shortHistory.reduce((val, entry) => jsonDiffer.applyPatch(val, entry).newDocument)
+  return shortHistory.reduce(
+    (val, entry) => jsonDiffer.applyPatch(val, entry).newDocument,
+  )
 }
 
 /**
@@ -58,7 +60,7 @@ export function replayHistory (_shortHistory) {
  * @param {Object} txMeta - the tx metadata object
  * @returns {Object} a deep clone without history
  */
-export function snapshotFromTxMeta (txMeta) {
+export function snapshotFromTxMeta(txMeta) {
   const shallow = { ...txMeta }
   delete shallow.history
   return cloneDeep(shallow)

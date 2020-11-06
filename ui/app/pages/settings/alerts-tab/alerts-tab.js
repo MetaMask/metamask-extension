@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { ALERT_TYPES } from '../../../../../app/scripts/controllers/alert'
-import Tooltip from '../../../components/ui/tooltip-v2'
+import Tooltip from '../../../components/ui/tooltip'
 import ToggleButton from '../../../components/ui/toggle-button'
 import { setAlertEnabledness } from '../../../store/actions'
 import { getAlertEnabledness } from '../../../ducks/metamask/metamask'
@@ -16,9 +16,7 @@ const AlertSettingsEntry = ({ alertId, description, title }) => {
 
   return (
     <>
-      <span>
-        { title }
-      </span>
+      <span>{title}</span>
       <Tooltip
         position="top"
         title={description}
@@ -54,16 +52,14 @@ const AlertsTab = () => {
 
   return (
     <div className="alerts-tab__body">
-      {
-        Object.entries(alertConfig).map(([alertId, { title, description }]) => (
-          <AlertSettingsEntry
-            alertId={alertId}
-            description={description}
-            key={alertId}
-            title={title}
-          />
-        ))
-      }
+      {Object.entries(alertConfig).map(([alertId, { title, description }]) => (
+        <AlertSettingsEntry
+          alertId={alertId}
+          description={description}
+          key={alertId}
+          title={title}
+        />
+      ))}
     </div>
   )
 }

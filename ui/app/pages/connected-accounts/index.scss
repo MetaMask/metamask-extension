@@ -2,9 +2,10 @@
   &__footer {
     a,
     a:hover {
+      @include H6;
+
       color: $primary-blue;
       cursor: pointer;
-      font-size: 14px;
     }
   }
 }

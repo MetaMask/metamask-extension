@@ -16,6 +16,6 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default function withModalProps (Component) {
+export default function withModalProps(Component) {
   return connect(mapStateToProps, mapDispatchToProps)(Component)
 }

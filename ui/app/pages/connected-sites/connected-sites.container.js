@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import ConnectedSites from './connected-sites.component'
 import {
   getOpenMetamaskTabsIds,
   requestAccountsPermissionWithId,
@@ -17,6 +16,7 @@ import {
 } from '../../selectors'
 import { CONNECT_ROUTE } from '../../helpers/constants/routes'
 import { getMostRecentOverviewPage } from '../../ducks/history/history'
+import ConnectedSites from './connected-sites.component'
 
 const mapStateToProps = (state) => {
   const { openMetaMaskTabs } = state.appState
@@ -26,9 +26,8 @@ const mapStateToProps = (state) => {
   const permittedAccountsByOrigin = getPermittedAccountsByOrigin(state)
   const selectedAddress = getSelectedAddress(state)
 
-  const currentTabHasNoAccounts = !permittedAccountsByOrigin[
-    originOfCurrentTab
-  ]?.length
+  const currentTabHasNoAccounts = !permittedAccountsByOrigin[originOfCurrentTab]
+    ?.length
 
   let tabToConnect
   if (originOfCurrentTab && currentTabHasNoAccounts && !openMetaMaskTabs[id]) {
@@ -56,12 +55,17 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(removePermittedAccount(domainKey, address))
     },
     disconnectAllAccounts: (domainKey, domain) => {
-      const permissionMethodNames = domain.permissions.map(({ parentCapability }) => parentCapability)
-      dispatch(removePermissionsFor({
-        [domainKey]: permissionMethodNames,
-      }))
+      const permissionMethodNames = domain.permissions.map(
+        ({ parentCapability }) => parentCapability,
+      )
+      dispatch(
+        removePermissionsFor({
+          [domainKey]: permissionMethodNames,
+        }),
+      )
     },
-    requestAccountsPermissionWithId: (origin) => dispatch(requestAccountsPermissionWithId(origin)),
+    requestAccountsPermissionWithId: (origin) =>
+      dispatch(requestAccountsPermissionWithId(origin)),
   }
 }
 
@@ -76,6 +80,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const {
     disconnectAccount,
     disconnectAllAccounts,
+    // eslint-disable-next-line no-shadow
     requestAccountsPermissionWithId,
   } = dispatchProps
   const { history } = ownProps
@@ -106,4 +111,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(ConnectedSites)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps,
+)(ConnectedSites)

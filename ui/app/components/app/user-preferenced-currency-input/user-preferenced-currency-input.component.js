@@ -7,7 +7,7 @@ export default class UserPreferencedCurrencyInput extends PureComponent {
     useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
   }
 
-  render () {
+  render() {
     const { useNativeCurrencyAsPrimaryCurrency, ...restProps } = this.props
 
     return (

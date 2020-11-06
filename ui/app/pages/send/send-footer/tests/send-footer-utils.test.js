@@ -5,7 +5,7 @@ import { TOKEN_TRANSFER_FUNCTION_SIGNATURE } from '../../send.constants'
 
 const stubs = {
   rawEncode: sinon.stub().callsFake((arr1, arr2) => {
-    return [ ...arr1, ...arr2 ]
+    return [...arr1, ...arr2]
   }),
 }
 
@@ -14,51 +14,26 @@ const sendUtils = proxyquire('../send-footer.utils.js', {
     rawEncode: stubs.rawEncode,
   },
 })
-const {
-  addressIsNew,
-  constructTxParams,
-  constructUpdatedTx,
-  addHexPrefixToObjectValues,
-} = sendUtils
+const { addressIsNew, constructTxParams, constructUpdatedTx } = sendUtils
 
 describe('send-footer utils', function () {
-
-  describe('addHexPrefixToObjectValues()', function () {
-    it('should return a new object with the same properties with a 0x prefix', function () {
-      assert.deepEqual(
-        addHexPrefixToObjectValues({
-          prop1: '0x123',
-          prop2: '456',
-          prop3: 'x',
-        }),
-        {
-          prop1: '0x123',
-          prop2: '0x456',
-          prop3: '0xx',
-        },
-      )
-    })
-  })
-
   describe('addressIsNew()', function () {
     it('should return false if the address exists in toAccounts', function () {
       assert.equal(
-        addressIsNew([
-          { address: '0xabc' },
-          { address: '0xdef' },
-          { address: '0xghi' },
-        ], '0xdef'),
+        addressIsNew(
+          [{ address: '0xabc' }, { address: '0xdef' }, { address: '0xghi' }],
+          '0xdef',
+        ),
         false,
       )
     })
 
     it('should return true if the address does not exists in toAccounts', function () {
       assert.equal(
-        addressIsNew([
-          { address: '0xabc' },
-          { address: '0xdef' },
-          { address: '0xghi' },
-        ], '0xxyz'),
+        addressIsNew(
+          [{ address: '0xabc' }, { address: '0xdef' }, { address: '0xghi' }],
+          '0xxyz',
+        ),
         true,
       )
     })
@@ -229,5 +204,4 @@ describe('send-footer utils', function () {
       })
     })
   })
-
 })

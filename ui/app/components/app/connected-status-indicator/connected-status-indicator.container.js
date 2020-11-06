@@ -1,6 +1,5 @@
 import { findKey } from 'lodash'
 import { connect } from 'react-redux'
-import ConnectedStatusIndicator from './connected-status-indicator.component'
 import {
   STATUS_CONNECTED,
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
@@ -11,7 +10,7 @@ import {
   getOriginOfCurrentTab,
   getSelectedAddress,
 } from '../../../selectors'
-
+import ConnectedStatusIndicator from './connected-status-indicator.component'
 
 const mapStateToProps = (state) => {
   const selectedAddress = getSelectedAddress(state)
@@ -19,7 +18,9 @@ const mapStateToProps = (state) => {
   const originOfCurrentTab = getOriginOfCurrentTab(state)
 
   const selectedAddressDomainMap = addressConnectedDomainMap[selectedAddress]
-  const currentTabIsConnectedToSelectedAddress = Boolean(selectedAddressDomainMap && selectedAddressDomainMap[originOfCurrentTab])
+  const currentTabIsConnectedToSelectedAddress = Boolean(
+    selectedAddressDomainMap && selectedAddressDomainMap[originOfCurrentTab],
+  )
 
   let status
   if (currentTabIsConnectedToSelectedAddress) {

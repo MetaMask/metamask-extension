@@ -5918,5 +5918,12 @@
   ],
   "metametrics": {
     "mockMetaMetricsResponse": true
+  },
+  "swaps": {
+    "featureFlag": {
+      "status": {
+        "active": true
+      }
+    }
   }
 }

@@ -13,25 +13,19 @@ export default class UniqueImageScreen extends PureComponent {
     history: PropTypes.object,
   }
 
-  render () {
+  render() {
     const { t } = this.context
     const { history } = this.props
 
     return (
       <div>
-        <img
-          src="/images/sleuth.svg"
-          height={42}
-          width={42}
-        />
-        <div className="first-time-flow__header">
-          { t('protectYourKeys') }
+        <img src="/images/sleuth.svg" height={42} width={42} />
+        <div className="first-time-flow__header">{t('protectYourKeys')}</div>
+        <div className="first-time-flow__text-block">
+          {t('protectYourKeysMessage1')}
         </div>
         <div className="first-time-flow__text-block">
-          { t('protectYourKeysMessage1') }
-        </div>
-        <div className="first-time-flow__text-block">
-          { t('protectYourKeysMessage2') }
+          {t('protectYourKeysMessage2')}
         </div>
         <Button
           type="primary"
@@ -47,7 +41,7 @@ export default class UniqueImageScreen extends PureComponent {
             history.push(INITIALIZE_END_OF_FLOW_ROUTE)
           }}
         >
-          { t('next') }
+          {t('next')}
         </Button>
       </div>
     )

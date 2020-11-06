@@ -22,8 +22,10 @@ import AccountMenu from './account-menu.component'
  */
 const SHOW_SEARCH_ACCOUNTS_MIN_COUNT = 5
 
-function mapStateToProps (state) {
-  const { metamask: { isAccountMenuOpen } } = state
+function mapStateToProps(state) {
+  const {
+    metamask: { isAccountMenuOpen },
+  } = state
   const accounts = getMetaMaskAccountsOrdered(state)
   const origin = getOriginOfCurrentTab(state)
   const selectedAddress = getSelectedAddress(state)
@@ -32,14 +34,14 @@ function mapStateToProps (state) {
     isAccountMenuOpen,
     addressConnectedDomainMap: getAddressConnectedDomainMap(state),
     originOfCurrentTab: origin,
-    selectedAddress: selectedAddress,
+    selectedAddress,
     keyrings: getMetaMaskKeyrings(state),
     accounts,
     shouldShowAccountsSearch: accounts.length >= SHOW_SEARCH_ACCOUNTS_MIN_COUNT,
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     toggleAccountMenu: () => dispatch(toggleAccountMenu()),
     showAccountDetail: (address) => {

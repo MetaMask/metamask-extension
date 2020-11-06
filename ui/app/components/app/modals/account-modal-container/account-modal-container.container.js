@@ -3,13 +3,13 @@ import { hideModal } from '../../../../store/actions'
 import { getSelectedIdentity } from '../../../../selectors'
 import AccountModalContainer from './account-modal-container.component'
 
-function mapStateToProps (state, ownProps) {
+function mapStateToProps(state, ownProps) {
   return {
     selectedIdentity: ownProps.selectedIdentity || getSelectedIdentity(state),
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     hideModal: () => {
       dispatch(hideModal())
@@ -17,4 +17,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AccountModalContainer)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(AccountModalContainer)

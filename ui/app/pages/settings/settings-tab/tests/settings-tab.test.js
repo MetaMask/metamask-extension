@@ -1,8 +1,8 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import sinon from 'sinon'
 import { mount } from 'enzyme'
-import SettingsTab from '../index'
+import SettingsTab from '..'
 
 describe('Settings Tab', function () {
   let wrapper
@@ -22,13 +22,11 @@ describe('Settings Tab', function () {
     useNativeCurrencyAsPrimaryCurrency: true,
   }
   beforeEach(function () {
-    wrapper = mount(
-      <SettingsTab.WrappedComponent {...props} />, {
-        context: {
-          t: (str) => str,
-        },
+    wrapper = mount(<SettingsTab.WrappedComponent {...props} />, {
+      context: {
+        t: (str) => str,
       },
-    )
+    })
   })
 
   it('selects currency', async function () {

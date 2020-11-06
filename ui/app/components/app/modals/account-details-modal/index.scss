@@ -1,0 +1,39 @@
+.account-details-modal {
+  &__name {
+    @include H4;
+
+    margin-top: 9px;
+  }
+
+  & &__button {
+    margin-top: 17px;
+    padding: 10px 22px;
+    width: 286px;
+  }
+
+  &__divider {
+    width: 100%;
+    height: 1px;
+    margin: 19px 0 8px 0;
+    background-color: $alto;
+  }
+
+  & .qr-header {
+    @include H4;
+
+    margin-top: 9px;
+  }
+
+  & .qr-wrapper {
+    margin-top: 5px;
+  }
+
+  & .ellip-address-wrapper {
+    display: flex;
+    justify-content: center;
+    border: 1px solid $alto;
+    padding: 5px 10px;
+    margin-top: 7px;
+    width: 286px;
+  }
+}

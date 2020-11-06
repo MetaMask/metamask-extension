@@ -1,8 +1,8 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import sinon from 'sinon'
 import { mount } from 'enzyme'
-import SecurityTab from '../index'
+import SecurityTab from '..'
 
 describe('Security Tab', function () {
   let wrapper
@@ -24,14 +24,12 @@ describe('Security Tab', function () {
   }
 
   beforeEach(function () {
-    wrapper = mount(
-      <SecurityTab.WrappedComponent {...props} />, {
-        context: {
-          t: (str) => str,
-          metricsEvent: () => {},
-        },
+    wrapper = mount(<SecurityTab.WrappedComponent {...props} />, {
+      context: {
+        t: (str) => str,
+        metricsEvent: () => undefined,
       },
-    )
+    })
   })
 
   it('navigates to reveal seed words page', function () {

@@ -1,0 +1,58 @@
+.global-alert {
+  position: relative;
+  width: 100%;
+  background-color: #33a4e7;
+
+  .msg {
+    @include H7;
+
+    width: 100%;
+    display: block;
+    color: white;
+    text-align: center;
+  }
+}
+
+.global-alert.hidden {
+  animation: alertHidden 0.5s ease forwards;
+}
+
+.global-alert.visible {
+  animation: alert 0.5s ease forwards;
+}
+
+/* Animation */
+@keyframes alert {
+  0% {
+    opacity: 0;
+    top: -50px;
+    padding: 0;
+    line-height: 12px;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    top: 0;
+    padding: 8px;
+    line-height: 12px;
+  }
+}
+
+@keyframes alertHidden {
+  0% {
+    top: 0;
+    opacity: 1;
+    padding: 8px;
+    line-height: 12px;
+  }
+
+  100% {
+    opacity: 0;
+    top: -50px;
+    padding: 0;
+    line-height: 0;
+  }
+}

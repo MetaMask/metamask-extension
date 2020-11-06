@@ -6,8 +6,12 @@ import AssetBreadcrumb from './asset-breadcrumb'
 const AssetNavigation = ({ accountName, assetName, onBack, optionsButton }) => {
   return (
     <div className="asset-navigation">
-      <AssetBreadcrumb accountName={accountName} assetName={assetName} onBack={onBack} />
-      { optionsButton }
+      <AssetBreadcrumb
+        accountName={accountName}
+        assetName={assetName}
+        onBack={onBack}
+      />
+      {optionsButton}
     </div>
   )
 }

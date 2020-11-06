@@ -1,0 +1,144 @@
+.deposit-ether-modal {
+  border-radius: 8px;
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+
+  &__header {
+    width: 100%;
+    border-radius: 8px 8px 0 0;
+    background-color: $mid-gray;
+    display: flex;
+    position: relative;
+    padding: 25px;
+    flex-flow: column;
+    align-items: flex-start;
+
+    &__title {
+      @include H3;
+
+      color: $white;
+    }
+
+    &__description {
+      @include Paragraph;
+
+      color: $white;
+      margin-top: 10px;
+    }
+
+    &__close::after {
+      content: '\00D7';
+      font-size: 2em;
+      color: $white;
+      position: absolute;
+      top: 20.8px;
+      right: 28px;
+      cursor: pointer;
+    }
+  }
+
+  &__buy-rows {
+    width: 100%;
+    padding: 0 30px;
+    display: flex;
+    flex-flow: column nowrap;
+    flex: 1;
+    align-items: center;
+
+    @media screen and (max-width: 575px) {
+      height: 0;
+    }
+  }
+
+  &__logo {
+    height: 60px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__buy-row {
+    border-bottom: 1px solid $alto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1 0 auto;
+    padding: 30px 0 20px;
+    min-height: 170px;
+
+    @media screen and (max-width: 575px) {
+      min-height: 270px;
+      flex-flow: column;
+      justify-content: flex-start;
+    }
+
+    &__back {
+      position: absolute;
+      top: 10px;
+      left: 0;
+    }
+
+    &__logo-container {
+      display: flex;
+      justify-content: center;
+      flex: 0 0 auto;
+      padding: 0 20px;
+
+      @media screen and (min-width: 576px) {
+        width: 12rem;
+      }
+
+      @media screen and (max-width: 575px) {
+        width: 100%;
+        max-height: 6rem;
+        padding-bottom: 20px;
+      }
+    }
+
+    &__right {
+      display: flex;
+    }
+
+    &__description {
+      color: $cape-cod;
+      padding-bottom: 20px;
+      align-self: flex-start;
+
+      @media screen and (min-width: 575px) {
+        width: 15rem;
+      }
+
+      &__title {
+        @include H4;
+      }
+
+      &__text {
+        @include H6;
+
+        margin-top: 7px;
+      }
+    }
+
+    &__button {
+      display: flex;
+      justify-content: flex-end;
+
+      @media screen and (min-width: 575px) {
+        min-width: 300px;
+      }
+    }
+  }
+
+  &__buy-row:last-of-type {
+    border-bottom: 0;
+  }
+
+  &__deposit-button {
+    width: 257px !important;
+  }
+}

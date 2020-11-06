@@ -3,8 +3,7 @@ import PropTypes from 'prop-types'
 import { debounce } from 'lodash'
 import Fuse from 'fuse.js'
 import InputAdornment from '@material-ui/core/InputAdornment'
-
-import { Menu, Item, Divider, CloseArea } from '../dropdowns/components/menu'
+import classnames from 'classnames'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 import Identicon from '../../ui/identicon'
@@ -21,6 +20,36 @@ import {
 } from '../../../helpers/constants/routes'
 import TextField from '../../ui/text-field'
 import SearchIcon from '../../ui/search-icon'
+
+export function AccountMenuItem(props) {
+  const { icon, children, text, subText, className, onClick } = props
+
+  const itemClassName = classnames('account-menu__item', className, {
+    'account-menu__item--clickable': Boolean(onClick),
+  })
+  return children ? (
+    <div className={itemClassName} onClick={onClick}>
+      {children}
+    </div>
+  ) : (
+    <div className={itemClassName} onClick={onClick}>
+      {icon ? <div className="account-menu__item__icon">{icon}</div> : null}
+      {text ? <div className="account-menu__item__text">{text}</div> : null}
+      {subText ? (
+        <div className="account-menu__item__subtext">{subText}</div>
+      ) : null}
+    </div>
+  )
+}
+
+AccountMenuItem.propTypes = {
+  icon: PropTypes.node,
+  children: PropTypes.node,
+  text: PropTypes.node,
+  subText: PropTypes.node,
+  onClick: PropTypes.func,
+  className: PropTypes.string,
+}
 
 export default class AccountMenu extends Component {
   static contextTypes = {
@@ -62,7 +91,7 @@ export default class AccountMenu extends Component {
     ],
   })
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     const { isAccountMenuOpen: prevIsAccountMenuOpen } = prevProps
     const { searchQuery: prevSearchQuery } = prevState
     const { isAccountMenuOpen } = this.props
@@ -80,7 +109,7 @@ export default class AccountMenu extends Component {
     }
   }
 
-  renderAccountsSearch () {
+  renderAccountsSearch() {
     const inputAdornment = (
       <InputAdornment
         position="start"
@@ -106,11 +135,11 @@ export default class AccountMenu extends Component {
         fullWidth
         theme="material-white-padded"
       />,
-      <Divider key="search-divider" />,
+      <div className="account-menu__divider" key="search-divider" />,
     ]
   }
 
-  renderAccounts () {
+  renderAccounts() {
     const {
       accounts,
       selectedAddress,
@@ -128,7 +157,11 @@ export default class AccountMenu extends Component {
     }
 
     if (filteredIdentities.length === 0) {
-      return <p className="account-menu__no-accounts">{this.context.t('noAccountsFound')}</p>
+      return (
+        <p className="account-menu__no-accounts">
+          {this.context.t('noAccountsFound')}
+        </p>
+      )
     }
 
     return filteredIdentities.map((identity) => {
@@ -137,14 +170,17 @@ export default class AccountMenu extends Component {
       const simpleAddress = identity.address.substring(2).toLowerCase()
 
       const keyring = keyrings.find((kr) => {
-        return kr.accounts.includes(simpleAddress) || kr.accounts.includes(identity.address)
+        return (
+          kr.accounts.includes(simpleAddress) ||
+          kr.accounts.includes(identity.address)
+        )
       })
       const addressDomains = addressConnectedDomainMap[identity.address] || {}
       const iconAndNameForOpenDomain = addressDomains[originOfCurrentTab]
 
       return (
         <div
-          className="account-menu__account menu__item--clickable"
+          className="account-menu__account account-menu__item--clickable"
           onClick={() => {
             this.context.metricsEvent({
               eventOpts: {
@@ -158,37 +194,33 @@ export default class AccountMenu extends Component {
           key={identity.address}
         >
           <div className="account-menu__check-mark">
-            { isSelected && <div className="account-menu__check-mark-icon" /> }
+            {isSelected && <div className="account-menu__check-mark-icon" />}
           </div>
-          <Identicon
-            address={identity.address}
-            diameter={24}
-          />
+          <Identicon address={identity.address} diameter={24} />
           <div className="account-menu__account-info">
-            <div className="account-menu__name">
-              { identity.name || '' }
-            </div>
+            <div className="account-menu__name">{identity.name || ''}</div>
             <UserPreferencedCurrencyDisplay
               className="account-menu__balance"
               value={identity.balance}
               type={PRIMARY}
             />
           </div>
-          { this.renderKeyringType(keyring) }
-          { iconAndNameForOpenDomain
-            ? (
-              <div className="account-menu__icon-list">
-                <SiteIcon icon={iconAndNameForOpenDomain.icon} name={iconAndNameForOpenDomain.name} size={32} />
-              </div>
-            )
-            : null
-          }
+          {this.renderKeyringType(keyring)}
+          {iconAndNameForOpenDomain ? (
+            <div className="account-menu__icon-list">
+              <SiteIcon
+                icon={iconAndNameForOpenDomain.icon}
+                name={iconAndNameForOpenDomain.name}
+                size={32}
+              />
+            </div>
+          ) : null}
         </div>
       )
     })
   }
 
-  renderKeyringType (keyring) {
+  renderKeyringType(keyring) {
     const { t } = this.context
 
     // Sometimes keyrings aren't loaded yet
@@ -211,18 +243,14 @@ export default class AccountMenu extends Component {
         return null
     }
 
-    return (
-      <div className="keyring-label allcaps">
-        { label }
-      </div>
-    )
+    return <div className="keyring-label allcaps">{label}</div>
   }
 
-  resetSearchQuery () {
+  resetSearchQuery() {
     this.setSearchQuery('')
   }
 
-  setSearchQuery (searchQuery) {
+  setSearchQuery(searchQuery) {
     this.setState({ searchQuery })
   }
 
@@ -249,25 +277,27 @@ export default class AccountMenu extends Component {
     this.setShouldShowScrollButton()
   }
 
-  renderScrollButton () {
+  renderScrollButton() {
     const { shouldShowScrollButton } = this.state
 
-    return shouldShowScrollButton && (
-      <div
-        className="account-menu__scroll-button"
-        onClick={this.handleScrollDown}
-      >
-        <img
-          src="./images/icons/down-arrow.svg"
-          width={28}
-          height={28}
-          alt="scroll down"
-        />
-      </div>
+    return (
+      shouldShowScrollButton && (
+        <div
+          className="account-menu__scroll-button"
+          onClick={this.handleScrollDown}
+        >
+          <img
+            src="./images/icons/down-arrow.svg"
+            width={28}
+            height={28}
+            alt="scroll down"
+          />
+        </div>
+      )
     )
   }
 
-  render () {
+  render() {
     const { t, metricsEvent } = this.context
     const {
       shouldShowAccountsSearch,
@@ -277,14 +307,15 @@ export default class AccountMenu extends Component {
       history,
     } = this.props
 
+    if (!isAccountMenuOpen) {
+      return null
+    }
+
     return (
-      <Menu
-        className="account-menu"
-        isShowing={isAccountMenuOpen}
-      >
-        <CloseArea onClick={toggleAccountMenu} />
-        <Item className="account-menu__header">
-          { t('myAccounts') }
+      <div className="account-menu">
+        <div className="account-menu__close-area" onClick={toggleAccountMenu} />
+        <AccountMenuItem className="account-menu__header">
+          {t('myAccounts')}
           <button
             className="account-menu__lock-button"
             onClick={() => {
@@ -292,10 +323,10 @@ export default class AccountMenu extends Component {
               history.push(DEFAULT_ROUTE)
             }}
           >
-            { t('lock') }
+            {t('lock')}
           </button>
-        </Item>
-        <Divider />
+        </AccountMenuItem>
+        <div className="account-menu__divider" />
         <div className="account-menu__accounts-container">
           {shouldShowAccountsSearch ? this.renderAccountsSearch() : null}
           <div
@@ -305,12 +336,12 @@ export default class AccountMenu extends Component {
               this.accountsRef = ref
             }}
           >
-            { this.renderAccounts() }
+            {this.renderAccounts()}
           </div>
-          { this.renderScrollButton() }
+          {this.renderScrollButton()}
         </div>
-        <Divider />
-        <Item
+        <div className="account-menu__divider" />
+        <AccountMenuItem
           onClick={() => {
             toggleAccountMenu()
             metricsEvent({
@@ -322,15 +353,15 @@ export default class AccountMenu extends Component {
             })
             history.push(NEW_ACCOUNT_ROUTE)
           }}
-          icon={(
+          icon={
             <img
               className="account-menu__item-icon"
               src="images/plus-btn-white.svg"
             />
-          )}
+          }
           text={t('createAccount')}
         />
-        <Item
+        <AccountMenuItem
           onClick={() => {
             toggleAccountMenu()
             metricsEvent({
@@ -342,15 +373,15 @@ export default class AccountMenu extends Component {
             })
             history.push(IMPORT_ACCOUNT_ROUTE)
           }}
-          icon={(
+          icon={
             <img
               className="account-menu__item-icon"
               src="images/import-account.svg"
             />
-          )}
+          }
           text={t('importAccount')}
         />
-        <Item
+        <AccountMenuItem
           onClick={() => {
             toggleAccountMenu()
             metricsEvent({
@@ -366,26 +397,24 @@ export default class AccountMenu extends Component {
               history.push(CONNECT_HARDWARE_ROUTE)
             }
           }}
-          icon={(
+          icon={
             <img
               className="account-menu__item-icon"
               src="images/connect-icon.svg"
             />
-          )}
+          }
           text={t('connectHardwareWallet')}
         />
-        <Divider />
-        <Item
+        <div className="account-menu__divider" />
+        <AccountMenuItem
           onClick={() => {
             toggleAccountMenu()
             history.push(ABOUT_US_ROUTE)
           }}
-          icon={
-            <img src="images/mm-info-icon.svg" />
-          }
+          icon={<img src="images/mm-info-icon.svg" />}
           text={t('infoHelp')}
         />
-        <Item
+        <AccountMenuItem
           onClick={() => {
             toggleAccountMenu()
             history.push(SETTINGS_ROUTE)
@@ -397,15 +426,15 @@ export default class AccountMenu extends Component {
               },
             })
           }}
-          icon={(
+          icon={
             <img
               className="account-menu__item-icon"
               src="images/settings.svg"
             />
-          )}
+          }
           text={t('settings')}
         />
-      </Menu>
+      </div>
     )
   }
 }

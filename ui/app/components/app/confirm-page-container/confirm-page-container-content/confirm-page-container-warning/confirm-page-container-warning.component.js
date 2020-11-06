@@ -9,7 +9,7 @@ const ConfirmPageContainerWarning = (props) => {
         src="/images/alert.svg"
       />
       <div className="confirm-page-container-warning__warning">
-        { props.warning }
+        {props.warning}
       </div>
     </div>
   )

@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types'
 import React from 'react'
+import classnames from 'classnames'
 import Identicon from '../../../ui/identicon'
 
-export default function AccountModalContainer (props, context) {
+export default function AccountModalContainer(props, context) {
   const {
+    className,
     selectedIdentity,
     showBackButton,
     backButtonAction,
@@ -12,21 +14,23 @@ export default function AccountModalContainer (props, context) {
   } = props
 
   return (
-    <div style={{ borderRadius: '4px' }}>
-      <div className="account-modal-container">
+    <div
+      className={classnames(className, 'account-modal')}
+      style={{ borderRadius: '4px' }}
+    >
+      <div className="account-modal__container">
         <div>
-          <Identicon
-            address={selectedIdentity.address}
-            diameter={64}
-          />
+          <Identicon address={selectedIdentity.address} diameter={64} />
         </div>
         {showBackButton && (
-          <div className="account-modal-back" onClick={backButtonAction}>
+          <div className="account-modal__back" onClick={backButtonAction}>
             <i className="fa fa-angle-left fa-lg" />
-            <span className="account-modal-back__text">{' ' + context.t('back')}</span>
+            <span className="account-modal__back-text">
+              {context.t('back')}
+            </span>
           </div>
         )}
-        <button className="account-modal-close" onClick={hideModal} />
+        <button className="account-modal__close" onClick={hideModal} />
         {children}
       </div>
     </div>
@@ -44,6 +48,7 @@ AccountModalContainer.defaultProps = {
 }
 
 AccountModalContainer.propTypes = {
+  className: PropTypes.string,
   selectedIdentity: PropTypes.object.isRequired,
   showBackButton: PropTypes.bool,
   backButtonAction: PropTypes.func,

@@ -17,15 +17,13 @@ export default class CachedBalancesController {
    *
    * @param {CachedBalancesOptions} [opts] Controller configuration parameters
    */
-  constructor (opts = {}) {
+  constructor(opts = {}) {
     const { accountTracker, getNetwork } = opts
 
     this.accountTracker = accountTracker
     this.getNetwork = getNetwork
 
-    const initState = Object.assign({
-      cachedBalances: {},
-    }, opts.initState)
+    const initState = { cachedBalances: {}, ...opts.initState }
     this.store = new ObservableStore(initState)
 
     this._registerUpdates()
@@ -38,15 +36,18 @@ export default class CachedBalancesController {
    * @param {Object} obj - The the recently updated accounts object for the current network
    * @returns {Promise<void>}
    */
-  async updateCachedBalances ({ accounts }) {
+  async updateCachedBalances({ accounts }) {
     const network = await this.getNetwork()
-    const balancesToCache = await this._generateBalancesToCache(accounts, network)
+    const balancesToCache = await this._generateBalancesToCache(
+      accounts,
+      network,
+    )
     this.store.updateState({
       cachedBalances: balancesToCache,
     })
   }
 
-  _generateBalancesToCache (newAccounts, currentNetwork) {
+  _generateBalancesToCache(newAccounts, currentNetwork) {
     const { cachedBalances } = this.store.getState()
     const currentNetworkBalancesToCache = { ...cachedBalances[currentNetwork] }
 
@@ -69,7 +70,7 @@ export default class CachedBalancesController {
    * Removes cachedBalances
    */
 
-  clearCachedBalances () {
+  clearCachedBalances() {
     this.store.updateState({ cachedBalances: {} })
   }
 
@@ -81,7 +82,7 @@ export default class CachedBalancesController {
    * @private
    *
    */
-  _registerUpdates () {
+  _registerUpdates() {
     const update = this.updateCachedBalances.bind(this)
     this.accountTracker.store.subscribe(update)
   }

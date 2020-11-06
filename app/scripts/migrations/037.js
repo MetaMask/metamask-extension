@@ -1,6 +1,7 @@
-const version = 37
 import { cloneDeep } from 'lodash'
 import { util } from '@metamask/controllers'
+
+const version = 37
 
 /**
  * The purpose of this migration is to update the address book state
@@ -9,7 +10,7 @@ import { util } from '@metamask/controllers'
  */
 export default {
   version,
-  migrate: async function (originalVersionedData) {
+  async migrate(originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     const state = versionedData.data
@@ -18,8 +19,7 @@ export default {
   },
 }
 
-function transformState (state) {
-
+function transformState(state) {
   if (state.AddressBookController) {
     const ab = state.AddressBookController.addressBook
 
@@ -33,11 +33,10 @@ function transformState (state) {
 
     // fill the chainId object with the entries with the matching chainId
     for (const id of chainIds.values()) {
-    // make an empty object entry for each chainId
+      // make an empty object entry for each chainId
       newAddressBook[id] = {}
       for (const address in ab) {
         if (ab[address].chainId === id) {
-
           ab[address].isEns = false
           if (util.normalizeEnsName(ab[address].name)) {
             ab[address].isEns = true

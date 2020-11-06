@@ -1,9 +1,9 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { shallow } from 'enzyme'
+import sinon from 'sinon'
 import GasFeeDisplay from '../gas-fee-display.component'
 import UserPreferencedCurrencyDisplay from '../../../../../../components/app/user-preferenced-currency-display'
-import sinon from 'sinon'
 
 const propsMethodSpies = {
   showCustomizeGasModal: sinon.spy(),
@@ -15,7 +15,7 @@ describe('GasFeeDisplay Component', function () {
 
   describe('render', function () {
     beforeEach(function () {
-      wrapper = shallow((
+      wrapper = shallow(
         <GasFeeDisplay
           conversionRate={20}
           gasTotal="mockGasTotal"
@@ -23,8 +23,9 @@ describe('GasFeeDisplay Component', function () {
           convertedCurrency="mockConvertedCurrency"
           showGasButtonGroup={propsMethodSpies.showCustomizeGasModal}
           onReset={propsMethodSpies.onReset}
-        />
-      ), { context: { t: (str) => str + '_t' } })
+        />,
+        { context: { t: (str) => `${str}_t` } },
+      )
     })
 
     afterEach(function () {
@@ -36,19 +37,16 @@ describe('GasFeeDisplay Component', function () {
     })
 
     it('should render the CurrencyDisplay with the correct props', function () {
-      const {
-        type,
-        value,
-      } = wrapper.find(UserPreferencedCurrencyDisplay).at(0).props()
+      const { type, value } = wrapper
+        .find(UserPreferencedCurrencyDisplay)
+        .at(0)
+        .props()
       assert.equal(type, 'PRIMARY')
       assert.equal(value, 'mockGasTotal')
     })
 
     it('should render the reset button with the correct props', function () {
-      const {
-        onClick,
-        className,
-      } = wrapper.find('button').props()
+      const { onClick, className } = wrapper.find('button').props()
       assert.equal(className, 'gas-fee-reset')
       assert.equal(propsMethodSpies.onReset.callCount, 0)
       onClick()

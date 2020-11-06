@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
-export default function ListItem ({
+export default function ListItem({
   title,
   subtitle,
   onClick,
@@ -17,46 +17,36 @@ export default function ListItem ({
   const primaryClassName = classnames('list-item', className)
 
   return (
-    <div className={primaryClassName} onClick={onClick} data-testid={dataTestId}>
-      {icon && (
-        <div className="list-item__icon">
-          {icon}
-        </div>
-      )}
-      <div className="list-item__heading" title={title}>
-        <h2>{ title }</h2>
+    <div
+      className={primaryClassName}
+      onClick={onClick}
+      data-testid={dataTestId}
+    >
+      {icon && <div className="list-item__icon">{icon}</div>}
+      <div className="list-item__heading">
+        {React.isValidElement(title) ? (
+          title
+        ) : (
+          <button onClick={onClick}>
+            <h2 className="list-item__title">{title}</h2>
+          </button>
+        )}
         {titleIcon && (
-          <div className="list-item__heading-wrap">
-            {titleIcon}
-          </div>
+          <div className="list-item__heading-wrap">{titleIcon}</div>
         )}
       </div>
-      {subtitle && (
-        <div className="list-item__subheading">
-          {subtitle}
-        </div>
-      )}
-      {children && (
-        <div className="list-item__actions">
-          { children }
-        </div>
-      )}
-      {midContent && (
-        <div className="list-item__mid-content">
-          {midContent}
-        </div>
-      )}
+      {subtitle && <div className="list-item__subheading">{subtitle}</div>}
+      {children && <div className="list-item__actions">{children}</div>}
+      {midContent && <div className="list-item__mid-content">{midContent}</div>}
       {rightContent && (
-        <div className="list-item__right-content">
-          {rightContent}
-        </div>
+        <div className="list-item__right-content">{rightContent}</div>
       )}
     </div>
   )
 }
 
 ListItem.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   titleIcon: PropTypes.node,
   subtitle: PropTypes.node,
   children: PropTypes.node,

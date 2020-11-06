@@ -1,23 +1,26 @@
+@import './send-content/send-gas-row/send-gas-row';
+
 .send {
   &__header {
     position: relative;
+    display: flex;
+    justify-content: center;
     background-color: $Grey-000;
     border-bottom: none;
     padding: 14px 0 3px 0;
 
     .page-container__title {
-      @extend %H4;
+      @include H4;
 
       text-align: center;
     }
 
     .page-container__header-close-text {
-      @extend %link;
+      @include H5;
 
-      font-size: 1rem;
-      line-height: 1.1875rem;
       position: absolute;
       right: 1rem;
+      width: min-content;
     }
   }
 
@@ -48,13 +51,15 @@
       overflow-y: auto;
 
       &__link {
-        @extend %link;
+        @include Paragraph;
+
         @extend %row-nowrap;
 
         padding: 1rem;
-        font-size: 1rem;
         border-bottom: 1px solid $alto;
+        border-radius: 0;
         align-items: center;
+        justify-content: flex-start;
       }
 
       &__back-caret {
@@ -76,13 +81,12 @@
       @extend %col-nowrap;
 
       &__load-more {
-        @extend %link;
+        @include H7;
 
-        font-size: 0.75rem;
-        line-height: 1.0625rem;
         padding: 0.5rem;
         text-align: center;
         border-bottom: 1px solid $alto;
+        justify-content: flex-start;
       }
     }
 
@@ -91,11 +95,10 @@
     }
 
     &__group-label {
-      @extend %H8;
+      @include H8;
 
       background-color: $Grey-000;
       color: $Grey-600;
-      line-height: 0.875rem;
       padding: 0.5rem 1rem;
       border-bottom: 1px solid $alto;
 
@@ -130,13 +133,13 @@
       }
 
       &__title {
-        font-size: 0.875rem;
-        line-height: 1.25rem;
+        @include H6;
+
         color: $black;
       }
 
       &__subtitle {
-        @extend %H8;
+        @include H8;
 
         color: $Grey-500;
       }
@@ -186,7 +189,7 @@
     }
 
     &__input {
-      @extend %H6;
+      @include H6;
 
       flex: 1 1 auto;
       width: 0;
@@ -229,9 +232,8 @@
         &__input {
           @extend %col-nowrap;
 
-          font-size: 0.75rem;
-          line-height: 0.75rem;
-          font-weight: 400;
+          @include H7;
+
           color: $Blue-500;
         }
       }
@@ -240,13 +242,14 @@
 
   &__selected-input {
     &__title {
-      @extend %ellipsify;
+      @include H6;
 
-      font-size: 0.875rem;
+      @extend %ellipsify;
     }
 
     &__subtitle {
-      font-size: 0.75rem;
+      @include H7;
+
       color: $Grey-500;
       margin-top: 0.25rem;
     }

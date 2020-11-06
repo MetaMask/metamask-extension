@@ -1,9 +1,9 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
-import Sidebar from '../sidebar.component.js'
+import Sidebar from '../sidebar.component'
 
 import CustomizeGas from '../../gas-customization/gas-modal-page-container'
 
@@ -15,14 +15,14 @@ describe('Sidebar Component', function () {
   let wrapper
 
   beforeEach(function () {
-    wrapper = shallow((
+    wrapper = shallow(
       <Sidebar
         sidebarOpen={false}
         hideSidebar={propsMethodSpies.hideSidebar}
         transitionName="someTransition"
         type="customize-gas"
-      />
-    ))
+      />,
+    )
   })
 
   afterEach(function () {
@@ -85,7 +85,16 @@ describe('Sidebar Component', function () {
       assert(wrapper.children().at(1).hasClass('sidebar-overlay'))
       assert.equal(wrapper.children().at(0).children().length, 1)
       assert(wrapper.children().at(0).children().at(0).hasClass('sidebar-left'))
-      assert(wrapper.children().at(0).children().at(0).children().at(0).is(CustomizeGas))
+      assert(
+        wrapper
+          .children()
+          .at(0)
+          .children()
+          .at(0)
+          .children()
+          .at(0)
+          .is(CustomizeGas),
+      )
     })
   })
 })

@@ -1,15 +1,17 @@
 import { combineReducers } from 'redux'
+import { ALERT_TYPES } from '../../../app/scripts/controllers/alert'
 import metamaskReducer from './metamask/metamask'
 import localeMessagesReducer from './locale/locale'
 import sendReducer from './send/send.duck'
 import appStateReducer from './app/app'
 import confirmTransactionReducer from './confirm-transaction/confirm-transaction.duck'
 import gasReducer from './gas/gas.duck'
-import { unconnectedAccount } from './alerts'
+import { invalidCustomNetwork, unconnectedAccount } from './alerts'
+import swapsReducer from './swaps/swaps'
 import historyReducer from './history/history'
-import { ALERT_TYPES } from '../../../app/scripts/controllers/alert'
 
 export default combineReducers({
+  [ALERT_TYPES.invalidCustomNetwork]: invalidCustomNetwork,
   [ALERT_TYPES.unconnectedAccount]: unconnectedAccount,
   activeTab: (s) => (s === undefined ? null : s),
   metamask: metamaskReducer,
@@ -17,6 +19,7 @@ export default combineReducers({
   history: historyReducer,
   send: sendReducer,
   confirmTransaction: confirmTransactionReducer,
+  swaps: swapsReducer,
   gas: gasReducer,
   localeMessages: localeMessagesReducer,
 })

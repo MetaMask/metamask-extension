@@ -1,5 +1,5 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import sinon from 'sinon'
 import { shallow } from 'enzyme'
 import AccountDetailsModal from '../account-details-modal'
@@ -22,9 +22,7 @@ describe('Account Details Modal', function () {
     keyrings: [
       {
         type: 'HD Key Tree',
-        accounts: [
-          '0xAddress',
-        ],
+        accounts: ['0xAddress'],
       },
     ],
     identities: {
@@ -36,17 +34,15 @@ describe('Account Details Modal', function () {
   }
 
   beforeEach(function () {
-    wrapper = shallow(
-      <AccountDetailsModal.WrappedComponent {...props} />, {
-        context: {
-          t: (str) => str,
-        },
+    wrapper = shallow(<AccountDetailsModal.WrappedComponent {...props} />, {
+      context: {
+        t: (str) => str,
       },
-    )
+    })
   })
 
   it('sets account label when changing default account label', function () {
-    const accountLabel = wrapper.find('.account-modal__name').first()
+    const accountLabel = wrapper.find('.account-details-modal__name').first()
     accountLabel.simulate('submit', 'New Label')
 
     assert(props.setAccountLabel.calledOnce)
@@ -54,7 +50,7 @@ describe('Account Details Modal', function () {
   })
 
   it('opens new tab when view block explorer is clicked', function () {
-    const modalButton = wrapper.find('.account-modal__button')
+    const modalButton = wrapper.find('.account-details-modal__button')
     const etherscanLink = modalButton.first()
 
     etherscanLink.simulate('click')
@@ -62,7 +58,7 @@ describe('Account Details Modal', function () {
   })
 
   it('shows export private key modal when clicked', function () {
-    const modalButton = wrapper.find('.account-modal__button')
+    const modalButton = wrapper.find('.account-details-modal__button')
     const etherscanLink = modalButton.last()
 
     etherscanLink.simulate('click')
@@ -73,9 +69,12 @@ describe('Account Details Modal', function () {
     const blockExplorerUrl = 'https://block.explorer'
     wrapper.setProps({ rpcPrefs: { blockExplorerUrl } })
 
-    const modalButton = wrapper.find('.account-modal__button')
+    const modalButton = wrapper.find('.account-details-modal__button')
     const blockExplorerLink = modalButton.first()
 
-    assert.equal(blockExplorerLink.html(), '<button class="button btn-secondary account-modal__button">blockExplorerView</button>')
+    assert.equal(
+      blockExplorerLink.html(),
+      '<button class="button btn-secondary account-details-modal__button">blockExplorerView</button>',
+    )
   })
 })

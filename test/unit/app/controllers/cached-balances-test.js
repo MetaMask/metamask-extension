@@ -9,7 +9,7 @@ describe('CachedBalancesController', function () {
         getNetwork: () => Promise.resolve(17),
         accountTracker: {
           store: {
-            subscribe: () => {},
+            subscribe: () => undefined,
           },
         },
         initState: {
@@ -17,13 +17,21 @@ describe('CachedBalancesController', function () {
         },
       })
 
-      controller._generateBalancesToCache = sinon.stub().callsFake(() => Promise.resolve('mockNewCachedBalances'))
+      controller._generateBalancesToCache = sinon
+        .stub()
+        .callsFake(() => Promise.resolve('mockNewCachedBalances'))
 
       await controller.updateCachedBalances({ accounts: 'mockAccounts' })
 
       assert.equal(controller._generateBalancesToCache.callCount, 1)
-      assert.deepEqual(controller._generateBalancesToCache.args[0], ['mockAccounts', 17])
-      assert.equal(controller.store.getState().cachedBalances, 'mockNewCachedBalances')
+      assert.deepEqual(controller._generateBalancesToCache.args[0], [
+        'mockAccounts',
+        17,
+      ])
+      assert.equal(
+        controller.store.getState().cachedBalances,
+        'mockNewCachedBalances',
+      )
     })
   })
 
@@ -32,7 +40,7 @@ describe('CachedBalancesController', function () {
       const controller = new CachedBalancesController({
         accountTracker: {
           store: {
-            subscribe: () => {},
+            subscribe: () => undefined,
           },
         },
         initState: {
@@ -51,11 +59,14 @@ describe('CachedBalancesController', function () {
         },
       })
 
-      const result = controller._generateBalancesToCache({
-        a: { balance: '0x4' },
-        b: { balance: null },
-        c: { balance: '0x5' },
-      }, 17)
+      const result = controller._generateBalancesToCache(
+        {
+          a: { balance: '0x4' },
+          b: { balance: null },
+          c: { balance: '0x5' },
+        },
+        17,
+      )
 
       assert.deepEqual(result, {
         17: {
@@ -75,7 +86,7 @@ describe('CachedBalancesController', function () {
       const controller = new CachedBalancesController({
         accountTracker: {
           store: {
-            subscribe: () => {},
+            subscribe: () => undefined,
           },
         },
         initState: {
@@ -89,11 +100,14 @@ describe('CachedBalancesController', function () {
         },
       })
 
-      const result = controller._generateBalancesToCache({
-        a: { balance: '0x4' },
-        b: { balance: null },
-        c: { balance: '0x5' },
-      }, 16)
+      const result = controller._generateBalancesToCache(
+        {
+          a: { balance: '0x4' },
+          b: { balance: null },
+          c: { balance: '0x5' },
+        },
+        16,
+      )
 
       assert.deepEqual(result, {
         17: {
@@ -133,5 +147,4 @@ describe('CachedBalancesController', function () {
       assert.equal(updateCachedBalancesSpy.callCount, 1)
     })
   })
-
 })
