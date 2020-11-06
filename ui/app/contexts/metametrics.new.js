@@ -168,6 +168,7 @@ export function MetaMetricsProvider({ children }) {
             // We do not want to send addresses or accounts in any events
             // Some routes include these as params.
             params: omit(params, ['account', 'address']),
+            locale: locale.replace('_', '-'),
             network,
             environment_type: environmentType,
           },
@@ -176,7 +177,14 @@ export function MetaMetricsProvider({ children }) {
       }
       previousMatch.current = match?.path
     }
-  }, [location, context, network, metaMetricsId, participateInMetaMetrics])
+  }, [
+    location,
+    locale,
+    context,
+    network,
+    metaMetricsId,
+    participateInMetaMetrics,
+  ])
 
   return (
     <MetaMetricsContext.Provider value={trackEvent}>
