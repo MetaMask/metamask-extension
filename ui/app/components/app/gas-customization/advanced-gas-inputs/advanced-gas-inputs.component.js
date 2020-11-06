@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { debounce } from 'lodash'
+import BigNumber from 'bignumber.js'
 
 export default class AdvancedGasInputs extends Component {
   static contextTypes = {
@@ -16,7 +17,7 @@ export default class AdvancedGasInputs extends Component {
     customGasLimit: PropTypes.number.isRequired,
     customStorageLimit: PropTypes.number.isRequired,
     insufficientBalance: PropTypes.bool,
-    // customPriceIsSafe: PropTypes.bool,
+    customPriceIsSafe: PropTypes.bool,
     isSimpleTx: PropTypes.bool,
     isSpeedUp: PropTypes.bool,
     showGasPriceInfoModal: PropTypes.func,
@@ -29,7 +30,7 @@ export default class AdvancedGasInputs extends Component {
     focused: false,
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       gasPrice: this.props.customGasPrice,
@@ -41,7 +42,7 @@ export default class AdvancedGasInputs extends Component {
     this.changeStorageLimit = debounce(this.changeStorageLimit, 500)
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     const {
       customGasPrice: prevCustomGasPrice,
       customGasLimit: prevCustomGasLimit,
@@ -64,7 +65,7 @@ export default class AdvancedGasInputs extends Component {
     }
   }
 
-  onChangeStorageLimit = (e) => {
+  onChangeStorageLimit = e => {
     if (typeof e.target.value === 'string' && e.target.value.startsWith('-')) {
       e.target.value = e.target.value.slice(1)
     }
@@ -72,7 +73,7 @@ export default class AdvancedGasInputs extends Component {
     this.changeStorageLimit({ target: { value: e.target.value } })
   }
 
-  changeStorageLimit = (e) => {
+  changeStorageLimit = e => {
     const { insufficientBalance } = this.props
     const { errorType } = this.storageLimitError({
       insufficientBalance,
@@ -82,7 +83,7 @@ export default class AdvancedGasInputs extends Component {
     }
   }
 
-  onChangeGasLimit = (e) => {
+  onChangeGasLimit = e => {
     if (typeof e.target.value === 'string' && e.target.value.startsWith('-')) {
       e.target.value = e.target.value.slice(1)
     }
@@ -90,7 +91,7 @@ export default class AdvancedGasInputs extends Component {
     this.changeGasLimit({ target: { value: e.target.value } })
   }
 
-  changeGasLimit = (e) => {
+  changeGasLimit = e => {
     const { insufficientBalance } = this.props
     const { gasLimit } = this.state
     const { errorType } = this.gasLimitError({
@@ -103,7 +104,7 @@ export default class AdvancedGasInputs extends Component {
     }
   }
 
-  onChangeGasPrice = (e) => {
+  onChangeGasPrice = e => {
     if (typeof e.target.value === 'string' && e.target.value.startsWith('-')) {
       e.target.value = e.target.value.slice(1)
     }
@@ -111,17 +112,13 @@ export default class AdvancedGasInputs extends Component {
     this.changeGasPrice({ target: { value: e.target.value } })
   }
 
-  changeGasPrice = (e) => {
-    const {
-      insufficientBalance,
-      // customPriceIsSafe,
-      isSpeedUp,
-    } = this.props
+  changeGasPrice = e => {
+    const { insufficientBalance, customPriceIsSafe, isSpeedUp } = this.props
     const { gasPrice } = this.state
 
     const { errorType } = this.gasPriceError({
       insufficientBalance,
-      // customPriceIsSafe,
+      customPriceIsSafe,
       isSpeedUp,
       gasPrice,
     })
@@ -130,13 +127,19 @@ export default class AdvancedGasInputs extends Component {
     }
   }
 
-  gasPriceError ({
+  gasPriceError({
     insufficientBalance,
-    // customPriceIsSafe,
+    customPriceIsSafe,
     isSpeedUp,
     gasPrice,
   }) {
     const { t } = this.context
+    let gasPriceBigNumber
+    try {
+      gasPriceBigNumber = new BigNumber(gasPrice || 0)
+    } catch (err) {
+      gasPriceBigNumber = new BigNumber(0)
+    }
 
     if (insufficientBalance) {
       return {
@@ -148,26 +151,26 @@ export default class AdvancedGasInputs extends Component {
         errorText: t('zeroGasPriceOnSpeedUpError'),
         errorType: 'error',
       }
+    } else if (gasPriceBigNumber.lessThan(1) || !customPriceIsSafe) {
+      return {
+        errorText: t('gasPriceExtremelyLow'),
+        errorType: 'error',
+      }
     }
-    // else if (!customPriceIsSafe) {
-    //   return {
-    //     errorText: t('gasPriceExtremelyLow'),
-    //     errorType: 'warning',
-    //   }
-    // }
 
     return {}
   }
 
-  gasLimitError ({ insufficientBalance, gasLimit }) {
+  gasLimitError({ insufficientBalance, gasLimit }) {
     const { t } = this.context
+    const gasLimitBigNumber = new BigNumber(String(gasLimit || 0))
 
     if (insufficientBalance) {
       return {
         errorText: t('insufficientBalance'),
         errorType: 'error',
       }
-    } else if (gasLimit < 21000) {
+    } else if (gasLimitBigNumber.lessThan(21000)) {
       return {
         errorText: t('gasLimitTooLow'),
         errorType: 'error',
@@ -177,7 +180,7 @@ export default class AdvancedGasInputs extends Component {
     return {}
   }
 
-  storageLimitError ({ insufficientBalance }) {
+  storageLimitError({ insufficientBalance }) {
     const { t } = this.context
 
     if (insufficientBalance) {
@@ -190,7 +193,7 @@ export default class AdvancedGasInputs extends Component {
     return {}
   }
 
-  renderGasOrStorageInput ({
+  renderGasOrStorageInput({
     value,
     onChange,
     errorComponent,
@@ -251,10 +254,10 @@ export default class AdvancedGasInputs extends Component {
     )
   }
 
-  render () {
+  render() {
     const {
       insufficientBalance,
-      // customPriceIsSafe,
+      customPriceIsSafe,
       isSpeedUp,
       isSimpleTx,
       showGasPriceInfoModal,
@@ -273,7 +276,7 @@ export default class AdvancedGasInputs extends Component {
       errorType: gasPriceErrorType,
     } = this.gasPriceError({
       insufficientBalance,
-      // customPriceIsSafe,
+      customPriceIsSafe,
       isSpeedUp,
       gasPrice,
     })

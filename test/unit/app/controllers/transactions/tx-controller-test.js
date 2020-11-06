@@ -23,10 +23,10 @@ import {
 const noop = () => true
 const currentNetworkId = 2999
 
-describe('Transaction Controller', function () {
+describe('Transaction Controller', function() {
   let txController, provider, providerResultStub, fromAccount
 
-  beforeEach(function () {
+  beforeEach(function() {
     providerResultStub = {
       // 1 gwei
       eth_gasPrice: '0x0de0b6b3a7640000',
@@ -42,14 +42,14 @@ describe('Transaction Controller', function () {
       Promise.resolve('0xabcd'.toString(16))
     txController = new TransactionController({
       provider,
-      getGasPrice: function () {
+      getGasPrice: function() {
         return '0xee6b2800'
       },
       networkStore: new ObservableStore(currentNetworkId),
       txHistoryLimit: 10,
       blockTracker: blockTrackerStub,
-      signTransaction: (ethTx) =>
-        new Promise((resolve) => {
+      signTransaction: ethTx =>
+        new Promise(resolve => {
           ethTx.sign(`0x${fromAccount.key.toString('hex')}`)
           resolve()
         }),
@@ -59,8 +59,8 @@ describe('Transaction Controller', function () {
       Promise.resolve({ nextNonce: 0, releaseLock: noop })
   })
 
-  describe('#getState', function () {
-    it('should return a state object with the right keys and datat types', function () {
+  describe('#getState', function() {
+    it('should return a state object with the right keys and datat types', function() {
       const exposedState = txController.getState()
       assert(
         'unapprovedTxs' in exposedState,
@@ -81,8 +81,8 @@ describe('Transaction Controller', function () {
     })
   })
 
-  describe('#getUnapprovedTxCount', function () {
-    it('should return the number of unapproved txs', function () {
+  describe('#getUnapprovedTxCount', function() {
+    it('should return the number of unapproved txs', function() {
       txController.txStateManager._saveTxList([
         {
           id: 1,
@@ -111,8 +111,8 @@ describe('Transaction Controller', function () {
     })
   })
 
-  describe('#getPendingTxCount', function () {
-    it('should return the number of pending txs', function () {
+  describe('#getPendingTxCount', function() {
+    it('should return the number of pending txs', function() {
       txController.txStateManager._saveTxList([
         {
           id: 1,
@@ -141,8 +141,8 @@ describe('Transaction Controller', function () {
     })
   })
 
-  describe('#getConfirmedTransactions', function () {
-    it('should return the number of confirmed txs', function () {
+  describe('#getConfirmedTransactions', function() {
+    it('should return the number of confirmed txs', function() {
       const address = '0xc684832530fcbddae4b4230a47e991ddcec2831d'
       const txParams = {
         from: address,
@@ -220,9 +220,9 @@ describe('Transaction Controller', function () {
     })
   })
 
-  describe('#newUnapprovedTransaction', function () {
+  describe('#newUnapprovedTransaction', function() {
     let stub, txMeta, txParams
-    beforeEach(function () {
+    beforeEach(function() {
       txParams = {
         from: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
         to: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
@@ -243,13 +243,13 @@ describe('Transaction Controller', function () {
         })
     })
 
-    afterEach(function () {
+    afterEach(function() {
       txController.txStateManager._saveTxList([])
       stub.restore()
     })
 
-    it('should resolve when finished and status is submitted and resolve with the hash', function (done) {
-      txController.once('newUnapprovedTx', (txMetaFromEmit) => {
+    it('should resolve when finished and status is submitted and resolve with the hash', function(done) {
+      txController.once('newUnapprovedTx', txMetaFromEmit => {
         setTimeout(() => {
           txController.setTxHash(txMetaFromEmit.id, '0x0')
           txController.txStateManager.setTxStatusSubmitted(txMetaFromEmit.id)
@@ -258,21 +258,21 @@ describe('Transaction Controller', function () {
 
       txController
         .newUnapprovedTransaction(txParams)
-        .then((hash) => {
+        .then(hash => {
           assert(hash, 'newUnapprovedTransaction needs to return the hash')
           done()
         })
         .catch(done)
     })
 
-    it('should reject when finished and status is rejected', function (done) {
-      txController.once('newUnapprovedTx', (txMetaFromEmit) => {
+    it('should reject when finished and status is rejected', function(done) {
+      txController.once('newUnapprovedTx', txMetaFromEmit => {
         setTimeout(() => {
           txController.txStateManager.setTxStatusRejected(txMetaFromEmit.id)
         }, 10)
       })
 
-      txController.newUnapprovedTransaction(txParams).catch((err) => {
+      txController.newUnapprovedTransaction(txParams).catch(err => {
         if (
           err.message ===
           'ConfluxPortal Tx Signature: User denied transaction signature.'
@@ -285,11 +285,11 @@ describe('Transaction Controller', function () {
     })
   })
 
-  describe('#addUnapprovedTransaction', function () {
+  describe('#addUnapprovedTransaction', function() {
     const selectedAddress = '0x1678a085c290ebd122dc42cba69373b5953b831d'
 
     let getSelectedAddress, getPermittedAccounts
-    beforeEach(function () {
+    beforeEach(function() {
       getSelectedAddress = sinon
         .stub(txController, 'getSelectedAddress')
         .returns(selectedAddress)
@@ -298,15 +298,15 @@ describe('Transaction Controller', function () {
         .returns([selectedAddress])
     })
 
-    afterEach(function () {
+    afterEach(function() {
       getSelectedAddress.restore()
       getPermittedAccounts.restore()
     })
 
-    it('should add an unapproved transaction and return a valid txMeta', function (done) {
+    it('should add an unapproved transaction and return a valid txMeta', function(done) {
       txController
         .addUnapprovedTransaction({ from: selectedAddress })
-        .then((txMeta) => {
+        .then(txMeta => {
           assert('id' in txMeta, 'should have a id')
           assert('time' in txMeta, 'should have a time stamp')
           assert(
@@ -327,9 +327,9 @@ describe('Transaction Controller', function () {
         .catch(done)
     })
 
-    it('should emit newUnapprovedTx event and pass txMeta as the first argument', function (done) {
+    it('should emit newUnapprovedTx event and pass txMeta as the first argument', function(done) {
       providerResultStub.eth_gasPrice = '4a817c800'
-      txController.once('newUnapprovedTx', (txMetaFromEmit) => {
+      txController.once('newUnapprovedTx', txMetaFromEmit => {
         assert(txMetaFromEmit, 'txMeta is falsey')
         done()
       })
@@ -338,14 +338,14 @@ describe('Transaction Controller', function () {
         .catch(done)
     })
 
-    it.skip('should fail if recipient is public', function (done) {
+    it.skip('should fail if recipient is public', function(done) {
       txController.networkStore = new ObservableStore(1)
       txController
         .addUnapprovedTransaction({
           from: selectedAddress,
           to: '0x1cdc8dccfb521bd409e6c5326848cb128b223a81',
         })
-        .catch((err) => {
+        .catch(err => {
           if (err.message === 'Recipient is a public account') {
             done()
           } else {
@@ -354,7 +354,7 @@ describe('Transaction Controller', function () {
         })
     })
 
-    it("should fail if the from address isn't the selected address", function (done) {
+    it("should fail if the from address isn't the selected address", function(done) {
       txController
         .addUnapprovedTransaction({
           from: '0x0d1d4e623D10F9FBA5Db95830F7d3839406C6AF2',
@@ -369,8 +369,8 @@ describe('Transaction Controller', function () {
         })
     })
 
-    it('should not fail if recipient is public but not on mainnet', function (done) {
-      txController.once('newUnapprovedTx', (txMetaFromEmit) => {
+    it('should not fail if recipient is public but not on mainnet', function(done) {
+      txController.once('newUnapprovedTx', txMetaFromEmit => {
         assert(txMetaFromEmit, 'txMeta is falsey')
         done()
       })
@@ -382,14 +382,14 @@ describe('Transaction Controller', function () {
         .catch(done)
     })
 
-    it('should fail if netId is loading', function (done) {
+    it('should fail if netId is loading', function(done) {
       txController.networkStore = new ObservableStore('loading')
       txController
         .addUnapprovedTransaction({
           from: selectedAddress,
           to: '0x0d1d4e623D10F9FBA5Db95830F7d3839406C6AF2',
         })
-        .catch((err) => {
+        .catch(err => {
           if (
             err.message ===
             'ConfluxPortal is having trouble connecting to the network'
@@ -402,8 +402,8 @@ describe('Transaction Controller', function () {
     })
   })
 
-  describe('#addTxGasAndCollateralDefaults', function () {
-    it('should add the tx defaults if their are none', async function () {
+  describe('#addTxGasAndCollateralDefaults', function() {
+    it('should add the tx defaults if their are none', async function() {
       const txMeta = {
         txParams: {
           from: '0x1684832530fcbddae4b4230a47e991ddcec2831d',
@@ -431,8 +431,8 @@ describe('Transaction Controller', function () {
     })
   })
 
-  describe('#addTxSponsorshipInfo', function () {
-    it('should add the tx sponsorshipInfo default', async function () {
+  describe('#addTxSponsorshipInfo', function() {
+    it('should add the tx sponsorshipInfo default', async function() {
       const txMeta = {
         txParams: {
           from: '0x1684832530fcbddae4b4230a47e991ddcec2831d',
@@ -461,8 +461,8 @@ describe('Transaction Controller', function () {
     })
   })
 
-  describe('#addTx', function () {
-    it('should emit updates', function (done) {
+  describe('#addTx', function() {
+    it('should emit updates', function(done) {
       const txMeta = {
         id: '1',
         status: 'unapproved',
@@ -472,17 +472,17 @@ describe('Transaction Controller', function () {
 
       const eventNames = ['update:badge', '1:unapproved']
       const listeners = []
-      eventNames.forEach((eventName) => {
+      eventNames.forEach(eventName => {
         listeners.push(
-          new Promise((resolve) => {
-            txController.once(eventName, (arg) => {
+          new Promise(resolve => {
+            txController.once(eventName, arg => {
               resolve(arg)
             })
           })
         )
       })
       Promise.all(listeners)
-        .then((returnValues) => {
+        .then(returnValues => {
           assert.deepEqual(
             returnValues.pop(),
             txMeta,
@@ -495,8 +495,8 @@ describe('Transaction Controller', function () {
     })
   })
 
-  describe('#approveTransaction', function () {
-    it('does not overwrite set values', function (done) {
+  describe('#approveTransaction', function() {
+    it('does not overwrite set values', function(done) {
       const originalValue = '0x01'
       const txMeta = {
         id: '1',
@@ -552,9 +552,9 @@ describe('Transaction Controller', function () {
     })
   })
 
-  describe('#sign replay-protected tx', function () {
+  describe('#sign replay-protected tx', function() {
     // TODO: we do need to use chainId in the future
-    it.skip('prepares a tx with the chainId set', function (done) {
+    it.skip('prepares a tx with the chainId set', function(done) {
       txController.addTx(
         {
           id: '1',
@@ -566,7 +566,7 @@ describe('Transaction Controller', function () {
       )
       txController
         .signTransaction('1')
-        .then((rawTx) => {
+        .then(rawTx => {
           const ethTx = new EthTx(toBuffer(rawTx))
           assert.equal(ethTx.getChainId(), currentNetworkId)
           done()
@@ -575,9 +575,9 @@ describe('Transaction Controller', function () {
     })
   })
 
-  describe('#updateAndApproveTransaction', function () {
+  describe('#updateAndApproveTransaction', function() {
     // TODO: this won't pass if run this test 2nd time in watch mode (same nonce error)
-    it('should update and approve transactions', async function () {
+    it('should update and approve transactions', async function() {
       const txMeta = {
         id: 1,
         status: 'unapproved',
@@ -601,15 +601,15 @@ describe('Transaction Controller', function () {
     })
   })
 
-  describe('#getChainId', function () {
-    it('returns 0 when the chainId is NaN', function () {
+  describe('#getChainId', function() {
+    it('returns 0 when the chainId is NaN', function() {
       txController.networkStore = new ObservableStore(NaN)
       assert.equal(txController.getChainId(), '0x0')
     })
   })
 
-  describe('#cancelTransaction', function () {
-    it('should emit a status change to rejected', function (done) {
+  describe('#cancelTransaction', function() {
+    it('should emit a status change to rejected', function(done) {
       txController.txStateManager._saveTxList([
         {
           id: 0,
@@ -677,13 +677,13 @@ describe('Transaction Controller', function () {
   })
 
   // TODO: fix this test, make sure speedup tx works (conflux chain support this)
-  describe.skip('#createSpeedUpTransaction', function () {
+  describe.skip('#createSpeedUpTransaction', function() {
     let addTxSpy
     let approveTransactionSpy
     let txParams
     let expectedTxParams
 
-    beforeEach(function () {
+    beforeEach(function() {
       addTxSpy = sinon.spy(txController, 'addTx')
       approveTransactionSpy = sinon.spy(txController, 'approveTransaction')
 
@@ -707,12 +707,12 @@ describe('Transaction Controller', function () {
       expectedTxParams = Object.assign({}, txParams, { gasPrice: '0xb' })
     })
 
-    afterEach(function () {
+    afterEach(function() {
       addTxSpy.restore()
       approveTransactionSpy.restore()
     })
 
-    it('should call this.addTx and this.approveTransaction with the expected args', async function () {
+    it('should call this.addTx and this.approveTransaction with the expected args', async function() {
       await txController.createSpeedUpTransaction(1)
       assert.equal(addTxSpy.callCount, 1)
 
@@ -729,7 +729,7 @@ describe('Transaction Controller', function () {
       )
     })
 
-    it('should call this.approveTransaction with the id of the returned tx', async function () {
+    it('should call this.approveTransaction with the id of the returned tx', async function() {
       const result = await txController.createSpeedUpTransaction(1)
       assert.equal(approveTransactionSpy.callCount, 1)
 
@@ -737,7 +737,7 @@ describe('Transaction Controller', function () {
       assert.equal(result.id, approveTransactionArg)
     })
 
-    it('should return the expected txMeta', async function () {
+    it('should return the expected txMeta', async function() {
       const result = await txController.createSpeedUpTransaction(1)
 
       assert.deepEqual(result.txParams, expectedTxParams)
@@ -753,9 +753,9 @@ describe('Transaction Controller', function () {
     })
   })
 
-  describe('#publishTransaction', function () {
+  describe('#publishTransaction', function() {
     let hash, txMeta
-    beforeEach(function () {
+    beforeEach(function() {
       hash =
         '0x2a5523c6fa98b47b7d9b6c8320179785150b42a16bcff36b398c5062b65657e8'
       txMeta = {
@@ -767,7 +767,7 @@ describe('Transaction Controller', function () {
       providerResultStub.eth_sendRawTransaction = hash
     })
 
-    it('should publish a tx, updates the rawTx when provided a one', async function () {
+    it('should publish a tx, updates the rawTx when provided a one', async function() {
       const rawTx =
         '0x477b2e6553c917af0db0388ae3da62965ff1a184558f61b749d1266b2e6d024c'
       txController.txStateManager.addTx(txMeta)
@@ -777,14 +777,14 @@ describe('Transaction Controller', function () {
       assert.equal(publishedTx.status, 'submitted')
     })
 
-    it('should ignore the error "Transaction Failed: known transaction" and be as usual', async function () {
+    it('should ignore the error "Transaction Failed: tx already exist" and be as usual', async function() {
       providerResultStub['eth_sendRawTransaction'] = async (
         _,
         __,
         ___,
         end
       ) => {
-        end('Transaction Failed: known transaction')
+        end('Transaction Failed: tx already exist')
       }
       const rawTx =
         '0xf86204831e848082520894f231d46dd78806e1dd93442cf33c7671f853874880802ca05f973e540f2d3c2f06d3725a626b75247593cb36477187ae07ecfe0a4db3cf57a00259b52ee8c58baaa385fb05c3f96116e58de89bcc165cb3bfdfc708672fed8a'
@@ -799,8 +799,8 @@ describe('Transaction Controller', function () {
     })
   })
 
-  describe('#retryTransaction', function () {
-    it('should create a new txMeta with the same txParams as the original one but with a higher gasPrice', function (done) {
+  describe('#retryTransaction', function() {
+    it('should create a new txMeta with the same txParams as the original one but with a higher gasPrice', function(done) {
       const txParams = {
         gasPrice: '0xee6b2800',
         nonce: '0x00',
@@ -819,7 +819,7 @@ describe('Transaction Controller', function () {
       ])
       txController
         .retryTransaction(1)
-        .then((txMeta) => {
+        .then(txMeta => {
           assert.equal(
             txMeta.txParams.gasPrice,
             '0x10642ac00',
@@ -852,8 +852,8 @@ describe('Transaction Controller', function () {
     })
   })
 
-  describe('#_markNonceDuplicatesDropped', function () {
-    it('should mark all nonce duplicates as dropped without marking the confirmed transaction as dropped', function () {
+  describe('#_markNonceDuplicatesDropped', function() {
+    it('should mark all nonce duplicates as dropped without marking the confirmed transaction as dropped', function() {
       txController.txStateManager._saveTxList([
         {
           id: 1,
@@ -920,8 +920,8 @@ describe('Transaction Controller', function () {
     })
   })
 
-  describe('#_determineTransactionCategory', function () {
-    it('should return a simple send transactionCategory when to is truthy but data is falsey', async function () {
+  describe('#_determineTransactionCategory', function() {
+    it('should return a simple send transactionCategory when to is truthy but data is falsey', async function() {
       const result = await txController._determineTransactionCategory({
         to: '0xabc',
         data: '',
@@ -932,7 +932,7 @@ describe('Transaction Controller', function () {
       })
     })
 
-    it('should return a token transfer transactionCategory when data is for the respective method call', async function () {
+    it('should return a token transfer transactionCategory when data is for the respective method call', async function() {
       const result = await txController._determineTransactionCategory({
         to: '0xabc',
         data:
@@ -944,7 +944,7 @@ describe('Transaction Controller', function () {
       })
     })
 
-    it('should return a token approve transactionCategory when data is for the respective method call', async function () {
+    it('should return a token approve transactionCategory when data is for the respective method call', async function() {
       const result = await txController._determineTransactionCategory({
         to: '0xabc',
         data:
@@ -956,7 +956,7 @@ describe('Transaction Controller', function () {
       })
     })
 
-    it('should return a contract deployment transactionCategory when to is falsey and there is data', async function () {
+    it('should return a contract deployment transactionCategory when to is falsey and there is data', async function() {
       const result = await txController._determineTransactionCategory({
         to: '',
         data: '0xabd',
@@ -967,7 +967,7 @@ describe('Transaction Controller', function () {
       })
     })
 
-    it('should return a simple send transactionCategory with a 0x getCodeResponse when there is data and but the to address is not a contract address', async function () {
+    it('should return a simple send transactionCategory with a 0x getCodeResponse when there is data and but the to address is not a contract address', async function() {
       const result = await txController._determineTransactionCategory({
         to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
         data: '0xabd',
@@ -978,7 +978,7 @@ describe('Transaction Controller', function () {
       })
     })
 
-    it('should return a simple send transactionCategory with a null getCodeResponse when to is truthy and there is data and but getCode returns an error', async function () {
+    it('should return a simple send transactionCategory with a null getCodeResponse when to is truthy and there is data and but getCode returns an error', async function() {
       const result = await txController._determineTransactionCategory({
         to: '0xabc',
         data: '0xabd',
@@ -989,7 +989,7 @@ describe('Transaction Controller', function () {
       })
     })
 
-    it('should return a contract interaction transactionCategory with the correct getCodeResponse when to is truthy and there is data and it is not a token transaction', async function () {
+    it('should return a contract interaction transactionCategory with the correct getCodeResponse when to is truthy and there is data and it is not a token transaction', async function() {
       const _providerResultStub = {
         // 1 gwei
         eth_gasPrice: '0x0de0b6b3a7640000',
@@ -1005,14 +1005,14 @@ describe('Transaction Controller', function () {
       _blockTrackerStub.getLatestBlock = noop
       const _txController = new TransactionController({
         provider: _provider,
-        getGasPrice: function () {
+        getGasPrice: function() {
           return '0xee6b2800'
         },
         networkStore: new ObservableStore(currentNetworkId),
         txHistoryLimit: 10,
         blockTracker: _blockTrackerStub,
-        signTransaction: (ethTx) =>
-          new Promise((resolve) => {
+        signTransaction: ethTx =>
+          new Promise(resolve => {
             ethTx.sign(_fromAccount.key)
             resolve()
           }),
@@ -1027,7 +1027,7 @@ describe('Transaction Controller', function () {
       })
     })
 
-    it('should return a contract interaction transactionCategory with the correct getCodeResponse when to is a contract address and data is falsey', async function () {
+    it('should return a contract interaction transactionCategory with the correct getCodeResponse when to is a contract address and data is falsey', async function() {
       const _providerResultStub = {
         // 1 gwei
         eth_gasPrice: '0x0de0b6b3a7640000',
@@ -1043,14 +1043,14 @@ describe('Transaction Controller', function () {
       _blockTrackerStub.getLatestBlock = noop
       const _txController = new TransactionController({
         provider: _provider,
-        getGasPrice: function () {
+        getGasPrice: function() {
           return '0xee6b2800'
         },
         networkStore: new ObservableStore(currentNetworkId),
         txHistoryLimit: 10,
         blockTracker: _blockTrackerStub,
-        signTransaction: (ethTx) =>
-          new Promise((resolve) => {
+        signTransaction: ethTx =>
+          new Promise(resolve => {
             ethTx.sign(_fromAccount.key)
             resolve()
           }),
@@ -1066,8 +1066,8 @@ describe('Transaction Controller', function () {
     })
   })
 
-  describe('#getPendingTransactions', function () {
-    it('should show only submitted and approved transactions as pending transasction', function () {
+  describe('#getPendingTransactions', function() {
+    it('should show only submitted and approved transactions as pending transasction', function() {
       txController.txStateManager._saveTxList([
         {
           id: 1,
@@ -1122,7 +1122,7 @@ describe('Transaction Controller', function () {
       assert(txController.pendingTxTracker.getPendingTransactions().length, 2)
       const states = txController.pendingTxTracker
         .getPendingTransactions()
-        .map((tx) => tx.status)
+        .map(tx => tx.status)
       assert(states.includes('approved'), 'includes approved')
       assert(states.includes('submitted'), 'includes submitted')
     })

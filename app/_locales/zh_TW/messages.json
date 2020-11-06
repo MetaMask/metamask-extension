@@ -525,7 +525,7 @@
     "message": "Gas 用量"
   },
   "gasPrice": {
-    "message": "Gas 價格 (GDrip)"
+    "message": "Gas 價格 (Drip)"
   },
   "gasPriceExtremelyLow": {
     "message": "Gas 價格極低"

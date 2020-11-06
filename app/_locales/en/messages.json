@@ -642,7 +642,7 @@
     "message": "Storage Collaterized"
   },
   "gasPrice": {
-    "message": "Gas Price (GDrip)"
+    "message": "Gas Price (Drip)"
   },
   "gasPriceExtremelyLow": {
     "message": "Gas Price Extremely Low"

@@ -5,7 +5,7 @@ import {
   getValueFromWeiHex,
   formatCurrency,
 } from '../../../helpers/utils/confirm-tx.util'
-import { GWEI } from '../../../helpers/constants/common'
+import { WEI } from '../../../helpers/constants/common'
 
 const mapStateToProps = (state) => {
   const {
@@ -67,7 +67,7 @@ const CurrencyDisplayContainer = connect(
 CurrencyDisplayContainer.propTypes = {
   className: PropTypes.string,
   currency: PropTypes.string,
-  denomination: PropTypes.oneOf([GWEI]),
+  denomination: PropTypes.oneOf([WEI]),
   displayValue: PropTypes.string,
   hideLabel: PropTypes.bool,
   hideTitle: PropTypes.bool,

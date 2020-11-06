@@ -540,7 +540,7 @@
     "message": "已使用燃气量"
   },
   "gasPrice": {
-    "message": " 燃气价格 (GDrip)"
+    "message": " 燃气价格 (Drip)"
   },
   "storageCollateralized": {
     "message": "已抵押的存储"

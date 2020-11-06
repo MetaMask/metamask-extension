@@ -1,16 +1,16 @@
 import { connect } from 'react-redux'
 import { showModal } from '../../../../store/actions'
 import {
-  decGWEIToHexWEI,
+  decWEIToHexWEI,
   decimalToHex,
-  hexWEIToDecGWEI,
+  hexWEIToDecWEI,
   hexWEIToDecEth,
 } from '../../../../helpers/utils/conversions.util'
 import { calcStorageTotal } from '../../../../pages/send/send.utils.js'
 import AdvancedGasInputs from './advanced-gas-inputs.component'
 
 function convertGasPriceForInputs (gasPriceInHexWEI) {
-  return Number(hexWEIToDecGWEI(gasPriceInHexWEI))
+  return Number(hexWEIToDecWEI(gasPriceInHexWEI))
 }
 
 function convertGasOrStorageLimitForInputs (gasLimitInHexWEI) {
@@ -56,7 +56,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     customGasPrice: convertGasPriceForInputs(customGasPrice),
     customGasLimit: convertGasOrStorageLimitForInputs(customGasLimit),
     customStorageLimit: convertGasOrStorageLimitForInputs(customStorageLimit),
-    updateCustomGasPrice: (price) => updateCustomGasPrice(decGWEIToHexWEI(price)),
+    updateCustomGasPrice: (price) => updateCustomGasPrice(decWEIToHexWEI(price)),
     updateCustomGasLimit: (limit) => updateCustomGasLimit(decimalToHex(limit)),
     updateCustomStorageLimit: (limit) =>
       updateCustomStorageLimit(decimalToHex(limit)),
