@@ -17,7 +17,7 @@ import { getFinalStates, normalizeTxParams } from './lib/util'
 
 /**
  * TransactionStateManager is responsible for the state of a transaction and
- * storing the transaction it also has some convenience methods for finding
+ * storing the transaction. It also has some convenience methods for finding
  * subsets of transactions.
  * @param {Object} opts
  * @param {Object} [opts.initState={ transactions: [] }] initial transactions list with the key transaction {array}
