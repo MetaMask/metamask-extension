@@ -46,7 +46,9 @@ async function start () {
 
 async function checkIfAuthWorks () {
   const itWorked = await doesNotFail(async () => {
-    await exec(`sentry-cli releases --org 'conflux-chain' --project 'portal' list`)
+    await exec(
+      `sentry-cli releases --org 'conflux-chain' --project 'portal' list`
+    )
   })
   return itWorked
 }

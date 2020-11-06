@@ -171,7 +171,9 @@ describe('MetaMask', function () {
       await driver.clickElement(By.css('.network-name'))
       await driver.delay(regularDelayMs)
 
-      await driver.clickElement(By.xpath(`//span[contains(text(), 'Conflux Test Network')]`))
+      await driver.clickElement(
+        By.xpath(`//span[contains(text(), 'Conflux Test Network')]`)
+      )
       await driver.delay(largeDelayMs)
     })
 

@@ -23,7 +23,7 @@ describe('MetaMask', function () {
       accounts: [
         {
           secretKey:
-          '0xA7C2DFA78CCA35B33EBC3728BD6229D18A64C95B38E364A9CCE05FF5F832E5D2',
+            '0xA7C2DFA78CCA35B33EBC3728BD6229D18A64C95B38E364A9CCE05FF5F832E5D2',
           balance: 100000000000000000000,
         },
       ],

@@ -14,7 +14,11 @@ function IconFactory (jazzicon) {
   this.cache = {}
 }
 
-IconFactory.prototype.iconForAddress = function (address, diameter, contractMap) {
+IconFactory.prototype.iconForAddress = function (
+  address,
+  diameter,
+  contractMap
+) {
   const addr = checksumAddress(address)
   if (iconExistsFor(addr, contractMap)) {
     return imageElFor(addr, contractMap)
@@ -53,7 +57,9 @@ function iconExistsFor (address, contractMap) {
 function imageElFor (address, contractMap) {
   const contract = contractMap[address]
   const fileName = contract.logo
-  const path = fileName.startsWith('data:image') ? fileName : `images/contract/${fileName}`
+  const path = fileName.startsWith('data:image')
+    ? fileName
+    : `images/contract/${fileName}`
   const img = document.createElement('img')
   img.src = path
   img.style.width = '100%'

@@ -310,7 +310,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn lint:changed:fix"
+      "pre-commit": "lint-staged"
     }
   }
 }
