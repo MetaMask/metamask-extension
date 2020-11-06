@@ -249,7 +249,14 @@ export function getTrackMetaMetricsEvent(metamaskVersion, getDynamicState) {
 
     return new Promise((resolve, reject) => {
       // This is only safe to do because we have set an extremely low (10ms) flushInterval.
+      // However, in the event that there are network connectivity issues, manually reject
+      // the promise after 300ms.
       const callback = (err) => {
+        setTimeout(() => {
+          reject(
+            new Error('Possible network failure, analytics event not recorded'),
+          )
+        }, 300)
         if (err) {
           return reject(err)
         }
