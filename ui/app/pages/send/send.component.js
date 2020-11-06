@@ -63,6 +63,7 @@ export default class SendTransactionScreen extends Component {
     query: '',
     toError: null,
     toWarning: null,
+    internalSearch: false,
   }
 
   constructor(props) {
@@ -204,21 +205,30 @@ export default class SendTransactionScreen extends Component {
   }
 
   onRecipientInputChange = (query) => {
-    if (query) {
-      this.dValidate(query)
-    } else {
-      this.validate(query)
+    const { internalSearch } = this.state
+
+    if (!internalSearch) {
+      if (query) {
+        this.dValidate(query)
+      } else {
+        this.dValidate.cancel()
+        this.validate(query)
+      }
     }
 
-    this.setState({
-      query,
-    })
+    this.setState({ query })
+  }
+
+  setInternalSearch(internalSearch) {
+    this.setState({ query: '', internalSearch })
   }
 
   validate(query) {
     const { hasHexData, tokens, sendToken, network } = this.props
 
-    if (!query) {
+    const { internalSearch } = this.state
+
+    if (!query || internalSearch) {
       this.setState({ toError: '', toWarning: '' })
       return
     }
@@ -293,6 +303,7 @@ export default class SendTransactionScreen extends Component {
   }
 
   renderInput() {
+    const { internalSearch } = this.state
     return (
       <EnsInput
         className="send__to-row"
@@ -314,6 +325,7 @@ export default class SendTransactionScreen extends Component {
         onReset={() => this.props.updateSendTo('', '')}
         updateEnsResolution={this.props.updateSendEnsResolution}
         updateEnsResolutionError={this.props.updateSendEnsResolutionError}
+        internalSearch={internalSearch}
       />
     )
   }
@@ -327,6 +339,9 @@ export default class SendTransactionScreen extends Component {
         }
         query={this.state.query}
         toError={toError}
+        setInternalSearch={(internalSearch) =>
+          this.setInternalSearch(internalSearch)
+        }
       />
     )
   }

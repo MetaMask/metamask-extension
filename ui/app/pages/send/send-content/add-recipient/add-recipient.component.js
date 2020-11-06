@@ -22,6 +22,7 @@ export default class AddRecipient extends Component {
     addressBookEntryName: PropTypes.string,
     contacts: PropTypes.array,
     nonContacts: PropTypes.array,
+    setInternalSearch: PropTypes.func,
   }
 
   constructor(props) {
@@ -140,15 +141,28 @@ export default class AddRecipient extends Component {
   }
 
   renderTransfer() {
-    const { ownedAccounts } = this.props
+    let { ownedAccounts } = this.props
+    const { query, setInternalSearch } = this.props
     const { t } = this.context
+    const { isShowingTransfer } = this.state
+
+    if (isShowingTransfer && query) {
+      ownedAccounts = ownedAccounts.filter(
+        (item) =>
+          item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 ||
+          item.address.toLowerCase().indexOf(query.toLowerCase()) > -1,
+      )
+    }
 
     return (
       <div className="send__select-recipient-wrapper__list">
         <Button
           type="link"
           className="send__select-recipient-wrapper__list__link"
-          onClick={() => this.setState({ isShowingTransfer: false })}
+          onClick={() => {
+            setInternalSearch(false)
+            this.setState({ isShowingTransfer: false })
+          }}
         >
           <div className="send__select-recipient-wrapper__list__back-caret" />
           {t('backToAll')}
@@ -164,7 +178,12 @@ export default class AddRecipient extends Component {
 
   renderMain() {
     const { t } = this.context
-    const { query, ownedAccounts = [], addressBook } = this.props
+    const {
+      query,
+      ownedAccounts = [],
+      addressBook,
+      setInternalSearch,
+    } = this.props
 
     return (
       <div className="send__select-recipient-wrapper__list">
@@ -178,7 +197,10 @@ export default class AddRecipient extends Component {
             <Button
               type="link"
               className="send__select-recipient-wrapper__list__link"
-              onClick={() => this.setState({ isShowingTransfer: true })}
+              onClick={() => {
+                setInternalSearch(true)
+                this.setState({ isShowingTransfer: true })
+              }}
             >
               {t('transferBetweenAccounts')}
             </Button>
