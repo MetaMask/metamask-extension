@@ -65,7 +65,7 @@ initProvider({
 
 // setup web3
 
-if (typeof window.ethereum !== 'undefined') {
+if (typeof window.ethereum !== 'undefined' || typeof window.web3 !== 'undefined') {
   log.warn(`MetaMask detected another ethereum provider.
      MetaMask will not work reliably with another wallet present.
      This usually happens if you have two MetaMasks installed,
