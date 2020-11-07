@@ -1425,7 +1425,7 @@
     "message": "Select Locale"
   },
   "selectPathHelp": {
-    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+    "message": "If you don't see your existing Ledger accounts below, try a different HD path."
   },
   "selectType": {
     "message": "Select Type"
