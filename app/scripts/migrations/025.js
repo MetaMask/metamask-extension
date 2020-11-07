@@ -6,6 +6,7 @@ normalizes txParams on unconfirmed txs
 */
 import { cloneDeep } from 'lodash'
 import { addHexPrefix } from '../lib/util'
+import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction'
 
 const version = 25
 
@@ -30,7 +31,7 @@ function transformState(state) {
       const { transactions } = newState.TransactionController
       newState.TransactionController.transactions = transactions.map(
         (txMeta) => {
-          if (txMeta.status !== 'unapproved') {
+          if (txMeta.status !== TRANSACTION_STATUSES.UNAPPROVED) {
             return txMeta
           }
           txMeta.txParams = normalizeTxParams(txMeta.txParams)

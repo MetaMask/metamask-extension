@@ -61,6 +61,7 @@ import {
 } from '../../../../pages/send/send.utils'
 import { MIN_GAS_LIMIT_DEC } from '../../../../pages/send/send.constants'
 import { calcMaxAmount } from '../../../../pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.utils'
+import { TRANSACTION_STATUSES } from '../../../../../../shared/constants/transaction'
 import GasModalPageContainer from './gas-modal-page-container.component'
 
 const mapStateToProps = (state, ownProps) => {
@@ -193,8 +194,8 @@ const mapStateToProps = (state, ownProps) => {
       sendAmount,
     },
     transaction: txData || transaction,
-    isSpeedUp: transaction.status === 'submitted',
-    isRetry: transaction.status === 'failed',
+    isSpeedUp: transaction.status === TRANSACTION_STATUSES.SUBMITTED,
+    isRetry: transaction.status === TRANSACTION_STATUSES.FAILED,
     txId: transaction.id,
     insufficientBalance,
     gasEstimatesLoading,

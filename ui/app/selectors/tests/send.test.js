@@ -4,6 +4,7 @@ import {
   accountsWithSendEtherInfoSelector,
   getCurrentAccountWithSendEtherInfo,
 } from '..'
+import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction'
 import {
   getBlockGasLimit,
   getConversionRate,
@@ -343,7 +344,7 @@ describe('send selectors', function () {
         4768706228115573: {
           id: 4768706228115573,
           time: 1487363153561,
-          status: 'unapproved',
+          status: TRANSACTION_STATUSES.UNAPPROVED,
           gasMultiplier: 1,
           metamaskNetworkId: '3',
           txParams: {

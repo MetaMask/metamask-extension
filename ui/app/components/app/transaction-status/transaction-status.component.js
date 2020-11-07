@@ -10,7 +10,6 @@ import {
 } from '../../../../../shared/constants/transaction'
 
 const QUEUED_PSEUDO_STATUS = 'queued'
-const PENDING_PSEUDO_STATUS = 'pending'
 
 /**
  * A note about status logic for this component:
@@ -23,9 +22,9 @@ const PENDING_PSEUDO_STATUS = 'pending'
  * status label will be the date the transaction was finalized.
  */
 const pendingStatusHash = {
-  [TRANSACTION_STATUSES.SUBMITTED]: PENDING_PSEUDO_STATUS,
-  [TRANSACTION_STATUSES.APPROVED]: PENDING_PSEUDO_STATUS,
-  [TRANSACTION_STATUSES.SIGNED]: PENDING_PSEUDO_STATUS,
+  [TRANSACTION_STATUSES.SUBMITTED]: TRANSACTION_GROUP_STATUSES.PENDING,
+  [TRANSACTION_STATUSES.APPROVED]: TRANSACTION_GROUP_STATUSES.PENDING,
+  [TRANSACTION_STATUSES.SIGNED]: TRANSACTION_GROUP_STATUSES.PENDING,
 }
 
 const statusToClassNameHash = {
@@ -35,7 +34,7 @@ const statusToClassNameHash = {
   [TRANSACTION_STATUSES.DROPPED]: 'transaction-status--dropped',
   [TRANSACTION_GROUP_STATUSES.CANCELLED]: 'transaction-status--cancelled',
   [QUEUED_PSEUDO_STATUS]: 'transaction-status--queued',
-  [PENDING_PSEUDO_STATUS]: 'transaction-status--pending',
+  [TRANSACTION_GROUP_STATUSES.PENDING]: 'transaction-status--pending',
 }
 
 export default function TransactionStatus({
@@ -49,7 +48,9 @@ export default function TransactionStatus({
   const tooltipText = error?.rpc?.message || error?.message
   let statusKey = status
   if (pendingStatusHash[status]) {
-    statusKey = isEarliestNonce ? PENDING_PSEUDO_STATUS : QUEUED_PSEUDO_STATUS
+    statusKey = isEarliestNonce
+      ? TRANSACTION_GROUP_STATUSES.PENDING
+      : QUEUED_PSEUDO_STATUS
   }
 
   const statusText =

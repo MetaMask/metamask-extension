@@ -1,5 +1,6 @@
 import { isValidAddress } from 'ethereumjs-util'
 import { addHexPrefix } from '../../../lib/util'
+import { TRANSACTION_STATUSES } from '../../../../../shared/constants/transaction'
 
 const normalizers = {
   from: (from) => addHexPrefix(from),
@@ -93,9 +94,9 @@ export function validateRecipient(txParams) {
  */
 export function getFinalStates() {
   return [
-    'rejected', // the user has responded no!
-    'confirmed', // the tx has been included in a block.
-    'failed', // the tx failed for some reason, included on tx data.
-    'dropped', // the tx nonce was already used
+    TRANSACTION_STATUSES.REJECTED, // the user has responded no!
+    TRANSACTION_STATUSES.CONFIRMED, // the tx has been included in a block.
+    TRANSACTION_STATUSES.FAILED, // the tx failed for some reason, included on tx data.
+    TRANSACTION_STATUSES.DROPPED, // the tx nonce was already used
   ]
 }

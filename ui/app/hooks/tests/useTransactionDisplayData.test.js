@@ -18,11 +18,16 @@ import * as i18nhooks from '../useI18nContext'
 import { getMessage } from '../../helpers/utils/i18n-helper'
 import messages from '../../../../app/_locales/en/messages.json'
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../helpers/constants/routes'
+import {
+  TRANSACTION_CATEGORIES,
+  TRANSACTION_GROUP_CATEGORIES,
+  TRANSACTION_STATUSES,
+} from '../../../../shared/constants/transaction'
 
 const expectedResults = [
   {
     title: 'Send ETH',
-    category: 'send',
+    category: TRANSACTION_GROUP_CATEGORIES.SEND,
     subtitle: 'To: 0xffe5...1a97',
     subtitleContainsOrigin: false,
     date: 'May 12',
@@ -31,12 +36,12 @@ const expectedResults = [
     recipientAddress: '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
     secondaryCurrency: '-1 ETH',
     isPending: false,
-    displayedStatusKey: 'confirmed',
+    displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
     isSubmitted: false,
   },
   {
     title: 'Send ETH',
-    category: 'send',
+    category: TRANSACTION_GROUP_CATEGORIES.SEND,
     subtitle: 'To: 0x0ccc...8848',
     subtitleContainsOrigin: false,
     date: 'May 12',
@@ -45,11 +50,11 @@ const expectedResults = [
     recipientAddress: '0x0ccc8aeeaf5ce790f3b448325981a143fdef8848',
     secondaryCurrency: '-2 ETH',
     isPending: false,
-    displayedStatusKey: 'confirmed',
+    displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
   },
   {
     title: 'Send ETH',
-    category: 'send',
+    category: TRANSACTION_GROUP_CATEGORIES.SEND,
     subtitle: 'To: 0xffe5...1a97',
     subtitleContainsOrigin: false,
     date: 'May 12',
@@ -58,11 +63,11 @@ const expectedResults = [
     recipientAddress: '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
     secondaryCurrency: '-2 ETH',
     isPending: false,
-    displayedStatusKey: 'confirmed',
+    displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
   },
   {
     title: 'Receive',
-    category: 'receive',
+    category: TRANSACTION_GROUP_CATEGORIES.RECEIVE,
     subtitle: 'From: 0x31b9...4523',
     subtitleContainsOrigin: false,
     date: 'May 12',
@@ -71,11 +76,11 @@ const expectedResults = [
     recipientAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     secondaryCurrency: '18.75 ETH',
     isPending: false,
-    displayedStatusKey: 'confirmed',
+    displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
   },
   {
     title: 'Receive',
-    category: 'receive',
+    category: TRANSACTION_GROUP_CATEGORIES.RECEIVE,
     subtitle: 'From: 0x9eca...a149',
     subtitleContainsOrigin: false,
     date: 'May 8',
@@ -84,11 +89,11 @@ const expectedResults = [
     recipientAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     secondaryCurrency: '0 ETH',
     isPending: false,
-    displayedStatusKey: 'confirmed',
+    displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
   },
   {
     title: 'Receive',
-    category: 'receive',
+    category: TRANSACTION_GROUP_CATEGORIES.RECEIVE,
     subtitle: 'From: 0xee01...febb',
     subtitleContainsOrigin: false,
     date: 'May 24',
@@ -97,11 +102,11 @@ const expectedResults = [
     recipientAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     secondaryCurrency: '1 ETH',
     isPending: false,
-    displayedStatusKey: 'confirmed',
+    displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
   },
   {
     title: 'Swap ETH to ABC',
-    category: 'swap',
+    category: TRANSACTION_CATEGORIES.SWAP,
     subtitle: '',
     subtitleContainsOrigin: false,
     date: 'May 12',
@@ -110,7 +115,7 @@ const expectedResults = [
     recipientAddress: '0xabca64466f257793eaa52fcfff5066894b76a149',
     secondaryCurrency: undefined,
     isPending: false,
-    displayedStatusKey: 'confirmed',
+    displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
   },
 ]
 
@@ -120,8 +125,9 @@ const renderHookWithRouter = (cb, tokenAddress) => {
   const initialEntries = [
     tokenAddress ? `${ASSET_ROUTE}/${tokenAddress}` : DEFAULT_ROUTE,
   ]
-  // eslint-disable-next-line
-  const wrapper = ({ children }) => <MemoryRouter initialEntries={initialEntries}>{children}</MemoryRouter>
+  const wrapper = ({ children }) => (
+    <MemoryRouter initialEntries={initialEntries}>{children}</MemoryRouter>
+  )
   return renderHook(cb, { wrapper })
 }
 

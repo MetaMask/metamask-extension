@@ -18,7 +18,10 @@ import { PRIMARY, SECONDARY } from '../../helpers/constants/common'
 import { hexToDecimal } from '../../helpers/utils/conversions.util'
 import AdvancedGasInputs from '../../components/app/gas-customization/advanced-gas-inputs'
 import TextField from '../../components/ui/text-field'
-import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction'
+import {
+  TRANSACTION_CATEGORIES,
+  TRANSACTION_STATUSES,
+} from '../../../../shared/constants/transaction'
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -225,7 +228,9 @@ export default class ConfirmTransactionBase extends Component {
       customVariables: {
         recipientKnown: null,
         functionType:
-          actionKey || getMethodName(methodData.name) || 'contractInteraction',
+          actionKey ||
+          getMethodName(methodData.name) ||
+          TRANSACTION_CATEGORIES.CONTRACT_INTERACTION,
         origin,
       },
     })
@@ -416,7 +421,9 @@ export default class ConfirmTransactionBase extends Component {
       customVariables: {
         recipientKnown: null,
         functionType:
-          actionKey || getMethodName(methodData.name) || 'contractInteraction',
+          actionKey ||
+          getMethodName(methodData.name) ||
+          TRANSACTION_CATEGORIES.CONTRACT_INTERACTION,
         origin,
       },
     })
@@ -470,7 +477,9 @@ export default class ConfirmTransactionBase extends Component {
       customVariables: {
         recipientKnown: null,
         functionType:
-          actionKey || getMethodName(methodData.name) || 'contractInteraction',
+          actionKey ||
+          getMethodName(methodData.name) ||
+          TRANSACTION_CATEGORIES.CONTRACT_INTERACTION,
         origin,
       },
     })
@@ -525,7 +534,7 @@ export default class ConfirmTransactionBase extends Component {
             functionType:
               actionKey ||
               getMethodName(methodData.name) ||
-              'contractInteraction',
+              TRANSACTION_CATEGORIES.CONTRACT_INTERACTION,
             origin,
           },
         })

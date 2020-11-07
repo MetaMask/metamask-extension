@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert'
+import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction'
 import {
   unapprovedMessagesSelector,
   transactionsSelector,
@@ -19,7 +20,7 @@ describe('Transaction Selectors', function () {
           origin: 'origin',
         },
         time: 1,
-        status: 'unapproved',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
         type: 'eth_sign',
       }
 
@@ -46,7 +47,7 @@ describe('Transaction Selectors', function () {
           origin: 'origin',
         },
         time: 1,
-        status: 'unapproved',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
         type: 'personal_sign',
       }
 
@@ -74,7 +75,7 @@ describe('Transaction Selectors', function () {
           origin: 'origin',
         },
         time: 1,
-        status: 'unapproved',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
         type: 'eth_signTypedData',
       }
 
@@ -203,7 +204,7 @@ describe('Transaction Selectors', function () {
         to: '0xRecipient',
         nonce: '0x0',
       },
-      status: 'submitted',
+      status: TRANSACTION_STATUSES.SUBMITTED,
     }
 
     const unapprovedTx = {
@@ -214,7 +215,7 @@ describe('Transaction Selectors', function () {
         to: '0xRecipient',
         nonce: '0x1',
       },
-      status: 'unapproved',
+      status: TRANSACTION_STATUSES.UNAPPROVED,
     }
 
     const approvedTx = {
@@ -225,7 +226,7 @@ describe('Transaction Selectors', function () {
         to: '0xRecipient',
         nonce: '0x2',
       },
-      status: 'approved',
+      status: TRANSACTION_STATUSES.APPROVED,
     }
 
     const confirmedTx = {
@@ -236,7 +237,7 @@ describe('Transaction Selectors', function () {
         to: '0xRecipient',
         nonce: '0x3',
       },
-      status: 'confirmed',
+      status: TRANSACTION_STATUSES.CONFIRMED,
     }
 
     const state = {

@@ -6,6 +6,7 @@ import { addHexPrefix } from '../../../../app/scripts/lib/util'
 import { getEtherscanNetworkPrefix } from '../../../lib/etherscan-prefix-for-network'
 import {
   TRANSACTION_CATEGORIES,
+  TRANSACTION_GROUP_STATUSES,
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
 } from '../../../../shared/constants/transaction'
@@ -176,14 +177,14 @@ export function getStatusKey(transaction) {
 
   // There was an on-chain failure
   if (receiptStatus === '0x0') {
-    return 'failed'
+    return TRANSACTION_STATUSES.FAILED
   }
 
   if (
     status === TRANSACTION_STATUSES.CONFIRMED &&
     type === TRANSACTION_TYPES.CANCEL
   ) {
-    return 'cancelled'
+    return TRANSACTION_GROUP_STATUSES.CANCELLED
   }
 
   return transaction.status

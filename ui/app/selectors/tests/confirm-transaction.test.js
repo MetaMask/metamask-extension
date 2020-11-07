@@ -1,4 +1,5 @@
 import assert from 'assert'
+import { TRANSACTION_CATEGORIES } from '../../../../shared/constants/transaction'
 import {
   unconfirmedTransactionsCountSelector,
   sendTokenTokenAmountAndToAddressSelector,
@@ -43,7 +44,7 @@ describe('Confirm Transaction Selector', function () {
     const state = {
       confirmTransaction: {
         tokenData: {
-          name: 'transfer',
+          name: TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER,
           args: getEthersArrayLikeFromObj({
             _to: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
             _value: { toString: () => '1' },

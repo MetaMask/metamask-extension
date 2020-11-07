@@ -5,6 +5,7 @@ normalizes txParams on unconfirmed txs
 
 */
 import { cloneDeep } from 'lodash'
+import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction'
 
 const version = 27
 
@@ -28,7 +29,7 @@ function transformState(state) {
     if (newState.TransactionController.transactions) {
       const { transactions } = newState.TransactionController
       newState.TransactionController.transactions = transactions.filter(
-        (txMeta) => txMeta.status !== 'rejected',
+        (txMeta) => txMeta.status !== TRANSACTION_STATUSES.REJECTED,
       )
     }
   }

@@ -1,5 +1,6 @@
 import assert from 'assert'
 import migration29 from '../../../app/scripts/migrations/029'
+import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction'
 
 const properTime = new Date().getTime()
 const storage = {
@@ -7,11 +8,23 @@ const storage = {
   data: {
     TransactionController: {
       transactions: [
-        { status: 'approved', id: 1, submittedTime: 0 },
-        { status: 'approved', id: 2, submittedTime: properTime },
-        { status: 'confirmed', id: 3, submittedTime: properTime },
-        { status: 'submitted', id: 4, submittedTime: properTime },
-        { status: 'submitted', id: 5, submittedTime: 0 },
+        { status: TRANSACTION_STATUSES.APPROVED, id: 1, submittedTime: 0 },
+        {
+          status: TRANSACTION_STATUSES.APPROVED,
+          id: 2,
+          submittedTime: properTime,
+        },
+        {
+          status: TRANSACTION_STATUSES.CONFIRMED,
+          id: 3,
+          submittedTime: properTime,
+        },
+        {
+          status: TRANSACTION_STATUSES.SUBMITTED,
+          id: 4,
+          submittedTime: properTime,
+        },
+        { status: TRANSACTION_STATUSES.SUBMITTED, id: 5, submittedTime: 0 },
       ],
     },
   },
@@ -26,7 +39,11 @@ describe('storage is migrated successfully where transactions that are submitted
         const [txMeta1] = txs
         assert.equal(migratedData.meta.version, 29)
 
-        assert.equal(txMeta1.status, 'failed', 'old tx is auto failed')
+        assert.equal(
+          txMeta1.status,
+          TRANSACTION_STATUSES.FAILED,
+          'old tx is auto failed',
+        )
         assert(
           txMeta1.err.message.includes('too long'),
           'error message assigned',
@@ -36,7 +53,11 @@ describe('storage is migrated successfully where transactions that are submitted
           if (tx.id === 1) {
             return
           }
-          assert.notEqual(tx.status, 'failed', 'other tx is not auto failed')
+          assert.notEqual(
+            tx.status,
+            TRANSACTION_STATUSES.FAILED,
+            'other tx is not auto failed',
+          )
         })
 
         done()

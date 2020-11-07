@@ -1,5 +1,6 @@
 import assert from 'assert'
 import MessageManager from '../../../app/scripts/lib/message-manager'
+import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction'
 
 describe('Message Manager', function () {
   let messageManager
@@ -18,7 +19,11 @@ describe('Message Manager', function () {
 
   describe('#addMsg', function () {
     it('adds a Msg returned in getMsgList', function () {
-      const Msg = { id: 1, status: 'approved', metamaskNetworkId: 'unit test' }
+      const Msg = {
+        id: 1,
+        status: TRANSACTION_STATUSES.APPROVED,
+        metamaskNetworkId: 'unit test',
+      }
       messageManager.addMsg(Msg)
       const result = messageManager.messages
       assert.ok(Array.isArray(result))
@@ -39,7 +44,7 @@ describe('Message Manager', function () {
       const result = messageManager.messages
       assert.ok(Array.isArray(result))
       assert.equal(result.length, 1)
-      assert.equal(result[0].status, 'approved')
+      assert.equal(result[0].status, TRANSACTION_STATUSES.APPROVED)
     })
   })
 
@@ -55,7 +60,7 @@ describe('Message Manager', function () {
       const result = messageManager.messages
       assert.ok(Array.isArray(result))
       assert.equal(result.length, 1)
-      assert.equal(result[0].status, 'rejected')
+      assert.equal(result[0].status, TRANSACTION_STATUSES.REJECTED)
     })
   })
 
@@ -68,7 +73,7 @@ describe('Message Manager', function () {
       })
       messageManager.addMsg({
         id: '2',
-        status: 'approved',
+        status: TRANSACTION_STATUSES.APPROVED,
         metamaskNetworkId: 'unit test',
       })
       messageManager._updateMsg({
@@ -91,7 +96,7 @@ describe('Message Manager', function () {
       })
       messageManager.addMsg({
         id: '2',
-        status: 'approved',
+        status: TRANSACTION_STATUSES.APPROVED,
         metamaskNetworkId: 'unit test',
       })
       const result = messageManager.getUnapprovedMsgs()
@@ -110,11 +115,14 @@ describe('Message Manager', function () {
       })
       messageManager.addMsg({
         id: '2',
-        status: 'approved',
+        status: TRANSACTION_STATUSES.APPROVED,
         metamaskNetworkId: 'unit test',
       })
       assert.equal(messageManager.getMsg('1').status, 'unapproved')
-      assert.equal(messageManager.getMsg('2').status, 'approved')
+      assert.equal(
+        messageManager.getMsg('2').status,
+        TRANSACTION_STATUSES.APPROVED,
+      )
     })
   })
 })

@@ -1,6 +1,7 @@
 import assert from 'assert'
 import proxyquire from 'proxyquire'
 import sinon from 'sinon'
+import { TRANSACTION_STATUSES } from '../../../../../../../shared/constants/transaction'
 
 let mapStateToProps
 let mapDispatchToProps
@@ -195,7 +196,7 @@ describe('gas-modal-page-container container', function () {
           mockState: baseMockState,
           mockOwnProps: {
             ...baseMockOwnProps,
-            transaction: { id: 34, status: 'submitted' },
+            transaction: { id: 34, status: TRANSACTION_STATUSES.SUBMITTED },
           },
           expectedResult: {
             ...baseExpectedResult,

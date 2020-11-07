@@ -1,6 +1,7 @@
 import assert from 'assert'
 import migration25 from '../../../app/scripts/migrations/025'
 import data from '../../../app/scripts/first-time-state'
+import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction'
 
 const firstTimeState = {
   meta: {},
@@ -25,11 +26,11 @@ while (transactions.length <= 10) {
       random: 'stuff',
       chainId: 2,
     },
-    status: 'unapproved',
+    status: TRANSACTION_STATUSES.UNAPPROVED,
   })
   transactions.push({
     txParams: { from: '0x8aCce2391c0d510a6c5E5d8f819a678f79b7e675' },
-    status: 'confirmed',
+    status: TRANSACTION_STATUSES.CONFIRMED,
   })
 }
 
@@ -43,10 +44,10 @@ describe('storage is migrated successfully and the txParams.from are lowercase',
         const migratedTransactions =
           migratedData.data.TransactionController.transactions
         migratedTransactions.forEach((tx) => {
-          if (tx.status === 'unapproved') {
+          if (tx.status === TRANSACTION_STATUSES.UNAPPROVED) {
             assert(!tx.txParams.random)
           }
-          if (tx.status === 'unapproved') {
+          if (tx.status === TRANSACTION_STATUSES.UNAPPROVED) {
             assert(!tx.txParams.chainId)
           }
         })

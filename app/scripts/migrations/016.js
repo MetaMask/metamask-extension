@@ -6,6 +6,7 @@ to a 'failed' stated
 */
 
 import { cloneDeep } from 'lodash'
+import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction'
 
 const version = 16
 
@@ -39,7 +40,7 @@ function transformState(state) {
       if (
         txMeta.err === 'transaction with the same hash was already imported.'
       ) {
-        txMeta.status = 'submitted'
+        txMeta.status = TRANSACTION_STATUSES.SUBMITTED
         delete txMeta.err
       }
       return txMeta
