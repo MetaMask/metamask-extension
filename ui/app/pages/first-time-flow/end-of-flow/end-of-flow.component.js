@@ -15,19 +15,24 @@ export default class EndOfFlowScreen extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
     completionMetaMetricsName: PropTypes.string,
+    setCompletedOnboarding: PropTypes.function,
     onboardingInitiator: PropTypes.exact({
       location: PropTypes.string,
       tabId: PropTypes.number,
     }),
   }
 
-  onComplete = async () => {
-    const {
-      history,
-      completionMetaMetricsName,
-      onboardingInitiator,
-    } = this.props
+  async _beforeUnload() {
+    await this._onOnboardingComplete()
+  }
 
+  _removeBeforeUnload() {
+    window.removeEventListener('beforeunload', this._beforeUnload)
+  }
+
+  async _onOnboardingComplete() {
+    const { setCompletedOnboarding, completionMetaMetricsName } = this.props
+    await setCompletedOnboarding()
     this.context.metricsEvent({
       eventOpts: {
         category: 'Onboarding',
@@ -35,11 +40,25 @@ export default class EndOfFlowScreen extends PureComponent {
         name: completionMetaMetricsName,
       },
     })
+  }
 
+  onComplete = async () => {
+    const { history, onboardingInitiator } = this.props
+
+    this._removeBeforeUnload()
+    await this._onOnboardingComplete()
     if (onboardingInitiator) {
       await returnToOnboardingInitiator(onboardingInitiator)
     }
     history.push(DEFAULT_ROUTE)
+  }
+
+  componentDidMount() {
+    window.addEventListener('beforeunload', this._beforeUnload.bind(this))
+  }
+
+  componentWillUnmount = () => {
+    this._removeBeforeUnload()
   }
 
   render() {

@@ -12,6 +12,7 @@ describe('End of Flow Screen', function () {
     history: {
       push: sinon.spy(),
     },
+    setCompletedOnboarding: sinon.spy(),
   }
 
   beforeEach(function () {
