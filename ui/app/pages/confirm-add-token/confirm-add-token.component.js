@@ -105,7 +105,6 @@ export default class ConfirmAddToken extends Component {
               onClick={() => {
                 addTokens(pendingTokens).then(() => {
                   const pendingTokenValues = Object.values(pendingTokens)
-                  console.log(pendingTokenValues)
                   pendingTokenValues?.forEach((pendingToken) => {
                     this.context.trackEvent({
                       event: 'Token Added',
