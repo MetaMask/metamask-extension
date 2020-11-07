@@ -44,9 +44,22 @@ function createSegmentServer(onRequest, onError = defaultOnError) {
       })
     })
 
-    const body = Buffer.concat(chunks).toString()
-    const segmentPayload = JSON.parse(body)
-    const metricEvents = segmentPayload.batch
+    // respond to preflight request
+    if (request.method === 'OPTIONS') {
+      response.setHeader('Access-Control-Allow-Origin', '*')
+      response.setHeader('Access-Control-Allow-Methods', '*')
+      response.setHeader('Access-Control-Allow-Headers', '*')
+      response.statusCode = 200
+      response.end()
+      return
+    }
+
+    let metricEvents = []
+    if (chunks.length) {
+      const body = Buffer.concat(chunks).toString()
+      const segmentPayload = JSON.parse(body)
+      metricEvents = segmentPayload.batch
+    }
 
     onRequest(request, response, metricEvents)
   })
