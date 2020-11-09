@@ -300,26 +300,10 @@ export default function ViewQuote() {
     available_quotes: numberOfQuotes,
   }
 
-  const anonymousAllAvailableQuotesOpened = useNewMetricEvent({
-    event: 'All Available Quotes Opened',
-    properties: {
-      ...eventObjectBase,
-      other_quote_selected: usedQuote?.aggregator !== topQuote?.aggregator,
-      other_quote_selected_source:
-        usedQuote?.aggregator === topQuote?.aggregator
-          ? null
-          : usedQuote?.aggregator,
-    },
-    excludeMetaMetricsId: true,
-    category: 'swaps',
-  })
   const allAvailableQuotesOpened = useNewMetricEvent({
     event: 'All Available Quotes Opened',
     category: 'swaps',
-  })
-  const anonymousQuoteDetailsOpened = useNewMetricEvent({
-    event: 'Quote Details Opened',
-    properties: {
+    sensitiveProperties: {
       ...eventObjectBase,
       other_quote_selected: usedQuote?.aggregator !== topQuote?.aggregator,
       other_quote_selected_source:
@@ -327,38 +311,34 @@ export default function ViewQuote() {
           ? null
           : usedQuote?.aggregator,
     },
-    excludeMetaMetricsId: true,
-    category: 'swaps',
   })
   const quoteDetailsOpened = useNewMetricEvent({
     event: 'Quote Details Opened',
     category: 'swaps',
+    sensitiveProperties: {
+      ...eventObjectBase,
+      other_quote_selected: usedQuote?.aggregator !== topQuote?.aggregator,
+      other_quote_selected_source:
+        usedQuote?.aggregator === topQuote?.aggregator
+          ? null
+          : usedQuote?.aggregator,
+    },
   })
-  const anonymousEditSpendLimitOpened = useNewMetricEvent({
+  const editSpendLimitOpened = useNewMetricEvent({
     event: 'Edit Spend Limit Opened',
-    properties: {
+    category: 'swaps',
+    sensitiveProperties: {
       ...eventObjectBase,
       custom_spend_limit_set: originalApproveAmount === approveAmount,
       custom_spend_limit_amount:
         originalApproveAmount === approveAmount ? null : approveAmount,
     },
-    excludeMetaMetricsId: true,
-    category: 'swaps',
-  })
-  const editSpendLimitOpened = useNewMetricEvent({
-    event: 'Edit Spend Limit Opened',
-    category: 'swaps',
   })
 
-  const anonymousBestQuoteReviewedEvent = useNewMetricEvent({
-    event: 'Best Quote Reviewed',
-    properties: { ...eventObjectBase, network_fees: feeInFiat },
-    excludeMetaMetricsId: true,
-    category: 'swaps',
-  })
   const bestQuoteReviewedEvent = useNewMetricEvent({
     event: 'Best Quote Reviewed',
     category: 'swaps',
+    sensitiveProperties: { ...eventObjectBase, network_fees: feeInFiat },
   })
   useEffect(() => {
     if (
@@ -376,7 +356,6 @@ export default function ViewQuote() {
     ) {
       bestQuoteReviewedEventSent.current = true
       bestQuoteReviewedEvent()
-      anonymousBestQuoteReviewedEvent()
     }
   }, [
     sourceTokenSymbol,
@@ -388,13 +367,11 @@ export default function ViewQuote() {
     numberOfQuotes,
     feeInFiat,
     bestQuoteReviewedEvent,
-    anonymousBestQuoteReviewedEvent,
   ])
 
   const metaMaskFee = usedQuote.fee
 
   const onFeeCardTokenApprovalClick = () => {
-    anonymousEditSpendLimitOpened()
     editSpendLimitOpened()
     dispatch(
       showModal({
@@ -500,10 +477,7 @@ export default function ViewQuote() {
             }}
             swapToSymbol={destinationTokenSymbol}
             initialAggId={usedQuote.aggregator}
-            onQuoteDetailsIsOpened={() => {
-              anonymousQuoteDetailsOpened()
-              quoteDetailsOpened()
-            }}
+            onQuoteDetailsIsOpened={quoteDetailsOpened}
           />
         )}
         <div className="view-quote__insufficient-eth-warning-wrapper">
@@ -547,7 +521,6 @@ export default function ViewQuote() {
           <div
             className="view-quote__view-other-button-fade"
             onClick={() => {
-              anonymousAllAvailableQuotesOpened()
               allAvailableQuotesOpened()
               setSelectQuotePopoverShown(true)
             }}

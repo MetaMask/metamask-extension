@@ -202,12 +202,7 @@ export default function Swap() {
   const exitedSwapsEvent = useNewMetricEvent({
     event: 'Exited Swaps',
     category: 'swaps',
-  })
-  const anonymousExitedSwapsEvent = useNewMetricEvent({
-    event: 'Exited Swaps',
-    category: 'swaps',
-    excludeMetaMetricsId: true,
-    properties: {
+    sensitiveProperties: {
       token_from: fetchParams?.sourceTokenInfo?.symbol,
       token_from_amount: fetchParams?.value,
       request_type: fetchParams?.balanceError,
@@ -221,7 +216,6 @@ export default function Swap() {
   useEffect(() => {
     exitEventRef.current = () => {
       exitedSwapsEvent()
-      anonymousExitedSwapsEvent()
     }
   })
 

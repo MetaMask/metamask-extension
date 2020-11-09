@@ -69,12 +69,7 @@ export default function LoadingSwapsQuotes({
   const quotesRequestCancelledEventConfig = {
     event: 'Quotes Request Cancelled',
     category: 'swaps',
-  }
-  const anonymousQuotesRequestCancelledEventConfig = {
-    event: 'Quotes Request Cancelled',
-    category: 'swaps',
-    excludeMetaMetricsId: true,
-    properties: {
+    sensitiveProperties: {
       token_from: fetchParams?.sourceTokenInfo?.symbol,
       token_from_amount: fetchParams?.value,
       request_type: fetchParams?.balanceError,
@@ -232,7 +227,6 @@ export default function LoadingSwapsQuotes({
         submitText={t('back')}
         onSubmit={async () => {
           metaMetricsEvent(quotesRequestCancelledEventConfig)
-          metaMetricsEvent(anonymousQuotesRequestCancelledEventConfig)
           await dispatch(navigateBackToBuildQuote(history))
         }}
         hideCancel
