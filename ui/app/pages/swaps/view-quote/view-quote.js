@@ -115,7 +115,7 @@ export default function ViewQuote() {
   const selectedQuote = useSelector(getSelectedQuote)
   const topQuote = useSelector(getTopQuote)
   const usedQuote = selectedQuote || topQuote
-  const { value: tradeValue = '0x0' } = usedQuote?.trade?.value || {}
+  const tradeValue = usedQuote?.trade?.value ?? '0x0'
 
   const fetchParamsSourceToken = fetchParams?.sourceToken
 
@@ -455,7 +455,7 @@ export default function ViewQuote() {
     dispatch(
       showModal({
         name: 'CUSTOMIZE_METASWAP_GAS',
-        value: usedQuote.value,
+        value: tradeValue,
         customGasLimitMessage: approveGas
           ? t('extraApprovalGas', [hexToDecimal(approveGas)])
           : '',
