@@ -108,7 +108,7 @@
     "eth-method-registry": "^1.2.0",
     "eth-phishing-detect": "^1.1.14",
     "eth-query": "^2.1.2",
-    "eth-sig-util": "^2.3.0",
+    "eth-sig-util": "^3.0.0",
     "eth-trezor-keyring": "^0.4.0",
     "ethereum-ens-network-map": "^1.0.2",
     "ethereumjs-abi": "^0.6.4",
