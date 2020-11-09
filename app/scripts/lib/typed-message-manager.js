@@ -2,7 +2,7 @@ import EventEmitter from 'events'
 import assert from 'assert'
 import ObservableStore from 'obs-store'
 import { ethErrors } from 'eth-json-rpc-errors'
-import sigUtil from 'eth-sig-util'
+import { typedSignatureHash, TYPED_MESSAGE_SCHEMA } from 'eth-sig-util'
 import { isValidAddress } from 'ethereumjs-util'
 import log from 'loglevel'
 import jsonschema from 'jsonschema'
@@ -164,7 +164,7 @@ export default class TypedMessageManager extends EventEmitter {
       case 'V1':
         assert.ok(Array.isArray(params.data), '"params.data" must be an array.')
         assert.doesNotThrow(() => {
-          sigUtil.typedSignatureHash(params.data)
+          typedSignatureHash(params.data)
         }, 'Signing data must be valid EIP-712 typed data.')
         break
       case 'V3':
@@ -178,10 +178,7 @@ export default class TypedMessageManager extends EventEmitter {
         assert.doesNotThrow(() => {
           data = JSON.parse(params.data)
         }, '"data" must be a valid JSON string.')
-        const validation = jsonschema.validate(
-          data,
-          sigUtil.TYPED_MESSAGE_SCHEMA,
-        )
+        const validation = jsonschema.validate(data, TYPED_MESSAGE_SCHEMA)
         assert.ok(
           data.primaryType in data.types,
           `Primary type of "${data.primaryType}" has no type definition.`,
