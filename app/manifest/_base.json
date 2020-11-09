@@ -41,10 +41,6 @@
   ],
   "default_locale": "en",
   "description": "__MSG_appDescription__",
-  "externally_connectable": {
-    "matches": ["https://metamask.io/*"],
-    "ids": ["*"]
-  },
   "icons": {
     "16": "images/icon-16.png",
     "19": "images/icon-19.png",
