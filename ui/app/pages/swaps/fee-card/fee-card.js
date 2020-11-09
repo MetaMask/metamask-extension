@@ -45,22 +45,18 @@ export default function FeeCard({
   const shouldDisplaySavings =
     inDevelopment && isBestQuote && tokenConversionRate && savingsIsPositive
 
-  let savingsText
-  if (!inDevelopment) {
-    savingsText = ''
-  } else if (shouldDisplaySavings) {
+  let savingsText = ''
+  if (inDevelopment && shouldDisplaySavings) {
     savingsText = t('swapSaving', [
       <span key="savings-tilde" className="fee-card__tilde">
         ~
       </span>,
       savingAmount,
     ])
-  } else if (isBestQuote && tokenConversionRate) {
+  } else if (inDevelopment && isBestQuote && tokenConversionRate) {
     savingsText = t('swapUsingBestQuote')
-  } else if (savingsIsPositive && tokenConversionRate) {
+  } else if (inDevelopment && savingsIsPositive && tokenConversionRate) {
     savingsText = t('swapBetterQuoteAvailable')
-  } else {
-    savingsText = ''
   }
 
   return (
