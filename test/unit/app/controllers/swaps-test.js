@@ -1196,7 +1196,7 @@ describe('SwapsController', function () {
             ethValueOfTokens: '0.3',
           },
           {
-            overallValueOfQuote: '2',
+            overallValueOfQuote: '1',
             ethFee: '20',
             metaMaskFeeInEth: '3',
             ethValueOfTokens: '0.2',
@@ -1212,6 +1212,120 @@ describe('SwapsController', function () {
             ethFee: '40',
             metaMaskFeeInEth: '6',
             ethValueOfTokens: '0.6',
+          },
+        ]
+        const median = getMedianEthValueQuote(values)
+
+        assert.deepEqual(
+          median,
+          expectedResult,
+          'should have returned correct median quote object',
+        )
+      })
+
+      it('calculates median correctly with an uneven sample where multiple quotes have the median overall value', function () {
+        const expectedResult = {
+          ethFee: '2',
+          metaMaskFeeInEth: '0.5',
+          ethValueOfTokens: '5',
+        }
+
+        const values = [
+          {
+            overallValueOfQuote: '1',
+            ethValueOfTokens: '2',
+            ethFee: '1',
+            metaMaskFeeInEth: '0.2',
+          },
+          {
+            overallValueOfQuote: '3',
+            ethValueOfTokens: '4',
+            ethFee: '1',
+            metaMaskFeeInEth: '0.4',
+          },
+          {
+            overallValueOfQuote: '3',
+            ethValueOfTokens: '5',
+            ethFee: '2',
+            metaMaskFeeInEth: '0.5',
+          },
+          {
+            overallValueOfQuote: '3',
+            ethValueOfTokens: '6',
+            ethFee: '3',
+            metaMaskFeeInEth: '0.6',
+          },
+          {
+            overallValueOfQuote: '4',
+            ethValueOfTokens: '6',
+            ethFee: '2',
+            metaMaskFeeInEth: '0.6',
+          },
+          {
+            overallValueOfQuote: '4',
+            ethValueOfTokens: '7',
+            ethFee: '3',
+            metaMaskFeeInEth: '0.7',
+          },
+          {
+            overallValueOfQuote: '6',
+            ethValueOfTokens: '8',
+            ethFee: '2',
+            metaMaskFeeInEth: '0.8',
+          },
+        ]
+        const median = getMedianEthValueQuote(values)
+
+        assert.deepEqual(
+          median,
+          expectedResult,
+          'should have returned correct median quote object',
+        )
+      })
+
+      it('calculates median correctly with an even sample where multiple quotes have the same overall value as either of the two middle values', function () {
+        const expectedResult = {
+          ethFee: '2',
+          metaMaskFeeInEth: '0.55',
+          ethValueOfTokens: '5.5',
+        }
+
+        const values = [
+          {
+            overallValueOfQuote: '1',
+            ethValueOfTokens: '2',
+            ethFee: '1',
+            metaMaskFeeInEth: '0.2',
+          },
+          {
+            overallValueOfQuote: '3',
+            ethValueOfTokens: '4',
+            ethFee: '1',
+            metaMaskFeeInEth: '0.4',
+          },
+          {
+            overallValueOfQuote: '3',
+            ethValueOfTokens: '5',
+            ethFee: '2',
+            metaMaskFeeInEth: '0.5',
+          },
+          {
+            overallValueOfQuote: '4',
+            ethValueOfTokens: '6',
+            ethFee: '2',
+            metaMaskFeeInEth: '0.6',
+          },
+          {
+            overallValueOfQuote: '4',
+            ethValueOfTokens: '7',
+            ethFee: '3',
+            metaMaskFeeInEth: '0.7',
+          },
+          {
+            overallValueOfQuote: '6',
+            ethValueOfTokens: '8',
+            ethFee: '2',
+            metaMaskFeeInEth: '0.8',
           },
         ]
         const median = getMedianEthValueQuote(values)

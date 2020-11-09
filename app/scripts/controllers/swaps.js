@@ -746,33 +746,91 @@ function getMedianEthValueQuote(_quotes) {
 
   if (quotes.length % 2 === 1) {
     // return middle values
-    const medianQuote = quotes[(quotes.length - 1) / 2]
-    return {
-      ethFee: medianQuote.ethFee,
-      metaMaskFeeInEth: medianQuote.metaMaskFeeInEth,
-      ethValueOfTokens: medianQuote.ethValueOfTokens,
-    }
+    const medianOverallValue =
+      quotes[(quotes.length - 1) / 2].overallValueOfQuote
+    const quotesMatchingMedianQuoteValue = quotes.filter(
+      (quote) => medianOverallValue === quote.overallValueOfQuote,
+    )
+    return meansOfQuotesFeesAndValue(quotesMatchingMedianQuoteValue)
   }
 
   // return mean of middle two values
   const upperIndex = quotes.length / 2
+  const lowerIndex = upperIndex - 1
+
+  const overallValueAtUpperIndex = quotes[upperIndex].overallValueOfQuote
+  const overallValueAtLowerIndex = quotes[lowerIndex].overallValueOfQuote
+
+  const quotesMatchingUpperIndexValue = quotes.filter(
+    (quote) => overallValueAtUpperIndex === quote.overallValueOfQuote,
+  )
+  const quotesMatchingLowerIndexValue = quotes.filter(
+    (quote) => overallValueAtLowerIndex === quote.overallValueOfQuote,
+  )
+
+  const feesAndValueAtUpperIndex = meansOfQuotesFeesAndValue(
+    quotesMatchingUpperIndexValue,
+  )
+  const feesAndValueAtLowerIndex = meansOfQuotesFeesAndValue(
+    quotesMatchingLowerIndexValue,
+  )
 
   return {
-    ethFee: new BigNumber(quotes[upperIndex].ethFee, 10)
-      .plus(quotes[upperIndex - 1].ethFee, 10)
+    ethFee: new BigNumber(feesAndValueAtUpperIndex.ethFee, 10)
+      .plus(feesAndValueAtLowerIndex.ethFee, 10)
       .dividedBy(2)
       .toString(10),
-    metaMaskFeeInEth: new BigNumber(quotes[upperIndex].metaMaskFeeInEth, 10)
-      .plus(quotes[upperIndex - 1].metaMaskFeeInEth, 10)
+    metaMaskFeeInEth: new BigNumber(
+      feesAndValueAtUpperIndex.metaMaskFeeInEth,
+      10,
+    )
+      .plus(feesAndValueAtLowerIndex.metaMaskFeeInEth, 10)
       .dividedBy(2)
       .toString(10),
-    ethValueOfTokens: new BigNumber(quotes[upperIndex].ethValueOfTokens, 10)
-      .plus(quotes[upperIndex - 1].ethValueOfTokens, 10)
+    ethValueOfTokens: new BigNumber(
+      feesAndValueAtUpperIndex.ethValueOfTokens,
+      10,
+    )
+      .plus(feesAndValueAtLowerIndex.ethValueOfTokens, 10)
       .dividedBy(2)
+      .toString(10),
+  }
+}
+
+function meansOfQuotesFeesAndValue(quotes) {
+  const feeAndValueSumsAsBigNumbers = quotes.reduce(
+    (feeAndValueSums, quote) => ({
+      ethFee: feeAndValueSums.ethFee.plus(quote.ethFee, 10),
+      metaMaskFeeInEth: feeAndValueSums.metaMaskFeeInEth.plus(
+        quote.metaMaskFeeInEth,
+        10,
+      ),
+      ethValueOfTokens: feeAndValueSums.ethValueOfTokens.plus(
+        quote.ethValueOfTokens,
+        10,
+      ),
+    }),
+    {
+      ethFee: new BigNumber(0, 10),
+      metaMaskFeeInEth: new BigNumber(0, 10),
+      ethValueOfTokens: new BigNumber(0, 10),
+    },
+  )
+
+  return {
+    ethFee: feeAndValueSumsAsBigNumbers.ethFee
+      .div(quotes.length, 10)
+      .toString(10),
+    metaMaskFeeInEth: feeAndValueSumsAsBigNumbers.metaMaskFeeInEth
+      .div(quotes.length, 10)
+      .toString(10),
+    ethValueOfTokens: feeAndValueSumsAsBigNumbers.ethValueOfTokens
+      .div(quotes.length, 10)
       .toString(10),
   }
 }
 
 export const utils = {
   getMedianEthValueQuote,
+  meansOfQuotesFeesAndValue,
 }
