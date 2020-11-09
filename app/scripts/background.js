@@ -29,7 +29,10 @@ import NotificationManager from './lib/notification-manager.js'
 import MetamaskController from './metamask-controller'
 import rawFirstTimeState from './first-time-state'
 import setupSentry from './lib/setupSentry'
-import reportFailedTxToSentry from './lib/reportFailedTxToSentry'
+import {
+  reportFailedTxToSentry,
+  reportErrorTxToSentry,
+} from './lib/reportFailedTxToSentry'
 import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code'
 import getObjStructure from './lib/getObjStructure'
 // import setupEnsIpfsResolver from './lib/ens-ipfs/setup'
@@ -267,10 +270,48 @@ function setupController(initState, initLangCode) {
 
   // report failed transactions to Sentry
   controller.txController.on(`tx:status-update`, (txId, status) => {
+    const txMeta = controller.txController.txStateManager.getTx(txId)
+    const txHistory = txMeta.history || []
+    let setHashNoteCount = 0
+    let approvedIdx
+    let setHashIdx
+
+    for (let i = 0; i < txHistory.length; i++) {
+      const innerHistory = txHistory[i]
+      if (Array.isArray(innerHistory) && innerHistory.length) {
+        for (let j = 0; j < innerHistory.length; j++) {
+          const his = innerHistory[j]
+          if (
+            his &&
+            his.note &&
+            his.note === 'Added new unapproved transaction.'
+          ) {
+            approvedIdx = i
+            continue
+          }
+          if (his && his.note && his.note === 'transactions#setTxHash') {
+            if (setHashIdx === undefined) {
+              setHashIdx = i
+            }
+            setHashNoteCount++
+          }
+        }
+      }
+    }
+
+    // more than one set hash in a single tx
+    // set hash before approve
+    if (setHashNoteCount > 1 || setHashIdx < approvedIdx) {
+      try {
+        reportErrorTxToSentry({ sentry, txMeta })
+      } catch (e) {
+        console.error(e)
+      }
+    }
+
     if (status !== 'failed') {
       return
     }
-    const txMeta = controller.txController.txStateManager.getTx(txId)
     if (txMeta.err && txMeta.err.message) {
       console.error(txMeta.err)
     }

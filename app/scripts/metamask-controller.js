@@ -366,7 +366,6 @@ export default class MetamaskController extends EventEmitter {
       // EnsController: this.ensController.store,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
-    this.switchToTethys()
   }
 
   /**
@@ -407,15 +406,6 @@ export default class MetamaskController extends EventEmitter {
       providerOpts
     )
     return providerProxy
-  }
-
-  switchToTethys() {
-    if (this.preferencesController.store.getState().tethysReset) {
-      return
-    }
-    this.txController.txStateManager._saveTxList([])
-    this.networkController.resetConnection()
-    this.preferencesController.store.updateState({ tethysReset: true })
   }
 
   /**
@@ -884,11 +874,11 @@ export default class MetamaskController extends EventEmitter {
             networkType !== 'mainnet'
               ? accountTokens[address][networkType]
               : accountTokens[address][networkType].filter(({ address }) => {
-                const tokenAddress = toChecksumAddress(address)
-                return trustedTokenMap[tokenAddress]
-                  ? trustedTokenMap[tokenAddress].erc20
-                  : true
-              }))
+                  const tokenAddress = toChecksumAddress(address)
+                  return trustedTokenMap[tokenAddress]
+                    ? trustedTokenMap[tokenAddress].erc20
+                    : true
+                }))
       )
     })
 
