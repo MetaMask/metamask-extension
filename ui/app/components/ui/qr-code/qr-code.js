@@ -9,15 +9,17 @@ import { checksumAddress } from '../../../helpers/utils/util'
 export default connect(mapStateToProps)(QrCodeView)
 
 function mapStateToProps(state) {
+  const { buyView, warning } = state.appState
   return {
     // Qr code is not fetched from state. 'message' and 'data' props are passed instead.
-    buyView: state.appState.buyView,
-    warning: state.appState.warning,
+    buyView,
+    warning,
   }
 }
 
 function QrCodeView(props) {
-  const { message, data } = props.Qr
+  const { Qr, warning } = props
+  const { message, data } = Qr
   const address = `${isHexPrefixed(data) ? 'ethereum:' : ''}${checksumAddress(
     data,
   )}`
@@ -29,7 +31,7 @@ function QrCodeView(props) {
     <div className="qr-code">
       {Array.isArray(message) ? (
         <div className="qr-code__message-container">
-          {props.Qr.message.map((msg, index) => (
+          {message.map((msg, index) => (
             <div className="qr_code__message" key={index}>
               {msg}
             </div>
@@ -38,11 +40,7 @@ function QrCodeView(props) {
       ) : (
         message && <div className="qr-code__header">{message}</div>
       )}
-      {props.warning
-        ? props.warning && (
-            <span className="qr_code__error">{props.warning}</span>
-          )
-        : null}
+      {warning && <span className="qr_code__error">{warning}</span>}
       <div
         className="qr-code__wrapper"
         dangerouslySetInnerHTML={{
