@@ -25,8 +25,9 @@ function transformState(state) {
       state.TransactionController &&
       state.TransactionController.transactions &&
       state.TransactionController.transactions.length
-    )
+    ) {
       state.TransactionController.transactions = []
+    }
     state.NetworkController = {}
     state.PreferencesController.migratedToTethys = true
   }

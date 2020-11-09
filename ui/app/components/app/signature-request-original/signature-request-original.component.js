@@ -30,10 +30,6 @@ export default class SignatureRequestOriginal extends Component {
     txData: PropTypes.object.isRequired,
   }
 
-  state = {
-    selectedAccount: this.props.selectedAccount,
-  }
-
   componentDidMount = () => {
     if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
       window.addEventListener('beforeunload', this._beforeUnload)
@@ -44,7 +40,7 @@ export default class SignatureRequestOriginal extends Component {
     this._removeBeforeUnload()
   }
 
-  _beforeUnload = (event) => {
+  _beforeUnload = event => {
     const { clearConfirmTransaction, cancel } = this.props
     const { metricsEvent } = this.context
     metricsEvent({
@@ -81,7 +77,7 @@ export default class SignatureRequestOriginal extends Component {
   }
 
   renderAccount = () => {
-    const { selectedAccount } = this.state
+    const { selectedAccount } = this.props
 
     return (
       <div className="request-signature__account">
@@ -149,7 +145,7 @@ export default class SignatureRequestOriginal extends Component {
     )
   }
 
-  msgHexToText = (hex) => {
+  msgHexToText = hex => {
     try {
       const stripped = ethUtil.stripHexPrefix(hex)
       const buff = Buffer.from(stripped, 'hex')
@@ -159,7 +155,7 @@ export default class SignatureRequestOriginal extends Component {
     }
   }
 
-  renderTypedData = (data) => {
+  renderTypedData = data => {
     const { domain, message } = JSON.parse(data)
     return (
       <div className="request-signature__typed-container">
@@ -244,7 +240,7 @@ export default class SignatureRequestOriginal extends Component {
           type="default"
           large
           className="request-signature__footer__cancel-button"
-          onClick={async (event) => {
+          onClick={async event => {
             this._removeBeforeUnload()
             await cancel(event)
             this.context.metricsEvent({
@@ -264,7 +260,7 @@ export default class SignatureRequestOriginal extends Component {
           type="secondary"
           large
           className="request-signature__footer__sign-button"
-          onClick={async (event) => {
+          onClick={async event => {
             this._removeBeforeUnload()
             await sign(event)
             this.context.metricsEvent({
