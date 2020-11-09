@@ -208,6 +208,7 @@
 
       &--erase {
         background-image: url("/images/close-gray.svg");
+        background-color: unset;
         width: 0.75rem;
         height: 0.75rem;
         margin: 0 0.25rem;
@@ -215,6 +216,7 @@
 
       &--qrcode {
         background-image: url("/images/qr-blue.svg");
+        background-color: unset;
         width: 1.5rem;
         height: 1.5rem;
         margin: 0 0.25rem;
