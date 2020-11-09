@@ -157,6 +157,7 @@
     justify-content: center;
 
     div {
+      // Needed to override the style property added by the react-tippy library
       display: flex !important;
       height: 10px;
     }
