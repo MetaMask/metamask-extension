@@ -5,6 +5,7 @@ const chalk = require('chalk')
 const pify = require('pify')
 
 const createStaticServer = require('./create-static-server')
+const { parsePort } = require('./lib/parse-port')
 
 const fsStat = pify(fs.stat)
 const DEFAULT_PORT = 9080
@@ -35,18 +36,6 @@ const startServer = ({ port, rootDirectory }) => {
   server.listen(port, () => {
     console.log(`Running at http://localhost:${port}`)
   })
-}
-
-const parsePort = (portString) => {
-  const port = Number(portString)
-  if (!Number.isInteger(port)) {
-    throw new Error(`Port '${portString}' is invalid; must be an integer`)
-  } else if (port < 0 || port > 65535) {
-    throw new Error(
-      `Port '${portString}' is out of range; must be between 0 and 65535 inclusive`,
-    )
-  }
-  return port
 }
 
 const parseDirectoryArgument = async (pathString) => {

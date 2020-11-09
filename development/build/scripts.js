@@ -17,6 +17,7 @@ const { makeStringTransform } = require('browserify-transform-tools')
 
 const conf = require('rc')('metamask', {
   INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
+  SEGMENT_HOST: process.env.SEGMENT_HOST,
   SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
   SEGMENT_LEGACY_WRITE_KEY: process.env.SEGMENT_LEGACY_WRITE_KEY,
 })
@@ -372,6 +373,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
         INFURA_PROJECT_ID: opts.testing
           ? '00000000000000000000000000000000'
           : conf.INFURA_PROJECT_ID,
+        SEGMENT_HOST: conf.SEGMENT_HOST,
         // When we're in the 'production' environment we will use a specific key only set in CI
         // Otherwise we'll use the key from .metamaskrc or from the environment variable. If
         // the value of SEGMENT_WRITE_KEY that we envify is undefined then no events will be tracked
