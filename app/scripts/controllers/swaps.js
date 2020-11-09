@@ -725,7 +725,7 @@ export default class SwapsController {
 /**
  * Calculates the median overallValueOfQuote of a sample of quotes.
  *
- * @param {Array} quotes - A sample of quote objects with overallValueOfQuote, ethFee, and metaMaskFeeInEth  properties
+ * @param {Array} quotes - A sample of quote objects with overallValueOfQuote, ethFee, metaMaskFeeInEth, and ethValueOfTokens properties
  * @returns {Object} An object with the overallValueOfQuote, ethFee, and metaMaskFeeInEth of the quote with the median overallValueOfQuote
  */
 function getMedianEthValueQuote(_quotes) {
@@ -797,6 +797,15 @@ function getMedianEthValueQuote(_quotes) {
   }
 }
 
+/**
+ * Calculates the arithmetic mean for each of three properties - ethFee, metaMaskFeeInEth and ethValueOfTokens - across
+ * an array of objects containing those properties.
+ *
+ * @param {Array} quotes - A sample of quote objects with overallValueOfQuote, ethFee, metaMaskFeeInEth and
+ * ethValueOfTokens properties
+ * @returns {Object} An object with the arithmetic mean each of the ethFee, metaMaskFeeInEth and ethValueOfTokens of
+ * the passed quote objects
+ */
 function meansOfQuotesFeesAndValue(quotes) {
   const feeAndValueSumsAsBigNumbers = quotes.reduce(
     (feeAndValueSums, quote) => ({
