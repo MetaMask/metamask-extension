@@ -650,7 +650,10 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       estimated_gas: estimatedGasLimit.toString(10),
       suggested_gas_price: fastGasEstimate,
       used_gas_price: hexWEIToDecGWEI(usedGasPrice),
-      average_savings: usedQuote.savings?.performance,
+      average_savings: usedQuote.savings?.total,
+      performance_savings: usedQuote.savings?.performance,
+      fee_savings: usedQuote.savings?.fee,
+      median_metamask_fee: usedQuote.savings?.medianMetaMaskFee,
     }
 
     const metaMetricsConfig = {
