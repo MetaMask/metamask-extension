@@ -64,7 +64,7 @@ const mapStateToProps = (state) => {
     swapsEnabled,
     unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),
     shouldShowSeedPhraseReminder:
-      !seedPhraseBackedUp &&
+      seedPhraseBackedUp === false &&
       (parseInt(accountBalance, 16) > 0 || tokens.length > 0),
     isPopup,
     isNotification,
