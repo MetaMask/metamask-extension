@@ -215,7 +215,7 @@ export default class EnsInput extends Component {
                 this.props.scanQrCode()
               }
             }}
-          ></button>
+          />
         </div>
       </div>
     )
