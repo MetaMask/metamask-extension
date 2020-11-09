@@ -650,7 +650,7 @@ export default class PreferencesController {
   _subscribeProviderType() {
     this.network.providerStore.subscribe(() => {
       const { tokens, hiddenTokens } = this._getTokenRelatedStates()
-      this.store.updateState({ tokens, hiddenTokens })
+      this._updateAccountTokens(tokens, this.getAssetImages(), hiddenTokens)
     })
   }
 
@@ -690,6 +690,7 @@ export default class PreferencesController {
     const { tokens, hiddenTokens } = this._getTokenRelatedStates(
       selectedAddress,
     )
+    this._updateAccountTokens(tokens, this.getAssetImages(), hiddenTokens)
     this.store.updateState({ tokens, hiddenTokens })
   }
 
