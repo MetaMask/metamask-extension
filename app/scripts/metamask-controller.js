@@ -21,6 +21,7 @@ import nanoid from 'nanoid'
 import contractMap from 'eth-contract-metadata'
 import {
   AddressBookController,
+  ApprovalController,
   CurrencyRateController,
   PhishingController,
 } from '@metamask/controllers'
@@ -104,6 +105,10 @@ export default class MetamaskController extends EventEmitter {
     // next, we will initialize the controllers
     // controller initialization order matters
 
+    this.approvalController = new ApprovalController({
+      showApprovalRequest: opts.showUserConfirmation,
+    })
+
     this.networkController = new NetworkController(initState.NetworkController)
     this.networkController.setInfuraProjectId(opts.infuraProjectId)
 
@@ -150,7 +155,7 @@ export default class MetamaskController extends EventEmitter {
       isUnlocked: this.isUnlocked.bind(this),
       initState: initState.AppStateController,
       onInactiveTimeout: () => this.setLocked(),
-      showUnlockRequest: opts.showUnlockRequest,
+      showUnlockRequest: opts.showUserConfirmation,
       preferencesStore: this.preferencesController.store,
     })
 
@@ -237,6 +242,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.permissionsController = new PermissionsController(
       {
+        approvals: this.approvalController,
         getKeyringAccounts: this.keyringController.getAccounts.bind(
           this.keyringController,
         ),
@@ -302,7 +308,7 @@ export default class MetamaskController extends EventEmitter {
       getParticipateInMetrics: () =>
         this.preferencesController.getParticipateInMetaMetrics(),
     })
-    this.txController.on('newUnapprovedTx', () => opts.showUnapprovedTx())
+    this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation())
 
     this.txController.on(`tx:status-update`, async (txId, status) => {
       if (
@@ -397,8 +403,8 @@ export default class MetamaskController extends EventEmitter {
       PermissionsMetadata: this.permissionsController.store,
       ThreeBoxController: this.threeBoxController.store,
       SwapsController: this.swapsController.store,
-      // ENS Controller
       EnsController: this.ensController.store,
+      ApprovalController: this.approvalController,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
 
@@ -519,6 +525,7 @@ export default class MetamaskController extends EventEmitter {
    */
   getApi() {
     const {
+      approvalController,
       keyringController,
       networkController,
       onboardingController,
@@ -825,6 +832,11 @@ export default class MetamaskController extends EventEmitter {
         swapsController.setSwapsLiveness,
         swapsController,
       ),
+      // approval controller
+      resolvePendingApproval: approvalController.resolve.bind(
+        approvalController,
+      ),
+      rejectPendingApproval: approvalController.reject.bind(approvalController),
     }
   }
 
@@ -1376,7 +1388,7 @@ export default class MetamaskController extends EventEmitter {
       req,
     )
     this.sendUpdate()
-    this.opts.showUnconfirmedMessage()
+    this.opts.showUserConfirmation()
     return promise
   }
 
@@ -1439,7 +1451,7 @@ export default class MetamaskController extends EventEmitter {
       req,
     )
     this.sendUpdate()
-    this.opts.showUnconfirmedMessage()
+    this.opts.showUserConfirmation()
     return promise
   }
 
@@ -1498,7 +1510,7 @@ export default class MetamaskController extends EventEmitter {
       req,
     )
     this.sendUpdate()
-    this.opts.showUnconfirmedMessage()
+    this.opts.showUserConfirmation()
     return promise
   }
 
@@ -1590,7 +1602,7 @@ export default class MetamaskController extends EventEmitter {
       req,
     )
     this.sendUpdate()
-    this.opts.showUnconfirmedMessage()
+    this.opts.showUserConfirmation()
     return promise
   }
 
@@ -1655,7 +1667,7 @@ export default class MetamaskController extends EventEmitter {
       version,
     )
     this.sendUpdate()
-    this.opts.showUnconfirmedMessage()
+    this.opts.showUserConfirmation()
     return promise
   }
 
