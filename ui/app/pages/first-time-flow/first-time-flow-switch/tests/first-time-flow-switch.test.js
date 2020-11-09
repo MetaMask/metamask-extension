@@ -3,6 +3,7 @@ import React from 'react'
 import { mountWithRouter } from '../../../../../../test/lib/render-helpers'
 import {
   DEFAULT_ROUTE,
+  LOCK_ROUTE,
   INITIALIZE_WELCOME_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
 } from '../../../../helpers/constants/routes'
@@ -30,6 +31,22 @@ describe('FirstTimeFlowSwitch', function () {
     assert.equal(
       wrapper.find('Lifecycle').find({ to: { pathname: DEFAULT_ROUTE } })
         .length,
+      1,
+    )
+  })
+
+  it('redirects to /lock route when isUnlocked is true ', function () {
+    const props = {
+      completedOnboarding: false,
+      isUnlocked: true,
+    }
+
+    const wrapper = mountWithRouter(
+      <FirstTimeFlowSwitch.WrappedComponent {...props} />,
+    )
+
+    assert.equal(
+      wrapper.find('Lifecycle').find({ to: { pathname: LOCK_ROUTE } }).length,
       1,
     )
   })
