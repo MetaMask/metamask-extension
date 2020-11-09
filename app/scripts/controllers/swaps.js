@@ -726,7 +726,7 @@ export default class SwapsController {
  * Calculates the median overallValueOfQuote of a sample of quotes.
  *
  * @param {Array} quotes - A sample of quote objects with overallValueOfQuote, ethFee, metaMaskFeeInEth, and ethValueOfTokens properties
- * @returns {Object} An object with the overallValueOfQuote, ethFee, and metaMaskFeeInEth of the quote with the median overallValueOfQuote
+ * @returns {Object} An object with the ethValueOfTokens, ethFee, and metaMaskFeeInEth of the quote with the median overallValueOfQuote
  */
 function getMedianEthValueQuote(_quotes) {
   if (!Array.isArray(_quotes) || _quotes.length === 0) {
