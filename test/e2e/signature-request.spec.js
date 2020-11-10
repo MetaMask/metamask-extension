@@ -5,7 +5,7 @@ const webdriver = require('selenium-webdriver')
 const { By, Key, until } = webdriver
 const { regularDelayMs, largeDelayMs } = require('./helpers')
 const { buildWebDriver } = require('./webdriver')
-const Ganache = require('./ganache')
+const Ganache = require('@cfxjs/fullnode')
 const FixtureServer = require('./fixture-server')
 
 const fixtureServer = new FixtureServer()

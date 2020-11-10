@@ -1,6 +1,8 @@
 const { promises: fs } = require('fs')
 const { until, error: webdriverError } = require('selenium-webdriver')
 const { strict: assert } = require('assert')
+const { Key } = require('selenium-webdriver')
+const { tinyDelayMs } = require('../helpers')
 
 class Driver {
   /**
@@ -8,38 +10,38 @@ class Driver {
    * @param {string} browser - The type of browser this driver is controlling
    * @param {number} timeout
    */
-  constructor (driver, browser, extensionUrl, timeout = 10000) {
+  constructor(driver, browser, extensionUrl, timeout = 10000) {
     this.driver = driver
     this.browser = browser
     this.extensionUrl = extensionUrl
     this.timeout = timeout
   }
 
-  async delay (time) {
-    await new Promise((resolve) => setTimeout(resolve, time))
+  async delay(time) {
+    await new Promise(resolve => setTimeout(resolve, time))
   }
 
-  async wait (condition, timeout = this.timeout) {
+  async wait(condition, timeout = this.timeout) {
     await this.driver.wait(condition, timeout)
   }
 
-  async quit () {
+  async quit() {
     await this.driver.quit()
   }
 
   // Element interactions
 
-  async findElement (locator) {
+  async findElement(locator) {
     return await this.driver.wait(until.elementLocated(locator), this.timeout)
   }
 
-  async findVisibleElement (locator) {
+  async findVisibleElement(locator) {
     const element = await this.findElement(locator)
     await this.driver.wait(until.elementIsVisible(element), this.timeout)
     return element
   }
 
-  async findClickableElement (locator) {
+  async findClickableElement(locator) {
     const element = await this.findElement(locator)
     await Promise.all([
       this.driver.wait(until.elementIsVisible(element), this.timeout),
@@ -48,11 +50,11 @@ class Driver {
     return element
   }
 
-  async findElements (locator) {
+  async findElements(locator) {
     return await this.driver.wait(until.elementsLocated(locator), this.timeout)
   }
 
-  async findClickableElements (locator) {
+  async findClickableElements(locator) {
     const elements = await this.findElements(locator)
     await Promise.all(
       elements.reduce((acc, element) => {
@@ -66,19 +68,35 @@ class Driver {
     return elements
   }
 
-  async clickElement (locator) {
+  async clickElement(locator) {
     const element = await this.findClickableElement(locator)
     await element.click()
   }
 
-  async scrollToElement (element) {
+  async clearElement(locator) {
+    if (locator && locator.click) {
+      for (let i = 0; i < 20; i++) {
+        await locator.sendKeys(Key.BACK_SPACE)
+      }
+      await this.delay(tinyDelayMs)
+      return
+    }
+
+    const element = await this.findElement(locator)
+    for (let i = 0; i < 20; i++) {
+      await element.sendKeys(Key.BACK_SPACE)
+    }
+    await this.delay(tinyDelayMs)
+  }
+
+  async scrollToElement(element) {
     await this.driver.executeScript(
       'arguments[0].scrollIntoView(true)',
       element
     )
   }
 
-  async assertElementNotPresent (locator) {
+  async assertElementNotPresent(locator) {
     let dataTab
     try {
       dataTab = await this.findElement(locator)
@@ -93,33 +111,33 @@ class Driver {
 
   // Navigation
 
-  async navigate (page = Driver.PAGES.HOME) {
+  async navigate(page = Driver.PAGES.HOME) {
     return await this.driver.get(`${this.extensionUrl}/${page}.html`)
   }
 
   // Metrics
 
-  async collectMetrics () {
+  async collectMetrics() {
     return await this.driver.executeScript(collectMetrics)
   }
 
   // Window management
 
-  async openNewPage (url) {
+  async openNewPage(url) {
     const newHandle = await this.driver.switchTo().newWindow()
     await this.driver.get(url)
     return newHandle
   }
 
-  async switchToWindow (handle) {
+  async switchToWindow(handle) {
     await this.driver.switchTo().window(handle)
   }
 
-  async getAllWindowHandles () {
+  async getAllWindowHandles() {
     return await this.driver.getAllWindowHandles()
   }
 
-  async waitUntilXWindowHandles (x, delayStep = 1000, timeout = 5000) {
+  async waitUntilXWindowHandles(x, delayStep = 1000, timeout = 5000) {
     let timeElapsed = 0
     while (timeElapsed <= timeout) {
       const windowHandles = await this.driver.getAllWindowHandles()
@@ -132,7 +150,7 @@ class Driver {
     throw new Error('waitUntilXWindowHandles timed out polling window handles')
   }
 
-  async switchToWindowWithTitle (title, windowHandles) {
+  async switchToWindowWithTitle(title, windowHandles) {
     if (!windowHandles) {
       windowHandles = await this.driver.getAllWindowHandles()
     }
@@ -154,7 +172,7 @@ class Driver {
    * @param {Array} [windowHandles] - The full list of window handles
    * @returns {Promise<void>}
    */
-  async closeAllWindowHandlesExcept (exceptions, windowHandles) {
+  async closeAllWindowHandlesExcept(exceptions, windowHandles) {
     windowHandles = windowHandles || (await this.driver.getAllWindowHandles())
 
     for (const handle of windowHandles) {
@@ -169,7 +187,7 @@ class Driver {
 
   // Error handling
 
-  async verboseReportOnFailure (test) {
+  async verboseReportOnFailure(test) {
     const artifactDir = `./test-artifacts/${this.browser}/${test.title}`
     const filepathBase = `${artifactDir}/test-failure`
     await fs.mkdir(artifactDir, { recursive: true })
@@ -181,7 +199,7 @@ class Driver {
     await fs.writeFile(`${filepathBase}-dom.html`, htmlSource)
   }
 
-  async checkBrowserForConsoleErrors () {
+  async checkBrowserForConsoleErrors() {
     const ignoredLogTypes = ['WARNING']
     const ignoredErrorMessages = [
       // Third-party Favicon 404s show up as errors
@@ -192,27 +210,27 @@ class Driver {
       .logs()
       .get('browser')
     const errorEntries = browserLogs.filter(
-      (entry) => !ignoredLogTypes.includes(entry.level.toString())
+      entry => !ignoredLogTypes.includes(entry.level.toString())
     )
-    const errorObjects = errorEntries.map((entry) => entry.toJSON())
+    const errorObjects = errorEntries.map(entry => entry.toJSON())
     return errorObjects.filter(
-      (entry) =>
-        !ignoredErrorMessages.some((message) => entry.message.includes(message))
+      entry =>
+        !ignoredErrorMessages.some(message => entry.message.includes(message))
     )
   }
 }
 
-function collectMetrics () {
+function collectMetrics() {
   const results = {
     paint: {},
     navigation: [],
   }
 
-  performance.getEntriesByType('paint').forEach((paintEntry) => {
+  performance.getEntriesByType('paint').forEach(paintEntry => {
     results.paint[paintEntry.name] = paintEntry.startTime
   })
 
-  performance.getEntriesByType('navigation').forEach((navigationEntry) => {
+  performance.getEntriesByType('navigation').forEach(navigationEntry => {
     results.navigation.push({
       domContentLoaded: navigationEntry.domContentLoadedEventEnd,
       load: navigationEntry.loadEventEnd,

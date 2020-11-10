@@ -1,5 +1,5 @@
 const path = require('path')
-const Ganache = require('./ganache')
+const Ganache = require('@cfxjs/fullnode')
 const FixtureServer = require('./fixture-server')
 const { buildWebDriver } = require('./webdriver')
 const { until } = require('selenium-webdriver')
@@ -16,7 +16,11 @@ async function withFixtures(options, callback) {
   let webDriver
   try {
     if (ganacheOptions) {
-      await ganacheServer.start({ ...ganacheOptions, killPortProcess: true })
+      await ganacheServer.start({
+        genBlockInterval: 300,
+        ...ganacheOptions,
+        killPortProcess: true,
+      })
     }
     await fixtureServer.start()
     await fixtureServer.loadState(path.join(__dirname, 'fixtures', fixtures))

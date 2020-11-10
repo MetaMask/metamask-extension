@@ -4,7 +4,7 @@ const webdriver = require('selenium-webdriver')
 const { By, until } = webdriver
 const { regularDelayMs, largeDelayMs } = require('./helpers')
 const { buildWebDriver } = require('./webdriver')
-const Ganache = require('./ganache')
+const Ganache = require('@cfxjs/fullnode')
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
 const ganacheServer = new Ganache()

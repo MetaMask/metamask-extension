@@ -14,7 +14,7 @@ process.on('unhandledRejection', (reason, promise) => {
   console.log('Unhandled rejection:', reason)
   unhandledRejections.set(promise, reason)
 })
-process.on('rejectionHandled', (promise) => {
+process.on('rejectionHandled', promise => {
   console.log(`handled: ${unhandledRejections.get(promise)}`)
   unhandledRejections.delete(promise)
 })
@@ -36,11 +36,11 @@ const server = new Node({ genBlockInterval: 300, killPortProcess: true })
 // unit test global don't need lite
 if (
   !process.argv.some(
-    (arg) => typeof arg === 'string' && arg.includes('unit-global')
+    arg => typeof arg === 'string' && arg.includes('unit-global')
   )
 ) {
   // eslint-disable-next-line mocha/no-hooks-for-single-case, mocha/no-top-level-hooks
-  before(function (done) {
+  before(function(done) {
     server
       .start()
       .then(() => {
@@ -48,7 +48,7 @@ if (
         nock.enableNetConnect('localhost')
         done()
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err)
       })
   })

@@ -1,7 +1,7 @@
 const assert = require('assert')
 const webdriver = require('selenium-webdriver')
 
-const { By, Key } = webdriver
+const { By } = webdriver
 const {
   tinyDelayMs,
   regularDelayMs,
@@ -24,6 +24,7 @@ describe('Using MetaMask with an existing account', function() {
     const [d, u] = await loadFixtures({
       fixtures: 'default-state',
       ganacheOptions: {
+        genBlockInterval: 300,
         accounts: [
           {
             secretKey:
@@ -138,32 +139,11 @@ describe('Using MetaMask with an existing account', function() {
         By.css('.advanced-gas-inputs__gas-edit-row__input')
       )
 
-      await gasPriceInput.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
-      await gasPriceInput.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
-      await gasPriceInput.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
-      await gasPriceInput.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
-      await gasPriceInput.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
+      await driver.clearElement(gasPriceInput)
       await gasPriceInput.sendKeys('10')
       await driver.delay(50)
       await driver.delay(tinyDelayMs)
-      await driver.delay(50)
-      await gasLimitInput.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
-      await gasLimitInput.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
-      await gasLimitInput.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
-      await gasLimitInput.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
-      await gasLimitInput.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
-      await gasLimitInput.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
+      await driver.clearElement(gasLimitInput)
 
       await gasLimitInput.sendKeys('25000')
 
@@ -197,12 +177,7 @@ describe('Using MetaMask with an existing account', function() {
       await driver.delay(regularDelayMs)
 
       const inputAmount = await driver.findElement(By.css('.unit-input__input'))
-      await inputAmount.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
-      await inputAmount.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
-      await inputAmount.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
+      await driver.clearElement(inputAmount)
       await inputAmount.sendKeys('2.2')
 
       // await driver.clickElement(By.css('.advanced-gas-options-btn'))
@@ -214,33 +189,12 @@ describe('Using MetaMask with an existing account', function() {
         By.css('.advanced-gas-inputs__gas-edit-row__input')
       )
 
-      await gasPriceInput.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
-      await gasPriceInput.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
-      await gasPriceInput.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
-      await gasPriceInput.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
-      await gasPriceInput.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
-      await gasPriceInput.sendKeys('8')
+      await driver.clearElement(gasPriceInput)
+      await gasPriceInput.sendKeys('8000000000')
       await driver.delay(50)
       await driver.delay(tinyDelayMs)
       await driver.delay(50)
-      await gasLimitInput.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
-      await gasLimitInput.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
-      await gasLimitInput.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
-      await gasLimitInput.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
-      await gasLimitInput.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
-      await gasLimitInput.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
-
+      await driver.clearElement(gasLimitInput)
       await gasLimitInput.sendKeys('100000')
 
       await driver.delay(1000)

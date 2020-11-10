@@ -66,8 +66,7 @@
   "lint-staged": {
     "*.{js,json}": [
       "prettier-eslint --write",
-      "eslint --fix",
-      "git add"
+      "eslint --fix"
     ]
   },
   "prettier": {
@@ -220,7 +219,7 @@
     "browserify-transform-tools": "^1.7.0",
     "chai": "^4.1.0",
     "chalk": "^2.4.2",
-    "chromedriver": "79.0.0",
+    "chromedriver": "86.0.0",
     "concurrently": "^4.1.1",
     "coveralls": "^3.0.0",
     "css-loader": "^2.1.1",
@@ -309,7 +308,7 @@
     "watchify": "^3.11.1"
   },
   "engines": {
-    "node": "^10.16.0",
+    "node": "^10.18.1",
     "yarn": "^1.16.0"
   },
   "husky": {
