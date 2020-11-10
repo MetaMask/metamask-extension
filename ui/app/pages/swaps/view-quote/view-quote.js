@@ -537,7 +537,6 @@ export default function ViewQuote() {
             isBestQuote={isBestQuote}
             numberOfQuotes={Object.values(quotes).length}
             onQuotesClick={() => {
-              anonymousAllAvailableQuotesOpened()
               allAvailableQuotesOpened()
               setSelectQuotePopoverShown(true)
             }}
