@@ -182,13 +182,17 @@ export function addHexes(aHexWEI, bHexWEI) {
   })
 }
 
-export function sumHexWEIsToRenderableFiat(
+export function sumHexWEIs(hexWEIs) {
+  return hexWEIs.filter((n) => n).reduce(addHexes)
+}
+
+export function sumHexWEIsToUnformattedFiat(
   hexWEIs,
   convertedCurrency,
   conversionRate,
 ) {
-  const hexWEIsSum = hexWEIs.filter((n) => n).reduce(addHexes)
-  const ethTotal = decEthToConvertedCurrency(
+  const hexWEIsSum = sumHexWEIs(hexWEIs)
+  const convertedTotal = decEthToConvertedCurrency(
     getValueFromWeiHex({
       value: hexWEIsSum,
       toCurrency: 'ETH',
@@ -197,5 +201,18 @@ export function sumHexWEIsToRenderableFiat(
     convertedCurrency,
     conversionRate,
   )
-  return formatCurrency(ethTotal, convertedCurrency)
+  return convertedTotal
+}
+
+export function sumHexWEIsToRenderableFiat(
+  hexWEIs,
+  convertedCurrency,
+  conversionRate,
+) {
+  const convertedTotal = sumHexWEIsToUnformattedFiat(
+    hexWEIs,
+    convertedCurrency,
+    conversionRate,
+  )
+  return formatCurrency(convertedTotal, convertedCurrency)
 }

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import PageContainer from '../../../components/ui/page-container'
 import { Tabs, Tab } from '../../../components/ui/tabs'
 import { calcGasTotal } from '../../send/send.utils'
-import { sumHexWEIsToRenderableFiat } from '../../../helpers/utils/conversions.util'
+import { sumHexWEIsToUnformattedFiat } from '../../../helpers/utils/conversions.util'
 import AdvancedGasInputs from '../../../components/app/gas-customization/advanced-gas-inputs'
 import BasicTabContent from '../../../components/app/gas-customization/gas-modal-page-container/basic-tab-content'
 import { GAS_ESTIMATE_TYPES } from '../../../helpers/constants/common'
@@ -35,8 +35,7 @@ export default class GasModalPageContainer extends Component {
     disableSave: PropTypes.bool,
     customGasLimitMessage: PropTypes.string,
     customTotalSupplement: PropTypes.string,
-    value: PropTypes.string,
-    conversionRate: PropTypes.string,
+    usdConversionRate: PropTypes.string,
     customGasPrice: PropTypes.string,
     customGasLimit: PropTypes.string,
     setSwapsCustomizationModalPrice: PropTypes.func,
@@ -246,14 +245,10 @@ export default class GasModalPageContainer extends Component {
               category: 'swaps',
               properties: {
                 speed_set: this.state.gasSpeedType,
-                gas_fees: sumHexWEIsToRenderableFiat(
-                  [
-                    this.props.value,
-                    newSwapGasTotal,
-                    this.props.customTotalSupplement,
-                  ],
+                gas_fees: sumHexWEIsToUnformattedFiat(
+                  [newSwapGasTotal, this.props.customTotalSupplement],
                   'usd',
-                  this.props.conversionRate,
+                  this.props.usdConversionRate,
                 )?.slice(1),
               },
             })
