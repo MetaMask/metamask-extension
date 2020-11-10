@@ -27,7 +27,7 @@ export default class OnboardingController {
       onboardingTabs: {},
     }
     const initState = {
-      seedPhraseBackedUp: true,
+      seedPhraseBackedUp: null,
       ...opts.initState,
       ...initialTransientState,
     }
