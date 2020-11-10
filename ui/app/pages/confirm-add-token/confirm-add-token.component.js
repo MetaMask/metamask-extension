@@ -109,17 +109,13 @@ export default class ConfirmAddToken extends Component {
                     this.context.trackEvent({
                       event: 'Token Added',
                       category: 'Wallet',
-                      excludeMetaMetricsId: true,
-                      properties: {
+                      sensitiveProperties: {
                         token_symbol: pendingToken.symbol,
                         token_contract_address: pendingToken.address,
                         token_decimal_precision: pendingToken.decimals,
-                        custom: pendingToken.isCustom,
+                        unlisted: pendingToken.unlisted,
+                        source: pendingToken.isCustom ? 'custom' : 'list',
                       },
-                    })
-                    this.context.trackEvent({
-                      event: 'Token Added',
-                      category: 'Wallet',
                     })
                   })
                   clearPendingTokens()

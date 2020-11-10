@@ -2,6 +2,7 @@ import { strict as assert } from 'assert'
 import ObservableStore from 'obs-store'
 import { normalize as normalizeAddress } from 'eth-sig-util'
 import { isValidAddress, sha3, bufferToHex } from 'ethereumjs-util'
+import contractMap from 'eth-contract-metadata'
 import ethers from 'ethers'
 import log from 'loglevel'
 import { isPrefixedFormattedHexString } from '../lib/util'
@@ -175,7 +176,13 @@ export default class PreferencesController {
     const suggested = this.getSuggestedTokens()
     const { rawAddress, symbol, decimals, image } = tokenOpts
     const address = normalizeAddress(rawAddress)
-    const newEntry = { address, symbol, decimals, image }
+    const newEntry = {
+      address,
+      symbol,
+      decimals,
+      image,
+      unlisted: contractMap[address] === undefined,
+    }
     suggested[address] = newEntry
     this.store.updateState({ suggestedTokens: suggested })
   }

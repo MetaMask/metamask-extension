@@ -2,6 +2,7 @@ import abi from 'human-standard-token-abi'
 import pify from 'pify'
 import log from 'loglevel'
 import { capitalize } from 'lodash'
+import contractMap from 'eth-contract-metadata'
 import getBuyEthUrl from '../../../app/scripts/lib/buy-eth-url'
 import { checksumAddress } from '../helpers/utils/util'
 import { calcTokenBalance, estimateGasForSend } from '../pages/send/send.utils'
@@ -2210,8 +2211,18 @@ export function setPendingTokens(pendingTokens) {
   const { address, symbol, decimals } = customToken
   const tokens =
     address && symbol && decimals
-      ? { ...selectedTokens, [address]: { ...customToken, isCustom: true } }
+      ? {
+          ...selectedTokens,
+          [address]: {
+            ...customToken,
+            isCustom: true,
+          },
+        }
       : selectedTokens
+
+  Object.keys(tokens).forEach((tokenAddress) => {
+    tokens[tokenAddress].unlisted = contractMap[tokenAddress] === undefined
+  })
 
   return {
     type: actionConstants.SET_PENDING_TOKENS,
