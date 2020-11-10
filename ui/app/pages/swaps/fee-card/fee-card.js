@@ -170,14 +170,13 @@ export default function FeeCard({
               <div className="fee-card__row-header-text">
                 {t('swapThisWillAllowApprove', [tokenApprovalTextComponent])}
               </div>
-              <div className="fee-card__info-tooltip-container">
-                <InfoTooltip
-                  position="top"
-                  contentText={t('swapEnableDescription', [
-                    tokenApprovalSourceTokenSymbol,
-                  ])}
-                />
-              </div>
+              <InfoTooltip
+                position="top"
+                contentText={t('swapEnableDescription', [
+                  tokenApprovalSourceTokenSymbol,
+                ])}
+                containerClassName="fee-card__info-tooltip-container"
+              />
             </div>
             <div
               className="fee-card__link"
