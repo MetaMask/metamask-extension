@@ -154,7 +154,6 @@ describe('ConfirmSeedPhrase Component', function () {
         history: { push: pushSpy },
         setSeedPhraseBackedUp: () => Promise.resolve(),
         initializeThreeBox: initialize3BoxSpy,
-        completeOnboarding: sinon.spy(),
       },
       {
         metricsEvent: metricsEventSpy,

@@ -6,12 +6,21 @@ import {
   LOCK_ROUTE,
   INITIALIZE_WELCOME_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
+  INITIALIZE_END_OF_FLOW_ROUTE,
 } from '../../../../helpers/constants/routes'
 import FirstTimeFlowSwitch from '..'
 
 describe('FirstTimeFlowSwitch', function () {
-  it('redirects to /welcome route with no props', function () {
-    const wrapper = mountWithRouter(<FirstTimeFlowSwitch.WrappedComponent />)
+  it('redirects to /welcome route with null props', function () {
+    const props = {
+      completedOnboarding: null,
+      isInitialized: null,
+      isUnlocked: null,
+      seedPhraseBackedUp: null,
+    }
+    const wrapper = mountWithRouter(
+      <FirstTimeFlowSwitch.WrappedComponent {...props} />,
+    )
     assert.equal(
       wrapper
         .find('Lifecycle')
@@ -35,10 +44,45 @@ describe('FirstTimeFlowSwitch', function () {
     )
   })
 
+  it('redirects to end of flow route when seedPhraseBackedUp is true', function () {
+    const props = {
+      completedOnboarding: false,
+      seedPhraseBackedUp: true,
+    }
+    const wrapper = mountWithRouter(
+      <FirstTimeFlowSwitch.WrappedComponent {...props} />,
+    )
+
+    assert.equal(
+      wrapper
+        .find('Lifecycle')
+        .find({ to: { pathname: INITIALIZE_END_OF_FLOW_ROUTE } }).length,
+      1,
+    )
+  })
+
+  it('redirects to end of flow route when seedPhraseBackedUp is false', function () {
+    const props = {
+      completedOnboarding: false,
+      seedPhraseBackedUp: false,
+    }
+    const wrapper = mountWithRouter(
+      <FirstTimeFlowSwitch.WrappedComponent {...props} />,
+    )
+
+    assert.equal(
+      wrapper
+        .find('Lifecycle')
+        .find({ to: { pathname: INITIALIZE_END_OF_FLOW_ROUTE } }).length,
+      1,
+    )
+  })
+
   it('redirects to /lock route when isUnlocked is true ', function () {
     const props = {
       completedOnboarding: false,
       isUnlocked: true,
+      seedPhraseBackedUp: null,
     }
 
     const wrapper = mountWithRouter(
@@ -56,6 +100,7 @@ describe('FirstTimeFlowSwitch', function () {
       completedOnboarding: false,
       isUnlocked: false,
       isInitialized: false,
+      seedPhraseBackedUp: null,
     }
 
     const wrapper = mountWithRouter(
@@ -75,6 +120,7 @@ describe('FirstTimeFlowSwitch', function () {
       completedOnboarding: false,
       isUnlocked: false,
       isInitialized: true,
+      seedPhraseBackedUp: null,
     }
 
     const wrapper = mountWithRouter(

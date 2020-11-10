@@ -21,7 +21,6 @@ export default class ImportWithSeedPhrase extends PureComponent {
     onSubmit: PropTypes.func.isRequired,
     setSeedPhraseBackedUp: PropTypes.func,
     initializeThreeBox: PropTypes.func,
-    completeOnboarding: PropTypes.func,
   }
 
   state = {
@@ -129,7 +128,6 @@ export default class ImportWithSeedPhrase extends PureComponent {
       onSubmit,
       setSeedPhraseBackedUp,
       initializeThreeBox,
-      completeOnboarding,
     } = this.props
 
     try {
@@ -143,7 +141,6 @@ export default class ImportWithSeedPhrase extends PureComponent {
       })
 
       setSeedPhraseBackedUp(true).then(async () => {
-        await completeOnboarding()
         initializeThreeBox()
         history.push(INITIALIZE_END_OF_FLOW_ROUTE)
       })
