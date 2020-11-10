@@ -39,7 +39,7 @@ import {
 } from './lib/enums'
 /* eslint-enable import/first */
 
-const { platform, sentry } = global
+const { platform } = global
 const firstTimeState = { ...rawFirstTimeState }
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
@@ -168,18 +168,18 @@ async function loadStateFromPersistence() {
   if (versionedData && !versionedData.data) {
     // unable to recover, clear state
     versionedData = migrator.generateInitialState(firstTimeState)
-    sentry.captureMessage('MetaMask - Empty vault found - unable to recover')
+    // sentry.captureMessage('MetaMask - Empty vault found - unable to recover')
   }
 
   // report migration errors to sentry
-  migrator.on('error', (err) => {
-    // get vault structure without secrets
-    const vaultStructure = getObjStructure(versionedData)
-    sentry.captureException(err, {
-      // "extra" key is required by Sentry
-      extra: { vaultStructure },
-    })
-  })
+  // migrator.on('error', (err) => {
+  //   // get vault structure without secrets
+  //   const vaultStructure = getObjStructure(versionedData)
+  //   sentry.captureException(err, {
+  //     // "extra" key is required by Sentry
+  //     extra: { vaultStructure },
+  //   })
+  // })
 
   // migrate data
   versionedData = await migrator.migrateData(versionedData)
