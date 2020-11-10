@@ -42,7 +42,7 @@ const mapStateToProps = (state) => {
     initialGasPrice,
     initialGasLimit,
     minimumGasLimit,
-  } = modalProps || {}
+  } = modalProps
   const buttonDataLoading = swapGasPriceEstimateIsLoading(state)
 
   const swapsCustomizationModalPrice = getSwapsCustomizationModalPrice(state)
