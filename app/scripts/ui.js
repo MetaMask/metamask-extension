@@ -1,6 +1,3 @@
-// Should be imported before anything else
-/* eslint-disable-next-line import/first,import/order */
-import './lib/freezeIntrinsicsUI'
 
 // polyfills
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
@@ -8,7 +5,7 @@ import '@formatjs/intl-relativetimeformat/polyfill'
 
 import { EventEmitter } from 'events'
 import PortStream from 'extension-port-stream'
-
+import ExtensionPlatform from './platforms/extension'
 import extension from 'extensionizer'
 
 import Dnode from 'dnode'
@@ -28,6 +25,9 @@ import { getEnvironmentType } from './lib/util'
 start().catch(log.error)
 
 async function start() {
+  // create platform global
+  global.platform = new ExtensionPlatform()
+
   // identify window type (popup, notification)
   const windowType = getEnvironmentType()
 

@@ -1,7 +1,12 @@
 {
   "author": "https://metamask.io",
   "background": {
-    "scripts": ["bg-libs.js", "background.js"],
+    "scripts": [
+      "lockdown.cjs",
+      "runLockdown.js",
+      "bg-libs.js",
+      "background.js"
+    ],
     "persistent": true
   },
   "browser_action": {
@@ -30,7 +35,11 @@
   "content_scripts": [
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
-      "js": ["contentscript.js"],
+      "js": [
+        "lockdown.cjs",
+        "runLockdown.js",
+        "contentscript.js"
+      ],
       "run_at": "document_start",
       "all_frames": true
     },

@@ -3,7 +3,6 @@
  */
 // these need to run before anything else
 /* eslint-disable import/first,import/order */
-import './lib/freezeIntrinsicsBackground'
 import setupFetchDebugging from './lib/setupFetchDebugging'
 /* eslint-enable import/order */
 
@@ -22,6 +21,7 @@ import asStream from 'obs-store/lib/asStream'
 import PortStream from 'extension-port-stream'
 import migrations from './migrations'
 import Migrator from './lib/migrator'
+import ExtensionPlatform from './platforms/extension'
 import LocalStore from './lib/local-store'
 import ReadOnlyNetworkStore from './lib/network-store'
 import createStreamSink from './lib/createStreamSink'
@@ -39,10 +39,12 @@ import {
 } from './lib/enums'
 /* eslint-enable import/first */
 
-const { platform } = global
+// const { sentry } = global
 const firstTimeState = { ...rawFirstTimeState }
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
+
+const platform = new ExtensionPlatform()
 
 const notificationManager = new NotificationManager()
 global.METAMASK_NOTIFIER = notificationManager

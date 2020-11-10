@@ -1,6 +1,3 @@
-// Should be imported before anything else
-/* eslint-disable-next-line import/first,import/order */
-import './lib/freezeIntrinsics'
 /* eslint-disable import/first */
 import querystring from 'querystring'
 import pump from 'pump'
