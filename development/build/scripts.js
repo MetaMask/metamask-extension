@@ -1,6 +1,8 @@
 const fs = require('fs')
 const gulp = require('gulp')
 const watch = require('gulp-watch')
+const pify = require('pify')
+const pump = pify(require('pump'))
 const source = require('vinyl-source-stream')
 const buffer = require('vinyl-buffer')
 const log = require('fancy-log')
@@ -11,8 +13,6 @@ const envify = require('envify/custom')
 const sourcemaps = require('gulp-sourcemaps')
 const sesify = require('sesify')
 const terser = require('gulp-terser-js')
-const pify = require('pify')
-const endOfStream = pify(require('end-of-stream'))
 const { makeStringTransform } = require('browserify-transform-tools')
 
 const conf = require('rc')('metamask', {
@@ -199,61 +199,37 @@ function createScriptTasks({ browserPlatforms, livereload }) {
         // output build logs to terminal
         bundler.on('log', log)
       }
-
-      let buildStream = bundler.bundle()
-
-      // handle errors
-      buildStream.on('error', (err) => {
-        beep()
-        if (opts.devMode) {
-          console.warn(err.stack)
-        } else {
-          throw err
-        }
-      })
-
+      
       // process bundles
-      buildStream = buildStream
+      await pump(...[
+        bundler.bundle(),
         // convert bundle stream to gulp vinyl stream
-        .pipe(source(opts.filename))
-        // buffer file contents (?)
-        .pipe(buffer())
-
-      // Initialize Source Maps
-      buildStream = buildStream
+        source(opts.filename),
+          // buffer file contents (?)
+        buffer(),
+        // Initialize Source Maps
         // loads map from browserify file
-        .pipe(sourcemaps.init({ loadMaps: true }))
-
-      // Minification
-      if (!opts.devMode) {
-        buildStream = buildStream.pipe(
-          terser({
-            mangle: {
-              reserved: ['MetamaskInpageProvider'],
-            },
-            sourceMap: {
-              content: true,
-            },
-          }),
-        )
-      }
-
-      // Finalize Source Maps
-      if (opts.devMode) {
-        // Use inline source maps for development due to Chrome DevTools bug
-        // https://bugs.chromium.org/p/chromium/issues/detail?id=931675
-        buildStream = buildStream.pipe(sourcemaps.write())
-      } else {
-        buildStream = buildStream.pipe(sourcemaps.write('../sourcemaps'))
-      }
-
-      // write completed bundles
-      browserPlatforms.forEach((platform) => {
-        const dest = `./dist/${platform}`
-        buildStream = buildStream.pipe(gulp.dest(dest))
-      })
-
-      await endOfStream(buildStream)
+        sourcemaps.init({
+          loadMaps: true
+        }),
+        // Minification
+        !opts.devMode && terser({
+          mangle: {
+            reserved: ['MetamaskInpageProvider'],
+          },
+          sourceMap: {
+            content: true,
+          },
+        }),
+        // Finalize Source Maps
+        opts.devMode ? 
+          // Use inline source maps for development due to Chrome DevTools bug
+          // https://bugs.chromium.org/p/chromium/issues/detail?id=931675
+          sourcemaps.write() : 
+          sourcemaps.write('../sourcemaps'),
+          // write completed bundles
+        ...browserPlatforms.map(platform => gulp.dest(`./dist/${platform}`))
+      ].filter(Boolean))
     }
   }
 
