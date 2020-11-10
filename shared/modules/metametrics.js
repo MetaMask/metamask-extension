@@ -1,5 +1,5 @@
 import Analytics from 'analytics-node'
-import { omit, pick } from 'lodash'
+import { merge, omit, pick } from 'lodash'
 
 // flushAt controls how many events are sent to segment at once. Segment
 // will hold onto a queue of events until it hits this number, then it sends
@@ -137,6 +137,8 @@ export const segmentLegacy =
  * @property {string}  category - category to associate event to
  * @property {boolean} [isOptIn] - happened during opt in/out workflow
  * @property {object}  [properties] - object of custom values to track, snake_case
+ * @property {object}  [sensitiveProperties] - Object of sensitive values to track, snake_case.
+ *  These properties will be sent in an additional event that excludes the user's metaMetricsId.
  * @property {number}  [revenue] - amount of currency that event creates in revenue for MetaMask
  * @property {string}  [currency] - ISO 4127 format currency for events with revenue, defaults to US dollars
  * @property {number}  [value] - Abstract "value" that this event has for MetaMask.
@@ -168,6 +170,7 @@ export function getTrackMetaMetricsEvent(metamaskVersion, getDynamicState) {
     category,
     isOptIn,
     properties = {},
+    sensitiveProperties,
     revenue,
     currency,
     value,
@@ -178,6 +181,27 @@ export function getTrackMetaMetricsEvent(metamaskVersion, getDynamicState) {
   }) {
     if (!event || !category) {
       throw new Error('Must specify event and category.')
+    }
+    // Uses recursion to track a duplicate event with sensitive properties included,
+    // but metaMetricsId excluded
+    if (sensitiveProperties) {
+      if (excludeId === true) {
+        throw new Error(
+          'sensitiveProperties was specified in an event payload that also set the excludeMetaMetricsId flag',
+        )
+      }
+      trackMetaMetricsEvent({
+        event,
+        category,
+        isOptIn,
+        properties: merge(sensitiveProperties, properties),
+        revenue,
+        currency,
+        value,
+        excludeMetaMetricsId: true,
+        matomoEvent,
+        eventContext,
+      })
     }
     const {
       participateInMetaMetrics,

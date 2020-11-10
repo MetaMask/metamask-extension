@@ -94,8 +94,7 @@ export default function AwaitingSwap({
 
   const quotesExpiredEvent = useNewMetricEvent({
     event: 'Quotes Timed Out',
-    excludeMetaMetricsId: true,
-    properties: {
+    sensitiveProperties: {
       token_from: sourceTokenInfo?.symbol,
       token_from_amount: fetchParams?.value,
       token_to: destinationTokenInfo?.symbol,
@@ -104,10 +103,6 @@ export default function AwaitingSwap({
       custom_slippage: fetchParams?.slippage === 2,
       gas_fees: feeinFiat,
     },
-    category: 'swaps',
-  })
-  const anonymousQuotesExpiredEvent = useNewMetricEvent({
-    event: 'Quotes Timed Out',
     category: 'swaps',
   })
 
@@ -196,7 +191,6 @@ export default function AwaitingSwap({
     if (!trackedQuotesExpiredEvent) {
       setTrackedQuotesExpiredEvent(true)
       quotesExpiredEvent()
-      anonymousQuotesExpiredEvent()
     }
   } else if (errorKey === ERROR_FETCHING_QUOTES) {
     headerText = t('swapFetchingQuotesErrorTitle')
