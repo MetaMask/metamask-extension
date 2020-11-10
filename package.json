@@ -70,7 +70,7 @@
     "@formatjs/intl-relativetimeformat": "^5.2.6",
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@material-ui/core": "^4.11.0",
-    "@metamask/controllers": "^4.0.0",
+    "@metamask/controllers": "^4.0.2",
     "@metamask/eth-ledger-bridge-keyring": "^0.2.6",
     "@metamask/eth-token-tracker": "^3.0.1",
     "@metamask/etherscan-link": "^1.2.0",
