@@ -10,9 +10,9 @@ const seedPhraseVerifier = {
    * - The created accounts in the primary keyring are always the same.
    * - The keyring always creates the accounts in the same sequence.
    *
-   * @param {array} createdAccounts - The accounts to restore
+   * @param {Array} createdAccounts - The accounts to restore
    * @param {string} seedWords - The seed words to verify
-   * @returns {Promise<void>} - Promises undefined
+   * @returns {Promise<void>} Promises undefined
    *
    */
   async verifyAccounts(createdAccounts, seedWords) {

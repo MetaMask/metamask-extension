@@ -5,7 +5,7 @@ import { useTimeout } from './useTimeout'
 /**
  * useCopyToClipboard
  *
- * @param {number}  [delay=3000]   - delay in ms
+ * @param {number} [delay=3000] - delay in ms
  *
  * @return {[boolean, Function]}
  */

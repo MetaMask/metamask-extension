@@ -6,7 +6,7 @@ const errorLabelPrefix = 'Error: '
  * is returned unchanged.
  *
  * @param {string} errorMessage - The error message to parse
- * @returns {string} - Returns an error message, either the same as was passed, or the ending message portion of an isEthjsRpcError
+ * @returns {string} Returns an error message, either the same as was passed, or the ending message portion of an isEthjsRpcError
  *
  * @example
  * // returns 'Transaction Failed: replacement transaction underpriced'

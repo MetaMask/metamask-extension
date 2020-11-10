@@ -48,7 +48,7 @@ import { useCurrentAsset } from './useCurrentAsset'
  * state access required to take a transactionGroup and derive from it a shape
  * of data that can power all views related to a transaction. Presently the main
  * case is for shared logic between transaction-list-item and transaction-detail-view
- * @param {Object} transactionGroup group of transactions
+ * @param {Object} transactionGroup - group of transactions
  * @return {TransactionDisplayData}
  */
 export function useTransactionDisplayData(transactionGroup) {

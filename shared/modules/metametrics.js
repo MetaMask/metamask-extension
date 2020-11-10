@@ -157,7 +157,7 @@ export const segmentLegacy =
  *
  * @param {string} metamaskVersion - The current version of the MetaMask extension.
  * @param {() => MetaMetricsRequiredState} getDynamicState - A function returning required fields
- * @returns {(payload: MetaMetricsEventPayload) => Promise<void>} - function to track an event
+ * @returns {(payload: MetaMetricsEventPayload) => Promise<void>} function to track an event
  */
 export function getTrackMetaMetricsEvent(metamaskVersion, getDynamicState) {
   const version =

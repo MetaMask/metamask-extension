@@ -45,7 +45,7 @@ export function getRequestUserApprovalHelper(permController) {
  *
  * This function must be called on the permissions controller for each request.
  *
- * @param {PermissionsController} - A permissions controller.
+ * @param {PermissionsController} permController - A permissions controller.
  * @returns {Promise<void>} A Promise that resolves once a pending approval
  * has been set.
  */

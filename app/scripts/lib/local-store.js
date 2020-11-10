@@ -45,7 +45,7 @@ export default class ExtensionStore {
   /**
    * Returns all of the keys currently saved
    * @private
-   * @returns {Object} - the key-value map from local storage
+   * @returns {Object} the key-value map from local storage
    */
   _get() {
     const { local } = extension.storage

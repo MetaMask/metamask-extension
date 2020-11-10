@@ -1,13 +1,13 @@
 import EventEmitter from 'events'
 
 /**
- * @typedef {object} Migration
+ * @typedef {Object} Migration
  * @property {number} version - The migration version
  * @property {Function} migrate - Returns a promise of the migrated data
  */
 
 /**
- * @typedef {object} MigratorOptions
+ * @typedef {Object} MigratorOptions
  * @property {Array<Migration>} [migrations] - The list of migrations to apply
  * @property {number} [defaultVersion] - The version to use in the initial state
  */

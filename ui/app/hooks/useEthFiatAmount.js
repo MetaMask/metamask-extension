@@ -12,7 +12,7 @@ import { formatCurrency } from '../helpers/utils/confirm-tx.util'
  * Get an Eth amount converted to fiat and formatted for display
  *
  * @param {string} [tokenAmount] - The eth amount to convert
- * @param {object} [overrides] - A configuration object that allows the called to explicitly
+ * @param {Object} [overrides] - A configuration object that allows the called to explicitly
  *                              ensure fiat is shown even if the property is not set in state.
  * @param {boolean} [overrides.showFiat] - If truthy, ensures the fiat value is shown even if the showFiat value from state is falsey
  * @param {boolean} hideCurrencySymbol Indicates whether the returned formatted amount should include the trailing currency symbol

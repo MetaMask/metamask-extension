@@ -53,7 +53,7 @@ export default class TxGasUtil {
   /**
     Estimates the tx's gas usage
     @param {Object} txMeta - the txMeta object
-    @returns {string} - the estimated gas limit as a hex string
+    @returns {string} the estimated gas limit as a hex string
   */
   async estimateTxGas(txMeta) {
     const { txParams } = txMeta
@@ -67,7 +67,7 @@ export default class TxGasUtil {
 
     @param {string} initialGasLimitHex - the initial gas limit to add the buffer too
     @param {string} blockGasLimitHex - the block gas limit
-    @returns {string} - the buffered gas limit as a hex string
+    @returns {string} the buffered gas limit as a hex string
   */
   addGasBuffer(initialGasLimitHex, blockGasLimitHex, multiplier = 1.5) {
     const initialGasLimitBn = hexToBn(initialGasLimitHex)

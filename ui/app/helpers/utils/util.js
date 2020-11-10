@@ -300,7 +300,7 @@ export function exportAsFile(filename, data, type = 'text/csv') {
  * Safely checksumms a potentially-null address
  *
  * @param {string} [address] - address to checksum
- * @returns {string} - checksummed address
+ * @returns {string} checksummed address
  *
  */
 export function checksumAddress(address) {
@@ -378,7 +378,7 @@ export function isExtensionUrl(urlLike) {
  * lowercased version of the addresses.
  *
  * @param {string} address - The hex address to check
- * @param {array} list - The array of objects to check
+ * @param {Array} list - The array of objects to check
  * @returns {boolean} Whether or not the address is in the list
  */
 export function checkExistingAddresses(address, list = []) {
@@ -428,7 +428,7 @@ export function addHexPrefixToObjectValues(obj) {
  * @param {string} from - A hex address of the tx sender address
  * @param {string} gas - A hex representation of the gas value for the transaction
  * @param {string} gasPrice - A hex representation of the gas price for the transaction
- * @returns {object} An object ready for submission to the blockchain, with all values appropriately hex prefixed
+ * @returns {Object} An object ready for submission to the blockchain, with all values appropriately hex prefixed
  */
 export function constructTxParams({
   sendToken,
