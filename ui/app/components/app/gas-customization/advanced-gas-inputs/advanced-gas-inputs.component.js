@@ -17,7 +17,6 @@ export default class AdvancedGasInputs extends Component {
     customGasLimit: PropTypes.number.isRequired,
     customStorageLimit: PropTypes.number.isRequired,
     insufficientBalance: PropTypes.bool,
-    customPriceIsSafe: PropTypes.bool,
     isSimpleTx: PropTypes.bool,
     isSpeedUp: PropTypes.bool,
     showGasPriceInfoModal: PropTypes.func,
@@ -78,7 +77,7 @@ export default class AdvancedGasInputs extends Component {
     const { errorType } = this.storageLimitError({
       insufficientBalance,
     })
-    if (errorType !== 'error') {
+    if (errorType !== 'error' || insufficientBalance) {
       this.props.updateCustomStorageLimit(Number(e.target.value))
     }
   }
@@ -99,7 +98,7 @@ export default class AdvancedGasInputs extends Component {
       gasLimit,
     })
 
-    if (errorType !== 'error') {
+    if (errorType !== 'error' || insufficientBalance) {
       this.props.updateCustomGasLimit(Number(e.target.value))
     }
   }
@@ -113,26 +112,22 @@ export default class AdvancedGasInputs extends Component {
   }
 
   changeGasPrice = e => {
-    const { insufficientBalance, customPriceIsSafe, isSpeedUp } = this.props
+    const { insufficientBalance, isSpeedUp } = this.props
     const { gasPrice } = this.state
 
     const { errorType } = this.gasPriceError({
       insufficientBalance,
-      customPriceIsSafe,
       isSpeedUp,
       gasPrice,
     })
-    if (errorType !== 'error') {
+    // if error is insufficientBalance, we still need to update custom gas and
+    // revalidate, cause the contract might be sponsored
+    if (errorType !== 'error' || insufficientBalance) {
       this.props.updateCustomGasPrice(Number(e.target.value))
     }
   }
 
-  gasPriceError({
-    insufficientBalance,
-    customPriceIsSafe,
-    isSpeedUp,
-    gasPrice,
-  }) {
+  gasPriceError({ insufficientBalance, isSpeedUp, gasPrice }) {
     const { t } = this.context
     let gasPriceBigNumber
     try {
@@ -146,12 +141,12 @@ export default class AdvancedGasInputs extends Component {
         errorText: t('insufficientBalance'),
         errorType: 'error',
       }
-    } else if (isSpeedUp && gasPrice === 0) {
+    } else if (isSpeedUp && gasPriceBigNumber.equals(0)) {
       return {
         errorText: t('zeroGasPriceOnSpeedUpError'),
         errorType: 'error',
       }
-    } else if (gasPriceBigNumber.lessThan(1) || !customPriceIsSafe) {
+    } else if (gasPriceBigNumber.lessThan(1)) {
       return {
         errorText: t('gasPriceExtremelyLow'),
         errorType: 'error',
@@ -257,7 +252,6 @@ export default class AdvancedGasInputs extends Component {
   render() {
     const {
       insufficientBalance,
-      customPriceIsSafe,
       isSpeedUp,
       isSimpleTx,
       showGasPriceInfoModal,
@@ -276,7 +270,6 @@ export default class AdvancedGasInputs extends Component {
       errorType: gasPriceErrorType,
     } = this.gasPriceError({
       insufficientBalance,
-      customPriceIsSafe,
       isSpeedUp,
       gasPrice,
     })
