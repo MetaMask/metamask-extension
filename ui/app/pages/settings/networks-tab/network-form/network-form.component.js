@@ -134,51 +134,58 @@ export default class NetworkForm extends PureComponent {
       isSubmitting: true,
     })
 
-    const {
-      setRpcTarget,
-      rpcUrl: propsRpcUrl,
-      editRpc,
-      rpcPrefs = {},
-      onClear,
-      networksTabIsInAddMode,
-    } = this.props
-    const {
-      networkName,
-      rpcUrl,
-      chainId: stateChainId,
-      ticker,
-      blockExplorerUrl,
-    } = this.state
+    try {
+      const {
+        setRpcTarget,
+        rpcUrl: propsRpcUrl,
+        editRpc,
+        rpcPrefs = {},
+        onClear,
+        networksTabIsInAddMode,
+      } = this.props
+      const {
+        networkName,
+        rpcUrl,
+        chainId: stateChainId,
+        ticker,
+        blockExplorerUrl,
+      } = this.state
 
-    const formChainId = stateChainId.trim().toLowerCase()
-    // Ensure chainId is a 0x-prefixed, lowercase hex string
-    let chainId = formChainId
-    if (!chainId.startsWith('0x')) {
-      chainId = `0x${new BigNumber(chainId, 10).toString(16)}`
-    }
+      const formChainId = stateChainId.trim().toLowerCase()
+      // Ensure chainId is a 0x-prefixed, lowercase hex string
+      let chainId = formChainId
+      if (!chainId.startsWith('0x')) {
+        chainId = `0x${new BigNumber(chainId, 10).toString(16)}`
+      }
 
-    if (!(await this.validateChainIdOnSubmit(formChainId, chainId, rpcUrl))) {
+      if (!(await this.validateChainIdOnSubmit(formChainId, chainId, rpcUrl))) {
+        this.setState({
+          isSubmitting: false,
+        })
+        return
+      }
+
+      // After this point, isSubmitting will be reset in componentDidUpdate
+      if (propsRpcUrl && rpcUrl !== propsRpcUrl) {
+        await editRpc(propsRpcUrl, rpcUrl, chainId, ticker, networkName, {
+          ...rpcPrefs,
+          blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
+        })
+      } else {
+        await setRpcTarget(rpcUrl, chainId, ticker, networkName, {
+          ...rpcPrefs,
+          blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
+        })
+      }
+
+      if (networksTabIsInAddMode) {
+        onClear()
+      }
+    } catch (error) {
+      log.error('Unexpected error during form submission.', error)
       this.setState({
         isSubmitting: false,
       })
-      return
-    }
-
-    // After this point, isSubmitting will be reset in componentDidUpdate
-    if (propsRpcUrl && rpcUrl !== propsRpcUrl) {
-      await editRpc(propsRpcUrl, rpcUrl, chainId, ticker, networkName, {
-        ...rpcPrefs,
-        blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
-      })
-    } else {
-      await setRpcTarget(rpcUrl, chainId, ticker, networkName, {
-        ...rpcPrefs,
-        blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
-      })
-    }
-
-    if (networksTabIsInAddMode) {
-      onClear()
     }
   }
 
