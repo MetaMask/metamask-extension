@@ -200,41 +200,48 @@ function createScriptTasks({ browserPlatforms, livereload }) {
         bundler.on('log', log)
       }
 
-      // process bundles
-      await pump(
-        ...[
-          bundler.bundle(),
-          // convert bundle stream to gulp vinyl stream
-          source(opts.filename),
-          // buffer file contents (?)
-          buffer(),
-          // Initialize Source Maps
-          // loads map from browserify file
-          sourcemaps.init({
-            loadMaps: true,
+      const buildPipeline = [
+        bundler.bundle(),
+        // convert bundle stream to gulp vinyl stream
+        source(opts.filename),
+        // Initialize Source Maps
+        buffer(),
+        // loads map from browserify file
+        buildPipeline.push(sourcemaps.init({ loadMaps: true })),
+      ]
+
+      // Minification
+      if (!opts.devMode) {
+        buildPipeline.push(
+          terser({
+            mangle: {
+              reserved: ['MetamaskInpageProvider'],
+            },
+            sourceMap: {
+              content: true,
+            },
           }),
-          // Minification
-          !opts.devMode &&
-            terser({
-              mangle: {
-                reserved: ['MetamaskInpageProvider'],
-              },
-              sourceMap: {
-                content: true,
-              },
-            }),
-          // Finalize Source Maps
-          opts.devMode
-            ? // Use inline source maps for development due to Chrome DevTools bug
-              // https://bugs.chromium.org/p/chromium/issues/detail?id=931675
-              sourcemaps.write()
-            : sourcemaps.write('../sourcemaps'),
-          // write completed bundles
-          ...browserPlatforms.map((platform) =>
-            gulp.dest(`./dist/${platform}`),
-          ),
-        ].filter(Boolean),
-      )
+        )
+      }
+
+      // Finalize Source Maps
+      if (opts.devMode) {
+        // Use inline source maps for development due to Chrome DevTools bug
+        // https://bugs.chromium.org/p/chromium/issues/detail?id=931675
+        // note: sourcemaps call arity is important
+        buildPipeline.push(sourcemaps.write())
+      } else {
+        buildPipeline.push(sourcemaps.write('../sourcemaps'))
+      }
+
+      // write completed bundles
+      browserPlatforms.forEach((platform) => {
+        const dest = `./dist/${platform}`
+        buildPipeline.push(gulp.dest(dest))
+      })
+
+      // process bundles
+      await pump(buildPipeline)
     }
   }
 
