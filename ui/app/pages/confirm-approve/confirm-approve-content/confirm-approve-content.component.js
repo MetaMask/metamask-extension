@@ -236,7 +236,7 @@ export default class ConfirmApproveContent extends Component {
           <div className="confirm-approve-content__full-tx-content">
             <div className="confirm-approve-content__permission">
               {this.renderApproveContentCard({
-                symbol: <img src="/images/user-check.svg" />,
+                symbol: <img src="/images/user-check.svg" alt="" />,
                 title: 'Permission',
                 content: this.renderPermissionContent(),
                 showEdit: true,

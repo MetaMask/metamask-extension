@@ -74,6 +74,7 @@ export default function MainQuoteSummary({
           <img
             className="main-quote-summary__down-arrow"
             src="images/down-arrow-grey.svg"
+            alt=""
           />
           <div className="main-quote-summary__destination-row">
             <UrlIcon

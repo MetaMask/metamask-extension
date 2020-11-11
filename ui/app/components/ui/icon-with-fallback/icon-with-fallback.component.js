@@ -30,6 +30,7 @@ export default class IconWithFallback extends PureComponent {
         src={icon}
         style={style}
         className={className}
+        alt=""
       />
     ) : (
       <i

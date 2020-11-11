@@ -32,7 +32,7 @@ export default function InfoTooltip({
         html={contentText}
         theme={wide ? 'tippy-tooltip-wideInfo' : 'tippy-tooltip-info'}
       >
-        <img src="images/mm-info-icon.svg" />
+        <img src="images/mm-info-icon.svg" alt="" />
       </Tooltip>
     </div>
   )

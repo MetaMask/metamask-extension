@@ -33,14 +33,14 @@ const ConfirmPageContainerNavigation = (props) => {
           data-testid="first-page"
           onClick={() => onNextTx(firstTx)}
         >
-          <img src="/images/double-arrow.svg" />
+          <img src="/images/double-arrow.svg" alt="" />
         </div>
         <div
           className="confirm-page-container-navigation__arrow"
           data-testid="previous-page"
           onClick={() => onNextTx(prevTxId)}
         >
-          <img src="/images/single-arrow.svg" />
+          <img src="/images/single-arrow.svg" alt="" />
         </div>
       </div>
       <div className="confirm-page-container-navigation__textcontainer">
@@ -65,6 +65,7 @@ const ConfirmPageContainerNavigation = (props) => {
           <img
             className="confirm-page-container-navigation__imageflip"
             src="/images/single-arrow.svg"
+            alt=""
           />
         </div>
         <div
@@ -75,6 +76,7 @@ const ConfirmPageContainerNavigation = (props) => {
           <img
             className="confirm-page-container-navigation__imageflip"
             src="/images/double-arrow.svg"
+            alt=""
           />
         </div>
       </div>

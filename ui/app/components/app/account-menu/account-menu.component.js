@@ -278,22 +278,22 @@ export default class AccountMenu extends Component {
   }
 
   renderScrollButton() {
-    const { shouldShowScrollButton } = this.state
+    if (!this.state.shouldShowScrollButton) {
+      return null
+    }
 
     return (
-      shouldShowScrollButton && (
-        <div
-          className="account-menu__scroll-button"
-          onClick={this.handleScrollDown}
-        >
-          <img
-            src="./images/icons/down-arrow.svg"
-            width={28}
-            height={28}
-            alt="scroll down"
-          />
-        </div>
-      )
+      <div
+        className="account-menu__scroll-button"
+        onClick={this.handleScrollDown}
+      >
+        <img
+          src="./images/icons/down-arrow.svg"
+          width="28"
+          height="28"
+          alt={this.context.t('scrollDown')}
+        />
+      </div>
     )
   }
 
@@ -357,6 +357,7 @@ export default class AccountMenu extends Component {
             <img
               className="account-menu__item-icon"
               src="images/plus-btn-white.svg"
+              alt={t('createAccount')}
             />
           }
           text={t('createAccount')}
@@ -377,6 +378,7 @@ export default class AccountMenu extends Component {
             <img
               className="account-menu__item-icon"
               src="images/import-account.svg"
+              alt={t('importAccount')}
             />
           }
           text={t('importAccount')}
@@ -401,6 +403,7 @@ export default class AccountMenu extends Component {
             <img
               className="account-menu__item-icon"
               src="images/connect-icon.svg"
+              alt={t('connectHardwareWallet')}
             />
           }
           text={t('connectHardwareWallet')}
@@ -411,7 +414,7 @@ export default class AccountMenu extends Component {
             toggleAccountMenu()
             history.push(ABOUT_US_ROUTE)
           }}
-          icon={<img src="images/mm-info-icon.svg" />}
+          icon={<img src="images/mm-info-icon.svg" alt={t('infoHelp')} />}
           text={t('infoHelp')}
         />
         <AccountMenuItem

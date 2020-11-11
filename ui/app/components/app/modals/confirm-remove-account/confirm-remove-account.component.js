@@ -54,7 +54,10 @@ export default class ConfirmRemoveAccount extends Component {
             rel="noopener noreferrer"
             title={this.context.t('etherscanView')}
           >
-            <img src="images/popout.svg" />
+            <img
+              src="images/popout.svg"
+              alt={this.context.t('etherscanView')}
+            />
           </a>
         </div>
       </div>
