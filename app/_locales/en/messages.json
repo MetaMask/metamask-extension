@@ -1254,7 +1254,7 @@
     "message": "Send Tokens"
   },
   "sentEther": {
-    "message": "sent CFX"
+    "message": "send CFX"
   },
   "sentTokens": {
     "message": "sent tokens"

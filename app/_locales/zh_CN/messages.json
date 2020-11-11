@@ -1107,7 +1107,7 @@
     "message": "发送 代币"
   },
   "sentEther": {
-    "message": "CFX已发送"
+    "message": "发送CFX"
   },
   "sentTokens": {
     "message": "代币已发送"
