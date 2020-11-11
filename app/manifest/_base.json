@@ -35,11 +35,7 @@
   "content_scripts": [
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
-      "js": [
-        "lockdown.cjs",
-        "runLockdown.js",
-        "contentscript.js"
-      ],
+      "js": ["lockdown.cjs", "runLockdown.js", "contentscript.js"],
       "run_at": "document_start",
       "all_frames": true
     },
