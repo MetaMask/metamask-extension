@@ -9,6 +9,14 @@ import Tooltip from '../../../../components/ui/tooltip'
 import { isPrefixedFormattedHexString } from '../../../../../../app/scripts/lib/util'
 import { jsonRpcRequest } from '../../../../helpers/utils/util'
 
+const FORM_STATE_KEYS = [
+  'rpcUrl',
+  'chainId',
+  'ticker',
+  'networkName',
+  'blockExplorerUrl',
+]
+
 export default class NetworkForm extends PureComponent {
   static contextTypes = {
     t: PropTypes.func.isRequired,
@@ -40,21 +48,12 @@ export default class NetworkForm extends PureComponent {
     networkName: this.props.networkName,
     blockExplorerUrl: this.props.blockExplorerUrl,
     errors: {},
+    isSubmitting: false,
   }
 
   componentDidUpdate(prevProps) {
-    const {
-      rpcUrl: prevRpcUrl,
-      networksTabIsInAddMode: prevAddMode,
-    } = prevProps
-    const {
-      rpcUrl,
-      chainId,
-      ticker,
-      networkName,
-      networksTabIsInAddMode,
-      blockExplorerUrl,
-    } = this.props
+    const { networksTabIsInAddMode: prevAddMode } = prevProps
+    const { networksTabIsInAddMode } = this.props
 
     if (!prevAddMode && networksTabIsInAddMode) {
       this.setState({
@@ -64,16 +63,15 @@ export default class NetworkForm extends PureComponent {
         networkName: '',
         blockExplorerUrl: '',
         errors: {},
+        isSubmitting: false,
       })
-    } else if (prevRpcUrl !== rpcUrl) {
-      this.setState({
-        rpcUrl,
-        chainId: this.getDisplayChainId(chainId),
-        ticker,
-        networkName,
-        blockExplorerUrl,
-        errors: {},
-      })
+    } else {
+      for (const key of FORM_STATE_KEYS) {
+        if (prevProps[key] !== this.props[key]) {
+          this.resetForm()
+          break
+        }
+      }
     }
   }
 
@@ -109,6 +107,7 @@ export default class NetworkForm extends PureComponent {
       networkName,
       blockExplorerUrl,
       errors: {},
+      isSubmitting: false,
     })
   }
 
@@ -131,6 +130,10 @@ export default class NetworkForm extends PureComponent {
   }
 
   onSubmit = async () => {
+    this.setState({
+      isSubmitting: true,
+    })
+
     const {
       setRpcTarget,
       rpcUrl: propsRpcUrl,
@@ -155,9 +158,13 @@ export default class NetworkForm extends PureComponent {
     }
 
     if (!(await this.validateChainIdOnSubmit(formChainId, chainId, rpcUrl))) {
+      this.setState({
+        isSubmitting: false,
+      })
       return
     }
 
+    // After this point, isSubmitting will be reset in componentDidUpdate
     if (propsRpcUrl && rpcUrl !== propsRpcUrl) {
       await editRpc(propsRpcUrl, rpcUrl, chainId, ticker, networkName, {
         ...rpcPrefs,
@@ -194,6 +201,10 @@ export default class NetworkForm extends PureComponent {
         onClear()
       },
     })
+  }
+
+  isSubmitting() {
+    return this.state.isSubmitting
   }
 
   stateIsUnchanged() {
@@ -423,6 +434,7 @@ export default class NetworkForm extends PureComponent {
       !networksTabIsInAddMode && !isCurrentRpcTarget && !viewOnly
 
     const isSubmitDisabled =
+      this.isSubmitting() ||
       this.stateIsUnchanged() ||
       !rpcUrl ||
       !chainId ||
