@@ -207,7 +207,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
         // Initialize Source Maps
         buffer(),
         // loads map from browserify file
-        buildPipeline.push(sourcemaps.init({ loadMaps: true })),
+        sourcemaps.init({ loadMaps: true }),
       ]
 
       // Minification
