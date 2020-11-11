@@ -573,12 +573,10 @@ describe('MetaMask', function() {
         By.css('.advanced-gas-inputs__gas-edit-row__input')
       )
 
-      await gasPriceInput.click()
       await driver.clearElement(gasPriceInput)
       await gasPriceInput.sendKeys('10')
       await driver.delay(tinyDelayMs * 2)
 
-      await gasLimitInput.click()
       await driver.clearElement(gasLimitInput)
       await gasLimitInput.sendKeys('25000')
 
@@ -600,7 +598,7 @@ describe('MetaMask', function() {
       await driver.wait(async () => {
         const confirmedTxes = await driver.findElements(
           By.css(
-            '.transaction-list__completed-transactions .transaction-list-item'
+            '.transaction-list__completed-transactions .transaction-list-item .transaction-status--confirmed'
           )
         )
         return confirmedTxes.length === 2 // 4
@@ -619,14 +617,6 @@ describe('MetaMask', function() {
 
       await txValue.click()
 
-      const txStatus = await driver.findElements(
-        By.css('div.transaction-status.transaction-list-item__status > div')
-      )
-      await driver.wait(
-        until.elementTextMatches(txStatus[0], /CONFIRMED/),
-        10000
-      )
-
       const txGasPrices = await driver.findElements(
         By.css('.transaction-breakdown__value')
       )
@@ -638,7 +628,7 @@ describe('MetaMask', function() {
       const gasPrice = await txGasPrices[3].getAttribute('innerText')
       assert.equal(gasLimit, '25000', 'invalid gas limit')
       assert.equal(gasUsed, '21000', 'invalid gas used')
-      assert.equal(gasPrice, '100000', 'invalid gas price')
+      assert.equal(gasPrice, '10', 'invalid gas price')
 
       assert(txGasPriceLabels[2])
       await txValue.click()

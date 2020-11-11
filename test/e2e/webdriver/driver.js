@@ -75,6 +75,7 @@ class Driver {
 
   async clearElement(locator) {
     if (locator && locator.click) {
+      await locator.sendKeys(Key.END)
       for (let i = 0; i < 20; i++) {
         await locator.sendKeys(Key.BACK_SPACE)
       }
@@ -83,6 +84,7 @@ class Driver {
     }
 
     const element = await this.findElement(locator)
+    await element.sendKeys(Key.END)
     for (let i = 0; i < 20; i++) {
       await element.sendKeys(Key.BACK_SPACE)
     }

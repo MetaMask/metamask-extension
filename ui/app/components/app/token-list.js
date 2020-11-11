@@ -7,7 +7,7 @@ import { getSelectedAddress } from '../../selectors/selectors'
 import log from 'loglevel'
 import getAccountLink from '../../../lib/account-link'
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     network: state.metamask.network,
     tokens: state.metamask.tokens,
@@ -46,7 +46,7 @@ class TokenList extends Component {
     isLoading: true,
   }
 
-  createFreshTokenTracker () {
+  createFreshTokenTracker() {
     if (this.tracker) {
       // Clean up old trackers when refreshing:
       this.tracker.stop()
@@ -68,7 +68,7 @@ class TokenList extends Component {
 
     // Set up listener instances for cleaning up
     this.balanceUpdater = this.updateBalances.bind(this)
-    this.showError = (error) => {
+    this.showError = error => {
       this.setState({ error, isLoading: false })
     }
     this.tracker.on('update', this.balanceUpdater)
@@ -79,24 +79,24 @@ class TokenList extends Component {
       .then(() => {
         this.updateBalances(this.tracker.serialize())
       })
-      .catch((reason) => {
+      .catch(reason => {
         log.error(`Problem updating balances`, reason)
         this.setState({ isLoading: false })
       })
   }
 
-  updateBalances = function (tokens) {
+  updateBalances = function(tokens) {
     if (!this.tracker.running) {
       return
     }
     this.setState({ tokens, isLoading: false })
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.createFreshTokenTracker()
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     const { network: oldNet, userAddress: oldAddress, tokens } = prevProps
     const {
       network: newNet,
@@ -120,7 +120,7 @@ class TokenList extends Component {
     this.createFreshTokenTracker()
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     if (!this.tracker) {
       return
     }
@@ -129,7 +129,7 @@ class TokenList extends Component {
     this.tracker.removeListener('error', this.showError)
   }
 
-  render () {
+  render() {
     const { network, userAddress, assetImages } = this.props
     const state = this.state
     const { tokens, isLoading, error } = state
@@ -180,6 +180,9 @@ class TokenList extends Component {
     return (
       <div>
         {tokens.map((tokenData, index) => {
+          if (tokenData?.string?.startsWith('.')) {
+            tokenData.string = '0' + tokenData.string
+          }
           tokenData.image = assetImages[tokenData.address]
           return <TokenCell key={index} {...tokenData} />
         })}
