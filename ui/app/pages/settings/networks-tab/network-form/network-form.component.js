@@ -35,7 +35,7 @@ export default class NetworkForm extends PureComponent {
 
   state = {
     rpcUrl: this.props.rpcUrl,
-    chainId: this.getDisplayChainIdFromProps(),
+    chainId: this.getDisplayChainId(this.props.chainId),
     ticker: this.props.ticker,
     networkName: this.props.networkName,
     blockExplorerUrl: this.props.blockExplorerUrl,
@@ -49,6 +49,7 @@ export default class NetworkForm extends PureComponent {
     } = prevProps
     const {
       rpcUrl,
+      chainId,
       ticker,
       networkName,
       networksTabIsInAddMode,
@@ -67,7 +68,7 @@ export default class NetworkForm extends PureComponent {
     } else if (prevRpcUrl !== rpcUrl) {
       this.setState({
         rpcUrl,
-        chainId: this.getDisplayChainIdFromProps(),
+        chainId: this.getDisplayChainId(chainId),
         ticker,
         networkName,
         blockExplorerUrl,
@@ -93,11 +94,17 @@ export default class NetworkForm extends PureComponent {
   }
 
   resetForm() {
-    const { rpcUrl, ticker, networkName, blockExplorerUrl } = this.props
+    const {
+      rpcUrl,
+      chainId,
+      ticker,
+      networkName,
+      blockExplorerUrl,
+    } = this.props
 
     this.setState({
       rpcUrl,
-      chainId: this.getDisplayChainIdFromProps(),
+      chainId: this.getDisplayChainId(chainId),
       ticker,
       networkName,
       blockExplorerUrl,
@@ -106,25 +113,21 @@ export default class NetworkForm extends PureComponent {
   }
 
   /**
-   * Ensures that the chainId is always displayed in decimal, even though
-   * it's stored in hexadecimal.
+   * Attempts to convert the given chainId to a decimal string, for display
+   * purposes.
    *
-   * Should be called to get the chainId whenever props are used to set the
+   * Should be called with the props chainId whenever it is used to set the
    * component's state.
    *
-   * @returns {string} The props chainId in decimal.
+   * @param {unknown} chainId - The chainId to convert.
+   * @returns {string} The props chainId in decimal, or the original value if
+   * it can't be converted.
    */
-  getDisplayChainIdFromProps() {
-    const { chainId: propsChainId } = this.props
-
-    if (
-      !propsChainId ||
-      typeof propsChainId !== 'string' ||
-      !propsChainId.startsWith('0x')
-    ) {
-      return propsChainId
+  getDisplayChainId(chainId) {
+    if (!chainId || typeof chainId !== 'string' || !chainId.startsWith('0x')) {
+      return chainId
     }
-    return new BigNumber(propsChainId, 16).toString(10)
+    return new BigNumber(chainId, 16).toString(10)
   }
 
   onSubmit = async () => {
@@ -157,22 +160,18 @@ export default class NetworkForm extends PureComponent {
 
     if (propsRpcUrl && rpcUrl !== propsRpcUrl) {
       await editRpc(propsRpcUrl, rpcUrl, chainId, ticker, networkName, {
-        blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
         ...rpcPrefs,
+        blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
       })
     } else {
       await setRpcTarget(rpcUrl, chainId, ticker, networkName, {
-        blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
         ...rpcPrefs,
+        blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
       })
     }
 
     if (networksTabIsInAddMode) {
       onClear()
-    } else {
-      this.setState({
-        chainId: this.getDisplayChainIdFromProps(),
-      })
     }
   }
 
@@ -220,7 +219,7 @@ export default class NetworkForm extends PureComponent {
     const chainIdIsUnchanged =
       typeof propsChainId === 'string' &&
       propsChainId.toLowerCase().startsWith('0x') &&
-      stateChainId === this.getDisplayChainIdFromProps()
+      stateChainId === this.getDisplayChainId(propsChainId)
 
     return (
       stateRpcUrl === rpcUrl &&
