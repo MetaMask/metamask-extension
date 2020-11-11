@@ -24,7 +24,6 @@ import {
   CurrencyRateController,
   PhishingController,
 } from '@metamask/controllers'
-import { getTrackMetaMetricsEvent } from '../../shared/modules/metametrics'
 import { getBackgroundMetaMetricState } from '../../ui/app/selectors'
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction'
 import ComposableObservableStore from './lib/ComposableObservableStore'
@@ -58,7 +57,7 @@ import getRestrictedMethods from './controllers/permissions/restrictedMethods'
 import nodeify from './lib/nodeify'
 import accountImporter from './account-import-strategies'
 import seedPhraseVerifier from './lib/seed-phrase-verifier'
-import { ENVIRONMENT_TYPE_BACKGROUND } from './lib/enums'
+import MetaMetricsController from './controllers/metametrics'
 
 export default class MetamaskController extends EventEmitter {
   /**
@@ -114,36 +113,16 @@ export default class MetamaskController extends EventEmitter {
       network: this.networkController,
       migrateAddressBookState: this.migrateAddressBookState.bind(this),
     })
-
-    this.trackMetaMetricsEvent = getTrackMetaMetricsEvent(
-      this.platform.getVersion(),
-      () => {
-        const participateInMetaMetrics = this.preferencesController.getParticipateInMetaMetrics()
-        const {
-          currentLocale,
-          metaMetricsId,
-        } = this.preferencesController.store.getState()
-        const chainId = this.networkController.getCurrentChainId()
-        const provider = this.networkController.getProviderConfig()
-        const network =
-          provider.type === 'rpc' ? provider.rpcUrl : provider.type
-        return {
-          participateInMetaMetrics,
-          metaMetricsId,
-          environmentType: ENVIRONMENT_TYPE_BACKGROUND,
-          chainId,
-          network,
-          context: {
-            page: {
-              path: '/background-process',
-              title: 'Background Process',
-              url: '/background-process',
-            },
-            locale: currentLocale.replace('_', '-'),
-          },
-        }
-      },
-    )
+    this.metaMetricsController = new MetaMetricsController({
+      preferencesStore: this.preferencesController.store,
+      getCurrentChainId: this.networkController.getCurrentChainId.bind(
+        this.networkController,
+      ),
+      getProviderConfig: this.networkController.getProviderConfig.bind(
+        this.networkController,
+      ),
+      version: this.platform.getVersion(),
+    })
 
     this.appStateController = new AppStateController({
       addUnlockListener: this.on.bind(this, 'unlock'),
@@ -298,7 +277,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       provider: this.provider,
       blockTracker: this.blockTracker,
-      trackMetaMetricsEvent: this.trackMetaMetricsEvent,
+      trackMetaMetricsEvent: this.metaMetricsController.trackEvent,
       getParticipateInMetrics: () =>
         this.preferencesController.getParticipateInMetaMetrics(),
     })
@@ -528,6 +507,7 @@ export default class MetamaskController extends EventEmitter {
       threeBoxController,
       txController,
       swapsController,
+      metaMetricsController,
     } = this
 
     return {
@@ -824,6 +804,16 @@ export default class MetamaskController extends EventEmitter {
       setSwapsLiveness: nodeify(
         swapsController.setSwapsLiveness,
         swapsController,
+      ),
+
+      // MetaMetrics
+      trackMetaMetricsEvent: nodeify(
+        metaMetricsController.trackEvent,
+        metaMetricsController,
+      ),
+      trackMetaMetricsPage: nodeify(
+        metaMetricsController.trackPage,
+        metaMetricsController,
       ),
     }
   }
@@ -1967,7 +1957,7 @@ export default class MetamaskController extends EventEmitter {
     engine.push(
       createMethodMiddleware({
         origin,
-        sendMetrics: this.trackMetaMetricsEvent,
+        sendMetrics: this.metaMetricsController.trackEvent,
         handleWatchAssetRequest: this.preferencesController.requestWatchAsset.bind(
           this.preferencesController,
         ),
@@ -2177,16 +2167,20 @@ export default class MetamaskController extends EventEmitter {
       metamask: metamaskState,
     })
 
-    this.trackMetaMetricsEvent({
-      event: name,
-      category: 'Background',
-      matomoEvent: true,
-      properties: {
-        action,
-        ...additionalProperties,
-        ...customVariables,
+    this.metaMetricsController.trackEvent(
+      {
+        event: name,
+        category: 'Background',
+        properties: {
+          action,
+          ...additionalProperties,
+          ...customVariables,
+        },
       },
-    })
+      {
+        matomoEvent: true,
+      },
+    )
   }
 
   /**

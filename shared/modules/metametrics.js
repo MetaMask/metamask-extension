@@ -19,7 +19,7 @@ const flushAt = process.env.METAMASK_ENVIRONMENT === 'production' ? 5 : 1
 // in rapid succession.
 const flushInterval = 10
 
-export const METAMETRICS_ANONYMOUS_ID = '0x0000000000000000'
+const METAMETRICS_ANONYMOUS_ID = '0x0000000000000000'
 
 const segmentNoop = {
   track(_, callback = () => undefined) {
