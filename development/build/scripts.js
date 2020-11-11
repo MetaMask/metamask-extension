@@ -199,37 +199,42 @@ function createScriptTasks({ browserPlatforms, livereload }) {
         // output build logs to terminal
         bundler.on('log', log)
       }
-      
+
       // process bundles
-      await pump(...[
-        bundler.bundle(),
-        // convert bundle stream to gulp vinyl stream
-        source(opts.filename),
+      await pump(
+        ...[
+          bundler.bundle(),
+          // convert bundle stream to gulp vinyl stream
+          source(opts.filename),
           // buffer file contents (?)
-        buffer(),
-        // Initialize Source Maps
-        // loads map from browserify file
-        sourcemaps.init({
-          loadMaps: true
-        }),
-        // Minification
-        !opts.devMode && terser({
-          mangle: {
-            reserved: ['MetamaskInpageProvider'],
-          },
-          sourceMap: {
-            content: true,
-          },
-        }),
-        // Finalize Source Maps
-        opts.devMode ? 
-          // Use inline source maps for development due to Chrome DevTools bug
-          // https://bugs.chromium.org/p/chromium/issues/detail?id=931675
-          sourcemaps.write() : 
-          sourcemaps.write('../sourcemaps'),
+          buffer(),
+          // Initialize Source Maps
+          // loads map from browserify file
+          sourcemaps.init({
+            loadMaps: true,
+          }),
+          // Minification
+          !opts.devMode &&
+            terser({
+              mangle: {
+                reserved: ['MetamaskInpageProvider'],
+              },
+              sourceMap: {
+                content: true,
+              },
+            }),
+          // Finalize Source Maps
+          opts.devMode
+            ? // Use inline source maps for development due to Chrome DevTools bug
+              // https://bugs.chromium.org/p/chromium/issues/detail?id=931675
+              sourcemaps.write()
+            : sourcemaps.write('../sourcemaps'),
           // write completed bundles
-        ...browserPlatforms.map(platform => gulp.dest(`./dist/${platform}`))
-      ].filter(Boolean))
+          ...browserPlatforms.map((platform) =>
+            gulp.dest(`./dist/${platform}`),
+          ),
+        ].filter(Boolean),
+      )
     }
   }
 
@@ -380,10 +385,6 @@ function createScriptTasks({ browserPlatforms, livereload }) {
 
     return bundler
   }
-}
-
-function beep() {
-  process.stdout.write('\x07')
 }
 
 function getEnvironment({ devMode, test }) {
