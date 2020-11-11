@@ -101,57 +101,59 @@ export default class MetaMetricsOptIn extends Component {
           </div>
           <div className="metametrics-opt-in__footer">
             <PageContainerFooter
-              onCancel={() => {
-                setParticipateInMetaMetrics(false).then(() => {
-                  const promise =
-                    participateInMetaMetrics === true
-                      ? metricsEvent({
-                          eventOpts: {
-                            category: 'Onboarding',
-                            action: 'Metrics Option',
-                            name: 'Metrics Opt Out',
-                          },
-                          isOptIn: true,
-                        })
-                      : Promise.resolve()
+              onCancel={async () => {
+                await setParticipateInMetaMetrics(false)
 
-                  promise.then(() => {
-                    history.push(nextRoute)
-                  })
-                })
+                try {
+                  if (participateInMetaMetrics === true) {
+                    await metricsEvent({
+                      eventOpts: {
+                        category: 'Onboarding',
+                        action: 'Metrics Option',
+                        name: 'Metrics Opt Out',
+                      },
+                      isOptIn: true,
+                    })
+                  }
+                } finally {
+                  history.push(nextRoute)
+                }
               }}
               cancelText={t('noThanks')}
               hideCancel={false}
-              onSubmit={() => {
-                setParticipateInMetaMetrics(true).then(([_, metaMetricsId]) => {
-                  const promise =
-                    participateInMetaMetrics === false
-                      ? metricsEvent({
-                          eventOpts: {
-                            category: 'Onboarding',
-                            action: 'Metrics Option',
-                            name: 'Metrics Opt In',
-                          },
-                          isOptIn: true,
-                        })
-                      : Promise.resolve()
-
-                  promise
-                    .then(() => {
-                      return metricsEvent({
+              onSubmit={async () => {
+                const [, metaMetricsId] = await setParticipateInMetaMetrics(
+                  true,
+                )
+                try {
+                  const metrics = []
+                  if (participateInMetaMetrics === false) {
+                    metrics.push(
+                      metricsEvent({
                         eventOpts: {
                           category: 'Onboarding',
-                          action: 'Import or Create',
-                          name: firstTimeSelectionMetaMetricsName,
+                          action: 'Metrics Option',
+                          name: 'Metrics Opt In',
                         },
                         isOptIn: true,
-                        metaMetricsId,
-                      })
-                    })
-                    .then(() => {
-                      history.push(nextRoute)
-                    })
-                })
+                      }),
+                    )
+                  }
+                  metrics.push(
+                    metricsEvent({
+                      eventOpts: {
+                        category: 'Onboarding',
+                        action: 'Import or Create',
+                        name: firstTimeSelectionMetaMetricsName,
+                      },
+                      isOptIn: true,
+                      metaMetricsId,
+                    }),
+                  )
+                  await Promise.all(metrics)
+                } finally {
+                  history.push(nextRoute)
+                }
               }}
               submitText={t('affirmAgree')}
               submitButtonType="primary"
