@@ -155,6 +155,7 @@ export function sumHexes(...args) {
   const total = args.reduce((acc, base) => {
     return addCurrencies(acc, base, {
       toNumericBase: 'hex',
+      // PROBLEM!  No aBase or bBase!
     })
   })
 

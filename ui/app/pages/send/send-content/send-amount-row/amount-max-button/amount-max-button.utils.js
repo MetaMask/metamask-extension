@@ -10,10 +10,13 @@ export function calcMaxAmount({ balance, gasTotal, sendToken, tokenBalance }) {
 
   return sendToken
     ? multiplyCurrencies(tokenBalance, multiplier, {
+        // TODO:  Verify these values
         toNumericBase: 'hex',
         multiplicandBase: 16,
+        multiplierBase: 16, // 16? 10?
       })
     : subtractCurrencies(addHexPrefix(balance), addHexPrefix(gasTotal), {
         toNumericBase: 'hex',
+        // PROBLEM!  No aBase or bBase!
       })
 }

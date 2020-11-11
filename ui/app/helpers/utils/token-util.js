@@ -217,6 +217,11 @@ export function getTokenFiatAmount(
   const currentTokenToFiatRate = multiplyCurrencies(
     contractExchangeRate,
     conversionRate,
+    {
+      // TODO:  Verify these values
+      multiplicandBase: 16, // 16? 10?
+      multiplierBase: 10, // 16? 10?
+    },
   )
   const currentTokenInFiat = conversionUtil(tokenAmount, {
     fromNumericBase: 'dec',

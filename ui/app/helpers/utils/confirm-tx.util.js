@@ -34,6 +34,7 @@ export function getHexGasTotal({ gasLimit, gasPrice }) {
       toNumericBase: 'hex',
       multiplicandBase: 16,
       multiplierBase: 16,
+      // PROBLEM!  No aBase or bBase!
     }),
   )
 }
@@ -43,6 +44,7 @@ export function addEth(...args) {
     return addCurrencies(acc, base, {
       toNumericBase: 'dec',
       numberOfDecimals: 6,
+      // PROBLEM!  No aBase or bBase!
     })
   })
 }
@@ -52,6 +54,7 @@ export function addFiat(...args) {
     return addCurrencies(acc, base, {
       toNumericBase: 'dec',
       numberOfDecimals: 2,
+      // PROBLEM!  No aBase or bBase!
     })
   })
 }

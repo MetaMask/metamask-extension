@@ -162,6 +162,14 @@ const conversionUtil = (
   })
 
 const getBigNumber = (value, base) => {
+  if (base === undefined) {
+    // debugger;
+    // throw new Error('No base provided to getBigNumber')
+    console.warn('getBigNumber problem -- no base provided!')
+  }
+
+  console.log('getBigNumber usage!  value: ', value, '; base: ', base)
+
   // We don't include 'number' here, because BigNumber will throw if passed
   // a number primitive it considers unsafe.
   if (typeof value === 'string' || value instanceof BigNumber) {
@@ -173,6 +181,13 @@ const getBigNumber = (value, base) => {
 
 const addCurrencies = (a, b, options = {}) => {
   const { aBase, bBase, ...conversionOptions } = options
+
+  if (aBase === undefined || bBase === undefined) {
+    // debugger;
+    // throw new Error('No base provided to addCurrencies')
+    console.warn('addCurrencies problem -- no base provided!')
+  }
+
   const value = getBigNumber(a, aBase).add(getBigNumber(b, bBase))
 
   return converter({
@@ -183,6 +198,13 @@ const addCurrencies = (a, b, options = {}) => {
 
 const subtractCurrencies = (a, b, options = {}) => {
   const { aBase, bBase, ...conversionOptions } = options
+
+  if (aBase === undefined || bBase === undefined) {
+    // debugger;
+    // throw new Error('No base provided to subtractCurrencies')
+    console.warn('subtractCurrencies problem -- no base provided!')
+  }
+
   const value = getBigNumber(a, aBase).minus(getBigNumber(b, bBase))
 
   return converter({
@@ -193,6 +215,12 @@ const subtractCurrencies = (a, b, options = {}) => {
 
 const multiplyCurrencies = (a, b, options = {}) => {
   const { multiplicandBase, multiplierBase, ...conversionOptions } = options
+
+  if (multiplicandBase === undefined || multiplierBase === undefined) {
+    // debugger;
+    // throw new Error('No base provided to multiplyCurrencies')
+    console.warn('multiplyCurrencies problem -- no base provided!')
+  }
 
   const value = getBigNumber(a, multiplicandBase).times(
     getBigNumber(b, multiplierBase),
