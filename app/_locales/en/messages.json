@@ -700,6 +700,9 @@
   "hexData": {
     "message": "Hex Data"
   },
+  "incorrectPassword": {
+    "message": "Incorrect Password"
+  },
   "invalidHexData": {
     "message": "Invalid Hex Data"
   },

@@ -12,7 +12,7 @@ import {
   estimateGasAndCollateral,
 } from '../pages/send/send.utils'
 import * as ethUtil from 'cfx-util'
-import { fetchLocale } from '../helpers/utils/i18n-helper'
+import { fetchLocale, getMessage } from '../helpers/utils/i18n-helper'
 import { getMethodDataAsync } from '../helpers/utils/transactions.util'
 import { fetchSymbolAndDecimals } from '../helpers/utils/token-util'
 import switchDirection from '../helpers/utils/switch-direction'
@@ -2089,8 +2089,21 @@ export function hideWarning() {
   }
 }
 
+export function t(key, getState, ...args) {
+  const {
+    localeMessages,
+    metamask: { currentLocale },
+  } = getState()
+
+  return (
+    getMessage(currentLocale, localeMessages?.current, key, ...args) ||
+    getMessage(currentLocale, localeMessages?.en, key, ...args) ||
+    'no i18n found'
+  )
+}
+
 export function exportAccount(password, address) {
-  return function(dispatch) {
+  return function(dispatch, getState) {
     dispatch(showLoadingIndication())
 
     log.debug(`background.submitPassword`)
@@ -2099,7 +2112,7 @@ export function exportAccount(password, address) {
         if (err) {
           log.error('Error in submiting password.')
           dispatch(hideLoadingIndication())
-          dispatch(displayWarning('Incorrect Password.'))
+          dispatch(displayWarning(t('incorrectPassword', getState)))
           return reject(err)
         }
         log.debug(`background.exportAccount`)

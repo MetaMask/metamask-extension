@@ -583,6 +583,9 @@
   "hexData": {
     "message": "16進位資料"
   },
+  "incorrectPassword": {
+    "message": "密碼錯誤"
+  },
   "invalidHexData": {
     "message": "十六進制數據格式錯誤"
   },

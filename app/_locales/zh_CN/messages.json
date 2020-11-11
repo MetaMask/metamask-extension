@@ -601,6 +601,9 @@
   "hexData": {
     "message": "十六进制数据"
   },
+  "incorrectPassword": {
+    "message": "密码错误"
+  },
   "invalidHexData": {
     "message": "十六进制数据格式错误"
   },
