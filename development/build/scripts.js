@@ -406,10 +406,6 @@ function createScriptTasks({ browserPlatforms, livereload }) {
   }
 }
 
-function beep() {
-  process.stdout.write('\x07')
-}
-
 function getEnvironment({ devMode, test }) {
   // get environment slug
   if (devMode) {

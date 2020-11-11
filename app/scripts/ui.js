@@ -1,11 +1,9 @@
-
 // polyfills
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
 import '@formatjs/intl-relativetimeformat/polyfill'
 
 import { EventEmitter } from 'events'
 import PortStream from 'extension-port-stream'
-import ExtensionPlatform from './platforms/extension'
 import extension from 'extensionizer'
 
 import Dnode from 'dnode'
@@ -14,6 +12,7 @@ import EthQuery from 'eth-query'
 import StreamProvider from 'web3-stream-provider'
 import log from 'loglevel'
 import launchMetaMaskUi from '../../ui'
+import ExtensionPlatform from './platforms/extension'
 import { setupMultiplex } from './lib/stream-utils'
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
