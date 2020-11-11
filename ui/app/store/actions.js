@@ -2754,15 +2754,7 @@ export function getCurrentWindowTab() {
 
 // MetaMetrics
 export function trackEvent(payload, options) {
-  return new Promise((resolve, reject) => {
-    background.trackMetaMetricsEvent(payload, options, (error) => {
-      if (error) {
-        reject(error)
-        return
-      }
-      resolve()
-    })
-  })
+  return promisifiedBackground.trackMetaMetricsEvent(payload, options)
 }
 
 let previousMatch

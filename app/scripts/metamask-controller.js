@@ -26,6 +26,10 @@ import {
 } from '@metamask/controllers'
 import { getBackgroundMetaMetricState } from '../../ui/app/selectors'
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction'
+import {
+  SEGMENT_FLUSH_AT,
+  SEGMENT_FLUSH_INTERVAL,
+} from '../../shared/constants/metametrics'
 import ComposableObservableStore from './lib/ComposableObservableStore'
 import AccountTracker from './lib/account-tracker'
 import createLoggerMiddleware from './lib/createLoggerMiddleware'
@@ -113,7 +117,16 @@ export default class MetamaskController extends EventEmitter {
       network: this.networkController,
       migrateAddressBookState: this.migrateAddressBookState.bind(this),
     })
+
     this.metaMetricsController = new MetaMetricsController({
+      isDevOrTestEnvironment: Boolean(
+        process.env.METAMASK_DEBUG || process.env.IN_TEST,
+      ),
+      segmentWriteKey: process.env.SEGMENT_WRITE_KEY,
+      segmentLegacyWriteKey: process.env.SEGMENT_LEGACY_WRITE_KEY,
+      segmentHost: process.env.SEGMENT_HOST,
+      flushAt: SEGMENT_FLUSH_AT,
+      flustInterval: SEGMENT_FLUSH_INTERVAL,
       preferencesStore: this.preferencesController.store,
       getCurrentChainId: this.networkController.getCurrentChainId.bind(
         this.networkController,
@@ -122,6 +135,7 @@ export default class MetamaskController extends EventEmitter {
         this.networkController,
       ),
       version: this.platform.getVersion(),
+      environment: process.env.METAMASK_ENVIRONMENT,
     })
 
     this.appStateController = new AppStateController({
