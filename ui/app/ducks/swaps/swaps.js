@@ -95,6 +95,8 @@ const slice = createSlice({
       state.approveTxId = null
       state.balanceError = false
       state.fetchingQuotes = false
+      state.customGas.limit = null
+      state.customGas.price = null
     },
     retriedGetQuotes: (state) => {
       state.approveTxId = null
@@ -121,6 +123,10 @@ const slice = createSlice({
     },
     setToToken: (state, action) => {
       state.toToken = action.payload
+    },
+    swapCustomGasModalClosed: (state) => {
+      state.customGas.price = null
+      state.customGas.limit = null
     },
     swapCustomGasModalPriceEdited: (state, action) => {
       state.customGas.price = action.payload
@@ -299,6 +305,7 @@ const {
   swapCustomGasModalPriceEdited,
   swapCustomGasModalLimitEdited,
   retrievedFallbackSwapsGasPrice,
+  swapCustomGasModalClosed,
 } = actions
 
 export {
@@ -312,6 +319,7 @@ export {
   setToToken as setSwapToToken,
   swapCustomGasModalPriceEdited,
   swapCustomGasModalLimitEdited,
+  swapCustomGasModalClosed,
 }
 
 export const navigateBackToBuildQuote = (history) => {
