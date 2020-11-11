@@ -203,4 +203,10 @@ describe('MetaMetricsController', function () {
       spy.restore()
     })
   })
+
+  afterEach(function () {
+    // flush the queues manually after each test
+    segment.flush()
+    segmentLegacy.flush()
+  })
 })
