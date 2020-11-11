@@ -182,10 +182,10 @@ export default class NetworkForm extends PureComponent {
         onClear()
       }
     } catch (error) {
-      log.error('Unexpected error during form submission.', error)
       this.setState({
         isSubmitting: false,
       })
+      throw error
     }
   }
 
