@@ -9,6 +9,14 @@ import Tooltip from '../../../../components/ui/tooltip'
 import { isPrefixedFormattedHexString } from '../../../../../../app/scripts/lib/util'
 import { jsonRpcRequest } from '../../../../helpers/utils/util'
 
+const FORM_STATE_KEYS = [
+  'rpcUrl',
+  'chainId',
+  'ticker',
+  'networkName',
+  'blockExplorerUrl',
+]
+
 export default class NetworkForm extends PureComponent {
   static contextTypes = {
     t: PropTypes.func.isRequired,
@@ -35,25 +43,17 @@ export default class NetworkForm extends PureComponent {
 
   state = {
     rpcUrl: this.props.rpcUrl,
-    chainId: this.getDisplayChainIdFromProps(),
+    chainId: this.getDisplayChainId(this.props.chainId),
     ticker: this.props.ticker,
     networkName: this.props.networkName,
     blockExplorerUrl: this.props.blockExplorerUrl,
     errors: {},
+    isSubmitting: false,
   }
 
   componentDidUpdate(prevProps) {
-    const {
-      rpcUrl: prevRpcUrl,
-      networksTabIsInAddMode: prevAddMode,
-    } = prevProps
-    const {
-      rpcUrl,
-      ticker,
-      networkName,
-      networksTabIsInAddMode,
-      blockExplorerUrl,
-    } = this.props
+    const { networksTabIsInAddMode: prevAddMode } = prevProps
+    const { networksTabIsInAddMode } = this.props
 
     if (!prevAddMode && networksTabIsInAddMode) {
       this.setState({
@@ -63,16 +63,15 @@ export default class NetworkForm extends PureComponent {
         networkName: '',
         blockExplorerUrl: '',
         errors: {},
+        isSubmitting: false,
       })
-    } else if (prevRpcUrl !== rpcUrl) {
-      this.setState({
-        rpcUrl,
-        chainId: this.getDisplayChainIdFromProps(),
-        ticker,
-        networkName,
-        blockExplorerUrl,
-        errors: {},
-      })
+    } else {
+      for (const key of FORM_STATE_KEYS) {
+        if (prevProps[key] !== this.props[key]) {
+          this.resetForm()
+          break
+        }
+      }
     }
   }
 
@@ -93,86 +92,100 @@ export default class NetworkForm extends PureComponent {
   }
 
   resetForm() {
-    const { rpcUrl, ticker, networkName, blockExplorerUrl } = this.props
+    const {
+      rpcUrl,
+      chainId,
+      ticker,
+      networkName,
+      blockExplorerUrl,
+    } = this.props
 
     this.setState({
       rpcUrl,
-      chainId: this.getDisplayChainIdFromProps(),
+      chainId: this.getDisplayChainId(chainId),
       ticker,
       networkName,
       blockExplorerUrl,
       errors: {},
+      isSubmitting: false,
     })
   }
 
   /**
-   * Ensures that the chainId is always displayed in decimal, even though
-   * it's stored in hexadecimal.
+   * Attempts to convert the given chainId to a decimal string, for display
+   * purposes.
    *
-   * Should be called to get the chainId whenever props are used to set the
+   * Should be called with the props chainId whenever it is used to set the
    * component's state.
    *
-   * @returns {string} The props chainId in decimal.
+   * @param {unknown} chainId - The chainId to convert.
+   * @returns {string} The props chainId in decimal, or the original value if
+   * it can't be converted.
    */
-  getDisplayChainIdFromProps() {
-    const { chainId: propsChainId } = this.props
-
-    if (
-      !propsChainId ||
-      typeof propsChainId !== 'string' ||
-      !propsChainId.startsWith('0x')
-    ) {
-      return propsChainId
+  getDisplayChainId(chainId) {
+    if (!chainId || typeof chainId !== 'string' || !chainId.startsWith('0x')) {
+      return chainId
     }
-    return new BigNumber(propsChainId, 16).toString(10)
+    return new BigNumber(chainId, 16).toString(10)
   }
 
   onSubmit = async () => {
-    const {
-      setRpcTarget,
-      rpcUrl: propsRpcUrl,
-      editRpc,
-      rpcPrefs = {},
-      onClear,
-      networksTabIsInAddMode,
-    } = this.props
-    const {
-      networkName,
-      rpcUrl,
-      chainId: stateChainId,
-      ticker,
-      blockExplorerUrl,
-    } = this.state
+    this.setState({
+      isSubmitting: true,
+    })
 
-    const formChainId = stateChainId.trim().toLowerCase()
-    // Ensure chainId is a 0x-prefixed, lowercase hex string
-    let chainId = formChainId
-    if (!chainId.startsWith('0x')) {
-      chainId = `0x${new BigNumber(chainId, 10).toString(16)}`
-    }
+    try {
+      const {
+        setRpcTarget,
+        rpcUrl: propsRpcUrl,
+        editRpc,
+        rpcPrefs = {},
+        onClear,
+        networksTabIsInAddMode,
+      } = this.props
+      const {
+        networkName,
+        rpcUrl,
+        chainId: stateChainId,
+        ticker,
+        blockExplorerUrl,
+      } = this.state
 
-    if (!(await this.validateChainIdOnSubmit(formChainId, chainId, rpcUrl))) {
-      return
-    }
+      const formChainId = stateChainId.trim().toLowerCase()
+      // Ensure chainId is a 0x-prefixed, lowercase hex string
+      let chainId = formChainId
+      if (!chainId.startsWith('0x')) {
+        chainId = `0x${new BigNumber(chainId, 10).toString(16)}`
+      }
 
-    if (propsRpcUrl && rpcUrl !== propsRpcUrl) {
-      await editRpc(propsRpcUrl, rpcUrl, chainId, ticker, networkName, {
-        blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
-        ...rpcPrefs,
-      })
-    } else {
-      await setRpcTarget(rpcUrl, chainId, ticker, networkName, {
-        blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
-        ...rpcPrefs,
-      })
-    }
+      if (!(await this.validateChainIdOnSubmit(formChainId, chainId, rpcUrl))) {
+        this.setState({
+          isSubmitting: false,
+        })
+        return
+      }
 
-    if (networksTabIsInAddMode) {
-      onClear()
-    } else {
+      // After this point, isSubmitting will be reset in componentDidUpdate
+      if (propsRpcUrl && rpcUrl !== propsRpcUrl) {
+        await editRpc(propsRpcUrl, rpcUrl, chainId, ticker, networkName, {
+          ...rpcPrefs,
+          blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
+        })
+      } else {
+        await setRpcTarget(rpcUrl, chainId, ticker, networkName, {
+          ...rpcPrefs,
+          blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
+        })
+      }
+
+      if (networksTabIsInAddMode) {
+        onClear()
+      }
+    } catch (error) {
       this.setState({
-        chainId: this.getDisplayChainIdFromProps(),
+        isSubmitting: false,
       })
+      throw error
     }
   }
 
@@ -195,6 +208,10 @@ export default class NetworkForm extends PureComponent {
         onClear()
       },
     })
+  }
+
+  isSubmitting() {
+    return this.state.isSubmitting
   }
 
   stateIsUnchanged() {
@@ -220,7 +237,7 @@ export default class NetworkForm extends PureComponent {
     const chainIdIsUnchanged =
       typeof propsChainId === 'string' &&
       propsChainId.toLowerCase().startsWith('0x') &&
-      stateChainId === this.getDisplayChainIdFromProps()
+      stateChainId === this.getDisplayChainId(propsChainId)
 
     return (
       stateRpcUrl === rpcUrl &&
@@ -424,6 +441,7 @@ export default class NetworkForm extends PureComponent {
       !networksTabIsInAddMode && !isCurrentRpcTarget && !viewOnly
 
     const isSubmitDisabled =
+      this.isSubmitting() ||
       this.stateIsUnchanged() ||
       !rpcUrl ||
       !chainId ||
