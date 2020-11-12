@@ -89,11 +89,11 @@ function mapDispatchToProps(dispatch) {
   return {
     showCustomizeGasModal: () =>
       dispatch(showModal({ name: 'CUSTOMIZE_GAS', hideBasic: true })),
-    setGasPrice: (newPrice, gasLimit) => {
-      dispatch(setGasPrice(newPrice))
-      dispatch(setCustomGasPrice(newPrice))
+    setGasPrice: ({ gasPrice, gasLimit }) => {
+      dispatch(setGasPrice(gasPrice))
+      dispatch(setCustomGasPrice(gasPrice))
       if (gasLimit) {
-        dispatch(setGasTotal(calcGasTotal(gasLimit, newPrice)))
+        dispatch(setGasTotal(calcGasTotal(gasLimit, gasPrice)))
       }
     },
     setGasLimit: (newLimit, gasPrice) => {

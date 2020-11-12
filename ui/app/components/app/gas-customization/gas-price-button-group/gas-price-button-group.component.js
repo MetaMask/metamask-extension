@@ -94,10 +94,10 @@ export default class GasPriceButtonGroup extends Component {
     return (
       <Button
         onClick={() =>
-          handleGasPriceSelection(
-            priceInHexWei,
-            renderableGasInfo.gasEstimateType,
-          )
+          handleGasPriceSelection({
+            gasPrice: priceInHexWei,
+            gasEstimateType: renderableGasInfo.gasEstimateType,
+          })
         }
         key={`gas-price-button-${index}`}
       >

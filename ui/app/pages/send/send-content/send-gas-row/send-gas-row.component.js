@@ -101,7 +101,7 @@ export default class SendGasRow extends Component {
           className="gas-price-button-group--small"
           showCheck={false}
           {...gasPriceButtonGroupProps}
-          handleGasPriceSelection={async (...args) => {
+          handleGasPriceSelection={async (opts) => {
             metricsEvent({
               eventOpts: {
                 category: 'Transactions',
@@ -109,7 +109,7 @@ export default class SendGasRow extends Component {
                 name: 'Changed Gas Button',
               },
             })
-            await gasPriceButtonGroupProps.handleGasPriceSelection(...args)
+            await gasPriceButtonGroupProps.handleGasPriceSelection(opts)
             if (maxModeOn) {
               this.setMaxAmount()
             }
@@ -134,7 +134,7 @@ export default class SendGasRow extends Component {
       <div>
         <AdvancedGasInputs
           updateCustomGasPrice={(newGasPrice) =>
-            setGasPrice(newGasPrice, gasLimit)
+            setGasPrice({ gasPrice: newGasPrice, gasLimit })
           }
           updateCustomGasLimit={(newGasLimit) =>
             setGasLimit(newGasLimit, gasPrice)
