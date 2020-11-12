@@ -36,7 +36,7 @@ async function getDecimalsFromContract(tokenAddress) {
   try {
     const result = await token.decimals()
     const decimalsBN = result[0]
-    return decimalsBN && decimalsBN.toString()
+    return decimalsBN?.toString()
   } catch (error) {
     log.warn(
       `decimals() call for token at address ${tokenAddress} resulted in error:`,

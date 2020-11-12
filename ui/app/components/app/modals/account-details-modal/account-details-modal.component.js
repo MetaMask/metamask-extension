@@ -37,7 +37,7 @@ export default class AccountDetailsModal extends Component {
 
     let exportPrivateKeyFeatureEnabled = true
     // This feature is disabled for hardware wallets
-    if (keyring && keyring.type.search('Hardware') !== -1) {
+    if (keyring?.type?.search('Hardware') !== -1) {
       exportPrivateKeyFeatureEnabled = false
     }
 

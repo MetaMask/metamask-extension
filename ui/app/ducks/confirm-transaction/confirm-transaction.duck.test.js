@@ -468,9 +468,7 @@ describe('Confirm Transaction Duck', function () {
         getCode: sinon
           .stub()
           .callsFake((address) =>
-            Promise.resolve(
-              address && address.match(/isContract/u) ? 'not-0x' : '0x',
-            ),
+            Promise.resolve(address?.match(/isContract/u) ? 'not-0x' : '0x'),
           ),
       }
     })

@@ -161,7 +161,7 @@ export default class SendTransactionScreen extends Component {
     if (qrCodeData) {
       if (qrCodeData.type === 'address') {
         scannedAddress = qrCodeData.values.address.toLowerCase()
-        const currentAddress = prevTo && prevTo.toLowerCase()
+        const currentAddress = prevTo?.toLowerCase()
         if (currentAddress !== scannedAddress) {
           updateSendTo(scannedAddress)
           updateGas = true

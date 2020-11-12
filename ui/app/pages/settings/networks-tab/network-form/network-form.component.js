@@ -291,7 +291,7 @@ export default class NetworkForm extends PureComponent {
 
   setStateWithValue = (stateKey, validator) => {
     return (e) => {
-      validator && validator(e.target.value, stateKey)
+      validator?.(e.target.value, stateKey)
       this.setState({ [stateKey]: e.target.value })
     }
   }

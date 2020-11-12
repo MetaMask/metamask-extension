@@ -31,11 +31,11 @@ export default function ItemList({
         ref={containerRef}
       >
         {results.slice(0, maxListItems).map((result, i) => {
-          if (hideItemIf && hideItemIf(result)) {
+          if (hideItemIf?.(result)) {
             return null
           }
 
-          const onClick = () => onClickItem && onClickItem(result)
+          const onClick = () => onClickItem?.(result)
           const {
             iconUrl,
             identiconAddress,

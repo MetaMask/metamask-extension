@@ -26,7 +26,7 @@ const ConfirmDetailRow = (props) => {
               'confirm-detail-row__header-text',
               headerTextClassName,
             )}
-            onClick={() => onHeaderClick && onHeaderClick()}
+            onClick={() => onHeaderClick?.()}
           >
             {headerText}
           </div>
