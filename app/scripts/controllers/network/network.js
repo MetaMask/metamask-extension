@@ -196,7 +196,7 @@ export default class NetworkController extends EventEmitter {
   }
 
   getNetworkIdentifier() {
-    const provider = this.providerStore.getstate()
+    const provider = this.providerStore.getState()
     return provider.type === 'rpc' ? provider.rpcUrl : provider.type
   }
 
