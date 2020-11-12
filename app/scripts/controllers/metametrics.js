@@ -1,5 +1,6 @@
 import { merge, omit } from 'lodash'
 import Analytics from 'analytics-node'
+import ObservableStore from 'obs-store'
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../lib/enums'
 import {
   createSegmentMock,
@@ -54,12 +55,46 @@ export default class MetaMetricsController {
     segmentHost,
     flushAt,
     flushInterval,
-    preferencesStore,
-    getCurrentChainId,
-    getProviderConfig,
+    preferencesController,
+    networkController,
     version,
     environment,
   }) {
+    const prefState = preferencesController.store.getState()
+
+    this.store = new ObservableStore({
+      chainId: networkController.getCurrentChainId(),
+      network: networkController.getNetworkName(),
+      participateInMetaMetrics: prefState.participateInMetaMetrics,
+      metaMetricsId: prefState.metaMetricsId,
+      currentLocale: prefState.currentLocale,
+      version:
+        environment === 'production' ? version : `${version}-${environment}`,
+    })
+
+    preferencesController.store.subscribe(
+      ({ participateInMetaMetrics, currentLocale, metaMetricsId }) => {
+        const currentState = this.store.getState()
+        if (
+          participateInMetaMetrics !== currentState.participateInMetaMetrics ||
+          currentLocale !== currentState.currentLocale ||
+          metaMetricsId !== currentState.metaMetricsId
+        ) {
+          this.store.updateState({
+            participateInMetaMetrics,
+            currentLocale,
+            metaMetricsId,
+          })
+        }
+      },
+    )
+
+    networkController.on('networkDidChange', () => {
+      this.store.updateState({
+        network: networkController.getNetworkName(),
+        chainId: networkController.getCurrentChainId(),
+      })
+    })
     // We do not want to track events on development builds unless specifically
     // provided a SEGMENT_WRITE_KEY. This also holds true for test environments and
     // E2E, which is handled in the build process by never providing the SEGMENT_WRITE_KEY
@@ -81,13 +116,6 @@ export default class MetaMetricsController {
             flushAt,
             flushInterval,
           })
-
-    this._previousTrackedPage = undefined
-    this._getPreferencesState = preferencesStore.getState.bind(preferencesStore)
-    this._getCurrentChainId = getCurrentChainId
-    this._getProviderConfig = getProviderConfig
-    this._version =
-      environment === 'production' ? version : `${version}-${environment}`
   }
 
   /**
@@ -295,28 +323,27 @@ export default class MetaMetricsController {
   }
 
   get version() {
-    return this._version
+    return this.store.getState().version
   }
 
   get network() {
-    const provider = this._getProviderConfig()
-    return provider.type === 'rpc' ? provider.rpcUrl : provider.type
+    return this.store.getState().network
   }
 
   get chainId() {
-    return this._getCurrentChainId()
+    return this.store.getState().chainId
   }
 
   get locale() {
-    const { currentLocale } = this._getPreferencesState()
+    const { currentLocale } = this.store.getState()
     return currentLocale.replace('_', '-')
   }
 
   get metaMetricsId() {
-    return this._getPreferencesState()?.metaMetricsId
+    return this.store.getState().metaMetricsId
   }
 
   get participateInMetaMetrics() {
-    return this._getPreferencesState()?.participateInMetaMetrics
+    return this.store.getState().participateInMetaMetrics
   }
 }

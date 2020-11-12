@@ -13,6 +13,7 @@ const segmentLegacy = createSegmentMock(2, 10000)
 
 const VERSION = '0.0.1-test'
 const NETWORK = 'Mainnet'
+const FAKE_CHAIN_ID = '0x1338'
 const LOCALE = 'en_US'
 const TEST_META_METRICS_ID = '0xabc'
 
@@ -24,7 +25,7 @@ const DEFAULT_TEST_CONTEXT = {
 }
 
 const DEFAULT_SHARED_PROPERTIES = {
-  chain_id: '0x1',
+  chain_id: FAKE_CHAIN_ID,
   locale: LOCALE.replace('_', '-'),
   network: NETWORK,
   environment_type: 'background',
@@ -42,29 +43,64 @@ const DEFAULT_PAGE_PROPERTIES = {
   ...DEFAULT_SHARED_PROPERTIES,
 }
 
-function getMetaMetricsController({
-  chainId = '0x1',
-  providerConfig = { type: NETWORK },
+function getMockNetworkController(
+  chainId = FAKE_CHAIN_ID,
+  provider = { type: NETWORK },
+) {
+  let networkStore = { chainId, provider }
+  const on = sinon.stub().withArgs('networkDidChange')
+  const updateState = (newState) => {
+    networkStore = { ...networkStore, ...newState }
+    console.log(networkStore)
+    on.getCall(0).args[1]()
+  }
+  return {
+    store: {
+      getState: () => networkStore,
+      updateState,
+    },
+    getCurrentChainId: () => networkStore.chainId,
+    getNetworkName: () => networkStore.provider.type,
+    on,
+  }
+}
+
+function getMockPreferencesController({
   participateInMetaMetrics = true,
   metaMetricsId = TEST_META_METRICS_ID,
+  currentLocale = LOCALE,
+} = {}) {
+  let preferencesStore = {
+    currentLocale,
+    participateInMetaMetrics,
+    metaMetricsId,
+  }
+  const subscribe = sinon.stub()
+  const updateState = (newState) => {
+    preferencesStore = { ...preferencesStore, ...newState }
+    subscribe.getCall(0).args[0](preferencesStore)
+  }
+  return {
+    store: {
+      getState: sinon.stub().returns(preferencesStore),
+      updateState,
+      subscribe,
+    },
+  }
+}
+
+function getMetaMetricsController({
+  preferencesController = getMockPreferencesController(),
+  networkController = getMockNetworkController(),
 } = {}) {
   return new MetaMetricsController({
     isDevOrTestEnvironment: true,
     segmentMock: segment,
     segmentLegacyMock: segmentLegacy,
-    getCurrentChainId: () => chainId,
-    getProviderConfig: () => providerConfig,
+    networkController,
     flushAt: 2,
     flushInterval: 1000,
-    preferencesStore: {
-      getState() {
-        return {
-          participateInMetaMetrics,
-          metaMetricsId,
-          currentLocale: 'en_US',
-        }
-      },
-    },
+    preferencesController,
     version: '0.0.1',
     environment: 'test',
   })
@@ -73,12 +109,47 @@ describe('MetaMetricsController', function () {
   describe('constructor', function () {
     it('should properly initialize', function () {
       const metaMetricsController = getMetaMetricsController()
-      assert.strictEqual(metaMetricsController.version, '0.0.1-test')
-      assert.strictEqual(metaMetricsController.network, 'Mainnet')
-      assert.strictEqual(metaMetricsController.chainId, '0x1')
+      assert.strictEqual(metaMetricsController.version, VERSION)
+      assert.strictEqual(metaMetricsController.network, NETWORK)
+      assert.strictEqual(metaMetricsController.chainId, FAKE_CHAIN_ID)
       assert.strictEqual(metaMetricsController.participateInMetaMetrics, true)
-      assert.strictEqual(metaMetricsController.metaMetricsId, '0xabc')
-      assert.strictEqual(metaMetricsController.locale, 'en-US')
+      assert.strictEqual(
+        metaMetricsController.metaMetricsId,
+        TEST_META_METRICS_ID,
+      )
+      assert.strictEqual(metaMetricsController.locale, LOCALE.replace('_', '-'))
+    })
+
+    it('should update when network changes', function () {
+      const networkController = getMockNetworkController()
+      const metaMetricsController = getMetaMetricsController({
+        networkController,
+      })
+      assert.strictEqual(metaMetricsController.network, NETWORK)
+      networkController.store.updateState({
+        provider: {
+          type: 'NEW_NETWORK',
+        },
+        chainId: '0xaab',
+      })
+      assert.strictEqual(metaMetricsController.network, 'NEW_NETWORK')
+      assert.strictEqual(metaMetricsController.chainId, '0xaab')
+    })
+
+    it('should update when preferences changes', function () {
+      const preferencesController = getMockPreferencesController()
+      const metaMetricsController = getMetaMetricsController({
+        preferencesController,
+      })
+      assert.strictEqual(metaMetricsController.network, NETWORK)
+      preferencesController.store.updateState({
+        participateInMetaMetrics: false,
+        metaMetricsId: null,
+        currentLocale: 'en_UK',
+      })
+      assert.strictEqual(metaMetricsController.participateInMetaMetrics, false)
+      assert.strictEqual(metaMetricsController.metaMetricsId, null)
+      assert.strictEqual(metaMetricsController.locale, 'en-UK')
     })
   })
 
@@ -86,7 +157,9 @@ describe('MetaMetricsController', function () {
     it('should not track an event if user is not participating in metametrics', function () {
       const mock = sinon.mock(segment)
       const metaMetricsController = getMetaMetricsController({
-        participateInMetaMetrics: false,
+        preferencesController: getMockPreferencesController({
+          participateInMetaMetrics: false,
+        }),
       })
       mock.expects('track').never()
       metaMetricsController.trackEvent({
@@ -103,7 +176,9 @@ describe('MetaMetricsController', function () {
     it('should track an event if user has not opted in, but isOptIn is true', function () {
       const mock = sinon.mock(segment)
       const metaMetricsController = getMetaMetricsController({
-        participateInMetaMetrics: false,
+        preferencesController: getMockPreferencesController({
+          participateInMetaMetrics: false,
+        }),
       })
       mock
         .expects('track')
@@ -134,7 +209,9 @@ describe('MetaMetricsController', function () {
     it('should track an event during optin and allow for metaMetricsId override', function () {
       const mock = sinon.mock(segment)
       const metaMetricsController = getMetaMetricsController({
-        participateInMetaMetrics: false,
+        preferencesController: getMockPreferencesController({
+          participateInMetaMetrics: false,
+        }),
       })
       mock
         .expects('track')
@@ -379,7 +456,9 @@ describe('MetaMetricsController', function () {
     it('should not track a page view if user is not participating in metametrics', function () {
       const mock = sinon.mock(segment)
       const metaMetricsController = getMetaMetricsController({
-        participateInMetaMetrics: false,
+        preferencesController: getMockPreferencesController({
+          participateInMetaMetrics: false,
+        }),
       })
       mock.expects('page').never()
       metaMetricsController.trackPage({
@@ -395,7 +474,9 @@ describe('MetaMetricsController', function () {
     it('should track a page view if isOptIn is true and user not yet opted in', function () {
       const mock = sinon.mock(segment)
       const metaMetricsController = getMetaMetricsController({
-        participateInMetaMetrics: null,
+        preferencesController: getMockPreferencesController({
+          participateInMetaMetrics: null,
+        }),
       })
       mock
         .expects('page')

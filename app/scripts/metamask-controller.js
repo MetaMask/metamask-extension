@@ -127,13 +127,8 @@ export default class MetamaskController extends EventEmitter {
       segmentHost: process.env.SEGMENT_HOST,
       flushAt: SEGMENT_FLUSH_AT,
       flustInterval: SEGMENT_FLUSH_INTERVAL,
-      preferencesStore: this.preferencesController.store,
-      getCurrentChainId: this.networkController.getCurrentChainId.bind(
-        this.networkController,
-      ),
-      getProviderConfig: this.networkController.getProviderConfig.bind(
-        this.networkController,
-      ),
+      preferencesController: this.preferencesController,
+      networkController: this.networkController,
       version: this.platform.getVersion(),
       environment: process.env.METAMASK_ENVIRONMENT,
     })
