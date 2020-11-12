@@ -11,7 +11,6 @@ import { useNewMetricEvent } from '../../../hooks/useMetricEvent'
 import { useSwapsEthToken } from '../../../hooks/useSwapsEthToken'
 import { MetaMetricsContext } from '../../../contexts/metametrics.new'
 import FeeCard from '../fee-card'
-import { setCustomGasLimit } from '../../../ducks/gas/gas.duck'
 import {
   getQuotes,
   getSelectedQuote,
@@ -27,6 +26,7 @@ import {
   navigateBackToBuildQuote,
   signAndSendTransactions,
   getBackgroundSwapRouteState,
+  swapsQuoteSelected,
 } from '../../../ducks/swaps/swaps'
 import {
   conversionRateSelector,
@@ -39,8 +39,6 @@ import { getTokens } from '../../../ducks/metamask/metamask'
 import {
   safeRefetchQuotes,
   setCustomApproveTxData,
-  setSwapsTxGasLimit,
-  setSelectedQuoteAggId,
   setSwapsErrorKey,
   showModal,
 } from '../../../store/actions'
@@ -445,7 +443,7 @@ export default function ViewQuote() {
           : null,
         initialGasPrice: gasPrice,
         initialGasLimit: maxGasLimit,
-        minimumGasLimit: nonCustomMaxGasLimit,
+        minimumGasLimit: new BigNumber(nonCustomMaxGasLimit, 16).toNumber(),
       }),
     )
 
@@ -471,11 +469,7 @@ export default function ViewQuote() {
           <SelectQuotePopover
             quoteDataRows={renderablePopoverData}
             onClose={() => setSelectQuotePopoverShown(false)}
-            onSubmit={(aggId) => {
-              dispatch(setSelectedQuoteAggId(aggId))
-              dispatch(setCustomGasLimit(null))
-              dispatch(setSwapsTxGasLimit(''))
-            }}
+            onSubmit={(aggId) => dispatch(swapsQuoteSelected(aggId))}
             swapToSymbol={destinationTokenSymbol}
             initialAggId={usedQuote.aggregator}
             onQuoteDetailsIsOpened={quoteDetailsOpened}

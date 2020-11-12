@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import BigNumber from 'bignumber.js'
 import { hideModal, customSwapsGasParamsUpdated } from '../../../store/actions'
 import {
   conversionRateSelector as getConversionRate,
@@ -18,6 +19,7 @@ import {
   swapCustomGasModalPriceEdited,
   swapCustomGasModalLimitEdited,
   shouldShowCustomPriceTooLowWarning,
+  swapCustomGasModalClosed,
 } from '../../../ducks/swaps/swaps'
 
 import {
@@ -87,6 +89,11 @@ const mapStateToProps = (state) => {
     conversionRate,
   })
 
+  const customGasLimitTooLow = new BigNumber(customGasLimit, 16).lt(
+    minimumGasLimit,
+    10,
+  )
+
   return {
     customGasPrice,
     customGasLimit,
@@ -121,7 +128,7 @@ const mapStateToProps = (state) => {
     customGasLimitMessage,
     customTotalSupplement,
     usdConversionRate: getUSDConversionRate(state),
-    disableSave: insufficientBalance || customGasLimit < minimumGasLimit,
+    disableSave: insufficientBalance || customGasLimitTooLow,
     minimumGasLimit,
   }
 }
@@ -129,10 +136,12 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     cancelAndClose: () => {
+      dispatch(swapCustomGasModalClosed())
       dispatch(hideModal())
     },
-    onSubmit: (gasLimit, gasPrice) => {
-      dispatch(customSwapsGasParamsUpdated(gasLimit, gasPrice))
+    onSubmit: async (gasLimit, gasPrice) => {
+      await dispatch(customSwapsGasParamsUpdated(gasLimit, gasPrice))
+      dispatch(swapCustomGasModalClosed())
       dispatch(hideModal())
     },
     setSwapsCustomizationModalPrice: (newPrice) => {
