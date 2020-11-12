@@ -690,7 +690,7 @@ export default class PreferencesController {
     const { tokens, hiddenTokens } = this._getTokenRelatedStates(
       selectedAddress,
     )
-    this._updateAccountTokens(tokens, this.getAssetImages(), hiddenTokens)
+    this.store.updateState({ tokens, hiddenTokens })
   }
 
   /**
