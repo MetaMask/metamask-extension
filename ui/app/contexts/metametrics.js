@@ -18,7 +18,7 @@ import {
 import { getSendToken } from '../selectors/send'
 import { txDataSelector } from '../selectors/confirm-transaction'
 import { getEnvironmentType } from '../../../app/scripts/lib/util'
-import { trackEvent } from '../store/actions'
+import { trackMetaMetricsEvent } from '../store/actions'
 
 export const MetaMetricsContext = createContext(() => {
   captureException(
@@ -67,7 +67,7 @@ export function MetaMetricsProvider({ children }) {
       const page = {
         path: currentPath,
       }
-      return trackEvent(
+      return trackMetaMetricsEvent(
         {
           event: eventOpts.name,
           category: eventOpts.category,

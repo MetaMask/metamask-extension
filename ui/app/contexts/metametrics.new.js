@@ -22,6 +22,29 @@ import { txDataSelector } from '../selectors'
 
 import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions'
 
+// type imports
+/**
+ * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventPayload} MetaMetricsEventPayload
+ * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventOptions} MetaMetricsEventOptions
+ */
+
+// types
+/**
+ * @typedef {Omit<MetaMetricsEventPayload, 'environmentType' | 'context'>} UIMetricsEventPayload
+ */
+/**
+ * @typedef {Omit<MetaMetricsEventOptions, 'metaMetricsSendCount'>} UIMetricsEventOptions
+ */
+/**
+ * @typedef {(
+ *  payload: UIMetricsEventPayload,
+ *  options: UIMetricsEventOptions
+ * ) => Promise<void>} UITrackEventMethod
+ */
+
+/**
+ * @type {React.Context<UITrackEventMethod>}
+ */
 export const MetaMetricsContext = createContext(() => {
   captureException(
     Error(
@@ -69,6 +92,9 @@ export function MetaMetricsProvider({ children }) {
   const location = useLocation()
   const context = useSegmentContext()
 
+  /**
+   * @type {UITrackEventMethod}
+   */
   const trackEvent = useCallback(
     (payload, options) => {
       trackMetaMetricsEvent(

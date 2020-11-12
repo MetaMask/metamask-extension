@@ -2748,6 +2748,15 @@ export function getCurrentWindowTab() {
 }
 
 // MetaMetrics
+/**
+ * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventPayload} MetaMetricsEventPayload
+ * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventOptions} MetaMetricsEventOptions
+ */
+/**
+ *
+ * @param {MetaMetricsEventPayload} payload - details of the event to track
+ * @param {MetaMetricsEventOptions} options - options for routing/handling of event
+ */
 export function trackMetaMetricsEvent(payload, options) {
   return promisifiedBackground.trackMetaMetricsEvent(payload, options)
 }
