@@ -166,7 +166,6 @@ const getBigNumber = (value, base) => {
     console.warn('getBigNumber problem -- no base provided!', value, base)
     throw new Error('No base provided to getBigNumber')
   }
-  
 
   // We don't include 'number' here, because BigNumber will throw if passed
   // a number primitive it considers unsafe.
@@ -181,7 +180,11 @@ const addCurrencies = (a, b, options = {}) => {
   const { aBase, bBase, ...conversionOptions } = options
 
   if (aBase === undefined || bBase === undefined) {
-    console.warn('addCurrencies problem -- no aBase or bBase provided!', aBase, bBase)
+    console.warn(
+      'addCurrencies problem -- no aBase or bBase provided!',
+      aBase,
+      bBase,
+    )
     throw new Error('No aBase or bBase provided to addCurrencies')
   }
 
@@ -197,7 +200,11 @@ const subtractCurrencies = (a, b, options = {}) => {
   const { aBase, bBase, ...conversionOptions } = options
 
   if (aBase === undefined || bBase === undefined) {
-    console.warn('subtractCurrencies problem -- no aBase or bBase provided!', aBase, bBase)
+    console.warn(
+      'subtractCurrencies problem -- no aBase or bBase provided!',
+      aBase,
+      bBase,
+    )
     throw new Error('No aBase or bBase provided to subtractCurrencies')
   }
 
@@ -213,8 +220,14 @@ const multiplyCurrencies = (a, b, options = {}) => {
   const { multiplicandBase, multiplierBase, ...conversionOptions } = options
 
   if (multiplicandBase === undefined || multiplierBase === undefined) {
-    console.warn('multiplyCurrencies problem -- no multiplicandBase or multiplierBase provided!', multiplicandBase, multiplierBase)
-    throw new Error('No multiplicandBase or multiplierBase provided to multiplyCurrencies')
+    console.warn(
+      'multiplyCurrencies problem -- no multiplicandBase or multiplierBase provided!',
+      multiplicandBase,
+      multiplierBase,
+    )
+    throw new Error(
+      'No multiplicandBase or multiplierBase provided to multiplyCurrencies',
+    )
   }
 
   const value = getBigNumber(a, multiplicandBase).times(
