@@ -443,7 +443,7 @@ export default function ViewQuote() {
           : null,
         initialGasPrice: gasPrice,
         initialGasLimit: maxGasLimit,
-        minimumGasLimit: new BigNumber(nonCustomMaxGasLimit, 16).toString(10),
+        minimumGasLimit: new BigNumber(nonCustomMaxGasLimit, 16).toNumber(),
       }),
     )
 
