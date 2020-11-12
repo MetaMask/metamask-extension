@@ -161,7 +161,7 @@ export default class MetaMetricsController {
   _track(payload, options) {
     const {
       isOptIn,
-      metaMetricsIdOverride,
+      metaMetricsId: metaMetricsIdOverride,
       matomoEvent,
       flushImmediately,
       metaMetricsSendCount,
@@ -172,7 +172,7 @@ export default class MetaMetricsController {
     // This is carried over from the old implementation, and will likely need
     // to be updated to work with the new tracking plan. I think we should use
     // a config setting for this instead of trying to match the event name
-    const isSendFlow = Boolean(payload.event.match(/^send|^confirm/u))
+    const isSendFlow = Boolean(payload.event.match(/^send|^confirm/iu))
     if (
       isSendFlow &&
       metaMetricsSendCount &&
@@ -217,11 +217,16 @@ export default class MetaMetricsController {
     })
   }
 
-  trackPage(name, params, environmentType, page, referrer) {
-    const idTrait = this.participateInMetaMetrics ? 'userId' : 'anonymousId'
-    const idValue = this.participateInMetaMetrics
-      ? this.metaMetricsId
-      : METAMETRICS_ANONYMOUS_ID
+  trackPage({ name, params, environmentType, page, referrer }, options = {}) {
+    if (this.participateInMetaMetrics === false) {
+      return
+    }
+
+    if (this.participateInMetaMetrics === null && !options.isOptInPath) {
+      return
+    }
+    const idTrait = this.metaMetricsId ? 'userId' : 'anonymousId'
+    const idValue = this.metaMetricsId ?? METAMETRICS_ANONYMOUS_ID
     this.segment.page({
       [idTrait]: idValue,
       name,

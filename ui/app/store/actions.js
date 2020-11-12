@@ -1,9 +1,7 @@
 import abi from 'human-standard-token-abi'
 import pify from 'pify'
 import log from 'loglevel'
-import { capitalize, omit } from 'lodash'
-import { matchPath } from 'react-router-dom'
-import { captureMessage } from '@sentry/browser'
+import { capitalize } from 'lodash'
 import getBuyEthUrl from '../../../app/scripts/lib/buy-eth-url'
 import { checksumAddress } from '../helpers/utils/util'
 import { calcTokenBalance, estimateGasForSend } from '../pages/send/send.utils'
@@ -26,10 +24,7 @@ import {
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account'
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask'
 import { LISTED_CONTRACT_ADDRESSES } from '../../../shared/constants/tokens'
-import { PATH_NAME_MAP } from '../helpers/constants/routes'
 import * as actionConstants from './actionConstants'
-
-const PATHS_TO_CHECK = Object.keys(PATH_NAME_MAP)
 
 let background = null
 let promisifiedBackground = null
@@ -2753,67 +2748,9 @@ export function getCurrentWindowTab() {
 }
 
 // MetaMetrics
-export function trackEvent(payload, options) {
+export function trackMetaMetricsEvent(payload, options) {
   return promisifiedBackground.trackMetaMetricsEvent(payload, options)
 }
-
-let previousMatch
-
-export function trackPage(location, environmentType, page, referrer) {
-  return async (_, getState) => {
-    const state = await getState()
-    return new Promise((resolve) => {
-      const { participateInMetaMetrics } = state.metamask
-      if (
-        (participateInMetaMetrics === null &&
-          location.pathname.startsWith('/initialize')) ||
-        participateInMetaMetrics
-      ) {
-        const match = matchPath(location.pathname, {
-          path: PATHS_TO_CHECK,
-          exact: true,
-          strict: true,
-        })
-        // Start by checking for a missing match route. If this falls through to the else if, then we know we
-        // have a matched route for tracking.
-        if (!match) {
-          // We have more specific pages for each type of transaction confirmation
-          // The user lands on /confirm-transaction first, then is redirected based on
-          // the contents of state.
-          if (location.pathname !== '/confirm-transaction') {
-            // Otherwise we are legitimately missing a matching route
-            captureMessage(`Segment page tracking found unmatched route`, {
-              previousMatch,
-              currentPath: location.pathname,
-            })
-            resolve()
-            return
-          }
-        } else if (
-          previousMatch !== match.path &&
-          !(
-            environmentType === 'notification' &&
-            match.path === '/' &&
-            previousMatch === undefined
-          )
-        ) {
-          // When a notification window is open by a Dapp we do not want to track the initial home route load that can
-          // sometimes happen. To handle this we keep track of the previousMatch, and we skip the event track in the event
-          // that we are dealing with the initial load of the homepage
-          const { path, params } = match
-          const name = PATH_NAME_MAP[path]
-          background.trackMetaMetricsPage(
-            name,
-            omit(params, ['account', 'address']),
-            environmentType,
-            page,
-            referrer,
-            resolve,
-          )
-          return
-        }
-      }
-      resolve()
-    })
-  }
+export function trackMetaMetricsPage(payload, options) {
+  return promisifiedBackground.trackMetaMetricsPage(payload, options)
 }

@@ -3,17 +3,24 @@
  * MetaMetrics is our own brand, and should remain aptly named regardless of the underlying
  * metrics system. This file implements Segment analytics tracking.
  */
-import React, { Component, createContext, useEffect, useCallback } from 'react'
+import React, {
+  Component,
+  createContext,
+  useEffect,
+  useRef,
+  useCallback,
+} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
-import { useLocation, useRouteMatch } from 'react-router-dom'
-import { captureException } from '@sentry/browser'
+import { matchPath, useLocation, useRouteMatch } from 'react-router-dom'
+import { captureException, captureMessage } from '@sentry/browser'
 
+import { omit } from 'lodash'
 import { getEnvironmentType } from '../../../app/scripts/lib/util'
 import { PATH_NAME_MAP } from '../helpers/constants/routes'
 import { txDataSelector } from '../selectors'
 
-import { trackEvent, trackPage } from '../store/actions'
+import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions'
 
 export const MetaMetricsContext = createContext(() => {
   captureException(
@@ -62,9 +69,9 @@ export function MetaMetricsProvider({ children }) {
   const location = useLocation()
   const context = useSegmentContext()
 
-  const trackMetaMetricsEvent = useCallback(
+  const trackEvent = useCallback(
     (payload, options) => {
-      trackEvent(
+      trackMetaMetricsEvent(
         {
           ...payload,
           environmentType: getEnvironmentType(),
@@ -79,6 +86,9 @@ export function MetaMetricsProvider({ children }) {
     [context, metaMetricsSendCount],
   )
 
+  // Used to prevent double tracking page calls
+  const previousMatch = useRef()
+
   /**
    * Anytime the location changes, track a page change with segment.
    * Previously we would manually track changes to history and keep a
@@ -87,13 +97,56 @@ export function MetaMetricsProvider({ children }) {
    */
   useEffect(() => {
     const environmentType = getEnvironmentType()
-    dispatch(
-      trackPage(location, environmentType, context.page, context.referrer),
-    )
+    // Events that happen during initialization before the user opts into MetaMetrics will be anonymous
+    const match = matchPath(location.pathname, {
+      path: PATHS_TO_CHECK,
+      exact: true,
+      strict: true,
+    })
+    // Start by checking for a missing match route. If this falls through to the else if, then we know we
+    // have a matched route for tracking.
+    if (!match) {
+      // We have more specific pages for each type of transaction confirmation
+      // The user lands on /confirm-transaction first, then is redirected based on
+      // the contents of state.
+      if (location.pathname !== '/confirm-transaction') {
+        // Otherwise we are legitimately missing a matching route
+        captureMessage(`Segment page tracking found unmatched route`, {
+          previousMatch,
+          currentPath: location.pathname,
+        })
+      }
+    } else if (
+      previousMatch.current !== match.path &&
+      !(
+        environmentType === 'notification' &&
+        match.path === '/' &&
+        previousMatch.current === undefined
+      )
+    ) {
+      // When a notification window is open by a Dapp we do not want to track the initial home route load that can
+      // sometimes happen. To handle this we keep track of the previousMatch, and we skip the event track in the event
+      // that we are dealing with the initial load of the homepage
+      const { path, params } = match
+      const name = PATH_NAME_MAP[path]
+      trackMetaMetricsPage(
+        {
+          name,
+          params: omit(params, ['account', 'address']),
+          environmentType,
+          page: context.page,
+          referrer: context.referrer,
+        },
+        {
+          isOptInPath: location.pathname.startsWith('/initialize'),
+        },
+      )
+    }
+    previousMatch.current = match?.path
   }, [location, dispatch, context])
 
   return (
-    <MetaMetricsContext.Provider value={trackMetaMetricsEvent}>
+    <MetaMetricsContext.Provider value={trackEvent}>
       {children}
     </MetaMetricsContext.Provider>
   )
