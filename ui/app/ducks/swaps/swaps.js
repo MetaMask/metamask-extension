@@ -23,6 +23,8 @@ import {
   updateTransaction,
   resetBackgroundSwapsState,
   setSwapsLiveness,
+  setSelectedQuoteAggId,
+  setSwapsTxGasLimit,
 } from '../../store/actions'
 import {
   AWAITING_SWAP_ROUTE,
@@ -344,6 +346,14 @@ export const prepareToLeaveSwaps = () => {
   return async (dispatch) => {
     dispatch(clearSwapsState())
     await dispatch(resetBackgroundSwapsState())
+  }
+}
+
+export const swapsQuoteSelected = (aggId) => {
+  return (dispatch) => {
+    dispatch(swapCustomGasModalLimitEdited(null))
+    dispatch(setSelectedQuoteAggId(aggId))
+    dispatch(setSwapsTxGasLimit(''))
   }
 }
 

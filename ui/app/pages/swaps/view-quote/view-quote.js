@@ -26,7 +26,7 @@ import {
   navigateBackToBuildQuote,
   signAndSendTransactions,
   getBackgroundSwapRouteState,
-  swapCustomGasModalLimitEdited,
+  swapsQuoteSelected,
 } from '../../../ducks/swaps/swaps'
 import {
   conversionRateSelector,
@@ -39,8 +39,6 @@ import { getTokens } from '../../../ducks/metamask/metamask'
 import {
   safeRefetchQuotes,
   setCustomApproveTxData,
-  setSwapsTxGasLimit,
-  setSelectedQuoteAggId,
   setSwapsErrorKey,
   showModal,
 } from '../../../store/actions'
@@ -471,11 +469,7 @@ export default function ViewQuote() {
           <SelectQuotePopover
             quoteDataRows={renderablePopoverData}
             onClose={() => setSelectQuotePopoverShown(false)}
-            onSubmit={(aggId) => {
-              dispatch(setSelectedQuoteAggId(aggId))
-              dispatch(swapCustomGasModalLimitEdited(null))
-              dispatch(setSwapsTxGasLimit(''))
-            }}
+            onSubmit={(aggId) => dispatch(swapsQuoteSelected(aggId))}
             swapToSymbol={destinationTokenSymbol}
             initialAggId={usedQuote.aggregator}
             onQuoteDetailsIsOpened={quoteDetailsOpened}
