@@ -113,6 +113,7 @@ export default class MetaMetricsOptIn extends Component {
                         name: 'Metrics Opt Out',
                       },
                       isOptIn: true,
+                      flushImmediately: true,
                     })
                   }
                 } finally {
@@ -136,6 +137,7 @@ export default class MetaMetricsOptIn extends Component {
                           name: 'Metrics Opt In',
                         },
                         isOptIn: true,
+                        flushImmediately: true,
                       }),
                     )
                   }
@@ -148,6 +150,7 @@ export default class MetaMetricsOptIn extends Component {
                       },
                       isOptIn: true,
                       metaMetricsId,
+                      flushImmediately: true,
                     }),
                   )
                   await Promise.all(metrics)

@@ -98,6 +98,7 @@ export function MetaMetricsProvider({ children }) {
           metaMetricsId: config.metaMetricsId,
           matomoEvent: true,
           metaMetricsSendCount,
+          flushImmediately: config.flushImmediately,
         },
       )
     },
