@@ -7,6 +7,7 @@ import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
 } from '../../../../shared/constants/metametrics'
+import waitUntilCalled from '../../../lib/wait-until-called'
 
 const segment = createSegmentMock(2, 10000)
 const segmentLegacy = createSegmentMock(2, 10000)
@@ -169,7 +170,6 @@ describe('MetaMetricsController', function () {
           test: 1,
         },
       })
-      mock.restore()
       mock.verify()
     })
 
@@ -202,7 +202,6 @@ describe('MetaMetricsController', function () {
         },
         { isOptIn: true },
       )
-      mock.restore()
       mock.verify()
     })
 
@@ -235,7 +234,6 @@ describe('MetaMetricsController', function () {
         },
         { isOptIn: true, metaMetricsId: 'TESTID' },
       )
-      mock.restore()
       mock.verify()
     })
 
@@ -264,7 +262,6 @@ describe('MetaMetricsController', function () {
         },
         { matomoEvent: true },
       )
-      mock.restore()
       mock.verify()
     })
 
@@ -290,7 +287,6 @@ describe('MetaMetricsController', function () {
           test: 1,
         },
       })
-      mock.restore()
       mock.verify()
     })
 
@@ -319,7 +315,6 @@ describe('MetaMetricsController', function () {
         },
         { metaMetricsSendCount: 1 },
       )
-      mock.restore()
       mock.verify()
     })
 
@@ -348,20 +343,21 @@ describe('MetaMetricsController', function () {
         },
         { metaMetricsSendCount: 0 },
       )
-      mock.restore()
       mock.verify()
     })
 
     it('should immediately flush queue if flushImmediately set to true', async function () {
       const metaMetricsController = getMetaMetricsController()
-      const value = await metaMetricsController.trackEvent(
+      const flushStub = sinon.stub(segment, 'flush')
+      const flushCalled = waitUntilCalled(flushStub, segment)
+      metaMetricsController.trackEvent(
         {
           event: 'Fake Event',
           category: 'Unit Test',
         },
         { flushImmediately: true },
       )
-      assert.strictEqual(value, undefined)
+      assert.doesNotReject(flushCalled)
     })
 
     it('should throw if event or category not provided', function () {
@@ -423,7 +419,6 @@ describe('MetaMetricsController', function () {
           properties: DEFAULT_EVENT_PROPERTIES,
         }),
       )
-      spy.restore()
     })
   })
 
@@ -449,7 +444,6 @@ describe('MetaMetricsController', function () {
         environmentType: ENVIRONMENT_TYPE_BACKGROUND,
         page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
       })
-      mock.restore()
       mock.verify()
     })
 
@@ -467,7 +461,6 @@ describe('MetaMetricsController', function () {
         environmentType: ENVIRONMENT_TYPE_BACKGROUND,
         page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
       })
-      mock.restore()
       mock.verify()
     })
 
@@ -499,7 +492,6 @@ describe('MetaMetricsController', function () {
         },
         { isOptInPath: true },
       )
-      mock.restore()
       mock.verify()
     })
   })
@@ -508,9 +500,6 @@ describe('MetaMetricsController', function () {
     // flush the queues manually after each test
     segment.flush()
     segmentLegacy.flush()
-  })
-
-  after(function () {
     sinon.restore()
   })
 })
