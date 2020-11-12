@@ -691,7 +691,6 @@ export default class PreferencesController {
       selectedAddress,
     )
     this._updateAccountTokens(tokens, this.getAssetImages(), hiddenTokens)
-    this.store.updateState({ tokens, hiddenTokens })
   }
 
   /**
