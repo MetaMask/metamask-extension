@@ -445,7 +445,7 @@ export default function ViewQuote() {
           : null,
         initialGasPrice: gasPrice,
         initialGasLimit: maxGasLimit,
-        minimumGasLimit: parseInt(nonCustomMaxGasLimit, 16),
+        minimumGasLimit: new BigNumber(nonCustomMaxGasLimit, 16).toString(10),
       }),
     )
 
