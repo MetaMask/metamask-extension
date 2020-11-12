@@ -152,11 +152,11 @@ export async function isSmartContractAddress(address) {
 }
 
 export function sumHexes(...args) {
-  const total = args.reduce((acc, base) => {
-    return addCurrencies(acc, base, {
+  const total = args.reduce((acc, hexAmount) => {
+    return addCurrencies(acc, hexAmount, {
       toNumericBase: 'hex',
-      aBase: 10,
-      bBase: 10,
+      aBase: 16,
+      bBase: 16,
     })
   })
 

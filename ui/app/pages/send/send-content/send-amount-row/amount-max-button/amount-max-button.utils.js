@@ -16,7 +16,7 @@ export function calcMaxAmount({ balance, gasTotal, sendToken, tokenBalance }) {
       })
     : subtractCurrencies(addHexPrefix(balance), addHexPrefix(gasTotal), {
         toNumericBase: 'hex',
-        aBase: 10,
-        bBase: 10,
+        aBase: 16,
+        bBase: 16,
       })
 }

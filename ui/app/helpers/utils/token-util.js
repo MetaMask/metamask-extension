@@ -219,7 +219,7 @@ export function getTokenFiatAmount(
     conversionRate,
     {
       multiplicandBase: 10,
-      multiplierBase: 16,
+      multiplierBase: 10,
     },
   )
   const currentTokenInFiat = conversionUtil(tokenAmount, {

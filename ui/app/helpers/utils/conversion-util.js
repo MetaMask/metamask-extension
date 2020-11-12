@@ -54,6 +54,11 @@ const baseChange = {
   BN: (n) => new BN(n.toString(16)),
 }
 
+// Utility function for checking base types
+const isValidBase = (base) => {
+  return Number.isInteger(base) && base > 1
+}
+
 /**
  * Defines the base type of numeric value
  * @typedef {('hex' | 'dec' | 'BN')} NumericBase
@@ -162,9 +167,8 @@ const conversionUtil = (
   })
 
 const getBigNumber = (value, base) => {
-  if (base === undefined) {
-    console.warn('getBigNumber problem -- no base provided!', value, base)
-    throw new Error('No base provided to getBigNumber')
+  if (!isValidBase(base)) {
+    throw new Error('Must specificy valid base')
   }
 
   // We don't include 'number' here, because BigNumber will throw if passed
@@ -179,13 +183,8 @@ const getBigNumber = (value, base) => {
 const addCurrencies = (a, b, options = {}) => {
   const { aBase, bBase, ...conversionOptions } = options
 
-  if (aBase === undefined || bBase === undefined) {
-    console.warn(
-      'addCurrencies problem -- no aBase or bBase provided!',
-      aBase,
-      bBase,
-    )
-    throw new Error('No aBase or bBase provided to addCurrencies')
+  if (!isValidBase(aBase) || !isValidBase(bBase)) {
+    throw new Error('Must specify valid aBase and bBase')
   }
 
   const value = getBigNumber(a, aBase).add(getBigNumber(b, bBase))
@@ -199,13 +198,8 @@ const addCurrencies = (a, b, options = {}) => {
 const subtractCurrencies = (a, b, options = {}) => {
   const { aBase, bBase, ...conversionOptions } = options
 
-  if (aBase === undefined || bBase === undefined) {
-    console.warn(
-      'subtractCurrencies problem -- no aBase or bBase provided!',
-      aBase,
-      bBase,
-    )
-    throw new Error('No aBase or bBase provided to subtractCurrencies')
+  if (!isValidBase(aBase) || !isValidBase(bBase)) {
+    throw new Error('Must specify valid aBase and bBase')
   }
 
   const value = getBigNumber(a, aBase).minus(getBigNumber(b, bBase))
@@ -219,15 +213,8 @@ const subtractCurrencies = (a, b, options = {}) => {
 const multiplyCurrencies = (a, b, options = {}) => {
   const { multiplicandBase, multiplierBase, ...conversionOptions } = options
 
-  if (multiplicandBase === undefined || multiplierBase === undefined) {
-    console.warn(
-      'multiplyCurrencies problem -- no multiplicandBase or multiplierBase provided!',
-      multiplicandBase,
-      multiplierBase,
-    )
-    throw new Error(
-      'No multiplicandBase or multiplierBase provided to multiplyCurrencies',
-    )
+  if (!isValidBase(multiplicandBase) || !isValidBase(multiplierBase)) {
+    throw new Error('Must specify valid multiplicandBase and multiplierBase')
   }
 
   const value = getBigNumber(a, multiplicandBase).times(

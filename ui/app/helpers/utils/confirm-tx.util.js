@@ -34,15 +34,13 @@ export function getHexGasTotal({ gasLimit, gasPrice }) {
       toNumericBase: 'hex',
       multiplicandBase: 16,
       multiplierBase: 16,
-      aBase: 10,
-      bBase: 10,
     }),
   )
 }
 
 export function addEth(...args) {
-  return args.reduce((acc, base) => {
-    return addCurrencies(acc, base, {
+  return args.reduce((acc, ethAmount) => {
+    return addCurrencies(acc, ethAmount, {
       toNumericBase: 'dec',
       numberOfDecimals: 6,
       aBase: 10,
@@ -52,8 +50,8 @@ export function addEth(...args) {
 }
 
 export function addFiat(...args) {
-  return args.reduce((acc, base) => {
-    return addCurrencies(acc, base, {
+  return args.reduce((acc, fiatAmount) => {
+    return addCurrencies(acc, fiatAmount, {
       toNumericBase: 'dec',
       numberOfDecimals: 2,
       aBase: 10,
