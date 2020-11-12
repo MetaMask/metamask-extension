@@ -163,12 +163,10 @@ const conversionUtil = (
 
 const getBigNumber = (value, base) => {
   if (base === undefined) {
-    // debugger;
-    // throw new Error('No base provided to getBigNumber')
-    console.warn('getBigNumber problem -- no base provided!')
+    console.warn('getBigNumber problem -- no base provided!', value, base)
+    throw new Error('No base provided to getBigNumber')
   }
-
-  console.log('getBigNumber usage!  value: ', value, '; base: ', base)
+  
 
   // We don't include 'number' here, because BigNumber will throw if passed
   // a number primitive it considers unsafe.
@@ -183,9 +181,8 @@ const addCurrencies = (a, b, options = {}) => {
   const { aBase, bBase, ...conversionOptions } = options
 
   if (aBase === undefined || bBase === undefined) {
-    // debugger;
-    // throw new Error('No base provided to addCurrencies')
-    console.warn('addCurrencies problem -- no base provided!')
+    console.warn('addCurrencies problem -- no aBase or bBase provided!', aBase, bBase)
+    throw new Error('No aBase or bBase provided to addCurrencies')
   }
 
   const value = getBigNumber(a, aBase).add(getBigNumber(b, bBase))
@@ -200,9 +197,8 @@ const subtractCurrencies = (a, b, options = {}) => {
   const { aBase, bBase, ...conversionOptions } = options
 
   if (aBase === undefined || bBase === undefined) {
-    // debugger;
-    // throw new Error('No base provided to subtractCurrencies')
-    console.warn('subtractCurrencies problem -- no base provided!')
+    console.warn('subtractCurrencies problem -- no aBase or bBase provided!', aBase, bBase)
+    throw new Error('No aBase or bBase provided to subtractCurrencies')
   }
 
   const value = getBigNumber(a, aBase).minus(getBigNumber(b, bBase))
@@ -217,9 +213,8 @@ const multiplyCurrencies = (a, b, options = {}) => {
   const { multiplicandBase, multiplierBase, ...conversionOptions } = options
 
   if (multiplicandBase === undefined || multiplierBase === undefined) {
-    // debugger;
-    // throw new Error('No base provided to multiplyCurrencies')
-    console.warn('multiplyCurrencies problem -- no base provided!')
+    console.warn('multiplyCurrencies problem -- no multiplicandBase or multiplierBase provided!', multiplicandBase, multiplierBase)
+    throw new Error('No multiplicandBase or multiplierBase provided to multiplyCurrencies')
   }
 
   const value = getBigNumber(a, multiplicandBase).times(
