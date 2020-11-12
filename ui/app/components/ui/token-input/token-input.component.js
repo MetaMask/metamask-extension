@@ -80,7 +80,7 @@ export default class TokenInput extends PureComponent {
 
     const multiplier = Math.pow(10, Number(decimals || 0))
     const hexValue = multiplyCurrencies(decimalValue || 0, multiplier, {
-      multiplicandBase: 16,
+      multiplicandBase: 10,
       multiplierBase: 10,
       toNumericBase: 'hex',
     })
