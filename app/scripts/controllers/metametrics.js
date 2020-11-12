@@ -64,7 +64,7 @@ export default class MetaMetricsController {
 
     this.store = new ObservableStore({
       chainId: networkController.getCurrentChainId(),
-      network: networkController.getNetworkName(),
+      network: networkController.getNetworkIdentifier(),
       participateInMetaMetrics: prefState.participateInMetaMetrics,
       metaMetricsId: prefState.metaMetricsId,
       currentLocale: prefState.currentLocale,
@@ -91,7 +91,7 @@ export default class MetaMetricsController {
 
     networkController.on('networkDidChange', () => {
       this.store.updateState({
-        network: networkController.getNetworkName(),
+        network: networkController.getNetworkIdentifier(),
         chainId: networkController.getCurrentChainId(),
       })
     })

@@ -61,7 +61,7 @@ function getMockNetworkController(
       updateState,
     },
     getCurrentChainId: () => networkStore.chainId,
-    getNetworkName: () => networkStore.provider.type,
+    getNetworkIdentifier: () => networkStore.provider.type,
     on,
   }
 }
