@@ -9,7 +9,7 @@ class LoadingScreen extends Component {
   }
 
   static propTypes = {
-    loadingMessage: PropTypes.oneOf([PropTypes.string, PropTypes.element]),
+    loadingMessage: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
     showLoadingSpinner: PropTypes.bool,
     header: PropTypes.element,
   }
