@@ -5,10 +5,20 @@
 
 // Type Declarations
 /**
+ * Used to attach context of where the user was at in the application when the
+ * event was triggered. Also included as full details of the current page in
+ * page events.
  * @typedef {Object} MetaMetricsPageObject
  * @property {string} [path] - the path of the current page (e.g /home)
  * @property {string} [title] - the title of the current page (e.g 'home')
  * @property {string} [url] - the fully qualified url of the current page
+ */
+
+/**
+ * For metamask, this is the dapp that triggered an interaction
+ * @typedef {Object} MetaMetricsReferrerObject
+ * @property {string} [url] - the origin of the dapp issuing the
+ *  notification
  */
 
 /**
@@ -23,12 +33,10 @@
  * @property {string} app.name - the name of the application tracking the event
  * @property {string} app.version - the version of the application
  * @property {string} userAgent - the useragent string of the user
- * @property {MetaMetricsPageObject} [page]     - an object representing details
- *  of the current page
- * @property {Object} [referrer] - for metamask, this is the dapp that triggered
- *  an interaction
- * @property {string} [referrer.url] - the origin of the dapp issuing the
- *  notification
+ * @property {MetaMetricsPageObject} [page] - an object representing details of
+ *  the current page
+ * @property {MetaMetricsReferrerObject} [referrer] - for metamask, this is the
+ *  dapp that triggered an interaction
  */
 
 /**
@@ -72,10 +80,43 @@
  *  the user's id to be included in the payload periodically
  */
 
+/**
+ * Represents the shape of data sent to the segment.track method.
+ * @typedef {Object} SegmentEventPayload
+ * @property {string} [userId] - The metametrics id for the user
+ * @property {string} [anonymousId] - An anonymousId that is used to track
+ *  sensitive data while preserving anonymity.
+ * @property {string} event - name of the event to track
+ * @property {Object} properties - properties to attach to the event
+ * @property {MetaMetricsContext} context - the context the event occurred in
+ */
+
+/**
+ * @typedef {Object} MetaMetricsPagePayload
+ * @property {string} name - The name of the page that was viewed
+ * @property {Object} [params] - The variadic parts of the page url
+ *  example (route: `/asset/:asset`, path: `/asset/ETH`)
+ *  params: { asset: 'ETH' }
+ * @property {EnvironmentType} environmentType - the environment type that the
+ *  page was viewed in
+ * @property {MetaMetricsPageObject} [page] - the details of the page
+ * @property {MetaMetricsReferrerObject} [referrer] - dapp that triggered the page
+ *  view
+ */
+
+/**
+ * @typedef {Object} MetaMetricsPageOptions
+ * @property {boolean} [isOptInPath] - is the current path one of the pages in
+ *  the onboarding workflow? If true and participateInMetaMetrics is null track
+ *  the page view
+ */
+
 export const METAMETRICS_ANONYMOUS_ID = '0x0000000000000000'
 
 /**
- * This object is used
+ * This object is used to identify events that are triggered by the background
+ * process.
+ * @type {MetaMetricsPageObject}
  */
 export const METAMETRICS_BACKGROUND_PAGE_OBJECT = {
   path: '/background-process',
@@ -101,12 +142,29 @@ export const SEGMENT_FLUSH_AT =
 export const SEGMENT_FLUSH_INTERVAL = 5000
 
 /**
+ * @typedef {Object} SegmentInterface
+ * @property {SegmentEventPayload[]} queue - A queue of events to be sent when
+ *  the flushAt limit has been reached, or flushInterval occurs
+ * @property {() => void} flush - Immediately flush the queue, resetting it to
+ *  an empty array and sending the pending events to Segment
+ * @property {(
+ *  payload: SegmentEventPayload,
+ *  callback: (err?: Error) => void
+ * ) => void} track - Track an event with Segment, using the internal batching
+ *  mechanism to optimize network requests
+ * @property {(payload: Object) => void} page - Track a page view with Segment
+ * @property {() => void} identify - Identify an anonymous user. We do not
+ *  currently use this method.
+ */
+
+/**
  * Creates a mock segment module for usage in test environments. This is used
  * when building the application in test mode to catch event calls and prevent
  * them from being sent to segment. It is also used in unit tests to mock and
  * spy on the methods to ensure proper behavior
  * @param {number} flushAt - number of events to queue before sending to segment
- * @param {nmber} flushInterval - ms interval to flush queue and send to segment
+ * @param {number} flushInterval - ms interval to flush queue and send to segment
+ * @returns {SegmentInterface}
  */
 export const createSegmentMock = (flushAt, flushInterval) => {
   const segmentMock = {

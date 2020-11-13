@@ -52,7 +52,6 @@ function getMockNetworkController(
   const on = sinon.stub().withArgs('networkDidChange')
   const updateState = (newState) => {
     networkStore = { ...networkStore, ...newState }
-    console.log(networkStore)
     on.getCall(0).args[1]()
   }
   return {

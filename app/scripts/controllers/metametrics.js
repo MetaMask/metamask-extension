@@ -36,16 +36,39 @@ export function sendCountIsTrackable(sendCount) {
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsContext} MetaMetricsContext
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventPayload} MetaMetricsEventPayload
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventOptions} MetaMetricsEventOptions
- */
-
-/**
- * @typedef {Object} SegmentEventPayload
- * @property {string} event - name of the event to track
- * @property {Object} properties - properties to attach to the event
- * @property {MetaMetricsContext} context - the context the event occurred in
+ * @typedef {import('../../../shared/constants/metametrics').SegmentEventPayload} SegmentEventPayload
+ * @typedef {import('../../../shared/constants/metametrics').SegmentInterface} SegmentInterface
+ * @typedef {import('../../../shared/constants/metametrics').MetaMetricsPagePayload} MetaMetricsPagePayload
+ * @typedef {import('../../../shared/constants/metametrics').MetaMetricsPageOptions} MetaMetricsPageOptions
  */
 
 export default class MetaMetricsController {
+  /**
+   * @param {boolean} isDevOrTestEnvironment - is the extension running in test
+   *  of dev mode? This will impact how segment is initialized
+   * @param {SegmentInterface} segmentMock - when in test or dev mode use this
+   *  mocked Segment module instead of an instance of Analytics
+   * @param {SegmentInterface} segmentLegacyMock - when in test or dev mode use
+   *  this mocked Segment module instead of an instance of Analytics for legacy
+   *  events
+   * @param {string} segmentWriteKey - the write key for the Segment source to
+   *  track new schema events to
+   * @param {string} segmentLegacyWriteKey - the write key for the Segment
+   *  source to tack legacy events to
+   * @param {string} segmentHost - the host to send events to. The default
+   *  host for Analytics constructor is 'https://api.segment.io'
+   * @param {number} flushAt - the maximum number of events to queue before
+   *  sending to Segment
+   * @param {number} flushInterval - the maximum number of milliseconds to wait
+   *  for before sending queued events
+   * @param {Object} preferencesController - The preferences controller, used
+   *  to access and subscribe to preferences that will be attached to events
+   * @param {Object} networkController - The network controller, used to access
+   *  the current network's chainId and network identifier. These properties
+   *  are attached to events
+   * @param {string} version - The version of the extension
+   * @param {string} environment - The environment the extension is running in
+   */
   constructor({
     isDevOrTestEnvironment,
     segmentMock,
@@ -119,6 +142,7 @@ export default class MetaMetricsController {
   }
 
   /**
+   * Build the context object to attach to page and track events.
    * @private
    * @param {Pick<MetaMetricsContext, 'referrer'>} [referrer] - dapp origin that initialized
    *  the notification window.
@@ -139,6 +163,8 @@ export default class MetaMetricsController {
   }
 
   /**
+   * Build's the event payload, processing all fields into a format that can be
+   * fed to Segment's track method
    * @private
    * @param {MetaMetricsEventPayload} rawPayload - raw payload provided to trackEvent
    * @param {MetaMetricsEventOptions} options - options for handling/routing event
@@ -180,10 +206,13 @@ export default class MetaMetricsController {
   }
 
   /**
+   * Perform validation on the payload and update the id type to use before
+   * sending to Segment. Also examines the options to route and handle the
+   * event appropriately.
    * @private
-   * @param {Object} payload
-   * @param {string} payload.event - name of the event to track
    * @param {SegmentEventPayload} payload - properties to attach to event
+   * @param {MetaMetricsEventOptions} options - options for routing and
+   *  handling the event
    * @returns {Promise<void>}
    */
   _track(payload, options) {
@@ -208,14 +237,16 @@ export default class MetaMetricsController {
     ) {
       excludeMetaMetricsId = true
     }
-    // If we are tracking sensitive data we will always use the anonymousId property
-    // as well as our METAMETRICS_ANONYMOUS_ID. This prevents us from associating potentially
-    // identifiable information with a specific id. During the opt in flow we will track all
-    // events, but do so with the anonymous id. The one exception to that rule is after the
-    // user opts in to MetaMetrics. When that happens we receive back the user's new MetaMetrics
-    // id before it is fully persisted to state. To avoid a race condition we explicitly pass the
-    // new id to the track method. In that case we will track the opt in event to the user's id.
-    // In all other cases we use the metaMetricsId from state.
+    // If we are tracking sensitive data we will always use the anonymousId
+    // property as well as our METAMETRICS_ANONYMOUS_ID. This prevents us from
+    // associating potentially identifiable information with a specific id.
+    // During the opt in flow we will track all events, but do so with the
+    // anonymous id. The one exception to that rule is after the user opts in
+    // to MetaMetrics. When that happens we receive back the user's new
+    // MetaMetrics id before it is fully persisted to state. To avoid a race
+    // condition we explicitly pass the new id to the track method. In that
+    // case we will track the opt in event to the user's id. In all other cases
+    // we use the metaMetricsId from state.
     if (excludeMetaMetricsId || (isOptIn && !metaMetricsIdOverride)) {
       idType = 'anonymousId'
       idValue = METAMETRICS_ANONYMOUS_ID
@@ -226,8 +257,8 @@ export default class MetaMetricsController {
 
     // Promises will only resolve when the event is sent to segment. For any
     // event that relies on this promise being fulfilled before performing UI
-    // updates, or otherwise delaying user interaction, supply the 'flushImmediately'
-    // flag to the trackEvent method.
+    // updates, or otherwise delaying user interaction, supply the
+    // 'flushImmediately' flag to the trackEvent method.
     return new Promise((resolve, reject) => {
       const callback = (err) => {
         if (err) {
@@ -245,6 +276,12 @@ export default class MetaMetricsController {
     })
   }
 
+  /**
+   * track a page view with Segment
+   * @param {MetaMetricsPagePayload} payload - details of the page viewed
+   * @param {MetaMetricsPageOptions} options - options for handling the page
+   *  view
+   */
   trackPage({ name, params, environmentType, page, referrer }, options = {}) {
     if (this.participateInMetaMetrics === false) {
       return
@@ -272,7 +309,10 @@ export default class MetaMetricsController {
   }
 
   /**
-   *
+   * track a metametrics event, performing necessary payload manipulation and
+   * routing the event to the appropriate segment source. Will split events
+   * with sensitiveProperties into two events, tracking the sensitiveProperties
+   * with the anonymousId only.
    * @param {MetaMetricsEventPayload} payload - details of the event
    * @param {MetaMetricsEventOptions} options - options for handling/routing the event
    * @returns {Promise<void>}
