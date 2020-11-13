@@ -40,6 +40,7 @@ export default class Identicon extends PureComponent {
         className={classnames('identicon', className)}
         src={image}
         style={getStyles(diameter)}
+        alt=""
       />
     )
   }
@@ -108,6 +109,7 @@ export default class Identicon extends PureComponent {
         className={classnames('identicon__eth-logo', className)}
         src="./images/eth_logo.svg"
         style={getStyles(diameter)}
+        alt=""
       />
     )
   }

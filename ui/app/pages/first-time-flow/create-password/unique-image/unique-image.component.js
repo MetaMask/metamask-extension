@@ -19,7 +19,7 @@ export default class UniqueImageScreen extends PureComponent {
 
     return (
       <div>
-        <img src="/images/sleuth.svg" height={42} width={42} />
+        <img src="/images/sleuth.svg" height="42" width="42" alt="" />
         <div className="first-time-flow__header">{t('protectYourKeys')}</div>
         <div className="first-time-flow__text-block">
           {t('protectYourKeysMessage1')}

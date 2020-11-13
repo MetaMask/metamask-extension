@@ -43,6 +43,9 @@
   "activityLog": {
     "message": "activity log"
   },
+  "addAccount": {
+    "message": "Add an account"
+  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
@@ -1357,6 +1360,9 @@
   },
   "scanQrCode": {
     "message": "Scan QR Code"
+  },
+  "scrollDown": {
+    "message": "Scroll down"
   },
   "search": {
     "message": "Search"

@@ -64,7 +64,7 @@ export default function IntroPopup({ onClose }) {
             {t('swapIntroLiquiditySourcesLabel')}
           </div>
           <div className="intro-popup__source-logo-container">
-            <img src="images/source-logos-all.svg" />
+            <img src="images/source-logos-all.svg" alt="" />
           </div>
           <div className="intro-popup__learn-more-header">
             {t('swapIntroLearnMoreHeader')}

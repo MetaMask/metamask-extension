@@ -173,7 +173,7 @@ export default class Network extends Component {
                 <img
                   title={t('attemptingConnect')}
                   src="images/loading.svg"
-                  alt=""
+                  alt={t('attemptingConnect')}
                 />
               </span>
             ) : (

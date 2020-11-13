@@ -49,6 +49,7 @@ export default class ContactListTab extends Component {
 
   renderAddButton() {
     const { history } = this.props
+
     return (
       <div
         className="address-book-add-button__button"
@@ -59,6 +60,7 @@ export default class ContactListTab extends Component {
         <img
           className="account-menu__item-icon"
           src="images/plus-btn-white.svg"
+          alt={this.context.t('addAccount')}
         />
       </div>
     )
