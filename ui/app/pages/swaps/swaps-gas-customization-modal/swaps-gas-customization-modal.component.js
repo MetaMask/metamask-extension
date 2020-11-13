@@ -61,9 +61,9 @@ export default class GasModalPageContainer extends Component {
       <BasicTabContent
         gasPriceButtonGroupProps={{
           ...gasPriceButtonGroupProps,
-          handleGasPriceSelection: (gasPriceInHexWei, gasEstimateType) => {
+          handleGasPriceSelection: ({ gasPrice, gasEstimateType }) => {
             this.setGasSpeedType(gasEstimateType)
-            this.props.setSwapsCustomizationModalPrice(gasPriceInHexWei)
+            this.props.setSwapsCustomizationModalPrice(gasPrice)
           },
         }}
       />

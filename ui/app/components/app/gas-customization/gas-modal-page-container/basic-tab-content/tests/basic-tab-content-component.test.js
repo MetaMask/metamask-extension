@@ -32,7 +32,8 @@ const mockGasPriceButtonGroupProps = {
       gasEstimateType: GAS_ESTIMATE_TYPES.AVERAGE,
     },
   ],
-  handleGasPriceSelection: (newPrice) => console.log('NewPrice: ', newPrice),
+  handleGasPriceSelection: ({ gasPrice }) =>
+    console.log('NewPrice: ', gasPrice),
   noButtonActiveByDefault: true,
   showCheck: true,
 }

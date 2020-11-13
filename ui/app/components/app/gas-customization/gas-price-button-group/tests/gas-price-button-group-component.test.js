@@ -73,13 +73,13 @@ describe('GasPriceButtonGroup Component', function () {
         defaultActiveButtonIndex,
         noButtonActiveByDefault,
       } = wrapper.props()
-      assert.equal(className, 'gas-price-button-group')
-      assert.equal(defaultActiveButtonIndex, 2)
-      assert.equal(noButtonActiveByDefault, true)
+      assert.strictEqual(className, 'gas-price-button-group')
+      assert.strictEqual(defaultActiveButtonIndex, 2)
+      assert.strictEqual(noButtonActiveByDefault, true)
     })
 
     function renderButtonArgsTest(i, mockPropsAndFlags) {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         GasPriceButtonGroup.prototype.renderButton.getCall(i).args,
         [
           { ...mockGasPriceButtonGroupProps.gasButtonInfo[i] },
@@ -90,7 +90,10 @@ describe('GasPriceButtonGroup Component', function () {
     }
 
     it('should call this.renderButton 3 times, with the correct args', function () {
-      assert.equal(GasPriceButtonGroup.prototype.renderButton.callCount, 3)
+      assert.strictEqual(
+        GasPriceButtonGroup.prototype.renderButton.callCount,
+        3,
+      )
       renderButtonArgsTest(0, mockButtonPropsAndFlags)
       renderButtonArgsTest(1, mockButtonPropsAndFlags)
       renderButtonArgsTest(2, mockButtonPropsAndFlags)
@@ -100,7 +103,7 @@ describe('GasPriceButtonGroup Component', function () {
       wrapper.setProps({ buttonDataLoading: true })
       assert(wrapper.is('div'))
       assert(wrapper.hasClass('gas-price-button-group__loading-container'))
-      assert.equal(wrapper.text(), 'loading')
+      assert.strictEqual(wrapper.text(), 'loading')
     })
   })
 
@@ -119,30 +122,34 @@ describe('GasPriceButtonGroup Component', function () {
     })
 
     it('should render a button', function () {
-      assert.equal(wrappedRenderButtonResult.type(), 'button')
+      assert.strictEqual(wrappedRenderButtonResult.type(), 'button')
     })
 
     it('should call the correct method when clicked', function () {
-      assert.equal(
+      assert.strictEqual(
         mockGasPriceButtonGroupProps.handleGasPriceSelection.callCount,
         0,
       )
       wrappedRenderButtonResult.props().onClick()
-      assert.equal(
+      assert.strictEqual(
         mockGasPriceButtonGroupProps.handleGasPriceSelection.callCount,
         1,
       )
-      assert.deepEqual(
+      assert.deepStrictEqual(
         mockGasPriceButtonGroupProps.handleGasPriceSelection.getCall(0).args,
         [
-          mockGasPriceButtonGroupProps.gasButtonInfo[0].priceInHexWei,
-          mockGasPriceButtonGroupProps.gasButtonInfo[0].gasEstimateType,
+          {
+            gasPrice:
+              mockGasPriceButtonGroupProps.gasButtonInfo[0].priceInHexWei,
+            gasEstimateType:
+              mockGasPriceButtonGroupProps.gasButtonInfo[0].gasEstimateType,
+          },
         ],
       )
     })
 
     it('should call this.renderButtonContent with the correct args', function () {
-      assert.equal(
+      assert.strictEqual(
         GasPriceButtonGroup.prototype.renderButtonContent.callCount,
         1,
       )
@@ -153,7 +160,7 @@ describe('GasPriceButtonGroup Component', function () {
         gasEstimateType,
       } = mockGasPriceButtonGroupProps.gasButtonInfo[0]
       const { showCheck, className } = mockGasPriceButtonGroupProps
-      assert.deepEqual(
+      assert.deepStrictEqual(
         GasPriceButtonGroup.prototype.renderButtonContent.getCall(0).args,
         [
           {
@@ -184,11 +191,11 @@ describe('GasPriceButtonGroup Component', function () {
       const wrappedRenderButtonContentResult = shallow(
         renderButtonContentResult,
       )
-      assert.equal(
+      assert.strictEqual(
         wrappedRenderButtonContentResult.childAt(0).children().length,
         1,
       )
-      assert.equal(
+      assert.strictEqual(
         wrappedRenderButtonContentResult.find('.someClass__label').text(),
         'slow',
       )
@@ -206,11 +213,11 @@ describe('GasPriceButtonGroup Component', function () {
       const wrappedRenderButtonContentResult = shallow(
         renderButtonContentResult,
       )
-      assert.equal(
+      assert.strictEqual(
         wrappedRenderButtonContentResult.childAt(0).children().length,
         1,
       )
-      assert.equal(
+      assert.strictEqual(
         wrappedRenderButtonContentResult
           .find('.someClass__primary-currency')
           .text(),
@@ -230,11 +237,11 @@ describe('GasPriceButtonGroup Component', function () {
       const wrappedRenderButtonContentResult = shallow(
         renderButtonContentResult,
       )
-      assert.equal(
+      assert.strictEqual(
         wrappedRenderButtonContentResult.childAt(0).children().length,
         1,
       )
-      assert.equal(
+      assert.strictEqual(
         wrappedRenderButtonContentResult
           .find('.someClass__secondary-currency')
           .text(),
@@ -254,11 +261,11 @@ describe('GasPriceButtonGroup Component', function () {
       const wrappedRenderButtonContentResult = shallow(
         renderButtonContentResult,
       )
-      assert.equal(
+      assert.strictEqual(
         wrappedRenderButtonContentResult.childAt(0).children().length,
         1,
       )
-      assert.equal(
+      assert.strictEqual(
         wrappedRenderButtonContentResult
           .find('.someClass__time-estimate')
           .text(),
@@ -277,7 +284,10 @@ describe('GasPriceButtonGroup Component', function () {
       const wrappedRenderButtonContentResult = shallow(
         renderButtonContentResult,
       )
-      assert.equal(wrappedRenderButtonContentResult.find('.fa-check').length, 1)
+      assert.strictEqual(
+        wrappedRenderButtonContentResult.find('.fa-check').length,
+        1,
+      )
     })
 
     it('should render all elements if all args passed', function () {
@@ -296,7 +306,7 @@ describe('GasPriceButtonGroup Component', function () {
       const wrappedRenderButtonContentResult = shallow(
         renderButtonContentResult,
       )
-      assert.equal(wrappedRenderButtonContentResult.children().length, 5)
+      assert.strictEqual(wrappedRenderButtonContentResult.children().length, 5)
     })
 
     it('should render no elements if all args passed', function () {
@@ -307,7 +317,7 @@ describe('GasPriceButtonGroup Component', function () {
       const wrappedRenderButtonContentResult = shallow(
         renderButtonContentResult,
       )
-      assert.equal(wrappedRenderButtonContentResult.children().length, 0)
+      assert.strictEqual(wrappedRenderButtonContentResult.children().length, 0)
     })
   })
 })
