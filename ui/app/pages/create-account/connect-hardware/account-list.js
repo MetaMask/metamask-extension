@@ -5,13 +5,6 @@ import getAccountLink from '../../../../lib/account-link'
 import Button from '../../../components/ui/button'
 
 class AccountList extends Component {
-  state = {
-    showCustomInput: false,
-    customPathSelected: false,
-  }
-
-  inputRef = React.createRef()
-
   getHdPaths() {
     return [
       {
@@ -21,10 +14,6 @@ class AccountList extends Component {
       {
         label: `Legacy (MEW / MyCrypto)`,
         value: `m/44'/60'/0'`,
-      },
-      {
-        label: `Custom`,
-        value: `custom`,
       },
     ]
   }
@@ -43,7 +32,6 @@ class AccountList extends Component {
   }
 
   renderHdPathSelector() {
-    const { showCustomInput } = this.state
     const { onPathChange, selectedPath } = this.props
 
     const options = this.getHdPaths()
@@ -58,41 +46,19 @@ class AccountList extends Component {
             className="hw-connect__hdPath__select"
             name="hd-path-select"
             clearable={false}
-            value={showCustomInput ? 'custom' : selectedPath}
+            value={selectedPath}
             options={options}
             onChange={(opt) => {
-              if (opt.value === 'custom') {
-                this.setState({ showCustomInput: true })
-              } else {
-                this.setState({ showCustomInput: false })
-                onPathChange(opt.value)
-              }
+              onPathChange(opt.value)
             }}
           />
         </div>
-        {showCustomInput && this.renderCustomInput()}
       </div>
     )
   }
 
   capitalizeDevice(device) {
     return device.slice(0, 1).toUpperCase() + device.slice(1)
-  }
-
-  renderCustomInput() {
-    const hdPaths = this.getHdPaths()
-    return (
-      <input
-        className="hw-connect__custom-input"
-        type="text"
-        defaultValue={hdPaths[0].value}
-        onChange={() => {
-          this.setState({ customPathSelected: false })
-        }}
-        ref={this.inputRef}
-        autoFocus
-      />
-    )
   }
 
   renderHeader() {
@@ -177,9 +143,6 @@ class AccountList extends Component {
   }
 
   renderButtons() {
-    const { showCustomInput, customPathSelected } = this.state
-    const { onPathChange } = this.props
-    const showSelectButton = showCustomInput && !customPathSelected
     const disabled = this.props.selectedAccount === null
     const buttonProps = {}
     if (disabled) {
@@ -196,29 +159,15 @@ class AccountList extends Component {
         >
           {this.context.t('cancel')}
         </Button>
-        {showSelectButton ? (
-          <Button
-            type="primary"
-            large
-            className="new-external-account-form__button unlock"
-            onClick={() => {
-              onPathChange(this.inputRef.current.value)
-              this.setState({ customPathSelected: true })
-            }}
-          >
-            {this.context.t('selectHdPath')}
-          </Button>
-        ) : (
-          <Button
-            type="primary"
-            large
-            className="new-external-account-form__button unlock"
-            disabled={disabled}
-            onClick={this.props.onUnlockAccount.bind(this, this.props.device)}
-          >
-            {this.context.t('unlock')}
-          </Button>
-        )}
+        <Button
+          type="primary"
+          large
+          className="new-external-account-form__button unlock"
+          disabled={disabled}
+          onClick={this.props.onUnlockAccount.bind(this, this.props.device)}
+        >
+          {this.context.t('unlock')}
+        </Button>
       </div>
     )
   }
@@ -234,12 +183,11 @@ class AccountList extends Component {
   }
 
   render() {
-    const { showCustomInput, customPathSelected } = this.state
     return (
       <div className="new-external-account-form account-list">
         {this.renderHeader()}
-        {(!showCustomInput || customPathSelected) && this.renderAccounts()}
-        {(!showCustomInput || customPathSelected) && this.renderPagination()}
+        {this.renderAccounts()}
+        {this.renderPagination()}
         {this.renderButtons()}
         {this.renderForgetDevice()}
       </div>
