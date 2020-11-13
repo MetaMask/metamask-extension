@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { decGWEIToHexWEI } from '../../../../../helpers/utils/conversions.util'
 import AdvancedGasInputs from '../../advanced-gas-inputs'
 
 export default class AdvancedTabContent extends Component {
