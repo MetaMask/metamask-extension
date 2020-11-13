@@ -215,9 +215,6 @@
   "connectingToRopsten": {
     "message": "Connectant a la xarxa de test Ropsten"
   },
-  "continueToCoinSwitch": {
-    "message": "Continua a CoinSwitch"
-  },
   "continueToWyre": {
     "message": "Continua a Wyre"
   },
