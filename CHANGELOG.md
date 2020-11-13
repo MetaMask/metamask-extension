@@ -27,12 +27,14 @@
 - [#9271](https://github.com/MetaMask/metamask-extension/pull/9271): Do not check popupIsOpen on Vivaldi
 - [#9306](https://github.com/MetaMask/metamask-extension/pull/9306): Fix UI crash when dapp submits negative gas price
 - [#9257](https://github.com/MetaMask/metamask-extension/pull/9257): Add sort and search to AddRecipient accounts list
-- [#9367](https://github.com/MetaMask/metamask-extension/pull/9367): Add custom Ledger HD path option
 - [#9824](https://github.com/MetaMask/metamask-extension/pull/9824): Move `externally_connectable` from base to Chrome manifest
 - [#9815](https://github.com/MetaMask/metamask-extension/pull/9815): Add support for custom network RPC URL with basic auth
 - [#9822](https://github.com/MetaMask/metamask-extension/pull/9822): Make QR code button focusable
 - [#9832](https://github.com/MetaMask/metamask-extension/pull/9832): Warn instead of throw on duplicate web3
 - [#9838](https://github.com/MetaMask/metamask-extension/pull/9838): @metamask/controllers@4.0.0
+- [#9856](https://github.com/MetaMask/metamask-extension/pull/9856): Prevent user from getting stuck on opt in page
+- [#9845](https://github.com/MetaMask/metamask-extension/pull/9845): Show a 'send eth' button on home screen in full screen mode
+- [#9871](https://github.com/MetaMask/metamask-extension/pull/9871): Show send text upon hover in main asset list
 
 ## 8.1.3 Mon Oct 26 2020
 - [#9642](https://github.com/MetaMask/metamask-extension/pull/9642) Prevent excessive overflow from swap dropdowns
