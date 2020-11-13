@@ -23,10 +23,11 @@
     }
   }
 
-  &__icon-wrapper {
+  &__icon-button {
     position: absolute;
     margin-left: 10px;
     left: 100%;
+    background: unset;
   }
 
   &__icon {
