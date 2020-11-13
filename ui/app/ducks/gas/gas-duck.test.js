@@ -24,14 +24,14 @@ const GasReducer = GasDuck.default
 describe('Gas Duck', function () {
   let tempFetch
   let tempDateNow
-  const mockEthGasApiResponse = {
+  const mockGasPriceApiResponse = {
     SafeGasPrice: 10,
     ProposeGasPrice: 20,
     FastGasPrice: 30,
   }
   const fakeFetch = () =>
     new Promise((resolve) => {
-      const dataToResolve = mockEthGasApiResponse
+      const dataToResolve = mockGasPriceApiResponse
       resolve({
         json: () => Promise.resolve(dataToResolve),
       })

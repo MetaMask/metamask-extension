@@ -1,5 +1,5 @@
 {
-  "ethGasBasic": {
+  "gasPricesBasic": {
     "average": 85,
     "fast": 200,
     "safeLow": 80

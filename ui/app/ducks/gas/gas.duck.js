@@ -140,7 +140,7 @@ export function gasEstimatesLoadingFinished() {
   }
 }
 
-async function queryEthGasStationBasic() {
+async function basicGasPriceQuery() {
   const url = `https://api.metaswap.codefi.network/gasPrices`
   return await window.fetch(url, {
     headers: {},
@@ -179,7 +179,7 @@ export function fetchBasicGasEstimates() {
 }
 
 async function fetchExternalBasicGasEstimates(dispatch) {
-  const response = await queryEthGasStationBasic()
+  const response = await basicGasPriceQuery()
 
   const { SafeGasPrice, ProposeGasPrice, FastGasPrice } = await response.json()
 
