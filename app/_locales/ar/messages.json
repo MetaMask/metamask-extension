@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "تم تصميم وإنشاء MetaMask في ولاية كاليفورنيا."
   },
-  "buyCoinSwitch": {
-    "message": "قم بالشراء على CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch هي الوجهة الوحيدة لتبادل أكثر من 300 عملة مشفرة بأفضل سعر."
-  },
   "buyWithWyre": {
     "message": "قم بشراء عملة إيثير بواسطة Wyre"
   },
@@ -223,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "جارِ الاتصال بشبكة اختبار Ropsten "
-  },
-  "continueToCoinSwitch": {
-    "message": "المتابعة إلى CoinSwitch"
   },
   "continueToWyre": {
     "message": "الاستمرار إلى Wyre"

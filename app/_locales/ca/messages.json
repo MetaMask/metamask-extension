@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask ha estat dissenyat i desenvolupat a Califòrnia."
   },
-  "buyCoinSwitch": {
-    "message": "Comprar a CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch és la destinació número 1 per a canviar més de 300 criptomonedes al millor preu."
-  },
   "buyWithWyre": {
     "message": "Compra ETH amb Wyre"
   },

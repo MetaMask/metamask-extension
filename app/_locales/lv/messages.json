@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask ir izstrādāta un izveidota Kalifornijā."
   },
-  "buyCoinSwitch": {
-    "message": "Pirkt CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch ir vienots galamērķis vairāk nekā 300 kriptovalūtu maiņai, izmantojot labāko kursu."
-  },
   "buyWithWyre": {
     "message": "Pirkt ETH ar Wyre"
   },
@@ -223,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "Pieslēdzas Ropsten testa tīklam"
-  },
-  "continueToCoinSwitch": {
-    "message": "Iet uz CoinSwitch"
   },
   "continueToWyre": {
     "message": "Pāriet uz Wyre"

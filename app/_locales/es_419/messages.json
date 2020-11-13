@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask se diseñó y creó en California."
   },
-  "buyCoinSwitch": {
-    "message": "Comprar en CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch es un destino integral para intercambiar más de 300 tipos de criptomonedas con la mejor tasa."
-  },
   "buyWithWyre": {
     "message": "Comprar ETH con Wyre"
   },
@@ -220,9 +214,6 @@
   },
   "connectingToRopsten": {
     "message": "Conexión con la red de prueba Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "Continuar a CoinSwitch"
   },
   "continueToWyre": {
     "message": "Continuar a Wyre"

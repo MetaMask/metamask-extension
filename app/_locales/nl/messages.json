@@ -43,12 +43,6 @@
   "builtInCalifornia": {
     "message": "MetaMask is ontworpen en gebouwd in Californië."
   },
-  "buyCoinSwitch": {
-    "message": "Koop op CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch is de one-stop-bestemming om meer dan 300 cryptocurrencies tegen de beste prijs in te wisselen."
-  },
   "cancel": {
     "message": "Annuleer"
   },
@@ -57,9 +51,6 @@
   },
   "confirmPassword": {
     "message": "bevestig wachtwoord"
-  },
-  "continueToCoinSwitch": {
-    "message": "Ga verder naar CoinSwitch"
   },
   "contractDeployment": {
     "message": "Contractimplementatie"

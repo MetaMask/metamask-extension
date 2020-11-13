@@ -58,12 +58,6 @@
   "builtInCalifornia": {
     "message": "மேடமஸ்க் வடிவமைக்கப்பட்டு கலிபோர்னியாவில் கட்டப்பட்டுள்ளது."
   },
-  "buyCoinSwitch": {
-    "message": "நாணயம் ஸ்விட்சில் வாங்கவும்"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "சிறந்த விகிதத்தில் 300 க்கும் அதிகமான cryptocurrencies ஐ பரிமாறிக்கொள்ள ஒரு நாணயமாற்று இலக்கு நாணயம் ஸ்விட்ச் ஆகும்."
-  },
   "cancel": {
     "message": "ரத்து செய்"
   },
@@ -93,9 +87,6 @@
   },
   "connectingToRopsten": {
     "message": "ரொப்ஸ்டென் டெஸ்ட் நெட்வொர்க்குடன் இணைக்கிறது"
-  },
-  "continueToCoinSwitch": {
-    "message": "நாணயம் மாறாமல் தொடர்க"
   },
   "contractDeployment": {
     "message": "ஒப்பந்த வரிசைப்படுத்தல்"

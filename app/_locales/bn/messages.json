@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask ক্যালিফোর্নিয়াতে ডিজাইন করা এবং নির্মিত।"
   },
-  "buyCoinSwitch": {
-    "message": "CoinSwitch এ ক্রয় করুন"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch হল 300রও বেশি ক্রিপ্টোকারেন্সি সর্বোত্তম হারে বিনময় করার সবথেকে ভালো স্থান।"
-  },
   "buyWithWyre": {
     "message": "Wyre দিয়ে ETH ক্রয় করুন"
   },
@@ -223,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "রপস্টেন টেস্ট নেটওয়ার্কের সাথে সংযোগ করছে"
-  },
-  "continueToCoinSwitch": {
-    "message": "CoinSwitch এ অবিরত থাকুন"
   },
   "continueToWyre": {
     "message": "Wyre এ অবিরত রাখুন"
