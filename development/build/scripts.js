@@ -14,6 +14,7 @@ const terser = require('gulp-terser-js')
 const pify = require('pify')
 const endOfStream = pify(require('end-of-stream'))
 const { makeStringTransform } = require('browserify-transform-tools')
+const baseManifest = require('../../app/manifest/_base.json')
 
 const conf = require('rc')('metamask', {
   INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
@@ -97,7 +98,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
   }
 
   function createTasksForBuildJsExtension({ taskPrefix, devMode, testing }) {
-    const standardBundles = ['background', 'ui', 'phishing-detect']
+    const standardBundles = ['background', 'ui', 'phishing-detect', 'initSentry']
 
     const standardSubtasks = standardBundles.map((filename) => {
       return createTask(
@@ -362,6 +363,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
       envify({
         METAMASK_DEBUG: opts.devMode,
         METAMASK_ENVIRONMENT: environment,
+        METAMASK_VERSION:  baseManifest.version,
         METAMETRICS_PROJECT_ID: process.env.METAMETRICS_PROJECT_ID,
         NODE_ENV: opts.devMode ? 'development' : 'production',
         IN_TEST: opts.testing ? 'true' : false,

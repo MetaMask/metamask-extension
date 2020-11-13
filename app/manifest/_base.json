@@ -2,6 +2,7 @@
   "author": "https://metamask.io",
   "background": {
     "scripts": [
+      "initSentry.js",
       "lockdown.cjs",
       "runLockdown.js",
       "bg-libs.js",
