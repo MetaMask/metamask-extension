@@ -2,8 +2,7 @@ import { useDispatch } from 'react-redux'
 import { useCallback } from 'react'
 import { showSidebar } from '../store/actions'
 import {
-  fetchBasicGasAndTimeEstimates,
-  fetchGasEstimates,
+  fetchBasicGasEstimates,
   setCustomGasPriceForRetry,
   setCustomGasLimit,
 } from '../ducks/gas/gas.duck'
@@ -34,8 +33,7 @@ export function useRetryTransaction(transactionGroup) {
       event.stopPropagation()
 
       trackMetricsEvent()
-      const basicEstimates = await dispatch(fetchBasicGasAndTimeEstimates)
-      await dispatch(fetchGasEstimates(basicEstimates.blockTime))
+      await dispatch(fetchBasicGasEstimates)
       const transaction = initialTransaction
       const increasedGasPrice = increaseLastGasPrice(gasPrice)
       await dispatch(

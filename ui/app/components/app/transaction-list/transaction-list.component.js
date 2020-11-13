@@ -93,12 +93,10 @@ export default function TransactionList({
     [hideTokenTransactions, tokenAddress, unfilteredCompletedTransactions],
   )
 
-  const { fetchGasEstimates, fetchBasicGasAndTimeEstimates } = useMemo(
+  const { fetchBasicGasEstimates } = useMemo(
     () => ({
-      fetchGasEstimates: (blockTime) =>
-        dispatch(actions.fetchGasEstimates(blockTime)),
-      fetchBasicGasAndTimeEstimates: () =>
-        dispatch(actions.fetchBasicGasAndTimeEstimates()),
+      fetchBasicGasEstimates: (blockTime) =>
+        dispatch(actions.fetchBasicGasEstimates(blockTime)),
     }),
     [dispatch],
   )
@@ -126,9 +124,7 @@ export default function TransactionList({
         transactionTimeFeatureWasActivated ||
         pendingTransactionAdded)
     ) {
-      fetchBasicGasAndTimeEstimates().then(({ blockTime }) =>
-        fetchGasEstimates(blockTime),
-      )
+      fetchBasicGasEstimates()
     }
     prevState.current = {
       loaded: true,
@@ -136,8 +132,7 @@ export default function TransactionList({
       transactionTimeFeatureActive,
     }
   }, [
-    fetchGasEstimates,
-    fetchBasicGasAndTimeEstimates,
+    fetchBasicGasEstimates,
     transactionTimeFeatureActive,
     pendingTransactions,
   ])

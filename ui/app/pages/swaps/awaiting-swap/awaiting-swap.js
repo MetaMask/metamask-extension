@@ -1,8 +1,7 @@
 import EventEmitter from 'events'
-import React, { useContext, useRef, useState, useEffect } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
-import classnames from 'classnames'
 import { useHistory } from 'react-router-dom'
 import { I18nContext } from '../../../contexts/i18n'
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent'
@@ -18,15 +17,9 @@ import {
   prepareForRetryGetQuotes,
   prepareToLeaveSwaps,
 } from '../../../ducks/swaps/swaps'
-import { useTransactionTimeRemaining } from '../../../hooks/useTransactionTimeRemaining'
-import { usePrevious } from '../../../hooks/usePrevious'
 import Mascot from '../../../components/ui/mascot'
 import PulseLoader from '../../../components/ui/pulse-loader'
-import {
-  getBlockExplorerUrlForTx,
-  getStatusKey,
-} from '../../../helpers/utils/transactions.util'
-import CountdownTimer from '../countdown-timer'
+import { getBlockExplorerUrlForTx } from '../../../helpers/utils/transactions.util'
 import {
   QUOTES_EXPIRED_ERROR,
   SWAP_FAILED_ERROR,
@@ -38,7 +31,6 @@ import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes'
 
 import { getRenderableNetworkFeesForQuote } from '../swaps.util'
 import SwapsFooter from '../swaps-footer'
-import { TRANSACTION_STATUSES } from '../../../../../shared/constants/transaction'
 import SwapFailureIcon from './swap-failure-icon'
 import SwapSuccessIcon from './swap-success-icon'
 import QuotesTimeoutIcon from './quotes-timeout-icon'
@@ -52,8 +44,6 @@ export default function AwaitingSwap({
   tokensReceived,
   rpcPrefs,
   submittingSwap,
-  tradeTxData,
-  usedGasPrice,
   inputValue,
   maxSlippage,
 }) {
@@ -71,7 +61,6 @@ export default function AwaitingSwap({
   const currentCurrency = useSelector(getCurrentCurrency)
   const usdConversionRate = useSelector(getUSDConversionRate)
 
-  const [timeRemainingExpired, setTimeRemainingExpired] = useState(false)
   const [trackedQuotesExpiredEvent, setTrackedQuotesExpiredEvent] = useState(
     false,
   )
@@ -108,56 +97,6 @@ export default function AwaitingSwap({
 
   const blockExplorerUrl =
     txHash && getBlockExplorerUrlForTx(networkId, txHash, rpcPrefs)
-
-  const statusKey = tradeTxData && getStatusKey(tradeTxData)
-  const timeRemaining = useTransactionTimeRemaining(
-    statusKey === TRANSACTION_STATUSES.SUBMITTED,
-    true,
-    tradeTxData?.submittedTime,
-    usedGasPrice,
-    true,
-    true,
-  )
-  const previousTimeRemaining = usePrevious(timeRemaining)
-  const timeRemainingIsNumber =
-    typeof timeRemaining === 'number' && !isNaN(timeRemaining)
-  const previousTimeRemainingIsNumber =
-    typeof previousTimeRemaining === 'number' && !isNaN(previousTimeRemaining)
-  const estimatedTransactionWaitTime = timeRemaining * 1000 * 60
-
-  useEffect(() => {
-    if (
-      !timeRemainingIsNumber &&
-      previousTimeRemainingIsNumber &&
-      !timeRemainingExpired
-    ) {
-      setTimeRemainingExpired(true)
-    }
-  }, [
-    timeRemainingIsNumber,
-    previousTimeRemainingIsNumber,
-    timeRemainingExpired,
-  ])
-
-  let countdownText
-  if (
-    timeRemainingIsNumber &&
-    !timeRemainingExpired &&
-    tradeTxData?.submittedTime
-  ) {
-    countdownText = (
-      <CountdownTimer
-        key="countdown-timer"
-        timeStarted={tradeTxData?.submittedTime}
-        timerBase={estimatedTransactionWaitTime}
-        timeOnly
-      />
-    )
-  } else if (tradeTxData?.submittedTime) {
-    countdownText = t('swapsAlmostDone')
-  } else {
-    countdownText = t('swapEstimatedTimeCalculating')
-  }
 
   let headerText
   let statusImage
@@ -203,13 +142,6 @@ export default function AwaitingSwap({
     submitText = t('tryAgain')
     statusImage = <SwapFailureIcon />
   } else if (!errorKey && !swapComplete) {
-    /**
-     * only show estimated time if the transaction has a submitted time, the swap has
-     * not yet completed and there isn't an error. If the swap has not completed and
-     * there is no error, but also has no submitted time (has not yet been published),
-     * then we apply the invisible class to the time estimate div. This creates consistent
-     * spacing before and after display of the time estimate.
-     */
     headerText = t('swapProcessing')
     statusImage = <PulseLoader />
     submitText = t('swapsViewInActivity')
@@ -221,31 +153,12 @@ export default function AwaitingSwap({
         {destinationTokenInfo.symbol}
       </span>,
     ])
-    content = (
-      <>
-        <div
-          className={classnames('awaiting-swap__time-estimate', {
-            'awaiting-swap__time-estimate--invisible': !tradeTxData?.submittedTime,
-          })}
-        >
-          {t('swapEstimatedTimeFull', [
-            <span
-              className="awaiting-swap__time-estimate-text"
-              key="swapEstimatedTime-1"
-            >
-              {t('swapEstimatedTime')}
-            </span>,
-            countdownText,
-          ])}
-        </div>
-        {blockExplorerUrl && (
-          <ViewOnEtherScanLink
-            txHash={txHash}
-            blockExplorerUrl={blockExplorerUrl}
-            isCustomBlockExplorerUrl={Boolean(rpcPrefs.blockExplorerUrl)}
-          />
-        )}
-      </>
+    content = blockExplorerUrl && (
+      <ViewOnEtherScanLink
+        txHash={txHash}
+        blockExplorerUrl={blockExplorerUrl}
+        isCustomBlockExplorerUrl={Boolean(rpcPrefs.blockExplorerUrl)}
+      />
     )
   } else if (!errorKey && swapComplete) {
     headerText = t('swapTransactionComplete')
@@ -329,8 +242,6 @@ AwaitingSwap.propTypes = {
     OFFLINE_FOR_MAINTENANCE,
   ]),
   submittingSwap: PropTypes.bool,
-  tradeTxData: PropTypes.object,
-  usedGasPrice: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   inputValue: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   maxSlippage: PropTypes.number,
 }

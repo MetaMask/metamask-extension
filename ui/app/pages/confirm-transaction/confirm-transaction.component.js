@@ -37,7 +37,7 @@ export default class ConfirmTransaction extends Component {
     send: PropTypes.object,
     setTransactionToConfirm: PropTypes.func,
     clearConfirmTransaction: PropTypes.func,
-    fetchBasicGasAndTimeEstimates: PropTypes.func,
+    fetchBasicGasEstimates: PropTypes.func,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     transaction: PropTypes.object,
     getContractMethodData: PropTypes.func,
@@ -54,7 +54,7 @@ export default class ConfirmTransaction extends Component {
       history,
       mostRecentOverviewPage,
       transaction: { txParams: { data, to } = {} } = {},
-      fetchBasicGasAndTimeEstimates,
+      fetchBasicGasEstimates,
       getContractMethodData,
       transactionId,
       paramsTransactionId,
@@ -67,7 +67,7 @@ export default class ConfirmTransaction extends Component {
       return
     }
 
-    fetchBasicGasAndTimeEstimates()
+    fetchBasicGasEstimates()
     getContractMethodData(data)
     if (isTokenMethodAction) {
       getTokenParams(to)

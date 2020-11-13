@@ -38,18 +38,6 @@ export function getGasEstimatesLoadingStatus(state) {
   return state.gas.gasEstimatesLoading
 }
 
-export function getPriceAndTimeEstimates(state) {
-  return state.gas.priceAndTimeEstimates
-}
-
-export function getEstimatedGasPrices(state) {
-  return getPriceAndTimeEstimates(state).map(({ gasprice }) => gasprice)
-}
-
-export function getEstimatedGasTimes(state) {
-  return getPriceAndTimeEstimates(state).map(({ expectedTime }) => expectedTime)
-}
-
 export function getAveragePriceEstimateInHexWEI(state) {
   const averagePriceEstimate = state.gas.basicEstimates.average
   return getGasPriceInHexWei(averagePriceEstimate || '0x0')
@@ -214,16 +202,7 @@ export function getRenderableGasButtonData(
   conversionRate,
   currentCurrency,
 ) {
-  const {
-    safeLow,
-    average,
-    fast,
-    safeLowWait,
-    avgWait,
-    fastWait,
-    fastest,
-    fastestWait,
-  } = estimates
+  const { safeLow, average, fast } = estimates
 
   const slowEstimateData = {
     gasEstimateType: GAS_ESTIMATE_TYPES.SLOW,
@@ -236,7 +215,6 @@ export function getRenderableGasButtonData(
           conversionRate,
         )
       : '',
-    timeEstimate: safeLowWait && getRenderableTimeEstimate(safeLowWait),
     priceInHexWei: getGasPriceInHexWei(safeLow),
   }
   const averageEstimateData = {
@@ -250,7 +228,6 @@ export function getRenderableGasButtonData(
           conversionRate,
         )
       : '',
-    timeEstimate: avgWait && getRenderableTimeEstimate(avgWait),
     priceInHexWei: getGasPriceInHexWei(average),
   }
   const fastEstimateData = {
@@ -264,29 +241,13 @@ export function getRenderableGasButtonData(
           conversionRate,
         )
       : '',
-    timeEstimate: fastWait && getRenderableTimeEstimate(fastWait),
     priceInHexWei: getGasPriceInHexWei(fast),
-  }
-  const fastestEstimateData = {
-    gasEstimateType: GAS_ESTIMATE_TYPES.FASTEST,
-    feeInPrimaryCurrency: getRenderableEthFee(fastest, gasLimit),
-    feeInSecondaryCurrency: showFiat
-      ? getRenderableConvertedCurrencyFee(
-          fastest,
-          gasLimit,
-          currentCurrency,
-          conversionRate,
-        )
-      : '',
-    timeEstimate: fastestWait && getRenderableTimeEstimate(fastestWait),
-    priceInHexWei: getGasPriceInHexWei(fastest),
   }
 
   return {
     slowEstimateData,
     averageEstimateData,
     fastEstimateData,
-    fastestEstimateData,
   }
 }
 

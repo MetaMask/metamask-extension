@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { decGWEIToHexWEI } from '../../../../../helpers/utils/conversions.util'
-import Loading from '../../../../ui/loading-screen'
-import GasPriceChart from '../../gas-price-chart'
 import AdvancedGasInputs from '../../advanced-gas-inputs'
 
 export default class AdvancedTabContent extends Component {
@@ -15,20 +13,15 @@ export default class AdvancedTabContent extends Component {
     updateCustomGasLimit: PropTypes.func,
     customModalGasPriceInHex: PropTypes.string,
     customModalGasLimitInHex: PropTypes.string,
-    gasEstimatesLoading: PropTypes.bool,
-    millisecondsRemaining: PropTypes.number,
     transactionFee: PropTypes.string,
-    timeRemaining: PropTypes.string,
-    gasChartProps: PropTypes.object,
     insufficientBalance: PropTypes.bool,
     customPriceIsSafe: PropTypes.bool,
     isSpeedUp: PropTypes.bool,
-    isEthereumNetwork: PropTypes.bool,
     customGasLimitMessage: PropTypes.string,
     minimumGasLimit: PropTypes.number,
   }
 
-  renderDataSummary(transactionFee, timeRemaining) {
+  renderDataSummary(transactionFee) {
     return (
       <div className="advanced-tab__transaction-data-summary">
         <div className="advanced-tab__transaction-data-summary__titles">
@@ -38,9 +31,6 @@ export default class AdvancedTabContent extends Component {
         <div className="advanced-tab__transaction-data-summary__container">
           <div className="advanced-tab__transaction-data-summary__fee">
             {transactionFee}
-          </div>
-          <div className="advanced-tab__transaction-data-summary__time-remaining">
-            {timeRemaining}
           </div>
         </div>
       </div>
@@ -53,27 +43,22 @@ export default class AdvancedTabContent extends Component {
   }
 
   render() {
-    const { t } = this.context
     const {
       updateCustomGasPrice,
       updateCustomGasLimit,
-      timeRemaining,
       customModalGasPriceInHex,
       customModalGasLimitInHex,
       insufficientBalance,
-      gasChartProps,
-      gasEstimatesLoading,
       customPriceIsSafe,
       isSpeedUp,
       transactionFee,
-      isEthereumNetwork,
       customGasLimitMessage,
       minimumGasLimit,
     } = this.props
 
     return (
       <div className="advanced-tab">
-        {this.renderDataSummary(transactionFee, timeRemaining)}
+        {this.renderDataSummary(transactionFee)}
         <div className="advanced-tab__fee-chart">
           <div className="advanced-tab__gas-inputs">
             <AdvancedGasInputs
@@ -88,29 +73,6 @@ export default class AdvancedTabContent extends Component {
               minimumGasLimit={minimumGasLimit}
             />
           </div>
-          {isEthereumNetwork ? (
-            <div>
-              <div className="advanced-tab__fee-chart__title">
-                {t('liveGasPricePredictions')}
-              </div>
-              {gasEstimatesLoading ? (
-                <Loading />
-              ) : (
-                <GasPriceChart
-                  {...gasChartProps}
-                  updateCustomGasPrice={this.onGasChartUpdate}
-                />
-              )}
-              <div className="advanced-tab__fee-chart__speed-buttons">
-                <span>{t('slower')}</span>
-                <span>{t('faster')}</span>
-              </div>
-            </div>
-          ) : (
-            <div className="advanced-tab__fee-chart__title">
-              {t('chartOnlyAvailableEth')}
-            </div>
-          )}
         </div>
       </div>
     )

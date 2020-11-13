@@ -127,7 +127,6 @@ describe('gas-modal-page-container container', function () {
         isConfirm: true,
         customGasPrice: 4.294967295,
         customGasLimit: 2863311530,
-        currentTimeEstimate: '~1 min 11 sec',
         newTotalFiat: '637.41',
         blockTime: 12,
         conversionRate: 50,
@@ -135,13 +134,6 @@ describe('gas-modal-page-container container', function () {
         customModalGasPriceInHex: 'ffffffff',
         customGasTotal: 'aaaaaaa955555556',
         customPriceIsSafe: true,
-        gasChartProps: {
-          currentPrice: 4.294967295,
-          estimatedTimes: [31, 62, 93, 124],
-          estimatedTimesMax: 31,
-          gasPrices: [3, 4, 5, 6],
-          gasPricesMax: 6,
-        },
         gasPriceButtonGroupProps: {
           buttonDataLoading: 'mockBasicGasEstimateLoadingStatus:4',
           defaultActiveButtonIndex: 'mockRenderableBasicEstimateData:4ffffffff',

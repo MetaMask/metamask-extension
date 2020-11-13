@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { captureException } from '@sentry/browser'
 import { addHexPrefix } from '../../../../../../app/scripts/lib/util'
 import {
   hideModal,
@@ -16,8 +15,7 @@ import {
   setCustomGasPrice,
   setCustomGasLimit,
   resetCustomData,
-  fetchGasEstimates,
-  fetchBasicGasAndTimeEstimates,
+  fetchBasicGasEstimates,
 } from '../../../../ducks/gas/gas.duck'
 import {
   hideGasButtonGroup,
@@ -36,14 +34,12 @@ import {
   getCustomGasLimit,
   getCustomGasPrice,
   getDefaultActiveButtonIndex,
-  getEstimatedGasPrices,
-  getEstimatedGasTimes,
   getRenderableBasicEstimateData,
   getBasicGasEstimateBlockTime,
   isCustomPriceSafe,
   getTokenBalance,
   getSendMaxModeState,
-  getFastPriceEstimateInHexWEI,
+  getAveragePriceEstimateInHexWEI,
 } from '../../../../selectors'
 
 import {
@@ -53,7 +49,6 @@ import {
   getValueFromWeiHex,
   sumHexWEIsToRenderableFiat,
 } from '../../../../helpers/utils/conversions.util'
-import { getRenderableTimeEstimate } from '../../../../helpers/utils/gas-time-estimates.util'
 import { formatETHFee } from '../../../../helpers/utils/formatters'
 import {
   calcGasTotal,
@@ -81,7 +76,7 @@ const mapStateToProps = (state, ownProps) => {
     ? selectedTransaction.txParams
     : {
         gas: send.gasLimit || '0x5208',
-        gasPrice: send.gasPrice || getFastPriceEstimateInHexWEI(state, true),
+        gasPrice: send.gasPrice || getAveragePriceEstimateInHexWEI(state, true),
         value: sendToken ? '0x0' : send.amount,
       }
 
@@ -113,8 +108,6 @@ const mapStateToProps = (state, ownProps) => {
 
   const maxModeOn = getSendMaxModeState(state)
 
-  const gasPrices = getEstimatedGasPrices(state)
-  const estimatedTimes = getEstimatedGasTimes(state)
   const balance = getCurrentEthBalance(state)
 
   const { showFiatInTestnets } = getPreferences(state)
@@ -142,17 +135,6 @@ const mapStateToProps = (state, ownProps) => {
         conversionRate,
       })
 
-  let currentTimeEstimate = ''
-  try {
-    currentTimeEstimate = getRenderableTimeEstimate(
-      customGasPrice,
-      gasPrices,
-      estimatedTimes,
-    )
-  } catch (error) {
-    captureException(error)
-  }
-
   return {
     hideBasic,
     isConfirm: isConfirm(state),
@@ -162,7 +144,6 @@ const mapStateToProps = (state, ownProps) => {
     customGasLimit: calcCustomGasLimit(customModalGasLimitInHex),
     customGasTotal,
     newTotalFiat,
-    currentTimeEstimate,
     blockTime: getBasicGasEstimateBlockTime(state),
     customPriceIsSafe: isCustomPriceSafe(state),
     maxModeOn,
@@ -173,13 +154,6 @@ const mapStateToProps = (state, ownProps) => {
         customModalGasPriceInHex,
       ),
       gasButtonInfo,
-    },
-    gasChartProps: {
-      currentPrice: customGasPrice,
-      gasPrices,
-      estimatedTimes,
-      gasPricesMax: gasPrices[gasPrices.length - 1],
-      estimatedTimesMax: estimatedTimes[0],
     },
     infoRowProps: {
       originalTotalFiat: sumHexWEIsToRenderableFiat(
@@ -239,9 +213,7 @@ const mapDispatchToProps = (dispatch) => {
     },
     hideGasButtonGroup: () => dispatch(hideGasButtonGroup()),
     hideSidebar: () => dispatch(hideSidebar()),
-    fetchGasEstimates: (blockTime) => dispatch(fetchGasEstimates(blockTime)),
-    fetchBasicGasAndTimeEstimates: () =>
-      dispatch(fetchBasicGasAndTimeEstimates()),
+    fetchBasicGasEstimates: () => dispatch(fetchBasicGasEstimates()),
     setGasTotal: (total) => dispatch(setGasTotal(total)),
     setAmountToMax: (maxAmountDataObject) => {
       dispatch(updateSendErrors({ amount: null }))
