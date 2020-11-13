@@ -15,7 +15,7 @@ export default class EndOfFlowScreen extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
     completionMetaMetricsName: PropTypes.string,
-    setCompletedOnboarding: PropTypes.function,
+    setCompletedOnboarding: PropTypes.func,
     onboardingInitiator: PropTypes.exact({
       location: PropTypes.string,
       tabId: PropTypes.number,
