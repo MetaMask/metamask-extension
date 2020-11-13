@@ -321,7 +321,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     },
     gasPriceButtonGroupProps: {
       ...gasPriceButtonGroupProps,
-      handleGasPriceSelection: otherDispatchProps.updateCustomGasPrice,
+      handleGasPriceSelection: ({ gasPrice }) =>
+        otherDispatchProps.updateCustomGasPrice(gasPrice),
     },
     cancelAndClose: () => {
       dispatchCancelAndClose()

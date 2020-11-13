@@ -274,7 +274,7 @@ describe('gas-modal-page-container container', function () {
       let result
       tests.forEach(({ mockState, mockOwnProps, expectedResult }) => {
         result = mapStateToProps(mockState, mockOwnProps)
-        assert.deepEqual(result, expectedResult)
+        assert.deepStrictEqual(result, expectedResult)
       })
     })
   })
@@ -316,7 +316,7 @@ describe('gas-modal-page-container container', function () {
         mapDispatchToPropsObject.updateCustomGasPrice('ffff')
         assert(dispatchSpy.calledOnce)
         assert(gasActionSpies.setCustomGasPrice.calledOnce)
-        assert.equal(
+        assert.strictEqual(
           gasActionSpies.setCustomGasPrice.getCall(0).args[0],
           '0xffff',
         )
@@ -326,7 +326,7 @@ describe('gas-modal-page-container container', function () {
         mapDispatchToPropsObject.updateCustomGasPrice('0xffff')
         assert(dispatchSpy.calledOnce)
         assert(gasActionSpies.setCustomGasPrice.calledOnce)
-        assert.equal(
+        assert.strictEqual(
           gasActionSpies.setCustomGasPrice.getCall(0).args[0],
           '0xffff',
         )
@@ -338,7 +338,7 @@ describe('gas-modal-page-container container', function () {
         mapDispatchToPropsObject.updateCustomGasLimit('0x10')
         assert(dispatchSpy.calledOnce)
         assert(gasActionSpies.setCustomGasLimit.calledOnce)
-        assert.equal(
+        assert.strictEqual(
           gasActionSpies.setCustomGasLimit.getCall(0).args[0],
           '0x10',
         )
@@ -351,19 +351,19 @@ describe('gas-modal-page-container container', function () {
         assert(dispatchSpy.calledTwice)
         assert(actionSpies.setGasPrice.calledOnce)
         assert(actionSpies.setGasLimit.calledOnce)
-        assert.equal(actionSpies.setGasLimit.getCall(0).args[0], 'ffff')
-        assert.equal(actionSpies.setGasPrice.getCall(0).args[0], 'aaaa')
+        assert.strictEqual(actionSpies.setGasLimit.getCall(0).args[0], 'ffff')
+        assert.strictEqual(actionSpies.setGasPrice.getCall(0).args[0], 'aaaa')
       })
     })
 
     describe('updateConfirmTxGasAndCalculate()', function () {
       it('should dispatch a updateGasAndCalculate action with the correct props', function () {
         mapDispatchToPropsObject.updateConfirmTxGasAndCalculate('ffff', 'aaaa')
-        assert.equal(dispatchSpy.callCount, 3)
+        assert.strictEqual(dispatchSpy.callCount, 3)
         assert(actionSpies.setGasPrice.calledOnce)
         assert(actionSpies.setGasLimit.calledOnce)
-        assert.equal(actionSpies.setGasLimit.getCall(0).args[0], 'ffff')
-        assert.equal(actionSpies.setGasPrice.getCall(0).args[0], 'aaaa')
+        assert.strictEqual(actionSpies.setGasLimit.getCall(0).args[0], 'ffff')
+        assert.strictEqual(actionSpies.setGasPrice.getCall(0).args[0], 'aaaa')
       })
     })
   })
@@ -410,37 +410,45 @@ describe('gas-modal-page-container container', function () {
     it('should return the expected props when isConfirm is true', function () {
       const result = mergeProps(stateProps, dispatchProps, ownProps)
 
-      assert.equal(result.isConfirm, true)
-      assert.equal(result.someOtherStateProp, 'baz')
-      assert.equal(
+      assert.strictEqual(result.isConfirm, true)
+      assert.strictEqual(result.someOtherStateProp, 'baz')
+      assert.strictEqual(
         result.gasPriceButtonGroupProps.someGasPriceButtonGroupProp,
         'foo',
       )
-      assert.equal(
+      assert.strictEqual(
         result.gasPriceButtonGroupProps.anotherGasPriceButtonGroupProp,
         'bar',
       )
-      assert.equal(result.someOwnProp, 123)
+      assert.strictEqual(result.someOwnProp, 123)
 
-      assert.equal(dispatchProps.updateConfirmTxGasAndCalculate.callCount, 0)
-      assert.equal(dispatchProps.setGasData.callCount, 0)
-      assert.equal(dispatchProps.hideGasButtonGroup.callCount, 0)
-      assert.equal(dispatchProps.hideModal.callCount, 0)
+      assert.strictEqual(
+        dispatchProps.updateConfirmTxGasAndCalculate.callCount,
+        0,
+      )
+      assert.strictEqual(dispatchProps.setGasData.callCount, 0)
+      assert.strictEqual(dispatchProps.hideGasButtonGroup.callCount, 0)
+      assert.strictEqual(dispatchProps.hideModal.callCount, 0)
 
       result.onSubmit()
 
-      assert.equal(dispatchProps.updateConfirmTxGasAndCalculate.callCount, 1)
-      assert.equal(dispatchProps.setGasData.callCount, 0)
-      assert.equal(dispatchProps.hideGasButtonGroup.callCount, 0)
-      assert.equal(dispatchProps.hideModal.callCount, 1)
+      assert.strictEqual(
+        dispatchProps.updateConfirmTxGasAndCalculate.callCount,
+        1,
+      )
+      assert.strictEqual(dispatchProps.setGasData.callCount, 0)
+      assert.strictEqual(dispatchProps.hideGasButtonGroup.callCount, 0)
+      assert.strictEqual(dispatchProps.hideModal.callCount, 1)
 
-      assert.equal(dispatchProps.updateCustomGasPrice.callCount, 0)
-      result.gasPriceButtonGroupProps.handleGasPriceSelection()
-      assert.equal(dispatchProps.updateCustomGasPrice.callCount, 1)
+      assert.strictEqual(dispatchProps.updateCustomGasPrice.callCount, 0)
+      result.gasPriceButtonGroupProps.handleGasPriceSelection({
+        gasPrice: '0x0',
+      })
+      assert.strictEqual(dispatchProps.updateCustomGasPrice.callCount, 1)
 
-      assert.equal(dispatchProps.someOtherDispatchProp.callCount, 0)
+      assert.strictEqual(dispatchProps.someOtherDispatchProp.callCount, 0)
       result.someOtherDispatchProp()
-      assert.equal(dispatchProps.someOtherDispatchProp.callCount, 1)
+      assert.strictEqual(dispatchProps.someOtherDispatchProp.callCount, 1)
     })
 
     it('should return the expected props when isConfirm is false', function () {
@@ -450,41 +458,49 @@ describe('gas-modal-page-container container', function () {
         ownProps,
       )
 
-      assert.equal(result.isConfirm, false)
-      assert.equal(result.someOtherStateProp, 'baz')
-      assert.equal(
+      assert.strictEqual(result.isConfirm, false)
+      assert.strictEqual(result.someOtherStateProp, 'baz')
+      assert.strictEqual(
         result.gasPriceButtonGroupProps.someGasPriceButtonGroupProp,
         'foo',
       )
-      assert.equal(
+      assert.strictEqual(
         result.gasPriceButtonGroupProps.anotherGasPriceButtonGroupProp,
         'bar',
       )
-      assert.equal(result.someOwnProp, 123)
+      assert.strictEqual(result.someOwnProp, 123)
 
-      assert.equal(dispatchProps.updateConfirmTxGasAndCalculate.callCount, 0)
-      assert.equal(dispatchProps.setGasData.callCount, 0)
-      assert.equal(dispatchProps.hideGasButtonGroup.callCount, 0)
-      assert.equal(dispatchProps.cancelAndClose.callCount, 0)
+      assert.strictEqual(
+        dispatchProps.updateConfirmTxGasAndCalculate.callCount,
+        0,
+      )
+      assert.strictEqual(dispatchProps.setGasData.callCount, 0)
+      assert.strictEqual(dispatchProps.hideGasButtonGroup.callCount, 0)
+      assert.strictEqual(dispatchProps.cancelAndClose.callCount, 0)
 
       result.onSubmit('mockNewLimit', 'mockNewPrice')
 
-      assert.equal(dispatchProps.updateConfirmTxGasAndCalculate.callCount, 0)
-      assert.equal(dispatchProps.setGasData.callCount, 1)
-      assert.deepEqual(dispatchProps.setGasData.getCall(0).args, [
+      assert.strictEqual(
+        dispatchProps.updateConfirmTxGasAndCalculate.callCount,
+        0,
+      )
+      assert.strictEqual(dispatchProps.setGasData.callCount, 1)
+      assert.deepStrictEqual(dispatchProps.setGasData.getCall(0).args, [
         'mockNewLimit',
         'mockNewPrice',
       ])
-      assert.equal(dispatchProps.hideGasButtonGroup.callCount, 1)
-      assert.equal(dispatchProps.cancelAndClose.callCount, 1)
+      assert.strictEqual(dispatchProps.hideGasButtonGroup.callCount, 1)
+      assert.strictEqual(dispatchProps.cancelAndClose.callCount, 1)
 
-      assert.equal(dispatchProps.updateCustomGasPrice.callCount, 0)
-      result.gasPriceButtonGroupProps.handleGasPriceSelection()
-      assert.equal(dispatchProps.updateCustomGasPrice.callCount, 1)
+      assert.strictEqual(dispatchProps.updateCustomGasPrice.callCount, 0)
+      result.gasPriceButtonGroupProps.handleGasPriceSelection({
+        gasPrice: '0x0',
+      })
+      assert.strictEqual(dispatchProps.updateCustomGasPrice.callCount, 1)
 
-      assert.equal(dispatchProps.someOtherDispatchProp.callCount, 0)
+      assert.strictEqual(dispatchProps.someOtherDispatchProp.callCount, 0)
       result.someOtherDispatchProp()
-      assert.equal(dispatchProps.someOtherDispatchProp.callCount, 1)
+      assert.strictEqual(dispatchProps.someOtherDispatchProp.callCount, 1)
     })
 
     it('should dispatch the expected actions from obSubmit when isConfirm is false and isSpeedUp is true', function () {
@@ -496,13 +512,16 @@ describe('gas-modal-page-container container', function () {
 
       result.onSubmit()
 
-      assert.equal(dispatchProps.updateConfirmTxGasAndCalculate.callCount, 0)
-      assert.equal(dispatchProps.setGasData.callCount, 0)
-      assert.equal(dispatchProps.hideGasButtonGroup.callCount, 0)
-      assert.equal(dispatchProps.cancelAndClose.callCount, 1)
+      assert.strictEqual(
+        dispatchProps.updateConfirmTxGasAndCalculate.callCount,
+        0,
+      )
+      assert.strictEqual(dispatchProps.setGasData.callCount, 0)
+      assert.strictEqual(dispatchProps.hideGasButtonGroup.callCount, 0)
+      assert.strictEqual(dispatchProps.cancelAndClose.callCount, 1)
 
-      assert.equal(dispatchProps.createSpeedUpTransaction.callCount, 1)
-      assert.equal(dispatchProps.hideSidebar.callCount, 1)
+      assert.strictEqual(dispatchProps.createSpeedUpTransaction.callCount, 1)
+      assert.strictEqual(dispatchProps.hideSidebar.callCount, 1)
     })
   })
 })
