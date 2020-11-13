@@ -220,8 +220,13 @@
 
 .address-book-add-button {
   &__button {
+
+    @media screen and (max-width: 576px) {
+      top: 10px;
+    }
+
     position: absolute;
-    top: 10px;
+    top: 80px;
     right: 16px;
     height: 56px;
     width: 56px;
