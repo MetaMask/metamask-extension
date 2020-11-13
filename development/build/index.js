@@ -3,7 +3,6 @@
 //
 // run any task with "yarn build ${taskName}"
 //
-require('../../app/scripts/lib/freezeIntrinsics')
 const livereload = require('gulp-livereload')
 const {
   createTask,

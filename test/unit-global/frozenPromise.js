@@ -1,5 +1,7 @@
 // Should occur before anything else
-import '../../app/scripts/lib/freezeIntrinsics'
+import './globalPatch'
+import 'ses/dist/lockdown.cjs'
+import '../../app/scripts/runLockdown'
 import assert from 'assert' /* eslint-disable-line import/first,import/order */
 
 describe('Promise global is immutable', function () {
