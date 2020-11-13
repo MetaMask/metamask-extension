@@ -54,6 +54,11 @@ const baseChange = {
   BN: (n) => new BN(n.toString(16)),
 }
 
+// Utility function for checking base types
+const isValidBase = (base) => {
+  return Number.isInteger(base) && base > 1
+}
+
 /**
  * Defines the base type of numeric value
  * @typedef {('hex' | 'dec' | 'BN')} NumericBase
@@ -162,6 +167,10 @@ const conversionUtil = (
   })
 
 const getBigNumber = (value, base) => {
+  if (!isValidBase(base)) {
+    throw new Error('Must specificy valid base')
+  }
+
   // We don't include 'number' here, because BigNumber will throw if passed
   // a number primitive it considers unsafe.
   if (typeof value === 'string' || value instanceof BigNumber) {
@@ -173,6 +182,11 @@ const getBigNumber = (value, base) => {
 
 const addCurrencies = (a, b, options = {}) => {
   const { aBase, bBase, ...conversionOptions } = options
+
+  if (!isValidBase(aBase) || !isValidBase(bBase)) {
+    throw new Error('Must specify valid aBase and bBase')
+  }
+
   const value = getBigNumber(a, aBase).add(getBigNumber(b, bBase))
 
   return converter({
@@ -183,6 +197,11 @@ const addCurrencies = (a, b, options = {}) => {
 
 const subtractCurrencies = (a, b, options = {}) => {
   const { aBase, bBase, ...conversionOptions } = options
+
+  if (!isValidBase(aBase) || !isValidBase(bBase)) {
+    throw new Error('Must specify valid aBase and bBase')
+  }
+
   const value = getBigNumber(a, aBase).minus(getBigNumber(b, bBase))
 
   return converter({
@@ -193,6 +212,10 @@ const subtractCurrencies = (a, b, options = {}) => {
 
 const multiplyCurrencies = (a, b, options = {}) => {
   const { multiplicandBase, multiplierBase, ...conversionOptions } = options
+
+  if (!isValidBase(multiplicandBase) || !isValidBase(multiplierBase)) {
+    throw new Error('Must specify valid multiplicandBase and multiplierBase')
+  }
 
   const value = getBigNumber(a, multiplicandBase).times(
     getBigNumber(b, multiplierBase),
