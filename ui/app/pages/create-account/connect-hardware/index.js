@@ -8,6 +8,8 @@ import { getMostRecentOverviewPage } from '../../../ducks/history/history'
 import SelectHardware from './select-hardware'
 import AccountList from './account-list'
 
+const U2F_ERROR = 'U2F'
+
 class ConnectHardwareForm extends Component {
   state = {
     error: null,
@@ -130,8 +132,8 @@ class ConnectHardwareForm extends Component {
         const errorMessage = e.message
         if (errorMessage === 'Window blocked') {
           this.setState({ browserSupported: false, error: null })
-        } else if (e.indexOf('U2F') > -1) {
-          this.setState({ error: 'U2F' })
+        } else if (errorMessage.includes(U2F_ERROR)) {
+          this.setState({ error: U2F_ERROR })
         } else if (
           errorMessage !== 'Window closed' &&
           errorMessage !== 'Popup closed'
@@ -200,7 +202,7 @@ class ConnectHardwareForm extends Component {
   }
 
   renderError() {
-    if (this.state.error === 'U2F') {
+    if (this.state.error === U2F_ERROR) {
       return (
         <p className="hw-connect__error">
           {this.context.t('troubleConnectingToWallet', [
