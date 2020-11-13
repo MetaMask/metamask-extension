@@ -57,7 +57,8 @@
       display: flex;
     }
 
-    & &__send-token-button {
+    &:hover &__send-token-button,
+    &:focus-within &__send-token-button {
       display: inline-block;
     }
 
