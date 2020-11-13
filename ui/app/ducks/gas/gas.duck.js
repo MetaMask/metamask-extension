@@ -187,7 +187,7 @@ async function fetchExternalBasicGasEstimates(dispatch) {
     SafeGasPrice,
     ProposeGasPrice,
     FastGasPrice,
-  ].map((price) => new BigNumber(price).toNumber())
+  ].map((price) => new BigNumber(price, 10).toNumber())
 
   const basicEstimates = {
     safeLow,
