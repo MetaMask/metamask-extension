@@ -502,7 +502,8 @@ class TransactionController extends EventEmitter {
       txMeta.txParams.chainId = this.getChainId()
       // wait for a nonce
       let { customNonceValue = null } = txMeta
-      customNonceValue = Number(customNonceValue)
+      customNonceValue =
+        customNonceValue === null ? null : Number(customNonceValue)
       nonceLock = await this.nonceTracker.getNonceLock(fromAddress)
       // add nonce to txParams
       // if txMeta has lastGasPrice then it is a retry at same nonce with higher
@@ -510,7 +511,12 @@ class TransactionController extends EventEmitter {
       const nonce = txMeta.lastGasPrice
         ? txMeta.txParams.nonce
         : nonceLock.nextNonce
-      const customOrNonce = customNonceValue || nonce
+      let customOrNonce
+      if (customNonceValue === 0) {
+ customOrNonce = 0
+} else {
+ customOrNonce = customNonceValue || nonce
+}
 
       txMeta.txParams.nonce = ethUtil.addHexPrefix(customOrNonce.toString(16))
       // add nonce debugging information to txMeta
