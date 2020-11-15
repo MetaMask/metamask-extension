@@ -34,7 +34,7 @@ if (shouldInjectProvider()) {
  *
  * @param {string} content - Code to be executed in the current document
  */
-function injectScript (content) {
+function injectScript(content) {
   try {
     const container = document.head || document.documentElement
     const scriptTag = document.createElement('script')
@@ -51,7 +51,7 @@ function injectScript (content) {
  * Sets up the stream communication and submits site metadata
  *
  */
-async function start () {
+async function start() {
   await setupStreams()
   await domIsReady()
 }
@@ -61,7 +61,7 @@ async function start () {
  * browser extension and local per-page browser context.
  *
  */
-async function setupStreams () {
+async function setupStreams() {
   // the transport-specific streams for communication between inpage and background
   const pageStream = new LocalMessageDuplexStream({
     name: 'portal-contentscript',
@@ -79,10 +79,10 @@ async function setupStreams () {
   const extensionMux = new ObjectMultiplex()
   extensionMux.setMaxListeners(25)
 
-  pump(pageMux, pageStream, pageMux, (err) =>
+  pump(pageMux, pageStream, pageMux, err =>
     logStreamDisconnectWarning('ConfluxPortal Inpage Multiplex', err)
   )
-  pump(extensionMux, extensionStream, extensionMux, (err) =>
+  pump(extensionMux, extensionStream, extensionMux, err =>
     logStreamDisconnectWarning('ConfluxPortal Background Multiplex', err)
   )
 
@@ -99,10 +99,10 @@ async function setupStreams () {
   phishingStream.once('data', redirectToPhishingWarning)
 }
 
-function forwardTrafficBetweenMuxers (channelName, muxA, muxB) {
+function forwardTrafficBetweenMuxers(channelName, muxA, muxB) {
   const channelA = muxA.createStream(channelName)
   const channelB = muxB.createStream(channelName)
-  pump(channelA, channelB, channelA, (err) =>
+  pump(channelA, channelB, channelA, err =>
     logStreamDisconnectWarning(
       `ConfluxPortal muxed traffic for channel "${channelName}" failed.`,
       err
@@ -116,7 +116,7 @@ function forwardTrafficBetweenMuxers (channelName, muxA, muxB) {
  * @param {string} remoteLabel - Remote stream name
  * @param {Error} err - Stream connection error
  */
-function logStreamDisconnectWarning (remoteLabel, err) {
+function logStreamDisconnectWarning(remoteLabel, err) {
   let warningMsg = `ConfluxPortalContentscript - lost connection to ${remoteLabel}`
   if (err) {
     warningMsg += '\n' + err.stack
@@ -129,7 +129,7 @@ function logStreamDisconnectWarning (remoteLabel, err) {
  *
  * @returns {boolean} {@code true} - if the provider should be injected
  */
-function shouldInjectProvider () {
+function shouldInjectProvider() {
   return (
     doctypeCheck() &&
     suffixCheck() &&
@@ -143,7 +143,7 @@ function shouldInjectProvider () {
  *
  * @returns {boolean} {@code true} - if the doctype is html or if none exists
  */
-function doctypeCheck () {
+function doctypeCheck() {
   const doctype = window.document.doctype
   if (doctype) {
     return doctype.name === 'html'
@@ -161,7 +161,7 @@ function doctypeCheck () {
  *
  * @returns {boolean} - whether or not the extension of the current document is prohibited
  */
-function suffixCheck () {
+function suffixCheck() {
   const prohibitedTypes = [/\.xml$/, /\.pdf$/]
   const currentUrl = window.location.pathname
   for (let i = 0; i < prohibitedTypes.length; i++) {
@@ -177,7 +177,7 @@ function suffixCheck () {
  *
  * @returns {boolean} {@code true} - if the documentElement is an html node or if none exists
  */
-function documentElementCheck () {
+function documentElementCheck() {
   const documentElement = document.documentElement.nodeName
   if (documentElement) {
     return documentElement.toLowerCase() === 'html'
@@ -190,7 +190,7 @@ function documentElementCheck () {
  *
  * @returns {boolean} {@code true} - if the current domain is blacklisted
  */
-function blacklistedDomainCheck () {
+function blacklistedDomainCheck() {
   const blacklistedDomains = [
     'uscourts.gov',
     'dropbox.com',
@@ -220,7 +220,7 @@ function blacklistedDomainCheck () {
 /**
  * Redirects the current page to a phishing information page
  */
-function redirectToPhishingWarning () {
+function redirectToPhishingWarning() {
   console.log('MetaMask - routing to Phishing Warning component')
   const extensionURL = extension.runtime.getURL('phishing.html')
   window.location.href = `${extensionURL}#${querystring.stringify({
@@ -232,13 +232,13 @@ function redirectToPhishingWarning () {
 /**
  * Returns a promise that resolves when the DOM is loaded (does not wait for images to load)
  */
-async function domIsReady () {
+async function domIsReady() {
   // already loaded
   if (['interactive', 'complete'].includes(document.readyState)) {
     return
   }
   // wait for load
-  return new Promise((resolve) =>
+  return new Promise(resolve =>
     window.addEventListener('DOMContentLoaded', resolve, { once: true })
   )
 }

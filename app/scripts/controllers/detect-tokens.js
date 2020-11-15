@@ -6,7 +6,9 @@ import { fakeContractMapForTest } from './fakeContractMapForTest'
 // By default, poll every 3 minutes
 const DEFAULT_INTERVAL = 180 * 1000
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
-const IN_TEST = process.env.IN_TEST === 'true' || process.env.METAMASK_ENVIRONMEN === 'testing'
+const IN_TEST =
+  process.env.IN_TEST === 'true' ||
+  process.env.METAMASK_ENVIRONMEN === 'testing'
 const ERC20_ABI = [
   {
     constant: true,
@@ -20,12 +22,9 @@ const ERC20_ABI = [
 import SINGLE_CALL_BALANCES_ABI from './cfx-single-call-balance-checker-abi'
 import { SINGLE_CALL_BALANCES_ADDRESS } from './network/contract-addresses.js'
 
-const CONFLUX_SCAN_CONTRACT_MANAGER_LIST_API =
-  '/contract-manager/api/contract/list'
-const CONFLUX_SCAN_CONTRACT_MANAGER_QUERY_API =
-  '/contract-manager/api/contract/query'
+const CONFLUX_SCAN_CONTRACT_MANAGER_LIST_API = '/v1/token'
 
-function getScanUrl (network) {
+function getScanUrl(network) {
   if (network.store.getState().provider.type === MAINNET) {
     return 'https://confluxscan.io'
   } else if (network.store.getState().provider.type === TESTNET) {
@@ -43,7 +42,7 @@ class DetectTokensController {
    *
    * @param {Object} [config] - Options to configure controller
    */
-  constructor ({
+  constructor({
     interval = DEFAULT_INTERVAL,
     preferences,
     network,
@@ -55,7 +54,7 @@ class DetectTokensController {
     this.keyringMemStore = keyringMemStore
   }
 
-  async refreshCachedTokenList () {
+  async refreshCachedTokenList() {
     const endpoint = getScanUrl(this._network)
     if (!endpoint) {
       if (METAMASK_DEBUG || IN_TEST) {
@@ -65,7 +64,9 @@ class DetectTokensController {
     }
 
     const res = await fetch(
-      endpoint + CONFLUX_SCAN_CONTRACT_MANAGER_LIST_API + '?page=1&pageSize=500'
+      endpoint +
+        CONFLUX_SCAN_CONTRACT_MANAGER_LIST_API +
+        '?limit=100&skip=0&fields=icon'
     ).catch(() => {})
 
     if (!res || !res.ok) {
@@ -73,61 +74,29 @@ class DetectTokensController {
       return {}
     }
 
-    const {
-      code,
-      message,
-      result: { list: tokenList },
-    } = await res.json()
-
-    if (code !== 0) {
-      console.warn(
-        `Failed to fetch token whitelist from confluxscan, message: ${message}`
-      )
-      return {}
-    }
+    const { list: tokenList } = await res.json()
 
     const validTokens = await Promise.all(
       tokenList.reduce((acc, token) => {
-        if (token && token.tokenSymbol) {
-          acc.push(
-            fetch(
-              endpoint +
-                CONFLUX_SCAN_CONTRACT_MANAGER_QUERY_API +
-                '?address=' +
-                token.address +
-                '&fields=address,name,icon,tokenIcon,tokenSymbol,tokenDecimal,tokenName'
-            )
-              .then((res) => res.json())
-              .catch(() => {})
-          )
+        if (token && token.symbol) {
+          acc.push(token)
         }
         return acc
       }, [])
     )
 
     const contractMap = {}
-    validTokens.forEach((tokenRes) => {
-      if (tokenRes && tokenRes.code === 0) {
-        const {
-          result: {
-            address,
-            name,
-            icon,
-            tokenIcon,
-            tokenSymbol,
-            tokenDecimal,
-            tokenName,
-          },
-        } = tokenRes
-        const checkSumedAddress = toChecksumAddress(address)
-        contractMap[checkSumedAddress] = {
-          address: checkSumedAddress,
-          name: tokenName || name,
-          symbol: tokenSymbol,
-          decimals: parseInt(tokenDecimal, 10) || 0,
-          logo: tokenIcon || icon || undefined,
-          erc20: true,
-        }
+    validTokens.forEach(token => {
+      const { address, name, icon, symbol, decimals, isERC721 } = token
+      const checkSumedAddress = toChecksumAddress(address)
+      contractMap[checkSumedAddress] = {
+        address: checkSumedAddress,
+        name: name,
+        symbol,
+        decimals: parseInt(decimals, 10) || 0,
+        logo: icon || undefined,
+        erc20: true,
+        erc721: isERC721,
       }
     })
     this._preferences.store.updateState({ trustedTokenMap: contractMap })
@@ -138,7 +107,7 @@ class DetectTokensController {
    * For each token in eth-contract-metada, find check selectedAddress balance.
    *
    */
-  async detectNewTokens () {
+  async detectNewTokens() {
     if (!this.isActive) {
       return
     }
@@ -198,7 +167,7 @@ class DetectTokensController {
    * @returns {boolean} - If balance is detected, token is added.
    *
    */
-  async detectTokenBalance (contractAddress) {
+  async detectTokenBalance(contractAddress) {
     const ethContract = this.web3.eth.contract(ERC20_ABI).at(contractAddress)
     const contracts = this._preferences.store.getState().trustedTokenMap
     ethContract.balanceOf(this.selectedAddress, (error, result) => {
@@ -224,7 +193,7 @@ class DetectTokensController {
    * in case of address change or user session initialization.
    *
    */
-  restartTokenDetection () {
+  restartTokenDetection() {
     if (!(this.isActive && this.selectedAddress)) {
       return
     }
@@ -237,7 +206,7 @@ class DetectTokensController {
   /**
    * @type {Number}
    */
-  set interval (interval) {
+  set interval(interval) {
     this._handle && clearInterval(this._handle)
     if (!interval) {
       return
@@ -251,13 +220,13 @@ class DetectTokensController {
    * In setter when selectedAddress is changed, detectNewTokens and restart polling
    * @type {Object}
    */
-  set preferences (preferences) {
+  set preferences(preferences) {
     if (!preferences) {
       return
     }
     this._preferences = preferences
     preferences.store.subscribe(({ tokens = [] }) => {
-      this.tokenAddresses = tokens.map((obj) => {
+      this.tokenAddresses = tokens.map(obj => {
         return obj.address
       })
     })
@@ -272,12 +241,12 @@ class DetectTokensController {
   /**
    * @type {Object}
    */
-  set network (network) {
+  set network(network) {
     if (!network) {
       return
     }
     this._network = network
-    this._network.on('networkDidChange', (net) => {
+    this._network.on('networkDidChange', net => {
       if (net !== MAINNET && net !== TESTNET) {
         return
       }
@@ -290,7 +259,7 @@ class DetectTokensController {
    * In setter when isUnlocked is updated to true, detectNewTokens and restart polling
    * @type {Object}
    */
-  set keyringMemStore (keyringMemStore) {
+  set keyringMemStore(keyringMemStore) {
     if (!keyringMemStore) {
       return
     }
@@ -309,7 +278,7 @@ class DetectTokensController {
    * Internal isActive state
    * @type {Object}
    */
-  get isActive () {
+  get isActive() {
     return this.isOpen && this.isUnlocked
   }
 }

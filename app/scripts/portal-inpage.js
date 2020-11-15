@@ -78,7 +78,7 @@ if (typeof window.confluxJS !== 'undefined') {
 
 const confluxJS = new ConfluxJS()
 confluxJS.provider = proxiedInpageProvider
-confluxJS.setProvider = function () {
+confluxJS.setProvider = function() {
   log.debug('ConfluxPortal - overrode conflux.setProvider')
 }
 log.debug('ConfluxPortal - injected conflux')

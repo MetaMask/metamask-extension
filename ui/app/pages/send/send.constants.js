@@ -1,8 +1,4 @@
-import * as ethUtil from 'cfx-util'
-import {
-  conversionUtil,
-  multiplyCurrencies,
-} from '../../helpers/utils/conversion-util'
+import { multiplyCurrencies } from '../../helpers/utils/conversion-util'
 
 const MIN_GAS_PRICE_DEC = '0'
 const MIN_GAS_PRICE_HEX = parseInt(MIN_GAS_PRICE_DEC).toString(16)
@@ -10,16 +6,6 @@ const MIN_GAS_LIMIT_DEC = '21000'
 const MIN_GAS_LIMIT_HEX = parseInt(MIN_GAS_LIMIT_DEC).toString(16)
 const MAX_GAS_LIMIT_DEC = '100000000'
 const MAX_GAS_LIMIT_HEX = parseInt(MAX_GAS_LIMIT_DEC).toString(16)
-
-const MIN_GAS_PRICE_GWEI = ethUtil.addHexPrefix(
-  conversionUtil(MIN_GAS_PRICE_HEX, {
-    fromDenomination: 'WEI',
-    toDenomination: 'GWEI',
-    fromNumericBase: 'hex',
-    toNumericBase: 'hex',
-    numberOfDecimals: 1,
-  })
-)
 
 const MIN_GAS_TOTAL = multiplyCurrencies(MIN_GAS_LIMIT_HEX, MIN_GAS_PRICE_HEX, {
   toNumericBase: 'hex',
@@ -42,15 +28,6 @@ const REQUIRED_ERROR = 'required'
 const INVALID_HEX_ERROR = 'invalidHexData'
 const KNOWN_RECIPIENT_ADDRESS_ERROR = 'knownAddressRecipient'
 
-const ONE_GWEI_IN_WEI_HEX = ethUtil.addHexPrefix(
-  conversionUtil('0x1', {
-    fromDenomination: 'GWEI',
-    toDenomination: 'WEI',
-    fromNumericBase: 'hex',
-    toNumericBase: 'hex',
-  })
-)
-
 const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
 const BASE_TOKEN_GAS_COST = '0x186a0' // Hex for 100000, a base estimate for token transfers.
 const SIMPLE_STORAGE_COST = '0x0' // Hex for 0, cost of a simple send.
@@ -70,11 +47,9 @@ export {
   MAX_GAS_LIMIT_DEC,
   MAX_GAS_LIMIT_HEX,
   MIN_GAS_PRICE_DEC,
-  MIN_GAS_PRICE_GWEI,
   MIN_GAS_PRICE_HEX,
   MIN_GAS_TOTAL,
   NEGATIVE_ETH_ERROR,
-  ONE_GWEI_IN_WEI_HEX,
   REQUIRED_ERROR,
   SIMPLE_GAS_COST,
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,

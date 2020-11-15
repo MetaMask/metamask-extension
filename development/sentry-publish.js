@@ -5,7 +5,7 @@ const VERSION = require('../dist/chrome/manifest.json').version // eslint-disabl
 
 start().catch(console.error)
 
-async function start () {
+async function start() {
   const authWorked = await checkIfAuthWorks()
   if (!authWorked) {
     console.log(`Sentry auth failed...`)
@@ -44,14 +44,16 @@ async function start () {
   }
 }
 
-async function checkIfAuthWorks () {
+async function checkIfAuthWorks() {
   const itWorked = await doesNotFail(async () => {
-    await exec(`sentry-cli releases --org 'conflux-chain' --project 'portal' list`)
+    await exec(
+      `sentry-cli releases --org 'conflux-chain' --project 'portal' list`
+    )
   })
   return itWorked
 }
 
-async function checkIfVersionExists () {
+async function checkIfVersionExists() {
   const versionAlreadyExists = await doesNotFail(async () => {
     await exec(
       `sentry-cli releases --org 'conflux-chain' --project 'portal' info ${VERSION}`
@@ -60,7 +62,7 @@ async function checkIfVersionExists () {
   return versionAlreadyExists
 }
 
-async function checkIfVersionHasArtifacts () {
+async function checkIfVersionHasArtifacts() {
   const artifacts = await exec(
     `sentry-cli releases --org 'conflux-chain' --project 'portal' files ${VERSION} list`
   )
@@ -68,7 +70,7 @@ async function checkIfVersionHasArtifacts () {
   return artifacts[0] && artifacts[0].length > 0
 }
 
-async function doesNotFail (asyncFn) {
+async function doesNotFail(asyncFn) {
   try {
     await asyncFn()
     return true

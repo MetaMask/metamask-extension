@@ -1,4 +1,4 @@
-const createExplorerLink = function (hash, networkId) {
+const createExplorerLink = function(hash, networkId) {
   switch (networkId) {
     case '1029':
       return `http://confluxscan.io/transaction/${hash}`
@@ -9,7 +9,7 @@ const createExplorerLink = function (hash, networkId) {
   }
 }
 
-const createAccountLink = function (address, networkId) {
+const createAccountLink = function(address, networkId) {
   switch (networkId) {
     case '1029':
       return `http://confluxscan.io/address/${address}`

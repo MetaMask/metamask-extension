@@ -3,8 +3,8 @@
   flex-direction: column;
   width: 100%;
   align-items: center;
-  position: absolute;
-  bottom: 50px;
+  /* position: absolute; */
+  /* bottom: 50px; */
 
   @media screen and (max-width: 575px) {
     bottom: 5px;
@@ -14,12 +14,12 @@
     @extend %content-text;
     font-size: 12px;
     line-height: 17px;
-    color: #6A737D;
+    color: #6a737d;
     display: flex;
     margin-top: 10px;
 
     &--link {
-      color: #037DD6;
+      color: #037dd6;
       margin-left: 4px;
       cursor: pointer;
     }

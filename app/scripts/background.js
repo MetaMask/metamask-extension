@@ -29,7 +29,10 @@ import NotificationManager from './lib/notification-manager.js'
 import MetamaskController from './metamask-controller'
 import rawFirstTimeState from './first-time-state'
 import setupSentry from './lib/setupSentry'
-import reportFailedTxToSentry from './lib/reportFailedTxToSentry'
+import {
+  reportFailedTxToSentry,
+  reportErrorTxToSentry,
+} from './lib/reportFailedTxToSentry'
 import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code'
 import getObjStructure from './lib/getObjStructure'
 // import setupEnsIpfsResolver from './lib/ens-ipfs/setup'
@@ -157,7 +160,7 @@ initialize().catch(log.error)
  * Initializes the MetaMask controller, and sets up all platform configuration.
  * @returns {Promise} - Setup complete.
  */
-async function initialize () {
+async function initialize() {
   const initState = await loadStateFromPersistence()
   const initLangCode = await getFirstPreferredLangCode()
   await setupController(initState, initLangCode)
@@ -173,7 +176,7 @@ async function initialize () {
  * Migrates that data schema in case it was last loaded on an older version.
  * @returns {Promise<MetaMaskState>} - Last data emitted from previous instance of MetaMask.
  */
-async function loadStateFromPersistence () {
+async function loadStateFromPersistence() {
   // migrations
   const migrator = new Migrator({ migrations })
   migrator.on('error', console.warn)
@@ -196,7 +199,7 @@ async function loadStateFromPersistence () {
   }
 
   // report migration errors to sentry
-  migrator.on('error', (err) => {
+  migrator.on('error', err => {
     // get vault structure without secrets
     const vaultStructure = getObjStructure(versionedData)
     sentry.captureException(err, {
@@ -235,7 +238,7 @@ async function loadStateFromPersistence () {
  * @param {string} initLangCode - The region code for the language preferred by the current user.
  * @returns {Promise} - After setup is complete.
  */
-function setupController (initState, initLangCode) {
+function setupController(initState, initLangCode) {
   //
   // MetaMask Controller
   //
@@ -267,10 +270,51 @@ function setupController (initState, initLangCode) {
 
   // report failed transactions to Sentry
   controller.txController.on(`tx:status-update`, (txId, status) => {
+    if (status === 'rejected') {
+ return
+}
+    const txMeta = controller.txController.txStateManager.getTx(txId)
+    const txHistory = txMeta.history || []
+    let setHashNoteCount = 0
+    let approvedIdx
+    let setHashIdx
+
+    for (let i = 0; i < txHistory.length; i++) {
+      const innerHistory = txHistory[i]
+      if (Array.isArray(innerHistory) && innerHistory.length) {
+        for (let j = 0; j < innerHistory.length; j++) {
+          const his = innerHistory[j]
+          if (
+            his &&
+            his.note &&
+            his.note === 'Added new unapproved transaction.'
+          ) {
+            approvedIdx = i
+            continue
+          }
+          if (his && his.note && his.note === 'transactions#setTxHash') {
+            if (setHashIdx === undefined) {
+              setHashIdx = i
+            }
+            setHashNoteCount++
+          }
+        }
+      }
+    }
+
+    // more than one set hash in a single tx
+    // set hash before approve
+    if (setHashNoteCount > 1 || setHashIdx < approvedIdx) {
+      try {
+        reportErrorTxToSentry({ sentry, txMeta })
+      } catch (e) {
+        console.error(e)
+      }
+    }
+
     if (status !== 'failed') {
       return
     }
-    const txMeta = controller.txController.txStateManager.getTx(txId)
     if (txMeta.err && txMeta.err.message) {
       console.error(txMeta.err)
     }
@@ -288,7 +332,7 @@ function setupController (initState, initLangCode) {
     debounce(1000),
     storeTransform(versionifyData),
     createStreamSink(persistData),
-    (error) => {
+    error => {
       log.error('ConfluxPortal - Persistence pipeline failed', error)
     }
   )
@@ -298,12 +342,12 @@ function setupController (initState, initLangCode) {
    * @param {Object} state - The state object as emitted by the MetaMaskController.
    * @returns {VersionedData} - The state object wrapped in an object that includes a metadata key.
    */
-  function versionifyData (state) {
+  function versionifyData(state) {
     versionedData.data = state
     return versionedData
   }
 
-  async function persistData (state) {
+  async function persistData(state) {
     if (!state) {
       throw new Error('ConfluxPortal - updated state is missing')
     }
@@ -354,7 +398,7 @@ function setupController (initState, initLangCode) {
    * This method identifies trusted (MetaMask) interfaces, and connects them differently from untrusted (web pages).
    * @param {Port} remotePort - The port provided by a new context.
    */
-  function connectRemote (remotePort) {
+  function connectRemote(remotePort) {
     const processName = remotePort.name
     const isMetaMaskInternalProcess = metamaskInternalProcessHash[processName]
 
@@ -401,7 +445,7 @@ function setupController (initState, initLangCode) {
         const url = new URL(remotePort.sender.url)
         const origin = url.hostname
 
-        remotePort.onMessage.addListener((msg) => {
+        remotePort.onMessage.addListener(msg => {
           if (msg.data && msg.data.method === 'eth_requestAccounts') {
             requestAccountTabIds[origin] = tabId
           }
@@ -412,7 +456,7 @@ function setupController (initState, initLangCode) {
   }
 
   // communication with page or other extension
-  function connectExternal (remotePort) {
+  function connectExternal(remotePort) {
     const portStream = new PortStream(remotePort)
     controller.setupUntrustedCommunication(portStream, remotePort.sender)
   }
@@ -434,7 +478,7 @@ function setupController (initState, initLangCode) {
    * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
    * The number reflects the current number of pending transactions or message signatures needing user approval.
    */
-  function updateBadge () {
+  function updateBadge() {
     let label = ''
     const unapprovedTxCount = controller.txController.getUnapprovedTxCount()
     const unapprovedMsgCount = controller.messageManager.unapprovedMsgCount
@@ -475,10 +519,10 @@ function setupController (initState, initLangCode) {
 /**
  * Opens the browser popup for user confirmation
  */
-function triggerUi () {
-  extension.tabs.query({ active: true }, (tabs) => {
+function triggerUi() {
+  extension.tabs.query({ active: true }, tabs => {
     const currentlyActiveMetamaskTab = Boolean(
-      tabs.find((tab) => openMetamaskTabsIDs[tab.id])
+      tabs.find(tab => openMetamaskTabsIDs[tab.id])
     )
     if (!popupIsOpen && !currentlyActiveMetamaskTab) {
       notificationManager.showPopup()
@@ -490,9 +534,9 @@ function triggerUi () {
  * Opens the browser popup for user confirmation of watchAsset
  * then it waits until user interact with the UI
  */
-function openPopup () {
+function openPopup() {
   triggerUi()
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const interval = setInterval(() => {
       if (!notificationIsOpen) {
         clearInterval(interval)

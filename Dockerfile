@@ -34,7 +34,7 @@
 # ** code:
 # *** Level 1
 # **** base
-FROM circleci/node:10.16.3 AS base
+FROM circleci/node:10.18.1 AS base
 RUN sudo apt update && sudo apt install lsof -y && sudo rm -rf /var/lib/apt/lists/*
 WORKDIR /home/circleci/portal
 COPY --chown=circleci:circleci yarn.lock package.json ./
@@ -90,7 +90,7 @@ FROM prep-deps AS test-lint-lockfile
 RUN yarn lint:lockfile
 
 # **** prep-deps with browser
-FROM circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88 AS browser
+FROM circleci/node:10.18.1-browsers AS browser
 # start xvfb automatically to avoid needing to express in circle.yml
 ENV DISPLAY :99
 RUN printf '#!/bin/sh\nsudo Xvfb :99 -screen 0 1280x1024x24 &\nexec "$@"\n' > /tmp/entrypoint \
@@ -104,6 +104,25 @@ WORKDIR /home/circleci/portal
 # **** install firefox
 COPY --chown=circleci:circleci ./.circleci/scripts/firefox-install ./.circleci/scripts/firefox.cfg ./.circleci/scripts/
 RUN ./.circleci/scripts/firefox-install
+
+# install chrome
+
+RUN echo 'install chrome 86'
+RUN curl --silent --show-error --location --fail --retry 3 --output /tmp/google-chrome-stable_current_amd64.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
+      && (sudo dpkg -i /tmp/google-chrome-stable_current_amd64.deb || sudo apt-get -fy install)  \
+      && rm -rf /tmp/google-chrome-stable_current_amd64.deb \
+      && sudo sed -i 's|HERE/chrome"|HERE/chrome" --disable-setuid-sandbox --no-sandbox|g' \
+           "/opt/google/chrome/google-chrome" \
+      && google-chrome --version
+
+RUN export CHROMEDRIVER_RELEASE=$(curl --location --fail --retry 3 http://chromedriver.storage.googleapis.com/LATEST_RELEASE) \
+      && curl --silent --show-error --location --fail --retry 3 --output /tmp/chromedriver_linux64.zip "http://chromedriver.storage.googleapis.com/$CHROMEDRIVER_RELEASE/chromedriver_linux64.zip" \
+      && cd /tmp \
+      && unzip chromedriver_linux64.zip \
+      && rm -rf chromedriver_linux64.zip \
+      && sudo mv chromedriver /usr/local/bin/chromedriver \
+      && sudo chmod +x /usr/local/bin/chromedriver \
+      && chromedriver --version
 
 # **** prep-deps with browser
 FROM browser AS prep-deps-browser

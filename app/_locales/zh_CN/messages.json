@@ -540,7 +540,7 @@
     "message": "已使用燃气量"
   },
   "gasPrice": {
-    "message": " 燃气价格 (GDrip)"
+    "message": " 燃气价格 (Drip)"
   },
   "storageCollateralized": {
     "message": "已抵押的存储"
@@ -600,6 +600,9 @@
   },
   "hexData": {
     "message": "十六进制数据"
+  },
+  "incorrectPassword": {
+    "message": "密码错误"
   },
   "invalidHexData": {
     "message": "十六进制数据格式错误"
@@ -1107,7 +1110,7 @@
     "message": "发送 代币"
   },
   "sentEther": {
-    "message": "CFX已发送"
+    "message": "发送CFX"
   },
   "sentTokens": {
     "message": "代币已发送"

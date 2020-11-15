@@ -4,19 +4,19 @@ const webdriver = require('selenium-webdriver')
 const { By, until } = webdriver
 const { tinyDelayMs, regularDelayMs, largeDelayMs } = require('./helpers')
 const { buildWebDriver } = require('./webdriver')
-const Ganache = require('./ganache')
+const Ganache = require('@cfxjs/fullnode')
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
 const ganacheServer = new Ganache()
 
-describe('MetaMask', function () {
+describe('MetaMask', function() {
   let driver
   let publicAddress
 
   this.timeout(0)
   this.bail(true)
 
-  before(async function () {
+  before(async function() {
     await ganacheServer.start({
       accounts: [
         {
@@ -35,11 +35,11 @@ describe('MetaMask', function () {
     driver = result.driver
   })
 
-  afterEach(async function () {
+  afterEach(async function() {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       const errors = await driver.checkBrowserForConsoleErrors(driver)
       if (errors.length) {
-        const errorReports = errors.map((err) => err.message)
+        const errorReports = errors.map(err => err.message)
         const errorMessage = `Errors found in browser console:\n${errorReports.join(
           '\n'
         )}`
@@ -51,13 +51,13 @@ describe('MetaMask', function () {
     }
   })
 
-  after(async function () {
+  after(async function() {
     await ganacheServer.quit()
     await driver.quit()
   })
 
-  describe('Going through the first time flow, but skipping the seed phrase challenge', function () {
-    it('clicks the continue button on the welcome screen', async function () {
+  describe('Going through the first time flow, but skipping the seed phrase challenge', function() {
+    it('clicks the continue button on the welcome screen', async function() {
       await driver.findElement(By.css('.welcome-page__header'))
       await driver.clickElement(
         By.xpath(
@@ -67,19 +67,19 @@ describe('MetaMask', function () {
       await driver.delay(largeDelayMs)
     })
 
-    it('clicks the "Create New Wallet" option', async function () {
+    it('clicks the "Create New Wallet" option', async function() {
       await driver.clickElement(
         By.xpath(`//button[contains(text(), 'Create a Wallet')]`)
       )
       await driver.delay(largeDelayMs)
     })
 
-    it('clicks the "No thanks" option on the metametrics opt-in screen', async function () {
+    it('clicks the "No thanks" option on the metametrics opt-in screen', async function() {
       await driver.clickElement(By.css('.btn-default'))
       await driver.delay(largeDelayMs)
     })
 
-    it('accepts a secure password', async function () {
+    it('accepts a secure password', async function() {
       const passwordBox = await driver.findElement(
         By.css('.first-time-flow__form #create-password')
       )
@@ -96,7 +96,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
     })
 
-    it('skips the seed phrase challenge', async function () {
+    it('skips the seed phrase challenge', async function() {
       await driver.clickElement(
         By.xpath(
           `//button[contains(text(), '${enLocaleMessages.remindMeLater.message}')]`
@@ -108,7 +108,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
     })
 
-    it('gets the current accounts address', async function () {
+    it('gets the current accounts address', async function() {
       const addressInput = await driver.findElement(By.css('.qr-ellip-address'))
       publicAddress = await addressInput.getAttribute('value')
 
@@ -121,10 +121,10 @@ describe('MetaMask', function () {
     })
   })
 
-  describe('send to current account from dapp with different provider', function () {
+  describe('send to current account from dapp with different provider', function() {
     let extension
 
-    it('switches to dapp screen', async function () {
+    it('switches to dapp screen', async function() {
       const windowHandles = await driver.getAllWindowHandles()
       extension = windowHandles[0]
 
@@ -132,7 +132,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
     })
 
-    it('sends eth to the current account', async function () {
+    it('sends eth to the current account', async function() {
       const addressInput = await driver.findElement(By.css('#address'))
       await addressInput.sendKeys(publicAddress)
       await driver.delay(regularDelayMs)
@@ -143,11 +143,11 @@ describe('MetaMask', function () {
       await driver.wait(until.elementTextMatches(txStatus, /Success/), 15000)
     })
 
-    it('switches back to MetaMask', async function () {
+    it('switches back to MetaMask', async function() {
       await driver.switchToWindow(extension)
     })
 
-    it('should have the correct amount of eth', async function () {
+    it('should have the correct amount of eth', async function() {
       const balances = await driver.findElements(
         By.css('.currency-display-component__text')
       )
@@ -158,8 +158,8 @@ describe('MetaMask', function () {
     })
   })
 
-  describe('backs up the seed phrase', function () {
-    it('should show a backup reminder', async function () {
+  describe('backs up the seed phrase', function() {
+    it('should show a backup reminder', async function() {
       const backupReminder = await driver.findElements(
         By.xpath(
           "//div[contains(@class, 'home-notification__text') and contains(text(), 'Backup your Secret Recovery code to keep your wallet and funds secure')]"
@@ -168,14 +168,14 @@ describe('MetaMask', function () {
       assert.equal(backupReminder.length, 1)
     })
 
-    it('should take the user to the seedphrase backup screen', async function () {
+    it('should take the user to the seedphrase backup screen', async function() {
       await driver.clickElement(By.css('.home-notification__accept-button'))
       await driver.delay(regularDelayMs)
     })
 
     let seedPhrase
 
-    it('reveals the seed phrase', async function () {
+    it('reveals the seed phrase', async function() {
       const byRevealButton = By.css(
         '.reveal-seed-phrase__secret-blocker .reveal-seed-phrase__reveal-button'
       )
@@ -197,7 +197,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
     })
 
-    async function clickWordAndWait (word) {
+    async function clickWordAndWait(word) {
       await driver.clickElement(
         By.css(
           `[data-testid="seed-phrase-sorted"] [data-testid="draggable-seed-${word}"]`
@@ -206,7 +206,7 @@ describe('MetaMask', function () {
       await driver.delay(tinyDelayMs)
     }
 
-    it('can retype the seed phrase', async function () {
+    it('can retype the seed phrase', async function() {
       const words = seedPhrase.split(' ')
 
       for (const word of words) {
@@ -219,14 +219,14 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
     })
 
-    it('can click through the success screen', async function () {
+    it('can click through the success screen', async function() {
       await driver.clickElement(
         By.xpath(`//button[contains(text(), 'All Done')]`)
       )
       await driver.delay(regularDelayMs)
     })
 
-    it('should have the correct amount of eth', async function () {
+    it('should have the correct amount of eth', async function() {
       const balances = await driver.findElements(
         By.css('.currency-display-component__text')
       )
@@ -236,7 +236,7 @@ describe('MetaMask', function () {
       assert.equal(balance, '1')
     })
 
-    it('should not show a backup reminder', async function () {
+    it('should not show a backup reminder', async function() {
       await driver.assertElementNotPresent(By.css('.backup-notification'))
     })
   })

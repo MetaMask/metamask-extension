@@ -10,7 +10,7 @@ import SendHeader from '../send-header/send-header.container'
 import SendContent from '../send-content/send-content.container'
 import SendFooter from '../send-footer/send-footer.container'
 
-describe('Send Component', function () {
+describe('Send Component', function() {
   let wrapper
 
   const mockBasicGasEstimates = {
@@ -35,7 +35,7 @@ describe('Send Component', function () {
       .returns({ gasAndCollateralFee: 'mockGasAndCollateralFeeError' }),
     doesAmountErrorRequireUpdate: sinon
       .stub()
-      .callsFake((obj) => obj.balance !== obj.prevBalance),
+      .callsFake(obj => obj.balance !== obj.prevBalance),
   }
 
   const SendTransactionScreen = proxyquire('../send.component.js', {
@@ -50,12 +50,12 @@ describe('Send Component', function () {
     },
   }).default
 
-  before(function () {
+  before(function() {
     sinon.spy(SendTransactionScreen.prototype, 'componentDidMount')
     sinon.spy(SendTransactionScreen.prototype, 'updateGas')
   })
 
-  beforeEach(function () {
+  beforeEach(function() {
     wrapper = shallow(
       <SendTransactionScreen
         amount="mockAmount"
@@ -105,7 +105,7 @@ describe('Send Component', function () {
     )
   })
 
-  afterEach(function () {
+  afterEach(function() {
     SendTransactionScreen.prototype.componentDidMount.resetHistory()
     SendTransactionScreen.prototype.updateGas.resetHistory()
     utilsMethodStubs.doesAmountErrorRequireUpdate.resetHistory()
@@ -118,23 +118,23 @@ describe('Send Component', function () {
     propsMethodSpies.updateToNicknameIfNecessary.resetHistory()
   })
 
-  after(function () {
+  after(function() {
     sinon.restore()
   })
 
-  it('should call componentDidMount', function () {
+  it('should call componentDidMount', function() {
     assert(SendTransactionScreen.prototype.componentDidMount.calledOnce)
   })
 
-  describe('componentDidMount', function () {
-    it('should call props.fetchBasicGasAndTimeEstimates', function () {
+  describe('componentDidMount', function() {
+    it('should call props.fetchBasicGasAndTimeEstimates', function() {
       propsMethodSpies.fetchBasicGasEstimates.resetHistory()
       assert.equal(propsMethodSpies.fetchBasicGasEstimates.callCount, 0)
       wrapper.instance().componentDidMount()
       assert.equal(propsMethodSpies.fetchBasicGasEstimates.callCount, 1)
     })
 
-    it('should call this.updateGas', async function () {
+    it('should call this.updateGas', async function() {
       SendTransactionScreen.prototype.updateGas.resetHistory()
       propsMethodSpies.updateSendErrors.resetHistory()
       assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 0)
@@ -144,8 +144,8 @@ describe('Send Component', function () {
     })
   })
 
-  describe('componentWillUnmount', function () {
-    it('should call this.props.resetSendState', function () {
+  describe('componentWillUnmount', function() {
+    it('should call this.props.resetSendState', function() {
       propsMethodSpies.resetSendState.resetHistory()
       assert.equal(propsMethodSpies.resetSendState.callCount, 0)
       wrapper.instance().componentWillUnmount()
@@ -153,8 +153,8 @@ describe('Send Component', function () {
     })
   })
 
-  describe('componentDidUpdate', function () {
-    it('should call doesAmountErrorRequireUpdate with the expected params', function () {
+  describe('componentDidUpdate', function() {
+    it('should call doesAmountErrorRequireUpdate with the expected params', function() {
       utilsMethodStubs.getAmountErrorObject.resetHistory()
       wrapper.instance().componentDidUpdate({
         from: {
@@ -184,7 +184,7 @@ describe('Send Component', function () {
       )
     })
 
-    it('should not call getAmountErrorObject if doesAmountErrorRequireUpdate returns false', function () {
+    it('should not call getAmountErrorObject if doesAmountErrorRequireUpdate returns false', function() {
       utilsMethodStubs.getAmountErrorObject.resetHistory()
       wrapper.instance().componentDidUpdate({
         from: {
@@ -194,7 +194,7 @@ describe('Send Component', function () {
       assert.equal(utilsMethodStubs.getAmountErrorObject.callCount, 0)
     })
 
-    it('should call getAmountErrorObject if doesAmountErrorRequireUpdate returns true', function () {
+    it('should call getAmountErrorObject if doesAmountErrorRequireUpdate returns true', function() {
       utilsMethodStubs.getAmountErrorObject.resetHistory()
       wrapper.instance().componentDidUpdate({
         from: {
@@ -221,7 +221,7 @@ describe('Send Component', function () {
       )
     })
 
-    it('should call getGasFeeErrorObject if doesAmountErrorRequireUpdate returns true and selectedToken is truthy', function () {
+    it('should call getGasFeeErrorObject if doesAmountErrorRequireUpdate returns true and selectedToken is truthy', function() {
       utilsMethodStubs.getGasFeeErrorObject.resetHistory()
       wrapper.instance().componentDidUpdate({
         from: {
@@ -246,7 +246,7 @@ describe('Send Component', function () {
       )
     })
 
-    it('should not call getGasFeeErrorObject if doesAmountErrorRequireUpdate returns false', function () {
+    it('should not call getGasFeeErrorObject if doesAmountErrorRequireUpdate returns false', function() {
       utilsMethodStubs.getGasFeeErrorObject.resetHistory()
       wrapper.instance().componentDidUpdate({
         from: { address: 'mockAddress', balance: 'mockBalance' },
@@ -254,7 +254,7 @@ describe('Send Component', function () {
       assert.equal(utilsMethodStubs.getGasFeeErrorObject.callCount, 0)
     })
 
-    it('should not call getGasFeeErrorObject if doesAmountErrorRequireUpdate returns true but selectedToken is falsy', function () {
+    it('should not call getGasFeeErrorObject if doesAmountErrorRequireUpdate returns true but selectedToken is falsy', function() {
       utilsMethodStubs.getGasFeeErrorObject.resetHistory()
       wrapper.setProps({ selectedToken: null })
       wrapper.instance().componentDidUpdate({
@@ -265,7 +265,7 @@ describe('Send Component', function () {
       assert.equal(utilsMethodStubs.getGasFeeErrorObject.callCount, 0)
     })
 
-    it('should call updateSendErrors with the expected params if selectedToken is falsy', function () {
+    it('should call updateSendErrors with the expected params if selectedToken is falsy', function() {
       propsMethodSpies.updateSendErrors.resetHistory()
       wrapper.setProps({ selectedToken: null })
       wrapper.instance().componentDidUpdate({
@@ -284,7 +284,7 @@ describe('Send Component', function () {
       })
     })
 
-    it('should call updateSendErrors with the expected params if selectedToken is truthy', function () {
+    it('should call updateSendErrors with the expected params if selectedToken is truthy', function() {
       propsMethodSpies.updateSendErrors.resetHistory()
       wrapper.setProps({
         selectedToken: {
@@ -309,7 +309,75 @@ describe('Send Component', function () {
       })
     })
 
-    it('should not call updateSendTokenBalance or this.updateGas if network === prevNetwork', function () {
+    it('should call updateSendErrors with the wrong hex data 1', function() {
+      propsMethodSpies.updateSendErrors.resetHistory()
+      wrapper.setProps({
+        hexData: '0x12121',
+      })
+      wrapper.instance().componentDidUpdate({
+        hexData: '',
+        from: {
+          balance: 'balanceChanged',
+        },
+      })
+      assert.equal(propsMethodSpies.updateSendErrors.callCount, 2)
+      assert.deepEqual(propsMethodSpies.updateSendErrors.getCall(0).args[0], {
+        hexData: 'invalidHexData',
+      })
+    })
+
+    it('should call updateSendErrors with the wrong hex data 2', function() {
+      propsMethodSpies.updateSendErrors.resetHistory()
+      wrapper.setProps({
+        hexData: '0x12121l',
+      })
+      wrapper.instance().componentDidUpdate({
+        hexData: '',
+        from: {
+          balance: 'balanceChanged',
+        },
+      })
+      assert.equal(propsMethodSpies.updateSendErrors.callCount, 2)
+      assert.deepEqual(propsMethodSpies.updateSendErrors.getCall(0).args[0], {
+        hexData: 'invalidHexData',
+      })
+    })
+
+    it('should call updateSendErrors with right hex data 1', function() {
+      propsMethodSpies.updateSendErrors.resetHistory()
+      wrapper.setProps({
+        hexData: '0x1212',
+      })
+      wrapper.instance().componentDidUpdate({
+        hexData: '',
+        from: {
+          balance: 'balanceChanged',
+        },
+      })
+      assert.equal(propsMethodSpies.updateSendErrors.callCount, 2)
+      assert.deepEqual(propsMethodSpies.updateSendErrors.getCall(0).args[0], {
+        hexData: null,
+      })
+    })
+
+    it('should call updateSendErrors with right hex data 2', function() {
+      propsMethodSpies.updateSendErrors.resetHistory()
+      wrapper.setProps({
+        hexData: '1212',
+      })
+      wrapper.instance().componentDidUpdate({
+        hexData: '',
+        from: {
+          balance: 'balanceChanged',
+        },
+      })
+      assert.equal(propsMethodSpies.updateSendErrors.callCount, 2)
+      assert.deepEqual(propsMethodSpies.updateSendErrors.getCall(0).args[0], {
+        hexData: null,
+      })
+    })
+
+    it('should not call updateSendTokenBalance or this.updateGas if network === prevNetwork', function() {
       SendTransactionScreen.prototype.updateGas.resetHistory()
       propsMethodSpies.updateSendTokenBalance.resetHistory()
       wrapper.instance().componentDidUpdate({
@@ -327,7 +395,7 @@ describe('Send Component', function () {
       assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 0)
     })
 
-    it('should not call updateSendTokenBalance or this.updateGas if network === loading', function () {
+    it('should not call updateSendTokenBalance or this.updateGas if network === loading', function() {
       wrapper.setProps({ network: 'loading' })
       SendTransactionScreen.prototype.updateGas.resetHistory()
       propsMethodSpies.updateSendTokenBalance.resetHistory()
@@ -346,7 +414,7 @@ describe('Send Component', function () {
       assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 0)
     })
 
-    it('should call updateSendTokenBalance and this.updateGas with the correct params', function () {
+    it('should call updateSendTokenBalance and this.updateGas with the correct params', function() {
       SendTransactionScreen.prototype.updateGas.resetHistory()
       propsMethodSpies.updateSendTokenBalance.resetHistory()
       wrapper.instance().componentDidUpdate({
@@ -380,7 +448,7 @@ describe('Send Component', function () {
       )
     })
 
-    it('should call updateGas when selectedToken.address is changed', function () {
+    it('should call updateGas when selectedToken.address is changed', function() {
       SendTransactionScreen.prototype.updateGas.resetHistory()
       propsMethodSpies.updateAndSetGasAndStorageLimit.resetHistory()
       wrapper.instance().componentDidUpdate({
@@ -395,8 +463,8 @@ describe('Send Component', function () {
     })
   })
 
-  describe('updateGas', function () {
-    it('should call updateAndSetGasAndStorageLimit with the correct params if no to prop is passed', function () {
+  describe('updateGas', function() {
+    it('should call updateAndSetGasAndStorageLimit with the correct params if no to prop is passed', function() {
       propsMethodSpies.updateAndSetGasAndStorageLimit.resetHistory()
       wrapper.instance().updateGas()
       assert.equal(propsMethodSpies.updateAndSetGasAndStorageLimit.callCount, 1)
@@ -421,7 +489,7 @@ describe('Send Component', function () {
       )
     })
 
-    it('should call updateAndSetGasAndStorageLimit with the correct params if a to prop is passed', function () {
+    it('should call updateAndSetGasAndStorageLimit with the correct params if a to prop is passed', function() {
       propsMethodSpies.updateAndSetGasAndStorageLimit.resetHistory()
       wrapper.setProps({ to: 'someAddress' })
       wrapper.instance().updateGas()
@@ -431,7 +499,7 @@ describe('Send Component', function () {
       )
     })
 
-    it('should call updateAndSetGasAndStorageLimit with to set to lowercase if passed', function () {
+    it('should call updateAndSetGasAndStorageLimit with to set to lowercase if passed', function() {
       propsMethodSpies.updateAndSetGasAndStorageLimit.resetHistory()
       wrapper.instance().updateGas({ to: '0xABC' })
       assert.equal(
@@ -441,17 +509,17 @@ describe('Send Component', function () {
     })
   })
 
-  describe('render', function () {
-    it('should render a page-container class', function () {
+  describe('render', function() {
+    it('should render a page-container class', function() {
       assert.equal(wrapper.find('.page-container').length, 1)
     })
 
-    it('should render SendHeader and AddRecipient', function () {
+    it('should render SendHeader and AddRecipient', function() {
       assert.equal(wrapper.find(SendHeader).length, 1)
       assert.equal(wrapper.find(AddRecipient).length, 1)
     })
 
-    it('should pass the history prop to SendHeader and SendFooter', function () {
+    it('should pass the history prop to SendHeader and SendFooter', function() {
       wrapper.setProps({
         to: '0x80F061544cC398520615B5d3e7A3BedD70cd4510',
       })
@@ -463,7 +531,7 @@ describe('Send Component', function () {
       })
     })
 
-    it('should pass showHexData to SendContent', function () {
+    it('should pass showHexData to SendContent', function() {
       wrapper.setProps({
         to: '0x80F061544cC398520615B5d3e7A3BedD70cd4510',
       })
@@ -471,18 +539,18 @@ describe('Send Component', function () {
     })
   })
 
-  describe('validate when input change', function () {
+  describe('validate when input change', function() {
     let clock
 
-    beforeEach(function () {
+    beforeEach(function() {
       clock = sinon.useFakeTimers()
     })
 
-    afterEach(function () {
+    afterEach(function() {
       clock.restore()
     })
 
-    it('should validate when input changes', function () {
+    it('should validate when input changes', function() {
       const instance = wrapper.instance()
       instance.onRecipientInputChange(
         '0x1Fa2889e80619495738B0262C6B17471F29d9Dc5'
@@ -497,7 +565,7 @@ describe('Send Component', function () {
       })
     })
 
-    it.skip('should validate when input changes and has error', async function () {
+    it.skip('should validate when input changes and has error', async function() {
       wrapper.setProps({ network: '2999' })
       const instance = wrapper.instance()
       instance.onRecipientInputChange(
@@ -511,7 +579,7 @@ describe('Send Component', function () {
       })
     })
 
-    it.skip('should validate when input changes and has error on a bad network', function () {
+    it.skip('should validate when input changes and has error on a bad network', function() {
       wrapper.setProps({ network: 'bad' })
       const instance = wrapper.instance()
       instance.onRecipientInputChange(
@@ -526,7 +594,7 @@ describe('Send Component', function () {
       })
     })
 
-    it.skip('should synchronously validate when input changes to ""', function () {
+    it.skip('should synchronously validate when input changes to ""', function() {
       wrapper.setProps({ network: 'bad' })
       const instance = wrapper.instance()
       instance.onRecipientInputChange(
@@ -548,7 +616,7 @@ describe('Send Component', function () {
       })
     })
 
-    it.skip('should warn when send to a known token contract address', function () {
+    it.skip('should warn when send to a known token contract address', function() {
       wrapper.setProps({ address: '0x888', decimals: 18, symbol: '888' })
       const instance = wrapper.instance()
       instance.onRecipientInputChange(

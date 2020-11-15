@@ -1,7 +1,7 @@
 import { valuesFor } from '../app/helpers/utils/util'
 import log from 'loglevel'
 
-export default function txHelper (
+export default function txHelper(
   unapprovedTxs,
   unapprovedMsgs,
   personalMsgs,
@@ -23,7 +23,7 @@ export default function txHelper (
 
   const txValues = network
     ? valuesFor(unapprovedTxs).filter(
-      (txMeta) => txMeta.metamaskNetworkId === network
+      txMeta => txMeta.metamaskNetworkId === network
     )
     : valuesFor(unapprovedTxs)
   log.debug(`tx helper found ${txValues.length} unapproved txs`)

@@ -1,7 +1,6 @@
 # * code:
 steps:
-
-# ** L1
+  # ** L1
   - key: 'base'
     label: ':docker: build base image'
     retry:
@@ -20,8 +19,7 @@ steps:
       - 'source .buildkite/scripts/pre'
       - 'docker-build'
 
-
-# ** L2
+  # ** L2
   - key: 'audit-deps'
     label: ':nsp: yarn audit'
     env:
@@ -46,7 +44,7 @@ steps:
       - 'source .buildkite/scripts/pre'
       - 'docker-build'
 
-# ** L3
+  # ** L3
   - key: 'prep-deps-with-files'
     label: ':parcel: install deps with all files'
     env:
@@ -107,7 +105,7 @@ steps:
       - 'source .buildkite/scripts/pre'
       - 'docker-build'
 
-# ** L4
+  # ** L4
   - key: 'prep-build'
     label: ':parcel: yarn dist'
     env:
@@ -196,7 +194,7 @@ steps:
     commands:
       - 'source .buildkite/scripts/pre'
       - 'docker-build'
-# ** L5
+  # ** L5
   - key: 'test-mozilla-lint'
     label: ':firefox: mozilla lint'
     env:
@@ -244,7 +242,7 @@ steps:
     commands:
       - 'source .buildkite/scripts/pre'
       - 'docker-run yarn test:e2e:chrome:parallel'
-      # - 'cpout test-artifacts || true'
+      - 'cpout test-artifacts || true'
     parallelism: 8
     artifact_paths:
       - 'test-artifacts/**/*'
@@ -260,7 +258,7 @@ steps:
     commands:
       - 'source .buildkite/scripts/pre'
       - 'docker-run yarn test:e2e:firefox:parallel'
-      # - 'cpout test-artifacts || true'
+      - 'cpout test-artifacts || true'
     parallelism: 8
     artifact_paths:
       - 'test-artifacts/**/*'
@@ -275,12 +273,10 @@ steps:
         limit: 2
     commands:
       - 'source .buildkite/scripts/pre'
-      - 'docker-run yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json'
-      # - 'cpout test-artifacts || true'
+      - 'docker-run yarn benchmark:firefox --out test-artifacts/chrome/benchmark/pageload.json'
+      - 'cpout test-artifacts || true'
     artifact_paths:
       - 'test-artifacts/**/*'
-
-  - wait
 
   - key: 'key-e2e-chrome'
     label: ':chrome: chrome e2e key test'
@@ -292,12 +288,12 @@ steps:
         limit: 2
     commands:
       - 'source .buildkite/scripts/pre'
-      - 'docker-run yarn test:e2e:chrome:keytest'
-      # - 'cpout test-artifacts || true'
+      - 'docker-run yarn test:e2e:chrome:keytest || echo failed > failed'
+      - 'cpout test-artifacts || true'
+    soft_fail:
+      - exit_status: 8
     artifact_paths:
       - 'test-artifacts/**/*'
-
-  - wait
 
   - key: 'key-e2e-firefox'
     label: ':firefox: firefox e2e key test'
@@ -310,7 +306,7 @@ steps:
     commands:
       - 'source .buildkite/scripts/pre'
       - 'docker-run yarn test:e2e:firefox:keytest'
-      # - 'cpout test-artifacts || true'
+      - 'cpout test-artifacts || true'
     artifact_paths:
       - 'test-artifacts/**/*'
 

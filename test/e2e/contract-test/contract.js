@@ -46,7 +46,7 @@ const initialize = () => {
   const sendButton = document.getElementById('sendButton')
   const createToken = document.getElementById('createToken')
   const createBalanceTracker = document.getElementById('createBalanceTracker')
-  createBalanceTracker.style.display = 'none'
+  // createBalanceTracker.style.display = 'none'
   const transferTokens = document.getElementById('transferTokens')
   const approveTokens = document.getElementById('approveTokens')
   const transferTokensWithoutGas = document.getElementById(
@@ -196,7 +196,7 @@ const initialize = () => {
           gasPrice: 10000000000,
         })
         .confirmed()
-        .catch((error) => {
+        .catch(error => {
           contractStatus.innerHTML = 'Deployment Failed'
           throw error
         })
@@ -327,7 +327,7 @@ const initialize = () => {
           gasPrice: 10000000000,
         })
         .confirmed()
-        .catch((error) => {
+        .catch(error => {
           throw error
         })
 
@@ -501,7 +501,7 @@ const initialize = () => {
           gasPrice: 10000000000,
         })
         .confirmed()
-        .catch((error) => {
+        .catch(error => {
           tokenAddress.innerHTML = 'Creation Failed'
           throw error
         })
@@ -525,7 +525,7 @@ const initialize = () => {
       transferTokensWithoutGas.disabled = false
       approveTokensWithoutGas.disabled = false
 
-      transferTokens.onclick = async (event) => {
+      transferTokens.onclick = async event => {
         console.log(`event`, event)
         const transferResult = humanstandardtokenContract
           .transfer('0x1f318C334780961FB129D2a6c30D0763d9a5C970', '15000')
@@ -550,7 +550,7 @@ const initialize = () => {
         console.log(approveResult)
       }
 
-      transferTokensWithoutGas.onclick = async (event) => {
+      transferTokensWithoutGas.onclick = async event => {
         console.log(`event`, event)
         const transferResult = await humanstandardtokenContract
           .transfer('0x1f318C334780961FB129D2a6c30D0763d9a5C970', '15000')
@@ -712,13 +712,13 @@ const initialize = () => {
 
   if (isConfluxPortalInstalled()) {
     conflux.autoRefreshOnNetworkChange = false
-    conflux.on('networkChanged', (networkId) => {
+    conflux.on('networkChanged', networkId => {
       networkDiv.innerHTML = networkId
     })
-    conflux.on('chainIdChanged', (chainId) => {
+    conflux.on('chainIdChanged', chainId => {
       chainIdDiv.innerHTML = chainId
     })
-    conflux.on('accountsChanged', (newAccounts) => {
+    conflux.on('accountsChanged', newAccounts => {
       const connecting = Boolean(
         (!accounts || !accounts.length) && newAccounts && newAccounts.length
       )

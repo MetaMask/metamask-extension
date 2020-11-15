@@ -525,7 +525,7 @@
     "message": "Gas 用量"
   },
   "gasPrice": {
-    "message": "Gas 價格 (GDrip)"
+    "message": "Gas 價格 (Drip)"
   },
   "gasPriceExtremelyLow": {
     "message": "Gas 價格極低"
@@ -582,6 +582,9 @@
   },
   "hexData": {
     "message": "16進位資料"
+  },
+  "incorrectPassword": {
+    "message": "密碼錯誤"
   },
   "invalidHexData": {
     "message": "十六進制數據格式錯誤"

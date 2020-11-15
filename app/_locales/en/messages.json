@@ -642,7 +642,7 @@
     "message": "Storage Collaterized"
   },
   "gasPrice": {
-    "message": "Gas Price (GDrip)"
+    "message": "Gas Price (Drip)"
   },
   "gasPriceExtremelyLow": {
     "message": "Gas Price Extremely Low"
@@ -699,6 +699,9 @@
   },
   "hexData": {
     "message": "Hex Data"
+  },
+  "incorrectPassword": {
+    "message": "Incorrect Password"
   },
   "invalidHexData": {
     "message": "Invalid Hex Data"
@@ -1254,7 +1257,7 @@
     "message": "Send Tokens"
   },
   "sentEther": {
-    "message": "sent CFX"
+    "message": "send CFX"
   },
   "sentTokens": {
     "message": "sent tokens"
