@@ -2,6 +2,35 @@
 
 ## Current Develop Branch
 
+- fix: set useNativeCurrencyAsPrimaryCurrency to false (#271)
+- Merge branch 'master' into develop
+- feat: remove hardcode timestamp CU-4xx8qt
+- ci: remove the --cache-from latest image
+- refactor: Merge branch 'master' into develop
+- fix: error message
+- refactor: make confirmTransaction function more readable
+- fix: tx error message
+- refactor: format
+- feat: show gas in drip, error when lower than 1 drip
+- refactor: format\$
+- feat: upgrade sentry sdk, add tethys migration
+- feat: use new scan token api
+- feat: use new scan api to get nonce
+- fix: sinagure request page showing the wrong account
+- feat: test with fullnode v1.0.2
+- fix: e2e tests
+- fix: show balance .xxx with 0.xxx
+- fix: makes network reconnect more responsive
+- fix(send-component): hexdata validation
+- fix: sentEther i18n CU-4vukp4
+- fix(send-component): re estimate even in simple send
+- fix(gas-input): recheck gas info even insufficient balance
+- fix: incorrect password i18n
+- fix: style in dapp auth page CU-4vqxec
+- feat(gas): use 1drip as default gas for now
+- fix(send): don't block user with gas error when adv inline gas is off
+- fix(customNonce): can't set custom nonce to 0
+
 ## 0.5.3 Wed Oct 28 2020
 
 - fix: wrong CFX balance
