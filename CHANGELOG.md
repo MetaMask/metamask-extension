@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 0.5.4 Sun Nov 15 2020
+
 - fix: set useNativeCurrencyAsPrimaryCurrency to false (#271)
 - Merge branch 'master' into develop
 - feat: remove hardcode timestamp CU-4xx8qt
