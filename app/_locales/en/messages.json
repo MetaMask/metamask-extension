@@ -1,7 +1,4 @@
 {
-  "cfxTestWarning": {
-    "message": "Currently, the CFX are test tokens, and the amount in your wallet will be nulled when the test-net resets or upgrades"
-  },
   "showIncomingTransactions": {
     "message": "Show Incoming Transactions"
   },
@@ -298,7 +295,7 @@
     "message": "Connecting to $1"
   },
   "connectingToMainnet": {
-    "message": "Connecting to Conflux Oceanus Network"
+    "message": "Connecting to Conflux Tethys Network"
   },
   "connectingToTestnet": {
     "message": "Connecting to Conflux Test Network"
@@ -394,7 +391,7 @@
     "message": "Decimals of Precision"
   },
   "defaultNetwork": {
-    "message": "The default network is Conflux Oceanus."
+    "message": "The default network is Conflux Tethys."
   },
   "delete": {
     "message": "Delete"
@@ -645,7 +642,7 @@
     "message": "Storage Collaterized"
   },
   "gasPrice": {
-    "message": "Gas Price (GDrip)"
+    "message": "Gas Price (Drip)"
   },
   "gasPriceExtremelyLow": {
     "message": "Gas Price Extremely Low"
@@ -702,6 +699,9 @@
   },
   "hexData": {
     "message": "Hex Data"
+  },
+  "incorrectPassword": {
+    "message": "Incorrect Password"
   },
   "invalidHexData": {
     "message": "Invalid Hex Data"
@@ -870,7 +870,7 @@
     "message": "Lock time is too great"
   },
   "mainnet": {
-    "message": "Conflux Oceanus"
+    "message": "Conflux Tethys"
   },
   "memorizePhrase": {
     "message": "Memorize this phrase."
@@ -1257,7 +1257,7 @@
     "message": "Send Tokens"
   },
   "sentEther": {
-    "message": "sent CFX"
+    "message": "send CFX"
   },
   "sentTokens": {
     "message": "sent tokens"

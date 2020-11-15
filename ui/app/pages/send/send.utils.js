@@ -48,7 +48,7 @@ export {
   ellipsify,
 }
 
-function calcGasTotal (gasLimit = '0', gasPrice = '0') {
+function calcGasTotal(gasLimit = '0', gasPrice = '0') {
   return multiplyCurrencies(gasLimit, gasPrice, {
     toNumericBase: 'hex',
     multiplicandBase: 16,
@@ -56,7 +56,7 @@ function calcGasTotal (gasLimit = '0', gasPrice = '0') {
   })
 }
 
-function calcGasAndCollateralTotal (
+function calcGasAndCollateralTotal(
   gasLimit = '0',
   gasPrice = '0',
   storageLimit = '0',
@@ -81,7 +81,7 @@ function calcGasAndCollateralTotal (
   )
 }
 
-function isBalanceSufficient ({
+function isBalanceSufficient({
   amount = '0x0',
   amountConversionRate = 1,
   balance = '0x0',
@@ -114,7 +114,7 @@ function isBalanceSufficient ({
   return balanceIsSufficient
 }
 
-function isTokenBalanceSufficient ({ amount = '0x0', tokenBalance, decimals }) {
+function isTokenBalanceSufficient({ amount = '0x0', tokenBalance, decimals }) {
   const amountInDec = conversionUtil(amount, {
     fromNumericBase: 'hex',
   })
@@ -132,15 +132,20 @@ function isTokenBalanceSufficient ({ amount = '0x0', tokenBalance, decimals }) {
   return tokenBalanceIsSufficient
 }
 
-function getHexDataErrorObject (hexData) {
-  if (hexData && !(hexData === '' || /^[a-fA-F0-9]+$/.test(hexData))) {
+function getHexDataErrorObject(hexData) {
+  if (
+    hexData &&
+    hexData.length &&
+    (hexData.length % 2 !== 0 ||
+      (!/^0x[a-fA-F0-9]+$/.test(hexData) && !/^[a-fA-F0-9]+$/.test(hexData)))
+  ) {
     return { hexData: INVALID_HEX_ERROR }
   }
 
   return { hexData: null }
 }
 
-function getAmountErrorObject ({
+function getAmountErrorObject({
   amount,
   amountConversionRate,
   balance,
@@ -190,7 +195,7 @@ function getAmountErrorObject ({
   return { amount: amountError }
 }
 
-function getGasFeeErrorObject ({
+function getGasFeeErrorObject({
   amountConversionRate,
   balance,
   conversionRate,
@@ -217,12 +222,12 @@ function getGasFeeErrorObject ({
   return { gasAndCollateralFee: gasAndCollateralFeeError }
 }
 
-function calcTokenBalance ({ selectedToken, usersToken }) {
+function calcTokenBalance({ selectedToken, usersToken }) {
   const { decimals } = selectedToken || {}
   return calcTokenAmount(usersToken.balance.toString(), decimals).toString(16)
 }
 
-function doesAmountErrorRequireUpdate ({
+function doesAmountErrorRequireUpdate({
   balance,
   storageTotal,
   prevStorageTotal,
@@ -252,7 +257,7 @@ function doesAmountErrorRequireUpdate ({
   return amountErrorRequiresUpdate
 }
 
-async function checkSponsorshipInfo ({
+async function checkSponsorshipInfo({
   selectedAddress,
   selectedToken,
   gasLimit,
@@ -270,7 +275,7 @@ async function checkSponsorshipInfo ({
     return defaultRst
   }
 
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     return checkSponsorshipInfoMethod(
       [
         selectedAddress,
@@ -294,7 +299,7 @@ async function checkSponsorshipInfo ({
   })
 }
 
-async function estimateGasAndCollateral ({
+async function estimateGasAndCollateral({
   selectedAddress,
   selectedToken,
   blockGasLimit = MIN_GAS_LIMIT_HEX,
@@ -411,7 +416,7 @@ async function estimateGasAndCollateral ({
   })
 }
 
-function addGasBuffer (
+function addGasBuffer(
   initialGasLimitHex,
   blockGasLimitHex,
   bufferMultiplier = 1.5
@@ -455,7 +460,7 @@ function addGasBuffer (
   return upperGasLimit
 }
 
-function generateTokenTransferData ({
+function generateTokenTransferData({
   toAddress = '0x0',
   amount = '0x0',
   selectedToken,
@@ -471,22 +476,22 @@ function generateTokenTransferData ({
           ['address', 'uint256'],
           [toAddress, addHexPrefix(amount)]
         ),
-        (x) => ('00' + x.toString(16)).slice(-2)
+        x => ('00' + x.toString(16)).slice(-2)
       )
       .join('')
   )
 }
 
-function getToAddressForGasUpdate (...addresses) {
+function getToAddressForGasUpdate(...addresses) {
   return [...addresses, '']
-    .find((str) => str !== undefined && str !== null)
+    .find(str => str !== undefined && str !== null)
     .toLowerCase()
 }
 
-function removeLeadingZeroes (str) {
+function removeLeadingZeroes(str) {
   return str.replace(/^0*(?=\d)/, '')
 }
 
-function ellipsify (text, first = 6, last = 4) {
+function ellipsify(text, first = 6, last = 4) {
   return `${text.slice(0, first)}...${text.slice(-last)}`
 }

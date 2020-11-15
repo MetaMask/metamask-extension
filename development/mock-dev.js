@@ -26,7 +26,7 @@ import ExtensionPlatform from '../app/scripts/platforms/extension'
 
 const backGroundConnectionModifiers = require('./backGroundConnectionModifiers')
 
-const noop = function () {}
+const noop = function() {}
 
 // the states file is generated before this file is run, but after `lint` is run
 const states = require('./states') /* eslint-disable-line import/no-unresolved */
@@ -46,7 +46,7 @@ selectedView = queryString.view || 'send new ui'
 const firstState = states[selectedView]
 updateQueryParams(selectedView)
 
-function updateQueryParams (newView) {
+function updateQueryParams(newView) {
   queryString.view = newView
   const params = qs.stringify(queryString)
   const locationPaths = window.location.href.split('#')
@@ -79,7 +79,7 @@ global.platform = new ExtensionPlatform()
 //
 
 actions._setBackgroundConnection(controller.getApi())
-function updateState (stateName) {
+function updateState(stateName) {
   selectedView = stateName
   updateQueryParams(stateName)
   const newState = states[selectedView]
@@ -89,7 +89,7 @@ function updateState (stateName) {
   }
 }
 
-function modifyBackgroundConnection (backgroundConnectionModifier) {
+function modifyBackgroundConnection(backgroundConnectionModifier) {
   const modifiedBackgroundConnection = Object.assign(
     {},
     controller.getApi(),
@@ -111,7 +111,7 @@ const store = createStore(
 // start app
 startApp()
 
-function startApp () {
+function startApp() {
   const body = document.body
   const container = document.createElement('div')
   container.id = 'test-container'
@@ -120,7 +120,7 @@ function startApp () {
   render(
     <div className="super-dev-container">
       <button
-        onClick={(ev) => {
+        onClick={ev => {
           ev.preventDefault()
           store.dispatch(updateState('terms'))
         }}

@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 export default class Selector extends Component {
   state = {}
 
-  render () {
+  render() {
     const {
       states,
       selectedKey,
@@ -19,7 +19,7 @@ export default class Selector extends Component {
       <select
         style={{ margin: '20px 20px 0px' }}
         value={selected}
-        onChange={(event) => {
+        onChange={event => {
           const selectedKey = event.target.value
           const backgroundConnectionModifier =
             backGroundConnectionModifiers[selectedKey]

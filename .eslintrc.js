@@ -38,7 +38,9 @@ module.exports = {
   },
 
   rules: {
-    'arrow-parens': 'error',
+    indent: 'off',
+    'space-before-function-paren': 'off',
+    'arrow-parens': 'off',
     'no-mixed-operators': 'off',
     'import/default': 'error',
     'import/export': 'error',

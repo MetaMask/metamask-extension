@@ -1,7 +1,4 @@
 {
-  "cfxTestWarning": {
-    "message": "目前 CFX 是测试通证，仅具有测试功能，随着 Conflux 网络重启、升级，CFX 将同步清零"
-  },
   "chartOnlyAvailableEth": {
     "message": "聊天功能仅对Conflux网络开放。(其实Conflux还不支持该功能)"
   },
@@ -264,7 +261,7 @@
     "message": "正在连接 $1"
   },
   "connectingToMainnet": {
-    "message": "正在连接到 Conflux Oceanus"
+    "message": "正在连接到 Conflux Tethys"
   },
   "connectingToTestnet": {
     "message": "正在连接到 Conflux Testnet"
@@ -348,7 +345,7 @@
     "message": "小数精度"
   },
   "defaultNetwork": {
-    "message": "默认网络为 Conflux Oceanus。"
+    "message": "默认网络为 Conflux Tethys。"
   },
   "delete": {
     "message": "删除"
@@ -543,7 +540,7 @@
     "message": "已使用燃气量"
   },
   "gasPrice": {
-    "message": " 燃气价格 (GDrip)"
+    "message": " 燃气价格 (Drip)"
   },
   "storageCollateralized": {
     "message": "已抵押的存储"
@@ -603,6 +600,9 @@
   },
   "hexData": {
     "message": "十六进制数据"
+  },
+  "incorrectPassword": {
+    "message": "密码错误"
   },
   "invalidHexData": {
     "message": "十六进制数据格式错误"
@@ -740,7 +740,7 @@
     "message": "锁定"
   },
   "mainnet": {
-    "message": "Conflux Oceanus"
+    "message": "Conflux Tethys"
   },
   "memorizePhrase": {
     "message": "记住该密语。"
@@ -1110,7 +1110,7 @@
     "message": "发送 代币"
   },
   "sentEther": {
-    "message": "CFX已发送"
+    "message": "发送CFX"
   },
   "sentTokens": {
     "message": "代币已发送"

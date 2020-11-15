@@ -1,4 +1,4 @@
-export function loadLocalStorageData (itemKey) {
+export function loadLocalStorageData(itemKey) {
   try {
     const serializedData = localStorage.getItem(itemKey)
     if (serializedData === null) {
@@ -10,7 +10,7 @@ export function loadLocalStorageData (itemKey) {
   }
 }
 
-export function saveLocalStorageData (data, itemKey) {
+export function saveLocalStorageData(data, itemKey) {
   try {
     const serializedData = JSON.stringify(data)
     localStorage.setItem(itemKey, serializedData)

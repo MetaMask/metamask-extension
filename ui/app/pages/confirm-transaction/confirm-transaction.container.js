@@ -8,8 +8,17 @@ import {
 import { isTokenMethodAction } from '../../helpers/utils/transactions.util'
 import { fetchBasicGasAndTimeEstimates } from '../../ducks/gas/gas.duck'
 
-import { getContractMethodData, getTokenParams } from '../../store/actions'
+import {
+  getContractMethodData,
+  getTokenParams,
+  setSelectedAddress,
+} from '../../store/actions'
 import ConfirmTransaction from './confirm-transaction.component'
+import {
+  getAddressConnectedToCurrentTab,
+  getDomainToConnectedAddressMap,
+} from '../../selectors/selectors'
+
 import { unconfirmedTransactionsListSelector } from '../../selectors/confirm-transaction'
 
 const mapStateToProps = (state, ownProps) => {
@@ -30,11 +39,21 @@ const mapStateToProps = (state, ownProps) => {
   const transaction = totalUnconfirmed
     ? unapprovedTxs[id] || unconfirmedTransactions[0]
     : {}
+  const origin = transaction?.msgParams?.origin
+  console.log('transaction', transaction)
+  const domainToConnectedAddressMap = getDomainToConnectedAddressMap(state)
+  console.log('domainToConnectedAddressMap = ', domainToConnectedAddressMap)
+  const addressConnectedToCurrentTab =
+    getAddressConnectedToCurrentTab(state) ||
+    domainToConnectedAddressMap?.[origin]?.[0] ||
+    undefined
   const { id: transactionId, transactionCategory } = transaction
 
   const trackABTest = false
 
   return {
+    selectedAddress: state.metamask.selectedAddress,
+    addressConnectedToCurrentTab,
     totalUnapprovedCount: totalUnconfirmed,
     send,
     unapprovedTxs,
@@ -48,16 +67,17 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
-    setTransactionToConfirm: (transactionId) => {
+    setSelectedAddress: address => dispatch(setSelectedAddress(address)),
+    setTransactionToConfirm: transactionId => {
       dispatch(setTransactionToConfirm(transactionId))
     },
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
     fetchBasicGasAndTimeEstimates: () =>
       dispatch(fetchBasicGasAndTimeEstimates()),
-    getContractMethodData: (data) => dispatch(getContractMethodData(data)),
-    getTokenParams: (tokenAddress) => dispatch(getTokenParams(tokenAddress)),
+    getContractMethodData: data => dispatch(getContractMethodData(data)),
+    getTokenParams: tokenAddress => dispatch(getTokenParams(tokenAddress)),
   }
 }
 

@@ -49,7 +49,7 @@ const startServer = ({ port, rootDirectory }) => {
   })
 }
 
-const parsePort = (portString) => {
+const parsePort = portString => {
   const port = Number(portString)
   if (!Number.isInteger(port)) {
     throw new Error(`Port '${portString}' is invalid; must be an integer`)
@@ -61,7 +61,7 @@ const parsePort = (portString) => {
   return port
 }
 
-const parseDirectoryArgument = async (pathString) => {
+const parseDirectoryArgument = async pathString => {
   const resolvedPath = path.resolve(pathString)
   const directoryStats = await fsStat(resolvedPath)
   if (!directoryStats.isDirectory()) {

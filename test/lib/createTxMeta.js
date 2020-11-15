@@ -2,7 +2,7 @@ import txStateHistoryHelper from '../../app/scripts/controllers/transactions/lib
 
 export default createTxMeta
 
-function createTxMeta (partialMeta) {
+function createTxMeta(partialMeta) {
   const txMeta = Object.assign(
     {
       status: 'unapproved',

@@ -134,12 +134,30 @@ export function decGWEIToHexWEI (decGWEI) {
   })
 }
 
-export function hexWEIToDecGWEI (hexGWEI) {
-  return conversionUtil(hexGWEI, {
+export function decWEIToHexWEI (decWEI) {
+  return conversionUtil(decWEI, {
+    fromNumericBase: 'dec',
+    toNumericBase: 'hex',
+    fromDenomination: 'WEI',
+    toDenomination: 'WEI',
+  })
+}
+
+export function hexWEIToDecGWEI (hexWEI) {
+  return conversionUtil(hexWEI, {
     fromNumericBase: 'hex',
     toNumericBase: 'dec',
     fromDenomination: 'WEI',
     toDenomination: 'GWEI',
+  })
+}
+
+export function hexWEIToDecWEI (hexWEI) {
+  return conversionUtil(hexWEI, {
+    fromNumericBase: 'hex',
+    toNumericBase: 'dec',
+    fromDenomination: 'WEI',
+    toDenomination: 'WEI',
   })
 }
 

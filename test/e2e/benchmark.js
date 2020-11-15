@@ -10,7 +10,7 @@ const { PAGES } = require('./webdriver/driver')
 const DEFAULT_NUM_SAMPLES = 12
 const ALL_PAGES = Object.values(PAGES)
 
-async function measurePage (pageName) {
+async function measurePage(pageName) {
   let metrics
   await withFixtures({ fixtures: 'imported-account' }, async ({ driver }) => {
     const passwordField = await driver.findElement(By.css('#password'))
@@ -24,8 +24,8 @@ async function measurePage (pageName) {
   return metrics
 }
 
-function calculateResult (calc) {
-  return (result) => {
+function calculateResult(calc) {
+  return result => {
     const calculatedResult = {}
     for (const key of Object.keys(result)) {
       calculatedResult[key] = calc(result[key])
@@ -33,24 +33,24 @@ function calculateResult (calc) {
     return calculatedResult
   }
 }
-const calculateSum = (array) => array.reduce((sum, val) => sum + val)
-const calculateAverage = (array) => calculateSum(array) / array.length
-const minResult = calculateResult((array) => Math.min(...array))
-const maxResult = calculateResult((array) => Math.max(...array))
-const averageResult = calculateResult((array) => calculateAverage(array))
-const standardDeviationResult = calculateResult((array) => {
+const calculateSum = array => array.reduce((sum, val) => sum + val)
+const calculateAverage = array => calculateSum(array) / array.length
+const minResult = calculateResult(array => Math.min(...array))
+const maxResult = calculateResult(array => Math.max(...array))
+const averageResult = calculateResult(array => calculateAverage(array))
+const standardDeviationResult = calculateResult(array => {
   const average = calculateAverage(array)
-  const squareDiffs = array.map((value) => Math.pow(value - average, 2))
+  const squareDiffs = array.map(value => Math.pow(value - average, 2))
   return Math.sqrt(calculateAverage(squareDiffs))
 })
 // 95% margin of error calculated using Student's t-distrbution
-const calculateMarginOfError = (array) =>
+const calculateMarginOfError = array =>
   ttest(array).confidence()[1] - calculateAverage(array)
-const marginOfErrorResult = calculateResult((array) =>
+const marginOfErrorResult = calculateResult(array =>
   calculateMarginOfError(array)
 )
 
-async function profilePageLoad (pages, numSamples) {
+async function profilePageLoad(pages, numSamples) {
   const results = {}
   for (const pageName of pages) {
     const runResults = []
@@ -58,29 +58,29 @@ async function profilePageLoad (pages, numSamples) {
       runResults.push(await measurePage(pageName))
     }
 
-    if (runResults.some((result) => result.navigation.lenth > 1)) {
+    if (runResults.some(result => result.navigation.lenth > 1)) {
       throw new Error(`Multiple navigations not supported`)
     } else if (
-      runResults.some((result) => result.navigation[0].type !== 'navigate')
+      runResults.some(result => result.navigation[0].type !== 'navigate')
     ) {
       throw new Error(
         `Navigation type ${
-          runResults.find((result) => result.navigation[0].type !== 'navigate')
+          runResults.find(result => result.navigation[0].type !== 'navigate')
             .navigation[0].type
         } not supported`
       )
     }
 
     const result = {
-      firstPaint: runResults.map((result) => result.paint['first-paint']),
+      firstPaint: runResults.map(result => result.paint['first-paint']),
       domContentLoaded: runResults.map(
-        (result) => result.navigation[0] && result.navigation[0].domContentLoaded
+        result => result.navigation[0] && result.navigation[0].domContentLoaded
       ),
       load: runResults.map(
-        (result) => result.navigation[0] && result.navigation[0].load
+        result => result.navigation[0] && result.navigation[0].load
       ),
       domInteractive: runResults.map(
-        (result) => result.navigation[0] && result.navigation[0].domInteractive
+        result => result.navigation[0] && result.navigation[0].domInteractive
       ),
     }
 
@@ -95,7 +95,7 @@ async function profilePageLoad (pages, numSamples) {
   return results
 }
 
-async function isWritable (directory) {
+async function isWritable(directory) {
   try {
     await fs.access(directory, fsConstants.W_OK)
     return true
@@ -107,7 +107,7 @@ async function isWritable (directory) {
   }
 }
 
-async function getFirstParentDirectoryThatExists (directory) {
+async function getFirstParentDirectoryThatExists(directory) {
   while (true) {
     try {
       await fs.access(directory, fsConstants.F_OK)
@@ -123,7 +123,7 @@ async function getFirstParentDirectoryThatExists (directory) {
   }
 }
 
-async function main () {
+async function main() {
   const args = process.argv.slice(2)
 
   let pages = ['home']
@@ -183,7 +183,7 @@ async function main () {
   }
 }
 
-main().catch((e) => {
+main().catch(e => {
   console.error(e)
   process.exit(1)
 })

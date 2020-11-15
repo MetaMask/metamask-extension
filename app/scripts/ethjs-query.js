@@ -3,7 +3,7 @@ const EthRPC = require('ethjs-rpc')
 
 module.exports = Eth
 
-function Eth (provider, options) {
+function Eth(provider, options) {
   const self = this
   const optionsObject = options || {}
 
@@ -29,21 +29,21 @@ function Eth (provider, options) {
   self.setProvider = self.rpc.setProvider
 }
 
-Eth.prototype.log = function log (message) {
+Eth.prototype.log = function log(message) {
   const self = this
   if (self.options.debug) {
     self.options.logger.log('[ethjs-query log] ' + message)
   }
 }
 
-Object.keys(format.schema.methods).forEach(function (rpcMethodName) {
+Object.keys(format.schema.methods).forEach(function(rpcMethodName) {
   Object.defineProperty(Eth.prototype, rpcMethodName.replace('eth_', ''), {
     enumerable: true,
     value: generateFnFor(rpcMethodName, format.schema.methods[rpcMethodName]),
   })
 })
 
-function betterErrorMessage (err) {
+function betterErrorMessage(err) {
   if (!err) {
     return
   }
@@ -64,8 +64,8 @@ function betterErrorMessage (err) {
   return err
 }
 
-function generateFnFor (method, methodObject) {
-  return function outputMethod () {
+function generateFnFor(method, methodObject) {
+  return function outputMethod() {
     let protoCallback = null // () => {}; // eslint-disable-line
     var inputs = null // eslint-disable-line
     var inputError = null // eslint-disable-line
@@ -77,8 +77,8 @@ function generateFnFor (method, methodObject) {
       protoCallback = args.pop()
     }
 
-    const prom = new Promise(function (resolve, reject) {
-      const cb = function cb (callbackError, callbackResult) {
+    const prom = new Promise(function(resolve, reject) {
+      const cb = function cb(callbackError, callbackResult) {
         if (callbackError) {
           reject(callbackError)
           // protoCallback(callbackError, null);
@@ -187,17 +187,17 @@ function generateFnFor (method, methodObject) {
 
     if (protoCallback) {
       prom
-        .then(function (result) {
+        .then(function(result) {
           return protoCallback(null, result)
         })
-        .catch(function (err) {
+        .catch(function(err) {
           return protoCallback(betterErrorMessage(err), null)
         })
 
       return undefined
     }
 
-    return prom.catch(function (err) {
+    return prom.catch(function(err) {
       throw betterErrorMessage(err)
     })
   }

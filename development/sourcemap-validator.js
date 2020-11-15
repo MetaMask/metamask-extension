@@ -15,7 +15,7 @@ const fsAsync = pify(fs)
 
 start().catch(console.error)
 
-async function start () {
+async function start() {
   const targetFiles = [
     `portal-inpage.js`,
     `portal-contentscript.js`,
@@ -27,7 +27,7 @@ async function start () {
   }
 }
 
-async function validateSourcemapForFile ({ buildName }) {
+async function validateSourcemapForFile({ buildName }) {
   console.log(`build "${buildName}"`)
   const platform = `chrome`
   // load build and sourcemaps
@@ -83,9 +83,9 @@ async function validateSourcemapForFile ({ buildName }) {
   const buildLines = rawBuild.split('\n')
   const targetString = 'new Error'
   // const targetString = 'null'
-  const matchesPerLine = buildLines.map((line) => indicesOf(targetString, line))
+  const matchesPerLine = buildLines.map(line => indicesOf(targetString, line))
   matchesPerLine.forEach((matchIndices, lineIndex) => {
-    matchIndices.forEach((matchColumn) => {
+    matchIndices.forEach(matchColumn => {
       sampleCount++
       const position = { line: lineIndex + 1, column: matchColumn }
       const result = consumer.originalPositionFor(position)
@@ -122,7 +122,7 @@ async function validateSourcemapForFile ({ buildName }) {
   console.log(`  checked ${sampleCount} samples`)
 }
 
-function indicesOf (substring, string) {
+function indicesOf(substring, string) {
   const a = []
   let i = -1
   while ((i = string.indexOf(substring, i + 1)) >= 0) {

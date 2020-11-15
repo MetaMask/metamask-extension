@@ -22,16 +22,9 @@ function getBuyEthUrl ({ network, /* amount, */ address, service, type }) {
     service = getDefaultServiceForNetwork(network)
   }
 
-  const MAINNET_LANCHED =
-    new Date().getTime() >
-    new Date(
-      'Thu Oct 29 2020 00:10:00 GMT+0800 (China Standard Time)'
-    ).getTime()
   switch (service) {
     case 'conflux-main-faucet':
-      return MAINNET_LANCHED
-        ? `https://confluxscan.io/sponsor`
-        : `https://wallet.confluxscan.io/faucet/dev/ask?address=${address}`
+      return `https://confluxscan.io/sponsor`
     case 'conflux-test-faucet':
       return `http://test-faucet.conflux-chain.org:18088/dev/ask?address=${address}`
     default:
@@ -42,8 +35,6 @@ function getBuyEthUrl ({ network, /* amount, */ address, service, type }) {
 function getDefaultServiceForNetwork (network) {
   switch (network) {
     case '1029':
-      return 'conflux-main-faucet'
-    case '2':
       return 'conflux-main-faucet'
     case '1':
       return 'conflux-test-faucet'

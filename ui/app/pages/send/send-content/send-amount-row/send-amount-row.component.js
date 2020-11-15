@@ -33,7 +33,7 @@ export default class SendAmountRow extends Component {
 
   updateGas = debounce(this.updateGas.bind(this), 500)
 
-  validateAmount (amount) {
+  validateAmount(amount) {
     const {
       amountConversionRate,
       balance,
@@ -70,22 +70,23 @@ export default class SendAmountRow extends Component {
     }
   }
 
-  updateAmount (amount) {
+  updateAmount(amount) {
     const { updateSendAmount, setMaxModeTo } = this.props
 
     setMaxModeTo(false)
     updateSendAmount(amount)
   }
 
-  updateGas (amount) {
-    const { selectedToken, updateGas } = this.props
+  updateGas(amount) {
+    const { updateGas } = this.props
 
-    if (selectedToken) {
-      updateGas({ amount })
-    }
+    // still needs to estimate when sending cfx to contract addr
+    // if (selectedToken) {
+    updateGas({ amount })
+    // }
   }
 
-  renderInput () {
+  renderInput() {
     const { amount, inError, selectedToken } = this.props
     const Component = selectedToken
       ? UserPreferencedTokenInput
@@ -93,7 +94,7 @@ export default class SendAmountRow extends Component {
 
     return (
       <Component
-        onChange={(newAmount) => {
+        onChange={newAmount => {
           this.validateAmount(newAmount)
           this.updateGas(newAmount)
           this.updateAmount(newAmount)
@@ -104,7 +105,7 @@ export default class SendAmountRow extends Component {
     )
   }
 
-  render () {
+  render() {
     const { gasTotalCountSponsorshipInfo: gasTotal, inError } = this.props
 
     return (

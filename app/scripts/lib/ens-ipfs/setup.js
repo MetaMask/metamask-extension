@@ -26,15 +26,7 @@ function setupEnsIpfsResolver ({ provider, getCurrentNetwork, getIpfsGateway }) 
     const { tabId, url } = details
     // ignore requests that are not associated with tabs
     // only attempt ENS resolution on mainnet
-    const MAINNET_LANCHED =
-      new Date().getTime() >
-      new Date(
-        'Thu Oct 29 2020 00:10:00 GMT+0800 (China Standard Time)'
-      ).getTime()
-    if (
-      tabId === -1 ||
-      getCurrentNetwork() !== (MAINNET_LANCHED ? '1029' : '2')
-    ) {
+    if (tabId === -1 || getCurrentNetwork() !== '1029') {
       return
     }
     // parse ens name

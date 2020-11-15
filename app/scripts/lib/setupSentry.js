@@ -6,14 +6,14 @@ import extractEthjsErrorMessage from './extractEthjsErrorMessage'
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 const METAMASK_ENVIRONMENT = process.env.METAMASK_ENVIRONMENT
 const SENTRY_DSN_PROD =
-      'https://756aa0cb47eb4b44ac25739ceba42c07@sentry.io/3624979'
+  'https://756aa0cb47eb4b44ac25739ceba42c07@sentry.io/3624979'
 const SENTRY_DSN_DEV =
-      'https://756aa0cb47eb4b44ac25739ceba42c07@sentry.io/3624979'
+  'https://756aa0cb47eb4b44ac25739ceba42c07@sentry.io/3624979'
 
 export default setupSentry
 
 // Setup sentry remote error reporting
-function setupSentry (opts) {
+function setupSentry(opts) {
   const { release, getState } = opts
   let sentryTarget
   // detect brave
@@ -37,14 +37,14 @@ function setupSentry (opts) {
     environment: METAMASK_ENVIRONMENT,
     integrations: [new Dedupe(), new ExtraErrorData()],
     release,
-    beforeSend: (report) => rewriteReport(report),
+    beforeSend: report => rewriteReport(report),
   })
 
-  Sentry.configureScope((scope) => {
+  Sentry.configureScope(scope => {
     scope.setExtra('isBrave', isBrave)
   })
 
-  function rewriteReport (report) {
+  function rewriteReport(report) {
     try {
       // simplify certain complex error messages (e.g. Ethjs)
       simplifyErrorMessages(report)
@@ -64,27 +64,27 @@ function setupSentry (opts) {
   return Sentry
 }
 
-function simplifyErrorMessages (report) {
-  rewriteErrorMessages(report, (errorMessage) => {
+function simplifyErrorMessages(report) {
+  rewriteErrorMessages(report, errorMessage => {
     // simplify ethjs error messages
     errorMessage = extractEthjsErrorMessage(errorMessage)
-    // simplify 'Transaction Failed: known transaction'
-    if (errorMessage.indexOf('Transaction Failed: known transaction') === 0) {
+    // simplify 'Transaction Failed: tx already exist'
+    if (errorMessage.indexOf('Transaction Failed: tx already exist') === 0) {
       // cut the hash from the error message
-      errorMessage = 'Transaction Failed: known transaction'
+      errorMessage = 'Transaction Failed: tx already exist'
     }
     return errorMessage
   })
 }
 
-function rewriteErrorMessages (report, rewriteFn) {
+function rewriteErrorMessages(report, rewriteFn) {
   // rewrite top level message
   if (typeof report.message === 'string') {
     report.message = rewriteFn(report.message)
   }
   // rewrite each exception message
   if (report.exception && report.exception.values) {
-    report.exception.values.forEach((item) => {
+    report.exception.values.forEach(item => {
       if (typeof item.value === 'string') {
         item.value = rewriteFn(item.value)
       }
@@ -92,24 +92,24 @@ function rewriteErrorMessages (report, rewriteFn) {
   }
 }
 
-function rewriteReportUrls (report) {
+function rewriteReportUrls(report) {
   // update request url
   report.request.url = toMetamaskUrl(report.request.url)
   // update exception stack trace
   if (report.exception && report.exception.values) {
-    report.exception.values.forEach((item) => {
-      item.stacktrace.frames.forEach((frame) => {
+    report.exception.values.forEach(item => {
+      item.stacktrace.frames.forEach(frame => {
         frame.filename = toMetamaskUrl(frame.filename)
       })
     })
   }
 }
 
-function toMetamaskUrl (origUrl) {
+function toMetamaskUrl(origUrl) {
   const filePath = origUrl.split(location.origin)[1]
   if (!filePath) {
     return origUrl
   }
-  const metamaskUrl = `metamask${filePath}`
+  const metamaskUrl = `portal${filePath}`
   return metamaskUrl
 }

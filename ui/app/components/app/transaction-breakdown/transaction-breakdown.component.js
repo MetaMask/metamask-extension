@@ -5,7 +5,7 @@ import TransactionBreakdownRow from './transaction-breakdown-row'
 import CurrencyDisplay from '../../ui/currency-display'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
 import HexToDecimal from '../../ui/hex-to-decimal'
-import { GWEI, PRIMARY, SECONDARY } from '../../../helpers/constants/common'
+import { WEI, PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 
 export default class TransactionBreakdown extends PureComponent {
   static contextTypes = {
@@ -20,7 +20,10 @@ export default class TransactionBreakdown extends PureComponent {
     gasPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     gasUsed: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    storageCollateralized: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    storageCollateralized: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]),
     totalInHex: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     collateralized: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   }
@@ -83,7 +86,7 @@ export default class TransactionBreakdown extends PureComponent {
             <CurrencyDisplay
               className="transaction-breakdown__value"
               currency={nativeCurrency}
-              denomination={GWEI}
+              denomination={WEI}
               value={gasPrice}
               hideLabel
             />
@@ -91,7 +94,9 @@ export default class TransactionBreakdown extends PureComponent {
             '?'
           )}
         </TransactionBreakdownRow>
-        {typeof storageCollateralized === 'string' && storageCollateralized && storageCollateralized !== '0x0' && (
+        {typeof storageCollateralized === 'string' &&
+          storageCollateralized &&
+          storageCollateralized !== '0x0' && (
           <TransactionBreakdownRow
             title={`${t('storageCollateralized')} (${t('units')})`}
             className="transaction-breakdown__row-title"
@@ -102,26 +107,24 @@ export default class TransactionBreakdown extends PureComponent {
             />
           </TransactionBreakdownRow>
         )}
-        {collateralized && collateralized !== '0x0' &&
-          (
-            <TransactionBreakdownRow title={t('storageCollaterizedFee')}>
-              <div>
+        {collateralized && collateralized !== '0x0' && (
+          <TransactionBreakdownRow title={t('storageCollaterizedFee')}>
+            <div>
+              <UserPreferencedCurrencyDisplay
+                className="transaction-breakdown__value transaction-breakdown__value--eth-total"
+                type={PRIMARY}
+                value={collateralized}
+              />
+              {showFiat && (
                 <UserPreferencedCurrencyDisplay
-                  className="transaction-breakdown__value transaction-breakdown__value--eth-total"
-                  type={PRIMARY}
+                  className="transaction-breakdown__value"
+                  type={SECONDARY}
                   value={collateralized}
                 />
-                {showFiat && (
-                  <UserPreferencedCurrencyDisplay
-                    className="transaction-breakdown__value"
-                    type={SECONDARY}
-                    value={collateralized}
-                  />
-                )}
-              </div>
-            </TransactionBreakdownRow>
-          )
-        }
+              )}
+            </div>
+          </TransactionBreakdownRow>
+        )}
         <TransactionBreakdownRow title={t('total')}>
           <div>
             <UserPreferencedCurrencyDisplay

@@ -64,7 +64,10 @@
     "generate:migration": "./development/generate-migration.sh"
   },
   "lint-staged": {
-    "*.{js,json}": ["prettier-eslint --write", "eslint", "git add"]
+    "*.{js,json}": [
+      "prettier-eslint --write",
+      "eslint --fix"
+    ]
   },
   "prettier": {
     "semi": false,
@@ -87,8 +90,8 @@
     "@download/blockies": "^1.0.3",
     "@material-ui/core": "1.0.0",
     "@metamask/eth-ledger-bridge-keyring": "^0.2.6",
-    "@sentry/browser": "^5.11.1",
-    "@sentry/integrations": "^5.11.1",
+    "@sentry/browser": "^5.27.3",
+    "@sentry/integrations": "^5.27.3",
     "@yqrashawn/cfx-contract-metadata": "^0.0.7",
     "@yqrashawn/cfx-json-rpc-middleware": "^4.4.6",
     "@yqrashawn/conflux-portal-inpage-provider": "^4.0.9",
@@ -197,7 +200,7 @@
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
     "@babel/register": "^7.5.5",
-    "@cfxjs/fullnode": "^1.2.1",
+    "@cfxjs/fullnode": "^1.4.0",
     "@metamask/eslint-config": "^1.1.0",
     "@metamask/forwarder": "^1.1.0",
     "@sentry/cli": "^1.49.0",
@@ -216,7 +219,7 @@
     "browserify-transform-tools": "^1.7.0",
     "chai": "^4.1.0",
     "chalk": "^2.4.2",
-    "chromedriver": "79.0.0",
+    "chromedriver": "86.0.0",
     "concurrently": "^4.1.1",
     "coveralls": "^3.0.0",
     "css-loader": "^2.1.1",
@@ -305,12 +308,12 @@
     "watchify": "^3.11.1"
   },
   "engines": {
-    "node": "^10.16.0",
+    "node": "^10.18.1",
     "yarn": "^1.16.0"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn lint:changed:fix"
+      "pre-commit": "lint-staged"
     }
   }
 }

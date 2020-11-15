@@ -1,7 +1,4 @@
 {
-  "cfxTestWarning": {
-    "message": "目前CFX是測試幣，僅具有測試功能，並會在網絡升級重啟時清零"
-  },
   "chartOnlyAvailableEth": {
     "message": "圖表僅適用於Conflux測試網路。"
   },
@@ -258,7 +255,7 @@
     "message": "連線到$1"
   },
   "connectingToMainnet": {
-    "message": "連線到主 Conflux Oceanus"
+    "message": "連線到主 Conflux Tethys"
   },
   "connectingToTestnet": {
     "message": "連線到 Conflux Testnet"
@@ -339,7 +336,7 @@
     "message": "小數點精度"
   },
   "defaultNetwork": {
-    "message": "預設網路為 Conflux Oceanus"
+    "message": "預設網路為 Conflux Tethys"
   },
   "delete": {
     "message": "刪除"
@@ -528,7 +525,7 @@
     "message": "Gas 用量"
   },
   "gasPrice": {
-    "message": "Gas 價格 (GDrip)"
+    "message": "Gas 價格 (Drip)"
   },
   "gasPriceExtremelyLow": {
     "message": "Gas 價格極低"
@@ -585,6 +582,9 @@
   },
   "hexData": {
     "message": "16進位資料"
+  },
+  "incorrectPassword": {
+    "message": "密碼錯誤"
   },
   "invalidHexData": {
     "message": "十六進制數據格式錯誤"
@@ -719,7 +719,7 @@
     "message": "鎖定"
   },
   "mainnet": {
-    "message": "Conflux Oceanus"
+    "message": "Conflux Tethys"
   },
   "memorizePhrase": {
     "message": "絕對不要忘記您的助憶詞。"

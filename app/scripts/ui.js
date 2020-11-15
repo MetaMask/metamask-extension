@@ -29,7 +29,7 @@ import log from 'loglevel'
 
 start().catch(log.error)
 
-async function start () {
+async function start() {
   // create platform global
   global.platform = new ExtensionPlatform()
 
@@ -37,7 +37,7 @@ async function start () {
   const release = global.platform.getVersion()
   setupSentry({ release, getState })
   // provide app state to append to error logs
-  function getState () {
+  function getState() {
     // get app state
     const state = window.getCleanAppState ? window.getCleanAppState() : {}
     // remove unnecessary data
@@ -58,14 +58,14 @@ async function start () {
   const activeTab = await queryCurrentActiveTab(windowType)
   initializeUiWithTab(activeTab)
 
-  function closePopupIfOpen (windowType) {
+  function closePopupIfOpen(windowType) {
     if (windowType !== ENVIRONMENT_TYPE_NOTIFICATION) {
       // should close only chrome popup
       notificationManager.closePopup()
     }
   }
 
-  function displayCriticalError (container, err) {
+  function displayCriticalError(container, err) {
     container.innerHTML =
       '<div class="critical-error">The MetaMask app failed to load: please open and close MetaMask again to restart.</div>'
     container.style.height = '80px'
@@ -73,7 +73,7 @@ async function start () {
     throw err
   }
 
-  function initializeUiWithTab (tab) {
+  function initializeUiWithTab(tab) {
     const container = document.getElementById('app-content')
     initializeUi(tab, container, connectionStream, (err, store) => {
       if (err) {
@@ -90,8 +90,8 @@ async function start () {
   }
 }
 
-async function queryCurrentActiveTab (windowType) {
-  return new Promise((resolve) => {
+async function queryCurrentActiveTab(windowType) {
+  return new Promise(resolve => {
     // At the time of writing we only have the `activeTab` permission which means
     // that this query will only succeed in the popup context (i.e. after a "browserAction")
     if (windowType !== ENVIRONMENT_TYPE_POPUP) {
@@ -99,7 +99,7 @@ async function queryCurrentActiveTab (windowType) {
       return
     }
 
-    extension.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    extension.tabs.query({ active: true, currentWindow: true }, tabs => {
       const [activeTab] = tabs
       const { title, url } = activeTab
       const { hostname: origin, protocol } = url ? urlUtil.parse(url) : {}
@@ -113,7 +113,7 @@ async function queryCurrentActiveTab (windowType) {
   })
 }
 
-function initializeUi (activeTab, container, connectionStream, cb) {
+function initializeUi(activeTab, container, connectionStream, cb) {
   connectToAccountManager(connectionStream, (err, backgroundConnection) => {
     if (err) {
       return cb(err)
@@ -136,7 +136,7 @@ function initializeUi (activeTab, container, connectionStream, cb) {
  * @param {PortDuplexStream} connectionStream - PortStream instance establishing a background connection
  * @param {Function} cb - Called when controller connection is established
  */
-function connectToAccountManager (connectionStream, cb) {
+function connectToAccountManager(connectionStream, cb) {
   const mx = setupMultiplex(connectionStream)
   setupControllerConnection(mx.createStream('confluxPortalController'), cb)
   setupWeb3Connection(mx.createStream('confluxPortalProvider'))
@@ -147,7 +147,7 @@ function connectToAccountManager (connectionStream, cb) {
  *
  * @param {PortDuplexStream} connectionStream - PortStream instance establishing a background connection
  */
-function setupWeb3Connection (connectionStream) {
+function setupWeb3Connection(connectionStream) {
   const providerStream = new StreamProvider()
   providerStream.pipe(connectionStream).pipe(providerStream)
   connectionStream.on('error', console.error.bind(console))
@@ -163,15 +163,15 @@ function setupWeb3Connection (connectionStream) {
  * @param {PortDuplexStream} connectionStream - PortStream instance establishing a background connection
  * @param {Function} cb - Called when the remote account manager connection is established
  */
-function setupControllerConnection (connectionStream, cb) {
+function setupControllerConnection(connectionStream, cb) {
   const eventEmitter = new EventEmitter()
   const backgroundDnode = Dnode({
-    sendUpdate: function (state) {
+    sendUpdate: function(state) {
       eventEmitter.emit('update', state)
     },
   })
   connectionStream.pipe(backgroundDnode).pipe(connectionStream)
-  backgroundDnode.once('remote', function (backgroundConnection) {
+  backgroundDnode.once('remote', function(backgroundConnection) {
     backgroundConnection.on = eventEmitter.on.bind(eventEmitter)
     cb(null, backgroundConnection)
   })

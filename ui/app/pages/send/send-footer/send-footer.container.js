@@ -31,6 +31,7 @@ import {
   getStorageIsLoading,
   getSponsorshipInfoIsLoading,
   getCurrentEthBalance,
+  getAdvancedInlineGasShown,
 } from '../../../selectors/selectors'
 import { isSendFormInError } from './send-footer.selectors'
 import {
@@ -46,7 +47,8 @@ import {
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendFooter)
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
+  const advancedInlineGasShown = getAdvancedInlineGasShown(state)
   const gasButtonInfo = getRenderableEstimateDataForSmallButtonsFromGWEI(state)
   const gasPrice = getGasPrice(state)
   const gasLimit = getGasLimit(state)
@@ -70,9 +72,9 @@ function mapStateToProps (state) {
   const insufficientBalance = !isBalanceSufficient({
     amount: selectedToken ? '0x0' : amount,
     gasTotal: calcGasAndCollateralTotal(
-      willUserPayTxFee ? gasLimit : '0',
-      willUserPayTxFee ? gasPrice : '0',
-      willUserPayCollateral ? storageLimit : '0'
+      advancedInlineGasShown && willUserPayTxFee ? gasLimit : '0',
+      advancedInlineGasShown && willUserPayTxFee ? gasPrice : '0',
+      advancedInlineGasShown && willUserPayCollateral ? storageLimit : '0'
     ),
     balance,
     conversionRate,
@@ -88,7 +90,7 @@ function mapStateToProps (state) {
     storageLimit,
     gasPrice,
     gasTotal: getGasTotal(state),
-    inError: isSendFormInError(state),
+    inError: isSendFormInError(state, advancedInlineGasShown),
     selectedToken,
     to: getSendTo(state),
     toAccounts: getSendToAccounts(state),
@@ -102,7 +104,7 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     clearSend: () => dispatch(clearSend()),
     sign: ({

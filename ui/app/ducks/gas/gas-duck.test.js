@@ -27,7 +27,7 @@ const {
 } = GasDuck
 const GasReducer = GasDuck.default
 
-describe('Gas Duck', function () {
+describe('Gas Duck', function() {
   let tempFetch
   let tempDateNow
   const mockEthGasApiResponse = {
@@ -146,17 +146,17 @@ describe('Gas Duck', function () {
       somethingElse: 'foobar',
     },
   ]
-  const fakeFetch = (url) =>
-    new Promise((resolve) => {
+  const fakeFetch = url =>
+    new Promise(resolve => {
       const dataToResolve = url.match(/ethgasAPI/)
         ? mockEthGasApiResponse
         : mockPredictTableResponse
       resolve({
-        json: () => new Promise((resolve) => resolve(dataToResolve)),
+        json: () => new Promise(resolve => resolve(dataToResolve)),
       })
     })
 
-  beforeEach(function () {
+  beforeEach(function() {
     tempFetch = global.fetch
     tempDateNow = global.Date.now
 
@@ -165,13 +165,13 @@ describe('Gas Duck', function () {
     global.fetch = sinon.stub().callsFake(fakeFetch)
     global.Date.now = () => 2000000
     global.ethQuery = {
-      gasPrice (cb) {
+      gasPrice(cb) {
         cb(null, '0x3b9aca00')
       },
     }
   })
 
-  afterEach(function () {
+  afterEach(function() {
     sinon.restore()
 
     global.fetch = tempFetch
@@ -234,12 +234,12 @@ describe('Gas Duck', function () {
   const SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED =
     'metamask/gas/SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED'
 
-  describe('GasReducer()', function () {
-    it('should initialize state', function () {
+  describe('GasReducer()', function() {
+    it('should initialize state', function() {
       assert.deepEqual(GasReducer(undefined, {}), initState)
     })
 
-    it('should return state unchanged if it does not match a dispatched actions type', function () {
+    it('should return state unchanged if it does not match a dispatched actions type', function() {
       assert.deepEqual(
         GasReducer(mockState, {
           type: 'someOtherAction',
@@ -249,35 +249,35 @@ describe('Gas Duck', function () {
       )
     })
 
-    it('should set basicEstimateIsLoading to true when receiving a BASIC_GAS_ESTIMATE_LOADING_STARTED action', function () {
+    it('should set basicEstimateIsLoading to true when receiving a BASIC_GAS_ESTIMATE_LOADING_STARTED action', function() {
       assert.deepEqual(
         GasReducer(mockState, { type: BASIC_GAS_ESTIMATE_LOADING_STARTED }),
         { basicEstimateIsLoading: true, ...mockState }
       )
     })
 
-    it('should set basicEstimateIsLoading to false when receiving a BASIC_GAS_ESTIMATE_LOADING_FINISHED action', function () {
+    it('should set basicEstimateIsLoading to false when receiving a BASIC_GAS_ESTIMATE_LOADING_FINISHED action', function() {
       assert.deepEqual(
         GasReducer(mockState, { type: BASIC_GAS_ESTIMATE_LOADING_FINISHED }),
         { basicEstimateIsLoading: false, ...mockState }
       )
     })
 
-    it('should set gasEstimatesLoading to true when receiving a GAS_ESTIMATE_LOADING_STARTED action', function () {
+    it('should set gasEstimatesLoading to true when receiving a GAS_ESTIMATE_LOADING_STARTED action', function() {
       assert.deepEqual(
         GasReducer(mockState, { type: GAS_ESTIMATE_LOADING_STARTED }),
         { gasEstimatesLoading: true, ...mockState }
       )
     })
 
-    it('should set gasEstimatesLoading to false when receiving a GAS_ESTIMATE_LOADING_FINISHED action', function () {
+    it('should set gasEstimatesLoading to false when receiving a GAS_ESTIMATE_LOADING_FINISHED action', function() {
       assert.deepEqual(
         GasReducer(mockState, { type: GAS_ESTIMATE_LOADING_FINISHED }),
         { gasEstimatesLoading: false, ...mockState }
       )
     })
 
-    it('should set basicEstimates when receiving a SET_BASIC_GAS_ESTIMATE_DATA action', function () {
+    it('should set basicEstimates when receiving a SET_BASIC_GAS_ESTIMATE_DATA action', function() {
       assert.deepEqual(
         GasReducer(mockState, {
           type: SET_BASIC_GAS_ESTIMATE_DATA,
@@ -287,7 +287,7 @@ describe('Gas Duck', function () {
       )
     })
 
-    it('should set priceAndTimeEstimates when receiving a SET_PRICE_AND_TIME_ESTIMATES action', function () {
+    it('should set priceAndTimeEstimates when receiving a SET_PRICE_AND_TIME_ESTIMATES action', function() {
       assert.deepEqual(
         GasReducer(mockState, {
           type: SET_PRICE_AND_TIME_ESTIMATES,
@@ -297,7 +297,7 @@ describe('Gas Duck', function () {
       )
     })
 
-    it('should set customData.price when receiving a SET_CUSTOM_GAS_PRICE action', function () {
+    it('should set customData.price when receiving a SET_CUSTOM_GAS_PRICE action', function() {
       assert.deepEqual(
         GasReducer(mockState, {
           type: SET_CUSTOM_GAS_PRICE,
@@ -307,7 +307,7 @@ describe('Gas Duck', function () {
       )
     })
 
-    it('should set customData.limit when receiving a SET_CUSTOM_GAS_LIMIT action', function () {
+    it('should set customData.limit when receiving a SET_CUSTOM_GAS_LIMIT action', function() {
       assert.deepEqual(
         GasReducer(mockState, {
           type: SET_CUSTOM_GAS_LIMIT,
@@ -317,7 +317,7 @@ describe('Gas Duck', function () {
       )
     })
 
-    it('should set customData.total when receiving a SET_CUSTOM_GAS_TOTAL action', function () {
+    it('should set customData.total when receiving a SET_CUSTOM_GAS_TOTAL action', function() {
       assert.deepEqual(
         GasReducer(mockState, {
           type: SET_CUSTOM_GAS_TOTAL,
@@ -327,7 +327,7 @@ describe('Gas Duck', function () {
       )
     })
 
-    it('should set priceAndTimeEstimatesLastRetrieved when receiving a SET_API_ESTIMATES_LAST_RETRIEVED action', function () {
+    it('should set priceAndTimeEstimatesLastRetrieved when receiving a SET_API_ESTIMATES_LAST_RETRIEVED action', function() {
       assert.deepEqual(
         GasReducer(mockState, {
           type: SET_API_ESTIMATES_LAST_RETRIEVED,
@@ -337,7 +337,7 @@ describe('Gas Duck', function () {
       )
     })
 
-    it('should set priceAndTimeEstimatesLastRetrieved when receiving a SET_BASIC_API_ESTIMATES_LAST_RETRIEVED action', function () {
+    it('should set priceAndTimeEstimatesLastRetrieved when receiving a SET_BASIC_API_ESTIMATES_LAST_RETRIEVED action', function() {
       assert.deepEqual(
         GasReducer(mockState, {
           type: SET_BASIC_API_ESTIMATES_LAST_RETRIEVED,
@@ -347,7 +347,7 @@ describe('Gas Duck', function () {
       )
     })
 
-    it('should set errors when receiving a SET_CUSTOM_GAS_ERRORS action', function () {
+    it('should set errors when receiving a SET_CUSTOM_GAS_ERRORS action', function() {
       assert.deepEqual(
         GasReducer(mockState, {
           type: SET_CUSTOM_GAS_ERRORS,
@@ -357,7 +357,7 @@ describe('Gas Duck', function () {
       )
     })
 
-    it('should return the initial state in response to a RESET_CUSTOM_GAS_STATE action', function () {
+    it('should return the initial state in response to a RESET_CUSTOM_GAS_STATE action', function() {
       assert.deepEqual(
         GasReducer(mockState, { type: RESET_CUSTOM_GAS_STATE }),
         initState
@@ -365,24 +365,24 @@ describe('Gas Duck', function () {
     })
   })
 
-  describe('basicGasEstimatesLoadingStarted', function () {
-    it('should create the correct action', function () {
+  describe('basicGasEstimatesLoadingStarted', function() {
+    it('should create the correct action', function() {
       assert.deepEqual(basicGasEstimatesLoadingStarted(), {
         type: BASIC_GAS_ESTIMATE_LOADING_STARTED,
       })
     })
   })
 
-  describe('basicGasEstimatesLoadingFinished', function () {
-    it('should create the correct action', function () {
+  describe('basicGasEstimatesLoadingFinished', function() {
+    it('should create the correct action', function() {
       assert.deepEqual(basicGasEstimatesLoadingFinished(), {
         type: BASIC_GAS_ESTIMATE_LOADING_FINISHED,
       })
     })
   })
 
-  describe('fetchBasicGasEstimates', function () {
-    it('should call fetch with the expected params', async function () {
+  describe('fetchBasicGasEstimates', function() {
+    it('should call fetch with the expected params', async function() {
       const mockDistpatch = sinon.spy()
       await fetchBasicGasEstimates()(mockDistpatch, () => ({
         metamask: {
@@ -416,7 +416,7 @@ describe('Gas Duck', function () {
         {
           type: SET_BASIC_GAS_ESTIMATE_DATA,
           value: {
-            average: 1,
+            average: 1e-9,
             blockTime: 'mockBlock_time',
             blockNum: 'mockBlockNum',
             fast: 3,
@@ -431,7 +431,7 @@ describe('Gas Duck', function () {
       assert.deepEqual(mockDistpatch.getCall(5).args, [{ type: HIDE_LOADING }])
     })
 
-    it('should fetch recently retrieved estimates from local storage', async function () {
+    it('should fetch recently retrieved estimates from local storage', async function() {
       const mockDistpatch = sinon.spy()
       fakeLocalStorage.loadLocalStorageData
         .withArgs('BASIC_PRICE_ESTIMATES_LAST_RETRIEVED')
@@ -482,7 +482,7 @@ describe('Gas Duck', function () {
       assert.deepEqual(mockDistpatch.getCall(4).args, [{ type: HIDE_LOADING }])
     })
 
-    it('should fallback to network if retrieving estimates from local storage fails', async function () {
+    it('should fallback to network if retrieving estimates from local storage fails', async function() {
       const mockDistpatch = sinon.spy()
       fakeLocalStorage.loadLocalStorageData
         .withArgs('BASIC_PRICE_ESTIMATES_LAST_RETRIEVED')
@@ -520,7 +520,7 @@ describe('Gas Duck', function () {
         {
           type: SET_BASIC_GAS_ESTIMATE_DATA,
           value: {
-            average: 1,
+            average: 1e-9,
             blockTime: 'mockBlock_time',
             blockNum: 'mockBlockNum',
             fast: 3,
@@ -536,8 +536,8 @@ describe('Gas Duck', function () {
     })
   })
 
-  describe('fetchBasicGasAndTimeEstimates', function () {
-    it('should call fetch with the expected params', async function () {
+  describe('fetchBasicGasAndTimeEstimates', function() {
+    it('should call fetch with the expected params', async function() {
       const mockDistpatch = sinon.spy()
 
       await fetchBasicGasAndTimeEstimates()(mockDistpatch, () => ({
@@ -577,7 +577,7 @@ describe('Gas Duck', function () {
         {
           type: SET_BASIC_GAS_ESTIMATE_DATA,
           value: {
-            average: 1,
+            average: 1e-9,
             avgWait: 'mockAvgWait',
             blockTime: 'mockBlock_time',
             blockNum: 'mockBlockNum',
@@ -597,7 +597,7 @@ describe('Gas Duck', function () {
       assert.deepEqual(mockDistpatch.getCall(5).args, [{ type: HIDE_LOADING }])
     })
 
-    it('should fetch recently retrieved estimates from local storage', async function () {
+    it('should fetch recently retrieved estimates from local storage', async function() {
       const mockDistpatch = sinon.spy()
       fakeLocalStorage.loadLocalStorageData
         .withArgs('BASIC_GAS_AND_TIME_API_ESTIMATES_LAST_RETRIEVED')
@@ -657,7 +657,7 @@ describe('Gas Duck', function () {
       ])
     })
 
-    it('should fallback to network if retrieving estimates from local storage fails', async function () {
+    it('should fallback to network if retrieving estimates from local storage fails', async function() {
       const mockDistpatch = sinon.spy()
       fakeLocalStorage.loadLocalStorageData
         .withArgs('BASIC_GAS_AND_TIME_API_ESTIMATES_LAST_RETRIEVED')
@@ -697,7 +697,7 @@ describe('Gas Duck', function () {
         {
           type: SET_BASIC_GAS_ESTIMATE_DATA,
           value: {
-            average: 1,
+            average: 1e-9,
             avgWait: 'mockAvgWait',
             blockTime: 'mockBlock_time',
             blockNum: 'mockBlockNum',
@@ -718,8 +718,8 @@ describe('Gas Duck', function () {
     })
   })
 
-  describe('fetchGasEstimates', function () {
-    it('should call fetch with the expected params', async function () {
+  describe('fetchGasEstimates', function() {
+    it('should call fetch with the expected params', async function() {
       const mockDistpatch = sinon.spy()
 
       await fetchGasEstimates(5)(mockDistpatch, () => ({
@@ -757,7 +757,7 @@ describe('Gas Duck', function () {
         priceAndTimeEstimateResult.length <
           mockPredictTableResponse.length * 3 - 2
       )
-      assert(!priceAndTimeEstimateResult.find((d) => d.expectedTime > 100))
+      assert(!priceAndTimeEstimateResult.find(d => d.expectedTime > 100))
       assert(
         !priceAndTimeEstimateResult.find(
           (d, _, a) => a[a + 1] && d.expectedTime > a[a + 1].expectedTime
@@ -774,7 +774,7 @@ describe('Gas Duck', function () {
       ])
     })
 
-    it('should not call fetch if the estimates were retrieved < 75000 ms ago', async function () {
+    it('should not call fetch if the estimates were retrieved < 75000 ms ago', async function() {
       const mockDistpatch = sinon.spy()
 
       await fetchGasEstimates(5)(mockDistpatch, () => ({
@@ -814,24 +814,24 @@ describe('Gas Duck', function () {
     })
   })
 
-  describe('gasEstimatesLoadingStarted', function () {
-    it('should create the correct action', function () {
+  describe('gasEstimatesLoadingStarted', function() {
+    it('should create the correct action', function() {
       assert.deepEqual(gasEstimatesLoadingStarted(), {
         type: GAS_ESTIMATE_LOADING_STARTED,
       })
     })
   })
 
-  describe('gasEstimatesLoadingFinished', function () {
-    it('should create the correct action', function () {
+  describe('gasEstimatesLoadingFinished', function() {
+    it('should create the correct action', function() {
       assert.deepEqual(gasEstimatesLoadingFinished(), {
         type: GAS_ESTIMATE_LOADING_FINISHED,
       })
     })
   })
 
-  describe('setPricesAndTimeEstimates', function () {
-    it('should create the correct action', function () {
+  describe('setPricesAndTimeEstimates', function() {
+    it('should create the correct action', function() {
       assert.deepEqual(
         setPricesAndTimeEstimates('mockPricesAndTimeEstimates'),
         {
@@ -842,8 +842,8 @@ describe('Gas Duck', function () {
     })
   })
 
-  describe('setBasicGasEstimateData', function () {
-    it('should create the correct action', function () {
+  describe('setBasicGasEstimateData', function() {
+    it('should create the correct action', function() {
       assert.deepEqual(setBasicGasEstimateData('mockBasicEstimatData'), {
         type: SET_BASIC_GAS_ESTIMATE_DATA,
         value: 'mockBasicEstimatData',
@@ -851,8 +851,8 @@ describe('Gas Duck', function () {
     })
   })
 
-  describe('setCustomGasPrice', function () {
-    it('should create the correct action', function () {
+  describe('setCustomGasPrice', function() {
+    it('should create the correct action', function() {
       assert.deepEqual(setCustomGasPrice('mockCustomGasPrice'), {
         type: SET_CUSTOM_GAS_PRICE,
         value: 'mockCustomGasPrice',
@@ -860,8 +860,8 @@ describe('Gas Duck', function () {
     })
   })
 
-  describe('setCustomGasLimit', function () {
-    it('should create the correct action', function () {
+  describe('setCustomGasLimit', function() {
+    it('should create the correct action', function() {
       assert.deepEqual(setCustomGasLimit('mockCustomGasLimit'), {
         type: SET_CUSTOM_GAS_LIMIT,
         value: 'mockCustomGasLimit',
@@ -869,8 +869,8 @@ describe('Gas Duck', function () {
     })
   })
 
-  describe('setCustomGasTotal', function () {
-    it('should create the correct action', function () {
+  describe('setCustomGasTotal', function() {
+    it('should create the correct action', function() {
       assert.deepEqual(setCustomGasTotal('mockCustomGasTotal'), {
         type: SET_CUSTOM_GAS_TOTAL,
         value: 'mockCustomGasTotal',
@@ -878,8 +878,8 @@ describe('Gas Duck', function () {
     })
   })
 
-  describe('setCustomGasErrors', function () {
-    it('should create the correct action', function () {
+  describe('setCustomGasErrors', function() {
+    it('should create the correct action', function() {
       assert.deepEqual(setCustomGasErrors('mockErrorObject'), {
         type: SET_CUSTOM_GAS_ERRORS,
         value: 'mockErrorObject',
@@ -887,8 +887,8 @@ describe('Gas Duck', function () {
     })
   })
 
-  describe('setApiEstimatesLastRetrieved', function () {
-    it('should create the correct action', function () {
+  describe('setApiEstimatesLastRetrieved', function() {
+    it('should create the correct action', function() {
       assert.deepEqual(setApiEstimatesLastRetrieved(1234), {
         type: SET_API_ESTIMATES_LAST_RETRIEVED,
         value: 1234,
@@ -896,8 +896,8 @@ describe('Gas Duck', function () {
     })
   })
 
-  describe('resetCustomGasState', function () {
-    it('should create the correct action', function () {
+  describe('resetCustomGasState', function() {
+    it('should create the correct action', function() {
       assert.deepEqual(resetCustomGasState(), { type: RESET_CUSTOM_GAS_STATE })
     })
   })

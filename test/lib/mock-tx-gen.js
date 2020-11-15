@@ -12,11 +12,11 @@ const template = {
 }
 
 class TxGenerator {
-  constructor () {
+  constructor() {
     this.txs = []
   }
 
-  generate (tx = {}, opts = {}) {
+  generate(tx = {}, opts = {}) {
     const { count, fromNonce } = opts
     let nonce = fromNonce || this.txs.length
     const txs = []
@@ -39,7 +39,7 @@ class TxGenerator {
   }
 }
 
-function hexify (number) {
+function hexify(number) {
   return '0x' + new BN(number).toString(16)
 }
 
