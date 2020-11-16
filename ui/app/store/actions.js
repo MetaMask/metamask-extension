@@ -26,6 +26,10 @@ import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-accoun
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask'
 import * as actionConstants from './actionConstants'
 
+const LISTED_CONTRACT_ADDRESSES = Object.keys(contractMap).map((address) =>
+  address.toLowerCase(),
+)
+
 let background = null
 let promisifiedBackground = null
 export function _setBackgroundConnection(backgroundConnection) {
@@ -2221,7 +2225,9 @@ export function setPendingTokens(pendingTokens) {
       : selectedTokens
 
   Object.keys(tokens).forEach((tokenAddress) => {
-    tokens[tokenAddress].unlisted = contractMap[tokenAddress] === undefined
+    tokens[tokenAddress].unlisted = !LISTED_CONTRACT_ADDRESSES.includes(
+      tokenAddress.toLowerCase(),
+    )
   })
 
   return {
