@@ -17,12 +17,14 @@ import {
   setConnectedStatusPopoverHasBeenShown,
   setDefaultHomeActiveTabName,
   setSwapsWelcomeMessageHasBeenShown,
+  setMobileWelcomeMessageHasBeenShown,
 } from '../../store/actions'
 import { setThreeBoxLastUpdated } from '../../ducks/app/app'
 import {
   getSwapsWelcomeMessageSeenStatus,
   getSwapsFeatureLiveness,
 } from '../../ducks/swaps/swaps'
+import { getMobileWelcomeMessageHasBeenShownStatus } from '../../ducks/metamask/metamask'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -77,6 +79,9 @@ const mapStateToProps = (state) => {
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
     swapsWelcomeMessageHasBeenShown: getSwapsWelcomeMessageSeenStatus(state),
+    mobileWelcomeMessageHasBeenShown: getMobileWelcomeMessageHasBeenShownStatus(
+      state,
+    ),
     haveSwapsQuotes: Boolean(Object.values(swapsState.quotes || {}).length),
     swapsFetchParams: swapsState.fetchParams,
     showAwaitingSwapScreen: swapsState.routeState === 'awaiting',
@@ -103,6 +108,8 @@ const mapDispatchToProps = (dispatch) => ({
   onTabClick: (name) => dispatch(setDefaultHomeActiveTabName(name)),
   setSwapsWelcomeMessageHasBeenShown: () =>
     dispatch(setSwapsWelcomeMessageHasBeenShown()),
+  setMobileWelcomeMessageHasBeenShown: () =>
+    dispatch(setMobileWelcomeMessageHasBeenShown()),
 })
 
 export default compose(

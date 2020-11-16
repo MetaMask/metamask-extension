@@ -2471,6 +2471,16 @@ export function setConnectedStatusPopoverHasBeenShown() {
   }
 }
 
+export function setMobileWelcomeMessageHasBeenShown() {
+  return () => {
+    background.setMobileWelcomeMessageHasBeenShown((err) => {
+      if (err) {
+        throw new Error(err.message)
+      }
+    })
+  }
+}
+
 export function setSwapsWelcomeMessageHasBeenShown() {
   return () => {
     background.setSwapsWelcomeMessageHasBeenShown((err) => {

@@ -642,6 +642,10 @@ export default class MetamaskController extends EventEmitter {
         this.appStateController.setSwapsWelcomeMessageHasBeenShown,
         this.appStateController,
       ),
+      setMobileWelcomeMessageHasBeenShown: nodeify(
+        this.appStateController.setMobileWelcomeMessageHasBeenShown,
+        this.appStateController,
+      ),
 
       // EnsController
       tryReverseResolveAddress: nodeify(

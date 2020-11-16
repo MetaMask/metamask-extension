@@ -22,6 +22,7 @@ export default class AppStateController extends EventEmitter {
       timeoutMinutes: 0,
       connectedStatusPopoverHasBeenShown: true,
       swapsWelcomeMessageHasBeenShown: false,
+      mobileWelcomeMessageHasBeenShown: false,
       defaultHomeActiveTabName: null,
       ...initState,
     })
@@ -117,6 +118,15 @@ export default class AppStateController extends EventEmitter {
   setSwapsWelcomeMessageHasBeenShown() {
     this.store.updateState({
       swapsWelcomeMessageHasBeenShown: true,
+    })
+  }
+
+  /**
+   * Record that the user has seen the mobile welcome message
+   */
+  setMobileWelcomeMessageHasBeenShown() {
+    this.store.updateState({
+      mobileWelcomeMessageHasBeenShown: true,
     })
   }
 

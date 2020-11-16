@@ -1002,6 +1002,12 @@
   "mobileSyncText": {
     "message": "Please enter your password to confirm it's you!"
   },
+  "mobileWelcomeText": {
+    "message": "Sync with your extension wallet in seconds.  Scan the QR code with your phone camera to download the app."
+  },
+  "mobileWelcomeTitle": {
+    "message": "MetaMask Mobile is here!"
+  },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
   },
