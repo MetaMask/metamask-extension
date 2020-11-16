@@ -153,11 +153,16 @@ function setupControllerConnection(connectionStream, cb) {
   const eventEmitter = new EventEmitter()
   // the "weak: false" option is for nodejs only (eg unit tests)
   // it is a workaround for node v12 support
-  const backgroundDnode = Dnode({
-    sendUpdate(state) {
-      eventEmitter.emit('update', state)
+  const backgroundDnode = Dnode(
+    {
+      sendUpdate(state) {
+        eventEmitter.emit('update', state)
+      },
     },
-  }, { weak: false })
+    {
+      weak: false,
+    },
+  )
   connectionStream.pipe(backgroundDnode).pipe(connectionStream)
   backgroundDnode.once('remote', function (backgroundConnection) {
     backgroundConnection.on = eventEmitter.on.bind(eventEmitter)

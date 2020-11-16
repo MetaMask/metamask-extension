@@ -254,7 +254,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
     }
   }
 
-  function generateBundler (opts, performBundle) {
+  function generateBundler(opts, performBundle) {
     const browserifyOpts = assign({}, watchify.args, {
       plugin: [],
       transform: [],
