@@ -35,6 +35,7 @@
 - [#9856](https://github.com/MetaMask/metamask-extension/pull/9856): Prevent user from getting stuck on opt in page
 - [#9845](https://github.com/MetaMask/metamask-extension/pull/9845): Show a 'send eth' button on home screen in full screen mode
 - [#9871](https://github.com/MetaMask/metamask-extension/pull/9871): Show send text upon hover in main asset list
+- [#9880](https://github.com/MetaMask/metamask-extension/pull/9880): Properly detect U2F errors in hardware wallet
 
 ## 8.1.3 Mon Oct 26 2020
 - [#9642](https://github.com/MetaMask/metamask-extension/pull/9642) Prevent excessive overflow from swap dropdowns
