@@ -1857,13 +1857,6 @@
   "swapsAlmostDone": {
     "message": "Almost done..."
   },
-  "swapsBestQuote": {
-    "message": "Best quote"
-  },
-  "swapsConvertToAbout": {
-    "message": "Convert $1 to about",
-    "description": "This message is part of a quote for a swap. The $1 is the amount being converted, and the amount it is being swapped for is below this message"
-  },
   "swapsMaxSlippage": {
     "message": "Max slippage"
   },
