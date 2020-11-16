@@ -10,24 +10,26 @@ const localhostNetwork = {
 }
 const expectedPreferencesState = {
   PreferencesController: {
-    frequentRpcListDetail: [{
-      ...localhostNetwork,
-    }],
+    frequentRpcListDetail: [
+      {
+        ...localhostNetwork,
+      },
+    ],
   },
 }
 
 describe('migration #48', function () {
   it('should update the version metadata', async function () {
     const oldStorage = {
-      'meta': {
-        'version': 47,
+      meta: {
+        version: 47,
       },
-      'data': {},
+      data: {},
     }
 
     const newStorage = await migration48.migrate(oldStorage)
     assert.deepEqual(newStorage.meta, {
-      'version': 48,
+      version: 48,
     })
   })
 
@@ -252,9 +254,7 @@ describe('migration #48', function () {
       meta: {},
       data: {
         PreferencesController: {
-          frequentRpcListDetail: [
-            ...existingList,
-          ],
+          frequentRpcListDetail: [...existingList],
         },
         foo: 'bar',
       },
@@ -263,10 +263,7 @@ describe('migration #48', function () {
     const newStorage = await migration48.migrate(oldStorage)
     assert.deepEqual(newStorage.data, {
       PreferencesController: {
-        frequentRpcListDetail: [
-          { ...localhostNetwork },
-          ...existingList,
-        ],
+        frequentRpcListDetail: [{ ...localhostNetwork }, ...existingList],
       },
       foo: 'bar',
     })
@@ -355,20 +352,20 @@ describe('migration #48', function () {
       data: {
         AddressBookController: {
           addressBook: {
-            '1': {
-              'address1': {
+            1: {
+              address1: {
                 chainId: '1',
                 foo: 'bar',
               },
             },
-            '100': {
-              'address1': {
+            100: {
+              address1: {
                 chainId: '100',
                 foo: 'bar',
               },
             },
             '0x2': {
-              'address2': {
+              address2: {
                 chainId: '0x2',
                 foo: 'bar',
               },
@@ -388,19 +385,19 @@ describe('migration #48', function () {
       AddressBookController: {
         addressBook: {
           '0x1': {
-            'address1': {
+            address1: {
               chainId: '0x1',
               foo: 'bar',
             },
           },
           '0x64': {
-            'address1': {
+            address1: {
               chainId: '0x64',
               foo: 'bar',
             },
           },
           '0x2': {
-            'address2': {
+            address2: {
               chainId: '0x2',
               foo: 'bar',
             },
@@ -420,27 +417,27 @@ describe('migration #48', function () {
       data: {
         AddressBookController: {
           addressBook: {
-            '2': {
-              'address1': {
+            2: {
+              address1: {
                 chainId: '2',
                 key2: 'kaplar',
                 key3: 'value3',
                 key4: null,
                 foo: 'bar',
               },
-              'address2': {
+              address2: {
                 chainId: '2',
                 foo: 'bar',
               },
             },
             '0x2': {
-              'address1': {
+              address1: {
                 chainId: '0x2',
                 key1: 'value1',
                 key2: 'value2',
                 foo: 'bar',
               },
-              'address3': {
+              address3: {
                 chainId: '0x2',
                 foo: 'bar',
               },
@@ -460,7 +457,7 @@ describe('migration #48', function () {
       AddressBookController: {
         addressBook: {
           '0x2': {
-            'address1': {
+            address1: {
               chainId: '0x2',
               key1: 'value1',
               key2: 'value2',
@@ -468,11 +465,11 @@ describe('migration #48', function () {
               key4: '',
               foo: 'bar',
             },
-            'address2': {
+            address2: {
               chainId: '0x2',
               foo: 'bar',
             },
-            'address3': {
+            address3: {
               chainId: '0x2',
               foo: 'bar',
             },
@@ -493,7 +490,7 @@ describe('migration #48', function () {
         AddressBookController: {
           addressBook: {
             '0x1': { foo: { bar: 'baz' } },
-            'kaplar': { foo: { bar: 'baz' } },
+            kaplar: { foo: { bar: 'baz' } },
           },
           bar: {
             baz: 'buzz',
@@ -509,7 +506,7 @@ describe('migration #48', function () {
       AddressBookController: {
         addressBook: {
           '0x1': { foo: { bar: 'baz' } },
-          'kaplar': { foo: { bar: 'baz' } },
+          kaplar: { foo: { bar: 'baz' } },
         },
         bar: {
           baz: 'buzz',
@@ -626,9 +623,11 @@ describe('migration #48', function () {
         },
         bar: 'baz',
         // from other migration
-        frequentRpcListDetail: [{
-          ...localhostNetwork,
-        }],
+        frequentRpcListDetail: [
+          {
+            ...localhostNetwork,
+          },
+        ],
       },
       foo: 'bar',
     })

@@ -158,9 +158,6 @@
   "cancel": {
     "message": "Cancelar"
   },
-  "cancelAttempt": {
-    "message": "Tentativa de cancelamento"
-  },
   "cancellationGasFee": {
     "message": "Tarifa de Gas de cancelamento"
   },
@@ -301,9 +298,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Tem certeza de que deseja excluir esta rede?"
-  },
-  "deposit": {
-    "message": "Depósito"
   },
   "depositEther": {
     "message": "Depositar Ether"
@@ -728,7 +722,7 @@
   "optionalBlockExplorerUrl": {
     "message": "URL exploradora de blocos (opcional)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Símbolo (opcional)"
   },
   "orderOneHere": {
@@ -975,9 +969,6 @@
   },
   "sentEther": {
     "message": "ether enviado"
-  },
-  "sentTokens": {
-    "message": "tokens enviados"
   },
   "separateEachWord": {
     "message": "Separe cada palavra com um único espaço"

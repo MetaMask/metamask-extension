@@ -12,7 +12,7 @@ describe('EnsController', function () {
       const currentNetworkId = '3'
       const networkStore = new ObservableStore(currentNetworkId)
       const ens = new EnsController({
-        provider: { },
+        provider: {},
         networkStore,
       })
 
@@ -117,7 +117,10 @@ describe('EnsController', function () {
       const ens = new EnsController({
         ens: {
           reverse: sinon.stub().withArgs(address).returns('peaksignal.eth'),
-          lookup: sinon.stub().withArgs('peaksignal.eth').returns(ZERO_X_ERROR_ADDRESS),
+          lookup: sinon
+            .stub()
+            .withArgs('peaksignal.eth')
+            .returns(ZERO_X_ERROR_ADDRESS),
         },
         networkStore,
       })

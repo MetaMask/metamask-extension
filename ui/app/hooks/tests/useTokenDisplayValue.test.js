@@ -126,7 +126,9 @@ describe('useTokenDisplayValue', function () {
         const getTokenDataStub = sinon.stub(txUtil, 'getTokenData')
         getTokenDataStub.callsFake(() => test.tokenData)
         getTokenValueStub.callsFake(() => test.tokenValue)
-        const { result } = renderHook(() => useTokenDisplayValue(`${idx}-fakestring`, test.token))
+        const { result } = renderHook(() =>
+          useTokenDisplayValue(`${idx}-fakestring`, test.token),
+        )
         sinon.restore()
         assert.equal(result.current, test.displayValue)
       })

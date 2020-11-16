@@ -10,6 +10,7 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
 
 // Modal Components
 import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container'
+import SwapsGasCustomizationModal from '../../../pages/swaps/swaps-gas-customization-modal'
 import DepositEtherModal from './deposit-ether-modal'
 import AccountDetailsModal from './account-details-modal'
 import ExportPrivateKeyModal from './export-private-key-modal'
@@ -272,6 +273,31 @@ const MODALS = {
     },
   },
 
+  CUSTOMIZE_METASWAP_GAS: {
+    contents: <SwapsGasCustomizationModal />,
+    mobileModalStyle: {
+      width: '100vw',
+      height: '100vh',
+      top: '0',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+    },
+    laptopModalStyle: {
+      width: 'auto',
+      height: '0px',
+      top: '80px',
+      left: '0px',
+      transform: 'none',
+      margin: '0 auto',
+      position: 'relative',
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
   EDIT_APPROVAL_PERMISSION: {
     contents: <EditApprovalPermission />,
     mobileModalStyle: {
@@ -361,14 +387,14 @@ const BACKDROPSTYLE = {
   backgroundColor: 'rgba(0, 0, 0, 0.5)',
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     active: state.appState.modal.open,
     modalState: state.appState.modal.modalState,
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     hideModal: (customOnHideOpts) => {
       dispatch(actions.hideModal())
@@ -379,7 +405,6 @@ function mapDispatchToProps (dispatch) {
     hideWarning: () => {
       dispatch(actions.hideWarning())
     },
-
   }
 }
 
@@ -391,15 +416,15 @@ class Modal extends Component {
     modalState: PropTypes.object.isRequired,
   }
 
-  hide () {
+  hide() {
     this.modalRef.hide()
   }
 
-  show () {
+  show() {
     this.modalRef.show()
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps, _) {
+  UNSAFE_componentWillReceiveProps(nextProps, _) {
     if (nextProps.active) {
       this.show()
     } else if (this.props.active) {
@@ -407,10 +432,11 @@ class Modal extends Component {
     }
   }
 
-  render () {
+  render() {
     const modal = MODALS[this.props.modalState.name || 'DEFAULT']
     const { contents: children, disableBackdropClick = false } = modal
-    const modalStyle = modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle']
+    const modalStyle =
+      modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle']
     const contentStyle = modal.contentStyle || {}
 
     return (

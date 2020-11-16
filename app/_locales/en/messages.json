@@ -239,9 +239,6 @@
   "cancel": {
     "message": "Cancel"
   },
-  "cancelAttempt": {
-    "message": "Cancel Attempt"
-  },
   "cancellationGasFee": {
     "message": "Cancellation Gas Fee"
   },
@@ -476,9 +473,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Are you sure you want to delete this network?"
-  },
-  "deposit": {
-    "message": "Deposit"
   },
   "depositEther": {
     "message": "Deposit Ether"
@@ -875,7 +869,7 @@
     "message": "Invalid IPFS Gateway: The value must be a valid URL"
   },
   "invalidNumber": {
-    "message": "Invalid number. Enter a decimal or hexadecimal number."
+    "message": "Invalid number. Enter a decimal or '0x'-prefixed hexadecimal number."
   },
   "invalidNumberLeadingZeros": {
     "message": "Invalid number. Remove any leading zeros."
@@ -1037,7 +1031,7 @@
     "message": "Network Name"
   },
   "networkSettingsChainIdDescription": {
-    "message": "The chain ID is used for signing transactions. It must match the chain ID returned by the network. Enter a decimal or hexadecimal number starting with '0x'."
+    "message": "The chain ID is used for signing transactions. It must match the chain ID returned by the network. You can enter a decimal or '0x'-prefixed hexadecimal number, but we will display the number in decimal."
   },
   "networkSettingsDescription": {
     "message": "Add and edit custom RPC networks"
@@ -1156,8 +1150,8 @@
   "optionalBlockExplorerUrl": {
     "message": "Block Explorer URL (optional)"
   },
-  "optionalSymbol": {
-    "message": "Symbol (optional)"
+  "optionalCurrencySymbol": {
+    "message": "Currency Symbol (optional)"
   },
   "orderOneHere": {
     "message": "Order a Trezor or Ledger and keep your funds in cold storage"
@@ -1457,9 +1451,6 @@
   },
   "sentEther": {
     "message": "sent ether"
-  },
-  "sentTokens": {
-    "message": "sent tokens"
   },
   "separateEachWord": {
     "message": "Separate each word with a single space"
@@ -1826,6 +1817,9 @@
   },
   "swapSwapFrom": {
     "message": "Swap from"
+  },
+  "swapSwapSwitch": {
+    "message": "Switch from and to tokens"
   },
   "swapSwapTo": {
     "message": "Swap to"

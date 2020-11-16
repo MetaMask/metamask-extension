@@ -6,13 +6,14 @@ to a 'failed' stated
 */
 
 import { cloneDeep } from 'lodash'
+import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction'
 
 const version = 15
 
 export default {
   version,
 
-  migrate (originalVersionedData) {
+  migrate(originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     try {
@@ -26,7 +27,7 @@ export default {
   },
 }
 
-function transformState (state) {
+function transformState(state) {
   const newState = state
   const { TransactionController } = newState
   if (TransactionController && TransactionController.transactions) {
@@ -35,7 +36,7 @@ function transformState (state) {
       if (!txMeta.err) {
         return txMeta
       } else if (txMeta.err.message === 'Gave up submitting tx.') {
-        txMeta.status = 'failed'
+        txMeta.status = TRANSACTION_STATUSES.FAILED
       }
       return txMeta
     })

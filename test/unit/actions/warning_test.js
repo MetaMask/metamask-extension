@@ -15,6 +15,10 @@ describe('action DISPLAY_WARNING', function () {
     const action = actions.displayWarning(warningText)
     const resultingState = reducers(initialState, action)
 
-    assert.equal(resultingState.appState.warning, warningText, 'warning text set')
+    assert.equal(
+      resultingState.appState.warning,
+      warningText,
+      'warning text set',
+    )
   })
 })

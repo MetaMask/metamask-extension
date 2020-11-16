@@ -309,9 +309,11 @@ jobs:
           path: test-artifacts
           destination: test-artifacts
       # important: generate sesify viz AFTER uploading builds as artifacts
-      - run:
-          name: build:sesify-viz
-          command: ./.circleci/scripts/create-sesify-viz
+      # Temporarily disabled until we can update to a version of `sesify` with
+      # this fix included: https://github.com/LavaMoat/LavaMoat/pull/121
+      # - run:
+      #     name: build:sesify-viz
+      #     command: ./.circleci/scripts/create-sesify-viz
       - store_artifacts:
           path: build-artifacts
           destination: build-artifacts

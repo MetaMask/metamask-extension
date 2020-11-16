@@ -25,10 +25,10 @@
   }
 
   &__title {
+    @include H2;
+
     color: $tundora;
-    font-size: 32px;
     font-weight: 500;
-    line-height: 43px;
     margin-top: 22px;
     margin-left: 29px;
   }
@@ -39,11 +39,11 @@
     margin-top: 10px;
 
     &__tab {
+      @include H4;
+
       height: 54px;
       padding: 15px 10px;
       color: $dusty-gray;
-      font-size: 18px;
-      line-height: 24px;
       text-align: center;
       cursor: pointer;
     }
@@ -70,21 +70,21 @@
   padding: 30px;
 
   &__input-label {
+    @include Paragraph;
+
     color: $scorpion;
-    font-size: 16px;
-    line-height: 21px;
     align-self: flex-start;
   }
 
   &__input {
+    @include Paragraph;
+
     height: 54px;
     width: 315.84px;
     border: 1px solid $geyser;
     border-radius: 4px;
     background-color: $white;
     color: $scorpion;
-    font-size: 16px;
-    line-height: 21px;
     margin-top: 15px;
     padding: 0 20px;
   }

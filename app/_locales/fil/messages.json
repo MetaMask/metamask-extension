@@ -146,9 +146,6 @@
   "cancel": {
     "message": "Kanselahin"
   },
-  "cancelAttempt": {
-    "message": "Kanselahin ang Pagtangka"
-  },
   "cancellationGasFee": {
     "message": "Gas Fee sa Pagkansela"
   },
@@ -283,9 +280,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Sigurado ka bang gusto mong i-delete ang network na ito?"
-  },
-  "deposit": {
-    "message": "Deposito"
   },
   "depositEther": {
     "message": "Magdeposito ng Ether"
@@ -671,7 +665,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Block Explorer URL (opsyonal)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Simbolo (opsyonal)"
   },
   "orderOneHere": {
@@ -899,9 +893,6 @@
   },
   "sentEther": {
     "message": "nagpadala ng ether"
-  },
-  "sentTokens": {
-    "message": "mga ipinadalang token"
   },
   "separateEachWord": {
     "message": "Paghiwa-hiwalayin ang bawat salita gamit ang isang space"

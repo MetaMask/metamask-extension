@@ -8,6 +8,8 @@ import { getMostRecentOverviewPage } from '../../../ducks/history/history'
 import SelectHardware from './select-hardware'
 import AccountList from './account-list'
 
+const U2F_ERROR = 'U2F'
+
 class ConnectHardwareForm extends Component {
   state = {
     error: null,
@@ -18,24 +20,29 @@ class ConnectHardwareForm extends Component {
     device: null,
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { accounts } = nextProps
     const newAccounts = this.state.accounts.map((a) => {
       const normalizedAddress = a.address.toLowerCase()
-      const balanceValue = (accounts[normalizedAddress] && accounts[normalizedAddress].balance) || null
+      const balanceValue =
+        (accounts[normalizedAddress] && accounts[normalizedAddress].balance) ||
+        null
       a.balance = balanceValue ? formatBalance(balanceValue, 6) : '...'
       return a
     })
     this.setState({ accounts: newAccounts })
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.checkIfUnlocked()
   }
 
-  async checkIfUnlocked () {
+  async checkIfUnlocked() {
     for (const device of ['trezor', 'ledger']) {
-      const unlocked = await this.props.checkHardwareStatus(device, this.props.defaultHdPaths[device])
+      const unlocked = await this.props.checkHardwareStatus(
+        device,
+        this.props.defaultHdPaths[device],
+      )
       if (unlocked) {
         this.setState({ unlocked: true })
         this.getPage(device, 0, this.props.defaultHdPaths[device])
@@ -54,7 +61,10 @@ class ConnectHardwareForm extends Component {
   }
 
   onPathChange = (path) => {
-    this.props.setHardwareWalletDefaultHdPath({ device: this.state.device, path })
+    this.props.setHardwareWalletDefaultHdPath({
+      device: this.state.device,
+      path,
+    })
     this.getPage(this.state.device, 0, path)
   }
 
@@ -66,7 +76,7 @@ class ConnectHardwareForm extends Component {
     this.setState({ error: this.context.t('ledgerAccountRestriction') })
   }
 
-  showTemporaryAlert () {
+  showTemporaryAlert() {
     this.props.showAlert(this.context.t('hardwareWalletConnected'))
     // Autohide the alert after 5 seconds
     setTimeout((_) => {
@@ -79,7 +89,6 @@ class ConnectHardwareForm extends Component {
       .connectHardware(device, page, hdPath)
       .then((accounts) => {
         if (accounts.length) {
-
           // If we just loaded the accounts for the first time
           // (device previously locked) show the global alert
           if (this.state.accounts.length === 0 && !this.state.unlocked) {
@@ -94,16 +103,25 @@ class ConnectHardwareForm extends Component {
                 newState.selectedAccount = a.index.toString()
               }
             })
-          // If the page doesn't contain the selected account, let's deselect it
-          } else if (!accounts.filter((a) => a.index.toString() === this.state.selectedAccount).length) {
+            // If the page doesn't contain the selected account, let's deselect it
+          } else if (
+            !accounts.filter(
+              (a) => a.index.toString() === this.state.selectedAccount,
+            ).length
+          ) {
             newState.selectedAccount = null
           }
 
           // Map accounts with balances
           newState.accounts = accounts.map((account) => {
             const normalizedAddress = account.address.toLowerCase()
-            const balanceValue = (this.props.accounts[normalizedAddress] && this.props.accounts[normalizedAddress].balance) || null
-            account.balance = balanceValue ? formatBalance(balanceValue, 6) : '...'
+            const balanceValue =
+              (this.props.accounts[normalizedAddress] &&
+                this.props.accounts[normalizedAddress].balance) ||
+              null
+            account.balance = balanceValue
+              ? formatBalance(balanceValue, 6)
+              : '...'
             return account
           })
 
@@ -114,16 +132,20 @@ class ConnectHardwareForm extends Component {
         const errorMessage = e.message
         if (errorMessage === 'Window blocked') {
           this.setState({ browserSupported: false, error: null })
-        } else if (e.indexOf('U2F') > -1) {
-          this.setState({ error: 'U2F' })
-        } else if (errorMessage !== 'Window closed' && errorMessage !== 'Popup closed') {
+        } else if (errorMessage.includes(U2F_ERROR)) {
+          this.setState({ error: U2F_ERROR })
+        } else if (
+          errorMessage !== 'Window closed' &&
+          errorMessage !== 'Popup closed'
+        ) {
           this.setState({ error: errorMessage })
         }
       })
   }
 
   onForgetDevice = (device) => {
-    this.props.forgetDevice(device)
+    this.props
+      .forgetDevice(device)
       .then((_) => {
         this.setState({
           error: null,
@@ -131,13 +153,18 @@ class ConnectHardwareForm extends Component {
           accounts: [],
           unlocked: false,
         })
-      }).catch((e) => {
+      })
+      .catch((e) => {
         this.setState({ error: e.message })
       })
   }
 
   onUnlockAccount = (device) => {
-    const { history, mostRecentOverviewPage, unlockHardwareWalletAccount } = this.props
+    const {
+      history,
+      mostRecentOverviewPage,
+      unlockHardwareWalletAccount,
+    } = this.props
 
     if (this.state.selectedAccount === null) {
       this.setState({ error: this.context.t('accountSelectionRequired') })
@@ -153,7 +180,8 @@ class ConnectHardwareForm extends Component {
           },
         })
         history.push(mostRecentOverviewPage)
-      }).catch((e) => {
+      })
+      .catch((e) => {
         this.context.metricsEvent({
           eventOpts: {
             category: 'Accounts',
@@ -173,13 +201,12 @@ class ConnectHardwareForm extends Component {
     history.push(mostRecentOverviewPage)
   }
 
-  renderError () {
-    if (this.state.error === 'U2F') {
+  renderError() {
+    if (this.state.error === U2F_ERROR) {
       return (
-        <p
-          className="hw-connect__error"
-        >
-          {this.context.t('troubleConnectingToWallet', [this.state.device, (
+        <p className="hw-connect__error">
+          {this.context.t('troubleConnectingToWallet', [
+            this.state.device,
             // eslint-disable-next-line react/jsx-key
             <a
               href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
@@ -189,21 +216,17 @@ class ConnectHardwareForm extends Component {
               style={{ marginLeft: '5px', marginRight: '5px' }}
             >
               {this.context.t('walletConnectionGuide')}
-            </a>
-          )])}
+            </a>,
+          ])}
         </p>
       )
     }
-    return this.state.error
-      ? (
-        <span className="hw-connect__error">
-          {this.state.error}
-        </span>
-      )
-      : null
+    return this.state.error ? (
+      <span className="hw-connect__error">{this.state.error}</span>
+    ) : null
   }
 
-  renderContent () {
+  renderContent() {
     if (!this.state.accounts.length) {
       return (
         <SelectHardware
@@ -231,7 +254,7 @@ class ConnectHardwareForm extends Component {
     )
   }
 
-  render () {
+  render() {
     return (
       <>
         {this.renderError()}
@@ -290,7 +313,9 @@ const mapDispatchToProps = (dispatch) => {
       return dispatch(actions.forgetDevice(deviceName))
     },
     unlockHardwareWalletAccount: (index, deviceName, hdPath) => {
-      return dispatch(actions.unlockHardwareWalletAccount(index, deviceName, hdPath))
+      return dispatch(
+        actions.unlockHardwareWalletAccount(index, deviceName, hdPath),
+      )
     },
     showAlert: (msg) => dispatch(actions.showAlert(msg)),
     hideAlert: () => dispatch(actions.hideAlert()),
@@ -302,6 +327,4 @@ ConnectHardwareForm.contextTypes = {
   metricsEvent: PropTypes.func,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  ConnectHardwareForm,
-)
+export default connect(mapStateToProps, mapDispatchToProps)(ConnectHardwareForm)

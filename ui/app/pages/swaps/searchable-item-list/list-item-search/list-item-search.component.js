@@ -6,15 +6,12 @@ import TextField from '../../../../components/ui/text-field'
 import { usePrevious } from '../../../../hooks/usePrevious'
 
 const renderAdornment = () => (
-  <InputAdornment
-    position="start"
-    style={{ marginRight: '12px' }}
-  >
+  <InputAdornment position="start" style={{ marginRight: '12px' }}>
     <img src="images/search.svg" width="17" height="17" />
   </InputAdornment>
 )
 
-export default function ListItemSearch ({
+export default function ListItemSearch({
   onSearch,
   error,
   listToSearch = [],
@@ -30,7 +27,8 @@ export default function ListItemSearch ({
     const fuseSearchResult = fuseRef.current.search(newSearchQuery)
     onSearch({
       searchQuery: newSearchQuery,
-      results: defaultToAll && newSearchQuery === '' ? listToSearch : fuseSearchResult,
+      results:
+        defaultToAll && newSearchQuery === '' ? listToSearch : fuseSearchResult,
     })
   }
 
@@ -50,7 +48,11 @@ export default function ListItemSearch ({
 
   const previousListToSearch = usePrevious(listToSearch) || []
   useEffect(() => {
-    if (fuseRef.current && searchQuery && previousListToSearch !== listToSearch) {
+    if (
+      fuseRef.current &&
+      searchQuery &&
+      previousListToSearch !== listToSearch
+    ) {
       fuseRef.current.setCollection(listToSearch)
       const fuseSearchResult = fuseRef.current.search(searchQuery)
       onSearch({ searchQuery, results: fuseSearchResult })

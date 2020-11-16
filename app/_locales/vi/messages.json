@@ -79,9 +79,6 @@
   "defaultNetwork": {
     "message": "Mạng lưới mặc định dùng cho các giao dịch Ether là Main Net (tiền ETH thật)."
   },
-  "deposit": {
-    "message": "Ký gửi/nạp tiền"
-  },
   "depositEther": {
     "message": "Ký gửi Ether"
   },

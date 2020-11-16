@@ -12,7 +12,7 @@ export default class UserPreferencedTokenInput extends PureComponent {
     useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
   }
 
-  render () {
+  render() {
     const { useNativeCurrencyAsPrimaryCurrency, ...restProps } = this.props
 
     return (

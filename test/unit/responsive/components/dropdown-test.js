@@ -7,7 +7,6 @@ import { renderWithProvider } from '../../../lib/render-helpers'
 import { Dropdown } from '../../../../ui/app/components/app/dropdowns/components/dropdown'
 
 describe('Dropdown components', function () {
-
   const mockState = {
     metamask: {},
   }
@@ -33,7 +32,8 @@ describe('Dropdown components', function () {
       <Dropdown {...props}>
         <li onClick={onClickSpy}>Item 1</li>
         <li onClick={onClickSpy}>Item 2</li>
-      </Dropdown>, store,
+      </Dropdown>,
+      store,
     )
 
     const item1 = getByText(/Item 1/u)
@@ -41,5 +41,4 @@ describe('Dropdown components', function () {
 
     assert.ok(onClickSpy.calledOnce)
   })
-
 })

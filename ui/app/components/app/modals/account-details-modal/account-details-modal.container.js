@@ -17,8 +17,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    showExportPrivateKeyModal: () => dispatch(showModal({ name: 'EXPORT_PRIVATE_KEY' })),
-    setAccountLabel: (address, label) => dispatch(setAccountLabel(address, label)),
+    showExportPrivateKeyModal: () =>
+      dispatch(showModal({ name: 'EXPORT_PRIVATE_KEY' })),
+    setAccountLabel: (address, label) =>
+      dispatch(setAccountLabel(address, label)),
   }
 }
 

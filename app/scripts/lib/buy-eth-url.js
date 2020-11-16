@@ -2,13 +2,13 @@
  * Gives the caller a url at which the user can acquire eth, depending on the network they are in
  *
  * @param {Object} opts - Options required to determine the correct url
- * @param {string} opts.network The network for which to return a url
- * @param {string} opts.address The address the bought ETH should be sent to.  Only relevant if network === '1'.
- * @returns {string|undefined} - The url at which the user can access ETH, while in the given network. If the passed
+ * @param {string} opts.network - The network for which to return a url
+ * @param {string} opts.address - The address the bought ETH should be sent to.  Only relevant if network === '1'.
+ * @returns {string|undefined} The url at which the user can access ETH, while in the given network. If the passed
  * network does not match any of the specified cases, or if no network is given, returns undefined.
  *
  */
-export default function getBuyEthUrl ({ network, address, service }) {
+export default function getBuyEthUrl({ network, address, service }) {
   // default service by network if not specified
   if (!service) {
     // eslint-disable-next-line no-param-reassign
@@ -33,7 +33,7 @@ export default function getBuyEthUrl ({ network, address, service }) {
   }
 }
 
-function getDefaultServiceForNetwork (network) {
+function getDefaultServiceForNetwork(network) {
   switch (network) {
     case '1':
       return 'wyre'
@@ -46,6 +46,8 @@ function getDefaultServiceForNetwork (network) {
     case '5':
       return 'goerli-faucet'
     default:
-      throw new Error(`No default cryptocurrency exchange or faucet for networkId: "${network}"`)
+      throw new Error(
+        `No default cryptocurrency exchange or faucet for networkId: "${network}"`,
+      )
   }
 }

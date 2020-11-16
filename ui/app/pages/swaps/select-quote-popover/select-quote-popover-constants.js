@@ -9,7 +9,7 @@ export const QUOTE_DATA_ROWS_PROPTYPES_SHAPE = PropTypes.shape({
   isBestQuote: PropTypes.bool,
   networkFees: PropTypes.string.isRequired,
   quoteSource: PropTypes.string.isRequired,
-  rawNetworkFees: PropTypes.number.isRequired,
+  rawNetworkFees: PropTypes.string.isRequired,
   slippage: PropTypes.string.isRequired,
   sourceTokenDecimals: PropTypes.number.isRequired,
   sourceTokenSymbol: PropTypes.string.isRequired,

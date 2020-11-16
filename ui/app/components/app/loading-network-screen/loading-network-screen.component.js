@@ -19,13 +19,19 @@ export default class LoadingNetworkScreen extends PureComponent {
     providerId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     showNetworkDropdown: PropTypes.func,
     setProviderArgs: PropTypes.array,
-    lastSelectedProvider: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    lastSelectedProvider: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.object,
+    ]),
     setProviderType: PropTypes.func,
     isLoadingNetwork: PropTypes.bool,
   }
 
   componentDidMount = () => {
-    this.cancelCallTimeout = setTimeout(this.cancelCall, this.props.cancelTime || 15000)
+    this.cancelCallTimeout = setTimeout(
+      this.cancelCall,
+      this.props.cancelTime || 15000,
+    )
   }
 
   getConnectingLabel = function (loadingMessage) {
@@ -60,7 +66,7 @@ export default class LoadingNetworkScreen extends PureComponent {
     return (
       <div className="loading-overlay__error-screen">
         <span className="loading-overlay__emoji">&#128542;</span>
-        <span>{ this.context.t('somethingWentWrong') }</span>
+        <span>{this.context.t('somethingWentWrong')}</span>
         <div className="loading-overlay__error-buttons">
           <Button
             type="default"
@@ -69,7 +75,7 @@ export default class LoadingNetworkScreen extends PureComponent {
               showNetworkDropdown()
             }}
           >
-            { this.context.t('switchNetworks') }
+            {this.context.t('switchNetworks')}
           </Button>
 
           <Button
@@ -78,10 +84,13 @@ export default class LoadingNetworkScreen extends PureComponent {
               this.setState({ showErrorScreen: false })
               setProviderType(...setProviderArgs)
               window.clearTimeout(this.cancelCallTimeout)
-              this.cancelCallTimeout = setTimeout(this.cancelCall, this.props.cancelTime || 15000)
+              this.cancelCallTimeout = setTimeout(
+                this.cancelCall,
+                this.props.cancelTime || 15000,
+              )
             }}
           >
-            { this.context.t('tryAgain') }
+            {this.context.t('tryAgain')}
           </Button>
         </div>
       </div>
@@ -102,7 +111,10 @@ export default class LoadingNetworkScreen extends PureComponent {
     if (provider.type !== prevProvider.type) {
       window.clearTimeout(this.cancelCallTimeout)
       this.setState({ showErrorScreen: false })
-      this.cancelCallTimeout = setTimeout(this.cancelCall, this.props.cancelTime || 15000)
+      this.cancelCallTimeout = setTimeout(
+        this.cancelCall,
+        this.props.cancelTime || 15000,
+      )
     }
   }
 
@@ -110,19 +122,23 @@ export default class LoadingNetworkScreen extends PureComponent {
     window.clearTimeout(this.cancelCallTimeout)
   }
 
-  render () {
+  render() {
     const { lastSelectedProvider, setProviderType } = this.props
 
     return (
       <LoadingScreen
-        header={(
+        header={
           <div
             className="page-container__header-close"
             onClick={() => setProviderType(lastSelectedProvider || 'ropsten')}
           />
-        )}
+        }
         showLoadingSpinner={!this.state.showErrorScreen}
-        loadingMessage={this.state.showErrorScreen ? this.renderErrorScreenContent() : this.getConnectingLabel(this.props.loadingMessage)}
+        loadingMessage={
+          this.state.showErrorScreen
+            ? this.renderErrorScreenContent()
+            : this.getConnectingLabel(this.props.loadingMessage)
+        }
       />
     )
   }

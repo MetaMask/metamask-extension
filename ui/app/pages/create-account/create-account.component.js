@@ -12,35 +12,50 @@ import NewAccountImportForm from './import-account'
 import ConnectHardwareForm from './connect-hardware'
 
 export default class CreateAccountPage extends Component {
-  renderTabs () {
-    const { history, location: { pathname } } = this.props
-    const getClassNames = (path) => classnames('new-account__tabs__tab', {
-      'new-account__tabs__selected': matchPath(pathname, {
-        path,
-        exact: true,
-      }),
-    })
+  renderTabs() {
+    const {
+      history,
+      location: { pathname },
+    } = this.props
+    const getClassNames = (path) =>
+      classnames('new-account__tabs__tab', {
+        'new-account__tabs__selected': matchPath(pathname, {
+          path,
+          exact: true,
+        }),
+      })
 
     return (
       <div className="new-account__tabs">
-        <div className={getClassNames(NEW_ACCOUNT_ROUTE)} onClick={() => history.push(NEW_ACCOUNT_ROUTE)}>
+        <div
+          className={getClassNames(NEW_ACCOUNT_ROUTE)}
+          onClick={() => history.push(NEW_ACCOUNT_ROUTE)}
+        >
           {this.context.t('create')}
         </div>
-        <div className={getClassNames(IMPORT_ACCOUNT_ROUTE)} onClick={() => history.push(IMPORT_ACCOUNT_ROUTE)}>
+        <div
+          className={getClassNames(IMPORT_ACCOUNT_ROUTE)}
+          onClick={() => history.push(IMPORT_ACCOUNT_ROUTE)}
+        >
           {this.context.t('import')}
         </div>
-        <div className={getClassNames(CONNECT_HARDWARE_ROUTE)} onClick={() => history.push(CONNECT_HARDWARE_ROUTE)}>
+        <div
+          className={getClassNames(CONNECT_HARDWARE_ROUTE)}
+          onClick={() => history.push(CONNECT_HARDWARE_ROUTE)}
+        >
           {this.context.t('hardware')}
         </div>
       </div>
     )
   }
 
-  render () {
+  render() {
     return (
       <div className="new-account">
         <div className="new-account__header">
-          <div className={`new-account__header ${this.context.t('newAccount')}`}>
+          <div
+            className={`new-account__header ${this.context.t('newAccount')}`}
+          >
             {this.renderTabs()}
           </div>
         </div>

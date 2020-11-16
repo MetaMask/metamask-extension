@@ -16,9 +16,7 @@ const AlertSettingsEntry = ({ alertId, description, title }) => {
 
   return (
     <>
-      <span>
-        { title }
-      </span>
+      <span>{title}</span>
       <Tooltip
         position="top"
         title={description}
@@ -54,16 +52,14 @@ const AlertsTab = () => {
 
   return (
     <div className="alerts-tab__body">
-      {
-        Object.entries(alertConfig).map(([alertId, { title, description }]) => (
-          <AlertSettingsEntry
-            alertId={alertId}
-            description={description}
-            key={alertId}
-            title={title}
-          />
-        ))
-      }
+      {Object.entries(alertConfig).map(([alertId, { title, description }]) => (
+        <AlertSettingsEntry
+          alertId={alertId}
+          description={description}
+          key={alertId}
+          title={title}
+        />
+      ))}
     </div>
   )
 }

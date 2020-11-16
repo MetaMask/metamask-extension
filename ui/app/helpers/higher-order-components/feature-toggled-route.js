@@ -2,8 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Redirect, Route } from 'react-router-dom'
 
-export default function FeatureToggledRoute ({ flag, redirectRoute, ...props }) {
-
+export default function FeatureToggledRoute({ flag, redirectRoute, ...props }) {
   if (flag) {
     return <Route {...props} />
   }

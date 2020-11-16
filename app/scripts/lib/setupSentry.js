@@ -8,7 +8,8 @@ import extractEthjsErrorMessage from './extractEthjsErrorMessage'
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 const METAMASK_ENVIRONMENT = process.env.METAMASK_ENVIRONMENT
 /* eslint-enable prefer-destructuring */
-const SENTRY_DSN_DEV = 'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496'
+const SENTRY_DSN_DEV =
+  'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496'
 
 // This describes the subset of Redux state attached to errors sent to Sentry
 // These properties have some potential to be useful for debugging, and they do
@@ -66,19 +67,25 @@ export const SENTRY_STATE = {
   unconnectedAccount: true,
 }
 
-export default function setupSentry ({ release, getState }) {
+export default function setupSentry({ release, getState }) {
   let sentryTarget
 
   if (METAMASK_DEBUG) {
     return undefined
   } else if (METAMASK_ENVIRONMENT === 'production') {
     if (!process.env.SENTRY_DSN) {
-      throw new Error(`Missing SENTRY_DSN environment variable in production environment`)
+      throw new Error(
+        `Missing SENTRY_DSN environment variable in production environment`,
+      )
     }
-    console.log(`Setting up Sentry Remote Error Reporting for '${METAMASK_ENVIRONMENT}': SENTRY_DSN`)
+    console.log(
+      `Setting up Sentry Remote Error Reporting for '${METAMASK_ENVIRONMENT}': SENTRY_DSN`,
+    )
     sentryTarget = process.env.SENTRY_DSN
   } else {
-    console.log(`Setting up Sentry Remote Error Reporting for '${METAMASK_ENVIRONMENT}': SENTRY_DSN_DEV`)
+    console.log(
+      `Setting up Sentry Remote Error Reporting for '${METAMASK_ENVIRONMENT}': SENTRY_DSN_DEV`,
+    )
     sentryTarget = SENTRY_DSN_DEV
   }
 
@@ -86,15 +93,12 @@ export default function setupSentry ({ release, getState }) {
     dsn: sentryTarget,
     debug: METAMASK_DEBUG,
     environment: METAMASK_ENVIRONMENT,
-    integrations: [
-      new Dedupe(),
-      new ExtraErrorData(),
-    ],
+    integrations: [new Dedupe(), new ExtraErrorData()],
     release,
     beforeSend: (report) => rewriteReport(report),
   })
 
-  function rewriteReport (report) {
+  function rewriteReport(report) {
     try {
       // simplify certain complex error messages (e.g. Ethjs)
       simplifyErrorMessages(report)
@@ -117,12 +121,16 @@ export default function setupSentry ({ release, getState }) {
   return Sentry
 }
 
-function simplifyErrorMessages (report) {
+function simplifyErrorMessages(report) {
   rewriteErrorMessages(report, (errorMessage) => {
     // simplify ethjs error messages
     let simplifiedErrorMessage = extractEthjsErrorMessage(errorMessage)
     // simplify 'Transaction Failed: known transaction'
-    if (simplifiedErrorMessage.indexOf('Transaction Failed: known transaction') === 0) {
+    if (
+      simplifiedErrorMessage.indexOf(
+        'Transaction Failed: known transaction',
+      ) === 0
+    ) {
       // cut the hash from the error message
       simplifiedErrorMessage = 'Transaction Failed: known transaction'
     }
@@ -130,7 +138,7 @@ function simplifyErrorMessages (report) {
   })
 }
 
-function rewriteErrorMessages (report, rewriteFn) {
+function rewriteErrorMessages(report, rewriteFn) {
   // rewrite top level message
   if (typeof report.message === 'string') {
     report.message = rewriteFn(report.message)
@@ -145,7 +153,7 @@ function rewriteErrorMessages (report, rewriteFn) {
   }
 }
 
-function rewriteReportUrls (report) {
+function rewriteReportUrls(report) {
   // update request url
   report.request.url = toMetamaskUrl(report.request.url)
   // update exception stack trace
@@ -160,7 +168,7 @@ function rewriteReportUrls (report) {
   }
 }
 
-function toMetamaskUrl (origUrl) {
+function toMetamaskUrl(origUrl) {
   const filePath = origUrl.split(window.location.origin)[1]
   if (!filePath) {
     return origUrl

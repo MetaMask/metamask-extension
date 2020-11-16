@@ -3,12 +3,12 @@ import PropTypes from 'prop-types'
 import { Redirect, Route } from 'react-router-dom'
 import { UNLOCK_ROUTE, INITIALIZE_ROUTE } from '../../constants/routes'
 
-export default function Authenticated (props) {
+export default function Authenticated(props) {
   const { isUnlocked, completedOnboarding } = props
 
   switch (true) {
     case isUnlocked && completedOnboarding:
-      return <Route { ...props } />
+      return <Route {...props} />
     case !completedOnboarding:
       return <Redirect to={{ pathname: INITIALIZE_ROUTE }} />
     default:

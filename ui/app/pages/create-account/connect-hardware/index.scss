@@ -12,13 +12,15 @@
 
   &__header {
     &__title {
+      @include H3;
+
       margin-top: 5px;
       margin-bottom: 15px;
-      font-size: 22px;
     }
 
     &__msg {
-      font-size: 14px;
+      @include H6;
+
       color: #9b9b9b;
       margin-top: 10px;
       margin-bottom: 20px;
@@ -43,7 +45,7 @@
 
   &__btn {
     background: #fbfbfb;
-    border: 2px solid #e5e5e5;
+    border: 1px solid #e5e5e5;
     height: 100px;
     width: 150px;
     flex: 1;
@@ -59,7 +61,7 @@
   }
 
   &__btn.selected {
-    border: 2px solid #00a8ee;
+    border-color: #00a8ee;
     width: 149px;
   }
 
@@ -73,11 +75,12 @@
   }
 
   &__hdPath {
+    @include H6;
+
     display: flex;
     flex-direction: row;
     margin-top: 15px;
     margin-bottom: 30px;
-    font-size: 14px;
 
     &__title {
       display: flex;
@@ -92,10 +95,10 @@
   }
 
   &__learn-more {
+    @include H6;
+
     margin-top: 15px;
-    font-size: 14px;
     color: #5b5d67;
-    line-height: 19px;
     text-align: center;
     cursor: pointer;
 
@@ -109,20 +112,23 @@
   }
 
   &__title {
+    @include H4;
+
     padding-top: 10px;
     font-weight: 400;
-    font-size: 18px;
   }
 
   &__unlock-title {
+    @include H3;
+
     padding-top: 10px;
     font-weight: 400;
-    font-size: 22px;
     margin-bottom: 15px;
   }
 
   &__msg {
-    font-size: 14px;
+    @include H6;
+
     color: #9b9b9b;
     margin-top: 10px;
     margin-bottom: 15px;
@@ -141,15 +147,17 @@
 
   &__footer {
     &__title {
+      @include H4;
+
       padding-top: 15px;
       padding-bottom: 12px;
       font-weight: 400;
-      font-size: 18px;
       text-align: center;
     }
 
     &__msg {
-      font-size: 14px;
+      @include H6;
+
       color: #9b9b9b;
       margin-top: 12px;
       margin-bottom: 27px;
@@ -170,12 +178,14 @@
     padding-top: 10px;
 
     &__msg {
-      font-size: 14px;
+      @include H6;
+
       color: #9b9b9b;
     }
 
     &__link {
-      font-size: 14px;
+      @include H4;
+
       text-align: center;
       color: #2f9ae0;
       cursor: pointer;
@@ -201,28 +211,28 @@
   }
 
   &__title {
+    @include H5;
+
     margin-bottom: 23px;
     align-self: flex-start;
     color: $scorpion;
-    font-size: 16px;
-    line-height: 21px;
     font-weight: bold;
     display: flex;
     flex: 1;
   }
 
   &__device {
+    @include Paragraph;
+
     margin-bottom: 23px;
     align-self: flex-end;
     color: $scorpion;
-    font-size: 16px;
-    line-height: 21px;
-    font-weight: normal;
     display: flex;
   }
 
   &__item {
-    font-size: 15px;
+    @include Paragraph;
+
     flex-direction: row;
     display: flex;
     padding-left: 10px;
@@ -287,12 +297,12 @@
   margin-top: 10px;
 
   &__button {
+    @include H6;
+
     background: #fff;
     height: 19px;
     display: flex;
     color: #33a4e7;
-    font-size: 14px;
-    line-height: 19px;
     border: none;
     min-width: 46px;
     margin-right: 0;
@@ -343,8 +353,9 @@
   padding: 22px;
 
   a {
+    @include H6;
+
     color: #2f9ae0;
-    font-size: 14px;
     cursor: pointer;
   }
 }

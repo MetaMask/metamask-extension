@@ -9,20 +9,29 @@ import {
   editRpc,
   showModal,
 } from '../../../store/actions'
+import { NETWORKS_FORM_ROUTE } from '../../../helpers/constants/routes'
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../app/scripts/lib/enums'
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 import NetworksTab from './networks-tab.component'
 import { defaultNetworksData } from './networks-tab.constants'
 
-const defaultNetworks = defaultNetworksData.map((network) => ({ ...network, viewOnly: true }))
+const defaultNetworks = defaultNetworksData.map((network) => ({
+  ...network,
+  viewOnly: true,
+}))
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
   const {
-    frequentRpcListDetail,
-    provider,
-  } = state.metamask
-  const {
-    networksTabSelectedRpcUrl,
-    networksTabIsInAddMode,
-  } = state.appState
+    location: { pathname },
+  } = ownProps
+
+  const environmentType = getEnvironmentType()
+  const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN
+  const shouldRenderNetworkForm =
+    isFullScreen || Boolean(pathname.match(NETWORKS_FORM_ROUTE))
+
+  const { frequentRpcListDetail, provider } = state.metamask
+  const { networksTabSelectedRpcUrl, networksTabIsInAddMode } = state.appState
 
   const frequentRpcNetworkListDetails = frequentRpcListDetail.map((rpc) => {
     return {
@@ -32,19 +41,30 @@ const mapStateToProps = (state) => {
       rpcUrl: rpc.rpcUrl,
       chainId: rpc.chainId,
       ticker: rpc.ticker,
-      blockExplorerUrl: (rpc.rpcPrefs && rpc.rpcPrefs.blockExplorerUrl) || '',
+      blockExplorerUrl: rpc.rpcPrefs?.blockExplorerUrl || '',
     }
   })
 
-  const networksToRender = [...defaultNetworks, ...frequentRpcNetworkListDetails]
-  let selectedNetwork = networksToRender.find((network) => network.rpcUrl === networksTabSelectedRpcUrl) || {}
+  const networksToRender = [
+    ...defaultNetworks,
+    ...frequentRpcNetworkListDetails,
+  ]
+  let selectedNetwork =
+    networksToRender.find(
+      (network) => network.rpcUrl === networksTabSelectedRpcUrl,
+    ) || {}
   const networkIsSelected = Boolean(selectedNetwork.rpcUrl)
 
   let networkDefaultedToProvider = false
   if (!networkIsSelected && !networksTabIsInAddMode) {
-    selectedNetwork = networksToRender.find((network) => {
-      return network.rpcUrl === provider.rpcUrl || (network.providerType !== 'rpc' && network.providerType === provider.type)
-    }) || {}
+    selectedNetwork =
+      networksToRender.find((network) => {
+        return (
+          network.rpcUrl === provider.rpcUrl ||
+          (network.providerType !== 'rpc' &&
+            network.providerType === provider.type)
+        )
+      }) || {}
     networkDefaultedToProvider = true
   }
 
@@ -56,22 +76,32 @@ const mapStateToProps = (state) => {
     providerType: provider.type,
     providerUrl: provider.rpcUrl,
     networkDefaultedToProvider,
+    isFullScreen,
+    shouldRenderNetworkForm,
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setSelectedSettingsRpcUrl: (newRpcUrl) => dispatch(setSelectedSettingsRpcUrl(newRpcUrl)),
+    setSelectedSettingsRpcUrl: (newRpcUrl) =>
+      dispatch(setSelectedSettingsRpcUrl(newRpcUrl)),
     setRpcTarget: (newRpc, chainId, ticker, nickname, rpcPrefs) => {
-      return dispatch(updateAndSetCustomRpc(newRpc, chainId, ticker, nickname, rpcPrefs))
+      return dispatch(
+        updateAndSetCustomRpc(newRpc, chainId, ticker, nickname, rpcPrefs),
+      )
     },
     showConfirmDeleteNetworkModal: ({ target, onConfirm }) => {
-      return dispatch(showModal({ name: 'CONFIRM_DELETE_NETWORK', target, onConfirm }))
+      return dispatch(
+        showModal({ name: 'CONFIRM_DELETE_NETWORK', target, onConfirm }),
+      )
     },
     displayWarning: (warning) => dispatch(displayWarning(warning)),
-    setNetworksTabAddMode: (isInAddMode) => dispatch(setNetworksTabAddMode(isInAddMode)),
+    setNetworksTabAddMode: (isInAddMode) =>
+      dispatch(setNetworksTabAddMode(isInAddMode)),
     editRpc: (oldRpc, newRpc, chainId, ticker, nickname, rpcPrefs) => {
-      return dispatch(editRpc(oldRpc, newRpc, chainId, ticker, nickname, rpcPrefs))
+      return dispatch(
+        editRpc(oldRpc, newRpc, chainId, ticker, nickname, rpcPrefs),
+      )
     },
   }
 }

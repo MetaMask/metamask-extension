@@ -1,7 +1,10 @@
 import { useSelector } from 'react-redux'
 import { getSelectedAccount } from '../selectors'
 import { ETH_SWAPS_TOKEN_OBJECT } from '../helpers/constants/swaps'
-import { getValueFromWeiHex, hexToDecimal } from '../helpers/utils/conversions.util'
+import {
+  getValueFromWeiHex,
+  hexToDecimal,
+} from '../helpers/utils/conversions.util'
 
 /**
  * @typedef {Object} SwapsEthToken
@@ -34,7 +37,7 @@ import { getValueFromWeiHex, hexToDecimal } from '../helpers/utils/conversions.u
  * @returns {SwapsEthToken} The token object representation of the currently
  * selected account's ETH balance, as expected by the Swaps API.
  */
-export function useSwapsEthToken () {
+export function useSwapsEthToken() {
   const selectedAccount = useSelector(getSelectedAccount)
   const { balance } = selectedAccount
 

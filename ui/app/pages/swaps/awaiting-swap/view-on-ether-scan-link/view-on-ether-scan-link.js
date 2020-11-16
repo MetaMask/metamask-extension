@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { I18nContext } from '../../../../contexts/i18n'
 
-export default function ViewOnEtherScanLink ({
+export default function ViewOnEtherScanLink({
   txHash,
   blockExplorerUrl,
   isCustomBlockExplorerUrl,
@@ -17,7 +17,9 @@ export default function ViewOnEtherScanLink ({
       })}
       onClick={() => global.platform.openTab({ url: blockExplorerUrl })}
     >
-      {isCustomBlockExplorerUrl ? t('viewOnCustomBlockExplorer', [blockExplorerUrl]) : t('viewOnEtherscan')}
+      {isCustomBlockExplorerUrl
+        ? t('viewOnCustomBlockExplorer', [blockExplorerUrl])
+        : t('viewOnEtherscan')}
     </div>
   )
 }

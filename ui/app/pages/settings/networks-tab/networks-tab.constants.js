@@ -59,6 +59,4 @@ const defaultNetworksData = [
   },
 ]
 
-export {
-  defaultNetworksData,
-}
+export { defaultNetworksData }

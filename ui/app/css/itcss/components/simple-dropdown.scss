@@ -1,4 +1,6 @@
 .simple-dropdown {
+  @include Paragraph;
+
   height: 56px;
   display: flex;
   justify-content: flex-start;
@@ -6,7 +8,6 @@
   border: 1px solid $alto;
   border-radius: 4px;
   background-color: $white;
-  font-size: 16px;
   color: #4d4d4d;
   cursor: pointer;
   position: relative;

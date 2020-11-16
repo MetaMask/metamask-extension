@@ -8,9 +8,7 @@ describe('Alert', function () {
   let wrapper
 
   beforeEach(function () {
-    wrapper = shallow(
-      <Alert />,
-    )
+    wrapper = shallow(<Alert />)
   })
 
   it('renders nothing with no visible boolean in state', function () {

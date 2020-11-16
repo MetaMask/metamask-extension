@@ -33,27 +33,59 @@ describe('Confirm Detail Row Component', function () {
     })
 
     it('should render the label as a child of the confirm-detail-row__label', function () {
-      assert.equal(wrapper.find('.confirm-detail-row > .confirm-detail-row__label').childAt(0).text(), 'mockLabel')
+      assert.equal(
+        wrapper
+          .find('.confirm-detail-row > .confirm-detail-row__label')
+          .childAt(0)
+          .text(),
+        'mockLabel',
+      )
     })
 
     it('should render the headerText as a child of the confirm-detail-row__header-text', function () {
-      assert.equal(wrapper.find('.confirm-detail-row__details > .confirm-detail-row__header-text').childAt(0).text(), 'mockHeaderText')
+      assert.equal(
+        wrapper
+          .find(
+            '.confirm-detail-row__details > .confirm-detail-row__header-text',
+          )
+          .childAt(0)
+          .text(),
+        'mockHeaderText',
+      )
     })
 
     it('should render the primaryText as a child of the confirm-detail-row__primary', function () {
-      assert.equal(wrapper.find('.confirm-detail-row__details > .confirm-detail-row__primary').childAt(0).text(), 'mockFiatText')
+      assert.equal(
+        wrapper
+          .find('.confirm-detail-row__details > .confirm-detail-row__primary')
+          .childAt(0)
+          .text(),
+        'mockFiatText',
+      )
     })
 
     it('should render the ethText as a child of the confirm-detail-row__secondary', function () {
-      assert.equal(wrapper.find('.confirm-detail-row__details > .confirm-detail-row__secondary').childAt(0).text(), 'mockEthText')
+      assert.equal(
+        wrapper
+          .find('.confirm-detail-row__details > .confirm-detail-row__secondary')
+          .childAt(0)
+          .text(),
+        'mockEthText',
+      )
     })
 
     it('should set the fiatTextColor on confirm-detail-row__primary', function () {
-      assert.equal(wrapper.find('.confirm-detail-row__primary').props().style.color, 'mockColor')
+      assert.equal(
+        wrapper.find('.confirm-detail-row__primary').props().style.color,
+        'mockColor',
+      )
     })
 
     it('should assure the confirm-detail-row__header-text classname is correct', function () {
-      assert.equal(wrapper.find('.confirm-detail-row__header-text').props().className, 'confirm-detail-row__header-text mockHeaderClass')
+      assert.equal(
+        wrapper.find('.confirm-detail-row__header-text').props().className,
+        'confirm-detail-row__header-text mockHeaderClass',
+      )
     })
 
     it('should call onHeaderClick when headerText div gets clicked', function () {

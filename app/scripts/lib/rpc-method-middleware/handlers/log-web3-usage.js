@@ -34,22 +34,20 @@ const recordedWeb3Usage = {}
  * @param {Function} end - The json-rpc-engine 'end' callback.
  * @param {LogWeb3UsageOptions} options
  */
-function logWeb3UsageHandler (
-  req, res, _next, end,
-  { origin, sendMetrics },
-) {
-  const { action, name } = req.params[0]
+function logWeb3UsageHandler(req, res, _next, end, { origin, sendMetrics }) {
+  const { action, path } = req.params[0]
 
   if (!recordedWeb3Usage[origin]) {
     recordedWeb3Usage[origin] = {}
   }
-  if (!recordedWeb3Usage[origin][name]) {
-    recordedWeb3Usage[origin][name] = true
+  if (!recordedWeb3Usage[origin][path]) {
+    recordedWeb3Usage[origin][path] = true
 
     sendMetrics({
-      event: `Website Accessed window.web3`,
+      matomo: true,
+      event: `Website Used window.web3`,
       category: 'inpage_provider',
-      properties: { action, web3Property: name },
+      properties: { action, web3Path: path },
       eventContext: {
         referrer: {
           url: origin,

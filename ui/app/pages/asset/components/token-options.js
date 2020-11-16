@@ -6,7 +6,9 @@ import { Menu, MenuItem } from '../../../components/ui/menu'
 
 const TokenOptions = ({ onRemove, onViewEtherscan, tokenSymbol }) => {
   const t = useContext(I18nContext)
-  const [tokenOptionsButtonElement, setTokenOptionsButtonElement] = useState(null)
+  const [tokenOptionsButtonElement, setTokenOptionsButtonElement] = useState(
+    null,
+  )
   const [tokenOptionsOpen, setTokenOptionsOpen] = useState(false)
 
   return (
@@ -18,34 +20,33 @@ const TokenOptions = ({ onRemove, onViewEtherscan, tokenSymbol }) => {
         ref={setTokenOptionsButtonElement}
         title={t('tokenOptions')}
       />
-      {
-        tokenOptionsOpen
-          ? (
-            <Menu anchorElement={tokenOptionsButtonElement} onHide={() => setTokenOptionsOpen(false)} >
-              <MenuItem
-                iconClassName="fas fa-external-link-alt token-options__icon"
-                data-testid="token-options__etherscan"
-                onClick={() => {
-                  setTokenOptionsOpen(false)
-                  onViewEtherscan()
-                }}
-              >
-                { t('viewOnEtherscan') }
-              </MenuItem>
-              <MenuItem
-                iconClassName="fas fa-trash-alt token-options__icon"
-                data-testid="token-options__hide"
-                onClick={() => {
-                  setTokenOptionsOpen(false)
-                  onRemove()
-                }}
-              >
-                { t('hideTokenSymbol', [tokenSymbol]) }
-              </MenuItem>
-            </Menu>
-          )
-          : null
-      }
+      {tokenOptionsOpen ? (
+        <Menu
+          anchorElement={tokenOptionsButtonElement}
+          onHide={() => setTokenOptionsOpen(false)}
+        >
+          <MenuItem
+            iconClassName="fas fa-external-link-alt token-options__icon"
+            data-testid="token-options__etherscan"
+            onClick={() => {
+              setTokenOptionsOpen(false)
+              onViewEtherscan()
+            }}
+          >
+            {t('viewOnEtherscan')}
+          </MenuItem>
+          <MenuItem
+            iconClassName="fas fa-trash-alt token-options__icon"
+            data-testid="token-options__hide"
+            onClick={() => {
+              setTokenOptionsOpen(false)
+              onRemove()
+            }}
+          >
+            {t('hideTokenSymbol', [tokenSymbol])}
+          </MenuItem>
+        </Menu>
+      ) : null}
     </>
   )
 }

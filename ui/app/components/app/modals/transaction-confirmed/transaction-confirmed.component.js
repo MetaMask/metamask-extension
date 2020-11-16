@@ -22,21 +22,18 @@ export default class TransactionConfirmed extends PureComponent {
     }
   }
 
-  render () {
+  render() {
     const { t } = this.context
 
     return (
-      <Modal
-        onSubmit={this.handleSubmit}
-        submitText={t('ok')}
-      >
+      <Modal onSubmit={this.handleSubmit} submitText={t('ok')}>
         <div className="transaction-confirmed__content">
           <img src="images/check-icon.svg" />
           <div className="transaction-confirmed__title">
-            { `${t('confirmed')}!` }
+            {`${t('confirmed')}!`}
           </div>
           <div className="transaction-confirmed__description">
-            { t('initialTransactionConfirmed') }
+            {t('initialTransactionConfirmed')}
           </div>
         </div>
       </Modal>

@@ -15,36 +15,42 @@ const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
 const DEFAULT_SYMBOL = ''
 const DEFAULT_DECIMALS = '0'
 
-async function getSymbolFromContract (tokenAddress) {
+async function getSymbolFromContract(tokenAddress) {
   const token = util.getContractAtAddress(tokenAddress)
 
   try {
     const result = await token.symbol()
     return result[0]
   } catch (error) {
-    log.warn(`symbol() call for token at address ${tokenAddress} resulted in error:`, error)
+    log.warn(
+      `symbol() call for token at address ${tokenAddress} resulted in error:`,
+      error,
+    )
     return undefined
   }
 }
 
-async function getDecimalsFromContract (tokenAddress) {
+async function getDecimalsFromContract(tokenAddress) {
   const token = util.getContractAtAddress(tokenAddress)
 
   try {
     const result = await token.decimals()
     const decimalsBN = result[0]
-    return decimalsBN && decimalsBN.toString()
+    return decimalsBN?.toString()
   } catch (error) {
-    log.warn(`decimals() call for token at address ${tokenAddress} resulted in error:`, error)
+    log.warn(
+      `decimals() call for token at address ${tokenAddress} resulted in error:`,
+      error,
+    )
     return undefined
   }
 }
 
-function getContractMetadata (tokenAddress) {
+function getContractMetadata(tokenAddress) {
   return tokenAddress && casedContractMap[tokenAddress.toLowerCase()]
 }
 
-async function getSymbol (tokenAddress) {
+async function getSymbol(tokenAddress) {
   let symbol = await getSymbolFromContract(tokenAddress)
 
   if (!symbol) {
@@ -58,7 +64,7 @@ async function getSymbol (tokenAddress) {
   return symbol
 }
 
-async function getDecimals (tokenAddress) {
+async function getDecimals(tokenAddress) {
   let decimals = await getDecimalsFromContract(tokenAddress)
 
   if (!decimals || decimals === '0') {
@@ -72,14 +78,17 @@ async function getDecimals (tokenAddress) {
   return decimals
 }
 
-export async function fetchSymbolAndDecimals (tokenAddress) {
+export async function fetchSymbolAndDecimals(tokenAddress) {
   let symbol, decimals
 
   try {
     symbol = await getSymbol(tokenAddress)
     decimals = await getDecimals(tokenAddress)
   } catch (error) {
-    log.warn(`symbol() and decimal() calls for token at address ${tokenAddress} resulted in error:`, error)
+    log.warn(
+      `symbol() and decimal() calls for token at address ${tokenAddress} resulted in error:`,
+      error,
+    )
   }
 
   return {
@@ -88,8 +97,10 @@ export async function fetchSymbolAndDecimals (tokenAddress) {
   }
 }
 
-export async function getSymbolAndDecimals (tokenAddress, existingTokens = []) {
-  const existingToken = existingTokens.find(({ address }) => tokenAddress === address)
+export async function getSymbolAndDecimals(tokenAddress, existingTokens = []) {
+  const existingToken = existingTokens.find(
+    ({ address }) => tokenAddress === address,
+  )
 
   if (existingToken) {
     return {
@@ -104,7 +115,10 @@ export async function getSymbolAndDecimals (tokenAddress, existingTokens = []) {
     symbol = await getSymbol(tokenAddress)
     decimals = await getDecimals(tokenAddress)
   } catch (error) {
-    log.warn(`symbol() and decimal() calls for token at address ${tokenAddress} resulted in error:`, error)
+    log.warn(
+      `symbol() and decimal() calls for token at address ${tokenAddress} resulted in error:`,
+      error,
+    )
   }
 
   return {
@@ -113,7 +127,7 @@ export async function getSymbolAndDecimals (tokenAddress, existingTokens = []) {
   }
 }
 
-export function tokenInfoGetter () {
+export function tokenInfoGetter() {
   const tokens = {}
 
   return async (address) => {
@@ -127,12 +141,12 @@ export function tokenInfoGetter () {
   }
 }
 
-export function calcTokenAmount (value, decimals) {
+export function calcTokenAmount(value, decimals) {
   const multiplier = Math.pow(10, Number(decimals || 0))
   return new BigNumber(String(value)).div(multiplier)
 }
 
-export function calcTokenValue (value, decimals) {
+export function calcTokenValue(value, decimals) {
   const multiplier = Math.pow(10, Number(decimals || 0))
   return new BigNumber(String(value)).times(multiplier)
 }
@@ -147,7 +161,7 @@ export function calcTokenValue (value, decimals) {
  * @param {Object} tokenData - ethers Interface token data.
  * @returns {string | undefined} A lowercase address string.
  */
-export function getTokenAddressParam (tokenData = {}) {
+export function getTokenAddressParam(tokenData = {}) {
   const value = tokenData?.args?._to || tokenData?.args?.[0]
   return value?.toString().toLowerCase()
 }
@@ -159,11 +173,11 @@ export function getTokenAddressParam (tokenData = {}) {
  * @param {Object} tokenData - ethers Interface token data.
  * @returns {string | undefined} A decimal string value.
  */
-export function getTokenValueParam (tokenData = {}) {
+export function getTokenValueParam(tokenData = {}) {
   return tokenData?.args?._value?.toString()
 }
 
-export function getTokenValue (tokenParams = []) {
+export function getTokenValue(tokenParams = []) {
   const valueData = tokenParams.find((param) => param.name === '_value')
   return valueData && valueData.value
 }
@@ -180,7 +194,7 @@ export function getTokenValue (tokenParams = []) {
  * @param {boolean} [hideCurrencySymbol] - excludes the currency symbol in the result if true
  * @returns {string|undefined} The token amount in the user's chosen fiat currency, optionally formatted and localize
  */
-export function getTokenFiatAmount (
+export function getTokenFiatAmount(
   contractExchangeRate,
   conversionRate,
   currentCurrency,
@@ -192,13 +206,21 @@ export function getTokenFiatAmount (
   // If the conversionRate is 0 (i.e. unknown) or the contract exchange rate
   // is currently unknown, the fiat amount cannot be calculated so it is not
   // shown to the user
-  if (conversionRate <= 0 || !contractExchangeRate || tokenAmount === undefined) {
+  if (
+    conversionRate <= 0 ||
+    !contractExchangeRate ||
+    tokenAmount === undefined
+  ) {
     return undefined
   }
 
   const currentTokenToFiatRate = multiplyCurrencies(
     contractExchangeRate,
     conversionRate,
+    {
+      multiplicandBase: 10,
+      multiplierBase: 10,
+    },
   )
   const currentTokenInFiat = conversionUtil(tokenAmount, {
     fromNumericBase: 'dec',
@@ -211,7 +233,10 @@ export function getTokenFiatAmount (
   if (hideCurrencySymbol) {
     result = formatCurrency(currentTokenInFiat, currentCurrency)
   } else if (formatted) {
-    result = `${formatCurrency(currentTokenInFiat, currentCurrency)} ${currentCurrency.toUpperCase()}`
+    result = `${formatCurrency(
+      currentTokenInFiat,
+      currentCurrency,
+    )} ${currentCurrency.toUpperCase()}`
   } else {
     result = currentTokenInFiat
   }

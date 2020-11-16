@@ -21,14 +21,13 @@ export const ALERT_TYPES = {
 }
 
 const defaultState = {
-  alertEnabledness: Object.keys(ALERT_TYPES)
-    .reduce(
-      (alertEnabledness, alertType) => {
-        alertEnabledness[alertType] = true
-        return alertEnabledness
-      },
-      {},
-    ),
+  alertEnabledness: Object.keys(ALERT_TYPES).reduce(
+    (alertEnabledness, alertType) => {
+      alertEnabledness[alertType] = true
+      return alertEnabledness
+    },
+    {},
+  ),
   unconnectedAccountAlertShownOrigins: {},
 }
 
@@ -37,12 +36,11 @@ const defaultState = {
  * alert related state
  */
 export default class AlertController {
-
   /**
    * @constructor
    * @param {AlertControllerOptions} [opts] - Controller configuration parameters
    */
-  constructor (opts = {}) {
+  constructor(opts = {}) {
     const { initState, preferencesStore } = opts
     const state = {
       ...defaultState,
@@ -56,14 +54,17 @@ export default class AlertController {
 
     preferencesStore.subscribe(({ selectedAddress }) => {
       const currentState = this.store.getState()
-      if (currentState.unconnectedAccountAlertShownOrigins && this.selectedAddress !== selectedAddress) {
+      if (
+        currentState.unconnectedAccountAlertShownOrigins &&
+        this.selectedAddress !== selectedAddress
+      ) {
         this.selectedAddress = selectedAddress
         this.store.updateState({ unconnectedAccountAlertShownOrigins: {} })
       }
     })
   }
 
-  setAlertEnabledness (alertId, enabledness) {
+  setAlertEnabledness(alertId, enabledness) {
     let { alertEnabledness } = this.store.getState()
     alertEnabledness = { ...alertEnabledness }
     alertEnabledness[alertId] = enabledness
@@ -74,9 +75,11 @@ export default class AlertController {
    * Sets the "switch to connected" alert as shown for the given origin
    * @param {string} origin - The origin the alert has been shown for
    */
-  setUnconnectedAccountAlertShown (origin) {
+  setUnconnectedAccountAlertShown(origin) {
     let { unconnectedAccountAlertShownOrigins } = this.store.getState()
-    unconnectedAccountAlertShownOrigins = { ...unconnectedAccountAlertShownOrigins }
+    unconnectedAccountAlertShownOrigins = {
+      ...unconnectedAccountAlertShownOrigins,
+    }
     unconnectedAccountAlertShownOrigins[origin] = true
     this.store.updateState({ unconnectedAccountAlertShownOrigins })
   }

@@ -3,15 +3,20 @@
 // TODO:deprecate:2020
 // Delete this file
 
+import web3Entitites from './web3-entities.json'
 import 'web3/dist/web3.min'
 
-const shouldLogUsage = !([
+const shouldLogUsage = ![
   'docs.metamask.io',
   'metamask.github.io',
   'metamask.io',
-].includes(window.location.hostname))
+].includes(window.location.hostname)
 
-export default function setupWeb3 (log) {
+/**
+ * To understand how we arrived at this implementation, please see:
+ * https://github.com/ethereum/web3.js/blob/0.20.7/DOCUMENTATION.md
+ */
+export default function setupWeb3(log) {
   // export web3 as a global, checking for usage
   let reloadInProgress = false
   let lastTimeUsed
@@ -31,40 +36,135 @@ export default function setupWeb3 (log) {
     value: web3.eth,
   })
 
-  const web3Proxy = new Proxy(web3, {
-    get: (_web3, key) => {
+  // Setup logging of nested property usage
+  if (shouldLogUsage) {
+    // web3 namespaces with common and uncommon dapp actions
+    const includedTopKeys = [
+      'eth',
+      'db',
+      'shh',
+      'net',
+      'personal',
+      'bzz',
+      'version',
+    ]
 
+    // For each top-level property, create appropriate Proxy traps for all of
+    // their properties
+    includedTopKeys.forEach((topKey) => {
+      const applyTrapKeys = new Map()
+      const getTrapKeys = new Map()
+
+      Object.keys(web3[topKey]).forEach((key) => {
+        const path = `web3.${topKey}.${key}`
+
+        if (web3Entitites[path]) {
+          if (web3Entitites[path] === 'function') {
+            applyTrapKeys.set(key, path)
+          } else {
+            getTrapKeys.set(key, path)
+          }
+        }
+      })
+
+      // Create apply traps for function properties
+      for (const [key, path] of applyTrapKeys) {
+        web3[topKey][key] = new Proxy(web3[topKey][key], {
+          apply: (...params) => {
+            window.ethereum.request({
+              method: 'metamask_logInjectedWeb3Usage',
+              params: [
+                {
+                  action: 'apply',
+                  path,
+                },
+              ],
+            })
+
+            // Call function normally
+            return Reflect.apply(...params)
+          },
+        })
+      }
+
+      // Create get trap for non-function properties
+      web3[topKey] = new Proxy(web3[topKey], {
+        get: (web3Prop, key, ...params) => {
+          const name = stringifyKey(key)
+
+          if (getTrapKeys.has(name)) {
+            window.ethereum.request({
+              method: 'metamask_logInjectedWeb3Usage',
+              params: [
+                {
+                  action: 'get',
+                  path: getTrapKeys.get(name),
+                },
+              ],
+            })
+          }
+
+          // return value normally
+          return Reflect.get(web3Prop, key, ...params)
+        },
+      })
+    })
+  }
+
+  const topLevelFunctions = [
+    'isConnected',
+    'setProvider',
+    'reset',
+    'sha3',
+    'toHex',
+    'toAscii',
+    'fromAscii',
+    'toDecimal',
+    'fromDecimal',
+    'fromWei',
+    'toWei',
+    'toBigNumber',
+    'isAddress',
+  ]
+
+  // apply-trap top-level functions
+  topLevelFunctions.forEach((key) => {
+    // This type check is probably redundant, but we've been burned before.
+    if (typeof web3[key] === 'function') {
+      web3[key] = new Proxy(web3[key], {
+        apply: (...params) => {
+          window.ethereum.request({
+            method: 'metamask_logInjectedWeb3Usage',
+            params: [
+              {
+                action: 'apply',
+                path: `web3.${key}`,
+              },
+            ],
+          })
+
+          // Call function normally
+          return Reflect.apply(...params)
+        },
+      })
+    }
+  })
+
+  const web3Proxy = new Proxy(web3, {
+    get: (...params) => {
       // get the time of use
       lastTimeUsed = Date.now()
 
       // show warning once on web3 access
       if (!hasBeenWarned) {
-        console.warn(`MetaMask: We will stop injecting web3 in Q4 2020.\nPlease see this article for more information: https://medium.com/metamask/no-longer-injecting-web3-js-4a899ad6e59e`)
+        console.warn(
+          `MetaMask: We will stop injecting web3 in Q4 2020.\nPlease see this article for more information: https://medium.com/metamask/no-longer-injecting-web3-js-4a899ad6e59e`,
+        )
         hasBeenWarned = true
       }
 
-      if (shouldLogUsage) {
-        const name = stringifyKey(key)
-        window.ethereum.request({
-          method: 'metamask_logInjectedWeb3Usage',
-          params: [{ action: 'get', name }],
-        })
-      }
-
       // return value normally
-      return _web3[key]
-    },
-    set: (_web3, key, value) => {
-      const name = stringifyKey(key)
-      if (shouldLogUsage) {
-        window.ethereum.request({
-          method: 'metamask_logInjectedWeb3Usage',
-          params: [{ action: 'set', name }],
-        })
-      }
-
-      // set value normally
-      _web3[key] = value
+      return Reflect.get(...params)
     },
   })
 
@@ -118,7 +218,7 @@ export default function setupWeb3 (log) {
 }
 
 // reload the page
-function triggerReset () {
+function triggerReset() {
   global.location.reload()
 }
 
@@ -128,8 +228,6 @@ function triggerReset () {
  *
  * @param {any} key - The key to stringify
  */
-function stringifyKey (key) {
-  return typeof key === 'string'
-    ? key
-    : `typeof ${typeof key}`
+function stringifyKey(key) {
+  return typeof key === 'string' ? key : `typeof ${typeof key}`
 }

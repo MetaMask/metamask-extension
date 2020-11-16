@@ -6,7 +6,8 @@
   align-items: center;
 
   &__label {
-    font-size: 0.75rem;
+    @include H7;
+
     font-weight: 500;
     color: $scorpion;
     text-transform: uppercase;
@@ -19,7 +20,8 @@
   }
 
   &__primary {
-    font-size: 1.5rem;
+    @include H3;
+
     justify-content: flex-end;
   }
 
@@ -29,7 +31,8 @@
   }
 
   &__header-text {
-    font-size: 0.75rem;
+    @include H7;
+
     text-transform: uppercase;
     margin-bottom: 6px;
     color: $scorpion;
@@ -40,7 +43,7 @@
     }
 
     &--total {
-      font-size: 0.625rem;
+      @include H8;
     }
   }
 
@@ -50,8 +53,9 @@
 
   .custom-nonce-input {
     input {
+      @include Paragraph;
+
       width: 90px;
-      font-size: 1rem;
     }
   }
 }

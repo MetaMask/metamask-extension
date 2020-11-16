@@ -1,11 +1,14 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import ethUtil from 'ethereumjs-util'
 import UnitInput from '../unit-input'
 import CurrencyDisplay from '../currency-display'
 import { getWeiHexFromDecimalValue } from '../../../helpers/utils/conversions.util'
-import { conversionUtil, multiplyCurrencies } from '../../../helpers/utils/conversion-util'
+import {
+  conversionUtil,
+  multiplyCurrencies,
+} from '../../../helpers/utils/conversion-util'
 import { ETH } from '../../../helpers/constants/common'
+import { addHexPrefix } from '../../../../../app/scripts/lib/util'
 
 /**
  * Component that allows user to enter token values as a number, and props receive a converted
@@ -31,7 +34,7 @@ export default class TokenInput extends PureComponent {
     tokenExchangeRates: PropTypes.object,
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     const { value: hexValue } = props
@@ -43,22 +46,25 @@ export default class TokenInput extends PureComponent {
     }
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     const { value: prevPropsHexValue } = prevProps
     const { value: propsHexValue } = this.props
     const { hexValue: stateHexValue } = this.state
 
-    if (prevPropsHexValue !== propsHexValue && propsHexValue !== stateHexValue) {
+    if (
+      prevPropsHexValue !== propsHexValue &&
+      propsHexValue !== stateHexValue
+    ) {
       const decimalValue = this.getValue(this.props)
       this.setState({ hexValue: propsHexValue, decimalValue })
     }
   }
 
-  getValue (props) {
+  getValue(props) {
     const { value: hexValue, token: { decimals, symbol } = {} } = props
 
     const multiplier = Math.pow(10, Number(decimals || 0))
-    const decimalValueString = conversionUtil(ethUtil.addHexPrefix(hexValue), {
+    const decimalValueString = conversionUtil(addHexPrefix(hexValue), {
       fromNumericBase: 'hex',
       toNumericBase: 'dec',
       toCurrency: symbol,
@@ -73,14 +79,24 @@ export default class TokenInput extends PureComponent {
     const { token: { decimals } = {}, onChange } = this.props
 
     const multiplier = Math.pow(10, Number(decimals || 0))
-    const hexValue = multiplyCurrencies(decimalValue || 0, multiplier, { toNumericBase: 'hex' })
+    const hexValue = multiplyCurrencies(decimalValue || 0, multiplier, {
+      multiplicandBase: 10,
+      multiplierBase: 10,
+      toNumericBase: 'hex',
+    })
 
     this.setState({ hexValue, decimalValue })
     onChange(hexValue)
   }
 
-  renderConversionComponent () {
-    const { tokenExchangeRates, showFiat, currentCurrency, hideConversion, token } = this.props
+  renderConversionComponent() {
+    const {
+      tokenExchangeRates,
+      showFiat,
+      currentCurrency,
+      hideConversion,
+      token,
+    } = this.props
     const { decimalValue } = this.state
 
     const tokenExchangeRate = tokenExchangeRates?.[token.address] || 0
@@ -89,7 +105,7 @@ export default class TokenInput extends PureComponent {
     if (hideConversion) {
       return (
         <div className="currency-input__conversion-component">
-          { this.context.t('noConversionRateAvailable') }
+          {this.context.t('noConversionRateAvailable')}
         </div>
       )
     }
@@ -104,29 +120,28 @@ export default class TokenInput extends PureComponent {
       numberOfDecimals = 6
     }
 
-    const decimalEthValue = (decimalValue * tokenExchangeRate) || 0
+    const decimalEthValue = decimalValue * tokenExchangeRate || 0
     const hexWeiValue = getWeiHexFromDecimalValue({
       value: decimalEthValue,
       fromCurrency: ETH,
       fromDenomination: ETH,
     })
 
-    return tokenExchangeRate
-      ? (
-        <CurrencyDisplay
-          className="currency-input__conversion-component"
-          currency={currency}
-          value={hexWeiValue}
-          numberOfDecimals={numberOfDecimals}
-        />
-      ) : (
-        <div className="currency-input__conversion-component">
-          { this.context.t('noConversionRateAvailable') }
-        </div>
-      )
+    return tokenExchangeRate ? (
+      <CurrencyDisplay
+        className="currency-input__conversion-component"
+        currency={currency}
+        value={hexWeiValue}
+        numberOfDecimals={numberOfDecimals}
+      />
+    ) : (
+      <div className="currency-input__conversion-component">
+        {this.context.t('noConversionRateAvailable')}
+      </div>
+    )
   }
 
-  render () {
+  render() {
     const { token, ...restProps } = this.props
     const { decimalValue } = this.state
 
@@ -137,7 +152,7 @@ export default class TokenInput extends PureComponent {
         onChange={this.handleChange}
         value={decimalValue}
       >
-        { this.renderConversionComponent() }
+        {this.renderConversionComponent()}
       </UnitInput>
     )
   }

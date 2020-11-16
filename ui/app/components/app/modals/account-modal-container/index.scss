@@ -22,13 +22,14 @@
   }
 
   &__back-text {
-    font-size: 14px;
-    line-height: 18px;
+    @include H6;
+
     padding-left: 3px;
   }
 
   &__close {
-    font-size: 40px;
+    @include H1;
+
     background-color: transparent;
     color: $dusty-gray;
     position: absolute;

@@ -60,9 +60,7 @@ const requestAccountTabIds = {}
 
 // state persistence
 const inTest = process.env.IN_TEST === 'true'
-const localStore = inTest
-  ? new ReadOnlyNetworkStore()
-  : new LocalStore()
+const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore()
 let versionedData
 
 if (inTest || process.env.METAMASK_DEBUG) {
@@ -141,9 +139,9 @@ initialize().catch(log.error)
 
 /**
  * Initializes the MetaMask controller, and sets up all platform configuration.
- * @returns {Promise} - Setup complete.
+ * @returns {Promise} Setup complete.
  */
-async function initialize () {
+async function initialize() {
   const initState = await loadStateFromPersistence()
   const initLangCode = await getFirstPreferredLangCode()
   await setupController(initState, initLangCode)
@@ -157,17 +155,17 @@ async function initialize () {
 /**
  * Loads any stored data, prioritizing the latest storage strategy.
  * Migrates that data schema in case it was last loaded on an older version.
- * @returns {Promise<MetaMaskState>} - Last data emitted from previous instance of MetaMask.
+ * @returns {Promise<MetaMaskState>} Last data emitted from previous instance of MetaMask.
  */
-async function loadStateFromPersistence () {
+async function loadStateFromPersistence() {
   // migrations
   const migrator = new Migrator({ migrations })
   migrator.on('error', console.warn)
 
   // read from disk
   // first from preferred, async API:
-  versionedData = (await localStore.get()) ||
-                  migrator.generateInitialState(firstTimeState)
+  versionedData =
+    (await localStore.get()) || migrator.generateInitialState(firstTimeState)
 
   // check if somehow state is empty
   // this should never happen but new error reporting suggests that it has
@@ -217,9 +215,9 @@ async function loadStateFromPersistence () {
  *
  * @param {Object} initState - The initial state to start the controller with, matches the state that is emitted from the controller.
  * @param {string} initLangCode - The region code for the language preferred by the current user.
- * @returns {Promise} - After setup is complete.
+ * @returns {Promise} After setup is complete.
  */
-function setupController (initState, initLangCode) {
+function setupController(initState, initLangCode) {
   //
   // MetaMask Controller
   //
@@ -249,7 +247,9 @@ function setupController (initState, initLangCode) {
 
   setupEnsIpfsResolver({
     getCurrentNetwork: controller.getCurrentNetwork,
-    getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(controller.preferencesController),
+    getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(
+      controller.preferencesController,
+    ),
     provider: controller.provider,
   })
 
@@ -267,14 +267,14 @@ function setupController (initState, initLangCode) {
   /**
    * Assigns the given state to the versioned object (with metadata), and returns that.
    * @param {Object} state - The state object as emitted by the MetaMaskController.
-   * @returns {VersionedData} - The state object wrapped in an object that includes a metadata key.
+   * @returns {VersionedData} The state object wrapped in an object that includes a metadata key.
    */
-  function versionifyData (state) {
+  function versionifyData(state) {
     versionedData.data = state
     return versionedData
   }
 
-  async function persistData (state) {
+  async function persistData(state) {
     if (!state) {
       throw new Error('MetaMask - updated state is missing')
     }
@@ -303,12 +303,14 @@ function setupController (initState, initLangCode) {
     [ENVIRONMENT_TYPE_FULLSCREEN]: true,
   }
 
-  const metamaskBlockedPorts = [
-    'trezor-connect',
-  ]
+  const metamaskBlockedPorts = ['trezor-connect']
 
   const isClientOpenStatus = () => {
-    return popupIsOpen || Boolean(Object.keys(openMetamaskTabsIDs).length) || notificationIsOpen
+    return (
+      popupIsOpen ||
+      Boolean(Object.keys(openMetamaskTabsIDs).length) ||
+      notificationIsOpen
+    )
   }
 
   /**
@@ -323,7 +325,7 @@ function setupController (initState, initLangCode) {
    * This method identifies trusted (MetaMask) interfaces, and connects them differently from untrusted (web pages).
    * @param {Port} remotePort - The port provided by a new context.
    */
-  function connectRemote (remotePort) {
+  function connectRemote(remotePort) {
     const processName = remotePort.name
     const isMetaMaskInternalProcess = metamaskInternalProcessHash[processName]
 
@@ -381,7 +383,7 @@ function setupController (initState, initLangCode) {
   }
 
   // communication with page or other extension
-  function connectExternal (remotePort) {
+  function connectExternal(remotePort) {
     const portStream = new PortStream(remotePort)
     controller.setupUntrustedCommunication(portStream, remotePort.sender)
   }
@@ -404,18 +406,30 @@ function setupController (initState, initLangCode) {
    * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
    * The number reflects the current number of pending transactions or message signatures needing user approval.
    */
-  function updateBadge () {
+  function updateBadge() {
     let label = ''
     const unapprovedTxCount = controller.txController.getUnapprovedTxCount()
     const { unapprovedMsgCount } = controller.messageManager
     const { unapprovedPersonalMsgCount } = controller.personalMessageManager
     const { unapprovedDecryptMsgCount } = controller.decryptMessageManager
-    const { unapprovedEncryptionPublicKeyMsgCount } = controller.encryptionPublicKeyManager
+    const {
+      unapprovedEncryptionPublicKeyMsgCount,
+    } = controller.encryptionPublicKeyManager
     const { unapprovedTypedMessagesCount } = controller.typedMessageManager
-    const pendingPermissionRequests = Object.keys(controller.permissionsController.permissions.state.permissionsRequests).length
-    const waitingForUnlockCount = controller.appStateController.waitingForUnlock.length
-    const count = unapprovedTxCount + unapprovedMsgCount + unapprovedPersonalMsgCount + unapprovedDecryptMsgCount + unapprovedEncryptionPublicKeyMsgCount +
-                 unapprovedTypedMessagesCount + pendingPermissionRequests + waitingForUnlockCount
+    const pendingPermissionRequests = Object.keys(
+      controller.permissionsController.permissions.state.permissionsRequests,
+    ).length
+    const waitingForUnlockCount =
+      controller.appStateController.waitingForUnlock.length
+    const count =
+      unapprovedTxCount +
+      unapprovedMsgCount +
+      unapprovedPersonalMsgCount +
+      unapprovedDecryptMsgCount +
+      unapprovedEncryptionPublicKeyMsgCount +
+      unapprovedTypedMessagesCount +
+      pendingPermissionRequests +
+      waitingForUnlockCount
     if (count) {
       label = String(count)
     }
@@ -433,10 +447,18 @@ function setupController (initState, initLangCode) {
 /**
  * Opens the browser popup for user confirmation
  */
-async function triggerUi () {
+async function triggerUi() {
   const tabs = await platform.getActiveTabs()
-  const currentlyActiveMetamaskTab = Boolean(tabs.find((tab) => openMetamaskTabsIDs[tab.id]))
-  if (!popupIsOpen && !currentlyActiveMetamaskTab) {
+  const currentlyActiveMetamaskTab = Boolean(
+    tabs.find((tab) => openMetamaskTabsIDs[tab.id]),
+  )
+  // Vivaldi is not closing port connection on popup close, so popupIsOpen does not work correctly
+  // To be reviewed in the future if this behaviour is fixed - also the way we determine isVivaldi variable might change at some point
+  const isVivaldi =
+    tabs.length > 0 &&
+    tabs[0].extData &&
+    tabs[0].extData.indexOf('vivaldi_tab') > -1
+  if ((isVivaldi || !popupIsOpen) && !currentlyActiveMetamaskTab) {
     await notificationManager.showPopup()
   }
 }
@@ -445,23 +467,24 @@ async function triggerUi () {
  * Opens the browser popup for user confirmation of watchAsset
  * then it waits until user interact with the UI
  */
-async function openPopup () {
+async function openPopup() {
   await triggerUi()
-  await new Promise(
-    (resolve) => {
-      const interval = setInterval(() => {
-        if (!notificationIsOpen) {
-          clearInterval(interval)
-          resolve()
-        }
-      }, 1000)
-    },
-  )
+  await new Promise((resolve) => {
+    const interval = setInterval(() => {
+      if (!notificationIsOpen) {
+        clearInterval(interval)
+        resolve()
+      }
+    }, 1000)
+  })
 }
 
 // On first install, open a new tab with MetaMask
 extension.runtime.onInstalled.addListener(({ reason }) => {
-  if (reason === 'install' && !(process.env.METAMASK_DEBUG || process.env.IN_TEST)) {
+  if (
+    reason === 'install' &&
+    !(process.env.METAMASK_DEBUG || process.env.IN_TEST)
+  ) {
     platform.openExtensionInBrowser()
   }
 })

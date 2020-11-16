@@ -1,8 +1,7 @@
 import { strict as assert } from 'assert'
 import pify from 'pify'
 
-import getRestrictedMethods
-  from '../../../../../app/scripts/controllers/permissions/restrictedMethods'
+import getRestrictedMethods from '../../../../../app/scripts/controllers/permissions/restrictedMethods'
 
 describe('restricted methods', function () {
   describe('eth_accounts', function () {
@@ -23,7 +22,8 @@ describe('restricted methods', function () {
       )
 
       assert.deepEqual(
-        res, { error: fooError },
+        res,
+        { error: fooError },
         'response should have expected error and no result',
       )
     })
@@ -40,7 +40,11 @@ describe('restricted methods', function () {
       const res = {}
       await assert.rejects(ethAccountsMethod(null, res, null))
       assert.ok(res.error instanceof Error, 'result should have error')
-      assert.deepEqual(Object.keys(res), ['error'], 'result should only contain error')
+      assert.deepEqual(
+        Object.keys(res),
+        ['error'],
+        'result should only contain error',
+      )
     })
 
     it('should handle missing identity for second account when sorting', async function () {
@@ -55,20 +59,21 @@ describe('restricted methods', function () {
       const res = {}
       await assert.rejects(ethAccountsMethod(null, res, null))
       assert.ok(res.error instanceof Error, 'result should have error')
-      assert.deepEqual(Object.keys(res), ['error'], 'result should only contain error')
+      assert.deepEqual(
+        Object.keys(res),
+        ['error'],
+        'result should only contain error',
+      )
     })
 
     it('should return accounts in keyring order when none are selected', async function () {
       const keyringAccounts = ['0x7e57e2', '0x7e57e3', '0x7e57e4', '0x7e57e5']
       const restrictedMethods = getRestrictedMethods({
         getIdentities: () => {
-          return keyringAccounts.reduce(
-            (identities, address) => {
-              identities[address] = {}
-              return identities
-            },
-            {},
-          )
+          return keyringAccounts.reduce((identities, address) => {
+            identities[address] = {}
+            return identities
+          }, {})
         },
         getKeyringAccounts: async () => [...keyringAccounts],
       })
@@ -76,20 +81,21 @@ describe('restricted methods', function () {
 
       const res = {}
       await ethAccountsMethod(null, res, null)
-      assert.deepEqual(res, { result: keyringAccounts }, 'should return accounts in correct order')
+      assert.deepEqual(
+        res,
+        { result: keyringAccounts },
+        'should return accounts in correct order',
+      )
     })
 
     it('should return accounts in keyring order when all have same last selected time', async function () {
       const keyringAccounts = ['0x7e57e2', '0x7e57e3', '0x7e57e4', '0x7e57e5']
       const restrictedMethods = getRestrictedMethods({
         getIdentities: () => {
-          return keyringAccounts.reduce(
-            (identities, address) => {
-              identities[address] = { lastSelected: 1000 }
-              return identities
-            },
-            {},
-          )
+          return keyringAccounts.reduce((identities, address) => {
+            identities[address] = { lastSelected: 1000 }
+            return identities
+          }, {})
         },
         getKeyringAccounts: async () => [...keyringAccounts],
       })
@@ -97,7 +103,11 @@ describe('restricted methods', function () {
 
       const res = {}
       await ethAccountsMethod(null, res, null)
-      assert.deepEqual(res, { result: keyringAccounts }, 'should return accounts in correct order')
+      assert.deepEqual(
+        res,
+        { result: keyringAccounts },
+        'should return accounts in correct order',
+      )
     })
 
     it('should return accounts sorted by last selected (descending)', async function () {
@@ -105,13 +115,10 @@ describe('restricted methods', function () {
       const expectedResult = keyringAccounts.slice().reverse()
       const restrictedMethods = getRestrictedMethods({
         getIdentities: () => {
-          return keyringAccounts.reduce(
-            (identities, address, index) => {
-              identities[address] = { lastSelected: index * 1000 }
-              return identities
-            },
-            {},
-          )
+          return keyringAccounts.reduce((identities, address, index) => {
+            identities[address] = { lastSelected: index * 1000 }
+            return identities
+          }, {})
         },
         getKeyringAccounts: async () => [...keyringAccounts],
       })
@@ -119,12 +126,28 @@ describe('restricted methods', function () {
 
       const res = {}
       await ethAccountsMethod(null, res, null)
-      assert.deepEqual(res, { result: expectedResult }, 'should return accounts in correct order')
+      assert.deepEqual(
+        res,
+        { result: expectedResult },
+        'should return accounts in correct order',
+      )
     })
 
     it('should return accounts sorted by last selected (descending) with unselected accounts last, in keyring order', async function () {
-      const keyringAccounts = ['0x7e57e2', '0x7e57e3', '0x7e57e4', '0x7e57e5', '0x7e57e6']
-      const expectedResult = ['0x7e57e4', '0x7e57e2', '0x7e57e3', '0x7e57e5', '0x7e57e6']
+      const keyringAccounts = [
+        '0x7e57e2',
+        '0x7e57e3',
+        '0x7e57e4',
+        '0x7e57e5',
+        '0x7e57e6',
+      ]
+      const expectedResult = [
+        '0x7e57e4',
+        '0x7e57e2',
+        '0x7e57e3',
+        '0x7e57e5',
+        '0x7e57e6',
+      ]
       const restrictedMethods = getRestrictedMethods({
         getIdentities: () => {
           return {
@@ -141,7 +164,11 @@ describe('restricted methods', function () {
 
       const res = {}
       await ethAccountsMethod(null, res, null)
-      assert.deepEqual(res, { result: expectedResult }, 'should return accounts in correct order')
+      assert.deepEqual(
+        res,
+        { result: expectedResult },
+        'should return accounts in correct order',
+      )
     })
   })
 })

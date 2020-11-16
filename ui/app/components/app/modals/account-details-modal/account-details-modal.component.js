@@ -20,7 +20,7 @@ export default class AccountDetailsModal extends Component {
     t: PropTypes.func,
   }
 
-  render () {
+  render() {
     const {
       selectedIdentity,
       network,
@@ -37,7 +37,7 @@ export default class AccountDetailsModal extends Component {
 
     let exportPrivateKeyFeatureEnabled = true
     // This feature is disabled for hardware wallets
-    if (keyring && keyring.type.search('Hardware') !== -1) {
+    if (keyring?.type?.search('Hardware') !== -1) {
       exportPrivateKeyFeatureEnabled = false
     }
 
@@ -61,27 +61,27 @@ export default class AccountDetailsModal extends Component {
           type="secondary"
           className="account-details-modal__button"
           onClick={() => {
-            global.platform.openTab({ url: getAccountLink(address, network, rpcPrefs) })
+            global.platform.openTab({
+              url: getAccountLink(address, network, rpcPrefs),
+            })
           }}
         >
           {rpcPrefs.blockExplorerUrl
-            ? this.context.t('blockExplorerView', [rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/u)[1]])
-            : this.context.t('viewOnEtherscan')
-          }
+            ? this.context.t('blockExplorerView', [
+                rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/u)[1],
+              ])
+            : this.context.t('viewOnEtherscan')}
         </Button>
 
-        {exportPrivateKeyFeatureEnabled
-          ? (
-            <Button
-              type="secondary"
-              className="account-details-modal__button"
-              onClick={() => showExportPrivateKeyModal()}
-            >
-              {this.context.t('exportPrivateKey')}
-            </Button>
-          )
-          : null
-        }
+        {exportPrivateKeyFeatureEnabled ? (
+          <Button
+            type="secondary"
+            className="account-details-modal__button"
+            onClick={() => showExportPrivateKeyModal()}
+          >
+            {this.context.t('exportPrivateKey')}
+          </Button>
+        ) : null}
       </AccountModalContainer>
     )
   }

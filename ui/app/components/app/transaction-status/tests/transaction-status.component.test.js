@@ -13,10 +13,7 @@ describe('TransactionStatus Component', function () {
 
   it('should render CONFIRMED properly', function () {
     const wrapper = mount(
-      <TransactionStatus
-        status="confirmed"
-        date="June 1"
-      />,
+      <TransactionStatus status="confirmed" date="June 1" />,
     )
 
     assert.ok(wrapper)
@@ -39,11 +36,7 @@ describe('TransactionStatus Component', function () {
 
   it('should render PENDING properly', function () {
     const wrapper = mount(
-      <TransactionStatus
-        date="June 1"
-        status="submitted"
-        isEarliestNonce
-      />,
+      <TransactionStatus date="June 1" status="submitted" isEarliestNonce />,
     )
 
     assert.ok(wrapper)
@@ -51,26 +44,24 @@ describe('TransactionStatus Component', function () {
   })
 
   it('should render QUEUED properly', function () {
-    const wrapper = mount(
-      <TransactionStatus
-        status="queued"
-      />,
-    )
+    const wrapper = mount(<TransactionStatus status="queued" />)
 
     assert.ok(wrapper)
-    assert.ok(wrapper.find('.transaction-status--queued').length, 'queued className not found')
+    assert.ok(
+      wrapper.find('.transaction-status--queued').length,
+      'queued className not found',
+    )
     assert.equal(wrapper.text(), 'QUEUED')
   })
 
   it('should render UNAPPROVED properly', function () {
-    const wrapper = mount(
-      <TransactionStatus
-        status="unapproved"
-      />,
-    )
+    const wrapper = mount(<TransactionStatus status="unapproved" />)
 
     assert.ok(wrapper)
-    assert.ok(wrapper.find('.transaction-status--unapproved').length, 'unapproved className not found')
+    assert.ok(
+      wrapper.find('.transaction-status--unapproved').length,
+      'unapproved className not found',
+    )
     assert.equal(wrapper.text(), 'UNAPPROVED')
   })
 

@@ -2,18 +2,17 @@ import { strict as assert } from 'assert'
 import migration43 from '../../../app/scripts/migrations/043'
 
 describe('migration #43', function () {
-
   it('should update the version metadata', async function () {
     const oldStorage = {
-      'meta': {
-        'version': 42,
+      meta: {
+        version: 42,
       },
-      'data': {},
+      data: {},
     }
 
     const newStorage = await migration43.migrate(oldStorage)
     assert.deepEqual(newStorage.meta, {
-      'version': 43,
+      version: 43,
     })
   })
 

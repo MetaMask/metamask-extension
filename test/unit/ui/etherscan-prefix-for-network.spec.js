@@ -2,7 +2,6 @@ import assert from 'assert'
 import { getEtherscanNetworkPrefix } from '../../../ui/lib/etherscan-prefix-for-network'
 
 describe('Etherscan Network Prefix', function () {
-
   it('returns empty string as default value', function () {
     assert.equal(getEtherscanNetworkPrefix(), '')
   })
@@ -26,5 +25,4 @@ describe('Etherscan Network Prefix', function () {
   it('returs goerli as prefix for networkId of 5', function () {
     assert.equal(getEtherscanNetworkPrefix('5'), 'goerli.')
   })
-
 })

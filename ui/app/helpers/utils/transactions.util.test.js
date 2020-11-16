@@ -1,13 +1,20 @@
 import assert from 'assert'
+import {
+  TRANSACTION_CATEGORIES,
+  TRANSACTION_GROUP_STATUSES,
+  TRANSACTION_STATUSES,
+} from '../../../../shared/constants/transaction'
 import * as utils from './transactions.util'
 
 describe('Transactions utils', function () {
   describe('getTokenData', function () {
     it('should return token data', function () {
-      const tokenData = utils.getTokenData('0xa9059cbb00000000000000000000000050a9d56c2b8ba9a5c7f2c08c3d26e0499f23a7060000000000000000000000000000000000000000000000000000000000004e20')
+      const tokenData = utils.getTokenData(
+        '0xa9059cbb00000000000000000000000050a9d56c2b8ba9a5c7f2c08c3d26e0499f23a7060000000000000000000000000000000000000000000000000000000000004e20',
+      )
       assert.ok(tokenData)
       const { name, args } = tokenData
-      assert.equal(name, 'transfer')
+      assert.equal(name, TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER)
       const to = args._to
       const value = args._value.toString()
       assert.equal(to, '0x50A9D56C2B8BA9A5c7f2C08C3d26E0499F23a706')
@@ -24,27 +31,27 @@ describe('Transactions utils', function () {
       const tests = [
         {
           transaction: {
-            status: 'confirmed',
+            status: TRANSACTION_STATUSES.CONFIRMED,
             txReceipt: {
               status: '0x0',
             },
           },
-          expected: 'failed',
+          expected: TRANSACTION_STATUSES.FAILED,
         },
         {
           transaction: {
-            status: 'confirmed',
+            status: TRANSACTION_STATUSES.CONFIRMED,
             txReceipt: {
               status: '0x1',
             },
           },
-          expected: 'confirmed',
+          expected: TRANSACTION_STATUSES.CONFIRMED,
         },
         {
           transaction: {
-            status: 'pending',
+            status: TRANSACTION_GROUP_STATUSES.PENDING,
           },
-          expected: 'pending',
+          expected: TRANSACTION_GROUP_STATUSES.PENDING,
         },
       ]
 
@@ -89,7 +96,10 @@ describe('Transactions utils', function () {
       ]
 
       tests.forEach(({ expected, networkId, hash, rpcPrefs }) => {
-        assert.equal(utils.getBlockExplorerUrlForTx(networkId, hash, rpcPrefs), expected)
+        assert.equal(
+          utils.getBlockExplorerUrlForTx(networkId, hash, rpcPrefs),
+          expected,
+        )
       })
     })
   })

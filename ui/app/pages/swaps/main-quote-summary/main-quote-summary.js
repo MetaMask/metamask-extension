@@ -11,7 +11,7 @@ import ExchangeRateDisplay from '../exchange-rate-display'
 import { formatSwapsValueForDisplay } from '../swaps.util'
 import QuoteBackdrop from './quote-backdrop'
 
-function getFontSizes (fontSizeScore) {
+function getFontSizes(fontSizeScore) {
   if (fontSizeScore <= 11) {
     return [40, 32]
   }
@@ -21,7 +21,7 @@ function getFontSizes (fontSizeScore) {
   return [24, 14]
 }
 
-function getLineHeight (fontSizeScore) {
+function getLineHeight(fontSizeScore) {
   if (fontSizeScore <= 11) {
     return 32
   }
@@ -40,13 +40,13 @@ function getLineHeight (fontSizeScore) {
 // length of ~22. As the symbol will always have a smaller font size than the amount, the
 // additive value of the symbol length to the font size score is corrected based on the total
 // number of alphanumeric characters in both strings and the desired rendered length of 22.
-function getFontSizeScore (amount, symbol) {
+function getFontSizeScore(amount, symbol) {
   const amountLength = amount.match(/\d+/gu).join('').length
   const symbolModifier = Math.min((amountLength + symbol.length) / 22, 1)
-  return amountLength + (symbol.length * symbolModifier)
+  return amountLength + symbol.length * symbolModifier
 }
 
-export default function MainQuoteSummary ({
+export default function MainQuoteSummary({
   isBestQuote,
   sourceValue,
   sourceSymbol,
@@ -55,11 +55,16 @@ export default function MainQuoteSummary ({
   destinationSymbol,
   destinationDecimals,
 }) {
-
   const t = useContext(I18nContext)
 
-  const sourceAmount = toPrecisionWithoutTrailingZeros(calcTokenAmount(sourceValue, sourceDecimals).toString(10), 12)
-  const destinationAmount = calcTokenAmount(destinationValue, destinationDecimals)
+  const sourceAmount = toPrecisionWithoutTrailingZeros(
+    calcTokenAmount(sourceValue, sourceDecimals).toString(10),
+    12,
+  )
+  const destinationAmount = calcTokenAmount(
+    destinationValue,
+    destinationDecimals,
+  )
 
   const amountToDisplay = formatSwapsValueForDisplay(destinationAmount)
   const fontSizeScore = getFontSizeScore(amountToDisplay, destinationSymbol)
@@ -68,7 +73,10 @@ export default function MainQuoteSummary ({
 
   let ellipsedAmountToDisplay = amountToDisplay
   if (fontSizeScore > 20) {
-    ellipsedAmountToDisplay = `${amountToDisplay.slice(0, amountToDisplay.length - (fontSizeScore - 20))}...`
+    ellipsedAmountToDisplay = `${amountToDisplay.slice(
+      0,
+      amountToDisplay.length - (fontSizeScore - 20),
+    )}...`
   }
 
   return (
@@ -87,7 +95,14 @@ export default function MainQuoteSummary ({
       <div className="main-quote-summary__details">
         <div className="main-quote-summary__quote-details-top">
           <span className="main-quote-summary__quote-small-white">
-            {t('swapsConvertToAbout', [<span className="main-quote-summary__bold" key="main-quote-summary-bold-1">{`${sourceAmount} ${sourceSymbol}`}</span>])}
+            {t('swapsConvertToAbout', [
+              <span
+                className="main-quote-summary__bold"
+                key="main-quote-summary-bold-1"
+              >
+                {`${sourceAmount} ${sourceSymbol}`}
+              </span>,
+            ])}
           </span>
           <div className="main-quote-summary__quote-large">
             <Tooltip
@@ -97,9 +112,25 @@ export default function MainQuoteSummary ({
               disabled={ellipsedAmountToDisplay === amountToDisplay}
               theme="white"
             >
-              <span className="main-quote-summary__quote-large-number" style={{ fontSize: numberFontSize, lineHeight: `${lineHeight}px` }}>{`${ellipsedAmountToDisplay}`}</span>
+              <span
+                className="main-quote-summary__quote-large-number"
+                style={{
+                  fontSize: numberFontSize,
+                  lineHeight: `${lineHeight}px`,
+                }}
+              >
+                {`${ellipsedAmountToDisplay}`}
+              </span>
             </Tooltip>
-            <span className="main-quote-summary__quote-large-symbol" style={{ fontSize: symbolFontSize, lineHeight: `${lineHeight}px` }}>{`${destinationSymbol}`}</span>
+            <span
+              className="main-quote-summary__quote-large-symbol"
+              style={{
+                fontSize: symbolFontSize,
+                lineHeight: `${lineHeight}px`,
+              }}
+            >
+              {`${destinationSymbol}`}
+            </span>
           </div>
         </div>
         <div className="main-quote-summary__exchange-rate-container">
@@ -131,6 +162,9 @@ MainQuoteSummary.propTypes = {
     PropTypes.string,
     PropTypes.instanceOf(BigNumber),
   ]).isRequired,
-  destinationDecimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  destinationDecimals: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
   destinationSymbol: PropTypes.string.isRequired,
 }

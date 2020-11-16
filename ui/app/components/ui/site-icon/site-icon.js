@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import IconBorder from '../icon-border'
 import IconWithFallback from '../icon-with-fallback'
 
-export default function SiteIcon ({ icon, name, size }) {
+export default function SiteIcon({ icon, name, size }) {
   const iconSize = Math.floor(size * 0.75)
   return (
     <IconBorder size={size}>

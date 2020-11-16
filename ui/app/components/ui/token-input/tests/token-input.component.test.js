@@ -43,8 +43,14 @@ describe('TokenInput Component', function () {
       assert.ok(wrapper)
       assert.equal(wrapper.find('.unit-input__suffix').length, 1)
       assert.equal(wrapper.find('.unit-input__suffix').text(), 'ABC')
-      assert.equal(wrapper.find('.currency-input__conversion-component').length, 1)
-      assert.equal(wrapper.find('.currency-input__conversion-component').text(), 'translate noConversionRateAvailable')
+      assert.equal(
+        wrapper.find('.currency-input__conversion-component').length,
+        1,
+      )
+      assert.equal(
+        wrapper.find('.currency-input__conversion-component').text(),
+        'translate noConversionRateAvailable',
+      )
     })
 
     it('should render properly with tokenExchangeRates', function () {
@@ -145,7 +151,10 @@ describe('TokenInput Component', function () {
       assert.equal(wrapper.find('.unit-input__suffix').length, 1)
       assert.equal(wrapper.find('.unit-input__suffix').text(), 'ABC')
       assert.equal(wrapper.find('.unit-input__input').props().value, '1')
-      assert.equal(wrapper.find('.currency-display-component').text(), '$462.12USD')
+      assert.equal(
+        wrapper.find('.currency-display-component').text(),
+        '$462.12USD',
+      )
     })
 
     it('should render properly with a token value for fiat, but hideConversion is true', function () {
@@ -186,7 +195,10 @@ describe('TokenInput Component', function () {
       assert.equal(wrapper.find('.unit-input__suffix').length, 1)
       assert.equal(wrapper.find('.unit-input__suffix').text(), 'ABC')
       assert.equal(wrapper.find('.unit-input__input').props().value, '1')
-      assert.equal(wrapper.find('.currency-input__conversion-component').text(), 'translate noConversionRateAvailable')
+      assert.equal(
+        wrapper.find('.currency-input__conversion-component').text(),
+        'translate noConversionRateAvailable',
+      )
     })
   })
 
@@ -270,14 +282,20 @@ describe('TokenInput Component', function () {
       const tokenInputInstance = wrapper.find(TokenInput).at(0).instance()
       assert.equal(tokenInputInstance.state.decimalValue, 0)
       assert.equal(tokenInputInstance.state.hexValue, undefined)
-      assert.equal(wrapper.find('.currency-display-component').text(), '$0.00USD')
+      assert.equal(
+        wrapper.find('.currency-display-component').text(),
+        '$0.00USD',
+      )
       const input = wrapper.find('input')
       assert.equal(input.props().value, 0)
 
       input.simulate('change', { target: { value: 1 } })
       assert.equal(handleChangeSpy.callCount, 1)
       assert.ok(handleChangeSpy.calledWith('2710'))
-      assert.equal(wrapper.find('.currency-display-component').text(), '$462.12USD')
+      assert.equal(
+        wrapper.find('.currency-display-component').text(),
+        '$462.12USD',
+      )
       assert.equal(tokenInputInstance.state.decimalValue, 1)
       assert.equal(tokenInputInstance.state.hexValue, '2710')
     })

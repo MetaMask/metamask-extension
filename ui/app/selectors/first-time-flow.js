@@ -4,7 +4,7 @@ import {
   DEFAULT_ROUTE,
 } from '../helpers/constants/routes'
 
-export function getFirstTimeFlowTypeRoute (state) {
+export function getFirstTimeFlowTypeRoute(state) {
   const { firstTimeFlowType } = state.metamask
 
   let nextRoute

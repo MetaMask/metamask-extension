@@ -7,7 +7,7 @@ const version = 45
  */
 export default {
   version,
-  async migrate (originalVersionedData) {
+  async migrate(originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     const state = versionedData.data
@@ -16,12 +16,9 @@ export default {
   },
 }
 
-const outdatedGateways = [
-  'ipfs.io',
-  'ipfs.dweb.link',
-]
+const outdatedGateways = ['ipfs.io', 'ipfs.dweb.link']
 
-function transformState (state) {
+function transformState(state) {
   if (outdatedGateways.includes(state?.PreferencesController?.ipfsGateway)) {
     state.PreferencesController.ipfsGateway = 'dweb.link'
   }

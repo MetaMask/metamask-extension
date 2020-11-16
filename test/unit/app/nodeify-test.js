@@ -4,7 +4,7 @@ import nodeify from '../../../app/scripts/lib/nodeify'
 describe('nodeify', function () {
   const obj = {
     foo: 'bar',
-    promiseFunc (a) {
+    promiseFunc(a) {
       const solution = this.foo + a
       return Promise.resolve(solution)
     },
@@ -29,7 +29,11 @@ describe('nodeify', function () {
       nodified('baz')
       done()
     } catch (err) {
-      done(new Error('should not have thrown if the last argument is not a function'))
+      done(
+        new Error(
+          'should not have thrown if the last argument is not a function',
+        ),
+      )
     }
   })
 

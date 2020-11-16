@@ -164,9 +164,6 @@
   "cancel": {
     "message": "ሰርዝ"
   },
-  "cancelAttempt": {
-    "message": "ሙከራን ሰርዝ"
-  },
   "cancellationGasFee": {
     "message": "የስረዛ ነዳጅ ወጪ"
   },
@@ -307,9 +304,6 @@
   },
   "deleteNetworkDescription": {
     "message": "ይህን አውታረ መረብ ለመሰረዝ እንደሚፈልጉ እርግጠኛ ነዎት?"
-  },
-  "deposit": {
-    "message": "ማጠራቀም"
   },
   "depositEther": {
     "message": "Ether አስቀምጥ"
@@ -737,7 +731,7 @@
   "optionalBlockExplorerUrl": {
     "message": "ኤክስፕሎረር URL አግድ (አማራጭ)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "ምልክት (አማራጭ)"
   },
   "orderOneHere": {
@@ -984,9 +978,6 @@
   },
   "sentEther": {
     "message": "የተላከ ether"
-  },
-  "sentTokens": {
-    "message": "የተላኩ ተለዋጭ ስሞች"
   },
   "separateEachWord": {
     "message": "እያንዳንዱን ቃል በነጠላ ክፍት ቦታ ይለያዩ"

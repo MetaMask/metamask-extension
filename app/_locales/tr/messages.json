@@ -118,9 +118,6 @@
   "defaultNetwork": {
     "message": "Ether işlemleri için varsayılan ağ Main Net."
   },
-  "deposit": {
-    "message": "Yatır"
-  },
   "depositEther": {
     "message": "Ether yatır"
   },

@@ -23,15 +23,8 @@ export default class ConnectedAccountsListItem extends PureComponent {
     action: null,
   }
 
-  render () {
-    const {
-      address,
-      className,
-      name,
-      status,
-      action,
-      options,
-    } = this.props
+  render() {
+    const { address, className, name, status, action, options } = this.props
 
     return (
       <div className={classnames('connected-accounts-list__row', className)}>
@@ -45,16 +38,12 @@ export default class ConnectedAccountsListItem extends PureComponent {
             <p className="connected-accounts-list__account-name">
               <strong>{name}</strong>
             </p>
-            {
-              status
-                ? (
-                  <p className="connected-accounts-list__account-status">
-                    &nbsp;&nbsp;
-                    {status}
-                  </p>
-                )
-                : null
-            }
+            {status ? (
+              <p className="connected-accounts-list__account-status">
+                &nbsp;&nbsp;
+                {status}
+              </p>
+            ) : null}
             {action}
           </div>
         </div>

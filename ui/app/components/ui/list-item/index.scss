@@ -19,7 +19,8 @@
   align-items: start;
   cursor: pointer;
 
-  &:hover {
+  &:hover,
+  &:focus-within {
     background-color: $Grey-000;
   }
 
@@ -37,12 +38,18 @@
   }
 
   &__heading {
+    @include H5;
+
     grid-area: head;
-    font-size: 16px;
-    line-height: 160%;
     position: relative;
     display: flex;
     align-items: center;
+
+    & button {
+      background: unset;
+      font-size: unset;
+      padding-inline-start: 0;
+    }
 
     &-wrap {
       display: inline-block;
@@ -57,9 +64,9 @@
   }
 
   &__subheading {
+    @include H7;
+
     grid-area: sub;
-    font-size: 12px;
-    line-height: 14px;
     color: $Grey-500;
     margin-top: 4px;
     // all direct descendants should be truncated with ellipses
@@ -76,8 +83,9 @@
   }
 
   &__mid-content {
+    @include H7;
+
     grid-area: mid;
-    font-size: 12px;
     color: $Grey-500;
   }
 

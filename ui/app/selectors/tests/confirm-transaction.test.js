@@ -1,4 +1,5 @@
 import assert from 'assert'
+import { TRANSACTION_CATEGORIES } from '../../../../shared/constants/transaction'
 import {
   unconfirmedTransactionsCountSelector,
   sendTokenTokenAmountAndToAddressSelector,
@@ -16,9 +17,7 @@ const getEthersArrayLikeFromObj = (obj) => {
 }
 
 describe('Confirm Transaction Selector', function () {
-
   describe('unconfirmedTransactionsCountSelector', function () {
-
     const state = {
       metamask: {
         unapprovedTxs: {
@@ -42,14 +41,13 @@ describe('Confirm Transaction Selector', function () {
   })
 
   describe('sendTokenTokenAmountAndToAddressSelector', function () {
-
     const state = {
       confirmTransaction: {
         tokenData: {
-          name: 'transfer',
+          name: TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER,
           args: getEthersArrayLikeFromObj({
-            '_to': '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-            '_value': { toString: () => '1' },
+            _to: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            _value: { toString: () => '1' },
           }),
         },
         tokenProps: {
@@ -60,14 +58,14 @@ describe('Confirm Transaction Selector', function () {
     }
 
     it('returns token address and calculated token amount', function () {
-      assert.deepEqual(sendTokenTokenAmountAndToAddressSelector(state),
-        { toAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc', tokenAmount: '0.01' })
+      assert.deepEqual(sendTokenTokenAmountAndToAddressSelector(state), {
+        toAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        tokenAmount: '0.01',
+      })
     })
-
   })
 
   describe('contractExchangeRateSelector', function () {
-
     const state = {
       metamask: {
         contractExchangeRates: {

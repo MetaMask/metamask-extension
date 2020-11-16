@@ -17,18 +17,17 @@ import log from 'loglevel'
  * state related to onboarding
  */
 export default class OnboardingController {
-
   /**
    * Creates a new controller instance
    *
    * @param {OnboardingOptions} [opts] Controller configuration parameters
    */
-  constructor (opts = {}) {
+  constructor(opts = {}) {
     const initialTransientState = {
       onboardingTabs: {},
     }
     const initState = {
-      seedPhraseBackedUp: true,
+      seedPhraseBackedUp: null,
       ...opts.initState,
       ...initialTransientState,
     }
@@ -46,7 +45,7 @@ export default class OnboardingController {
     })
   }
 
-  setSeedPhraseBackedUp (newSeedPhraseBackUpState) {
+  setSeedPhraseBackedUp(newSeedPhraseBackUpState) {
     this.store.updateState({
       seedPhraseBackedUp: newSeedPhraseBackUpState,
     })
@@ -65,7 +64,9 @@ export default class OnboardingController {
     }
     const onboardingTabs = { ...this.store.getState().onboardingTabs }
     if (!onboardingTabs[location] || onboardingTabs[location] !== tabId) {
-      log.debug(`Registering onboarding tab at location '${location}' with tabId '${tabId}'`)
+      log.debug(
+        `Registering onboarding tab at location '${location}' with tabId '${tabId}'`,
+      )
       onboardingTabs[location] = tabId
       this.store.updateState({ onboardingTabs })
     }

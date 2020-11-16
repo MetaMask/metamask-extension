@@ -20,7 +20,7 @@ export default class RejectTransactionsModal extends PureComponent {
     hideModal()
   }
 
-  render () {
+  render() {
     const { t } = this.context
     const { hideModal, unapprovedTxCount } = this.props
 
@@ -36,7 +36,7 @@ export default class RejectTransactionsModal extends PureComponent {
       >
         <div>
           <div className="reject-transactions__description">
-            { t('rejectTxsDescription', [unapprovedTxCount]) }
+            {t('rejectTxsDescription', [unapprovedTxCount])}
           </div>
         </div>
       </Modal>

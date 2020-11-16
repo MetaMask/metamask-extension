@@ -5,7 +5,7 @@ const version = 4
 export default {
   version,
 
-  migrate (versionedData) {
+  migrate(versionedData) {
     const safeVersionedData = cloneDeep(versionedData)
     safeVersionedData.meta.version = version
     try {

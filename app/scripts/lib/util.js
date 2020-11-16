@@ -44,12 +44,13 @@ const getEnvironmentTypeMemo = memoize((url) => {
  * @param {string} [url] - the URL of the window
  * @returns {string} the environment ENUM
  */
-const getEnvironmentType = (url = window.location.href) => getEnvironmentTypeMemo(url)
+const getEnvironmentType = (url = window.location.href) =>
+  getEnvironmentTypeMemo(url)
 
 /**
  * Returns the platform (browser) where the extension is running.
  *
- * @returns {string} - the platform ENUM
+ * @returns {string} the platform ENUM
  *
  */
 const getPlatform = (_) => {
@@ -73,17 +74,25 @@ const getPlatform = (_) => {
  * Checks whether a given balance of ETH, represented as a hex string, is sufficient to pay a value plus a gas fee
  *
  * @param {Object} txParams - Contains data about a transaction
- * @param {string} txParams.gas The gas for a transaction
- * @param {string} txParams.gasPrice The price per gas for the transaction
- * @param {string} txParams.value The value of ETH to send
+ * @param {string} txParams.gas - The gas for a transaction
+ * @param {string} txParams.gasPrice - The price per gas for the transaction
+ * @param {string} txParams.value - The value of ETH to send
  * @param {string} hexBalance - A balance of ETH represented as a hex string
- * @returns {boolean} - Whether the balance is greater than or equal to the value plus the value of gas times gasPrice
+ * @returns {boolean} Whether the balance is greater than or equal to the value plus the value of gas times gasPrice
  *
  */
-function sufficientBalance (txParams, hexBalance) {
+function sufficientBalance(txParams, hexBalance) {
   // validate hexBalance is a hex string
-  assert.equal(typeof hexBalance, 'string', 'sufficientBalance - hexBalance is not a hex string')
-  assert.equal(hexBalance.slice(0, 2), '0x', 'sufficientBalance - hexBalance is not a hex string')
+  assert.equal(
+    typeof hexBalance,
+    'string',
+    'sufficientBalance - hexBalance is not a hex string',
+  )
+  assert.equal(
+    hexBalance.slice(0, 2),
+    '0x',
+    'sufficientBalance - hexBalance is not a hex string',
+  )
 
   const balance = hexToBn(hexBalance)
   const value = hexToBn(txParams.value)
@@ -95,24 +104,13 @@ function sufficientBalance (txParams, hexBalance) {
 }
 
 /**
- * Converts a BN object to a hex string with a '0x' prefix
- *
- * @param {BN} inputBn - The BN to convert to a hex string
- * @returns {string} - A '0x' prefixed hex string
- *
- */
-function bnToHex (inputBn) {
-  return ethUtil.addHexPrefix(inputBn.toString(16))
-}
-
-/**
  * Converts a hex string to a BN object
  *
  * @param {string} inputHex - A number represented as a hex string
- * @returns {Object} - A BN object
+ * @returns {Object} A BN object
  *
  */
-function hexToBn (inputHex) {
+function hexToBn(inputHex) {
   return new BN(ethUtil.stripHexPrefix(inputHex), 16)
 }
 
@@ -122,10 +120,10 @@ function hexToBn (inputHex) {
  * @param {BN} targetBN - The number to multiply by a fraction
  * @param {number|string} numerator - The numerator of the fraction multiplier
  * @param {number|string} denominator - The denominator of the fraction multiplier
- * @returns {BN} - The product of the multiplication
+ * @returns {BN} The product of the multiplication
  *
  */
-function BnMultiplyByFraction (targetBN, numerator, denominator) {
+function BnMultiplyByFraction(targetBN, numerator, denominator) {
   const numBN = new BN(numerator)
   const denomBN = new BN(denominator)
   return targetBN.mul(numBN).div(denomBN)
@@ -136,7 +134,7 @@ function BnMultiplyByFraction (targetBN, numerator, denominator) {
  * this is a workaround for the non-standard error object that's used
  * @returns {Error|undefined}
  */
-function checkForError () {
+function checkForError() {
   const { lastError } = extension.runtime
   if (!lastError) {
     return undefined
@@ -157,11 +155,44 @@ function checkForError () {
  * @returns {boolean} True if the value is a correctly formatted hex string,
  * false otherwise.
  */
-function isPrefixedFormattedHexString (value) {
+function isPrefixedFormattedHexString(value) {
   if (typeof value !== 'string') {
     return false
   }
-  return (/^0x[1-9a-f]+[0-9a-f]*$/ui).test(value)
+  return /^0x[1-9a-f]+[0-9a-f]*$/iu.test(value)
+}
+
+/**
+ * Prefixes a hex string with '0x' or '-0x' and returns it. Idempotent.
+ *
+ * @param {string} str - The string to prefix.
+ * @returns {string} The prefixed string.
+ */
+const addHexPrefix = (str) => {
+  if (typeof str !== 'string' || str.match(/^-?0x/u)) {
+    return str
+  }
+
+  if (str.match(/^-?0X/u)) {
+    return str.replace('0X', '0x')
+  }
+
+  if (str.startsWith('-')) {
+    return str.replace('-', '-0x')
+  }
+
+  return `0x${str}`
+}
+
+/**
+ * Converts a BN object to a hex string with a '0x' prefix
+ *
+ * @param {BN} inputBn - The BN to convert to a hex string
+ * @returns {string} - A '0x' prefixed hex string
+ *
+ */
+function bnToHex(inputBn) {
+  return addHexPrefix(inputBn.toString(16))
 }
 
 export {
@@ -169,8 +200,9 @@ export {
   getEnvironmentType,
   sufficientBalance,
   hexToBn,
-  bnToHex,
   BnMultiplyByFraction,
   checkForError,
   isPrefixedFormattedHexString,
+  addHexPrefix,
+  bnToHex,
 }

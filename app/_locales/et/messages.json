@@ -164,9 +164,6 @@
   "cancel": {
     "message": "Tühista"
   },
-  "cancelAttempt": {
-    "message": "Tühista katse"
-  },
   "cancellationGasFee": {
     "message": "Tühistamise gaasitasu"
   },
@@ -307,9 +304,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Olete kindel, et soovite selle võrgu kustutada?"
-  },
-  "deposit": {
-    "message": "Sissemakse"
   },
   "depositEther": {
     "message": "Eetri sissemakse"
@@ -730,7 +724,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Blokeeri Exploreri URL (valikuline)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Sümbol (valikuline)"
   },
   "orderOneHere": {
@@ -977,9 +971,6 @@
   },
   "sentEther": {
     "message": "saadetud eeter"
-  },
-  "sentTokens": {
-    "message": "saadetud load"
   },
   "separateEachWord": {
     "message": "Eraldage iga sõna ühe tühikuga"

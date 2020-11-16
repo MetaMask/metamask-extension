@@ -4,19 +4,12 @@ import { getNetworkIdentifier } from '../../../selectors'
 import LoadingNetworkScreen from './loading-network-screen.component'
 
 const mapStateToProps = (state) => {
-  const {
-    loadingMessage,
-    lastSelectedProvider,
-  } = state.appState
-  const {
-    provider,
-    network,
-  } = state.metamask
+  const { loadingMessage, lastSelectedProvider } = state.appState
+  const { provider, network } = state.metamask
   const { rpcUrl, chainId, ticker, nickname, type } = provider
 
-  const setProviderArgs = type === 'rpc'
-    ? [rpcUrl, chainId, ticker, nickname]
-    : [provider.type]
+  const setProviderArgs =
+    type === 'rpc' ? [rpcUrl, chainId, ticker, nickname] : [provider.type]
 
   return {
     isLoadingNetwork: network === 'loading',
@@ -37,4 +30,7 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoadingNetworkScreen)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(LoadingNetworkScreen)

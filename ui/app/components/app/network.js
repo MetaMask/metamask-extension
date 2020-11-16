@@ -3,7 +3,13 @@ import React, { Component } from 'react'
 import classnames from 'classnames'
 import NetworkDropdownIcon from './dropdowns/components/network-dropdown-icon'
 
-function NetworkIndicator ({ disabled, children, hoverText, onClick, providerName }) {
+function NetworkIndicator({
+  disabled,
+  children,
+  hoverText,
+  onClick,
+  providerName,
+}) {
   return (
     <div
       className={classnames('network-component pointer', {
@@ -53,17 +59,10 @@ export default class Network extends Component {
     onClick: PropTypes.func.isRequired,
   }
 
-  render () {
-    const {
-      t,
-    } = this.context
+  render() {
+    const { t } = this.context
 
-    const {
-      disabled,
-      network: networkNumber,
-      onClick,
-      provider,
-    } = this.props
+    const { disabled, network: networkNumber, onClick, provider } = this.props
 
     let providerName, providerNick, providerUrl
     if (provider) {
@@ -75,7 +74,12 @@ export default class Network extends Component {
     switch (providerName) {
       case 'mainnet':
         return (
-          <NetworkIndicator disabled={disabled} hoverText={t('mainnet')} onClick={onClick} providerName={providerName}>
+          <NetworkIndicator
+            disabled={disabled}
+            hoverText={t('mainnet')}
+            onClick={onClick}
+            providerName={providerName}
+          >
             <NetworkDropdownIcon
               backgroundColor="#038789"
               nonSelectBackgroundColor="#15afb2"
@@ -87,7 +91,12 @@ export default class Network extends Component {
 
       case 'ropsten':
         return (
-          <NetworkIndicator disabled={disabled} hoverText={t('ropsten')} onClick={onClick} providerName={providerName}>
+          <NetworkIndicator
+            disabled={disabled}
+            hoverText={t('ropsten')}
+            onClick={onClick}
+            providerName={providerName}
+          >
             <NetworkDropdownIcon
               backgroundColor="#e91550"
               nonSelectBackgroundColor="#ec2c50"
@@ -99,7 +108,12 @@ export default class Network extends Component {
 
       case 'kovan':
         return (
-          <NetworkIndicator disabled={disabled} hoverText={t('kovan')} onClick={onClick} providerName={providerName}>
+          <NetworkIndicator
+            disabled={disabled}
+            hoverText={t('kovan')}
+            onClick={onClick}
+            providerName={providerName}
+          >
             <NetworkDropdownIcon
               backgroundColor="#690496"
               nonSelectBackgroundColor="#b039f3"
@@ -111,7 +125,12 @@ export default class Network extends Component {
 
       case 'rinkeby':
         return (
-          <NetworkIndicator disabled={disabled} hoverText={t('rinkeby')} onClick={onClick} providerName={providerName}>
+          <NetworkIndicator
+            disabled={disabled}
+            hoverText={t('rinkeby')}
+            onClick={onClick}
+            providerName={providerName}
+          >
             <NetworkDropdownIcon
               backgroundColor="#ebb33f"
               nonSelectBackgroundColor="#ecb23e"
@@ -123,7 +142,12 @@ export default class Network extends Component {
 
       case 'goerli':
         return (
-          <NetworkIndicator disabled={disabled} hoverText={t('goerli')} onClick={onClick} providerName={providerName}>
+          <NetworkIndicator
+            disabled={disabled}
+            hoverText={t('goerli')}
+            onClick={onClick}
+            providerName={providerName}
+          >
             <NetworkDropdownIcon
               backgroundColor="#3099f2"
               nonSelectBackgroundColor="#ecb23e"
@@ -141,17 +165,23 @@ export default class Network extends Component {
             onClick={onClick}
             providerName={providerName}
           >
-            {
-              networkNumber === 'loading'
-                ? (
-                  <span className="pointer network-loading-spinner" onClick={(event) => onClick(event)}>
-                    <img title={t('attemptingConnect')} src="images/loading.svg" alt="" />
-                  </span>
-                )
-                : (
-                  <i className="fa fa-question-circle fa-lg" style={{ color: 'rgb(125, 128, 130)' }} />
-                )
-            }
+            {networkNumber === 'loading' ? (
+              <span
+                className="pointer network-loading-spinner"
+                onClick={(event) => onClick(event)}
+              >
+                <img
+                  title={t('attemptingConnect')}
+                  src="images/loading.svg"
+                  alt=""
+                />
+              </span>
+            ) : (
+              <i
+                className="fa fa-question-circle fa-lg"
+                style={{ color: 'rgb(125, 128, 130)' }}
+              />
+            )}
             <div className="network-name">
               {providerNick || t('privateNetwork')}
             </div>

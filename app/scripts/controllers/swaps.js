@@ -2,7 +2,7 @@ import { ethers } from 'ethers'
 import log from 'loglevel'
 import BigNumber from 'bignumber.js'
 import ObservableStore from 'obs-store'
-import { mapValues } from 'lodash'
+import { mapValues, cloneDeep } from 'lodash'
 import abi from 'human-standard-token-abi'
 import { calcTokenAmount } from '../../../ui/app/helpers/utils/token-util'
 import { calcGasTotal } from '../../../ui/app/pages/send/send.utils'
@@ -28,17 +28,14 @@ const MAX_GAS_LIMIT = 2500000
 // 3 seems to be an appropriate balance of giving users the time they need when MetaMask is not left idle, and turning polling off when it is.
 const POLL_COUNT_LIMIT = 3
 
-function calculateGasEstimateWithRefund (maxGas = MAX_GAS_LIMIT, estimatedRefund = 0, estimatedGas = 0) {
-  const maxGasMinusRefund = new BigNumber(
-    maxGas,
-    10,
-  )
-    .minus(estimatedRefund, 10)
+function calculateGasEstimateWithRefund(
+  maxGas = MAX_GAS_LIMIT,
+  estimatedRefund = 0,
+  estimatedGas = 0,
+) {
+  const maxGasMinusRefund = new BigNumber(maxGas, 10).minus(estimatedRefund, 10)
 
-  const gasEstimateWithRefund = maxGasMinusRefund.lt(
-    estimatedGas,
-    16,
-  )
+  const gasEstimateWithRefund = maxGasMinusRefund.lt(estimatedGas, 16)
     ? maxGasMinusRefund.toString(16)
     : estimatedGas
 
@@ -68,7 +65,7 @@ const initialState = {
 }
 
 export default class SwapsController {
-  constructor ({
+  constructor({
     getBufferedGasLimit,
     networkController,
     provider,
@@ -108,18 +105,26 @@ export default class SwapsController {
   // that quotes will no longer be available after 1 or 2 minutes. When fetchAndSetQuotes is first called it, receives fetch that parameters are stored in
   // state. These stored parameters are used on subsequent calls made during polling.
   // Note: we stop polling after 3 requests, until new quotes are explicitly asked for. The logic that enforces that maximum is in the body of fetchAndSetQuotes
-  pollForNewQuotes () {
+  pollForNewQuotes() {
     this.pollingTimeout = setTimeout(() => {
       const { swapsState } = this.store.getState()
-      this.fetchAndSetQuotes(swapsState.fetchParams, swapsState.fetchParams.metaData, true)
+      this.fetchAndSetQuotes(
+        swapsState.fetchParams,
+        swapsState.fetchParams?.metaData,
+        true,
+      )
     }, QUOTE_POLLING_INTERVAL)
   }
 
-  stopPollingForQuotes () {
+  stopPollingForQuotes() {
     clearTimeout(this.pollingTimeout)
   }
 
-  async fetchAndSetQuotes (fetchParams, fetchParamsMetaData = {}, isPolledRequest) {
+  async fetchAndSetQuotes(
+    fetchParams,
+    fetchParamsMetaData = {},
+    isPolledRequest,
+  ) {
     if (!fetchParams) {
       return null
     }
@@ -150,7 +155,10 @@ export default class SwapsController {
     const quotesLastFetched = Date.now()
 
     let approvalRequired = false
-    if (fetchParams.sourceToken !== ETH_SWAPS_TOKEN_ADDRESS && Object.values(newQuotes).length) {
+    if (
+      fetchParams.sourceToken !== ETH_SWAPS_TOKEN_ADDRESS &&
+      Object.values(newQuotes).length
+    ) {
       const allowance = await this._getERC20Allowance(
         fetchParams.sourceToken,
         fetchParams.fromAddress,
@@ -167,7 +175,9 @@ export default class SwapsController {
           approvalNeeded: null,
         }))
       } else if (!isPolledRequest) {
-        const { gasLimit: approvalGas } = await this.timedoutGasReturn(Object.values(newQuotes)[0].approvalNeeded)
+        const { gasLimit: approvalGas } = await this.timedoutGasReturn(
+          Object.values(newQuotes)[0].approvalNeeded,
+        )
 
         newQuotes = mapValues(newQuotes, (quote) => ({
           ...quote,
@@ -190,13 +200,12 @@ export default class SwapsController {
     if (Object.values(newQuotes).length === 0) {
       this.setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR)
     } else {
-      const topQuoteData = await this._findTopQuoteAndCalculateSavings(newQuotes)
-
-      if (topQuoteData.topAggId) {
-        topAggId = topQuoteData.topAggId
-        newQuotes[topAggId].isBestQuote = topQuoteData.isBest
-        newQuotes[topAggId].savings = topQuoteData.savings
-      }
+      const [
+        _topAggId,
+        quotesWithSavingsAndFeeData,
+      ] = await this._findTopQuoteAndCalculateSavings(newQuotes)
+      topAggId = _topAggId
+      newQuotes = quotesWithSavingsAndFeeData
     }
 
     // If a newer call has been made, don't update state with old information
@@ -235,32 +244,34 @@ export default class SwapsController {
     return [newQuotes, topAggId]
   }
 
-  safeRefetchQuotes () {
+  safeRefetchQuotes() {
     const { swapsState } = this.store.getState()
     if (!this.pollingTimeout && swapsState.fetchParams) {
       this.fetchAndSetQuotes(swapsState.fetchParams)
     }
   }
 
-  setSelectedQuoteAggId (selectedAggId) {
+  setSelectedQuoteAggId(selectedAggId) {
     const { swapsState } = this.store.getState()
     this.store.updateState({ swapsState: { ...swapsState, selectedAggId } })
   }
 
-  setSwapsTokens (tokens) {
+  setSwapsTokens(tokens) {
     const { swapsState } = this.store.getState()
     this.store.updateState({ swapsState: { ...swapsState, tokens } })
   }
 
-  setSwapsErrorKey (errorKey) {
+  setSwapsErrorKey(errorKey) {
     const { swapsState } = this.store.getState()
     this.store.updateState({ swapsState: { ...swapsState, errorKey } })
   }
 
-  async getAllQuotesWithGasEstimates (quotes) {
+  async getAllQuotesWithGasEstimates(quotes) {
     const quoteGasData = await Promise.all(
       Object.values(quotes).map(async (quote) => {
-        const { gasLimit, simulationFails } = await this.timedoutGasReturn(quote.trade)
+        const { gasLimit, simulationFails } = await this.timedoutGasReturn(
+          quote.trade,
+        )
         return [gasLimit, simulationFails, quote.aggregator]
       }),
     )
@@ -268,7 +279,11 @@ export default class SwapsController {
     const newQuotes = {}
     quoteGasData.forEach(([gasLimit, simulationFails, aggId]) => {
       if (gasLimit && !simulationFails) {
-        const gasEstimateWithRefund = calculateGasEstimateWithRefund(quotes[aggId].maxGas, quotes[aggId].estimatedRefund, gasLimit)
+        const gasEstimateWithRefund = calculateGasEstimateWithRefund(
+          quotes[aggId].maxGas,
+          quotes[aggId].estimatedRefund,
+          gasLimit,
+        )
 
         newQuotes[aggId] = {
           ...quotes[aggId],
@@ -285,7 +300,7 @@ export default class SwapsController {
     return newQuotes
   }
 
-  timedoutGasReturn (tradeTxParams) {
+  timedoutGasReturn(tradeTxParams) {
     return new Promise((resolve) => {
       let gasTimedOut = false
 
@@ -321,7 +336,7 @@ export default class SwapsController {
     })
   }
 
-  async setInitialGasEstimate (initialAggId) {
+  async setInitialGasEstimate(initialAggId) {
     const { swapsState } = this.store.getState()
 
     const quoteToUpdate = { ...swapsState.quotes[initialAggId] }
@@ -332,64 +347,73 @@ export default class SwapsController {
     } = await this.timedoutGasReturn(quoteToUpdate.trade)
 
     if (newGasEstimate && !simulationFails) {
-      const gasEstimateWithRefund = calculateGasEstimateWithRefund(quoteToUpdate.maxGas, quoteToUpdate.estimatedRefund, newGasEstimate)
+      const gasEstimateWithRefund = calculateGasEstimateWithRefund(
+        quoteToUpdate.maxGas,
+        quoteToUpdate.estimatedRefund,
+        newGasEstimate,
+      )
 
       quoteToUpdate.gasEstimate = newGasEstimate
       quoteToUpdate.gasEstimateWithRefund = gasEstimateWithRefund
     }
 
     this.store.updateState({
-      swapsState: { ...swapsState, quotes: { ...swapsState.quotes, [initialAggId]: quoteToUpdate } },
+      swapsState: {
+        ...swapsState,
+        quotes: { ...swapsState.quotes, [initialAggId]: quoteToUpdate },
+      },
     })
   }
 
-  setApproveTxId (approveTxId) {
+  setApproveTxId(approveTxId) {
     const { swapsState } = this.store.getState()
     this.store.updateState({ swapsState: { ...swapsState, approveTxId } })
   }
 
-  setTradeTxId (tradeTxId) {
+  setTradeTxId(tradeTxId) {
     const { swapsState } = this.store.getState()
     this.store.updateState({ swapsState: { ...swapsState, tradeTxId } })
   }
 
-  setQuotesLastFetched (quotesLastFetched) {
+  setQuotesLastFetched(quotesLastFetched) {
     const { swapsState } = this.store.getState()
     this.store.updateState({ swapsState: { ...swapsState, quotesLastFetched } })
   }
 
-  setSwapsTxGasPrice (gasPrice) {
+  setSwapsTxGasPrice(gasPrice) {
     const { swapsState } = this.store.getState()
     this.store.updateState({
       swapsState: { ...swapsState, customGasPrice: gasPrice },
     })
   }
 
-  setSwapsTxGasLimit (gasLimit) {
+  setSwapsTxGasLimit(gasLimit) {
     const { swapsState } = this.store.getState()
     this.store.updateState({
       swapsState: { ...swapsState, customMaxGas: gasLimit },
     })
   }
 
-  setCustomApproveTxData (data) {
+  setCustomApproveTxData(data) {
     const { swapsState } = this.store.getState()
     this.store.updateState({
       swapsState: { ...swapsState, customApproveTxData: data },
     })
   }
 
-  setBackgroundSwapRouteState (routeState) {
+  setBackgroundSwapRouteState(routeState) {
     const { swapsState } = this.store.getState()
     this.store.updateState({ swapsState: { ...swapsState, routeState } })
   }
 
-  setSwapsLiveness (swapsFeatureIsLive) {
+  setSwapsLiveness(swapsFeatureIsLive) {
     const { swapsState } = this.store.getState()
-    this.store.updateState({ swapsState: { ...swapsState, swapsFeatureIsLive } })
+    this.store.updateState({
+      swapsState: { ...swapsState, swapsFeatureIsLive },
+    })
   }
 
-  resetPostFetchState () {
+  resetPostFetchState() {
     const { swapsState } = this.store.getState()
 
     this.store.updateState({
@@ -403,21 +427,25 @@ export default class SwapsController {
     clearTimeout(this.pollingTimeout)
   }
 
-  resetSwapsState () {
+  resetSwapsState() {
     const { swapsState } = this.store.getState()
 
     this.store.updateState({
-      swapsState: { ...initialState.swapsState, tokens: swapsState.tokens, swapsFeatureIsLive: swapsState.swapsFeatureIsLive },
+      swapsState: {
+        ...initialState.swapsState,
+        tokens: swapsState.tokens,
+        swapsFeatureIsLive: swapsState.swapsFeatureIsLive,
+      },
     })
     clearTimeout(this.pollingTimeout)
   }
 
-  async _getEthersGasPrice () {
+  async _getEthersGasPrice() {
     const ethersGasPrice = await this.ethersProvider.getGasPrice()
     return ethersGasPrice.toHexString()
   }
 
-  async _findTopQuoteAndCalculateSavings (quotes = {}) {
+  async _findTopQuoteAndCalculateSavings(quotes = {}) {
     const tokenConversionRates = this.tokenRatesStore.getState()
       .contractExchangeRates
     const {
@@ -429,15 +457,14 @@ export default class SwapsController {
       return {}
     }
 
-    const usedGasPrice = customGasPrice || await this._getEthersGasPrice()
+    const newQuotes = cloneDeep(quotes)
 
-    let topAggId = ''
-    let ethTradeValueOfBestQuote = null
-    let ethFeeForBestQuote = null
-    const allEthTradeValues = []
-    const allEthFees = []
+    const usedGasPrice = customGasPrice || (await this._getEthersGasPrice())
 
-    Object.values(quotes).forEach((quote) => {
+    let topAggId = null
+    let overallValueOfBestQuoteForSorting = null
+
+    Object.values(newQuotes).forEach((quote) => {
       const {
         aggregator,
         approvalNeeded,
@@ -449,6 +476,7 @@ export default class SwapsController {
         sourceAmount,
         sourceToken,
         trade,
+        fee: metaMaskFee,
       } = quote
 
       const tradeGasLimitForCalculation = gasEstimate
@@ -468,8 +496,10 @@ export default class SwapsController {
       // It always includes any external fees charged by the quote source. In
       // addition, if the source asset is ETH, trade.value includes the amount
       // of swapped ETH.
-      const totalWeiCost = new BigNumber(gasTotalInWeiHex, 16)
-        .plus(trade.value, 16)
+      const totalWeiCost = new BigNumber(gasTotalInWeiHex, 16).plus(
+        trade.value,
+        16,
+      )
 
       const totalEthCost = conversionUtil(totalWeiCost, {
         fromCurrency: 'ETH',
@@ -482,81 +512,122 @@ export default class SwapsController {
       // The total fee is aggregator/exchange fees plus gas fees.
       // If the swap is from ETH, subtract the sourceAmount from the total cost.
       // Otherwise, the total fee is simply trade.value plus gas fees.
-      const ethFee = sourceToken === ETH_SWAPS_TOKEN_ADDRESS
-        ? conversionUtil(
-          totalWeiCost.minus(sourceAmount, 10), // sourceAmount is in wei
-          {
-            fromCurrency: 'ETH',
-            fromDenomination: 'WEI',
-            toDenomination: 'ETH',
-            fromNumericBase: 'BN',
-            numberOfDecimals: 6,
-          },
-        )
-        : totalEthCost
+      const ethFee =
+        sourceToken === ETH_SWAPS_TOKEN_ADDRESS
+          ? conversionUtil(
+              totalWeiCost.minus(sourceAmount, 10), // sourceAmount is in wei
+              {
+                fromCurrency: 'ETH',
+                fromDenomination: 'WEI',
+                toDenomination: 'ETH',
+                fromNumericBase: 'BN',
+                numberOfDecimals: 6,
+              },
+            )
+          : totalEthCost
+
+      const decimalAdjustedDestinationAmount = calcTokenAmount(
+        destinationAmount,
+        destinationTokenInfo.decimals,
+      )
+
+      const tokenPercentageOfPreFeeDestAmount = new BigNumber(100, 10)
+        .minus(metaMaskFee, 10)
+        .div(100)
+      const destinationAmountBeforeMetaMaskFee = decimalAdjustedDestinationAmount.div(
+        tokenPercentageOfPreFeeDestAmount,
+      )
+      const metaMaskFeeInTokens = destinationAmountBeforeMetaMaskFee.minus(
+        decimalAdjustedDestinationAmount,
+      )
 
       const tokenConversionRate = tokenConversionRates[destinationToken]
-      const ethValueOfTrade =
-        destinationToken === ETH_SWAPS_TOKEN_ADDRESS
-          ? calcTokenAmount(destinationAmount, 18).minus(totalEthCost, 10)
-          : new BigNumber(tokenConversionRate || 1, 10)
-            .times(
-              calcTokenAmount(
-                destinationAmount,
-                destinationTokenInfo.decimals,
-              ),
-              10,
-            )
-            .minus(tokenConversionRate ? totalEthCost : 0, 10)
+      const conversionRateForSorting = tokenConversionRate || 1
 
-      // collect values for savings calculation
-      allEthTradeValues.push(ethValueOfTrade)
-      allEthFees.push(ethFee)
+      const ethValueOfTokens = decimalAdjustedDestinationAmount.times(
+        conversionRateForSorting,
+        10,
+      )
+
+      const conversionRateForCalculations =
+        destinationToken === ETH_SWAPS_TOKEN_ADDRESS ? 1 : tokenConversionRate
+
+      const overallValueOfQuoteForSorting =
+        conversionRateForCalculations === undefined
+          ? ethValueOfTokens
+          : ethValueOfTokens.minus(ethFee, 10)
+
+      quote.ethFee = ethFee.toString(10)
+
+      if (conversionRateForCalculations !== undefined) {
+        quote.ethValueOfTokens = ethValueOfTokens.toString(10)
+        quote.overallValueOfQuote = overallValueOfQuoteForSorting.toString(10)
+        quote.metaMaskFeeInEth = metaMaskFeeInTokens
+          .times(conversionRateForCalculations)
+          .toString(10)
+      }
 
       if (
-        ethTradeValueOfBestQuote === null ||
-        ethValueOfTrade.gt(ethTradeValueOfBestQuote)
+        overallValueOfBestQuoteForSorting === null ||
+        overallValueOfQuoteForSorting.gt(overallValueOfBestQuoteForSorting)
       ) {
         topAggId = aggregator
-        ethTradeValueOfBestQuote = ethValueOfTrade
-        ethFeeForBestQuote = ethFee
+        overallValueOfBestQuoteForSorting = overallValueOfQuoteForSorting
       }
     })
 
     const isBest =
-      quotes[topAggId].destinationToken === ETH_SWAPS_TOKEN_ADDRESS ||
-      Boolean(tokenConversionRates[quotes[topAggId]?.destinationToken])
+      newQuotes[topAggId].destinationToken === ETH_SWAPS_TOKEN_ADDRESS ||
+      Boolean(tokenConversionRates[newQuotes[topAggId]?.destinationToken])
 
     let savings = null
 
     if (isBest) {
+      const bestQuote = newQuotes[topAggId]
+
       savings = {}
+
+      const {
+        ethFee: medianEthFee,
+        metaMaskFeeInEth: medianMetaMaskFee,
+        ethValueOfTokens: medianEthValueOfTokens,
+      } = getMedianEthValueQuote(Object.values(newQuotes))
+
       // Performance savings are calculated as:
-      //   valueForBestTrade - medianValueOfAllTrades
-      savings.performance = ethTradeValueOfBestQuote.minus(
-        getMedian(allEthTradeValues),
+      //   (ethValueOfTokens for the best trade) - (ethValueOfTokens for the media trade)
+      savings.performance = new BigNumber(bestQuote.ethValueOfTokens, 10).minus(
+        medianEthValueOfTokens,
         10,
       )
 
-      // Performance savings are calculated as:
-      //   medianFeeOfAllTrades - feeForBestTrade
-      savings.fee = getMedian(allEthFees).minus(
-        ethFeeForBestQuote,
-        10,
-      )
+      // Fee savings are calculated as:
+      //   (fee for the median trade) - (fee for the best trade)
+      savings.fee = new BigNumber(medianEthFee).minus(bestQuote.ethFee, 10)
 
-      // Total savings are the sum of performance and fee savings
-      savings.total = savings.performance.plus(savings.fee, 10).toString(10)
+      savings.metaMaskFee = bestQuote.metaMaskFeeInEth
+
+      // Total savings are calculated as:
+      //   performance savings + fee savings - metamask fee
+      savings.total = savings.performance
+        .plus(savings.fee)
+        .minus(savings.metaMaskFee)
+        .toString(10)
       savings.performance = savings.performance.toString(10)
       savings.fee = savings.fee.toString(10)
+      savings.medianMetaMaskFee = medianMetaMaskFee
+
+      newQuotes[topAggId].isBestQuote = true
+      newQuotes[topAggId].savings = savings
     }
 
-    return { topAggId, isBest, savings }
+    return [topAggId, newQuotes]
   }
 
-  async _getERC20Allowance (contractAddress, walletAddress) {
+  async _getERC20Allowance(contractAddress, walletAddress) {
     const contract = new ethers.Contract(
-      contractAddress, abi, this.ethersProvider,
+      contractAddress,
+      abi,
+      this.ethersProvider,
     )
     return await contract.allowance(walletAddress, METASWAP_ADDRESS)
   }
@@ -569,7 +640,7 @@ export default class SwapsController {
    * If the browser goes offline, the interval is cleared and swaps are disabled
    * until the value can be fetched again.
    */
-  _setupSwapsLivenessFetching () {
+  _setupSwapsLivenessFetching() {
     const TEN_MINUTES_MS = 10 * 60 * 1000
     let intervalId = null
 
@@ -577,7 +648,10 @@ export default class SwapsController {
       if (window.navigator.onLine && intervalId === null) {
         // Set the interval first to prevent race condition between listener and
         // initial call to this function.
-        intervalId = setInterval(this._fetchAndSetSwapsLiveness.bind(this), TEN_MINUTES_MS)
+        intervalId = setInterval(
+          this._fetchAndSetSwapsLiveness.bind(this),
+          TEN_MINUTES_MS,
+        )
         this._fetchAndSetSwapsLiveness()
       }
     }
@@ -608,7 +682,7 @@ export default class SwapsController {
    * Only updates state if the fetched/computed flag value differs from current
    * state.
    */
-  async _fetchAndSetSwapsLiveness () {
+  async _fetchAndSetSwapsLiveness() {
     const { swapsState } = this.store.getState()
     const { swapsFeatureIsLive: oldSwapsFeatureIsLive } = swapsState
     let swapsFeatureIsLive = false
@@ -637,7 +711,9 @@ export default class SwapsController {
     }
 
     if (!successfullyFetched) {
-      log.error('Failed to fetch swaps feature flag 3 times. Setting to false and trying again next interval.')
+      log.error(
+        'Failed to fetch swaps feature flag 3 times. Setting to false and trying again next interval.',
+      )
     }
 
     if (swapsFeatureIsLive !== oldSwapsFeatureIsLive) {
@@ -647,36 +723,123 @@ export default class SwapsController {
 }
 
 /**
- * Calculates the median of a sample of BigNumber values.
+ * Calculates the median overallValueOfQuote of a sample of quotes.
  *
- * @param {import('bignumber.js').BigNumber[]} values - A sample of BigNumber
- * values. The array will be sorted in place.
- * @returns {import('bignumber.js').BigNumber} The median of the sample.
+ * @param {Array} quotes - A sample of quote objects with overallValueOfQuote, ethFee, metaMaskFeeInEth, and ethValueOfTokens properties
+ * @returns {Object} An object with the ethValueOfTokens, ethFee, and metaMaskFeeInEth of the quote with the median overallValueOfQuote
  */
-function getMedian (values) {
-  if (!Array.isArray(values) || values.length === 0) {
+function getMedianEthValueQuote(_quotes) {
+  if (!Array.isArray(_quotes) || _quotes.length === 0) {
     throw new Error('Expected non-empty array param.')
   }
 
-  values.sort((a, b) => {
-    if (a.equals(b)) {
+  const quotes = [..._quotes]
+
+  quotes.sort((quoteA, quoteB) => {
+    const overallValueOfQuoteA = new BigNumber(quoteA.overallValueOfQuote, 10)
+    const overallValueOfQuoteB = new BigNumber(quoteB.overallValueOfQuote, 10)
+    if (overallValueOfQuoteA.equals(overallValueOfQuoteB)) {
       return 0
     }
-    return a.lessThan(b) ? -1 : 1
+    return overallValueOfQuoteA.lessThan(overallValueOfQuoteB) ? -1 : 1
   })
 
-  if (values.length % 2 === 1) {
-    // return middle value
-    return values[(values.length - 1) / 2]
+  if (quotes.length % 2 === 1) {
+    // return middle values
+    const medianOverallValue =
+      quotes[(quotes.length - 1) / 2].overallValueOfQuote
+    const quotesMatchingMedianQuoteValue = quotes.filter(
+      (quote) => medianOverallValue === quote.overallValueOfQuote,
+    )
+    return meansOfQuotesFeesAndValue(quotesMatchingMedianQuoteValue)
   }
 
   // return mean of middle two values
-  const upperIndex = values.length / 2
-  return values[upperIndex]
-    .plus(values[upperIndex - 1])
-    .dividedBy(2)
+  const upperIndex = quotes.length / 2
+  const lowerIndex = upperIndex - 1
+
+  const overallValueAtUpperIndex = quotes[upperIndex].overallValueOfQuote
+  const overallValueAtLowerIndex = quotes[lowerIndex].overallValueOfQuote
+
+  const quotesMatchingUpperIndexValue = quotes.filter(
+    (quote) => overallValueAtUpperIndex === quote.overallValueOfQuote,
+  )
+  const quotesMatchingLowerIndexValue = quotes.filter(
+    (quote) => overallValueAtLowerIndex === quote.overallValueOfQuote,
+  )
+
+  const feesAndValueAtUpperIndex = meansOfQuotesFeesAndValue(
+    quotesMatchingUpperIndexValue,
+  )
+  const feesAndValueAtLowerIndex = meansOfQuotesFeesAndValue(
+    quotesMatchingLowerIndexValue,
+  )
+
+  return {
+    ethFee: new BigNumber(feesAndValueAtUpperIndex.ethFee, 10)
+      .plus(feesAndValueAtLowerIndex.ethFee, 10)
+      .dividedBy(2)
+      .toString(10),
+    metaMaskFeeInEth: new BigNumber(
+      feesAndValueAtUpperIndex.metaMaskFeeInEth,
+      10,
+    )
+      .plus(feesAndValueAtLowerIndex.metaMaskFeeInEth, 10)
+      .dividedBy(2)
+      .toString(10),
+    ethValueOfTokens: new BigNumber(
+      feesAndValueAtUpperIndex.ethValueOfTokens,
+      10,
+    )
+      .plus(feesAndValueAtLowerIndex.ethValueOfTokens, 10)
+      .dividedBy(2)
+      .toString(10),
+  }
+}
+
+/**
+ * Calculates the arithmetic mean for each of three properties - ethFee, metaMaskFeeInEth and ethValueOfTokens - across
+ * an array of objects containing those properties.
+ *
+ * @param {Array} quotes - A sample of quote objects with overallValueOfQuote, ethFee, metaMaskFeeInEth and
+ * ethValueOfTokens properties
+ * @returns {Object} An object with the arithmetic mean each of the ethFee, metaMaskFeeInEth and ethValueOfTokens of
+ * the passed quote objects
+ */
+function meansOfQuotesFeesAndValue(quotes) {
+  const feeAndValueSumsAsBigNumbers = quotes.reduce(
+    (feeAndValueSums, quote) => ({
+      ethFee: feeAndValueSums.ethFee.plus(quote.ethFee, 10),
+      metaMaskFeeInEth: feeAndValueSums.metaMaskFeeInEth.plus(
+        quote.metaMaskFeeInEth,
+        10,
+      ),
+      ethValueOfTokens: feeAndValueSums.ethValueOfTokens.plus(
+        quote.ethValueOfTokens,
+        10,
+      ),
+    }),
+    {
+      ethFee: new BigNumber(0, 10),
+      metaMaskFeeInEth: new BigNumber(0, 10),
+      ethValueOfTokens: new BigNumber(0, 10),
+    },
+  )
+
+  return {
+    ethFee: feeAndValueSumsAsBigNumbers.ethFee
+      .div(quotes.length, 10)
+      .toString(10),
+    metaMaskFeeInEth: feeAndValueSumsAsBigNumbers.metaMaskFeeInEth
+      .div(quotes.length, 10)
+      .toString(10),
+    ethValueOfTokens: feeAndValueSumsAsBigNumbers.ethValueOfTokens
+      .div(quotes.length, 10)
+      .toString(10),
+  }
 }
 
 export const utils = {
-  getMedian,
+  getMedianEthValueQuote,
+  meansOfQuotesFeesAndValue,
 }

@@ -161,9 +161,6 @@
   "cancel": {
     "message": "취소"
   },
-  "cancelAttempt": {
-    "message": "취소 시도"
-  },
   "cancellationGasFee": {
     "message": "취소 가스 수수료"
   },
@@ -304,9 +301,6 @@
   },
   "deleteNetworkDescription": {
     "message": "정말로 이 네트워크를 삭제하시겠습니까?"
-  },
-  "deposit": {
-    "message": "입금"
   },
   "depositEther": {
     "message": "이더리움 입금하기"
@@ -734,7 +728,7 @@
   "optionalBlockExplorerUrl": {
     "message": "익스플로러 URL 차단 (선택 사항)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Symbol (선택)"
   },
   "orderOneHere": {
@@ -978,9 +972,6 @@
   },
   "sentEther": {
     "message": "전송된 이더"
-  },
-  "sentTokens": {
-    "message": "전송된 토큰"
   },
   "separateEachWord": {
     "message": "각 단어는 공백 한칸으로 분리합니다"

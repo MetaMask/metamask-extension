@@ -1,40 +1,32 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 
-function NetworkDropdownIcon (props) {
-  const {
-    backgroundColor,
-    isSelected,
-    innerBorder,
-    diameter,
-    loading,
-  } = props
+function NetworkDropdownIcon(props) {
+  const { backgroundColor, isSelected, innerBorder, diameter, loading } = props
 
-  return loading
-    ? (
-      <span
-        className="pointer network-indicator"
+  return loading ? (
+    <span
+      className="pointer network-indicator"
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'row',
+      }}
+    >
+      <img alt="" style={{ width: '27px' }} src="images/loading.svg" />
+    </span>
+  ) : (
+    <div className={`menu-icon-circle${isSelected ? '--active' : ''}`}>
+      <div
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          flexDirection: 'row',
+          background: backgroundColor,
+          border: innerBorder,
+          height: `${diameter}px`,
+          width: `${diameter}px`,
         }}
-      >
-        <img alt="" style={{ width: '27px' }} src="images/loading.svg" />
-      </span>
-    )
-    : (
-      <div className={`menu-icon-circle${isSelected ? '--active' : ''}`}>
-        <div
-          style={{
-            background: backgroundColor,
-            border: innerBorder,
-            height: `${diameter}px`,
-            width: `${diameter}px`,
-          }}
-        />
-      </div>
-    )
+      />
+    </div>
+  )
 }
 
 NetworkDropdownIcon.defaultProps = {

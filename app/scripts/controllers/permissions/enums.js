@@ -1,4 +1,3 @@
-
 export const WALLET_PREFIX = 'wallet_'
 
 export const HISTORY_STORE_KEY = 'permissionsHistory'
@@ -23,9 +22,7 @@ export const NOTIFICATION_NAMES = {
   accountsChanged: 'wallet_accountsChanged',
 }
 
-export const LOG_IGNORE_METHODS = [
-  'wallet_sendDomainMetadata',
-]
+export const LOG_IGNORE_METHODS = ['wallet_sendDomainMetadata']
 
 export const LOG_METHOD_TYPES = {
   restricted: 'restricted',

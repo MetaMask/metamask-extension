@@ -1,14 +1,15 @@
 import { connect } from 'react-redux'
 import { checksumAddress } from '../../../helpers/utils/util'
 import { tryReverseResolveAddress } from '../../../store/actions'
-import { getAddressBook, getRpcPrefsForCurrentProvider } from '../../../selectors'
+import {
+  getAddressBook,
+  getRpcPrefsForCurrentProvider,
+} from '../../../selectors'
 import TransactionListItemDetails from './transaction-list-item-details.component'
 
 const mapStateToProps = (state, ownProps) => {
   const { metamask } = state
-  const {
-    ensResolutionsByAddress,
-  } = metamask
+  const { ensResolutionsByAddress } = metamask
   const { recipientAddress, senderAddress } = ownProps
   let recipientEns
   if (recipientAddress) {
@@ -41,4 +42,7 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TransactionListItemDetails)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(TransactionListItemDetails)

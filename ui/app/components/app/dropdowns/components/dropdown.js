@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import MenuDroppo from '../../menu-droppo'
 
 export class Dropdown extends Component {
-  render () {
+  render() {
     const {
       containerClassName,
       isOpen,
@@ -18,7 +18,8 @@ export class Dropdown extends Component {
       borderRadius: '4px',
       padding: '8px 16px',
       background: 'rgba(0, 0, 0, 0.8)',
-      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px', ...innerStyle,
+      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+      ...innerStyle,
     }
 
     return (
@@ -41,7 +42,7 @@ export class Dropdown extends Component {
             li.dropdown-menu-item { color: rgb(185, 185, 185); }
           `}
         </style>
-        { children }
+        {children}
       </MenuDroppo>
     )
   }
@@ -62,7 +63,7 @@ Dropdown.propTypes = {
 }
 
 export class DropdownMenuItem extends Component {
-  render () {
+  render() {
     const { onClick, closeMenu, children, style } = this.props
 
     return (
@@ -72,7 +73,7 @@ export class DropdownMenuItem extends Component {
           onClick()
           closeMenu()
         }}
-        style={({
+        style={{
           listStyle: 'none',
           padding: '8px 0px',
           fontSize: '18px',
@@ -81,8 +82,9 @@ export class DropdownMenuItem extends Component {
           display: 'flex',
           justifyContent: 'flex-start',
           alignItems: 'center',
-          color: 'white', ...style,
-        })}
+          color: 'white',
+          ...style,
+        }}
       >
         {children}
       </li>

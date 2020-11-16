@@ -17,13 +17,14 @@
 }
 
 .asset-breadcrumb {
-  font-size: 14px;
+  @include H6;
+
   color: $Black-100;
   background-color: inherit;
 
   &__chevron {
+    font-size: $font-size-paragraph;
     padding: 0 10px 0 2px;
-    font-size: 16px;
   }
 
   &__asset {
@@ -33,13 +34,13 @@
 
 .token-options {
   &__button {
-    font-size: 20px;
+    font-size: $font-size-paragraph;
     color: $Black-100;
     background-color: inherit;
     padding: 2px 8px;
   }
 
   &__icon {
-    font-size: 16px;
+    @include Paragraph;
   }
 }

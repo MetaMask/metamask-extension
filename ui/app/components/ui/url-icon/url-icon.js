@@ -3,11 +3,7 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import IconWithFallback from '../icon-with-fallback'
 
-export default function UrlIcon ({
-  url,
-  className,
-  name,
-}) {
+export default function UrlIcon({ url, className, name }) {
   return (
     <IconWithFallback
       className={classnames('url-icon', className)}

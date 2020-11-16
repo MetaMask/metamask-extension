@@ -164,9 +164,6 @@
   "cancel": {
     "message": "Atcelt"
   },
-  "cancelAttempt": {
-    "message": "Atcelt mēģinājumu"
-  },
   "cancellationGasFee": {
     "message": "Atcelšanas maksājums par Gas"
   },
@@ -307,9 +304,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Vai tiešām vēlaties dzēst šo tīklu?"
-  },
-  "deposit": {
-    "message": "Iemaksa"
   },
   "depositEther": {
     "message": "Noguldīt Ether"
@@ -736,7 +730,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Bloķēt Explorer URL (pēc izvēles)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Simbols (neobligāti)"
   },
   "orderOneHere": {
@@ -983,9 +977,6 @@
   },
   "sentEther": {
     "message": "nosūtītie ether"
-  },
-  "sentTokens": {
-    "message": "nosūtītie marķieri"
   },
   "separateEachWord": {
     "message": "Atdaliet katru vārdu ar vienu atstarpi"

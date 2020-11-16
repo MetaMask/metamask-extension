@@ -15,13 +15,8 @@ export default class CircleIcon extends PureComponent {
     circleClass: '',
   }
 
-  render () {
-    const {
-      size,
-      circleClass,
-      iconSize,
-      iconSource,
-    } = this.props
+  render() {
+    const { size, circleClass, iconSize, iconSource } = this.props
 
     return (
       <div

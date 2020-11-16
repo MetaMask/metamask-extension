@@ -164,9 +164,6 @@
   "cancel": {
     "message": "Batal"
   },
-  "cancelAttempt": {
-    "message": "Batalkan Percubaan"
-  },
   "cancellationGasFee": {
     "message": "Fi Gas Pembatalan"
   },
@@ -714,7 +711,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Sekat URL Explorer (pilihan)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Simbol (pilihan)"
   },
   "orderOneHere": {
@@ -961,9 +958,6 @@
   },
   "sentEther": {
     "message": "menghantar ether"
-  },
-  "sentTokens": {
-    "message": "token dihantar"
   },
   "separateEachWord": {
     "message": "Pisahkan setiap perkataan dengan ruang tunggal"

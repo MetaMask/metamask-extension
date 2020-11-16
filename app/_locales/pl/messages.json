@@ -164,9 +164,6 @@
   "cancel": {
     "message": "Anuluj"
   },
-  "cancelAttempt": {
-    "message": "Anuluj próbę"
-  },
   "cancellationGasFee": {
     "message": "Opłata za gaz za anulowanie"
   },
@@ -307,9 +304,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Czy na pewno chcesz usunąć tę sieć?"
-  },
-  "deposit": {
-    "message": "Zdeponuj"
   },
   "depositEther": {
     "message": "Zdeponuj Eter"
@@ -734,7 +728,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Adres URL przeglądarki łańcucha bloków (opcjonalnie)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Symbol (opcjonalnie)"
   },
   "orderOneHere": {
@@ -981,9 +975,6 @@
   },
   "sentEther": {
     "message": "wyślij eter"
-  },
-  "sentTokens": {
-    "message": "wysłane tokeny"
   },
   "separateEachWord": {
     "message": "Oddziel słowa pojedynczą spacją"

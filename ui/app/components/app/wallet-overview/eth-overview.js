@@ -6,18 +6,33 @@ import { useHistory } from 'react-router-dom'
 
 import Identicon from '../../ui/identicon'
 import { I18nContext } from '../../../contexts/i18n'
-import { SEND_ROUTE, BUILD_QUOTE_ROUTE } from '../../../helpers/constants/routes'
-import { useMetricEvent, useNewMetricEvent } from '../../../hooks/useMetricEvent'
+import {
+  SEND_ROUTE,
+  BUILD_QUOTE_ROUTE,
+} from '../../../helpers/constants/routes'
+import {
+  useMetricEvent,
+  useNewMetricEvent,
+} from '../../../hooks/useMetricEvent'
 import { useSwapsEthToken } from '../../../hooks/useSwapsEthToken'
 import Tooltip from '../../ui/tooltip'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 import { showModal } from '../../../store/actions'
-import { isBalanceCached, getSelectedAccount, getShouldShowFiat, getCurrentNetworkId, getCurrentKeyring } from '../../../selectors/selectors'
+import {
+  isBalanceCached,
+  getSelectedAccount,
+  getShouldShowFiat,
+  getCurrentNetworkId,
+  getCurrentKeyring,
+} from '../../../selectors/selectors'
 import SwapIcon from '../../ui/icon/swap-icon.component'
 import BuyIcon from '../../ui/icon/overview-buy-icon.component'
 import SendIcon from '../../ui/icon/overview-send-icon.component'
-import { getSwapsFeatureLiveness, setSwapsFromToken } from '../../../ducks/swaps/swaps'
+import {
+  getSwapsFeatureLiveness,
+  setSwapsFromToken,
+} from '../../../ducks/swaps/swaps'
 import IconButton from '../../ui/icon-button'
 import { MAINNET_NETWORK_ID } from '../../../../../app/scripts/controllers/network/enums'
 import WalletOverview from './wallet-overview'
@@ -47,14 +62,22 @@ const EthOverview = ({ className }) => {
   const selectedAccount = useSelector(getSelectedAccount)
   const { balance } = selectedAccount
   const networkId = useSelector(getCurrentNetworkId)
-  const enteredSwapsEvent = useNewMetricEvent({ event: 'Swaps Opened', properties: { source: 'Main View', active_currency: 'ETH' }, category: 'swaps' })
+  const enteredSwapsEvent = useNewMetricEvent({
+    event: 'Swaps Opened',
+    properties: { source: 'Main View', active_currency: 'ETH' },
+    category: 'swaps',
+  })
   const swapsEnabled = useSelector(getSwapsFeatureLiveness)
   const swapsEthToken = useSwapsEthToken()
 
   return (
     <WalletOverview
-      balance={(
-        <Tooltip position="top" title={t('balanceOutdated')} disabled={!balanceIsCached}>
+      balance={
+        <Tooltip
+          position="top"
+          title={t('balanceOutdated')}
+          disabled={!balanceIsCached}
+        >
           <div className="eth-overview__balance">
             <div className="eth-overview__primary-container">
               <UserPreferencedCurrencyDisplay
@@ -67,29 +90,27 @@ const EthOverview = ({ className }) => {
                 ethNumberOfDecimals={4}
                 hideTitle
               />
-              {
-                balanceIsCached ? <span className="eth-overview__cached-star">*</span> : null
-              }
+              {balanceIsCached ? (
+                <span className="eth-overview__cached-star">*</span>
+              ) : null}
             </div>
-            {
-              showFiat && (
-                <UserPreferencedCurrencyDisplay
-                  className={classnames({
-                    'eth-overview__cached-secondary-balance': balanceIsCached,
-                    'eth-overview__secondary-balance': !balanceIsCached,
-                  })}
-                  data-testid="eth-overview__secondary-currency"
-                  value={balance}
-                  type={SECONDARY}
-                  ethNumberOfDecimals={4}
-                  hideTitle
-                />
-              )
-            }
+            {showFiat && (
+              <UserPreferencedCurrencyDisplay
+                className={classnames({
+                  'eth-overview__cached-secondary-balance': balanceIsCached,
+                  'eth-overview__secondary-balance': !balanceIsCached,
+                })}
+                data-testid="eth-overview__secondary-currency"
+                value={balance}
+                type={SECONDARY}
+                ethNumberOfDecimals={4}
+                hideTitle
+              />
+            )}
           </div>
         </Tooltip>
-      )}
-      buttons={(
+      }
+      buttons={
         <>
           <IconButton
             className="eth-overview__button"
@@ -126,16 +147,20 @@ const EthOverview = ({ className }) => {
                   }
                 }
               }}
-              label={ t('swap') }
+              label={t('swap')}
               tooltipRender={(contents) => (
-                <Tooltip title={t('onlyAvailableOnMainnet')} position="bottom" disabled={networkId === '1'}>
+                <Tooltip
+                  title={t('onlyAvailableOnMainnet')}
+                  position="bottom"
+                  disabled={networkId === '1'}
+                >
                   {contents}
                 </Tooltip>
               )}
             />
           ) : null}
         </>
-      )}
+      }
       className={className}
       icon={<Identicon diameter={32} />}
     />

@@ -97,9 +97,6 @@
   "defaultNetwork": {
     "message": "ईथर लेनदेन के लिए डिफ़ॉल्ट नेटवर्क मुख्य नेट है।"
   },
-  "deposit": {
-    "message": "जमा"
-  },
   "depositEther": {
     "message": "जमा - Ether"
   },

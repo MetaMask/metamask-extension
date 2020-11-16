@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import PageContainerHeader from '../../../components/ui/page-container/page-container-header'
 
 export default class SendHeader extends Component {
-
   static propTypes = {
     clearSend: PropTypes.func,
     history: PropTypes.object,
@@ -15,13 +14,13 @@ export default class SendHeader extends Component {
     t: PropTypes.func,
   }
 
-  onClose () {
+  onClose() {
     const { clearSend, history, mostRecentOverviewPage } = this.props
     clearSend()
     history.push(mostRecentOverviewPage)
   }
 
-  render () {
+  render() {
     return (
       <PageContainerHeader
         className="send__header"
@@ -31,5 +30,4 @@ export default class SendHeader extends Component {
       />
     )
   }
-
 }

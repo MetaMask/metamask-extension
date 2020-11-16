@@ -161,9 +161,6 @@
   "cancel": {
     "message": "Ακύρωση"
   },
-  "cancelAttempt": {
-    "message": "Ακύρωση Προσπάθειας"
-  },
   "cancellationGasFee": {
     "message": "Ακύρωση Χρέωσης Αερίου"
   },
@@ -304,9 +301,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Θέλετε σίγουρα να διαγράψετε αυτό το δίκτυο;"
-  },
-  "deposit": {
-    "message": "Κατάθεση"
   },
   "depositEther": {
     "message": "Κατάθεση Ether"
@@ -737,7 +731,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Διεύθυνση URL Εξερευνητή Μπλοκ (προαιρετικό)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Σύμβολο (προαιρετικό)"
   },
   "orderOneHere": {
@@ -984,9 +978,6 @@
   },
   "sentEther": {
     "message": "απεσταλμένα ether"
-  },
-  "sentTokens": {
-    "message": "αποστολή token"
   },
   "separateEachWord": {
     "message": "Διαχωρίστε κάθε λέξη με ένα μόνο κενό"

@@ -2,13 +2,14 @@ import assert from 'assert'
 import React from 'react'
 import { shallow } from 'enzyme'
 import TransactionBreakdown from '../transaction-breakdown.component'
+import { TRANSACTION_STATUSES } from '../../../../../../shared/constants/transaction'
 
 describe('TransactionBreakdown Component', function () {
   it('should render properly', function () {
     const transaction = {
       history: [],
       id: 1,
-      status: 'confirmed',
+      status: TRANSACTION_STATUSES.CONFIRMED,
       txParams: {
         from: '0x1',
         gas: '0x5208',
@@ -20,10 +21,7 @@ describe('TransactionBreakdown Component', function () {
     }
 
     const wrapper = shallow(
-      <TransactionBreakdown
-        transaction={transaction}
-        className="test-class"
-      />,
+      <TransactionBreakdown transaction={transaction} className="test-class" />,
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     )
 

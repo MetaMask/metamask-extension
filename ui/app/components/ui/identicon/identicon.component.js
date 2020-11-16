@@ -7,13 +7,11 @@ import { checksumAddress } from '../../../helpers/utils/util'
 import Jazzicon from '../jazzicon'
 import BlockieIdenticon from './blockieIdenticon'
 
-const getStyles = (diameter) => (
-  {
-    height: diameter,
-    width: diameter,
-    borderRadius: diameter / 2,
-  }
-)
+const getStyles = (diameter) => ({
+  height: diameter,
+  width: diameter,
+  borderRadius: diameter / 2,
+})
 
 export default class Identicon extends PureComponent {
   static propTypes = {
@@ -34,7 +32,7 @@ export default class Identicon extends PureComponent {
     useBlockie: false,
   }
 
-  renderImage () {
+  renderImage() {
     const { className, diameter, image } = this.props
 
     return (
@@ -46,7 +44,7 @@ export default class Identicon extends PureComponent {
     )
   }
 
-  renderJazzicon () {
+  renderJazzicon() {
     const { address, className, diameter } = this.props
 
     return (
@@ -59,7 +57,7 @@ export default class Identicon extends PureComponent {
     )
   }
 
-  renderBlockie () {
+  renderBlockie() {
     const { address, className, diameter } = this.props
 
     return (
@@ -67,16 +65,20 @@ export default class Identicon extends PureComponent {
         className={classnames('identicon', className)}
         style={getStyles(diameter)}
       >
-        <BlockieIdenticon
-          address={address}
-          diameter={diameter}
-        />
+        <BlockieIdenticon address={address} diameter={diameter} />
       </div>
     )
   }
 
-  render () {
-    const { className, address, image, diameter, useBlockie, addBorder } = this.props
+  render() {
+    const {
+      className,
+      address,
+      image,
+      diameter,
+      useBlockie,
+      addBorder,
+    } = this.props
 
     if (image) {
       return this.renderImage()
@@ -85,13 +87,18 @@ export default class Identicon extends PureComponent {
     if (address) {
       const checksummedAddress = checksumAddress(address)
 
-      if (contractMap[checksummedAddress] && contractMap[checksummedAddress].logo) {
+      if (
+        contractMap[checksummedAddress] &&
+        contractMap[checksummedAddress].logo
+      ) {
         return this.renderJazzicon()
       }
 
       return (
-        <div className={classnames({ 'identicon__address-wrapper': addBorder })}>
-          { useBlockie ? this.renderBlockie() : this.renderJazzicon() }
+        <div
+          className={classnames({ 'identicon__address-wrapper': addBorder })}
+        >
+          {useBlockie ? this.renderBlockie() : this.renderJazzicon()}
         </div>
       )
     }

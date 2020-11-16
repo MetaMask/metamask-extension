@@ -13,10 +13,7 @@ import Button from '../../../ui/button'
 import { useI18nContext } from '../../../../hooks/useI18nContext'
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes'
 
-const {
-  ERROR,
-  LOADING,
-} = ALERT_STATE
+const { ERROR, LOADING } = ALERT_STATE
 
 const InvalidCustomNetworkAlert = ({ history }) => {
   const t = useI18nContext()
@@ -28,15 +25,11 @@ const InvalidCustomNetworkAlert = ({ history }) => {
 
   const footer = (
     <>
-      {
-        alertState === ERROR
-          ? (
-            <div className="invalid-custom-network-alert__error">
-              { t('failureMessage') }
-            </div>
-          )
-          : null
-      }
+      {alertState === ERROR ? (
+        <div className="invalid-custom-network-alert__error">
+          {t('failureMessage')}
+        </div>
+      ) : null}
       <div className="invalid-custom-network-alert__footer-row">
         <Button
           disabled={alertState === LOADING}
@@ -44,7 +37,7 @@ const InvalidCustomNetworkAlert = ({ history }) => {
           type="secondary"
           className="invalid-custom-network-alert__footer-row-button"
         >
-          { t('dismiss') }
+          {t('dismiss')}
         </Button>
         <Button
           disabled={alertState === LOADING}
@@ -55,7 +48,7 @@ const InvalidCustomNetworkAlert = ({ history }) => {
           type="primary"
           className="invalid-custom-network-alert__footer-row-button"
         >
-          { t('settings') }
+          {t('settings')}
         </Button>
       </div>
     </>
@@ -72,19 +65,17 @@ const InvalidCustomNetworkAlert = ({ history }) => {
       <p>{t('invalidCustomNetworkAlertContent1', [networkName])}</p>
       <p>{t('invalidCustomNetworkAlertContent2')}</p>
       <p>
-        {
-          t('invalidCustomNetworkAlertContent3', [(
-            <span
-              key="invalidCustomNetworkAlertContentLink"
-              className="invalid-custom-network-alert__content-link"
-              onClick={
-                () => global.platform.openTab({ url: 'https://chainid.network' })
-              }
-            >
-              chainId.network
-            </span>
-          )])
-        }
+        {t('invalidCustomNetworkAlertContent3', [
+          <span
+            key="invalidCustomNetworkAlertContentLink"
+            className="invalid-custom-network-alert__content-link"
+            onClick={() =>
+              global.platform.openTab({ url: 'https://chainid.network' })
+            }
+          >
+            chainId.network
+          </span>,
+        ])}
       </p>
     </Popover>
   )
