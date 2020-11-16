@@ -7,13 +7,11 @@ import {
 export function getFirstTimeFlowTypeRoute(state) {
   const { firstTimeFlowType } = state.metamask
 
-  let nextRoute
+  let nextRoute = DEFAULT_ROUTE
   if (firstTimeFlowType === 'create') {
     nextRoute = INITIALIZE_CREATE_PASSWORD_ROUTE
   } else if (firstTimeFlowType === 'import') {
     nextRoute = INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE
-  } else {
-    nextRoute = DEFAULT_ROUTE
   }
 
   return nextRoute

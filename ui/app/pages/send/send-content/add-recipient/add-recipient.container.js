@@ -17,8 +17,8 @@ function mapStateToProps(state) {
 
   let addressBookEntryName = ''
   if (ensResolution) {
-    const addressBookEntry = getAddressBookEntry(state, ensResolution) || {}
-    addressBookEntryName = addressBookEntry.name
+    const addressBookEntry = getAddressBookEntry(state, ensResolution)
+    addressBookEntryName = addressBookEntry?.name
   }
 
   const addressBook = getAddressBook(state)

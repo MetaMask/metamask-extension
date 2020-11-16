@@ -16,6 +16,7 @@ export default class GasFeeDisplay extends Component {
 
   render() {
     const { gasTotal, gasLoadingError, onReset } = this.props
+    const { t } = this.context
 
     return (
       <div className="send-v2__gas-fee-display">
@@ -31,13 +32,13 @@ export default class GasFeeDisplay extends Component {
           </div>
         ) : gasLoadingError ? (
           <div className="currency-display.currency-display--message">
-            {this.context.t('setGasPrice')}
+            {t('setGasPrice')}
           </div>
         ) : (
-          <div className="currency-display">{this.context.t('loading')}</div>
+          <div className="currency-display">{t('loading')}</div>
         )}
         <button className="gas-fee-reset" onClick={onReset}>
-          {this.context.t('reset')}
+          {t('reset')}
         </button>
       </div>
     )

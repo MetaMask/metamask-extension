@@ -167,9 +167,9 @@ export default function TransactionList({
           </div>
         )}
         <div className="transaction-list__completed-transactions">
-          {pendingLength > 0 ? (
+          {pendingLength && (
             <div className="transaction-list__header">{t('history')}</div>
-          ) : null}
+          )}
           {completedTransactions.length > 0 ? (
             completedTransactions
               .slice(0, limit)
@@ -193,7 +193,7 @@ export default function TransactionList({
               rounded
               onClick={viewMore}
             >
-              View More
+              {t('viewMoreTransactions')}
             </Button>
           )}
         </div>

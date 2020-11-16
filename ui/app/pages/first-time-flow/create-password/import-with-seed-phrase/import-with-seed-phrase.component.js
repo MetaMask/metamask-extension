@@ -81,7 +81,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
       let confirmPasswordError = ''
       let passwordError = ''
 
-      if (password && password.length < 8) {
+      if (password?.length < 8) {
         passwordError = t('passwordNotLongEnough')
       }
 

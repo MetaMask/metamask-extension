@@ -151,22 +151,22 @@ const contractExchangeRatesSelector = (state) =>
 
 const tokenDecimalsSelector = createSelector(
   tokenPropsSelector,
-  (tokenProps) => tokenProps && tokenProps.tokenDecimals,
+  (tokenProps) => tokenProps?.tokenDecimals,
 )
 
 const tokenDataArgsSelector = createSelector(
   tokenDataSelector,
-  (tokenData) => (tokenData && tokenData.args) || [],
+  (tokenData) => tokenData?.args || [],
 )
 
 const txParamsSelector = createSelector(
   txDataSelector,
-  (txData) => (txData && txData.txParams) || {},
+  (txData) => txData?.txParams || {},
 )
 
 export const tokenAddressSelector = createSelector(
   txParamsSelector,
-  (txParams) => txParams && txParams.to,
+  (txParams) => txParams?.to,
 )
 
 const TOKEN_PARAM_TO = '_to'

@@ -75,11 +75,7 @@ class PrivateKeyImportView extends Component {
 
   checkInputEmpty() {
     const privateKey = this.inputRef.current.value
-    let isEmpty = true
-    if (privateKey !== '') {
-      isEmpty = false
-    }
-    this.setState({ isEmpty })
+    this.setState({ isEmpty: privateKey === '' })
   }
 
   render() {
@@ -124,7 +120,7 @@ class PrivateKeyImportView extends Component {
             {this.context.t('import')}
           </Button>
         </div>
-        {error ? <span className="error">{error}</span> : null}
+        {error && <span className="error">{error}</span>}
       </div>
     )
   }

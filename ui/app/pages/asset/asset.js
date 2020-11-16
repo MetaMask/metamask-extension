@@ -14,13 +14,11 @@ const Asset = () => {
 
   const token = tokens.find(({ address }) => address === asset)
 
-  let content
+  let content = <Redirect to={{ pathname: DEFAULT_ROUTE }} />
   if (token) {
     content = <TokenAsset token={token} />
   } else if (asset === nativeCurrency) {
     content = <NativeAsset nativeCurrency={nativeCurrency} />
-  } else {
-    content = <Redirect to={{ pathname: DEFAULT_ROUTE }} />
   }
   return <div className="main-container asset__container">{content}</div>
 }

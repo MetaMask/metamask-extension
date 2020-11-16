@@ -39,26 +39,19 @@ export default class ConfirmAddToken extends Component {
       mostRecentOverviewPage,
       pendingTokens,
     } = this.props
+    const { t } = this.context
 
     return (
       <div className="page-container">
         <div className="page-container__header">
-          <div className="page-container__title">
-            {this.context.t('addTokens')}
-          </div>
-          <div className="page-container__subtitle">
-            {this.context.t('likeToAddTokens')}
-          </div>
+          <div className="page-container__title">{t('addTokens')}</div>
+          <div className="page-container__subtitle">{t('likeToAddTokens')}</div>
         </div>
         <div className="page-container__content">
           <div className="confirm-add-token">
             <div className="confirm-add-token__header">
-              <div className="confirm-add-token__token">
-                {this.context.t('token')}
-              </div>
-              <div className="confirm-add-token__balance">
-                {this.context.t('balance')}
-              </div>
+              <div className="confirm-add-token__token">{t('token')}</div>
+              <div className="confirm-add-token__balance">{t('balance')}</div>
             </div>
             <div className="confirm-add-token__token-list">
               {Object.entries(pendingTokens).map(([address, token]) => {
@@ -96,7 +89,7 @@ export default class ConfirmAddToken extends Component {
               className="page-container__footer-button"
               onClick={() => history.push(ADD_TOKEN_ROUTE)}
             >
-              {this.context.t('back')}
+              {t('back')}
             </Button>
             <Button
               type="secondary"
@@ -128,7 +121,7 @@ export default class ConfirmAddToken extends Component {
                 })
               }}
             >
-              {this.context.t('addTokens')}
+              {t('addTokens')}
             </Button>
           </footer>
         </div>

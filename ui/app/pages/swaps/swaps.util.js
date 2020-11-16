@@ -487,7 +487,7 @@ export function quotesToRenderableData(
             )
             .minus(rawEthFee, 10)
 
-    let liquiditySourceKey
+    let liquiditySourceKey = 'swapUnknown'
     let renderedSlippage = slippage
 
     if (aggType === 'AGG') {
@@ -497,8 +497,6 @@ export function quotesToRenderableData(
       renderedSlippage = 0
     } else if (aggType === 'DEX') {
       liquiditySourceKey = 'swapDecentralizedExchange'
-    } else {
-      liquiditySourceKey = 'swapUnknown'
     }
 
     return {

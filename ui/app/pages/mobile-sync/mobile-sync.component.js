@@ -45,9 +45,7 @@ export default class MobileSyncPage extends Component {
 
   componentDidMount() {
     const passwordBox = document.getElementById('password-box')
-    if (passwordBox) {
-      passwordBox.focus()
-    }
+    passwordBox?.focus()
   }
 
   startIdleTimeout() {

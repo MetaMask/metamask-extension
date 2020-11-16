@@ -56,7 +56,7 @@ class RestoreVaultPage extends Component {
     let confirmPasswordError = null
     let passwordError = null
 
-    if (password && password.length < 8) {
+    if (password?.length < 8) {
       passwordError = this.context.t('passwordNotLongEnough')
     }
 

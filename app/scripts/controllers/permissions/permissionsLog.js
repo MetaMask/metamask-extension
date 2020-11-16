@@ -281,8 +281,7 @@ export default class PermissionsLogController {
 
     // eth_accounts requires special handling, because of information
     // we store about the accounts
-    const existingEthAccountsEntry =
-      history[origin] && history[origin].eth_accounts
+    const existingEthAccountsEntry = history[origin]?.eth_accounts
     const newEthAccountsEntry = newEntries.eth_accounts
 
     if (existingEthAccountsEntry && newEthAccountsEntry) {

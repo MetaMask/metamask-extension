@@ -5,10 +5,7 @@ import { checksumAddress } from '../app/helpers/utils/util'
 let iconFactory
 
 export default function iconFactoryGenerator(jazzicon) {
-  if (!iconFactory) {
-    iconFactory = new IconFactory(jazzicon)
-  }
-  return iconFactory
+  return iconFactory || new IconFactory(jazzicon)
 }
 
 function IconFactory(jazzicon) {
@@ -47,9 +44,7 @@ IconFactory.prototype.generateNewIdenticon = function (address, diameter) {
 // util
 
 function iconExistsFor(address) {
-  return (
-    contractMap[address] && isValidAddress(address) && contractMap[address].logo
-  )
+  return contractMap[address]?.logo && isValidAddress(address)
 }
 
 function imageElFor(address) {

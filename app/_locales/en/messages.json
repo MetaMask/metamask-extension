@@ -2095,6 +2095,9 @@
   "viewContact": {
     "message": "View Contact"
   },
+  "viewMoreTransactions": {
+    "message": "View more"
+  },
   "viewOnCustomBlockExplorer": {
     "message": "View at $1"
   },

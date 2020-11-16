@@ -47,34 +47,36 @@ class AddToken extends Component {
     const { pendingTokens = {} } = this.props
     const pendingTokenKeys = Object.keys(pendingTokens)
 
-    if (pendingTokenKeys.length > 0) {
-      let selectedTokens = {}
-      let customToken = {}
-
-      pendingTokenKeys.forEach((tokenAddress) => {
-        const token = pendingTokens[tokenAddress]
-        const { isCustom } = token
-
-        if (isCustom) {
-          customToken = { ...token }
-        } else {
-          selectedTokens = { ...selectedTokens, [tokenAddress]: { ...token } }
-        }
-      })
-
-      const {
-        address: customAddress = '',
-        symbol: customSymbol = '',
-        decimals: customDecimals = 0,
-      } = customToken
-
-      this.setState({
-        selectedTokens,
-        customAddress,
-        customSymbol,
-        customDecimals,
-      })
+    if (pendingTokenKeys.length < 1) {
+      return
     }
+
+    let selectedTokens = {}
+    let customToken = {}
+
+    pendingTokenKeys.forEach((tokenAddress) => {
+      const token = pendingTokens[tokenAddress]
+      const { isCustom } = token
+
+      if (isCustom) {
+        customToken = { ...token }
+      } else {
+        selectedTokens = { ...selectedTokens, [tokenAddress]: { ...token } }
+      }
+    })
+
+    const {
+      address: customAddress = '',
+      symbol: customSymbol = '',
+      decimals: customDecimals = 0,
+    } = customToken
+
+    this.setState({
+      selectedTokens,
+      customAddress,
+      customSymbol,
+      customDecimals,
+    })
   }
 
   handleToggleToken(token) {
@@ -310,12 +312,11 @@ class AddToken extends Component {
   }
 
   renderTabs() {
+    const { t } = this.context
     return (
       <Tabs>
-        <Tab name={this.context.t('search')}>{this.renderSearchToken()}</Tab>
-        <Tab name={this.context.t('customToken')}>
-          {this.renderCustomTokenForm()}
-        </Tab>
+        <Tab name={t('search')}>{this.renderSearchToken()}</Tab>
+        <Tab name={t('customToken')}>{this.renderCustomTokenForm()}</Tab>
       </Tabs>
     )
   }

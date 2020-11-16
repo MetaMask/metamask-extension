@@ -185,10 +185,7 @@ export function getAccountToConnectToActiveTab(state) {
   } = state
   const numberOfAccounts = Object.keys(identities).length
 
-  if (
-    connectedAccounts.length &&
-    connectedAccounts.length !== numberOfAccounts
-  ) {
+  if (connectedAccounts?.length !== numberOfAccounts) {
     if (
       connectedAccounts.findIndex((address) => address === selectedAddress) ===
       -1
@@ -213,7 +210,7 @@ export function getOrderedConnectedAccountsForActiveTab(state) {
   const connectedAccounts = getPermittedAccountsForCurrentTab(state)
 
   return orderedAccounts
-    .filter((account) => connectedAccounts.includes(account.address))
+    .filter(({ address }) => connectedAccounts.includes(address))
     .map((account) => ({
       ...account,
       lastActive: permissionsHistoryByAccount?.[account.address],

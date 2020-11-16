@@ -19,9 +19,8 @@ const fetchWithCache = async (
     fetchOptions.headers = new window.Headers(fetchOptions.headers)
   }
   if (
-    fetchOptions.headers &&
-    fetchOptions.headers.has('Content-Type') &&
-    fetchOptions.headers.get('Content-Type') !== 'application/json'
+    fetchOptions.headers?.has('Content-Type') &&
+    fetchOptions.headers?.get('Content-Type') !== 'application/json'
   ) {
     throw new Error('fetchWithCache only supports JSON responses')
   }

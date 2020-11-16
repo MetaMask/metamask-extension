@@ -38,7 +38,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
 
   componentDidMount() {
     const { seedPhrase = '' } = this.props
-    const sortedSeedWords = (seedPhrase.split(' ') || []).sort()
+    const sortedSeedWords = seedPhrase.split(' ')?.sort() || []
     this.setState({ sortedSeedWords })
   }
 

@@ -38,8 +38,7 @@ import {
  * selected account's ETH balance, as expected by the Swaps API.
  */
 export function useSwapsEthToken() {
-  const selectedAccount = useSelector(getSelectedAccount)
-  const { balance } = selectedAccount
+  const { balance } = useSelector(getSelectedAccount)
 
   return {
     ...ETH_SWAPS_TOKEN_OBJECT,

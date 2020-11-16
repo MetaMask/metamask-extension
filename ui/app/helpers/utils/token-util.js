@@ -79,7 +79,8 @@ async function getDecimals(tokenAddress) {
 }
 
 export async function fetchSymbolAndDecimals(tokenAddress) {
-  let symbol, decimals
+  let symbol = DEFAULT_SYMBOL
+  let decimals = DEFAULT_DECIMALS
 
   try {
     symbol = await getSymbol(tokenAddress)
@@ -92,8 +93,8 @@ export async function fetchSymbolAndDecimals(tokenAddress) {
   }
 
   return {
-    symbol: symbol || DEFAULT_SYMBOL,
-    decimals: decimals || DEFAULT_DECIMALS,
+    symbol,
+    decimals,
   }
 }
 
@@ -109,7 +110,8 @@ export async function getSymbolAndDecimals(tokenAddress, existingTokens = []) {
     }
   }
 
-  let symbol, decimals
+  let symbol = DEFAULT_SYMBOL
+  let decimals = DEFAULT_DECIMALS
 
   try {
     symbol = await getSymbol(tokenAddress)
@@ -122,8 +124,8 @@ export async function getSymbolAndDecimals(tokenAddress, existingTokens = []) {
   }
 
   return {
-    symbol: symbol || DEFAULT_SYMBOL,
-    decimals: decimals || DEFAULT_DECIMALS,
+    symbol,
+    decimals,
   }
 }
 
@@ -179,7 +181,7 @@ export function getTokenValueParam(tokenData = {}) {
 
 export function getTokenValue(tokenParams = []) {
   const valueData = tokenParams.find((param) => param.name === '_value')
-  return valueData && valueData.value
+  return valueData?.value
 }
 
 /**

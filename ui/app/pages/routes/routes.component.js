@@ -224,12 +224,10 @@ export default class Routes extends Component {
     }
 
     const windowType = getEnvironmentType()
-
-    if (windowType === ENVIRONMENT_TYPE_NOTIFICATION) {
-      return true
-    }
-
-    if (windowType === ENVIRONMENT_TYPE_POPUP && this.onConfirmPage()) {
+    if (
+      windowType === ENVIRONMENT_TYPE_NOTIFICATION ||
+      (windowType === ENVIRONMENT_TYPE_POPUP && this.onConfirmPage())
+    ) {
       return true
     }
 

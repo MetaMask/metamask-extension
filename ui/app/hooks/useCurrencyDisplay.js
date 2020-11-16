@@ -49,19 +49,19 @@ export function useCurrencyDisplay(
   const toCurrency = currency || currentCurrency
 
   const value = useMemo(() => {
-    if (displayValue) {
-      return displayValue
-    }
-    return formatCurrency(
-      getValueFromWeiHex({
-        value: inputValue,
-        fromCurrency: nativeCurrency,
+    return (
+      displayValue ||
+      formatCurrency(
+        getValueFromWeiHex({
+          value: inputValue,
+          fromCurrency: nativeCurrency,
+          toCurrency,
+          conversionRate,
+          numberOfDecimals: numberOfDecimals || 2,
+          toDenomination: denomination,
+        }),
         toCurrency,
-        conversionRate,
-        numberOfDecimals: numberOfDecimals || 2,
-        toDenomination: denomination,
-      }),
-      toCurrency,
+      )
     )
   }, [
     inputValue,

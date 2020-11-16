@@ -82,7 +82,6 @@ export function getSafeLowEstimate(state) {
 
 export function isCustomPriceSafe(state) {
   const safeLow = getSafeLowEstimate(state)
-
   const customGasPrice = getCustomGasPrice(state)
 
   if (!customGasPrice) {

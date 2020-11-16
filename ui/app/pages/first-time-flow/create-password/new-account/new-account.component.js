@@ -53,7 +53,7 @@ export default class NewAccount extends PureComponent {
       let passwordError = ''
       let confirmPasswordError = ''
 
-      if (password && password.length < 8) {
+      if (password?.length < 8) {
         passwordError = t('passwordNotLongEnough')
       }
 
