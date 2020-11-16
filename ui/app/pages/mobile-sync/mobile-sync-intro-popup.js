@@ -34,12 +34,6 @@ export default function MobileSyncIntroPopup({ onClose }) {
       >
         <div className="intro-popup__content">
           <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
             className="qr-code__wrapper"
             dangerouslySetInnerHTML={{
               __html: qrImage.createTableTag(4),

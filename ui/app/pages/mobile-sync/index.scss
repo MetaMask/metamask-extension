@@ -1,15 +1,24 @@
 .mobile-welcome-popup {
   &.intro-popup__popover {
     background: url(/images/mobile-launch.png) 0 0 no-repeat #fff;
-    width: 328px !important;
     background-size: contain;
+
+    /* Overrides the size being modified via media query */
+    width: 328px !important;
   }
 
   .popover-header {
     background: none;
     margin: 120px 0 0 0;
   }
-  
+
+  .qr-code__wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
   button.fa-times {
     margin-top: -240px;
   }

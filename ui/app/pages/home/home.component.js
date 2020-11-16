@@ -285,9 +285,9 @@ export default class Home extends PureComponent {
           {!swapsWelcomeMessageHasBeenShown && swapsEnabled && isMainnet ? (
             <SwapsIntroPopup onClose={setSwapsWelcomeMessageHasBeenShown} />
           ) : null}
-          {/*(swapsWelcomeMessageHasBeenShown || !swapsEnabled) &&
+          {(swapsWelcomeMessageHasBeenShown || !swapsEnabled) &&
           !mobileWelcomeMessageHasBeenShown &&
-          isMainnet*/ true ? (
+          isMainnet ? (
             <MobileSyncIntroPopup
               onClose={setMobileWelcomeMessageHasBeenShown}
             />
