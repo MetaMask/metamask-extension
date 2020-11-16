@@ -2,10 +2,10 @@ import { strict as assert } from 'assert'
 import ObservableStore from 'obs-store'
 import { normalize as normalizeAddress } from 'eth-sig-util'
 import { isValidAddress, sha3, bufferToHex } from 'ethereumjs-util'
-import contractMap from 'eth-contract-metadata'
 import ethers from 'ethers'
 import log from 'loglevel'
 import { isPrefixedFormattedHexString } from '../lib/util'
+import { LISTED_CONTRACT_ADDRESSES } from '../../../shared/constants/tokens'
 import { addInternalMethodPrefix } from './permissions'
 import { NETWORK_TYPE_TO_ID_MAP } from './network/enums'
 
@@ -181,7 +181,7 @@ export default class PreferencesController {
       symbol,
       decimals,
       image,
-      unlisted: contractMap[address] === undefined,
+      unlisted: !LISTED_CONTRACT_ADDRESSES.includes(address.toLowerCase()),
     }
     suggested[address] = newEntry
     this.store.updateState({ suggestedTokens: suggested })

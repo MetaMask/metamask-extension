@@ -2,7 +2,6 @@ import abi from 'human-standard-token-abi'
 import pify from 'pify'
 import log from 'loglevel'
 import { capitalize } from 'lodash'
-import contractMap from 'eth-contract-metadata'
 import getBuyEthUrl from '../../../app/scripts/lib/buy-eth-url'
 import { checksumAddress } from '../helpers/utils/util'
 import { calcTokenBalance, estimateGasForSend } from '../pages/send/send.utils'
@@ -24,11 +23,8 @@ import {
 } from '../selectors'
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account'
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask'
+import { LISTED_CONTRACT_ADDRESSES } from '../../../shared/constants/tokens'
 import * as actionConstants from './actionConstants'
-
-const LISTED_CONTRACT_ADDRESSES = Object.keys(contractMap).map((address) =>
-  address.toLowerCase(),
-)
 
 let background = null
 let promisifiedBackground = null
