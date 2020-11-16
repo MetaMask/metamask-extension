@@ -49,12 +49,6 @@
   "builtInCalifornia": {
     "message": "MetaMask California'da tasarlandı ve yaratıldı"
   },
-  "buyCoinSwitch": {
-    "message": "CoinSwitch'de satın al"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "Cairnswich, 300'den fazla kriptona en iyi oranda eşlik eden tek durak noktasıdır."
-  },
   "cancel": {
     "message": "Vazgeç"
   },
@@ -78,9 +72,6 @@
   },
   "connectingToRopsten": {
     "message": "Ropsten Test Ağına bağlanıyor"
-  },
-  "continueToCoinSwitch": {
-    "message": "CoinSwitch'e devam et"
   },
   "contractDeployment": {
     "message": "Sözleşme kurulumu"

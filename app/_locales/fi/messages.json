@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask on suunniteltu ja koottu Kaliforniassa."
   },
-  "buyCoinSwitch": {
-    "message": "Osta CoinSwitchissa"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch on yhden pysähdyksen kohde yli 300 kryptovaluutan vaihtoon parhailla kursseilla."
-  },
   "buyWithWyre": {
     "message": "Osta ETH:ta Wyrella"
   },
@@ -223,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "Yhdistetään Ropstenin koeverkkoon"
-  },
-  "continueToCoinSwitch": {
-    "message": "Jatka CoinSwitchiin"
   },
   "continueToWyre": {
     "message": "Jatka Wyreen"

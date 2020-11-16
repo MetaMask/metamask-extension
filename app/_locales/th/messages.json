@@ -52,12 +52,6 @@
   "builtInCalifornia": {
     "message": "MetaMask ออกแบบและพัฒนาที่แคลิฟอร์เนีย"
   },
-  "buyCoinSwitch": {
-    "message": "ซื้อด้วย CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch เป็นจุดหมายปลายทางแบบครบวงจรในการแลกเปลี่ยนสกุลเงินมากกว่า 300 ครั้งในอัตราที่ดีที่สุด"
-  },
   "cancel": {
     "message": "ยกเลิก"
   },
@@ -87,9 +81,6 @@
   },
   "connectingToRopsten": {
     "message": "เชื่อมต่อกับเครือข่ายทดสอบ Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "ไปที่ CoinSwitch"
   },
   "continueToWyre": {
     "message": "ไปที่ Wyre"

@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask er designet og bygget i Californien."
   },
-  "buyCoinSwitch": {
-    "message": "Køb på CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch er den direkte destination for veksling af mere end 300 kryptovalutaer til den bedste sats."
-  },
   "buyWithWyre": {
     "message": "Køb ETH med Wyre"
   },
@@ -223,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "Forbinder til Ropsten-testnetværk"
-  },
-  "continueToCoinSwitch": {
-    "message": "Fortsæt til CoinSwitch"
   },
   "continueToWyre": {
     "message": "Fortsæt til Wyre"

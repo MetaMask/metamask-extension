@@ -224,12 +224,6 @@
   "buy": {
     "message": "Buy"
   },
-  "buyCoinSwitch": {
-    "message": "Buy on CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch is the one-stop destination to exchange more than 300 cryptocurrencies at the best rate."
-  },
   "buyWithWyre": {
     "message": "Buy ETH with Wyre"
   },
@@ -363,9 +357,6 @@
   },
   "contactsSettingsDescription": {
     "message": "Add, edit, remove, and manage your contacts"
-  },
-  "continueToCoinSwitch": {
-    "message": "Continue to CoinSwitch"
   },
   "continueToWyre": {
     "message": "Continue to Wyre"

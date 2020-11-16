@@ -31,12 +31,6 @@
   "balance": {
     "message": "Balanse:"
   },
-  "buyCoinSwitch": {
-    "message": "Bumili sa CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "Ang CoinSwitch ay isang one-stop destination upang makipagpalitan ng higit sa 300 mga cryptocurrency sa pinakamahusay na rate."
-  },
   "cancel": {
     "message": "Kanselahin"
   },
@@ -45,9 +39,6 @@
   },
   "confirmPassword": {
     "message": "Tiyakin ang Password"
-  },
-  "continueToCoinSwitch": {
-    "message": "Magpatuloy sa CoinSwitch"
   },
   "contractDeployment": {
     "message": "Pag-deploy ng Contract"

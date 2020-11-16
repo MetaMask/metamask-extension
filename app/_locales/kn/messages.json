@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask ಅನ್ನು ವಿನ್ಯಾಸಗೊಳಿಸಲಾಗಿದೆ ಮತ್ತು ಕ್ಯಾಲಿಫೋರ್ನಿಯಾದಲ್ಲಿ ನಿರ್ಮಿಸಲಾಗಿದೆ."
   },
-  "buyCoinSwitch": {
-    "message": "ಕಾಯಿನ್‌ಸ್ವೀಚ್‌ನಲ್ಲಿ ಖರೀದಿಸಿ"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "300 ಕ್ಕೂ ಹೆಚ್ಚು ಕ್ರಿಪ್ಟೋಕರೆನ್ಸಿಗಳನ್ನು ಉತ್ತಮ ದರದಲ್ಲಿ ವಿನಿಮಯ ಮಾಡಿಕೊಳ್ಳುವ ಒಂದು ತಾಣವೆಂದರೆ ಕಾಯಿನ್‌ಸ್ವಿಚ್ ಆಗಿದೆ."
-  },
   "buyWithWyre": {
     "message": "Wyre ನೊಂದಿಗೆ ETH ಖರೀದಿಸಿ"
   },
@@ -223,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "Ropsten ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
-  },
-  "continueToCoinSwitch": {
-    "message": "CoinSwitch ಗೆ ಮುಂದುವರಿಸಿ"
   },
   "continueToWyre": {
     "message": "Wyre ಗೆ ಮುಂದುವರಿಸಿ"

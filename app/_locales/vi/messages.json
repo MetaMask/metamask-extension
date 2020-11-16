@@ -34,12 +34,6 @@
   "balance": {
     "message": "Số dư:"
   },
-  "buyCoinSwitch": {
-    "message": "Mua trên CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch là điểm đến duy nhất để trao đổi hơn 300 tiền điện tử với tốc độ tốt nhất."
-  },
   "cancel": {
     "message": "Hủy"
   },
@@ -48,9 +42,6 @@
   },
   "confirmPassword": {
     "message": "Xác nhận mật khẩu"
-  },
-  "continueToCoinSwitch": {
-    "message": "Tiếp tục đến CoinSwitch"
   },
   "contractDeployment": {
     "message": "Triển khai hợp đồng"

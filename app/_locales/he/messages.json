@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask תוכנן ונבנה בקליפורניה."
   },
-  "buyCoinSwitch": {
-    "message": "רכישה ב-CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch הוא היעד עם כלל האפשרויות להחלפת יותר מ-300 מטבעות קריפטו בשער הטוב ביותר."
-  },
   "buyWithWyre": {
     "message": "רכישת את'ר עם Wyre"
   },
@@ -223,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "מתחבר אל רשת בדיקה Ropsten "
-  },
-  "continueToCoinSwitch": {
-    "message": "המשך אל CoinSwitch"
   },
   "continueToWyre": {
     "message": "המשך ל-Wyre"

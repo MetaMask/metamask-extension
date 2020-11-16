@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask ካሊፎርኒያ ውስጥ ተዘጋጅቶ የተገነባ ነው።"
   },
-  "buyCoinSwitch": {
-    "message": "በ CoinSwitch ላይ ይግዙ"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch ከ300 በላይ ክሪፕቶ ከረንሲዎችን በጥሩ ዋጋ ለመመንዘር ባለ አንድ ማቆሚያ መዳረሻ ነው።"
-  },
   "buyWithWyre": {
     "message": "ETH በ Wyre ይግዙ"
   },
@@ -223,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "ከ Ropsten የሙከራ አውታረ መረብ ጋር በመገናኘት ላይ"
-  },
-  "continueToCoinSwitch": {
-    "message": "ወደ CoinSwitch ይቀጥሉ"
   },
   "continueToWyre": {
     "message": "ወደ Wyre ይቀጥሉ"

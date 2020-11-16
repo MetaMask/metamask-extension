@@ -76,12 +76,6 @@
   "builtInCalifornia": {
     "message": "MetaMask fèt e bati nan California."
   },
-  "buyCoinSwitch": {
-    "message": "Achte sou CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch se destinasyon nan yon sèl-Stop nan echanj plis pase 300 kriptoksèr nan pousantaj la pi byen."
-  },
   "cancel": {
     "message": "Anile"
   },
@@ -120,9 +114,6 @@
   },
   "connectingToRopsten": {
     "message": "Konekte ak Ropsten Tès Rezo a"
-  },
-  "continueToCoinSwitch": {
-    "message": "Kontinye CoinSwitch"
   },
   "contractDeployment": {
     "message": "Kontra Deplwaman"
