@@ -131,6 +131,7 @@ export default class MetamaskController extends EventEmitter {
       networkController: this.networkController,
       version: this.platform.getVersion(),
       environment: process.env.METAMASK_ENVIRONMENT,
+      initState: initState.MetaMetricsController,
     })
 
     this.appStateController = new AppStateController({
@@ -288,7 +289,7 @@ export default class MetamaskController extends EventEmitter {
       blockTracker: this.blockTracker,
       trackMetaMetricsEvent: this.metaMetricsController.trackEvent,
       getParticipateInMetrics: () =>
-        this.preferencesController.getParticipateInMetaMetrics(),
+        this.metaMetricsController.participateInMetaMetrics,
     })
     this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation())
 
@@ -350,6 +351,7 @@ export default class MetamaskController extends EventEmitter {
       TransactionController: this.txController.store,
       KeyringController: this.keyringController.store,
       PreferencesController: this.preferencesController.store,
+      MetamaskController: this.metaMetricsController.store,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
       NetworkController: this.networkController.store,
@@ -376,6 +378,7 @@ export default class MetamaskController extends EventEmitter {
       TypesMessageManager: this.typedMessageManager.memStore,
       KeyringController: this.keyringController.memStore,
       PreferencesController: this.preferencesController.store,
+      MetaMetricsController: this.metaMetricsController.store,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
       AlertController: this.alertController.store,
@@ -2424,7 +2427,7 @@ export default class MetamaskController extends EventEmitter {
    */
   setParticipateInMetaMetrics(bool, cb) {
     try {
-      const metaMetricsId = this.preferencesController.setParticipateInMetaMetrics(
+      const metaMetricsId = this.metaMetricsController.setParticipateInMetaMetrics(
         bool,
       )
       cb(null, metaMetricsId)
@@ -2438,7 +2441,7 @@ export default class MetamaskController extends EventEmitter {
 
   setMetaMetricsSendCount(val, cb) {
     try {
-      this.preferencesController.setMetaMetricsSendCount(val)
+      this.metaMetricsController.setMetaMetricsSendCount(val)
       cb(null)
       return
     } catch (err) {

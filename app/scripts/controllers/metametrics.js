@@ -1,6 +1,7 @@
 import { merge, omit } from 'lodash'
 import Analytics from 'analytics-node'
 import ObservableStore from 'obs-store'
+import { bufferToHex, sha3 } from 'ethereumjs-util'
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../lib/enums'
 import {
   createSegmentMock,
@@ -42,6 +43,18 @@ export function sendCountIsTrackable(sendCount) {
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsPageOptions} MetaMetricsPageOptions
  */
 
+/**
+ * @typedef {Object} MetaMetricsControllerState
+ * @property {?string} metaMetricsId - The user's metaMetricsId that will be
+ *  attached to all non-anonymized event payloads
+ * @property {?boolean} participateInMetaMetrics - The user's preference for
+ *  participating in the MetaMetrics analytics program. This setting controls
+ *  whether or not events are tracked
+ * @property {number} metaMetricsSendCount - How many send transactions have
+ *  been tracked through this controller. Used to prevent attaching sensitive
+ *  data that can be traced through on chain data.
+ */
+
 export default class MetaMetricsController {
   /**
    * @param {boolean} isDevOrTestEnvironment - is the extension running in test
@@ -68,6 +81,7 @@ export default class MetaMetricsController {
    *  are attached to events
    * @param {string} version - The version of the extension
    * @param {string} environment - The environment the extension is running in
+   * @param {MetaMetricsControllerState} - State to initialized with
    */
   constructor({
     isDevOrTestEnvironment,
@@ -82,42 +96,31 @@ export default class MetaMetricsController {
     networkController,
     version,
     environment,
+    initState,
   }) {
     const prefState = preferencesController.store.getState()
+    this.chainId = networkController.getCurrentChainId()
+    this.network = networkController.getNetworkIdentifier()
+    this.locale = prefState.currentLocale.replace('_', '-')
+    this.version =
+      environment === 'production' ? version : `${version}-${environment}`
 
     this.store = new ObservableStore({
-      chainId: networkController.getCurrentChainId(),
-      network: networkController.getNetworkIdentifier(),
-      participateInMetaMetrics: prefState.participateInMetaMetrics,
-      metaMetricsId: prefState.metaMetricsId,
-      currentLocale: prefState.currentLocale,
-      version:
-        environment === 'production' ? version : `${version}-${environment}`,
+      participateInMetaMetrics: null,
+      metaMetricsId: null,
+      metaMetricsSendCount: 0,
+      ...initState,
     })
 
-    preferencesController.store.subscribe(
-      ({ participateInMetaMetrics, currentLocale, metaMetricsId }) => {
-        const currentState = this.store.getState()
-        if (
-          participateInMetaMetrics !== currentState.participateInMetaMetrics ||
-          currentLocale !== currentState.currentLocale ||
-          metaMetricsId !== currentState.metaMetricsId
-        ) {
-          this.store.updateState({
-            participateInMetaMetrics,
-            currentLocale,
-            metaMetricsId,
-          })
-        }
-      },
-    )
+    preferencesController.store.subscribe(({ currentLocale }) => {
+      this.locale = currentLocale.replace('_', '-')
+    })
 
     networkController.on('networkDidChange', () => {
-      this.store.updateState({
-        network: networkController.getNetworkIdentifier(),
-        chainId: networkController.getCurrentChainId(),
-      })
+      this.chainId = networkController.getCurrentChainId()
+      this.network = networkController.getNetworkIdentifier()
     })
+
     // We do not want to track events on development builds unless specifically
     // provided a SEGMENT_WRITE_KEY. This also holds true for test environments and
     // E2E, which is handled in the build process by never providing the SEGMENT_WRITE_KEY
@@ -139,6 +142,55 @@ export default class MetaMetricsController {
             flushAt,
             flushInterval,
           })
+  }
+
+  generateMetaMetricsId() {
+    return bufferToHex(
+      sha3(
+        String(Date.now()) +
+          String(Math.round(Math.random() * Number.MAX_SAFE_INTEGER)),
+      ),
+    )
+  }
+
+  /**
+   * Setter for the `participateInMetaMetrics` property
+   *
+   * @param {boolean} bool - Whether or not the user wants to participate in MetaMetrics
+   * @returns {string|null} the string of the new metametrics id, or null if not set
+   *
+   */
+  setParticipateInMetaMetrics(bool) {
+    this.store.updateState({ participateInMetaMetrics: bool })
+    if (bool && !this.metaMetricsId) {
+      this.metaMetricsId = this.generateMetaMetricsId()
+    } else if (bool === false) {
+      this.metaMetricsId = null
+    }
+    return this.metaMetricsId
+  }
+
+  /**
+   * retrieve the user's preference for participating in MetaMetrics
+   */
+  get participateInMetaMetrics() {
+    return this.store.getState().participateInMetaMetrics
+  }
+
+  setMetaMetricsSendCount(val) {
+    this.store.updateState({ metaMetricsSendCount: val })
+  }
+
+  get metaMetricsSendCount() {
+    return this.store.getState().metaMetricsSendCount
+  }
+
+  get metaMetricsId() {
+    return this.store.getState().metaMetricsId
+  }
+
+  set metaMetricsId(metaMetricsId) {
+    this.store.updateState({ metaMetricsId })
   }
 
   /**
@@ -221,7 +273,6 @@ export default class MetaMetricsController {
       metaMetricsId: metaMetricsIdOverride,
       matomoEvent,
       flushImmediately,
-      metaMetricsSendCount,
     } = options
     let idType = 'userId'
     let idValue = this.metaMetricsId
@@ -232,8 +283,8 @@ export default class MetaMetricsController {
     const isSendFlow = Boolean(payload.event.match(/^send|^confirm/iu))
     if (
       isSendFlow &&
-      metaMetricsSendCount &&
-      !sendCountIsTrackable(metaMetricsSendCount + 1)
+      this.metaMetricsSendCount &&
+      !sendCountIsTrackable(this.metaMetricsSendCount + 1)
     ) {
       excludeMetaMetricsId = true
     }
@@ -360,30 +411,5 @@ export default class MetaMetricsController {
     events.push(this._track(this._buildEventPayload(payload), options))
 
     await Promise.all(events)
-  }
-
-  get version() {
-    return this.store.getState().version
-  }
-
-  get network() {
-    return this.store.getState().network
-  }
-
-  get chainId() {
-    return this.store.getState().chainId
-  }
-
-  get locale() {
-    const { currentLocale } = this.store.getState()
-    return currentLocale.replace('_', '-')
-  }
-
-  get metaMetricsId() {
-    return this.store.getState().metaMetricsId
-  }
-
-  get participateInMetaMetrics() {
-    return this.store.getState().participateInMetaMetrics
   }
 }
