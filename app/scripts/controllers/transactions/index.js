@@ -512,16 +512,17 @@ class TransactionController extends EventEmitter {
         ? txMeta.txParams.nonce
         : nonceLock.nextNonce
       let customOrNonce
+
       if (customNonceValue === 0) {
- customOrNonce = 0
-} else {
- customOrNonce = customNonceValue || nonce
-}
+        customOrNonce = 0
+      } else {
+        customOrNonce = customNonceValue || nonce
+      }
 
       txMeta.txParams.nonce = ethUtil.addHexPrefix(customOrNonce.toString(16))
       // add nonce debugging information to txMeta
       txMeta.nonceDetails = nonceLock.nonceDetails
-      if (customNonceValue) {
+      if (customNonceValue === 0 || customNonceValue) {
         txMeta.nonceDetails.customNonceValue = customNonceValue
       }
       this.txStateManager.updateTx(txMeta, 'transactions#approveTransaction')
