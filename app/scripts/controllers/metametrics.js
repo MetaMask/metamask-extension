@@ -101,7 +101,7 @@ export default class MetaMetricsController {
     const prefState = preferencesController.store.getState()
     this.chainId = networkController.getCurrentChainId()
     this.network = networkController.getNetworkIdentifier()
-    this.locale = prefState.currentLocale.replace('_', '-')
+    this.locale = prefState.currentLocale?.replace('_', '-') ?? ''
     this.version =
       environment === 'production' ? version : `${version}-${environment}`
 
@@ -113,7 +113,7 @@ export default class MetaMetricsController {
     })
 
     preferencesController.store.subscribe(({ currentLocale }) => {
-      this.locale = currentLocale.replace('_', '-')
+      this.locale = currentLocale?.replace('_', '-') ?? ''
     })
 
     networkController.on('networkDidChange', () => {
