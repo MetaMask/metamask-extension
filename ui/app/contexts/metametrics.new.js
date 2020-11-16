@@ -96,9 +96,6 @@ function useSegmentContext() {
 
 export function MetaMetricsProvider({ children }) {
   const dispatch = useDispatch()
-  const metaMetricsSendCount = useSelector(
-    (state) => state.metamask.metaMetricsSendCount,
-  )
   const location = useLocation()
   const context = useSegmentContext()
 
@@ -113,13 +110,10 @@ export function MetaMetricsProvider({ children }) {
           environmentType: getEnvironmentType(),
           ...context,
         },
-        {
-          ...options,
-          metaMetricsSendCount,
-        },
+        options,
       )
     },
-    [context, metaMetricsSendCount],
+    [context],
   )
 
   // Used to prevent double tracking page calls

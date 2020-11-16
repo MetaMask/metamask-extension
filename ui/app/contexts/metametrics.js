@@ -36,9 +36,6 @@ export function MetaMetricsProvider({ children }) {
   const confirmTransactionOrigin = txData.origin
   const numberOfTokens = useSelector(getNumberOfTokens)
   const numberOfAccounts = useSelector(getNumberOfAccounts)
-  const metaMetricsSendCount = useSelector(
-    (state) => state.metamask.metaMetricsSendCount,
-  )
   const history = useHistory()
   const [state, setState] = useState(() => ({
     currentPath: new URL(window.location.href).pathname,
@@ -97,7 +94,6 @@ export function MetaMetricsProvider({ children }) {
             false,
           metaMetricsId: config.metaMetricsId,
           matomoEvent: true,
-          metaMetricsSendCount,
           flushImmediately: config.flushImmediately,
         },
       )
@@ -110,7 +106,6 @@ export function MetaMetricsProvider({ children }) {
       numberOfTokens,
       numberOfAccounts,
       environmentType,
-      metaMetricsSendCount,
     ],
   )
 

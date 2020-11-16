@@ -129,7 +129,7 @@ export default class MetaMetricsController {
       !segmentWriteKey || (isDevOrTestEnvironment && !segmentHost)
         ? segmentMock ?? createSegmentMock(flushAt, flushInterval)
         : new Analytics(segmentWriteKey, {
-            segmentHost,
+            host: segmentHost,
             flushAt,
             flushInterval,
           })
@@ -138,7 +138,7 @@ export default class MetaMetricsController {
       !segmentLegacyWriteKey || (isDevOrTestEnvironment && !segmentHost)
         ? segmentLegacyMock ?? createSegmentMock(flushAt, flushInterval)
         : new Analytics(segmentLegacyWriteKey, {
-            segmentHost,
+            host: segmentHost,
             flushAt,
             flushInterval,
           })
