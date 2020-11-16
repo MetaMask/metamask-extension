@@ -5,6 +5,7 @@ import {
   BASE_TOKEN_GAS_COST,
   SIMPLE_GAS_COST,
   INSUFFICIENT_FUNDS_ERROR,
+  GAS_PRICE_TOO_LOW,
   INSUFFICIENT_TOKENS_ERROR,
 } from '../send.constants'
 
@@ -18,7 +19,7 @@ const stubs = {
     }
     return a + b
   }),
-  conversionUtil: sinon.stub().callsFake((val) => parseInt(val, 16)),
+  conversionUtil: sinon.stub().callsFake(val => parseInt(val, 16)),
   conversionGTE: sinon
     .stub()
     .callsFake((obj1, obj2) => obj1.value >= obj2.value),
@@ -55,6 +56,7 @@ const {
   generateTokenTransferData,
   getAmountErrorObject,
   getGasFeeErrorObject,
+  getGasPriceErrorObject,
   getToAddressForGasUpdate,
   calcTokenBalance,
   isBalanceSufficient,
@@ -62,9 +64,9 @@ const {
   removeLeadingZeroes,
 } = sendUtils
 
-describe('send utils', function () {
-  describe('calcGasTotal()', function () {
-    it('should call multiplyCurrencies with the correct params and return the multiplyCurrencies return', function () {
+describe('send utils', function() {
+  describe('calcGasTotal()', function() {
+    it('should call multiplyCurrencies with the correct params and return the multiplyCurrencies return', function() {
       const result = calcGasTotal(12, 15)
       assert.equal(result, '12x15')
       const call_ = stubs.multiplyCurrencies.getCall(0).args
@@ -80,7 +82,7 @@ describe('send utils', function () {
     })
   })
 
-  describe('doesAmountErrorRequireUpdate()', function () {
+  describe('doesAmountErrorRequireUpdate()', function() {
     const config = {
       'should return true if balances are different': {
         balance: 0,
@@ -117,14 +119,14 @@ describe('send utils', function () {
       },
     }
     Object.entries(config).map(([description, obj]) => {
-      it(description, function () {
+      it(description, function() {
         assert.equal(doesAmountErrorRequireUpdate(obj), obj.expectedResult)
       })
     })
   })
 
-  describe('generateTokenTransferData()', function () {
-    it('should return undefined if not passed a selected token', function () {
+  describe('generateTokenTransferData()', function() {
+    it('should return undefined if not passed a selected token', function() {
       assert.equal(
         generateTokenTransferData({
           toAddress: 'mockAddress',
@@ -135,7 +137,7 @@ describe('send utils', function () {
       )
     })
 
-    it('should call abi.rawEncode with the correct params', function () {
+    it('should call abi.rawEncode with the correct params', function() {
       stubs.rawEncode.resetHistory()
       generateTokenTransferData({
         toAddress: 'mockAddress',
@@ -148,7 +150,7 @@ describe('send utils', function () {
       ])
     })
 
-    it('should return encoded token transfer data', function () {
+    it('should return encoded token transfer data', function() {
       assert.equal(
         generateTokenTransferData({
           toAddress: 'mockAddress',
@@ -160,7 +162,7 @@ describe('send utils', function () {
     })
   })
 
-  describe('getAmountErrorObject()', function () {
+  describe('getAmountErrorObject()', function() {
     const config = {
       'should return insufficientFunds error if isBalanceSufficient returns false': {
         amount: 15,
@@ -197,13 +199,13 @@ describe('send utils', function () {
       },
     }
     Object.entries(config).map(([description, obj]) => {
-      it(description, function () {
+      it(description, function() {
         assert.deepEqual(getAmountErrorObject(obj), obj.expectedResult)
       })
     })
   })
 
-  describe('getGasFeeErrorObject()', function () {
+  describe('getGasFeeErrorObject()', function() {
     const config = {
       'should return insufficientFunds error if isBalanceSufficient returns false': {
         amountConversionRate: 2,
@@ -211,26 +213,53 @@ describe('send utils', function () {
         conversionRate: 3,
         gasTotal: 17,
         primaryCurrency: 'ABC',
-        expectedResult: { gasAndCollateralFee: INSUFFICIENT_FUNDS_ERROR },
+        expectedResult: {
+          gasAndCollateralFee: INSUFFICIENT_FUNDS_ERROR,
+        },
       },
       'should return null error if isBalanceSufficient returns true': {
+        gasPrice: 12,
         amountConversionRate: 2,
         balance: 16,
         conversionRate: 3,
         gasTotal: 15,
         primaryCurrency: 'ABC',
-        expectedResult: { gasAndCollateralFee: null },
+        expectedResult: {
+          gasAndCollateralFee: null,
+        },
       },
     }
     Object.entries(config).map(([description, obj]) => {
-      it(description, function () {
+      it(description, function() {
         assert.deepEqual(getGasFeeErrorObject(obj), obj.expectedResult)
       })
     })
   })
 
-  describe('calcTokenBalance()', function () {
-    it('should return the calculated token blance', function () {
+  describe('getGasPriceErrorObject()', function() {
+    const config = {
+      'should return insufficientFunds error if gasPriceTooLow returns false': {
+        gasPrice: 0.1,
+        expectedResult: {
+          gasPriceTooLow: GAS_PRICE_TOO_LOW,
+        },
+      },
+      'should return null error if gasPriceTooLow returns true': {
+        gasPrice: 12,
+        expectedResult: {
+          gasPriceTooLow: null,
+        },
+      },
+    }
+    Object.entries(config).map(([description, obj]) => {
+      it(description, function() {
+        assert.deepEqual(getGasPriceErrorObject(obj), obj.expectedResult)
+      })
+    })
+  })
+
+  describe('calcTokenBalance()', function() {
+    it('should return the calculated token blance', function() {
       assert.equal(
         calcTokenBalance({
           selectedToken: {
@@ -245,8 +274,8 @@ describe('send utils', function () {
     })
   })
 
-  describe('isBalanceSufficient()', function () {
-    it('should correctly call addCurrencies and return the result of calling conversionGTE', function () {
+  describe('isBalanceSufficient()', function() {
+    it('should correctly call addCurrencies and return the result of calling conversionGTE', function() {
       stubs.conversionGTE.resetHistory()
       const result = isBalanceSufficient({
         amount: 15,
@@ -284,8 +313,8 @@ describe('send utils', function () {
     })
   })
 
-  describe('isTokenBalanceSufficient()', function () {
-    it('should correctly call conversionUtil and return the result of calling conversionGTE', function () {
+  describe('isTokenBalanceSufficient()', function() {
+    it('should correctly call conversionUtil and return the result of calling conversionGTE', function() {
       stubs.conversionGTE.resetHistory()
       stubs.conversionUtil.resetHistory()
       const result = isTokenBalanceSufficient({
@@ -313,7 +342,7 @@ describe('send utils', function () {
     })
   })
 
-  describe('estimateGasAndCollateral', function () {
+  describe('estimateGasAndCollateral', function() {
     const baseMockParams = {
       blockGasLimit: '0x64',
       selectedAddress: 'mockAddress',
@@ -324,7 +353,7 @@ describe('send utils', function () {
             ? new Error(to.match(/:(.+)$/)[1])
             : null
         const result = {
-          gasUsed: { toString: (n) => `0xabc${n}` },
+          gasUsed: { toString: n => `0xabc${n}` },
           storageCollateralized: '0x30',
         }
         return cb(err, result)
@@ -337,22 +366,22 @@ describe('send utils', function () {
       value: '0xff',
     }
 
-    beforeEach(function () {
+    beforeEach(function() {
       global.eth = {
         getCode: sinon
           .stub()
-          .callsFake((address) =>
+          .callsFake(address =>
             Promise.resolve(address.match(/isContract/) ? 'not-0x' : '0x')
           ),
       }
     })
 
-    afterEach(function () {
+    afterEach(function() {
       baseMockParams.estimateGasAndCollateralMethod.resetHistory()
       global.eth.getCode.resetHistory()
     })
 
-    it('should call ethQuery.estimateGas with the expected params', async function () {
+    it('should call ethQuery.estimateGas with the expected params', async function() {
       const result = await sendUtils.estimateGasAndCollateral(baseMockParams)
       assert.equal(baseMockParams.estimateGasAndCollateralMethod.callCount, 1)
       assert.deepEqual(
@@ -365,7 +394,7 @@ describe('send utils', function () {
       assert.deepEqual(result, { gas: '0xabc16', storageLimit: '0x30' })
     })
 
-    it('should call ethQuery.estimateGas with the expected params when initialGasLimitHex is lower than the upperGasLimit', async function () {
+    it('should call ethQuery.estimateGas with the expected params when initialGasLimitHex is lower than the upperGasLimit', async function() {
       const result = await estimateGasAndCollateral(
         Object.assign({}, baseMockParams, { blockGasLimit: '0xbcd' })
       )
@@ -381,7 +410,7 @@ describe('send utils', function () {
       assert.deepEqual(result, { gas: '0xabc16x1.5', storageLimit: '0x30' })
     })
 
-    it('should call ethQuery.estimateGas with a value of 0x0 and the expected data and to if passed a selectedToken', async function () {
+    it('should call ethQuery.estimateGas with a value of 0x0 and the expected data and to if passed a selectedToken', async function() {
       const result = await estimateGasAndCollateral(
         Object.assign(
           { data: 'mockData', selectedToken: { address: 'mockAddress' } },
@@ -401,22 +430,29 @@ describe('send utils', function () {
       assert.deepEqual(result, { gas: '0xabc16', storageLimit: '0x30' })
     })
 
-    it('should call ethQuery.estimateGas without a recipient if the recipient is empty and data passed', async function () {
+    it('should call ethQuery.estimateGas without a recipient if the recipient is empty and data passed', async function() {
       const data = 'mockData'
       const to = ''
-      const result = await estimateGasAndCollateral({ ...baseMockParams, data, to })
-      assert.equal(baseMockParams.estimateGasAndCollateralMethod.callCount, 1)
-      assert.deepEqual(baseMockParams.estimateGasAndCollateralMethod.getCall(0).args[0], {
-        gasPrice: undefined,
-        value: '0xff',
+      const result = await estimateGasAndCollateral({
+        ...baseMockParams,
         data,
-        from: baseExpectedCall.from,
-        gas: baseExpectedCall.gas,
+        to,
       })
+      assert.equal(baseMockParams.estimateGasAndCollateralMethod.callCount, 1)
+      assert.deepEqual(
+        baseMockParams.estimateGasAndCollateralMethod.getCall(0).args[0],
+        {
+          gasPrice: undefined,
+          value: '0xff',
+          data,
+          from: baseExpectedCall.from,
+          gas: baseExpectedCall.gas,
+        }
+      )
       assert.deepEqual(result, { gas: '0xabc16', storageLimit: '0x30' })
     })
 
-    it(`should return ${SIMPLE_GAS_COST} if ethQuery.getCode does not return '0x'`, async function () {
+    it(`should return ${SIMPLE_GAS_COST} if ethQuery.getCode does not return '0x'`, async function() {
       assert.equal(baseMockParams.estimateGasAndCollateralMethod.callCount, 0)
       const result = await estimateGasAndCollateral(
         Object.assign({}, baseMockParams, { to: '0x123' })
@@ -424,7 +460,7 @@ describe('send utils', function () {
       assert.deepEqual(result, { gas: '0x5208', storageLimit: '0x0' })
     })
 
-    it(`should return ${SIMPLE_GAS_COST} if not passed a selectedToken or truthy to address`, async function () {
+    it(`should return ${SIMPLE_GAS_COST} if not passed a selectedToken or truthy to address`, async function() {
       assert.equal(baseMockParams.estimateGasAndCollateralMethod.callCount, 0)
       const result = await estimateGasAndCollateral(
         Object.assign({}, baseMockParams, { to: null })
@@ -432,7 +468,7 @@ describe('send utils', function () {
       assert.deepEqual(result, { gas: '0x5208', storageLimit: '0x0' })
     })
 
-    it(`should not return ${SIMPLE_GAS_COST} if passed a selectedToken`, async function () {
+    it(`should not return ${SIMPLE_GAS_COST} if passed a selectedToken`, async function() {
       assert.equal(baseMockParams.estimateGasAndCollateralMethod.callCount, 0)
       const result = await estimateGasAndCollateral(
         Object.assign({}, baseMockParams, {
@@ -444,17 +480,20 @@ describe('send utils', function () {
     })
 
     // we plan to support tokens other than erc20 token
-    it.skip(`should return ${BASE_TOKEN_GAS_COST} if passed a selectedToken but no to address`, async function () {
+    it.skip(`should return ${BASE_TOKEN_GAS_COST} if passed a selectedToken but no to address`, async function() {
       const result = await estimateGasAndCollateral(
         Object.assign({}, baseMockParams, {
           to: null,
           selectedToken: { address: '0x8isContract' },
         })
       )
-      assert.deepEqual(result, { gas: BASE_TOKEN_GAS_COST, storageLimit: '0x39' })
+      assert.deepEqual(result, {
+        gas: BASE_TOKEN_GAS_COST,
+        storageLimit: '0x39',
+      })
     })
 
-    it(`should return the adjusted blockGasLimit if it fails with a 'Transaction execution error.'`, async function () {
+    it(`should return the adjusted blockGasLimit if it fails with a 'Transaction execution error.'`, async function() {
       const result = await estimateGasAndCollateral(
         Object.assign({}, baseMockParams, {
           to: 'isContract willFailBecauseOf:Transaction execution error.',
@@ -463,7 +502,7 @@ describe('send utils', function () {
       assert.equal(result, '0x64x0.95')
     })
 
-    it(`should return the adjusted blockGasLimit if it fails with a 'gas required exceeds allowance or always failing transaction.'`, async function () {
+    it(`should return the adjusted blockGasLimit if it fails with a 'gas required exceeds allowance or always failing transaction.'`, async function() {
       const result = await estimateGasAndCollateral(
         Object.assign({}, baseMockParams, {
           to:
@@ -473,7 +512,7 @@ describe('send utils', function () {
       assert.equal(result, '0x64x0.95')
     })
 
-    it(`should reject other errors`, async function () {
+    it(`should reject other errors`, async function() {
       try {
         await estimateGasAndCollateral(
           Object.assign({}, baseMockParams, {
@@ -569,30 +608,30 @@ describe('send utils', function () {
   //   })
   // })
 
-  describe('getToAddressForGasUpdate()', function () {
-    it('should return empty string if all params are undefined or null', function () {
+  describe('getToAddressForGasUpdate()', function() {
+    it('should return empty string if all params are undefined or null', function() {
       assert.equal(getToAddressForGasUpdate(undefined, null), '')
     })
 
-    it('should return the first string that is not defined or null in lower case', function () {
+    it('should return the first string that is not defined or null in lower case', function() {
       assert.equal(getToAddressForGasUpdate('A', null), 'a')
       assert.equal(getToAddressForGasUpdate(undefined, 'B'), 'b')
     })
   })
 
-  describe('removeLeadingZeroes()', function () {
-    it('should remove leading zeroes from int when user types', function () {
+  describe('removeLeadingZeroes()', function() {
+    it('should remove leading zeroes from int when user types', function() {
       assert.equal(removeLeadingZeroes('0'), '0')
       assert.equal(removeLeadingZeroes('1'), '1')
       assert.equal(removeLeadingZeroes('00'), '0')
       assert.equal(removeLeadingZeroes('01'), '1')
     })
 
-    it('should remove leading zeroes from int when user copy/paste', function () {
+    it('should remove leading zeroes from int when user copy/paste', function() {
       assert.equal(removeLeadingZeroes('001'), '1')
     })
 
-    it('should remove leading zeroes from float when user types', function () {
+    it('should remove leading zeroes from float when user types', function() {
       assert.equal(removeLeadingZeroes('0.'), '0.')
       assert.equal(removeLeadingZeroes('0.0'), '0.0')
       assert.equal(removeLeadingZeroes('0.00'), '0.00')
@@ -600,7 +639,7 @@ describe('send utils', function () {
       assert.equal(removeLeadingZeroes('0.10'), '0.10')
     })
 
-    it('should remove leading zeroes from float when user copy/paste', function () {
+    it('should remove leading zeroes from float when user copy/paste', function() {
       assert.equal(removeLeadingZeroes('00.1'), '0.1')
     })
   })

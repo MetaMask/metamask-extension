@@ -166,9 +166,11 @@ describe('Send Component', function() {
         utilsMethodStubs.doesAmountErrorRequireUpdate.getCall(0).args[0],
         {
           balance: 'mockBalance',
+          gasPrice: 'mockGasPrice',
           gasTotal: 'mockGasTotalCountSponsorshipInfo',
           storageTotal: 'mockStorageTotal',
           prevBalance: '',
+          prevGasPrice: undefined,
           prevGasTotal: undefined,
           prevStorageTotal: undefined,
           prevTokenBalance: undefined,
@@ -265,6 +267,27 @@ describe('Send Component', function() {
       assert.equal(utilsMethodStubs.getGasFeeErrorObject.callCount, 0)
     })
 
+    it('should call updateSendErrors with the expected params if gasPrice is below 1', function() {
+      propsMethodSpies.updateSendErrors.resetHistory()
+      wrapper.setProps({ selectedToken: null })
+      wrapper.instance().componentDidUpdate({
+        gasPrice: 0.1,
+        from: {
+          balance: 'balanceChanged',
+        },
+      })
+      assert.equal(propsMethodSpies.updateSendErrors.callCount, 2)
+      assert.deepEqual(propsMethodSpies.updateSendErrors.getCall(0).args[0], {
+        hexData: null,
+      })
+      assert.deepEqual(propsMethodSpies.updateSendErrors.getCall(1).args[0], {
+        gasPriceTooLow: 'gasPriceExtremelyLow',
+        amount: 'mockAmountError',
+        gasAndCollateralFee: null,
+        hexData: null,
+      })
+    })
+
     it('should call updateSendErrors with the expected params if selectedToken is falsy', function() {
       propsMethodSpies.updateSendErrors.resetHistory()
       wrapper.setProps({ selectedToken: null })
@@ -278,6 +301,7 @@ describe('Send Component', function() {
         hexData: null,
       })
       assert.deepEqual(propsMethodSpies.updateSendErrors.getCall(1).args[0], {
+        gasPriceTooLow: 'gasPriceExtremelyLow',
         amount: 'mockAmountError',
         gasAndCollateralFee: null,
         hexData: null,
@@ -287,6 +311,7 @@ describe('Send Component', function() {
     it('should call updateSendErrors with the expected params if selectedToken is truthy', function() {
       propsMethodSpies.updateSendErrors.resetHistory()
       wrapper.setProps({
+        gasPrice: 10,
         selectedToken: {
           address: 'mockTokenAddress',
           decimals: 18,
@@ -305,6 +330,7 @@ describe('Send Component', function() {
       assert.deepEqual(propsMethodSpies.updateSendErrors.getCall(1).args[0], {
         amount: 'mockAmountError',
         gasAndCollateralFee: 'mockGasAndCollateralFeeError',
+        gasPriceTooLow: null,
         hexData: null,
       })
     })

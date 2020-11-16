@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import {
   getHexDataErrorObject,
   getAmountErrorObject,
+  getGasPriceErrorObject,
   getGasFeeErrorObject,
   getToAddressForGasUpdate,
   doesAmountErrorRequireUpdate,
@@ -78,13 +79,14 @@ export default class SendTransactionScreen extends Component {
     toWarning: null,
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.dValidate = debounce(this.validate, 1000)
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     const {
+      gasPrice,
       amount,
       amountConversionRate,
       conversionRate,
@@ -113,6 +115,7 @@ export default class SendTransactionScreen extends Component {
     let updateGas = false
     const {
       from: { balance: prevBalance },
+      gasPrice: prevGasPrice,
       gasTotal: prevGasTotal,
       storageTotal: prevStorageTotal,
       sponsorshipInfoIsLoading: prevSponsorshipInfoIsLoading,
@@ -124,7 +127,7 @@ export default class SendTransactionScreen extends Component {
       sendErrors: prevSendErrors = {},
     } = prevProps
 
-    const uninitialized = [prevBalance, prevGasTotal].every((n) => n === null)
+    const uninitialized = [prevBalance, prevGasTotal].every(n => n === null)
     const sendErrors = {}
     let hexDataErrorRequiresUpdate = false
 
@@ -137,6 +140,8 @@ export default class SendTransactionScreen extends Component {
     }
 
     const amountErrorRequiresUpdate = doesAmountErrorRequireUpdate({
+      gasPrice,
+      prevGasPrice,
       balance,
       storageTotal,
       prevStorageTotal,
@@ -161,20 +166,23 @@ export default class SendTransactionScreen extends Component {
         selectedToken,
         tokenBalance,
       })
+      const gasPriceError = getGasPriceErrorObject({ gasPrice })
+
       const gasAndCollateralFeeErrorObject = selectedToken
         ? getGasFeeErrorObject({
-          amountConversionRate,
-          balance,
-          conversionRate,
-          gasTotal: gasTotalCountSponsorshipInfo,
-          primaryCurrency,
-          selectedToken,
-        })
+            amountConversionRate,
+            balance,
+            conversionRate,
+            gasTotal: gasTotalCountSponsorshipInfo,
+            primaryCurrency,
+            selectedToken,
+          })
         : { gasAndCollateralFee: null }
       Object.assign(
         sendErrors,
         amountErrorObject,
-        gasAndCollateralFeeErrorObject
+        gasAndCollateralFeeErrorObject,
+        gasPriceError
       )
     }
 
@@ -225,13 +233,13 @@ export default class SendTransactionScreen extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.fetchBasicGasEstimates().then(() => {
       this.updateGas()
     })
   }
 
-  UNSAFE_componentWillMount () {
+  UNSAFE_componentWillMount() {
     this.updateSendToken()
 
     // Show QR Scanner modal  if ?scan=true
@@ -245,11 +253,11 @@ export default class SendTransactionScreen extends Component {
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.props.resetSendState()
   }
 
-  onRecipientInputChange = (query) => {
+  onRecipientInputChange = query => {
     if (query) {
       this.dValidate(query)
     } else {
@@ -261,7 +269,7 @@ export default class SendTransactionScreen extends Component {
     })
   }
 
-  validate (query) {
+  validate(query) {
     const {
       hasHexData,
       tokens,
@@ -293,7 +301,7 @@ export default class SendTransactionScreen extends Component {
     )
   }
 
-  updateSendToken () {
+  updateSendToken() {
     const {
       from: { address },
       selectedToken,
@@ -308,7 +316,7 @@ export default class SendTransactionScreen extends Component {
     })
   }
 
-  updateGas ({ to: updatedToAddress, amount: value, data } = {}) {
+  updateGas({ to: updatedToAddress, amount: value, data } = {}) {
     const {
       amount,
       blockGasLimit,
@@ -336,7 +344,7 @@ export default class SendTransactionScreen extends Component {
     })
   }
 
-  render () {
+  render() {
     const { history, to } = this.props
     let content
 
@@ -356,7 +364,7 @@ export default class SendTransactionScreen extends Component {
     )
   }
 
-  renderAddressWarning () {
+  renderAddressWarning() {
     const { to } = this.props
     const { t } = this.context
     const isContract = to && to.startsWith('0x8')
@@ -371,11 +379,11 @@ export default class SendTransactionScreen extends Component {
     )
   }
 
-  renderInput () {
+  renderInput() {
     return (
       <EnsInput
         className="send__to-row"
-        scanQrCode={(_) => {
+        scanQrCode={_ => {
           /* this.context.metricsEvent({ */
           /*   eventOpts: { */
           /*     category: 'Transactions', */
@@ -386,8 +394,8 @@ export default class SendTransactionScreen extends Component {
           this.props.scanQrCode()
         }}
         onChange={this.onRecipientInputChange}
-        onValidAddressTyped={(address) => this.props.updateSendTo(address, '')}
-        onPaste={(text) => {
+        onValidAddressTyped={address => this.props.updateSendTo(address, '')}
+        onPaste={text => {
           this.props.updateSendTo(text) && this.updateGas()
         }}
         onReset={() => this.props.updateSendTo('', '')}
@@ -397,7 +405,7 @@ export default class SendTransactionScreen extends Component {
     )
   }
 
-  renderAddRecipient () {
+  renderAddRecipient() {
     const {
       toError,
       toWarning,
@@ -417,7 +425,7 @@ export default class SendTransactionScreen extends Component {
     )
   }
 
-  renderSendContent () {
+  renderSendContent() {
     const { history, showHexData } = this.props
 
     return [

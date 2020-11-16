@@ -73,13 +73,7 @@ export default class AdvancedGasInputs extends Component {
   }
 
   changeStorageLimit = e => {
-    const { insufficientBalance } = this.props
-    const { errorType } = this.storageLimitError({
-      insufficientBalance,
-    })
-    if (errorType !== 'error' || insufficientBalance) {
-      this.props.updateCustomStorageLimit(Number(e.target.value))
-    }
+    this.props.updateCustomStorageLimit(Number(e.target.value))
   }
 
   onChangeGasLimit = e => {
@@ -91,16 +85,7 @@ export default class AdvancedGasInputs extends Component {
   }
 
   changeGasLimit = e => {
-    const { insufficientBalance } = this.props
-    const { gasLimit } = this.state
-    const { errorType } = this.gasLimitError({
-      insufficientBalance,
-      gasLimit,
-    })
-
-    if (errorType !== 'error' || insufficientBalance) {
-      this.props.updateCustomGasLimit(Number(e.target.value))
-    }
+    this.props.updateCustomGasLimit(Number(e.target.value))
   }
 
   onChangeGasPrice = e => {
@@ -112,19 +97,7 @@ export default class AdvancedGasInputs extends Component {
   }
 
   changeGasPrice = e => {
-    const { insufficientBalance, isSpeedUp } = this.props
-    const { gasPrice } = this.state
-
-    const { errorType } = this.gasPriceError({
-      insufficientBalance,
-      isSpeedUp,
-      gasPrice,
-    })
-    // if error is insufficientBalance, we still need to update custom gas and
-    // revalidate, cause the contract might be sponsored
-    if (errorType !== 'error' || insufficientBalance) {
-      this.props.updateCustomGasPrice(Number(e.target.value))
-    }
+    this.props.updateCustomGasPrice(Number(e.target.value))
   }
 
   gasPriceError({ insufficientBalance, isSpeedUp, gasPrice }) {
