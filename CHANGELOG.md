@@ -3,6 +3,40 @@
 ## Current Develop Branch
 - [#9612](https://github.com/MetaMask/metamask-extension/pull/9612): Update main-quote-summary designs/styles
 
+## 8.1.4 Tue Nov 10 2020
+- [#9687](https://github.com/MetaMask/metamask-extension/pull/9687): Allow speeding up of underpriced transactions
+- [#9694](https://github.com/MetaMask/metamask-extension/pull/9694): normalize UI component font styles
+- [#9695](https://github.com/MetaMask/metamask-extension/pull/9695): normalize app component font styles
+- [#9696](https://github.com/MetaMask/metamask-extension/pull/9696): normalize deprecated itcss font styles
+- [#9697](https://github.com/MetaMask/metamask-extension/pull/9697): normalize page font styles
+- [#9740](https://github.com/MetaMask/metamask-extension/pull/9740): Standardize network settings page
+- [#9750](https://github.com/MetaMask/metamask-extension/pull/9750): Make swap arrows accessible, make swaps advanced options accessible
+- [#9766](https://github.com/MetaMask/metamask-extension/pull/9766): Use 1px borders on inputs and buttons
+- [#9767](https://github.com/MetaMask/metamask-extension/pull/9767): Remove border radius from transfer button
+- [#9764](https://github.com/MetaMask/metamask-extension/pull/9764): Update custom RPC network dropdown icons
+- [#9763](https://github.com/MetaMask/metamask-extension/pull/9763): Add confirmation for network dropdown delete action
+- [#9583](https://github.com/MetaMask/metamask-extension/pull/9583): Use `chainId` for incoming transactions controller
+- [#9748](https://github.com/MetaMask/metamask-extension/pull/9748): Autofocus input, improve accessibility of restore page
+- [#9778](https://github.com/MetaMask/metamask-extension/pull/9778): Shorten unit input width and use ellipses for overflow
+- [#9746](https://github.com/MetaMask/metamask-extension/pull/9746): Make the login screen's Restore and Import links accessible
+- [#9780](https://github.com/MetaMask/metamask-extension/pull/9780): Display decimal chain ID in network form
+- [#9599](https://github.com/MetaMask/metamask-extension/pull/9599): Use MetaSwap API for gas price estimation in swaps
+- [#9518](https://github.com/MetaMask/metamask-extension/pull/9518): Make all UI tabs accessible via keyboard
+- [#9808](https://github.com/MetaMask/metamask-extension/pull/9808): Always allow overwriting invalid custom RPC chain ID
+- [#9812](https://github.com/MetaMask/metamask-extension/pull/9812): Fix send header cancel button alignment
+- [#9271](https://github.com/MetaMask/metamask-extension/pull/9271): Do not check popupIsOpen on Vivaldi
+- [#9306](https://github.com/MetaMask/metamask-extension/pull/9306): Fix UI crash when dapp submits negative gas price
+- [#9257](https://github.com/MetaMask/metamask-extension/pull/9257): Add sort and search to AddRecipient accounts list
+- [#9824](https://github.com/MetaMask/metamask-extension/pull/9824): Move `externally_connectable` from base to Chrome manifest
+- [#9815](https://github.com/MetaMask/metamask-extension/pull/9815): Add support for custom network RPC URL with basic auth
+- [#9822](https://github.com/MetaMask/metamask-extension/pull/9822): Make QR code button focusable
+- [#9832](https://github.com/MetaMask/metamask-extension/pull/9832): Warn instead of throw on duplicate web3
+- [#9838](https://github.com/MetaMask/metamask-extension/pull/9838): @metamask/controllers@4.0.0
+- [#9856](https://github.com/MetaMask/metamask-extension/pull/9856): Prevent user from getting stuck on opt in page
+- [#9845](https://github.com/MetaMask/metamask-extension/pull/9845): Show a 'send eth' button on home screen in full screen mode
+- [#9871](https://github.com/MetaMask/metamask-extension/pull/9871): Show send text upon hover in main asset list
+- [#9880](https://github.com/MetaMask/metamask-extension/pull/9880): Properly detect U2F errors in hardware wallet
+
 ## 8.1.3 Mon Oct 26 2020
 - [#9642](https://github.com/MetaMask/metamask-extension/pull/9642) Prevent excessive overflow from swap dropdowns
 - [#9658](https://github.com/MetaMask/metamask-extension/pull/9658): Fix sorting Quote Source column of quote sort list
