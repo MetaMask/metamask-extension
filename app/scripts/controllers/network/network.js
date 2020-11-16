@@ -146,7 +146,7 @@ export default class NetworkController extends EventEmitter {
     ethQuery.sendAsync({ method: 'cfx_getStatus' }, (err, status) => {
       const currentNetwork = this.getNetworkState()
       if (initialNetwork === currentNetwork) {
-        if (err) {
+        if (err || !status || !status.chainId) {
           return this.setNetworkState('loading')
         }
         const chainId = parseInt(status.chainId, 16)
