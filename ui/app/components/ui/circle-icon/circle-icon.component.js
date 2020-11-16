@@ -40,6 +40,7 @@ export default class CircleIcon extends PureComponent {
             height: iconSize,
             width: iconSize,
           }}
+          alt=""
         />
       </div>
     )

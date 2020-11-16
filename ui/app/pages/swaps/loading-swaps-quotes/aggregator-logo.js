@@ -19,7 +19,7 @@ export default function AggregatorLogo({ icon, color }) {
           boxShadow: `0px 4px 20px ${hexToRGB(color, 0.25)}`,
         }}
       >
-        <img src={icon} />
+        <img src={icon} alt="" />
       </div>
     </div>
   )

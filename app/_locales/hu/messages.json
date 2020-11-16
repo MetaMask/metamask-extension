@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "A MetaMaskot Kaliforniában tervezték és hozták létre."
   },
-  "buyCoinSwitch": {
-    "message": "Vegye meg a CoinSwitchen"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "A CoinSwitch a legjobb hely több mint 300 cryptovaluta legjobb árfolyamon történő átváltására."
-  },
   "buyWithWyre": {
     "message": "Vásároljon ETH-t a Wyre-rel"
   },
@@ -223,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "Csatlakozás a Ropsten teszthálózathoz"
-  },
-  "continueToCoinSwitch": {
-    "message": "Tovább a CoinSwitch-re"
   },
   "continueToWyre": {
     "message": "Tovább a Wyre-re"

@@ -35,7 +35,7 @@ export default class SelectHardware extends Component {
         <img
           className="hw-connect__btn__img"
           src="images/trezor-logo.svg"
-          alt=""
+          alt="Trezor"
         />
       </button>
     )
@@ -52,7 +52,7 @@ export default class SelectHardware extends Component {
         <img
           className="hw-connect__btn__img"
           src="images/ledger-logo.svg"
-          alt=""
+          alt="Ledger"
         />
       </button>
     )

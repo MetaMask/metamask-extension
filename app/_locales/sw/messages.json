@@ -143,12 +143,6 @@
   "builtInCalifornia": {
     "message": "MetaMask imeundwa na kutengenezwa California."
   },
-  "buyCoinSwitch": {
-    "message": "Nunua kwenye CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch ni kituo cha kubadilisha fedha za kidijitali zaidi ya 300 kwa bei nzuri kabisa."
-  },
   "buyWithWyre": {
     "message": "Nunua ETH kwa kutumia Wyre"
   },
@@ -217,9 +211,6 @@
   },
   "connectingToRopsten": {
     "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "Endelea kwenye CoinSwitch"
   },
   "continueToWyre": {
     "message": "Endelea kwenye Wyre"

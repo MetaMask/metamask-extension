@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "मेटामास्क का डिजाइन और निर्माण कैलिफोर्निया में किया गया है।"
   },
-  "buyCoinSwitch": {
-    "message": "CoinSwitch पर खरीदें"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "300 से अधिक क्रिप्टोकरेंसी को सबसे अच्छी दर पर एक्सचेंज करने के लिए CoinSwitch सर्वोत्तम स्थल है।"
-  },
   "buyWithWyre": {
     "message": "Wyre से ETH खरीदें"
   },
@@ -223,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "रोपस्टेन टेस्ट नेटवर्क से कनेक्ट करना"
-  },
-  "continueToCoinSwitch": {
-    "message": "कॉइनस्विच पर जारी रखें "
   },
   "continueToWyre": {
     "message": "Wyre को जारी रखें"

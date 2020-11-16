@@ -170,6 +170,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
               <img
                 className="request-encryption-public-key__visual-identicon"
                 src={origin.icon}
+                alt=""
               />
             ) : (
               <i className="request-encryption-public-key__visual-identicon--default">

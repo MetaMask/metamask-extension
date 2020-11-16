@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask 是在加州設計製造"
   },
-  "buyCoinSwitch": {
-    "message": "在CoinSwitch上购买"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch是以最优惠的价格交换超过300种加密货币的一站式目的地。"
-  },
   "buyWithWyre": {
     "message": "用 Wyre 購買 ETH"
   },
@@ -223,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "連線到 Ropsten 測試網路"
-  },
-  "continueToCoinSwitch": {
-    "message": "繼續前往 CoinSwitch"
   },
   "continueToWyre": {
     "message": "繼續至 Wyre"

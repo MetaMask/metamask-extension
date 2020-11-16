@@ -221,7 +221,7 @@
 .address-book-add-button {
   &__button {
     position: absolute;
-    top: 10px;
+    top: 80px;
     right: 16px;
     height: 56px;
     width: 56px;
@@ -235,6 +235,10 @@
     margin-right: 5px;
     cursor: pointer;
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
+
+    @media screen and (max-width: 576px) {
+      top: 10px;
+    }
   }
 }
 

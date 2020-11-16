@@ -24,7 +24,7 @@ export default class MetaMetricsOptInModal extends Component {
           <div className="metametrics-opt-in__content">
             <MetaFoxLogo />
             <div className="metametrics-opt-in__body-graphic">
-              <img src="images/metrics-chart.svg" />
+              <img src="images/metrics-chart.svg" alt="" />
             </div>
             <div className="metametrics-opt-in__title">
               Help Us Improve MetaMask

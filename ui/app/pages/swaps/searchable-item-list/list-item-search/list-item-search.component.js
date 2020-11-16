@@ -7,7 +7,7 @@ import { usePrevious } from '../../../../hooks/usePrevious'
 
 const renderAdornment = () => (
   <InputAdornment position="start" style={{ marginRight: '12px' }}>
-    <img src="images/search.svg" width="17" height="17" />
+    <img src="images/search.svg" width="17" height="17" alt="" />
   </InputAdornment>
 )
 

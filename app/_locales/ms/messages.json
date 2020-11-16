@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask direka dan dibina di California."
   },
-  "buyCoinSwitch": {
-    "message": "Beli di CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch ialah tempat sehentian untuk menukar lebih daripada 300 mata wang kripto dengan kadar terbaik."
-  },
   "buyWithWyre": {
     "message": "Beli ETH dengan Wyre"
   },
@@ -223,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "Menyambungkan kepada Rangkaian Ujian Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "Teruskan ke CoinSwitch"
   },
   "continueToWyre": {
     "message": "Teruskan ke Wyre"

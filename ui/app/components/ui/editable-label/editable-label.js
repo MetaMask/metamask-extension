@@ -45,13 +45,15 @@ class EditableLabel extends Component {
         className={classnames('large-input', 'editable-label__input', {
           'editable-label__input--error': value === '',
         })}
+        autoFocus
       />,
-      <div className="editable-label__icon-wrapper" key={2}>
-        <i
-          className="fa fa-check editable-label__icon"
-          onClick={() => this.handleSubmit()}
-        />
-      </div>,
+      <button
+        className="editable-label__icon-button"
+        key={2}
+        onClick={() => this.handleSubmit()}
+      >
+        <i className="fa fa-check editable-label__icon" />
+      </button>,
     ]
   }
 
@@ -60,12 +62,13 @@ class EditableLabel extends Component {
       <div key={1} className="editable-label__value">
         {this.state.value}
       </div>,
-      <div key={2} className="editable-label__icon-wrapper">
-        <i
-          className="fas fa-pencil-alt editable-label__icon"
-          onClick={() => this.setState({ isEditing: true })}
-        />
-      </div>,
+      <button
+        key={2}
+        className="editable-label__icon-button"
+        onClick={() => this.setState({ isEditing: true })}
+      >
+        <i className="fas fa-pencil-alt editable-label__icon" />
+      </button>,
     ]
   }
 

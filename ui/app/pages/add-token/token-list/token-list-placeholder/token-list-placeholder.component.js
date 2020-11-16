@@ -10,7 +10,7 @@ export default class TokenListPlaceholder extends Component {
   render() {
     return (
       <div className="token-list-placeholder">
-        <img src="images/tokensearch.svg" />
+        <img src="images/tokensearch.svg" alt="" width="65" height="58" />
         <div className="token-list-placeholder__text">
           {this.context.t('addAcquiredTokens')}
         </div>

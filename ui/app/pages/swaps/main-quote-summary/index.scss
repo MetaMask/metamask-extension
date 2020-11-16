@@ -1,8 +1,11 @@
 .main-quote-summary {
   display: flex;
   flex-flow: column;
+  justify-content: center;
   align-items: center;
   position: relative;
+  max-height: 196px;
+  min-height: 196px;
   width: 100%;
   color: $Black-100;
 

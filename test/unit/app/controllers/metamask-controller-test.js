@@ -97,8 +97,7 @@ describe('MetaMaskController', function () {
       .reply(200, '{"JPY":12415.9}')
 
     metamaskController = new MetaMaskController({
-      showUnapprovedTx: noop,
-      showUnconfirmedMessage: noop,
+      showUserConfirmation: noop,
       encryptor: {
         encrypt(_, object) {
           this.object = object
