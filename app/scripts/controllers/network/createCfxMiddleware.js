@@ -9,9 +9,10 @@ const MethodsWithDefaultEpochParameter = {
   cfx_epochNumber: 0,
   cfx_getBlocksByEpoch: 0,
   cfx_call: 1,
+  cfx_getCode: 1,
 }
 
-function alterRpcMethodAndParams ({ method = '', params = {} } = {}) {
+function alterRpcMethodAndParams({ method = '', params = {} } = {}) {
   if (method) {
     method = method.replace('eth_', 'cfx_')
     method = method.replace('getTransactionCount', 'getNextNonce')
@@ -35,7 +36,7 @@ function alterRpcMethodAndParams ({ method = '', params = {} } = {}) {
   return { method, params }
 }
 
-function createCfxRewriteRequestMiddleware () {
+function createCfxRewriteRequestMiddleware() {
   // eslint-disable-next-line no-unused-vars
   return createAsyncMiddleware(async (req, res, next) => {
     if (req) {

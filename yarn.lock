@@ -2767,10 +2767,10 @@
   resolved "https://registry.yarnpkg.com/@yqrashawn/cfx-contract-metadata/-/cfx-contract-metadata-0.0.7.tgz#304472f418c770eb9908304c6dd95a31934dbfd0"
   integrity sha512-wVX6iwcoLLS+O5Un0ngint4qO+VKb+zwnUvpWu3LmBIWtexl+YTOMh8G746rkNlKkJyBi2ckQ8GlQo7mEfgumQ==
 
-"@yqrashawn/cfx-json-rpc-middleware@^4.4.6":
-  version "4.4.6"
-  resolved "https://registry.yarnpkg.com/@yqrashawn/cfx-json-rpc-middleware/-/cfx-json-rpc-middleware-4.4.6.tgz#03f1a853d1f336d9bcf4caad73d9adcb18bb02b5"
-  integrity sha512-obURDcHoFqw4uz4adDkEMxOxbmO3j9TlcgyAyBKYS6qjMRfOo42rq6DkqvivsJH7xbK8zj6ihdV6fVoXWYbBEQ==
+"@yqrashawn/cfx-json-rpc-middleware@^4.4.7":
+  version "4.4.7"
+  resolved "https://registry.yarnpkg.com/@yqrashawn/cfx-json-rpc-middleware/-/cfx-json-rpc-middleware-4.4.7.tgz#41ac4e5606e3ce579806c9f72aa279bd6fc23e8a"
+  integrity sha512-ulr6a2NXwwXRwyu8v3PMFLrn3dp+HpMKa4V/3bd3UVbgXmfxZzAP3uwV/PefumQ6iDn4pDzAfzk2m5xxWhMcLw==
   dependencies:
     btoa "^1.2.1"
     clone "^2.1.1"
@@ -5023,6 +5023,11 @@ base64-js@^1.0.2:
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.3.1.tgz#58ece8cb75dd07e71ed08c736abc5fac4dbf8df1"
   integrity sha512-mLQ4i2QO1ytvGWFWmcngKO//JXAQueZvwEKtjgQFM4jIK0kU+ytMfplL8j+n5mspOfjHwoAg+9yhb7BwAHm36g==
 
+base64-js@^1.3.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.5.1.tgz#1b1b440160a5bf7ad40b650f095963481903930a"
+  integrity sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==
+
 base64id@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/base64id/-/base64id-1.0.0.tgz#47688cb99bb6804f0e06d3e763b1c32e57d8e6b6"
@@ -5742,6 +5747,14 @@ buffer@^5.2.1:
     base64-js "^1.0.2"
     ieee754 "^1.1.4"
 
+buffer@^5.6.0:
+  version "5.7.1"
+  resolved "https://registry.yarnpkg.com/buffer/-/buffer-5.7.1.tgz#ba62e7c13133053582197160851a8f648e99eed0"
+  integrity sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==
+  dependencies:
+    base64-js "^1.3.1"
+    ieee754 "^1.1.13"
+
 buffers@~0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/buffers/-/buffers-0.1.1.tgz#b24579c3bed4d6d396aeee6d9a8ae7f5482ab7bb"
@@ -6137,6 +6150,18 @@ cfx-sig-util@>=0.0.3, cfx-sig-util@>=0.0.4:
   integrity sha512-VisMXx5LY2iPYR5IUiObyg07MEmJrk4d3TE437aVjj6oZUZLpjS3agfNg1Xws1ZzPVJLlT/1vkfukK6uwwRl1Q==
   dependencies:
     buffer "^5.2.1"
+    cfx-util ">=0.0.3"
+    elliptic "^6.4.0"
+    ethereumjs-abi "0.6.5"
+    tweetnacl "^1.0.0"
+    tweetnacl-util "^0.15.0"
+
+cfx-sig-util@>=2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/cfx-sig-util/-/cfx-sig-util-2.0.3.tgz#163b007591ccde4a78939fc69647bf1582080ce3"
+  integrity sha512-Pajrr2l96vWGzwT7bn8D6x6Cr7oYPOr16vLlozbi1DPKUbNq3hbcE2zvPF26HxdoE0rkbSy/BcArMBAu/JkAkA==
+  dependencies:
+    buffer "^5.6.0"
     cfx-util ">=0.0.3"
     elliptic "^6.4.0"
     ethereumjs-abi "0.6.5"
@@ -13593,6 +13618,11 @@ idna-uts46@^1.0.1:
   integrity sha1-vgmLK3wcq/vvh6i4D2JvrDc2auo=
   dependencies:
     punycode "^2.1.0"
+
+ieee754@^1.1.13:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/ieee754/-/ieee754-1.2.1.tgz#8eb7a10a63fff25d15a57b001586d177d1b0d352"
+  integrity sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==
 
 ieee754@^1.1.4:
   version "1.1.13"
