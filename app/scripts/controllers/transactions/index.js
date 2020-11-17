@@ -92,12 +92,14 @@ class TransactionController extends EventEmitter {
     this.nonceTracker = new NonceTracker({
       provider: this.provider,
       blockTracker: this.blockTracker,
-      getPendingTransactions: this.txStateManager.getPendingTransactions.bind(
+      getPendingTransactions: this.txStateManager.getSubmittedTransactions.bind(
         this.txStateManager
       ),
-      getConfirmedTransactions: this.txStateManager.getConfirmedTransactions.bind(
-        this.txStateManager
-      ),
+      getConfirmedTransactions: () => {
+        const executed = this.txStateManager.getExecutedTransactions()
+        const confirmed = this.txStateManager.getConfirmedTransactions()
+        return [...executed, ...confirmed]
+      },
     })
 
     this.pendingTxTracker = new PendingTransactionTracker({
@@ -110,9 +112,11 @@ class TransactionController extends EventEmitter {
         return [...pending, ...approved]
       },
       approveTransaction: this.approveTransaction.bind(this),
-      getCompletedTransactions: this.txStateManager.getConfirmedTransactions.bind(
-        this.txStateManager
-      ),
+      getCompletedTransactions: () => {
+        const executed = this.txStateManager.getExecutedTransactions()
+        const confirmed = this.txStateManager.getConfirmedTransactions()
+        return [...executed, ...confirmed]
+      },
     })
 
     this.txStateManager.store.subscribe(() => this.emit('update:badge'))
@@ -181,7 +185,7 @@ class TransactionController extends EventEmitter {
         `${initialTxMeta.id}:finished`,
         finishedTxMeta => {
           switch (finishedTxMeta.status) {
-            case 'submitted':
+            case 'confirmed':
               return resolve(finishedTxMeta.hash)
             case 'rejected':
               return reject(
@@ -512,16 +516,17 @@ class TransactionController extends EventEmitter {
         ? txMeta.txParams.nonce
         : nonceLock.nextNonce
       let customOrNonce
+
       if (customNonceValue === 0) {
- customOrNonce = 0
-} else {
- customOrNonce = customNonceValue || nonce
-}
+        customOrNonce = 0
+      } else {
+        customOrNonce = customNonceValue || nonce
+      }
 
       txMeta.txParams.nonce = ethUtil.addHexPrefix(customOrNonce.toString(16))
       // add nonce debugging information to txMeta
       txMeta.nonceDetails = nonceLock.nonceDetails
-      if (customNonceValue) {
+      if (customNonceValue === 0 || customNonceValue) {
         txMeta.nonceDetails.customNonceValue = customNonceValue
       }
       this.txStateManager.updateTx(txMeta, 'transactions#approveTransaction')
@@ -783,22 +788,15 @@ class TransactionController extends EventEmitter {
       'tx:skipped',
       this.txStateManager.setTxStatusSkipped.bind(this.txStateManager)
     )
-    this.pendingTxTracker.on('tx:confirmed', (txId, transactionReceipt) =>
-      this.confirmTransaction(txId, transactionReceipt)
+    this.pendingTxTracker.on('tx:confirmed', txId =>
+      this.confirmTransaction(txId)
     )
     this.pendingTxTracker.on(
       'tx:dropped',
       this.txStateManager.setTxStatusDropped.bind(this.txStateManager)
     )
-    this.pendingTxTracker.on('tx:block-update', (txMeta, latestBlockNumber) => {
-      if (!txMeta.firstRetryBlockNumber) {
-        txMeta.firstRetryBlockNumber = latestBlockNumber
-        this.txStateManager.updateTx(
-          txMeta,
-          'transactions/pending-tx-tracker#event: tx:block-update'
-        )
-      }
-    })
+    // this.pendingTxTracker.on('tx:block-update', (txMeta, latestBlockNumber) => {
+    // })
     this.pendingTxTracker.on('tx:retry', txMeta => {
       if (!('retryCount' in txMeta)) {
         txMeta.retryCount = 0

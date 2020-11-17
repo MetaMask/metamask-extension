@@ -30,7 +30,6 @@ class PendingTransactionTracker extends EventEmitter {
     this.getCompletedTransactions = config.getCompletedTransactions
     this.publishTransaction = config.publishTransaction
     this.approveTransaction = config.approveTransaction
-    this.confirmTransaction = config.confirmTransaction
   }
 
   /**
@@ -113,20 +112,22 @@ class PendingTransactionTracker extends EventEmitter {
     @returns {string} - txHash
   */
   async _resubmitTx(txMeta, latestBlockNumber) {
-    if (!txMeta.firstRetryBlockNumber) {
-      this.emit('tx:block-update', txMeta, latestBlockNumber)
+    if (!txMeta?.txParams?.epochHeight) {
+      return
     }
 
-    const firstRetryBlockNumber =
-      txMeta.firstRetryBlockNumber || latestBlockNumber
+    if (txMeta?.status === 'executed') {
+ return
+}
+    const proposedEpochHeight = txMeta?.txParams?.epochHeight
     const txBlockDistance =
       Number.parseInt(latestBlockNumber, 16) -
-      Number.parseInt(firstRetryBlockNumber, 16)
+      Number.parseInt(proposedEpochHeight, 16)
 
     const retryCount = txMeta.retryCount || 0
 
     // Exponential backoff to limit retries at publishing
-    if (txBlockDistance <= Math.pow(2, retryCount) - 1) {
+    if (txBlockDistance <= Math.pow(2, retryCount) + 4) {
       return
     }
 
@@ -152,11 +153,15 @@ class PendingTransactionTracker extends EventEmitter {
     @emits tx:warning
   */
   async _checkPendingTx(txMeta) {
+    if (txMeta.status === 'executed') {
+      return this._checkExecutedTransactions(txMeta)
+    }
+
     const txHash = txMeta.hash
     const txId = txMeta.id
 
     // Only check submitted and executed txs
-    if (txMeta.status !== 'submitted' && txMeta.status !== 'executed') {
+    if (txMeta.status !== 'submitted') {
       return
     }
 
@@ -229,18 +234,7 @@ class PendingTransactionTracker extends EventEmitter {
         outcomeStatusErr.name = 'OutcomeStatusErr'
         this.emit('tx:failed', txId, outcomeStatusErr)
       } else if (epochNumber) {
-        const risk = await this.query.getConfirmationRiskByHash(
-          transactionReceipt.blockHash
-        )
-        if (
-          txMeta.status === 'executed' &&
-          risk &&
-          parseRiskByte(risk).lessThanOrEqualTo(1e-8)
-        ) {
-          this.emit('tx:confirmed', txId, transactionReceipt)
-        } else {
-          this.emit('tx:executed', txId, transactionReceipt)
-        }
+        this.emit('tx:executed', txId, transactionReceipt)
       }
     } catch (err) {
       txMeta.warning = {
@@ -250,6 +244,34 @@ class PendingTransactionTracker extends EventEmitter {
       this.emit('tx:warning', txMeta, err)
     }
   }
+
+  async _checkExecutedTransactions(txMeta) {
+    const txHash = txMeta.hash
+    const txId = txMeta.id
+
+    const transactionReceipt =
+      txMeta.txReceipt || (await this.query.getTransactionReceipt(txHash))
+
+    if (!transactionReceipt) {
+      return
+    }
+
+    try {
+      const risk = await this.query.getConfirmationRiskByHash(
+        transactionReceipt.blockHash
+      )
+      if (risk && parseRiskByte(risk).lessThanOrEqualTo(1e-8)) {
+        this.emit('tx:confirmed', txId)
+      }
+    } catch (err) {
+      txMeta.warning = {
+        error: err.message,
+        message: 'There was a problem loading this executed transaction.',
+      }
+      this.emit('tx:warning', txMeta, err)
+    }
+  }
+
   /**
     checks to see if the tx's nonce has been used by another transaction
     @param {Object} txMeta - txMeta object

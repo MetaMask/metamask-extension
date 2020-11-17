@@ -15,6 +15,7 @@ const MIN_GAS_TOTAL = multiplyCurrencies(MIN_GAS_LIMIT_HEX, MIN_GAS_PRICE_HEX, {
 
 const TOKEN_TRANSFER_FUNCTION_SIGNATURE = '0xa9059cbb'
 
+const GAS_PRICE_TOO_LOW = 'gasPriceExtremelyLow'
 const INSUFFICIENT_FUNDS_ERROR = 'insufficientFunds'
 const INSUFFICIENT_TOKENS_ERROR = 'insufficientTokens'
 const NEGATIVE_ETH_ERROR = 'negativeETH'
@@ -33,6 +34,7 @@ const BASE_TOKEN_GAS_COST = '0x186a0' // Hex for 100000, a base estimate for tok
 const SIMPLE_STORAGE_COST = '0x0' // Hex for 0, cost of a simple send.
 
 export {
+  GAS_PRICE_TOO_LOW,
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
   INVALID_HEX_ERROR,
