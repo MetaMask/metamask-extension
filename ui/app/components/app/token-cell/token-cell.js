@@ -10,7 +10,7 @@ import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount'
 export default function TokenCell({
   address,
   decimals,
-  outdatedBalance,
+  balanceError,
   symbol,
   string,
   image,
@@ -21,13 +21,14 @@ export default function TokenCell({
 
   const formattedFiat = useTokenFiatAmount(address, string, symbol)
 
-  const warning = outdatedBalance ? (
+  const warning = balanceError ? (
     <span>
       {t('troubleTokenBalances')}
       <a
         href={`https://ethplorer.io/address/${userAddress}`}
         rel="noopener noreferrer"
         target="_blank"
+        onClick={(event) => event.stopPropagation()}
         style={{ color: '#F7861C' }}
       >
         {t('here')}
@@ -38,7 +39,7 @@ export default function TokenCell({
   return (
     <AssetListItem
       className={classnames('token-cell', {
-        'token-cell--outdated': outdatedBalance,
+        'token-cell--outdated': Boolean(balanceError),
       })}
       iconClassName="token-cell__icon"
       onClick={onClick.bind(null, address)}
@@ -55,7 +56,7 @@ export default function TokenCell({
 
 TokenCell.propTypes = {
   address: PropTypes.string,
-  outdatedBalance: PropTypes.bool,
+  balanceError: PropTypes.object,
   symbol: PropTypes.string,
   decimals: PropTypes.number,
   string: PropTypes.string,
@@ -64,5 +65,5 @@ TokenCell.propTypes = {
 }
 
 TokenCell.defaultProps = {
-  outdatedBalance: false,
+  balanceError: null,
 }
