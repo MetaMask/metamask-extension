@@ -202,7 +202,7 @@ function getGasPriceErrorObject({ gasPrice }) {
   let gasPriceTooLow = null
   let gasPriceBigNumber
   try {
-    gasPriceBigNumber = new BigNumber(gasPrice || 0)
+    gasPriceBigNumber = new BigNumber(gasPrice || '0', 16)
   } catch (err) {
     gasPriceBigNumber = new BigNumber(0)
   }
