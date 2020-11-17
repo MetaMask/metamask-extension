@@ -271,7 +271,6 @@ jobs:
   benchmark:
     docker:
       - image: circleci/node:12-browsers
-    resource_class: 2xlarge+
     steps:
       - checkout
       - attach_workspace:
