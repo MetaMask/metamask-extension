@@ -6,7 +6,7 @@ const chrome = require('selenium-webdriver/chrome')
  */
 class ChromeDriver {
   static async build({ extensionPath, responsive, port }) {
-    const args = [`load-extension=${extensionPath}`, "disable-dev-shm-usage"]
+    const args = [`load-extension=${extensionPath}`, "no-sandbox", "disable-dev-shm-usage"]
     if (responsive) {
       args.push('--auto-open-devtools-for-tabs')
     }
