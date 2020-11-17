@@ -19,7 +19,6 @@ import {
   ENVIRONMENT_TYPE_POPUP,
 } from './lib/enums'
 import { getEnvironmentType } from './lib/util'
-/* eslint-disable import/first,import/order */
 
 start().catch(log.error)
 

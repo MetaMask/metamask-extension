@@ -50,7 +50,7 @@
     "storybook:deploy": "storybook-to-ghpages --existing-output-dir .out --remote storybook --branch master",
     "update-changelog": "./development/auto-changelog.sh",
     "generate:migration": "./development/generate-migration.sh",
-    "postinstall": "npx patch-package"
+    "postinstall": "yarn patch-package"
   },
   "resolutions": {
     "**/configstore/dot-prop": "^5.1.1",
@@ -131,7 +131,6 @@
     "jsonschema": "^1.2.4",
     "lodash": "^4.17.19",
     "loglevel": "^1.4.1",
-    "loose-envify": "^1.4.0",
     "luxon": "^1.24.1",
     "multihashes": "^0.4.12",
     "nanoid": "^2.1.6",
@@ -216,7 +215,6 @@
     "css-loader": "^2.1.1",
     "del": "^3.0.0",
     "deps-dump": "^1.1.0",
-    "envify": "^4.1.0",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.15.1",
     "eslint": "^7.7.0",
@@ -253,11 +251,13 @@
     "jsdom": "^11.2.0",
     "koa": "^2.7.0",
     "lockfile-lint": "^4.0.0",
+    "loose-envify": "^1.4.0",
     "mocha": "^7.2.0",
     "nock": "^9.0.14",
     "node-fetch": "^2.6.1",
     "node-sass": "^4.14.1",
     "nyc": "^15.0.0",
+    "patch-package": "^6.2.2",
     "polyfill-crypto.getrandomvalues": "^1.0.0",
     "prettier": "^2.1.1",
     "prettier-plugin-sort-json": "^0.0.1",
