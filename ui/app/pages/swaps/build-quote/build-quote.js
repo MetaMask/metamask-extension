@@ -13,6 +13,7 @@ import DropdownInputPair from '../dropdown-input-pair'
 import DropdownSearchList from '../dropdown-search-list'
 import SlippageButtons from '../slippage-buttons'
 import { getTokens } from '../../../ducks/metamask/metamask'
+import InfoTooltip from '../../../components/ui/info-tooltip'
 
 import {
   fetchQuotesAndSetQuoteState,
@@ -366,6 +367,27 @@ export default function BuildQuote({
             defaultToAll
           />
         </div>
+        {selectedToToken?.address &&
+          selectedToToken?.address !== ETH_SWAPS_TOKEN_OBJECT.address && (
+            <div className="build-quote__token-message">
+              {t('verifyThisTokenOn', [
+                <a
+                  className="build-quote__token-etherscan-link"
+                  key="build-quote-etherscan-link"
+                  href={`https://etherscan.io/token/${selectedToToken.address}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t('etherscan')}
+                </a>,
+              ])}
+              <InfoTooltip
+                position="top"
+                contentText={t('swapVerifyTokenExplanation')}
+                containerClassName="build-quote__token-tooltip-container"
+              />
+            </div>
+          )}
         <div className="build-quote__slippage-buttons-container">
           <SlippageButtons
             onSelect={(newSlippage) => {

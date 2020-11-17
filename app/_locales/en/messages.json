@@ -629,6 +629,9 @@
   "ethereumPublicAddress": {
     "message": "Ethereum Public Address"
   },
+  "etherscan": {
+    "message": "Etherscan"
+  },
   "etherscanView": {
     "message": "View account on Etherscan"
   },
@@ -1848,6 +1851,9 @@
   "swapUsingBestQuote": {
     "message": "Using the best quote"
   },
+  "swapVerifyTokenExplanation": {
+    "message": "Multiple tokens can use the same name and symbol. Check Etherscan to verify this is the token you're looking for."
+  },
   "swapViewToken": {
     "message": "View $1"
   },
@@ -2078,6 +2084,10 @@
   },
   "userName": {
     "message": "Username"
+  },
+  "verifyThisTokenOn": {
+    "message": "Verify this token on $1",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "viewAccount": {
     "message": "View Account"
