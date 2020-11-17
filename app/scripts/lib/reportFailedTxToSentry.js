@@ -18,10 +18,14 @@ export function reportErrorTxToSentry({ sentry, txMeta }) {
   sentry.withScope(function(scope) {
     scope.setTag('ERROR_TX', 'setHash')
     scope.setLevel('error')
+    scope.setExtra('txMeta', txMeta)
     const errorMessage = 'Transaction hash found early'
-    sentry.captureMessage(errorMessage, {
-      // "extra" key is required by Sentry
-      extra: { txMeta },
-    })
+    sentry.captureMessage(
+      errorMessage
+      //                       {
+      //   // "extra" key is required by Sentry
+      //   extra: { txMeta },
+      // }
+    )
   })
 }

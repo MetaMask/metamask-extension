@@ -112,20 +112,22 @@ class PendingTransactionTracker extends EventEmitter {
     @returns {string} - txHash
   */
   async _resubmitTx(txMeta, latestBlockNumber) {
-    if (!txMeta.firstRetryBlockNumber) {
-      this.emit('tx:block-update', txMeta, latestBlockNumber)
+    if (!txMeta?.txParams?.epochHeight) {
+      return
     }
 
-    const firstRetryBlockNumber =
-      txMeta.firstRetryBlockNumber || latestBlockNumber
+    if (txMeta?.status === 'executed') {
+ return
+}
+    const proposedEpochHeight = txMeta?.txParams?.epochHeight
     const txBlockDistance =
       Number.parseInt(latestBlockNumber, 16) -
-      Number.parseInt(firstRetryBlockNumber, 16)
+      Number.parseInt(proposedEpochHeight, 16)
 
     const retryCount = txMeta.retryCount || 0
 
     // Exponential backoff to limit retries at publishing
-    if (txBlockDistance <= Math.pow(2, retryCount) - 1) {
+    if (txBlockDistance <= Math.pow(2, retryCount) + 4) {
       return
     }
 
