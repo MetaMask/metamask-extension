@@ -2086,7 +2086,8 @@
     "message": "Username"
   },
   "verifyThisTokenOn": {
-    "message": "Verify this token on $1"
+    "message": "Verify this token on $1",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "viewAccount": {
     "message": "View Account"
