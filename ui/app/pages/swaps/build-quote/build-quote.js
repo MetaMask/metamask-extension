@@ -372,7 +372,7 @@ export default function BuildQuote({
             <div className="build-quote__token-message">
               <span>
                 {t('verifyThisTokenOn', [
-                  <span
+                  <a
                     className="build-quote__token-etherscan-link"
                     key="build-quote-etherscan-link"
                     onClick={() => {
@@ -382,7 +382,7 @@ export default function BuildQuote({
                     }}
                   >
                     {t('etherscan')}
-                  </span>,
+                  </a>,
                 ])}
               </span>
               <InfoTooltip
