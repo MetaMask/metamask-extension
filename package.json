@@ -207,7 +207,7 @@
     "browserify-transform-tools": "^1.7.0",
     "chai": "^4.1.0",
     "chalk": "^3.0.0",
-    "chromedriver": "^86.0.0",
+    "chromedriver": "^79.0.0",
     "concurrently": "^5.2.0",
     "copy-webpack-plugin": "^6.0.3",
     "coveralls": "^3.0.0",
