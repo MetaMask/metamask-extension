@@ -370,21 +370,19 @@ export default function BuildQuote({
         {selectedToToken?.address &&
           selectedToToken?.address !== ETH_SWAPS_TOKEN_OBJECT.address && (
             <div className="build-quote__token-message">
-              <span>
-                {t('verifyThisTokenOn', [
-                  <a
-                    className="build-quote__token-etherscan-link"
-                    key="build-quote-etherscan-link"
-                    onClick={() => {
-                      const etherscanUrl = `https://etherscan.io/token/${selectedToToken.address}`
+              {t('verifyThisTokenOn', [
+                <a
+                  className="build-quote__token-etherscan-link"
+                  key="build-quote-etherscan-link"
+                  onClick={() => {
+                    const etherscanUrl = `https://etherscan.io/token/${selectedToToken.address}`
 
-                      global.platform.openTab({ url: etherscanUrl })
-                    }}
-                  >
-                    {t('etherscan')}
-                  </a>,
-                ])}
-              </span>
+                    global.platform.openTab({ url: etherscanUrl })
+                  }}
+                >
+                  {t('etherscan')}
+                </a>,
+              ])}
               <InfoTooltip
                 position="top"
                 contentText={t('swapVerifyTokenExplanation')}
