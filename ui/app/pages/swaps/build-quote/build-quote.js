@@ -374,11 +374,9 @@ export default function BuildQuote({
                 <a
                   className="build-quote__token-etherscan-link"
                   key="build-quote-etherscan-link"
-                  onClick={() => {
-                    const etherscanUrl = `https://etherscan.io/token/${selectedToToken.address}`
-
-                    global.platform.openTab({ url: etherscanUrl })
-                  }}
+                  href={`https://etherscan.io/token/${selectedToToken.address}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   {t('etherscan')}
                 </a>,
