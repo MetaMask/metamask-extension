@@ -71,8 +71,8 @@ export default function setupWeb3(log) {
       for (const [key, path] of applyTrapKeys) {
         web3[topKey][key] = new Proxy(web3[topKey][key], {
           apply: (...params) => {
-            window.ethereum
-              .request({
+            try {
+              window.ethereum.request({
                 method: 'metamask_logInjectedWeb3Usage',
                 params: [
                   {
@@ -81,7 +81,9 @@ export default function setupWeb3(log) {
                   },
                 ],
               })
-              .catch(() => undefined)
+            } catch (error) {
+              log.debug('Failed to log web3 usage.', error)
+            }
 
             // Call function normally
             return Reflect.apply(...params)
@@ -95,8 +97,8 @@ export default function setupWeb3(log) {
           const name = stringifyKey(key)
 
           if (getTrapKeys.has(name)) {
-            window.ethereum
-              .request({
+            try {
+              window.ethereum.request({
                 method: 'metamask_logInjectedWeb3Usage',
                 params: [
                   {
@@ -105,7 +107,9 @@ export default function setupWeb3(log) {
                   },
                 ],
               })
-              .catch(() => undefined)
+            } catch (error) {
+              log.debug('Failed to log web3 usage.', error)
+            }
           }
 
           // return value normally
@@ -136,8 +140,8 @@ export default function setupWeb3(log) {
       if (typeof web3[key] === 'function') {
         web3[key] = new Proxy(web3[key], {
           apply: (...params) => {
-            window.ethereum
-              .request({
+            try {
+              window.ethereum.request({
                 method: 'metamask_logInjectedWeb3Usage',
                 params: [
                   {
@@ -146,7 +150,9 @@ export default function setupWeb3(log) {
                   },
                 ],
               })
-              .catch(() => undefined)
+            } catch (error) {
+              log.debug('Failed to log web3 usage.', error)
+            }
 
             // Call function normally
             return Reflect.apply(...params)
