@@ -86,6 +86,38 @@
     };
   }
 
+  &__price-difference-warning {
+    &-wrapper {
+      width: 100%;
+
+      &.medium .actionable-message {
+        border-color: $Yellow-500;
+        background: $Yellow-100;
+
+        .actionable-message__message {
+          color: inherit;
+        }
+      }
+
+      &.high .actionable-message {
+        border-color: $Red-500;
+        background: $Red-100;
+
+        .actionable-message__message {
+          color: $Red-500;
+        }
+      }
+    }
+
+    &-contents {
+      display: flex;
+
+      i {
+        margin-inline-start: 10px;
+      }
+    }
+  }
+
   &__insufficient-eth-warning-wrapper {
     margin-top: 8px;
     width: 100%;

@@ -74,6 +74,7 @@ import { QUOTES_EXPIRED_ERROR } from '../../../helpers/constants/swaps'
 import CountdownTimer from '../countdown-timer'
 import SwapsFooter from '../swaps-footer'
 import InfoTooltip from '../../../components/ui/info-tooltip'
+import Tooltip from '../../../components/ui/tooltip'
 
 export default function ViewQuote() {
   const history = useHistory()
@@ -279,8 +280,22 @@ export default function ViewQuote() {
     }
   }, [originalApproveAmount, approveAmount])
 
-  const showWarning =
+  const showInsufficientWarning =
     (balanceError || tokenBalanceNeeded || ethBalanceNeeded) && !warningHidden
+
+  const shouldShowPriceDifferenceWarning =
+    !showInsufficientWarning &&
+    ['high', 'medium'].includes(usedQuote?.priceSlippage?.bucket)
+  let priceDifferencePercentage = 0
+  if (usedQuote?.priceSlippage?.ratio) {
+    priceDifferencePercentage = parseFloat(
+      new BigNumber(usedQuote.priceSlippage.ratio, 10)
+        .minus(1, 10)
+        .times(100, 10)
+        .toFixed(2),
+      10,
+    )
+  }
 
   const numberOfQuotes = Object.values(quotes).length
   const bestQuoteReviewedEventSent = useRef()
@@ -474,8 +489,34 @@ export default function ViewQuote() {
             onQuoteDetailsIsOpened={quoteDetailsOpened}
           />
         )}
+        {shouldShowPriceDifferenceWarning && (
+          <div
+            className={classnames(
+              'view-quote__price-difference-warning-wrapper',
+              {
+                high: usedQuote?.priceSlippage?.bucket === 'high',
+                medium: usedQuote?.priceSlippage?.bucket === 'medium',
+              },
+            )}
+          >
+            <ActionableMessage
+              message={
+                <div className="view-quote__price-difference-warning-contents">
+                  {t('swapPriceDifference', [priceDifferencePercentage])}
+                  <Tooltip
+                    position="bottom"
+                    theme="white"
+                    title={t('swapPriceDifferenceTooltip')}
+                  >
+                    <i className="fa fa-info-circle" />
+                  </Tooltip>
+                </div>
+              }
+            />
+          </div>
+        )}
         <div className="view-quote__insufficient-eth-warning-wrapper">
-          {showWarning && (
+          {showInsufficientWarning && (
             <ActionableMessage
               message={actionableMessage}
               onClose={() => setWarningHidden(true)}
@@ -540,7 +581,7 @@ export default function ViewQuote() {
         </div>
         <div
           className={classnames('view-quote__fee-card-container', {
-            'view-quote__fee-card-container--thin': showWarning,
+            'view-quote__fee-card-container--thin': showInsufficientWarning,
             'view-quote__fee-card-container--three-rows':
               approveTxParams && (!balanceError || warningHidden),
           })}
@@ -577,6 +618,7 @@ export default function ViewQuote() {
         submitText={t('swap')}
         onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}
         disabled={balanceError || gasPrice === null || gasPrice === undefined}
+        className={showInsufficientWarning && 'view-quote__thin-swaps-footer'}
         showTermsOfService
         showTopBorder
       />
