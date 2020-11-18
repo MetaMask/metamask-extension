@@ -6,12 +6,14 @@ import {
   conversionGreaterThan,
   conversionLessThan,
 } from '../../helpers/utils/conversion-util'
+import BigNumber from 'bignumber.js'
 
 import { calcTokenAmount } from '../../helpers/utils/token-util'
 
 import {
   INVALID_HEX_ERROR,
   BASE_TOKEN_GAS_COST,
+  GAS_PRICE_TOO_LOW,
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
   MIN_GAS_LIMIT_HEX,
@@ -41,6 +43,7 @@ export {
   getHexDataErrorObject,
   getAmountErrorObject,
   getGasFeeErrorObject,
+  getGasPriceErrorObject,
   getToAddressForGasUpdate,
   isBalanceSufficient,
   isTokenBalanceSufficient,
@@ -195,6 +198,20 @@ function getAmountErrorObject({
   return { amount: amountError }
 }
 
+function getGasPriceErrorObject({ gasPrice }) {
+  let gasPriceTooLow = null
+  let gasPriceBigNumber
+  try {
+    gasPriceBigNumber = new BigNumber(gasPrice || '0', 16)
+  } catch (err) {
+    gasPriceBigNumber = new BigNumber(0)
+  }
+
+  gasPriceTooLow = gasPriceBigNumber.lessThan(1) ? GAS_PRICE_TOO_LOW : null
+
+  return { gasPriceTooLow }
+}
+
 function getGasFeeErrorObject({
   amountConversionRate,
   balance,
@@ -228,6 +245,8 @@ function calcTokenBalance({ selectedToken, usersToken }) {
 }
 
 function doesAmountErrorRequireUpdate({
+  gasPrice,
+  prevGasPrice,
   balance,
   storageTotal,
   prevStorageTotal,
@@ -240,6 +259,7 @@ function doesAmountErrorRequireUpdate({
   sponsorshipInfoIsLoading,
   prevSponsorshipInfoIsLoading,
 }) {
+  const gasPriceChanged = gasPrice !== prevGasPrice
   const balanceHasChanged = balance !== prevBalance
   const gasTotalHasChange = gasTotal !== prevGasTotal
   const storageTotalHasChange = storageTotal !== prevStorageTotal
@@ -248,6 +268,7 @@ function doesAmountErrorRequireUpdate({
   const sponsorshipInfoIsLoadingChanged =
     sponsorshipInfoIsLoading !== prevSponsorshipInfoIsLoading
   const amountErrorRequiresUpdate =
+    gasPriceChanged ||
     balanceHasChanged ||
     gasTotalHasChange ||
     tokenBalanceHasChanged ||

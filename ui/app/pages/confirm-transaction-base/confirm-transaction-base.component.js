@@ -15,6 +15,7 @@ import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   TRANSACTION_ERROR_KEY,
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
+  GAS_PRICE_TOO_LOW_ERROR_KEY,
 } from '../../helpers/constants/error-keys'
 import {
   CONFIRMED_STATUS,
@@ -124,7 +125,7 @@ export default class ConfirmTransactionBase extends Component {
     submitWarning: '',
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     const {
       transactionStatus,
       showTransactionConfirmedModal,
@@ -173,7 +174,7 @@ export default class ConfirmTransactionBase extends Component {
     }
   }
 
-  getErrorKey () {
+  getErrorKey() {
     const {
       balance,
       conversionRate,
@@ -198,6 +199,13 @@ export default class ConfirmTransactionBase extends Component {
       }
     }
 
+    if (hexToDecimal(customGasAndCollateral.gasPrice) < 1) {
+      return {
+        valid: false,
+        errorKey: GAS_PRICE_TOO_LOW_ERROR_KEY,
+      }
+    }
+
     if (hexToDecimal(customGasAndCollateral.gasLimit) < 21000) {
       return {
         valid: false,
@@ -219,7 +227,7 @@ export default class ConfirmTransactionBase extends Component {
     }
   }
 
-  handleEditGas () {
+  handleEditGas() {
     const {
       onEditGas,
       showCustomizeGasModal,
@@ -249,7 +257,7 @@ export default class ConfirmTransactionBase extends Component {
     }
   }
 
-  renderDetails () {
+  renderDetails() {
     const {
       detailsComponent,
       primaryTotalTextOverride,
@@ -322,7 +330,7 @@ export default class ConfirmTransactionBase extends Component {
               style={{
                 visibility: advancedInlineGasShown ? 'hidden' : 'visible',
               }}
-              onClick={(e) => {
+              onClick={e => {
                 e.preventDefault()
                 !advancedInlineGasShown && this.handleEditGas()
               }}
@@ -351,19 +359,19 @@ export default class ConfirmTransactionBase extends Component {
               />
               {gasInputVisible && (
                 <AdvancedGasInputs
-                  updateCustomGasPrice={(newGasPrice) =>
+                  updateCustomGasPrice={newGasPrice =>
                     updateGasAndCollateralAndCalculte({
                       ...customGasAndCollateral,
                       gasPrice: newGasPrice,
                     })
                   }
-                  updateCustomGasLimit={(newGasLimit) =>
+                  updateCustomGasLimit={newGasLimit =>
                     updateGasAndCollateralAndCalculte({
                       ...customGasAndCollateral,
                       gasLimit: newGasLimit,
                     })
                   }
-                  updateCustomStorageLimit={(newStorageLimit) =>
+                  updateCustomStorageLimit={newStorageLimit =>
                     updateGasAndCollateralAndCalculte({
                       ...customGasAndCollateral,
                       storageLimit: newStorageLimit,
@@ -401,19 +409,19 @@ export default class ConfirmTransactionBase extends Component {
               {storageInputVisible && (
                 <AdvancedGasInputs
                   key="collateral"
-                  updateCustomGasPrice={(newGasPrice) =>
+                  updateCustomGasPrice={newGasPrice =>
                     updateGasAndCollateralAndCalculte({
                       ...customGasAndCollateral,
                       gasPrice: newGasPrice,
                     })
                   }
-                  updateCustomGasLimit={(newGasLimit) =>
+                  updateCustomGasLimit={newGasLimit =>
                     updateGasAndCollateralAndCalculte({
                       ...customGasAndCollateral,
                       gasLimit: newGasLimit,
                     })
                   }
-                  updateCustomStorageLimit={(newStorageLimit) =>
+                  updateCustomStorageLimit={newStorageLimit =>
                     updateGasAndCollateralAndCalculte({
                       ...customGasAndCollateral,
                       storageLimit: newStorageLimit,
@@ -485,7 +493,7 @@ export default class ConfirmTransactionBase extends Component {
     )
   }
 
-  renderData () {
+  renderData() {
     const { t } = this.context
     const {
       txData: { txParams: { data } = {} } = {},
@@ -529,7 +537,7 @@ export default class ConfirmTransactionBase extends Component {
     )
   }
 
-  handleEdit () {
+  handleEdit() {
     const {
       txData,
       tokenData,
@@ -557,7 +565,7 @@ export default class ConfirmTransactionBase extends Component {
     onEdit({ txData, tokenData, tokenProps })
   }
 
-  handleCancelAll () {
+  handleCancelAll() {
     const {
       cancelAllTransactions,
       clearConfirmTransaction,
@@ -577,7 +585,7 @@ export default class ConfirmTransactionBase extends Component {
     })
   }
 
-  handleCancel () {
+  handleCancel() {
     // const { metricsEvent } = this.context
     const {
       onCancel,
@@ -616,7 +624,7 @@ export default class ConfirmTransactionBase extends Component {
     }
   }
 
-  handleSubmit () {
+  handleSubmit() {
     // const { metricsEvent } = this.context
     const {
       // txData: { origin },
@@ -682,7 +690,7 @@ export default class ConfirmTransactionBase extends Component {
                 }
               )
             })
-            .catch((error) => {
+            .catch(error => {
               this.setState({
                 submitting: false,
                 submitError: error.message,
@@ -695,7 +703,7 @@ export default class ConfirmTransactionBase extends Component {
     )
   }
 
-  renderTitleComponent () {
+  renderTitleComponent() {
     const { title, titleComponent, hexTransactionAmount } = this.props
 
     // Title string passed in by props takes priority
@@ -716,7 +724,7 @@ export default class ConfirmTransactionBase extends Component {
     )
   }
 
-  renderSubtitleComponent () {
+  renderSubtitleComponent() {
     const { subtitle, subtitleComponent, hexTransactionAmount } = this.props
 
     // Subtitle string passed in by props takes priority
@@ -736,7 +744,7 @@ export default class ConfirmTransactionBase extends Component {
     )
   }
 
-  handleNextTx (txId) {
+  handleNextTx(txId) {
     const { history, clearConfirmTransaction } = this.props
 
     if (txId) {
@@ -745,7 +753,7 @@ export default class ConfirmTransactionBase extends Component {
     }
   }
 
-  getNavigateTxData () {
+  getNavigateTxData() {
     const { currentNetworkUnapprovedTxs, txData: { id } = {} } = this.props
     const enumUnapprovedTxs = Object.keys(currentNetworkUnapprovedTxs)
     const currentPosition = enumUnapprovedTxs.indexOf(id ? id.toString() : '')
@@ -785,7 +793,7 @@ export default class ConfirmTransactionBase extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const {
       toAddress,
       // txData: { origin } = {},
@@ -817,11 +825,11 @@ export default class ConfirmTransactionBase extends Component {
     tryReverseResolveAddress(toAddress)
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this._removeBeforeUnload()
   }
 
-  render () {
+  render() {
     const {
       isTxReprice,
       fromName,
@@ -900,7 +908,7 @@ export default class ConfirmTransactionBase extends Component {
         nextTxId={nextTxId}
         prevTxId={prevTxId}
         showNavigation={showNavigation}
-        onNextTx={(txId) => this.handleNextTx(txId)}
+        onNextTx={txId => this.handleNextTx(txId)}
         firstTx={firstTx}
         lastTx={lastTx}
         ofText={ofText}
@@ -916,7 +924,7 @@ export default class ConfirmTransactionBase extends Component {
   }
 }
 
-export function getMethodName (camelCase) {
+export function getMethodName(camelCase) {
   if (!camelCase || typeof camelCase !== 'string') {
     return ''
   }

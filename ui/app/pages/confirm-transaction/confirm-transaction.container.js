@@ -40,9 +40,7 @@ const mapStateToProps = (state, ownProps) => {
     ? unapprovedTxs[id] || unconfirmedTransactions[0]
     : {}
   const origin = transaction?.msgParams?.origin
-  console.log('transaction', transaction)
   const domainToConnectedAddressMap = getDomainToConnectedAddressMap(state)
-  console.log('domainToConnectedAddressMap = ', domainToConnectedAddressMap)
   const addressConnectedToCurrentTab =
     getAddressConnectedToCurrentTab(state) ||
     domainToConnectedAddressMap?.[origin]?.[0] ||

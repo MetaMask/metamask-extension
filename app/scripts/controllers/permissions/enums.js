@@ -92,7 +92,6 @@ export const SAFE_METHODS = [
   'cfx_getTransactionByEpochHashAndIndex',
   'cfx_getTransactionByEpochNumberAndIndex',
   'cfx_getTransactionByHash',
-  'cfx_getTransactionCount',
   'cfx_getNextNonce',
   'cfx_getTransactionReceipt',
   'cfx_getUncleByEpochHashAndIndex',

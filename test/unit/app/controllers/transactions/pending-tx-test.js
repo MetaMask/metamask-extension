@@ -4,7 +4,7 @@ import PendingTransactionTracker from '../../../../../app/scripts/controllers/tr
 import MockTxGen from '../../../../lib/mock-tx-gen'
 import sinon from 'sinon'
 
-describe('PendingTransactionTracker', function () {
+describe('PendingTransactionTracker', function() {
   let pendingTxTracker,
     txMeta,
     txMetaNoHash,
@@ -15,13 +15,14 @@ describe('PendingTransactionTracker', function () {
     knownErrors
   this.timeout(10000)
 
-  beforeEach(function () {
+  beforeEach(function() {
     txMeta = {
       id: 1,
       hash:
         '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
       status: 'signed',
       txParams: {
+        epochHeight: '0x2',
         from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
         nonce: '0x1',
         value: '0xfffff',
@@ -58,13 +59,13 @@ describe('PendingTransactionTracker', function () {
       confirmTransaction: () => {},
     })
 
-    pendingTxTracker._getBlock = (blockNumber) => {
+    pendingTxTracker._getBlock = blockNumber => {
       return { number: blockNumber, transactions: [] }
     }
   })
 
-  describe('_checkPendingTx state management', function () {
-    it('should emit dropped if another tx with the same nonce succeeds', async function () {
+  describe('_checkPendingTx state management', function() {
+    it('should emit dropped if another tx with the same nonce succeeds', async function() {
       const txGen = new MockTxGen()
 
       txGen.generate(
@@ -93,7 +94,7 @@ describe('PendingTransactionTracker', function () {
         .returns(txGen.txs)
 
       const spy = sinon.spy()
-      pendingTxTracker.on('tx:dropped', (txId) => {
+      pendingTxTracker.on('tx:dropped', txId => {
         assert.equal(txId, pending.id, 'should fail the pending tx')
         spy(txId)
       })
@@ -105,16 +106,16 @@ describe('PendingTransactionTracker', function () {
     })
   })
 
-  describe('#_checkPendingTx', function () {
-    it("should emit 'tx:failed' if the txMeta does not have a hash", function (done) {
-      pendingTxTracker.once('tx:failed', (txId) => {
+  describe('#_checkPendingTx', function() {
+    it("should emit 'tx:failed' if the txMeta does not have a hash", function(done) {
+      pendingTxTracker.once('tx:failed', txId => {
         assert(txId, txMetaNoHash.id, 'should pass txId')
         done()
       })
       pendingTxTracker._checkPendingTx(txMetaNoHash)
     })
 
-    it('should emit tx:dropped with the txMetas id only after the fourth call', function (done) {
+    it('should emit tx:dropped with the txMetas id only after the fourth call', function(done) {
       txMeta = {
         id: 1,
         hash:
@@ -133,7 +134,7 @@ describe('PendingTransactionTracker', function () {
       let counter = 0
       providerResultStub['eth_getTransactionCount'] = '0x02'
       providerResultStub['eth_getTransactionReceipt'] = {}
-      pendingTxTracker.once('tx:dropped', (id) => {
+      pendingTxTracker.once('tx:dropped', id => {
         if (id === txMeta.id) {
           delete providerResultStub['eth_getTransactionCount']
           delete providerResultStub['eth_getTransactionReceipt']
@@ -164,7 +165,7 @@ describe('PendingTransactionTracker', function () {
         .catch(done)
     })
 
-    it("should emit tx:failed with the txMetas id if tx recipient's outcomeStatus is none 0", function (done) {
+    it("should emit tx:failed with the txMetas id if tx recipient's outcomeStatus is none 0", function(done) {
       txMeta = {
         id: 1,
         hash:
@@ -186,7 +187,7 @@ describe('PendingTransactionTracker', function () {
         epochNumber: '0x9090',
       }
 
-      pendingTxTracker.once('tx:failed', (id) => {
+      pendingTxTracker.once('tx:failed', id => {
         delete providerResultStub['eth_getTransactionCount']
         delete providerResultStub['eth_getTransactionReceipt']
         assert(id, txMetaNoHash.id, 'should emit failed')
@@ -195,28 +196,28 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker._checkPendingTx(txMeta)
     })
 
-    it('should should return if query does not return txParams', function () {
+    it('should should return if query does not return txParams', function() {
       providerResultStub.eth_getTransactionByHash = null
       pendingTxTracker._checkPendingTx(txMeta)
     })
   })
 
-  describe('#_checkPendingTxs', function () {
-    it("should warp all txMeta's in #updatePendingTxs", function (done) {
+  describe('#_checkPendingTxs', function() {
+    it("should warp all txMeta's in #updatePendingTxs", function(done) {
       const txMeta2 = (txMeta3 = txMeta)
       txMeta2.id = 2
       txMeta3.id = 3
-      txList = [txMeta, txMeta2, txMeta3].map((tx) => {
-        tx.processed = new Promise((resolve) => {
+      txList = [txMeta, txMeta2, txMeta3].map(tx => {
+        tx.processed = new Promise(resolve => {
           tx.resolve = resolve
         })
         return tx
       })
       pendingTxTracker.getPendingTransactions = () => txList
-      pendingTxTracker._checkPendingTx = (tx) => {
+      pendingTxTracker._checkPendingTx = tx => {
         tx.resolve(tx)
       }
-      Promise.all(txList.map((tx) => tx.processed))
+      Promise.all(txList.map(tx => tx.processed))
         .then(() => done())
         .catch(done)
 
@@ -224,32 +225,32 @@ describe('PendingTransactionTracker', function () {
     })
   })
 
-  describe('#resubmitPendingTxs', function () {
+  describe('#resubmitPendingTxs', function() {
     const blockNumberStub = '0x0'
-    beforeEach(function () {
+    beforeEach(function() {
       const txMeta2 = (txMeta3 = txMeta)
-      txList = [txMeta, txMeta2, txMeta3].map((tx) => {
-        tx.processed = new Promise((resolve) => {
+      txList = [txMeta, txMeta2, txMeta3].map(tx => {
+        tx.processed = new Promise(resolve => {
           tx.resolve = resolve
         })
         return tx
       })
     })
 
-    it('should return if no pending transactions', function () {
+    it('should return if no pending transactions', function() {
       pendingTxTracker.resubmitPendingTxs()
     })
-    it("should call #_resubmitTx for all pending tx's", function (done) {
+    it("should call #_resubmitTx for all pending tx's", function(done) {
       pendingTxTracker.getPendingTransactions = () => txList
-      pendingTxTracker._resubmitTx = async (tx) => {
+      pendingTxTracker._resubmitTx = async tx => {
         tx.resolve(tx)
       }
-      Promise.all(txList.map((tx) => tx.processed))
+      Promise.all(txList.map(tx => tx.processed))
         .then(() => done())
         .catch(done)
       pendingTxTracker.resubmitPendingTxs(blockNumberStub)
     })
-    it("should not emit 'tx:failed' if the txMeta throws a known txError", function (done) {
+    it("should not emit 'tx:failed' if the txMeta throws a known txError", function(done) {
       knownErrors = [
         // geth
         '     Replacement transaction Underpriced            ',
@@ -266,20 +267,20 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker.on('tx:failed', (_, err) => done(err))
 
       pendingTxTracker.getPendingTransactions = () => enoughForAllErrors
-      pendingTxTracker._resubmitTx = async (tx) => {
+      pendingTxTracker._resubmitTx = async tx => {
         tx.resolve()
         throw new Error(knownErrors.pop())
       }
-      Promise.all(txList.map((tx) => tx.processed))
+      Promise.all(txList.map(tx => tx.processed))
         .then(() => done())
         .catch(done)
 
       pendingTxTracker.resubmitPendingTxs(blockNumberStub)
     })
-    it("should emit 'tx:warning' if it encountered a real error", function (done) {
+    it("should emit 'tx:warning' if it encountered a real error", function(done) {
       pendingTxTracker.once('tx:warning', (txMeta, err) => {
         if (err.message === 'im some real error') {
-          const matchingTx = txList.find((tx) => tx.id === txMeta.id)
+          const matchingTx = txList.find(tx => tx.id === txMeta.id)
           matchingTx.resolve()
         } else {
           done(err)
@@ -290,7 +291,7 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker._resubmitTx = async () => {
         throw new TypeError('im some real error')
       }
-      Promise.all(txList.map((tx) => tx.processed))
+      Promise.all(txList.map(tx => tx.processed))
         .then(() => done())
         .catch(done)
 
@@ -298,16 +299,16 @@ describe('PendingTransactionTracker', function () {
     })
   })
 
-  describe('#_resubmitTx', function () {
+  describe('#_resubmitTx', function() {
     const mockFirstRetryBlockNumber = '0x1'
     let txMetaToTestExponentialBackoff, enoughBalance
 
-    beforeEach(function () {
-      pendingTxTracker.getBalance = (address) => {
+    beforeEach(function() {
+      pendingTxTracker.getBalance = address => {
         assert.equal(address, txMeta.txParams.from, 'Should pass the address')
         return enoughBalance
       }
-      pendingTxTracker.publishTransaction = async (rawTx) => {
+      pendingTxTracker.publishTransaction = async rawTx => {
         assert.equal(rawTx, txMeta.rawTx, 'Should pass the rawTx')
       }
       pendingTxTracker.approveTransaction = async () => {}
@@ -319,19 +320,19 @@ describe('PendingTransactionTracker', function () {
       })
     })
 
-    afterEach(function () {
+    afterEach(function() {
       pendingTxTracker.publishTransaction.restore()
     })
 
-    it('should publish the transaction', function (done) {
+    it('should publish the transaction', function(done) {
       enoughBalance = '0x100000'
 
       // Stubbing out current account state:
       // Adding the fake tx:
       pendingTxTracker
-        ._resubmitTx(txMeta)
+        ._resubmitTx(txMeta, '0x8')
         .then(() => done())
-        .catch((err) => {
+        .catch(err => {
           assert.ifError(err, 'should not throw an error')
           done(err)
         })
@@ -343,14 +344,14 @@ describe('PendingTransactionTracker', function () {
       )
     })
 
-    it('should not publish the transaction if the limit of retries has been exceeded', function (done) {
+    it('should not publish the transaction if the limit of retries has been exceeded', function(done) {
       enoughBalance = '0x100000'
       const mockLatestBlockNumber = '0x5'
 
       pendingTxTracker
         ._resubmitTx(txMetaToTestExponentialBackoff, mockLatestBlockNumber)
         .then(() => done())
-        .catch((err) => {
+        .catch(err => {
           assert.ifError(err, 'should not throw an error')
           done(err)
         })
@@ -362,14 +363,14 @@ describe('PendingTransactionTracker', function () {
       )
     })
 
-    it('should publish the transaction if the number of blocks since last retry exceeds the last set limit', function (done) {
+    it('should publish the transaction if the number of blocks since last retry exceeds the last set limit', function(done) {
       enoughBalance = '0x100000'
-      const mockLatestBlockNumber = '0x11'
+      const mockLatestBlockNumber = '0x17'
 
       pendingTxTracker
         ._resubmitTx(txMetaToTestExponentialBackoff, mockLatestBlockNumber)
         .then(() => done())
-        .catch((err) => {
+        .catch(err => {
           assert.ifError(err, 'should not throw an error')
           done(err)
         })
@@ -381,20 +382,21 @@ describe('PendingTransactionTracker', function () {
       )
     })
 
-    it('should call opts.approveTransaction with the id if the tx is not signed', async function () {
+    it('should call opts.approveTransaction with the id if the tx is not signed', async function() {
       const stubTx = {
         id: 40,
+        txParams: { epochHeight: '0x0' },
       }
       const approveMock = sinon.stub(pendingTxTracker, 'approveTransaction')
 
-      pendingTxTracker._resubmitTx(stubTx)
+      pendingTxTracker._resubmitTx(stubTx, '0x6')
 
       assert.ok(approveMock.called)
       approveMock.restore()
     })
   })
 
-  describe('#_checkIftxWasDropped', function () {
+  describe('#_checkIftxWasDropped', function() {
     const txMeta = {
       id: 1,
       hash:
@@ -408,24 +410,24 @@ describe('PendingTransactionTracker', function () {
       rawTx:
         '0xf86c808504a817c800827b0d940c62bb85faa3311a998d3aba8098c1235c564966880de0b6b3a7640000802aa08ff665feb887a25d4099e40e11f0fef93ee9608f404bd3f853dd9e84ed3317a6a02ec9d3d1d6e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
     }
-    it('should return false when the nonce is the suggested network nonce', function (done) {
+    it('should return false when the nonce is the suggested network nonce', function(done) {
       providerResultStub['eth_getTransactionCount'] = '0x01'
       providerResultStub['eth_getTransactionReceipt'] = {}
       pendingTxTracker
         ._checkIftxWasDropped(txMeta, {})
-        .then((dropped) => {
+        .then(dropped => {
           assert(!dropped, 'should be false')
           done()
         })
         .catch(done)
     })
 
-    it('should return true when the network nonce is higher then the txMeta nonce', function (done) {
+    it('should return true when the network nonce is higher then the txMeta nonce', function(done) {
       providerResultStub['eth_getTransactionCount'] = '0x02'
       providerResultStub['eth_getTransactionReceipt'] = {}
       pendingTxTracker
         ._checkIftxWasDropped(txMeta, {})
-        .then((dropped) => {
+        .then(dropped => {
           assert(dropped, 'should be true')
           done()
         })
@@ -433,8 +435,8 @@ describe('PendingTransactionTracker', function () {
     })
   })
 
-  describe('#_checkIfNonceIsTaken', function () {
-    beforeEach(function () {
+  describe('#_checkIfNonceIsTaken', function() {
+    beforeEach(function() {
       const confirmedTxList = [
         {
           id: 1,
@@ -463,7 +465,7 @@ describe('PendingTransactionTracker', function () {
             '0xf86c808504a817c800827b0d940c62bb85faa3311a998d3aba8098c1235c564966880de0b6b3a7640000802aa08ff665feb887a25d4099e40e11f0fef93ee9608f404bd3f853dd9e84ed3317a6a02ec9d3d1d6e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
         },
       ]
-      pendingTxTracker.getCompletedTransactions = (address) => {
+      pendingTxTracker.getCompletedTransactions = address => {
         if (!address) {
           throw new Error(
             'unless behavior has changed #_checkIfNonceIsTaken needs a filtered list of transactions to see if the nonce is taken'
@@ -473,7 +475,7 @@ describe('PendingTransactionTracker', function () {
       }
     })
 
-    it('should return false if nonce has not been taken', function (done) {
+    it('should return false if nonce has not been taken', function(done) {
       pendingTxTracker
         ._checkIfNonceIsTaken({
           txParams: {
@@ -482,14 +484,14 @@ describe('PendingTransactionTracker', function () {
             value: '0xfffff',
           },
         })
-        .then((taken) => {
+        .then(taken => {
           assert.ok(!taken)
           done()
         })
         .catch(done)
     })
 
-    it('should return true if nonce has been taken', function (done) {
+    it('should return true if nonce has been taken', function(done) {
       pendingTxTracker
         ._checkIfNonceIsTaken({
           txParams: {
@@ -498,7 +500,7 @@ describe('PendingTransactionTracker', function () {
             value: '0xfffff',
           },
         })
-        .then((taken) => {
+        .then(taken => {
           assert.ok(taken)
           done()
         })

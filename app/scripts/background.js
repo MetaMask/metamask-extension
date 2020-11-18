@@ -271,8 +271,8 @@ function setupController(initState, initLangCode) {
   // report failed transactions to Sentry
   controller.txController.on(`tx:status-update`, (txId, status) => {
     if (status === 'rejected') {
- return
-}
+      return
+    }
     const txMeta = controller.txController.txStateManager.getTx(txId)
     const txHistory = txMeta.history || []
     let setHashNoteCount = 0

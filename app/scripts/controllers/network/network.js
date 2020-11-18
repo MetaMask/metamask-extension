@@ -49,7 +49,7 @@ const defaultNetworkConfig = {
 }
 
 export default class NetworkController extends EventEmitter {
-  constructor (opts = {}) {
+  constructor(opts = {}) {
     super()
 
     // parse options
@@ -72,7 +72,7 @@ export default class NetworkController extends EventEmitter {
     this._blockTrackerProxy = null
   }
 
-  initializeProvider (providerParams) {
+  initializeProvider(providerParams) {
     this._baseProviderParams = providerParams
     const {
       type,
@@ -86,28 +86,28 @@ export default class NetworkController extends EventEmitter {
   }
 
   // return the proxies so the references will always be good
-  getProviderAndBlockTracker () {
+  getProviderAndBlockTracker() {
     const provider = this._providerProxy
     const blockTracker = this._blockTrackerProxy
     return { provider, blockTracker }
   }
 
-  verifyNetwork () {
+  verifyNetwork() {
     // Check network when restoring connectivity:
     if (this.isNetworkLoading()) {
       this.lookupNetwork()
     }
   }
 
-  getNetworkState () {
+  getNetworkState() {
     return this.networkStore.getState()
   }
 
-  getNetworkConfig () {
+  getNetworkConfig() {
     return this.networkConfig.getState()
   }
 
-  setNetworkState (network, type) {
+  setNetworkState(network, type) {
     if (network === 'loading') {
       return this.networkStore.putState(network)
     }
@@ -129,11 +129,11 @@ export default class NetworkController extends EventEmitter {
     return this.networkStore.putState(network)
   }
 
-  isNetworkLoading () {
+  isNetworkLoading() {
     return this.getNetworkState() === 'loading'
   }
 
-  lookupNetwork () {
+  lookupNetwork() {
     // Prevent firing when provider is not defined.
     if (!this._provider) {
       return log.warn(
@@ -146,20 +146,23 @@ export default class NetworkController extends EventEmitter {
     ethQuery.sendAsync({ method: 'cfx_getStatus' }, (err, status) => {
       const currentNetwork = this.getNetworkState()
       if (initialNetwork === currentNetwork) {
-        if (err) {
+        if (err || !status || !status.chainId) {
           return this.setNetworkState('loading')
         }
         const chainId = parseInt(status.chainId, 16)
         log.info('web3.getStatus returned ' + chainId)
         if (this.getProviderConfig()) {
-          this.providerConfig = { ...this.getProviderConfig(), chainId }
+          this.providerConfig = {
+            ...this.getProviderConfig(),
+            chainId: chainId.toString(),
+          }
         }
         this.setNetworkState(chainId, type)
       }
     })
   }
 
-  setRpcTarget (rpcTarget, chainId, ticker = 'CFX', nickname = '', rpcPrefs) {
+  setRpcTarget(rpcTarget, chainId, ticker = 'CFX', nickname = '', rpcPrefs) {
     const providerConfig = {
       type: 'rpc',
       rpcTarget,
@@ -171,7 +174,7 @@ export default class NetworkController extends EventEmitter {
     this.providerConfig = providerConfig
   }
 
-  async setProviderType (
+  async setProviderType(
     type,
     rpcTarget = '',
     ticker = 'CFX',
@@ -198,16 +201,16 @@ export default class NetworkController extends EventEmitter {
     }
   }
 
-  resetConnection () {
+  resetConnection() {
     this.providerConfig = this.getProviderConfig()
   }
 
-  set providerConfig (providerConfig) {
+  set providerConfig(providerConfig) {
     this.providerStore.updateState(providerConfig)
     this._switchNetwork(providerConfig)
   }
 
-  getProviderConfig () {
+  getProviderConfig() {
     return this.providerStore.getState()
   }
 
@@ -215,13 +218,13 @@ export default class NetworkController extends EventEmitter {
   // Private
   //
 
-  _switchNetwork (opts) {
+  _switchNetwork(opts) {
     this.setNetworkState('loading')
     this._configureProvider(opts)
     this.emit('networkDidChange', opts.type)
   }
 
-  _configureProvider (opts) {
+  _configureProvider(opts) {
     const { type, rpcTarget, chainId, ticker, nickname } = opts
     // infura type-based endpoints
     // const isInfura = INFURA_PROVIDER_TYPES.includes(type)
@@ -251,7 +254,7 @@ export default class NetworkController extends EventEmitter {
       this._configureStandardProvider({
         rpcUrl: rpcTarget,
         chainId,
-        ticker,
+        ticker: ticker || 'CFX',
         nickname,
         type,
       })
@@ -275,13 +278,13 @@ export default class NetworkController extends EventEmitter {
   //   this.networkConfig.putState(settings)
   // }
 
-  _configureLocalhostProvider () {
+  _configureLocalhostProvider() {
     log.info('NetworkController - configureLocalhostProvider')
     const networkClient = createLocalhostClient()
     this._setNetworkClient(networkClient)
   }
 
-  _configureStandardProvider ({ rpcUrl, chainId, ticker, nickname, type }) {
+  _configureStandardProvider({ rpcUrl, chainId, ticker, nickname, type }) {
     log.info('NetworkController - configureStandardProvider', rpcUrl)
     const networkClient = createJsonRpcClient({ rpcUrl })
     // hack to add a 'rpc' network with chainId
@@ -301,7 +304,7 @@ export default class NetworkController extends EventEmitter {
     this._setNetworkClient(networkClient)
   }
 
-  _setNetworkClient ({ networkMiddleware, blockTracker, rpcUrl }) {
+  _setNetworkClient({ networkMiddleware, blockTracker, rpcUrl }) {
     const metamaskMiddleware = createMetamaskMiddleware(
       this._baseProviderParams
     )
@@ -314,7 +317,7 @@ export default class NetworkController extends EventEmitter {
     this._setProviderAndBlockTracker({ provider, blockTracker })
   }
 
-  _setProviderAndBlockTracker ({ provider, blockTracker }) {
+  _setProviderAndBlockTracker({ provider, blockTracker }) {
     // update or intialize proxies
     if (this._providerProxy) {
       this._providerProxy.setTarget(provider)
@@ -333,7 +336,7 @@ export default class NetworkController extends EventEmitter {
     this._blockTracker = blockTracker
   }
 
-  _logBlock (block) {
+  _logBlock(block) {
     log.info(
       `BLOCK CHANGED: #${block.number.toString('hex')} 0x${block.hash.toString(
         'hex'

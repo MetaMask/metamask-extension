@@ -7,6 +7,7 @@ export function isSendFormInError(state, advancedInlineGasShown) {
   // so we shouldn't check gas here
   if (!advancedInlineGasShown) {
     sendErrors.gasAndCollateralFee = null
+    sendErrors.gasPriceTooLow = null
   }
   return Object.values(sendErrors).some(n => n)
 }

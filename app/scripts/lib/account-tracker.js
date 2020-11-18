@@ -36,7 +36,7 @@ class AccountTracker {
    * @property {Object} _currentBlockNumber Reference to a property on the _blockTracker: the number (i.e. an id) of the the current block
    *
    */
-  constructor (opts = {}) {
+  constructor(opts = {}) {
     const initState = {
       accounts: {},
       currentBlockGasLimit: '',
@@ -48,7 +48,7 @@ class AccountTracker {
     this._blockTracker = opts.blockTracker
     // blockTracker.currentBlock may be null
     this._currentBlockNumber = this._blockTracker.getCurrentBlock()
-    this._blockTracker.once('latest', (blockNumber) => {
+    this._blockTracker.once('latest', blockNumber => {
       this._currentBlockNumber = blockNumber
     })
     // bind function for easier listener syntax
@@ -58,7 +58,7 @@ class AccountTracker {
     this.web3 = new Web3(this._provider)
   }
 
-  start () {
+  start() {
     // remove first to avoid double add
     this._blockTracker.removeListener('latest', this._updateForBlock)
     // add listener
@@ -67,7 +67,7 @@ class AccountTracker {
     this._updateAccounts()
   }
 
-  stop () {
+  stop() {
     // remove listener
     this._blockTracker.removeListener('latest', this._updateForBlock)
   }
@@ -83,19 +83,19 @@ class AccountTracker {
    * in sync
    *
    */
-  syncWithAddresses (addresses) {
+  syncWithAddresses(addresses) {
     const accounts = this.store.getState().accounts
     const locals = Object.keys(accounts)
 
     const accountsToAdd = []
-    addresses.forEach((upstream) => {
+    addresses.forEach(upstream => {
       if (!locals.includes(upstream)) {
         accountsToAdd.push(upstream)
       }
     })
 
     const accountsToRemove = []
-    locals.forEach((local) => {
+    locals.forEach(local => {
       if (!addresses.includes(local)) {
         accountsToRemove.push(local)
       }
@@ -112,10 +112,10 @@ class AccountTracker {
    * @param {array} addresses - An array of hex addresses of new accounts to track
    *
    */
-  addAccounts (addresses) {
+  addAccounts(addresses) {
     const accounts = this.store.getState().accounts
     // add initial state for addresses
-    addresses.forEach((address) => {
+    addresses.forEach(address => {
       accounts[address] = {}
     })
     // save accounts state
@@ -133,10 +133,10 @@ class AccountTracker {
    * @param {array} an - array of hex addresses to stop tracking
    *
    */
-  removeAccount (addresses) {
+  removeAccount(addresses) {
     const accounts = this.store.getState().accounts
     // remove each state object
-    addresses.forEach((address) => {
+    addresses.forEach(address => {
       delete accounts[address]
     })
     // save accounts state
@@ -152,7 +152,7 @@ class AccountTracker {
    * @fires 'block' The updated state, if all account updates are successful
    *
    */
-  async _updateForBlock (blockNumber) {
+  async _updateForBlock(blockNumber) {
     this._currentBlockNumber = blockNumber
 
     // block gasLimit polling shouldn't be in account-tracker shouldn't be here...
@@ -177,7 +177,7 @@ class AccountTracker {
    * @returns {Promise} - after all account balances updated
    *
    */
-  async _updateAccounts () {
+  async _updateAccounts() {
     const accounts = this.store.getState().accounts
     const addresses = Object.keys(accounts)
 
@@ -195,7 +195,7 @@ class AccountTracker {
    * @returns {Promise} - after the account balance is updated
    *
    */
-  async _updateAccount (address) {
+  async _updateAccount(address) {
     // query balance
     const balance = await this._query.getBalance(address, 'latest_state')
     const result = { address, balance }
@@ -214,8 +214,7 @@ class AccountTracker {
    * @param {*} addresses
    * @param {*} deployedContractAddress
    */
-  async _updateAccountsViaBalanceChecker (addresses, deployedContractAddress) {
-    // TODO: deploy the SINGLE_CALL_BALANCES contract
+  async _updateAccountsViaBalanceChecker(addresses, deployedContractAddress) {
     const accounts = this.store.getState().accounts
     this.web3.setProvider(this._provider)
     const ethContract = this.web3.eth
@@ -226,11 +225,11 @@ class AccountTracker {
     const result = await ethContract
       .balances(addresses, ethBalance)
       .call()
-      .catch((error) => {
-        log.warn(
-          `MetaMask - Account Tracker single call balance fetch failed`,
-          error
-        )
+      .catch(() => {
+        // log.warn(
+        //   `MetaMask - Account Tracker single call balance fetch failed`,
+        //   error
+        // )
         return Promise.all(addresses.map(this._updateAccount.bind(this)))
       })
     addresses.forEach((address, index) => {
