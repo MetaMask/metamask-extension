@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+- fix(rpc): undefined block tag
+
 ## 0.5.5 Wed Nov 18 2020
 
 - fix(account-tracker): support conflux block tag
