@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 0.5.7 Wed Nov 18 2020
+
 - fix(tx): finished tx status
 
 ## 0.5.6 Wed Nov 18 2020
