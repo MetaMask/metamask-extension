@@ -17,9 +17,18 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    table {
+      /* Overrides style directly applied by QR code component */
+      margin-inline-start: 0 !important;
+    }
   }
 
   button.fa-times {
     margin-top: -240px;
+  }
+
+  .intro-popup__button {
+    width: 200px;
   }
 }
