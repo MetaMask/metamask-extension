@@ -3,7 +3,12 @@ import PropTypes from 'prop-types'
 import CurrencyDisplay from '../currency-display'
 import { useTokenDisplayValue } from '../../../hooks/useTokenDisplayValue'
 
-export default function TokenCurrencyDisplay ({ className, transactionData, token, prefix }) {
+export default function TokenCurrencyDisplay({
+  className,
+  transactionData,
+  token,
+  prefix,
+}) {
   const displayValue = useTokenDisplayValue(transactionData, token)
 
   return (

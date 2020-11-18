@@ -9,11 +9,12 @@ import {
 import SecurityTab from './security-tab.component'
 
 const mapStateToProps = (state) => {
-  const { appState: { warning }, metamask } = state
   const {
-    featureFlags: {
-      showIncomingTransactions,
-    } = {},
+    appState: { warning },
+    metamask,
+  } = state
+  const {
+    featureFlags: { showIncomingTransactions } = {},
     participateInMetaMetrics,
     usePhishDetect,
   } = metamask
@@ -28,8 +29,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setParticipateInMetaMetrics: (val) => dispatch(setParticipateInMetaMetrics(val)),
-    setShowIncomingTransactionsFeatureFlag: (shouldShow) => dispatch(setFeatureFlag('showIncomingTransactions', shouldShow)),
+    setParticipateInMetaMetrics: (val) =>
+      dispatch(setParticipateInMetaMetrics(val)),
+    setShowIncomingTransactionsFeatureFlag: (shouldShow) =>
+      dispatch(setFeatureFlag('showIncomingTransactions', shouldShow)),
     setUsePhishDetect: (val) => dispatch(setUsePhishDetect(val)),
   }
 }

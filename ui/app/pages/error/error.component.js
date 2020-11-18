@@ -12,30 +12,24 @@ class ErrorPage extends PureComponent {
     error: PropTypes.object.isRequired,
   }
 
-  renderErrorDetail (content) {
+  renderErrorDetail(content) {
     return (
       <li>
-        <p>
-          {content}
-        </p>
+        <p>{content}</p>
       </li>
     )
   }
 
-  renderErrorStack (title, stack) {
+  renderErrorStack(title, stack) {
     return (
       <li>
-        <span>
-          {title}
-        </span>
-        <pre className="error-page__stack">
-          {stack}
-        </pre>
+        <span>{title}</span>
+        <pre className="error-page__stack">{stack}</pre>
       </li>
     )
   }
 
-  render () {
+  render() {
     const { error } = this.props
     const { t } = this.context
 
@@ -43,26 +37,26 @@ class ErrorPage extends PureComponent {
 
     return (
       <section className="error-page">
-        <h1 className="error-page__header">
-          {t('errorPageTitle')}
-        </h1>
+        <h1 className="error-page__header">{t('errorPageTitle')}</h1>
         <h2 className="error-page__subheader">
-          {
-            isPopup
-              ? t('errorPagePopupMessage')
-              : t('errorPageMessage')
-          }
+          {isPopup ? t('errorPagePopupMessage') : t('errorPageMessage')}
         </h2>
         <section className="error-page__details">
           <details>
-            <summary>
-              {t('errorDetails')}
-            </summary>
+            <summary>{t('errorDetails')}</summary>
             <ul>
-              { error.message ? this.renderErrorDetail(t('errorMessage', [error.message])) : null }
-              { error.code ? this.renderErrorDetail(t('errorCode', [error.code])) : null }
-              { error.name ? this.renderErrorDetail(t('errorName', [error.name])) : null }
-              { error.stack ? this.renderErrorStack(t('errorStack'), error.stack) : null }
+              {error.message
+                ? this.renderErrorDetail(t('errorMessage', [error.message]))
+                : null}
+              {error.code
+                ? this.renderErrorDetail(t('errorCode', [error.code]))
+                : null}
+              {error.name
+                ? this.renderErrorDetail(t('errorName', [error.name]))
+                : null}
+              {error.stack
+                ? this.renderErrorStack(t('errorStack'), error.stack)
+                : null}
             </ul>
           </details>
         </section>

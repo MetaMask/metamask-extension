@@ -3,7 +3,11 @@ import React, { Component } from 'react'
 import classnames from 'classnames'
 import Identicon from '../../../components/ui/identicon'
 import Button from '../../../components/ui/button'
-import CheckBox, { CHECKED, INDETERMINATE, UNCHECKED } from '../../../components/ui/check-box'
+import CheckBox, {
+  CHECKED,
+  INDETERMINATE,
+  UNCHECKED,
+} from '../../../components/ui/check-box'
 import Tooltip from '../../../components/ui/tooltip'
 import { PRIMARY } from '../../../helpers/constants/common'
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display'
@@ -12,12 +16,14 @@ import PermissionsConnectFooter from '../../../components/app/permissions-connec
 
 export default class ChooseAccount extends Component {
   static propTypes = {
-    accounts: PropTypes.arrayOf(PropTypes.shape({
-      address: PropTypes.string,
-      addressLabel: PropTypes.string,
-      lastConnectedDate: PropTypes.string,
-      balance: PropTypes.string,
-    })).isRequired,
+    accounts: PropTypes.arrayOf(
+      PropTypes.shape({
+        address: PropTypes.string,
+        addressLabel: PropTypes.string,
+        lastConnectedDate: PropTypes.string,
+        balance: PropTypes.string,
+      }),
+    ).isRequired,
     selectAccounts: PropTypes.func.isRequired,
     selectNewAccountViaModal: PropTypes.func.isRequired,
     nativeCurrency: PropTypes.string.isRequired,
@@ -46,7 +52,7 @@ export default class ChooseAccount extends Component {
     t: PropTypes.func,
   }
 
-  handleAccountClick (address) {
+  handleAccountClick(address) {
     const { selectedAccounts } = this.state
 
     const newSelectedAccounts = new Set(selectedAccounts)
@@ -60,19 +66,21 @@ export default class ChooseAccount extends Component {
     this.setState({ selectedAccounts: newSelectedAccounts })
   }
 
-  selectAll () {
+  selectAll() {
     const { accounts } = this.props
 
-    const newSelectedAccounts = new Set(accounts.map((account) => account.address))
+    const newSelectedAccounts = new Set(
+      accounts.map((account) => account.address),
+    )
 
     this.setState({ selectedAccounts: newSelectedAccounts })
   }
 
-  deselectAll () {
+  deselectAll() {
     this.setState({ selectedAccounts: new Set() })
   }
 
-  allAreSelected () {
+  allAreSelected() {
     const { accounts } = this.props
     const { selectedAccounts } = this.state
 
@@ -84,52 +92,50 @@ export default class ChooseAccount extends Component {
     const { selectedAccounts } = this.state
     return (
       <div className="permissions-connect-choose-account__accounts-list">
-        {
-          accounts.map((account, index) => {
-            const { address, addressLabel, balance } = account
-            return (
-              <div
-                key={`permissions-connect-choose-account-${index}`}
-                onClick={ () => this.handleAccountClick(address) }
-                className="permissions-connect-choose-account__account"
-              >
-                <div className="permissions-connect-choose-account__account-info-wrapper">
-                  <CheckBox
-                    className="permissions-connect-choose-account__list-check-box"
-                    checked={selectedAccounts.has(address)}
-                  />
-                  <Identicon
-                    diameter={34}
-                    address={address}
-                  />
-                  <div className="permissions-connect-choose-account__account__info">
-                    <div className="permissions-connect-choose-account__account__label">{ addressLabel }</div>
-                    <UserPreferencedCurrencyDisplay
-                      className="permissions-connect-choose-account__account__balance"
-                      type={PRIMARY}
-                      value={balance}
-                      style={{ color: '#6A737D' }}
-                      suffix={nativeCurrency}
-                    />
+        {accounts.map((account, index) => {
+          const { address, addressLabel, balance } = account
+          return (
+            <div
+              key={`permissions-connect-choose-account-${index}`}
+              onClick={() => this.handleAccountClick(address)}
+              className="permissions-connect-choose-account__account"
+            >
+              <div className="permissions-connect-choose-account__account-info-wrapper">
+                <CheckBox
+                  className="permissions-connect-choose-account__list-check-box"
+                  checked={selectedAccounts.has(address)}
+                />
+                <Identicon diameter={34} address={address} />
+                <div className="permissions-connect-choose-account__account__info">
+                  <div className="permissions-connect-choose-account__account__label">
+                    {addressLabel}
                   </div>
+                  <UserPreferencedCurrencyDisplay
+                    className="permissions-connect-choose-account__account__balance"
+                    type={PRIMARY}
+                    value={balance}
+                    style={{ color: '#6A737D' }}
+                    suffix={nativeCurrency}
+                  />
                 </div>
-                { addressLastConnectedMap[address]
-                  ? (
-                    <Tooltip title={`${this.context.t('lastConnected')} ${addressLastConnectedMap[address]}`}>
-                      <i className="fa fa-info-circle" />
-                    </Tooltip>
-                  )
-                  : null
-                }
               </div>
-            )
-          })
-        }
+              {addressLastConnectedMap[address] ? (
+                <Tooltip
+                  title={`${this.context.t('lastConnected')} ${
+                    addressLastConnectedMap[address]
+                  }`}
+                >
+                  <i className="fa fa-info-circle" />
+                </Tooltip>
+              ) : null}
+            </div>
+          )
+        })}
       </div>
     )
   }
 
-  renderAccountsListHeader () {
+  renderAccountsListHeader() {
     const { t } = this.context
     const { selectNewAccountViaModal, accounts } = this.props
     const { selectedAccounts } = this.state
@@ -146,44 +152,49 @@ export default class ChooseAccount extends Component {
     return (
       <div
         className={classnames({
-          'permissions-connect-choose-account__accounts-list-header--one-item': accounts.length === 1,
-          'permissions-connect-choose-account__accounts-list-header--two-items': accounts.length > 1,
+          'permissions-connect-choose-account__accounts-list-header--one-item':
+            accounts.length === 1,
+          'permissions-connect-choose-account__accounts-list-header--two-items':
+            accounts.length > 1,
         })}
       >
-        { accounts.length > 1
-          ? (
-            <div className="permissions-connect-choose-account__select-all">
-              <CheckBox
-                className="permissions-connect-choose-account__header-check-box"
-                checked={checked}
-                onClick={() => (this.allAreSelected() ? this.deselectAll() : this.selectAll())}
-              />
-              <div className="permissions-connect-choose-account__text-grey">{ this.context.t('selectAll') }</div>
-              <Tooltip
-                position="bottom"
-                html={(
-                  <div style={{ width: 200, padding: 4 }}>
-                    {t('selectingAllWillAllow')}
-                  </div>
-                )}
-              >
-                <i className="fa fa-info-circle" />
-              </Tooltip>
+        {accounts.length > 1 ? (
+          <div className="permissions-connect-choose-account__select-all">
+            <CheckBox
+              className="permissions-connect-choose-account__header-check-box"
+              checked={checked}
+              onClick={() =>
+                this.allAreSelected() ? this.deselectAll() : this.selectAll()
+              }
+            />
+            <div className="permissions-connect-choose-account__text-grey">
+              {this.context.t('selectAll')}
             </div>
-          )
-          : null
-        }
+            <Tooltip
+              position="bottom"
+              html={
+                <div style={{ width: 200, padding: 4 }}>
+                  {t('selectingAllWillAllow')}
+                </div>
+              }
+            >
+              <i className="fa fa-info-circle" />
+            </Tooltip>
+          </div>
+        ) : null}
         <div
           className="permissions-connect-choose-account__text-blue"
-          onClick={() => selectNewAccountViaModal(this.handleAccountClick.bind(this))}
+          onClick={() =>
+            selectNewAccountViaModal(this.handleAccountClick.bind(this))
+          }
         >
-          { this.context.t('newAccount') }
+          {this.context.t('newAccount')}
         </div>
       </div>
     )
   }
 
-  render () {
+  render() {
     const {
       selectAccounts,
       permissionsRequestId,
@@ -199,9 +210,10 @@ export default class ChooseAccount extends Component {
           icon={targetDomainMetadata.icon}
           iconName={targetDomainMetadata.name}
           headerTitle={t('connectWithMetaMask')}
-          headerText={accounts.length > 0
-            ? t('selectAccounts')
-            : t('connectAccountOrCreate')
+          headerText={
+            accounts.length > 0
+              ? t('selectAccounts')
+              : t('connectAccountOrCreate')
           }
           siteOrigin={targetDomainMetadata.origin}
         />

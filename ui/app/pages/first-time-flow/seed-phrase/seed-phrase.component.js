@@ -24,22 +24,21 @@ export default class SeedPhrase extends PureComponent {
     verifiedSeedPhrase: '',
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const { seedPhrase, history, verifySeedPhrase } = this.props
 
     if (!seedPhrase) {
-      verifySeedPhrase()
-        .then((verifiedSeedPhrase) => {
-          if (verifiedSeedPhrase) {
-            this.setState({ verifiedSeedPhrase })
-          } else {
-            history.push(DEFAULT_ROUTE)
-          }
-        })
+      verifySeedPhrase().then((verifiedSeedPhrase) => {
+        if (verifiedSeedPhrase) {
+          this.setState({ verifiedSeedPhrase })
+        } else {
+          history.push(DEFAULT_ROUTE)
+        }
+      })
     }
   }
 
-  render () {
+  render() {
     const { seedPhrase } = this.props
     const { verifiedSeedPhrase } = this.state
 
@@ -53,7 +52,7 @@ export default class SeedPhrase extends PureComponent {
               path={INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE}
               render={(routeProps) => (
                 <ConfirmSeedPhrase
-                  { ...routeProps }
+                  {...routeProps}
                   seedPhrase={seedPhrase || verifiedSeedPhrase}
                 />
               )}
@@ -63,7 +62,7 @@ export default class SeedPhrase extends PureComponent {
               path={INITIALIZE_SEED_PHRASE_ROUTE}
               render={(routeProps) => (
                 <RevealSeedPhrase
-                  { ...routeProps }
+                  {...routeProps}
                   seedPhrase={seedPhrase || verifiedSeedPhrase}
                 />
               )}
@@ -73,7 +72,7 @@ export default class SeedPhrase extends PureComponent {
               path={INITIALIZE_BACKUP_SEED_PHRASE_ROUTE}
               render={(routeProps) => (
                 <RevealSeedPhrase
-                  { ...routeProps }
+                  {...routeProps}
                   seedPhrase={seedPhrase || verifiedSeedPhrase}
                 />
               )}

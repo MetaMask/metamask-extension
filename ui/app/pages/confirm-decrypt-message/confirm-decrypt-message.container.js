@@ -16,17 +16,17 @@ import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm
 import { getMostRecentOverviewPage } from '../../ducks/history/history'
 import ConfirmDecryptMessage from './confirm-decrypt-message.component'
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   const {
     confirmTransaction,
     metamask: { domainMetadata = {} },
   } = state
 
-  const {
-    txData = {},
-  } = confirmTransaction
+  const { txData = {} } = confirmTransaction
 
-  const { msgParams: { from } } = txData
+  const {
+    msgParams: { from },
+  } = txData
 
   const fromAccount = getTargetAccountWithSendEtherInfo(state, from)
 
@@ -41,7 +41,7 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     goHome: () => dispatch(goHome()),
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),

@@ -6,12 +6,11 @@ const VERSION = require('../dist/chrome/manifest.json').version // eslint-disabl
 
 start().catch(console.error)
 
-function capitalizeFirstLetter (string) {
+function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
-async function start () {
-
+async function start() {
   const { GITHUB_COMMENT_TOKEN, CIRCLE_PULL_REQUEST } = process.env
   console.log('CIRCLE_PULL_REQUEST', CIRCLE_PULL_REQUEST)
   const { CIRCLE_SHA1 } = process.env
@@ -32,17 +31,29 @@ async function start () {
 
   // links to extension builds
   const platforms = ['chrome', 'firefox', 'opera']
-  const buildLinks = platforms.map((platform) => {
-    const url = `${BUILD_LINK_BASE}/builds/metamask-${platform}-${VERSION}.zip`
-    return `<a href="${url}">${platform}</a>`
-  }).join(', ')
+  const buildLinks = platforms
+    .map((platform) => {
+      const url = `${BUILD_LINK_BASE}/builds/metamask-${platform}-${VERSION}.zip`
+      return `<a href="${url}">${platform}</a>`
+    })
+    .join(', ')
 
   // links to bundle browser builds
-  const bundles = ['background', 'ui', 'inpage', 'contentscript', 'ui-libs', 'bg-libs', 'phishing-detect']
-  const bundleLinks = bundles.map((bundle) => {
-    const url = `${BUILD_LINK_BASE}/build-artifacts/source-map-explorer/${bundle}.html`
-    return `<a href="${url}">${bundle}</a>`
-  }).join(', ')
+  const bundles = [
+    'background',
+    'ui',
+    'inpage',
+    'contentscript',
+    'ui-libs',
+    'bg-libs',
+    'phishing-detect',
+  ]
+  const bundleLinks = bundles
+    .map((bundle) => {
+      const url = `${BUILD_LINK_BASE}/build-artifacts/source-map-explorer/${bundle}.html`
+      return `<a href="${url}">${bundle}</a>`
+    })
+    .join(', ')
 
   // links to bundle browser builds
   const depVizUrl = `${BUILD_LINK_BASE}/build-artifacts/deps-viz/background/index.html`
@@ -57,13 +68,19 @@ async function start () {
     `dep viz: ${depVizLink}`,
     `<a href="${allArtifactsUrl}">all artifacts</a>`,
   ]
-  const hiddenContent = `<ul>${contentRows.map((row) => `<li>${row}</li>`).join('\n')}</ul>`
+  const hiddenContent = `<ul>${contentRows
+    .map((row) => `<li>${row}</li>`)
+    .join('\n')}</ul>`
   const exposedContent = `Builds ready [${SHORT_SHA1}]`
   const artifactsBody = `<details><summary>${exposedContent}</summary>${hiddenContent}</details>`
 
   const benchmarkResults = {}
   for (const platform of platforms) {
-    const benchmarkPath = path.resolve(__dirname, '..', path.join('test-artifacts', platform, 'benchmark', 'pageload.json'))
+    const benchmarkPath = path.resolve(
+      __dirname,
+      '..',
+      path.join('test-artifacts', platform, 'benchmark', 'pageload.json'),
+    )
     try {
       const data = await fs.readFile(benchmarkPath, 'utf8')
       const benchmark = JSON.parse(data)
@@ -72,7 +89,9 @@ async function start () {
       if (error.code === 'ENOENT') {
         console.log(`No benchmark data found for ${platform}; skipping`)
       } else {
-        console.error(`Error encountered processing benchmark data for '${platform}': '${error}'`)
+        console.error(
+          `Error encountered processing benchmark data for '${platform}': '${error}'`,
+        )
       }
     }
   }
@@ -82,8 +101,14 @@ async function start () {
   let commentBody
   if (benchmarkResults[summaryPlatform]) {
     try {
-      const summaryPageLoad = Math.round(parseFloat(benchmarkResults[summaryPlatform][summaryPage].average.load))
-      const summaryPageLoadMarginOfError = Math.round(parseFloat(benchmarkResults[summaryPlatform][summaryPage].marginOfError.load))
+      const summaryPageLoad = Math.round(
+        parseFloat(benchmarkResults[summaryPlatform][summaryPage].average.load),
+      )
+      const summaryPageLoadMarginOfError = Math.round(
+        parseFloat(
+          benchmarkResults[summaryPlatform][summaryPage].marginOfError.load,
+        ),
+      )
       const benchmarkSummary = `Page Load Metrics (${summaryPageLoad} ± ${summaryPageLoadMarginOfError} ms)`
 
       const allPlatforms = new Set()
@@ -117,14 +142,20 @@ async function start () {
           for (const metric of allMetrics) {
             let metricData = `<td>${metric}</td>`
             for (const measure of allMeasures) {
-              metricData += `<td align="right">${Math.round(parseFloat(benchmarkResults[platform][page][measure][metric]))}</td>`
+              metricData += `<td align="right">${Math.round(
+                parseFloat(benchmarkResults[platform][page][measure][metric]),
+              )}</td>`
             }
             metricRows.push(metricData)
           }
-          metricRows[0] = `<td rowspan="${allMetrics.size}">${capitalizeFirstLetter(page)}</td>${metricRows[0]}`
+          metricRows[0] = `<td rowspan="${
+            allMetrics.size
+          }">${capitalizeFirstLetter(page)}</td>${metricRows[0]}`
           pageRows.push(...metricRows)
         }
-        pageRows[0] = `<td rowspan="${allPages.size * allMetrics.size}">${capitalizeFirstLetter(platform)}</td>${pageRows[0]}`
+        pageRows[0] = `<td rowspan="${
+          allPages.size * allMetrics.size
+        }">${capitalizeFirstLetter(platform)}</td>${pageRows[0]}`
         for (const row of pageRows) {
           tableRows.push(`<tr>${row}</tr>`)
         }
@@ -134,7 +165,9 @@ async function start () {
       for (const measure of allMeasures) {
         benchmarkTableHeaders.push(`${capitalizeFirstLetter(measure)} (ms)`)
       }
-      const benchmarkTableHeader = `<thead><tr>${benchmarkTableHeaders.map((header) => `<th>${header}</th>`).join('')}</tr></thead>`
+      const benchmarkTableHeader = `<thead><tr>${benchmarkTableHeaders
+        .map((header) => `<th>${header}</th>`)
+        .join('')}</tr></thead>`
       const benchmarkTableBody = `<tbody>${tableRows.join('')}</tbody>`
       const benchmarkTable = `<table>${benchmarkTableHeader}${benchmarkTableBody}</table>`
       const benchmarkBody = `<details><summary>${benchmarkSummary}</summary>${benchmarkTable}</details>`
@@ -158,7 +191,7 @@ async function start () {
     body: JSON_PAYLOAD,
     headers: {
       'User-Agent': 'metamaskbot',
-      'Authorization': `token ${GITHUB_COMMENT_TOKEN}`,
+      Authorization: `token ${GITHUB_COMMENT_TOKEN}`,
     },
   })
   if (!response.ok) {

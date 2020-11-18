@@ -5,7 +5,7 @@ import { I18nContext } from '../../../contexts/i18n'
 
 import PageContainerFooter from '../../../components/ui/page-container/page-container-footer'
 
-export default function SwapsFooter ({
+export default function SwapsFooter({
   onCancel,
   hideCancel,
   onSubmit,
@@ -13,6 +13,7 @@ export default function SwapsFooter ({
   disabled,
   showTermsOfService,
   showTopBorder,
+  className,
 }) {
   const t = useContext(I18nContext)
 
@@ -30,17 +31,25 @@ export default function SwapsFooter ({
           onSubmit={onSubmit}
           submitText={submitText}
           submitButtonType="confirm"
-          footerClassName="swaps-footer__custom-page-container-footer-class"
-          footerButtonClassName={classnames('swaps-footer__custom-page-container-footer-button-class', {
-            'swaps-footer__custom-page-container-footer-button-class--single': hideCancel,
-          })}
+          footerClassName={classnames(
+            'swaps-footer__custom-page-container-footer-class',
+            className,
+          )}
+          footerButtonClassName={classnames(
+            'swaps-footer__custom-page-container-footer-button-class',
+            {
+              'swaps-footer__custom-page-container-footer-button-class--single': hideCancel,
+            },
+          )}
           disabled={disabled}
         />
       </div>
       {showTermsOfService && (
         <div
           className="swaps-footer__bottom-text"
-          onClick={() => global.platform.openTab({ url: 'https://metamask.io/terms.html' })}
+          onClick={() =>
+            global.platform.openTab({ url: 'https://metamask.io/terms.html' })
+          }
         >
           {t('termsOfService')}
         </div>
@@ -57,4 +66,5 @@ SwapsFooter.propTypes = {
   disabled: PropTypes.bool,
   showTermsOfService: PropTypes.bool,
   showTopBorder: PropTypes.bool,
+  className: PropTypes.string,
 }

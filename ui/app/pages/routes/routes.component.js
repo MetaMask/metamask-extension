@@ -55,8 +55,12 @@ import {
   BUILD_QUOTE_ROUTE,
 } from '../../helpers/constants/routes'
 
-import { ENVIRONMENT_TYPE_NOTIFICATION, ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+} from '../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
+import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction'
 
 export default class Routes extends Component {
   static propTypes = {
@@ -91,7 +95,7 @@ export default class Routes extends Component {
     metricsEvent: PropTypes.func,
   }
 
-  UNSAFE_componentWillMount () {
+  UNSAFE_componentWillMount() {
     const { currentCurrency, pageChanged, setCurrentCurrencyToUSD } = this.props
 
     if (!currentCurrency) {
@@ -105,7 +109,7 @@ export default class Routes extends Component {
     })
   }
 
-  renderRoutes () {
+  renderRoutes() {
     const { autoLockTimeLimit, setLastActiveTime } = this.props
 
     const routes = (
@@ -113,18 +117,48 @@ export default class Routes extends Component {
         <Route path={LOCK_ROUTE} component={Lock} exact />
         <Route path={INITIALIZE_ROUTE} component={FirstTimeFlow} />
         <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
-        <Initialized path={RESTORE_VAULT_ROUTE} component={RestoreVaultPage} exact />
-        <Authenticated path={REVEAL_SEED_ROUTE} component={RevealSeedConfirmation} exact />
-        <Authenticated path={MOBILE_SYNC_ROUTE} component={MobileSyncPage} exact />
+        <Initialized
+          path={RESTORE_VAULT_ROUTE}
+          component={RestoreVaultPage}
+          exact
+        />
+        <Authenticated
+          path={REVEAL_SEED_ROUTE}
+          component={RevealSeedConfirmation}
+          exact
+        />
+        <Authenticated
+          path={MOBILE_SYNC_ROUTE}
+          component={MobileSyncPage}
+          exact
+        />
         <Authenticated path={SETTINGS_ROUTE} component={Settings} />
-        <Authenticated path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`} component={ConfirmTransaction} />
-        <Authenticated path={SEND_ROUTE} component={SendTransactionScreen} exact />
+        <Authenticated
+          path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
+          component={ConfirmTransaction}
+        />
+        <Authenticated
+          path={SEND_ROUTE}
+          component={SendTransactionScreen}
+          exact
+        />
         <Authenticated path={SWAPS_ROUTE} component={Swaps} />
         <Authenticated path={ADD_TOKEN_ROUTE} component={AddTokenPage} exact />
-        <Authenticated path={CONFIRM_ADD_TOKEN_ROUTE} component={ConfirmAddTokenPage} exact />
-        <Authenticated path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE} component={ConfirmAddSuggestedTokenPage} exact />
+        <Authenticated
+          path={CONFIRM_ADD_TOKEN_ROUTE}
+          component={ConfirmAddTokenPage}
+          exact
+        />
+        <Authenticated
+          path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
+          component={ConfirmAddSuggestedTokenPage}
+          exact
+        />
         <Authenticated path={NEW_ACCOUNT_ROUTE} component={CreateAccountPage} />
-        <Authenticated path={`${CONNECT_ROUTE}/:id`} component={PermissionsConnect} />
+        <Authenticated
+          path={`${CONNECT_ROUTE}/:id`}
+          component={PermissionsConnect}
+        />
         <Authenticated path={`${ASSET_ROUTE}/:asset`} component={Asset} />
         <Authenticated path={DEFAULT_ROUTE} component={Home} />
       </Switch>
@@ -141,32 +175,49 @@ export default class Routes extends Component {
     return routes
   }
 
-  onInitializationUnlockPage () {
+  onInitializationUnlockPage() {
     const { location } = this.props
-    return Boolean(matchPath(location.pathname, { path: INITIALIZE_UNLOCK_ROUTE, exact: true }))
+    return Boolean(
+      matchPath(location.pathname, {
+        path: INITIALIZE_UNLOCK_ROUTE,
+        exact: true,
+      }),
+    )
   }
 
-  onConfirmPage () {
+  onConfirmPage() {
     const { location } = this.props
-    return Boolean(matchPath(location.pathname, { path: CONFIRM_TRANSACTION_ROUTE, exact: false }))
+    return Boolean(
+      matchPath(location.pathname, {
+        path: CONFIRM_TRANSACTION_ROUTE,
+        exact: false,
+      }),
+    )
   }
 
-  onSwapsPage () {
+  onSwapsPage() {
     const { location } = this.props
-    return Boolean(matchPath(location.pathname, { path: SWAPS_ROUTE, exact: false }))
+    return Boolean(
+      matchPath(location.pathname, { path: SWAPS_ROUTE, exact: false }),
+    )
   }
 
-  onSwapsBuildQuotePage () {
+  onSwapsBuildQuotePage() {
     const { location } = this.props
-    return Boolean(matchPath(location.pathname, { path: BUILD_QUOTE_ROUTE, exact: false }))
+    return Boolean(
+      matchPath(location.pathname, { path: BUILD_QUOTE_ROUTE, exact: false }),
+    )
   }
 
-  hideAppHeader () {
+  hideAppHeader() {
     const { location } = this.props
 
-    const isInitializing = Boolean(matchPath(location.pathname, {
-      path: INITIALIZE_ROUTE, exact: false,
-    }))
+    const isInitializing = Boolean(
+      matchPath(location.pathname, {
+        path: INITIALIZE_ROUTE,
+        exact: false,
+      }),
+    )
 
     if (isInitializing && !this.onInitializationUnlockPage()) {
       return true
@@ -182,14 +233,17 @@ export default class Routes extends Component {
       return true
     }
 
-    const isHandlingPermissionsRequest = Boolean(matchPath(location.pathname, {
-      path: CONNECT_ROUTE, exact: false,
-    }))
+    const isHandlingPermissionsRequest = Boolean(
+      matchPath(location.pathname, {
+        path: CONNECT_ROUTE,
+        exact: false,
+      }),
+    )
 
     return isHandlingPermissionsRequest
   }
 
-  render () {
+  render() {
     const {
       isLoading,
       isUnlocked,
@@ -206,9 +260,10 @@ export default class Routes extends Component {
       prepareToLeaveSwaps,
     } = this.props
     const isLoadingNetwork = network === 'loading'
-    const loadMessage = (loadingMessage || isLoadingNetwork)
-      ? this.getConnectingLabel(loadingMessage)
-      : null
+    const loadMessage =
+      loadingMessage || isLoadingNetwork
+        ? this.getConnectingLabel(loadingMessage)
+        : null
 
     const {
       isOpen: sidebarIsOpen,
@@ -218,9 +273,12 @@ export default class Routes extends Component {
     } = sidebar
     const { transaction: sidebarTransaction } = props || {}
 
-    const sidebarShouldClose = sidebarTransaction &&
-      !sidebarTransaction.status === 'failed' &&
-      !submittedPendingTransactions.find(({ id }) => id === sidebarTransaction.id)
+    const sidebarShouldClose =
+      sidebarTransaction &&
+      !sidebarTransaction.status === TRANSACTION_STATUSES.FAILED &&
+      !submittedPendingTransactions.find(
+        ({ id }) => id === sidebarTransaction.id,
+      )
 
     return (
       <div
@@ -234,23 +292,22 @@ export default class Routes extends Component {
         }}
       >
         <Modal />
-        <Alert
-          visible={this.props.alertOpen}
-          msg={alertMessage}
-        />
-        { !this.hideAppHeader() && (
+        <Alert visible={this.props.alertOpen} msg={alertMessage} />
+        {!this.hideAppHeader() && (
           <AppHeader
             hideNetworkIndicator={this.onInitializationUnlockPage()}
             disableNetworkIndicator={this.onSwapsPage()}
             onClick={async () => {
               if (this.onSwapsPage()) {
                 await prepareToLeaveSwaps()
-
               }
             }}
-            disabled={this.onConfirmPage() || (this.onSwapsPage() && !this.onSwapsBuildQuotePage())}
+            disabled={
+              this.onConfirmPage() ||
+              (this.onSwapsPage() && !this.onSwapsBuildQuotePage())
+            }
           />
-        ) }
+        )}
         <Sidebar
           sidebarOpen={sidebarIsOpen}
           sidebarShouldClose={sidebarShouldClose}
@@ -265,22 +322,16 @@ export default class Routes extends Component {
         />
         <AccountMenu />
         <div className="main-container-wrapper">
-          { isLoading && <Loading loadingMessage={loadMessage} /> }
-          { !isLoading && isLoadingNetwork && <LoadingNetwork /> }
-          { this.renderRoutes() }
+          {isLoading && <Loading loadingMessage={loadMessage} />}
+          {!isLoading && isLoadingNetwork && <LoadingNetwork />}
+          {this.renderRoutes()}
         </div>
-        {
-          isUnlocked
-            ? (
-              <Alerts history={this.props.history} />
-            )
-            : null
-        }
+        {isUnlocked ? <Alerts history={this.props.history} /> : null}
       </div>
     )
   }
 
-  toggleMetamaskActive () {
+  toggleMetamaskActive() {
     if (this.props.isUnlocked) {
       // currently active: deactivate
       this.props.lockMetaMask()
@@ -294,7 +345,7 @@ export default class Routes extends Component {
     }
   }
 
-  getConnectingLabel (loadingMessage) {
+  getConnectingLabel(loadingMessage) {
     if (loadingMessage) {
       return loadingMessage
     }
@@ -316,7 +367,7 @@ export default class Routes extends Component {
     }
   }
 
-  getNetworkName () {
+  getNetworkName() {
     switch (this.props.provider.type) {
       case 'mainnet':
         return this.context.t('mainnet')

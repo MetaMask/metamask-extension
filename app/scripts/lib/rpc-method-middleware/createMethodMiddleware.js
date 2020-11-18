@@ -23,8 +23,8 @@ const handlerMap = handlers.reduce((map, handler) => {
  * @param {Function} opts.sendMetrics - A function for sending a metrics event
  * @returns {(req: Object, res: Object, next: Function, end: Function) => void}
  */
-export default function createMethodMiddleware (opts) {
-  return function methodMiddleware (req, res, next, end) {
+export default function createMethodMiddleware(opts) {
+  return function methodMiddleware(req, res, next, end) {
     if (handlerMap.has(req.method)) {
       return handlerMap.get(req.method)(req, res, next, end, opts)
     }

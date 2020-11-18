@@ -105,38 +105,25 @@
   }
 
   &__countdown-timer-container {
-    @media screen and (max-width: 576px) {
-      margin-top: 12px;
-      margin-bottom: 16px;
-
-      &--thin {
-        margin-top: 8px;
-        margin-bottom: 8px;
-
-        > div {
-          margin-top: 0;
-          margin-bottom: 0;
-        }
-      }
-    }
-
-    @media screen and (min-width: 576px) {
-      &--thin {
-        margin-top: 6px;
-      }
-    }
+    width: 152px;
+    min-height: 32px;
+    display: flex;
+    justify-content: center;
+    border-radius: 42px;
+    background: #f2f3f4;
+    margin-top: 16px;
   }
 
   &__fee-card-container {
+    display: flex;
+    align-items: center;
+    min-height: 172px;
     width: 100%;
+    max-width: 311px;
     margin-bottom: 8px;
 
     @media screen and (min-width: 576px) {
       margin-bottom: 0;
-
-      &--three-rows {
-        margin-bottom: -16px;
-      }
     }
   }
 
@@ -152,5 +139,11 @@
 
   &__metamask-rate-info-icon {
     margin-left: 4px;
+  }
+
+  &__thin-swaps-footer {
+    @media screen and (min-width: 576px) {
+      height: 72px;
+    }
   }
 }

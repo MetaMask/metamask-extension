@@ -3,7 +3,7 @@ import React from 'react'
 import classnames from 'classnames'
 import Identicon from '../../../ui/identicon'
 
-export default function AccountModalContainer (props, context) {
+export default function AccountModalContainer(props, context) {
   const {
     className,
     selectedIdentity,
@@ -14,18 +14,20 @@ export default function AccountModalContainer (props, context) {
   } = props
 
   return (
-    <div className={classnames(className, 'account-modal')} style={{ borderRadius: '4px' }}>
+    <div
+      className={classnames(className, 'account-modal')}
+      style={{ borderRadius: '4px' }}
+    >
       <div className="account-modal__container">
         <div>
-          <Identicon
-            address={selectedIdentity.address}
-            diameter={64}
-          />
+          <Identicon address={selectedIdentity.address} diameter={64} />
         </div>
         {showBackButton && (
           <div className="account-modal__back" onClick={backButtonAction}>
             <i className="fa fa-angle-left fa-lg" />
-            <span className="account-modal__back-text">{context.t('back')}</span>
+            <span className="account-modal__back-text">
+              {context.t('back')}
+            </span>
           </div>
         )}
         <button className="account-modal__close" onClick={hideModal} />

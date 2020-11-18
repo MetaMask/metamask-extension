@@ -20,39 +20,31 @@ const ConfirmPageContainerSummary = (props) => {
   return (
     <div className={classnames('confirm-page-container-summary', className)}>
       <div className="confirm-page-container-summary__action-row">
-        <div className="confirm-page-container-summary__action">
-          { action }
-        </div>
-        {
-          nonce && (
-            <div className="confirm-page-container-summary__nonce">
-              { `#${nonce}` }
-            </div>
-          )
-        }
+        <div className="confirm-page-container-summary__action">{action}</div>
+        {nonce && (
+          <div className="confirm-page-container-summary__nonce">
+            {`#${nonce}`}
+          </div>
+        )}
       </div>
       <div className="confirm-page-container-summary__title">
-        {
-          identiconAddress && (
-            <Identicon
-              className="confirm-page-container-summary__identicon"
-              diameter={36}
-              address={identiconAddress}
-              image={assetImage}
-            />
-          )
-        }
+        {identiconAddress && (
+          <Identicon
+            className="confirm-page-container-summary__identicon"
+            diameter={36}
+            address={identiconAddress}
+            image={assetImage}
+          />
+        )}
         <div className="confirm-page-container-summary__title-text">
-          { titleComponent || title }
+          {titleComponent || title}
         </div>
       </div>
-      {
-        hideSubtitle || (
-          <div className="confirm-page-container-summary__subtitle">
-            { subtitleComponent || subtitle }
-          </div>
-        )
-      }
+      {hideSubtitle || (
+        <div className="confirm-page-container-summary__subtitle">
+          {subtitleComponent || subtitle}
+        </div>
+      )}
     </div>
   )
 }

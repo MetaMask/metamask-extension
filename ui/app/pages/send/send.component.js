@@ -7,7 +7,10 @@ import {
   getToAddressForGasUpdate,
   doesAmountErrorRequireUpdate,
 } from './send.utils'
-import { getToWarningObject, getToErrorObject } from './send-content/add-recipient/add-recipient'
+import {
+  getToWarningObject,
+  getToErrorObject,
+} from './send-content/add-recipient/add-recipient'
 import SendHeader from './send-header'
 import AddRecipient from './send-content/add-recipient'
 import SendContent from './send-content'
@@ -15,7 +18,6 @@ import SendFooter from './send-footer'
 import EnsInput from './send-content/add-recipient/ens-input'
 
 export default class SendTransactionScreen extends Component {
-
   static propTypes = {
     addressBook: PropTypes.arrayOf(PropTypes.object),
     amount: PropTypes.string,
@@ -61,14 +63,15 @@ export default class SendTransactionScreen extends Component {
     query: '',
     toError: null,
     toWarning: null,
+    internalSearch: false,
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.dValidate = debounce(this.validate, 1000)
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     const {
       amount,
       conversionRate,
@@ -124,18 +127,17 @@ export default class SendTransactionScreen extends Component {
       })
       const gasFeeErrorObject = sendToken
         ? getGasFeeErrorObject({
-          balance,
-          conversionRate,
-          gasTotal,
-          primaryCurrency,
-          sendToken,
-        })
+            balance,
+            conversionRate,
+            gasTotal,
+            primaryCurrency,
+            sendToken,
+          })
         : { gasFee: null }
       updateSendErrors(Object.assign(amountErrorObject, gasFeeErrorObject))
     }
 
     if (!uninitialized) {
-
       if (network !== prevNetwork && network !== 'loading') {
         updateSendTokenBalance({
           sendToken,
@@ -159,7 +161,7 @@ export default class SendTransactionScreen extends Component {
     if (qrCodeData) {
       if (qrCodeData.type === 'address') {
         scannedAddress = qrCodeData.values.address.toLowerCase()
-        const currentAddress = prevTo && prevTo.toLowerCase()
+        const currentAddress = prevTo?.toLowerCase()
         if (currentAddress !== scannedAddress) {
           updateSendTo(scannedAddress)
           updateGas = true
@@ -178,14 +180,13 @@ export default class SendTransactionScreen extends Component {
     }
   }
 
-  componentDidMount () {
-    this.props.fetchBasicGasEstimates()
-      .then(() => {
-        this.updateGas()
-      })
+  componentDidMount() {
+    this.props.fetchBasicGasEstimates().then(() => {
+      this.updateGas()
+    })
   }
 
-  UNSAFE_componentWillMount () {
+  UNSAFE_componentWillMount() {
     this.updateSendToken()
 
     // Show QR Scanner modal  if ?scan=true
@@ -199,31 +200,35 @@ export default class SendTransactionScreen extends Component {
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.props.resetSendState()
   }
 
   onRecipientInputChange = (query) => {
-    if (query) {
-      this.dValidate(query)
-    } else {
-      this.validate(query)
+    const { internalSearch } = this.state
+
+    if (!internalSearch) {
+      if (query) {
+        this.dValidate(query)
+      } else {
+        this.dValidate.cancel()
+        this.validate(query)
+      }
     }
 
-    this.setState({
-      query,
-    })
+    this.setState({ query })
   }
 
-  validate (query) {
-    const {
-      hasHexData,
-      tokens,
-      sendToken,
-      network,
-    } = this.props
+  setInternalSearch(internalSearch) {
+    this.setState({ query: '', internalSearch })
+  }
 
-    if (!query) {
+  validate(query) {
+    const { hasHexData, tokens, sendToken, network } = this.props
+
+    const { internalSearch } = this.state
+
+    if (!query || internalSearch) {
       this.setState({ toError: '', toWarning: '' })
       return
     }
@@ -237,7 +242,7 @@ export default class SendTransactionScreen extends Component {
     })
   }
 
-  updateSendToken () {
+  updateSendToken() {
     const {
       from: { address },
       sendToken,
@@ -252,7 +257,7 @@ export default class SendTransactionScreen extends Component {
     })
   }
 
-  updateGas ({ to: updatedToAddress, amount: value, data } = {}) {
+  updateGas({ to: updatedToAddress, amount: value, data } = {}) {
     const {
       amount,
       blockGasLimit,
@@ -278,7 +283,7 @@ export default class SendTransactionScreen extends Component {
     })
   }
 
-  render () {
+  render() {
     const { history, to } = this.props
     let content
 
@@ -291,13 +296,14 @@ export default class SendTransactionScreen extends Component {
     return (
       <div className="page-container">
         <SendHeader history={history} />
-        { this.renderInput() }
-        { content }
+        {this.renderInput()}
+        {content}
       </div>
     )
   }
 
-  renderInput () {
+  renderInput() {
+    const { internalSearch } = this.state
     return (
       <EnsInput
         className="send__to-row"
@@ -319,34 +325,41 @@ export default class SendTransactionScreen extends Component {
         onReset={() => this.props.updateSendTo('', '')}
         updateEnsResolution={this.props.updateSendEnsResolution}
         updateEnsResolutionError={this.props.updateSendEnsResolutionError}
+        internalSearch={internalSearch}
       />
     )
   }
 
-  renderAddRecipient () {
+  renderAddRecipient() {
     const { toError } = this.state
     return (
       <AddRecipient
-        updateGas={({ to, amount, data } = {}) => this.updateGas({ to, amount, data })}
+        updateGas={({ to, amount, data } = {}) =>
+          this.updateGas({ to, amount, data })
+        }
         query={this.state.query}
         toError={toError}
+        setInternalSearch={(internalSearch) =>
+          this.setInternalSearch(internalSearch)
+        }
       />
     )
   }
 
-  renderSendContent () {
+  renderSendContent() {
     const { history, showHexData } = this.props
     const { toWarning } = this.state
 
     return [
       <SendContent
         key="send-content"
-        updateGas={({ to, amount, data } = {}) => this.updateGas({ to, amount, data })}
+        updateGas={({ to, amount, data } = {}) =>
+          this.updateGas({ to, amount, data })
+        }
         showHexData={showHexData}
         warning={toWarning}
       />,
       <SendFooter key="send-footer" history={history} />,
     ]
   }
-
 }

@@ -20,15 +20,11 @@ describe('Unlock Page', function () {
   }
 
   beforeEach(function () {
-
-    wrapper = mount(
-      <UnlockPage.WrappedComponent{...props} />, {
-        context: {
-          t: (str) => str,
-        },
+    wrapper = mount(<UnlockPage.WrappedComponent {...props} />, {
+      context: {
+        t: (str) => str,
       },
-    )
-
+    })
   })
 
   after(function () {
@@ -57,7 +53,6 @@ describe('Unlock Page', function () {
 
     importSeedButton.simulate('click')
     assert(props.onImport.calledOnce)
-
   })
 
   it('clicks restore', function () {

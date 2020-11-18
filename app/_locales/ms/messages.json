@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask direka dan dibina di California."
   },
-  "buyCoinSwitch": {
-    "message": "Beli di CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch ialah tempat sehentian untuk menukar lebih daripada 300 mata wang kripto dengan kadar terbaik."
-  },
   "buyWithWyre": {
     "message": "Beli ETH dengan Wyre"
   },
@@ -163,9 +157,6 @@
   },
   "cancel": {
     "message": "Batal"
-  },
-  "cancelAttempt": {
-    "message": "Batalkan Percubaan"
   },
   "cancellationGasFee": {
     "message": "Fi Gas Pembatalan"
@@ -226,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "Menyambungkan kepada Rangkaian Ujian Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "Teruskan ke CoinSwitch"
   },
   "continueToWyre": {
     "message": "Teruskan ke Wyre"
@@ -714,7 +702,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Sekat URL Explorer (pilihan)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Simbol (pilihan)"
   },
   "orderOneHere": {
@@ -961,9 +949,6 @@
   },
   "sentEther": {
     "message": "menghantar ether"
-  },
-  "sentTokens": {
-    "message": "token dihantar"
   },
   "separateEachWord": {
     "message": "Pisahkan setiap perkataan dengan ruang tunggal"

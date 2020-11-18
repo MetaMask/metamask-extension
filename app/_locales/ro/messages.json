@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask este concepută și creată în California."
   },
-  "buyCoinSwitch": {
-    "message": "Cumpărați pe CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch este destinația unică pentru a schimba peste 300 de cripto monede la cele mai bune cursuri."
-  },
   "buyWithWyre": {
     "message": "Cumpărați ETH cu Wyre"
   },
@@ -163,9 +157,6 @@
   },
   "cancel": {
     "message": "Anulare"
-  },
-  "cancelAttempt": {
-    "message": "Anulare încercare"
   },
   "cancellationGasFee": {
     "message": "Taxă de anulare în gaz"
@@ -226,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "Se conectează la rețeaua de test Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "Continuare către CoinSwitch"
   },
   "continueToWyre": {
     "message": "Continuați la Wyre"
@@ -307,9 +295,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Sigur vreți să ștergeți această rețea?"
-  },
-  "deposit": {
-    "message": "Depunere"
   },
   "depositEther": {
     "message": "Depuneți Ether"
@@ -727,7 +712,7 @@
   "optionalBlockExplorerUrl": {
     "message": "URL explorator bloc (opțional)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Simbol (opțional)"
   },
   "orderOneHere": {
@@ -974,9 +959,6 @@
   },
   "sentEther": {
     "message": "trimiteți ether"
-  },
-  "sentTokens": {
-    "message": "tokenuri trimise"
   },
   "separateEachWord": {
     "message": "Despărțiți fiecare cuvânt cu un spațiu"

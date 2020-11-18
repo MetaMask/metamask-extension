@@ -34,32 +34,31 @@ export default class ConfirmPageContainerContent extends Component {
     rejectNText: PropTypes.string,
   }
 
-  renderContent () {
+  renderContent() {
     const { detailsComponent, dataComponent } = this.props
 
     if (detailsComponent && dataComponent) {
       return this.renderTabs()
     }
     return detailsComponent || dataComponent
-
   }
 
-  renderTabs () {
+  renderTabs() {
     const { detailsComponent, dataComponent } = this.props
 
     return (
       <Tabs>
         <Tab className="confirm-page-container-content__tab" name="Details">
-          { detailsComponent }
+          {detailsComponent}
         </Tab>
         <Tab className="confirm-page-container-content__tab" name="Data">
-          { dataComponent }
+          {dataComponent}
         </Tab>
       </Tabs>
     )
   }
 
-  render () {
+  render() {
     const {
       action,
       errorKey,
@@ -88,40 +87,30 @@ export default class ConfirmPageContainerContent extends Component {
 
     return (
       <div className="confirm-page-container-content">
-        {
-          warning && (
-            <ConfirmPageContainerWarning warning={warning} />
-          )
-        }
-        {
-          summaryComponent || (
-            <ConfirmPageContainerSummary
-              className={classnames({
-                'confirm-page-container-summary--border': !detailsComponent || !dataComponent,
-              })}
-              action={action}
-              title={title}
-              titleComponent={titleComponent}
-              subtitle={subtitle}
-              subtitleComponent={subtitleComponent}
-              hideSubtitle={hideSubtitle}
-              identiconAddress={identiconAddress}
-              nonce={nonce}
-              assetImage={assetImage}
-            />
-          )
-        }
-        { this.renderContent() }
-        {
-          (errorKey || errorMessage) && (
-            <div className="confirm-page-container-content__error-container">
-              <ErrorMessage
-                errorMessage={errorMessage}
-                errorKey={errorKey}
-              />
-            </div>
-          )
-        }
+        {warning && <ConfirmPageContainerWarning warning={warning} />}
+        {summaryComponent || (
+          <ConfirmPageContainerSummary
+            className={classnames({
+              'confirm-page-container-summary--border':
+                !detailsComponent || !dataComponent,
+            })}
+            action={action}
+            title={title}
+            titleComponent={titleComponent}
+            subtitle={subtitle}
+            subtitleComponent={subtitleComponent}
+            hideSubtitle={hideSubtitle}
+            identiconAddress={identiconAddress}
+            nonce={nonce}
+            assetImage={assetImage}
+          />
+        )}
+        {this.renderContent()}
+        {(errorKey || errorMessage) && (
+          <div className="confirm-page-container-content__error-container">
+            <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
+          </div>
+        )}
         <PageContainerFooter
           onCancel={onCancel}
           cancelText={cancelText}
@@ -130,13 +119,8 @@ export default class ConfirmPageContainerContent extends Component {
           submitButtonType="confirm"
           disabled={disabled}
         >
-          {unapprovedTxCount > 1 && (
-            <a onClick={onCancelAll}>
-              {rejectNText}
-            </a>
-          )}
+          {unapprovedTxCount > 1 && <a onClick={onCancelAll}>{rejectNText}</a>}
         </PageContainerFooter>
-
       </div>
     )
   }

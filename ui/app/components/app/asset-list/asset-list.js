@@ -9,12 +9,20 @@ import AssetListItem from '../asset-list-item'
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 import { useMetricEvent } from '../../../hooks/useMetricEvent'
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency'
-import { getCurrentAccountWithSendEtherInfo, getNativeCurrency, getShouldShowFiat } from '../../../selectors'
+import {
+  getCurrentAccountWithSendEtherInfo,
+  getNativeCurrency,
+  getShouldShowFiat,
+  getSelectedAddress,
+} from '../../../selectors'
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay'
 
 const AssetList = ({ onClickAsset }) => {
   const history = useHistory()
-  const selectedAccountBalance = useSelector((state) => getCurrentAccountWithSendEtherInfo(state).balance)
+  const selectedAddress = useSelector((state) => getSelectedAddress(state))
+  const selectedAccountBalance = useSelector(
+    (state) => getCurrentAccountWithSendEtherInfo(state).balance,
+  )
   const nativeCurrency = useSelector(getNativeCurrency)
   const showFiat = useSelector(getShouldShowFiat)
   const selectTokenEvent = useMetricEvent({
@@ -41,14 +49,20 @@ const AssetList = ({ onClickAsset }) => {
     numberOfDecimals: secondaryNumberOfDecimals,
   } = useUserPreferencedCurrency(SECONDARY, { ethNumberOfDecimals: 4 })
 
-  const [primaryCurrencyDisplay] = useCurrencyDisplay(
+  const [, primaryCurrencyProperties] = useCurrencyDisplay(
     selectedAccountBalance,
-    { numberOfDecimals: primaryNumberOfDecimals, currency: primaryCurrency },
+    {
+      numberOfDecimals: primaryNumberOfDecimals,
+      currency: primaryCurrency,
+    },
   )
 
   const [secondaryCurrencyDisplay] = useCurrencyDisplay(
     selectedAccountBalance,
-    { numberOfDecimals: secondaryNumberOfDecimals, currency: secondaryCurrency },
+    {
+      numberOfDecimals: secondaryNumberOfDecimals,
+      currency: secondaryCurrency,
+    },
   )
 
   return (
@@ -56,7 +70,9 @@ const AssetList = ({ onClickAsset }) => {
       <AssetListItem
         onClick={() => onClickAsset(nativeCurrency)}
         data-testid="wallet-balance"
-        primary={primaryCurrencyDisplay}
+        primary={primaryCurrencyProperties.value}
+        tokenAddress={selectedAddress}
+        tokenSymbol={primaryCurrencyProperties.suffix}
         secondary={showFiat ? secondaryCurrencyDisplay : undefined}
       />
       <TokenList

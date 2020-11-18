@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask er designet og bygget i Californien."
   },
-  "buyCoinSwitch": {
-    "message": "Køb på CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch er den direkte destination for veksling af mere end 300 kryptovalutaer til den bedste sats."
-  },
   "buyWithWyre": {
     "message": "Køb ETH med Wyre"
   },
@@ -163,9 +157,6 @@
   },
   "cancel": {
     "message": "Afbryd"
-  },
-  "cancelAttempt": {
-    "message": "Annullér forsøg"
   },
   "cancellationGasFee": {
     "message": "Gebyr for brændstofannullering"
@@ -226,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "Forbinder til Ropsten-testnetværk"
-  },
-  "continueToCoinSwitch": {
-    "message": "Fortsæt til CoinSwitch"
   },
   "continueToWyre": {
     "message": "Fortsæt til Wyre"
@@ -307,9 +295,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Er du sikker på, at du vil slette dette netværk?"
-  },
-  "deposit": {
-    "message": "Indbetal"
   },
   "depositEther": {
     "message": "Indbetal Ether"
@@ -724,7 +709,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Blok-stifinder-URL (valgfrit)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Symbol (valgfrit)"
   },
   "orderOneHere": {
@@ -965,9 +950,6 @@
   },
   "sentEther": {
     "message": "sendte ether"
-  },
-  "sentTokens": {
-    "message": "afsendte tokens"
   },
   "separateEachWord": {
     "message": "Separer hvert ord med et enkelt mellemrum"

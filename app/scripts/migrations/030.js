@@ -12,7 +12,7 @@ const version = 30
 export default {
   version,
 
-  async migrate (originalVersionedData) {
+  async migrate(originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     const state = versionedData.data
@@ -22,7 +22,7 @@ export default {
   },
 }
 
-function transformState (state) {
+function transformState(state) {
   const newState = state
   if (state.PreferencesController) {
     const { frequentRpcListDetail } = newState.PreferencesController
@@ -37,13 +37,20 @@ function transformState (state) {
     }
   }
   if (state.NetworkController) {
-    // eslint-disable-next-line radix
-    if (newState.NetworkController.network && Number.isNaN(parseInt(newState.NetworkController.network))) {
+    if (
+      newState.NetworkController.network &&
+      // eslint-disable-next-line radix
+      Number.isNaN(parseInt(newState.NetworkController.network))
+    ) {
       delete newState.NetworkController.network
     }
 
-    // eslint-disable-next-line radix
-    if (newState.NetworkController.provider && newState.NetworkController.provider.chainId && Number.isNaN(parseInt(newState.NetworkController.provider.chainId))) {
+    if (
+      newState.NetworkController.provider &&
+      newState.NetworkController.provider.chainId &&
+      // eslint-disable-next-line radix
+      Number.isNaN(parseInt(newState.NetworkController.provider.chainId))
+    ) {
       delete newState.NetworkController.provider.chainId
     }
   }

@@ -18,7 +18,7 @@ start().catch((error) => {
   process.exit(1)
 })
 
-async function start () {
+async function start() {
   const targetFiles = [
     `background.js`,
     // `bg-libs`, skipped because source maps are invalid due to browserify bug: https://github.com/browserify/browserify/issues/1971
@@ -40,37 +40,53 @@ async function start () {
   }
 }
 
-async function validateSourcemapForFile ({ buildName }) {
+async function validateSourcemapForFile({ buildName }) {
   console.log(`build "${buildName}"`)
   const platform = `chrome`
   // load build and sourcemaps
   let rawBuild
   try {
-    const filePath = path.join(__dirname, `/../dist/${platform}/`, `${buildName}`)
+    const filePath = path.join(
+      __dirname,
+      `/../dist/${platform}/`,
+      `${buildName}`,
+    )
     rawBuild = await fsAsync.readFile(filePath, 'utf8')
   } catch (_) {
     // empty
   }
   if (!rawBuild) {
-    throw new Error(`SourcemapValidator - failed to load source file for "${buildName}"`)
+    throw new Error(
+      `SourcemapValidator - failed to load source file for "${buildName}"`,
+    )
   }
   // attempt to load in dist mode
   let rawSourceMap
   try {
-    const filePath = path.join(__dirname, `/../dist/sourcemaps/`, `${buildName}.map`)
+    const filePath = path.join(
+      __dirname,
+      `/../dist/sourcemaps/`,
+      `${buildName}.map`,
+    )
     rawSourceMap = await fsAsync.readFile(filePath, 'utf8')
   } catch (_) {
     // empty
   }
   // attempt to load in dev mode
   try {
-    const filePath = path.join(__dirname, `/../dist/${platform}/`, `${buildName}.map`)
+    const filePath = path.join(
+      __dirname,
+      `/../dist/${platform}/`,
+      `${buildName}.map`,
+    )
     rawSourceMap = await fsAsync.readFile(filePath, 'utf8')
   } catch (_) {
     // empty
   }
   if (!rawSourceMap) {
-    throw new Error(`SourcemapValidator - failed to load sourcemaps for "${buildName}"`)
+    throw new Error(
+      `SourcemapValidator - failed to load sourcemaps for "${buildName}"`,
+    )
   }
 
   const consumer = await new SourceMapConsumer(rawSourceMap)
@@ -96,7 +112,9 @@ async function validateSourcemapForFile ({ buildName }) {
       // warn if source content is missing
       if (!result.source) {
         valid = false
-        console.warn(`!! missing source for position: ${JSON.stringify(position)}`)
+        console.warn(
+          `!! missing source for position: ${JSON.stringify(position)}`,
+        )
         // const buildLine = buildLines[position.line - 1]
         console.warn(`   origin in build:`)
         console.warn(`   ${buildLines[position.line - 2]}`)
@@ -112,7 +130,9 @@ async function validateSourcemapForFile ({ buildName }) {
       const isMaybeValid = portion.includes(targetString)
       if (!isMaybeValid) {
         valid = false
-        console.error(`Sourcemap seems invalid:\n${getFencedCode(result.source, line)}`)
+        console.error(
+          `Sourcemap seems invalid:\n${getFencedCode(result.source, line)}`,
+        )
       }
     })
   })
@@ -123,18 +143,25 @@ async function validateSourcemapForFile ({ buildName }) {
 const CODE_FENCE_LENGTH = 80
 const TITLE_PADDING_LENGTH = 1
 
-function getFencedCode (filename, code) {
-  const title = `${' '.repeat(TITLE_PADDING_LENGTH)}${filename}${' '.repeat(TITLE_PADDING_LENGTH)}`
-  const openingFenceLength = Math.max(CODE_FENCE_LENGTH - (filename.length + (TITLE_PADDING_LENGTH * 2)), 0)
+function getFencedCode(filename, code) {
+  const title = `${' '.repeat(TITLE_PADDING_LENGTH)}${filename}${' '.repeat(
+    TITLE_PADDING_LENGTH,
+  )}`
+  const openingFenceLength = Math.max(
+    CODE_FENCE_LENGTH - (filename.length + TITLE_PADDING_LENGTH * 2),
+    0,
+  )
   const startOpeningFenceLength = Math.floor(openingFenceLength / 2)
   const endOpeningFenceLength = Math.ceil(openingFenceLength / 2)
-  const openingFence = `${'='.repeat(startOpeningFenceLength)}${title}${'='.repeat(endOpeningFenceLength)}`
+  const openingFence = `${'='.repeat(
+    startOpeningFenceLength,
+  )}${title}${'='.repeat(endOpeningFenceLength)}`
   const closingFence = '='.repeat(CODE_FENCE_LENGTH)
 
   return `${openingFence}\n${code}\n${closingFence}\n`
 }
 
-function indicesOf (substring, string) {
+function indicesOf(substring, string) {
   const a = []
   let i = -1
   while ((i = string.indexOf(substring, i + 1)) >= 0) {

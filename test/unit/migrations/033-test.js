@@ -3,10 +3,10 @@ import migration33 from '../../../app/scripts/migrations/033'
 
 describe('Migration to delete notice controller', function () {
   const oldStorage = {
-    'meta': {},
-    'data': {
-      'NoticeController': {
-        'noticesList': [
+    meta: {},
+    data: {
+      NoticeController: {
+        noticesList: [
           {
             id: 0,
             read: false,
@@ -32,9 +32,8 @@ describe('Migration to delete notice controller', function () {
   }
 
   it('removes notice controller from state', function () {
-    migration33.migrate(oldStorage)
-      .then((newStorage) => {
-        assert.equal(newStorage.data.NoticeController, undefined)
-      })
+    migration33.migrate(oldStorage).then((newStorage) => {
+      assert.equal(newStorage.data.NoticeController, undefined)
+    })
   })
 })

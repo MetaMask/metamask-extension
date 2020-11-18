@@ -10,17 +10,14 @@ import Tooltip from '../../../../components/ui/tooltip'
 import { useI18nContext } from '../../../../hooks/useI18nContext'
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard'
 
-function quadSplit (address) {
-  return (
-    `0x ${
-      address
-        .slice(2)
-        .match(/.{1,4}/ug)
-        .join(' ')}`
-  )
+function quadSplit(address) {
+  return `0x ${address
+    .slice(2)
+    .match(/.{1,4}/gu)
+    .join(' ')}`
 }
 
-function ViewContact ({
+function ViewContact({
   history,
   name,
   address,

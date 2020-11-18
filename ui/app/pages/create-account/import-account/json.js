@@ -9,7 +9,8 @@ import { getMetaMaskAccounts } from '../../../selectors'
 import Button from '../../../components/ui/button'
 import { getMostRecentOverviewPage } from '../../../ducks/history/history'
 
-const HELP_LINK = 'https://metamask.zendesk.com/hc/en-us/articles/360015489331-Importing-an-Account'
+const HELP_LINK =
+  'https://metamask.zendesk.com/hc/en-us/articles/360015489331-Importing-an-Account'
 
 class JsonImportSubview extends Component {
   state = {
@@ -19,14 +20,21 @@ class JsonImportSubview extends Component {
 
   inputRef = React.createRef()
 
-  render () {
+  render() {
     const { error, history, mostRecentOverviewPage } = this.props
     const enabled = !this.state.isEmpty && this.state.fileContents !== ''
 
     return (
       <div className="new-account-import-form__json">
         <p>{this.context.t('usedByClients')}</p>
-        <a className="warning" href={HELP_LINK} target="_blank" rel="noopener noreferrer">{this.context.t('fileImportFail')}</a>
+        <a
+          className="warning"
+          href={HELP_LINK}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {this.context.t('fileImportFail')}
+        </a>
         <FileInput
           readAs="text"
           onLoad={this.onLoad.bind(this)}
@@ -66,29 +74,25 @@ class JsonImportSubview extends Component {
             {this.context.t('import')}
           </Button>
         </div>
-        {
-          error
-            ? <span className="error">{error}</span>
-            : null
-        }
+        {error ? <span className="error">{error}</span> : null}
       </div>
     )
   }
 
-  onLoad (event) {
+  onLoad(event) {
     this.setState({
       fileContents: event.target.result,
     })
   }
 
-  createKeyringOnEnter (event) {
+  createKeyringOnEnter(event) {
     if (event.key === 'Enter') {
       event.preventDefault()
       this.createNewKeychain()
     }
   }
 
-  createNewKeychain () {
+  createNewKeychain() {
     const {
       firstAddress,
       displayWarning,
@@ -134,7 +138,7 @@ class JsonImportSubview extends Component {
       .catch((err) => err && displayWarning(err.message || err))
   }
 
-  checkInputEmpty () {
+  checkInputEmpty() {
     const password = this.inputRef.current.value
     let isEmpty = true
     if (password !== '') {
@@ -165,8 +169,10 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     displayWarning: (warning) => dispatch(actions.displayWarning(warning)),
-    importNewJsonAccount: (options) => dispatch(actions.importNewAccount('JSON File', options)),
-    setSelectedAddress: (address) => dispatch(actions.setSelectedAddress(address)),
+    importNewJsonAccount: (options) =>
+      dispatch(actions.importNewAccount('JSON File', options)),
+    setSelectedAddress: (address) =>
+      dispatch(actions.setSelectedAddress(address)),
   }
 }
 

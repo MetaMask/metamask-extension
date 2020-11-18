@@ -22,7 +22,10 @@ describe('TransactionActivityLog container', function () {
         },
       }
 
-      assert.deepEqual(mapStateToProps(mockState), { conversionRate: 280.45, nativeCurrency: 'ETH' })
+      assert.deepEqual(mapStateToProps(mockState), {
+        conversionRate: 280.45,
+        nativeCurrency: 'ETH',
+      })
     })
   })
 })

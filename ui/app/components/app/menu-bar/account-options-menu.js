@@ -7,13 +7,18 @@ import { showModal } from '../../../store/actions'
 import { CONNECTED_ROUTE } from '../../../helpers/constants/routes'
 import { Menu, MenuItem } from '../../ui/menu'
 import getAccountLink from '../../../../lib/account-link'
-import { getCurrentKeyring, getCurrentNetwork, getRpcPrefsForCurrentProvider, getSelectedIdentity } from '../../../selectors'
+import {
+  getCurrentKeyring,
+  getCurrentNetwork,
+  getRpcPrefsForCurrentProvider,
+  getSelectedIdentity,
+} from '../../../selectors'
 import { useI18nContext } from '../../../hooks/useI18nContext'
 import { useMetricEvent } from '../../../hooks/useMetricEvent'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../app/scripts/lib/enums'
 
-export default function AccountOptionsMenu ({ anchorElement, onClose }) {
+export default function AccountOptionsMenu({ anchorElement, onClose }) {
   const t = useI18nContext()
   const dispatch = useDispatch()
   const history = useHistory()
@@ -60,22 +65,18 @@ export default function AccountOptionsMenu ({ anchorElement, onClose }) {
       className="account-options-menu"
       onHide={onClose}
     >
-      {
-        getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN
-          ? null
-          : (
-            <MenuItem
-              onClick={() => {
-                openFullscreenEvent()
-                global.platform.openExtensionInBrowser()
-                onClose()
-              }}
-              iconClassName="fas fa-expand-alt"
-            >
-              { t('expandView') }
-            </MenuItem>
-          )
-      }
+      {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
+        <MenuItem
+          onClick={() => {
+            openFullscreenEvent()
+            global.platform.openExtensionInBrowser()
+            onClose()
+          }}
+          iconClassName="fas fa-expand-alt"
+        >
+          {t('expandView')}
+        </MenuItem>
+      )}
       <MenuItem
         data-testid="account-options-menu__account-details"
         onClick={() => {
@@ -85,30 +86,26 @@ export default function AccountOptionsMenu ({ anchorElement, onClose }) {
         }}
         iconClassName="fas fa-qrcode"
       >
-        { t('accountDetails') }
+        {t('accountDetails')}
       </MenuItem>
       <MenuItem
         onClick={() => {
           viewOnEtherscanEvent()
-          global.platform.openTab({ url: getAccountLink(address, network, rpcPrefs) })
+          global.platform.openTab({
+            url: getAccountLink(address, network, rpcPrefs),
+          })
           onClose()
         }}
         subtitle={
-          rpcPrefs.blockExplorerUrl
-            ? (
-              <span className="account-options-menu__explorer-origin">
-                { rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/u)[1] }
-              </span>
-            )
-            : null
+          rpcPrefs.blockExplorerUrl ? (
+            <span className="account-options-menu__explorer-origin">
+              {rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/u)[1]}
+            </span>
+          ) : null
         }
         iconClassName="fas fa-external-link-alt"
       >
-        {
-          rpcPrefs.blockExplorerUrl
-            ? t('viewinExplorer')
-            : t('viewOnEtherscan')
-        }
+        {rpcPrefs.blockExplorerUrl ? t('viewinExplorer') : t('viewOnEtherscan')}
       </MenuItem>
       <MenuItem
         data-testid="account-options-menu__connected-sites"
@@ -119,24 +116,25 @@ export default function AccountOptionsMenu ({ anchorElement, onClose }) {
         }}
         iconClassName="account-options-menu__connected-sites"
       >
-        { t('connectedSites') }
+        {t('connectedSites')}
       </MenuItem>
-      {
-        isRemovable
-          ? (
-            <MenuItem
-              data-testid="account-options-menu__remove-account"
-              onClick={() => {
-                dispatch(showModal({ name: 'CONFIRM_REMOVE_ACCOUNT', identity: selectedIdentity }))
-                onClose()
-              }}
-              iconClassName="fas fa-trash-alt"
-            >
-              { t('removeAccount') }
-            </MenuItem>
-          )
-          : null
-      }
+      {isRemovable ? (
+        <MenuItem
+          data-testid="account-options-menu__remove-account"
+          onClick={() => {
+            dispatch(
+              showModal({
+                name: 'CONFIRM_REMOVE_ACCOUNT',
+                identity: selectedIdentity,
+              }),
+            )
+            onClose()
+          }}
+          iconClassName="fas fa-trash-alt"
+        >
+          {t('removeAccount')}
+        </MenuItem>
+      ) : null}
     </Menu>
   )
 }

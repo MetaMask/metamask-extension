@@ -7,14 +7,12 @@ import {
   getAddressBookEntry,
 } from '../../../../selectors'
 
-import {
-  updateSendTo,
-} from '../../../../store/actions'
+import { updateSendTo } from '../../../../store/actions'
 import AddRecipient from './add-recipient.component'
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddRecipient)
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   const ensResolution = getSendEnsResolution(state)
 
   let addressBookEntryName = ''
@@ -25,18 +23,22 @@ function mapStateToProps (state) {
 
   const addressBook = getAddressBook(state)
 
+  const ownedAccounts = accountsWithSendEtherInfoSelector(state).sort((a, b) =>
+    a.name.localeCompare(b.name),
+  )
+
   return {
-    ownedAccounts: accountsWithSendEtherInfoSelector(state),
     addressBook,
-    ensResolution,
     addressBookEntryName,
-    ensResolutionError: getSendEnsResolutionError(state),
     contacts: addressBook.filter(({ name }) => Boolean(name)),
+    ensResolution,
+    ensResolutionError: getSendEnsResolutionError(state),
     nonContacts: addressBook.filter(({ name }) => !name),
+    ownedAccounts,
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
   }

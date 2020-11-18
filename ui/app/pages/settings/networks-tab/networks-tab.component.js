@@ -35,23 +35,22 @@ export default class NetworksTab extends PureComponent {
     isFullScreen: PropTypes.bool.isRequired,
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.props.setSelectedSettingsRpcUrl('')
   }
 
-  isCurrentPath (pathname) {
+  isCurrentPath(pathname) {
     return this.props.location.pathname === pathname
   }
 
-  renderSubHeader () {
-    const {
-      setSelectedSettingsRpcUrl,
-      setNetworksTabAddMode,
-    } = this.props
+  renderSubHeader() {
+    const { setSelectedSettingsRpcUrl, setNetworksTabAddMode } = this.props
 
     return (
       <div className="settings-page__sub-header">
-        <span className="settings-page__sub-header-text">{ this.context.t('networks') }</span>
+        <span className="settings-page__sub-header-text">
+          {this.context.t('networks')}
+        </span>
         <div className="networks-tab__add-network-header-button-wrapper">
           <Button
             type="secondary"
@@ -61,14 +60,14 @@ export default class NetworksTab extends PureComponent {
               setNetworksTabAddMode(true)
             }}
           >
-            { this.context.t('addNetwork') }
+            {this.context.t('addNetwork')}
           </Button>
         </div>
       </div>
     )
   }
 
-  renderNetworkListItem (network, selectRpcUrl) {
+  renderNetworkListItem(network, selectRpcUrl) {
     const {
       setSelectedSettingsRpcUrl,
       setNetworksTabAddMode,
@@ -90,9 +89,14 @@ export default class NetworksTab extends PureComponent {
 
     const listItemNetworkIsSelected = selectRpcUrl && selectRpcUrl === rpcUrl
     const listItemUrlIsProviderUrl = rpcUrl === providerUrl
-    const listItemTypeIsProviderNonRpcType = providerType !== 'rpc' && currentProviderType === providerType
-    const listItemNetworkIsCurrentProvider = !networkIsSelected && !networksTabIsInAddMode && (listItemUrlIsProviderUrl || listItemTypeIsProviderNonRpcType)
-    const displayNetworkListItemAsSelected = listItemNetworkIsSelected || listItemNetworkIsCurrentProvider
+    const listItemTypeIsProviderNonRpcType =
+      providerType !== 'rpc' && currentProviderType === providerType
+    const listItemNetworkIsCurrentProvider =
+      !networkIsSelected &&
+      !networksTabIsInAddMode &&
+      (listItemUrlIsProviderUrl || listItemTypeIsProviderNonRpcType)
+    const displayNetworkListItemAsSelected =
+      listItemNetworkIsSelected || listItemNetworkIsCurrentProvider
 
     return (
       <div
@@ -113,56 +117,58 @@ export default class NetworksTab extends PureComponent {
         <div
           className={classnames('networks-tab__networks-list-name', {
             'networks-tab__networks-list-name--selected': displayNetworkListItemAsSelected,
-            'networks-tab__networks-list-name--disabled': currentProviderType !== 'rpc' && !displayNetworkListItemAsSelected,
+            'networks-tab__networks-list-name--disabled':
+              currentProviderType !== 'rpc' &&
+              !displayNetworkListItemAsSelected,
           })}
         >
-          { label || this.context.t(labelKey) }
-          { currentProviderType !== 'rpc' && (
-            <LockIcon
-              width="14px"
-              height="17px"
-              fill="#cdcdcd"
-            />
-          ) }
+          {label || this.context.t(labelKey)}
+          {currentProviderType !== 'rpc' && (
+            <LockIcon width="14px" height="17px" fill="#cdcdcd" />
+          )}
         </div>
         <div className="networks-tab__networks-list-arrow" />
       </div>
     )
   }
 
-  renderNetworksList () {
-    const { networksToRender, selectedNetwork, networkIsSelected, networksTabIsInAddMode, networkDefaultedToProvider } = this.props
+  renderNetworksList() {
+    const {
+      networksToRender,
+      selectedNetwork,
+      networkIsSelected,
+      networksTabIsInAddMode,
+      networkDefaultedToProvider,
+    } = this.props
 
     return (
       <div
         className={classnames('networks-tab__networks-list', {
-          'networks-tab__networks-list--selection': (networkIsSelected && !networkDefaultedToProvider) || networksTabIsInAddMode,
+          'networks-tab__networks-list--selection':
+            (networkIsSelected && !networkDefaultedToProvider) ||
+            networksTabIsInAddMode,
         })}
       >
-        { networksToRender.map((network) => this.renderNetworkListItem(network, selectedNetwork.rpcUrl)) }
-        {
-          networksTabIsInAddMode && (
-            <div
-              className="networks-tab__networks-list-item"
-            >
-              <NetworkDropdownIcon
-                backgroundColor="white"
-                innerBorder="1px solid rgb(106, 115, 125)"
-              />
-              <div
-                className="networks-tab__networks-list-name networks-tab__networks-list-name--selected"
-              >
-                { this.context.t('newNetwork') }
-              </div>
-              <div className="networks-tab__networks-list-arrow" />
+        {networksToRender.map((network) =>
+          this.renderNetworkListItem(network, selectedNetwork.rpcUrl),
+        )}
+        {networksTabIsInAddMode && (
+          <div className="networks-tab__networks-list-item">
+            <NetworkDropdownIcon
+              backgroundColor="white"
+              innerBorder="1px solid rgb(106, 115, 125)"
+            />
+            <div className="networks-tab__networks-list-name networks-tab__networks-list-name--selected">
+              {this.context.t('newNetwork')}
             </div>
-          )
-        }
+            <div className="networks-tab__networks-list-arrow" />
+          </div>
+        )}
       </div>
     )
   }
 
-  renderNetworksTabContent () {
+  renderNetworksTabContent() {
     const { t } = this.context
     const {
       setRpcTarget,
@@ -190,41 +196,37 @@ export default class NetworksTab extends PureComponent {
 
     return (
       <>
-        { this.renderNetworksList() }
-        {
-          shouldRenderNetworkForm
-            ? (
-              <NetworkForm
-                rpcUrls={networksToRender.map((network) => network.rpcUrl)}
-                setRpcTarget={setRpcTarget}
-                editRpc={editRpc}
-                networkName={label || (labelKey && t(labelKey)) || ''}
-                rpcUrl={rpcUrl}
-                chainId={chainId}
-                ticker={ticker}
-                onClear={(shouldUpdateHistory = true) => {
-                  setNetworksTabAddMode(false)
-                  setSelectedSettingsRpcUrl('')
-                  if (shouldUpdateHistory && !isFullScreen) {
-                    history.push(NETWORKS_ROUTE)
-                  }
-                }}
-                showConfirmDeleteNetworkModal={showConfirmDeleteNetworkModal}
-                viewOnly={viewOnly}
-                isCurrentRpcTarget={providerUrl === rpcUrl}
-                networksTabIsInAddMode={networksTabIsInAddMode}
-                rpcPrefs={rpcPrefs}
-                blockExplorerUrl={blockExplorerUrl}
-                isFullScreen={isFullScreen}
-              />
-            )
-            : null
-        }
+        {this.renderNetworksList()}
+        {shouldRenderNetworkForm ? (
+          <NetworkForm
+            rpcUrls={networksToRender.map((network) => network.rpcUrl)}
+            setRpcTarget={setRpcTarget}
+            editRpc={editRpc}
+            networkName={label || (labelKey && t(labelKey)) || ''}
+            rpcUrl={rpcUrl}
+            chainId={chainId}
+            ticker={ticker}
+            onClear={(shouldUpdateHistory = true) => {
+              setNetworksTabAddMode(false)
+              setSelectedSettingsRpcUrl('')
+              if (shouldUpdateHistory && !isFullScreen) {
+                history.push(NETWORKS_ROUTE)
+              }
+            }}
+            showConfirmDeleteNetworkModal={showConfirmDeleteNetworkModal}
+            viewOnly={viewOnly}
+            isCurrentRpcTarget={providerUrl === rpcUrl}
+            networksTabIsInAddMode={networksTabIsInAddMode}
+            rpcPrefs={rpcPrefs}
+            blockExplorerUrl={blockExplorerUrl}
+            isFullScreen={isFullScreen}
+          />
+        ) : null}
       </>
     )
   }
 
-  render () {
+  render() {
     const {
       setNetworksTabAddMode,
       setSelectedSettingsRpcUrl,
@@ -238,24 +240,21 @@ export default class NetworksTab extends PureComponent {
         {isFullScreen && this.renderSubHeader()}
         <div className="networks-tab__content">
           {this.renderNetworksTabContent()}
-          {!isFullScreen && !shouldRenderNetworkForm
-            ? (
-              <div className="networks-tab__networks-list-popup-footer">
-                <Button
-                  type="primary"
-                  onClick={(event) => {
-                    event.preventDefault()
-                    setSelectedSettingsRpcUrl('')
-                    setNetworksTabAddMode(true)
-                    history.push(NETWORKS_FORM_ROUTE)
-                  }}
-                >
-                  { this.context.t('addNetwork') }
-                </Button>
-              </div>
-            )
-            : null
-          }
+          {!isFullScreen && !shouldRenderNetworkForm ? (
+            <div className="networks-tab__networks-list-popup-footer">
+              <Button
+                type="primary"
+                onClick={(event) => {
+                  event.preventDefault()
+                  setSelectedSettingsRpcUrl('')
+                  setNetworksTabAddMode(true)
+                  history.push(NETWORKS_FORM_ROUTE)
+                }}
+              >
+                {this.context.t('addNetwork')}
+              </Button>
+            </div>
+          ) : null}
         </div>
       </div>
     )

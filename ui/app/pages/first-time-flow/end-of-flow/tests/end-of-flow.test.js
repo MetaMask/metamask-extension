@@ -12,12 +12,11 @@ describe('End of Flow Screen', function () {
     history: {
       push: sinon.spy(),
     },
+    setCompletedOnboarding: sinon.spy(),
   }
 
   beforeEach(function () {
-    wrapper = mountWithRouter(
-      <EndOfFlowScreen.WrappedComponent {...props} />,
-    )
+    wrapper = mountWithRouter(<EndOfFlowScreen.WrappedComponent {...props} />)
   })
 
   it('renders', function () {

@@ -20,22 +20,23 @@ describe('AmountMaxButton Component', function () {
   })
 
   beforeEach(function () {
-    wrapper = shallow((
+    wrapper = shallow(
       <AmountMaxButton
         balance="mockBalance"
         gasTotal="mockGasTotal"
         maxModeOn={false}
-        sendToken={ { address: 'mockTokenAddress' } }
+        sendToken={{ address: 'mockTokenAddress' }}
         setAmountToMax={propsMethodSpies.setAmountToMax}
         setMaxModeTo={propsMethodSpies.setMaxModeTo}
         tokenBalance="mockTokenBalance"
-      />
-    ), {
-      context: {
-        t: (str) => `${str}_t`,
-        metricsEvent: () => undefined,
+      />,
+      {
+        context: {
+          t: (str) => `${str}_t`,
+          metricsEvent: () => undefined,
+        },
       },
-    })
+    )
     instance = wrapper.instance()
   })
 
@@ -50,22 +51,19 @@ describe('AmountMaxButton Component', function () {
   })
 
   describe('setMaxAmount', function () {
-
     it('should call setAmountToMax with the correct params', function () {
       assert.equal(propsMethodSpies.setAmountToMax.callCount, 0)
       instance.setMaxAmount()
       assert.equal(propsMethodSpies.setAmountToMax.callCount, 1)
-      assert.deepEqual(
-        propsMethodSpies.setAmountToMax.getCall(0).args,
-        [{
+      assert.deepEqual(propsMethodSpies.setAmountToMax.getCall(0).args, [
+        {
           balance: 'mockBalance',
           gasTotal: 'mockGasTotal',
           sendToken: { address: 'mockTokenAddress' },
           tokenBalance: 'mockTokenBalance',
-        }],
-      )
+        },
+      ])
     })
-
   })
 
   describe('render', function () {
@@ -74,19 +72,14 @@ describe('AmountMaxButton Component', function () {
     })
 
     it('should call setMaxModeTo and setMaxAmount when the checkbox is checked', function () {
-      const {
-        onClick,
-      } = wrapper.find('.send-v2__amount-max').props()
+      const { onClick } = wrapper.find('.send-v2__amount-max').props()
 
       assert.equal(AmountMaxButton.prototype.setMaxAmount.callCount, 0)
       assert.equal(propsMethodSpies.setMaxModeTo.callCount, 0)
       onClick(MOCK_EVENT)
       assert.equal(AmountMaxButton.prototype.setMaxAmount.callCount, 1)
       assert.equal(propsMethodSpies.setMaxModeTo.callCount, 1)
-      assert.deepEqual(
-        propsMethodSpies.setMaxModeTo.getCall(0).args,
-        [true],
-      )
+      assert.deepEqual(propsMethodSpies.setMaxModeTo.getCall(0).args, [true])
     })
 
     it('should render the expected text when maxModeOn is false', function () {

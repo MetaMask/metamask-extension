@@ -10,7 +10,7 @@ const positionArrowClassMap = {
   right: 'info-tooltip__right-tooltip-arrow',
 }
 
-export default function InfoTooltip ({
+export default function InfoTooltip({
   contentText = '',
   position = '',
   containerClassName,
@@ -22,14 +22,17 @@ export default function InfoTooltip ({
       <Tooltip
         interactive
         position={position}
-        containerClassName={classnames('info-tooltip__tooltip-container', containerClassName)}
+        containerClassName={classnames(
+          'info-tooltip__tooltip-container',
+          containerClassName,
+        )}
         wrapperClassName={wrapperClassName}
         tooltipInnerClassName="info-tooltip__tooltip-content"
         tooltipArrowClassName={positionArrowClassMap[position]}
         html={contentText}
         theme={wide ? 'tippy-tooltip-wideInfo' : 'tippy-tooltip-info'}
       >
-        <img src="images/mm-info-icon.svg" />
+        <img src="images/mm-info-icon.svg" alt="" />
       </Tooltip>
     </div>
   )

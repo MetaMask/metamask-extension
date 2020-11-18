@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "A MetaMaskot Kaliforniában tervezték és hozták létre."
   },
-  "buyCoinSwitch": {
-    "message": "Vegye meg a CoinSwitchen"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "A CoinSwitch a legjobb hely több mint 300 cryptovaluta legjobb árfolyamon történő átváltására."
-  },
   "buyWithWyre": {
     "message": "Vásároljon ETH-t a Wyre-rel"
   },
@@ -163,9 +157,6 @@
   },
   "cancel": {
     "message": "Mégse"
-  },
-  "cancelAttempt": {
-    "message": "Kísérlet megszakítása"
   },
   "cancellationGasFee": {
     "message": "A törlés gázára"
@@ -226,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "Csatlakozás a Ropsten teszthálózathoz"
-  },
-  "continueToCoinSwitch": {
-    "message": "Tovább a CoinSwitch-re"
   },
   "continueToWyre": {
     "message": "Tovább a Wyre-re"
@@ -307,9 +295,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Biztosan törli ezt a hálózatot?"
-  },
-  "deposit": {
-    "message": "Befizetés"
   },
   "depositEther": {
     "message": "Ether befizetése"
@@ -733,7 +718,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Explorer URL letiltása (nem kötelező)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Szimbólum (opcionális)"
   },
   "orderOneHere": {
@@ -980,9 +965,6 @@
   },
   "sentEther": {
     "message": "elküldött ether"
-  },
-  "sentTokens": {
-    "message": "elküldött érmék"
   },
   "separateEachWord": {
     "message": "Minden egyes szavat szóközzel válasszon el"

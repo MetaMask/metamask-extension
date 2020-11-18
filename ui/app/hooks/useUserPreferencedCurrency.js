@@ -1,5 +1,9 @@
 import { useSelector } from 'react-redux'
-import { getPreferences, getShouldShowFiat, getNativeCurrency } from '../selectors'
+import {
+  getPreferences,
+  getShouldShowFiat,
+  getNativeCurrency,
+} from '../selectors'
 import { PRIMARY, SECONDARY, ETH } from '../helpers/constants/common'
 
 /**
@@ -29,21 +33,24 @@ import { PRIMARY, SECONDARY, ETH } from '../helpers/constants/common'
  * @param {UseUserPreferencedCurrencyOptions} opts - options to override default values
  * @return {UserPreferredCurrency}
  */
-export function useUserPreferencedCurrency (type, opts = {}) {
+export function useUserPreferencedCurrency(type, opts = {}) {
   const nativeCurrency = useSelector(getNativeCurrency)
-  const {
-    useNativeCurrencyAsPrimaryCurrency,
-  } = useSelector(getPreferences)
+  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences)
   const showFiat = useSelector(getShouldShowFiat)
 
   let currency, numberOfDecimals
-  if (!showFiat || (type === PRIMARY && useNativeCurrencyAsPrimaryCurrency) ||
-    (type === SECONDARY && !useNativeCurrencyAsPrimaryCurrency)) {
+  if (
+    !showFiat ||
+    (type === PRIMARY && useNativeCurrencyAsPrimaryCurrency) ||
+    (type === SECONDARY && !useNativeCurrencyAsPrimaryCurrency)
+  ) {
     // Display ETH
     currency = nativeCurrency || ETH
     numberOfDecimals = opts.numberOfDecimals || opts.ethNumberOfDecimals || 6
-  } else if ((type === SECONDARY && useNativeCurrencyAsPrimaryCurrency) ||
-    (type === PRIMARY && !useNativeCurrencyAsPrimaryCurrency)) {
+  } else if (
+    (type === SECONDARY && useNativeCurrencyAsPrimaryCurrency) ||
+    (type === PRIMARY && !useNativeCurrencyAsPrimaryCurrency)
+  ) {
     // Display Fiat
     numberOfDecimals = opts.numberOfDecimals || opts.fiatNumberOfDecimals || 2
   }

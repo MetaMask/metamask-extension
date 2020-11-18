@@ -145,12 +145,6 @@
   "builtInCalifornia": {
     "message": "MetaMask спроектирован и разработан в Калифорнии."
   },
-  "buyCoinSwitch": {
-    "message": "Купить на CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch - это однонаправленное место для обмена более 300 криптоконверсий по наилучшей цене."
-  },
   "buyWithWyre": {
     "message": "Купить ETH на Wyre"
   },
@@ -162,9 +156,6 @@
   },
   "cancel": {
     "message": "Отмена"
-  },
-  "cancelAttempt": {
-    "message": "Попытка отмены транзакции"
   },
   "cancellationGasFee": {
     "message": "Комиссия за газ на отмену"
@@ -225,9 +216,6 @@
   },
   "connectingToRopsten": {
     "message": "Соединение с тестовой сетью Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "Продолжить в CoinSwitch"
   },
   "continueToWyre": {
     "message": "Продолжить на Wyre"
@@ -329,9 +317,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Вы уверены, что хотите удалить эту сеть?"
-  },
-  "deposit": {
-    "message": "Пополнить"
   },
   "depositEther": {
     "message": "Пополнить Ether"
@@ -769,7 +754,7 @@
   "optionalBlockExplorerUrl": {
     "message": "URL блок-эксплорера  (необязательно)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Символ  (необязательно)"
   },
   "orderOneHere": {
@@ -1023,9 +1008,6 @@
   },
   "sentEther": {
     "message": "Отправить Ether"
-  },
-  "sentTokens": {
-    "message": "Отправленные токены"
   },
   "separateEachWord": {
     "message": "Разделяйте каждое слово одним пробелом"

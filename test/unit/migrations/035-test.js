@@ -10,10 +10,11 @@ describe('migration #35', function () {
       data: {},
     }
 
-    migration35.migrate(oldStorage)
+    migration35
+      .migrate(oldStorage)
       .then((newStorage) => {
         assert.deepEqual(newStorage.meta, {
-          'version': 35,
+          version: 35,
         })
         done()
       })
@@ -30,7 +31,8 @@ describe('migration #35', function () {
       },
     }
 
-    migration35.migrate(oldStorage)
+    migration35
+      .migrate(oldStorage)
       .then((newStorage) => {
         assert.deepEqual(newStorage.data.PreferencesController, {})
         done()
@@ -48,7 +50,8 @@ describe('migration #35', function () {
       },
     }
 
-    migration35.migrate(oldStorage)
+    migration35
+      .migrate(oldStorage)
       .then((newStorage) => {
         assert.deepEqual(newStorage.data.PreferencesController, {})
         done()
@@ -85,7 +88,8 @@ describe('migration #35', function () {
       },
     }
 
-    migration35.migrate(oldStorage)
+    migration35
+      .migrate(oldStorage)
       .then((newStorage) => {
         assert.deepEqual(newStorage.data, oldStorage.data)
         done()

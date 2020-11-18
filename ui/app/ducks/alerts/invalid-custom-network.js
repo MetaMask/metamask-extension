@@ -43,9 +43,6 @@ export const alertIsOpen = (state) => state[name].state !== ALERT_STATE.CLOSED
 
 // Actions / action-creators
 
-const {
-  openAlert,
-  dismissAlert,
-} = actions
+const { openAlert, dismissAlert } = actions
 
 export { openAlert, dismissAlert }

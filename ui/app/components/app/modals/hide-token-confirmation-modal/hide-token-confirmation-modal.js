@@ -5,21 +5,20 @@ import * as actions from '../../../../store/actions'
 import Identicon from '../../../ui/identicon'
 import Button from '../../../ui/button'
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     token: state.appState.modal.modalState.props.token,
     assetImages: state.metamask.assetImages,
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     hideModal: () => dispatch(actions.hideModal()),
     hideToken: (address) => {
-      dispatch(actions.removeToken(address))
-        .then(() => {
-          dispatch(actions.hideModal())
-        })
+      dispatch(actions.removeToken(address)).then(() => {
+        dispatch(actions.hideModal())
+      })
     },
   }
 }
@@ -41,7 +40,7 @@ class HideTokenConfirmationModal extends Component {
 
   state = {}
 
-  render () {
+  render() {
     const { token, hideToken, hideModal, assetImages } = this.props
     const { symbol, address } = token
     const image = assetImages[address]
@@ -86,4 +85,7 @@ class HideTokenConfirmationModal extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(HideTokenConfirmationModal)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(HideTokenConfirmationModal)

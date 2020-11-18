@@ -143,12 +143,6 @@
   "builtInCalifornia": {
     "message": "O MetaMask foi projetado e desenvolvido na Califórnia."
   },
-  "buyCoinSwitch": {
-    "message": "Compre no CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "O CoinSwitch é o destino único para trocar mais de 300 criptomoedas com a melhor taxa."
-  },
   "buyWithWyre": {
     "message": "Comprar ETH com Wyre"
   },
@@ -157,9 +151,6 @@
   },
   "cancel": {
     "message": "Cancelar"
-  },
-  "cancelAttempt": {
-    "message": "Tentativa de cancelamento"
   },
   "cancellationGasFee": {
     "message": "Tarifa de Gas de cancelamento"
@@ -220,9 +211,6 @@
   },
   "connectingToRopsten": {
     "message": "Conectando à Rede de Testes Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "Continuar para CoinSwitch"
   },
   "continueToWyre": {
     "message": "Continuar para Wyre"
@@ -301,9 +289,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Tem certeza de que deseja excluir esta rede?"
-  },
-  "deposit": {
-    "message": "Depósito"
   },
   "depositEther": {
     "message": "Depositar Ether"
@@ -728,7 +713,7 @@
   "optionalBlockExplorerUrl": {
     "message": "URL exploradora de blocos (opcional)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Símbolo (opcional)"
   },
   "orderOneHere": {
@@ -975,9 +960,6 @@
   },
   "sentEther": {
     "message": "ether enviado"
-  },
-  "sentTokens": {
-    "message": "tokens enviados"
   },
   "separateEachWord": {
     "message": "Separe cada palavra com um único espaço"

@@ -2,7 +2,6 @@ import assert from 'assert'
 import cleanErrorStack from '../../../app/scripts/lib/cleanErrorStack'
 
 describe('Clean Error Stack', function () {
-
   const testMessage = 'Test Message'
   const testError = new Error(testMessage)
   const undefinedErrorName = new Error(testMessage)
@@ -19,7 +18,10 @@ describe('Clean Error Stack', function () {
   })
 
   it('tests error with undefined name', function () {
-    assert.equal(cleanErrorStack(undefinedErrorName).toString(), 'Error: Test Message')
+    assert.equal(
+      cleanErrorStack(undefinedErrorName).toString(),
+      'Error: Test Message',
+    )
   })
 
   it('tests error with blank name', function () {
@@ -29,5 +31,4 @@ describe('Clean Error Stack', function () {
   it('tests error with blank message', function () {
     assert.equal(cleanErrorStack(blankMsgError), 'Error')
   })
-
 })

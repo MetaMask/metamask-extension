@@ -9,7 +9,7 @@ import { useTokenTracker } from '../../../hooks/useTokenTracker'
 import { getAssetImages } from '../../../selectors'
 import { getTokens } from '../../../ducks/metamask/metamask'
 
-export default function TokenList ({ onTokenClick }) {
+export default function TokenList({ onTokenClick }) {
   const t = useI18nContext()
   const assetImages = useSelector(getAssetImages)
   // use `isEqual` comparison function because the token array is serialized

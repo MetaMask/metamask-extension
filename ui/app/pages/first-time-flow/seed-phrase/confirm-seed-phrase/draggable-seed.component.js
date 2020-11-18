@@ -4,7 +4,6 @@ import classnames from 'classnames'
 import { DragSource, DropTarget } from 'react-dnd'
 
 class DraggableSeed extends Component {
-
   static propTypes = {
     // React DnD Props
     connectDragSource: PropTypes.func.isRequired,
@@ -26,14 +25,14 @@ class DraggableSeed extends Component {
     onClick: undefined,
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { isOver, setHoveringIndex } = this.props
     if (isOver && !nextProps.isOver) {
       setHoveringIndex(-1)
     }
   }
 
-  render () {
+  render() {
     const {
       connectDragSource,
       connectDropTarget,
@@ -47,39 +46,45 @@ class DraggableSeed extends Component {
       canDrop,
     } = this.props
 
-    return connectDropTarget(connectDragSource(
-      <div
-        key={index}
-        className={classnames('btn-secondary notranslate confirm-seed-phrase__seed-word', className, {
-          'confirm-seed-phrase__seed-word--selected btn-primary': selected,
-          'confirm-seed-phrase__seed-word--dragging': isDragging,
-          'confirm-seed-phrase__seed-word--empty': !word,
-          'confirm-seed-phrase__seed-word--active-drop': !isOver && canDrop,
-          'confirm-seed-phrase__seed-word--drop-hover': isOver && canDrop,
-        })}
-        onClick={onClick}
-        data-testid={`draggable-seed-${selected ? 'selected-' : ''}${word}`}
-      >
-        { word }
-      </div>,
-    ))
+    return connectDropTarget(
+      connectDragSource(
+        <div
+          key={index}
+          className={classnames(
+            'btn-secondary notranslate confirm-seed-phrase__seed-word',
+            className,
+            {
+              'confirm-seed-phrase__seed-word--selected btn-primary': selected,
+              'confirm-seed-phrase__seed-word--dragging': isDragging,
+              'confirm-seed-phrase__seed-word--empty': !word,
+              'confirm-seed-phrase__seed-word--active-drop': !isOver && canDrop,
+              'confirm-seed-phrase__seed-word--drop-hover': isOver && canDrop,
+            },
+          )}
+          onClick={onClick}
+          data-testid={`draggable-seed-${selected ? 'selected-' : ''}${word}`}
+        >
+          {word}
+        </div>,
+      ),
+    )
   }
 }
 
 const SEEDWORD = 'SEEDWORD'
 
 const seedSource = {
-  beginDrag (props) {
+  beginDrag(props) {
     setTimeout(() => props.setDraggingSeedIndex(props.seedIndex), 0)
     return {
       seedIndex: props.seedIndex,
       word: props.word,
     }
   },
-  canDrag (props) {
+  canDrag(props) {
     return props.draggable
   },
-  endDrag (props, monitor) {
+  endDrag(props, monitor) {
     const dropTarget = monitor.getDropResult()
 
     if (!dropTarget) {
@@ -92,15 +97,15 @@ const seedSource = {
 }
 
 const seedTarget = {
-  drop (props) {
+  drop(props) {
     return {
       targetIndex: props.index,
     }
   },
-  canDrop (props) {
+  canDrop(props) {
     return props.droppable
   },
-  hover (props) {
+  hover(props) {
     props.setHoveringIndex(props.index)
   },
 }
@@ -120,4 +125,8 @@ const collectDrop = (connect, monitor) => {
   }
 }
 
-export default DropTarget(SEEDWORD, seedTarget, collectDrop)(DragSource(SEEDWORD, seedSource, collectDrag)(DraggableSeed))
+export default DropTarget(
+  SEEDWORD,
+  seedTarget,
+  collectDrop,
+)(DragSource(SEEDWORD, seedSource, collectDrag)(DraggableSeed))

@@ -5,7 +5,9 @@ import { getMostRecentOverviewPage } from '../../ducks/history/history'
 import AddToken from './add-token.component'
 
 const mapStateToProps = (state) => {
-  const { metamask: { identities, tokens, pendingTokens } } = state
+  const {
+    metamask: { identities, tokens, pendingTokens },
+  } = state
   return {
     identities,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),

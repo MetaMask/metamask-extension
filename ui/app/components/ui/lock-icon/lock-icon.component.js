@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function LockIcon (props) {
+export default function LockIcon(props) {
   return (
     <svg
       version="1.1"

@@ -26,7 +26,7 @@ describe('SendFooter Component', function () {
   })
 
   beforeEach(function () {
-    wrapper = shallow((
+    wrapper = shallow(
       <SendFooter
         addToAddressBookIfNew={propsMethodSpies.addToAddressBookIfNew}
         amount="mockAmount"
@@ -34,7 +34,7 @@ describe('SendFooter Component', function () {
         disabled
         editingTransactionId="mockEditingTransactionId"
         errors={{}}
-        from={ { address: 'mockAddress', balance: 'mockBalance' } }
+        from={{ address: 'mockAddress', balance: 'mockBalance' }}
         gasLimit="mockGasLimit"
         gasPrice="mockGasPrice"
         gasTotal="mockGasTotal"
@@ -49,8 +49,9 @@ describe('SendFooter Component', function () {
         update={propsMethodSpies.update}
         sendErrors={{}}
         mostRecentOverviewPage="mostRecentOverviewPage"
-      />
-    ), { context: { t: (str) => str, metricsEvent: () => ({}) } })
+      />,
+      { context: { t: (str) => str, metricsEvent: () => ({}) } },
+    )
   })
 
   afterEach(function () {
@@ -79,7 +80,10 @@ describe('SendFooter Component', function () {
       assert.equal(historySpies.push.callCount, 0)
       wrapper.instance().onCancel()
       assert.equal(historySpies.push.callCount, 1)
-      assert.equal(historySpies.push.getCall(0).args[0], 'mostRecentOverviewPage')
+      assert.equal(
+        historySpies.push.getCall(0).args[0],
+        'mostRecentOverviewPage',
+      )
     })
   })
 
@@ -125,12 +129,14 @@ describe('SendFooter Component', function () {
         expectedResult: false,
         gasIsLoading: false,
       },
-
     }
     Object.entries(config).forEach(([description, obj]) => {
       it(description, function () {
         wrapper.setProps(obj)
-        assert.equal(wrapper.instance().formShouldBeDisabled(), obj.expectedResult)
+        assert.equal(
+          wrapper.instance().formShouldBeDisabled(),
+          obj.expectedResult,
+        )
       })
     })
   })
@@ -139,29 +145,26 @@ describe('SendFooter Component', function () {
     it('should call addToAddressBookIfNew with the correct params', function () {
       wrapper.instance().onSubmit(MOCK_EVENT)
       assert(propsMethodSpies.addToAddressBookIfNew.calledOnce)
-      assert.deepEqual(
-        propsMethodSpies.addToAddressBookIfNew.getCall(0).args,
-        ['mockTo', ['mockAccount']],
-      )
+      assert.deepEqual(propsMethodSpies.addToAddressBookIfNew.getCall(0).args, [
+        'mockTo',
+        ['mockAccount'],
+      ])
     })
 
     it('should call props.update if editingTransactionId is truthy', async function () {
       await wrapper.instance().onSubmit(MOCK_EVENT)
       assert(propsMethodSpies.update.calledOnce)
-      assert.deepEqual(
-        propsMethodSpies.update.getCall(0).args[0],
-        {
-          data: undefined,
-          amount: 'mockAmount',
-          editingTransactionId: 'mockEditingTransactionId',
-          from: 'mockAddress',
-          gas: 'mockGasLimit',
-          gasPrice: 'mockGasPrice',
-          sendToken: { mockProp: 'mockSendTokenProp' },
-          to: 'mockTo',
-          unapprovedTxs: {},
-        },
-      )
+      assert.deepEqual(propsMethodSpies.update.getCall(0).args[0], {
+        data: undefined,
+        amount: 'mockAmount',
+        editingTransactionId: 'mockEditingTransactionId',
+        from: 'mockAddress',
+        gas: 'mockGasLimit',
+        gasPrice: 'mockGasPrice',
+        sendToken: { mockProp: 'mockSendTokenProp' },
+        to: 'mockTo',
+        unapprovedTxs: {},
+      })
     })
 
     it('should not call props.sign if editingTransactionId is truthy', function () {
@@ -172,18 +175,15 @@ describe('SendFooter Component', function () {
       wrapper.setProps({ editingTransactionId: null })
       await wrapper.instance().onSubmit(MOCK_EVENT)
       assert(propsMethodSpies.sign.calledOnce)
-      assert.deepEqual(
-        propsMethodSpies.sign.getCall(0).args[0],
-        {
-          data: undefined,
-          amount: 'mockAmount',
-          from: 'mockAddress',
-          gas: 'mockGasLimit',
-          gasPrice: 'mockGasPrice',
-          sendToken: { mockProp: 'mockSendTokenProp' },
-          to: 'mockTo',
-        },
-      )
+      assert.deepEqual(propsMethodSpies.sign.getCall(0).args[0], {
+        data: undefined,
+        amount: 'mockAmount',
+        from: 'mockAddress',
+        gas: 'mockGasLimit',
+        gasPrice: 'mockGasPrice',
+        sendToken: { mockProp: 'mockSendTokenProp' },
+        to: 'mockTo',
+      })
     })
 
     it('should not call props.update if editingTransactionId is falsy', function () {
@@ -193,14 +193,17 @@ describe('SendFooter Component', function () {
     it('should call history.push', async function () {
       await wrapper.instance().onSubmit(MOCK_EVENT)
       assert.equal(historySpies.push.callCount, 1)
-      assert.equal(historySpies.push.getCall(0).args[0], CONFIRM_TRANSACTION_ROUTE)
+      assert.equal(
+        historySpies.push.getCall(0).args[0],
+        CONFIRM_TRANSACTION_ROUTE,
+      )
     })
   })
 
   describe('render', function () {
     beforeEach(function () {
       sinon.stub(SendFooter.prototype, 'formShouldBeDisabled').returns(true)
-      wrapper = shallow((
+      wrapper = shallow(
         <SendFooter
           addToAddressBookIfNew={propsMethodSpies.addToAddressBookIfNew}
           amount="mockAmount"
@@ -208,7 +211,7 @@ describe('SendFooter Component', function () {
           disabled
           editingTransactionId="mockEditingTransactionId"
           errors={{}}
-          from={ { address: 'mockAddress', balance: 'mockBalance' } }
+          from={{ address: 'mockAddress', balance: 'mockBalance' }}
           gasLimit="mockGasLimit"
           gasPrice="mockGasPrice"
           gasTotal="mockGasTotal"
@@ -221,8 +224,9 @@ describe('SendFooter Component', function () {
           tokenBalance="mockTokenBalance"
           unapprovedTxs={{}}
           update={propsMethodSpies.update}
-        />
-      ), { context: { t: (str) => str, metricsEvent: () => ({}) } })
+        />,
+        { context: { t: (str) => str, metricsEvent: () => ({}) } },
+      )
     })
 
     afterEach(function () {
@@ -234,11 +238,9 @@ describe('SendFooter Component', function () {
     })
 
     it('should pass the correct props to PageContainerFooter', function () {
-      const {
-        onCancel,
-        onSubmit,
-        disabled,
-      } = wrapper.find(PageContainerFooter).props()
+      const { onCancel, onSubmit, disabled } = wrapper
+        .find(PageContainerFooter)
+        .props()
       assert.equal(disabled, true)
 
       assert.equal(SendFooter.prototype.onSubmit.callCount, 0)

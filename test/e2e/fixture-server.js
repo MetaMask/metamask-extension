@@ -9,11 +9,9 @@ const FIXTURE_SERVER_HOST = 'localhost'
 const FIXTURE_SERVER_PORT = 12345
 
 class FixtureServer {
-  constructor () {
+  constructor() {
     this._app = new Koa()
-    this._stateMap = new Map([
-      [DEFAULT_STATE_KEY, Object.create(null)],
-    ])
+    this._stateMap = new Map([[DEFAULT_STATE_KEY, Object.create(null)]])
     this._initialStateCache = new Map()
 
     this._app.use(async (ctx) => {
@@ -25,7 +23,7 @@ class FixtureServer {
     })
   }
 
-  async start () {
+  async start() {
     const options = {
       host: FIXTURE_SERVER_HOST,
       port: FIXTURE_SERVER_PORT,
@@ -39,7 +37,7 @@ class FixtureServer {
     })
   }
 
-  async stop () {
+  async stop() {
     if (!this._server) {
       return
     }
@@ -51,7 +49,7 @@ class FixtureServer {
     })
   }
 
-  async loadState (directory) {
+  async loadState(directory) {
     const statePath = path.resolve(__dirname, directory, 'state.json')
 
     let state
@@ -66,7 +64,7 @@ class FixtureServer {
     this._stateMap.set(CURRENT_STATE_KEY, state)
   }
 
-  _isStateRequest (ctx) {
+  _isStateRequest(ctx) {
     return ctx.method === 'GET' && ctx.path === '/state.json'
   }
 }

@@ -3,16 +3,23 @@ import abi from 'human-standard-token-abi'
 import BigNumber from 'bignumber.js'
 import ethUtil from 'ethereumjs-util'
 import { DateTime } from 'luxon'
+import { addHexPrefix } from '../../../../app/scripts/lib/util'
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
-export function formatDate (date, format = 'M/d/y \'at\' T') {
+export function formatDate(date, format = "M/d/y 'at' T") {
   return DateTime.fromMillis(date).toFormat(format)
 }
 
-export function formatDateWithYearContext (date, formatThisYear = 'MMM d', fallback = 'MMM d, y') {
+export function formatDateWithYearContext(
+  date,
+  formatThisYear = 'MMM d',
+  fallback = 'MMM d, y',
+) {
   const dateTime = DateTime.fromMillis(date)
   const now = DateTime.local()
-  return dateTime.toFormat(now.year === dateTime.year ? formatThisYear : fallback)
+  return dateTime.toFormat(
+    now.year === dateTime.year ? formatThisYear : fallback,
+  )
 }
 
 const valueTable = {
@@ -33,25 +40,36 @@ Object.keys(valueTable).forEach((currency) => {
   bnTable[currency] = new ethUtil.BN(valueTable[currency], 10)
 })
 
-export function isEthNetwork (netId) {
-  if (!netId || netId === '1' || netId === '3' || netId === '4' || netId === '42' || netId === '1337') {
+export function isEthNetwork(netId) {
+  if (
+    !netId ||
+    netId === '1' ||
+    netId === '3' ||
+    netId === '4' ||
+    netId === '42' ||
+    netId === '1337'
+  ) {
     return true
   }
 
   return false
 }
 
-export function valuesFor (obj) {
+export function valuesFor(obj) {
   if (!obj) {
     return []
   }
-  return Object.keys(obj)
-    .map(function (key) {
-      return obj[key]
-    })
+  return Object.keys(obj).map(function (key) {
+    return obj[key]
+  })
 }
 
-export function addressSummary (address, firstSegLength = 10, lastSegLength = 4, includeHex = true) {
+export function addressSummary(
+  address,
+  firstSegLength = 10,
+  lastSegLength = 4,
+  includeHex = true,
+) {
   if (!address) {
     return ''
   }
@@ -59,28 +77,38 @@ export function addressSummary (address, firstSegLength = 10, lastSegLength = 4,
   if (!includeHex) {
     checked = ethUtil.stripHexPrefix(checked)
   }
-  return checked ? `${checked.slice(0, firstSegLength)}...${checked.slice(checked.length - lastSegLength)}` : '...'
+  return checked
+    ? `${checked.slice(0, firstSegLength)}...${checked.slice(
+        checked.length - lastSegLength,
+      )}`
+    : '...'
 }
 
-export function isValidAddress (address) {
+export function isValidAddress(address) {
   if (!address || address === '0x0000000000000000000000000000000000000000') {
     return false
   }
-  const prefixed = address.startsWith('0X') ? address : ethUtil.addHexPrefix(address)
-  return (isAllOneCase(prefixed.slice(2)) && ethUtil.isValidAddress(prefixed)) || ethUtil.isValidChecksumAddress(prefixed)
+  const prefixed = addHexPrefix(address)
+  return (
+    (isAllOneCase(prefixed.slice(2)) && ethUtil.isValidAddress(prefixed)) ||
+    ethUtil.isValidChecksumAddress(prefixed)
+  )
 }
 
-export function isValidDomainName (address) {
-  const match = punycode.toASCII(address)
+export function isValidDomainName(address) {
+  const match = punycode
+    .toASCII(address)
     .toLowerCase()
     // Checks that the domain consists of at least one valid domain pieces separated by periods, followed by a tld
     // Each piece of domain name has only the characters a-z, 0-9, and a hyphen (but not at the start or end of chunk)
     // A chunk has minimum length of 1, but minimum tld is set to 2 for now (no 1-character tlds exist yet)
-    .match(/^(?:[a-z0-9](?:[-a-z0-9]*[a-z0-9])?\.)+[a-z0-9][-a-z0-9]*[a-z0-9]$/u)
+    .match(
+      /^(?:[a-z0-9](?:[-a-z0-9]*[a-z0-9])?\.)+[a-z0-9][-a-z0-9]*[a-z0-9]$/u,
+    )
   return match !== null
 }
 
-export function isAllOneCase (address) {
+export function isAllOneCase(address) {
   if (!address) {
     return true
   }
@@ -90,7 +118,7 @@ export function isAllOneCase (address) {
 }
 
 // Takes wei Hex, returns wei BN, even if input is null
-export function numericBalance (balance) {
+export function numericBalance(balance) {
   if (!balance) {
     return new ethUtil.BN(0, 16)
   }
@@ -99,14 +127,17 @@ export function numericBalance (balance) {
 }
 
 // Takes  hex, returns [beforeDecimal, afterDecimal]
-export function parseBalance (balance) {
+export function parseBalance(balance) {
   let afterDecimal
   const wei = numericBalance(balance)
   const weiString = wei.toString()
   const trailingZeros = /0+$/u
 
-  const beforeDecimal = weiString.length > 18 ? weiString.slice(0, weiString.length - 18) : '0'
-  afterDecimal = (`000000000000000000${wei}`).slice(-18).replace(trailingZeros, '')
+  const beforeDecimal =
+    weiString.length > 18 ? weiString.slice(0, weiString.length - 18) : '0'
+  afterDecimal = `000000000000000000${wei}`
+    .slice(-18)
+    .replace(trailingZeros, '')
   if (afterDecimal === '') {
     afterDecimal = '0'
   }
@@ -115,7 +146,12 @@ export function parseBalance (balance) {
 
 // Takes wei hex, returns an object with three properties.
 // Its "formatted" property is what we generally use to render values.
-export function formatBalance (balance, decimalsToKeep, needsParse = true, ticker = 'ETH') {
+export function formatBalance(
+  balance,
+  decimalsToKeep,
+  needsParse = true,
+  ticker = 'ETH',
+) {
   const parsed = needsParse ? parseBalance(balance) : balance.split('.')
   const beforeDecimal = parsed[0]
   let afterDecimal = parsed[1]
@@ -134,12 +170,15 @@ export function formatBalance (balance, decimalsToKeep, needsParse = true, ticke
     }
   } else {
     afterDecimal += Array(decimalsToKeep).join('0')
-    formatted = `${beforeDecimal}.${afterDecimal.slice(0, decimalsToKeep)} ${ticker}`
+    formatted = `${beforeDecimal}.${afterDecimal.slice(
+      0,
+      decimalsToKeep,
+    )} ${ticker}`
   }
   return formatted
 }
 
-export function generateBalanceObject (formattedBalance, decimalsToKeep = 1) {
+export function generateBalanceObject(formattedBalance, decimalsToKeep = 1) {
   let balance = formattedBalance.split(' ')[0]
   const label = formattedBalance.split(' ')[1]
   const beforeDecimal = balance.split('.')[0]
@@ -160,7 +199,7 @@ export function generateBalanceObject (formattedBalance, decimalsToKeep = 1) {
   return { balance, label, shortBalance }
 }
 
-export function shortenBalance (balance, decimalsToKeep = 1) {
+export function shortenBalance(balance, decimalsToKeep = 1) {
   let truncatedValue
   const convertedBalance = parseFloat(balance)
   if (convertedBalance > 1000000) {
@@ -185,7 +224,7 @@ export function shortenBalance (balance, decimalsToKeep = 1) {
 
 // Takes a BN and an ethereum currency name,
 // returns a BN in wei
-export function normalizeToWei (amount, currency) {
+export function normalizeToWei(amount, currency) {
   try {
     return amount.mul(bnTable.wei).div(bnTable[currency])
   } catch (e) {
@@ -193,7 +232,7 @@ export function normalizeToWei (amount, currency) {
   }
 }
 
-export function normalizeEthStringToWei (str) {
+export function normalizeEthStringToWei(str) {
   const parts = str.split('.')
   let eth = new ethUtil.BN(parts[0], 10).mul(bnTable.wei)
   if (parts[1]) {
@@ -211,26 +250,26 @@ export function normalizeEthStringToWei (str) {
 }
 
 const multiple = new ethUtil.BN('10000', 10)
-export function normalizeNumberToWei (n, currency) {
+export function normalizeNumberToWei(n, currency) {
   const enlarged = n * 10000
   const amount = new ethUtil.BN(String(enlarged), 10)
   return normalizeToWei(amount, currency).div(multiple)
 }
 
-export function isHex (str) {
+export function isHex(str) {
   return Boolean(str.match(/^(0x)?[0-9a-fA-F]+$/u))
 }
 
-export function getContractAtAddress (tokenAddress) {
+export function getContractAtAddress(tokenAddress) {
   return global.eth.contract(abi).at(tokenAddress)
 }
 
-export function getRandomFileName () {
+export function getRandomFileName() {
   let fileName = ''
   const charBank = [
     ...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
   ]
-  const fileNameLength = Math.floor((Math.random() * 7) + 6)
+  const fileNameLength = Math.floor(Math.random() * 7 + 6)
 
   for (let i = 0; i < fileNameLength; i++) {
     fileName += charBank[Math.floor(Math.random() * charBank.length)]
@@ -239,7 +278,7 @@ export function getRandomFileName () {
   return fileName
 }
 
-export function exportAsFile (filename, data, type = 'text/csv') {
+export function exportAsFile(filename, data, type = 'text/csv') {
   // eslint-disable-next-line no-param-reassign
   filename = filename || getRandomFileName()
   // source: https://stackoverflow.com/a/33542499 by Ludovic Feltz
@@ -261,10 +300,10 @@ export function exportAsFile (filename, data, type = 'text/csv') {
  * Safely checksumms a potentially-null address
  *
  * @param {string} [address] - address to checksum
- * @returns {string} - checksummed address
+ * @returns {string} checksummed address
  *
  */
-export function checksumAddress (address) {
+export function checksumAddress(address) {
   const checksummed = address ? ethUtil.toChecksumAddress(address) : ''
   return checksummed
 }
@@ -280,7 +319,7 @@ export function checksumAddress (address) {
  * @returns {string} The shortened address, or the original if it was no longer
  * than 10 characters.
  */
-export function shortenAddress (address = '') {
+export function shortenAddress(address = '') {
   if (address.length < 11) {
     return address
   }
@@ -288,14 +327,14 @@ export function shortenAddress (address = '') {
   return `${address.slice(0, 6)}...${address.slice(-4)}`
 }
 
-export function isValidAddressHead (address) {
+export function isValidAddressHead(address) {
   const addressLengthIsLessThanFull = address.length < 42
   const addressIsHex = isHex(address)
 
   return addressLengthIsLessThanFull && addressIsHex
 }
 
-export function getAccountByAddress (accounts = [], targetAddress) {
+export function getAccountByAddress(accounts = [], targetAddress) {
   return accounts.find(({ address }) => address === targetAddress)
 }
 
@@ -307,7 +346,7 @@ export function getAccountByAddress (accounts = [], targetAddress) {
  * @param {string} urlString - The URL string to strip the scheme from.
  * @returns {string} The URL string, without the scheme, if it was stripped.
  */
-export function stripHttpSchemes (urlString) {
+export function stripHttpSchemes(urlString) {
   return urlString.replace(/^https?:\/\//u, '')
 }
 
@@ -317,8 +356,7 @@ export function stripHttpSchemes (urlString) {
  * @param {string | URL | object} urlLike - The URL-like value to test.
  * @returns {boolean} Whether the URL-like value is an extension URL.
  */
-export function isExtensionUrl (urlLike) {
-
+export function isExtensionUrl(urlLike) {
   const EXT_PROTOCOLS = ['chrome-extension:', 'moz-extension:']
 
   if (typeof urlLike === 'string') {
@@ -340,10 +378,10 @@ export function isExtensionUrl (urlLike) {
  * lowercased version of the addresses.
  *
  * @param {string} address - The hex address to check
- * @param {array} list - The array of objects to check
+ * @param {Array} list - The array of objects to check
  * @returns {boolean} Whether or not the address is in the list
  */
-export function checkExistingAddresses (address, list = []) {
+export function checkExistingAddresses(address, list = []) {
   if (!address) {
     return false
   }
@@ -364,19 +402,19 @@ export function checkExistingAddresses (address, list = []) {
  * @param {number} precision - The maximum number of significant digits in the return value
  * @returns {string} The number in decimal form, with <= precision significant digits and no decimal trailing zeros
  */
-export function toPrecisionWithoutTrailingZeros (n, precision) {
-  return (new BigNumber(n))
+export function toPrecisionWithoutTrailingZeros(n, precision) {
+  return new BigNumber(n)
     .toPrecision(precision)
     .replace(/(\.[0-9]*[1-9])0*|(\.0*)/u, '$1')
 }
 
 /**
-  * Given and object where all values are strings, returns the same object with all values
-  * now prefixed with '0x'
-  */
-export function addHexPrefixToObjectValues (obj) {
+ * Given and object where all values are strings, returns the same object with all values
+ * now prefixed with '0x'
+ */
+export function addHexPrefixToObjectValues(obj) {
   return Object.keys(obj).reduce((newObj, key) => {
-    return { ...newObj, [key]: ethUtil.addHexPrefix(obj[key]) }
+    return { ...newObj, [key]: addHexPrefix(obj[key]) }
   }, {})
 }
 
@@ -390,9 +428,17 @@ export function addHexPrefixToObjectValues (obj) {
  * @param {string} from - A hex address of the tx sender address
  * @param {string} gas - A hex representation of the gas value for the transaction
  * @param {string} gasPrice - A hex representation of the gas price for the transaction
- * @returns {object} An object ready for submission to the blockchain, with all values appropriately hex prefixed
+ * @returns {Object} An object ready for submission to the blockchain, with all values appropriately hex prefixed
  */
-export function constructTxParams ({ sendToken, data, to, amount, from, gas, gasPrice }) {
+export function constructTxParams({
+  sendToken,
+  data,
+  to,
+  amount,
+  from,
+  gas,
+  gasPrice,
+}) {
   const txParams = {
     data,
     from,
@@ -417,20 +463,33 @@ export function constructTxParams ({ sendToken, data, to, amount, from, gas, gas
  * @returns {Promise<unknown|undefined>} Returns the result of the RPC method call,
  * or throws an error in case of failure.
  */
-export async function jsonRpcRequest (rpcUrl, rpcMethod, rpcParams = []) {
-  const jsonRpcResponse = await window.fetch(rpcUrl, {
-    method: 'POST',
-    body: JSON.stringify({
-      id: Date.now().toString(),
-      jsonrpc: '2.0',
-      method: rpcMethod,
-      params: rpcParams,
-    }),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    cache: 'default',
-  })
+export async function jsonRpcRequest(rpcUrl, rpcMethod, rpcParams = []) {
+  let fetchUrl = rpcUrl
+  const headers = {
+    'Content-Type': 'application/json',
+  }
+  // Convert basic auth URL component to Authorization header
+  const { origin, pathname, username, password, search } = new URL(rpcUrl)
+  // URLs containing username and password needs special processing
+  if (username && password) {
+    const encodedAuth = Buffer.from(`${username}:${password}`).toString(
+      'base64',
+    )
+    headers.Authorization = `Basic ${encodedAuth}`
+    fetchUrl = `${origin}${pathname}${search}`
+  }
+  const jsonRpcResponse = await window
+    .fetch(fetchUrl, {
+      method: 'POST',
+      body: JSON.stringify({
+        id: Date.now().toString(),
+        jsonrpc: '2.0',
+        method: rpcMethod,
+        params: rpcParams,
+      }),
+      headers,
+      cache: 'default',
+    })
     .then((httpResponse) => httpResponse.json())
 
   if (

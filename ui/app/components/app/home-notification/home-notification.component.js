@@ -34,8 +34,16 @@ export default class HomeNotification extends PureComponent {
     this.props.onIgnore()
   }
 
-  render () {
-    const { descriptionText, acceptText, onAccept, ignoreText, onIgnore, infoText, classNames = [] } = this.props
+  render() {
+    const {
+      descriptionText,
+      acceptText,
+      onAccept,
+      ignoreText,
+      onIgnore,
+      infoText,
+      classNames = [],
+    } = this.props
 
     return (
       <div className={classnames('home-notification', ...classNames)}>
@@ -46,65 +54,46 @@ export default class HomeNotification extends PureComponent {
               alt=""
               src="images/icons/connect.svg"
             />
-            <div className="home-notification__text">
-              { descriptionText }
-            </div>
+            <div className="home-notification__text">{descriptionText}</div>
           </div>
-          {
-            infoText ? (
-              <ReactTippy
-                style={{
-                  display: 'flex',
-                }}
-                html={(
-                  <p className="home-notification-tooltip__content">
-                    {infoText}
-                  </p>
-                )}
-                offset={-36}
-                distance={36}
-                animation="none"
-                position="top"
-                arrow
-                theme="tippy-tooltip-home"
-              >
-                <img
-                  alt=""
-                  src="images/icons/info.svg"
-                />
-              </ReactTippy>
-            ) : (
-              null
-            )
-          }
+          {infoText ? (
+            <ReactTippy
+              style={{
+                display: 'flex',
+              }}
+              html={
+                <p className="home-notification-tooltip__content">{infoText}</p>
+              }
+              offset={-36}
+              distance={36}
+              animation="none"
+              position="top"
+              arrow
+              theme="tippy-tooltip-home"
+            >
+              <img alt="" src="images/icons/info.svg" />
+            </ReactTippy>
+          ) : null}
         </div>
         <div className="home-notification__buttons">
-          {
-            (onAccept && acceptText) ? (
-              <Button
-                type="primary"
-                className="home-notification__accept-button"
-                onClick={this.handleAccept}
-              >
-                { acceptText }
-              </Button>
-            ) : (
-              null
-            )
-          }
-          {
-            (onIgnore && ignoreText) ? (
-              <Button
-                type="secondary"
-                className="home-notification__ignore-button"
-                onClick={this.handleIgnore}
-              >
-                { ignoreText }
-              </Button>
-            ) : (
-              null
-            )
-          }
+          {onAccept && acceptText ? (
+            <Button
+              type="primary"
+              className="home-notification__accept-button"
+              onClick={this.handleAccept}
+            >
+              {acceptText}
+            </Button>
+          ) : null}
+          {onIgnore && ignoreText ? (
+            <Button
+              type="secondary"
+              className="home-notification__ignore-button"
+              onClick={this.handleIgnore}
+            >
+              {ignoreText}
+            </Button>
+          ) : null}
         </div>
       </div>
     )

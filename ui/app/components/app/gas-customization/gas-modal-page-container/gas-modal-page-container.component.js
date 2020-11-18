@@ -2,10 +2,6 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import PageContainer from '../../../ui/page-container'
 import { Tabs, Tab } from '../../../ui/tabs'
-import { calcGasTotal } from '../../../../pages/send/send.utils'
-import {
-  sumHexWEIsToRenderableFiat,
-} from '../../../../helpers/utils/conversions.util'
 import AdvancedTabContent from './advanced-tab-content'
 import BasicTabContent from './basic-tab-content'
 
@@ -34,54 +30,38 @@ export default class GasModalPageContainer extends Component {
       newTotalEth: PropTypes.string,
       sendAmount: PropTypes.string,
       transactionFee: PropTypes.string,
-      extraInfoRow: PropTypes.shape({ label: PropTypes.string, value: PropTypes.string }),
     }),
     onSubmit: PropTypes.func,
     customModalGasPriceInHex: PropTypes.string,
     customModalGasLimitInHex: PropTypes.string,
     cancelAndClose: PropTypes.func,
-    blockTime: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-    ]),
+    blockTime: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     customPriceIsSafe: PropTypes.bool,
     isSpeedUp: PropTypes.bool,
     isRetry: PropTypes.bool,
     disableSave: PropTypes.bool,
     isEthereumNetwork: PropTypes.bool,
-    customGasLimitMessage: PropTypes.string,
-    customTotalSupplement: PropTypes.string,
-    isSwap: PropTypes.bool,
-    value: PropTypes.string,
-    conversionRate: PropTypes.number,
-    minimumGasLimit: PropTypes.number.isRequired,
   }
 
-  state = {
-    selectedTab: 'Basic',
-  }
-
-  componentDidMount () {
+  componentDidMount() {
     const promise = this.props.hideBasic
       ? Promise.resolve(this.props.blockTime)
-      : this.props.fetchBasicGasAndTimeEstimates()
-        .then((basicEstimates) => basicEstimates.blockTime)
+      : this.props
+          .fetchBasicGasAndTimeEstimates()
+          .then((basicEstimates) => basicEstimates.blockTime)
 
-    promise
-      .then((blockTime) => {
-        this.props.fetchGasEstimates(blockTime)
-      })
+    promise.then((blockTime) => {
+      this.props.fetchGasEstimates(blockTime)
+    })
   }
 
-  renderBasicTabContent (gasPriceButtonGroupProps) {
+  renderBasicTabContent(gasPriceButtonGroupProps) {
     return (
-      <BasicTabContent
-        gasPriceButtonGroupProps={gasPriceButtonGroupProps}
-      />
+      <BasicTabContent gasPriceButtonGroupProps={gasPriceButtonGroupProps} />
     )
   }
 
-  renderAdvancedTabContent () {
+  renderAdvancedTabContent() {
     const {
       updateCustomGasPrice,
       updateCustomGasLimit,
@@ -94,12 +74,8 @@ export default class GasModalPageContainer extends Component {
       customPriceIsSafe,
       isSpeedUp,
       isRetry,
-      infoRowProps: {
-        transactionFee,
-      },
+      infoRowProps: { transactionFee },
       isEthereumNetwork,
-      customGasLimitMessage,
-      minimumGasLimit,
     } = this.props
 
     return (
@@ -108,7 +84,6 @@ export default class GasModalPageContainer extends Component {
         updateCustomGasLimit={updateCustomGasLimit}
         customModalGasPriceInHex={customModalGasPriceInHex}
         customModalGasLimitInHex={customModalGasLimitInHex}
-        customGasLimitMessage={customGasLimitMessage}
         timeRemaining={currentTimeEstimate}
         transactionFee={transactionFee}
         gasChartProps={gasChartProps}
@@ -118,52 +93,53 @@ export default class GasModalPageContainer extends Component {
         isSpeedUp={isSpeedUp}
         isRetry={isRetry}
         isEthereumNetwork={isEthereumNetwork}
-        minimumGasLimit={minimumGasLimit}
       />
     )
   }
 
-  renderInfoRows (newTotalFiat, newTotalEth, sendAmount, transactionFee, extraInfoRow) {
+  renderInfoRows(newTotalFiat, newTotalEth, sendAmount, transactionFee) {
     return (
       <div className="gas-modal-content__info-row-wrapper">
         <div className="gas-modal-content__info-row">
           <div className="gas-modal-content__info-row__send-info">
-            <span className="gas-modal-content__info-row__send-info__label">{this.context.t('sendAmount')}</span>
-            <span className="gas-modal-content__info-row__send-info__value">{sendAmount}</span>
+            <span className="gas-modal-content__info-row__send-info__label">
+              {this.context.t('sendAmount')}
+            </span>
+            <span className="gas-modal-content__info-row__send-info__value">
+              {sendAmount}
+            </span>
           </div>
           <div className="gas-modal-content__info-row__transaction-info">
-            <span className="gas-modal-content__info-row__transaction-info__label">{this.context.t('transactionFee')}</span>
-            <span className="gas-modal-content__info-row__transaction-info__value">{transactionFee}</span>
+            <span className="gas-modal-content__info-row__transaction-info__label">
+              {this.context.t('transactionFee')}
+            </span>
+            <span className="gas-modal-content__info-row__transaction-info__value">
+              {transactionFee}
+            </span>
           </div>
-          {extraInfoRow && (
-            <div className="gas-modal-content__info-row__transaction-info">
-              <span className="gas-modal-content__info-row__transaction-info__label">{extraInfoRow.label}</span>
-              <span className="gas-modal-content__info-row__transaction-info__value">{extraInfoRow.value}</span>
-            </div>
-          )}
           <div className="gas-modal-content__info-row__total-info">
-            <span className="gas-modal-content__info-row__total-info__label">{this.context.t('newTotal')}</span>
-            <span className="gas-modal-content__info-row__total-info__value">{newTotalEth}</span>
+            <span className="gas-modal-content__info-row__total-info__label">
+              {this.context.t('newTotal')}
+            </span>
+            <span className="gas-modal-content__info-row__total-info__value">
+              {newTotalEth}
+            </span>
           </div>
           <div className="gas-modal-content__info-row__fiat-total-info">
-            <span className="gas-modal-content__info-row__fiat-total-info__value">{newTotalFiat}</span>
+            <span className="gas-modal-content__info-row__fiat-total-info__value">
+              {newTotalFiat}
+            </span>
           </div>
         </div>
       </div>
     )
   }
 
-  renderTabs () {
+  renderTabs() {
     const {
       gasPriceButtonGroupProps,
       hideBasic,
-      infoRowProps: {
-        newTotalFiat,
-        newTotalEth,
-        sendAmount,
-        transactionFee,
-        extraInfoRow,
-      },
+      infoRowProps: { newTotalFiat, newTotalEth, sendAmount, transactionFee },
     } = this.props
 
     let tabsToRender = [
@@ -182,12 +158,17 @@ export default class GasModalPageContainer extends Component {
     }
 
     return (
-      <Tabs onTabClick={(tabName) => this.setState({ selectedTab: tabName })}>
+      <Tabs>
         {tabsToRender.map(({ name, content }, i) => (
           <Tab name={name} key={`gas-modal-tab-${i}`}>
             <div className="gas-modal-content">
-              { content }
-              { this.renderInfoRows(newTotalFiat, newTotalEth, sendAmount, transactionFee, extraInfoRow) }
+              {content}
+              {this.renderInfoRows(
+                newTotalFiat,
+                newTotalEth,
+                sendAmount,
+                transactionFee,
+              )}
             </div>
           </Tab>
         ))}
@@ -195,7 +176,7 @@ export default class GasModalPageContainer extends Component {
     )
   }
 
-  render () {
+  render() {
     const {
       cancelAndClose,
       onSubmit,
@@ -224,26 +205,7 @@ export default class GasModalPageContainer extends Component {
                 },
               })
             }
-            if (this.props.isSwap) {
-              const newSwapGasTotal = calcGasTotal(customModalGasLimitInHex, customModalGasPriceInHex)
-              let speedSet = ''
-              if (this.state.selectedTab === 'Basic') {
-                const { gasButtonInfo } = this.props.gasPriceButtonGroupProps
-                const selectedGasButtonInfo = gasButtonInfo.find(({ priceInHexWei }) => priceInHexWei === customModalGasPriceInHex)
-                speedSet = selectedGasButtonInfo?.gasEstimateType || ''
-              }
-
-              this.context.trackEvent({
-                event: 'Gas Fees Changed',
-                category: 'swaps',
-                properties: {
-                  speed_set: speedSet,
-                  gas_mode: this.state.selectedTab,
-                  gas_fees: sumHexWEIsToRenderableFiat([this.props.value, newSwapGasTotal, this.props.customTotalSupplement], 'usd', this.props.conversionRate)?.slice(1),
-                },
-              })
-            }
-            onSubmit(customModalGasLimitInHex, customModalGasPriceInHex, this.state.selectedTab, this.context.mixPanelTrack)
+            onSubmit(customModalGasLimitInHex, customModalGasPriceInHex)
           }}
           submitText={this.context.t('save')}
           headerCloseText={this.context.t('close')}

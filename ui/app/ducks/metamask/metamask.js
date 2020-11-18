@@ -1,7 +1,7 @@
 import * as actionConstants from '../../store/actionConstants'
 import { ALERT_TYPES } from '../../../../app/scripts/controllers/alert'
 
-export default function reduceMetamask (state = {}, action) {
+export default function reduceMetamask(state = {}, action) {
   const metamaskState = {
     isInitialized: false,
     isUnlocked: false,
@@ -50,7 +50,6 @@ export default function reduceMetamask (state = {}, action) {
   }
 
   switch (action.type) {
-
     case actionConstants.UPDATE_METAMASK_STATE:
       return { ...metamaskState, ...action.value }
 
@@ -206,7 +205,8 @@ export default function reduceMetamask (state = {}, action) {
       }
       // erase token-related state when switching back to native currency
       if (newSend.editingTransactionId && !newSend.token) {
-        const unapprovedTx = newSend?.unapprovedTxs?.[newSend.editingTransactionId] || {}
+        const unapprovedTx =
+          newSend?.unapprovedTxs?.[newSend.editingTransactionId] || {}
         const txParams = unapprovedTx.txParams || {}
         Object.assign(newSend, {
           tokenBalance: null,
@@ -375,10 +375,13 @@ export const getCurrentLocale = (state) => state.metamask.currentLocale
 
 export const getAlertEnabledness = (state) => state.metamask.alertEnabledness
 
-export const getInvalidCustomNetworkAlertEnabledness = (state) => getAlertEnabledness(state)[ALERT_TYPES.invalidCustomNetwork]
+export const getInvalidCustomNetworkAlertEnabledness = (state) =>
+  getAlertEnabledness(state)[ALERT_TYPES.invalidCustomNetwork]
 
-export const getUnconnectedAccountAlertEnabledness = (state) => getAlertEnabledness(state)[ALERT_TYPES.unconnectedAccount]
+export const getUnconnectedAccountAlertEnabledness = (state) =>
+  getAlertEnabledness(state)[ALERT_TYPES.unconnectedAccount]
 
-export const getUnconnectedAccountAlertShown = (state) => state.metamask.unconnectedAccountAlertShownOrigins
+export const getUnconnectedAccountAlertShown = (state) =>
+  state.metamask.unconnectedAccountAlertShownOrigins
 
 export const getTokens = (state) => state.metamask.tokens

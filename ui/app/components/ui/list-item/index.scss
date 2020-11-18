@@ -19,7 +19,8 @@
   align-items: start;
   cursor: pointer;
 
-  &:hover {
+  &:hover,
+  &:focus-within {
     background-color: $Grey-000;
   }
 
@@ -43,6 +44,12 @@
     position: relative;
     display: flex;
     align-items: center;
+
+    & button {
+      background: unset;
+      font-size: unset;
+      padding-inline-start: 0;
+    }
 
     &-wrap {
       display: inline-block;

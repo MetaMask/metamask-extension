@@ -16,7 +16,7 @@ export default class InfoBox extends Component {
     isShowing: true,
   }
 
-  handleClose () {
+  handleClose() {
     const { onClose } = this.props
 
     if (onClose) {
@@ -26,20 +26,15 @@ export default class InfoBox extends Component {
     }
   }
 
-  render () {
+  render() {
     const { title, description } = this.props
 
-    return this.state.isShowing
-      ? (
-        <div className="info-box">
-          <div
-            className="info-box__close"
-            onClick={() => this.handleClose()}
-          />
-          <div className="info-box__title">{title}</div>
-          <div className="info-box__description">{description}</div>
-        </div>
-      )
-      : null
+    return this.state.isShowing ? (
+      <div className="info-box">
+        <div className="info-box__close" onClick={() => this.handleClose()} />
+        <div className="info-box__title">{title}</div>
+        <div className="info-box__description">{description}</div>
+      </div>
+    ) : null
   }
 }

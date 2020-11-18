@@ -140,12 +140,6 @@
   "builtInCalifornia": {
     "message": "MetaMask je navržen a vytvořen v Kalifornii."
   },
-  "buyCoinSwitch": {
-    "message": "Kúpiť na CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch je jedno miesto, kde si môžete vymieňať viac ako 300 kryptomien za najlepšiu cenu."
-  },
   "buyWithWyre": {
     "message": "Kúpte ETH s Wyre"
   },
@@ -157,9 +151,6 @@
   },
   "cancel": {
     "message": "Zrušit"
-  },
-  "cancelAttempt": {
-    "message": "Zrušiť pokus"
   },
   "cancellationGasFee": {
     "message": "Storno poplatok za GAS"
@@ -220,9 +211,6 @@
   },
   "connectingToRopsten": {
     "message": "Připojuji se k Ropsten Test Network"
-  },
-  "continueToCoinSwitch": {
-    "message": "Pokračovať na CoinSwitch"
   },
   "continueToWyre": {
     "message": "Pokračovať na Wyre"
@@ -301,9 +289,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Naozaj chcete túto sieť odstrániť?"
-  },
-  "deposit": {
-    "message": "Vklad"
   },
   "depositEther": {
     "message": "Vložit Ether"
@@ -709,7 +694,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Blokovať URL Explorera (voliteľné)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Symbol (voliteľné)"
   },
   "orderOneHere": {
@@ -950,9 +935,6 @@
   },
   "sentEther": {
     "message": "poslaný ether"
-  },
-  "sentTokens": {
-    "message": "poslané tokeny"
   },
   "separateEachWord": {
     "message": "Každé slovo oddeľte jednou medzerou"

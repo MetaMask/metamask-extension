@@ -26,9 +26,8 @@ const mapStateToProps = (state) => {
   const permittedAccountsByOrigin = getPermittedAccountsByOrigin(state)
   const selectedAddress = getSelectedAddress(state)
 
-  const currentTabHasNoAccounts = !permittedAccountsByOrigin[
-    originOfCurrentTab
-  ]?.length
+  const currentTabHasNoAccounts = !permittedAccountsByOrigin[originOfCurrentTab]
+    ?.length
 
   let tabToConnect
   if (originOfCurrentTab && currentTabHasNoAccounts && !openMetaMaskTabs[id]) {
@@ -56,12 +55,17 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(removePermittedAccount(domainKey, address))
     },
     disconnectAllAccounts: (domainKey, domain) => {
-      const permissionMethodNames = domain.permissions.map(({ parentCapability }) => parentCapability)
-      dispatch(removePermissionsFor({
-        [domainKey]: permissionMethodNames,
-      }))
+      const permissionMethodNames = domain.permissions.map(
+        ({ parentCapability }) => parentCapability,
+      )
+      dispatch(
+        removePermissionsFor({
+          [domainKey]: permissionMethodNames,
+        }),
+      )
     },
-    requestAccountsPermissionWithId: (origin) => dispatch(requestAccountsPermissionWithId(origin)),
+    requestAccountsPermissionWithId: (origin) =>
+      dispatch(requestAccountsPermissionWithId(origin)),
   }
 }
 
@@ -107,4 +111,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(ConnectedSites)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps,
+)(ConnectedSites)

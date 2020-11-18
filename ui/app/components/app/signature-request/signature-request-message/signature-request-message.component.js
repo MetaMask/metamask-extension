@@ -11,36 +11,45 @@ export default class SignatureRequestMessage extends PureComponent {
     t: PropTypes.func,
   }
 
-  renderNode (data) {
+  renderNode(data) {
     return (
       <div className="signature-request-message--node">
         {Object.entries(data).map(([label, value], i) => (
           <div
             className={classnames('signature-request-message--node', {
-              'signature-request-message--node-leaf': typeof value !== 'object' || value === null,
+              'signature-request-message--node-leaf':
+                typeof value !== 'object' || value === null,
             })}
             key={i}
           >
-            <span className="signature-request-message--node-label">{label}: </span>
-            {
-              typeof value === 'object' && value !== null ?
-                this.renderNode(value)
-                : <span className="signature-request-message--node-value">{value}</span>
-            }
+            <span className="signature-request-message--node-label">
+              {label}:{' '}
+            </span>
+            {typeof value === 'object' && value !== null ? (
+              this.renderNode(value)
+            ) : (
+              <span className="signature-request-message--node-value">
+                {value}
+              </span>
+            )}
           </div>
         ))}
       </div>
     )
   }
 
-  render () {
+  render() {
     const { data } = this.props
 
     return (
       <div className="signature-request-message">
-        <div className="signature-request-message__title">{this.context.t('signatureRequest1')}</div>
+        <div className="signature-request-message__title">
+          {this.context.t('signatureRequest1')}
+        </div>
         <div className="signature-request-message--root">
-          <div className="signature-request-message__type-title">{this.context.t('signatureRequest1')}</div>
+          <div className="signature-request-message__type-title">
+            {this.context.t('signatureRequest1')}
+          </div>
           {this.renderNode(data)}
         </div>
       </div>

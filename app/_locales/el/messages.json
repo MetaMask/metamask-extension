@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "Το MetaMask έχει σχεδιαστεί και αναπτυχθεί στην Καλιφόρνια."
   },
-  "buyCoinSwitch": {
-    "message": "Αγοράστε στο  CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "Το CoinSwitch είναι ο προορισμός μιας στάσης για ανταλλαγή σε περισσότερα από 300 κρυπτονομίσματα στην καλύτερη ισοτιμία."
-  },
   "buyWithWyre": {
     "message": "Αγοράστε ETH με το Wyre"
   },
@@ -160,9 +154,6 @@
   },
   "cancel": {
     "message": "Ακύρωση"
-  },
-  "cancelAttempt": {
-    "message": "Ακύρωση Προσπάθειας"
   },
   "cancellationGasFee": {
     "message": "Ακύρωση Χρέωσης Αερίου"
@@ -223,9 +214,6 @@
   },
   "connectingToRopsten": {
     "message": "Σύνδεση με το Δίκτυο Δοκιμών Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "Συνέχεια με CoinSwitch"
   },
   "continueToWyre": {
     "message": "Συνεχίστε στο Wyre"
@@ -304,9 +292,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Θέλετε σίγουρα να διαγράψετε αυτό το δίκτυο;"
-  },
-  "deposit": {
-    "message": "Κατάθεση"
   },
   "depositEther": {
     "message": "Κατάθεση Ether"
@@ -737,7 +722,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Διεύθυνση URL Εξερευνητή Μπλοκ (προαιρετικό)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Σύμβολο (προαιρετικό)"
   },
   "orderOneHere": {
@@ -984,9 +969,6 @@
   },
   "sentEther": {
     "message": "απεσταλμένα ether"
-  },
-  "sentTokens": {
-    "message": "αποστολή token"
   },
   "separateEachWord": {
     "message": "Διαχωρίστε κάθε λέξη με ένα μόνο κενό"

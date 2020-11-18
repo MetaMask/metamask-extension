@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask ক্যালিফোর্নিয়াতে ডিজাইন করা এবং নির্মিত।"
   },
-  "buyCoinSwitch": {
-    "message": "CoinSwitch এ ক্রয় করুন"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch হল 300রও বেশি ক্রিপ্টোকারেন্সি সর্বোত্তম হারে বিনময় করার সবথেকে ভালো স্থান।"
-  },
   "buyWithWyre": {
     "message": "Wyre দিয়ে ETH ক্রয় করুন"
   },
@@ -163,9 +157,6 @@
   },
   "cancel": {
     "message": "বাতিল করুন"
-  },
-  "cancelAttempt": {
-    "message": "প্রচেষ্টা বাতিল করুন"
   },
   "cancellationGasFee": {
     "message": "বাতিল করার গ্যাস ফী"
@@ -226,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "রপস্টেন টেস্ট নেটওয়ার্কের সাথে সংযোগ করছে"
-  },
-  "continueToCoinSwitch": {
-    "message": "CoinSwitch এ অবিরত থাকুন"
   },
   "continueToWyre": {
     "message": "Wyre এ অবিরত রাখুন"
@@ -307,9 +295,6 @@
   },
   "deleteNetworkDescription": {
     "message": "আপনি কি এই নেটওয়ার্কটি মোছার বিষয়ে নিশ্চিত?"
-  },
-  "deposit": {
-    "message": "জমা "
   },
   "depositEther": {
     "message": "ইথার জমা করুন"
@@ -740,7 +725,7 @@
   "optionalBlockExplorerUrl": {
     "message": "এক্সপ্লোরার URL ব্লক করুন (ঐচ্ছিক)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "প্রতীক (ঐচ্ছিক)"
   },
   "orderOneHere": {
@@ -987,9 +972,6 @@
   },
   "sentEther": {
     "message": "পাঠানো ইথার "
-  },
-  "sentTokens": {
-    "message": "টোকেনগুলি পাঠান"
   },
   "separateEachWord": {
     "message": "প্রতিটি শব্দকে একটি স্পেস দিয়ে আলাদা করুন"

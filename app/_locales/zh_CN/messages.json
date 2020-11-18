@@ -6,7 +6,7 @@
     "message": "版本、技术支持中心和联系方式。"
   },
   "acceleratingATransaction": {
-    "message": "* 设定更高 Gas 价格，加快交易完成进度，提高网络快速处理机率，但无法保证每次均能够实现提速。"
+    "message": "* 设定更高的 Gas 价格，加快交易的完成进度，提高网络快速处理机率，但无法保证每次均能够实现提速。"
   },
   "accessingYourCamera": {
     "message": "正在获取相机使用权限..."
@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask在加利福尼亚设计和制造。"
   },
-  "buyCoinSwitch": {
-    "message": "在CoinSwitch上购买"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch是以最优惠的价格交换超过300种加密货币的一站式平台。"
-  },
   "buyWithWyre": {
     "message": "使用 Wyre 购买 ETH"
   },
@@ -163,9 +157,6 @@
   },
   "cancel": {
     "message": "取消"
-  },
-  "cancelAttempt": {
-    "message": "取消操作"
   },
   "cancellationGasFee": {
     "message": "取消 Gas 费"
@@ -226,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "正在连接到Ropsten测试网络"
-  },
-  "continueToCoinSwitch": {
-    "message": "继续访问 CoinSwitch"
   },
   "continueToWyre": {
     "message": "继续前往 Wyre"
@@ -307,9 +295,6 @@
   },
   "deleteNetworkDescription": {
     "message": "您是否确认要删除该网络？"
-  },
-  "deposit": {
-    "message": "存入"
   },
   "depositEther": {
     "message": "存入 Ether"
@@ -722,7 +707,7 @@
   "optionalBlockExplorerUrl": {
     "message": "屏蔽管理器 URL（选填）"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "符号（选填）"
   },
   "orderOneHere": {
@@ -970,9 +955,6 @@
   "sentEther": {
     "message": "以太币已发送"
   },
-  "sentTokens": {
-    "message": "代币已发送"
-  },
   "separateEachWord": {
     "message": "用空格分隔每个单词"
   },
@@ -1058,7 +1040,7 @@
     "message": "3. 开始体验 dApps 和更多功能！"
   },
   "step3HardwareWalletMsg": {
-    "message": "使用您的硬件钱包，操作与以太坊账户制作相同。登录 dApps，发送 ETH ，购买和保存 ERC20 代币和非同质化代币如 CryptoKitties"
+    "message": "使用您的硬件钱包，操作与以太坊账户制作相同。登录 dApps，发送 ETH ，购买和保存 ERC20 代币和非同质化代币如 CryptoKitties。"
   },
   "storePhrase": {
     "message": "通过如 1Password 等密码管家保存该密语。"

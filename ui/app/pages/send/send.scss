@@ -3,6 +3,8 @@
 .send {
   &__header {
     position: relative;
+    display: flex;
+    justify-content: center;
     background-color: $Grey-000;
     border-bottom: none;
     padding: 14px 0 3px 0;
@@ -206,6 +208,7 @@
 
       &--erase {
         background-image: url("/images/close-gray.svg");
+        background-color: unset;
         width: 0.75rem;
         height: 0.75rem;
         margin: 0 0.25rem;
@@ -213,6 +216,7 @@
 
       &--qrcode {
         background-image: url("/images/qr-blue.svg");
+        background-color: unset;
         width: 1.5rem;
         height: 1.5rem;
         margin: 0 0.25rem;

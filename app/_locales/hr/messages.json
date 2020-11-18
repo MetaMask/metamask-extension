@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask je osmišljen i izrađen u Kaliforniji."
   },
-  "buyCoinSwitch": {
-    "message": "Kupujte na usluzi CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "Usluga CoinSwitch predstavlja mjesto stalne razmjene više od 300 kriptovaluta po najboljim tečajevima."
-  },
   "buyWithWyre": {
     "message": "Kupi ETH Wyerom"
   },
@@ -163,9 +157,6 @@
   },
   "cancel": {
     "message": "Odustani"
-  },
-  "cancelAttempt": {
-    "message": "Otkaži pokušaj"
   },
   "cancellationGasFee": {
     "message": "Otkazivanje naknade za gorivo"
@@ -226,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "Povezivanje na testnu mrežu Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "Nastavi na uslugu CoinSwitch"
   },
   "continueToWyre": {
     "message": "Nastavi na uslugu Wyre"
@@ -307,9 +295,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Sigurno želite izbrisati ovu mrežu?"
-  },
-  "deposit": {
-    "message": "Polog"
   },
   "depositEther": {
     "message": "Položi Ether"
@@ -733,7 +718,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Blokiraj Explorerov URL (neobavezno)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Simbol (neobavezno)"
   },
   "orderOneHere": {
@@ -980,9 +965,6 @@
   },
   "sentEther": {
     "message": "pošalji ether"
-  },
-  "sentTokens": {
-    "message": "pošalji tokene"
   },
   "separateEachWord": {
     "message": "Odvojite pojedinačne riječi jednim razmakom"

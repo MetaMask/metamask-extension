@@ -10,8 +10,10 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes'
 
 import AssetNavigation from './asset-navigation'
 
-export default function NativeAsset ({ nativeCurrency }) {
-  const selectedAccountName = useSelector((state) => getSelectedIdentity(state).name)
+export default function NativeAsset({ nativeCurrency }) {
+  const selectedAccountName = useSelector(
+    (state) => getSelectedIdentity(state).name,
+  )
   const history = useHistory()
 
   return (

@@ -1,6 +1,7 @@
 import { cloneDeep } from 'lodash'
+import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction'
 
-export default function failTxsThat (version, reason, condition) {
+export default function failTxsThat(version, reason, condition) {
   return function (originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
@@ -12,11 +13,10 @@ export default function failTxsThat (version, reason, condition) {
       console.warn(`MetaMask Migration #${version}${err.stack}`)
     }
     return Promise.resolve(versionedData)
-
   }
 }
 
-function transformState (state, condition, reason) {
+function transformState(state, condition, reason) {
   const newState = state
   const { TransactionController } = newState
   if (TransactionController && TransactionController.transactions) {
@@ -27,7 +27,7 @@ function transformState (state, condition, reason) {
         return txMeta
       }
 
-      txMeta.status = 'failed'
+      txMeta.status = TRANSACTION_STATUSES.FAILED
       txMeta.err = {
         message: reason,
         note: `Tx automatically failed by migration because ${reason}`,
@@ -38,4 +38,3 @@ function transformState (state, condition, reason) {
   }
   return newState
 }
-

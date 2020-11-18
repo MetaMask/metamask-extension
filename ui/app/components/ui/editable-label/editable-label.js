@@ -14,21 +14,22 @@ class EditableLabel extends Component {
     value: this.props.defaultValue || '',
   }
 
-  handleSubmit () {
+  handleSubmit() {
     const { value } = this.state
 
     if (value === '') {
       return
     }
 
-    Promise.resolve(this.props.onSubmit(value))
-      .then(() => this.setState({ isEditing: false }))
+    Promise.resolve(this.props.onSubmit(value)).then(() =>
+      this.setState({ isEditing: false }),
+    )
   }
 
-  renderEditing () {
+  renderEditing() {
     const { value } = this.state
 
-    return [(
+    return [
       <input
         key={1}
         type="text"
@@ -44,35 +45,40 @@ class EditableLabel extends Component {
         className={classnames('large-input', 'editable-label__input', {
           'editable-label__input--error': value === '',
         })}
-      />
-    ), (
-      <div className="editable-label__icon-wrapper" key={2}>
-        <i className="fa fa-check editable-label__icon" onClick={() => this.handleSubmit()} />
-      </div>
-    )]
+        autoFocus
+      />,
+      <button
+        className="editable-label__icon-button"
+        key={2}
+        onClick={() => this.handleSubmit()}
+      >
+        <i className="fa fa-check editable-label__icon" />
+      </button>,
+    ]
   }
 
-  renderReadonly () {
-    return [(
-      <div key={1} className="editable-label__value">{this.state.value}</div>
-    ), (
-      <div key={2} className="editable-label__icon-wrapper">
-        <i className="fas fa-pencil-alt editable-label__icon" onClick={() => this.setState({ isEditing: true })} />
-      </div>
-    )]
+  renderReadonly() {
+    return [
+      <div key={1} className="editable-label__value">
+        {this.state.value}
+      </div>,
+      <button
+        key={2}
+        className="editable-label__icon-button"
+        onClick={() => this.setState({ isEditing: true })}
+      >
+        <i className="fas fa-pencil-alt editable-label__icon" />
+      </button>,
+    ]
   }
 
-  render () {
+  render() {
     const { isEditing } = this.state
     const { className } = this.props
 
     return (
       <div className={classnames('editable-label', className)}>
-        {
-          isEditing
-            ? this.renderEditing()
-            : this.renderReadonly()
-        }
+        {isEditing ? this.renderEditing() : this.renderReadonly()}
       </div>
     )
   }

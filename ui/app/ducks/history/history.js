@@ -31,7 +31,8 @@ export default reducer
 
 // Selectors
 
-export const getMostRecentOverviewPage = (state) => state[name].mostRecentOverviewPage
+export const getMostRecentOverviewPage = (state) =>
+  state[name].mostRecentOverviewPage
 
 // Actions / action-creators
 

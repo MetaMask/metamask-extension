@@ -2,6 +2,10 @@ import assert from 'assert'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import sinon from 'sinon'
+import {
+  TRANSACTION_CATEGORIES,
+  TRANSACTION_STATUSES,
+} from '../../../../shared/constants/transaction'
 
 import ConfirmTransactionReducer, * as actions from './confirm-transaction.duck'
 
@@ -33,15 +37,20 @@ const UPDATE_TOKEN_DATA = 'metamask/confirm-transaction/UPDATE_TOKEN_DATA'
 const CLEAR_TOKEN_DATA = 'metamask/confirm-transaction/CLEAR_TOKEN_DATA'
 const UPDATE_METHOD_DATA = 'metamask/confirm-transaction/UPDATE_METHOD_DATA'
 const CLEAR_METHOD_DATA = 'metamask/confirm-transaction/CLEAR_METHOD_DATA'
-const UPDATE_TRANSACTION_AMOUNTS = 'metamask/confirm-transaction/UPDATE_TRANSACTION_AMOUNTS'
-const UPDATE_TRANSACTION_FEES = 'metamask/confirm-transaction/UPDATE_TRANSACTION_FEES'
-const UPDATE_TRANSACTION_TOTALS = 'metamask/confirm-transaction/UPDATE_TRANSACTION_TOTALS'
+const UPDATE_TRANSACTION_AMOUNTS =
+  'metamask/confirm-transaction/UPDATE_TRANSACTION_AMOUNTS'
+const UPDATE_TRANSACTION_FEES =
+  'metamask/confirm-transaction/UPDATE_TRANSACTION_FEES'
+const UPDATE_TRANSACTION_TOTALS =
+  'metamask/confirm-transaction/UPDATE_TRANSACTION_TOTALS'
 const UPDATE_TOKEN_PROPS = 'metamask/confirm-transaction/UPDATE_TOKEN_PROPS'
 const UPDATE_NONCE = 'metamask/confirm-transaction/UPDATE_NONCE'
-const UPDATE_TO_SMART_CONTRACT = 'metamask/confirm-transaction/UPDATE_TO_SMART_CONTRACT'
+const UPDATE_TO_SMART_CONTRACT =
+  'metamask/confirm-transaction/UPDATE_TO_SMART_CONTRACT'
 const FETCH_DATA_START = 'metamask/confirm-transaction/FETCH_DATA_START'
 const FETCH_DATA_END = 'metamask/confirm-transaction/FETCH_DATA_END'
-const CLEAR_CONFIRM_TRANSACTION = 'metamask/confirm-transaction/CLEAR_CONFIRM_TRANSACTION'
+const CLEAR_CONFIRM_TRANSACTION =
+  'metamask/confirm-transaction/CLEAR_CONFIRM_TRANSACTION'
 
 describe('Confirm Transaction Duck', function () {
   describe('State changes', function () {
@@ -53,7 +62,7 @@ describe('Confirm Transaction Duck', function () {
         name: 'abcToken',
       },
       methodData: {
-        name: 'approve',
+        name: TRANSACTION_CATEGORIES.TOKEN_METHOD_APPROVE,
       },
       tokenProps: {
         tokenDecimals: '3',
@@ -293,13 +302,21 @@ describe('Confirm Transaction Duck', function () {
 
     it('should set fetchingData to false when receiving a FETCH_DATA_END action', function () {
       assert.deepEqual(
-        ConfirmTransactionReducer({ fetchingData: true }, { type: FETCH_DATA_END }),
+        ConfirmTransactionReducer(
+          { fetchingData: true },
+          { type: FETCH_DATA_END },
+        ),
         { fetchingData: false },
       )
     })
 
     it('should clear confirmTransaction when receiving a FETCH_DATA_END action', function () {
-      assert.deepEqual(ConfirmTransactionReducer(mockState, { type: CLEAR_CONFIRM_TRANSACTION }), initialState)
+      assert.deepEqual(
+        ConfirmTransactionReducer(mockState, {
+          type: CLEAR_CONFIRM_TRANSACTION,
+        }),
+        initialState,
+      )
     })
   })
 
@@ -311,10 +328,7 @@ describe('Confirm Transaction Duck', function () {
         payload: txData,
       }
 
-      assert.deepEqual(
-        actions.updateTxData(txData),
-        expectedAction,
-      )
+      assert.deepEqual(actions.updateTxData(txData), expectedAction)
     })
 
     it('should create an action to clear txData', function () {
@@ -322,10 +336,7 @@ describe('Confirm Transaction Duck', function () {
         type: CLEAR_TX_DATA,
       }
 
-      assert.deepEqual(
-        actions.clearTxData(),
-        expectedAction,
-      )
+      assert.deepEqual(actions.clearTxData(), expectedAction)
     })
 
     it('should create an action to update tokenData', function () {
@@ -335,10 +346,7 @@ describe('Confirm Transaction Duck', function () {
         payload: tokenData,
       }
 
-      assert.deepEqual(
-        actions.updateTokenData(tokenData),
-        expectedAction,
-      )
+      assert.deepEqual(actions.updateTokenData(tokenData), expectedAction)
     })
 
     it('should create an action to clear tokenData', function () {
@@ -346,10 +354,7 @@ describe('Confirm Transaction Duck', function () {
         type: CLEAR_TOKEN_DATA,
       }
 
-      assert.deepEqual(
-        actions.clearTokenData(),
-        expectedAction,
-      )
+      assert.deepEqual(actions.clearTokenData(), expectedAction)
     })
 
     it('should create an action to update methodData', function () {
@@ -359,10 +364,7 @@ describe('Confirm Transaction Duck', function () {
         payload: methodData,
       }
 
-      assert.deepEqual(
-        actions.updateMethodData(methodData),
-        expectedAction,
-      )
+      assert.deepEqual(actions.updateMethodData(methodData), expectedAction)
     })
 
     it('should create an action to clear methodData', function () {
@@ -370,10 +372,7 @@ describe('Confirm Transaction Duck', function () {
         type: CLEAR_METHOD_DATA,
       }
 
-      assert.deepEqual(
-        actions.clearMethodData(),
-        expectedAction,
-      )
+      assert.deepEqual(actions.clearMethodData(), expectedAction)
     })
 
     it('should create an action to update transaction amounts', function () {
@@ -425,10 +424,7 @@ describe('Confirm Transaction Duck', function () {
         payload: tokenProps,
       }
 
-      assert.deepEqual(
-        actions.updateTokenProps(tokenProps),
-        expectedAction,
-      )
+      assert.deepEqual(actions.updateTokenProps(tokenProps), expectedAction)
     })
 
     it('should create an action to update nonce', function () {
@@ -438,10 +434,7 @@ describe('Confirm Transaction Duck', function () {
         payload: nonce,
       }
 
-      assert.deepEqual(
-        actions.updateNonce(nonce),
-        expectedAction,
-      )
+      assert.deepEqual(actions.updateNonce(nonce), expectedAction)
     })
 
     it('should create an action to set fetchingData to true', function () {
@@ -449,10 +442,7 @@ describe('Confirm Transaction Duck', function () {
         type: FETCH_DATA_START,
       }
 
-      assert.deepEqual(
-        actions.setFetchingData(true),
-        expectedAction,
-      )
+      assert.deepEqual(actions.setFetchingData(true), expectedAction)
     })
 
     it('should create an action to set fetchingData to false', function () {
@@ -460,10 +450,7 @@ describe('Confirm Transaction Duck', function () {
         type: FETCH_DATA_END,
       }
 
-      assert.deepEqual(
-        actions.setFetchingData(false),
-        expectedAction,
-      )
+      assert.deepEqual(actions.setFetchingData(false), expectedAction)
     })
 
     it('should create an action to clear confirmTransaction', function () {
@@ -471,19 +458,18 @@ describe('Confirm Transaction Duck', function () {
         type: CLEAR_CONFIRM_TRANSACTION,
       }
 
-      assert.deepEqual(
-        actions.clearConfirmTransaction(),
-        expectedAction,
-      )
+      assert.deepEqual(actions.clearConfirmTransaction(), expectedAction)
     })
   })
 
   describe('Thunk actions', function () {
     beforeEach(function () {
       global.eth = {
-        getCode: sinon.stub().callsFake(
-          (address) => Promise.resolve(address && address.match(/isContract/u) ? 'not-0x' : '0x'),
-        ),
+        getCode: sinon
+          .stub()
+          .callsFake((address) =>
+            Promise.resolve(address?.match(/isContract/u) ? 'not-0x' : '0x'),
+          ),
       }
     })
 
@@ -519,7 +505,7 @@ describe('Confirm Transaction Duck', function () {
             loadingDefaults: false,
             metamaskNetworkId: '3',
             origin: 'faucet.metamask.io',
-            status: 'unapproved',
+            status: TRANSACTION_STATUSES.UNAPPROVED,
             time: 1530838113716,
           },
         },
@@ -535,11 +521,15 @@ describe('Confirm Transaction Duck', function () {
         'metamask/confirm-transaction/UPDATE_TRANSACTION_TOTALS',
       ]
 
-      store.dispatch(actions.updateGasAndCalculate({ gasLimit: '0x2', gasPrice: '0x25' }))
+      store.dispatch(
+        actions.updateGasAndCalculate({ gasLimit: '0x2', gasPrice: '0x25' }),
+      )
 
       const storeActions = store.getActions()
       assert.equal(storeActions.length, expectedActions.length)
-      storeActions.forEach((action, index) => assert.equal(action.type, expectedActions[index]))
+      storeActions.forEach((action, index) =>
+        assert.equal(action.type, expectedActions[index]),
+      )
     })
 
     it('updates txData and updates gas values in confirmTransaction', function () {
@@ -549,7 +539,7 @@ describe('Confirm Transaction Duck', function () {
         loadingDefaults: false,
         metamaskNetworkId: '3',
         origin: 'faucet.metamask.io',
-        status: 'unapproved',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
         time: 1530838113716,
         txParams: {
           from: '0xc5ae6383e126f901dcb06131d97a88745bfa88d6',
@@ -603,7 +593,9 @@ describe('Confirm Transaction Duck', function () {
 
       const storeActions = store.getActions()
       assert.equal(storeActions.length, expectedActions.length)
-      storeActions.forEach((action, index) => assert.equal(action.type, expectedActions[index]))
+      storeActions.forEach((action, index) =>
+        assert.equal(action.type, expectedActions[index]),
+      )
     })
 
     it('updates confirmTransaction transaction', function () {
@@ -619,7 +611,7 @@ describe('Confirm Transaction Duck', function () {
               loadingDefaults: false,
               metamaskNetworkId: '3',
               origin: 'faucet.metamask.io',
-              status: 'unapproved',
+              status: TRANSACTION_STATUSES.UNAPPROVED,
               time: 1530838113716,
               txParams: {
                 from: '0xc5ae6383e126f901dcb06131d97a88745bfa88d6',
@@ -648,7 +640,9 @@ describe('Confirm Transaction Duck', function () {
       const storeActions = store.getActions()
       assert.equal(storeActions.length, expectedActions.length)
 
-      storeActions.forEach((action, index) => assert.equal(action.type, expectedActions[index]))
+      storeActions.forEach((action, index) =>
+        assert.equal(action.type, expectedActions[index]),
+      )
     })
   })
 })

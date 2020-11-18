@@ -6,7 +6,9 @@ const mapStateToProps = (state, ownProps) => {
   const { selectedIdentities } = ownProps
 
   const allIdentities = getMetaMaskIdentities(state)
-  const allIdentitiesSelected = Object.keys(selectedIdentities).length === Object.keys(allIdentities).length && selectedIdentities.length > 1
+  const allIdentitiesSelected =
+    Object.keys(selectedIdentities).length ===
+      Object.keys(allIdentities).length && selectedIdentities.length > 1
 
   return {
     allIdentitiesSelected,

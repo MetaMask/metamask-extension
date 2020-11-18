@@ -18,18 +18,18 @@ class SelectedAccount extends Component {
     selectedIdentity: PropTypes.object.isRequired,
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.copyTimeout = null
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     if (this.copyTimeout) {
       clearTimeout(this.copyTimeout)
       this.copyTimeout = null
     }
   }
 
-  render () {
+  render() {
     const { t } = this.context
     const { selectedIdentity } = this.props
     const checksummedAddress = checksumAddress(selectedIdentity.address)
@@ -39,23 +39,28 @@ class SelectedAccount extends Component {
         <Tooltip
           wrapperClassName="selected-account__tooltip-wrapper"
           position="bottom"
-          title={this.state.copied ? t('copiedExclamation') : t('copyToClipboard')}
+          title={
+            this.state.copied ? t('copiedExclamation') : t('copyToClipboard')
+          }
         >
-          <div
+          <button
             className="selected-account__clickable"
             onClick={() => {
               this.setState({ copied: true })
-              this.copyTimeout = setTimeout(() => this.setState({ copied: false }), 3000)
+              this.copyTimeout = setTimeout(
+                () => this.setState({ copied: false }),
+                3000,
+              )
               copyToClipboard(checksummedAddress)
             }}
           >
             <div className="selected-account__name">
-              { selectedIdentity.name }
+              {selectedIdentity.name}
             </div>
             <div className="selected-account__address">
-              { shortenAddress(checksummedAddress) }
+              {shortenAddress(checksummedAddress)}
             </div>
-          </div>
+          </button>
         </Tooltip>
       </div>
     )

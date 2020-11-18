@@ -24,7 +24,7 @@ export default {
   title: 'Mascot',
 }
 
-export function Demo () {
+export function Demo() {
   const [lookAtDirection, setLookAtDirection] = useState(null)
   const [followMouseMode, setFollowMouseMode] = useState(false)
   const [clickToLookMode, setClickToLookMode] = useState(false)
@@ -40,7 +40,9 @@ export function Demo () {
     <div
       style={containerStyle}
       onClick={(event) => {
-        const isButtonClick = event.target.classList.contains('button-group__button')
+        const isButtonClick = event.target.classList.contains(
+          'button-group__button',
+        )
         if (clickToLookMode && !isButtonClick) {
           setLookAtDirection(null)
           setClickedTarget({ x: event.clientX, y: event.clientY })
@@ -60,21 +62,11 @@ export function Demo () {
           style={{ width: '300px', flexFlow: 'column' }}
           defaultActiveButtonIndex={4}
         >
-          <Button onClick={createDirectionOnClick('up')}>
-            Up
-          </Button>
-          <Button onClick={createDirectionOnClick('down')}>
-            Down
-          </Button>
-          <Button onClick={createDirectionOnClick('left')}>
-            Left
-          </Button>
-          <Button onClick={createDirectionOnClick('right')}>
-            Right
-          </Button>
-          <Button onClick={createDirectionOnClick('middle')}>
-            Middle
-          </Button>
+          <Button onClick={createDirectionOnClick('up')}>Up</Button>
+          <Button onClick={createDirectionOnClick('down')}>Down</Button>
+          <Button onClick={createDirectionOnClick('left')}>Left</Button>
+          <Button onClick={createDirectionOnClick('right')}>Right</Button>
+          <Button onClick={createDirectionOnClick('middle')}>Middle</Button>
           <Button
             onClick={() => {
               setFollowMouseMode(true)

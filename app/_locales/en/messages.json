@@ -43,6 +43,9 @@
   "activityLog": {
     "message": "activity log"
   },
+  "addAccount": {
+    "message": "Add an account"
+  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
@@ -221,12 +224,6 @@
   "buy": {
     "message": "Buy"
   },
-  "buyCoinSwitch": {
-    "message": "Buy on CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch is the one-stop destination to exchange more than 300 cryptocurrencies at the best rate."
-  },
   "buyWithWyre": {
     "message": "Buy ETH with Wyre"
   },
@@ -238,9 +235,6 @@
   },
   "cancel": {
     "message": "Cancel"
-  },
-  "cancelAttempt": {
-    "message": "Cancel Attempt"
   },
   "cancellationGasFee": {
     "message": "Cancellation Gas Fee"
@@ -364,9 +358,6 @@
   "contactsSettingsDescription": {
     "message": "Add, edit, remove, and manage your contacts"
   },
-  "continueToCoinSwitch": {
-    "message": "Continue to CoinSwitch"
-  },
   "continueToWyre": {
     "message": "Continue to Wyre"
   },
@@ -476,9 +467,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Are you sure you want to delete this network?"
-  },
-  "deposit": {
-    "message": "Deposit"
   },
   "depositEther": {
     "message": "Deposit Ether"
@@ -640,6 +628,9 @@
   },
   "ethereumPublicAddress": {
     "message": "Ethereum Public Address"
+  },
+  "etherscan": {
+    "message": "Etherscan"
   },
   "etherscanView": {
     "message": "View account on Etherscan"
@@ -875,7 +866,7 @@
     "message": "Invalid IPFS Gateway: The value must be a valid URL"
   },
   "invalidNumber": {
-    "message": "Invalid number. Enter a decimal or hexadecimal number."
+    "message": "Invalid number. Enter a decimal or '0x'-prefixed hexadecimal number."
   },
   "invalidNumberLeadingZeros": {
     "message": "Invalid number. Remove any leading zeros."
@@ -1037,7 +1028,7 @@
     "message": "Network Name"
   },
   "networkSettingsChainIdDescription": {
-    "message": "The chain ID is used for signing transactions. It must match the chain ID returned by the network. Enter a decimal or hexadecimal number starting with '0x'."
+    "message": "The chain ID is used for signing transactions. It must match the chain ID returned by the network. You can enter a decimal or '0x'-prefixed hexadecimal number, but we will display the number in decimal."
   },
   "networkSettingsDescription": {
     "message": "Add and edit custom RPC networks"
@@ -1156,8 +1147,8 @@
   "optionalBlockExplorerUrl": {
     "message": "Block Explorer URL (optional)"
   },
-  "optionalSymbol": {
-    "message": "Symbol (optional)"
+  "optionalCurrencySymbol": {
+    "message": "Currency Symbol (optional)"
   },
   "orderOneHere": {
     "message": "Order a Trezor or Ledger and keep your funds in cold storage"
@@ -1364,6 +1355,9 @@
   "scanQrCode": {
     "message": "Scan QR Code"
   },
+  "scrollDown": {
+    "message": "Scroll down"
+  },
   "search": {
     "message": "Search"
   },
@@ -1457,9 +1451,6 @@
   },
   "sentEther": {
     "message": "sent ether"
-  },
-  "sentTokens": {
-    "message": "sent tokens"
   },
   "separateEachWord": {
     "message": "Separate each word with a single space"
@@ -1629,6 +1620,9 @@
     "message": "You need $1 more $2 to complete this swap",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
+  "swapBetterQuoteAvailable": {
+    "message": "A better quote is available"
+  },
   "swapBuildQuotePlaceHolderText": {
     "message": "No tokens available matching $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
@@ -1735,8 +1729,8 @@
     "message": "We find the best price from the top liquidity sources, every time. A fee of $1% is automatically factored into each quote, which supports ongoing development to make MetaMask even better.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
-  "swapNQuotesAvailable": {
-    "message": "$1 quotes available",
+  "swapNQuotes": {
+    "message": "$1 quotes",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapNetworkFeeSummary": {
@@ -1797,6 +1791,10 @@
   "swapRequestForQuotation": {
     "message": "Request for quotation"
   },
+  "swapSaving": {
+    "message": "Saving $1 $2",
+    "description": "Tells the user their average savings for the selected best quote. $1 is replaced by a tilde sign, to shown approximation. $2 is replaced by the approximate amount of money the user will save, in fiat"
+  },
   "swapSearchForAToken": {
     "message": "Search for a token"
   },
@@ -1849,6 +1847,12 @@
   },
   "swapUnknown": {
     "message": "Unknown"
+  },
+  "swapUsingBestQuote": {
+    "message": "Using the best quote"
+  },
+  "swapVerifyTokenExplanation": {
+    "message": "Multiple tokens can use the same name and symbol. Check Etherscan to verify this is the token you're looking for."
   },
   "swapViewToken": {
     "message": "View $1"
@@ -2080,6 +2084,10 @@
   },
   "userName": {
     "message": "Username"
+  },
+  "verifyThisTokenOn": {
+    "message": "Verify this token on $1",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "viewAccount": {
     "message": "View Account"

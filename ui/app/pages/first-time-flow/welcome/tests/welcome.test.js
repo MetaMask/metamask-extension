@@ -17,7 +17,6 @@ describe('Welcome', function () {
   })
 
   it('routes to select action when participateInMetaMetrics is not initialized', function () {
-
     const props = {
       history: {
         push: sinon.spy(),
@@ -25,17 +24,21 @@ describe('Welcome', function () {
     }
 
     const wrapper = mountWithRouter(
-      <Welcome.WrappedComponent {...props} />, store,
+      <Welcome.WrappedComponent {...props} />,
+      store,
     )
 
-    const getStartedButton = wrapper.find('.btn-primary.first-time-flow__button')
+    const getStartedButton = wrapper.find(
+      '.btn-primary.first-time-flow__button',
+    )
     getStartedButton.simulate('click')
-    assert.equal(props.history.push.getCall(0).args[0], '/initialize/select-action')
-
+    assert.equal(
+      props.history.push.getCall(0).args[0],
+      '/initialize/select-action',
+    )
   })
 
   it('routes to correct password when participateInMetaMetrics is initialized', function () {
-
     const props = {
       welcomeScreenSeen: true,
       participateInMetaMetrics: false,
@@ -45,11 +48,17 @@ describe('Welcome', function () {
     }
 
     const wrapper = mountWithRouter(
-      <Welcome.WrappedComponent {...props} />, store,
+      <Welcome.WrappedComponent {...props} />,
+      store,
     )
 
-    const getStartedButton = wrapper.find('.btn-primary.first-time-flow__button')
+    const getStartedButton = wrapper.find(
+      '.btn-primary.first-time-flow__button',
+    )
     getStartedButton.simulate('click')
-    assert.equal(props.history.push.getCall(0).args[0], '/initialize/create-password')
+    assert.equal(
+      props.history.push.getCall(0).args[0],
+      '/initialize/create-password',
+    )
   })
 })

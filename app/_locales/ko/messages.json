@@ -143,12 +143,6 @@
   "builtInCalifornia": {
     "message": "메타마스크는 캘리포니아에서 디자인되고 만들어졌습니다."
   },
-  "buyCoinSwitch": {
-    "message": "코인 스위치 구입"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "코인 스위치는 최상의 속도로 300 개 이상의 크립토 카드를 교환하는 원 스톱 목적지입니다."
-  },
   "buyWithWyre": {
     "message": "Wyre로 ETH 구매"
   },
@@ -160,9 +154,6 @@
   },
   "cancel": {
     "message": "취소"
-  },
-  "cancelAttempt": {
-    "message": "취소 시도"
   },
   "cancellationGasFee": {
     "message": "취소 가스 수수료"
@@ -223,9 +214,6 @@
   },
   "connectingToRopsten": {
     "message": "Ropsten 테스트넷 접속 중"
-  },
-  "continueToCoinSwitch": {
-    "message": "코인 스위치 계속하기"
   },
   "continueToWyre": {
     "message": "Wyre로 계속 진행"
@@ -304,9 +292,6 @@
   },
   "deleteNetworkDescription": {
     "message": "정말로 이 네트워크를 삭제하시겠습니까?"
-  },
-  "deposit": {
-    "message": "입금"
   },
   "depositEther": {
     "message": "이더리움 입금하기"
@@ -734,7 +719,7 @@
   "optionalBlockExplorerUrl": {
     "message": "익스플로러 URL 차단 (선택 사항)"
   },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Symbol (선택)"
   },
   "orderOneHere": {
@@ -978,9 +963,6 @@
   },
   "sentEther": {
     "message": "전송된 이더"
-  },
-  "sentTokens": {
-    "message": "전송된 토큰"
   },
   "separateEachWord": {
     "message": "각 단어는 공백 한칸으로 분리합니다"
