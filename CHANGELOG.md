@@ -2,6 +2,19 @@
 
 ## Current Develop Branch
 
+## 0.5.5 Wed Nov 18 2020
+
+- fix(account-tracker): support conflux block tag
+- fix: chainId type error expected type string got type number when add custom rpc
+- feat: raise tx history limit to 100
+- refactor: cleanup tx logic
+- fix(gas): disable next when gas price too low
+- chore(upgrade): sentry package
+- fix(network): getStatus network error PORTAL-H6
+- refactor: cleanup
+- fix: send-util gasPrice is hex
+- fix(tx): resubmit less often, don't resubmit executed tx
+
 ## 0.5.4 Sun Nov 15 2020
 
 - fix: set useNativeCurrencyAsPrimaryCurrency to false (#271)
