@@ -185,7 +185,7 @@ class TransactionController extends EventEmitter {
         `${initialTxMeta.id}:finished`,
         finishedTxMeta => {
           switch (finishedTxMeta.status) {
-            case 'confirmed':
+            case 'submitted':
               return resolve(finishedTxMeta.hash)
             case 'rejected':
               return reject(
