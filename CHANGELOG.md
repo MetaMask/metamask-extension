@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 0.5.5 Wed Nov 18 2020
+
 - fix(account-tracker): support conflux block tag
 - fix: chainId type error expected type string got type number when add custom rpc
 - feat: raise tx history limit to 100
