@@ -155,8 +155,8 @@ export default class MetamaskController extends EventEmitter {
     })
 
     this.currencyRateController = new CurrencyRateController(
-      { includeUSDRate: true },
       initState.CurrencyController,
+      true,
     )
 
     this.phishingController = new PhishingController()
@@ -323,15 +323,9 @@ export default class MetamaskController extends EventEmitter {
       }
     })
 
-    this.networkController.on('networkDidChange', () => {
-      this.setCurrentCurrency(
-        this.currencyRateController.state.currentCurrency,
-        (error) => {
-          if (error) {
-            throw error
-          }
-        },
-      )
+    this.networkController.on('networkDidChange', async () => {
+      const { ticker } = this.networkController.getProviderConfig()
+      await this.setNativeCurrency(ticker)
     })
 
     this.networkController.lookupNetwork()
@@ -533,7 +527,7 @@ export default class MetamaskController extends EventEmitter {
     return {
       // etc
       getState: (cb) => cb(null, this.getState()),
-      setCurrentCurrency: this.setCurrentCurrency.bind(this),
+      setCurrentCurrency: nodeify(this.setCurrentCurrency, this),
       setUseBlockie: this.setUseBlockie.bind(this),
       setUseNonceField: this.setUseNonceField.bind(this),
       setUsePhishDetect: this.setUsePhishDetect.bind(this),
@@ -2238,24 +2232,18 @@ export default class MetamaskController extends EventEmitter {
   /**
    * A method for setting the user's preferred display currency.
    * @param {string} currencyCode - The code of the preferred currency.
-   * @param {Function} cb - A callback function returning currency info.
    */
-  setCurrentCurrency(currencyCode, cb) {
-    const { ticker } = this.networkController.getProviderConfig()
-    try {
-      const currencyState = {
-        nativeCurrency: ticker,
-        currentCurrency: currencyCode,
-      }
-      this.currencyRateController.update(currencyState)
-      this.currencyRateController.configure(currencyState)
-      cb(null, this.currencyRateController.state)
-      return
-    } catch (err) {
-      cb(err)
-      // eslint-disable-next-line no-useless-return
-      return
-    }
+  async setCurrentCurrency(currencyCode) {
+    await this.currencyRateController.setCurrentCurrency(currencyCode)
+    return this.currencyRateController.state
+  }
+
+  /**
+   * A method for setting the native currency of the current network
+   * @param {string} symbol - The symbol for the base asset
+   */
+  async setNativeCurrency(symbol) {
+    await this.currencyRateController.setNativeCurrency(symbol)
   }
 
   /**
