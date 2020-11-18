@@ -1,6 +1,8 @@
 # Changelog
 
 ## Current Develop Branch
+
+## 8.1.5 Wed Nov 18 2020
 - [#9612](https://github.com/MetaMask/metamask-extension/pull/9612): Update main-quote-summary designs/styles
 
 ## 8.1.4 Tue Nov 10 2020
