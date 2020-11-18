@@ -21,8 +21,9 @@ import nanoid from 'nanoid'
 import contractMap from 'eth-contract-metadata'
 import {
   AddressBookController,
-  CurrencyRateController,
   PhishingController,
+  CurrencyRateSlice,
+  store,
 } from '@metamask/controllers'
 import { getTrackMetaMetricsEvent } from '../../shared/modules/metametrics'
 import { getBackgroundMetaMetricState } from '../../ui/app/selectors'
@@ -59,6 +60,7 @@ import nodeify from './lib/nodeify'
 import accountImporter from './account-import-strategies'
 import seedPhraseVerifier from './lib/seed-phrase-verifier'
 import { ENVIRONMENT_TYPE_BACKGROUND } from './lib/enums'
+import ReduxObsStoreAdapter from './lib/redux-obs-store-adapter'
 
 export default class MetamaskController extends EventEmitter {
   /**
@@ -154,9 +156,14 @@ export default class MetamaskController extends EventEmitter {
       preferencesStore: this.preferencesController.store,
     })
 
-    this.currencyRateController = new CurrencyRateController(
-      initState.CurrencyController,
-      true,
+    store.dispatch(CurrencyRateSlice.usdRateEnabled())
+    const CurrencyRateStore = new ReduxObsStoreAdapter(
+      () => store.getState().CurrencyRate,
+      store.subscribe.bind(store),
+    )
+    const PersistantCurrencyRateStore = new ReduxObsStoreAdapter(
+      () => CurrencyRateSlice.getPersistedState(),
+      store.subscribe.bind(store),
     )
 
     this.phishingController = new PhishingController()
@@ -357,7 +364,7 @@ export default class MetamaskController extends EventEmitter {
       KeyringController: this.keyringController.store,
       PreferencesController: this.preferencesController.store,
       AddressBookController: this.addressBookController,
-      CurrencyController: this.currencyRateController,
+      CurrencyController: PersistantCurrencyRateStore,
       NetworkController: this.networkController.store,
       CachedBalancesController: this.cachedBalancesController.store,
       AlertController: this.alertController.store,
@@ -383,7 +390,7 @@ export default class MetamaskController extends EventEmitter {
       KeyringController: this.keyringController.memStore,
       PreferencesController: this.preferencesController.store,
       AddressBookController: this.addressBookController,
-      CurrencyController: this.currencyRateController,
+      CurrencyController: CurrencyRateStore,
       AlertController: this.alertController.store,
       OnboardingController: this.onboardingController.store,
       IncomingTransactionsController: this.incomingTransactionsController.store,
@@ -2232,10 +2239,13 @@ export default class MetamaskController extends EventEmitter {
   /**
    * A method for setting the user's preferred display currency.
    * @param {string} currencyCode - The code of the preferred currency.
+   * @returns {Object} Updated currency rate state
    */
   async setCurrentCurrency(currencyCode) {
-    await this.currencyRateController.setCurrentCurrency(currencyCode)
-    return this.currencyRateController.state
+    await store.dispatch(
+      CurrencyRateSlice.updateCurrency({ currentCurrency: currencyCode }),
+    )
+    return store.getState().CurrencyRate
   }
 
   /**
@@ -2243,7 +2253,9 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} symbol - The symbol for the base asset
    */
   async setNativeCurrency(symbol) {
-    await this.currencyRateController.setNativeCurrency(symbol)
+    await store.dispatch(
+      CurrencyRateSlice.updateCurrency({ nativeCurrency: symbol }),
+    )
   }
 
   /**
