@@ -368,7 +368,7 @@ export default function ViewQuote() {
     bestQuoteReviewedEvent,
   ])
 
-  const metaMaskFee = usedQuote.fee
+  const metaMaskFee = String(usedQuote.fee)
 
   const onFeeCardTokenApprovalClick = () => {
     editSpendLimitOpened()
