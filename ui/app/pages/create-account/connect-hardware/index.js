@@ -33,10 +33,6 @@ class ConnectHardwareForm extends Component {
     this.setState({ accounts: newAccounts })
   }
 
-  componentDidMount() {
-    this.checkIfUnlocked()
-  }
-
   async checkIfUnlocked() {
     for (const device of ['trezor', 'ledger']) {
       const unlocked = await this.props.checkHardwareStatus(
@@ -129,7 +125,7 @@ class ConnectHardwareForm extends Component {
         }
       })
       .catch((e) => {
-        const errorMessage = e.message
+        const errorMessage = e.message || e
         if (errorMessage === 'Window blocked') {
           this.setState({ browserSupported: false, error: null })
         } else if (errorMessage.includes(U2F_ERROR)) {
@@ -210,6 +206,7 @@ class ConnectHardwareForm extends Component {
             // eslint-disable-next-line react/jsx-key
             <a
               href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
+              key="hardware-connection-guide"
               target="_blank"
               rel="noopener noreferrer"
               className="hw-connect__link"
