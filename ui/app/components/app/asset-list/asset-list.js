@@ -13,13 +13,11 @@ import {
   getCurrentAccountWithSendEtherInfo,
   getNativeCurrency,
   getShouldShowFiat,
-  getSelectedAddress,
 } from '../../../selectors'
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay'
 
 const AssetList = ({ onClickAsset }) => {
   const history = useHistory()
-  const selectedAddress = useSelector((state) => getSelectedAddress(state))
   const selectedAccountBalance = useSelector(
     (state) => getCurrentAccountWithSendEtherInfo(state).balance,
   )
@@ -71,7 +69,6 @@ const AssetList = ({ onClickAsset }) => {
         onClick={() => onClickAsset(nativeCurrency)}
         data-testid="wallet-balance"
         primary={primaryCurrencyProperties.value}
-        tokenAddress={selectedAddress}
         tokenSymbol={primaryCurrencyProperties.suffix}
         secondary={showFiat ? secondaryCurrencyDisplay : undefined}
       />
