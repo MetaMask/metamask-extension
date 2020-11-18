@@ -4,7 +4,7 @@ set -e
 set -u
 set -o pipefail
 
-CHROME_VERSION="79.0.3945.130-1"
+CHROME_VERSION='79.0.3945.130-1'
 CHROME_BINARY="google-chrome-stable_${CHROME_VERSION}_amd64.deb"
 CHROME_BINARY_URL="http://dl.google.com/linux/chrome/deb/pool/main/g/${CHROME_BINARY}"
 
