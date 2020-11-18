@@ -226,6 +226,9 @@ jobs:
       - image: circleci/node:12-browsers
     steps:
       - checkout
+      - run:
+          name: Re-Install Chrome
+          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
