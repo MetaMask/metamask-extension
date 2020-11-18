@@ -252,7 +252,7 @@ describe('Transaction Controller', function() {
       txController.once('newUnapprovedTx', txMetaFromEmit => {
         setTimeout(() => {
           txController.setTxHash(txMetaFromEmit.id, '0x0')
-          txController.txStateManager.setTxStatusConfirmed(txMetaFromEmit.id)
+          txController.txStateManager.setTxStatusSubmitted(txMetaFromEmit.id)
         }, 10)
       })
 
