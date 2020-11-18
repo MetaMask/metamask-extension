@@ -16,6 +16,8 @@ import { EthOverview } from '../../components/app/wallet-overview'
 import SwapsIntroPopup from '../swaps/intro-popup'
 import MobileSyncIntroPopup from '../mobile-sync/mobile-sync-intro-popup'
 
+import { setMobileWelcomeMessageHasBeenShown } from '../../store/actions'
+
 import {
   ASSET_ROUTE,
   RESTORE_VAULT_ROUTE,
@@ -62,7 +64,6 @@ export default class Home extends PureComponent {
     onTabClick: PropTypes.func.isRequired,
     setSwapsWelcomeMessageHasBeenShown: PropTypes.func.isRequired,
     swapsWelcomeMessageHasBeenShown: PropTypes.bool.isRequired,
-    setMobileWelcomeMessageHasBeenShown: PropTypes.func.isRequired,
     mobileWelcomeMessageHasBeenShown: PropTypes.bool.isRequired,
     haveSwapsQuotes: PropTypes.bool.isRequired,
     showAwaitingSwapScreen: PropTypes.bool.isRequired,
@@ -261,7 +262,6 @@ export default class Home extends PureComponent {
       isPopup,
       swapsWelcomeMessageHasBeenShown,
       setSwapsWelcomeMessageHasBeenShown,
-      setMobileWelcomeMessageHasBeenShown,
       mobileWelcomeMessageHasBeenShown,
       swapsEnabled,
       isMainnet,
@@ -289,7 +289,7 @@ export default class Home extends PureComponent {
           !mobileWelcomeMessageHasBeenShown &&
           isMainnet ? (
             <MobileSyncIntroPopup
-              onClose={setMobileWelcomeMessageHasBeenShown}
+              onClose={() => setMobileWelcomeMessageHasBeenShown()}
             />
           ) : null}
           {isPopup && !connectedStatusPopoverHasBeenShown

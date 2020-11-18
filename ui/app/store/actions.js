@@ -2471,13 +2471,13 @@ export function setConnectedStatusPopoverHasBeenShown() {
   }
 }
 
-export function setMobileWelcomeMessageHasBeenShown() {
-  return () => {
-    background.setMobileWelcomeMessageHasBeenShown((err) => {
-      if (err) {
-        throw new Error(err.message)
-      }
-    })
+export async function setMobileWelcomeMessageHasBeenShown() {
+  log.debug(`Setting mobile message shown!`)
+
+  try {
+    await promisifiedBackground.setMobileWelcomeMessageHasBeenShown()
+  } catch (error) {
+    log.error(error)
   }
 }
 

@@ -17,7 +17,6 @@ import {
   setConnectedStatusPopoverHasBeenShown,
   setDefaultHomeActiveTabName,
   setSwapsWelcomeMessageHasBeenShown,
-  setMobileWelcomeMessageHasBeenShown,
 } from '../../store/actions'
 import { setThreeBoxLastUpdated } from '../../ducks/app/app'
 import {
@@ -108,8 +107,6 @@ const mapDispatchToProps = (dispatch) => ({
   onTabClick: (name) => dispatch(setDefaultHomeActiveTabName(name)),
   setSwapsWelcomeMessageHasBeenShown: () =>
     dispatch(setSwapsWelcomeMessageHasBeenShown()),
-  setMobileWelcomeMessageHasBeenShown: () =>
-    dispatch(setMobileWelcomeMessageHasBeenShown()),
 })
 
 export default compose(
