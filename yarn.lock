@@ -1879,9 +1879,9 @@
     hdkey "0.8.0"
 
 "@metamask/eth-token-tracker@^3.0.1":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@metamask/eth-token-tracker/-/eth-token-tracker-3.0.1.tgz#36b89f39c2af2ac41aa600dcedd2341704d94484"
-  integrity sha512-vlSKnI27zMCbaDOAHG5apYXoZgO833GUOP6/gkkzuKNEE7QZZCMti/9U6DYfrE8QvgbWyt/RjZkF3cTXXjBhCA==
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@metamask/eth-token-tracker/-/eth-token-tracker-3.1.0.tgz#1396c5d88401f3cd598b0c86d3a42951c8e78d73"
+  integrity sha512-SopDFnIu7lI8aloD9HGPEpqlcjZNzZ5BeXZqrNRSdSO+CGpuwmFoeyrCrgEmrlkKQvP8dQi6R6aYK/itFPhPrg==
   dependencies:
     deep-equal "^1.1.0"
     eth-block-tracker "^4.4.2"
