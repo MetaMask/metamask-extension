@@ -6,7 +6,7 @@ const chrome = require('selenium-webdriver/chrome')
  */
 class ChromeDriver {
   static async build({ extensionPath, responsive, port }) {
-    const args = [`load-extension=${extensionPath}`, "--single-process"]
+    const args = [`load-extension=${extensionPath}`]
     if (responsive) {
       args.push('--auto-open-devtools-for-tabs')
     }
