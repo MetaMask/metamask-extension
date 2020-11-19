@@ -11,6 +11,7 @@
 - [#9891](https://github.com/MetaMask/metamask-extension/pull/9891): Add token verification message to swaps build quote screen
 - [#9896](https://github.com/MetaMask/metamask-extension/pull/9896): Show failed token balance updates
 - [#9909](https://github.com/MetaMask/metamask-extension/pull/9909): Update asset page etherscan link to the address-filtered token page on Etherscan
+- [#9910](https://github.com/MetaMask/metamask-extension/pull/9910): Revert "Show a 'send eth' button on home screen in full screen mode"
 
 ## 8.1.4 Tue Nov 10 2020
 - [#9687](https://github.com/MetaMask/metamask-extension/pull/9687): Allow speeding up of underpriced transactions
