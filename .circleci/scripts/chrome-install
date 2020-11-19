@@ -5,9 +5,14 @@ set -u
 set -o pipefail
 
 CHROME_VERSION='79.0.3945.117-1'
+CHROMEDRIVER_VERSION='79.0.3945.36'
 CHROME_BINARY="google-chrome-stable_${CHROME_VERSION}_amd64.deb"
 CHROME_BINARY_URL="http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/${CHROME_BINARY}"
 
 sudo wget -O "${CHROME_BINARY}" -t 5 "${CHROME_BINARY_URL}"     && (sudo dpkg -i "${CHROME_BINARY}" || sudo apt-get -fy install)      && rm -rf "${CHROME_BINARY}"     && sudo sed -i 's|HERE/chrome"|HERE/chrome" --disable-setuid-sandbox --no-sandbox|g'         "/opt/google/chrome/google-chrome"     && google-chrome --version
 
 printf '%s\n' "CHROME ${CHROME_VERSION} configured"
+
+curl --silent --show-error --location --fail --retry 4 --retry-delay 5 --output /tmp/chromedriver_linux64.zip "http://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"     && cd /tmp     && unzip chromedriver_linux64.zip     && rm -rf chromedriver_linux64.zip     && sudo mv chromedriver /usr/local/bin/chromedriver     && sudo chmod +x /usr/local/bin/chromedriver     && chromedriver --version
+
+printf '%s\n' "CHROMEDRIVER ${CHROMEDRIVER_VERSION} configured"
