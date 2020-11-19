@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import ethUtil from 'ethereumjs-util'
 import { debounce } from 'lodash'
 import {
   getAmountErrorObject,
@@ -16,6 +17,7 @@ import AddRecipient from './send-content/add-recipient'
 import SendContent from './send-content'
 import SendFooter from './send-footer'
 import EnsInput from './send-content/add-recipient/ens-input'
+import { INVALID_RECIPIENT_ADDRESS_ERROR } from './send.constants'
 
 export default class SendTransactionScreen extends Component {
   static propTypes = {
@@ -162,12 +164,18 @@ export default class SendTransactionScreen extends Component {
     if (qrCodeData) {
       if (qrCodeData.type === 'address') {
         scannedAddress = qrCodeData.values.address.toLowerCase()
-        const currentAddress = prevTo?.toLowerCase()
-        if (currentAddress !== scannedAddress) {
-          updateSendTo(scannedAddress)
-          updateGas = true
-          // Clean up QR code data after handling
+        if (ethUtil.isValidAddress(scannedAddress)) {
+          const currentAddress = prevTo?.toLowerCase()
+          if (currentAddress !== scannedAddress) {
+            updateSendTo(scannedAddress)
+            updateGas = true
+            // Clean up QR code data after handling
+            qrCodeDetected(null)
+          }
+        } else {
+          scannedAddress = null
           qrCodeDetected(null)
+          this.setState({ toError: INVALID_RECIPIENT_ADDRESS_ERROR })
         }
       }
     }
