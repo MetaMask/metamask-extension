@@ -228,7 +228,7 @@ jobs:
       - checkout
       - run:
           name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install
+          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
