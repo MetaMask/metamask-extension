@@ -41,6 +41,9 @@
   "activityLog": {
     "message": "活动日志"
   },
+  "addAccount": {
+    "message": "添加一个账户"
+  },
   "addAcquiredTokens": {
     "message": "在 MetaMask 上添加获得的代币"
   },
@@ -80,6 +83,9 @@
   "affirmAgree": {
     "message": "我同意"
   },
+  "aggregatorFeeCost": {
+    "message": "聚集器网络手续费"
+  },
   "alertDisableTooltip": {
     "message": "这个可以在“设置 > 提醒”中进行更改"
   },
@@ -110,6 +116,9 @@
   "amount": {
     "message": "数额"
   },
+  "amountInEth": {
+    "message": "$1 ETH"
+  },
   "amountWithColon": {
     "message": "数额："
   },
@@ -118,6 +127,12 @@
   },
   "appName": {
     "message": "MetaMask"
+  },
+  "approvalAndAggregatorTxFeeCost": {
+    "message": "批准聚合商网络手续费"
+  },
+  "approvalTxGasCost": {
+    "message": "批准交易燃料成本"
   },
   "approve": {
     "message": "批准消费限额"
@@ -530,6 +545,9 @@
   "endOfFlowMessage9": {
     "message": "了解详情。"
   },
+  "endpointReturnedDifferentChainId": {
+    "message": "RPC 端点使用链不同的链 ID: $1"
+  },
   "ensNotFoundOnCurrentNetwork": {
     "message": "未在当前网络找到 ENS 名称。请尝试切换至主以太坊网络。"
   },
@@ -581,8 +599,11 @@
   "ethereumPublicAddress": {
     "message": "以太坊 Ethereum 公开地址"
   },
+  "etherscan": {
+    "message": "Etherscan（以太坊浏览器）"
+  },
   "etherscanView": {
-    "message": "在 Etherscan 上查看账户"
+    "message": "在 Etherscan（以太坊浏览器）上查看账户"
   },
   "expandView": {
     "message": "展开视图"
@@ -593,8 +614,14 @@
   "externalExtension": {
     "message": "外部扩展"
   },
+  "extraApprovalGas": {
+    "message": "+$1 批准燃料"
+  },
   "failed": {
     "message": "失败"
+  },
+  "failedToFetchChainId": {
+    "message": "无法获取链 IC，你的 RPC URL 地址是正确的么？"
   },
   "failureMessage": {
     "message": "出了点问题，我们无法完成这个操作。"
@@ -604,6 +631,9 @@
   },
   "faster": {
     "message": "更快"
+  },
+  "fastest": {
+    "message": "最快"
   },
   "feeAssociatedRequest": {
     "message": "此请求需要支付一定的费用。"
@@ -640,6 +670,9 @@
   },
   "gasLimitTooLow": {
     "message": "燃料限制至少要 21000"
+  },
+  "gasLimitTooLowWithDynamicFee": {
+    "message": "燃料限制至少要 $1"
   },
   "gasPrice": {
     "message": "燃料价格（GWEI）"
@@ -767,8 +800,32 @@
   "invalidBlockExplorerURL": {
     "message": "无效的区块浏览器 URL"
   },
+  "invalidCustomNetworkAlertContent1": {
+    "message": "需要重新输入自定义网络'$1'的链 ID。"
+  },
+  "invalidCustomNetworkAlertContent2": {
+    "message": "为了保护你免受恶意或有问题的网络提供商的侵害，现在所有的自定义网络都需要提供链 ID。"
+  },
+  "invalidCustomNetworkAlertContent3": {
+    "message": "进入设置 > 网络并输入链 ID。你可以通过 $1 查找常用的链 ID。"
+  },
+  "invalidCustomNetworkAlertTitle": {
+    "message": "无效的自定义网络"
+  },
+  "invalidHexNumber": {
+    "message": "无效的十六进制数。"
+  },
+  "invalidHexNumberLeadingZeros": {
+    "message": "无效的十六进制数。去除任何开头的零。"
+  },
   "invalidIpfsGateway": {
     "message": "无效的 IPFS 网关。该值必须是一个有效的 URL"
+  },
+  "invalidNumber": {
+    "message": "无效的数字。输入一个数字或‘0x’开头的十六进制数。"
+  },
+  "invalidNumberLeadingZeros": {
+    "message": "无效的数字。去除任何开头的零。"
   },
   "invalidRPC": {
     "message": "无效 RPC URL"
@@ -860,8 +917,38 @@
   "metamaskDescription": {
     "message": "将你与 Ethereum 和去中心化网络连接起来。"
   },
+  "metamaskSwapsOfflineDescription": {
+    "message": "MetaMask Swaps 正在进行维护。请稍后访问。"
+  },
   "metamaskVersion": {
     "message": "MetaMask 版本"
+  },
+  "metametricsCommitmentsAllowOptOut": {
+    "message": "始终允许你通过设置选择退出"
+  },
+  "metametricsCommitmentsBoldNever": {
+    "message": "从不"
+  },
+  "metametricsCommitmentsIntro": {
+    "message": "MetaMask..."
+  },
+  "metametricsCommitmentsNeverCollectIP": {
+    "message": "$1收集你的完整IP地址"
+  },
+  "metametricsCommitmentsNeverCollectKeysEtc": {
+    "message": "$1收集密钥、地址、交易记录、余额、哈希或任何个人信息"
+  },
+  "metametricsCommitmentsNeverSellDataForProfit": {
+    "message": "$1为利益而出售你的数据，永远不会！"
+  },
+  "metametricsCommitmentsSendAnonymizedEvents": {
+    "message": "发送匿名的点击和页面浏览事件信息"
+  },
+  "metametricsHelpImproveMetaMask": {
+    "message": "帮助我们让 MetaMask 变得更好"
+  },
+  "metametricsOptInDescription": {
+    "message": "MetaMask 希望收集使用数据，以更好地了解我们的用户如何与扩展进行互动。这些数据将被用于持续改进我们产品和 Ethereum 生态系统的可用性和用户体验。"
   },
   "mobileSyncText": {
     "message": "请输入密码确认个人身份！"
@@ -889,6 +976,9 @@
   },
   "networkName": {
     "message": "网络名称"
+  },
+  "networkSettingsChainIdDescription": {
+    "message": "链 ID 用于签署交易。它必须与网络返回的链 ID 相匹配。你可以输入十进制或'0x'前缀的十六进制数字，但我们将以十进制显示。"
   },
   "networkSettingsDescription": {
     "message": "添加和编辑自定义 RPC 网络"
@@ -980,6 +1070,9 @@
   "off": {
     "message": "关"
   },
+  "offlineForMaintenance": {
+    "message": "脱机维护"
+  },
   "ok": {
     "message": "确定"
   },
@@ -991,6 +1084,9 @@
   },
   "onlyAddTrustedNetworks": {
     "message": "恶意的 Ethereum 以太坊网络提供商可以伪造区块链状态，并记录你的网络活动。只添加你信任的自定义网络。"
+  },
+  "onlyAvailableOnMainnet": {
+    "message": "仅在主网（mainnet）上提供"
   },
   "onlyConnectTrust": {
     "message": "只连接你信任的网站。"
@@ -1202,6 +1298,9 @@
   "scanQrCode": {
     "message": "扫描二维码"
   },
+  "scrollDown": {
+    "message": "向下滚动"
+  },
   "search": {
     "message": "搜索"
   },
@@ -1323,7 +1422,7 @@
     "message": "显示收到的交易"
   },
   "showIncomingTransactionsDescription": {
-    "message": "选择该选项可使用 Etherscan 在交易列表中显示收到的交易。"
+    "message": "选择该选项可使用 Etherscan（以太坊浏览器）（以太坊浏览器）在交易列表中显示收到的交易。"
   },
   "showPermissions": {
     "message": "显示权限"
@@ -1372,6 +1471,12 @@
   },
   "speedUpTransaction": {
     "message": "加速该交易操作"
+  },
+  "spendLimitAmount": {
+    "message": "消费限额数量"
+  },
+  "spendLimitInsufficient": {
+    "message": "消费限额不足"
   },
   "spendLimitInvalid": {
     "message": "消费限制无效，必须是正数。"
@@ -1433,6 +1538,267 @@
   "supportCenter": {
     "message": "访问我们的支持中心"
   },
+  "swap": {
+    "message": "兑换 Swap"
+  },
+  "swapAdvancedSlippageInfo": {
+    "message": "如果价格在你下单和确认之间发生变化，这就叫做“滑点”。如果滑点超过你的“最大滑点”设置，你的的兑换将自动取消。"
+  },
+  "swapAggregator": {
+    "message": "聚合商"
+  },
+  "swapAmountReceived": {
+    "message": "保证数额"
+  },
+  "swapAmountReceivedInfo": {
+    "message": "这是你将收到的最低数额。你也可能会收到更多，这取决于滑点。"
+  },
+  "swapApproval": {
+    "message": "批准 $1 的兑换 "
+  },
+  "swapApproveNeedMoreTokens": {
+    "message": "你还需 $1 $2 来完成这笔兑换"
+  },
+  "swapBuildQuotePlaceHolderText": {
+    "message": "没有匹配的代币符合 $1"
+  },
+  "swapCheckingQuote": {
+    "message": "正在检查 $1"
+  },
+  "swapCustom": {
+    "message": "自定义"
+  },
+  "swapDecentralizedExchange": {
+    "message": "去中心化交易所"
+  },
+  "swapEditLimit": {
+    "message": "修改限制"
+  },
+  "swapEnableDescription": {
+    "message": "这是必须的，并且允许 MetaMask 兑换你的 $1。"
+  },
+  "swapEstimatedNetworkFee": {
+    "message": "预计网络手续费"
+  },
+  "swapEstimatedNetworkFeeSummary": {
+    "message": "“$1”是我们预计的实际产生费用。具体数额视网络情况而定。"
+  },
+  "swapEstimatedNetworkFees": {
+    "message": "预计网络手续费"
+  },
+  "swapEstimatedNetworkFeesInfo": {
+    "message": "这是预估的用于完成你的兑换所使用的网络手续费。实际数额可能会根据网络条件而变化。"
+  },
+  "swapEstimatedTime": {
+    "message": "预计时间："
+  },
+  "swapEstimatedTimeCalculating": {
+    "message": "计算中..."
+  },
+  "swapEstimatedTimeFull": {
+    "message": "$1 $2"
+  },
+  "swapFailedErrorDescription": {
+    "message": "你的资金是安全的，仍然可以在你的钱包中使用。"
+  },
+  "swapFailedErrorTitle": {
+    "message": "兑换失败"
+  },
+  "swapFetchingQuotesErrorDescription": {
+    "message": "呃...出错了。再试一次，如果错误仍存在，请联系客户支持。"
+  },
+  "swapFetchingQuotesErrorTitle": {
+    "message": "获取报价出错"
+  },
+  "swapFetchingTokens": {
+    "message": "获取代币中..."
+  },
+  "swapFinalizing": {
+    "message": "确定中..."
+  },
+  "swapGetQuotes": {
+    "message": "获取报价"
+  },
+  "swapHighSlippageWarning": {
+    "message": "滑点数量非常大。确保你知道你的操作！"
+  },
+  "swapIntroLearnMoreHeader": {
+    "message": "想了解更多信息？"
+  },
+  "swapIntroLearnMoreLink": {
+    "message": "了解更多关于 MetaMask Swap（兑换）"
+  },
+  "swapIntroLiquiditySourcesLabel": {
+    "message": "流动资金来源包括："
+  },
+  "swapIntroPopupSubTitle": {
+    "message": "现在你可以直接在 MetaMask 钱包中兑换代币。MetaMask Swaps（兑换）结合了多个去中心化交易所聚合商、专业做市商和个人 DEX，确保 MetaMask 用户始终以最低的网络费用获得最佳价格。"
+  },
+  "swapIntroPopupTitle": {
+    "message": "代币兑换来了！"
+  },
+  "swapLearnMoreContractsAuditReview": {
+    "message": "查看我们的官方合约审计"
+  },
+  "swapLowSlippageError": {
+    "message": "交易可能失败，最大滑点过低。"
+  },
+  "swapMaxNetworkFeeInfo": {
+    "message": "“$1”是你最多所话费的数量，当网络不稳定时，这可能是一个大的数额。"
+  },
+  "swapMaxNetworkFees": {
+    "message": "最大网络手续费"
+  },
+  "swapMaxSlippage": {
+    "message": "最大滑点"
+  },
+  "swapMetaMaskFee": {
+    "message": "MetaMask 手续费"
+  },
+  "swapMetaMaskFeeDescription": {
+    "message": "我们每次都能从顶级流动性资源中找到最好的价格。每次报价都会自动收取1%的手续费用，以支持 MetaMask 的持续发展，使其更加完善。"
+  },
+  "swapNQuotesAvailable": {
+    "message": "$1个报价可用"
+  },
+  "swapNetworkFeeSummary": {
+    "message": "网络手续费包括处理你的兑换和在以太坊（Ethereum）网络上存储的成本。MetaMask 不从这笔费用中获利。"
+  },
+  "swapNewQuoteIn": {
+    "message": "$1 后更新报价"
+  },
+  "swapOnceTransactionHasProcess": {
+    "message": "一旦交易完成，你的 $1 将被添加到你的账户中。"
+  },
+  "swapProcessing": {
+    "message": "处理中"
+  },
+  "swapQuoteDetails": {
+    "message": "报价详情"
+  },
+  "swapQuoteDetailsSlippageInfo": {
+    "message": "如果在你下订单和确认订单之间的价格发生了变化，这就叫做\"滑点\"。如果滑点超过你的\"最大滑点\"设置，你的兑换将自动取消。"
+  },
+  "swapQuoteIncludesRate": {
+    "message": "报价包含 $1% MetaMask 手续费"
+  },
+  "swapQuoteNofN": {
+    "message": "报价 $1 / $2"
+  },
+  "swapQuoteSource": {
+    "message": "报价来源"
+  },
+  "swapQuotesAreRefreshed": {
+    "message": "报价会经常刷新，以反映当前的市场状况。"
+  },
+  "swapQuotesExpiredErrorDescription": {
+    "message": "请请求新的报价，以获得最新的价格。"
+  },
+  "swapQuotesExpiredErrorTitle": {
+    "message": "报价超时"
+  },
+  "swapQuotesNotAvailableErrorDescription": {
+    "message": "尝试调整滑点数量设置，并再试一次。"
+  },
+  "swapQuotesNotAvailableErrorTitle": {
+    "message": "无可用报价"
+  },
+  "swapRate": {
+    "message": "费率"
+  },
+  "swapReceiving": {
+    "message": "接收"
+  },
+  "swapReceivingInfoTooltip": {
+    "message": "这是一个预估数额。确切的数额取决于滑点。"
+  },
+  "swapRequestForQuotation": {
+    "message": "请求报价"
+  },
+  "swapSearchForAToken": {
+    "message": "搜索代币"
+  },
+  "swapSelect": {
+    "message": "选择"
+  },
+  "swapSelectAQuote": {
+    "message": "选择一个报价"
+  },
+  "swapSelectAToken": {
+    "message": "选择一个代币"
+  },
+  "swapSelectQuotePopoverDescription": {
+    "message": "以下是从多个流动资金来源收集到的所有报价。"
+  },
+  "swapSlippageTooLow": {
+    "message": "滑点必须大于零"
+  },
+  "swapSource": {
+    "message": "流动资金来源"
+  },
+  "swapSourceInfo": {
+    "message": "我们搜索多个流动性来源（交易所、聚合商和专业做市商），以找到最好的利率和最低的网络手续费。"
+  },
+  "swapStartSwapping": {
+    "message": "开始兑换"
+  },
+  "swapSwapFrom": {
+    "message": "兑换自"
+  },
+  "swapSwapSwitch": {
+    "message": "切换兑换代币方向"
+  },
+  "swapSwapTo": {
+    "message": "兑换到"
+  },
+  "swapThisWillAllowApprove": {
+    "message": "这样将允许 $1 用于兑换。"
+  },
+  "swapTokenAvailable": {
+    "message": "你的 $1 已添加到你的账户。"
+  },
+  "swapTokenToToken": {
+    "message": "兑换 $1 到 $2"
+  },
+  "swapTransactionComplete": {
+    "message": "交易完成"
+  },
+  "swapUnknown": {
+    "message": "未知的"
+  },
+  "swapVerifyTokenExplanation": {
+    "message": "多个代币可以使用相同的名称和符号。检查 Etherscan（以太坊浏览器）以确认这是您正在寻找的代币。"
+  },
+  "swapViewToken": {
+    "message": "查看 $1"
+  },
+  "swapYourTokenBalance": {
+    "message": "$1 $2 可用"
+  },
+  "swapZeroSlippage": {
+    "message": "0% 滑点"
+  },
+  "swapsAdvancedOptions": {
+    "message": "高级选项"
+  },
+  "swapsAlmostDone": {
+    "message": "快好了..."
+  },
+  "swapsBestQuote": {
+    "message": "最佳报价"
+  },
+  "swapsConvertToAbout": {
+    "message": "兑换 $1 到约"
+  },
+  "swapsMaxSlippage": {
+    "message": "最大滑点"
+  },
+  "swapsNotEnoughForTx": {
+    "message": "没有足够的 $1 来完成此交易"
+  },
+  "swapsViewInActivity": {
+    "message": "在活动中查看"
+  },
   "switchNetworks": {
     "message": "切换网络"
   },
@@ -1477,6 +1843,9 @@
   },
   "terms": {
     "message": "使用条款"
+  },
+  "termsOfService": {
+    "message": "服务条款"
   },
   "testFaucet": {
     "message": "测试水管"
@@ -1631,6 +2000,9 @@
   "userName": {
     "message": "名称"
   },
+  "verifyThisTokenOn": {
+    "message": "在 $1 上验证此代币"
+  },
   "viewAccount": {
     "message": "查看账户"
   },
@@ -1641,7 +2013,7 @@
     "message": "在 $1 查看"
   },
   "viewOnEtherscan": {
-    "message": "在 Etherscan 上查看"
+    "message": "在 Etherscan（以太坊浏览器）上查看"
   },
   "viewinExplorer": {
     "message": "在浏览器中查看"
