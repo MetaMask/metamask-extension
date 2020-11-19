@@ -2,6 +2,9 @@
 
 ## Current Develop Branch
 
+- fix: multiply 1drip with 1.1
+- fix(nonce-tracker): failed to filter tx with address
+
 ## 0.5.7 Wed Nov 18 2020
 
 - fix(tx): finished tx status
