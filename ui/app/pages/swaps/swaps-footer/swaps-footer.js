@@ -13,7 +13,6 @@ export default function SwapsFooter({
   disabled,
   showTermsOfService,
   showTopBorder,
-  className,
 }) {
   const t = useContext(I18nContext)
 
@@ -31,10 +30,7 @@ export default function SwapsFooter({
           onSubmit={onSubmit}
           submitText={submitText}
           submitButtonType="confirm"
-          footerClassName={classnames(
-            'swaps-footer__custom-page-container-footer-class',
-            className,
-          )}
+          footerClassName="swaps-footer__custom-page-container-footer-class"
           footerButtonClassName={classnames(
             'swaps-footer__custom-page-container-footer-button-class',
             {
@@ -66,5 +62,4 @@ SwapsFooter.propTypes = {
   disabled: PropTypes.bool,
   showTermsOfService: PropTypes.bool,
   showTopBorder: PropTypes.bool,
-  className: PropTypes.string,
 }
