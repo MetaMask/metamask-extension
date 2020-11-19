@@ -1,4 +1,3 @@
-
 /*
 
 This migration removes transactions that are no longer usefull down to 40 total
@@ -6,13 +5,14 @@ This migration removes transactions that are no longer usefull down to 40 total
 */
 
 import { cloneDeep } from 'lodash'
+import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction'
 
 const version = 23
 
 export default {
   version,
 
-  migrate (originalVersionedData) {
+  migrate(originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     try {
@@ -26,7 +26,7 @@ export default {
   },
 }
 
-function transformState (state) {
+function transformState(state) {
   const newState = state
 
   const { TransactionController } = newState
@@ -41,10 +41,12 @@ function transformState (state) {
     let stripping = true
     while (reverseTxList.length > 40 && stripping) {
       const txIndex = reverseTxList.findIndex((txMeta) => {
-        return (txMeta.status === 'failed' ||
-        txMeta.status === 'rejected' ||
-        txMeta.status === 'confirmed' ||
-        txMeta.status === 'dropped')
+        return (
+          txMeta.status === TRANSACTION_STATUSES.FAILED ||
+          txMeta.status === TRANSACTION_STATUSES.REJECTED ||
+          txMeta.status === TRANSACTION_STATUSES.CONFIRMED ||
+          txMeta.status === TRANSACTION_STATUSES.DROPPED
+        )
       })
       if (txIndex < 0) {
         stripping = false

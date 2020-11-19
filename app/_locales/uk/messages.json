@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask розроблено й створено в Каліфорнії."
   },
-  "buyCoinSwitch": {
-    "message": "Купувати на CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch це точка призначення з однією зупинкою для обміну більш ніж 300 криптовалют за найкращими курсами. "
-  },
   "buyWithWyre": {
     "message": "Купити ETH через Wyre"
   },
@@ -163,9 +157,6 @@
   },
   "cancel": {
     "message": "Скасувати"
-  },
-  "cancelAttempt": {
-    "message": "Відмінити спробу"
   },
   "cancellationGasFee": {
     "message": "Вартість пального за скасування"
@@ -218,9 +209,6 @@
   "connectingToKovan": {
     "message": "Підключення до тестової мережі Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "Під'єднуємось до локального хосту 8545"
-  },
   "connectingToMainnet": {
     "message": "З'єднуємось з Головною мережею Ethereum"
   },
@@ -229,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "Під'єднуємось до Тестової мережі Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "Продовжити в CoinSwitch"
   },
   "continueToWyre": {
     "message": "Продовжити у Wyre"
@@ -310,9 +295,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Ви впевнені, що хочете видалити цю мережу?"
-  },
-  "deposit": {
-    "message": "Депозит"
   },
   "depositEther": {
     "message": "Депонувати Ether"
@@ -566,9 +548,6 @@
   "invalidBlockExplorerURL": {
     "message": "Недійсний Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Неприпустимий ввід."
-  },
   "invalidRPC": {
     "message": "Недійсний RPC URL"
   },
@@ -746,10 +725,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Блокувати Explorer URL (не обов'язково)"
   },
-  "optionalChainId": {
-    "message": "ChainID (необов’язково)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Символ (не обов'язково)"
   },
   "orderOneHere": {
@@ -996,9 +972,6 @@
   },
   "sentEther": {
     "message": "надісланий ефір"
-  },
-  "sentTokens": {
-    "message": "надіслані токени"
   },
   "separateEachWord": {
     "message": "Відділіть кожне слово одним пробілом"

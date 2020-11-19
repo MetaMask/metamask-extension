@@ -7,7 +7,7 @@ const newTestRpc = 'https://testrpc.metamask.io/'
 export default {
   version,
 
-  migrate (originalVersionedData) {
+  migrate(originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     try {

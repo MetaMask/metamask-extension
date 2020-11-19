@@ -1,4 +1,6 @@
 .unit-input {
+  @include Paragraph;
+
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
@@ -7,7 +9,6 @@
   border-radius: 4px;
   background-color: #fff;
   color: #4d4d4d;
-  font-size: 16px;
   padding: 8px 10px;
   position: relative;
 
@@ -34,12 +35,14 @@
   }
 
   &__input {
+    @include Paragraph;
+
     color: #4d4d4d;
-    font-size: 1rem;
     border: none;
-    max-width: 22ch;
+    max-width: 15ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
     height: 16px;
-    line-height: 18px;
 
     &__disabled {
       background-color: rgb(222, 222, 222);
@@ -48,14 +51,14 @@
 
   &__input-container {
     display: flex;
-    align-items: flex-start;
-    padding-bottom: 4px;
+    align-items: center;
+    padding-bottom: 2px;
   }
 
   &__suffix {
+    @include Paragraph;
+
     margin-left: 3px;
-    font-size: 1rem;
-    line-height: 1rem;
   }
 
   &--error {

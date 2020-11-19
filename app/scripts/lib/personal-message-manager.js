@@ -3,10 +3,11 @@ import ObservableStore from 'obs-store'
 import ethUtil from 'ethereumjs-util'
 import { ethErrors } from 'eth-json-rpc-errors'
 import log from 'loglevel'
+import { addHexPrefix } from './util'
 import createId from './random-id'
 import { MESSAGE_TYPE } from './enums'
 
-const hexRe = /^[0-9A-Fa-f]+$/ug
+const hexRe = /^[0-9A-Fa-f]+$/gu
 
 /**
  * Represents, and contains data about, an 'personal_sign' type signature request. These are created when a
@@ -28,19 +29,17 @@ const hexRe = /^[0-9A-Fa-f]+$/ug
  */
 
 export default class PersonalMessageManager extends EventEmitter {
-
   /**
    * Controller in charge of managing - storing, adding, removing, updating - PersonalMessage.
    *
    * @typedef {Object} PersonalMessageManager
-   * @param {Object} opts @deprecated
    * @property {Object} memStore The observable store where PersonalMessage are saved.
    * @property {Object} memStore.unapprovedPersonalMsgs A collection of all PersonalMessages in the 'unapproved' state
    * @property {number} memStore.unapprovedPersonalMsgCount The count of all PersonalMessages in this.memStore.unapprobedMsgs
-   * @property {array} messages Holds all messages that have been created by this PersonalMessageManager
+   * @property {Array} messages Holds all messages that have been created by this PersonalMessageManager
    *
    */
-  constructor () {
+  constructor() {
     super()
     this.memStore = new ObservableStore({
       unapprovedPersonalMsgs: {},
@@ -52,22 +51,23 @@ export default class PersonalMessageManager extends EventEmitter {
   /**
    * A getter for the number of 'unapproved' PersonalMessages in this.messages
    *
-   * @returns {number} - The number of 'unapproved' PersonalMessages in this.messages
+   * @returns {number} The number of 'unapproved' PersonalMessages in this.messages
    *
    */
-  get unapprovedPersonalMsgCount () {
+  get unapprovedPersonalMsgCount() {
     return Object.keys(this.getUnapprovedMsgs()).length
   }
 
   /**
    * A getter for the 'unapproved' PersonalMessages in this.messages
    *
-   * @returns {Object} - An index of PersonalMessage ids to PersonalMessages, for all 'unapproved' PersonalMessages in
+   * @returns {Object} An index of PersonalMessage ids to PersonalMessages, for all 'unapproved' PersonalMessages in
    * this.messages
    *
    */
-  getUnapprovedMsgs () {
-    return this.messages.filter((msg) => msg.status === 'unapproved')
+  getUnapprovedMsgs() {
+    return this.messages
+      .filter((msg) => msg.status === 'unapproved')
       .reduce((result, msg) => {
         result[msg.id] = msg
         return result
@@ -80,11 +80,11 @@ export default class PersonalMessageManager extends EventEmitter {
    * this.memStore.
    *
    * @param {Object} msgParams - The params for the eth_sign call to be made after the message is approved.
-   * @param {Object} req (optional) The original request object possibly containing the origin
-   * @returns {promise} - When the message has been signed or rejected
+   * @param {Object} [req] - The original request object possibly containing the origin
+   * @returns {promise} When the message has been signed or rejected
    *
    */
-  addUnapprovedMessageAsync (msgParams, req) {
+  addUnapprovedMessageAsync(msgParams, req) {
     return new Promise((resolve, reject) => {
       if (!msgParams.from) {
         reject(new Error('MetaMask Message Signature: from field is required.'))
@@ -97,10 +97,20 @@ export default class PersonalMessageManager extends EventEmitter {
             resolve(data.rawSig)
             return
           case 'rejected':
-            reject(ethErrors.provider.userRejectedRequest('MetaMask Message Signature: User denied message signature.'))
+            reject(
+              ethErrors.provider.userRejectedRequest(
+                'MetaMask Message Signature: User denied message signature.',
+              ),
+            )
             return
           default:
-            reject(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+            reject(
+              new Error(
+                `MetaMask Message Signature: Unknown problem: ${JSON.stringify(
+                  msgParams,
+                )}`,
+              ),
+            )
         }
       })
     })
@@ -112,19 +122,23 @@ export default class PersonalMessageManager extends EventEmitter {
    * this.memStore.
    *
    * @param {Object} msgParams - The params for the eth_sign call to be made after the message is approved.
-   * @param {Object} req (optional) The original request object possibly containing the origin
-   * @returns {number} - The id of the newly created PersonalMessage.
+   * @param {Object} [req] - The original request object possibly containing the origin
+   * @returns {number} The id of the newly created PersonalMessage.
    *
    */
-  addUnapprovedMessage (msgParams, req) {
-    log.debug(`PersonalMessageManager addUnapprovedMessage: ${JSON.stringify(msgParams)}`)
+  addUnapprovedMessage(msgParams, req) {
+    log.debug(
+      `PersonalMessageManager addUnapprovedMessage: ${JSON.stringify(
+        msgParams,
+      )}`,
+    )
     // add origin from request
     if (req) {
       msgParams.origin = req.origin
     }
     msgParams.data = this.normalizeMsgData(msgParams.data)
     // create txData obj with parameters and meta data
-    const time = (new Date()).getTime()
+    const time = new Date().getTime()
     const msgId = createId()
     const msgData = {
       id: msgId,
@@ -147,7 +161,7 @@ export default class PersonalMessageManager extends EventEmitter {
    * @param {Message} msg - The PersonalMessage to add to this.messages
    *
    */
-  addMsg (msg) {
+  addMsg(msg) {
     this.messages.push(msg)
     this._saveMsgList()
   }
@@ -156,11 +170,11 @@ export default class PersonalMessageManager extends EventEmitter {
    * Returns a specified PersonalMessage.
    *
    * @param {number} msgId - The id of the PersonalMessage to get
-   * @returns {PersonalMessage|undefined} - The PersonalMessage with the id that matches the passed msgId, or undefined
+   * @returns {PersonalMessage|undefined} The PersonalMessage with the id that matches the passed msgId, or undefined
    * if no PersonalMessage has that id.
    *
    */
-  getMsg (msgId) {
+  getMsg(msgId) {
     return this.messages.find((msg) => msg.id === msgId)
   }
 
@@ -170,10 +184,10 @@ export default class PersonalMessageManager extends EventEmitter {
    *
    * @param {Object} msgParams - The msgParams to be used when eth_sign is called, plus data added by MetaMask.
    * @param {Object} msgParams.metamaskId Added to msgParams for tracking and identification within MetaMask.
-   * @returns {Promise<object>} - Promises the msgParams object with metamaskId removed.
+   * @returns {Promise<object>} Promises the msgParams object with metamaskId removed.
    *
    */
-  approveMessage (msgParams) {
+  approveMessage(msgParams) {
     this.setMsgStatusApproved(msgParams.metamaskId)
     return this.prepMsgForSigning(msgParams)
   }
@@ -184,7 +198,7 @@ export default class PersonalMessageManager extends EventEmitter {
    * @param {number} msgId - The id of the PersonalMessage to approve.
    *
    */
-  setMsgStatusApproved (msgId) {
+  setMsgStatusApproved(msgId) {
     this._setMsgStatus(msgId, 'approved')
   }
 
@@ -196,7 +210,7 @@ export default class PersonalMessageManager extends EventEmitter {
    * @param {buffer} rawSig - The raw data of the signature request
    *
    */
-  setMsgStatusSigned (msgId, rawSig) {
+  setMsgStatusSigned(msgId, rawSig) {
     const msg = this.getMsg(msgId)
     msg.rawSig = rawSig
     this._updateMsg(msg)
@@ -207,10 +221,10 @@ export default class PersonalMessageManager extends EventEmitter {
    * Removes the metamaskId property from passed msgParams and returns a promise which resolves the updated msgParams
    *
    * @param {Object} msgParams - The msgParams to modify
-   * @returns {Promise<object>} - Promises the msgParams with the metamaskId property removed
+   * @returns {Promise<object>} Promises the msgParams with the metamaskId property removed
    *
    */
-  prepMsgForSigning (msgParams) {
+  prepMsgForSigning(msgParams) {
     delete msgParams.metamaskId
     return Promise.resolve(msgParams)
   }
@@ -221,7 +235,7 @@ export default class PersonalMessageManager extends EventEmitter {
    * @param {number} msgId - The id of the PersonalMessage to reject.
    *
    */
-  rejectMsg (msgId) {
+  rejectMsg(msgId) {
     this._setMsgStatus(msgId, 'rejected')
   }
 
@@ -238,10 +252,12 @@ export default class PersonalMessageManager extends EventEmitter {
    * with the PersonalMessage
    *
    */
-  _setMsgStatus (msgId, status) {
+  _setMsgStatus(msgId, status) {
     const msg = this.getMsg(msgId)
     if (!msg) {
-      throw new Error(`PersonalMessageManager - Message not found for id: "${msgId}".`)
+      throw new Error(
+        `PersonalMessageManager - Message not found for id: "${msgId}".`,
+      )
     }
     msg.status = status
     this._updateMsg(msg)
@@ -260,7 +276,7 @@ export default class PersonalMessageManager extends EventEmitter {
    * id) in this.messages
    *
    */
-  _updateMsg (msg) {
+  _updateMsg(msg) {
     const index = this.messages.findIndex((message) => message.id === msg.id)
     if (index !== -1) {
       this.messages[index] = msg
@@ -275,10 +291,14 @@ export default class PersonalMessageManager extends EventEmitter {
    * @fires 'updateBadge'
    *
    */
-  _saveMsgList () {
+  _saveMsgList() {
     const unapprovedPersonalMsgs = this.getUnapprovedMsgs()
-    const unapprovedPersonalMsgCount = Object.keys(unapprovedPersonalMsgs).length
-    this.memStore.updateState({ unapprovedPersonalMsgs, unapprovedPersonalMsgCount })
+    const unapprovedPersonalMsgCount = Object.keys(unapprovedPersonalMsgs)
+      .length
+    this.memStore.updateState({
+      unapprovedPersonalMsgs,
+      unapprovedPersonalMsgCount,
+    })
     this.emit('updateBadge')
   }
 
@@ -286,14 +306,14 @@ export default class PersonalMessageManager extends EventEmitter {
    * A helper function that converts raw buffer data to a hex, or just returns the data if it is already formatted as a hex.
    *
    * @param {any} data - The buffer data to convert to a hex
-   * @returns {string} - A hex string conversion of the buffer data
+   * @returns {string} A hex string conversion of the buffer data
    *
    */
-  normalizeMsgData (data) {
+  normalizeMsgData(data) {
     try {
       const stripped = ethUtil.stripHexPrefix(data)
       if (stripped.match(hexRe)) {
-        return ethUtil.addHexPrefix(stripped)
+        return addHexPrefix(stripped)
       }
     } catch (e) {
       log.debug(`Message was not hex encoded, interpreting as utf8.`)
@@ -301,5 +321,4 @@ export default class PersonalMessageManager extends EventEmitter {
 
     return ethUtil.bufferToHex(Buffer.from(data, 'utf8'))
   }
-
 }

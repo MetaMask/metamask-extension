@@ -200,12 +200,6 @@
   "buy": {
     "message": "购买"
   },
-  "buyCoinSwitch": {
-    "message": "在 CoinSwitch 上购买"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch 是以最优惠的价格交换超过 300 种加密货币的一站式目的地。"
-  },
   "buyWithWyre": {
     "message": "使用 Wyre 购买 ETH"
   },
@@ -217,9 +211,6 @@
   },
   "cancel": {
     "message": "取消"
-  },
-  "cancelAttempt": {
-    "message": "取消操作"
   },
   "cancellationGasFee": {
     "message": "取消交易费用"
@@ -317,9 +308,6 @@
   "connectingToKovan": {
     "message": "正在连接到 Kovan 测试网络"
   },
-  "connectingToLocalhost": {
-    "message": "正在连接 Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "正在连接到以太坊 Ethereum 主网"
   },
@@ -337,9 +325,6 @@
   },
   "contactsSettingsDescription": {
     "message": "添加、编辑、删除和管理你的联系人。"
-  },
-  "continueToCoinSwitch": {
-    "message": "继续访问 CoinSwitch"
   },
   "continueToWyre": {
     "message": "继续前往 Wyre"
@@ -448,9 +433,6 @@
   },
   "deleteNetworkDescription": {
     "message": "是否确认要删除该网络？"
-  },
-  "deposit": {
-    "message": "存入"
   },
   "depositEther": {
     "message": "存入 Ether"
@@ -785,9 +767,6 @@
   "invalidBlockExplorerURL": {
     "message": "无效的区块浏览器 URL"
   },
-  "invalidInput": {
-    "message": "无效输入。"
-  },
   "invalidIpfsGateway": {
     "message": "无效的 IPFS 网关。该值必须是一个有效的 URL"
   },
@@ -1019,10 +998,7 @@
   "optionalBlockExplorerUrl": {
     "message": "区块浏览器 URL（选填）"
   },
-  "optionalChainId": {
-    "message": "ChainID（选填）"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "符号（选填）"
   },
   "orderOneHere": {
@@ -1318,9 +1294,6 @@
   },
   "sentEther": {
     "message": "发送 Ether"
-  },
-  "sentTokens": {
-    "message": "发送代币"
   },
   "separateEachWord": {
     "message": "用空格分隔每个单词"

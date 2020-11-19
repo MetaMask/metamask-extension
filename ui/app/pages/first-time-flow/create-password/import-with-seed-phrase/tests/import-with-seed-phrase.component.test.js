@@ -4,7 +4,7 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import ImportWithSeedPhrase from '../import-with-seed-phrase.component'
 
-function shallowRender (props = {}, context = {}) {
+function shallowRender(props = {}, context = {}) {
   return shallow(<ImportWithSeedPhrase {...props} />, {
     context: {
       t: (str) => `${str}_t`,

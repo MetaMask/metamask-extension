@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask je dizajniran i izgrađen u Kaliforniji."
   },
-  "buyCoinSwitch": {
-    "message": "Kupujte na CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch je odredište gde na jednom mestu možete razmeniti više od 300 kripto valuta po najboljem kursu."
-  },
   "buyWithWyre": {
     "message": "Kupite ETH preko servisa Wyre"
   },
@@ -163,9 +157,6 @@
   },
   "cancel": {
     "message": "Otkaži"
-  },
-  "cancelAttempt": {
-    "message": "Otkaži pokušaj"
   },
   "cancellationGasFee": {
     "message": "Otkazivanje gas naknade"
@@ -215,9 +206,6 @@
   "connectingToKovan": {
     "message": "Povezuje se na test mrežu Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "Povezuje se na lokalnog hosta 8545"
-  },
   "connectingToMainnet": {
     "message": "Povezuje se na glavnu Ethereum mrežu"
   },
@@ -226,9 +214,6 @@
   },
   "connectingToRopsten": {
     "message": "Povezuje se na Ropsten Test mrežu"
-  },
-  "continueToCoinSwitch": {
-    "message": "Nastavi na CoinSwitch"
   },
   "continueToWyre": {
     "message": "Nastavite ka Wyre"
@@ -307,9 +292,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Da li ste sigurni da želite da izbrišete ovu mrežu?"
-  },
-  "deposit": {
-    "message": "Depozit"
   },
   "depositEther": {
     "message": "Dajte depozit Ether-u"
@@ -563,9 +545,6 @@
   "invalidBlockExplorerURL": {
     "message": "Nevažeći Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Nevažeći unos."
-  },
   "invalidRPC": {
     "message": "Nevažeći RPC URL"
   },
@@ -737,10 +716,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Blokirajte URL Explorer-a (opciono)"
   },
-  "optionalChainId": {
-    "message": "ChainID (opciono)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Simbol (opciono)"
   },
   "orderOneHere": {
@@ -987,9 +963,6 @@
   },
   "sentEther": {
     "message": "ether je poslat"
-  },
-  "sentTokens": {
-    "message": "poslati tokeni"
   },
   "separateEachWord": {
     "message": "Razdvojite svaku reč jednim mestom razmaka"

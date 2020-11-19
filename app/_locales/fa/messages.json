@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask در کالیفورنیا طراحی و ساخته شده است."
   },
-  "buyCoinSwitch": {
-    "message": "خرید بر اساس CoinSwitch "
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch یک مقصد یک-ایستگاه است تا بیش از 300 رمز ارز را در بهترین نرخ مبادله نماید."
-  },
   "buyWithWyre": {
     "message": "ETH را توسط Wyre خریداری نمایید"
   },
@@ -163,9 +157,6 @@
   },
   "cancel": {
     "message": "لغو"
-  },
-  "cancelAttempt": {
-    "message": "لغو تلاش"
   },
   "cancellationGasFee": {
     "message": "لغو فیس گاز"
@@ -218,9 +209,6 @@
   "connectingToKovan": {
     "message": "در حال اتصال به شبکه آزمایشی Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "در حال اتصال با Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "در حال اتصال به شبکه اصلی ایتریم"
   },
@@ -229,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "در حال اتصال به شبکه آزمایشی Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "ادامه به CoinSwitch"
   },
   "continueToWyre": {
     "message": "ادامه به Wyre"
@@ -310,9 +295,6 @@
   },
   "deleteNetworkDescription": {
     "message": "آیا مطمئن هستید که این شبکه حذف شود؟"
-  },
-  "deposit": {
-    "message": "سپرده"
   },
   "depositEther": {
     "message": "پرداخت ایتر"
@@ -566,9 +548,6 @@
   "invalidBlockExplorerURL": {
     "message": "Block Explorer URL نا معتبر"
   },
-  "invalidInput": {
-    "message": "ورودی نامعتبر."
-  },
   "invalidRPC": {
     "message": "RPC URL نا معتبر"
   },
@@ -746,10 +725,7 @@
   "optionalBlockExplorerUrl": {
     "message": "بلاک کردن مرورگر URL (انتخابی)"
   },
-  "optionalChainId": {
-    "message": "آی دی زنجیره (انتخابی)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "سمبول (انتخابی)"
   },
   "orderOneHere": {
@@ -996,9 +972,6 @@
   },
   "sentEther": {
     "message": "ایتر ارسال شد"
-  },
-  "sentTokens": {
-    "message": "رمزیاب های فرستاده شده"
   },
   "separateEachWord": {
     "message": "هر کلمه را با یک فاصله واحد جدا سازید"

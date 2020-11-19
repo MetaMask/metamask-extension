@@ -2,7 +2,15 @@ import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
-const Dropdown = ({ className, disabled, onChange, options, selectedOption, style, title }) => {
+const Dropdown = ({
+  className,
+  disabled,
+  onChange,
+  options,
+  selectedOption,
+  style,
+  title,
+}) => {
   const _onChange = useCallback(
     (event) => {
       event.preventDefault()
@@ -21,18 +29,13 @@ const Dropdown = ({ className, disabled, onChange, options, selectedOption, styl
       style={style}
       value={selectedOption}
     >
-      {
-        options.map((option) => {
-          return (
-            <option
-              key={option.value}
-              value={option.value}
-            >
-              { option.name || option.value }
-            </option>
-          )
-        })
-      }
+      {options.map((option) => {
+        return (
+          <option key={option.value} value={option.value}>
+            {option.name || option.value}
+          </option>
+        )
+      })}
     </select>
   )
 }

@@ -8,7 +8,6 @@ import { isValidAddress } from '../../../../helpers/utils/util'
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer'
 
 export default class EditContact extends PureComponent {
-
   static contextTypes = {
     t: PropTypes.func,
   }
@@ -39,7 +38,7 @@ export default class EditContact extends PureComponent {
     error: '',
   }
 
-  render () {
+  render() {
     const { t } = this.context
     const {
       address,
@@ -63,26 +62,22 @@ export default class EditContact extends PureComponent {
       <div className="settings-page__content-row address-book__edit-contact">
         <div className="settings-page__header address-book__header--edit">
           <Identicon address={address} diameter={60} />
-          {
-            showingMyAccounts
-              ? null
-              : (
-                <Button
-                  type="link"
-                  className="settings-page__address-book-button"
-                  onClick={async () => {
-                    await removeFromAddressBook(chainId, address)
-                  }}
-                >
-                  {t('deleteAccount')}
-                </Button>
-              )
-          }
+          {showingMyAccounts ? null : (
+            <Button
+              type="link"
+              className="settings-page__address-book-button"
+              onClick={async () => {
+                await removeFromAddressBook(chainId, address)
+              }}
+            >
+              {t('deleteAccount')}
+            </Button>
+          )}
         </div>
         <div className="address-book__edit-contact__content">
           <div className="address-book__view-contact__group">
             <div className="address-book__view-contact__group__label">
-              { t('userName') }
+              {t('userName')}
             </div>
             <TextField
               type="text"
@@ -97,7 +92,7 @@ export default class EditContact extends PureComponent {
 
           <div className="address-book__view-contact__group">
             <div className="address-book__view-contact__group__label">
-              { t('ethereumPublicAddress') }
+              {t('ethereumPublicAddress')}
             </div>
             <TextField
               type="text"
@@ -112,7 +107,7 @@ export default class EditContact extends PureComponent {
 
           <div className="address-book__view-contact__group">
             <div className="address-book__view-contact__group__label--capitalized">
-              { t('memo') }
+              {t('memo')}
             </div>
             <TextField
               type="text"
@@ -134,13 +129,23 @@ export default class EditContact extends PureComponent {
         <PageContainerFooter
           cancelText={this.context.t('cancel')}
           onSubmit={async () => {
-            if (this.state.newAddress !== '' && this.state.newAddress !== address) {
+            if (
+              this.state.newAddress !== '' &&
+              this.state.newAddress !== address
+            ) {
               // if the user makes a valid change to the address field, remove the original address
               if (isValidAddress(this.state.newAddress)) {
                 await removeFromAddressBook(chainId, address)
-                await addToAddressBook(this.state.newAddress, this.state.newName || name, this.state.newMemo || memo)
+                await addToAddressBook(
+                  this.state.newAddress,
+                  this.state.newName || name,
+                  this.state.newMemo || memo,
+                )
                 if (showingMyAccounts) {
-                  setAccountLabel(this.state.newAddress, this.state.newName || name)
+                  setAccountLabel(
+                    this.state.newAddress,
+                    this.state.newName || name,
+                  )
                 }
                 history.push(listRoute)
               } else {
@@ -148,7 +153,11 @@ export default class EditContact extends PureComponent {
               }
             } else {
               // update name
-              await addToAddressBook(address, this.state.newName || name, this.state.newMemo || memo)
+              await addToAddressBook(
+                address,
+                this.state.newName || name,
+                this.state.newMemo || memo,
+              )
               if (showingMyAccounts) {
                 setAccountLabel(address, this.state.newName || name)
               }

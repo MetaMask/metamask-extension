@@ -1,11 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const Copy = ({
-  className,
-  size,
-  color,
-}) => (
+const Copy = ({ className, size, color }) => (
   <svg
     className={className}
     width={size}

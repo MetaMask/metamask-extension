@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask ble bygget og designet i California."
   },
-  "buyCoinSwitch": {
-    "message": "Kjøp på CoinSwitch "
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch er destinasjonen som utveksler mer enn 300 typer kryptovaluta med den beste kursen."
-  },
   "buyWithWyre": {
     "message": "Kjøp ETH med Wyre"
   },
@@ -160,9 +154,6 @@
   },
   "cancel": {
     "message": "Avbryt"
-  },
-  "cancelAttempt": {
-    "message": "Avbryt forsøk"
   },
   "cancellationGasFee": {
     "message": "Kansellering gassavgift"
@@ -215,9 +206,6 @@
   "connectingToKovan": {
     "message": "Kobler til Kovan testnettverk"
   },
-  "connectingToLocalhost": {
-    "message": "Kobler til lokalvert 8545"
-  },
   "connectingToMainnet": {
     "message": "Forbinder med hoved-Ethereumnettverk "
   },
@@ -226,9 +214,6 @@
   },
   "connectingToRopsten": {
     "message": "Kobler til Ropsten testnettverk"
-  },
-  "continueToCoinSwitch": {
-    "message": "Fortsett med CoinSwitch "
   },
   "continueToWyre": {
     "message": "Fortsett til Wyre "
@@ -307,9 +292,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Er du sikker på at du vil slette dette nettverket?"
-  },
-  "deposit": {
-    "message": "Innskudd"
   },
   "depositEther": {
     "message": "Sett inn Ether "
@@ -553,9 +535,6 @@
   "invalidBlockExplorerURL": {
     "message": "Ugyldig Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Ugyldig inndata "
-  },
   "invalidRPC": {
     "message": "Ugyldig RPC URL"
   },
@@ -733,10 +712,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Blokker Explorer URL (valgfritt)"
   },
-  "optionalChainId": {
-    "message": "Blokkjede (vagfritt)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Symbol (valgfritt)"
   },
   "orderOneHere": {
@@ -974,9 +950,6 @@
   },
   "sentEther": {
     "message": "sendt ether"
-  },
-  "sentTokens": {
-    "message": "sendte tokener "
   },
   "separateEachWord": {
     "message": "Del hvert ord med et enkelt mellomrom "

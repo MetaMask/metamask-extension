@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask är skapat och utformat i Kalifornien."
   },
-  "buyCoinSwitch": {
-    "message": "Köp på CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch är allt-i-ett-platsen för att växla mer än 300 kryptovalutor till bästa kurs."
-  },
   "buyWithWyre": {
     "message": "Köp ETH med Wyre"
   },
@@ -160,9 +154,6 @@
   },
   "cancel": {
     "message": "Avbryt"
-  },
-  "cancelAttempt": {
-    "message": "Avbryt försök"
   },
   "cancellationGasFee": {
     "message": "Gasavgift för avbrytning"
@@ -212,9 +203,6 @@
   "connectingToKovan": {
     "message": "Ansluter till Kovans testnätverk"
   },
-  "connectingToLocalhost": {
-    "message": "Ansluter till Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Koppla till Ethereums huvudnätverk"
   },
@@ -223,9 +211,6 @@
   },
   "connectingToRopsten": {
     "message": "Ansluter till Ropsten Test Network"
-  },
-  "continueToCoinSwitch": {
-    "message": "Fortsätt till CoinSwitch"
   },
   "continueToWyre": {
     "message": "Fortsätt till Wyre"
@@ -304,9 +289,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Är du säker på att du vill ta bort detta nätverk?"
-  },
-  "deposit": {
-    "message": "Deposition"
   },
   "depositEther": {
     "message": "Sätt in Ether"
@@ -556,9 +538,6 @@
   "invalidBlockExplorerURL": {
     "message": "Ogiltig Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Ogiltigt input."
-  },
   "invalidRPC": {
     "message": "Ogiltig RPC-URL"
   },
@@ -730,10 +709,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Block Explorer URL (valfritt)"
   },
-  "optionalChainId": {
-    "message": "ChainID (frivilligt)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Symbol (frivillig)"
   },
   "orderOneHere": {
@@ -980,9 +956,6 @@
   },
   "sentEther": {
     "message": "skickat ether"
-  },
-  "sentTokens": {
-    "message": "skickade tokens"
   },
   "separateEachWord": {
     "message": "Lägg in ett mellanslag mellan varje ord"

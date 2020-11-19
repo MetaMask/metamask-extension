@@ -14,7 +14,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setSeedPhraseBackedUp: (seedPhraseBackupState) => dispatch(setSeedPhraseBackedUp(seedPhraseBackupState)),
+    setSeedPhraseBackedUp: (seedPhraseBackupState) =>
+      dispatch(setSeedPhraseBackedUp(seedPhraseBackupState)),
     setCompletedOnboarding: () => dispatch(setCompletedOnboarding()),
   }
 }

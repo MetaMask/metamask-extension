@@ -4,6 +4,8 @@ workflows:
   test_and_release:
     jobs:
       - create_release_pull_request:
+          requires:
+            - prep-deps
           filters:
             branches:
               only:
@@ -89,6 +91,8 @@ jobs:
       - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - checkout
+      - attach_workspace:
+          at: .
       - run:
           name: Create GitHub Pull Request for version
           command: |
@@ -118,6 +122,8 @@ jobs:
   prep-build:
     docker:
       - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    environment:
+      NODE_OPTIONS: --max_old_space_size=1024
     steps:
       - checkout
       - attach_workspace:
@@ -137,6 +143,8 @@ jobs:
   prep-build-test:
     docker:
       - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    environment:
+      NODE_OPTIONS: --max_old_space_size=1024
     steps:
       - checkout
       - attach_workspace:
@@ -225,7 +233,11 @@ jobs:
           command: mv ./dist-test ./dist
       - run:
           name: test:e2e:chrome
-          command: yarn test:e2e:chrome
+          command: |
+            if .circleci/scripts/test-run-e2e
+            then
+              yarn test:e2e:chrome
+            fi
           no_output_timeout: 20m
       - store_artifacts:
           path: test-artifacts
@@ -246,7 +258,11 @@ jobs:
           command: mv ./dist-test ./dist
       - run:
           name: test:e2e:firefox
-          command: yarn test:e2e:firefox
+          command: |
+            if .circleci/scripts/test-run-e2e
+            then
+              yarn test:e2e:firefox
+            fi
           no_output_timeout: 20m
       - store_artifacts:
           path: test-artifacts
@@ -293,9 +309,11 @@ jobs:
           path: test-artifacts
           destination: test-artifacts
       # important: generate sesify viz AFTER uploading builds as artifacts
-      - run:
-          name: build:sesify-viz
-          command: ./.circleci/scripts/create-sesify-viz
+      # Temporarily disabled until we can update to a version of `sesify` with
+      # this fix included: https://github.com/LavaMoat/LavaMoat/pull/121
+      # - run:
+      #     name: build:sesify-viz
+      #     command: ./.circleci/scripts/create-sesify-viz
       - store_artifacts:
           path: build-artifacts
           destination: build-artifacts

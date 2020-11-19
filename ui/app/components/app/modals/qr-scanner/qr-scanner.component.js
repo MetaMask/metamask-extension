@@ -24,7 +24,7 @@ export default class QrScanner extends Component {
     t: PropTypes.func,
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = this.getInitialState()
@@ -36,12 +36,12 @@ export default class QrScanner extends Component {
     this.props.qrCodeDetected(null)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.mounted = true
     this.checkEnvironment()
   }
 
-  componentDidUpdate (_, prevState) {
+  componentDidUpdate(_, prevState) {
     const { ready } = this.state
 
     if (prevState.ready !== ready) {
@@ -53,7 +53,7 @@ export default class QrScanner extends Component {
     }
   }
 
-  getInitialState () {
+  getInitialState() {
     return {
       ready: READY_STATE.ACCESSING_CAMERA,
       error: null,
@@ -63,12 +63,13 @@ export default class QrScanner extends Component {
   checkEnvironment = async () => {
     try {
       const { environmentReady } = await WebcamUtils.checkStatus()
-      if (!environmentReady && getEnvironmentType() !== ENVIRONMENT_TYPE_FULLSCREEN) {
+      if (
+        !environmentReady &&
+        getEnvironmentType() !== ENVIRONMENT_TYPE_FULLSCREEN
+      ) {
         const currentUrl = new URL(window.location.href)
         const currentHash = currentUrl.hash
-        const currentRoute = currentHash
-          ? currentHash.substring(1)
-          : null
+        const currentRoute = currentHash ? currentHash.substring(1) : null
         global.platform.openExtensionInBrowser(currentRoute)
       }
     } catch (error) {
@@ -101,19 +102,36 @@ export default class QrScanner extends Component {
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.mounted = false
     clearTimeout(this.permissionChecker)
+    this.teardownCodeReader()
+  }
+
+  teardownCodeReader() {
     if (this.codeReader) {
       this.codeReader.reset()
+      this.codeReader.stop()
+      this.codeReader = null
     }
   }
 
   initCamera = async () => {
-    this.codeReader = new BrowserQRCodeReader()
+    // The `decodeFromInputVideoDevice` call prompts the browser to show
+    // the user the camera permission request.  We must then call it again
+    // once we receive permission so that the video displays.
+    // It's important to prevent this codeReader from being created twice;
+    // Firefox otherwise starts 2 video streams, one of which cannot be stopped
+    if (!this.codeReader) {
+      this.codeReader = new BrowserQRCodeReader()
+    }
     try {
       await this.codeReader.getVideoInputDevices()
-      const content = await this.codeReader.decodeFromInputVideoDevice(undefined, 'video')
+      this.checkPermissions()
+      const content = await this.codeReader.decodeFromInputVideoDevice(
+        undefined,
+        'video',
+      )
       const result = this.parseContent(content.text)
       if (!this.mounted) {
         return
@@ -136,7 +154,7 @@ export default class QrScanner extends Component {
     }
   }
 
-  parseContent (content) {
+  parseContent(content) {
     let type = 'unknown'
     let values = {}
 
@@ -146,23 +164,20 @@ export default class QrScanner extends Component {
 
     // Ethereum address links - fox ex. ethereum:0x.....1111
     if (content.split('ethereum:').length > 1) {
-
       type = 'address'
-      values = { 'address': content.split('ethereum:')[1] }
+      values = { address: content.split('ethereum:')[1] }
 
-    // Regular ethereum addresses - fox ex. 0x.....1111
+      // Regular ethereum addresses - fox ex. 0x.....1111
     } else if (content.substring(0, 2).toLowerCase() === '0x') {
-
       type = 'address'
-      values = { 'address': content }
-
+      values = { address: content }
     }
     return { type, values }
   }
 
   stopAndClose = () => {
     if (this.codeReader) {
-      this.codeReader.reset()
+      this.teardownCodeReader()
     }
     this.props.hideModal()
   }
@@ -170,14 +185,14 @@ export default class QrScanner extends Component {
   tryAgain = () => {
     clearTimeout(this.permissionChecker)
     if (this.codeReader) {
-      this.codeReader.reset()
+      this.teardownCodeReader()
     }
     this.setState(this.getInitialState(), () => {
       this.checkEnvironment()
     })
   }
 
-  renderError () {
+  renderError() {
     const { t } = this.context
     const { error } = this.state
 
@@ -195,20 +210,10 @@ export default class QrScanner extends Component {
     return (
       <>
         <div className="qr-scanner__image">
-          <img src="images/webcam.svg" width={70} height={70} />
+          <img src="images/webcam.svg" width="70" height="70" alt="" />
         </div>
-        {
-          title
-            ? (
-              <div className="qr-scanner__title">
-                { title }
-              </div>
-            )
-            : null
-        }
-        <div className="qr-scanner__error">
-          {msg}
-        </div>
+        {title ? <div className="qr-scanner__title">{title}</div> : null}
+        <div className="qr-scanner__error">{msg}</div>
         <PageContainerFooter
           onCancel={this.stopAndClose}
           onSubmit={this.tryAgain}
@@ -220,7 +225,7 @@ export default class QrScanner extends Component {
     )
   }
 
-  renderVideo () {
+  renderVideo() {
     const { t } = this.context
     const { ready } = this.state
 
@@ -235,9 +240,7 @@ export default class QrScanner extends Component {
 
     return (
       <>
-        <div className="qr-scanner__title">
-          { `${t('scanQrCode')}` }
-        </div>
+        <div className="qr-scanner__title">{`${t('scanQrCode')}`}</div>
         <div className="qr-scanner__content">
           <div className="qr-scanner__content__video-wrapper">
             <video
@@ -249,23 +252,17 @@ export default class QrScanner extends Component {
             {ready === READY_STATE.READY ? null : <Spinner color="#F7C06C" />}
           </div>
         </div>
-        <div className="qr-scanner__status">
-          {message}
-        </div>
+        <div className="qr-scanner__status">{message}</div>
       </>
     )
   }
 
-  render () {
+  render() {
     const { error } = this.state
     return (
       <div className="qr-scanner">
         <div className="qr-scanner__close" onClick={this.stopAndClose}></div>
-        {
-          error
-            ? this.renderError()
-            : this.renderVideo()
-        }
+        {error ? this.renderError() : this.renderVideo()}
       </div>
     )
   }

@@ -8,6 +8,6 @@ import { I18nContext } from '../contexts/i18n'
  * different places.
  * @return {Function} I18n function from contexts/I18n.js
  */
-export function useI18nContext () {
+export function useI18nContext() {
   return useContext(I18nContext)
 }

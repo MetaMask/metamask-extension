@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "Το MetaMask έχει σχεδιαστεί και αναπτυχθεί στην Καλιφόρνια."
   },
-  "buyCoinSwitch": {
-    "message": "Αγοράστε στο  CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "Το CoinSwitch είναι ο προορισμός μιας στάσης για ανταλλαγή σε περισσότερα από 300 κρυπτονομίσματα στην καλύτερη ισοτιμία."
-  },
   "buyWithWyre": {
     "message": "Αγοράστε ETH με το Wyre"
   },
@@ -160,9 +154,6 @@
   },
   "cancel": {
     "message": "Ακύρωση"
-  },
-  "cancelAttempt": {
-    "message": "Ακύρωση Προσπάθειας"
   },
   "cancellationGasFee": {
     "message": "Ακύρωση Χρέωσης Αερίου"
@@ -215,9 +206,6 @@
   "connectingToKovan": {
     "message": "Σύνδεση στο Δοκιμαστικό Δίκτυο Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "Σύνδεση στον Τοπικό Υπολογιστή 8545"
-  },
   "connectingToMainnet": {
     "message": "Σύνδεση στο Κύριο Δίκτυο Ethereum"
   },
@@ -226,9 +214,6 @@
   },
   "connectingToRopsten": {
     "message": "Σύνδεση με το Δίκτυο Δοκιμών Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "Συνέχεια με CoinSwitch"
   },
   "continueToWyre": {
     "message": "Συνεχίστε στο Wyre"
@@ -307,9 +292,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Θέλετε σίγουρα να διαγράψετε αυτό το δίκτυο;"
-  },
-  "deposit": {
-    "message": "Κατάθεση"
   },
   "depositEther": {
     "message": "Κατάθεση Ether"
@@ -563,9 +545,6 @@
   "invalidBlockExplorerURL": {
     "message": "Μη έγκυρο Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Μη έγκυρη είσοδος."
-  },
   "invalidRPC": {
     "message": "Μη έγκυρο RPC URL"
   },
@@ -743,10 +722,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Διεύθυνση URL Εξερευνητή Μπλοκ (προαιρετικό)"
   },
-  "optionalChainId": {
-    "message": "Ταυτότητα Αλυσίδας (προαιρετικό)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Σύμβολο (προαιρετικό)"
   },
   "orderOneHere": {
@@ -993,9 +969,6 @@
   },
   "sentEther": {
     "message": "απεσταλμένα ether"
-  },
-  "sentTokens": {
-    "message": "αποστολή token"
   },
   "separateEachWord": {
     "message": "Διαχωρίστε κάθε λέξη με ένα μόνο κενό"

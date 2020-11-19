@@ -1,5 +1,6 @@
 import EthQuery from 'ethjs-query'
 import log from 'loglevel'
+import ethUtil from 'ethereumjs-util'
 import { hexToBn, BnMultiplyByFraction, bnToHex } from '../../lib/util'
 
 /**
@@ -19,8 +20,7 @@ and used to do things like calculate gas of a tx.
 */
 
 export default class TxGasUtil {
-
-  constructor (provider) {
+  constructor(provider) {
     this.query = new EthQuery(provider)
   }
 
@@ -28,7 +28,7 @@ export default class TxGasUtil {
     @param {Object} txMeta - the txMeta object
     @returns {GasAnalysisResult} The result of the gas analysis
   */
-  async analyzeGasUsage (txMeta) {
+  async analyzeGasUsage(txMeta) {
     const block = await this.query.getBlockByNumber('latest', false)
 
     // fallback to block gasLimit
@@ -53,9 +53,9 @@ export default class TxGasUtil {
   /**
     Estimates the tx's gas usage
     @param {Object} txMeta - the txMeta object
-    @returns {string} - the estimated gas limit as a hex string
+    @returns {string} the estimated gas limit as a hex string
   */
-  async estimateTxGas (txMeta) {
+  async estimateTxGas(txMeta) {
     const { txParams } = txMeta
 
     // estimate tx gas requirements
@@ -67,13 +67,13 @@ export default class TxGasUtil {
 
     @param {string} initialGasLimitHex - the initial gas limit to add the buffer too
     @param {string} blockGasLimitHex - the block gas limit
-    @returns {string} - the buffered gas limit as a hex string
+    @returns {string} the buffered gas limit as a hex string
   */
-  addGasBuffer (initialGasLimitHex, blockGasLimitHex) {
+  addGasBuffer(initialGasLimitHex, blockGasLimitHex, multiplier = 1.5) {
     const initialGasLimitBn = hexToBn(initialGasLimitHex)
     const blockGasLimitBn = hexToBn(blockGasLimitHex)
     const upperGasLimitBn = blockGasLimitBn.muln(0.9)
-    const bufferedGasLimitBn = initialGasLimitBn.muln(1.5)
+    const bufferedGasLimitBn = initialGasLimitBn.muln(multiplier)
 
     // if initialGasLimit is above blockGasLimit, dont modify it
     if (initialGasLimitBn.gt(upperGasLimitBn)) {
@@ -85,5 +85,21 @@ export default class TxGasUtil {
     }
     // otherwise use blockGasLimit
     return bnToHex(upperGasLimitBn)
+  }
+
+  async getBufferedGasLimit(txMeta, multiplier) {
+    const {
+      blockGasLimit,
+      estimatedGasHex,
+      simulationFails,
+    } = await this.analyzeGasUsage(txMeta)
+
+    // add additional gas buffer to our estimation for safety
+    const gasLimit = this.addGasBuffer(
+      ethUtil.addHexPrefix(estimatedGasHex),
+      blockGasLimit,
+      multiplier,
+    )
+    return { gasLimit, simulationFails }
   }
 }

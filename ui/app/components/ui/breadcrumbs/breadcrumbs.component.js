@@ -9,20 +9,22 @@ export default class Breadcrumbs extends PureComponent {
     total: PropTypes.number,
   }
 
-  render () {
+  render() {
     const { className, currentIndex, total } = this.props
 
     return (
       <div className={classnames('breadcrumbs', className)}>
-        {
-          Array(total).fill().map((_, i) => (
+        {Array(total)
+          .fill()
+          .map((_, i) => (
             <div
               key={i}
               className="breadcrumb"
-              style={{ backgroundColor: i === currentIndex ? '#D8D8D8' : '#FFFFFF' }}
+              style={{
+                backgroundColor: i === currentIndex ? '#D8D8D8' : '#FFFFFF',
+              }}
             />
-          ))
-        }
+          ))}
       </div>
     )
   }

@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask je zasnovan in ustvarjen v Kaliforniji."
   },
-  "buyCoinSwitch": {
-    "message": "Kupi na CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch je destinacija na enem mestu za izmenjavo več kot 300 kriptokotovitev po najboljši hitrosti."
-  },
   "buyWithWyre": {
     "message": "Kupi ETH z Wyre"
   },
@@ -163,9 +157,6 @@
   },
   "cancel": {
     "message": "Prekliči"
-  },
-  "cancelAttempt": {
-    "message": "Prekliči poskus"
   },
   "cancellationGasFee": {
     "message": "Preklicani znesek gas"
@@ -218,9 +209,6 @@
   "connectingToKovan": {
     "message": "Povezovanje na testno omrežje Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "Povezovanje na lokalnega gostitelja 8545 "
-  },
   "connectingToMainnet": {
     "message": "Povezovanje na glavno omrežje"
   },
@@ -229,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "Povezovanje na testno omrežje Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "Nadaljuj na CoinSwitch"
   },
   "continueToWyre": {
     "message": "Nadaljuj na Wyre"
@@ -310,9 +295,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Ali ste prepričani, da želite izbrisati to omrežje?"
-  },
-  "deposit": {
-    "message": "Vplačaj"
   },
   "depositEther": {
     "message": "Vplačilo ethra"
@@ -557,9 +539,6 @@
   "invalidBlockExplorerURL": {
     "message": "Neveljaven Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Neveljaven vnos."
-  },
   "invalidRPC": {
     "message": "Neveljaven RPC URL"
   },
@@ -731,10 +710,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Blokiraj URL Explorerja (poljubno)"
   },
-  "optionalChainId": {
-    "message": "ChainID (nezahtevano)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Simbol (nezahtevano)"
   },
   "orderOneHere": {
@@ -978,9 +954,6 @@
   },
   "sentEther": {
     "message": "poslani ether"
-  },
-  "sentTokens": {
-    "message": "poslani žetoni"
   },
   "separateEachWord": {
     "message": "Vsako besedo ločite z enim presledkom"

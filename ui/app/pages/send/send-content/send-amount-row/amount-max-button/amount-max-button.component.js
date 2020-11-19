@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
 export default class AmountMaxButton extends Component {
-
   static propTypes = {
     balance: PropTypes.string,
     buttonDataLoading: PropTypes.bool,
@@ -15,7 +14,6 @@ export default class AmountMaxButton extends Component {
     setAmountToMax: PropTypes.func,
     setMaxModeTo: PropTypes.func,
     tokenBalance: PropTypes.string,
-
   }
 
   static contextTypes = {
@@ -23,7 +21,7 @@ export default class AmountMaxButton extends Component {
     metricsEvent: PropTypes.func,
   }
 
-  setMaxAmount () {
+  setMaxAmount() {
     const {
       balance,
       gasTotal,
@@ -60,13 +58,21 @@ export default class AmountMaxButton extends Component {
     }
   }
 
-  render () {
+  render() {
     const { maxModeOn, buttonDataLoading, inError } = this.props
 
     return (
-      <div className="send-v2__amount-max" onClick={buttonDataLoading || inError ? null : this.onMaxClick}>
+      <div
+        className="send-v2__amount-max"
+        onClick={buttonDataLoading || inError ? null : this.onMaxClick}
+      >
         <input type="checkbox" checked={maxModeOn} readOnly />
-        <div className={classnames('send-v2__amount-max__button', { 'send-v2__amount-max__button__disabled': buttonDataLoading || inError })}>
+        <div
+          className={classnames('send-v2__amount-max__button', {
+            'send-v2__amount-max__button__disabled':
+              buttonDataLoading || inError,
+          })}
+        >
           {this.context.t('max')}
         </div>
       </div>

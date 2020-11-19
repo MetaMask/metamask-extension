@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask on projekteeritud ja loodud Californias."
   },
-  "buyCoinSwitch": {
-    "message": "Osta CoinSwitchil"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch on ühe akna sihtpunkt enama kui 300 krüptoraha vahetamiseks parima hinnaga."
-  },
   "buyWithWyre": {
     "message": "Ostke ETH-d Wyre'iga"
   },
@@ -163,9 +157,6 @@
   },
   "cancel": {
     "message": "Tühista"
-  },
-  "cancelAttempt": {
-    "message": "Tühista katse"
   },
   "cancellationGasFee": {
     "message": "Tühistamise gaasitasu"
@@ -218,9 +209,6 @@
   "connectingToKovan": {
     "message": "Ühendamine Kovani testvõrguga"
   },
-  "connectingToLocalhost": {
-    "message": "Ühenduse loomine Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Ühenduse loomine peamise Etherumi võrguga"
   },
@@ -229,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "Ühendamine Ropsteni testvõrguga"
-  },
-  "continueToCoinSwitch": {
-    "message": "Avage ConSwitch"
   },
   "continueToWyre": {
     "message": "Ava Wyre"
@@ -310,9 +295,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Olete kindel, et soovite selle võrgu kustutada?"
-  },
-  "deposit": {
-    "message": "Sissemakse"
   },
   "depositEther": {
     "message": "Eetri sissemakse"
@@ -562,9 +544,6 @@
   "invalidBlockExplorerURL": {
     "message": "Vale Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Vigane sisend."
-  },
   "invalidRPC": {
     "message": "Vale RPC URL"
   },
@@ -736,10 +715,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Blokeeri Exploreri URL (valikuline)"
   },
-  "optionalChainId": {
-    "message": "ChainID (valikuline)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Sümbol (valikuline)"
   },
   "orderOneHere": {
@@ -986,9 +962,6 @@
   },
   "sentEther": {
     "message": "saadetud eeter"
-  },
-  "sentTokens": {
-    "message": "saadetud load"
   },
   "separateEachWord": {
     "message": "Eraldage iga sõna ühe tühikuga"

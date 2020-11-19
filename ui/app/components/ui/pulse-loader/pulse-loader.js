@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function PulseLoader () {
+export default function PulseLoader() {
   return (
     <div className="pulse-loader">
       <div className="pulse-loader__loading-dot-one" />

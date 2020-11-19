@@ -127,17 +127,8 @@
   "builtInCalifornia": {
     "message": "MetaMask fue diseñado y construido en California"
   },
-  "buyCoinSwitch": {
-    "message": "Comprar en CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch es el destino de una sola parada para intercambiar más de 300 criptomonedas al mejor precio."
-  },
   "cancel": {
     "message": "Cancelar"
-  },
-  "cancelAttempt": {
-    "message": "Intentar cancelar"
   },
   "cancellationGasFee": {
     "message": "Comisión de Gas por cancelación"
@@ -187,9 +178,6 @@
   "connectingToKovan": {
     "message": "Conectando a la red de test Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "Conectando to Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Conectando a la red principal de Ethereum (Main Net)"
   },
@@ -198,9 +186,6 @@
   },
   "connectingToRopsten": {
     "message": "Conectando a la red de test Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "Continuar a CoinSwitch"
   },
   "continueToWyre": {
     "message": "Continuar a Wyre"
@@ -273,9 +258,6 @@
   },
   "deleteAccount": {
     "message": "Eliminar Cuenta"
-  },
-  "deposit": {
-    "message": "Depositar"
   },
   "depositEther": {
     "message": "Depositar Ether"
@@ -463,9 +445,6 @@
   "invalidBlockExplorerURL": {
     "message": "Invalida URL del Block Explorer"
   },
-  "invalidInput": {
-    "message": "Entrada inválida"
-  },
   "invalidRPC": {
     "message": "Invalida URL del RPC"
   },
@@ -586,10 +565,7 @@
   "ofTextNofM": {
     "message": "de"
   },
-  "optionalChainId": {
-    "message": "ChainID (opcional)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Símbolo (opcional)"
   },
   "orderOneHere": {
@@ -791,9 +767,6 @@
   },
   "sentEther": {
     "message": "se mandó ether"
-  },
-  "sentTokens": {
-    "message": "se mandaron tokens"
   },
   "separateEachWord": {
     "message": "Separar a cada palabra con un sólo espacio"

@@ -15,8 +15,7 @@ describe('Dropdown', function () {
         onClick={onClickSpy}
         style={{ test: 'style' }}
         closeMenu={closeMenuSpy}
-      >
-      </DropdownMenuItem>,
+      />,
     )
   })
 
@@ -33,5 +32,4 @@ describe('Dropdown', function () {
     assert.equal(onClickSpy.callCount, 1)
     assert.equal(closeMenuSpy.callCount, 1)
   })
-
 })

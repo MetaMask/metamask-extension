@@ -2,7 +2,7 @@ import React from 'react'
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
 
-export default function IconWithLabel ({ icon, label, className }) {
+export default function IconWithLabel({ icon, label, className }) {
   return (
     <div className={classnames('icon-with-label', className)}>
       {icon}

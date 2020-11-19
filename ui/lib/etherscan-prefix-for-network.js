@@ -6,7 +6,7 @@ import * as networkEnums from '../../app/scripts/controllers/network/enums'
  * @param {string} networkId - The network ID to get the prefix for.
  * @returns {string} The etherscan.io URL prefix for the given network ID.
  */
-export function getEtherscanNetworkPrefix (networkId) {
+export function getEtherscanNetworkPrefix(networkId) {
   switch (networkId) {
     case networkEnums.ROPSTEN_NETWORK_ID:
       return 'ropsten.'
@@ -16,7 +16,8 @@ export function getEtherscanNetworkPrefix (networkId) {
       return 'kovan.'
     case networkEnums.GOERLI_NETWORK_ID:
       return 'goerli.'
-    default: // also covers mainnet
+    default:
+      // also covers mainnet
       return ''
   }
 }

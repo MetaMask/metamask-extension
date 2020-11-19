@@ -8,8 +8,9 @@
   }
 
   &__description {
+    @include H6;
+
     text-align: center;
-    font-size: 0.875rem;
   }
 
   &__cancel-transaction-gas-fee-container {

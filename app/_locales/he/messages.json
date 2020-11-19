@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask תוכנן ונבנה בקליפורניה."
   },
-  "buyCoinSwitch": {
-    "message": "רכישה ב-CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch הוא היעד עם כלל האפשרויות להחלפת יותר מ-300 מטבעות קריפטו בשער הטוב ביותר."
-  },
   "buyWithWyre": {
     "message": "רכישת את'ר עם Wyre"
   },
@@ -163,9 +157,6 @@
   },
   "cancel": {
     "message": "ביטול"
-  },
-  "cancelAttempt": {
-    "message": "בטל ניסיון"
   },
   "cancellationGasFee": {
     "message": "עמלת דלק עבור ביטול"
@@ -218,9 +209,6 @@
   "connectingToKovan": {
     "message": "מתחבר ל-Kovan Test Network"
   },
-  "connectingToLocalhost": {
-    "message": "מתחבר אל Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "מתחבר לרשת אתריום הראשית"
   },
@@ -229,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "מתחבר אל רשת בדיקה Ropsten "
-  },
-  "continueToCoinSwitch": {
-    "message": "המשך אל CoinSwitch"
   },
   "continueToWyre": {
     "message": "המשך ל-Wyre"
@@ -310,9 +295,6 @@
   },
   "deleteNetworkDescription": {
     "message": "הנך בטוח/ה שברצונך למחוק רשת זו?"
-  },
-  "deposit": {
-    "message": "הפקדה"
   },
   "depositEther": {
     "message": "הפקדת את'ר"
@@ -566,9 +548,6 @@
   "invalidBlockExplorerURL": {
     "message": "כתובת URL לא חוקית של Block Explorer"
   },
-  "invalidInput": {
-    "message": "קלט לא תקין."
-  },
   "invalidRPC": {
     "message": "כתובת URL לא חוקית של RPC"
   },
@@ -743,10 +722,7 @@
   "optionalBlockExplorerUrl": {
     "message": "חסום כתובת URL של אקספלורר (אופציונלי)"
   },
-  "optionalChainId": {
-    "message": "ChainID (אופציונלי)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "סמל (אופציונלי)"
   },
   "orderOneHere": {
@@ -990,9 +966,6 @@
   },
   "sentEther": {
     "message": "את'ר שנשלח"
-  },
-  "sentTokens": {
-    "message": "טוקנים שנשלחו"
   },
   "separateEachWord": {
     "message": "יש להפריד כל מילה עם רווח יחיד"

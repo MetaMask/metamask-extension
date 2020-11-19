@@ -66,4 +66,3 @@ export const dangerPrimaryType = () => (
     {text('text', 'Click me')}
   </Button>
 )
-

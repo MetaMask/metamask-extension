@@ -145,12 +145,6 @@
   "builtInCalifornia": {
     "message": "MetaMask спроектирован и разработан в Калифорнии."
   },
-  "buyCoinSwitch": {
-    "message": "Купить на CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch - это однонаправленное место для обмена более 300 криптоконверсий по наилучшей цене."
-  },
   "buyWithWyre": {
     "message": "Купить ETH на Wyre"
   },
@@ -162,9 +156,6 @@
   },
   "cancel": {
     "message": "Отмена"
-  },
-  "cancelAttempt": {
-    "message": "Попытка отмены транзакции"
   },
   "cancellationGasFee": {
     "message": "Комиссия за газ на отмену"
@@ -217,9 +208,6 @@
   "connectingToKovan": {
     "message": "Соединение с тестовой сетью Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "Подключение к Localhost:8545"
-  },
   "connectingToMainnet": {
     "message": "Соединение с основной сетью Ethereum"
   },
@@ -228,9 +216,6 @@
   },
   "connectingToRopsten": {
     "message": "Соединение с тестовой сетью Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "Продолжить в CoinSwitch"
   },
   "continueToWyre": {
     "message": "Продолжить на Wyre"
@@ -332,9 +317,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Вы уверены, что хотите удалить эту сеть?"
-  },
-  "deposit": {
-    "message": "Пополнить"
   },
   "depositEther": {
     "message": "Пополнить Ether"
@@ -595,9 +577,6 @@
   "invalidBlockExplorerURL": {
     "message": "Неверный Block Explorer URI"
   },
-  "invalidInput": {
-    "message": "Неверный ввод."
-  },
   "invalidRPC": {
     "message": "Неверный RPC URI"
   },
@@ -775,10 +754,7 @@
   "optionalBlockExplorerUrl": {
     "message": "URL блок-эксплорера  (необязательно)"
   },
-  "optionalChainId": {
-    "message": "ID сети (необязательно)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Символ  (необязательно)"
   },
   "orderOneHere": {
@@ -1032,9 +1008,6 @@
   },
   "sentEther": {
     "message": "Отправить Ether"
-  },
-  "sentTokens": {
-    "message": "Отправленные токены"
   },
   "separateEachWord": {
     "message": "Разделяйте каждое слово одним пробелом"

@@ -1,4 +1,4 @@
-import { validateMnemonic } from 'bip39'
+import { ethers } from 'ethers'
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import TextField from '../../../../components/ui/text-field'
@@ -7,6 +7,8 @@ import {
   INITIALIZE_SELECT_ACTION_ROUTE,
   INITIALIZE_END_OF_FLOW_ROUTE,
 } from '../../../../helpers/constants/routes'
+
+const { isValidMnemonic } = ethers.utils
 
 export default class ImportWithSeedPhrase extends PureComponent {
   static contextTypes = {
@@ -19,7 +21,6 @@ export default class ImportWithSeedPhrase extends PureComponent {
     onSubmit: PropTypes.func.isRequired,
     setSeedPhraseBackedUp: PropTypes.func,
     initializeThreeBox: PropTypes.func,
-    completeOnboarding: PropTypes.func,
   }
 
   state = {
@@ -33,28 +34,30 @@ export default class ImportWithSeedPhrase extends PureComponent {
     termsChecked: false,
   }
 
-  parseSeedPhrase = (seedPhrase) => (seedPhrase || '').trim().toLowerCase().match(/\w+/gu)?.join(' ') || ''
+  parseSeedPhrase = (seedPhrase) =>
+    (seedPhrase || '').trim().toLowerCase().match(/\w+/gu)?.join(' ') || ''
 
-  UNSAFE_componentWillMount () {
-    this._onBeforeUnload = () => this.context.metricsEvent({
-      eventOpts: {
-        category: 'Onboarding',
-        action: 'Import Seed Phrase',
-        name: 'Close window on import screen',
-      },
-      customVariables: {
-        errorLabel: 'Seed Phrase Error',
-        errorMessage: this.state.seedPhraseError,
-      },
-    })
+  UNSAFE_componentWillMount() {
+    this._onBeforeUnload = () =>
+      this.context.metricsEvent({
+        eventOpts: {
+          category: 'Onboarding',
+          action: 'Import Seed Phrase',
+          name: 'Close window on import screen',
+        },
+        customVariables: {
+          errorLabel: 'Seed Phrase Error',
+          errorMessage: this.state.seedPhraseError,
+        },
+      })
     window.addEventListener('beforeunload', this._onBeforeUnload)
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     window.removeEventListener('beforeunload', this._onBeforeUnload)
   }
 
-  handleSeedPhraseChange (seedPhrase) {
+  handleSeedPhraseChange(seedPhrase) {
     let seedPhraseError = ''
 
     if (seedPhrase) {
@@ -62,7 +65,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
       const wordCount = parsedSeedPhrase.split(/\s/u).length
       if (wordCount % 3 !== 0 || wordCount > 24 || wordCount < 12) {
         seedPhraseError = this.context.t('seedPhraseReq')
-      } else if (!validateMnemonic(parsedSeedPhrase)) {
+      } else if (!isValidMnemonic(parsedSeedPhrase)) {
         seedPhraseError = this.context.t('invalidSeedPhrase')
       }
     }
@@ -70,7 +73,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
     this.setState({ seedPhrase, seedPhraseError })
   }
 
-  handlePasswordChange (password) {
+  handlePasswordChange(password) {
     const { t } = this.context
 
     this.setState((state) => {
@@ -94,7 +97,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
     })
   }
 
-  handleConfirmPasswordChange (confirmPassword) {
+  handleConfirmPasswordChange(confirmPassword) {
     const { t } = this.context
 
     this.setState((state) => {
@@ -120,7 +123,12 @@ export default class ImportWithSeedPhrase extends PureComponent {
     }
 
     const { password, seedPhrase } = this.state
-    const { history, onSubmit, setSeedPhraseBackedUp, initializeThreeBox, completeOnboarding } = this.props
+    const {
+      history,
+      onSubmit,
+      setSeedPhraseBackedUp,
+      initializeThreeBox,
+    } = this.props
 
     try {
       await onSubmit(password, this.parseSeedPhrase(seedPhrase))
@@ -133,7 +141,6 @@ export default class ImportWithSeedPhrase extends PureComponent {
       })
 
       setSeedPhraseBackedUp(true).then(async () => {
-        await completeOnboarding()
         initializeThreeBox()
         history.push(INITIALIZE_END_OF_FLOW_ROUTE)
       })
@@ -142,7 +149,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
     }
   }
 
-  isValid () {
+  isValid() {
     const {
       seedPhrase,
       password,
@@ -152,7 +159,12 @@ export default class ImportWithSeedPhrase extends PureComponent {
       seedPhraseError,
     } = this.state
 
-    if (!password || !confirmPassword || !seedPhrase || password !== confirmPassword) {
+    if (
+      !password ||
+      !confirmPassword ||
+      !seedPhrase ||
+      password !== confirmPassword
+    ) {
       return false
     }
 
@@ -188,15 +200,18 @@ export default class ImportWithSeedPhrase extends PureComponent {
     }))
   }
 
-  render () {
+  render() {
     const { t } = this.context
-    const { seedPhraseError, showSeedPhrase, passwordError, confirmPasswordError, termsChecked } = this.state
+    const {
+      seedPhraseError,
+      showSeedPhrase,
+      passwordError,
+      confirmPasswordError,
+      termsChecked,
+    } = this.state
 
     return (
-      <form
-        className="first-time-flow__form"
-        onSubmit={this.handleImport}
-      >
+      <form className="first-time-flow__form" onSubmit={this.handleImport}>
         <div className="first-time-flow__create-back">
           <a
             onClick={(e) => {
@@ -220,13 +235,11 @@ export default class ImportWithSeedPhrase extends PureComponent {
           </a>
         </div>
         <div className="first-time-flow__header">
-          { t('importAccountSeedPhrase') }
+          {t('importAccountSeedPhrase')}
         </div>
-        <div className="first-time-flow__text-block">
-          { t('secretPhrase') }
-        </div>
+        <div className="first-time-flow__text-block">{t('secretPhrase')}</div>
         <div className="first-time-flow__textarea-wrapper">
-          <label>{ t('walletSeed') }</label>
+          <label>{t('walletSeed')}</label>
           {showSeedPhrase ? (
             <textarea
               className="first-time-flow__textarea"
@@ -243,14 +256,11 @@ export default class ImportWithSeedPhrase extends PureComponent {
               placeholder={t('seedPhrasePlaceholderPaste')}
             />
           )}
-          {
-            seedPhraseError && (
-              <span className="error">
-                { seedPhraseError }
-              </span>
-            )
-          }
-          <div className="first-time-flow__checkbox-container" onClick={this.toggleShowSeedPhrase}>
+          {seedPhraseError && <span className="error">{seedPhraseError}</span>}
+          <div
+            className="first-time-flow__checkbox-container"
+            onClick={this.toggleShowSeedPhrase}
+          >
             <div
               className="first-time-flow__checkbox"
               tabIndex="0"
@@ -261,8 +271,11 @@ export default class ImportWithSeedPhrase extends PureComponent {
             >
               {showSeedPhrase ? <i className="fa fa-check fa-2x" /> : null}
             </div>
-            <span id="ftf-chk1-label" className="first-time-flow__checkbox-label">
-              { t('showSeedPhrase') }
+            <span
+              id="ftf-chk1-label"
+              className="first-time-flow__checkbox-label"
+            >
+              {t('showSeedPhrase')}
             </span>
           </div>
         </div>
@@ -284,13 +297,18 @@ export default class ImportWithSeedPhrase extends PureComponent {
           type="password"
           className="first-time-flow__input"
           value={this.state.confirmPassword}
-          onChange={(event) => this.handleConfirmPasswordChange(event.target.value)}
+          onChange={(event) =>
+            this.handleConfirmPasswordChange(event.target.value)
+          }
           error={confirmPasswordError}
           autoComplete="confirm-password"
           margin="normal"
           largeLabel
         />
-        <div className="first-time-flow__checkbox-container" onClick={this.toggleTermsCheck}>
+        <div
+          className="first-time-flow__checkbox-container"
+          onClick={this.toggleTermsCheck}
+        >
           <div
             className="first-time-flow__checkbox first-time-flow__terms"
             tabIndex="0"
@@ -302,7 +320,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
             {termsChecked ? <i className="fa fa-check fa-2x" /> : null}
           </div>
           <span id="ftf-chk1-label" className="first-time-flow__checkbox-label">
-            {t('acceptTermsOfUse', [(
+            {t('acceptTermsOfUse', [
               <a
                 onClick={(e) => e.stopPropagation()}
                 key="first-time-flow__link-text"
@@ -310,11 +328,9 @@ export default class ImportWithSeedPhrase extends PureComponent {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <span className="first-time-flow__link-text">
-                  { t('terms') }
-                </span>
-              </a>
-            )])}
+                <span className="first-time-flow__link-text">{t('terms')}</span>
+              </a>,
+            ])}
           </span>
         </div>
         <Button
@@ -323,7 +339,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
           className="first-time-flow__button"
           disabled={!this.isValid() || !termsChecked}
         >
-          { t('import') }
+          {t('import')}
         </Button>
       </form>
     )

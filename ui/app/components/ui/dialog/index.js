@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
-export default function Dialog (props) {
+export default function Dialog(props) {
   const { children, type, className, onClick } = props
   return (
     <div
@@ -13,7 +13,7 @@ export default function Dialog (props) {
       })}
       onClick={onClick}
     >
-      { children }
+      {children}
     </div>
   )
 }

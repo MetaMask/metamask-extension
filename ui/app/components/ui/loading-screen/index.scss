@@ -26,13 +26,6 @@
     align-items: center;
   }
 
-  &__message {
-    margin-top: 32px;
-    font-weight: 400;
-    font-size: 20px;
-    color: $manatee;
-  }
-
   &__error-screen {
     display: flex;
     flex-direction: column;

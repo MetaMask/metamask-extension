@@ -11,7 +11,7 @@ const version = 21
 export default {
   version,
 
-  migrate (originalVersionedData) {
+  migrate(originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     try {
@@ -25,10 +25,9 @@ export default {
   },
 }
 
-function transformState (state) {
+function transformState(state) {
   const newState = state
   delete newState.BlacklistController
   delete newState.RecentBlocks
   return newState
 }
-

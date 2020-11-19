@@ -17,38 +17,47 @@ export default class Tabs extends Component {
   }
 
   state = {
-    activeTabIndex: Math.max(this._findChildByName(this.props.defaultActiveTabName), 0),
+    activeTabIndex: Math.max(
+      this._findChildByName(this.props.defaultActiveTabName),
+      0,
+    ),
   }
 
-  handleTabClick (tabIndex, tabName) {
+  handleTabClick(tabIndex, tabName) {
     const { onTabClick } = this.props
     const { activeTabIndex } = this.state
 
     if (tabIndex !== activeTabIndex) {
-      this.setState({
-        activeTabIndex: tabIndex,
-      }, () => {
-        if (onTabClick) {
-          onTabClick(tabName)
-        }
-      })
+      this.setState(
+        {
+          activeTabIndex: tabIndex,
+        },
+        () => {
+          if (onTabClick) {
+            onTabClick(tabName)
+          }
+        },
+      )
     }
   }
 
-  renderTabs () {
+  renderTabs() {
     const numberOfTabs = React.Children.count(this.props.children)
 
     return React.Children.map(this.props.children, (child, index) => {
       const tabName = child?.props.name
-      return child && React.cloneElement(child, {
-        onClick: (idx) => this.handleTabClick(idx, tabName),
-        tabIndex: index,
-        isActive: numberOfTabs > 1 && index === this.state.activeTabIndex,
-      })
+      return (
+        child &&
+        React.cloneElement(child, {
+          onClick: (idx) => this.handleTabClick(idx, tabName),
+          tabIndex: index,
+          isActive: numberOfTabs > 1 && index === this.state.activeTabIndex,
+        })
+      )
     })
   }
 
-  renderActiveTabContent () {
+  renderActiveTabContent() {
     const { children } = this.props
     const { activeTabIndex } = this.state
 
@@ -64,16 +73,14 @@ export default class Tabs extends Component {
       : children.props.children
   }
 
-  render () {
+  render() {
     const { tabsClassName } = this.props
     return (
       <div className="tabs">
         <ul className={classnames('tabs__list', tabsClassName)}>
-          { this.renderTabs() }
+          {this.renderTabs()}
         </ul>
-        <div className="tabs__content">
-          { this.renderActiveTabContent() }
-        </div>
+        <div className="tabs__content">{this.renderActiveTabContent()}</div>
       </div>
     )
   }
@@ -84,7 +91,9 @@ export default class Tabs extends Component {
    * @returns {number} the index of the child with the given name
    * @private
    */
-  _findChildByName (name) {
-    return React.Children.toArray(this.props.children).findIndex((c) => c?.props.name === name)
+  _findChildByName(name) {
+    return React.Children.toArray(this.props.children).findIndex(
+      (c) => c?.props.name === name,
+    )
   }
 }

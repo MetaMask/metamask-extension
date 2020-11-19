@@ -9,27 +9,35 @@ export default class ConnectedSitesList extends Component {
   }
 
   static propTypes = {
-    connectedDomains: PropTypes.arrayOf(PropTypes.shape({
-      name: PropTypes.string,
-      icon: PropTypes.string,
-      origin: PropTypes.string,
-      host: PropTypes.string,
-    })).isRequired,
+    connectedDomains: PropTypes.arrayOf(
+      PropTypes.shape({
+        name: PropTypes.string,
+        icon: PropTypes.string,
+        origin: PropTypes.string,
+        host: PropTypes.string,
+      }),
+    ).isRequired,
     onDisconnect: PropTypes.func.isRequired,
     domainHostCount: PropTypes.objectOf(PropTypes.number).isRequired,
   }
 
-  render () {
+  render() {
     const { connectedDomains, onDisconnect } = this.props
     const { t } = this.context
 
     return (
       <main className="connected-sites-list__content-rows">
-        { connectedDomains.map((domain) => (
-          <div key={domain.origin} className="connected-sites-list__content-row">
+        {connectedDomains.map((domain) => (
+          <div
+            key={domain.origin}
+            className="connected-sites-list__content-row"
+          >
             <div className="connected-sites-list__domain-info">
               <SiteIcon icon={domain.icon} name={domain.name} size={32} />
-              <span className="connected-sites-list__domain-name" title={domain.extensionId || domain.origin}>
+              <span
+                className="connected-sites-list__domain-name"
+                title={domain.extensionId || domain.origin}
+              >
                 {this.getDomainDisplayName(domain)}
               </span>
             </div>
@@ -39,12 +47,12 @@ export default class ConnectedSitesList extends Component {
               onClick={() => onDisconnect(domain.origin)}
             />
           </div>
-        )) }
+        ))}
       </main>
     )
   }
 
-  getDomainDisplayName (domain) {
+  getDomainDisplayName(domain) {
     if (domain.extensionId) {
       return this.context.t('externalExtension')
     }

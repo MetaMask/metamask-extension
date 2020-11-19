@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask on suunniteltu ja koottu Kaliforniassa."
   },
-  "buyCoinSwitch": {
-    "message": "Osta CoinSwitchissa"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch on yhden pysähdyksen kohde yli 300 kryptovaluutan vaihtoon parhailla kursseilla."
-  },
   "buyWithWyre": {
     "message": "Osta ETH:ta Wyrella"
   },
@@ -163,9 +157,6 @@
   },
   "cancel": {
     "message": "Peruuta"
-  },
-  "cancelAttempt": {
-    "message": "Peruuta yritys"
   },
   "cancellationGasFee": {
     "message": "Peruutuksen gas-maksu"
@@ -218,9 +209,6 @@
   "connectingToKovan": {
     "message": "Yhdistetään Kovanin koeverkkoon"
   },
-  "connectingToLocalhost": {
-    "message": "Yhdistetään kohteeseen Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Yhdistetään Ethereumin pääverkkoon"
   },
@@ -229,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "Yhdistetään Ropstenin koeverkkoon"
-  },
-  "continueToCoinSwitch": {
-    "message": "Jatka CoinSwitchiin"
   },
   "continueToWyre": {
     "message": "Jatka Wyreen"
@@ -310,9 +295,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Haluatko varmasti poistaa tämän verkon?"
-  },
-  "deposit": {
-    "message": "Talleta"
   },
   "depositEther": {
     "message": "Talleta Etheriä"
@@ -566,9 +548,6 @@
   "invalidBlockExplorerURL": {
     "message": "Virheellinen Block Explorer URL-osoite"
   },
-  "invalidInput": {
-    "message": "Virheellinen syötetty arvo."
-  },
   "invalidRPC": {
     "message": "Virheellinen RPC:n URL-osoite"
   },
@@ -743,10 +722,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Estä Explorerin URL-osoite (valinnainen)"
   },
-  "optionalChainId": {
-    "message": "Ketjun tunnus (valinnainen)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Symboli (valinnainen)"
   },
   "orderOneHere": {
@@ -993,9 +969,6 @@
   },
   "sentEther": {
     "message": "lähetä etheriä"
-  },
-  "sentTokens": {
-    "message": "lähetetyt poletit"
   },
   "separateEachWord": {
     "message": "Erottele sanat toisistaan yhdellä välilyönnillä"

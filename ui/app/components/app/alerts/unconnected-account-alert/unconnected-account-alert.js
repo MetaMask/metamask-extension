@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { ALERT_STATE } from '../../../../ducks/alerts'
 import {
-  ALERT_STATE,
   connectAccount,
   dismissAlert,
   dismissAndDisableAlert,
@@ -23,10 +23,7 @@ import Tooltip from '../../../ui/tooltip'
 import ConnectedAccountsList from '../../connected-accounts-list'
 import { useI18nContext } from '../../../../hooks/useI18nContext'
 
-const {
-  ERROR,
-  LOADING,
-} = ALERT_STATE
+const { ERROR, LOADING } = ALERT_STATE
 
 const UnconnectedAccountAlert = () => {
   const t = useI18nContext()
@@ -46,15 +43,11 @@ const UnconnectedAccountAlert = () => {
 
   const footer = (
     <>
-      {
-        alertState === ERROR
-          ? (
-            <div className="unconnected-account-alert__error">
-              { t('failureMessage') }
-            </div>
-          )
-          : null
-      }
+      {alertState === ERROR ? (
+        <div className="unconnected-account-alert__error">
+          {t('failureMessage')}
+        </div>
+      ) : null}
       <div className="unconnected-account-alert__footer-row">
         <div className="unconnected-account-alert__checkbox-wrapper">
           <Checkbox
@@ -67,7 +60,7 @@ const UnconnectedAccountAlert = () => {
             className="unconnected-account-alert__checkbox-label"
             htmlFor="unconnectedAccount_dontShowThisAgain"
           >
-            { t('dontShowThisAgain') }
+            {t('dontShowThisAgain')}
             <Tooltip
               position="top"
               title={t('alertDisableTooltip')}
@@ -84,7 +77,7 @@ const UnconnectedAccountAlert = () => {
           rounded
           className="unconnected-account-alert__dismiss-button"
         >
-          { t('dismiss') }
+          {t('dismiss')}
         </Button>
       </div>
     </>
@@ -92,7 +85,9 @@ const UnconnectedAccountAlert = () => {
 
   return (
     <Popover
-      title={isExtensionUrl(origin) ? t('currentExtension') : new URL(origin).host}
+      title={
+        isExtensionUrl(origin) ? t('currentExtension') : new URL(origin).host
+      }
       subtitle={t('currentAccountNotConnected')}
       onClose={onClose}
       className="unconnected-account-alert"

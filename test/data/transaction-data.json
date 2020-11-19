@@ -495,5 +495,48 @@
     },
     "hasRetried": false,
     "hasCancelled": false
+  },
+  {
+    "initialTransaction": {
+      "blockNumber": "6195527",
+      "id": 4243712234858467,
+      "metamaskNetworkId": "4",
+      "status": "confirmed",
+      "time": 1585088013000,
+      "txParams": {
+        "from": "0xee014609ef9e09776ac5fe00bdbfef57bcdefebb",
+        "gas": "0x5208",
+        "gasPrice": "0x77359400",
+        "nonce": "0x3",
+        "to": "0xabca64466f257793eaa52fcfff5066894b76a149",
+        "value": "0xde0b6b3a7640000"
+      },
+      "hash": "0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a",
+      "destinationTokenSymbol": "ABC",
+      "sourceTokenSymbol": "ETH",
+      "transactionCategory": "swap"
+    },
+    "primaryTransaction": {
+      "blockNumber": "6195527",
+      "id": 4243712234858467,
+      "metamaskNetworkId": "4",
+      "status": "confirmed",
+      "time": 1585088013000,
+      "txParams": {
+        "from": "0xee014609ef9e09776ac5fe00bdbfef57bcdefebb",
+        "gas": "0x5208",
+        "gasPrice": "0x77359400",
+        "nonce": "0x3",
+        "to": "0xabca64466f257793eaa52fcfff5066894b76a149",
+        "value": "0xde0b6b3a7640000"
+      },
+      "hash": "0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a",
+      "transactionCategory": "swap",
+      "destinationTokenSymbol": "ABC",
+      "destinationTokenAddress": "0xabca64466f257793eaa52fcfff5066894b76a149",
+      "sourceTokenSymbol": "ETH"
+    },
+    "hasRetried": false,
+    "hasCancelled": false
   }
 ]

@@ -1,4 +1,3 @@
-
 /*
 
 This migration adds submittedTime to the txMeta if it is not their
@@ -6,13 +5,14 @@ This migration adds submittedTime to the txMeta if it is not their
 */
 
 import { cloneDeep } from 'lodash'
+import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction'
 
 const version = 22
 
 export default {
   version,
 
-  migrate (originalVersionedData) {
+  migrate(originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     try {
@@ -26,17 +26,20 @@ export default {
   },
 }
 
-function transformState (state) {
+function transformState(state) {
   const newState = state
   const { TransactionController } = newState
   if (TransactionController && TransactionController.transactions) {
     const { transactions } = newState.TransactionController
 
     newState.TransactionController.transactions = transactions.map((txMeta) => {
-      if (txMeta.status !== 'submitted' || txMeta.submittedTime) {
+      if (
+        txMeta.status !== TRANSACTION_STATUSES.SUBMITTED ||
+        txMeta.submittedTime
+      ) {
         return txMeta
       }
-      txMeta.submittedTime = (new Date()).getTime()
+      txMeta.submittedTime = new Date().getTime()
       return txMeta
     })
   }

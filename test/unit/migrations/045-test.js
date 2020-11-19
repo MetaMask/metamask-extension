@@ -4,16 +4,17 @@ import migration45 from '../../../app/scripts/migrations/045'
 describe('migration #45', function () {
   it('should update the version metadata', function (done) {
     const oldStorage = {
-      'meta': {
-        'version': 44,
+      meta: {
+        version: 44,
       },
-      'data': {},
+      data: {},
     }
 
-    migration45.migrate(oldStorage)
+    migration45
+      .migrate(oldStorage)
       .then((newStorage) => {
         assert.deepEqual(newStorage.meta, {
-          'version': 45,
+          version: 45,
         })
         done()
       })
@@ -32,7 +33,8 @@ describe('migration #45', function () {
       },
     }
 
-    migration45.migrate(oldStorage)
+    migration45
+      .migrate(oldStorage)
       .then((newStorage) => {
         assert.deepEqual(newStorage.data, {
           PreferencesController: {
@@ -58,7 +60,8 @@ describe('migration #45', function () {
       },
     }
 
-    migration45.migrate(oldStorage)
+    migration45
+      .migrate(oldStorage)
       .then((newStorage) => {
         assert.deepEqual(newStorage.data, {
           PreferencesController: {
@@ -80,7 +83,8 @@ describe('migration #45', function () {
       },
     }
 
-    migration45.migrate(oldStorage)
+    migration45
+      .migrate(oldStorage)
       .then((newStorage) => {
         assert.deepEqual(newStorage.data, {
           foo: 'bar',

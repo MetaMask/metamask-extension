@@ -1,9 +1,10 @@
 .alerts-tab {
   &__body {
+    @include H6;
+
     display: grid;
     grid-template-columns: 8fr 30px max-content;
     grid-template-rows: 1fr 1fr;
-    font-size: 14px;
     align-items: center;
   }
 

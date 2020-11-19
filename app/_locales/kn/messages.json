@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask ಅನ್ನು ವಿನ್ಯಾಸಗೊಳಿಸಲಾಗಿದೆ ಮತ್ತು ಕ್ಯಾಲಿಫೋರ್ನಿಯಾದಲ್ಲಿ ನಿರ್ಮಿಸಲಾಗಿದೆ."
   },
-  "buyCoinSwitch": {
-    "message": "ಕಾಯಿನ್‌ಸ್ವೀಚ್‌ನಲ್ಲಿ ಖರೀದಿಸಿ"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "300 ಕ್ಕೂ ಹೆಚ್ಚು ಕ್ರಿಪ್ಟೋಕರೆನ್ಸಿಗಳನ್ನು ಉತ್ತಮ ದರದಲ್ಲಿ ವಿನಿಮಯ ಮಾಡಿಕೊಳ್ಳುವ ಒಂದು ತಾಣವೆಂದರೆ ಕಾಯಿನ್‌ಸ್ವಿಚ್ ಆಗಿದೆ."
-  },
   "buyWithWyre": {
     "message": "Wyre ನೊಂದಿಗೆ ETH ಖರೀದಿಸಿ"
   },
@@ -163,9 +157,6 @@
   },
   "cancel": {
     "message": "ರದ್ದುಮಾಡಿ"
-  },
-  "cancelAttempt": {
-    "message": "ಪ್ರಯತ್ನವನ್ನು ರದ್ದುಪಡಿಸಿ"
   },
   "cancellationGasFee": {
     "message": "ರದ್ದುಗೊಳಿಸುವ ಗ್ಯಾಸ್ ಶುಲ್ಕ"
@@ -218,9 +209,6 @@
   "connectingToKovan": {
     "message": "Kovan ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ "
   },
-  "connectingToLocalhost": {
-    "message": "ಲೋಕಲ್‌ಹೋಸ್ಟ್ 8545 ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
-  },
   "connectingToMainnet": {
     "message": "ಮುಖ್ಯ ಎಥೆರಿಯಮ್ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
   },
@@ -229,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "Ropsten ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
-  },
-  "continueToCoinSwitch": {
-    "message": "CoinSwitch ಗೆ ಮುಂದುವರಿಸಿ"
   },
   "continueToWyre": {
     "message": "Wyre ಗೆ ಮುಂದುವರಿಸಿ"
@@ -310,9 +295,6 @@
   },
   "deleteNetworkDescription": {
     "message": "ನೀವು ಈ ನೆಟ್‌ವರ್ಕ್ ಅನ್ನು ಖಚಿತವಾಗಿ ಅಳಿಸಲು ಬಯಸುತ್ತೀರಾ?"
-  },
-  "deposit": {
-    "message": "ಠೇವಣಿ"
   },
   "depositEther": {
     "message": "ಎಥರ್ ಠೇವಣಿ ಮಾಡಿ"
@@ -566,9 +548,6 @@
   "invalidBlockExplorerURL": {
     "message": "ಅಮಾನ್ಯವಾದ Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "ಅಮಾನ್ಯವಾದ ಇನ್‌ಪುಟ್."
-  },
   "invalidRPC": {
     "message": "ಅಮಾನ್ಯವಾದ RPC URL"
   },
@@ -746,10 +725,7 @@
   "optionalBlockExplorerUrl": {
     "message": "ಅನ್ವೇಷಕ URL ಅನ್ನು ನಿರ್ಬಂಧಿಸಿ (ಐಚ್ಛಿಕ)"
   },
-  "optionalChainId": {
-    "message": "ಚೈನ್‌ಐಡಿ (ಐಚ್ಛಿಕ)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "ಚಿಹ್ನೆ (ಐಚ್ಛಿಕ)"
   },
   "orderOneHere": {
@@ -996,9 +972,6 @@
   },
   "sentEther": {
     "message": "ಕಳುಹಿಸಲಾದ ಎಥರ್"
-  },
-  "sentTokens": {
-    "message": "ಕಳುಹಿಸಲಾದ ಟೋಕನ್‌ಗಳು"
   },
   "separateEachWord": {
     "message": "ಒಂದು ಸ್ಪೇಸ್ ಮೂಲಕ ಪ್ರತಿ ಪದವನ್ನು ಬೇರ್ಪಡಿಸಿ"

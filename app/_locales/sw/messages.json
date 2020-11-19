@@ -143,12 +143,6 @@
   "builtInCalifornia": {
     "message": "MetaMask imeundwa na kutengenezwa California."
   },
-  "buyCoinSwitch": {
-    "message": "Nunua kwenye CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch ni kituo cha kubadilisha fedha za kidijitali zaidi ya 300 kwa bei nzuri kabisa."
-  },
   "buyWithWyre": {
     "message": "Nunua ETH kwa kutumia Wyre"
   },
@@ -157,9 +151,6 @@
   },
   "cancel": {
     "message": "Ghairi"
-  },
-  "cancelAttempt": {
-    "message": "Jaribio la Kubatilisha"
   },
   "cancellationGasFee": {
     "message": "Ada ya Kubatilisha Gesi"
@@ -212,9 +203,6 @@
   "connectingToKovan": {
     "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "Inaunganisha kwenye Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Inaunganisha kwenye Mtandao Mkuu wa Ethereum"
   },
@@ -223,9 +211,6 @@
   },
   "connectingToRopsten": {
     "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "Endelea kwenye CoinSwitch"
   },
   "continueToWyre": {
     "message": "Endelea kwenye Wyre"
@@ -304,9 +289,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Una uhakika unataka kufuta mtandao huu?"
-  },
-  "deposit": {
-    "message": "Fedha zilizopo kwenye akaunti"
   },
   "depositEther": {
     "message": "Weka Ether"
@@ -553,9 +535,6 @@
   "invalidBlockExplorerURL": {
     "message": "Block Explorer URL batili"
   },
-  "invalidInput": {
-    "message": "Maandii si sahihi."
-  },
   "invalidRPC": {
     "message": "RPC URL batili"
   },
@@ -724,10 +703,7 @@
   "optionalBlockExplorerUrl": {
     "message": "URL ya Block Explorer URL (hiari)"
   },
-  "optionalChainId": {
-    "message": "Utambulisho wa Mnyororo (hiari)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Ishara (hiari)"
   },
   "orderOneHere": {
@@ -974,9 +950,6 @@
   },
   "sentEther": {
     "message": "ether iliyotumwa"
-  },
-  "sentTokens": {
-    "message": "vianzio vilivyotumwa"
   },
   "separateEachWord": {
     "message": "Tenganisha kila neno kwa nafasi moja"

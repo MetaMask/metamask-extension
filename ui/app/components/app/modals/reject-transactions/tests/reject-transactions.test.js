@@ -14,13 +14,11 @@ describe('Reject Transactions Model', function () {
   }
 
   beforeEach(function () {
-    wrapper = mount(
-      <RejectTransactionsModal.WrappedComponent {...props} />, {
-        context: {
-          t: (str) => str,
-        },
+    wrapper = mount(<RejectTransactionsModal.WrappedComponent {...props} />, {
+      context: {
+        t: (str) => str,
       },
-    )
+    })
   })
 
   afterEach(function () {
@@ -28,14 +26,18 @@ describe('Reject Transactions Model', function () {
   })
 
   it('hides modal when cancel button is clicked', function () {
-    const cancelButton = wrapper.find('.btn-default.modal-container__footer-button')
+    const cancelButton = wrapper.find(
+      '.btn-default.modal-container__footer-button',
+    )
     cancelButton.simulate('click')
 
     assert(props.hideModal.calledOnce)
   })
 
   it('onSubmit is called and hides modal when reject all clicked', function (done) {
-    const rejectAllButton = wrapper.find('.btn-secondary.modal-container__footer-button')
+    const rejectAllButton = wrapper.find(
+      '.btn-secondary.modal-container__footer-button',
+    )
     rejectAllButton.simulate('click')
 
     setImmediate(() => {
@@ -43,6 +45,5 @@ describe('Reject Transactions Model', function () {
       assert(props.hideModal.calledOnce)
       done()
     })
-
   })
 })

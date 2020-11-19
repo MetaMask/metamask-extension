@@ -13,7 +13,6 @@ import * as actions from '../../../../../store/actions'
 import UnconnectedAccountAlert from '..'
 
 describe('Unconnected Account Alert', function () {
-
   const network = '123'
 
   const selectedAddress = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b'
@@ -41,7 +40,7 @@ describe('Unconnected Account Alert', function () {
   }
 
   const cachedBalances = {
-    '123': {
+    123: {
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': '0x0',
       '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': '0x0',
     },
@@ -87,9 +86,7 @@ describe('Unconnected Account Alert', function () {
                 {
                   name: 'exposedAccounts',
                   type: 'filterResponse',
-                  value: [
-                    '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-                  ],
+                  value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
                 },
               ],
               invoker: 'https://test.dapp',
@@ -112,7 +109,6 @@ describe('Unconnected Account Alert', function () {
   })
 
   it('checks that checkbox is checked', function () {
-
     const store = configureMockStore()(mockState)
 
     const { getByRole } = renderWithProvider(<UnconnectedAccountAlert />, store)
@@ -140,7 +136,10 @@ describe('Unconnected Account Alert', function () {
 
     const store = configureMockStore([thunk])(mockState)
 
-    const { getByText, getByRole } = renderWithProvider(<UnconnectedAccountAlert />, store)
+    const { getByText, getByRole } = renderWithProvider(
+      <UnconnectedAccountAlert />,
+      store,
+    )
 
     const dismissButton = getByText(/dismiss/u)
     const dontShowCheckbox = getByRole('checkbox')
@@ -149,10 +148,14 @@ describe('Unconnected Account Alert', function () {
     fireEvent.click(dismissButton)
 
     setImmediate(() => {
-      assert.equal(store.getActions()[0].type, 'unconnectedAccount/disableAlertRequested')
-      assert.equal(store.getActions()[1].type, 'unconnectedAccount/disableAlertSucceeded')
+      assert.equal(
+        store.getActions()[0].type,
+        'unconnectedAccount/disableAlertRequested',
+      )
+      assert.equal(
+        store.getActions()[1].type,
+        'unconnectedAccount/disableAlertSucceeded',
+      )
     })
-
   })
-
 })

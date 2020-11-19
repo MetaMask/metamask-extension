@@ -4,13 +4,13 @@ import MetaMaskLogo from '@metamask/logo'
 import { debounce } from 'lodash'
 
 const directionTargetGenerator = ({ top, left, height, width }) => {
-  const horizontalMiddle = left + (width / 2)
-  const verticalMiddle = top + (height / 2)
+  const horizontalMiddle = left + width / 2
+  const verticalMiddle = top + height / 2
   return {
     up: { x: horizontalMiddle, y: top - height },
-    down: { x: horizontalMiddle, y: top + (height * 2) },
+    down: { x: horizontalMiddle, y: top + height * 2 },
     left: { x: left - width, y: verticalMiddle },
-    right: { x: left + (width * 2), y: verticalMiddle },
+    right: { x: left + width * 2, y: verticalMiddle },
     middle: { x: horizontalMiddle, y: verticalMiddle },
   }
 }
@@ -33,7 +33,7 @@ export default class Mascot extends Component {
     lookAtDirection: null,
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     const { width, height, followMouse } = props
@@ -47,29 +47,37 @@ export default class Mascot extends Component {
 
     this.mascotContainer = createRef()
 
-    this.refollowMouse = debounce(this.logo.setFollowMouse.bind(this.logo, true), 1000)
+    this.refollowMouse = debounce(
+      this.logo.setFollowMouse.bind(this.logo, true),
+      1000,
+    )
     this.unfollowMouse = this.logo.setFollowMouse.bind(this.logo, false)
   }
 
-  handleAnimationEvents () {
+  handleAnimationEvents() {
     // only setup listeners once
     if (this.animations) {
       return
     }
     this.animations = this.props.animationEventEmitter
     this.animations.on('point', this.lookAt.bind(this))
-    this.animations.on('setFollowMouse', this.logo.setFollowMouse.bind(this.logo))
+    this.animations.on(
+      'setFollowMouse',
+      this.logo.setFollowMouse.bind(this.logo),
+    )
   }
 
-  lookAt (target) {
+  lookAt(target) {
     this.unfollowMouse()
     this.logo.lookAt(target)
     this.refollowMouse()
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.mascotContainer.current.appendChild(this.logo.container)
-    this.directionTargetMap = directionTargetGenerator(this.mascotContainer.current.getBoundingClientRect())
+    this.directionTargetMap = directionTargetGenerator(
+      this.mascotContainer.current.getBoundingClientRect(),
+    )
 
     const { lookAtTarget, lookAtDirection } = this.props
 
@@ -80,13 +88,20 @@ export default class Mascot extends Component {
     }
   }
 
-  componentDidUpdate (prevProps) {
-    const { lookAtTarget: prevTarget = {}, lookAtDirection: prevDirection = null, followMouse: prevFollowMouse } = prevProps
+  componentDidUpdate(prevProps) {
+    const {
+      lookAtTarget: prevTarget = {},
+      lookAtDirection: prevDirection = null,
+      followMouse: prevFollowMouse,
+    } = prevProps
     const { lookAtTarget = {}, followMouse, lookAtDirection } = this.props
 
     if (lookAtDirection && prevDirection !== lookAtDirection) {
       this.logo.lookAtAndRender(this.directionTargetMap[lookAtDirection])
-    } else if (lookAtTarget?.x !== prevTarget?.x || lookAtTarget?.y !== prevTarget?.y) {
+    } else if (
+      lookAtTarget?.x !== prevTarget?.x ||
+      lookAtTarget?.y !== prevTarget?.y
+    ) {
       this.logo.lookAtAndRender(lookAtTarget)
     }
     if (prevFollowMouse !== followMouse) {
@@ -95,23 +110,18 @@ export default class Mascot extends Component {
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.animations = this.props.animationEventEmitter
     this.animations.removeAllListeners()
     this.logo.container.remove()
     this.logo.stopAnimation()
   }
 
-  render () {
+  render() {
     // this is a bit hacky
     // the event emitter is on `this.props`
     // and we dont get that until render
     this.handleAnimationEvents()
-    return (
-      <div
-        ref={this.mascotContainer}
-        style={{ zIndex: 0 }}
-      />
-    )
+    return <div ref={this.mascotContainer} style={{ zIndex: 0 }} />
   }
 }

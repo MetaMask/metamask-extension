@@ -32,49 +32,56 @@ export default class NetworkDisplay extends Component {
     t: PropTypes.func,
   }
 
-  renderNetworkIcon () {
+  renderNetworkIcon() {
     const { network } = this.props
     const networkClass = networkIdToTypeMap[network]
 
-    return networkClass
-      ? <div className={`network-display__icon network-display__icon--${networkClass}`} />
-      : (
-        <div
-          className="i fa fa-question-circle fa-med"
-          style={{
-            margin: '0 4px',
-            color: 'rgb(125, 128, 130)',
-          }}
-        />
-      )
+    return networkClass ? (
+      <div
+        className={`network-display__icon network-display__icon--${networkClass}`}
+      />
+    ) : (
+      <div
+        className="i fa fa-question-circle fa-med"
+        style={{
+          margin: '0 4px',
+          color: 'rgb(125, 128, 130)',
+        }}
+      />
+    )
   }
 
-  render () {
-    const { colored, network, provider: { type, nickname } } = this.props
+  render() {
+    const {
+      colored,
+      network,
+      provider: { type, nickname },
+    } = this.props
     const networkClass = networkIdToTypeMap[network]
 
     return (
       <div
         className={classnames('network-display__container', {
           'network-display__container--colored': colored,
-          [`network-display__container--${networkClass}`]: colored && networkClass,
+          [`network-display__container--${networkClass}`]:
+            colored && networkClass,
         })}
       >
-        {
-          networkClass
-            ? <div className={`network-display__icon network-display__icon--${networkClass}`} />
-            : (
-              <div
-                className="i fa fa-question-circle fa-med"
-                style={{
-                  margin: '0 4px',
-                  color: 'rgb(125, 128, 130)',
-                }}
-              />
-            )
-        }
+        {networkClass ? (
+          <div
+            className={`network-display__icon network-display__icon--${networkClass}`}
+          />
+        ) : (
+          <div
+            className="i fa fa-question-circle fa-med"
+            style={{
+              margin: '0 4px',
+              color: 'rgb(125, 128, 130)',
+            }}
+          />
+        )}
         <div className="network-display__name">
-          { type === 'rpc' && nickname ? nickname : this.context.t(type) }
+          {type === 'rpc' && nickname ? nickname : this.context.t(type)}
         </div>
       </div>
     )

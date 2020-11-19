@@ -17,10 +17,11 @@
   }
 
   &__text {
+    @include H4;
+
     resize: none;
     border: none;
     background: $alabaster;
-    font-size: 20px;
     text-align: center;
   }
 
@@ -32,12 +33,13 @@
   }
 
   &__button {
+    @include H7;
+
     padding: 10px;
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 12px;
     cursor: pointer;
     color: $primary-blue;
 

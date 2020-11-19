@@ -9,17 +9,13 @@ export default class TransactionBreakdownRow extends PureComponent {
     className: PropTypes.string,
   }
 
-  render () {
+  render() {
     const { title, children, className } = this.props
 
     return (
       <div className={classnames('transaction-breakdown-row', className)}>
-        <div className="transaction-breakdown-row__title">
-          { title }
-        </div>
-        <div className="transaction-breakdown-row__value">
-          { children }
-        </div>
+        <div className="transaction-breakdown-row__title">{title}</div>
+        <div className="transaction-breakdown-row__value">{children}</div>
       </div>
     )
   }

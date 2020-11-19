@@ -12,9 +12,7 @@ import CurrencyDisplay from '../../currency-display'
 describe('CurrencyInput Component', function () {
   describe('rendering', function () {
     it('should render properly without a suffix', function () {
-      const wrapper = shallow(
-        <CurrencyInput />,
-      )
+      const wrapper = shallow(<CurrencyInput />)
 
       assert.ok(wrapper)
       assert.equal(wrapper.find(UnitInput).length, 1)
@@ -76,7 +74,10 @@ describe('CurrencyInput Component', function () {
       assert.equal(wrapper.find('.unit-input__suffix').length, 1)
       assert.equal(wrapper.find('.unit-input__suffix').text(), 'ETH')
       assert.equal(wrapper.find('.unit-input__input').props().value, '1')
-      assert.equal(wrapper.find('.currency-display-component').text(), '$231.06USD')
+      assert.equal(
+        wrapper.find('.currency-display-component').text(),
+        '$231.06USD',
+      )
     })
 
     it('should render properly with a fiat value', function () {
@@ -110,7 +111,10 @@ describe('CurrencyInput Component', function () {
       assert.equal(wrapper.find('.unit-input__suffix').length, 1)
       assert.equal(wrapper.find('.unit-input__suffix').text(), 'USD')
       assert.equal(wrapper.find('.unit-input__input').props().value, '1')
-      assert.equal(wrapper.find('.currency-display-component').text(), '0.004328ETH')
+      assert.equal(
+        wrapper.find('.currency-display-component').text(),
+        '0.004328ETH',
+      )
     })
 
     it('should render properly with a native value when hideFiat is true', function () {
@@ -149,7 +153,10 @@ describe('CurrencyInput Component', function () {
       assert.equal(wrapper.find('.unit-input__suffix').length, 1)
       assert.equal(wrapper.find('.unit-input__suffix').text(), 'ETH')
       assert.equal(wrapper.find('.unit-input__input').props().value, '0.004328')
-      assert.equal(wrapper.find('.currency-input__conversion-component').text(), 'noConversionRateAvailable_t')
+      assert.equal(
+        wrapper.find('.currency-input__conversion-component').text(),
+        'noConversionRateAvailable_t',
+      )
     })
   })
 
@@ -190,14 +197,20 @@ describe('CurrencyInput Component', function () {
       const currencyInputInstance = wrapper.find(CurrencyInput).at(0).instance()
       assert.equal(currencyInputInstance.state.decimalValue, 0)
       assert.equal(currencyInputInstance.state.hexValue, undefined)
-      assert.equal(wrapper.find('.currency-display-component').text(), '$0.00USD')
+      assert.equal(
+        wrapper.find('.currency-display-component').text(),
+        '$0.00USD',
+      )
       const input = wrapper.find('input')
       assert.equal(input.props().value, 0)
 
       input.simulate('change', { target: { value: 1 } })
       assert.equal(handleChangeSpy.callCount, 1)
       assert.ok(handleChangeSpy.calledWith('de0b6b3a7640000'))
-      assert.equal(wrapper.find('.currency-display-component').text(), '$231.06USD')
+      assert.equal(
+        wrapper.find('.currency-display-component').text(),
+        '$231.06USD',
+      )
       assert.equal(currencyInputInstance.state.decimalValue, 1)
       assert.equal(currencyInputInstance.state.hexValue, 'de0b6b3a7640000')
     })
@@ -238,7 +251,10 @@ describe('CurrencyInput Component', function () {
       input.simulate('change', { target: { value: 1 } })
       assert.equal(handleChangeSpy.callCount, 1)
       assert.ok(handleChangeSpy.calledWith('f602f2234d0ea'))
-      assert.equal(wrapper.find('.currency-display-component').text(), '0.004328ETH')
+      assert.equal(
+        wrapper.find('.currency-display-component').text(),
+        '0.004328ETH',
+      )
       assert.equal(currencyInputInstance.state.decimalValue, 1)
       assert.equal(currencyInputInstance.state.hexValue, 'f602f2234d0ea')
     })
@@ -307,20 +323,29 @@ describe('CurrencyInput Component', function () {
       const currencyInputInstance = wrapper.find(CurrencyInput).at(0).instance()
       assert.equal(currencyInputInstance.state.decimalValue, 0)
       assert.equal(currencyInputInstance.state.hexValue, undefined)
-      assert.equal(wrapper.find('.currency-display-component').text(), '$0.00USD')
+      assert.equal(
+        wrapper.find('.currency-display-component').text(),
+        '$0.00USD',
+      )
       const input = wrapper.find('input')
       assert.equal(input.props().value, 0)
 
       input.simulate('change', { target: { value: 1 } })
       assert.equal(handleChangeSpy.callCount, 1)
       assert.ok(handleChangeSpy.calledWith('de0b6b3a7640000'))
-      assert.equal(wrapper.find('.currency-display-component').text(), '$231.06USD')
+      assert.equal(
+        wrapper.find('.currency-display-component').text(),
+        '$231.06USD',
+      )
       assert.equal(currencyInputInstance.state.decimalValue, 1)
       assert.equal(currencyInputInstance.state.hexValue, 'de0b6b3a7640000')
 
       const swap = wrapper.find('.currency-input__swap-component')
       swap.simulate('click')
-      assert.equal(wrapper.find('.currency-display-component').text(), '0.004328ETH')
+      assert.equal(
+        wrapper.find('.currency-display-component').text(),
+        '0.004328ETH',
+      )
     })
   })
 })

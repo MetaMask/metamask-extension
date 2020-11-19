@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask ir izstrādāta un izveidota Kalifornijā."
   },
-  "buyCoinSwitch": {
-    "message": "Pirkt CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch ir vienots galamērķis vairāk nekā 300 kriptovalūtu maiņai, izmantojot labāko kursu."
-  },
   "buyWithWyre": {
     "message": "Pirkt ETH ar Wyre"
   },
@@ -163,9 +157,6 @@
   },
   "cancel": {
     "message": "Atcelt"
-  },
-  "cancelAttempt": {
-    "message": "Atcelt mēģinājumu"
   },
   "cancellationGasFee": {
     "message": "Atcelšanas maksājums par Gas"
@@ -218,9 +209,6 @@
   "connectingToKovan": {
     "message": "Savienojas ar Kovan testa tīklu"
   },
-  "connectingToLocalhost": {
-    "message": "Savienojas ar vietējo resursdatoru 8545"
-  },
   "connectingToMainnet": {
     "message": "Savienojas ar galveno Ethereum tīklu"
   },
@@ -229,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "Pieslēdzas Ropsten testa tīklam"
-  },
-  "continueToCoinSwitch": {
-    "message": "Iet uz CoinSwitch"
   },
   "continueToWyre": {
     "message": "Pāriet uz Wyre"
@@ -310,9 +295,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Vai tiešām vēlaties dzēst šo tīklu?"
-  },
-  "deposit": {
-    "message": "Iemaksa"
   },
   "depositEther": {
     "message": "Noguldīt Ether"
@@ -562,9 +544,6 @@
   "invalidBlockExplorerURL": {
     "message": "Nederīgs Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Nederīga ievadītā vērtība."
-  },
   "invalidRPC": {
     "message": "Nederīgs RPC URL"
   },
@@ -742,10 +721,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Bloķēt Explorer URL (pēc izvēles)"
   },
-  "optionalChainId": {
-    "message": "ChainID (neobligāti)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Simbols (neobligāti)"
   },
   "orderOneHere": {
@@ -992,9 +968,6 @@
   },
   "sentEther": {
     "message": "nosūtītie ether"
-  },
-  "sentTokens": {
-    "message": "nosūtītie marķieri"
   },
   "separateEachWord": {
     "message": "Atdaliet katru vārdu ar vienu atstarpi"

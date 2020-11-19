@@ -3,7 +3,12 @@ import { useRef, useEffect, useState, useMemo } from 'react'
 import { isEqual } from 'lodash'
 import { captureException } from '@sentry/browser'
 import { hexWEIToDecGWEI } from '../helpers/utils/conversions.util'
-import { getEstimatedGasPrices, getEstimatedGasTimes, getFeatureFlags, getIsMainnet } from '../selectors'
+import {
+  getEstimatedGasPrices,
+  getEstimatedGasTimes,
+  getFeatureFlags,
+  getIsMainnet,
+} from '../selectors'
 import { getRawTimeEstimateData } from '../helpers/utils/gas-time-estimates.util'
 import { getCurrentLocale } from '../ducks/metamask/metamask'
 
@@ -13,12 +18,15 @@ import { getCurrentLocale } from '../ducks/metamask/metamask'
  * @param {number} submittedTime       - timestamp of when the tx was submitted
  * @return {number} minutes remaining
  */
-function calcTransactionTimeRemaining (initialTimeEstimate, submittedTime) {
-  const currentTime = (new Date()).getTime()
+function calcTransactionTimeRemaining(initialTimeEstimate, submittedTime) {
+  const currentTime = new Date().getTime()
   const timeElapsedSinceSubmission = (currentTime - submittedTime) / 1000
-  const timeRemainingOnEstimate = initialTimeEstimate - timeElapsedSinceSubmission
+  const timeRemainingOnEstimate =
+    initialTimeEstimate - timeElapsedSinceSubmission
 
-  const renderingTimeRemainingEstimate = Math.round(timeRemainingOnEstimate / 60)
+  const renderingTimeRemainingEstimate = Math.round(
+    timeRemainingOnEstimate / 60,
+  )
   return renderingTimeRemainingEstimate
 }
 
@@ -26,17 +34,20 @@ function calcTransactionTimeRemaining (initialTimeEstimate, submittedTime) {
  * returns a string representing the number of minutes predicted for the transaction to be
  * completed. Only returns this prediction if the transaction is the earliest pending
  * transaction, and the feature flag for showing timing is enabled.
- * @param {bool} isPending         - is the transaction currently pending
+ * @param {bool} isSubmitted       - is the transaction currently in the 'submitted' state
  * @param {bool} isEarliestNonce   - is this transaction the earliest nonce in list
  * @param {number} submittedTime   - the timestamp for when the transaction was submitted
  * @param {number} currentGasPrice - gas price to use for calculation of time
+ * @param {boolean} dontFormat     - Whether the result should be be formatted, or just a number of minutes
  * @returns {string | undefined} i18n formatted string if applicable
  */
-export function useTransactionTimeRemaining (
-  isPending,
+export function useTransactionTimeRemaining(
+  isSubmitted,
   isEarliestNonce,
   submittedTime,
   currentGasPrice,
+  forceAllow,
+  dontFormat,
 ) {
   // the following two selectors return the result of mapping over an array, as such they
   // will always be new objects and trigger effects. To avoid this, we use isEqual as the
@@ -50,15 +61,20 @@ export function useTransactionTimeRemaining (
   const featureFlags = useSelector(getFeatureFlags)
   const transactionTimeFeatureActive = featureFlags?.transactionTime
 
-  const rtf = new Intl.RelativeTimeFormat(locale.replace('_', '-'), { numeric: 'auto', style: 'narrow' })
+  const rtf = new Intl.RelativeTimeFormat(locale.replace('_', '-'), {
+    numeric: 'auto',
+    style: 'narrow',
+  })
 
   // Memoize this value so it can be used as a dependency in the effect below
   const initialTimeEstimate = useMemo(() => {
     const customGasPrice = Number(hexWEIToDecGWEI(currentGasPrice))
     try {
-      const {
-        newTimeEstimate,
-      } = getRawTimeEstimateData(customGasPrice, gasPrices, estimatedTimes)
+      const { newTimeEstimate } = getRawTimeEstimateData(
+        customGasPrice,
+        gasPrices,
+        estimatedTimes,
+      )
       return newTimeEstimate
     } catch (error) {
       captureException(error)
@@ -69,8 +85,8 @@ export function useTransactionTimeRemaining (
   useEffect(() => {
     if (
       isMainNet &&
-      transactionTimeFeatureActive &&
-      isPending &&
+      (transactionTimeFeatureActive || forceAllow) &&
+      isSubmitted &&
       isEarliestNonce &&
       !isNaN(initialTimeEstimate)
     ) {
@@ -90,9 +106,10 @@ export function useTransactionTimeRemaining (
     isMainNet,
     transactionTimeFeatureActive,
     isEarliestNonce,
-    isPending,
     submittedTime,
     initialTimeEstimate,
+    forceAllow,
+    isSubmitted,
   ])
 
   // there are numerous checks to determine if time should be displayed.
@@ -100,5 +117,10 @@ export function useTransactionTimeRemaining (
   // User is currently not on the mainnet
   // User does not have the transactionTime feature flag enabled
   // The transaction is not pending, or isn't the earliest nonce
-  return timeRemaining ? rtf.format(timeRemaining, 'minute') : undefined
+  if (timeRemaining && dontFormat) {
+    return timeRemaining
+  } else if (timeRemaining) {
+    return rtf.format(timeRemaining, 'minute')
+  }
+  return undefined
 }

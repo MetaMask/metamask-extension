@@ -5,7 +5,6 @@ import * as actionConstants from '../../../../../ui/app/store/actionConstants'
 const actions = actionConstants
 
 describe('App State', function () {
-
   const metamaskState = {
     selectedAddress: '0xAddress',
     identities: {
@@ -42,9 +41,9 @@ describe('App State', function () {
 
   it('opens sidebar', function () {
     const value = {
-      'transitionName': 'sidebar-right',
-      'type': 'wallet-view',
-      'isOpen': true,
+      transitionName: 'sidebar-right',
+      type: 'wallet-view',
+      isOpen: true,
     }
     const state = reduceApp(metamaskState, {
       type: actions.SIDEBAR_OPEN,
@@ -151,7 +150,6 @@ describe('App State', function () {
     assert.equal(state.accountDetail.accountExport, 'none')
     assert.equal(state.accountDetail.privateKey, '')
     assert.equal(state.warning, null)
-
   })
 
   it('shows account detail', function () {
@@ -163,7 +161,6 @@ describe('App State', function () {
     assert.equal(state.accountDetail.subview, 'transactions') // default
     assert.equal(state.accountDetail.accountExport, 'none') // default
     assert.equal(state.accountDetail.privateKey, '') // default
-
   })
 
   it('clears account details', function () {
@@ -214,7 +211,6 @@ describe('App State', function () {
     assert.equal(state.txId, 2)
     assert.equal(state.warning, null)
     assert.equal(state.isLoading, false)
-
   })
 
   it('completes tx continues to show pending txs current view context', function () {

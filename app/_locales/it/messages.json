@@ -208,12 +208,6 @@
   "buy": {
     "message": "Compra"
   },
-  "buyCoinSwitch": {
-    "message": "Compra su CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch è la destinazione one-stop per lo scambio di oltre 300 criptovalute alla migliore tariffa."
-  },
   "buyWithWyre": {
     "message": "Compra ETH con Wyre"
   },
@@ -225,9 +219,6 @@
   },
   "cancel": {
     "message": "Annulla"
-  },
-  "cancelAttempt": {
-    "message": "Tentativo di Annullamento"
   },
   "cancellationGasFee": {
     "message": "Costo di Annullamento in Gas"
@@ -333,9 +324,6 @@
   "connectingToKovan": {
     "message": "Connessione alla Rete di test Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "Connessione a Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Connessione alla Rete Ethereum Principale"
   },
@@ -353,9 +341,6 @@
   },
   "contactsSettingsDescription": {
     "message": "Aggiungi, modifica, rimuovi e gestisci i tuoi contatti"
-  },
-  "continueToCoinSwitch": {
-    "message": "Continua su CoinSwitch"
   },
   "continueToWyre": {
     "message": "Continua su Wyre"
@@ -466,9 +451,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Sei sicuro di voler eliminare questa rete?"
-  },
-  "deposit": {
-    "message": "Deposita"
   },
   "depositEther": {
     "message": "Deposita Ether"
@@ -823,9 +805,6 @@
   "invalidBlockExplorerURL": {
     "message": "URI Block Explorer invalido"
   },
-  "invalidInput": {
-    "message": "Input non valido."
-  },
   "invalidIpfsGateway": {
     "message": "Portale IPFS non valido: il valore deve essere un URL valido"
   },
@@ -1062,10 +1041,7 @@
   "optionalBlockExplorerUrl": {
     "message": "URL del Block Explorer (opzionale)"
   },
-  "optionalChainId": {
-    "message": "ChainID (opzionale)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Simbolo (opzionale)"
   },
   "orderOneHere": {
@@ -1366,9 +1342,6 @@
   },
   "sentEther": {
     "message": "ether inviati"
-  },
-  "sentTokens": {
-    "message": "tokens inviati"
   },
   "separateEachWord": {
     "message": "Separa ogni parola con un solo spazio"

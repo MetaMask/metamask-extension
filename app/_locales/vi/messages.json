@@ -34,12 +34,6 @@
   "balance": {
     "message": "Số dư:"
   },
-  "buyCoinSwitch": {
-    "message": "Mua trên CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch là điểm đến duy nhất để trao đổi hơn 300 tiền điện tử với tốc độ tốt nhất."
-  },
   "cancel": {
     "message": "Hủy"
   },
@@ -48,9 +42,6 @@
   },
   "confirmPassword": {
     "message": "Xác nhận mật khẩu"
-  },
-  "continueToCoinSwitch": {
-    "message": "Tiếp tục đến CoinSwitch"
   },
   "contractDeployment": {
     "message": "Triển khai hợp đồng"
@@ -78,9 +69,6 @@
   },
   "defaultNetwork": {
     "message": "Mạng lưới mặc định dùng cho các giao dịch Ether là Main Net (tiền ETH thật)."
-  },
-  "deposit": {
-    "message": "Ký gửi/nạp tiền"
   },
   "depositEther": {
     "message": "Ký gửi Ether"
@@ -165,9 +153,6 @@
   },
   "invalidAddress": {
     "message": "Địa chỉ không hợp lệ"
-  },
-  "invalidInput": {
-    "message": "Thông tin nhập vào không hợp lệ"
   },
   "jsonFile": {
     "message": "Tập tin JSON",

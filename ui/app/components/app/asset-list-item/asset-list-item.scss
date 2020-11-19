@@ -1,9 +1,24 @@
 .asset-list-item {
-  &__token-value {
-    padding: 0 5px 0 0;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+  & .list-item__heading {
+    max-width: 100%;
+  }
+
+  &__token-button {
+    padding-inline-start: 0;
+    min-width: 0;
+    min-height: 0;
+    text-align: start;
+
+    & h2 {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    & span {
+      padding-right: 5px;
+    }
   }
 
   &__chevron-right {
@@ -15,8 +30,9 @@
   }
 
   .list-item__subheading {
+    @include H6;
+
     margin-top: 6px;
-    font-size: 14px;
   }
 
   &__warning {
@@ -25,10 +41,13 @@
   }
 
   & &__send-token-button {
+    @include H6;
+
     display: none;
     text-transform: uppercase;
     width: fit-content;
-    font-size: 14px;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
   @media (min-width: 576px) {
@@ -40,7 +59,8 @@
       display: flex;
     }
 
-    & &__send-token-button {
+    &:hover &__send-token-button,
+    &:focus-within &__send-token-button {
       display: inline-block;
     }
 

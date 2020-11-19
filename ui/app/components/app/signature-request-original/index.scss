@@ -61,9 +61,9 @@
   }
 
   &__header__text {
+    @include H3;
+
     color: #5b5d67;
-    font-size: 22px;
-    line-height: 29px;
     z-index: 3;
   }
 
@@ -96,14 +96,14 @@
   }
 
   &__account-text {
-    font-size: 14px;
+    @include H6;
   }
 
   &__account-item {
+    @include H7;
+
     height: 22px;
     background-color: $white;
-    line-height: 16px;
-    font-size: 12px;
     width: 124px;
 
     .account-list-item {
@@ -129,8 +129,9 @@
   }
 
   &__balance-text {
+    @include H6;
+
     text-align: right;
-    font-size: 14px;
   }
 
   &__balance-value {
@@ -157,19 +158,19 @@
   }
 
   &__headline {
+    @include H4;
+
     height: 48px;
     width: 240px;
     color: $tundora;
-    font-size: 18px;
-    line-height: 24px;
     text-align: center;
     margin-top: 20px;
   }
 
   &__notice,
   &__warning {
-    font-size: 14px;
-    line-height: 19px;
+    @include H6;
+
     text-align: center;
     margin-top: 41px;
     margin-bottom: 11px;
@@ -200,19 +201,19 @@
   }
 
   &__row-title {
+    @include H5;
+
     width: 80px;
     color: $dusty-gray;
-    font-size: 16px;
-    line-height: 22px;
     margin-top: 12px;
     margin-left: 18px;
     width: 100%;
   }
 
   &__row-value {
+    @include H6;
+
     color: $scorpion;
-    font-size: 14px;
-    line-height: 19px;
     width: 100%;
     overflow-wrap: break-word;
     border-bottom: 1px solid #d2d8dd;
@@ -227,11 +228,12 @@
   }
 
   &__footer {
+    @include H3;
+
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 22px;
     position: relative;
     flex: 0 0 auto;
     border-top: 1px solid $geyser;

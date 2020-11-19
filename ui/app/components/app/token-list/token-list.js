@@ -9,14 +9,14 @@ import { useTokenTracker } from '../../../hooks/useTokenTracker'
 import { getAssetImages } from '../../../selectors'
 import { getTokens } from '../../../ducks/metamask/metamask'
 
-export default function TokenList ({ onTokenClick }) {
+export default function TokenList({ onTokenClick }) {
   const t = useI18nContext()
   const assetImages = useSelector(getAssetImages)
   // use `isEqual` comparison function because the token array is serialized
   // from the background so it has a new reference with each background update,
   // even if the tokens haven't changed
   const tokens = useSelector(getTokens, isEqual)
-  const { loading, error, tokensWithBalances } = useTokenTracker(tokens)
+  const { loading, tokensWithBalances } = useTokenTracker(tokens, true)
 
   if (loading) {
     return (
@@ -38,14 +38,7 @@ export default function TokenList ({ onTokenClick }) {
     <div>
       {tokensWithBalances.map((tokenData, index) => {
         tokenData.image = assetImages[tokenData.address]
-        return (
-          <TokenCell
-            key={index}
-            {...tokenData}
-            outdatedBalance={Boolean(error)}
-            onClick={onTokenClick}
-          />
-        )
+        return <TokenCell key={index} {...tokenData} onClick={onTokenClick} />
       })}
     </div>
   )

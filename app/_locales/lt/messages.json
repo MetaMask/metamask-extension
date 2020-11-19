@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "„MetaMask“ suprojektuota ir įdiegta Kalifornijoje."
   },
-  "buyCoinSwitch": {
-    "message": "Pirkti „CoinSwitch“"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "„CoinSwitch“ – tai lengvai pasiekiama vieta keisti per 300 kriptovaliutų geriausiu santykiu."
-  },
   "buyWithWyre": {
     "message": "Pirkti ETH su „Wyre“"
   },
@@ -163,9 +157,6 @@
   },
   "cancel": {
     "message": "Atšaukti"
-  },
-  "cancelAttempt": {
-    "message": "Atšaukti mėginimą"
   },
   "cancellationGasFee": {
     "message": "Dujų mokesčio atšaukimas"
@@ -218,9 +209,6 @@
   "connectingToKovan": {
     "message": "Jungiamasi prie „Kovan“ bandomojo tinklo"
   },
-  "connectingToLocalhost": {
-    "message": "Jungiamasi prie vietinio serverio 8545"
-  },
   "connectingToMainnet": {
     "message": "Jungiamasi prie pagrindinio „Ethereum“ tinklo"
   },
@@ -229,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "Jungiamasi prie „Ropsten“ bandomojo tinklo"
-  },
-  "continueToCoinSwitch": {
-    "message": "Tęsti su „CoinSwitch“"
   },
   "continueToWyre": {
     "message": "Tęsti su „Wyre“"
@@ -310,9 +295,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Ar tikrai norite panaikinti šį tinklą?"
-  },
-  "deposit": {
-    "message": "Indėlis"
   },
   "depositEther": {
     "message": "Įnešti eterių"
@@ -566,9 +548,6 @@
   "invalidBlockExplorerURL": {
     "message": "Netinkamas Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Netinkama įvestis."
-  },
   "invalidRPC": {
     "message": "Netinkamas RPC URL"
   },
@@ -746,10 +725,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Blokuoti naršyklės URL (pasirinktinai)"
   },
-  "optionalChainId": {
-    "message": "Grandinės ID (nebūtinas)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Simbolis (nebūtinas)"
   },
   "orderOneHere": {
@@ -996,9 +972,6 @@
   },
   "sentEther": {
     "message": "siųsti eterių"
-  },
-  "sentTokens": {
-    "message": "išsiųsti žetonai"
   },
   "separateEachWord": {
     "message": "Kiekvieną žodį atskirkite viengubu tarpu"

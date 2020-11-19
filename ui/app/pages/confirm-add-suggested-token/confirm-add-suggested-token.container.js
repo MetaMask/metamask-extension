@@ -6,7 +6,9 @@ import { getMostRecentOverviewPage } from '../../ducks/history/history'
 import ConfirmAddSuggestedToken from './confirm-add-suggested-token.component'
 
 const mapStateToProps = (state) => {
-  const { metamask: { pendingTokens, suggestedTokens, tokens } } = state
+  const {
+    metamask: { pendingTokens, suggestedTokens, tokens },
+  } = state
   const params = { ...pendingTokens, ...suggestedTokens }
 
   return {
@@ -18,7 +20,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addToken: ({ address, symbol, decimals, image }) => dispatch(addToken(address, symbol, Number(decimals), image)),
+    addToken: ({ address, symbol, decimals, image }) =>
+      dispatch(addToken(address, symbol, Number(decimals), image)),
     removeSuggestedTokens: () => dispatch(removeSuggestedTokens()),
   }
 }

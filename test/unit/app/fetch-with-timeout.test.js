@@ -5,9 +5,7 @@ import fetchWithTimeout from '../../../app/scripts/lib/fetch-with-timeout'
 
 describe('fetchWithTimeout', function () {
   it('fetches a url', async function () {
-    nock('https://api.infura.io')
-      .get('/money')
-      .reply(200, '{"hodl": false}')
+    nock('https://api.infura.io').get('/money').reply(200, '{"hodl": false}')
 
     const fetch = fetchWithTimeout()
     const response = await (await fetch('https://api.infura.io/money')).json()

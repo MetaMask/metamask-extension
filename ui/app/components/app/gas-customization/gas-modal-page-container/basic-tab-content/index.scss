@@ -8,22 +8,25 @@
   border-bottom: 1px solid #d2d8dd;
 
   &__title {
+    @include Paragraph;
+
     margin-top: 19px;
-    font-size: 16px;
     color: $black;
   }
 
   &__blurb {
+    @include H7;
+
     width: 95%;
-    font-size: 12px;
     color: $black;
     margin-top: 5px;
     margin-bottom: 15px;
   }
 
   &__footer-blurb {
+    @include H7;
+
     width: 95%;
-    font-size: 12px;
     color: #979797;
     margin-top: 15px;
   }

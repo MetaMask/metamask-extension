@@ -8,19 +8,10 @@ import {
   setAlertEnabledness,
   setSelectedAddress,
 } from '../../store/actions'
-import {
-  getOriginOfCurrentTab,
-  getSelectedAddress,
-} from '../../selectors'
+import { getOriginOfCurrentTab, getSelectedAddress } from '../../selectors'
+import { ALERT_STATE } from './enums'
 
 // Constants
-
-export const ALERT_STATE = {
-  CLOSED: 'CLOSED',
-  ERROR: 'ERROR',
-  LOADING: 'LOADING',
-  OPEN: 'OPEN',
-}
 
 const name = ALERT_TYPES.unconnectedAccount
 

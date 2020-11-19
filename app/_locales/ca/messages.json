@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask ha estat dissenyat i desenvolupat a Califòrnia."
   },
-  "buyCoinSwitch": {
-    "message": "Comprar a CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch és la destinació número 1 per a canviar més de 300 criptomonedes al millor preu."
-  },
   "buyWithWyre": {
     "message": "Compra ETH amb Wyre"
   },
@@ -160,9 +154,6 @@
   },
   "cancel": {
     "message": "Cancel·la"
-  },
-  "cancelAttempt": {
-    "message": "Cancel·la l'intent"
   },
   "cancellationGasFee": {
     "message": "Preu de cancel·lació del gas"
@@ -215,9 +206,6 @@
   "connectingToKovan": {
     "message": "Conectant a la xarxa de Kovan Test"
   },
-  "connectingToLocalhost": {
-    "message": "Connectant al host local 8545"
-  },
   "connectingToMainnet": {
     "message": "Connectant a Xarxa Principal Ethereum"
   },
@@ -226,9 +214,6 @@
   },
   "connectingToRopsten": {
     "message": "Connectant a la xarxa de test Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "Continua a CoinSwitch"
   },
   "continueToWyre": {
     "message": "Continua a Wyre"
@@ -307,9 +292,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Estàs segur que vols eliminar aquesta xarxa?"
-  },
-  "deposit": {
-    "message": "Depòsit"
   },
   "depositEther": {
     "message": "Diposita Ether"
@@ -553,9 +535,6 @@
   "invalidBlockExplorerURL": {
     "message": "URL de Block Explorer"
   },
-  "invalidInput": {
-    "message": "Entrada no vàlida."
-  },
   "invalidRPC": {
     "message": "URL de RPC"
   },
@@ -730,10 +709,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Bloqueja l'URL d'Explorer (opcional)"
   },
-  "optionalChainId": {
-    "message": "Cadena ID (opcional)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Símbol (opcional)"
   },
   "orderOneHere": {
@@ -974,9 +950,6 @@
   },
   "sentEther": {
     "message": "envia ether"
-  },
-  "sentTokens": {
-    "message": "fitxes enviades"
   },
   "separateEachWord": {
     "message": "Separa cada paraula amb un sol espai"

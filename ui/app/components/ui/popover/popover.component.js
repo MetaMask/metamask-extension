@@ -20,26 +20,23 @@ const Popover = ({
   const t = useI18nContext()
   return (
     <div className="popover-container">
-      { CustomBackground
-        ? <CustomBackground onClose={onClose} />
-        : <div className="popover-bg" onClick={onClose} />
-      }
+      {CustomBackground ? (
+        <CustomBackground onClose={onClose} />
+      ) : (
+        <div className="popover-bg" onClick={onClose} />
+      )}
       <section className={classnames('popover-wrap', className)}>
-        { showArrow ? <div className="popover-arrow" /> : null}
+        {showArrow ? <div className="popover-arrow" /> : null}
         <header className="popover-header">
           <div className="popover-header__title">
             <h2 title={title}>
-              {
-                onBack
-                  ? (
-                    <button
-                      className="fas fa-chevron-left popover-header__button"
-                      title={t('back')}
-                      onClick={onBack}
-                    />
-                  )
-                  : null
-              }
+              {onBack ? (
+                <button
+                  className="fas fa-chevron-left popover-header__button"
+                  title={t('back')}
+                  onClick={onBack}
+                />
+              ) : null}
               {title}
             </h2>
             <button
@@ -48,26 +45,20 @@ const Popover = ({
               onClick={onClose}
             />
           </div>
-          { subtitle ? <p className="popover-header__subtitle">{subtitle}</p> : null }
+          {subtitle ? (
+            <p className="popover-header__subtitle">{subtitle}</p>
+          ) : null}
         </header>
-        {
-          children
-            ? (
-              <div className={classnames('popover-content', contentClassName)}>
-                {children}
-              </div>
-            )
-            : null
-        }
-        {
-          footer
-            ? (
-              <footer className={classnames('popover-footer', footerClassName)}>
-                {footer}
-              </footer>
-            )
-            : null
-        }
+        {children ? (
+          <div className={classnames('popover-content', contentClassName)}>
+            {children}
+          </div>
+        ) : null}
+        {footer ? (
+          <footer className={classnames('popover-footer', footerClassName)}>
+            {footer}
+          </footer>
+        ) : null}
       </section>
     </div>
   )
@@ -94,7 +85,7 @@ export default class PopoverPortal extends PureComponent {
 
   instanceNode = document.createElement('div')
 
-  componentDidMount () {
+  componentDidMount() {
     if (!this.rootNode) {
       return
     }
@@ -102,7 +93,7 @@ export default class PopoverPortal extends PureComponent {
     this.rootNode.appendChild(this.instanceNode)
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     if (!this.rootNode) {
       return
     }
@@ -110,7 +101,7 @@ export default class PopoverPortal extends PureComponent {
     this.rootNode.removeChild(this.instanceNode)
   }
 
-  render () {
+  render() {
     const children = <Popover {...this.props} />
     return this.rootNode
       ? ReactDOM.createPortal(children, this.instanceNode)

@@ -86,6 +86,6 @@ if (!window.crypto) {
   window.crypto = {}
 }
 if (!window.crypto.getRandomValues) {
-  // eslint-disable-next-line global-require
+  // eslint-disable-next-line node/global-require
   window.crypto.getRandomValues = require('polyfill-crypto.getrandomvalues')
 }

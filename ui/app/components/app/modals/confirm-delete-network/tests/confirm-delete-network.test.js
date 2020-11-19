@@ -15,13 +15,11 @@ describe('Confirm Delete Network', function () {
   }
 
   beforeEach(function () {
-    wrapper = mount(
-      <ConfirmDeleteNetwork.WrappedComponent {...props} />, {
-        context: {
-          t: (str) => str,
-        },
+    wrapper = mount(<ConfirmDeleteNetwork.WrappedComponent {...props} />, {
+      context: {
+        t: (str) => str,
       },
-    )
+    })
   })
 
   afterEach(function () {
@@ -36,15 +34,18 @@ describe('Confirm Delete Network', function () {
   })
 
   it('clicks cancel to hide modal', function () {
-    const cancelButton = wrapper.find('.button.btn-default.modal-container__footer-button')
+    const cancelButton = wrapper.find(
+      '.button.btn-default.modal-container__footer-button',
+    )
     cancelButton.simulate('click')
 
     assert(props.hideModal.calledOnce)
-
   })
 
   it('clicks delete to delete the target and hides modal', function () {
-    const deleteButton = wrapper.find('.button.btn-danger.modal-container__footer-button')
+    const deleteButton = wrapper.find(
+      '.button.btn-danger.modal-container__footer-button',
+    )
 
     deleteButton.simulate('click')
 
@@ -54,5 +55,4 @@ describe('Confirm Delete Network', function () {
       assert(props.onConfirm.calledOnce)
     })
   })
-
 })

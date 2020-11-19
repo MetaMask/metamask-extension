@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import Button from '../../../ui/button/button.component'
 
 export default class NewAccountModal extends Component {
-
   static contextTypes = {
     t: PropTypes.func,
   }
@@ -15,7 +14,9 @@ export default class NewAccountModal extends Component {
   }
 
   state = {
-    alias: this.context.t('newAccountNumberName', [this.props.newAccountNumber]),
+    alias: this.context.t('newAccountNumberName', [
+      this.props.newAccountNumber,
+    ]),
   }
 
   onChange = (e) => {
@@ -25,8 +26,7 @@ export default class NewAccountModal extends Component {
   }
 
   onSubmit = () => {
-    this.props.onSave(this.state.alias)
-      .then(this.props.hideModal)
+    this.props.onSave(this.state.alias).then(this.props.hideModal)
   }
 
   onKeyPress = (e) => {
@@ -35,7 +35,7 @@ export default class NewAccountModal extends Component {
     }
   }
 
-  render () {
+  render() {
     const { t } = this.context
 
     return (
@@ -62,10 +62,7 @@ export default class NewAccountModal extends Component {
           />
         </div>
         <div className="new-account-modal__footer">
-          <Button
-            type="secondary"
-            onClick={this.props.hideModal}
-          >
+          <Button type="secondary" onClick={this.props.hideModal}>
             {t('cancel')}
           </Button>
           <Button

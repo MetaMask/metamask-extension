@@ -1,6 +1,9 @@
-export default function getRestrictedMethods ({ getIdentities, getKeyringAccounts }) {
+export default function getRestrictedMethods({
+  getIdentities,
+  getKeyringAccounts,
+}) {
   return {
-    'eth_accounts': {
+    eth_accounts: {
       method: async (_, res, __, end) => {
         try {
           const accounts = await getKeyringAccounts()
@@ -10,7 +13,10 @@ export default function getRestrictedMethods ({ getIdentities, getKeyringAccount
               throw new Error(`Missing identity for address ${firstAddress}`)
             } else if (!identities[secondAddress]) {
               throw new Error(`Missing identity for address ${secondAddress}`)
-            } else if (identities[firstAddress].lastSelected === identities[secondAddress].lastSelected) {
+            } else if (
+              identities[firstAddress].lastSelected ===
+              identities[secondAddress].lastSelected
+            ) {
               return 0
             } else if (identities[firstAddress].lastSelected === undefined) {
               return 1
@@ -18,7 +24,10 @@ export default function getRestrictedMethods ({ getIdentities, getKeyringAccount
               return -1
             }
 
-            return identities[secondAddress].lastSelected - identities[firstAddress].lastSelected
+            return (
+              identities[secondAddress].lastSelected -
+              identities[firstAddress].lastSelected
+            )
           })
           end()
         } catch (err) {

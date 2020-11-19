@@ -43,12 +43,6 @@
   "builtInCalifornia": {
     "message": "MetaMask is ontworpen en gebouwd in Californië."
   },
-  "buyCoinSwitch": {
-    "message": "Koop op CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch is de one-stop-bestemming om meer dan 300 cryptocurrencies tegen de beste prijs in te wisselen."
-  },
   "cancel": {
     "message": "Annuleer"
   },
@@ -57,9 +51,6 @@
   },
   "confirmPassword": {
     "message": "bevestig wachtwoord"
-  },
-  "continueToCoinSwitch": {
-    "message": "Ga verder naar CoinSwitch"
   },
   "contractDeployment": {
     "message": "Contractimplementatie"
@@ -93,9 +84,6 @@
   },
   "defaultNetwork": {
     "message": "Het standaardnetwerk voor Ether-transacties is Main Net."
-  },
-  "deposit": {
-    "message": "Storting"
   },
   "depositEther": {
     "message": "Stort Ether"
@@ -195,9 +183,6 @@
   },
   "invalidBlockExplorerURL": {
     "message": "Ongeldige Block Explorer URI"
-  },
-  "invalidInput": {
-    "message": "Ongeldige invoer."
   },
   "invalidRPC": {
     "message": "Ongeldige RPC-URI"

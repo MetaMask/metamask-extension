@@ -69,11 +69,22 @@ $fa-font-path: 'fonts/fontawesome';
 
 $font-family: Euclid, Roboto, Helvetica, Arial, sans-serif;
 
+$font-size-h1: 2.5rem;
+$font-size-h2: 2rem;
+$font-size-h3: 1.5rem;
+$font-size-h4: 1.125rem;
+$font-size-h5: 1rem;
+$font-size-h6: 0.875rem;
+$font-size-paragraph: 1rem;
+$font-size-h7: 0.75rem;
+$font-size-h8: 0.625rem;
+$font-size-h9: 0.5rem;
+
 // Typography
 @mixin H1 {
   font-style: normal;
   font-weight: normal;
-  font-size: 2.5rem;
+  font-size: $font-size-h1;
   font-family: $font-family;
   line-height: 140%;
 }
@@ -82,7 +93,7 @@ $font-family: Euclid, Roboto, Helvetica, Arial, sans-serif;
 @mixin H2 {
   font-style: normal;
   font-weight: normal;
-  font-size: 2rem;
+  font-size: $font-size-h2;
   font-family: $font-family;
   line-height: 140%;
 }
@@ -90,7 +101,7 @@ $font-family: Euclid, Roboto, Helvetica, Arial, sans-serif;
 @mixin H3 {
   font-style: normal;
   font-weight: normal;
-  font-size: 1.5rem;
+  font-size: $font-size-h3;
   font-family: $font-family;
   line-height: 140%;
 }
@@ -98,7 +109,7 @@ $font-family: Euclid, Roboto, Helvetica, Arial, sans-serif;
 @mixin H4 {
   font-style: normal;
   font-weight: normal;
-  font-size: 1.125rem;
+  font-size: $font-size-h4;
   font-family: $font-family;
   line-height: 140%;
 }
@@ -106,46 +117,41 @@ $font-family: Euclid, Roboto, Helvetica, Arial, sans-serif;
 @mixin H5 {
   font-style: normal;
   font-weight: normal;
-  font-size: 1rem;
-  font-family: $font-family;
+  font-size: $font-size-h5;
   line-height: 140%;
 }
 
 @mixin H6 {
   font-style: normal;
   font-weight: normal;
-  font-size: 0.875rem; // 14px @default
+  font-size: $font-size-h6; // 14px @default
   line-height: 140%;
 }
 
 @mixin Paragraph {
   font-style: normal;
   font-weight: normal;
-  font-size: 1rem;
-  font-family: $font-family;
+  font-size: $font-size-paragraph;
   line-height: 140%;
 }
 
 @mixin H7 {
   font-style: normal;
   font-weight: normal;
-  font-size: 0.75rem;
-  font-family: $font-family;
+  font-size: $font-size-h7;
   line-height: 140%;
 }
 
 @mixin H8 {
   font-style: normal;
   font-weight: normal;
-  font-size: 0.625rem;
-  font-family: $font-family;
+  font-size: $font-size-h8;
   line-height: 140%;
 }
 
 @mixin H9 {
   font-style: normal;
   font-weight: normal;
-  font-size: 0.5rem;
-  font-family: $font-family;
+  font-size: $font-size-h9;
   line-height: 140%;
 }
