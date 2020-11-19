@@ -33,6 +33,10 @@ class ConnectHardwareForm extends Component {
     this.setState({ accounts: newAccounts })
   }
 
+  componentDidMount() {
+    this.checkIfUnlocked()
+  }
+
   async checkIfUnlocked() {
     for (const device of ['trezor', 'ledger']) {
       const unlocked = await this.props.checkHardwareStatus(
