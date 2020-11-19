@@ -727,7 +727,7 @@ describe('Gas Duck', function() {
           ...initState,
           priceAndTimeEstimatesLastRetrieved: 1000000,
         },
-        metamask: { provider: { type: 'ropsten' } },
+        metamask: { provider: { type: 'testnet' } },
       }))
       assert.deepEqual(mockDistpatch.getCall(0).args, [
         { type: GAS_ESTIMATE_LOADING_STARTED },
@@ -789,7 +789,7 @@ describe('Gas Duck', function() {
             },
           ],
         },
-        metamask: { provider: { type: 'ropsten' } },
+        metamask: { provider: { type: 'testnet' } },
       }))
       assert.deepEqual(mockDistpatch.getCall(0).args, [
         { type: GAS_ESTIMATE_LOADING_STARTED },

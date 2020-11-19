@@ -1,7 +1,7 @@
 import EventEmitter from 'safe-event-emitter'
 import ObservableStore from 'obs-store'
 import * as ethUtil from 'cfx-util'
-import { Transaction } from 'js-conflux-sdk/dist/js-conflux-sdk.umd.min.js'
+import { Transaction } from 'js-conflux-sdk/src/index.js'
 import EthQuery from '../../ethjs-query'
 import { ethErrors } from 'eth-json-rpc-errors'
 import TxGasUtil, { SIMPLE_GAS_COST } from './tx-gas-utils'
@@ -95,9 +95,9 @@ class TransactionController extends EventEmitter {
       getPendingTransactions: this.txStateManager.getSubmittedTransactions.bind(
         this.txStateManager
       ),
-      getConfirmedTransactions: () => {
-        const executed = this.txStateManager.getExecutedTransactions()
-        const confirmed = this.txStateManager.getConfirmedTransactions()
+      getConfirmedTransactions: address => {
+        const executed = this.txStateManager.getExecutedTransactions(address)
+        const confirmed = this.txStateManager.getConfirmedTransactions(address)
         return [...executed, ...confirmed]
       },
     })
@@ -112,9 +112,9 @@ class TransactionController extends EventEmitter {
         return [...pending, ...approved]
       },
       approveTransaction: this.approveTransaction.bind(this),
-      getCompletedTransactions: () => {
-        const executed = this.txStateManager.getExecutedTransactions()
-        const confirmed = this.txStateManager.getConfirmedTransactions()
+      getCompletedTransactions: address => {
+        const executed = this.txStateManager.getExecutedTransactions(address)
+        const confirmed = this.txStateManager.getConfirmedTransactions(address)
         return [...executed, ...confirmed]
       },
     })

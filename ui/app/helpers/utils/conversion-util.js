@@ -179,7 +179,12 @@ const subtractCurrencies = (a, b, options = {}) => {
 }
 
 const multiplyCurrencies = (a, b, options = {}) => {
-  const { multiplicandBase, multiplierBase, ...conversionOptions } = options
+  const {
+    multiplicandBase,
+    multiplierBase,
+    ceil,
+    ...conversionOptions
+  } = options
 
   const bigNumberA = new BigNumber(String(a), multiplicandBase)
   const bigNumberB = new BigNumber(String(b), multiplierBase)
@@ -187,7 +192,7 @@ const multiplyCurrencies = (a, b, options = {}) => {
   const value = bigNumberA.times(bigNumberB)
 
   return converter({
-    value,
+    value: ceil ? value.ceil() : value,
     ...conversionOptions,
   })
 }
