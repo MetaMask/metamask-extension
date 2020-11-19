@@ -2,10 +2,8 @@ import { createSlice } from '@reduxjs/toolkit'
 import BigNumber from 'bignumber.js'
 import log from 'loglevel'
 
-import {
-  loadLocalStorageData,
-  saveLocalStorageData,
-} from '../../../lib/local-storage-helpers'
+import { getStorageItem, setStorageItem } from '../../../lib/storage-helpers'
+
 import {
   addToken,
   addUnapprovedTransaction,
@@ -754,7 +752,7 @@ export function fetchMetaSwapsGasPriceEstimates() {
     )
     const timeLastRetrieved =
       priceEstimatesLastRetrieved ||
-      loadLocalStorageData('METASWAP_GAS_PRICE_ESTIMATES_LAST_RETRIEVED') ||
+      (await getStorageItem('METASWAP_GAS_PRICE_ESTIMATES_LAST_RETRIEVED')) ||
       0
 
     dispatch(swapGasPriceEstimatesFetchStarted())
@@ -764,7 +762,7 @@ export function fetchMetaSwapsGasPriceEstimates() {
       if (Date.now() - timeLastRetrieved > 30000) {
         priceEstimates = await fetchSwapsGasPrices()
       } else {
-        const cachedPriceEstimates = loadLocalStorageData(
+        const cachedPriceEstimates = await getStorageItem(
           'METASWAP_GAS_PRICE_ESTIMATES',
         )
         priceEstimates = cachedPriceEstimates || (await fetchSwapsGasPrices())
@@ -795,11 +793,13 @@ export function fetchMetaSwapsGasPriceEstimates() {
 
     const timeRetrieved = Date.now()
 
-    saveLocalStorageData(priceEstimates, 'METASWAP_GAS_PRICE_ESTIMATES')
-    saveLocalStorageData(
-      timeRetrieved,
-      'METASWAP_GAS_PRICE_ESTIMATES_LAST_RETRIEVED',
-    )
+    await Promise.all([
+      setStorageItem('METASWAP_GAS_PRICE_ESTIMATES', priceEstimates),
+      setStorageItem(
+        'METASWAP_GAS_PRICE_ESTIMATES_LAST_RETRIEVED',
+        timeRetrieved,
+      ),
+    ])
 
     dispatch(
       swapGasPriceEstimatesFetchCompleted({

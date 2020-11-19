@@ -1,9 +1,7 @@
 import { uniqBy, cloneDeep, flatten } from 'lodash'
 import BigNumber from 'bignumber.js'
-import {
-  loadLocalStorageData,
-  saveLocalStorageData,
-} from '../../../lib/local-storage-helpers'
+import { getStorageItem, setStorageItem } from '../../../lib/storage-helpers'
+
 import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util'
 import { isEthereumNetwork } from '../../selectors'
 
@@ -209,7 +207,7 @@ export function fetchBasicGasEstimates() {
     const { basicPriceEstimatesLastRetrieved } = getState().gas
     const timeLastRetrieved =
       basicPriceEstimatesLastRetrieved ||
-      loadLocalStorageData('BASIC_PRICE_ESTIMATES_LAST_RETRIEVED') ||
+      (await getStorageItem('BASIC_PRICE_ESTIMATES_LAST_RETRIEVED')) ||
       0
 
     dispatch(basicGasEstimatesLoadingStarted())
@@ -218,7 +216,7 @@ export function fetchBasicGasEstimates() {
     if (Date.now() - timeLastRetrieved > 75000) {
       basicEstimates = await fetchExternalBasicGasEstimates(dispatch)
     } else {
-      const cachedBasicEstimates = loadLocalStorageData('BASIC_PRICE_ESTIMATES')
+      const cachedBasicEstimates = await getStorageItem('BASIC_PRICE_ESTIMATES')
       basicEstimates =
         cachedBasicEstimates || (await fetchExternalBasicGasEstimates(dispatch))
     }
@@ -259,8 +257,10 @@ async function fetchExternalBasicGasEstimates(dispatch) {
   }
 
   const timeRetrieved = Date.now()
-  saveLocalStorageData(basicEstimates, 'BASIC_PRICE_ESTIMATES')
-  saveLocalStorageData(timeRetrieved, 'BASIC_PRICE_ESTIMATES_LAST_RETRIEVED')
+  await Promise.all([
+    setStorageItem('BASIC_PRICE_ESTIMATES', basicEstimates),
+    setStorageItem('BASIC_PRICE_ESTIMATES_LAST_RETRIEVED', timeRetrieved),
+  ])
   dispatch(setBasicPriceEstimatesLastRetrieved(timeRetrieved))
 
   return basicEstimates
@@ -271,7 +271,9 @@ export function fetchBasicGasAndTimeEstimates() {
     const { basicPriceAndTimeEstimatesLastRetrieved } = getState().gas
     const timeLastRetrieved =
       basicPriceAndTimeEstimatesLastRetrieved ||
-      loadLocalStorageData('BASIC_GAS_AND_TIME_API_ESTIMATES_LAST_RETRIEVED') ||
+      (await getStorageItem(
+        'BASIC_GAS_AND_TIME_API_ESTIMATES_LAST_RETRIEVED',
+      )) ||
       0
 
     dispatch(basicGasEstimatesLoadingStarted())
@@ -280,7 +282,7 @@ export function fetchBasicGasAndTimeEstimates() {
     if (Date.now() - timeLastRetrieved > 75000) {
       basicEstimates = await fetchExternalBasicGasAndTimeEstimates(dispatch)
     } else {
-      const cachedBasicEstimates = loadLocalStorageData(
+      const cachedBasicEstimates = await getStorageItem(
         'BASIC_GAS_AND_TIME_API_ESTIMATES',
       )
       basicEstimates =
@@ -332,11 +334,13 @@ async function fetchExternalBasicGasAndTimeEstimates(dispatch) {
   }
 
   const timeRetrieved = Date.now()
-  saveLocalStorageData(basicEstimates, 'BASIC_GAS_AND_TIME_API_ESTIMATES')
-  saveLocalStorageData(
-    timeRetrieved,
-    'BASIC_GAS_AND_TIME_API_ESTIMATES_LAST_RETRIEVED',
-  )
+  await Promise.all([
+    setStorageItem('BASIC_GAS_AND_TIME_API_ESTIMATES', basicEstimates),
+    setStorageItem(
+      'BASIC_GAS_AND_TIME_API_ESTIMATES_LAST_RETRIEVED',
+      timeRetrieved,
+    ),
+  ])
   dispatch(setBasicApiEstimatesLastRetrieved(timeRetrieved))
 
   return basicEstimates
@@ -403,11 +407,11 @@ function inliersByIQR(data, prop) {
 }
 
 export function fetchGasEstimates(blockTime) {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const state = getState()
 
     if (!isEthereumNetwork(state)) {
-      return Promise.resolve(null)
+      return
     }
 
     const {
@@ -416,114 +420,112 @@ export function fetchGasEstimates(blockTime) {
     } = state.gas
     const timeLastRetrieved =
       priceAndTimeEstimatesLastRetrieved ||
-      loadLocalStorageData('GAS_API_ESTIMATES_LAST_RETRIEVED') ||
+      (await getStorageItem('GAS_API_ESTIMATES_LAST_RETRIEVED')) ||
       0
 
     dispatch(gasEstimatesLoadingStarted())
 
-    const promiseToFetch =
-      Date.now() - timeLastRetrieved > 75000
-        ? queryEthGasStationPredictionTable()
-            .then((r) => r.json())
-            .then((r) => {
-              const estimatedPricesAndTimes = r.map(
-                ({ expectedTime, expectedWait, gasprice }) => ({
-                  expectedTime,
-                  expectedWait,
-                  gasprice,
-                }),
-              )
-              const estimatedTimeWithUniquePrices = uniqBy(
-                estimatedPricesAndTimes,
-                ({ expectedTime }) => expectedTime,
-              )
+    const shouldGetFreshGasQuote = Date.now() - timeLastRetrieved > 75000
+    let estimates
+    if (shouldGetFreshGasQuote) {
+      const response = await queryEthGasStationPredictionTable()
+      const tableJson = await response.json()
 
-              const withSupplementalTimeEstimates = flatten(
-                estimatedTimeWithUniquePrices.map(
-                  ({ expectedWait, gasprice }, i, arr) => {
-                    const next = arr[i + 1]
-                    if (!next) {
-                      return [{ expectedWait, gasprice }]
-                    }
-                    const supplementalPrice = getRandomArbitrary(
-                      gasprice,
-                      next.gasprice,
-                    )
-                    const supplementalTime = extrapolateY({
-                      higherY: next.expectedWait,
-                      lowerY: expectedWait,
-                      higherX: next.gasprice,
-                      lowerX: gasprice,
-                      xForExtrapolation: supplementalPrice,
-                    })
-                    const supplementalPrice2 = getRandomArbitrary(
-                      supplementalPrice,
-                      next.gasprice,
-                    )
-                    const supplementalTime2 = extrapolateY({
-                      higherY: next.expectedWait,
-                      lowerY: supplementalTime,
-                      higherX: next.gasprice,
-                      lowerX: supplementalPrice,
-                      xForExtrapolation: supplementalPrice2,
-                    })
-                    return [
-                      { expectedWait, gasprice },
-                      {
-                        expectedWait: supplementalTime,
-                        gasprice: supplementalPrice,
-                      },
-                      {
-                        expectedWait: supplementalTime2,
-                        gasprice: supplementalPrice2,
-                      },
-                    ]
-                  },
-                ),
-              )
-              const withOutliersRemoved = inliersByIQR(
-                withSupplementalTimeEstimates.slice(0).reverse(),
-                'expectedWait',
-              ).reverse()
-              const timeMappedToSeconds = withOutliersRemoved.map(
-                ({ expectedWait, gasprice }) => {
-                  const expectedTime = new BigNumber(expectedWait)
-                    .times(Number(blockTime), 10)
-                    .toNumber()
-                  return {
-                    expectedTime,
-                    gasprice: new BigNumber(gasprice, 10).toNumber(),
-                  }
-                },
-              )
+      const estimatedPricesAndTimes = tableJson.map(
+        ({ expectedTime, expectedWait, gasprice }) => ({
+          expectedTime,
+          expectedWait,
+          gasprice,
+        }),
+      )
+      const estimatedTimeWithUniquePrices = uniqBy(
+        estimatedPricesAndTimes,
+        ({ expectedTime }) => expectedTime,
+      )
 
-              const timeRetrieved = Date.now()
-              dispatch(setApiEstimatesLastRetrieved(timeRetrieved))
-              saveLocalStorageData(
-                timeRetrieved,
-                'GAS_API_ESTIMATES_LAST_RETRIEVED',
-              )
-              saveLocalStorageData(timeMappedToSeconds, 'GAS_API_ESTIMATES')
-
-              return timeMappedToSeconds
+      const withSupplementalTimeEstimates = flatten(
+        estimatedTimeWithUniquePrices.map(
+          ({ expectedWait, gasprice }, i, arr) => {
+            const next = arr[i + 1]
+            if (!next) {
+              return [{ expectedWait, gasprice }]
+            }
+            const supplementalPrice = getRandomArbitrary(
+              gasprice,
+              next.gasprice,
+            )
+            const supplementalTime = extrapolateY({
+              higherY: next.expectedWait,
+              lowerY: expectedWait,
+              higherX: next.gasprice,
+              lowerX: gasprice,
+              xForExtrapolation: supplementalPrice,
             })
-        : Promise.resolve(
-            priceAndTimeEstimates.length
-              ? priceAndTimeEstimates
-              : loadLocalStorageData('GAS_API_ESTIMATES'),
-          )
+            const supplementalPrice2 = getRandomArbitrary(
+              supplementalPrice,
+              next.gasprice,
+            )
+            const supplementalTime2 = extrapolateY({
+              higherY: next.expectedWait,
+              lowerY: supplementalTime,
+              higherX: next.gasprice,
+              lowerX: supplementalPrice,
+              xForExtrapolation: supplementalPrice2,
+            })
+            return [
+              { expectedWait, gasprice },
+              {
+                expectedWait: supplementalTime,
+                gasprice: supplementalPrice,
+              },
+              {
+                expectedWait: supplementalTime2,
+                gasprice: supplementalPrice2,
+              },
+            ]
+          },
+        ),
+      )
+      const withOutliersRemoved = inliersByIQR(
+        withSupplementalTimeEstimates.slice(0).reverse(),
+        'expectedWait',
+      ).reverse()
+      const timeMappedToSeconds = withOutliersRemoved.map(
+        ({ expectedWait, gasprice }) => {
+          const expectedTime = new BigNumber(expectedWait)
+            .times(Number(blockTime), 10)
+            .toNumber()
+          return {
+            expectedTime,
+            gasprice: new BigNumber(gasprice, 10).toNumber(),
+          }
+        },
+      )
 
-    return promiseToFetch.then((estimates) => {
-      dispatch(setPricesAndTimeEstimates(estimates))
-      dispatch(gasEstimatesLoadingFinished())
-    })
+      const timeRetrieved = Date.now()
+      dispatch(setApiEstimatesLastRetrieved(timeRetrieved))
+
+      await Promise.all([
+        setStorageItem('GAS_API_ESTIMATES_LAST_RETRIEVED', timeRetrieved),
+        setStorageItem('GAS_API_ESTIMATES', timeMappedToSeconds),
+      ])
+
+      estimates = timeMappedToSeconds
+    } else if (priceAndTimeEstimates.length) {
+      estimates = priceAndTimeEstimates
+    } else {
+      estimates = await getStorageItem('GAS_API_ESTIMATES')
+    }
+
+    dispatch(setPricesAndTimeEstimates(estimates))
+    dispatch(gasEstimatesLoadingFinished())
   }
 }
 
 export function setCustomGasPriceForRetry(newPrice) {
-  return (dispatch) => {
+  return async (dispatch) => {
     if (newPrice === '0x0') {
-      const { fast } = loadLocalStorageData('BASIC_PRICE_ESTIMATES')
+      const { fast } = await getStorageItem('BASIC_PRICE_ESTIMATES')
       dispatch(setCustomGasPrice(decGWEIToHexWEI(fast)))
     } else {
       dispatch(setCustomGasPrice(newPrice))

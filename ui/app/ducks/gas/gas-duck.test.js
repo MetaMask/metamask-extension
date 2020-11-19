@@ -2,10 +2,10 @@ import assert from 'assert'
 import sinon from 'sinon'
 import proxyquire from 'proxyquire'
 
-const fakeLocalStorage = {}
+const fakeStorage = {}
 
 const GasDuck = proxyquire('./gas.duck.js', {
-  '../../../lib/local-storage-helpers': fakeLocalStorage,
+  '../../../lib/storage-helpers': fakeStorage,
 })
 
 const {
@@ -160,8 +160,8 @@ describe('Gas Duck', function () {
     tempFetch = window.fetch
     tempDateNow = global.Date.now
 
-    fakeLocalStorage.loadLocalStorageData = sinon.stub()
-    fakeLocalStorage.saveLocalStorageData = sinon.spy()
+    fakeStorage.getStorageItem = sinon.stub()
+    fakeStorage.setStorageItem = sinon.spy()
     window.fetch = sinon.stub().callsFake(fakeFetch)
     global.Date.now = () => 2000000
   })
@@ -412,21 +412,19 @@ describe('Gas Duck', function () {
       ])
     })
 
-    it('should fetch recently retrieved estimates from local storage', async function () {
+    it('should fetch recently retrieved estimates from storage', async function () {
       const mockDistpatch = sinon.spy()
-      fakeLocalStorage.loadLocalStorageData
+      fakeStorage.getStorageItem
         .withArgs('BASIC_PRICE_ESTIMATES_LAST_RETRIEVED')
         .returns(2000000 - 1) // one second ago from "now"
-      fakeLocalStorage.loadLocalStorageData
-        .withArgs('BASIC_PRICE_ESTIMATES')
-        .returns({
-          average: 25,
-          blockTime: 'mockBlock_time',
-          blockNum: 'mockBlockNum',
-          fast: 35,
-          fastest: 45,
-          safeLow: 15,
-        })
+      fakeStorage.getStorageItem.withArgs('BASIC_PRICE_ESTIMATES').returns({
+        average: 25,
+        blockTime: 'mockBlock_time',
+        blockNum: 'mockBlockNum',
+        fast: 35,
+        fastest: 45,
+        safeLow: 15,
+      })
 
       await fetchBasicGasEstimates()(mockDistpatch, () => ({
         gas: { ...initState },
@@ -453,9 +451,9 @@ describe('Gas Duck', function () {
       ])
     })
 
-    it('should fallback to network if retrieving estimates from local storage fails', async function () {
+    it('should fallback to network if retrieving estimates from storage fails', async function () {
       const mockDistpatch = sinon.spy()
-      fakeLocalStorage.loadLocalStorageData
+      fakeStorage.getStorageItem
         .withArgs('BASIC_PRICE_ESTIMATES_LAST_RETRIEVED')
         .returns(2000000 - 1) // one second ago from "now"
 
@@ -541,12 +539,12 @@ describe('Gas Duck', function () {
       ])
     })
 
-    it('should fetch recently retrieved estimates from local storage', async function () {
+    it('should fetch recently retrieved estimates from storage', async function () {
       const mockDistpatch = sinon.spy()
-      fakeLocalStorage.loadLocalStorageData
+      fakeStorage.getStorageItem
         .withArgs('BASIC_GAS_AND_TIME_API_ESTIMATES_LAST_RETRIEVED')
         .returns(2000000 - 1) // one second ago from "now"
-      fakeLocalStorage.loadLocalStorageData
+      fakeStorage.getStorageItem
         .withArgs('BASIC_GAS_AND_TIME_API_ESTIMATES')
         .returns({
           average: 5,
@@ -596,9 +594,9 @@ describe('Gas Duck', function () {
       ])
     })
 
-    it('should fallback to network if retrieving estimates from local storage fails', async function () {
+    it('should fallback to network if retrieving estimates from storage fails', async function () {
       const mockDistpatch = sinon.spy()
-      fakeLocalStorage.loadLocalStorageData
+      fakeStorage.getStorageItem
         .withArgs('BASIC_GAS_AND_TIME_API_ESTIMATES_LAST_RETRIEVED')
         .returns(2000000 - 1) // one second ago from "now"
 
