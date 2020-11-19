@@ -1,18 +1,14 @@
 import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
-import qrCode from 'qrcode-generator'
 import { I18nContext } from '../../contexts/i18n'
 import Button from '../../components/ui/button'
 import Popover from '../../components/ui/popover'
 
-const MOBILE_HOMEPAGE_URL = 'https://metamask.io/download.html'
+const MOBILE_HOMEPAGE_URL =
+  'https://metamask.io/?_branch_match_id=844633002169985313'
 
 export default function MobileSyncIntroPopup({ onClose }) {
   const t = useContext(I18nContext)
-
-  const qrImage = qrCode(4, 'M')
-  qrImage.addData(MOBILE_HOMEPAGE_URL)
-  qrImage.make()
 
   return (
     <div className="intro-popup">
@@ -33,12 +29,14 @@ export default function MobileSyncIntroPopup({ onClose }) {
         }
       >
         <div className="intro-popup__content">
-          <div
-            className="qr-code__wrapper"
-            dangerouslySetInnerHTML={{
-              __html: qrImage.createTableTag(4),
-            }}
-          />
+          <a href={MOBILE_HOMEPAGE_URL}>
+            <img
+              src="/images/mobile-qr-code.svg"
+              alt={t('mobileWelcomeImageAlt')}
+              width="128"
+              height="128"
+            />
+          </a>
         </div>
       </Popover>
     </div>

@@ -1002,6 +1002,9 @@
   "mobileSyncText": {
     "message": "Please enter your password to confirm it's you!"
   },
+  "mobileWelcomeImageAlt": {
+    "message": "MetaMask Mobile QR Code"
+  },
   "mobileWelcomeText": {
     "message": "Sync with your extension wallet in seconds.  Scan the QR code with your phone camera to download the app."
   },
