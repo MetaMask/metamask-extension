@@ -42,5 +42,7 @@
 
   &__icon {
     @include Paragraph;
+
+    font-weight: 900;
   }
 }

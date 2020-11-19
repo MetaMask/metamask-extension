@@ -9,6 +9,7 @@ import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../app/scripts/lib/enums
 export default class ConfirmAddSuggestedToken extends Component {
   static contextTypes = {
     t: PropTypes.func,
+    trackEvent: PropTypes.func,
   }
 
   static propTypes = {
@@ -139,6 +140,19 @@ export default class ConfirmAddSuggestedToken extends Component {
               onClick={() => {
                 addToken(pendingToken)
                   .then(() => removeSuggestedTokens())
+                  .then(() => {
+                    this.context.trackEvent({
+                      event: 'Token Added',
+                      category: 'Wallet',
+                      sensitiveProperties: {
+                        token_symbol: pendingToken.symbol,
+                        token_contract_address: pendingToken.address,
+                        token_decimal_precision: pendingToken.decimals,
+                        unlisted: pendingToken.unlisted,
+                        source: 'dapp',
+                      },
+                    })
+                  })
                   .then(() => history.push(mostRecentOverviewPage))
               }}
             >

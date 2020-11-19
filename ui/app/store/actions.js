@@ -23,6 +23,7 @@ import {
 } from '../selectors'
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account'
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask'
+import { LISTED_CONTRACT_ADDRESSES } from '../../../shared/constants/tokens'
 import * as actionConstants from './actionConstants'
 
 let background = null
@@ -2210,8 +2211,20 @@ export function setPendingTokens(pendingTokens) {
   const { address, symbol, decimals } = customToken
   const tokens =
     address && symbol && decimals
-      ? { ...selectedTokens, [address]: { ...customToken, isCustom: true } }
+      ? {
+          ...selectedTokens,
+          [address]: {
+            ...customToken,
+            isCustom: true,
+          },
+        }
       : selectedTokens
+
+  Object.keys(tokens).forEach((tokenAddress) => {
+    tokens[tokenAddress].unlisted = !LISTED_CONTRACT_ADDRESSES.includes(
+      tokenAddress.toLowerCase(),
+    )
+  })
 
   return {
     type: actionConstants.SET_PENDING_TOKENS,

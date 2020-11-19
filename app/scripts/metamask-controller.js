@@ -150,7 +150,7 @@ export default class MetamaskController extends EventEmitter {
       isUnlocked: this.isUnlocked.bind(this),
       initState: initState.AppStateController,
       onInactiveTimeout: () => this.setLocked(),
-      showUnlockRequest: opts.showUnlockRequest,
+      showUnlockRequest: opts.showUserConfirmation,
       preferencesStore: this.preferencesController.store,
     })
 
@@ -247,7 +247,7 @@ export default class MetamaskController extends EventEmitter {
         notifyDomain: this.notifyConnections.bind(this),
         notifyAllDomains: this.notifyAllConnections.bind(this),
         preferences: this.preferencesController.store,
-        showPermissionRequest: opts.showPermissionRequest,
+        showPermissionRequest: opts.showUserConfirmation,
       },
       initState.PermissionsController,
       initState.PermissionsMetadata,
@@ -302,7 +302,7 @@ export default class MetamaskController extends EventEmitter {
       getParticipateInMetrics: () =>
         this.preferencesController.getParticipateInMetaMetrics(),
     })
-    this.txController.on('newUnapprovedTx', () => opts.showUnapprovedTx())
+    this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation())
 
     this.txController.on(`tx:status-update`, async (txId, status) => {
       if (
@@ -1376,7 +1376,7 @@ export default class MetamaskController extends EventEmitter {
       req,
     )
     this.sendUpdate()
-    this.opts.showUnconfirmedMessage()
+    this.opts.showUserConfirmation()
     return promise
   }
 
@@ -1439,7 +1439,7 @@ export default class MetamaskController extends EventEmitter {
       req,
     )
     this.sendUpdate()
-    this.opts.showUnconfirmedMessage()
+    this.opts.showUserConfirmation()
     return promise
   }
 
@@ -1498,7 +1498,7 @@ export default class MetamaskController extends EventEmitter {
       req,
     )
     this.sendUpdate()
-    this.opts.showUnconfirmedMessage()
+    this.opts.showUserConfirmation()
     return promise
   }
 
@@ -1590,7 +1590,7 @@ export default class MetamaskController extends EventEmitter {
       req,
     )
     this.sendUpdate()
-    this.opts.showUnconfirmedMessage()
+    this.opts.showUserConfirmation()
     return promise
   }
 
@@ -1655,7 +1655,7 @@ export default class MetamaskController extends EventEmitter {
       version,
     )
     this.sendUpdate()
-    this.opts.showUnconfirmedMessage()
+    this.opts.showUserConfirmation()
     return promise
   }
 

@@ -195,6 +195,7 @@ export default class ConfirmDecryptMessage extends Component {
               <img
                 className="request-decrypt-message__visual-identicon"
                 src={origin.icon}
+                alt=""
               />
             ) : (
               <i className="request-decrypt-message__visual-identicon--default">
@@ -240,7 +241,7 @@ export default class ConfirmDecryptMessage extends Component {
               })
             }}
           >
-            <img src="images/lock.svg" />
+            <img src="images/lock.svg" alt="" />
             <div className="request-decrypt-message__message-lock-text">
               {t('decryptMetamask')}
             </div>

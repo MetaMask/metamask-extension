@@ -5,6 +5,7 @@ import { isValidAddress, sha3, bufferToHex } from 'ethereumjs-util'
 import ethers from 'ethers'
 import log from 'loglevel'
 import { isPrefixedFormattedHexString } from '../lib/util'
+import { LISTED_CONTRACT_ADDRESSES } from '../../../shared/constants/tokens'
 import { addInternalMethodPrefix } from './permissions'
 import { NETWORK_TYPE_TO_ID_MAP } from './network/enums'
 
@@ -175,7 +176,13 @@ export default class PreferencesController {
     const suggested = this.getSuggestedTokens()
     const { rawAddress, symbol, decimals, image } = tokenOpts
     const address = normalizeAddress(rawAddress)
-    const newEntry = { address, symbol, decimals, image }
+    const newEntry = {
+      address,
+      symbol,
+      decimals,
+      image,
+      unlisted: !LISTED_CONTRACT_ADDRESSES.includes(address.toLowerCase()),
+    }
     suggested[address] = newEntry
     this.store.updateState({ suggestedTokens: suggested })
   }

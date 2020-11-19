@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "„MetaMask“ suprojektuota ir įdiegta Kalifornijoje."
   },
-  "buyCoinSwitch": {
-    "message": "Pirkti „CoinSwitch“"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "„CoinSwitch“ – tai lengvai pasiekiama vieta keisti per 300 kriptovaliutų geriausiu santykiu."
-  },
   "buyWithWyre": {
     "message": "Pirkti ETH su „Wyre“"
   },
@@ -223,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "Jungiamasi prie „Ropsten“ bandomojo tinklo"
-  },
-  "continueToCoinSwitch": {
-    "message": "Tęsti su „CoinSwitch“"
   },
   "continueToWyre": {
     "message": "Tęsti su „Wyre“"

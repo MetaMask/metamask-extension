@@ -174,12 +174,12 @@ function Arrow({ variant }) {
   return variant === DEFAULT_VARIANT ? (
     <div className="sender-to-recipient__arrow-container">
       <div className="sender-to-recipient__arrow-circle">
-        <img height={15} width={15} src="./images/arrow-right.svg" />
+        <img height="15" width="15" src="./images/arrow-right.svg" alt="" />
       </div>
     </div>
   ) : (
     <div className="sender-to-recipient__arrow-container">
-      <img height={20} src="./images/caret-right.svg" />
+      <img height="20" src="./images/caret-right.svg" alt="" />
     </div>
   )
 }

@@ -82,6 +82,7 @@ const QuoteDetails = ({
           <img
             src="/images/logo/metamask-fox.svg"
             className="quote-details__metafox-logo"
+            alt=""
           />
           {t('swapMetaMaskFee')}
         </div>

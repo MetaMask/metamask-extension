@@ -1833,16 +1833,16 @@
     web3 "^0.20.7"
     web3-provider-engine "^16.0.1"
 
-"@metamask/controllers@^4.0.2":
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-4.0.2.tgz#ec7efa2bea7f323bb3dc458b8a29d1a284f2849e"
-  integrity sha512-SoEgVgRlguazOJF/pHCE+DFk+9Wb0z/cSsfyFrUSLUiQ0hZOx+fuuxf5bbNvnUNdXgMqai8WP11f9IBXPBad3w==
+"@metamask/controllers@^4.2.0":
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-4.2.0.tgz#ee304fa26aa1d291e21e7969dffee0977b149cbf"
+  integrity sha512-NPpBFP6x2YPEdJhjP5jC9E/WHJ+FJNWH7wf8he5/dfeY0J9hlXgkRv6vrvYI3wo6YvcgPy3IF1EOA0rR4jNbeg==
   dependencies:
     await-semaphore "^0.1.3"
     eth-contract-metadata "^1.11.0"
     eth-ens-namehash "^2.0.8"
     eth-json-rpc-infura "^5.1.0"
-    eth-keyring-controller "^5.6.1"
+    eth-keyring-controller "^6.1.0"
     eth-method-registry "1.1.0"
     eth-phishing-detect "^1.1.13"
     eth-query "^2.1.2"
@@ -1879,9 +1879,9 @@
     hdkey "0.8.0"
 
 "@metamask/eth-token-tracker@^3.0.1":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@metamask/eth-token-tracker/-/eth-token-tracker-3.0.1.tgz#36b89f39c2af2ac41aa600dcedd2341704d94484"
-  integrity sha512-vlSKnI27zMCbaDOAHG5apYXoZgO833GUOP6/gkkzuKNEE7QZZCMti/9U6DYfrE8QvgbWyt/RjZkF3cTXXjBhCA==
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@metamask/eth-token-tracker/-/eth-token-tracker-3.1.0.tgz#1396c5d88401f3cd598b0c86d3a42951c8e78d73"
+  integrity sha512-SopDFnIu7lI8aloD9HGPEpqlcjZNzZ5BeXZqrNRSdSO+CGpuwmFoeyrCrgEmrlkKQvP8dQi6R6aYK/itFPhPrg==
   dependencies:
     deep-equal "^1.1.0"
     eth-block-tracker "^4.4.2"
@@ -1891,10 +1891,10 @@
     human-standard-token-abi "^1.0.2"
     safe-event-emitter "^1.0.1"
 
-"@metamask/etherscan-link@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@metamask/etherscan-link/-/etherscan-link-1.2.0.tgz#677aa49774bd41a1f0fe783a9c04e13075ad73d2"
-  integrity sha512-zSrOowUdEmr2u3HrlrO/dn1Wc6REXvs0bV1m9/JJmzLw1fXpJQ6qn2sPeu/KtZF0Im9iPt4a01nGjFuhzot54w==
+"@metamask/etherscan-link@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@metamask/etherscan-link/-/etherscan-link-1.3.0.tgz#ce5b9e0083f51386f8f462110b4094cf6243022c"
+  integrity sha512-2BLaSJLqOIq5CasneVqortc7sPMjgXDTdPv4dSjseF+RUtv/HPTSXZPhV2dFkGd/n+eCQoevPRVOFsVvuRnFeA==
 
 "@metamask/forwarder@^1.1.0":
   version "1.1.0"

@@ -43,6 +43,9 @@
   "activityLog": {
     "message": "activity log"
   },
+  "addAccount": {
+    "message": "Add an account"
+  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
@@ -221,12 +224,6 @@
   "buy": {
     "message": "Buy"
   },
-  "buyCoinSwitch": {
-    "message": "Buy on CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch is the one-stop destination to exchange more than 300 cryptocurrencies at the best rate."
-  },
   "buyWithWyre": {
     "message": "Buy ETH with Wyre"
   },
@@ -360,9 +357,6 @@
   },
   "contactsSettingsDescription": {
     "message": "Add, edit, remove, and manage your contacts"
-  },
-  "continueToCoinSwitch": {
-    "message": "Continue to CoinSwitch"
   },
   "continueToWyre": {
     "message": "Continue to Wyre"
@@ -634,6 +628,9 @@
   },
   "ethereumPublicAddress": {
     "message": "Ethereum Public Address"
+  },
+  "etherscan": {
+    "message": "Etherscan"
   },
   "etherscanView": {
     "message": "View account on Etherscan"
@@ -1358,6 +1355,9 @@
   "scanQrCode": {
     "message": "Scan QR Code"
   },
+  "scrollDown": {
+    "message": "Scroll down"
+  },
   "search": {
     "message": "Search"
   },
@@ -1841,6 +1841,9 @@
   "swapUnknown": {
     "message": "Unknown"
   },
+  "swapVerifyTokenExplanation": {
+    "message": "Multiple tokens can use the same name and symbol. Check Etherscan to verify this is the token you're looking for."
+  },
   "swapViewToken": {
     "message": "View $1"
   },
@@ -2078,6 +2081,10 @@
   },
   "userName": {
     "message": "Username"
+  },
+  "verifyThisTokenOn": {
+    "message": "Verify this token on $1",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "viewAccount": {
     "message": "View Account"

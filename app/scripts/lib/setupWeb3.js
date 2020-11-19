@@ -71,15 +71,19 @@ export default function setupWeb3(log) {
       for (const [key, path] of applyTrapKeys) {
         web3[topKey][key] = new Proxy(web3[topKey][key], {
           apply: (...params) => {
-            window.ethereum.request({
-              method: 'metamask_logInjectedWeb3Usage',
-              params: [
-                {
-                  action: 'apply',
-                  path,
-                },
-              ],
-            })
+            try {
+              window.ethereum.request({
+                method: 'metamask_logInjectedWeb3Usage',
+                params: [
+                  {
+                    action: 'apply',
+                    path,
+                  },
+                ],
+              })
+            } catch (error) {
+              log.debug('Failed to log web3 usage.', error)
+            }
 
             // Call function normally
             return Reflect.apply(...params)
@@ -93,15 +97,19 @@ export default function setupWeb3(log) {
           const name = stringifyKey(key)
 
           if (getTrapKeys.has(name)) {
-            window.ethereum.request({
-              method: 'metamask_logInjectedWeb3Usage',
-              params: [
-                {
-                  action: 'get',
-                  path: getTrapKeys.get(name),
-                },
-              ],
-            })
+            try {
+              window.ethereum.request({
+                method: 'metamask_logInjectedWeb3Usage',
+                params: [
+                  {
+                    action: 'get',
+                    path: getTrapKeys.get(name),
+                  },
+                ],
+              })
+            } catch (error) {
+              log.debug('Failed to log web3 usage.', error)
+            }
           }
 
           // return value normally
@@ -109,46 +117,50 @@ export default function setupWeb3(log) {
         },
       })
     })
+
+    const topLevelFunctions = [
+      'isConnected',
+      'setProvider',
+      'reset',
+      'sha3',
+      'toHex',
+      'toAscii',
+      'fromAscii',
+      'toDecimal',
+      'fromDecimal',
+      'fromWei',
+      'toWei',
+      'toBigNumber',
+      'isAddress',
+    ]
+
+    // apply-trap top-level functions
+    topLevelFunctions.forEach((key) => {
+      // This type check is probably redundant, but we've been burned before.
+      if (typeof web3[key] === 'function') {
+        web3[key] = new Proxy(web3[key], {
+          apply: (...params) => {
+            try {
+              window.ethereum.request({
+                method: 'metamask_logInjectedWeb3Usage',
+                params: [
+                  {
+                    action: 'apply',
+                    path: `web3.${key}`,
+                  },
+                ],
+              })
+            } catch (error) {
+              log.debug('Failed to log web3 usage.', error)
+            }
+
+            // Call function normally
+            return Reflect.apply(...params)
+          },
+        })
+      }
+    })
   }
-
-  const topLevelFunctions = [
-    'isConnected',
-    'setProvider',
-    'reset',
-    'sha3',
-    'toHex',
-    'toAscii',
-    'fromAscii',
-    'toDecimal',
-    'fromDecimal',
-    'fromWei',
-    'toWei',
-    'toBigNumber',
-    'isAddress',
-  ]
-
-  // apply-trap top-level functions
-  topLevelFunctions.forEach((key) => {
-    // This type check is probably redundant, but we've been burned before.
-    if (typeof web3[key] === 'function') {
-      web3[key] = new Proxy(web3[key], {
-        apply: (...params) => {
-          window.ethereum.request({
-            method: 'metamask_logInjectedWeb3Usage',
-            params: [
-              {
-                action: 'apply',
-                path: `web3.${key}`,
-              },
-            ],
-          })
-
-          // Call function normally
-          return Reflect.apply(...params)
-        },
-      })
-    }
-  })
 
   const web3Proxy = new Proxy(web3, {
     get: (...params) => {

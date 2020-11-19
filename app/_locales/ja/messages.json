@@ -112,12 +112,6 @@
   "blockiesIdenticon": {
     "message": "Blockies Identicon を使用"
   },
-  "buyCoinSwitch": {
-    "message": "CoinSwitchのサイトで購入"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitchは、最高のレートで300以上の暗号化交換を行うワンストップの宛先です。"
-  },
   "cancel": {
     "message": "キャンセル"
   },
@@ -129,9 +123,6 @@
   },
   "confirmPassword": {
     "message": "パスワードの確認"
-  },
-  "continueToCoinSwitch": {
-    "message": "CoinSwitchを開く"
   },
   "contractDeployment": {
     "message": "コントラクトのデプロイ"
