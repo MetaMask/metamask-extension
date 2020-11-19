@@ -299,7 +299,7 @@ export default function Swap() {
                     ethBalance={ethBalance}
                     setMaxSlippage={setMaxSlippage}
                     selectedAccountAddress={selectedAccountAddress}
-                    maxSlippage={Number(maxSlippage)}
+                    maxSlippage={maxSlippage}
                   />
                 )
               }}
