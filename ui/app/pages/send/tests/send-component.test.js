@@ -138,7 +138,7 @@ describe('Send Component', function () {
           balance: '',
         },
       })
-      assert(utilsMethodStubs.doesAmountErrorRequireUpdate.calledOnce)
+      assert(utilsMethodStubs.doesAmountErrorRequireUpdate.calledTwice)
       assert.deepEqual(
         utilsMethodStubs.doesAmountErrorRequireUpdate.getCall(0).args[0],
         {
