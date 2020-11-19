@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import * as ethUtil from 'cfx-util'
-import { multiplyCurrencies } from '../../../../helpers/utils/conversion-util'
+import { addCurrencies } from '../../../../helpers/utils/conversion-util'
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props'
 import CancelTransaction from './cancel-transaction.component'
 import { showModal, createCancelTransaction } from '../../../../store/actions'
@@ -17,10 +17,10 @@ const mapStateToProps = (state, ownProps) => {
   const transactionStatus = transaction ? transaction.status : ''
 
   const defaultNewGasPrice = ethUtil.addHexPrefix(
-    multiplyCurrencies(originalGasPrice, 1.1, {
+    addCurrencies(originalGasPrice, '0x1', {
+      aBase: 16,
+      bBase: 16,
       toNumericBase: 'hex',
-      multiplicandBase: 16,
-      multiplierBase: 10,
     })
   )
 
@@ -38,7 +38,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     createCancelTransaction: (txId, customGasPrice) => {
       return dispatch(createCancelTransaction(txId, customGasPrice))
