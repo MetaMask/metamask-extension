@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { getTokenTrackerLink } from '@metamask/etherscan-link'
+import { createTokenTrackerLink } from '@metamask/etherscan-link'
 
 import TransactionList from '../../../components/app/transaction-list'
 import { TokenOverview } from '../../../components/app/wallet-overview'
@@ -36,7 +36,7 @@ export default function TokenAsset({ token }) {
               dispatch(showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token }))
             }
             onViewEtherscan={() => {
-              const url = getTokenTrackerLink(
+              const url = createTokenTrackerLink(
                 token.address,
                 network,
                 selectedAddress,
