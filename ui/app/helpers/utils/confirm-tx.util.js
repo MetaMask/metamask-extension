@@ -13,24 +13,24 @@ import {
 
 import { unconfirmedTransactionsCountSelector } from '../../selectors/confirm-transaction'
 
-export function increaseLastGasPrice (lastGasPrice) {
+export function increaseLastGasPrice(lastGasPrice) {
   return ethUtil.addHexPrefix(
-    multiplyCurrencies(lastGasPrice || '0x0', 1.1, {
-      multiplicandBase: 16,
-      multiplierBase: 10,
+    addCurrencies(lastGasPrice || '0x0', '0x1', {
+      aBase: 16,
+      bBase: 16,
       toNumericBase: 'hex',
     })
   )
 }
 
-export function hexGreaterThan (a, b) {
+export function hexGreaterThan(a, b) {
   return conversionGreaterThan(
     { value: a, fromNumericBase: 'hex' },
     { value: b, fromNumericBase: 'hex' }
   )
 }
 
-export function getHexGasTotal ({ gasLimit, gasPrice }) {
+export function getHexGasTotal({ gasLimit, gasPrice }) {
   return ethUtil.addHexPrefix(
     multiplyCurrencies(gasLimit || '0x0', gasPrice || '0x0', {
       toNumericBase: 'hex',
@@ -40,11 +40,11 @@ export function getHexGasTotal ({ gasLimit, gasPrice }) {
   )
 }
 
-export function getHexStorageTotal ({ storageLimit }) {
+export function getHexStorageTotal({ storageLimit }) {
   return ethUtil.addHexPrefix(storageToDrip(storageLimit))
 }
 
-export function getHexGasAndCollateralTotal ({
+export function getHexGasAndCollateralTotal({
   gasLimit,
   gasPrice,
   storageLimit,
@@ -63,7 +63,7 @@ export function getHexGasAndCollateralTotal ({
   )
 }
 
-export function addEth (...args) {
+export function addEth(...args) {
   return args.reduce((acc, base) => {
     return addCurrencies(acc, base, {
       toNumericBase: 'dec',
@@ -72,7 +72,7 @@ export function addEth (...args) {
   })
 }
 
-export function addFiat (...args) {
+export function addFiat(...args) {
   return args.reduce((acc, base) => {
     return addCurrencies(acc, base, {
       toNumericBase: 'dec',
@@ -81,7 +81,7 @@ export function addFiat (...args) {
   })
 }
 
-export function getValueFromWeiHex ({
+export function getValueFromWeiHex({
   value,
   fromCurrency = 'CFX',
   toCurrency,
@@ -101,7 +101,7 @@ export function getValueFromWeiHex ({
   })
 }
 
-export function getTransactionFee ({
+export function getTransactionFee({
   value,
   fromCurrency = 'CFX',
   toCurrency,
@@ -119,18 +119,18 @@ export function getTransactionFee ({
   })
 }
 
-export function formatCurrency (value, currencyCode) {
+export function formatCurrency(value, currencyCode) {
   const upperCaseCurrencyCode = currencyCode.toUpperCase()
 
-  return currencies.find((currency) => currency.code === upperCaseCurrencyCode)
+  return currencies.find(currency => currency.code === upperCaseCurrencyCode)
     ? currencyFormatter.format(Number(value), {
-      code: upperCaseCurrencyCode,
-      style: 'currency',
-    })
+        code: upperCaseCurrencyCode,
+        style: 'currency',
+      })
     : value
 }
 
-export function convertTokenToFiat ({
+export function convertTokenToFiat({
   value,
   fromCurrency = 'CFX',
   toCurrency,
@@ -149,11 +149,11 @@ export function convertTokenToFiat ({
   })
 }
 
-export function hasUnconfirmedTransactions (state) {
+export function hasUnconfirmedTransactions(state) {
   return unconfirmedTransactionsCountSelector(state) > 0
 }
 
-export function roundExponential (value) {
+export function roundExponential(value) {
   const PRECISION = 4
   const bigNumberValue = new BigNumber(String(value))
 

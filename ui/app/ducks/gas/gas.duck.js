@@ -4,7 +4,7 @@ import {
   loadLocalStorageData,
   saveLocalStorageData,
 } from '../../../lib/local-storage-helpers'
-import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util'
+import { addCurrencies } from '../../helpers/utils/conversion-util'
 import { isEthereumNetwork } from '../../selectors/selectors'
 import {
   showLoadingIndication,
@@ -576,11 +576,19 @@ export function fetchGasEstimates(blockTime) {
 
 export function setCustomGasPriceForRetry(newPrice) {
   return dispatch => {
+    console.log('newPrice = ', newPrice)
     if (newPrice !== '0x0') {
       dispatch(setCustomGasPrice(newPrice))
     } else {
-      const { fast } = loadLocalStorageData('BASIC_PRICE_ESTIMATES')
-      dispatch(setCustomGasPrice(decGWEIToHexWEI(fast)))
+      dispatch(
+        setCustomGasPrice(
+          addCurrencies(newPrice, '0x1', {
+            aBase: 16,
+            bBase: 16,
+            toNumericBase: 'hex',
+          })
+        )
+      )
     }
   }
 }

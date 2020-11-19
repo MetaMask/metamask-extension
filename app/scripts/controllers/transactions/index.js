@@ -1,7 +1,7 @@
 import EventEmitter from 'safe-event-emitter'
 import ObservableStore from 'obs-store'
 import * as ethUtil from 'cfx-util'
-import { Transaction } from 'js-conflux-sdk/dist/js-conflux-sdk.umd.min.js'
+import { Transaction } from 'js-conflux-sdk/src/index.js'
 import EthQuery from '../../ethjs-query'
 import { ethErrors } from 'eth-json-rpc-errors'
 import TxGasUtil, { SIMPLE_GAS_COST } from './tx-gas-utils'

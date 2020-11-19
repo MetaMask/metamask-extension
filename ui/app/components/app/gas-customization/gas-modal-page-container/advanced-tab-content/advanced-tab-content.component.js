@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { decGWEIToHexWEI } from '../../../../../helpers/utils/conversions.util'
+// import { decGWEIToHexWEI } from '../../../../../helpers/utils/conversions.util'
 // import Loading from '../../../../ui/loading-screen'
 // import GasPriceChart from '../../gas-price-chart'
 import AdvancedGasInputs from '../../advanced-gas-inputs'
@@ -30,7 +30,7 @@ export default class AdvancedTabContent extends Component {
   }
 
   // TODO: add timeRemaining back when we have gas station
-  renderDataSummary (transactionFee /* timeRemaining */) {
+  renderDataSummary(transactionFee /* timeRemaining */) {
     return (
       <div className="advanced-tab__transaction-data-summary">
         <div className="advanced-tab__transaction-data-summary__titles">
@@ -49,12 +49,12 @@ export default class AdvancedTabContent extends Component {
     )
   }
 
-  onGasChartUpdate = (price) => {
-    const { updateCustomGasPrice } = this.props
-    updateCustomGasPrice(decGWEIToHexWEI(price))
-  }
+  // onGasChartUpdate = (price) => {
+  //   const { updateCustomGasPrice } = this.props
+  //   updateCustomGasPrice(decGWEIToHexWEI(price))
+  // }
 
-  render () {
+  render() {
     // const { t } = this.context
     const {
       isSimpleTx,

@@ -38,8 +38,8 @@ export default class TransactionListItem extends PureComponent {
     transaction: PropTypes.object,
     transactionGroup: PropTypes.object,
     value: PropTypes.string,
-    fetchBasicGasAndTimeEstimates: PropTypes.func,
-    fetchGasEstimates: PropTypes.func,
+    // fetchBasicGasAndTimeEstimates: PropTypes.func,
+    // fetchGasEstimates: PropTypes.func,
     rpcPrefs: PropTypes.object,
     data: PropTypes.string,
     getContractMethodData: PropTypes.func,
@@ -60,7 +60,7 @@ export default class TransactionListItem extends PureComponent {
     showTransactionDetails: false,
   }
 
-  componentDidMount () {
+  componentDidMount() {
     if (this.props.data) {
       this.props.getContractMethodData(this.props.data)
     }
@@ -89,7 +89,7 @@ export default class TransactionListItem extends PureComponent {
     this.setState({ showTransactionDetails: !showTransactionDetails })
   }
 
-  handleCancel = (id) => {
+  handleCancel = id => {
     const {
       primaryTransaction: { txParams: { gasPrice } } = {},
       transaction: { id: initialTransactionId },
@@ -107,15 +107,15 @@ export default class TransactionListItem extends PureComponent {
    * transaction.
    * @param {number} id - Transaction id
    */
-  handleRetry = (id) => {
+  handleRetry = id => {
     const {
       primaryTransaction: { txParams: { gasPrice } } = {},
       transaction: { txParams: { to } = {}, id: initialTransactionId },
       methodData: { name } = {},
       setSelectedToken,
       retryTransaction,
-      fetchBasicGasAndTimeEstimates,
-      fetchGasEstimates,
+      // fetchBasicGasAndTimeEstimates,
+      // fetchGasEstimates,
     } = this.props
 
     if (name === TOKEN_METHOD_TRANSFER) {
@@ -132,12 +132,13 @@ export default class TransactionListItem extends PureComponent {
       },
     })
 
-    return fetchBasicGasAndTimeEstimates()
-      .then((basicEstimates) => fetchGasEstimates(basicEstimates.blockTime))
-      .then(retryTransaction(retryId, gasPrice))
+    return retryTransaction(retryId, gasPrice)
+    // return fetchBasicGasAndTimeEstimates()
+    //   .then((basicEstimates) => fetchGasEstimates(basicEstimates.blockTime))
+    //   .then(retryTransaction(retryId, gasPrice))
   }
 
-  renderPrimaryCurrency () {
+  renderPrimaryCurrency() {
     const {
       token,
       primaryTransaction: { txParams: { data } = {} } = {},
@@ -162,7 +163,7 @@ export default class TransactionListItem extends PureComponent {
     )
   }
 
-  renderSecondaryCurrency () {
+  renderSecondaryCurrency() {
     const { token, value, showFiat } = this.props
 
     return token || !showFiat ? null : (
@@ -175,7 +176,7 @@ export default class TransactionListItem extends PureComponent {
     )
   }
 
-  render () {
+  render() {
     const {
       assetImages,
       transaction,

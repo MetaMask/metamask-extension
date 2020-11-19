@@ -13,6 +13,7 @@ export const SECONDARY = 'SECONDARY'
 export const NETWORK_TYPES = {
   KOVAN: 'kovan',
   MAINNET: 'mainnet',
+  TESTNET: 'testnet',
   RINKEBY: 'rinkeby',
   ROPSTEN: 'ropsten',
   GOERLI: 'goerli',
