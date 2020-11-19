@@ -73,7 +73,7 @@
     "@metamask/controllers": "^4.2.0",
     "@metamask/eth-ledger-bridge-keyring": "^0.2.6",
     "@metamask/eth-token-tracker": "^3.0.1",
-    "@metamask/etherscan-link": "^1.2.0",
+    "@metamask/etherscan-link": "^1.3.0",
     "@metamask/inpage-provider": "^6.1.0",
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/logo": "^2.5.0",
