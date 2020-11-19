@@ -95,9 +95,9 @@ class TransactionController extends EventEmitter {
       getPendingTransactions: this.txStateManager.getSubmittedTransactions.bind(
         this.txStateManager
       ),
-      getConfirmedTransactions: () => {
-        const executed = this.txStateManager.getExecutedTransactions()
-        const confirmed = this.txStateManager.getConfirmedTransactions()
+      getConfirmedTransactions: address => {
+        const executed = this.txStateManager.getExecutedTransactions(address)
+        const confirmed = this.txStateManager.getConfirmedTransactions(address)
         return [...executed, ...confirmed]
       },
     })
@@ -112,9 +112,9 @@ class TransactionController extends EventEmitter {
         return [...pending, ...approved]
       },
       approveTransaction: this.approveTransaction.bind(this),
-      getCompletedTransactions: () => {
-        const executed = this.txStateManager.getExecutedTransactions()
-        const confirmed = this.txStateManager.getConfirmedTransactions()
+      getCompletedTransactions: address => {
+        const executed = this.txStateManager.getExecutedTransactions(address)
+        const confirmed = this.txStateManager.getConfirmedTransactions(address)
         return [...executed, ...confirmed]
       },
     })
