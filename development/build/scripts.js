@@ -241,7 +241,15 @@ function createScriptTasks({ browserPlatforms, livereload }) {
       })
 
       // process bundles
-      await pump(buildPipeline)
+      if (opts.devMode) {
+        try {
+          await pump(buildPipeline)
+        } catch (err) {
+          gracefulError(err)
+        }
+      } else {
+        await pump(buildPipeline)
+      }
     }
   }
 
@@ -412,4 +420,13 @@ function getEnvironment({ devMode, test }) {
     return 'pull-request'
   }
   return 'other'
+}
+
+function beep() {
+  process.stdout.write('\x07')
+}
+
+function gracefulError (err) {
+  console.warn(err)
+  beep()
 }
