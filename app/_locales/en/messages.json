@@ -1742,11 +1742,11 @@
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
   },
   "swapPriceDifference": {
-    "message": "Price difference of ~$1%",
+    "message": "Swapping $1 $2 (~$3) for $4 $5 (~$6)",
     "description": "This message represents the price slippage for the swap.  $1 is a percentage with up to two decimals (ex: 2.89)."
   },
   "swapPriceDifferenceTooltip": {
-    "message": "Depending on liquidity, swapping can cause a token's price to change. This is the difference between the current market price and what it will be after you swap."
+    "message": "The difference in market prices can be affected by fees taken by intermediaries, size of market, size of trade, or market inefficiencies."
   },
   "swapProcessing": {
     "message": "Processing"

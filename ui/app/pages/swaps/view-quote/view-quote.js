@@ -283,20 +283,6 @@ export default function ViewQuote() {
   const showInsufficientWarning =
     (balanceError || tokenBalanceNeeded || ethBalanceNeeded) && !warningHidden
 
-  const shouldShowPriceDifferenceWarning =
-    !showInsufficientWarning &&
-    ['high', 'medium'].includes(usedQuote?.priceSlippage?.bucket)
-  let priceDifferencePercentage = 0
-  if (usedQuote?.priceSlippage?.ratio) {
-    priceDifferencePercentage = parseFloat(
-      new BigNumber(usedQuote.priceSlippage.ratio, 10)
-        .minus(1, 10)
-        .times(100, 10)
-        .toFixed(2),
-      10,
-    )
-  }
-
   const numberOfQuotes = Object.values(quotes).length
   const bestQuoteReviewedEventSent = useRef()
   const eventObjectBase = {
@@ -467,7 +453,7 @@ export default function ViewQuote() {
     </span>
   )
 
-  const actionableMessage = t('swapApproveNeedMoreTokens', [
+  const actionableInsufficientMessage = t('swapApproveNeedMoreTokens', [
     <span key="swapApproveNeedMoreTokens-1" className="view-quote__bold">
       {tokenBalanceNeeded || ethBalanceNeeded}
     </span>,
@@ -475,6 +461,24 @@ export default function ViewQuote() {
       ? sourceTokenSymbol
       : 'ETH',
   ])
+
+  debugger;
+
+
+  const shouldShowPriceDifferenceWarning =
+    !showInsufficientWarning &&
+    ['high', 'medium'].includes(usedQuote?.priceSlippage?.bucket)
+
+  const priceDifferenceMessage = t('swapPriceDifference', [
+    sourceTokenValue, // Number of source token to swap
+    usedQuote.sourceTokenInfo.symbol, // Source token symbol
+    '', // Source tokens total value
+    destinationTokenValue, // Number of destination tokens in return
+    usedQuote.destinationTokenInfo.symbol, // Destination token symbol,
+    '', // Destination tokens total value
+  ]);
+
+  debugger;
 
   return (
     <div className="view-quote">
@@ -489,7 +493,7 @@ export default function ViewQuote() {
             onQuoteDetailsIsOpened={quoteDetailsOpened}
           />
         )}
-        {shouldShowPriceDifferenceWarning && (
+        {true /* shouldShowPriceDifferenceWarning */ && (
           <div
             className={classnames(
               'view-quote__price-difference-warning-wrapper',
@@ -502,7 +506,7 @@ export default function ViewQuote() {
             <ActionableMessage
               message={
                 <div className="view-quote__price-difference-warning-contents">
-                  {t('swapPriceDifference', [priceDifferencePercentage])}
+                  {priceDifferenceMessage}
                   <Tooltip
                     position="bottom"
                     theme="white"
@@ -518,14 +522,14 @@ export default function ViewQuote() {
         <div className="view-quote__insufficient-eth-warning-wrapper">
           {showInsufficientWarning && (
             <ActionableMessage
-              message={actionableMessage}
+              message={actionableInsufficientMessage}
               onClose={() => setWarningHidden(true)}
             />
           )}
         </div>
         <div
           className={classnames('view-quote__countdown-timer-container', {
-            'view-quote__countdown-timer-container--thin': showWarning,
+            'view-quote__countdown-timer-container--thin': showInsufficientWarning,
           })}
         >
           <CountdownTimer
@@ -537,7 +541,7 @@ export default function ViewQuote() {
         </div>
         <div
           className={classnames('view-quote__main-quote-summary-container', {
-            'view-quote__main-quote-summary-container--thin': showWarning,
+            'view-quote__main-quote-summary-container--thin': showInsufficientWarning,
           })}
         >
           <MainQuoteSummary
