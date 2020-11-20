@@ -426,7 +426,7 @@ function beep() {
   process.stdout.write('\x07')
 }
 
-function gracefulError (err) {
+function gracefulError(err) {
   console.warn(err)
   beep()
 }
