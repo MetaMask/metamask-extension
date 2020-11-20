@@ -61,8 +61,7 @@
     "3box/ipfs/ipld-zcash/zcash-bitcore-lib/elliptic": "^6.5.3",
     "3box/**/libp2p-crypto/node-forge": "^0.10.0",
     "3box/**/libp2p-keychain/node-forge": "^0.10.0",
-    "browserify-derequire/derequire": "^2.1.1",
-    "ethereumjs-wallet": "^0.6.4"
+    "browserify-derequire/derequire": "^2.1.1"
   },
   "dependencies": {
     "3box": "^1.10.2",
@@ -71,7 +70,7 @@
     "@formatjs/intl-relativetimeformat": "^5.2.6",
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@material-ui/core": "^4.11.0",
-    "@metamask/controllers": "^4.2.0",
+    "@metamask/controllers": "^5.0.0",
     "@metamask/eth-ledger-bridge-keyring": "^0.2.6",
     "@metamask/eth-token-tracker": "^3.0.1",
     "@metamask/etherscan-link": "^1.3.0",
@@ -115,7 +114,6 @@
     "ethereumjs-abi": "^0.6.4",
     "ethereumjs-tx": "1.3.7",
     "ethereumjs-util": "5.1.0",
-    "ethereumjs-wallet": "^0.6.4",
     "ethers": "^5.0.8",
     "ethjs": "^0.4.0",
     "ethjs-contract": "^0.2.3",
@@ -163,7 +161,7 @@
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "reselect": "^3.0.1",
-    "rpc-cap": "^3.2.0",
+    "rpc-cap": "^3.2.1",
     "safe-event-emitter": "^1.0.1",
     "safe-json-stringify": "^1.2.0",
     "single-call-balance-checker-abi": "^1.0.0",

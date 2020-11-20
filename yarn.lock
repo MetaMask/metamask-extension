@@ -1805,38 +1805,10 @@
     prop-types "^15.7.2"
     react-is "^16.8.0"
 
-"@metamask/controllers@^3.1.0":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-3.2.0.tgz#8ad2e63f7953d294712d9b5bacaea1c5261ce588"
-  integrity sha512-Nysutcny5ddsr4eP4XvYuNMAwMqvCO/krughnNUzT69LljslutJyxS2MnT0MnWyKYNa6+CBaV9gxdV+Mm6fAFA==
-  dependencies:
-    await-semaphore "^0.1.3"
-    eth-contract-metadata "^1.11.0"
-    eth-ens-namehash "^2.0.8"
-    eth-json-rpc-infura "^5.1.0"
-    eth-keyring-controller "^5.6.1"
-    eth-method-registry "1.1.0"
-    eth-phishing-detect "^1.1.13"
-    eth-query "^2.1.2"
-    eth-rpc-errors "^3.0.0"
-    eth-sig-util "^2.3.0"
-    ethereumjs-util "^6.1.0"
-    ethereumjs-wallet "0.6.0"
-    ethjs-query "^0.3.8"
-    human-standard-collectible-abi "^1.0.2"
-    human-standard-token-abi "^2.0.0"
-    isomorphic-fetch "^3.0.0"
-    jsonschema "^1.2.4"
-    percentile "^1.2.1"
-    single-call-balance-checker-abi "^1.0.0"
-    uuid "^3.3.2"
-    web3 "^0.20.7"
-    web3-provider-engine "^16.0.1"
-
-"@metamask/controllers@^4.2.0":
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-4.2.0.tgz#ee304fa26aa1d291e21e7969dffee0977b149cbf"
-  integrity sha512-NPpBFP6x2YPEdJhjP5jC9E/WHJ+FJNWH7wf8he5/dfeY0J9hlXgkRv6vrvYI3wo6YvcgPy3IF1EOA0rR4jNbeg==
+"@metamask/controllers@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-5.0.0.tgz#f490a504126c2e19bf019dc94d61dff898f62975"
+  integrity sha512-rpHV+i5p8BNTiCV806Ne9M67CquwbrSLqxwox/rAIdJZeD3YJ/RqXoKcyda4YwdfxAqZ3QyZh6Ww8qyGb1MrFQ==
   dependencies:
     await-semaphore "^0.1.3"
     eth-contract-metadata "^1.11.0"
@@ -1849,14 +1821,13 @@
     eth-rpc-errors "^4.0.0"
     eth-sig-util "^3.0.0"
     ethereumjs-util "^6.1.0"
-    ethereumjs-wallet "0.6.0"
+    ethereumjs-wallet "^0.6.4"
     ethjs-query "^0.3.8"
     human-standard-collectible-abi "^1.0.2"
     human-standard-token-abi "^2.0.0"
     isomorphic-fetch "^3.0.0"
     jsonschema "^1.2.4"
     nanoid "^3.1.12"
-    percentile "^1.2.1"
     single-call-balance-checker-abi "^1.0.0"
     uuid "^3.3.2"
     web3 "^0.20.7"
@@ -9812,21 +9783,6 @@ eth-json-rpc-middleware@^6.0.0:
     pify "^3.0.0"
     safe-event-emitter "^1.0.1"
 
-eth-keyring-controller@^5.6.1:
-  version "5.6.1"
-  resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-5.6.1.tgz#7b7268400704c8f5ce98a055910341177dd207ca"
-  integrity sha512-sxJ87bJg7PvvPzj1sY1jJYHQL1HVUhh84Q/a4QPrcnzAAng1yibvvUfww0pCez4XJfHuMkJvUxfF8eAusJM8fQ==
-  dependencies:
-    bip39 "^2.4.0"
-    bluebird "^3.5.0"
-    browser-passworder "^2.0.3"
-    eth-hd-keyring "^3.5.0"
-    eth-sig-util "^1.4.0"
-    eth-simple-keyring "^3.5.0"
-    ethereumjs-util "^5.1.2"
-    loglevel "^1.5.0"
-    obs-store "^4.0.3"
-
 eth-keyring-controller@^6.1.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-6.1.0.tgz#dc9313d0b793e085dc1badf84dd4f5e3004e127e"
@@ -9922,7 +9878,7 @@ eth-sig-util@^1.4.0, eth-sig-util@^1.4.2:
     ethereumjs-abi "git+https://github.com/ethereumjs/ethereumjs-abi.git"
     ethereumjs-util "^5.1.1"
 
-eth-sig-util@^2.0.0, eth-sig-util@^2.3.0, eth-sig-util@^2.4.4, eth-sig-util@^2.5.0:
+eth-sig-util@^2.0.0, eth-sig-util@^2.4.4, eth-sig-util@^2.5.0:
   version "2.5.3"
   resolved "https://registry.yarnpkg.com/eth-sig-util/-/eth-sig-util-2.5.3.tgz#6938308b38226e0b3085435474900b03036abcbe"
   integrity sha512-KpXbCKmmBUNUTGh9MRKmNkIPietfhzBqqYqysDavLseIiMUGl95k6UcPEkALAZlj41e9E6yioYXc1PC333RKqw==
@@ -10256,7 +10212,7 @@ ethereumjs-vm@^2.1.0, ethereumjs-vm@^2.3.4, ethereumjs-vm@^2.6.0:
     rustbn.js "~0.2.0"
     safe-buffer "^5.1.1"
 
-ethereumjs-wallet@0.6.0, ethereumjs-wallet@0.6.5, ethereumjs-wallet@^0.6.0, ethereumjs-wallet@^0.6.4:
+ethereumjs-wallet@0.6.5, ethereumjs-wallet@^0.6.0, ethereumjs-wallet@^0.6.4:
   version "0.6.5"
   resolved "https://registry.yarnpkg.com/ethereumjs-wallet/-/ethereumjs-wallet-0.6.5.tgz#685e9091645cee230ad125c007658833991ed474"
   integrity sha512-MDwjwB9VQVnpp/Dc1XzA6J1a3wgHQ4hSvA1uWNatdpOrtCbPVuQSKSyRnjLvS0a+KKMw2pvQ9Ybqpb3+eW8oNA==
@@ -19835,11 +19791,6 @@ pend@~1.2.0:
   resolved "https://registry.yarnpkg.com/pend/-/pend-1.2.0.tgz#7a57eb550a6783f9115331fcf4663d5c8e007a50"
   integrity sha1-elfrVQpng/kRUzH89GY9XI4AelA=
 
-percentile@^1.2.1:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/percentile/-/percentile-1.2.2.tgz#8966abc4bb36aaacaee91405f17095d9c881d1cb"
-  integrity sha512-yb/W/Y3WNxEZ6/P75qkAvE3lu81AO1qDk95j7jPJg4Vj+wDWSDs0CMLVGoAUCOZbXOUOz3b3rWWR6Bf1hyzNJg==
-
 performance-now@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/performance-now/-/performance-now-0.2.0.tgz#33ef30c5c77d4ea21c5a53869d91b56d8f2555e5"
@@ -22416,12 +22367,12 @@ roarr@^2.15.3:
     semver-compare "^1.0.0"
     sprintf-js "^1.1.2"
 
-rpc-cap@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/rpc-cap/-/rpc-cap-3.2.0.tgz#304b31c4c7ae65e88b8d847045d7514563045d0c"
-  integrity sha512-RX9ECQfstggmHEN1hzCp9NdSKl4Ct3EAn+HworDU4bfpCl20EEDZAipVXUpqxKqFrNEU6mzH0BRqHmPCUix9qA==
+rpc-cap@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/rpc-cap/-/rpc-cap-3.2.1.tgz#95aba886c60562626261667d3637f9b4fe05b078"
+  integrity sha512-aNevLIJ/jIGR3by0b3pd7MWBUSJOkbOkjOCZ13Kk2ddToGZV1TaxclBsasLIdomFbxl0lyUQ8EeoMwYrS7yuBA==
   dependencies:
-    "@metamask/controllers" "^3.1.0"
+    "@metamask/controllers" "^5.0.0"
     eth-rpc-errors "^3.0.0"
     is-subset "^0.1.1"
     json-rpc-engine "^5.3.0"
