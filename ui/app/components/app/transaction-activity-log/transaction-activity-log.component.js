@@ -8,7 +8,10 @@ import {
 import { formatDate } from '../../../helpers/utils/util'
 import { getEtherscanNetworkPrefix } from '../../../../lib/etherscan-prefix-for-network'
 import TransactionActivityLogIcon from './transaction-activity-log-icon'
-import { CONFIRMED_STATUS } from './transaction-activity-log.constants'
+import {
+  CONFIRMED_STATUS,
+  TRANSACTION_SUBMITTED_EVENT,
+} from './transaction-activity-log.constants'
 
 export default class TransactionActivityLog extends PureComponent {
   static contextTypes = {
@@ -39,7 +42,7 @@ export default class TransactionActivityLog extends PureComponent {
     global.platform.openTab({ url: etherscanUrl })
   }
 
-  renderInlineRetry(index) {
+  renderInlineRetry(activity, index) {
     const { t } = this.context
     const {
       inlineRetryIndex,
@@ -48,10 +51,12 @@ export default class TransactionActivityLog extends PureComponent {
       isEarliestNonce,
     } = this.props
     const { status } = primaryTransaction
+    const { eventKey } = activity
 
-    return isEarliestNonce &&
+    return (isEarliestNonce &&
       status !== CONFIRMED_STATUS &&
-      index === inlineRetryIndex ? (
+      index === inlineRetryIndex) ||
+      eventKey === TRANSACTION_SUBMITTED_EVENT ? (
       <div className="transaction-activity-log__action-link" onClick={onRetry}>
         {t('speedUpTransaction')}
       </div>
@@ -115,7 +120,7 @@ export default class TransactionActivityLog extends PureComponent {
           >
             {activityText}
           </div>
-          {this.renderInlineRetry(index)}
+          {this.renderInlineRetry(activity, index)}
           {this.renderInlineCancel(index)}
         </div>
       </div>
