@@ -49,8 +49,7 @@
     "storybook:build": "build-storybook -c .storybook -o .out --static-dir ./app ./storybook/images",
     "storybook:deploy": "storybook-to-ghpages --existing-output-dir .out --remote storybook --branch master",
     "update-changelog": "./development/auto-changelog.sh",
-    "generate:migration": "./development/generate-migration.sh",
-    "postinstall": "yarn patch-package"
+    "generate:migration": "./development/generate-migration.sh"
   },
   "resolutions": {
     "**/configstore/dot-prop": "^5.1.1",
@@ -58,6 +57,9 @@
     "**/knex/minimist": "^1.2.5",
     "**/optimist/minimist": "^1.2.5",
     "**/socketcluster/minimist": "^1.2.5",
+    "**/redux/symbol-observable": "^2.0.3",
+    "**/redux-devtools-instrument/symbol-observable": "^2.0.3",
+    "**/rxjs/symbol-observable": "^2.0.3",
     "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.19",
     "3box/ipfs/ipld-zcash/zcash-bitcore-lib/elliptic": "^6.5.3",
     "3box/**/libp2p-crypto/node-forge": "^0.10.0",
@@ -257,7 +259,6 @@
     "node-fetch": "^2.6.1",
     "node-sass": "^4.14.1",
     "nyc": "^15.0.0",
-    "patch-package": "^6.2.2",
     "polyfill-crypto.getrandomvalues": "^1.0.0",
     "prettier": "^2.1.1",
     "prettier-plugin-sort-json": "^0.0.1",

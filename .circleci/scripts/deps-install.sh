@@ -6,7 +6,6 @@ set -x
 set -e
 
 yarn --frozen-lockfile --ignore-scripts --har
-yarn run postinstall
 
 # run each in subshell so directory change does not persist
 # scripts can be any of:
