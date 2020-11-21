@@ -115,7 +115,7 @@ describe('TransactionActivityLog Component', function () {
     )
   })
 
-  it('should only render inline retry and cancel buttons for newer pending transactions and submitted txs', function () {
+  it('should not render inline retry and cancel buttons for newer pending transactions but does for submitted transactions', function () {
     const activities = [
       {
         eventKey: 'transactionCreated',
