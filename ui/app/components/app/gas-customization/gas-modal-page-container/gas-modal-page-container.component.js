@@ -19,7 +19,6 @@ export default class GasModalPageContainer extends Component {
     insufficientBalance: PropTypes.bool,
     fetchBasicGasEstimates: PropTypes.func,
     gasPriceButtonGroupProps: PropTypes.object,
-    gasEstimatesLoading: PropTypes.bool,
     infoRowProps: PropTypes.shape({
       originalTotalFiat: PropTypes.string,
       originalTotalEth: PropTypes.string,
@@ -36,7 +35,6 @@ export default class GasModalPageContainer extends Component {
     isSpeedUp: PropTypes.bool,
     isRetry: PropTypes.bool,
     disableSave: PropTypes.bool,
-    isEthereumNetwork: PropTypes.bool,
   }
 
   componentDidMount() {
@@ -56,12 +54,10 @@ export default class GasModalPageContainer extends Component {
       customModalGasPriceInHex,
       customModalGasLimitInHex,
       insufficientBalance,
-      gasEstimatesLoading,
       customPriceIsSafe,
       isSpeedUp,
       isRetry,
       infoRowProps: { transactionFee },
-      isEthereumNetwork,
     } = this.props
 
     return (
@@ -72,11 +68,9 @@ export default class GasModalPageContainer extends Component {
         customModalGasLimitInHex={customModalGasLimitInHex}
         transactionFee={transactionFee}
         insufficientBalance={insufficientBalance}
-        gasEstimatesLoading={gasEstimatesLoading}
         customPriceIsSafe={customPriceIsSafe}
         isSpeedUp={isSpeedUp}
         isRetry={isRetry}
-        isEthereumNetwork={isEthereumNetwork}
       />
     )
   }

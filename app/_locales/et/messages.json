@@ -1143,9 +1143,6 @@
   "transactionSubmitted": {
     "message": "Tehing edastatud gaasihinnaga $1 asukohas $2."
   },
-  "transactionTime": {
-    "message": "Tehingu aeg"
-  },
   "transactionUpdated": {
     "message": "Tehing on uuendatud $2."
   },

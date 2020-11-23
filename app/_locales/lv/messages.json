@@ -1149,9 +1149,6 @@
   "transactionSubmitted": {
     "message": "Darījums iesniegts ar maksu par Gas $1 pie $2."
   },
-  "transactionTime": {
-    "message": "Darījuma ilgums"
-  },
   "transactionUpdated": {
     "message": "Darījums atjaunināts $2."
   },

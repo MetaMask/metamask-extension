@@ -39,11 +39,10 @@ const dependencies = Object.keys(
 )
 const materialUIDependencies = ['@material-ui/core']
 const reactDepenendencies = dependencies.filter((dep) => dep.match(/react/u))
-const d3Dependencies = ['c3', 'd3']
 
 const externalDependenciesMap = {
   background: ['3box'],
-  ui: [...materialUIDependencies, ...reactDepenendencies, ...d3Dependencies],
+  ui: [...materialUIDependencies, ...reactDepenendencies],
 }
 
 function createScriptTasks({ browserPlatforms, livereload }) {

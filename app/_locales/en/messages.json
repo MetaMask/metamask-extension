@@ -1970,9 +1970,6 @@
   "transactionSubmitted": {
     "message": "Transaction submitted with gas fee of $1 at $2."
   },
-  "transactionTime": {
-    "message": "Transaction Time"
-  },
   "transactionUpdated": {
     "message": "Transaction updated at $2."
   },

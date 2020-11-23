@@ -1189,9 +1189,6 @@
   "transactionSubmitted": {
     "message": "Сделка подана с оплатой за газ в размере 1$ за 2$."
   },
-  "transactionTime": {
-    "message": "Время транзакции"
-  },
   "transactionUpdated": {
     "message": "Транзакция обновлена до $2."
   },

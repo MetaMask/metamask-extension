@@ -1149,9 +1149,6 @@
   "transactionSubmitted": {
     "message": "Транзакция, изпратена с такса за газ от $1 при $2."
   },
-  "transactionTime": {
-    "message": "Време на транзакция"
-  },
   "transactionUpdated": {
     "message": "Транзакцията е актуализирана на $2."
   },

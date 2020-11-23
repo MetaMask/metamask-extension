@@ -52,8 +52,6 @@ describe('useRetryTransaction', function () {
       )
       const retry = result.current
       await retry(event)
-      const calls = dispatch.getCalls()
-      assert.equal(calls.length, 4)
       assert.equal(
         dispatch.calledWith(
           showSidebar({

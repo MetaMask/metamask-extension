@@ -1122,9 +1122,6 @@
   "transactionSubmitted": {
     "message": "Transaktion indsendt med brændstofgebyr på $1 til $2."
   },
-  "transactionTime": {
-    "message": "Transaktionstid"
-  },
   "transactionUpdated": {
     "message": "Transaktion opdateret til $2."
   },

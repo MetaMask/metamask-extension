@@ -1135,9 +1135,6 @@
   "transactionSubmitted": {
     "message": "Transação enviada com taxa de gás de $1 a $2."
   },
-  "transactionTime": {
-    "message": "Hora da Transação"
-  },
   "transactionUpdated": {
     "message": "Transação atualizada às $2."
   },

@@ -104,7 +104,6 @@ describe('gas-modal-page-container container', function () {
             limit: 'aaaaaaaa',
             price: 'ffffffff',
           },
-          gasEstimatesLoading: false,
           priceAndTimeEstimates: [
             { gasprice: 3, expectedTime: 31 },
             { gasprice: 4, expectedTime: 62 },
@@ -128,7 +127,6 @@ describe('gas-modal-page-container container', function () {
         customGasPrice: 4.294967295,
         customGasLimit: 2863311530,
         newTotalFiat: '637.41',
-        blockTime: 12,
         conversionRate: 50,
         customModalGasLimitInHex: 'aaaaaaaa',
         customModalGasPriceInHex: 'ffffffff',
@@ -139,7 +137,6 @@ describe('gas-modal-page-container container', function () {
           defaultActiveButtonIndex: 'mockRenderableBasicEstimateData:4ffffffff',
           gasButtonInfo: 'mockRenderableBasicEstimateData:4',
         },
-        gasEstimatesLoading: false,
         hideBasic: true,
         infoRowProps: {
           originalTotalFiat: '637.41',
@@ -153,7 +150,6 @@ describe('gas-modal-page-container container', function () {
         isSpeedUp: false,
         isRetry: false,
         txId: 34,
-        isEthereumNetwork: true,
         isMainnet: true,
         maxModeOn: false,
         sendToken: null,

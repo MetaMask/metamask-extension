@@ -1153,9 +1153,6 @@
   "transactionSubmitted": {
     "message": "Operacija pateikta $2 su $1 dujų mokesčiu."
   },
-  "transactionTime": {
-    "message": "Operacijos laikas"
-  },
   "transactionUpdated": {
     "message": "Operacija atnaujinta$2."
   },

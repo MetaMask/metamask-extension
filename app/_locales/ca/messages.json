@@ -1122,9 +1122,6 @@
   "transactionSubmitted": {
     "message": "Transacció enviada amb un preu del gas de $1 a $2."
   },
-  "transactionTime": {
-    "message": "Temps de transacció"
-  },
   "transactionUpdated": {
     "message": "Transacció actualitzada a $2."
   },

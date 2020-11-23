@@ -1131,9 +1131,6 @@
   "transactionSubmitted": {
     "message": "Transaksi diajukan dengan biaya gas sebesar $1 di $2."
   },
-  "transactionTime": {
-    "message": "Waktu Transaksi"
-  },
   "transactionUpdated": {
     "message": "Transaksi diperbarui di $2."
   },

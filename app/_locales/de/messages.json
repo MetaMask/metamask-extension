@@ -1116,9 +1116,6 @@
   "transactionSubmitted": {
     "message": "Transaktion mit einer Gasgebühr von $1 bei $2 übermittelt."
   },
-  "transactionTime": {
-    "message": "Transaktionszeit"
-  },
   "transactionUpdated": {
     "message": "Transaktion für $2 aktualisiert."
   },

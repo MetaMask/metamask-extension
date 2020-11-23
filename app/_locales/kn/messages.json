@@ -1153,9 +1153,6 @@
   "transactionSubmitted": {
     "message": "ವಹಿವಾಟನ್ನು $2 ನಲ್ಲಿ $1 ಗ್ಯಾಸ್ ಶುಲ್ಕದೊಂದಿಗೆ ರಚಿಸಲಾಗಿದೆ."
   },
-  "transactionTime": {
-    "message": "ವಹಿವಾಟು ಸಮಯ"
-  },
   "transactionUpdated": {
     "message": "$2 ನಲ್ಲಿ ವಹಿವಾಟನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ."
   },

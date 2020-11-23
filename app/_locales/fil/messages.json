@@ -1050,9 +1050,6 @@
   "transactionSubmitted": {
     "message": "Nasumite ang transaksyon nang may gas fee na $1 sa $2."
   },
-  "transactionTime": {
-    "message": "Oras ng Transaksyon"
-  },
   "transactionUpdated": {
     "message": "Na-update ang transaksyon sa $2."
   },

@@ -1150,9 +1150,6 @@
   "transactionSubmitted": {
     "message": "Tapahtuma toimitettu $1 bensataksalla kohdassa $2."
   },
-  "transactionTime": {
-    "message": "Tapahtuman aika"
-  },
   "transactionUpdated": {
     "message": "Tapahtuma päivitetty – $2."
   },

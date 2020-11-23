@@ -1127,9 +1127,6 @@
   "transactionSubmitted": {
     "message": "Transaksi dihantar dengan fi gas sebanyak $1 pada $2."
   },
-  "transactionTime": {
-    "message": "Masa Transaksi"
-  },
   "transactionUpdated": {
     "message": "Transaksi dikemaskini pada $2."
   },

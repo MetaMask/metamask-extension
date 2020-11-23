@@ -1144,9 +1144,6 @@
   "transactionSubmitted": {
     "message": "$1의 가스 요금으로 트랜잭션이 제출됨 $2."
   },
-  "transactionTime": {
-    "message": "트랜잭션 시간"
-  },
   "transactionUpdated": {
     "message": "트랜잭션이 수정됨 $2."
   },

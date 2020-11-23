@@ -1153,9 +1153,6 @@
   "transactionSubmitted": {
     "message": "Транзакція надіслана з оплатою за газ $1 о $2."
   },
-  "transactionTime": {
-    "message": "Час транзакції"
-  },
   "transactionUpdated": {
     "message": "Час оновлення транзакції: $2."
   },

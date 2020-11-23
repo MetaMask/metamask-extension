@@ -1135,9 +1135,6 @@
   "transactionSubmitted": {
     "message": "Transakcija z gas fee $1 oddana na $2."
   },
-  "transactionTime": {
-    "message": "Transakcijski čas"
-  },
   "transactionUpdated": {
     "message": "Transakcija na $2 spremenjena."
   },

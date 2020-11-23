@@ -1137,9 +1137,6 @@
   "transactionSubmitted": {
     "message": "Tranzacția a fost trimisă, cu o taxă gas de $1 la $2."
   },
-  "transactionTime": {
-    "message": "Ora tranzacției"
-  },
   "transactionUpdated": {
     "message": "Tranzacție actualizată la $2."
   },

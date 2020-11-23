@@ -1153,9 +1153,6 @@
   "transactionSubmitted": {
     "message": "معامله با فیس گاز 1$1 در 2$2 ارائه شد."
   },
-  "transactionTime": {
-    "message": "زمان معامله"
-  },
   "transactionUpdated": {
     "message": "معامله به 1$2 بروزرسانی شد."
   },

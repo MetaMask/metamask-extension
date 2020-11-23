@@ -1143,9 +1143,6 @@
   "transactionSubmitted": {
     "message": "Tranzakció jóváhagyva $1 üzemanyag költséggel $2-kor."
   },
-  "transactionTime": {
-    "message": "Tranzakció ideje"
-  },
   "transactionUpdated": {
     "message": "Tranzakció frissítve $2-nál"
   },

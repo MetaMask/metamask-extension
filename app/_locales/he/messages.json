@@ -1147,9 +1147,6 @@
   "transactionSubmitted": {
     "message": "עסקה הוגשה עם עמלת דלק של $1 ב-$2."
   },
-  "transactionTime": {
-    "message": "זמן העסקה"
-  },
   "transactionUpdated": {
     "message": "העסקה עודכנה ב- $2."
   },

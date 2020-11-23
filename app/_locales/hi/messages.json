@@ -1147,9 +1147,6 @@
   "transactionSubmitted": {
     "message": "$2 पर $1 के गैस शुल्क के साथ ट्रांज़ैक्शन दर्ज किया गया।"
   },
-  "transactionTime": {
-    "message": "ट्रांज़ैक्शन का समय"
-  },
   "transactionUpdated": {
     "message": "$2 पर ट्रांज़ैक्शन अपडेट किया गया।"
   },

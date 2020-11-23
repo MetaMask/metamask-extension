@@ -1153,9 +1153,6 @@
   "transactionSubmitted": {
     "message": "$2 এ $1 এর গ্যাস ফী সহ লেনদেন জমা করা হয়েছে।"
   },
-  "transactionTime": {
-    "message": "লেনদেনের সময়"
-  },
   "transactionUpdated": {
     "message": "লেনদেন $2 এ আপডেট করা হয়েছে।"
   },

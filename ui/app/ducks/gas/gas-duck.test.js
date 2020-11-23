@@ -69,7 +69,6 @@ describe('Gas Duck', function () {
     },
     basicEstimateIsLoading: true,
     errors: {},
-    gasEstimatesLoading: true,
     basicPriceEstimatesLastRetrieved: 0,
   }
   const BASIC_GAS_ESTIMATE_LOADING_FINISHED =

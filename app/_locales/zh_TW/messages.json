@@ -1132,9 +1132,6 @@
   "transactionSubmitted": {
     "message": "交易送出 手續費 $1 時間 $2"
   },
-  "transactionTime": {
-    "message": "交易時間"
-  },
   "transactionUpdated": {
     "message": "交易狀態更新 時間 $2"
   },

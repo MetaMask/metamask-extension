@@ -1,7 +1,6 @@
 import { addHexPrefix } from '../../../app/scripts/lib/util'
 import {
   conversionUtil,
-  multiplyCurrencies,
   conversionGreaterThan,
 } from '../helpers/utils/conversion-util'
 import { formatCurrency } from '../helpers/utils/confirm-tx.util'
@@ -32,10 +31,6 @@ export function getCustomGasTotal(state) {
 
 export function getBasicGasEstimateLoadingStatus(state) {
   return state.gas.basicEstimateIsLoading
-}
-
-export function getGasEstimatesLoadingStatus(state) {
-  return state.gas.gasEstimatesLoading
 }
 
 export function getAveragePriceEstimateInHexWEI(state) {
@@ -94,10 +89,6 @@ export function isCustomPriceSafe(state) {
   return customPriceSafe
 }
 
-export function getBasicGasEstimateBlockTime(state) {
-  return state.gas.basicEstimates.blockTime
-}
-
 export function basicPriceEstimateToETHTotal(
   estimate,
   gasLimit,
@@ -137,44 +128,6 @@ export function getRenderableConvertedCurrencyFee(
     conversionRate,
   )
   return formatCurrency(feeInCurrency, convertedCurrency)
-}
-
-export function getTimeEstimateInSeconds(blockWaitEstimate) {
-  return multiplyCurrencies(blockWaitEstimate, 60, {
-    toNumericBase: 'dec',
-    multiplicandBase: 10,
-    multiplierBase: 10,
-    numberOfDecimals: 1,
-  })
-}
-
-export function formatTimeEstimate(totalSeconds, greaterThanMax, lessThanMin) {
-  const minutes = Math.floor(totalSeconds / 60)
-  const seconds = Math.floor(totalSeconds % 60)
-
-  if (!minutes && !seconds) {
-    return '...'
-  }
-
-  let symbol = '~'
-  if (greaterThanMax) {
-    symbol = '< '
-  } else if (lessThanMin) {
-    symbol = '> '
-  }
-
-  const formattedMin = `${minutes ? `${minutes} min` : ''}`
-  const formattedSec = `${seconds ? `${seconds} sec` : ''}`
-  const formattedCombined =
-    formattedMin && formattedSec
-      ? `${symbol}${formattedMin} ${formattedSec}`
-      : symbol + [formattedMin, formattedSec].find((t) => t)
-
-  return formattedCombined
-}
-
-export function getRenderableTimeEstimate(blockWaitEstimate) {
-  return formatTimeEstimate(getTimeEstimateInSeconds(blockWaitEstimate))
 }
 
 export function priceEstimateToWei(priceEstimate) {

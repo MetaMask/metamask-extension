@@ -1141,9 +1141,6 @@
   "transactionSubmitted": {
     "message": "Transakcja wykonana z opłatą za gaz w wysokości $1 – $2."
   },
-  "transactionTime": {
-    "message": "Czas transakcji"
-  },
   "transactionUpdated": {
     "message": "Transakcja zaktualizowana – $2."
   },

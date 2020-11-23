@@ -25,7 +25,6 @@ export default class AdvancedTabContent extends Component {
       <div className="advanced-tab__transaction-data-summary">
         <div className="advanced-tab__transaction-data-summary__titles">
           <span>{this.context.t('newTransactionFee')}</span>
-          <span>~{this.context.t('transactionTime')}</span>
         </div>
         <div className="advanced-tab__transaction-data-summary__container">
           <div className="advanced-tab__transaction-data-summary__fee">

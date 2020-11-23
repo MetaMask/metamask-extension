@@ -71,11 +71,8 @@ describe('GasModalPageContainer Component', function () {
         fetchBasicGasEstimates={propsMethodSpies.fetchBasicGasEstimates}
         updateCustomGasPrice={() => 'mockupdateCustomGasPrice'}
         updateCustomGasLimit={() => 'mockupdateCustomGasLimit'}
-        customGasPrice={21}
-        customGasLimit={54321}
         gasPriceButtonGroupProps={mockGasPriceButtonGroupProps}
         infoRowProps={mockInfoRowProps}
-        currentTimeEstimate="1 min 31 sec"
         customGasPriceInHex="mockCustomGasPriceInHex"
         customGasLimitInHex="mockCustomGasLimitInHex"
         insufficientBalance={false}
@@ -192,11 +189,8 @@ describe('GasModalPageContainer Component', function () {
           fetchBasicGasEstimates={propsMethodSpies.fetchBasicGasEstimates}
           updateCustomGasPrice={() => 'mockupdateCustomGasPrice'}
           updateCustomGasLimit={() => 'mockupdateCustomGasLimit'}
-          customGasPrice={21}
-          customGasLimit={54321}
           gasPriceButtonGroupProps={mockGasPriceButtonGroupProps}
           infoRowProps={mockInfoRowProps}
-          currentTimeEstimate="1 min 31 sec"
           customGasPriceInHex="mockCustomGasPriceInHex"
           customGasLimitInHex="mockCustomGasLimitInHex"
           insufficientBalance={false}

@@ -1135,9 +1135,6 @@
   "transactionSubmitted": {
     "message": "在 $2 提交的交易单，其天然气费为 $1 。"
   },
-  "transactionTime": {
-    "message": "交易时间"
-  },
   "transactionUpdated": {
     "message": "交易单已于 $2 更新。"
   },

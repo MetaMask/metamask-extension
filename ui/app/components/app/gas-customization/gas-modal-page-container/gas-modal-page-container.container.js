@@ -27,15 +27,12 @@ import {
   getCurrentEthBalance,
   getIsMainnet,
   getSendToken,
-  isEthereumNetwork,
   getPreferences,
   getBasicGasEstimateLoadingStatus,
-  getGasEstimatesLoadingStatus,
   getCustomGasLimit,
   getCustomGasPrice,
   getDefaultActiveButtonIndex,
   getRenderableBasicEstimateData,
-  getBasicGasEstimateBlockTime,
   isCustomPriceSafe,
   getTokenBalance,
   getSendMaxModeState,
@@ -68,7 +65,6 @@ const mapStateToProps = (state, ownProps) => {
     ({ id }) => id === (transaction.id || txData.id),
   )
   const buttonDataLoading = getBasicGasEstimateLoadingStatus(state)
-  const gasEstimatesLoading = getGasEstimatesLoadingStatus(state)
   const sendToken = getSendToken(state)
 
   // a "default" txParams is used during the send flow, since the transaction doesn't exist yet in that case
@@ -144,7 +140,6 @@ const mapStateToProps = (state, ownProps) => {
     customGasLimit: calcCustomGasLimit(customModalGasLimitInHex),
     customGasTotal,
     newTotalFiat,
-    blockTime: getBasicGasEstimateBlockTime(state),
     customPriceIsSafe: isCustomPriceSafe(state),
     maxModeOn,
     gasPriceButtonGroupProps: {
@@ -172,9 +167,7 @@ const mapStateToProps = (state, ownProps) => {
     isRetry: transaction.status === TRANSACTION_STATUSES.FAILED,
     txId: transaction.id,
     insufficientBalance,
-    gasEstimatesLoading,
     isMainnet,
-    isEthereumNetwork: isEthereumNetwork(state),
     sendToken,
     balance,
     tokenBalance: getTokenBalance(state),

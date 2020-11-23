@@ -1143,9 +1143,6 @@
   "transactionSubmitted": {
     "message": "Transakcija je poslana s naknadom za gorivo od $1 u $2."
   },
-  "transactionTime": {
-    "message": "Vrijeme transkacije"
-  },
   "transactionUpdated": {
     "message": "Transakcija je ažurirana u $2."
   },

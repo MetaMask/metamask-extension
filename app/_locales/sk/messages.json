@@ -1110,9 +1110,6 @@
   "transactionSubmitted": {
     "message": "Transakcia bola odoslaná s poplatkom za GAS z  $1 na $2."
   },
-  "transactionTime": {
-    "message": "Čas transakcie"
-  },
   "transactionUpdated": {
     "message": "Transakcia bola aktualizovaná na $2."
   },

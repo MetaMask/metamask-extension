@@ -1138,9 +1138,6 @@
   "transactionSubmitted": {
     "message": "Transakcija je podnešena sa gas naknadom od $1 na $2."
   },
-  "transactionTime": {
-    "message": "Vreme transakcije"
-  },
   "transactionUpdated": {
     "message": "Transakcija je ažurirana na $2."
   },

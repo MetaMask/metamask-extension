@@ -1131,9 +1131,6 @@
   "transactionSubmitted": {
     "message": "Muamala umewasilishwa ukiwa na ada ya gesi ya$1 mnamo $2."
   },
-  "transactionTime": {
-    "message": "Muda wa Muamala"
-  },
   "transactionUpdated": {
     "message": "Muamala umesasishwa mnamo $2."
   },

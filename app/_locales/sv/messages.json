@@ -1128,9 +1128,6 @@
   "transactionSubmitted": {
     "message": "Överföring angedd med gasavgift på $1 vid $2."
   },
-  "transactionTime": {
-    "message": "Transaktionstid"
-  },
   "transactionUpdated": {
     "message": "Transaktionen uppdaterades $2."
   },

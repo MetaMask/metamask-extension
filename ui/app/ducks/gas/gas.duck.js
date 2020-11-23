@@ -9,9 +9,6 @@ const BASIC_GAS_ESTIMATE_LOADING_FINISHED =
   'metamask/gas/BASIC_GAS_ESTIMATE_LOADING_FINISHED'
 const BASIC_GAS_ESTIMATE_LOADING_STARTED =
   'metamask/gas/BASIC_GAS_ESTIMATE_LOADING_STARTED'
-const GAS_ESTIMATE_LOADING_FINISHED =
-  'metamask/gas/GAS_ESTIMATE_LOADING_FINISHED'
-const GAS_ESTIMATE_LOADING_STARTED = 'metamask/gas/GAS_ESTIMATE_LOADING_STARTED'
 const RESET_CUSTOM_GAS_STATE = 'metamask/gas/RESET_CUSTOM_GAS_STATE'
 const RESET_CUSTOM_DATA = 'metamask/gas/RESET_CUSTOM_DATA'
 const SET_BASIC_GAS_ESTIMATE_DATA = 'metamask/gas/SET_BASIC_GAS_ESTIMATE_DATA'
@@ -33,7 +30,6 @@ const initState = {
     fast: null,
   },
   basicEstimateIsLoading: true,
-  gasEstimatesLoading: true,
   basicPriceEstimatesLastRetrieved: 0,
   errors: {},
 }
@@ -50,16 +46,6 @@ export default function reducer(state = initState, action) {
       return {
         ...state,
         basicEstimateIsLoading: false,
-      }
-    case GAS_ESTIMATE_LOADING_STARTED:
-      return {
-        ...state,
-        gasEstimatesLoading: true,
-      }
-    case GAS_ESTIMATE_LOADING_FINISHED:
-      return {
-        ...state,
-        gasEstimatesLoading: false,
       }
     case SET_BASIC_GAS_ESTIMATE_DATA:
       return {
@@ -125,18 +111,6 @@ export function basicGasEstimatesLoadingStarted() {
 export function basicGasEstimatesLoadingFinished() {
   return {
     type: BASIC_GAS_ESTIMATE_LOADING_FINISHED,
-  }
-}
-
-export function gasEstimatesLoadingStarted() {
-  return {
-    type: GAS_ESTIMATE_LOADING_STARTED,
-  }
-}
-
-export function gasEstimatesLoadingFinished() {
-  return {
-    type: GAS_ESTIMATE_LOADING_FINISHED,
   }
 }
 

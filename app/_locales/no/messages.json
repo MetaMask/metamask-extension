@@ -1125,9 +1125,6 @@
   "transactionSubmitted": {
     "message": "Transaksjon sendt med datakraftavgift på $1 til $2."
   },
-  "transactionTime": {
-    "message": "Transaksjonstid"
-  },
   "transactionUpdated": {
     "message": "Transaksjonen oppdatert på $2."
   },

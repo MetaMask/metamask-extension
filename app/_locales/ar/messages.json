@@ -1146,9 +1146,6 @@
   "transactionSubmitted": {
     "message": "تم تقديم المعاملة برسوم $1 من عملة جاس في $2."
   },
-  "transactionTime": {
-    "message": "وقت المعاملة"
-  },
   "transactionUpdated": {
     "message": "تم تحديث المعاملة في $2."
   },

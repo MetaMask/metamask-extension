@@ -1147,9 +1147,6 @@
   "transactionSubmitted": {
     "message": "Η συναλλαγή στάλθηκε με τέλος gas του $1 σε $2."
   },
-  "transactionTime": {
-    "message": "Χρόνος Συναλλαγής"
-  },
   "transactionUpdated": {
     "message": "Η συναλλαγή ενημερώθηκε σε $2."
   },

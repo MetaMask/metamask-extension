@@ -1585,9 +1585,6 @@
   "transactionSubmitted": {
     "message": "Transazione inviata alle $2."
   },
-  "transactionTime": {
-    "message": "Tempo Conferma Transazione"
-  },
   "transactionUpdated": {
     "message": "Transazione aggiornata alle $2."
   },

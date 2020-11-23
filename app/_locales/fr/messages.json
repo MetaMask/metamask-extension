@@ -1129,9 +1129,6 @@
   "transactionSubmitted": {
     "message": "Transaction envoyée sur $2."
   },
-  "transactionTime": {
-    "message": "Heure de la transaction"
-  },
   "transactionUpdated": {
     "message": "Transaction mise à jour sur $2."
   },
