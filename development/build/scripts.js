@@ -11,8 +11,6 @@ const browserify = require('browserify')
 const envify = require('envify/custom')
 const sourcemaps = require('gulp-sourcemaps')
 const terser = require('gulp-terser-js')
-const pify = require('pify')
-const endOfStream = pify(require('end-of-stream'))
 
 const conf = require('rc')('metamask', {
   INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
