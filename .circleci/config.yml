@@ -88,7 +88,7 @@ workflows:
 jobs:
   create_release_pull_request:
     docker:
-      - image: circleci/node:12-browsers
+      - image: circleci/node:14-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -102,7 +102,7 @@ jobs:
 
   prep-deps:
     docker:
-      - image: circleci/node:12-browsers
+      - image: circleci/node:14-browsers
     steps:
       - checkout
       - run:
@@ -121,7 +121,7 @@ jobs:
 
   prep-build:
     docker:
-      - image: circleci/node:12-browsers
+      - image: circleci/node:14-browsers
     resource_class: medium+
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
@@ -143,7 +143,7 @@ jobs:
 
   prep-build-test:
     docker:
-      - image: circleci/node:12-browsers
+      - image: circleci/node:14-browsers
     resource_class: medium+
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
@@ -164,7 +164,7 @@ jobs:
 
   prep-build-storybook:
     docker:
-      - image: circleci/node:12-browsers
+      - image: circleci/node:14-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -179,7 +179,7 @@ jobs:
 
   test-lint:
     docker:
-      - image: circleci/node:12-browsers
+      - image: circleci/node:14-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -203,7 +203,7 @@ jobs:
 
   test-lint-lockfile:
     docker:
-      - image: circleci/node:12-browsers
+      - image: circleci/node:14-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -214,7 +214,7 @@ jobs:
 
   test-deps:
     docker:
-      - image: circleci/node:12-browsers
+      - image: circleci/node:14-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -225,7 +225,7 @@ jobs:
 
   test-e2e-chrome:
     docker:
-      - image: circleci/node:12-browsers
+      - image: circleci/node:14-browsers
     steps:
       - checkout
       - run:
@@ -250,7 +250,7 @@ jobs:
 
   test-e2e-firefox:
     docker:
-      - image: circleci/node:12-browsers
+      - image: circleci/node:14-browsers
     steps:
       - checkout
       - run:
@@ -275,7 +275,7 @@ jobs:
 
   benchmark:
     docker:
-      - image: circleci/node:12-browsers
+      - image: circleci/node:14-browsers
     steps:
       - checkout
       - run:
@@ -299,7 +299,7 @@ jobs:
 
   job-publish-prerelease:
     docker:
-      - image: circleci/node:12-browsers
+      - image: circleci/node:14-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -325,7 +325,7 @@ jobs:
 
   job-publish-release:
     docker:
-      - image: circleci/node:12-browsers
+      - image: circleci/node:14-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -343,7 +343,7 @@ jobs:
 
   job-publish-storybook:
     docker:
-      - image: circleci/node:12-browsers
+      - image: circleci/node:14-browsers
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -359,7 +359,7 @@ jobs:
 
   test-unit:
     docker:
-      - image: circleci/node:12-browsers
+      - image: circleci/node:14-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -374,7 +374,7 @@ jobs:
             - coverage
   test-unit-global:
     docker:
-      - image: circleci/node:12-browsers
+      - image: circleci/node:14-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -385,7 +385,7 @@ jobs:
 
   validate-source-maps:
     docker:
-      - image: circleci/node:12-browsers
+      - image: circleci/node:14-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -396,7 +396,7 @@ jobs:
 
   test-mozilla-lint:
     docker:
-      - image: circleci/node:12-browsers
+      - image: circleci/node:14-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -407,7 +407,7 @@ jobs:
 
   all-tests-pass:
     docker:
-      - image: circleci/node:12-browsers
+      - image: circleci/node:14-browsers
     steps:
       - run:
           name: All Tests Passed
@@ -415,7 +415,7 @@ jobs:
 
   coveralls-upload:
     docker:
-      - image: circleci/node:12-browsers
+      - image: circleci/node:14-browsers
     steps:
       - checkout
       - attach_workspace:
