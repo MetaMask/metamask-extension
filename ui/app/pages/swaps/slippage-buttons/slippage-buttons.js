@@ -116,7 +116,7 @@ export default function SlippageButtons({ onSelect }) {
                     <input
                       onChange={(event) => {
                         setCustomValue(event.target.value)
-                        onSelect(event.target.value)
+                        onSelect(Number(event.target.value))
                       }}
                       type="number"
                       step="0.1"

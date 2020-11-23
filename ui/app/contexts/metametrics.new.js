@@ -83,6 +83,12 @@ export function MetaMetricsProvider({ children }) {
   const context = useSegmentContext()
   const network = useSelector(getMetricsNetworkIdentifier)
   const chainId = useSelector(getCurrentChainId)
+  // Temporary until the background controller refactor merges:
+  const baseVersion = global.platform.getVersion()
+  const version =
+    process.env.METAMASK_ENVIRONMENT === 'production'
+      ? baseVersion
+      : `${baseVersion}-${process.env.METAMASK_ENVIRONMENT}`
 
   /**
    * track a metametrics event
@@ -171,13 +177,17 @@ export function MetaMetricsProvider({ children }) {
             network,
             environment_type: environmentType,
           },
-          context,
+          context: {
+            ...context,
+            version,
+          },
         })
       }
       previousMatch.current = match?.path
     }
   }, [
     location,
+    version,
     locale,
     context,
     network,

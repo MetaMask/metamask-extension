@@ -113,6 +113,7 @@ const AssetListItem = ({
           diameter={32}
           address={tokenAddress}
           image={tokenImage}
+          alt={`${primary} ${tokenSymbol}`}
         />
       }
       midContent={midContent}
