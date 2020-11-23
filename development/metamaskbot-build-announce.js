@@ -55,17 +55,12 @@ async function start() {
     })
     .join(', ')
 
-  // links to bundle browser builds
-  const depVizUrl = `${BUILD_LINK_BASE}/build-artifacts/deps-viz/background/index.html`
-  const depVizLink = `<a href="${depVizUrl}">background</a>`
-
   // link to artifacts
   const allArtifactsUrl = `https://circleci.com/gh/MetaMask/metamask-extension/${CIRCLE_BUILD_NUM}#artifacts/containers/0`
 
   const contentRows = [
     `builds: ${buildLinks}`,
     `bundle viz: ${bundleLinks}`,
-    `dep viz: ${depVizLink}`,
     `<a href="${allArtifactsUrl}">all artifacts</a>`,
   ]
   const hiddenContent = `<ul>${contentRows
