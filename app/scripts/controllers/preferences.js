@@ -743,33 +743,17 @@ export default class PreferencesController {
    *
    */
   async _handleWatchAssetERC20(tokenMetadata) {
-    const { address, symbol, decimals, image } = tokenMetadata
-    const rawAddress = address
-    const tokenOpts = { rawAddress, decimals, symbol, image }
+    this._validateERC20AssetParams(tokenMetadata)
 
-    this._validateERC20AssetParams(tokenOpts)
-    this._addSuggestedERC20Asset(tokenOpts)
+    const address = normalizeAddress(tokenMetadata.address)
+    const { symbol, decimals, image } = tokenMetadata
+    this._addSuggestedERC20Asset(address, symbol, decimals, image)
 
     await this.openPopup()
     const tokenAddresses = this.getTokens().filter(
-      (token) => token.address === normalizeAddress(rawAddress),
+      (token) => token.address === address,
     )
     return tokenAddresses.length > 0
-  }
-
-  _addSuggestedERC20Asset(tokenOpts) {
-    const suggested = this.getSuggestedTokens()
-    const { rawAddress, symbol, decimals, image } = tokenOpts
-    const address = normalizeAddress(rawAddress)
-    const newEntry = {
-      address,
-      symbol,
-      decimals,
-      image,
-      unlisted: !LISTED_CONTRACT_ADDRESSES.includes(address.toLowerCase()),
-    }
-    suggested[address] = newEntry
-    this.store.updateState({ suggestedTokens: suggested })
   }
 
   /**
@@ -780,9 +764,8 @@ export default class PreferencesController {
    * doesn't fulfill requirements
    *
    */
-  _validateERC20AssetParams(opts) {
-    const { rawAddress, symbol, decimals } = opts
-    if (!rawAddress || !symbol || typeof decimals === 'undefined') {
+  _validateERC20AssetParams({ address, symbol, decimals }) {
+    if (!address || !symbol || typeof decimals === 'undefined') {
       throw ethErrors.rpc.invalidParams(
         `Must specify address, symbol, and decimals.`,
       )
@@ -798,8 +781,21 @@ export default class PreferencesController {
         `Invalid decimals "${decimals}": must be 0 <= 36.`,
       )
     }
-    if (!isValidAddress(rawAddress)) {
-      throw ethErrors.rpc.invalidParams(`Invalid address "${rawAddress}".`)
+    if (!isValidAddress(address)) {
+      throw ethErrors.rpc.invalidParams(`Invalid address "${address}".`)
     }
+  }
+
+  _addSuggestedERC20Asset(address, symbol, decimals, image) {
+    const newEntry = {
+      address,
+      symbol,
+      decimals,
+      image,
+      unlisted: !LISTED_CONTRACT_ADDRESSES.includes(address),
+    }
+    const suggested = this.getSuggestedTokens()
+    suggested[address] = newEntry
+    this.store.updateState({ suggestedTokens: suggested })
   }
 }

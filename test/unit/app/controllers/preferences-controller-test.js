@@ -514,7 +514,7 @@ describe('preferences controller', function () {
 
       assert.doesNotThrow(() =>
         validate({
-          rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07',
+          address: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07',
           symbol: 'ABC',
           decimals: 0,
         }),
@@ -526,7 +526,7 @@ describe('preferences controller', function () {
       assert.throws(
         () =>
           validate({
-            rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07',
+            address: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07',
             decimals: 0,
           }),
         'missing symbol should fail',
@@ -534,7 +534,7 @@ describe('preferences controller', function () {
       assert.throws(
         () =>
           validate({
-            rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07',
+            address: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07',
             symbol: 'ABC',
           }),
         'missing decimals should fail',
@@ -542,7 +542,7 @@ describe('preferences controller', function () {
       assert.throws(
         () =>
           validate({
-            rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07',
+            address: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07',
             symbol: 'ABCDEFGHI',
             decimals: 0,
           }),
@@ -551,7 +551,7 @@ describe('preferences controller', function () {
       assert.throws(
         () =>
           validate({
-            rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07',
+            address: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07',
             symbol: 'ABC',
             decimals: -1,
           }),
@@ -560,14 +560,14 @@ describe('preferences controller', function () {
       assert.throws(
         () =>
           validate({
-            rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07',
+            address: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07',
             symbol: 'ABC',
             decimals: 38,
           }),
         'decimals > 36 should fail',
       )
       assert.throws(
-        () => validate({ rawAddress: '0x123', symbol: 'ABC', decimals: 0 }),
+        () => validate({ address: '0x123', symbol: 'ABC', decimals: 0 }),
         'invalid address should fail',
       )
     })
