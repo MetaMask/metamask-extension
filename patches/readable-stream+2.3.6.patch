@@ -1,0 +1,103 @@
+diff --git a/node_modules/readable-stream/lib/_stream_duplex.js b/node_modules/readable-stream/lib/_stream_duplex.js
+index a1ca813..7f2933b 100644
+--- a/node_modules/readable-stream/lib/_stream_duplex.js
++++ b/node_modules/readable-stream/lib/_stream_duplex.js
+@@ -43,14 +43,13 @@ var objectKeys = Object.keys || function (obj) {
+ module.exports = Duplex;
+ 
+ /*<replacement>*/
+-var util = require('core-util-is');
+-util.inherits = require('inherits');
++var inherits = require('inherits');
+ /*</replacement>*/
+ 
+ var Readable = require('./_stream_readable');
+ var Writable = require('./_stream_writable');
+ 
+-util.inherits(Duplex, Readable);
++inherits(Duplex, Readable);
+ 
+ {
+   // avoid scope creep, the keys array can then be collected
+diff --git a/node_modules/readable-stream/lib/_stream_passthrough.js b/node_modules/readable-stream/lib/_stream_passthrough.js
+index a9c8358..a890b8c 100644
+--- a/node_modules/readable-stream/lib/_stream_passthrough.js
++++ b/node_modules/readable-stream/lib/_stream_passthrough.js
+@@ -30,11 +30,10 @@ module.exports = PassThrough;
+ var Transform = require('./_stream_transform');
+ 
+ /*<replacement>*/
+-var util = require('core-util-is');
+-util.inherits = require('inherits');
++var inherits = require('inherits');
+ /*</replacement>*/
+ 
+-util.inherits(PassThrough, Transform);
++inherits(PassThrough, Transform);
+ 
+ function PassThrough(options) {
+   if (!(this instanceof PassThrough)) return new PassThrough(options);
+diff --git a/node_modules/readable-stream/lib/_stream_readable.js b/node_modules/readable-stream/lib/_stream_readable.js
+index bf34ac6..f1d8aa2 100644
+--- a/node_modules/readable-stream/lib/_stream_readable.js
++++ b/node_modules/readable-stream/lib/_stream_readable.js
+@@ -64,8 +64,7 @@ function _isUint8Array(obj) {
+ /*</replacement>*/
+ 
+ /*<replacement>*/
+-var util = require('core-util-is');
+-util.inherits = require('inherits');
++var inherits = require('inherits');
+ /*</replacement>*/
+ 
+ /*<replacement>*/
+@@ -82,7 +81,7 @@ var BufferList = require('./internal/streams/BufferList');
+ var destroyImpl = require('./internal/streams/destroy');
+ var StringDecoder;
+ 
+-util.inherits(Readable, Stream);
++inherits(Readable, Stream);
+ 
+ var kProxyEvents = ['error', 'close', 'destroy', 'pause', 'resume'];
+ 
+diff --git a/node_modules/readable-stream/lib/_stream_transform.js b/node_modules/readable-stream/lib/_stream_transform.js
+index 5d1f8b8..ffb888e 100644
+--- a/node_modules/readable-stream/lib/_stream_transform.js
++++ b/node_modules/readable-stream/lib/_stream_transform.js
+@@ -68,11 +68,10 @@ module.exports = Transform;
+ var Duplex = require('./_stream_duplex');
+ 
+ /*<replacement>*/
+-var util = require('core-util-is');
+-util.inherits = require('inherits');
++var inherits = require('inherits');
+ /*</replacement>*/
+ 
+-util.inherits(Transform, Duplex);
++inherits(Transform, Duplex);
+ 
+ function afterTransform(er, data) {
+   var ts = this._transformState;
+diff --git a/node_modules/readable-stream/lib/_stream_writable.js b/node_modules/readable-stream/lib/_stream_writable.js
+index b3f4e85..b3130be 100644
+--- a/node_modules/readable-stream/lib/_stream_writable.js
++++ b/node_modules/readable-stream/lib/_stream_writable.js
+@@ -64,8 +64,7 @@ var Duplex;
+ Writable.WritableState = WritableState;
+ 
+ /*<replacement>*/
+-var util = require('core-util-is');
+-util.inherits = require('inherits');
++var inherits = require('inherits');
+ /*</replacement>*/
+ 
+ /*<replacement>*/
+@@ -93,7 +92,7 @@ function _isUint8Array(obj) {
+ 
+ var destroyImpl = require('./internal/streams/destroy');
+ 
+-util.inherits(Writable, Stream);
++inherits(Writable, Stream);
+ 
+ function nop() {}
+ 
