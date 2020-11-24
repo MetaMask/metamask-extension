@@ -745,9 +745,9 @@ export default class PreferencesController {
   async _handleWatchAssetERC20(tokenMetadata) {
     const { address, symbol, decimals, image } = tokenMetadata
     const rawAddress = address
-    this._validateERC20AssetParams({ rawAddress, symbol, decimals })
-
     const tokenOpts = { rawAddress, decimals, symbol, image }
+
+    this._validateERC20AssetParams(tokenOpts)
     this._addSuggestedERC20Asset(tokenOpts)
 
     await this.openPopup()
