@@ -785,22 +785,22 @@ export default class PreferencesController {
     const { rawAddress, symbol, decimals } = opts
     if (!rawAddress || !symbol || typeof decimals === 'undefined') {
       throw ethErrors.rpc.invalidParams(
-        `Cannot suggest token without address, symbol, and decimals`,
+        `Must specify address, symbol, and decimals.`,
       )
     }
     if (!(symbol.length < 7)) {
       throw ethErrors.rpc.invalidParams(
-        `Invalid symbol ${symbol} more than six characters`,
+        `Invalid symbol "${symbol}": longer than 6 characters.`,
       )
     }
     const numDecimals = parseInt(decimals, 10)
     if (isNaN(numDecimals) || numDecimals > 36 || numDecimals < 0) {
       throw ethErrors.rpc.invalidParams(
-        `Invalid decimals ${decimals} must be at least 0, and not over 36`,
+        `Invalid decimals "${decimals}": must be 0 <= 36.`,
       )
     }
     if (!isValidAddress(rawAddress)) {
-      throw ethErrors.rpc.invalidParams(`Invalid address ${rawAddress}`)
+      throw ethErrors.rpc.invalidParams(`Invalid address "${rawAddress}".`)
     }
   }
 }
