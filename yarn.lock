@@ -10786,13 +10786,10 @@ extend@3, extend@3.0.2, extend@^3.0.0, extend@~3.0.2:
   resolved "https://registry.yarnpkg.com/extend/-/extend-3.0.2.tgz#f8b1136b4071fbd8eb140aff858b1019ec2915fa"
   integrity sha512-fjquC59cD7CyW6urNXK0FBufkZcoiGG80wTuPujX590cB5Ttln20E2UB4S/WARVqhXffZl2LNgS+gQdPIIim/g==
 
-extension-port-stream@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/extension-port-stream/-/extension-port-stream-1.0.0.tgz#5da21d4627dfef6013ae101cb3ff8eacaf18b279"
-  integrity sha512-FsFr64yr6ituPdaGP6Io5recGFWVjJoDYt7asz2AvPkYqGN9c923nmEtyHH+413066bjGcQZaF8w5wn9HbNXiQ==
-  dependencies:
-    readable-stream "^2.3.6"
-    util "^0.11.0"
+extension-port-stream@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/extension-port-stream/-/extension-port-stream-2.0.0.tgz#c52da241eef4643171b7c6d696baa4a3453c5a9a"
+  integrity sha512-7ju8jisPXY8w8UiUczF61hRN6bpx/YTZYU9J901GnEqu7vQnweMAwS30k+SgXCcY9S38Zno+fhuu1iaxd+0swg==
 
 extensionizer@^1.0.1:
   version "1.0.1"
