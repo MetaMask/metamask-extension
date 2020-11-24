@@ -15,6 +15,17 @@ const createScriptTasks = require('./scripts')
 const createStyleTasks = require('./styles')
 const createStaticAssetTasks = require('./static')
 const createEtcTasks = require('./etc')
+// packages required dynamically via browserify configuration in dependencies
+require('loose-envify')
+require('@babel/plugin-proposal-object-rest-spread')
+require('@babel/plugin-transform-runtime')
+require('@babel/plugin-proposal-class-properties')
+require('@babel/plugin-proposal-optional-chaining')
+require('@babel/plugin-proposal-nullish-coalescing-operator')
+require('@babel/preset-env')
+require('@babel/preset-react')
+require('@babel/core')
+require('@babel/types')
 
 const browserPlatforms = ['firefox', 'chrome', 'brave', 'opera']
 
