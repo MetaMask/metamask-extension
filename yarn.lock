@@ -16608,6 +16608,13 @@ localforage@1.8.1:
   dependencies:
     lie "3.1.1"
 
+localforage@^1.9.0:
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/localforage/-/localforage-1.9.0.tgz#f3e4d32a8300b362b4634cc4e066d9d00d2f09d1"
+  integrity sha512-rR1oyNrKulpe+VM9cYmcFn6tsHuokyVHFaCM3+osEmxaHTbEk8oQu6eGDfS6DQLWi/N67XRmB8ECG37OES368g==
+  dependencies:
+    lie "3.1.1"
+
 localstorage-down@^0.6.7:
   version "0.6.7"
   resolved "https://registry.yarnpkg.com/localstorage-down/-/localstorage-down-0.6.7.tgz#d0799a93b31e6c5fa5188ec06242eb1cce9d6d15"

@@ -1,7 +1,4 @@
-import {
-  loadLocalStorageData,
-  saveLocalStorageData,
-} from '../../../lib/local-storage-helpers'
+import { getStorageItem, setStorageItem } from '../../../lib/storage-helpers'
 import fetchWithTimeout from '../../../../app/scripts/lib/fetch-with-timeout'
 
 const fetchWithCache = async (
@@ -27,7 +24,7 @@ const fetchWithCache = async (
   }
 
   const currentTime = Date.now()
-  const cachedFetch = loadLocalStorageData('cachedFetch') || {}
+  const cachedFetch = (await getStorageItem('cachedFetch')) || {}
   const { cachedResponse, cachedTime } = cachedFetch[url] || {}
   if (cachedResponse && currentTime - cachedTime < cacheRefreshTime) {
     return cachedResponse
@@ -52,7 +49,7 @@ const fetchWithCache = async (
     cachedTime: currentTime,
   }
   cachedFetch[url] = cacheEntry
-  saveLocalStorageData(cachedFetch, 'cachedFetch')
+  await setStorageItem('cachedFetch', cachedFetch)
   return responseJson
 }
 

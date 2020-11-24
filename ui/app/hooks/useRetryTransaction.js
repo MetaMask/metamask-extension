@@ -38,7 +38,7 @@ export function useRetryTransaction(transactionGroup) {
       await dispatch(fetchGasEstimates(basicEstimates.blockTime))
       const transaction = initialTransaction
       const increasedGasPrice = increaseLastGasPrice(gasPrice)
-      dispatch(
+      await dispatch(
         setCustomGasPriceForRetry(
           increasedGasPrice || transaction.txParams.gasPrice,
         ),
