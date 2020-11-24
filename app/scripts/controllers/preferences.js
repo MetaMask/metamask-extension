@@ -171,22 +171,6 @@ export default class PreferencesController {
     return this.store.getState().assetImages
   }
 
-  addSuggestedERC20Asset(tokenOpts) {
-    this._validateERC20AssetParams(tokenOpts)
-    const suggested = this.getSuggestedTokens()
-    const { rawAddress, symbol, decimals, image } = tokenOpts
-    const address = normalizeAddress(rawAddress)
-    const newEntry = {
-      address,
-      symbol,
-      decimals,
-      image,
-      unlisted: !LISTED_CONTRACT_ADDRESSES.includes(address.toLowerCase()),
-    }
-    suggested[address] = newEntry
-    this.store.updateState({ suggestedTokens: suggested })
-  }
-
   /**
    * Add new methodData to state, to avoid requesting this information again through Infura
    *
@@ -764,13 +748,28 @@ export default class PreferencesController {
     this._validateERC20AssetParams({ rawAddress, symbol, decimals })
 
     const tokenOpts = { rawAddress, decimals, symbol, image }
-    this.addSuggestedERC20Asset(tokenOpts)
+    this._addSuggestedERC20Asset(tokenOpts)
 
     await this.openPopup()
     const tokenAddresses = this.getTokens().filter(
       (token) => token.address === normalizeAddress(rawAddress),
     )
     return tokenAddresses.length > 0
+  }
+
+  _addSuggestedERC20Asset(tokenOpts) {
+    const suggested = this.getSuggestedTokens()
+    const { rawAddress, symbol, decimals, image } = tokenOpts
+    const address = normalizeAddress(rawAddress)
+    const newEntry = {
+      address,
+      symbol,
+      decimals,
+      image,
+      unlisted: !LISTED_CONTRACT_ADDRESSES.includes(address.toLowerCase()),
+    }
+    suggested[address] = newEntry
+    this.store.updateState({ suggestedTokens: suggested })
   }
 
   /**
