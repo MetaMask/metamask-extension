@@ -9,7 +9,7 @@ const log = require('fancy-log')
 const { assign } = require('lodash')
 const watchify = require('watchify')
 const browserify = require('browserify')
-const envify = require('envify/custom')
+const envify = require('loose-envify/custom')
 const sourcemaps = require('gulp-sourcemaps')
 const sesify = require('sesify')
 const terser = require('gulp-terser-js')
@@ -21,6 +21,8 @@ const conf = require('rc')('metamask', {
   SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
   SEGMENT_LEGACY_WRITE_KEY: process.env.SEGMENT_LEGACY_WRITE_KEY,
 })
+
+const baseManifest = require('../../app/manifest/_base.json')
 
 const packageJSON = require('../../package.json')
 const {
@@ -97,7 +99,12 @@ function createScriptTasks({ browserPlatforms, livereload }) {
   }
 
   function createTasksForBuildJsExtension({ taskPrefix, devMode, testing }) {
-    const standardBundles = ['background', 'ui', 'phishing-detect']
+    const standardBundles = [
+      'background',
+      'ui',
+      'phishing-detect',
+      'initSentry',
+    ]
 
     const standardSubtasks = standardBundles.map((filename) => {
       return createTask(
@@ -358,6 +365,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
       envify({
         METAMASK_DEBUG: opts.devMode,
         METAMASK_ENVIRONMENT: environment,
+        METAMASK_VERSION: baseManifest.version,
         METAMETRICS_PROJECT_ID: process.env.METAMETRICS_PROJECT_ID,
         NODE_ENV: opts.devMode ? 'development' : 'production',
         IN_TEST: opts.testing ? 'true' : false,
