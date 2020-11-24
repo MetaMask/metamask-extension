@@ -19,11 +19,11 @@ const { setupTaskDisplay } = require('./display')
 
 function detectAndRunEntryTask() {
   // get requested task name and execute
-  const taskName = process.argv[2]
+  const taskName = process.argv[3]
   if (!taskName) {
     throw new Error(`MetaMask build: No task name specified`)
   }
-  const skipStats = process.argv[3] === '--skip-stats'
+  const skipStats = process.argv.includes('--skip-stats')
 
   runTask(taskName, { skipStats })
 }
