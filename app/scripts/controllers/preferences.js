@@ -1,12 +1,12 @@
 import { strict as assert } from 'assert'
 import ObservableStore from 'obs-store'
+import { ethErrors } from 'eth-json-rpc-errors'
 import { normalize as normalizeAddress } from 'eth-sig-util'
 import { isValidAddress, sha3, bufferToHex } from 'ethereumjs-util'
 import ethers from 'ethers'
 import log from 'loglevel'
 import { isPrefixedFormattedHexString } from '../lib/util'
 import { LISTED_CONTRACT_ADDRESSES } from '../../../shared/constants/tokens'
-import { addInternalMethodPrefix } from './permissions'
 import { NETWORK_TYPE_TO_ID_MAP } from './network/enums'
 
 export default class PreferencesController {
@@ -200,37 +200,21 @@ export default class PreferencesController {
   }
 
   /**
-   * RPC engine middleware for requesting new asset added
+   * wallet_watchAsset request handler.
    *
-   * @param {any} req
-   * @param {any} res
-   * @param {Function} next
-   * @param {Function} end
+   * @param {Object} req - The watchAsset JSON-RPC request object.
    */
-  async requestWatchAsset(req, res, next, end) {
-    if (
-      req.method === 'metamask_watchAsset' ||
-      req.method === addInternalMethodPrefix('watchAsset')
-    ) {
-      const { type, options } = req.params
-      switch (type) {
-        case 'ERC20': {
-          const result = await this._handleWatchAssetERC20(options)
-          if (result instanceof Error) {
-            end(result)
-          } else {
-            res.result = result
-            end()
-          }
-          return
-        }
-        default:
-          end(new Error(`Asset of type ${type} not supported`))
-          return
-      }
-    }
+  async requestWatchAsset(req) {
+    const { type, options } = req.params
 
-    next()
+    switch (type) {
+      case 'ERC20':
+        return await this._handleWatchAssetERC20(options)
+      default:
+        throw ethErrors.rpc.invalidParams(
+          `Asset of type "${type}" not supported.`,
+        )
+    }
   }
 
   /**
@@ -777,19 +761,16 @@ export default class PreferencesController {
   async _handleWatchAssetERC20(tokenMetadata) {
     const { address, symbol, decimals, image } = tokenMetadata
     const rawAddress = address
-    try {
-      this._validateERC20AssetParams({ rawAddress, symbol, decimals })
-    } catch (err) {
-      return err
-    }
+    this._validateERC20AssetParams({ rawAddress, symbol, decimals })
+
     const tokenOpts = { rawAddress, decimals, symbol, image }
     this.addSuggestedERC20Asset(tokenOpts)
-    return this.openPopup().then(() => {
-      const tokenAddresses = this.getTokens().filter(
-        (token) => token.address === normalizeAddress(rawAddress),
-      )
-      return tokenAddresses.length > 0
-    })
+
+    await this.openPopup()
+    const tokenAddresses = this.getTokens().filter(
+      (token) => token.address === normalizeAddress(rawAddress),
+    )
+    return tokenAddresses.length > 0
   }
 
   /**
@@ -803,21 +784,23 @@ export default class PreferencesController {
   _validateERC20AssetParams(opts) {
     const { rawAddress, symbol, decimals } = opts
     if (!rawAddress || !symbol || typeof decimals === 'undefined') {
-      throw new Error(
+      throw ethErrors.rpc.invalidParams(
         `Cannot suggest token without address, symbol, and decimals`,
       )
     }
     if (!(symbol.length < 7)) {
-      throw new Error(`Invalid symbol ${symbol} more than six characters`)
+      throw ethErrors.rpc.invalidParams(
+        `Invalid symbol ${symbol} more than six characters`,
+      )
     }
     const numDecimals = parseInt(decimals, 10)
     if (isNaN(numDecimals) || numDecimals > 36 || numDecimals < 0) {
-      throw new Error(
+      throw ethErrors.rpc.invalidParams(
         `Invalid decimals ${decimals} must be at least 0, and not over 36`,
       )
     }
     if (!isValidAddress(rawAddress)) {
-      throw new Error(`Invalid address ${rawAddress}`)
+      throw ethErrors.rpc.invalidParams(`Invalid address ${rawAddress}`)
     }
   }
 }

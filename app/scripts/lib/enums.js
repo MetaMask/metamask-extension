@@ -25,6 +25,8 @@ const MESSAGE_TYPE = {
   ETH_SIGN_TYPED_DATA: 'eth_signTypedData',
   LOG_WEB3_USAGE: 'metamask_logInjectedWeb3Usage',
   PERSONAL_SIGN: 'personal_sign',
+  WATCH_ASSET: 'wallet_watchAsset',
+  WATCH_ASSET_LEGACY: 'metamask_watchAsset',
 }
 
 export {

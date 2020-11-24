@@ -2,7 +2,6 @@ import assert from 'assert'
 import ObservableStore from 'obs-store'
 import sinon from 'sinon'
 import PreferencesController from '../../../../app/scripts/controllers/preferences'
-import { addInternalMethodPrefix } from '../../../../app/scripts/controllers/permissions'
 
 describe('preferences controller', function () {
   let preferencesController
@@ -405,53 +404,41 @@ describe('preferences controller', function () {
   })
 
   describe('on watchAsset', function () {
-    let stubHandleWatchAssetERC20, asy, req, res
+    let req, stubHandleWatchAssetERC20
     const sandbox = sinon.createSandbox()
 
     beforeEach(function () {
-      req = { params: {} }
-      res = {}
-      asy = { next: sandbox.spy(), end: sandbox.spy() }
+      req = { method: 'wallet_watchAsset', params: {} }
       stubHandleWatchAssetERC20 = sandbox.stub(
         preferencesController,
         '_handleWatchAssetERC20',
       )
     })
+
     after(function () {
       sandbox.restore()
     })
 
-    it('shouldn not do anything if method not corresponds', async function () {
-      req.method = 'metamask'
-      await preferencesController.requestWatchAsset(req, res, asy.next, asy.end)
-      sandbox.assert.notCalled(asy.end)
-      sandbox.assert.called(asy.next)
+    it('should error if passed no type', async function () {
+      await assert.rejects(
+        () => preferencesController.requestWatchAsset(req),
+        { message: 'Asset of type "undefined" not supported.' },
+        'should have errored',
+      )
     })
-    it('should do something if method is supported', async function () {
-      req.method = 'metamask_watchAsset'
+
+    it('should error if method is not supported', async function () {
       req.params.type = 'someasset'
-      await preferencesController.requestWatchAsset(req, res, asy.next, asy.end)
-      sandbox.assert.called(asy.end)
-      sandbox.assert.notCalled(asy.next)
-      req.method = addInternalMethodPrefix('watchAsset')
-      req.params.type = 'someasset'
-      await preferencesController.requestWatchAsset(req, res, asy.next, asy.end)
-      sandbox.assert.calledTwice(asy.end)
-      sandbox.assert.notCalled(asy.next)
+      await assert.rejects(
+        () => preferencesController.requestWatchAsset(req),
+        { message: 'Asset of type "someasset" not supported.' },
+        'should have errored',
+      )
     })
-    it('should through error if method is supported but asset type is not', async function () {
-      req.method = 'metamask_watchAsset'
-      req.params.type = 'someasset'
-      await preferencesController.requestWatchAsset(req, res, asy.next, asy.end)
-      sandbox.assert.called(asy.end)
-      sandbox.assert.notCalled(stubHandleWatchAssetERC20)
-      sandbox.assert.notCalled(asy.next)
-      assert.deepEqual(res, {})
-    })
-    it('should trigger handle add asset if type supported', async function () {
-      req.method = 'metamask_watchAsset'
+
+    it('should handle ERC20 type', async function () {
       req.params.type = 'ERC20'
-      await preferencesController.requestWatchAsset(req, res, asy.next, asy.end)
+      await preferencesController.requestWatchAsset(req)
       sandbox.assert.called(stubHandleWatchAssetERC20)
     })
   })
