@@ -1,4 +1,3 @@
-const fs = require('fs')
 const gulp = require('gulp')
 const watch = require('gulp-watch')
 const pify = require('pify')
@@ -12,7 +11,8 @@ const browserify = require('browserify')
 const envify = require('loose-envify/custom')
 const sourcemaps = require('gulp-sourcemaps')
 const terser = require('gulp-terser-js')
-const { makeStringTransform } = require('browserify-transform-tools')
+const babelify = require('babelify')
+const brfs = require('brfs')
 
 const conf = require('rc')('metamask', {
   INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
