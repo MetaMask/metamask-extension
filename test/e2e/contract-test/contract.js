@@ -193,7 +193,7 @@ const initialize = () => {
         .constructor()
         .sendTransaction({
           from: accounts[0],
-          gasPrice: 10000000000,
+          gasPrice: 1,
         })
         .confirmed()
         .catch(error => {
@@ -221,7 +221,7 @@ const initialize = () => {
           .sendTransaction({
             value: '0x3782dace9d900000',
             from: accounts[0],
-            gasPrice: 10000000000,
+            gasPrice: 1,
           })
           .confirmed()
         console.log(depositResult)
@@ -235,7 +235,7 @@ const initialize = () => {
             from: accounts[0],
             gas: 600000,
             storageLimit: 0,
-            gasPrice: 10000000000,
+            gasPrice: 1,
           })
           .confirmed()
         console.log(withdrawResult)
@@ -255,7 +255,7 @@ const initialize = () => {
           from: accounts[0],
           to: accounts[0],
           value: '0x29a2241af62c0000',
-          gasPrice: 10000000000,
+          gasPrice: 1,
         })
         .confirmed()
       console.log(txResult)
@@ -324,7 +324,7 @@ const initialize = () => {
         .sendTransaction({
           from: accounts[0],
           storageLimit: 5000,
-          gasPrice: 10000000000,
+          gasPrice: 1,
         })
         .confirmed()
         .catch(error => {
@@ -498,7 +498,7 @@ const initialize = () => {
         .sendTransaction({
           from: accounts[0],
           storageLimit: 5000,
-          gasPrice: 10000000000,
+          gasPrice: 1,
         })
         .confirmed()
         .catch(error => {
@@ -532,7 +532,7 @@ const initialize = () => {
           .sendTransaction({
             from: accounts[0],
             to: humanstandardtokenContract.address,
-            gasPrice: 10000000000,
+            gasPrice: 1,
           })
           .confirmed()
         console.log(transferResult)
@@ -544,7 +544,7 @@ const initialize = () => {
           .sendTransaction({
             from: accounts[0],
             to: humanstandardtokenContract.address,
-            gasPrice: 10000000000,
+            gasPrice: 1,
           })
           .confirmed()
         console.log(approveResult)
@@ -557,7 +557,7 @@ const initialize = () => {
           .sendTransaction({
             from: accounts[0],
             to: humanstandardtokenContract.address,
-            gasPrice: 10000000000,
+            gasPrice: 1,
           })
           .confirmed()
         console.log(transferResult)
@@ -569,7 +569,7 @@ const initialize = () => {
           .sendTransaction({
             from: accounts[0],
             to: humanstandardtokenContract.address,
-            gasPrice: 10000000000,
+            gasPrice: 1,
           })
           .confirmed()
         console.log(approveResult)
@@ -691,7 +691,7 @@ const initialize = () => {
           from: accounts[0],
           to: accounts[0],
           data: signedData,
-          gasPrice: 10000000000,
+          gasPrice: 1,
         })
         .confirmed()
       sendSignedTypedDataResult.innerText = JSON.stringify(txResult, 2)
