@@ -5760,6 +5760,13 @@ buffers@~0.1.1:
   resolved "https://registry.yarnpkg.com/buffers/-/buffers-0.1.1.tgz#b24579c3bed4d6d396aeee6d9a8ae7f5482ab7bb"
   integrity sha1-skV5w77U1tOWru5tmorn9Ugqt7s=
 
+bufferutil@^4.0.1:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/bufferutil/-/bufferutil-4.0.2.tgz#79f68631910f6b993d870fc77dc0a2894eb96cd5"
+  integrity sha512-AtnG3W6M8B2n4xDQ5R+70EXvOpnXsFYg/AK2yTZd+HQ/oxAdz+GI+DvjmhBw3L0ole+LJ0ngqY4JMbDzkfNzhA==
+  dependencies:
+    node-gyp-build "^4.2.0"
+
 builtin-modules@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/builtin-modules/-/builtin-modules-1.1.1.tgz#270f076c5a72c02f5b65a47df94c5fe3a278892f"
@@ -15327,20 +15334,6 @@ js-conflux-sdk@0.10.1:
     secp256k1 "^3.7.1"
     superagent "^5.1.0"
 
-js-conflux-sdk@^0.13.3:
-  version "0.13.3"
-  resolved "https://registry.yarnpkg.com/js-conflux-sdk/-/js-conflux-sdk-0.13.3.tgz#ce2f8eb309ff489b2d214414383f47b40cbfe13d"
-  integrity sha512-Oa3QfZlS721np+IbRTOcRvJ33Y0jZajphLFUrUQIj0hRWfRHrmF5fjpiVR5XOuTBZsZMZRxJleSdEcB2I6I1Ow==
-  dependencies:
-    "@babel/runtime" "^7.8.4"
-    big.js "^5.2.2"
-    jsbi "^3.1.1"
-    keccak "^2.0.0"
-    lodash "^4.17.15"
-    scrypt-js "^3.0.1"
-    secp256k1 "^3.7.1"
-    superagent "^5.1.0"
-
 js-conflux-sdk@^0.13.4:
   version "0.13.6"
   resolved "https://registry.yarnpkg.com/js-conflux-sdk/-/js-conflux-sdk-0.13.6.tgz#0820c377d9b537f11fd0c0b8874d8f8ce7c18b85"
@@ -15354,6 +15347,20 @@ js-conflux-sdk@^0.13.4:
     scrypt-js "^3.0.1"
     secp256k1 "^3.7.1"
     superagent "^5.1.0"
+
+js-conflux-sdk@^1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/js-conflux-sdk/-/js-conflux-sdk-1.1.4.tgz#2079f95b9fe574d2afa7c7a4cdffb1b02f40a4ce"
+  integrity sha512-OF5ibW1wQZ4uDqQN9QhSUXIU+brNJ0p8IwPLTe1fYjsZ29mt3eTomDK8Xtq5Yft6YhaTCq18YMbK16o6Xf9XGA==
+  dependencies:
+    "@babel/runtime" "^7.8.4"
+    big.js "^5.2.2"
+    keccak "^2.0.0"
+    lodash "^4.17.19"
+    scrypt-js "^3.0.1"
+    secp256k1 "^3.7.1"
+    superagent "^5.1.0"
+    websocket "^1.0.31"
 
 js-levenshtein@^1.1.3:
   version "1.1.6"
@@ -25976,6 +25983,13 @@ useragent@2.3.0:
     lru-cache "4.1.x"
     tmp "0.0.x"
 
+utf-8-validate@^5.0.2:
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/utf-8-validate/-/utf-8-validate-5.0.3.tgz#3b64e418ad2ff829809025fdfef595eab2f03a27"
+  integrity sha512-jtJM6fpGv8C1SoH4PtG22pGto6x+Y8uPprW0tw3//gGFhDDTiuksgradgFN6yRayDP4SyZZa6ZMGHLIa17+M8A==
+  dependencies:
+    node-gyp-build "^4.2.0"
+
 utf8@3.0.0, utf8@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/utf8/-/utf8-3.0.0.tgz#f052eed1364d696e769ef058b183df88c87f69d1"
@@ -26798,6 +26812,18 @@ websocket@1.0.29:
     gulp "^4.0.2"
     nan "^2.11.0"
     typedarray-to-buffer "^3.1.5"
+    yaeti "^0.0.6"
+
+websocket@^1.0.31:
+  version "1.0.32"
+  resolved "https://registry.yarnpkg.com/websocket/-/websocket-1.0.32.tgz#1f16ddab3a21a2d929dec1687ab21cfdc6d3dbb1"
+  integrity sha512-i4yhcllSP4wrpoPMU2N0TQ/q0O94LRG/eUQjEAamRltjQ1oT1PFFKOG4i877OlJgCG8rw6LrrowJp+TYCEWF7Q==
+  dependencies:
+    bufferutil "^4.0.1"
+    debug "^2.2.0"
+    es5-ext "^0.10.50"
+    typedarray-to-buffer "^3.1.5"
+    utf-8-validate "^5.0.2"
     yaeti "^0.0.6"
 
 "websocket@github:web3-js/WebSocket-Node#polyfill/globalThis":
