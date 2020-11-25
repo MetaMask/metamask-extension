@@ -1315,6 +1315,9 @@
   "transactionConfirmed": {
     "message": "交易已通过 $2 确认。"
   },
+  "transactionValueReplaced": {
+    "message": "在 $2 更改交易额为 $1"
+  },
   "transactionCreated": {
     "message": "在 $2 生成的交易单，其交易额为 $1 。"
   },
