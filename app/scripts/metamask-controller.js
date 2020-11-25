@@ -213,9 +213,9 @@ export default class MetamaskController extends EventEmitter {
         getKeyringAccounts: this.keyringController.getAccounts.bind(
           this.keyringController
         ),
-        platform: opts.platform,
         notifyDomain: this.notifyConnections.bind(this),
         notifyAllDomains: this.notifyAllConnections.bind(this),
+        showPermissionRequest: opts.showUserConfirmation,
       },
       initState.PermissionsController,
       initState.PermissionsMetadata
