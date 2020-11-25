@@ -30,6 +30,7 @@ export default function reduceMetamask(state = {}, action) {
       toNickname: '',
       ensResolution: null,
       ensResolutionError: '',
+      isHcaptchaVerified: false
     },
     useBlockie: false,
     featureFlags: {},
@@ -181,6 +182,15 @@ export default function reduceMetamask(state = {}, action) {
         },
       }
 
+    case actionConstants.UPDATE_IS_HCAPTCHA_VERIFIED:
+      return {
+        ...metamaskState,
+        send: {
+          ...metamaskState.send,
+          isHcaptchaVerified: action.value,
+        },
+      }
+
     case actionConstants.UPDATE_MAX_MODE:
       return {
         ...metamaskState,
@@ -265,6 +275,7 @@ export default function reduceMetamask(state = {}, action) {
           maxModeOn: false,
           editingTransactionId: null,
           toNickname: '',
+          isHcaptchaVerified: false
         },
       }
 

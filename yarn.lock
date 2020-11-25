@@ -1711,6 +1711,11 @@
     "@hapi/bourne" "1.x.x"
     "@hapi/hoek" "6.x.x"
 
+"@hcaptcha/react-hcaptcha@^0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@hcaptcha/react-hcaptcha/-/react-hcaptcha-0.2.1.tgz#af0ec7646f33f4141f3381878a772b6790ad8155"
+  integrity sha512-2YiUrUvwFys1UVjplTx2sNiOqN7RJE0krhGmQo7yrhV5ULuLy4XRdOLEXESSDlMCDQPKcMx4cGkXjtoTljjXcQ==
+
 "@icons/material@^0.2.4":
   version "0.2.4"
   resolved "https://registry.yarnpkg.com/@icons/material/-/material-0.2.4.tgz#e90c9f71768b3736e76d7dd6783fc6c2afa88bc8"

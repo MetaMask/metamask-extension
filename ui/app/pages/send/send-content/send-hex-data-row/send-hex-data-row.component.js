@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { unpad, bufferToHex, addHexPrefix } from 'ethereumjs-util'
 import SendRowWrapper from '../send-row-wrapper'
 
 export default class SendHexDataRow extends Component {
@@ -7,6 +8,7 @@ export default class SendHexDataRow extends Component {
     inError: PropTypes.bool,
     updateSendHexData: PropTypes.func.isRequired,
     updateGas: PropTypes.func.isRequired,
+    isHcaptchaVerified: PropTypes.bool
   }
 
   static contextTypes = {
@@ -14,10 +16,19 @@ export default class SendHexDataRow extends Component {
   }
 
   onInput = (event) => {
-    const { updateSendHexData, updateGas } = this.props
+    const { updateSendHexData, updateGas, isHcaptchaVerified } = this.props
     const data = event.target.value.replace(/\n/gu, '') || null
-    updateSendHexData(data)
-    updateGas({ data })
+    // TODO gas should be valid, but data inserted here doesn't include the is_human string, so the estimated gas would be wrong
+    // and user will not be able to complete the transaction
+    // need to consider this postfix string - is_human=0|1 into the gas estimations
+    const isHuman = Number(isHcaptchaVerified)
+    let updatedHexData = unpad(bufferToHex(Buffer.from(`;is_human=${isHuman}`)))
+    if (data) {
+      updatedHexData = `${data}${updatedHexData}`
+    }
+    updatedHexData = addHexPrefix(updatedHexData)
+    updateSendHexData(updatedHexData)
+    updateGas({ data: updatedHexData })
   }
 
   render() {

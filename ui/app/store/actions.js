@@ -739,6 +739,13 @@ export function updateSendAmount(amount) {
   }
 }
 
+export function updateSendIsHcaptchaVerified(value) {
+  return {
+    type: actionConstants.UPDATE_IS_HCAPTCHA_VERIFIED,
+    value
+  }
+}
+
 export function updateCustomNonce(value) {
   return {
     type: actionConstants.UPDATE_CUSTOM_NONCE,

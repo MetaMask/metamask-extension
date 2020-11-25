@@ -6,6 +6,7 @@ import SendAmountRow from './send-amount-row'
 import SendGasRow from './send-gas-row'
 import SendHexDataRow from './send-hex-data-row'
 import SendAssetRow from './send-asset-row'
+import SendCaptchaRow from './send-captcha-row'
 
 export default class SendContent extends Component {
   static contextTypes = {
@@ -36,6 +37,7 @@ export default class SendContent extends Component {
           {this.props.showHexData && (
             <SendHexDataRow updateGas={this.updateGas} />
           )}
+          <SendCaptchaRow />
         </div>
       </PageContainerContent>
     )
