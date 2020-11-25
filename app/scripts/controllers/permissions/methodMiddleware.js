@@ -4,7 +4,7 @@ import { ethErrors } from 'eth-json-rpc-errors'
 /**
  * Create middleware for handling certain methods and preprocessing permissions requests.
  */
-export default function createMethodMiddleware ({
+export default function createMethodMiddleware({
   store,
   storeKey,
   getAccounts,
@@ -19,10 +19,12 @@ export default function createMethodMiddleware ({
     switch (req.method) {
       // intercepting eth_accounts requests for backwards compatibility,
       // i.e. return an empty array instead of an error
+      case 'cfx_accounts':
       case 'eth_accounts':
         res.result = await getAccounts()
         return
 
+      case 'cfx_requestAccounts':
       case 'eth_requestAccounts':
         // first, just try to get accounts
         let accounts = await getAccounts()

@@ -2787,10 +2787,10 @@
     pify "^3.0.0"
     safe-event-emitter "^1.0.1"
 
-"@yqrashawn/conflux-portal-inpage-provider@^4.0.9":
-  version "4.0.9"
-  resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-portal-inpage-provider/-/conflux-portal-inpage-provider-4.0.9.tgz#7185d26fcad5ead168cb1a9ccaee9ee1bf05446e"
-  integrity sha512-ZD2apvLz7Lk4vex9QihGLKRUsqCFt13aS/mEP1Ssu682fs5yNHaHjERDSxkKUvPb5ZatCzZcdZjYUIH0B+xP7g==
+"@yqrashawn/conflux-portal-inpage-provider@^4.0.10":
+  version "4.0.10"
+  resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-portal-inpage-provider/-/conflux-portal-inpage-provider-4.0.10.tgz#60f20629968b47a8c9b9c32022c9f34713739a33"
+  integrity sha512-ydpSVvf1OfbKdB/jKXesvpf4EHmNTzkEvZcf0jtCM8/kYuuq29s/6bqvMZEq3ZoWZ8U/pREUp+NacXdpdNyAiQ==
   dependencies:
     eth-json-rpc-errors "^2.0.0"
     fast-deep-equal "^2.0.1"

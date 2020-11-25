@@ -94,7 +94,7 @@
     "@sentry/integrations": "^5.27.4",
     "@yqrashawn/cfx-contract-metadata": "^0.0.7",
     "@yqrashawn/cfx-json-rpc-middleware": "^4.4.8",
-    "@yqrashawn/conflux-portal-inpage-provider": "^4.0.9",
+    "@yqrashawn/conflux-portal-inpage-provider": "^4.0.10",
     "@zxing/library": "^0.8.0",
     "abi-decoder": "^1.2.0",
     "abortcontroller-polyfill": "^1.3.0",
