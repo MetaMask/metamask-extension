@@ -15837,6 +15837,16 @@ lavamoat@^4.3.1:
     object.fromentries "^2.0.2"
     resolve "^1.17.0"
     yargs "^16.0.0"
+    
+lavamoat-viz@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/lavamoat-viz/-/lavamoat-viz-4.0.2.tgz#6817a570730dc62c76721baeefd00b922c9bea1b"
+  integrity sha512-ok0EoIXasU0NnjukyFDwcAMoGvbUgbvS67LGttqSDo2LbV3qu6W5qqbSodbPuxATn1EgGoWkTFNfbOoOL5ja+w==
+  dependencies:
+    ncp "^2.0.0"
+    open "^7.0.3"
+    pify "^4.0.1"
+    yargs "^14.0.0"
 
 lazy-cache@^0.2.3:
   version "0.2.7"
