@@ -1535,7 +1535,7 @@
     },
     "default-resolution": {
       "globals": {
-        "process.version.match": true
+        "process.version": true
       }
     },
     "define-properties": {
@@ -1611,7 +1611,7 @@
     },
     "domutils": {
       "globals": {
-        "hasOwnProperty.call": true
+        "hasOwnProperty": true
       },
       "packages": {
         "dom-serializer": true,
@@ -2238,7 +2238,7 @@
         "constants.O_WRONLY": true,
         "constants.hasOwnProperty": true,
         "fs": true,
-        "stream.Stream.call": true,
+        "stream.Stream": true,
         "util": true
       },
       "globals": {
@@ -2849,7 +2849,7 @@
     "memoizee": {
       "globals": {
         "clearTimeout": true,
-        "hasOwnProperty.call": true,
+        "hasOwnProperty": true,
         "setTimeout": true
       },
       "packages": {
@@ -4520,7 +4520,7 @@
       },
       "globals": {
         "Buffer": true,
-        "process.version.match": true
+        "process.version": true
       },
       "packages": {
         "http-parser-js": true,
