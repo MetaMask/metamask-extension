@@ -65,7 +65,7 @@ async function start() {
   const contentRows = [
     `builds: ${buildLinks}`,
     `bundle viz: ${bundleLinks}`,
-    `dep viz: ${depVizLink}`,
+    `build viz: ${depVizLink}`,
     `<a href="${allArtifactsUrl}">all artifacts</a>`,
   ]
   const hiddenContent = `<ul>${contentRows
