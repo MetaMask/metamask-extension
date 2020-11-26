@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { unpad, bufferToHex, addHexPrefix } from 'ethereumjs-util'
+import { calculateHexData } from '../../send.utils';
 import SendRowWrapper from '../send-row-wrapper'
 import HCaptcha from '../../../../components/app/captcha'
 
@@ -11,6 +11,10 @@ export default class CaptchaRowComponent extends Component {
       hasTriedSolveCaptchaChallenge: false,
       isCaptchaChallengePassed: false,
     }
+  }
+
+  componentDidMount() {
+    this.updateData();
   }
 
   onCaptchaVerified = () => {
@@ -34,27 +38,17 @@ export default class CaptchaRowComponent extends Component {
   }
 
   updateData = () => {
-    let isHuman = 0
-
-    if (!this.state.hasTriedSolveCaptchaChallenge) {
-      return
-    }
-
-    this.props.updateSendIsHcaptchaVerified(this.state.isCaptchaChallengePassed)
-
-    if (this.state.isCaptchaChallengePassed) {
-      isHuman = 1
-    }
-
-    let updatedHexData = unpad(bufferToHex(Buffer.from(`;is_human=${isHuman}`)))
-
-    if (this.props.hexData) {
-      updatedHexData = `${this.props.hexData}${updatedHexData}`
-    }
-
-    updatedHexData = addHexPrefix(updatedHexData)
-
-    this.props.updateSendHexData(updatedHexData)
+    const {
+      updateSendIsHcaptchaVerified,
+      hexData,
+      updateSendHexData,
+      updateGas
+    } = this.props
+    const { isCaptchaChallengePassed } = this.state
+    updateSendIsHcaptchaVerified(isCaptchaChallengePassed)
+    const data = calculateHexData(hexData, isCaptchaChallengePassed)
+    updateSendHexData(data);
+    updateGas({ data })
   }
 
   render() {

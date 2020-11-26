@@ -37,7 +37,7 @@ export default class SendContent extends Component {
           {this.props.showHexData && (
             <SendHexDataRow updateGas={this.updateGas} />
           )}
-          <SendCaptchaRow />
+          <SendCaptchaRow updateGas={this.updateGas}/>
         </div>
       </PageContainerContent>
     )
