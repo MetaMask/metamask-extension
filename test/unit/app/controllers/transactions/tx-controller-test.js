@@ -412,8 +412,10 @@ describe('Transaction Controller', function() {
         history: [{}],
       }
       providerResultStub.eth_gasPrice = '4a817c800'
-      providerResultStub.eth_getBlockByNumber = { gasLimit: '47b784' }
-      providerResultStub.eth_estimateGas = '5209'
+      providerResultStub.eth_estimateGas = {
+        gasUsed: '5209',
+        storageCollateralized: '0',
+      }
 
       const txMetaWithDefaults = await txController.addTxGasAndCollateralDefaults(
         txMeta

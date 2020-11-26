@@ -528,7 +528,7 @@ const initialize = () => {
       transferTokens.onclick = async event => {
         console.log(`event`, event)
         const transferResult = humanstandardtokenContract
-          .transfer('0x1f318C334780961FB129D2a6c30D0763d9a5C970', '15000')
+          .transfer('0x1f318c334780961fb129d2a6c30d0763d9a5c970', '15000')
           .sendTransaction({
             from: accounts[0],
             to: humanstandardtokenContract.address,
@@ -540,7 +540,7 @@ const initialize = () => {
 
       approveTokens.onclick = async () => {
         const approveResult = await humanstandardtokenContract
-          .approve('0x8bc5baF874d2DA8D216aE9f137804184EE5AfEF4', '70000')
+          .approve('0x8bc5baf874d2da8d216ae9f137804184ee5afef4', '70000')
           .sendTransaction({
             from: accounts[0],
             to: humanstandardtokenContract.address,
@@ -553,7 +553,7 @@ const initialize = () => {
       transferTokensWithoutGas.onclick = async event => {
         console.log(`event`, event)
         const transferResult = await humanstandardtokenContract
-          .transfer('0x1f318C334780961FB129D2a6c30D0763d9a5C970', '15000')
+          .transfer('0x1f318c334780961fb129d2a6c30d0763d9a5c970', '15000')
           .sendTransaction({
             from: accounts[0],
             to: humanstandardtokenContract.address,
@@ -565,7 +565,7 @@ const initialize = () => {
 
       approveTokensWithoutGas.onclick = async () => {
         const approveResult = await humanstandardtokenContract
-          .approve('0x1f318C334780961FB129D2a6c30D0763d9a5C970', '70000')
+          .approve('0x1f318c334780961fb129d2a6c30d0763d9a5c970', '70000')
           .sendTransaction({
             from: accounts[0],
             to: humanstandardtokenContract.address,
@@ -654,7 +654,7 @@ const initialize = () => {
           from: {
             happy: true,
             name: 'Cow',
-            wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+            wallet: '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826',
           },
           to: {
             happy: false,
