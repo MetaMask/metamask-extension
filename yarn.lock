@@ -9297,6 +9297,11 @@ escalade@^3.1.1:
   resolved "https://registry.yarnpkg.com/escalade/-/escalade-3.1.1.tgz#d8cfdc7000965c5a0174b4a82eaa5c0552742e40"
   integrity sha512-k0er2gUkLf8O0zKJiAhmkTnJlTvINGv7ygDNPbeIsX/TJjGJZHuh9B2UxbsaEkmlEo9MfhrSzmhIlhRlI2GXnw==
 
+escalade@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/escalade/-/escalade-3.1.1.tgz#d8cfdc7000965c5a0174b4a82eaa5c0552742e40"
+  integrity sha512-k0er2gUkLf8O0zKJiAhmkTnJlTvINGv7ygDNPbeIsX/TJjGJZHuh9B2UxbsaEkmlEo9MfhrSzmhIlhRlI2GXnw==
+
 escape-html@^1.0.3, escape-html@~1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/escape-html/-/escape-html-1.0.3.tgz#0258eae4d3d0c0974de1c169188ef0051d1d1988"
@@ -15820,6 +15825,16 @@ lavamoat-tofu@^5.1.1:
   dependencies:
     "@babel/parser" "^7.10.1"
     "@babel/traverse" "^7.10.1"
+
+lavamoat-viz@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/lavamoat-viz/-/lavamoat-viz-4.1.2.tgz#d57f5e4b3e664a6e3472f5d59ebef59a85c7e931"
+  integrity sha512-MzNHM0KMKLnAJaMbkMwwNNqA1/rM8SbiIAcb5OaBhAdeUoe+Ymo6ZPOu2X5XHuDU0Bh2HNYbazm96A2L17xixQ==
+  dependencies:
+    ncp "^2.0.0"
+    open "^7.0.3"
+    pify "^4.0.1"
+    yargs "^16.0.0"
 
 lavamoat@^4.3.1:
   version "4.3.1"
