@@ -21,7 +21,7 @@ export function getScriptNode(hl) {
   const script = document.createElement('script')
   // Chrome extensions don't have domain
   // Because of this we passing custom domain here(value doesn't matter)
-  const host = 'alexnewman.com'
+  const host = 'metamask-human.com'
   script.src = `https://hcaptcha.com/1/api.js?render=explicit&onload=hcaptchaOnLoad&host=${host}`
   script.async = true
   if (hl) {

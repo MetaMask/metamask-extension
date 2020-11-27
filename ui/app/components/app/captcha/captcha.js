@@ -1,7 +1,6 @@
-import React from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { nanoid, getScriptNode } from './utils'
-
-/* eslint-disable */
 
 // Create script to init hCaptcha
 let onLoadListeners = []
@@ -23,8 +22,15 @@ const CaptchaScript = (hl) => {
   document.head.appendChild(hCaptchaScriptNode)
 }
 
-export default class HCaptcha extends React.Component {
-  // TODO add proptypes here
+export default class HCaptcha extends Component {
+  static propTypes = {
+    sitekey: PropTypes.string,
+    onClose: PropTypes.func,
+    onVerify: PropTypes.func,
+    onExpire: PropTypes.func,
+    languageOverride: PropTypes.string
+  }
+
   constructor(props) {
     super(props)
     const { id = null } = props
@@ -98,8 +104,6 @@ export default class HCaptcha extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { endpoint } = this.props
-
     // Prop Keys that could change
     const keys = [
       'sitekey',
@@ -234,4 +238,3 @@ export default class HCaptcha extends React.Component {
     return <div id={elementId}></div>
   }
 }
-/* eslint-enable */

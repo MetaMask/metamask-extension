@@ -16,6 +16,7 @@ import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../app/scripts/lib/enums'
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util'
 import { setCustomGasLimit } from '../ducks/gas/gas.duck'
 import txHelper from '../../lib/tx-helper'
+import { saveLocalStorageData } from '../../lib/local-storage-helpers';
 import { getEnvironmentType, addHexPrefix } from '../../../app/scripts/lib/util'
 import {
   getPermittedAccountsForCurrentTab,
@@ -740,6 +741,7 @@ export function updateSendAmount(amount) {
 }
 
 export function updateSendIsHcaptchaVerified(value) {
+  saveLocalStorageData(value, 'IS_HCAPTCHA_VERIFIED')
   return {
     type: actionConstants.UPDATE_IS_HCAPTCHA_VERIFIED,
     value

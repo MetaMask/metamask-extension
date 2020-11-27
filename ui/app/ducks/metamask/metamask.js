@@ -1,5 +1,6 @@
 import * as actionConstants from '../../store/actionConstants'
 import { ALERT_TYPES } from '../../../../app/scripts/controllers/alert'
+import { loadLocalStorageData } from '../../../lib/local-storage-helpers'
 
 export default function reduceMetamask(state = {}, action) {
   const metamaskState = {
@@ -29,8 +30,7 @@ export default function reduceMetamask(state = {}, action) {
       editingTransactionId: null,
       toNickname: '',
       ensResolution: null,
-      ensResolutionError: '',
-      isHcaptchaVerified: false
+      ensResolutionError: ''
     },
     useBlockie: false,
     featureFlags: {},
@@ -47,6 +47,7 @@ export default function reduceMetamask(state = {}, action) {
     participateInMetaMetrics: null,
     metaMetricsSendCount: 0,
     nextNonce: null,
+    isHcaptchaVerified: loadLocalStorageData('IS_HCAPTCHA_VERIFIED') || false,
     ...state,
   }
 
@@ -182,15 +183,6 @@ export default function reduceMetamask(state = {}, action) {
         },
       }
 
-    case actionConstants.UPDATE_IS_HCAPTCHA_VERIFIED:
-      return {
-        ...metamaskState,
-        send: {
-          ...metamaskState.send,
-          isHcaptchaVerified: action.value,
-        },
-      }
-
     case actionConstants.UPDATE_MAX_MODE:
       return {
         ...metamaskState,
@@ -274,9 +266,8 @@ export default function reduceMetamask(state = {}, action) {
           errors: {},
           maxModeOn: false,
           editingTransactionId: null,
-          toNickname: '',
-          isHcaptchaVerified: false
-        },
+          toNickname: ''
+        }
       }
 
     case actionConstants.UPDATE_TRANSACTION_PARAMS: {
@@ -376,6 +367,12 @@ export default function reduceMetamask(state = {}, action) {
         nextNonce: action.value,
       }
     }
+
+    case actionConstants.UPDATE_IS_HCAPTCHA_VERIFIED:
+      return {
+        ...metamaskState,
+        isHcaptchaVerified: action.value,
+      }
 
     default:
       return metamaskState
