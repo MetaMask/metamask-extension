@@ -29,7 +29,7 @@ export default function reduceMetamask(state = {}, action) {
       editingTransactionId: null,
       toNickname: '',
       ensResolution: null,
-      ensResolutionError: '',
+      ensResolutionError: ''
     },
     useBlockie: false,
     featureFlags: {},
@@ -46,6 +46,7 @@ export default function reduceMetamask(state = {}, action) {
     participateInMetaMetrics: null,
     metaMetricsSendCount: 0,
     nextNonce: null,
+    isHcaptchaVerified: false,
     ...state,
   }
 
@@ -264,8 +265,9 @@ export default function reduceMetamask(state = {}, action) {
           errors: {},
           maxModeOn: false,
           editingTransactionId: null,
-          toNickname: '',
+          toNickname: ''
         },
+        isHcaptchaVerified: false
       }
 
     case actionConstants.UPDATE_TRANSACTION_PARAMS: {
@@ -365,6 +367,12 @@ export default function reduceMetamask(state = {}, action) {
         nextNonce: action.value,
       }
     }
+
+    case actionConstants.UPDATE_IS_HCAPTCHA_VERIFIED:
+      return {
+        ...metamaskState,
+        isHcaptchaVerified: action.value,
+      }
 
     default:
       return metamaskState

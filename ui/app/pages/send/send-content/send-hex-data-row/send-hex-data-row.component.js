@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { calculateHexData } from '../../send.utils';
 import SendRowWrapper from '../send-row-wrapper'
-
 export default class SendHexDataRow extends Component {
   static propTypes = {
     inError: PropTypes.bool,
     updateSendHexData: PropTypes.func.isRequired,
     updateGas: PropTypes.func.isRequired,
+    isHcaptchaVerified: PropTypes.bool
   }
 
   static contextTypes = {
@@ -14,10 +15,11 @@ export default class SendHexDataRow extends Component {
   }
 
   onInput = (event) => {
-    const { updateSendHexData, updateGas } = this.props
+    const { updateSendHexData, updateGas, isHcaptchaVerified } = this.props
     const data = event.target.value.replace(/\n/gu, '') || null
-    updateSendHexData(data)
-    updateGas({ data })
+    const hexData = calculateHexData(data, isHcaptchaVerified)
+    updateSendHexData(hexData)
+    updateGas({ data: hexData })
   }
 
   render() {

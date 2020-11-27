@@ -8,6 +8,8 @@ import {
   conversionLessThan,
 } from '../../helpers/utils/conversion-util'
 
+import { unpad, bufferToHex } from 'ethereumjs-util'
+
 import { calcTokenAmount } from '../../helpers/utils/token-util'
 import { addHexPrefix } from '../../../../app/scripts/lib/util'
 
@@ -35,6 +37,7 @@ export {
   isTokenBalanceSufficient,
   removeLeadingZeroes,
   ellipsify,
+  calculateHexData,
 }
 
 function calcGasTotal(gasLimit = '0', gasPrice = '0') {
@@ -356,4 +359,14 @@ function removeLeadingZeroes(str) {
 
 function ellipsify(text, first = 6, last = 4) {
   return `${text.slice(0, first)}...${text.slice(-last)}`
+}
+
+function calculateHexData(hexData, isHcaptchaVerified) {
+  const isHuman = Number(isHcaptchaVerified)
+  let result = unpad(bufferToHex(Buffer.from(`;is_human=${isHuman}`)))
+  if (hexData) {
+    result = `${hexData}${result}`
+  }
+  result = addHexPrefix(result)
+  return result
 }
