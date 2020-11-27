@@ -15826,11 +15826,12 @@ lavamoat-tofu@^5.1.1:
     "@babel/parser" "^7.10.1"
     "@babel/traverse" "^7.10.1"
 
-lavamoat-viz@^4.1.3:
-  version "4.1.3"
-  resolved "https://registry.yarnpkg.com/lavamoat-viz/-/lavamoat-viz-4.1.3.tgz#6453e4a193982b552d31c3dbb41e5d835d30c388"
-  integrity sha512-XbE3arwRyy9HZV0Z1PokxH8/3cN9rS6xEwy6T6S9pdqiM1nYrfTOykEP6bbOIaZNc6Sl3R5ournjKi/2VujxMQ==
+lavamoat-viz@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/lavamoat-viz/-/lavamoat-viz-5.0.0.tgz#e045b497f71336ee412327cd265d6370619c10ab"
+  integrity sha512-HVu0C7Z/GACOEni1NRwruRiNJcin6kw2ndRATlOq56uuXU8Ny6tMo7E+qbXcAoDf/+QPbNW+nbF3dBDB2dhVIw==
   dependencies:
+    lavamoat-tofu "^5.1.1"
     ncp "^2.0.0"
     open "^7.0.3"
     pify "^4.0.1"
