@@ -26,10 +26,6 @@ import {
 } from '@metamask/controllers'
 import { getBackgroundMetaMetricState } from '../../ui/app/selectors'
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction'
-import {
-  SEGMENT_FLUSH_AT,
-  SEGMENT_FLUSH_INTERVAL,
-} from '../../shared/constants/metametrics'
 import ComposableObservableStore from './lib/ComposableObservableStore'
 import AccountTracker from './lib/account-tracker'
 import createLoggerMiddleware from './lib/createLoggerMiddleware'
@@ -62,6 +58,7 @@ import nodeify from './lib/nodeify'
 import accountImporter from './account-import-strategies'
 import seedPhraseVerifier from './lib/seed-phrase-verifier'
 import MetaMetricsController from './controllers/metametrics'
+import { segment, segmentLegacy } from './lib/segment'
 
 export default class MetamaskController extends EventEmitter {
   /**
@@ -119,14 +116,8 @@ export default class MetamaskController extends EventEmitter {
     })
 
     this.metaMetricsController = new MetaMetricsController({
-      isDevOrTestEnvironment: Boolean(
-        process.env.METAMASK_DEBUG || process.env.IN_TEST,
-      ),
-      segmentWriteKey: process.env.SEGMENT_WRITE_KEY,
-      segmentLegacyWriteKey: process.env.SEGMENT_LEGACY_WRITE_KEY,
-      segmentHost: process.env.SEGMENT_HOST,
-      flushAt: SEGMENT_FLUSH_AT,
-      flustInterval: SEGMENT_FLUSH_INTERVAL,
+      segment,
+      segmentLegacy,
       preferencesController: this.preferencesController,
       networkController: this.networkController,
       version: this.platform.getVersion(),

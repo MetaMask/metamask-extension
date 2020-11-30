@@ -1,10 +1,8 @@
 import { merge, omit } from 'lodash'
-import Analytics from 'analytics-node'
 import ObservableStore from 'obs-store'
 import { bufferToHex, sha3 } from 'ethereumjs-util'
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../lib/enums'
 import {
-  createSegmentMock,
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
 } from '../../../shared/constants/metametrics'
@@ -57,23 +55,6 @@ export function sendCountIsTrackable(sendCount) {
 
 export default class MetaMetricsController {
   /**
-   * @param {boolean} isDevOrTestEnvironment - is the extension running in test
-   *  of dev mode? This will impact how segment is initialized
-   * @param {SegmentInterface} segmentMock - when in test or dev mode use this
-   *  mocked Segment module instead of an instance of Analytics
-   * @param {SegmentInterface} segmentLegacyMock - when in test or dev mode use
-   *  this mocked Segment module instead of an instance of Analytics for legacy
-   *  events
-   * @param {string} segmentWriteKey - the write key for the Segment source to
-   *  track new schema events to
-   * @param {string} segmentLegacyWriteKey - the write key for the Segment
-   *  source to tack legacy events to
-   * @param {string} segmentHost - the host to send events to. The default
-   *  host for Analytics constructor is 'https://api.segment.io'
-   * @param {number} flushAt - the maximum number of events to queue before
-   *  sending to Segment
-   * @param {number} flushInterval - the maximum number of milliseconds to wait
-   *  for before sending queued events
    * @param {Object} preferencesController - The preferences controller, used
    *  to access and subscribe to preferences that will be attached to events
    * @param {Object} networkController - The network controller, used to access
@@ -84,14 +65,8 @@ export default class MetaMetricsController {
    * @param {MetaMetricsControllerState} - State to initialized with
    */
   constructor({
-    isDevOrTestEnvironment,
-    segmentMock,
-    segmentLegacyMock,
-    segmentWriteKey,
-    segmentLegacyWriteKey,
-    segmentHost,
-    flushAt,
-    flushInterval,
+    segment,
+    segmentLegacy,
     preferencesController,
     networkController,
     version,
@@ -101,7 +76,7 @@ export default class MetaMetricsController {
     const prefState = preferencesController.store.getState()
     this.chainId = networkController.getCurrentChainId()
     this.network = networkController.getNetworkIdentifier()
-    this.locale = prefState.currentLocale?.replace('_', '-') ?? ''
+    this.locale = prefState.currentLocale.replace('_', '-')
     this.version =
       environment === 'production' ? version : `${version}-${environment}`
 
@@ -113,35 +88,15 @@ export default class MetaMetricsController {
     })
 
     preferencesController.store.subscribe(({ currentLocale }) => {
-      this.locale = currentLocale?.replace('_', '-') ?? ''
+      this.locale = currentLocale.replace('_', '-')
     })
 
     networkController.on('networkDidChange', () => {
       this.chainId = networkController.getCurrentChainId()
       this.network = networkController.getNetworkIdentifier()
     })
-
-    // We do not want to track events on development builds unless specifically
-    // provided a SEGMENT_WRITE_KEY. This also holds true for test environments and
-    // E2E, which is handled in the build process by never providing the SEGMENT_WRITE_KEY
-    // when process.env.IN_TEST is truthy
-    this.segment =
-      !segmentWriteKey || (isDevOrTestEnvironment && !segmentHost)
-        ? segmentMock ?? createSegmentMock(flushAt, flushInterval)
-        : new Analytics(segmentWriteKey, {
-            host: segmentHost,
-            flushAt,
-            flushInterval,
-          })
-
-    this.segmentLegacy =
-      !segmentLegacyWriteKey || (isDevOrTestEnvironment && !segmentHost)
-        ? segmentLegacyMock ?? createSegmentMock(flushAt, flushInterval)
-        : new Analytics(segmentLegacyWriteKey, {
-            host: segmentHost,
-            flushAt,
-            flushInterval,
-          })
+    this.segment = segment
+    this.segmentLegacy = segmentLegacy
   }
 
   generateMetaMetricsId() {
@@ -156,41 +111,28 @@ export default class MetaMetricsController {
   /**
    * Setter for the `participateInMetaMetrics` property
    *
-   * @param {boolean} bool - Whether or not the user wants to participate in MetaMetrics
-   * @returns {string|null} the string of the new metametrics id, or null if not set
-   *
+   * @param {boolean} participateInMetaMetrics - Whether or not the user wants
+   *  to participate in MetaMetrics
+   * @returns {string|null} the string of the new metametrics id, or null
+   *  if not set
    */
-  setParticipateInMetaMetrics(bool) {
-    this.store.updateState({ participateInMetaMetrics: bool })
-    if (bool && !this.metaMetricsId) {
-      this.metaMetricsId = this.generateMetaMetricsId()
-    } else if (bool === false) {
-      this.metaMetricsId = null
+  setParticipateInMetaMetrics(participateInMetaMetrics) {
+    let { metaMetricsId } = this.state
+    if (participateInMetaMetrics && !metaMetricsId) {
+      metaMetricsId = this.generateMetaMetricsId()
+    } else if (participateInMetaMetrics === false) {
+      metaMetricsId = null
     }
-    return this.metaMetricsId
+    this.store.updateState({ participateInMetaMetrics, metaMetricsId })
+    return metaMetricsId
   }
 
-  /**
-   * retrieve the user's preference for participating in MetaMetrics
-   */
-  get participateInMetaMetrics() {
-    return this.store.getState().participateInMetaMetrics
+  get state() {
+    return this.store.getState()
   }
 
   setMetaMetricsSendCount(val) {
     this.store.updateState({ metaMetricsSendCount: val })
-  }
-
-  get metaMetricsSendCount() {
-    return this.store.getState().metaMetricsSendCount
-  }
-
-  get metaMetricsId() {
-    return this.store.getState().metaMetricsId
-  }
-
-  set metaMetricsId(metaMetricsId) {
-    this.store.updateState({ metaMetricsId })
   }
 
   /**
@@ -275,7 +217,7 @@ export default class MetaMetricsController {
       flushImmediately,
     } = options
     let idType = 'userId'
-    let idValue = this.metaMetricsId
+    let idValue = this.state.metaMetricsId
     let excludeMetaMetricsId = options.excludeMetaMetricsId ?? false
     // This is carried over from the old implementation, and will likely need
     // to be updated to work with the new tracking plan. I think we should use
@@ -283,8 +225,8 @@ export default class MetaMetricsController {
     const isSendFlow = Boolean(payload.event.match(/^send|^confirm/iu))
     if (
       isSendFlow &&
-      this.metaMetricsSendCount &&
-      !sendCountIsTrackable(this.metaMetricsSendCount + 1)
+      this.state.metaMetricsSendCount &&
+      !sendCountIsTrackable(this.state.metaMetricsSendCount + 1)
     ) {
       excludeMetaMetricsId = true
     }
@@ -334,15 +276,16 @@ export default class MetaMetricsController {
    *  view
    */
   trackPage({ name, params, environmentType, page, referrer }, options = {}) {
-    if (this.participateInMetaMetrics === false) {
+    if (this.state.participateInMetaMetrics === false) {
       return
     }
 
-    if (this.participateInMetaMetrics === null && !options.isOptInPath) {
+    if (this.state.participateInMetaMetrics === null && !options.isOptInPath) {
       return
     }
-    const idTrait = this.metaMetricsId ? 'userId' : 'anonymousId'
-    const idValue = this.metaMetricsId ?? METAMETRICS_ANONYMOUS_ID
+    const { metaMetricsId } = this.state
+    const idTrait = metaMetricsId ? 'userId' : 'anonymousId'
+    const idValue = metaMetricsId ?? METAMETRICS_ANONYMOUS_ID
     this.segment.page({
       [idTrait]: idValue,
       name,
@@ -374,7 +317,7 @@ export default class MetaMetricsController {
       throw new Error('Must specify event and category.')
     }
 
-    if (!this.participateInMetaMetrics && !options.isOptIn) {
+    if (!this.state.participateInMetaMetrics && !options.isOptIn) {
       return
     }
 

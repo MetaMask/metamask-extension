@@ -2,8 +2,8 @@ import { strict as assert } from 'assert'
 import sinon from 'sinon'
 import MetaMetricsController from '../../../../app/scripts/controllers/metametrics'
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../../app/scripts/lib/enums'
+import { createSegmentMock } from '../../../../app/scripts/lib/segment'
 import {
-  createSegmentMock,
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
 } from '../../../../shared/constants/metametrics'
@@ -91,12 +91,9 @@ function getMetaMetricsController({
   networkController = getMockNetworkController(),
 } = {}) {
   return new MetaMetricsController({
-    isDevOrTestEnvironment: true,
-    segmentMock: segment,
-    segmentLegacyMock: segmentLegacy,
+    segment,
+    segmentLegacy,
     networkController,
-    flushAt: 2,
-    flushInterval: 1000,
     preferencesController,
     version: '0.0.1',
     environment: 'test',
@@ -114,9 +111,12 @@ describe('MetaMetricsController', function () {
       assert.strictEqual(metaMetricsController.version, VERSION)
       assert.strictEqual(metaMetricsController.network, NETWORK)
       assert.strictEqual(metaMetricsController.chainId, FAKE_CHAIN_ID)
-      assert.strictEqual(metaMetricsController.participateInMetaMetrics, true)
       assert.strictEqual(
-        metaMetricsController.metaMetricsId,
+        metaMetricsController.state.participateInMetaMetrics,
+        true,
+      )
+      assert.strictEqual(
+        metaMetricsController.state.metaMetricsId,
         TEST_META_METRICS_ID,
       )
       assert.strictEqual(metaMetricsController.locale, LOCALE.replace('_', '-'))
@@ -167,33 +167,33 @@ describe('MetaMetricsController', function () {
         participateInMetaMetrics: null,
         metaMetricsId: null,
       })
-      assert.equal(metaMetricsController.participateInMetaMetrics, null)
+      assert.equal(metaMetricsController.state.participateInMetaMetrics, null)
       metaMetricsController.setParticipateInMetaMetrics(true)
-      assert.equal(metaMetricsController.participateInMetaMetrics, true)
+      assert.equal(metaMetricsController.state.participateInMetaMetrics, true)
       metaMetricsController.setParticipateInMetaMetrics(false)
-      assert.equal(metaMetricsController.participateInMetaMetrics, false)
+      assert.equal(metaMetricsController.state.participateInMetaMetrics, false)
     })
     it('should generate and update the metaMetricsId when set to true', function () {
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: null,
         metaMetricsId: null,
       })
-      assert.equal(metaMetricsController.metaMetricsId, null)
+      assert.equal(metaMetricsController.state.metaMetricsId, null)
       metaMetricsController.setParticipateInMetaMetrics(true)
-      assert.equal(typeof metaMetricsController.metaMetricsId, 'string')
+      assert.equal(typeof metaMetricsController.state.metaMetricsId, 'string')
     })
     it('should nullify the metaMetricsId when set to false', function () {
       const metaMetricsController = getMetaMetricsController()
       metaMetricsController.setParticipateInMetaMetrics(false)
-      assert.equal(metaMetricsController.metaMetricsId, null)
+      assert.equal(metaMetricsController.state.metaMetricsId, null)
     })
   })
 
   describe('setMetaMetricsSendCount', function () {
-    it('should upate the send count in state', function () {
+    it('should update the send count in state', function () {
       const metaMetricsController = getMetaMetricsController()
       metaMetricsController.setMetaMetricsSendCount(1)
-      assert.equal(metaMetricsController.metaMetricsSendCount, 1)
+      assert.equal(metaMetricsController.state.metaMetricsSendCount, 1)
     })
   })
 
