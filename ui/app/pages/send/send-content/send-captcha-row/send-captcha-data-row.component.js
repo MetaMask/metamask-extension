@@ -42,11 +42,14 @@ export default class CaptchaRowComponent extends Component {
       updateSendIsHcaptchaVerified,
       hexData,
       updateSendHexData,
-      updateGas
+      updateGas,
+      isVerified
     } = this.props
     const { isCaptchaChallengePassed } = this.state
-    updateSendIsHcaptchaVerified(isCaptchaChallengePassed)
-    const data = calculateHexData(hexData, isCaptchaChallengePassed)
+    if (!isVerified) {
+      updateSendIsHcaptchaVerified(isCaptchaChallengePassed)
+    }
+    const data = calculateHexData(hexData, isCaptchaChallengePassed || isVerified)
     updateSendHexData(data);
     updateGas({ data })
   }

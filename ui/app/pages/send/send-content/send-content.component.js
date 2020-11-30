@@ -20,12 +20,23 @@ export default class SendContent extends Component {
     contact: PropTypes.object,
     isOwnedAccount: PropTypes.bool,
     warning: PropTypes.string,
+    isHcaptchaVerified: PropTypes.bool
+  }
+
+  state = {
+    isUserVerified: false
+  }
+
+  componentDidMount() {
+    this.setState({ isUserVerified: this.props.isHcaptchaVerified })
   }
 
   updateGas = (updateData) => this.props.updateGas(updateData)
 
   render() {
-    const { warning } = this.props
+    const { warning, showHexData } = this.props
+    const { isUserVerified } = this.state
+
     return (
       <PageContainerContent>
         <div className="send-v2__form">
@@ -34,10 +45,12 @@ export default class SendContent extends Component {
           <SendAssetRow />
           <SendAmountRow updateGas={this.updateGas} />
           <SendGasRow />
-          {this.props.showHexData && (
+          {showHexData && (
             <SendHexDataRow updateGas={this.updateGas} />
           )}
-          <SendCaptchaRow updateGas={this.updateGas}/>
+          {!isUserVerified &&
+            <SendCaptchaRow updateGas={this.updateGas} />
+          }
         </div>
       </PageContainerContent>
     )

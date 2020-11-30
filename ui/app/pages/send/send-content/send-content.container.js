@@ -19,6 +19,7 @@ function mapStateToProps(state) {
     ),
     contact: getAddressBookEntry(state, to),
     to,
+    isHcaptchaVerified: state.metamask.isHcaptchaVerified,
   }
 }
 

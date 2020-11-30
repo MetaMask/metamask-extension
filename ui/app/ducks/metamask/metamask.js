@@ -1,5 +1,6 @@
 import * as actionConstants from '../../store/actionConstants'
 import { ALERT_TYPES } from '../../../../app/scripts/controllers/alert'
+import { loadLocalStorageData } from '../../../lib/local-storage-helpers'
 
 export default function reduceMetamask(state = {}, action) {
   const metamaskState = {
@@ -46,7 +47,7 @@ export default function reduceMetamask(state = {}, action) {
     participateInMetaMetrics: null,
     metaMetricsSendCount: 0,
     nextNonce: null,
-    isHcaptchaVerified: false,
+    isHcaptchaVerified: loadLocalStorageData('IS_USER_VERIFIED') || false,
     ...state,
   }
 
@@ -266,8 +267,7 @@ export default function reduceMetamask(state = {}, action) {
           maxModeOn: false,
           editingTransactionId: null,
           toNickname: ''
-        },
-        isHcaptchaVerified: false
+        }
       }
 
     case actionConstants.UPDATE_TRANSACTION_PARAMS: {
