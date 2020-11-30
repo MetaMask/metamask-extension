@@ -1,6 +1,6 @@
 import React from 'react'
 import { action } from '@storybook/addon-actions'
-import { text } from '@storybook/addon-knobs/react'
+import { text } from '@storybook/addon-knobs'
 import FeeCard from './fee-card'
 
 const tokenApprovalTextComponent = (
