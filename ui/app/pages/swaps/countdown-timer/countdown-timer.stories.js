@@ -1,5 +1,5 @@
 import React from 'react'
-import { number } from '@storybook/addon-knobs/react'
+import { number } from '@storybook/addon-knobs'
 import CountdownTimer from './countdown-timer'
 
 export default {

@@ -1,7 +1,7 @@
 import React from 'react'
 import { action } from '@storybook/addon-actions'
 import classnames from 'classnames'
-import { text, boolean } from '@storybook/addon-knobs/react'
+import { text, boolean } from '@storybook/addon-knobs'
 import Button from '../button'
 import ButtonGroup from '.'
 
