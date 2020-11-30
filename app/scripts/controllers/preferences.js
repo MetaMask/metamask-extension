@@ -800,14 +800,16 @@ export default class PreferencesController {
    * doesn't fulfill requirements
    *
    */
-  _validateERC20AssetParams(opts) {
-    const { rawAddress, symbol, decimals } = opts
+  _validateERC20AssetParams({ rawAddress, symbol, decimals } = {}) {
     if (!rawAddress || !symbol || typeof decimals === 'undefined') {
       throw new Error(
         `Cannot suggest token without address, symbol, and decimals`,
       )
     }
-    if (!(symbol.length < 7)) {
+    if (typeof symbol !== 'string') {
+      throw new Error(`Invalid symbol: not a string`)
+    }
+    if (symbol.length > 6) {
       throw new Error(`Invalid symbol ${symbol} more than six characters`)
     }
     const numDecimals = parseInt(decimals, 10)
