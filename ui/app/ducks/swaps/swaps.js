@@ -93,7 +93,6 @@ const slice = createSlice({
     clearSwapsState: () => initialState,
     navigatedBackToBuildQuote: (state) => {
       state.approveTxId = null
-      state.balanceError = false
       state.fetchingQuotes = false
       state.customGas.limit = null
       state.customGas.price = null
