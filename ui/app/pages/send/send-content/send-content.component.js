@@ -24,18 +24,18 @@ export default class SendContent extends Component {
   }
 
   state = {
-    isAlreadyHcaptchaVerified: false
+    isUserVerified: false
   }
 
   componentDidMount() {
-    this.setState({ isAlreadyHcaptchaVerified: this.props.isHcaptchaVerified})
+    this.setState({ isUserVerified: this.props.isHcaptchaVerified })
   }
 
   updateGas = (updateData) => this.props.updateGas(updateData)
 
   render() {
     const { warning, showHexData } = this.props
-    const { isAlreadyHcaptchaVerified } = this.state
+    const { isUserVerified } = this.state
 
     return (
       <PageContainerContent>
@@ -48,8 +48,8 @@ export default class SendContent extends Component {
           {showHexData && (
             <SendHexDataRow updateGas={this.updateGas} />
           )}
-          {!isAlreadyHcaptchaVerified &&
-            <SendCaptchaRow updateGas={this.updateGas}/>
+          {!isUserVerified &&
+            <SendCaptchaRow updateGas={this.updateGas} />
           }
         </div>
       </PageContainerContent>

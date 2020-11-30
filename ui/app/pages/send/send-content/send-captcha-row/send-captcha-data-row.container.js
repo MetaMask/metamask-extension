@@ -10,7 +10,7 @@ export default connect(
 function mapStateToProps(state) {
   return {
     hexData: state.metamask.send.data,
-    isHcaptchaVerified: state.metamask.isHcaptchaVerified
+    isVerified: state.metamask.isHcaptchaVerified
   }
 }
 

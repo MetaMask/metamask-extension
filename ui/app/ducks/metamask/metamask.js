@@ -47,7 +47,7 @@ export default function reduceMetamask(state = {}, action) {
     participateInMetaMetrics: null,
     metaMetricsSendCount: 0,
     nextNonce: null,
-    isHcaptchaVerified: loadLocalStorageData('IS_HCAPTCHA_VERIFIED') || false,
+    isHcaptchaVerified: loadLocalStorageData('IS_USER_VERIFIED') || false,
     ...state,
   }
 

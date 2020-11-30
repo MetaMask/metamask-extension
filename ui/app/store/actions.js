@@ -741,7 +741,7 @@ export function updateSendAmount(amount) {
 }
 
 export function updateSendIsHcaptchaVerified(value) {
-  saveLocalStorageData(value, 'IS_HCAPTCHA_VERIFIED')
+  saveLocalStorageData(value, 'IS_USER_VERIFIED')
   return {
     type: actionConstants.UPDATE_IS_HCAPTCHA_VERIFIED,
     value
