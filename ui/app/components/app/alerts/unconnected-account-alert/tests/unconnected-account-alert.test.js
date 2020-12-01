@@ -115,9 +115,9 @@ describe('Unconnected Account Alert', function () {
 
     const dontShowCheckbox = getByRole('checkbox')
 
-    assert.equal(dontShowCheckbox.checked, false)
+    assert.strictEqual(dontShowCheckbox.checked, false)
     fireEvent.click(dontShowCheckbox)
-    assert.equal(dontShowCheckbox.checked, true)
+    assert.strictEqual(dontShowCheckbox.checked, true)
   })
 
   it('clicks dismiss button and calls dismissAlert action', function () {
@@ -128,7 +128,10 @@ describe('Unconnected Account Alert', function () {
     const dismissButton = getByText(/dismiss/u)
     fireEvent.click(dismissButton)
 
-    assert.equal(store.getActions()[0].type, 'unconnectedAccount/dismissAlert')
+    assert.strictEqual(
+      store.getActions()[0].type,
+      'unconnectedAccount/dismissAlert',
+    )
   })
 
   it('clicks Dont Show checkbox and dismiss to call disable alert request action', async function () {
@@ -148,11 +151,11 @@ describe('Unconnected Account Alert', function () {
     fireEvent.click(dismissButton)
 
     setImmediate(() => {
-      assert.equal(
+      assert.strictEqual(
         store.getActions()[0].type,
         'unconnectedAccount/disableAlertRequested',
       )
-      assert.equal(
+      assert.strictEqual(
         store.getActions()[1].type,
         'unconnectedAccount/disableAlertSucceeded',
       )

@@ -109,7 +109,7 @@ describe('TransactionActivityLog Component', function () {
 
     assert.ok(wrapper.hasClass('transaction-activity-log'))
     assert.ok(wrapper.hasClass('test-class'))
-    assert.equal(
+    assert.strictEqual(
       wrapper.find('.transaction-activity-log__action-link').length,
       2,
     )
@@ -166,7 +166,7 @@ describe('TransactionActivityLog Component', function () {
 
     assert.ok(wrapper.hasClass('transaction-activity-log'))
     assert.ok(wrapper.hasClass('test-class'))
-    assert.equal(
+    assert.strictEqual(
       wrapper.find('.transaction-activity-log__action-link').length,
       0,
     )

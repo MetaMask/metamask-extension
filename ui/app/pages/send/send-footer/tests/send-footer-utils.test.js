@@ -19,7 +19,7 @@ const { addressIsNew, constructTxParams, constructUpdatedTx } = sendUtils
 describe('send-footer utils', function () {
   describe('addressIsNew()', function () {
     it('should return false if the address exists in toAccounts', function () {
-      assert.equal(
+      assert.strictEqual(
         addressIsNew(
           [{ address: '0xabc' }, { address: '0xdef' }, { address: '0xghi' }],
           '0xdef',
@@ -29,7 +29,7 @@ describe('send-footer utils', function () {
     })
 
     it('should return true if the address does not exists in toAccounts', function () {
-      assert.equal(
+      assert.strictEqual(
         addressIsNew(
           [{ address: '0xabc' }, { address: '0xdef' }, { address: '0xghi' }],
           '0xxyz',

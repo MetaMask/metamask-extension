@@ -31,7 +31,7 @@ describe('Selection Action', function () {
     importWalletButton.simulate('click')
 
     assert(props.setFirstTimeFlowType.calledOnce)
-    assert.equal(props.setFirstTimeFlowType.getCall(0).args[0], 'import')
+    assert.strictEqual(props.setFirstTimeFlowType.getCall(0).args[0], 'import')
     assert(props.history.push.calledOnce)
   })
 
@@ -42,7 +42,7 @@ describe('Selection Action', function () {
     createWalletButton.simulate('click')
 
     assert(props.setFirstTimeFlowType.calledOnce)
-    assert.equal(props.setFirstTimeFlowType.getCall(0).args[0], 'create')
+    assert.strictEqual(props.setFirstTimeFlowType.getCall(0).args[0], 'create')
     assert(props.history.push.calledOnce)
   })
 })

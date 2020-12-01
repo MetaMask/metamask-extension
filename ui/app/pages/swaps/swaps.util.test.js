@@ -14,24 +14,24 @@ import {
 const swapsUtils = proxyquire('./swaps.util.js', {
   '../../helpers/utils/fetch-with-cache': {
     default: (url, fetchObject) => {
-      assert.equal(fetchObject.method, 'GET')
+      assert.strictEqual(fetchObject.method, 'GET')
       if (url.match(TRADES_BASE_PROD_URL)) {
-        assert.equal(
+        assert.strictEqual(
           url,
           'https://api.metaswap.codefi.network/trades?destinationToken=0xE41d2489571d322189246DaFA5ebDe1F4699F498&sourceToken=0x617b3f8050a0BD94b6b1da02B4384eE5B4DF13F4&sourceAmount=2000000000000000000000000000000000000&slippage=3&timeout=10000&walletAddress=0xmockAddress',
         )
         return Promise.resolve(MOCK_TRADE_RESPONSE_2)
       }
       if (url.match(TOKENS_BASE_PROD_URL)) {
-        assert.equal(url, TOKENS_BASE_PROD_URL)
+        assert.strictEqual(url, TOKENS_BASE_PROD_URL)
         return Promise.resolve(TOKENS)
       }
       if (url.match(AGGREGATOR_METADATA_BASE_PROD_URL)) {
-        assert.equal(url, AGGREGATOR_METADATA_BASE_PROD_URL)
+        assert.strictEqual(url, AGGREGATOR_METADATA_BASE_PROD_URL)
         return Promise.resolve(AGGREGATOR_METADATA)
       }
       if (url.match(TOP_ASSET_BASE_PROD_URL)) {
-        assert.equal(url, TOP_ASSET_BASE_PROD_URL)
+        assert.strictEqual(url, TOP_ASSET_BASE_PROD_URL)
         return Promise.resolve(TOP_ASSETS)
       }
       return Promise.resolve()

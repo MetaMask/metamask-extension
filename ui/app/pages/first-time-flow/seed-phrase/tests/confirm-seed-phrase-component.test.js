@@ -19,7 +19,7 @@ describe('ConfirmSeedPhrase Component', function () {
       seedPhrase: '鼠 牛 虎 兔 龍 蛇 馬 羊 猴 雞 狗 豬',
     })
 
-    assert.equal(
+    assert.strictEqual(
       root.find('.confirm-seed-phrase__seed-word--sorted').length,
       12,
       'should render 12 seed phrases',
@@ -94,9 +94,9 @@ describe('ConfirmSeedPhrase Component', function () {
       '.confirm-seed-phrase__selected-seed-words__pending-seed',
     )
 
-    assert.equal(pendingSeeds.at(0).props().seedIndex, 2)
-    assert.equal(pendingSeeds.at(1).props().seedIndex, 0)
-    assert.equal(pendingSeeds.at(2).props().seedIndex, 1)
+    assert.strictEqual(pendingSeeds.at(0).props().seedIndex, 2)
+    assert.strictEqual(pendingSeeds.at(1).props().seedIndex, 0)
+    assert.strictEqual(pendingSeeds.at(2).props().seedIndex, 1)
   })
 
   it('should insert seed in place on drop', function () {
@@ -182,6 +182,6 @@ describe('ConfirmSeedPhrase Component', function () {
       },
     })
     assert(initialize3BoxSpy.calledOnce)
-    assert.equal(pushSpy.args[0][0], '/initialize/end-of-flow')
+    assert.strictEqual(pushSpy.args[0][0], '/initialize/end-of-flow')
   })
 })

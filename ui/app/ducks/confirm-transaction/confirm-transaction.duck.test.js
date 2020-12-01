@@ -526,9 +526,9 @@ describe('Confirm Transaction Duck', function () {
       )
 
       const storeActions = store.getActions()
-      assert.equal(storeActions.length, expectedActions.length)
+      assert.strictEqual(storeActions.length, expectedActions.length)
       storeActions.forEach((action, index) =>
-        assert.equal(action.type, expectedActions[index]),
+        assert.strictEqual(action.type, expectedActions[index]),
       )
     })
 
@@ -592,9 +592,9 @@ describe('Confirm Transaction Duck', function () {
       store.dispatch(actions.updateTxDataAndCalculate(txData))
 
       const storeActions = store.getActions()
-      assert.equal(storeActions.length, expectedActions.length)
+      assert.strictEqual(storeActions.length, expectedActions.length)
       storeActions.forEach((action, index) =>
-        assert.equal(action.type, expectedActions[index]),
+        assert.strictEqual(action.type, expectedActions[index]),
       )
     })
 
@@ -638,10 +638,10 @@ describe('Confirm Transaction Duck', function () {
 
       store.dispatch(actions.setTransactionToConfirm(2603411941761054))
       const storeActions = store.getActions()
-      assert.equal(storeActions.length, expectedActions.length)
+      assert.strictEqual(storeActions.length, expectedActions.length)
 
       storeActions.forEach((action, index) =>
-        assert.equal(action.type, expectedActions[index]),
+        assert.strictEqual(action.type, expectedActions[index]),
       )
     })
   })

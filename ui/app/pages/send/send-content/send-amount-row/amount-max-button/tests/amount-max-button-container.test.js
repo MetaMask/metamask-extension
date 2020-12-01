@@ -68,7 +68,7 @@ describe('amount-max-button container', function () {
           amount: null,
         })
         assert(actionSpies.updateSendAmount.calledOnce)
-        assert.equal(actionSpies.updateSendAmount.getCall(0).args[0], 12)
+        assert.strictEqual(actionSpies.updateSendAmount.getCall(0).args[0], 12)
       })
     })
 
@@ -76,7 +76,10 @@ describe('amount-max-button container', function () {
       it('should dispatch an action', function () {
         mapDispatchToPropsObject.setMaxModeTo('mockVal')
         assert(dispatchSpy.calledOnce)
-        assert.equal(actionSpies.setMaxModeTo.getCall(0).args[0], 'mockVal')
+        assert.strictEqual(
+          actionSpies.setMaxModeTo.getCall(0).args[0],
+          'mockVal',
+        )
       })
     })
   })

@@ -20,7 +20,7 @@ describe('ImportWithSeedPhrase Component', function () {
       onSubmit: sinon.spy(),
     })
     const textareaCount = root.find('.first-time-flow__textarea').length
-    assert.equal(textareaCount, 1, 'should render 12 seed phrases')
+    assert.strictEqual(textareaCount, 1, 'should render 12 seed phrases')
   })
 
   describe('parseSeedPhrase', function () {

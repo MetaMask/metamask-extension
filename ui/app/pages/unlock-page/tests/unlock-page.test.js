@@ -32,7 +32,7 @@ describe('Unlock Page', function () {
   })
 
   it('renders', function () {
-    assert.equal(wrapper.length, 1)
+    assert.strictEqual(wrapper.length, 1)
   })
 
   it('changes password and submits', function () {
@@ -40,9 +40,9 @@ describe('Unlock Page', function () {
     const loginButton = wrapper.find({ type: 'submit' }).last()
 
     const event = { target: { value: 'password' } }
-    assert.equal(wrapper.instance().state.password, '')
+    assert.strictEqual(wrapper.instance().state.password, '')
     passwordField.last().simulate('change', event)
-    assert.equal(wrapper.instance().state.password, 'password')
+    assert.strictEqual(wrapper.instance().state.password, 'password')
 
     loginButton.simulate('click')
     assert(props.onSubmit.calledOnce)

@@ -50,7 +50,10 @@ describe('send-amount-row container', function () {
         mapDispatchToPropsObject.setMaxModeTo('mockBool')
         assert(dispatchSpy.calledOnce)
         assert(actionSpies.setMaxModeTo.calledOnce)
-        assert.equal(actionSpies.setMaxModeTo.getCall(0).args[0], 'mockBool')
+        assert.strictEqual(
+          actionSpies.setMaxModeTo.getCall(0).args[0],
+          'mockBool',
+        )
       })
     })
 
@@ -59,7 +62,7 @@ describe('send-amount-row container', function () {
         mapDispatchToPropsObject.updateSendAmount('mockAmount')
         assert(dispatchSpy.calledOnce)
         assert(actionSpies.updateSendAmount.calledOnce)
-        assert.equal(
+        assert.strictEqual(
           actionSpies.updateSendAmount.getCall(0).args[0],
           'mockAmount',
         )

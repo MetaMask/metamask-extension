@@ -40,7 +40,7 @@ describe('Advanced Gas Inputs', function () {
     wrapper.find('input').at(0).simulate('change', event)
     clock.tick(499)
 
-    assert.equal(props.updateCustomGasPrice.callCount, 0)
+    assert.strictEqual(props.updateCustomGasPrice.callCount, 0)
   })
 
   it('simulates onChange on gas price after debounce', function () {
@@ -49,8 +49,8 @@ describe('Advanced Gas Inputs', function () {
     wrapper.find('input').at(0).simulate('change', event)
     clock.tick(500)
 
-    assert.equal(props.updateCustomGasPrice.calledOnce, true)
-    assert.equal(props.updateCustomGasPrice.calledWith(1), true)
+    assert.strictEqual(props.updateCustomGasPrice.calledOnce, true)
+    assert.strictEqual(props.updateCustomGasPrice.calledWith(1), true)
   })
 
   it('wont update gasLimit in props before debounce', function () {
@@ -59,7 +59,7 @@ describe('Advanced Gas Inputs', function () {
     wrapper.find('input').at(1).simulate('change', event)
     clock.tick(499)
 
-    assert.equal(props.updateCustomGasLimit.callCount, 0)
+    assert.strictEqual(props.updateCustomGasLimit.callCount, 0)
   })
 
   it('simulates onChange on gas limit after debounce', function () {
@@ -68,8 +68,8 @@ describe('Advanced Gas Inputs', function () {
     wrapper.find('input').at(1).simulate('change', event)
     clock.tick(500)
 
-    assert.equal(props.updateCustomGasLimit.calledOnce, true)
-    assert.equal(props.updateCustomGasLimit.calledWith(21000), true)
+    assert.strictEqual(props.updateCustomGasLimit.calledOnce, true)
+    assert.strictEqual(props.updateCustomGasLimit.calledWith(21000), true)
   })
 
   it('errors when insufficientBalance under gas price and gas limit', function () {
@@ -77,10 +77,10 @@ describe('Advanced Gas Inputs', function () {
     const renderError = wrapper.find(
       '.advanced-gas-inputs__gas-edit-row__error-text',
     )
-    assert.equal(renderError.length, 2)
+    assert.strictEqual(renderError.length, 2)
 
-    assert.equal(renderError.at(0).text(), 'insufficientBalance')
-    assert.equal(renderError.at(1).text(), 'insufficientBalance')
+    assert.strictEqual(renderError.at(0).text(), 'insufficientBalance')
+    assert.strictEqual(renderError.at(1).text(), 'insufficientBalance')
   })
 
   it('errors zero gas price / speed up', function () {
@@ -89,10 +89,10 @@ describe('Advanced Gas Inputs', function () {
     const renderError = wrapper.find(
       '.advanced-gas-inputs__gas-edit-row__error-text',
     )
-    assert.equal(renderError.length, 2)
+    assert.strictEqual(renderError.length, 2)
 
-    assert.equal(renderError.at(0).text(), 'zeroGasPriceOnSpeedUpError')
-    assert.equal(renderError.at(1).text(), 'gasLimitTooLowWithDynamicFee')
+    assert.strictEqual(renderError.at(0).text(), 'zeroGasPriceOnSpeedUpError')
+    assert.strictEqual(renderError.at(1).text(), 'gasLimitTooLowWithDynamicFee')
   })
 
   it('warns when custom gas price is too low', function () {
@@ -101,8 +101,8 @@ describe('Advanced Gas Inputs', function () {
     const renderWarning = wrapper.find(
       '.advanced-gas-inputs__gas-edit-row__warning-text',
     )
-    assert.equal(renderWarning.length, 1)
+    assert.strictEqual(renderWarning.length, 1)
 
-    assert.equal(renderWarning.text(), 'gasPriceExtremelyLow')
+    assert.strictEqual(renderWarning.text(), 'gasPriceExtremelyLow')
   })
 })

@@ -39,7 +39,7 @@ describe('AdvancedTabContent Component', function () {
 
     it('should render the expected child of the advanced-tab div', function () {
       const advancedTabChildren = wrapper.children()
-      assert.equal(advancedTabChildren.length, 2)
+      assert.strictEqual(advancedTabChildren.length, 2)
 
       assert(
         advancedTabChildren
@@ -52,7 +52,7 @@ describe('AdvancedTabContent Component', function () {
       const renderDataSummaryArgs = AdvancedTabContent.prototype.renderDataSummary.getCall(
         0,
       ).args
-      assert.deepEqual(renderDataSummaryArgs, ['$0.25'])
+      assert.deepStrictEqual(renderDataSummaryArgs, ['$0.25'])
     })
   })
 
@@ -74,7 +74,10 @@ describe('AdvancedTabContent Component', function () {
       assert(
         titlesNode.hasClass('advanced-tab__transaction-data-summary__titles'),
       )
-      assert.equal(titlesNode.children().at(0).text(), 'newTransactionFee')
+      assert.strictEqual(
+        titlesNode.children().at(0).text(),
+        'newTransactionFee',
+      )
     })
 
     it('should render the data', function () {
@@ -82,7 +85,7 @@ describe('AdvancedTabContent Component', function () {
       assert(
         dataNode.hasClass('advanced-tab__transaction-data-summary__container'),
       )
-      assert.equal(dataNode.children().at(0).text(), 'mockTotalFee')
+      assert.strictEqual(dataNode.children().at(0).text(), 'mockTotalFee')
     })
   })
 })

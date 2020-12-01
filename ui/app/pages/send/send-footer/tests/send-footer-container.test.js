@@ -150,7 +150,7 @@ describe('send-footer container', function () {
           sendToken: { address: 'mockAddress' },
           unapprovedTxs: 'mockUnapprovedTxs',
         })
-        assert.equal(
+        assert.strictEqual(
           actionSpies.updateTransaction.getCall(0).args[0],
           'mockConstructedUpdatedTxParams',
         )
@@ -165,7 +165,7 @@ describe('send-footer container', function () {
           'mockNickname',
         )
         assert(dispatchSpy.calledOnce)
-        assert.equal(
+        assert.strictEqual(
           utilsStubs.addressIsNew.getCall(0).args[0],
           'mockToAccounts',
         )

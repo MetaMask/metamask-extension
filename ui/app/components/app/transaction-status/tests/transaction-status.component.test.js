@@ -17,7 +17,7 @@ describe('TransactionStatus Component', function () {
     )
 
     assert.ok(wrapper)
-    assert.equal(wrapper.text(), 'June 1')
+    assert.strictEqual(wrapper.text(), 'June 1')
   })
 
   it('should render PENDING properly when status is APPROVED', function () {
@@ -30,8 +30,8 @@ describe('TransactionStatus Component', function () {
     )
 
     assert.ok(wrapper)
-    assert.equal(wrapper.text(), 'PENDING')
-    assert.equal(wrapper.find(Tooltip).props().title, 'test-title')
+    assert.strictEqual(wrapper.text(), 'PENDING')
+    assert.strictEqual(wrapper.find(Tooltip).props().title, 'test-title')
   })
 
   it('should render PENDING properly', function () {
@@ -40,7 +40,7 @@ describe('TransactionStatus Component', function () {
     )
 
     assert.ok(wrapper)
-    assert.equal(wrapper.text(), 'PENDING')
+    assert.strictEqual(wrapper.text(), 'PENDING')
   })
 
   it('should render QUEUED properly', function () {
@@ -51,7 +51,7 @@ describe('TransactionStatus Component', function () {
       wrapper.find('.transaction-status--queued').length,
       'queued className not found',
     )
-    assert.equal(wrapper.text(), 'QUEUED')
+    assert.strictEqual(wrapper.text(), 'QUEUED')
   })
 
   it('should render UNAPPROVED properly', function () {
@@ -62,7 +62,7 @@ describe('TransactionStatus Component', function () {
       wrapper.find('.transaction-status--unapproved').length,
       'unapproved className not found',
     )
-    assert.equal(wrapper.text(), 'UNAPPROVED')
+    assert.strictEqual(wrapper.text(), 'UNAPPROVED')
   })
 
   after(function () {

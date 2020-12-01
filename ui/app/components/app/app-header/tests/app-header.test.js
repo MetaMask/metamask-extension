@@ -43,7 +43,7 @@ describe('App Header', function () {
       const appLogo = wrapper.find(MetaFoxLogo)
       appLogo.simulate('click')
       assert(props.history.push.calledOnce)
-      assert.equal(props.history.push.getCall(0).args[0], '/')
+      assert.strictEqual(props.history.push.getCall(0).args[0], '/')
     })
   })
 
@@ -74,7 +74,7 @@ describe('App Header', function () {
     it('hides network indicator', function () {
       wrapper.setProps({ hideNetworkIndicator: true })
       const network = wrapper.find({ network: 'test' })
-      assert.equal(network.length, 0)
+      assert.strictEqual(network.length, 0)
     })
   })
 
