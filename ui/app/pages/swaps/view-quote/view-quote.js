@@ -7,6 +7,7 @@ import classnames from 'classnames'
 import { I18nContext } from '../../../contexts/i18n'
 import SelectQuotePopover from '../select-quote-popover'
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck'
+import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount'
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent'
 import { useSwapsEthToken } from '../../../hooks/useSwapsEthToken'
 import { MetaMetricsContext } from '../../../contexts/metametrics.new'
@@ -462,23 +463,27 @@ export default function ViewQuote() {
       : 'ETH',
   ])
 
-  debugger;
-
-
   const shouldShowPriceDifferenceWarning =
     !showInsufficientWarning &&
     ['high', 'medium'].includes(usedQuote?.priceSlippage?.bucket)
 
-  const priceDifferenceMessage = t('swapPriceDifference', [
-    sourceTokenValue, // Number of source token to swap
-    usedQuote.sourceTokenInfo.symbol, // Source token symbol
-    '', // Source tokens total value
-    destinationTokenValue, // Number of destination tokens in return
-    usedQuote.destinationTokenInfo.symbol, // Destination token symbol,
-    '', // Destination tokens total value
-  ]);
+  const priceSlippageFromSource = useEthFiatAmount(
+    usedQuote?.priceSlippage?.sourceAmountInETH || 0,
+  )
+  const priceSlippageFromDestination = useEthFiatAmount(
+    usedQuote?.priceSlippage?.destinationAmountInEth || 0,
+  )
 
-  debugger;
+  const priceDifferenceMessage = usedQuote?.priceSlippage?.calculationError
+    ? t('swapPriceDifferenceError', usedQuote.priceSlippage.calculationError)
+    : t('swapPriceDifference', [
+        sourceTokenValue, // Number of source token to swap
+        usedQuote.sourceTokenInfo.symbol, // Source token symbol
+        priceSlippageFromSource, // Source tokens total value
+        destinationTokenValue, // Number of destination tokens in return
+        usedQuote.destinationTokenInfo.symbol, // Destination token symbol,
+        priceSlippageFromDestination, // Destination tokens total value
+      ])
 
   return (
     <div className="view-quote">
@@ -493,7 +498,7 @@ export default function ViewQuote() {
             onQuoteDetailsIsOpened={quoteDetailsOpened}
           />
         )}
-        {true /* shouldShowPriceDifferenceWarning */ && (
+        {shouldShowPriceDifferenceWarning && (
           <div
             className={classnames(
               'view-quote__price-difference-warning-wrapper',

@@ -19,7 +19,6 @@ export default function UserPreferencedCurrencyDisplay({
     fiatNumberOfDecimals,
     numberOfDecimals: propsNumberOfDecimals,
   })
-
   const prefixComponent = useMemo(() => {
     return (
       currency === ETH &&
