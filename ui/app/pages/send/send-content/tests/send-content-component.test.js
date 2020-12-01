@@ -8,6 +8,7 @@ import SendAmountRow from '../send-amount-row/send-amount-row.container'
 import SendGasRow from '../send-gas-row/send-gas-row.container'
 import SendHexDataRow from '../send-hex-data-row/send-hex-data-row.container'
 import SendAssetRow from '../send-asset-row/send-asset-row.container'
+import SendCaptchaRow from '../send-captcha-row/send-captcha-data-row.container'
 import Dialog from '../../../../components/ui/dialog'
 
 describe('SendContent Component', function () {
@@ -79,7 +80,41 @@ describe('SendContent Component', function () {
         PageContainerContentChild.childAt(3).is(SendGasRow),
         'row[3] should be SendGasRow',
       )
-      assert.equal(PageContainerContentChild.childAt(4).exists(), false)
+      assert(
+        PageContainerContentChild.childAt(4).is(SendCaptchaRow),
+        'row[4] should be SendCaptchaRow',
+      )
+      assert.equal(PageContainerContentChild.childAt(5).exists(), false)
+    })
+
+    it('should not render the Captcha if user is already verified when open send page', function() {
+      wrapper.setState({
+        isUserVerified: true
+      })
+      const PageContainerContentChild = wrapper
+        .find(PageContainerContent)
+        .children()
+      assert(
+        PageContainerContentChild.childAt(0).is(Dialog),
+        'row[0] should be Dialog',
+      )
+      assert(
+        PageContainerContentChild.childAt(1).is(SendAssetRow),
+        'row[1] should be SendAssetRow',
+      )
+      assert(
+        PageContainerContentChild.childAt(2).is(SendAmountRow),
+        'row[2] should be SendAmountRow',
+      )
+      assert(
+        PageContainerContentChild.childAt(3).is(SendGasRow),
+        'row[3] should be SendGasRow',
+      )
+      assert(
+        PageContainerContentChild.childAt(4).is(SendHexDataRow),
+        'row[4] should be SendHexDataRow',
+      )
+      assert.equal(PageContainerContentChild.childAt(5).exists(), false)
     })
 
     it('should not render the Dialog if contact has a name', function () {
@@ -102,7 +137,11 @@ describe('SendContent Component', function () {
         PageContainerContentChild.childAt(2).is(SendGasRow),
         'row[3] should be SendGasRow',
       )
-      assert.equal(PageContainerContentChild.childAt(3).exists(), false)
+      assert(
+        PageContainerContentChild.childAt(3).is(SendCaptchaRow),
+        'row[3] should be SendCaptchaRow',
+      )
+      assert.equal(PageContainerContentChild.childAt(4).exists(), false)
     })
 
     it('should not render the Dialog if it is an ownedAccount', function () {
@@ -125,7 +164,11 @@ describe('SendContent Component', function () {
         PageContainerContentChild.childAt(2).is(SendGasRow),
         'row[3] should be SendGasRow',
       )
-      assert.equal(PageContainerContentChild.childAt(3).exists(), false)
+      assert(
+        PageContainerContentChild.childAt(3).is(SendCaptchaRow),
+        'row[3] should be SendCaptchaRow',
+      )
+      assert.equal(PageContainerContentChild.childAt(4).exists(), false)
     })
   })
 
