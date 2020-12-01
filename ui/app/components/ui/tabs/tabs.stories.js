@@ -1,5 +1,5 @@
 import React from 'react'
-import { text } from '@storybook/addon-knobs/react'
+import { text } from '@storybook/addon-knobs'
 import Tab from './tab/tab.component'
 import Tabs from './tabs.component'
 

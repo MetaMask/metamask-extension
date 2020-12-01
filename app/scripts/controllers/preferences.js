@@ -770,6 +770,9 @@ export default class PreferencesController {
         `Must specify address, symbol, and decimals.`,
       )
     }
+    if (typeof symbol !== 'string') {
+      throw new Error(`Invalid symbol: not a string.`)
+    }
     if (!(symbol.length < 7)) {
       throw ethErrors.rpc.invalidParams(
         `Invalid symbol "${symbol}": longer than 6 characters.`,
