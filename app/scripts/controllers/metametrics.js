@@ -31,6 +31,10 @@ export function sendCountIsTrackable(sendCount) {
   return Boolean(trackableSendCounts[sendCount])
 }
 
+export function generateFragmentKey(eventName, category) {
+  return `${eventName}_${category}`.toLowerCase().replace(' ', '_')
+}
+
 /**
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsContext} MetaMetricsContext
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventPayload} MetaMetricsEventPayload
@@ -93,6 +97,7 @@ export default class MetaMetricsController {
       participateInMetaMetrics: null,
       metaMetricsId: null,
       metaMetricsSendCount: 0,
+      fragments: {},
       ...initState,
     })
 
@@ -311,6 +316,43 @@ export default class MetaMetricsController {
   }
 
   /**
+   * Add property and sensitiveProperties to a fragment in the store that can
+   * be included in future trackEvent calls for the same event and category.
+   * @param {string} eventName - Event name associated with this payload
+   * @param {string} category - Category to associated with this payload
+   * @param {object} properties - Event properties to store in the fragment
+   * @param {object} [sensitiveProperties] - Sensitive event properties to
+   *  store in the fragment
+   * @returns {void}
+   */
+  trackEventFragment(eventName, category, properties, sensitiveProperties) {
+    // event and category are required fields for all payloads
+    if (!eventName || !category) {
+      throw new Error('Must specify event and category.')
+    }
+    const fragmentKey = generateFragmentKey(eventName, category)
+    const fragment = this.state.fragments[fragmentKey] ?? {}
+    const updatedFragment = {
+      properties: {
+        ...fragment.properties,
+        ...properties,
+      },
+    }
+    if (fragment.sensitiveProperties || sensitiveProperties) {
+      updatedFragment.sensitiveProperties = {
+        ...fragment.sensitiveProperties,
+        ...sensitiveProperties,
+      }
+    }
+    this.store.updateState({
+      fragments: {
+        ...this.state.fragments,
+        [fragmentKey]: updatedFragment,
+      },
+    })
+  }
+
+  /**
    * track a metametrics event, performing necessary payload manipulation and
    * routing the event to the appropriate segment source. Will split events
    * with sensitiveProperties into two events, tracking the sensitiveProperties
@@ -333,6 +375,21 @@ export default class MetaMetricsController {
     // the promises returned from this._track.
     const events = []
 
+    const fragmentKey = generateFragmentKey(payload.event, payload.category)
+    if (options.includeFragment) {
+      const fragment = this.state.fragments[fragmentKey]
+      payload.properties = {
+        ...fragment.properties,
+        ...payload.properties,
+      }
+      if (payload.sensitiveProperties || fragment.sensitiveProperties) {
+        payload.sensitiveProperties = {
+          ...fragment.sensitiveProperties,
+          ...payload.sensitiveProperties,
+        }
+      }
+    }
+
     if (payload.sensitiveProperties) {
       // sensitiveProperties will only be tracked using the anonymousId property and generic id
       // If the event options already specify to exclude the metaMetricsId we throw an error as
@@ -343,9 +400,13 @@ export default class MetaMetricsController {
         )
       }
 
+      // merge mutates the object, so we use an empty object as the TObject
+      // and provide two sources. Properties is provided first so that
+      // sensitiveProperties can override keys on properties.
       const combinedProperties = merge(
-        payload.sensitiveProperties,
+        {},
         payload.properties,
+        payload.sensitiveProperties,
       )
 
       events.push(
@@ -362,5 +423,13 @@ export default class MetaMetricsController {
     events.push(this._track(this._buildEventPayload(payload), options))
 
     await Promise.all(events)
+    if (options.includeFragment) {
+      const newFragments = this.state.fragments
+      delete newFragments[fragmentKey]
+      // clear the fragment once the event has been tracked
+      this.store.updateState({
+        fragments: newFragments,
+      })
+    }
   }
 }

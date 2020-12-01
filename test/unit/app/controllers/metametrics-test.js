@@ -1,6 +1,9 @@
 import { strict as assert } from 'assert'
+import { expect } from 'chai'
 import sinon from 'sinon'
-import MetaMetricsController from '../../../../app/scripts/controllers/metametrics'
+import MetaMetricsController, {
+  generateFragmentKey,
+} from '../../../../app/scripts/controllers/metametrics'
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../../app/scripts/lib/enums'
 import { createSegmentMock } from '../../../../app/scripts/lib/segment'
 import {
@@ -389,7 +392,7 @@ describe('MetaMetricsController', function () {
       mock.verify()
     })
 
-    it('should immediately flush queue if flushImmediately set to true', async function () {
+    it('should immediately flush queue if flushImmediately set to true', function () {
       const metaMetricsController = getMetaMetricsController()
       const flushStub = sinon.stub(segment, 'flush')
       const flushCalled = waitUntilCalled(flushStub, segment)
@@ -462,6 +465,151 @@ describe('MetaMetricsController', function () {
           properties: DEFAULT_EVENT_PROPERTIES,
         }),
       )
+    })
+
+    it('should pull stored event fragment when includeFragment is true', function () {
+      const metaMetricsController = getMetaMetricsController()
+
+      metaMetricsController.trackEventFragment('Fake Event', 'Unit Test', {
+        foo: 'bar',
+      })
+
+      const spy = sinon.spy(segment, 'track')
+      metaMetricsController.trackEvent(
+        {
+          event: 'Fake Event',
+          category: 'Unit Test',
+          sensitiveProperties: { foo: 'baz' },
+        },
+        { includeFragment: true },
+      )
+      assert.ok(spy.calledTwice)
+      assert.ok(
+        spy.calledWith({
+          event: 'Fake Event',
+          anonymousId: METAMETRICS_ANONYMOUS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            foo: 'baz',
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+        }),
+      )
+      assert.ok(
+        spy.calledWith({
+          event: 'Fake Event',
+          userId: TEST_META_METRICS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            foo: 'bar',
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+        }),
+      )
+    })
+
+    it('should clear event fragment after track', async function () {
+      const metaMetricsController = getMetaMetricsController()
+
+      metaMetricsController.trackEventFragment('Fake Event', 'Unit Test', {
+        foo: 'bar',
+      })
+
+      const fragmentKey = generateFragmentKey('Fake Event', 'Unit Test')
+
+      await metaMetricsController.trackEvent(
+        {
+          event: 'Fake Event',
+          category: 'Unit Test',
+          sensitiveProperties: { foo: 'baz' },
+        },
+        { includeFragment: true, flushImmediately: true },
+      )
+      assert.strictEqual(
+        metaMetricsController.state.fragments[fragmentKey],
+        undefined,
+      )
+    })
+  })
+
+  describe('trackEventFragment', function () {
+    it('should store fragments without tracking an event', function () {
+      const mock = sinon.mock(segment)
+      const metaMetricsController = getMetaMetricsController()
+      mock.expects('track').never()
+
+      const fragmentKey = generateFragmentKey('Fake Event', 'Unit Test')
+
+      metaMetricsController.trackEventFragment('Fake Event', 'Unit Test', {
+        foo: 'bar',
+      })
+
+      assert.deepEqual(metaMetricsController.state.fragments[fragmentKey], {
+        properties: { foo: 'bar' },
+      })
+      mock.verify()
+    })
+
+    it('should only store sensitiveProperties if provided', function () {
+      const metaMetricsController = getMetaMetricsController()
+
+      const fragmentKey = generateFragmentKey('Fake Event', 'Unit Test')
+
+      metaMetricsController.trackEventFragment('Fake Event', 'Unit Test', {
+        foo: 'bar',
+      })
+
+      assert.strictEqual(
+        metaMetricsController.state.fragments[fragmentKey].sensitiveProperties,
+        undefined,
+      )
+    })
+
+    it('should combine properties from successive calls', function () {
+      const metaMetricsController = getMetaMetricsController()
+
+      const fragmentKey = generateFragmentKey('Fake Event', 'Unit Test')
+
+      metaMetricsController.trackEventFragment('Fake Event', 'Unit Test', {
+        foo: 'bar',
+      })
+
+      metaMetricsController.trackEventFragment(
+        'Fake Event',
+        'Unit Test',
+        { bar: 'baz' },
+        { baz: 'foo' },
+      )
+
+      assert.deepEqual(metaMetricsController.state.fragments[fragmentKey], {
+        properties: { foo: 'bar', bar: 'baz' },
+        sensitiveProperties: { baz: 'foo' },
+      })
+    })
+
+    it('should prefer values from the most recent trackEventFragment', function () {
+      const metaMetricsController = getMetaMetricsController()
+
+      const fragmentKey = generateFragmentKey('Fake Event', 'Unit Test')
+
+      metaMetricsController.trackEventFragment(
+        'Fake Event',
+        'Unit Test',
+        { foo: 'bar' },
+        { baz: 'foo' },
+      )
+
+      metaMetricsController.trackEventFragment(
+        'Fake Event',
+        'Unit Test',
+        { foo: 'baz', bar: 'foo' },
+        { baz: 'bar' },
+      )
+
+      assert.deepEqual(metaMetricsController.state.fragments[fragmentKey], {
+        properties: { foo: 'baz', bar: 'foo' },
+        sensitiveProperties: { baz: 'bar' },
+      })
     })
   })
 

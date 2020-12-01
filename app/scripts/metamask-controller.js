@@ -823,6 +823,10 @@ export default class MetamaskController extends EventEmitter {
         metaMetricsController.trackEvent,
         metaMetricsController,
       ),
+      trackMetaMetricsEventFragment: nodeify(
+        metaMetricsController.trackEventFragment,
+        metaMetricsController,
+      ),
       trackMetaMetricsPage: nodeify(
         metaMetricsController.trackPage,
         metaMetricsController,

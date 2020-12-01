@@ -77,6 +77,8 @@
  * @property {boolean} [matomoEvent] - is this event a holdover from matomo
  *  that needs further migration? when true, sends the data to a special
  *  segment source that marks the event data as not conforming to our schema
+ * @property {boolean} [includeFragment] - if true pulls event properties and
+ *  sensitiveProperties in the store and includes them in the event payload
  */
 
 /**
