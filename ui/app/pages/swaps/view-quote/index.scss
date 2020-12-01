@@ -90,7 +90,8 @@
     &-wrapper {
       width: 100%;
 
-      &.medium .actionable-message {
+      &.medium .actionable-message,
+      &.fiat-error .actionable-message {
         border-color: $Yellow-500;
         background: $Yellow-100;
 
@@ -107,10 +108,22 @@
           color: $Red-500;
         }
       }
+
+      /* Hides info tooltip if there's a fiat error message */
+      &.fiat-error div[data-tooltipped] {
+        /* !important overrides style being applied directly to tooltip by component */
+        display: none !important;
+      }
     }
+
+    
 
     &-contents {
       display: flex;
+
+      &-title {
+        font-weight: bold;
+      }
 
       i {
         margin-inline-start: 10px;

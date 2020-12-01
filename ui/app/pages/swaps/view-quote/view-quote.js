@@ -463,27 +463,53 @@ export default function ViewQuote() {
       : 'ETH',
   ])
 
-  const shouldShowPriceDifferenceWarning =
-    !showInsufficientWarning &&
-    ['high', 'medium'].includes(usedQuote?.priceSlippage?.bucket)
-
   const priceSlippageFromSource = useEthFiatAmount(
     usedQuote?.priceSlippage?.sourceAmountInETH || 0,
   )
   const priceSlippageFromDestination = useEthFiatAmount(
     usedQuote?.priceSlippage?.destinationAmountInEth || 0,
   )
+  const priceSlippageUnknownFiatValue =
+    !priceSlippageFromSource || !priceSlippageFromDestination
 
-  const priceDifferenceMessage = usedQuote?.priceSlippage?.calculationError
-    ? t('swapPriceDifferenceError', usedQuote.priceSlippage.calculationError)
-    : t('swapPriceDifference', [
-        sourceTokenValue, // Number of source token to swap
-        usedQuote.sourceTokenInfo.symbol, // Source token symbol
-        priceSlippageFromSource, // Source tokens total value
-        destinationTokenValue, // Number of destination tokens in return
-        usedQuote.destinationTokenInfo.symbol, // Destination token symbol,
-        priceSlippageFromDestination, // Destination tokens total value
-      ])
+  let priceDifferencePercentage = 0
+  if (usedQuote?.priceSlippage?.ratio) {
+    priceDifferencePercentage = parseFloat(
+      new BigNumber(usedQuote.priceSlippage.ratio, 10)
+        .minus(1, 10)
+        .times(100, 10)
+        .toFixed(2),
+      10,
+    )
+  }
+
+  let priceDifferenceTitle = ''
+  let priceDifferenceMessage = ''
+  if (usedQuote?.priceSlippage?.calculationError) {
+    // An error was returned by the API; show it to the user
+    priceDifferenceMessage = usedQuote.priceSlippage.calculationError
+  } else if (priceSlippageUnknownFiatValue) {
+    // useEthFiatAmount returns undefined if there's a value problem
+    priceDifferenceMessage = t('swapPriceDifferenceUnavailable')
+  } else {
+    priceDifferenceTitle = t(
+      'swapPriceDifferenceTitle',
+      priceDifferencePercentage,
+    )
+    priceDifferenceMessage = t('swapPriceDifference', [
+      sourceTokenValue, // Number of source token to swap
+      usedQuote.sourceTokenInfo.symbol, // Source token symbol
+      priceSlippageFromSource, // Source tokens total value
+      destinationTokenValue, // Number of destination tokens in return
+      usedQuote.destinationTokenInfo.symbol, // Destination token symbol,
+      priceSlippageFromDestination, // Destination tokens total value
+    ])
+  }
+
+  const shouldShowPriceDifferenceWarning =
+    !showInsufficientWarning &&
+    ['high', 'medium'].includes(usedQuote?.priceSlippage?.bucket) &&
+    priceDifferenceMessage !== ''
 
   return (
     <div className="view-quote">
@@ -505,13 +531,19 @@ export default function ViewQuote() {
               {
                 high: usedQuote?.priceSlippage?.bucket === 'high',
                 medium: usedQuote?.priceSlippage?.bucket === 'medium',
+                'fiat-error': priceSlippageUnknownFiatValue,
               },
             )}
           >
             <ActionableMessage
               message={
                 <div className="view-quote__price-difference-warning-contents">
-                  {priceDifferenceMessage}
+                  <div className="view-quote__price-difference-warning-contents-text">
+                    <div className="view-quote__price-difference-warning-contents-title">
+                      {priceDifferenceTitle}
+                    </div>
+                    {priceDifferenceMessage}
+                  </div>
                   <Tooltip
                     position="bottom"
                     theme="white"
