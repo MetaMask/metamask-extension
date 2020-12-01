@@ -771,7 +771,7 @@ export default class PreferencesController {
       )
     }
     if (typeof symbol !== 'string') {
-      throw new Error(`Invalid symbol: not a string.`)
+      throw ethErrors.rpc.invalidParams(`Invalid symbol: not a string.`)
     }
     if (!(symbol.length < 7)) {
       throw ethErrors.rpc.invalidParams(
