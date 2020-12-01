@@ -419,7 +419,7 @@ describe('send utils', function () {
         to: '0x123',
         sendToken: { address: '0x0' },
       })
-      assert.notEqual(result, SIMPLE_GAS_COST)
+      assert.notStrictEqual(result, SIMPLE_GAS_COST)
     })
 
     it(`should return ${BASE_TOKEN_GAS_COST} if passed a sendToken but no to address`, async function () {
