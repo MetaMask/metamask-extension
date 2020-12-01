@@ -3,16 +3,16 @@ import Analytics from 'analytics-node'
 const isDevOrTestEnvironment = Boolean(
   process.env.METAMASK_DEBUG || process.env.IN_TEST,
 )
-const writeKey = process.env.SEGMENT_WRITE_KEY
-const legacyWriteKey = process.env.SEGMENT_LEGACY_WRITE_KEY
-const host = process.env.SEGMENT_HOST
+const { SEGMENT_WRITE_KEY } = process.env
+const { SEGMENT_LEGACY_WRITE_KEY } = process.env
+const { SEGMENT_HOST } = process.env
 
 // flushAt controls how many events are sent to segment at once. Segment will
 // hold onto a queue of events until it hits this number, then it sends them as
 // a batch. This setting defaults to 20, but in development we likely want to
 // see events in real time for debugging, so this is set to 1 to disable the
 // queueing mechanism.
-const flushAt =
+const SEGMENT_FLUSH_AT =
   process.env.METAMASK_ENVIRONMENT === 'production' ? undefined : 1
 
 // flushInterval controls how frequently the queue is flushed to segment.
@@ -22,7 +22,7 @@ const flushAt =
 // deal with short lived sessions that happen faster than the interval
 // e.g confirmations. This is set to 5,000ms (5 seconds) arbitrarily with the
 // intent of having a value less than 10 seconds.
-const flushInterval = 5000
+const SEGMENT_FLUSH_INTERVAL = 5000
 
 /**
  * Creates a mock segment module for usage in test environments. This is used
@@ -33,7 +33,10 @@ const flushInterval = 5000
  * @param {number} flushInterval - ms interval to flush queue and send to segment
  * @returns {SegmentInterface}
  */
-export const createSegmentMock = (flushAt, flushInterval) => {
+export const createSegmentMock = (
+  flushAt = SEGMENT_FLUSH_AT,
+  flushInterval = SEGMENT_FLUSH_INTERVAL,
+) => {
   const segmentMock = {
     // Internal queue to keep track of events and properly mimic segment's
     // queueing behavior.
@@ -80,19 +83,19 @@ export const createSegmentMock = (flushAt, flushInterval) => {
 }
 
 export const segment =
-  !writeKey || (isDevOrTestEnvironment && !host)
-    ? createSegmentMock(flushAt, flushInterval)
-    : new Analytics(writeKey, {
-        host,
-        flushAt,
-        flushInterval,
+  !SEGMENT_WRITE_KEY || (isDevOrTestEnvironment && !SEGMENT_HOST)
+    ? createSegmentMock(SEGMENT_FLUSH_AT, SEGMENT_FLUSH_INTERVAL)
+    : new Analytics(SEGMENT_WRITE_KEY, {
+        host: SEGMENT_HOST,
+        flushAt: SEGMENT_FLUSH_AT,
+        flushInterval: SEGMENT_FLUSH_INTERVAL,
       })
 
 export const segmentLegacy =
-  !legacyWriteKey || (isDevOrTestEnvironment && !host)
-    ? createSegmentMock(flushAt, flushInterval)
-    : new Analytics(legacyWriteKey, {
-        host,
-        flushAt,
-        flushInterval,
+  !SEGMENT_LEGACY_WRITE_KEY || (isDevOrTestEnvironment && !SEGMENT_HOST)
+    ? createSegmentMock(SEGMENT_FLUSH_AT, SEGMENT_FLUSH_INTERVAL)
+    : new Analytics(SEGMENT_LEGACY_WRITE_KEY, {
+        host: SEGMENT_HOST,
+        flushAt: SEGMENT_FLUSH_AT,
+        flushInterval: SEGMENT_FLUSH_INTERVAL,
       })

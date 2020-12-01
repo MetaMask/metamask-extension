@@ -161,7 +161,6 @@ export default class MetaMetricsController {
    * fed to Segment's track method
    * @private
    * @param {MetaMetricsEventPayload} rawPayload - raw payload provided to trackEvent
-   * @param {MetaMetricsEventOptions} options - options for handling/routing event
    * @returns {SegmentEventPayload} - formatted event payload for segment
    */
   _buildEventPayload(rawPayload) {
