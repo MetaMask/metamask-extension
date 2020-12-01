@@ -1,7 +1,7 @@
 import assert from 'assert'
 import sinon from 'sinon'
 import ObservableStore from 'obs-store'
-import contracts from 'eth-contract-metadata'
+import contracts from '@metamask/contract-metadata'
 import BigNumber from 'bignumber.js'
 
 import DetectTokensController from '../../../../app/scripts/controllers/detect-tokens'
