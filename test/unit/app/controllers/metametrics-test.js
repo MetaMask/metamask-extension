@@ -65,7 +65,7 @@ function getMockNetworkController(
   }
 }
 
-function getMockPreferencesController({ currentLocale = LOCALE } = {}) {
+function getMockPreferencesStore({ currentLocale = LOCALE } = {}) {
   let preferencesStore = {
     currentLocale,
   }
@@ -75,11 +75,9 @@ function getMockPreferencesController({ currentLocale = LOCALE } = {}) {
     subscribe.getCall(0).args[0](preferencesStore)
   }
   return {
-    store: {
-      getState: sinon.stub().returns(preferencesStore),
-      updateState,
-      subscribe,
-    },
+    getState: sinon.stub().returns(preferencesStore),
+    updateState,
+    subscribe,
   }
 }
 
@@ -87,14 +85,23 @@ function getMetaMetricsController({
   participateInMetaMetrics = true,
   metaMetricsId = TEST_META_METRICS_ID,
   metaMetricsSendCount = 0,
-  preferencesController = getMockPreferencesController(),
+  preferencesStore = getMockPreferencesStore(),
   networkController = getMockNetworkController(),
 } = {}) {
   return new MetaMetricsController({
     segment,
     segmentLegacy,
-    networkController,
-    preferencesController,
+    getNetworkIdentifier: networkController.getNetworkIdentifier.bind(
+      networkController,
+    ),
+    getCurrentChainId: networkController.getCurrentChainId.bind(
+      networkController,
+    ),
+    onNetworkDidChange: networkController.on.bind(
+      networkController,
+      'networkDidChange',
+    ),
+    preferencesStore,
     version: '0.0.1',
     environment: 'test',
     initState: {
@@ -139,12 +146,12 @@ describe('MetaMetricsController', function () {
     })
 
     it('should update when preferences changes', function () {
-      const preferencesController = getMockPreferencesController()
+      const preferencesStore = getMockPreferencesStore()
       const metaMetricsController = getMetaMetricsController({
-        preferencesController,
+        preferencesStore,
       })
       assert.strictEqual(metaMetricsController.network, NETWORK)
-      preferencesController.store.updateState({
+      preferencesStore.updateState({
         currentLocale: 'en_UK',
       })
       assert.strictEqual(metaMetricsController.locale, 'en-UK')
@@ -501,7 +508,7 @@ describe('MetaMetricsController', function () {
     it('should track a page view if isOptInPath is true and user not yet opted in', function () {
       const mock = sinon.mock(segment)
       const metaMetricsController = getMetaMetricsController({
-        preferencesController: getMockPreferencesController({
+        preferencesStore: getMockPreferencesStore({
           participateInMetaMetrics: null,
         }),
       })

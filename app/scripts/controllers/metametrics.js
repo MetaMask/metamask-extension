@@ -55,27 +55,36 @@ export function sendCountIsTrackable(sendCount) {
 
 export default class MetaMetricsController {
   /**
-   * @param {Object} preferencesController - The preferences controller, used
+   * @param {Object} segment - an instance of analytics-node for tracking
+   *  events that conform to the new MetaMetrics tracking plan.
+   * @param {Object} segmentLegacy - an instance of analytics-node for
+   *  tracking legacy schema events. Will eventually be phased out
+   * @param {Object} preferencesStore - The preferences controller store, used
    *  to access and subscribe to preferences that will be attached to events
-   * @param {Object} networkController - The network controller, used to access
-   *  the current network's chainId and network identifier. These properties
-   *  are attached to events
+   * @param {function} onNetworkDidChange - Used to attach a listener to the
+   *  networkDidChange event emitted by the networkController
+   * @param {function} getCurrentChainId - Gets the current chain id from the
+   *  network controller
+   * @param {function} getNetworkIdentifier - Gets the current network
+   *  identifier from the network controller
    * @param {string} version - The version of the extension
    * @param {string} environment - The environment the extension is running in
-   * @param {MetaMetricsControllerState} - State to initialized with
+   * @param {MetaMetricsControllerState} initState - State to initialized with
    */
   constructor({
     segment,
     segmentLegacy,
-    preferencesController,
-    networkController,
+    preferencesStore,
+    onNetworkDidChange,
+    getCurrentChainId,
+    getNetworkIdentifier,
     version,
     environment,
     initState,
   }) {
-    const prefState = preferencesController.store.getState()
-    this.chainId = networkController.getCurrentChainId()
-    this.network = networkController.getNetworkIdentifier()
+    const prefState = preferencesStore.getState()
+    this.chainId = getCurrentChainId()
+    this.network = getNetworkIdentifier()
     this.locale = prefState.currentLocale.replace('_', '-')
     this.version =
       environment === 'production' ? version : `${version}-${environment}`
@@ -87,13 +96,13 @@ export default class MetaMetricsController {
       ...initState,
     })
 
-    preferencesController.store.subscribe(({ currentLocale }) => {
+    preferencesStore.subscribe(({ currentLocale }) => {
       this.locale = currentLocale.replace('_', '-')
     })
 
-    networkController.on('networkDidChange', () => {
-      this.chainId = networkController.getCurrentChainId()
-      this.network = networkController.getNetworkIdentifier()
+    onNetworkDidChange(() => {
+      this.chainId = getCurrentChainId()
+      this.network = getNetworkIdentifier()
     })
     this.segment = segment
     this.segmentLegacy = segmentLegacy

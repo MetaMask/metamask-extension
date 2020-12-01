@@ -118,8 +118,17 @@ export default class MetamaskController extends EventEmitter {
     this.metaMetricsController = new MetaMetricsController({
       segment,
       segmentLegacy,
-      preferencesController: this.preferencesController,
-      networkController: this.networkController,
+      preferencesStore: this.preferencesController.store,
+      onNetworkDidChange: this.networkController.on.bind(
+        this.networkController,
+        'networkDidChange',
+      ),
+      getNetworkIdentifier: this.networkController.getNetworkIdentifier.bind(
+        this.networkController,
+      ),
+      getCurrentChainId: this.networkController.getCurrentChainId.bind(
+        this.networkController,
+      ),
       version: this.platform.getVersion(),
       environment: process.env.METAMASK_ENVIRONMENT,
       initState: initState.MetaMetricsController,
