@@ -233,7 +233,7 @@ class AccountTracker {
 
     addresses.forEach((address, index) => {
       const rst = result[index]
-      if (rst) {
+      if (rst || typeof rst === 'bigint') {
         const balance = bnToHex(rst)
         accounts[address] = { address, balance }
       }
