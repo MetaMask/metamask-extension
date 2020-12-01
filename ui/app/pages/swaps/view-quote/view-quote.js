@@ -7,7 +7,6 @@ import classnames from 'classnames'
 import { I18nContext } from '../../../contexts/i18n'
 import SelectQuotePopover from '../select-quote-popover'
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck'
-import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount'
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent'
 import { useSwapsEthToken } from '../../../hooks/useSwapsEthToken'
 import { MetaMetricsContext } from '../../../contexts/metametrics.new'
@@ -75,7 +74,7 @@ import { QUOTES_EXPIRED_ERROR } from '../../../helpers/constants/swaps'
 import CountdownTimer from '../countdown-timer'
 import SwapsFooter from '../swaps-footer'
 import InfoTooltip from '../../../components/ui/info-tooltip'
-import Tooltip from '../../../components/ui/tooltip'
+import ViewQuotePriceDifference from './view-quote-price-difference'
 
 export default function ViewQuote() {
   const history = useHistory()
@@ -463,54 +462,6 @@ export default function ViewQuote() {
       : 'ETH',
   ])
 
-  const priceSlippageFromSource = useEthFiatAmount(
-    usedQuote?.priceSlippage?.sourceAmountInETH || 0,
-  )
-  const priceSlippageFromDestination = useEthFiatAmount(
-    usedQuote?.priceSlippage?.destinationAmountInEth || 0,
-  )
-  const priceSlippageUnknownFiatValue =
-    !priceSlippageFromSource || !priceSlippageFromDestination
-
-  let priceDifferencePercentage = 0
-  if (usedQuote?.priceSlippage?.ratio) {
-    priceDifferencePercentage = parseFloat(
-      new BigNumber(usedQuote.priceSlippage.ratio, 10)
-        .minus(1, 10)
-        .times(100, 10)
-        .toFixed(2),
-      10,
-    )
-  }
-
-  let priceDifferenceTitle = ''
-  let priceDifferenceMessage = ''
-  if (usedQuote?.priceSlippage?.calculationError) {
-    // An error was returned by the API; show it to the user
-    priceDifferenceMessage = usedQuote.priceSlippage.calculationError
-  } else if (priceSlippageUnknownFiatValue) {
-    // useEthFiatAmount returns undefined if there's a value problem
-    priceDifferenceMessage = t('swapPriceDifferenceUnavailable')
-  } else {
-    priceDifferenceTitle = t(
-      'swapPriceDifferenceTitle',
-      priceDifferencePercentage,
-    )
-    priceDifferenceMessage = t('swapPriceDifference', [
-      sourceTokenValue, // Number of source token to swap
-      usedQuote.sourceTokenInfo.symbol, // Source token symbol
-      priceSlippageFromSource, // Source tokens total value
-      destinationTokenValue, // Number of destination tokens in return
-      usedQuote.destinationTokenInfo.symbol, // Destination token symbol,
-      priceSlippageFromDestination, // Destination tokens total value
-    ])
-  }
-
-  const shouldShowPriceDifferenceWarning =
-    !showInsufficientWarning &&
-    ['high', 'medium'].includes(usedQuote?.priceSlippage?.bucket) &&
-    priceDifferenceMessage !== ''
-
   return (
     <div className="view-quote">
       <div className="view-quote__content">
@@ -524,37 +475,12 @@ export default function ViewQuote() {
             onQuoteDetailsIsOpened={quoteDetailsOpened}
           />
         )}
-        {shouldShowPriceDifferenceWarning && (
-          <div
-            className={classnames(
-              'view-quote__price-difference-warning-wrapper',
-              {
-                high: usedQuote?.priceSlippage?.bucket === 'high',
-                medium: usedQuote?.priceSlippage?.bucket === 'medium',
-                'fiat-error': priceSlippageUnknownFiatValue,
-              },
-            )}
-          >
-            <ActionableMessage
-              message={
-                <div className="view-quote__price-difference-warning-contents">
-                  <div className="view-quote__price-difference-warning-contents-text">
-                    <div className="view-quote__price-difference-warning-contents-title">
-                      {priceDifferenceTitle}
-                    </div>
-                    {priceDifferenceMessage}
-                  </div>
-                  <Tooltip
-                    position="bottom"
-                    theme="white"
-                    title={t('swapPriceDifferenceTooltip')}
-                  >
-                    <i className="fa fa-info-circle" />
-                  </Tooltip>
-                </div>
-              }
-            />
-          </div>
+        {!showInsufficientWarning && (
+          <ViewQuotePriceDifference
+            usedQuote={usedQuote}
+            sourceTokenValue={sourceTokenValue}
+            destinationTokenValue={destinationTokenValue}
+          />
         )}
         <div className="view-quote__insufficient-eth-warning-wrapper">
           {showInsufficientWarning && (
