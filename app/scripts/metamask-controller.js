@@ -18,7 +18,7 @@ import TrezorKeyring from 'eth-trezor-keyring'
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring'
 import EthQuery from 'eth-query'
 import nanoid from 'nanoid'
-import contractMap from 'eth-contract-metadata'
+import contractMap from '@metamask/contract-metadata'
 import {
   AddressBookController,
   CurrencyRateController,
