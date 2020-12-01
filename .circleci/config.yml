@@ -18,6 +18,9 @@ workflows:
       - prep-build-test:
           requires:
             - prep-deps
+      - prep-build-test-metrics:
+          requires:
+            - prep-deps
       - prep-build-storybook:
           requires:
             - prep-deps
@@ -34,6 +37,12 @@ workflows:
       - test-e2e-firefox:
           requires:
             - prep-build-test
+      - test-e2e-chrome-metrics:
+          requires:
+            - prep-build-test-metrics
+      - test-e2e-firefox-metrics:
+          requires:
+            - prep-build-test-metrics
       - test-unit:
           requires:
             - prep-deps
@@ -58,6 +67,8 @@ workflows:
             - test-mozilla-lint
             - test-e2e-chrome
             - test-e2e-firefox
+            - test-e2e-chrome-metrics
+            - test-e2e-firefox-metrics
       - benchmark:
           requires:
             - prep-build-test
@@ -162,6 +173,27 @@ jobs:
           paths:
             - dist-test
 
+  prep-build-test-metrics:
+    docker:
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    resource_class: medium+
+    environment:
+      NODE_OPTIONS: --max_old_space_size=2048
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build extension for testing metrics
+          command: yarn build:test:metrics
+      - run:
+          name: Move test build to 'dist-test-metrics' to avoid conflict with production build
+          command: mv ./dist ./dist-test-metrics
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-test-metrics
+
   prep-build-storybook:
     docker:
       - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
@@ -245,6 +277,28 @@ jobs:
           path: test-artifacts
           destination: test-artifacts
 
+  test-e2e-chrome-metrics:
+    docker:
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-metrics ./dist
+      - run:
+          name: test:e2e:chrome:metrics
+          command: |
+            if .circleci/scripts/test-run-e2e
+            then
+              yarn test:e2e:chrome:metrics
+            fi
+          no_output_timeout: 20m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+
   test-e2e-firefox:
     docker:
       - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
@@ -264,6 +318,31 @@ jobs:
             if .circleci/scripts/test-run-e2e
             then
               yarn test:e2e:firefox
+            fi
+          no_output_timeout: 20m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+
+  test-e2e-firefox-metrics:
+    docker:
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    steps:
+      - checkout
+      - run:
+          name: Install Firefox
+          command: ./.circleci/scripts/firefox-install
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-metrics ./dist
+      - run:
+          name: test:e2e:firefox:metrics
+          command: |
+            if .circleci/scripts/test-run-e2e
+            then
+              yarn test:e2e:firefox:metrics
             fi
           no_output_timeout: 20m
       - store_artifacts:
