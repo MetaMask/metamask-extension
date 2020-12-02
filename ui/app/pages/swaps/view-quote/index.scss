@@ -14,6 +14,7 @@
     padding-left: 20px;
     padding-right: 20px;
     justify-content: space-between;
+    margin-top: 8px;
 
     @media screen and (max-width: 576px) {
       overflow-y: auto;
@@ -130,7 +131,6 @@
   }
 
   &__insufficient-eth-warning-wrapper {
-    margin-top: 8px;
     width: 100%;
     align-items: center;
     justify-content: center;
