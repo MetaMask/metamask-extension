@@ -6,7 +6,7 @@ import { useEqualityCheck } from './useEqualityCheck'
 // Type imports
 /**
  * @typedef {import('../contexts/metametrics.new').UIMetricsEventPayload} UIMetricsEventPayload
- * @typedef {import('../contexts/metametrics.new').UIMetricsEventOptions} UIMetricsEventOptions
+ * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventOptions} MetaMetricsEventOptions
  */
 
 export function useMetricEvent(config = {}, overrides = {}) {
@@ -24,7 +24,7 @@ export function useMetricEvent(config = {}, overrides = {}) {
  * e.g metricsEvent({ event: 'Unlocked MetaMask', category: 'Navigation' })
  *
  * @param {UIMetricsEventPayload}  payload - payload of the event to track
- * @param {UIMetricsEventOptions} options - options for handling/routing event
+ * @param {MetaMetricsEventOptions} options - options for handling/routing event
  * @return {() => Promise<void>} function to execute the tracking event
  */
 export function useNewMetricEvent(payload, options) {

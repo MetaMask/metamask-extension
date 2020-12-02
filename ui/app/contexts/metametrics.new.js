@@ -123,7 +123,6 @@ export function MetaMetricsProvider({ children }) {
    */
   useEffect(() => {
     const environmentType = getEnvironmentType()
-    // Events that happen during initialization before the user opts into MetaMetrics will be anonymous
     const match = matchPath(location.pathname, {
       path: PATHS_TO_CHECK,
       exact: true,
