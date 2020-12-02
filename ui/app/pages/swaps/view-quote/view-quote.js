@@ -462,6 +462,17 @@ export default function ViewQuote() {
       : 'ETH',
   ])
 
+  const viewQuotePriceDifferenceComponent = (
+    <ViewQuotePriceDifference
+      usedQuote={usedQuote}
+      sourceTokenValue={sourceTokenValue}
+      destinationTokenValue={destinationTokenValue}
+    />
+  )
+
+  const isShowingWarning =
+    showInsufficientWarning || viewQuotePriceDifferenceComponent !== null
+
   return (
     <div className="view-quote">
       <div className="view-quote__content">
@@ -477,16 +488,10 @@ export default function ViewQuote() {
         )}
         <div
           className={classnames('view-quote__warning-wrapper', {
-            'view-quote__warning-wrapper--thin': !showInsufficientWarning,
+            'view-quote__warning-wrapper--thin': !isShowingWarning,
           })}
         >
-          {!showInsufficientWarning && (
-            <ViewQuotePriceDifference
-              usedQuote={usedQuote}
-              sourceTokenValue={sourceTokenValue}
-              destinationTokenValue={destinationTokenValue}
-            />
-          )}
+          {!showInsufficientWarning && viewQuotePriceDifferenceComponent}
           {showInsufficientWarning && (
             <ActionableMessage
               message={actionableInsufficientMessage}
@@ -496,7 +501,7 @@ export default function ViewQuote() {
         </div>
         <div
           className={classnames('view-quote__countdown-timer-container', {
-            'view-quote__countdown-timer-container--thin': showInsufficientWarning,
+            'view-quote__countdown-timer-container--thin': isShowingWarning,
           })}
         >
           <CountdownTimer
@@ -508,7 +513,7 @@ export default function ViewQuote() {
         </div>
         <div
           className={classnames('view-quote__main-quote-summary-container', {
-            'view-quote__main-quote-summary-container--thin': showInsufficientWarning,
+            'view-quote__main-quote-summary-container--thin': isShowingWarning,
           })}
         >
           <MainQuoteSummary
@@ -552,7 +557,7 @@ export default function ViewQuote() {
         </div>
         <div
           className={classnames('view-quote__fee-card-container', {
-            'view-quote__fee-card-container--thin': showInsufficientWarning,
+            'view-quote__fee-card-container--thin': isShowingWarning,
             'view-quote__fee-card-container--three-rows':
               approveTxParams && (!balanceError || warningHidden),
           })}
@@ -589,7 +594,7 @@ export default function ViewQuote() {
         submitText={t('swap')}
         onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}
         disabled={balanceError || gasPrice === null || gasPrice === undefined}
-        className={showInsufficientWarning && 'view-quote__thin-swaps-footer'}
+        className={isShowingWarning && 'view-quote__thin-swaps-footer'}
         showTermsOfService
         showTopBorder
       />

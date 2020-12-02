@@ -139,7 +139,7 @@
       &--thin {
         min-height: 36px;
       }
-      
+
       display: flex;
     }
   }
@@ -210,5 +210,9 @@
 
   &__metamask-rate-info-icon {
     margin-left: 4px;
+  }
+
+  &__thin-swaps-footer {
+    max-height: 82px;
   }
 }
