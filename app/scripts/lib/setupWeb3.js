@@ -27,7 +27,12 @@ export default function setupWeb3(log) {
   web3.setProvider = function () {
     log.debug('MetaMask - overrode web3.setProvider')
   }
-  log.debug('MetaMask - injected web3')
+  Object.defineProperty(web3, '__isMetaMaskShim__', {
+    value: true,
+    enumerable: false,
+    configurable: false,
+    writable: false,
+  })
 
   Object.defineProperty(window.ethereum, '_web3Ref', {
     enumerable: false,
@@ -180,12 +185,13 @@ export default function setupWeb3(log) {
     },
   })
 
-  Object.defineProperty(global, 'web3', {
+  Object.defineProperty(window, 'web3', {
     enumerable: false,
     writable: true,
     configurable: true,
     value: web3Proxy,
   })
+  log.debug('MetaMask - injected web3')
 
   window.ethereum._publicConfigStore.subscribe((state) => {
     // if the auto refresh on network change is false do not
@@ -231,7 +237,7 @@ export default function setupWeb3(log) {
 
 // reload the page
 function triggerReset() {
-  global.location.reload()
+  window.location.reload()
 }
 
 /**
