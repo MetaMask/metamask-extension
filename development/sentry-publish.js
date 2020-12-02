@@ -5,12 +5,15 @@ const pify = require('pify')
 const exec = pify(childProcess.exec, { multiArgs: true })
 const VERSION = require('../dist/chrome/manifest.json').version // eslint-disable-line import/no-unresolved
 
-start().catch(console.error)
+start().catch((error) => {
+  console.error(error)
+  process.exit(1)
+})
 
 async function start() {
   const authWorked = await checkIfAuthWorks()
   if (!authWorked) {
-    console.log(`Sentry auth failed...`)
+    throw new Error(`Sentry auth failed`)
   }
   // check if version exists or not
   const versionAlreadyExists = await checkIfVersionExists()

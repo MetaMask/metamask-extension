@@ -122,8 +122,9 @@ jobs:
   prep-build:
     docker:
       - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    resource_class: medium+
     environment:
-      NODE_OPTIONS: --max_old_space_size=1024
+      NODE_OPTIONS: --max_old_space_size=2048
     steps:
       - checkout
       - attach_workspace:
@@ -143,8 +144,9 @@ jobs:
   prep-build-test:
     docker:
       - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    resource_class: medium+
     environment:
-      NODE_OPTIONS: --max_old_space_size=1024
+      NODE_OPTIONS: --max_old_space_size=2048
     steps:
       - checkout
       - attach_workspace:

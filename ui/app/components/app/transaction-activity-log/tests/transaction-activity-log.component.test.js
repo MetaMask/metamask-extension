@@ -58,7 +58,7 @@ describe('TransactionActivityLog Component', function () {
     assert.ok(wrapper.hasClass('test-class'))
   })
 
-  it('should render inline retry and cancel buttons for earliest pending transaction', function () {
+  it('should render inline retry and cancel buttons for earliest pending transaction and submitted transactions', function () {
     const activities = [
       {
         eventKey: 'transactionCreated',
@@ -111,11 +111,11 @@ describe('TransactionActivityLog Component', function () {
     assert.ok(wrapper.hasClass('test-class'))
     assert.equal(
       wrapper.find('.transaction-activity-log__action-link').length,
-      2,
+      3,
     )
   })
 
-  it('should not render inline retry and cancel buttons for newer pending transactions', function () {
+  it('should not render inline retry and cancel buttons for newer pending transactions but does for submitted transactions', function () {
     const activities = [
       {
         eventKey: 'transactionCreated',
@@ -168,7 +168,7 @@ describe('TransactionActivityLog Component', function () {
     assert.ok(wrapper.hasClass('test-class'))
     assert.equal(
       wrapper.find('.transaction-activity-log__action-link').length,
-      0,
+      1,
     )
   })
 })

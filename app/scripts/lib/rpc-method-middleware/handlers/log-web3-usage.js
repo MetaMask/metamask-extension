@@ -44,7 +44,6 @@ function logWeb3UsageHandler(req, res, _next, end, { origin, sendMetrics }) {
     recordedWeb3Usage[origin][path] = true
 
     sendMetrics({
-      matomo: true,
       event: `Website Used window.web3`,
       category: 'inpage_provider',
       properties: { action, web3Path: path },

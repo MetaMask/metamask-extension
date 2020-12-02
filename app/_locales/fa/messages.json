@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask در کالیفورنیا طراحی و ساخته شده است."
   },
-  "buyCoinSwitch": {
-    "message": "خرید بر اساس CoinSwitch "
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch یک مقصد یک-ایستگاه است تا بیش از 300 رمز ارز را در بهترین نرخ مبادله نماید."
-  },
   "buyWithWyre": {
     "message": "ETH را توسط Wyre خریداری نمایید"
   },
@@ -223,9 +217,6 @@
   },
   "connectingToRopsten": {
     "message": "در حال اتصال به شبکه آزمایشی Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "ادامه به CoinSwitch"
   },
   "continueToWyre": {
     "message": "ادامه به Wyre"

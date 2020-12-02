@@ -131,12 +131,6 @@
   "builtInCalifornia": {
     "message": "Ang MetaMask ay dinisenyo at binuo sa California."
   },
-  "buyCoinSwitch": {
-    "message": "Bilhin sa CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "Ang CoinSwitch ay ang one-stop na destinasyon para magpapalit ng mahigit sa 300 cryptocurrency sa pinakamababang halaga."
-  },
   "buyWithWyre": {
     "message": "Bumili ng ETH gamit ang Wyre"
   },
@@ -202,9 +196,6 @@
   },
   "connectingToRopsten": {
     "message": "Kumokonekta sa Ropsten Test Network"
-  },
-  "continueToCoinSwitch": {
-    "message": "Magpatuloy sa CoinSwitch"
   },
   "continueToWyre": {
     "message": "Magpatuloy sa Wyre"

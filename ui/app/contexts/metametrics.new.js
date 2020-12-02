@@ -127,7 +127,8 @@ export function MetaMetricsProvider({ children }) {
         location.pathname.startsWith('/initialize')) ||
       participateInMetaMetrics
     ) {
-      // Events that happen during initialization before the user opts into MetaMetrics will be anonymous
+      // Events that happen during initialization before the user opts into
+      // MetaMetrics will be anonymous
       const idTrait = metaMetricsId ? 'userId' : 'anonymousId'
       const idValue = metaMetricsId ?? METAMETRICS_ANONYMOUS_ID
       const match = matchPath(location.pathname, {
@@ -135,19 +136,15 @@ export function MetaMetricsProvider({ children }) {
         exact: true,
         strict: true,
       })
-      // Start by checking for a missing match route. If this falls through to the else if, then we know we
-      // have a matched route for tracking.
+      // Start by checking for a missing match route. If this falls through to
+      // the else if, then we know we have a matched route for tracking.
       if (!match) {
-        // We have more specific pages for each type of transaction confirmation
-        // The user lands on /confirm-transaction first, then is redirected based on
-        // the contents of state.
-        if (location.pathname !== '/confirm-transaction') {
-          // Otherwise we are legitimately missing a matching route
-          captureMessage(`Segment page tracking found unmatched route`, {
+        captureMessage(`Segment page tracking found unmatched route`, {
+          extra: {
             previousMatch,
             currentPath: location.pathname,
-          })
-        }
+          },
+        })
       } else if (
         previousMatch.current !== match.path &&
         !(
@@ -156,9 +153,11 @@ export function MetaMetricsProvider({ children }) {
           previousMatch.current === undefined
         )
       ) {
-        // When a notification window is open by a Dapp we do not want to track the initial home route load that can
-        // sometimes happen. To handle this we keep track of the previousMatch, and we skip the event track in the event
-        // that we are dealing with the initial load of the homepage
+        // When a notification window is open by a Dapp we do not want to track
+        // the initial home route load that can sometimes happen. To handle
+        // this we keep track of the previousMatch, and we skip the event track
+        // in the event that we are dealing with the initial load of the
+        // homepage
         const { path, params } = match
         const name = PATH_NAME_MAP[path]
         segment.page({

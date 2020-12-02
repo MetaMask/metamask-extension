@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { createAccountLink } from '@metamask/etherscan-link'
+import { createTokenTrackerLink } from '@metamask/etherscan-link'
 
 import TransactionList from '../../../components/app/transaction-list'
 import { TokenOverview } from '../../../components/app/wallet-overview'
@@ -19,9 +19,9 @@ import TokenOptions from './token-options'
 export default function TokenAsset({ token }) {
   const dispatch = useDispatch()
   const network = useSelector(getCurrentNetworkId)
-  const selectedAccountName = useSelector(
-    (state) => getSelectedIdentity(state).name,
-  )
+  const selectedIdentity = useSelector(getSelectedIdentity)
+  const selectedAccountName = selectedIdentity.name
+  const selectedAddress = selectedIdentity.address
   const history = useHistory()
 
   return (
@@ -36,7 +36,11 @@ export default function TokenAsset({ token }) {
               dispatch(showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token }))
             }
             onViewEtherscan={() => {
-              const url = createAccountLink(token.address, network)
+              const url = createTokenTrackerLink(
+                token.address,
+                network,
+                selectedAddress,
+              )
               global.platform.openTab({ url })
             }}
             tokenSymbol={token.symbol}

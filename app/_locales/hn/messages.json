@@ -46,12 +46,6 @@
   "builtInCalifornia": {
     "message": "मेटामास्क कैलिफ़ोर्निया में डिज़ाइन और बनाया गया है।"
   },
-  "buyCoinSwitch": {
-    "message": "कॉइनस्विच पर खरीदें"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "कॉइनस्विच 300 से अधिक क्रिप्टोक्रांसियों को सर्वोत्तम दर पर विनिमय करने का एक-स्टॉप गंतव्य है।"
-  },
   "cancel": {
     "message": "रद्द करें"
   },
@@ -60,9 +54,6 @@
   },
   "confirmPassword": {
     "message": "पासवर्ड की पुष्टि करें"
-  },
-  "continueToCoinSwitch": {
-    "message": "कॉइनस्विच को ब्हेजना जारी रखें"
   },
   "contractDeployment": {
     "message": "अनुबंध परिनियोजन व तैनाती"

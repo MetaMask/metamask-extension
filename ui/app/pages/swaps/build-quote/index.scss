@@ -116,6 +116,27 @@
     }
   }
 
+  &__token-message {
+    @include H7;
+
+    width: 100%;
+    color: $Grey-500;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+  }
+
+  &__token-etherscan-link {
+    color: $Blue-500;
+    cursor: pointer;
+    margin-right: 4px;
+  }
+
+  &__token-tooltip-container {
+    // Needed to override the style property added by the react-tippy library
+    display: flex !important;
+  }
+
   /* Prevents the swaps "Swap to" field from overflowing */
   .dropdown-input-pair__to .dropdown-search-list {
     width: 100%;

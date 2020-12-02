@@ -8,6 +8,7 @@ import TokenBalance from '../../components/ui/token-balance'
 export default class ConfirmAddToken extends Component {
   static contextTypes = {
     t: PropTypes.func,
+    trackEvent: PropTypes.func,
   }
 
   static propTypes = {
@@ -103,10 +104,22 @@ export default class ConfirmAddToken extends Component {
               className="page-container__footer-button"
               onClick={() => {
                 addTokens(pendingTokens).then(() => {
+                  const pendingTokenValues = Object.values(pendingTokens)
+                  pendingTokenValues.forEach((pendingToken) => {
+                    this.context.trackEvent({
+                      event: 'Token Added',
+                      category: 'Wallet',
+                      sensitiveProperties: {
+                        token_symbol: pendingToken.symbol,
+                        token_contract_address: pendingToken.address,
+                        token_decimal_precision: pendingToken.decimals,
+                        unlisted: pendingToken.unlisted,
+                        source: pendingToken.isCustom ? 'custom' : 'list',
+                      },
+                    })
+                  })
                   clearPendingTokens()
-                  const firstTokenAddress = Object.values(
-                    pendingTokens,
-                  )?.[0].address?.toLowerCase()
+                  const firstTokenAddress = pendingTokenValues?.[0].address?.toLowerCase()
                   if (firstTokenAddress) {
                     history.push(`${ASSET_ROUTE}/${firstTokenAddress}`)
                   } else {
