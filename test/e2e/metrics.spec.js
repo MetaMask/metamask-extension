@@ -35,10 +35,6 @@ describe('Segment metrics', function () {
         await driver.findElement(By.css('[data-testid="eth-overview-send"]'))
 
         assert.ok(segmentSpy.called, 'Segment should receive metrics')
-        assert.ok(
-          segmentSpy.callCount >= 3,
-          'At least 3 segment events should be sent',
-        )
 
         const firstSegmentEvent = segmentSpy.getCall(0).args[0]
         assert.equal(firstSegmentEvent.name, 'Home')
