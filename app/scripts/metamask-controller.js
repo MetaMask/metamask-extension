@@ -289,7 +289,7 @@ export default class MetamaskController extends EventEmitter {
       blockTracker: this.blockTracker,
       trackMetaMetricsEvent: this.metaMetricsController.trackEvent,
       getParticipateInMetrics: () =>
-        this.metaMetricsController.participateInMetaMetrics,
+        this.metaMetricsController.state.participateInMetaMetrics,
     })
     this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation())
 
@@ -351,7 +351,7 @@ export default class MetamaskController extends EventEmitter {
       TransactionController: this.txController.store,
       KeyringController: this.keyringController.store,
       PreferencesController: this.preferencesController.store,
-      MetamaskController: this.metaMetricsController.store,
+      MetaMetricsController: this.metaMetricsController.store,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
       NetworkController: this.networkController.store,

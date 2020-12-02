@@ -169,7 +169,9 @@ export default class MetaMetricsController {
    * Build's the event payload, processing all fields into a format that can be
    * fed to Segment's track method
    * @private
-   * @param {MetaMetricsEventPayload} rawPayload - raw payload provided to trackEvent
+   * @param {
+   *  Omit<MetaMetricsEventPayload, 'sensitiveProperties'>
+   * } rawPayload - raw payload provided to trackEvent
    * @returns {SegmentEventPayload} - formatted event payload for segment
    */
   _buildEventPayload(rawPayload) {
@@ -298,8 +300,6 @@ export default class MetaMetricsController {
       [idTrait]: idValue,
       name,
       properties: {
-        // We do not want to send addresses or accounts in any events
-        // Some routes include these as params.
         params,
         locale: this.locale,
         network: this.network,

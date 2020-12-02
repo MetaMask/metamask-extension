@@ -32,15 +32,12 @@ import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions'
 
 // types
 /**
- * @typedef {Omit<MetaMetricsEventPayload, 'environmentType' | 'context'>} UIMetricsEventPayload
- */
-/**
- * @typedef {Omit<MetaMetricsEventOptions, 'metaMetricsSendCount'>} UIMetricsEventOptions
+ * @typedef {Omit<MetaMetricsEventPayload, 'environmentType' | 'page' | 'referrer'>} UIMetricsEventPayload
  */
 /**
  * @typedef {(
  *  payload: UIMetricsEventPayload,
- *  options: UIMetricsEventOptions
+ *  options: MetaMetricsEventOptions
  * ) => Promise<void>} UITrackEventMethod
  */
 
@@ -162,6 +159,8 @@ export function MetaMetricsProvider({ children }) {
       trackMetaMetricsPage(
         {
           name,
+          // We do not want to send addresses or accounts in any events
+          // Some routes include these as params.
           params: omit(params, ['account', 'address']),
           environmentType,
           page: context.page,

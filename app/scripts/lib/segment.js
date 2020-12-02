@@ -3,9 +3,9 @@ import Analytics from 'analytics-node'
 const isDevOrTestEnvironment = Boolean(
   process.env.METAMASK_DEBUG || process.env.IN_TEST,
 )
-const { SEGMENT_WRITE_KEY } = process.env
-const { SEGMENT_LEGACY_WRITE_KEY } = process.env
-const { SEGMENT_HOST } = process.env
+const SEGMENT_WRITE_KEY = process.env.SEGMENT_WRITE_KEY ?? null
+const SEGMENT_LEGACY_WRITE_KEY = process.env.SEGMENT_LEGACY_WRITE_KEY ?? null
+const SEGMENT_HOST = process.env.SEGMENT_HOST ?? null
 
 // flushAt controls how many events are sent to segment at once. Segment will
 // hold onto a queue of events until it hits this number, then it sends them as
