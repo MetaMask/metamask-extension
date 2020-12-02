@@ -20,14 +20,19 @@ export default function ViewQuotePriceDifference(props) {
   const priceSlippageFromDestination = useEthFiatAmount(
     usedQuote?.priceSlippage?.destinationAmountInEth || 0,
   )
-  const priceSlippageUnknownFiatValue =
-    !priceSlippageFromSource || !priceSlippageFromDestination
 
   if (!usedQuote || !usedQuote.priceSlippage) {
     return null
   }
 
   const { priceSlippage } = usedQuote
+
+  // We cannot present fiat value if there is a calculation error or no slippage
+  // from source or destination
+  const priceSlippageUnknownFiatValue =
+    !priceSlippageFromSource ||
+    !priceSlippageFromDestination ||
+    priceSlippage.calculationError
 
   let priceDifferencePercentage = 0
   if (priceSlippage.ratio) {
@@ -40,11 +45,21 @@ export default function ViewQuotePriceDifference(props) {
     )
   }
 
+  const shouldShowPriceDifferenceWarning =
+    ['high', 'medium'].includes(priceSlippage.bucket) ||
+    priceSlippageUnknownFiatValue
+
+  if (!shouldShowPriceDifferenceWarning) {
+    return null
+  }
+
   let priceDifferenceTitle = ''
   let priceDifferenceMessage = ''
-  if (priceSlippage.calculationError || priceSlippageUnknownFiatValue) {
+  let priceDifferenceClass = ''
+  if (priceSlippageUnknownFiatValue) {
     // A calculation error signals we cannot determine dollar value
     priceDifferenceMessage = t('swapPriceDifferenceUnavailable')
+    priceDifferenceClass = 'fiat-error'
   } else {
     priceDifferenceTitle = t('swapPriceDifferenceTitle', [
       priceDifferencePercentage,
@@ -57,31 +72,25 @@ export default function ViewQuotePriceDifference(props) {
       usedQuote.destinationTokenInfo.symbol, // Destination token symbol,
       priceSlippageFromDestination, // Destination tokens total value
     ])
-  }
-
-  const shouldShowPriceDifferenceWarning =
-    ['high', 'medium'].includes(priceSlippage.bucket) &&
-    priceDifferenceMessage !== ''
-
-  if (!shouldShowPriceDifferenceWarning) {
-    return null
+    priceDifferenceClass = priceSlippage.bucket
   }
 
   return (
     <div
-      className={classnames('view-quote__price-difference-warning-wrapper', {
-        high: priceSlippage.bucket === 'high',
-        medium: priceSlippage.bucket === 'medium',
-        'fiat-error': priceSlippageUnknownFiatValue,
-      })}
+      className={classnames(
+        'view-quote__price-difference-warning-wrapper',
+        priceDifferenceClass,
+      )}
     >
       <ActionableMessage
         message={
           <div className="view-quote__price-difference-warning-contents">
             <div className="view-quote__price-difference-warning-contents-text">
-              <div className="view-quote__price-difference-warning-contents-title">
-                {priceDifferenceTitle}
-              </div>
+              {priceDifferenceTitle && (
+                <div className="view-quote__price-difference-warning-contents-title">
+                  {priceDifferenceTitle}
+                </div>
+              )}
               {priceDifferenceMessage}
             </div>
             <Tooltip

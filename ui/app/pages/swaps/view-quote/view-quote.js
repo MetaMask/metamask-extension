@@ -482,14 +482,14 @@ export default function ViewQuote() {
             destinationTokenValue={destinationTokenValue}
           />
         )}
-        <div className="view-quote__insufficient-eth-warning-wrapper">
-          {showInsufficientWarning && (
+        {showInsufficientWarning && (
+          <div className="view-quote__insufficient-eth-warning-wrapper">
             <ActionableMessage
               message={actionableInsufficientMessage}
               onClose={() => setWarningHidden(true)}
             />
-          )}
-        </div>
+          </div>
+        )}
         <div
           className={classnames('view-quote__countdown-timer-container', {
             'view-quote__countdown-timer-container--thin': showInsufficientWarning,
