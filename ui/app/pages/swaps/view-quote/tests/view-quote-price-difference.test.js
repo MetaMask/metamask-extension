@@ -85,8 +85,9 @@ describe('View Price Quote Difference', function () {
     destinationTokenValue: '42.947749',
   }
 
+  let component
   function renderComponent(props) {
-    return shallow(
+    component = shallow(
       <Provider store={store}>
         <ViewQuotePriceDifference {...props} />
       </Provider>,
@@ -96,9 +97,13 @@ describe('View Price Quote Difference', function () {
     )
   }
 
+  afterEach(function () {
+    component.unmount()
+  })
+
   it('does not render when there is no quote', function () {
     const props = { ...DEFAULT_PROPS, usedQuote: null }
-    const component = renderComponent(props)
+    renderComponent(props)
 
     const wrappingDiv = component.find(
       '.view-quote__price-difference-warning-wrapper',
@@ -110,7 +115,7 @@ describe('View Price Quote Difference', function () {
     const props = { ...DEFAULT_PROPS }
     props.usedQuote.priceSlippage.bucket = 'low'
 
-    const component = renderComponent(props)
+    renderComponent(props)
     const wrappingDiv = component.find(
       '.view-quote__price-difference-warning-wrapper',
     )
@@ -121,7 +126,7 @@ describe('View Price Quote Difference', function () {
     const props = { ...DEFAULT_PROPS }
     props.usedQuote.priceSlippage.bucket = 'medium'
 
-    const component = renderComponent(props)
+    renderComponent(props)
     assert.strictEqual(component.html().includes('medium'), true)
   })
 
@@ -129,7 +134,7 @@ describe('View Price Quote Difference', function () {
     const props = { ...DEFAULT_PROPS }
     props.usedQuote.priceSlippage.bucket = 'high'
 
-    const component = renderComponent(props)
+    renderComponent(props)
     assert.strictEqual(component.html().includes('high'), true)
   })
 
@@ -138,7 +143,7 @@ describe('View Price Quote Difference', function () {
     props.usedQuote.priceSlippage.calculationError =
       'Could not determine price.'
 
-    const component = renderComponent(props)
+    renderComponent(props)
     assert.strictEqual(component.html().includes('fiat-error'), true)
   })
 })
