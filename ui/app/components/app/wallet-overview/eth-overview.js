@@ -40,7 +40,7 @@ const EthOverview = ({ className }) => {
   const address = useSelector(getSelectedAddress)
   let selectedAccount = useSelector(getSelectedAccount)
   if (!selectedAccount) {
-    selectedAccount = {address: address, balance: '0x0'}
+    selectedAccount = { address, balance: '0x0' }
   }
   const { balance } = selectedAccount
 
