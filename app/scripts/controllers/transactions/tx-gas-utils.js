@@ -1,13 +1,12 @@
-import EthQuery from '../../ethjs-query'
-import { hexToBn, bnToHex } from '../../lib/util'
-import log from 'loglevel'
 import { addHexPrefix, isValidContractAddress } from 'cfx-util'
+import log from 'loglevel'
+import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/helpers/constants/error-keys'
 import { SEND_ETHER_ACTION_KEY } from '../../../../ui/app/helpers/constants/transactions.js'
+import EthQuery from '../../ethjs-query'
+import { bnToHex, hexToBn } from '../../lib/util'
 
 export const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
 export const SIMPLE_STORAGE_COST = '0x0' // Hex for 0, cost of a simple send.
-
-import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/helpers/constants/error-keys'
 
 /**
 tx-gas-utils are gas utility methods for Transaction manager
@@ -36,10 +35,17 @@ class TxGasUtil {
 
       if (gasUsed?.constructor?.name === 'BN') {
         estimatedGasHex = gasUsed.toString(16)
+      } else if (typeof gasUsed !== 'string' && gasUsed.toString) {
+        estimatedGasHex = gasUsed.toString(16)
       } else {
         estimatedGasHex = gasUsed
       }
       if (storageCollateralized?.constructor?.name === 'BN') {
+        estimatedStorageHex = storageCollateralized.toString(16)
+      } else if (
+        typeof storageCollateralized !== 'string' &&
+        storageCollateralized.toString
+      ) {
         estimatedStorageHex = storageCollateralized.toString(16)
       } else {
         estimatedStorageHex = storageCollateralized

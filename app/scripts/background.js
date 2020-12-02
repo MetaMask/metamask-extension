@@ -330,7 +330,7 @@ function setupController(initState, initLangCode) {
   // setup state persistence
   pump(
     asStream(controller.store),
-    debounce(1000),
+    debounce(10),
     storeTransform(versionifyData),
     createStreamSink(persistData),
     error => {

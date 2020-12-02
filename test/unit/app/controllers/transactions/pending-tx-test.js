@@ -1,8 +1,8 @@
 import assert from 'assert'
-import { createTestProviderTools } from '../../../../stub/provider'
+import sinon from 'sinon'
 import PendingTransactionTracker from '../../../../../app/scripts/controllers/transactions/pending-tx-tracker'
 import MockTxGen from '../../../../lib/mock-tx-gen'
-import sinon from 'sinon'
+import { createTestProviderTools } from '../../../../stub/provider'
 
 describe('PendingTransactionTracker', function() {
   let pendingTxTracker,
@@ -382,9 +382,10 @@ describe('PendingTransactionTracker', function() {
       )
     })
 
-    it('should call opts.approveTransaction with the id if the tx is not signed', async function() {
+    it('should call opts.approveTransaction with the id and approved status if the tx is not signed', async function() {
       const stubTx = {
         id: 40,
+        status: 'approved',
         txParams: { epochHeight: '0x0' },
       }
       const approveMock = sinon.stub(pendingTxTracker, 'approveTransaction')
@@ -392,6 +393,20 @@ describe('PendingTransactionTracker', function() {
       pendingTxTracker._resubmitTx(stubTx, '0x6')
 
       assert.ok(approveMock.called)
+      approveMock.restore()
+    })
+
+    it('should not call opts.approveTransaction with non-approved status if the tx is not signed', async function() {
+      const stubTx = {
+        id: 40,
+        status: 'unapproved',
+        txParams: { epochHeight: '0x0' },
+      }
+      const approveMock = sinon.stub(pendingTxTracker, 'approveTransaction')
+
+      pendingTxTracker._resubmitTx(stubTx, '0x6')
+
+      assert.ok(!approveMock.called)
       approveMock.restore()
     })
   })
