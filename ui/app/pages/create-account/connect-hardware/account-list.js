@@ -17,10 +17,10 @@ class AccountList extends Component {
       },
     ]
   }
-  
+
   UNSAFE_componentWillMount = () => {
     if (!this.props.selectedAccount && this.props.accounts.length > 0) {
-      this.props.onAccountChange('0');
+      this.props.onAccountChange('0')
     }
   }
 
