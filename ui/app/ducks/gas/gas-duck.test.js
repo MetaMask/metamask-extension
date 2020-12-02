@@ -14,8 +14,6 @@ const {
   setBasicGasEstimateData,
   setCustomGasPrice,
   setCustomGasLimit,
-  setCustomGasTotal,
-  setCustomGasErrors,
   resetCustomGasState,
   fetchBasicGasEstimates,
 } = GasDuck
@@ -68,7 +66,6 @@ describe('Gas Duck', function () {
       safeLow: null,
     },
     basicEstimateIsLoading: true,
-    errors: {},
     basicPriceEstimatesLastRetrieved: 0,
   }
   const BASIC_GAS_ESTIMATE_LOADING_FINISHED =
@@ -77,10 +74,8 @@ describe('Gas Duck', function () {
     'metamask/gas/BASIC_GAS_ESTIMATE_LOADING_STARTED'
   const RESET_CUSTOM_GAS_STATE = 'metamask/gas/RESET_CUSTOM_GAS_STATE'
   const SET_BASIC_GAS_ESTIMATE_DATA = 'metamask/gas/SET_BASIC_GAS_ESTIMATE_DATA'
-  const SET_CUSTOM_GAS_ERRORS = 'metamask/gas/SET_CUSTOM_GAS_ERRORS'
   const SET_CUSTOM_GAS_LIMIT = 'metamask/gas/SET_CUSTOM_GAS_LIMIT'
   const SET_CUSTOM_GAS_PRICE = 'metamask/gas/SET_CUSTOM_GAS_PRICE'
-  const SET_CUSTOM_GAS_TOTAL = 'metamask/gas/SET_CUSTOM_GAS_TOTAL'
   const SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED =
     'metamask/gas/SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED'
 
@@ -140,26 +135,6 @@ describe('Gas Duck', function () {
           value: 9876,
         }),
         { customData: { limit: 9876 }, ...mockState },
-      )
-    })
-
-    it('should set customData.total when receiving a SET_CUSTOM_GAS_TOTAL action', function () {
-      assert.deepStrictEqual(
-        GasReducer(mockState, {
-          type: SET_CUSTOM_GAS_TOTAL,
-          value: 10000,
-        }),
-        { customData: { total: 10000 }, ...mockState },
-      )
-    })
-
-    it('should set errors when receiving a SET_CUSTOM_GAS_ERRORS action', function () {
-      assert.deepStrictEqual(
-        GasReducer(mockState, {
-          type: SET_CUSTOM_GAS_ERRORS,
-          value: { someError: 'error_error' },
-        }),
-        { errors: { someError: 'error_error' }, ...mockState },
       )
     })
 
@@ -314,24 +289,6 @@ describe('Gas Duck', function () {
       assert.deepStrictEqual(setCustomGasLimit('mockCustomGasLimit'), {
         type: SET_CUSTOM_GAS_LIMIT,
         value: 'mockCustomGasLimit',
-      })
-    })
-  })
-
-  describe('setCustomGasTotal', function () {
-    it('should create the correct action', function () {
-      assert.deepStrictEqual(setCustomGasTotal('mockCustomGasTotal'), {
-        type: SET_CUSTOM_GAS_TOTAL,
-        value: 'mockCustomGasTotal',
-      })
-    })
-  })
-
-  describe('setCustomGasErrors', function () {
-    it('should create the correct action', function () {
-      assert.deepStrictEqual(setCustomGasErrors('mockErrorObject'), {
-        type: SET_CUSTOM_GAS_ERRORS,
-        value: 'mockErrorObject',
       })
     })
   })
