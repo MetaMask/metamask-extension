@@ -1741,6 +1741,20 @@
     "message": "Your $1 will be added to your account once this transaction has processed.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
   },
+  "swapPriceDifference": {
+    "message": "You are about to swap $1 $2 (~$3) for $4 $5 (~$6).",
+    "description": "This message represents the price slippage for the swap.  $1 and $4 are a number (ex: 2.89), $2 and $5 are symbols (ex: ETH), and $3 and $6 are fiat currency amounts."
+  },
+  "swapPriceDifferenceTitle": {
+    "message": "Price difference of ~$1%",
+    "description": "$1 is a number (ex: 1.23) that represents the price difference."
+  },
+  "swapPriceDifferenceTooltip": {
+    "message": "The difference in market prices can be affected by fees taken by intermediaries, size of market, size of trade, or market inefficiencies."
+  },
+  "swapPriceDifferenceUnavailable": {
+    "message": "Market price is unavailable.  Make sure you feel comfortable with the returned amount before proceeding."
+  },
   "swapProcessing": {
     "message": "Processing"
   },
