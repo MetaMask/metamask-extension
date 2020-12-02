@@ -108,6 +108,7 @@ describe('MetaMaskController', function () {
         },
       },
       initState: cloneDeep(firstTimeState),
+      initLangCode: 'en_US',
       platform: {
         showTransactionNotification: () => undefined,
         getVersion: () => 'foo',
@@ -799,7 +800,7 @@ describe('MetaMaskController', function () {
     it('checks the default currentLocale', function () {
       const preferenceCurrentLocale = metamaskController.preferencesController.store.getState()
         .currentLocale
-      assert.equal(preferenceCurrentLocale, undefined)
+      assert.equal(preferenceCurrentLocale, 'en_US')
     })
 
     it('sets current locale in preferences controller', function () {

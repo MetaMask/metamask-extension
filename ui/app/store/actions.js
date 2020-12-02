@@ -2746,3 +2746,29 @@ export function getCurrentWindowTab() {
     dispatch(setCurrentWindowTab(currentWindowTab))
   }
 }
+
+// MetaMetrics
+/**
+ * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventPayload} MetaMetricsEventPayload
+ * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventOptions} MetaMetricsEventOptions
+ * @typedef {import('../../../shared/constants/metametrics').MetaMetricsPagePayload} MetaMetricsPagePayload
+ * @typedef {import('../../../shared/constants/metametrics').MetaMetricsPageOptions} MetaMetricsPageOptions
+ */
+
+/**
+ * @param {MetaMetricsEventPayload} payload - details of the event to track
+ * @param {MetaMetricsEventOptions} options - options for routing/handling of event
+ * @returns {Promise<void>}
+ */
+export function trackMetaMetricsEvent(payload, options) {
+  return promisifiedBackground.trackMetaMetricsEvent(payload, options)
+}
+
+/**
+ * @param {MetaMetricsPagePayload} payload - details of the page viewed
+ * @param {MetaMetricsPageOptions} options - options for handling the page view
+ * @returns {void}
+ */
+export function trackMetaMetricsPage(payload, options) {
+  return promisifiedBackground.trackMetaMetricsPage(payload, options)
+}

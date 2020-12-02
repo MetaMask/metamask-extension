@@ -54,6 +54,7 @@ describe('Actions', function () {
           return Promise.resolve(this.object)
         },
       },
+      initLangCode: 'en_US',
       initState: cloneDeep(firstTimeState),
       infuraProjectId: 'foo',
     })

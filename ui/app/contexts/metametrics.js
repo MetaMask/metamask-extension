@@ -4,7 +4,6 @@ import React, {
   useEffect,
   useCallback,
   useState,
-  useMemo,
 } from 'react'
 import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -12,17 +11,14 @@ import { useHistory } from 'react-router-dom'
 import { captureException } from '@sentry/browser'
 
 import {
-  getCurrentNetworkId,
   getAccountType,
   getNumberOfAccounts,
   getNumberOfTokens,
-  getCurrentChainId,
 } from '../selectors/selectors'
 import { getSendToken } from '../selectors/send'
 import { txDataSelector } from '../selectors/confirm-transaction'
 import { getEnvironmentType } from '../../../app/scripts/lib/util'
-import { getTrackMetaMetricsEvent } from '../../../shared/modules/metametrics'
-import { getCurrentLocale } from '../ducks/metamask/metamask'
+import { trackMetaMetricsEvent } from '../store/actions'
 
 export const MetaMetricsContext = createContext(() => {
   captureException(
@@ -34,20 +30,10 @@ export const MetaMetricsContext = createContext(() => {
 
 export function MetaMetricsProvider({ children }) {
   const txData = useSelector(txDataSelector) || {}
-  const network = useSelector(getCurrentNetworkId)
   const environmentType = getEnvironmentType()
-  const chainId = useSelector(getCurrentChainId)
-  const locale = useSelector(getCurrentLocale)
   const activeCurrency = useSelector(getSendToken)?.symbol
   const accountType = useSelector(getAccountType)
   const confirmTransactionOrigin = txData.origin
-  const metaMetricsId = useSelector((state) => state.metamask.metaMetricsId)
-  const participateInMetaMetrics = useSelector(
-    (state) => state.metamask.participateInMetaMetrics,
-  )
-  const metaMetricsSendCount = useSelector(
-    (state) => state.metamask.metaMetricsSendCount,
-  )
   const numberOfTokens = useSelector(getNumberOfTokens)
   const numberOfAccounts = useSelector(getNumberOfAccounts)
   const history = useHistory()
@@ -69,75 +55,58 @@ export function MetaMetricsProvider({ children }) {
     return unlisten
   }, [history])
 
-  /**
-   * track a metametrics event
-   *
-   * @param {import('../../../shared/modules/metametrics').MetaMetricsEventPayload} payload - payload for event
-   * @returns undefined
-   */
-  const trackEvent = useMemo(() => {
-    const referrer = confirmTransactionOrigin
-      ? { url: confirmTransactionOrigin }
-      : undefined
-    const page = {
-      path: currentPath,
-    }
-    return getTrackMetaMetricsEvent(global.platform.getVersion(), () => ({
-      context: {
-        referrer,
-        page,
-      },
-      environmentType,
-      locale: locale.replace('_', '-'),
-      network,
-      chainId,
-      participateInMetaMetrics,
-      metaMetricsId,
-      metaMetricsSendCount,
-    }))
-  }, [
-    network,
-    chainId,
-    locale,
-    environmentType,
-    participateInMetaMetrics,
-    currentPath,
-    confirmTransactionOrigin,
-    metaMetricsId,
-    metaMetricsSendCount,
-  ])
-
   const metricsEvent = useCallback(
     (config = {}, overrides = {}) => {
       const { eventOpts = {} } = config
-
-      return trackEvent({
-        event: eventOpts.name,
-        category: eventOpts.category,
-        isOptIn: config.isOptIn,
-        excludeMetaMetricsId:
-          eventOpts.excludeMetaMetricsId ??
-          overrides.excludeMetaMetricsId ??
-          false,
-        metaMetricsId: config.metaMetricsId,
-        matomoEvent: true,
-        properties: {
-          action: eventOpts.action,
-          number_of_tokens: numberOfTokens,
-          number_of_accounts: numberOfAccounts,
-          active_currency: activeCurrency,
-          account_type: accountType,
-          is_new_visit: config.is_new_visit,
-          // the properties coming from this key will not match our standards for
-          // snake_case on properties, and they may be redundant and/or not in the
-          // proper location (origin not as a referrer, for example). This is a temporary
-          // solution to not lose data, and the entire event system will be reworked in
-          // forthcoming PRs to deprecate the old Matomo events in favor of the new schema.
-          ...config.customVariables,
+      const referrer = confirmTransactionOrigin
+        ? { url: confirmTransactionOrigin }
+        : undefined
+      const page = {
+        path: currentPath,
+      }
+      return trackMetaMetricsEvent(
+        {
+          event: eventOpts.name,
+          category: eventOpts.category,
+          properties: {
+            action: eventOpts.action,
+            number_of_tokens: numberOfTokens,
+            number_of_accounts: numberOfAccounts,
+            active_currency: activeCurrency,
+            account_type: accountType,
+            is_new_visit: config.is_new_visit,
+            // the properties coming from this key will not match our standards for
+            // snake_case on properties, and they may be redundant and/or not in the
+            // proper location (origin not as a referrer, for example). This is a temporary
+            // solution to not lose data, and the entire event system will be reworked in
+            // forthcoming PRs to deprecate the old Matomo events in favor of the new schema.
+            ...config.customVariables,
+          },
+          page,
+          referrer,
+          environmentType,
         },
-      })
+        {
+          isOptIn: config.isOptIn,
+          excludeMetaMetricsId:
+            eventOpts.excludeMetaMetricsId ??
+            overrides.excludeMetaMetricsId ??
+            false,
+          metaMetricsId: config.metaMetricsId,
+          matomoEvent: true,
+          flushImmediately: config.flushImmediately,
+        },
+      )
     },
-    [accountType, activeCurrency, numberOfTokens, numberOfAccounts, trackEvent],
+    [
+      accountType,
+      currentPath,
+      confirmTransactionOrigin,
+      activeCurrency,
+      numberOfTokens,
+      numberOfAccounts,
+      environmentType,
+    ],
   )
 
   return (
