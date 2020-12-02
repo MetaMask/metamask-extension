@@ -1,7 +1,9 @@
 import handlers from './handlers'
 
 const handlerMap = handlers.reduce((map, handler) => {
-  map.set(handler.methodName, handler.implementation)
+  for (const methodName of handler.methodNames) {
+    map.set(methodName, handler.implementation)
+  }
   return map
 }, new Map())
 

@@ -1968,6 +1968,9 @@ export default class MetamaskController extends EventEmitter {
       createMethodMiddleware({
         origin,
         sendMetrics: this.trackMetaMetricsEvent,
+        handleWatchAssetRequest: this.preferencesController.requestWatchAsset.bind(
+          this.preferencesController,
+        ),
       }),
     )
     // filter and subscription polyfills
@@ -1979,12 +1982,6 @@ export default class MetamaskController extends EventEmitter {
         this.permissionsController.createMiddleware({ origin, extensionId }),
       )
     }
-    // watch asset
-    engine.push(
-      this.preferencesController.requestWatchAsset.bind(
-        this.preferencesController,
-      ),
-    )
     // forward to metamask primary provider
     engine.push(providerAsMiddleware(provider))
     return engine

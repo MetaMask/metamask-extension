@@ -8,7 +8,7 @@ import { MESSAGE_TYPE } from '../../enums'
  */
 
 const logWeb3Usage = {
-  methodName: MESSAGE_TYPE.LOG_WEB3_USAGE,
+  methodNames: [MESSAGE_TYPE.LOG_WEB3_USAGE],
   implementation: logWeb3UsageHandler,
 }
 export default logWeb3Usage
