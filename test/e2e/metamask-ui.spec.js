@@ -901,7 +901,7 @@ describe('MetaMask', function () {
       )
 
       await driver.clickElement(By.css('#depositButton'))
-      await driver.delay(largeDelayMs * 2)
+      await driver.delay(largeDelayMs)
 
       contractStatus = await driver.findElement(By.css('#contractStatus'))
       await driver.wait(
@@ -910,7 +910,7 @@ describe('MetaMask', function () {
       )
 
       await driver.switchToWindow(extension)
-      await driver.delay(largeDelayMs * 3)
+      await driver.delay(largeDelayMs * 2)
 
       await driver.findElements(By.css('.transaction-list-item--unconfirmed'))
       const txListValue = await driver.findClickableElement(
@@ -1375,7 +1375,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
 
       await driver.switchToWindow(dapp)
-      await driver.delay(largeDelayMs * 2)
+      await driver.delay(tinyDelayMs)
 
       await driver.clickElement(
         By.xpath(`//button[contains(text(), 'Approve Tokens')]`),
