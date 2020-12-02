@@ -475,21 +475,21 @@ export default function ViewQuote() {
             onQuoteDetailsIsOpened={quoteDetailsOpened}
           />
         )}
-        {!showInsufficientWarning && (
-          <ViewQuotePriceDifference
-            usedQuote={usedQuote}
-            sourceTokenValue={sourceTokenValue}
-            destinationTokenValue={destinationTokenValue}
-          />
-        )}
-        {showInsufficientWarning && (
-          <div className="view-quote__insufficient-eth-warning-wrapper">
-            <ActionableMessage
-              message={actionableInsufficientMessage}
-              onClose={() => setWarningHidden(true)}
-            />
-          </div>
-        )}
+        <div className="view-quote__warning-wrapper">
+            {!showInsufficientWarning && (
+              <ViewQuotePriceDifference
+                usedQuote={usedQuote}
+                sourceTokenValue={sourceTokenValue}
+                destinationTokenValue={destinationTokenValue}
+              />
+            )}
+            {showInsufficientWarning && (
+              <ActionableMessage
+                message={actionableInsufficientMessage}
+                onClose={() => setWarningHidden(true)}
+              />
+            )}
+        </div>
         <div
           className={classnames('view-quote__countdown-timer-container', {
             'view-quote__countdown-timer-container--thin': showInsufficientWarning,
