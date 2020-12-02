@@ -47,7 +47,6 @@ export default class PreferencesController {
       // perform sensitive operations.
       featureFlags: {
         showIncomingTransactions: true,
-        transactionTime: false,
       },
       knownMethodData: {},
       firstTimeFlowType: null,

@@ -167,9 +167,6 @@
   "chainId": {
     "message": "Ahela ID"
   },
-  "chartOnlyAvailableEth": {
-    "message": "Tabel on saadaval vaid Ethereumi võrkudes."
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Riistvararahakoti ühendamiseks peate kasutama MetaMaski Google Chrome'is."
   },
@@ -398,9 +395,6 @@
   "fast": {
     "message": "Kiire"
   },
-  "faster": {
-    "message": "Kiiremini"
-  },
   "fileImportFail": {
     "message": "Faili importimine ei toimi? Klõpsake siia!",
     "description": "Helps user import their account from a JSON file"
@@ -574,9 +568,6 @@
   },
   "links": {
     "message": "Lingid"
-  },
-  "liveGasPricePredictions": {
-    "message": "Gaasihinna prognoosid reaalajas"
   },
   "loadMore": {
     "message": "Laadi rohkem"
@@ -1008,9 +999,6 @@
   "slow": {
     "message": "Aeglane"
   },
-  "slower": {
-    "message": "Aeglasem"
-  },
   "somethingWentWrong": {
     "message": "Oih! Midagi läks valesti."
   },
@@ -1154,9 +1142,6 @@
   },
   "transactionSubmitted": {
     "message": "Tehing edastatud gaasihinnaga $1 asukohas $2."
-  },
-  "transactionTime": {
-    "message": "Tehingu aeg"
   },
   "transactionUpdated": {
     "message": "Tehing on uuendatud $2."

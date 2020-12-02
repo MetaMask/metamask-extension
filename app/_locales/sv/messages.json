@@ -161,9 +161,6 @@
   "cancelled": {
     "message": "Avbruten"
   },
-  "chartOnlyAvailableEth": {
-    "message": "Tabellen är endast tillgänglig på Ethereum-nätverk."
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Du måste använda MetaMask på Google Chrome för att ansluta till din hårdvaruplånbok."
   },
@@ -392,9 +389,6 @@
   "fast": {
     "message": "Snabb"
   },
-  "faster": {
-    "message": "Snabbare"
-  },
   "fileImportFail": {
     "message": "Fungerar inte filimporten? Klicka här!",
     "description": "Helps user import their account from a JSON file"
@@ -568,9 +562,6 @@
   },
   "links": {
     "message": "Länkar"
-  },
-  "liveGasPricePredictions": {
-    "message": "Liveuppdaterad gaspris-förutsägelser"
   },
   "loadMore": {
     "message": "Ladda mer"
@@ -1002,9 +993,6 @@
   "slow": {
     "message": "Långsamt"
   },
-  "slower": {
-    "message": "Långsammare"
-  },
   "somethingWentWrong": {
     "message": "Hoppsan! Något gick fel."
   },
@@ -1139,9 +1127,6 @@
   },
   "transactionSubmitted": {
     "message": "Överföring angedd med gasavgift på $1 vid $2."
-  },
-  "transactionTime": {
-    "message": "Transaktionstid"
   },
   "transactionUpdated": {
     "message": "Transaktionen uppdaterades $2."

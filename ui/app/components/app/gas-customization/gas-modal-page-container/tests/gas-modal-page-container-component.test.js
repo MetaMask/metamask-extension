@@ -3,23 +3,21 @@ import React from 'react'
 import sinon from 'sinon'
 import shallow from '../../../../../../lib/shallow-with-context'
 import GasModalPageContainer from '../gas-modal-page-container.component'
-import timeout from '../../../../../../lib/test-timeout'
 
 import PageContainer from '../../../../ui/page-container'
 
 import { Tab } from '../../../../ui/tabs'
 
 const mockBasicGasEstimates = {
-  blockTime: 'mockBlockTime',
+  average: '20',
 }
 
 const propsMethodSpies = {
   cancelAndClose: sinon.spy(),
   onSubmit: sinon.spy(),
-  fetchBasicGasAndTimeEstimates: sinon
+  fetchBasicGasEstimates: sinon
     .stub()
     .returns(Promise.resolve(mockBasicGasEstimates)),
-  fetchGasEstimates: sinon.spy(),
 }
 
 const mockGasPriceButtonGroupProps = {
@@ -70,17 +68,11 @@ describe('GasModalPageContainer Component', function () {
       <GasModalPageContainer
         cancelAndClose={propsMethodSpies.cancelAndClose}
         onSubmit={propsMethodSpies.onSubmit}
-        fetchBasicGasAndTimeEstimates={
-          propsMethodSpies.fetchBasicGasAndTimeEstimates
-        }
-        fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
+        fetchBasicGasEstimates={propsMethodSpies.fetchBasicGasEstimates}
         updateCustomGasPrice={() => 'mockupdateCustomGasPrice'}
         updateCustomGasLimit={() => 'mockupdateCustomGasLimit'}
-        customGasPrice={21}
-        customGasLimit={54321}
         gasPriceButtonGroupProps={mockGasPriceButtonGroupProps}
         infoRowProps={mockInfoRowProps}
-        currentTimeEstimate="1 min 31 sec"
         customGasPriceInHex="mockCustomGasPriceInHex"
         customGasLimitInHex="mockCustomGasLimitInHex"
         insufficientBalance={false}
@@ -94,23 +86,11 @@ describe('GasModalPageContainer Component', function () {
   })
 
   describe('componentDidMount', function () {
-    it('should call props.fetchBasicGasAndTimeEstimates', function () {
-      propsMethodSpies.fetchBasicGasAndTimeEstimates.resetHistory()
-      assert.equal(propsMethodSpies.fetchBasicGasAndTimeEstimates.callCount, 0)
+    it('should call props.fetchBasicGasEstimates', function () {
+      propsMethodSpies.fetchBasicGasEstimates.resetHistory()
+      assert.equal(propsMethodSpies.fetchBasicGasEstimates.callCount, 0)
       wrapper.instance().componentDidMount()
-      assert.equal(propsMethodSpies.fetchBasicGasAndTimeEstimates.callCount, 1)
-    })
-
-    it('should call props.fetchGasEstimates with the block time returned by fetchBasicGasAndTimeEstimates', async function () {
-      propsMethodSpies.fetchGasEstimates.resetHistory()
-      assert.equal(propsMethodSpies.fetchGasEstimates.callCount, 0)
-      wrapper.instance().componentDidMount()
-      await timeout(250)
-      assert.equal(propsMethodSpies.fetchGasEstimates.callCount, 1)
-      assert.equal(
-        propsMethodSpies.fetchGasEstimates.getCall(0).args[0],
-        'mockBlockTime',
-      )
+      assert.equal(propsMethodSpies.fetchBasicGasEstimates.callCount, 1)
     })
   })
 
@@ -139,9 +119,7 @@ describe('GasModalPageContainer Component', function () {
       sinon.stub(GP, 'renderTabs').returns('mockTabs')
       const renderTabsWrapperTester = shallow(
         <GasModalPageContainer
-          fetchBasicGasAndTimeEstimates={
-            propsMethodSpies.fetchBasicGasAndTimeEstimates
-          }
+          fetchBasicGasEstimates={propsMethodSpies.fetchBasicGasEstimates}
           fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
         />,
         { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
@@ -208,17 +186,11 @@ describe('GasModalPageContainer Component', function () {
         <GasModalPageContainer
           cancelAndClose={propsMethodSpies.cancelAndClose}
           onSubmit={propsMethodSpies.onSubmit}
-          fetchBasicGasAndTimeEstimates={
-            propsMethodSpies.fetchBasicGasAndTimeEstimates
-          }
-          fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
+          fetchBasicGasEstimates={propsMethodSpies.fetchBasicGasEstimates}
           updateCustomGasPrice={() => 'mockupdateCustomGasPrice'}
           updateCustomGasLimit={() => 'mockupdateCustomGasLimit'}
-          customGasPrice={21}
-          customGasLimit={54321}
           gasPriceButtonGroupProps={mockGasPriceButtonGroupProps}
           infoRowProps={mockInfoRowProps}
-          currentTimeEstimate="1 min 31 sec"
           customGasPriceInHex="mockCustomGasPriceInHex"
           customGasLimitInHex="mockCustomGasLimitInHex"
           insufficientBalance={false}

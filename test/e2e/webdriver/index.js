@@ -45,12 +45,11 @@ async function setupFetchMocking(driver) {
     window.origFetch = window.fetch.bind(window)
     window.fetch = async (...args) => {
       const url = args[0]
-      if (url.match(/^http(s)?:\/\/ethgasstation\.info\/json\/ethgasAPI.*/u)) {
-        return { json: async () => clone(mockResponses.ethGasBasic) }
-      } else if (
-        url.match(/http(s?):\/\/ethgasstation\.info\/json\/predictTable.*/u)
+      // api.metaswap.codefi.network/gasPrices
+      if (
+        url.match(/^http(s)?:\/\/api\.metaswap\.codefi\.network\/gasPrices/u)
       ) {
-        return { json: async () => clone(mockResponses.ethGasPredictTable) }
+        return { json: async () => clone(mockResponses.gasPricesBasic) }
       } else if (url.match(/chromeextensionmm/u)) {
         return { json: async () => clone(mockResponses.metametrics) }
       } else if (url.match(/^https:\/\/(api\.metaswap|.*airswap-dev)/u)) {

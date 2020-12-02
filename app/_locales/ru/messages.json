@@ -166,9 +166,6 @@
   "chainId": {
     "message": "ID сети"
   },
-  "chartOnlyAvailableEth": {
-    "message": "Диаграмма доступна только в сетях Ethereum."
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Вам необходимо использовать MetaMask в Google Chrome, чтобы подключиться к своему аппаратному кошельку."
   },
@@ -427,9 +424,6 @@
   "fast": {
     "message": "Быстро"
   },
-  "faster": {
-    "message": "Быстрее"
-  },
   "fiat": {
     "message": "Валюта",
     "description": "Exchange type"
@@ -607,9 +601,6 @@
   },
   "links": {
     "message": "Ссылки"
-  },
-  "liveGasPricePredictions": {
-    "message": "Прогноз цены газа в режиме реального времени"
   },
   "loadMore": {
     "message": "Загрузить еще"
@@ -1054,9 +1045,6 @@
   "slow": {
     "message": "Медленно"
   },
-  "slower": {
-    "message": "Медленнее"
-  },
   "somethingWentWrong": {
     "message": "Опс! Что-то пошло не так."
   },
@@ -1200,9 +1188,6 @@
   },
   "transactionSubmitted": {
     "message": "Сделка подана с оплатой за газ в размере 1$ за 2$."
-  },
-  "transactionTime": {
-    "message": "Время транзакции"
   },
   "transactionUpdated": {
     "message": "Транзакция обновлена до $2."

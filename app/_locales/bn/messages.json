@@ -167,9 +167,6 @@
   "chainId": {
     "message": "চেন আইডি"
   },
-  "chartOnlyAvailableEth": {
-    "message": "শুধুমাত্র Ethereum নেটওয়ার্কগুলিতে চার্ট উপলভ্য। "
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "আপনার হার্ডওয়্যার ওয়ালেটের সাথে সংযোগ করতে আপনাকে Google Chrome এ MetaMask ব্যবহার করতে হবে।  "
   },
@@ -398,9 +395,6 @@
   "fast": {
     "message": "দ্রুত"
   },
-  "faster": {
-    "message": "দ্রুততর"
-  },
   "fiat": {
     "message": "ফিয়াট",
     "description": "Exchange type"
@@ -578,9 +572,6 @@
   },
   "links": {
     "message": "লিঙ্কসমূহ"
-  },
-  "liveGasPricePredictions": {
-    "message": "সরাসরি গ্যাসের মূল্যের অনুমান"
   },
   "loadMore": {
     "message": "আরও লোড করুন"
@@ -1018,9 +1009,6 @@
   "slow": {
     "message": "মন্থর"
   },
-  "slower": {
-    "message": "ধীর গতির"
-  },
   "somethingWentWrong": {
     "message": "ওহো! কিছু সমস্যা হয়েছে।"
   },
@@ -1164,9 +1152,6 @@
   },
   "transactionSubmitted": {
     "message": "$2 এ $1 এর গ্যাস ফী সহ লেনদেন জমা করা হয়েছে।"
-  },
-  "transactionTime": {
-    "message": "লেনদেনের সময়"
   },
   "transactionUpdated": {
     "message": "লেনদেন $2 এ আপডেট করা হয়েছে।"

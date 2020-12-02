@@ -158,9 +158,6 @@
   "chainId": {
     "message": "ID de chaîne"
   },
-  "chartOnlyAvailableEth": {
-    "message": "Tableau disponible uniquement sur les réseaux Ethereum."
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Pour connecter votre portefeuille hardware, vous devez utiliser MetaMask pour Google Chrome."
   },
@@ -389,9 +386,6 @@
   "fast": {
     "message": "Rapide"
   },
-  "faster": {
-    "message": "Plus rapide"
-  },
   "fiat": {
     "message": "FIAT",
     "description": "Exchange type"
@@ -572,9 +566,6 @@
   },
   "links": {
     "message": "Liens"
-  },
-  "liveGasPricePredictions": {
-    "message": "Prévisions des prix de l'essence en direct"
   },
   "loadMore": {
     "message": "Charger plus"
@@ -1000,9 +991,6 @@
   "slow": {
     "message": "Lente"
   },
-  "slower": {
-    "message": "Plus lent"
-  },
   "somethingWentWrong": {
     "message": "Oups !  Quelque chose a mal tourné. "
   },
@@ -1140,9 +1128,6 @@
   },
   "transactionSubmitted": {
     "message": "Transaction envoyée sur $2."
-  },
-  "transactionTime": {
-    "message": "Heure de la transaction"
   },
   "transactionUpdated": {
     "message": "Transaction mise à jour sur $2."

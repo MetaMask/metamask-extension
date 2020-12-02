@@ -167,9 +167,6 @@
   "chainId": {
     "message": "链 ID"
   },
-  "chartOnlyAvailableEth": {
-    "message": "聊天功能仅对以太坊网络开放。"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "您需要通过 Google Chrome 浏览器使用 MetaMask ，连接个人硬件钱包。"
   },
@@ -398,9 +395,6 @@
   "fast": {
     "message": "快"
   },
-  "faster": {
-    "message": "快捷操作"
-  },
   "fiat": {
     "message": "FIAT",
     "description": "Exchange type"
@@ -569,9 +563,6 @@
   },
   "links": {
     "message": "链接"
-  },
-  "liveGasPricePredictions": {
-    "message": "实时天然气价格预测"
   },
   "loadMore": {
     "message": "加载更多"
@@ -1000,9 +991,6 @@
   "slow": {
     "message": "慢"
   },
-  "slower": {
-    "message": "降速"
-  },
   "somethingWentWrong": {
     "message": "哎呀！出问题了。"
   },
@@ -1146,9 +1134,6 @@
   },
   "transactionSubmitted": {
     "message": "在 $2 提交的交易单，其天然气费为 $1 。"
-  },
-  "transactionTime": {
-    "message": "交易时间"
   },
   "transactionUpdated": {
     "message": "交易单已于 $2 更新。"

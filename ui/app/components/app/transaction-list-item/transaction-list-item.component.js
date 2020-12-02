@@ -4,7 +4,6 @@ import classnames from 'classnames'
 import { useHistory } from 'react-router-dom'
 import ListItem from '../../ui/list-item'
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData'
-import Preloader from '../../ui/icon/preloader'
 import { useI18nContext } from '../../../hooks/useI18nContext'
 import { useCancelTransaction } from '../../../hooks/useCancelTransaction'
 import { useRetryTransaction } from '../../../hooks/useRetryTransaction'
@@ -15,8 +14,6 @@ import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes'
 import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp'
 import TransactionStatus from '../transaction-status/transaction-status.component'
 import TransactionIcon from '../transaction-icon'
-import { useTransactionTimeRemaining } from '../../../hooks/useTransactionTimeRemaining'
-import IconWithLabel from '../../ui/icon-with-label'
 import {
   TRANSACTION_GROUP_CATEGORIES,
   TRANSACTION_STATUSES,
@@ -33,7 +30,7 @@ export default function TransactionListItem({
 
   const {
     initialTransaction: { id },
-    primaryTransaction: { err, gasPrice, status, submittedTime },
+    primaryTransaction: { err, status },
   } = transactionGroup
   const [cancelEnabled, cancelTransaction] = useCancelTransaction(
     transactionGroup,
@@ -56,15 +53,7 @@ export default function TransactionListItem({
     displayedStatusKey,
     isPending,
     senderAddress,
-    isSubmitted,
   } = useTransactionDisplayData(transactionGroup)
-
-  const timeRemaining = useTransactionTimeRemaining(
-    isSubmitted,
-    isEarliestNonce,
-    submittedTime,
-    gasPrice,
-  )
 
   const isSignatureReq =
     category === TRANSACTION_GROUP_CATEGORIES.SIGNATURE_REQUEST
@@ -143,16 +132,6 @@ export default function TransactionListItem({
         onClick={toggleShowDetails}
         className={className}
         title={title}
-        titleIcon={
-          !isUnapproved &&
-          isPending &&
-          isEarliestNonce && (
-            <IconWithLabel
-              icon={<Preloader size={16} color="#D73A49" />}
-              label={timeRemaining}
-            />
-          )
-        }
         icon={
           <TransactionIcon category={category} status={displayedStatusKey} />
         }

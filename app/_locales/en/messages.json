@@ -245,9 +245,6 @@
   "chainId": {
     "message": "Chain ID"
   },
-  "chartOnlyAvailableEth": {
-    "message": "Chart only available on Ethereum networks."
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
   },
@@ -660,9 +657,6 @@
   "fast": {
     "message": "Fast"
   },
-  "faster": {
-    "message": "Faster"
-  },
   "fastest": {
     "message": "Fastest"
   },
@@ -913,9 +907,6 @@
   },
   "links": {
     "message": "Links"
-  },
-  "liveGasPricePredictions": {
-    "message": "Live Gas Price Predictions"
   },
   "loadMore": {
     "message": "Load More"
@@ -1491,9 +1482,6 @@
   "showSeedPhrase": {
     "message": "Show seed phrase"
   },
-  "showTransactionTimeDescription": {
-    "message": "Select this to display pending transaction time estimates in the activity tab while on the Ethereum Mainnet. Note: estimates are approximations based on network conditions."
-  },
   "sigRequest": {
     "message": "Signature Request"
   },
@@ -1514,9 +1502,6 @@
   },
   "slow": {
     "message": "Slow"
-  },
-  "slower": {
-    "message": "Slower"
   },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
@@ -1653,16 +1638,6 @@
   },
   "swapEstimatedNetworkFeesInfo": {
     "message": "This is an estimate of the network fee that will be used to complete your swap. The actual amount may change according to network conditions."
-  },
-  "swapEstimatedTime": {
-    "message": "Estimated time:"
-  },
-  "swapEstimatedTimeCalculating": {
-    "message": "Calculating..."
-  },
-  "swapEstimatedTimeFull": {
-    "message": "$1 $2",
-    "description": "This message shows bolded swapEstimatedTime message, which is substited for $1, followed by either the estimated remaining transaction time in mm:ss, or the swapEstimatedTimeCalculating message, which are substituted for $2."
   },
   "swapFailedErrorDescription": {
     "message": "Your funds are safe and still available in your wallet."
@@ -1871,9 +1846,6 @@
   "swapsAdvancedOptions": {
     "message": "Advanced Options"
   },
-  "swapsAlmostDone": {
-    "message": "Almost done..."
-  },
   "swapsBestQuote": {
     "message": "Best quote"
   },
@@ -2011,9 +1983,6 @@
   },
   "transactionSubmitted": {
     "message": "Transaction submitted with gas fee of $1 at $2."
-  },
-  "transactionTime": {
-    "message": "Transaction Time"
   },
   "transactionUpdated": {
     "message": "Transaction updated at $2."
