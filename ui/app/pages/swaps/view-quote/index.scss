@@ -136,7 +136,10 @@
     margin-top: 8px;
 
     @media screen and (min-width: 576px) {
-      min-height: 0;
+      &--thin {
+        min-height: 36px;
+      }
+      
       display: flex;
     }
   }

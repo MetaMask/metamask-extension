@@ -475,7 +475,11 @@ export default function ViewQuote() {
             onQuoteDetailsIsOpened={quoteDetailsOpened}
           />
         )}
-        <div className="view-quote__warning-wrapper">
+        <div
+          className={classnames('view-quote__warning-wrapper', {
+            'view-quote__warning-wrapper--thin': !showInsufficientWarning,
+          })}
+        >
           {!showInsufficientWarning && (
             <ViewQuotePriceDifference
               usedQuote={usedQuote}
