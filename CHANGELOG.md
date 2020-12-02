@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 8.1.6 Wed Dec 02 2020
+
 ## 8.1.5 Wed Nov 18 2020
 - [#9871](https://github.com/MetaMask/metamask-extension/pull/9871): Show send text upon hover in main asset list
 - [#9855](https://github.com/MetaMask/metamask-extension/pull/9855): Make edit icon and account name in account details modal focusable
