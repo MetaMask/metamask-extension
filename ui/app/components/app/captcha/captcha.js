@@ -235,6 +235,6 @@ export default class HCaptcha extends Component {
 
   render() {
     const { elementId } = this.state
-    return <div id={elementId}></div>
+    return <div id={elementId} className="captcha-wrapper"></div>
   }
 }

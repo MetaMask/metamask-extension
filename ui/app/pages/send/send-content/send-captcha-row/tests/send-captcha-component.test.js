@@ -5,7 +5,6 @@ import sinon from 'sinon'
 import { calculateHexData } from '../../../send.utils'
 import SendCaptchaRow from '../send-captcha-data-row.component'
 
-import SendRowWrapper from '../../send-row-wrapper/send-row-wrapper.component'
 import Hcaptcha from '../../../../../components/app/captcha'
 
 const propsMethodSpies = {
@@ -140,8 +139,7 @@ describe('SendCaptchaRow Component', function () {
   describe('render', function () {
     it('should render a SendCaptchaRow component with Hcaptcha inside', function () {
       assert.strictEqual(wrapper.name(), 'CaptchaRowComponent')
-      assert.strictEqual(wrapper.at(0).find(SendRowWrapper).length, 1)
-      assert.strictEqual(wrapper.at(0).at(0).find(Hcaptcha).length, 1)
+      assert.strictEqual(wrapper.at(0).find(Hcaptcha).length, 1)
     })
   })
 })

@@ -1,0 +1,10 @@
+.captcha-wrapper {
+  position: relative;
+  margin: 1rem 1rem 0;
+
+  iframe {
+    position: absolute;
+    right: 0;
+    width: 303px !important;
+  }
+}
