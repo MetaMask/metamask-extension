@@ -2115,9 +2115,10 @@
   resolved "https://registry.yarnpkg.com/@metamask/forwarder/-/forwarder-1.1.0.tgz#13829d8244bbf19ea658c0b20d21a77b67de0bdd"
   integrity sha512-Hggj4y0QIjDzKGTXzarhEPIQyFSB2bi2y6YLJNwaT4JmP30UB5Cj6gqoY0M4pj3QT57fzp0BUuGp7F/AUe28tw==
 
-"@metamask/inpage-provider@MetaMask/inpage-provider#web3-removal":
-  version "6.2.0"
-  resolved "https://codeload.github.com/MetaMask/inpage-provider/tar.gz/b04deb7df87e66bd4601b0334166ce9c5fbef2ff"
+"@metamask/inpage-provider@^6.1.0":
+  version "6.3.0"
+  resolved "https://registry.yarnpkg.com/@metamask/inpage-provider/-/inpage-provider-6.3.0.tgz#92d965e20912c24adbf973efbd07dbf339547741"
+  integrity sha512-n7E06+8hWdYKmgJo84WFvgX6/BSqaOQEOMIrcbrP48LdkkZNEAChx6D8oUb2lYDQiWgahR+f20jsJoN4WmOjxw==
   dependencies:
     eth-rpc-errors "^2.1.1"
     fast-deep-equal "^2.0.1"
