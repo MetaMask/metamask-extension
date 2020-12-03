@@ -22,6 +22,7 @@ describe('MetaMask', function () {
     await ganacheServer.start()
     const result = await buildWebDriver({ responsive: true })
     driver = result.driver
+    await driver.navigate()
   })
 
   afterEach(async function () {
