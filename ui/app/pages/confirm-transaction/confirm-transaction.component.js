@@ -28,9 +28,9 @@ import {
 } from '../../helpers/constants/routes'
 
 export default class ConfirmTransaction extends Component {
-  static contextTypes = {
-    metricsEvent: PropTypes.func,
-  }
+  // static contextTypes = {
+  //   metricsEvent: PropTypes.func,
+  // }
 
   static propTypes = {
     setSelectedAddress: PropTypes.func.isRequired,
@@ -48,8 +48,8 @@ export default class ConfirmTransaction extends Component {
     paramsTransactionId: PropTypes.string,
     getTokenParams: PropTypes.func,
     isTokenMethodAction: PropTypes.bool,
-    fullScreenVsPopupTestGroup: PropTypes.string,
-    trackABTest: PropTypes.bool,
+    // fullScreenVsPopupTestGroup: PropTypes.string,
+    // trackABTest: PropTypes.bool,
   }
 
   componentDidMount() {
@@ -64,8 +64,8 @@ export default class ConfirmTransaction extends Component {
       paramsTransactionId,
       getTokenParams,
       isTokenMethodAction,
-      fullScreenVsPopupTestGroup,
-      trackABTest,
+      // fullScreenVsPopupTestGroup,
+      // trackABTest,
       addressConnectedToCurrentTab,
       setSelectedAddress,
       selectedAddress,
@@ -93,18 +93,18 @@ export default class ConfirmTransaction extends Component {
       this.props.setTransactionToConfirm(txId)
     }
 
-    if (trackABTest) {
-      this.context.metricsEvent({
-        eventOpts: {
-          category: 'abtesting',
-          action: 'fullScreenVsPopup',
-          name:
-            fullScreenVsPopupTestGroup === 'fullScreen'
-              ? 'fullscreen'
-              : 'original',
-        },
-      })
-    }
+    // if (trackABTest) {
+    //   this.context.metricsEvent({
+    //     eventOpts: {
+    //       category: 'abtesting',
+    //       action: 'fullScreenVsPopup',
+    //       name:
+    //         fullScreenVsPopupTestGroup === 'fullScreen'
+    //           ? 'fullscreen'
+    //           : 'original',
+    //     },
+    //   })
+    // }
   }
 
   componentDidUpdate(prevProps) {

@@ -16,8 +16,6 @@ import {
   GAS_PRICE_TOO_LOW,
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
-  MIN_GAS_LIMIT_HEX,
-  MAX_GAS_LIMIT_HEX,
   NEGATIVE_ETH_ERROR,
   SIMPLE_GAS_COST,
   SIMPLE_STORAGE_COST,
@@ -323,7 +321,6 @@ async function checkSponsorshipInfo({
 async function estimateGasAndCollateral({
   selectedAddress,
   selectedToken,
-  blockGasLimit = MIN_GAS_LIMIT_HEX,
   to,
   value,
   data,
@@ -368,69 +365,32 @@ async function estimateGasAndCollateral({
         paramsForEstimate.value = '0xff'
       }
     }
-
-    // if not, fall back to block gasLimit
-    if (!blockGasLimit && to) {
-      blockGasLimit = MIN_GAS_LIMIT_HEX
-    } else if (
-      parseInt(blockGasLimit) > parseInt(`0x{MAX_GAS_LIMIT_HEX}`) &&
-      to
-    ) {
-      blockGasLimit = MAX_GAS_LIMIT_HEX
-    }
   }
 
   if (!selectedToken && !data && !to) {
     paramsForEstimate.to = paramsForEstimate.to || selectedToken.address
   }
 
-  paramsForEstimate.gas = addHexPrefix(
-    multiplyCurrencies(blockGasLimit, 0.95, {
-      multiplicandBase: 16,
-      multiplierBase: 10,
-      roundDown: '0',
-      toNumericBase: 'hex',
-    })
-  )
-
   // run tx
   return new Promise((resolve, reject) => {
     return estimateGasAndCollateralMethod(paramsForEstimate, (err, result) => {
       if (err) {
-        const simulationFailed =
-          err.message.includes('Internal error') ||
-          err.message.includes('Transaction execution error.') ||
-          err.message.includes(
-            'gas required exceeds allowance or always failing transaction'
-          )
-        if (simulationFailed) {
-          const estimateWithBuffer = addGasBuffer(
-            paramsForEstimate.gas,
-            blockGasLimit,
-            1.5
-          )
-          return resolve(addHexPrefix(estimateWithBuffer))
-        } else {
-          return reject(err)
-        }
+        return reject(err)
       }
       const {
         gasUsed: estimatedGas,
         storageCollateralized: estimatedStorage,
       } = result
 
-      // only need the storageLimit here
-      if (result.gas !== undefined) {
-        result.storageLimit = addHexPrefix(estimatedStorage)
-        return result
-      }
-      const estimateWithBuffer = addGasBuffer(
-        estimatedGas.toString(16),
-        blockGasLimit,
-        1.5
-      )
       return resolve({
-        gas: addHexPrefix(estimateWithBuffer),
+        gas: addHexPrefix(
+          multiplyCurrencies(addHexPrefix(estimatedGas), 1.3, {
+            toNumericBase: 'hex',
+            multiplicandBase: 16,
+            multiplierBase: 10,
+            numberOfDecimals: '0',
+          })
+        ),
         storageLimit: addHexPrefix(estimatedStorage),
       })
     })
@@ -440,7 +400,7 @@ async function estimateGasAndCollateral({
 function addGasBuffer(
   initialGasLimitHex,
   blockGasLimitHex,
-  bufferMultiplier = 1.5
+  bufferMultiplier = 1.3
 ) {
   const upperGasLimit = multiplyCurrencies(blockGasLimitHex, 0.9, {
     toNumericBase: 'hex',

@@ -288,7 +288,7 @@ steps:
         limit: 2
     commands:
       - 'source .buildkite/scripts/pre'
-      - 'docker-run yarn test:e2e:chrome:keytest || echo failed > failed'
+      - 'docker-run yarn test:e2e:chrome:keytest'
       - 'cpout test-artifacts || true'
     soft_fail:
       - exit_status: 8

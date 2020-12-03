@@ -1504,6 +1504,9 @@
   "transactionConfirmed": {
     "message": "Transaction confirmed at $2."
   },
+  "transactionValueReplaced": {
+    "message": "Transaction's value replaced to $1 at $2"
+  },
   "transactionCreated": {
     "message": "Transaction created with a value of $1 at $2."
   },

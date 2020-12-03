@@ -93,7 +93,13 @@ const mapStateToProps = (state, ownProps) => {
     to: toAddress,
     data,
   } = txParams
-  let { willUserPayTxFee, willUserPayCollateral } = selectedTransaction
+  let willUserPayTxFee, willUserPayCollateral
+  if (selectedTransaction?.willUserPayTxFee !== undefined) {
+    willUserPayTxFee = selectedTransaction?.willUserPayTxFee
+  }
+  if (selectedTransaction?.willUserPayCollateral !== undefined) {
+    willUserPayCollateral = selectedTransaction?.willUserPayCollateral
+  }
 
   if (willUserPayTxFee === undefined) {
     willUserPayTxFee = txData.willUserPayTxFee
@@ -150,15 +156,15 @@ const mapStateToProps = (state, ownProps) => {
   const newTotalEth = maxModeOn
     ? addHexWEIsToRenderableEth(balance, '0x0')
     : addHexWEIsToRenderableEth(
-      value,
-      customGasAndCollateralTotalCountSponsoredFee
-    )
+        value,
+        customGasAndCollateralTotalCountSponsoredFee
+      )
 
   const sendAmount = maxModeOn
     ? subtractHexWEIsFromRenderableEth(
-      balance,
-      customGasAndCollateralTotalCountSponsoredFee
-    )
+        balance,
+        customGasAndCollateralTotalCountSponsoredFee
+      )
     : addHexWEIsToRenderableEth(value, '0x0')
 
   const sponsoredFeeHex = calcGasAndCollateralTotal(
@@ -170,11 +176,11 @@ const mapStateToProps = (state, ownProps) => {
   const insufficientBalance = maxModeOn
     ? false
     : !isBalanceSufficient({
-      amount: value,
-      gasTotal: customGasAndCollateralTotalCountSponsoredFee,
-      balance,
-      conversionRate,
-    })
+        amount: value,
+        gasTotal: customGasAndCollateralTotalCountSponsoredFee,
+        balance,
+        conversionRate,
+      })
 
   return {
     hideBasic: true, // TODO: support smarter gas price estimation based on gas station
@@ -248,8 +254,8 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  const updateCustomGasPrice = (newPrice) =>
+const mapDispatchToProps = dispatch => {
+  const updateCustomGasPrice = newPrice =>
     dispatch(setCustomGasPrice(addHexPrefix(newPrice)))
 
   return {
@@ -265,7 +271,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setGasLimit(newLimit))
       dispatch(setGasPrice(newPrice))
     },
-    setStorageData: (newLimit) => {
+    setStorageData: newLimit => {
       dispatch(setStorageLimit(newLimit))
     },
     updateConfirmTxGasAndCollateralAndCalculate: (
@@ -284,14 +290,14 @@ const mapDispatchToProps = (dispatch) => {
     },
     hideGasButtonGroup: () => dispatch(hideGasButtonGroup()),
     hideSidebar: () => dispatch(hideSidebar()),
-    fetchGasEstimates: (blockTime) => dispatch(fetchGasEstimates(blockTime)),
+    fetchGasEstimates: blockTime => dispatch(fetchGasEstimates(blockTime)),
     fetchBasicGasAndTimeEstimates: () =>
       dispatch(fetchBasicGasAndTimeEstimates()),
-    setGasTotal: (total) => dispatch(setGasTotal(total)),
-    setStorageTotal: (total) => dispatch(setStorageTotal(total)),
-    setGasAndCollateralTotal: (total) =>
+    setGasTotal: total => dispatch(setGasTotal(total)),
+    setStorageTotal: total => dispatch(setStorageTotal(total)),
+    setGasAndCollateralTotal: total =>
       dispatch(setGasAndCollateralTotal(total)),
-    setAmountToMax: (maxAmountDataObject) => {
+    setAmountToMax: maxAmountDataObject => {
       dispatch(updateSendErrors({ amount: null }))
       dispatch(updateSendAmount(calcMaxAmount(maxAmountDataObject)))
     },
@@ -397,13 +403,13 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...otherDispatchProps,
     ...ownProps,
     isSimpleTx: !selectedToken && isSimpleTx,
-    updateCustomGasLimit: (gasLimit) => {
+    updateCustomGasLimit: gasLimit => {
       onSubmit(gasLimit, null, null, true)
     },
-    updateCustomGasPrice: (gasPrice) => {
+    updateCustomGasPrice: gasPrice => {
       onSubmit(null, gasPrice, null, true)
     },
-    updateCustomStorageLimit: (storageLimit) => {
+    updateCustomStorageLimit: storageLimit => {
       onSubmit(null, null, storageLimit, true)
     },
     onSubmit,
@@ -430,27 +436,27 @@ export default connect(
   mergeProps
 )(GasModalPageContainer)
 
-function isConfirm (state) {
+function isConfirm(state) {
   return Boolean(Object.keys(state.confirmTransaction.txData).length)
 }
 
-function calcCustomGasPrice (customGasPriceInHex) {
+function calcCustomGasPrice(customGasPriceInHex) {
   return Number(hexWEIToDecGWEI(customGasPriceInHex))
 }
 
-function calcCustomGasOrStorageLimit (customGasOrStorageLimitInHex) {
+function calcCustomGasOrStorageLimit(customGasOrStorageLimitInHex) {
   return parseInt(customGasOrStorageLimitInHex, 16)
 }
 
-function addHexWEIsToRenderableEth (aHexWEI, bHexWEI) {
+function addHexWEIsToRenderableEth(aHexWEI, bHexWEI) {
   return pipe(addHexWEIsToDec, formatETHFee)(aHexWEI, bHexWEI)
 }
 
-function subtractHexWEIsFromRenderableEth (aHexWEI, bHexWei) {
+function subtractHexWEIsFromRenderableEth(aHexWEI, bHexWei) {
   return pipe(subtractHexWEIsToDec, formatETHFee)(aHexWEI, bHexWei)
 }
 
-function addHexWEIsToRenderableFiat (
+function addHexWEIsToRenderableFiat(
   aHexWEI,
   bHexWEI,
   convertedCurrency,

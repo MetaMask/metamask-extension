@@ -11,7 +11,7 @@ import EthQuery from '../eth-query'
 import ObservableStore from 'obs-store'
 import log from 'loglevel'
 import pify from 'pify'
-import Web3 from '../controllers/ConfluxWeb'
+import { Conflux } from 'js-conflux-sdk/src/index'
 import SINGLE_CALL_BALANCES_ABI from '../controllers/cfx-single-call-balance-checker-abi.js'
 
 import { bnToHex } from './util'
@@ -55,7 +55,7 @@ class AccountTracker {
     this._updateForBlock = this._updateForBlock.bind(this)
     this.network = opts.network
 
-    this.web3 = new Web3(this._provider)
+    this.cfx = new Conflux({ url: this._provider._confluxWebProvider.url })
   }
 
   start() {
@@ -216,25 +216,24 @@ class AccountTracker {
    */
   async _updateAccountsViaBalanceChecker(addresses, deployedContractAddress) {
     const accounts = this.store.getState().accounts
-    this.web3.setProvider(this._provider)
-    const ethContract = this.web3.eth
-      .contract(SINGLE_CALL_BALANCES_ABI)
-      .at(deployedContractAddress)
+    this.cfx.provider.url = this._provider._confluxWebProvider.url
+    const ethContract = this.cfx.Contract({
+      abi: SINGLE_CALL_BALANCES_ABI,
+      address: deployedContractAddress,
+    })
     const ethBalance = ['0x0000000000000000000000000000000000000000']
+    let result
+    try {
+      result = await ethContract.balances(addresses, ethBalance)
+    } catch (err) {}
 
-    const result = await ethContract
-      .balances(addresses, ethBalance)
-      .call()
-      .catch(() => {
-        // log.warn(
-        //   `MetaMask - Account Tracker single call balance fetch failed`,
-        //   error
-        // )
-        return Promise.all(addresses.map(this._updateAccount.bind(this)))
-      })
+    if (!result) {
+      return Promise.all(addresses.map(this._updateAccount.bind(this)))
+    }
+
     addresses.forEach((address, index) => {
       const rst = result[index]
-      if (rst) {
+      if (rst || typeof rst === 'bigint') {
         const balance = bnToHex(rst)
         accounts[address] = { address, balance }
       }

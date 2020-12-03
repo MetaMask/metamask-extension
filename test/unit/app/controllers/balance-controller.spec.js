@@ -8,6 +8,7 @@ import TransactionController from '../../../../app/scripts/controllers/transacti
 import { createTestProviderTools } from '../../../stub/provider'
 
 const provider = createTestProviderTools({ scaffold: {} }).provider
+provider._confluxWebProvider = 'http://localhost:12537'
 
 const TEST_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
 
@@ -18,10 +19,10 @@ const accounts = {
   },
 }
 
-describe('Balance Controller', function () {
+describe('Balance Controller', function() {
   let balanceController
 
-  it('errors when address, accountTracker, txController, or blockTracker', function () {
+  it('errors when address, accountTracker, txController, or blockTracker', function() {
     try {
       balanceController = new BalanceController()
     } catch (error) {
@@ -32,7 +33,7 @@ describe('Balance Controller', function () {
     }
   })
 
-  beforeEach(function () {
+  beforeEach(function() {
     balanceController = new BalanceController({
       address: TEST_ADDRESS,
       accountTracker: new AccountTracker({
@@ -50,7 +51,7 @@ describe('Balance Controller', function () {
     balanceController.accountTracker.store.updateState({ accounts })
   })
 
-  it('updates balance controller ethBalance from account tracker', async function () {
+  it('updates balance controller ethBalance from account tracker', async function() {
     await balanceController.updateBalance()
     const balanceControllerState = balanceController.store.getState()
     assert.equal(balanceControllerState.ethBalance, '0x5e942b06dc24c4d50')

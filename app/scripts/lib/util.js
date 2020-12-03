@@ -45,7 +45,7 @@ const getEnvironmentType = (url = window.location.href) => {
  * @returns {string} - the platform ENUM
  *
  */
-const getPlatform = (_) => {
+const getPlatform = _ => {
   const ua = navigator.userAgent
   if (ua.search('Firefox') !== -1) {
     return PLATFORM_FIREFOX
@@ -73,7 +73,7 @@ const getPlatform = (_) => {
  * @returns {boolean} - Whether the balance is greater than or equal to the value plus the value of gas times gasPrice
  *
  */
-function sufficientBalance (txParams, hexBalance) {
+function sufficientBalance(txParams, hexBalance) {
   // validate hexBalance is a hex string
   assert.equal(
     typeof hexBalance,
@@ -102,7 +102,7 @@ function sufficientBalance (txParams, hexBalance) {
  * @returns {string} - A '0x' prefixed hex string
  *
  */
-function bnToHex (inputBn) {
+function bnToHex(inputBn) {
   return ethUtil.addHexPrefix(inputBn.toString(16))
 }
 
@@ -113,7 +113,7 @@ function bnToHex (inputBn) {
  * @returns {Object} - A BN object
  *
  */
-function hexToBn (inputHex) {
+function hexToBn(inputHex) {
   return new BN(ethUtil.stripHexPrefix(inputHex), 16)
 }
 
@@ -126,25 +126,25 @@ function hexToBn (inputHex) {
  * @returns {BN} - The product of the multiplication
  *
  */
-function BnMultiplyByFraction (targetBN, numerator, denominator) {
+function BnMultiplyByFraction(targetBN, numerator, denominator) {
   const numBN = new BN(numerator)
   const denomBN = new BN(denominator)
   return targetBN.mul(numBN).div(denomBN)
 }
 
-function removeListeners (listeners, emitter) {
-  Object.keys(listeners).forEach((key) => {
+function removeListeners(listeners, emitter) {
+  Object.keys(listeners).forEach(key => {
     emitter.removeListener(key, listeners[key])
   })
 }
 
-function getRandomArrayItem (array) {
+function getRandomArrayItem(array) {
   return array[Math.floor(Math.random() * array.length)]
 }
 
-function mapObjectValues (object, cb) {
+function mapObjectValues(object, cb) {
   const mappedObject = {}
-  Object.keys(object).forEach((key) => {
+  Object.keys(object).forEach(key => {
     mappedObject[key] = cb(key, object[key])
   })
   return mappedObject
@@ -155,7 +155,7 @@ function mapObjectValues (object, cb) {
  * this is a workaround for the non-standard error object thats used
  * @returns {Error}
  */
-function checkForError () {
+function checkForError() {
   const lastError = extension.runtime.lastError
   if (!lastError) {
     return
@@ -171,11 +171,12 @@ function checkForError () {
 const MAX_UINT_256 = new BigNumber(
   '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
 )
-export function parseRiskByte (byte) {
+export function parseRiskByte(byte) {
   return new BigNumber(byte).div(MAX_UINT_256)
 }
 
 export {
+  BN,
   removeListeners,
   getPlatform,
   getEnvironmentType,

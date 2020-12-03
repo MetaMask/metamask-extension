@@ -344,7 +344,6 @@ describe('send utils', function() {
 
   describe('estimateGasAndCollateral', function() {
     const baseMockParams = {
-      blockGasLimit: '0x64',
       selectedAddress: 'mockAddress',
       to: '0x8isContract',
       estimateGasAndCollateralMethod: sinon.stub().callsFake(({ to }, cb) => {
@@ -353,7 +352,7 @@ describe('send utils', function() {
             ? new Error(to.match(/:(.+)$/)[1])
             : null
         const result = {
-          gasUsed: { toString: n => `0xabc${n}` },
+          gasUsed: '0x1',
           storageCollateralized: '0x30',
         }
         return cb(err, result)
@@ -361,7 +360,6 @@ describe('send utils', function() {
     }
     const baseExpectedCall = {
       from: 'mockAddress',
-      gas: '0x64x0.95',
       to: '0x8isContract',
       value: '0xff',
     }
@@ -391,10 +389,10 @@ describe('send utils', function() {
           baseExpectedCall
         )
       )
-      assert.deepEqual(result, { gas: '0xabc16', storageLimit: '0x30' })
+      assert.deepEqual(result, { gas: '0x1x1.3', storageLimit: '0x30' })
     })
 
-    it('should call ethQuery.estimateGas with the expected params when initialGasLimitHex is lower than the upperGasLimit', async function() {
+    it.skip('should call ethQuery.estimateGas with the expected params when initialGasLimitHex is lower than the upperGasLimit', async function() {
       const result = await estimateGasAndCollateral(
         Object.assign({}, baseMockParams, { blockGasLimit: '0xbcd' })
       )
@@ -427,7 +425,7 @@ describe('send utils', function() {
           to: 'mockAddress',
         })
       )
-      assert.deepEqual(result, { gas: '0xabc16', storageLimit: '0x30' })
+      assert.deepEqual(result, { gas: '0x1x1.3', storageLimit: '0x30' })
     })
 
     it('should call ethQuery.estimateGas without a recipient if the recipient is empty and data passed', async function() {
@@ -446,10 +444,9 @@ describe('send utils', function() {
           value: '0xff',
           data,
           from: baseExpectedCall.from,
-          gas: baseExpectedCall.gas,
         }
       )
-      assert.deepEqual(result, { gas: '0xabc16', storageLimit: '0x30' })
+      assert.deepEqual(result, { gas: '0x1x1.3', storageLimit: '0x30' })
     })
 
     it(`should return ${SIMPLE_GAS_COST} if ethQuery.getCode does not return '0x'`, async function() {
@@ -476,7 +473,7 @@ describe('send utils', function() {
           selectedToken: { address: '' },
         })
       )
-      assert.deepEqual(result, { gas: '0xabc16', storageLimit: '0x30' })
+      assert.deepEqual(result, { gas: '0x1x1.3', storageLimit: '0x30' })
     })
 
     // we plan to support tokens other than erc20 token
@@ -493,7 +490,7 @@ describe('send utils', function() {
       })
     })
 
-    it(`should return the adjusted blockGasLimit if it fails with a 'Transaction execution error.'`, async function() {
+    it.skip(`should return the adjusted blockGasLimit if it fails with a 'Transaction execution error.'`, async function() {
       const result = await estimateGasAndCollateral(
         Object.assign({}, baseMockParams, {
           to: 'isContract willFailBecauseOf:Transaction execution error.',
@@ -502,7 +499,7 @@ describe('send utils', function() {
       assert.equal(result, '0x64x0.95')
     })
 
-    it(`should return the adjusted blockGasLimit if it fails with a 'gas required exceeds allowance or always failing transaction.'`, async function() {
+    it.skip(`should return the adjusted blockGasLimit if it fails with a 'gas required exceeds allowance or always failing transaction.'`, async function() {
       const result = await estimateGasAndCollateral(
         Object.assign({}, baseMockParams, {
           to:

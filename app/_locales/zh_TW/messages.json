@@ -1270,6 +1270,9 @@
   "transactionConfirmed": {
     "message": "交易確認 時間 $2."
   },
+  "transactionValueReplaced": {
+    "message": "在 $2 更改交易额为 $1"
+  },
   "transactionCreated": {
     "message": "交易產生 數量 $1 時間 $2"
   },
