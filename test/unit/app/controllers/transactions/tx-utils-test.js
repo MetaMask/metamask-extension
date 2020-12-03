@@ -37,7 +37,7 @@ describe('txUtils', function () {
       })
     })
 
-    it('returns error for negative values', function () {
+    it('throws for negative values', function () {
       const sample = {
         from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
         to: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
