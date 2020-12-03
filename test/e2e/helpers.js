@@ -27,7 +27,7 @@ async function withFixtures(options, testSuite) {
   const ganacheServer = new Ganache()
   let dappServer
   let segmentServer
-  let segmentSpy
+  let segmentStub
 
   let webDriver
   try {
@@ -52,10 +52,10 @@ async function withFixtures(options, testSuite) {
       })
     }
     if (mockSegment) {
-      segmentSpy = sinon.spy()
+      segmentStub = sinon.stub()
       segmentServer = createSegmentServer((_request, response, events) => {
         for (const event of events) {
-          segmentSpy(event)
+          segmentStub(event)
         }
         response.statusCode = 200
         response.end()
@@ -67,7 +67,7 @@ async function withFixtures(options, testSuite) {
 
     await testSuite({
       driver,
-      segmentSpy,
+      segmentStub,
     })
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {

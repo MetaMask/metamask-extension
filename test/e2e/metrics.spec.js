@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert')
 const { By, Key } = require('selenium-webdriver')
+const waitUntilCalled = require('../lib/wait-until-called')
 const { withFixtures } = require('./helpers')
 
 /**
@@ -26,26 +27,27 @@ describe('Segment metrics', function () {
         title: this.test.title,
         mockSegment: true,
       },
-      async ({ driver, segmentSpy }) => {
+      async ({ driver, segmentStub }) => {
+        const threeSegmentEventsReceived = waitUntilCalled(segmentStub, null, 3)
         await driver.navigate()
+
         const passwordField = await driver.findElement(By.css('#password'))
         await passwordField.sendKeys('correct horse battery staple')
         await passwordField.sendKeys(Key.ENTER)
 
-        // find arbitary element to ensure Home page has loaded
-        await driver.findElement(By.css('[data-testid="eth-overview-send"]'))
+        await threeSegmentEventsReceived
 
-        assert.ok(segmentSpy.called, 'Segment should receive metrics')
+        assert.ok(segmentStub.called, 'Segment should receive metrics')
 
-        const firstSegmentEvent = segmentSpy.getCall(0).args[0]
+        const firstSegmentEvent = segmentStub.getCall(0).args[0]
         assert.equal(firstSegmentEvent.name, 'Home')
         assert.equal(firstSegmentEvent.context.page.path, '/')
 
-        const secondSegmentEvent = segmentSpy.getCall(1).args[0]
+        const secondSegmentEvent = segmentStub.getCall(1).args[0]
         assert.equal(secondSegmentEvent.name, 'Unlock Page')
         assert.equal(secondSegmentEvent.context.page.path, '/unlock')
 
-        const thirdSegmentEvent = segmentSpy.getCall(2).args[0]
+        const thirdSegmentEvent = segmentStub.getCall(2).args[0]
         assert.equal(thirdSegmentEvent.name, 'Home')
         assert.equal(thirdSegmentEvent.context.page.path, '/')
       },

@@ -197,6 +197,7 @@ module.exports = {
         'stylelint.config.js',
         'development/**/*.js',
         'test/e2e/**/*.js',
+        'test/lib/wait-until-called.js',
         'test/env.js',
         'test/setup.js',
       ],
