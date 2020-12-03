@@ -131,7 +131,9 @@ describe('AccountListItem Component', function () {
         wrapper.find('.account-list-item__account-address').text(),
         'mockCheckSumAddress',
       )
-      assert.deepStrictEqual(checksumAddressStub.getCall(0).args, ['mockAddress'])
+      assert.deepStrictEqual(checksumAddressStub.getCall(0).args, [
+        'mockAddress',
+      ])
     })
 
     it('should not render the account address as a checksumAddress if displayAddress is false', function () {

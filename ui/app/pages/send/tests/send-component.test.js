@@ -245,10 +245,13 @@ describe('Send Component', function () {
         },
       })
       assert.strictEqual(propsMethodSpies.updateSendErrors.callCount, 1)
-      assert.deepStrictEqual(propsMethodSpies.updateSendErrors.getCall(0).args[0], {
-        amount: 'mockAmountError',
-        gasFee: null,
-      })
+      assert.deepStrictEqual(
+        propsMethodSpies.updateSendErrors.getCall(0).args[0],
+        {
+          amount: 'mockAmountError',
+          gasFee: null,
+        },
+      )
     })
 
     it('should call updateSendErrors with the expected params if sendToken is truthy', function () {
@@ -262,10 +265,13 @@ describe('Send Component', function () {
         },
       })
       assert.strictEqual(propsMethodSpies.updateSendErrors.callCount, 1)
-      assert.deepStrictEqual(propsMethodSpies.updateSendErrors.getCall(0).args[0], {
-        amount: 'mockAmountError',
-        gasFee: 'mockGasFeeError',
-      })
+      assert.deepStrictEqual(
+        propsMethodSpies.updateSendErrors.getCall(0).args[0],
+        {
+          amount: 'mockAmountError',
+          gasFee: 'mockGasFeeError',
+        },
+      )
     })
 
     it('should not call updateSendTokenBalance or this.updateGas if network === prevNetwork', function () {

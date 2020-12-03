@@ -115,11 +115,15 @@ describe('Send Duck', function () {
   })
 
   describe('showGasButtonGroup', function () {
-    assert.deepStrictEqual(showGasButtonGroup(), { type: SHOW_GAS_BUTTON_GROUP })
+    assert.deepStrictEqual(showGasButtonGroup(), {
+      type: SHOW_GAS_BUTTON_GROUP,
+    })
   })
 
   describe('hideGasButtonGroup', function () {
-    assert.deepStrictEqual(hideGasButtonGroup(), { type: HIDE_GAS_BUTTON_GROUP })
+    assert.deepStrictEqual(hideGasButtonGroup(), {
+      type: HIDE_GAS_BUTTON_GROUP,
+    })
   })
 
   describe('updateSendErrors', function () {

@@ -61,7 +61,10 @@ describe('ImportWithSeedPhrase Component', function () {
 
       const { parseSeedPhrase } = root.instance()
 
-      assert.deepStrictEqual(parseSeedPhrase('  foo   bar   baz  '), 'foo bar baz')
+      assert.deepStrictEqual(
+        parseSeedPhrase('  foo   bar   baz  '),
+        'foo bar baz',
+      )
     })
 
     it('should return an empty string when given a whitespace-only string', function () {

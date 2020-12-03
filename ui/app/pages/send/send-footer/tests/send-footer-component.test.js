@@ -145,10 +145,10 @@ describe('SendFooter Component', function () {
     it('should call addToAddressBookIfNew with the correct params', function () {
       wrapper.instance().onSubmit(MOCK_EVENT)
       assert(propsMethodSpies.addToAddressBookIfNew.calledOnce)
-      assert.deepStrictEqual(propsMethodSpies.addToAddressBookIfNew.getCall(0).args, [
-        'mockTo',
-        ['mockAccount'],
-      ])
+      assert.deepStrictEqual(
+        propsMethodSpies.addToAddressBookIfNew.getCall(0).args,
+        ['mockTo', ['mockAccount']],
+      )
     })
 
     it('should call props.update if editingTransactionId is truthy', async function () {

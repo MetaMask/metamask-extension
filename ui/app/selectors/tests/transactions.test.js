@@ -191,7 +191,10 @@ describe('Transaction Selectors', function () {
         },
       ]
 
-      assert.deepStrictEqual(nonceSortedTransactionsSelector(state), expectedResult)
+      assert.deepStrictEqual(
+        nonceSortedTransactionsSelector(state),
+        expectedResult,
+      )
     })
   })
 

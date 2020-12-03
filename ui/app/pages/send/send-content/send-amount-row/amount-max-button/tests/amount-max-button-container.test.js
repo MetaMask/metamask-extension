@@ -64,9 +64,12 @@ describe('amount-max-button container', function () {
         mapDispatchToPropsObject.setAmountToMax({ val: 11, foo: 'bar' })
         assert(dispatchSpy.calledTwice)
         assert(duckActionSpies.updateSendErrors.calledOnce)
-        assert.deepStrictEqual(duckActionSpies.updateSendErrors.getCall(0).args[0], {
-          amount: null,
-        })
+        assert.deepStrictEqual(
+          duckActionSpies.updateSendErrors.getCall(0).args[0],
+          {
+            amount: null,
+          },
+        )
         assert(actionSpies.updateSendAmount.calledOnce)
         assert.strictEqual(actionSpies.updateSendAmount.getCall(0).args[0], 12)
       })

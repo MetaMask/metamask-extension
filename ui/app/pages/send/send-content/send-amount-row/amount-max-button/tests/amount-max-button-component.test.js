@@ -79,7 +79,9 @@ describe('AmountMaxButton Component', function () {
       onClick(MOCK_EVENT)
       assert.strictEqual(AmountMaxButton.prototype.setMaxAmount.callCount, 1)
       assert.strictEqual(propsMethodSpies.setMaxModeTo.callCount, 1)
-      assert.deepStrictEqual(propsMethodSpies.setMaxModeTo.getCall(0).args, [true])
+      assert.deepStrictEqual(propsMethodSpies.setMaxModeTo.getCall(0).args, [
+        true,
+      ])
     })
 
     it('should render the expected text when maxModeOn is false', function () {

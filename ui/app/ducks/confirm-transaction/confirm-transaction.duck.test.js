@@ -83,7 +83,10 @@ describe('Confirm Transaction Duck', function () {
     }
 
     it('should initialize state', function () {
-      assert.deepStrictEqual(ConfirmTransactionReducer(undefined, {}), initialState)
+      assert.deepStrictEqual(
+        ConfirmTransactionReducer(undefined, {}),
+        initialState,
+      )
     })
 
     it('should return state unchanged if it does not match a dispatched actions type', function () {
@@ -364,7 +367,10 @@ describe('Confirm Transaction Duck', function () {
         payload: methodData,
       }
 
-      assert.deepStrictEqual(actions.updateMethodData(methodData), expectedAction)
+      assert.deepStrictEqual(
+        actions.updateMethodData(methodData),
+        expectedAction,
+      )
     })
 
     it('should create an action to clear methodData', function () {
@@ -424,7 +430,10 @@ describe('Confirm Transaction Duck', function () {
         payload: tokenProps,
       }
 
-      assert.deepStrictEqual(actions.updateTokenProps(tokenProps), expectedAction)
+      assert.deepStrictEqual(
+        actions.updateTokenProps(tokenProps),
+        expectedAction,
+      )
     })
 
     it('should create an action to update nonce', function () {

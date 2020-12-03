@@ -217,7 +217,10 @@ describe('TransactionActivityLog utils', function () {
         },
       ]
 
-      assert.deepStrictEqual(combineTransactionHistories(transactions), expected)
+      assert.deepStrictEqual(
+        combineTransactionHistories(transactions),
+        expected,
+      )
     })
   })
 

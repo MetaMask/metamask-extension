@@ -74,10 +74,13 @@ describe('send-amount-row container', function () {
         mapDispatchToPropsObject.updateGasFeeError({ some: 'data' })
         assert(dispatchSpy.calledOnce)
         assert(duckActionSpies.updateSendErrors.calledOnce)
-        assert.deepStrictEqual(duckActionSpies.updateSendErrors.getCall(0).args[0], {
-          some: 'data',
-          mockGasFeeErrorChange: true,
-        })
+        assert.deepStrictEqual(
+          duckActionSpies.updateSendErrors.getCall(0).args[0],
+          {
+            some: 'data',
+            mockGasFeeErrorChange: true,
+          },
+        )
       })
     })
 
@@ -86,10 +89,13 @@ describe('send-amount-row container', function () {
         mapDispatchToPropsObject.updateSendAmountError({ some: 'data' })
         assert(dispatchSpy.calledOnce)
         assert(duckActionSpies.updateSendErrors.calledOnce)
-        assert.deepStrictEqual(duckActionSpies.updateSendErrors.getCall(0).args[0], {
-          some: 'data',
-          mockChange: true,
-        })
+        assert.deepStrictEqual(
+          duckActionSpies.updateSendErrors.getCall(0).args[0],
+          {
+            some: 'data',
+            mockChange: true,
+          },
+        )
       })
     })
   })

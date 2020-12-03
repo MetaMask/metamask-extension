@@ -342,11 +342,14 @@ describe('send utils', function () {
     it('should call ethQuery.estimateGasForSend with the expected params', async function () {
       const result = await estimateGasForSend(baseMockParams)
       assert.strictEqual(baseMockParams.estimateGasMethod.callCount, 1)
-      assert.deepStrictEqual(baseMockParams.estimateGasMethod.getCall(0).args[0], {
-        gasPrice: undefined,
-        value: undefined,
-        ...baseExpectedCall,
-      })
+      assert.deepStrictEqual(
+        baseMockParams.estimateGasMethod.getCall(0).args[0],
+        {
+          gasPrice: undefined,
+          value: undefined,
+          ...baseExpectedCall,
+        },
+      )
       assert.strictEqual(result, '0xabc16')
     })
 
@@ -356,12 +359,15 @@ describe('send utils', function () {
         blockGasLimit: '0xbcd',
       })
       assert.strictEqual(baseMockParams.estimateGasMethod.callCount, 1)
-      assert.deepStrictEqual(baseMockParams.estimateGasMethod.getCall(0).args[0], {
-        gasPrice: undefined,
-        value: undefined,
-        ...baseExpectedCall,
-        gas: '0xbcdx0.95',
-      })
+      assert.deepStrictEqual(
+        baseMockParams.estimateGasMethod.getCall(0).args[0],
+        {
+          gasPrice: undefined,
+          value: undefined,
+          ...baseExpectedCall,
+          gas: '0xbcdx0.95',
+        },
+      )
       assert.strictEqual(result, '0xabc16x1.5')
     })
 
@@ -372,13 +378,16 @@ describe('send utils', function () {
         ...baseMockParams,
       })
       assert.strictEqual(baseMockParams.estimateGasMethod.callCount, 1)
-      assert.deepStrictEqual(baseMockParams.estimateGasMethod.getCall(0).args[0], {
-        ...baseExpectedCall,
-        gasPrice: undefined,
-        value: '0x0',
-        data: '0xa9059cbb104c',
-        to: 'mockAddress',
-      })
+      assert.deepStrictEqual(
+        baseMockParams.estimateGasMethod.getCall(0).args[0],
+        {
+          ...baseExpectedCall,
+          gasPrice: undefined,
+          value: '0x0',
+          data: '0xa9059cbb104c',
+          to: 'mockAddress',
+        },
+      )
       assert.strictEqual(result, '0xabc16')
     })
 
@@ -387,13 +396,16 @@ describe('send utils', function () {
       const to = ''
       const result = await estimateGasForSend({ ...baseMockParams, data, to })
       assert.strictEqual(baseMockParams.estimateGasMethod.callCount, 1)
-      assert.deepStrictEqual(baseMockParams.estimateGasMethod.getCall(0).args[0], {
-        gasPrice: undefined,
-        value: '0xff',
-        data,
-        from: baseExpectedCall.from,
-        gas: baseExpectedCall.gas,
-      })
+      assert.deepStrictEqual(
+        baseMockParams.estimateGasMethod.getCall(0).args[0],
+        {
+          gasPrice: undefined,
+          value: '0xff',
+          data,
+          from: baseExpectedCall.from,
+          gas: baseExpectedCall.gas,
+        },
+      )
       assert.strictEqual(result, '0xabc16')
     })
 
