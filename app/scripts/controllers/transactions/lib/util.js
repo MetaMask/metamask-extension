@@ -45,7 +45,7 @@ export function validateTxParams(txParams) {
   }
   if (!txParams.to && !txParams.data) {
     throw ethErrors.rpc.invalidParams(
-      'Invalid transaction params: must specify "to" and/or "data".',
+      'Invalid transaction params: must specify "data" for contract deployments, or "to" (and optionally "data") for all other types of transactions.',
     )
   }
 
