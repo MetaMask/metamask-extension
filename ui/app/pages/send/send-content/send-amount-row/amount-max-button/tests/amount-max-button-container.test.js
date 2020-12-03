@@ -39,7 +39,7 @@ proxyquire('../amount-max-button.container.js', {
 describe('amount-max-button container', function () {
   describe('mapStateToProps()', function () {
     it('should map the correct properties to props', function () {
-      assert.deepEqual(mapStateToProps('mockState'), {
+      assert.deepStrictEqual(mapStateToProps('mockState'), {
         balance: 'mockBalance:mockState',
         buttonDataLoading: 'mockButtonDataLoading:mockState',
         gasTotal: 'mockGasTotal:mockState',
@@ -64,7 +64,7 @@ describe('amount-max-button container', function () {
         mapDispatchToPropsObject.setAmountToMax({ val: 11, foo: 'bar' })
         assert(dispatchSpy.calledTwice)
         assert(duckActionSpies.updateSendErrors.calledOnce)
-        assert.deepEqual(duckActionSpies.updateSendErrors.getCall(0).args[0], {
+        assert.deepStrictEqual(duckActionSpies.updateSendErrors.getCall(0).args[0], {
           amount: null,
         })
         assert(actionSpies.updateSendAmount.calledOnce)

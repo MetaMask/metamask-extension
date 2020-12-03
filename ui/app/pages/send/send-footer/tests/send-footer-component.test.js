@@ -145,7 +145,7 @@ describe('SendFooter Component', function () {
     it('should call addToAddressBookIfNew with the correct params', function () {
       wrapper.instance().onSubmit(MOCK_EVENT)
       assert(propsMethodSpies.addToAddressBookIfNew.calledOnce)
-      assert.deepEqual(propsMethodSpies.addToAddressBookIfNew.getCall(0).args, [
+      assert.deepStrictEqual(propsMethodSpies.addToAddressBookIfNew.getCall(0).args, [
         'mockTo',
         ['mockAccount'],
       ])
@@ -154,7 +154,7 @@ describe('SendFooter Component', function () {
     it('should call props.update if editingTransactionId is truthy', async function () {
       await wrapper.instance().onSubmit(MOCK_EVENT)
       assert(propsMethodSpies.update.calledOnce)
-      assert.deepEqual(propsMethodSpies.update.getCall(0).args[0], {
+      assert.deepStrictEqual(propsMethodSpies.update.getCall(0).args[0], {
         data: undefined,
         amount: 'mockAmount',
         editingTransactionId: 'mockEditingTransactionId',
@@ -175,7 +175,7 @@ describe('SendFooter Component', function () {
       wrapper.setProps({ editingTransactionId: null })
       await wrapper.instance().onSubmit(MOCK_EVENT)
       assert(propsMethodSpies.sign.calledOnce)
-      assert.deepEqual(propsMethodSpies.sign.getCall(0).args[0], {
+      assert.deepStrictEqual(propsMethodSpies.sign.getCall(0).args[0], {
         data: undefined,
         amount: 'mockAmount',
         from: 'mockAddress',

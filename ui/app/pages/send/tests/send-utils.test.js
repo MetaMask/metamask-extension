@@ -69,7 +69,7 @@ describe('send utils', function () {
       const result = calcGasTotal(12, 15)
       assert.strictEqual(result, '12x15')
       const call_ = stubs.multiplyCurrencies.getCall(0).args
-      assert.deepEqual(call_, [
+      assert.deepStrictEqual(call_, [
         12,
         15,
         {
@@ -139,7 +139,7 @@ describe('send utils', function () {
         amount: 'ab',
         sendToken: { address: '0x0' },
       })
-      assert.deepEqual(stubs.rawEncode.getCall(0).args, [
+      assert.deepStrictEqual(stubs.rawEncode.getCall(0).args, [
         ['address', 'uint256'],
         ['mockAddress', '0xab'],
       ])
@@ -192,7 +192,7 @@ describe('send utils', function () {
     }
     Object.entries(config).forEach(([description, obj]) => {
       it(description, function () {
-        assert.deepEqual(getAmountErrorObject(obj), obj.expectedResult)
+        assert.deepStrictEqual(getAmountErrorObject(obj), obj.expectedResult)
       })
     })
   })
@@ -216,7 +216,7 @@ describe('send utils', function () {
     }
     Object.entries(config).forEach(([description, obj]) => {
       it(description, function () {
-        assert.deepEqual(getGasFeeErrorObject(obj), obj.expectedResult)
+        assert.deepStrictEqual(getGasFeeErrorObject(obj), obj.expectedResult)
       })
     })
   })
@@ -248,7 +248,7 @@ describe('send utils', function () {
         gasTotal: 17,
         primaryCurrency: 'ABC',
       })
-      assert.deepEqual(stubs.addCurrencies.getCall(0).args, [
+      assert.deepStrictEqual(stubs.addCurrencies.getCall(0).args, [
         15,
         17,
         {
@@ -257,7 +257,7 @@ describe('send utils', function () {
           toNumericBase: 'hex',
         },
       ])
-      assert.deepEqual(stubs.conversionGTE.getCall(0).args, [
+      assert.deepStrictEqual(stubs.conversionGTE.getCall(0).args, [
         {
           value: 100,
           fromNumericBase: 'hex',
@@ -285,13 +285,13 @@ describe('send utils', function () {
         tokenBalance: 123,
         decimals: 10,
       })
-      assert.deepEqual(stubs.conversionUtil.getCall(0).args, [
+      assert.deepStrictEqual(stubs.conversionUtil.getCall(0).args, [
         '0x10',
         {
           fromNumericBase: 'hex',
         },
       ])
-      assert.deepEqual(stubs.conversionGTE.getCall(0).args, [
+      assert.deepStrictEqual(stubs.conversionGTE.getCall(0).args, [
         {
           value: 123,
           fromNumericBase: 'hex',
@@ -342,7 +342,7 @@ describe('send utils', function () {
     it('should call ethQuery.estimateGasForSend with the expected params', async function () {
       const result = await estimateGasForSend(baseMockParams)
       assert.strictEqual(baseMockParams.estimateGasMethod.callCount, 1)
-      assert.deepEqual(baseMockParams.estimateGasMethod.getCall(0).args[0], {
+      assert.deepStrictEqual(baseMockParams.estimateGasMethod.getCall(0).args[0], {
         gasPrice: undefined,
         value: undefined,
         ...baseExpectedCall,
@@ -356,7 +356,7 @@ describe('send utils', function () {
         blockGasLimit: '0xbcd',
       })
       assert.strictEqual(baseMockParams.estimateGasMethod.callCount, 1)
-      assert.deepEqual(baseMockParams.estimateGasMethod.getCall(0).args[0], {
+      assert.deepStrictEqual(baseMockParams.estimateGasMethod.getCall(0).args[0], {
         gasPrice: undefined,
         value: undefined,
         ...baseExpectedCall,
@@ -372,7 +372,7 @@ describe('send utils', function () {
         ...baseMockParams,
       })
       assert.strictEqual(baseMockParams.estimateGasMethod.callCount, 1)
-      assert.deepEqual(baseMockParams.estimateGasMethod.getCall(0).args[0], {
+      assert.deepStrictEqual(baseMockParams.estimateGasMethod.getCall(0).args[0], {
         ...baseExpectedCall,
         gasPrice: undefined,
         value: '0x0',
@@ -387,7 +387,7 @@ describe('send utils', function () {
       const to = ''
       const result = await estimateGasForSend({ ...baseMockParams, data, to })
       assert.strictEqual(baseMockParams.estimateGasMethod.callCount, 1)
-      assert.deepEqual(baseMockParams.estimateGasMethod.getCall(0).args[0], {
+      assert.deepStrictEqual(baseMockParams.estimateGasMethod.getCall(0).args[0], {
         gasPrice: undefined,
         value: '0xff',
         data,

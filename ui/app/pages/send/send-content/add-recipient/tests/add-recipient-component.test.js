@@ -71,7 +71,7 @@ describe('AddRecipient Component', function () {
       assert.strictEqual(propsMethodSpies.updateSendTo.callCount, 0)
       instance.selectRecipient('mockTo2', 'mockNickname')
       assert.strictEqual(propsMethodSpies.updateSendTo.callCount, 1)
-      assert.deepEqual(propsMethodSpies.updateSendTo.getCall(0).args, [
+      assert.deepStrictEqual(propsMethodSpies.updateSendTo.getCall(0).args, [
         'mockTo2',
         'mockNickname',
       ])

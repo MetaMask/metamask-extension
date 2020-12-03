@@ -173,13 +173,13 @@ describe('GasModalPageContainer Component', function () {
 
       assert.strictEqual(GP.renderInfoRows.callCount, 2)
 
-      assert.deepEqual(GP.renderInfoRows.getCall(0).args, [
+      assert.deepStrictEqual(GP.renderInfoRows.getCall(0).args, [
         'mockNewTotalFiat',
         'mockNewTotalEth',
         'mockSendAmount',
         'mockTransactionFee',
       ])
-      assert.deepEqual(GP.renderInfoRows.getCall(1).args, [
+      assert.deepStrictEqual(GP.renderInfoRows.getCall(1).args, [
         'mockNewTotalFiat',
         'mockNewTotalEth',
         'mockSendAmount',
@@ -219,7 +219,7 @@ describe('GasModalPageContainer Component', function () {
         .instance()
         .renderBasicTabContent(mockGasPriceButtonGroupProps)
 
-      assert.deepEqual(
+      assert.deepStrictEqual(
         renderBasicTabContentResult.props.gasPriceButtonGroupProps,
         mockGasPriceButtonGroupProps,
       )

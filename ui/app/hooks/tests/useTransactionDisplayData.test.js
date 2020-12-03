@@ -247,7 +247,7 @@ describe('useTransactionDisplayData', function () {
     const { result } = renderHookWithRouter(() =>
       useTransactionDisplayData(transactions[0]),
     )
-    assert.deepEqual(result.current, expectedResults[0])
+    assert.deepStrictEqual(result.current, expectedResults[0])
   })
   after(function () {
     useSelector.restore()

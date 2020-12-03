@@ -64,7 +64,7 @@ describe('selectors', function () {
         },
       }
       const extensionId = undefined
-      assert.deepEqual(getConnectedDomainsForSelectedAddress(mockState), [
+      assert.deepStrictEqual(getConnectedDomainsForSelectedAddress(mockState), [
         {
           extensionId,
           icon: 'https://peepeth.com/favicon-32x32.png',
@@ -142,7 +142,7 @@ describe('selectors', function () {
         },
       }
       const extensionId = undefined
-      assert.deepEqual(getConnectedDomainsForSelectedAddress(mockState), [
+      assert.deepStrictEqual(getConnectedDomainsForSelectedAddress(mockState), [
         {
           extensionId,
           name: 'Remix - Ethereum IDE',
@@ -279,7 +279,7 @@ describe('selectors', function () {
     }
 
     it('should return connected accounts sorted by last selected, then by keyring controller order', function () {
-      assert.deepEqual(getOrderedConnectedAccountsForActiveTab(mockState), [
+      assert.deepStrictEqual(getOrderedConnectedAccountsForActiveTab(mockState), [
         {
           address: '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
           name: 'Account 2',
@@ -415,7 +415,7 @@ describe('selectors', function () {
     }
 
     it('should return a list of permissions strings', function () {
-      assert.deepEqual(getPermissionsForActiveTab(mockState), [
+      assert.deepStrictEqual(getPermissionsForActiveTab(mockState), [
         {
           key: 'eth_accounts',
         },

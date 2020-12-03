@@ -12,25 +12,25 @@ describe('util', function () {
     it('should render 0.01 eth correctly', function () {
       const input = '0x2386F26FC10000'
       const output = util.parseBalance(input)
-      assert.deepEqual(output, ['0', '01'])
+      assert.deepStrictEqual(output, ['0', '01'])
     })
 
     it('should render 12.023 eth correctly', function () {
       const input = 'A6DA46CCA6858000'
       const output = util.parseBalance(input)
-      assert.deepEqual(output, ['12', '023'])
+      assert.deepStrictEqual(output, ['12', '023'])
     })
 
     it('should render 0.0000000342422 eth correctly', function () {
       const input = '0x7F8FE81C0'
       const output = util.parseBalance(input)
-      assert.deepEqual(output, ['0', '0000000342422'])
+      assert.deepStrictEqual(output, ['0', '0000000342422'])
     })
 
     it('should render 0 eth correctly', function () {
       const input = '0x0'
       const output = util.parseBalance(input)
-      assert.deepEqual(output, ['0', '0'])
+      assert.deepStrictEqual(output, ['0', '0'])
     })
   })
 
@@ -418,7 +418,7 @@ describe('util', function () {
 
   describe('addHexPrefixToObjectValues()', function () {
     it('should return a new object with the same properties with a 0x prefix', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         util.addHexPrefixToObjectValues({
           prop1: '0x123',
           prop2: '456',

@@ -55,7 +55,7 @@ describe('AccountListItem Component', function () {
       assert.strictEqual(propsMethodSpies.handleClick.callCount, 0)
       onClick()
       assert.strictEqual(propsMethodSpies.handleClick.callCount, 1)
-      assert.deepEqual(propsMethodSpies.handleClick.getCall(0).args, [
+      assert.deepStrictEqual(propsMethodSpies.handleClick.getCall(0).args, [
         { address: 'mockAddress', name: 'mockName', balance: 'mockBalance' },
       ])
     })
@@ -131,7 +131,7 @@ describe('AccountListItem Component', function () {
         wrapper.find('.account-list-item__account-address').text(),
         'mockCheckSumAddress',
       )
-      assert.deepEqual(checksumAddressStub.getCall(0).args, ['mockAddress'])
+      assert.deepStrictEqual(checksumAddressStub.getCall(0).args, ['mockAddress'])
     })
 
     it('should not render the account address as a checksumAddress if displayAddress is false', function () {

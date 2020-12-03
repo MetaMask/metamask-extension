@@ -100,31 +100,31 @@ describe('Swaps Util', function () {
         sourceTokenInfo: { ...TOKENS[0] },
         destinationTokenInfo: { ...TOKENS[1] },
       })
-      assert.deepEqual(result, expectedResult2)
+      assert.deepStrictEqual(result, expectedResult2)
     })
   })
 
   describe('fetchTokens', function () {
     it('should fetch tokens', async function () {
       const result = await fetchTokens(true)
-      assert.deepEqual(result, TOKENS)
+      assert.deepStrictEqual(result, TOKENS)
     })
 
     it('should fetch tokens on prod', async function () {
       const result = await fetchTokens(false)
-      assert.deepEqual(result, TOKENS)
+      assert.deepStrictEqual(result, TOKENS)
     })
   })
 
   describe('fetchAggregatorMetadata', function () {
     it('should fetch aggregator metadata', async function () {
       const result = await fetchAggregatorMetadata(true)
-      assert.deepEqual(result, AGGREGATOR_METADATA)
+      assert.deepStrictEqual(result, AGGREGATOR_METADATA)
     })
 
     it('should fetch aggregator metadata on prod', async function () {
       const result = await fetchAggregatorMetadata(false)
-      assert.deepEqual(result, AGGREGATOR_METADATA)
+      assert.deepStrictEqual(result, AGGREGATOR_METADATA)
     })
   })
 
@@ -148,12 +148,12 @@ describe('Swaps Util', function () {
     }
     it('should fetch top assets', async function () {
       const result = await fetchTopAssets(true)
-      assert.deepEqual(result, expectedResult)
+      assert.deepStrictEqual(result, expectedResult)
     })
 
     it('should fetch top assets on prod', async function () {
       const result = await fetchTopAssets(false)
-      assert.deepEqual(result, expectedResult)
+      assert.deepStrictEqual(result, expectedResult)
     })
   })
 })

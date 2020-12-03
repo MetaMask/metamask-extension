@@ -83,7 +83,7 @@ describe('BasicTabContent Component', function () {
         mockGasPriceButtonGroupProps.noButtonActiveByDefault,
       )
       assert.strictEqual(showCheck, mockGasPriceButtonGroupProps.showCheck)
-      assert.deepEqual(
+      assert.deepStrictEqual(
         gasButtonInfo,
         mockGasPriceButtonGroupProps.gasButtonInfo,
       )

@@ -21,7 +21,7 @@ describe('Selectors', function () {
   })
 
   it('returns selected identity', function () {
-    assert.deepEqual(selectors.getSelectedIdentity(mockState), {
+    assert.deepStrictEqual(selectors.getSelectedIdentity(mockState), {
       address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
       name: 'Test Account',
     })
@@ -39,7 +39,7 @@ describe('Selectors', function () {
   describe('#getTokenExchangeRates', function () {
     it('returns token exchange rates', function () {
       const tokenExchangeRates = selectors.getTokenExchangeRates(mockState)
-      assert.deepEqual(tokenExchangeRates, {
+      assert.deepStrictEqual(tokenExchangeRates, {
         '0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d': 0.00039345803819379796,
         '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5': 0.00008189274407698049,
       })
@@ -48,7 +48,7 @@ describe('Selectors', function () {
 
   describe('#getAddressBook', function () {
     it('should return the address book', function () {
-      assert.deepEqual(selectors.getAddressBook(mockState), [
+      assert.deepStrictEqual(selectors.getAddressBook(mockState), [
         {
           address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
           chainId: '0x4',

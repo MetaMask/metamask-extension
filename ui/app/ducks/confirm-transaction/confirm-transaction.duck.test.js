@@ -83,11 +83,11 @@ describe('Confirm Transaction Duck', function () {
     }
 
     it('should initialize state', function () {
-      assert.deepEqual(ConfirmTransactionReducer(undefined, {}), initialState)
+      assert.deepStrictEqual(ConfirmTransactionReducer(undefined, {}), initialState)
     })
 
     it('should return state unchanged if it does not match a dispatched actions type', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         ConfirmTransactionReducer(mockState, {
           type: 'someOtherAction',
           value: 'someValue',
@@ -97,7 +97,7 @@ describe('Confirm Transaction Duck', function () {
     })
 
     it('should set txData when receiving a UPDATE_TX_DATA action', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         ConfirmTransactionReducer(mockState, {
           type: UPDATE_TX_DATA,
           payload: {
@@ -115,7 +115,7 @@ describe('Confirm Transaction Duck', function () {
     })
 
     it('should clear txData when receiving a CLEAR_TX_DATA action', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         ConfirmTransactionReducer(mockState, {
           type: CLEAR_TX_DATA,
         }),
@@ -127,7 +127,7 @@ describe('Confirm Transaction Duck', function () {
     })
 
     it('should set tokenData when receiving a UPDATE_TOKEN_DATA action', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         ConfirmTransactionReducer(mockState, {
           type: UPDATE_TOKEN_DATA,
           payload: {
@@ -145,7 +145,7 @@ describe('Confirm Transaction Duck', function () {
     })
 
     it('should clear tokenData when receiving a CLEAR_TOKEN_DATA action', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         ConfirmTransactionReducer(mockState, {
           type: CLEAR_TOKEN_DATA,
         }),
@@ -157,7 +157,7 @@ describe('Confirm Transaction Duck', function () {
     })
 
     it('should set methodData when receiving a UPDATE_METHOD_DATA action', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         ConfirmTransactionReducer(mockState, {
           type: UPDATE_METHOD_DATA,
           payload: {
@@ -175,7 +175,7 @@ describe('Confirm Transaction Duck', function () {
     })
 
     it('should clear methodData when receiving a CLEAR_METHOD_DATA action', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         ConfirmTransactionReducer(mockState, {
           type: CLEAR_METHOD_DATA,
         }),
@@ -187,7 +187,7 @@ describe('Confirm Transaction Duck', function () {
     })
 
     it('should update transaction amounts when receiving an UPDATE_TRANSACTION_AMOUNTS action', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         ConfirmTransactionReducer(mockState, {
           type: UPDATE_TRANSACTION_AMOUNTS,
           payload: {
@@ -206,7 +206,7 @@ describe('Confirm Transaction Duck', function () {
     })
 
     it('should update transaction fees when receiving an UPDATE_TRANSACTION_FEES action', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         ConfirmTransactionReducer(mockState, {
           type: UPDATE_TRANSACTION_FEES,
           payload: {
@@ -225,7 +225,7 @@ describe('Confirm Transaction Duck', function () {
     })
 
     it('should update transaction totals when receiving an UPDATE_TRANSACTION_TOTALS action', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         ConfirmTransactionReducer(mockState, {
           type: UPDATE_TRANSACTION_TOTALS,
           payload: {
@@ -244,7 +244,7 @@ describe('Confirm Transaction Duck', function () {
     })
 
     it('should update tokenProps when receiving an UPDATE_TOKEN_PROPS action', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         ConfirmTransactionReducer(mockState, {
           type: UPDATE_TOKEN_PROPS,
           payload: {
@@ -263,7 +263,7 @@ describe('Confirm Transaction Duck', function () {
     })
 
     it('should update nonce when receiving an UPDATE_NONCE action', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         ConfirmTransactionReducer(mockState, {
           type: UPDATE_NONCE,
           payload: '0x1',
@@ -276,7 +276,7 @@ describe('Confirm Transaction Duck', function () {
     })
 
     it('should update nonce when receiving an UPDATE_TO_SMART_CONTRACT action', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         ConfirmTransactionReducer(mockState, {
           type: UPDATE_TO_SMART_CONTRACT,
           payload: true,
@@ -289,7 +289,7 @@ describe('Confirm Transaction Duck', function () {
     })
 
     it('should set fetchingData to true when receiving a FETCH_DATA_START action', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         ConfirmTransactionReducer(mockState, {
           type: FETCH_DATA_START,
         }),
@@ -301,7 +301,7 @@ describe('Confirm Transaction Duck', function () {
     })
 
     it('should set fetchingData to false when receiving a FETCH_DATA_END action', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         ConfirmTransactionReducer(
           { fetchingData: true },
           { type: FETCH_DATA_END },
@@ -311,7 +311,7 @@ describe('Confirm Transaction Duck', function () {
     })
 
     it('should clear confirmTransaction when receiving a FETCH_DATA_END action', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         ConfirmTransactionReducer(mockState, {
           type: CLEAR_CONFIRM_TRANSACTION,
         }),
@@ -328,7 +328,7 @@ describe('Confirm Transaction Duck', function () {
         payload: txData,
       }
 
-      assert.deepEqual(actions.updateTxData(txData), expectedAction)
+      assert.deepStrictEqual(actions.updateTxData(txData), expectedAction)
     })
 
     it('should create an action to clear txData', function () {
@@ -336,7 +336,7 @@ describe('Confirm Transaction Duck', function () {
         type: CLEAR_TX_DATA,
       }
 
-      assert.deepEqual(actions.clearTxData(), expectedAction)
+      assert.deepStrictEqual(actions.clearTxData(), expectedAction)
     })
 
     it('should create an action to update tokenData', function () {
@@ -346,7 +346,7 @@ describe('Confirm Transaction Duck', function () {
         payload: tokenData,
       }
 
-      assert.deepEqual(actions.updateTokenData(tokenData), expectedAction)
+      assert.deepStrictEqual(actions.updateTokenData(tokenData), expectedAction)
     })
 
     it('should create an action to clear tokenData', function () {
@@ -354,7 +354,7 @@ describe('Confirm Transaction Duck', function () {
         type: CLEAR_TOKEN_DATA,
       }
 
-      assert.deepEqual(actions.clearTokenData(), expectedAction)
+      assert.deepStrictEqual(actions.clearTokenData(), expectedAction)
     })
 
     it('should create an action to update methodData', function () {
@@ -364,7 +364,7 @@ describe('Confirm Transaction Duck', function () {
         payload: methodData,
       }
 
-      assert.deepEqual(actions.updateMethodData(methodData), expectedAction)
+      assert.deepStrictEqual(actions.updateMethodData(methodData), expectedAction)
     })
 
     it('should create an action to clear methodData', function () {
@@ -372,7 +372,7 @@ describe('Confirm Transaction Duck', function () {
         type: CLEAR_METHOD_DATA,
       }
 
-      assert.deepEqual(actions.clearMethodData(), expectedAction)
+      assert.deepStrictEqual(actions.clearMethodData(), expectedAction)
     })
 
     it('should create an action to update transaction amounts', function () {
@@ -382,7 +382,7 @@ describe('Confirm Transaction Duck', function () {
         payload: transactionAmounts,
       }
 
-      assert.deepEqual(
+      assert.deepStrictEqual(
         actions.updateTransactionAmounts(transactionAmounts),
         expectedAction,
       )
@@ -395,7 +395,7 @@ describe('Confirm Transaction Duck', function () {
         payload: transactionFees,
       }
 
-      assert.deepEqual(
+      assert.deepStrictEqual(
         actions.updateTransactionFees(transactionFees),
         expectedAction,
       )
@@ -408,7 +408,7 @@ describe('Confirm Transaction Duck', function () {
         payload: transactionTotals,
       }
 
-      assert.deepEqual(
+      assert.deepStrictEqual(
         actions.updateTransactionTotals(transactionTotals),
         expectedAction,
       )
@@ -424,7 +424,7 @@ describe('Confirm Transaction Duck', function () {
         payload: tokenProps,
       }
 
-      assert.deepEqual(actions.updateTokenProps(tokenProps), expectedAction)
+      assert.deepStrictEqual(actions.updateTokenProps(tokenProps), expectedAction)
     })
 
     it('should create an action to update nonce', function () {
@@ -434,7 +434,7 @@ describe('Confirm Transaction Duck', function () {
         payload: nonce,
       }
 
-      assert.deepEqual(actions.updateNonce(nonce), expectedAction)
+      assert.deepStrictEqual(actions.updateNonce(nonce), expectedAction)
     })
 
     it('should create an action to set fetchingData to true', function () {
@@ -442,7 +442,7 @@ describe('Confirm Transaction Duck', function () {
         type: FETCH_DATA_START,
       }
 
-      assert.deepEqual(actions.setFetchingData(true), expectedAction)
+      assert.deepStrictEqual(actions.setFetchingData(true), expectedAction)
     })
 
     it('should create an action to set fetchingData to false', function () {
@@ -450,7 +450,7 @@ describe('Confirm Transaction Duck', function () {
         type: FETCH_DATA_END,
       }
 
-      assert.deepEqual(actions.setFetchingData(false), expectedAction)
+      assert.deepStrictEqual(actions.setFetchingData(false), expectedAction)
     })
 
     it('should create an action to clear confirmTransaction', function () {
@@ -458,7 +458,7 @@ describe('Confirm Transaction Duck', function () {
         type: CLEAR_CONFIRM_TRANSACTION,
       }
 
-      assert.deepEqual(actions.clearConfirmTransaction(), expectedAction)
+      assert.deepStrictEqual(actions.clearConfirmTransaction(), expectedAction)
     })
   })
 

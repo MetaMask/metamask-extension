@@ -46,7 +46,7 @@ describe('ConfirmSeedPhrase Component', function () {
     seeds.at(1).simulate('click')
     seeds.at(2).simulate('click')
 
-    assert.deepEqual(
+    assert.deepStrictEqual(
       root.state().selectedSeedIndices,
       [0, 1, 2],
       'should add seed phrase to selected on click',
@@ -57,7 +57,7 @@ describe('ConfirmSeedPhrase Component', function () {
     root.update()
     root.state()
     root.find('.confirm-seed-phrase__seed-word--sorted').at(1).simulate('click')
-    assert.deepEqual(
+    assert.deepStrictEqual(
       root.state().selectedSeedIndices,
       [0, 2],
       'should remove seed phrase from selected when click again',
@@ -126,8 +126,8 @@ describe('ConfirmSeedPhrase Component', function () {
 
     root.update()
 
-    assert.deepEqual(root.state().selectedSeedIndices, [2, 0, 1])
-    assert.deepEqual(root.state().pendingSeedIndices, [2, 0, 1])
+    assert.deepStrictEqual(root.state().selectedSeedIndices, [2, 0, 1])
+    assert.deepStrictEqual(root.state().pendingSeedIndices, [2, 0, 1])
   })
 
   it('should submit correctly', async function () {
@@ -174,7 +174,7 @@ describe('ConfirmSeedPhrase Component', function () {
 
     await new Promise((resolve) => setTimeout(resolve, 100))
 
-    assert.deepEqual(metricsEventSpy.args[0][0], {
+    assert.deepStrictEqual(metricsEventSpy.args[0][0], {
       eventOpts: {
         category: 'Onboarding',
         action: 'Seed Phrase Setup',

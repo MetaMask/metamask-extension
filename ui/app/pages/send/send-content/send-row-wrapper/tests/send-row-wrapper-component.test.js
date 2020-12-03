@@ -68,7 +68,7 @@ describe('SendContent Component', function () {
         .find('.send-v2__form-row > .send-v2__form-label')
         .childAt(1)
       assert(expectedSendRowErrorMessage.is(SendRowErrorMessage))
-      assert.deepEqual(expectedSendRowErrorMessage.props(), {
+      assert.deepStrictEqual(expectedSendRowErrorMessage.props(), {
         errorType: 'mockErrorType',
       })
     })

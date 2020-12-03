@@ -139,7 +139,7 @@ describe('Send Component', function () {
         },
       })
       assert(utilsMethodStubs.doesAmountErrorRequireUpdate.calledTwice)
-      assert.deepEqual(
+      assert.deepStrictEqual(
         utilsMethodStubs.doesAmountErrorRequireUpdate.getCall(0).args[0],
         {
           balance: 'mockBalance',
@@ -175,7 +175,7 @@ describe('Send Component', function () {
         },
       })
       assert.strictEqual(utilsMethodStubs.getAmountErrorObject.callCount, 1)
-      assert.deepEqual(
+      assert.deepStrictEqual(
         utilsMethodStubs.getAmountErrorObject.getCall(0).args[0],
         {
           amount: 'mockAmount',
@@ -201,7 +201,7 @@ describe('Send Component', function () {
         },
       })
       assert.strictEqual(utilsMethodStubs.getGasFeeErrorObject.callCount, 1)
-      assert.deepEqual(
+      assert.deepStrictEqual(
         utilsMethodStubs.getGasFeeErrorObject.getCall(0).args[0],
         {
           balance: 'mockBalance',
@@ -245,7 +245,7 @@ describe('Send Component', function () {
         },
       })
       assert.strictEqual(propsMethodSpies.updateSendErrors.callCount, 1)
-      assert.deepEqual(propsMethodSpies.updateSendErrors.getCall(0).args[0], {
+      assert.deepStrictEqual(propsMethodSpies.updateSendErrors.getCall(0).args[0], {
         amount: 'mockAmountError',
         gasFee: null,
       })
@@ -262,7 +262,7 @@ describe('Send Component', function () {
         },
       })
       assert.strictEqual(propsMethodSpies.updateSendErrors.callCount, 1)
-      assert.deepEqual(propsMethodSpies.updateSendErrors.getCall(0).args[0], {
+      assert.deepStrictEqual(propsMethodSpies.updateSendErrors.getCall(0).args[0], {
         amount: 'mockAmountError',
         gasFee: 'mockGasFeeError',
       })
@@ -308,7 +308,7 @@ describe('Send Component', function () {
         sendToken: { address: 'mockTokenAddress', decimals: 18, symbol: 'TST' }, // Make sure not to hit updateGas when changing asset
       })
       assert.strictEqual(propsMethodSpies.updateSendTokenBalance.callCount, 1)
-      assert.deepEqual(
+      assert.deepStrictEqual(
         propsMethodSpies.updateSendTokenBalance.getCall(0).args[0],
         {
           sendToken: {
@@ -321,7 +321,7 @@ describe('Send Component', function () {
         },
       )
       assert.strictEqual(SendTransactionScreen.prototype.updateGas.callCount, 1)
-      assert.deepEqual(
+      assert.deepStrictEqual(
         SendTransactionScreen.prototype.updateGas.getCall(0).args,
         [],
       )
@@ -350,7 +350,7 @@ describe('Send Component', function () {
       propsMethodSpies.updateAndSetGasLimit.resetHistory()
       wrapper.instance().updateGas()
       assert.strictEqual(propsMethodSpies.updateAndSetGasLimit.callCount, 1)
-      assert.deepEqual(
+      assert.deepStrictEqual(
         propsMethodSpies.updateAndSetGasLimit.getCall(0).args[0],
         {
           blockGasLimit: 'mockBlockGasLimit',
@@ -407,7 +407,7 @@ describe('Send Component', function () {
       assert.strictEqual(wrapper.find(SendHeader).length, 1)
       assert.strictEqual(wrapper.find(SendContent).length, 1)
       assert.strictEqual(wrapper.find(SendFooter).length, 1)
-      assert.deepEqual(wrapper.find(SendFooter).props(), {
+      assert.deepStrictEqual(wrapper.find(SendFooter).props(), {
         history: { mockProp: 'history-abc' },
       })
     })
@@ -437,7 +437,7 @@ describe('Send Component', function () {
         '0x80F061544cC398520615B5d3e7A3BedD70cd4510',
       )
 
-      assert.deepEqual(instance.state, {
+      assert.deepStrictEqual(instance.state, {
         internalSearch: false,
         query: '0x80F061544cC398520615B5d3e7A3BedD70cd4510',
         toError: null,
@@ -452,7 +452,7 @@ describe('Send Component', function () {
       )
 
       clock.tick(1001)
-      assert.deepEqual(instance.state, {
+      assert.deepStrictEqual(instance.state, {
         internalSearch: false,
         query: '0x80F061544cC398520615B5d3e7a3BedD70cd4510',
         toError: 'invalidAddressRecipient',
@@ -468,7 +468,7 @@ describe('Send Component', function () {
       )
 
       clock.tick(1001)
-      assert.deepEqual(instance.state, {
+      assert.deepStrictEqual(instance.state, {
         internalSearch: false,
         query: '0x80F061544cC398520615B5d3e7a3BedD70cd4510',
         toError: 'invalidAddressRecipientNotEthNetwork',
@@ -484,7 +484,7 @@ describe('Send Component', function () {
       )
 
       clock.tick(1001)
-      assert.deepEqual(instance.state, {
+      assert.deepStrictEqual(instance.state, {
         internalSearch: false,
         query: '0x80F061544cC398520615B5d3e7a3BedD70cd4510',
         toError: 'invalidAddressRecipientNotEthNetwork',
@@ -492,7 +492,7 @@ describe('Send Component', function () {
       })
 
       instance.onRecipientInputChange('')
-      assert.deepEqual(instance.state, {
+      assert.deepStrictEqual(instance.state, {
         internalSearch: false,
         query: '',
         toError: '',
@@ -508,7 +508,7 @@ describe('Send Component', function () {
       )
 
       clock.tick(1001)
-      assert.deepEqual(instance.state, {
+      assert.deepStrictEqual(instance.state, {
         internalSearch: false,
         query: '0x13cb85823f78Cff38f0B0E90D3e975b8CB3AAd64',
         toError: null,

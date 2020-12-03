@@ -279,7 +279,7 @@ describe('custom-gas selectors', function () {
     ]
     it('should return renderable data about basic estimates', function () {
       tests.forEach((test) => {
-        assert.deepEqual(
+        assert.deepStrictEqual(
           getRenderableBasicEstimateData(
             test.mockState,
             '0x5208',
@@ -528,7 +528,7 @@ describe('custom-gas selectors', function () {
     ]
     it('should return renderable data about basic estimates appropriate for buttons with less info', function () {
       tests.forEach((test) => {
-        assert.deepEqual(
+        assert.deepStrictEqual(
           getRenderableEstimateDataForSmallButtonsFromGWEI(test.mockState),
           test.expectedResult,
         )

@@ -58,7 +58,7 @@ describe('Confirm Transaction Selector', function () {
     }
 
     it('returns token address and calculated token amount', function () {
-      assert.deepEqual(sendTokenTokenAmountAndToAddressSelector(state), {
+      assert.deepStrictEqual(sendTokenTokenAmountAndToAddressSelector(state), {
         toAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         tokenAmount: '0.01',
       })

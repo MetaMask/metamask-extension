@@ -53,7 +53,7 @@ describe('send selectors', function () {
 
   describe('accountsWithSendEtherInfoSelector()', function () {
     it('should return an array of account objects with name info from identities', function () {
-      assert.deepEqual(accountsWithSendEtherInfoSelector(mockState), [
+      assert.deepStrictEqual(accountsWithSendEtherInfoSelector(mockState), [
         {
           code: '0x',
           balance: '0x47c9d71831c76efe',
@@ -88,19 +88,19 @@ describe('send selectors', function () {
 
   describe('getBlockGasLimit', function () {
     it('should return the current block gas limit', function () {
-      assert.deepEqual(getBlockGasLimit(mockState), '0x4c1878')
+      assert.deepStrictEqual(getBlockGasLimit(mockState), '0x4c1878')
     })
   })
 
   describe('getConversionRate()', function () {
     it('should return the eth conversion rate', function () {
-      assert.deepEqual(getConversionRate(mockState), 1200.88200327)
+      assert.deepStrictEqual(getConversionRate(mockState), 1200.88200327)
     })
   })
 
   describe('getCurrentAccountWithSendEtherInfo()', function () {
     it('should return the currently selected account with identity info', function () {
-      assert.deepEqual(getCurrentAccountWithSendEtherInfo(mockState), {
+      assert.deepStrictEqual(getCurrentAccountWithSendEtherInfo(mockState), {
         code: '0x',
         balance: '0x0',
         nonce: '0x0',
@@ -153,7 +153,7 @@ describe('send selectors', function () {
 
   describe('getSendToken()', function () {
     it('should return the current send token if set', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         getSendToken({
           metamask: {
             send: {
@@ -215,19 +215,19 @@ describe('send selectors', function () {
 
   describe('getSendErrors()', function () {
     it('should return the send.errors', function () {
-      assert.deepEqual(getSendErrors(mockState), { someError: null })
+      assert.deepStrictEqual(getSendErrors(mockState), { someError: null })
     })
   })
 
   describe('getSendHexDataFeatureFlagState()', function () {
     it('should return the sendHexData feature flag state', function () {
-      assert.deepEqual(getSendHexDataFeatureFlagState(mockState), true)
+      assert.deepStrictEqual(getSendHexDataFeatureFlagState(mockState), true)
     })
   })
 
   describe('getSendFrom()', function () {
     it('should return the send.from', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         getSendFrom(mockState),
         '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
       )
@@ -254,7 +254,7 @@ describe('send selectors', function () {
 
   describe('getSendFromObject()', function () {
     it('should return send.from if it exists', function () {
-      assert.deepEqual(getSendFromObject(mockState), {
+      assert.deepStrictEqual(getSendFromObject(mockState), {
         address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
         balance: '0x37452b1315889f80',
         code: '0x',
@@ -271,7 +271,7 @@ describe('send selectors', function () {
           },
         },
       }
-      assert.deepEqual(getSendFromObject(editedMockState), {
+      assert.deepStrictEqual(getSendFromObject(editedMockState), {
         code: '0x',
         balance: '0x0',
         nonce: '0x0',
@@ -294,7 +294,7 @@ describe('send selectors', function () {
 
   describe('getSendToAccounts()', function () {
     it('should return an array including all the users accounts and the address book', function () {
-      assert.deepEqual(getSendToAccounts(mockState), [
+      assert.deepStrictEqual(getSendToAccounts(mockState), [
         {
           code: '0x',
           balance: '0x47c9d71831c76efe',
@@ -340,7 +340,7 @@ describe('send selectors', function () {
 
   describe('getUnapprovedTxs()', function () {
     it('should return the unapproved txs', function () {
-      assert.deepEqual(getUnapprovedTxs(mockState), {
+      assert.deepStrictEqual(getUnapprovedTxs(mockState), {
         4768706228115573: {
           id: 4768706228115573,
           time: 1487363153561,

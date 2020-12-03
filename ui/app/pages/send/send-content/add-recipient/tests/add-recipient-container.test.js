@@ -33,7 +33,7 @@ proxyquire('../add-recipient.container.js', {
 describe('add-recipient container', function () {
   describe('mapStateToProps()', function () {
     it('should map the correct properties to props', function () {
-      assert.deepEqual(mapStateToProps('mockState'), {
+      assert.deepStrictEqual(mapStateToProps('mockState'), {
         addressBook: [{ name: 'mockAddressBook:mockState' }],
         contacts: [{ name: 'mockAddressBook:mockState' }],
         ensResolution: 'mockSendEnsResolution:mockState',
@@ -57,7 +57,7 @@ describe('add-recipient container', function () {
         mapDispatchToPropsObject.updateSendTo('mockTo', 'mockNickname')
         assert(dispatchSpy.calledOnce)
         assert(actionSpies.updateSendTo.calledOnce)
-        assert.deepEqual(actionSpies.updateSendTo.getCall(0).args, [
+        assert.deepStrictEqual(actionSpies.updateSendTo.getCall(0).args, [
           'mockTo',
           'mockNickname',
         ])

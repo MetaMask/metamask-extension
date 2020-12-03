@@ -78,7 +78,7 @@ describe('ButtonGroup Component', function () {
     it('should render the correct button with an active state', function () {
       const childButtons = wrapper.find('.button-group__button')
       const activeChildButton = wrapper.find('.button-group__button--active')
-      assert.deepEqual(childButtons.get(1), activeChildButton.get(0))
+      assert.deepStrictEqual(childButtons.get(1), activeChildButton.get(0))
     })
 
     it("should call handleButtonClick and the respective button's onClick method when a button is clicked", function () {
@@ -114,7 +114,7 @@ describe('ButtonGroup Component', function () {
         wrapper.find('div').at(0).props().className,
         'someClassName',
       )
-      assert.deepEqual(wrapper.find('div').at(0).props().style, {
+      assert.deepStrictEqual(wrapper.find('div').at(0).props().style, {
         color: 'red',
       })
     })

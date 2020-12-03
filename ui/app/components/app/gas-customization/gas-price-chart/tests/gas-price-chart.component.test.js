@@ -118,7 +118,7 @@ describe('GasPriceChart Component', function () {
     it('should call handleChartUpdate with the correct props', function () {
       gasPriceChartUtilsSpies.handleChartUpdate.resetHistory()
       wrapper.instance().componentDidUpdate({ currentPrice: 7 })
-      assert.deepEqual(
+      assert.deepStrictEqual(
         gasPriceChartUtilsSpies.handleChartUpdate.getCall(0).args,
         [
           {
@@ -146,19 +146,19 @@ describe('GasPriceChart Component', function () {
       wrapper.instance().renderChart(testProps)
       await timeout(0)
       assert.strictEqual(gasPriceChartUtilsSpies.setTickPosition.callCount, 4)
-      assert.deepEqual(
+      assert.deepStrictEqual(
         gasPriceChartUtilsSpies.setTickPosition.getCall(0).args,
         ['y', 0, -5, 8],
       )
-      assert.deepEqual(
+      assert.deepStrictEqual(
         gasPriceChartUtilsSpies.setTickPosition.getCall(1).args,
         ['y', 1, -3, -5],
       )
-      assert.deepEqual(
+      assert.deepStrictEqual(
         gasPriceChartUtilsSpies.setTickPosition.getCall(2).args,
         ['x', 0, 3],
       )
-      assert.deepEqual(
+      assert.deepStrictEqual(
         gasPriceChartUtilsSpies.setTickPosition.getCall(3).args,
         ['x', 1, 3, -8],
       )
@@ -169,7 +169,7 @@ describe('GasPriceChart Component', function () {
       gasPriceChartUtilsSpies.handleChartUpdate.resetHistory()
       wrapper.instance().renderChart(testProps)
       await timeout(0)
-      assert.deepEqual(
+      assert.deepStrictEqual(
         gasPriceChartUtilsSpies.handleChartUpdate.getCall(0).args,
         [
           {
@@ -208,7 +208,7 @@ describe('GasPriceChart Component', function () {
       assert.strictEqual(gasPriceChartUtilsSpies.hideDataUI.callCount, 0)
       mouseoutEventArgs[1]()
       assert.strictEqual(gasPriceChartUtilsSpies.hideDataUI.callCount, 1)
-      assert.deepEqual(gasPriceChartUtilsSpies.hideDataUI.getCall(0).args, [
+      assert.deepStrictEqual(gasPriceChartUtilsSpies.hideDataUI.getCall(0).args, [
         { mockChart: true },
         '#overlayed-circle',
       ])
@@ -240,7 +240,7 @@ describe('GasPriceChart Component', function () {
       assert.strictEqual(gasPriceChartUtilsSpies.handleMouseMove.callCount, 0)
       mouseoutEventArgs[1]()
       assert.strictEqual(gasPriceChartUtilsSpies.handleMouseMove.callCount, 1)
-      assert.deepEqual(
+      assert.deepStrictEqual(
         gasPriceChartUtilsSpies.handleMouseMove.getCall(0).args,
         [
           {

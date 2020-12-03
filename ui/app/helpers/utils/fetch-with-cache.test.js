@@ -26,7 +26,7 @@ describe('Fetch with cache', function () {
     const response = await fetchWithCache(
       'https://fetchwithcache.metamask.io/price',
     )
-    assert.deepEqual(response, {
+    assert.deepStrictEqual(response, {
       average: 1,
     })
   })
@@ -46,7 +46,7 @@ describe('Fetch with cache', function () {
     const response = await fetchWithCache(
       'https://fetchwithcache.metamask.io/price',
     )
-    assert.deepEqual(response, {
+    assert.deepStrictEqual(response, {
       average: 1,
     })
   })
@@ -68,7 +68,7 @@ describe('Fetch with cache', function () {
       {},
       { cacheRefreshTime: 123 },
     )
-    assert.deepEqual(response, {
+    assert.deepStrictEqual(response, {
       average: 3,
     })
   })

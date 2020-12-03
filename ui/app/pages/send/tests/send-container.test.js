@@ -74,7 +74,7 @@ describe('send container', function () {
           editingTransactionId: false,
         })
         assert(dispatchSpy.calledOnce)
-        assert.deepEqual(actionSpies.updateGasData.getCall(0).args[0], {
+        assert.deepStrictEqual(actionSpies.updateGasData.getCall(0).args[0], {
           gasPrice,
           selectedAddress,
           sendToken,
@@ -96,7 +96,7 @@ describe('send container', function () {
       it('should dispatch an action', function () {
         mapDispatchToPropsObject.updateSendTokenBalance({ ...mockProps })
         assert(dispatchSpy.calledOnce)
-        assert.deepEqual(
+        assert.deepStrictEqual(
           actionSpies.updateSendTokenBalance.getCall(0).args[0],
           mockProps,
         )

@@ -82,7 +82,7 @@ describe('send-footer container', function () {
           gasPrice: 'mockGasPrice',
         })
         assert(dispatchSpy.calledOnce)
-        assert.deepEqual(utilsStubs.constructTxParams.getCall(0).args[0], {
+        assert.deepStrictEqual(utilsStubs.constructTxParams.getCall(0).args[0], {
           data: undefined,
           sendToken: {
             address: '0xabc',
@@ -93,7 +93,7 @@ describe('send-footer container', function () {
           gas: 'mockGas',
           gasPrice: 'mockGasPrice',
         })
-        assert.deepEqual(actionSpies.signTokenTx.getCall(0).args, [
+        assert.deepStrictEqual(actionSpies.signTokenTx.getCall(0).args, [
           '0xabc',
           'mockTo',
           'mockAmount',
@@ -111,7 +111,7 @@ describe('send-footer container', function () {
           gasPrice: 'mockGasPrice',
         })
         assert(dispatchSpy.calledOnce)
-        assert.deepEqual(utilsStubs.constructTxParams.getCall(0).args[0], {
+        assert.deepStrictEqual(utilsStubs.constructTxParams.getCall(0).args[0], {
           data: undefined,
           sendToken: undefined,
           to: 'mockTo',
@@ -120,7 +120,7 @@ describe('send-footer container', function () {
           gas: 'mockGas',
           gasPrice: 'mockGasPrice',
         })
-        assert.deepEqual(actionSpies.signTx.getCall(0).args, [
+        assert.deepStrictEqual(actionSpies.signTx.getCall(0).args, [
           { value: 'mockAmount' },
         ])
       })
@@ -139,7 +139,7 @@ describe('send-footer container', function () {
           unapprovedTxs: 'mockUnapprovedTxs',
         })
         assert(dispatchSpy.calledOnce)
-        assert.deepEqual(utilsStubs.constructUpdatedTx.getCall(0).args[0], {
+        assert.deepStrictEqual(utilsStubs.constructUpdatedTx.getCall(0).args[0], {
           data: undefined,
           to: 'mockTo',
           amount: 'mockAmount',
@@ -169,7 +169,7 @@ describe('send-footer container', function () {
           utilsStubs.addressIsNew.getCall(0).args[0],
           'mockToAccounts',
         )
-        assert.deepEqual(actionSpies.addToAddressBook.getCall(0).args, [
+        assert.deepStrictEqual(actionSpies.addToAddressBook.getCall(0).args, [
           '0xmockNewAddress',
           'mockNickname',
         ])
