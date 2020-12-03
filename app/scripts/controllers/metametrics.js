@@ -215,7 +215,7 @@ export default class MetaMetricsController {
    * event appropriately.
    * @private
    * @param {SegmentEventPayload} payload - properties to attach to event
-   * @param {MetaMetricsEventOptions} options - options for routing and
+   * @param {MetaMetricsEventOptions} [options] - options for routing and
    *  handling the event
    * @returns {Promise<void>}
    */
@@ -225,10 +225,10 @@ export default class MetaMetricsController {
       metaMetricsId: metaMetricsIdOverride,
       matomoEvent,
       flushImmediately,
-    } = options
+    } = options || {}
     let idType = 'userId'
     let idValue = this.state.metaMetricsId
-    let excludeMetaMetricsId = options.excludeMetaMetricsId ?? false
+    let excludeMetaMetricsId = options?.excludeMetaMetricsId ?? false
     // This is carried over from the old implementation, and will likely need
     // to be updated to work with the new tracking plan. I think we should use
     // a config setting for this instead of trying to match the event name
@@ -282,15 +282,15 @@ export default class MetaMetricsController {
   /**
    * track a page view with Segment
    * @param {MetaMetricsPagePayload} payload - details of the page viewed
-   * @param {MetaMetricsPageOptions} options - options for handling the page
+   * @param {MetaMetricsPageOptions} [options] - options for handling the page
    *  view
    */
-  trackPage({ name, params, environmentType, page, referrer }, options = {}) {
+  trackPage({ name, params, environmentType, page, referrer }, options) {
     if (this.state.participateInMetaMetrics === false) {
       return
     }
 
-    if (this.state.participateInMetaMetrics === null && !options.isOptInPath) {
+    if (this.state.participateInMetaMetrics === null && !options?.isOptInPath) {
       return
     }
     const { metaMetricsId } = this.state
@@ -316,16 +316,16 @@ export default class MetaMetricsController {
    * with sensitiveProperties into two events, tracking the sensitiveProperties
    * with the anonymousId only.
    * @param {MetaMetricsEventPayload} payload - details of the event
-   * @param {MetaMetricsEventOptions} options - options for handling/routing the event
+   * @param {MetaMetricsEventOptions} [options] - options for handling/routing the event
    * @returns {Promise<void>}
    */
-  async trackEvent(payload, options = {}) {
+  async trackEvent(payload, options) {
     // event and category are required fields for all payloads
     if (!payload.event || !payload.category) {
       throw new Error('Must specify event and category.')
     }
 
-    if (!this.state.participateInMetaMetrics && !options.isOptIn) {
+    if (!this.state.participateInMetaMetrics && !options?.isOptIn) {
       return
     }
 
@@ -337,7 +337,7 @@ export default class MetaMetricsController {
       // sensitiveProperties will only be tracked using the anonymousId property and generic id
       // If the event options already specify to exclude the metaMetricsId we throw an error as
       // a signal to the developer that the event was implemented incorrectly
-      if (options.excludeMetaMetricsId === true) {
+      if (options?.excludeMetaMetricsId === true) {
         throw new Error(
           'sensitiveProperties was specified in an event payload that also set the excludeMetaMetricsId flag',
         )
