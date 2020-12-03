@@ -47,6 +47,8 @@ const fuseSearchKeys = [
   { name: 'address', weight: 0.002 },
 ]
 
+const MAX_ALLOWED_SLIPPAGE = 15
+
 export default function BuildQuote({
   inputValue,
   onInputChange,
@@ -393,6 +395,7 @@ export default function BuildQuote({
             onSelect={(newSlippage) => {
               setMaxSlippage(newSlippage)
             }}
+            maxAllowedSlippage={MAX_ALLOWED_SLIPPAGE}
           />
         </div>
       </div>
@@ -411,7 +414,8 @@ export default function BuildQuote({
         disabled={
           !Number(inputValue) ||
           !selectedToToken?.address ||
-          Number(maxSlippage) === 0
+          Number(maxSlippage) === 0 ||
+          Number(maxSlippage) > MAX_ALLOWED_SLIPPAGE
         }
         hideCancel
       />
