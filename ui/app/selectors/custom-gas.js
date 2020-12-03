@@ -13,20 +13,12 @@ import { getCurrentCurrency, getIsMainnet, getPreferences } from '.'
 
 const NUMBER_OF_DECIMALS_SM_BTNS = 5
 
-export function getCustomGasErrors(state) {
-  return state.gas.errors
-}
-
 export function getCustomGasLimit(state) {
   return state.gas.customData.limit
 }
 
 export function getCustomGasPrice(state) {
   return state.gas.customData.price
-}
-
-export function getCustomGasTotal(state) {
-  return state.gas.customData.total
 }
 
 export function getBasicGasEstimateLoadingStatus(state) {

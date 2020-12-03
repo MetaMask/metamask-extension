@@ -12,10 +12,8 @@ const BASIC_GAS_ESTIMATE_LOADING_STARTED =
 const RESET_CUSTOM_GAS_STATE = 'metamask/gas/RESET_CUSTOM_GAS_STATE'
 const RESET_CUSTOM_DATA = 'metamask/gas/RESET_CUSTOM_DATA'
 const SET_BASIC_GAS_ESTIMATE_DATA = 'metamask/gas/SET_BASIC_GAS_ESTIMATE_DATA'
-const SET_CUSTOM_GAS_ERRORS = 'metamask/gas/SET_CUSTOM_GAS_ERRORS'
 const SET_CUSTOM_GAS_LIMIT = 'metamask/gas/SET_CUSTOM_GAS_LIMIT'
 const SET_CUSTOM_GAS_PRICE = 'metamask/gas/SET_CUSTOM_GAS_PRICE'
-const SET_CUSTOM_GAS_TOTAL = 'metamask/gas/SET_CUSTOM_GAS_TOTAL'
 const SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED =
   'metamask/gas/SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED'
 
@@ -31,7 +29,6 @@ const initState = {
   },
   basicEstimateIsLoading: true,
   basicPriceEstimatesLastRetrieved: 0,
-  errors: {},
 }
 
 // Reducer
@@ -66,22 +63,6 @@ export default function reducer(state = initState, action) {
         customData: {
           ...state.customData,
           limit: action.value,
-        },
-      }
-    case SET_CUSTOM_GAS_TOTAL:
-      return {
-        ...state,
-        customData: {
-          ...state.customData,
-          total: action.value,
-        },
-      }
-    case SET_CUSTOM_GAS_ERRORS:
-      return {
-        ...state,
-        errors: {
-          ...state.errors,
-          ...action.value,
         },
       }
     case SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED:
@@ -208,20 +189,6 @@ export function setCustomGasLimit(newLimit) {
   return {
     type: SET_CUSTOM_GAS_LIMIT,
     value: newLimit,
-  }
-}
-
-export function setCustomGasTotal(newTotal) {
-  return {
-    type: SET_CUSTOM_GAS_TOTAL,
-    value: newTotal,
-  }
-}
-
-export function setCustomGasErrors(newErrors) {
-  return {
-    type: SET_CUSTOM_GAS_ERRORS,
-    value: newErrors,
   }
 }
 
