@@ -249,7 +249,7 @@ describe('IncomingTransactionsController', function () {
       )
 
       incomingTransactionsController.start()
-      await updateStateCalled
+      await updateStateCalled()
 
       const actualState = incomingTransactionsController.store.getState()
       const generatedTxId = actualState?.incomingTransactions?.['0xfake']?.id
@@ -345,8 +345,8 @@ describe('IncomingTransactionsController', function () {
 
       try {
         await Promise.race([
-          updateStateCalled,
-          putStateCalled,
+          updateStateCalled(),
+          putStateCalled(),
           new Promise((_, reject) => {
             setTimeout(() => reject(new Error('TIMEOUT')), SET_STATE_TIMEOUT)
           }),
@@ -412,8 +412,8 @@ describe('IncomingTransactionsController', function () {
 
       try {
         await Promise.race([
-          updateStateCalled,
-          putStateCalled,
+          updateStateCalled(),
+          putStateCalled(),
           new Promise((_, reject) => {
             setTimeout(() => reject(new Error('TIMEOUT')), SET_STATE_TIMEOUT)
           }),
@@ -475,8 +475,8 @@ describe('IncomingTransactionsController', function () {
 
       try {
         await Promise.race([
-          updateStateCalled,
-          putStateCalled,
+          updateStateCalled(),
+          putStateCalled(),
           new Promise((_, reject) => {
             setTimeout(() => reject(new Error('TIMEOUT')), SET_STATE_TIMEOUT)
           }),
@@ -540,8 +540,8 @@ describe('IncomingTransactionsController', function () {
 
       try {
         await Promise.race([
-          updateStateCalled,
-          putStateCalled,
+          updateStateCalled(),
+          putStateCalled(),
           new Promise((_, reject) => {
             setTimeout(() => reject(new Error('TIMEOUT')), SET_STATE_TIMEOUT)
           }),
@@ -592,7 +592,7 @@ describe('IncomingTransactionsController', function () {
       // TODO: stop skipping the first event
       await subscription({ selectedAddress: MOCK_SELECTED_ADDRESS })
       await subscription({ selectedAddress: NEW_MOCK_SELECTED_ADDRESS })
-      await updateStateCalled
+      await updateStateCalled()
 
       const actualState = incomingTransactionsController.store.getState()
       const generatedTxId = actualState?.incomingTransactions?.['0xfake']?.id
@@ -696,8 +696,8 @@ describe('IncomingTransactionsController', function () {
 
       try {
         await Promise.race([
-          updateStateCalled,
-          putStateCalled,
+          updateStateCalled(),
+          putStateCalled(),
           new Promise((_, reject) => {
             setTimeout(() => reject(new Error('TIMEOUT')), SET_STATE_TIMEOUT)
           }),
@@ -746,7 +746,7 @@ describe('IncomingTransactionsController', function () {
         ROPSTEN_CHAIN_ID,
       )
       await subscription(ROPSTEN)
-      await updateStateCalled
+      await updateStateCalled()
 
       const actualState = incomingTransactionsController.store.getState()
       const generatedTxId = actualState?.incomingTransactions?.['0xfake']?.id
@@ -848,8 +848,8 @@ describe('IncomingTransactionsController', function () {
 
       try {
         await Promise.race([
-          updateStateCalled,
-          putStateCalled,
+          updateStateCalled(),
+          putStateCalled(),
           new Promise((_, reject) => {
             setTimeout(() => reject(new Error('TIMEOUT')), SET_STATE_TIMEOUT)
           }),
