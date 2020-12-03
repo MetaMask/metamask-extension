@@ -14,9 +14,9 @@ describe('Network Dropdown Icon', function () {
       />,
     )
     const styleProp = wrapper.find('.menu-icon-circle').children().prop('style')
-    assert.equal(styleProp.background, 'red')
-    assert.equal(styleProp.border, 'none')
-    assert.equal(styleProp.height, '12px')
-    assert.equal(styleProp.width, '12px')
+    assert.strictEqual(styleProp.background, 'red')
+    assert.strictEqual(styleProp.border, 'none')
+    assert.strictEqual(styleProp.height, '12px')
+    assert.strictEqual(styleProp.width, '12px')
   })
 })

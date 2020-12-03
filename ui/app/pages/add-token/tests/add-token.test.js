@@ -49,7 +49,7 @@ describe('Add Token', function () {
         '.button.btn-secondary.page-container__footer-button',
       )
 
-      assert.equal(nextButton.props().disabled, true)
+      assert.strictEqual(nextButton.props().disabled, true)
     })
 
     it('edits token address', function () {
@@ -58,7 +58,7 @@ describe('Add Token', function () {
       const customAddress = wrapper.find('input#custom-address')
 
       customAddress.simulate('change', event)
-      assert.equal(
+      assert.strictEqual(
         wrapper.find('AddToken').instance().state.customAddress,
         tokenAddress,
       )
@@ -70,7 +70,7 @@ describe('Add Token', function () {
       const customAddress = wrapper.find('#custom-symbol')
       customAddress.last().simulate('change', event)
 
-      assert.equal(
+      assert.strictEqual(
         wrapper.find('AddToken').instance().state.customSymbol,
         tokenSymbol,
       )
@@ -82,7 +82,7 @@ describe('Add Token', function () {
       const customAddress = wrapper.find('#custom-decimals')
       customAddress.last().simulate('change', event)
 
-      assert.equal(
+      assert.strictEqual(
         wrapper.find('AddToken').instance().state.customDecimals,
         tokenPrecision,
       )
@@ -96,7 +96,10 @@ describe('Add Token', function () {
 
       assert(props.setPendingTokens.calledOnce)
       assert(props.history.push.calledOnce)
-      assert.equal(props.history.push.getCall(0).args[0], '/confirm-add-token')
+      assert.strictEqual(
+        props.history.push.getCall(0).args[0],
+        '/confirm-add-token',
+      )
     })
 
     it('cancels', function () {
@@ -106,7 +109,7 @@ describe('Add Token', function () {
       cancelButton.simulate('click')
 
       assert(props.clearPendingTokens.calledOnce)
-      assert.equal(props.history.push.getCall(0).args[0], '/')
+      assert.strictEqual(props.history.push.getCall(0).args[0], '/')
     })
   })
 })

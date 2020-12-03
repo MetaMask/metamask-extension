@@ -33,7 +33,7 @@ describe('GasFeeDisplay Component', function () {
     })
 
     it('should render a CurrencyDisplay component', function () {
-      assert.equal(wrapper.find(UserPreferencedCurrencyDisplay).length, 2)
+      assert.strictEqual(wrapper.find(UserPreferencedCurrencyDisplay).length, 2)
     })
 
     it('should render the CurrencyDisplay with the correct props', function () {
@@ -41,20 +41,20 @@ describe('GasFeeDisplay Component', function () {
         .find(UserPreferencedCurrencyDisplay)
         .at(0)
         .props()
-      assert.equal(type, 'PRIMARY')
-      assert.equal(value, 'mockGasTotal')
+      assert.strictEqual(type, 'PRIMARY')
+      assert.strictEqual(value, 'mockGasTotal')
     })
 
     it('should render the reset button with the correct props', function () {
       const { onClick, className } = wrapper.find('button').props()
-      assert.equal(className, 'gas-fee-reset')
-      assert.equal(propsMethodSpies.onReset.callCount, 0)
+      assert.strictEqual(className, 'gas-fee-reset')
+      assert.strictEqual(propsMethodSpies.onReset.callCount, 0)
       onClick()
-      assert.equal(propsMethodSpies.onReset.callCount, 1)
+      assert.strictEqual(propsMethodSpies.onReset.callCount, 1)
     })
 
     it('should render the reset button with the correct text', function () {
-      assert.equal(wrapper.find('button').text(), 'reset_t')
+      assert.strictEqual(wrapper.find('button').text(), 'reset_t')
     })
   })
 })

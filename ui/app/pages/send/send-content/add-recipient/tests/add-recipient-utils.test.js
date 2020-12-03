@@ -24,25 +24,25 @@ const { getToErrorObject, getToWarningObject } = toRowUtils
 describe('add-recipient utils', function () {
   describe('getToErrorObject()', function () {
     it('should return a required error if "to" is falsy', function () {
-      assert.deepEqual(getToErrorObject(null), {
+      assert.deepStrictEqual(getToErrorObject(null), {
         to: REQUIRED_ERROR,
       })
     })
 
     it('should return null if "to" is falsy and hexData is truthy', function () {
-      assert.deepEqual(getToErrorObject(null, true), {
+      assert.deepStrictEqual(getToErrorObject(null, true), {
         to: null,
       })
     })
 
     it('should return an invalid recipient error if "to" is truthy but invalid', function () {
-      assert.deepEqual(getToErrorObject('mockInvalidTo'), {
+      assert.deepStrictEqual(getToErrorObject('mockInvalidTo'), {
         to: INVALID_RECIPIENT_ADDRESS_ERROR,
       })
     })
 
     it('should return null if "to" is truthy and valid', function () {
-      assert.deepEqual(getToErrorObject('0xabc123'), {
+      assert.deepStrictEqual(getToErrorObject('0xabc123'), {
         to: null,
       })
     })
@@ -50,7 +50,7 @@ describe('add-recipient utils', function () {
 
   describe('getToWarningObject()', function () {
     it('should return a known address recipient error if "to" is a token address', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         getToWarningObject('0xabc123', [{ address: '0xabc123' }], {
           address: '0xabc123',
         }),
@@ -61,7 +61,7 @@ describe('add-recipient utils', function () {
     })
 
     it('should null if "to" is a token address but sendToken is falsy', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         getToWarningObject('0xabc123', [{ address: '0xabc123' }]),
         {
           to: null,
@@ -70,7 +70,7 @@ describe('add-recipient utils', function () {
     })
 
     it('should return a known address recipient error if "to" is part of contract metadata', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         getToWarningObject(
           '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359',
           [{ address: '0xabc123' }],
@@ -82,7 +82,7 @@ describe('add-recipient utils', function () {
       )
     })
     it('should null if "to" is part of contract metadata but sendToken is falsy', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         getToWarningObject(
           '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359',
           [{ address: '0xabc123' }],

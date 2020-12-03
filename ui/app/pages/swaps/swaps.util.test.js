@@ -14,24 +14,24 @@ import {
 const swapsUtils = proxyquire('./swaps.util.js', {
   '../../helpers/utils/fetch-with-cache': {
     default: (url, fetchObject) => {
-      assert.equal(fetchObject.method, 'GET')
+      assert.strictEqual(fetchObject.method, 'GET')
       if (url.match(TRADES_BASE_PROD_URL)) {
-        assert.equal(
+        assert.strictEqual(
           url,
           'https://api.metaswap.codefi.network/trades?destinationToken=0xE41d2489571d322189246DaFA5ebDe1F4699F498&sourceToken=0x617b3f8050a0BD94b6b1da02B4384eE5B4DF13F4&sourceAmount=2000000000000000000000000000000000000&slippage=3&timeout=10000&walletAddress=0xmockAddress',
         )
         return Promise.resolve(MOCK_TRADE_RESPONSE_2)
       }
       if (url.match(TOKENS_BASE_PROD_URL)) {
-        assert.equal(url, TOKENS_BASE_PROD_URL)
+        assert.strictEqual(url, TOKENS_BASE_PROD_URL)
         return Promise.resolve(TOKENS)
       }
       if (url.match(AGGREGATOR_METADATA_BASE_PROD_URL)) {
-        assert.equal(url, AGGREGATOR_METADATA_BASE_PROD_URL)
+        assert.strictEqual(url, AGGREGATOR_METADATA_BASE_PROD_URL)
         return Promise.resolve(AGGREGATOR_METADATA)
       }
       if (url.match(TOP_ASSET_BASE_PROD_URL)) {
-        assert.equal(url, TOP_ASSET_BASE_PROD_URL)
+        assert.strictEqual(url, TOP_ASSET_BASE_PROD_URL)
         return Promise.resolve(TOP_ASSETS)
       }
       return Promise.resolve()
@@ -100,31 +100,31 @@ describe('Swaps Util', function () {
         sourceTokenInfo: { ...TOKENS[0] },
         destinationTokenInfo: { ...TOKENS[1] },
       })
-      assert.deepEqual(result, expectedResult2)
+      assert.deepStrictEqual(result, expectedResult2)
     })
   })
 
   describe('fetchTokens', function () {
     it('should fetch tokens', async function () {
       const result = await fetchTokens(true)
-      assert.deepEqual(result, TOKENS)
+      assert.deepStrictEqual(result, TOKENS)
     })
 
     it('should fetch tokens on prod', async function () {
       const result = await fetchTokens(false)
-      assert.deepEqual(result, TOKENS)
+      assert.deepStrictEqual(result, TOKENS)
     })
   })
 
   describe('fetchAggregatorMetadata', function () {
     it('should fetch aggregator metadata', async function () {
       const result = await fetchAggregatorMetadata(true)
-      assert.deepEqual(result, AGGREGATOR_METADATA)
+      assert.deepStrictEqual(result, AGGREGATOR_METADATA)
     })
 
     it('should fetch aggregator metadata on prod', async function () {
       const result = await fetchAggregatorMetadata(false)
-      assert.deepEqual(result, AGGREGATOR_METADATA)
+      assert.deepStrictEqual(result, AGGREGATOR_METADATA)
     })
   })
 
@@ -148,12 +148,12 @@ describe('Swaps Util', function () {
     }
     it('should fetch top assets', async function () {
       const result = await fetchTopAssets(true)
-      assert.deepEqual(result, expectedResult)
+      assert.deepStrictEqual(result, expectedResult)
     })
 
     it('should fetch top assets on prod', async function () {
       const result = await fetchTopAssets(false)
-      assert.deepEqual(result, expectedResult)
+      assert.deepStrictEqual(result, expectedResult)
     })
   })
 })

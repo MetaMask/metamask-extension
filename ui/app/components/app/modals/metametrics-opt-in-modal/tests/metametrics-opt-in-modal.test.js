@@ -34,7 +34,10 @@ describe('MetaMetrics Opt In', function () {
 
     setImmediate(() => {
       assert(props.setParticipateInMetaMetrics.calledOnce)
-      assert.equal(props.setParticipateInMetaMetrics.getCall(0).args[0], false)
+      assert.strictEqual(
+        props.setParticipateInMetaMetrics.getCall(0).args[0],
+        false,
+      )
       assert(props.hideModal.calledOnce)
       done()
     })
@@ -48,7 +51,10 @@ describe('MetaMetrics Opt In', function () {
 
     setImmediate(() => {
       assert(props.setParticipateInMetaMetrics.calledOnce)
-      assert.equal(props.setParticipateInMetaMetrics.getCall(0).args[0], true)
+      assert.strictEqual(
+        props.setParticipateInMetaMetrics.getCall(0).args[0],
+        true,
+      )
       assert(props.hideModal.calledOnce)
       done()
     })

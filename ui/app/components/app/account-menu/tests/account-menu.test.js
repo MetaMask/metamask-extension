@@ -74,14 +74,14 @@ describe('Account Menu', function () {
   describe('Render Content', function () {
     it('returns account name from identities', function () {
       const accountName = wrapper.find('.account-menu__name')
-      assert.equal(accountName.length, 2)
+      assert.strictEqual(accountName.length, 2)
     })
 
     it('renders user preference currency display balance from account balance', function () {
       const accountBalance = wrapper.find(
         '.currency-display-component.account-menu__balance',
       )
-      assert.equal(accountBalance.length, 2)
+      assert.strictEqual(accountBalance.length, 2)
     })
 
     it('simulate click', function () {
@@ -91,12 +91,15 @@ describe('Account Menu', function () {
       click.first().simulate('click')
 
       assert(props.showAccountDetail.calledOnce)
-      assert.equal(props.showAccountDetail.getCall(0).args[0], '0xAddress')
+      assert.strictEqual(
+        props.showAccountDetail.getCall(0).args[0],
+        '0xAddress',
+      )
     })
 
     it('render imported account label', function () {
       const importedAccount = wrapper.find('.keyring-label.allcaps')
-      assert.equal(importedAccount.text(), 'imported')
+      assert.strictEqual(importedAccount.text(), 'imported')
     })
   })
 
@@ -105,13 +108,13 @@ describe('Account Menu', function () {
 
     it('logout', function () {
       logout = wrapper.find('.account-menu__lock-button')
-      assert.equal(logout.length, 1)
+      assert.strictEqual(logout.length, 1)
     })
 
     it('simulate click', function () {
       logout.simulate('click')
       assert(props.lockMetamask.calledOnce)
-      assert.equal(props.history.push.getCall(0).args[0], '/')
+      assert.strictEqual(props.history.push.getCall(0).args[0], '/')
     })
   })
 
@@ -120,13 +123,13 @@ describe('Account Menu', function () {
 
     it('renders create account item', function () {
       createAccount = wrapper.find({ text: 'createAccount' })
-      assert.equal(createAccount.length, 1)
+      assert.strictEqual(createAccount.length, 1)
     })
 
     it('calls toggle menu and push new-account route to history', function () {
       createAccount.simulate('click')
       assert(props.toggleAccountMenu.calledOnce)
-      assert.equal(props.history.push.getCall(0).args[0], '/new-account')
+      assert.strictEqual(props.history.push.getCall(0).args[0], '/new-account')
     })
   })
 
@@ -135,7 +138,7 @@ describe('Account Menu', function () {
 
     it('renders import account item', function () {
       importAccount = wrapper.find({ text: 'importAccount' })
-      assert.equal(importAccount.length, 1)
+      assert.strictEqual(importAccount.length, 1)
     })
 
     it('calls toggle menu and push /new-account/import route to history', function () {
@@ -150,13 +153,13 @@ describe('Account Menu', function () {
 
     it('renders import account item', function () {
       connectHardwareWallet = wrapper.find({ text: 'connectHardwareWallet' })
-      assert.equal(connectHardwareWallet.length, 1)
+      assert.strictEqual(connectHardwareWallet.length, 1)
     })
 
     it('calls toggle menu and push /new-account/connect route to history', function () {
       connectHardwareWallet.simulate('click')
       assert(props.toggleAccountMenu.calledOnce)
-      assert.equal(
+      assert.strictEqual(
         props.history.push.getCall(0).args[0],
         '/new-account/connect',
       )
@@ -168,13 +171,16 @@ describe('Account Menu', function () {
 
     it('renders import account item', function () {
       infoHelp = wrapper.find({ text: 'infoHelp' })
-      assert.equal(infoHelp.length, 1)
+      assert.strictEqual(infoHelp.length, 1)
     })
 
     it('calls toggle menu and push /new-account/connect route to history', function () {
       infoHelp.simulate('click')
       assert(props.toggleAccountMenu.calledOnce)
-      assert.equal(props.history.push.getCall(0).args[0], '/settings/about-us')
+      assert.strictEqual(
+        props.history.push.getCall(0).args[0],
+        '/settings/about-us',
+      )
     })
   })
 
@@ -183,13 +189,13 @@ describe('Account Menu', function () {
 
     it('renders import account item', function () {
       settings = wrapper.find({ text: 'settings' })
-      assert.equal(settings.length, 1)
+      assert.strictEqual(settings.length, 1)
     })
 
     it('calls toggle menu and push /new-account/connect route to history', function () {
       settings.simulate('click')
       assert(props.toggleAccountMenu.calledOnce)
-      assert.equal(props.history.push.getCall(0).args[0], '/settings')
+      assert.strictEqual(props.history.push.getCall(0).args[0], '/settings')
     })
   })
 })

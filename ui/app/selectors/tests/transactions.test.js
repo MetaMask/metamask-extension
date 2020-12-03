@@ -35,7 +35,7 @@ describe('Transaction Selectors', function () {
       const msgSelector = unapprovedMessagesSelector(state)
 
       assert(Array.isArray(msgSelector))
-      assert.deepEqual(msgSelector, [msg])
+      assert.deepStrictEqual(msgSelector, [msg])
     })
 
     it('returns personal sign from unapprovedPersonalMsgsSelector', function () {
@@ -62,7 +62,7 @@ describe('Transaction Selectors', function () {
       const msgSelector = unapprovedMessagesSelector(state)
 
       assert(Array.isArray(msgSelector))
-      assert.deepEqual(msgSelector, [msg])
+      assert.deepStrictEqual(msgSelector, [msg])
     })
 
     it('returns typed message from unapprovedTypedMessagesSelector', function () {
@@ -90,7 +90,7 @@ describe('Transaction Selectors', function () {
       const msgSelector = unapprovedMessagesSelector(state)
 
       assert(Array.isArray(msgSelector))
-      assert.deepEqual(msgSelector, [msg])
+      assert.deepStrictEqual(msgSelector, [msg])
     })
   })
 
@@ -133,7 +133,7 @@ describe('Transaction Selectors', function () {
       const selectedTx = transactionsSelector(state)
 
       assert(Array.isArray(selectedTx))
-      assert.deepEqual(selectedTx, orderedTxList)
+      assert.deepStrictEqual(selectedTx, orderedTxList)
     })
   })
 
@@ -191,7 +191,10 @@ describe('Transaction Selectors', function () {
         },
       ]
 
-      assert.deepEqual(nonceSortedTransactionsSelector(state), expectedResult)
+      assert.deepStrictEqual(
+        nonceSortedTransactionsSelector(state),
+        expectedResult,
+      )
     })
   })
 
@@ -286,7 +289,7 @@ describe('Transaction Selectors', function () {
         },
       ]
 
-      assert.deepEqual(
+      assert.deepStrictEqual(
         nonceSortedPendingTransactionsSelector(state),
         expectedResult,
       )
@@ -304,7 +307,7 @@ describe('Transaction Selectors', function () {
         },
       ]
 
-      assert.deepEqual(
+      assert.deepStrictEqual(
         nonceSortedCompletedTransactionsSelector(state),
         expectedResult,
       )
@@ -312,7 +315,7 @@ describe('Transaction Selectors', function () {
 
     it('submittedPendingTransactionsSelector', function () {
       const expectedResult = [submittedTx]
-      assert.deepEqual(
+      assert.deepStrictEqual(
         submittedPendingTransactionsSelector(state),
         expectedResult,
       )

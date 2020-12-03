@@ -68,25 +68,28 @@ describe('AddRecipient Component', function () {
 
   describe('selectRecipient', function () {
     it('should call updateSendTo', function () {
-      assert.equal(propsMethodSpies.updateSendTo.callCount, 0)
+      assert.strictEqual(propsMethodSpies.updateSendTo.callCount, 0)
       instance.selectRecipient('mockTo2', 'mockNickname')
-      assert.equal(propsMethodSpies.updateSendTo.callCount, 1)
-      assert.deepEqual(propsMethodSpies.updateSendTo.getCall(0).args, [
+      assert.strictEqual(propsMethodSpies.updateSendTo.callCount, 1)
+      assert.deepStrictEqual(propsMethodSpies.updateSendTo.getCall(0).args, [
         'mockTo2',
         'mockNickname',
       ])
     })
 
     it('should call updateGas if there is no to error', function () {
-      assert.equal(propsMethodSpies.updateGas.callCount, 0)
+      assert.strictEqual(propsMethodSpies.updateGas.callCount, 0)
       instance.selectRecipient(false)
-      assert.equal(propsMethodSpies.updateGas.callCount, 1)
+      assert.strictEqual(propsMethodSpies.updateGas.callCount, 1)
     })
   })
 
   describe('render', function () {
     it('should render a component', function () {
-      assert.equal(wrapper.find('.send__select-recipient-wrapper').length, 1)
+      assert.strictEqual(
+        wrapper.find('.send__select-recipient-wrapper').length,
+        1,
+      )
     })
 
     it('should render no content if there are no recents, transfers, and contacts', function () {
@@ -95,11 +98,11 @@ describe('AddRecipient Component', function () {
         addressBook: [],
       })
 
-      assert.equal(
+      assert.strictEqual(
         wrapper.find('.send__select-recipient-wrapper__list__link').length,
         0,
       )
-      assert.equal(
+      assert.strictEqual(
         wrapper.find('.send__select-recipient-wrapper__group').length,
         0,
       )
@@ -118,10 +121,10 @@ describe('AddRecipient Component', function () {
       const xferLink = wrapper.find(
         '.send__select-recipient-wrapper__list__link',
       )
-      assert.equal(xferLink.length, 1)
+      assert.strictEqual(xferLink.length, 1)
 
       const groups = wrapper.find('RecipientGroup')
-      assert.equal(
+      assert.strictEqual(
         groups.shallow().find('.send__select-recipient-wrapper__group').length,
         1,
       )
@@ -138,7 +141,7 @@ describe('AddRecipient Component', function () {
 
       const contactList = wrapper.find('ContactList')
 
-      assert.equal(contactList.length, 1)
+      assert.strictEqual(contactList.length, 1)
     })
 
     it('should render contacts', function () {
@@ -154,12 +157,12 @@ describe('AddRecipient Component', function () {
       const xferLink = wrapper.find(
         '.send__select-recipient-wrapper__list__link',
       )
-      assert.equal(xferLink.length, 0)
+      assert.strictEqual(xferLink.length, 0)
 
       const groups = wrapper.find('ContactList')
-      assert.equal(groups.length, 1)
+      assert.strictEqual(groups.length, 1)
 
-      assert.equal(
+      assert.strictEqual(
         groups.find('.send__select-recipient-wrapper__group-item').length,
         0,
       )
@@ -175,9 +178,9 @@ describe('AddRecipient Component', function () {
 
       const dialog = wrapper.find(Dialog)
 
-      assert.equal(dialog.props().type, 'error')
-      assert.equal(dialog.props().children, 'bad_t')
-      assert.equal(dialog.length, 1)
+      assert.strictEqual(dialog.props().type, 'error')
+      assert.strictEqual(dialog.props().children, 'bad_t')
+      assert.strictEqual(dialog.length, 1)
     })
 
     it('should render error when query has ens does not resolve', function () {
@@ -191,9 +194,9 @@ describe('AddRecipient Component', function () {
 
       const dialog = wrapper.find(Dialog)
 
-      assert.equal(dialog.props().type, 'error')
-      assert.equal(dialog.props().children, 'very bad')
-      assert.equal(dialog.length, 1)
+      assert.strictEqual(dialog.props().type, 'error')
+      assert.strictEqual(dialog.props().children, 'very bad')
+      assert.strictEqual(dialog.length, 1)
     })
 
     it('should not render error when ens resolved', function () {
@@ -205,7 +208,7 @@ describe('AddRecipient Component', function () {
 
       const dialog = wrapper.find(Dialog)
 
-      assert.equal(dialog.length, 0)
+      assert.strictEqual(dialog.length, 0)
     })
 
     it('should not render error when query has results', function () {
@@ -220,7 +223,7 @@ describe('AddRecipient Component', function () {
 
       const dialog = wrapper.find(Dialog)
 
-      assert.equal(dialog.length, 0)
+      assert.strictEqual(dialog.length, 0)
     })
   })
 })

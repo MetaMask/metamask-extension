@@ -24,7 +24,7 @@ describe('AdvancedTab Component', function () {
       },
     )
 
-    assert.equal(root.find('.settings-page__content-row').length, 10)
+    assert.strictEqual(root.find('.settings-page__content-row').length, 10)
   })
 
   it('should update autoLockTimeLimit', function () {
@@ -50,9 +50,9 @@ describe('AdvancedTab Component', function () {
     const textField = autoTimeout.find(TextField)
 
     textField.props().onChange({ target: { value: 1440 } })
-    assert.equal(root.state().autoLockTimeLimit, 1440)
+    assert.strictEqual(root.state().autoLockTimeLimit, 1440)
 
     autoTimeout.find('.settings-tab__rpc-save-button').simulate('click')
-    assert.equal(setAutoLockTimeLimitSpy.args[0][0], 1440)
+    assert.strictEqual(setAutoLockTimeLimitSpy.args[0][0], 1440)
   })
 })

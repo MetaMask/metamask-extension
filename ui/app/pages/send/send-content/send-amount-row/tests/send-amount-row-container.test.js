@@ -50,7 +50,10 @@ describe('send-amount-row container', function () {
         mapDispatchToPropsObject.setMaxModeTo('mockBool')
         assert(dispatchSpy.calledOnce)
         assert(actionSpies.setMaxModeTo.calledOnce)
-        assert.equal(actionSpies.setMaxModeTo.getCall(0).args[0], 'mockBool')
+        assert.strictEqual(
+          actionSpies.setMaxModeTo.getCall(0).args[0],
+          'mockBool',
+        )
       })
     })
 
@@ -59,7 +62,7 @@ describe('send-amount-row container', function () {
         mapDispatchToPropsObject.updateSendAmount('mockAmount')
         assert(dispatchSpy.calledOnce)
         assert(actionSpies.updateSendAmount.calledOnce)
-        assert.equal(
+        assert.strictEqual(
           actionSpies.updateSendAmount.getCall(0).args[0],
           'mockAmount',
         )
@@ -71,10 +74,13 @@ describe('send-amount-row container', function () {
         mapDispatchToPropsObject.updateGasFeeError({ some: 'data' })
         assert(dispatchSpy.calledOnce)
         assert(duckActionSpies.updateSendErrors.calledOnce)
-        assert.deepEqual(duckActionSpies.updateSendErrors.getCall(0).args[0], {
-          some: 'data',
-          mockGasFeeErrorChange: true,
-        })
+        assert.deepStrictEqual(
+          duckActionSpies.updateSendErrors.getCall(0).args[0],
+          {
+            some: 'data',
+            mockGasFeeErrorChange: true,
+          },
+        )
       })
     })
 
@@ -83,10 +89,13 @@ describe('send-amount-row container', function () {
         mapDispatchToPropsObject.updateSendAmountError({ some: 'data' })
         assert(dispatchSpy.calledOnce)
         assert(duckActionSpies.updateSendErrors.calledOnce)
-        assert.deepEqual(duckActionSpies.updateSendErrors.getCall(0).args[0], {
-          some: 'data',
-          mockChange: true,
-        })
+        assert.deepStrictEqual(
+          duckActionSpies.updateSendErrors.getCall(0).args[0],
+          {
+            some: 'data',
+            mockChange: true,
+          },
+        )
       })
     })
   })

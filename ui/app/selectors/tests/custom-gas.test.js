@@ -14,28 +14,28 @@ describe('custom-gas selectors', function () {
   describe('getCustomGasPrice()', function () {
     it('should return gas.customData.price', function () {
       const mockState = { gas: { customData: { price: 'mockPrice' } } }
-      assert.equal(getCustomGasPrice(mockState), 'mockPrice')
+      assert.strictEqual(getCustomGasPrice(mockState), 'mockPrice')
     })
   })
 
   describe('getCustomGasLimit()', function () {
     it('should return gas.customData.limit', function () {
       const mockState = { gas: { customData: { limit: 'mockLimit' } } }
-      assert.equal(getCustomGasLimit(mockState), 'mockLimit')
+      assert.strictEqual(getCustomGasLimit(mockState), 'mockLimit')
     })
   })
 
   describe('getCustomGasTotal()', function () {
     it('should return gas.customData.total', function () {
       const mockState = { gas: { customData: { total: 'mockTotal' } } }
-      assert.equal(getCustomGasTotal(mockState), 'mockTotal')
+      assert.strictEqual(getCustomGasTotal(mockState), 'mockTotal')
     })
   })
 
   describe('getCustomGasErrors()', function () {
     it('should return gas.errors', function () {
       const mockState = { gas: { errors: 'mockErrors' } }
-      assert.equal(getCustomGasErrors(mockState), 'mockErrors')
+      assert.strictEqual(getCustomGasErrors(mockState), 'mockErrors')
     })
   })
 
@@ -279,7 +279,7 @@ describe('custom-gas selectors', function () {
     ]
     it('should return renderable data about basic estimates', function () {
       tests.forEach((test) => {
-        assert.deepEqual(
+        assert.deepStrictEqual(
           getRenderableBasicEstimateData(
             test.mockState,
             '0x5208',
@@ -528,7 +528,7 @@ describe('custom-gas selectors', function () {
     ]
     it('should return renderable data about basic estimates appropriate for buttons with less info', function () {
       tests.forEach((test) => {
-        assert.deepEqual(
+        assert.deepStrictEqual(
           getRenderableEstimateDataForSmallButtonsFromGWEI(test.mockState),
           test.expectedResult,
         )

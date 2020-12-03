@@ -12,9 +12,9 @@ describe('ErrorMessage Component', function () {
     })
 
     assert.ok(wrapper)
-    assert.equal(wrapper.find('.error-message').length, 1)
-    assert.equal(wrapper.find('.error-message__icon').length, 1)
-    assert.equal(
+    assert.strictEqual(wrapper.find('.error-message').length, 1)
+    assert.strictEqual(wrapper.find('.error-message__icon').length, 1)
+    assert.strictEqual(
       wrapper.find('.error-message__text').text(),
       'ALERT: This is an error.',
     )
@@ -26,9 +26,9 @@ describe('ErrorMessage Component', function () {
     })
 
     assert.ok(wrapper)
-    assert.equal(wrapper.find('.error-message').length, 1)
-    assert.equal(wrapper.find('.error-message__icon').length, 1)
-    assert.equal(
+    assert.strictEqual(wrapper.find('.error-message').length, 1)
+    assert.strictEqual(wrapper.find('.error-message__icon').length, 1)
+    assert.strictEqual(
       wrapper.find('.error-message__text').text(),
       'ALERT: translate testKey',
     )

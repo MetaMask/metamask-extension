@@ -88,31 +88,31 @@ describe('GasModalPageContainer Component', function () {
   describe('componentDidMount', function () {
     it('should call props.fetchBasicGasEstimates', function () {
       propsMethodSpies.fetchBasicGasEstimates.resetHistory()
-      assert.equal(propsMethodSpies.fetchBasicGasEstimates.callCount, 0)
+      assert.strictEqual(propsMethodSpies.fetchBasicGasEstimates.callCount, 0)
       wrapper.instance().componentDidMount()
-      assert.equal(propsMethodSpies.fetchBasicGasEstimates.callCount, 1)
+      assert.strictEqual(propsMethodSpies.fetchBasicGasEstimates.callCount, 1)
     })
   })
 
   describe('render', function () {
     it('should render a PageContainer compenent', function () {
-      assert.equal(wrapper.find(PageContainer).length, 1)
+      assert.strictEqual(wrapper.find(PageContainer).length, 1)
     })
 
     it('should pass correct props to PageContainer', function () {
       const { title, subtitle, disabled } = wrapper.find(PageContainer).props()
-      assert.equal(title, 'customGas')
-      assert.equal(subtitle, 'customGasSubTitle')
-      assert.equal(disabled, false)
+      assert.strictEqual(title, 'customGas')
+      assert.strictEqual(subtitle, 'customGasSubTitle')
+      assert.strictEqual(disabled, false)
     })
 
     it('should pass the correct onCancel and onClose methods to PageContainer', function () {
       const { onCancel, onClose } = wrapper.find(PageContainer).props()
-      assert.equal(propsMethodSpies.cancelAndClose.callCount, 0)
+      assert.strictEqual(propsMethodSpies.cancelAndClose.callCount, 0)
       onCancel()
-      assert.equal(propsMethodSpies.cancelAndClose.callCount, 1)
+      assert.strictEqual(propsMethodSpies.cancelAndClose.callCount, 1)
       onClose()
-      assert.equal(propsMethodSpies.cancelAndClose.callCount, 2)
+      assert.strictEqual(propsMethodSpies.cancelAndClose.callCount, 2)
     })
 
     it('should pass the correct renderTabs property to PageContainer', function () {
@@ -127,7 +127,7 @@ describe('GasModalPageContainer Component', function () {
       const { tabsComponent } = renderTabsWrapperTester
         .find(PageContainer)
         .props()
-      assert.equal(tabsComponent, 'mockTabs')
+      assert.strictEqual(tabsComponent, 'mockTabs')
       GasModalPageContainer.prototype.renderTabs.restore()
     })
   })
@@ -148,32 +148,38 @@ describe('GasModalPageContainer Component', function () {
     it('should render a Tabs component with "Basic" and "Advanced" tabs', function () {
       const renderTabsResult = wrapper.instance().renderTabs()
       const renderedTabs = shallow(renderTabsResult)
-      assert.equal(renderedTabs.props().className, 'tabs')
+      assert.strictEqual(renderedTabs.props().className, 'tabs')
 
       const tabs = renderedTabs.find(Tab)
-      assert.equal(tabs.length, 2)
+      assert.strictEqual(tabs.length, 2)
 
-      assert.equal(tabs.at(0).props().name, 'basic')
-      assert.equal(tabs.at(1).props().name, 'advanced')
+      assert.strictEqual(tabs.at(0).props().name, 'basic')
+      assert.strictEqual(tabs.at(1).props().name, 'advanced')
 
-      assert.equal(tabs.at(0).childAt(0).props().className, 'gas-modal-content')
-      assert.equal(tabs.at(1).childAt(0).props().className, 'gas-modal-content')
+      assert.strictEqual(
+        tabs.at(0).childAt(0).props().className,
+        'gas-modal-content',
+      )
+      assert.strictEqual(
+        tabs.at(1).childAt(0).props().className,
+        'gas-modal-content',
+      )
     })
 
     it('should call renderInfoRows with the expected props', function () {
-      assert.equal(GP.renderInfoRows.callCount, 0)
+      assert.strictEqual(GP.renderInfoRows.callCount, 0)
 
       wrapper.instance().renderTabs()
 
-      assert.equal(GP.renderInfoRows.callCount, 2)
+      assert.strictEqual(GP.renderInfoRows.callCount, 2)
 
-      assert.deepEqual(GP.renderInfoRows.getCall(0).args, [
+      assert.deepStrictEqual(GP.renderInfoRows.getCall(0).args, [
         'mockNewTotalFiat',
         'mockNewTotalEth',
         'mockSendAmount',
         'mockTransactionFee',
       ])
-      assert.deepEqual(GP.renderInfoRows.getCall(1).args, [
+      assert.deepStrictEqual(GP.renderInfoRows.getCall(1).args, [
         'mockNewTotalFiat',
         'mockNewTotalEth',
         'mockSendAmount',
@@ -202,8 +208,8 @@ describe('GasModalPageContainer Component', function () {
 
       const renderedTabs = shallow(renderTabsResult)
       const tabs = renderedTabs.find(Tab)
-      assert.equal(tabs.length, 1)
-      assert.equal(tabs.at(0).props().name, 'advanced')
+      assert.strictEqual(tabs.length, 1)
+      assert.strictEqual(tabs.at(0).props().name, 'advanced')
     })
   })
 
@@ -213,7 +219,7 @@ describe('GasModalPageContainer Component', function () {
         .instance()
         .renderBasicTabContent(mockGasPriceButtonGroupProps)
 
-      assert.deepEqual(
+      assert.deepStrictEqual(
         renderBasicTabContentResult.props.gasPriceButtonGroupProps,
         mockGasPriceButtonGroupProps,
       )
@@ -237,7 +243,7 @@ describe('GasModalPageContainer Component', function () {
       assert(renderedInfoRowsContainer.childAt(0).hasClass(baseClassName))
 
       const renderedInfoRows = renderedInfoRowsContainer.childAt(0).children()
-      assert.equal(renderedInfoRows.length, 4)
+      assert.strictEqual(renderedInfoRows.length, 4)
       assert(renderedInfoRows.at(0).hasClass(`${baseClassName}__send-info`))
       assert(
         renderedInfoRows.at(1).hasClass(`${baseClassName}__transaction-info`),
@@ -247,13 +253,19 @@ describe('GasModalPageContainer Component', function () {
         renderedInfoRows.at(3).hasClass(`${baseClassName}__fiat-total-info`),
       )
 
-      assert.equal(renderedInfoRows.at(0).text(), 'sendAmount mockSendAmount')
-      assert.equal(
+      assert.strictEqual(
+        renderedInfoRows.at(0).text(),
+        'sendAmount mockSendAmount',
+      )
+      assert.strictEqual(
         renderedInfoRows.at(1).text(),
         'transactionFee mockTransactionFee',
       )
-      assert.equal(renderedInfoRows.at(2).text(), 'newTotal mockNewTotalEth')
-      assert.equal(renderedInfoRows.at(3).text(), 'mockNewTotalFiat')
+      assert.strictEqual(
+        renderedInfoRows.at(2).text(),
+        'newTotal mockNewTotalEth',
+      )
+      assert.strictEqual(renderedInfoRows.at(3).text(), 'mockNewTotalFiat')
     })
   })
 })

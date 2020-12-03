@@ -16,7 +16,7 @@ describe('SendAmountRow Component', function () {
         propsMethodSpies: { updateSendAmountError },
       } = shallowRenderSendAmountRow()
 
-      assert.equal(updateSendAmountError.callCount, 0)
+      assert.strictEqual(updateSendAmountError.callCount, 0)
 
       instance.validateAmount('someAmount')
 
@@ -39,7 +39,7 @@ describe('SendAmountRow Component', function () {
         propsMethodSpies: { updateGasFeeError },
       } = shallowRenderSendAmountRow()
 
-      assert.equal(updateGasFeeError.callCount, 0)
+      assert.strictEqual(updateGasFeeError.callCount, 0)
 
       instance.validateAmount('someAmount')
 
@@ -64,11 +64,11 @@ describe('SendAmountRow Component', function () {
 
       wrapper.setProps({ sendToken: null })
 
-      assert.equal(updateGasFeeError.callCount, 0)
+      assert.strictEqual(updateGasFeeError.callCount, 0)
 
       instance.validateAmount('someAmount')
 
-      assert.equal(updateGasFeeError.callCount, 0)
+      assert.strictEqual(updateGasFeeError.callCount, 0)
     })
   })
 
@@ -79,7 +79,7 @@ describe('SendAmountRow Component', function () {
         propsMethodSpies: { setMaxModeTo },
       } = shallowRenderSendAmountRow()
 
-      assert.equal(setMaxModeTo.callCount, 0)
+      assert.strictEqual(setMaxModeTo.callCount, 0)
 
       instance.updateAmount('someAmount')
 
@@ -92,7 +92,7 @@ describe('SendAmountRow Component', function () {
         propsMethodSpies: { updateSendAmount },
       } = shallowRenderSendAmountRow()
 
-      assert.equal(updateSendAmount.callCount, 0)
+      assert.strictEqual(updateSendAmount.callCount, 0)
 
       instance.updateAmount('someAmount')
 
@@ -104,7 +104,7 @@ describe('SendAmountRow Component', function () {
     it('should render a SendRowWrapper component', function () {
       const { wrapper } = shallowRenderSendAmountRow()
 
-      assert.equal(wrapper.find(SendRowWrapper).length, 1)
+      assert.strictEqual(wrapper.find(SendRowWrapper).length, 1)
     })
 
     it('should pass the correct props to SendRowWrapper', function () {
@@ -113,9 +113,9 @@ describe('SendAmountRow Component', function () {
         .find(SendRowWrapper)
         .props()
 
-      assert.equal(errorType, 'amount')
-      assert.equal(label, 'amount_t:')
-      assert.equal(showError, false)
+      assert.strictEqual(errorType, 'amount')
+      assert.strictEqual(label, 'amount_t:')
+      assert.strictEqual(showError, false)
     })
 
     it('should render an AmountMaxButton as the first child of the SendRowWrapper', function () {
@@ -142,11 +142,11 @@ describe('SendAmountRow Component', function () {
         .childAt(1)
         .props()
 
-      assert.equal(error, false)
-      assert.equal(value, 'mockAmount')
-      assert.equal(updateGas.callCount, 0)
-      assert.equal(updateAmount.callCount, 0)
-      assert.equal(validateAmount.callCount, 0)
+      assert.strictEqual(error, false)
+      assert.strictEqual(value, 'mockAmount')
+      assert.strictEqual(updateGas.callCount, 0)
+      assert.strictEqual(updateAmount.callCount, 0)
+      assert.strictEqual(validateAmount.callCount, 0)
 
       onChange('mockNewAmount')
 
