@@ -15,10 +15,10 @@ const LEGACY_LOCAL_STORAGE_KEYS = [
 ]
 
 describe('migration #50', function () {
-  const mockLocalStorageRemoveItem = sinon.stub()
+  let mockLocalStorageRemoveItem
 
   beforeEach(function () {
-    window.localStorage.removeItem = mockLocalStorageRemoveItem
+    mockLocalStorageRemoveItem = sinon.stub(window.localStorage, 'removeItem')
   })
 
   afterEach(function () {
@@ -40,6 +40,14 @@ describe('migration #50', function () {
   })
 
   it('should call window.localStorage.removeItem for each legacy key', async function () {
+    const oldStorage = {
+      meta: {
+        version: 49,
+      },
+      data: {},
+    }
+
+    await migration50.migrate(oldStorage)
     assert.equal(mockLocalStorageRemoveItem.callCount, 9)
     assert.equal(
       mockLocalStorageRemoveItem.getCall(0).args[0],

@@ -78,6 +78,10 @@ require('abortcontroller-polyfill/dist/polyfill-patch-fetch')
 // localStorage
 window.localStorage = {}
 
+if (!window.localStorage.removeItem) {
+  window.localStorage.removeItem = () => null
+}
+
 // override @metamask/logo
 window.requestAnimationFrame = () => undefined
 
