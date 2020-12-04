@@ -6,21 +6,47 @@ describe('txUtils', function () {
     it('does not throw for positive values', function () {
       const sample = {
         from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+        to: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
         value: '0x01',
       }
       txUtils.validateTxParams(sample)
     })
 
-    it('returns error for negative values', function () {
+    it('throws for invalid params value', function () {
+      assert.throws(() => txUtils.validateTxParams(), {
+        message: 'Invalid transaction params: must be an object.',
+      })
+      assert.throws(() => txUtils.validateTxParams(null), {
+        message: 'Invalid transaction params: must be an object.',
+      })
+      assert.throws(() => txUtils.validateTxParams(true), {
+        message: 'Invalid transaction params: must be an object.',
+      })
+      assert.throws(() => txUtils.validateTxParams([]), {
+        message: 'Invalid transaction params: must be an object.',
+      })
+    })
+
+    it('throws for missing "to" and "data"', function () {
       const sample = {
         from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+        value: '0x01',
+      }
+      assert.throws(() => txUtils.validateTxParams(sample), {
+        message:
+          'Invalid transaction params: must specify "data" for contract deployments, or "to" (and optionally "data") for all other types of transactions.',
+      })
+    })
+
+    it('throws for negative values', function () {
+      const sample = {
+        from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+        to: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
         value: '-0x01',
       }
-      try {
-        txUtils.validateTxParams(sample)
-      } catch (err) {
-        assert.ok(err, 'error')
-      }
+      assert.throws(() => txUtils.validateTxParams(sample), {
+        message: 'Invalid transaction value "-0x01": not a positive number.',
+      })
     })
   })
 
