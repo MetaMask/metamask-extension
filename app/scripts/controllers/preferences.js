@@ -7,7 +7,21 @@ import ethers from 'ethers'
 import log from 'loglevel'
 import { isPrefixedFormattedHexString } from '../lib/util'
 import { LISTED_CONTRACT_ADDRESSES } from '../../../shared/constants/tokens'
+import {
+  call,
+  publish,
+  registerActionHandler,
+  unregisterActionHandler,
+} from '../lib/controller-message-system'
 import { NETWORK_TYPE_TO_ID_MAP } from './network/enums'
+
+/** Action Constants */
+const GET_PREFERENCES_STATE = 'PreferencesController.getState'
+
+/** Action Handlers */
+export function getPreferencesState() {
+  return call(GET_PREFERENCES_STATE)
+}
 
 export default class PreferencesController {
   /**
@@ -75,8 +89,19 @@ export default class PreferencesController {
     global.setPreference = (key, value) => {
       return this.setFeatureFlag(key, value)
     }
+
+    this.store.subscribe((newState) => {
+      publish('PreferencesController.stateChanged', newState)
+    })
+    registerActionHandler('PreferencesController.getState', () =>
+      this.store.getState(),
+    )
   }
   // PUBLIC METHODS
+
+  destroy() {
+    unregisterActionHandler('PreferencesController.getState')
+  }
 
   /**
    * Sets the {@code forgottenPassword} state property

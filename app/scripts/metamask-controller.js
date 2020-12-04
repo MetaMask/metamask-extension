@@ -57,7 +57,12 @@ import getRestrictedMethods from './controllers/permissions/restrictedMethods'
 import nodeify from './lib/nodeify'
 import accountImporter from './account-import-strategies'
 import seedPhraseVerifier from './lib/seed-phrase-verifier'
-import MetaMetricsController from './controllers/metametrics'
+import MetaMetricsController, {
+  getMetaMetricsState,
+  setMetaMetricsSendCount,
+  setParticipateInMetaMetrics,
+  trackMetaMetricsEvent,
+} from './controllers/metametrics'
 import { segment, segmentLegacy } from './lib/segment'
 
 export default class MetamaskController extends EventEmitter {
@@ -287,9 +292,9 @@ export default class MetamaskController extends EventEmitter {
       ),
       provider: this.provider,
       blockTracker: this.blockTracker,
-      trackMetaMetricsEvent: this.metaMetricsController.trackEvent,
+      trackMetaMetricsEvent,
       getParticipateInMetrics: () =>
-        this.metaMetricsController.state.participateInMetaMetrics,
+        getMetaMetricsState().participateInMetaMetrics,
     })
     this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation())
 
@@ -401,6 +406,12 @@ export default class MetamaskController extends EventEmitter {
     ) {
       this.submitPassword(password)
     }
+  }
+
+  destroy() {
+    this.networkController.destroy()
+    this.preferencesController.destroy()
+    this.metaMetricsController.destroy()
   }
 
   /**
@@ -819,10 +830,7 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // MetaMetrics
-      trackMetaMetricsEvent: nodeify(
-        metaMetricsController.trackEvent,
-        metaMetricsController,
-      ),
+      trackMetaMetricsEvent,
       trackMetaMetricsPage: nodeify(
         metaMetricsController.trackPage,
         metaMetricsController,
@@ -1969,7 +1977,7 @@ export default class MetamaskController extends EventEmitter {
     engine.push(
       createMethodMiddleware({
         origin,
-        sendMetrics: this.metaMetricsController.trackEvent,
+        sendMetrics: trackMetaMetricsEvent,
         handleWatchAssetRequest: this.preferencesController.requestWatchAsset.bind(
           this.preferencesController,
         ),
@@ -2179,7 +2187,7 @@ export default class MetamaskController extends EventEmitter {
       metamask: metamaskState,
     })
 
-    this.metaMetricsController.trackEvent(
+    trackMetaMetricsEvent(
       {
         event: name,
         category: 'Background',
@@ -2427,9 +2435,7 @@ export default class MetamaskController extends EventEmitter {
    */
   setParticipateInMetaMetrics(bool, cb) {
     try {
-      const metaMetricsId = this.metaMetricsController.setParticipateInMetaMetrics(
-        bool,
-      )
+      const metaMetricsId = setParticipateInMetaMetrics(bool)
       cb(null, metaMetricsId)
       return
     } catch (err) {
@@ -2441,7 +2447,7 @@ export default class MetamaskController extends EventEmitter {
 
   setMetaMetricsSendCount(val, cb) {
     try {
-      this.metaMetricsController.setMetaMetricsSendCount(val)
+      setMetaMetricsSendCount(val)
       cb(null)
       return
     } catch (err) {

@@ -10,6 +10,7 @@ import firstTimeState from '../../localhostState'
 import createTxMeta from '../../../lib/createTxMeta'
 import { addHexPrefix } from '../../../../app/scripts/lib/util'
 import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction'
+import { unregisterActionHandler } from '../../../../app/scripts/lib/controller-message-system'
 
 const threeBoxSpies = {
   init: sinon.stub(),
@@ -129,6 +130,9 @@ describe('MetaMaskController', function () {
   })
 
   afterEach(function () {
+    if (metamaskController) {
+      metamaskController.destroy()
+    }
     nock.cleanAll()
     sandbox.restore()
   })
@@ -1119,6 +1123,9 @@ describe('MetaMaskController', function () {
       const syncWithAddresses = sinon.fake()
       sandbox.replace(metamaskController, 'preferencesController', {
         syncAddresses,
+        destroy: () => {
+          unregisterActionHandler('PreferencesController.getState')
+        },
       })
       sandbox.replace(metamaskController, 'accountTracker', {
         syncWithAddresses,
@@ -1137,6 +1144,9 @@ describe('MetaMaskController', function () {
       const syncWithAddresses = sinon.fake()
       sandbox.replace(metamaskController, 'preferencesController', {
         syncAddresses,
+        destroy: () => {
+          unregisterActionHandler('PreferencesController.getState')
+        },
       })
       sandbox.replace(metamaskController, 'accountTracker', {
         syncWithAddresses,
@@ -1161,6 +1171,9 @@ describe('MetaMaskController', function () {
       const syncWithAddresses = sinon.fake()
       sandbox.replace(metamaskController, 'preferencesController', {
         syncAddresses,
+        destroy: () => {
+          unregisterActionHandler('PreferencesController.getState')
+        },
       })
       sandbox.replace(metamaskController, 'accountTracker', {
         syncWithAddresses,

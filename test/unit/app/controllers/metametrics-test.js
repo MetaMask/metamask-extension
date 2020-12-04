@@ -1,6 +1,12 @@
 import { strict as assert } from 'assert'
+import ObservableStore from 'obs-store'
 import sinon from 'sinon'
 import MetaMetricsController from '../../../../app/scripts/controllers/metametrics'
+import {
+  registerActionHandler,
+  resetActionHandlers,
+  unregisterActionHandler,
+} from '../../../../app/scripts/lib/controller-message-system'
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../../app/scripts/lib/enums'
 import { createSegmentMock } from '../../../../app/scripts/lib/segment'
 import {
@@ -44,64 +50,43 @@ const DEFAULT_PAGE_PROPERTIES = {
   ...DEFAULT_SHARED_PROPERTIES,
 }
 
-function getMockNetworkController(
-  chainId = FAKE_CHAIN_ID,
-  provider = { type: NETWORK },
-) {
-  let networkStore = { chainId, provider }
-  const on = sinon.stub().withArgs('networkDidChange')
-  const updateState = (newState) => {
-    networkStore = { ...networkStore, ...newState }
-    on.getCall(0).args[1]()
-  }
-  return {
-    store: {
-      getState: () => networkStore,
-      updateState,
-    },
-    getCurrentChainId: () => networkStore.chainId,
-    getNetworkIdentifier: () => networkStore.provider.type,
-    on,
-  }
+function registerProviderActionHandler() {
+  const providerConfig = new ObservableStore({
+    chainId: FAKE_CHAIN_ID,
+    type: NETWORK,
+  })
+
+  unregisterActionHandler('NetworkController.getProviderConfig')
+
+  registerActionHandler('NetworkController.getProviderConfig', () =>
+    providerConfig.getState(),
+  )
+
+  return providerConfig
 }
 
-function getMockPreferencesStore({ currentLocale = LOCALE } = {}) {
-  let preferencesStore = {
-    currentLocale,
-  }
-  const subscribe = sinon.stub()
-  const updateState = (newState) => {
-    preferencesStore = { ...preferencesStore, ...newState }
-    subscribe.getCall(0).args[0](preferencesStore)
-  }
-  return {
-    getState: sinon.stub().returns(preferencesStore),
-    updateState,
-    subscribe,
-  }
+function registerPreferencesActionHandler() {
+  const preferencesStore = new ObservableStore({
+    locale: LOCALE,
+  })
+
+  unregisterActionHandler('PreferencesController.getState')
+
+  registerActionHandler('PreferencesController.getState', () =>
+    preferencesStore.getState(),
+  )
+
+  return preferencesStore
 }
 
 function getMetaMetricsController({
   participateInMetaMetrics = true,
   metaMetricsId = TEST_META_METRICS_ID,
   metaMetricsSendCount = 0,
-  preferencesStore = getMockPreferencesStore(),
-  networkController = getMockNetworkController(),
 } = {}) {
   return new MetaMetricsController({
     segment,
     segmentLegacy,
-    getNetworkIdentifier: networkController.getNetworkIdentifier.bind(
-      networkController,
-    ),
-    getCurrentChainId: networkController.getCurrentChainId.bind(
-      networkController,
-    ),
-    onNetworkDidChange: networkController.on.bind(
-      networkController,
-      'networkDidChange',
-    ),
-    preferencesStore,
     version: '0.0.1',
     environment: 'test',
     initState: {
@@ -112,12 +97,14 @@ function getMetaMetricsController({
   })
 }
 describe('MetaMetricsController', function () {
+  beforeEach(function () {
+    registerProviderActionHandler()
+    registerPreferencesActionHandler()
+  })
   describe('constructor', function () {
     it('should properly initialize', function () {
       const metaMetricsController = getMetaMetricsController()
       assert.strictEqual(metaMetricsController.version, VERSION)
-      assert.strictEqual(metaMetricsController.network, NETWORK)
-      assert.strictEqual(metaMetricsController.chainId, FAKE_CHAIN_ID)
       assert.strictEqual(
         metaMetricsController.state.participateInMetaMetrics,
         true,
@@ -126,35 +113,6 @@ describe('MetaMetricsController', function () {
         metaMetricsController.state.metaMetricsId,
         TEST_META_METRICS_ID,
       )
-      assert.strictEqual(metaMetricsController.locale, LOCALE.replace('_', '-'))
-    })
-
-    it('should update when network changes', function () {
-      const networkController = getMockNetworkController()
-      const metaMetricsController = getMetaMetricsController({
-        networkController,
-      })
-      assert.strictEqual(metaMetricsController.network, NETWORK)
-      networkController.store.updateState({
-        provider: {
-          type: 'NEW_NETWORK',
-        },
-        chainId: '0xaab',
-      })
-      assert.strictEqual(metaMetricsController.network, 'NEW_NETWORK')
-      assert.strictEqual(metaMetricsController.chainId, '0xaab')
-    })
-
-    it('should update when preferences changes', function () {
-      const preferencesStore = getMockPreferencesStore()
-      const metaMetricsController = getMetaMetricsController({
-        preferencesStore,
-      })
-      assert.strictEqual(metaMetricsController.network, NETWORK)
-      preferencesStore.updateState({
-        currentLocale: 'en_UK',
-      })
-      assert.strictEqual(metaMetricsController.locale, 'en-UK')
     })
   })
 
@@ -324,6 +282,35 @@ describe('MetaMetricsController', function () {
             ...DEFAULT_EVENT_PROPERTIES,
           },
         })
+      metaMetricsController.trackEvent({
+        event: 'Fake Event',
+        category: 'Unit Test',
+        properties: {
+          test: 1,
+        },
+      })
+      mock.verify()
+    })
+
+    it('should change network and chainId when network updates', function () {
+      const providerStore = registerProviderActionHandler()
+      const mock = sinon.mock(segment)
+      const metaMetricsController = getMetaMetricsController()
+      mock
+        .expects('track')
+        .once()
+        .withArgs({
+          event: 'Fake Event',
+          userId: TEST_META_METRICS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            test: 1,
+            ...DEFAULT_EVENT_PROPERTIES,
+            network: 'Fake',
+            chain_id: 'Fake',
+          },
+        })
+      providerStore.updateState({ type: 'Fake', chainId: 'Fake' })
       metaMetricsController.trackEvent({
         event: 'Fake Event',
         category: 'Unit Test',
@@ -508,9 +495,7 @@ describe('MetaMetricsController', function () {
     it('should track a page view if isOptInPath is true and user not yet opted in', function () {
       const mock = sinon.mock(segment)
       const metaMetricsController = getMetaMetricsController({
-        preferencesStore: getMockPreferencesStore({
-          participateInMetaMetrics: null,
-        }),
+        participateInMetaMetrics: null,
       })
       mock
         .expects('page')
@@ -542,5 +527,6 @@ describe('MetaMetricsController', function () {
     segment.flush()
     segmentLegacy.flush()
     sinon.restore()
+    resetActionHandlers()
   })
 })

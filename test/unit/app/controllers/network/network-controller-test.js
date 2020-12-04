@@ -16,6 +16,10 @@ describe('NetworkController', function () {
       networkController.setInfuraProjectId('foo')
     })
 
+    afterEach(function () {
+      networkController.destroy()
+    })
+
     describe('#provider', function () {
       it('provider should be updatable without reassignment', function () {
         networkController.initializeProvider(networkControllerProviderConfig)

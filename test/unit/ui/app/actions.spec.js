@@ -77,6 +77,10 @@ describe('Actions', function () {
     global.ethQuery = new EthQuery(provider)
   })
 
+  afterEach(function () {
+    metamaskController.destroy()
+  })
+
   describe('#tryUnlockMetamask', function () {
     let submitPasswordSpy, verifySeedPhraseSpy
 

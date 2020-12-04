@@ -34,6 +34,11 @@ describe('DetectTokensController', function () {
     network.initializeProvider(networkControllerProviderConfig)
   })
 
+  afterEach(function () {
+    network.destroy()
+    preferences.destroy()
+  })
+
   after(function () {
     sandbox.restore()
   })

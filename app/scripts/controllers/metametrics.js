@@ -6,6 +6,17 @@ import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
 } from '../../../shared/constants/metametrics'
+import {
+  call,
+  registerActionHandler,
+  unregisterActionHandler,
+} from '../lib/controller-message-system'
+import {
+  getCurrentChainId,
+  getNetworkIdentifier,
+  getProviderConfig,
+} from './network/network'
+import { getPreferencesState } from './preferences'
 
 /**
  * Used to determine whether or not to attach a user's metametrics id
@@ -29,6 +40,30 @@ const trackableSendCounts = {
 
 export function sendCountIsTrackable(sendCount) {
   return Boolean(trackableSendCounts[sendCount])
+}
+
+/** Action constants */
+export const TRACK_METAMETRICS_EVENT = 'MetaMetricsController.trackEvent'
+export const SET_PARTICIPATE_IN_METAMETRICS =
+  'MetaMetricsController.setParticipateInMetaMetrics'
+export const SET_METAMETRICS_SEND_COUNT =
+  'MetaMetricsController.setMetaMetricsSendCount'
+export const GET_METAMETRICS_STATE = 'MetaMetricsController.getState'
+
+/** Action methods */
+export function trackMetaMetricsEvent(...params) {
+  return call(TRACK_METAMETRICS_EVENT, ...params)
+}
+export function getMetaMetricsState() {
+  return call(GET_METAMETRICS_STATE)
+}
+
+export function setParticipateInMetaMetrics(participateInMetaMetrics) {
+  return call(SET_PARTICIPATE_IN_METAMETRICS, participateInMetaMetrics)
+}
+
+export function setMetaMetricsSendCount(sendCount) {
+  return call(SET_METAMETRICS_SEND_COUNT, sendCount)
 }
 
 /**
@@ -59,33 +94,11 @@ export default class MetaMetricsController {
    *  events that conform to the new MetaMetrics tracking plan.
    * @param {Object} segmentLegacy - an instance of analytics-node for
    *  tracking legacy schema events. Will eventually be phased out
-   * @param {Object} preferencesStore - The preferences controller store, used
-   *  to access and subscribe to preferences that will be attached to events
-   * @param {function} onNetworkDidChange - Used to attach a listener to the
-   *  networkDidChange event emitted by the networkController
-   * @param {function} getCurrentChainId - Gets the current chain id from the
-   *  network controller
-   * @param {function} getNetworkIdentifier - Gets the current network
-   *  identifier from the network controller
    * @param {string} version - The version of the extension
    * @param {string} environment - The environment the extension is running in
    * @param {MetaMetricsControllerState} initState - State to initialized with
    */
-  constructor({
-    segment,
-    segmentLegacy,
-    preferencesStore,
-    onNetworkDidChange,
-    getCurrentChainId,
-    getNetworkIdentifier,
-    version,
-    environment,
-    initState,
-  }) {
-    const prefState = preferencesStore.getState()
-    this.chainId = getCurrentChainId()
-    this.network = getNetworkIdentifier()
-    this.locale = prefState.currentLocale.replace('_', '-')
+  constructor({ segment, segmentLegacy, version, environment, initState }) {
     this.version =
       environment === 'production' ? version : `${version}-${environment}`
 
@@ -96,16 +109,26 @@ export default class MetaMetricsController {
       ...initState,
     })
 
-    preferencesStore.subscribe(({ currentLocale }) => {
-      this.locale = currentLocale.replace('_', '-')
-    })
-
-    onNetworkDidChange(() => {
-      this.chainId = getCurrentChainId()
-      this.network = getNetworkIdentifier()
-    })
     this.segment = segment
     this.segmentLegacy = segmentLegacy
+
+    registerActionHandler(TRACK_METAMETRICS_EVENT, this.trackEvent)
+    registerActionHandler(GET_METAMETRICS_STATE, () => this.store.getState())
+    registerActionHandler(
+      SET_PARTICIPATE_IN_METAMETRICS,
+      this.setParticipateInMetaMetrics,
+    )
+    registerActionHandler(
+      SET_METAMETRICS_SEND_COUNT,
+      this.setMetaMetricsSendCount,
+    )
+  }
+
+  destroy() {
+    unregisterActionHandler(TRACK_METAMETRICS_EVENT)
+    unregisterActionHandler(GET_METAMETRICS_STATE)
+    unregisterActionHandler(SET_PARTICIPATE_IN_METAMETRICS)
+    unregisterActionHandler(SET_METAMETRICS_SEND_COUNT)
   }
 
   generateMetaMetricsId() {
@@ -186,6 +209,10 @@ export default class MetaMetricsController {
       referrer,
       environmentType = ENVIRONMENT_TYPE_BACKGROUND,
     } = rawPayload
+    const providerConfig = getProviderConfig()
+    const chainId = getCurrentChainId(providerConfig)
+    const network = getNetworkIdentifier(providerConfig)
+    const locale = getPreferencesState().locale.replace('_', '-')
     return {
       event,
       properties: {
@@ -200,9 +227,9 @@ export default class MetaMetricsController {
         value,
         currency,
         category,
-        network: this.network,
-        locale: this.locale,
-        chain_id: this.chainId,
+        network,
+        locale,
+        chain_id: chainId,
         environment_type: environmentType,
       },
       context: this._buildContext(referrer, page),
@@ -296,14 +323,19 @@ export default class MetaMetricsController {
     const { metaMetricsId } = this.state
     const idTrait = metaMetricsId ? 'userId' : 'anonymousId'
     const idValue = metaMetricsId ?? METAMETRICS_ANONYMOUS_ID
+    const providerConfig = getProviderConfig()
+    const chainId = getCurrentChainId(providerConfig)
+    const network = getNetworkIdentifier(providerConfig)
+    const locale = getPreferencesState().locale.replace('_', '-')
+
     this.segment.page({
       [idTrait]: idValue,
       name,
       properties: {
         params,
-        locale: this.locale,
-        network: this.network,
-        chain_id: this.chainId,
+        locale,
+        network,
+        chain_id: chainId,
         environment_type: environmentType,
       },
       context: this._buildContext(referrer, page),

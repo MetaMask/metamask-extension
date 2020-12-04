@@ -18,6 +18,7 @@ describe('preferences controller', function () {
 
   afterEach(function () {
     sinon.restore()
+    preferencesController.destroy()
   })
 
   describe('setAddresses', function () {

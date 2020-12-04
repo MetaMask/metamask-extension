@@ -10,6 +10,11 @@ import {
   createEventEmitterProxy,
 } from 'swappable-obj-proxy'
 import EthQuery from 'eth-query'
+import {
+  call,
+  registerActionHandler,
+  unregisterActionHandler,
+} from '../../lib/controller-message-system'
 import createMetamaskMiddleware from './createMetamaskMiddleware'
 import createInfuraClient from './createInfuraClient'
 import createJsonRpcClient from './createJsonRpcClient'
@@ -20,6 +25,26 @@ import {
   INFURA_PROVIDER_TYPES,
   NETWORK_TYPE_TO_ID_MAP,
 } from './enums'
+
+/** Action Constants */
+export const GET_PROVIDER_CONFIG = 'NetworkController.getProviderConfig'
+
+/** Selectors */
+export function getNetworkIdentifier(providerConfig) {
+  return providerConfig.type === 'rpc'
+    ? providerConfig.rpcUrl
+    : providerConfig.type
+}
+
+export function getCurrentChainId(providerConfig) {
+  const { type, chainId: configChainId } = providerConfig
+  return NETWORK_TYPE_TO_ID_MAP[type]?.chainId || configChainId
+}
+
+/** actions */
+export function getProviderConfig() {
+  return call(GET_PROVIDER_CONFIG)
+}
 
 const env = process.env.METAMASK_ENV
 
@@ -65,6 +90,18 @@ export default class NetworkController extends EventEmitter {
     this._blockTrackerProxy = null
 
     this.on('networkDidChange', this.lookupNetwork)
+    registerActionHandler(GET_PROVIDER_CONFIG, () => {
+      return this.getProviderConfig
+    })
+
+    this.getNetworkIdentifier = () =>
+      getNetworkIdentifier(this.getProviderConfig())
+
+    this.getCurrentChainId = () => getCurrentChainId(this.getProviderConfig())
+  }
+
+  destroy() {
+    unregisterActionHandler(GET_PROVIDER_CONFIG)
   }
 
   /**
@@ -150,8 +187,7 @@ export default class NetworkController extends EventEmitter {
   }
 
   getCurrentChainId() {
-    const { type, chainId: configChainId } = this.getProviderConfig()
-    return NETWORK_TYPE_TO_ID_MAP[type]?.chainId || configChainId
+    return getCurrentChainId(this.store.getState())
   }
 
   setRpcTarget(rpcUrl, chainId, ticker = 'ETH', nickname = '', rpcPrefs) {
