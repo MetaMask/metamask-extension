@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { action } from '@storybook/addon-actions'
-import { object } from '@storybook/addon-knobs/react'
+import { object } from '@storybook/addon-knobs'
 import Button from '../../../components/ui/button'
 import mockQuoteData from './mock-quote-data'
 import SelectQuotePopover from '.'

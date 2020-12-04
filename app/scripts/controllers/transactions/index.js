@@ -929,15 +929,8 @@ export default class TransactionController extends EventEmitter {
       if (txMeta.txReceipt.status === '0x0') {
         this._trackMetaMetricsEvent({
           event: 'Swap Failed',
+          sensitiveProperties: { ...txMeta.swapMetaData },
           category: 'swaps',
-          excludeMetaMetricsId: false,
-        })
-
-        this._trackMetaMetricsEvent({
-          event: 'Swap Failed',
-          properties: { ...txMeta.swapMetaData },
-          category: 'swaps',
-          excludeMetaMetricsId: true,
         })
       } else {
         const tokensReceived = getSwapsTokensReceivedFromTxMeta(
@@ -965,19 +958,12 @@ export default class TransactionController extends EventEmitter {
         this._trackMetaMetricsEvent({
           event: 'Swap Completed',
           category: 'swaps',
-          excludeMetaMetricsId: false,
-        })
-
-        this._trackMetaMetricsEvent({
-          event: 'Swap Completed',
-          category: 'swaps',
-          properties: {
+          sensitiveProperties: {
             ...txMeta.swapMetaData,
             token_to_amount_received: tokensReceived,
             quote_vs_executionRatio: quoteVsExecutionRatio,
             estimated_vs_used_gasRatio: estimatedVsUsedGasRatio,
           },
-          excludeMetaMetricsId: true,
         })
       }
     }

@@ -13,7 +13,7 @@ describe('Alert', function () {
 
   it('renders nothing with no visible boolean in state', function () {
     const alert = wrapper.find('.global-alert')
-    assert.equal(alert.length, 0)
+    assert.strictEqual(alert.length, 0)
   })
 
   it('renders when visible in state is true, and message', function () {
@@ -22,10 +22,10 @@ describe('Alert', function () {
     wrapper.setState({ visible: true, msg: errorMessage })
 
     const alert = wrapper.find('.global-alert')
-    assert.equal(alert.length, 1)
+    assert.strictEqual(alert.length, 1)
 
     const errorText = wrapper.find('.msg')
-    assert.equal(errorText.text(), errorMessage)
+    assert.strictEqual(errorText.text(), errorMessage)
   })
 
   it('calls component method when componentWillReceiveProps is called', function () {

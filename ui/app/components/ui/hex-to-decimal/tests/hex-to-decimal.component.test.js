@@ -10,7 +10,7 @@ describe('HexToDecimal Component', function () {
     )
 
     assert.ok(wrapper.hasClass('hex-to-decimal'))
-    assert.equal(wrapper.text(), '12345')
+    assert.strictEqual(wrapper.text(), '12345')
   })
 
   it('should render an unprefixed hex as a decimal with a className', function () {
@@ -19,6 +19,6 @@ describe('HexToDecimal Component', function () {
     )
 
     assert.ok(wrapper.hasClass('hex-to-decimal'))
-    assert.equal(wrapper.text(), '6789')
+    assert.strictEqual(wrapper.text(), '6789')
   })
 })

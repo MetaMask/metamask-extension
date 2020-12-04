@@ -12,7 +12,7 @@ describe('UserPreferencedCurrencyInput Component', function () {
       )
 
       assert.ok(wrapper)
-      assert.equal(wrapper.find(TokenInput).length, 1)
+      assert.strictEqual(wrapper.find(TokenInput).length, 1)
     })
 
     it('should render showFiat for TokenInput based on preferences.useNativeCurrencyAsPrimaryCurrency', function () {
@@ -24,10 +24,10 @@ describe('UserPreferencedCurrencyInput Component', function () {
       )
 
       assert.ok(wrapper)
-      assert.equal(wrapper.find(TokenInput).length, 1)
-      assert.equal(wrapper.find(TokenInput).props().showFiat, false)
+      assert.strictEqual(wrapper.find(TokenInput).length, 1)
+      assert.strictEqual(wrapper.find(TokenInput).props().showFiat, false)
       wrapper.setProps({ useNativeCurrencyAsPrimaryCurrency: false })
-      assert.equal(wrapper.find(TokenInput).props().showFiat, true)
+      assert.strictEqual(wrapper.find(TokenInput).props().showFiat, true)
     })
   })
 })

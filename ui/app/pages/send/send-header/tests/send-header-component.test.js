@@ -43,16 +43,16 @@ describe('SendHeader Component', function () {
 
   describe('onClose', function () {
     it('should call clearSend', function () {
-      assert.equal(propsMethodSpies.clearSend.callCount, 0)
+      assert.strictEqual(propsMethodSpies.clearSend.callCount, 0)
       wrapper.instance().onClose()
-      assert.equal(propsMethodSpies.clearSend.callCount, 1)
+      assert.strictEqual(propsMethodSpies.clearSend.callCount, 1)
     })
 
     it('should call history.push', function () {
-      assert.equal(historySpies.push.callCount, 0)
+      assert.strictEqual(historySpies.push.callCount, 0)
       wrapper.instance().onClose()
-      assert.equal(historySpies.push.callCount, 1)
-      assert.equal(
+      assert.strictEqual(historySpies.push.callCount, 1)
+      assert.strictEqual(
         historySpies.push.getCall(0).args[0],
         'mostRecentOverviewPage',
       )
@@ -61,15 +61,15 @@ describe('SendHeader Component', function () {
 
   describe('render', function () {
     it('should render a PageContainerHeader component', function () {
-      assert.equal(wrapper.find(PageContainerHeader).length, 1)
+      assert.strictEqual(wrapper.find(PageContainerHeader).length, 1)
     })
 
     it('should pass the correct props to PageContainerHeader', function () {
       const { onClose, title } = wrapper.find(PageContainerHeader).props()
-      assert.equal(title, 'mockTitleKey')
-      assert.equal(SendHeader.prototype.onClose.callCount, 0)
+      assert.strictEqual(title, 'mockTitleKey')
+      assert.strictEqual(SendHeader.prototype.onClose.callCount, 0)
       onClose()
-      assert.equal(SendHeader.prototype.onClose.callCount, 1)
+      assert.strictEqual(SendHeader.prototype.onClose.callCount, 1)
     })
   })
 })

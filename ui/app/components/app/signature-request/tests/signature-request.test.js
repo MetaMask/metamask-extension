@@ -23,7 +23,7 @@ describe('Signature Request Component', function () {
       )
 
       assert(wrapper.is('div'))
-      assert.equal(wrapper.length, 1)
+      assert.strictEqual(wrapper.length, 1)
       assert(wrapper.hasClass('signature-request'))
     })
   })

@@ -27,12 +27,15 @@ describe('Page Container Header', function () {
 
   describe('Render Header Row', function () {
     it('renders back button', function () {
-      assert.equal(wrapper.find('.page-container__back-button').length, 1)
-      assert.equal(wrapper.find('.page-container__back-button').text(), 'Back')
+      assert.strictEqual(wrapper.find('.page-container__back-button').length, 1)
+      assert.strictEqual(
+        wrapper.find('.page-container__back-button').text(),
+        'Back',
+      )
     })
 
     it('ensures style prop', function () {
-      assert.equal(
+      assert.strictEqual(
         wrapper.find('.page-container__back-button').props().style,
         style,
       )
@@ -40,7 +43,7 @@ describe('Page Container Header', function () {
 
     it('should call back button when click is simulated', function () {
       wrapper.find('.page-container__back-button').prop('onClick')()
-      assert.equal(onBackButtonClick.callCount, 1)
+      assert.strictEqual(onBackButtonClick.callCount, 1)
     })
   })
 
@@ -57,29 +60,29 @@ describe('Page Container Header', function () {
     })
 
     it('renders page container', function () {
-      assert.equal(header.length, 1)
-      assert.equal(headerRow.length, 1)
-      assert.equal(pageTitle.length, 1)
-      assert.equal(pageSubtitle.length, 1)
-      assert.equal(pageClose.length, 1)
-      assert.equal(pageTab.length, 1)
+      assert.strictEqual(header.length, 1)
+      assert.strictEqual(headerRow.length, 1)
+      assert.strictEqual(pageTitle.length, 1)
+      assert.strictEqual(pageSubtitle.length, 1)
+      assert.strictEqual(pageClose.length, 1)
+      assert.strictEqual(pageTab.length, 1)
     })
 
     it('renders title', function () {
-      assert.equal(pageTitle.text(), 'Test Title')
+      assert.strictEqual(pageTitle.text(), 'Test Title')
     })
 
     it('renders subtitle', function () {
-      assert.equal(pageSubtitle.text(), 'Test Subtitle')
+      assert.strictEqual(pageSubtitle.text(), 'Test Subtitle')
     })
 
     it('renders tabs', function () {
-      assert.equal(pageTab.text(), 'Test Tab')
+      assert.strictEqual(pageTab.text(), 'Test Tab')
     })
 
     it('should call close when click is simulated', function () {
       pageClose.prop('onClick')()
-      assert.equal(onClose.callCount, 1)
+      assert.strictEqual(onClose.callCount, 1)
     })
   })
 })

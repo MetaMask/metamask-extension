@@ -74,6 +74,7 @@ import { QUOTES_EXPIRED_ERROR } from '../../../helpers/constants/swaps'
 import CountdownTimer from '../countdown-timer'
 import SwapsFooter from '../swaps-footer'
 import InfoTooltip from '../../../components/ui/info-tooltip'
+import ViewQuotePriceDifference from './view-quote-price-difference'
 
 export default function ViewQuote() {
   const history = useHistory()
@@ -279,7 +280,7 @@ export default function ViewQuote() {
     }
   }, [originalApproveAmount, approveAmount])
 
-  const showWarning =
+  const showInsufficientWarning =
     (balanceError || tokenBalanceNeeded || ethBalanceNeeded) && !warningHidden
 
   const numberOfQuotes = Object.values(quotes).length
@@ -452,7 +453,7 @@ export default function ViewQuote() {
     </span>
   )
 
-  const actionableMessage = t('swapApproveNeedMoreTokens', [
+  const actionableInsufficientMessage = t('swapApproveNeedMoreTokens', [
     <span key="swapApproveNeedMoreTokens-1" className="view-quote__bold">
       {tokenBalanceNeeded || ethBalanceNeeded}
     </span>,
@@ -460,6 +461,17 @@ export default function ViewQuote() {
       ? sourceTokenSymbol
       : 'ETH',
   ])
+
+  const viewQuotePriceDifferenceComponent = (
+    <ViewQuotePriceDifference
+      usedQuote={usedQuote}
+      sourceTokenValue={sourceTokenValue}
+      destinationTokenValue={destinationTokenValue}
+    />
+  )
+
+  const isShowingWarning =
+    showInsufficientWarning || viewQuotePriceDifferenceComponent !== null
 
   return (
     <div className="view-quote">
@@ -474,17 +486,22 @@ export default function ViewQuote() {
             onQuoteDetailsIsOpened={quoteDetailsOpened}
           />
         )}
-        <div className="view-quote__insufficient-eth-warning-wrapper">
-          {showWarning && (
+        <div
+          className={classnames('view-quote__warning-wrapper', {
+            'view-quote__warning-wrapper--thin': !isShowingWarning,
+          })}
+        >
+          {!showInsufficientWarning && viewQuotePriceDifferenceComponent}
+          {showInsufficientWarning && (
             <ActionableMessage
-              message={actionableMessage}
+              message={actionableInsufficientMessage}
               onClose={() => setWarningHidden(true)}
             />
           )}
         </div>
         <div
           className={classnames('view-quote__countdown-timer-container', {
-            'view-quote__countdown-timer-container--thin': showWarning,
+            'view-quote__countdown-timer-container--thin': isShowingWarning,
           })}
         >
           <CountdownTimer
@@ -496,7 +513,7 @@ export default function ViewQuote() {
         </div>
         <div
           className={classnames('view-quote__main-quote-summary-container', {
-            'view-quote__main-quote-summary-container--thin': showWarning,
+            'view-quote__main-quote-summary-container--thin': isShowingWarning,
           })}
         >
           <MainQuoteSummary
@@ -540,7 +557,7 @@ export default function ViewQuote() {
         </div>
         <div
           className={classnames('view-quote__fee-card-container', {
-            'view-quote__fee-card-container--thin': showWarning,
+            'view-quote__fee-card-container--thin': isShowingWarning,
             'view-quote__fee-card-container--three-rows':
               approveTxParams && (!balanceError || warningHidden),
           })}
@@ -577,6 +594,7 @@ export default function ViewQuote() {
         submitText={t('swap')}
         onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}
         disabled={balanceError || gasPrice === null || gasPrice === undefined}
+        className={isShowingWarning && 'view-quote__thin-swaps-footer'}
         showTermsOfService
         showTopBorder
       />

@@ -106,27 +106,27 @@ describe('Send Component', function () {
   describe('componentDidMount', function () {
     it('should call props.fetchBasicGasAndTimeEstimates', function () {
       propsMethodSpies.fetchBasicGasEstimates.resetHistory()
-      assert.equal(propsMethodSpies.fetchBasicGasEstimates.callCount, 0)
+      assert.strictEqual(propsMethodSpies.fetchBasicGasEstimates.callCount, 0)
       wrapper.instance().componentDidMount()
-      assert.equal(propsMethodSpies.fetchBasicGasEstimates.callCount, 1)
+      assert.strictEqual(propsMethodSpies.fetchBasicGasEstimates.callCount, 1)
     })
 
     it('should call this.updateGas', async function () {
       SendTransactionScreen.prototype.updateGas.resetHistory()
       propsMethodSpies.updateSendErrors.resetHistory()
-      assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 0)
+      assert.strictEqual(SendTransactionScreen.prototype.updateGas.callCount, 0)
       wrapper.instance().componentDidMount()
       await timeout(250)
-      assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 1)
+      assert.strictEqual(SendTransactionScreen.prototype.updateGas.callCount, 1)
     })
   })
 
   describe('componentWillUnmount', function () {
     it('should call this.props.resetSendState', function () {
       propsMethodSpies.resetSendState.resetHistory()
-      assert.equal(propsMethodSpies.resetSendState.callCount, 0)
+      assert.strictEqual(propsMethodSpies.resetSendState.callCount, 0)
       wrapper.instance().componentWillUnmount()
-      assert.equal(propsMethodSpies.resetSendState.callCount, 1)
+      assert.strictEqual(propsMethodSpies.resetSendState.callCount, 1)
     })
   })
 
@@ -139,7 +139,7 @@ describe('Send Component', function () {
         },
       })
       assert(utilsMethodStubs.doesAmountErrorRequireUpdate.calledTwice)
-      assert.deepEqual(
+      assert.deepStrictEqual(
         utilsMethodStubs.doesAmountErrorRequireUpdate.getCall(0).args[0],
         {
           balance: 'mockBalance',
@@ -164,7 +164,7 @@ describe('Send Component', function () {
           balance: 'mockBalance',
         },
       })
-      assert.equal(utilsMethodStubs.getAmountErrorObject.callCount, 0)
+      assert.strictEqual(utilsMethodStubs.getAmountErrorObject.callCount, 0)
     })
 
     it('should call getAmountErrorObject if doesAmountErrorRequireUpdate returns true', function () {
@@ -174,8 +174,8 @@ describe('Send Component', function () {
           balance: 'balanceChanged',
         },
       })
-      assert.equal(utilsMethodStubs.getAmountErrorObject.callCount, 1)
-      assert.deepEqual(
+      assert.strictEqual(utilsMethodStubs.getAmountErrorObject.callCount, 1)
+      assert.deepStrictEqual(
         utilsMethodStubs.getAmountErrorObject.getCall(0).args[0],
         {
           amount: 'mockAmount',
@@ -200,8 +200,8 @@ describe('Send Component', function () {
           balance: 'balanceChanged',
         },
       })
-      assert.equal(utilsMethodStubs.getGasFeeErrorObject.callCount, 1)
-      assert.deepEqual(
+      assert.strictEqual(utilsMethodStubs.getGasFeeErrorObject.callCount, 1)
+      assert.deepStrictEqual(
         utilsMethodStubs.getGasFeeErrorObject.getCall(0).args[0],
         {
           balance: 'mockBalance',
@@ -222,7 +222,7 @@ describe('Send Component', function () {
       wrapper.instance().componentDidUpdate({
         from: { address: 'mockAddress', balance: 'mockBalance' },
       })
-      assert.equal(utilsMethodStubs.getGasFeeErrorObject.callCount, 0)
+      assert.strictEqual(utilsMethodStubs.getGasFeeErrorObject.callCount, 0)
     })
 
     it('should not call getGasFeeErrorObject if doesAmountErrorRequireUpdate returns true but sendToken is falsy', function () {
@@ -233,7 +233,7 @@ describe('Send Component', function () {
           balance: 'balanceChanged',
         },
       })
-      assert.equal(utilsMethodStubs.getGasFeeErrorObject.callCount, 0)
+      assert.strictEqual(utilsMethodStubs.getGasFeeErrorObject.callCount, 0)
     })
 
     it('should call updateSendErrors with the expected params if sendToken is falsy', function () {
@@ -244,11 +244,14 @@ describe('Send Component', function () {
           balance: 'balanceChanged',
         },
       })
-      assert.equal(propsMethodSpies.updateSendErrors.callCount, 1)
-      assert.deepEqual(propsMethodSpies.updateSendErrors.getCall(0).args[0], {
-        amount: 'mockAmountError',
-        gasFee: null,
-      })
+      assert.strictEqual(propsMethodSpies.updateSendErrors.callCount, 1)
+      assert.deepStrictEqual(
+        propsMethodSpies.updateSendErrors.getCall(0).args[0],
+        {
+          amount: 'mockAmountError',
+          gasFee: null,
+        },
+      )
     })
 
     it('should call updateSendErrors with the expected params if sendToken is truthy', function () {
@@ -261,11 +264,14 @@ describe('Send Component', function () {
           balance: 'balanceChanged',
         },
       })
-      assert.equal(propsMethodSpies.updateSendErrors.callCount, 1)
-      assert.deepEqual(propsMethodSpies.updateSendErrors.getCall(0).args[0], {
-        amount: 'mockAmountError',
-        gasFee: 'mockGasFeeError',
-      })
+      assert.strictEqual(propsMethodSpies.updateSendErrors.callCount, 1)
+      assert.deepStrictEqual(
+        propsMethodSpies.updateSendErrors.getCall(0).args[0],
+        {
+          amount: 'mockAmountError',
+          gasFee: 'mockGasFeeError',
+        },
+      )
     })
 
     it('should not call updateSendTokenBalance or this.updateGas if network === prevNetwork', function () {
@@ -278,8 +284,8 @@ describe('Send Component', function () {
         network: '3',
         sendToken: { address: 'mockTokenAddress', decimals: 18, symbol: 'TST' }, // Make sure not to hit updateGas when changing asset
       })
-      assert.equal(propsMethodSpies.updateSendTokenBalance.callCount, 0)
-      assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 0)
+      assert.strictEqual(propsMethodSpies.updateSendTokenBalance.callCount, 0)
+      assert.strictEqual(SendTransactionScreen.prototype.updateGas.callCount, 0)
     })
 
     it('should not call updateSendTokenBalance or this.updateGas if network === loading', function () {
@@ -293,8 +299,8 @@ describe('Send Component', function () {
         network: '3',
         sendToken: { address: 'mockTokenAddress', decimals: 18, symbol: 'TST' }, // Make sure not to hit updateGas when changing asset
       })
-      assert.equal(propsMethodSpies.updateSendTokenBalance.callCount, 0)
-      assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 0)
+      assert.strictEqual(propsMethodSpies.updateSendTokenBalance.callCount, 0)
+      assert.strictEqual(SendTransactionScreen.prototype.updateGas.callCount, 0)
     })
 
     it('should call updateSendTokenBalance and this.updateGas with the correct params', function () {
@@ -307,8 +313,8 @@ describe('Send Component', function () {
         network: '2',
         sendToken: { address: 'mockTokenAddress', decimals: 18, symbol: 'TST' }, // Make sure not to hit updateGas when changing asset
       })
-      assert.equal(propsMethodSpies.updateSendTokenBalance.callCount, 1)
-      assert.deepEqual(
+      assert.strictEqual(propsMethodSpies.updateSendTokenBalance.callCount, 1)
+      assert.deepStrictEqual(
         propsMethodSpies.updateSendTokenBalance.getCall(0).args[0],
         {
           sendToken: {
@@ -320,8 +326,8 @@ describe('Send Component', function () {
           address: 'mockAddress',
         },
       )
-      assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 1)
-      assert.deepEqual(
+      assert.strictEqual(SendTransactionScreen.prototype.updateGas.callCount, 1)
+      assert.deepStrictEqual(
         SendTransactionScreen.prototype.updateGas.getCall(0).args,
         [],
       )
@@ -337,8 +343,11 @@ describe('Send Component', function () {
         network: '3', // Make sure not to hit updateGas when changing network
         sendToken: { address: 'newSelectedToken' },
       })
-      assert.equal(propsMethodSpies.updateToNicknameIfNecessary.callCount, 0) // Network did not change
-      assert.equal(propsMethodSpies.updateAndSetGasLimit.callCount, 1)
+      assert.strictEqual(
+        propsMethodSpies.updateToNicknameIfNecessary.callCount,
+        0,
+      ) // Network did not change
+      assert.strictEqual(propsMethodSpies.updateAndSetGasLimit.callCount, 1)
     })
   })
 
@@ -346,8 +355,8 @@ describe('Send Component', function () {
     it('should call updateAndSetGasLimit with the correct params if no to prop is passed', function () {
       propsMethodSpies.updateAndSetGasLimit.resetHistory()
       wrapper.instance().updateGas()
-      assert.equal(propsMethodSpies.updateAndSetGasLimit.callCount, 1)
-      assert.deepEqual(
+      assert.strictEqual(propsMethodSpies.updateAndSetGasLimit.callCount, 1)
+      assert.deepStrictEqual(
         propsMethodSpies.updateAndSetGasLimit.getCall(0).args[0],
         {
           blockGasLimit: 'mockBlockGasLimit',
@@ -371,7 +380,7 @@ describe('Send Component', function () {
       propsMethodSpies.updateAndSetGasLimit.resetHistory()
       wrapper.setProps({ to: 'someAddress' })
       wrapper.instance().updateGas()
-      assert.equal(
+      assert.strictEqual(
         propsMethodSpies.updateAndSetGasLimit.getCall(0).args[0].to,
         'someaddress',
       )
@@ -380,7 +389,7 @@ describe('Send Component', function () {
     it('should call updateAndSetGasLimit with to set to lowercase if passed', function () {
       propsMethodSpies.updateAndSetGasLimit.resetHistory()
       wrapper.instance().updateGas({ to: '0xABC' })
-      assert.equal(
+      assert.strictEqual(
         propsMethodSpies.updateAndSetGasLimit.getCall(0).args[0].to,
         '0xabc',
       )
@@ -389,22 +398,22 @@ describe('Send Component', function () {
 
   describe('render', function () {
     it('should render a page-container class', function () {
-      assert.equal(wrapper.find('.page-container').length, 1)
+      assert.strictEqual(wrapper.find('.page-container').length, 1)
     })
 
     it('should render SendHeader and AddRecipient', function () {
-      assert.equal(wrapper.find(SendHeader).length, 1)
-      assert.equal(wrapper.find(AddRecipient).length, 1)
+      assert.strictEqual(wrapper.find(SendHeader).length, 1)
+      assert.strictEqual(wrapper.find(AddRecipient).length, 1)
     })
 
     it('should pass the history prop to SendHeader and SendFooter', function () {
       wrapper.setProps({
         to: '0x80F061544cC398520615B5d3e7A3BedD70cd4510',
       })
-      assert.equal(wrapper.find(SendHeader).length, 1)
-      assert.equal(wrapper.find(SendContent).length, 1)
-      assert.equal(wrapper.find(SendFooter).length, 1)
-      assert.deepEqual(wrapper.find(SendFooter).props(), {
+      assert.strictEqual(wrapper.find(SendHeader).length, 1)
+      assert.strictEqual(wrapper.find(SendContent).length, 1)
+      assert.strictEqual(wrapper.find(SendFooter).length, 1)
+      assert.deepStrictEqual(wrapper.find(SendFooter).props(), {
         history: { mockProp: 'history-abc' },
       })
     })
@@ -413,7 +422,7 @@ describe('Send Component', function () {
       wrapper.setProps({
         to: '0x80F061544cC398520615B5d3e7A3BedD70cd4510',
       })
-      assert.equal(wrapper.find(SendContent).props().showHexData, true)
+      assert.strictEqual(wrapper.find(SendContent).props().showHexData, true)
     })
   })
 
@@ -434,7 +443,7 @@ describe('Send Component', function () {
         '0x80F061544cC398520615B5d3e7A3BedD70cd4510',
       )
 
-      assert.deepEqual(instance.state, {
+      assert.deepStrictEqual(instance.state, {
         internalSearch: false,
         query: '0x80F061544cC398520615B5d3e7A3BedD70cd4510',
         toError: null,
@@ -449,7 +458,7 @@ describe('Send Component', function () {
       )
 
       clock.tick(1001)
-      assert.deepEqual(instance.state, {
+      assert.deepStrictEqual(instance.state, {
         internalSearch: false,
         query: '0x80F061544cC398520615B5d3e7a3BedD70cd4510',
         toError: 'invalidAddressRecipient',
@@ -465,7 +474,7 @@ describe('Send Component', function () {
       )
 
       clock.tick(1001)
-      assert.deepEqual(instance.state, {
+      assert.deepStrictEqual(instance.state, {
         internalSearch: false,
         query: '0x80F061544cC398520615B5d3e7a3BedD70cd4510',
         toError: 'invalidAddressRecipientNotEthNetwork',
@@ -481,7 +490,7 @@ describe('Send Component', function () {
       )
 
       clock.tick(1001)
-      assert.deepEqual(instance.state, {
+      assert.deepStrictEqual(instance.state, {
         internalSearch: false,
         query: '0x80F061544cC398520615B5d3e7a3BedD70cd4510',
         toError: 'invalidAddressRecipientNotEthNetwork',
@@ -489,7 +498,7 @@ describe('Send Component', function () {
       })
 
       instance.onRecipientInputChange('')
-      assert.deepEqual(instance.state, {
+      assert.deepStrictEqual(instance.state, {
         internalSearch: false,
         query: '',
         toError: '',
@@ -505,7 +514,7 @@ describe('Send Component', function () {
       )
 
       clock.tick(1001)
-      assert.deepEqual(instance.state, {
+      assert.deepStrictEqual(instance.state, {
         internalSearch: false,
         query: '0x13cb85823f78Cff38f0B0E90D3e975b8CB3AAd64',
         toError: null,

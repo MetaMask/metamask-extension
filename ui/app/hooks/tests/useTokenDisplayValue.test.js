@@ -130,7 +130,7 @@ describe('useTokenDisplayValue', function () {
           useTokenDisplayValue(`${idx}-fakestring`, test.token),
         )
         sinon.restore()
-        assert.equal(result.current, test.displayValue)
+        assert.strictEqual(result.current, test.displayValue)
       })
     })
   })

@@ -3,15 +3,15 @@ import nock from 'nock'
 import sinon from 'sinon'
 import proxyquire from 'proxyquire'
 
-const fakeLocalStorageHelpers = {}
+const fakeStorage = {}
 const fetchWithCache = proxyquire('./fetch-with-cache', {
-  '../../../lib/local-storage-helpers': fakeLocalStorageHelpers,
+  '../../../lib/storage-helpers': fakeStorage,
 }).default
 
 describe('Fetch with cache', function () {
   beforeEach(function () {
-    fakeLocalStorageHelpers.loadLocalStorageData = sinon.stub()
-    fakeLocalStorageHelpers.saveLocalStorageData = sinon.stub()
+    fakeStorage.getStorageItem = sinon.stub()
+    fakeStorage.setStorageItem = sinon.stub()
   })
   afterEach(function () {
     sinon.restore()
@@ -26,7 +26,7 @@ describe('Fetch with cache', function () {
     const response = await fetchWithCache(
       'https://fetchwithcache.metamask.io/price',
     )
-    assert.deepEqual(response, {
+    assert.deepStrictEqual(response, {
       average: 1,
     })
   })
@@ -36,7 +36,7 @@ describe('Fetch with cache', function () {
       .get('/price')
       .reply(200, '{"average": 2}')
 
-    fakeLocalStorageHelpers.loadLocalStorageData.returns({
+    fakeStorage.getStorageItem.returns({
       'https://fetchwithcache.metamask.io/price': {
         cachedResponse: { average: 1 },
         cachedTime: Date.now(),
@@ -46,7 +46,7 @@ describe('Fetch with cache', function () {
     const response = await fetchWithCache(
       'https://fetchwithcache.metamask.io/price',
     )
-    assert.deepEqual(response, {
+    assert.deepStrictEqual(response, {
       average: 1,
     })
   })
@@ -56,7 +56,7 @@ describe('Fetch with cache', function () {
       .get('/price')
       .reply(200, '{"average": 3}')
 
-    fakeLocalStorageHelpers.loadLocalStorageData.returns({
+    fakeStorage.getStorageItem.returns({
       'https://fetchwithcache.metamask.io/cached': {
         cachedResponse: { average: 1 },
         cachedTime: Date.now() - 1000,
@@ -68,7 +68,7 @@ describe('Fetch with cache', function () {
       {},
       { cacheRefreshTime: 123 },
     )
-    assert.deepEqual(response, {
+    assert.deepStrictEqual(response, {
       average: 3,
     })
   })

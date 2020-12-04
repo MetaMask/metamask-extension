@@ -1,12 +1,10 @@
-import React, { useMemo, useEffect, useRef, useState, useCallback } from 'react'
+import React, { useMemo, useState, useCallback } from 'react'
 import PropTypes from 'prop-types'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import {
   nonceSortedCompletedTransactionsSelector,
   nonceSortedPendingTransactionsSelector,
 } from '../../../selectors/transactions'
-import { getFeatureFlags } from '../../../selectors/selectors'
-import * as actions from '../../../ducks/gas/gas.duck'
 import { useI18nContext } from '../../../hooks/useI18nContext'
 import TransactionListItem from '../transaction-list-item'
 import Button from '../../ui/button'
@@ -63,15 +61,11 @@ export default function TransactionList({
   const [limit, setLimit] = useState(PAGE_INCREMENT)
   const t = useI18nContext()
 
-  const dispatch = useDispatch()
   const unfilteredPendingTransactions = useSelector(
     nonceSortedPendingTransactionsSelector,
   )
   const unfilteredCompletedTransactions = useSelector(
     nonceSortedCompletedTransactionsSelector,
-  )
-  const { transactionTime: transactionTimeFeatureActive } = useSelector(
-    getFeatureFlags,
   )
 
   const pendingTransactions = useMemo(
@@ -92,55 +86,6 @@ export default function TransactionList({
       ),
     [hideTokenTransactions, tokenAddress, unfilteredCompletedTransactions],
   )
-
-  const { fetchGasEstimates, fetchBasicGasAndTimeEstimates } = useMemo(
-    () => ({
-      fetchGasEstimates: (blockTime) =>
-        dispatch(actions.fetchGasEstimates(blockTime)),
-      fetchBasicGasAndTimeEstimates: () =>
-        dispatch(actions.fetchBasicGasAndTimeEstimates()),
-    }),
-    [dispatch],
-  )
-
-  // keep track of previous values from state.
-  // loaded is used here to determine if our effect has ran at least once.
-  const prevState = useRef({
-    loaded: false,
-    pendingTransactions,
-    transactionTimeFeatureActive,
-  })
-
-  useEffect(() => {
-    const { loaded } = prevState.current
-    const pendingTransactionAdded =
-      pendingTransactions.length > 0 &&
-      prevState.current.pendingTransactions.length === 0
-    const transactionTimeFeatureWasActivated =
-      !prevState.current.transactionTimeFeatureActive &&
-      transactionTimeFeatureActive
-    if (
-      transactionTimeFeatureActive &&
-      pendingTransactions.length > 0 &&
-      (loaded === false ||
-        transactionTimeFeatureWasActivated ||
-        pendingTransactionAdded)
-    ) {
-      fetchBasicGasAndTimeEstimates().then(({ blockTime }) =>
-        fetchGasEstimates(blockTime),
-      )
-    }
-    prevState.current = {
-      loaded: true,
-      pendingTransactions,
-      transactionTimeFeatureActive,
-    }
-  }, [
-    fetchGasEstimates,
-    fetchBasicGasAndTimeEstimates,
-    transactionTimeFeatureActive,
-    pendingTransactions,
-  ])
 
   const viewMore = useCallback(
     () => setLimit((prev) => prev + PAGE_INCREMENT),

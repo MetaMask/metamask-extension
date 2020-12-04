@@ -135,12 +135,12 @@ describe('useUserPreferencedCurrency', function () {
       it(`should return currency as ${
         result.currency || 'not modified by user preferences'
       }`, function () {
-        assert.equal(hookResult.current.currency, result.currency)
+        assert.strictEqual(hookResult.current.currency, result.currency)
       })
       it(`should return decimals as ${
         result.numberOfDecimals || 'not modified by user preferences'
       }`, function () {
-        assert.equal(
+        assert.strictEqual(
           hookResult.current.numberOfDecimals,
           result.numberOfDecimals,
         )

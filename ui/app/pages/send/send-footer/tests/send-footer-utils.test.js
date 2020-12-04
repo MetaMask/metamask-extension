@@ -19,7 +19,7 @@ const { addressIsNew, constructTxParams, constructUpdatedTx } = sendUtils
 describe('send-footer utils', function () {
   describe('addressIsNew()', function () {
     it('should return false if the address exists in toAccounts', function () {
-      assert.equal(
+      assert.strictEqual(
         addressIsNew(
           [{ address: '0xabc' }, { address: '0xdef' }, { address: '0xghi' }],
           '0xdef',
@@ -29,7 +29,7 @@ describe('send-footer utils', function () {
     })
 
     it('should return true if the address does not exists in toAccounts', function () {
-      assert.equal(
+      assert.strictEqual(
         addressIsNew(
           [{ address: '0xabc' }, { address: '0xdef' }, { address: '0xghi' }],
           '0xxyz',
@@ -41,7 +41,7 @@ describe('send-footer utils', function () {
 
   describe('constructTxParams()', function () {
     it('should return a new txParams object with data if there data is given', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         constructTxParams({
           data: 'someData',
           sendToken: undefined,
@@ -63,7 +63,7 @@ describe('send-footer utils', function () {
     })
 
     it('should return a new txParams object with value and to properties if there is no sendToken', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         constructTxParams({
           sendToken: undefined,
           to: 'mockTo',
@@ -84,7 +84,7 @@ describe('send-footer utils', function () {
     })
 
     it('should return a new txParams object without a to property and a 0 value if there is a sendToken', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         constructTxParams({
           sendToken: { address: '0x0' },
           to: 'mockTo',
@@ -124,7 +124,7 @@ describe('send-footer utils', function () {
           },
         },
       })
-      assert.deepEqual(result, {
+      assert.deepStrictEqual(result, {
         unapprovedTxParam: 'someOtherParam',
         txParams: {
           from: '0xmockFrom',
@@ -159,7 +159,7 @@ describe('send-footer utils', function () {
         },
       })
 
-      assert.deepEqual(result, {
+      assert.deepStrictEqual(result, {
         unapprovedTxParam: 'someOtherParam',
         txParams: {
           from: '0xmockFrom',
@@ -191,7 +191,7 @@ describe('send-footer utils', function () {
         },
       })
 
-      assert.deepEqual(result, {
+      assert.deepStrictEqual(result, {
         unapprovedTxParam: 'someOtherParam',
         txParams: {
           from: '0xmockFrom',

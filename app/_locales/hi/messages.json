@@ -167,9 +167,6 @@
   "chainId": {
     "message": "चेन आई.डी."
   },
-  "chartOnlyAvailableEth": {
-    "message": "केवल ईथरअम नेटवर्क पर उपलब्ध चार्ट।"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "अपने हार्डवेयर वॉलेट से कनेक्ट करने के लिए आपको Google Chrome में MetaMask का उपयोग करना ज़रूरी है।"
   },
@@ -398,9 +395,6 @@
   "fast": {
     "message": "तेज़"
   },
-  "faster": {
-    "message": "तीव्र"
-  },
   "fiat": {
     "message": "फ़्लैट",
     "description": "Exchange type"
@@ -575,9 +569,6 @@
   },
   "likeToAddTokens": {
     "message": "क्या आप इन टोकन को जोड़ना चाहेंगे?"
-  },
-  "liveGasPricePredictions": {
-    "message": "लाइव गैस की कीमत की भविष्यवाणी"
   },
   "loadMore": {
     "message": "और लोड करें"
@@ -1012,9 +1003,6 @@
   "slow": {
     "message": "धीमा"
   },
-  "slower": {
-    "message": "धीमा"
-  },
   "somethingWentWrong": {
     "message": "ओह! कुछ गलत हो गया।"
   },
@@ -1158,9 +1146,6 @@
   },
   "transactionSubmitted": {
     "message": "$2 पर $1 के गैस शुल्क के साथ ट्रांज़ैक्शन दर्ज किया गया।"
-  },
-  "transactionTime": {
-    "message": "ट्रांज़ैक्शन का समय"
   },
   "transactionUpdated": {
     "message": "$2 पर ट्रांज़ैक्शन अपडेट किया गया।"

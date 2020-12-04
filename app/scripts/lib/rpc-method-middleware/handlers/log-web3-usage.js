@@ -8,7 +8,7 @@ import { MESSAGE_TYPE } from '../../enums'
  */
 
 const logWeb3Usage = {
-  methodName: MESSAGE_TYPE.LOG_WEB3_USAGE,
+  methodNames: [MESSAGE_TYPE.LOG_WEB3_USAGE],
   implementation: logWeb3UsageHandler,
 }
 export default logWeb3Usage
@@ -43,17 +43,19 @@ function logWeb3UsageHandler(req, res, _next, end, { origin, sendMetrics }) {
   if (!recordedWeb3Usage[origin][path]) {
     recordedWeb3Usage[origin][path] = true
 
-    sendMetrics({
-      event: `Website Used window.web3`,
-      category: 'inpage_provider',
-      properties: { action, web3Path: path },
-      eventContext: {
+    sendMetrics(
+      {
+        event: `Website Used window.web3`,
+        category: 'inpage_provider',
+        properties: { action, web3Path: path },
         referrer: {
           url: origin,
         },
       },
-      excludeMetaMetricsId: true,
-    })
+      {
+        excludeMetaMetricsId: true,
+      },
+    )
   }
 
   res.result = true

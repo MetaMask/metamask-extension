@@ -21,7 +21,7 @@ export const mapStateToProps = (state) => {
     metamask,
   } = state
   const {
-    featureFlags: { sendHexData, transactionTime, advancedInlineGas } = {},
+    featureFlags: { sendHexData, advancedInlineGas } = {},
     threeBoxSyncingAllowed,
     threeBoxDisabled,
     useNonceField,
@@ -33,7 +33,6 @@ export const mapStateToProps = (state) => {
     warning,
     sendHexData,
     advancedInlineGas,
-    transactionTime,
     showFiatInTestnets,
     autoLockTimeLimit,
     threeBoxSyncingAllowed,
@@ -52,8 +51,6 @@ export const mapDispatchToProps = (dispatch) => {
       dispatch(showModal({ name: 'CONFIRM_RESET_ACCOUNT' })),
     setAdvancedInlineGasFeatureFlag: (shouldShow) =>
       dispatch(setFeatureFlag('advancedInlineGas', shouldShow)),
-    setTransactionTimeFeatureFlag: (shouldShow) =>
-      dispatch(setFeatureFlag('transactionTime', shouldShow)),
     setUseNonceField: (value) => dispatch(setUseNonceField(value)),
     setShowFiatConversionOnTestnetsPreference: (value) => {
       return dispatch(setShowFiatConversionOnTestnetsPreference(value))

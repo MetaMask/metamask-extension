@@ -167,9 +167,6 @@
   "chainId": {
     "message": "ಚೈನ್ ID"
   },
-  "chartOnlyAvailableEth": {
-    "message": "ಎಥೆರಿಯಮ್ ನೆಟ್‌ವರ್ಕ್‌ಗಳಲ್ಲಿ ಮಾತ್ರವೇ ಚಾರ್ಟ್‌ಗಳು ಲಭ್ಯವಿರುತ್ತವೆ."
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "ನಿಮ್ಮ ಹಾರ್ಡ್‌ವೇರ್ ವ್ಯಾಲೆಟ್‌ಗೆ ಸಂಪರ್ಕಪಡಿಸುವ ಸಲುವಾಗಿ Google Chrome ನಲ್ಲಿ ನಿಮಗೆ MetaMask ಅನ್ನು ಬಳಸುವ ಅಗತ್ಯವಿದೆ."
   },
@@ -398,9 +395,6 @@
   "fast": {
     "message": "ವೇಗ"
   },
-  "faster": {
-    "message": "ವೇಗವಾಗಿ"
-  },
   "fiat": {
     "message": "ಫಿಯೆಟ್",
     "description": "Exchange type"
@@ -578,9 +572,6 @@
   },
   "links": {
     "message": "ಲಿಂಕ್‌ಗಳು"
-  },
-  "liveGasPricePredictions": {
-    "message": "ಲೈವ್ ಗ್ಯಾಸ್ ಬೆಲೆಯ ಭವಿಷ್ಯಗಳು"
   },
   "loadMore": {
     "message": "ಇನ್ನಷ್ಟು ಲೋಡ್ ಮಾಡಿ"
@@ -1018,9 +1009,6 @@
   "slow": {
     "message": "ನಿಧಾನ"
   },
-  "slower": {
-    "message": "ನಿಧಾನ"
-  },
   "somethingWentWrong": {
     "message": "ಓಹ್‌‍! ಏನೋ ತಪ್ಪಾಗಿದೆ."
   },
@@ -1164,9 +1152,6 @@
   },
   "transactionSubmitted": {
     "message": "ವಹಿವಾಟನ್ನು $2 ನಲ್ಲಿ $1 ಗ್ಯಾಸ್ ಶುಲ್ಕದೊಂದಿಗೆ ರಚಿಸಲಾಗಿದೆ."
-  },
-  "transactionTime": {
-    "message": "ವಹಿವಾಟು ಸಮಯ"
   },
   "transactionUpdated": {
     "message": "$2 ನಲ್ಲಿ ವಹಿವಾಟನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ."

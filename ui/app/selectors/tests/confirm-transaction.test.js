@@ -36,7 +36,7 @@ describe('Confirm Transaction Selector', function () {
     }
 
     it('returns number of txs in unapprovedTxs state with the same network plus unapproved signing method counts', function () {
-      assert.equal(unconfirmedTransactionsCountSelector(state), 4)
+      assert.strictEqual(unconfirmedTransactionsCountSelector(state), 4)
     })
   })
 
@@ -58,7 +58,7 @@ describe('Confirm Transaction Selector', function () {
     }
 
     it('returns token address and calculated token amount', function () {
-      assert.deepEqual(sendTokenTokenAmountAndToAddressSelector(state), {
+      assert.deepStrictEqual(sendTokenTokenAmountAndToAddressSelector(state), {
         toAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         tokenAmount: '0.01',
       })
@@ -82,7 +82,7 @@ describe('Confirm Transaction Selector', function () {
     }
 
     it('returns contract exchange rate in metamask state based on confirm transaction txParams token recipient', function () {
-      assert.equal(contractExchangeRateSelector(state), 10)
+      assert.strictEqual(contractExchangeRateSelector(state), '10')
     })
   })
 
@@ -91,7 +91,7 @@ describe('Confirm Transaction Selector', function () {
       const state = {
         metamask: { conversionRate: 556.12 },
       }
-      assert.equal(conversionRateSelector(state), 556.12)
+      assert.strictEqual(conversionRateSelector(state), 556.12)
     })
   })
 })

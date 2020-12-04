@@ -30,6 +30,7 @@ describe('Using MetaMask with an existing account', function () {
     })
     const result = await buildWebDriver()
     driver = result.driver
+    await driver.navigate()
   })
 
   afterEach(async function () {

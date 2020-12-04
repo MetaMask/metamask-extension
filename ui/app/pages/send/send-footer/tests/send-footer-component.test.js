@@ -71,16 +71,16 @@ describe('SendFooter Component', function () {
 
   describe('onCancel', function () {
     it('should call clearSend', function () {
-      assert.equal(propsMethodSpies.clearSend.callCount, 0)
+      assert.strictEqual(propsMethodSpies.clearSend.callCount, 0)
       wrapper.instance().onCancel()
-      assert.equal(propsMethodSpies.clearSend.callCount, 1)
+      assert.strictEqual(propsMethodSpies.clearSend.callCount, 1)
     })
 
     it('should call history.push', function () {
-      assert.equal(historySpies.push.callCount, 0)
+      assert.strictEqual(historySpies.push.callCount, 0)
       wrapper.instance().onCancel()
-      assert.equal(historySpies.push.callCount, 1)
-      assert.equal(
+      assert.strictEqual(historySpies.push.callCount, 1)
+      assert.strictEqual(
         historySpies.push.getCall(0).args[0],
         'mostRecentOverviewPage',
       )
@@ -133,7 +133,7 @@ describe('SendFooter Component', function () {
     Object.entries(config).forEach(([description, obj]) => {
       it(description, function () {
         wrapper.setProps(obj)
-        assert.equal(
+        assert.strictEqual(
           wrapper.instance().formShouldBeDisabled(),
           obj.expectedResult,
         )
@@ -145,16 +145,16 @@ describe('SendFooter Component', function () {
     it('should call addToAddressBookIfNew with the correct params', function () {
       wrapper.instance().onSubmit(MOCK_EVENT)
       assert(propsMethodSpies.addToAddressBookIfNew.calledOnce)
-      assert.deepEqual(propsMethodSpies.addToAddressBookIfNew.getCall(0).args, [
-        'mockTo',
-        ['mockAccount'],
-      ])
+      assert.deepStrictEqual(
+        propsMethodSpies.addToAddressBookIfNew.getCall(0).args,
+        ['mockTo', ['mockAccount']],
+      )
     })
 
     it('should call props.update if editingTransactionId is truthy', async function () {
       await wrapper.instance().onSubmit(MOCK_EVENT)
       assert(propsMethodSpies.update.calledOnce)
-      assert.deepEqual(propsMethodSpies.update.getCall(0).args[0], {
+      assert.deepStrictEqual(propsMethodSpies.update.getCall(0).args[0], {
         data: undefined,
         amount: 'mockAmount',
         editingTransactionId: 'mockEditingTransactionId',
@@ -168,14 +168,14 @@ describe('SendFooter Component', function () {
     })
 
     it('should not call props.sign if editingTransactionId is truthy', function () {
-      assert.equal(propsMethodSpies.sign.callCount, 0)
+      assert.strictEqual(propsMethodSpies.sign.callCount, 0)
     })
 
     it('should call props.sign if editingTransactionId is falsy', async function () {
       wrapper.setProps({ editingTransactionId: null })
       await wrapper.instance().onSubmit(MOCK_EVENT)
       assert(propsMethodSpies.sign.calledOnce)
-      assert.deepEqual(propsMethodSpies.sign.getCall(0).args[0], {
+      assert.deepStrictEqual(propsMethodSpies.sign.getCall(0).args[0], {
         data: undefined,
         amount: 'mockAmount',
         from: 'mockAddress',
@@ -187,13 +187,13 @@ describe('SendFooter Component', function () {
     })
 
     it('should not call props.update if editingTransactionId is falsy', function () {
-      assert.equal(propsMethodSpies.update.callCount, 0)
+      assert.strictEqual(propsMethodSpies.update.callCount, 0)
     })
 
     it('should call history.push', async function () {
       await wrapper.instance().onSubmit(MOCK_EVENT)
-      assert.equal(historySpies.push.callCount, 1)
-      assert.equal(
+      assert.strictEqual(historySpies.push.callCount, 1)
+      assert.strictEqual(
         historySpies.push.getCall(0).args[0],
         CONFIRM_TRANSACTION_ROUTE,
       )
@@ -234,22 +234,22 @@ describe('SendFooter Component', function () {
     })
 
     it('should render a PageContainerFooter component', function () {
-      assert.equal(wrapper.find(PageContainerFooter).length, 1)
+      assert.strictEqual(wrapper.find(PageContainerFooter).length, 1)
     })
 
     it('should pass the correct props to PageContainerFooter', function () {
       const { onCancel, onSubmit, disabled } = wrapper
         .find(PageContainerFooter)
         .props()
-      assert.equal(disabled, true)
+      assert.strictEqual(disabled, true)
 
-      assert.equal(SendFooter.prototype.onSubmit.callCount, 0)
+      assert.strictEqual(SendFooter.prototype.onSubmit.callCount, 0)
       onSubmit(MOCK_EVENT)
-      assert.equal(SendFooter.prototype.onSubmit.callCount, 1)
+      assert.strictEqual(SendFooter.prototype.onSubmit.callCount, 1)
 
-      assert.equal(SendFooter.prototype.onCancel.callCount, 0)
+      assert.strictEqual(SendFooter.prototype.onCancel.callCount, 0)
       onCancel()
-      assert.equal(SendFooter.prototype.onCancel.callCount, 1)
+      assert.strictEqual(SendFooter.prototype.onCancel.callCount, 1)
     })
   })
 })

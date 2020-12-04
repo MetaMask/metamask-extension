@@ -1,5 +1,4 @@
-import mergeMiddleware from 'json-rpc-engine/src/mergeMiddleware'
-import createScaffoldMiddleware from 'json-rpc-engine/src/createScaffoldMiddleware'
+import { createScaffoldMiddleware, mergeMiddleware } from 'json-rpc-engine'
 import createBlockReRefMiddleware from 'eth-json-rpc-middleware/block-ref'
 import createRetryOnEmptyMiddleware from 'eth-json-rpc-middleware/retryOnEmpty'
 import createBlockCacheMiddleware from 'eth-json-rpc-middleware/block-cache'

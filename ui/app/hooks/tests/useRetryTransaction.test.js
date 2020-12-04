@@ -43,7 +43,7 @@ describe('useRetryTransaction', function () {
       )
       const retry = result.current
       retry(event)
-      assert.equal(trackEvent.calledOnce, true)
+      assert.strictEqual(trackEvent.calledOnce, true)
     })
 
     it('retryTransaction function should show retry sidebar', async function () {
@@ -52,9 +52,7 @@ describe('useRetryTransaction', function () {
       )
       const retry = result.current
       await retry(event)
-      const calls = dispatch.getCalls()
-      assert.equal(calls.length, 5)
-      assert.equal(
+      assert.strictEqual(
         dispatch.calledWith(
           showSidebar({
             transitionName: 'sidebar-left',

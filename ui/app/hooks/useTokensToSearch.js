@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import contractMap from 'eth-contract-metadata'
+import contractMap from '@metamask/contract-metadata'
 import BigNumber from 'bignumber.js'
 import { isEqual, shuffle } from 'lodash'
 import { checksumAddress } from '../helpers/utils/util'

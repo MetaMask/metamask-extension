@@ -1,7 +1,13 @@
 {
   "author": "https://metamask.io",
   "background": {
-    "scripts": ["bg-libs.js", "background.js"],
+    "scripts": [
+      "initSentry.js",
+      "lockdown.cjs",
+      "runLockdown.js",
+      "bg-libs.js",
+      "background.js"
+    ],
     "persistent": true
   },
   "browser_action": {
@@ -30,7 +36,7 @@
   "content_scripts": [
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
-      "js": ["contentscript.js"],
+      "js": ["lockdown.cjs", "runLockdown.js", "contentscript.js"],
       "run_at": "document_start",
       "all_frames": true
     },
@@ -46,6 +52,7 @@
     "19": "images/icon-19.png",
     "32": "images/icon-32.png",
     "38": "images/icon-38.png",
+    "48": "images/icon-48.png",
     "64": "images/icon-64.png",
     "128": "images/icon-128.png",
     "512": "images/icon-512.png"
@@ -64,6 +71,6 @@
     "notifications"
   ],
   "short_name": "__MSG_appName__",
-  "version": "8.1.5",
+  "version": "8.1.6",
   "web_accessible_resources": ["inpage.js", "phishing.html"]
 }

@@ -19,7 +19,7 @@ const copyTargets = [
     dest: `images`,
   },
   {
-    src: `./node_modules/eth-contract-metadata/images/`,
+    src: `./node_modules/@metamask/contract-metadata/images/`,
     dest: `images/contract`,
   },
   {
@@ -42,6 +42,16 @@ const copyTargets = [
   {
     src: `./app/`,
     pattern: `*.html`,
+    dest: ``,
+  },
+  {
+    src: `./node_modules/ses/dist/`,
+    pattern: `lockdown.cjs`,
+    dest: ``,
+  },
+  {
+    src: `./app/scripts/`,
+    pattern: `runLockdown.js`,
     dest: ``,
   },
 ]

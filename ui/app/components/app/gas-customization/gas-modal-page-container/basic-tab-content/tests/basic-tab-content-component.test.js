@@ -60,7 +60,7 @@ describe('BasicTabContent Component', function () {
     })
 
     it('should render a GasPriceButtonGroup compenent', function () {
-      assert.equal(wrapper.find(GasPriceButtonGroup).length, 1)
+      assert.strictEqual(wrapper.find(GasPriceButtonGroup).length, 1)
     })
 
     it('should pass correct props to GasPriceButtonGroup', function () {
@@ -72,22 +72,22 @@ describe('BasicTabContent Component', function () {
         noButtonActiveByDefault,
         showCheck,
       } = wrapper.find(GasPriceButtonGroup).props()
-      assert.equal(wrapper.find(GasPriceButtonGroup).length, 1)
-      assert.equal(
+      assert.strictEqual(wrapper.find(GasPriceButtonGroup).length, 1)
+      assert.strictEqual(
         buttonDataLoading,
         mockGasPriceButtonGroupProps.buttonDataLoading,
       )
-      assert.equal(className, mockGasPriceButtonGroupProps.className)
-      assert.equal(
+      assert.strictEqual(className, mockGasPriceButtonGroupProps.className)
+      assert.strictEqual(
         noButtonActiveByDefault,
         mockGasPriceButtonGroupProps.noButtonActiveByDefault,
       )
-      assert.equal(showCheck, mockGasPriceButtonGroupProps.showCheck)
-      assert.deepEqual(
+      assert.strictEqual(showCheck, mockGasPriceButtonGroupProps.showCheck)
+      assert.deepStrictEqual(
         gasButtonInfo,
         mockGasPriceButtonGroupProps.gasButtonInfo,
       )
-      assert.equal(
+      assert.strictEqual(
         JSON.stringify(handleGasPriceSelection),
         JSON.stringify(mockGasPriceButtonGroupProps.handleGasPriceSelection),
       )
@@ -101,8 +101,8 @@ describe('BasicTabContent Component', function () {
         },
       })
 
-      assert.equal(wrapper.find(GasPriceButtonGroup).length, 0)
-      assert.equal(wrapper.find(Loading).length, 1)
+      assert.strictEqual(wrapper.find(GasPriceButtonGroup).length, 0)
+      assert.strictEqual(wrapper.find(Loading).length, 1)
     })
   })
 })

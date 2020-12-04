@@ -1,5 +1,5 @@
 import Web3 from 'web3'
-import contracts from 'eth-contract-metadata'
+import contracts from '@metamask/contract-metadata'
 import { warn } from 'loglevel'
 import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi'
 import { MAINNET } from './network/enums'
@@ -32,7 +32,7 @@ export default class DetectTokensController {
   }
 
   /**
-   * For each token in eth-contract-metadata, find check selectedAddress balance.
+   * For each token in @metamask/contract-metadata, find check selectedAddress balance.
    */
   async detectNewTokens() {
     if (!this.isActive) {

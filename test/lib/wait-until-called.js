@@ -9,18 +9,30 @@
  *
  * @param {import('sinon').stub} stub - A sinon stub of a function
  * @param {unknown} [wrappedThis] - The object the stubbed function was called on, if any (i.e. the `this` value)
+ * @param {number} [callCount] - The number of calls to wait for. Defaults to 1.
  * @returns {Promise} A Promise that resolves when the stub has been called
  */
-export default function waitUntilCalled(stub, wrappedThis = null) {
-  let wasCalled
-  const stubHasBeenCalled = new Promise((resolve) => {
-    wasCalled = resolve
+function waitUntilCalled(stub, wrappedThis = null, callCount = 1) {
+  let numCalls = 0
+  let resolve
+  const stubHasBeenCalled = new Promise((_resolve) => {
+    resolve = _resolve
   })
   stub.callsFake((...args) => {
-    if (stub.wrappedMethod) {
-      stub.wrappedMethod.call(wrappedThis, ...args)
+    try {
+      if (stub.wrappedMethod) {
+        stub.wrappedMethod.call(wrappedThis, ...args)
+      }
+    } finally {
+      if (numCalls < callCount) {
+        numCalls += 1
+        if (numCalls === callCount) {
+          resolve()
+        }
+      }
     }
-    wasCalled()
   })
   return stubHasBeenCalled
 }
+
+module.exports = waitUntilCalled

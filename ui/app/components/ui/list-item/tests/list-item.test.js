@@ -35,13 +35,13 @@ describe('ListItem', function () {
     )
   })
   it('includes the data-testid', function () {
-    assert.equal(wrapper.props()['data-testid'], 'test-id')
+    assert.strictEqual(wrapper.props()['data-testid'], 'test-id')
   })
   it(`renders "${TITLE}" title`, function () {
-    assert.equal(wrapper.find('.list-item__heading h2').text(), TITLE)
+    assert.strictEqual(wrapper.find('.list-item__heading h2').text(), TITLE)
   })
   it(`renders "I am a list item" subtitle`, function () {
-    assert.equal(
+    assert.strictEqual(
       wrapper.find('.list-item__subheading').text(),
       'I am a list item',
     )
@@ -50,19 +50,19 @@ describe('ListItem', function () {
     assert(wrapper.props().className.includes(CLASSNAME))
   })
   it('renders content on the right side of the list item', function () {
-    assert.equal(
+    assert.strictEqual(
       wrapper.find('.list-item__right-content p').text(),
       'Content rendered to the right',
     )
   })
   it('renders content in the middle of the list item', function () {
-    assert.equal(
+    assert.strictEqual(
       wrapper.find('.list-item__mid-content p').text(),
       'Content rendered in the middle',
     )
   })
   it('renders list item actions', function () {
-    assert.equal(
+    assert.strictEqual(
       wrapper.find('.list-item__actions button').text(),
       'I am a button',
     )
@@ -75,7 +75,7 @@ describe('ListItem', function () {
   })
   it('handles click action and fires onClick', function () {
     wrapper.simulate('click')
-    assert.equal(clickHandler.callCount, 1)
+    assert.strictEqual(clickHandler.callCount, 1)
   })
 
   after(function () {

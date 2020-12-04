@@ -158,9 +158,6 @@
   "cancelled": {
     "message": "Abgebrochen"
   },
-  "chartOnlyAvailableEth": {
-    "message": "Die Grafik ist nur in Ethereum-Netzwerken verfügbar."
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Sie müssen MetaMask unter Google Chrome nutzen, um sich mit Ihrem Hardware-Wallet zu verbinden."
   },
@@ -386,9 +383,6 @@
   "fast": {
     "message": "Schnell"
   },
-  "faster": {
-    "message": "Schneller"
-  },
   "fiat": {
     "message": "FIAT",
     "description": "Exchange type"
@@ -563,9 +557,6 @@
   },
   "likeToAddTokens": {
     "message": "Möchtest du diese Token hinzufügen?"
-  },
-  "liveGasPricePredictions": {
-    "message": "Live-Gaspreisprognosen"
   },
   "loadMore": {
     "message": "Mehr laden"
@@ -987,9 +978,6 @@
   "slow": {
     "message": "Langsam"
   },
-  "slower": {
-    "message": "Langsamer"
-  },
   "somethingWentWrong": {
     "message": "Hoppla! Da hat etwas nicht geklappt."
   },
@@ -1127,9 +1115,6 @@
   },
   "transactionSubmitted": {
     "message": "Transaktion mit einer Gasgebühr von $1 bei $2 übermittelt."
-  },
-  "transactionTime": {
-    "message": "Transaktionszeit"
   },
   "transactionUpdated": {
     "message": "Transaktion für $2 aktualisiert."

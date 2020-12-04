@@ -1,5 +1,5 @@
 import React from 'react'
-import { color, number } from '@storybook/addon-knobs/react'
+import { color, number } from '@storybook/addon-knobs'
 import Approve from './approve-icon.component'
 import Copy from './copy-icon.component'
 import Interaction from './interaction-icon.component'

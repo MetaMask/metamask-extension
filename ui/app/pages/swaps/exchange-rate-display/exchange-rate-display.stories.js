@@ -1,5 +1,5 @@
 import React from 'react'
-import { text, number } from '@storybook/addon-knobs/react'
+import { text, number } from '@storybook/addon-knobs'
 import ExchangeRateDisplay from './exchange-rate-display'
 
 export default {

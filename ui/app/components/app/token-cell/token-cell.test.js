@@ -64,20 +64,32 @@ describe('Token Cell', function () {
   })
 
   it('renders Identicon with props from token cell', function () {
-    assert.equal(wrapper.find(Identicon).prop('address'), '0xAnotherToken')
-    assert.equal(wrapper.find(Identicon).prop('image'), './test-image')
+    assert.strictEqual(
+      wrapper.find(Identicon).prop('address'),
+      '0xAnotherToken',
+    )
+    assert.strictEqual(wrapper.find(Identicon).prop('image'), './test-image')
   })
 
   it('renders token balance', function () {
-    assert.equal(wrapper.find('.asset-list-item__token-value').text(), '5.000')
+    assert.strictEqual(
+      wrapper.find('.asset-list-item__token-value').text(),
+      '5.000',
+    )
   })
 
   it('renders token symbol', function () {
-    assert.equal(wrapper.find('.asset-list-item__token-symbol').text(), 'TEST')
+    assert.strictEqual(
+      wrapper.find('.asset-list-item__token-symbol').text(),
+      'TEST',
+    )
   })
 
   it('renders converted fiat amount', function () {
-    assert.equal(wrapper.find('.list-item__subheading').text(), '$0.52 USD')
+    assert.strictEqual(
+      wrapper.find('.list-item__subheading').text(),
+      '$0.52 USD',
+    )
   })
 
   it('calls onClick when clicked', function () {

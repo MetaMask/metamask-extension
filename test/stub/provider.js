@@ -1,4 +1,4 @@
-import JsonRpcEngine from 'json-rpc-engine'
+import { JsonRpcEngine } from 'json-rpc-engine'
 import scaffoldMiddleware from 'eth-json-rpc-middleware/scaffold'
 import providerAsMiddleware from 'eth-json-rpc-middleware/providerAsMiddleware'
 import GanacheCore from 'ganache-core'

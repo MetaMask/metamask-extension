@@ -21,7 +21,7 @@ describe('SendContent Component', function () {
 
   describe('render', function () {
     it('should render a PageContainerContent component', function () {
-      assert.equal(wrapper.find(PageContainerContent).length, 1)
+      assert.strictEqual(wrapper.find(PageContainerContent).length, 1)
     })
 
     it('should render a div with a .send-v2__form class as a child of PageContainerContent', function () {
@@ -79,7 +79,7 @@ describe('SendContent Component', function () {
         PageContainerContentChild.childAt(3).is(SendGasRow),
         'row[3] should be SendGasRow',
       )
-      assert.equal(PageContainerContentChild.childAt(4).exists(), false)
+      assert.strictEqual(PageContainerContentChild.childAt(4).exists(), false)
     })
 
     it('should not render the Dialog if contact has a name', function () {
@@ -102,7 +102,7 @@ describe('SendContent Component', function () {
         PageContainerContentChild.childAt(2).is(SendGasRow),
         'row[3] should be SendGasRow',
       )
-      assert.equal(PageContainerContentChild.childAt(3).exists(), false)
+      assert.strictEqual(PageContainerContentChild.childAt(3).exists(), false)
     })
 
     it('should not render the Dialog if it is an ownedAccount', function () {
@@ -125,7 +125,7 @@ describe('SendContent Component', function () {
         PageContainerContentChild.childAt(2).is(SendGasRow),
         'row[3] should be SendGasRow',
       )
-      assert.equal(PageContainerContentChild.childAt(3).exists(), false)
+      assert.strictEqual(PageContainerContentChild.childAt(3).exists(), false)
     })
   })
 
@@ -150,8 +150,8 @@ describe('SendContent Component', function () {
 
     const dialog = wrapper.find(Dialog).at(0)
 
-    assert.equal(dialog.props().type, 'warning')
-    assert.equal(dialog.props().children, 'watchout_t')
-    assert.equal(dialog.length, 1)
+    assert.strictEqual(dialog.props().type, 'warning')
+    assert.strictEqual(dialog.props().children, 'watchout_t')
+    assert.strictEqual(dialog.length, 1)
   })
 })

@@ -164,9 +164,6 @@
   "chainId": {
     "message": "Cadena ID"
   },
-  "chartOnlyAvailableEth": {
-    "message": "Mostra només els disponibles a les xarxes Ethereum."
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Necessites fer servir MetaMask amb Google Chrome per a connectar-te al teu Moneder Hardware."
   },
@@ -395,9 +392,6 @@
   "fast": {
     "message": "Ràpid"
   },
-  "faster": {
-    "message": "Més ràpid"
-  },
   "fileImportFail": {
     "message": "La importació no funciona? Fes clic aquí!",
     "description": "Helps user import their account from a JSON file"
@@ -565,9 +559,6 @@
   },
   "links": {
     "message": "Enllaços"
-  },
-  "liveGasPricePredictions": {
-    "message": "Prediccions del preu del gas en directe"
   },
   "loadMore": {
     "message": "Carregar Més"
@@ -996,9 +987,6 @@
   "slow": {
     "message": "Lent"
   },
-  "slower": {
-    "message": "Més lent"
-  },
   "somethingWentWrong": {
     "message": "Ui! Alguna cosa ha fallat."
   },
@@ -1133,9 +1121,6 @@
   },
   "transactionSubmitted": {
     "message": "Transacció enviada amb un preu del gas de $1 a $2."
-  },
-  "transactionTime": {
-    "message": "Temps de transacció"
   },
   "transactionUpdated": {
     "message": "Transacció actualitzada a $2."

@@ -23,7 +23,7 @@ describe('UserPreferencedCurrencyInput container', function () {
         },
       }
 
-      assert.deepEqual(mapStateToProps(mockState), {
+      assert.deepStrictEqual(mapStateToProps(mockState), {
         useNativeCurrencyAsPrimaryCurrency: true,
       })
     })

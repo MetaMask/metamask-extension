@@ -167,9 +167,6 @@
   "chainId": {
     "message": "Идентификатор на веригата"
   },
-  "chartOnlyAvailableEth": {
-    "message": "Диаграмата е достъпна само в мрежи на Ethereum."
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "За да се свържете с хардуерния си портфейл, трябва да използвате MetaMask в Google Chrome."
   },
@@ -398,9 +395,6 @@
   "fast": {
     "message": "Бързо"
   },
-  "faster": {
-    "message": "По-бързо"
-  },
   "fileImportFail": {
     "message": "Импортирането на файл не работи? Натиснете тук!",
     "description": "Helps user import their account from a JSON file"
@@ -574,9 +568,6 @@
   },
   "links": {
     "message": "Връзки"
-  },
-  "liveGasPricePredictions": {
-    "message": "Прогнози на живо за цената на газа"
   },
   "loadMore": {
     "message": "Зареди повече"
@@ -1014,9 +1005,6 @@
   "slow": {
     "message": "Бавно"
   },
-  "slower": {
-    "message": "По-бавно"
-  },
   "somethingWentWrong": {
     "message": "Упс! Нещо се обърка."
   },
@@ -1160,9 +1148,6 @@
   },
   "transactionSubmitted": {
     "message": "Транзакция, изпратена с такса за газ от $1 при $2."
-  },
-  "transactionTime": {
-    "message": "Време на транзакция"
   },
   "transactionUpdated": {
     "message": "Транзакцията е актуализирана на $2."

@@ -13,6 +13,7 @@ const ALL_PAGES = Object.values(PAGES)
 async function measurePage(pageName) {
   let metrics
   await withFixtures({ fixtures: 'imported-account' }, async ({ driver }) => {
+    await driver.navigate()
     const passwordField = await driver.findElement(By.css('#password'))
     await passwordField.sendKeys('correct horse battery staple')
     await passwordField.sendKeys(Key.ENTER)
