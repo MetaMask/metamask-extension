@@ -56,17 +56,12 @@ export default class CaptchaRowComponent extends Component {
 
   render() {
     return (
-      <SendRowWrapper
-        label={`Captcha`}
-        errorType="captcha"
-      >
-        <HCaptcha
-          sitekey="271edc5c-0fcc-4b01-8740-e4355e2d82d7"
-          onVerify={this.onCaptchaVerified}
-          onClose={this.onCaptchaClosed}
-          languageOverride={this.props.lang}
-        />
-      </SendRowWrapper>
+      <HCaptcha
+        sitekey="271edc5c-0fcc-4b01-8740-e4355e2d82d7"
+        onVerify={this.onCaptchaVerified}
+        onClose={this.onCaptchaClosed}
+        languageOverride={this.props.lang}
+      />
     )
   }
 }
