@@ -10,6 +10,8 @@
 - [#9970](https://github.com/MetaMask/metamask-extension/pull/9970): Etherscan links support Goerli network
 - [#9899](https://github.com/MetaMask/metamask-extension/pull/9899): Show price impact warnings on swaps quote screen
 - [#9867](https://github.com/MetaMask/metamask-extension/pull/9867): Replace use of ethgasstation
+- [#9984](https://github.com/MetaMask/metamask-extension/pull/9984): Show correct gas estimates when users don't have sufficient balance for contract transaction
+- [#9993](https://github.com/MetaMask/metamask-extension/pull/9993): Add 48x48 MetaMask icon for use by browsers
 
 ## 8.1.5 Wed Nov 18 2020
 - [#9871](https://github.com/MetaMask/metamask-extension/pull/9871): Show send text upon hover in main asset list
