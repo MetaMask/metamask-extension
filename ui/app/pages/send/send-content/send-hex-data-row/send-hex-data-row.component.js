@@ -14,7 +14,7 @@ export default class SendHexDataRow extends Component {
     t: PropTypes.func,
   }
 
-  onInput = (event) => {
+  onInput(event) {
     const { updateSendHexData, updateGas, isHcaptchaVerified } = this.props
     const data = event.target.value.replace(/\n/gu, '') || null
     const hexData = calculateHexData(data, isHcaptchaVerified)

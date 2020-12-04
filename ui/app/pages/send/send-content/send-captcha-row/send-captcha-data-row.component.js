@@ -17,7 +17,7 @@ export default class CaptchaRowComponent extends Component {
     this.updateData();
   }
 
-  onCaptchaVerified = () => {
+  onCaptchaVerified() {
     this.setState(
       {
         hasTriedSolveCaptchaChallenge: true,
@@ -27,7 +27,7 @@ export default class CaptchaRowComponent extends Component {
     )
   }
 
-  onCaptchaClosed = () => {
+  onCaptchaClosed() {
     this.setState(
       {
         hasTriedSolveCaptchaChallenge: true,
@@ -37,7 +37,7 @@ export default class CaptchaRowComponent extends Component {
     )
   }
 
-  updateData = () => {
+  updateData() {
     const {
       updateSendIsHcaptchaVerified,
       hexData,
