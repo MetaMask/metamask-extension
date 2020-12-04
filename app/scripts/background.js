@@ -32,6 +32,7 @@ import setupSentry from './lib/setupSentry'
 import {
   reportFailedTxToSentry,
   reportErrorTxToSentry,
+  reportBuggedTxToSentry,
 } from './lib/reportFailedTxToSentry'
 import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code'
 import getObjStructure from './lib/getObjStructure'
@@ -275,6 +276,11 @@ function setupController(initState, initLangCode) {
       return
     }
     const txMeta = controller.txController.txStateManager.getTx(txId)
+
+    if (txMeta?.status === 'bugged') {
+      reportBuggedTxToSentry({ sentry, txMeta })
+    }
+
     const txHistory = txMeta.history || []
     let setHashNoteCount = 0
     let approvedIdx

@@ -139,7 +139,8 @@ class PendingTransactionTracker extends EventEmitter {
         txMeta.status === 'signed' ||
         txMeta.status === 'submitted')
     ) {
-      return this.approveTransaction(txMeta.id)
+      return this.emit('tx:bugged', txMeta)
+      // return this.approveTransaction(txMeta.id)
     }
 
     if (!txMeta?.rawTx) {

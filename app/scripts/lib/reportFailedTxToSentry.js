@@ -18,14 +18,24 @@ export function reportErrorTxToSentry({ sentry, txMeta }) {
   sentry.withScope(function(scope) {
     scope.setTag('ERROR_TX', 'setHash')
     scope.setLevel('error')
-    scope.setExtra('txMeta', txMeta)
+    scope.addEventProcessor(function(event) {
+      event.extra.txMeta = txMeta
+      return event
+    })
     const errorMessage = 'Transaction hash found early'
-    sentry.captureMessage(
-      errorMessage
-      //                       {
-      //   // "extra" key is required by Sentry
-      //   extra: { txMeta },
-      // }
-    )
+    sentry.captureMessage(errorMessage)
+  })
+}
+
+export function reportBuggedTxToSentry({ sentry, txMeta }) {
+  sentry.withScope(function(scope) {
+    scope.setTag('ERROR_TX', 'missingRawTx')
+    scope.setLevel('error')
+    scope.addEventProcessor(function(event) {
+      event.extra.txMeta = txMeta
+      return event
+    })
+    const errorMessage = 'Transaction rawTx missing'
+    sentry.captureMessage(errorMessage)
   })
 }

@@ -164,6 +164,12 @@
   "browserNotSupported": {
     "message": "您的浏览器不支持该功能…"
   },
+  "bugged": {
+    "message": "未知"
+  },
+  "buggedTxTooltip": {
+    "message": "Portal 无法查询到该交易的状态, 请到 ConfluxScan 查看该交易的状态."
+  },
   "builtInCalifornia": {
     "message": "ConfluxPortal 是 fork MetaMask 代码并在其基础上进行更改从而适配 Conflux, MetaMask 在加利福尼亚设计和制造, 针对 Conflux 的修改在北京设计和制造."
   },
