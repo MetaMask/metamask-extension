@@ -2055,7 +2055,9 @@ export default class MetamaskController extends EventEmitter {
 
     if (connections) {
       Object.values(connections).forEach((conn) => {
-        conn.engine && conn.engine.emit('notification', payload)
+        if (conn.engine) {
+          conn.engine.emit('notification', payload)
+        }
       })
     }
   }
@@ -2064,15 +2066,26 @@ export default class MetamaskController extends EventEmitter {
    * Causes the RPC engines associated with all connections to emit a
    * notification event with the given payload.
    *
+   * If the "payload" parameter is a function, the payload for each connection
+   * will be the return value of that function called with the connection's
+   * origin.
+   *
    * The caller is responsible for ensuring that only permitted notifications
    * are sent.
    *
-   * @param {any} payload - The event payload.
+   * @param {any} payload - The event payload, or payload getter function.
    */
   notifyAllConnections(payload) {
+    const getPayload =
+      typeof payload === 'function'
+        ? (origin) => payload(origin)
+        : () => payload
+
     Object.values(this.connections).forEach((origin) => {
       Object.values(origin).forEach((conn) => {
-        conn.engine && conn.engine.emit('notification', payload)
+        if (conn.engine) {
+          conn.engine.emit('notification', getPayload(origin))
+        }
       })
     })
   }
@@ -2106,9 +2119,14 @@ export default class MetamaskController extends EventEmitter {
    * Notifies all connections that the extension is unlocked.
    */
   _onUnlock() {
-    this.notifyAllConnections({
-      method: NOTIFICATION_NAMES.unlockStateChanged,
-      result: true,
+    this.notifyAllConnections((origin) => {
+      return {
+        method: NOTIFICATION_NAMES.unlockStateChanged,
+        params: {
+          isUnlocked: true,
+          accounts: this.permissionsController.getAccounts(origin),
+        },
+      }
     })
     this.emit('unlock')
   }
@@ -2120,7 +2138,9 @@ export default class MetamaskController extends EventEmitter {
   _onLock() {
     this.notifyAllConnections({
       method: NOTIFICATION_NAMES.unlockStateChanged,
-      result: false,
+      params: {
+        isUnlocked: false,
+      },
     })
     this.emit('lock')
   }
@@ -2135,7 +2155,7 @@ export default class MetamaskController extends EventEmitter {
     this.isClientOpenAndUnlocked = newState.isUnlocked && this._isClientOpen
     this.notifyAllConnections({
       method: NOTIFICATION_NAMES.chainChanged,
-      result: this.getProviderNetworkState(newState),
+      params: this.getProviderNetworkState(newState),
     })
   }
 
