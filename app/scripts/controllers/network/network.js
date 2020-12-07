@@ -19,6 +19,8 @@ import {
   MAINNET,
   INFURA_PROVIDER_TYPES,
   NETWORK_TYPE_TO_ID_MAP,
+  MAINNET_CHAIN_ID,
+  RINKEBY_CHAIN_ID,
 } from './enums'
 
 const env = process.env.METAMASK_ENV
@@ -32,9 +34,9 @@ if (process.env.IN_TEST === 'true') {
     nickname: 'Localhost 8545',
   }
 } else if (process.env.METAMASK_DEBUG || env === 'test') {
-  defaultProviderConfigOpts = { type: RINKEBY }
+  defaultProviderConfigOpts = { type: RINKEBY, chainId: RINKEBY_CHAIN_ID }
 } else {
-  defaultProviderConfigOpts = { type: MAINNET }
+  defaultProviderConfigOpts = { type: MAINNET, chainId: MAINNET_CHAIN_ID }
 }
 
 const defaultProviderConfig = {
