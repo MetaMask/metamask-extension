@@ -1,6 +1,10 @@
 import extension from 'extensionizer'
 import log from 'loglevel'
+import { cloneDeepWith } from 'lodash'
+import { captureException } from '@sentry/browser'
 import { checkForError } from './util'
+
+let stateErrorFound = false
 
 /**
  * A wrapper around the extension's storage local API
@@ -70,7 +74,29 @@ export default class ExtensionStore {
   _set(obj) {
     const { local } = extension.storage
     return new Promise((resolve, reject) => {
-      local.set(obj, () => {
+      const state = cloneDeepWith(obj, (value, key) => {
+        // On Firefox, native Errors cannot be cloned
+        // See https://bugzilla.mozilla.org/show_bug.cgi?id=1556604
+        if (value instanceof Error) {
+          if (!stateErrorFound) {
+            stateErrorFound = true
+            const error = new Error(`Native error found at key '${key}'`)
+            captureException(error, {
+              extra: {
+                originalError: value,
+              },
+            })
+          }
+          return {
+            code: value.code,
+            message: value.message,
+            name: value.name,
+            stack: value.stack,
+          }
+        }
+        return undefined
+      })
+      local.set(state, () => {
         const err = checkForError()
         if (err) {
           reject(err)
