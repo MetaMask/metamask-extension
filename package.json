@@ -295,6 +295,18 @@
     "watchify": "^3.11.1",
     "webpack": "^4.41.6"
   },
+  "allowScripts": {
+    "node-sass": true,
+    "optipng-bin": true,
+    "gifsicle": true,
+    "jpegtran-bin": true,
+    "scrypt": true,
+    "weak": true,
+    "chromedriver": true,
+    "geckodriver": true,
+    "@sentry/cli": true
+
+  },
   "engines": {
     "node": "^10.18.1",
     "yarn": "^1.16.0"
