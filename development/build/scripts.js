@@ -20,6 +20,7 @@ const conf = require('rc')('metamask', {
   SEGMENT_HOST: process.env.SEGMENT_HOST,
   SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
   SEGMENT_LEGACY_WRITE_KEY: process.env.SEGMENT_LEGACY_WRITE_KEY,
+  HCAPTCHA_SITE_KEY: process.env.HCAPTCHA_SITE_KEY
 })
 
 const baseManifest = require('../../app/manifest/_base.json')
@@ -377,6 +378,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
         INFURA_PROJECT_ID: opts.testing
           ? '00000000000000000000000000000000'
           : conf.INFURA_PROJECT_ID,
+        HCAPTCHA_SITE_KEY: conf.HCAPTCHA_SITE_KEY,
         SEGMENT_HOST: conf.SEGMENT_HOST,
         // When we're in the 'production' environment we will use a specific key only set in CI
         // Otherwise we'll use the key from .metamaskrc or from the environment variable. If
