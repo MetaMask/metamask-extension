@@ -277,9 +277,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
       }
     }
 
-    let bundler = browserify(browserifyOpts)
-      .transform(babelify)
-      .transform(brfs)
+    let bundler = browserify(browserifyOpts).transform(babelify).transform(brfs)
 
     if (opts.buildLib) {
       bundler = bundler.require(opts.dependenciesToBundle)
