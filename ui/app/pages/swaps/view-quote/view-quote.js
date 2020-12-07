@@ -501,11 +501,7 @@ export default function ViewQuote() {
             />
           )}
         </div>
-        <div
-          className={classnames('view-quote__countdown-timer-container', {
-            'view-quote__countdown-timer-container--thin': isShowingWarning,
-          })}
-        >
+        <div className="view-quote__countdown-timer-container">
           <CountdownTimer
             timeStarted={quotesLastFetched}
             warningTime="0:30"
@@ -528,7 +524,6 @@ export default function ViewQuote() {
         />
         <div
           className={classnames('view-quote__fee-card-container', {
-            'view-quote__fee-card-container--thin': isShowingWarning,
             'view-quote__fee-card-container--three-rows':
               approveTxParams && (!balanceError || warningHidden),
           })}
@@ -556,9 +551,6 @@ export default function ViewQuote() {
               allAvailableQuotesOpened()
               setSelectQuotePopoverShown(true)
             }}
-            savings={usedQuote?.savings}
-            conversionRate={conversionRate}
-            currentCurrency={currentCurrency}
             tokenConversionRate={
               destinationTokenSymbol === 'ETH'
                 ? 1

@@ -1,5 +1,5 @@
 import React from 'react'
-import { text, number, boolean } from '@storybook/addon-knobs'
+import { text, number } from '@storybook/addon-knobs'
 import MainQuoteSummary from './main-quote-summary'
 
 export default {
