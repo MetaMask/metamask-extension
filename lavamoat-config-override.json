@@ -71,9 +71,7 @@
     },
     "module-deps": {
       "packages": {
-        "loose-envify": true,
-        "babelify": true,
-        "brfs": true
+        "loose-envify": true
       }
     },
     "@babel/core": {
