@@ -1,5 +1,5 @@
-import logWeb3Usage from './log-web3-usage'
+import logWeb3ShimUsage from './log-web3-shim-usage'
 import watchAsset from './watch-asset'
 
-const handlers = [logWeb3Usage, watchAsset]
+const handlers = [logWeb3ShimUsage, watchAsset]
 export default handlers
