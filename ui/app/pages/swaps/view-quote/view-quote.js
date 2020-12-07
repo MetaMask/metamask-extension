@@ -573,7 +573,6 @@ export default function ViewQuote() {
         onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}
         disabled={balanceError || gasPrice === null || gasPrice === undefined}
         className={isShowingWarning && 'view-quote__thin-swaps-footer'}
-        showTermsOfService
         showTopBorder
       />
     </div>
