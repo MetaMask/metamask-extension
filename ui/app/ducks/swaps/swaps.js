@@ -325,7 +325,6 @@ export {
 export const navigateBackToBuildQuote = (history) => {
   return async (dispatch) => {
     // TODO: Ensure any fetch in progress is cancelled
-    await dispatch(resetSwapsPostFetchState())
     dispatch(navigatedBackToBuildQuote())
 
     history.push(BUILD_QUOTE_ROUTE)
