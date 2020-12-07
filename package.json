@@ -305,7 +305,6 @@
     "chromedriver": true,
     "geckodriver": true,
     "@sentry/cli": true
-
   },
   "engines": {
     "node": "^10.18.1",
