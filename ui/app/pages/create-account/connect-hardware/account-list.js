@@ -4,8 +4,14 @@ import getAccountLink from '../../../../lib/account-link';
 import Button from '../../../components/ui/button';
 import Checkbox from '../../../components/ui/check-box';
 import Dropdown from '../../../components/ui/dropdown';
+import Popover from '../../../components/ui/popover';
 
 class AccountList extends Component {
+  state = {
+    showPopover: false,
+    pathValue: null,
+  };
+
   goToNextPage = () => {
     // If we have < 5 accounts, it's restricted by BIP-44
     if (this.props.accounts.length === 5) {
@@ -19,8 +25,13 @@ class AccountList extends Component {
     this.props.getPage(this.props.device, -1, this.props.selectedPath);
   };
 
+  setPath(pathValue) {
+    this.setState({ pathValue });
+  }
+
   renderHdPathSelector() {
-    const { onPathChange, selectedPath, hdPaths } = this.props;
+    const { selectedPath, hdPaths } = this.props;
+    const { pathValue } = this.state;
 
     return (
       <div>
@@ -32,9 +43,9 @@ class AccountList extends Component {
           <Dropdown
             className="hw-connect__hdPath__select"
             options={hdPaths}
-            selectedOption={selectedPath}
+            selectedOption={pathValue || selectedPath}
             onChange={(value) => {
-              onPathChange(value);
+              this.setPath(value);
             }}
           />
         </div>
@@ -47,18 +58,24 @@ class AccountList extends Component {
   }
 
   renderHeader() {
-    const { device } = this.props;
     return (
       <div className="hw-connect">
         <h3 className="hw-connect__unlock-title">
-          {`${this.context.t('unlock')} ${this.capitalizeDevice(device)}`}
+          {this.context.t('selectAnAccount')}
         </h3>
-        {device.toLowerCase() === 'ledger' ? this.renderHdPathSelector() : null}
         <h3 className="hw-connect__hdPath__title">
           {this.context.t('selectAnAccount')}
         </h3>
         <p className="hw-connect__msg">
-          {this.context.t('selectAnAccountHelp')}
+          {this.context.t('selectAnAccountHelp', [
+            // eslint-disable-next-line react/jsx-key
+            <span
+              className="hw-connect__msg__link"
+              onClick={() => this.setState({ showPopover: true })}
+            >
+              Click here
+            </span>,
+          ])}
         </p>
       </div>
     );
@@ -104,9 +121,9 @@ class AccountList extends Component {
                   <span className="hw-account-list__item__index">
                     {account.index + 1}
                   </span>
-                  {`${account.address.slice(0, 4)}...${account.address.slice(
-                    -4,
-                  )}`}
+                  {`${account.address.slice(0, 5)}...${account.address.slice(
+                  -5,
+                )}`}
                   <span className="hw-account-list__item__balance">{`${account.balance}`}</span>
                 </label>
               </div>
@@ -193,7 +210,46 @@ class AccountList extends Component {
     );
   }
 
+  renderSelectPathPopover() {
+    const { pathValue } = this.state;
+    const { onPathChange } = this.props;
+
+    const footer = (
+      <div className="switch-ledger-path-popover__footer">
+        <Button
+          onClick={() => this.setState({ showPopover: false })}
+          type="secondary"
+          className="invalid-custom-network-alert__footer-row-button"
+        >
+          {this.context.t('cancel')}
+        </Button>
+        <Button
+          onClick={() => {
+            onPathChange(pathValue);
+            this.setState({ showPopover: false });
+          }}
+          type="primary"
+          className="invalid-custom-network-alert__footer-row-button"
+        >
+          {this.context.t('save')}
+        </Button>
+      </div>
+    );
+
+    return (
+      <Popover
+        title={this.context.t('switchLedgerPaths')}
+        subtitle={this.context.t('switchLedgerPathsText')}
+        contentClassName="switch-ledger-path-popover__content"
+        footer={footer}
+      >
+        {this.renderHdPathSelector()}
+      </Popover>
+    );
+  }
+
   render() {
+    const { showPopover } = this.state;
     return (
       <div className="new-external-account-form account-list">
         {this.renderHeader()}
@@ -201,6 +257,7 @@ class AccountList extends Component {
         {this.renderPagination()}
         {this.renderButtons()}
         {this.renderForgetDevice()}
+        {showPopover && this.renderSelectPathPopover()}
       </div>
     );
   }
