@@ -19,6 +19,7 @@ import extension from 'extensionizer'
 import storeTransform from 'obs-store/lib/transform'
 import asStream from 'obs-store/lib/asStream'
 import PortStream from 'extension-port-stream'
+import { captureException } from '@sentry/browser'
 import migrations from './migrations'
 import Migrator from './lib/migrator'
 import ExtensionPlatform from './platforms/extension'
@@ -279,6 +280,7 @@ function setupController(initState, initLangCode) {
         await localStore.set(state)
       } catch (err) {
         // log error so we dont break the pipeline
+        captureException(err)
         log.error('error setting state in local store:', err)
       }
     }
