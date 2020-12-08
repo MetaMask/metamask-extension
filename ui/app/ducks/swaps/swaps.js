@@ -34,6 +34,7 @@ import {
 import {
   fetchSwapsFeatureLiveness,
   fetchSwapsGasPrices,
+  fetchSwapsQuoteRefreshTime,
 } from '../../pages/swaps/swaps.util'
 import { calcGasTotal } from '../../pages/send/send.utils'
 import {
@@ -85,6 +86,8 @@ const initialState = {
     priceEstimatesLastRetrieved: 0,
     fallBackPrice: null,
   },
+  // This will eventually be overriden by a property provided by the MetaSwap API
+  swapsQuoteRefreshTime: 0,
 }
 
 const slice = createSlice({
@@ -149,6 +152,9 @@ const slice = createSlice({
     },
     retrievedFallbackSwapsGasPrice: (state, action) => {
       state.customGas.fallBackPrice = action.payload
+    },
+    setSwapsQuoteRefreshTime: (state, action) => {
+      state.swapsQuoteRefreshTime = action.payload
     },
   },
 })
@@ -264,6 +270,9 @@ export const getApproveTxId = (state) => state.metamask.swapsState.approveTxId
 
 export const getTradeTxId = (state) => state.metamask.swapsState.tradeTxId
 
+export const getSwapsQuoteRefreshTime = (state) =>
+  state.swaps.swapsQuoteRefreshTime
+
 export const getUsedQuote = (state) =>
   getSelectedQuote(state) || getTopQuote(state)
 
@@ -307,6 +316,7 @@ const {
   swapCustomGasModalLimitEdited,
   retrievedFallbackSwapsGasPrice,
   swapCustomGasModalClosed,
+  setSwapsQuoteRefreshTime,
 } = actions
 
 export {
@@ -323,11 +333,17 @@ export {
   swapCustomGasModalClosed,
 }
 
+export function fetchMetaSwapsQuoteRefreshTime() {
+  return async (dispatch) => {
+    const quoteRefreshTime = await fetchSwapsQuoteRefreshTime()
+    dispatch(setSwapsQuoteRefreshTime(quoteRefreshTime))
+  }
+}
+
 export const navigateBackToBuildQuote = (history) => {
   return async (dispatch) => {
     // TODO: Ensure any fetch in progress is cancelled
     dispatch(navigatedBackToBuildQuote())
-
     history.push(BUILD_QUOTE_ROUTE)
   }
 }
@@ -504,9 +520,12 @@ export const fetchQuotesAndSetQuoteState = (
 
       const gasPriceFetchPromise = dispatch(fetchAndSetSwapsGasPriceInfo())
 
+      const quoteRefreshTimePromise = dispatch(fetchMetaSwapsQuoteRefreshTime())
+
       const [[fetchedQuotes, selectedAggId]] = await Promise.all([
         fetchAndSetQuotesPromise,
         gasPriceFetchPromise,
+        quoteRefreshTimePromise,
       ])
 
       if (Object.values(fetchedQuotes)?.length === 0) {
