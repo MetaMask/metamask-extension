@@ -3,6 +3,10 @@
 ## Current Develop Branch
 
 ## 8.1.8 Wed Dec 09 2020
+- [#9992](https://github.com/MetaMask/metamask-extension/pull/9992): Improve transaction params validation
+- [#9991](https://github.com/MetaMask/metamask-extension/pull/9991): Don't allow more than 15% slippage
+- [#9994](https://github.com/MetaMask/metamask-extension/pull/9994): Prevent unwanted 'no quotes available' message when going back to build quote screen while having insufficient funds
+- [#9999](https://github.com/MetaMask/metamask-extension/pull/9999): Fix missing contacts upon restart
 
 ## 8.1.7 Tue Dec 08 2020
 - Revert SES lockdown
