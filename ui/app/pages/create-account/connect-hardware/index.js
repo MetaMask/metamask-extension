@@ -134,11 +134,21 @@ class ConnectHardwareForm extends Component {
           this.setState({ browserSupported: false, error: null })
         } else if (errorMessage.includes(U2F_ERROR)) {
           this.setState({ error: U2F_ERROR })
+        } else if (errorMessage === 'LEDGER_LOCKED') {
+          this.setState({
+            error: this.context.t('ledgerLocked'),
+          })
+        } else if (errorMessage.includes('timeout')) {
+          this.setState({
+            error: this.context.t('ledgerTimeout'),
+          })
         } else if (
           errorMessage !== 'Window closed' &&
           errorMessage !== 'Popup closed'
         ) {
-          this.setState({ error: errorMessage })
+          this.setState({
+            error: errorMessage,
+          })
         }
       })
   }

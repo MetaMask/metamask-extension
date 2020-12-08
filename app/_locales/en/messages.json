@@ -364,6 +364,9 @@
   "contactsSettingsDescription": {
     "message": "Add, edit, remove, and manage your contacts"
   },
+  "continue": {
+    "message": "Continue"
+  },
   "continueToWyre": {
     "message": "Continue to Wyre"
   },
@@ -908,6 +911,12 @@
   "ledgerAccountRestriction": {
     "message": "You need to make use your last account before you can add a new one."
   },
+  "ledgerLocked": {
+    "message": "Cannot connect to Ledger device. Please make sure your device is unlocked and Ethereum app is opened."
+  },
+  "ledgerTimeout": {
+    "message": "Ledger Live is taking too long to respond or connection timeout. Make sure Ledger Live app is opened and your device is unlocked."
+  },
   "letsGoSetUp": {
     "message": "Yes, let’s get set up!"
   },
@@ -1410,7 +1419,7 @@
     "message": "Select an Account"
   },
   "selectAnAccountHelp": {
-    "message": "Select the account to view in MetaMask"
+    "message": "Select an account to view in MetaMask. Don't see your account? $1"
   },
   "selectCurrency": {
     "message": "Select Currency"
@@ -1561,23 +1570,23 @@
   "statusNotConnected": {
     "message": "Not connected"
   },
-  "step1HardwareWallet": {
-    "message": "1. Connect Hardware Wallet"
+  "step1LedgerWallet": {
+    "message": "1. Download Ledger app"
   },
-  "step1HardwareWalletMsg": {
-    "message": "Connect your hardware wallet directly to your computer."
+  "step1LedgerWalletMsg": {
+    "message": "Download and set up $1"
   },
-  "step2HardwareWallet": {
-    "message": "2. Select an Account"
+  "step2LedgerWallet": {
+    "message": "2. Plug in Ledger wallet"
   },
-  "step2HardwareWalletMsg": {
-    "message": "Select the account you want to view. You can only choose one at a time."
+  "step2LedgerWalletMsg": {
+    "message": "Connect your wallet directly to your computer. For more on using your hardware wallet device, $1"
   },
-  "step3HardwareWallet": {
-    "message": "3. Start using web3 sites and more!"
+  "step1TrezorWallet": {
+    "message": "Plug in Trezor wallet"
   },
-  "step3HardwareWalletMsg": {
-    "message": "Use your hardware account like you would with any Ethereum account. Connect to web3 sites, send ETH, buy and store ERC20 tokens and non-fungible tokens like CryptoKitties."
+  "step1TrezorWalletMsg": {
+    "message": "Connect your wallet directly to your computer. For more on using your hardware wallet device, $1"
   },
   "storePhrase": {
     "message": "Store this phrase in a password manager like 1Password."
@@ -1873,6 +1882,12 @@
   },
   "swapsViewInActivity": {
     "message": "View in activity"
+  },
+  "switchLedgerPaths": {
+    "message": "Switch Ledger paths"
+  },
+  "switchLedgerPathsText": {
+    "message": "Select the Ledger path to view other accounts"
   },
   "switchNetworks": {
     "message": "Switch Networks"
