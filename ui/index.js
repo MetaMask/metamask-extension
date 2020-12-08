@@ -12,22 +12,22 @@ import switchDirection from './app/helpers/utils/switch-direction'
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn')
 
-export default function launchMetamaskUi (opts, cb) {
+export default function launchMetaMaskUi(opts, cb) {
   const { backgroundConnection } = opts
   actions._setBackgroundConnection(backgroundConnection)
   // check if we are unlocked first
-  backgroundConnection.getState(function (err, metamaskState) {
+  backgroundConnection.getState(function(err, metamaskState) {
     if (err) {
       return cb(err)
     }
-    startApp(metamaskState, backgroundConnection, opts).then((store) => {
+    startApp(metamaskState, backgroundConnection, opts).then(store => {
       setupDebuggingHelpers(store)
       cb(null, store)
     })
   })
 }
 
-async function startApp (metamaskState, backgroundConnection, opts) {
+async function startApp(metamaskState, backgroundConnection, opts) {
   // parse opts
   if (!metamaskState.featureFlags) {
     metamaskState.featureFlags = {}
@@ -76,7 +76,7 @@ async function startApp (metamaskState, backgroundConnection, opts) {
     )
   }
 
-  backgroundConnection.on('update', function (metamaskState) {
+  backgroundConnection.on('update', function(metamaskState) {
     const currentState = store.getState()
     const { currentLocale } = currentState.metamask
     const { currentLocale: newLocale } = metamaskState
@@ -90,10 +90,10 @@ async function startApp (metamaskState, backgroundConnection, opts) {
 
   // global metamask api - used by tooling
   global.metamask = {
-    updateCurrentLocale: (code) => {
+    updateCurrentLocale: code => {
       store.dispatch(actions.updateCurrentLocale(code))
     },
-    setProviderType: (type) => {
+    setProviderType: type => {
       store.dispatch(actions.setProviderType(type))
     },
     setFeatureFlag: (key, value) => {
@@ -107,8 +107,8 @@ async function startApp (metamaskState, backgroundConnection, opts) {
   return store
 }
 
-function setupDebuggingHelpers (store) {
-  window.getCleanAppState = function () {
+function setupDebuggingHelpers(store) {
+  window.getCleanAppState = function() {
     const state = clone(store.getState())
     state.version = global.platform.getVersion()
     state.browser = window.navigator.userAgent
@@ -116,7 +116,7 @@ function setupDebuggingHelpers (store) {
   }
 }
 
-window.logStateString = function (cb) {
+window.logStateString = function(cb) {
   const state = window.getCleanAppState()
   global.platform.getPlatformInfo((err, platform) => {
     if (err) {
@@ -128,7 +128,7 @@ window.logStateString = function (cb) {
   })
 }
 
-window.logState = function (toClipboard) {
+window.logState = function(toClipboard) {
   return window.logStateString((err, result) => {
     if (err) {
       console.error(err.message)

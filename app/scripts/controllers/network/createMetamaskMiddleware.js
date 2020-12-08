@@ -8,7 +8,7 @@ import {
 
 export default createMetamaskMiddleware
 
-function createMetamaskMiddleware ({
+function createMetamaskMiddleware({
   version,
   getAccounts,
   processTransaction,
@@ -28,6 +28,8 @@ function createMetamaskMiddleware ({
       eth_syncing: false,
       web3_clientVersion: `MetaMask/v${version}`,
     }),
+
+    // wallet middleware
     createWalletSubprovider({
       getAccounts,
       processTransaction,
