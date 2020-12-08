@@ -464,7 +464,7 @@ export const getters = deepFreeze({
     removedAccounts: () => {
       return {
         method: NOTIFICATION_NAMES.accountsChanged,
-        result: [],
+        params: [],
       }
     },
 
@@ -477,7 +477,7 @@ export const getters = deepFreeze({
     newAccounts: (accounts) => {
       return {
         method: NOTIFICATION_NAMES.accountsChanged,
-        result: accounts,
+        params: accounts,
       }
     },
   },

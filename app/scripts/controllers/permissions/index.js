@@ -469,7 +469,7 @@ export class PermissionsController {
     if (this._isUnlocked()) {
       this._notifyDomain(origin, {
         method: NOTIFICATION_NAMES.accountsChanged,
-        result: newAccounts,
+        params: newAccounts,
       })
       this.permissionsLog.updateAccountsHistory(origin, newAccounts)
     }
@@ -513,7 +513,7 @@ export class PermissionsController {
     // extension lock state
     this._notifyAllDomains({
       method: NOTIFICATION_NAMES.accountsChanged,
-      result: [],
+      params: [],
     })
   }
 
