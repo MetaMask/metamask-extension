@@ -45,6 +45,10 @@ const copyTargets = [
     dest: ``,
   },
   {
+    src: `./node_modules/globalthis/dist/browser.js`,
+    dest: `globalthis.js`,
+  },
+  {
     src: `./node_modules/ses/dist/`,
     pattern: `lockdown.cjs`,
     dest: ``,
