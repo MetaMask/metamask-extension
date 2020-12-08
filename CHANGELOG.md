@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 8.1.7 Tue Dec 08 2020
+
 ## 8.1.6 Wed Dec 02 2020
 - [#9916](https://github.com/MetaMask/metamask-extension/pull/9916): Fix QR code scans interpretting payment requests as token addresses
 - [#9847](https://github.com/MetaMask/metamask-extension/pull/9847): Add alt text for images in list items
