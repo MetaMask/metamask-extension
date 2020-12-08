@@ -287,7 +287,9 @@ export default class MetamaskController extends EventEmitter {
       ),
       provider: this.provider,
       blockTracker: this.blockTracker,
-      trackMetaMetricsEvent: this.metaMetricsController.trackEvent,
+      trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
       getParticipateInMetrics: () =>
         this.metaMetricsController.state.participateInMetaMetrics,
     })
@@ -1969,7 +1971,9 @@ export default class MetamaskController extends EventEmitter {
     engine.push(
       createMethodMiddleware({
         origin,
-        sendMetrics: this.metaMetricsController.trackEvent,
+        sendMetrics: this.metaMetricsController.trackEvent.bind(
+          this.metaMetricsController,
+        ),
         handleWatchAssetRequest: this.preferencesController.requestWatchAsset.bind(
           this.preferencesController,
         ),
