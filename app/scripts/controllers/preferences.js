@@ -119,6 +119,38 @@ export default class PreferencesController {
   }
 
   /**
+   * Setter for the `participateInMetaMetrics` property
+   *
+   * @param {boolean} bool - Whether or not the user wants to participate in MetaMetrics
+   * @returns {string|null} the string of the new metametrics id, or null if not set
+   *
+   */
+  setParticipateInMetaMetrics(bool) {
+    this.store.updateState({ participateInMetaMetrics: bool })
+    let metaMetricsId = null
+    if (bool && !this.store.getState().metaMetricsId) {
+      metaMetricsId = bufferToHex(
+        sha3(
+          String(Date.now()) +
+          String(Math.round(Math.random() * Number.MAX_SAFE_INTEGER)),
+        ),
+      )
+      this.store.updateState({ metaMetricsId })
+    } else if (bool === false) {
+      this.store.updateState({ metaMetricsId })
+    }
+    return metaMetricsId
+  }
+
+  getParticipateInMetaMetrics() {
+    return this.store.getState().participateInMetaMetrics
+  }
+
+  setMetaMetricsSendCount(val) {
+    this.store.updateState({ metaMetricsSendCount: val })
+  }
+
+  /**
    * Setter for the `firstTimeFlowType` property
    *
    * @param {string} type - Indicates the type of first time flow - create or import - the user wishes to follow
@@ -193,6 +225,7 @@ export default class PreferencesController {
   setAddresses(addresses) {
     const oldIdentities = this.store.getState().identities
     const oldAccountTokens = this.store.getState().accountTokens
+    const oldAccountHiddenTokens = this.store.getState().accountHiddenTokens
 
     const identities = addresses.reduce((ids, address, index) => {
       const oldId = oldIdentities[address] || {}
@@ -204,7 +237,12 @@ export default class PreferencesController {
       tokens[address] = oldTokens
       return tokens
     }, {})
-    this.store.updateState({ identities, accountTokens })
+    const accountHiddenTokens = addresses.reduce((hiddenTokens, address) => {
+      const oldHiddenTokens = oldAccountHiddenTokens[address] || {}
+      hiddenTokens[address] = oldHiddenTokens
+      return hiddenTokens
+    }, {})
+    this.store.updateState({ identities, accountTokens, accountHiddenTokens })
   }
 
   /**
@@ -214,14 +252,19 @@ export default class PreferencesController {
    * @returns {string} the address that was removed
    */
   removeAddress(address) {
-    const { identities } = this.store.getState()
-    const { accountTokens } = this.store.getState()
+    const {
+      identities,
+      accountTokens,
+      accountHiddenTokens,
+    } = this.store.getState()
+
     if (!identities[address]) {
       throw new Error(`${address} can't be deleted cause it was not found`)
     }
     delete identities[address]
     delete accountTokens[address]
-    this.store.updateState({ identities, accountTokens })
+    delete accountHiddenTokens[address]
+    this.store.updateState({ identities, accountTokens, accountHiddenTokens })
 
     // If the selected account is no longer valid,
     // select an arbitrary other account:
@@ -239,7 +282,11 @@ export default class PreferencesController {
    *
    */
   addAddresses(addresses) {
-    const { identities, accountTokens } = this.store.getState()
+    const {
+      identities,
+      accountTokens,
+      accountHiddenTokens,
+    } = this.store.getState()
     addresses.forEach((address) => {
       // skip if already exists
       if (identities[address]) {
@@ -249,9 +296,10 @@ export default class PreferencesController {
       const identityCount = Object.keys(identities).length
 
       accountTokens[address] = {}
+      accountHiddenTokens[address] = {}
       identities[address] = { name: `Account ${identityCount + 1}`, address }
     })
-    this.store.updateState({ identities, accountTokens })
+    this.store.updateState({ identities, accountTokens, accountHiddenTokens })
   }
 
   /**
