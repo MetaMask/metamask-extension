@@ -33,7 +33,7 @@ cleanContextForImports()
 /* eslint-disable import/first */
 import log from 'loglevel'
 import LocalMessageDuplexStream from 'post-message-stream'
-import { initProvider } from '@metamask/inpage-provider'
+import { initializeProvider } from '@metamask/inpage-provider'
 
 restoreContextAfterImports()
 
@@ -45,10 +45,12 @@ log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
 // setup background connection
 const metamaskStream = new LocalMessageDuplexStream({
-  name: 'inpage',
-  target: 'contentscript',
+  name: 'metamask-inpage',
+  target: 'metamask-contentscript',
 })
 
-initProvider({
+initializeProvider({
   connectionStream: metamaskStream,
+  logger: log,
+  shouldShimWeb3: true,
 })
