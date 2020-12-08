@@ -1022,7 +1022,7 @@ describe('MetaMaskController', function () {
       }
       streamTest.write(
         {
-          name: 'provider',
+          name: 'metamask-provider',
           data: message,
         },
         null,
@@ -1061,7 +1061,7 @@ describe('MetaMaskController', function () {
       }
       streamTest.write(
         {
-          name: 'provider',
+          name: 'metamask-provider',
           data: message,
         },
         null,
