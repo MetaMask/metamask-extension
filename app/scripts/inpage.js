@@ -51,4 +51,6 @@ const metamaskStream = new LocalMessageDuplexStream({
 
 initializeProvider({
   connectionStream: metamaskStream,
+  logger: log,
+  shouldShimWeb3: true,
 })
