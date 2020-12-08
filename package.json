@@ -301,7 +301,7 @@
     "gifsicle": true,
     "jpegtran-bin": true,
     "scrypt": true,
-    "weak": true,
+    "weak": false,
     "chromedriver": true,
     "geckodriver": true,
     "@sentry/cli": true,
