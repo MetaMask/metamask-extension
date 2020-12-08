@@ -2115,18 +2115,19 @@
   resolved "https://registry.yarnpkg.com/@metamask/forwarder/-/forwarder-1.1.0.tgz#13829d8244bbf19ea658c0b20d21a77b67de0bdd"
   integrity sha512-Hggj4y0QIjDzKGTXzarhEPIQyFSB2bi2y6YLJNwaT4JmP30UB5Cj6gqoY0M4pj3QT57fzp0BUuGp7F/AUe28tw==
 
-"@metamask/inpage-provider@./metamask-inpage-provider-7.0.0.tgz":
-  version "7.0.0"
-  resolved "./metamask-inpage-provider-7.0.0.tgz#a2af6325639797848d781d4133c21000746f3d0c"
+"@metamask/inpage-provider@^8.0.0":
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/inpage-provider/-/inpage-provider-8.0.0.tgz#033bd30f09718f901dcc4dd5b6466d8fbac9af7b"
+  integrity sha512-iKk/ZslO+2nOLebi3wbNdeTvla75fAasTFD9yormT5UQMbLAT9bmuQW37TXU96BVe1vDFsGYFTsPUHzjf+zR/g==
   dependencies:
-    eth-rpc-errors "^2.1.1"
+    "@metamask/safe-event-emitter" "^2.0.0"
+    eth-rpc-errors "^4.0.2"
     fast-deep-equal "^2.0.1"
     is-stream "^2.0.0"
     json-rpc-engine "^6.1.0"
     json-rpc-middleware-stream "^2.1.1"
     obj-multiplex "^1.0.0"
     pump "^3.0.0"
-    safe-event-emitter "^1.0.1"
 
 "@metamask/jazzicon@^2.0.0":
   version "2.0.0"
@@ -9886,13 +9887,6 @@ eth-query@^2.0.2, eth-query@^2.1.0, eth-query@^2.1.2:
   dependencies:
     json-rpc-random-id "^1.0.0"
     xtend "^4.0.1"
-
-eth-rpc-errors@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/eth-rpc-errors/-/eth-rpc-errors-2.1.1.tgz#00a7d6c8a9c864a8ab7d0356be20964e5bee4b13"
-  integrity sha512-MY3zAa5ZF8hvgQu1HOF9agaK5GgigBRGpTJ8H0oVlE0NqMu13CW6syyjLXdeIDCGQTbUeHliU1z9dVmvMKx1Tg==
-  dependencies:
-    fast-safe-stringify "^2.0.6"
 
 eth-rpc-errors@^3.0.0:
   version "3.0.0"
