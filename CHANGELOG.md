@@ -3,6 +3,7 @@
 ## Current Develop Branch
 
 ## 8.1.7 Tue Dec 08 2020
+- Revert SES lockdown
 
 ## 8.1.6 Wed Dec 02 2020
 - [#9916](https://github.com/MetaMask/metamask-extension/pull/9916): Fix QR code scans interpretting payment requests as token addresses
