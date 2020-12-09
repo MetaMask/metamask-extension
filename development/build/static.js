@@ -44,16 +44,6 @@ const copyTargets = [
     pattern: `*.html`,
     dest: ``,
   },
-  {
-    src: `./node_modules/ses/dist/`,
-    pattern: `lockdown.cjs`,
-    dest: ``,
-  },
-  {
-    src: `./app/scripts/`,
-    pattern: `runLockdown.js`,
-    dest: ``,
-  },
 ]
 
 const languageTags = new Set()

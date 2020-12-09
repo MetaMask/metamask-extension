@@ -1,8 +1,6 @@
-// Should occur before anything else
-import './globalPatch'
-import 'ses/dist/lockdown.cjs'
-import '../../app/scripts/runLockdown'
-import assert from 'assert' /* eslint-disable-line import/first,import/order */
+import '../../app/scripts/lib/freezeGlobals'
+
+import assert from 'assert'
 
 describe('Promise global is immutable', function () {
   it('throws when reassinging promise (syntax 1)', function () {
