@@ -594,11 +594,11 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     const usedTradeTxParams = usedQuote.trade
 
     const estimatedGasLimit = new BigNumber(
-      usedQuote?.gasEstimate || decimalToHex(usedQuote?.averageGas || 0),
+      usedQuote?.gasEstimate || `0x${decimalToHex(0)}`,
       16,
     )
     const estimatedGasLimitWithMultiplier = estimatedGasLimit
-      .times(1.4, 10)
+      .times(usedQuote?.gasMultiplier, 10)
       .round(0)
       .toString(16)
     const maxGasLimit =
