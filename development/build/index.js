@@ -3,6 +3,11 @@
 //
 // run any task with "yarn build ${taskName}"
 //
+global.globalThis = global // eslint-disable-line node/no-unsupported-features/es-builtins
+require('lavamoat-core/lib/ses.umd.js')
+
+lockdown() // eslint-disable-line no-undef
+
 const livereload = require('gulp-livereload')
 const {
   createTask,

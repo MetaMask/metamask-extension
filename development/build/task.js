@@ -68,9 +68,7 @@ function runInChildProcess(task) {
     )
   }
   return instrumentForTaskStats(taskName, async () => {
-    const childProcess = spawn('yarn', ['build', taskName, '--skip-stats'], {
-      env: process.env,
-    })
+    const childProcess = spawn('yarn', ['build', taskName, '--skip-stats'])
     // forward logs to main process
     // skip the first stdout event (announcing the process command)
     childProcess.stdout.once('data', () => {
@@ -87,7 +85,7 @@ function runInChildProcess(task) {
         if (errCode !== 0) {
           reject(
             new Error(
-              `MetaMask build: runInChildProcess for task "${taskName}" encountered an error ${errCode}`,
+              `MetaMask build: runInChildProcess for task "${taskName}" encountered an error`,
             ),
           )
           return
