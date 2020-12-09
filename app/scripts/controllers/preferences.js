@@ -34,8 +34,10 @@ export default class PreferencesController {
     const initState = {
       frequentRpcListDetail: [],
       accountTokens: {},
+      accountHiddenTokens: {},
       assetImages: {},
       tokens: [],
+      hiddenTokens: [],
       suggestedTokens: {},
       useBlockie: false,
       useNonceField: false,
@@ -191,6 +193,7 @@ export default class PreferencesController {
   setAddresses(addresses) {
     const oldIdentities = this.store.getState().identities
     const oldAccountTokens = this.store.getState().accountTokens
+    const oldAccountHiddenTokens = this.store.getState().accountHiddenTokens
 
     const identities = addresses.reduce((ids, address, index) => {
       const oldId = oldIdentities[address] || {}
@@ -202,7 +205,12 @@ export default class PreferencesController {
       tokens[address] = oldTokens
       return tokens
     }, {})
-    this.store.updateState({ identities, accountTokens })
+    const accountHiddenTokens = addresses.reduce((hiddenTokens, address) => {
+      const oldHiddenTokens = oldAccountHiddenTokens[address] || {}
+      hiddenTokens[address] = oldHiddenTokens
+      return hiddenTokens
+    }, {})
+    this.store.updateState({ identities, accountTokens, accountHiddenTokens })
   }
 
   /**
@@ -212,14 +220,19 @@ export default class PreferencesController {
    * @returns {string} the address that was removed
    */
   removeAddress(address) {
-    const { identities } = this.store.getState()
-    const { accountTokens } = this.store.getState()
+    const {
+      identities,
+      accountTokens,
+      accountHiddenTokens,
+    } = this.store.getState()
+
     if (!identities[address]) {
       throw new Error(`${address} can't be deleted cause it was not found`)
     }
     delete identities[address]
     delete accountTokens[address]
-    this.store.updateState({ identities, accountTokens })
+    delete accountHiddenTokens[address]
+    this.store.updateState({ identities, accountTokens, accountHiddenTokens })
 
     // If the selected account is no longer valid,
     // select an arbitrary other account:
@@ -237,7 +250,11 @@ export default class PreferencesController {
    *
    */
   addAddresses(addresses) {
-    const { identities, accountTokens } = this.store.getState()
+    const {
+      identities,
+      accountTokens,
+      accountHiddenTokens,
+    } = this.store.getState()
     addresses.forEach((address) => {
       // skip if already exists
       if (identities[address]) {
@@ -247,9 +264,10 @@ export default class PreferencesController {
       const identityCount = Object.keys(identities).length
 
       accountTokens[address] = {}
+      accountHiddenTokens[address] = {}
       identities[address] = { name: `Account ${identityCount + 1}`, address }
     })
-    this.store.updateState({ identities, accountTokens })
+    this.store.updateState({ identities, accountTokens, accountHiddenTokens })
   }
 
   /**
@@ -346,7 +364,7 @@ export default class PreferencesController {
    */
 
   /**
-   * Adds a new token to the token array, or updates the token if passed an address that already exists.
+   * Adds a new token to the token array and removes it from the hiddenToken array, or updates the token if passed an address that already exists.
    * Modifies the existing tokens array from the store. All objects in the tokens array array AddedToken objects.
    * @see AddedToken {@link AddedToken}
    *
@@ -359,8 +377,11 @@ export default class PreferencesController {
   async addToken(rawAddress, symbol, decimals, image) {
     const address = normalizeAddress(rawAddress)
     const newEntry = { address, symbol, decimals }
-    const { tokens } = this.store.getState()
+    const { tokens, hiddenTokens } = this.store.getState()
     const assetImages = this.getAssetImages()
+    const updatedHiddenTokens = hiddenTokens.filter(
+      (tokenAddress) => tokenAddress !== rawAddress.toLowerCase(),
+    )
     const previousEntry = tokens.find((token) => {
       return token.address === address
     })
@@ -372,23 +393,24 @@ export default class PreferencesController {
       tokens.push(newEntry)
     }
     assetImages[address] = image
-    this._updateAccountTokens(tokens, assetImages)
+    this._updateAccountTokens(tokens, assetImages, updatedHiddenTokens)
     return Promise.resolve(tokens)
   }
 
   /**
-   * Removes a specified token from the tokens array.
+   * Removes a specified token from the tokens array and adds it to hiddenTokens array
    *
    * @param {string} rawAddress - Hex address of the token contract to remove.
    * @returns {Promise<array>} The new array of AddedToken objects
    *
    */
   removeToken(rawAddress) {
-    const { tokens } = this.store.getState()
+    const { tokens, hiddenTokens } = this.store.getState()
     const assetImages = this.getAssetImages()
     const updatedTokens = tokens.filter((token) => token.address !== rawAddress)
+    const updatedHiddenTokens = [...hiddenTokens, rawAddress.toLowerCase()]
     delete assetImages[rawAddress]
-    this._updateAccountTokens(updatedTokens, assetImages)
+    this._updateAccountTokens(updatedTokens, assetImages, updatedHiddenTokens)
     return Promise.resolve(updatedTokens)
   }
 
@@ -643,47 +665,59 @@ export default class PreferencesController {
    */
   _subscribeProviderType() {
     this.network.providerStore.subscribe(() => {
-      const { tokens } = this._getTokenRelatedStates()
-      this.store.updateState({ tokens })
+      const { tokens, hiddenTokens } = this._getTokenRelatedStates()
+      this._updateAccountTokens(tokens, this.getAssetImages(), hiddenTokens)
     })
   }
 
   /**
-   * Updates `accountTokens` and `tokens` of current account and network according to it.
+   * Updates `accountTokens`, `tokens`, `accountHiddenTokens` and `hiddenTokens` of current account and network according to it.
    *
-   * @param {Array} tokens - Array of tokens to be updated.
+   * @param {array} tokens - Array of tokens to be updated.
+   * @param {array} assetImages - Array of assets objects related to assets added
+   * @param {array} hiddenTokens - Array of tokens hidden by user
    *
    */
-  _updateAccountTokens(tokens, assetImages) {
+  _updateAccountTokens(tokens, assetImages, hiddenTokens) {
     const {
       accountTokens,
       providerType,
       selectedAddress,
+      accountHiddenTokens,
     } = this._getTokenRelatedStates()
     accountTokens[selectedAddress][providerType] = tokens
-    this.store.updateState({ accountTokens, tokens, assetImages })
+    accountHiddenTokens[selectedAddress][providerType] = hiddenTokens
+    this.store.updateState({
+      accountTokens,
+      tokens,
+      assetImages,
+      accountHiddenTokens,
+      hiddenTokens,
+    })
   }
 
   /**
-   * Updates `tokens` of current account and network.
+   * Updates `tokens` and `hiddenTokens` of current account and network.
    *
    * @param {string} selectedAddress - Account address to be updated with.
    *
    */
   _updateTokens(selectedAddress) {
-    const { tokens } = this._getTokenRelatedStates(selectedAddress)
-    this.store.updateState({ tokens })
+    const { tokens, hiddenTokens } = this._getTokenRelatedStates(
+      selectedAddress,
+    )
+    this.store.updateState({ tokens, hiddenTokens })
   }
 
   /**
-   * A getter for `tokens` and `accountTokens` related states.
+   * A getter for `tokens`, `accountTokens`, `hiddenTokens` and `accountHiddenTokens` related states.
    *
    * @param {string} [selectedAddress] - A new hex address for an account
    * @returns {Object.<array, object, string, string>} States to interact with tokens in `accountTokens`
    *
    */
   _getTokenRelatedStates(selectedAddress) {
-    const { accountTokens } = this.store.getState()
+    const { accountTokens, accountHiddenTokens } = this.store.getState()
     if (!selectedAddress) {
       // eslint-disable-next-line no-param-reassign
       selectedAddress = this.store.getState().selectedAddress
@@ -692,11 +726,25 @@ export default class PreferencesController {
     if (!(selectedAddress in accountTokens)) {
       accountTokens[selectedAddress] = {}
     }
+    if (!(selectedAddress in accountHiddenTokens)) {
+      accountHiddenTokens[selectedAddress] = {}
+    }
     if (!(providerType in accountTokens[selectedAddress])) {
       accountTokens[selectedAddress][providerType] = []
     }
+    if (!(providerType in accountHiddenTokens[selectedAddress])) {
+      accountHiddenTokens[selectedAddress][providerType] = []
+    }
     const tokens = accountTokens[selectedAddress][providerType]
-    return { tokens, accountTokens, providerType, selectedAddress }
+    const hiddenTokens = accountHiddenTokens[selectedAddress][providerType]
+    return {
+      tokens,
+      accountTokens,
+      hiddenTokens,
+      accountHiddenTokens,
+      providerType,
+      selectedAddress,
+    }
   }
 
   /**

@@ -1605,6 +1605,9 @@
     "message": "You need $1 more $2 to complete this swap",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
+  "swapBetterQuoteAvailable": {
+    "message": "A better quote is available"
+  },
   "swapBuildQuotePlaceHolderText": {
     "message": "No tokens available matching $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
@@ -1701,8 +1704,8 @@
     "message": "We find the best price from the top liquidity sources, every time. A fee of $1% is automatically factored into each quote, which supports ongoing development to make MetaMask even better.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
-  "swapNQuotesAvailable": {
-    "message": "$1 quotes available",
+  "swapNQuotes": {
+    "message": "$1 quotes",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapNetworkFeeSummary": {
@@ -1830,6 +1833,9 @@
   "swapUnknown": {
     "message": "Unknown"
   },
+  "swapUsingBestQuote": {
+    "message": "Using the best quote"
+  },
   "swapVerifyTokenExplanation": {
     "message": "Multiple tokens can use the same name and symbol. Check Etherscan to verify this is the token you're looking for."
   },
@@ -1845,13 +1851,6 @@
   },
   "swapsAdvancedOptions": {
     "message": "Advanced Options"
-  },
-  "swapsBestQuote": {
-    "message": "Best quote"
-  },
-  "swapsConvertToAbout": {
-    "message": "Convert $1 to about",
-    "description": "This message is part of a quote for a swap. The $1 is the amount being converted, and the amount it is being swapped for is below this message"
   },
   "swapsExcessiveSlippageWarning": {
     "message": "Slippage amount is too high and will result in a bad rate. Please reduce your slippage tolerance to a value below 15%."
