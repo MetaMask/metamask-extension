@@ -1424,9 +1424,6 @@
   "showSeedPhrase": {
     "message": "显示账户助记词"
   },
-  "showTransactionTimeDescription": {
-    "message": "选择该选项，在 Ethereum 主网络上的活动选项卡中显示待处理的估计时间。注意：估计时间是基于网络条件的近似值。"
-  },
   "sigRequest": {
     "message": "请求签名"
   },
@@ -1547,6 +1544,9 @@
   "swapApproveNeedMoreTokens": {
     "message": "你还需 $1 $2 来完成这笔兑换"
   },
+  "swapBetterQuoteAvailable": {
+    "message": "有一个更好的报价可用"
+  },
   "swapBuildQuotePlaceHolderText": {
     "message": "没有匹配的代币符合 $1"
   },
@@ -1576,15 +1576,6 @@
   },
   "swapEstimatedNetworkFeesInfo": {
     "message": "这是预估的用于完成你的兑换所使用的网络手续费。实际数额可能会根据网络条件而变化。"
-  },
-  "swapEstimatedTime": {
-    "message": "预计时间："
-  },
-  "swapEstimatedTimeCalculating": {
-    "message": "计算中..."
-  },
-  "swapEstimatedTimeFull": {
-    "message": "$1 $2"
   },
   "swapFailedErrorDescription": {
     "message": "你的资金是安全的，仍然可以在你的钱包中使用。"
@@ -1646,8 +1637,8 @@
   "swapMetaMaskFeeDescription": {
     "message": "我们每次都能从顶级流动性资源中找到最好的价格。每次报价都会自动收取1%的手续费用，以支持 MetaMask 的持续发展，使其更加完善。"
   },
-  "swapNQuotesAvailable": {
-    "message": "$1个报价可用"
+  "swapNQuotes": {
+    "message": "$1 个报价"
   },
   "swapNetworkFeeSummary": {
     "message": "网络手续费包括处理你的兑换和在以太坊（Ethereum）网络上存储的成本。MetaMask 不从这笔费用中获利。"
@@ -1657,6 +1648,18 @@
   },
   "swapOnceTransactionHasProcess": {
     "message": "一旦交易完成，你的 $1 将被添加到你的账户中。"
+  },
+  "swapPriceDifference": {
+    "message": "你将兑换 $1 $2（~$3）为 $4 $5（~$6）。"
+  },
+  "swapPriceDifferenceTitle": {
+    "message": "价格差异 ~$1%"
+  },
+  "swapPriceDifferenceTooltip": {
+    "message": "市场价格的差异可能受到中介机构收取的费用、市场规模、交易规模或市场效率低下的影响。"
+  },
+  "swapPriceDifferenceUnavailable": {
+    "message": "市场价格不可用。 请确认你对退回的数额感到满意后再继续。"
   },
   "swapProcessing": {
     "message": "处理中"
@@ -1754,6 +1757,9 @@
   "swapUnknown": {
     "message": "未知的"
   },
+  "swapUsingBestQuote": {
+    "message": "使用最好的报价"
+  },
   "swapVerifyTokenExplanation": {
     "message": "多个代币可以使用相同的名称和符号。检查 Etherscan（以太坊浏览器）以确认这是您正在寻找的代币。"
   },
@@ -1769,14 +1775,8 @@
   "swapsAdvancedOptions": {
     "message": "高级选项"
   },
-  "swapsAlmostDone": {
-    "message": "快好了..."
-  },
-  "swapsBestQuote": {
-    "message": "最佳报价"
-  },
-  "swapsConvertToAbout": {
-    "message": "兑换 $1 到约"
+  "swapsExcessiveSlippageWarning": {
+    "message": "滑点数额太高，会导致不良率。请将滑点设置降低到 15% 以下。"
   },
   "swapsMaxSlippage": {
     "message": "最大滑点"
