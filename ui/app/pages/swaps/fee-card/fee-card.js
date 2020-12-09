@@ -11,11 +11,41 @@ export default function FeeCard({
   tokenApprovalTextComponent,
   tokenApprovalSourceTokenSymbol,
   onTokenApprovalClick,
+  metaMaskFee,
+  isBestQuote,
+  numberOfQuotes,
+  onQuotesClick,
+  tokenConversionRate,
 }) {
   const t = useContext(I18nContext)
 
+  let bestQuoteText = ''
+  if (isBestQuote && tokenConversionRate) {
+    bestQuoteText = t('swapUsingBestQuote')
+  } else if (tokenConversionRate) {
+    bestQuoteText = t('swapBetterQuoteAvailable')
+  }
+
   return (
     <div className="fee-card">
+      <div className="fee-card__savings-and-quotes-header">
+        <div className="fee-card__savings-and-quotes-row">
+          {bestQuoteText && (
+            <p className="fee-card__savings-text">{bestQuoteText}</p>
+          )}
+          <div
+            className="fee-card__quote-link-container"
+            onClick={onQuotesClick}
+          >
+            <p className="fee-card__quote-link-text">
+              {t('swapNQuotes', [numberOfQuotes])}
+            </p>
+            <div className="fee-card__caret-right">
+              <i className="fa fa-angle-up" />
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="fee-card__main">
         <div className="fee-card__row-header">
           <div>
@@ -83,26 +113,39 @@ export default function FeeCard({
           </div>
         </div>
         {!hideTokenApprovalRow && (
-          <div className="fee-card__top-bordered-row">
+          <div className="fee-card__row-header">
             <div className="fee-card__row-label">
               <div className="fee-card__row-header-text">
                 {t('swapThisWillAllowApprove', [tokenApprovalTextComponent])}
-              </div>
-              <div
-                className="fee-card__link"
-                onClick={() => onTokenApprovalClick()}
-              >
-                {t('swapEditLimit')}
               </div>
               <InfoTooltip
                 position="top"
                 contentText={t('swapEnableDescription', [
                   tokenApprovalSourceTokenSymbol,
                 ])}
+                containerClassName="fee-card__info-tooltip-container"
               />
+            </div>
+            <div
+              className="fee-card__link"
+              onClick={() => onTokenApprovalClick()}
+            >
+              {t('swapEditLimit')}
             </div>
           </div>
         )}
+        <div className="fee-card__top-bordered-row">
+          <div className="fee-card__row-label">
+            <div className="fee-card__row-header-text">
+              {t('swapQuoteIncludesRate', [metaMaskFee])}
+            </div>
+            <InfoTooltip
+              position="top"
+              contentText={t('swapMetaMaskFeeDescription', [metaMaskFee])}
+              wrapperClassName="fee-card__info-tooltip-container"
+            />
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -122,4 +165,9 @@ FeeCard.propTypes = {
   tokenApprovalTextComponent: PropTypes.node,
   tokenApprovalSourceTokenSymbol: PropTypes.string,
   onTokenApprovalClick: PropTypes.func,
+  metaMaskFee: PropTypes.string.isRequired,
+  isBestQuote: PropTypes.bool,
+  onQuotesClick: PropTypes.func.isRequired,
+  numberOfQuotes: PropTypes.number.isRequired,
+  tokenConversionRate: PropTypes.number,
 }

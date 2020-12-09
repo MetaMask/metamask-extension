@@ -73,7 +73,6 @@ import { useTokenTracker } from '../../../hooks/useTokenTracker'
 import { QUOTES_EXPIRED_ERROR } from '../../../helpers/constants/swaps'
 import CountdownTimer from '../countdown-timer'
 import SwapsFooter from '../swaps-footer'
-import InfoTooltip from '../../../components/ui/info-tooltip'
 import ViewQuotePriceDifference from './view-quote-price-difference'
 
 export default function ViewQuote() {
@@ -117,6 +116,7 @@ export default function ViewQuote() {
   const tradeValue = usedQuote?.trade?.value ?? '0x0'
 
   const { isBestQuote } = usedQuote
+
   const fetchParamsSourceToken = fetchParams?.sourceToken
 
   const usedGasLimit =
@@ -191,9 +191,11 @@ export default function ViewQuote() {
     destinationTokenDecimals,
     destinationTokenSymbol,
     destinationTokenValue,
+    destinationIconUrl,
     sourceTokenDecimals,
     sourceTokenSymbol,
     sourceTokenValue,
+    sourceTokenIconUrl,
   } = renderableDataForUsedQuote
 
   const { feeInFiat, feeInEth } = getRenderableNetworkFeesForQuote(
@@ -499,11 +501,7 @@ export default function ViewQuote() {
             />
           )}
         </div>
-        <div
-          className={classnames('view-quote__countdown-timer-container', {
-            'view-quote__countdown-timer-container--thin': isShowingWarning,
-          })}
-        >
+        <div className="view-quote__countdown-timer-container">
           <CountdownTimer
             timeStarted={quotesLastFetched}
             warningTime="0:30"
@@ -511,53 +509,21 @@ export default function ViewQuote() {
             labelKey="swapNewQuoteIn"
           />
         </div>
-        <div
-          className={classnames('view-quote__main-quote-summary-container', {
-            'view-quote__main-quote-summary-container--thin': isShowingWarning,
-          })}
-        >
-          <MainQuoteSummary
-            sourceValue={calcTokenValue(sourceTokenValue, sourceTokenDecimals)}
-            sourceDecimals={sourceTokenDecimals}
-            sourceSymbol={sourceTokenSymbol}
-            destinationValue={calcTokenValue(
-              destinationTokenValue,
-              destinationTokenDecimals,
-            )}
-            destinationDecimals={destinationTokenDecimals}
-            destinationSymbol={destinationTokenSymbol}
-            isBestQuote={isBestQuote}
-          />
-        </div>
-        <div className="view-quote__view-other-button-container">
-          <div className="view-quote__view-other-button">
-            {t('swapNQuotesAvailable', [Object.values(quotes).length])}
-            <i className="fa fa-arrow-right" />
-          </div>
-          <div
-            className="view-quote__view-other-button-fade"
-            onClick={() => {
-              allAvailableQuotesOpened()
-              setSelectQuotePopoverShown(true)
-            }}
-          >
-            {t('swapNQuotesAvailable', [Object.values(quotes).length])}
-            <i className="fa fa-arrow-right" />
-          </div>
-        </div>
-        <div className="view-quote__metamask-rate">
-          <p className="view-quote__metamask-rate-text">
-            {t('swapQuoteIncludesRate', [metaMaskFee])}
-          </p>
-          <InfoTooltip
-            position="top"
-            contentText={t('swapMetaMaskFeeDescription', [metaMaskFee])}
-            wrapperClassName="view-quote__metamask-rate-info-icon"
-          />
-        </div>
+        <MainQuoteSummary
+          sourceValue={calcTokenValue(sourceTokenValue, sourceTokenDecimals)}
+          sourceDecimals={sourceTokenDecimals}
+          sourceSymbol={sourceTokenSymbol}
+          destinationValue={calcTokenValue(
+            destinationTokenValue,
+            destinationTokenDecimals,
+          )}
+          destinationDecimals={destinationTokenDecimals}
+          destinationSymbol={destinationTokenSymbol}
+          sourceIconUrl={sourceTokenIconUrl}
+          destinationIconUrl={destinationIconUrl}
+        />
         <div
           className={classnames('view-quote__fee-card-container', {
-            'view-quote__fee-card-container--thin': isShowingWarning,
             'view-quote__fee-card-container--three-rows':
               approveTxParams && (!balanceError || warningHidden),
           })}
@@ -578,6 +544,18 @@ export default function ViewQuote() {
             tokenApprovalTextComponent={tokenApprovalTextComponent}
             tokenApprovalSourceTokenSymbol={sourceTokenSymbol}
             onTokenApprovalClick={onFeeCardTokenApprovalClick}
+            metaMaskFee={metaMaskFee}
+            isBestQuote={isBestQuote}
+            numberOfQuotes={Object.values(quotes).length}
+            onQuotesClick={() => {
+              allAvailableQuotesOpened()
+              setSelectQuotePopoverShown(true)
+            }}
+            tokenConversionRate={
+              destinationTokenSymbol === 'ETH'
+                ? 1
+                : memoizedTokenConversionRates[destinationToken.address]
+            }
           />
         </div>
       </div>
@@ -595,7 +573,6 @@ export default function ViewQuote() {
         onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}
         disabled={balanceError || gasPrice === null || gasPrice === undefined}
         className={isShowingWarning && 'view-quote__thin-swaps-footer'}
-        showTermsOfService
         showTopBorder
       />
     </div>

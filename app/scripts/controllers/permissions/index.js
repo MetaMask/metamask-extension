@@ -28,6 +28,7 @@ export class PermissionsController {
       getKeyringAccounts,
       getRestrictedMethods,
       getUnlockPromise,
+      isUnlocked,
       notifyDomain,
       notifyAllDomains,
       preferences,
@@ -47,6 +48,7 @@ export class PermissionsController {
     this._notifyDomain = notifyDomain
     this._notifyAllDomains = notifyAllDomains
     this._showPermissionRequest = showPermissionRequest
+    this._isUnlocked = isUnlocked
 
     this._restrictedMethods = getRestrictedMethods({
       getKeyringAccounts: this.getKeyringAccounts.bind(this),
@@ -463,21 +465,20 @@ export class PermissionsController {
       throw new Error('Invalid accounts', newAccounts)
     }
 
-    this._notifyDomain(origin, {
-      method: NOTIFICATION_NAMES.accountsChanged,
-      result: newAccounts,
-    })
-
-    // if the accounts changed from the perspective of the dapp,
-    // update "last seen" time for the origin and account(s)
-    // exception: no accounts -> no times to update
-    this.permissionsLog.updateAccountsHistory(origin, newAccounts)
+    // We do not share accounts when the extension is locked.
+    if (this._isUnlocked()) {
+      this._notifyDomain(origin, {
+        method: NOTIFICATION_NAMES.accountsChanged,
+        params: newAccounts,
+      })
+      this.permissionsLog.updateAccountsHistory(origin, newAccounts)
+    }
 
     // NOTE:
-    // we don't check for accounts changing in the notifyAllDomains case,
-    // because the log only records when accounts were last seen,
-    // and the accounts only change for all domains at once when permissions
-    // are removed
+    // We don't check for accounts changing in the notifyAllDomains case,
+    // because the log only records when accounts were last seen, and the
+    // the accounts only change for all domains at once when permissions are
+    // removed.
   }
 
   /**
@@ -508,9 +509,11 @@ export class PermissionsController {
    */
   clearPermissions() {
     this.permissions.clearDomains()
+    // It's safe to notify that no accounts are available, regardless of
+    // extension lock state
     this._notifyAllDomains({
       method: NOTIFICATION_NAMES.accountsChanged,
-      result: [],
+      params: [],
     })
   }
 
@@ -748,8 +751,4 @@ export class PermissionsController {
       initState,
     )
   }
-}
-
-export function addInternalMethodPrefix(method) {
-  return WALLET_PREFIX + method
 }

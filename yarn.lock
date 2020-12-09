@@ -2115,20 +2115,19 @@
   resolved "https://registry.yarnpkg.com/@metamask/forwarder/-/forwarder-1.1.0.tgz#13829d8244bbf19ea658c0b20d21a77b67de0bdd"
   integrity sha512-Hggj4y0QIjDzKGTXzarhEPIQyFSB2bi2y6YLJNwaT4JmP30UB5Cj6gqoY0M4pj3QT57fzp0BUuGp7F/AUe28tw==
 
-"@metamask/inpage-provider@^6.1.0":
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/@metamask/inpage-provider/-/inpage-provider-6.3.0.tgz#92d965e20912c24adbf973efbd07dbf339547741"
-  integrity sha512-n7E06+8hWdYKmgJo84WFvgX6/BSqaOQEOMIrcbrP48LdkkZNEAChx6D8oUb2lYDQiWgahR+f20jsJoN4WmOjxw==
+"@metamask/inpage-provider@^8.0.1":
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/@metamask/inpage-provider/-/inpage-provider-8.0.1.tgz#67b1f0733ae7c0e0e429dc5c067ba9d2dd6d66da"
+  integrity sha512-dN3IpiJtaHeiPzF01UXnrQ6TxXbXbkU54kiOHuIUe9e8s7vyPzgDgN2nj84xjmIkqxL0MKY90Wcp0obFKnNj+Q==
   dependencies:
-    eth-rpc-errors "^2.1.1"
+    "@metamask/safe-event-emitter" "^2.0.0"
+    eth-rpc-errors "^4.0.2"
     fast-deep-equal "^2.0.1"
     is-stream "^2.0.0"
-    json-rpc-engine "^5.2.0"
+    json-rpc-engine "^6.1.0"
     json-rpc-middleware-stream "^2.1.1"
     obj-multiplex "^1.0.0"
-    obs-store "^4.0.3"
     pump "^3.0.0"
-    safe-event-emitter "^1.0.1"
 
 "@metamask/jazzicon@^2.0.0":
   version "2.0.0"
@@ -9889,13 +9888,6 @@ eth-query@^2.0.2, eth-query@^2.1.0, eth-query@^2.1.2:
     json-rpc-random-id "^1.0.0"
     xtend "^4.0.1"
 
-eth-rpc-errors@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/eth-rpc-errors/-/eth-rpc-errors-2.1.1.tgz#00a7d6c8a9c864a8ab7d0356be20964e5bee4b13"
-  integrity sha512-MY3zAa5ZF8hvgQu1HOF9agaK5GgigBRGpTJ8H0oVlE0NqMu13CW6syyjLXdeIDCGQTbUeHliU1z9dVmvMKx1Tg==
-  dependencies:
-    fast-safe-stringify "^2.0.6"
-
 eth-rpc-errors@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/eth-rpc-errors/-/eth-rpc-errors-3.0.0.tgz#d7b22653c70dbf9defd4ef490fd08fe70608ca10"
@@ -12935,9 +12927,9 @@ hi-base32@~0.5.0:
   integrity sha512-DDRmxSyoYuvjUb9EnXdoiMChBZ7ZcUVJsK5Frd3kqMhuBxvmZdnBeynAVfj7/ECbn++CekcoprvC/rprHPAtow==
 
 highlight.js@^10.1.1, highlight.js@~10.4.0:
-  version "10.4.0"
-  resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-10.4.0.tgz#ef3ce475e5dfa7a48484260b49ea242ddab823a0"
-  integrity sha512-EfrUGcQ63oLJbj0J0RI9ebX6TAITbsDBLbsjr881L/X5fMO9+oadKzEF21C7R3ULKG6Gv3uoab2HiqVJa/4+oA==
+  version "10.4.1"
+  resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-10.4.1.tgz#d48fbcf4a9971c4361b3f95f302747afe19dbad0"
+  integrity sha512-yR5lWvNz7c85OhVAEAeFhVCc/GV4C30Fjzc/rCP0aCWzc1UUOPUk55dK/qdwTZHBvMZo+eZ2jpk62ndX/xMFlg==
 
 history@^4.9.0:
   version "4.10.1"
@@ -15221,7 +15213,7 @@ json-rpc-engine@^3.4.0, json-rpc-engine@^3.6.0:
     promise-to-callback "^1.0.0"
     safe-event-emitter "^1.0.1"
 
-json-rpc-engine@^5.2.0, json-rpc-engine@^5.3.0:
+json-rpc-engine@^5.3.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/json-rpc-engine/-/json-rpc-engine-5.3.0.tgz#7dc7291766b28766ebda33eb6d3f4c6301c44ff4"
   integrity sha512-+diJ9s8rxB+fbJhT7ZEf8r8spaLRignLd8jTgQ/h5JSGppAHGtNMZtCoabipCaleR1B3GTGxbXBOqhaJSGmPGQ==

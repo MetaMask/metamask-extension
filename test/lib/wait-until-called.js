@@ -1,22 +1,41 @@
+const DEFAULT_TIMEOUT = 10000
+
 /**
- * A function that wraps a sinon stubbed function and returns a Promise
- * when this stub was called.
+ * A function that wraps a sinon stub and returns an asynchronous function
+ * that resolves if the stubbed function was called enough times, or throws
+ * if the timeout is exceeded.
  *
  * The stub that has been passed in will be setup to call the wrapped function
- * directly, then trigger the returned Promise to resolve.
+ * directly.
  *
  * WARNING: Any existing `callsFake` behavior will be overwritten.
  *
  * @param {import('sinon').stub} stub - A sinon stub of a function
- * @param {unknown} [wrappedThis] - The object the stubbed function was called on, if any (i.e. the `this` value)
- * @param {number} [callCount] - The number of calls to wait for. Defaults to 1.
- * @returns {Promise} A Promise that resolves when the stub has been called
+ * @param {unknown} [wrappedThis] - The object the stubbed function was called
+ *   on, if any (i.e. the `this` value)
+ * @param {Object} [options] - Optional configuration
+ * @param {number} [options.callCount] - The number of calls to wait for.
+ * @param {number|null} [options.timeout] - The timeout, in milliseconds. Pass
+ *   in `null` to disable the timeout.
+ * @returns {Function} An asynchronous function that resolves when the stub is
+ *   called enough times, or throws if the timeout is reached.
  */
-function waitUntilCalled(stub, wrappedThis = null, callCount = 1) {
+function waitUntilCalled(
+  stub,
+  wrappedThis = null,
+  { callCount = 1, timeout = DEFAULT_TIMEOUT } = {},
+) {
   let numCalls = 0
   let resolve
+  let timeoutHandle
   const stubHasBeenCalled = new Promise((_resolve) => {
     resolve = _resolve
+    if (timeout !== null) {
+      timeoutHandle = setTimeout(
+        () => resolve(new Error('Timeout exceeded')),
+        timeout,
+      )
+    }
   })
   stub.callsFake((...args) => {
     try {
@@ -27,12 +46,21 @@ function waitUntilCalled(stub, wrappedThis = null, callCount = 1) {
       if (numCalls < callCount) {
         numCalls += 1
         if (numCalls === callCount) {
+          if (timeoutHandle) {
+            clearTimeout(timeoutHandle)
+          }
           resolve()
         }
       }
     }
   })
-  return stubHasBeenCalled
+
+  return async () => {
+    const error = await stubHasBeenCalled
+    if (error) {
+      throw error
+    }
+  }
 }
 
 module.exports = waitUntilCalled

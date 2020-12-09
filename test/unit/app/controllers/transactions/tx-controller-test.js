@@ -276,6 +276,7 @@ describe('Transaction Controller', function () {
 
   describe('#addUnapprovedTransaction', function () {
     const selectedAddress = '0x1678a085c290ebd122dc42cba69373b5953b831d'
+    const recipientAddress = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
 
     let getSelectedAddress, getPermittedAccounts
     beforeEach(function () {
@@ -295,6 +296,7 @@ describe('Transaction Controller', function () {
     it('should add an unapproved transaction and return a valid txMeta', async function () {
       const txMeta = await txController.addUnapprovedTransaction({
         from: selectedAddress,
+        to: recipientAddress,
       })
       assert.ok('id' in txMeta, 'should have a id')
       assert.ok('time' in txMeta, 'should have a time stamp')
@@ -321,7 +323,10 @@ describe('Transaction Controller', function () {
         done()
       })
       txController
-        .addUnapprovedTransaction({ from: selectedAddress })
+        .addUnapprovedTransaction({
+          from: selectedAddress,
+          to: recipientAddress,
+        })
         .catch(done)
     })
 
