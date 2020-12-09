@@ -1,4 +1,5 @@
 import ObservableStore from 'obs-store'
+import { WEB3_USAGE_ALERT_STATES } from '../../../shared/constants/alerts'
 
 /**
  * @typedef {Object} AlertControllerInitState
@@ -16,6 +17,7 @@ import ObservableStore from 'obs-store'
 
 export const ALERT_TYPES = {
   unconnectedAccount: 'unconnectedAccount',
+  web3ShimUsage: 'web3ShimUsage',
   // enumerated here but has no background state
   invalidCustomNetwork: 'invalidCustomNetwork',
 }
@@ -29,6 +31,7 @@ const defaultState = {
     {},
   ),
   unconnectedAccountAlertShownOrigins: {},
+  web3ShimUsageOrigins: {},
 }
 
 /**
@@ -82,5 +85,49 @@ export default class AlertController {
     }
     unconnectedAccountAlertShownOrigins[origin] = true
     this.store.updateState({ unconnectedAccountAlertShownOrigins })
+  }
+
+  /**
+   * Gets the web3 shim usage state for the given origin.
+   *
+   * @param {string} origin - The origin to get the web3 shim usage state for.
+   * @returns {undefined | 1 | 2} The web3 shim usage state for the given
+   * origin, or undefined.
+   */
+  getWeb3ShimUsageState(origin) {
+    return this.store.getState().web3ShimUsageOrigins[origin]
+  }
+
+  /**
+   * Sets the web3 shim usage state for the given origin to RECORDED.
+   *
+   * @param {string} origin - The origin the that used the web3 shim.
+   */
+  recordWeb3ShimUsage(origin) {
+    this._setWeb3ShimUsageState(origin, WEB3_USAGE_ALERT_STATES.RECORDED)
+  }
+
+  /**
+   * Sets the web3 shim usage state for the given origin to DISMISSED.
+   *
+   * @param {string} origin - The origin that the web3 shim notification was
+   * dismissed for.
+   */
+  recordWeb3ShimUsageDismissal(origin) {
+    this._setWeb3ShimUsageState(origin, WEB3_USAGE_ALERT_STATES.DISMISSED)
+  }
+
+  /**
+   * @private
+   * @param {string} origin - The origin to set the state for.
+   * @param {number} value - The state value to set.
+   */
+  _setWeb3ShimUsageState(origin, value) {
+    let { web3ShimUsageOrigins } = this.store.getState()
+    web3ShimUsageOrigins = {
+      ...web3ShimUsageOrigins,
+    }
+    web3ShimUsageOrigins[origin] = value
+    this.store.updateState({ web3ShimUsageOrigins })
   }
 }

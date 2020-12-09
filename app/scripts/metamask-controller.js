@@ -1979,6 +1979,12 @@ export default class MetamaskController extends EventEmitter {
         handleWatchAssetRequest: this.preferencesController.requestWatchAsset.bind(
           this.preferencesController,
         ),
+        getWeb3ShimUsageState: this.alertController.getWeb3ShimUsageState.bind(
+          this.alertController,
+        ),
+        recordWeb3ShimUsage: this.alertController.recordWeb3ShimUsage.bind(
+          this.alertController,
+        ),
       }),
     )
     // filter and subscription polyfills

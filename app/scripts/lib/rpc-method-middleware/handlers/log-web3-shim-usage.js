@@ -13,11 +13,13 @@ const logWeb3ShimUsage = {
 }
 export default logWeb3ShimUsage
 
-const recordedWeb3ShimUsage = {}
-
 /**
  * @typedef {Object} LogWeb3ShimUsageOptions
  * @property {Function} sendMetrics - A function that registers a metrics event.
+ * @property {Function} getWeb3ShimUsageState - A function that gets web3 shim
+ * usage state for the given origin.
+ * @property {Function} recordWeb3ShimUsage - A function that records web3 shim
+ * usage for a particular origin.
  */
 
 /**
@@ -27,10 +29,16 @@ const recordedWeb3ShimUsage = {}
  * @param {Function} end - The json-rpc-engine 'end' callback.
  * @param {LogWeb3ShimUsageOptions} options
  */
-function logWeb3ShimUsageHandler(req, res, _next, end, { sendMetrics }) {
+function logWeb3ShimUsageHandler(
+  req,
+  res,
+  _next,
+  end,
+  { sendMetrics, getWeb3ShimUsageState, recordWeb3ShimUsage },
+) {
   const { origin } = req
-  if (!recordedWeb3ShimUsage[origin]) {
-    recordedWeb3ShimUsage[origin] = true
+  if (getWeb3ShimUsageState(origin) === undefined) {
+    recordWeb3ShimUsage(origin)
 
     sendMetrics({
       event: `Website Accessed window.web3 Shim`,
