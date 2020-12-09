@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 8.1.8 Wed Dec 09 2020
+
 ## 8.1.7 Tue Dec 08 2020
 - Revert SES lockdown
 

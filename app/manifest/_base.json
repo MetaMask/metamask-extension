@@ -77,6 +77,6 @@
     "notifications"
   ],
   "short_name": "__MSG_appName__",
-  "version": "8.1.7",
+  "version": "8.1.8",
   "web_accessible_resources": ["inpage.js", "phishing.html"]
 }
