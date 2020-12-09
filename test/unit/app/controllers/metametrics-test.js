@@ -400,7 +400,7 @@ describe('MetaMetricsController', function () {
         },
         { flushImmediately: true },
       )
-      assert.doesNotReject(flushCalled)
+      assert.doesNotReject(flushCalled())
     })
 
     it('should throw if event or category not provided', function () {

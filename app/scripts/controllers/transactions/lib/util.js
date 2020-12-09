@@ -1,4 +1,5 @@
 import { isValidAddress } from 'ethereumjs-util'
+import { ethErrors } from 'eth-json-rpc-errors'
 import { addHexPrefix } from '../../../lib/util'
 import { TRANSACTION_STATUSES } from '../../../../../shared/constants/transaction'
 
@@ -37,19 +38,30 @@ export function normalizeTxParams(txParams, lowerCase = true) {
  * @throws {Error} if the tx params contains invalid fields
  */
 export function validateTxParams(txParams) {
+  if (!txParams || typeof txParams !== 'object' || Array.isArray(txParams)) {
+    throw ethErrors.rpc.invalidParams(
+      'Invalid transaction params: must be an object.',
+    )
+  }
+  if (!txParams.to && !txParams.data) {
+    throw ethErrors.rpc.invalidParams(
+      'Invalid transaction params: must specify "data" for contract deployments, or "to" (and optionally "data") for all other types of transactions.',
+    )
+  }
+
   validateFrom(txParams)
   validateRecipient(txParams)
   if ('value' in txParams) {
     const value = txParams.value.toString()
     if (value.includes('-')) {
-      throw new Error(
-        `Invalid transaction value of ${txParams.value} not a positive number.`,
+      throw ethErrors.rpc.invalidParams(
+        `Invalid transaction value "${txParams.value}": not a positive number.`,
       )
     }
 
     if (value.includes('.')) {
-      throw new Error(
-        `Invalid transaction value of ${txParams.value} number must be in wei`,
+      throw ethErrors.rpc.invalidParams(
+        `Invalid transaction value of "${txParams.value}": number must be in wei.`,
       )
     }
   }
@@ -62,10 +74,12 @@ export function validateTxParams(txParams) {
  */
 export function validateFrom(txParams) {
   if (!(typeof txParams.from === 'string')) {
-    throw new Error(`Invalid from address ${txParams.from} not a string`)
+    throw ethErrors.rpc.invalidParams(
+      `Invalid "from" address "${txParams.from}": not a string.`,
+    )
   }
   if (!isValidAddress(txParams.from)) {
-    throw new Error('Invalid from address')
+    throw ethErrors.rpc.invalidParams('Invalid "from" address.')
   }
 }
 
@@ -80,10 +94,10 @@ export function validateRecipient(txParams) {
     if (txParams.data) {
       delete txParams.to
     } else {
-      throw new Error('Invalid recipient address')
+      throw ethErrors.rpc.invalidParams('Invalid "to" address.')
     }
   } else if (txParams.to !== undefined && !isValidAddress(txParams.to)) {
-    throw new Error('Invalid recipient address')
+    throw ethErrors.rpc.invalidParams('Invalid "to" address.')
   }
   return txParams
 }

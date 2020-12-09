@@ -1,7 +1,14 @@
 {
   "author": "https://metamask.io",
   "background": {
-    "scripts": ["bg-libs.js", "background.js"],
+    "scripts": [
+      "globalthis.js",
+      "initSentry.js",
+      "lockdown.js",
+      "runLockdown.js",
+      "bg-libs.js",
+      "background.js"
+    ],
     "persistent": true
   },
   "browser_action": {
@@ -30,7 +37,12 @@
   "content_scripts": [
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
-      "js": ["contentscript.js"],
+      "js": [
+        "globalthis.js",
+        "lockdown.js",
+        "runLockdown.js",
+        "contentscript.js"
+      ],
       "run_at": "document_start",
       "all_frames": true
     },
@@ -65,6 +77,6 @@
     "notifications"
   ],
   "short_name": "__MSG_appName__",
-  "version": "8.1.7",
+  "version": "8.1.8",
   "web_accessible_resources": ["inpage.js", "phishing.html"]
 }
