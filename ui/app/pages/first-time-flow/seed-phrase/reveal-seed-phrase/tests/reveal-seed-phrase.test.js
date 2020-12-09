@@ -30,18 +30,18 @@ describe('Reveal Seed Phrase', function () {
 
   it('seed phrase', function () {
     const seedPhrase = wrapper.find('.reveal-seed-phrase__secret-words--hidden')
-    assert.equal(seedPhrase.length, 1)
-    assert.equal(seedPhrase.text(), TEST_SEED)
+    assert.strictEqual(seedPhrase.length, 1)
+    assert.strictEqual(seedPhrase.text(), TEST_SEED)
   })
 
   it('clicks to reveal', function () {
     const reveal = wrapper.find('.reveal-seed-phrase__secret-blocker')
 
-    assert.equal(wrapper.state().isShowingSeedPhrase, false)
+    assert.strictEqual(wrapper.state().isShowingSeedPhrase, false)
     reveal.simulate('click')
-    assert.equal(wrapper.state().isShowingSeedPhrase, true)
+    assert.strictEqual(wrapper.state().isShowingSeedPhrase, true)
 
     const showSeed = wrapper.find('.reveal-seed-phrase__secret-words')
-    assert.equal(showSeed.length, 1)
+    assert.strictEqual(showSeed.length, 1)
   })
 })

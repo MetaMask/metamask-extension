@@ -53,14 +53,14 @@ describe('useTokenData', function () {
     it(testTitle, function () {
       const { result } = renderHook(() => useTokenData(test.data))
       if (test.tokenData) {
-        assert.equal(result.current.name, test.tokenData.name)
-        assert.equal(
+        assert.strictEqual(result.current.name, test.tokenData.name)
+        assert.strictEqual(
           result.current.args[0].toLowerCase(),
           test.tokenData.args[0],
         )
         assert.ok(test.tokenData.args[1].eq(result.current.args[1]))
       } else {
-        assert.equal(result.current, test.tokenData)
+        assert.strictEqual(result.current, test.tokenData)
       }
     })
   })

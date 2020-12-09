@@ -20,7 +20,7 @@ describe('ImportWithSeedPhrase Component', function () {
       onSubmit: sinon.spy(),
     })
     const textareaCount = root.find('.first-time-flow__textarea').length
-    assert.equal(textareaCount, 1, 'should render 12 seed phrases')
+    assert.strictEqual(textareaCount, 1, 'should render 12 seed phrases')
   })
 
   describe('parseSeedPhrase', function () {
@@ -31,7 +31,7 @@ describe('ImportWithSeedPhrase Component', function () {
 
       const { parseSeedPhrase } = root.instance()
 
-      assert.deepEqual(parseSeedPhrase('foo bar baz'), 'foo bar baz')
+      assert.deepStrictEqual(parseSeedPhrase('foo bar baz'), 'foo bar baz')
     })
 
     it('should handle a mixed-case seed phrase', function () {
@@ -41,7 +41,7 @@ describe('ImportWithSeedPhrase Component', function () {
 
       const { parseSeedPhrase } = root.instance()
 
-      assert.deepEqual(parseSeedPhrase('FOO bAr baZ'), 'foo bar baz')
+      assert.deepStrictEqual(parseSeedPhrase('FOO bAr baZ'), 'foo bar baz')
     })
 
     it('should handle an upper-case seed phrase', function () {
@@ -51,7 +51,7 @@ describe('ImportWithSeedPhrase Component', function () {
 
       const { parseSeedPhrase } = root.instance()
 
-      assert.deepEqual(parseSeedPhrase('FOO BAR BAZ'), 'foo bar baz')
+      assert.deepStrictEqual(parseSeedPhrase('FOO BAR BAZ'), 'foo bar baz')
     })
 
     it('should trim extraneous whitespace from the given seed phrase', function () {
@@ -61,7 +61,10 @@ describe('ImportWithSeedPhrase Component', function () {
 
       const { parseSeedPhrase } = root.instance()
 
-      assert.deepEqual(parseSeedPhrase('  foo   bar   baz  '), 'foo bar baz')
+      assert.deepStrictEqual(
+        parseSeedPhrase('  foo   bar   baz  '),
+        'foo bar baz',
+      )
     })
 
     it('should return an empty string when given a whitespace-only string', function () {
@@ -71,7 +74,7 @@ describe('ImportWithSeedPhrase Component', function () {
 
       const { parseSeedPhrase } = root.instance()
 
-      assert.deepEqual(parseSeedPhrase('   '), '')
+      assert.deepStrictEqual(parseSeedPhrase('   '), '')
     })
 
     it('should return an empty string when given a string with only symbols', function () {
@@ -81,7 +84,7 @@ describe('ImportWithSeedPhrase Component', function () {
 
       const { parseSeedPhrase } = root.instance()
 
-      assert.deepEqual(parseSeedPhrase('$'), '')
+      assert.deepStrictEqual(parseSeedPhrase('$'), '')
     })
 
     it('should return an empty string for both null and undefined', function () {
@@ -91,8 +94,8 @@ describe('ImportWithSeedPhrase Component', function () {
 
       const { parseSeedPhrase } = root.instance()
 
-      assert.deepEqual(parseSeedPhrase(undefined), '')
-      assert.deepEqual(parseSeedPhrase(null), '')
+      assert.deepStrictEqual(parseSeedPhrase(undefined), '')
+      assert.deepStrictEqual(parseSeedPhrase(null), '')
     })
   })
 })

@@ -28,6 +28,7 @@ describe('MetaMask', function () {
     publicAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1'
     const result = await buildWebDriver()
     driver = result.driver
+    await driver.navigate()
   })
 
   afterEach(async function () {

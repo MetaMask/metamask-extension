@@ -1,5 +1,9 @@
 const path = require('path')
+const sinon = require('sinon')
 const createStaticServer = require('../../development/create-static-server')
+const {
+  createSegmentServer,
+} = require('../../development/lib/create-segment-server')
 const Ganache = require('./ganache')
 const FixtureServer = require('./fixture-server')
 const { buildWebDriver } = require('./webdriver')
@@ -11,10 +15,19 @@ const largeDelayMs = regularDelayMs * 2
 const dappPort = 8080
 
 async function withFixtures(options, testSuite) {
-  const { dapp, fixtures, ganacheOptions, driverOptions, title } = options
+  const {
+    dapp,
+    fixtures,
+    ganacheOptions,
+    driverOptions,
+    mockSegment,
+    title,
+  } = options
   const fixtureServer = new FixtureServer()
   const ganacheServer = new Ganache()
   let dappServer
+  let segmentServer
+  let segmentStub
 
   let webDriver
   try {
@@ -38,11 +51,23 @@ async function withFixtures(options, testSuite) {
         dappServer.on('error', reject)
       })
     }
+    if (mockSegment) {
+      segmentStub = sinon.stub()
+      segmentServer = createSegmentServer((_request, response, events) => {
+        for (const event of events) {
+          segmentStub(event)
+        }
+        response.statusCode = 200
+        response.end()
+      })
+      await segmentServer.start(9090)
+    }
     const { driver } = await buildWebDriver(driverOptions)
     webDriver = driver
 
     await testSuite({
       driver,
+      segmentStub,
     })
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
@@ -57,7 +82,11 @@ async function withFixtures(options, testSuite) {
     }
   } catch (error) {
     if (webDriver) {
-      await webDriver.verboseReportOnFailure(title)
+      try {
+        await webDriver.verboseReportOnFailure(title)
+      } catch (verboseReportError) {
+        console.error(verboseReportError)
+      }
     }
     throw error
   } finally {
@@ -75,6 +104,9 @@ async function withFixtures(options, testSuite) {
           return resolve()
         })
       })
+    }
+    if (segmentServer) {
+      await segmentServer.stop()
     }
   }
 }

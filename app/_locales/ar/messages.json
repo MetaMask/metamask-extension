@@ -167,9 +167,6 @@
   "chainId": {
     "message": "معرّف السلسلة"
   },
-  "chartOnlyAvailableEth": {
-    "message": "الرسم البياني متاح فقط على شبكات إيثيريوم."
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "تحتاج إلى استخدام MetaMask على Google Chrome للاتصال بمحفظة الأجهزة الخاصة بك."
   },
@@ -398,9 +395,6 @@
   "fast": {
     "message": "سريع"
   },
-  "faster": {
-    "message": "أسرع"
-  },
   "fileImportFail": {
     "message": "استيراد الملف لا ينجح؟ انقر هنا!",
     "description": "Helps user import their account from a JSON file"
@@ -574,9 +568,6 @@
   },
   "links": {
     "message": "الروابط"
-  },
-  "liveGasPricePredictions": {
-    "message": "توقعات أسعار الجاس الحية"
   },
   "loadMore": {
     "message": "تحميل المزيد"
@@ -1011,9 +1002,6 @@
   "slow": {
     "message": "بطيء"
   },
-  "slower": {
-    "message": "أبطأ"
-  },
   "somethingWentWrong": {
     "message": "عذراً! حدث خطأ ما."
   },
@@ -1157,9 +1145,6 @@
   },
   "transactionSubmitted": {
     "message": "تم تقديم المعاملة برسوم $1 من عملة جاس في $2."
-  },
-  "transactionTime": {
-    "message": "وقت المعاملة"
   },
   "transactionUpdated": {
     "message": "تم تحديث المعاملة في $2."

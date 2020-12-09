@@ -1,7 +1,35 @@
 # Changelog
 
 ## Current Develop Branch
-- [#9612](https://github.com/MetaMask/metamask-extension/pull/9612): Update main-quote-summary designs/styles
+
+## 8.1.7 Tue Dec 08 2020
+- Revert SES lockdown
+
+## 8.1.6 Wed Dec 02 2020
+- [#9916](https://github.com/MetaMask/metamask-extension/pull/9916): Fix QR code scans interpretting payment requests as token addresses
+- [#9847](https://github.com/MetaMask/metamask-extension/pull/9847): Add alt text for images in list items
+- [#9960](https://github.com/MetaMask/metamask-extension/pull/9960): Ensure watchAsset returns errors for invalid token symbols
+- [#9968](https://github.com/MetaMask/metamask-extension/pull/9968): Adds tokens from v1.19.0 of metamask/contract-metadata to add token lists
+- [#9970](https://github.com/MetaMask/metamask-extension/pull/9970): Etherscan links support Goerli network
+- [#9899](https://github.com/MetaMask/metamask-extension/pull/9899): Show price impact warnings on swaps quote screen
+- [#9867](https://github.com/MetaMask/metamask-extension/pull/9867): Replace use of ethgasstation
+- [#9984](https://github.com/MetaMask/metamask-extension/pull/9984): Show correct gas estimates when users don't have sufficient balance for contract transaction
+- [#9993](https://github.com/MetaMask/metamask-extension/pull/9993): Add 48x48 MetaMask icon for use by browsers
+
+## 8.1.5 Wed Nov 18 2020
+- [#9871](https://github.com/MetaMask/metamask-extension/pull/9871): Show send text upon hover in main asset list
+- [#9855](https://github.com/MetaMask/metamask-extension/pull/9855): Make edit icon and account name in account details modal focusable
+- [#9853](https://github.com/MetaMask/metamask-extension/pull/9853): Provide alternative text for images where appropriate
+- [#9869](https://github.com/MetaMask/metamask-extension/pull/9869): Remove CoinSwitch from the Deposit modal
+- [#9883](https://github.com/MetaMask/metamask-extension/pull/9883): Move add contact button in fullscreen/expanded view of settings lower to expose the close button.
+- [#9891](https://github.com/MetaMask/metamask-extension/pull/9891): Add token verification message to swaps build quote screen
+- [#9896](https://github.com/MetaMask/metamask-extension/pull/9896): Show failed token balance updates
+- [#9909](https://github.com/MetaMask/metamask-extension/pull/9909): Update asset page etherscan link to the address-filtered token page on Etherscan
+- [#9910](https://github.com/MetaMask/metamask-extension/pull/9910): Revert "Show a 'send eth' button on home screen in full screen mode"
+- [#9907](https://github.com/MetaMask/metamask-extension/pull/9907): Ensure "Known contract address" warning is shown on send screen even when changing asset
+- [#9911](https://github.com/MetaMask/metamask-extension/pull/9911): Fix display of Ledger connection error
+- [#9918](https://github.com/MetaMask/metamask-extension/pull/9918): Fix missing icon in asset page dropdown and in advanced gas modal button group
+
 
 ## 8.1.4 Tue Nov 10 2020
 - [#9687](https://github.com/MetaMask/metamask-extension/pull/9687): Allow speeding up of underpriced transactions

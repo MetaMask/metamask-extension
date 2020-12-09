@@ -56,7 +56,7 @@ describe('send container', function () {
       it('should dispatch a setGasTotal action when editingTransactionId is truthy', function () {
         mapDispatchToPropsObject.updateAndSetGasLimit(mockProps)
         assert(dispatchSpy.calledOnce)
-        assert.equal(actionSpies.setGasTotal.getCall(0).args[0], '0x30x4')
+        assert.strictEqual(actionSpies.setGasTotal.getCall(0).args[0], '0x30x4')
       })
 
       it('should dispatch an updateGasData action when editingTransactionId is falsy', function () {
@@ -74,7 +74,7 @@ describe('send container', function () {
           editingTransactionId: false,
         })
         assert(dispatchSpy.calledOnce)
-        assert.deepEqual(actionSpies.updateGasData.getCall(0).args[0], {
+        assert.deepStrictEqual(actionSpies.updateGasData.getCall(0).args[0], {
           gasPrice,
           selectedAddress,
           sendToken,
@@ -96,7 +96,7 @@ describe('send container', function () {
       it('should dispatch an action', function () {
         mapDispatchToPropsObject.updateSendTokenBalance({ ...mockProps })
         assert(dispatchSpy.calledOnce)
-        assert.deepEqual(
+        assert.deepStrictEqual(
           actionSpies.updateSendTokenBalance.getCall(0).args[0],
           mockProps,
         )
@@ -107,7 +107,7 @@ describe('send container', function () {
       it('should dispatch an action', function () {
         mapDispatchToPropsObject.updateSendErrors('mockError')
         assert(dispatchSpy.calledOnce)
-        assert.equal(
+        assert.strictEqual(
           duckActionSpies.updateSendErrors.getCall(0).args[0],
           'mockError',
         )
@@ -118,7 +118,10 @@ describe('send container', function () {
       it('should dispatch an action', function () {
         mapDispatchToPropsObject.resetSendState()
         assert(dispatchSpy.calledOnce)
-        assert.equal(duckActionSpies.resetSendState.getCall(0).args.length, 0)
+        assert.strictEqual(
+          duckActionSpies.resetSendState.getCall(0).args.length,
+          0,
+        )
       })
     })
   })

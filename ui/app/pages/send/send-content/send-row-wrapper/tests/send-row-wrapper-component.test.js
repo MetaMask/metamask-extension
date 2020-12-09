@@ -22,22 +22,22 @@ describe('SendContent Component', function () {
     })
 
     it('should render a div with a send-v2__form-row class', function () {
-      assert.equal(wrapper.find('div.send-v2__form-row').length, 1)
+      assert.strictEqual(wrapper.find('div.send-v2__form-row').length, 1)
     })
 
     it('should render two children of the root div, with send-v2_form label and field classes', function () {
-      assert.equal(
+      assert.strictEqual(
         wrapper.find('.send-v2__form-row > .send-v2__form-label').length,
         1,
       )
-      assert.equal(
+      assert.strictEqual(
         wrapper.find('.send-v2__form-row > .send-v2__form-field').length,
         1,
       )
     })
 
     it('should render the label as a child of the send-v2__form-label', function () {
-      assert.equal(
+      assert.strictEqual(
         wrapper
           .find('.send-v2__form-row > .send-v2__form-label')
           .childAt(0)
@@ -47,7 +47,7 @@ describe('SendContent Component', function () {
     })
 
     it('should render its first child as a child of the send-v2__form-field', function () {
-      assert.equal(
+      assert.strictEqual(
         wrapper
           .find('.send-v2__form-row > .send-v2__form-field')
           .childAt(0)
@@ -57,18 +57,18 @@ describe('SendContent Component', function () {
     })
 
     it('should not render a SendRowErrorMessage if showError is false', function () {
-      assert.equal(wrapper.find(SendRowErrorMessage).length, 0)
+      assert.strictEqual(wrapper.find(SendRowErrorMessage).length, 0)
     })
 
     it('should render a SendRowErrorMessage with and errorType props if showError is true', function () {
       wrapper.setProps({ showError: true })
-      assert.equal(wrapper.find(SendRowErrorMessage).length, 1)
+      assert.strictEqual(wrapper.find(SendRowErrorMessage).length, 1)
 
       const expectedSendRowErrorMessage = wrapper
         .find('.send-v2__form-row > .send-v2__form-label')
         .childAt(1)
       assert(expectedSendRowErrorMessage.is(SendRowErrorMessage))
-      assert.deepEqual(expectedSendRowErrorMessage.props(), {
+      assert.deepStrictEqual(expectedSendRowErrorMessage.props(), {
         errorType: 'mockErrorType',
       })
     })
@@ -84,7 +84,7 @@ describe('SendContent Component', function () {
           <span>Mock Form Field</span>
         </SendRowWrapper>,
       )
-      assert.equal(
+      assert.strictEqual(
         wrapper
           .find('.send-v2__form-row > .send-v2__form-field')
           .childAt(0)
@@ -104,7 +104,7 @@ describe('SendContent Component', function () {
           <span>Mock Form Field</span>
         </SendRowWrapper>,
       )
-      assert.equal(
+      assert.strictEqual(
         wrapper
           .find('.send-v2__form-row > .send-v2__form-label')
           .childAt(1)

@@ -1,4 +1,4 @@
-import createAsyncMiddleware from 'json-rpc-engine/src/createAsyncMiddleware'
+import { createAsyncMiddleware } from 'json-rpc-engine'
 import { formatTxMetaForRpcResult } from '../util'
 
 export function createPendingNonceMiddleware({ getPendingNonce }) {

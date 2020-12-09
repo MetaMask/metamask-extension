@@ -31,6 +31,7 @@ describe('MetaMask', function () {
     })
     const result = await buildWebDriver({ port: await getPort() })
     driver = result.driver
+    await driver.navigate()
   })
 
   afterEach(async function () {
@@ -189,6 +190,7 @@ describe('MetaMask', function () {
     before(async function () {
       const result = await buildWebDriver({ port: await getPort() })
       driver2 = result.driver
+      await driver2.navigate()
     })
 
     after(async function () {

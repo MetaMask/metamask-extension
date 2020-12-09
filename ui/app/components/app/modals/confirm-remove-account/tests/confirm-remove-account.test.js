@@ -61,7 +61,10 @@ describe('Confirm Remove Account', function () {
     remove.simulate('click')
 
     assert(props.removeAccount.calledOnce)
-    assert.equal(props.removeAccount.getCall(0).args[0], props.identity.address)
+    assert.strictEqual(
+      props.removeAccount.getCall(0).args[0],
+      props.identity.address,
+    )
 
     setImmediate(() => {
       assert(props.hideModal.calledOnce)

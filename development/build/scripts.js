@@ -1,18 +1,18 @@
 const fs = require('fs')
 const gulp = require('gulp')
 const watch = require('gulp-watch')
+const pify = require('pify')
+const pump = pify(require('pump'))
 const source = require('vinyl-source-stream')
 const buffer = require('vinyl-buffer')
 const log = require('fancy-log')
 const { assign } = require('lodash')
 const watchify = require('watchify')
 const browserify = require('browserify')
-const envify = require('envify/custom')
+const envify = require('loose-envify/custom')
 const sourcemaps = require('gulp-sourcemaps')
 const sesify = require('sesify')
 const terser = require('gulp-terser-js')
-const pify = require('pify')
-const endOfStream = pify(require('end-of-stream'))
 const { makeStringTransform } = require('browserify-transform-tools')
 
 const conf = require('rc')('metamask', {
@@ -21,6 +21,8 @@ const conf = require('rc')('metamask', {
   SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
   SEGMENT_LEGACY_WRITE_KEY: process.env.SEGMENT_LEGACY_WRITE_KEY,
 })
+
+const baseManifest = require('../../app/manifest/_base.json')
 
 const packageJSON = require('../../package.json')
 const {
@@ -37,11 +39,10 @@ const dependencies = Object.keys(
 )
 const materialUIDependencies = ['@material-ui/core']
 const reactDepenendencies = dependencies.filter((dep) => dep.match(/react/u))
-const d3Dependencies = ['c3', 'd3']
 
 const externalDependenciesMap = {
   background: ['3box'],
-  ui: [...materialUIDependencies, ...reactDepenendencies, ...d3Dependencies],
+  ui: [...materialUIDependencies, ...reactDepenendencies],
 }
 
 function createScriptTasks({ browserPlatforms, livereload }) {
@@ -97,7 +98,12 @@ function createScriptTasks({ browserPlatforms, livereload }) {
   }
 
   function createTasksForBuildJsExtension({ taskPrefix, devMode, testing }) {
-    const standardBundles = ['background', 'ui', 'phishing-detect']
+    const standardBundles = [
+      'background',
+      'ui',
+      'phishing-detect',
+      'initSentry',
+    ]
 
     const standardSubtasks = standardBundles.map((filename) => {
       return createTask(
@@ -200,33 +206,19 @@ function createScriptTasks({ browserPlatforms, livereload }) {
         bundler.on('log', log)
       }
 
-      let buildStream = bundler.bundle()
-
-      // handle errors
-      buildStream.on('error', (err) => {
-        beep()
-        if (opts.devMode) {
-          console.warn(err.stack)
-        } else {
-          throw err
-        }
-      })
-
-      // process bundles
-      buildStream = buildStream
+      const buildPipeline = [
+        bundler.bundle(),
         // convert bundle stream to gulp vinyl stream
-        .pipe(source(opts.filename))
-        // buffer file contents (?)
-        .pipe(buffer())
-
-      // Initialize Source Maps
-      buildStream = buildStream
+        source(opts.filename),
+        // Initialize Source Maps
+        buffer(),
         // loads map from browserify file
-        .pipe(sourcemaps.init({ loadMaps: true }))
+        sourcemaps.init({ loadMaps: true }),
+      ]
 
       // Minification
       if (!opts.devMode) {
-        buildStream = buildStream.pipe(
+        buildPipeline.push(
           terser({
             mangle: {
               reserved: ['MetamaskInpageProvider'],
@@ -242,18 +234,28 @@ function createScriptTasks({ browserPlatforms, livereload }) {
       if (opts.devMode) {
         // Use inline source maps for development due to Chrome DevTools bug
         // https://bugs.chromium.org/p/chromium/issues/detail?id=931675
-        buildStream = buildStream.pipe(sourcemaps.write())
+        // note: sourcemaps call arity is important
+        buildPipeline.push(sourcemaps.write())
       } else {
-        buildStream = buildStream.pipe(sourcemaps.write('../sourcemaps'))
+        buildPipeline.push(sourcemaps.write('../sourcemaps'))
       }
 
       // write completed bundles
       browserPlatforms.forEach((platform) => {
         const dest = `./dist/${platform}`
-        buildStream = buildStream.pipe(gulp.dest(dest))
+        buildPipeline.push(gulp.dest(dest))
       })
 
-      await endOfStream(buildStream)
+      // process bundles
+      if (opts.devMode) {
+        try {
+          await pump(buildPipeline)
+        } catch (err) {
+          gracefulError(err)
+        }
+      } else {
+        await pump(buildPipeline)
+      }
     }
   }
 
@@ -331,14 +333,6 @@ function createScriptTasks({ browserPlatforms, livereload }) {
 
     let bundler = browserify(browserifyOpts)
       .transform('babelify')
-      // Transpile any dependencies using the object spread/rest operator
-      // because it is incompatible with `esprima`, which is used by `envify`
-      // See https://github.com/jquery/esprima/issues/1927
-      .transform('babelify', {
-        only: ['./**/node_modules/libp2p'],
-        global: true,
-        plugins: ['@babel/plugin-proposal-object-rest-spread'],
-      })
       .transform('brfs')
 
     if (opts.buildLib) {
@@ -362,6 +356,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
       envify({
         METAMASK_DEBUG: opts.devMode,
         METAMASK_ENVIRONMENT: environment,
+        METAMASK_VERSION: baseManifest.version,
         METAMETRICS_PROJECT_ID: process.env.METAMETRICS_PROJECT_ID,
         NODE_ENV: opts.devMode ? 'development' : 'production',
         IN_TEST: opts.testing ? 'true' : false,
@@ -406,10 +401,6 @@ function createScriptTasks({ browserPlatforms, livereload }) {
   }
 }
 
-function beep() {
-  process.stdout.write('\x07')
-}
-
 function getEnvironment({ devMode, test }) {
   // get environment slug
   if (devMode) {
@@ -428,4 +419,13 @@ function getEnvironment({ devMode, test }) {
     return 'pull-request'
   }
   return 'other'
+}
+
+function beep() {
+  process.stdout.write('\x07')
+}
+
+function gracefulError(err) {
+  console.warn(err)
+  beep()
 }

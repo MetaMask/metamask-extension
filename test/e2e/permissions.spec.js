@@ -28,6 +28,7 @@ describe('MetaMask', function () {
     })
     const result = await buildWebDriver()
     driver = result.driver
+    await driver.navigate()
   })
 
   afterEach(async function () {

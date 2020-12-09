@@ -20,7 +20,7 @@ describe('Common utils', function () {
       ]
 
       tests.forEach(({ test, expected }) => {
-        assert.equal(utils.camelCaseToCapitalize(test), expected)
+        assert.strictEqual(utils.camelCaseToCapitalize(test), expected)
       })
     })
   })

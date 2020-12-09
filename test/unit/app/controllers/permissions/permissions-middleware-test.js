@@ -808,7 +808,7 @@ describe('permissions middleware', function () {
     })
   })
 
-  describe('wallet_sendDomainMetadata', function () {
+  describe('metamask_sendDomainMetadata', function () {
     let permController, clock
 
     beforeEach(function () {
@@ -828,7 +828,10 @@ describe('permissions middleware', function () {
         DOMAINS.c.origin,
       )
 
-      const req = RPC_REQUESTS.wallet_sendDomainMetadata(DOMAINS.c.origin, name)
+      const req = RPC_REQUESTS.metamask_sendDomainMetadata(
+        DOMAINS.c.origin,
+        name,
+      )
       const res = {}
 
       await assert.doesNotReject(cMiddleware(req, res), 'should not reject')
@@ -861,7 +864,10 @@ describe('permissions middleware', function () {
         extensionId,
       )
 
-      const req = RPC_REQUESTS.wallet_sendDomainMetadata(DOMAINS.c.origin, name)
+      const req = RPC_REQUESTS.metamask_sendDomainMetadata(
+        DOMAINS.c.origin,
+        name,
+      )
       const res = {}
 
       await assert.doesNotReject(cMiddleware(req, res), 'should not reject')
@@ -885,7 +891,10 @@ describe('permissions middleware', function () {
         DOMAINS.c.origin,
       )
 
-      const req = RPC_REQUESTS.wallet_sendDomainMetadata(DOMAINS.c.origin, name)
+      const req = RPC_REQUESTS.metamask_sendDomainMetadata(
+        DOMAINS.c.origin,
+        name,
+      )
       const res = {}
 
       await assert.doesNotReject(cMiddleware(req, res), 'should not reject')
@@ -907,7 +916,7 @@ describe('permissions middleware', function () {
         DOMAINS.c.origin,
       )
 
-      const req = RPC_REQUESTS.wallet_sendDomainMetadata(DOMAINS.c.origin)
+      const req = RPC_REQUESTS.metamask_sendDomainMetadata(DOMAINS.c.origin)
       delete req.domainMetadata
       const res = {}
 

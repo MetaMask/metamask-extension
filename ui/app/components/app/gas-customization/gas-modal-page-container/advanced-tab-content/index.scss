@@ -2,8 +2,7 @@
   display: flex;
   flex-flow: column;
 
-  &__transaction-data-summary,
-  &__fee-chart-title {
+  &__transaction-data-summary {
     padding-left: 24px;
     padding-right: 24px;
   }

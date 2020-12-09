@@ -139,9 +139,6 @@
   "chainId": {
     "message": "ID Cadena"
   },
-  "chartOnlyAvailableEth": {
-    "message": "Tabla solo disponible en redes Ethereum."
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Hay que usar MetaMask en Google Chrome para poder conectarse con tu Monedero Físico."
   },
@@ -322,9 +319,6 @@
   "fast": {
     "message": "Rápido"
   },
-  "faster": {
-    "message": "Más Rápido"
-  },
   "fiat": {
     "message": "FIAT",
     "description": "Exchange type"
@@ -469,9 +463,6 @@
   },
   "links": {
     "message": "Enlaces"
-  },
-  "liveGasPricePredictions": {
-    "message": "Previsiones en vivo del precio de Gas"
   },
   "loadMore": {
     "message": "Cargar Más"
@@ -801,9 +792,6 @@
   "slow": {
     "message": "Lento"
   },
-  "slower": {
-    "message": "Más lento"
-  },
   "somethingWentWrong": {
     "message": "¡Ups! Algo funcionó mal."
   },
@@ -911,9 +899,6 @@
   },
   "transactionSubmitted": {
     "message": "Se propuso la transacción con una comisión de gas de $1, en $2."
-  },
-  "transactionTime": {
-    "message": "Tiempo de Transacción"
   },
   "transactionUpdated": {
     "message": "Se actualizó la transacción en $2."

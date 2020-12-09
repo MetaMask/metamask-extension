@@ -1,10 +1,7 @@
 import EventEmitter from 'events'
-
 import pump from 'pump'
 import Dnode from 'dnode'
-import ObservableStore from 'obs-store'
-import asStream from 'obs-store/lib/asStream'
-import RpcEngine from 'json-rpc-engine'
+import { JsonRpcEngine } from 'json-rpc-engine'
 import { debounce } from 'lodash'
 import createEngineStream from 'json-rpc-middleware-stream/engineStream'
 import createFilterMiddleware from 'eth-json-rpc-filters'
@@ -18,13 +15,12 @@ import TrezorKeyring from 'eth-trezor-keyring'
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring'
 import EthQuery from 'eth-query'
 import nanoid from 'nanoid'
-import contractMap from 'eth-contract-metadata'
+import contractMap from '@metamask/contract-metadata'
 import {
   AddressBookController,
   CurrencyRateController,
   PhishingController,
 } from '@metamask/controllers'
-import { getTrackMetaMetricsEvent } from '../../shared/modules/metametrics'
 import { getBackgroundMetaMetricState } from '../../ui/app/selectors'
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction'
 import ComposableObservableStore from './lib/ComposableObservableStore'
@@ -54,11 +50,13 @@ import TokenRatesController from './controllers/token-rates'
 import DetectTokensController from './controllers/detect-tokens'
 import SwapsController from './controllers/swaps'
 import { PermissionsController } from './controllers/permissions'
+import { NOTIFICATION_NAMES } from './controllers/permissions/enums'
 import getRestrictedMethods from './controllers/permissions/restrictedMethods'
 import nodeify from './lib/nodeify'
 import accountImporter from './account-import-strategies'
 import seedPhraseVerifier from './lib/seed-phrase-verifier'
-import { ENVIRONMENT_TYPE_BACKGROUND } from './lib/enums'
+import MetaMetricsController from './controllers/metametrics'
+import { segment, segmentLegacy } from './lib/segment'
 
 export default class MetamaskController extends EventEmitter {
   /**
@@ -115,35 +113,24 @@ export default class MetamaskController extends EventEmitter {
       migrateAddressBookState: this.migrateAddressBookState.bind(this),
     })
 
-    this.trackMetaMetricsEvent = getTrackMetaMetricsEvent(
-      this.platform.getVersion(),
-      () => {
-        const participateInMetaMetrics = this.preferencesController.getParticipateInMetaMetrics()
-        const {
-          currentLocale,
-          metaMetricsId,
-        } = this.preferencesController.store.getState()
-        const chainId = this.networkController.getCurrentChainId()
-        const provider = this.networkController.getProviderConfig()
-        const network =
-          provider.type === 'rpc' ? provider.rpcUrl : provider.type
-        return {
-          participateInMetaMetrics,
-          metaMetricsId,
-          environmentType: ENVIRONMENT_TYPE_BACKGROUND,
-          chainId,
-          network,
-          context: {
-            page: {
-              path: '/background-process',
-              title: 'Background Process',
-              url: '/background-process',
-            },
-            locale: currentLocale.replace('_', '-'),
-          },
-        }
-      },
-    )
+    this.metaMetricsController = new MetaMetricsController({
+      segment,
+      segmentLegacy,
+      preferencesStore: this.preferencesController.store,
+      onNetworkDidChange: this.networkController.on.bind(
+        this.networkController,
+        'networkDidChange',
+      ),
+      getNetworkIdentifier: this.networkController.getNetworkIdentifier.bind(
+        this.networkController,
+      ),
+      getCurrentChainId: this.networkController.getCurrentChainId.bind(
+        this.networkController,
+      ),
+      version: this.platform.getVersion(),
+      environment: process.env.METAMASK_ENVIRONMENT,
+      initState: initState.MetaMetricsController,
+    })
 
     this.appStateController = new AppStateController({
       addUnlockListener: this.on.bind(this, 'unlock'),
@@ -230,10 +217,11 @@ export default class MetamaskController extends EventEmitter {
       initState: initState.KeyringController,
       encryptor: opts.encryptor || undefined,
     })
-    this.keyringController.memStore.subscribe((s) =>
-      this._onKeyringControllerUpdate(s),
+    this.keyringController.memStore.subscribe((state) =>
+      this._onKeyringControllerUpdate(state),
     )
     this.keyringController.on('unlock', () => this.emit('unlock'))
+    this.keyringController.on('lock', () => this._onLock())
 
     this.permissionsController = new PermissionsController(
       {
@@ -244,6 +232,7 @@ export default class MetamaskController extends EventEmitter {
         getUnlockPromise: this.appStateController.getUnlockPromise.bind(
           this.appStateController,
         ),
+        isUnlocked: this.isUnlocked.bind(this),
         notifyDomain: this.notifyConnections.bind(this),
         notifyAllDomains: this.notifyAllConnections.bind(this),
         preferences: this.preferencesController.store,
@@ -298,9 +287,11 @@ export default class MetamaskController extends EventEmitter {
       ),
       provider: this.provider,
       blockTracker: this.blockTracker,
-      trackMetaMetricsEvent: this.trackMetaMetricsEvent,
+      trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
       getParticipateInMetrics: () =>
-        this.preferencesController.getParticipateInMetaMetrics(),
+        this.metaMetricsController.state.participateInMetaMetrics,
     })
     this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation())
 
@@ -357,11 +348,15 @@ export default class MetamaskController extends EventEmitter {
       tokenRatesStore: this.tokenRatesController.store,
     })
 
+    // ensure isClientOpenAndUnlocked is updated when memState updates
+    this.on('update', (memState) => this._onStateUpdate(memState))
+
     this.store.updateStructure({
       AppStateController: this.appStateController.store,
       TransactionController: this.txController.store,
       KeyringController: this.keyringController.store,
       PreferencesController: this.preferencesController.store,
+      MetaMetricsController: this.metaMetricsController.store,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
       NetworkController: this.networkController.store,
@@ -388,6 +383,7 @@ export default class MetamaskController extends EventEmitter {
       TypesMessageManager: this.typedMessageManager.memStore,
       KeyringController: this.keyringController.memStore,
       PreferencesController: this.preferencesController.store,
+      MetaMetricsController: this.metaMetricsController.store,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
       AlertController: this.alertController.store,
@@ -457,38 +453,37 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Constructor helper: initialize a public config store.
-   * This store is used to make some config info available to Dapps synchronously.
+   * Gets relevant state for the provider of an external origin.
+   *
+   * @param {string} origin - The origin to get the provider state for.
+   * @returns {Promise<{
+   *  isUnlocked: boolean,
+   *  networkVersion: string,
+   *  chainId: string,
+   *  accounts: string[],
+   * }>} An object with relevant state properties.
    */
-  createPublicConfigStore() {
-    // subset of state for metamask inpage provider
-    const publicConfigStore = new ObservableStore()
-    const { networkController } = this
-
-    // setup memStore subscription hooks
-    this.on('update', updatePublicConfigStore)
-    updatePublicConfigStore(this.getState())
-
-    publicConfigStore.destroy = () => {
-      this.removeEventListener &&
-        this.removeEventListener('update', updatePublicConfigStore)
+  async getProviderState(origin) {
+    return {
+      isUnlocked: this.isUnlocked(),
+      ...this.getProviderNetworkState(),
+      accounts: await this.permissionsController.getAccounts(origin),
     }
+  }
 
-    function updatePublicConfigStore(memState) {
-      const chainId = networkController.getCurrentChainId()
-      if (memState.network !== 'loading') {
-        publicConfigStore.putState(selectPublicState(chainId, memState))
-      }
+  /**
+   * Gets network state relevant for external providers.
+   *
+   * @param {Object} [memState] - The MetaMask memState. If not provided,
+   * this function will retrieve the most recent state.
+   * @returns {Object} An object with relevant network state properties.
+   */
+  getProviderNetworkState(memState) {
+    const { network } = memState || this.getState()
+    return {
+      chainId: this.networkController.getCurrentChainId(),
+      networkVersion: network,
     }
-
-    function selectPublicState(chainId, { isUnlocked, network }) {
-      return {
-        isUnlocked,
-        chainId,
-        networkVersion: network,
-      }
-    }
-    return publicConfigStore
   }
 
   //=============================================================================
@@ -528,6 +523,7 @@ export default class MetamaskController extends EventEmitter {
       threeBoxController,
       txController,
       swapsController,
+      metaMetricsController,
     } = this
 
     return {
@@ -824,6 +820,16 @@ export default class MetamaskController extends EventEmitter {
       setSwapsLiveness: nodeify(
         swapsController.setSwapsLiveness,
         swapsController,
+      ),
+
+      // MetaMetrics
+      trackMetaMetricsEvent: nodeify(
+        metaMetricsController.trackEvent,
+        metaMetricsController,
+      ),
+      trackMetaMetricsPage: nodeify(
+        metaMetricsController.trackPage,
+        metaMetricsController,
       ),
     }
   }
@@ -1809,8 +1815,7 @@ export default class MetamaskController extends EventEmitter {
     const mux = setupMultiplex(connectionStream)
 
     // messages between inpage and background
-    this.setupProviderConnection(mux.createStream('provider'), sender)
-    this.setupPublicConfig(mux.createStream('publicConfig'))
+    this.setupProviderConnection(mux.createStream('metamask-provider'), sender)
   }
 
   /**
@@ -1935,7 +1940,7 @@ export default class MetamaskController extends EventEmitter {
     isInternal = false,
   }) {
     // setup json rpc engine stack
-    const engine = new RpcEngine()
+    const engine = new JsonRpcEngine()
     const { provider, blockTracker } = this
 
     // create filter polyfill middleware
@@ -1967,7 +1972,13 @@ export default class MetamaskController extends EventEmitter {
     engine.push(
       createMethodMiddleware({
         origin,
-        sendMetrics: this.trackMetaMetricsEvent,
+        getProviderState: this.getProviderState.bind(this),
+        sendMetrics: this.metaMetricsController.trackEvent.bind(
+          this.metaMetricsController,
+        ),
+        handleWatchAssetRequest: this.preferencesController.requestWatchAsset.bind(
+          this.preferencesController,
+        ),
       }),
     )
     // filter and subscription polyfills
@@ -1979,38 +1990,9 @@ export default class MetamaskController extends EventEmitter {
         this.permissionsController.createMiddleware({ origin, extensionId }),
       )
     }
-    // watch asset
-    engine.push(
-      this.preferencesController.requestWatchAsset.bind(
-        this.preferencesController,
-      ),
-    )
     // forward to metamask primary provider
     engine.push(providerAsMiddleware(provider))
     return engine
-  }
-
-  /**
-   * A method for providing our public config info over a stream.
-   * This includes info we like to be synchronous if possible, like
-   * the current selected account, and network ID.
-   *
-   * Since synchronous methods have been deprecated in web3,
-   * this is a good candidate for deprecation.
-   *
-   * @param {*} outStream - The stream to provide public config over.
-   */
-  setupPublicConfig(outStream) {
-    const configStore = this.createPublicConfigStore()
-    const configStream = asStream(configStore)
-
-    pump(configStream, outStream, (err) => {
-      configStore.destroy()
-      configStream.destroy()
-      if (err) {
-        log.error(err)
-      }
-    })
   }
 
   /**
@@ -2063,37 +2045,51 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Causes the RPC engines associated with the connections to the given origin
    * to emit a notification event with the given payload.
-   * Does nothing if the extension is locked or the origin is unknown.
+   *
+   * The caller is responsible for ensuring that only permitted notifications
+   * are sent.
+   *
+   * Ignores unknown origins.
    *
    * @param {string} origin - The connection's origin string.
    * @param {any} payload - The event payload.
    */
   notifyConnections(origin, payload) {
     const connections = this.connections[origin]
-    if (!this.isUnlocked() || !connections) {
-      return
-    }
 
-    Object.values(connections).forEach((conn) => {
-      conn.engine && conn.engine.emit('notification', payload)
-    })
+    if (connections) {
+      Object.values(connections).forEach((conn) => {
+        if (conn.engine) {
+          conn.engine.emit('notification', payload)
+        }
+      })
+    }
   }
 
   /**
    * Causes the RPC engines associated with all connections to emit a
    * notification event with the given payload.
-   * Does nothing if the extension is locked.
    *
-   * @param {any} payload - The event payload.
+   * If the "payload" parameter is a function, the payload for each connection
+   * will be the return value of that function called with the connection's
+   * origin.
+   *
+   * The caller is responsible for ensuring that only permitted notifications
+   * are sent.
+   *
+   * @param {any} payload - The event payload, or payload getter function.
    */
   notifyAllConnections(payload) {
-    if (!this.isUnlocked()) {
-      return
-    }
+    const getPayload =
+      typeof payload === 'function'
+        ? (origin) => payload(origin)
+        : () => payload
 
     Object.values(this.connections).forEach((origin) => {
       Object.values(origin).forEach((conn) => {
-        conn.engine && conn.engine.emit('notification', payload)
+        if (conn.engine) {
+          conn.engine.emit('notification', getPayload(origin))
+        }
       })
     })
   }
@@ -2120,6 +2116,51 @@ export default class MetamaskController extends EventEmitter {
     // Ensure preferences + identities controller know about all addresses
     this.preferencesController.syncAddresses(addresses)
     this.accountTracker.syncWithAddresses(addresses)
+  }
+
+  /**
+   * Handle global unlock, triggered by KeyringController unlock.
+   * Notifies all connections that the extension is unlocked.
+   */
+  _onUnlock() {
+    this.notifyAllConnections((origin) => {
+      return {
+        method: NOTIFICATION_NAMES.unlockStateChanged,
+        params: {
+          isUnlocked: true,
+          accounts: this.permissionsController.getAccounts(origin),
+        },
+      }
+    })
+    this.emit('unlock')
+  }
+
+  /**
+   * Handle global lock, triggered by KeyringController lock.
+   * Notifies all connections that the extension is locked.
+   */
+  _onLock() {
+    this.notifyAllConnections({
+      method: NOTIFICATION_NAMES.unlockStateChanged,
+      params: {
+        isUnlocked: false,
+      },
+    })
+    this.emit('lock')
+  }
+
+  /**
+   * Handle memory state updates.
+   * - Ensure isClientOpenAndUnlocked is updated
+   * - Notifies all connections with the new provider network state
+   *   - The external providers handle diffing the state
+   */
+  _onStateUpdate(newState) {
+    this.isClientOpenAndUnlocked = newState.isUnlocked && this._isClientOpen
+    this.notifyAllConnections({
+      method: NOTIFICATION_NAMES.chainChanged,
+      params: this.getProviderNetworkState(newState),
+    })
   }
 
   // misc
@@ -2180,16 +2221,20 @@ export default class MetamaskController extends EventEmitter {
       metamask: metamaskState,
     })
 
-    this.trackMetaMetricsEvent({
-      event: name,
-      category: 'Background',
-      matomoEvent: true,
-      properties: {
-        action,
-        ...additionalProperties,
-        ...customVariables,
+    this.metaMetricsController.trackEvent(
+      {
+        event: name,
+        category: 'Background',
+        properties: {
+          action,
+          ...additionalProperties,
+          ...customVariables,
+        },
       },
-    })
+      {
+        matomoEvent: true,
+      },
+    )
   }
 
   /**
@@ -2424,7 +2469,7 @@ export default class MetamaskController extends EventEmitter {
    */
   setParticipateInMetaMetrics(bool, cb) {
     try {
-      const metaMetricsId = this.preferencesController.setParticipateInMetaMetrics(
+      const metaMetricsId = this.metaMetricsController.setParticipateInMetaMetrics(
         bool,
       )
       cb(null, metaMetricsId)
@@ -2438,7 +2483,7 @@ export default class MetamaskController extends EventEmitter {
 
   setMetaMetricsSendCount(val, cb) {
     try {
-      this.preferencesController.setMetaMetricsSendCount(val)
+      this.metaMetricsController.setMetaMetricsSendCount(val)
       cb(null)
       return
     } catch (err) {

@@ -115,9 +115,6 @@
   "cancel": {
     "message": "キャンセル"
   },
-  "chartOnlyAvailableEth": {
-    "message": "チャートはEthereumネットワークでのみ利用可能です。"
-  },
   "confirm": {
     "message": "確認"
   },

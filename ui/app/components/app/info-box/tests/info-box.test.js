@@ -20,12 +20,12 @@ describe('InfoBox', function () {
 
   it('renders title from props', function () {
     const title = wrapper.find('.info-box__title')
-    assert.equal(title.text(), props.title)
+    assert.strictEqual(title.text(), props.title)
   })
 
   it('renders description from props', function () {
     const description = wrapper.find('.info-box__description')
-    assert.equal(description.text(), props.description)
+    assert.strictEqual(description.text(), props.description)
   })
 
   it('closes info box', function () {

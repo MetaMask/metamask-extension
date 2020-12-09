@@ -236,9 +236,6 @@
   "chainId": {
     "message": "链 ID"
   },
-  "chartOnlyAvailableEth": {
-    "message": "图表仅支持 Ethereum 以太坊网络。"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "你需要在谷歌浏览器（Google Chrome）上使用 MetaMask 才能连接到你的硬件钱包。"
   },
@@ -629,9 +626,6 @@
   "fast": {
     "message": "快"
   },
-  "faster": {
-    "message": "更快"
-  },
   "fastest": {
     "message": "最快"
   },
@@ -868,9 +862,6 @@
   },
   "links": {
     "message": "链接"
-  },
-  "liveGasPricePredictions": {
-    "message": "实时燃料价格预测"
   },
   "loadMore": {
     "message": "加载更多"
@@ -1457,9 +1448,6 @@
   "slow": {
     "message": "慢"
   },
-  "slower": {
-    "message": "更慢"
-  },
   "somethingWentWrong": {
     "message": "糟糕！出问题了。"
   },
@@ -1918,9 +1906,6 @@
   },
   "transactionSubmitted": {
     "message": "交易已提交 $2，交易费：$1。"
-  },
-  "transactionTime": {
-    "message": "交易时间"
   },
   "transactionUpdated": {
     "message": "交易更新时间 $2。"

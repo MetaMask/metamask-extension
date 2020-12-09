@@ -30,7 +30,7 @@ describe('Confirm Delete Network', function () {
 
   it('renders delete network modal title', function () {
     const modalTitle = wrapper.find('.modal-content__title')
-    assert.equal(modalTitle.text(), 'deleteNetwork')
+    assert.strictEqual(modalTitle.text(), 'deleteNetwork')
   })
 
   it('clicks cancel to hide modal', function () {

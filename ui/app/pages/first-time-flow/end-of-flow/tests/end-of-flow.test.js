@@ -20,7 +20,7 @@ describe('End of Flow Screen', function () {
   })
 
   it('renders', function () {
-    assert.equal(wrapper.length, 1)
+    assert.strictEqual(wrapper.length, 1)
   })
 
   it('should navigate to the default route on click', function (done) {

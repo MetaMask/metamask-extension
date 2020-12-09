@@ -64,7 +64,7 @@ describe('selectors', function () {
         },
       }
       const extensionId = undefined
-      assert.deepEqual(getConnectedDomainsForSelectedAddress(mockState), [
+      assert.deepStrictEqual(getConnectedDomainsForSelectedAddress(mockState), [
         {
           extensionId,
           icon: 'https://peepeth.com/favicon-32x32.png',
@@ -142,7 +142,7 @@ describe('selectors', function () {
         },
       }
       const extensionId = undefined
-      assert.deepEqual(getConnectedDomainsForSelectedAddress(mockState), [
+      assert.deepStrictEqual(getConnectedDomainsForSelectedAddress(mockState), [
         {
           extensionId,
           name: 'Remix - Ethereum IDE',
@@ -279,36 +279,39 @@ describe('selectors', function () {
     }
 
     it('should return connected accounts sorted by last selected, then by keyring controller order', function () {
-      assert.deepEqual(getOrderedConnectedAccountsForActiveTab(mockState), [
-        {
-          address: '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
-          name: 'Account 2',
-          lastActive: 1586359844192,
-          lastSelected: 1586359844193,
-        },
-        {
-          address: '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
-          name: 'Account 1',
-          lastActive: 1586359844192,
-          lastSelected: 1586359844192,
-        },
-        {
-          address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-          name: 'Account 3',
-          lastActive: 1586359844192,
-          lastSelected: 1586359844192,
-        },
-        {
-          address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
-          name: 'Really Long Name That Should Be Truncated',
-          lastActive: 1586359844192,
-        },
-        {
-          address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
-          name: 'Account 4',
-          lastActive: 1586359844192,
-        },
-      ])
+      assert.deepStrictEqual(
+        getOrderedConnectedAccountsForActiveTab(mockState),
+        [
+          {
+            address: '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
+            name: 'Account 2',
+            lastActive: 1586359844192,
+            lastSelected: 1586359844193,
+          },
+          {
+            address: '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+            name: 'Account 1',
+            lastActive: 1586359844192,
+            lastSelected: 1586359844192,
+          },
+          {
+            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            name: 'Account 3',
+            lastActive: 1586359844192,
+            lastSelected: 1586359844192,
+          },
+          {
+            address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
+            name: 'Really Long Name That Should Be Truncated',
+            lastActive: 1586359844192,
+          },
+          {
+            address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
+            name: 'Account 4',
+            lastActive: 1586359844192,
+          },
+        ],
+      )
     })
   })
 
@@ -415,7 +418,7 @@ describe('selectors', function () {
     }
 
     it('should return a list of permissions strings', function () {
-      assert.deepEqual(getPermissionsForActiveTab(mockState), [
+      assert.deepStrictEqual(getPermissionsForActiveTab(mockState), [
         {
           key: 'eth_accounts',
         },
