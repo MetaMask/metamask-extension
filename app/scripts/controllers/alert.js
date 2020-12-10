@@ -19,7 +19,7 @@ import {
  */
 
 const defaultState = {
-  alertEnabledness: Object.keys(TOGGLEABLE_ALERT_TYPES).reduce(
+  alertEnabledness: TOGGLEABLE_ALERT_TYPES.reduce(
     (alertEnabledness, alertType) => {
       alertEnabledness[alertType] = true
       return alertEnabledness
@@ -39,7 +39,7 @@ export default class AlertController {
    * @param {AlertControllerOptions} [opts] - Controller configuration parameters
    */
   constructor(opts = {}) {
-    const { initState, preferencesStore } = opts
+    const { initState = {}, preferencesStore } = opts
     const state = {
       alertEnabledness: {
         ...defaultState.alertEnabledness,
@@ -111,7 +111,7 @@ export default class AlertController {
    * @param {string} origin - The origin that the web3 shim notification was
    * dismissed for.
    */
-  setWeb3ShimUsageDismissed(origin) {
+  setWeb3ShimUsageAlertDismissed(origin) {
     this._setWeb3ShimUsageState(origin, WEB3_SHIM_USAGE_ALERT_STATES.DISMISSED)
   }
 

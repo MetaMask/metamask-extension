@@ -357,6 +357,6 @@ export function getUSDConversionRate(state) {
   return state.metamask.usdConversionRate
 }
 
-export function getWeb3ShimUsageStateForCurrentTab(state) {
-  return state.metamask.web3ShimUsageOrigins[getOriginOfCurrentTab(state)]
+export function getWeb3ShimUsageStateForOrigin(state, origin) {
+  return state.metamask.web3ShimUsageOrigins[origin]
 }

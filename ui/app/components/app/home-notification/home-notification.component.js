@@ -1,11 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
 import Button from '../../ui/button'
+import Checkbox from '../../ui/check-box'
 import Tooltip from '../../ui/tooltip'
 
 const HomeNotification = ({
   acceptText,
+  checkboxText,
+  checkboxTooltipText,
   classNames = [],
   descriptionText,
   ignoreText,
@@ -13,10 +16,26 @@ const HomeNotification = ({
   onAccept,
   onIgnore,
 }) => {
+  const [checkboxState, setCheckBoxState] = useState(false)
+
+  const checkboxElement = checkboxText && (
+    <Checkbox
+      id="homeNotification_checkbox"
+      checked={checkboxState}
+      className="home-notification__checkbox"
+      onClick={() => setCheckBoxState((checked) => !checked)}
+    />
+  )
+
   return (
     <div className={classnames('home-notification', ...classNames)}>
       <div className="home-notification__content">
         <div className="home-notification__content-container">
+          <img
+            className="home-notification__icon"
+            alt=""
+            src="images/icons/connect.svg"
+          />
           <div className="home-notification__text">{descriptionText}</div>
         </div>
         {infoText ? (
@@ -43,10 +62,33 @@ const HomeNotification = ({
           <Button
             type="secondary"
             className="home-notification__ignore-button"
-            onClick={onIgnore}
+            // Some onIgnore handlers use the checkboxState to determine whether
+            // to disable the notification
+            onClick={() => onIgnore(checkboxState)}
           >
             {ignoreText}
           </Button>
+        ) : null}
+        {checkboxText ? (
+          <div className="home-notification__checkbox-wrapper">
+            {checkboxTooltipText ? (
+              <Tooltip
+                position="top"
+                title={checkboxTooltipText}
+                wrapperClassName="home-notification__checkbox-label-tooltip"
+              >
+                {checkboxElement}
+              </Tooltip>
+            ) : (
+              checkboxElement
+            )}
+            <label
+              className="home-notification__checkbox-label"
+              htmlFor="homeNotification_checkbox"
+            >
+              {checkboxText}
+            </label>
+          </div>
         ) : null}
       </div>
     </div>
@@ -55,6 +97,8 @@ const HomeNotification = ({
 
 HomeNotification.propTypes = {
   acceptText: PropTypes.node,
+  checkboxText: PropTypes.node,
+  checkboxTooltipText: PropTypes.node,
   classNames: PropTypes.array,
   descriptionText: PropTypes.node.isRequired,
   ignoreText: PropTypes.node,

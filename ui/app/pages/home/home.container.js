@@ -6,8 +6,9 @@ import {
   getCurrentEthBalance,
   getFirstPermissionRequest,
   getIsMainnet,
+  getOriginOfCurrentTab,
   getTotalUnapprovedCount,
-  getWeb3ShimUsageStateForCurrentTab,
+  getWeb3ShimUsageStateForOrigin,
   unconfirmedTransactionsCountSelector,
 } from '../../selectors'
 
@@ -19,6 +20,8 @@ import {
   setConnectedStatusPopoverHasBeenShown,
   setDefaultHomeActiveTabName,
   setSwapsWelcomeMessageHasBeenShown,
+  setWeb3ShimUsageAlertDismissed,
+  setAlertEnabledness,
 } from '../../store/actions'
 import { setThreeBoxLastUpdated } from '../../ducks/app/app'
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask'
@@ -31,7 +34,10 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../../app/scripts/lib/enums'
-import { WEB3_SHIM_USAGE_ALERT_STATES } from '../../../../shared/constants/alerts'
+import {
+  ALERT_TYPES,
+  WEB3_SHIM_USAGE_ALERT_STATES,
+} from '../../../../shared/constants/alerts'
 import Home from './home.component'
 
 const mapStateToProps = (state) => {
@@ -62,11 +68,12 @@ const mapStateToProps = (state) => {
       ? firstPermissionsRequest.metadata.id
       : null
 
+  const originOfCurrentTab = getOriginOfCurrentTab(state)
   const shouldShowWeb3ShimUsageNotification =
     isPopup &&
     getWeb3ShimUsageAlertEnabledness(state) &&
     activeTabHasPermissions(state) &&
-    getWeb3ShimUsageStateForCurrentTab(state) ===
+    getWeb3ShimUsageStateForOrigin(state, originOfCurrentTab) ===
       WEB3_SHIM_USAGE_ALERT_STATES.RECORDED
 
   return {
@@ -77,7 +84,6 @@ const mapStateToProps = (state) => {
     shouldShowSeedPhraseReminder:
       seedPhraseBackedUp === false &&
       (parseInt(accountBalance, 16) > 0 || tokens.length > 0),
-    shouldShowWeb3ShimUsageNotification,
     isPopup,
     isNotification,
     threeBoxSynced,
@@ -93,6 +99,8 @@ const mapStateToProps = (state) => {
     swapsFetchParams: swapsState.fetchParams,
     showAwaitingSwapScreen: swapsState.routeState === 'awaiting',
     isMainnet: getIsMainnet(state),
+    originOfCurrentTab,
+    shouldShowWeb3ShimUsageNotification,
   }
 }
 
@@ -115,6 +123,11 @@ const mapDispatchToProps = (dispatch) => ({
   onTabClick: (name) => dispatch(setDefaultHomeActiveTabName(name)),
   setSwapsWelcomeMessageHasBeenShown: () =>
     dispatch(setSwapsWelcomeMessageHasBeenShown()),
+  setWeb3ShimUsageAlertDismissed: (origin) =>
+    dispatch(setWeb3ShimUsageAlertDismissed(origin)),
+  disableWeb3ShimUsageAlert: () => {
+    dispatch(setAlertEnabledness(ALERT_TYPES.web3ShimUsage, false))
+  },
 })
 
 export default compose(

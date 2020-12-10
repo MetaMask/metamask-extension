@@ -2487,12 +2487,16 @@ export function setAlertEnabledness(alertId, enabledness) {
   }
 }
 
-export async function setUnconnectedAccountAlertShown(origin) {
-  await promisifiedBackground.setUnconnectedAccountAlertShown(origin)
+export function setUnconnectedAccountAlertShown(origin) {
+  return async () => {
+    await promisifiedBackground.setUnconnectedAccountAlertShown(origin)
+  }
 }
 
-export async function setWeb3ShimUsageDismissed(origin) {
-  await promisifiedBackground.setWeb3ShimUsageDismissed(origin)
+export function setWeb3ShimUsageAlertDismissed(origin) {
+  return async () => {
+    await promisifiedBackground.setWeb3ShimUsageAlertDismissed(origin)
+  }
 }
 
 export function loadingMethodDataStarted() {

@@ -707,7 +707,7 @@ export default class MetamaskController extends EventEmitter {
       setUnconnectedAccountAlertShown: alertController.setUnconnectedAccountAlertShown.bind(
         alertController,
       ),
-      setWeb3ShimUsageDismissed: alertController.setWeb3ShimUsageDismissed.bind(
+      setWeb3ShimUsageAlertDismissed: alertController.setWeb3ShimUsageAlertDismissed.bind(
         alertController,
       ),
 

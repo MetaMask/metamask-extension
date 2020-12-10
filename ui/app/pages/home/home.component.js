@@ -43,7 +43,6 @@ export default class Home extends PureComponent {
     suggestedTokens: PropTypes.object,
     unconfirmedTransactionsCount: PropTypes.number,
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
-    shouldShowWeb3ShimUsageNotification: PropTypes.bool.isRequired,
     isPopup: PropTypes.bool,
     isNotification: PropTypes.bool.isRequired,
     threeBoxSynced: PropTypes.bool,
@@ -67,6 +66,10 @@ export default class Home extends PureComponent {
     swapsFetchParams: PropTypes.object,
     swapsEnabled: PropTypes.bool,
     isMainnet: PropTypes.bool,
+    shouldShowWeb3ShimUsageNotification: PropTypes.bool.isRequired,
+    setWeb3ShimUsageAlertDismissed: PropTypes.func.isRequired,
+    originOfCurrentTab: PropTypes.string,
+    disableWeb3ShimUsageAlert: PropTypes.func.isRequired,
   }
 
   state = {
@@ -155,7 +158,6 @@ export default class Home extends PureComponent {
     const {
       history,
       shouldShowSeedPhraseReminder,
-      shouldShowWeb3ShimUsageNotification,
       isPopup,
       selectedAddress,
       restoreFromThreeBox,
@@ -163,22 +165,38 @@ export default class Home extends PureComponent {
       setShowRestorePromptToFalse,
       showRestorePrompt,
       threeBoxLastUpdated,
+      shouldShowWeb3ShimUsageNotification,
+      setWeb3ShimUsageAlertDismissed,
+      originOfCurrentTab,
+      disableWeb3ShimUsageAlert,
     } = this.props
 
     return (
       <MultipleNotifications>
         {shouldShowWeb3ShimUsageNotification ? (
           <HomeNotification
-            descriptionText={t('web3UsageNotification', ['foobar.com'])}
-            acceptText={t('dismiss')}
-            onAccept={() => {
-              console.log('Dismiss!')
+            descriptionText={t('web3ShimUsageNotification', [
+              <span
+                key="web3ShimUsageNotificationLink"
+                className="home-notification__text-link"
+                onClick={() =>
+                  // TODO: update this
+                  global.platform.openTab({ url: 'https://metamask.io' })
+                }
+              >
+                {t('here')}
+              </span>,
+            ])}
+            ignoreText={t('dismiss')}
+            onIgnore={(disable) => {
+              setWeb3ShimUsageAlertDismissed(originOfCurrentTab)
+              if (disable) {
+                disableWeb3ShimUsageAlert()
+              }
             }}
-            // onIgnore={() => {
-            //   console.log('Ignore!')
-            // }}
-            // infoText={t('backupApprovalInfo')} // the icon thingy
-            key="home-web3UsageNotification"
+            checkboxText={t('dontShowThisAgain')}
+            checkboxTooltipText={t('canToggleInSettings')}
+            key="home-web3ShimUsageNotification"
           />
         ) : null}
         {shouldShowSeedPhraseReminder ? (
