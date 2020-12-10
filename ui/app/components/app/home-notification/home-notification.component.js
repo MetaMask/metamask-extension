@@ -34,7 +34,7 @@ const HomeNotification = ({
           <Button
             type="primary"
             className="home-notification__accept-button"
-            onClick={() => onAccept()}
+            onClick={onAccept}
           >
             {acceptText}
           </Button>
