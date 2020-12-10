@@ -31,6 +31,8 @@ import {
 
 const LEARN_MORE_URL =
   'https://metamask.zendesk.com/hc/en-us/articles/360045129011-Intro-to-MetaMask-v8-extension'
+const LEGACY_WEB3_URL =
+  'https://metamask.zendesk.com/hc/en-us/articles/360053147012'
 
 export default class Home extends PureComponent {
   static contextTypes = {
@@ -180,8 +182,7 @@ export default class Home extends PureComponent {
                 key="web3ShimUsageNotificationLink"
                 className="home-notification__text-link"
                 onClick={() =>
-                  // TODO: update this
-                  global.platform.openTab({ url: 'https://metamask.io' })
+                  global.platform.openTab({ url: LEGACY_WEB3_URL })
                 }
               >
                 {t('here')}
