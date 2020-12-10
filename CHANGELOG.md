@@ -1,6 +1,7 @@
 # Changelog
 
 ## Current Develop Branch
+- [#10048](https://github.com/MetaMask/metamask-extension/pull/10048): Display boolean values when signing typed data
 
 ## 8.1.8 Wed Dec 09 2020
 - [#9992](https://github.com/MetaMask/metamask-extension/pull/9992): Improve transaction params validation
