@@ -1,14 +1,7 @@
-.tippy-tooltip {
-  // This looks weird, but its repeating the class name
-  // using interpolation for higher specificity.
-  &#{&}-home-theme {
-    background: rgba(36, 41, 46, 0.9);
-    color: $white;
-    border-radius: 8px;
-  }
-}
-
 .home-notification {
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
   background: rgba(36, 41, 46, 0.9);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
   border-radius: 8px;
@@ -19,31 +12,20 @@
     min-width: 472px;
   }
 
-  display: flex;
-  flex-flow: column;
-  justify-content: space-between;
-
-  &__header-container {
+  &__content-container {
     display: flex;
   }
 
-  &__header {
+  &__content {
     display: flex;
     align-items: center;
     justify-content: space-between;
-  }
-
-  &__icon {
-    height: 16px;
-    align-self: center;
   }
 
   &__text {
     @include H7;
 
     color: $white;
-    margin-left: 10px;
-    margin-right: 8px;
   }
 
   .fa-info-circle {
@@ -102,23 +84,14 @@
   &__buttons {
     display: flex;
     width: 100%;
-    margin-top: 10px;
-    justify-content: flex-start;
+    padding-top: 10px;
+    align-items: center;
+    justify-content: space-between;
     flex-direction: row-reverse;
   }
-}
 
-.home-notification-tooltip {
-  &__tooltip-container {
+  &__tooltip-wrapper {
     display: flex;
-  }
-
-  &__content {
-    @include H7;
-
-    color: $white;
-    text-align: left;
-    display: inline-block;
-    width: 200px;
+    margin-left: 10px;
   }
 }
