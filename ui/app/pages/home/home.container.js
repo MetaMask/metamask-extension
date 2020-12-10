@@ -124,10 +124,9 @@ const mapDispatchToProps = (dispatch) => ({
   setSwapsWelcomeMessageHasBeenShown: () =>
     dispatch(setSwapsWelcomeMessageHasBeenShown()),
   setWeb3ShimUsageAlertDismissed: (origin) =>
-    dispatch(setWeb3ShimUsageAlertDismissed(origin)),
-  disableWeb3ShimUsageAlert: () => {
-    dispatch(setAlertEnabledness(ALERT_TYPES.web3ShimUsage, false))
-  },
+    setWeb3ShimUsageAlertDismissed(origin),
+  disableWeb3ShimUsageAlert: () =>
+    setAlertEnabledness(ALERT_TYPES.web3ShimUsage, false),
 })
 
 export default compose(

@@ -2481,22 +2481,16 @@ export function setSwapsWelcomeMessageHasBeenShown() {
   }
 }
 
-export function setAlertEnabledness(alertId, enabledness) {
-  return async () => {
-    await promisifiedBackground.setAlertEnabledness(alertId, enabledness)
-  }
+export async function setAlertEnabledness(alertId, enabledness) {
+  await promisifiedBackground.setAlertEnabledness(alertId, enabledness)
 }
 
-export function setUnconnectedAccountAlertShown(origin) {
-  return async () => {
-    await promisifiedBackground.setUnconnectedAccountAlertShown(origin)
-  }
+export async function setUnconnectedAccountAlertShown(origin) {
+  await promisifiedBackground.setUnconnectedAccountAlertShown(origin)
 }
 
-export function setWeb3ShimUsageAlertDismissed(origin) {
-  return async () => {
-    await promisifiedBackground.setWeb3ShimUsageAlertDismissed(origin)
-  }
+export async function setWeb3ShimUsageAlertDismissed(origin) {
+  await promisifiedBackground.setWeb3ShimUsageAlertDismissed(origin)
 }
 
 export function loadingMethodDataStarted() {

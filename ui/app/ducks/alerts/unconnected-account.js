@@ -101,7 +101,7 @@ export const dismissAndDisableAlert = () => {
   return async (dispatch) => {
     try {
       await dispatch(disableAlertRequested())
-      await dispatch(setAlertEnabledness(name, false))
+      await setAlertEnabledness(name, false)
       await dispatch(disableAlertSucceeded())
     } catch (error) {
       console.error(error)

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 import { ALERT_TYPES } from '../../../../../shared/constants/alerts'
 import Tooltip from '../../../components/ui/tooltip'
@@ -11,7 +11,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext'
 
 const AlertSettingsEntry = ({ alertId, description, title }) => {
   const t = useI18nContext()
-  const dispatch = useDispatch()
   const isEnabled = useSelector((state) => getAlertEnabledness(state)[alertId])
 
   return (
@@ -27,7 +26,7 @@ const AlertSettingsEntry = ({ alertId, description, title }) => {
       <ToggleButton
         offLabel={t('off')}
         onLabel={t('on')}
-        onToggle={() => dispatch(setAlertEnabledness(alertId, !isEnabled))}
+        onToggle={() => setAlertEnabledness(alertId, !isEnabled)}
         value={isEnabled}
       />
     </>
