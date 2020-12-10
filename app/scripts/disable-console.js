@@ -3,5 +3,4 @@
 if (typeof window.console !== undefined) {
   // eslint-disable-next-line no-empty-function
   console.log = () => {}
-
 }
