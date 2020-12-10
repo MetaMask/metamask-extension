@@ -514,16 +514,16 @@ export default class MetamaskController extends EventEmitter {
    */
   getApi() {
     const {
+      alertController,
       keyringController,
+      metaMetricsController,
       networkController,
       onboardingController,
-      alertController,
       permissionsController,
       preferencesController,
+      swapsController,
       threeBoxController,
       txController,
-      swapsController,
-      metaMetricsController,
     } = this
 
     return {
@@ -706,8 +706,12 @@ export default class MetamaskController extends EventEmitter {
         alertController,
       ),
       setUnconnectedAccountAlertShown: nodeify(
-        this.alertController.setUnconnectedAccountAlertShown,
-        this.alertController,
+        alertController.setUnconnectedAccountAlertShown,
+        alertController,
+      ),
+      setWeb3ShimUsageAlertDismissed: nodeify(
+        alertController.setWeb3ShimUsageAlertDismissed,
+        alertController,
       ),
 
       // 3Box
@@ -1978,6 +1982,12 @@ export default class MetamaskController extends EventEmitter {
         ),
         handleWatchAssetRequest: this.preferencesController.requestWatchAsset.bind(
           this.preferencesController,
+        ),
+        getWeb3ShimUsageState: this.alertController.getWeb3ShimUsageState.bind(
+          this.alertController,
+        ),
+        setWeb3ShimUsageRecorded: this.alertController.setWeb3ShimUsageRecorded.bind(
+          this.alertController,
         ),
       }),
     )

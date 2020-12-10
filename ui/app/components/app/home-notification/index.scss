@@ -28,8 +28,44 @@
     color: $white;
   }
 
+  &__text-link {
+    @include H7;
+
+    color: $primary-blue;
+    cursor: pointer;
+  }
+
   .fa-info-circle {
     color: #6a737d;
+  }
+
+  & &__checkbox-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    @media screen and (max-width: 575px) {
+      width: 160px;
+    }
+  }
+
+  & &__checkbox {
+    height: 13px;
+    width: 13px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  & &__checkbox-label {
+    @include H7;
+
+    color: $white;
+    margin-left: 10px;
+    margin-top: 1px;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    cursor: pointer;
   }
 
   & &__ignore-button {

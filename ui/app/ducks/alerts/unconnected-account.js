@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { captureException } from '@sentry/browser'
 
-import { ALERT_TYPES } from '../../../../app/scripts/controllers/alert'
+import { ALERT_TYPES } from '../../../../shared/constants/alerts'
 import * as actionConstants from '../../store/actionConstants'
 import {
   addPermittedAccount,
@@ -101,7 +101,7 @@ export const dismissAndDisableAlert = () => {
   return async (dispatch) => {
     try {
       await dispatch(disableAlertRequested())
-      await dispatch(setAlertEnabledness(name, false))
+      await setAlertEnabledness(name, false)
       await dispatch(disableAlertSucceeded())
     } catch (error) {
       console.error(error)

@@ -95,7 +95,13 @@
     "message": "Browsing a website with an unconnected account selected"
   },
   "alertSettingsUnconnectedAccountDescription": {
-    "message": "This alert is shown in the popup when you are browsing a connected Web3 site, but the currently selected account is not connected."
+    "message": "This alert is shown in the popup when you are browsing a connected web3 site, but the currently selected account is not connected."
+  },
+  "alertSettingsWeb3ShimUsage": {
+    "message": "When a website tries to use the removed window.web3 API"
+  },
+  "alertSettingsWeb3ShimUsageDescription": {
+    "message": "This alert is shown in the popup when you are browsing a site that tries to use the removed window.web3 API, and may be broken as a result."
   },
   "alerts": {
     "message": "Alerts"
@@ -232,6 +238,9 @@
   },
   "bytes": {
     "message": "Bytes"
+  },
+  "canToggleInSettings": {
+    "message": "You can re-enable this notification in Settings -> Alerts."
   },
   "cancel": {
     "message": "Cancel"
@@ -2094,6 +2103,10 @@
   },
   "walletSeed": {
     "message": "Seed phrase"
+  },
+  "web3ShimUsageNotification": {
+    "message": "We noticed that the current website tried to use the removed window.web3 API. If the site appears to be broken, please click $1 for more information.",
+    "description": "$1 is a clickable link."
   },
   "welcome": {
     "message": "Welcome to MetaMask"
