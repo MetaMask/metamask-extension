@@ -41,12 +41,11 @@ export default class AlertController {
   constructor(opts = {}) {
     const { initState = {}, preferencesStore } = opts
     const state = {
+      ...defaultState,
       alertEnabledness: {
         ...defaultState.alertEnabledness,
         ...initState.alertEnabledness,
       },
-      unconnectedAccountAlertShownOrigins: {},
-      web3ShimUsageOrigins: {},
     }
 
     this.store = new ObservableStore(state)
