@@ -156,7 +156,7 @@ export default class SendTransactionScreen extends Component {
 
     if (sendTokenAddress && prevTokenAddress !== sendTokenAddress) {
       this.updateSendToken()
-      this.validate(sendTokenAddress)
+      this.validate(this.state.query)
       updateGas = true
     }
 
