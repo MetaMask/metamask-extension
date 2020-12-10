@@ -43,7 +43,7 @@ const HomeNotification = ({
           <Button
             type="secondary"
             className="home-notification__ignore-button"
-            onClick={() => onIgnore()}
+            onClick={onIgnore}
           >
             {ignoreText}
           </Button>
