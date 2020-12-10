@@ -31,11 +31,6 @@ const HomeNotification = ({
     <div className={classnames('home-notification', ...classNames)}>
       <div className="home-notification__content">
         <div className="home-notification__content-container">
-          <img
-            className="home-notification__icon"
-            alt=""
-            src="images/icons/connect.svg"
-          />
           <div className="home-notification__text">{descriptionText}</div>
         </div>
         {infoText ? (
