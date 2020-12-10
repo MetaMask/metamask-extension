@@ -544,7 +544,7 @@ export default function ViewQuote() {
             tokenApprovalTextComponent={tokenApprovalTextComponent}
             tokenApprovalSourceTokenSymbol={sourceTokenSymbol}
             onTokenApprovalClick={onFeeCardTokenApprovalClick}
-            metaMaskFee={metaMaskFee}
+            metaMaskFee={String(metaMaskFee)}
             isBestQuote={isBestQuote}
             numberOfQuotes={Object.values(quotes).length}
             onQuotesClick={() => {
