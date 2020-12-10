@@ -1,5 +1,5 @@
 import * as actionConstants from '../../store/actionConstants'
-import { ALERT_TYPES } from '../../../../app/scripts/controllers/alert'
+import { ALERT_TYPES } from '../../../../shared/constants/alerts'
 
 export default function reduceMetamask(state = {}, action) {
   const metamaskState = {
@@ -380,6 +380,9 @@ export const getInvalidCustomNetworkAlertEnabledness = (state) =>
 
 export const getUnconnectedAccountAlertEnabledness = (state) =>
   getAlertEnabledness(state)[ALERT_TYPES.unconnectedAccount]
+
+export const getWeb3ShimUsageAlertEnabledness = (state) =>
+  getAlertEnabledness(state)[ALERT_TYPES.web3ShimUsage]
 
 export const getUnconnectedAccountAlertShown = (state) =>
   state.metamask.unconnectedAccountAlertShownOrigins

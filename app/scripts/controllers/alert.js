@@ -1,5 +1,8 @@
 import ObservableStore from 'obs-store'
-import { WEB3_USAGE_ALERT_STATES } from '../../../shared/constants/alerts'
+import {
+  ALERT_TYPES,
+  WEB3_USAGE_ALERT_STATES,
+} from '../../../shared/constants/alerts'
 
 /**
  * @typedef {Object} AlertControllerInitState
@@ -15,13 +18,6 @@ import { WEB3_USAGE_ALERT_STATES } from '../../../shared/constants/alerts'
  * @property {AlertControllerInitState} initState - The initial controller state
  */
 
-export const ALERT_TYPES = {
-  unconnectedAccount: 'unconnectedAccount',
-  web3ShimUsage: 'web3ShimUsage',
-  // enumerated here but has no background state
-  invalidCustomNetwork: 'invalidCustomNetwork',
-}
-
 const defaultState = {
   alertEnabledness: Object.keys(ALERT_TYPES).reduce(
     (alertEnabledness, alertType) => {
@@ -35,8 +31,7 @@ const defaultState = {
 }
 
 /**
- * Controller responsible for maintaining
- * alert related state
+ * Controller responsible for maintaining alert-related state.
  */
 export default class AlertController {
   /**
@@ -46,9 +41,12 @@ export default class AlertController {
   constructor(opts = {}) {
     const { initState, preferencesStore } = opts
     const state = {
-      ...defaultState,
-      ...initState,
+      alertEnabledness: {
+        ...defaultState.alertEnabledness,
+        ...initState.alertEnabledness,
+      },
       unconnectedAccountAlertShownOrigins: {},
+      web3ShimUsageOrigins: {},
     }
 
     this.store = new ObservableStore(state)
@@ -103,7 +101,7 @@ export default class AlertController {
    *
    * @param {string} origin - The origin the that used the web3 shim.
    */
-  recordWeb3ShimUsage(origin) {
+  setWeb3ShimUsageRecorded(origin) {
     this._setWeb3ShimUsageState(origin, WEB3_USAGE_ALERT_STATES.RECORDED)
   }
 
@@ -113,7 +111,7 @@ export default class AlertController {
    * @param {string} origin - The origin that the web3 shim notification was
    * dismissed for.
    */
-  recordWeb3ShimUsageDismissal(origin) {
+  setWeb3ShimUsageDismissed(origin) {
     this._setWeb3ShimUsageState(origin, WEB3_USAGE_ALERT_STATES.DISMISSED)
   }
 

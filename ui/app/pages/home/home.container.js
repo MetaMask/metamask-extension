@@ -2,11 +2,13 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import {
-  unconfirmedTransactionsCountSelector,
+  activeTabHasPermissions,
   getCurrentEthBalance,
   getFirstPermissionRequest,
-  getTotalUnapprovedCount,
   getIsMainnet,
+  getTotalUnapprovedCount,
+  getWeb3ShimUsageStateForCurrentTab,
+  unconfirmedTransactionsCountSelector,
 } from '../../selectors'
 
 import {
@@ -19,6 +21,7 @@ import {
   setSwapsWelcomeMessageHasBeenShown,
 } from '../../store/actions'
 import { setThreeBoxLastUpdated } from '../../ducks/app/app'
+import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask'
 import {
   getSwapsWelcomeMessageSeenStatus,
   getSwapsFeatureLiveness,
@@ -28,6 +31,7 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../../app/scripts/lib/enums'
+import { WEB3_USAGE_ALERT_STATES } from '../../../../shared/constants/alerts'
 import Home from './home.component'
 
 const mapStateToProps = (state) => {
@@ -58,6 +62,13 @@ const mapStateToProps = (state) => {
       ? firstPermissionsRequest.metadata.id
       : null
 
+  const shouldShowWeb3ShimUsageNotification =
+    isPopup &&
+    getWeb3ShimUsageAlertEnabledness(state) &&
+    activeTabHasPermissions(state) &&
+    getWeb3ShimUsageStateForCurrentTab(state) ===
+      WEB3_USAGE_ALERT_STATES.RECORDED
+
   return {
     forgottenPassword,
     suggestedTokens,
@@ -66,6 +77,7 @@ const mapStateToProps = (state) => {
     shouldShowSeedPhraseReminder:
       seedPhraseBackedUp === false &&
       (parseInt(accountBalance, 16) > 0 || tokens.length > 0),
+    shouldShowWeb3ShimUsageNotification,
     isPopup,
     isNotification,
     threeBoxSynced,

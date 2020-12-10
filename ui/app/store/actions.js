@@ -2491,6 +2491,10 @@ export async function setUnconnectedAccountAlertShown(origin) {
   await promisifiedBackground.setUnconnectedAccountAlertShown(origin)
 }
 
+export async function setWeb3ShimUsageDismissed(origin) {
+  await promisifiedBackground.setWeb3ShimUsageDismissed(origin)
+}
+
 export function loadingMethodDataStarted() {
   return {
     type: actionConstants.LOADING_METHOD_DATA_STARTED,

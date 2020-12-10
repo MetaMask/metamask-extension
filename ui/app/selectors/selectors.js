@@ -356,3 +356,7 @@ export function getIpfsGateway(state) {
 export function getUSDConversionRate(state) {
   return state.metamask.usdConversionRate
 }
+
+export function getWeb3ShimUsageStateForCurrentTab(state) {
+  return state.metamask.web3ShimUsageOrigins[getOriginOfCurrentTab(state)]
+}

@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { ALERT_TYPES } from '../../../../../app/scripts/controllers/alert'
+import { ALERT_TYPES } from '../../../../../shared/constants/alerts'
 import Tooltip from '../../../components/ui/tooltip'
 import ToggleButton from '../../../components/ui/toggle-button'
 import { setAlertEnabledness } from '../../../store/actions'
@@ -47,6 +47,10 @@ const AlertsTab = () => {
     [ALERT_TYPES.unconnectedAccount]: {
       title: t('alertSettingsUnconnectedAccount'),
       description: t('alertSettingsUnconnectedAccountDescription'),
+    },
+    [ALERT_TYPES.web3ShimUsage]: {
+      title: t('alertSettingsWeb3ShimUsage'),
+      description: t('alertSettingsWeb3ShimUsageDescription'),
     },
   }
 

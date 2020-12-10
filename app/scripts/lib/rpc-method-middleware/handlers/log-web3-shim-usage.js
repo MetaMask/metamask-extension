@@ -18,7 +18,7 @@ export default logWeb3ShimUsage
  * @property {Function} sendMetrics - A function that registers a metrics event.
  * @property {Function} getWeb3ShimUsageState - A function that gets web3 shim
  * usage state for the given origin.
- * @property {Function} recordWeb3ShimUsage - A function that records web3 shim
+ * @property {Function} setWeb3ShimUsageRecorded - A function that records web3 shim
  * usage for a particular origin.
  */
 
@@ -34,11 +34,11 @@ function logWeb3ShimUsageHandler(
   res,
   _next,
   end,
-  { sendMetrics, getWeb3ShimUsageState, recordWeb3ShimUsage },
+  { sendMetrics, getWeb3ShimUsageState, setWeb3ShimUsageRecorded },
 ) {
   const { origin } = req
   if (getWeb3ShimUsageState(origin) === undefined) {
-    recordWeb3ShimUsage(origin)
+    setWeb3ShimUsageRecorded(origin)
 
     sendMetrics({
       event: `Website Accessed window.web3 Shim`,

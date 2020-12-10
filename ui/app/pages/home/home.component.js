@@ -42,7 +42,8 @@ export default class Home extends PureComponent {
     forgottenPassword: PropTypes.bool,
     suggestedTokens: PropTypes.object,
     unconfirmedTransactionsCount: PropTypes.number,
-    shouldShowSeedPhraseReminder: PropTypes.bool,
+    shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
+    shouldShowWeb3ShimUsageNotification: PropTypes.bool.isRequired,
     isPopup: PropTypes.bool,
     isNotification: PropTypes.bool.isRequired,
     threeBoxSynced: PropTypes.bool,
@@ -154,6 +155,7 @@ export default class Home extends PureComponent {
     const {
       history,
       shouldShowSeedPhraseReminder,
+      shouldShowWeb3ShimUsageNotification,
       isPopup,
       selectedAddress,
       restoreFromThreeBox,
@@ -165,6 +167,20 @@ export default class Home extends PureComponent {
 
     return (
       <MultipleNotifications>
+        {shouldShowWeb3ShimUsageNotification ? (
+          <HomeNotification
+            descriptionText={t('web3UsageNotification', ['foobar.com'])}
+            acceptText={t('dismiss')}
+            onAccept={() => {
+              console.log('Dismiss!')
+            }}
+            // onIgnore={() => {
+            //   console.log('Ignore!')
+            // }}
+            // infoText={t('backupApprovalInfo')} // the icon thingy
+            key="home-web3UsageNotification"
+          />
+        ) : null}
         {shouldShowSeedPhraseReminder ? (
           <HomeNotification
             descriptionText={t('backupApprovalNotice')}

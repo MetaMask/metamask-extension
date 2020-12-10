@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { captureException } from '@sentry/browser'
 
-import { ALERT_TYPES } from '../../../../app/scripts/controllers/alert'
+import { ALERT_TYPES } from '../../../../shared/constants/alerts'
 import * as actionConstants from '../../store/actionConstants'
 import {
   addPermittedAccount,
