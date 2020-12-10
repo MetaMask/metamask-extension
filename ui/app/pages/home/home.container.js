@@ -31,7 +31,7 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../../app/scripts/lib/enums'
-import { WEB3_USAGE_ALERT_STATES } from '../../../../shared/constants/alerts'
+import { WEB3_SHIM_USAGE_ALERT_STATES } from '../../../../shared/constants/alerts'
 import Home from './home.component'
 
 const mapStateToProps = (state) => {
@@ -67,7 +67,7 @@ const mapStateToProps = (state) => {
     getWeb3ShimUsageAlertEnabledness(state) &&
     activeTabHasPermissions(state) &&
     getWeb3ShimUsageStateForCurrentTab(state) ===
-      WEB3_USAGE_ALERT_STATES.RECORDED
+      WEB3_SHIM_USAGE_ALERT_STATES.RECORDED
 
   return {
     forgottenPassword,

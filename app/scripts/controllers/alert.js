@@ -1,7 +1,7 @@
 import ObservableStore from 'obs-store'
 import {
-  ALERT_TYPES,
-  WEB3_USAGE_ALERT_STATES,
+  TOGGLEABLE_ALERT_TYPES,
+  WEB3_SHIM_USAGE_ALERT_STATES,
 } from '../../../shared/constants/alerts'
 
 /**
@@ -19,7 +19,7 @@ import {
  */
 
 const defaultState = {
-  alertEnabledness: Object.keys(ALERT_TYPES).reduce(
+  alertEnabledness: Object.keys(TOGGLEABLE_ALERT_TYPES).reduce(
     (alertEnabledness, alertType) => {
       alertEnabledness[alertType] = true
       return alertEnabledness
@@ -102,7 +102,7 @@ export default class AlertController {
    * @param {string} origin - The origin the that used the web3 shim.
    */
   setWeb3ShimUsageRecorded(origin) {
-    this._setWeb3ShimUsageState(origin, WEB3_USAGE_ALERT_STATES.RECORDED)
+    this._setWeb3ShimUsageState(origin, WEB3_SHIM_USAGE_ALERT_STATES.RECORDED)
   }
 
   /**
@@ -112,7 +112,7 @@ export default class AlertController {
    * dismissed for.
    */
   setWeb3ShimUsageDismissed(origin) {
-    this._setWeb3ShimUsageState(origin, WEB3_USAGE_ALERT_STATES.DISMISSED)
+    this._setWeb3ShimUsageState(origin, WEB3_SHIM_USAGE_ALERT_STATES.DISMISSED)
   }
 
   /**

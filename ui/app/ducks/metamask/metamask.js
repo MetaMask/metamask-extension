@@ -375,9 +375,6 @@ export const getCurrentLocale = (state) => state.metamask.currentLocale
 
 export const getAlertEnabledness = (state) => state.metamask.alertEnabledness
 
-export const getInvalidCustomNetworkAlertEnabledness = (state) =>
-  getAlertEnabledness(state)[ALERT_TYPES.invalidCustomNetwork]
-
 export const getUnconnectedAccountAlertEnabledness = (state) =>
   getAlertEnabledness(state)[ALERT_TYPES.unconnectedAccount]
 
