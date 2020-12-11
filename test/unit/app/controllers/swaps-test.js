@@ -13,7 +13,7 @@ import { ETH_SWAPS_TOKEN_ADDRESS } from '../../../../ui/app/helpers/constants/sw
 import { createTestProviderTools } from '../../../stub/provider'
 import SwapsController, {
   utils,
-  SWAPS_LIVELINESS_CHECK_INTERVAL,
+  SWAPS_LIVENESS_CHECK_INTERVAL,
 } from '../../../../app/scripts/controllers/swaps'
 
 const MOCK_FETCH_PARAMS = {
@@ -869,7 +869,7 @@ describe('SwapsController', function () {
 
     describe('_setupSwapsLivenessFetching ', function () {
       let clock
-      const EXPECTED_TIME = SWAPS_LIVELINESS_CHECK_INTERVAL
+      const EXPECTED_TIME = SWAPS_LIVENESS_CHECK_INTERVAL
 
       const getLivenessState = () => {
         return swapsController.store.getState().swapsState.swapsFeatureIsLive

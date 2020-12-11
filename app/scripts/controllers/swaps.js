@@ -29,7 +29,7 @@ const MAX_GAS_LIMIT = 2500000
 const POLL_COUNT_LIMIT = 3
 
 // Represents the interval time for which we check for swaps feature liveliness
-export const SWAPS_LIVELINESS_CHECK_INTERVAL = 6 * 60 * 60 * 1000 // 6 hours
+export const SWAPS_LIVENESS_CHECK_INTERVAL = 6 * 60 * 60 * 1000 // 6 hours
 
 function calculateGasEstimateWithRefund(
   maxGas = MAX_GAS_LIMIT,
@@ -652,7 +652,7 @@ export default class SwapsController {
         // initial call to this function.
         intervalId = setInterval(
           this._fetchAndSetSwapsLiveness.bind(this),
-          SWAPS_LIVELINESS_CHECK_INTERVAL,
+          SWAPS_LIVENESS_CHECK_INTERVAL,
         )
         this._fetchAndSetSwapsLiveness()
       }
