@@ -168,10 +168,14 @@ jobs:
       - run:
           name: Move test build to 'dist-test' to avoid conflict with production build
           command: mv ./dist ./dist-test
+      - run:
+          name: Move test zips to 'builds-test' to avoid conflict with production build
+          command: mv ./builds ./builds-test
       - persist_to_workspace:
           root: .
           paths:
             - dist-test
+            - builds-test
 
   prep-build-test-metrics:
     docker:
@@ -189,10 +193,14 @@ jobs:
       - run:
           name: Move test build to 'dist-test-metrics' to avoid conflict with production build
           command: mv ./dist ./dist-test-metrics
+      - run:
+          name: Move test zips to 'builds-test' to avoid conflict with production build
+          command: mv ./builds ./builds-test-metrics
       - persist_to_workspace:
           root: .
           paths:
             - dist-test-metrics
+            - builds-test-metrics
 
   prep-build-storybook:
     docker:
@@ -266,6 +274,9 @@ jobs:
           name: Move test build to dist
           command: mv ./dist-test ./dist
       - run:
+          name: Move test zips to builds
+          command: mv ./builds-test ./builds
+      - run:
           name: test:e2e:chrome
           command: |
             if .circleci/scripts/test-run-e2e
@@ -287,6 +298,9 @@ jobs:
       - run:
           name: Move test build to dist
           command: mv ./dist-test-metrics ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-metrics ./builds
       - run:
           name: test:e2e:chrome:metrics
           command: |
@@ -313,6 +327,9 @@ jobs:
           name: Move test build to dist
           command: mv ./dist-test ./dist
       - run:
+          name: Move test zips to builds
+          command: mv ./builds-test ./builds
+      - run:
           name: test:e2e:firefox
           command: |
             if .circleci/scripts/test-run-e2e
@@ -338,6 +355,9 @@ jobs:
           name: Move test build to dist
           command: mv ./dist-test-metrics ./dist
       - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-metrics ./builds
+      - run:
           name: test:e2e:firefox:metrics
           command: |
             if .circleci/scripts/test-run-e2e
@@ -359,6 +379,9 @@ jobs:
       - run:
           name: Move test build to dist
           command: mv ./dist-test ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test ./builds
       - run:
           name: Run page load benchmark
           command: yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json
