@@ -121,12 +121,14 @@ const EMPTY_INIT_STATE = {
     topAggId: null,
     routeState: '',
     swapsFeatureIsLive: false,
+    swapsQuoteRefreshTime: 0,
   },
 }
 
 const sandbox = sinon.createSandbox()
 const fetchTradesInfoStub = sandbox.stub()
 const fetchSwapsFeatureLivenessStub = sandbox.stub()
+const fetchSwapsQuoteRefreshTimeStub = sandbox.stub()
 
 describe('SwapsController', function () {
   let provider
@@ -140,6 +142,7 @@ describe('SwapsController', function () {
       tokenRatesStore: MOCK_TOKEN_RATES_STORE,
       fetchTradesInfo: fetchTradesInfoStub,
       fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
+      fetchSwapsQuoteRefreshTime: fetchSwapsQuoteRefreshTimeStub,
     })
   }
 
@@ -805,6 +808,7 @@ describe('SwapsController', function () {
         assert.deepStrictEqual(swapsState, {
           ...EMPTY_INIT_STATE.swapsState,
           tokens: old.tokens,
+          swapsQuoteRefreshTime: old.swapsQuoteRefreshTime,
         })
       })
 
@@ -850,8 +854,9 @@ describe('SwapsController', function () {
         const tokens = 'test'
         const fetchParams = 'test'
         const swapsFeatureIsLive = false
+        const swapsQuoteRefreshTime = 0
         swapsController.store.updateState({
-          swapsState: { tokens, fetchParams, swapsFeatureIsLive },
+          swapsState: { tokens, fetchParams, swapsFeatureIsLive, swapsQuoteRefreshTime, },
         })
 
         swapsController.resetPostFetchState()
@@ -862,6 +867,7 @@ describe('SwapsController', function () {
           tokens,
           fetchParams,
           swapsFeatureIsLive,
+          swapsQuoteRefreshTime,
         })
       })
     })

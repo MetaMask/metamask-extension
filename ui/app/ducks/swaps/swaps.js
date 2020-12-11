@@ -21,6 +21,7 @@ import {
   updateTransaction,
   resetBackgroundSwapsState,
   setSwapsLiveness,
+  setSwapsQuoteRefreshTime,
   setSelectedQuoteAggId,
   setSwapsTxGasLimit,
 } from '../../store/actions'
@@ -86,8 +87,6 @@ const initialState = {
     priceEstimatesLastRetrieved: 0,
     fallBackPrice: null,
   },
-  // This will eventually be overriden by a property provided by the MetaSwap API
-  swapsQuoteRefreshTime: 0,
 }
 
 const slice = createSlice({
@@ -152,9 +151,6 @@ const slice = createSlice({
     },
     retrievedFallbackSwapsGasPrice: (state, action) => {
       state.customGas.fallBackPrice = action.payload
-    },
-    setSwapsQuoteRefreshTime: (state, action) => {
-      state.swapsQuoteRefreshTime = action.payload
     },
   },
 })
@@ -230,6 +226,9 @@ const getSwapsState = (state) => state.metamask.swapsState
 export const getSwapsFeatureLiveness = (state) =>
   state.metamask.swapsState.swapsFeatureIsLive
 
+export const getSwapsQuoteRefreshTime = (state) =>
+  state.metamask.swapsState.swapsQuoteRefreshTime
+
 export const getBackgroundSwapRouteState = (state) =>
   state.metamask.swapsState.routeState
 
@@ -269,9 +268,6 @@ export const getTopQuote = (state) => {
 export const getApproveTxId = (state) => state.metamask.swapsState.approveTxId
 
 export const getTradeTxId = (state) => state.metamask.swapsState.tradeTxId
-
-export const getSwapsQuoteRefreshTime = (state) =>
-  state.swaps.swapsQuoteRefreshTime
 
 export const getUsedQuote = (state) =>
   getSelectedQuote(state) || getTopQuote(state)
@@ -316,7 +312,6 @@ const {
   swapCustomGasModalLimitEdited,
   retrievedFallbackSwapsGasPrice,
   swapCustomGasModalClosed,
-  setSwapsQuoteRefreshTime,
 } = actions
 
 export {
@@ -520,12 +515,9 @@ export const fetchQuotesAndSetQuoteState = (
 
       const gasPriceFetchPromise = dispatch(fetchAndSetSwapsGasPriceInfo())
 
-      const quoteRefreshTimePromise = dispatch(fetchMetaSwapsQuoteRefreshTime())
-
       const [[fetchedQuotes, selectedAggId]] = await Promise.all([
         fetchAndSetQuotesPromise,
         gasPriceFetchPromise,
-        quoteRefreshTimePromise,
       ])
 
       if (Object.values(fetchedQuotes)?.length === 0) {

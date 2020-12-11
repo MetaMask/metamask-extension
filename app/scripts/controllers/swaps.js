@@ -17,6 +17,7 @@ import {
 import {
   fetchTradesInfo as defaultFetchTradesInfo,
   fetchSwapsFeatureLiveness as defaultFetchSwapsFeatureLiveness,
+  fetchSwapsQuoteRefreshTime as defaultFetchSwapsQuoteRefreshTime,
 } from '../../../ui/app/pages/swaps/swaps.util'
 
 const METASWAP_ADDRESS = '0x881d40237659c251811cec9c364ef91dc08d300c'
@@ -42,8 +43,13 @@ function calculateGasEstimateWithRefund(
   return gasEstimateWithRefund
 }
 
-// This is the amount of time to wait, after successfully fetching quotes and their gas estimates, before fetching for new quotes
-const QUOTE_POLLING_INTERVAL = 50 * 1000
+// If for any reason the MetaSwap API fails to provide a refresh time,
+// provide a reasonable fallback to avoid further errors
+const FALLBACK_QUOTE_REFRESH_TIME = 60000
+
+// This is the amount of time to wait, after successfully fetching quotes
+// and their gas estimates, before fetching for new quotes
+const QUOTE_POLLING_DIFFERENCE_INTERVAL = 10 * 1000
 
 const initialState = {
   swapsState: {
@@ -61,6 +67,7 @@ const initialState = {
     topAggId: null,
     routeState: '',
     swapsFeatureIsLive: false,
+    swapsQuoteRefreshTime: 0,
   },
 }
 
@@ -73,6 +80,7 @@ export default class SwapsController {
     tokenRatesStore,
     fetchTradesInfo = defaultFetchTradesInfo,
     fetchSwapsFeatureLiveness = defaultFetchSwapsFeatureLiveness,
+    fetchSwapsQuoteRefreshTime = defaultFetchSwapsQuoteRefreshTime,
   }) {
     this.store = new ObservableStore({
       swapsState: { ...initialState.swapsState },
@@ -80,6 +88,7 @@ export default class SwapsController {
 
     this._fetchTradesInfo = fetchTradesInfo
     this._fetchSwapsFeatureLiveness = fetchSwapsFeatureLiveness
+    this._fetchSwapsQuoteRefreshTime = fetchSwapsQuoteRefreshTime
 
     this.getBufferedGasLimit = getBufferedGasLimit
     this.tokenRatesStore = tokenRatesStore
@@ -99,6 +108,18 @@ export default class SwapsController {
     })
 
     this._setupSwapsLivenessFetching()
+    this._setSwapsQuoteRefreshTime()
+  }
+
+  // Sets the refresh rate for quote updates from the MetaSwap API
+  async _setSwapsQuoteRefreshTime() {
+    let refreshTime = FALLBACK_QUOTE_REFRESH_TIME
+    try {
+      refreshTime = await this._fetchSwapsQuoteRefreshTime()
+    } catch (e) {
+      console.error('Request for swaps quote refresh time failed: ', e)
+    }
+    this.setSwapsQuoteRefreshTime(refreshTime)
   }
 
   // Once quotes are fetched, we poll for new ones to keep the quotes up to date. Market and aggregator contract conditions can change fast enough
@@ -106,6 +127,8 @@ export default class SwapsController {
   // state. These stored parameters are used on subsequent calls made during polling.
   // Note: we stop polling after 3 requests, until new quotes are explicitly asked for. The logic that enforces that maximum is in the body of fetchAndSetQuotes
   pollForNewQuotes() {
+    const { swapsState: { swapsQuoteRefreshTime } } = this.store.getState()
+
     this.pollingTimeout = setTimeout(() => {
       const { swapsState } = this.store.getState()
       this.fetchAndSetQuotes(
@@ -113,7 +136,7 @@ export default class SwapsController {
         swapsState.fetchParams?.metaData,
         true,
       )
-    }, QUOTE_POLLING_INTERVAL)
+    }, swapsQuoteRefreshTime - QUOTE_POLLING_DIFFERENCE_INTERVAL)
   }
 
   stopPollingForQuotes() {
@@ -413,6 +436,13 @@ export default class SwapsController {
     })
   }
 
+  setSwapsQuoteRefreshTime(swapsQuoteRefreshTime) {
+    const { swapsState } = this.store.getState()
+    this.store.updateState({
+      swapsState: { ...swapsState, swapsQuoteRefreshTime },
+    })
+  }
+
   resetPostFetchState() {
     const { swapsState } = this.store.getState()
 
@@ -422,6 +452,7 @@ export default class SwapsController {
         tokens: swapsState.tokens,
         fetchParams: swapsState.fetchParams,
         swapsFeatureIsLive: swapsState.swapsFeatureIsLive,
+        swapsQuoteRefreshTime: swapsState.swapsQuoteRefreshTime,
       },
     })
     clearTimeout(this.pollingTimeout)
@@ -435,6 +466,7 @@ export default class SwapsController {
         ...initialState.swapsState,
         tokens: swapsState.tokens,
         swapsFeatureIsLive: swapsState.swapsFeatureIsLive,
+        swapsQuoteRefreshTime: swapsState.swapsQuoteRefreshTime,
       },
     })
     clearTimeout(this.pollingTimeout)
