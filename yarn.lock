@@ -7486,17 +7486,6 @@ cosmiconfig@^6.0.0:
     path-type "^4.0.0"
     yaml "^1.7.2"
 
-coveralls@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/coveralls/-/coveralls-3.0.0.tgz#22ef730330538080d29b8c151dc9146afde88a99"
-  integrity sha512-ZppXR9y5PraUOrf/DzHJY6gzNUhXYE3b9D43xEXs4QYZ7/Oe0Gy0CS+IPKWFfvQFXB3RG9QduaQUFehzSpGAFw==
-  dependencies:
-    js-yaml "^3.6.1"
-    lcov-parse "^0.0.10"
-    log-driver "^1.2.5"
-    minimist "^1.2.0"
-    request "^2.79.0"
-
 cp-file@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/cp-file/-/cp-file-7.0.0.tgz#b9454cfd07fe3b974ab9ea0e5f29655791a9b8cd"
@@ -15111,7 +15100,7 @@ js-tokens@^3.0.2:
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-3.0.2.tgz#9866df395102130e38f7f996bceb65443209c25b"
   integrity sha1-mGbfOVECEw449/mWvOtlRDIJwls=
 
-js-yaml@3.13.1, js-yaml@^3.13.0, js-yaml@^3.13.1, js-yaml@^3.5.1, js-yaml@^3.6.1, js-yaml@^3.9.0:
+js-yaml@3.13.1, js-yaml@^3.13.0, js-yaml@^3.13.1, js-yaml@^3.5.1, js-yaml@^3.9.0:
   version "3.13.1"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.13.1.tgz#aff151b30bfdfa8e49e05da22e7415e9dfa37847"
   integrity sha512-YfbcO7jXDdyj0DGxYVSlSeQNHbD7XPWvrVWeVUujrQEoZzWJIRrCPoyk6kL6IAjAG2IolMK4T0hNUe0HOUs5Jw==
@@ -15796,11 +15785,6 @@ lcid@^3.0.0:
   integrity sha512-cT68NXBqcByQPcYCoMArX8SI5SuzOTjF7nibqHlf24K01zYbFifLHaacZi8Ye3dvmBP9XaatbRO8uXM6YPHlSg==
   dependencies:
     invert-kv "^3.0.0"
-
-lcov-parse@^0.0.10:
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/lcov-parse/-/lcov-parse-0.0.10.tgz#1b0b8ff9ac9c7889250582b70b71315d9da6d9a3"
-  integrity sha1-GwuP+ayceIklBYK3C3ExXZ2m2aM=
 
 lead@^1.0.0:
   version "1.0.0"
@@ -16758,11 +16742,6 @@ lodash@4.17.20, lodash@=3.10.1, lodash@^4.0.0, lodash@^4.0.1, lodash@^4.13.1, lo
   version "4.17.20"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.20.tgz#b44a9b6297bcb698f1c51a3545a2b3b368d59c52"
   integrity sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==
-
-log-driver@^1.2.5:
-  version "1.2.5"
-  resolved "https://registry.yarnpkg.com/log-driver/-/log-driver-1.2.5.tgz#7ae4ec257302fd790d557cb10c97100d857b0056"
-  integrity sha1-euTsJXMC/XkNVXyxDJcQDYV7AFY=
 
 log-symbols@3.0.0:
   version "3.0.0"
