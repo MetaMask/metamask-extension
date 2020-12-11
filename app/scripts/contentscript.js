@@ -223,7 +223,6 @@ function blockedDomainCheck() {
  * Redirects the current page to a phishing information page
  */
 function redirectToPhishingWarning() {
-  console.log('MetaMask - routing to Phishing Warning component')
   const extensionURL = extension.runtime.getURL('phishing.html')
   window.location.href = `${extensionURL}#${querystring.stringify({
     hostname: window.location.hostname,
