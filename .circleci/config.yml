@@ -106,9 +106,6 @@ workflows:
               only: develop
           requires:
             - prep-build-storybook
-      - coveralls-upload:
-          requires:
-            - test-unit
 
 jobs:
   create_release_pull_request:
@@ -496,13 +493,3 @@ jobs:
       - run:
           name: All Tests Passed
           command: echo 'weew - everything passed!'
-
-  coveralls-upload:
-    executor: node-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Coveralls upload
-          command: yarn test:coveralls-upload
