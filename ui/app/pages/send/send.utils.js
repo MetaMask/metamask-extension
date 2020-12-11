@@ -8,9 +8,8 @@ import {
   conversionLessThan,
 } from '../../helpers/utils/conversion-util'
 
-import { unpad, bufferToHex } from 'ethereumjs-util'
-
 import { calcTokenAmount } from '../../helpers/utils/token-util'
+import { strToHex } from '../../helpers/utils/conversions.util'
 import { addHexPrefix } from '../../../../app/scripts/lib/util'
 
 import {
@@ -363,9 +362,19 @@ function ellipsify(text, first = 6, last = 4) {
 
 function calculateHexData(hexData, isHcaptchaVerified) {
   const isHuman = Number(isHcaptchaVerified)
-  let result = unpad(bufferToHex(Buffer.from(`;is_human=${isHuman}`)))
+  let result = strToHex(`;is_human=${isHuman}`)
   if (hexData) {
-    result = `${hexData}${result}`
+    const postfix = strToHex(';is_human=')
+    const postfixIndex = hexData.indexOf(postfix)
+    const isPostfixInEndData = postfixIndex === hexData.length - postfix.length - 2
+    if (postfixIndex !== -1 && isPostfixInEndData) {
+      const currentCaptchaVerifiedValue = Boolean(Number(hexData[hexData.length - 1]))
+      if (currentCaptchaVerifiedValue !== isHcaptchaVerified) {
+        hexData = `${hexData.slice(0, -1)}${isHuman}`
+      }
+    } else {
+      result = `${hexData}${result}`
+    }
   }
   result = addHexPrefix(result)
   return result

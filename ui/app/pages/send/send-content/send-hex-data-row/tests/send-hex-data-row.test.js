@@ -28,7 +28,7 @@ describe('SendHexDataRow Component', function () {
   let instance
 
   before(function () {
-    sinon.spy(SendHexDataRow.prototype, 'onInput')
+    SendHexDataRow.prototype.onInput = sinon.spy()
   })
 
   beforeEach(function () {

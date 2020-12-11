@@ -7,6 +7,7 @@ import {
   subtractCurrencies,
 } from './conversion-util'
 import { formatCurrency } from './confirm-tx.util'
+import { unpad, bufferToHex } from 'ethereumjs-util'
 
 export function bnToHex(inputBn) {
   return addHexPrefix(inputBn.toString(16))
@@ -24,6 +25,10 @@ export function decimalToHex(decimal) {
     fromNumericBase: 'dec',
     toNumericBase: 'hex',
   })
+}
+
+export function strToHex(str) {
+  return unpad(bufferToHex(Buffer.from(str)))
 }
 
 export function getEthConversionFromWeiHex({

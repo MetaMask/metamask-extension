@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { calculateHexData } from '../../send.utils';
-import SendRowWrapper from '../send-row-wrapper'
 import HCaptcha from '../../../../components/app/captcha'
 
 export default class CaptchaRowComponent extends Component {
@@ -17,7 +16,7 @@ export default class CaptchaRowComponent extends Component {
     this.updateData();
   }
 
-  onCaptchaVerified() {
+  onCaptchaVerified = () => {
     this.setState(
       {
         hasTriedSolveCaptchaChallenge: true,
@@ -27,13 +26,12 @@ export default class CaptchaRowComponent extends Component {
     )
   }
 
-  onCaptchaClosed() {
+  onCaptchaClosed = () => {
     this.setState(
       {
         hasTriedSolveCaptchaChallenge: true,
         isCaptchaChallengePassed: false,
-      },
-      this.updateData,
+      }
     )
   }
 

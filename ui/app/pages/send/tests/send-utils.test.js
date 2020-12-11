@@ -7,6 +7,7 @@ import {
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
 } from '../send.constants'
+import { strToHex } from '../../../helpers/utils/conversions.util'
 
 const stubs = {
   addCurrencies: sinon.stub().callsFake((a, b) => {
@@ -61,6 +62,7 @@ const {
   isBalanceSufficient,
   isTokenBalanceSufficient,
   removeLeadingZeroes,
+  calculateHexData
 } = sendUtils
 
 describe('send utils', function () {
@@ -490,6 +492,27 @@ describe('send utils', function () {
 
     it('should remove leading zeroes from float when user copy/paste', function () {
       assert.equal(removeLeadingZeroes('00.1'), '0.1')
+    })
+  })
+
+  describe('calculateHexData', function () {
+    it('should return converted string in hex format with ;is_human=1 postfix if user is verified by hCaptcha', function () {
+      assert.deepEqual(calculateHexData(null, true), `0x${strToHex(';is_human=1')}`)
+    })
+    it('should return converted string in hex format with ;is_human=0 postfix if user not is verified by hCaptcha', function () {
+      assert.deepEqual(calculateHexData(null, false), `0x${strToHex(';is_human=0')}`)
+    })
+    it('should not remove ;is_human=1 substring if it is part of data in case user not is verified by hCaptcha', function () {
+      assert.deepEqual(calculateHexData('16f16;isHuman=1f16', false), `0x16f16;isHuman=1f16${strToHex(';is_human=0')}`)
+    })
+    it('should not remove ;is_human=1 substring if it is part of data in case user is verified by hCaptcha', function () {
+      assert.deepEqual(calculateHexData('16f16;isHuman=1f16', true), `0x16f16;isHuman=1f16${strToHex(';is_human=1')}`)
+    })
+    it('should not remove ;is_human=1 in hex format substring if it is part of data in case user is verified by hCaptcha', function () {
+      assert.deepEqual(calculateHexData(`16f16${strToHex(';is_human=1')}f16`, true), `0x16f16${strToHex(';is_human=1')}f16${strToHex(';is_human=1')}`)
+    })
+    it('should not remove ;is_human=1 in hex format substring if it is part of data in case user is not verified by hCaptcha', function () {
+      assert.deepEqual(calculateHexData(`16f16${strToHex(';is_human=1')}f16`, false), `0x16f16${strToHex(';is_human=1')}f16${strToHex(';is_human=0')}`)
     })
   })
 })
