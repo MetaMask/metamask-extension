@@ -1,8 +1,24 @@
 # Changelog
 
-## Current Develop Branch
-
-## 9.0.0 Fri Dec 11 2020
+## 9.0.0 Fri Jan 8 2021
+- [#9156](https://github.com/MetaMask/metamask-extension/pull/9156): Remove window.web3 injection 
+- [#10039](https://github.com/MetaMask/metamask-extension/pull/10039): Add web3 shim usage notification (#10039)
+- [#8640](https://github.com/MetaMask/metamask-extension/pull/8640): Implement breaking window.ethereum API changes
+- [#8629](https://github.com/MetaMask/metamask-extension/pull/8629): Fix `eth_chainId` return values for Infura networks
+- [#10019](https://github.com/MetaMask/metamask-extension/pull/10019): Increase Chrome minimum version to v63
+- [#10135](https://github.com/MetaMask/metamask-extension/pull/10135): Fix error where a swap only completed the token approval transaction
+- [#10100](https://github.com/MetaMask/metamask-extension/pull/10100): Remove unnecessary swaps footer space when in dropdown mode
+- [#10069](https://github.com/MetaMask/metamask-extension/pull/10069): Fetch swap quote refresh time from API
+- [#10045](https://github.com/MetaMask/metamask-extension/pull/10045): Fix token validation in Send flow
+- [#10048](https://github.com/MetaMask/metamask-extension/pull/10048): Fix display of boolean values when signing typed data
+- [#9992](https://github.com/MetaMask/metamask-extension/pull/9992): Improve Ethereum transaction params validation
+- [#9905](https://github.com/MetaMask/metamask-extension/pull/9905): Redesign view quote screens
+- [#9320](https://github.com/MetaMask/metamask-extension/pull/9320): Prevent hidden tokens from reappearing
+- [#10000](https://github.com/MetaMask/metamask-extension/pull/10000): Use consistent font size for modal top right Close links
+- [#10046](https://github.com/MetaMask/metamask-extension/pull/10046): Improve home screen notification appearance
+- [#10117](https://github.com/MetaMask/metamask-extension/pull/10117): Fix network settings Kovan block explorer link
+- [#10040](https://github.com/MetaMask/metamask-extension/pull/10040): Disable console in contentscript to reduce noise
+- [#10070](https://github.com/MetaMask/metamask-extension/pull/10070): Enable eth_getProof RPC method
 
 ## 8.1.10 Fri Dec 18 2020
 - [#10084](https://github.com/MetaMask/metamask-extension/pull/10084): Set last provider when switching to a customRPC
