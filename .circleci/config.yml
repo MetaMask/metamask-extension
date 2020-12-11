@@ -396,6 +396,9 @@ jobs:
           path: builds
           destination: builds
       - store_artifacts:
+          path: coverage
+          destination: coverage
+      - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
       # important: generate sesify viz AFTER uploading builds as artifacts
