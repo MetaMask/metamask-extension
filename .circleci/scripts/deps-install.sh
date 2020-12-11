@@ -7,6 +7,14 @@ set -e
 
 yarn --frozen-lockfile --ignore-scripts --har
 
+# Move HAR file into directory with consistent name so that we can cache it
+mkdir -p build-artifacts/yarn-install-har
+har_files=(./*.har)
+if [[ -f "${har_files[0]}" ]]
+then
+  mv ./*.har build-artifacts/yarn-install-har/
+fi
+
 # run each in subshell so directory change does not persist
 # scripts can be any of:
 #   preinstall
