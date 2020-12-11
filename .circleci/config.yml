@@ -1,5 +1,19 @@
 version: 2.1
 
+executors:
+  node-browsers:
+    docker:
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+  node-browsers-medium-plus:
+    docker:
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    resource_class: medium+
+    environment:
+      NODE_OPTIONS: --max_old_space_size=2048
+  shellcheck:
+    docker:
+      - image: koalaman/shellcheck-alpine@sha256:35882cba254810c7de458528011e935ba2c4f3ebcb224275dfa7ebfa930ef294
+
 workflows:
   test_and_release:
     jobs:
@@ -98,8 +112,7 @@ workflows:
 
 jobs:
   create_release_pull_request:
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    executor: node-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -112,8 +125,7 @@ jobs:
             .circleci/scripts/release-create-release-pr
 
   prep-deps:
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    executor: node-browsers
     steps:
       - checkout
       - run:
@@ -131,11 +143,7 @@ jobs:
           - build-artifacts
 
   prep-build:
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
-    resource_class: medium+
-    environment:
-      NODE_OPTIONS: --max_old_space_size=2048
+    executor: node-browsers-medium-plus
     steps:
       - checkout
       - attach_workspace:
@@ -153,11 +161,7 @@ jobs:
             - builds
 
   prep-build-test:
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
-    resource_class: medium+
-    environment:
-      NODE_OPTIONS: --max_old_space_size=2048
+    executor: node-browsers-medium-plus
     steps:
       - checkout
       - attach_workspace:
@@ -178,11 +182,7 @@ jobs:
             - builds-test
 
   prep-build-test-metrics:
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
-    resource_class: medium+
-    environment:
-      NODE_OPTIONS: --max_old_space_size=2048
+    executor: node-browsers-medium-plus
     steps:
       - checkout
       - attach_workspace:
@@ -203,8 +203,7 @@ jobs:
             - builds-test-metrics
 
   prep-build-storybook:
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    executor: node-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -218,8 +217,7 @@ jobs:
             - .out
 
   test-lint:
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    executor: node-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -232,8 +230,7 @@ jobs:
           command: yarn verify-locales --quiet
 
   test-lint-shellcheck:
-    docker:
-      - image: koalaman/shellcheck-alpine@sha256:35882cba254810c7de458528011e935ba2c4f3ebcb224275dfa7ebfa930ef294
+    executor: shellcheck
     steps:
       - checkout
       - run: apk add --no-cache bash jq yarn
@@ -242,8 +239,7 @@ jobs:
           command: ./development/shellcheck.sh
 
   test-lint-lockfile:
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    executor: node-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -253,8 +249,7 @@ jobs:
           command: yarn lint:lockfile
 
   test-deps:
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    executor: node-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -264,8 +259,7 @@ jobs:
           command: .circleci/scripts/yarn-audit
 
   test-e2e-chrome:
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    executor: node-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -289,8 +283,7 @@ jobs:
           destination: test-artifacts
 
   test-e2e-chrome-metrics:
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    executor: node-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -314,8 +307,7 @@ jobs:
           destination: test-artifacts
 
   test-e2e-firefox:
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    executor: node-browsers
     steps:
       - checkout
       - run:
@@ -342,8 +334,7 @@ jobs:
           destination: test-artifacts
 
   test-e2e-firefox-metrics:
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    executor: node-browsers
     steps:
       - checkout
       - run:
@@ -370,8 +361,7 @@ jobs:
           destination: test-artifacts
 
   benchmark:
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    executor: node-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -394,8 +384,7 @@ jobs:
             - test-artifacts
 
   job-publish-prerelease:
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    executor: node-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -426,8 +415,7 @@ jobs:
           command: ./development/metamaskbot-build-announce.js
 
   job-publish-release:
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    executor: node-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -444,8 +432,7 @@ jobs:
           command: .circleci/scripts/release-create-master-pr
 
   job-publish-storybook:
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    executor: node-browsers
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -460,8 +447,7 @@ jobs:
             yarn storybook:deploy
 
   test-unit:
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    executor: node-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -475,8 +461,7 @@ jobs:
             - .nyc_output
             - coverage
   test-unit-global:
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    executor: node-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -486,8 +471,7 @@ jobs:
           command: yarn test:unit:global
 
   validate-source-maps:
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    executor: node-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -497,8 +481,7 @@ jobs:
           command: yarn validate-source-maps
 
   test-mozilla-lint:
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    executor: node-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -508,16 +491,14 @@ jobs:
           command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint
 
   all-tests-pass:
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    executor: node-browsers
     steps:
       - run:
           name: All Tests Passed
           command: echo 'weew - everything passed!'
 
   coveralls-upload:
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    executor: node-browsers
     steps:
       - checkout
       - attach_workspace:
