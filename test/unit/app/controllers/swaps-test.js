@@ -868,7 +868,7 @@ describe('SwapsController', function () {
 
     describe('_setupSwapsLivenessFetching ', function () {
       let clock
-      const EXPECTED_TIME = 600000
+      const EXPECTED_TIME = 6 * 60 * 60 * 1000
 
       const getLivenessState = () => {
         return swapsController.store.getState().swapsState.swapsFeatureIsLive

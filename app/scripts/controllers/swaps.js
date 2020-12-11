@@ -634,14 +634,14 @@ export default class SwapsController {
 
   /**
    * Sets up the fetching of the swaps feature liveness flag from our API.
-   * Performs an initial fetch when called, then fetches on a 10-minute
+   * Performs an initial fetch when called, then fetches on a six-hour interval
    * interval.
    *
    * If the browser goes offline, the interval is cleared and swaps are disabled
    * until the value can be fetched again.
    */
   _setupSwapsLivenessFetching() {
-    const TEN_MINUTES_MS = 10 * 60 * 1000
+    const SIX_HOURS = 6 * 60 * 60 * 1000
     let intervalId = null
 
     const fetchAndSetupInterval = () => {
@@ -650,7 +650,7 @@ export default class SwapsController {
         // initial call to this function.
         intervalId = setInterval(
           this._fetchAndSetSwapsLiveness.bind(this),
-          TEN_MINUTES_MS,
+          SIX_HOURS,
         )
         this._fetchAndSetSwapsLiveness()
       }
