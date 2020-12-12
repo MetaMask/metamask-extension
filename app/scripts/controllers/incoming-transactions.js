@@ -249,9 +249,7 @@ export default class IncomingTransactionsController {
       })
 
       const incomingTxs = remoteTxs.filter(
-        (tx) =>
-          tx.txParams.to &&
-          tx.txParams.to.toLowerCase() === address.toLowerCase(),
+        (tx) => tx.txParams?.to?.toLowerCase() === address.toLowerCase(),
       )
       incomingTxs.sort((a, b) => (a.time < b.time ? -1 : 1))
 

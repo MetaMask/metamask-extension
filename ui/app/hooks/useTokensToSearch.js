@@ -145,9 +145,7 @@ export function useTokensToSearch({
         return new BigNumber(rawFiat || 0).gt(secondRawFiat || 0) ? -1 : 1
       },
     )
-    tokensToSearchBuckets.top = tokensToSearchBuckets.top.filter(
-      (token) => token,
-    )
+    tokensToSearchBuckets.top = tokensToSearchBuckets.top.filter(Boolean)
     return [
       ...tokensToSearchBuckets.owned,
       ...tokensToSearchBuckets.top,
