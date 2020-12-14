@@ -598,7 +598,10 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       .round(0)
       .toString(16)
     const maxGasLimit =
-      customSwapsGas || estimatedGasLimitWithMultiplier || usedQuote?.maxGas
+      customSwapsGas ||
+      (usedQuote?.gasEstimate
+        ? estimatedGasLimitWithMultiplier
+        : usedQuote?.maxGas)
 
     const usedGasPrice = getUsedSwapsGasPrice(state)
     usedTradeTxParams.gas = maxGasLimit

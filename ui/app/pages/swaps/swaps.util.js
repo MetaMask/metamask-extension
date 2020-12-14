@@ -115,7 +115,7 @@ const QUOTE_VALIDATORS = [
   {
     property: 'gasEstimate',
     type: 'number|undefined',
-  }
+  },
 ]
 
 const TOKEN_VALIDATORS = [
