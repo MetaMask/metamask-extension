@@ -125,14 +125,17 @@ jobs:
     executor: node-browsers
     steps:
       - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "yarn.lock" }}
       - run:
           name: Install deps
           command: |
             .circleci/scripts/deps-install.sh
-      - run:
-          name: Collect yarn install HAR logs
-          command: |
-            .circleci/scripts/collect-har-artifact.sh
+      - save_cache:
+          key: dependency-cache-{{ checksum "yarn.lock" }}
+          paths:
+            - node_modules/
+            - build-artifacts/yarn-install-har/
       - persist_to_workspace:
           root: .
           paths:
