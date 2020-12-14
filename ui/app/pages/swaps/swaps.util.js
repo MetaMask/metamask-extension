@@ -115,6 +115,7 @@ const QUOTE_VALIDATORS = [
   {
     property: 'gasEstimate',
     type: 'number|undefined',
+    validator: (gasEstimate) => gasEstimate === undefined || gasEstimate > 0,
   },
 ]
 
