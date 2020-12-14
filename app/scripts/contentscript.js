@@ -38,8 +38,8 @@ function injectScript(content) {
     scriptTag.textContent = content
     container.insertBefore(scriptTag, container.children[0])
     container.removeChild(scriptTag)
-  } catch (e) {
-    console.error('MetaMask provider injection failed.', e)
+  } catch (error) {
+    console.error('MetaMask: Provider injection failed.', error)
   }
 }
 
@@ -85,7 +85,7 @@ function forwardTrafficBetweenMuxes(channelName, muxA, muxB) {
   const channelB = muxB.createStream(channelName)
   pump(channelA, channelB, channelA, (error) =>
     console.debug(
-      `MetaMask muxed traffic for channel "${channelName}" failed.`,
+      `MetaMask: Muxed traffic for channel "${channelName}" failed.`,
       error,
     ),
   )
@@ -99,7 +99,7 @@ function forwardTrafficBetweenMuxes(channelName, muxA, muxB) {
  */
 function logStreamDisconnectWarning(remoteLabel, error) {
   console.debug(
-    `MetaMask Contentscript: Lost connection to "${remoteLabel}".`,
+    `MetaMask: Content script lost connection to "${remoteLabel}".`,
     error,
   )
 }
@@ -223,7 +223,7 @@ function blockedDomainCheck() {
  * Redirects the current page to a phishing information page
  */
 function redirectToPhishingWarning() {
-  console.log('MetaMask - routing to Phishing Warning component')
+  console.debug('MetaMask: Routing to Phishing Warning component.')
   const extensionURL = extension.runtime.getURL('phishing.html')
   window.location.href = `${extensionURL}#${querystring.stringify({
     hostname: window.location.hostname,
