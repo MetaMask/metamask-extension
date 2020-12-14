@@ -856,7 +856,12 @@ describe('SwapsController', function () {
         const swapsFeatureIsLive = false
         const swapsQuoteRefreshTime = 0
         swapsController.store.updateState({
-          swapsState: { tokens, fetchParams, swapsFeatureIsLive, swapsQuoteRefreshTime, },
+          swapsState: {
+            tokens,
+            fetchParams,
+            swapsFeatureIsLive,
+            swapsQuoteRefreshTime,
+          },
         })
 
         swapsController.resetPostFetchState()

@@ -108,15 +108,15 @@ export default class SwapsController {
     })
 
     this._setupSwapsLivenessFetching()
-    this._setSwapsQuoteRefreshTime()
   }
 
   // Sets the refresh rate for quote updates from the MetaSwap API
   async _setSwapsQuoteRefreshTime() {
-    let refreshTime = FALLBACK_QUOTE_REFRESH_TIME
+    let refreshTime
     try {
       refreshTime = await this._fetchSwapsQuoteRefreshTime()
     } catch (e) {
+      refreshTime = FALLBACK_QUOTE_REFRESH_TIME
       console.error('Request for swaps quote refresh time failed: ', e)
     }
     this.setSwapsQuoteRefreshTime(refreshTime)
@@ -127,7 +127,9 @@ export default class SwapsController {
   // state. These stored parameters are used on subsequent calls made during polling.
   // Note: we stop polling after 3 requests, until new quotes are explicitly asked for. The logic that enforces that maximum is in the body of fetchAndSetQuotes
   pollForNewQuotes() {
-    const { swapsState: { swapsQuoteRefreshTime } } = this.store.getState()
+    const {
+      swapsState: { swapsQuoteRefreshTime },
+    } = this.store.getState()
 
     this.pollingTimeout = setTimeout(() => {
       const { swapsState } = this.store.getState()
@@ -151,7 +153,6 @@ export default class SwapsController {
     if (!fetchParams) {
       return null
     }
-
     // Every time we get a new request that is not from the polling, we reset the poll count so we can poll for up to three more sets of quotes with these new params.
     if (!isPolledRequest) {
       this.pollCount = 0
@@ -163,6 +164,9 @@ export default class SwapsController {
     if (!isPolledRequest) {
       this.setSwapsErrorKey('')
     }
+
+    // Ensure we have a quotes refresh rate
+    await this._setSwapsQuoteRefreshTime()
 
     const indexOfCurrentCall = this.indexOfNewestCallInFlight + 1
     this.indexOfNewestCallInFlight = indexOfCurrentCall
