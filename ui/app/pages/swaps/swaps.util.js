@@ -332,7 +332,7 @@ export async function fetchSwapsFeatureLiveness() {
   return status?.active
 }
 
-export async function fetchSwapsQuoteRefreshTime() {
+export async function fetchSwapsQuoteRefreshTime(defaultValue = 0) {
   const response = await fetchWithCache(
     getBaseApi('refreshTime'),
     { method: 'GET' },
@@ -340,7 +340,11 @@ export async function fetchSwapsQuoteRefreshTime() {
   )
 
   // We presently use milliseconds in the UI
-  return response?.seconds * 1000
+  if (response?.seconds) {
+    return response.seconds * 1000
+  }
+
+  return defaultValue
 }
 
 export async function fetchTokenPrice(address) {

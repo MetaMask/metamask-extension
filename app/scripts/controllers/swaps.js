@@ -29,6 +29,14 @@ const MAX_GAS_LIMIT = 2500000
 // 3 seems to be an appropriate balance of giving users the time they need when MetaMask is not left idle, and turning polling off when it is.
 const POLL_COUNT_LIMIT = 3
 
+// If for any reason the MetaSwap API fails to provide a refresh time,
+// provide a reasonable fallback to avoid further errors
+const FALLBACK_QUOTE_REFRESH_TIME = 60000
+
+// This is the amount of time to wait, after successfully fetching quotes
+// and their gas estimates, before fetching for new quotes
+const QUOTE_POLLING_DIFFERENCE_INTERVAL = 10 * 1000
+
 function calculateGasEstimateWithRefund(
   maxGas = MAX_GAS_LIMIT,
   estimatedRefund = 0,
@@ -42,14 +50,6 @@ function calculateGasEstimateWithRefund(
 
   return gasEstimateWithRefund
 }
-
-// If for any reason the MetaSwap API fails to provide a refresh time,
-// provide a reasonable fallback to avoid further errors
-const FALLBACK_QUOTE_REFRESH_TIME = 60000
-
-// This is the amount of time to wait, after successfully fetching quotes
-// and their gas estimates, before fetching for new quotes
-const QUOTE_POLLING_DIFFERENCE_INTERVAL = 10 * 1000
 
 const initialState = {
   swapsState: {
@@ -112,11 +112,11 @@ export default class SwapsController {
 
   // Sets the refresh rate for quote updates from the MetaSwap API
   async _setSwapsQuoteRefreshTime() {
-    let refreshTime
+    // Default to fallback time unless API returns valid response
+    let refreshTime = FALLBACK_QUOTE_REFRESH_TIME
     try {
-      refreshTime = await this._fetchSwapsQuoteRefreshTime()
+      refreshTime = await this._fetchSwapsQuoteRefreshTime(FALLBACK_QUOTE_REFRESH_TIME)
     } catch (e) {
-      refreshTime = FALLBACK_QUOTE_REFRESH_TIME
       console.error('Request for swaps quote refresh time failed: ', e)
     }
     this.setSwapsQuoteRefreshTime(refreshTime)
@@ -165,13 +165,13 @@ export default class SwapsController {
       this.setSwapsErrorKey('')
     }
 
-    // Ensure we have a quotes refresh rate
-    await this._setSwapsQuoteRefreshTime()
-
     const indexOfCurrentCall = this.indexOfNewestCallInFlight + 1
     this.indexOfNewestCallInFlight = indexOfCurrentCall
 
-    let newQuotes = await this._fetchTradesInfo(fetchParams)
+    let [newQuotes] = await Promise.all([
+      this._fetchTradesInfo(fetchParams),
+      this._setSwapsQuoteRefreshTime(),
+    ])
 
     newQuotes = mapValues(newQuotes, (quote) => ({
       ...quote,

@@ -21,7 +21,6 @@ import {
   updateTransaction,
   resetBackgroundSwapsState,
   setSwapsLiveness,
-  setSwapsQuoteRefreshTime,
   setSelectedQuoteAggId,
   setSwapsTxGasLimit,
 } from '../../store/actions'
@@ -35,7 +34,6 @@ import {
 import {
   fetchSwapsFeatureLiveness,
   fetchSwapsGasPrices,
-  fetchSwapsQuoteRefreshTime,
 } from '../../pages/swaps/swaps.util'
 import { calcGasTotal } from '../../pages/send/send.utils'
 import {
@@ -326,13 +324,6 @@ export {
   swapCustomGasModalPriceEdited,
   swapCustomGasModalLimitEdited,
   swapCustomGasModalClosed,
-}
-
-export function fetchMetaSwapsQuoteRefreshTime() {
-  return async (dispatch) => {
-    const quoteRefreshTime = await fetchSwapsQuoteRefreshTime()
-    dispatch(setSwapsQuoteRefreshTime(quoteRefreshTime))
-  }
 }
 
 export const navigateBackToBuildQuote = (history) => {
