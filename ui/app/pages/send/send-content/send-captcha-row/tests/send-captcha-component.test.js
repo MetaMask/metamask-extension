@@ -2,7 +2,7 @@ import assert from 'assert'
 import React from 'react'
 import { mount } from 'enzyme'
 import sinon from 'sinon'
-import { calculateHexData } from '../../../send.utils'
+import { appendProofOfHumanityToData } from '../../../send.utils'
 import SendCaptchaRow from '../send-captcha-data-row.component'
 
 import Hcaptcha from '../../../../../components/app/captcha'
@@ -81,42 +81,42 @@ describe('SendCaptchaRow Component', function () {
       assert.strictEqual(SendCaptchaRow.prototype.updateData.callCount, 0)
     })
 
-    it('should calculate gas with is_human=0 postfix in the transaction data if user has not solve the captcha puzzle', function() {
+    it('should calculate gas with proof of humanity postfix with value 0 in the transaction data if user has not solve the captcha puzzle', function() {
       propsMethodSpies.updateGas.resetHistory()
       assert.strictEqual(propsMethodSpies.updateGas.callCount, 0)
       instance.updateData()
       assert.strictEqual(propsMethodSpies.updateGas.callCount, 1)
       assert.deepEqual(propsMethodSpies.updateGas.getCall(0).args[0], {
-        data: calculateHexData(props.hexData, false)
+        data: appendProofOfHumanityToData(props.hexData, false)
       })
     })
 
-    it('should calculate gas with is_human=1 postfix in the transaction data if user has solve the captcha puzzle', function() {
+    it('should calculate gas with proof of humanity postfix with value 1 in the transaction data if user has solve the captcha puzzle', function() {
       propsMethodSpies.updateGas.resetHistory();
       assert.strictEqual(propsMethodSpies.updateGas.callCount, 0)
       wrapper.setProps({ isVerified: true })
       wrapper.instance().updateData()
       assert.strictEqual(propsMethodSpies.updateGas.callCount, 1)
       assert.deepEqual(propsMethodSpies.updateGas.getCall(0).args[0], {
-        data: calculateHexData(props.hexData, true)
+        data: appendProofOfHumanityToData(props.hexData, true)
       })
     });
 
-    it('should add is_human=0 postfix to the transaction data if user have not solved the captcha puzzle before', function() {
+    it('should add proof of humanity postfix with value 0 to the transaction data if user have not solved the captcha puzzle before', function() {
       propsMethodSpies.updateSendHexData.resetHistory();
       assert.strictEqual(propsMethodSpies.updateSendHexData.callCount, 0)
       instance.updateData();
       assert.strictEqual(propsMethodSpies.updateSendHexData.callCount, 1)
-      assert.strictEqual(propsMethodSpies.updateSendHexData.getCall(0).args[0], calculateHexData(props.hexData, false))
+      assert.strictEqual(propsMethodSpies.updateSendHexData.getCall(0).args[0], appendProofOfHumanityToData(props.hexData, false))
     });
 
-    it('should add is_human=1 postfix to the transaction data if user have solved the captcha puzzle before', function() {
+    it('should add proof of humanity postfix with value 1 postfix to the transaction data if user have solved the captcha puzzle before', function() {
       propsMethodSpies.updateSendHexData.resetHistory();
       assert.strictEqual(propsMethodSpies.updateSendHexData.callCount, 0)
       wrapper.setProps({ isVerified: true })
       wrapper.instance().updateData()
       assert.strictEqual(propsMethodSpies.updateSendHexData.callCount, 1)
-      assert.strictEqual(propsMethodSpies.updateSendHexData.getCall(0).args[0], calculateHexData(props.hexData, true))
+      assert.strictEqual(propsMethodSpies.updateSendHexData.getCall(0).args[0], appendProofOfHumanityToData(props.hexData, true))
     });
 
     it('should call updateSendIsHcaptchaVerified in updateData if user is not verified', function() {

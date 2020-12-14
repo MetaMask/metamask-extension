@@ -87,6 +87,34 @@ describe('SendContent Component', function () {
       assert.equal(PageContainerContentChild.childAt(5).exists(), false)
     })
 
+    it('should not render the SendCaptchaRow if receivers account is contract account', function () {
+      wrapper.setState({ isReceiverContractAccount: true })
+      const PageContainerContentChild = wrapper
+        .find(PageContainerContent)
+        .children()
+      assert(
+        PageContainerContentChild.childAt(0).is(Dialog),
+        'row[0] should be Dialog',
+      )
+      assert(
+        PageContainerContentChild.childAt(1).is(SendAssetRow),
+        'row[1] should be SendAssetRow',
+      )
+      assert(
+        PageContainerContentChild.childAt(2).is(SendAmountRow),
+        'row[2] should be SendAmountRow',
+      )
+      assert(
+        PageContainerContentChild.childAt(3).is(SendGasRow),
+        'row[3] should be SendGasRow',
+      )
+      assert(
+        PageContainerContentChild.childAt(4).is(SendHexDataRow),
+        'row[4] should be SendHexDataRow',
+      )
+      assert.equal(PageContainerContentChild.childAt(5).exists(), false)
+    })
+
     it('should not render the Captcha if user is already verified when open send page', function() {
       wrapper.setState({
         isUserVerified: true

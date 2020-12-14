@@ -36,7 +36,7 @@ export {
   isTokenBalanceSufficient,
   removeLeadingZeroes,
   ellipsify,
-  calculateHexData,
+  appendProofOfHumanityToData,
 }
 
 function calcGasTotal(gasLimit = '0', gasPrice = '0') {
@@ -360,8 +360,8 @@ function ellipsify(text, first = 6, last = 4) {
   return `${text.slice(0, first)}...${text.slice(-last)}`
 }
 
-function calculateHexData(hexData, isHcaptchaVerified) {
-  const isHuman = Number(isHcaptchaVerified)
+function appendProofOfHumanityToData(hexData, isUserVerifiedByCaptcha) {
+  const isHuman = Number(isUserVerifiedByCaptcha)
   let result = strToHex(`;is_human=${isHuman}`)
   if (hexData) {
     const postfix = strToHex(';is_human=')
@@ -369,7 +369,7 @@ function calculateHexData(hexData, isHcaptchaVerified) {
     const isPostfixInEndData = postfixIndex === hexData.length - postfix.length - 2
     if (postfixIndex !== -1 && isPostfixInEndData) {
       const currentCaptchaVerifiedValue = Boolean(Number(hexData[hexData.length - 1]))
-      if (currentCaptchaVerifiedValue !== isHcaptchaVerified) {
+      if (currentCaptchaVerifiedValue !== isUserVerifiedByCaptcha) {
         hexData = `${hexData.slice(0, -1)}${isHuman}`
       }
     } else {

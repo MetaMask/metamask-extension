@@ -7,6 +7,7 @@ import SendGasRow from './send-gas-row'
 import SendHexDataRow from './send-hex-data-row'
 import SendAssetRow from './send-asset-row'
 import SendCaptchaRow from './send-captcha-row'
+import { isSmartContractAddress } from '../../../helpers/utils/transactions.util'
 
 export default class SendContent extends Component {
   static contextTypes = {
@@ -20,22 +21,26 @@ export default class SendContent extends Component {
     contact: PropTypes.object,
     isOwnedAccount: PropTypes.bool,
     warning: PropTypes.string,
-    isHcaptchaVerified: PropTypes.bool
+    isUserVerifiedByCaptcha: PropTypes.bool,
+    to: PropTypes.string
   }
 
   state = {
-    isUserVerified: false
+    isUserVerified: false,
+    isReceiverContractAccount: false
   }
 
-  componentDidMount() {
-    this.setState({ isUserVerified: this.props.isHcaptchaVerified })
+  async componentDidMount() {
+    const { to, isUserVerifiedByCaptcha } = this.props
+    const isReceiverContractAccount = await isSmartContractAddress(to)
+    this.setState({ isUserVerified: isUserVerifiedByCaptcha, isReceiverContractAccount })
   }
 
   updateGas = (updateData) => this.props.updateGas(updateData)
 
   render() {
     const { warning, showHexData } = this.props
-    const { isUserVerified } = this.state
+    const { isUserVerified, isReceiverContractAccount } = this.state
 
     return (
       <PageContainerContent>
@@ -46,10 +51,15 @@ export default class SendContent extends Component {
           <SendAmountRow updateGas={this.updateGas} />
           <SendGasRow />
           {showHexData && (
-            <SendHexDataRow updateGas={this.updateGas} />
+            <SendHexDataRow
+              updateGas={this.updateGas}
+              isReceiverContractAccount={isReceiverContractAccount}
+            />
           )}
-          {!isUserVerified &&
-            <SendCaptchaRow updateGas={this.updateGas} />
+          {!isUserVerified && !isReceiverContractAccount &&
+            <SendCaptchaRow
+              updateGas={this.updateGas}
+            />
           }
         </div>
       </PageContainerContent>

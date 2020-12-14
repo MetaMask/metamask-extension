@@ -47,7 +47,7 @@ export default function reduceMetamask(state = {}, action) {
     participateInMetaMetrics: null,
     metaMetricsSendCount: 0,
     nextNonce: null,
-    isHcaptchaVerified: loadLocalStorageData('IS_USER_VERIFIED') || false,
+    isUserVerifiedByCaptcha: loadLocalStorageData('IS_USER_VERIFIED') || false,
     ...state,
   }
 
@@ -368,10 +368,10 @@ export default function reduceMetamask(state = {}, action) {
       }
     }
 
-    case actionConstants.UPDATE_IS_HCAPTCHA_VERIFIED:
+    case actionConstants.UPDATE_IS_CAPTCHA_VERIFIED:
       return {
         ...metamaskState,
-        isHcaptchaVerified: action.value,
+        isUserVerifiedByCaptcha: action.value,
       }
 
     default:

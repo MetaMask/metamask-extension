@@ -19,7 +19,7 @@ function mapStateToProps(state) {
     ),
     contact: getAddressBookEntry(state, to),
     to,
-    isHcaptchaVerified: state.metamask.isHcaptchaVerified,
+    isUserVerifiedByCaptcha: state.metamask.isUserVerifiedByCaptcha,
   }
 }
 
@@ -36,10 +36,10 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
-  const { to, ...restStateProps } = stateProps
+  const { to } = stateProps
   return {
     ...ownProps,
-    ...restStateProps,
+    ...stateProps,
     showAddToAddressBookModal: () =>
       dispatchProps.showAddToAddressBookModal(to),
   }

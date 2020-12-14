@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { calculateHexData } from '../../send.utils';
+import { appendProofOfHumanityToData } from '../../send.utils';
 import HCaptcha from '../../../../components/app/captcha'
 
 export default class CaptchaRowComponent extends Component {
@@ -12,7 +12,7 @@ export default class CaptchaRowComponent extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.updateData();
   }
 
@@ -41,13 +41,13 @@ export default class CaptchaRowComponent extends Component {
       hexData,
       updateSendHexData,
       updateGas,
-      isVerified
+      isVerified,
     } = this.props
     const { isCaptchaChallengePassed } = this.state
     if (!isVerified) {
       updateSendIsHcaptchaVerified(isCaptchaChallengePassed)
     }
-    const data = calculateHexData(hexData, isCaptchaChallengePassed || isVerified)
+    const data = appendProofOfHumanityToData(hexData, isCaptchaChallengePassed || isVerified)
     updateSendHexData(data);
     updateGas({ data })
   }
@@ -67,5 +67,5 @@ export default class CaptchaRowComponent extends Component {
 CaptchaRowComponent.propTypes = {
   hexData: PropTypes.string,
   updateSendHexData: PropTypes.func.isRequired,
-  lang: PropTypes.string
+  lang: PropTypes.string,
 }
