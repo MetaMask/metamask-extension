@@ -78,6 +78,7 @@ export default class SwapsController {
     provider,
     getProviderConfig,
     tokenRatesStore,
+    trackMetaMetricsEvent,
     fetchTradesInfo = defaultFetchTradesInfo,
     fetchSwapsFeatureLiveness = defaultFetchSwapsFeatureLiveness,
     fetchSwapsQuoteRefreshTime = defaultFetchSwapsQuoteRefreshTime,
@@ -89,6 +90,7 @@ export default class SwapsController {
     this._fetchTradesInfo = fetchTradesInfo
     this._fetchSwapsFeatureLiveness = fetchSwapsFeatureLiveness
     this._fetchSwapsQuoteRefreshTime = fetchSwapsQuoteRefreshTime
+    this._trackEvent = trackMetaMetricsEvent
 
     this.getBufferedGasLimit = getBufferedGasLimit
     this.tokenRatesStore = tokenRatesStore
@@ -113,13 +115,28 @@ export default class SwapsController {
   // Sets the refresh rate for quote updates from the MetaSwap API
   async _setSwapsQuoteRefreshTime() {
     // Default to fallback time unless API returns valid response
-    let refreshTime = FALLBACK_QUOTE_REFRESH_TIME
+    let swapsQuoteRefreshTime = FALLBACK_QUOTE_REFRESH_TIME
     try {
-      refreshTime = await this._fetchSwapsQuoteRefreshTime(FALLBACK_QUOTE_REFRESH_TIME)
+      swapsQuoteRefreshTime = await this._fetchSwapsQuoteRefreshTime(
+        FALLBACK_QUOTE_REFRESH_TIME,
+      )
     } catch (e) {
+      this._trackEvent({
+        category: 'Swaps',
+        event: 'quote_refresh_api_error',
+        properties: {
+          error_message: e.message,
+        },
+      })
       console.error('Request for swaps quote refresh time failed: ', e)
     }
-    this.setSwapsQuoteRefreshTime(refreshTime)
+    
+    const {
+      swapsState
+    } = this.store.getState()
+    this.store.updateState({
+      swapsState: { ...swapsState, swapsQuoteRefreshTime },
+    })
   }
 
   // Once quotes are fetched, we poll for new ones to keep the quotes up to date. Market and aggregator contract conditions can change fast enough
@@ -441,10 +458,7 @@ export default class SwapsController {
   }
 
   setSwapsQuoteRefreshTime(swapsQuoteRefreshTime) {
-    const { swapsState } = this.store.getState()
-    this.store.updateState({
-      swapsState: { ...swapsState, swapsQuoteRefreshTime },
-    })
+    
   }
 
   resetPostFetchState() {

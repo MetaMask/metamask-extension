@@ -2241,13 +2241,6 @@ export function setSwapsLiveness(swapsFeatureIsLive) {
   }
 }
 
-export function setSwapsQuoteRefreshTime(refreshTime) {
-  return async (dispatch) => {
-    await promisifiedBackground.setSwapsQuoteRefreshTime(refreshTime)
-    await forceUpdateMetamaskState(dispatch)
-  }
-}
-
 export function fetchAndSetQuotes(fetchParams, fetchParamsMetaData) {
   return async (dispatch) => {
     const [
