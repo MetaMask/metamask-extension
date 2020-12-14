@@ -11,6 +11,7 @@ import PermissionsLogController from './permissionsLog'
 
 // Methods that do not require any permissions to use:
 import {
+  APPROVAL_TYPE,
   SAFE_METHODS, // methods that do not require any permissions to use
   WALLET_PREFIX,
   METADATA_STORE_KEY,
@@ -22,9 +23,13 @@ import {
   CAVEAT_TYPES,
 } from './enums'
 
+// instanbul ignore next
+const noop = () => undefined
+
 export class PermissionsController {
   constructor(
     {
+      approvals,
       getKeyringAccounts,
       getRestrictedMethods,
       getUnlockPromise,
@@ -32,7 +37,6 @@ export class PermissionsController {
       notifyDomain,
       notifyAllDomains,
       preferences,
-      showPermissionRequest,
     } = {},
     restoredPermissions = {},
     restoredState = {},
@@ -47,7 +51,6 @@ export class PermissionsController {
     this._getUnlockPromise = getUnlockPromise
     this._notifyDomain = notifyDomain
     this._notifyAllDomains = notifyAllDomains
-    this._showPermissionRequest = showPermissionRequest
     this._isUnlocked = isUnlocked
 
     this._restrictedMethods = getRestrictedMethods({
@@ -58,8 +61,12 @@ export class PermissionsController {
       restrictedMethods: Object.keys(this._restrictedMethods),
       store: this.store,
     })
-    this.pendingApprovals = new Map()
-    this.pendingApprovalOrigins = new Set()
+
+    /**
+     * @type {import('@metamask/controllers').ApprovalController}
+     * @public
+     */
+    this.approvals = approvals
     this._initializePermissions(restoredPermissions)
     this._lastSelectedAddress = preferences.getState().selectedAddress
     this.preferences = preferences
@@ -139,7 +146,7 @@ export class PermissionsController {
         { origin },
         req,
         res,
-        () => undefined,
+        noop,
         _end,
       )
 
@@ -193,13 +200,7 @@ export class PermissionsController {
       }
       const res = {}
 
-      this.permissions.providerMiddlewareFunction(
-        domain,
-        req,
-        res,
-        () => undefined,
-        _end,
-      )
+      this.permissions.providerMiddlewareFunction(domain, req, res, noop, _end)
 
       function _end(_err) {
         const err = _err || res.error
@@ -223,16 +224,16 @@ export class PermissionsController {
    */
   async approvePermissionsRequest(approved, accounts) {
     const { id } = approved.metadata
-    const approval = this.pendingApprovals.get(id)
 
-    if (!approval) {
-      log.debug(`Permissions request with id '${id}' not found`)
+    if (!this.approvals.has({ id })) {
+      log.debug(`Permissions request with id '${id}' not found.`)
       return
     }
 
     try {
       if (Object.keys(approved.permissions).length === 0) {
-        approval.reject(
+        this.approvals.reject(
+          id,
           ethErrors.rpc.invalidRequest({
             message: 'Must request at least one permission.',
           }),
@@ -244,19 +245,18 @@ export class PermissionsController {
           approved.permissions,
           accounts,
         )
-        approval.resolve(approved.permissions)
+        this.approvals.resolve(id, approved.permissions)
       }
     } catch (err) {
       // if finalization fails, reject the request
-      approval.reject(
+      this.approvals.reject(
+        id,
         ethErrors.rpc.invalidRequest({
           message: err.message,
           data: err,
         }),
       )
     }
-
-    this._removePendingApproval(id)
   }
 
   /**
@@ -267,15 +267,12 @@ export class PermissionsController {
    * @param {string} id - The id of the request rejected by the user
    */
   async rejectPermissionsRequest(id) {
-    const approval = this.pendingApprovals.get(id)
-
-    if (!approval) {
-      log.debug(`Permissions request with id '${id}' not found`)
+    if (!this.approvals.has({ id })) {
+      log.debug(`Permissions request with id '${id}' not found.`)
       return
     }
 
-    approval.reject(ethErrors.provider.userRejectedRequest())
-    this._removePendingApproval(id)
+    this.approvals.reject(id, ethErrors.provider.userRejectedRequest())
   }
 
   /**
@@ -671,37 +668,6 @@ export class PermissionsController {
   }
 
   /**
-   * Adds a pending approval.
-   * @param {string} id - The id of the pending approval.
-   * @param {string} origin - The origin of the pending approval.
-   * @param {Function} resolve - The function resolving the pending approval Promise.
-   * @param {Function} reject - The function rejecting the pending approval Promise.
-   */
-  _addPendingApproval(id, origin, resolve, reject) {
-    if (
-      this.pendingApprovalOrigins.has(origin) ||
-      this.pendingApprovals.has(id)
-    ) {
-      throw new Error(
-        `Pending approval with id '${id}' or origin '${origin}' already exists.`,
-      )
-    }
-
-    this.pendingApprovals.set(id, { origin, resolve, reject })
-    this.pendingApprovalOrigins.add(origin)
-  }
-
-  /**
-   * Removes the pending approval with the given id.
-   * @param {string} id - The id of the pending approval to remove.
-   */
-  _removePendingApproval(id) {
-    const { origin } = this.pendingApprovals.get(id)
-    this.pendingApprovalOrigins.delete(origin)
-    this.pendingApprovals.delete(id)
-  }
-
-  /**
    * A convenience method for retrieving a login object
    * or creating a new one if needed.
    *
@@ -735,16 +701,10 @@ export class PermissionsController {
             metadata: { id, origin },
           } = req
 
-          if (this.pendingApprovalOrigins.has(origin)) {
-            throw ethErrors.rpc.resourceUnavailable(
-              'Permissions request already pending; please wait.',
-            )
-          }
-
-          this._showPermissionRequest()
-
-          return new Promise((resolve, reject) => {
-            this._addPendingApproval(id, origin, resolve, reject)
+          return this.approvals.addAndShowApprovalRequest({
+            id,
+            origin,
+            type: APPROVAL_TYPE,
           })
         },
       },
