@@ -12,6 +12,7 @@ import { useSwapsEthToken } from '../../../hooks/useSwapsEthToken'
 import { MetaMetricsContext } from '../../../contexts/metametrics.new'
 import FeeCard from '../fee-card'
 import {
+  FALLBACK_GAS_MULTIPLIER,
   getQuotes,
   getSelectedQuote,
   getApproveTxParams,
@@ -125,7 +126,7 @@ export default function ViewQuote() {
   const gasLimitForMax = usedQuote?.gasEstimate || `0x0`
 
   const usedGasLimitWithMultiplier = new BigNumber(gasLimitForMax, 16)
-    .times(usedQuote?.gasMultiplier, 10)
+    .times(usedQuote?.gasMultiplier || FALLBACK_GAS_MULTIPLIER, 10)
     .round(0)
     .toString(16)
 
