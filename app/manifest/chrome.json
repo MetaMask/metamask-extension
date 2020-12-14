@@ -3,6 +3,6 @@
     "matches": ["https://metamask.io/*"],
     "ids": ["*"]
   },
-  "minimum_chrome_version": "58",
+  "minimum_chrome_version": "63",
   "content_security_policy": "script-src 'self' https://hcaptcha.com https://assets.hcaptcha.com; object-src 'self'"
 }

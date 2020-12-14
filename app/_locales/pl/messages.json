@@ -167,9 +167,6 @@
   "chainId": {
     "message": "Identyfikator łańcucha"
   },
-  "chartOnlyAvailableEth": {
-    "message": "Wykres dostępny tylko w sieciach Ethereum"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Żeby połączyć się z portfelem sprzętowym, należy uruchomić MetaMask z przeglądarką Google Chrome."
   },
@@ -398,9 +395,6 @@
   "fast": {
     "message": "Szybko"
   },
-  "faster": {
-    "message": "Szybciej"
-  },
   "fiat": {
     "message": "FIAT",
     "description": "Exchange type"
@@ -578,9 +572,6 @@
   },
   "links": {
     "message": "Łącza"
-  },
-  "liveGasPricePredictions": {
-    "message": "Przewidywanie ceny gazu na żywo"
   },
   "loadMore": {
     "message": "Załaduj więcej"
@@ -1012,9 +1003,6 @@
   "slow": {
     "message": "Powoli"
   },
-  "slower": {
-    "message": "Wolniej"
-  },
   "somethingWentWrong": {
     "message": "Ups! Coś poszło nie tak."
   },
@@ -1152,9 +1140,6 @@
   },
   "transactionSubmitted": {
     "message": "Transakcja wykonana z opłatą za gaz w wysokości $1 – $2."
-  },
-  "transactionTime": {
-    "message": "Czas transakcji"
   },
   "transactionUpdated": {
     "message": "Transakcja zaktualizowana – $2."

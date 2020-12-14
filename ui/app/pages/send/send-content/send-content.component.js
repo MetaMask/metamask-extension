@@ -8,6 +8,7 @@ import SendHexDataRow from './send-hex-data-row'
 import SendAssetRow from './send-asset-row'
 import SendCaptchaRow from './send-captcha-row'
 import { isSmartContractAddress } from '../../../helpers/utils/transactions.util'
+import { getStorageItem } from '../../../../lib/storage-helpers'
 
 export default class SendContent extends Component {
   static contextTypes = {
@@ -22,7 +23,8 @@ export default class SendContent extends Component {
     isOwnedAccount: PropTypes.bool,
     warning: PropTypes.string,
     isUserVerifiedByCaptcha: PropTypes.bool,
-    to: PropTypes.string
+    to: PropTypes.string,
+    updateSendIsHcaptchaVerified: PropTypes.func.isRequired
   }
 
   state = {
@@ -31,7 +33,9 @@ export default class SendContent extends Component {
   }
 
   async componentDidMount() {
-    const { to, isUserVerifiedByCaptcha } = this.props
+    const { to, updateSendIsHcaptchaVerified } = this.props
+    const isUserVerifiedByCaptcha = await getStorageItem('IS_USER_VERIFIED')
+    updateSendIsHcaptchaVerified(!!isUserVerifiedByCaptcha)
     const isReceiverContractAccount = await isSmartContractAddress(to)
     this.setState({ isUserVerified: isUserVerifiedByCaptcha, isReceiverContractAccount })
   }

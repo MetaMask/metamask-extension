@@ -76,8 +76,9 @@ Object.assign(window, { fetch, Headers, Request, Response })
 require('abortcontroller-polyfill/dist/polyfill-patch-fetch')
 
 // localStorage
-window.localStorage = {}
-
+window.localStorage = {
+  removeItem: () => null,
+}
 // override @metamask/logo
 window.requestAnimationFrame = () => undefined
 

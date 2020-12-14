@@ -1,5 +1,5 @@
 import React from 'react'
-import { text } from '@storybook/addon-knobs/react'
+import { text } from '@storybook/addon-knobs'
 import { action } from '@storybook/addon-actions'
 import Popover from './popover.component'
 

@@ -29,7 +29,7 @@ export default class SignatureRequestMessage extends PureComponent {
               this.renderNode(value)
             ) : (
               <span className="signature-request-message--node-value">
-                {value}
+                {`${value}`}
               </span>
             )}
           </div>

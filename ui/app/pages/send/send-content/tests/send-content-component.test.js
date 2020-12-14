@@ -1,6 +1,7 @@
 import assert from 'assert'
 import React from 'react'
 import { shallow } from 'enzyme'
+import sinon from 'sinon'
 import SendContent from '../send-content.component'
 
 import PageContainerContent from '../../../../components/ui/page-container/page-container-content.component'
@@ -11,18 +12,26 @@ import SendAssetRow from '../send-asset-row/send-asset-row.container'
 import SendCaptchaRow from '../send-captcha-row/send-captcha-data-row.container'
 import Dialog from '../../../../components/ui/dialog'
 
+const propsMethodSpies = {
+  updateSendIsHcaptchaVerified: sinon.spy(),
+}
+
 describe('SendContent Component', function () {
   let wrapper
 
   beforeEach(function () {
-    wrapper = shallow(<SendContent showHexData />, {
+    wrapper = shallow(<SendContent showHexData {...propsMethodSpies} />, {
       context: { t: (str) => `${str}_t` },
     })
   })
 
+  afterEach(function () {
+    propsMethodSpies.updateSendIsHcaptchaVerified.resetHistory()
+  })
+
   describe('render', function () {
     it('should render a PageContainerContent component', function () {
-      assert.equal(wrapper.find(PageContainerContent).length, 1)
+      assert.strictEqual(wrapper.find(PageContainerContent).length, 1)
     })
 
     it('should render a div with a .send-v2__form class as a child of PageContainerContent', function () {
@@ -142,7 +151,7 @@ describe('SendContent Component', function () {
         PageContainerContentChild.childAt(4).is(SendHexDataRow),
         'row[4] should be SendHexDataRow',
       )
-      assert.equal(PageContainerContentChild.childAt(5).exists(), false)
+      assert.strictEqual(PageContainerContentChild.childAt(5).exists(), false)
     })
 
     it('should not render the Dialog if contact has a name', function () {
@@ -169,7 +178,7 @@ describe('SendContent Component', function () {
         PageContainerContentChild.childAt(3).is(SendCaptchaRow),
         'row[3] should be SendCaptchaRow',
       )
-      assert.equal(PageContainerContentChild.childAt(4).exists(), false)
+      assert.strictEqual(PageContainerContentChild.childAt(4).exists(), false)
     })
 
     it('should not render the Dialog if it is an ownedAccount', function () {
@@ -196,7 +205,7 @@ describe('SendContent Component', function () {
         PageContainerContentChild.childAt(3).is(SendCaptchaRow),
         'row[3] should be SendCaptchaRow',
       )
-      assert.equal(PageContainerContentChild.childAt(4).exists(), false)
+      assert.strictEqual(PageContainerContentChild.childAt(4).exists(), false)
     })
   })
 
@@ -221,8 +230,8 @@ describe('SendContent Component', function () {
 
     const dialog = wrapper.find(Dialog).at(0)
 
-    assert.equal(dialog.props().type, 'warning')
-    assert.equal(dialog.props().children, 'watchout_t')
-    assert.equal(dialog.length, 1)
+    assert.strictEqual(dialog.props().type, 'warning')
+    assert.strictEqual(dialog.props().children, 'watchout_t')
+    assert.strictEqual(dialog.length, 1)
   })
 })

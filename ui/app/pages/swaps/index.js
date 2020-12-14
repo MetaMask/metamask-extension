@@ -22,7 +22,6 @@ import {
   getFetchingQuotes,
   setBalanceError,
   setTopAssets,
-  getUsedSwapsGasPrice,
   getFetchParams,
   setAggregatorMetadata,
   getAggregatorMetadata,
@@ -94,7 +93,6 @@ export default function Swap() {
   const [maxSlippage, setMaxSlippage] = useState(fetchParams?.slippage || 2)
 
   const routeState = useSelector(getBackgroundSwapRouteState)
-  const usedGasPrice = useSelector(getUsedSwapsGasPrice)
   const selectedAccount = useSelector(getSelectedAccount)
   const quotes = useSelector(getQuotes)
   const txList = useSelector(currentNetworkTxListSelector)
@@ -397,8 +395,6 @@ export default function Swap() {
                     networkId={networkId}
                     txHash={tradeTxData?.hash}
                     tokensReceived={tokensReceived}
-                    tradeTxData={tradeTxData}
-                    usedGasPrice={usedGasPrice}
                     submittingSwap={
                       routeState === 'awaiting' && !(approveTxId || tradeTxId)
                     }

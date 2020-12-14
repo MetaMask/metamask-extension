@@ -7,7 +7,7 @@ const Box = process.env.IN_TEST
 /* eslint-enable import/order */
 
 import log from 'loglevel'
-import JsonRpcEngine from 'json-rpc-engine'
+import { JsonRpcEngine } from 'json-rpc-engine'
 import providerFromEngine from 'eth-json-rpc-middleware/providerFromEngine'
 import Migrator from '../lib/migrator'
 import migrations from '../migrations'

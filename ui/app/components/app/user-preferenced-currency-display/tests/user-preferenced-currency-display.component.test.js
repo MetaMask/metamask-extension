@@ -19,7 +19,7 @@ describe('UserPreferencedCurrencyDisplay Component', function () {
       const wrapper = shallow(<UserPreferencedCurrencyDisplay />)
 
       assert.ok(wrapper)
-      assert.equal(wrapper.find(CurrencyDisplay).length, 1)
+      assert.strictEqual(wrapper.find(CurrencyDisplay).length, 1)
     })
 
     it('should pass all props to the CurrencyDisplay child component', function () {
@@ -28,10 +28,10 @@ describe('UserPreferencedCurrencyDisplay Component', function () {
       )
 
       assert.ok(wrapper)
-      assert.equal(wrapper.find(CurrencyDisplay).length, 1)
-      assert.equal(wrapper.find(CurrencyDisplay).props().prop1, true)
-      assert.equal(wrapper.find(CurrencyDisplay).props().prop2, 'test')
-      assert.equal(wrapper.find(CurrencyDisplay).props().prop3, 1)
+      assert.strictEqual(wrapper.find(CurrencyDisplay).length, 1)
+      assert.strictEqual(wrapper.find(CurrencyDisplay).props().prop1, true)
+      assert.strictEqual(wrapper.find(CurrencyDisplay).props().prop2, 'test')
+      assert.strictEqual(wrapper.find(CurrencyDisplay).props().prop3, 1)
     })
     afterEach(function () {
       sinon.restore()

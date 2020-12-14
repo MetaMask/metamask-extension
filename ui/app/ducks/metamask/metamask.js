@@ -1,6 +1,6 @@
 import * as actionConstants from '../../store/actionConstants'
-import { ALERT_TYPES } from '../../../../app/scripts/controllers/alert'
-import { loadLocalStorageData } from '../../../lib/local-storage-helpers'
+import { getStorageItem } from '../../../lib/storage-helpers'
+import { ALERT_TYPES } from '../../../../shared/constants/alerts'
 
 export default function reduceMetamask(state = {}, action) {
   const metamaskState = {
@@ -47,7 +47,7 @@ export default function reduceMetamask(state = {}, action) {
     participateInMetaMetrics: null,
     metaMetricsSendCount: 0,
     nextNonce: null,
-    isUserVerifiedByCaptcha: loadLocalStorageData('IS_USER_VERIFIED') || false,
+    isUserVerifiedByCaptcha: false,
     ...state,
   }
 
@@ -383,11 +383,11 @@ export const getCurrentLocale = (state) => state.metamask.currentLocale
 
 export const getAlertEnabledness = (state) => state.metamask.alertEnabledness
 
-export const getInvalidCustomNetworkAlertEnabledness = (state) =>
-  getAlertEnabledness(state)[ALERT_TYPES.invalidCustomNetwork]
-
 export const getUnconnectedAccountAlertEnabledness = (state) =>
   getAlertEnabledness(state)[ALERT_TYPES.unconnectedAccount]
+
+export const getWeb3ShimUsageAlertEnabledness = (state) =>
+  getAlertEnabledness(state)[ALERT_TYPES.web3ShimUsage]
 
 export const getUnconnectedAccountAlertShown = (state) =>
   state.metamask.unconnectedAccountAlertShownOrigins

@@ -15,10 +15,13 @@ describe('SelectedAccount Component', function () {
       { context: { t: () => undefined } },
     )
     // Checksummed version of address is displayed
-    assert.equal(
+    assert.strictEqual(
       wrapper.find('.selected-account__address').text(),
       '0x1B82...5C9D',
     )
-    assert.equal(wrapper.find('.selected-account__name').text(), 'testName')
+    assert.strictEqual(
+      wrapper.find('.selected-account__name').text(),
+      'testName',
+    )
   })
 })

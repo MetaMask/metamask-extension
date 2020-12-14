@@ -167,9 +167,6 @@
   "chainId": {
     "message": "鏈 ID"
   },
-  "chartOnlyAvailableEth": {
-    "message": "圖表僅適用於以太坊網路。"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "您需要在 Google Chrome 瀏覽器使用 MetaMask 連結您的硬體錢包"
   },
@@ -398,9 +395,6 @@
   "fast": {
     "message": "快"
   },
-  "faster": {
-    "message": "更快"
-  },
   "fiat": {
     "message": "法定貨幣",
     "description": "Exchange type"
@@ -578,9 +572,6 @@
   },
   "links": {
     "message": "連結"
-  },
-  "liveGasPricePredictions": {
-    "message": "即時 Gas 價格預估"
   },
   "loadMore": {
     "message": "載入更多"
@@ -997,9 +988,6 @@
   "slow": {
     "message": "慢"
   },
-  "slower": {
-    "message": "更慢"
-  },
   "somethingWentWrong": {
     "message": "糟糕！出了點問題。"
   },
@@ -1143,9 +1131,6 @@
   },
   "transactionSubmitted": {
     "message": "交易送出 手續費 $1 時間 $2"
-  },
-  "transactionTime": {
-    "message": "交易時間"
   },
   "transactionUpdated": {
     "message": "交易狀態更新 時間 $2"

@@ -19,7 +19,7 @@ describe('ConfirmSeedPhrase Component', function () {
       seedPhrase: '鼠 牛 虎 兔 龍 蛇 馬 羊 猴 雞 狗 豬',
     })
 
-    assert.equal(
+    assert.strictEqual(
       root.find('.confirm-seed-phrase__seed-word--sorted').length,
       12,
       'should render 12 seed phrases',
@@ -46,7 +46,7 @@ describe('ConfirmSeedPhrase Component', function () {
     seeds.at(1).simulate('click')
     seeds.at(2).simulate('click')
 
-    assert.deepEqual(
+    assert.deepStrictEqual(
       root.state().selectedSeedIndices,
       [0, 1, 2],
       'should add seed phrase to selected on click',
@@ -57,7 +57,7 @@ describe('ConfirmSeedPhrase Component', function () {
     root.update()
     root.state()
     root.find('.confirm-seed-phrase__seed-word--sorted').at(1).simulate('click')
-    assert.deepEqual(
+    assert.deepStrictEqual(
       root.state().selectedSeedIndices,
       [0, 2],
       'should remove seed phrase from selected when click again',
@@ -94,9 +94,9 @@ describe('ConfirmSeedPhrase Component', function () {
       '.confirm-seed-phrase__selected-seed-words__pending-seed',
     )
 
-    assert.equal(pendingSeeds.at(0).props().seedIndex, 2)
-    assert.equal(pendingSeeds.at(1).props().seedIndex, 0)
-    assert.equal(pendingSeeds.at(2).props().seedIndex, 1)
+    assert.strictEqual(pendingSeeds.at(0).props().seedIndex, 2)
+    assert.strictEqual(pendingSeeds.at(1).props().seedIndex, 0)
+    assert.strictEqual(pendingSeeds.at(2).props().seedIndex, 1)
   })
 
   it('should insert seed in place on drop', function () {
@@ -126,8 +126,8 @@ describe('ConfirmSeedPhrase Component', function () {
 
     root.update()
 
-    assert.deepEqual(root.state().selectedSeedIndices, [2, 0, 1])
-    assert.deepEqual(root.state().pendingSeedIndices, [2, 0, 1])
+    assert.deepStrictEqual(root.state().selectedSeedIndices, [2, 0, 1])
+    assert.deepStrictEqual(root.state().pendingSeedIndices, [2, 0, 1])
   })
 
   it('should submit correctly', async function () {
@@ -174,7 +174,7 @@ describe('ConfirmSeedPhrase Component', function () {
 
     await new Promise((resolve) => setTimeout(resolve, 100))
 
-    assert.deepEqual(metricsEventSpy.args[0][0], {
+    assert.deepStrictEqual(metricsEventSpy.args[0][0], {
       eventOpts: {
         category: 'Onboarding',
         action: 'Seed Phrase Setup',
@@ -182,6 +182,6 @@ describe('ConfirmSeedPhrase Component', function () {
       },
     })
     assert(initialize3BoxSpy.calledOnce)
-    assert.equal(pushSpy.args[0][0], '/initialize/end-of-flow')
+    assert.strictEqual(pushSpy.args[0][0], '/initialize/end-of-flow')
   })
 })

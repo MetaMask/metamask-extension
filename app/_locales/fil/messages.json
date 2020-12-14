@@ -146,9 +146,6 @@
   "cancelled": {
     "message": "Nakansela"
   },
-  "chartOnlyAvailableEth": {
-    "message": "Available lang ang chart sa mga Ethereum network."
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Kailangan mong gamitin ang MetaMask sa Google Chrome upang makakonekta sa iyong Hardware Wallet."
   },
@@ -371,9 +368,6 @@
   "fast": {
     "message": "Mabilis"
   },
-  "faster": {
-    "message": "Mas Mabilis"
-  },
   "fileImportFail": {
     "message": "Hindi gumagana ang pag-import ng file? Mag-click dito!",
     "description": "Helps user import their account from a JSON file"
@@ -528,9 +522,6 @@
   },
   "links": {
     "message": "Mga Link"
-  },
-  "liveGasPricePredictions": {
-    "message": "Mga Live na Prediksyon sa Presyo ng Gas"
   },
   "loadMore": {
     "message": "Mag-load Pa"
@@ -924,9 +915,6 @@
   "slow": {
     "message": "Mabagal"
   },
-  "slower": {
-    "message": "Mas Mabagal"
-  },
   "somethingWentWrong": {
     "message": "Oops! Nagkaroon ng problema."
   },
@@ -1061,9 +1049,6 @@
   },
   "transactionSubmitted": {
     "message": "Nasumite ang transaksyon nang may gas fee na $1 sa $2."
-  },
-  "transactionTime": {
-    "message": "Oras ng Transaksyon"
   },
   "transactionUpdated": {
     "message": "Na-update ang transaksyon sa $2."

@@ -284,13 +284,6 @@ export function getIsMainnet(state) {
   return networkType === NETWORK_TYPES.MAINNET
 }
 
-export function isEthereumNetwork(state) {
-  const networkType = getNetworkIdentifier(state)
-  const { KOVAN, MAINNET, RINKEBY, ROPSTEN, GOERLI } = NETWORK_TYPES
-
-  return [KOVAN, MAINNET, RINKEBY, ROPSTEN, GOERLI].includes(networkType)
-}
-
 export function getPreferences({ metamask }) {
   return metamask.preferences
 }
@@ -362,4 +355,8 @@ export function getIpfsGateway(state) {
 
 export function getUSDConversionRate(state) {
   return state.metamask.usdConversionRate
+}
+
+export function getWeb3ShimUsageStateForOrigin(state, origin) {
+  return state.metamask.web3ShimUsageOrigins[origin]
 }

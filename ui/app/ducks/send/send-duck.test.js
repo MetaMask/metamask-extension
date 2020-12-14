@@ -26,11 +26,11 @@ describe('Send Duck', function () {
 
   describe('SendReducer()', function () {
     it('should initialize state', function () {
-      assert.deepEqual(SendReducer(undefined, {}), initState)
+      assert.deepStrictEqual(SendReducer(undefined, {}), initState)
     })
 
     it('should return state unchanged if it does not match a dispatched actions type', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         SendReducer(mockState, {
           type: 'someOtherAction',
           value: 'someValue',
@@ -40,7 +40,7 @@ describe('Send Duck', function () {
     })
 
     it('should set toDropdownOpen to true when receiving a OPEN_TO_DROPDOWN action', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         SendReducer(mockState, {
           type: OPEN_TO_DROPDOWN,
         }),
@@ -49,7 +49,7 @@ describe('Send Duck', function () {
     })
 
     it('should set toDropdownOpen to false when receiving a CLOSE_TO_DROPDOWN action', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         SendReducer(mockState, {
           type: CLOSE_TO_DROPDOWN,
         }),
@@ -58,7 +58,7 @@ describe('Send Duck', function () {
     })
 
     it('should set gasButtonGroupShown to true when receiving a SHOW_GAS_BUTTON_GROUP action', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         SendReducer(
           { ...mockState, gasButtonGroupShown: false },
           { type: SHOW_GAS_BUTTON_GROUP },
@@ -68,7 +68,7 @@ describe('Send Duck', function () {
     })
 
     it('should set gasButtonGroupShown to false when receiving a HIDE_GAS_BUTTON_GROUP action', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         SendReducer(mockState, { type: HIDE_GAS_BUTTON_GROUP }),
         { gasButtonGroupShown: false, ...mockState },
       )
@@ -81,7 +81,7 @@ describe('Send Duck', function () {
           someError: false,
         },
       }
-      assert.deepEqual(
+      assert.deepStrictEqual(
         SendReducer(modifiedMockState, {
           type: UPDATE_SEND_ERRORS,
           value: { someOtherError: true },
@@ -97,7 +97,7 @@ describe('Send Duck', function () {
     })
 
     it('should return the initial state in response to a RESET_SEND_STATE action', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         SendReducer(mockState, {
           type: RESET_SEND_STATE,
         }),
@@ -107,23 +107,27 @@ describe('Send Duck', function () {
   })
 
   describe('openToDropdown', function () {
-    assert.deepEqual(openToDropdown(), { type: OPEN_TO_DROPDOWN })
+    assert.deepStrictEqual(openToDropdown(), { type: OPEN_TO_DROPDOWN })
   })
 
   describe('closeToDropdown', function () {
-    assert.deepEqual(closeToDropdown(), { type: CLOSE_TO_DROPDOWN })
+    assert.deepStrictEqual(closeToDropdown(), { type: CLOSE_TO_DROPDOWN })
   })
 
   describe('showGasButtonGroup', function () {
-    assert.deepEqual(showGasButtonGroup(), { type: SHOW_GAS_BUTTON_GROUP })
+    assert.deepStrictEqual(showGasButtonGroup(), {
+      type: SHOW_GAS_BUTTON_GROUP,
+    })
   })
 
   describe('hideGasButtonGroup', function () {
-    assert.deepEqual(hideGasButtonGroup(), { type: HIDE_GAS_BUTTON_GROUP })
+    assert.deepStrictEqual(hideGasButtonGroup(), {
+      type: HIDE_GAS_BUTTON_GROUP,
+    })
   })
 
   describe('updateSendErrors', function () {
-    assert.deepEqual(updateSendErrors('mockErrorObject'), {
+    assert.deepStrictEqual(updateSendErrors('mockErrorObject'), {
       type: UPDATE_SEND_ERRORS,
       value: 'mockErrorObject',
     })

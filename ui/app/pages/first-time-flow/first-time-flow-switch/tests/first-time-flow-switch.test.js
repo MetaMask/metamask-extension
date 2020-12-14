@@ -21,7 +21,7 @@ describe('FirstTimeFlowSwitch', function () {
     const wrapper = mountWithRouter(
       <FirstTimeFlowSwitch.WrappedComponent {...props} />,
     )
-    assert.equal(
+    assert.strictEqual(
       wrapper
         .find('Lifecycle')
         .find({ to: { pathname: INITIALIZE_WELCOME_ROUTE } }).length,
@@ -37,7 +37,7 @@ describe('FirstTimeFlowSwitch', function () {
       <FirstTimeFlowSwitch.WrappedComponent {...props} />,
     )
 
-    assert.equal(
+    assert.strictEqual(
       wrapper.find('Lifecycle').find({ to: { pathname: DEFAULT_ROUTE } })
         .length,
       1,
@@ -53,7 +53,7 @@ describe('FirstTimeFlowSwitch', function () {
       <FirstTimeFlowSwitch.WrappedComponent {...props} />,
     )
 
-    assert.equal(
+    assert.strictEqual(
       wrapper
         .find('Lifecycle')
         .find({ to: { pathname: INITIALIZE_END_OF_FLOW_ROUTE } }).length,
@@ -70,7 +70,7 @@ describe('FirstTimeFlowSwitch', function () {
       <FirstTimeFlowSwitch.WrappedComponent {...props} />,
     )
 
-    assert.equal(
+    assert.strictEqual(
       wrapper
         .find('Lifecycle')
         .find({ to: { pathname: INITIALIZE_END_OF_FLOW_ROUTE } }).length,
@@ -89,7 +89,7 @@ describe('FirstTimeFlowSwitch', function () {
       <FirstTimeFlowSwitch.WrappedComponent {...props} />,
     )
 
-    assert.equal(
+    assert.strictEqual(
       wrapper.find('Lifecycle').find({ to: { pathname: LOCK_ROUTE } }).length,
       1,
     )
@@ -107,7 +107,7 @@ describe('FirstTimeFlowSwitch', function () {
       <FirstTimeFlowSwitch.WrappedComponent {...props} />,
     )
 
-    assert.equal(
+    assert.strictEqual(
       wrapper
         .find('Lifecycle')
         .find({ to: { pathname: INITIALIZE_WELCOME_ROUTE } }).length,
@@ -127,7 +127,7 @@ describe('FirstTimeFlowSwitch', function () {
       <FirstTimeFlowSwitch.WrappedComponent {...props} />,
     )
 
-    assert.equal(
+    assert.strictEqual(
       wrapper
         .find('Lifecycle')
         .find({ to: { pathname: INITIALIZE_UNLOCK_ROUTE } }).length,

@@ -16,7 +16,7 @@ import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../app/scripts/lib/enums'
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util'
 import { setCustomGasLimit } from '../ducks/gas/gas.duck'
 import txHelper from '../../lib/tx-helper'
-import { saveLocalStorageData } from '../../lib/local-storage-helpers';
+import { setStorageItem } from '../../lib/storage-helpers';
 import { getEnvironmentType, addHexPrefix } from '../../../app/scripts/lib/util'
 import {
   getPermittedAccountsForCurrentTab,
@@ -741,7 +741,7 @@ export function updateSendAmount(amount) {
 }
 
 export function updateSendIsHcaptchaVerified(value) {
-  saveLocalStorageData(value, 'IS_USER_VERIFIED')
+  setStorageItem('IS_USER_VERIFIED', value)
   return {
     type: actionConstants.UPDATE_IS_CAPTCHA_VERIFIED,
     value
@@ -2490,14 +2490,16 @@ export function setSwapsWelcomeMessageHasBeenShown() {
   }
 }
 
-export function setAlertEnabledness(alertId, enabledness) {
-  return async () => {
-    await promisifiedBackground.setAlertEnabledness(alertId, enabledness)
-  }
+export async function setAlertEnabledness(alertId, enabledness) {
+  await promisifiedBackground.setAlertEnabledness(alertId, enabledness)
 }
 
 export async function setUnconnectedAccountAlertShown(origin) {
   await promisifiedBackground.setUnconnectedAccountAlertShown(origin)
+}
+
+export async function setWeb3ShimUsageAlertDismissed(origin) {
+  await promisifiedBackground.setWeb3ShimUsageAlertDismissed(origin)
 }
 
 export function loadingMethodDataStarted() {
@@ -2754,4 +2756,30 @@ export function getCurrentWindowTab() {
     const currentWindowTab = await global.platform.currentTab()
     dispatch(setCurrentWindowTab(currentWindowTab))
   }
+}
+
+// MetaMetrics
+/**
+ * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventPayload} MetaMetricsEventPayload
+ * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventOptions} MetaMetricsEventOptions
+ * @typedef {import('../../../shared/constants/metametrics').MetaMetricsPagePayload} MetaMetricsPagePayload
+ * @typedef {import('../../../shared/constants/metametrics').MetaMetricsPageOptions} MetaMetricsPageOptions
+ */
+
+/**
+ * @param {MetaMetricsEventPayload} payload - details of the event to track
+ * @param {MetaMetricsEventOptions} options - options for routing/handling of event
+ * @returns {Promise<void>}
+ */
+export function trackMetaMetricsEvent(payload, options) {
+  return promisifiedBackground.trackMetaMetricsEvent(payload, options)
+}
+
+/**
+ * @param {MetaMetricsPagePayload} payload - details of the page viewed
+ * @param {MetaMetricsPageOptions} options - options for handling the page view
+ * @returns {void}
+ */
+export function trackMetaMetricsPage(payload, options) {
+  return promisifiedBackground.trackMetaMetricsPage(payload, options)
 }

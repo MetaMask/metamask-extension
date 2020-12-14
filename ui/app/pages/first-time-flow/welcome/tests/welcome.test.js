@@ -32,7 +32,7 @@ describe('Welcome', function () {
       '.btn-primary.first-time-flow__button',
     )
     getStartedButton.simulate('click')
-    assert.equal(
+    assert.strictEqual(
       props.history.push.getCall(0).args[0],
       '/initialize/select-action',
     )
@@ -56,7 +56,7 @@ describe('Welcome', function () {
       '.btn-primary.first-time-flow__button',
     )
     getStartedButton.simulate('click')
-    assert.equal(
+    assert.strictEqual(
       props.history.push.getCall(0).args[0],
       '/initialize/create-password',
     )

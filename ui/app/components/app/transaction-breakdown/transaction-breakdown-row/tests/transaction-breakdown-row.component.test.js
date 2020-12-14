@@ -14,11 +14,11 @@ describe('TransactionBreakdownRow Component', function () {
     )
 
     assert.ok(wrapper.hasClass('transaction-breakdown-row'))
-    assert.equal(
+    assert.strictEqual(
       wrapper.find('.transaction-breakdown-row__title').text(),
       'test',
     )
-    assert.equal(
+    assert.strictEqual(
       wrapper.find('.transaction-breakdown-row__value').text(),
       'Test',
     )
@@ -33,7 +33,7 @@ describe('TransactionBreakdownRow Component', function () {
     )
 
     assert.ok(wrapper.hasClass('transaction-breakdown-row'))
-    assert.equal(
+    assert.strictEqual(
       wrapper.find('.transaction-breakdown-row__title').text(),
       'test',
     )

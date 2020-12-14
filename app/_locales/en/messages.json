@@ -95,7 +95,13 @@
     "message": "Browsing a website with an unconnected account selected"
   },
   "alertSettingsUnconnectedAccountDescription": {
-    "message": "This alert is shown in the popup when you are browsing a connected Web3 site, but the currently selected account is not connected."
+    "message": "This alert is shown in the popup when you are browsing a connected web3 site, but the currently selected account is not connected."
+  },
+  "alertSettingsWeb3ShimUsage": {
+    "message": "When a website tries to use the removed window.web3 API"
+  },
+  "alertSettingsWeb3ShimUsageDescription": {
+    "message": "This alert is shown in the popup when you are browsing a site that tries to use the removed window.web3 API, and may be broken as a result."
   },
   "alerts": {
     "message": "Alerts"
@@ -233,6 +239,9 @@
   "bytes": {
     "message": "Bytes"
   },
+  "canToggleInSettings": {
+    "message": "You can re-enable this notification in Settings -> Alerts."
+  },
   "cancel": {
     "message": "Cancel"
   },
@@ -244,9 +253,6 @@
   },
   "chainId": {
     "message": "Chain ID"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "Chart only available on Ethereum networks."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
@@ -660,9 +666,6 @@
   "fast": {
     "message": "Fast"
   },
-  "faster": {
-    "message": "Faster"
-  },
   "fastest": {
     "message": "Fastest"
   },
@@ -913,9 +916,6 @@
   },
   "links": {
     "message": "Links"
-  },
-  "liveGasPricePredictions": {
-    "message": "Live Gas Price Predictions"
   },
   "loadMore": {
     "message": "Load More"
@@ -1491,9 +1491,6 @@
   "showSeedPhrase": {
     "message": "Show seed phrase"
   },
-  "showTransactionTimeDescription": {
-    "message": "Select this to display pending transaction time estimates in the activity tab while on the Ethereum Mainnet. Note: estimates are approximations based on network conditions."
-  },
   "sigRequest": {
     "message": "Signature Request"
   },
@@ -1514,9 +1511,6 @@
   },
   "slow": {
     "message": "Slow"
-  },
-  "slower": {
-    "message": "Slower"
   },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
@@ -1620,6 +1614,9 @@
     "message": "You need $1 more $2 to complete this swap",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
+  "swapBetterQuoteAvailable": {
+    "message": "A better quote is available"
+  },
   "swapBuildQuotePlaceHolderText": {
     "message": "No tokens available matching $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
@@ -1653,16 +1650,6 @@
   },
   "swapEstimatedNetworkFeesInfo": {
     "message": "This is an estimate of the network fee that will be used to complete your swap. The actual amount may change according to network conditions."
-  },
-  "swapEstimatedTime": {
-    "message": "Estimated time:"
-  },
-  "swapEstimatedTimeCalculating": {
-    "message": "Calculating..."
-  },
-  "swapEstimatedTimeFull": {
-    "message": "$1 $2",
-    "description": "This message shows bolded swapEstimatedTime message, which is substited for $1, followed by either the estimated remaining transaction time in mm:ss, or the swapEstimatedTimeCalculating message, which are substituted for $2."
   },
   "swapFailedErrorDescription": {
     "message": "Your funds are safe and still available in your wallet."
@@ -1726,8 +1713,8 @@
     "message": "We find the best price from the top liquidity sources, every time. A fee of $1% is automatically factored into each quote, which supports ongoing development to make MetaMask even better.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
-  "swapNQuotesAvailable": {
-    "message": "$1 quotes available",
+  "swapNQuotes": {
+    "message": "$1 quotes",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapNetworkFeeSummary": {
@@ -1741,6 +1728,20 @@
     "message": "Your $1 will be added to your account once this transaction has processed.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
   },
+  "swapPriceDifference": {
+    "message": "You are about to swap $1 $2 (~$3) for $4 $5 (~$6).",
+    "description": "This message represents the price slippage for the swap.  $1 and $4 are a number (ex: 2.89), $2 and $5 are symbols (ex: ETH), and $3 and $6 are fiat currency amounts."
+  },
+  "swapPriceDifferenceTitle": {
+    "message": "Price difference of ~$1%",
+    "description": "$1 is a number (ex: 1.23) that represents the price difference."
+  },
+  "swapPriceDifferenceTooltip": {
+    "message": "The difference in market prices can be affected by fees taken by intermediaries, size of market, size of trade, or market inefficiencies."
+  },
+  "swapPriceDifferenceUnavailable": {
+    "message": "Market price is unavailable.  Make sure you feel comfortable with the returned amount before proceeding."
+  },
   "swapProcessing": {
     "message": "Processing"
   },
@@ -1748,7 +1749,7 @@
     "message": "Quote details"
   },
   "swapQuoteDetailsSlippageInfo": {
-    "message": "If the price changes between the time your order is placed and confirmed it’s called \"slippage\". Your Swap will automatically cancel if slippage exceeds your \"max slippage\" setting."
+    "message": "If the price changes between the time your order is placed and confirmed it’s called \"slippage\". Your Swap will automatically cancel if slippage exceeds your \"slippage tolerance\" setting."
   },
   "swapQuoteIncludesRate": {
     "message": "Quote includes a $1% MetaMask fee",
@@ -1841,6 +1842,9 @@
   "swapUnknown": {
     "message": "Unknown"
   },
+  "swapUsingBestQuote": {
+    "message": "Using the best quote"
+  },
   "swapVerifyTokenExplanation": {
     "message": "Multiple tokens can use the same name and symbol. Check Etherscan to verify this is the token you're looking for."
   },
@@ -1857,18 +1861,11 @@
   "swapsAdvancedOptions": {
     "message": "Advanced Options"
   },
-  "swapsAlmostDone": {
-    "message": "Almost done..."
-  },
-  "swapsBestQuote": {
-    "message": "Best quote"
-  },
-  "swapsConvertToAbout": {
-    "message": "Convert $1 to about",
-    "description": "This message is part of a quote for a swap. The $1 is the amount being converted, and the amount it is being swapped for is below this message"
+  "swapsExcessiveSlippageWarning": {
+    "message": "Slippage amount is too high and will result in a bad rate. Please reduce your slippage tolerance to a value below 15%."
   },
   "swapsMaxSlippage": {
-    "message": "Max slippage"
+    "message": "Slippage Tolerance"
   },
   "swapsNotEnoughForTx": {
     "message": "Not enough $1 to complete this transaction",
@@ -1998,9 +1995,6 @@
   "transactionSubmitted": {
     "message": "Transaction submitted with gas fee of $1 at $2."
   },
-  "transactionTime": {
-    "message": "Transaction Time"
-  },
   "transactionUpdated": {
     "message": "Transaction updated at $2."
   },
@@ -2109,6 +2103,10 @@
   },
   "walletSeed": {
     "message": "Seed phrase"
+  },
+  "web3ShimUsageNotification": {
+    "message": "We noticed that the current website tried to use the removed window.web3 API. If the site appears to be broken, please click $1 for more information.",
+    "description": "$1 is a clickable link."
   },
   "welcome": {
     "message": "Welcome to MetaMask"

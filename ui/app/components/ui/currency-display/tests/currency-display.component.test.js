@@ -24,7 +24,7 @@ describe('CurrencyDisplay Component', function () {
     )
 
     assert.ok(wrapper.hasClass('currency-display'))
-    assert.equal(wrapper.text(), '$123.45')
+    assert.strictEqual(wrapper.text(), '$123.45')
   })
 
   it('should render text with a prefix', function () {
@@ -38,7 +38,7 @@ describe('CurrencyDisplay Component', function () {
     )
 
     assert.ok(wrapper.hasClass('currency-display'))
-    assert.equal(wrapper.text(), '-$123.45')
+    assert.strictEqual(wrapper.text(), '-$123.45')
   })
   afterEach(function () {
     sinon.restore()

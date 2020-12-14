@@ -4,7 +4,7 @@ import classnames from 'classnames'
 import { checkExistingAddresses } from '../../../helpers/utils/util'
 import TokenListPlaceholder from './token-list-placeholder'
 
-export default class InfoBox extends Component {
+export default class TokenList extends Component {
   static contextTypes = {
     t: PropTypes.func,
   }

@@ -1,6 +1,6 @@
 import log from 'loglevel'
 import BigNumber from 'bignumber.js'
-import contractMap from 'eth-contract-metadata'
+import contractMap from '@metamask/contract-metadata'
 import * as util from './util'
 import { conversionUtil, multiplyCurrencies } from './conversion-util'
 import { formatCurrency } from './confirm-tx.util'

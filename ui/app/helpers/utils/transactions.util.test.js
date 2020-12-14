@@ -14,11 +14,11 @@ describe('Transactions utils', function () {
       )
       assert.ok(tokenData)
       const { name, args } = tokenData
-      assert.equal(name, TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER)
+      assert.strictEqual(name, TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER)
       const to = args._to
       const value = args._value.toString()
-      assert.equal(to, '0x50A9D56C2B8BA9A5c7f2C08C3d26E0499F23a706')
-      assert.equal(value, '20000')
+      assert.strictEqual(to, '0x50A9D56C2B8BA9A5c7f2C08C3d26E0499F23a706')
+      assert.strictEqual(value, '20000')
     })
 
     it('should not throw errors when called without arguments', function () {
@@ -56,7 +56,7 @@ describe('Transactions utils', function () {
       ]
 
       tests.forEach(({ transaction, expected }) => {
-        assert.equal(utils.getStatusKey(transaction), expected)
+        assert.strictEqual(utils.getStatusKey(transaction), expected)
       })
     })
   })
@@ -96,7 +96,7 @@ describe('Transactions utils', function () {
       ]
 
       tests.forEach(({ expected, networkId, hash, rpcPrefs }) => {
-        assert.equal(
+        assert.strictEqual(
           utils.getBlockExplorerUrlForTx(networkId, hash, rpcPrefs),
           expected,
         )

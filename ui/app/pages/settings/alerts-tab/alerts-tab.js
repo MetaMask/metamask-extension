@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 
-import { ALERT_TYPES } from '../../../../../app/scripts/controllers/alert'
+import { ALERT_TYPES } from '../../../../../shared/constants/alerts'
 import Tooltip from '../../../components/ui/tooltip'
 import ToggleButton from '../../../components/ui/toggle-button'
 import { setAlertEnabledness } from '../../../store/actions'
@@ -11,7 +11,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext'
 
 const AlertSettingsEntry = ({ alertId, description, title }) => {
   const t = useI18nContext()
-  const dispatch = useDispatch()
   const isEnabled = useSelector((state) => getAlertEnabledness(state)[alertId])
 
   return (
@@ -27,7 +26,7 @@ const AlertSettingsEntry = ({ alertId, description, title }) => {
       <ToggleButton
         offLabel={t('off')}
         onLabel={t('on')}
-        onToggle={() => dispatch(setAlertEnabledness(alertId, !isEnabled))}
+        onToggle={() => setAlertEnabledness(alertId, !isEnabled)}
         value={isEnabled}
       />
     </>
@@ -47,6 +46,10 @@ const AlertsTab = () => {
     [ALERT_TYPES.unconnectedAccount]: {
       title: t('alertSettingsUnconnectedAccount'),
       description: t('alertSettingsUnconnectedAccountDescription'),
+    },
+    [ALERT_TYPES.web3ShimUsage]: {
+      title: t('alertSettingsWeb3ShimUsage'),
+      description: t('alertSettingsWeb3ShimUsageDescription'),
     },
   }
 

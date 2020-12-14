@@ -1,6 +1,7 @@
 import EthQuery from 'ethjs-query'
 import log from 'loglevel'
 import ethUtil from 'ethereumjs-util'
+import { cloneDeep } from 'lodash'
 import { hexToBn, BnMultiplyByFraction, bnToHex } from '../../lib/util'
 
 /**
@@ -56,7 +57,13 @@ export default class TxGasUtil {
     @returns {string} the estimated gas limit as a hex string
   */
   async estimateTxGas(txMeta) {
-    const { txParams } = txMeta
+    const txParams = cloneDeep(txMeta.txParams)
+
+    // `eth_estimateGas` can fail if the user has insufficient balance for the
+    // value being sent, or for the gas cost. We don't want to check their
+    // balance here, we just want the gas estimate. The gas price is removed
+    // to skip those balance checks. We check balance elsewhere.
+    delete txParams.gasPrice
 
     // estimate tx gas requirements
     return await this.query.estimateGas(txParams)

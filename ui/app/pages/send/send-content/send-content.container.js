@@ -32,6 +32,8 @@ function mapDispatchToProps(dispatch) {
           recipient,
         }),
       ),
+    updateSendIsHcaptchaVerified: (value) =>
+      dispatch(actions.updateSendIsHcaptchaVerified(value))
   }
 }
 
@@ -42,6 +44,8 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     ...stateProps,
     showAddToAddressBookModal: () =>
       dispatchProps.showAddToAddressBookModal(to),
+    updateSendIsHcaptchaVerified: (value) =>
+      dispatchProps.updateSendIsHcaptchaVerified(value)
   }
 }
 

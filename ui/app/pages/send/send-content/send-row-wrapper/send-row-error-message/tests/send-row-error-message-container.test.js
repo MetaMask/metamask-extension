@@ -16,7 +16,7 @@ proxyquire('../send-row-error-message.container.js', {
 describe('send-row-error-message container', function () {
   describe('mapStateToProps()', function () {
     it('should map the correct properties to props', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         mapStateToProps('mockState', { errorType: 'someType' }),
         {
           errors: 'mockErrors:mockState',

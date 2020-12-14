@@ -167,9 +167,6 @@
   "chainId": {
     "message": "Kæde-ID"
   },
-  "chartOnlyAvailableEth": {
-    "message": "Skema kun tilgængeligt på Ethereum-netværk."
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Du skal bruge MetaMask i Google Chrome for at forbinde med din Hardware Wallet."
   },
@@ -398,9 +395,6 @@
   "fast": {
     "message": "Hurtig"
   },
-  "faster": {
-    "message": "Hurtigere"
-  },
   "fileImportFail": {
     "message": "Virker filimportering ikke? Klik her!",
     "description": "Helps user import their account from a JSON file"
@@ -568,9 +562,6 @@
   },
   "likeToAddTokens": {
     "message": "Ønsker du at tilføje disse tokens?"
-  },
-  "liveGasPricePredictions": {
-    "message": "Live forudsigelser af brændstofpriser"
   },
   "loadMore": {
     "message": "Indlæs Mere"
@@ -996,9 +987,6 @@
   "slow": {
     "message": "Langsom"
   },
-  "slower": {
-    "message": "Langsommere"
-  },
   "somethingWentWrong": {
     "message": "Ups! Noget gik galt."
   },
@@ -1133,9 +1121,6 @@
   },
   "transactionSubmitted": {
     "message": "Transaktion indsendt med brændstofgebyr på $1 til $2."
-  },
-  "transactionTime": {
-    "message": "Transaktionstid"
   },
   "transactionUpdated": {
     "message": "Transaktion opdateret til $2."

@@ -1,6 +1,27 @@
 # Changelog
 
 ## Current Develop Branch
+- [#10048](https://github.com/MetaMask/metamask-extension/pull/10048): Display boolean values when signing typed data
+
+## 8.1.8 Wed Dec 09 2020
+- [#9992](https://github.com/MetaMask/metamask-extension/pull/9992): Improve transaction params validation
+- [#9991](https://github.com/MetaMask/metamask-extension/pull/9991): Don't allow more than 15% slippage
+- [#9994](https://github.com/MetaMask/metamask-extension/pull/9994): Prevent unwanted 'no quotes available' message when going back to build quote screen while having insufficient funds
+- [#9999](https://github.com/MetaMask/metamask-extension/pull/9999): Fix missing contacts upon restart
+
+## 8.1.7 Tue Dec 08 2020
+- Revert SES lockdown
+
+## 8.1.6 Wed Dec 02 2020
+- [#9916](https://github.com/MetaMask/metamask-extension/pull/9916): Fix QR code scans interpretting payment requests as token addresses
+- [#9847](https://github.com/MetaMask/metamask-extension/pull/9847): Add alt text for images in list items
+- [#9960](https://github.com/MetaMask/metamask-extension/pull/9960): Ensure watchAsset returns errors for invalid token symbols
+- [#9968](https://github.com/MetaMask/metamask-extension/pull/9968): Adds tokens from v1.19.0 of metamask/contract-metadata to add token lists
+- [#9970](https://github.com/MetaMask/metamask-extension/pull/9970): Etherscan links support Goerli network
+- [#9899](https://github.com/MetaMask/metamask-extension/pull/9899): Show price impact warnings on swaps quote screen
+- [#9867](https://github.com/MetaMask/metamask-extension/pull/9867): Replace use of ethgasstation
+- [#9984](https://github.com/MetaMask/metamask-extension/pull/9984): Show correct gas estimates when users don't have sufficient balance for contract transaction
+- [#9993](https://github.com/MetaMask/metamask-extension/pull/9993): Add 48x48 MetaMask icon for use by browsers
 
 ## 8.1.5 Wed Nov 18 2020
 - [#9871](https://github.com/MetaMask/metamask-extension/pull/9871): Show send text upon hover in main asset list
