@@ -122,7 +122,7 @@ export default function ViewQuote() {
     usedQuote?.gasEstimateWithRefund ||
     `0x${decimalToHex(usedQuote?.averageGas || 0)}`
 
-  const gasLimitForMax = usedQuote?.gasEstimate || `0x${decimalToHex(0)}`
+  const gasLimitForMax = usedQuote?.gasEstimate || `0x0`
 
   const usedGasLimitWithMultiplier = new BigNumber(gasLimitForMax, 16)
     .times(usedQuote?.gasMultiplier, 10)

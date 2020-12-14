@@ -39,7 +39,6 @@ import { calcGasTotal } from '../../pages/send/send.utils'
 import {
   decimalToHex,
   getValueFromWeiHex,
-  hexMax,
   decGWEIToHexWEI,
   hexToDecimal,
   hexWEIToDecGWEI,
@@ -593,20 +592,13 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     const usedQuote = getUsedQuote(state)
     const usedTradeTxParams = usedQuote.trade
 
-    const estimatedGasLimit = new BigNumber(
-      usedQuote?.gasEstimate || `0x${decimalToHex(0)}`,
-      16,
-    )
+    const estimatedGasLimit = new BigNumber(usedQuote?.gasEstimate || `0x0`, 16)
     const estimatedGasLimitWithMultiplier = estimatedGasLimit
       .times(usedQuote?.gasMultiplier, 10)
       .round(0)
       .toString(16)
     const maxGasLimit =
-      customSwapsGas ||
-      hexMax(
-        `0x${decimalToHex(usedQuote?.maxGas || 0)}`,
-        estimatedGasLimitWithMultiplier,
-      )
+      customSwapsGas || estimatedGasLimitWithMultiplier || usedQuote?.maxGas
 
     const usedGasPrice = getUsedSwapsGasPrice(state)
     usedTradeTxParams.gas = maxGasLimit
