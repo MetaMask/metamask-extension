@@ -78,7 +78,6 @@ export default class SwapsController {
     provider,
     getProviderConfig,
     tokenRatesStore,
-    trackMetaMetricsEvent,
     fetchTradesInfo = defaultFetchTradesInfo,
     fetchSwapsFeatureLiveness = defaultFetchSwapsFeatureLiveness,
     fetchSwapsQuoteRefreshTime = defaultFetchSwapsQuoteRefreshTime,
@@ -90,7 +89,6 @@ export default class SwapsController {
     this._fetchTradesInfo = fetchTradesInfo
     this._fetchSwapsFeatureLiveness = fetchSwapsFeatureLiveness
     this._fetchSwapsQuoteRefreshTime = fetchSwapsQuoteRefreshTime
-    this._trackEvent = trackMetaMetricsEvent
 
     this.getBufferedGasLimit = getBufferedGasLimit
     this.tokenRatesStore = tokenRatesStore
@@ -121,13 +119,6 @@ export default class SwapsController {
         FALLBACK_QUOTE_REFRESH_TIME,
       )
     } catch (e) {
-      this._trackEvent({
-        category: 'Swaps',
-        event: 'quote_refresh_api_error',
-        properties: {
-          error_message: e.message,
-        },
-      })
       console.error('Request for swaps quote refresh time failed: ', e)
     }
 

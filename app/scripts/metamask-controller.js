@@ -352,9 +352,6 @@ export default class MetamaskController extends EventEmitter {
         this.networkController,
       ),
       tokenRatesStore: this.tokenRatesController.store,
-      trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
-        this.metaMetricsController,
-      ),
     })
 
     // ensure isClientOpenAndUnlocked is updated when memState updates
