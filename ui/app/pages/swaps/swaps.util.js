@@ -112,6 +112,11 @@ const QUOTE_VALIDATORS = [
     property: 'maxGas',
     type: 'number',
   },
+  {
+    property: 'gasEstimate',
+    type: 'number|undefined',
+    validator: (gasEstimate) => gasEstimate === undefined || gasEstimate > 0,
+  },
 ]
 
 const TOKEN_VALIDATORS = [
