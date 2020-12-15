@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext, useRef } from 'react'
+import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { Duration } from 'luxon'
 import { I18nContext } from '../../../contexts/i18n'
 import InfoTooltip from '../../../components/ui/info-tooltip'
-
-const TIMER_BASE = 60000
+import { getSwapsQuoteRefreshTime } from '../../../ducks/swaps/swaps'
 
 // Return the mm:ss start time of the countdown timer.
 // If time has elapsed between `timeStarted` the time current time,
@@ -31,7 +31,7 @@ function timeBelowWarningTime(timer, warningTime) {
 export default function CountdownTimer({
   timeStarted,
   timeOnly,
-  timerBase = TIMER_BASE,
+  timerBase,
   warningTime,
   labelKey,
   infoTooltipLabelKey,
@@ -40,9 +40,12 @@ export default function CountdownTimer({
   const intervalRef = useRef()
   const initialTimeStartedRef = useRef()
 
+  const swapsQuoteRefreshTime = useSelector(getSwapsQuoteRefreshTime)
+  const timerStart = Number(timerBase) || swapsQuoteRefreshTime
+
   const [currentTime, setCurrentTime] = useState(() => Date.now())
   const [timer, setTimer] = useState(() =>
-    getNewTimer(currentTime, timeStarted, timerBase),
+    getNewTimer(currentTime, timeStarted, timerStart),
   )
 
   useEffect(() => {
@@ -67,14 +70,14 @@ export default function CountdownTimer({
       initialTimeStartedRef.current = timeStarted
       const newCurrentTime = Date.now()
       setCurrentTime(newCurrentTime)
-      setTimer(getNewTimer(newCurrentTime, timeStarted, timerBase))
+      setTimer(getNewTimer(newCurrentTime, timeStarted, timerStart))
 
       clearInterval(intervalRef.current)
       intervalRef.current = setInterval(() => {
         setTimer(decreaseTimerByOne)
       }, 1000)
     }
-  }, [timeStarted, timer, timerBase])
+  }, [timeStarted, timer, timerStart])
 
   const formattedTimer = Duration.fromMillis(timer).toFormat('m:ss')
   let time

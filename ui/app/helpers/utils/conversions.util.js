@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { ETH, GWEI, WEI } from '../constants/common'
 import { addHexPrefix } from '../../../../app/scripts/lib/util'
 import {
@@ -161,16 +160,6 @@ export function hexWEIToDecETH(hexWEI) {
     fromDenomination: 'WEI',
     toDenomination: 'ETH',
   })
-}
-
-export function hexMax(...hexNumbers) {
-  let max = hexNumbers[0]
-  hexNumbers.slice(1).forEach((hexNumber) => {
-    if (new BigNumber(hexNumber, 16).gt(max, 16)) {
-      max = hexNumber
-    }
-  })
-  return max
 }
 
 export function addHexes(aHexWEI, bHexWEI) {

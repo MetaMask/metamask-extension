@@ -2,6 +2,14 @@
 
 ## Current Develop Branch
 
+## 8.1.9 Tue Dec 15 2020
+- [#10034](https://github.com/MetaMask/metamask-extension/pull/10034): Fix contentscript injection failure on Firefox 56
+- [#10045](https://github.com/MetaMask/metamask-extension/pull/10045): Fix token validation in Send flow
+- [#10048](https://github.com/MetaMask/metamask-extension/pull/10048): Display boolean values when signing typed data
+- [#10070](https://github.com/MetaMask/metamask-extension/pull/10070): Add eth_getProof
+- [#10043](https://github.com/MetaMask/metamask-extension/pull/10043): Improve swaps maximum gas estimation
+- [#10069](https://github.com/MetaMask/metamask-extension/pull/10069): Fetch swap quote refresh time from API
+
 ## 8.1.8 Wed Dec 09 2020
 - [#9992](https://github.com/MetaMask/metamask-extension/pull/9992): Improve transaction params validation
 - [#9991](https://github.com/MetaMask/metamask-extension/pull/9991): Don't allow more than 15% slippage

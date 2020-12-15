@@ -41,8 +41,8 @@ function injectScript(content) {
     scriptTag.textContent = content
     container.insertBefore(scriptTag, container.children[0])
     container.removeChild(scriptTag)
-  } catch (e) {
-    console.error('MetaMask provider injection failed.', e)
+  } catch (error) {
+    console.error('MetaMask: Provider injection failed.', error)
   }
 }
 
@@ -95,10 +95,10 @@ async function setupStreams() {
 function forwardTrafficBetweenMuxers(channelName, muxA, muxB) {
   const channelA = muxA.createStream(channelName)
   const channelB = muxB.createStream(channelName)
-  pump(channelA, channelB, channelA, (err) =>
-    logStreamDisconnectWarning(
-      `MetaMask muxed traffic for channel "${channelName}" failed.`,
-      err,
+  pump(channelA, channelB, channelA, (error) =>
+    console.debug(
+      `MetaMask: Muxed traffic for channel "${channelName}" failed.`,
+      error,
     ),
   )
 }
@@ -107,14 +107,13 @@ function forwardTrafficBetweenMuxers(channelName, muxA, muxB) {
  * Error handler for page to extension stream disconnections
  *
  * @param {string} remoteLabel - Remote stream name
- * @param {Error} err - Stream connection error
+ * @param {Error} error - Stream connection error
  */
-function logStreamDisconnectWarning(remoteLabel, err) {
-  let warningMsg = `MetamaskContentscript - lost connection to ${remoteLabel}`
-  if (err) {
-    warningMsg += `\n${err.stack}`
-  }
-  console.warn(warningMsg)
+function logStreamDisconnectWarning(remoteLabel, error) {
+  console.debug(
+    `MetaMask: Content script lost connection to "${remoteLabel}".`,
+    error,
+  )
 }
 
 /**
@@ -214,7 +213,7 @@ function blockedDomainCheck() {
  * Redirects the current page to a phishing information page
  */
 function redirectToPhishingWarning() {
-  console.log('MetaMask - routing to Phishing Warning component')
+  console.debug('MetaMask: Routing to Phishing Warning component.')
   const extensionURL = extension.runtime.getURL('phishing.html')
   window.location.href = `${extensionURL}#${querystring.stringify({
     hostname: window.location.hostname,

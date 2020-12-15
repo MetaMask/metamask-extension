@@ -38,6 +38,7 @@
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
       "js": [
+        "disable-console.js",
         "globalthis.js",
         "lockdown.js",
         "runLockdown.js",
@@ -77,6 +78,6 @@
     "notifications"
   ],
   "short_name": "__MSG_appName__",
-  "version": "8.1.8",
+  "version": "8.1.9",
   "web_accessible_resources": ["inpage.js", "phishing.html"]
 }
