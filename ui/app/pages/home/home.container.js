@@ -2,11 +2,14 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import {
-  unconfirmedTransactionsCountSelector,
+  activeTabHasPermissions,
   getCurrentEthBalance,
   getFirstPermissionRequest,
-  getTotalUnapprovedCount,
   getIsMainnet,
+  getOriginOfCurrentTab,
+  getTotalUnapprovedCount,
+  getWeb3ShimUsageStateForOrigin,
+  unconfirmedTransactionsCountSelector,
 } from '../../selectors'
 
 import {
@@ -17,8 +20,11 @@ import {
   setConnectedStatusPopoverHasBeenShown,
   setDefaultHomeActiveTabName,
   setSwapsWelcomeMessageHasBeenShown,
+  setWeb3ShimUsageAlertDismissed,
+  setAlertEnabledness,
 } from '../../store/actions'
 import { setThreeBoxLastUpdated } from '../../ducks/app/app'
+import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask'
 import {
   getSwapsWelcomeMessageSeenStatus,
   getSwapsFeatureLiveness,
@@ -28,6 +34,10 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../../app/scripts/lib/enums'
+import {
+  ALERT_TYPES,
+  WEB3_SHIM_USAGE_ALERT_STATES,
+} from '../../../../shared/constants/alerts'
 import Home from './home.component'
 
 const mapStateToProps = (state) => {
@@ -58,6 +68,14 @@ const mapStateToProps = (state) => {
       ? firstPermissionsRequest.metadata.id
       : null
 
+  const originOfCurrentTab = getOriginOfCurrentTab(state)
+  const shouldShowWeb3ShimUsageNotification =
+    isPopup &&
+    getWeb3ShimUsageAlertEnabledness(state) &&
+    activeTabHasPermissions(state) &&
+    getWeb3ShimUsageStateForOrigin(state, originOfCurrentTab) ===
+      WEB3_SHIM_USAGE_ALERT_STATES.RECORDED
+
   return {
     forgottenPassword,
     suggestedTokens,
@@ -81,6 +99,8 @@ const mapStateToProps = (state) => {
     swapsFetchParams: swapsState.fetchParams,
     showAwaitingSwapScreen: swapsState.routeState === 'awaiting',
     isMainnet: getIsMainnet(state),
+    originOfCurrentTab,
+    shouldShowWeb3ShimUsageNotification,
   }
 }
 
@@ -103,6 +123,10 @@ const mapDispatchToProps = (dispatch) => ({
   onTabClick: (name) => dispatch(setDefaultHomeActiveTabName(name)),
   setSwapsWelcomeMessageHasBeenShown: () =>
     dispatch(setSwapsWelcomeMessageHasBeenShown()),
+  setWeb3ShimUsageAlertDismissed: (origin) =>
+    setWeb3ShimUsageAlertDismissed(origin),
+  disableWeb3ShimUsageAlert: () =>
+    setAlertEnabledness(ALERT_TYPES.web3ShimUsage, false),
 })
 
 export default compose(

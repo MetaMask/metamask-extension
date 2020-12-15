@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import { ALERT_TYPES } from '../../../app/scripts/controllers/alert'
+import { ALERT_TYPES } from '../../../shared/constants/alerts'
 import metamaskReducer from './metamask/metamask'
 import localeMessagesReducer from './locale/locale'
 import sendReducer from './send/send.duck'
