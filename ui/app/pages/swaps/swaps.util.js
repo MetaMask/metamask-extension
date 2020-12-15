@@ -24,20 +24,24 @@ const TOKEN_TRANSFER_LOG_TOPIC_HASH =
 
 const CACHE_REFRESH_ONE_HOUR = 3600000
 
+const METASWAP_API_HOST = 'https://api.metaswap.codefi.network'
+
 const getBaseApi = function (type) {
   switch (type) {
     case 'trade':
-      return `https://api.metaswap.codefi.network/trades?`
+      return `${METASWAP_API_HOST}/trades?`
     case 'tokens':
-      return `https://api.metaswap.codefi.network/tokens`
+      return `${METASWAP_API_HOST}/tokens`
     case 'topAssets':
-      return `https://api.metaswap.codefi.network/topAssets`
+      return `${METASWAP_API_HOST}/topAssets`
     case 'featureFlag':
-      return `https://api.metaswap.codefi.network/featureFlag`
+      return `${METASWAP_API_HOST}/featureFlag`
     case 'aggregatorMetadata':
-      return `https://api.metaswap.codefi.network/aggregatorMetadata`
+      return `${METASWAP_API_HOST}/aggregatorMetadata`
     case 'gasPrices':
-      return `https://api.metaswap.codefi.network/gasPrices`
+      return `${METASWAP_API_HOST}/gasPrices`
+    case 'refreshTime':
+      return `${METASWAP_API_HOST}/quoteRefreshRate`
     default:
       throw new Error('getBaseApi requires an api call type')
   }
@@ -326,6 +330,23 @@ export async function fetchSwapsFeatureLiveness() {
     { cacheRefreshTime: 600000 },
   )
   return status?.active
+}
+
+export async function fetchSwapsQuoteRefreshTime() {
+  const response = await fetchWithCache(
+    getBaseApi('refreshTime'),
+    { method: 'GET' },
+    { cacheRefreshTime: 600000 },
+  )
+
+  // We presently use milliseconds in the UI
+  if (typeof response?.seconds === 'number' && response.seconds > 0) {
+    return response.seconds * 1000
+  }
+
+  throw new Error(
+    `MetaMask - refreshTime provided invalid response: ${response}`,
+  )
 }
 
 export async function fetchTokenPrice(address) {
