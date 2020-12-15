@@ -37,10 +37,8 @@ describe('Fetch with cache', function () {
       .reply(200, '{"average": 2}')
 
     fakeStorage.getStorageItem.returns({
-      'https://fetchwithcache.metamask.io/price': {
-        cachedResponse: { average: 1 },
-        cachedTime: Date.now(),
-      },
+      cachedResponse: { average: 1 },
+      cachedTime: Date.now(),
     })
 
     const response = await fetchWithCache(
@@ -57,10 +55,8 @@ describe('Fetch with cache', function () {
       .reply(200, '{"average": 3}')
 
     fakeStorage.getStorageItem.returns({
-      'https://fetchwithcache.metamask.io/cached': {
-        cachedResponse: { average: 1 },
-        cachedTime: Date.now() - 1000,
-      },
+      cachedResponse: { average: 1 },
+      cachedTime: Date.now() - 1000,
     })
 
     const response = await fetchWithCache(
@@ -133,6 +129,45 @@ describe('Fetch with cache', function () {
           headers: { 'Content-Type': 'text/plain' },
         }),
       { message: 'fetchWithCache only supports JSON responses' },
+    )
+  })
+
+  it('should correctly cache responses from interwoven requests', async function () {
+    nock('https://fetchwithcache.metamask.io')
+      .get('/foo')
+      .reply(200, '{"average": 9}')
+    nock('https://fetchwithcache.metamask.io')
+      .get('/bar')
+      .reply(200, '{"average": 9}')
+
+    const testCache = {}
+    fakeStorage.getStorageItem.callsFake((key) => testCache[key])
+    fakeStorage.setStorageItem.callsFake((key, value) => {
+      testCache[key] = value
+    })
+
+    await Promise.all([
+      fetchWithCache(
+        'https://fetchwithcache.metamask.io/foo',
+        {},
+        { cacheRefreshTime: 123 },
+      ),
+      fetchWithCache(
+        'https://fetchwithcache.metamask.io/bar',
+        {},
+        { cacheRefreshTime: 123 },
+      ),
+    ])
+
+    assert.deepStrictEqual(
+      testCache['cachedFetch:https://fetchwithcache.metamask.io/foo']
+        .cachedResponse,
+      { average: 9 },
+    )
+    assert.deepStrictEqual(
+      testCache['cachedFetch:https://fetchwithcache.metamask.io/bar']
+        .cachedResponse,
+      { average: 9 },
     )
   })
 })
