@@ -650,7 +650,7 @@ describe('SwapsController', function () {
         sandbox
           .stub(swapsController, '_getERC20Allowance')
           .resolves(ethers.BigNumber.from(1))
-        
+
         const [newQuotes] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
           MOCK_FETCH_METADATA,
@@ -1633,6 +1633,6 @@ function getTopQuoteAndSavingsBaseExpectedResults() {
 
 function getMockQuoteRefreshTime() {
   return {
-    seconds: 45
+    seconds: 45,
   }
 }
