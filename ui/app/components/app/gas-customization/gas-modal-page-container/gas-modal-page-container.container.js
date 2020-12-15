@@ -321,7 +321,7 @@ function calcCustomGasLimit(customGasLimitInHex) {
 }
 
 function sumHexWEIsToRenderableEth(hexWEIs) {
-  const hexWEIsSum = hexWEIs.filter((n) => n).reduce(addHexes)
+  const hexWEIsSum = hexWEIs.filter(Boolean).reduce(addHexes)
   return formatETHFee(
     getValueFromWeiHex({
       value: hexWEIsSum,

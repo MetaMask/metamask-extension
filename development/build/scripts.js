@@ -116,11 +116,18 @@ function createScriptTasks({ browserPlatforms, livereload }) {
         }),
       )
     })
+
     // inpage must be built before contentscript
     // because inpage bundle result is included inside contentscript
     const contentscriptSubtask = createTask(
       `${taskPrefix}:contentscript`,
       createTaskForBuildJsExtensionContentscript({ devMode, testing }),
+    )
+
+    // this can run whenever
+    const disableConsoleSubtask = createTask(
+      `${taskPrefix}:disable-console`,
+      createTaskForBuildJsExtensionDisableConsole({ devMode }),
     )
 
     // task for initiating livereload
@@ -143,6 +150,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
     const allSubtasks = [
       ...standardSubtasks,
       contentscriptSubtask,
+      disableConsoleSubtask,
     ].map((subtask) => runInChildProcess(subtask))
     // const allSubtasks = [...standardSubtasks, contentscriptSubtask].map(subtask => (subtask))
     // make a parent task that runs each task in a child thread
@@ -163,6 +171,16 @@ function createScriptTasks({ browserPlatforms, livereload }) {
         : externalDependenciesMap[filename],
       devMode,
       testing,
+    })
+  }
+
+  function createTaskForBuildJsExtensionDisableConsole({ devMode }) {
+    const filename = 'disable-console'
+    return bundleTask({
+      label: filename,
+      filename: `${filename}.js`,
+      filepath: `./app/scripts/${filename}.js`,
+      devMode,
     })
   }
 

@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert'
 import { find } from 'lodash'
-import nanoid from 'nanoid'
 import sinon from 'sinon'
 
 import {
@@ -13,7 +12,6 @@ import { PermissionsController } from '../../../../../app/scripts/controllers/pe
 import { getRequestUserApprovalHelper, grantPermissions } from './helpers'
 
 import {
-  noop,
   constants,
   getters,
   getNotifyDomain,
@@ -49,6 +47,15 @@ const initPermController = (notifications = initNotifications()) => {
 }
 
 describe('permissions controller', function () {
+  describe('constructor', function () {
+    it('throws on undefined argument', function () {
+      assert.throws(
+        () => new PermissionsController(),
+        'should throw on undefined argument',
+      )
+    })
+  })
+
   describe('getAccounts', function () {
     let permController
 
@@ -1006,12 +1013,6 @@ describe('permissions controller', function () {
     })
 
     it('does nothing if called on non-existing request', async function () {
-      assert.equal(
-        permController.pendingApprovals.size,
-        0,
-        'pending approvals should be empty on init',
-      )
-
       sinon.spy(permController, 'finalizePermissionsRequest')
 
       const request = PERMS.approvedRequest(REQUEST_IDS.a, null)
@@ -1024,12 +1025,6 @@ describe('permissions controller', function () {
       assert.ok(
         permController.finalizePermissionsRequest.notCalled,
         'should not call finalizePermissionRequest',
-      )
-
-      assert.equal(
-        permController.pendingApprovals.size,
-        0,
-        'pending approvals should still be empty after request',
       )
     })
 
@@ -1047,12 +1042,6 @@ describe('permissions controller', function () {
 
       await permController.approvePermissionsRequest(request, null)
       await rejectionPromise
-
-      assert.equal(
-        permController.pendingApprovals.size,
-        0,
-        'pending approvals should be empty after rejection',
-      )
     })
 
     it('rejects request with no permissions', async function () {
@@ -1069,12 +1058,6 @@ describe('permissions controller', function () {
         ACCOUNTS.a.permitted,
       )
       await requestRejection
-
-      assert.equal(
-        permController.pendingApprovals.size,
-        0,
-        'pending approvals should be empty after rejection',
-      )
     })
 
     it('approves valid request', async function () {
@@ -1099,12 +1082,6 @@ describe('permissions controller', function () {
         perms,
         PERMS.finalizedRequests.eth_accounts(ACCOUNTS.a.permitted),
         'should produce expected approved permissions',
-      )
-
-      assert.equal(
-        permController.pendingApprovals.size,
-        0,
-        'pending approvals should be empty after approval',
       )
     })
 
@@ -1161,12 +1138,6 @@ describe('permissions controller', function () {
         PERMS.finalizedRequests.eth_accounts(ACCOUNTS.b.permitted),
         'second request should produce expected approved permissions',
       )
-
-      assert.equal(
-        permController.pendingApprovals.size,
-        0,
-        'pending approvals should be empty after approvals',
-      )
     })
   })
 
@@ -1179,21 +1150,13 @@ describe('permissions controller', function () {
     })
 
     it('does nothing if called on non-existing request', async function () {
-      assert.equal(
-        permController.pendingApprovals.size,
-        0,
-        'pending approvals should be empty on init',
+      permController.approvals.add = sinon.fake.throws(
+        new Error('should not call add'),
       )
 
       await assert.doesNotReject(
         permController.rejectPermissionsRequest(REQUEST_IDS.a),
         'should not throw on non-existing request',
-      )
-
-      assert.equal(
-        permController.pendingApprovals.size,
-        0,
-        'pending approvals should still be empty after request',
       )
     })
 
@@ -1206,12 +1169,6 @@ describe('permissions controller', function () {
 
       await permController.rejectPermissionsRequest(REQUEST_IDS.a)
       await requestRejection
-
-      assert.equal(
-        permController.pendingApprovals.size,
-        0,
-        'pending approvals should be empty after rejection',
-      )
     })
 
     it('rejects requests regardless of order', async function () {
@@ -1235,12 +1192,6 @@ describe('permissions controller', function () {
 
       await requestRejection1
       await requestRejection2
-
-      assert.equal(
-        permController.pendingApprovals.size,
-        0,
-        'pending approvals should be empty after approval',
-      )
     })
   })
 
@@ -1568,13 +1519,8 @@ describe('permissions controller', function () {
   })
 
   describe('miscellanea and edge cases', function () {
-    let permController
-
-    beforeEach(function () {
-      permController = initPermController()
-    })
-
     it('requestAccountsPermissionWithId calls _requestAccountsPermission with an explicit request ID', async function () {
+      const permController = initPermController()
       const _requestPermissions = sinon
         .stub(permController, '_requestPermissions')
         .resolves()
@@ -1587,44 +1533,6 @@ describe('permissions controller', function () {
         ),
       )
       _requestPermissions.restore()
-    })
-
-    it('_addPendingApproval: should throw if adding origin twice', function () {
-      const id = nanoid()
-      const origin = DOMAINS.a
-
-      permController._addPendingApproval(id, origin, noop, noop)
-
-      const otherId = nanoid()
-
-      assert.throws(
-        () => permController._addPendingApproval(otherId, origin, noop, noop),
-        ERRORS.pendingApprovals.duplicateOriginOrId(otherId, origin),
-        'should throw expected error',
-      )
-
-      assert.equal(
-        permController.pendingApprovals.size,
-        1,
-        'pending approvals should have single entry',
-      )
-
-      assert.equal(
-        permController.pendingApprovalOrigins.size,
-        1,
-        'pending approval origins should have single item',
-      )
-
-      assert.deepEqual(
-        permController.pendingApprovals.get(id),
-        { origin, resolve: noop, reject: noop },
-        'pending approvals should have expected entry',
-      )
-
-      assert.ok(
-        permController.pendingApprovalOrigins.has(origin),
-        'pending approval origins should have expected item',
-      )
     })
   })
 })
