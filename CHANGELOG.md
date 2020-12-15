@@ -1,6 +1,8 @@
 # Changelog
 
 ## Current Develop Branch
+
+## 8.1.9 Tue Dec 15 2020
 - [#10048](https://github.com/MetaMask/metamask-extension/pull/10048): Display boolean values when signing typed data
 
 ## 8.1.8 Wed Dec 09 2020
