@@ -121,12 +121,14 @@ const EMPTY_INIT_STATE = {
     topAggId: null,
     routeState: '',
     swapsFeatureIsLive: false,
+    swapsQuoteRefreshTime: 60000,
   },
 }
 
 const sandbox = sinon.createSandbox()
 const fetchTradesInfoStub = sandbox.stub()
 const fetchSwapsFeatureLivenessStub = sandbox.stub()
+const fetchSwapsQuoteRefreshTimeStub = sandbox.stub()
 
 describe('SwapsController', function () {
   let provider
@@ -140,6 +142,7 @@ describe('SwapsController', function () {
       tokenRatesStore: MOCK_TOKEN_RATES_STORE,
       fetchTradesInfo: fetchTradesInfoStub,
       fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
+      fetchSwapsQuoteRefreshTime: fetchSwapsQuoteRefreshTimeStub,
     })
   }
 
@@ -639,9 +642,9 @@ describe('SwapsController', function () {
         const quotes = await swapsController.fetchAndSetQuotes(undefined)
         assert.strictEqual(quotes, null)
       })
-
       it('calls fetchTradesInfo with the given fetchParams and returns the correct quotes', async function () {
         fetchTradesInfoStub.resolves(getMockQuotes())
+        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime())
 
         // Make it so approval is not required
         sandbox
@@ -682,9 +685,9 @@ describe('SwapsController', function () {
           true,
         )
       })
-
       it('performs the allowance check', async function () {
         fetchTradesInfoStub.resolves(getMockQuotes())
+        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime())
 
         // Make it so approval is not required
         const allowanceStub = sandbox
@@ -707,6 +710,7 @@ describe('SwapsController', function () {
 
       it('gets the gas limit if approval is required', async function () {
         fetchTradesInfoStub.resolves(MOCK_QUOTES_APPROVAL_REQUIRED)
+        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime())
 
         // Ensure approval is required
         sandbox
@@ -732,6 +736,7 @@ describe('SwapsController', function () {
 
       it('marks the best quote', async function () {
         fetchTradesInfoStub.resolves(getMockQuotes())
+        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime())
 
         // Make it so approval is not required
         sandbox
@@ -762,6 +767,7 @@ describe('SwapsController', function () {
         }
         const quotes = { ...getMockQuotes(), [bestAggId]: bestQuote }
         fetchTradesInfoStub.resolves(quotes)
+        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime())
 
         // Make it so approval is not required
         sandbox
@@ -779,6 +785,7 @@ describe('SwapsController', function () {
 
       it('does not mark as best quote if no conversion rate exists for destination token', async function () {
         fetchTradesInfoStub.resolves(getMockQuotes())
+        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime())
 
         // Make it so approval is not required
         sandbox
@@ -805,6 +812,7 @@ describe('SwapsController', function () {
         assert.deepStrictEqual(swapsState, {
           ...EMPTY_INIT_STATE.swapsState,
           tokens: old.tokens,
+          swapsQuoteRefreshTime: old.swapsQuoteRefreshTime,
         })
       })
 
@@ -850,8 +858,14 @@ describe('SwapsController', function () {
         const tokens = 'test'
         const fetchParams = 'test'
         const swapsFeatureIsLive = false
+        const swapsQuoteRefreshTime = 0
         swapsController.store.updateState({
-          swapsState: { tokens, fetchParams, swapsFeatureIsLive },
+          swapsState: {
+            tokens,
+            fetchParams,
+            swapsFeatureIsLive,
+            swapsQuoteRefreshTime,
+          },
         })
 
         swapsController.resetPostFetchState()
@@ -862,6 +876,7 @@ describe('SwapsController', function () {
           tokens,
           fetchParams,
           swapsFeatureIsLive,
+          swapsQuoteRefreshTime,
         })
       })
     })
@@ -1614,4 +1629,8 @@ function getTopQuoteAndSavingsBaseExpectedResults() {
       ethValueOfTokens: '1.9305',
     },
   }
+}
+
+function getMockQuoteRefreshTime() {
+  return 45000
 }

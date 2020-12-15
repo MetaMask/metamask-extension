@@ -224,6 +224,9 @@ const getSwapsState = (state) => state.metamask.swapsState
 export const getSwapsFeatureLiveness = (state) =>
   state.metamask.swapsState.swapsFeatureIsLive
 
+export const getSwapsQuoteRefreshTime = (state) =>
+  state.metamask.swapsState.swapsQuoteRefreshTime
+
 export const getBackgroundSwapRouteState = (state) =>
   state.metamask.swapsState.routeState
 

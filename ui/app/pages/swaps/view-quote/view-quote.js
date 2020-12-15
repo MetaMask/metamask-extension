@@ -28,6 +28,7 @@ import {
   signAndSendTransactions,
   getBackgroundSwapRouteState,
   swapsQuoteSelected,
+  getSwapsQuoteRefreshTime,
 } from '../../../ducks/swaps/swaps'
 import {
   conversionRateSelector,
@@ -115,6 +116,7 @@ export default function ViewQuote() {
   const topQuote = useSelector(getTopQuote)
   const usedQuote = selectedQuote || topQuote
   const tradeValue = usedQuote?.trade?.value ?? '0x0'
+  const swapsQuoteRefreshTime = useSelector(getSwapsQuoteRefreshTime)
 
   const { isBestQuote } = usedQuote
   const fetchParamsSourceToken = fetchParams?.sourceToken
@@ -263,14 +265,23 @@ export default function ViewQuote() {
   useEffect(() => {
     const currentTime = Date.now()
     const timeSinceLastFetched = currentTime - quotesLastFetched
-    if (timeSinceLastFetched > 60000 && !dispatchedSafeRefetch) {
+    if (
+      timeSinceLastFetched > swapsQuoteRefreshTime &&
+      !dispatchedSafeRefetch
+    ) {
       setDispatchedSafeRefetch(true)
       dispatch(safeRefetchQuotes())
-    } else if (timeSinceLastFetched > 60000) {
+    } else if (timeSinceLastFetched > swapsQuoteRefreshTime) {
       dispatch(setSwapsErrorKey(QUOTES_EXPIRED_ERROR))
       history.push(SWAPS_ERROR_ROUTE)
     }
-  }, [quotesLastFetched, dispatchedSafeRefetch, dispatch, history])
+  }, [
+    quotesLastFetched,
+    dispatchedSafeRefetch,
+    dispatch,
+    history,
+    swapsQuoteRefreshTime,
+  ])
 
   useEffect(() => {
     if (!originalApproveAmount && approveAmount) {

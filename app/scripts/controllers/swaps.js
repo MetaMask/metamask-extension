@@ -17,6 +17,7 @@ import {
 import {
   fetchTradesInfo as defaultFetchTradesInfo,
   fetchSwapsFeatureLiveness as defaultFetchSwapsFeatureLiveness,
+  fetchSwapsQuoteRefreshTime as defaultFetchSwapsQuoteRefreshTime,
 } from '../../../ui/app/pages/swaps/swaps.util'
 
 const METASWAP_ADDRESS = '0x881d40237659c251811cec9c364ef91dc08d300c'
@@ -27,6 +28,14 @@ const MAX_GAS_LIMIT = 2500000
 // To ensure that our serves are not spammed if MetaMask is left idle, we limit the number of fetches for quotes that are made on timed intervals.
 // 3 seems to be an appropriate balance of giving users the time they need when MetaMask is not left idle, and turning polling off when it is.
 const POLL_COUNT_LIMIT = 3
+
+// If for any reason the MetaSwap API fails to provide a refresh time,
+// provide a reasonable fallback to avoid further errors
+const FALLBACK_QUOTE_REFRESH_TIME = 60000
+
+// This is the amount of time to wait, after successfully fetching quotes
+// and their gas estimates, before fetching for new quotes
+const QUOTE_POLLING_DIFFERENCE_INTERVAL = 10 * 1000
 
 function calculateGasEstimateWithRefund(
   maxGas = MAX_GAS_LIMIT,
@@ -41,9 +50,6 @@ function calculateGasEstimateWithRefund(
 
   return gasEstimateWithRefund
 }
-
-// This is the amount of time to wait, after successfully fetching quotes and their gas estimates, before fetching for new quotes
-const QUOTE_POLLING_INTERVAL = 50 * 1000
 
 const initialState = {
   swapsState: {
@@ -61,6 +67,7 @@ const initialState = {
     topAggId: null,
     routeState: '',
     swapsFeatureIsLive: false,
+    swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
   },
 }
 
@@ -73,6 +80,7 @@ export default class SwapsController {
     tokenRatesStore,
     fetchTradesInfo = defaultFetchTradesInfo,
     fetchSwapsFeatureLiveness = defaultFetchSwapsFeatureLiveness,
+    fetchSwapsQuoteRefreshTime = defaultFetchSwapsQuoteRefreshTime,
   }) {
     this.store = new ObservableStore({
       swapsState: { ...initialState.swapsState },
@@ -80,6 +88,7 @@ export default class SwapsController {
 
     this._fetchTradesInfo = fetchTradesInfo
     this._fetchSwapsFeatureLiveness = fetchSwapsFeatureLiveness
+    this._fetchSwapsQuoteRefreshTime = fetchSwapsQuoteRefreshTime
 
     this.getBufferedGasLimit = getBufferedGasLimit
     this.tokenRatesStore = tokenRatesStore
@@ -101,11 +110,31 @@ export default class SwapsController {
     this._setupSwapsLivenessFetching()
   }
 
+  // Sets the refresh rate for quote updates from the MetaSwap API
+  async _setSwapsQuoteRefreshTime() {
+    // Default to fallback time unless API returns valid response
+    let swapsQuoteRefreshTime = FALLBACK_QUOTE_REFRESH_TIME
+    try {
+      swapsQuoteRefreshTime = await this._fetchSwapsQuoteRefreshTime()
+    } catch (e) {
+      console.error('Request for swaps quote refresh time failed: ', e)
+    }
+
+    const { swapsState } = this.store.getState()
+    this.store.updateState({
+      swapsState: { ...swapsState, swapsQuoteRefreshTime },
+    })
+  }
+
   // Once quotes are fetched, we poll for new ones to keep the quotes up to date. Market and aggregator contract conditions can change fast enough
   // that quotes will no longer be available after 1 or 2 minutes. When fetchAndSetQuotes is first called it, receives fetch that parameters are stored in
   // state. These stored parameters are used on subsequent calls made during polling.
   // Note: we stop polling after 3 requests, until new quotes are explicitly asked for. The logic that enforces that maximum is in the body of fetchAndSetQuotes
   pollForNewQuotes() {
+    const {
+      swapsState: { swapsQuoteRefreshTime },
+    } = this.store.getState()
+
     this.pollingTimeout = setTimeout(() => {
       const { swapsState } = this.store.getState()
       this.fetchAndSetQuotes(
@@ -113,7 +142,7 @@ export default class SwapsController {
         swapsState.fetchParams?.metaData,
         true,
       )
-    }, QUOTE_POLLING_INTERVAL)
+    }, swapsQuoteRefreshTime - QUOTE_POLLING_DIFFERENCE_INTERVAL)
   }
 
   stopPollingForQuotes() {
@@ -128,7 +157,6 @@ export default class SwapsController {
     if (!fetchParams) {
       return null
     }
-
     // Every time we get a new request that is not from the polling, we reset the poll count so we can poll for up to three more sets of quotes with these new params.
     if (!isPolledRequest) {
       this.pollCount = 0
@@ -144,7 +172,10 @@ export default class SwapsController {
     const indexOfCurrentCall = this.indexOfNewestCallInFlight + 1
     this.indexOfNewestCallInFlight = indexOfCurrentCall
 
-    let newQuotes = await this._fetchTradesInfo(fetchParams)
+    let [newQuotes] = await Promise.all([
+      this._fetchTradesInfo(fetchParams),
+      this._setSwapsQuoteRefreshTime(),
+    ])
 
     newQuotes = mapValues(newQuotes, (quote) => ({
       ...quote,
@@ -422,6 +453,7 @@ export default class SwapsController {
         tokens: swapsState.tokens,
         fetchParams: swapsState.fetchParams,
         swapsFeatureIsLive: swapsState.swapsFeatureIsLive,
+        swapsQuoteRefreshTime: swapsState.swapsQuoteRefreshTime,
       },
     })
     clearTimeout(this.pollingTimeout)
@@ -435,6 +467,7 @@ export default class SwapsController {
         ...initialState.swapsState,
         tokens: swapsState.tokens,
         swapsFeatureIsLive: swapsState.swapsFeatureIsLive,
+        swapsQuoteRefreshTime: swapsState.swapsQuoteRefreshTime,
       },
     })
     clearTimeout(this.pollingTimeout)
