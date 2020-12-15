@@ -332,7 +332,7 @@ export async function fetchSwapsFeatureLiveness() {
   return status?.active
 }
 
-export async function fetchSwapsQuoteRefreshTime(defaultValue = 0) {
+export async function fetchSwapsQuoteRefreshTime() {
   const response = await fetchWithCache(
     getBaseApi('refreshTime'),
     { method: 'GET' },
@@ -340,11 +340,13 @@ export async function fetchSwapsQuoteRefreshTime(defaultValue = 0) {
   )
 
   // We presently use milliseconds in the UI
-  if (response?.seconds) {
+  if (typeof response?.seconds === 'number' && response.seconds > 0) {
     return response.seconds * 1000
   }
 
-  return defaultValue
+  throw new Error(
+    `MetaMask - refreshTime provided invalid response: ${response}`,
+  )
 }
 
 export async function fetchTokenPrice(address) {

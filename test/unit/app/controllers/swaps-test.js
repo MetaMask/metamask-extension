@@ -121,7 +121,7 @@ const EMPTY_INIT_STATE = {
     topAggId: null,
     routeState: '',
     swapsFeatureIsLive: false,
-    swapsQuoteRefreshTime: 0,
+    swapsQuoteRefreshTime: 60000,
   },
 }
 

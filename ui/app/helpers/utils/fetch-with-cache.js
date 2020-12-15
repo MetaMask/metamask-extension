@@ -48,7 +48,6 @@ const fetchWithCache = async (
     cachedResponse: responseJson,
     cachedTime: currentTime,
   }
-
   cachedFetch[url] = cacheEntry
   await setStorageItem('cachedFetch', cachedFetch)
   return responseJson

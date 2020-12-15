@@ -67,7 +67,7 @@ const initialState = {
     topAggId: null,
     routeState: '',
     swapsFeatureIsLive: false,
-    swapsQuoteRefreshTime: 0,
+    swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
   },
 }
 
@@ -115,9 +115,7 @@ export default class SwapsController {
     // Default to fallback time unless API returns valid response
     let swapsQuoteRefreshTime = FALLBACK_QUOTE_REFRESH_TIME
     try {
-      swapsQuoteRefreshTime = await this._fetchSwapsQuoteRefreshTime(
-        FALLBACK_QUOTE_REFRESH_TIME,
-      )
+      swapsQuoteRefreshTime = await this._fetchSwapsQuoteRefreshTime()
     } catch (e) {
       console.error('Request for swaps quote refresh time failed: ', e)
     }
