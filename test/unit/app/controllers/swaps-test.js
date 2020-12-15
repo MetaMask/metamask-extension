@@ -642,15 +642,15 @@ describe('SwapsController', function () {
         const quotes = await swapsController.fetchAndSetQuotes(undefined)
         assert.strictEqual(quotes, null)
       })
-
       it('calls fetchTradesInfo with the given fetchParams and returns the correct quotes', async function () {
         fetchTradesInfoStub.resolves(getMockQuotes())
+        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime())
 
         // Make it so approval is not required
         sandbox
           .stub(swapsController, '_getERC20Allowance')
           .resolves(ethers.BigNumber.from(1))
-
+        
         const [newQuotes] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
           MOCK_FETCH_METADATA,
@@ -685,9 +685,9 @@ describe('SwapsController', function () {
           true,
         )
       })
-
       it('performs the allowance check', async function () {
         fetchTradesInfoStub.resolves(getMockQuotes())
+        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime())
 
         // Make it so approval is not required
         const allowanceStub = sandbox
@@ -710,6 +710,7 @@ describe('SwapsController', function () {
 
       it('gets the gas limit if approval is required', async function () {
         fetchTradesInfoStub.resolves(MOCK_QUOTES_APPROVAL_REQUIRED)
+        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime())
 
         // Ensure approval is required
         sandbox
@@ -735,6 +736,7 @@ describe('SwapsController', function () {
 
       it('marks the best quote', async function () {
         fetchTradesInfoStub.resolves(getMockQuotes())
+        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime())
 
         // Make it so approval is not required
         sandbox
@@ -765,6 +767,7 @@ describe('SwapsController', function () {
         }
         const quotes = { ...getMockQuotes(), [bestAggId]: bestQuote }
         fetchTradesInfoStub.resolves(quotes)
+        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime())
 
         // Make it so approval is not required
         sandbox
@@ -782,6 +785,7 @@ describe('SwapsController', function () {
 
       it('does not mark as best quote if no conversion rate exists for destination token', async function () {
         fetchTradesInfoStub.resolves(getMockQuotes())
+        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime())
 
         // Make it so approval is not required
         sandbox
@@ -1624,5 +1628,11 @@ function getTopQuoteAndSavingsBaseExpectedResults() {
       metaMaskFeeInEth: '0.0195',
       ethValueOfTokens: '1.9305',
     },
+  }
+}
+
+function getMockQuoteRefreshTime() {
+  return {
+    seconds: 45
   }
 }
