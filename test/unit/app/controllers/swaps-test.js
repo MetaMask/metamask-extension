@@ -1632,7 +1632,5 @@ function getTopQuoteAndSavingsBaseExpectedResults() {
 }
 
 function getMockQuoteRefreshTime() {
-  return {
-    seconds: 45,
-  }
+  return 45000
 }
