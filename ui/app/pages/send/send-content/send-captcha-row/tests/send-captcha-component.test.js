@@ -16,7 +16,7 @@ const propsMethodSpies = {
 const props = {
   ...propsMethodSpies,
   hexData: '16f',
-  isVerified: false
+  isVerified: false,
 }
 
 describe('SendCaptchaRow Component', function () {
@@ -31,10 +31,9 @@ describe('SendCaptchaRow Component', function () {
   })
 
   beforeEach(function () {
-    wrapper = mount(
-      <SendCaptchaRow {...props} />,
-      { context: { t: (str) => `${str}_t` } }
-    )
+    wrapper = mount(<SendCaptchaRow {...props} />, {
+      context: { t: (str) => `${str}_t` },
+    })
     instance = wrapper.instance()
   })
 
@@ -52,7 +51,7 @@ describe('SendCaptchaRow Component', function () {
   })
 
   describe('componentDidMount', function () {
-    it('should call componentDidMount once', function() {
+    it('should call componentDidMount once', function () {
       assert(SendCaptchaRow.prototype.componentDidMount.calledOnce)
     })
 
@@ -64,8 +63,8 @@ describe('SendCaptchaRow Component', function () {
     })
   })
 
-  describe('updateData', function() {
-    it('should call updateData in user solve captcha puzzle', function() {
+  describe('updateData', function () {
+    it('should call updateData in user solve captcha puzzle', function () {
       SendCaptchaRow.prototype.updateData.resetHistory()
       SendCaptchaRow.prototype.onCaptchaVerified.resetHistory()
       assert.strictEqual(SendCaptchaRow.prototype.updateData.callCount, 0)
@@ -73,7 +72,7 @@ describe('SendCaptchaRow Component', function () {
       assert.strictEqual(SendCaptchaRow.prototype.updateData.callCount, 1)
     })
 
-    it('should not call updateData when user close the captcha', function() {
+    it('should not call updateData when user close the captcha', function () {
       SendCaptchaRow.prototype.updateData.resetHistory()
       SendCaptchaRow.prototype.onCaptchaClosed.resetHistory()
       assert.strictEqual(SendCaptchaRow.prototype.updateData.callCount, 0)
@@ -81,59 +80,77 @@ describe('SendCaptchaRow Component', function () {
       assert.strictEqual(SendCaptchaRow.prototype.updateData.callCount, 0)
     })
 
-    it('should calculate gas with proof of humanity postfix with value 0 in the transaction data if user has not solve the captcha puzzle', function() {
+    it('should calculate gas with proof of humanity postfix with value 0 in the transaction data if user has not solve the captcha puzzle', function () {
       propsMethodSpies.updateGas.resetHistory()
       assert.strictEqual(propsMethodSpies.updateGas.callCount, 0)
       instance.updateData()
       assert.strictEqual(propsMethodSpies.updateGas.callCount, 1)
       assert.deepEqual(propsMethodSpies.updateGas.getCall(0).args[0], {
-        data: appendProofOfHumanityToData(props.hexData, false)
+        data: appendProofOfHumanityToData(props.hexData, false),
       })
     })
 
-    it('should calculate gas with proof of humanity postfix with value 1 in the transaction data if user has solve the captcha puzzle', function() {
-      propsMethodSpies.updateGas.resetHistory();
+    it('should calculate gas with proof of humanity postfix with value 1 in the transaction data if user has solve the captcha puzzle', function () {
+      propsMethodSpies.updateGas.resetHistory()
       assert.strictEqual(propsMethodSpies.updateGas.callCount, 0)
       wrapper.setProps({ isVerified: true })
       wrapper.instance().updateData()
       assert.strictEqual(propsMethodSpies.updateGas.callCount, 1)
       assert.deepEqual(propsMethodSpies.updateGas.getCall(0).args[0], {
-        data: appendProofOfHumanityToData(props.hexData, true)
+        data: appendProofOfHumanityToData(props.hexData, true),
       })
-    });
+    })
 
-    it('should add proof of humanity postfix with value 0 to the transaction data if user have not solved the captcha puzzle before', function() {
-      propsMethodSpies.updateSendHexData.resetHistory();
+    it('should add proof of humanity postfix with value 0 to the transaction data if user have not solved the captcha puzzle before', function () {
+      propsMethodSpies.updateSendHexData.resetHistory()
       assert.strictEqual(propsMethodSpies.updateSendHexData.callCount, 0)
-      instance.updateData();
+      instance.updateData()
       assert.strictEqual(propsMethodSpies.updateSendHexData.callCount, 1)
-      assert.strictEqual(propsMethodSpies.updateSendHexData.getCall(0).args[0], appendProofOfHumanityToData(props.hexData, false))
-    });
+      assert.strictEqual(
+        propsMethodSpies.updateSendHexData.getCall(0).args[0],
+        appendProofOfHumanityToData(props.hexData, false),
+      )
+    })
 
-    it('should add proof of humanity postfix with value 1 postfix to the transaction data if user have solved the captcha puzzle before', function() {
-      propsMethodSpies.updateSendHexData.resetHistory();
+    it('should add proof of humanity postfix with value 1 postfix to the transaction data if user have solved the captcha puzzle before', function () {
+      propsMethodSpies.updateSendHexData.resetHistory()
       assert.strictEqual(propsMethodSpies.updateSendHexData.callCount, 0)
       wrapper.setProps({ isVerified: true })
       wrapper.instance().updateData()
       assert.strictEqual(propsMethodSpies.updateSendHexData.callCount, 1)
-      assert.strictEqual(propsMethodSpies.updateSendHexData.getCall(0).args[0], appendProofOfHumanityToData(props.hexData, true))
-    });
+      assert.strictEqual(
+        propsMethodSpies.updateSendHexData.getCall(0).args[0],
+        appendProofOfHumanityToData(props.hexData, true),
+      )
+    })
 
-    it('should call updateSendIsHcaptchaVerified in updateData if user is not verified', function() {
-      propsMethodSpies.updateSendIsHcaptchaVerified.resetHistory();
-      assert.strictEqual(propsMethodSpies.updateSendIsHcaptchaVerified.callCount, 0)
+    it('should call updateSendIsHcaptchaVerified in updateData if user is not verified', function () {
+      propsMethodSpies.updateSendIsHcaptchaVerified.resetHistory()
+      assert.strictEqual(
+        propsMethodSpies.updateSendIsHcaptchaVerified.callCount,
+        0,
+      )
       wrapper.setProps({ isVerified: false })
       wrapper.instance().updateData()
-      assert.strictEqual(propsMethodSpies.updateSendIsHcaptchaVerified.callCount, 1)
-    });
+      assert.strictEqual(
+        propsMethodSpies.updateSendIsHcaptchaVerified.callCount,
+        1,
+      )
+    })
 
-    it('should not call updateSendIsHcaptchaVerified in updateData if user is already verified', function() {
-      propsMethodSpies.updateSendIsHcaptchaVerified.resetHistory();
-      assert.strictEqual(propsMethodSpies.updateSendIsHcaptchaVerified.callCount, 0)
+    it('should not call updateSendIsHcaptchaVerified in updateData if user is already verified', function () {
+      propsMethodSpies.updateSendIsHcaptchaVerified.resetHistory()
+      assert.strictEqual(
+        propsMethodSpies.updateSendIsHcaptchaVerified.callCount,
+        0,
+      )
       wrapper.setProps({ isVerified: true })
       wrapper.instance().updateData()
-      assert.strictEqual(propsMethodSpies.updateSendIsHcaptchaVerified.callCount, 0)
-    });
+      assert.strictEqual(
+        propsMethodSpies.updateSendIsHcaptchaVerified.callCount,
+        0,
+      )
+    })
   })
 
   describe('render', function () {

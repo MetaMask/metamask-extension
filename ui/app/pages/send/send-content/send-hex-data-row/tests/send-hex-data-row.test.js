@@ -9,8 +9,8 @@ import SendRowWrapper from '../../send-row-wrapper/send-row-wrapper.component'
 
 const eventMock = {
   target: {
-    value: '16f10a'
-  }
+    value: '16f10a',
+  },
 }
 
 const propsMethodSpies = {
@@ -20,7 +20,7 @@ const propsMethodSpies = {
 
 const props = {
   ...propsMethodSpies,
-  isUserVerifiedByCaptcha: false
+  isUserVerifiedByCaptcha: false,
 }
 
 describe('SendHexDataRow Component', function () {
@@ -32,10 +32,9 @@ describe('SendHexDataRow Component', function () {
   })
 
   beforeEach(function () {
-    wrapper = mount(
-      <SendHexDataRow {...props} />,
-      { context: { t: (str) => `${str}_t` } }
-    )
+    wrapper = mount(<SendHexDataRow {...props} />, {
+      context: { t: (str) => `${str}_t` },
+    })
     instance = wrapper.instance()
   })
 
@@ -49,52 +48,64 @@ describe('SendHexDataRow Component', function () {
     sinon.restore()
   })
 
-  describe('onInput', function() {
-    it('should calculate gas with proof of humanity postfix with value 0 in the transaction data if user is not verified by hcaptcha', function() {
+  describe('onInput', function () {
+    it('should calculate gas with proof of humanity postfix with value 0 in the transaction data if user is not verified by hcaptcha', function () {
       propsMethodSpies.updateGas.resetHistory()
       assert.strictEqual(propsMethodSpies.updateGas.callCount, 0)
       instance.onInput(eventMock)
       assert.strictEqual(propsMethodSpies.updateGas.callCount, 1)
       assert.deepEqual(propsMethodSpies.updateGas.getCall(0).args[0], {
-        data: appendProofOfHumanityToData(eventMock.target.value, false)
+        data: appendProofOfHumanityToData(eventMock.target.value, false),
       })
     })
 
-    it('should calculate gas with proof of humanity postfix with value 1 in the transaction data if user is verified by hcaptcha', function() {
+    it('should calculate gas with proof of humanity postfix with value 1 in the transaction data if user is verified by hcaptcha', function () {
       propsMethodSpies.updateGas.resetHistory()
       assert.strictEqual(propsMethodSpies.updateGas.callCount, 0)
       wrapper.setProps({ isUserVerifiedByCaptcha: true })
       wrapper.instance().onInput(eventMock)
       assert.strictEqual(propsMethodSpies.updateGas.callCount, 1)
       assert.deepEqual(propsMethodSpies.updateGas.getCall(0).args[0], {
-        data: appendProofOfHumanityToData(eventMock.target.value, true)
+        data: appendProofOfHumanityToData(eventMock.target.value, true),
       })
     })
 
-    it('should add proof of humanity postfix with value 0 to the transaction data data if user is not verified by hcaptcha', function() {
+    it('should add proof of humanity postfix with value 0 to the transaction data data if user is not verified by hcaptcha', function () {
       propsMethodSpies.updateSendHexData.resetHistory()
       assert.strictEqual(propsMethodSpies.updateSendHexData.callCount, 0)
       instance.onInput(eventMock)
       assert.strictEqual(propsMethodSpies.updateSendHexData.callCount, 1)
-      assert.strictEqual(propsMethodSpies.updateSendHexData.getCall(0).args[0], appendProofOfHumanityToData(eventMock.target.value, false))
+      assert.strictEqual(
+        propsMethodSpies.updateSendHexData.getCall(0).args[0],
+        appendProofOfHumanityToData(eventMock.target.value, false),
+      )
     })
 
-    it('should add proof of humanity postfix with value 1 to the transaction data if user is verified by hcaptcha', function() {
+    it('should add proof of humanity postfix with value 1 to the transaction data if user is verified by hcaptcha', function () {
       propsMethodSpies.updateSendHexData.resetHistory()
       assert.strictEqual(propsMethodSpies.updateGas.callCount, 0)
       wrapper.setProps({ isUserVerifiedByCaptcha: true })
       wrapper.instance().onInput(eventMock)
       assert.strictEqual(propsMethodSpies.updateSendHexData.callCount, 1)
-      assert.strictEqual(propsMethodSpies.updateSendHexData.getCall(0).args[0], appendProofOfHumanityToData(eventMock.target.value, true))
+      assert.strictEqual(
+        propsMethodSpies.updateSendHexData.getCall(0).args[0],
+        appendProofOfHumanityToData(eventMock.target.value, true),
+      )
     })
 
-    it('should not add proof of humanity postfix to the transaction data if it is smart contract', function() {
+    it('should not add proof of humanity postfix to the transaction data if it is smart contract', function () {
       propsMethodSpies.updateSendHexData.resetHistory()
       assert.strictEqual(propsMethodSpies.updateGas.callCount, 0)
-      wrapper.setProps({ isUserVerifiedByCaptcha: true, isReceiverContractAccount: true })
+      wrapper.setProps({
+        isUserVerifiedByCaptcha: true,
+        isReceiverContractAccount: true,
+      })
       wrapper.instance().onInput(eventMock)
       assert.strictEqual(propsMethodSpies.updateSendHexData.callCount, 1)
-      assert.strictEqual(propsMethodSpies.updateSendHexData.getCall(0).args[0], eventMock.target.value)
+      assert.strictEqual(
+        propsMethodSpies.updateSendHexData.getCall(0).args[0],
+        eventMock.target.value,
+      )
     })
   })
 

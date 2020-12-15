@@ -2,13 +2,13 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import PageContainerContent from '../../../components/ui/page-container/page-container-content.component'
 import Dialog from '../../../components/ui/dialog'
+import { isSmartContractAddress } from '../../../helpers/utils/transactions.util'
+import { getStorageItem } from '../../../../lib/storage-helpers'
 import SendAmountRow from './send-amount-row'
 import SendGasRow from './send-gas-row'
 import SendHexDataRow from './send-hex-data-row'
 import SendAssetRow from './send-asset-row'
 import SendCaptchaRow from './send-captcha-row'
-import { isSmartContractAddress } from '../../../helpers/utils/transactions.util'
-import { getStorageItem } from '../../../../lib/storage-helpers'
 
 export default class SendContent extends Component {
   static contextTypes = {
@@ -22,22 +22,24 @@ export default class SendContent extends Component {
     contact: PropTypes.object,
     isOwnedAccount: PropTypes.bool,
     warning: PropTypes.string,
-    isUserVerifiedByCaptcha: PropTypes.bool,
     to: PropTypes.string,
-    updateSendIsHcaptchaVerified: PropTypes.func.isRequired
+    updateSendIsHcaptchaVerified: PropTypes.func.isRequired,
   }
 
   state = {
     isUserVerified: false,
-    isReceiverContractAccount: false
+    isReceiverContractAccount: false,
   }
 
   async componentDidMount() {
     const { to, updateSendIsHcaptchaVerified } = this.props
     const isUserVerifiedByCaptcha = await getStorageItem('IS_USER_VERIFIED')
-    updateSendIsHcaptchaVerified(!!isUserVerifiedByCaptcha)
+    updateSendIsHcaptchaVerified(Boolean(isUserVerifiedByCaptcha))
     const isReceiverContractAccount = await isSmartContractAddress(to)
-    this.setState({ isUserVerified: isUserVerifiedByCaptcha, isReceiverContractAccount })
+    this.setState({
+      isUserVerified: isUserVerifiedByCaptcha,
+      isReceiverContractAccount,
+    })
   }
 
   updateGas = (updateData) => this.props.updateGas(updateData)
@@ -60,11 +62,9 @@ export default class SendContent extends Component {
               isReceiverContractAccount={isReceiverContractAccount}
             />
           )}
-          {!isUserVerified && !isReceiverContractAccount &&
-            <SendCaptchaRow
-              updateGas={this.updateGas}
-            />
-          }
+          {!isUserVerified && !isReceiverContractAccount && (
+            <SendCaptchaRow updateGas={this.updateGas} />
+          )}
         </div>
       </PageContainerContent>
     )

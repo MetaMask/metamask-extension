@@ -7,7 +7,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(SendHexDataRow)
 function mapStateToProps(state) {
   return {
     data: state.metamask.send.data,
-    isUserVerifiedByCaptcha: state.metamask.isUserVerifiedByCaptcha
+    isUserVerifiedByCaptcha: state.metamask.isUserVerifiedByCaptcha,
   }
 }
 

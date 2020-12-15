@@ -1,14 +1,15 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { appendProofOfHumanityToData } from '../../send.utils';
+import { appendProofOfHumanityToData } from '../../send.utils'
 import SendRowWrapper from '../send-row-wrapper'
+
 export default class SendHexDataRow extends Component {
   static propTypes = {
     inError: PropTypes.bool,
     updateSendHexData: PropTypes.func.isRequired,
     updateGas: PropTypes.func.isRequired,
     isUserVerifiedByCaptcha: PropTypes.bool,
-    isReceiverContractAccount: PropTypes.bool
+    isReceiverContractAccount: PropTypes.bool,
   }
 
   static contextTypes = {
@@ -20,10 +21,11 @@ export default class SendHexDataRow extends Component {
       updateSendHexData,
       updateGas,
       isUserVerifiedByCaptcha,
-      isReceiverContractAccount
+      isReceiverContractAccount,
     } = this.props
     const data = event.target.value.replace(/\n/gu, '') || null
-    const hexData = isReceiverContractAccount ? data
+    const hexData = isReceiverContractAccount
+      ? data
       : appendProofOfHumanityToData(data, isUserVerifiedByCaptcha)
     updateSendHexData(hexData)
     updateGas({ data: hexData })

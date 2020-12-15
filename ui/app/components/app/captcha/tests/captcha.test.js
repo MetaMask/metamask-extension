@@ -1,6 +1,6 @@
 import assert from 'assert'
 import React from 'react'
-import sinon from 'sinon';
+import sinon from 'sinon'
 import { shallow } from 'enzyme'
 
 import Captcha from '..'
@@ -9,7 +9,7 @@ describe('Captcha component', function () {
   let wrapper
 
   const props = {
-    elementId: '271edf'
+    elementId: '271edf',
   }
 
   before(function () {
@@ -20,7 +20,7 @@ describe('Captcha component', function () {
     wrapper = shallow(<Captcha {...props} />)
   })
 
-  it('calls componentDidMount', function() {
+  it('calls componentDidMount', function () {
     assert(Captcha.prototype.componentDidMount.calledOnce)
   })
 

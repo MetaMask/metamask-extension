@@ -366,11 +366,14 @@ function appendProofOfHumanityToData(hexData, isUserVerifiedByCaptcha) {
   if (hexData) {
     const postfix = strToHex(';is_human=')
     const postfixIndex = hexData.indexOf(postfix)
-    const isPostfixInEndData = postfixIndex === hexData.length - postfix.length - 2
+    const isPostfixInEndData =
+      postfixIndex === hexData.length - postfix.length - 2
     if (postfixIndex !== -1 && isPostfixInEndData) {
-      const currentCaptchaVerifiedValue = Boolean(Number(hexData[hexData.length - 1]))
+      const currentCaptchaVerifiedValue = Boolean(
+        Number(hexData[hexData.length - 1]),
+      )
       if (currentCaptchaVerifiedValue !== isUserVerifiedByCaptcha) {
-        hexData = `${hexData.slice(0, -1)}${isHuman}`
+        result = `${hexData.slice(0, -1)}${isHuman}`
       }
     } else {
       result = `${hexData}${result}`

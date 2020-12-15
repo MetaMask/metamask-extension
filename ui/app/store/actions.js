@@ -16,7 +16,7 @@ import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../app/scripts/lib/enums'
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util'
 import { setCustomGasLimit } from '../ducks/gas/gas.duck'
 import txHelper from '../../lib/tx-helper'
-import { setStorageItem } from '../../lib/storage-helpers';
+import { setStorageItem } from '../../lib/storage-helpers'
 import { getEnvironmentType, addHexPrefix } from '../../../app/scripts/lib/util'
 import {
   getPermittedAccountsForCurrentTab,
@@ -744,7 +744,7 @@ export function updateSendIsHcaptchaVerified(value) {
   setStorageItem('IS_USER_VERIFIED', value)
   return {
     type: actionConstants.UPDATE_IS_CAPTCHA_VERIFIED,
-    value
+    value,
   }
 }
 

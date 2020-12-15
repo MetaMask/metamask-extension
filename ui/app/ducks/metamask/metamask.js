@@ -1,5 +1,4 @@
 import * as actionConstants from '../../store/actionConstants'
-import { getStorageItem } from '../../../lib/storage-helpers'
 import { ALERT_TYPES } from '../../../../shared/constants/alerts'
 
 export default function reduceMetamask(state = {}, action) {
@@ -30,7 +29,7 @@ export default function reduceMetamask(state = {}, action) {
       editingTransactionId: null,
       toNickname: '',
       ensResolution: null,
-      ensResolutionError: ''
+      ensResolutionError: '',
     },
     useBlockie: false,
     featureFlags: {},
@@ -266,8 +265,8 @@ export default function reduceMetamask(state = {}, action) {
           errors: {},
           maxModeOn: false,
           editingTransactionId: null,
-          toNickname: ''
-        }
+          toNickname: '',
+        },
       }
 
     case actionConstants.UPDATE_TRANSACTION_PARAMS: {

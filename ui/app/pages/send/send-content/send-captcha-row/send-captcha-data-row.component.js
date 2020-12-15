@@ -1,25 +1,23 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { appendProofOfHumanityToData } from '../../send.utils';
+import { appendProofOfHumanityToData } from '../../send.utils'
 import HCaptcha from '../../../../components/app/captcha'
 
 export default class CaptchaRowComponent extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      hasTriedSolveCaptchaChallenge: false,
       isCaptchaChallengePassed: false,
     }
   }
 
-  componentDidMount () {
-    this.updateData();
+  componentDidMount() {
+    this.updateData()
   }
 
   onCaptchaVerified = () => {
     this.setState(
       {
-        hasTriedSolveCaptchaChallenge: true,
         isCaptchaChallengePassed: true,
       },
       this.updateData,
@@ -27,12 +25,9 @@ export default class CaptchaRowComponent extends Component {
   }
 
   onCaptchaClosed = () => {
-    this.setState(
-      {
-        hasTriedSolveCaptchaChallenge: true,
-        isCaptchaChallengePassed: false,
-      }
-    )
+    this.setState({
+      isCaptchaChallengePassed: false,
+    })
   }
 
   updateData() {
@@ -47,8 +42,11 @@ export default class CaptchaRowComponent extends Component {
     if (!isVerified) {
       updateSendIsHcaptchaVerified(isCaptchaChallengePassed)
     }
-    const data = appendProofOfHumanityToData(hexData, isCaptchaChallengePassed || isVerified)
-    updateSendHexData(data);
+    const data = appendProofOfHumanityToData(
+      hexData,
+      isCaptchaChallengePassed || isVerified,
+    )
+    updateSendHexData(data)
     updateGas({ data })
   }
 
@@ -68,4 +66,7 @@ CaptchaRowComponent.propTypes = {
   hexData: PropTypes.string,
   updateSendHexData: PropTypes.func.isRequired,
   lang: PropTypes.string,
+  updateSendIsHcaptchaVerified: PropTypes.func,
+  updateGas: PropTypes.func,
+  isVerified: PropTypes.bool,
 }

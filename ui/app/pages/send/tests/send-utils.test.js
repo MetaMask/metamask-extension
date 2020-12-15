@@ -62,7 +62,7 @@ const {
   isBalanceSufficient,
   isTokenBalanceSufficient,
   removeLeadingZeroes,
-  appendProofOfHumanityToData
+  appendProofOfHumanityToData,
 } = sendUtils
 
 describe('send utils', function () {
@@ -512,22 +512,43 @@ describe('send utils', function () {
 
   describe('appendProofOfHumanityToData', function () {
     it('should return converted string in hex format with proof of humanity postfix with value 1 if user is verified by hCaptcha', function () {
-      assert.deepEqual(appendProofOfHumanityToData(null, true), `0x${strToHex(';is_human=1')}`)
+      assert.deepEqual(
+        appendProofOfHumanityToData(null, true),
+        `0x${strToHex(';is_human=1')}`,
+      )
     })
     it('should return converted string in hex format with proof of humanity postfix with value 0 if user not is verified by hCaptcha', function () {
-      assert.deepEqual(appendProofOfHumanityToData(null, false), `0x${strToHex(';is_human=0')}`)
+      assert.deepEqual(
+        appendProofOfHumanityToData(null, false),
+        `0x${strToHex(';is_human=0')}`,
+      )
     })
     it('should not remove ;is_human=1 substring if it is part of data in case user not is verified by hCaptcha', function () {
-      assert.deepEqual(appendProofOfHumanityToData('16f16;isHuman=1f16', false), `0x16f16;isHuman=1f16${strToHex(';is_human=0')}`)
+      assert.deepEqual(
+        appendProofOfHumanityToData('16f16;isHuman=1f16', false),
+        `0x16f16;isHuman=1f16${strToHex(';is_human=0')}`,
+      )
     })
     it('should not remove ;is_human=1 substring if it is part of data in case user is verified by hCaptcha', function () {
-      assert.deepEqual(appendProofOfHumanityToData('16f16;isHuman=1f16', true), `0x16f16;isHuman=1f16${strToHex(';is_human=1')}`)
+      assert.deepEqual(
+        appendProofOfHumanityToData('16f16;isHuman=1f16', true),
+        `0x16f16;isHuman=1f16${strToHex(';is_human=1')}`,
+      )
     })
     it('should not remove ;is_human=1 in hex format substring if it is part of data in case user is verified by hCaptcha', function () {
-      assert.deepEqual(appendProofOfHumanityToData(`16f16${strToHex(';is_human=1')}f16`, true), `0x16f16${strToHex(';is_human=1')}f16${strToHex(';is_human=1')}`)
+      assert.deepEqual(
+        appendProofOfHumanityToData(`16f16${strToHex(';is_human=1')}f16`, true),
+        `0x16f16${strToHex(';is_human=1')}f16${strToHex(';is_human=1')}`,
+      )
     })
     it('should not remove ;is_human=1 in hex format substring if it is part of data in case user is not verified by hCaptcha', function () {
-      assert.deepEqual(appendProofOfHumanityToData(`16f16${strToHex(';is_human=1')}f16`, false), `0x16f16${strToHex(';is_human=1')}f16${strToHex(';is_human=0')}`)
+      assert.deepEqual(
+        appendProofOfHumanityToData(
+          `16f16${strToHex(';is_human=1')}f16`,
+          false,
+        ),
+        `0x16f16${strToHex(';is_human=1')}f16${strToHex(';is_human=0')}`,
+      )
     })
   })
 })

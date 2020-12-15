@@ -20,7 +20,7 @@ const conf = require('rc')('metamask', {
   SEGMENT_HOST: process.env.SEGMENT_HOST,
   SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
   SEGMENT_LEGACY_WRITE_KEY: process.env.SEGMENT_LEGACY_WRITE_KEY,
-  HCAPTCHA_SITE_KEY: process.env.HCAPTCHA_SITE_KEY
+  HCAPTCHA_SITE_KEY: process.env.HCAPTCHA_SITE_KEY,
 })
 
 const baseManifest = require('../../app/manifest/_base.json')

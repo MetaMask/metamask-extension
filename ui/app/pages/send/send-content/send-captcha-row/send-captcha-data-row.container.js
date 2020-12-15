@@ -1,5 +1,8 @@
 import { connect } from 'react-redux'
-import { updateSendHexData, updateSendIsHcaptchaVerified } from '../../../../store/actions'
+import {
+  updateSendHexData,
+  updateSendIsHcaptchaVerified,
+} from '../../../../store/actions'
 import SendCaptchaDataRowComponent from './send-captcha-data-row.component'
 
 export default connect(
@@ -11,7 +14,7 @@ function mapStateToProps(state) {
   return {
     hexData: state.metamask.send.data,
     isVerified: state.metamask.isUserVerifiedByCaptcha,
-    lang: state.metamask.currentLocale
+    lang: state.metamask.currentLocale,
   }
 }
 
@@ -22,6 +25,6 @@ function mapDispatchToProps(dispatch) {
     },
     updateSendIsHcaptchaVerified(value) {
       return dispatch(updateSendIsHcaptchaVerified(value))
-    }
+    },
   }
 }

@@ -21,14 +21,15 @@ const CaptchaScript = (hl) => {
 
   document.head.appendChild(hCaptchaScriptNode)
 }
-
+/* eslint-disable no-undef */
 export default class HCaptcha extends Component {
   static propTypes = {
-    sitekey: PropTypes.string,
+    id: PropTypes.string,
     onClose: PropTypes.func,
     onVerify: PropTypes.func,
     onExpire: PropTypes.func,
-    languageOverride: PropTypes.string
+    onError: PropTypes.func,
+    languageOverride: PropTypes.string,
   }
 
   constructor(props) {
@@ -63,9 +64,11 @@ export default class HCaptcha extends Component {
 
   componentDidMount() {
     const { languageOverride } = this.props
-    const { isApiReady, elementId } = this.state
+    const { isApiReady } = this.state
 
-    if (!isApiReady) {
+    if (isApiReady) {
+      this.renderCaptcha()
+    } else {
       // Check if hCaptcha has already been loaded, if not create script tag and wait to render captcha elementID - hCaptcha
       if (!captchaScriptCreated) {
         // Only create the script tag once, use a global variable to track
@@ -75,8 +78,6 @@ export default class HCaptcha extends Component {
 
       // Add onload callback to global onload listeners
       onLoadListeners.push(this.handleOnLoad)
-    } else {
-      this.renderCaptcha()
     }
   }
 
@@ -91,7 +92,7 @@ export default class HCaptcha extends Component {
     hcaptcha.remove(captchaId)
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(_, nextState) {
     // Prevent component re-rendering when these internal state variables are updated
     if (
       this.state.isApiReady !== nextState.isApiReady ||
@@ -169,7 +170,7 @@ export default class HCaptcha extends Component {
     })
   }
 
-  handleSubmit(event) {
+  handleSubmit() {
     const { onVerify } = this.props
     const { isRemoved, captchaId } = this.state
 
@@ -238,3 +239,4 @@ export default class HCaptcha extends Component {
     return <div id={elementId} className="captcha-wrapper"></div>
   }
 }
+/* eslint-disable no-undef */

@@ -124,9 +124,9 @@ describe('SendContent Component', function () {
       assert.equal(PageContainerContentChild.childAt(5).exists(), false)
     })
 
-    it('should not render the Captcha if user is already verified when open send page', function() {
+    it('should not render the Captcha if user is already verified when open send page', function () {
       wrapper.setState({
-        isUserVerified: true
+        isUserVerified: true,
       })
       const PageContainerContentChild = wrapper
         .find(PageContainerContent)

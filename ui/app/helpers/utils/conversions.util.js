@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { unpad, bufferToHex } from 'ethereumjs-util'
 import { ETH, GWEI, WEI } from '../constants/common'
 import { addHexPrefix } from '../../../../app/scripts/lib/util'
 import {
@@ -7,7 +8,6 @@ import {
   subtractCurrencies,
 } from './conversion-util'
 import { formatCurrency } from './confirm-tx.util'
-import { unpad, bufferToHex } from 'ethereumjs-util'
 
 export function bnToHex(inputBn) {
   return addHexPrefix(inputBn.toString(16))
