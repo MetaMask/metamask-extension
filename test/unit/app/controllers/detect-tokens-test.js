@@ -1,6 +1,6 @@
 import assert from 'assert'
 import sinon from 'sinon'
-import ObservableStore from 'obs-store'
+import { ObservableStore } from '@metamask/obs-store'
 import contracts from '@metamask/contract-metadata'
 import BigNumber from 'bignumber.js'
 

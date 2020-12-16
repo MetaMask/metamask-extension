@@ -1,5 +1,5 @@
 import EventEmitter from 'safe-event-emitter'
-import ObservableStore from 'obs-store'
+import { ObservableStore } from '@metamask/obs-store'
 import log from 'loglevel'
 import createId from '../../lib/random-id'
 import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction'

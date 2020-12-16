@@ -1,5 +1,5 @@
 import EventEmitter from 'events'
-import ObservableStore from 'obs-store'
+import { ObservableStore } from '@metamask/obs-store'
 
 export default class AppStateController extends EventEmitter {
   /**

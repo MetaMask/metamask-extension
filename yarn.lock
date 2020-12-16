@@ -2145,6 +2145,15 @@
     gl-mat4 "1.1.4"
     gl-vec3 "1.0.3"
 
+"@metamask/obs-store@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/obs-store/-/obs-store-5.0.0.tgz#cf2213874c62186a8a4c80f0c402af62a0a877a9"
+  integrity sha512-9Az33hULCDVUVpBzNAdjPPgNTfs6paC38LYZv4xazt03mJt4jwWFFTP79TtF4grXfiAtUs/UZOktW4Vp+r37rw==
+  dependencies:
+    "@metamask/safe-event-emitter" "^2.0.0"
+    readable-stream "^2.2.2"
+    through2 "^2.0.3"
+
 "@metamask/safe-event-emitter@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/safe-event-emitter/-/safe-event-emitter-2.0.0.tgz#af577b477c683fad17c619a78208cede06f9605c"

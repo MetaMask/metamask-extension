@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert'
-import ObservableStore from 'obs-store'
+import { ObservableStore } from '@metamask/obs-store'
 import nanoid from 'nanoid'
 import { useFakeTimers } from 'sinon'
 
