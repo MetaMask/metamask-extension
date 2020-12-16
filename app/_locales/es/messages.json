@@ -8,7 +8,7 @@
   "acceleratingATransaction": {
     "message": "* Agilizar a una transacción al usar un precio de gas más alto aumenta las probabilidades que que la red lo procese más rápidamente, pero eso no siempre está garantizado."
   },
-    "acceptTermsOfUse": {
+  "acceptTermsOfUse": {
     "message": "Leí y acepto $1",
     "description": "$1 is the `terms` message"
   },
@@ -114,7 +114,7 @@
   },
   "allowOriginSpendToken": {
     "message": "¿Habilitar a $1 gastar sus $2?",
-    "description": "$1 es la url del sitio y $2 es el símboolo del token que requieren gastar"
+    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
   },
   "allowThisSiteTo": {
     "message": "Habilitar a este sitio a:"
@@ -1129,7 +1129,7 @@
     "message": "Ok"
   },
   "on": {
-    "message": "Encendida"
+    "message": "Encendido"
   },
   "onboardingReturnNotice": {
     "message": "\"$1\" cerrará esta pestaña y volverá directamente a $2",
@@ -1733,7 +1733,7 @@
     "description": "This message represents the price slippage for the swap.  $1 and $4 are a number (ex: 2.89), $2 and $5 are symbols (ex: ETH), and $3 and $6 are fiat currency amounts."
   },
   "swapPriceDifferenceTitle": {
-    "message": "Diferencia de preciioi de ~$1%",
+    "message": "Diferencia de precio de ~$1%",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
   },
   "swapPriceDifferenceTooltip": {
