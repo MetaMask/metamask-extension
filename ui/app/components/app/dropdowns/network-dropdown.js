@@ -40,6 +40,9 @@ function mapDispatchToProps(dispatch) {
     setProviderType: (type) => {
       dispatch(actions.setProviderType(type))
     },
+    setPreviousProvider: (type) => {
+      dispatch(actions.setPreviousProvider(type))
+    },
     setRpcTarget: (target, chainId, ticker, nickname) => {
       dispatch(actions.setRpcTarget(target, chainId, ticker, nickname))
     },
@@ -82,6 +85,7 @@ class NetworkDropdown extends Component {
     setRpcTarget: PropTypes.func.isRequired,
     hideNetworkDropdown: PropTypes.func.isRequired,
     setNetworksTabAddMode: PropTypes.func.isRequired,
+    setPreviousProvider: PropTypes.func.isRequired,
     setSelectedSettingsRpcUrl: PropTypes.func.isRequired,
     frequentRpcListDetail: PropTypes.array.isRequired,
     networkDropdownOpen: PropTypes.bool.isRequired,
@@ -112,6 +116,10 @@ class NetworkDropdown extends Component {
   }
 
   renderCustomRpcList(rpcListDetail, provider) {
+    const {
+      provider: { type: providerType },
+      setPreviousProvider,
+    } = this.props
     const reversedRpcListDetail = rpcListDetail.slice().reverse()
 
     return reversedRpcListDetail.map((entry) => {
@@ -125,6 +133,7 @@ class NetworkDropdown extends Component {
           closeMenu={() => this.props.hideNetworkDropdown()}
           onClick={() => {
             if (isPrefixedFormattedHexString(chainId)) {
+              setPreviousProvider(providerType)
               this.props.setRpcTarget(rpcUrl, chainId, ticker, nickname)
             } else {
               this.props.displayInvalidCustomNetworkAlert(nickname || rpcUrl)
