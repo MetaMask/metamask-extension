@@ -2,7 +2,7 @@ import { strict as assert } from 'assert'
 import EventEmitter from 'events'
 import ethUtil from 'ethereumjs-util'
 import EthTx from 'ethereumjs-tx'
-import ObservableStore from 'obs-store'
+import { ObservableStore } from '@metamask/obs-store'
 import sinon from 'sinon'
 import TransactionController from '../../../../../app/scripts/controllers/transactions'
 

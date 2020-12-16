@@ -9,7 +9,7 @@
 
 import EthQuery from 'eth-query'
 
-import ObservableStore from 'obs-store'
+import { ObservableStore } from '@metamask/obs-store'
 import log from 'loglevel'
 import pify from 'pify'
 import Web3 from 'web3'

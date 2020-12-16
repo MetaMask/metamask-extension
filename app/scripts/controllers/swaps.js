@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
 import log from 'loglevel'
 import BigNumber from 'bignumber.js'
-import ObservableStore from 'obs-store'
+import { ObservableStore } from '@metamask/obs-store'
 import { mapValues, cloneDeep } from 'lodash'
 import abi from 'human-standard-token-abi'
 import { calcTokenAmount } from '../../../ui/app/helpers/utils/token-util'
