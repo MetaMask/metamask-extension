@@ -387,7 +387,8 @@ function createScriptTasks({ browserPlatforms, livereload }) {
         INFURA_PROJECT_ID: opts.testing
           ? '00000000000000000000000000000000'
           : conf.INFURA_PROJECT_ID,
-        HCAPTCHA_SITE_KEY: conf.HCAPTCHA_SITE_KEY,
+        HCAPTCHA_SITE_KEY:
+          conf.HCAPTCHA_SITE_KEY || '10000000-ffff-ffff-ffff-000000000001',
         SEGMENT_HOST: conf.SEGMENT_HOST,
         // When we're in the 'production' environment we will use a specific key only set in CI
         // Otherwise we'll use the key from .metamaskrc or from the environment variable. If
