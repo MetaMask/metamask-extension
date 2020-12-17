@@ -16028,15 +16028,16 @@ latest-version@^5.0.0:
   dependencies:
     package-json "^6.3.0"
 
-lavamoat-core@^6.3.1:
-  version "6.3.1"
-  resolved "https://registry.yarnpkg.com/lavamoat-core/-/lavamoat-core-6.3.1.tgz#236dac556e7a7ffd50f12b917c3e735c716a230f"
-  integrity sha512-Ae0dds+vWnPKMToOvSTymB4cqvzz3m7VUdho+inT4H/rM/tv5Ui9peCF9Y+F/9n9Mrjp1Aj55lyIn2AuA1jkvw==
+lavamoat-core@^6.4.2:
+  version "6.4.2"
+  resolved "https://registry.yarnpkg.com/lavamoat-core/-/lavamoat-core-6.4.2.tgz#7004a882682b64141846965542acabda8b8d4df5"
+  integrity sha512-BftpKz1DpLlqRkZf8kM5Lc/hi8ZtTaZ3rIO6JvMzxRKeRduPDA+Cm3N7s9YciQZ172rg9w3lWIO5Rg6jxirCpw==
   dependencies:
     cytoplasm "^3.3.1"
     fromentries "^1.2.0"
     json-stable-stringify "^1.0.1"
     lavamoat-tofu "^5.1.1"
+    merge-deep "^3.0.2"
     resolve "^1.15.1"
 
 lavamoat-tofu@^5.1.1:
@@ -16047,18 +16048,28 @@ lavamoat-tofu@^5.1.1:
     "@babel/parser" "^7.10.1"
     "@babel/traverse" "^7.10.1"
 
-lavamoat@^4.3.1:
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/lavamoat/-/lavamoat-4.3.1.tgz#b7278833e0e2859bbdf2fcd1b350c5d6c20b4659"
-  integrity sha512-7TzKH8TPhV18Nn5QUHIYF7Hq+ClCPBbHmAKXunppczjNDF3uDuoQipV0JNyI9w0dSQeV9+UKOI+K/7W2bKnbdw==
+lavamoat-viz@^5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/lavamoat-viz/-/lavamoat-viz-5.0.2.tgz#c6f5c77e32be6f4651f93c8d73414cb10a0177b8"
+  integrity sha512-e7LdZ/9mvmjz6S8D90hs1dY/8dQ0w3c4+N9je2u20pDhnEAsA25WCdDPcF0BZVr71cqr5cJfiZLYe/91HVFQiQ==
+  dependencies:
+    lavamoat-core "^6.4.2"
+    ncp "^2.0.0"
+    open "^7.0.3"
+    pify "^4.0.1"
+    yargs "^16.0.0"
+
+lavamoat@^4.3.3:
+  version "4.3.3"
+  resolved "https://registry.yarnpkg.com/lavamoat/-/lavamoat-4.3.3.tgz#e50d14ae125df4316b87c207d1c4cbd8a4b7f694"
+  integrity sha512-+xa3obzPvmqFWe8HQKopsg6BzMKpJkE57moJ5dy0wc+2QaedBYvX6rf4XiQIfgXaR3mwxWaaHiTAUMpw37s8XQ==
   dependencies:
     "@babel/code-frame" "^7.10.4"
     bindings "^1.5.0"
     htmlescape "^1.1.1"
     json-stable-stringify "^1.0.1"
-    lavamoat-core "^6.3.1"
+    lavamoat-core "^6.4.2"
     lavamoat-tofu "^5.1.1"
-    merge-deep "^3.0.2"
     node-gyp-build "^4.2.3"
     object.fromentries "^2.0.2"
     resolve "^1.17.0"
