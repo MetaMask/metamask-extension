@@ -103,13 +103,14 @@ export function createNewVaultAndRestore(password, seed) {
       .then(() => dispatch(unMarkPasswordForgotten()))
       .then(() => {
         dispatch(showAccountsPage())
-        dispatch(hideLoadingIndication())
         return vault
       })
       .catch((err) => {
         dispatch(displayWarning(err.message))
-        dispatch(hideLoadingIndication())
         return Promise.reject(err)
+      })
+      .finally(() => {
+        dispatch(hideLoadingIndication())
       })
   }
 }
@@ -121,12 +122,12 @@ export function createNewVaultAndGetSeedPhrase(password) {
     try {
       await createNewVault(password)
       const seedWords = await verifySeedPhrase()
-      dispatch(hideLoadingIndication())
       return seedWords
     } catch (error) {
-      dispatch(hideLoadingIndication())
       dispatch(displayWarning(error.message))
       throw new Error(error.message)
+    } finally {
+      dispatch(hideLoadingIndication())
     }
   }
 }
@@ -139,12 +140,12 @@ export function unlockAndGetSeedPhrase(password) {
       await submitPassword(password)
       const seedWords = await verifySeedPhrase()
       await forceUpdateMetamaskState(dispatch)
-      dispatch(hideLoadingIndication())
       return seedWords
     } catch (error) {
-      dispatch(hideLoadingIndication())
       dispatch(displayWarning(error.message))
       throw new Error(error.message)
+    } finally {
+      dispatch(hideLoadingIndication())
     }
   }
 }
@@ -209,12 +210,12 @@ export function requestRevealSeedWords(password) {
     try {
       await verifyPassword(password)
       const seedWords = await verifySeedPhrase()
-      dispatch(hideLoadingIndication())
       return seedWords
     } catch (error) {
-      dispatch(hideLoadingIndication())
       dispatch(displayWarning(error.message))
       throw new Error(error.message)
+    } finally {
+      dispatch(hideLoadingIndication())
     }
   }
 }
@@ -254,7 +255,6 @@ export function resetAccount() {
 
     return new Promise((resolve, reject) => {
       background.resetAccount((err, account) => {
-        dispatch(hideLoadingIndication())
         if (err) {
           dispatch(displayWarning(err.message))
           reject(err)
@@ -265,6 +265,8 @@ export function resetAccount() {
         dispatch(showAccountsPage())
         resolve(account)
       })
+    }).finally(() => {
+      dispatch(hideLoadingIndication())
     })
   }
 }
@@ -306,9 +308,10 @@ export function importNewAccount(strategy, args) {
       log.debug(`background.getState`)
       newState = await promisifiedBackground.getState()
     } catch (err) {
-      dispatch(hideLoadingIndication())
       dispatch(displayWarning(err.message))
       throw err
+    } finally {
+      dispatch(hideLoadingIndication())
     }
     dispatch(hideLoadingIndication())
     dispatch(updateMetamaskState(newState))
@@ -335,11 +338,12 @@ export function addNewAccount() {
     } catch (error) {
       dispatch(displayWarning(error.message))
       throw error
+    } finally {
+      dispatch(hideLoadingIndication())
     }
     const newAccountAddress = Object.keys(newIdentities).find(
       (address) => !oldIdentities[address],
     )
-    dispatch(hideLoadingIndication())
     await forceUpdateMetamaskState(dispatch)
     return newAccountAddress
   }
@@ -360,9 +364,10 @@ export function checkHardwareStatus(deviceName, hdPath) {
       log.error(error)
       dispatch(displayWarning(error.message))
       throw error
+    } finally {
+      dispatch(hideLoadingIndication())
     }
 
-    dispatch(hideLoadingIndication())
     await forceUpdateMetamaskState(dispatch)
     return unlocked
   }
@@ -378,9 +383,10 @@ export function forgetDevice(deviceName) {
       log.error(error)
       dispatch(displayWarning(error.message))
       throw error
+    } finally {
+      dispatch(hideLoadingIndication())
     }
 
-    dispatch(hideLoadingIndication())
     await forceUpdateMetamaskState(dispatch)
   }
 }
@@ -403,8 +409,9 @@ export function connectHardware(deviceName, page, hdPath) {
       log.error(error)
       dispatch(displayWarning(error.message))
       throw error
+    } finally {
+      dispatch(hideLoadingIndication())
     }
-    dispatch(hideLoadingIndication())
     await forceUpdateMetamaskState(dispatch)
 
     return accounts
@@ -428,10 +435,11 @@ export function unlockHardwareWalletAccount(index, deviceName, hdPath) {
             return
           }
 
-          dispatch(hideLoadingIndication())
           resolve()
         },
       )
+    }).finally(() => {
+      dispatch(hideLoadingIndication())
     })
   }
 }
@@ -458,8 +466,9 @@ export function setCurrentCurrency(currencyCode) {
       log.error(error.stack)
       dispatch(displayWarning(error.message))
       return
+    } finally {
+      dispatch(hideLoadingIndication())
     }
-    dispatch(hideLoadingIndication())
     dispatch({
       type: actionConstants.SET_CURRENT_FIAT,
       value: {
@@ -484,6 +493,8 @@ export function signMsg(msgData) {
       log.error(error)
       dispatch(displayWarning(error.message))
       throw error
+    } finally {
+      dispatch(hideLoadingIndication())
     }
     dispatch(hideLoadingIndication())
     dispatch(updateMetamaskState(newState))
@@ -507,8 +518,9 @@ export function signPersonalMsg(msgData) {
       log.error(error)
       dispatch(displayWarning(error.message))
       throw error
+    } finally {
+      dispatch(hideLoadingIndication())
     }
-    dispatch(hideLoadingIndication())
     dispatch(updateMetamaskState(newState))
     dispatch(completedTx(msgData.metamaskId))
     dispatch(closeCurrentNotificationWindow())
@@ -551,8 +563,9 @@ export function decryptMsg(decryptedMsgData) {
       log.error(error)
       dispatch(displayWarning(error.message))
       throw error
+    } finally {
+      dispatch(hideLoadingIndication())
     }
-    dispatch(hideLoadingIndication())
     dispatch(updateMetamaskState(newState))
     dispatch(completedTx(decryptedMsgData.metamaskId))
     dispatch(closeCurrentNotificationWindow())
@@ -574,8 +587,9 @@ export function encryptionPublicKeyMsg(msgData) {
       log.error(error)
       dispatch(displayWarning(error.message))
       throw error
+    } finally {
+      dispatch(hideLoadingIndication())
     }
-    dispatch(hideLoadingIndication())
     dispatch(updateMetamaskState(newState))
     dispatch(completedTx(msgData.metamaskId))
     dispatch(closeCurrentNotificationWindow())
@@ -597,8 +611,9 @@ export function signTypedMsg(msgData) {
       log.error(error)
       dispatch(displayWarning(error.message))
       throw error
+    } finally {
+      dispatch(hideLoadingIndication())
     }
-    dispatch(hideLoadingIndication())
     dispatch(updateMetamaskState(newState))
     dispatch(completedTx(msgData.metamaskId))
     dispatch(closeCurrentNotificationWindow())
@@ -791,10 +806,14 @@ export function signTokenTx(tokenAddress, toAddress, amount, txData) {
   return (dispatch) => {
     dispatch(showLoadingIndication())
     const token = global.eth.contract(abi).at(tokenAddress)
-    token.transfer(toAddress, addHexPrefix(amount), txData).catch((err) => {
-      dispatch(hideLoadingIndication())
-      dispatch(displayWarning(err.message))
-    })
+    token
+      .transfer(toAddress, addHexPrefix(amount), txData)
+      .catch((err) => {
+        dispatch(displayWarning(err.message))
+      })
+      .finally(() => {
+        dispatch(hideLoadingIndication())
+      })
     dispatch(showConfTxPage())
   }
 }
@@ -836,8 +855,10 @@ export function updateTransaction(txData, dontShowLoadingIndicator) {
       .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => {
         dispatch(showConfTxPage({ id: txData.id }))
-        dispatch(hideLoadingIndication())
         return txData
+      })
+      .finally(() => {
+        dispatch(hideLoadingIndication())
       })
   }
 }
@@ -882,15 +903,16 @@ export function updateAndApproveTx(txData, dontShowLoadingIndicator) {
       .then(() => {
         dispatch(clearSend())
         dispatch(completedTx(txData.id))
-        dispatch(hideLoadingIndication())
         dispatch(updateCustomNonce(''))
         dispatch(closeCurrentNotificationWindow())
 
         return txData
       })
       .catch((err) => {
-        dispatch(hideLoadingIndication())
         return Promise.reject(err)
+      })
+      .finally(() => {
+        dispatch(hideLoadingIndication())
       })
   }
 }
@@ -1045,10 +1067,12 @@ export function cancelTx(txData) {
       .then(() => {
         dispatch(clearSend())
         dispatch(completedTx(txData.id))
-        dispatch(hideLoadingIndication())
         dispatch(closeCurrentNotificationWindow())
 
         return txData
+      })
+      .finally(() => {
+        dispatch(hideLoadingIndication())
       })
   }
 }
@@ -1076,7 +1100,9 @@ export function cancelTxs(txDataList) {
         }),
     )
 
-    await Promise.all(cancellations)
+    await Promise.all(cancellations).finally(() => {
+      dispatch(hideLoadingIndication())
+    })
     const newState = await updateMetamaskStateFromBackground()
     dispatch(updateMetamaskState(newState))
     dispatch(clearSend())
@@ -1084,8 +1110,6 @@ export function cancelTxs(txDataList) {
     txIds.forEach((id) => {
       dispatch(completedTx(id))
     })
-
-    dispatch(hideLoadingIndication())
 
     if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
       global.platform.closeCurrentWindow()
@@ -1107,7 +1131,6 @@ export function markPasswordForgotten() {
       })
     } finally {
       // TODO: handle errors
-      dispatch(hideLoadingIndication())
       dispatch(forgotPassword())
       await forceUpdateMetamaskState(dispatch)
     }
@@ -1212,12 +1235,13 @@ export function lockMetamask() {
       })
       .then((newState) => {
         dispatch(updateMetamaskState(newState))
-        dispatch(hideLoadingIndication())
         dispatch({ type: actionConstants.LOCK_METAMASK })
       })
       .catch(() => {
-        dispatch(hideLoadingIndication())
         dispatch({ type: actionConstants.LOCK_METAMASK })
+      })
+      .finally(() => {
+        dispatch(hideLoadingIndication())
       })
   }
 }
@@ -1235,11 +1259,11 @@ export function setSelectedAddress(address) {
     try {
       await _setSelectedAddress(dispatch, address)
     } catch (error) {
-      dispatch(hideLoadingIndication())
       dispatch(displayWarning(error.message))
       return
+    } finally {
+      dispatch(hideLoadingIndication())
     }
-    dispatch(hideLoadingIndication())
   }
 }
 
@@ -1270,11 +1294,11 @@ export function showAccountDetail(address) {
     try {
       await _setSelectedAddress(dispatch, address)
     } catch (error) {
-      dispatch(hideLoadingIndication())
       dispatch(displayWarning(error.message))
       return
+    } finally {
+      dispatch(hideLoadingIndication())
     }
-    dispatch(hideLoadingIndication())
     dispatch({
       type: actionConstants.SHOW_ACCOUNT_DETAIL,
       value: address,
@@ -1343,7 +1367,6 @@ export function addToken(
     !dontShowLoadingIndicator && dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.addToken(address, symbol, decimals, image, (err, tokens) => {
-        dispatch(hideLoadingIndication())
         if (err) {
           dispatch(displayWarning(err.message))
           reject(err)
@@ -1352,6 +1375,8 @@ export function addToken(
         dispatch(updateTokens(tokens))
         resolve(tokens)
       })
+    }).finally(() => {
+      dispatch(hideLoadingIndication())
     })
   }
 }
@@ -1361,7 +1386,6 @@ export function removeToken(address) {
     dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.removeToken(address, (err, tokens) => {
-        dispatch(hideLoadingIndication())
         if (err) {
           dispatch(displayWarning(err.message))
           reject(err)
@@ -1370,6 +1394,8 @@ export function removeToken(address) {
         dispatch(updateTokens(tokens))
         resolve(tokens)
       })
+    }).finally(() => {
+      dispatch(hideLoadingIndication())
     })
   }
 }
@@ -1396,7 +1422,6 @@ export function removeSuggestedTokens() {
     dispatch(showLoadingIndication())
     return new Promise((resolve) => {
       background.removeSuggestedTokens((err, suggestedTokens) => {
-        dispatch(hideLoadingIndication())
         if (err) {
           dispatch(displayWarning(err.message))
         }
@@ -1412,6 +1437,9 @@ export function removeSuggestedTokens() {
       .then((suggestedTokens) =>
         dispatch(updateMetamaskState({ ...suggestedTokens })),
       )
+      .finally(() => {
+        dispatch(hideLoadingIndication())
+      })
   }
 }
 
@@ -1832,15 +1860,12 @@ export function exportAccount(password, address) {
       background.verifyPassword(password, function (err) {
         if (err) {
           log.error('Error in verifying password.')
-          dispatch(hideLoadingIndication())
           dispatch(displayWarning('Incorrect Password.'))
           reject(err)
           return
         }
         log.debug(`background.exportAccount`)
         background.exportAccount(address, function (err2, result) {
-          dispatch(hideLoadingIndication())
-
           if (err2) {
             log.error(err2)
             dispatch(displayWarning('Had a problem exporting the account.'))
@@ -1852,6 +1877,8 @@ export function exportAccount(password, address) {
           resolve(result)
         })
       })
+    }).finally(() => {
+      dispatch(hideLoadingIndication())
     })
   }
 }
@@ -1885,6 +1912,8 @@ export function exportAccounts(password, addresses) {
         )
         resolve(Promise.all(accountPromises))
       })
+    }).finally(() => {
+      dispatch(hideLoadingIndication())
     })
   }
 }
@@ -1903,8 +1932,6 @@ export function setAccountLabel(account, label) {
 
     return new Promise((resolve, reject) => {
       background.setAccountLabel(account, label, (err) => {
-        dispatch(hideLoadingIndication())
-
         if (err) {
           dispatch(displayWarning(err.message))
           reject(err)
@@ -1917,6 +1944,8 @@ export function setAccountLabel(account, label) {
         })
         resolve(account)
       })
+    }).finally(() => {
+      dispatch(hideLoadingIndication())
     })
   }
 }
@@ -1951,7 +1980,6 @@ export function setFeatureFlag(feature, activated, notificationType) {
         feature,
         activated,
         (err, updatedFeatureFlags) => {
-          dispatch(hideLoadingIndication())
           if (err) {
             dispatch(displayWarning(err.message))
             reject(err)
@@ -1962,6 +1990,8 @@ export function setFeatureFlag(feature, activated, notificationType) {
           resolve(updatedFeatureFlags)
         },
       )
+    }).finally(() => {
+      dispatch(hideLoadingIndication())
     })
   }
 }
@@ -1978,8 +2008,6 @@ export function setPreference(preference, value) {
     dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.setPreference(preference, value, (err, updatedPreferences) => {
-        dispatch(hideLoadingIndication())
-
         if (err) {
           dispatch(displayWarning(err.message))
           reject(err)
@@ -1989,6 +2017,8 @@ export function setPreference(preference, value) {
         dispatch(updatePreferences(updatedPreferences))
         resolve(updatedPreferences)
       })
+    }).finally(() => {
+      dispatch(hideLoadingIndication())
     })
   }
 }
@@ -2027,10 +2057,11 @@ export function setCompletedOnboarding() {
     } catch (err) {
       dispatch(displayWarning(err.message))
       throw err
+    } finally {
+      dispatch(hideLoadingIndication())
     }
 
     dispatch(completeOnboarding())
-    dispatch(hideLoadingIndication())
   }
 }
 
@@ -2180,19 +2211,21 @@ export function updateCurrentLocale(key) {
   return async (dispatch) => {
     dispatch(showLoadingIndication())
     await loadRelativeTimeFormatLocaleData(key)
-    return fetchLocale(key).then((localeMessages) => {
-      log.debug(`background.setCurrentLocale`)
-      background.setCurrentLocale(key, (err, textDirection) => {
-        if (err) {
-          dispatch(hideLoadingIndication())
-          dispatch(displayWarning(err.message))
-          return
-        }
-        switchDirection(textDirection)
-        dispatch(setCurrentLocale(key, localeMessages))
+    return fetchLocale(key)
+      .then((localeMessages) => {
+        log.debug(`background.setCurrentLocale`)
+        background.setCurrentLocale(key, (err, textDirection) => {
+          if (err) {
+            dispatch(displayWarning(err.message))
+            return
+          }
+          switchDirection(textDirection)
+          dispatch(setCurrentLocale(key, localeMessages))
+        })
+      })
+      .finally(() => {
         dispatch(hideLoadingIndication())
       })
-    })
   }
 }
 
