@@ -2047,13 +2047,13 @@
     web3 "^0.20.7"
     web3-provider-engine "^16.0.1"
 
-"@metamask/controllers@^4.2.0":
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-4.2.0.tgz#ee304fa26aa1d291e21e7969dffee0977b149cbf"
-  integrity sha512-NPpBFP6x2YPEdJhjP5jC9E/WHJ+FJNWH7wf8he5/dfeY0J9hlXgkRv6vrvYI3wo6YvcgPy3IF1EOA0rR4jNbeg==
+"@metamask/controllers@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-5.1.0.tgz#02c1957295bcb6db1655a716d165665d170e7f34"
+  integrity sha512-4piqkIrpphe+9nEy68WH+yBw9wsXZyCMVeBZeRtliVHAJFXUdz+KZDUi/R1Y+568JBzqAvsOtOzbUIU4btD3Fw==
   dependencies:
+    "@metamask/contract-metadata" "^1.19.0"
     await-semaphore "^0.1.3"
-    eth-contract-metadata "^1.11.0"
     eth-ens-namehash "^2.0.8"
     eth-json-rpc-infura "^5.1.0"
     eth-keyring-controller "^6.1.0"
@@ -2063,14 +2063,13 @@
     eth-rpc-errors "^4.0.0"
     eth-sig-util "^3.0.0"
     ethereumjs-util "^6.1.0"
-    ethereumjs-wallet "0.6.0"
+    ethereumjs-wallet "^0.6.4"
     ethjs-query "^0.3.8"
     human-standard-collectible-abi "^1.0.2"
     human-standard-token-abi "^2.0.0"
     isomorphic-fetch "^3.0.0"
     jsonschema "^1.2.4"
     nanoid "^3.1.12"
-    percentile "^1.2.1"
     single-call-balance-checker-abi "^1.0.0"
     uuid "^3.3.2"
     web3 "^0.20.7"
@@ -10259,7 +10258,7 @@ ethereumjs-wallet@0.6.0:
     utf8 "^2.1.1"
     uuid "^2.0.1"
 
-ethereumjs-wallet@0.6.5, ethereumjs-wallet@^0.6.0:
+ethereumjs-wallet@0.6.5, ethereumjs-wallet@^0.6.0, ethereumjs-wallet@^0.6.4:
   version "0.6.5"
   resolved "https://registry.yarnpkg.com/ethereumjs-wallet/-/ethereumjs-wallet-0.6.5.tgz#685e9091645cee230ad125c007658833991ed474"
   integrity sha512-MDwjwB9VQVnpp/Dc1XzA6J1a3wgHQ4hSvA1uWNatdpOrtCbPVuQSKSyRnjLvS0a+KKMw2pvQ9Ybqpb3+eW8oNA==
