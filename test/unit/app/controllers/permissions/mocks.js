@@ -71,6 +71,7 @@ export function getPermControllerOpts() {
   return {
     approvals: new ApprovalController({
       showApprovalRequest: noop,
+      defaultApprovalType: 'NO_TYPE',
     }),
     getKeyringAccounts: async () => [...keyringAccounts],
     getUnlockPromise: () => Promise.resolve(),
