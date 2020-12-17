@@ -1,4 +1,6 @@
-const getFetchWithTimeout = (timeout = 30000) => {
+import { memoize } from 'lodash'
+
+const getFetchWithTimeout = memoize((timeout = 30000) => {
   return async function _fetch(url, opts) {
     const abortController = new window.AbortController()
     const { signal } = abortController
@@ -18,6 +20,6 @@ const getFetchWithTimeout = (timeout = 30000) => {
       throw e
     }
   }
-}
+})
 
 export default getFetchWithTimeout
