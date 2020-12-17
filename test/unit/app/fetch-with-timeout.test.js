@@ -7,7 +7,7 @@ describe('getFetchWithTimeout', function () {
   it('fetches a url', async function () {
     nock('https://api.infura.io').get('/money').reply(200, '{"hodl": false}')
 
-    const fetchWithTimeout = getFetchWithTimeout()
+    const fetchWithTimeout = getFetchWithTimeout(30000)
     const response = await (
       await fetchWithTimeout('https://api.infura.io/money')
     ).json()
@@ -46,5 +46,12 @@ describe('getFetchWithTimeout', function () {
     } catch (e) {
       assert.deepEqual(e.message, 'Aborted')
     }
+  })
+
+  it('throws on invalid timeout', async function () {
+    assert.throws(() => getFetchWithTimeout(), 'should throw')
+    assert.throws(() => getFetchWithTimeout(-1), 'should throw')
+    assert.throws(() => getFetchWithTimeout({}), 'should throw')
+    assert.throws(() => getFetchWithTimeout(true), 'should throw')
   })
 })

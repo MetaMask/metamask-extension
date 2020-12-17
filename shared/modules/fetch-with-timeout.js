@@ -1,6 +1,10 @@
 import { memoize } from 'lodash'
 
-const getFetchWithTimeout = memoize((timeout = 30000) => {
+const getFetchWithTimeout = memoize((timeout) => {
+  if (!Number.isInteger(timeout) || timeout < 1) {
+    throw new Error('Must specify positive integer timeout.')
+  }
+
   return async function _fetch(url, opts) {
     const abortController = new window.AbortController()
     const { signal } = abortController
