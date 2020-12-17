@@ -257,7 +257,7 @@
     "gulp-zip": "^4.0.0",
     "jsdom": "^11.2.0",
     "koa": "^2.7.0",
-    "lavamoat": "^4.3.3",
+    "lavamoat": "^4.3.4",
     "lavamoat-viz": "^5.0.2",
     "lockfile-lint": "^4.0.0",
     "loose-envify": "^1.4.0",
