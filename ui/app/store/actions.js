@@ -806,10 +806,11 @@ export function signTokenTx(tokenAddress, toAddress, amount, txData) {
     // showConfTxPage is a superset of hideLoadingIndication
     try {
       const token = global.eth.contract(abi).at(tokenAddress)
-      await token.transfer(toAddress, addHexPrefix(amount), txData)
+      const txPromise = token.transfer(toAddress, addHexPrefix(amount), txData)
       dispatch(showConfTxPage())
+      await txPromise
     } catch (error) {
-      dispatch(showConfTxPage())
+      dispatch(hideLoadingIndication())
       dispatch(displayWarning(error.message))
     }
   }
