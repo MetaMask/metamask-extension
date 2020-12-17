@@ -121,12 +121,12 @@ export function createNewVaultAndGetSeedPhrase(password) {
     try {
       await createNewVault(password)
       const seedWords = await verifySeedPhrase()
-      dispatch(hideLoadingIndication())
       return seedWords
     } catch (error) {
-      dispatch(hideLoadingIndication())
       dispatch(displayWarning(error.message))
       throw new Error(error.message)
+    } finally {
+      dispatch(hideLoadingIndication())
     }
   }
 }
@@ -139,12 +139,12 @@ export function unlockAndGetSeedPhrase(password) {
       await submitPassword(password)
       const seedWords = await verifySeedPhrase()
       await forceUpdateMetamaskState(dispatch)
-      dispatch(hideLoadingIndication())
       return seedWords
     } catch (error) {
-      dispatch(hideLoadingIndication())
       dispatch(displayWarning(error.message))
       throw new Error(error.message)
+    } finally {
+      dispatch(hideLoadingIndication())
     }
   }
 }
@@ -209,12 +209,12 @@ export function requestRevealSeedWords(password) {
     try {
       await verifyPassword(password)
       const seedWords = await verifySeedPhrase()
-      dispatch(hideLoadingIndication())
       return seedWords
     } catch (error) {
-      dispatch(hideLoadingIndication())
       dispatch(displayWarning(error.message))
       throw new Error(error.message)
+    } finally {
+      dispatch(hideLoadingIndication())
     }
   }
 }
@@ -306,11 +306,12 @@ export function importNewAccount(strategy, args) {
       log.debug(`background.getState`)
       newState = await promisifiedBackground.getState()
     } catch (err) {
-      dispatch(hideLoadingIndication())
       dispatch(displayWarning(err.message))
       throw err
+    } finally {
+      dispatch(hideLoadingIndication())
     }
-    dispatch(hideLoadingIndication())
+
     dispatch(updateMetamaskState(newState))
     if (newState.selectedAddress) {
       dispatch({
@@ -335,11 +336,13 @@ export function addNewAccount() {
     } catch (error) {
       dispatch(displayWarning(error.message))
       throw error
+    } finally {
+      dispatch(hideLoadingIndication())
     }
+
     const newAccountAddress = Object.keys(newIdentities).find(
       (address) => !oldIdentities[address],
     )
-    dispatch(hideLoadingIndication())
     await forceUpdateMetamaskState(dispatch)
     return newAccountAddress
   }
@@ -360,9 +363,10 @@ export function checkHardwareStatus(deviceName, hdPath) {
       log.error(error)
       dispatch(displayWarning(error.message))
       throw error
+    } finally {
+      dispatch(hideLoadingIndication())
     }
 
-    dispatch(hideLoadingIndication())
     await forceUpdateMetamaskState(dispatch)
     return unlocked
   }
@@ -378,9 +382,10 @@ export function forgetDevice(deviceName) {
       log.error(error)
       dispatch(displayWarning(error.message))
       throw error
+    } finally {
+      dispatch(hideLoadingIndication())
     }
 
-    dispatch(hideLoadingIndication())
     await forceUpdateMetamaskState(dispatch)
   }
 }
@@ -403,10 +408,11 @@ export function connectHardware(deviceName, page, hdPath) {
       log.error(error)
       dispatch(displayWarning(error.message))
       throw error
+    } finally {
+      dispatch(hideLoadingIndication())
     }
-    dispatch(hideLoadingIndication())
-    await forceUpdateMetamaskState(dispatch)
 
+    await forceUpdateMetamaskState(dispatch)
     return accounts
   }
 }
@@ -421,6 +427,7 @@ export function unlockHardwareWalletAccount(index, deviceName, hdPath) {
         deviceName,
         hdPath,
         (err) => {
+          dispatch(hideLoadingIndication())
           if (err) {
             log.error(err)
             dispatch(displayWarning(err.message))
@@ -428,7 +435,6 @@ export function unlockHardwareWalletAccount(index, deviceName, hdPath) {
             return
           }
 
-          dispatch(hideLoadingIndication())
           resolve()
         },
       )
@@ -454,12 +460,13 @@ export function setCurrentCurrency(currencyCode) {
     try {
       data = await promisifiedBackground.setCurrentCurrency(currencyCode)
     } catch (error) {
-      dispatch(hideLoadingIndication())
       log.error(error.stack)
       dispatch(displayWarning(error.message))
       return
+    } finally {
+      dispatch(hideLoadingIndication())
     }
-    dispatch(hideLoadingIndication())
+
     dispatch({
       type: actionConstants.SET_CURRENT_FIAT,
       value: {
@@ -480,12 +487,13 @@ export function signMsg(msgData) {
     try {
       newState = await promisifiedBackground.signMessage(msgData)
     } catch (error) {
-      dispatch(hideLoadingIndication())
       log.error(error)
       dispatch(displayWarning(error.message))
       throw error
+    } finally {
+      dispatch(hideLoadingIndication())
     }
-    dispatch(hideLoadingIndication())
+
     dispatch(updateMetamaskState(newState))
     dispatch(completedTx(msgData.metamaskId))
     dispatch(closeCurrentNotificationWindow())
@@ -503,12 +511,13 @@ export function signPersonalMsg(msgData) {
     try {
       newState = await promisifiedBackground.signPersonalMessage(msgData)
     } catch (error) {
-      dispatch(hideLoadingIndication())
       log.error(error)
       dispatch(displayWarning(error.message))
       throw error
+    } finally {
+      dispatch(hideLoadingIndication())
     }
-    dispatch(hideLoadingIndication())
+
     dispatch(updateMetamaskState(newState))
     dispatch(completedTx(msgData.metamaskId))
     dispatch(closeCurrentNotificationWindow())
@@ -547,12 +556,13 @@ export function decryptMsg(decryptedMsgData) {
     try {
       newState = await promisifiedBackground.decryptMessage(decryptedMsgData)
     } catch (error) {
-      dispatch(hideLoadingIndication())
       log.error(error)
       dispatch(displayWarning(error.message))
       throw error
+    } finally {
+      dispatch(hideLoadingIndication())
     }
-    dispatch(hideLoadingIndication())
+
     dispatch(updateMetamaskState(newState))
     dispatch(completedTx(decryptedMsgData.metamaskId))
     dispatch(closeCurrentNotificationWindow())
@@ -570,12 +580,13 @@ export function encryptionPublicKeyMsg(msgData) {
     try {
       newState = await promisifiedBackground.encryptionPublicKey(msgData)
     } catch (error) {
-      dispatch(hideLoadingIndication())
       log.error(error)
       dispatch(displayWarning(error.message))
       throw error
+    } finally {
+      dispatch(hideLoadingIndication())
     }
-    dispatch(hideLoadingIndication())
+
     dispatch(updateMetamaskState(newState))
     dispatch(completedTx(msgData.metamaskId))
     dispatch(closeCurrentNotificationWindow())
@@ -593,12 +604,13 @@ export function signTypedMsg(msgData) {
     try {
       newState = await promisifiedBackground.signTypedMessage(msgData)
     } catch (error) {
-      dispatch(hideLoadingIndication())
       log.error(error)
       dispatch(displayWarning(error.message))
       throw error
+    } finally {
+      dispatch(hideLoadingIndication())
     }
-    dispatch(hideLoadingIndication())
+
     dispatch(updateMetamaskState(newState))
     dispatch(completedTx(msgData.metamaskId))
     dispatch(closeCurrentNotificationWindow())
@@ -788,14 +800,18 @@ export function updateSendEnsResolutionError(errorMessage) {
 }
 
 export function signTokenTx(tokenAddress, toAddress, amount, txData) {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
-    const token = global.eth.contract(abi).at(tokenAddress)
-    token.transfer(toAddress, addHexPrefix(amount), txData).catch((err) => {
-      dispatch(hideLoadingIndication())
-      dispatch(displayWarning(err.message))
-    })
-    dispatch(showConfTxPage())
+
+    // showConfTxPage is a superset of hideLoadingIndication
+    try {
+      const token = global.eth.contract(abi).at(tokenAddress)
+      await token.transfer(toAddress, addHexPrefix(amount), txData)
+      dispatch(showConfTxPage())
+    } catch (error) {
+      dispatch(showConfTxPage())
+      dispatch(displayWarning(error.message))
+    }
   }
 }
 
@@ -822,6 +838,7 @@ export function updateTransaction(txData, dontShowLoadingIndicator) {
       background.updateTransaction(txData, (err) => {
         dispatch(updateTransactionParams(txData.id, txData.txParams))
         if (err) {
+          dispatch(hideLoadingIndication())
           dispatch(txError(err))
           dispatch(goHome())
           log.error(err.message)
@@ -950,6 +967,7 @@ export function cancelMsg(msgData) {
     } finally {
       dispatch(hideLoadingIndication())
     }
+
     dispatch(updateMetamaskState(newState))
     dispatch(completedTx(msgData.id))
     dispatch(closeCurrentNotificationWindow())
@@ -967,6 +985,7 @@ export function cancelPersonalMsg(msgData) {
     } finally {
       dispatch(hideLoadingIndication())
     }
+
     dispatch(updateMetamaskState(newState))
     dispatch(completedTx(msgData.id))
     dispatch(closeCurrentNotificationWindow())
@@ -984,6 +1003,7 @@ export function cancelDecryptMsg(msgData) {
     } finally {
       dispatch(hideLoadingIndication())
     }
+
     dispatch(updateMetamaskState(newState))
     dispatch(completedTx(msgData.id))
     dispatch(closeCurrentNotificationWindow())
@@ -1003,6 +1023,7 @@ export function cancelEncryptionPublicKeyMsg(msgData) {
     } finally {
       dispatch(hideLoadingIndication())
     }
+
     dispatch(updateMetamaskState(newState))
     dispatch(completedTx(msgData.id))
     dispatch(closeCurrentNotificationWindow())
@@ -1020,6 +1041,7 @@ export function cancelTypedMsg(msgData) {
     } finally {
       dispatch(hideLoadingIndication())
     }
+
     dispatch(updateMetamaskState(newState))
     dispatch(completedTx(msgData.id))
     dispatch(closeCurrentNotificationWindow())
@@ -1031,9 +1053,9 @@ export function cancelTx(txData) {
   return (dispatch) => {
     dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.cancelTransaction(txData.id, (err) => {
-        if (err) {
-          reject(err)
+      background.cancelTransaction(txData.id, (error) => {
+        if (error) {
+          reject(error)
           return
         }
 
@@ -1050,6 +1072,10 @@ export function cancelTx(txData) {
 
         return txData
       })
+      .catch((error) => {
+        dispatch(hideLoadingIndication())
+        throw error
+      })
   }
 }
 
@@ -1061,34 +1087,38 @@ export function cancelTx(txData) {
 export function cancelTxs(txDataList) {
   return async (dispatch) => {
     dispatch(showLoadingIndication())
-    const txIds = txDataList.map(({ id }) => id)
-    const cancellations = txIds.map(
-      (id) =>
-        new Promise((resolve, reject) => {
-          background.cancelTransaction(id, (err) => {
-            if (err) {
-              reject(err)
-              return
-            }
 
-            resolve()
-          })
-        }),
-    )
+    try {
+      const txIds = txDataList.map(({ id }) => id)
+      const cancellations = txIds.map(
+        (id) =>
+          new Promise((resolve, reject) => {
+            background.cancelTransaction(id, (err) => {
+              if (err) {
+                reject(err)
+                return
+              }
 
-    await Promise.all(cancellations)
-    const newState = await updateMetamaskStateFromBackground()
-    dispatch(updateMetamaskState(newState))
-    dispatch(clearSend())
+              resolve()
+            })
+          }),
+      )
 
-    txIds.forEach((id) => {
-      dispatch(completedTx(id))
-    })
+      await Promise.all(cancellations)
 
-    dispatch(hideLoadingIndication())
+      const newState = await updateMetamaskStateFromBackground()
+      dispatch(updateMetamaskState(newState))
+      dispatch(clearSend())
 
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-      global.platform.closeCurrentWindow()
+      txIds.forEach((id) => {
+        dispatch(completedTx(id))
+      })
+
+      if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
+        global.platform.closeCurrentWindow()
+      }
+    } finally {
+      dispatch(hideLoadingIndication())
     }
   }
 }
@@ -1235,11 +1265,11 @@ export function setSelectedAddress(address) {
     try {
       await _setSelectedAddress(dispatch, address)
     } catch (error) {
-      dispatch(hideLoadingIndication())
       dispatch(displayWarning(error.message))
       return
+    } finally {
+      dispatch(hideLoadingIndication())
     }
-    dispatch(hideLoadingIndication())
   }
 }
 
@@ -1270,11 +1300,12 @@ export function showAccountDetail(address) {
     try {
       await _setSelectedAddress(dispatch, address)
     } catch (error) {
-      dispatch(hideLoadingIndication())
       dispatch(displayWarning(error.message))
       return
+    } finally {
+      dispatch(hideLoadingIndication())
     }
-    dispatch(hideLoadingIndication())
+
     dispatch({
       type: actionConstants.SHOW_ACCOUNT_DETAIL,
       value: address,
@@ -2024,13 +2055,13 @@ export function setCompletedOnboarding() {
 
     try {
       await promisifiedBackground.completeOnboarding()
+      dispatch(completeOnboarding())
     } catch (err) {
       dispatch(displayWarning(err.message))
       throw err
+    } finally {
+      dispatch(hideLoadingIndication())
     }
-
-    dispatch(completeOnboarding())
-    dispatch(hideLoadingIndication())
   }
 }
 
