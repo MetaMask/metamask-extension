@@ -28,14 +28,16 @@ describe('Segment metrics', function () {
         mockSegment: true,
       },
       async ({ driver, segmentStub }) => {
-        const threeSegmentEventsReceived = waitUntilCalled(segmentStub, null, 3)
+        const threeSegmentEventsReceived = waitUntilCalled(segmentStub, null, {
+          callCount: 3,
+        })
         await driver.navigate()
 
         const passwordField = await driver.findElement(By.css('#password'))
         await passwordField.sendKeys('correct horse battery staple')
         await passwordField.sendKeys(Key.ENTER)
 
-        await threeSegmentEventsReceived
+        await threeSegmentEventsReceived()
 
         assert.ok(segmentStub.called, 'Segment should receive metrics')
 

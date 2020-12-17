@@ -47,7 +47,8 @@ export default class DetectTokensController {
     for (const contractAddress in contracts) {
       if (
         contracts[contractAddress].erc20 &&
-        !this.tokenAddresses.includes(contractAddress.toLowerCase())
+        !this.tokenAddresses.includes(contractAddress.toLowerCase()) &&
+        !this.hiddenTokens.includes(contractAddress.toLowerCase())
       ) {
         tokensToDetect.push(contractAddress)
       }
@@ -130,10 +131,12 @@ export default class DetectTokensController {
     this.tokenAddresses = currentTokens
       ? currentTokens.map((token) => token.address)
       : []
-    preferences.store.subscribe(({ tokens = [] }) => {
+    this.hiddenTokens = preferences.store.getState().hiddenTokens
+    preferences.store.subscribe(({ tokens = [], hiddenTokens = [] }) => {
       this.tokenAddresses = tokens.map((token) => {
         return token.address
       })
+      this.hiddenTokens = hiddenTokens
     })
     preferences.store.subscribe(({ selectedAddress }) => {
       if (this.selectedAddress !== selectedAddress) {

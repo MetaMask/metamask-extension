@@ -35,7 +35,7 @@ export default class GasModalPageContainer extends Component {
     disableSave: PropTypes.bool,
     customGasLimitMessage: PropTypes.string,
     customTotalSupplement: PropTypes.string,
-    usdConversionRate: PropTypes.string,
+    usdConversionRate: PropTypes.number,
     customGasPrice: PropTypes.string,
     customGasLimit: PropTypes.string,
     setSwapsCustomizationModalPrice: PropTypes.func,

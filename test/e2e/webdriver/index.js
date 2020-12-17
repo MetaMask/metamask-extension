@@ -6,13 +6,12 @@ const FirefoxDriver = require('./firefox')
 
 async function buildWebDriver({ responsive, port } = {}) {
   const browser = process.env.SELENIUM_BROWSER
-  const extensionPath = `dist/${browser}`
 
   const {
     driver: seleniumDriver,
     extensionId,
     extensionUrl,
-  } = await buildBrowserWebDriver(browser, { extensionPath, responsive, port })
+  } = await buildBrowserWebDriver(browser, { responsive, port })
   await setupFetchMocking(seleniumDriver)
   const driver = new Driver(seleniumDriver, browser, extensionUrl)
 

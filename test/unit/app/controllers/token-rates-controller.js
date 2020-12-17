@@ -1,6 +1,6 @@
 import assert from 'assert'
 import sinon from 'sinon'
-import ObservableStore from 'obs-store'
+import { ObservableStore } from '@metamask/obs-store'
 import TokenRatesController from '../../../../app/scripts/controllers/token-rates'
 
 describe('TokenRatesController', function () {

@@ -55,6 +55,9 @@ async function start() {
     })
     .join(', ')
 
+  const coverageUrl = `${BUILD_LINK_BASE}/coverage/index.html`
+  const coverageLink = `<a href="${coverageUrl}">Report</a>`
+
   // links to bundle browser builds
   const depVizUrl = `${BUILD_LINK_BASE}/build-artifacts/build-viz/index.html`
   const depVizLink = `<a href="${depVizUrl}">Build System</a>`
@@ -66,6 +69,7 @@ async function start() {
     `builds: ${buildLinks}`,
     `bundle viz: ${bundleLinks}`,
     `build viz: ${depVizLink}`,
+    `code coverage: ${coverageLink}`,
     `<a href="${allArtifactsUrl}">all artifacts</a>`,
   ]
   const hiddenContent = `<ul>${contentRows

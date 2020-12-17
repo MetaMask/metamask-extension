@@ -16,7 +16,6 @@ const fetchWithCache = async (
     fetchOptions.headers = new window.Headers(fetchOptions.headers)
   }
   if (
-    fetchOptions.headers &&
     fetchOptions.headers.has('Content-Type') &&
     fetchOptions.headers.get('Content-Type') !== 'application/json'
   ) {
@@ -24,8 +23,8 @@ const fetchWithCache = async (
   }
 
   const currentTime = Date.now()
-  const cachedFetch = (await getStorageItem('cachedFetch')) || {}
-  const { cachedResponse, cachedTime } = cachedFetch[url] || {}
+  const cacheKey = `cachedFetch:${url}`
+  const { cachedResponse, cachedTime } = (await getStorageItem(cacheKey)) || {}
   if (cachedResponse && currentTime - cachedTime < cacheRefreshTime) {
     return cachedResponse
   }
@@ -48,8 +47,8 @@ const fetchWithCache = async (
     cachedResponse: responseJson,
     cachedTime: currentTime,
   }
-  cachedFetch[url] = cacheEntry
-  await setStorageItem('cachedFetch', cachedFetch)
+
+  await setStorageItem(cacheKey, cacheEntry)
   return responseJson
 }
 

@@ -90,6 +90,7 @@ function defineAllTasks() {
       clean,
       styleTasks.prod,
       composeParallel(scriptTasks.test, staticTasks.prod, manifestTasks.test),
+      zip,
     ),
   )
 

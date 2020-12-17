@@ -5,8 +5,8 @@ const chrome = require('selenium-webdriver/chrome')
  * A wrapper around a {@code WebDriver} instance exposing Chrome-specific functionality
  */
 class ChromeDriver {
-  static async build({ extensionPath, responsive, port }) {
-    const args = [`load-extension=${extensionPath}`]
+  static async build({ responsive, port }) {
+    const args = [`load-extension=dist/chrome`]
     if (responsive) {
       args.push('--auto-open-devtools-for-tabs')
     }

@@ -3,7 +3,7 @@ const os = require('os')
 const path = require('path')
 const { Builder, By, until } = require('selenium-webdriver')
 const firefox = require('selenium-webdriver/firefox')
-const { Command } = require('selenium-webdriver/lib/command')
+const { version } = require('../../../app/manifest/_base.json')
 
 /**
  * The prefix for temporary Firefox profiles. All Firefox profiles used for e2e tests
@@ -12,20 +12,16 @@ const { Command } = require('selenium-webdriver/lib/command')
  */
 const TEMP_PROFILE_PATH_PREFIX = path.join(os.tmpdir(), 'MetaMask-Fx-Profile')
 
-const GeckoDriverCommand = {
-  INSTALL_ADDON: 'install addon',
-}
-
 /**
  * A wrapper around a {@code WebDriver} instance exposing Firefox-specific functionality
  */
 class FirefoxDriver {
   /**
    * Builds a {@link FirefoxDriver} instance
-   * @param {{extensionPath: string}} options - the options for the build
+   * @param {Object} options - the options for the build
    * @returns {Promise<{driver: !ThenableWebDriver, extensionUrl: string, extensionId: string}>}
    */
-  static async build({ extensionPath, responsive, port }) {
+  static async build({ responsive, port }) {
     const templateProfile = fs.mkdtempSync(TEMP_PROFILE_PATH_PREFIX)
     const options = new firefox.Options().setProfile(templateProfile)
     const builder = new Builder()
@@ -38,9 +34,9 @@ class FirefoxDriver {
     const driver = builder.build()
     const fxDriver = new FirefoxDriver(driver)
 
-    await fxDriver.init()
-
-    const extensionId = await fxDriver.installExtension(extensionPath)
+    const extensionId = await fxDriver.installExtension(
+      `builds/metamask-firefox-${version}.zip`,
+    )
     const internalExtensionId = await fxDriver.getInternalId()
 
     if (responsive) {
@@ -63,30 +59,12 @@ class FirefoxDriver {
   }
 
   /**
-   * Initializes the driver
-   * @returns {Promise<void>}
-   */
-  async init() {
-    await this._driver
-      .getExecutor()
-      .defineCommand(
-        GeckoDriverCommand.INSTALL_ADDON,
-        'POST',
-        '/session/:sessionId/moz/addon/install',
-      )
-  }
-
-  /**
    * Installs the extension at the given path
    * @param {string} addonPath - the path to the unpacked extension or XPI
    * @returns {Promise<string>} the extension ID
    */
   async installExtension(addonPath) {
-    const cmd = new Command(GeckoDriverCommand.INSTALL_ADDON)
-      .setParameter('path', path.resolve(addonPath))
-      .setParameter('temporary', true)
-
-    return await this._driver.execute(cmd)
+    return await this._driver.installAddon(addonPath, true)
   }
 
   /**
