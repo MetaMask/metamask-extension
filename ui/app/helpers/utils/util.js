@@ -4,6 +4,9 @@ import BigNumber from 'bignumber.js'
 import ethUtil from 'ethereumjs-util'
 import { DateTime } from 'luxon'
 import { addHexPrefix } from '../../../../app/scripts/lib/util'
+import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout'
+
+const fetchWithTimeout = getFetchWithTimeout(30000)
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
@@ -478,19 +481,17 @@ export async function jsonRpcRequest(rpcUrl, rpcMethod, rpcParams = []) {
     headers.Authorization = `Basic ${encodedAuth}`
     fetchUrl = `${origin}${pathname}${search}`
   }
-  const jsonRpcResponse = await window
-    .fetch(fetchUrl, {
-      method: 'POST',
-      body: JSON.stringify({
-        id: Date.now().toString(),
-        jsonrpc: '2.0',
-        method: rpcMethod,
-        params: rpcParams,
-      }),
-      headers,
-      cache: 'default',
-    })
-    .then((httpResponse) => httpResponse.json())
+  const jsonRpcResponse = await fetchWithTimeout(fetchUrl, {
+    method: 'POST',
+    body: JSON.stringify({
+      id: Date.now().toString(),
+      jsonrpc: '2.0',
+      method: rpcMethod,
+      params: rpcParams,
+    }),
+    headers,
+    cache: 'default',
+  }).then((httpResponse) => httpResponse.json())
 
   if (
     !jsonRpcResponse ||

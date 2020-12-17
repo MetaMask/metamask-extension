@@ -1,5 +1,8 @@
 import extension from 'extensionizer'
+import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout'
 import resolveEnsToIpfsContentId from './resolver'
+
+const fetchWithTimeout = getFetchWithTimeout(30000)
 
 const supportedTopLevelDomains = ['eth']
 
@@ -55,7 +58,9 @@ export default function setupEnsIpfsResolver({
         )}.${ipfsGateway}${pathname}${search || ''}${fragment || ''}`
         try {
           // check if ipfs gateway has result
-          const response = await window.fetch(resolvedUrl, { method: 'HEAD' })
+          const response = await fetchWithTimeout(resolvedUrl, {
+            method: 'HEAD',
+          })
           if (response.status === 200) {
             url = resolvedUrl
           }
