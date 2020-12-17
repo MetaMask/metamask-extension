@@ -105,6 +105,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.approvalController = new ApprovalController({
       showApprovalRequest: opts.showUserConfirmation,
+      defaultApprovalType: 'NO_TYPE',
     })
 
     this.networkController = new NetworkController(initState.NetworkController)
