@@ -2210,20 +2210,19 @@ export function setIpfsGateway(val) {
 export function updateCurrentLocale(key) {
   return async (dispatch) => {
     dispatch(showLoadingIndication())
-    await loadRelativeTimeFormatLocaleData(key)
-    return fetchLocale(key).then((localeMessages) => {
-      log.debug(`background.setCurrentLocale`)
-      background.setCurrentLocale(key, (err, textDirection) => {
-        if (err) {
-          dispatch(hideLoadingIndication())
-          dispatch(displayWarning(err.message))
-          return
-        }
-        switchDirection(textDirection)
-        dispatch(setCurrentLocale(key, localeMessages))
-        dispatch(hideLoadingIndication())
-      })
-    })
+
+    try {
+      await loadRelativeTimeFormatLocaleData(key)
+      const localeMessages = await fetchLocale(key)
+      const textDirection = await promisifiedBackground.setCurrentLocale(key)
+      await switchDirection(textDirection)
+      dispatch(setCurrentLocale(key, localeMessages))
+    } catch (error) {
+      dispatch(displayWarning(error.message))
+      return
+    } finally {
+      dispatch(hideLoadingIndication())
+    }
   }
 }
 

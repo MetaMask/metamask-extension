@@ -1430,8 +1430,8 @@ describe('Actions', function () {
       const store = mockStore()
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
         { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'HIDE_LOADING_INDICATION' },
       ]
       setCurrentLocaleSpy = sinon.stub(background, 'setCurrentLocale')
       setCurrentLocaleSpy.callsFake((_, callback) => {
