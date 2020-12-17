@@ -851,7 +851,6 @@ export function updateTransaction(txData, dontShowLoadingIndicator) {
       const newState = await updateMetamaskStateFromBackground()
       dispatch(updateMetamaskState(newState))
       dispatch(showConfTxPage({ id: txData.id }))
-      dispatch(hideLoadingIndication())
       return txData
     } finally {
       dispatch(hideLoadingIndication())
