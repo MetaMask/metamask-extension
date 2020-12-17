@@ -54,6 +54,7 @@
     "update-changelog": "./development/auto-changelog.sh",
     "generate:migration": "./development/generate-migration.sh",
     "lavamoat:parse": "lavamoat ./development/build/index.js --writeAutoConfig",
+    "lavamoat:debug": "lavamoat ./development/build/index.js --writeAutoConfigDebug",
     "postinstall": "yarn patch-package"
   },
   "resolutions": {
@@ -257,7 +258,8 @@
     "gulp-zip": "^4.0.0",
     "jsdom": "^11.2.0",
     "koa": "^2.7.0",
-    "lavamoat": "^4.3.1",
+    "lavamoat": "^4.3.3",
+    "lavamoat-viz": "^5.0.2",
     "lockfile-lint": "^4.0.0",
     "loose-envify": "^1.4.0",
     "mocha": "^7.2.0",
