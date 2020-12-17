@@ -1114,12 +1114,12 @@ export function cancelTxs(txDataList) {
       txIds.forEach((id) => {
         dispatch(completedTx(id))
       })
-
+    } finally {
       if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
         global.platform.closeCurrentWindow()
+      } else {
+        dispatch(hideLoadingIndication())
       }
-    } finally {
-      dispatch(hideLoadingIndication())
     }
   }
 }
