@@ -832,31 +832,30 @@ const updateMetamaskStateFromBackground = () => {
 }
 
 export function updateTransaction(txData, dontShowLoadingIndicator) {
-  return (dispatch) => {
+  return async (dispatch) => {
     !dontShowLoadingIndicator && dispatch(showLoadingIndication())
 
-    return new Promise((resolve, reject) => {
-      background.updateTransaction(txData, (err) => {
-        dispatch(updateTransactionParams(txData.id, txData.txParams))
-        if (err) {
-          dispatch(hideLoadingIndication())
-          dispatch(txError(err))
-          dispatch(goHome())
-          log.error(err.message)
-          reject(err)
-          return
-        }
+    try {
+      await promisifiedBackground.updateTransaction(txData)
+    } catch (error) {
+      dispatch(updateTransactionParams(txData.id, txData.txParams))
+      dispatch(hideLoadingIndication())
+      dispatch(txError(error))
+      dispatch(goHome())
+      log.error(error.message)
+      throw error
+    }
 
-        resolve(txData)
-      })
-    })
-      .then(() => updateMetamaskStateFromBackground())
-      .then((newState) => dispatch(updateMetamaskState(newState)))
-      .then(() => {
-        dispatch(showConfTxPage({ id: txData.id }))
-        dispatch(hideLoadingIndication())
-        return txData
-      })
+    try {
+      dispatch(updateTransactionParams(txData.id, txData.txParams))
+      const newState = await updateMetamaskStateFromBackground()
+      dispatch(updateMetamaskState(newState))
+      dispatch(showConfTxPage({ id: txData.id }))
+      dispatch(hideLoadingIndication())
+      return txData
+    } finally {
+      dispatch(hideLoadingIndication())
+    }
   }
 }
 
