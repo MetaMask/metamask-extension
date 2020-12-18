@@ -1,3 +1,4 @@
+export { default as persistenceFailing } from './persistence-failing'
 export { default as unconnectedAccount } from './unconnected-account'
 export { default as invalidCustomNetwork } from './invalid-custom-network'
 

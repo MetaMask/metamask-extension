@@ -6,11 +6,16 @@ import sendReducer from './send/send.duck'
 import appStateReducer from './app/app'
 import confirmTransactionReducer from './confirm-transaction/confirm-transaction.duck'
 import gasReducer from './gas/gas.duck'
-import { invalidCustomNetwork, unconnectedAccount } from './alerts'
+import {
+  persistenceFailing,
+  invalidCustomNetwork,
+  unconnectedAccount,
+} from './alerts'
 import swapsReducer from './swaps/swaps'
 import historyReducer from './history/history'
 
 export default combineReducers({
+  [ALERT_TYPES.dataPersistenceFailing]: persistenceFailing,
   [ALERT_TYPES.invalidCustomNetwork]: invalidCustomNetwork,
   [ALERT_TYPES.unconnectedAccount]: unconnectedAccount,
   activeTab: (s) => (s === undefined ? null : s),

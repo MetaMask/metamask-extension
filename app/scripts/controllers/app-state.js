@@ -24,6 +24,7 @@ export default class AppStateController extends EventEmitter {
       swapsWelcomeMessageHasBeenShown: false,
       defaultHomeActiveTabName: null,
       ...initState,
+      dataPersistenceFailing: false,
     })
     this.timer = null
 
@@ -42,6 +43,10 @@ export default class AppStateController extends EventEmitter {
 
     const { preferences } = preferencesStore.getState()
     this._setInactiveTimeout(preferences.autoLockTimeLimit)
+  }
+
+  get state() {
+    return this.store.getState()
   }
 
   /**
@@ -108,6 +113,18 @@ export default class AppStateController extends EventEmitter {
   setConnectedStatusPopoverHasBeenShown() {
     this.store.updateState({
       connectedStatusPopoverHasBeenShown: true,
+    })
+  }
+
+  /**
+   * Set whether data persistence is failing
+   *
+   * @param {boolean} failing - 'true' indicates that data persistence is
+   *   failing, 'false' indicates that it is working correctly.
+   */
+  setDataPersistenceFailing(failing) {
+    this.store.updateState({
+      dataPersistenceFailing: failing,
     })
   }
 

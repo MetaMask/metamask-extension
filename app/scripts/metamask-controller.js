@@ -261,6 +261,7 @@ export default class MetamaskController extends EventEmitter {
     )
 
     this.alertController = new AlertController({
+      appStateStore: this.appStateController.store,
       initState: initState.AlertController,
       preferencesStore: this.preferencesController.store,
     })
@@ -708,6 +709,10 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // alert controller
+      dismissDataPersistenceFailure: nodeify(
+        alertController.dismissDataPersistenceFailure,
+        alertController,
+      ),
       setAlertEnabledness: nodeify(
         alertController.setAlertEnabledness,
         alertController,

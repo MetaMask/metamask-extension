@@ -26,6 +26,7 @@ const defaultState = {
     },
     {},
   ),
+  dataPersistenceFailureDismissed: false,
   unconnectedAccountAlertShownOrigins: {},
   web3ShimUsageOrigins: {},
 }
@@ -39,7 +40,7 @@ export default class AlertController {
    * @param {AlertControllerOptions} [opts] - Controller configuration parameters
    */
   constructor(opts = {}) {
-    const { initState = {}, preferencesStore } = opts
+    const { appStateStore, initState = {}, preferencesStore } = opts
     const state = {
       ...defaultState,
       alertEnabledness: {
@@ -52,6 +53,15 @@ export default class AlertController {
 
     this.selectedAddress = preferencesStore.getState().selectedAddress
 
+    appStateStore.subscribe(({ dataPersistenceFailing }) => {
+      const currentState = this.store.getState()
+      if (
+        currentState.dataPersistenceFailureDismissed &&
+        !dataPersistenceFailing
+      ) {
+        this.store.updateState({ dataPersistenceFailureDismissed: false })
+      }
+    })
     preferencesStore.subscribe(({ selectedAddress }) => {
       const currentState = this.store.getState()
       if (
@@ -62,6 +72,10 @@ export default class AlertController {
         this.store.updateState({ unconnectedAccountAlertShownOrigins: {} })
       }
     })
+  }
+
+  dismissDataPersistenceFailure() {
+    this.store.updateState({ dataPersistenceFailureDismissed: true })
   }
 
   setAlertEnabledness(alertId, enabledness) {

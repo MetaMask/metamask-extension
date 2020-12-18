@@ -267,9 +267,6 @@ function setupController(initState, initLangCode) {
     versionedData.data = state
     return versionedData
   }
-
-  let dataPersistenceFailing = false
-
   async function persistData(state) {
     if (!state) {
       throw new Error('MetaMask - updated state is missing')
@@ -280,14 +277,13 @@ function setupController(initState, initLangCode) {
     if (localStore.isSupported) {
       try {
         await localStore.set(state)
-        if (dataPersistenceFailing) {
-          dataPersistenceFailing = false
+        if (controller.appStateController.dataPersistenceFailing) {
+          controller.appStateController.setDataPersistenceFailing(false)
         }
       } catch (err) {
         // log error so we dont break the pipeline
-        if (!dataPersistenceFailing) {
-          dataPersistenceFailing = true
-          captureException(err)
+        if (!controller.appStateController.dataPersistenceFailing) {
+          controller.appStateController.setDataPersistenceFailing(true)
         }
         log.error('error setting state in local store:', err)
       }

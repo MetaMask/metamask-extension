@@ -1,7 +1,8 @@
 export const ALERT_TYPES = {
+  dataPersistenceFailing: 'dataPersistenceFailing',
+  invalidCustomNetwork: 'invalidCustomNetwork',
   unconnectedAccount: 'unconnectedAccount',
   web3ShimUsage: 'web3ShimUsage',
-  invalidCustomNetwork: 'invalidCustomNetwork',
 }
 
 /**

@@ -1195,10 +1195,16 @@ export function updateMetamaskState(newState) {
   return (dispatch, getState) => {
     const { metamask: currentState } = getState()
 
-    const { currentLocale, selectedAddress } = currentState
+    const {
+      currentLocale,
+      dataPersistenceFailing,
+      selectedAddress,
+    } = currentState
     const {
       currentLocale: newLocale,
+      dataPersistenceFailing: newDataPersistenceFailing,
       selectedAddress: newSelectedAddress,
+      dataPersistenceFailureDismissed,
     } = newState
 
     if (currentLocale && newLocale && currentLocale !== newLocale) {
@@ -1206,6 +1212,13 @@ export function updateMetamaskState(newState) {
     }
     if (selectedAddress !== newSelectedAddress) {
       dispatch({ type: actionConstants.SELECTED_ADDRESS_CHANGED })
+    }
+    if (
+      dataPersistenceFailing !== newDataPersistenceFailing &&
+      newDataPersistenceFailing &&
+      !dataPersistenceFailureDismissed
+    ) {
+      dispatch({ type: actionConstants.DATA_PERSISTENCE_FAILING })
     }
 
     dispatch({
@@ -2508,6 +2521,10 @@ export function setSwapsWelcomeMessageHasBeenShown() {
       }
     })
   }
+}
+
+export async function dismissDataPersistenceFailure() {
+  await promisifiedBackground.dismissDataPersistenceFailure()
 }
 
 export async function setAlertEnabledness(alertId, enabledness) {
