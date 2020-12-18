@@ -2015,9 +2015,9 @@
     react-is "^16.8.0"
 
 "@metamask/contract-metadata@^1.19.0":
-  version "1.19.0"
-  resolved "https://registry.yarnpkg.com/@metamask/contract-metadata/-/contract-metadata-1.19.0.tgz#2f074bce7ab7ffd0d20e3905b1936da0749a0473"
-  integrity sha512-TklMuz7ZbFJ2Zc6C7I+9qL3J9J+4prs5Ok5MJzoxD/57Iq6espzArhpI275elVCFF9ci8IMvach1kH8+F04/hA==
+  version "1.20.0"
+  resolved "https://registry.yarnpkg.com/@metamask/contract-metadata/-/contract-metadata-1.20.0.tgz#8a127ca08edeb2c19b2f725b439b1630926c8aa9"
+  integrity sha512-Htb2yUwmAe4GrABpqahNDpYR3ErcCcaavF6tKamqvyymICeywi6HV0y/A7rbe86gLy5UW6wJG9yP4pCpQxs4RQ==
 
 "@metamask/controllers@^3.1.0":
   version "3.2.0"
