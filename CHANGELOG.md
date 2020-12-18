@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 8.1.10 Fri Dec 18 2020
+
 ## 8.1.9 Tue Dec 15 2020
 - [#10034](https://github.com/MetaMask/metamask-extension/pull/10034): Fix contentscript injection failure on Firefox 56
 - [#10045](https://github.com/MetaMask/metamask-extension/pull/10045): Fix token validation in Send flow
