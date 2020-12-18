@@ -121,9 +121,11 @@ export default class SwapsController {
     }
 
     const { swapsState } = this.store.getState()
-    this.store.updateState({
-      swapsState: { ...swapsState, swapsQuoteRefreshTime },
-    })
+    if (swapsState.swapsQuoteRefreshTime !== swapsQuoteRefreshTime) {
+      this.store.updateState({
+        swapsState: { ...swapsState, swapsQuoteRefreshTime },
+      })
+    }
   }
 
   // Once quotes are fetched, we poll for new ones to keep the quotes up to date. Market and aggregator contract conditions can change fast enough
