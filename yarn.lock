@@ -2014,7 +2014,7 @@
     prop-types "^15.7.2"
     react-is "^16.8.0"
 
-"@metamask/contract-metadata@^1.19.0":
+"@metamask/contract-metadata@^1.19.0", "@metamask/contract-metadata@^1.20.0":
   version "1.20.0"
   resolved "https://registry.yarnpkg.com/@metamask/contract-metadata/-/contract-metadata-1.20.0.tgz#8a127ca08edeb2c19b2f725b439b1630926c8aa9"
   integrity sha512-Htb2yUwmAe4GrABpqahNDpYR3ErcCcaavF6tKamqvyymICeywi6HV0y/A7rbe86gLy5UW6wJG9yP4pCpQxs4RQ==
