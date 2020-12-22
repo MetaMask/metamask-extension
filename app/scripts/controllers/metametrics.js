@@ -265,7 +265,7 @@ export default class MetaMetricsController {
     return new Promise((resolve, reject) => {
       const callback = (err) => {
         if (err) {
-          return reject(err)
+          return reject(new Error(err.message))
         }
         return resolve()
       }
