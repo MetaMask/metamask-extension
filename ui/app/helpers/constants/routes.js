@@ -43,6 +43,8 @@ const INITIALIZE_ROUTE = '/initialize'
 const INITIALIZE_WELCOME_ROUTE = '/initialize/welcome'
 const INITIALIZE_UNLOCK_ROUTE = '/initialize/unlock'
 const INITIALIZE_CREATE_PASSWORD_ROUTE = '/initialize/create-password'
+const INITIALIZE_CREATE_NEW_VAULT_ROUTE = '/initialize/create-new-vault'
+const INITIALIZE_IMPORT_COBO_VAULT_ROUTE = '/initialize/import-cobo-vault'
 const INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE =
   '/initialize/create-password/import-with-seed-phrase'
 const INITIALIZE_SELECT_ACTION_ROUTE = '/initialize/select-action'
@@ -195,4 +197,6 @@ export {
   AWAITING_SWAP_ROUTE,
   SWAPS_ERROR_ROUTE,
   SWAPS_MAINTENANCE_ROUTE,
+  INITIALIZE_IMPORT_COBO_VAULT_ROUTE,
+  INITIALIZE_CREATE_NEW_VAULT_ROUTE,
 }

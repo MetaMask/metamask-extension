@@ -29,6 +29,7 @@ import ConfirmDeleteNetwork from './confirm-delete-network'
 import AddToAddressBookModal from './add-to-addressbook-modal'
 import EditApprovalPermission from './edit-approval-permission'
 import NewAccountModal from './new-account-modal'
+import ExternalWalletImporter from './external-wallet-importer'
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -339,6 +340,19 @@ const MODALS = {
 
   QR_SCANNER: {
     contents: <QRScanner />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  EXTERNAL_WALLET_IMPORTER: {
+    contents: <ExternalWalletImporter />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },

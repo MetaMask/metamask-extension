@@ -6,6 +6,7 @@ import EndOfFlow from './end-of-flow.component'
 const firstTimeFlowTypeNameMap = {
   create: 'New Wallet Created',
   import: 'New Wallet Imported',
+  importBidirectionalQr: 'New Bidirectional Qr Wallet Imported',
 }
 
 const mapStateToProps = (state) => {

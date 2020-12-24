@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import Mascot from '../../../components/ui/mascot'
 import Button from '../../../components/ui/button'
 import {
+  INITIALIZE_CREATE_NEW_VAULT_ROUTE,
   INITIALIZE_CREATE_PASSWORD_ROUTE,
   INITIALIZE_SELECT_ACTION_ROUTE,
 } from '../../../helpers/constants/routes'
@@ -31,12 +32,12 @@ export default class Welcome extends PureComponent {
     if (welcomeScreenSeen && participateInMetaMetrics !== null) {
       history.push(INITIALIZE_CREATE_PASSWORD_ROUTE)
     } else if (welcomeScreenSeen) {
-      history.push(INITIALIZE_SELECT_ACTION_ROUTE)
+      history.push(INITIALIZE_CREATE_NEW_VAULT_ROUTE)
     }
   }
 
   handleContinue = () => {
-    this.props.history.push(INITIALIZE_SELECT_ACTION_ROUTE)
+    this.props.history.push(INITIALIZE_CREATE_NEW_VAULT_ROUTE)
   }
 
   render() {

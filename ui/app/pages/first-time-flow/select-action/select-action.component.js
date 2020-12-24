@@ -34,6 +34,11 @@ export default class SelectAction extends PureComponent {
     this.props.history.push(INITIALIZE_METAMETRICS_OPT_IN_ROUTE)
   }
 
+  handleImportCoboVault = () => {
+    this.props.setFirstTimeFlowType('import-cobovault')
+    this.props.history.push(INITIALIZE_METAMETRICS_OPT_IN_ROUTE)
+  }
+
   render() {
     const { t } = this.context
 
@@ -52,39 +57,16 @@ export default class SelectAction extends PureComponent {
                   <div className="select-action__button-symbol">
                     <img src="/images/download-alt.svg" alt="" />
                   </div>
-                  <div className="select-action__button-text-big">
-                    {t('noAlreadyHaveSeed')}
-                  </div>
                   <div className="select-action__button-text-small">
-                    {t('importYourExisting')}
+                    import Cobo Vault
                   </div>
                 </div>
                 <Button
                   type="primary"
                   className="first-time-flow__button"
-                  onClick={this.handleImport}
+                  onClick={this.handleImportCoboVault}
                 >
-                  {t('importWallet')}
-                </Button>
-              </div>
-              <div className="select-action__select-button">
-                <div className="select-action__button-content">
-                  <div className="select-action__button-symbol">
-                    <img src="/images/thin-plus.svg" alt="" />
-                  </div>
-                  <div className="select-action__button-text-big">
-                    {t('letsGoSetUp')}
-                  </div>
-                  <div className="select-action__button-text-small">
-                    {t('thisWillCreate')}
-                  </div>
-                </div>
-                <Button
-                  type="primary"
-                  className="first-time-flow__button"
-                  onClick={this.handleCreate}
-                >
-                  {t('createAWallet')}
+                  import Cobo Vault
                 </Button>
               </div>
             </div>

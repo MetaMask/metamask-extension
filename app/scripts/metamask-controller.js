@@ -58,6 +58,7 @@ import accountImporter from './account-import-strategies'
 import seedPhraseVerifier from './lib/seed-phrase-verifier'
 import MetaMetricsController from './controllers/metametrics'
 import { segment, segmentLegacy } from './lib/segment'
+import BidirectionalQrAccountKeyring from './lib/bidirectional-qr-account/bidirectional-qr-account-keyring'
 
 export default class MetamaskController extends EventEmitter {
   /**
@@ -216,7 +217,11 @@ export default class MetamaskController extends EventEmitter {
       this.accountTracker._updateAccounts()
     })
 
-    const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring]
+    const additionalKeyrings = [
+      TrezorKeyring,
+      LedgerBridgeKeyring,
+      BidirectionalQrAccountKeyring,
+    ]
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
       initState: initState.KeyringController,
@@ -557,6 +562,13 @@ export default class MetamaskController extends EventEmitter {
       removeAccount: nodeify(this.removeAccount, this),
       importAccountWithStrategy: nodeify(this.importAccountWithStrategy, this),
 
+      // Bidirectional QR wallets
+      addBidirectionalQrAccount: nodeify(this.addBidirectionalQrAccount, this),
+      unlockBidirectionalQrAccount: nodeify(
+        this.unlockBidirectionalQrAccount,
+        this,
+      ),
+
       // hardware wallets
       connectHardware: nodeify(this.connectHardware, this),
       forgetDevice: nodeify(this.forgetDevice, this),
@@ -655,6 +667,7 @@ export default class MetamaskController extends EventEmitter {
       setLocked: nodeify(this.setLocked, this),
       createNewVaultAndKeychain: nodeify(this.createNewVaultAndKeychain, this),
       createNewVaultAndRestore: nodeify(this.createNewVaultAndRestore, this),
+      createNewEmptyVault: nodeify(this.createNewEmptyVault, this),
       exportAccount: nodeify(
         keyringController.exportAccount,
         keyringController,
@@ -880,6 +893,25 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
+  async createNewEmptyVault(password) {
+    const releaseLock = await this.createVaultMutex.acquire()
+    try {
+      let vault
+      const accounts = await this.keyringController.getAccounts()
+      if (accounts.length > 0) {
+        vault = await this.keyringController.fullUpdate()
+      } else {
+        vault = await this.keyringController
+          .persistAllKeyrings(password)
+          .then(this.keyringController.setUnlocked.bind(this.keyringController))
+          .then(this.keyringController.fullUpdate.bind(this.keyringController))
+      }
+      return vault
+    } finally {
+      releaseLock()
+    }
+  }
+
   /**
    * Create a new Vault and restore an existent keyring.
    * @param {string} password
@@ -1072,7 +1104,6 @@ export default class MetamaskController extends EventEmitter {
    */
   async submitPassword(password) {
     await this.keyringController.submitPassword(password)
-
     try {
       await this.blockTracker.checkForLatestBlock()
     } catch (error) {
@@ -1121,6 +1152,68 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController.setSelectedAddress(address)
   }
 
+  async addBidirectionalQrAccount(extendedPublicKey, page) {
+    const keyring = await this.getBidirectionalQrKeyring(extendedPublicKey)
+    let accounts = []
+    switch (page) {
+      case -1:
+        accounts = await keyring.getPreviousPage()
+        break
+      case 1:
+        accounts = await keyring.getNextPage()
+        break
+      default:
+        accounts = await keyring.getFirstPage()
+    }
+    const oldAccounts = await this.keyringController.getAccounts()
+    const accountsToTrack = [
+      ...new Set(
+        oldAccounts.concat(accounts.map((a) => a.address.toLowerCase())),
+      ),
+    ]
+    this.accountTracker.syncWithAddresses(accountsToTrack)
+    return accounts
+  }
+
+  async unlockBidirectionalQrAccount(index) {
+    const keyring = await this.getKeyringForDevice('bidirectionalQrDevice')
+
+    const deviceName = 'bidirectionalQrDevice'
+    keyring.setAccountToUnlock(index)
+    const oldAccounts = await this.keyringController.getAccounts()
+    const keyState = await this.keyringController.addNewAccount(keyring)
+    const newAccounts = await this.keyringController.getAccounts()
+    this.preferencesController.setAddresses(newAccounts)
+    newAccounts.forEach((address) => {
+      if (!oldAccounts.includes(address)) {
+        // Set the account label to Trezor 1 /  Ledger 1, etc
+        this.preferencesController.setAccountLabel(
+          address,
+          `${deviceName[0].toUpperCase()}${deviceName.slice(1)} ${
+            parseInt(index, 10) + 1
+          }`,
+        )
+        // Select the account
+        this.preferencesController.setSelectedAddress(address)
+      }
+    })
+
+    const { identities } = this.preferencesController.store.getState()
+    return { ...keyState, identities }
+  }
+
+  async getBidirectionalQrKeyring(extendedPublicKey) {
+    const keyringName = BidirectionalQrAccountKeyring.type
+    let keyring = await this.keyringController.getKeyringsByType(keyringName)[0]
+    if (!keyring) {
+      keyring = await this.keyringController.addNewKeyring(keyringName, {
+        xpub: extendedPublicKey,
+      })
+    }
+    keyring.network = this.networkController.getProviderConfig().type
+    return keyring
+  }
+
   //
   // Hardware
   //
@@ -1133,6 +1226,9 @@ export default class MetamaskController extends EventEmitter {
         break
       case 'ledger':
         keyringName = LedgerBridgeKeyring.type
+        break
+      case 'bidirectionalQrDevice':
+        keyringName = BidirectionalQrAccountKeyring.type
         break
       default:
         throw new Error(

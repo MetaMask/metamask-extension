@@ -128,6 +128,12 @@ export default class AppStateController extends EventEmitter {
     this._resetTimer()
   }
 
+  openBidirectionalQrAccountImporter() {
+    this.store.updateState({
+
+    })
+  }
+
   /**
    * Sets the inactive timeout for the app
    * @param {number} timeoutMinutes - the inactive timeout in minutes
