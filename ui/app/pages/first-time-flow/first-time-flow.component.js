@@ -91,10 +91,10 @@ export default class FirstTimeFlow extends PureComponent {
     }
   }
 
-  handleCreateNewExternalWallet = async (extendedPublicKey, page) => {
+  handleCreateNewExternalWallet = async (externalWallet, page) => {
     const { createNewExternalWallet } = this.props
     try {
-      return await createNewExternalWallet(extendedPublicKey, page)
+      return await createNewExternalWallet(externalWallet, page)
     } catch (error) {
       throw new Error(error.message)
     }

@@ -5,19 +5,17 @@ import * as actions from '../../../store/actions'
 import { getMetaMaskAccounts } from '../../../selectors'
 import { formatBalance } from '../../../helpers/utils/util'
 import { getMostRecentOverviewPage } from '../../../ducks/history/history'
-import { INITIALIZE_END_OF_FLOW_ROUTE } from '../../../helpers/constants/routes'
-import { initializeThreeBox } from '../../../store/actions'
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes'
 import AccountList from './account-list'
 
 const U2F_ERROR = 'U2F'
 
-class ConnectHardwareForm extends Component {
+class CreateBidirectionalQrAccount extends Component {
   state = {
     error: null,
     selectedAccount: null,
     accounts: [],
     unlocked: false,
-    externalWallet: {},
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -31,28 +29,6 @@ class ConnectHardwareForm extends Component {
       return a
     })
     this.setState({ accounts: newAccounts })
-  }
-
-  componentDidMount() {
-    const { scanWallet } = this.props
-    scanWallet()
-  }
-
-  // eslint-disable-next-line no-unused-vars
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    const { qrCodeData } = this.props
-    if (qrCodeData && qrCodeData !== prevProps.qrCodeData) {
-      const externalWallet = qrCodeData.values
-      this.setState(
-        {
-          externalWallet,
-        },
-        () => {
-          this.getPage(externalWallet, 0)
-          this.props.qrCodeDetected(null)
-        },
-      )
-    }
   }
 
   onAccountChange = (account) => {
@@ -71,10 +47,15 @@ class ConnectHardwareForm extends Component {
     }, 5000)
   }
 
-  getPage = (externalWallet, page) => {
+  componentDidMount() {
+    this.getPage(0)
+  }
+
+  getPage = (page) => {
     this.props
-      .createNewCoboVault(externalWallet, page)
+      .getBidirectionalQrAccountsByPage(page)
       .then((accounts) => {
+        console.log('create bidirectional qr account', accounts)
         if (accounts.length) {
           // If we just loaded the accounts for the first time
           // (device previously locked) show the global alert
@@ -139,8 +120,7 @@ class ConnectHardwareForm extends Component {
 
     unlockBidirectionalQrAccount(this.state.selectedAccount)
       .then((_) => {
-        this.props.initializeThreeBox()
-        history.push(INITIALIZE_END_OF_FLOW_ROUTE)
+        history.push(DEFAULT_ROUTE)
       })
       .catch((e) => {
         this.setState({ error: e.message })
@@ -153,6 +133,7 @@ class ConnectHardwareForm extends Component {
   }
 
   renderError() {
+    console.log('error', this.state.error)
     if (this.state.error === U2F_ERROR) {
       return (
         <p className="hw-connect__error">
@@ -187,10 +168,10 @@ class ConnectHardwareForm extends Component {
       <AccountList
         accounts={this.state.accounts}
         selectedAccount={this.state.selectedAccount}
+        selectedAccounts={this.state.selectedAccounts}
         onAccountChange={this.onAccountChange}
         network={this.props.network}
         getPage={this.getPage}
-        externalWallet={this.state.externalWallet}
         onUnlockAccount={this.onUnlockAccount}
         onCancel={this.onCancel}
         onAccountRestriction={this.onAccountRestriction}
@@ -208,7 +189,7 @@ class ConnectHardwareForm extends Component {
   }
 }
 
-ConnectHardwareForm.propTypes = {
+CreateBidirectionalQrAccount.propTypes = {
   showAlert: PropTypes.func,
   hideAlert: PropTypes.func,
   history: PropTypes.object,
@@ -216,12 +197,8 @@ ConnectHardwareForm.propTypes = {
   accounts: PropTypes.object,
   address: PropTypes.string,
   mostRecentOverviewPage: PropTypes.string.isRequired,
-  createNewCoboVault: PropTypes.func,
+  getBidirectionalQrAccountsByPage: PropTypes.func,
   unlockBidirectionalQrAccount: PropTypes.func,
-  scanWallet: PropTypes.func,
-  qrCodeDetected: PropTypes.func,
-  qrCodeData: PropTypes.object,
-  initializeThreeBox: PropTypes.func,
 }
 
 const mapStateToProps = (state) => {
@@ -230,7 +207,7 @@ const mapStateToProps = (state) => {
   } = state
   const accounts = getMetaMaskAccounts(state)
   const {
-    appState: { defaultHdPaths, qrCodeData },
+    appState: { defaultHdPaths },
   } = state
 
   return {
@@ -238,7 +215,6 @@ const mapStateToProps = (state) => {
     accounts,
     address: selectedAddress,
     defaultHdPaths,
-    qrCodeData,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
   }
 }
@@ -250,15 +226,18 @@ const mapDispatchToProps = (dispatch) => {
     },
     showAlert: (msg) => dispatch(actions.showAlert(msg)),
     hideAlert: () => dispatch(actions.hideAlert()),
-    scanWallet: () => dispatch(actions.showExternalWalletImporter()),
-    qrCodeDetected: (data) => dispatch(actions.qrCodeDetected(data)),
-    initializeThreeBox: () => dispatch(initializeThreeBox()),
+    getBidirectionalQrAccountsByPage: (page) => {
+      return dispatch(actions.getBidirectionalQrAccountsByPage(page))
+    },
   }
 }
 
-ConnectHardwareForm.contextTypes = {
+CreateBidirectionalQrAccount.contextTypes = {
   t: PropTypes.func,
   metricsEvent: PropTypes.func,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ConnectHardwareForm)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(CreateBidirectionalQrAccount)

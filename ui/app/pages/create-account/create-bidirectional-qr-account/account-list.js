@@ -20,12 +20,12 @@ class AccountList extends Component {
   goToNextPage = () => {
     // If we have < 5 accounts, it's restricted by BIP-44
     if (this.props.accounts.length === 5) {
-      this.props.getPage(this.props.externalWallet, 1)
+      this.props.getPage(1)
     }
   }
 
   goToPreviousPage = () => {
-    this.props.getPage(this.props.externalWallet, -1)
+    this.props.getPage(-1)
   }
 
   capitalizeDevice(device) {
@@ -157,7 +157,6 @@ AccountList.propTypes = {
   network: PropTypes.string,
   selectedAccount: PropTypes.string,
   onCancel: PropTypes.func,
-  externalWallet: PropTypes.object.isRequired,
   onUnlockAccount: PropTypes.func.isRequired,
 }
 

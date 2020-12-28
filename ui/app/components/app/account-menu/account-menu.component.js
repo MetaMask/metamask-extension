@@ -4,8 +4,6 @@ import { debounce } from 'lodash'
 import Fuse from 'fuse.js'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import classnames from 'classnames'
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
-import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 import Identicon from '../../ui/identicon'
 import SiteIcon from '../../ui/site-icon'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
@@ -13,9 +11,7 @@ import { PRIMARY } from '../../../helpers/constants/common'
 import {
   SETTINGS_ROUTE,
   ABOUT_US_ROUTE,
-  NEW_ACCOUNT_ROUTE,
-  IMPORT_ACCOUNT_ROUTE,
-  CONNECT_HARDWARE_ROUTE,
+  NEW_BIDIRECTIONAL_QR_ACCOUNT_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes'
 import TextField from '../../ui/text-field'
@@ -344,14 +340,7 @@ export default class AccountMenu extends Component {
         <AccountMenuItem
           onClick={() => {
             toggleAccountMenu()
-            metricsEvent({
-              eventOpts: {
-                category: 'Navigation',
-                action: 'Main Menu',
-                name: 'Clicked Create Account',
-              },
-            })
-            history.push(NEW_ACCOUNT_ROUTE)
+            history.push(NEW_BIDIRECTIONAL_QR_ACCOUNT_ROUTE)
           }}
           icon={
             <img
@@ -360,53 +349,7 @@ export default class AccountMenu extends Component {
               alt={t('createAccount')}
             />
           }
-          text={t('createAccount')}
-        />
-        <AccountMenuItem
-          onClick={() => {
-            toggleAccountMenu()
-            metricsEvent({
-              eventOpts: {
-                category: 'Navigation',
-                action: 'Main Menu',
-                name: 'Clicked Import Account',
-              },
-            })
-            history.push(IMPORT_ACCOUNT_ROUTE)
-          }}
-          icon={
-            <img
-              className="account-menu__item-icon"
-              src="images/import-account.svg"
-              alt={t('importAccount')}
-            />
-          }
-          text={t('importAccount')}
-        />
-        <AccountMenuItem
-          onClick={() => {
-            toggleAccountMenu()
-            metricsEvent({
-              eventOpts: {
-                category: 'Navigation',
-                action: 'Main Menu',
-                name: 'Clicked Connect Hardware',
-              },
-            })
-            if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-              global.platform.openExtensionInBrowser(CONNECT_HARDWARE_ROUTE)
-            } else {
-              history.push(CONNECT_HARDWARE_ROUTE)
-            }
-          }}
-          icon={
-            <img
-              className="account-menu__item-icon"
-              src="images/connect-icon.svg"
-              alt={t('connectHardwareWallet')}
-            />
-          }
-          text={t('connectHardwareWallet')}
+          text="Switch Account"
         />
         <div className="account-menu__divider" />
         <AccountMenuItem

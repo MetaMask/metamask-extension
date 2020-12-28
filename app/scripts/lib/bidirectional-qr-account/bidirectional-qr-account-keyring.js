@@ -17,6 +17,7 @@ class BidirectionalQrAccountKeyring extends EventEmitter {
     this.perPage = 5
     this.unlockedAccount = 0
     this.xpub = ''
+    this.xfp = ''
     this.paths = {}
     this.deserialize(opts)
   }
@@ -30,6 +31,7 @@ class BidirectionalQrAccountKeyring extends EventEmitter {
       perPage: this.perPage,
       unlockedAccount: this.unlockedAccount,
       xpub: this.xpub,
+      xfp: this.xfp,
     })
   }
 
@@ -39,6 +41,7 @@ class BidirectionalQrAccountKeyring extends EventEmitter {
     this.page = opts.page || 0
     this.perPage = opts.perPage || 5
     this.xpub = opts.xpub
+    this.xfp = opts.xfp
     return Promise.resolve()
   }
 

@@ -42,8 +42,8 @@ const mapDispatchToProps = (dispatch) => {
     createNewAccountFromSeed: (password, seedPhrase) => {
       return dispatch(createNewVaultAndRestore(password, seedPhrase))
     },
-    createNewExternalWallet: (extendedPublicKey, page) => {
-      return dispatch(importExternalWallet(extendedPublicKey, page))
+    createNewExternalWallet: (externalWallet, page) => {
+      return dispatch(importExternalWallet(externalWallet, page))
     },
     unlockAccount: (password) =>
       dispatch(unlockAndGetBidirectionalQrAccount(password)),

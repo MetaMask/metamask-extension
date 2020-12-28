@@ -24,6 +24,7 @@ const ADD_TOKEN_ROUTE = '/add-token'
 const CONFIRM_ADD_TOKEN_ROUTE = '/confirm-add-token'
 const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token'
 const NEW_ACCOUNT_ROUTE = '/new-account'
+const NEW_BIDIRECTIONAL_QR_ACCOUNT_ROUTE = '/new-bidirectional-qr-account'
 const IMPORT_ACCOUNT_ROUTE = '/new-account/import'
 const CONNECT_HARDWARE_ROUTE = '/new-account/connect'
 const SEND_ROUTE = '/send'
@@ -94,6 +95,7 @@ const PATH_NAME_MAP = {
   [CONFIRM_ADD_TOKEN_ROUTE]: 'Confirm Add Token Page',
   [CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE]: 'Confirm Add Suggested Token Page',
   [NEW_ACCOUNT_ROUTE]: 'New Account Page',
+  [NEW_BIDIRECTIONAL_QR_ACCOUNT_ROUTE]: 'New Bidirectional Qr Account Page',
   [IMPORT_ACCOUNT_ROUTE]: 'Import Account Page',
   [CONNECT_HARDWARE_ROUTE]: 'Connect Hardware Wallet Page',
   [SEND_ROUTE]: 'Send Page',
@@ -199,4 +201,5 @@ export {
   SWAPS_MAINTENANCE_ROUTE,
   INITIALIZE_IMPORT_COBO_VAULT_ROUTE,
   INITIALIZE_CREATE_NEW_VAULT_ROUTE,
+  NEW_BIDIRECTIONAL_QR_ACCOUNT_ROUTE,
 }

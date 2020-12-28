@@ -53,6 +53,7 @@ import {
   SETTINGS_ROUTE,
   UNLOCK_ROUTE,
   BUILD_QUOTE_ROUTE,
+  NEW_BIDIRECTIONAL_QR_ACCOUNT_ROUTE,
 } from '../../helpers/constants/routes'
 
 import {
@@ -61,6 +62,7 @@ import {
 } from '../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction'
+import CreateBidirectionalQrAccount from '../create-account/create-bidirectional-qr-account'
 
 export default class Routes extends Component {
   static propTypes = {
@@ -155,6 +157,10 @@ export default class Routes extends Component {
           exact
         />
         <Authenticated path={NEW_ACCOUNT_ROUTE} component={CreateAccountPage} />
+        <Authenticated
+          path={NEW_BIDIRECTIONAL_QR_ACCOUNT_ROUTE}
+          component={CreateBidirectionalQrAccount}
+        />
         <Authenticated
           path={`${CONNECT_ROUTE}/:id`}
           component={PermissionsConnect}

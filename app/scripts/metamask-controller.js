@@ -563,9 +563,16 @@ export default class MetamaskController extends EventEmitter {
       importAccountWithStrategy: nodeify(this.importAccountWithStrategy, this),
 
       // Bidirectional QR wallets
-      addBidirectionalQrAccount: nodeify(this.addBidirectionalQrAccount, this),
+      createBidirectionalQrAccount: nodeify(
+        this.createBidirectionalQrAccount,
+        this,
+      ),
       unlockBidirectionalQrAccount: nodeify(
         this.unlockBidirectionalQrAccount,
+        this,
+      ),
+      getBidirectionalQrAccountsByPage: nodeify(
+        this.getBidirectionalQrAccountsByPage,
         this,
       ),
 
@@ -1152,8 +1159,8 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController.setSelectedAddress(address)
   }
 
-  async addBidirectionalQrAccount(extendedPublicKey, page) {
-    const keyring = await this.getBidirectionalQrKeyring(extendedPublicKey)
+  async createBidirectionalQrAccount(externalWallet, page) {
+    const keyring = await this.getBidirectionalQrKeyring(externalWallet)
     let accounts = []
     switch (page) {
       case -1:
@@ -1176,7 +1183,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async unlockBidirectionalQrAccount(index) {
-    const keyring = await this.getKeyringForDevice('bidirectionalQrDevice')
+    const keyring = await this.getBidirectionalQrKeyring()
 
     const deviceName = 'bidirectionalQrDevice'
     keyring.setAccountToUnlock(index)
@@ -1197,17 +1204,40 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController.setSelectedAddress(address)
       }
     })
-
     const { identities } = this.preferencesController.store.getState()
     return { ...keyState, identities }
   }
 
-  async getBidirectionalQrKeyring(extendedPublicKey) {
+  async getBidirectionalQrAccountsByPage(page) {
+    const keyring = await this.getBidirectionalQrKeyring()
+    let accounts = []
+    switch (page) {
+      case -1:
+        accounts = await keyring.getPreviousPage()
+        break
+      case 1:
+        accounts = await keyring.getNextPage()
+        break
+      default:
+        accounts = await keyring.getFirstPage()
+    }
+    const oldAccounts = await this.keyringController.getAccounts()
+    const accountsToTrack = [
+      ...new Set(
+        oldAccounts.concat(accounts.map((a) => a.address.toLowerCase())),
+      ),
+    ]
+    this.accountTracker.syncWithAddresses(accountsToTrack)
+    return accounts
+  }
+
+  async getBidirectionalQrKeyring(externalWallet) {
     const keyringName = BidirectionalQrAccountKeyring.type
     let keyring = await this.keyringController.getKeyringsByType(keyringName)[0]
     if (!keyring) {
       keyring = await this.keyringController.addNewKeyring(keyringName, {
-        xpub: extendedPublicKey,
+        xpub: externalWallet.xpub,
+        xfp: externalWallet.xfp,
       })
     }
     keyring.network = this.networkController.getProviderConfig().type

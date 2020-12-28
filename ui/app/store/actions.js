@@ -43,7 +43,6 @@ export function goHome() {
 
 export function tryUnlockMetamask(password) {
   return (dispatch) => {
-    console.log('tryUnlockMetamask')
     dispatch(showLoadingIndication())
     dispatch(unlockInProgress())
     log.debug(`background.submitPassword`)
@@ -119,13 +118,13 @@ export function createNewVaultAndGetSeedPhrase(password) {
   }
 }
 
-export function importExternalWallet(extendedPublicKey, page) {
+export function importExternalWallet(externalWallet, page) {
   return async (dispatch) => {
     dispatch(showLoadingIndication())
     let accounts
     try {
-      accounts = await promisifiedBackground.addBidirectionalQrAccount(
-        extendedPublicKey,
+      accounts = await promisifiedBackground.createBidirectionalQrAccount(
+        externalWallet,
         page,
       )
     } catch (error) {
@@ -454,7 +453,7 @@ export function connectHardware(deviceName, page, hdPath) {
 }
 
 export function unlockBidirectionalQrAccount(index) {
-  log.debug(`background.unlockHardwareWalletAccount`, index)
+  log.debug(`background.unlockBidirectionalQrAccount`, index)
   return (dispatch) => {
     dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
@@ -470,6 +469,27 @@ export function unlockBidirectionalQrAccount(index) {
         resolve()
       })
     })
+  }
+}
+
+export function getBidirectionalQrAccountsByPage(page) {
+  log.debug(`background.getBidirectionalQrAccountsByPage`, page)
+  return async (dispatch) => {
+    dispatch(showLoadingIndication())
+    let accounts
+    try {
+      accounts = await promisifiedBackground.getBidirectionalQrAccountsByPage(
+        page,
+      )
+    } catch (error) {
+      log.error(error)
+      dispatch(displayWarning(error.message))
+      throw error
+    }
+    dispatch(hideLoadingIndication())
+    await forceUpdateMetamaskState(dispatch)
+
+    return accounts
   }
 }
 
