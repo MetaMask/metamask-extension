@@ -22,6 +22,7 @@ import {
   CurrencyRateController,
   PhishingController,
 } from '@metamask/controllers'
+import { ObservableStore } from '@metamask/obs-store'
 import { getBackgroundMetaMetricState } from '../../ui/app/selectors'
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction'
 import ComposableObservableStore from './lib/ComposableObservableStore'
@@ -380,11 +381,14 @@ export default class MetamaskController extends EventEmitter {
       ThreeBoxController: this.threeBoxController.store,
     })
 
+    this.bidirectionalQrKeyring = new BidirectionalQrAccountKeyring()
+
     this.memStore = new ComposableObservableStore(null, {
       AppStateController: this.appStateController.store,
       NetworkController: this.networkController.store,
       AccountTracker: this.accountTracker.store,
       TxController: this.txController.memStore,
+      BidirectionalQrKeyring: this.bidirectionalQrKeyring.memStore,
       CachedBalancesController: this.cachedBalancesController.store,
       TokenRatesController: this.tokenRatesController.store,
       MessageManager: this.messageManager.memStore,
@@ -535,6 +539,7 @@ export default class MetamaskController extends EventEmitter {
       swapsController,
       threeBoxController,
       txController,
+      bidirectionalQrKeyring,
     } = this
 
     return {
@@ -574,6 +579,10 @@ export default class MetamaskController extends EventEmitter {
       getBidirectionalQrAccountsByPage: nodeify(
         this.getBidirectionalQrAccountsByPage,
         this,
+      ),
+      cancelBidirectionalQrTransaction: nodeify(
+        bidirectionalQrKeyring.cancelTransaction,
+        bidirectionalQrKeyring,
       ),
 
       // hardware wallets
@@ -1242,6 +1251,10 @@ export default class MetamaskController extends EventEmitter {
     }
     keyring.network = this.networkController.getProviderConfig().type
     return keyring
+  }
+
+  cancelBidirectionalQrTransaction() {
+    this.bidirectionalQrKeyring
   }
 
   //

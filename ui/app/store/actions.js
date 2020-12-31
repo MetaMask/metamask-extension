@@ -538,6 +538,34 @@ export function showExternalWalletImporter() {
   }
 }
 
+export function showBidirectionalTransactionDisplay() {
+  return (dispatch) => {
+    dispatch(
+      showModal({
+        name: 'BIDIRECTIONAL_TRANSACTION_DISPLAY',
+      }),
+    )
+  }
+}
+
+export function showBidirectionalSignatureImporter() {
+  return (dispatch) => {
+    dispatch(
+      showModal({
+        name: 'BIDIRECTIONAL_SIGNATURE_IMPORTER',
+      }),
+    )
+  }
+}
+
+export function cancelBidirectionalTransaction() {
+  return (dispatch) => {
+    background.cancelBidirectionalQrTransaction()
+  }
+}
+
+export function submitBidirectionalSignature() {}
+
 export function setCurrentCurrency(currencyCode) {
   return async (dispatch) => {
     dispatch(showLoadingIndication())

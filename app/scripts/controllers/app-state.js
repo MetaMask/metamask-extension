@@ -129,8 +129,28 @@ export default class AppStateController extends EventEmitter {
   }
 
   openBidirectionalQrAccountImporter() {
-    this.store.updateState({
+    this.store.updateState({})
+  }
 
+  openBidirectionalTransactionModal() {
+    this.store.updateState({
+      modal: {
+        open: true,
+        modalState: {
+          name: 'BIDIRECTIONAL_TRANSACTION_DISPLAY',
+        },
+      },
+    })
+  }
+
+  openBidirectionalSignatureImporter() {
+    this.store.updateState({
+      modal: {
+        open: true,
+        modalState: {
+          name: 'BIDIRECTIONAL_SIGNATURE_IMPORTER',
+        },
+      },
     })
   }
 

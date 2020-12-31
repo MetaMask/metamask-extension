@@ -1,7 +1,9 @@
 import { EventEmitter } from 'events'
+import hash from 'hash.js'
 
 import ethUtil from 'ethereumjs-util'
 import HDKey from 'hdkey'
+import { ObservableStore } from '@metamask/obs-store'
 
 const hdPathString = `m/44'/60'/0'`
 const keyringType = 'Bidirectional QrCode Device'
@@ -11,6 +13,11 @@ const MAX_INDEX = 1000
 class BidirectionalQrAccountKeyring extends EventEmitter {
   constructor(opts = {}) {
     super()
+    if (BidirectionalQrAccountKeyring.instance) {
+      BidirectionalQrAccountKeyring.instance.deserialize(opts)
+      // eslint-disable-next-line no-constructor-return
+      return BidirectionalQrAccountKeyring.instance
+    }
     this.type = keyringType
     this.accounts = []
     this.page = 0
@@ -19,6 +26,10 @@ class BidirectionalQrAccountKeyring extends EventEmitter {
     this.xpub = ''
     this.xfp = ''
     this.paths = {}
+    this.memStore = new ObservableStore({
+      signPayload: {},
+    })
+    BidirectionalQrAccountKeyring.instance = this
     this.deserialize(opts)
   }
 
@@ -126,68 +137,39 @@ class BidirectionalQrAccountKeyring extends EventEmitter {
     )
   }
 
-  // // tx is an instance of the ethereumjs-transaction class.
-  // signTransaction(address, tx) {
-  //   return new Promise((resolve, reject) => {
-  //     this.unlock()
-  //       .then((status) => {
-  //         setTimeout(
-  //           (_) => {
-  //             TrezorConnect.ethereumSignTransaction({
-  //               path: this._pathFromAddress(address),
-  //               transaction: {
-  //                 to: this._normalize(tx.to),
-  //                 value: this._normalize(tx.value),
-  //                 data: this._normalize(tx.data),
-  //                 chainId: tx._chainId,
-  //                 nonce: this._normalize(tx.nonce),
-  //                 gasLimit: this._normalize(tx.gasLimit),
-  //                 gasPrice: this._normalize(tx.gasPrice),
-  //               },
-  //             })
-  //               .then((response) => {
-  //                 if (response.success) {
-  //                   tx.v = response.payload.v
-  //                   tx.r = response.payload.r
-  //                   tx.s = response.payload.s
-  //
-  //                   const signedTx = new Transaction(tx)
-  //
-  //                   const addressSignedWith = ethUtil.toChecksumAddress(
-  //                     `0x${signedTx.from.toString('hex')}`,
-  //                   )
-  //                   const correctAddress = ethUtil.toChecksumAddress(address)
-  //                   if (addressSignedWith !== correctAddress) {
-  //                     reject(
-  //                       new Error('signature doesnt match the right address'),
-  //                     )
-  //                   }
-  //
-  //                   resolve(signedTx)
-  //                 } else {
-  //                   reject(
-  //                     new Error(
-  //                       (response.payload && response.payload.error) ||
-  //                         'Unknown error',
-  //                     ),
-  //                   )
-  //                 }
-  //               })
-  //               .catch((e) => {
-  //                 reject(new Error((e && e.toString()) || 'Unknown error'))
-  //               })
-  //
-  //             // This is necessary to avoid popup collision
-  //             // between the unlock & sign trezor popups
-  //           },
-  //           status === 'just unlocked' ? DELAY_BETWEEN_POPUPS : 0,
-  //         )
-  //       })
-  //       .catch((e) => {
-  //         reject(new Error((e && e.toString()) || 'Unknown error'))
-  //       })
-  //   })
-  // }
+  // tx is an instance of the ethereumjs-transaction class.
+  signTransaction(address, tx) {
+    return new Promise((resolve, reject) => {
+      tx.v = tx.getChainId()
+      const txHex = tx.serialize().toString('hex')
+      const hdPath = `${this.hdPath}/${0}/${this.unlockedAccount}`
+      const signId = hash
+        .sha256()
+        .update(`${txHex}${hdPath}${this.xfp}`)
+        .digest('hex')
+        .slice(0, 8)
+      const signPayload = {
+        txHex,
+        xfp: this.xfp,
+        hdPath,
+        signId,
+      }
+      this.memStore.updateState({
+        signPayload,
+      })
+      this.once(`${signId}-signed`, (r, s, v) => {
+        tx.r = r
+        tx.s = s
+        tx.v = v
+        this.memStore.updateState({ signPayload: {} })
+        resolve(tx)
+      })
+      this.once(`${signId}-canceled`, () => {
+        this.memStore.updateState({ signPayload: {} })
+        reject(new Error('transaction canceled'))
+      })
+    })
+  }
   //
   // signMessage(withAccount, data) {
   //   return this.signPersonalMessage(withAccount, data)
@@ -258,6 +240,10 @@ class BidirectionalQrAccountKeyring extends EventEmitter {
     this.page = 0
     this.unlockedAccount = 0
     this.paths = {}
+  }
+
+  cancelTransaction() {
+    this.emit(`${this.memStore.getState().signPayload.signId}-canceled`)
   }
 
   /* PRIVATE METHODS */

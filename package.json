@@ -71,6 +71,7 @@
   "dependencies": {
     "3box": "^1.10.2",
     "@babel/runtime": "^7.5.5",
+    "@cvbb/bc-ur": "^0.2.9",
     "@download/blockies": "^1.0.3",
     "@formatjs/intl-relativetimeformat": "^5.2.6",
     "@fortawesome/fontawesome-free": "^5.13.0",
@@ -129,6 +130,7 @@
     "fast-json-patch": "^2.0.4",
     "fuse.js": "^3.2.0",
     "globalthis": "^1.0.1",
+    "hash.js": "^1.1.7",
     "hdkey": "^2.0.1",
     "human-standard-token-abi": "^2.0.0",
     "json-rpc-engine": "^6.1.0",
@@ -150,6 +152,7 @@
     "pump": "^3.0.0",
     "punycode": "^2.1.1",
     "qrcode-generator": "1.4.1",
+    "qrcode.react": "^1.0.1",
     "react": "^16.12.0",
     "react-dnd": "^3.0.2",
     "react-dnd-html5-backend": "^7.4.4",
