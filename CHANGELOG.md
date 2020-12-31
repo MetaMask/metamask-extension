@@ -2,6 +2,23 @@
 
 ## Current Develop Branch
 
+- fix: cfx_requestAccounts CU-ggztjn CU-59v4cv
+- feat: use popup instead of tab for login
+- fix: gasPrice to 1 in e2e test
+- feat: remove ConfluxWeb, upgrade js-conflux-sdk to 1.1.4
+- fix: add tx value replace into activity log
+- fix: remove block gas limit logic when estimate gas
+- feat: update schema, fullnode, keyring controller
+- fix(account-tracker): balance error
+- fix: willUserPayTxFee error when opening gas modal
+- fix: more strict check before tx resign
+- fix: add status for tx missing `rawTx`
+- fix: pending middleware method names
+- fix(inpage): used precompiled js-conflux-sdk
+- feat: upgrade sdk to v1.1.6
+- feat: remove zh_TW
+- feat: add/restore account wording
+
 ## 0.5.8 Thu Nov 19 2020
 
 - fix: multiply 1drip with 1.1
