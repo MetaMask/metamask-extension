@@ -15,7 +15,7 @@ const LOG_LIMIT = 100
  * and permissions-related methods.
  */
 export default class PermissionsLogController {
-  constructor ({ restrictedMethods, store }) {
+  constructor({ restrictedMethods, store }) {
     this.restrictedMethods = restrictedMethods
     this.store = store
   }
@@ -25,7 +25,7 @@ export default class PermissionsLogController {
    *
    * @returns {Array<Object>} - The activity log.
    */
-  getActivityLog () {
+  getActivityLog() {
     return this.store.getState()[LOG_STORE_KEY] || []
   }
 
@@ -34,7 +34,7 @@ export default class PermissionsLogController {
    *
    * @param {Array<Object>} logs - The new activity log array.
    */
-  updateActivityLog (logs) {
+  updateActivityLog(logs) {
     this.store.updateState({ [LOG_STORE_KEY]: logs })
   }
 
@@ -43,7 +43,7 @@ export default class PermissionsLogController {
    *
    * @returns {Object} - The permissions history log.
    */
-  getHistory () {
+  getHistory() {
     return this.store.getState()[HISTORY_STORE_KEY] || {}
   }
 
@@ -52,7 +52,7 @@ export default class PermissionsLogController {
    *
    * @param {Object} history - The new permissions history log object.
    */
-  updateHistory (history) {
+  updateHistory(history) {
     this.store.updateState({ [HISTORY_STORE_KEY]: history })
   }
 
@@ -63,7 +63,7 @@ export default class PermissionsLogController {
    * @param {string} origin - The origin that the accounts are exposed to.
    * @param {Array<string>} accounts - The accounts.
    */
-  updateAccountsHistory (origin, accounts) {
+  updateAccountsHistory(origin, accounts) {
     if (accounts.length === 0) {
       return
     }
@@ -82,7 +82,7 @@ export default class PermissionsLogController {
    *
    * @returns {JsonRpcEngineMiddleware} - The permissions log middleware.
    */
-  createMiddleware () {
+  createMiddleware() {
     return (req, res, next, _end) => {
       let requestedMethods
       const { origin, method, id: requestId } = req
@@ -99,7 +99,10 @@ export default class PermissionsLogController {
           // get the corresponding methods from the requested permissions
           requestedMethods = this.getRequestedMethods(req)
         }
-      } else if (method === 'eth_requestAccounts') {
+      } else if (
+        method === 'cfx_requestAccounts' ||
+        method === 'eth_requestAccounts'
+      ) {
         // eth_requestAccounts is a special case; we need to extract the accounts
         // from it
         this.logActivityRequest(req, isInternal)
@@ -110,7 +113,7 @@ export default class PermissionsLogController {
       }
 
       // call next with a return handler for capturing the response
-      next((cb) => {
+      next(cb => {
         const time = Date.now()
         this.logActivityResponse(requestId, res, time)
 
@@ -122,7 +125,7 @@ export default class PermissionsLogController {
             origin,
             res.result,
             time,
-            method === 'eth_requestAccounts'
+            method === 'cfx_requestAccounts' || method === 'eth_requestAccounts'
           )
         }
         cb()
@@ -136,7 +139,7 @@ export default class PermissionsLogController {
    * @param {Object} request - The request object.
    * @param {boolean} isInternal - Whether the request is internal.
    */
-  logActivityRequest (request, isInternal) {
+  logActivityRequest(request, isInternal) {
     const activityEntry = {
       id: request.id,
       method: request.method,
@@ -158,7 +161,7 @@ export default class PermissionsLogController {
    * @param {Object} response - The response object.
    * @param {number} time - Output from Date.now()
    */
-  logActivityResponse (id, response, time) {
+  logActivityResponse(id, response, time) {
     if (!id || !response) {
       return
     }
@@ -183,7 +186,7 @@ export default class PermissionsLogController {
    *
    * @param {Object} entry - The activity log entry.
    */
-  commitNewActivity (entry) {
+  commitNewActivity(entry) {
     const logs = this.getActivityLog()
 
     // add new entry to end of log
@@ -206,7 +209,7 @@ export default class PermissionsLogController {
    * @param {string} time - The time of the request, i.e. Date.now().
    * @param {boolean} isEthRequestAccounts - Whether the permissions request was 'eth_requestAccounts'.
    */
-  logPermissionsHistory (
+  logPermissionsHistory(
     requestedMethods,
     origin,
     result,
@@ -231,29 +234,29 @@ export default class PermissionsLogController {
       // accounts were last seen or approved by the origin.
       newEntries = result
         ? result
-          .map((perm) => {
-            if (perm.parentCapability === 'eth_accounts') {
-              accounts = this.getAccountsFromPermission(perm)
-            }
-
-            return perm.parentCapability
-          })
-          .reduce((acc, method) => {
-            if (requestedMethods.includes(method)) {
-              if (method === 'eth_accounts') {
-                const accountToTimeMap = getAccountToTimeMap(accounts, time)
-
-                acc[method] = {
-                  lastApproved: time,
-                  accounts: accountToTimeMap,
-                }
-              } else {
-                acc[method] = { lastApproved: time }
+            .map(perm => {
+              if (perm.parentCapability === 'eth_accounts') {
+                accounts = this.getAccountsFromPermission(perm)
               }
-            }
 
-            return acc
-          }, {})
+              return perm.parentCapability
+            })
+            .reduce((acc, method) => {
+              if (requestedMethods.includes(method)) {
+                if (method === 'eth_accounts') {
+                  const accountToTimeMap = getAccountToTimeMap(accounts, time)
+
+                  acc[method] = {
+                    lastApproved: time,
+                    accounts: accountToTimeMap,
+                  }
+                } else {
+                  acc[method] = { lastApproved: time }
+                }
+              }
+
+              return acc
+            }, {})
         : {} // no result (e.g. in case of error), no log
     }
 
@@ -270,7 +273,7 @@ export default class PermissionsLogController {
    * @param {string} origin - The requesting origin.
    * @param {Object} newEntries - The new entries to commit.
    */
-  commitNewHistory (origin, newEntries) {
+  commitNewHistory(origin, newEntries) {
     // a simple merge updates most permissions
     const history = this.getHistory()
     const newOriginHistory = {
@@ -311,7 +314,7 @@ export default class PermissionsLogController {
    * @param {Object} request - The request object.
    * @returns {Array<string>} - The names of the requested permissions.
    */
-  getRequestedMethods (request) {
+  getRequestedMethods(request) {
     if (
       !request.params ||
       !request.params[0] ||
@@ -330,7 +333,7 @@ export default class PermissionsLogController {
    * @param {Object} perm - The permissions object.
    * @returns {Array<string>} - The permitted accounts.
    */
-  getAccountsFromPermission (perm) {
+  getAccountsFromPermission(perm) {
     if (perm.parentCapability !== 'eth_accounts' || !perm.caveats) {
       return []
     }
@@ -357,7 +360,7 @@ export default class PermissionsLogController {
 // the call to clone is set to disallow circular references
 // we attempt cloning at a depth of 3 and 2, then return a
 // shallow copy of the object
-function cloneObj (obj) {
+function cloneObj(obj) {
   for (let i = 3; i > 1; i--) {
     try {
       return cloneDeep(obj, false, i)
@@ -366,11 +369,11 @@ function cloneObj (obj) {
   return { ...obj }
 }
 
-function getAccountToTimeMap (accounts, time) {
+function getAccountToTimeMap(accounts, time) {
   return accounts.reduce((acc, account) => ({ ...acc, [account]: time }), {})
 }
 
-function getLastIndexOfObjectArray (array, key, value) {
+function getLastIndexOfObjectArray(array, key, value) {
   if (Array.isArray(array) && array.length > 0) {
     for (let i = array.length - 1; i >= 0; i--) {
       if (!array[i] || typeof array[i] !== 'object') {

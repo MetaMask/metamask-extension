@@ -1,5 +1,5 @@
-import EventEmitter from 'safe-event-emitter'
 import log from 'loglevel'
+import EventEmitter from 'safe-event-emitter'
 import EthQuery from '../../ethjs-query'
 import { parseRiskByte } from '../../lib/util'
 
@@ -56,6 +56,7 @@ class PendingTransactionTracker extends EventEmitter {
     @emits tx:warning
   */
   resubmitPendingTxs(epochNumber) {
+    // submitted/executed/approved tx
     const pending = this.getPendingTransactions()
     // only try resubmitting if their are transactions to resubmit
     if (!pending.length) {
@@ -116,9 +117,9 @@ class PendingTransactionTracker extends EventEmitter {
       return
     }
 
-    if (txMeta?.status === 'executed') {
- return
-}
+    if (txMeta?.status === 'executed' || txMeta?.status === 'confirmed') {
+      return
+    }
     const proposedEpochHeight = txMeta?.txParams?.epochHeight
     const txBlockDistance =
       Number.parseInt(latestBlockNumber, 16) -
@@ -132,8 +133,18 @@ class PendingTransactionTracker extends EventEmitter {
     }
 
     // Only auto-submit already-signed txs:
-    if (!('rawTx' in txMeta)) {
-      return this.approveTransaction(txMeta.id)
+    if (
+      !txMeta?.rawTx &&
+      (txMeta.status === 'approved' ||
+        txMeta.status === 'signed' ||
+        txMeta.status === 'submitted')
+    ) {
+      return this.emit('tx:bugged', txMeta)
+      // return this.approveTransaction(txMeta.id)
+    }
+
+    if (!txMeta?.rawTx) {
+      return
     }
 
     const rawTx = txMeta.rawTx

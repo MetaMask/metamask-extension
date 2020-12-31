@@ -12,12 +12,12 @@ import {
 } from '../../helpers/constants/routes'
 
 export default class CreateAccountPage extends Component {
-  renderTabs () {
+  renderTabs() {
     const {
       history,
       location: { pathname },
     } = this.props
-    const getClassNames = (path) =>
+    const getClassNames = path =>
       classnames('new-account__tabs__tab', {
         'new-account__tabs__selected': matchPath(pathname, {
           path,
@@ -31,7 +31,7 @@ export default class CreateAccountPage extends Component {
           className={getClassNames(NEW_ACCOUNT_ROUTE)}
           onClick={() => history.push(NEW_ACCOUNT_ROUTE)}
         >
-          {this.context.t('create')}
+          {this.context.t('createRestoreSubAccount')}
         </div>
         <div
           className={getClassNames(IMPORT_ACCOUNT_ROUTE)}
@@ -49,7 +49,7 @@ export default class CreateAccountPage extends Component {
     )
   }
 
-  render () {
+  render() {
     return (
       <div className="new-account">
         <div className="new-account__header">

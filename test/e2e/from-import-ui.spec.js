@@ -180,7 +180,7 @@ describe('Using MetaMask with an existing account', function() {
       await driver.delay(regularDelayMs)
 
       await driver.clickElement(
-        By.xpath(`//div[contains(text(), 'Create Account')]`)
+        By.xpath(`//div[contains(text(), 'Add Account')]`)
       )
       await driver.delay(regularDelayMs)
     })
@@ -193,7 +193,7 @@ describe('Using MetaMask with an existing account', function() {
       await driver.delay(regularDelayMs)
 
       await driver.clickElement(
-        By.xpath(`//button[contains(text(), 'Create')]`)
+        By.xpath(`//button[contains(text(), 'Submit')]`)
       )
       await driver.delay(regularDelayMs)
     })
@@ -270,7 +270,7 @@ describe('Using MetaMask with an existing account', function() {
   })
 
   describe('Imports an account with private key', function() {
-    it('choose Create Account from the account menu', async function() {
+    it('choose Add Account from the account menu', async function() {
       await driver.clickElement(By.css('.account-menu__icon'))
       await driver.delay(regularDelayMs)
 
@@ -310,7 +310,7 @@ describe('Using MetaMask with an existing account', function() {
   })
 
   describe('Imports and removes an account', function() {
-    it('choose Create Account from the account menu', async function() {
+    it('choose Add Account from the account menu', async function() {
       await driver.clickElement(By.css('.account-menu__icon'))
       await driver.delay(regularDelayMs)
 

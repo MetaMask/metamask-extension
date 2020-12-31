@@ -164,6 +164,12 @@
   "browserNotSupported": {
     "message": "您的浏览器不支持该功能…"
   },
+  "bugged": {
+    "message": "未知"
+  },
+  "buggedTxTooltip": {
+    "message": "Portal 无法查询到该交易的状态, 请到 ConfluxScan 查看该交易的状态."
+  },
   "builtInCalifornia": {
     "message": "ConfluxPortal 是 fork MetaMask 代码并在其基础上进行更改从而适配 Conflux, MetaMask 在加利福尼亚设计和制造, 针对 Conflux 的修改在北京设计和制造."
   },
@@ -308,8 +314,14 @@
   "create": {
     "message": "创建"
   },
+  "submitCreateRestoreAccount": {
+    "message": "确认"
+  },
+  "createRestoreSubAccount": {
+    "message": " 添加/恢复子账户"
+  },
   "createAccount": {
-    "message": "创建账户"
+    "message": " 添加账户"
   },
   "createAWallet": {
     "message": "创建钱包"
@@ -1314,6 +1326,9 @@
   },
   "transactionConfirmed": {
     "message": "交易已通过 $2 确认。"
+  },
+  "transactionValueReplaced": {
+    "message": "在 $2 更改交易额为 $1"
   },
   "transactionCreated": {
     "message": "在 $2 生成的交易单，其交易额为 $1 。"

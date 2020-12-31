@@ -1,41 +1,36 @@
-import EventEmitter from 'safe-event-emitter'
-import ObservableStore from 'obs-store'
-import * as ethUtil from 'cfx-util'
-import { Transaction } from 'js-conflux-sdk/src/index.js'
-import EthQuery from '../../ethjs-query'
-import { ethErrors } from 'eth-json-rpc-errors'
-import TxGasUtil, { SIMPLE_GAS_COST } from './tx-gas-utils'
-import abi from 'human-standard-token-abi'
 import abiDecoder from 'abi-decoder'
-
-abiDecoder.addABI(abi)
-
+import * as ethUtil from 'cfx-util'
+import { ethErrors } from 'eth-json-rpc-errors'
+import abi from 'human-standard-token-abi'
+import { Transaction } from 'js-conflux-sdk/src/index.js'
+import log from 'loglevel'
+import NonceTracker from 'nonce-tracker'
+import ObservableStore from 'obs-store'
+import EventEmitter from 'safe-event-emitter'
 import {
+  CONTRACT_INTERACTION_KEY,
+  DEPLOY_CONTRACT_ACTION_KEY,
+  SEND_ETHER_ACTION_KEY,
   TOKEN_METHOD_APPROVE,
   TOKEN_METHOD_TRANSFER,
   TOKEN_METHOD_TRANSFER_FROM,
-  SEND_ETHER_ACTION_KEY,
-  DEPLOY_CONTRACT_ACTION_KEY,
-  CONTRACT_INTERACTION_KEY,
 } from '../../../../ui/app/helpers/constants/transactions.js'
-
-import TransactionStateManager from './tx-state-manager'
-
-import PendingTransactionTracker from './pending-tx-tracker'
-import NonceTracker from 'nonce-tracker'
-import * as txUtils from './lib/util'
+import EthQuery from '../../ethjs-query'
 import cleanErrorStack from '../../lib/cleanErrorStack'
-import log from 'loglevel'
-import recipientBlacklistChecker from './lib/recipient-blacklist-checker'
-
+import { BnMultiplyByFraction, bnToHex, hexToBn } from '../../lib/util'
 import {
+  TRANSACTION_STATUS_APPROVED,
   TRANSACTION_TYPE_CANCEL,
   TRANSACTION_TYPE_RETRY,
   TRANSACTION_TYPE_STANDARD,
-  TRANSACTION_STATUS_APPROVED,
 } from './enums'
+import recipientBlacklistChecker from './lib/recipient-blacklist-checker'
+import * as txUtils from './lib/util'
+import PendingTransactionTracker from './pending-tx-tracker'
+import TxGasUtil, { SIMPLE_GAS_COST } from './tx-gas-utils'
+import TransactionStateManager from './tx-state-manager'
 
-import { hexToBn, bnToHex, BnMultiplyByFraction } from '../../lib/util'
+abiDecoder.addABI(abi)
 
 /**
   Transaction Controller is an aggregate of sub-controllers and trackers
@@ -107,6 +102,7 @@ class TransactionController extends EventEmitter {
       nonceTracker: this.nonceTracker,
       publishTransaction: rawTx => this.query.sendRawTransaction(rawTx),
       getPendingTransactions: () => {
+        // submitted and executed transaction
         const pending = this.txStateManager.getPendingTransactions()
         const approved = this.txStateManager.getApprovedTransactions()
         return [...pending, ...approved]
@@ -139,7 +135,7 @@ class TransactionController extends EventEmitter {
     const networkState = this.networkStore.getState()
     const getChainId = parseInt(networkState, 10)
     if (Number.isNaN(getChainId)) {
-      return '0x0'
+      throw new Error('invalid chainId NaN')
     } else {
       return `0x${getChainId.toString(16)}`
     }
@@ -180,7 +176,7 @@ class TransactionController extends EventEmitter {
     )
 
     // listen for tx completion (success, fail)
-    return new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
       this.txStateManager.once(
         `${initialTxMeta.id}:finished`,
         finishedTxMeta => {
@@ -530,9 +526,10 @@ class TransactionController extends EventEmitter {
         txMeta.nonceDetails.customNonceValue = customNonceValue
       }
       this.txStateManager.updateTx(txMeta, 'transactions#approveTransaction')
+
       // sign transaction
-      const rawTx = await this.signTransaction(txId)
-      await this.publishTransaction(txId, rawTx)
+      await this.signTransaction(txId)
+      await this.publishTransaction(txId)
       // must set transaction to submitted/failed before releasing lock
       nonceLock.releaseLock()
     } catch (err) {
@@ -561,9 +558,6 @@ class TransactionController extends EventEmitter {
   async signTransaction(txId) {
     const txMeta = this.txStateManager.getTx(txId)
     const txParams = Object.assign({}, txMeta.txParams)
-    // add network/chain id
-    const chainId = this.getChainId()
-    txParams.chainId = chainId
     txParams.storageLimit = txParams.storageLimit || '0x0'
     // sign tx
     const fromAddress = txParams.from
@@ -575,15 +569,16 @@ class TransactionController extends EventEmitter {
     txMeta.r = ethUtil.bufferToHex(ethTx.r)
     txMeta.s = ethUtil.bufferToHex(ethTx.s)
     txMeta.v = ethUtil.bufferToHex(ethTx.v)
+    const rawTx = ethUtil.bufferToHex(ethTx.serialize())
+    txMeta.rawTx = rawTx
 
     this.txStateManager.updateTx(
       txMeta,
-      'transactions#signTransaction: add r, s, v values'
+      'transactions#signTransaction: add r, s, v, rawTx values'
     )
 
     // set state to signed
     this.txStateManager.setTxStatusSigned(txMeta.id)
-    const rawTx = ethUtil.bufferToHex(ethTx.serialize())
     return rawTx
   }
 
@@ -593,16 +588,17 @@ class TransactionController extends EventEmitter {
     @param {string} rawTx - the hex string of the serialized signed transaction
     @returns {Promise<void>}
   */
-  async publishTransaction(txId, rawTx) {
+  async publishTransaction(txId) {
     const txMeta = this.txStateManager.getTx(txId)
-    txMeta.rawTx = rawTx
     this.txStateManager.updateTx(txMeta, 'transactions#publishTransaction')
     let txHash
     try {
-      txHash = await this.query.sendRawTransaction(rawTx)
+      txHash = await this.query.sendRawTransaction(txMeta.rawTx)
     } catch (error) {
       if (error.message.toLowerCase().includes('tx already exist')) {
-        txHash = ethUtil.keccak(ethUtil.addHexPrefix(rawTx)).toString('hex')
+        txHash = ethUtil
+          .keccak(ethUtil.addHexPrefix(txMeta.rawTx))
+          .toString('hex')
         txHash = ethUtil.addHexPrefix(txHash)
       } else {
         throw error
@@ -794,6 +790,10 @@ class TransactionController extends EventEmitter {
     this.pendingTxTracker.on(
       'tx:dropped',
       this.txStateManager.setTxStatusDropped.bind(this.txStateManager)
+    )
+    this.pendingTxTracker.on(
+      'tx:bugged',
+      this.txStateManager.setTxStatusBugged.bind(this.txStateManager)
     )
     // this.pendingTxTracker.on('tx:block-update', (txMeta, latestBlockNumber) => {
     // })

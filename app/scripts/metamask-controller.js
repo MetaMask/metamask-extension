@@ -213,9 +213,9 @@ export default class MetamaskController extends EventEmitter {
         getKeyringAccounts: this.keyringController.getAccounts.bind(
           this.keyringController
         ),
-        platform: opts.platform,
         notifyDomain: this.notifyConnections.bind(this),
         notifyAllDomains: this.notifyAllConnections.bind(this),
+        showPermissionRequest: opts.showUserConfirmation,
       },
       initState.PermissionsController,
       initState.PermissionsMetadata
@@ -1632,10 +1632,9 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async estimateGas(estimateGasParams) {
-    const nonce = await this.getNextNonce(estimateGasParams.from)
     return new Promise((resolve, reject) => {
       this.txController.txGasUtil.query.estimateGas(
-        { ...estimateGasParams, nonce },
+        { ...estimateGasParams },
         (err, res) => {
           if (err) {
             reject(err)

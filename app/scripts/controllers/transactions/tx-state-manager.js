@@ -1,8 +1,8 @@
-import EventEmitter from 'safe-event-emitter'
-import ObservableStore from 'obs-store'
 import log from 'loglevel'
-import txStateHistoryHelper from './lib/tx-state-history-helper'
+import ObservableStore from 'obs-store'
+import EventEmitter from 'safe-event-emitter'
 import createId from '../../lib/random-id'
+import txStateHistoryHelper from './lib/tx-state-history-helper'
 import { getFinalStates, normalizeTxParams } from './lib/util'
 /**
   TransactionStateManager is responsible for the state of a transaction and
@@ -278,16 +278,22 @@ class TransactionStateManager extends EventEmitter {
       switch (key) {
         case 'chainId':
           if (typeof value !== 'number' && typeof value !== 'string') {
-            throw new Error(
-              `${key} in txParams is not a Number or hex string. got: (${value})`
+            const err = new Error(
+              `${key} in txParams is not a Number or hex string. got: (${value} with type ${typeof value})`
             )
+            err.message += '\n'
+            err.message += err.stack
+            throw err
           }
           break
         default:
           if (typeof value !== 'string') {
-            throw new Error(
-              `${key} in txParams is not a string. got: (${value})`
+            const err = new Error(
+              `${key} in txParams is not a string. got: (${value} with type ${typeof value})`
             )
+            err.message += '\n'
+            err.message += err.stack
+            throw err
           }
           break
       }
@@ -418,6 +424,10 @@ class TransactionStateManager extends EventEmitter {
   */
   setTxStatusDropped(txId) {
     this._setTxStatus(txId, 'dropped')
+  }
+
+  setTxStatusBugged(txId) {
+    this._setTxStatus(txId, 'bugged')
   }
 
   /**

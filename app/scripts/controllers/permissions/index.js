@@ -21,8 +21,13 @@ import {
 } from './enums'
 
 export class PermissionsController {
-  constructor (
-    { platform, notifyDomain, notifyAllDomains, getKeyringAccounts } = {},
+  constructor(
+    {
+      notifyDomain,
+      notifyAllDomains,
+      getKeyringAccounts,
+      showPermissionRequest,
+    } = {},
     restoredPermissions = {},
     restoredState = {}
   ) {
@@ -35,7 +40,7 @@ export class PermissionsController {
     this._notifyDomain = notifyDomain
     this.notifyAllDomains = notifyAllDomains
     this.getKeyringAccounts = getKeyringAccounts
-    this._platform = platform
+    this._showPermissionRequest = showPermissionRequest
     this._restrictedMethods = getRestrictedMethods(this)
     this.permissionsLogController = new PermissionsLogController({
       restrictedMethods: Object.keys(this._restrictedMethods),
@@ -44,7 +49,7 @@ export class PermissionsController {
     this._initializePermissions(restoredPermissions)
   }
 
-  createMiddleware ({ origin, extensionId }) {
+  createMiddleware({ origin, extensionId }) {
     if (extensionId) {
       this.store.updateState({
         [METADATA_STORE_KEY]: {
@@ -84,7 +89,7 @@ export class PermissionsController {
    *
    * @param {string} origin - The origin string.
    */
-  getAccounts (origin) {
+  getAccounts(origin) {
     return new Promise((resolve, _) => {
       const req = { method: 'eth_accounts' }
       const res = {}
@@ -96,7 +101,7 @@ export class PermissionsController {
         _end
       )
 
-      function _end () {
+      function _end() {
         if (res.error || !Array.isArray(res.result)) {
           resolve([])
         } else {
@@ -112,7 +117,7 @@ export class PermissionsController {
    * @param {string} origin - The origin string.
    * @param {IRequestedPermissions} permissions - The requested permissions.
    */
-  _requestPermissions (origin, permissions) {
+  _requestPermissions(origin, permissions) {
     return new Promise((resolve, reject) => {
       const req = { method: 'wallet_requestPermissions', params: [permissions] }
       const res = {}
@@ -124,7 +129,7 @@ export class PermissionsController {
         _end
       )
 
-      function _end (err) {
+      function _end(err) {
         if (err || res.error) {
           reject(err || res.error)
         } else {
@@ -140,7 +145,7 @@ export class PermissionsController {
    * @param {Object} approved - the approved request object
    * @param {Array} accounts - The accounts to expose, if any
    */
-  async approvePermissionsRequest (approved, accounts) {
+  async approvePermissionsRequest(approved, accounts) {
     const { id } = approved.metadata
     const approval = this.pendingApprovals[id]
 
@@ -171,7 +176,7 @@ export class PermissionsController {
    *
    * @param {string} id - the id of the rejected request
    */
-  async rejectPermissionsRequest (id) {
+  async rejectPermissionsRequest(id) {
     const approval = this.pendingApprovals[id]
 
     if (!approval) {
@@ -191,7 +196,7 @@ export class PermissionsController {
    * @param {string} origin - The origin to expose the account(s) to.
    * @param {Array<string>} accounts - The account(s) to expose.
    */
-  async legacyExposeAccounts (origin, accounts) {
+  async legacyExposeAccounts(origin, accounts) {
     const permissions = {
       eth_accounts: {},
     }
@@ -201,7 +206,7 @@ export class PermissionsController {
     let error
     try {
       await new Promise((resolve, reject) => {
-        this.permissions.grantNewPermissions(origin, permissions, {}, (err) =>
+        this.permissions.grantNewPermissions(origin, permissions, {}, err =>
           (err ? resolve() : reject(err))
         )
       })
@@ -235,7 +240,7 @@ export class PermissionsController {
    * @param {string} origin - The origin to change the exposed accounts for.
    * @param {string[]} accounts - The new account(s) to expose.
    */
-  async updatePermittedAccounts (origin, accounts) {
+  async updatePermittedAccounts(origin, accounts) {
     await this.validatePermittedAccounts(accounts)
 
     this.permissions.updateCaveatFor(
@@ -258,7 +263,7 @@ export class PermissionsController {
    * @param {Object} requestedPermissions - The requested permissions.
    * @param {string[]} accounts - The accounts to expose, if any.
    */
-  async finalizePermissionsRequest (requestedPermissions, accounts) {
+  async finalizePermissionsRequest(requestedPermissions, accounts) {
     const { eth_accounts: ethAccounts } = requestedPermissions
 
     if (ethAccounts) {
@@ -270,7 +275,7 @@ export class PermissionsController {
 
       // caveat names are unique, and we will only construct this caveat here
       ethAccounts.caveats = ethAccounts.caveats.filter(
-        (c) => c.name !== CAVEAT_NAMES.exposedAccounts
+        c => c.name !== CAVEAT_NAMES.exposedAccounts
       )
 
       ethAccounts.caveats.push({
@@ -287,21 +292,21 @@ export class PermissionsController {
    *
    * @param {string[]} accounts - An array of addresses.
    */
-  async validatePermittedAccounts (accounts) {
+  async validatePermittedAccounts(accounts) {
     if (!Array.isArray(accounts) || accounts.length === 0) {
       throw new Error('Must provide non-empty array of account(s).')
     }
 
     // assert accounts exist
     const allAccounts = await this.getKeyringAccounts()
-    accounts.forEach((acc) => {
+    accounts.forEach(acc => {
       if (!allAccounts.includes(acc)) {
         throw new Error(`Unknown account: ${acc}`)
       }
     })
   }
 
-  notifyDomain (origin, payload) {
+  notifyDomain(origin, payload) {
     // if the accounts changed from the perspective of the dapp,
     // update "last seen" time for the origin and account(s)
     // exception: no accounts -> no times to update
@@ -328,11 +333,11 @@ export class PermissionsController {
    * Removes the given permissions for the given domain.
    * @param {Object} domains { origin: [permissions] }
    */
-  removePermissionsFor (domains) {
+  removePermissionsFor(domains) {
     Object.entries(domains).forEach(([origin, perms]) => {
       this.permissions.removePermissionsFor(
         origin,
-        perms.map((methodName) => {
+        perms.map(methodName => {
           if (methodName === 'eth_accounts') {
             this.notifyDomain(origin, {
               method: NOTIFICATION_NAMES.accountsChanged,
@@ -352,7 +357,7 @@ export class PermissionsController {
    * @param {string} origin - The origin.
    * @param {string} account - The newly selected account's address.
    */
-  async handleNewAccountSelected (origin, account) {
+  async handleNewAccountSelected(origin, account) {
     const permittedAccounts = await this.getAccounts(origin)
 
     // do nothing if the account is not permitted for the origin, or
@@ -366,7 +371,7 @@ export class PermissionsController {
     }
 
     const newPermittedAccounts = [account].concat(
-      permittedAccounts.filter((_account) => _account !== account)
+      permittedAccounts.filter(_account => _account !== account)
     )
 
     // update permitted accounts to ensure that accounts are returned
@@ -377,7 +382,7 @@ export class PermissionsController {
   /**
    * Removes all known domains and their related permissions.
    */
-  clearPermissions () {
+  clearPermissions() {
     this.permissions.clearDomains()
     this.notifyAllDomains({
       method: NOTIFICATION_NAMES.accountsChanged,
@@ -391,7 +396,7 @@ export class PermissionsController {
    *
    * @param {string} origin = The origin string representing the domain.
    */
-  _initializePermissions (restoredState) {
+  _initializePermissions(restoredState) {
     // these permission requests are almost certainly stale
     const initState = { ...restoredState, permissionsRequests: [] }
 
@@ -416,12 +421,12 @@ export class PermissionsController {
          *
          * @param {string} req - The internal rpc-cap user request object.
          */
-        requestUserApproval: async (req) => {
+        requestUserApproval: async req => {
           const {
             metadata: { id },
           } = req
 
-          this._platform.openExtensionInBrowser(`connect/${id}`)
+          this._showPermissionRequest()
 
           return new Promise((resolve, reject) => {
             this.pendingApprovals[id] = { resolve, reject }
@@ -433,6 +438,6 @@ export class PermissionsController {
   }
 }
 
-export function addInternalMethodPrefix (method) {
+export function addInternalMethodPrefix(method) {
   return WALLET_PREFIX + method
 }

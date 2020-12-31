@@ -32,6 +32,7 @@ import setupSentry from './lib/setupSentry'
 import {
   reportFailedTxToSentry,
   reportErrorTxToSentry,
+  reportBuggedTxToSentry,
 } from './lib/reportFailedTxToSentry'
 import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code'
 import getObjStructure from './lib/getObjStructure'
@@ -244,6 +245,7 @@ function setupController(initState, initLangCode) {
   //
   const controller = new MetamaskController({
     // User confirmation callbacks:
+    showUserConfirmation: triggerUi,
     showUnconfirmedMessage: triggerUi,
     showUnapprovedTx: triggerUi,
     openPopup: openPopup,
@@ -274,6 +276,11 @@ function setupController(initState, initLangCode) {
       return
     }
     const txMeta = controller.txController.txStateManager.getTx(txId)
+
+    if (txMeta?.status === 'bugged') {
+      reportBuggedTxToSentry({ sentry, txMeta })
+    }
+
     const txHistory = txMeta.history || []
     let setHashNoteCount = 0
     let approvedIdx
@@ -329,7 +336,7 @@ function setupController(initState, initLangCode) {
   // setup state persistence
   pump(
     asStream(controller.store),
-    debounce(1000),
+    debounce(10),
     storeTransform(versionifyData),
     createStreamSink(persistData),
     error => {
@@ -446,7 +453,11 @@ function setupController(initState, initLangCode) {
         const origin = url.hostname
 
         remotePort.onMessage.addListener(msg => {
-          if (msg.data && msg.data.method === 'eth_requestAccounts') {
+          if (
+            msg.data &&
+            (msg.data.method === 'cfx_requestAccounts' ||
+              msg.data.method === 'eth_requestAccounts')
+          ) {
             requestAccountTabIds[origin] = tabId
           }
         })

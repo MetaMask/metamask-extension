@@ -1,5 +1,4 @@
-import Web3 from './ConfluxWeb/index'
-import { warn } from 'loglevel'
+import { Conflux } from 'js-conflux-sdk/src/index'
 import { MAINNET, TESTNET } from './network/enums'
 import { toChecksumAddress } from 'cfx-util'
 import { fakeContractMapForTest } from './fakeContractMapForTest'
@@ -118,7 +117,7 @@ class DetectTokensController {
       return
     }
     const tokensToDetect = []
-    this.web3.setProvider(this._network._provider)
+    this.cfx.provider.url = this._network._provider._confluxWebProvider.url
     const contracts = this._preferences.store.getState().trustedTokenMap
     for (const contractAddress in contracts) {
       if (
@@ -132,9 +131,10 @@ class DetectTokensController {
       return
     }
 
-    const ethContract = this.web3.eth
-      .contract(SINGLE_CALL_BALANCES_ABI)
-      .at(SINGLE_CALL_BALANCES_ADDRESS)
+    const ethContract = this.cfx.Contract({
+      abi: SINGLE_CALL_BALANCES_ABI,
+      address: SINGLE_CALL_BALANCES_ADDRESS,
+    })
     try {
       const balances = await ethContract.balances(
         [this.selectedAddress],
@@ -151,11 +151,10 @@ class DetectTokensController {
         }
       })
     } catch (error) {
-      // TODO let the error make sense
-      warn(
-        `MetaMask - DetectTokensController single call balance fetch failed`,
-        error
-      )
+      // warn(
+      //   `MetaMask - DetectTokensController single call balance fetch failed`,
+      //   error
+      // )
       return
     }
   }
@@ -168,24 +167,28 @@ class DetectTokensController {
    *
    */
   async detectTokenBalance(contractAddress) {
-    const ethContract = this.web3.eth.contract(ERC20_ABI).at(contractAddress)
-    const contracts = this._preferences.store.getState().trustedTokenMap
-    ethContract.balanceOf(this.selectedAddress, (error, result) => {
-      if (!error) {
-        if (!result.isZero()) {
-          this._preferences.addToken(
-            contractAddress,
-            contracts[contractAddress].symbol,
-            contracts[contractAddress].decimals
-          )
-        }
-      } else {
-        warn(
-          `MetaMask - DetectTokensController balance fetch failed for ${contractAddress}.`,
-          error
-        )
-      }
+    const ethContract = this.cfx.Contract({
+      abi: ERC20_ABI,
+      address: contractAddress,
     })
+    const contracts = this._preferences.store.getState().trustedTokenMap
+    let result
+    try {
+      result = await ethContract.balanceOf(this.selectedAddress)
+    } catch (err) {}
+
+    if (!result) {
+ return
+}
+    if (result.isZero()) {
+ return
+}
+
+    this._preferences.addToken(
+      contractAddress,
+      contracts[contractAddress].symbol,
+      contracts[contractAddress].decimals
+    )
   }
 
   /**
@@ -252,7 +255,7 @@ class DetectTokensController {
       }
       this.restartTokenDetection()
     })
-    this.web3 = new Web3(network._provider)
+    this.cfx = new Conflux(network._provider._confluxWebProvider)
   }
 
   /**

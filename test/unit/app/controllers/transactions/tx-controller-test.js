@@ -1,20 +1,18 @@
 import assert from 'assert'
-import EventEmitter from 'events'
 import { toBuffer } from 'cfx-util'
 import EthTx from 'ethereumjs-tx'
+import EventEmitter from 'events'
 import ObservableStore from 'obs-store'
 import sinon from 'sinon'
 import TransactionController from '../../../../../app/scripts/controllers/transactions'
 import { TRANSACTION_TYPE_RETRY } from '../../../../../app/scripts/controllers/transactions/enums'
-
 import {
+  CONTRACT_INTERACTION_KEY,
+  DEPLOY_CONTRACT_ACTION_KEY,
+  SEND_ETHER_ACTION_KEY,
   TOKEN_METHOD_APPROVE,
   TOKEN_METHOD_TRANSFER,
-  SEND_ETHER_ACTION_KEY,
-  DEPLOY_CONTRACT_ACTION_KEY,
-  CONTRACT_INTERACTION_KEY,
 } from '../../../../../ui/app/helpers/constants/transactions.js'
-
 import {
   createTestProviderTools,
   getTestAccounts,
@@ -412,8 +410,10 @@ describe('Transaction Controller', function() {
         history: [{}],
       }
       providerResultStub.eth_gasPrice = '4a817c800'
-      providerResultStub.eth_getBlockByNumber = { gasLimit: '47b784' }
-      providerResultStub.eth_estimateGas = '5209'
+      providerResultStub.eth_estimateGas = {
+        gasUsed: '5209',
+        storageCollateralized: '0',
+      }
 
       const txMetaWithDefaults = await txController.addTxGasAndCollateralDefaults(
         txMeta
@@ -601,13 +601,6 @@ describe('Transaction Controller', function() {
     })
   })
 
-  describe('#getChainId', function() {
-    it('returns 0 when the chainId is NaN', function() {
-      txController.networkStore = new ObservableStore(NaN)
-      assert.equal(txController.getChainId(), '0x0')
-    })
-  })
-
   describe('#cancelTransaction', function() {
     it('should emit a status change to rejected', function(done) {
       txController.txStateManager._saveTxList([
@@ -770,8 +763,9 @@ describe('Transaction Controller', function() {
     it('should publish a tx, updates the rawTx when provided a one', async function() {
       const rawTx =
         '0x477b2e6553c917af0db0388ae3da62965ff1a184558f61b749d1266b2e6d024c'
+      txMeta.rawTx = rawTx
       txController.txStateManager.addTx(txMeta)
-      await txController.publishTransaction(txMeta.id, rawTx)
+      await txController.publishTransaction(txMeta.id)
       const publishedTx = txController.txStateManager.getTx(1)
       assert.equal(publishedTx.hash, hash)
       assert.equal(publishedTx.status, 'submitted')
@@ -788,8 +782,9 @@ describe('Transaction Controller', function() {
       }
       const rawTx =
         '0xf86204831e848082520894f231d46dd78806e1dd93442cf33c7671f853874880802ca05f973e540f2d3c2f06d3725a626b75247593cb36477187ae07ecfe0a4db3cf57a00259b52ee8c58baaa385fb05c3f96116e58de89bcc165cb3bfdfc708672fed8a'
+      txMeta.rawTx = rawTx
       txController.txStateManager.addTx(txMeta)
-      await txController.publishTransaction(txMeta.id, rawTx)
+      await txController.publishTransaction(txMeta.id)
       const publishedTx = txController.txStateManager.getTx(1)
       assert.equal(
         publishedTx.hash,

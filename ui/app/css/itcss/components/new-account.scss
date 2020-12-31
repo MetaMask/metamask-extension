@@ -529,6 +529,12 @@
     padding: 0px 20px;
   }
 
+  &__notice {
+    margin-top: 1.5rem;
+    font-size: 0.8rem;
+    color: red;
+  }
+
   &__buttons {
     margin-top: 39px;
     display: flex;

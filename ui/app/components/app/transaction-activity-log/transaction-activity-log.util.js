@@ -11,6 +11,7 @@ const REPLACE_OP = 'replace'
 
 import {
   // event constants
+  TRANSACTION_VALUE_REPLACED_EVENT,
   TRANSACTION_CREATED_EVENT,
   TRANSACTION_SUBMITTED_EVENT,
   TRANSACTION_RESUBMITTED_EVENT,
@@ -51,7 +52,7 @@ const statusHash = {
  * transactionCreated activity.
  * @returns {Array}
  */
-export function getActivities (transaction, isFirstTransaction = false) {
+export function getActivities(transaction, isFirstTransaction = false) {
   const {
     id,
     hash,
@@ -101,11 +102,21 @@ export function getActivities (transaction, isFirstTransaction = false) {
     } else if (Array.isArray(base)) {
       const events = []
 
-      base.forEach((entry) => {
+      base.forEach(entry => {
         const { op, path, value, timestamp: entryTimestamp } = entry
         // Not all sub-entries in a history entry have a timestamp. If the sub-entry does not have a
         // timestamp, the first sub-entry in a history entry should.
         const timestamp = entryTimestamp || (base[0] && base[0].timestamp)
+
+        if (path === '/txParams/value' && op === 'replace') {
+          events.push({
+            id,
+            hash,
+            timestamp,
+            value,
+            eventKey: TRANSACTION_VALUE_REPLACED_EVENT,
+          })
+        }
 
         if (path in eventPathsHash && op === REPLACE_OP) {
           switch (path) {
@@ -115,15 +126,15 @@ export function getActivities (transaction, isFirstTransaction = false) {
                 cachedGasPrice === '0x0' &&
                 cachedStorageLimit === '0x0'
                   ? getHexGasAndCollateralTotal({
-                    gasLimit: paramsGasLimit,
-                    gasPrice: paramsGasPrice,
-                    storageLimit: paramsStorageLimit,
-                  })
+                      gasLimit: paramsGasLimit,
+                      gasPrice: paramsGasPrice,
+                      storageLimit: paramsStorageLimit,
+                    })
                   : getHexGasAndCollateralTotal({
-                    gasLimit: cachedGasLimit,
-                    gasPrice: cachedGasPrice,
-                    storageLimit: cachedStorageLimit,
-                  })
+                      gasLimit: cachedGasLimit,
+                      gasPrice: cachedGasPrice,
+                      storageLimit: cachedStorageLimit,
+                    })
 
               if (value in statusHash) {
                 let eventKey = statusHash[value]
@@ -207,10 +218,10 @@ export function getActivities (transaction, isFirstTransaction = false) {
   // so we add an error entry to the Activity Log.
   return status === '0x0'
     ? historyActivities.concat({
-      id,
-      hash,
-      eventKey: TRANSACTION_ERRORED_EVENT,
-    })
+        id,
+        hash,
+        eventKey: TRANSACTION_ERRORED_EVENT,
+      })
     : historyActivities
 }
 
@@ -223,7 +234,7 @@ export function getActivities (transaction, isFirstTransaction = false) {
  * @param {Array} activities - List of sorted activities generated from the getActivities function.
  * @returns {Array}
  */
-function filterSortedActivities (activities) {
+function filterSortedActivities(activities) {
   const filteredActivities = []
   const hasConfirmedActivity = Boolean(
     activities.find(
@@ -234,7 +245,7 @@ function filterSortedActivities (activities) {
   )
   let addedDroppedActivity = false
 
-  activities.forEach((activity) => {
+  activities.forEach(activity => {
     if (activity.eventKey === TRANSACTION_DROPPED_EVENT) {
       if (!hasConfirmedActivity && !addedDroppedActivity) {
         filteredActivities.push(activity)
@@ -253,7 +264,7 @@ function filterSortedActivities (activities) {
  * @param {Array} transactions - Array of txMeta transaction objects.
  * @returns {Array}
  */
-export function combineTransactionHistories (transactions = []) {
+export function combineTransactionHistories(transactions = []) {
   if (!transactions.length) {
     return []
   }

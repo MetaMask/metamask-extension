@@ -213,6 +213,12 @@
   "browserNotSupported": {
     "message": "Your Browser is not supported..."
   },
+  "bugged": {
+    "message": "Unknown"
+  },
+  "buggedTxTooltip": {
+    "message": "Portal can't get the right status of this transaction, please check it on ConfluxScan"
+  },
   "builtInCalifornia": {
     "message": "ConfluxPortal a fork of Metamask which is designed and built in California. It's altered to use on Conflux network in Beijing."
   },
@@ -348,8 +354,14 @@
   "create": {
     "message": "Create"
   },
+  "createRestoreSubAccount": {
+    "message": "Add/Restore Sub-account"
+  },
+  "submitCreateRestoreAccount": {
+    "message": "Submit"
+  },
   "createAccount": {
-    "message": "Create Account"
+    "message": "Add Account"
   },
   "createAWallet": {
     "message": "Create a Wallet"
@@ -1503,6 +1515,9 @@
   },
   "transactionConfirmed": {
     "message": "Transaction confirmed at $2."
+  },
+  "transactionValueReplaced": {
+    "message": "Transaction's value replaced to $1 at $2"
   },
   "transactionCreated": {
     "message": "Transaction created with a value of $1 at $2."

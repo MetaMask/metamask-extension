@@ -1,3 +1,4 @@
+export const TRANSACTION_VALUE_REPLACED_EVENT = 'transactionValueReplaced'
 export const TRANSACTION_CREATED_EVENT = 'transactionCreated'
 export const TRANSACTION_SUBMITTED_EVENT = 'transactionSubmitted'
 export const TRANSACTION_RESUBMITTED_EVENT = 'transactionResubmitted'
