@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 0.5.9 Thu Dec 31 2020
+
 - fix: cfx_requestAccounts CU-ggztjn CU-59v4cv
 - feat: use popup instead of tab for login
 - fix: gasPrice to 1 in e2e test
