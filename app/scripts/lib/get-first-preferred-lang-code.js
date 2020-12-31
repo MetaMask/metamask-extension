@@ -8,8 +8,8 @@ const getPreferredLocales = extension.i18n
 
 // mapping some browsers return hyphen instead underscore in locale codes (e.g. zh_TW -> zh-tw)
 const existingLocaleCodes = {}
-const enabledLocals = ['en', 'zh_CN', 'zh_TW']
-allLocales.forEach((locale) => {
+const enabledLocals = ['en', 'zh_CN']
+allLocales.forEach(locale => {
   if (locale && locale.code && enabledLocals.includes(locale.code)) {
     existingLocaleCodes[locale.code.toLowerCase().replace('_', '-')] =
       locale.code
@@ -23,7 +23,7 @@ allLocales.forEach((locale) => {
  * @returns {Promise<string>} - Promises a locale code, either one from the user's preferred list that we have a translation for, or 'en'
  *
  */
-async function getFirstPreferredLangCode () {
+async function getFirstPreferredLangCode() {
   let userPreferredLocaleCodes
 
   try {
@@ -40,8 +40,8 @@ async function getFirstPreferredLangCode () {
   }
 
   const firstPreferredLangCode = userPreferredLocaleCodes
-    .map((code) => code.toLowerCase().replace('_', '-'))
-    .find((code) => existingLocaleCodes.hasOwnProperty(code))
+    .map(code => code.toLowerCase().replace('_', '-'))
+    .find(code => existingLocaleCodes.hasOwnProperty(code))
 
   return existingLocaleCodes[firstPreferredLangCode] || 'en'
 }

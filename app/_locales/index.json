@@ -1,5 +1,4 @@
 [
   { "code": "en", "name": "English" },
-  { "code": "zh_CN", "name": "中文(简体)" },
-  { "code": "zh_TW", "name": "中文(繁體)" }
+  { "code": "zh_CN", "name": "中文(简体)" }
 ]
