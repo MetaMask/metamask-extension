@@ -791,6 +791,10 @@ class TransactionController extends EventEmitter {
       'tx:dropped',
       this.txStateManager.setTxStatusDropped.bind(this.txStateManager)
     )
+    this.pendingTxTracker.on(
+      'tx:bugged',
+      this.txStateManager.setTxStatusBugged.bind(this.txStateManager)
+    )
     // this.pendingTxTracker.on('tx:block-update', (txMeta, latestBlockNumber) => {
     // })
     this.pendingTxTracker.on('tx:retry', txMeta => {

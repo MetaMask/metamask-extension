@@ -382,7 +382,7 @@ describe('PendingTransactionTracker', function() {
       )
     })
 
-    it('should call opts.approveTransaction with the id and approved status if the tx is not signed', async function() {
+    it.skip('should call opts.approveTransaction with the id and approved status if the tx is not signed', async function() {
       const stubTx = {
         id: 40,
         status: 'approved',

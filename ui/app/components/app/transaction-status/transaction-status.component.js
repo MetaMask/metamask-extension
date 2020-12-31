@@ -16,9 +16,11 @@ import {
   DROPPED_STATUS,
   CANCELLED_STATUS,
   SKIPPED_STATUS,
+  BUGGED_STATUS,
 } from '../../../helpers/constants/transactions'
 
 const statusToClassNameHash = {
+  [BUGGED_STATUS]: 'transaction-status--bugged',
   [UNAPPROVED_STATUS]: 'transaction-status--unapproved',
   [REJECTED_STATUS]: 'transaction-status--rejected',
   [APPROVED_STATUS]: 'transaction-status--approved',
@@ -52,7 +54,7 @@ export default class TransactionStatus extends PureComponent {
     title: PropTypes.string,
   }
 
-  render () {
+  render() {
     const { className, statusKey, title } = this.props
     const statusText = this.context.t(statusToTextHash[statusKey] || statusKey)
 
@@ -66,9 +68,14 @@ export default class TransactionStatus extends PureComponent {
       >
         {statusToTextHash[statusKey] === 'pending' ||
         statusToTextHash[statusKey] === 'executed' ? (
-            <Spinner className="transaction-status__pending-spinner" />
-          ) : null}
-        <Tooltip position="top" title={title}>
+          <Spinner className="transaction-status__pending-spinner" />
+        ) : null}
+        <Tooltip
+          position="top"
+          title={
+            statusKey === 'bugged' ? this.context.t('buggedTxTooltip') : title
+          }
+        >
           {statusText}
         </Tooltip>
       </div>

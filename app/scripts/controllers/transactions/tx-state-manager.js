@@ -426,6 +426,10 @@ class TransactionStateManager extends EventEmitter {
     this._setTxStatus(txId, 'dropped')
   }
 
+  setTxStatusBugged(txId) {
+    this._setTxStatus(txId, 'bugged')
+  }
+
   /**
      should update the status of the tx to 'skipped'.
      and put the cost gas fee on the txMeta

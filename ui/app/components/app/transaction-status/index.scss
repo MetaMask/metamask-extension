@@ -24,6 +24,14 @@
     }
   }
 
+  &--bugged {
+    background: #fc00ff29;
+    color: #fc00ff;
+    .transaction-status__transaction-count {
+      border: 1px solid #fc00ff;
+    }
+  }
+
   &--confirmed {
     background-color: #eafad7;
     color: #609a1c;
