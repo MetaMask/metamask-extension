@@ -314,8 +314,14 @@
   "create": {
     "message": "创建"
   },
+  "submitCreateRestoreAccount": {
+    "message": "确认"
+  },
+  "createRestoreSubAccount": {
+    "message": " 添加/恢复子账户"
+  },
   "createAccount": {
-    "message": "创建账户"
+    "message": " 添加账户"
   },
   "createAWallet": {
     "message": "创建钱包"

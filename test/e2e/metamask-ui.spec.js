@@ -198,12 +198,12 @@ describe('MetaMask', function() {
   })
 
   describe('Add account', function() {
-    it('choose Create Account from the account menu', async function() {
+    it('choose Add Account from the account menu', async function() {
       await driver.clickElement(By.css('.account-menu__icon'))
       await driver.delay(regularDelayMs)
 
       await driver.clickElement(
-        By.xpath(`//div[contains(text(), 'Create Account')]`)
+        By.xpath(`//div[contains(text(), 'Add Account')]`)
       )
       await driver.delay(regularDelayMs)
     })
@@ -216,7 +216,7 @@ describe('MetaMask', function() {
       await driver.delay(regularDelayMs)
 
       await driver.clickElement(
-        By.xpath(`//button[contains(text(), 'Create')]`)
+        By.xpath(`//button[contains(text(), 'Submit')]`)
       )
       await driver.delay(largeDelayMs)
     })

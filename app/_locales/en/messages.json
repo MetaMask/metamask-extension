@@ -354,8 +354,14 @@
   "create": {
     "message": "Create"
   },
+  "createRestoreSubAccount": {
+    "message": "Add/Restore Sub-account"
+  },
+  "submitCreateRestoreAccount": {
+    "message": "Submit"
+  },
   "createAccount": {
-    "message": "Create Account"
+    "message": "Add Account"
   },
   "createAWallet": {
     "message": "Create a Wallet"
