@@ -66,7 +66,8 @@
     "3box/ipfs/ipld-zcash/zcash-bitcore-lib/elliptic": "^6.5.3",
     "3box/**/libp2p-crypto/node-forge": "^0.10.0",
     "3box/**/libp2p-keychain/node-forge": "^0.10.0",
-    "browserify-derequire/derequire": "^2.1.1"
+    "browserify-derequire/derequire": "^2.1.1",
+    "analytics-node/axios": "^0.21.1"
   },
   "dependencies": {
     "3box": "^1.10.2",
