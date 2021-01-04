@@ -606,7 +606,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       customSwapsGas ||
       (usedQuote?.gasEstimate
         ? estimatedGasLimitWithMultiplier
-        : usedQuote?.maxGas)
+        : `0x${decimalToHex(usedQuote?.maxGas || 0)}`)
 
     const usedGasPrice = getUsedSwapsGasPrice(state)
     usedTradeTxParams.gas = maxGasLimit
