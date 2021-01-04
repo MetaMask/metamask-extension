@@ -1,5 +1,7 @@
 # Changelog
 
+## Current Develop Branch
+
 ## 9.0.0 Fri Jan 8 2021
 
 - [#9156](https://github.com/MetaMask/metamask-extension/pull/9156): Remove window.web3 injection
