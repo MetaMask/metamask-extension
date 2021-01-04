@@ -142,7 +142,7 @@ class BidirectionalQrAccountKeyring extends EventEmitter {
     return new Promise((resolve, reject) => {
       tx.v = tx.getChainId()
       const txHex = tx.serialize().toString('hex')
-      const hdPath = `${this.hdPath}/${0}/${this.unlockedAccount}`
+      const hdPath = this._pathFromAddress(address)
       const signId = hash
         .sha256()
         .update(`${txHex}${hdPath}${this.xfp}`)
@@ -242,6 +242,18 @@ class BidirectionalQrAccountKeyring extends EventEmitter {
     this.paths = {}
   }
 
+  submitSignature(signResult) {
+    const { signId, signature: signatureHex } = signResult
+    const r = Buffer.from(signatureHex.slice(0, 64), 'hex')
+    const s = Buffer.from(signatureHex.slice(64, 128), 'hex')
+    const v = Buffer.from(signatureHex.slice(128), 'hex')
+    const storedSignId = this.memStore.getState().signPayload.signId;
+    if (signId !== storedSignId) {
+      throw new Error('Mismatched sign id')
+    }
+    this.emit(`${this.memStore.getState().signPayload.signId}-signed`, r, s, v)
+  }
+
   cancelTransaction() {
     this.emit(`${this.memStore.getState().signPayload.signId}-canceled`)
   }
@@ -278,7 +290,7 @@ class BidirectionalQrAccountKeyring extends EventEmitter {
     if (typeof index === 'undefined') {
       throw new Error('Unknown address')
     }
-    return `${this.hdPath}/${index}`
+    return `${this.hdPath}/0/${index}`
   }
 }
 

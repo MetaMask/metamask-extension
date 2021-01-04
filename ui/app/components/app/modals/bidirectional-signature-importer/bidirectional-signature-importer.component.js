@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import log from 'loglevel'
 import { BrowserQRCodeReader } from '@zxing/library'
+import { decodeUR, extractSingleWorkload } from '@cvbb/bc-ur'
 import { getEnvironmentType } from '../../../../../../app/scripts/lib/util'
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../../app/scripts/lib/enums'
 import Spinner from '../../../ui/spinner'
@@ -14,10 +15,16 @@ const READY_STATE = {
   READY: 'READY',
 }
 
+function onlyUnique(value, index, arr) {
+  return arr.indexOf(value) === index
+}
+
 export default class BidirectionalSignatureImporter extends Component {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
     qrCodeDetected: PropTypes.func.isRequired,
+    submitSignature: PropTypes.func.isRequired,
+    cancelTransaction: PropTypes.func.isRequired,
   }
 
   static contextTypes = {
@@ -57,6 +64,11 @@ export default class BidirectionalSignatureImporter extends Component {
     return {
       ready: READY_STATE.ACCESSING_CAMERA,
       error: null,
+      urs: [],
+      urInfo: {
+        current: 0,
+        total: 0,
+      },
     }
   }
 
@@ -116,6 +128,59 @@ export default class BidirectionalSignatureImporter extends Component {
     }
   }
 
+  readQRCode = async () => {
+    return await this.codeReader
+      .decodeFromInputVideoDevice(undefined, 'video')
+      .then((content) => {
+        // eslint-disable-next-line no-unused-vars
+        const [_, total] = extractSingleWorkload(content.text)
+        if (this.state.urInfo.total) {
+          if (this.state.urInfo.total !== total) {
+            throw new Error('Invalid UR')
+          }
+          if (this.state.urInfo.total === total) {
+            const newUrs = [...this.state.urs, content.text].filter(onlyUnique)
+            if (newUrs.length === this.state.urInfo.total) {
+              return true
+            }
+            this.setState({
+              urs: newUrs,
+              urInfo: {
+                ...this.state.urInfo,
+                current: newUrs.length,
+              },
+            })
+            return false
+          }
+        } else {
+          this.setState({
+            urs: [content.text],
+            urInfo: {
+              current: 1,
+              total,
+            },
+          })
+          return false
+        }
+        return false
+      })
+      .then((fulfilled) => {
+        if (fulfilled) {
+          const result = JSON.parse(
+            Buffer.from(decodeUR(this.state.urs), 'hex').toString('utf-8'),
+          )
+          this.props.submitSignature(result)
+          this.stopAndClose()
+        } else {
+          this.readQRCode()
+        }
+      })
+      .catch((error) => {
+        this.setState({ error })
+        this.setState(this.getInitialState())
+      })
+  }
+
   initCamera = async () => {
     // The `decodeFromInputVideoDevice` call prompts the browser to show
     // the user the camera permission request.  We must then call it again
@@ -127,20 +192,8 @@ export default class BidirectionalSignatureImporter extends Component {
     }
     try {
       await this.codeReader.getVideoInputDevices()
-      this.checkPermissions()
-      const content = await this.codeReader.decodeFromInputVideoDevice(
-        undefined,
-        'video',
-      )
-      const result = this.parseContent(content.text)
-      if (!this.mounted) {
-        return
-      } else if (result.type === 'unknown') {
-        this.setState({ error: new Error(this.context.t('unknownQrCode')) })
-      } else {
-        this.props.qrCodeDetected(result)
-        this.stopAndClose()
-      }
+      await this.checkPermissions()
+      await this.readQRCode()
     } catch (error) {
       if (!this.mounted) {
         return
@@ -152,22 +205,6 @@ export default class BidirectionalSignatureImporter extends Component {
         this.setState({ error })
       }
     }
-  }
-
-  parseContent(content) {
-    let type = 'unknown'
-    let values = {}
-    // {xfp: "", xpub: "", path: ""}
-    try {
-      const result = JSON.parse(content)
-      if (result.xfp && result.xpub && result.path) {
-        type = 'external-wallet'
-        values = result
-      }
-    } catch (e) {
-      log.error(e)
-    }
-    return { type, values }
   }
 
   stopAndClose = () => {
@@ -254,9 +291,16 @@ export default class BidirectionalSignatureImporter extends Component {
 
   render() {
     const { error } = this.state
+    const { cancelTransaction } = this.props
     return (
       <div className="qr-scanner">
-        <div className="qr-scanner__close" onClick={this.stopAndClose}></div>
+        <div
+          className="qr-scanner__close"
+          onClick={() => {
+            this.stopAndClose()
+            cancelTransaction()
+          }}
+        />
         {error ? this.renderError() : this.renderVideo()}
       </div>
     )

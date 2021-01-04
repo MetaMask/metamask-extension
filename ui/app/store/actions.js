@@ -559,12 +559,16 @@ export function showBidirectionalSignatureImporter() {
 }
 
 export function cancelBidirectionalTransaction() {
-  return (dispatch) => {
+  return () => {
     background.cancelBidirectionalQrTransaction()
   }
 }
 
-export function submitBidirectionalSignature() {}
+export function submitBidirectionalSignature(signatureHex) {
+  return () => {
+    background.submitBidirectionalQrSignature(signatureHex)
+  }
+}
 
 export function setCurrentCurrency(currencyCode) {
   return async (dispatch) => {

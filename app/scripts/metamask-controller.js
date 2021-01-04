@@ -584,6 +584,10 @@ export default class MetamaskController extends EventEmitter {
         bidirectionalQrKeyring.cancelTransaction,
         bidirectionalQrKeyring,
       ),
+      submitBidirectionalQrSignature: nodeify(
+        bidirectionalQrKeyring.submitSignature,
+        bidirectionalQrKeyring,
+      ),
 
       // hardware wallets
       connectHardware: nodeify(this.connectHardware, this),

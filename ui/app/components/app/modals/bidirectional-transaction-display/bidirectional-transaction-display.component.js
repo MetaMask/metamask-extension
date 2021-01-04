@@ -37,11 +37,18 @@ export default class BidirectionalTransactionDisplay extends Component {
         </div>
         <div
           className="qr-scanner__content"
-          style={{ display: 'flex', alignItems: 'center' }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: 'column',
+          }}
         >
           <QRCode value={transactionData[current]} size={250} />
         </div>
-        <button onClick={showBidirectionalSignatureImporter}>
+        <button
+          onClick={showBidirectionalSignatureImporter}
+          style={{ height: 48 }}
+        >
           Get Signature
         </button>
       </div>
