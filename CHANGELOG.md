@@ -2,6 +2,13 @@
 
 ## Current Develop Branch
 
+## 8.1.10 Fri Dec 18 2020
+- [#10084](https://github.com/MetaMask/metamask-extension/pull/10084): Set last provider when switching to a customRPC
+- [#10096](https://github.com/MetaMask/metamask-extension/pull/10096): Update `@metamask/controllers` to v5.1.0
+- [#10103](https://github.com/MetaMask/metamask-extension/pull/10103): Prevent stuck loading screen in some situations
+- [#10104](https://github.com/MetaMask/metamask-extension/pull/10104): Bump @metamask/contract-metadata from 1.19.0 to 1.20.0
+- [#10110](https://github.com/MetaMask/metamask-extension/pull/10110): Fix frozen loading screen on Firefox when strict Enhanced Tracking Protection is enabled
+
 ## 8.1.9 Tue Dec 15 2020
 - [#10034](https://github.com/MetaMask/metamask-extension/pull/10034): Fix contentscript injection failure on Firefox 56
 - [#10045](https://github.com/MetaMask/metamask-extension/pull/10045): Fix token validation in Send flow
