@@ -1,6 +1,7 @@
 # Changelog
 
 ## Current Develop Branch
+- [#10048](https://github.com/MetaMask/metamask-extension/pull/10048): Display boolean values when signing typed data
 
 ## 8.1.10 Fri Dec 18 2020
 - [#10084](https://github.com/MetaMask/metamask-extension/pull/10084): Set last provider when switching to a customRPC

@@ -1,7 +1,6 @@
 import assert from 'assert'
 import EventEmitter from 'events'
-import ObservableStore from 'obs-store'
-import ComposedStore from 'obs-store/lib/composed'
+import { ComposedStore, ObservableStore } from '@metamask/obs-store'
 import { JsonRpcEngine } from 'json-rpc-engine'
 import providerFromEngine from 'eth-json-rpc-middleware/providerFromEngine'
 import log from 'loglevel'

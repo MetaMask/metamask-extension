@@ -16,16 +16,13 @@ const inpageContent = fs.readFileSync(
 const inpageSuffix = `//# sourceURL=${extension.runtime.getURL('inpage.js')}\n`
 const inpageBundle = inpageContent + inpageSuffix
 
-// Eventually this streaming injection could be replaced with:
-// https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Language_Bindings/Components.utils.exportFunction
-//
-// But for now that is only Firefox
-// If we create a FireFox-only code path using that API,
-// MetaMask will be much faster loading and performant on Firefox.
+const CONTENT_SCRIPT = 'metamask-contentscript'
+const INPAGE = 'metamask-inpage'
+const PROVIDER = 'metamask-provider'
 
 if (shouldInjectProvider()) {
   injectScript(inpageBundle)
-  start()
+  setupStreams()
 }
 
 /**
@@ -47,15 +44,6 @@ function injectScript(content) {
 }
 
 /**
- * Sets up the stream communication and submits site metadata
- *
- */
-async function start() {
-  await setupStreams()
-  await domIsReady()
-}
-
-/**
  * Sets up two-way communication streams between the
  * browser extension and local per-page browser context.
  *
@@ -63,10 +51,10 @@ async function start() {
 async function setupStreams() {
   // the transport-specific streams for communication between inpage and background
   const pageStream = new LocalMessageDuplexStream({
-    name: 'contentscript',
-    target: 'inpage',
+    name: CONTENT_SCRIPT,
+    target: INPAGE,
   })
-  const extensionPort = extension.runtime.connect({ name: 'contentscript' })
+  const extensionPort = extension.runtime.connect({ name: CONTENT_SCRIPT })
   const extensionStream = new PortStream(extensionPort)
 
   // create and connect channel muxers
@@ -79,20 +67,20 @@ async function setupStreams() {
   pump(pageMux, pageStream, pageMux, (err) =>
     logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
   )
-  pump(extensionMux, extensionStream, extensionMux, (err) =>
-    logStreamDisconnectWarning('MetaMask Background Multiplex', err),
-  )
+  pump(extensionMux, extensionStream, extensionMux, (err) => {
+    logStreamDisconnectWarning('MetaMask Background Multiplex', err)
+    notifyInpageOfStreamFailure()
+  })
 
   // forward communication across inpage-background for these channels only
-  forwardTrafficBetweenMuxers('provider', pageMux, extensionMux)
-  forwardTrafficBetweenMuxers('publicConfig', pageMux, extensionMux)
+  forwardTrafficBetweenMuxes(PROVIDER, pageMux, extensionMux)
 
   // connect "phishing" channel to warning system
   const phishingStream = extensionMux.createStream('phishing')
   phishingStream.once('data', redirectToPhishingWarning)
 }
 
-function forwardTrafficBetweenMuxers(channelName, muxA, muxB) {
+function forwardTrafficBetweenMuxes(channelName, muxA, muxB) {
   const channelA = muxA.createStream(channelName)
   const channelB = muxB.createStream(channelName)
   pump(channelA, channelB, channelA, (error) =>
@@ -113,6 +101,28 @@ function logStreamDisconnectWarning(remoteLabel, error) {
   console.debug(
     `MetaMask: Content script lost connection to "${remoteLabel}".`,
     error,
+  )
+}
+
+/**
+ * This function must ONLY be called in pump destruction/close callbacks.
+ * Notifies the inpage context that streams have failed, via window.postMessage.
+ * Relies on obj-multiplex and post-message-stream implementation details.
+ */
+function notifyInpageOfStreamFailure() {
+  window.postMessage(
+    {
+      target: INPAGE, // the post-message-stream "target"
+      data: {
+        // this object gets passed to obj-multiplex
+        name: PROVIDER, // the obj-multiplex channel name
+        data: {
+          jsonrpc: '2.0',
+          method: 'METAMASK_STREAM_FAILURE',
+        },
+      },
+    },
+    window.location.origin,
   )
 }
 
@@ -219,18 +229,4 @@ function redirectToPhishingWarning() {
     hostname: window.location.hostname,
     href: window.location.href,
   })}`
-}
-
-/**
- * Returns a promise that resolves when the DOM is loaded (does not wait for images to load)
- */
-async function domIsReady() {
-  // already loaded
-  if (['interactive', 'complete'].includes(document.readyState)) {
-    return undefined
-  }
-  // wait for load
-  return new Promise((resolve) =>
-    window.addEventListener('DOMContentLoaded', resolve, { once: true }),
-  )
 }

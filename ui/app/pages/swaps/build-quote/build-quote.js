@@ -418,6 +418,7 @@ export default function BuildQuote({
           Number(maxSlippage) > MAX_ALLOWED_SLIPPAGE
         }
         hideCancel
+        showTermsOfService
       />
     </div>
   )

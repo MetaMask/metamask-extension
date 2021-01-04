@@ -31,7 +31,10 @@ export default function SwapsFooter({
           onSubmit={onSubmit}
           submitText={submitText}
           submitButtonType="confirm"
-          footerClassName="swaps-footer__custom-page-container-footer-class"
+          footerClassName={classnames(
+            'swaps-footer__custom-page-container-footer-class',
+            className,
+          )}
           footerButtonClassName={classnames(
             'swaps-footer__custom-page-container-footer-button-class',
             {

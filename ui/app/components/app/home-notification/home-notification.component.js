@@ -1,101 +1,105 @@
-import React, { PureComponent } from 'react'
+import React, { useState } from 'react'
 import classnames from 'classnames'
-import { Tooltip as ReactTippy } from 'react-tippy'
 import PropTypes from 'prop-types'
 import Button from '../../ui/button'
+import Checkbox from '../../ui/check-box'
+import Tooltip from '../../ui/tooltip'
 
-export default class HomeNotification extends PureComponent {
-  static contextTypes = {
-    metricsEvent: PropTypes.func,
-  }
+const HomeNotification = ({
+  acceptText,
+  checkboxText,
+  checkboxTooltipText,
+  classNames = [],
+  descriptionText,
+  ignoreText,
+  infoText,
+  onAccept,
+  onIgnore,
+}) => {
+  const [checkboxState, setCheckBoxState] = useState(false)
 
-  static defaultProps = {
-    onAccept: null,
-    ignoreText: null,
-    onIgnore: null,
-    infoText: null,
-  }
+  const checkboxElement = checkboxText && (
+    <Checkbox
+      id="homeNotification_checkbox"
+      checked={checkboxState}
+      className="home-notification__checkbox"
+      onClick={() => setCheckBoxState((checked) => !checked)}
+    />
+  )
 
-  static propTypes = {
-    acceptText: PropTypes.node.isRequired,
-    onAccept: PropTypes.func,
-    ignoreText: PropTypes.node,
-    onIgnore: PropTypes.func,
-    descriptionText: PropTypes.node.isRequired,
-    infoText: PropTypes.node,
-    classNames: PropTypes.array,
-  }
-
-  handleAccept = () => {
-    this.props.onAccept()
-  }
-
-  handleIgnore = () => {
-    this.props.onIgnore()
-  }
-
-  render() {
-    const {
-      descriptionText,
-      acceptText,
-      onAccept,
-      ignoreText,
-      onIgnore,
-      infoText,
-      classNames = [],
-    } = this.props
-
-    return (
-      <div className={classnames('home-notification', ...classNames)}>
-        <div className="home-notification__header">
-          <div className="home-notification__header-container">
-            <img
-              className="home-notification__icon"
-              alt=""
-              src="images/icons/connect.svg"
-            />
-            <div className="home-notification__text">{descriptionText}</div>
-          </div>
-          {infoText ? (
-            <ReactTippy
-              style={{
-                display: 'flex',
-              }}
-              html={
-                <p className="home-notification-tooltip__content">{infoText}</p>
-              }
-              offset={-36}
-              distance={36}
-              animation="none"
-              position="top"
-              arrow
-              theme="tippy-tooltip-home"
-            >
-              <img alt="" src="images/icons/info.svg" />
-            </ReactTippy>
-          ) : null}
+  return (
+    <div className={classnames('home-notification', ...classNames)}>
+      <div className="home-notification__content">
+        <div className="home-notification__content-container">
+          <div className="home-notification__text">{descriptionText}</div>
         </div>
-        <div className="home-notification__buttons">
-          {onAccept && acceptText ? (
-            <Button
-              type="primary"
-              className="home-notification__accept-button"
-              onClick={this.handleAccept}
-            >
-              {acceptText}
-            </Button>
-          ) : null}
-          {onIgnore && ignoreText ? (
-            <Button
-              type="secondary"
-              className="home-notification__ignore-button"
-              onClick={this.handleIgnore}
-            >
-              {ignoreText}
-            </Button>
-          ) : null}
-        </div>
+        {infoText ? (
+          <Tooltip
+            position="top"
+            title={infoText}
+            wrapperClassName="home-notification__tooltip-wrapper"
+          >
+            <i className="fa fa-info-circle" />
+          </Tooltip>
+        ) : null}
       </div>
-    )
-  }
+      <div className="home-notification__buttons">
+        {onAccept && acceptText ? (
+          <Button
+            type="primary"
+            className="home-notification__accept-button"
+            onClick={onAccept}
+          >
+            {acceptText}
+          </Button>
+        ) : null}
+        {onIgnore && ignoreText ? (
+          <Button
+            type="secondary"
+            className="home-notification__ignore-button"
+            // Some onIgnore handlers use the checkboxState to determine whether
+            // to disable the notification
+            onClick={() => onIgnore(checkboxState)}
+          >
+            {ignoreText}
+          </Button>
+        ) : null}
+        {checkboxText ? (
+          <div className="home-notification__checkbox-wrapper">
+            {checkboxTooltipText ? (
+              <Tooltip
+                position="top"
+                title={checkboxTooltipText}
+                wrapperClassName="home-notification__checkbox-label-tooltip"
+              >
+                {checkboxElement}
+              </Tooltip>
+            ) : (
+              checkboxElement
+            )}
+            <label
+              className="home-notification__checkbox-label"
+              htmlFor="homeNotification_checkbox"
+            >
+              {checkboxText}
+            </label>
+          </div>
+        ) : null}
+      </div>
+    </div>
+  )
 }
+
+HomeNotification.propTypes = {
+  acceptText: PropTypes.node,
+  checkboxText: PropTypes.node,
+  checkboxTooltipText: PropTypes.node,
+  classNames: PropTypes.array,
+  descriptionText: PropTypes.node.isRequired,
+  ignoreText: PropTypes.node,
+  infoText: PropTypes.node,
+  onAccept: PropTypes.func,
+  onIgnore: PropTypes.func,
+}
+
+export default HomeNotification
