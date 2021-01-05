@@ -141,7 +141,7 @@ export default class ConfirmTransactionBase extends Component {
       nextNonce !== prevNextNonce ||
       customNonceValue !== prevCustomNonceValue
     ) {
-      if (customNonceValue > nextNonce) {
+      if (nextNonce !== null && customNonceValue > nextNonce) {
         this.setState({
           submitWarning: this.context.t('nextNonceWarning', [nextNonce]),
         })
