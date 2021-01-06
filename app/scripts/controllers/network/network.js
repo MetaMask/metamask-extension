@@ -51,9 +51,13 @@ export default class NetworkController extends EventEmitter {
     this.providerStore = new ObservableStore(
       opts.provider || { ...defaultProviderConfig },
     )
+    this.previousProviderStore = new ObservableStore(
+      this.providerStore.getState(),
+    )
     this.networkStore = new ObservableStore('loading')
     this.store = new ComposedStore({
       provider: this.providerStore,
+      previousProviderStore: this.previousProviderStore,
       network: this.networkStore,
     })
 
@@ -188,6 +192,13 @@ export default class NetworkController extends EventEmitter {
    * Sets the provider config and switches the network.
    */
   setProviderConfig(config) {
+    this.previousProviderStore.updateState(this.getProviderConfig())
+    this.providerStore.updateState(config)
+    this._switchNetwork(config)
+  }
+
+  rollbackToPreviousProvider() {
+    const config = this.previousProviderStore.getState()
     this.providerStore.updateState(config)
     this._switchNetwork(config)
   }

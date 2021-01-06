@@ -579,6 +579,10 @@ export default class MetamaskController extends EventEmitter {
         networkController.setProviderType,
         networkController,
       ),
+      rollbackToPreviousProvider: nodeify(
+        networkController.rollbackToPreviousProvider,
+        networkController,
+      ),
       setCustomRpc: nodeify(this.setCustomRpc, this),
       updateAndSetCustomRpc: nodeify(this.updateAndSetCustomRpc, this),
       delCustomRpc: nodeify(this.delCustomRpc, this),
