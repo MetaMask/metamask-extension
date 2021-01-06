@@ -247,8 +247,9 @@ class BidirectionalQrAccountKeyring extends EventEmitter {
     const r = Buffer.from(signatureHex.slice(0, 64), 'hex')
     const s = Buffer.from(signatureHex.slice(64, 128), 'hex')
     const v = Buffer.from(signatureHex.slice(128), 'hex')
-    const storedSignId = this.memStore.getState().signPayload.signId;
+    const storedSignId = this.memStore.getState().signPayload.signId
     if (signId !== storedSignId) {
+      this.cancelTransaction()
       throw new Error('Mismatched sign id')
     }
     this.emit(`${this.memStore.getState().signPayload.signId}-signed`, r, s, v)

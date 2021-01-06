@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import log from 'loglevel'
-import { BrowserQRCodeReader } from '@zxing/library'
 import { decodeUR, extractSingleWorkload } from '@cvbb/bc-ur'
+import QrReader from 'react-qr-reader'
 import { getEnvironmentType } from '../../../../../../app/scripts/lib/util'
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../../app/scripts/lib/enums'
 import Spinner from '../../../ui/spinner'
@@ -97,8 +97,6 @@ export default class BidirectionalSignatureImporter extends Component {
     try {
       const { permissions } = await WebcamUtils.checkStatus()
       if (permissions) {
-        // Let the video stream load first...
-        await new Promise((resolve) => setTimeout(resolve, 2000))
         if (!this.mounted) {
           return
         }
@@ -117,83 +115,11 @@ export default class BidirectionalSignatureImporter extends Component {
   componentWillUnmount() {
     this.mounted = false
     clearTimeout(this.permissionChecker)
-    this.teardownCodeReader()
-  }
-
-  teardownCodeReader() {
-    if (this.codeReader) {
-      this.codeReader.reset()
-      this.codeReader.stop()
-      this.codeReader = null
-    }
-  }
-
-  readQRCode = async () => {
-    return await this.codeReader
-      .decodeFromInputVideoDevice(undefined, 'video')
-      .then((content) => {
-        // eslint-disable-next-line no-unused-vars
-        const [_, total] = extractSingleWorkload(content.text)
-        if (this.state.urInfo.total) {
-          if (this.state.urInfo.total !== total) {
-            throw new Error('Invalid UR')
-          }
-          if (this.state.urInfo.total === total) {
-            const newUrs = [...this.state.urs, content.text].filter(onlyUnique)
-            if (newUrs.length === this.state.urInfo.total) {
-              return true
-            }
-            this.setState({
-              urs: newUrs,
-              urInfo: {
-                ...this.state.urInfo,
-                current: newUrs.length,
-              },
-            })
-            return false
-          }
-        } else {
-          this.setState({
-            urs: [content.text],
-            urInfo: {
-              current: 1,
-              total,
-            },
-          })
-          return false
-        }
-        return false
-      })
-      .then((fulfilled) => {
-        if (fulfilled) {
-          const result = JSON.parse(
-            Buffer.from(decodeUR(this.state.urs), 'hex').toString('utf-8'),
-          )
-          this.props.submitSignature(result)
-          this.stopAndClose()
-        } else {
-          this.readQRCode()
-        }
-      })
-      .catch((error) => {
-        this.setState({ error })
-        this.setState(this.getInitialState())
-      })
   }
 
   initCamera = async () => {
-    // The `decodeFromInputVideoDevice` call prompts the browser to show
-    // the user the camera permission request.  We must then call it again
-    // once we receive permission so that the video displays.
-    // It's important to prevent this codeReader from being created twice;
-    // Firefox otherwise starts 2 video streams, one of which cannot be stopped
-    if (!this.codeReader) {
-      this.codeReader = new BrowserQRCodeReader()
-    }
     try {
-      await this.codeReader.getVideoInputDevices()
       await this.checkPermissions()
-      await this.readQRCode()
     } catch (error) {
       if (!this.mounted) {
         return
@@ -208,17 +134,11 @@ export default class BidirectionalSignatureImporter extends Component {
   }
 
   stopAndClose = () => {
-    if (this.codeReader) {
-      this.teardownCodeReader()
-    }
     this.props.hideModal()
   }
 
   tryAgain = () => {
     clearTimeout(this.permissionChecker)
-    if (this.codeReader) {
-      this.teardownCodeReader()
-    }
     this.setState(this.getInitialState(), () => {
       this.checkEnvironment()
     })
@@ -257,6 +177,53 @@ export default class BidirectionalSignatureImporter extends Component {
     )
   }
 
+  handleError(error) {
+    this.setState({ error })
+  }
+
+  handleScan(data) {
+    try {
+      if (!data) {
+        return
+      }
+      // eslint-disable-next-line no-unused-vars
+      const [_, total] = extractSingleWorkload(data)
+      if (this.state.urInfo.total) {
+        if (this.state.urInfo.total !== total) {
+          throw new Error('Invalid UR')
+        }
+        if (this.state.urInfo.total === total) {
+          const newUrs = [...this.state.urs, data].filter(onlyUnique)
+          if (newUrs.length === this.state.urInfo.total) {
+            const result = JSON.parse(
+              Buffer.from(decodeUR(this.state.urs), 'hex').toString('utf-8'),
+            )
+            this.props.submitSignature(result)
+            this.stopAndClose()
+          } else {
+            this.setState({
+              urs: newUrs,
+              urInfo: {
+                ...this.state.urInfo,
+                current: newUrs.length,
+              },
+            })
+          }
+        }
+      } else {
+        this.setState({
+          urs: [data],
+          urInfo: {
+            current: 1,
+            total,
+          },
+        })
+      }
+    } catch (error) {
+      this.setState({ error })
+    }
+  }
+
   renderVideo() {
     const { t } = this.context
     const { ready } = this.state
@@ -275,13 +242,20 @@ export default class BidirectionalSignatureImporter extends Component {
         <div className="qr-scanner__title">{`${t('scanQrCode')}`}</div>
         <div className="qr-scanner__content">
           <div className="qr-scanner__content__video-wrapper">
-            <video
-              id="video"
-              style={{
-                display: ready === READY_STATE.READY ? 'block' : 'none',
-              }}
-            />
-            {ready === READY_STATE.READY ? null : <Spinner color="#F7C06C" />}
+            {ready === READY_STATE.READY ? (
+              <QrReader
+                delay={300}
+                onError={(error) => {
+                  this.handleError(error)
+                }}
+                onScan={(data) => {
+                  this.handleScan(data)
+                }}
+                style={{ width: '100%' }}
+              />
+            ) : (
+              <Spinner color="#F7C06C" />
+            )}
           </div>
         </div>
         <div className="qr-scanner__status">{message}</div>
