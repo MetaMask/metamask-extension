@@ -1409,6 +1409,15 @@
   "selectAnAccount": {
     "message": "Select an Account"
   },
+  "scanWithCoboVault": {
+    "message": "Scan With Cobo Vault"
+  },
+  "getSignatureFromCoboVault": {
+    "message": "Get Signature"
+  },
+  "switchAccount": {
+    "message": "Switch Account"
+  },
   "selectAnAccountHelp": {
     "message": "Select the account to view in MetaMask"
   },

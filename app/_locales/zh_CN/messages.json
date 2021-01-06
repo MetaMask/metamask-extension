@@ -910,6 +910,15 @@
   "selectAnAccount": {
     "message": "选择账户"
   },
+  "scanWithCoboVault": {
+    "message": "使用Cobo Vault扫描二维码"
+  },
+  "getSignatureFromCoboVault": {
+    "message": "Get Signature"
+  },
+  "switchAccount": {
+    "message": "切换账号"
+  },
   "selectAnAccountHelp": {
     "message": "请通过 MetaMask 选择需要查看的账户"
   },

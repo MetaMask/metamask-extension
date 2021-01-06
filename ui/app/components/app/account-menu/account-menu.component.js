@@ -349,7 +349,7 @@ export default class AccountMenu extends Component {
               alt={t('createAccount')}
             />
           }
-          text="Switch Account"
+          text={t('switchAccount')}
         />
         <div className="account-menu__divider" />
         <AccountMenuItem

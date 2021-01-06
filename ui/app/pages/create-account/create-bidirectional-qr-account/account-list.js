@@ -4,19 +4,6 @@ import getAccountLink from '../../../../lib/account-link'
 import Button from '../../../components/ui/button'
 
 class AccountList extends Component {
-  getHdPaths() {
-    return [
-      {
-        label: `Ledger Live`,
-        value: `m/44'/60'/0'/0/0`,
-      },
-      {
-        label: `Legacy (MEW / MyCrypto)`,
-        value: `m/44'/60'/0'`,
-      },
-    ]
-  }
-
   goToNextPage = () => {
     // If we have < 5 accounts, it's restricted by BIP-44
     if (this.props.accounts.length === 5) {

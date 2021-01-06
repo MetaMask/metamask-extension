@@ -4,9 +4,12 @@ import QRCode from 'qrcode.react'
 
 export default class BidirectionalTransactionDisplay extends Component {
   static propTypes = {
-    hideModal: PropTypes.func.isRequired,
     transactionData: PropTypes.array.isRequired,
     showBidirectionalSignatureImporter: PropTypes.func.isRequired,
+  }
+
+  static contextTypes = {
+    t: PropTypes.func,
   }
 
   constructor(props) {
@@ -38,7 +41,7 @@ export default class BidirectionalTransactionDisplay extends Component {
     return (
       <div className="qr-scanner">
         <div className="qr-scanner__title">
-          <p>Scan with Cobo Vault</p>
+          <p>{this.context.t('scanWithCoboVault')}</p>
         </div>
         <div
           className="qr-scanner__content"
@@ -54,7 +57,7 @@ export default class BidirectionalTransactionDisplay extends Component {
           onClick={showBidirectionalSignatureImporter}
           style={{ height: 48 }}
         >
-          Get Signature
+          {this.context.t('getSignatureFromCoboVault')}
         </button>
       </div>
     )
