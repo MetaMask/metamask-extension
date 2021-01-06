@@ -18,6 +18,8 @@
 - [#10000](https://github.com/MetaMask/metamask-extension/pull/10000): Use consistent font size for modal top right Close links
 - [#10046](https://github.com/MetaMask/metamask-extension/pull/10046): Improve home screen notification appearance
 - [#10117](https://github.com/MetaMask/metamask-extension/pull/10117): Fix network settings Kovan block explorer link
+- [#10143](https://github.com/MetaMask/metamask-extension/pull/10143): Prevent malformed next nonce warning
+- [#10142](https://github.com/MetaMask/metamask-extension/pull/10142): Update @metamask/contract-metadata from v1.20.0 to 1.21.0
 
 ## 8.1.10 Fri Dec 18 2020
 
