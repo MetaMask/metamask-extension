@@ -21,7 +21,7 @@
       "128": "images/icon-128.png",
       "512": "images/icon-512.png"
     },
-    "default_title": "MetaMask",
+    "default_title": "MetaMask-CoboVault",
     "default_popup": "popup.html"
   },
   "commands": {
