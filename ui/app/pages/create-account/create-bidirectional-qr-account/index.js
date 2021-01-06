@@ -15,7 +15,6 @@ class CreateBidirectionalQrAccount extends Component {
     error: null,
     selectedAccount: null,
     accounts: [],
-    unlocked: false,
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -39,14 +38,6 @@ class CreateBidirectionalQrAccount extends Component {
     this.setState({ error: this.context.t('ledgerAccountRestriction') })
   }
 
-  showTemporaryAlert() {
-    this.props.showAlert(this.context.t('hardwareWalletConnected'))
-    // Autohide the alert after 5 seconds
-    setTimeout((_) => {
-      this.props.hideAlert()
-    }, 5000)
-  }
-
   componentDidMount() {
     this.getPage(0)
   }
@@ -55,15 +46,8 @@ class CreateBidirectionalQrAccount extends Component {
     this.props
       .getBidirectionalQrAccountsByPage(page)
       .then((accounts) => {
-        console.log('create bidirectional qr account', accounts)
         if (accounts.length) {
-          // If we just loaded the accounts for the first time
-          // (device previously locked) show the global alert
-          if (this.state.accounts.length === 0 && !this.state.unlocked) {
-            this.showTemporaryAlert()
-          }
-
-          const newState = { unlocked: true, error: null }
+          const newState = { error: null }
           // Default to the first account
           if (this.state.selectedAccount === null) {
             accounts.forEach((a) => {
@@ -133,7 +117,6 @@ class CreateBidirectionalQrAccount extends Component {
   }
 
   renderError() {
-    console.log('error', this.state.error)
     if (this.state.error === U2F_ERROR) {
       return (
         <p className="hw-connect__error">

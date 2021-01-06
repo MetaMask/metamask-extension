@@ -19,11 +19,16 @@ export default class BidirectionalTransactionDisplay extends Component {
 
   componentDidMount() {
     setInterval(() => {
-      this.setState((state) => {
-        return {
-          current: state.current + (1 % state.total),
-        }
-      })
+      this.setState(
+        (state) => {
+          return {
+            current: (state.current + 1) % state.total,
+          }
+        },
+        () => {
+          console.error('state: ', this.state)
+        },
+      )
     }, 500)
   }
 

@@ -488,8 +488,6 @@ export default class TransactionController extends EventEmitter {
     this.inProcessOfSigning.add(txId)
     let nonceLock
     try {
-      // approve
-      this.txStateManager.setTxStatusApproved(txId)
       // get next nonce
       const txMeta = this.txStateManager.getTx(txId)
       const fromAddress = txMeta.txParams.from
@@ -516,6 +514,8 @@ export default class TransactionController extends EventEmitter {
       // sign transaction
       const rawTx = await this.signTransaction(txId)
       await this.publishTransaction(txId, rawTx)
+      // approve
+      this.txStateManager.setTxStatusApproved(txId)
       // must set transaction to submitted/failed before releasing lock
       nonceLock.releaseLock()
     } catch (err) {

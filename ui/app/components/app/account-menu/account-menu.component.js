@@ -294,7 +294,7 @@ export default class AccountMenu extends Component {
   }
 
   render() {
-    const { t, metricsEvent } = this.context
+    const { t } = this.context
     const {
       shouldShowAccountsSearch,
       isAccountMenuOpen,
