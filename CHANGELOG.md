@@ -11,8 +11,6 @@
 - [#10019](https://github.com/MetaMask/metamask-extension/pull/10019): Increase Chrome minimum version to v63
 - [#10135](https://github.com/MetaMask/metamask-extension/pull/10135): Fix error where a swap only completed the token approval transaction
 - [#10100](https://github.com/MetaMask/metamask-extension/pull/10100): Remove unnecessary swaps footer space when in dropdown mode
-- [#10069](https://github.com/MetaMask/metamask-extension/pull/10069): Fetch swap quote refresh time from API
-- [#9992](https://github.com/MetaMask/metamask-extension/pull/9992): Improve Ethereum transaction params validation
 - [#9905](https://github.com/MetaMask/metamask-extension/pull/9905): Redesign view quote screens
 - [#9320](https://github.com/MetaMask/metamask-extension/pull/9320): Prevent hidden tokens from reappearing
 - [#10000](https://github.com/MetaMask/metamask-extension/pull/10000): Use consistent font size for modal top right Close links
