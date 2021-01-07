@@ -3,6 +3,9 @@
 ## Current Develop Branch
 - [#10048](https://github.com/MetaMask/metamask-extension/pull/10048): Display boolean values when signing typed data
 
+## 8.1.11 Thu Jan 07 2021
+- [#10155](https://github.com/MetaMask/metamask-extension/pull/10155): Disable swaps when the current network's chainId does not match the mainnet chain ID, instead of disabling based on network ID
+
 ## 8.1.10 Fri Dec 18 2020
 - [#10084](https://github.com/MetaMask/metamask-extension/pull/10084): Set last provider when switching to a customRPC
 - [#10096](https://github.com/MetaMask/metamask-extension/pull/10096): Update `@metamask/controllers` to v5.1.0
