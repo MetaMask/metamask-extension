@@ -3394,7 +3394,7 @@
   optionalDependencies:
     text-encoding "^0.6.4"
 
-JSONStream@^1.0.3:
+JSONStream@^1.0.3, JSONStream@^1.3.5:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/JSONStream/-/JSONStream-1.3.5.tgz#3208c1f08d3a4d99261ab64f92302bc15e111ca0"
   integrity sha512-E+iruNOY8VV9s4JEbe1aNEm6MiszPRr/UfcHMz0TQh1BXSxHK+ASV1R6W4HpjBhSeS+54PIsAMCBmwD06LLsqQ==
@@ -7256,7 +7256,7 @@ concat-stream@^1.4.6, concat-stream@^1.5.0, concat-stream@^1.5.1, concat-stream@
     readable-stream "^2.2.2"
     typedarray "^0.0.6"
 
-"concat-stream@github:hugomrdias/concat-stream#feat/smaller":
+concat-stream@^2.0.0, "concat-stream@github:hugomrdias/concat-stream#feat/smaller":
   version "2.0.0"
   resolved "https://codeload.github.com/hugomrdias/concat-stream/tar.gz/057bc7b5d6d8df26c8cf00a3f151b6721a0a8034"
   dependencies:
@@ -8816,6 +8816,16 @@ duplexify@^3.1.2, duplexify@^3.4.2:
     end-of-stream "^1.0.0"
     inherits "^2.0.1"
     readable-stream "^2.0.0"
+    stream-shift "^1.0.0"
+
+duplexify@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/duplexify/-/duplexify-4.1.1.tgz#7027dc374f157b122a8ae08c2d3ea4d2d953aa61"
+  integrity sha512-DY3xVEmVHTv1wSzKNbwoU6nVjzI369Y6sPoqfYr0/xlx3IdX2n94xIszTcjPO8W8ZIv0Wb0PXNcjuZyT4wiICA==
+  dependencies:
+    end-of-stream "^1.4.1"
+    inherits "^2.0.3"
+    readable-stream "^3.1.1"
     stream-shift "^1.0.0"
 
 each-props@^1.3.0:
@@ -15787,6 +15797,27 @@ latest-version@^5.0.0:
   dependencies:
     package-json "^6.3.0"
 
+lavamoat-browserify@12.0.0:
+  version "12.0.0"
+  resolved "https://registry.yarnpkg.com/lavamoat-browserify/-/lavamoat-browserify-12.0.0.tgz#8313bf0cfa337780bfd819a2d25b9906da267a4e"
+  integrity sha512-9xE4GKoPzAr87cR2gNw+r09VT0SiXiOSlGsw+MWnB+LTSlJf+JvrGir0pktsnJyi7o2lDwoa3rKHrHEfMdAl0g==
+  dependencies:
+    JSONStream "^1.3.5"
+    clone "^2.1.2"
+    combine-source-map "^0.8.0"
+    concat-stream "^2.0.0"
+    duplexify "^4.1.1"
+    json-stable-stringify "^1.0.1"
+    lavamoat-core "^7.0.0"
+    merge-deep "^3.0.2"
+    mkdirp "^1.0.3"
+    offset-sourcemap-lines "^1.0.1"
+    pify "^4.0.1"
+    readable-stream "^3.6.0"
+    safe-buffer "^5.1.2"
+    through2 "^3.0.0"
+    umd "^3.0.3"
+
 lavamoat-core@^6.4.2:
   version "6.4.2"
   resolved "https://registry.yarnpkg.com/lavamoat-core/-/lavamoat-core-6.4.2.tgz#7004a882682b64141846965542acabda8b8d4df5"
@@ -15799,10 +15830,10 @@ lavamoat-core@^6.4.2:
     merge-deep "^3.0.2"
     resolve "^1.15.1"
 
-lavamoat-core@^6.4.4:
-  version "6.4.4"
-  resolved "https://registry.yarnpkg.com/lavamoat-core/-/lavamoat-core-6.4.4.tgz#a3e88d8ef05ba4986071b0aacab49f0c3d2b2f9c"
-  integrity sha512-LxLpxHfoXQkbCfllNB2WjVesvFfBWkDsKWy9KUI3vep2GxjaZa1LtBbOFtTI1h2IS9fUZo/IDAIQdeMvOzUl5Q==
+lavamoat-core@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/lavamoat-core/-/lavamoat-core-7.0.0.tgz#61231b1454d3978d9a9bc0cfbc7c827c1ccd3314"
+  integrity sha512-vOBzF1iVHk+6XNs1KertzfpNGWjvYisFPKHyHWKa9kXAx68Iy7x/wLAccrIv4ODWybt5t2tYzRnC1SmqEvYyxQ==
   dependencies:
     cytoplasm "^3.3.1"
     fromentries "^1.2.0"
@@ -15830,16 +15861,16 @@ lavamoat-viz@^5.0.2:
     pify "^4.0.1"
     yargs "^16.0.0"
 
-lavamoat@^4.3.4:
-  version "4.3.4"
-  resolved "https://registry.yarnpkg.com/lavamoat/-/lavamoat-4.3.4.tgz#dedd52ed759239cedc5b2b3b32452ceb8b85739e"
-  integrity sha512-+FL8WNiu2NP/JfQ8XyLl0xIhzJLtlxMkz4jK4/darQ+U1dcA+EJrQtvVsrBH+5rsU2CHlUvztEge4vSirWgvGQ==
+lavamoat@4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/lavamoat/-/lavamoat-4.4.0.tgz#f19b4ba244bb7f2e385f28a2631221bfbed3f452"
+  integrity sha512-tBQ5LpvM8UdvUjTQZuHOsCgzhgEkfq5+kPp3jfaJSOQe88iCjVb2wgFuKQ0YHUhxTxy7meJBRaRg/X58HkoGQA==
   dependencies:
     "@babel/code-frame" "^7.10.4"
     bindings "^1.5.0"
     htmlescape "^1.1.1"
     json-stable-stringify "^1.0.1"
-    lavamoat-core "^6.4.4"
+    lavamoat-core "^7.0.0"
     lavamoat-tofu "^5.1.1"
     node-gyp-build "^4.2.3"
     object.fromentries "^2.0.2"
@@ -18772,6 +18803,13 @@ observable-webworkers@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/observable-webworkers/-/observable-webworkers-1.0.0.tgz#dcbd484a9644d512accc351962c6e710313fbb68"
   integrity sha512-+cECwCR8IEh8UY5nefQVLO9Cydqpk1izO+o7BABmKjXfJZyEOzBWY3ss5jbOPM6KmEa9aQExvAtTW6tVTOsNAQ==
+
+offset-sourcemap-lines@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/offset-sourcemap-lines/-/offset-sourcemap-lines-1.0.1.tgz#5854dff74b73fc06efcb61d7b721a8113d99be92"
+  integrity sha1-WFTf90tz/Abvy2HXtyGoET2ZvpI=
+  dependencies:
+    source-map "^0.5.0"
 
 on-finished@^2.3.0, on-finished@~2.3.0:
   version "2.3.0"
@@ -25067,7 +25105,7 @@ ultron@~1.1.0:
   resolved "https://registry.yarnpkg.com/ultron/-/ultron-1.1.1.tgz#9fe1536a10a664a65266a1e3ccf85fd36302bc9c"
   integrity sha512-UIEXBNeYmKptWH6z8ZnqTeS8fV74zG0/eRU9VGkpzz+LIJNs8W/zM/L+7ctCkRrgbNnnR0xxw4bKOr0cW0N0Og==
 
-umd@^3.0.0:
+umd@^3.0.0, umd@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/umd/-/umd-3.0.3.tgz#aa9fe653c42b9097678489c01000acb69f0b26cf"
   integrity sha512-4IcGSufhFshvLNcMCV80UnQVlZ5pMOC8mvNPForqwA4+lzYQuetTESLDQkeLmihq8bRcnpbQa48Wb8Lh16/xow==
