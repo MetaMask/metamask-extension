@@ -13,6 +13,8 @@ const sourcemaps = require('gulp-sourcemaps')
 const terser = require('gulp-terser-js')
 const babelify = require('babelify')
 const brfs = require('brfs')
+const lavamoat = require('lavamoat-browserify')
+const path = require('path')
 
 const conf = require('rc')('metamask', {
   INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
@@ -277,12 +279,19 @@ function createScriptTasks({ browserPlatforms, livereload }) {
   }
 
   function generateBundler(opts, performBundle) {
-    const browserifyOpts = assign({}, watchify.args, {
+    let browserifyOpts = assign({}, watchify.args, {
       plugin: [],
       transform: [],
       debug: true,
       fullPaths: opts.devMode,
     })
+
+    if (opts.label === 'ui') assign(browserifyOpts, lavamoat.opts)
+
+    const lavamoatOpts = {
+      config: path.resolve(__dirname, `../lavamoat-configs/${opts.label}/lavamoat-config.json`),
+      configOverride: path.resolve(__dirname, `../lavamoat-configs/${opts.label}/lavamoat-config-override.json`)
+    }
 
     if (!opts.buildLib) {
       if (opts.devMode && opts.filename === 'ui.js') {
@@ -296,6 +305,9 @@ function createScriptTasks({ browserPlatforms, livereload }) {
     }
 
     let bundler = browserify(browserifyOpts).transform(babelify).transform(brfs)
+
+    // apply lavamoat protections to UI
+    if (opts.label === 'ui') bundler.plugin(lavamoat, lavamoatOpts)
 
     if (opts.buildLib) {
       bundler = bundler.require(opts.dependenciesToBundle)
