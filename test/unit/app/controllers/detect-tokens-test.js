@@ -189,6 +189,63 @@ describe('DetectTokensController', function () {
     ])
   })
 
+  it('should check and add tokens while on non-default Mainnet', async function () {
+    sandbox.useFakeTimers()
+    network.setRpcTarget('https://some-fake-RPC-endpoint.metamask.io', '0x1')
+    const controller = new DetectTokensController({
+      preferences,
+      network,
+      keyringMemStore,
+    })
+    controller.isOpen = true
+    controller.isUnlocked = true
+
+    const contractAddresses = Object.keys(contracts)
+    const erc20ContractAddresses = contractAddresses.filter(
+      (contractAddress) => contracts[contractAddress].erc20 === true,
+    )
+
+    const existingTokenAddress = erc20ContractAddresses[0]
+    const existingToken = contracts[existingTokenAddress]
+    await preferences.addToken(
+      existingTokenAddress,
+      existingToken.symbol,
+      existingToken.decimals,
+    )
+
+    const tokenAddressToAdd = erc20ContractAddresses[1]
+    const tokenToAdd = contracts[tokenAddressToAdd]
+
+    const contractAddresssesToDetect = contractAddresses.filter(
+      (address) => address !== existingTokenAddress,
+    )
+    const indexOfTokenToAdd = contractAddresssesToDetect.indexOf(
+      tokenAddressToAdd,
+    )
+
+    const balances = new Array(contractAddresssesToDetect.length)
+    balances[indexOfTokenToAdd] = new BigNumber(10)
+
+    sandbox
+      .stub(controller, '_getTokenBalances')
+      .returns(Promise.resolve(balances))
+
+    await controller.detectNewTokens()
+
+    assert.deepEqual(preferences.store.getState().tokens, [
+      {
+        address: existingTokenAddress.toLowerCase(),
+        decimals: existingToken.decimals,
+        symbol: existingToken.symbol,
+      },
+      {
+        address: tokenAddressToAdd.toLowerCase(),
+        decimals: tokenToAdd.decimals,
+        symbol: tokenToAdd.symbol,
+      },
+    ])
+  })
+
   it('should trigger detect new tokens when change address', async function () {
     sandbox.useFakeTimers()
     const controller = new DetectTokensController({
