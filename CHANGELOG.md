@@ -15,9 +15,11 @@
 - [#9320](https://github.com/MetaMask/metamask-extension/pull/9320): Prevent hidden tokens from reappearing
 - [#10000](https://github.com/MetaMask/metamask-extension/pull/10000): Use consistent font size for modal top right Close links
 - [#10046](https://github.com/MetaMask/metamask-extension/pull/10046): Improve home screen notification appearance
+- [#10093](https://github.com/MetaMask/metamask-extension/pull/10093): Always roll back to the previously selected network when unable to connect to a newly selected network
 - [#10117](https://github.com/MetaMask/metamask-extension/pull/10117): Fix network settings Kovan block explorer link
 - [#10143](https://github.com/MetaMask/metamask-extension/pull/10143): Prevent malformed next nonce warning
 - [#10142](https://github.com/MetaMask/metamask-extension/pull/10142): Update @metamask/contract-metadata from v1.20.0 to 1.21.0
+- [#10160](https://github.com/MetaMask/metamask-extension/pull/10160): Fix French "Block Explorer URL" translations
 
 ## 8.1.11 Thu Jan 07 2021
 
