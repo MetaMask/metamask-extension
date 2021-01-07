@@ -38,6 +38,27 @@
   "syncCobo": {
     "message": "扫描 Cobo Vault"
   },
+  "congratulationsCobo": {
+    "message": "恭喜"
+  },
+  "endOfFlowMessage1Cobo": {
+    "message": "您已完成 Cobo 金库的同步，点击下方按钮后进入 ETH 账户。"
+  },
+  "endOfFlowMessage2Cobo": {
+    "message": "安全保存小技巧"
+  },
+  "endOfFlowMessage3Cobo": {
+    "message": "请您务必妥善保管好助记词，不要透露给任何人"
+  },
+  "endOfFlowMessage4Cobo": {
+    "message": "谨防网络钓鱼！Cobo 在任何情况下都不会询问您的助记词"
+  },
+  "endOfFlowMessage5Cobo": {
+    "message": "如有任何问题，您可邮件联系我们：support@cobo.com"
+  },
+  "endOfFlowMessage6Cobo": {
+    "message": "全部完成"
+  },
   "about": {
     "message": "About"
   },
