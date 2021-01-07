@@ -1348,6 +1348,15 @@
         "buffer.Buffer": true
       }
     },
+    "clone-deep": {
+      "packages": {
+        "for-own": true,
+        "is-plain-object": true,
+        "kind-of": true,
+        "lazy-cache": true,
+        "shallow-clone": true
+      }
+    },
     "clone-regexp": {
       "packages": {
         "is-regexp": true
@@ -1406,6 +1415,7 @@
     "concat-stream": {
       "globals": {
         "Buffer.concat": true,
+        "Buffer.from": true,
         "Buffer.isBuffer": true
       },
       "packages": {
@@ -2751,6 +2761,81 @@
         "es6-weak-map": true
       }
     },
+    "lavamoat-browserify": {
+      "builtin": {
+        "assert": true,
+        "fs.existsSync": true,
+        "fs.readFileSync": true,
+        "fs.writeFile": true,
+        "fs.writeFileSync": true,
+        "path.dirname": true,
+        "path.extname": true,
+        "path.join": true,
+        "path.relative": true,
+        "path.resolve": true,
+        "util.callbackify": true
+      },
+      "globals": {
+        "__MODULE_CONTENT__": true,
+        "__dirname": true,
+        "console.warn": true,
+        "process.cwd": true
+      },
+      "packages": {
+        "JSONStream": true,
+        "clone": true,
+        "combine-source-map": true,
+        "concat-stream": true,
+        "convert-source-map": true,
+        "duplexify": true,
+        "json-stable-stringify": true,
+        "lavamoat-core": true,
+        "merge-deep": true,
+        "mkdirp": true,
+        "offset-sourcemap-lines": true,
+        "readable-stream": true,
+        "safe-buffer": true,
+        "through2": true,
+        "umd": true
+      }
+    },
+    "lavamoat-core": {
+      "builtin": {
+        "events": true,
+        "fs.readFileSync": true,
+        "module.createRequire": true,
+        "module.createRequireFromPath": true,
+        "path.extname": true,
+        "path.join": true,
+        "path.sep": true
+      },
+      "globals": {
+        "__dirname": true,
+        "console.warn": true
+      },
+      "packages": {
+        "fromentries": true,
+        "json-stable-stringify": true,
+        "lavamoat-tofu": true,
+        "merge-deep": true,
+        "resolve": true
+      }
+    },
+    "lavamoat-tofu": {
+      "globals": {
+        "console.log": true
+      },
+      "packages": {
+        "@babel/parser": true,
+        "@babel/traverse": true
+      }
+    },
+    "lazy-cache": {
+      "globals": {
+        "process.env.TRAVIS": true,
+        "process.env.UNLAZY": true
+      }
+    },
     "lazystream": {
       "builtin": {
         "util.inherits": true
@@ -2862,6 +2947,13 @@
         "timers-ext": true
       }
     },
+    "merge-deep": {
+      "packages": {
+        "arr-union": true,
+        "clone-deep": true,
+        "kind-of": true
+      }
+    },
     "merge-source-map": {
       "packages": {
         "source-map": true
@@ -2926,11 +3018,25 @@
         "is-extendable": true
       }
     },
+    "mixin-object": {
+      "packages": {
+        "for-in": true,
+        "is-extendable": true
+      }
+    },
     "mkdirp": {
       "builtin": {
         "fs": true,
         "path.dirname": true,
-        "path.resolve": true
+        "path.parse": true,
+        "path.resolve": true,
+        "util.promisify": true
+      },
+      "globals": {
+        "process.env.__TESTING_MKDIRP_NODE_VERSION__": true,
+        "process.env.__TESTING_MKDIRP_PLATFORM__": true,
+        "process.platform": true,
+        "process.version": true
       }
     },
     "module-deps": {
@@ -3169,6 +3275,11 @@
       "packages": {
         "for-own": true,
         "make-iterator": true
+      }
+    },
+    "offset-sourcemap-lines": {
+      "packages": {
+        "source-map": true
       }
     },
     "once": {
@@ -3786,6 +3897,14 @@
         "is-extendable": true,
         "is-plain-object": true,
         "split-string": true
+      }
+    },
+    "shallow-clone": {
+      "packages": {
+        "is-extendable": true,
+        "kind-of": true,
+        "lazy-cache": true,
+        "mixin-object": true
       }
     },
     "shasum": {
