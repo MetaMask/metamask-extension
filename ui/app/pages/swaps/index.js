@@ -12,6 +12,7 @@ import { I18nContext } from '../../contexts/i18n'
 import {
   getSelectedAccount,
   getCurrentNetworkId,
+  getCurrentChainId,
 } from '../../selectors/selectors'
 import {
   getFromToken,
@@ -47,6 +48,7 @@ import {
   SWAP_FAILED_ERROR,
   OFFLINE_FOR_MAINTENANCE,
 } from '../../helpers/constants/swaps'
+import { MAINNET_CHAIN_ID } from '../../../../app/scripts/controllers/network/enums'
 
 import {
   resetBackgroundSwapsState,
@@ -244,6 +246,11 @@ export default function Swap() {
     }
     return () => window.removeEventListener('beforeunload', fn)
   }, [dispatch, isLoadingQuotesRoute])
+
+  const chainId = useSelector(getCurrentChainId)
+  if (chainId !== MAINNET_CHAIN_ID) {
+    return <Redirect to={{ pathname: DEFAULT_ROUTE }} />
+  }
 
   return (
     <div className="swaps">

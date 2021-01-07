@@ -23,7 +23,7 @@ import {
   isBalanceCached,
   getSelectedAccount,
   getShouldShowFiat,
-  getCurrentNetworkId,
+  getCurrentChainId,
   getCurrentKeyring,
 } from '../../../selectors/selectors'
 import SwapIcon from '../../ui/icon/swap-icon.component'
@@ -34,7 +34,7 @@ import {
   setSwapsFromToken,
 } from '../../../ducks/swaps/swaps'
 import IconButton from '../../ui/icon-button'
-import { MAINNET_NETWORK_ID } from '../../../../../app/scripts/controllers/network/enums'
+import { MAINNET_CHAIN_ID } from '../../../../../app/scripts/controllers/network/enums'
 import WalletOverview from './wallet-overview'
 
 const EthOverview = ({ className }) => {
@@ -61,7 +61,7 @@ const EthOverview = ({ className }) => {
   const showFiat = useSelector(getShouldShowFiat)
   const selectedAccount = useSelector(getSelectedAccount)
   const { balance } = selectedAccount
-  const networkId = useSelector(getCurrentNetworkId)
+  const chainId = useSelector(getCurrentChainId)
   const enteredSwapsEvent = useNewMetricEvent({
     event: 'Swaps Opened',
     properties: { source: 'Main View', active_currency: 'ETH' },
@@ -134,10 +134,10 @@ const EthOverview = ({ className }) => {
           {swapsEnabled ? (
             <IconButton
               className="eth-overview__button"
-              disabled={networkId !== MAINNET_NETWORK_ID}
+              disabled={chainId !== MAINNET_CHAIN_ID}
               Icon={SwapIcon}
               onClick={() => {
-                if (networkId === MAINNET_NETWORK_ID) {
+                if (chainId === MAINNET_CHAIN_ID) {
                   enteredSwapsEvent()
                   dispatch(setSwapsFromToken(swapsEthToken))
                   if (usingHardwareWallet) {
@@ -152,7 +152,7 @@ const EthOverview = ({ className }) => {
                 <Tooltip
                   title={t('onlyAvailableOnMainnet')}
                   position="bottom"
-                  disabled={networkId === '1'}
+                  disabled={chainId === MAINNET_CHAIN_ID}
                 >
                   {contents}
                 </Tooltip>
