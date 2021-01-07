@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import { ethers } from 'ethers'
 import { mapValues } from 'lodash'
 import BigNumber from 'bignumber.js'
-import ObservableStore from 'obs-store'
+import { ObservableStore } from '@metamask/obs-store'
 import {
   ROPSTEN_NETWORK_ID,
   MAINNET_NETWORK_ID,

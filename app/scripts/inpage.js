@@ -33,11 +33,7 @@ cleanContextForImports()
 /* eslint-disable import/first */
 import log from 'loglevel'
 import LocalMessageDuplexStream from 'post-message-stream'
-import { initProvider } from '@metamask/inpage-provider'
-
-// TODO:deprecate:2020
-import setupWeb3 from './lib/setupWeb3'
-/* eslint-enable import/first */
+import { initializeProvider } from '@metamask/inpage-provider'
 
 restoreContextAfterImports()
 
@@ -49,24 +45,12 @@ log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
 // setup background connection
 const metamaskStream = new LocalMessageDuplexStream({
-  name: 'inpage',
-  target: 'contentscript',
+  name: 'metamask-inpage',
+  target: 'metamask-contentscript',
 })
 
-initProvider({
+initializeProvider({
   connectionStream: metamaskStream,
+  logger: log,
+  shouldShimWeb3: true,
 })
-
-// TODO:deprecate:2020
-// Setup web3
-
-if (typeof window.web3 === 'undefined') {
-  // proxy web3, assign to window, and set up site auto reload
-  setupWeb3(log)
-} else {
-  log.warn(`MetaMask detected another web3.
-     MetaMask will not work reliably with another web3 extension.
-     This usually happens if you have two MetaMasks installed,
-     or MetaMask and another web3 extension. Please remove one
-     and try again.`)
-}

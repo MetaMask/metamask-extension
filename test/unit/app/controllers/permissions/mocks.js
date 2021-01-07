@@ -1,6 +1,8 @@
 import { ethErrors, ERROR_CODES } from 'eth-json-rpc-errors'
 import deepFreeze from 'deep-freeze-strict'
 
+import { ApprovalController } from '@metamask/controllers'
+
 import _getRestrictedMethods from '../../../../../app/scripts/controllers/permissions/restrictedMethods'
 
 import {
@@ -32,8 +34,6 @@ const keyringAccounts = deepFreeze([
   '0xcc74c7a59194e5d9268476955650d1e285be703c',
 ])
 
-const getKeyringAccounts = async () => [...keyringAccounts]
-
 const getIdentities = () => {
   return keyringAccounts.reduce((identities, address, index) => {
     identities[address] = { address, name: `Account ${index}` }
@@ -62,8 +62,6 @@ const getRestrictedMethods = (permController) => {
   }
 }
 
-const getUnlockPromise = () => Promise.resolve()
-
 /**
  * Gets default mock constructor options for a permissions controller.
  *
@@ -71,10 +69,14 @@ const getUnlockPromise = () => Promise.resolve()
  */
 export function getPermControllerOpts() {
   return {
-    showPermissionRequest: noop,
-    getKeyringAccounts,
-    getUnlockPromise,
+    approvals: new ApprovalController({
+      showApprovalRequest: noop,
+      defaultApprovalType: 'NO_TYPE',
+    }),
+    getKeyringAccounts: async () => [...keyringAccounts],
+    getUnlockPromise: () => Promise.resolve(),
     getRestrictedMethods,
+    isUnlocked: () => true,
     notifyDomain: noop,
     notifyAllDomains: noop,
     preferences: {
@@ -86,6 +88,7 @@ export function getPermControllerOpts() {
       },
       subscribe: noop,
     },
+    showPermissionRequest: noop,
   }
 }
 
@@ -426,9 +429,9 @@ export const getters = deepFreeze({
           message: `Pending approval with id '${id}' or origin '${origin}' already exists.`,
         }
       },
-      requestAlreadyPending: () => {
+      requestAlreadyPending: (origin) => {
         return {
-          message: 'Permissions request already pending; please wait.',
+          message: `Request of type 'wallet_requestPermissions' already pending for origin ${origin}. Please wait.`,
         }
       },
     },
@@ -467,7 +470,7 @@ export const getters = deepFreeze({
     removedAccounts: () => {
       return {
         method: NOTIFICATION_NAMES.accountsChanged,
-        result: [],
+        params: [],
       }
     },
 
@@ -480,7 +483,7 @@ export const getters = deepFreeze({
     newAccounts: (accounts) => {
       return {
         method: NOTIFICATION_NAMES.accountsChanged,
-        result: accounts,
+        params: accounts,
       }
     },
   },
@@ -586,17 +589,17 @@ export const getters = deepFreeze({
     },
 
     /**
-     * Gets a wallet_sendDomainMetadata RPC request object.
+     * Gets a metamask_sendDomainMetadata RPC request object.
      *
      * @param {string} origin - The origin of the request
      * @param {Object} name - The domainMetadata name
      * @param {Array<any>} [args] - Any other data for the request's domainMetadata
      * @returns {Object} An RPC request object
      */
-    wallet_sendDomainMetadata: (origin, name, ...args) => {
+    metamask_sendDomainMetadata: (origin, name, ...args) => {
       return {
         origin,
-        method: 'wallet_sendDomainMetadata',
+        method: 'metamask_sendDomainMetadata',
         domainMetadata: {
           ...args,
           name,

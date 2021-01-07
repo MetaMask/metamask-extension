@@ -17,7 +17,7 @@
 
     @media screen and (max-width: 576px) {
       overflow-y: auto;
-      max-height: 388px;
+      max-height: 428px;
     }
   }
 
@@ -44,13 +44,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: 46px;
   }
 
   &__view-other-button,
   &__view-other-button-fade {
     display: flex;
     align-items: center;
-    margin-bottom: 16px;
     position: absolute;
 
     @include H7;
@@ -133,6 +133,9 @@
     width: 100%;
     align-items: center;
     justify-content: center;
+    width: intrinsic;           /* Safari/WebKit uses a non-standard name */
+    width: max-content;
+    max-width: 340px;
     margin-top: 8px;
 
     @media screen and (min-width: 576px) {
@@ -149,57 +152,29 @@
   }
 
   &__countdown-timer-container {
-    @media screen and (max-width: 576px) {
-      margin-top: 12px;
-      margin-bottom: 16px;
-
-      &--thin {
-        margin-top: 8px;
-        margin-bottom: 8px;
-
-        > div {
-          margin-top: 0;
-          margin-bottom: 0;
-        }
-      }
-    }
-
-    @media screen and (min-width: 576px) {
-      &--thin {
-        margin-top: 6px;
-      }
-    }
+    width: 152px;
+    min-height: 32px;
+    display: flex;
+    justify-content: center;
+    border-radius: 42px;
+    background: #f2f3f4;
+    margin-top: 8px;
   }
 
   &__fee-card-container {
+    display: flex;
+    align-items: center;
     width: 100%;
-    margin-top: 8px;
+    max-width: 311px;
     margin-bottom: 8px;
 
     @media screen and (min-width: 576px) {
       margin-bottom: 0;
-
-      &--three-rows {
-        margin-bottom: -16px;
-      }
-    }
-  }
-
-  &__main-quote-summary-container {
-    margin-top: 24px;
-
-    @media screen and (max-width: 576px) {
-      margin-top: 0;
-    }
-
-    &--thin {
-      margin-top: 8px;
     }
   }
 
   &__metamask-rate {
     display: flex;
-    margin-top: 8%;
   }
 
   &__metamask-rate-text {
@@ -214,5 +189,9 @@
 
   &__thin-swaps-footer {
     max-height: 82px;
+
+    @media screen and (min-width: 576px) {
+      height: 72px;
+    }
   }
 }

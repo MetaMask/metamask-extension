@@ -1,7 +1,6 @@
 import assert from 'assert'
 import EventEmitter from 'events'
-import ObservableStore from 'obs-store'
-import ComposedStore from 'obs-store/lib/composed'
+import { ComposedStore, ObservableStore } from '@metamask/obs-store'
 import { JsonRpcEngine } from 'json-rpc-engine'
 import providerFromEngine from 'eth-json-rpc-middleware/providerFromEngine'
 import log from 'loglevel'
@@ -52,9 +51,13 @@ export default class NetworkController extends EventEmitter {
     this.providerStore = new ObservableStore(
       opts.provider || { ...defaultProviderConfig },
     )
+    this.previousProviderStore = new ObservableStore(
+      this.providerStore.getState(),
+    )
     this.networkStore = new ObservableStore('loading')
     this.store = new ComposedStore({
       provider: this.providerStore,
+      previousProviderStore: this.previousProviderStore,
       network: this.networkStore,
     })
 
@@ -189,6 +192,13 @@ export default class NetworkController extends EventEmitter {
    * Sets the provider config and switches the network.
    */
   setProviderConfig(config) {
+    this.previousProviderStore.updateState(this.getProviderConfig())
+    this.providerStore.updateState(config)
+    this._switchNetwork(config)
+  }
+
+  rollbackToPreviousProvider() {
+    const config = this.previousProviderStore.getState()
     this.providerStore.updateState(config)
     this._switchNetwork(config)
   }

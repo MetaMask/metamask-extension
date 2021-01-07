@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert'
-import ObservableStore from 'obs-store'
+import { ObservableStore } from '@metamask/obs-store'
 import nanoid from 'nanoid'
 import { useFakeTimers } from 'sinon'
 
@@ -286,7 +286,7 @@ describe('permissions log', function () {
       assert.equal(log.length, 0, 'log should be empty')
 
       const res = { foo: 'bar' }
-      const req1 = RPC_REQUESTS.wallet_sendDomainMetadata(
+      const req1 = RPC_REQUESTS.metamask_sendDomainMetadata(
         DOMAINS.c.origin,
         'foobar',
       )

@@ -244,6 +244,13 @@ export function getPermissionsForActiveTab(state) {
   })
 }
 
+export function activeTabHasPermissions(state) {
+  const { activeTab, metamask } = state
+  const { domains = {} } = metamask
+
+  return Boolean(domains[activeTab.origin]?.permissions?.length > 0)
+}
+
 export function getLastConnectedInfo(state) {
   const { permissionsHistory = {} } = state.metamask
   return Object.keys(permissionsHistory).reduce((acc, origin) => {
