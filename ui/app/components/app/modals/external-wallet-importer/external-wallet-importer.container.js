@@ -1,4 +1,6 @@
 import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { withRouter } from 'react-router-dom'
 import { hideModal, qrCodeDetected } from '../../../../store/actions'
 import ExternalWalletImporter from './external-wallet-importer.component'
 
@@ -9,4 +11,7 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(null, mapDispatchToProps)(ExternalWalletImporter)
+export default compose(
+  withRouter,
+  connect(null, mapDispatchToProps),
+)(ExternalWalletImporter)

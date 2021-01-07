@@ -6,7 +6,6 @@ import Button from '../../../components/ui/button'
 import {
   INITIALIZE_CREATE_NEW_VAULT_ROUTE,
   INITIALIZE_CREATE_PASSWORD_ROUTE,
-  INITIALIZE_SELECT_ACTION_ROUTE,
 } from '../../../helpers/constants/routes'
 
 export default class Welcome extends PureComponent {
@@ -51,10 +50,10 @@ export default class Welcome extends PureComponent {
             width="125"
             height="125"
           />
-          <div className="welcome-page__header">{t('welcome')}</div>
+          <div className="welcome-page__header">{t('welcomeCobo')}</div>
           <div className="welcome-page__description">
-            <div>{t('metamaskDescription')}</div>
-            <div>{t('happyToSeeYou')}</div>
+            <div>{t('metamaskDescriptionCobo')}</div>
+            <div>{t('happyToSeeYouCobo')}</div>
           </div>
           <Button
             type="primary"

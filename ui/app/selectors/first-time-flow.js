@@ -2,7 +2,7 @@ import {
   INITIALIZE_CREATE_PASSWORD_ROUTE,
   INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
   DEFAULT_ROUTE,
-  INITIALIZE_IMPORT_COBO_VAULT_ROUTE,
+  INITIALIZE_CREATE_COBO_VAULT_HINT,
 } from '../helpers/constants/routes'
 
 export function getFirstTimeFlowTypeRoute(state) {
@@ -13,7 +13,7 @@ export function getFirstTimeFlowTypeRoute(state) {
   } else if (firstTimeFlowType === 'import') {
     nextRoute = INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE
   } else if (firstTimeFlowType === 'import-cobovault') {
-    nextRoute = INITIALIZE_IMPORT_COBO_VAULT_ROUTE
+    nextRoute = INITIALIZE_CREATE_COBO_VAULT_HINT
   } else {
     nextRoute = DEFAULT_ROUTE
   }

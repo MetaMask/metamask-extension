@@ -45,6 +45,7 @@ const INITIALIZE_WELCOME_ROUTE = '/initialize/welcome'
 const INITIALIZE_UNLOCK_ROUTE = '/initialize/unlock'
 const INITIALIZE_CREATE_PASSWORD_ROUTE = '/initialize/create-password'
 const INITIALIZE_CREATE_NEW_VAULT_ROUTE = '/initialize/create-new-vault'
+const INITIALIZE_CREATE_COBO_VAULT_HINT = '/initialize/create-cobo-vault-hint'
 const INITIALIZE_IMPORT_COBO_VAULT_ROUTE = '/initialize/import-cobo-vault'
 const INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE =
   '/initialize/create-password/import-with-seed-phrase'
@@ -134,6 +135,7 @@ const PATH_NAME_MAP = {
   [LOADING_QUOTES_ROUTE]: 'Swaps Loading Quotes Page',
   [AWAITING_SWAP_ROUTE]: 'Swaps Awaiting Swaps Page',
   [SWAPS_ERROR_ROUTE]: 'Swaps Error Page',
+  [INITIALIZE_CREATE_COBO_VAULT_HINT]: 'Initialize Create Cobo Vault Hint Page',
 }
 
 export {
@@ -202,4 +204,5 @@ export {
   INITIALIZE_IMPORT_COBO_VAULT_ROUTE,
   INITIALIZE_CREATE_NEW_VAULT_ROUTE,
   NEW_BIDIRECTIONAL_QR_ACCOUNT_ROUTE,
+  INITIALIZE_CREATE_COBO_VAULT_HINT,
 }

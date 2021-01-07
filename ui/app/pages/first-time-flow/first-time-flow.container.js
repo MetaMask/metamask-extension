@@ -7,6 +7,7 @@ import {
   unlockAndGetBidirectionalQrAccount,
   verifySeedPhrase,
   createNewEmptyVault,
+  setFirstTimeFlowType,
 } from '../../store/actions'
 import { INITIALIZE_BACKUP_SEED_PHRASE_ROUTE } from '../../helpers/constants/routes'
 import FirstTimeFlow from './first-time-flow.component'
@@ -48,6 +49,7 @@ const mapDispatchToProps = (dispatch) => {
     unlockAccount: (password) =>
       dispatch(unlockAndGetBidirectionalQrAccount(password)),
     verifySeedPhrase: () => verifySeedPhrase(),
+    setFirstTimeFlowType: (type) => dispatch(setFirstTimeFlowType(type)),
   }
 }
 

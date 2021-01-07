@@ -364,6 +364,7 @@ const MODALS = {
     contentStyle: {
       borderRadius: '8px',
     },
+    disableBackdropClick: true,
   },
 
   BIDIRECTIONAL_TRANSACTION_DISPLAY: {

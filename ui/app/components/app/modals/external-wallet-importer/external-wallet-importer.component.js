@@ -18,6 +18,7 @@ export default class ExternalWalletImporter extends Component {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
     qrCodeDetected: PropTypes.func.isRequired,
+    history: PropTypes.object,
   }
 
   static contextTypes = {
@@ -256,7 +257,13 @@ export default class ExternalWalletImporter extends Component {
     const { error } = this.state
     return (
       <div className="qr-scanner">
-        <div className="qr-scanner__close" onClick={this.stopAndClose}></div>
+        <div
+          className="qr-scanner__close"
+          onClick={() => {
+            this.stopAndClose()
+            this.props.history.goBack()
+          }}
+        />
         {error ? this.renderError() : this.renderVideo()}
       </div>
     )

@@ -1,4 +1,43 @@
 {
+  "scanWithCoboVault": {
+    "message": "使用Cobo Vault扫描二维码"
+  },
+  "getSignatureFromCoboVault": {
+    "message": "Get Signature"
+  },
+  "switchAccount": {
+    "message": "切换账号"
+  },
+  "welcomeCobo": {
+    "message": "欢迎使用 MetaMask for Cobo Vault 测试版"
+  },
+  "metamaskDescriptionCobo": {
+    "message": "请注意，MetaMask for Cobo Vault 应用不能和 MetaMask 官方应用同时存在"
+  },
+  "happyToSeeYouCobo": {
+    "message": "若您要使用 MetaMask for Cobo Vault，请先卸载MetaMask 官方应用"
+  },
+  "getStartedCobo": {
+    "message": "开始使用"
+  },
+  "syncCoboTitle": {
+    "message": "同步 Cobo Vault 硬件钱包"
+  },
+  "syncStep1": {
+    "message": "1. 打开 Cobo Vault 硬件钱包"
+  },
+  "syncStep2": {
+    "message": "2. 选择观察钱包为“MetaMask for Cobo Vault”"
+  },
+  "syncStep3": {
+    "message": "3. 点击下方“扫描 Cobo Vault”按钮后扫描 Cobo Vault 上展示的钱包二维码"
+  },
+  "syncStep4": {
+    "message": "4. 扫描完成后进入观察钱包"
+  },
+  "syncCobo": {
+    "message": "扫描 Cobo Vault"
+  },
   "about": {
     "message": "About"
   },
@@ -1408,15 +1447,6 @@
   },
   "selectAnAccount": {
     "message": "Select an Account"
-  },
-  "scanWithCoboVault": {
-    "message": "Scan With Cobo Vault"
-  },
-  "getSignatureFromCoboVault": {
-    "message": "Get Signature"
-  },
-  "switchAccount": {
-    "message": "Switch Account"
   },
   "selectAnAccountHelp": {
     "message": "Select the account to view in MetaMask"

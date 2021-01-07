@@ -14,6 +14,7 @@ import {
   INITIALIZE_UNLOCK_ROUTE,
   INITIALIZE_WELCOME_ROUTE,
   INITIALIZE_CREATE_NEW_VAULT_ROUTE,
+  INITIALIZE_CREATE_COBO_VAULT_HINT,
 } from '../../helpers/constants/routes'
 import FirstTimeFlowSwitch from './first-time-flow-switch'
 import Welcome from './welcome'
@@ -24,6 +25,7 @@ import SeedPhrase from './seed-phrase'
 import MetaMetricsOptInScreen from './metametrics-opt-in'
 import ImportCoboVault from './import-cobo-vault'
 import CreateVault from './create-vault'
+import CreateCoboVaultHint from './create-cobo-vault-hint'
 
 export default class FirstTimeFlow extends PureComponent {
   static propTypes = {
@@ -40,6 +42,7 @@ export default class FirstTimeFlow extends PureComponent {
     showingSeedPhraseBackupAfterOnboarding: PropTypes.bool,
     seedPhraseBackedUp: PropTypes.bool,
     verifySeedPhrase: PropTypes.func,
+    setFirstTimeFlowType: PropTypes.func
   }
 
   state = {
@@ -163,8 +166,13 @@ export default class FirstTimeFlow extends PureComponent {
               <CreateVault
                 {...routeProps}
                 onCreateNewVault={this.handleCreateNewVault}
+                setFirstTimeFlowType={this.props.setFirstTimeFlowType}
               />
             )}
+          />
+          <Route
+            path={INITIALIZE_CREATE_COBO_VAULT_HINT}
+            render={(routeProps) => <CreateCoboVaultHint {...routeProps} />}
           />
           <Route
             path={INITIALIZE_IMPORT_COBO_VAULT_ROUTE}

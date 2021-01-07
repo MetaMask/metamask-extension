@@ -128,32 +128,6 @@ export default class AppStateController extends EventEmitter {
     this._resetTimer()
   }
 
-  openBidirectionalQrAccountImporter() {
-    this.store.updateState({})
-  }
-
-  openBidirectionalTransactionModal() {
-    this.store.updateState({
-      modal: {
-        open: true,
-        modalState: {
-          name: 'BIDIRECTIONAL_TRANSACTION_DISPLAY',
-        },
-      },
-    })
-  }
-
-  openBidirectionalSignatureImporter() {
-    this.store.updateState({
-      modal: {
-        open: true,
-        modalState: {
-          name: 'BIDIRECTIONAL_SIGNATURE_IMPORTER',
-        },
-      },
-    })
-  }
-
   /**
    * Sets the inactive timeout for the app
    * @param {number} timeoutMinutes - the inactive timeout in minutes
