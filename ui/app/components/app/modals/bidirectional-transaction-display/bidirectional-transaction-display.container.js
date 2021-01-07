@@ -3,6 +3,7 @@ import { encodeUR } from '@cvbb/bc-ur'
 import {
   hideModal,
   showBidirectionalSignatureImporter,
+  cancelBidirectionalTransaction,
 } from '../../../../store/actions'
 import BidirectionalTransactionDisplay from './bidirectional-transaction-display.component'
 
@@ -22,6 +23,7 @@ const mapDispatchToProps = (dispatch) => {
     hideModal: () => dispatch(hideModal()),
     showBidirectionalSignatureImporter: () =>
       dispatch(showBidirectionalSignatureImporter()),
+    cancelTransaction: () => dispatch(cancelBidirectionalTransaction())
   }
 }
 

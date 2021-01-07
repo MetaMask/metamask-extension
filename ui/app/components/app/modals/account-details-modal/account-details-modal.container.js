@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { showModal, setAccountLabel } from '../../../../store/actions'
+import { setAccountLabel } from '../../../../store/actions'
 import {
   getSelectedIdentity,
   getRpcPrefsForCurrentProvider,
@@ -10,15 +10,12 @@ const mapStateToProps = (state) => {
   return {
     network: state.metamask.network,
     selectedIdentity: getSelectedIdentity(state),
-    keyrings: state.metamask.keyrings,
     rpcPrefs: getRpcPrefsForCurrentProvider(state),
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    showExportPrivateKeyModal: () =>
-      dispatch(showModal({ name: 'EXPORT_PRIVATE_KEY' })),
     setAccountLabel: (address, label) =>
       dispatch(setAccountLabel(address, label)),
   }

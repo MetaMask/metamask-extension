@@ -10,9 +10,7 @@ export default class AccountDetailsModal extends Component {
   static propTypes = {
     selectedIdentity: PropTypes.object,
     network: PropTypes.string,
-    showExportPrivateKeyModal: PropTypes.func,
     setAccountLabel: PropTypes.func,
-    keyrings: PropTypes.array,
     rpcPrefs: PropTypes.object,
   }
 
@@ -24,22 +22,10 @@ export default class AccountDetailsModal extends Component {
     const {
       selectedIdentity,
       network,
-      showExportPrivateKeyModal,
       setAccountLabel,
-      keyrings,
       rpcPrefs,
     } = this.props
     const { name, address } = selectedIdentity
-
-    const keyring = keyrings.find((kr) => {
-      return kr.accounts.includes(address)
-    })
-
-    let exportPrivateKeyFeatureEnabled = true
-    // This feature is disabled for hardware wallets
-    if (keyring?.type?.search('Hardware') !== -1) {
-      exportPrivateKeyFeatureEnabled = false
-    }
 
     return (
       <AccountModalContainer className="account-details-modal">
@@ -72,16 +58,6 @@ export default class AccountDetailsModal extends Component {
               ])
             : this.context.t('viewOnEtherscan')}
         </Button>
-
-        {exportPrivateKeyFeatureEnabled ? (
-          <Button
-            type="secondary"
-            className="account-details-modal__button"
-            onClick={() => showExportPrivateKeyModal()}
-          >
-            {this.context.t('exportPrivateKey')}
-          </Button>
-        ) : null}
       </AccountModalContainer>
     )
   }

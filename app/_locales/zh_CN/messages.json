@@ -3,7 +3,13 @@
     "message": "使用Cobo Vault扫描二维码"
   },
   "getSignatureFromCoboVault": {
-    "message": "Get Signature"
+    "message": "扫描CoboVault二维码"
+  },
+  "scanCoboDescription": {
+    "message": "Cobo Vault 对交易签完名后，点击下方“扫描Cobo Vault二维码”广播该交易"
+  },
+  "cancelTransaction": {
+    "message": "拒绝"
   },
   "switchAccount": {
     "message": "切换账号"
@@ -58,6 +64,12 @@
   },
   "endOfFlowMessage6Cobo": {
     "message": "全部完成"
+  },
+  "metamaskVersionCobo": {
+    "message": "MetaMask for Cobo Vault 版本"
+  },
+  "builtByFork": {
+    "message": "MetaMask for Cobo Vault 是 fork MetaMask 代码并在其基础上进行更改，从而适配 Cobo Vault 硬件钱包。"
   },
   "about": {
     "message": "关于"

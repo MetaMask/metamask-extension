@@ -20,7 +20,7 @@ export default class InfoTab extends PureComponent {
         <div className="info-tab__link-item">
           <Button
             type="link"
-            href="https://metamask.io/privacy.html"
+            href="https://vault-static-resource.s3-ap-northeast-1.amazonaws.com/CoboVaultMobile_Privacy_Policy_en.html"
             target="_blank"
             rel="noopener noreferrer"
             className="info-tab__link-text"
@@ -31,23 +31,12 @@ export default class InfoTab extends PureComponent {
         <div className="info-tab__link-item">
           <Button
             type="link"
-            href="https://metamask.io/terms.html"
+            href="https://vault-static-resource.s3-ap-northeast-1.amazonaws.com/CoboVaultMobile_Terms_of_Service_en.html"
             target="_blank"
             rel="noopener noreferrer"
             className="info-tab__link-text"
           >
             {t('terms')}
-          </Button>
-        </div>
-        <div className="info-tab__link-item">
-          <Button
-            type="link"
-            href="https://metamask.io/attributions.html"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="info-tab__link-text"
-          >
-            {t('attributions')}
           </Button>
         </div>
         <hr className="info-tab__separator" />
@@ -65,7 +54,7 @@ export default class InfoTab extends PureComponent {
         <div className="info-tab__link-item">
           <Button
             type="link"
-            href="https://metamask.io/"
+            href="https://cobo.com/hardware-wallet/cobo-vault"
             target="_blank"
             rel="noopener noreferrer"
             className="info-tab__link-text"
@@ -76,7 +65,7 @@ export default class InfoTab extends PureComponent {
         <div className="info-tab__link-item">
           <Button
             type="link"
-            href="https://metamask.zendesk.com/hc/en-us/requests/new"
+            href="https://support.cobo.com/hc/zh-cn/requests/new"
             target="_blank"
             rel="noopener noreferrer"
             className="info-tab__link-text"
@@ -104,14 +93,14 @@ export default class InfoTab extends PureComponent {
             </div>
             <div className="info-tab__item">
               <div className="info-tab__version-header">
-                {t('metamaskVersion')}
+                {t('metamaskVersionCobo')}
               </div>
               <div className="info-tab__version-number">
                 {this.state.version}
               </div>
             </div>
             <div className="info-tab__item">
-              <div className="info-tab__about">{t('builtInCalifornia')}</div>
+              <div className="info-tab__about">{t('builtByFork')}</div>
             </div>
           </div>
           {this.renderInfoLinks()}

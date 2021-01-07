@@ -52,6 +52,11 @@ export default class Welcome extends PureComponent {
           />
           <div className="welcome-page__header">{t('welcomeCobo')}</div>
           <div className="welcome-page__description">
+            <img
+              className="page-container__warning-icon"
+              src="images/warning.svg"
+              alt=""
+            />
             <div>{t('metamaskDescriptionCobo')}</div>
             <div>{t('happyToSeeYouCobo')}</div>
           </div>

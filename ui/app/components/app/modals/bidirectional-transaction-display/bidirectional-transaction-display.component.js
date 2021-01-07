@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import QRCode from 'qrcode.react'
+import Button from '../../../ui/button'
 
 export default class BidirectionalTransactionDisplay extends Component {
   static propTypes = {
     transactionData: PropTypes.array.isRequired,
+    hideModal: PropTypes.func,
+    cancelTransaction: PropTypes.func,
     showBidirectionalSignatureImporter: PropTypes.func.isRequired,
   }
 
@@ -30,6 +33,12 @@ export default class BidirectionalTransactionDisplay extends Component {
     }, 500)
   }
 
+  handleCancel() {
+    const { hideModal, cancelTransaction } = this.props
+    hideModal()
+    cancelTransaction()
+  }
+
   render() {
     const { current } = this.state
     const { transactionData, showBidirectionalSignatureImporter } = this.props
@@ -44,16 +53,27 @@ export default class BidirectionalTransactionDisplay extends Component {
             display: 'flex',
             alignItems: 'center',
             flexDirection: 'column',
+            marginBottom: 20,
           }}
         >
           <QRCode value={transactionData[current]} size={250} />
         </div>
-        <button
-          onClick={showBidirectionalSignatureImporter}
-          style={{ height: 48 }}
-        >
-          {this.context.t('getSignatureFromCoboVault')}
-        </button>
+        <div style={{ paddingLeft: 20, paddingRight: 20 }}>
+          {this.context.t('scanCoboDescription')}
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
+          <Button
+            type="default"
+            onClick={() => {
+              this.handleCancel()
+            }}
+          >
+            {this.context.t('cancelTransaction')}
+          </Button>
+          <Button type="secondary" onClick={showBidirectionalSignatureImporter}>
+            {this.context.t('getSignatureFromCoboVault')}
+          </Button>
+        </div>
       </div>
     )
   }

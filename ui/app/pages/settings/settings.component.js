@@ -180,11 +180,6 @@ class SettingsPage extends PureComponent {
             key: CONTACT_LIST_ROUTE,
           },
           {
-            content: t('securityAndPrivacy'),
-            description: t('securitySettingsDescription'),
-            key: SECURITY_ROUTE,
-          },
-          {
             content: t('alerts'),
             description: t('alertsSettingsDescription'),
             key: ALERTS_ROUTE,
@@ -219,7 +214,6 @@ class SettingsPage extends PureComponent {
         <Route exact path={ADVANCED_ROUTE} component={AdvancedTab} />
         <Route exact path={ALERTS_ROUTE} component={AlertsTab} />
         <Route path={NETWORKS_ROUTE} component={NetworksTab} />
-        <Route exact path={SECURITY_ROUTE} component={SecurityTab} />
         <Route exact path={CONTACT_LIST_ROUTE} component={ContactListTab} />
         <Route exact path={CONTACT_ADD_ROUTE} component={ContactListTab} />
         <Route

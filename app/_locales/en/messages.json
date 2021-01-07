@@ -3,7 +3,13 @@
     "message": "使用Cobo Vault扫描二维码"
   },
   "getSignatureFromCoboVault": {
-    "message": "Get Signature"
+    "message": "扫描CoboVault二维码"
+  },
+  "scanCoboDescription": {
+    "message": "Cobo Vault 对交易签完名后，点击下方“扫描Cobo Vault二维码”广播该交易"
+  },
+  "cancelTransaction": {
+    "message": "拒绝"
   },
   "switchAccount": {
     "message": "切换账号"
