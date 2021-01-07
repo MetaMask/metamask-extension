@@ -25,9 +25,9 @@ import {
 import {
   getAssetImages,
   getCurrentKeyring,
-  getCurrentNetworkId,
+  getCurrentChainId,
 } from '../../../selectors/selectors'
-import { MAINNET_NETWORK_ID } from '../../../../../app/scripts/controllers/network/enums'
+import { MAINNET_CHAIN_ID } from '../../../../../app/scripts/controllers/network/enums'
 
 import SwapIcon from '../../ui/icon/swap-icon.component'
 import SendIcon from '../../ui/icon/overview-send-icon.component'
@@ -58,7 +58,7 @@ const TokenOverview = ({ className, token }) => {
     balanceToRender,
     token.symbol,
   )
-  const networkId = useSelector(getCurrentNetworkId)
+  const chainId = useSelector(getCurrentChainId)
   const enteredSwapsEvent = useNewMetricEvent({
     event: 'Swaps Opened',
     properties: { source: 'Token View', active_currency: token.symbol },
@@ -100,10 +100,10 @@ const TokenOverview = ({ className, token }) => {
           {swapsEnabled ? (
             <IconButton
               className="token-overview__button"
-              disabled={networkId !== MAINNET_NETWORK_ID}
+              disabled={chainId !== MAINNET_CHAIN_ID}
               Icon={SwapIcon}
               onClick={() => {
-                if (networkId === MAINNET_NETWORK_ID) {
+                if (chainId === MAINNET_CHAIN_ID) {
                   enteredSwapsEvent()
                   dispatch(
                     setSwapsFromToken({
@@ -125,7 +125,7 @@ const TokenOverview = ({ className, token }) => {
                 <Tooltip
                   title={t('onlyAvailableOnMainnet')}
                   position="bottom"
-                  disabled={networkId === '1'}
+                  disabled={chainId === MAINNET_CHAIN_ID}
                 >
                   {contents}
                 </Tooltip>
