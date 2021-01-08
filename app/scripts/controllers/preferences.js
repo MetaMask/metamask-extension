@@ -55,6 +55,7 @@ class PreferencesController {
         forgottenPassword: false,
         preferences: {
           useNativeCurrencyAsPrimaryCurrency: false,
+          autoLockTimeLimit: 5,
         },
         trustedTokenMap: {},
         completedOnboarding: false,
