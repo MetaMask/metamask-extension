@@ -412,11 +412,17 @@
   "functionType": {
     "message": "功能类型"
   },
+  "gasLimit": {
+    "message": "Gas 上限"
+  },
   "gasLimitInfoTooltipContent": {
-    "message": "gasLimit 即您个人希望付出的最大 Gas 数量。"
+    "message": "Gas 上限是您个人希望付出的 Gas 数量上限。"
   },
   "gasLimitTooLow": {
-    "message": "Gas Limit 至少要 21000"
+    "message": "Gas 上限至少要 21000"
+  },
+  "gasPrice": {
+    "message": "Gas 价格 (GWEI)"
   },
   "gasPriceExtremelyLow": {
     "message": "Gas 价格极低"
