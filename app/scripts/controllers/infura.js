@@ -5,7 +5,7 @@ import log from 'loglevel'
 const POLLING_INTERVAL = 10 * 60 * 1000
 
 class InfuraController {
-  constructor (opts = {}) {
+  constructor(opts = {}) {
     const initState = Object.assign(
       {
         infuraNetworkStatus: {},
@@ -21,7 +21,7 @@ class InfuraController {
 
   // Responsible for retrieving the status of Infura's nodes. Can return either
   // ok, degraded, or down.
-  async checkInfuraNetworkStatus () {
+  async checkInfuraNetworkStatus() {
     const response = await fetch('https://api.infura.io/v1/status/metamask')
     const parsedResponse = await response.json()
     this.store.updateState({
@@ -30,7 +30,7 @@ class InfuraController {
     return parsedResponse
   }
 
-  scheduleInfuraNetworkCheck () {
+  scheduleInfuraNetworkCheck() {
     if (this.conversionInterval) {
       clearInterval(this.conversionInterval)
     }

@@ -16,7 +16,7 @@
     "forwarder": "node ./development/static-server.js ./node_modules/@metamask/forwarder/dist/ --port 9010",
     "dapp-forwarder": "concurrently -k -n forwarder,dapp -p '[{time}][{name}]' 'yarn forwarder' 'yarn dapp'",
     "watch:test:unit": "nodemon --exec \"yarn test:unit\" ./test ./app ./ui",
-    "format:js": "prettier-eslint {app,ui,test,development}/**/*.{js,json} --write",
+    "format:js": "prettier-eslint ./{app,ui,test,development}/**/*.{js,json} --write",
     "sendwithprivatedapp": "node development/static-server.js test/e2e/send-eth-with-private-key-test --port 8080",
     "test:unit": "yarn test:prepare-conflux-local && mocha --timeout 10000 --exit --require test/env.js --file test/setup.js --recursive \"test/unit/**/*.js\" \"ui/app/**/*.test.js\"",
     "test:unit:global": "yarn test:prepare-conflux-local && mocha --timeout 6000 --exit --require test/env.js --file test/setup.js --recursive mocha test/unit-global/*",

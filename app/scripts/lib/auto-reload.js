@@ -2,7 +2,7 @@
 
 export default setupDappAutoReload
 
-function setupDappAutoReload (web3, observable) {
+function setupDappAutoReload(web3, observable) {
   // export web3 as a global, checking for usage
   let reloadInProgress = false
   let lastTimeUsed
@@ -29,7 +29,7 @@ function setupDappAutoReload (web3, observable) {
     },
   })
 
-  observable.subscribe(function (state) {
+  observable.subscribe(function(state) {
     // if the auto refresh on network change is false do not
     // do anything
     if (!window.conflux.autoRefreshOnNetworkChange) {
@@ -72,6 +72,6 @@ function setupDappAutoReload (web3, observable) {
 }
 
 // reload the page
-function triggerReset () {
+function triggerReset() {
   global.location.reload()
 }

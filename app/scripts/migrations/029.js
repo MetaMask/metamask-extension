@@ -20,7 +20,7 @@ export default {
   migrate: failTxsThat(
     version,
     'Stuck in approved state for too long.',
-    (txMeta) => {
+    txMeta => {
       const isApproved = txMeta.status === 'approved'
       const createdTime = txMeta.submittedTime
       const now = Date.now()

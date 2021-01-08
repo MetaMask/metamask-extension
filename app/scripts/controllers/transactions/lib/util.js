@@ -6,14 +6,14 @@ const normalizers = {
     (LowerCase ? addHexPrefix(from).toLowerCase() : addHexPrefix(from)),
   to: (to, LowerCase = true) =>
     (LowerCase ? addHexPrefix(to).toLowerCase() : addHexPrefix(to)),
-  nonce: (nonce) => addHexPrefix(nonce),
-  value: (value) => addHexPrefix(value),
-  data: (data) => addHexPrefix(data),
-  gas: (gas) => addHexPrefix(gas),
-  gasPrice: (gasPrice) => addHexPrefix(gasPrice),
-  storageLimit: (storageLimit) => addHexPrefix(storageLimit),
-  epochHeight: (epochHeight) => addHexPrefix(epochHeight.toString(16)),
-  chainId: (chainId) => addHexPrefix(chainId.toString(16)),
+  nonce: nonce => addHexPrefix(nonce),
+  value: value => addHexPrefix(value),
+  data: data => addHexPrefix(data),
+  gas: gas => addHexPrefix(gas),
+  gasPrice: gasPrice => addHexPrefix(gasPrice),
+  storageLimit: storageLimit => addHexPrefix(storageLimit),
+  epochHeight: epochHeight => addHexPrefix(epochHeight.toString(16)),
+  chainId: chainId => addHexPrefix(chainId.toString(16)),
 }
 
 /**
@@ -21,7 +21,7 @@ const normalizers = {
   @param {Object} txParams
   @returns {Object} - normalized txParams
  */
-export function normalizeTxParams (txParams, LowerCase) {
+export function normalizeTxParams(txParams, LowerCase) {
   // apply only keys in the normalizers
   const normalizedTxParams = {}
   for (const key in normalizers) {
@@ -36,7 +36,7 @@ export function normalizeTxParams (txParams, LowerCase) {
   validates txParams
   @param {Object} txParams
  */
-export function validateTxParams (txParams) {
+export function validateTxParams(txParams) {
   validateFrom(txParams)
   validateRecipient(txParams)
   if ('value' in txParams) {
@@ -59,7 +59,7 @@ export function validateTxParams (txParams) {
   validates the from field in  txParams
   @param {Object} txParams
  */
-export function validateFrom (txParams) {
+export function validateFrom(txParams) {
   if (!(typeof txParams.from === 'string')) {
     throw new Error(`Invalid from address ${txParams.from} not a string`)
   }
@@ -72,7 +72,7 @@ export function validateFrom (txParams) {
   validates the to field in txParams
   @param {Object} txParams
  */
-export function validateRecipient (txParams) {
+export function validateRecipient(txParams) {
   if (txParams.to === '0x' || txParams.to === null) {
     if (txParams.data) {
       delete txParams.to
@@ -88,7 +88,7 @@ export function validateRecipient (txParams) {
 /**
     @returns {array} - states that can be considered final
   */
-export function getFinalStates () {
+export function getFinalStates() {
   return [
     'rejected', // the user has responded no!
     'confirmed', // the tx has been confirmed with very low risk.

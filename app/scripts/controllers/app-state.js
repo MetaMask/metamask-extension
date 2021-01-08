@@ -5,7 +5,7 @@ class AppStateController {
    * @constructor
    * @param opts
    */
-  constructor (opts = {}) {
+  constructor(opts = {}) {
     const { initState, onInactiveTimeout, preferencesStore } = opts
     const { preferences } = preferencesStore.getState()
 
@@ -21,14 +21,14 @@ class AppStateController {
     )
     this.timer = null
 
-    preferencesStore.subscribe((state) => {
+    preferencesStore.subscribe(state => {
       this._setInactiveTimeout(state.preferences.autoLockTimeLimit)
     })
 
     this._setInactiveTimeout(preferences.autoLockTimeLimit)
   }
 
-  setMkrMigrationReminderTimestamp (timestamp) {
+  setMkrMigrationReminderTimestamp(timestamp) {
     this.store.updateState({
       mkrMigrationReminderTimestamp: timestamp,
     })
@@ -38,7 +38,7 @@ class AppStateController {
    * Sets the last active time to the current time
    * @returns {void}
    */
-  setLastActiveTime () {
+  setLastActiveTime() {
     this._resetTimer()
   }
 
@@ -48,7 +48,7 @@ class AppStateController {
    * @returns {void}
    * @private
    */
-  _setInactiveTimeout (timeoutMinutes) {
+  _setInactiveTimeout(timeoutMinutes) {
     this.store.updateState({
       timeoutMinutes,
     })
@@ -65,7 +65,7 @@ class AppStateController {
    * @returns {void}
    * @private
    */
-  _resetTimer () {
+  _resetTimer() {
     const { timeoutMinutes } = this.store.getState()
 
     if (this.timer) {

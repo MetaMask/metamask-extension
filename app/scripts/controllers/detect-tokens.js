@@ -178,11 +178,11 @@ class DetectTokensController {
     } catch (err) {}
 
     if (!result) {
- return
-}
+      return
+    }
     if (result.isZero()) {
- return
-}
+      return
+    }
 
     this._preferences.addToken(
       contractAddress,

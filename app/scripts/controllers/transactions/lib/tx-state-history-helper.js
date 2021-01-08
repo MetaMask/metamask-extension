@@ -14,7 +14,7 @@ export default {
   @param {array} longHistory
   @returns {array}
 */
-function migrateFromSnapshotsToDiffs (longHistory) {
+function migrateFromSnapshotsToDiffs(longHistory) {
   return (
     longHistory
       // convert non-initial history entries into diffs
@@ -39,7 +39,7 @@ function migrateFromSnapshotsToDiffs (longHistory) {
   @param {string} [note] - a optional note for the state change
   @returns {array}
 */
-function generateHistoryEntry (previousState, newState, note) {
+function generateHistoryEntry(previousState, newState, note) {
   const entry = jsonDiffer.compare(previousState, newState)
   // Add a note to the first op, since it breaks if we append it to the entry
   if (entry[0]) {
@@ -56,7 +56,7 @@ function generateHistoryEntry (previousState, newState, note) {
   Recovers previous txMeta state obj
   @returns {Object}
 */
-function replayHistory (_shortHistory) {
+function replayHistory(_shortHistory) {
   const shortHistory = cloneDeep(_shortHistory)
   return shortHistory.reduce(
     (val, entry) => jsonDiffer.applyPatch(val, entry).newDocument
@@ -67,7 +67,7 @@ function replayHistory (_shortHistory) {
   @param {Object} txMeta
   @returns {Object} - a clone object of the txMeta with out history
 */
-function snapshotFromTxMeta (txMeta) {
+function snapshotFromTxMeta(txMeta) {
   // create txMeta snapshot for history
   const snapshot = cloneDeep(txMeta)
   // dont include previous history in this snapshot
