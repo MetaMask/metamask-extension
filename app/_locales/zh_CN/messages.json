@@ -422,7 +422,7 @@
     "message": "Gas 上限至少要 21000"
   },
   "gasPrice": {
-    "message": "Gas 价格 (GWEI)"
+    "message": "Gas 价格 (gwei)"
   },
   "gasPriceExtremelyLow": {
     "message": "Gas 价格极低"
