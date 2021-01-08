@@ -16,13 +16,9 @@ export default class GasModalPageContainer extends Component {
     hideBasic: PropTypes.bool,
     updateCustomGasPrice: PropTypes.func,
     updateCustomGasLimit: PropTypes.func,
-    currentTimeEstimate: PropTypes.string,
     insufficientBalance: PropTypes.bool,
-    fetchBasicGasAndTimeEstimates: PropTypes.func,
-    fetchGasEstimates: PropTypes.func,
+    fetchBasicGasEstimates: PropTypes.func,
     gasPriceButtonGroupProps: PropTypes.object,
-    gasChartProps: PropTypes.object,
-    gasEstimatesLoading: PropTypes.bool,
     infoRowProps: PropTypes.shape({
       originalTotalFiat: PropTypes.string,
       originalTotalEth: PropTypes.string,
@@ -35,24 +31,14 @@ export default class GasModalPageContainer extends Component {
     customModalGasPriceInHex: PropTypes.string,
     customModalGasLimitInHex: PropTypes.string,
     cancelAndClose: PropTypes.func,
-    blockTime: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     customPriceIsSafe: PropTypes.bool,
     isSpeedUp: PropTypes.bool,
     isRetry: PropTypes.bool,
     disableSave: PropTypes.bool,
-    isEthereumNetwork: PropTypes.bool,
   }
 
   componentDidMount() {
-    const promise = this.props.hideBasic
-      ? Promise.resolve(this.props.blockTime)
-      : this.props
-          .fetchBasicGasAndTimeEstimates()
-          .then((basicEstimates) => basicEstimates.blockTime)
-
-    promise.then((blockTime) => {
-      this.props.fetchGasEstimates(blockTime)
-    })
+    this.props.fetchBasicGasEstimates()
   }
 
   renderBasicTabContent(gasPriceButtonGroupProps) {
@@ -67,15 +53,11 @@ export default class GasModalPageContainer extends Component {
       updateCustomGasLimit,
       customModalGasPriceInHex,
       customModalGasLimitInHex,
-      gasChartProps,
-      currentTimeEstimate,
       insufficientBalance,
-      gasEstimatesLoading,
       customPriceIsSafe,
       isSpeedUp,
       isRetry,
       infoRowProps: { transactionFee },
-      isEthereumNetwork,
     } = this.props
 
     return (
@@ -84,15 +66,11 @@ export default class GasModalPageContainer extends Component {
         updateCustomGasLimit={updateCustomGasLimit}
         customModalGasPriceInHex={customModalGasPriceInHex}
         customModalGasLimitInHex={customModalGasLimitInHex}
-        timeRemaining={currentTimeEstimate}
         transactionFee={transactionFee}
-        gasChartProps={gasChartProps}
         insufficientBalance={insufficientBalance}
-        gasEstimatesLoading={gasEstimatesLoading}
         customPriceIsSafe={customPriceIsSafe}
         isSpeedUp={isSpeedUp}
         isRetry={isRetry}
-        isEthereumNetwork={isEthereumNetwork}
       />
     )
   }

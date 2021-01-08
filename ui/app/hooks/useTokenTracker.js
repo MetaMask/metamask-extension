@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { getCurrentNetwork, getSelectedAddress } from '../selectors'
 import { useEqualityCheck } from './useEqualityCheck'
 
-export function useTokenTracker(tokens) {
+export function useTokenTracker(tokens, includeFailedTokens = false) {
   const network = useSelector(getCurrentNetwork)
   const userAddress = useSelector(getSelectedAddress)
 
@@ -42,6 +42,7 @@ export function useTokenTracker(tokens) {
         userAddress: address,
         provider: global.ethereumProvider,
         tokens: tokenList,
+        includeFailedTokens,
         pollingInterval: 8000,
       })
 
@@ -49,7 +50,7 @@ export function useTokenTracker(tokens) {
       tokenTracker.current.on('error', showError)
       tokenTracker.current.updateBalances()
     },
-    [updateBalances, showError, teardownTracker],
+    [updateBalances, includeFailedTokens, showError, teardownTracker],
   )
 
   // Effect to remove the tracker when the component is removed from DOM

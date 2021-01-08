@@ -167,9 +167,6 @@
   "chainId": {
     "message": "ID Rantaian"
   },
-  "chartOnlyAvailableEth": {
-    "message": "Carta hanya tersedia di rangkaian Ethereum."
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Anda perlu menggunakan MetaMask di Google Chrome untuk menyambung kepada Dompet Perkakasan anda."
   },
@@ -392,9 +389,6 @@
   "fast": {
     "message": "Cepat"
   },
-  "faster": {
-    "message": "Lebih cepat"
-  },
   "fileImportFail": {
     "message": "Pengimportan fail tidak berfungsi? Klik di sini!",
     "description": "Helps user import their account from a JSON file"
@@ -564,9 +558,6 @@
   },
   "links": {
     "message": "Pautan"
-  },
-  "liveGasPricePredictions": {
-    "message": "Ramalan Harga Gas Langsung"
   },
   "loadMore": {
     "message": "Muat Lagi"
@@ -995,9 +986,6 @@
   "slow": {
     "message": "Perlahan"
   },
-  "slower": {
-    "message": "Lebih Perlahan"
-  },
   "somethingWentWrong": {
     "message": "Alamak! Ada yang tak kena."
   },
@@ -1138,9 +1126,6 @@
   },
   "transactionSubmitted": {
     "message": "Transaksi dihantar dengan fi gas sebanyak $1 pada $2."
-  },
-  "transactionTime": {
-    "message": "Masa Transaksi"
   },
   "transactionUpdated": {
     "message": "Transaksi dikemaskini pada $2."

@@ -16,7 +16,7 @@ export default function TokenList({ onTokenClick }) {
   // from the background so it has a new reference with each background update,
   // even if the tokens haven't changed
   const tokens = useSelector(getTokens, isEqual)
-  const { loading, error, tokensWithBalances } = useTokenTracker(tokens)
+  const { loading, tokensWithBalances } = useTokenTracker(tokens, true)
 
   if (loading) {
     return (
@@ -38,14 +38,7 @@ export default function TokenList({ onTokenClick }) {
     <div>
       {tokensWithBalances.map((tokenData, index) => {
         tokenData.image = assetImages[tokenData.address]
-        return (
-          <TokenCell
-            key={index}
-            {...tokenData}
-            outdatedBalance={Boolean(error)}
-            onClick={onTokenClick}
-          />
-        )
+        return <TokenCell key={index} {...tokenData} onClick={onTokenClick} />
       })}
     </div>
   )

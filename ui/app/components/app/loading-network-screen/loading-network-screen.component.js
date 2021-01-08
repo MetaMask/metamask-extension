@@ -19,11 +19,8 @@ export default class LoadingNetworkScreen extends PureComponent {
     providerId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     showNetworkDropdown: PropTypes.func,
     setProviderArgs: PropTypes.array,
-    lastSelectedProvider: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.object,
-    ]),
     setProviderType: PropTypes.func,
+    rollbackToPreviousProvider: PropTypes.func,
     isLoadingNetwork: PropTypes.bool,
   }
 
@@ -123,14 +120,14 @@ export default class LoadingNetworkScreen extends PureComponent {
   }
 
   render() {
-    const { lastSelectedProvider, setProviderType } = this.props
+    const { rollbackToPreviousProvider } = this.props
 
     return (
       <LoadingScreen
         header={
           <div
             className="page-container__header-close"
-            onClick={() => setProviderType(lastSelectedProvider || 'ropsten')}
+            onClick={rollbackToPreviousProvider}
           />
         }
         showLoadingSpinner={!this.state.showErrorScreen}

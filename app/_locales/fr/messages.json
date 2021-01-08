@@ -158,9 +158,6 @@
   "chainId": {
     "message": "ID de chaîne"
   },
-  "chartOnlyAvailableEth": {
-    "message": "Tableau disponible uniquement sur les réseaux Ethereum."
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Pour connecter votre portefeuille hardware, vous devez utiliser MetaMask pour Google Chrome."
   },
@@ -389,9 +386,6 @@
   "fast": {
     "message": "Rapide"
   },
-  "faster": {
-    "message": "Plus rapide"
-  },
   "fiat": {
     "message": "FIAT",
     "description": "Exchange type"
@@ -531,7 +525,7 @@
     "message": "Pas de réseau ETH, régler en minuscules"
   },
   "invalidBlockExplorerURL": {
-    "message": "URL Block Explorer invalide"
+    "message": "URL de l'explorateur de blocs invalide"
   },
   "invalidIpfsGateway": {
     "message": "IPFS Gateway Invalide: la valeur doit être une URL valide"
@@ -572,9 +566,6 @@
   },
   "links": {
     "message": "Liens"
-  },
-  "liveGasPricePredictions": {
-    "message": "Prévisions des prix de l'essence en direct"
   },
   "loadMore": {
     "message": "Charger plus"
@@ -705,7 +696,7 @@
     "message": "Activé"
   },
   "optionalBlockExplorerUrl": {
-    "message": "Bloquer l'URL de l'explorateur (facultatif)"
+    "message": "URL de l'explorateur de blocs (facultatif)"
   },
   "optionalCurrencySymbol": {
     "message": "Symbole (facultatif)"
@@ -1000,9 +991,6 @@
   "slow": {
     "message": "Lente"
   },
-  "slower": {
-    "message": "Plus lent"
-  },
   "somethingWentWrong": {
     "message": "Oups !  Quelque chose a mal tourné. "
   },
@@ -1140,9 +1128,6 @@
   },
   "transactionSubmitted": {
     "message": "Transaction envoyée sur $2."
-  },
-  "transactionTime": {
-    "message": "Heure de la transaction"
   },
   "transactionUpdated": {
     "message": "Transaction mise à jour sur $2."

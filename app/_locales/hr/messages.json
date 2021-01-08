@@ -167,9 +167,6 @@
   "chainId": {
     "message": "Identifikacijska oznaka bloka"
   },
-  "chartOnlyAvailableEth": {
-    "message": "Grafikon je dostupan samo na mrežama Ethereum."
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Trebate upotrebljavati MetaMask u pregledniku Google Chrome kako biste ga povezali s vašim hardverskim novčanikom."
   },
@@ -398,9 +395,6 @@
   "fast": {
     "message": "Brzo"
   },
-  "faster": {
-    "message": "Brže"
-  },
   "fileImportFail": {
     "message": "Uvoženje datoteke ne radi? Kliknite ovdje.",
     "description": "Helps user import their account from a JSON file"
@@ -574,9 +568,6 @@
   },
   "links": {
     "message": "Poveznice"
-  },
-  "liveGasPricePredictions": {
-    "message": "Predviđanja uživo za cijenu goriva"
   },
   "loadMore": {
     "message": "Učitaj više"
@@ -1011,9 +1002,6 @@
   "slow": {
     "message": "Sporo"
   },
-  "slower": {
-    "message": "Sporije"
-  },
   "somethingWentWrong": {
     "message": "Ups! Nešto je pošlo po zlu."
   },
@@ -1154,9 +1142,6 @@
   },
   "transactionSubmitted": {
     "message": "Transakcija je poslana s naknadom za gorivo od $1 u $2."
-  },
-  "transactionTime": {
-    "message": "Vrijeme transkacije"
   },
   "transactionUpdated": {
     "message": "Transakcija je ažurirana u $2."

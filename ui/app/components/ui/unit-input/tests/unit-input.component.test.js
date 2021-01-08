@@ -10,15 +10,15 @@ describe('UnitInput Component', function () {
       const wrapper = shallow(<UnitInput />)
 
       assert.ok(wrapper)
-      assert.equal(wrapper.find('.unit-input__suffix').length, 0)
+      assert.strictEqual(wrapper.find('.unit-input__suffix').length, 0)
     })
 
     it('should render properly with a suffix', function () {
       const wrapper = shallow(<UnitInput suffix="ETH" />)
 
       assert.ok(wrapper)
-      assert.equal(wrapper.find('.unit-input__suffix').length, 1)
-      assert.equal(wrapper.find('.unit-input__suffix').text(), 'ETH')
+      assert.strictEqual(wrapper.find('.unit-input__suffix').length, 1)
+      assert.strictEqual(wrapper.find('.unit-input__suffix').text(), 'ETH')
     })
 
     it('should render properly with a child component', function () {
@@ -29,15 +29,15 @@ describe('UnitInput Component', function () {
       )
 
       assert.ok(wrapper)
-      assert.equal(wrapper.find('.testing').length, 1)
-      assert.equal(wrapper.find('.testing').text(), 'TESTCOMPONENT')
+      assert.strictEqual(wrapper.find('.testing').length, 1)
+      assert.strictEqual(wrapper.find('.testing').text(), 'TESTCOMPONENT')
     })
 
     it('should render with an error class when props.error === true', function () {
       const wrapper = shallow(<UnitInput error />)
 
       assert.ok(wrapper)
-      assert.equal(wrapper.find('.unit-input--error').length, 1)
+      assert.strictEqual(wrapper.find('.unit-input--error').length, 1)
     })
   })
 
@@ -57,43 +57,43 @@ describe('UnitInput Component', function () {
       const handleFocusSpy = sinon.spy(wrapper.instance(), 'handleFocus')
       wrapper.instance().forceUpdate()
       wrapper.update()
-      assert.equal(handleFocusSpy.callCount, 0)
+      assert.strictEqual(handleFocusSpy.callCount, 0)
       wrapper.find('.unit-input').simulate('click')
-      assert.equal(handleFocusSpy.callCount, 1)
+      assert.strictEqual(handleFocusSpy.callCount, 1)
     })
 
     it('should call onChange on input changes with the value', function () {
       const wrapper = mount(<UnitInput onChange={handleChangeSpy} />)
 
       assert.ok(wrapper)
-      assert.equal(handleChangeSpy.callCount, 0)
+      assert.strictEqual(handleChangeSpy.callCount, 0)
       const input = wrapper.find('input')
       input.simulate('change', { target: { value: 123 } })
-      assert.equal(handleChangeSpy.callCount, 1)
+      assert.strictEqual(handleChangeSpy.callCount, 1)
       assert.ok(handleChangeSpy.calledWith(123))
-      assert.equal(wrapper.state('value'), 123)
+      assert.strictEqual(wrapper.state('value'), 123)
     })
 
     it('should set the component state value with props.value', function () {
       const wrapper = mount(<UnitInput value={123} />)
 
       assert.ok(wrapper)
-      assert.equal(wrapper.state('value'), 123)
+      assert.strictEqual(wrapper.state('value'), 123)
     })
 
     it('should update the component state value with props.value', function () {
       const wrapper = mount(<UnitInput onChange={handleChangeSpy} />)
 
       assert.ok(wrapper)
-      assert.equal(handleChangeSpy.callCount, 0)
+      assert.strictEqual(handleChangeSpy.callCount, 0)
       const input = wrapper.find('input')
       input.simulate('change', { target: { value: 123 } })
-      assert.equal(wrapper.state('value'), 123)
-      assert.equal(handleChangeSpy.callCount, 1)
+      assert.strictEqual(wrapper.state('value'), 123)
+      assert.strictEqual(handleChangeSpy.callCount, 1)
       assert.ok(handleChangeSpy.calledWith(123))
       wrapper.setProps({ value: 456 })
-      assert.equal(wrapper.state('value'), 456)
-      assert.equal(handleChangeSpy.callCount, 1)
+      assert.strictEqual(wrapper.state('value'), 456)
+      assert.strictEqual(handleChangeSpy.callCount, 1)
     })
   })
 })

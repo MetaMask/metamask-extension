@@ -11,7 +11,7 @@ import {
 describe('TransactionActivityLog utils', function () {
   describe('combineTransactionHistories', function () {
     it('should return no activities for an empty list of transactions', function () {
-      assert.deepEqual(combineTransactionHistories([]), [])
+      assert.deepStrictEqual(combineTransactionHistories([]), [])
     })
 
     it('should return activities for an array of transactions', function () {
@@ -217,7 +217,10 @@ describe('TransactionActivityLog utils', function () {
         },
       ]
 
-      assert.deepEqual(combineTransactionHistories(transactions), expected)
+      assert.deepStrictEqual(
+        combineTransactionHistories(transactions),
+        expected,
+      )
     })
   })
 
@@ -237,7 +240,7 @@ describe('TransactionActivityLog utils', function () {
         },
       }
 
-      assert.deepEqual(getActivities(transaction), [])
+      assert.deepStrictEqual(getActivities(transaction), [])
     })
 
     it("should return activities for a transaction's history", function () {
@@ -412,7 +415,7 @@ describe('TransactionActivityLog utils', function () {
         },
       ]
 
-      assert.deepEqual(getActivities(transaction, true), expectedResult)
+      assert.deepStrictEqual(getActivities(transaction, true), expectedResult)
     })
   })
 })

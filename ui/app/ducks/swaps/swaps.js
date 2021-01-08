@@ -2,10 +2,8 @@ import { createSlice } from '@reduxjs/toolkit'
 import BigNumber from 'bignumber.js'
 import log from 'loglevel'
 
-import {
-  loadLocalStorageData,
-  saveLocalStorageData,
-} from '../../../lib/local-storage-helpers'
+import { getStorageItem, setStorageItem } from '../../../lib/storage-helpers'
+
 import {
   addToken,
   addUnapprovedTransaction,
@@ -41,7 +39,6 @@ import { calcGasTotal } from '../../pages/send/send.utils'
 import {
   decimalToHex,
   getValueFromWeiHex,
-  hexMax,
   decGWEIToHexWEI,
   hexToDecimal,
   hexWEIToDecGWEI,
@@ -68,6 +65,8 @@ const GAS_PRICES_LOADING_STATES = {
   FAILED: 'FAILED',
   COMPLETED: 'COMPLETED',
 }
+
+export const FALLBACK_GAS_MULTIPLIER = 1.5
 
 const initialState = {
   aggregatorMetadata: null,
@@ -225,6 +224,9 @@ const getSwapsState = (state) => state.metamask.swapsState
 export const getSwapsFeatureLiveness = (state) =>
   state.metamask.swapsState.swapsFeatureIsLive
 
+export const getSwapsQuoteRefreshTime = (state) =>
+  state.metamask.swapsState.swapsQuoteRefreshTime
+
 export const getBackgroundSwapRouteState = (state) =>
   state.metamask.swapsState.routeState
 
@@ -327,7 +329,6 @@ export {
 export const navigateBackToBuildQuote = (history) => {
   return async (dispatch) => {
     // TODO: Ensure any fetch in progress is cancelled
-    await dispatch(resetSwapsPostFetchState())
     dispatch(navigatedBackToBuildQuote())
 
     history.push(BUILD_QUOTE_ROUTE)
@@ -469,12 +470,7 @@ export const fetchQuotesAndSetQuoteState = (
     metaMetricsEvent({
       event: 'Quotes Requested',
       category: 'swaps',
-    })
-    metaMetricsEvent({
-      event: 'Quotes Requested',
-      category: 'swaps',
-      excludeMetaMetricsId: true,
-      properties: {
+      sensitiveProperties: {
         token_from: fromTokenSymbol,
         token_from_amount: String(inputValue),
         token_to: toTokenSymbol,
@@ -520,12 +516,7 @@ export const fetchQuotesAndSetQuoteState = (
         metaMetricsEvent({
           event: 'No Quotes Available',
           category: 'swaps',
-        })
-        metaMetricsEvent({
-          event: 'No Quotes Available',
-          category: 'swaps',
-          excludeMetaMetricsId: true,
-          properties: {
+          sensitiveProperties: {
             token_from: fromTokenSymbol,
             token_from_amount: String(inputValue),
             token_to: toTokenSymbol,
@@ -541,12 +532,7 @@ export const fetchQuotesAndSetQuoteState = (
         metaMetricsEvent({
           event: 'Quotes Received',
           category: 'swaps',
-        })
-        metaMetricsEvent({
-          event: 'Quotes Received',
-          category: 'swaps',
-          excludeMetaMetricsId: true,
-          properties: {
+          sensitiveProperties: {
             token_from: fromTokenSymbol,
             token_from_amount: String(inputValue),
             token_to: toTokenSymbol,
@@ -611,20 +597,16 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     const usedQuote = getUsedQuote(state)
     const usedTradeTxParams = usedQuote.trade
 
-    const estimatedGasLimit = new BigNumber(
-      usedQuote?.gasEstimate || decimalToHex(usedQuote?.averageGas || 0),
-      16,
-    )
+    const estimatedGasLimit = new BigNumber(usedQuote?.gasEstimate || `0x0`, 16)
     const estimatedGasLimitWithMultiplier = estimatedGasLimit
-      .times(1.4, 10)
+      .times(usedQuote?.gasMultiplier || FALLBACK_GAS_MULTIPLIER, 10)
       .round(0)
       .toString(16)
     const maxGasLimit =
       customSwapsGas ||
-      hexMax(
-        `0x${decimalToHex(usedQuote?.maxGas || 0)}`,
-        estimatedGasLimitWithMultiplier,
-      )
+      (usedQuote?.gasEstimate
+        ? estimatedGasLimitWithMultiplier
+        : `0x${decimalToHex(usedQuote?.maxGas || 0)}`)
 
     const usedGasPrice = getUsedSwapsGasPrice(state)
     usedTradeTxParams.gas = maxGasLimit
@@ -673,16 +655,10 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       median_metamask_fee: usedQuote.savings?.medianMetaMaskFee,
     }
 
-    const metaMetricsConfig = {
+    metaMetricsEvent({
       event: 'Swap Started',
       category: 'swaps',
-    }
-
-    metaMetricsEvent({ ...metaMetricsConfig })
-    metaMetricsEvent({
-      ...metaMetricsConfig,
-      excludeMetaMetricsId: true,
-      properties: swapMetaData,
+      sensitiveProperties: swapMetaData,
     })
 
     let finalApproveTxMeta
@@ -754,7 +730,7 @@ export function fetchMetaSwapsGasPriceEstimates() {
     )
     const timeLastRetrieved =
       priceEstimatesLastRetrieved ||
-      loadLocalStorageData('METASWAP_GAS_PRICE_ESTIMATES_LAST_RETRIEVED') ||
+      (await getStorageItem('METASWAP_GAS_PRICE_ESTIMATES_LAST_RETRIEVED')) ||
       0
 
     dispatch(swapGasPriceEstimatesFetchStarted())
@@ -764,7 +740,7 @@ export function fetchMetaSwapsGasPriceEstimates() {
       if (Date.now() - timeLastRetrieved > 30000) {
         priceEstimates = await fetchSwapsGasPrices()
       } else {
-        const cachedPriceEstimates = loadLocalStorageData(
+        const cachedPriceEstimates = await getStorageItem(
           'METASWAP_GAS_PRICE_ESTIMATES',
         )
         priceEstimates = cachedPriceEstimates || (await fetchSwapsGasPrices())
@@ -795,11 +771,13 @@ export function fetchMetaSwapsGasPriceEstimates() {
 
     const timeRetrieved = Date.now()
 
-    saveLocalStorageData(priceEstimates, 'METASWAP_GAS_PRICE_ESTIMATES')
-    saveLocalStorageData(
-      timeRetrieved,
-      'METASWAP_GAS_PRICE_ESTIMATES_LAST_RETRIEVED',
-    )
+    await Promise.all([
+      setStorageItem('METASWAP_GAS_PRICE_ESTIMATES', priceEstimates),
+      setStorageItem(
+        'METASWAP_GAS_PRICE_ESTIMATES_LAST_RETRIEVED',
+        timeRetrieved,
+      ),
+    ])
 
     dispatch(
       swapGasPriceEstimatesFetchCompleted({

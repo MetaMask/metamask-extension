@@ -44,10 +44,10 @@ describe('TransactionListItemDetails Component', function () {
     )
     const child = wrapper.childAt(0)
     assert.ok(child.hasClass('transaction-list-item-details'))
-    assert.equal(child.find(Button).length, 2)
-    assert.equal(child.find(SenderToRecipient).length, 1)
-    assert.equal(child.find(TransactionBreakdown).length, 1)
-    assert.equal(child.find(TransactionActivityLog).length, 1)
+    assert.strictEqual(child.find(Button).length, 2)
+    assert.strictEqual(child.find(SenderToRecipient).length, 1)
+    assert.strictEqual(child.find(TransactionBreakdown).length, 1)
+    assert.strictEqual(child.find(TransactionActivityLog).length, 1)
   })
 
   it('should render a retry button', function () {
@@ -90,7 +90,7 @@ describe('TransactionListItemDetails Component', function () {
     const child = wrapper.childAt(0)
 
     assert.ok(child.hasClass('transaction-list-item-details'))
-    assert.equal(child.find(Button).length, 3)
+    assert.strictEqual(child.find(Button).length, 3)
   })
 
   it('should disable the Copy Tx ID and View In Etherscan buttons when tx hash is missing', function () {

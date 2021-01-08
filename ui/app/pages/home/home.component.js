@@ -31,6 +31,8 @@ import {
 
 const LEARN_MORE_URL =
   'https://metamask.zendesk.com/hc/en-us/articles/360045129011-Intro-to-MetaMask-v8-extension'
+const LEGACY_WEB3_URL =
+  'https://metamask.zendesk.com/hc/en-us/articles/360053147012'
 
 export default class Home extends PureComponent {
   static contextTypes = {
@@ -42,7 +44,7 @@ export default class Home extends PureComponent {
     forgottenPassword: PropTypes.bool,
     suggestedTokens: PropTypes.object,
     unconfirmedTransactionsCount: PropTypes.number,
-    shouldShowSeedPhraseReminder: PropTypes.bool,
+    shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
     isPopup: PropTypes.bool,
     isNotification: PropTypes.bool.isRequired,
     threeBoxSynced: PropTypes.bool,
@@ -66,6 +68,10 @@ export default class Home extends PureComponent {
     swapsFetchParams: PropTypes.object,
     swapsEnabled: PropTypes.bool,
     isMainnet: PropTypes.bool,
+    shouldShowWeb3ShimUsageNotification: PropTypes.bool.isRequired,
+    setWeb3ShimUsageAlertDismissed: PropTypes.func.isRequired,
+    originOfCurrentTab: PropTypes.string,
+    disableWeb3ShimUsageAlert: PropTypes.func.isRequired,
   }
 
   state = {
@@ -161,10 +167,39 @@ export default class Home extends PureComponent {
       setShowRestorePromptToFalse,
       showRestorePrompt,
       threeBoxLastUpdated,
+      shouldShowWeb3ShimUsageNotification,
+      setWeb3ShimUsageAlertDismissed,
+      originOfCurrentTab,
+      disableWeb3ShimUsageAlert,
     } = this.props
 
     return (
       <MultipleNotifications>
+        {shouldShowWeb3ShimUsageNotification ? (
+          <HomeNotification
+            descriptionText={t('web3ShimUsageNotification', [
+              <span
+                key="web3ShimUsageNotificationLink"
+                className="home-notification__text-link"
+                onClick={() =>
+                  global.platform.openTab({ url: LEGACY_WEB3_URL })
+                }
+              >
+                {t('here')}
+              </span>,
+            ])}
+            ignoreText={t('dismiss')}
+            onIgnore={(disable) => {
+              setWeb3ShimUsageAlertDismissed(originOfCurrentTab)
+              if (disable) {
+                disableWeb3ShimUsageAlert()
+              }
+            }}
+            checkboxText={t('dontShowThisAgain')}
+            checkboxTooltipText={t('canToggleInSettings')}
+            key="home-web3ShimUsageNotification"
+          />
+        ) : null}
         {shouldShowSeedPhraseReminder ? (
           <HomeNotification
             descriptionText={t('backupApprovalNotice')}

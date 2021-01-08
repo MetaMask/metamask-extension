@@ -53,7 +53,7 @@ describe('send selectors', function () {
 
   describe('accountsWithSendEtherInfoSelector()', function () {
     it('should return an array of account objects with name info from identities', function () {
-      assert.deepEqual(accountsWithSendEtherInfoSelector(mockState), [
+      assert.deepStrictEqual(accountsWithSendEtherInfoSelector(mockState), [
         {
           code: '0x',
           balance: '0x47c9d71831c76efe',
@@ -88,19 +88,19 @@ describe('send selectors', function () {
 
   describe('getBlockGasLimit', function () {
     it('should return the current block gas limit', function () {
-      assert.deepEqual(getBlockGasLimit(mockState), '0x4c1878')
+      assert.deepStrictEqual(getBlockGasLimit(mockState), '0x4c1878')
     })
   })
 
   describe('getConversionRate()', function () {
     it('should return the eth conversion rate', function () {
-      assert.deepEqual(getConversionRate(mockState), 1200.88200327)
+      assert.deepStrictEqual(getConversionRate(mockState), 1200.88200327)
     })
   })
 
   describe('getCurrentAccountWithSendEtherInfo()', function () {
     it('should return the currently selected account with identity info', function () {
-      assert.deepEqual(getCurrentAccountWithSendEtherInfo(mockState), {
+      assert.deepStrictEqual(getCurrentAccountWithSendEtherInfo(mockState), {
         code: '0x',
         balance: '0x0',
         nonce: '0x0',
@@ -112,37 +112,37 @@ describe('send selectors', function () {
 
   describe('getNativeCurrency()', function () {
     it('should return the ticker symbol of the selected network', function () {
-      assert.equal(getNativeCurrency(mockState), 'ETH')
+      assert.strictEqual(getNativeCurrency(mockState), 'ETH')
     })
   })
 
   describe('getCurrentNetwork()', function () {
     it('should return the id of the currently selected network', function () {
-      assert.equal(getCurrentNetwork(mockState), '3')
+      assert.strictEqual(getCurrentNetwork(mockState), '3')
     })
   })
 
   describe('getGasLimit()', function () {
     it('should return the send.gasLimit', function () {
-      assert.equal(getGasLimit(mockState), '0xFFFF')
+      assert.strictEqual(getGasLimit(mockState), '0xFFFF')
     })
   })
 
   describe('getGasPrice()', function () {
     it('should return the send.gasPrice', function () {
-      assert.equal(getGasPrice(mockState), '0xaa')
+      assert.strictEqual(getGasPrice(mockState), '0xaa')
     })
   })
 
   describe('getGasTotal()', function () {
     it('should return the send.gasTotal', function () {
-      assert.equal(getGasTotal(mockState), 'a9ff56')
+      assert.strictEqual(getGasTotal(mockState), 'a9ff56')
     })
   })
 
   describe('getPrimaryCurrency()', function () {
     it('should return the symbol of the send token', function () {
-      assert.equal(
+      assert.strictEqual(
         getPrimaryCurrency({
           metamask: { send: { token: { symbol: 'DEF' } } },
         }),
@@ -153,7 +153,7 @@ describe('send selectors', function () {
 
   describe('getSendToken()', function () {
     it('should return the current send token if set', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         getSendToken({
           metamask: {
             send: {
@@ -176,7 +176,7 @@ describe('send selectors', function () {
 
   describe('getSendTokenContract()', function () {
     it('should return the contract at the send token address', function () {
-      assert.equal(
+      assert.strictEqual(
         getSendTokenContract({
           metamask: {
             send: {
@@ -194,7 +194,7 @@ describe('send selectors', function () {
 
     it('should return null if send token is not set', function () {
       const modifiedMetamaskState = { ...mockState.metamask, send: {} }
-      assert.equal(
+      assert.strictEqual(
         getSendTokenContract({ ...mockState, metamask: modifiedMetamaskState }),
         null,
       )
@@ -203,31 +203,31 @@ describe('send selectors', function () {
 
   describe('getSendAmount()', function () {
     it('should return the send.amount', function () {
-      assert.equal(getSendAmount(mockState), '0x080')
+      assert.strictEqual(getSendAmount(mockState), '0x080')
     })
   })
 
   describe('getSendEditingTransactionId()', function () {
     it('should return the send.editingTransactionId', function () {
-      assert.equal(getSendEditingTransactionId(mockState), 97531)
+      assert.strictEqual(getSendEditingTransactionId(mockState), 97531)
     })
   })
 
   describe('getSendErrors()', function () {
     it('should return the send.errors', function () {
-      assert.deepEqual(getSendErrors(mockState), { someError: null })
+      assert.deepStrictEqual(getSendErrors(mockState), { someError: null })
     })
   })
 
   describe('getSendHexDataFeatureFlagState()', function () {
     it('should return the sendHexData feature flag state', function () {
-      assert.deepEqual(getSendHexDataFeatureFlagState(mockState), true)
+      assert.deepStrictEqual(getSendHexDataFeatureFlagState(mockState), true)
     })
   })
 
   describe('getSendFrom()', function () {
     it('should return the send.from', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         getSendFrom(mockState),
         '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
       )
@@ -236,7 +236,7 @@ describe('send selectors', function () {
 
   describe('getSendFromBalance()', function () {
     it('should get the send.from balance if it exists', function () {
-      assert.equal(getSendFromBalance(mockState), '0x37452b1315889f80')
+      assert.strictEqual(getSendFromBalance(mockState), '0x37452b1315889f80')
     })
 
     it('should get the selected account balance if the send.from does not exist', function () {
@@ -248,13 +248,13 @@ describe('send selectors', function () {
           },
         },
       }
-      assert.equal(getSendFromBalance(editedMockState), '0x0')
+      assert.strictEqual(getSendFromBalance(editedMockState), '0x0')
     })
   })
 
   describe('getSendFromObject()', function () {
     it('should return send.from if it exists', function () {
-      assert.deepEqual(getSendFromObject(mockState), {
+      assert.deepStrictEqual(getSendFromObject(mockState), {
         address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
         balance: '0x37452b1315889f80',
         code: '0x',
@@ -271,7 +271,7 @@ describe('send selectors', function () {
           },
         },
       }
-      assert.deepEqual(getSendFromObject(editedMockState), {
+      assert.deepStrictEqual(getSendFromObject(editedMockState), {
         code: '0x',
         balance: '0x0',
         nonce: '0x0',
@@ -282,19 +282,19 @@ describe('send selectors', function () {
 
   describe('getSendMaxModeState()', function () {
     it('should return send.maxModeOn', function () {
-      assert.equal(getSendMaxModeState(mockState), false)
+      assert.strictEqual(getSendMaxModeState(mockState), false)
     })
   })
 
   describe('getSendTo()', function () {
     it('should return send.to', function () {
-      assert.equal(getSendTo(mockState), '0x987fedabc')
+      assert.strictEqual(getSendTo(mockState), '0x987fedabc')
     })
   })
 
   describe('getSendToAccounts()', function () {
     it('should return an array including all the users accounts and the address book', function () {
-      assert.deepEqual(getSendToAccounts(mockState), [
+      assert.deepStrictEqual(getSendToAccounts(mockState), [
         {
           code: '0x',
           balance: '0x47c9d71831c76efe',
@@ -334,13 +334,13 @@ describe('send selectors', function () {
 
   describe('getTokenBalance()', function () {
     it('should', function () {
-      assert.equal(getTokenBalance(mockState), 3434)
+      assert.strictEqual(getTokenBalance(mockState), 3434)
     })
   })
 
   describe('getUnapprovedTxs()', function () {
     it('should return the unapproved txs', function () {
-      assert.deepEqual(getUnapprovedTxs(mockState), {
+      assert.deepStrictEqual(getUnapprovedTxs(mockState), {
         4768706228115573: {
           id: 4768706228115573,
           time: 1487363153561,
@@ -375,7 +375,7 @@ describe('send selectors', function () {
           },
         }
 
-        assert.equal(sendAmountIsInError(state), true)
+        assert.strictEqual(sendAmountIsInError(state), true)
       })
 
       it('should return false if send.errors.amount is falsy', function () {
@@ -387,7 +387,7 @@ describe('send selectors', function () {
           },
         }
 
-        assert.equal(sendAmountIsInError(state), false)
+        assert.strictEqual(sendAmountIsInError(state), false)
       })
     })
   })
@@ -403,7 +403,7 @@ describe('send selectors', function () {
           },
         }
 
-        assert.equal(getGasLoadingError(state), 'abc')
+        assert.strictEqual(getGasLoadingError(state), 'abc')
       })
     })
 
@@ -417,7 +417,7 @@ describe('send selectors', function () {
           },
         }
 
-        assert.equal(gasFeeIsInError(state), true)
+        assert.strictEqual(gasFeeIsInError(state), true)
       })
 
       it('should return false send.errors.gasFee is falsely', function () {
@@ -429,7 +429,7 @@ describe('send selectors', function () {
           },
         }
 
-        assert.equal(gasFeeIsInError(state), false)
+        assert.strictEqual(gasFeeIsInError(state), false)
       })
     })
 
@@ -441,7 +441,7 @@ describe('send selectors', function () {
           },
         }
 
-        assert.equal(getGasButtonGroupShown(state), 'foobar')
+        assert.strictEqual(getGasButtonGroupShown(state), 'foobar')
       })
     })
   })
@@ -457,11 +457,14 @@ describe('send selectors', function () {
 
     describe('getTitleKey()', function () {
       it('should return the correct key when "to" is empty', function () {
-        assert.equal(getTitleKey(getMetamaskSendMockState({})), 'addRecipient')
+        assert.strictEqual(
+          getTitleKey(getMetamaskSendMockState({})),
+          'addRecipient',
+        )
       })
 
       it('should return the correct key when getSendEditingTransactionId is truthy', function () {
-        assert.equal(
+        assert.strictEqual(
           getTitleKey(
             getMetamaskSendMockState({
               to: true,
@@ -474,7 +477,7 @@ describe('send selectors', function () {
       })
 
       it('should return the correct key when getSendEditingTransactionId is falsy and getSendToken is truthy', function () {
-        assert.equal(
+        assert.strictEqual(
           getTitleKey(
             getMetamaskSendMockState({
               to: true,
@@ -487,7 +490,7 @@ describe('send selectors', function () {
       })
 
       it('should return the correct key when getSendEditingTransactionId is falsy and getSendToken is falsy', function () {
-        assert.equal(
+        assert.strictEqual(
           getTitleKey(
             getMetamaskSendMockState({
               to: true,
@@ -510,7 +513,7 @@ describe('send selectors', function () {
 
     describe('isSendFormInError()', function () {
       it('should return true if any of the values of the object returned by getSendErrors are truthy', function () {
-        assert.equal(
+        assert.strictEqual(
           isSendFormInError(
             getSendMockState({
               errors: [true],
@@ -521,7 +524,7 @@ describe('send selectors', function () {
       })
 
       it('should return false if all of the values of the object returned by getSendErrors are falsy', function () {
-        assert.equal(
+        assert.strictEqual(
           isSendFormInError(
             getSendMockState({
               errors: [],
@@ -529,7 +532,7 @@ describe('send selectors', function () {
           ),
           false,
         )
-        assert.equal(
+        assert.strictEqual(
           isSendFormInError(
             getSendMockState({
               errors: [false],

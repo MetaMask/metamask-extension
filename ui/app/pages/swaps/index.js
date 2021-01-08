@@ -12,6 +12,7 @@ import { I18nContext } from '../../contexts/i18n'
 import {
   getSelectedAccount,
   getCurrentNetworkId,
+  getCurrentChainId,
 } from '../../selectors/selectors'
 import {
   getFromToken,
@@ -22,7 +23,6 @@ import {
   getFetchingQuotes,
   setBalanceError,
   setTopAssets,
-  getUsedSwapsGasPrice,
   getFetchParams,
   setAggregatorMetadata,
   getAggregatorMetadata,
@@ -48,6 +48,7 @@ import {
   SWAP_FAILED_ERROR,
   OFFLINE_FOR_MAINTENANCE,
 } from '../../helpers/constants/swaps'
+import { MAINNET_CHAIN_ID } from '../../../../app/scripts/controllers/network/enums'
 
 import {
   resetBackgroundSwapsState,
@@ -94,7 +95,6 @@ export default function Swap() {
   const [maxSlippage, setMaxSlippage] = useState(fetchParams?.slippage || 2)
 
   const routeState = useSelector(getBackgroundSwapRouteState)
-  const usedGasPrice = useSelector(getUsedSwapsGasPrice)
   const selectedAccount = useSelector(getSelectedAccount)
   const quotes = useSelector(getQuotes)
   const txList = useSelector(currentNetworkTxListSelector)
@@ -247,6 +247,11 @@ export default function Swap() {
     return () => window.removeEventListener('beforeunload', fn)
   }, [dispatch, isLoadingQuotesRoute])
 
+  const chainId = useSelector(getCurrentChainId)
+  if (chainId !== MAINNET_CHAIN_ID) {
+    return <Redirect to={{ pathname: DEFAULT_ROUTE }} />
+  }
+
   return (
     <div className="swaps">
       <div className="swaps__container">
@@ -299,7 +304,7 @@ export default function Swap() {
                     ethBalance={ethBalance}
                     setMaxSlippage={setMaxSlippage}
                     selectedAccountAddress={selectedAccountAddress}
-                    maxSlippage={Number(maxSlippage)}
+                    maxSlippage={maxSlippage}
                   />
                 )
               }}
@@ -397,8 +402,6 @@ export default function Swap() {
                     networkId={networkId}
                     txHash={tradeTxData?.hash}
                     tokensReceived={tokensReceived}
-                    tradeTxData={tradeTxData}
-                    usedGasPrice={usedGasPrice}
                     submittingSwap={
                       routeState === 'awaiting' && !(approveTxId || tradeTxId)
                     }

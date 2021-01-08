@@ -1,4 +1,6 @@
 .fee-card {
+  width: 100%;
+
   @include H7;
 
   &__savings-and-quotes-header {
@@ -7,56 +9,20 @@
     align-items: center;
   }
 
-  &__savings-and-quotes-header-first-part,
-  &__savings-and-quotes-header-second-part,
-  &__savings-and-quotes-header-third-part {
-    height: 39px;
-    background: $Blue-000;
-    border: 1px solid $Blue-500;
-  }
-
-  &__savings-and-quotes-header-first-part {
-    width: 22px;
-    border-top-left-radius: 8px;
-    border-bottom: none;
-    border-right: none;
-  }
-
-  &__savings-and-quotes-header-second-part {
-    width: 18px;
-    border: none;
-
-    &--top-border {
-      border-top: 1px solid $Blue-500;
-    }
-  }
-
-  &__savings-and-quotes-header-third-part {
-    width: 271px;
-    border-top-right-radius: 8px;
-    border-bottom: none;
-    border-left: none;
-  }
-
-  &__pig-icon-container {
-    position: absolute;
-    left: 14.5px;
-    bottom: 4px;
-  }
-
   &__savings-and-quotes-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 234px;
     width: 100%;
-    position: absolute;
     left: 58px;
-
-    &--align-left {
-      left: 16px;
-      max-width: 272px;
-    }
+    height: 39px;
+    background: $Blue-000;
+    border: 1px solid $Blue-500;
+    border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
+    border-bottom: 0;
+    padding-left: 8px;
+    padding-right: 8px;
   }
 
   &__savings-text {

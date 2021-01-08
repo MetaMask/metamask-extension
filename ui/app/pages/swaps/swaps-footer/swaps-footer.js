@@ -13,14 +13,14 @@ export default function SwapsFooter({
   disabled,
   showTermsOfService,
   showTopBorder,
-  className,
+  className = '',
 }) {
   const t = useContext(I18nContext)
 
   return (
     <div className="swaps-footer">
       <div
-        className={classnames('swaps-footer__buttons', {
+        className={classnames('swaps-footer__buttons', className, {
           'swaps-footer__buttons--border': showTopBorder,
         })}
       >

@@ -1,8 +1,7 @@
 import assert from 'assert'
 import EventEmitter from 'events'
-import ObservableStore from 'obs-store'
-import ComposedStore from 'obs-store/lib/composed'
-import JsonRpcEngine from 'json-rpc-engine'
+import { ComposedStore, ObservableStore } from '@metamask/obs-store'
+import { JsonRpcEngine } from 'json-rpc-engine'
 import providerFromEngine from 'eth-json-rpc-middleware/providerFromEngine'
 import log from 'loglevel'
 import {
@@ -19,6 +18,8 @@ import {
   MAINNET,
   INFURA_PROVIDER_TYPES,
   NETWORK_TYPE_TO_ID_MAP,
+  MAINNET_CHAIN_ID,
+  RINKEBY_CHAIN_ID,
 } from './enums'
 
 const env = process.env.METAMASK_ENV
@@ -32,9 +33,9 @@ if (process.env.IN_TEST === 'true') {
     nickname: 'Localhost 8545',
   }
 } else if (process.env.METAMASK_DEBUG || env === 'test') {
-  defaultProviderConfigOpts = { type: RINKEBY }
+  defaultProviderConfigOpts = { type: RINKEBY, chainId: RINKEBY_CHAIN_ID }
 } else {
-  defaultProviderConfigOpts = { type: MAINNET }
+  defaultProviderConfigOpts = { type: MAINNET, chainId: MAINNET_CHAIN_ID }
 }
 
 const defaultProviderConfig = {
@@ -50,9 +51,13 @@ export default class NetworkController extends EventEmitter {
     this.providerStore = new ObservableStore(
       opts.provider || { ...defaultProviderConfig },
     )
+    this.previousProviderStore = new ObservableStore(
+      this.providerStore.getState(),
+    )
     this.networkStore = new ObservableStore('loading')
     this.store = new ComposedStore({
       provider: this.providerStore,
+      previousProviderStore: this.previousProviderStore,
       network: this.networkStore,
     })
 
@@ -187,12 +192,24 @@ export default class NetworkController extends EventEmitter {
    * Sets the provider config and switches the network.
    */
   setProviderConfig(config) {
+    this.previousProviderStore.updateState(this.getProviderConfig())
+    this.providerStore.updateState(config)
+    this._switchNetwork(config)
+  }
+
+  rollbackToPreviousProvider() {
+    const config = this.previousProviderStore.getState()
     this.providerStore.updateState(config)
     this._switchNetwork(config)
   }
 
   getProviderConfig() {
     return this.providerStore.getState()
+  }
+
+  getNetworkIdentifier() {
+    const provider = this.providerStore.getState()
+    return provider.type === 'rpc' ? provider.rpcUrl : provider.type
   }
 
   //

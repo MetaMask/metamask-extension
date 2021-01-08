@@ -167,9 +167,6 @@
   "chainId": {
     "message": "ID lanț"
   },
-  "chartOnlyAvailableEth": {
-    "message": "Grafic disponibil numai pe rețelele Ethereum."
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Trebuie să folosiți MetaMask în Google Chrome pentru a vă conecta la portofelul hardware."
   },
@@ -398,9 +395,6 @@
   "fast": {
     "message": "Rapid"
   },
-  "faster": {
-    "message": "Mai repede"
-  },
   "fileImportFail": {
     "message": "Importarea fișierului nu funcționează? Dați clic aici!",
     "description": "Helps user import their account from a JSON file"
@@ -568,9 +562,6 @@
   },
   "links": {
     "message": "Link-uri"
-  },
-  "liveGasPricePredictions": {
-    "message": "Predicții live de preț în gas"
   },
   "loadMore": {
     "message": "Încărcați mai multe"
@@ -1005,9 +996,6 @@
   "slow": {
     "message": "Lent"
   },
-  "slower": {
-    "message": "Mai încet"
-  },
   "somethingWentWrong": {
     "message": "Hopa! A apărut o eroare."
   },
@@ -1148,9 +1136,6 @@
   },
   "transactionSubmitted": {
     "message": "Tranzacția a fost trimisă, cu o taxă gas de $1 la $2."
-  },
-  "transactionTime": {
-    "message": "Ora tranzacției"
   },
   "transactionUpdated": {
     "message": "Tranzacție actualizată la $2."

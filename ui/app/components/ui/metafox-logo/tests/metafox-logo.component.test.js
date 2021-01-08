@@ -7,11 +7,11 @@ describe('MetaFoxLogo', function () {
   it('sets icon height and width to 42 by default', function () {
     const wrapper = mount(<MetaFoxLogo />)
 
-    assert.equal(
+    assert.strictEqual(
       wrapper.find('img.app-header__metafox-logo--icon').prop('width'),
       42,
     )
-    assert.equal(
+    assert.strictEqual(
       wrapper.find('img.app-header__metafox-logo--icon').prop('height'),
       42,
     )
@@ -20,13 +20,13 @@ describe('MetaFoxLogo', function () {
   it('does not set icon height and width when unsetIconHeight is true', function () {
     const wrapper = mount(<MetaFoxLogo unsetIconHeight />)
 
-    assert.equal(
+    assert.strictEqual(
       wrapper.find('img.app-header__metafox-logo--icon').prop('width'),
-      null,
+      undefined,
     )
-    assert.equal(
+    assert.strictEqual(
       wrapper.find('img.app-header__metafox-logo--icon').prop('height'),
-      null,
+      undefined,
     )
   })
 })

@@ -20,11 +20,11 @@ describe('AccountMismatchWarning', function () {
   })
   it('renders nothing when the addresses match', function () {
     const wrapper = shallow(<AccountMismatchWarning address="mockedAddress" />)
-    assert.equal(wrapper.find(InfoIcon).length, 0)
+    assert.strictEqual(wrapper.find(InfoIcon).length, 0)
   })
   it('renders a warning info icon when addresses do not match', function () {
     const wrapper = shallow(<AccountMismatchWarning address="mockedAddress2" />)
-    assert.equal(wrapper.find(InfoIcon).length, 1)
+    assert.strictEqual(wrapper.find(InfoIcon).length, 1)
   })
   after(function () {
     sinon.restore()

@@ -54,6 +54,7 @@ describe('Actions', function () {
           return Promise.resolve(this.object)
         },
       },
+      initLangCode: 'en_US',
       initState: cloneDeep(firstTimeState),
       infuraProjectId: 'foo',
     })
@@ -217,8 +218,8 @@ describe('Actions', function () {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
         { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'HIDE_LOADING_INDICATION' },
       ]
 
       submitPasswordSpy = sinon.stub(background, 'verifySeedPhrase')
@@ -367,8 +368,8 @@ describe('Actions', function () {
           type: 'SHOW_LOADING_INDICATION',
           value: 'This may take a while, please be patient.',
         },
-        { type: 'HIDE_LOADING_INDICATION' },
         { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'HIDE_LOADING_INDICATION' },
       ]
 
       importAccountWithStrategySpy = sinon.stub(
@@ -427,6 +428,7 @@ describe('Actions', function () {
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
         { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'HIDE_LOADING_INDICATION' },
       ]
 
       try {
@@ -464,6 +466,7 @@ describe('Actions', function () {
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
         { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'HIDE_LOADING_INDICATION' },
       ]
 
       try {
@@ -506,6 +509,7 @@ describe('Actions', function () {
           value: 'Looking for your Ledger...',
         },
         { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'HIDE_LOADING_INDICATION' },
       ]
 
       try {
@@ -544,6 +548,7 @@ describe('Actions', function () {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
         { type: 'DISPLAY_WARNING', value: 'error' },
       ]
 
@@ -580,8 +585,8 @@ describe('Actions', function () {
       const store = mockStore()
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
         { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'HIDE_LOADING_INDICATION' },
       ]
 
       await store.dispatch(actions.setCurrentCurrency())
@@ -622,8 +627,8 @@ describe('Actions', function () {
       const store = mockStore()
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
         { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'HIDE_LOADING_INDICATION' },
       ]
 
       signMessageSpy = sinon.stub(background, 'signMessage')
@@ -674,8 +679,8 @@ describe('Actions', function () {
       const store = mockStore()
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
         { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'HIDE_LOADING_INDICATION' },
       ]
 
       signPersonalMessageSpy = sinon.stub(background, 'signPersonalMessage')
@@ -764,8 +769,8 @@ describe('Actions', function () {
       const store = mockStore()
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
         { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'HIDE_LOADING_INDICATION' },
       ]
 
       try {
@@ -1004,8 +1009,8 @@ describe('Actions', function () {
       const store = mockStore()
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
         { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'HIDE_LOADING_INDICATION' },
       ]
 
       await store.dispatch(actions.setSelectedAddress())
@@ -1043,8 +1048,8 @@ describe('Actions', function () {
       })
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
         { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'HIDE_LOADING_INDICATION' },
       ]
 
       await store.dispatch(actions.showAccountDetail())
@@ -1425,8 +1430,8 @@ describe('Actions', function () {
       const store = mockStore()
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
         { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'HIDE_LOADING_INDICATION' },
       ]
       setCurrentLocaleSpy = sinon.stub(background, 'setCurrentLocale')
       setCurrentLocaleSpy.callsFake((_, callback) => {

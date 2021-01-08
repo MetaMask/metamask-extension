@@ -1,7 +1,9 @@
 import handlers from './handlers'
 
 const handlerMap = handlers.reduce((map, handler) => {
-  map.set(handler.methodName, handler.implementation)
+  for (const methodName of handler.methodNames) {
+    map.set(methodName, handler.implementation)
+  }
   return map
 }, new Map())
 
@@ -19,7 +21,6 @@ const handlerMap = handlers.reduce((map, handler) => {
  * Eventually, we'll want to extract this middleware into its own package.
  *
  * @param {Object} opts - The middleware options
- * @param {string} opts.origin - The origin for the middleware stack
  * @param {Function} opts.sendMetrics - A function for sending a metrics event
  * @returns {(req: Object, res: Object, next: Function, end: Function) => void}
  */

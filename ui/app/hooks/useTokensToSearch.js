@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import contractMap from 'eth-contract-metadata'
+import contractMap from '@metamask/contract-metadata'
 import BigNumber from 'bignumber.js'
 import { isEqual, shuffle } from 'lodash'
 import { checksumAddress } from '../helpers/utils/util'
@@ -145,9 +145,7 @@ export function useTokensToSearch({
         return new BigNumber(rawFiat || 0).gt(secondRawFiat || 0) ? -1 : 1
       },
     )
-    tokensToSearchBuckets.top = tokensToSearchBuckets.top.filter(
-      (token) => token,
-    )
+    tokensToSearchBuckets.top = tokensToSearchBuckets.top.filter(Boolean)
     return [
       ...tokensToSearchBuckets.owned,
       ...tokensToSearchBuckets.top,

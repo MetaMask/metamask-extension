@@ -46,7 +46,7 @@ describe('Account Details Modal', function () {
     accountLabel.simulate('submit', 'New Label')
 
     assert(props.setAccountLabel.calledOnce)
-    assert.equal(props.setAccountLabel.getCall(0).args[1], 'New Label')
+    assert.strictEqual(props.setAccountLabel.getCall(0).args[1], 'New Label')
   })
 
   it('opens new tab when view block explorer is clicked', function () {
@@ -72,7 +72,7 @@ describe('Account Details Modal', function () {
     const modalButton = wrapper.find('.account-details-modal__button')
     const blockExplorerLink = modalButton.first()
 
-    assert.equal(
+    assert.strictEqual(
       blockExplorerLink.html(),
       '<button class="button btn-secondary account-details-modal__button">blockExplorerView</button>',
     )

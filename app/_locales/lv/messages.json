@@ -167,9 +167,6 @@
   "chainId": {
     "message": "Ķēdes ID"
   },
-  "chartOnlyAvailableEth": {
-    "message": "Grafiks pieejams vienīgi Ethereum tīklos."
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "MetaMask ir jāpalaiž pārlūkprogrammā Google Chrome, lai varētu pievienot aparatūras maku."
   },
@@ -398,9 +395,6 @@
   "fast": {
     "message": "Ātrs"
   },
-  "faster": {
-    "message": "Ātrāk"
-  },
   "fileImportFail": {
     "message": "Vai faila importēšanas iespēja nedarbojas? Klikšķiniet šeit!",
     "description": "Helps user import their account from a JSON file"
@@ -574,9 +568,6 @@
   },
   "links": {
     "message": "Saites"
-  },
-  "liveGasPricePredictions": {
-    "message": "Reāllaika Gas cenu prognozes"
   },
   "loadMore": {
     "message": "Ielādēt vairāk"
@@ -1014,9 +1005,6 @@
   "slow": {
     "message": "Lēns"
   },
-  "slower": {
-    "message": "Lēnāk"
-  },
   "somethingWentWrong": {
     "message": "Ak vai! Radās problēma."
   },
@@ -1160,9 +1148,6 @@
   },
   "transactionSubmitted": {
     "message": "Darījums iesniegts ar maksu par Gas $1 pie $2."
-  },
-  "transactionTime": {
-    "message": "Darījuma ilgums"
   },
   "transactionUpdated": {
     "message": "Darījums atjaunināts $2."

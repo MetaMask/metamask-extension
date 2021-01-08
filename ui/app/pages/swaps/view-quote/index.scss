@@ -17,7 +17,7 @@
 
     @media screen and (max-width: 576px) {
       overflow-y: auto;
-      max-height: 388px;
+      max-height: 428px;
     }
   }
 
@@ -86,16 +86,63 @@
     };
   }
 
-  &__insufficient-eth-warning-wrapper {
+  &__price-difference-warning {
+    &-wrapper {
+      width: 100%;
+
+      &.medium .actionable-message,
+      &.fiat-error .actionable-message {
+        border-color: $Yellow-500;
+        background: $Yellow-100;
+
+        .actionable-message__message {
+          color: inherit;
+        }
+      }
+
+      &.high .actionable-message {
+        border-color: $Red-500;
+        background: $Red-100;
+
+        .actionable-message__message {
+          color: $Red-500;
+        }
+      }
+
+      /* Hides info tooltip if there's a fiat error message */
+      &.fiat-error div[data-tooltipped] {
+        /* !important overrides style being applied directly to tooltip by component */
+        display: none !important;
+      }
+    }
+
+    &-contents {
+      display: flex;
+
+      &-title {
+        font-weight: bold;
+      }
+
+      i {
+        margin-inline-start: 10px;
+      }
+    }
+  }
+
+  &__warning-wrapper {
     width: 100%;
     align-items: center;
     justify-content: center;
     width: intrinsic;           /* Safari/WebKit uses a non-standard name */
     width: max-content;
     max-width: 340px;
+    margin-top: 8px;
 
     @media screen and (min-width: 576px) {
-      min-height: 36px;
+      &--thin {
+        min-height: 36px;
+      }
+
       display: flex;
     }
   }
@@ -111,13 +158,12 @@
     justify-content: center;
     border-radius: 42px;
     background: #f2f3f4;
-    margin-top: 16px;
+    margin-top: 8px;
   }
 
   &__fee-card-container {
     display: flex;
     align-items: center;
-    min-height: 172px;
     width: 100%;
     max-width: 311px;
     margin-bottom: 8px;
@@ -142,6 +188,8 @@
   }
 
   &__thin-swaps-footer {
+    max-height: 82px;
+
     @media screen and (min-width: 576px) {
       height: 72px;
     }

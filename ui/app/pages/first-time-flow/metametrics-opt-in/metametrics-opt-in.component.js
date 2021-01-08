@@ -105,7 +105,10 @@ export default class MetaMetricsOptIn extends Component {
                 await setParticipateInMetaMetrics(false)
 
                 try {
-                  if (participateInMetaMetrics === true) {
+                  if (
+                    participateInMetaMetrics === null ||
+                    participateInMetaMetrics === true
+                  ) {
                     await metricsEvent({
                       eventOpts: {
                         category: 'Onboarding',
@@ -113,6 +116,7 @@ export default class MetaMetricsOptIn extends Component {
                         name: 'Metrics Opt Out',
                       },
                       isOptIn: true,
+                      flushImmediately: true,
                     })
                   }
                 } finally {
@@ -127,7 +131,10 @@ export default class MetaMetricsOptIn extends Component {
                 )
                 try {
                   const metrics = []
-                  if (participateInMetaMetrics === false) {
+                  if (
+                    participateInMetaMetrics === null ||
+                    participateInMetaMetrics === false
+                  ) {
                     metrics.push(
                       metricsEvent({
                         eventOpts: {
@@ -136,6 +143,7 @@ export default class MetaMetricsOptIn extends Component {
                           name: 'Metrics Opt In',
                         },
                         isOptIn: true,
+                        flushImmediately: true,
                       }),
                     )
                   }
@@ -148,6 +156,7 @@ export default class MetaMetricsOptIn extends Component {
                       },
                       isOptIn: true,
                       metaMetricsId,
+                      flushImmediately: true,
                     }),
                   )
                   await Promise.all(metrics)

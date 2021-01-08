@@ -117,13 +117,13 @@ describe('useCurrencyDisplay', function () {
       const [displayValue, parts] = hookReturn.result.current
       stub.restore()
       it(`should return ${result.displayValue} as displayValue`, function () {
-        assert.equal(displayValue, result.displayValue)
+        assert.strictEqual(displayValue, result.displayValue)
       })
       it(`should return ${result.value} as value`, function () {
-        assert.equal(parts.value, result.value)
+        assert.strictEqual(parts.value, result.value)
       })
       it(`should return ${result.suffix} as suffix`, function () {
-        assert.equal(parts.suffix, result.suffix)
+        assert.strictEqual(parts.suffix, result.suffix)
       })
     })
   })

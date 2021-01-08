@@ -16,6 +16,7 @@ describe('Localization', function () {
     await withFixtures(
       { fixtures: 'localization', ganacheOptions, title: this.test.title },
       async ({ driver }) => {
+        await driver.navigate()
         const passwordField = await driver.findElement(By.css('#password'))
         await passwordField.sendKeys('correct horse battery staple')
         await passwordField.sendKeys(Key.ENTER)

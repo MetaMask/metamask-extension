@@ -43,6 +43,7 @@ export default function MainQuoteSummary({
     amountDigitLength,
   )
   let ellipsedAmountToDisplay = amountToDisplay
+
   if (amountDigitLength > 20) {
     ellipsedAmountToDisplay = `${amountToDisplay.slice(0, 20)}...`
   }
@@ -74,7 +75,6 @@ export default function MainQuoteSummary({
           <img
             className="main-quote-summary__down-arrow"
             src="images/down-arrow-grey.svg"
-            alt=""
           />
           <div className="main-quote-summary__destination-row">
             <UrlIcon

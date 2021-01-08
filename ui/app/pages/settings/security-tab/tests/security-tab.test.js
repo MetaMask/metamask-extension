@@ -37,7 +37,7 @@ describe('Security Tab', function () {
 
     seedWords.simulate('click')
     assert(props.history.push.calledOnce)
-    assert.equal(props.history.push.getCall(0).args[0], '/seed')
+    assert.strictEqual(props.history.push.getCall(0).args[0], '/seed')
   })
 
   it('toggles incoming txs', function () {

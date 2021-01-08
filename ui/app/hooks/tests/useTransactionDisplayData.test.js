@@ -30,7 +30,7 @@ const expectedResults = [
     category: TRANSACTION_GROUP_CATEGORIES.SEND,
     subtitle: 'To: 0xffe5...1a97',
     subtitleContainsOrigin: false,
-    date: 'May 12',
+    date: 'May 12, 2020',
     primaryCurrency: '-1 ETH',
     senderAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     recipientAddress: '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
@@ -44,7 +44,7 @@ const expectedResults = [
     category: TRANSACTION_GROUP_CATEGORIES.SEND,
     subtitle: 'To: 0x0ccc...8848',
     subtitleContainsOrigin: false,
-    date: 'May 12',
+    date: 'May 12, 2020',
     primaryCurrency: '-2 ETH',
     senderAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     recipientAddress: '0x0ccc8aeeaf5ce790f3b448325981a143fdef8848',
@@ -57,7 +57,7 @@ const expectedResults = [
     category: TRANSACTION_GROUP_CATEGORIES.SEND,
     subtitle: 'To: 0xffe5...1a97',
     subtitleContainsOrigin: false,
-    date: 'May 12',
+    date: 'May 12, 2020',
     primaryCurrency: '-2 ETH',
     senderAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     recipientAddress: '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
@@ -70,7 +70,7 @@ const expectedResults = [
     category: TRANSACTION_GROUP_CATEGORIES.RECEIVE,
     subtitle: 'From: 0x31b9...4523',
     subtitleContainsOrigin: false,
-    date: 'May 12',
+    date: 'May 12, 2020',
     primaryCurrency: '18.75 ETH',
     senderAddress: '0x31b98d14007bdee637298086988a0bbd31184523',
     recipientAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
@@ -83,7 +83,7 @@ const expectedResults = [
     category: TRANSACTION_GROUP_CATEGORIES.RECEIVE,
     subtitle: 'From: 0x9eca...a149',
     subtitleContainsOrigin: false,
-    date: 'May 8',
+    date: 'May 8, 2020',
     primaryCurrency: '0 ETH',
     senderAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     recipientAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
@@ -96,7 +96,7 @@ const expectedResults = [
     category: TRANSACTION_GROUP_CATEGORIES.RECEIVE,
     subtitle: 'From: 0xee01...febb',
     subtitleContainsOrigin: false,
-    date: 'May 24',
+    date: 'May 24, 2020',
     primaryCurrency: '1 ETH',
     senderAddress: '0xee014609ef9e09776ac5fe00bdbfef57bcdefebb',
     recipientAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
@@ -109,7 +109,7 @@ const expectedResults = [
     category: TRANSACTION_CATEGORIES.SWAP,
     subtitle: '',
     subtitleContainsOrigin: false,
-    date: 'May 12',
+    date: 'May 12, 2020',
     primaryCurrency: '+1 ABC',
     senderAddress: '0xee014609ef9e09776ac5fe00bdbfef57bcdefebb',
     recipientAddress: '0xabca64466f257793eaa52fcfff5066894b76a149',
@@ -178,35 +178,38 @@ describe('useTransactionDisplayData', function () {
           () => useTransactionDisplayData(transactionGroup),
           tokenAddress,
         )
-        assert.equal(result.current.title, expected.title)
+        assert.strictEqual(result.current.title, expected.title)
       })
       it(`should return a subtitle of ${expected.subtitle}`, function () {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
           tokenAddress,
         )
-        assert.equal(result.current.subtitle, expected.subtitle)
+        assert.strictEqual(result.current.subtitle, expected.subtitle)
       })
       it(`should return a category of ${expected.category}`, function () {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
           tokenAddress,
         )
-        assert.equal(result.current.category, expected.category)
+        assert.strictEqual(result.current.category, expected.category)
       })
       it(`should return a primaryCurrency of ${expected.primaryCurrency}`, function () {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
           tokenAddress,
         )
-        assert.equal(result.current.primaryCurrency, expected.primaryCurrency)
+        assert.strictEqual(
+          result.current.primaryCurrency,
+          expected.primaryCurrency,
+        )
       })
       it(`should return a secondaryCurrency of ${expected.secondaryCurrency}`, function () {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
           tokenAddress,
         )
-        assert.equal(
+        assert.strictEqual(
           result.current.secondaryCurrency,
           expected.secondaryCurrency,
         )
@@ -216,7 +219,7 @@ describe('useTransactionDisplayData', function () {
           () => useTransactionDisplayData(transactionGroup),
           tokenAddress,
         )
-        assert.equal(
+        assert.strictEqual(
           result.current.displayedStatusKey,
           expected.displayedStatusKey,
         )
@@ -226,14 +229,17 @@ describe('useTransactionDisplayData', function () {
           () => useTransactionDisplayData(transactionGroup),
           tokenAddress,
         )
-        assert.equal(result.current.recipientAddress, expected.recipientAddress)
+        assert.strictEqual(
+          result.current.recipientAddress,
+          expected.recipientAddress,
+        )
       })
       it(`should return a senderAddress of ${expected.senderAddress}`, function () {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
           tokenAddress,
         )
-        assert.equal(result.current.senderAddress, expected.senderAddress)
+        assert.strictEqual(result.current.senderAddress, expected.senderAddress)
       })
     })
   })
@@ -241,7 +247,7 @@ describe('useTransactionDisplayData', function () {
     const { result } = renderHookWithRouter(() =>
       useTransactionDisplayData(transactions[0]),
     )
-    assert.deepEqual(result.current, expectedResults[0])
+    assert.deepStrictEqual(result.current, expectedResults[0])
   })
   after(function () {
     useSelector.restore()
