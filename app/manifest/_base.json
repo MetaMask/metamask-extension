@@ -79,5 +79,6 @@
   ],
   "short_name": "__MSG_appName__",
   "version": "8.1.9",
-  "web_accessible_resources": ["inpage.js", "phishing.html"]
+  "web_accessible_resources": ["inpage.js", "phishing.html"],
+  "content_security_policy": "script-src 'unsafe-eval' 'self'; object-src 'self'"
 }
