@@ -24,6 +24,10 @@ export default class CreateCoboVaultHint extends Component {
         <p>{t('syncStep2')}</p>
         <p>{t('syncStep3')}</p>
         <p>{t('syncStep4')}</p>
+        <p style={{ color: 'grey', fontSize: 14 }}>{t('syncSubMessage')}</p>
+        <div>
+          <a href={t('syncLink')}>{t('syncLinkDescription')}</a>
+        </div>
         <button
           className="first-time-flow__button"
           onClick={() => this.handleContinue()}

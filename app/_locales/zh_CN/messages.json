@@ -41,6 +41,15 @@
   "syncStep4": {
     "message": "4. 扫描完成后进入观察钱包"
   },
+  "syncSubMessage": {
+    "message": "当前MetaMask for Cobo Vault仅支持同步一个 Cobo 金库，若您想切换至另一个 Cobo 金库，您需要卸载重装 MetaMask For Cobo Vault，然后再进行同步。"
+  },
+  "syncLinkDescription": {
+    "message": "点击此处查看详细教程"
+  },
+  "syncLink": {
+    "message": "https://support.cobo.com/hc/zh-cn/articles/360061649173"
+  },
   "syncCobo": {
     "message": "扫描 Cobo Vault"
   },
