@@ -83,6 +83,7 @@ export default function ViewQuote() {
   const metaMetricsEvent = useContext(MetaMetricsContext)
 
   const [dispatchedSafeRefetch, setDispatchedSafeRefetch] = useState(false)
+  const [submitClicked, setSubmitClicked] = useState(false)
   const [selectQuotePopoverShown, setSelectQuotePopoverShown] = useState(false)
   const [warningHidden, setWarningHidden] = useState(false)
   const [originalApproveAmount, setOriginalApproveAmount] = useState(null)
@@ -570,6 +571,7 @@ export default function ViewQuote() {
       </div>
       <SwapsFooter
         onSubmit={() => {
+          setSubmitClicked(true)
           if (!balanceError) {
             dispatch(signAndSendTransactions(history, metaMetricsEvent))
           } else if (destinationToken.symbol === 'ETH') {
@@ -580,7 +582,12 @@ export default function ViewQuote() {
         }}
         submitText={t('swap')}
         onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}
-        disabled={balanceError || gasPrice === null || gasPrice === undefined}
+        disabled={
+          submitClicked ||
+          balanceError ||
+          gasPrice === null ||
+          gasPrice === undefined
+        }
         className={isShowingWarning && 'view-quote__thin-swaps-footer'}
         showTopBorder
       />
