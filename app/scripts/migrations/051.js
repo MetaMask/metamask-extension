@@ -18,11 +18,11 @@ export default {
 }
 
 function transformState(state) {
-  const type = state?.NetworkController?.provider?.type
+  const { chainId, type } = state?.NetworkController?.provider || {}
 
-  if (NETWORK_TYPE_TO_ID_MAP[type]) {
+  if (!chainId && NETWORK_TYPE_TO_ID_MAP[type]) {
     state.NetworkController.provider.chainId =
-      NETWORK_TYPE_TO_ID_MAP[type]?.chainId
+      NETWORK_TYPE_TO_ID_MAP[type].chainId
   }
 
   return state

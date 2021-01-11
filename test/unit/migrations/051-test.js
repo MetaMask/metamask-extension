@@ -22,7 +22,7 @@ describe('migration #51', function () {
 
   describe('setting chainId', function () {
     INFURA_PROVIDER_TYPES.forEach(function (type) {
-      it(`should correctly set the chainId for the Infura network: ${type}`, async function () {
+      it(`should correctly set the chainId for the Infura network: ${type}, if no chainId is set`, async function () {
         const oldStorage = {
           meta: {},
           data: {
