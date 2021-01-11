@@ -20,6 +20,9 @@
 - [#10143](https://github.com/MetaMask/metamask-extension/pull/10143): Prevent malformed next nonce warning
 - [#10142](https://github.com/MetaMask/metamask-extension/pull/10142): Update @metamask/contract-metadata from v1.20.0 to 1.21.0
 - [#10160](https://github.com/MetaMask/metamask-extension/pull/10160): Fix French "Block Explorer URL" translations
+- [#10157](https://github.com/MetaMask/metamask-extension/pull/10157): Automatically detect tokens on custom Mainnet RPC endpoints
+- [#9772](https://github.com/MetaMask/metamask-extension/pull/9772): Improve zh_CN translation
+- [#10170](https://github.com/MetaMask/metamask-extension/pull/10170): Fix bug where swaps button was disabled on Mainnet if the user hadn't switched networks in a long time
 
 ## 8.1.11 Thu Jan 07 2021
 
