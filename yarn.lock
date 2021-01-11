@@ -9858,12 +9858,12 @@ eth-method-registry@1.1.0:
   dependencies:
     ethjs "^0.3.0"
 
-eth-method-registry@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/eth-method-registry/-/eth-method-registry-1.2.0.tgz#2160592d7938ef0b850c9267bc40b3470c2700c9"
-  integrity sha512-m+nphH4kOxz5KTvQ+BeIKVggxAul1sp4Ev09lfxRXIEHM1t/6NQEtaErL5ddTDFXXFVtTiW8uC9edTVUTnBZNg==
+eth-method-registry@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/eth-method-registry/-/eth-method-registry-2.0.0.tgz#96b643891d1c72853e709e3d74d89103a48a4460"
+  integrity sha512-uzwguuAdnd83SjogNo0xMd7pSuyK1dlyAeVGB++OaY7xaprT+31jXkBGYSIkmTz7sGIVf6A1Qy9Ir+/hXs4jWg==
   dependencies:
-    ethjs "^0.3.0"
+    ethjs "^0.4.0"
 
 eth-phishing-detect@^1.1.13, eth-phishing-detect@^1.1.14:
   version "1.1.14"
