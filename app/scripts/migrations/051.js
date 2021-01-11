@@ -19,11 +19,10 @@ export default {
 
 function transformState(state) {
   const { chainId, type } = state?.NetworkController?.provider || {}
+  const enumChainId = NETWORK_TYPE_TO_ID_MAP[type]?.chainId
 
-  if (!chainId && NETWORK_TYPE_TO_ID_MAP[type]) {
-    state.NetworkController.provider.chainId =
-      NETWORK_TYPE_TO_ID_MAP[type].chainId
+  if (enumChainId && chainId !== enumChainId) {
+    state.NetworkController.provider.chainId = enumChainId
   }
-
   return state
 }
