@@ -20,11 +20,13 @@ const CONTENT_SCRIPT = 'metamask-contentscript'
 const INPAGE = 'metamask-inpage'
 const PROVIDER = 'metamask-provider'
 
+// TODO:LegacyProvider: Delete
 const LEGACY_CONTENT_SCRIPT = 'contentscript'
 const LEGACY_INPAGE = 'inpage'
+const LEGACY_PUBLIC_CONFIG ='publicConfig'
 
 if (shouldInjectProvider()) {
-  injectScript(inpageBundle)
+  // injectScript(inpageBundle)
   setupStreams()
 }
 
@@ -64,8 +66,10 @@ async function setupStreams() {
   // so we can handle the channels individually
   const pageMux = new ObjectMultiplex()
   pageMux.setMaxListeners(25)
+  pageMux.ignoreStream(LEGACY_PUBLIC_CONFIG) // TODO:LegacyProvider: Delete
   const extensionMux = new ObjectMultiplex()
   extensionMux.setMaxListeners(25)
+  extensionMux.ignoreStream(LEGACY_PUBLIC_CONFIG) // TODO:LegacyProvider: Delete
 
   pump(pageMux, pageStream, pageMux, (err) =>
     logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
@@ -82,6 +86,7 @@ async function setupStreams() {
   const phishingStream = extensionMux.createStream('phishing')
   phishingStream.once('data', redirectToPhishingWarning)
 
+  // TODO:LegacyProvider: Delete
   // handle legacy provider
   const legacyPageStream = new LocalMessageDuplexStream({
     name: LEGACY_CONTENT_SCRIPT,
@@ -107,7 +112,7 @@ async function setupStreams() {
     legacyPageMux,
     legacyExtensionMux,
   )
-  forwardTrafficBetweenMuxes('publicConfig', legacyPageMux, legacyExtensionMux)
+  forwardTrafficBetweenMuxes(LEGACY_PUBLIC_CONFIG, legacyPageMux, legacyExtensionMux)
 }
 
 function forwardTrafficBetweenMuxes(channelName, muxA, muxB) {
@@ -121,6 +126,7 @@ function forwardTrafficBetweenMuxes(channelName, muxA, muxB) {
   )
 }
 
+// TODO:LegacyProvider: Delete
 function forwardNamedTrafficBetweenMuxes(
   channelAName,
   channelBName,
