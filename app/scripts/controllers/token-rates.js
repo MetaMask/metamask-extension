@@ -1,4 +1,4 @@
-import ObservableStore from 'obs-store'
+import { ObservableStore } from '@metamask/obs-store'
 import log from 'loglevel'
 import { normalize as normalizeAddress } from 'eth-sig-util'
 import ethUtil from 'ethereumjs-util'

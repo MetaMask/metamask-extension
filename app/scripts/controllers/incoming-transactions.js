@@ -1,4 +1,4 @@
-import ObservableStore from 'obs-store'
+import { ObservableStore } from '@metamask/obs-store'
 import log from 'loglevel'
 import BN from 'bn.js'
 import createId from '../lib/random-id'
@@ -249,9 +249,7 @@ export default class IncomingTransactionsController {
       })
 
       const incomingTxs = remoteTxs.filter(
-        (tx) =>
-          tx.txParams.to &&
-          tx.txParams.to.toLowerCase() === address.toLowerCase(),
+        (tx) => tx.txParams?.to?.toLowerCase() === address.toLowerCase(),
       )
       incomingTxs.sort((a, b) => (a.time < b.time ? -1 : 1))
 

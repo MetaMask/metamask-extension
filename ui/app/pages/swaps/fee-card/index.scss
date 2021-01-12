@@ -1,11 +1,69 @@
 .fee-card {
-  border-radius: 8px;
-  border: 1px solid $Grey-100;
   width: 100%;
 
   @include H7;
 
+  &__savings-and-quotes-header {
+    display: flex;
+    position: relative;
+    align-items: center;
+  }
+
+  &__savings-and-quotes-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    left: 58px;
+    height: 39px;
+    background: $Blue-000;
+    border: 1px solid $Blue-500;
+    border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
+    border-bottom: 0;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  &__savings-text {
+    @include H6;
+
+    font-weight: bold;
+    color: $Blue-500;
+  }
+
+  &__quote-link-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  &__quote-link-text {
+    @include H7;
+
+    color: $Blue-500;
+  }
+
+  &__caret-right {
+    color: $Blue-500;
+    width: 6px;
+    height: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 6px;
+
+    i {
+      transform: rotate(90deg);
+    }
+  }
+
   &__main {
+    border: 1px solid $Blue-500;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    width: 100%;
+    max-width: 311px;
     padding: 16px 16px 12px 16px;
   }
 
@@ -31,6 +89,10 @@
     cursor: pointer;
   }
 
+  &__row-header-text--bold {
+    color: $Black-100;
+  }
+
   &__row,
   &__top-bordered-row {
     display: flex;
@@ -51,7 +113,6 @@
     img {
       height: 10px;
       width: 10px;
-      margin-left: 4px;
       cursor: pointer;
     }
   }
@@ -60,7 +121,12 @@
     height: 10px;
     width: 10px;
     justify-content: center;
-    margin-top: 2px;
+
+    div {
+      // Needed to override the style property added by the react-tippy library
+      display: flex !important;
+      height: 10px;
+    }
   }
 
   &__info-tooltip-paragraph {
@@ -111,9 +177,12 @@
     margin-right: 12px;
   }
 
-  &__row-header-primary,
-  &__row-header-primary--bold {
+  &__row-header-primary {
     color: $Grey-500;
+  }
+
+  &__row-header-primary--bold {
+    color: $Black-100;
   }
 
   &__row-header-text--bold,
@@ -124,6 +193,11 @@
 
   &__bold {
     font-weight: bold;
+  }
+
+  &__tilde {
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+    margin-right: -3.5px;
   }
 }
 

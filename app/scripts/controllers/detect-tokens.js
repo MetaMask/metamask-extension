@@ -2,7 +2,7 @@ import Web3 from 'web3'
 import contracts from '@metamask/contract-metadata'
 import { warn } from 'loglevel'
 import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi'
-import { MAINNET } from './network/enums'
+import { MAINNET_CHAIN_ID } from './network/enums'
 
 // By default, poll every 3 minutes
 const DEFAULT_INTERVAL = 180 * 1000
@@ -38,7 +38,7 @@ export default class DetectTokensController {
     if (!this.isActive) {
       return
     }
-    if (this._network.store.getState().provider.type !== MAINNET) {
+    if (this._network.store.getState().provider.chainId !== MAINNET_CHAIN_ID) {
       return
     }
 
@@ -47,7 +47,8 @@ export default class DetectTokensController {
     for (const contractAddress in contracts) {
       if (
         contracts[contractAddress].erc20 &&
-        !this.tokenAddresses.includes(contractAddress.toLowerCase())
+        !this.tokenAddresses.includes(contractAddress.toLowerCase()) &&
+        !this.hiddenTokens.includes(contractAddress.toLowerCase())
       ) {
         tokensToDetect.push(contractAddress)
       }
@@ -130,10 +131,12 @@ export default class DetectTokensController {
     this.tokenAddresses = currentTokens
       ? currentTokens.map((token) => token.address)
       : []
-    preferences.store.subscribe(({ tokens = [] }) => {
+    this.hiddenTokens = preferences.store.getState().hiddenTokens
+    preferences.store.subscribe(({ tokens = [], hiddenTokens = [] }) => {
       this.tokenAddresses = tokens.map((token) => {
         return token.address
       })
+      this.hiddenTokens = hiddenTokens
     })
     preferences.store.subscribe(({ selectedAddress }) => {
       if (this.selectedAddress !== selectedAddress) {

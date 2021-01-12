@@ -1,5 +1,5 @@
 import { merge, omit } from 'lodash'
-import ObservableStore from 'obs-store'
+import { ObservableStore } from '@metamask/obs-store'
 import { bufferToHex, sha3 } from 'ethereumjs-util'
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../lib/enums'
 import {

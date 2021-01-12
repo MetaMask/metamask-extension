@@ -1,4 +1,4 @@
-import ObservableStore from 'obs-store'
+import { ObservableStore } from '@metamask/obs-store'
 
 /* eslint-disable import/first,import/order */
 const Box = process.env.IN_TEST

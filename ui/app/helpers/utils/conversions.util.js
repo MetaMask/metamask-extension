@@ -172,7 +172,7 @@ export function addHexes(aHexWEI, bHexWEI) {
 }
 
 export function sumHexWEIs(hexWEIs) {
-  return hexWEIs.filter((n) => n).reduce(addHexes)
+  return hexWEIs.filter(Boolean).reduce(addHexes)
 }
 
 export function sumHexWEIsToUnformattedFiat(

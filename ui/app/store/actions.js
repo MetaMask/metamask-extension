@@ -1553,8 +1553,7 @@ export function createRetryTransaction(txId, customGasPrice, customGasLimit) {
 //
 
 export function setProviderType(type) {
-  return async (dispatch, getState) => {
-    const { type: currentProviderType } = getState().metamask.provider
+  return async (dispatch) => {
     log.debug(`background.setProviderType`, type)
 
     try {
@@ -1564,7 +1563,6 @@ export function setProviderType(type) {
       dispatch(displayWarning('Had a problem changing networks!'))
       return
     }
-    dispatch(setPreviousProvider(currentProviderType))
     dispatch(updateProviderType(type))
   }
 }
@@ -1572,13 +1570,6 @@ export function setProviderType(type) {
 export function updateProviderType(type) {
   return {
     type: actionConstants.SET_PROVIDER_TYPE,
-    value: type,
-  }
-}
-
-export function setPreviousProvider(type) {
-  return {
-    type: actionConstants.SET_PREVIOUS_PROVIDER,
     value: type,
   }
 }
@@ -1668,6 +1659,17 @@ export function setRpcTarget(newRpc, chainId, ticker = 'ETH', nickname) {
         ticker,
         nickname || newRpc,
       )
+    } catch (error) {
+      log.error(error)
+      dispatch(displayWarning('Had a problem changing networks!'))
+    }
+  }
+}
+
+export function rollbackToPreviousProvider() {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.rollbackToPreviousProvider()
     } catch (error) {
       log.error(error)
       dispatch(displayWarning('Had a problem changing networks!'))
@@ -2510,14 +2512,16 @@ export function setSwapsWelcomeMessageHasBeenShown() {
   }
 }
 
-export function setAlertEnabledness(alertId, enabledness) {
-  return async () => {
-    await promisifiedBackground.setAlertEnabledness(alertId, enabledness)
-  }
+export async function setAlertEnabledness(alertId, enabledness) {
+  await promisifiedBackground.setAlertEnabledness(alertId, enabledness)
 }
 
 export async function setUnconnectedAccountAlertShown(origin) {
   await promisifiedBackground.setUnconnectedAccountAlertShown(origin)
+}
+
+export async function setWeb3ShimUsageAlertDismissed(origin) {
+  await promisifiedBackground.setWeb3ShimUsageAlertDismissed(origin)
 }
 
 export function loadingMethodDataStarted() {
