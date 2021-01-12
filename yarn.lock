@@ -2114,18 +2114,18 @@
   resolved "https://registry.yarnpkg.com/@metamask/forwarder/-/forwarder-1.1.0.tgz#13829d8244bbf19ea658c0b20d21a77b67de0bdd"
   integrity sha512-Hggj4y0QIjDzKGTXzarhEPIQyFSB2bi2y6YLJNwaT4JmP30UB5Cj6gqoY0M4pj3QT57fzp0BUuGp7F/AUe28tw==
 
-"@metamask/inpage-provider@^8.0.1":
-  version "8.0.1"
-  resolved "https://registry.yarnpkg.com/@metamask/inpage-provider/-/inpage-provider-8.0.1.tgz#67b1f0733ae7c0e0e429dc5c067ba9d2dd6d66da"
-  integrity sha512-dN3IpiJtaHeiPzF01UXnrQ6TxXbXbkU54kiOHuIUe9e8s7vyPzgDgN2nj84xjmIkqxL0MKY90Wcp0obFKnNj+Q==
+"@metamask/inpage-provider@^8.0.2":
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/@metamask/inpage-provider/-/inpage-provider-8.0.2.tgz#50e7559a3ab729e46c5f1e92baa3a3465617c10e"
+  integrity sha512-LG4wqf7LKwv9akI38HR25Mt/9+YD+DOtbZZKZSG8zUx3hI8moIKxbSwS64pqEyARmLhLKXYkZNROkPjxqbvTdA==
   dependencies:
+    "@metamask/object-multiplex" "^1.1.0"
     "@metamask/safe-event-emitter" "^2.0.0"
     eth-rpc-errors "^4.0.2"
     fast-deep-equal "^2.0.1"
     is-stream "^2.0.0"
     json-rpc-engine "^6.1.0"
-    json-rpc-middleware-stream "^2.1.1"
-    obj-multiplex "^1.0.0"
+    json-rpc-middleware-stream "^3.0.0"
     pump "^3.0.0"
 
 "@metamask/jazzicon@^2.0.0":
@@ -2143,6 +2143,15 @@
   dependencies:
     gl-mat4 "1.1.4"
     gl-vec3 "1.0.3"
+
+"@metamask/object-multiplex@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@metamask/object-multiplex/-/object-multiplex-1.1.0.tgz#6b1507c4d10caafd2ea82dd2a5360b91631e036e"
+  integrity sha512-ImDw5+NdO5qnzmK/rpSlPmQMQm6HIC6wAHdR9nBaDK8TpeuRik5H8DCUcoNrxSeUAk1iHwchZ03lpZu6mZfrdw==
+  dependencies:
+    end-of-stream "^1.4.4"
+    once "^1.4.0"
+    readable-stream "^2.3.3"
 
 "@metamask/obs-store@^5.0.0":
   version "5.0.0"
@@ -15233,6 +15242,14 @@ json-rpc-middleware-stream@^2.1.1:
   dependencies:
     readable-stream "^2.3.3"
     safe-event-emitter "^1.0.1"
+
+json-rpc-middleware-stream@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/json-rpc-middleware-stream/-/json-rpc-middleware-stream-3.0.0.tgz#8540331d884f36b9e0ad31054cc68ac6b5a89b52"
+  integrity sha512-JmZmlehE0xF3swwORpLHny/GvW3MZxCsb2uFNBrn8TOqMqivzCfz232NSDLLOtIQlrPlgyEjiYpyzyOPFOzClw==
+  dependencies:
+    "@metamask/safe-event-emitter" "^2.0.0"
+    readable-stream "^2.3.3"
 
 json-rpc-random-id@^1.0.0, json-rpc-random-id@^1.0.1:
   version "1.0.1"
