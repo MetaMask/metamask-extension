@@ -101,7 +101,12 @@ async function setupStreams() {
     notifyInpageOfStreamFailure()
   })
 
-  forwardTrafficBetweenMuxes(PROVIDER, legacyPageMux, legacyExtensionMux)
+  forwardNamedTrafficBetweenMuxes(
+    'provider',
+    PROVIDER,
+    legacyPageMux,
+    legacyExtensionMux,
+  )
   forwardTrafficBetweenMuxes('publicConfig', legacyPageMux, legacyExtensionMux)
 }
 
@@ -111,6 +116,22 @@ function forwardTrafficBetweenMuxes(channelName, muxA, muxB) {
   pump(channelA, channelB, channelA, (error) =>
     console.debug(
       `MetaMask: Muxed traffic for channel "${channelName}" failed.`,
+      error,
+    ),
+  )
+}
+
+function forwardNamedTrafficBetweenMuxes(
+  channelAName,
+  channelBName,
+  muxA,
+  muxB,
+) {
+  const channelA = muxA.createStream(channelAName)
+  const channelB = muxB.createStream(channelBName)
+  pump(channelA, channelB, channelA, (error) =>
+    console.debug(
+      `MetaMask: Muxed traffic between channels "${channelAName}" and "${channelBName}" failed.`,
       error,
     ),
   )
