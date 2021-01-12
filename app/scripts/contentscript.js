@@ -20,6 +20,9 @@ const CONTENT_SCRIPT = 'metamask-contentscript'
 const INPAGE = 'metamask-inpage'
 const PROVIDER = 'metamask-provider'
 
+const LEGACY_CONTENT_SCRIPT = 'contentscript'
+const LEGACY_INPAGE = 'inpage'
+
 if (shouldInjectProvider()) {
   injectScript(inpageBundle)
   setupStreams()
@@ -78,6 +81,28 @@ async function setupStreams() {
   // connect "phishing" channel to warning system
   const phishingStream = extensionMux.createStream('phishing')
   phishingStream.once('data', redirectToPhishingWarning)
+
+  // handle legacy provider
+  const legacyPageStream = new LocalMessageDuplexStream({
+    name: LEGACY_CONTENT_SCRIPT,
+    target: LEGACY_INPAGE,
+  })
+
+  const legacyPageMux = new ObjectMultiplex()
+  legacyPageMux.setMaxListeners(25)
+  const legacyExtensionMux = new ObjectMultiplex()
+  legacyExtensionMux.setMaxListeners(25)
+
+  pump(legacyPageMux, legacyPageStream, legacyPageMux, (err) =>
+    logStreamDisconnectWarning('MetaMask Legacy Inpage Multiplex', err),
+  )
+  pump(legacyExtensionMux, extensionStream, legacyExtensionMux, (err) => {
+    logStreamDisconnectWarning('MetaMask Background Legacy Multiplex', err)
+    notifyInpageOfStreamFailure()
+  })
+
+  forwardTrafficBetweenMuxes(PROVIDER, legacyPageMux, legacyExtensionMux)
+  forwardTrafficBetweenMuxes('publicConfig', legacyPageMux, legacyExtensionMux)
 }
 
 function forwardTrafficBetweenMuxes(channelName, muxA, muxB) {
