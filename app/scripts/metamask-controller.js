@@ -415,6 +415,9 @@ export default class MetamaskController extends EventEmitter {
     ) {
       this.submitPassword(password)
     }
+
+    // TODO:LegacyProvider: Delete
+    this.publicConfigStore = this.createPublicConfigStore()
   }
 
   /**
@@ -462,6 +465,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * TODO:LegacyProvider: Delete
    * Constructor helper: initialize a public config store.
    * This store is used to make some config info available to Dapps synchronously.
    */
@@ -473,11 +477,6 @@ export default class MetamaskController extends EventEmitter {
     // setup memStore subscription hooks
     this.on('update', updatePublicConfigStore)
     updatePublicConfigStore(this.getState())
-
-    publicConfigStore.destroy = () => {
-      this.removeEventListener &&
-        this.removeEventListener('update', updatePublicConfigStore)
-    }
 
     function updatePublicConfigStore(memState) {
       const chainId = networkController.getCurrentChainId()
@@ -1870,6 +1869,7 @@ export default class MetamaskController extends EventEmitter {
     // messages between inpage and background
     this.setupProviderConnection(mux.createStream('metamask-provider'), sender)
 
+    // TODO:LegacyProvider: Delete
     // legacy streams
     this.setupPublicConfig(mux.createStream('publicConfig'))
   }
@@ -2058,6 +2058,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * TODO:LegacyProvider: Delete
    * A method for providing our public config info over a stream.
    * This includes info we like to be synchronous if possible, like
    * the current selected account, and network ID.
@@ -2068,11 +2069,9 @@ export default class MetamaskController extends EventEmitter {
    * @param {*} outStream - The stream to provide public config over.
    */
   setupPublicConfig(outStream) {
-    const configStore = this.createPublicConfigStore()
-    const configStream = storeAsStream(configStore)
+    const configStream = storeAsStream(this.publicConfigStore)
 
     pump(configStream, outStream, (err) => {
-      configStore.destroy()
       configStream.destroy()
       if (err) {
         log.error(err)
