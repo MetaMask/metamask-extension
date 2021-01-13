@@ -158,23 +158,24 @@ export default class ConfirmEncryptionPublicKey extends Component {
     const { domainMetadata, txData } = this.props
     const { t } = this.context
 
-    const origin = domainMetadata[txData.origin]
-    const notice = t('encryptionPublicKeyNotice', [origin.name])
+    const originMetadata = domainMetadata[txData.origin]
+    const notice = t('encryptionPublicKeyNotice', [txData.origin])
+    const name = originMetadata?.name || txData.origin
 
     return (
       <div className="request-encryption-public-key__body">
         {this.renderAccountInfo()}
         <div className="request-encryption-public-key__visual">
           <section>
-            {origin.icon ? (
+            {originMetadata?.icon ? (
               <img
                 className="request-encryption-public-key__visual-identicon"
-                src={origin.icon}
+                src={originMetadata.icon}
                 alt=""
               />
             ) : (
               <i className="request-encryption-public-key__visual-identicon--default">
-                {origin.name.charAt(0).toUpperCase()}
+                {name.charAt(0).toUpperCase()}
               </i>
             )}
             <div className="request-encryption-public-key__notice">
