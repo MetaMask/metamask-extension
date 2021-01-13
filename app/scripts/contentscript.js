@@ -28,7 +28,7 @@ const LEGACY_PROVIDER = 'provider'
 const LEGACY_PUBLIC_CONFIG = 'publicConfig'
 
 if (shouldInjectProvider()) {
-  // injectScript(inpageBundle)
+  injectScript(inpageBundle)
   setupStreams()
 }
 
