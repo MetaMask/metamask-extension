@@ -68,7 +68,6 @@ async function setupStreams() {
   // so we can handle the channels individually
   const pageMux = new ObjectMultiplex()
   pageMux.setMaxListeners(25)
-  pageMux.ignoreStream(LEGACY_PUBLIC_CONFIG) // TODO:LegacyProvider: Delete
   const extensionMux = new ObjectMultiplex()
   extensionMux.setMaxListeners(25)
   extensionMux.ignoreStream(LEGACY_PUBLIC_CONFIG) // TODO:LegacyProvider: Delete
