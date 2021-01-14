@@ -69,7 +69,7 @@
     "message": "數量"
   },
   "appDescription": {
-    "message": "乙太坊瀏覽器擴充插件",
+    "message": "以太坊瀏覽器擴充插件",
     "description": "The description of the application"
   },
   "appName": {
@@ -279,7 +279,7 @@
     "message": "小數點後位數至少為0, 最多為36."
   },
   "defaultNetwork": {
-    "message": "預設乙太幣交易網路為主網路"
+    "message": "預設以太幣交易網路為主網路"
   },
   "delete": {
     "message": "刪除"
@@ -294,16 +294,16 @@
     "message": "你確定要刪除網路嗎？"
   },
   "depositEther": {
-    "message": "存入乙太幣"
+    "message": "存入以太幣"
   },
   "details": {
     "message": "詳情"
   },
   "directDepositEther": {
-    "message": "直接存入乙太幣"
+    "message": "直接存入以太幣"
   },
   "directDepositEtherExplainer": {
-    "message": "如果您已經擁有乙太幣，直接存入功能是讓新錢包最快取得乙太幣的方式。"
+    "message": "如果您已經擁有以太幣，直接存入功能是讓新錢包最快取得以太幣的方式。"
   },
   "done": {
     "message": "完成"
@@ -440,10 +440,10 @@
     "message": "貨幣轉換，主要貨幣，語言，區塊鏈哈希頭像"
   },
   "getEther": {
-    "message": "取得乙太幣"
+    "message": "取得以太幣"
   },
   "getEtherFromFaucet": {
-    "message": "從水管取得 $1 乙太幣。",
+    "message": "從水管取得 $1 以太幣。",
     "description": "Displays network name for Ether faucet"
   },
   "getHelp": {
@@ -586,7 +586,7 @@
     "message": "鎖定"
   },
   "mainnet": {
-    "message": "乙太坊 主網路"
+    "message": "以太坊 主網路"
   },
   "max": {
     "message": "最大值"
@@ -601,7 +601,7 @@
     "message": "訊息"
   },
   "metamaskDescription": {
-    "message": "MetaMask 是乙太坊安全身份識別金庫"
+    "message": "MetaMask 是以太坊安全身份識別金庫"
   },
   "metamaskVersion": {
     "message": "MetaMask 版本"
@@ -622,14 +622,14 @@
     "message": "所有你在 MetaMask 創建的帳號將自動新增到此區塊。"
   },
   "needEtherInWallet": {
-    "message": "要使用 MetaMask 存取去中心化應用服務時，您的錢包中需要有乙太幣。"
+    "message": "要使用 MetaMask 存取去中心化應用服務時，您的錢包中需要有以太幣。"
   },
   "needImportFile": {
     "message": "您必須選擇一個檔案來匯入",
     "description": "User is important an account and needs to add a file to continue"
   },
   "negativeETH": {
-    "message": "不能送出負值的乙太幣"
+    "message": "不能送出負值的以太幣"
   },
   "networkName": {
     "message": "網路名稱"
@@ -748,7 +748,7 @@
     "message": "主要顯示"
   },
   "primaryCurrencySettingDescription": {
-    "message": "選擇使用乙太幣(ETH)或是法定貨幣(例如：美金)為主要錢幣顯示單位"
+    "message": "選擇使用以太幣(ETH)或是法定貨幣(例如：美金)為主要錢幣顯示單位"
   },
   "privacyMsg": {
     "message": "隱私政策"
@@ -890,7 +890,7 @@
     "message": "助憶詞將可協助您用更簡單的方式備份帳戶資訊。"
   },
   "secretBackupPhraseWarning": {
-    "message": "警告: 絕對不要洩漏您的助憶詞。任何人只要得知助憶詞代表他可以竊取您所有的乙太幣和代幣。"
+    "message": "警告: 絕對不要洩漏您的助憶詞。任何人只要得知助憶詞代表他可以竊取您所有的以太幣和代幣。"
   },
   "secretPhrase": {
     "message": "輸入您的12個助憶詞以回復金庫"
@@ -935,13 +935,13 @@
     "message": "發送數量"
   },
   "sendETH": {
-    "message": "發送乙太幣"
+    "message": "發送以太幣"
   },
   "sendTokens": {
     "message": "發送代幣"
   },
   "sentEther": {
-    "message": "發送乙太幣"
+    "message": "發送以太幣"
   },
   "separateEachWord": {
     "message": "單詞之間請以空白間隔"
@@ -1025,7 +1025,7 @@
     "message": "3. 開始使用！"
   },
   "step3HardwareWalletMsg": {
-    "message": "使用您硬體錢包中的帳戶，與去中心化應用服務交易乙太幣、ERC20代幣、或迷戀貓等數位資產。"
+    "message": "使用您硬體錢包中的帳戶，與去中心化應用服務交易以太幣、ERC20代幣、或迷戀貓等數位資產。"
   },
   "storePhrase": {
     "message": "您可以用密碼管理系統例如 1Password 等軟體儲存助憶詞。"
