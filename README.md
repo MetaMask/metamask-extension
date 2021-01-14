@@ -1,6 +1,6 @@
 # MetaMask Browser Extension
 
-Hey! We are JavaScript Engineers! Apply here: https://boards.greenhouse.io/consensys/jobs/1990589
+Hey! We are hiring JavaScript Engineers! Apply here: https://boards.greenhouse.io/consensys/jobs/1990589
 ---
 
 You can find the latest version of MetaMask on [our official website](https://metamask.io/). For help using MetaMask, visit our [User Support Site](https://metamask.zendesk.com/hc/en-us).
