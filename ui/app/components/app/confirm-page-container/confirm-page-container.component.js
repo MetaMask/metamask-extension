@@ -27,8 +27,10 @@ export default class ConfirmPageContainer extends Component {
     showAccountInHeader: PropTypes.bool,
     // Sender to Recipient
     fromAddress: PropTypes.string,
+    base32FromAddress: PropTypes.string,
     fromName: PropTypes.string,
     toAddress: PropTypes.string,
+    base32ToAddress: PropTypes.string,
     toName: PropTypes.string,
     toNickname: PropTypes.string,
     // Content
@@ -61,14 +63,16 @@ export default class ConfirmPageContainer extends Component {
     disabled: PropTypes.bool,
   }
 
-  render () {
+  render() {
     const {
       showEdit,
       onEdit,
       fromName,
+      base32FromAddress,
       fromAddress,
       toName,
       toNickname,
+      base32ToAddress,
       toAddress,
       disabled,
       errorKey,
@@ -115,7 +119,7 @@ export default class ConfirmPageContainer extends Component {
           nextTxId={nextTxId}
           prevTxId={prevTxId}
           showNavigation={showNavigation}
-          onNextTx={(txId) => onNextTx(txId)}
+          onNextTx={txId => onNextTx(txId)}
           firstTx={firstTx}
           lastTx={lastTx}
           ofText={ofText}
@@ -126,13 +130,16 @@ export default class ConfirmPageContainer extends Component {
           onEdit={() => onEdit()}
           showAccountInHeader={showAccountInHeader}
           accountAddress={fromAddress}
+          base32AccountAddress={base32FromAddress}
         >
           {hideSenderToRecipient ? null : (
             <SenderToRecipient
               senderName={fromName}
               senderAddress={fromAddress}
+              base32SenderAddress={base32FromAddress}
               recipientName={toName}
               recipientAddress={toAddress}
+              base32RecipientAddress={base32ToAddress}
               recipientNickname={toNickname}
               assetImage={renderAssetImage ? assetImage : undefined}
             />

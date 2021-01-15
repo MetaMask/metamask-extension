@@ -5,21 +5,23 @@ import WalletView from './wallet-view.component'
 import { hideSidebar, setSelectedToken } from '../../../store/actions'
 import {
   getSelectedAddress,
+  getSelectedBase32Address,
   getSelectedAccount,
 } from '../../../selectors/selectors'
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     sidebarOpen: state.appState.sidebar.isOpen,
     identities: state.metamask.identities,
     keyrings: state.metamask.keyrings,
     selectedAddress: getSelectedAddress(state),
+    selectedBase32Address: getSelectedBase32Address(state),
     selectedAccount: getSelectedAccount(state),
     selectedTokenAddress: state.metamask.selectedTokenAddress,
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     hideSidebar: () => dispatch(hideSidebar()),
     unsetSelectedToken: () => dispatch(setSelectedToken()),

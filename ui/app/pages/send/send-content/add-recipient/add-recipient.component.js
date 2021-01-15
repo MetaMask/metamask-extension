@@ -24,7 +24,7 @@ export default class AddRecipient extends Component {
     nonContacts: PropTypes.array,
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.recentFuse = new Fuse(props.nonContacts, {
       shouldSort: true,
@@ -59,10 +59,10 @@ export default class AddRecipient extends Component {
     isShowingTransfer: false,
   }
 
-  selectRecipient = (to, nickname = '') => {
+  selectRecipient = (to, nickname = '', opt = {}) => {
     const { updateSendTo, updateGas } = this.props
 
-    updateSendTo(to, nickname)
+    updateSendTo(to, nickname, opt)
     updateGas({ to })
   }
 
@@ -92,7 +92,7 @@ export default class AddRecipient extends Component {
     return _nonContacts
   }
 
-  render () {
+  render() {
     const { ensResolution, query, addressBookEntryName } = this.props
     const { isShowingTransfer } = this.state
 
@@ -117,7 +117,7 @@ export default class AddRecipient extends Component {
     )
   }
 
-  renderExplicitAddress (address, name) {
+  renderExplicitAddress(address, name) {
     return (
       <div
         key={address}
@@ -139,7 +139,7 @@ export default class AddRecipient extends Component {
     )
   }
 
-  renderTransfer () {
+  renderTransfer() {
     const { ownedAccounts } = this.props
     const { t } = this.context
 
@@ -155,13 +155,15 @@ export default class AddRecipient extends Component {
         <RecipientGroup
           label={t('myAccounts')}
           items={ownedAccounts}
-          onSelect={this.selectRecipient}
+          onSelect={(addr, nickname) =>
+            this.selectRecipient(addr, nickname, { fromMyAccounts: true })
+          }
         />
       </div>
     )
   }
 
-  renderMain () {
+  renderMain() {
     const { t } = this.context
     const { query, ownedAccounts = [], addressBook } = this.props
 
@@ -186,15 +188,15 @@ export default class AddRecipient extends Component {
     )
   }
 
-  renderDialogs () {
+  renderDialogs() {
     const { toError, toWarning, ensResolutionError, ensResolution } = this.props
     const { t } = this.context
-    const contacts = this.searchForContacts()
+    // const contacts = this.searchForContacts()
     const recents = this.searchForRecents()
 
-    if (contacts.length) {
-      return null
-    }
+    // if (contacts.length) {
+    //   return null
+    // }
 
     if (ensResolutionError) {
       return (

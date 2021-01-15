@@ -4,10 +4,12 @@ import c from 'classnames'
 import {
   // isValidDomainName,
   isValidAddress,
+  base32AddressSlicer,
+  addressSlicer,
   // isValidAddressHead,
 } from '../../../../helpers/utils/util'
 import { isSmartContractAddress } from '../../../../helpers/utils/transactions.util'
-import { ellipsify } from '../../send.utils'
+import { isValidBase32Address } from '../../../../../../app/scripts/cip37'
 
 // import { debounce } from 'lodash'
 // import copyToClipboard from 'copy-to-clipboard/index'
@@ -28,6 +30,8 @@ export default class EnsInput extends Component {
     className: PropTypes.string,
     network: PropTypes.string,
     selectedAddress: PropTypes.string,
+    selectedBase32Address: PropTypes.string,
+    inputIsBase32: PropTypes.bool,
     selectedName: PropTypes.string,
     onChange: PropTypes.func,
     updateEnsResolution: PropTypes.func,
@@ -59,7 +63,7 @@ export default class EnsInput extends Component {
 
   // If an address is sent without a nickname, meaning not from ENS or from
   // the user's own accounts, a default of a one-space string is used.
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     const { input } = this.state
     const { network } = this.props
 
@@ -112,21 +116,28 @@ export default class EnsInput extends Component {
   //     })
   // }
 
-  onPaste = (event) => {
-    event.clipboardData.items[0].getAsString((text) => {
-      if (isValidAddress(text, 'account')) {
+  onPaste = event => {
+    const { network } = this.props
+    event.clipboardData.items[0].getAsString(text => {
+      if (
+        isValidAddress(text, 'account') ||
+        isValidBase32Address(text, network, 'user')
+      ) {
         this.props.onPaste(text)
-      } else if (isValidAddress(text, 'contract')) {
-        isSmartContractAddress(text).then(
-          (rst) => rst && this.props.onPaste(text)
+      } else if (
+        isValidAddress(text, 'contract') ||
+        isValidBase32Address(text, network, 'contract')
+      ) {
+        isSmartContractAddress(text, network).then(
+          rst => rst && this.props.onPaste(text)
         )
       }
     })
   }
 
-  onChange = (e) => {
+  onChange = e => {
     const {
-      // network,
+      network,
       onChange,
       updateEnsResolution,
       updateEnsResolutionError,
@@ -137,29 +148,18 @@ export default class EnsInput extends Component {
 
     this.setState({ input }, () => onChange(input))
 
-    // Empty ENS state if input is empty
-    // maybe scan ENS
-
-    // if (
-    //   !networkHasEnsSupport &&
-    //     !isValidAddress(input) &&
-    //     !isValidAddressHead(input)
-    // ) {
-    //   updateEnsResolution('')
-    //   updateEnsResolutionError(
-    //     !networkHasEnsSupport ? 'Network does not support ENS' : ''
-    //   )
-    //   return
-    // }
-
-    // if (isValidDomainName(input)) {
-    //   // this.lookupEnsName(input)
-    // } else
-    if (onValidAddressTyped && isValidAddress(input, 'account')) {
+    if (
+      onValidAddressTyped &&
+      (isValidBase32Address(input, network, 'user') ||
+        isValidAddress(input, 'account'))
+    ) {
       onValidAddressTyped(input)
-    } else if (isValidAddress(input, 'contract')) {
-      isSmartContractAddress(input).then(
-        (rst) => rst && onValidAddressTyped(input)
+    } else if (
+      isValidBase32Address(input, network, 'contract') ||
+      isValidAddress(input, 'contract')
+    ) {
+      isSmartContractAddress(input, network).then(
+        rst => rst && onValidAddressTyped(input)
       )
     } else {
       updateEnsResolution('')
@@ -167,9 +167,9 @@ export default class EnsInput extends Component {
     }
   }
 
-  render () {
+  render() {
     const { t } = this.context
-    const { className, selectedAddress } = this.props
+    const { className, selectedAddress, selectedBase32Address } = this.props
     const { input } = this.state
 
     if (selectedAddress) {
@@ -192,7 +192,7 @@ export default class EnsInput extends Component {
             placeholder={t('recipientAddressPlaceholder')}
             onChange={this.onChange}
             onPaste={this.onPaste}
-            value={selectedAddress || input}
+            value={selectedBase32Address || input}
             autoFocus
             data-testid="ens-input"
           />
@@ -214,12 +214,14 @@ export default class EnsInput extends Component {
     )
   }
 
-  renderSelected () {
+  renderSelected() {
     const { t } = this.context
     const {
       className,
-      selectedAddress,
       selectedName,
+      selectedAddress,
+      selectedBase32Address,
+      inputIsBase32,
       contact = {},
     } = this.props
     const name = contact.name || selectedName
@@ -227,18 +229,26 @@ export default class EnsInput extends Component {
     return (
       <div className={c('ens-input', className)}>
         <div className="ens-input__wrapper ens-input__wrapper--valid">
-          <div className="ens-input__wrapper__status-icon ens-input__wrapper__status-icon--valid" />
+          <div
+            className={c('ens-input__wrapper__status-icon', {
+              'ens-input__wrapper__status-icon--warning': !inputIsBase32,
+              'ens-input__wrapper__status-icon--valid': inputIsBase32,
+            })}
+          />
           <div
             className="ens-input__wrapper__input ens-input__wrapper__input--selected"
             placeholder={t('recipientAddress')}
             onChange={this.onChange}
           >
             <div className="ens-input__selected-input__title">
-              {name || ellipsify(selectedAddress)}
+              {name ||
+                (inputIsBase32
+                  ? base32AddressSlicer(selectedBase32Address)
+                  : addressSlicer(selectedAddress))}
             </div>
             {name && (
               <div className="ens-input__selected-input__subtitle">
-                {selectedAddress}
+                {inputIsBase32 ? selectedBase32Address : selectedAddress}
               </div>
             )}
           </div>

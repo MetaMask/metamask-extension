@@ -9,7 +9,10 @@ import {
   CARDS_VARIANT,
   FLAT_VARIANT,
 } from './sender-to-recipient.constants'
-import { checksumAddress, addressSlicer } from '../../../helpers/utils/util'
+import {
+  checksumAddress,
+  base32AddressSlicer,
+} from '../../../helpers/utils/util'
 
 const variantHash = {
   [DEFAULT_VARIANT]: 'sender-to-recipient--default',
@@ -21,8 +24,10 @@ export default class SenderToRecipient extends PureComponent {
   static propTypes = {
     senderName: PropTypes.string,
     senderAddress: PropTypes.string,
+    base32SenderAddress: PropTypes.string,
     recipientName: PropTypes.string,
     recipientAddress: PropTypes.string,
+    base32RecipientAddress: PropTypes.string,
     recipientNickname: PropTypes.string,
     variant: PropTypes.oneOf([DEFAULT_VARIANT, CARDS_VARIANT, FLAT_VARIANT]),
     addressOnly: PropTypes.bool,
@@ -43,7 +48,7 @@ export default class SenderToRecipient extends PureComponent {
     senderAddressCopied: false,
   }
 
-  renderSenderIdenticon () {
+  renderSenderIdenticon() {
     return (
       !this.props.addressOnly && (
         <div className="sender-to-recipient__sender-icon">
@@ -56,10 +61,9 @@ export default class SenderToRecipient extends PureComponent {
     )
   }
 
-  renderSenderAddress () {
+  renderSenderAddress() {
     const { t } = this.context
-    const { senderName, senderAddress, addressOnly } = this.props
-    const checksummedSenderAddress = checksumAddress(senderAddress)
+    const { senderName, base32SenderAddress, addressOnly } = this.props
 
     return (
       <Tooltip
@@ -71,7 +75,7 @@ export default class SenderToRecipient extends PureComponent {
             <p>{t('copyAddress')}</p>
           ) : (
             <p>
-              {addressSlicer(checksummedSenderAddress)}
+              {base32AddressSlicer(base32SenderAddress)}
               <br />
               {t('copyAddress')}
             </p>
@@ -83,9 +87,7 @@ export default class SenderToRecipient extends PureComponent {
       >
         <div className="sender-to-recipient__name">
           {addressOnly ? (
-            <span>
-              {`${t('from')}: ${senderName || checksummedSenderAddress}`}
-            </span>
+            <span>{`${t('from')}: ${senderName || base32SenderAddress}`}</span>
           ) : (
             senderName
           )}
@@ -94,7 +96,7 @@ export default class SenderToRecipient extends PureComponent {
     )
   }
 
-  renderRecipientIdenticon () {
+  renderRecipientIdenticon() {
     const { recipientAddress, assetImage } = this.props
     const checksummedRecipientAddress = checksumAddress(recipientAddress)
 
@@ -111,22 +113,21 @@ export default class SenderToRecipient extends PureComponent {
     )
   }
 
-  renderRecipientWithAddress () {
+  renderRecipientWithAddress() {
     const { t } = this.context
     const {
       recipientName,
-      recipientAddress,
+      base32RecipientAddress,
       recipientNickname,
       addressOnly,
       onRecipientClick,
     } = this.props
-    const checksummedRecipientAddress = checksumAddress(recipientAddress)
 
     return (
       <div
         className="sender-to-recipient__party sender-to-recipient__party--recipient sender-to-recipient__party--recipient-with-address"
         onClick={() => {
-          copyToClipboard(checksummedRecipientAddress)
+          copyToClipboard(base32RecipientAddress)
           if (onRecipientClick) {
             onRecipientClick()
           }
@@ -142,7 +143,7 @@ export default class SenderToRecipient extends PureComponent {
               <p>{t('copyAddress')}</p>
             ) : (
               <p>
-                {addressSlicer(checksummedRecipientAddress)}
+                {base32AddressSlicer(base32RecipientAddress)}
                 <br />
                 {t('copyAddress')}
               </p>
@@ -154,7 +155,7 @@ export default class SenderToRecipient extends PureComponent {
           <div className="sender-to-recipient__name">
             <span>{addressOnly ? `${t('to')}: ` : ''}</span>
             {addressOnly
-              ? recipientNickname || checksummedRecipientAddress
+              ? recipientNickname || base32RecipientAddress
               : recipientNickname ||
                 recipientName ||
                 this.context.t('newContract')}
@@ -164,7 +165,7 @@ export default class SenderToRecipient extends PureComponent {
     )
   }
 
-  renderRecipientWithoutAddress () {
+  renderRecipientWithoutAddress() {
     return (
       <div className="sender-to-recipient__party sender-to-recipient__party--recipient">
         {!this.props.addressOnly && <i className="fa fa-file-text-o" />}
@@ -175,7 +176,7 @@ export default class SenderToRecipient extends PureComponent {
     )
   }
 
-  renderArrow () {
+  renderArrow() {
     return this.props.variant === DEFAULT_VARIANT ? (
       <div className="sender-to-recipient__arrow-container">
         <div className="sender-to-recipient__arrow-circle">
@@ -189,14 +190,13 @@ export default class SenderToRecipient extends PureComponent {
     )
   }
 
-  render () {
+  render() {
     const {
-      senderAddress,
-      recipientAddress,
+      base32SenderAddress,
+      base32RecipientAddress,
       variant,
       onSenderClick,
     } = this.props
-    const checksummedSenderAddress = checksumAddress(senderAddress)
 
     return (
       <div className={classnames('sender-to-recipient', variantHash[variant])}>
@@ -206,7 +206,7 @@ export default class SenderToRecipient extends PureComponent {
           )}
           onClick={() => {
             this.setState({ senderAddressCopied: true })
-            copyToClipboard(checksummedSenderAddress)
+            copyToClipboard(base32SenderAddress)
             if (onSenderClick) {
               onSenderClick()
             }
@@ -216,7 +216,7 @@ export default class SenderToRecipient extends PureComponent {
           {this.renderSenderAddress()}
         </div>
         {this.renderArrow()}
-        {recipientAddress
+        {base32RecipientAddress
           ? this.renderRecipientWithAddress()
           : this.renderRecipientWithoutAddress()}
       </div>

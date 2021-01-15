@@ -2,13 +2,11 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import qrCode from 'qrcode-generator'
 import { connect } from 'react-redux'
-import { isHexPrefixed } from 'cfx-util'
 import ReadOnlyInput from './readonly-input'
-import { checksumAddress } from '../../helpers/utils/util'
 
 export default connect(mapStateToProps)(QrCodeView)
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     // Qr code is not fetched from state. 'message' and 'data' props are passed instead.
     buyView: state.appState.buyView,
@@ -16,11 +14,9 @@ function mapStateToProps (state) {
   }
 }
 
-function QrCodeView (props) {
+function QrCodeView(props) {
   const { message, data } = props.Qr
-  const address = `${isHexPrefixed(data) ? 'conflux:' : ''}${checksumAddress(
-    data
-  )}`
+  const address = `conflux:${data}`
   const qrImage = qrCode(4, 'M')
   qrImage.addData(address)
   qrImage.make()
@@ -40,8 +36,8 @@ function QrCodeView (props) {
       )}
       {props.warning
         ? props.warning && (
-          <span className="error flex-center">{props.warning}</span>
-        )
+            <span className="error flex-center">{props.warning}</span>
+          )
         : null}
       <div
         className="div qr-wrapper"
@@ -52,7 +48,7 @@ function QrCodeView (props) {
       <ReadOnlyInput
         wrapperClass="ellip-address-wrapper"
         inputClass="qr-ellip-address"
-        value={checksumAddress(data)}
+        value={data}
       />
     </div>
   )

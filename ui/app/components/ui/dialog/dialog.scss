@@ -1,5 +1,5 @@
 .dialog {
-  font-size: .75rem;
+  font-size: 0.75rem;
   line-height: 1rem;
   padding: 1rem;
   border: 1px solid $black;
@@ -22,5 +22,23 @@
     border-color: $Orange-300;
     color: $Orange-600;
     background-color: $Orange-000;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .go-convert {
+      color: #037dd6;
+      display: flex;
+      align-items: center;
+
+      .link-button {
+        @extend %bg-contain;
+        background-image: url('/images/go-convert-share.svg');
+        width: 1rem;
+        height: 1rem;
+        margin: 0.25rem 0.5rem 0.25rem 0.25rem;
+      }
+    }
   }
 }

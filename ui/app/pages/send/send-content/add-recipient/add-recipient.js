@@ -21,8 +21,9 @@ import {
   isValidChecksumAddress,
   isValidAddress as ethUtilIsValidAddress,
 } from 'cfx-util'
+import { isValidBase32Address } from '../../../../../../app/scripts/cip37'
 
-export async function getToErrorObject (
+export async function getToErrorObject(
   to,
   toError = null,
   hasHexData = false,
@@ -34,15 +35,26 @@ export async function getToErrorObject (
     if (!hasHexData) {
       toError = REQUIRED_ERROR
     }
-  } else if (!ethUtilIsValidAddress(to) && !toError) {
+  } else if (
+    !ethUtilIsValidAddress(to) &&
+    !isValidBase32Address(to, network) &&
+    !toError
+  ) {
     toError = isEthNetwork(network)
       ? INVALID_RECIPIENT_ADDRESS_ERROR
       : INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR
-  } else if (!isAllOneCase(to) && !isValidChecksumAddress(to) && !toError) {
+  } else if (
+    !isValidBase32Address(to, network) &&
+    ethUtilIsValidAddress(to) &&
+    !isAllOneCase(to) &&
+    !isValidChecksumAddress(to) &&
+    !toError
+  ) {
     toError = isEthNetwork(network)
       ? INVALID_RECIPIENT_CHECKSUM_ERROR
       : INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR
   } else if (
+    !isValidBase32Address(to, network) &&
     !isValidAddress(to, 'account') &&
     !isValidAddress(to, 'contract') &&
     !toError
@@ -51,9 +63,9 @@ export async function getToErrorObject (
       ? INVALID_RECIPIENT_0X_ERROR
       : INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR
   } else if (
-    !isValidAddress(to, 'account') &&
-    isValidAddress(to, 'contract') &&
-    !(await isSmartContractAddress(to)) &&
+    (isValidAddress(to, 'contract') ||
+      isValidBase32Address(to, network, 'contract')) &&
+    !(await isSmartContractAddress(to, network)) &&
     !toError
   ) {
     toError = isEthNetwork(network)
@@ -64,7 +76,7 @@ export async function getToErrorObject (
   return { to: toError }
 }
 
-export function getToWarningObject (
+export function getToWarningObject(
   to,
   toWarning = null,
   tokens = [],

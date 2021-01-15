@@ -13,7 +13,7 @@ import AddRecipient from './add-recipient.component'
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddRecipient)
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   const ensResolution = getSendEnsResolution(state)
 
   let addressBookEntryName = ''
@@ -35,8 +35,9 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
-    updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
+    updateSendTo: (to, nickname, opt) =>
+      dispatch(updateSendTo(to, nickname, opt)),
   }
 }

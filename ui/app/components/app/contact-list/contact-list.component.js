@@ -20,7 +20,7 @@ export default class ContactList extends PureComponent {
     isShowingAllRecent: false,
   }
 
-  renderRecents () {
+  renderRecents() {
     const { t } = this.context
     const { isShowingAllRecent } = this.state
     const nonContacts = this.props.searchForRecents()
@@ -32,7 +32,9 @@ export default class ContactList extends PureComponent {
         <RecipientGroup
           label={t('recents')}
           items={showLoadMore ? nonContacts.slice(0, 2) : nonContacts}
-          onSelect={this.props.selectRecipient}
+          onSelect={(addr, nickname) =>
+            this.props.selectRecipient(addr, nickname, { fromRecent: true })
+          }
           selectedAddress={this.props.selectedAddress}
         />
         {showLoadMore && (
@@ -47,7 +49,7 @@ export default class ContactList extends PureComponent {
     )
   }
 
-  renderAddressBook () {
+  renderAddressBook() {
     const contacts = this.props.searchForContacts()
 
     const contactGroups = contacts.reduce((acc, contact) => {
@@ -73,25 +75,31 @@ export default class ContactList extends PureComponent {
           key={`${letter}-contract-group`}
           label={letter}
           items={groupItems}
-          onSelect={this.props.selectRecipient}
+          onSelect={(addr, nickname) =>
+            this.props.selectRecipient(addr, nickname, {
+              fromAddressBook: true,
+            })
+          }
           selectedAddress={this.props.selectedAddress}
         />
       ))
   }
 
-  renderMyAccounts () {
+  renderMyAccounts() {
     const myAccounts = this.props.searchForMyAccounts()
 
     return (
       <RecipientGroup
         items={myAccounts}
-        onSelect={this.props.selectRecipient}
+        onSelect={(addr, nickname) =>
+          this.props.selectRecipient(addr, nickname, { fromMyAccounts: true })
+        }
         selectedAddress={this.props.selectedAddress}
       />
     )
   }
 
-  render () {
+  render() {
     const {
       children,
       searchForRecents,

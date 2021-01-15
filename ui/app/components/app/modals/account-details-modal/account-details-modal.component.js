@@ -20,7 +20,7 @@ export default class AccountDetailsModal extends Component {
     t: PropTypes.func,
   }
 
-  render () {
+  render() {
     const {
       selectedIdentity,
       network,
@@ -29,10 +29,10 @@ export default class AccountDetailsModal extends Component {
       keyrings,
       rpcPrefs,
     } = this.props
-    const { name, address } = selectedIdentity
+    const { name, address, base32Address } = selectedIdentity
     const { t } = this.context
 
-    const keyring = keyrings.find((kr) => {
+    const keyring = keyrings.find(kr => {
       return kr.accounts.includes(address)
     })
 
@@ -47,12 +47,12 @@ export default class AccountDetailsModal extends Component {
         <EditableLabel
           className="account-modal__name"
           defaultValue={name}
-          onSubmit={(label) => setAccountLabel(address, label)}
+          onSubmit={label => setAccountLabel(address, label)}
         />
 
         <QrView
           Qr={{
-            data: address,
+            data: base32Address,
             network: network,
           }}
         />
@@ -109,8 +109,8 @@ export default class AccountDetailsModal extends Component {
         >
           {rpcPrefs.blockExplorerUrl
             ? this.context.t('blockExplorerView', [
-              rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/)[1],
-            ])
+                rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/)[1],
+              ])
             : this.context.t('viewOnEtherscan')}
         </Button>
 

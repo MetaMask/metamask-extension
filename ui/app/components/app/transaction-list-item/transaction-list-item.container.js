@@ -29,6 +29,7 @@ import {
   conversionRateSelector,
   getKnownMethodData,
   getFeatureFlags,
+  getCurrentNetworkId,
 } from '../../../selectors/selectors'
 import { isBalanceSufficient } from '../../../pages/send/send.utils'
 
@@ -67,6 +68,7 @@ const mapStateToProps = (state, ownProps) => {
   const transactionTimeFeatureActive = getFeatureFlags(state).transactionTime
 
   return {
+    networkId: parseInt(getCurrentNetworkId(state), 10),
     methodData: getKnownMethodData(state, data) || {},
     showFiat: isMainnet || !!showFiatInTestnets,
     selectedAccountBalance,

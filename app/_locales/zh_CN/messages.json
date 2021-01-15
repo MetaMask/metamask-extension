@@ -236,6 +236,12 @@
   "confluxAddressWarningSend": {
     "message": "请不要向非 Conflux 网络地址转账，否则资产可能丢失。"
   },
+  "confluxNewAddressWarning": {
+    "message": "建议使用 CFX 开头的新地址进行交易"
+  },
+  "goConvert": {
+    "message": "去转换"
+  },
   "confluxContractAddressWarningSend": {
     "message": "该地址为 Conflux 网络合约地址，非个人用户"
   },

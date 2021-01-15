@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { isValidContractAddress } from 'cfx-util'
 import ConfirmTransactionBase from './confirm-transaction-base.component'
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck'
+import { hexToBase32 } from '../../../../app/scripts/cip37'
 
 import {
   updateCustomNonce,
@@ -31,7 +32,7 @@ import { conversionGreaterThan } from '../../helpers/utils/conversion-util'
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants'
 import {
   checksumAddress,
-  addressSlicer,
+  base32AddressSlicer,
   valuesFor,
 } from '../../helpers/utils/util'
 import {
@@ -42,16 +43,17 @@ import {
   preferencesSelector,
   getIsMainnet,
   getKnownMethodData,
+  getCurrentNetworkId,
 } from '../../selectors/selectors'
 import { transactionFeeSelector } from '../../selectors/confirm-transaction'
 
 let customNonceValue = ''
-const customNonceMerge = (txData) =>
+const customNonceMerge = txData =>
   (customNonceValue
     ? {
-      ...txData,
-      customNonceValue,
-    }
+        ...txData,
+        customNonceValue,
+      }
     : txData)
 
 const mapStateToProps = (state, ownProps) => {
@@ -60,6 +62,7 @@ const mapStateToProps = (state, ownProps) => {
     customTxParamsData,
     match: { params = {} },
   } = ownProps
+  const network = getCurrentNetworkId(state)
   const { id: paramsTransactionId } = params
   const { showFiatInTestnets } = preferencesSelector(state)
   const isMainnet = getIsMainnet(state)
@@ -77,7 +80,6 @@ const mapStateToProps = (state, ownProps) => {
     identities,
     addressBook,
     assetImages,
-    network,
     unapprovedTxs,
     metaMetricsSendCount,
     nextNonce,
@@ -117,11 +119,12 @@ const mapStateToProps = (state, ownProps) => {
   const { balance } = accounts[fromAddress]
   const { name: fromName } = identities[fromAddress]
   const toAddress = propsToAddress || txParamsToAddress
+  const base32ToAddress = hexToBase32(toAddress, parseInt(network, 10))
   const toName = identities[toAddress]
     ? identities[toAddress].name
     : casedContractMap[toAddress]
-      ? casedContractMap[toAddress].name
-      : addressSlicer(checksumAddress(toAddress))
+    ? casedContractMap[toAddress].name
+    : base32AddressSlicer(base32ToAddress)
 
   const checksummedAddress = checksumAddress(toAddress)
   const addressBookObject = addressBook[checksummedAddress]
@@ -147,7 +150,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
-    .filter((key) => unapprovedTxs[key].metamaskNetworkId === network)
+    .filter(key => unapprovedTxs[key].metamaskNetworkId === network)
     .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {})
   const unapprovedTxCount = valuesFor(currentNetworkUnapprovedTxs).length
 
@@ -185,8 +188,10 @@ const mapStateToProps = (state, ownProps) => {
     txMetaLoadingDefaults: loadingDefaults,
     balance,
     fromAddress,
+    base32FromAddress: hexToBase32(fromAddress, parseInt(network, 10)),
     fromName,
     toAddress,
+    base32ToAddress,
     toName,
     toNickname,
     hexTransactionAmount,
@@ -228,7 +233,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export const mapDispatchToProps = (dispatch) => {
+export const mapDispatchToProps = dispatch => {
   return {
     showLoadingIndication: () => {
       dispatch(showLoadingIndication())
@@ -236,10 +241,10 @@ export const mapDispatchToProps = (dispatch) => {
     hideLoadingIndication: () => {
       dispatch(hideLoadingIndication())
     },
-    tryReverseResolveAddress: (address) => {
+    tryReverseResolveAddress: address => {
       return dispatch(tryReverseResolveAddress(address))
     },
-    updateCustomNonce: (value) => {
+    updateCustomNonce: value => {
       customNonceValue = value
       dispatch(updateCustomNonce(value))
     },
@@ -257,7 +262,7 @@ export const mapDispatchToProps = (dispatch) => {
         showModal({ name: 'CUSTOMIZE_GAS', txData, onSubmit, validate })
       )
     },
-    updateGasAndCollateralAndCalculte: (updatedTx) => {
+    updateGasAndCollateralAndCalculte: updatedTx => {
       return dispatch(updateTransaction(updatedTx))
     },
     showRejectTransactionsConfirmationModal: ({
@@ -269,8 +274,8 @@ export const mapDispatchToProps = (dispatch) => {
       )
     },
     cancelTransaction: ({ id }) => dispatch(cancelTx({ id })),
-    cancelAllTransactions: (txList) => dispatch(cancelTxs(txList)),
-    sendTransaction: (txData) =>
+    cancelAllTransactions: txList => dispatch(cancelTxs(txList)),
+    sendTransaction: txData =>
       dispatch(updateAndApproveTx(customNonceMerge(txData))),
     // setMetaMetricsSendCount: val => dispatch(setMetaMetricsSendCount(val)),
     getNextNonce: () => dispatch(getNextNonce()),
@@ -354,14 +359,14 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     showCustomizeGasModal: () =>
       dispatchShowCustomizeGasModal({
         txData,
-        onSubmit: (customGasAndCollateral) =>
+        onSubmit: customGasAndCollateral =>
           dispatchUpdateGasAndCollateralAndCalculate(customGasAndCollateral),
         validate: validateEditGasAndCollateral,
       }),
     showCustomizeStorageModal: () =>
       dispatchShowCustomizeStorageModal({
         txData,
-        onSubmit: (customGasAndCollateral) =>
+        onSubmit: customGasAndCollateral =>
           dispatchUpdateGasAndCollateralAndCalculate(customGasAndCollateral),
         validate: validateEditGasAndCollateral,
       }),

@@ -20,6 +20,12 @@
   "confluxAddressWarningSend": {
     "message": "DO NOT transfer to non-ConfluxNetwork address to avoid permanent asset loss."
   },
+  "confluxNewAddressWarning": {
+    "message": "建议使用 CFX 开头的新地址进行交易"
+  },
+  "goConvert": {
+    "message": "去转换"
+  },
   "confluxContractAddressWarningSend": {
     "message": "ConfluxNetwork smart contract address, NOT user address"
   },

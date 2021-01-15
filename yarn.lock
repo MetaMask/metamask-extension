@@ -1108,10 +1108,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@cfxjs/fullnode@^1.5.0":
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/@cfxjs/fullnode/-/fullnode-1.5.0.tgz#e3476f82e86a0823e218af2653357151f258ab75"
-  integrity sha512-BwSTPZqqAQQvd0eOvfJfBfg74F9COGjp7MCor6ezmjPNs93kqG8Apgm3Ah+nCQeCC29IH8bPtaR/+73hzThb9Q==
+"@cfxjs/fullnode@^1.6.1":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@cfxjs/fullnode/-/fullnode-1.6.1.tgz#d6f4f7afacd376642e5181eb8e2bb3600d8157e4"
+  integrity sha512-FeNd0tUjAzvptN5JtVVVYGHpL5zWPtJj/CAb1t0fiK02dDr9AsJtnOsT/3CNlPWEOBk4yOXuC3hqVJhMpeY/OQ==
   dependencies:
     cfx-util ">=0.0.2"
     cross-port-killer "^1.2.1"
@@ -5087,6 +5087,11 @@ big.js@^5.2.2:
   resolved "https://registry.yarnpkg.com/big.js/-/big.js-5.2.2.tgz#65f0af382f578bcdc742bd9c281e9cb2d7768328"
   integrity sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==
 
+bigi@^1.4.2:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/bigi/-/bigi-1.4.2.tgz#9c665a95f88b8b08fc05cfd731f561859d725825"
+  integrity sha1-nGZalfiLiwj8Bc/XMfVhhZ1yWCU=
+
 bignumber.js@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-4.1.0.tgz#db6f14067c140bd46624815a7916c92d9b6c24b1"
@@ -7086,6 +7091,12 @@ configstore@^3.0.0:
     unique-string "^1.0.0"
     write-file-atomic "^2.0.0"
     xdg-basedir "^3.0.0"
+
+conflux-address-js@yqrashawn/conflux-address-js#main:
+  version "1.0.0"
+  resolved "https://codeload.github.com/yqrashawn/conflux-address-js/tar.gz/b4c31e07bf6f8b263274b96f2e1e69534e1f02c2"
+  dependencies:
+    bigi "^1.4.2"
 
 connect@^3.6.0:
   version "3.7.0"
