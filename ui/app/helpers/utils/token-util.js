@@ -237,6 +237,7 @@ export function getTokenFiatAmount(
     result = `${formatCurrency(
       currentTokenInFiat,
       currentCurrency,
+      currentLocale,
     )} ${currentCurrency.toUpperCase()}`;
   } else {
     result = currentTokenInFiat;
