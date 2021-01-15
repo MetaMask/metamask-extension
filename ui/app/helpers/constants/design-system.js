@@ -25,6 +25,7 @@ export const COLORS = {
   KOVAN: 'kovan',
   RINKEBY: 'rinkeby',
   GOERLI: 'goerli',
+  TRANSPARENT: 'transparent',
 }
 
 export const TYPOGRAPHY = {
