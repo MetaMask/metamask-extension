@@ -9,6 +9,7 @@ import {
   createEventEmitterProxy,
 } from 'swappable-obj-proxy'
 import EthQuery from 'eth-query'
+import { isPrefixedFormattedHexString } from '../../lib/util'
 import createMetamaskMiddleware from './createMetamaskMiddleware'
 import createInfuraClient from './createInfuraClient'
 import createJsonRpcClient from './createJsonRpcClient'
@@ -160,6 +161,10 @@ export default class NetworkController extends EventEmitter {
   }
 
   setRpcTarget(rpcUrl, chainId, ticker = 'ETH', nickname = '', rpcPrefs) {
+    assert.ok(
+      isPrefixedFormattedHexString(chainId),
+      `Invalid chainId "${chainId}".`,
+    )
     this.setProviderConfig({
       type: 'rpc',
       rpcUrl,
@@ -171,14 +176,14 @@ export default class NetworkController extends EventEmitter {
   }
 
   async setProviderType(type, rpcUrl = '', ticker = 'ETH', nickname = '') {
-    assert.notEqual(
+    assert.notStrictEqual(
       type,
       'rpc',
-      `NetworkController - cannot call "setProviderType" with type 'rpc'. use "setRpcTarget"`,
+      `May not call NetworkController.setProviderType with type 'rpc'. Use NetworkController.setRpcTarget instead.`,
     )
-    assert(
+    assert.ok(
       INFURA_PROVIDER_TYPES.includes(type),
-      `NetworkController - Unknown rpc type "${type}"`,
+      `Unknown Infura provider type "${type}".`,
     )
     const { chainId } = NETWORK_TYPE_TO_ID_MAP[type]
     this.setProviderConfig({ type, rpcUrl, chainId, ticker, nickname })
