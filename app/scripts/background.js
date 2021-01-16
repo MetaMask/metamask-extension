@@ -6,6 +6,8 @@
 import setupFetchDebugging from './lib/setupFetchDebugging'
 /* eslint-enable import/order */
 
+setupFetchDebugging()
+
 // polyfills
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
 
@@ -36,8 +38,6 @@ import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code'
 import getObjStructure from './lib/getObjStructure'
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup'
 /* eslint-enable import/first */
-
-setupFetchDebugging()
 
 const { sentry } = global
 const firstTimeState = { ...rawFirstTimeState }
