@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import { CHAIN_ID_TO_TYPE_MAP } from '../../../../../shared/constants/network'
+import { NETWORK_TYPE_RPC } from '../../../../../shared/constants/network'
 
 export default class NetworkDisplay extends Component {
   static defaultProps = {
@@ -9,14 +9,9 @@ export default class NetworkDisplay extends Component {
   }
 
   static propTypes = {
+    networkNickname: PropTypes.string.isRequired,
+    networkType: PropTypes.string.isRequired,
     colored: PropTypes.bool,
-    provider: PropTypes.shape({
-      chainId: PropTypes.string.isRequired,
-      nickname: PropTypes.string.isRequired,
-      ticker: PropTypes.string.isRequired,
-      type: PropTypes.string.isRequired,
-      rpcUrl: PropTypes.string,
-    }).isRequired,
   }
 
   static contextTypes = {
@@ -24,10 +19,7 @@ export default class NetworkDisplay extends Component {
   }
 
   renderNetworkIcon() {
-    const {
-      provider: { chainId },
-    } = this.props
-    const networkType = CHAIN_ID_TO_TYPE_MAP[chainId]
+    const { networkType } = this.props
 
     return networkType ? (
       <div
@@ -45,11 +37,7 @@ export default class NetworkDisplay extends Component {
   }
 
   render() {
-    const {
-      colored,
-      provider: { chainId, nickname, type },
-    } = this.props
-    const networkType = CHAIN_ID_TO_TYPE_MAP[chainId]
+    const { colored, networkNickname, networkType } = this.props
 
     return (
       <div
@@ -73,7 +61,9 @@ export default class NetworkDisplay extends Component {
           />
         )}
         <div className="network-display__name">
-          {type === 'rpc' && nickname ? nickname : this.context.t(type)}
+          {networkType === NETWORK_TYPE_RPC && networkNickname
+            ? networkNickname
+            : this.context.t(networkType)}
         </div>
       </div>
     )

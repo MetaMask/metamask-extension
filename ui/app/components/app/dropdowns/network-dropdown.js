@@ -10,6 +10,7 @@ import {
   NETWORKS_FORM_ROUTE,
 } from '../../../helpers/constants/routes'
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app'
+import { NETWORK_TYPE_RPC } from '../../../../../shared/constants/network'
 import {
   getEnvironmentType,
   isPrefixedFormattedHexString,
@@ -117,7 +118,7 @@ class NetworkDropdown extends Component {
     return reversedRpcListDetail.map((entry) => {
       const { rpcUrl, chainId, ticker = 'ETH', nickname = '' } = entry
       const isCurrentRpcTarget =
-        provider.type === 'rpc' && rpcUrl === provider.rpcUrl
+        provider.type === NETWORK_TYPE_RPC && rpcUrl === provider.rpcUrl
 
       return (
         <DropdownMenuItem

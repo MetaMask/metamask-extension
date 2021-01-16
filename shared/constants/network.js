@@ -3,6 +3,7 @@ export const RINKEBY = 'rinkeby'
 export const KOVAN = 'kovan'
 export const MAINNET = 'mainnet'
 export const GOERLI = 'goerli'
+export const NETWORK_TYPE_RPC = 'rpc'
 
 export const MAINNET_NETWORK_ID = '1'
 export const ROPSTEN_NETWORK_ID = '3'

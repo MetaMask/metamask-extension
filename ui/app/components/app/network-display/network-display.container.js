@@ -1,9 +1,14 @@
 import { connect } from 'react-redux'
 import NetworkDisplay from './network-display.component'
 
-const mapStateToProps = ({ metamask: { provider } }) => {
+const mapStateToProps = ({
+  metamask: {
+    provider: { nickname, type },
+  },
+}) => {
   return {
-    provider,
+    networkNickname: nickname,
+    networkType: type,
   }
 }
 

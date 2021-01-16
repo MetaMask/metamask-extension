@@ -1,6 +1,7 @@
 import { stripHexPrefix } from 'ethereumjs-util'
 import { createSelector } from 'reselect'
 import { addHexPrefix } from '../../../app/scripts/lib/util'
+import { NETWORK_TYPE_RPC } from '../../../shared/constants/network'
 import { NETWORK_TYPES } from '../helpers/constants/common'
 import {
   shortenAddress,
@@ -21,7 +22,7 @@ export function getNetworkIdentifier(state) {
 
 export function getMetricsNetworkIdentifier(state) {
   const { provider } = state.metamask
-  return provider.type === 'rpc' ? provider.rpcUrl : provider.type
+  return provider.type === NETWORK_TYPE_RPC ? provider.rpcUrl : provider.type
 }
 
 export function getCurrentChainId(state) {
