@@ -305,7 +305,7 @@
       "optipng-bin": true,
       "gifsicle": true,
       "jpegtran-bin": true,
-      "scrypt": false,
+      "scrypt": true,
       "chromedriver": true,
       "geckodriver": true,
       "@sentry/cli": true,
