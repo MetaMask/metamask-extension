@@ -5,8 +5,8 @@ import { ApprovalController } from '@metamask/controllers'
 
 import _getRestrictedMethods from '../../../../../app/scripts/controllers/permissions/restrictedMethods'
 
+import { CAVEAT_NAMES } from '../../../../../shared/constants/permissions'
 import {
-  CAVEAT_NAMES,
   CAVEAT_TYPES,
   NOTIFICATION_NAMES,
 } from '../../../../../app/scripts/controllers/permissions/enums'
