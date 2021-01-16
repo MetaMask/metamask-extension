@@ -17,6 +17,12 @@ export const RINKEBY_CHAIN_ID = '0x4'
 export const GOERLI_CHAIN_ID = '0x5'
 export const KOVAN_CHAIN_ID = '0x2a'
 
+/**
+ * The largest possible chain ID our codebase can handle.
+ * TODO: Add link to document explaining why.
+ */
+export const MAX_SAFE_CHAIN_ID = 4503599627370476
+
 export const ROPSTEN_DISPLAY_NAME = 'Ropsten'
 export const RINKEBY_DISPLAY_NAME = 'Rinkeby'
 export const KOVAN_DISPLAY_NAME = 'Kovan'
