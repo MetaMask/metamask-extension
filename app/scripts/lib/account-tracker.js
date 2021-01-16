@@ -19,7 +19,7 @@ import {
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
   KOVAN_CHAIN_ID,
-} from '../controllers/network/enums'
+} from '../../../shared/constants/network'
 
 import {
   SINGLE_CALL_BALANCES_ADDRESS,

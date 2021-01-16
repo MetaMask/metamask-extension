@@ -34,7 +34,7 @@ import {
   setSwapsFromToken,
 } from '../../../ducks/swaps/swaps'
 import IconButton from '../../ui/icon-button'
-import { MAINNET_CHAIN_ID } from '../../../../../app/scripts/controllers/network/enums'
+import { MAINNET_CHAIN_ID } from '../../../../../shared/constants/network'
 import WalletOverview from './wallet-overview'
 
 const EthOverview = ({ className }) => {

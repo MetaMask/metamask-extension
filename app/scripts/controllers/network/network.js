@@ -20,7 +20,7 @@ import {
   NETWORK_TYPE_TO_ID_MAP,
   MAINNET_CHAIN_ID,
   RINKEBY_CHAIN_ID,
-} from './enums'
+} from '../../../../shared/constants/network'
 
 const env = process.env.METAMASK_ENV
 
