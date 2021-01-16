@@ -9,10 +9,6 @@ import {
   createEventEmitterProxy,
 } from 'swappable-obj-proxy'
 import EthQuery from 'eth-query'
-import createMetamaskMiddleware from './createMetamaskMiddleware'
-import createInfuraClient from './createInfuraClient'
-import createJsonRpcClient from './createJsonRpcClient'
-
 import {
   RINKEBY,
   MAINNET,
@@ -21,6 +17,9 @@ import {
   MAINNET_CHAIN_ID,
   RINKEBY_CHAIN_ID,
 } from '../../../../shared/constants/network'
+import createMetamaskMiddleware from './createMetamaskMiddleware'
+import createInfuraClient from './createInfuraClient'
+import createJsonRpcClient from './createJsonRpcClient'
 
 const env = process.env.METAMASK_ENV
 

@@ -14,7 +14,7 @@ import {
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
 } from '../../helpers/constants/routes'
-import { MESSAGE_TYPE } from '../../../../app/scripts/lib/enums'
+import { MESSAGE_TYPE } from '../../../../shared/constants/app'
 import { TRANSACTION_CATEGORIES } from '../../../../shared/constants/transaction'
 
 export default class ConfirmTransactionSwitch extends Component {

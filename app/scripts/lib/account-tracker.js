@@ -26,7 +26,7 @@ import {
   SINGLE_CALL_BALANCES_ADDRESS_RINKEBY,
   SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN,
   SINGLE_CALL_BALANCES_ADDRESS_KOVAN,
-} from '../controllers/network/contract-addresses'
+} from '../constants/contracts'
 import { bnToHex } from './util'
 
 /**

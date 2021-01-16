@@ -14,7 +14,7 @@ import {
   PLATFORM_CHROME,
   PLATFORM_EDGE,
   PLATFORM_BRAVE,
-} from './enums'
+} from '../../../shared/constants/app'
 
 /**
  * @see {@link getEnvironmentType}

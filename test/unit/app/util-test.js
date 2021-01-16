@@ -10,7 +10,7 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_BACKGROUND,
-} from '../../../app/scripts/lib/enums'
+} from '../../../shared/constants/app'
 
 describe('app utils', function () {
   describe('getEnvironmentType', function () {
