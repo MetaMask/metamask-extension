@@ -90,7 +90,7 @@ class AccountList extends Component {
                 name="selectedAccount"
                 id={`address-${idx}`}
                 value={account.index}
-                onChange={(e) => this.props.onAccountChange(e.target.value)}
+                onClick={(e) => this.props.onAccountChange(e.target.value)}
                 checked={
                   this.props.selectedAccount === account.index.toString()
                 }
