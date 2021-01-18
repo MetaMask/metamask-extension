@@ -26,6 +26,9 @@
   "accountSelectionRequired": {
     "message": "必須先選擇一個帳戶!"
   },
+  "activity": {
+    "message": "交易紀錄"
+  },
   "activityLog": {
     "message": "活動紀錄"
   },
@@ -83,6 +86,9 @@
     "message": "已批准"
   },
   "asset": {
+    "message": "資產"
+  },
+  "assets": {
     "message": "資產"
   },
   "attemptToCancel": {
@@ -145,6 +151,9 @@
   },
   "builtInCalifornia": {
     "message": "MetaMask 是在加州設計製造"
+  },
+  "buy": {
+    "message": "買"
   },
   "buyWithWyre": {
     "message": "用 Wyre 購買 ETH"
