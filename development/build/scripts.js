@@ -315,7 +315,7 @@ function setupSourcemaps ({ bundlerOpts, events, devMode }) {
       // https://bugs.chromium.org/p/chromium/issues/detail?id=931675
       pipeline.get('sourcemaps:write').push(sourcemaps.write())
     } else {
-      pipeline.get('sourcemaps:write').push(sourcemaps.write('../sourcemaps'))
+      pipeline.get('sourcemaps:write').push(sourcemaps.write('../sourcemaps', { addComment: false }))
     }
 
   })
