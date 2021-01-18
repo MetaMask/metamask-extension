@@ -22,7 +22,6 @@ module.exports = {
             url: false,
           },
         },
-        'resolve-url-loader',
         {
           loader: 'sass-loader',
           options: {
