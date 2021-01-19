@@ -1,5 +1,5 @@
 import { getStorageItem, setStorageItem } from '../../../lib/storage-helpers'
-import fetchWithTimeout from '../../../../app/scripts/lib/fetch-with-timeout'
+import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout'
 
 const fetchWithCache = async (
   url,
@@ -29,8 +29,8 @@ const fetchWithCache = async (
     return cachedResponse
   }
   fetchOptions.headers.set('Content-Type', 'application/json')
-  const _fetch = timeout ? fetchWithTimeout({ timeout }) : window.fetch
-  const response = await _fetch(url, {
+  const fetchWithTimeout = getFetchWithTimeout(timeout)
+  const response = await fetchWithTimeout(url, {
     referrerPolicy: 'no-referrer-when-downgrade',
     body: null,
     method: 'GET',
