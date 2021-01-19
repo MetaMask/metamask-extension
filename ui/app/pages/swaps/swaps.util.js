@@ -467,11 +467,11 @@ export function quotesToRenderableData(
     } = quote
     const sourceValue = calcTokenAmount(
       sourceAmount,
-      sourceTokenInfo.decimals || 18,
+      sourceTokenInfo.decimals,
     ).toString(10)
     const destinationValue = calcTokenAmount(
       destinationAmount,
-      destinationTokenInfo.decimals || 18,
+      destinationTokenInfo.decimals,
     ).toPrecision(8)
 
     const {
@@ -501,14 +501,11 @@ export function quotesToRenderableData(
       destinationTokenInfo.symbol === 'ETH'
         ? calcTokenAmount(
             destinationAmount,
-            destinationTokenInfo.decimals || 18,
+            destinationTokenInfo.decimals,
           ).minus(rawEthFee, 10)
         : new BigNumber(tokenConversionRate || 0, 10)
             .times(
-              calcTokenAmount(
-                destinationAmount,
-                destinationTokenInfo.decimals || 18,
-              ),
+              calcTokenAmount(destinationAmount, destinationTokenInfo.decimals),
               10,
             )
             .minus(rawEthFee, 10)
