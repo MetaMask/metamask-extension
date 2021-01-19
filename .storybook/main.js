@@ -28,6 +28,9 @@ module.exports = {
           options: {
             sourceMap: true,
             implementation: require('sass'),
+            sassOptions: {
+              includePaths: ['ui/app/css/'],
+            },
           },
         },
       ],
