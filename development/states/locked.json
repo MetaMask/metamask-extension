@@ -20,14 +20,14 @@
       "type": "rpc",
       "rpcTarget": "http://localhost:8545"
     },
-    "selectedAddress": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825"
+    "selectedAddress": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825"
   },
   "appState": {
     "menuOpen": false,
     "currentView": {
       "name": "accountDetail",
       "detailView": null,
-      "context": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825"
+      "context": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825"
     },
     "accountDetail": {
       "subview": "transactions"

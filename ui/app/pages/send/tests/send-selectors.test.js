@@ -38,50 +38,54 @@ import {
 } from '../send.selectors.js'
 import mockState from './send-selectors-test-data'
 
-describe('send selectors', function () {
+describe('send selectors', function() {
   const tempGlobalEth = Object.assign({}, global.eth)
-  beforeEach(function () {
+  beforeEach(function() {
     global.eth = {
       contract: sinon.stub().returns({
-        at: (address) => 'mockAt:' + address,
+        at: address => 'mockAt:' + address,
       }),
     }
   })
 
-  afterEach(function () {
+  afterEach(function() {
     global.eth = tempGlobalEth
   })
 
-  describe('accountsWithSendEtherInfoSelector()', function () {
-    it('should return an array of account objects with name info from identities', function () {
+  describe('accountsWithSendEtherInfoSelector()', function() {
+    it('should return an array of account objects with name info from identities', function() {
       assert.deepEqual(accountsWithSendEtherInfoSelector(mockState), [
         {
-          code: '0x',
+          address: '0x1dea65c8e26263f6d9a1b5de9555d2931a33b825',
           balance: '0x47c9d71831c76efe',
-          nonce: '0x1b',
-          address: '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825',
+          base32Address: 'net3:00eymte8w9h67xptm6uxx5anua9hmcxs4md9w091pt',
+          code: '0x',
           name: 'Send Account 1',
+          nonce: '0x1b',
         },
         {
-          code: '0x',
+          address: '0x15b8dbac4c1d3f152cdeb400e2313f309c410acb',
           balance: '0x37452b1315889f80',
-          nonce: '0xa',
-          address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
+          base32Address: 'net3:00avhpxc9geky59cvuu01shh7ws9sg8atccde2dx2s',
+          code: '0x',
           name: 'Send Account 2',
+          nonce: '0xa',
         },
         {
-          code: '0x',
+          address: '0x1f8d4a878cfa04a6e60d46362f5644deab66572d',
           balance: '0x30c9d71831c76efe',
-          nonce: '0x1c',
-          address: '0x2f8d4a878cfa04a6e60d46362f5644deab66572d',
+          base32Address: 'net3:00fsujm7hkx099r61n33cbup8kfaptjr5m475trfyv',
+          code: '0x',
           name: 'Send Account 3',
+          nonce: '0x1c',
         },
         {
-          code: '0x',
+          address: '0x185a4b6a394794842887b8284293d69163007bbb',
           balance: '0x0',
-          nonce: '0x0',
-          address: '0xd85a4b6a394794842887b8284293d69163007bbb',
+          base32Address: 'net3:00c5mjva753t9118gyw2ggmkuu8p603vrc4mt81avu',
+          code: '0x',
           name: 'Send Account 4',
+          nonce: '0x0',
         },
       ])
     })
@@ -96,12 +100,12 @@ describe('send selectors', function () {
   //   })
   // })
 
-  describe('getAmountConversionRate()', function () {
-    it('should return the token conversion rate if a token is selected', function () {
+  describe('getAmountConversionRate()', function() {
+    it('should return the token conversion rate if a token is selected', function() {
       assert.equal(getAmountConversionRate(mockState), 2401.76400654)
     })
 
-    it('should return the eth conversion rate if no token is selected', function () {
+    it('should return the eth conversion rate if no token is selected', function() {
       const editedMockState = {
         metamask: Object.assign({}, mockState.metamask, {
           selectedTokenAddress: null,
@@ -111,74 +115,75 @@ describe('send selectors', function () {
     })
   })
 
-  describe('getBlockGasLimit', function () {
-    it('should return the current block gas limit', function () {
+  describe('getBlockGasLimit', function() {
+    it('should return the current block gas limit', function() {
       assert.deepEqual(getBlockGasLimit(mockState), '0x4c1878')
     })
   })
 
-  describe('getConversionRate()', function () {
-    it('should return the eth conversion rate', function () {
+  describe('getConversionRate()', function() {
+    it('should return the eth conversion rate', function() {
       assert.deepEqual(getConversionRate(mockState), 1200.88200327)
     })
   })
 
-  describe('getCurrentAccountWithSendEtherInfo()', function () {
-    it('should return the currently selected account with identity info', function () {
+  describe('getCurrentAccountWithSendEtherInfo()', function() {
+    it('should return the currently selected account with identity info', function() {
       assert.deepEqual(getCurrentAccountWithSendEtherInfo(mockState), {
         code: '0x',
         balance: '0x0',
         nonce: '0x0',
-        address: '0xd85a4b6a394794842887b8284293d69163007bbb',
+        address: '0x185a4b6a394794842887b8284293d69163007bbb',
+        base32Address: 'net3:00c5mjva753t9118gyw2ggmkuu8p603vrc4mt81avu',
         name: 'Send Account 4',
       })
     })
   })
 
-  describe('getCurrentCurrency()', function () {
-    it('should return the currently selected currency', function () {
+  describe('getCurrentCurrency()', function() {
+    it('should return the currently selected currency', function() {
       assert.equal(getCurrentCurrency(mockState), 'USD')
     })
   })
 
-  describe('getNativeCurrency()', function () {
-    it('should return the ticker symbol of the selected network', function () {
+  describe('getNativeCurrency()', function() {
+    it('should return the ticker symbol of the selected network', function() {
       assert.equal(getNativeCurrency(mockState), 'CFX')
     })
   })
 
-  describe('getCurrentNetwork()', function () {
-    it('should return the id of the currently selected network', function () {
+  describe('getCurrentNetwork()', function() {
+    it('should return the id of the currently selected network', function() {
       assert.equal(getCurrentNetwork(mockState), '3')
     })
   })
 
-  describe('getForceGasMin()', function () {
-    it('should get the send.forceGasMin property', function () {
+  describe('getForceGasMin()', function() {
+    it('should get the send.forceGasMin property', function() {
       assert.equal(getForceGasMin(mockState), true)
     })
   })
 
-  describe('getGasLimit()', function () {
-    it('should return the send.gasLimit', function () {
+  describe('getGasLimit()', function() {
+    it('should return the send.gasLimit', function() {
       assert.equal(getGasLimit(mockState), '0xFFFF')
     })
   })
 
-  describe('getGasPrice()', function () {
-    it('should return the send.gasPrice', function () {
+  describe('getGasPrice()', function() {
+    it('should return the send.gasPrice', function() {
       assert.equal(getGasPrice(mockState), '0xaa')
     })
   })
 
-  describe('getGasTotal()', function () {
-    it('should return the send.gasTotal', function () {
+  describe('getGasTotal()', function() {
+    it('should return the send.gasTotal', function() {
       assert.equal(getGasTotal(mockState), 'a9ff56')
     })
   })
 
-  describe('getPrimaryCurrency()', function () {
-    it('should return the symbol of the selected token', function () {
+  describe('getPrimaryCurrency()', function() {
+    it('should return the symbol of the selected token', function() {
       assert.equal(getPrimaryCurrency(mockState), 'DEF')
     })
   })
@@ -193,28 +198,29 @@ describe('send selectors', function () {
   //   })
   // })
 
-  describe('getSelectedAccount()', function () {
-    it('should return the currently selected account', function () {
+  describe('getSelectedAccount()', function() {
+    it('should return the currently selected account', function() {
       assert.deepEqual(getSelectedAccount(mockState), {
         code: '0x',
         balance: '0x0',
         nonce: '0x0',
-        address: '0xd85a4b6a394794842887b8284293d69163007bbb',
+        address: '0x185a4b6a394794842887b8284293d69163007bbb',
+        base32Address: 'net3:00c5mjva753t9118gyw2ggmkuu8p603vrc4mt81avu',
       })
     })
   })
 
-  describe('getSelectedIdentity()', function () {
-    it('should return the identity object of the currently selected address', function () {
+  describe('getSelectedIdentity()', function() {
+    it('should return the identity object of the currently selected address', function() {
       assert.deepEqual(getSelectedIdentity(mockState), {
-        address: '0xd85a4b6a394794842887b8284293d69163007bbb',
+        address: '0x185a4b6a394794842887b8284293d69163007bbb',
         name: 'Send Account 4',
       })
     })
   })
 
-  describe('getSelectedToken()', function () {
-    it('should return the currently selected token if selected', function () {
+  describe('getSelectedToken()', function() {
+    it('should return the currently selected token if selected', function() {
       assert.deepEqual(getSelectedToken(mockState), {
         address: '0x8d6b81208414189a58339873ab429b6c47ab92d3',
         decimals: 4,
@@ -222,7 +228,7 @@ describe('send selectors', function () {
       })
     })
 
-    it('should return the send token if none is currently selected, but a send token exists', function () {
+    it('should return the send token if none is currently selected, but a send token exists', function() {
       const mockSendToken = {
         address: '0x123456708414189a58339873ab429b6c47ab92d3',
         decimals: 4,
@@ -243,15 +249,15 @@ describe('send selectors', function () {
     })
   })
 
-  describe('getSelectedTokenContract()', function () {
-    it('should return the contract at the selected token address', function () {
+  describe('getSelectedTokenContract()', function() {
+    it('should return the contract at the selected token address', function() {
       assert.equal(
         getSelectedTokenContract(mockState),
         'mockAt:0x8d6b81208414189a58339873ab429b6c47ab92d3'
       )
     })
 
-    it('should return null if no token is selected', function () {
+    it('should return null if no token is selected', function() {
       const modifiedMetamaskState = Object.assign({}, mockState.metamask, {
         selectedTokenAddress: false,
       })
@@ -264,44 +270,44 @@ describe('send selectors', function () {
     })
   })
 
-  describe('getSelectedTokenExchangeRate()', function () {
-    it('should return the exchange rate for the selected token', function () {
+  describe('getSelectedTokenExchangeRate()', function() {
+    it('should return the exchange rate for the selected token', function() {
       assert.equal(getSelectedTokenExchangeRate(mockState), 2.0)
     })
   })
 
-  describe('getSelectedTokenToFiatRate()', function () {
-    it('should return rate for converting the selected token to fiat', function () {
+  describe('getSelectedTokenToFiatRate()', function() {
+    it('should return rate for converting the selected token to fiat', function() {
       assert.equal(getSelectedTokenToFiatRate(mockState), 2401.76400654)
     })
   })
 
-  describe('getSendAmount()', function () {
-    it('should return the send.amount', function () {
+  describe('getSendAmount()', function() {
+    it('should return the send.amount', function() {
       assert.equal(getSendAmount(mockState), '0x080')
     })
   })
 
-  describe('getSendEditingTransactionId()', function () {
-    it('should return the send.editingTransactionId', function () {
+  describe('getSendEditingTransactionId()', function() {
+    it('should return the send.editingTransactionId', function() {
       assert.equal(getSendEditingTransactionId(mockState), 97531)
     })
   })
 
-  describe('getSendErrors()', function () {
-    it('should return the send.errors', function () {
+  describe('getSendErrors()', function() {
+    it('should return the send.errors', function() {
       assert.deepEqual(getSendErrors(mockState), { someError: null })
     })
   })
 
-  describe('getSendHexDataFeatureFlagState()', function () {
-    it('should return the sendHexData feature flag state', function () {
+  describe('getSendHexDataFeatureFlagState()', function() {
+    it('should return the sendHexData feature flag state', function() {
       assert.deepEqual(getSendHexDataFeatureFlagState(mockState), true)
     })
   })
 
-  describe('getSendFrom()', function () {
-    it('should return the send.from', function () {
+  describe('getSendFrom()', function() {
+    it('should return the send.from', function() {
       assert.deepEqual(getSendFrom(mockState), {
         address: '0xabcdefg',
         balance: '0x5f4e3d2c1',
@@ -309,12 +315,12 @@ describe('send selectors', function () {
     })
   })
 
-  describe('getSendFromBalance()', function () {
-    it('should get the send.from balance if it exists', function () {
+  describe('getSendFromBalance()', function() {
+    it('should get the send.from balance if it exists', function() {
       assert.equal(getSendFromBalance(mockState), '0x5f4e3d2c1')
     })
 
-    it('should get the selected account balance if the send.from does not exist', function () {
+    it('should get the selected account balance if the send.from does not exist', function() {
       const editedMockState = {
         metamask: Object.assign({}, mockState.metamask, {
           send: {
@@ -326,15 +332,15 @@ describe('send selectors', function () {
     })
   })
 
-  describe('getSendFromObject()', function () {
-    it('should return send.from if it exists', function () {
+  describe('getSendFromObject()', function() {
+    it('should return send.from if it exists', function() {
       assert.deepEqual(getSendFromObject(mockState), {
         address: '0xabcdefg',
         balance: '0x5f4e3d2c1',
       })
     })
 
-    it('should return the current account with send ether info if send.from does not exist', function () {
+    it('should return the current account with send ether info if send.from does not exist', function() {
       const editedMockState = {
         metamask: Object.assign({}, mockState.metamask, {
           send: {
@@ -346,53 +352,58 @@ describe('send selectors', function () {
         code: '0x',
         balance: '0x0',
         nonce: '0x0',
-        address: '0xd85a4b6a394794842887b8284293d69163007bbb',
+        address: '0x185a4b6a394794842887b8284293d69163007bbb',
+        base32Address: 'net3:00c5mjva753t9118gyw2ggmkuu8p603vrc4mt81avu',
         name: 'Send Account 4',
       })
     })
   })
 
-  describe('getSendMaxModeState()', function () {
-    it('should return send.maxModeOn', function () {
+  describe('getSendMaxModeState()', function() {
+    it('should return send.maxModeOn', function() {
       assert.equal(getSendMaxModeState(mockState), false)
     })
   })
 
-  describe('getSendTo()', function () {
-    it('should return send.to', function () {
+  describe('getSendTo()', function() {
+    it('should return send.to', function() {
       assert.equal(getSendTo(mockState), '0x987fedabc')
     })
   })
 
-  describe('getSendToAccounts()', function () {
-    it('should return an array including all the users accounts and the address book', function () {
+  describe('getSendToAccounts()', function() {
+    it('should return an array including all the users accounts and the address book', function() {
       assert.deepEqual(getSendToAccounts(mockState), [
         {
           code: '0x',
           balance: '0x47c9d71831c76efe',
           nonce: '0x1b',
-          address: '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825',
+          address: '0x1dea65c8e26263f6d9a1b5de9555d2931a33b825',
+          base32Address: 'net3:00eymte8w9h67xptm6uxx5anua9hmcxs4md9w091pt',
           name: 'Send Account 1',
         },
         {
           code: '0x',
           balance: '0x37452b1315889f80',
           nonce: '0xa',
-          address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
+          address: '0x15b8dbac4c1d3f152cdeb400e2313f309c410acb',
+          base32Address: 'net3:00avhpxc9geky59cvuu01shh7ws9sg8atccde2dx2s',
           name: 'Send Account 2',
         },
         {
           code: '0x',
           balance: '0x30c9d71831c76efe',
           nonce: '0x1c',
-          address: '0x2f8d4a878cfa04a6e60d46362f5644deab66572d',
+          address: '0x1f8d4a878cfa04a6e60d46362f5644deab66572d',
+          base32Address: 'net3:00fsujm7hkx099r61n33cbup8kfaptjr5m475trfyv',
           name: 'Send Account 3',
         },
         {
           code: '0x',
           balance: '0x0',
           nonce: '0x0',
-          address: '0xd85a4b6a394794842887b8284293d69163007bbb',
+          address: '0x185a4b6a394794842887b8284293d69163007bbb',
+          base32Address: 'net3:00c5mjva753t9118gyw2ggmkuu8p603vrc4mt81avu',
           name: 'Send Account 4',
         },
         {
@@ -404,20 +415,20 @@ describe('send selectors', function () {
     })
   })
 
-  describe('getTokenBalance()', function () {
-    it('should', function () {
+  describe('getTokenBalance()', function() {
+    it('should', function() {
       assert.equal(getTokenBalance(mockState), 3434)
     })
   })
 
-  describe('getTokenExchangeRate()', function () {
-    it('should return the passed tokens exchange rates', function () {
+  describe('getTokenExchangeRate()', function() {
+    it('should return the passed tokens exchange rates', function() {
       assert.equal(getTokenExchangeRate(mockState, 'GHI'), 31.01)
     })
   })
 
-  describe('getUnapprovedTxs()', function () {
-    it('should return the unapproved txs', function () {
+  describe('getUnapprovedTxs()', function() {
+    it('should return the unapproved txs', function() {
       assert.deepEqual(getUnapprovedTxs(mockState), {
         4768706228115573: {
           id: 4768706228115573,
@@ -426,7 +437,7 @@ describe('send selectors', function () {
           gasMultiplier: 1,
           metamaskNetworkId: '3',
           txParams: {
-            from: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
+            from: '0x15b8dbac4c1d3f152cdeb400e2313f309c410acb',
             to: '0x18a3462427bcc9133bb46e88bcbe39cd7ef0e761',
             value: '0xde0b6b3a7640000',
             metamaskId: 4768706228115573,
@@ -444,8 +455,8 @@ describe('send selectors', function () {
     })
   })
 
-  describe('transactionsSelector()', function () {
-    it('should return the selected addresses selected token transactions', function () {
+  describe('transactionsSelector()', function() {
+    it('should return the selected addresses selected token transactions', function() {
       assert.deepEqual(transactionsSelector(mockState), [
         {
           id: 'mockTokenTx1',
@@ -464,7 +475,7 @@ describe('send selectors', function () {
       ])
     })
 
-    it('should return all transactions if no token is selected', function () {
+    it('should return all transactions if no token is selected', function() {
       const modifiedMetamaskState = Object.assign({}, mockState.metamask, {
         selectedTokenAddress: false,
       })
@@ -509,13 +520,13 @@ describe('send selectors', function () {
           id: 'mockEthTx1',
           time: 1400000000000,
           txParams: {
-            to: '0xd85a4b6a394794842887b8284293d69163007bbb',
+            to: '0x185a4b6a394794842887b8284293d69163007bbb',
           },
         },
       ])
     })
 
-    it('should return shapeshift transactions if current network is 1', function () {
+    it('should return shapeshift transactions if current network is 1', function() {
       const modifiedMetamaskState = Object.assign({}, mockState.metamask, {
         selectedTokenAddress: false,
         network: '1',
@@ -564,7 +575,7 @@ describe('send selectors', function () {
           id: 'mockEthTx1',
           time: 1400000000000,
           txParams: {
-            to: '0xd85a4b6a394794842887b8284293d69163007bbb',
+            to: '0x185a4b6a394794842887b8284293d69163007bbb',
           },
         },
       ])

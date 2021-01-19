@@ -4,8 +4,8 @@
     "isUnlocked": true,
     "rpcTarget": "https://rawtestrpc.metamask.io/",
     "identities": {
-      "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825": {
-        "address": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+      "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825": {
+        "address": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
         "name": "Account 1"
       }
     },
@@ -21,11 +21,11 @@
     },
     "network": "1",
     "accounts": {
-      "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825": {
+      "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825": {
         "code": "0x",
         "balance": "0x1b3f641ed0c2f62",
         "nonce": "0x35",
-        "address": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825"
+        "address": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825"
       }
     },
     "currentBlockGasLimit": "0x66df83",
@@ -36,8 +36,8 @@
         "status": "submitted",
         "metamaskNetworkId": "1",
         "txParams": {
-          "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
-          "to": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "to": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
           "value": "0x16345785d8a0000",
           "gasPrice": "0xc1b710800",
           "gas": "0x7b0c",
@@ -54,8 +54,8 @@
             "status": "unapproved",
             "metamaskNetworkId": "1",
             "txParams": {
-              "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
-              "to": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+              "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
+              "to": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
               "value": "0x16345785d8a0000",
               "gasPrice": "0xe6f7cec00",
               "gas": "0x7b0c"
@@ -192,8 +192,8 @@
         "status": "confirmed",
         "metamaskNetworkId": "1",
         "txParams": {
-          "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
-          "to": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "to": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
           "value": "0x16345785d8a0000",
           "gasPrice": "0xba43b7400",
           "gas": "0x7b0c",
@@ -210,8 +210,8 @@
             "status": "unapproved",
             "metamaskNetworkId": "1",
             "txParams": {
-              "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
-              "to": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+              "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
+              "to": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
               "value": "0x16345785d8a0000",
               "gasPrice": "0xdf8475800",
               "gas": "0x7b0c"
@@ -356,8 +356,8 @@
         "status": "confirmed",
         "metamaskNetworkId": "1",
         "txParams": {
-          "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
-          "to": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "to": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
           "value": "0x16345785d8a0000",
           "gasPrice": "0xa7a358200",
           "gas": "0x7b0c",
@@ -374,8 +374,8 @@
             "status": "unapproved",
             "metamaskNetworkId": "1",
             "txParams": {
-              "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
-              "to": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+              "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
+              "to": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
               "value": "0x16345785d8a0000",
               "gasPrice": "0xba43b7400",
               "gas": "0x7b0c"
@@ -520,8 +520,8 @@
         "status": "failed",
         "metamaskNetworkId": "1",
         "txParams": {
-          "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
-          "to": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "to": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
           "value": "0x16345785d8a0000",
           "gasPrice": "0x77359400",
           "gas": "0x7b0c",
@@ -538,8 +538,8 @@
             "status": "unapproved",
             "metamaskNetworkId": "1",
             "txParams": {
-              "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
-              "to": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+              "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
+              "to": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
               "value": "0x16345785d8a0000",
               "gasPrice": "0xba43b7400",
               "gas": "0x7b0c"
@@ -677,7 +677,7 @@
     "keyrings": [
       {
         "type": "HD Key Tree",
-        "accounts": ["0xfdea65c8e26263f6d9a1b5de9555d2931a33b825"]
+        "accounts": ["0x1dea65c8e26263f6d9a1b5de9555d2931a33b825"]
       }
     ],
     "currentAccountTab": "history",
@@ -688,7 +688,7 @@
         "decimals": "18"
       }
     ],
-    "selectedAddress": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+    "selectedAddress": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
     "currentCurrency": "usd",
     "conversionRate": 418.62,
     "conversionDate": 1512615622,
@@ -706,7 +706,7 @@
     "menuOpen": false,
     "currentView": {
       "name": "accountDetail",
-      "context": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825"
+      "context": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825"
     },
     "accountDetail": {
       "subview": "transactions",

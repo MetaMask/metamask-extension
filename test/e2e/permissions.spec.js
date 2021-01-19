@@ -8,10 +8,12 @@ const Ganache = require('@cfxjs/fullnode')
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
 const ganacheServer = new Ganache()
+const { decode } = require('conflux-address-js')
+const { bufferToHex } = require('cfx-util')
 
 describe('MetaMask', function() {
   let driver
-  let publicAddress
+  let publicBase32Address
 
   this.timeout(0)
   this.bail(true)
@@ -105,7 +107,7 @@ describe('MetaMask', function() {
 
     it('gets the current accounts address', async function() {
       const addressInput = await driver.findElement(By.css('.qr-ellip-address'))
-      publicAddress = await addressInput.getAttribute('value')
+      publicBase32Address = await addressInput.getAttribute('value')
       const accountModal = await driver.findElement(By.css('span .modal'))
 
       await driver.clickElement(By.css('.account-modal-close'))
@@ -198,7 +200,7 @@ describe('MetaMask', function() {
       )
       assert.equal(
         (await getAccountsResult.getText()).toLowerCase(),
-        publicAddress.toLowerCase()
+        bufferToHex(decode(publicBase32Address).hexAddress)
       )
     })
 

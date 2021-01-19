@@ -126,6 +126,10 @@ export default class NetworkController extends EventEmitter {
       network = '1'
     }
 
+    if (Number.isSafeInteger(network)) {
+ network = network.toString(10)
+}
+
     return this.networkStore.putState(network)
   }
 
@@ -289,7 +293,7 @@ export default class NetworkController extends EventEmitter {
     const networkClient = createJsonRpcClient({ rpcUrl })
     // hack to add a 'rpc' network with chainId
     networks.networkList[type || 'rpc'] = {
-      chainId: chainId,
+      chainId,
       rpcUrl,
       ticker: ticker || 'CFX',
       nickname,

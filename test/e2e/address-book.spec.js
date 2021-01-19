@@ -213,7 +213,9 @@ describe('MetaMask', function() {
       const inputAddress = await driver.findElement(
         By.css('input[placeholder="Search, public address (0x1 or 0x8)"]')
       )
-      await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
+      await inputAddress.sendKeys(
+        'net2999:00fk331k8y09c7xh579adgsd0xhxk9e9e0akwd6jms'
+      )
       await driver.delay(regularDelayMs)
 
       await driver.clickElement(By.css('.dialog.send__dialog.dialog--message'))

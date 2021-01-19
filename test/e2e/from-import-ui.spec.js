@@ -14,7 +14,8 @@ describe('Using MetaMask with an existing account', function() {
 
   const testSeedPhrase =
     'forum vessel pink push lonely enact gentle tail admit parrot grunt dress'
-  const testAddress = '0x1B5367BB0215070aD6EEF31576bbbB58B024A65c'
+  // const testAddress = '0x1B5367BB0215070aD6EEF31576bbbB58B024A65c'
+  const testBase32Address = 'net2999:00dn6txv08age2ppxvthaxnvrdcb0956bgmz2xhhfv'
   const testPrivateKey2 =
     '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6'
   const testPrivateKey3 =
@@ -125,7 +126,7 @@ describe('Using MetaMask with an existing account', function() {
       const [address] = await driver.findElements(
         By.css('input.qr-ellip-address')
       )
-      assert.equal(await address.getAttribute('value'), testAddress)
+      assert.equal(await address.getAttribute('value'), testBase32Address)
 
       await driver.clickElement(By.css('.account-modal-close'))
       await driver.delay(largeDelayMs)

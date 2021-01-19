@@ -10,24 +10,24 @@ import SendHexDataRow from '../send-hex-data-row/send-hex-data-row.container'
 import SendAssetRow from '../send-asset-row/send-asset-row.container'
 import Dialog from '../../../../components/ui/dialog'
 
-describe('SendContent Component', function () {
+describe('SendContent Component', function() {
   let wrapper
 
-  beforeEach(function () {
+  beforeEach(function() {
     wrapper = shallow(
       <SendContent showHexData fetchAddressTransactionCount={() => {}} />,
       {
-        context: { t: (str) => str + '_t' },
+        context: { t: str => str + '_t' },
       }
     )
   })
 
-  describe('render', function () {
-    it('should render a PageContainerContent component', function () {
+  describe('render', function() {
+    it('should render a PageContainerContent component', function() {
       assert.equal(wrapper.find(PageContainerContent).length, 1)
     })
 
-    it('should render a div with a .send-v2__form class as a child of PageContainerContent', function () {
+    it('should render a div with a .send-v2__form class as a child of PageContainerContent', function() {
       const PageContainerContentChild = wrapper
         .find(PageContainerContent)
         .children()
@@ -35,7 +35,7 @@ describe('SendContent Component', function () {
       PageContainerContentChild.is('.send-v2__form')
     })
 
-    it('should render the correct row components as grandchildren of the PageContainerContent component', function () {
+    it('should render the correct row components as grandchildren of the PageContainerContent component', function() {
       const PageContainerContentChild = wrapper
         .find(PageContainerContent)
         .children()
@@ -61,7 +61,7 @@ describe('SendContent Component', function () {
       )
     })
 
-    it('should not render the SendHexDataRow if props.showHexData is false', function () {
+    it('should not render the SendHexDataRow if props.showHexData is false', function() {
       wrapper.setProps({ showHexData: false })
       const PageContainerContentChild = wrapper
         .find(PageContainerContent)
@@ -85,7 +85,7 @@ describe('SendContent Component', function () {
       assert.equal(PageContainerContentChild.childAt(4).exists(), false)
     })
 
-    it('should not render the Dialog if contact has a name', function () {
+    it('should not render the Dialog if contact has a name', function() {
       wrapper.setProps({
         showHexData: false,
         contact: { name: 'testName' },
@@ -94,21 +94,28 @@ describe('SendContent Component', function () {
         .find(PageContainerContent)
         .children()
       assert(
-        PageContainerContentChild.childAt(0).is(SendAssetRow),
-        'row[1] should be SendAssetRow'
+        PageContainerContentChild.childAt(0)
+          .childAt(0)
+          .text()
+          .includes('confluxNewAddressWarning'),
+        'row[1] should be new address warning'
       )
       assert(
-        PageContainerContentChild.childAt(1).is(SendAmountRow),
-        'row[2] should be SendAmountRow'
+        PageContainerContentChild.childAt(1).is(SendAssetRow),
+        'row[2] should be SendAssetRow'
       )
       assert(
-        PageContainerContentChild.childAt(2).is(SendGasRow),
-        'row[3] should be SendGasRow'
+        PageContainerContentChild.childAt(2).is(SendAmountRow),
+        'row[3] should be SendAmountRow'
       )
-      assert.equal(PageContainerContentChild.childAt(3).exists(), false)
+      assert(
+        PageContainerContentChild.childAt(3).is(SendGasRow),
+        'row[4] should be SendGasRow'
+      )
+      assert.equal(PageContainerContentChild.childAt(4).exists(), false)
     })
 
-    it('should not render the Dialog if it is an ownedAccount', function () {
+    it('should not render the Dialog if it is an ownedAccount', function() {
       wrapper.setProps({
         showHexData: false,
         isOwnedAccount: true,
@@ -117,22 +124,29 @@ describe('SendContent Component', function () {
         .find(PageContainerContent)
         .children()
       assert(
-        PageContainerContentChild.childAt(0).is(SendAssetRow),
-        'row[1] should be SendAssetRow'
+        PageContainerContentChild.childAt(0)
+          .childAt(0)
+          .text()
+          .includes('confluxNewAddressWarning'),
+        'row[1] should be new address warning'
       )
       assert(
-        PageContainerContentChild.childAt(1).is(SendAmountRow),
-        'row[2] should be SendAmountRow'
+        PageContainerContentChild.childAt(1).is(SendAssetRow),
+        'row[2] should be SendAssetRow'
       )
       assert(
-        PageContainerContentChild.childAt(2).is(SendGasRow),
-        'row[3] should be SendGasRow'
+        PageContainerContentChild.childAt(2).is(SendAmountRow),
+        'row[3] should be SendAmountRow'
       )
-      assert.equal(PageContainerContentChild.childAt(3).exists(), false)
+      assert(
+        PageContainerContentChild.childAt(3).is(SendGasRow),
+        'row[4] should be SendGasRow'
+      )
+      assert.equal(PageContainerContentChild.childAt(4).exists(), false)
     })
   })
 
-  it('should not render the asset dropdown if token length is 0 ', function () {
+  it('should not render the asset dropdown if token length is 0 ', function() {
     wrapper.setProps({ tokens: [] })
     const PageContainerContentChild = wrapper
       .find(PageContainerContent)

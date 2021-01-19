@@ -7,8 +7,8 @@ import {
   contractExchangeRateSelector,
 } from '../confirm-transaction'
 
-describe('Confirm Transaction Selector', function () {
-  describe('unconfirmedTransactionsCountSelector', function () {
+describe('Confirm Transaction Selector', function() {
+  describe('unconfirmedTransactionsCountSelector', function() {
     const state = {
       metamask: {
         unapprovedTxs: {
@@ -26,12 +26,12 @@ describe('Confirm Transaction Selector', function () {
       },
     }
 
-    it('returns number of txs in unapprovedTxs state with the same network plus unapproved signing method counts', function () {
+    it('returns number of txs in unapprovedTxs state with the same network plus unapproved signing method counts', function() {
       assert.equal(unconfirmedTransactionsCountSelector(state), 4)
     })
   })
 
-  describe('tokenAmountAndToAddressSelector', function () {
+  describe('tokenAmountAndToAddressSelector', function() {
     const state = {
       confirmTransaction: {
         tokenData: {
@@ -39,7 +39,7 @@ describe('Confirm Transaction Selector', function () {
           params: [
             {
               name: '_to',
-              value: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+              value: '0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc',
               type: 'address',
             },
             {
@@ -56,15 +56,15 @@ describe('Confirm Transaction Selector', function () {
       },
     }
 
-    it('returns calulcated token amount based on token value and token decimals and recipient address', function () {
+    it('returns calulcated token amount based on token value and token decimals and recipient address', function() {
       assert.deepEqual(tokenAmountAndToAddressSelector(state), {
-        toAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        toAddress: '0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         tokenAmount: 0.01,
       })
     })
   })
 
-  describe('approveTokenAmountAndToAddressSelector', function () {
+  describe('approveTokenAmountAndToAddressSelector', function() {
     const state = {
       confirmTransaction: {
         tokenData: {
@@ -72,7 +72,7 @@ describe('Confirm Transaction Selector', function () {
           params: [
             {
               name: '_spender',
-              value: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+              value: '0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc',
               type: 'address',
             },
             {
@@ -89,15 +89,15 @@ describe('Confirm Transaction Selector', function () {
       },
     }
 
-    it('returns token amount and recipient for approve token allocation spending', function () {
+    it('returns token amount and recipient for approve token allocation spending', function() {
       assert.deepEqual(approveTokenAmountAndToAddressSelector(state), {
-        toAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        toAddress: '0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         tokenAmount: 0.01,
       })
     })
   })
 
-  describe('sendTokenTokenAmountAndToAddressSelector', function () {
+  describe('sendTokenTokenAmountAndToAddressSelector', function() {
     const state = {
       confirmTransaction: {
         tokenData: {
@@ -105,7 +105,7 @@ describe('Confirm Transaction Selector', function () {
           params: [
             {
               name: '_to',
-              value: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+              value: '0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc',
               type: 'address',
             },
             {
@@ -122,15 +122,15 @@ describe('Confirm Transaction Selector', function () {
       },
     }
 
-    it('returns token address and calculated token amount', function () {
+    it('returns token address and calculated token amount', function() {
       assert.deepEqual(sendTokenTokenAmountAndToAddressSelector(state), {
-        toAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        toAddress: '0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         tokenAmount: 0.01,
       })
     })
   })
 
-  describe('contractExchangeRateSelector', function () {
+  describe('contractExchangeRateSelector', function() {
     const state = {
       metamask: {
         contractExchangeRates: {
@@ -146,7 +146,7 @@ describe('Confirm Transaction Selector', function () {
       },
     }
 
-    it('returns contract exchange rate in metamask state based on confirm transaction txParams token recipient', function () {
+    it('returns contract exchange rate in metamask state based on confirm transaction txParams token recipient', function() {
       assert.equal(contractExchangeRateSelector(state), 10)
     })
   })
