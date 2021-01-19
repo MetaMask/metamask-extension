@@ -20,8 +20,8 @@ export function isValidHexAddress(addr) {
 
 export function hexToBase32(hexAddr, netId) {
   if (hexAddr === undefined) {
- return hexAddr
-}
+    return hexAddr
+  }
   if (!isValidHexAddress(hexAddr)) {
     throw new Error(`invalid address: ${hexAddr}, must be a 0x prefixed string`)
   }
@@ -56,8 +56,8 @@ export function isValidBase32Address(addr, netId, type) {
 
   let valid = Boolean(decoded) && decoded.netId === netId
   if (type) {
- valid = valid && type === decoded.type
-}
+    valid = valid && type === decoded.type
+  }
 
   return valid
 }

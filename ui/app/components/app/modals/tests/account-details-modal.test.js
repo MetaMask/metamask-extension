@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import { shallow } from 'enzyme'
 import AccountDetailsModal from '../account-details-modal'
 
-describe('Account Details Modal', function () {
+describe('Account Details Modal', function() {
   let wrapper
 
   global.platform = { openWindow: sinon.spy() }
@@ -14,35 +14,36 @@ describe('Account Details Modal', function () {
     setAccountLabel: sinon.spy(),
     showExportPrivateKeyModal: sinon.spy(),
     showQrView: sinon.spy(),
-    network: 'test',
+    network: '4',
     rpcPrefs: {},
     selectedIdentity: {
-      address: '0xAddress',
+      address: '0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      base32Address: 'net4:00ewurc8cnvxa20v1h9e4grf57kgrsz7rgbatmmvuf',
       name: 'Account 1',
     },
     keyrings: [
       {
         type: 'HD Key Tree',
-        accounts: ['0xAddress'],
+        accounts: ['0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
       },
     ],
     identities: {
-      '0xAddress': {
-        address: '0xAddress',
+      '0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+        address: '0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         name: 'Account 1',
       },
     },
   }
 
-  beforeEach(function () {
+  beforeEach(function() {
     wrapper = shallow(<AccountDetailsModal.WrappedComponent {...props} />, {
       context: {
-        t: (str) => str,
+        t: str => str,
       },
     })
   })
 
-  it('sets account label when changing default account label', function () {
+  it('sets account label when changing default account label', function() {
     const accountLabel = wrapper.find('.account-modal__name').first()
     accountLabel.simulate('submit', 'New Label')
 
@@ -50,7 +51,7 @@ describe('Account Details Modal', function () {
     assert.equal(props.setAccountLabel.getCall(0).args[1], 'New Label')
   })
 
-  it('opens new window when view block explorer is clicked', function () {
+  it('opens new window when view block explorer is clicked', function() {
     const modalButton = wrapper.find('.account-modal__button')
     const etherscanLink = modalButton.first()
 
@@ -58,7 +59,7 @@ describe('Account Details Modal', function () {
     assert(global.platform.openWindow.calledOnce)
   })
 
-  it('shows export private key modal when clicked', function () {
+  it('shows export private key modal when clicked', function() {
     const modalButton = wrapper.find('.account-modal__button')
     const etherscanLink = modalButton.last()
 
@@ -66,7 +67,7 @@ describe('Account Details Modal', function () {
     assert(props.showExportPrivateKeyModal.calledOnce)
   })
 
-  it('sets blockexplorerview text when block explorer url in rpcPrefs exists', function () {
+  it('sets blockexplorerview text when block explorer url in rpcPrefs exists', function() {
     const blockExplorerUrl = 'https://block.explorer'
     wrapper.setProps({ rpcPrefs: { blockExplorerUrl } })
 
