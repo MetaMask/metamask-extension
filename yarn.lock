@@ -1108,13 +1108,14 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@cfxjs/fullnode@^1.6.1":
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/@cfxjs/fullnode/-/fullnode-1.6.1.tgz#d6f4f7afacd376642e5181eb8e2bb3600d8157e4"
-  integrity sha512-FeNd0tUjAzvptN5JtVVVYGHpL5zWPtJj/CAb1t0fiK02dDr9AsJtnOsT/3CNlPWEOBk4yOXuC3hqVJhMpeY/OQ==
+"@cfxjs/fullnode@^1.6.3":
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/@cfxjs/fullnode/-/fullnode-1.6.3.tgz#2b8bd0e2a2878790d5ab13e710eb277201252eee"
+  integrity sha512-3CQgHjld1aPkubowXmdA9MK4Hzv9HrIamIJ6yH8JXZtBr9/JitK6W2yjJHv3ixTYiW9NdpJZ1aeUy8fPMikPHA==
   dependencies:
     cfx-util ">=0.0.2"
     cross-port-killer "^1.2.1"
+    delay "^4.4.0"
     express "^4.17.1"
     express-async-errors "^3.1.1"
     got "^10.7.0"
@@ -8378,6 +8379,11 @@ del@^5.1.0:
     p-map "^3.0.0"
     rimraf "^3.0.0"
     slash "^3.0.0"
+
+delay@^4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/delay/-/delay-4.4.0.tgz#71abc745f3ce043fe7f450491236541edec4ad0c"
+  integrity sha512-txgOrJu3OdtOfTiEOT2e76dJVfG/1dz2NZ4F0Pyt4UGZJryssMRp5vdM5wQoLwSOBNdrJv3F9PAhp/heqd7vrA==
 
 delayed-stream@~1.0.0:
   version "1.0.0"
