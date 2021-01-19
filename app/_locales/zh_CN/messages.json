@@ -718,9 +718,6 @@
     "message": "JSON 文件",
     "description": "format for importing an account"
   },
-  "kovan": {
-    "message": "Kovan 测试网络"
-  },
   "max": {
     "message": "最大"
   },
@@ -1051,9 +1048,6 @@
   },
   "ropsten": {
     "message": "Ropsten 测试网络"
-  },
-  "goerli": {
-    "message": "Goerli 测试网络"
   },
   "save": {
     "message": "保存"

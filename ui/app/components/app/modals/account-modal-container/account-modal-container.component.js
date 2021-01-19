@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import Identicon from '../../../ui/identicon'
 
-export default function AccountModalContainer (props, context) {
+export default function AccountModalContainer(props, context) {
   const {
     selectedIdentity,
     showBackButton,

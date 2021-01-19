@@ -3,6 +3,7 @@ import React from 'react'
 import qrCode from 'qrcode-generator'
 import { connect } from 'react-redux'
 import ReadOnlyInput from './readonly-input'
+import NetworkTag from './network-tag'
 
 export default connect(mapStateToProps)(QrCodeView)
 
@@ -15,11 +16,23 @@ function mapStateToProps(state) {
 }
 
 function QrCodeView(props) {
-  const { message, data } = props.Qr
+  const { message, data, testnetBase32Address, mainnetBase32Address } = props.Qr
   const address = `conflux:${data}`
   const qrImage = qrCode(4, 'M')
   qrImage.addData(address)
   qrImage.make()
+  const [isMainnet, isTestnet] = [
+    data === mainnetBase32Address,
+    data === testnetBase32Address,
+  ]
+
+  const currentTagName =
+    (isMainnet && 'Mainnet (Current)') ||
+    (isTestnet && 'Testnet (Current)') ||
+    'Current'
+
+  const currentTagClass =
+    (isMainnet && 'mainnet') || (isTestnet && 'testnet') || 'current'
 
   return (
     <div className="div flex-column flex-center">
@@ -45,11 +58,34 @@ function QrCodeView(props) {
           __html: qrImage.createTableTag(4),
         }}
       />
-      <ReadOnlyInput
-        wrapperClass="ellip-address-wrapper"
-        inputClass="qr-ellip-address"
-        value={data}
-      />
+      <div className="address-wrapper flex-row flex-center">
+        <NetworkTag wrapperClass={currentTagClass} name={currentTagName} />
+        <ReadOnlyInput
+          wrapperClass="ellip-address-wrapper"
+          inputClass="qr-ellip-address"
+          value={data}
+        />
+      </div>
+      {!isMainnet && (
+        <div className="address-wrapper flex-row flex-center">
+          <NetworkTag wrapperClass="mainnet" name="Mainnet" />
+          <ReadOnlyInput
+            wrapperClass="ellip-address-wrapper"
+            inputClass="qr-ellip-address"
+            value={mainnetBase32Address}
+          />
+        </div>
+      )}
+      {!isTestnet && (
+        <div className="address-wrapper flex-row flex-center">
+          <NetworkTag wrapperClass="testnet" name="Testnet" />
+          <ReadOnlyInput
+            wrapperClass="ellip-address-wrapper"
+            inputClass="qr-ellip-address"
+            value={testnetBase32Address}
+          />
+        </div>
+      )}
     </div>
   )
 }
@@ -62,5 +98,7 @@ QrCodeView.propTypes = {
       PropTypes.node,
     ]),
     data: PropTypes.string.isRequired,
+    testnetBase32Address: PropTypes.string,
+    mainnetBase32Address: PropTypes.string,
   }).isRequired,
 }

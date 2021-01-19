@@ -20,7 +20,7 @@
   bottom: 0;
   left: 0;
   z-index: 1040;
-  background-color: #373A47;
+  background-color: #373a47;
   animation-fill-mode: forwards;
   animation-duration: 0.3s;
 }
@@ -83,11 +83,9 @@
   margin-bottom: -32px;
 }
 
-
 // Account Details Modal
 
 .account-modal-container {
-
   .qr-header {
     margin-top: 9px;
     font-size: 20px;
@@ -111,6 +109,35 @@
     margin-top: 17px;
     padding: 10px 22px;
     width: 286px;
+  }
+
+  .address-wrapper {
+    margin-bottom: 1rem;
+
+    .ellip-address-wrapper {
+      width: unset;
+      margin-top: unset;
+    }
+
+    .network-tag {
+      margin-right: 4px;
+      font-size: 12px;
+      padding: 8px;
+      min-width: 120px;
+      text-align: center;
+    }
+    .network-tag.current {
+      color: white;
+      background-color: black;
+    }
+    .network-tag.mainnet {
+      color: white;
+      background-color: #60b3ae;
+    }
+    .network-tag.testnet {
+      background-color: #e3598d;
+      color: white;
+    }
   }
 }
 
@@ -144,7 +171,8 @@
   flex-direction: column;
 }
 
-.private-key-password-label, .private-key-password-error {
+.private-key-password-label,
+.private-key-password-error {
   color: $scorpion;
   font-size: 14px;
   line-height: 18px;
@@ -171,7 +199,7 @@
 
 .private-key-password-warning {
   border-radius: 8px;
-  background-color: #FFF6F6;
+  background-color: #fff6f6;
   font-size: 12px;
   font-weight: 500;
   line-height: 15px;
@@ -236,7 +264,7 @@
   min-height: 250.72px;
   border-radius: 4px;
   background-color: $white;
-  box-shadow: 0 1px 7px 0 rgba(0, 0, 0, .5);
+  box-shadow: 0 1px 7px 0 rgba(0, 0, 0, 0.5);
 
   &__container {
     padding: 24px 27px 21px;
@@ -298,7 +326,6 @@
 //Notification Modal
 
 .notification-modal {
-
   &__wrapper {
     display: flex;
     flex-direction: column;
@@ -407,9 +434,10 @@
       align-items: center;
       flex: 1 0 auto;
 
-      .shapeshift-form, .modal-shapeshift-form {
+      .shapeshift-form,
+      .modal-shapeshift-form {
         border-radius: 8px;
-        background-color: rgba(0, 0, 0, .05);
+        background-color: rgba(0, 0, 0, 0.05);
         padding: 17px 15px;
         margin-bottom: 10px;
 
@@ -534,7 +562,8 @@
     border-bottom: 0px;
   }
 
-  &__deposit-button, .shapeshift-form__shapeshift-buy-btn {
+  &__deposit-button,
+  .shapeshift-form__shapeshift-buy-btn {
     width: 257px;
   }
 
@@ -546,9 +575,10 @@
     margin-top: 28px;
     flex: 1 0 auto;
 
-    .shapeshift-form, .modal-shapeshift-form {
+    .shapeshift-form,
+    .modal-shapeshift-form {
       border-radius: 8px;
-      background-color: rgba(0, 0, 0, .05);
+      background-color: rgba(0, 0, 0, 0.05);
       padding: 17px 15px;
 
       &__caret {
@@ -563,11 +593,11 @@
   }
 
   .simple-dropdown {
-    color: #5B5D67;
+    color: #5b5d67;
     font-size: 16px;
     line-height: 21px;
-    border: 1px solid #D8D8D8;
-    background-color: #FFFFFF;
+    border: 1px solid #d8d8d8;
+    background-color: #ffffff;
     text-align: center;
     width: 100%;
     height: 45px;

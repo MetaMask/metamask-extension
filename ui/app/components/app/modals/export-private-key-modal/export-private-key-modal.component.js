@@ -4,7 +4,6 @@ import React, { Component } from 'react'
 
 import { stripHexPrefix } from 'cfx-util'
 import copyToClipboard from 'copy-to-clipboard'
-import { checksumAddress } from '../../../../helpers/utils/util'
 import ReadOnlyInput from '../../../ui/readonly-input'
 import Button from '../../../ui/button'
 import AccountModalContainer from '../account-modal-container'
@@ -38,16 +37,16 @@ export default class ExportPrivateKeyModal extends Component {
     const { exportAccount } = this.props
 
     exportAccount(password, address)
-      .then((privateKey) =>
+      .then(privateKey =>
         this.setState({
           privateKey,
           showWarning: false,
         })
       )
-      .catch((e) => log.error(e))
+      .catch(e => log.error(e))
   }
 
-  renderPasswordLabel (privateKey) {
+  renderPasswordLabel(privateKey) {
     return (
       <span className="private-key-password-label">
         {privateKey
@@ -57,7 +56,7 @@ export default class ExportPrivateKeyModal extends Component {
     )
   }
 
-  renderPasswordInput (privateKey) {
+  renderPasswordInput(privateKey) {
     const plainKey = privateKey && stripHexPrefix(privateKey)
 
     if (!privateKey) {
@@ -65,7 +64,7 @@ export default class ExportPrivateKeyModal extends Component {
         <input
           type="password"
           className="private-key-password-input"
-          onChange={(event) => this.setState({ password: event.target.value })}
+          onChange={event => this.setState({ password: event.target.value })}
         />
       )
     }
@@ -81,7 +80,7 @@ export default class ExportPrivateKeyModal extends Component {
     )
   }
 
-  renderButtons (privateKey, address, hideModal) {
+  renderButtons(privateKey, address, hideModal) {
     return (
       <div className="export-private-key-buttons">
         {!privateKey && (
@@ -120,7 +119,7 @@ export default class ExportPrivateKeyModal extends Component {
     )
   }
 
-  render () {
+  render() {
     const {
       selectedIdentity,
       warning,
@@ -128,7 +127,7 @@ export default class ExportPrivateKeyModal extends Component {
       hideModal,
       previousModalState,
     } = this.props
-    const { name, address } = selectedIdentity
+    const { name, base32Address, address } = selectedIdentity
 
     const { privateKey, showWarning } = this.state
 
@@ -142,7 +141,7 @@ export default class ExportPrivateKeyModal extends Component {
         <ReadOnlyInput
           wrapperClass="ellip-address-wrapper"
           inputClass="qr-ellip-address ellip-address"
-          value={checksumAddress(address)}
+          value={base32Address}
         />
         <div className="account-modal-divider" />
         <span className="modal-body-title">

@@ -835,9 +835,6 @@
     "message": "JSON File",
     "description": "format for importing an account"
   },
-  "kovan": {
-    "message": "Kovan Test Network"
-  },
   "max": {
     "message": "Max"
   },
@@ -1198,9 +1195,6 @@
   },
   "ropsten": {
     "message": "Ropsten Test Network"
-  },
-  "goerli": {
-    "message": "Goerli Test Network"
   },
   "save": {
     "message": "Save"

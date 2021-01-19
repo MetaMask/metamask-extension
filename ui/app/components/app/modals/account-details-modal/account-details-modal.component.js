@@ -8,6 +8,8 @@ import Button from '../../../ui/button'
 
 export default class AccountDetailsModal extends Component {
   static propTypes = {
+    testnetBase32Address: PropTypes.string.isRequired,
+    mainnetBase32Address: PropTypes.string.isRequired,
     selectedIdentity: PropTypes.object,
     network: PropTypes.string,
     showExportPrivateKeyModal: PropTypes.func,
@@ -22,6 +24,8 @@ export default class AccountDetailsModal extends Component {
 
   render() {
     const {
+      testnetBase32Address,
+      mainnetBase32Address,
       selectedIdentity,
       network,
       showExportPrivateKeyModal,
@@ -53,7 +57,9 @@ export default class AccountDetailsModal extends Component {
         <QrView
           Qr={{
             data: base32Address,
-            network: network,
+            testnetBase32Address,
+            mainnetBase32Address,
+            network,
           }}
         />
 
