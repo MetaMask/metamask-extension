@@ -246,7 +246,6 @@ export default class MetamaskController extends EventEmitter {
         notifyDomain: this.notifyConnections.bind(this),
         notifyAllDomains: this.notifyAllConnections.bind(this),
         preferences: this.preferencesController.store,
-        showPermissionRequest: opts.showUserConfirmation,
       },
       initState.PermissionsController,
       initState.PermissionsMetadata,
@@ -575,6 +574,7 @@ export default class MetamaskController extends EventEmitter {
   getApi() {
     const {
       alertController,
+      approvalController,
       keyringController,
       metaMetricsController,
       networkController,
@@ -898,6 +898,16 @@ export default class MetamaskController extends EventEmitter {
       trackMetaMetricsPage: nodeify(
         metaMetricsController.trackPage,
         metaMetricsController,
+      ),
+
+      // approval controller
+      resolvePendingApproval: nodeify(
+        approvalController.resolve,
+        approvalController,
+      ),
+      rejectPendingApproval: nodeify(
+        approvalController.reject,
+        approvalController,
       ),
     };
   }
@@ -2094,6 +2104,21 @@ export default class MetamaskController extends EventEmitter {
         setWeb3ShimUsageRecorded: this.alertController.setWeb3ShimUsageRecorded.bind(
           this.alertController,
         ),
+        customRpcExistsWith: this.customRpcExistsWith.bind(this),
+        requestUserApproval: this.approvalController.addAndShowApprovalRequest.bind(
+          this.approvalController,
+        ),
+        addCustomRpc: ({
+          chainId,
+          blockExplorerUrl,
+          ticker,
+          chainName,
+          rpcUrl,
+        } = {}) => {
+          this.updateAndSetCustomRpc(rpcUrl, chainId, ticker, chainName, {
+            blockExplorerUrl,
+          });
+        },
       }),
     );
     // filter and subscription polyfills
@@ -2447,8 +2472,10 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} rpcUrl - A URL for a valid Ethereum RPC API.
    * @param {string} chainId - The chainId of the selected network.
    * @param {string} ticker - The ticker symbol of the selected network.
-   * @param {string} nickname - Optional nickname of the selected network.
-   * @returns {Promise<String>} The RPC Target URL confirmed.
+   * @param {string} [nickname] - Nickname of the selected network.
+   * @param {Object} [rpcPrefs] - RPC preferences.
+   * @param {string} [rpcPrefs.blockExplorerUrl] - URL of block explorer for the chain.
+   * @returns {Promise<String>} - The RPC Target URL confirmed.
    */
   async updateAndSetCustomRpc(
     rpcUrl,
@@ -2527,6 +2554,26 @@ export default class MetamaskController extends EventEmitter {
    */
   async delCustomRpc(rpcUrl) {
     await this.preferencesController.removeFromFrequentRpcList(rpcUrl);
+  }
+
+  /**
+   * Checks whether the given RPC info object matches at least one field of any
+   * existing frequent RPC list object.
+   *
+   * @param {Object} rpcInfo - The RPC endpoint properties and values to check.
+   * @returns {boolean} true if there exists an RPC list entry with any of the
+   * given propertiers, false otherwise.
+   */
+  customRpcExistsWith(rpcInfo) {
+    const frequentRpcListDetail = this.preferencesController.getFrequentRpcListDetail();
+    for (const existingRpcInfo of frequentRpcListDetail) {
+      for (const key of Object.keys(rpcInfo)) {
+        if (existingRpcInfo[key] === rpcInfo[key]) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   async initializeThreeBox() {
