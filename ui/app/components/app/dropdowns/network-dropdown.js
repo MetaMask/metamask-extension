@@ -9,7 +9,7 @@ import {
   NETWORKS_ROUTE,
   NETWORKS_FORM_ROUTE,
 } from '../../../helpers/constants/routes'
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../app/scripts/lib/enums'
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app'
 import {
   getEnvironmentType,
   isPrefixedFormattedHexString,

@@ -22,7 +22,7 @@ import {
   RINKEBY_CHAIN_ID,
   ROPSTEN,
   ROPSTEN_CHAIN_ID,
-} from './network/enums'
+} from '../../../shared/constants/network'
 
 const fetchWithTimeout = getFetchWithTimeout(30000)
 

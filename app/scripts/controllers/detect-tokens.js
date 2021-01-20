@@ -2,12 +2,11 @@ import Web3 from 'web3'
 import contracts from '@metamask/contract-metadata'
 import { warn } from 'loglevel'
 import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi'
-import { MAINNET_CHAIN_ID } from './network/enums'
+import { MAINNET_CHAIN_ID } from '../../../shared/constants/network'
+import { SINGLE_CALL_BALANCES_ADDRESS } from '../constants/contracts'
 
 // By default, poll every 3 minutes
 const DEFAULT_INTERVAL = 180 * 1000
-const SINGLE_CALL_BALANCES_ADDRESS =
-  '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39'
 
 /**
  * A controller that polls for token exchange

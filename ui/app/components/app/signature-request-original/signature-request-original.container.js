@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 
-import { MESSAGE_TYPE } from '../../../../../app/scripts/lib/enums'
+import { MESSAGE_TYPE } from '../../../../../shared/constants/app'
 import { goHome } from '../../../store/actions'
 import {
   accountsWithSendEtherInfoSelector,

@@ -13,7 +13,7 @@ import {
   isValidAddress,
   isValidAddressHead,
 } from '../../../../helpers/utils/util'
-import { MAINNET_NETWORK_ID } from '../../../../../../app/scripts/controllers/network/enums'
+import { MAINNET_NETWORK_ID } from '../../../../../../shared/constants/network'
 
 // Local Constants
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'

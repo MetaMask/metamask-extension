@@ -10,7 +10,7 @@ import {
   showModal,
 } from '../../../store/actions'
 import { NETWORKS_FORM_ROUTE } from '../../../helpers/constants/routes'
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../app/scripts/lib/enums'
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 import NetworksTab from './networks-tab.component'
 import { defaultNetworksData } from './networks-tab.constants'

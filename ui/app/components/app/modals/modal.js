@@ -6,7 +6,7 @@ import * as actions from '../../../store/actions'
 import { resetCustomData as resetCustomGasData } from '../../../ducks/gas/gas.duck'
 import isMobileView from '../../../../lib/is-mobile-view'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app'
 
 // Modal Components
 import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container'

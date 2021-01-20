@@ -7,7 +7,7 @@ import {
   RINKEBY_NETWORK_ID,
   KOVAN_NETWORK_ID,
   GOERLI_NETWORK_ID,
-} from '../../../../../app/scripts/controllers/network/enums'
+} from '../../../../../shared/constants/network'
 
 const networkIdToTypeMap = {
   [MAINNET_NETWORK_ID]: 'mainnet',

@@ -16,7 +16,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext'
 import { useMetricEvent } from '../../../hooks/useMetricEvent'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../app/scripts/lib/enums'
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app'
 
 export default function AccountOptionsMenu({ anchorElement, onClose }) {
   const t = useI18nContext()

@@ -3,9 +3,9 @@ import { ObservableStore } from '@metamask/obs-store'
 import ethUtil from 'ethereumjs-util'
 import { ethErrors } from 'eth-json-rpc-errors'
 import log from 'loglevel'
+import { MESSAGE_TYPE } from '../../../shared/constants/app'
 import { addHexPrefix } from './util'
 import createId from './random-id'
-import { MESSAGE_TYPE } from './enums'
 
 const hexRe = /^[0-9A-Fa-f]+$/gu
 

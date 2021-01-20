@@ -1,4 +1,4 @@
-import { MESSAGE_TYPE } from '../../enums'
+import { MESSAGE_TYPE } from '../../../../../shared/constants/app'
 
 /**
  * This RPC method is called by the inpage provider whenever it detects the

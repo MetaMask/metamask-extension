@@ -1,5 +1,5 @@
 import { forOwn } from 'lodash'
-import { CAVEAT_NAMES } from '../../../app/scripts/controllers/permissions/enums'
+import { CAVEAT_NAMES } from '../../../shared/constants/permissions'
 import {
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,

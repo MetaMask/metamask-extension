@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck'
 import { accountsWithSendEtherInfoSelector } from '../../../selectors'
 import { getAccountByAddress } from '../../../helpers/utils/util'
-import { MESSAGE_TYPE } from '../../../../../app/scripts/lib/enums'
+import { MESSAGE_TYPE } from '../../../../../shared/constants/app'
 import SignatureRequest from './signature-request.component'
 
 function mapStateToProps(state) {

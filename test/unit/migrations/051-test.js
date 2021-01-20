@@ -3,7 +3,7 @@ import migration51 from '../../../app/scripts/migrations/051'
 import {
   INFURA_PROVIDER_TYPES,
   NETWORK_TYPE_TO_ID_MAP,
-} from '../../../app/scripts/controllers/network/enums'
+} from '../../../shared/constants/network'
 
 describe('migration #51', function () {
   it('should update the version metadata', async function () {
