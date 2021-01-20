@@ -1,5 +1,6 @@
 import * as actionConstants from '../../store/actionConstants'
 import { ALERT_TYPES } from '../../../../shared/constants/alerts'
+import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network'
 
 export default function reduceMetamask(state = {}, action) {
   const metamaskState = {
@@ -63,7 +64,7 @@ export default function reduceMetamask(state = {}, action) {
       return {
         ...metamaskState,
         provider: {
-          type: 'rpc',
+          type: NETWORK_TYPE_RPC,
           rpcUrl: action.value,
         },
       }

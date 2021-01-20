@@ -1,21 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import {
-  MAINNET_NETWORK_ID,
-  ROPSTEN_NETWORK_ID,
-  RINKEBY_NETWORK_ID,
-  KOVAN_NETWORK_ID,
-  GOERLI_NETWORK_ID,
-} from '../../../../../shared/constants/network'
-
-const networkIdToTypeMap = {
-  [MAINNET_NETWORK_ID]: 'mainnet',
-  [ROPSTEN_NETWORK_ID]: 'ropsten',
-  [RINKEBY_NETWORK_ID]: 'rinkeby',
-  [GOERLI_NETWORK_ID]: 'goerli',
-  [KOVAN_NETWORK_ID]: 'kovan',
-}
+import { NETWORK_TYPE_RPC } from '../../../../../shared/constants/network'
 
 export default class NetworkDisplay extends Component {
   static defaultProps = {
@@ -23,9 +9,9 @@ export default class NetworkDisplay extends Component {
   }
 
   static propTypes = {
+    networkNickname: PropTypes.string.isRequired,
+    networkType: PropTypes.string.isRequired,
     colored: PropTypes.bool,
-    network: PropTypes.string,
-    provider: PropTypes.object,
   }
 
   static contextTypes = {
@@ -33,12 +19,11 @@ export default class NetworkDisplay extends Component {
   }
 
   renderNetworkIcon() {
-    const { network } = this.props
-    const networkClass = networkIdToTypeMap[network]
+    const { networkType } = this.props
 
-    return networkClass ? (
+    return networkType ? (
       <div
-        className={`network-display__icon network-display__icon--${networkClass}`}
+        className={`network-display__icon network-display__icon--${networkType}`}
       />
     ) : (
       <div
@@ -52,24 +37,19 @@ export default class NetworkDisplay extends Component {
   }
 
   render() {
-    const {
-      colored,
-      network,
-      provider: { type, nickname },
-    } = this.props
-    const networkClass = networkIdToTypeMap[network]
+    const { colored, networkNickname, networkType } = this.props
 
     return (
       <div
         className={classnames('network-display__container', {
           'network-display__container--colored': colored,
-          [`network-display__container--${networkClass}`]:
-            colored && networkClass,
+          [`network-display__container--${networkType}`]:
+            colored && networkType,
         })}
       >
-        {networkClass ? (
+        {networkType ? (
           <div
-            className={`network-display__icon network-display__icon--${networkClass}`}
+            className={`network-display__icon network-display__icon--${networkType}`}
           />
         ) : (
           <div
@@ -81,7 +61,9 @@ export default class NetworkDisplay extends Component {
           />
         )}
         <div className="network-display__name">
-          {type === 'rpc' && nickname ? nickname : this.context.t(type)}
+          {networkType === NETWORK_TYPE_RPC && networkNickname
+            ? networkNickname
+            : this.context.t(networkType)}
         </div>
       </div>
     )
