@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 9.0.2 Wed Jan 20 2021
+
 ## 9.0.1 Wed Jan 13 2021
 - [#10169](https://github.com/MetaMask/metamask-extension/pull/10169): Improved detection of contract methods with array parameters
 - [#10178](https://github.com/MetaMask/metamask-extension/pull/10178): Only warn of injected web3 usage once per page
