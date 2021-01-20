@@ -926,6 +926,7 @@ describe('MetaMask', function() {
         15000
       )
 
+      await driver.delay(regularDelayMs)
       await driver.clickElement(By.css('#depositButton'))
       await driver.delay(largeDelayMs)
 
@@ -1134,6 +1135,7 @@ describe('MetaMask', function() {
 
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Next')]`))
       await driver.delay(regularDelayMs)
+      await driver.delay(regularDelayMs)
 
       await driver.clickElement(
         By.xpath(`//button[contains(text(), 'Add Tokens')]`)
@@ -1341,6 +1343,7 @@ describe('MetaMask', function() {
       const gasAndCollateralFeeInputs = await driver.findElements(
         By.css('.confirm-detail-row__primary')
       )
+      await driver.delay(regularDelayMs)
       const renderedGasFee = await gasAndCollateralFeeInputs[0].getText()
       assert.equal(renderedGasFee, '0.0006')
     })

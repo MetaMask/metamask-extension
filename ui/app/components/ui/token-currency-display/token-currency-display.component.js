@@ -18,11 +18,11 @@ export default class TokenCurrencyDisplay extends PureComponent {
     suffix: '',
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.setDisplayValue()
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     const { transactionData } = this.props
     const { transactionData: prevTransactionData } = prevProps
 
@@ -31,7 +31,7 @@ export default class TokenCurrencyDisplay extends PureComponent {
     }
   }
 
-  setDisplayValue () {
+  setDisplayValue() {
     const { transactionData: data, token } = this.props
     const { decimals = '', symbol: suffix = '' } = token
     const tokenData = getTokenData(data)
@@ -46,7 +46,7 @@ export default class TokenCurrencyDisplay extends PureComponent {
     this.setState({ displayValue, suffix })
   }
 
-  render () {
+  render() {
     const { displayValue, suffix } = this.state
 
     return (

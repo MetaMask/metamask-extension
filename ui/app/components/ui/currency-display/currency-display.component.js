@@ -14,7 +14,7 @@ export default class CurrencyDisplay extends PureComponent {
     hide: PropTypes.bool,
   }
 
-  render () {
+  render() {
     const {
       className,
       displayValue,
