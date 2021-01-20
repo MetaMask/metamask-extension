@@ -11,10 +11,8 @@ import {
 } from '../../../helpers/constants/routes'
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app'
 import { NETWORK_TYPE_RPC } from '../../../../../shared/constants/network'
-import {
-  getEnvironmentType,
-  isPrefixedFormattedHexString,
-} from '../../../../../app/scripts/lib/util'
+import { isPrefixedFormattedHexString } from '../../../../../shared/modules/utils'
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 
 import { Dropdown, DropdownMenuItem } from './components/dropdown'
 import NetworkDropdownIcon from './components/network-dropdown-icon'

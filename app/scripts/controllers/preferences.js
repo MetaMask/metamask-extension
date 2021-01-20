@@ -5,9 +5,9 @@ import { normalize as normalizeAddress } from 'eth-sig-util'
 import { isValidAddress } from 'ethereumjs-util'
 import ethers from 'ethers'
 import log from 'loglevel'
-import { isPrefixedFormattedHexString } from '../lib/util'
 import { LISTED_CONTRACT_ADDRESSES } from '../../../shared/constants/tokens'
 import { NETWORK_TYPE_TO_ID_MAP } from '../../../shared/constants/network'
+import { isPrefixedFormattedHexString } from '../../../shared/modules/utils'
 
 export default class PreferencesController {
   /**
