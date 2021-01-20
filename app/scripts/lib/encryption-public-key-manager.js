@@ -1,6 +1,6 @@
 import EventEmitter from 'events'
 import { ObservableStore } from '@metamask/obs-store'
-import { ethErrors } from 'eth-json-rpc-errors'
+import { ethErrors } from 'eth-rpc-errors'
 import log from 'loglevel'
 import { MESSAGE_TYPE } from '../../../shared/constants/app'
 import createId from './random-id'

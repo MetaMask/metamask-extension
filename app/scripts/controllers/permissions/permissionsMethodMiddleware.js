@@ -1,5 +1,5 @@
 import { createAsyncMiddleware } from 'json-rpc-engine'
-import { ethErrors } from 'eth-json-rpc-errors'
+import { ethErrors } from 'eth-rpc-errors'
 
 /**
  * Create middleware for handling certain methods and preprocessing permissions requests.

@@ -9747,13 +9747,6 @@ eth-hd-keyring@^3.5.0:
     events "^1.1.1"
     xtend "^4.0.1"
 
-eth-json-rpc-errors@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/eth-json-rpc-errors/-/eth-json-rpc-errors-2.0.2.tgz#c1965de0301fe941c058e928bebaba2e1285e3c4"
-  integrity sha512-uBCRM2w2ewusRHGxN8JhcuOb2RN3ueAOYH/0BhqdFmQkZx5lj5+fLKTz0mIVOzd4FG5/kUksCzCD7eTEim6gaA==
-  dependencies:
-    fast-safe-stringify "^2.0.6"
-
 eth-json-rpc-filters@^4.2.1:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/eth-json-rpc-filters/-/eth-json-rpc-filters-4.2.1.tgz#82204a13c99927dbf42cbb3962846650c6281f33"
