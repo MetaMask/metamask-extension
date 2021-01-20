@@ -2114,10 +2114,10 @@
   resolved "https://registry.yarnpkg.com/@metamask/forwarder/-/forwarder-1.1.0.tgz#13829d8244bbf19ea658c0b20d21a77b67de0bdd"
   integrity sha512-Hggj4y0QIjDzKGTXzarhEPIQyFSB2bi2y6YLJNwaT4JmP30UB5Cj6gqoY0M4pj3QT57fzp0BUuGp7F/AUe28tw==
 
-"@metamask/inpage-provider@^8.0.2":
-  version "8.0.2"
-  resolved "https://registry.yarnpkg.com/@metamask/inpage-provider/-/inpage-provider-8.0.2.tgz#50e7559a3ab729e46c5f1e92baa3a3465617c10e"
-  integrity sha512-LG4wqf7LKwv9akI38HR25Mt/9+YD+DOtbZZKZSG8zUx3hI8moIKxbSwS64pqEyARmLhLKXYkZNROkPjxqbvTdA==
+"@metamask/inpage-provider@^8.0.3":
+  version "8.0.3"
+  resolved "https://registry.yarnpkg.com/@metamask/inpage-provider/-/inpage-provider-8.0.3.tgz#65f636233a13a00e1f199a421bdfa8099ed28ea4"
+  integrity sha512-pj9tGNoS1edohuRJzxOuILRqRrQTdgu5mJwMwa9wuOZIMQLFZtr3g2T6vayPBwoNkE1FzLhs/osUqaVQDRfDvQ==
   dependencies:
     "@metamask/object-multiplex" "^1.1.0"
     "@metamask/safe-event-emitter" "^2.0.0"
