@@ -6,8 +6,7 @@ const { regularDelayMs, largeDelayMs } = require('./helpers')
 const { buildWebDriver } = require('./webdriver')
 const Ganache = require('@cfxjs/fullnode')
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
-const { decode } = require('conflux-address-js')
-const { bufferToHex } = require('cfx-util')
+const { base32ToHex } = require('../../app/scripts/cip37')
 
 const ganacheServer = new Ganache()
 
@@ -200,7 +199,7 @@ describe('MetaMask', function() {
       const accountsDiv = await driver.findElement(By.css('#accounts'))
       assert.equal(
         await accountsDiv.getText(),
-        bufferToHex(decode(publicBase32Address).hexAddress)
+        base32ToHex(publicBase32Address)
       )
     })
   })

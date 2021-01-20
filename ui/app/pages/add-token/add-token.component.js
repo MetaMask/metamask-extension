@@ -12,6 +12,10 @@ import TokenList from './token-list'
 import TokenSearch from './token-search'
 import PageContainer from '../../components/ui/page-container'
 import { Tabs, Tab } from '../../components/ui/tabs'
+import {
+  isValidBase32Address,
+  base32ToHex,
+} from '../../../../app/scripts/cip37'
 
 const emptyAddr = '0x0000000000000000000000000000000000000000'
 
@@ -28,9 +32,12 @@ class AddToken extends Component {
     tokens: PropTypes.array,
     identities: PropTypes.object,
     trustedTokenMap: PropTypes.object,
+    network: PropTypes.number,
   }
 
   state = {
+    base32Address: '',
+    hexAddress: '',
     customAddress: '',
     customSymbol: '',
     customDecimals: 0,
@@ -44,7 +51,7 @@ class AddToken extends Component {
     forceEditSymbol: false,
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const { pendingTokens = {}, trustedTokenMap = {} } = this.props
     this.tokenInfoGetter = tokenInfoGetter(trustedTokenMap)
     const pendingTokenKeys = Object.keys(pendingTokens)
@@ -53,7 +60,7 @@ class AddToken extends Component {
       let selectedTokens = {}
       let customToken = {}
 
-      pendingTokenKeys.forEach((tokenAddress) => {
+      pendingTokenKeys.forEach(tokenAddress => {
         const token = pendingTokens[tokenAddress]
         const { isCustom } = token
 
@@ -65,12 +72,14 @@ class AddToken extends Component {
       })
 
       const {
+        base32Address = '',
         address: customAddress = '',
         symbol: customSymbol = '',
         decimals: customDecimals = 0,
       } = customToken
 
       this.setState({
+        base32Address,
         selectedTokens,
         customAddress,
         customSymbol,
@@ -79,7 +88,7 @@ class AddToken extends Component {
     }
   }
 
-  handleToggleToken (token) {
+  handleToggleToken(token) {
     const { address } = token
     const { selectedTokens = {} } = this.state
     const selectedTokensCopy = { ...selectedTokens }
@@ -96,7 +105,7 @@ class AddToken extends Component {
     })
   }
 
-  hasError () {
+  hasError() {
     const {
       tokenSelectorError,
       customAddressError,
@@ -112,12 +121,12 @@ class AddToken extends Component {
     )
   }
 
-  hasSelected () {
+  hasSelected() {
     const { customAddress = '', selectedTokens = {} } = this.state
     return customAddress || Object.keys(selectedTokens).length > 0
   }
 
-  handleNext () {
+  handleNext() {
     if (this.hasError()) {
       return
     }
@@ -129,14 +138,16 @@ class AddToken extends Component {
 
     const { setPendingTokens, history } = this.props
     const {
-      customAddress: address,
+      base32Address,
+      hexAddress,
       customSymbol: symbol,
       customDecimals: decimals,
       selectedTokens,
     } = this.state
 
     const customToken = {
-      address,
+      base32Address,
+      address: hexAddress,
       symbol,
       decimals,
     }
@@ -145,7 +156,7 @@ class AddToken extends Component {
     history.push(CONFIRM_ADD_TOKEN_ROUTE)
   }
 
-  async attemptToAutoFillTokenParams (address) {
+  async attemptToAutoFillTokenParams(address) {
     const { symbol = '', decimals = 0 } = await this.tokenInfoGetter(address)
 
     const autoFilled = Boolean(symbol && decimals)
@@ -154,17 +165,27 @@ class AddToken extends Component {
     this.handleCustomDecimalsChange(decimals)
   }
 
-  handleCustomAddressChange (value) {
+  handleCustomAddressChange(value) {
+    const { network } = this.props
     const customAddress = value.trim()
+
+    const isValidAddress = isValidBase32Address(
+      customAddress,
+      network,
+      'contract'
+    )
+    const hexAddress = ethUtil
+      .addHexPrefix(isValidAddress ? base32ToHex(customAddress) : '')
+      .toLowerCase()
+
     this.setState({
+      hexAddress,
+      base32Address: isValidAddress ? customAddress : '',
       customAddress,
       customAddressError: null,
       tokenSelectorError: null,
       autoFilled: false,
     })
-
-    const isValidAddress = ethUtil.isValidContractAddress(customAddress)
-    const standardAddress = ethUtil.addHexPrefix(customAddress).toLowerCase()
 
     switch (true) {
       case !isValidAddress:
@@ -177,26 +198,26 @@ class AddToken extends Component {
         })
 
         break
-      case Boolean(this.props.identities[standardAddress]):
+      case Boolean(this.props.identities[hexAddress]):
         this.setState({
           customAddressError: this.context.t('personalAddressDetected'),
         })
 
         break
-      case checkExistingAddresses(customAddress, this.props.tokens):
+      case checkExistingAddresses(hexAddress, this.props.tokens):
         this.setState({
           customAddressError: this.context.t('tokenAlreadyAdded'),
         })
 
         break
       default:
-        if (customAddress !== emptyAddr) {
-          this.attemptToAutoFillTokenParams(customAddress)
+        if (hexAddress !== emptyAddr) {
+          this.attemptToAutoFillTokenParams(hexAddress)
         }
     }
   }
 
-  handleCustomSymbolChange (value) {
+  handleCustomSymbolChange(value) {
     const customSymbol = value.trim()
     const symbolLength = customSymbol.length
     let customSymbolError = null
@@ -208,7 +229,7 @@ class AddToken extends Component {
     this.setState({ customSymbol, customSymbolError })
   }
 
-  handleCustomDecimalsChange (value) {
+  handleCustomDecimalsChange(value) {
     const customDecimals = value.trim()
     const validDecimals =
       customDecimals !== null &&
@@ -224,7 +245,7 @@ class AddToken extends Component {
     this.setState({ customDecimals, customDecimalsError })
   }
 
-  renderCustomTokenForm () {
+  renderCustomTokenForm() {
     const {
       customAddress,
       customSymbol,
@@ -243,7 +264,7 @@ class AddToken extends Component {
           label={this.context.t('tokenContractAddress')}
           type="text"
           value={customAddress}
-          onChange={(e) => this.handleCustomAddressChange(e.target.value)}
+          onChange={e => this.handleCustomAddressChange(e.target.value)}
           error={customAddressError}
           fullWidth
           margin="normal"
@@ -252,24 +273,24 @@ class AddToken extends Component {
           id="custom-symbol"
           label={
             (
-              <div className="add-token__custom-symbol__label-wrapper">
-                <span className="add-token__custom-symbol__label">
-                  {this.context.t('tokenSymbol')}
-                </span>
-                {autoFilled && !forceEditSymbol && (
-                  <div
-                    className="add-token__custom-symbol__edit"
-                    onClick={() => this.setState({ forceEditSymbol: true })}
-                  >
-                    {this.context.t('edit')}
-                  </div>
-                )}
-              </div>
-            )
+<div className="add-token__custom-symbol__label-wrapper">
+              <span className="add-token__custom-symbol__label">
+                {this.context.t('tokenSymbol')}
+              </span>
+              {autoFilled && !forceEditSymbol && (
+                <div
+                  className="add-token__custom-symbol__edit"
+                  onClick={() => this.setState({ forceEditSymbol: true })}
+                >
+                  {this.context.t('edit')}
+                </div>
+              )}
+</div>
+)
           }
           type="text"
           value={customSymbol}
-          onChange={(e) => this.handleCustomSymbolChange(e.target.value)}
+          onChange={e => this.handleCustomSymbolChange(e.target.value)}
           error={customSymbolError}
           fullWidth
           margin="normal"
@@ -280,7 +301,7 @@ class AddToken extends Component {
           label={this.context.t('decimal')}
           type="number"
           value={customDecimals}
-          onChange={(e) => this.handleCustomDecimalsChange(e.target.value)}
+          onChange={e => this.handleCustomDecimalsChange(e.target.value)}
           error={customDecimalsError}
           fullWidth
           margin="normal"
@@ -290,7 +311,7 @@ class AddToken extends Component {
     )
   }
 
-  renderSearchToken () {
+  renderSearchToken() {
     const { tokenSelectorError, selectedTokens, searchResults } = this.state
 
     return (
@@ -305,14 +326,14 @@ class AddToken extends Component {
           <TokenList
             results={searchResults}
             selectedTokens={selectedTokens}
-            onToggleToken={(token) => this.handleToggleToken(token)}
+            onToggleToken={token => this.handleToggleToken(token)}
           />
         </div>
       </div>
     )
   }
 
-  renderTabs () {
+  renderTabs() {
     return (
       <Tabs>
         <Tab name={this.context.t('search')}>{this.renderSearchToken()}</Tab>
@@ -323,7 +344,7 @@ class AddToken extends Component {
     )
   }
 
-  render () {
+  render() {
     const { history, clearPendingTokens } = this.props
 
     return (
@@ -331,7 +352,7 @@ class AddToken extends Component {
         title={this.context.t('addTokens')}
         tabsComponent={this.renderTabs()}
         onSubmit={() => this.handleNext()}
-        disabled={this.hasError() || !this.hasSelected()}
+        disabled={Boolean(this.hasError() || !this.hasSelected())}
         onCancel={() => {
           clearPendingTokens()
           history.push(DEFAULT_ROUTE)

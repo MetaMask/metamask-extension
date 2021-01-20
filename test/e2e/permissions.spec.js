@@ -8,8 +8,7 @@ const Ganache = require('@cfxjs/fullnode')
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
 const ganacheServer = new Ganache()
-const { decode } = require('conflux-address-js')
-const { bufferToHex } = require('cfx-util')
+const { base32ToHex } = require('../../app/scripts/cip37')
 
 describe('MetaMask', function() {
   let driver
@@ -200,7 +199,7 @@ describe('MetaMask', function() {
       )
       assert.equal(
         (await getAccountsResult.getText()).toLowerCase(),
-        bufferToHex(decode(publicBase32Address).hexAddress)
+        base32ToHex(publicBase32Address)
       )
     })
 

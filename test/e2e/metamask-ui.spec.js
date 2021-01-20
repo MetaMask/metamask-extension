@@ -1,5 +1,6 @@
 const assert = require('assert')
 const webdriver = require('selenium-webdriver')
+const { hexToBase32 } = require('../../app/scripts/cip37')
 
 const { By, Key, until } = webdriver
 const {
@@ -1128,7 +1129,7 @@ describe('MetaMask', function() {
       const newTokenAddress = await driver.findElement(
         By.css('#custom-address')
       )
-      await newTokenAddress.sendKeys(tokenAddress)
+      await newTokenAddress.sendKeys(hexToBase32(tokenAddress, 2999))
       await driver.delay(regularDelayMs)
 
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Next')]`))

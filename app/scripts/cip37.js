@@ -1,5 +1,5 @@
-import { encode, decode } from 'conflux-address-js'
-import { stripHexPrefix, bufferToHex } from 'cfx-util'
+const { encode, decode } = require('conflux-address-js')
+const { stripHexPrefix, bufferToHex } = require('cfx-util')
 
 function hexStrToByte(hex) {
   const bytes = new Uint8Array(hex.length / 2)
@@ -14,11 +14,11 @@ function isHexString(hex) {
   return typeof hex === 'string' && /^(-)?0x[0-9a-f]*$/i.test(hex)
 }
 
-export function isValidHexAddress(addr) {
+function isValidHexAddress(addr) {
   return isHexString(addr) && /^0x[018][0-9a-fA-F]{39}$/.test(addr)
 }
 
-export function hexToBase32(hexAddr, netId) {
+function hexToBase32(hexAddr, netId) {
   if (hexAddr === undefined) {
     return hexAddr
   }
@@ -32,22 +32,22 @@ export function hexToBase32(hexAddr, netId) {
     throw new Error(`invalid netId: ${netId}, must be a safe integer`)
   }
   hexAddr = stripHexPrefix(hexAddr)
-  return encode(hexStrToByte(hexAddr), netId)
+  return encode(hexStrToByte(hexAddr.toLowerCase()), netId)
 }
 
-export function base32ToHex(addr) {
+function base32ToHex(addr) {
   const { hexAddress } = decode(addr)
   return bufferToHex(hexAddress)
 }
 
-export function isLikeBase32Address(addr) {
+function isLikeBase32Address(addr) {
   // this won't return false when there's net1029, net1
   return /^(cfx(test)?|net\d+):(type=(null|user|contract|builtin):)?[0123456789abcdefghjkmnprstuvwxyz]{42}$/i.test(
     addr
   )
 }
 
-export function isValidBase32Address(addr, netId, type) {
+function isValidBase32Address(addr, netId, type) {
   netId = parseInt(netId, 10)
   let decoded = false
   try {
@@ -60,4 +60,12 @@ export function isValidBase32Address(addr, netId, type) {
   }
 
   return valid
+}
+
+module.exports = {
+  isValidBase32Address,
+  hexToBase32,
+  base32ToHex,
+  isLikeBase32Address,
+  isValidHexAddress,
 }

@@ -10,8 +10,9 @@ import {
   conversionRateSelector,
 } from '../../../selectors/selectors.js'
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
+    network: parseInt(state.metamask.network, 10),
     balance: getSelectedAccount(state).balance,
     selectedAccount: getCurrentAccountWithSendEtherInfo(state),
     selectedAddress: getSelectedAddress(state),
@@ -20,14 +21,14 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     goHome: () => dispatch(goHome()),
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
   }
 }
 
-function mergeProps (stateProps, dispatchProps, ownProps) {
+function mergeProps(stateProps, dispatchProps, ownProps) {
   const {
     signPersonalMessage,
     signTypedMessage,

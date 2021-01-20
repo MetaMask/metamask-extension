@@ -1,4 +1,4 @@
-import { hexToBase32 } from './cip37'
+const { hexToBase32 } = require('./cip37')
 
 const createExplorerLink = function(hash, networkId) {
   switch (networkId) {

@@ -9,6 +9,7 @@ import Identicon from '../../ui/identicon'
 
 export default class SignatureRequest extends PureComponent {
   static propTypes = {
+    network: PropTypes.number.isRequired,
     txData: PropTypes.object.isRequired,
     selectedAccount: PropTypes.shape({
       address: PropTypes.string,
@@ -26,11 +27,11 @@ export default class SignatureRequest extends PureComponent {
     metricsEvent: PropTypes.func,
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const { clearConfirmTransaction, cancel } = this.props
     const { metricsEvent } = this.context
     if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.addEventListener('beforeunload', (event) => {
+      window.addEventListener('beforeunload', event => {
         metricsEvent({
           eventOpts: {
             category: 'Transactions',
@@ -44,14 +45,14 @@ export default class SignatureRequest extends PureComponent {
     }
   }
 
-  formatWallet (wallet) {
+  formatWallet(wallet) {
     return `${wallet.slice(0, 8)}...${wallet.slice(
       wallet.length - 8,
       wallet.length
     )}`
   }
 
-  render () {
+  render() {
     const {
       selectedAccount,
       txData: {
@@ -59,6 +60,7 @@ export default class SignatureRequest extends PureComponent {
       },
       cancel,
       sign,
+      network,
     } = this.props
     const { message, domain = {} } = JSON.parse(data)
 
@@ -84,7 +86,7 @@ export default class SignatureRequest extends PureComponent {
             {this.formatWallet(senderWallet)}
           </div>
         </div>
-        <Message data={message} />
+        <Message network={network} data={message} />
         <Footer cancelAction={cancel} signAction={sign} />
       </div>
     )

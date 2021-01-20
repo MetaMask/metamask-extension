@@ -6,7 +6,7 @@ import configureMockStore from 'redux-mock-store'
 import { mountWithRouter } from '../../../../../test/lib/render-helpers'
 import AddToken from '../index'
 
-describe('Add Token', function () {
+describe('Add Token', function() {
   let wrapper
 
   const state = {
@@ -25,10 +25,11 @@ describe('Add Token', function () {
     clearPendingTokens: sinon.spy(),
     tokens: [],
     identities: {},
+    network: 1,
   }
 
-  describe('Add Token', function () {
-    before(function () {
+  describe('Add Token', function() {
+    before(function() {
       wrapper = mountWithRouter(
         <Provider store={store}>
           <AddToken.WrappedComponent {...props} />
@@ -39,11 +40,11 @@ describe('Add Token', function () {
       wrapper.find({ name: 'customToken' }).simulate('click')
     })
 
-    afterEach(function () {
+    afterEach(function() {
       props.history.push.reset()
     })
 
-    it('next button is disabled when no fields are populated', function () {
+    it('next button is disabled when no fields are populated', function() {
       const nextButton = wrapper.find(
         '.button.btn-secondary.page-container__footer-button'
       )
@@ -51,8 +52,8 @@ describe('Add Token', function () {
       assert.equal(nextButton.props().disabled, true)
     })
 
-    it('edits token address', function () {
-      const tokenAddress = '0x817b3f8050a0BD94b6b1da02B4384eE5B4DF13F4'
+    it('edits token address', function() {
+      const tokenAddress = 'cfxtest:023efusytf983gkuyz3ng8fbh96rsmh9ks27zmfc08'
       const event = { target: { value: tokenAddress } }
       const customAddress = wrapper.find('input#custom-address')
 
@@ -63,7 +64,7 @@ describe('Add Token', function () {
       )
     })
 
-    it('edits token symbol', function () {
+    it('edits token symbol', function() {
       const tokenSymbol = 'META'
       const event = { target: { value: tokenSymbol } }
       const customAddress = wrapper.find('#custom-symbol')
@@ -75,7 +76,7 @@ describe('Add Token', function () {
       )
     })
 
-    it('edits token decimal precision', function () {
+    it('edits token decimal precision', function() {
       const tokenPrecision = '2'
       const event = { target: { value: tokenPrecision } }
       const customAddress = wrapper.find('#custom-decimals')
@@ -87,18 +88,24 @@ describe('Add Token', function () {
       )
     })
 
-    it('next', function () {
+    it('next', function() {
       const nextButton = wrapper.find(
         '.button.btn-secondary.page-container__footer-button'
       )
       nextButton.simulate('click')
 
-      assert(props.setPendingTokens.calledOnce)
-      assert(props.history.push.calledOnce)
+      assert(
+        props.setPendingTokens.calledOnce,
+        'setPendingTokens should be called once'
+      )
+      assert(
+        props.history.push.calledOnce,
+        'history.push should be called once'
+      )
       assert.equal(props.history.push.getCall(0).args[0], '/confirm-add-token')
     })
 
-    it('cancels', function () {
+    it('cancels', function() {
       const cancelButton = wrapper.find(
         'button.btn-default.page-container__footer-button'
       )
