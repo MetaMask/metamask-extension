@@ -2,8 +2,8 @@ import { strict as assert } from 'assert'
 import {
   getEnvironmentType,
   sufficientBalance,
-  isPrefixedFormattedHexString,
 } from '../../../app/scripts/lib/util'
+import { isPrefixedFormattedHexString } from '../../../shared/modules/utils'
 
 import {
   ENVIRONMENT_TYPE_POPUP,

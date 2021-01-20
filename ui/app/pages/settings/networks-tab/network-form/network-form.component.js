@@ -5,8 +5,10 @@ import log from 'loglevel'
 import TextField from '../../../../components/ui/text-field'
 import Button from '../../../../components/ui/button'
 import Tooltip from '../../../../components/ui/tooltip'
-import { isSafeChainId } from '../../../../../../shared/modules/utils'
-import { isPrefixedFormattedHexString } from '../../../../../../app/scripts/lib/util'
+import {
+  isPrefixedFormattedHexString,
+  isSafeChainId,
+} from '../../../../../../shared/modules/utils'
 import { jsonRpcRequest } from '../../../../helpers/utils/util'
 
 const FORM_STATE_KEYS = [

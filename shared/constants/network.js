@@ -18,7 +18,7 @@ export const GOERLI_CHAIN_ID = '0x5'
 export const KOVAN_CHAIN_ID = '0x2a'
 
 /**
- * The largest possible chain ID our codebase can handle.
+ * The largest possible chain ID we can handle.
  * TODO: Add link to document explaining why.
  */
 export const MAX_SAFE_CHAIN_ID = 4503599627370476

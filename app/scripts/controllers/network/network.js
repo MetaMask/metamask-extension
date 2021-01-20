@@ -18,7 +18,10 @@ import {
   MAINNET_CHAIN_ID,
   RINKEBY_CHAIN_ID,
 } from '../../../../shared/constants/network'
-import { isSafeChainId } from '../../../../shared/modules/utils'
+import {
+  isPrefixedFormattedHexString,
+  isSafeChainId,
+} from '../../../../shared/modules/utils'
 import createMetamaskMiddleware from './createMetamaskMiddleware'
 import createInfuraClient from './createInfuraClient'
 import createJsonRpcClient from './createJsonRpcClient'
@@ -163,11 +166,11 @@ export default class NetworkController extends EventEmitter {
   setRpcTarget(rpcUrl, chainId, ticker = 'ETH', nickname = '', rpcPrefs) {
     assert.ok(
       isPrefixedFormattedHexString(chainId),
-      `Invalid hexadecimal chain ID "${chainId}".`,
+      `Invalid chain ID "${chainId}": invalid hex string.`,
     )
     assert.ok(
       isSafeChainId(parseInt(chainId, 16)),
-      `Chain ID "${chainId}" too big.`,
+      `Invalid chain ID "${chainId}": numerical value greater than max safe value.`,
     )
     this.setProviderConfig({
       type: NETWORK_TYPE_RPC,
