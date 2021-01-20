@@ -4,7 +4,12 @@
 
 ## 9.0.2 Wed Jan 20 2021
 
+- [#10191](https://github.com/MetaMask/metamask-extension/pull/10191): zh_TW: 乙太 -> 以太 (#10191)
+- [#10207](https://github.com/MetaMask/metamask-extension/pull/10207): zh_TW: Translate buy, assets, activity (#10207)
+- [#10219](https://github.com/MetaMask/metamask-extension/pull/10219): Restore provider 'data' event (#10219)
+
 ## 9.0.1 Wed Jan 13 2021
+
 - [#10169](https://github.com/MetaMask/metamask-extension/pull/10169): Improved detection of contract methods with array parameters
 - [#10178](https://github.com/MetaMask/metamask-extension/pull/10178): Only warn of injected web3 usage once per page
 - [#10179](https://github.com/MetaMask/metamask-extension/pull/10179): Restore support for @metamask/inpage provider@"< 8.0.0"
