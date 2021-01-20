@@ -1,7 +1,7 @@
 import { merge, omit } from 'lodash'
 import { ObservableStore } from '@metamask/obs-store'
 import { bufferToHex, sha3 } from 'ethereumjs-util'
-import { ENVIRONMENT_TYPE_BACKGROUND } from '../lib/enums'
+import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app'
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,

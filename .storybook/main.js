@@ -7,7 +7,7 @@ module.exports = {
   addons: [
     '@storybook/addon-knobs',
     '@storybook/addon-actions',
-    '@storybook/addon-backgrounds'
+    '@storybook/addon-backgrounds',
   ],
   webpackFinal: async (config) => {
     config.module.strictExportPresence = true
@@ -27,18 +27,29 @@ module.exports = {
           loader: 'sass-loader',
           options: {
             sourceMap: true,
+            implementation: require('sass'),
+            sassOptions: {
+              includePaths: ['ui/app/css/'],
+            },
           },
         },
       ],
     })
-    config.plugins.push(new CopyWebpackPlugin({
-      patterns: [
-        {
-          from: path.join('node_modules', '@fortawesome', 'fontawesome-free', 'webfonts'),
-          to: path.join('fonts', 'fontawesome'),
-        },
-      ],
-    }))
+    config.plugins.push(
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: path.join(
+              'node_modules',
+              '@fortawesome',
+              'fontawesome-free',
+              'webfonts',
+            ),
+            to: path.join('fonts', 'fontawesome'),
+          },
+        ],
+      }),
+    )
     return config
   },
 }

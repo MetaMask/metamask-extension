@@ -33,7 +33,7 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
-} from '../../../../app/scripts/lib/enums'
+} from '../../../../shared/constants/app'
 import {
   ALERT_TYPES,
   WEB3_SHIM_USAGE_ALERT_STATES,

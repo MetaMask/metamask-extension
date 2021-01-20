@@ -1,8 +1,10 @@
 import { cloneDeep } from 'lodash'
 import BigNumber from 'bignumber.js'
 import { getStorageItem, setStorageItem } from '../../../lib/storage-helpers'
-
 import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util'
+import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout'
+
+const fetchWithTimeout = getFetchWithTimeout(30000)
 
 // Actions
 const BASIC_GAS_ESTIMATE_LOADING_FINISHED =
@@ -97,7 +99,7 @@ export function basicGasEstimatesLoadingFinished() {
 
 async function basicGasPriceQuery() {
   const url = `https://api.metaswap.codefi.network/gasPrices`
-  return await window.fetch(url, {
+  return await fetchWithTimeout(url, {
     headers: {},
     referrer: 'https://api.metaswap.codefi.network/gasPrices',
     referrerPolicy: 'no-referrer-when-downgrade',

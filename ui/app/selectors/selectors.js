@@ -1,7 +1,7 @@
 import { stripHexPrefix } from 'ethereumjs-util'
 import { createSelector } from 'reselect'
 import { addHexPrefix } from '../../../app/scripts/lib/util'
-import { NETWORK_TYPES } from '../helpers/constants/common'
+import { MAINNET, NETWORK_TYPE_RPC } from '../../../shared/constants/network'
 import {
   shortenAddress,
   checksumAddress,
@@ -21,7 +21,7 @@ export function getNetworkIdentifier(state) {
 
 export function getMetricsNetworkIdentifier(state) {
   const { provider } = state.metamask
-  return provider.type === 'rpc' ? provider.rpcUrl : provider.type
+  return provider.type === NETWORK_TYPE_RPC ? provider.rpcUrl : provider.type
 }
 
 export function getCurrentChainId(state) {
@@ -281,7 +281,7 @@ function getSuggestedTokenCount(state) {
 
 export function getIsMainnet(state) {
   const networkType = getNetworkIdentifier(state)
-  return networkType === NETWORK_TYPES.MAINNET
+  return networkType === MAINNET
 }
 
 export function getPreferences({ metamask }) {

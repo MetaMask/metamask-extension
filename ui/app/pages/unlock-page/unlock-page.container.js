@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app'
 import {
   DEFAULT_ROUTE,
   RESTORE_VAULT_ROUTE,

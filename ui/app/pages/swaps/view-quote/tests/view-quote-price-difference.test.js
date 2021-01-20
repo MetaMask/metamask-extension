@@ -3,6 +3,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import { Provider } from 'react-redux'
 import configureMockStore from 'redux-mock-store'
+import { NETWORK_TYPE_RPC } from '../../../../../../shared/constants/network'
 import ViewQuotePriceDifference from '../view-quote-price-difference'
 
 describe('View Price Quote Difference', function () {
@@ -11,7 +12,7 @@ describe('View Price Quote Difference', function () {
   const state = {
     metamask: {
       tokens: [],
-      provider: { type: 'rpc', nickname: '', rpcUrl: '' },
+      provider: { type: NETWORK_TYPE_RPC, nickname: '', rpcUrl: '' },
       preferences: { showFiatInTestnets: true },
       currentCurrency: 'usd',
       conversionRate: 600.0,

@@ -1,4 +1,10 @@
-const fetchWithTimeout = ({ timeout = 120000 } = {}) => {
+import { memoize } from 'lodash'
+
+const getFetchWithTimeout = memoize((timeout) => {
+  if (!Number.isInteger(timeout) || timeout < 1) {
+    throw new Error('Must specify positive integer timeout.')
+  }
+
   return async function _fetch(url, opts) {
     const abortController = new window.AbortController()
     const { signal } = abortController
@@ -18,6 +24,6 @@ const fetchWithTimeout = ({ timeout = 120000 } = {}) => {
       throw e
     }
   }
-}
+})
 
-export default fetchWithTimeout
+export default getFetchWithTimeout

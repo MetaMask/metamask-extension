@@ -7,10 +7,7 @@ import BigNumber from 'bignumber.js'
 import DetectTokensController from '../../../../app/scripts/controllers/detect-tokens'
 import NetworkController from '../../../../app/scripts/controllers/network/network'
 import PreferencesController from '../../../../app/scripts/controllers/preferences'
-import {
-  MAINNET,
-  ROPSTEN,
-} from '../../../../app/scripts/controllers/network/enums'
+import { MAINNET, ROPSTEN } from '../../../../shared/constants/network'
 
 describe('DetectTokensController', function () {
   const sandbox = sinon.createSandbox()

@@ -7,7 +7,7 @@ import { ObjectInspector } from 'react-inspector'
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   MESSAGE_TYPE,
-} from '../../../../../app/scripts/lib/enums'
+} from '../../../../../shared/constants/app'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 import Identicon from '../../ui/identicon'
 import AccountListItem from '../account-list-item'
