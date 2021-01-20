@@ -3,8 +3,11 @@ import PropTypes from 'prop-types'
 import Identicon from '../../../../components/ui/identicon'
 import Button from '../../../../components/ui/button/button.component'
 import TextField from '../../../../components/ui/text-field'
-import { isValidAddress } from '../../../../helpers/utils/util'
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer'
+import {
+  base32ToHex,
+  isValidBase32Address,
+} from '../../../../../../app/scripts/cip37'
 
 export default class EditContact extends PureComponent {
   static contextTypes = {
@@ -12,11 +15,13 @@ export default class EditContact extends PureComponent {
   }
 
   static propTypes = {
+    network: PropTypes.number,
     addToAddressBook: PropTypes.func,
     removeFromAddressBook: PropTypes.func,
     history: PropTypes.object,
     name: PropTypes.string,
     address: PropTypes.string,
+    base32Address: PropTypes.string,
     chainId: PropTypes.string,
     memo: PropTypes.string,
     viewRoute: PropTypes.string,
@@ -33,12 +38,12 @@ export default class EditContact extends PureComponent {
 
   state = {
     newName: this.props.name,
-    newAddress: this.props.address,
+    newBase32Address: this.props.base32Address,
     newMemo: this.props.memo,
     error: '',
   }
 
-  render () {
+  render() {
     const { t } = this.context
     const {
       history,
@@ -46,12 +51,14 @@ export default class EditContact extends PureComponent {
       addToAddressBook,
       removeFromAddressBook,
       address,
+      base32Address,
       chainId,
       memo,
       viewRoute,
       listRoute,
       setAccountLabel,
       showingMyAccounts,
+      network,
     } = this.props
 
     return (
@@ -81,7 +88,7 @@ export default class EditContact extends PureComponent {
               id="nickname"
               placeholder={this.context.t('addAlias')}
               value={this.state.newName}
-              onChange={(e) => this.setState({ newName: e.target.value })}
+              onChange={e => this.setState({ newName: e.target.value })}
               fullWidth
               margin="dense"
             />
@@ -94,9 +101,11 @@ export default class EditContact extends PureComponent {
             <TextField
               type="text"
               id="address"
-              value={this.state.newAddress}
+              value={this.state.newBase32Address}
               error={this.state.error}
-              onChange={(e) => this.setState({ newAddress: e.target.value })}
+              onChange={e =>
+                this.setState({ newBase32Address: e.target.value })
+              }
               fullWidth
               margin="dense"
             />
@@ -111,7 +120,7 @@ export default class EditContact extends PureComponent {
               id="memo"
               placeholder={memo}
               value={this.state.newMemo}
-              onChange={(e) => this.setState({ newMemo: e.target.value })}
+              onChange={e => this.setState({ newMemo: e.target.value })}
               fullWidth
               margin="dense"
               multiline
@@ -127,21 +136,19 @@ export default class EditContact extends PureComponent {
           cancelText={this.context.t('cancel')}
           onSubmit={() => {
             if (
-              this.state.newAddress !== '' &&
-              this.state.newAddress !== address
+              this.state.newBase32Address !== '' &&
+              this.state.newBase32Address !== base32Address
             ) {
               // if the user makes a valid change to the address field, remove the original address
-              if (isValidAddress(this.state.newAddress)) {
-                removeFromAddressBook(chainId, address)
+              if (isValidBase32Address(this.state.newBase32Address, network)) {
+                const hexAddress = base32ToHex(this.state.newBase32Address)
+                removeFromAddressBook(chainId, hexAddress)
                 addToAddressBook(
-                  this.state.newAddress,
+                  hexAddress,
                   this.state.newName || name,
                   this.state.newMemo || memo
                 )
-                setAccountLabel(
-                  this.state.newAddress,
-                  this.state.newName || name
-                )
+                setAccountLabel(hexAddress, this.state.newName || name)
                 history.push(listRoute)
               } else {
                 this.setState({ error: this.context.t('invalidAddress') })

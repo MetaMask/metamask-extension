@@ -16,6 +16,8 @@ import {
   setAccountLabel,
 } from '../../../../store/actions'
 
+import { hexToBase32 } from '../../../../../../app/scripts/cip37'
+
 const mapStateToProps = (state, ownProps) => {
   const { location } = ownProps
   const { pathname } = location
@@ -25,7 +27,9 @@ const mapStateToProps = (state, ownProps) => {
     ? pathNameTail.toLowerCase()
     : ownProps.match.params.id
 
-  const { memo, name } =
+  const { network } = state.metamask
+
+  const { memo, name, base32Address } =
     getAddressBookEntry(state, address) || state.metamask.identities[address]
 
   const chainId = state.metamask.network
@@ -35,7 +39,9 @@ const mapStateToProps = (state, ownProps) => {
   )
 
   return {
+    network: parseInt(network, 10),
     address,
+    base32Address: base32Address || hexToBase32(address, parseInt(network, 10)),
     chainId,
     name,
     memo,
@@ -49,7 +55,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     addToAddressBook: (recipient, nickname, memo) =>
       dispatch(addToAddressBook(recipient, nickname, memo)),
