@@ -4,8 +4,11 @@ import Identicon from '../../../../components/ui/identicon'
 import Button from '../../../../components/ui/button/button.component'
 import TextField from '../../../../components/ui/text-field'
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer'
+import { isValidAccountAddress, isValidContractAddress } from 'cfx-util'
+
 import {
   base32ToHex,
+  isLikeBase32Address,
   isValidBase32Address,
 } from '../../../../../../app/scripts/cip37'
 
@@ -38,9 +41,10 @@ export default class EditContact extends PureComponent {
 
   state = {
     newName: this.props.name,
-    newBase32Address: this.props.base32Address,
+    newBase32OrHexAddress: this.props.base32Address,
     newMemo: this.props.memo,
     error: '',
+    errorIsWarning: false,
   }
 
   render() {
@@ -99,13 +103,20 @@ export default class EditContact extends PureComponent {
               {t('ethereumPublicAddress')}
             </div>
             <TextField
+              className={this.state.errorIsWarning ? 'is-warning' : ''}
               type="text"
               id="address"
-              value={this.state.newBase32Address}
+              value={this.state.newBase32OrHexAddress}
               error={this.state.error}
-              onChange={e =>
-                this.setState({ newBase32Address: e.target.value })
-              }
+              onChange={e => {
+                if (e.target.value?.trim()?.startsWith('0x')) {
+                  this.setState({
+                    error: this.context.t('confluxNewAddressWarning'),
+                    errorIsWarning: true,
+                  })
+                }
+                this.setState({ newBase32OrHexAddress: e.target.value })
+              }}
               fullWidth
               margin="dense"
             />
@@ -136,12 +147,17 @@ export default class EditContact extends PureComponent {
           cancelText={this.context.t('cancel')}
           onSubmit={() => {
             if (
-              this.state.newBase32Address !== '' &&
-              this.state.newBase32Address !== base32Address
+              this.state.newBase32OrHexAddress !== '' &&
+              this.state.newBase32OrHexAddress !== base32Address &&
+              this.state.newBase32OrHexAddress !== address
             ) {
               // if the user makes a valid change to the address field, remove the original address
-              if (isValidBase32Address(this.state.newBase32Address, network)) {
-                const hexAddress = base32ToHex(this.state.newBase32Address)
+              if (
+                // base32 address
+                isLikeBase32Address(this.state.newBase32OrHexAddress) &&
+                isValidBase32Address(this.state.newBase32OrHexAddress, network)
+              ) {
+                const hexAddress = base32ToHex(this.state.newBase32OrHexAddress)
                 removeFromAddressBook(chainId, hexAddress)
                 addToAddressBook(
                   hexAddress,
@@ -150,8 +166,27 @@ export default class EditContact extends PureComponent {
                 )
                 setAccountLabel(hexAddress, this.state.newName || name)
                 history.push(listRoute)
+              } else if (
+                // hex address
+                isValidAccountAddress(this.state.newBase32OrHexAddress) &&
+                isValidContractAddress(this.state.newBase32OrHexAddress)
+              ) {
+                removeFromAddressBook(chainId, this.state.newBase32OrHexAddress)
+                addToAddressBook(
+                  this.state.newBase32OrHexAddress,
+                  this.state.newName || name,
+                  this.state.newMemo || memo
+                )
+                setAccountLabel(
+                  this.state.newBase32OrHexAddress,
+                  this.state.newName || name
+                )
+                history.push(listRoute)
               } else {
-                this.setState({ error: this.context.t('invalidAddress') })
+                this.setState({
+                  error: this.context.t('invalidAddress'),
+                  errorIsWarning: false,
+                })
               }
             } else {
               // update name
