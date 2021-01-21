@@ -21,7 +21,7 @@ import {
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
-} from '../../../../shared/modules/utils';
+} from '../../../../shared/modules/network.utils';
 import createMetamaskMiddleware from './createMetamaskMiddleware';
 import createInfuraClient from './createInfuraClient';
 import createJsonRpcClient from './createJsonRpcClient';

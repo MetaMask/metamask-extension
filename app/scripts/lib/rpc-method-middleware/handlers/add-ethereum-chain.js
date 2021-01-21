@@ -1,9 +1,13 @@
-import { ethErrors } from 'eth-json-rpc-errors'
+import { ethErrors } from 'eth-rpc-errors'
 import validUrl from 'valid-url'
 // import { NETWORK_TO_NAME_MAP as DEFAULT_NETWORK_MAP } from '../../../controllers/network/enums'
 import { omit } from 'lodash'
-import { isPrefixedFormattedHexString } from '../../util'
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app'
+import {
+  isPrefixedFormattedHexString,
+  isSafeChainId,
+} from '../../../../../shared/modules/network.utils'
+import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils'
 
 const addEthereumChain = {
   methodNames: [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN],
@@ -74,7 +78,25 @@ async function addEthereumChainHandler(
     )
   }
 
+  if (blockExplorerUrls !== null && !firstValidBlockExplorerUrl) {
+    return end(
+      ethErrors.rpc.invalidParams({
+        message: `Expected null or array with at least one valid string HTTPS URL 'blockExplorerUrl'. Received: ${blockExplorerUrls}`,
+      }),
+    )
+  }
+
   const _chainId = typeof chainId === 'string' && chainId.toLowerCase()
+
+  if (customRpcExistsWith({ rpcUrl: firstValidRPCUrl, chainId: _chainId })) {
+    return end(
+      ethErrors.rpc.internal({
+        message: `Ethereum chain with the given RPC URL and chain ID already exists.`,
+        data: { rpcUrl: firstValidRPCUrl, chainId },
+      }),
+    )
+  }
+
   if (!isPrefixedFormattedHexString(_chainId)) {
     return end(
       ethErrors.rpc.invalidParams({
@@ -83,14 +105,35 @@ async function addEthereumChainHandler(
     )
   }
 
-  // TODO: Check specified chain ID against endpoint chain ID, as in custom network form.
+  if (!isSafeChainId(parseInt(_chainId, 16))) {
+    return end(
+      ethErrors.rpc.invalidParams({
+        message: `Invalid chain ID "${_chainId}": numerical value greater than max safe value. Received:\n${chainId}`,
+      }),
+    )
+  }
 
-  // TODO: Disallow adding default networks
-  // if (DEFAULT_NETWORK_MAP[_chainId]) {
-  //   return end(ethErrors.rpc.invalidParams({
-  //     message: `May not specify default MetaMask chain.`,
-  //   }))
-  // }
+  let endpointChainId
+
+  try {
+    endpointChainId = await jsonRpcRequest(firstValidRPCUrl, 'eth_chainId')
+  } catch (err) {
+    return end(
+      ethErrors.rpc.internal({
+        message: `Request for method 'eth_chainId on ${firstValidRPCUrl} failed`,
+        data: { networkErr: err },
+      }),
+    )
+  }
+
+  if (_chainId !== endpointChainId) {
+    return end(
+      ethErrors.rpc.invalidParams({
+        message: `Chain ID returned by RPC URL ${firstValidRPCUrl} does not match ${_chainId}`,
+        data: { chainId: endpointChainId },
+      }),
+    )
+  }
 
   if (typeof chainName !== 'string' || !chainName) {
     return end(
@@ -110,52 +153,29 @@ async function addEthereumChainHandler(
     )
   }
 
-  if (
-    nativeCurrency !== null &&
-    (!nativeCurrency.decimals || nativeCurrency.decimals !== 18)
-  ) {
-    return end(
-      ethErrors.rpc.invalidParams({
-        message: `Expected the number 18 for 'nativeCurrency.decimals' when 'nativeCurrency' is provided. Received: ${nativeCurrency.decimals}`,
-      }),
-    )
-  }
+  if (nativeCurrency !== null) {
+    if (nativeCurrency.decimals !== 18) {
+      return end(
+        ethErrors.rpc.invalidParams({
+          message: `Expected the number 18 for 'nativeCurrency.decimals' when 'nativeCurrency' is provided. Received: ${nativeCurrency.decimals}`,
+        }),
+      )
+    }
 
-  if (
-    nativeCurrency !== null &&
-    (!nativeCurrency.symbol || typeof nativeCurrency.symbol !== 'string')
-  ) {
-    return end(
-      ethErrors.rpc.invalidParams({
-        message: `Expected a string 'nativeCurrency.symbol'. Received: ${nativeCurrency.symbol}`,
-      }),
-    )
+    if (!nativeCurrency.symbol || typeof nativeCurrency.symbol !== 'string') {
+      return end(
+        ethErrors.rpc.invalidParams({
+          message: `Expected a string 'nativeCurrency.symbol'. Received: ${nativeCurrency.symbol}`,
+        }),
+      )
+    }
   }
-
   const ticker = nativeCurrency?.symbol || 'ETH'
 
-  // TODO: how long should the ticker be?
-  if (typeof ticker !== 'string' || ticker.length < 2 || ticker.length > 12) {
+  if (typeof ticker !== 'string' || ticker.length < 2 || ticker.length > 6) {
     return end(
       ethErrors.rpc.invalidParams({
-        message: `Expected 3-12 character string 'nativeCurrency.symbol'. Received:\n${ticker}`,
-      }),
-    )
-  }
-
-  if (blockExplorerUrls !== null && !firstValidBlockExplorerUrl) {
-    return end(
-      ethErrors.rpc.invalidParams({
-        message: `Expected null or array with at least one valid string HTTPS URL 'blockExplorerUrl'. Received: ${blockExplorerUrls}`,
-      }),
-    )
-  }
-
-  if (customRpcExistsWith({ rpcUrl: firstValidRPCUrl, chainId: _chainId })) {
-    return end(
-      ethErrors.rpc.internal({
-        message: `Ethereum chain with the given RPC URL and chain ID already exists.`,
-        data: { rpcUrl: firstValidRPCUrl, chainId },
+        message: `Expected 2-6 character string 'nativeCurrency.symbol'. Received:\n${ticker}`,
       }),
     )
   }

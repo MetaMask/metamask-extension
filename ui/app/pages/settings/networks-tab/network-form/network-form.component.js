@@ -8,8 +8,8 @@ import Tooltip from '../../../../components/ui/tooltip';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
-} from '../../../../../../shared/modules/utils';
-import { jsonRpcRequest } from '../../../../helpers/utils/util';
+} from '../../../../../../shared/modules/network.utils';
+import { jsonRpcRequest } from '../../../../../../shared/modules/rpc.utils';
 
 const FORM_STATE_KEYS = [
   'rpcUrl',
