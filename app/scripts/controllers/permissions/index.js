@@ -3,7 +3,7 @@ import { JsonRpcEngine } from 'json-rpc-engine'
 import { ObservableStore } from '@metamask/obs-store'
 import log from 'loglevel'
 import { CapabilitiesController as RpcCap } from 'rpc-cap'
-import { ethErrors } from 'eth-json-rpc-errors'
+import { ethErrors } from 'eth-rpc-errors'
 import { cloneDeep } from 'lodash'
 
 import { CAVEAT_NAMES } from '../../../../shared/constants/permissions'
