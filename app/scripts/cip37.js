@@ -48,13 +48,18 @@ function isLikeBase32Address(addr) {
 }
 
 function isValidBase32Address(addr, netId, type) {
-  netId = parseInt(netId, 10)
+  if (netId !== undefined) {
+ netId = parseInt(netId, 10)
+}
   let decoded = false
   try {
     decoded = decode(addr)
   } catch (err) {}
 
-  let valid = Boolean(decoded) && decoded.netId === netId
+  let valid = Boolean(decoded)
+  if (netId !== undefined) {
+ valid = valid && decoded.netId === netId
+}
   if (type) {
     valid = valid && type === decoded.type
   }

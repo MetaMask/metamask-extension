@@ -237,7 +237,7 @@
     "message": "请不要向非 Conflux 网络地址转账，否则资产可能丢失。"
   },
   "confluxNewAddressWarning": {
-    "message": "建议使用 CFX 开头的新地址进行交易"
+    "message": "建议使用新地址格式进行交易"
   },
   "goConvert": {
     "message": "去转换"
@@ -681,8 +681,20 @@
   "insufficientTokens": {
     "message": "代币余额不足."
   },
+  "base32AddressNotice": {
+    "message": "Conflux地址规则已更新，可以自动将旧地址转换为新地址； 之后，以0x开头的地址将停止使用，并逐渐切换到CFX的地址； 新的地址规则，不同的网络，不同的地址； 如果有特殊需要，可以通过转换工具获取旧地址。"
+  },
+  "base32AddressNoticeShort": {
+    "message": "Conflux 地址规则已升级，已自动将旧地址转换为新地址"
+  },
+  "base32AddressNoticeMedium": {
+    "message": "Conflux 地址规则已升级, 建议使用新地址进行交易, 后续 0x 开头的地址将停止使用"
+  },
   "invalidAddress": {
     "message": "无效地址"
+  },
+  "invalidAddressNetId": {
+    "message": "需要使用以 $1 开头的地址或交换网络"
   },
   "invalidAddressRecipient": {
     "message": "收款地址不合法"
@@ -756,6 +768,12 @@
   },
   "mainnet": {
     "message": "Conflux Tethys"
+  },
+  "currentNetwork": {
+    "message": "当前网络"
+  },
+  "mainnetCurrent": {
+    "message": "Conflux Tethys (当前网络)"
   },
   "memorizePhrase": {
     "message": "记住该密语。"
@@ -966,7 +984,7 @@
     "message": "接收地址"
   },
   "recipientAddressPlaceholder": {
-    "message": "查找、公用地址 (0x1 或 0x8)"
+    "message": "输入 Conflux 地址"
   },
   "rejectAll": {
     "message": "拒绝所有"
@@ -1282,6 +1300,9 @@
   },
   "testnet": {
     "message": "Conflux 测试网"
+  },
+  "testnetCurrent": {
+    "message": "Conflux 测试网 (当前网络)"
   },
   "testFaucet": {
     "message": "测试水龙头"

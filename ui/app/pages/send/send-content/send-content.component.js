@@ -33,8 +33,8 @@ export default class SendContent extends Component {
     return (
       <PageContainerContent>
         <div className="send-v2__form">
-          {this.maybeRenderAddressNoTxWarning()}
           {this.maybeRenderHexAddressWarning()}
+          {this.maybeRenderAddressNoTxWarning()}
           {this.maybeRenderAddContact()}
           <SendAssetRow />
           <SendAmountRow updateGas={this.updateGas} />
@@ -57,8 +57,8 @@ export default class SendContent extends Component {
     } = this.props
 
     if (!inputIsBase32) {
- return
-}
+      return
+    }
     if (isOwnedAccount || contact.name) {
       return
     }
@@ -78,11 +78,11 @@ export default class SendContent extends Component {
     const { t } = this.context
     const { inputIsBase32 } = this.props
     if (inputIsBase32) {
- return
-}
+      return
+    }
 
     return (
-      <Dialog type="warning" className="send_dialog">
+      <Dialog type="warning" className="send__dialog">
         {t('confluxNewAddressWarning')}
         <a
           className="go-convert"

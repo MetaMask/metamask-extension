@@ -7,9 +7,11 @@ import Dialog from '../../../../components/ui/dialog'
 import ContactList from '../../../../components/app/contact-list'
 import RecipientGroup from '../../../../components/app/contact-list/recipient-group/recipient-group.component'
 import { ellipsify } from '../../send.utils'
+import { encodeNetId } from 'conflux-address-js'
 
 export default class AddRecipient extends Component {
   static propTypes = {
+    network: PropTypes.number,
     query: PropTypes.string,
     ownedAccounts: PropTypes.array,
     addressBook: PropTypes.array,
@@ -111,9 +113,18 @@ export default class AddRecipient extends Component {
 
     return (
       <div className="send__select-recipient-wrapper">
+        {this.renderBase32AddressNotice()}
         {this.renderDialogs()}
         {content || this.renderMain()}
       </div>
+    )
+  }
+
+  renderBase32AddressNotice() {
+    return (
+      <Dialog type="message" className="send__error-dialog">
+        {this.context.t('base32AddressNoticeMedium')}
+      </Dialog>
     )
   }
 
@@ -189,7 +200,13 @@ export default class AddRecipient extends Component {
   }
 
   renderDialogs() {
-    const { toError, toWarning, ensResolutionError, ensResolution } = this.props
+    const {
+      network,
+      toError,
+      toWarning,
+      ensResolutionError,
+      ensResolution,
+    } = this.props
     const { t } = this.context
     // const contacts = this.searchForContacts()
     const recents = this.searchForRecents()
@@ -209,7 +226,7 @@ export default class AddRecipient extends Component {
     if (toError && toError !== 'required' && !ensResolution) {
       return (
         <Dialog type="error" className="send__error-dialog">
-          {t(toError)}
+          {t(toError, [encodeNetId(network)])}
         </Dialog>
       )
     }

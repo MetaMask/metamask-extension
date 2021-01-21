@@ -96,12 +96,12 @@ export default class AccountDetails extends Component {
           position="bottom"
           html={
             (
-<AddressWarning warning={' ' + t('confluxAddressWarningClip')}>
+<AddressWarning warning={' ' + t('base32AddressNoticeShort')}>
               {hasCopied ? t('copiedExclamation') : t('copyToClipboard')}
 </AddressWarning>
 )
           }
-          wrapperClassName="account-details__tooltip"
+          wrapperClassName="account-details__tooltip is-warning"
         >
           <button
             className={classnames({

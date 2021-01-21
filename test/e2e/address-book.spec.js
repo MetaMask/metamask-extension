@@ -211,7 +211,7 @@ describe('MetaMask', function() {
       await driver.delay(regularDelayMs)
 
       const inputAddress = await driver.findElement(
-        By.css('input[placeholder="Search, public address (0x1 or 0x8)"]')
+        By.css('input[placeholder="Search Conflux Address"]')
       )
       await inputAddress.sendKeys(
         'net2999:00fk331k8y09c7xh579adgsd0xhxk9e9e0akwd6jms'

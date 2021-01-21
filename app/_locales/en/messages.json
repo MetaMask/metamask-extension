@@ -21,10 +21,10 @@
     "message": "DO NOT transfer to non-ConfluxNetwork address to avoid permanent asset loss."
   },
   "confluxNewAddressWarning": {
-    "message": "建议使用 CFX 开头的新地址进行交易"
+    "message": "It is recommended to use the new address format"
   },
   "goConvert": {
-    "message": "去转换"
+    "message": "Convert"
   },
   "confluxContractAddressWarningSend": {
     "message": "ConfluxNetwork smart contract address, NOT user address"
@@ -780,8 +780,20 @@
   "insufficientTokens": {
     "message": "Insufficient tokens."
   },
+  "base32AddressNotice": {
+    "message": "Conflux address rules have been updated to automatically convert old addresses to new addresses. After that, the 0x prefixed addresses will be abandoned, and will gradually switch to the new address. Under new address rules, different addresses correspond to different networks. In special cases if you need, you can get the old address through the conversion tool."
+  },
+  "base32AddressNoticeShort": {
+    "message": "Conflux address rules have been updated to automatically convert old addresses to new addresses"
+  },
+  "base32AddressNoticeMedium": {
+    "message": "Conflux address rules have been updated to automatically convert old addresses to new addresses. After that, the 0x prefixed addresses will be abandoned"
+  },
   "invalidAddress": {
     "message": "Invalid address"
+  },
+  "invalidAddressNetId": {
+    "message": "Need to use the address beginning with $1 or switch network"
   },
   "invalidAddressRecipient": {
     "message": "Recipient address is invalid"
@@ -886,6 +898,15 @@
   },
   "mainnet": {
     "message": "Conflux Tethys"
+  },
+  "currentNetwork": {
+    "message": "Current Network"
+  },
+  "mainnetCurrent": {
+    "message": "Conflux Tethys (Current)"
+  },
+  "testnetCurrent": {
+    "message": "Conflux Test Network (Current)"
   },
   "memorizePhrase": {
     "message": "Memorize this phrase."
@@ -1109,7 +1130,7 @@
     "message": "Recipient Address"
   },
   "recipientAddressPlaceholder": {
-    "message": "Search, public address (0x1 or 0x8)"
+    "message": "Search Conflux Address"
   },
   "rejectAll": {
     "message": "Reject All"

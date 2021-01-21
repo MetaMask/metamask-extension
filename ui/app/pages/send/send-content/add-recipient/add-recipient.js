@@ -1,6 +1,7 @@
 import {
   REQUIRED_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
+  INVALID_ADDRESS_NETID_ERROR,
   INVALID_RECIPIENT_CHECKSUM_ERROR,
   INVALID_RECIPIENT_0X_ERROR,
   INVALID_RECIPIENT_CONTRACT_ERROR,
@@ -35,6 +36,12 @@ export async function getToErrorObject(
     if (!hasHexData) {
       toError = REQUIRED_ERROR
     }
+  } else if (
+    isValidBase32Address(to) &&
+    !isValidBase32Address(to, network) &&
+    !toError
+  ) {
+    toError = INVALID_ADDRESS_NETID_ERROR
   } else if (
     !ethUtilIsValidAddress(to) &&
     !isValidBase32Address(to, network) &&

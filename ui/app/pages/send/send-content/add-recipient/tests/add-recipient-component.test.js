@@ -176,9 +176,9 @@ describe('AddRecipient Component', function() {
 
       const dialog = wrapper.find(Dialog)
 
-      assert.equal(dialog.props().type, 'error')
-      assert.equal(dialog.props().children, 'bad_t')
-      assert.equal(dialog.length, 1)
+      assert.equal(dialog.at(1).props().type, 'error')
+      assert.equal(dialog.at(1).props().children, 'bad_t')
+      assert.equal(dialog.length, 2)
     })
 
     it('should render error when query has ens does not resolve', function() {
@@ -192,9 +192,9 @@ describe('AddRecipient Component', function() {
 
       const dialog = wrapper.find(Dialog)
 
-      assert.equal(dialog.props().type, 'error')
-      assert.equal(dialog.props().children, 'very bad')
-      assert.equal(dialog.length, 1)
+      assert.equal(dialog.at(1).props().type, 'error')
+      assert.equal(dialog.at(1).props().children, 'very bad')
+      assert.equal(dialog.length, 2)
     })
 
     it('should render warning', function() {
@@ -206,9 +206,9 @@ describe('AddRecipient Component', function() {
 
       const dialog = wrapper.find(Dialog)
 
-      assert.equal(dialog.props().type, 'warning')
-      assert.equal(dialog.props().children, 'watchout_t')
-      assert.equal(dialog.length, 1)
+      assert.equal(dialog.at(1).props().type, 'warning')
+      assert.equal(dialog.at(1).props().children, 'watchout_t')
+      assert.equal(dialog.length, 2)
     })
 
     it('should not render error when ens resolved', function() {
@@ -220,7 +220,7 @@ describe('AddRecipient Component', function() {
 
       const dialog = wrapper.find(Dialog)
 
-      assert.equal(dialog.length, 0)
+      assert.equal(dialog.length, 1)
     })
 
     it('should not render error when query has results', function() {
@@ -235,7 +235,7 @@ describe('AddRecipient Component', function() {
 
       const dialog = wrapper.find(Dialog)
 
-      assert.equal(dialog.length, 1)
+      assert.equal(dialog.length, 2)
     })
   })
 })

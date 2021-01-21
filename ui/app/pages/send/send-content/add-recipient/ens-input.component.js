@@ -35,7 +35,7 @@ export default class EnsInput extends Component {
     selectedName: PropTypes.string,
     onChange: PropTypes.func,
     updateEnsResolution: PropTypes.func,
-    scanQrCode: PropTypes.func,
+    // scanQrCode: PropTypes.func,
     updateEnsResolutionError: PropTypes.func,
     onPaste: PropTypes.func,
     onReset: PropTypes.func,
@@ -199,14 +199,14 @@ export default class EnsInput extends Component {
           <div
             className={c('ens-input__wrapper__action-icon', {
               'ens-input__wrapper__action-icon--erase': input,
-              'ens-input__wrapper__action-icon--qrcode': !input,
+              /* 'ens-input__wrapper__action-icon--qrcode': !input, */
             })}
             onClick={() => {
-              if (input) {
-                this.resetInput()
-              } else {
-                this.props.scanQrCode()
-              }
+              /* if (input) { */
+              this.resetInput()
+              /* } else { */
+              /*   this.props.scanQrCode() */
+              /* } */
             }}
           />
         </div>

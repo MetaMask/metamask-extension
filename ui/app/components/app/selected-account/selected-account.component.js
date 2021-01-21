@@ -30,7 +30,7 @@ class SelectedAccount extends Component {
           position="bottom"
           html={
             (
-<AddressWarning warning={' ' + t('confluxAddressWarningClip')}>
+<AddressWarning warning={' ' + t('base32AddressNoticeShort')}>
               {this.state.copied
                 ? t('copiedExclamation')
                 : t('copyToClipboard')}

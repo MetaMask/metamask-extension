@@ -25,6 +25,7 @@ function mapStateToProps(state) {
   const addressBook = getAddressBook(state)
 
   return {
+    network: parseInt(state.metamask.network, 10),
     ownedAccounts: accountsWithSendEtherInfoSelector(state),
     addressBook,
     ensResolution,
