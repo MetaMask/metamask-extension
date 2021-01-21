@@ -73,6 +73,12 @@ export class DropdownMenuItem extends Component {
           onClick()
           closeMenu()
         }}
+        onKeyPress={(event) => {
+          if (event.key === 'Enter') {
+            onClick()
+            closeMenu()
+          }
+        }}
         style={{
           listStyle: 'none',
           padding: '8px 0px',
@@ -85,6 +91,7 @@ export class DropdownMenuItem extends Component {
           color: 'white',
           ...style,
         }}
+        tabIndex="0"
       >
         {children}
       </li>

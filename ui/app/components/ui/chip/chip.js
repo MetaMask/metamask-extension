@@ -15,9 +15,16 @@ export default function Chip({
   rightIcon,
   onClick,
 }) {
+  const onKeyPress = (event) => {
+    if (event.key === 'Enter' && onClick) {
+      onClick(event)
+    }
+  }
+
   return (
     <div
       onClick={onClick}
+      onKeyPress={onKeyPress}
       className={classnames(className, 'chip', {
         'chip--with-left-icon': Boolean(leftIcon),
         'chip--with-right-icon': Boolean(rightIcon),
