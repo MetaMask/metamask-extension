@@ -6,7 +6,7 @@ module.exports = function (api) {
         '@babel/preset-env',
         {
           targets: {
-            browsers: ['chrome >= 63', 'firefox >= 56.2'],
+            browsers: ['chrome >= 63', 'firefox >= 68'],
           },
         },
       ],
