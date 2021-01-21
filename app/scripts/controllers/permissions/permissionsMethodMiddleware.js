@@ -74,8 +74,8 @@ export default function createPermissionsMethodMiddleware({
       // custom method for getting metadata from the requesting domain,
       // sent automatically by the inpage provider when it's initialized
       case 'metamask_sendDomainMetadata': {
-        if (typeof req.domainMetadata?.name === 'string') {
-          addDomainMetadata(req.origin, req.domainMetadata)
+        if (typeof req.params?.name === 'string') {
+          addDomainMetadata(req.origin, req.params)
         }
         res.result = true
         return
