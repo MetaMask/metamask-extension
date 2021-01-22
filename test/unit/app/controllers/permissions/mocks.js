@@ -600,7 +600,7 @@ export const getters = deepFreeze({
       return {
         origin,
         method: 'metamask_sendDomainMetadata',
-        domainMetadata: {
+        params: {
           ...args,
           name,
         },
