@@ -12,6 +12,7 @@ import { useSwapsEthToken } from '../../../hooks/useSwapsEthToken'
 import { MetaMetricsContext } from '../../../contexts/metametrics.new'
 import FeeCard from '../fee-card'
 import {
+  FALLBACK_GAS_MULTIPLIER,
   getQuotes,
   getSelectedQuote,
   getApproveTxParams,
@@ -27,6 +28,7 @@ import {
   signAndSendTransactions,
   getBackgroundSwapRouteState,
   swapsQuoteSelected,
+  getSwapsQuoteRefreshTime,
 } from '../../../ducks/swaps/swaps'
 import {
   conversionRateSelector,
@@ -57,7 +59,6 @@ import {
 } from '../../../helpers/utils/token-util'
 import {
   decimalToHex,
-  hexMax,
   hexToDecimal,
   getValueFromWeiHex,
 } from '../../../helpers/utils/conversions.util'
@@ -82,6 +83,7 @@ export default function ViewQuote() {
   const metaMetricsEvent = useContext(MetaMetricsContext)
 
   const [dispatchedSafeRefetch, setDispatchedSafeRefetch] = useState(false)
+  const [submitClicked, setSubmitClicked] = useState(false)
   const [selectQuotePopoverShown, setSelectQuotePopoverShown] = useState(false)
   const [warningHidden, setWarningHidden] = useState(false)
   const [originalApproveAmount, setOriginalApproveAmount] = useState(null)
@@ -114,6 +116,7 @@ export default function ViewQuote() {
   const topQuote = useSelector(getTopQuote)
   const usedQuote = selectedQuote || topQuote
   const tradeValue = usedQuote?.trade?.value ?? '0x0'
+  const swapsQuoteRefreshTime = useSelector(getSwapsQuoteRefreshTime)
 
   const { isBestQuote } = usedQuote
 
@@ -123,18 +126,16 @@ export default function ViewQuote() {
     usedQuote?.gasEstimateWithRefund ||
     `0x${decimalToHex(usedQuote?.averageGas || 0)}`
 
-  const gasLimitForMax =
-    usedQuote?.gasEstimate || `0x${decimalToHex(usedQuote?.averageGas || 0)}`
+  const gasLimitForMax = usedQuote?.gasEstimate || `0x0`
 
   const usedGasLimitWithMultiplier = new BigNumber(gasLimitForMax, 16)
-    .times(1.4, 10)
+    .times(usedQuote?.gasMultiplier || FALLBACK_GAS_MULTIPLIER, 10)
     .round(0)
     .toString(16)
 
-  const nonCustomMaxGasLimit = hexMax(
-    `0x${decimalToHex(usedQuote?.maxGas || 0)}`,
-    usedGasLimitWithMultiplier,
-  )
+  const nonCustomMaxGasLimit = usedQuote?.gasEstimate
+    ? usedGasLimitWithMultiplier
+    : `0x${decimalToHex(usedQuote?.maxGas || 0)}`
   const maxGasLimit = customMaxGas || nonCustomMaxGasLimit
 
   const gasTotalInWeiHex = calcGasTotal(maxGasLimit, gasPrice)
@@ -267,14 +268,23 @@ export default function ViewQuote() {
   useEffect(() => {
     const currentTime = Date.now()
     const timeSinceLastFetched = currentTime - quotesLastFetched
-    if (timeSinceLastFetched > 60000 && !dispatchedSafeRefetch) {
+    if (
+      timeSinceLastFetched > swapsQuoteRefreshTime &&
+      !dispatchedSafeRefetch
+    ) {
       setDispatchedSafeRefetch(true)
       dispatch(safeRefetchQuotes())
-    } else if (timeSinceLastFetched > 60000) {
+    } else if (timeSinceLastFetched > swapsQuoteRefreshTime) {
       dispatch(setSwapsErrorKey(QUOTES_EXPIRED_ERROR))
       history.push(SWAPS_ERROR_ROUTE)
     }
-  }, [quotesLastFetched, dispatchedSafeRefetch, dispatch, history])
+  }, [
+    quotesLastFetched,
+    dispatchedSafeRefetch,
+    dispatch,
+    history,
+    swapsQuoteRefreshTime,
+  ])
 
   useEffect(() => {
     if (!originalApproveAmount && approveAmount) {
@@ -544,7 +554,7 @@ export default function ViewQuote() {
             tokenApprovalTextComponent={tokenApprovalTextComponent}
             tokenApprovalSourceTokenSymbol={sourceTokenSymbol}
             onTokenApprovalClick={onFeeCardTokenApprovalClick}
-            metaMaskFee={metaMaskFee}
+            metaMaskFee={String(metaMaskFee)}
             isBestQuote={isBestQuote}
             numberOfQuotes={Object.values(quotes).length}
             onQuotesClick={() => {
@@ -561,6 +571,7 @@ export default function ViewQuote() {
       </div>
       <SwapsFooter
         onSubmit={() => {
+          setSubmitClicked(true)
           if (!balanceError) {
             dispatch(signAndSendTransactions(history, metaMetricsEvent))
           } else if (destinationToken.symbol === 'ETH') {
@@ -571,7 +582,12 @@ export default function ViewQuote() {
         }}
         submitText={t('swap')}
         onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}
-        disabled={balanceError || gasPrice === null || gasPrice === undefined}
+        disabled={
+          submitClicked ||
+          balanceError ||
+          gasPrice === null ||
+          gasPrice === undefined
+        }
         className={isShowingWarning && 'view-quote__thin-swaps-footer'}
         showTopBorder
       />

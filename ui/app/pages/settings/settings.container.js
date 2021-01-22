@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { getAddressBookEntryName } from '../../selectors'
 import { isValidAddress } from '../../helpers/utils/util'
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import { getMostRecentOverviewPage } from '../../ducks/history/history'
 

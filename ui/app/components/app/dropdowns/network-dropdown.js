@@ -9,11 +9,10 @@ import {
   NETWORKS_ROUTE,
   NETWORKS_FORM_ROUTE,
 } from '../../../helpers/constants/routes'
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../app/scripts/lib/enums'
-import {
-  getEnvironmentType,
-  isPrefixedFormattedHexString,
-} from '../../../../../app/scripts/lib/util'
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app'
+import { NETWORK_TYPE_RPC } from '../../../../../shared/constants/network'
+import { isPrefixedFormattedHexString } from '../../../../../shared/modules/utils'
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 
 import { Dropdown, DropdownMenuItem } from './components/dropdown'
 import NetworkDropdownIcon from './components/network-dropdown-icon'
@@ -117,7 +116,7 @@ class NetworkDropdown extends Component {
     return reversedRpcListDetail.map((entry) => {
       const { rpcUrl, chainId, ticker = 'ETH', nickname = '' } = entry
       const isCurrentRpcTarget =
-        provider.type === 'rpc' && rpcUrl === provider.rpcUrl
+        provider.type === NETWORK_TYPE_RPC && rpcUrl === provider.rpcUrl
 
       return (
         <DropdownMenuItem

@@ -14,7 +14,7 @@ import {
   ROPSTEN,
   ROPSTEN_CHAIN_ID,
   ROPSTEN_NETWORK_ID,
-} from '../../../../app/scripts/controllers/network/enums'
+} from '../../../../shared/constants/network'
 import {
   TRANSACTION_CATEGORIES,
   TRANSACTION_STATUSES,

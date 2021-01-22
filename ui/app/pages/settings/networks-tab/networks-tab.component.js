@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import { NETWORK_TYPE_RPC } from '../../../../../shared/constants/network'
 import Button from '../../../components/ui/button'
 import LockIcon from '../../../components/ui/lock-icon'
 import {
@@ -90,7 +91,7 @@ export default class NetworksTab extends PureComponent {
     const listItemNetworkIsSelected = selectRpcUrl && selectRpcUrl === rpcUrl
     const listItemUrlIsProviderUrl = rpcUrl === providerUrl
     const listItemTypeIsProviderNonRpcType =
-      providerType !== 'rpc' && currentProviderType === providerType
+      providerType !== NETWORK_TYPE_RPC && currentProviderType === providerType
     const listItemNetworkIsCurrentProvider =
       !networkIsSelected &&
       !networksTabIsInAddMode &&
@@ -118,12 +119,12 @@ export default class NetworksTab extends PureComponent {
           className={classnames('networks-tab__networks-list-name', {
             'networks-tab__networks-list-name--selected': displayNetworkListItemAsSelected,
             'networks-tab__networks-list-name--disabled':
-              currentProviderType !== 'rpc' &&
+              currentProviderType !== NETWORK_TYPE_RPC &&
               !displayNetworkListItemAsSelected,
           })}
         >
           {label || this.context.t(labelKey)}
-          {currentProviderType !== 'rpc' && (
+          {currentProviderType !== NETWORK_TYPE_RPC && (
             <LockIcon width="14px" height="17px" fill="#cdcdcd" />
           )}
         </div>

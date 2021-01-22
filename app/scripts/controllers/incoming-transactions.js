@@ -1,9 +1,9 @@
-import ObservableStore from 'obs-store'
+import { ObservableStore } from '@metamask/obs-store'
 import log from 'loglevel'
 import BN from 'bn.js'
 import createId from '../lib/random-id'
 import { bnToHex } from '../lib/util'
-import fetchWithTimeout from '../lib/fetch-with-timeout'
+import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout'
 
 import {
   TRANSACTION_CATEGORIES,
@@ -22,11 +22,9 @@ import {
   RINKEBY_CHAIN_ID,
   ROPSTEN,
   ROPSTEN_CHAIN_ID,
-} from './network/enums'
+} from '../../../shared/constants/network'
 
-const fetch = fetchWithTimeout({
-  timeout: 30000,
-})
+const fetchWithTimeout = getFetchWithTimeout(30000)
 
 /**
  * This controller is responsible for retrieving incoming transactions. Etherscan is polled once every block to check
@@ -227,7 +225,7 @@ export default class IncomingTransactionsController {
     if (fromBlock) {
       url += `&startBlock=${parseInt(fromBlock, 10)}`
     }
-    const response = await fetch(url)
+    const response = await fetchWithTimeout(url)
     const parsedResponse = await response.json()
 
     return {
@@ -249,9 +247,7 @@ export default class IncomingTransactionsController {
       })
 
       const incomingTxs = remoteTxs.filter(
-        (tx) =>
-          tx.txParams.to &&
-          tx.txParams.to.toLowerCase() === address.toLowerCase(),
+        (tx) => tx.txParams?.to?.toLowerCase() === address.toLowerCase(),
       )
       incomingTxs.sort((a, b) => (a.time < b.time ? -1 : 1))
 

@@ -4,7 +4,7 @@
     "scripts": [
       "globalthis.js",
       "initSentry.js",
-      "lockdown.cjs",
+      "lockdown.js",
       "runLockdown.js",
       "bg-libs.js",
       "background.js"
@@ -38,8 +38,9 @@
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
       "js": [
+        "disable-console.js",
         "globalthis.js",
-        "lockdown.cjs",
+        "lockdown.js",
         "runLockdown.js",
         "contentscript.js"
       ],
@@ -77,6 +78,6 @@
     "notifications"
   ],
   "short_name": "__MSG_appName__",
-  "version": "8.1.7",
+  "version": "9.0.2",
   "web_accessible_resources": ["inpage.js", "phishing.html"]
 }

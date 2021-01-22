@@ -1,5 +1,5 @@
 import assert from 'assert'
-import ObservableStore from 'obs-store'
+import { ObservableStore } from '@metamask/obs-store'
 import sinon from 'sinon'
 import PreferencesController from '../../../../app/scripts/controllers/preferences'
 

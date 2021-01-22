@@ -1,7 +1,7 @@
 import extension from 'extensionizer'
 import { createExplorerLink as explorerLink } from '@metamask/etherscan-link'
 import { getEnvironmentType, checkForError } from '../lib/util'
-import { ENVIRONMENT_TYPE_BACKGROUND } from '../lib/enums'
+import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app'
 import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction'
 
 export default class ExtensionPlatform {

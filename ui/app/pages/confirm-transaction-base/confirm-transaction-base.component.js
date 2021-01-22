@@ -1,7 +1,7 @@
 import ethUtil from 'ethereumjs-util'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../app/scripts/lib/enums'
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import ConfirmPageContainer, {
   ConfirmDetailRow,
@@ -141,7 +141,7 @@ export default class ConfirmTransactionBase extends Component {
       nextNonce !== prevNextNonce ||
       customNonceValue !== prevCustomNonceValue
     ) {
-      if (customNonceValue > nextNonce) {
+      if (nextNonce !== null && customNonceValue > nextNonce) {
         this.setState({
           submitWarning: this.context.t('nextNonceWarning', [nextNonce]),
         })

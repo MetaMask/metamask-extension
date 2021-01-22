@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
-} from '../../../../../../app/scripts/lib/enums'
+} from '../../../../../../shared/constants/app'
 import { getEnvironmentType } from '../../../../../../app/scripts/lib/util'
 import NetworkDisplay from '../../network-display'
 import Identicon from '../../../ui/identicon'

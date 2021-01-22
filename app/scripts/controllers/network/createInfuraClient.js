@@ -8,7 +8,7 @@ import providerFromMiddleware from 'eth-json-rpc-middleware/providerFromMiddlewa
 import createInfuraMiddleware from 'eth-json-rpc-infura'
 import BlockTracker from 'eth-block-tracker'
 
-import { NETWORK_TYPE_TO_ID_MAP } from './enums'
+import { NETWORK_TYPE_TO_ID_MAP } from '../../../../shared/constants/network'
 
 export default function createInfuraClient({ network, projectId }) {
   const infuraMiddleware = createInfuraMiddleware({

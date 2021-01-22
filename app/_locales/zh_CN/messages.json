@@ -95,6 +95,12 @@
   "alertSettingsUnconnectedAccountDescription": {
     "message": "当你在浏览已连接的 Web3 网站，但当前选择的账户没有连接时，该提醒会在弹出的窗口中显示。"
   },
+  "alertSettingsWeb3ShimUsage": {
+    "message": "当网站尝试使用已经删除的 window.web3 API"
+  },
+  "alertSettingsWeb3ShimUsageDescription": {
+    "message": "当你在浏览的网站尝试使用已经删除的 window.web3 API 时，该提醒会在弹出的窗口中显示。"
+  },
   "alerts": {
     "message": "提醒"
   },
@@ -224,11 +230,14 @@
   "bytes": {
     "message": "字节"
   },
+  "canToggleInSettings": {
+    "message": "你可以在 设置 -> 提醒 中重新启用该提醒通知。"
+  },
   "cancel": {
     "message": "取消"
   },
   "cancellationGasFee": {
-    "message": "取消交易费用"
+    "message": "取消交易燃料费用"
   },
   "cancelled": {
     "message": "已取消"
@@ -794,6 +803,9 @@
   "invalidBlockExplorerURL": {
     "message": "无效的区块浏览器 URL"
   },
+  "invalidChainIdTooBig": {
+    "message": "无效的链 ID，该链 ID 数字过大。"
+  },
   "invalidCustomNetworkAlertContent1": {
     "message": "需要重新输入自定义网络'$1'的链 ID。"
   },
@@ -1332,7 +1344,7 @@
     "message": "账户助记词由 12、15、18、21 或 24 个单词组成"
   },
   "selectAHigherGasFee": {
-    "message": "选择更高的交易费，提高交易处理速度。*"
+    "message": "选择更高的燃料费用，提高交易处理速度。*"
   },
   "selectAccounts": {
     "message": "选择账户"
@@ -1431,7 +1443,7 @@
     "message": "签名"
   },
   "signNotice": {
-    "message": "签署此消息可能会产生危险的副作用。 \n只从你完全信任的网站上签名。 这种危险的方法将在未来的版本中被移除。"
+    "message": "签署此消息可能会产生危险的副作用。 \n只从你完全信任的网站上签名。 未来的版本将移除这种危险的方法。"
   },
   "signatureRequest": {
     "message": "请求签名"
@@ -1875,7 +1887,7 @@
     "message": "交易"
   },
   "transactionCancelAttempted": {
-    "message": "尝试取消交易 $2，交易费：$1。"
+    "message": "尝试取消交易 $2，燃料费用：$1。"
   },
   "transactionCancelSuccess": {
     "message": "取消交易成功 $2。"
@@ -2011,6 +2023,9 @@
   },
   "walletSeed": {
     "message": "账户助记词"
+  },
+  "web3ShimUsageNotification": {
+    "message": "我们发现当前的网站尝试使用已经删除的 window.web3 API。如果这个网站网站已经无法正常使用，请点击 $1 获取更多信息。"
   },
   "welcome": {
     "message": "欢迎使用 MetaMask"

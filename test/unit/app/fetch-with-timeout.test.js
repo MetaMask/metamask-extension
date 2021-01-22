@@ -1,14 +1,16 @@
 import assert from 'assert'
 import nock from 'nock'
 
-import fetchWithTimeout from '../../../app/scripts/lib/fetch-with-timeout'
+import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout'
 
-describe('fetchWithTimeout', function () {
+describe('getFetchWithTimeout', function () {
   it('fetches a url', async function () {
     nock('https://api.infura.io').get('/money').reply(200, '{"hodl": false}')
 
-    const fetch = fetchWithTimeout()
-    const response = await (await fetch('https://api.infura.io/money')).json()
+    const fetchWithTimeout = getFetchWithTimeout(30000)
+    const response = await (
+      await fetchWithTimeout('https://api.infura.io/money')
+    ).json()
     assert.deepEqual(response, {
       hodl: false,
     })
@@ -20,12 +22,10 @@ describe('fetchWithTimeout', function () {
       .delay(2000)
       .reply(200, '{"moon": "2012-12-21T11:11:11Z"}')
 
-    const fetch = fetchWithTimeout({
-      timeout: 123,
-    })
+    const fetchWithTimeout = getFetchWithTimeout(123)
 
     try {
-      await fetch('https://api.infura.io/moon').then((r) => r.json())
+      await fetchWithTimeout('https://api.infura.io/moon').then((r) => r.json())
       assert.fail('Request should throw')
     } catch (e) {
       assert.ok(e)
@@ -38,15 +38,20 @@ describe('fetchWithTimeout', function () {
       .delay(2000)
       .reply(200, '{"moon": "2012-12-21T11:11:11Z"}')
 
-    const fetch = fetchWithTimeout({
-      timeout: 123,
-    })
+    const fetchWithTimeout = getFetchWithTimeout(123)
 
     try {
-      await fetch('https://api.infura.io/moon').then((r) => r.json())
+      await fetchWithTimeout('https://api.infura.io/moon').then((r) => r.json())
       assert.fail('Request should be aborted')
     } catch (e) {
       assert.deepEqual(e.message, 'Aborted')
     }
+  })
+
+  it('throws on invalid timeout', async function () {
+    assert.throws(() => getFetchWithTimeout(), 'should throw')
+    assert.throws(() => getFetchWithTimeout(-1), 'should throw')
+    assert.throws(() => getFetchWithTimeout({}), 'should throw')
+    assert.throws(() => getFetchWithTimeout(true), 'should throw')
   })
 })

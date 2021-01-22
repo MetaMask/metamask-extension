@@ -1,4 +1,7 @@
 import log from 'loglevel'
+import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout'
+
+const fetchWithTimeout = getFetchWithTimeout(30000)
 
 const FIXTURE_SERVER_HOST = 'localhost'
 const FIXTURE_SERVER_PORT = 12345
@@ -24,7 +27,7 @@ export default class ReadOnlyNetworkStore {
    */
   async _init() {
     try {
-      const response = await window.fetch(FIXTURE_SERVER_URL)
+      const response = await fetchWithTimeout(FIXTURE_SERVER_URL)
       if (response.ok) {
         this._state = await response.json()
       }

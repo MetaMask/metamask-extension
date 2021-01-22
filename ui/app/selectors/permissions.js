@@ -1,5 +1,5 @@
 import { forOwn } from 'lodash'
-import { CAVEAT_NAMES } from '../../../app/scripts/controllers/permissions/enums'
+import { CAVEAT_NAMES } from '../../../shared/constants/permissions'
 import {
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
@@ -242,6 +242,13 @@ export function getPermissionsForActiveTab(state) {
       key: parentCapability,
     }
   })
+}
+
+export function activeTabHasPermissions(state) {
+  const { activeTab, metamask } = state
+  const { domains = {} } = metamask
+
+  return Boolean(domains[activeTab.origin]?.permissions?.length > 0)
 }
 
 export function getLastConnectedInfo(state) {

@@ -14,7 +14,7 @@ import {
   PLATFORM_CHROME,
   PLATFORM_EDGE,
   PLATFORM_BRAVE,
-} from './enums'
+} from '../../../shared/constants/app'
 
 /**
  * @see {@link getEnvironmentType}
@@ -148,21 +148,6 @@ function checkForError() {
 }
 
 /**
- * Checks whether the given value is a 0x-prefixed, non-zero, non-zero-padded,
- * hexadecimal string.
- *
- * @param {any} value - The value to check.
- * @returns {boolean} True if the value is a correctly formatted hex string,
- * false otherwise.
- */
-function isPrefixedFormattedHexString(value) {
-  if (typeof value !== 'string') {
-    return false
-  }
-  return /^0x[1-9a-f]+[0-9a-f]*$/iu.test(value)
-}
-
-/**
  * Prefixes a hex string with '0x' or '-0x' and returns it. Idempotent.
  *
  * @param {string} str - The string to prefix.
@@ -202,7 +187,6 @@ export {
   hexToBn,
   BnMultiplyByFraction,
   checkForError,
-  isPrefixedFormattedHexString,
   addHexPrefix,
   bnToHex,
 }

@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash'
+import { CAVEAT_NAMES } from '../../../../shared/constants/permissions'
 import {
-  CAVEAT_NAMES,
   HISTORY_STORE_KEY,
   LOG_IGNORE_METHODS,
   LOG_LIMIT,

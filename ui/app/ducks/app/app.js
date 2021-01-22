@@ -42,7 +42,6 @@ export default function reduceApp(state = {}, action) {
       trezor: `m/44'/60'/0'/0`,
       ledger: `m/44'/60'/0'/0/0`,
     },
-    lastSelectedProvider: null,
     networksTabSelectedRpcUrl: '',
     networksTabIsInAddMode: false,
     loadingMethodData: false,
@@ -303,15 +302,6 @@ export default function reduceApp(state = {}, action) {
       return {
         ...appState,
         gasIsLoading: false,
-      }
-
-    case actionConstants.SET_PREVIOUS_PROVIDER:
-      if (action.value === 'loading') {
-        return appState
-      }
-      return {
-        ...appState,
-        lastSelectedProvider: action.value,
       }
 
     case actionConstants.SET_SELECTED_SETTINGS_RPC_URL:
