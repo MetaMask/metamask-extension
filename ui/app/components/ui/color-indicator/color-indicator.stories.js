@@ -9,11 +9,7 @@ export default {
 
 export const colorIndicator = () => (
   <ColorIndicator
-    size={select(
-      'size',
-      { large: 'large', medium: 'medium', small: 'small' },
-      'large',
-    )}
+    size={select('size', ColorIndicator.SIZES, ColorIndicator.SIZES.LARGE)}
     type={select('type', ColorIndicator.TYPES, ColorIndicator.TYPES.FILLED)}
     color={select('color', COLORS, COLORS.PRIMARY1)}
     borderColor={select('borderColor', { NONE: undefined, ...COLORS })}
@@ -22,11 +18,7 @@ export const colorIndicator = () => (
 
 export const withIcon = () => (
   <ColorIndicator
-    size={select(
-      'size',
-      { large: 'large', medium: 'medium', small: 'small' },
-      'large',
-    )}
+    size={select('size', ColorIndicator.SIZES, ColorIndicator.SIZES.LARGE)}
     type={select('type', ColorIndicator.TYPES, ColorIndicator.TYPES.FILLED)}
     color={select('color', COLORS, COLORS.PRIMARY1)}
     iconClassName="fa fa-question"

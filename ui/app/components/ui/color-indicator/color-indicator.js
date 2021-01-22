@@ -29,16 +29,22 @@ export default function ColorIndicator({
   )
 }
 
-ColorIndicator.propTypes = {
-  color: PropTypes.oneOf(Object.values(COLORS)),
-  borderColor: PropTypes.oneOf(Object.values(COLORS)),
-  size: PropTypes.oneOf(['small', 'medium', 'large']),
-  iconClassName: PropTypes.string,
-  type: PropTypes.oneOf(['filled', 'partial-filled', 'outline']),
+ColorIndicator.SIZES = {
+  LARGE: 'large',
+  MEDIUM: 'medium',
+  SMALL: 'small,',
 }
 
 ColorIndicator.TYPES = {
   FILLED: 'filled',
   PARTIAL: 'partial-filled',
   OUTLINE: 'outline',
+}
+
+ColorIndicator.propTypes = {
+  color: PropTypes.oneOf(Object.values(COLORS)),
+  borderColor: PropTypes.oneOf(Object.values(COLORS)),
+  size: PropTypes.oneOf(Object.values(ColorIndicator.SIZES)),
+  iconClassName: PropTypes.string,
+  type: PropTypes.oneOf(Object.values(ColorIndicator.TYPES)),
 }
