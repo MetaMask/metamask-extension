@@ -1,9 +1,9 @@
 import EventEmitter from 'events'
 import { ObservableStore } from '@metamask/obs-store'
 import ethUtil from 'ethereumjs-util'
-import { ethErrors } from 'eth-json-rpc-errors'
+import { ethErrors } from 'eth-rpc-errors'
+import { MESSAGE_TYPE } from '../../../shared/constants/app'
 import createId from './random-id'
-import { MESSAGE_TYPE } from './enums'
 
 /**
  * Represents, and contains data about, an 'eth_sign' type signature request. These are created when a signature for

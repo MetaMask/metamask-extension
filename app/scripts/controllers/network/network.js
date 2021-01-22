@@ -9,25 +9,29 @@ import {
   createEventEmitterProxy,
 } from 'swappable-obj-proxy'
 import EthQuery from 'eth-query'
-import createMetamaskMiddleware from './createMetamaskMiddleware'
-import createInfuraClient from './createInfuraClient'
-import createJsonRpcClient from './createJsonRpcClient'
-
 import {
   RINKEBY,
   MAINNET,
   INFURA_PROVIDER_TYPES,
+  NETWORK_TYPE_RPC,
   NETWORK_TYPE_TO_ID_MAP,
   MAINNET_CHAIN_ID,
   RINKEBY_CHAIN_ID,
-} from './enums'
+} from '../../../../shared/constants/network'
+import {
+  isPrefixedFormattedHexString,
+  isSafeChainId,
+} from '../../../../shared/modules/utils'
+import createMetamaskMiddleware from './createMetamaskMiddleware'
+import createInfuraClient from './createInfuraClient'
+import createJsonRpcClient from './createJsonRpcClient'
 
 const env = process.env.METAMASK_ENV
 
 let defaultProviderConfigOpts
 if (process.env.IN_TEST === 'true') {
   defaultProviderConfigOpts = {
-    type: 'rpc',
+    type: NETWORK_TYPE_RPC,
     rpcUrl: 'http://localhost:8545',
     chainId: '0x539',
     nickname: 'Localhost 8545',
@@ -160,8 +164,16 @@ export default class NetworkController extends EventEmitter {
   }
 
   setRpcTarget(rpcUrl, chainId, ticker = 'ETH', nickname = '', rpcPrefs) {
+    assert.ok(
+      isPrefixedFormattedHexString(chainId),
+      `Invalid chain ID "${chainId}": invalid hex string.`,
+    )
+    assert.ok(
+      isSafeChainId(parseInt(chainId, 16)),
+      `Invalid chain ID "${chainId}": numerical value greater than max safe value.`,
+    )
     this.setProviderConfig({
-      type: 'rpc',
+      type: NETWORK_TYPE_RPC,
       rpcUrl,
       chainId,
       ticker,
@@ -171,14 +183,14 @@ export default class NetworkController extends EventEmitter {
   }
 
   async setProviderType(type, rpcUrl = '', ticker = 'ETH', nickname = '') {
-    assert.notEqual(
+    assert.notStrictEqual(
       type,
-      'rpc',
-      `NetworkController - cannot call "setProviderType" with type 'rpc'. use "setRpcTarget"`,
+      NETWORK_TYPE_RPC,
+      `NetworkController - cannot call "setProviderType" with type "${NETWORK_TYPE_RPC}". Use "setRpcTarget"`,
     )
-    assert(
+    assert.ok(
       INFURA_PROVIDER_TYPES.includes(type),
-      `NetworkController - Unknown rpc type "${type}"`,
+      `Unknown Infura provider type "${type}".`,
     )
     const { chainId } = NETWORK_TYPE_TO_ID_MAP[type]
     this.setProviderConfig({ type, rpcUrl, chainId, ticker, nickname })
@@ -209,7 +221,7 @@ export default class NetworkController extends EventEmitter {
 
   getNetworkIdentifier() {
     const provider = this.providerStore.getState()
-    return provider.type === 'rpc' ? provider.rpcUrl : provider.type
+    return provider.type === NETWORK_TYPE_RPC ? provider.rpcUrl : provider.type
   }
 
   //
@@ -228,7 +240,7 @@ export default class NetworkController extends EventEmitter {
     if (isInfura) {
       this._configureInfuraProvider(type, this._infuraProjectId)
       // url-based rpc endpoints
-    } else if (type === 'rpc') {
+    } else if (type === NETWORK_TYPE_RPC) {
       this._configureStandardProvider(rpcUrl, chainId)
     } else {
       throw new Error(

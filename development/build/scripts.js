@@ -375,12 +375,10 @@ function createScriptTasks({ browserPlatforms, livereload }) {
         METAMASK_DEBUG: opts.devMode,
         METAMASK_ENVIRONMENT: environment,
         METAMASK_VERSION: baseManifest.version,
-        METAMETRICS_PROJECT_ID: process.env.METAMETRICS_PROJECT_ID,
         NODE_ENV: opts.devMode ? 'development' : 'production',
         IN_TEST: opts.testing ? 'true' : false,
         PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
         PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
-        ETH_GAS_STATION_API_KEY: process.env.ETH_GAS_STATION_API_KEY || '',
         CONF: opts.devMode ? conf : {},
         SENTRY_DSN: process.env.SENTRY_DSN,
         INFURA_PROJECT_ID: opts.testing

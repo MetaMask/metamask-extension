@@ -19,6 +19,12 @@ import extension from 'extensionizer'
 import { storeAsStream, storeTransformStream } from '@metamask/obs-store'
 import PortStream from 'extension-port-stream'
 import { captureException } from '@sentry/browser'
+
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_FULLSCREEN,
+} from '../../shared/constants/app'
 import migrations from './migrations'
 import Migrator from './lib/migrator'
 import ExtensionPlatform from './platforms/extension'
@@ -31,12 +37,6 @@ import rawFirstTimeState from './first-time-state'
 import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code'
 import getObjStructure from './lib/getObjStructure'
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup'
-
-import {
-  ENVIRONMENT_TYPE_POPUP,
-  ENVIRONMENT_TYPE_NOTIFICATION,
-  ENVIRONMENT_TYPE_FULLSCREEN,
-} from './lib/enums'
 /* eslint-enable import/first */
 
 const { sentry } = global

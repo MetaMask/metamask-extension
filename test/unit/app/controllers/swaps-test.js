@@ -8,7 +8,7 @@ import { ObservableStore } from '@metamask/obs-store'
 import {
   ROPSTEN_NETWORK_ID,
   MAINNET_NETWORK_ID,
-} from '../../../../app/scripts/controllers/network/enums'
+} from '../../../../shared/constants/network'
 import { ETH_SWAPS_TOKEN_ADDRESS } from '../../../../ui/app/helpers/constants/swaps'
 import { createTestProviderTools } from '../../../stub/provider'
 import SwapsController, {

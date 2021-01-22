@@ -1,4 +1,4 @@
-import * as networkEnums from '../../app/scripts/controllers/network/enums'
+import * as networkEnums from '../../shared/constants/network'
 
 /**
  * Gets the etherscan.io URL prefix for a given network ID.

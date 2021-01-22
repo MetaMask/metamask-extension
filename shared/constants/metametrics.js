@@ -1,6 +1,6 @@
 // Type Imports
 /**
- * @typedef {import('../../app/scripts/lib/enums').EnvironmentType} EnvironmentType
+ * @typedef {import('../../shared/constants/app').EnvironmentType} EnvironmentType
  */
 
 // Type Declarations

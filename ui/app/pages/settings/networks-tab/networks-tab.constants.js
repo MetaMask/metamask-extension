@@ -9,7 +9,7 @@ import {
   RINKEBY_CHAIN_ID,
   ROPSTEN,
   ROPSTEN_CHAIN_ID,
-} from '../../../../../app/scripts/controllers/network/enums'
+} from '../../../../../shared/constants/network'
 
 const defaultNetworksData = [
   {

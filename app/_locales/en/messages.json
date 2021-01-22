@@ -845,6 +845,9 @@
   "invalidBlockExplorerURL": {
     "message": "Invalid Block Explorer URL"
   },
+  "invalidChainIdTooBig": {
+    "message": "Invalid chain ID. The chain ID is too big."
+  },
   "invalidCustomNetworkAlertContent1": {
     "message": "The chain ID for custom network '$1' has to be re-entered.",
     "description": "$1 is the name/identifier of the network."

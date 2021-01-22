@@ -1,12 +1,12 @@
-import { ethErrors, ERROR_CODES } from 'eth-json-rpc-errors'
+import { ethErrors, errorCodes } from 'eth-rpc-errors'
 import deepFreeze from 'deep-freeze-strict'
 
 import { ApprovalController } from '@metamask/controllers'
 
 import _getRestrictedMethods from '../../../../../app/scripts/controllers/permissions/restrictedMethods'
 
+import { CAVEAT_NAMES } from '../../../../../shared/constants/permissions'
 import {
-  CAVEAT_NAMES,
   CAVEAT_TYPES,
   NOTIFICATION_NAMES,
 } from '../../../../../app/scripts/controllers/permissions/enums'
@@ -336,7 +336,7 @@ export const getters = deepFreeze({
         return {
           // name: 'EthereumRpcError',
           message: `Failed to add 'eth_accounts' to '${origin}'.`,
-          code: ERROR_CODES.rpc.internal,
+          code: errorCodes.rpc.internal,
         }
       },
     },

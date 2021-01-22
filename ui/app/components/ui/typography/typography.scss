@@ -1,0 +1,38 @@
+@use "design-system";
+@use "sass:map";
+
+.typography {
+  @include design-system.Paragraph;
+
+  @each $variant in map.keys(design-system.$typography-variants) {
+    &--#{$variant} {
+      @include design-system.typography($variant);
+    }
+  }
+
+  @each $variant, $color in design-system.$color-map {
+    &--color-#{$variant} {
+      color: $color;
+    }
+  }
+
+  @each $variant, $weight in design-system.$typography-font-weights {
+    &--weight-#{$variant} {
+      font-weight: $weight;
+    }
+  }
+
+  &--align-center {
+    text-align: center;
+  }
+
+  &--align-right {
+    text-align: right;
+  }
+
+  @for $i from 1 through 8 {
+    &--spacing-#{$i} {
+      margin: #{$i * 4}px auto;
+    }
+  }
+}

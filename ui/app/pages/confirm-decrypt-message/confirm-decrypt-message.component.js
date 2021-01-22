@@ -9,7 +9,7 @@ import Identicon from '../../components/ui/identicon'
 import Tooltip from '../../components/ui/tooltip'
 import Copy from '../../components/ui/icon/copy-icon.component'
 
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../app/scripts/lib/enums'
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import { conversionUtil } from '../../helpers/utils/conversion-util'
 

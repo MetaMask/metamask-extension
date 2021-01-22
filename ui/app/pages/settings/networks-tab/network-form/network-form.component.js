@@ -1,12 +1,14 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import validUrl from 'valid-url'
-import BigNumber from 'bignumber.js'
 import log from 'loglevel'
 import TextField from '../../../../components/ui/text-field'
 import Button from '../../../../components/ui/button'
 import Tooltip from '../../../../components/ui/tooltip'
-import { isPrefixedFormattedHexString } from '../../../../../../app/scripts/lib/util'
+import {
+  isPrefixedFormattedHexString,
+  isSafeChainId,
+} from '../../../../../../shared/modules/utils'
 import { jsonRpcRequest } from '../../../../helpers/utils/util'
 
 const FORM_STATE_KEYS = [
@@ -126,7 +128,7 @@ export default class NetworkForm extends PureComponent {
     if (!chainId || typeof chainId !== 'string' || !chainId.startsWith('0x')) {
       return chainId
     }
-    return new BigNumber(chainId, 16).toString(10)
+    return parseInt(chainId, 16).toString(10)
   }
 
   onSubmit = async () => {
@@ -155,7 +157,7 @@ export default class NetworkForm extends PureComponent {
       // Ensure chainId is a 0x-prefixed, lowercase hex string
       let chainId = formChainId
       if (!chainId.startsWith('0x')) {
-        chainId = `0x${new BigNumber(chainId, 10).toString(16)}`
+        chainId = `0x${parseInt(chainId, 10).toString(16)}`
       }
 
       if (!(await this.validateChainIdOnSubmit(formChainId, chainId, rpcUrl))) {
@@ -308,8 +310,10 @@ export default class NetworkForm extends PureComponent {
   validateChainIdOnChange = (chainIdArg = '') => {
     const chainId = chainIdArg.trim()
     let errorMessage = ''
+    let radix = 10
 
     if (chainId.startsWith('0x')) {
+      radix = 16
       if (!/^0x[0-9a-f]+$/iu.test(chainId)) {
         errorMessage = this.context.t('invalidHexNumber')
       } else if (!isPrefixedFormattedHexString(chainId)) {
@@ -319,6 +323,8 @@ export default class NetworkForm extends PureComponent {
       errorMessage = this.context.t('invalidNumber')
     } else if (chainId.startsWith('0')) {
       errorMessage = this.context.t('invalidNumberLeadingZeros')
+    } else if (!isSafeChainId(parseInt(chainId, radix))) {
+      errorMessage = this.context.t('invalidChainIdTooBig')
     }
 
     this.setErrorTo('chainId', errorMessage)
@@ -356,7 +362,7 @@ export default class NetworkForm extends PureComponent {
       // in an error message in the form.
       if (!formChainId.startsWith('0x')) {
         try {
-          endpointChainId = new BigNumber(endpointChainId, 16).toString(10)
+          endpointChainId = parseInt(endpointChainId, 16).toString(10)
         } catch (err) {
           log.warn(
             'Failed to convert endpoint chain ID to decimal',
