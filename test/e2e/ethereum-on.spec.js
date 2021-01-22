@@ -171,7 +171,7 @@ describe('MetaMask', function () {
     it('changes the network', async function () {
       await driver.switchToWindow(extension)
 
-      await driver.clickElement(By.css('.network-name'))
+      await driver.clickElement(By.css('.network-display'))
       await driver.delay(regularDelayMs)
 
       await driver.clickElement(By.xpath(`//span[contains(text(), 'Ropsten')]`))
