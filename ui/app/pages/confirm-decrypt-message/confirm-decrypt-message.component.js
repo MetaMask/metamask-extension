@@ -174,8 +174,9 @@ export default class ConfirmDecryptMessage extends Component {
     const { decryptMessageInline, domainMetadata, txData } = this.props
     const { t } = this.context
 
-    const origin = domainMetadata[txData.msgParams.origin]
-    const notice = t('decryptMessageNotice', [origin.name])
+    const originMetadata = domainMetadata[txData.msgParams.origin]
+    const name = originMetadata?.name || txData.msgParams.origin
+    const notice = t('decryptMessageNotice', [txData.msgParams.origin])
 
     const {
       hasCopied,
@@ -191,15 +192,15 @@ export default class ConfirmDecryptMessage extends Component {
         {this.renderAccountInfo()}
         <div className="request-decrypt-message__visual">
           <section>
-            {origin.icon ? (
+            {originMetadata?.icon ? (
               <img
                 className="request-decrypt-message__visual-identicon"
-                src={origin.icon}
+                src={originMetadata?.icon}
                 alt=""
               />
             ) : (
               <i className="request-decrypt-message__visual-identicon--default">
-                {origin.name.charAt(0).toUpperCase()}
+                {name.charAt(0).toUpperCase()}
               </i>
             )}
             <div className="request-decrypt-message__notice">{notice}</div>
