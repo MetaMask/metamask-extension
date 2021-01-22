@@ -3,6 +3,8 @@
 ## Current Develop Branch
 
 ## 9.0.3 Fri Jan 22 2021
+- [#10243](https://github.com/MetaMask/metamask-extension/pull/10243): Fix site metadata handling
+- [#10252](https://github.com/MetaMask/metamask-extension/pull/10252): Fix decrypt message confirmation UI crash
 
 ## 9.0.2 Wed Jan 20 2021
 
