@@ -4,6 +4,16 @@
 /**
  * Calculate the luminance for a color.
  * See https://www.w3.org/TR/WCAG20-TECHS/G17.html#G17-tests
+ *
+ * Note:
+ * @Gudahtt and @brad-decker have identified a potential performance concern
+ * that **might** impact build times if this function becomes widely used. It
+ * has not been validated, and is predicated on user-land math.pow functions
+ * prior to dart-sass 1.25.0. However, if the build times of sass raise
+ * exponentially a lookup table of all possible values for the math.pow call
+ * can be used to bypass the issue. This will require some logic updates as
+ * well. For reference, the blog post where the performance concern was
+ * originally made is here https://bit.ly/3c3qXzq (css-tricks)
  */
 @function luminance($color) {
   $channels: (
