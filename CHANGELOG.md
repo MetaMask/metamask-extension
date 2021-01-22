@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 9.0.3 Fri Jan 22 2021
+
 ## 9.0.2 Wed Jan 20 2021
 
 - [#10191](https://github.com/MetaMask/metamask-extension/pull/10191): zh_TW: 乙太 -> 以太 (#10191)
