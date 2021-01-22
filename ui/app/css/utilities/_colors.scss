@@ -19,7 +19,7 @@
   );
 
   @each $name, $value in $values {
-    @if $value < 0.03928 {
+    @if $value <= 0.03928 {
       $value: $value / 12.92;
     }
 
