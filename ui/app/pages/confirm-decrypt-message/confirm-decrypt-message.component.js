@@ -195,7 +195,7 @@ export default class ConfirmDecryptMessage extends Component {
             {originMetadata?.icon ? (
               <img
                 className="request-decrypt-message__visual-identicon"
-                src={originMetadata?.icon}
+                src={originMetadata.icon}
                 alt=""
               />
             ) : (
