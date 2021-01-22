@@ -694,6 +694,21 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       addUnapprovedTransaction(usedTradeTxParams, 'metamask'),
     )
     dispatch(setTradeTxId(tradeTxMeta.id))
+
+    // The simulationFails property is added during the transaction controllers
+    // addUnapprovedTransaction call if the estimateGas call fails. In cases
+    // when no approval is required, this indicates that the swap will likely
+    // fail. There was an earlier estimateGas call made by the swaps controller,
+    // but it is possible that external conditions have change since then, and
+    // a previously succeeding estimate gas call could now fail. By checking for
+    // the `simulationFails` property here, we can reduce the number of swap
+    // transactions that get published to the blockchain only to fail and thereby
+    // waste the user's funds on gas.
+    if (!approveTxParams && tradeTxMeta.simulationFails) {
+      await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR))
+      history.push(SWAPS_ERROR_ROUTE)
+      return
+    }
     const finalTradeTxMeta = await dispatch(
       updateTransaction(
         {
