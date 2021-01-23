@@ -134,7 +134,8 @@
     "message": "Блок-эксплорер"
   },
   "blockExplorerView": {
-    "message": "Посмотреть аккаунт на $1"
+    "message": "Посмотреть аккаунт на $1",
+    "description": "$1 replaced by URL for custom block explorer"
   },
   "blockiesIdenticon": {
     "message": "Использовать Blockies Identicon"
@@ -292,7 +293,7 @@
   },
   "decryptMessageNotice": {
     "message": "Для $1 необходимо прочитать это сообщение, чтобы завершить Ваше действие",
-    "description": "$1 is website or dapp name"
+    "description": "$1 is the web3 site name"
   },
   "decryptMetamask": {
     "message": "Расшифровать сообщение"
@@ -353,7 +354,7 @@
   },
   "encryptionPublicKeyNotice": {
     "message": "$1 запрашивает ваш открытый ключ шифрования. По согласованию, этот сайт сможет создавать для Вас зашифрованные сообщения.",
-    "description": "$1 is website or dapp name"
+    "description": "$1 is the web3 site name"
   },
   "encryptionPublicKeyRequest": {
     "message": "Запрос публичного ключа шифрования"
