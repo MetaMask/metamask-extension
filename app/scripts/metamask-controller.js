@@ -1872,6 +1872,7 @@ export default class MetamaskController extends EventEmitter {
     // TODO:LegacyProvider: Delete
     // legacy streams
     this.setupPublicConfig(mux.createStream('publicConfig'))
+    this.setupProviderConnection(mux.createStream('provider'), sender)
   }
 
   /**
