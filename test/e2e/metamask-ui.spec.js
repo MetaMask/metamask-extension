@@ -308,8 +308,6 @@ describe('MetaMask', function () {
       )
       await amountMax.click()
 
-      assert.equal(await inputAmount.isEnabled(), false)
-
       let inputValue = await inputAmount.getAttribute('value')
 
       assert(Number(inputValue) > 99)
