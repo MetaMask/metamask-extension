@@ -82,11 +82,6 @@ $typography-variants: (
   'h9': 0.5rem,
 );
 
-$typography-font-weights: (
-  'bold': 700,
-  'normal': 400,
-);
-
 $font-size-h1: map-get($typography-variants, 'h1');
 $font-size-h2: map-get($typography-variants, 'h2');
 $font-size-h3: map-get($typography-variants, 'h3');
