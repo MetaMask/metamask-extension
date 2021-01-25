@@ -2,6 +2,7 @@ import { connect } from 'react-redux'
 import {
   accountsWithSendEtherInfoSelector,
   getSendEnsResolution,
+  getCurrentNetwork,
   getSendEnsResolutionError,
 } from '../../send.selectors.js'
 import {
@@ -25,7 +26,7 @@ function mapStateToProps(state) {
   const addressBook = getAddressBook(state)
 
   return {
-    network: parseInt(state.metamask.network, 10),
+    network: parseInt(getCurrentNetwork(state), 10),
     ownedAccounts: accountsWithSendEtherInfoSelector(state),
     addressBook,
     ensResolution,

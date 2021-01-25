@@ -18,6 +18,7 @@ proxyquire('../add-recipient.container.js', {
     },
   },
   '../../send.selectors.js': {
+    getCurrentNetwork: () => '2999',
     getSendEnsResolution: s => `mockSendEnsResolution:${s}`,
     getSendEnsResolutionError: s => `mockSendEnsResolutionError:${s}`,
     accountsWithSendEtherInfoSelector: s =>
@@ -34,6 +35,7 @@ describe('add-recipient container', function() {
   describe('mapStateToProps()', function() {
     it('should map the correct properties to props', function() {
       assert.deepEqual(mapStateToProps('mockState'), {
+        network: 2999,
         addressBook: [{ name: 'mockAddressBook:mockState' }],
         contacts: [{ name: 'mockAddressBook:mockState' }],
         ensResolution: 'mockSendEnsResolution:mockState',

@@ -59,8 +59,8 @@ export function getNativeCurrency(state) {
 export function getCurrentNetwork(state) {
   const { network } = state.metamask
   if (Number.isNaN(parseInt(network, 10)) && getIsMainnet(state)) {
- return '1029'
-}
+    return '1029'
+  }
   return network.toString(10)
 }
 
@@ -233,8 +233,8 @@ export function getSendToInputIsBase32(state) {
 export function getSendToBase32(state) {
   const { base32Address } = state.metamask.send
   if (base32Address) {
- return base32Address
-}
+    return base32Address
+  }
   const network = getCurrentNetwork(state)
   const to = state.metamask.send.to
   return isValidHexAddress(to) ? hexToBase32(to, parseInt(network, 10)) : ''
