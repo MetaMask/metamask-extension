@@ -36,7 +36,7 @@ export default function NetworkDisplay({
         >
           <ColorIndicator
             color={networkType === NETWORK_TYPE_RPC ? COLORS.UI4 : networkType}
-            size="large"
+            size={ColorIndicator.SIZES.LARGE}
             type={ColorIndicator.TYPES.FILLED}
             iconClassName={
               networkType === NETWORK_TYPE_RPC ? 'fa fa-question' : undefined

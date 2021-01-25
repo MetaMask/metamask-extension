@@ -149,7 +149,7 @@ class NetworkDropdown extends Component {
           )}
           <ColorIndicator
             color={COLORS.UI2}
-            size="large"
+            size={ColorIndicator.SIZES.LARGE}
             type={ColorIndicator.TYPES.FILLED}
             borderColor={isCurrentRpcTarget ? COLORS.WHITE : COLORS.UI2}
           />
@@ -219,7 +219,7 @@ class NetworkDropdown extends Component {
         )}
         <ColorIndicator
           color={network}
-          size="large"
+          size={ColorIndicator.SIZES.LARGE}
           type={ColorIndicator.TYPES.FILLED}
           borderColor={providerType === network ? COLORS.WHITE : network}
         />
@@ -308,7 +308,7 @@ class NetworkDropdown extends Component {
             type={ColorIndicator.TYPES.FILLED}
             color={COLORS.TRANSPARENT}
             borderColor={COLORS.UI2}
-            size="large"
+            size={ColorIndicator.SIZES.LARGE}
           />
           <span
             className="network-name-item"

@@ -113,7 +113,7 @@ export default class NetworksTab extends PureComponent {
         <ColorIndicator
           color={labelKey}
           type={ColorIndicator.TYPES.FILLED}
-          size="large"
+          size={ColorIndicator.SIZES.LARGE}
         />
         <div
           className={classnames('networks-tab__networks-list-name', {
@@ -159,7 +159,7 @@ export default class NetworksTab extends PureComponent {
               type={ColorIndicator.TYPES.FILLED}
               color={COLORS.WHITE}
               borderColor={COLORS.UI4}
-              size="large"
+              size={ColorIndicator.SIZES.LARGE}
             />
             <div className="networks-tab__networks-list-name networks-tab__networks-list-name--selected">
               {this.context.t('newNetwork')}
