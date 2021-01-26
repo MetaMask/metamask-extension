@@ -18,7 +18,7 @@ describe('Account Details Modal', function() {
     rpcPrefs: {},
     selectedIdentity: {
       address: '0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-      base32Address: 'net4:00ewurc8cnvxa20v1h9e4grf57kgrsz7rgbatmmvuf',
+      base32Address: 'net4:aas641pjpz57mca5bvkseu1tfhxu129h1unm3yy54t',
       name: 'Account 1',
     },
     keyrings: [

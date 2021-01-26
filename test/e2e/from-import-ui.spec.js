@@ -15,7 +15,7 @@ describe('Using MetaMask with an existing account', function() {
   const testSeedPhrase =
     'forum vessel pink push lonely enact gentle tail admit parrot grunt dress'
   // const testAddress = '0x1B5367BB0215070aD6EEF31576bbbB58B024A65c'
-  const testBase32Address = 'net2999:00dn6txv08age2ppxvthaxnvrdcb0956bgmz2xhhfv'
+  const testBase32Address = 'net2999:aarzg375ajmusc00753vm7z51rpnakfgnuy9c7vvt5'
   const testPrivateKey2 =
     '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6'
   const testPrivateKey3 =

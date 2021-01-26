@@ -17,7 +17,7 @@ describe('Selectors', function() {
           accounts: {
             '0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
               balance: '0x0',
-              base32Address: 'net4:00ewurc8cnvxa20v1h9e4grf57kgrsz7rgbatmmvuf',
+              base32Address: 'net4:aas641pjpz57mca5bvkseu1tfhxu129h1unm3yy54t',
               address: '0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc',
             },
           },
@@ -46,7 +46,7 @@ describe('Selectors', function() {
     assert.equal(identity.address, '0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc')
     assert.equal(
       identity.base32Address,
-      'net4:00ewurc8cnvxa20v1h9e4grf57kgrsz7rgbatmmvuf'
+      'net4:aas641pjpz57mca5bvkseu1tfhxu129h1unm3yy54t'
     )
     assert.equal(identity.name, 'Test Account')
   })

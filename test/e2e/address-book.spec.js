@@ -214,7 +214,7 @@ describe('MetaMask', function() {
         By.css('input[placeholder="Search Conflux Address"]')
       )
       await inputAddress.sendKeys(
-        'net2999:00fk331k8y09c7xh579adgsd0xhxk9e9e0akwd6jms'
+        'net2999:aatxddbxj8akph7vfhkmru2ra7v7xksksamx6rgwy2'
       )
       await driver.delay(regularDelayMs)
 

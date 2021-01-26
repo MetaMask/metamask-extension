@@ -27,7 +27,7 @@ describe('MetaMask', function() {
       path.join(__dirname, 'fixtures', 'imported-account')
     )
     publicAddress = '0x1494e65ac65e076c4297a60d929ca5d3db7701b3'
-    publicBase32Address = 'net2999:00a99tjustf0ev22jyk0v4mwmr9xpxs1pcg18zzjja'
+    publicBase32Address = 'net2999:aamkk3w423tas5ccw8xa5ey6y1k7072b0pubj99wwm'
     const result = await buildWebDriver()
     driver = result.driver
   })

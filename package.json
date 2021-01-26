@@ -111,7 +111,7 @@
     "cfx-wallet": ">=0.0.4",
     "cfxjs-format": "^0.0.4",
     "classnames": "^2.2.6",
-    "conflux-address-js": "yqrashawn/conflux-address-js#ea26ad323a7c1349c4fb4a9255863db6e95f442f",
+    "conflux-address-js": "yqrashawn/conflux-address-js#f095d5ae409daf1e06a00ee2187d9b0f84be8448",
     "content-hash": "^2.5.0",
     "copy-to-clipboard": "^3.0.8",
     "currency-formatter": "^1.4.2",

@@ -7093,9 +7093,9 @@ configstore@^3.0.0:
     write-file-atomic "^2.0.0"
     xdg-basedir "^3.0.0"
 
-conflux-address-js@yqrashawn/conflux-address-js#ea26ad323a7c1349c4fb4a9255863db6e95f442f:
-  version "1.0.3"
-  resolved "https://codeload.github.com/yqrashawn/conflux-address-js/tar.gz/ea26ad323a7c1349c4fb4a9255863db6e95f442f"
+conflux-address-js@yqrashawn/conflux-address-js#f095d5ae409daf1e06a00ee2187d9b0f84be8448:
+  version "1.0.4"
+  resolved "https://codeload.github.com/yqrashawn/conflux-address-js/tar.gz/f095d5ae409daf1e06a00ee2187d9b0f84be8448"
   dependencies:
     bigi "^1.4.2"
 
