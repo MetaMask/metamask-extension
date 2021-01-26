@@ -1,6 +1,5 @@
 import { ethErrors } from 'eth-rpc-errors'
 import validUrl from 'valid-url'
-// import { NETWORK_TO_NAME_MAP as DEFAULT_NETWORK_MAP } from '../../../controllers/network/enums'
 import { omit } from 'lodash'
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app'
 import {
