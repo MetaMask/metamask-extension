@@ -11,7 +11,7 @@ const defaultNetworksData = [
     labelKey: 'testnet',
     iconColor: '#FF4A8D',
     providerType: 'testnet',
-    rpcUrl: 'http://wallet-test.confluxrpc.org',
+    rpcUrl: 'http://portal-test.confluxrpc.org',
     ticker: 'CFX',
     blockExplorerUrl: 'https://testnet.confluxscan.io',
   },

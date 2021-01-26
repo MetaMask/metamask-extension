@@ -210,6 +210,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.permissionsController = new PermissionsController(
       {
+        getCurrentNetwork: this.getCurrentNetwork.bind(this),
         getKeyringAccounts: this.keyringController.getAccounts.bind(
           this.keyringController
         ),

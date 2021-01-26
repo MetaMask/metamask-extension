@@ -648,18 +648,19 @@ const initialize = () => {
           name: 'Ether Mail',
           version: '1',
           chainId,
-          verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+          verifyingContract:
+            'cfxtest:achs3nehae0j6ksvy1bhrffsh1rtfrw1f6w1kzv46t',
         },
         message: {
           from: {
             happy: true,
             name: 'Cow',
-            wallet: '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826',
+            wallet: 'cfxtest:aaj9xt6ngs0xr24ng2pe8wbp7d1tj71f5u7xzc28ws',
           },
           to: {
             happy: false,
             name: 'Bob',
-            wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+            wallet: 'cfxtest:aaj9xt6ngs0xr24ng2pe8wbp7d1tj71f5u7xzc28ws',
           },
           contents: 'Hello, Bob!',
         },

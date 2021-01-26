@@ -1,10 +1,12 @@
 import createAsyncMiddleware from 'json-rpc-engine/src/createAsyncMiddleware'
 import { ethErrors } from 'eth-json-rpc-errors'
+import { hexToBase32 } from '../../cip37'
 
 /**
  * Create middleware for handling certain methods and preprocessing permissions requests.
  */
 export default function createMethodMiddleware({
+  getCurrentNetwork,
   store,
   storeKey,
   getAccounts,
@@ -15,21 +17,27 @@ export default function createMethodMiddleware({
       res.error = ethErrors.rpc.invalidRequest({ data: req })
       return
     }
+    let accounts = []
 
     switch (req.method) {
       // intercepting eth_accounts requests for backwards compatibility,
       // i.e. return an empty array instead of an error
       case 'cfx_accounts':
       case 'eth_accounts':
-        res.result = await getAccounts()
+        accounts = await getAccounts()
+        res.result = accounts.map(a =>
+          hexToBase32(a, parseInt(getCurrentNetwork(), 10))
+        )
         return
 
       case 'cfx_requestAccounts':
       case 'eth_requestAccounts':
         // first, just try to get accounts
-        let accounts = await getAccounts()
+        accounts = await getAccounts()
         if (accounts.length > 0) {
-          res.result = accounts
+          res.result = accounts.map(a =>
+            hexToBase32(a, parseInt(getCurrentNetwork(), 10))
+          )
           return
         }
 
@@ -44,7 +52,9 @@ export default function createMethodMiddleware({
         // get the accounts again
         accounts = await getAccounts()
         if (accounts.length > 0) {
-          res.result = accounts
+          res.result = accounts.map(a =>
+            hexToBase32(a, parseInt(getCurrentNetwork(), 10))
+          )
         } else {
           // this should never happen
           res.error = ethErrors.rpc.internal(

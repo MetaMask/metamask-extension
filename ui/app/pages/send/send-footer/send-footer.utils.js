@@ -1,14 +1,14 @@
-import ethAbi from 'ethereumjs-abi'
+import ethAbi from '@cfxjs/abi'
 import * as ethUtil from 'cfx-util'
 import { TOKEN_TRANSFER_FUNCTION_SIGNATURE } from '../send.constants'
 
-export function addHexPrefixToObjectValues (obj) {
+export function addHexPrefixToObjectValues(obj) {
   return Object.keys(obj).reduce((newObj, key) => {
     return { ...newObj, [key]: ethUtil.addHexPrefix(obj[key]) }
   }, {})
 }
 
-export function constructTxParams ({
+export function constructTxParams({
   selectedToken,
   data,
   to,
@@ -35,7 +35,7 @@ export function constructTxParams ({
   return addHexPrefixToObjectValues(txParams)
 }
 
-export function constructUpdatedTx ({
+export function constructUpdatedTx({
   amount,
   data,
   editingTransactionId,
@@ -77,7 +77,7 @@ export function constructUpdatedTx ({
             ['address', 'uint256'],
             [to, ethUtil.addHexPrefix(amount)]
           ),
-          (x) => ('00' + x.toString(16)).slice(-2)
+          x => ('00' + x.toString(16)).slice(-2)
         )
         .join('')
 
@@ -98,7 +98,7 @@ export function constructUpdatedTx ({
   return editingTx
 }
 
-export function addressIsNew (toAccounts, newAddress) {
+export function addressIsNew(toAccounts, newAddress) {
   const newAddressNormalized = newAddress.toLowerCase()
   const foundMatching = toAccounts.some(
     ({ address }) => address.toLowerCase() === newAddressNormalized

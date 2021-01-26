@@ -46,9 +46,10 @@ describe('Transaction Controller', function() {
       networkStore: new ObservableStore(currentNetworkId),
       txHistoryLimit: 10,
       blockTracker: blockTrackerStub,
-      signTransaction: ethTx =>
+      // eslint-disable-next-line no-unused-vars
+      signTransaction: (ethTx, fromAddress, { networkId }) =>
         new Promise(resolve => {
-          ethTx.sign(`0x${fromAccount.key.toString('hex')}`)
+          ethTx.sign(`0x${fromAccount.key.toString('hex')}`, networkId)
           resolve()
         }),
       getPermittedAccounts: () => {},
@@ -1006,9 +1007,10 @@ describe('Transaction Controller', function() {
         networkStore: new ObservableStore(currentNetworkId),
         txHistoryLimit: 10,
         blockTracker: _blockTrackerStub,
-        signTransaction: ethTx =>
+        // eslint-disable-next-line no-unused-vars
+        signTransaction: (ethTx, fromAddress, { networkId }) =>
           new Promise(resolve => {
-            ethTx.sign(_fromAccount.key)
+            ethTx.sign(_fromAccount.key, networkId)
             resolve()
           }),
       })
@@ -1044,9 +1046,10 @@ describe('Transaction Controller', function() {
         networkStore: new ObservableStore(currentNetworkId),
         txHistoryLimit: 10,
         blockTracker: _blockTrackerStub,
-        signTransaction: ethTx =>
+        // eslint-disable-next-line no-unused-vars
+        signTransaction: (ethTx, fromAddress, { networkId }) =>
           new Promise(resolve => {
-            ethTx.sign(_fromAccount.key)
+            ethTx.sign(_fromAccount.key, networkId)
             resolve()
           }),
       })

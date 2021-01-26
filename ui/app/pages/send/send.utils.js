@@ -24,7 +24,7 @@ import {
 
 import { storageToDrip as calcStorageTotal } from '../../helpers/utils/storage-util'
 
-import abi from 'ethereumjs-abi'
+import abi from '@cfxjs/abi'
 
 import { addHexPrefix } from 'cfx-util'
 

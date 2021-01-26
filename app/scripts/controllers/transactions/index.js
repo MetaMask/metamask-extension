@@ -562,7 +562,9 @@ class TransactionController extends EventEmitter {
     // sign tx
     const fromAddress = txParams.from
     const ethTx = new Transaction(txParams)
-    await this.signEthTx(ethTx, fromAddress)
+    await this.signEthTx(ethTx, fromAddress, {
+      networkId: parseInt(txMeta.metamaskNetworkId, 10),
+    })
 
     // add r,s,v values for provider request purposes see createMetamaskMiddleware
     // and JSON rpc standard for further explanation
