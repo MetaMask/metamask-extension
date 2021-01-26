@@ -8,6 +8,7 @@ import {
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils'
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils'
+import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../../../../shared/constants/network'
 
 const addEthereumChain = {
   methodNames: [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN],
@@ -88,15 +89,6 @@ async function addEthereumChainHandler(
 
   const _chainId = typeof chainId === 'string' && chainId.toLowerCase()
 
-  if (customRpcExistsWith({ rpcUrl: firstValidRPCUrl, chainId: _chainId })) {
-    return end(
-      ethErrors.rpc.internal({
-        message: `Ethereum chain with the given RPC URL and chain ID already exists.`,
-        data: { rpcUrl: firstValidRPCUrl, chainId },
-      }),
-    )
-  }
-
   if (!isPrefixedFormattedHexString(_chainId)) {
     return end(
       ethErrors.rpc.invalidParams({
@@ -109,6 +101,23 @@ async function addEthereumChainHandler(
     return end(
       ethErrors.rpc.invalidParams({
         message: `Invalid chain ID "${_chainId}": numerical value greater than max safe value. Received:\n${chainId}`,
+      }),
+    )
+  }
+
+  if (CHAIN_ID_TO_NETWORK_ID_MAP[_chainId]) {
+    return end(
+      ethErrors.rpc.invalidParams({
+        message: `May not specify default MetaMask chain.`,
+      }),
+    )
+  }
+
+  if (customRpcExistsWith({ rpcUrl: firstValidRPCUrl, chainId: _chainId })) {
+    return end(
+      ethErrors.rpc.internal({
+        message: `Ethereum chain with the given RPC URL and chain ID already exists.`,
+        data: { rpcUrl: firstValidRPCUrl, chainId },
       }),
     )
   }
@@ -145,15 +154,14 @@ async function addEthereumChainHandler(
   const _chainName =
     chainName.length > 100 ? chainName.substring(0, 100) : chainName
 
-  if (nativeCurrency !== null && typeof nativeCurrency !== 'object') {
-    return end(
-      ethErrors.rpc.invalidParams({
-        message: `Expected null or object 'nativeCurrency'. Received:\n${nativeCurrency}`,
-      }),
-    )
-  }
-
   if (nativeCurrency !== null) {
+    if (typeof nativeCurrency !== 'object' || Array.isArray(nativeCurrency)) {
+      return end(
+        ethErrors.rpc.invalidParams({
+          message: `Expected null or object 'nativeCurrency'. Received:\n${nativeCurrency}`,
+        }),
+      )
+    }
     if (nativeCurrency.decimals !== 18) {
       return end(
         ethErrors.rpc.invalidParams({
