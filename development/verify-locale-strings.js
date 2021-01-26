@@ -54,13 +54,17 @@ main().catch((error) => {
 async function main() {
   if (specifiedLocale) {
     log.info(`Verifying selected locale "${specifiedLocale}":\n`)
-    const locale = localeIndex.find(
+    const localeEntry = localeIndex.find(
       (localeMeta) => localeMeta.code === specifiedLocale,
     )
+    if (!localeEntry) {
+      throw new Error(`No localize entry found for ${specifiedLocale}`)
+    }
+
     const failed =
-      locale.code === 'en'
+      specifiedLocale === 'en'
         ? await verifyEnglishLocale()
-        : await verifyLocale(locale)
+        : await verifyLocale(specifiedLocale)
     if (failed) {
       process.exit(1)
     }
