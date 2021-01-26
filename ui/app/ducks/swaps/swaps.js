@@ -23,6 +23,7 @@ import {
   setSwapsLiveness,
   setSelectedQuoteAggId,
   setSwapsTxGasLimit,
+  cancelTx,
 } from '../../store/actions'
 import {
   AWAITING_SWAP_ROUTE,
@@ -705,6 +706,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     // transactions that get published to the blockchain only to fail and thereby
     // waste the user's funds on gas.
     if (!approveTxParams && tradeTxMeta.simulationFails) {
+      await dispatch(cancelTx(tradeTxMeta, false))
       await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR))
       history.push(SWAPS_ERROR_ROUTE)
       return

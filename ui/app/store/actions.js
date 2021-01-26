@@ -1048,9 +1048,9 @@ export function cancelTypedMsg(msgData) {
   }
 }
 
-export function cancelTx(txData) {
+export function cancelTx(txData, _showLoadingIndication = true) {
   return (dispatch) => {
-    dispatch(showLoadingIndication())
+    _showLoadingIndication && dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.cancelTransaction(txData.id, (error) => {
         if (error) {
