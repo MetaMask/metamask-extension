@@ -924,7 +924,7 @@
     "message": "잠금"
   },
   "lockTimeTooGreat": {
-    "message": "자금 시간이 너무 김"
+    "message": "잠금 시간이 너무 김"
   },
   "mainnet": {
     "message": "이더리움 메인넷"
