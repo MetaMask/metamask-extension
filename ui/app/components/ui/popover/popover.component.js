@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import { omit } from 'lodash'
 import { useI18nContext } from '../../../hooks/useI18nContext'
 
 const Popover = ({
@@ -79,7 +80,14 @@ Popover.propTypes = {
 }
 
 export default class PopoverPortal extends PureComponent {
-  static propTypes = Popover.propTypes
+  static propTypes = {
+    ...Popover.propTypes,
+    open: PropTypes.bool,
+  }
+
+  static defaultProps = {
+    open: true,
+  }
 
   rootNode = document.getElementById('popover-content')
 
@@ -102,7 +110,10 @@ export default class PopoverPortal extends PureComponent {
   }
 
   render() {
-    const children = <Popover {...this.props} />
+    if (this.props.open === false) {
+      return null
+    }
+    const children = <Popover {...omit(this.props, 'open')} />
     return this.rootNode
       ? ReactDOM.createPortal(children, this.instanceNode)
       : children
