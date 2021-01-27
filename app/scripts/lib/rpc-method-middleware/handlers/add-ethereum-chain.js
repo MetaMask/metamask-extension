@@ -46,7 +46,7 @@ async function addEthereumChainHandler(
       'chainId',
       'chainName',
       'blockExplorerUrls',
-      'iconUrl',
+      'iconUrls',
       'rpcUrls',
       'nativeCurrency',
     ]),
