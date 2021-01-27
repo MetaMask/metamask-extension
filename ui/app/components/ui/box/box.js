@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import { Boolean } from 'globalthis/implementation'
 import {
   ALIGN_ITEMS,
   BLOCK_SIZES,
@@ -127,7 +126,7 @@ export default function Box({
 }
 
 Box.propTypes = {
-  children: PropTypes.oneOf([PropTypes.node, PropTypes.func]),
+  children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   margin: MultipleSizes,
   marginTop: ValidSize,
   marginBottom: ValidSize,

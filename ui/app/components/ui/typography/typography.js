@@ -55,7 +55,9 @@ Typography.propTypes = {
   color: PropTypes.oneOf(Object.values(COLORS)),
   className: PropTypes.string,
   align: PropTypes.oneOf(Object.values(TEXT_ALIGN)),
-  boxProps: Box.propTypes,
+  boxProps: PropTypes.shape({
+    ...Box.propTypes,
+  }),
   fontWeight: PropTypes.oneOf(Object.values(FONT_WEIGHT)),
   tag: PropTypes.oneOf([
     'p',
