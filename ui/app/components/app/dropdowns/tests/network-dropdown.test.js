@@ -5,7 +5,7 @@ import thunk from 'redux-thunk'
 import { mountWithRouter } from '../../../../../../test/lib/render-helpers'
 import NetworkDropdown from '../network-dropdown'
 import { DropdownMenuItem } from '../components/dropdown'
-import NetworkDropdownIcon from '../components/network-dropdown-icon'
+import ColorIndicator from '../../../ui/color-indicator'
 
 describe('Network Dropdown', function () {
   let wrapper
@@ -65,46 +65,41 @@ describe('Network Dropdown', function () {
       assert.strictEqual(wrapper.find(DropdownMenuItem).length, 8)
     })
 
-    it('checks background color for first NetworkDropdownIcon', function () {
-      assert.strictEqual(
-        wrapper.find(NetworkDropdownIcon).at(0).prop('backgroundColor'),
-        '#29B6AF',
-      ) // Ethereum Mainnet Teal
+    it('checks background color for first ColorIndicator', function () {
+      const colorIndicator = wrapper.find(ColorIndicator).at(0)
+      assert.strictEqual(colorIndicator.prop('color'), 'mainnet')
+      assert.strictEqual(colorIndicator.prop('borderColor'), 'mainnet')
     })
 
-    it('checks background color for second NetworkDropdownIcon', function () {
-      assert.strictEqual(
-        wrapper.find(NetworkDropdownIcon).at(1).prop('backgroundColor'),
-        '#ff4a8d',
-      ) // Ropsten Red
+    it('checks background color for second ColorIndicator', function () {
+      const colorIndicator = wrapper.find(ColorIndicator).at(1)
+      assert.strictEqual(colorIndicator.prop('color'), 'ropsten')
+      assert.strictEqual(colorIndicator.prop('borderColor'), 'ropsten')
     })
 
-    it('checks background color for third NetworkDropdownIcon', function () {
-      assert.strictEqual(
-        wrapper.find(NetworkDropdownIcon).at(2).prop('backgroundColor'),
-        '#7057ff',
-      ) // Kovan Purple
+    it('checks background color for third ColorIndicator', function () {
+      const colorIndicator = wrapper.find(ColorIndicator).at(2)
+      assert.strictEqual(colorIndicator.prop('color'), 'kovan')
+      assert.strictEqual(colorIndicator.prop('borderColor'), 'kovan')
     })
 
-    it('checks background color for fourth NetworkDropdownIcon', function () {
-      assert.strictEqual(
-        wrapper.find(NetworkDropdownIcon).at(3).prop('backgroundColor'),
-        '#f6c343',
-      ) // Rinkeby Yellow
+    it('checks background color for fourth ColorIndicator', function () {
+      const colorIndicator = wrapper.find(ColorIndicator).at(3)
+      assert.strictEqual(colorIndicator.prop('color'), 'rinkeby')
+      assert.strictEqual(colorIndicator.prop('borderColor'), 'rinkeby')
     })
 
-    it('checks background color for fifth NetworkDropdownIcon', function () {
-      assert.strictEqual(
-        wrapper.find(NetworkDropdownIcon).at(4).prop('backgroundColor'),
-        '#3099f2',
-      ) // Goerli Blue
+    it('checks background color for fifth ColorIndicator', function () {
+      const colorIndicator = wrapper.find(ColorIndicator).at(4)
+      assert.strictEqual(colorIndicator.prop('color'), 'goerli')
+      assert.strictEqual(colorIndicator.prop('borderColor'), 'goerli')
     })
 
-    it('checks background color for sixth NetworkDropdownIcon', function () {
-      assert.strictEqual(
-        wrapper.find(NetworkDropdownIcon).at(5).prop('backgroundColor'),
-        '#d6d9dc',
-      ) // "Custom network grey"
+    it('checks background color for sixth ColorIndicator', function () {
+      const colorIndicator = wrapper.find(ColorIndicator).at(5)
+      const customNetworkGray = 'ui-2'
+      assert.strictEqual(colorIndicator.prop('color'), customNetworkGray)
+      assert.strictEqual(colorIndicator.prop('borderColor'), customNetworkGray)
     })
 
     it('checks dropdown for frequestRPCList from state', function () {

@@ -4,13 +4,11 @@ import classnames from 'classnames'
 import Identicon from '../../ui/identicon'
 import MetaFoxLogo from '../../ui/metafox-logo'
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes'
-import NetworkIndicator from '../network'
+import NetworkDisplay from '../network-display'
 
 export default class AppHeader extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
-    network: PropTypes.string,
-    provider: PropTypes.object,
     networkDropdownOpen: PropTypes.bool,
     showNetworkDropdown: PropTypes.func,
     hideNetworkDropdown: PropTypes.func,
@@ -37,7 +35,13 @@ export default class AppHeader extends PureComponent {
       networkDropdownOpen,
       showNetworkDropdown,
       hideNetworkDropdown,
+      disabled,
+      disableNetworkIndicator,
     } = this.props
+
+    if (disabled || disableNetworkIndicator) {
+      return
+    }
 
     if (networkDropdownOpen === false) {
       this.context.metricsEvent({
@@ -91,8 +95,6 @@ export default class AppHeader extends PureComponent {
   render() {
     const {
       history,
-      network,
-      provider,
       isUnlocked,
       hideNetworkIndicator,
       disableNetworkIndicator,
@@ -119,9 +121,10 @@ export default class AppHeader extends PureComponent {
           <div className="app-header__account-menu-container">
             {!hideNetworkIndicator && (
               <div className="app-header__network-component-wrapper">
-                <NetworkIndicator
-                  network={network}
-                  provider={provider}
+                <NetworkDisplay
+                  colored={false}
+                  outline
+                  iconClassName="app-header__network-down-arrow"
                   onClick={(event) => this.handleNetworkIndicatorClick(event)}
                   disabled={disabled || disableNetworkIndicator}
                 />

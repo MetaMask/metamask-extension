@@ -10,6 +10,11 @@
     padding: 4px 13px 4px 13px;
     flex: 0 0 auto;
     align-items: center;
+
+    & .network-display {
+      margin-right: 0;
+      height: 25px;
+    }
   }
 
   &__back-button-container {

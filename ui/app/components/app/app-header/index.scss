@@ -95,13 +95,12 @@
     flex: 1 0 auto;
     width: 0;
     justify-content: flex-end;
+  }
 
-    .network-component.pointer {
-      max-width: 200px;
-    }
-
-    .network-indicator {
-      width: 100%;
-    }
+  &__network-down-arrow {
+    background-image: url(/images/icons/caret-down.svg);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
   }
 }

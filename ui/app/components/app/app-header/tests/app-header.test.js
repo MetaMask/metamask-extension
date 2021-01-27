@@ -4,6 +4,7 @@ import sinon from 'sinon'
 import { shallow } from 'enzyme'
 import MetaFoxLogo from '../../../ui/metafox-logo'
 import AppHeader from '..'
+import NetworkDisplay from '../../network-display'
 
 describe('App Header', function () {
   let wrapper
@@ -49,7 +50,7 @@ describe('App Header', function () {
 
   describe('Network', function () {
     it('shows network dropdown when networkDropdownOpen is false', function () {
-      const network = wrapper.find({ network: 'test' })
+      const network = wrapper.find(NetworkDisplay)
 
       network.simulate('click', {
         preventDefault: () => undefined,
@@ -61,7 +62,7 @@ describe('App Header', function () {
 
     it('hides network dropdown when networkDropdownOpen is true', function () {
       wrapper.setProps({ networkDropdownOpen: true })
-      const network = wrapper.find({ network: 'test' })
+      const network = wrapper.find(NetworkDisplay)
 
       network.simulate('click', {
         preventDefault: () => undefined,
