@@ -54,16 +54,16 @@ export const withTypographyControl = () => (
     tooltips={object('tooltips', tooltips)}
     gapSize={select('gapSize', SIZES, SIZES.SM)}
     termTypography={{
-      variant: select('term typography variant', TYPOGRAPHY, TYPOGRAPHY.H6),
-      color: select('term typography color', COLORS, COLORS.BLACK),
+      variant: select('termTypography.variant', TYPOGRAPHY, TYPOGRAPHY.H6),
+      color: select('termTypography.color', COLORS, COLORS.BLACK),
     }}
     definitionTypography={{
       variant: select(
-        'definition typography variant',
+        'definitionTypography.variant',
         TYPOGRAPHY,
         TYPOGRAPHY.H6,
       ),
-      color: select('definition typography color', COLORS, COLORS.BLACK),
+      color: select('definitionTypography.color', COLORS, COLORS.BLACK),
     }}
   />
 )

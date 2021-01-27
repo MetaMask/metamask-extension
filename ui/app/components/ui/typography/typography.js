@@ -69,5 +69,7 @@ Typography.propTypes = {
     'h6',
     'span',
     'div',
+    'dt',
+    'dd',
   ]),
 }
