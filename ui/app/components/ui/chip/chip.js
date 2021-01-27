@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { omit } from 'lodash'
 import Typography from '../typography'
-import { COLORS } from '../../../helpers/constants/design-system'
+import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system'
 
 export default function Chip({
   className,
@@ -37,9 +37,9 @@ export default function Chip({
       {children ?? (
         <Typography
           className="chip__label"
-          variant="h6"
+          variant={TYPOGRAPHY.H6}
           tag="span"
-          color="UI4"
+          color={COLORS.UI4}
           {...labelProps}
         >
           {label}
@@ -54,7 +54,9 @@ Chip.propTypes = {
   borderColor: PropTypes.oneOf(Object.values(COLORS)),
   label: PropTypes.string,
   children: PropTypes.node,
-  labelProps: PropTypes.shape(omit(Typography.propTypes, ['className'])),
+  labelProps: PropTypes.shape({
+    ...omit(Typography.propTypes, ['className']),
+  }),
   leftIcon: PropTypes.node,
   rightIcon: PropTypes.node,
   className: PropTypes.string,
