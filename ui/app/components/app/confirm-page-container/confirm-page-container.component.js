@@ -42,6 +42,7 @@ export default class ConfirmPageContainer extends Component {
     assetImage: PropTypes.string,
     warning: PropTypes.string,
     unapprovedTxCount: PropTypes.number,
+    origin: PropTypes.string.isRequired,
     // Navigation
     totalTx: PropTypes.number,
     positionOfCurrentTx: PropTypes.number,
@@ -101,6 +102,7 @@ export default class ConfirmPageContainer extends Component {
       requestsWaitingText,
       hideSenderToRecipient,
       showAccountInHeader,
+      origin,
     } = this.props
     const renderAssetImage =
       contentComponent || (!contentComponent && !identiconAddress)
@@ -160,6 +162,7 @@ export default class ConfirmPageContainer extends Component {
             disabled={disabled}
             unapprovedTxCount={unapprovedTxCount}
             rejectNText={this.context.t('rejectTxsN', [unapprovedTxCount])}
+            origin={origin}
           />
         )}
         {contentComponent && (

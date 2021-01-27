@@ -14,10 +14,14 @@ const ConfirmPageContainerSummary = (props) => {
     identiconAddress,
     nonce,
     assetImage,
+    origin,
   } = props
 
   return (
     <div className={classnames('confirm-page-container-summary', className)}>
+      {origin === 'metamask' ? null : (
+        <div className="confirm-page-container-summary__origin">{origin}</div>
+      )}
       <div className="confirm-page-container-summary__action-row">
         <div className="confirm-page-container-summary__action">{action}</div>
         {nonce && (
@@ -58,6 +62,7 @@ ConfirmPageContainerSummary.propTypes = {
   identiconAddress: PropTypes.string,
   nonce: PropTypes.string,
   assetImage: PropTypes.string,
+  origin: PropTypes.string.isRequired,
 }
 
 export default ConfirmPageContainerSummary
