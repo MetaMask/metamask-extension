@@ -2855,6 +2855,10 @@ export function getCurrentWindowTab() {
   };
 }
 
+export function setLedgerLivePreference(value) {
+  return async () => promisifiedBackground.setLedgerLivePreference(value);
+}
+
 // MetaMetrics
 /**
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventPayload} MetaMetricsEventPayload

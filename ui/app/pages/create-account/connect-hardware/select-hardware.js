@@ -178,12 +178,14 @@ export default class SelectHardware extends Component {
           <div className="hw-connect" key={index}>
             <h3 className="hw-connect__title">{step.title}</h3>
             <p className="hw-connect__msg">{step.message}</p>
-            {step.asset && <img
-              className="hw-connect__step-asset"
-              src={`images/${step.asset}.svg`}
-              {...step.dimensions}
-              alt=""
-            />}
+            {step.asset && (
+              <img
+                className="hw-connect__step-asset"
+                src={`images/${step.asset}.svg`}
+                {...step.dimensions}
+                alt=""
+              />
+            )}
           </div>
         ))}
       </div>
@@ -221,12 +223,14 @@ export default class SelectHardware extends Component {
           <div className="hw-connect" key={index}>
             <h3 className="hw-connect__title">{step.title}</h3>
             <p className="hw-connect__msg">{step.message}</p>
-            {step.asset && <img
-              className="hw-connect__step-asset"
-              src={`images/${step.asset}.svg`}
-              {...step.dimensions}
-              alt=""
-            />}
+            {step.asset && (
+              <img
+                className="hw-connect__step-asset"
+                src={`images/${step.asset}.svg`}
+                {...step.dimensions}
+                alt=""
+              />
+            )}
           </div>
         ))}
       </div>

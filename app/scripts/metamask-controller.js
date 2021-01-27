@@ -632,6 +632,7 @@ export default class MetamaskController extends EventEmitter {
       setUseNonceField: this.setUseNonceField.bind(this),
       setUsePhishDetect: this.setUsePhishDetect.bind(this),
       setIpfsGateway: this.setIpfsGateway.bind(this),
+      setLedgerLivePreference: this.setLedgerLivePreference.bind(this),
       setParticipateInMetaMetrics: this.setParticipateInMetaMetrics.bind(this),
       setMetaMetricsSendCount: this.setMetaMetricsSendCount.bind(this),
       setFirstTimeFlowType: this.setFirstTimeFlowType.bind(this),
@@ -2662,6 +2663,23 @@ export default class MetamaskController extends EventEmitter {
   setIpfsGateway(val, cb) {
     try {
       this.preferencesController.setIpfsGateway(val);
+      cb(null);
+      return;
+    } catch (err) {
+      cb(err);
+      // eslint-disable-next-line no-useless-return
+      return;
+    }
+  }
+
+  /**
+   * Sets the Ledger Live preference to use for hardware wallet support
+   * @param {bool} val - the value representing if they want Ledger Live support
+   * @param {Function} cb - A callback function called when complete.
+   */
+  setLedgerLivePreference(val, cb) {
+    try {
+      this.preferencesController.setLedgerLivePreference(val);
       cb(null);
       return;
     } catch (err) {
