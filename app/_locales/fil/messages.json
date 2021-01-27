@@ -1147,9 +1147,6 @@
   "yourPrivateSeedPhrase": {
     "message": "Ang iyong pribadong seed phrase"
   },
-  "yourSigRequested": {
-    "message": "Hinihiling ang iyong signature"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero ang presyo ng gas sa speed up"
   }

@@ -474,8 +474,5 @@
   },
   "youSign": {
     "message": "署名しています。"
-  },
-  "yourSigRequested": {
-    "message": "あなたの署名がリクエストされています。"
   }
 }

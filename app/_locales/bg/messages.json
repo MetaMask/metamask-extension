@@ -1252,9 +1252,6 @@
   "yourPrivateSeedPhrase": {
     "message": "Вашата лична фраза зародиш"
   },
-  "yourSigRequested": {
-    "message": "Изисква се вашият подпис"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Нулева цена на газ при ускоряване"
   }
