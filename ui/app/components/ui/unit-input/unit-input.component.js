@@ -13,7 +13,6 @@ export default class UnitInput extends PureComponent {
     children: PropTypes.node,
     actionComponent: PropTypes.node,
     error: PropTypes.bool,
-    maxModeOn: PropTypes.bool,
     onChange: PropTypes.func,
     placeholder: PropTypes.string,
     suffix: PropTypes.string,
@@ -63,33 +62,20 @@ export default class UnitInput extends PureComponent {
   }
 
   render() {
-    const {
-      error,
-      placeholder,
-      suffix,
-      actionComponent,
-      children,
-      maxModeOn,
-    } = this.props
+    const { error, placeholder, suffix, actionComponent, children } = this.props
     const { value } = this.state
 
     return (
       <div
-        className={classnames(
-          'unit-input',
-          { 'unit-input--error': error },
-          { 'unit-input__disabled': maxModeOn },
-        )}
-        onClick={maxModeOn ? null : this.handleFocus}
+        className={classnames('unit-input', { 'unit-input--error': error })}
+        onClick={this.handleFocus}
       >
         <div className="unit-input__inputs">
           <div className="unit-input__input-container">
             <input
               type="number"
               dir="ltr"
-              className={classnames('unit-input__input', {
-                'unit-input__disabled': maxModeOn,
-              })}
+              className={classnames('unit-input__input')}
               value={value}
               placeholder={placeholder}
               onChange={this.handleChange}
@@ -97,7 +83,6 @@ export default class UnitInput extends PureComponent {
               ref={(ref) => {
                 this.unitInput = ref
               }}
-              disabled={maxModeOn}
             />
             {suffix && <div className="unit-input__suffix">{suffix}</div>}
           </div>
