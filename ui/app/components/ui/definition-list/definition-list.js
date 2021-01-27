@@ -6,6 +6,7 @@ import {
   COLORS,
   SIZES,
   TYPOGRAPHY,
+  FONT_WEIGHT,
 } from '../../../helpers/constants/design-system'
 import Tooltip from '../tooltip'
 
@@ -27,10 +28,10 @@ export default function DefinitionList({
   return (
     <dl className="definition-list">
       {Object.entries(dictionary).map(([term, definition]) => (
-        <>
+        <React.Fragment key={`definition-for-${term}`}>
           <Typography
             variant={TYPOGRAPHY.H6}
-            fontWeight="bold"
+            fontWeight={FONT_WEIGHT.BOLD}
             {...termTypography}
             boxProps={{
               marginTop: 0,
@@ -63,7 +64,7 @@ export default function DefinitionList({
           >
             {definition}
           </Typography>
-        </>
+        </React.Fragment>
       ))}
     </dl>
   )
@@ -73,6 +74,10 @@ DefinitionList.propTypes = {
   gapSize: PropTypes.oneOf(Object.values(SIZES)),
   dictionary: PropTypes.objectOf(PropTypes.string),
   tooltips: PropTypes.objectOf(PropTypes.string),
-  termTypography: omit(Typography.propTypes, ['tag', 'className']),
-  definitionTypography: omit(Typography.propTypes, ['tag', 'className']),
+  termTypography: PropTypes.shape({
+    ...omit(Typography.propTypes, ['tag', 'className']),
+  }),
+  definitionTypography: PropTypes.shape({
+    ...omit(Typography.propTypes, ['tag', 'className']),
+  }),
 }
