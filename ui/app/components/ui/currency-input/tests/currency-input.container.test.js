@@ -30,9 +30,6 @@ describe('CurrencyInput container', function () {
             provider: {
               type: 'mainnet',
             },
-            send: {
-              maxModeOn: false,
-            },
           },
         },
         expected: {
@@ -40,7 +37,6 @@ describe('CurrencyInput container', function () {
           currentCurrency: 'usd',
           nativeCurrency: 'ETH',
           hideFiat: false,
-          maxModeOn: false,
         },
       },
       // Test # 2
@@ -58,9 +54,6 @@ describe('CurrencyInput container', function () {
             provider: {
               type: 'rinkeby',
             },
-            send: {
-              maxModeOn: false,
-            },
           },
         },
         expected: {
@@ -68,7 +61,6 @@ describe('CurrencyInput container', function () {
           currentCurrency: 'usd',
           nativeCurrency: 'ETH',
           hideFiat: true,
-          maxModeOn: false,
         },
       },
       // Test # 3
@@ -86,9 +78,6 @@ describe('CurrencyInput container', function () {
             provider: {
               type: 'rinkeby',
             },
-            send: {
-              maxModeOn: false,
-            },
           },
         },
         expected: {
@@ -96,7 +85,6 @@ describe('CurrencyInput container', function () {
           currentCurrency: 'usd',
           nativeCurrency: 'ETH',
           hideFiat: false,
-          maxModeOn: false,
         },
       },
       // Test # 4
@@ -114,9 +102,6 @@ describe('CurrencyInput container', function () {
             provider: {
               type: 'mainnet',
             },
-            send: {
-              maxModeOn: false,
-            },
           },
         },
         expected: {
@@ -124,7 +109,6 @@ describe('CurrencyInput container', function () {
           currentCurrency: 'usd',
           nativeCurrency: 'ETH',
           hideFiat: false,
-          maxModeOn: false,
         },
       },
     ]

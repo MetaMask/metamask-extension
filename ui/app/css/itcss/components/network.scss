@@ -41,42 +41,6 @@
   }
 }
 
-.network-indicator {
-  @include H8;
-
-  display: flex;
-  align-items: center;
-
-  &__down-arrow {
-    height: 8px;
-    width: 12px;
-    display: block;
-    background-image: url(/images/icons/caret-down.svg);
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
-    margin: 0 8px;
-  }
-
-  .fa-question-circle {
-    font-size: $font-size-paragraph;
-    margin: 0 4px 0 6px;
-    flex: 0 0 auto;
-  }
-}
-
-.network-name {
-  @include H7;
-
-  padding: 0 4px;
-  flex: 1 1 auto;
-  color: $tundora;
-  font-weight: 500;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-
 .dropdown-menu-item .fa.delete {
   margin-right: 10px;
   display: none;
@@ -88,6 +52,10 @@
 
 .network-droppo {
   right: 2px;
+
+  .color-indicator {
+    margin: 0 14px;
+  }
 
   @media screen and (min-width: 576px) {
     right: calc(((100% - 85vw) / 2) + 2px);

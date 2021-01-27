@@ -308,8 +308,6 @@ describe('MetaMask', function () {
       )
       await amountMax.click()
 
-      assert.equal(await inputAmount.isEnabled(), false)
-
       let inputValue = await inputAmount.getAttribute('value')
 
       assert(Number(inputValue) > 99)
@@ -1725,7 +1723,7 @@ describe('MetaMask', function () {
       const rpcUrl = 'http://127.0.0.1:8545/1'
       const chainId = '0x539' // Ganache default, decimal 1337
 
-      await driver.clickElement(By.css('.network-name'))
+      await driver.clickElement(By.css('.network-display'))
       await driver.delay(regularDelayMs)
 
       await driver.clickElement(
@@ -1755,7 +1753,7 @@ describe('MetaMask', function () {
       const rpcUrl = 'http://127.0.0.1:8545/2'
       const chainId = '0x539' // Ganache default, decimal 1337
 
-      await driver.clickElement(By.css('.network-name'))
+      await driver.clickElement(By.css('.network-display'))
       await driver.delay(regularDelayMs)
 
       await driver.clickElement(
@@ -1782,7 +1780,7 @@ describe('MetaMask', function () {
     })
 
     it('selects another provider', async function () {
-      await driver.clickElement(By.css('.network-name'))
+      await driver.clickElement(By.css('.network-display'))
       await driver.delay(regularDelayMs)
 
       await driver.clickElement(
@@ -1792,7 +1790,7 @@ describe('MetaMask', function () {
     })
 
     it('finds all recent RPCs in history', async function () {
-      await driver.clickElement(By.css('.network-name'))
+      await driver.clickElement(By.css('.network-display'))
       await driver.delay(regularDelayMs)
 
       // only recent 3 are found and in correct order (most recent at the top)

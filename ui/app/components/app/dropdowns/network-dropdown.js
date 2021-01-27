@@ -14,8 +14,9 @@ import { NETWORK_TYPE_RPC } from '../../../../../shared/constants/network'
 import { isPrefixedFormattedHexString } from '../../../../../shared/modules/utils'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 
+import ColorIndicator from '../../ui/color-indicator'
+import { COLORS } from '../../../helpers/constants/design-system'
 import { Dropdown, DropdownMenuItem } from './components/dropdown'
-import NetworkDropdownIcon from './components/network-dropdown-icon'
 
 // classes from nodes of the toggle element.
 const notToggleElementClassnames = [
@@ -25,6 +26,12 @@ const notToggleElementClassnames = [
   'network-caret',
   'network-component',
 ]
+
+const DROP_DOWN_MENU_ITEM_STYLE = {
+  fontSize: '16px',
+  lineHeight: '20px',
+  padding: '12px 0',
+}
 
 function mapStateToProps(state) {
   return {
@@ -140,9 +147,11 @@ class NetworkDropdown extends Component {
           ) : (
             <div className="network-check__transparent">✓</div>
           )}
-          <NetworkDropdownIcon
-            backgroundColor="#d6d9dc"
-            isSelected={isCurrentRpcTarget}
+          <ColorIndicator
+            color={COLORS.UI2}
+            size={ColorIndicator.SIZES.LARGE}
+            type={ColorIndicator.TYPES.FILLED}
+            borderColor={isCurrentRpcTarget ? COLORS.WHITE : COLORS.UI2}
           />
           <span
             className="network-name-item"
@@ -192,19 +201,48 @@ class NetworkDropdown extends Component {
     return name
   }
 
+  renderNetworkEntry(network) {
+    const {
+      provider: { type: providerType },
+    } = this.props
+    return (
+      <DropdownMenuItem
+        key={network}
+        closeMenu={this.props.hideNetworkDropdown}
+        onClick={() => this.handleClick(network)}
+        style={DROP_DOWN_MENU_ITEM_STYLE}
+      >
+        {providerType === network ? (
+          <i className="fa fa-check" />
+        ) : (
+          <div className="network-check__transparent">✓</div>
+        )}
+        <ColorIndicator
+          color={network}
+          size={ColorIndicator.SIZES.LARGE}
+          type={ColorIndicator.TYPES.FILLED}
+          borderColor={providerType === network ? COLORS.WHITE : network}
+        />
+        <span
+          className="network-name-item"
+          style={{
+            color: providerType === network ? '#ffffff' : '#9b9b9b',
+          }}
+        >
+          {this.context.t(network)}
+        </span>
+      </DropdownMenuItem>
+    )
+  }
+
   render() {
     const {
-      provider: { type: providerType, rpcUrl: activeNetwork },
+      provider: { rpcUrl: activeNetwork },
       setNetworksTabAddMode,
       setSelectedSettingsRpcUrl,
     } = this.props
     const rpcListDetail = this.props.frequentRpcListDetail
     const isOpen = this.props.networkDropdownOpen
-    const dropdownMenuItemStyle = {
-      fontSize: '16px',
-      lineHeight: '20px',
-      padding: '12px 0',
-    }
 
     return (
       <Dropdown
@@ -241,126 +279,12 @@ class NetworkDropdown extends Component {
             {this.context.t('defaultNetwork')}
           </div>
         </div>
-        <DropdownMenuItem
-          key="main"
-          closeMenu={() => this.props.hideNetworkDropdown()}
-          onClick={() => this.handleClick('mainnet')}
-          style={{ ...dropdownMenuItemStyle, borderColor: '#038789' }}
-        >
-          {providerType === 'mainnet' ? (
-            <i className="fa fa-check" />
-          ) : (
-            <div className="network-check__transparent">✓</div>
-          )}
-          <NetworkDropdownIcon
-            backgroundColor="#29B6AF"
-            isSelected={providerType === 'mainnet'}
-          />
-          <span
-            className="network-name-item"
-            style={{
-              color: providerType === 'mainnet' ? '#ffffff' : '#9b9b9b',
-            }}
-          >
-            {this.context.t('mainnet')}
-          </span>
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          key="ropsten"
-          closeMenu={() => this.props.hideNetworkDropdown()}
-          onClick={() => this.handleClick('ropsten')}
-          style={dropdownMenuItemStyle}
-        >
-          {providerType === 'ropsten' ? (
-            <i className="fa fa-check" />
-          ) : (
-            <div className="network-check__transparent">✓</div>
-          )}
-          <NetworkDropdownIcon
-            backgroundColor="#ff4a8d"
-            isSelected={providerType === 'ropsten'}
-          />
-          <span
-            className="network-name-item"
-            style={{
-              color: providerType === 'ropsten' ? '#ffffff' : '#9b9b9b',
-            }}
-          >
-            {this.context.t('ropsten')}
-          </span>
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          key="kovan"
-          closeMenu={() => this.props.hideNetworkDropdown()}
-          onClick={() => this.handleClick('kovan')}
-          style={dropdownMenuItemStyle}
-        >
-          {providerType === 'kovan' ? (
-            <i className="fa fa-check" />
-          ) : (
-            <div className="network-check__transparent">✓</div>
-          )}
-          <NetworkDropdownIcon
-            backgroundColor="#7057ff"
-            isSelected={providerType === 'kovan'}
-          />
-          <span
-            className="network-name-item"
-            style={{
-              color: providerType === 'kovan' ? '#ffffff' : '#9b9b9b',
-            }}
-          >
-            {this.context.t('kovan')}
-          </span>
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          key="rinkeby"
-          closeMenu={() => this.props.hideNetworkDropdown()}
-          onClick={() => this.handleClick('rinkeby')}
-          style={dropdownMenuItemStyle}
-        >
-          {providerType === 'rinkeby' ? (
-            <i className="fa fa-check" />
-          ) : (
-            <div className="network-check__transparent">✓</div>
-          )}
-          <NetworkDropdownIcon
-            backgroundColor="#f6c343"
-            isSelected={providerType === 'rinkeby'}
-          />
-          <span
-            className="network-name-item"
-            style={{
-              color: providerType === 'rinkeby' ? '#ffffff' : '#9b9b9b',
-            }}
-          >
-            {this.context.t('rinkeby')}
-          </span>
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          key="goerli"
-          closeMenu={() => this.props.hideNetworkDropdown()}
-          onClick={() => this.handleClick('goerli')}
-          style={dropdownMenuItemStyle}
-        >
-          {providerType === 'goerli' ? (
-            <i className="fa fa-check" />
-          ) : (
-            <div className="network-check__transparent">✓</div>
-          )}
-          <NetworkDropdownIcon
-            backgroundColor="#3099f2"
-            isSelected={providerType === 'goerli'}
-          />
-          <span
-            className="network-name-item"
-            style={{
-              color: providerType === 'goerli' ? '#ffffff' : '#9b9b9b',
-            }}
-          >
-            {this.context.t('goerli')}
-          </span>
-        </DropdownMenuItem>
+        {this.renderNetworkEntry('mainnet')}
+        {this.renderNetworkEntry('ropsten')}
+        {this.renderNetworkEntry('kovan')}
+        {this.renderNetworkEntry('rinkeby')}
+        {this.renderNetworkEntry('goerli')}
+
         {this.renderCustomRpcList(rpcListDetail, this.props.provider)}
         <DropdownMenuItem
           closeMenu={() => this.props.hideNetworkDropdown()}
@@ -373,16 +297,18 @@ class NetworkDropdown extends Component {
             setSelectedSettingsRpcUrl('')
             setNetworksTabAddMode(true)
           }}
-          style={dropdownMenuItemStyle}
+          style={DROP_DOWN_MENU_ITEM_STYLE}
         >
           {activeNetwork === 'custom' ? (
             <i className="fa fa-check" />
           ) : (
             <div className="network-check__transparent">✓</div>
           )}
-          <NetworkDropdownIcon
-            isSelected={activeNetwork === 'custom'}
-            innerBorder="1px solid #9b9b9b"
+          <ColorIndicator
+            type={ColorIndicator.TYPES.FILLED}
+            color={COLORS.TRANSPARENT}
+            borderColor={COLORS.UI2}
+            size={ColorIndicator.SIZES.LARGE}
           />
           <span
             className="network-name-item"

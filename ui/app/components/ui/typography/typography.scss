@@ -4,6 +4,10 @@
 .typography {
   @include design-system.Paragraph;
 
+  & b {
+    font-weight: 700;
+  }
+
   @each $variant in map.keys(design-system.$typography-variants) {
     &--#{$variant} {
       @include design-system.typography($variant);
@@ -16,18 +20,16 @@
     }
   }
 
-  @each $variant, $weight in design-system.$typography-font-weights {
-    &--weight-#{$variant} {
+  @each $weight in design-system.$font-weight {
+    &--weight-#{$weight} {
       font-weight: $weight;
     }
   }
 
-  &--align-center {
-    text-align: center;
-  }
-
-  &--align-right {
-    text-align: right;
+  @each $alignment in design-system.$text-align {
+    &--align-#{$alignment} {
+      text-align: $alignment;
+    }
   }
 
   @for $i from 1 through 8 {
