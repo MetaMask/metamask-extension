@@ -1705,7 +1705,7 @@
     "message": "네트워크 요금에는 스왑을 처리하고 이더리움 네트워크에 보관하는 비용이 적용됩니다. MetaMask는 이 요금을 이용해 이득을 얻지 않습니다."
   },
   "swapNewQuoteIn": {
-    "message": "$1의 새 견적",
+    "message": "$1 후에 새 견적",
     "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
   },
   "swapOnceTransactionHasProcess": {
