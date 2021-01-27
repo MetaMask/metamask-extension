@@ -4,7 +4,7 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   PLATFORM_BRAVE,
   PLATFORM_FIREFOX,
-} from '../../app/scripts/lib/enums'
+} from '../../shared/constants/app'
 import { getEnvironmentType, getPlatform } from '../../app/scripts/lib/util'
 
 class WebcamUtils {

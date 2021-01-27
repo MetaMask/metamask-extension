@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert'
 import sinon from 'sinon'
 import MetaMetricsController from '../../../../app/scripts/controllers/metametrics'
-import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../../app/scripts/lib/enums'
+import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../../shared/constants/app'
 import { createSegmentMock } from '../../../../app/scripts/lib/segment'
 import {
   METAMETRICS_ANONYMOUS_ID,

@@ -3,6 +3,7 @@ export const RINKEBY = 'rinkeby'
 export const KOVAN = 'kovan'
 export const MAINNET = 'mainnet'
 export const GOERLI = 'goerli'
+export const NETWORK_TYPE_RPC = 'rpc'
 
 export const MAINNET_NETWORK_ID = '1'
 export const ROPSTEN_NETWORK_ID = '3'
@@ -15,6 +16,12 @@ export const ROPSTEN_CHAIN_ID = '0x3'
 export const RINKEBY_CHAIN_ID = '0x4'
 export const GOERLI_CHAIN_ID = '0x5'
 export const KOVAN_CHAIN_ID = '0x2a'
+
+/**
+ * The largest possible chain ID we can handle.
+ * Explanation: https://gist.github.com/rekmarks/a47bd5f2525936c4b8eee31a16345553
+ */
+export const MAX_SAFE_CHAIN_ID = 4503599627370476
 
 export const ROPSTEN_DISPLAY_NAME = 'Ropsten'
 export const RINKEBY_DISPLAY_NAME = 'Rinkeby'

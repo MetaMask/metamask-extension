@@ -27,7 +27,7 @@ import {
   getCurrentKeyring,
   getCurrentChainId,
 } from '../../../selectors/selectors'
-import { MAINNET_CHAIN_ID } from '../../../../../app/scripts/controllers/network/enums'
+import { MAINNET_CHAIN_ID } from '../../../../../shared/constants/network'
 
 import SwapIcon from '../../ui/icon/swap-icon.component'
 import SendIcon from '../../ui/icon/overview-send-icon.component'

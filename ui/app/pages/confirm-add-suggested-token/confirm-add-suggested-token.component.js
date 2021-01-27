@@ -4,7 +4,7 @@ import Button from '../../components/ui/button'
 import Identicon from '../../components/ui/identicon'
 import TokenBalance from '../../components/ui/token-balance'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../app/scripts/lib/enums'
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app'
 
 export default class ConfirmAddSuggestedToken extends Component {
   static contextTypes = {

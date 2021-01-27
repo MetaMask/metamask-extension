@@ -12,7 +12,7 @@ import {
 import { getMethodDataAsync } from '../helpers/utils/transactions.util'
 import { fetchSymbolAndDecimals } from '../helpers/utils/token-util'
 import switchDirection from '../helpers/utils/switch-direction'
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../app/scripts/lib/enums'
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app'
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util'
 import { setCustomGasLimit } from '../ducks/gas/gas.duck'
 import txHelper from '../../lib/tx-helper'
@@ -1048,9 +1048,9 @@ export function cancelTypedMsg(msgData) {
   }
 }
 
-export function cancelTx(txData) {
+export function cancelTx(txData, _showLoadingIndication = true) {
   return (dispatch) => {
-    dispatch(showLoadingIndication())
+    _showLoadingIndication && dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.cancelTransaction(txData.id, (error) => {
         if (error) {

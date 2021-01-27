@@ -1,4 +1,4 @@
-import { MESSAGE_TYPE } from '../../enums'
+import { MESSAGE_TYPE } from '../../../../../shared/constants/app'
 
 /**
  * This RPC method gets background state relevant to the provider.

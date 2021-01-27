@@ -10,7 +10,8 @@ import {
   showModal,
 } from '../../../store/actions'
 import { NETWORKS_FORM_ROUTE } from '../../../helpers/constants/routes'
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../app/scripts/lib/enums'
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app'
+import { NETWORK_TYPE_RPC } from '../../../../../shared/constants/network'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 import NetworksTab from './networks-tab.component'
 import { defaultNetworksData } from './networks-tab.constants'
@@ -37,7 +38,7 @@ const mapStateToProps = (state, ownProps) => {
     return {
       label: rpc.nickname,
       iconColor: '#6A737D',
-      providerType: 'rpc',
+      providerType: NETWORK_TYPE_RPC,
       rpcUrl: rpc.rpcUrl,
       chainId: rpc.chainId,
       ticker: rpc.ticker,
@@ -61,7 +62,7 @@ const mapStateToProps = (state, ownProps) => {
       networksToRender.find((network) => {
         return (
           network.rpcUrl === provider.rpcUrl ||
-          (network.providerType !== 'rpc' &&
+          (network.providerType !== NETWORK_TYPE_RPC &&
             network.providerType === provider.type)
         )
       }) || {}

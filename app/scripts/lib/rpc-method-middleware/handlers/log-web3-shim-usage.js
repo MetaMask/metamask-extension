@@ -1,4 +1,4 @@
-import { MESSAGE_TYPE } from '../../enums'
+import { MESSAGE_TYPE } from '../../../../../shared/constants/app'
 
 /**
  * This RPC method is called by the inpage provider whenever it detects the
@@ -40,16 +40,18 @@ function logWeb3ShimUsageHandler(
   if (getWeb3ShimUsageState(origin) === undefined) {
     setWeb3ShimUsageRecorded(origin)
 
-    sendMetrics({
-      event: `Website Accessed window.web3 Shim`,
-      category: 'inpage_provider',
-      eventContext: {
+    sendMetrics(
+      {
+        event: `Website Accessed window.web3 Shim`,
+        category: 'inpage_provider',
         referrer: {
           url: origin,
         },
       },
-      excludeMetaMetricsId: true,
-    })
+      {
+        excludeMetaMetricsId: true,
+      },
+    )
   }
 
   res.result = true

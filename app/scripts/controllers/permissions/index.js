@@ -3,13 +3,10 @@ import { JsonRpcEngine } from 'json-rpc-engine'
 import { ObservableStore } from '@metamask/obs-store'
 import log from 'loglevel'
 import { CapabilitiesController as RpcCap } from 'rpc-cap'
-import { ethErrors } from 'eth-json-rpc-errors'
+import { ethErrors } from 'eth-rpc-errors'
 import { cloneDeep } from 'lodash'
 
-import createPermissionsMethodMiddleware from './permissionsMethodMiddleware'
-import PermissionsLogController from './permissionsLog'
-
-// Methods that do not require any permissions to use:
+import { CAVEAT_NAMES } from '../../../../shared/constants/permissions'
 import {
   APPROVAL_TYPE,
   SAFE_METHODS, // methods that do not require any permissions to use
@@ -18,10 +15,12 @@ import {
   METADATA_CACHE_MAX_SIZE,
   LOG_STORE_KEY,
   HISTORY_STORE_KEY,
-  CAVEAT_NAMES,
   NOTIFICATION_NAMES,
   CAVEAT_TYPES,
 } from './enums'
+
+import createPermissionsMethodMiddleware from './permissionsMethodMiddleware'
+import PermissionsLogController from './permissionsLog'
 
 // instanbul ignore next
 const noop = () => undefined

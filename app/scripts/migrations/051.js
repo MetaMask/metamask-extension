@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash'
-import { NETWORK_TYPE_TO_ID_MAP } from '../controllers/network/enums'
+import { NETWORK_TYPE_TO_ID_MAP } from '../../../shared/constants/network'
 
 const version = 51
 

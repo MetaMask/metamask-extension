@@ -48,7 +48,7 @@ import {
   SWAP_FAILED_ERROR,
   OFFLINE_FOR_MAINTENANCE,
 } from '../../helpers/constants/swaps'
-import { MAINNET_CHAIN_ID } from '../../../../app/scripts/controllers/network/enums'
+import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network'
 
 import {
   resetBackgroundSwapsState,

@@ -1,4 +1,4 @@
-import { NETWORK_TO_NAME_MAP } from './enums'
+import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network'
 
 export const getNetworkDisplayName = (key) => NETWORK_TO_NAME_MAP[key]
 

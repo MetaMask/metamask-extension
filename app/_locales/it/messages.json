@@ -267,7 +267,7 @@
   },
   "connectTo": {
     "message": "Connettiti a $1",
-    "description": "$1 is the name/origin of a site/dapp that the user can connect to metamask"
+    "description": "$1 is the name/origin of a web3 site/application that the user can connect to metamask"
   },
   "connectToAll": {
     "message": "Connettiti a tutti i tuoi $1",
@@ -426,7 +426,7 @@
   },
   "decryptMessageNotice": {
     "message": "$1 vorrebbe leggere questo messaggio per completare l'azione",
-    "description": "$1 is website or dapp name"
+    "description": "$1 is the web3 site name"
   },
   "decryptMetamask": {
     "message": "Decifra messaggio"
@@ -511,7 +511,7 @@
   },
   "encryptionPublicKeyNotice": {
     "message": "$1 vorrebbe la tua chiave di cifratura pubblica. Consentendo, questo sito sarà in grado di comporre messaggi criptati per te.",
-    "description": "$1 is website or dapp name"
+    "description": "$1 is the web3 site name"
   },
   "encryptionPublicKeyRequest": {
     "message": "Richiedi chiave pubblica di cifratura"
