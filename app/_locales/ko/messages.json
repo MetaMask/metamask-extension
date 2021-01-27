@@ -963,22 +963,22 @@
     "message": "언제든 설정을 통해 옵트아웃할 수 있습니다."
   },
   "metametricsCommitmentsBoldNever": {
-    "message": "안 함",
+    "message": "절대",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask에서는.."
   },
   "metametricsCommitmentsNeverCollectIP": {
-    "message": "$1은(는) 전체 IP 주소를 수집하지 않습니다.",
+    "message": "전체 IP 주소를 $1 수집하지 않습니다.",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
   },
   "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "$1은(는) 키, 주소, 거래, 잔액, 해시 또는 개인 정보를 수집합니다.",
+    "message": "키, 주소, 거래, 잔액, 해시 또는 개인 정보를 $1 수집하지 않습니다.",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "$1은(는) 수익을 위해 데이터를 판매합니다. 절대로요!",
+    "message": "수익을 위해 데이터를 $1 판매하지 않습니다.",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
   },
   "metametricsCommitmentsSendAnonymizedEvents": {
