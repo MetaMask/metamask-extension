@@ -154,3 +154,10 @@ export const FONT_WEIGHT = {
   800: 800,
   900: 900,
 }
+
+export const SEVERITIES = {
+  DANGER: 'danger',
+  WARNING: 'warning',
+  INFO: 'info',
+  SUCCESS: 'success',
+}
