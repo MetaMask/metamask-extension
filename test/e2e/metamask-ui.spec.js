@@ -166,7 +166,7 @@ describe('MetaMask', function() {
   describe('Show account information', function() {
     it('shows the QR code for the account', async function() {
       await driver.clickElement(By.css('.account-details__details-button'))
-      await driver.findVisibleElement(By.css('.qr-wrapper'))
+      await driver.findVisibleElement(By.css('.account-modal__button'))
       await driver.delay(regularDelayMs)
 
       const accountModal = await driver.findElement(By.css('span .modal'))
