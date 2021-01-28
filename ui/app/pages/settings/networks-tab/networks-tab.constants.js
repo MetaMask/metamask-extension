@@ -3,7 +3,7 @@ const defaultNetworksData = [
     labelKey: 'mainnet',
     iconColor: '#4890cc',
     providerType: 'mainnet',
-    rpcUrl: 'http://wallet-main.confluxrpc.org',
+    rpcUrl: 'http://portal-main.confluxrpc.org',
     ticker: 'CFX',
     blockExplorerUrl: 'https://confluxscan.io',
   },

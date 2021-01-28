@@ -76,7 +76,7 @@
       "https://confluxscan.io/*",
       "https://testnet.confluxscan.io/*",
       "https://conflux-chain.org/*",
-      "https://wallet-main.confluxrpc.org/*",
+      "https://portal-main.confluxrpc.org/*",
       "https://portal-test.confluxrpc.org/*"
     ],
     "ids": ["*"]
