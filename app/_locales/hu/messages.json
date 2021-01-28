@@ -1246,9 +1246,6 @@
   "yourPrivateSeedPhrase": {
     "message": "Az ön privát seed mondata"
   },
-  "yourSigRequested": {
-    "message": "Szükség van az aláírására"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Nulla gázár a gyorsuláshoz"
   }

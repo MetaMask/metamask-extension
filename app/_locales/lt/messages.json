@@ -1256,9 +1256,6 @@
   "yourPrivateSeedPhrase": {
     "message": "Jūsų asmeninė atkūrimo frazė"
   },
-  "yourSigRequested": {
-    "message": "Prašoma jūsų parašo"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Nustatykite nulinę dujų kainą greitėjant"
   }

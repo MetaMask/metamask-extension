@@ -2096,9 +2096,6 @@
   "yourPrivateSeedPhrase": {
     "message": "आपका निजी सीड फ्रेज़"
   },
-  "yourSigRequested": {
-    "message": "आपके हस्ताक्षर का अनुरोध किया जा रहा है"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "ज़ीरो गैस मूल्य में तेज़ी"
   }

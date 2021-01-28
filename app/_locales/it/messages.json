@@ -1718,9 +1718,6 @@
   "yourPrivateSeedPhrase": {
     "message": "La tua frase seed privata"
   },
-  "yourSigRequested": {
-    "message": "E' richiesta la tua firma"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Prezzo del gas maggiore di zero"
   }

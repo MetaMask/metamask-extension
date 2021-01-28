@@ -1244,9 +1244,6 @@
   "yourPrivateSeedPhrase": {
     "message": "您的助憶詞"
   },
-  "yourSigRequested": {
-    "message": "正在請求您的簽署"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "加速的 Gas 價格為 0"
   }

@@ -13,6 +13,7 @@ import Identicon from '../../ui/identicon'
 import AccountListItem from '../account-list-item'
 import { conversionUtil } from '../../../helpers/utils/conversion-util'
 import Button from '../../ui/button'
+import SiteIcon from '../../ui/site-icon'
 
 export default class SignatureRequestOriginal extends Component {
   static contextTypes = {
@@ -34,6 +35,7 @@ export default class SignatureRequestOriginal extends Component {
     requesterAddress: PropTypes.string,
     sign: PropTypes.func.isRequired,
     txData: PropTypes.object.isRequired,
+    domainMetadata: PropTypes.object,
   }
 
   state = {
@@ -148,11 +150,28 @@ export default class SignatureRequestOriginal extends Component {
     )
   }
 
-  renderRequestInfo = () => {
+  renderOriginInfo = () => {
+    const { txData, domainMetadata } = this.props
+    const { t } = this.context
+
+    const originMetadata = txData.msgParams.origin
+      ? domainMetadata?.[txData.msgParams.origin]
+      : null
+
     return (
-      <div className="request-signature__request-info">
-        <div className="request-signature__headline">
-          {this.context.t('yourSigRequested')}
+      <div className="request-signature__origin-row">
+        <div className="request-signature__origin-label">
+          {`${t('origin')}:`}
+        </div>
+        {originMetadata?.icon ? (
+          <SiteIcon
+            icon={originMetadata.icon}
+            name={originMetadata.name}
+            size={24}
+          />
+        ) : null}
+        <div className="request-signature__origin">
+          {txData.msgParams.origin}
         </div>
       </div>
     )
@@ -216,7 +235,7 @@ export default class SignatureRequestOriginal extends Component {
     return (
       <div className="request-signature__body">
         {this.renderAccountInfo()}
-        {this.renderRequestInfo()}
+        {this.renderOriginInfo()}
         <div
           className={classnames('request-signature__notice', {
             'request-signature__warning': type === MESSAGE_TYPE.ETH_SIGN,

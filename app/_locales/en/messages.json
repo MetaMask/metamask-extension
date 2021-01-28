@@ -2142,9 +2142,6 @@
   "yourPrivateSeedPhrase": {
     "message": "Your private seed phrase"
   },
-  "yourSigRequested": {
-    "message": "Your signature is being requested"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"
   }

@@ -1250,9 +1250,6 @@
   "yourPrivateSeedPhrase": {
     "message": "Η προσωπική σας φράση φύτρου"
   },
-  "yourSigRequested": {
-    "message": "Ζητείται η υπογραφή σας"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Μηδενική τιμή καυσίμου κατά την επιτάχυνση"
   }

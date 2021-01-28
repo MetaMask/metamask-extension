@@ -1225,9 +1225,6 @@
   "yourPrivateSeedPhrase": {
     "message": "La teva frase privada de seeds"
   },
-  "yourSigRequested": {
-    "message": "Es necessita la teva firma"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Gas a cost zero accelerant-se"
   }

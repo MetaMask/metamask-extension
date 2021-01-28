@@ -1230,9 +1230,6 @@
   "yourPrivateSeedPhrase": {
     "message": "Ungkapan benih peribadi anda"
   },
-  "yourSigRequested": {
-    "message": "Tandatangan anda sedang diminta"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Sifar harga gas untuk pencepatan"
   }
