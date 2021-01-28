@@ -42,15 +42,15 @@ function base32ToHex(addr) {
 
 function isLikeBase32Address(addr) {
   // this won't return false when there's net1029, net1
-  return /^(cfx(test)?|net\d+):(type=(null|user|contract|builtin):)?[0123456789abcdefghjkmnprstuvwxyz]{42}$/i.test(
+  return /^(cfx(test)?|net\d+):(type\.(null|user|contract|builtin):)?[0123456789abcdefghjkmnprstuvwxyz]{42}$/i.test(
     addr
   )
 }
 
 function isValidBase32Address(addr, netId, type) {
   if (netId !== undefined) {
- netId = parseInt(netId, 10)
-}
+    netId = parseInt(netId, 10)
+  }
   let decoded = false
   try {
     decoded = decode(addr)
@@ -58,8 +58,8 @@ function isValidBase32Address(addr, netId, type) {
 
   let valid = Boolean(decoded)
   if (netId !== undefined) {
- valid = valid && decoded.netId === netId
-}
+    valid = valid && decoded.netId === netId
+  }
   if (type) {
     valid = valid && type === decoded.type
   }

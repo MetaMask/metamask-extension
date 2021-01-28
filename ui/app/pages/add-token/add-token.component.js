@@ -14,6 +14,7 @@ import PageContainer from '../../components/ui/page-container'
 import { Tabs, Tab } from '../../components/ui/tabs'
 import {
   isValidBase32Address,
+  hexToBase32,
   base32ToHex,
 } from '../../../../app/scripts/cip37'
 
@@ -169,18 +170,38 @@ class AddToken extends Component {
     const { network } = this.props
     const customAddress = value.trim()
 
-    const isValidAddress = isValidBase32Address(
+    const isValidHexAddress = ethUtil.isValidContractAddress(customAddress)
+
+    const isValidBase32Addr = isValidBase32Address(
       customAddress,
       network,
       'contract'
     )
+    const isValidAddress = isValidBase32Addr || isValidHexAddress
+
     const hexAddress = ethUtil
-      .addHexPrefix(isValidAddress ? base32ToHex(customAddress) : '')
+      .addHexPrefix(
+        isValidBase32Addr
+          ? base32ToHex(customAddress)
+          : isValidHexAddress
+          ? customAddress
+          : ''
+      )
+      .toLowerCase()
+
+    const base32Address = ethUtil
+      .addHexPrefix(
+        isValidBase32Addr
+          ? customAddress
+          : isValidHexAddress
+          ? hexToBase32(customAddress, network)
+          : ''
+      )
       .toLowerCase()
 
     this.setState({
       hexAddress,
-      base32Address: isValidAddress ? customAddress : '',
+      base32Address,
       customAddress,
       customAddressError: null,
       tokenSelectorError: null,
