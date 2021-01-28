@@ -17,7 +17,6 @@ export default class ConfirmPageContainerContent extends Component {
     identiconAddress: PropTypes.string,
     nonce: PropTypes.string,
     assetImage: PropTypes.string,
-    subtitle: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     subtitleComponent: PropTypes.node,
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     titleComponent: PropTypes.node,
@@ -64,7 +63,6 @@ export default class ConfirmPageContainerContent extends Component {
       errorMessage,
       title,
       titleComponent,
-      subtitle,
       subtitleComponent,
       hideSubtitle,
       identiconAddress,
@@ -94,7 +92,6 @@ export default class ConfirmPageContainerContent extends Component {
           action={action}
           title={title}
           titleComponent={titleComponent}
-          subtitle={subtitle}
           subtitleComponent={subtitleComponent}
           hideSubtitle={hideSubtitle}
           identiconAddress={identiconAddress}

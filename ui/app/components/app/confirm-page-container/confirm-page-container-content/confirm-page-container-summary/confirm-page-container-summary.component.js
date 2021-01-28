@@ -8,7 +8,6 @@ const ConfirmPageContainerSummary = (props) => {
     action,
     title,
     titleComponent,
-    subtitle,
     subtitleComponent,
     hideSubtitle,
     className,
@@ -42,7 +41,7 @@ const ConfirmPageContainerSummary = (props) => {
       </div>
       {hideSubtitle || (
         <div className="confirm-page-container-summary__subtitle">
-          {subtitleComponent || subtitle}
+          {subtitleComponent}
         </div>
       )}
     </div>
@@ -53,7 +52,6 @@ ConfirmPageContainerSummary.propTypes = {
   action: PropTypes.string,
   title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   titleComponent: PropTypes.node,
-  subtitle: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   subtitleComponent: PropTypes.node,
   hideSubtitle: PropTypes.bool,
   className: PropTypes.string,
