@@ -86,7 +86,7 @@ export default class SendContent extends Component {
         {t('confluxNewAddressWarning')}
         <a
           className="go-convert"
-          href="https://confluxscan.io"
+          href="https://confluxscan.io/address-converter"
           target="_blank"
           rel="noreferrer noopener"
         >
