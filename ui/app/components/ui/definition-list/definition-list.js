@@ -75,9 +75,9 @@ DefinitionList.propTypes = {
   dictionary: PropTypes.objectOf(PropTypes.string),
   tooltips: PropTypes.objectOf(PropTypes.string),
   termTypography: PropTypes.shape({
-    ...omit(Typography.propTypes, ['tag', 'className']),
+    ...omit(Typography.propTypes, ['tag', 'className', 'boxProps']),
   }),
   definitionTypography: PropTypes.shape({
-    ...omit(Typography.propTypes, ['tag', 'className']),
+    ...omit(Typography.propTypes, ['tag', 'className', 'boxProps']),
   }),
 }
