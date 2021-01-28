@@ -2086,6 +2086,9 @@
   "viewAccount": {
     "message": "View Account"
   },
+  "viewAllDetails": {
+    "message": "View all details"
+  },
   "viewContact": {
     "message": "View Contact"
   },
