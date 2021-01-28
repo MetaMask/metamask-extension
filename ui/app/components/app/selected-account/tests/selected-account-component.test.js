@@ -15,7 +15,7 @@ describe('SelectedAccount Component', function() {
     // Checksummed version of address is displayed
     assert.equal(
       wrapper.find('.selected-account__address').text(),
-      'net2999:00ewur...62a2'
+      'net2999:00ewurc8...'
     )
     assert.equal(wrapper.find('.selected-account__name').text(), 'testName')
   })
