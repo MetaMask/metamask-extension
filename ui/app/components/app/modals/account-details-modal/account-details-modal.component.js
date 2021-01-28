@@ -54,15 +54,6 @@ export default class AccountDetailsModal extends Component {
           onSubmit={label => setAccountLabel(address, label)}
         />
 
-        <QrView
-          Qr={{
-            data: base32Address,
-            testnetBase32Address,
-            mainnetBase32Address,
-            network,
-          }}
-        />
-
         <p
           style={{
             fontSize: '80%',
@@ -75,10 +66,22 @@ export default class AccountDetailsModal extends Component {
             border: '1px solid #75C4FD',
             borderRadius: '8px',
             padding: '8px',
+            marginTop: '1rem',
+            marginBottom: '1rem',
           }}
         >
           {' ' + t('base32AddressNotice')}
         </p>
+
+        <QrView
+          Qr={{
+            noQr: true,
+            data: base32Address,
+            testnetBase32Address,
+            mainnetBase32Address,
+            network,
+          }}
+        />
 
         <div className="account-modal-divider" />
 

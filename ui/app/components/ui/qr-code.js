@@ -16,6 +16,7 @@ class QrCodeView extends React.Component {
       data,
       testnetBase32Address,
       mainnetBase32Address,
+      noQr,
     } = this.props.Qr
     const address = `conflux:${data}`
     const qrImage = qrCode(4, 'M')
@@ -50,12 +51,14 @@ class QrCodeView extends React.Component {
               <span className="error flex-center">{this.props.warning}</span>
             )
           : null}
-        <div
-          className="div qr-wrapper"
-          dangerouslySetInnerHTML={{
-            __html: qrImage.createTableTag(4),
-          }}
-        />
+        {!noQr && (
+          <div
+            className="div qr-wrapper"
+            dangerouslySetInnerHTML={{
+              __html: qrImage.createTableTag(4),
+            }}
+          />
+        )}
         <div className="address-wrapper flex-row flex-center">
           <NetworkTag
             wrapperClass={currentTagClass}
@@ -95,6 +98,7 @@ class QrCodeView extends React.Component {
 QrCodeView.propTypes = {
   warning: PropTypes.node,
   Qr: PropTypes.shape({
+    noQr: PropTypes.bool,
     message: PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node,
