@@ -21,6 +21,7 @@ export default class ConfirmPageContainerContent extends Component {
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     titleComponent: PropTypes.node,
     warning: PropTypes.string,
+    origin: PropTypes.string.isRequired,
     // Footer
     onCancelAll: PropTypes.func,
     onCancel: PropTypes.func,
@@ -79,6 +80,7 @@ export default class ConfirmPageContainerContent extends Component {
       disabled,
       unapprovedTxCount,
       rejectNText,
+      origin,
     } = this.props
 
     return (
@@ -97,6 +99,7 @@ export default class ConfirmPageContainerContent extends Component {
           identiconAddress={identiconAddress}
           nonce={nonce}
           assetImage={assetImage}
+          origin={origin}
         />
         {this.renderContent()}
         {(errorKey || errorMessage) && (

@@ -4,6 +4,12 @@
   height: 133px;
   box-sizing: border-box;
 
+  &__origin {
+    @include H6;
+
+    padding-bottom: 10px;
+  }
+
   &__action-row {
     display: flex;
     justify-content: space-between;

@@ -669,6 +669,7 @@ export default class ConfirmTransactionBase extends Component {
       transactionCategory,
       hideSenderToRecipient,
       showAccountInHeader,
+      txData,
     } = this.props
     const { submitting, submitError, submitWarning } = this.state
 
@@ -736,6 +737,7 @@ export default class ConfirmTransactionBase extends Component {
         onCancel={() => this.handleCancel()}
         onSubmit={() => this.handleSubmit()}
         hideSenderToRecipient={hideSenderToRecipient}
+        origin={txData.origin}
       />
     )
   }
