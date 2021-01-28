@@ -312,9 +312,9 @@ export function base32AddressSlicer(address = '') {
   const [prefix, ...rest] = address.split(':')
 
   if (rest.length === 2) {
-    return `${prefix}:${rest[0]}:${rest[1].slice(0, 6)}...${rest[1].slice(-4)}`
+    return `${prefix}:${rest[0]}:${rest[1].slice(0, 8)}...`
   } else {
-    return `${prefix}:${rest[0].slice(0, 6)}...${rest[0].slice(-4)}`
+    return `${prefix}:${rest[0].slice(0, 8)}...`
   }
 }
 
