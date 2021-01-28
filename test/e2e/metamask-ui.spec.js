@@ -1,6 +1,5 @@
 const assert = require('assert')
 const webdriver = require('selenium-webdriver')
-const { hexToBase32 } = require('../../app/scripts/cip37')
 
 const { By, Key, until } = webdriver
 const {
@@ -289,7 +288,9 @@ describe('MetaMask', function() {
       const inputAddress = await driver.findElement(
         By.css('input[placeholder="Search Conflux Address"]')
       )
-      await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
+      await inputAddress.sendKeys(
+        'net2999:aatxddbxj8akph7vfhkmru2ra7v7xksksamx6rgwy2'
+      )
 
       const inputAmount = await driver.findElement(By.css('.unit-input__input'))
       await inputAmount.sendKeys('1000')
@@ -367,7 +368,9 @@ describe('MetaMask', function() {
       const inputAddress = await driver.findElement(
         By.css('input[placeholder="Search Conflux Address"]')
       )
-      await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
+      await inputAddress.sendKeys(
+        'net2999:aatxddbxj8akph7vfhkmru2ra7v7xksksamx6rgwy2'
+      )
 
       const inputAmount = await driver.findElement(By.css('.unit-input__input'))
       await inputAmount.sendKeys('1')
@@ -419,7 +422,9 @@ describe('MetaMask', function() {
       const inputAddress = await driver.findElement(
         By.css('input[placeholder="Search Conflux Address"]')
       )
-      await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
+      await inputAddress.sendKeys(
+        'net2999:aatxddbxj8akph7vfhkmru2ra7v7xksksamx6rgwy2'
+      )
 
       const inputAmount = await driver.findElement(By.css('.unit-input__input'))
       await inputAmount.sendKeys('1')
@@ -1104,7 +1109,9 @@ describe('MetaMask', function() {
       const tokenContractAddress = await driver.findElement(
         By.css('#tokenAddress')
       )
-      await driver.wait(until.elementTextMatches(tokenContractAddress, /0x/))
+      await driver.wait(
+        until.elementTextMatches(tokenContractAddress, /net2999:/i)
+      )
       tokenAddress = await tokenContractAddress.getText()
 
       await driver.delay(regularDelayMs)
@@ -1130,7 +1137,7 @@ describe('MetaMask', function() {
       const newTokenAddress = await driver.findElement(
         By.css('#custom-address')
       )
-      await newTokenAddress.sendKeys(hexToBase32(tokenAddress, 2999))
+      await newTokenAddress.sendKeys(tokenAddress)
       await driver.delay(regularDelayMs)
 
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Next')]`))
@@ -1165,7 +1172,9 @@ describe('MetaMask', function() {
       const inputAddress = await driver.findElement(
         By.css('input[placeholder="Search Conflux Address"]')
       )
-      await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
+      await inputAddress.sendKeys(
+        'net2999:aatxddbxj8akph7vfhkmru2ra7v7xksksamx6rgwy2'
+      )
 
       const inputAmount = await driver.findElement(By.css('.unit-input__input'))
       await inputAmount.sendKeys('1')
@@ -1674,7 +1683,7 @@ describe('MetaMask', function() {
         By.css('.confirm-approve-content__medium-text')
       )
       const recipientDiv = permissionInfo[1]
-      assert.equal(await recipientDiv.getText(), '0x1f318c33...C970')
+      assert.equal(await recipientDiv.getText(), 'net2999:aatxddbx...')
     })
 
     it('submits the transaction', async function() {

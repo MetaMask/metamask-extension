@@ -2,10 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import Identicon from '../../../components/ui/identicon'
-import {
-  addressSummary,
-  base32AddressSlicer,
-} from '../../../helpers/utils/util'
+import { base32AddressSlicer } from '../../../helpers/utils/util'
 // import { formatCurrency } from '../../../helpers/utils/confirm-tx.util'
 
 export default class ConfirmApproveContent extends Component {
@@ -25,7 +22,6 @@ export default class ConfirmApproveContent extends Component {
     setCustomAmount: PropTypes.func,
     tokenBalance: PropTypes.string,
     data: PropTypes.string,
-    toAddress: PropTypes.string,
     toBase32Address: PropTypes.string,
     // currentCurrency: PropTypes.string,
     // fiatTransactionTotal: PropTypes.string,
@@ -34,7 +30,6 @@ export default class ConfirmApproveContent extends Component {
 
   state = {
     showFullTxDetails: false,
-    toAddressOnHover: false,
   }
 
   renderApproveContentCard({
@@ -102,13 +97,11 @@ export default class ConfirmApproveContent extends Component {
 
   renderPermissionContent() {
     const { t } = this.context
-    const { toAddressOnHover } = this.state
     const {
       customTokenAmount,
       tokenAmount,
       tokenSymbol,
       origin,
-      toAddress,
       toBase32Address,
     } = this.props
 
@@ -129,14 +122,8 @@ export default class ConfirmApproveContent extends Component {
           <div className="confirm-approve-content__label">
             {t('toWithColon')}
           </div>
-          <div
-            className="confirm-approve-content__medium-text is-address"
-            onMouseOver={() => this.setState({ toAddressOnHover: true })}
-            onMouseLeave={() => this.setState({ toAddressOnHover: false })}
-          >
-            {toAddressOnHover
-              ? base32AddressSlicer(toBase32Address)
-              : addressSummary(toAddress)}
+          <div className="confirm-approve-content__medium-text is-address">
+            {base32AddressSlicer(toBase32Address)}
           </div>
         </div>
       </div>

@@ -528,7 +528,10 @@ const initialize = () => {
       transferTokens.onclick = async event => {
         console.log(`event`, event)
         const transferResult = humanstandardtokenContract
-          .transfer('0x1f318c334780961fb129d2a6c30d0763d9a5c970', '15000')
+          .transfer(
+            'net2999:aatxddbxj8akph7vfhkmru2ra7v7xksksamx6rgwy2',
+            '15000'
+          )
           .sendTransaction({
             from: accounts[0],
             to: humanstandardtokenContract.address,
@@ -540,7 +543,10 @@ const initialize = () => {
 
       approveTokens.onclick = async () => {
         const approveResult = await humanstandardtokenContract
-          .approve('0x8bc5baf874d2da8d216ae9f137804184ee5afef4', '70000')
+          .approve(
+            'net2999:acf6ns12sxkrzdkbrny9cr6ajgcs60188ub3vfnwe1',
+            '70000'
+          )
           .sendTransaction({
             from: accounts[0],
             to: humanstandardtokenContract.address,
@@ -553,7 +559,10 @@ const initialize = () => {
       transferTokensWithoutGas.onclick = async event => {
         console.log(`event`, event)
         const transferResult = await humanstandardtokenContract
-          .transfer('0x1f318c334780961fb129d2a6c30d0763d9a5c970', '15000')
+          .transfer(
+            'net2999:aatxddbxj8akph7vfhkmru2ra7v7xksksamx6rgwy2',
+            '15000'
+          )
           .sendTransaction({
             from: accounts[0],
             to: humanstandardtokenContract.address,
@@ -565,7 +574,10 @@ const initialize = () => {
 
       approveTokensWithoutGas.onclick = async () => {
         const approveResult = await humanstandardtokenContract
-          .approve('0x1f318c334780961fb129d2a6c30d0763d9a5c970', '70000')
+          .approve(
+            'net2999:aatxddbxj8akph7vfhkmru2ra7v7xksksamx6rgwy2',
+            '70000'
+          )
           .sendTransaction({
             from: accounts[0],
             to: humanstandardtokenContract.address,

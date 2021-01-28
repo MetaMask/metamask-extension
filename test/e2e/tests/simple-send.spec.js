@@ -3,8 +3,8 @@ const { withFixtures } = require('../helpers')
 // use sleep to debug
 // const sleep = require('sleep-promise')
 
-describe('MetaMask Browser Extension', function () {
-  it('can send a simple transaction from one account to another', async function () {
+describe('MetaMask Browser Extension', function() {
+  it('can send a simple transaction from one account to another', async function() {
     const ganacheOptions = {
       accounts: [
         {
@@ -27,7 +27,7 @@ describe('MetaMask Browser Extension', function () {
           By.css('[data-testid="ens-input"]')
         )
         await recipientAddressField.sendKeys(
-          '0x185c30949c92df7a0bd42e0f3e3d539ece98db24'
+          'net2999:aapf2peyxwkr88un4u1a8tv7mstp7gg5euf00turfa'
         )
         const amountField = await driver.findElement(
           By.css('.unit-input__input')

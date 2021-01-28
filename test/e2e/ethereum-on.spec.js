@@ -6,7 +6,6 @@ const { regularDelayMs, largeDelayMs } = require('./helpers')
 const { buildWebDriver } = require('./webdriver')
 const Ganache = require('@cfxjs/fullnode')
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
-const { base32ToHex } = require('../../app/scripts/cip37')
 
 const ganacheServer = new Ganache()
 
@@ -197,10 +196,7 @@ describe('MetaMask', function() {
     it('sets the account div within the dapp', async function() {
       await driver.switchToWindow(dapp)
       const accountsDiv = await driver.findElement(By.css('#accounts'))
-      assert.equal(
-        await accountsDiv.getText(),
-        base32ToHex(publicBase32Address)
-      )
+      assert.equal(await accountsDiv.getText(), publicBase32Address)
     })
   })
 })

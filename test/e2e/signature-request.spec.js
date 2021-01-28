@@ -15,7 +15,6 @@ const ganacheServer = new Ganache()
 describe('MetaMask', function() {
   let driver
   let publicAddress
-  let publicBase32Address
 
   this.timeout(0)
   this.bail(true)
@@ -26,8 +25,7 @@ describe('MetaMask', function() {
     await fixtureServer.loadState(
       path.join(__dirname, 'fixtures', 'imported-account')
     )
-    publicAddress = '0x1494e65ac65e076c4297a60d929ca5d3db7701b3'
-    publicBase32Address = 'net2999:aamkk3w423tas5ccw8xa5ey6y1k7072b0pubj99wwm'
+    publicAddress = 'net2999:aamkk3w423tas5ccw8xa5ey6y1k7072b0pubj99wwm'
     const result = await buildWebDriver()
     driver = result.driver
   })
@@ -135,12 +133,7 @@ describe('MetaMask', function() {
       assert.equal(await title.getText(), 'Signature Request')
       assert.equal(await name.getText(), 'Ether Mail')
       assert.equal(await origin.getText(), '127.0.0.1')
-      assert.equal(
-        await address.getText(),
-        publicAddress.slice(0, 8) +
-          '...' +
-          publicAddress.slice(publicAddress.length - 8)
-      )
+      assert.equal(await address.getText(), 'net2999:aamkk3w4...')
     })
 
     it('signs the transaction', async function() {
@@ -166,7 +159,7 @@ describe('MetaMask', function() {
 
       await driver.wait(until.stalenessOf(accountModal))
       await driver.delay(regularDelayMs)
-      assert.equal(newPublicAddress.toLowerCase(), publicBase32Address)
+      assert.equal(newPublicAddress.toLowerCase(), publicAddress)
     })
   })
 })
