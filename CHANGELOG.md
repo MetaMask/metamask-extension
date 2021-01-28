@@ -2,6 +2,19 @@
 
 ## Current Develop Branch
 
+## 9.0.4 Fri Jan 22 2021
+- [#10285](https://github.com/MetaMask/metamask-extension/pull/10285): Update @metamask/contract-metadata from v1.21.0 to 1.22.0
+- [#10174](https://github.com/MetaMask/metamask-extension/pull/10174): Move fox to bottom of 'About' page
+- [#10198](https://github.com/MetaMask/metamask-extension/pull/10198): Fix hardware account selection
+- [#10101](https://github.com/MetaMask/metamask-extension/pull/10101): Add a timeout to all network requests
+- [#10212](https://github.com/MetaMask/metamask-extension/pull/10212): Fix displayed balance of tokens with 0 decimals in swaps flow
+- [#10162](https://github.com/MetaMask/metamask-extension/pull/10162): Prevent accidentally submitting a swap twice
+- [#10224](https://github.com/MetaMask/metamask-extension/pull/10224): Improve chain ID validation
+- [#10195](https://github.com/MetaMask/metamask-extension/pull/10195): Increase minimum Firefox version to v68
+- [#10192](https://github.com/MetaMask/metamask-extension/pull/10192): Update TrezorConnect to v8
+- [#10166](https://github.com/MetaMask/metamask-extension/pull/10166): Fix back button on swaps loading page
+- [#9947](https://github.com/MetaMask/metamask-extension/pull/9947): Do not publish swaps transaction if the estimateGas call made when adding the transaction fails.
+
 ## 9.0.3 Fri Jan 22 2021
 - [#10243](https://github.com/MetaMask/metamask-extension/pull/10243): Fix site metadata handling
 - [#10252](https://github.com/MetaMask/metamask-extension/pull/10252): Fix decrypt message confirmation UI crash
