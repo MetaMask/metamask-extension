@@ -16,12 +16,12 @@ export default function TruncatedDefinitionList({
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
 
   return (
-    <>
+    <div className="truncated-definition-list">
       <Box
         margin={6}
         padding={4}
         paddingBottom={3}
-        borderRadius="lg"
+        borderRadius={SIZES.LG}
         borderColor={COLORS.UI2}
       >
         <DefinitionList
@@ -29,7 +29,7 @@ export default function TruncatedDefinitionList({
           tooltips={tooltips}
         />
         <Button
-          className="approval-page__view-all-details"
+          className="truncated-definition-list__view-more"
           type="link"
           onClick={() => setIsPopoverOpen(true)}
         >
@@ -62,7 +62,7 @@ export default function TruncatedDefinitionList({
           />
         </Box>
       </Popover>
-    </>
+    </div>
   )
 }
 
