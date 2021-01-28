@@ -6,6 +6,7 @@ import Box from '../box'
 import Button from '../button'
 import DefinitionList from '../definition-list/definition-list'
 import Popover from '../popover'
+import { useI18nContext } from '../../../hooks/useI18nContext'
 
 export default function TruncatedDefinitionList({
   dictionary,
@@ -14,9 +15,10 @@ export default function TruncatedDefinitionList({
   title,
 }) {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
+  const t = useI18nContext()
 
   return (
-    <div className="truncated-definition-list">
+    <>
       <Box
         margin={6}
         padding={4}
@@ -33,36 +35,38 @@ export default function TruncatedDefinitionList({
           type="link"
           onClick={() => setIsPopoverOpen(true)}
         >
-          View all details
+          {t('viewAllDetails')}
         </Button>
       </Box>
-      <Popover
-        title={title}
-        open={isPopoverOpen}
-        onClose={() => setIsPopoverOpen(false)}
-        footer={
-          <>
-            <div />
-            <Button
-              type="primary"
-              style={{ width: '50%' }}
-              rounded
-              onClick={() => setIsPopoverOpen(false)}
-            >
-              Close
-            </Button>
-          </>
-        }
-      >
-        <Box padding={6} paddingTop={0}>
-          <DefinitionList
-            gap={SIZES.MD}
-            tooltips={tooltips}
-            dictionary={dictionary}
-          />
-        </Box>
-      </Popover>
-    </div>
+      {isPopoverOpen && (
+        <Popover
+          title={title}
+          open={isPopoverOpen}
+          onClose={() => setIsPopoverOpen(false)}
+          footer={
+            <>
+              <div />
+              <Button
+                type="primary"
+                style={{ width: '50%' }}
+                rounded
+                onClick={() => setIsPopoverOpen(false)}
+              >
+                Close
+              </Button>
+            </>
+          }
+        >
+          <Box padding={6} paddingTop={0}>
+            <DefinitionList
+              gap={SIZES.MD}
+              tooltips={tooltips}
+              dictionary={dictionary}
+            />
+          </Box>
+        </Popover>
+      )}
+    </>
   )
 }
 
