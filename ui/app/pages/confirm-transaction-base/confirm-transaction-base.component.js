@@ -70,31 +70,19 @@ export default class ConfirmTransactionBase extends Component {
     actionKey: PropTypes.string,
     contentComponent: PropTypes.node,
     dataComponent: PropTypes.node,
-    detailsComponent: PropTypes.node,
-    errorKey: PropTypes.string,
-    errorMessage: PropTypes.string,
     primaryTotalTextOverride: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.node,
     ]),
     secondaryTotalTextOverride: PropTypes.string,
     hideData: PropTypes.bool,
-    hideDetails: PropTypes.bool,
     hideSubtitle: PropTypes.bool,
     identiconAddress: PropTypes.string,
-    onCancel: PropTypes.func,
     onEdit: PropTypes.func,
-    onEditGas: PropTypes.func,
-    onSubmit: PropTypes.func,
     setMetaMetricsSendCount: PropTypes.func,
     metaMetricsSendCount: PropTypes.number,
-    subtitle: PropTypes.string,
     subtitleComponent: PropTypes.node,
-    summaryComponent: PropTypes.node,
     title: PropTypes.string,
-    titleComponent: PropTypes.node,
-    valid: PropTypes.bool,
-    warning: PropTypes.string,
     advancedInlineGasShown: PropTypes.bool,
     insufficientBalance: PropTypes.bool,
     hideFiatConversion: PropTypes.bool,
@@ -212,7 +200,6 @@ export default class ConfirmTransactionBase extends Component {
 
   handleEditGas() {
     const {
-      onEditGas,
       showCustomizeGasModal,
       actionKey,
       txData: { origin },
@@ -235,21 +222,15 @@ export default class ConfirmTransactionBase extends Component {
       },
     })
 
-    if (onEditGas) {
-      onEditGas()
-    } else {
-      showCustomizeGasModal()
-    }
+    showCustomizeGasModal()
   }
 
   renderDetails() {
     const {
-      detailsComponent,
       primaryTotalTextOverride,
       secondaryTotalTextOverride,
       hexTransactionFee,
       hexTransactionTotal,
-      hideDetails,
       useNonceField,
       customNonceValue,
       updateCustomNonce,
@@ -263,100 +244,90 @@ export default class ConfirmTransactionBase extends Component {
       isMainnet,
     } = this.props
 
-    if (hideDetails) {
-      return null
-    }
-
     const notMainnetOrTest = !(isMainnet || process.env.IN_TEST)
 
     return (
-      detailsComponent || (
-        <div className="confirm-page-container-content__details">
-          <div className="confirm-page-container-content__gas-fee">
-            <ConfirmDetailRow
-              label="Gas Fee"
-              value={hexTransactionFee}
-              headerText={notMainnetOrTest ? '' : 'Edit'}
-              headerTextClassName={
-                notMainnetOrTest ? '' : 'confirm-detail-row__header-text--edit'
-              }
-              onHeaderClick={
-                notMainnetOrTest ? null : () => this.handleEditGas()
-              }
-              secondaryText={
-                hideFiatConversion
-                  ? this.context.t('noConversionRateAvailable')
-                  : ''
-              }
-            />
-            {advancedInlineGasShown || notMainnetOrTest ? (
-              <AdvancedGasInputs
-                updateCustomGasPrice={(newGasPrice) =>
-                  updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })
-                }
-                updateCustomGasLimit={(newGasLimit) =>
-                  updateGasAndCalculate({ ...customGas, gasLimit: newGasLimit })
-                }
-                customGasPrice={customGas.gasPrice}
-                customGasLimit={customGas.gasLimit}
-                insufficientBalance={insufficientBalance}
-                customPriceIsSafe
-                isSpeedUp={false}
-              />
-            ) : null}
-          </div>
-          <div
-            className={
-              useNonceField ? 'confirm-page-container-content__gas-fee' : null
+      <div className="confirm-page-container-content__details">
+        <div className="confirm-page-container-content__gas-fee">
+          <ConfirmDetailRow
+            label="Gas Fee"
+            value={hexTransactionFee}
+            headerText={notMainnetOrTest ? '' : 'Edit'}
+            headerTextClassName={
+              notMainnetOrTest ? '' : 'confirm-detail-row__header-text--edit'
             }
-          >
-            <ConfirmDetailRow
-              label="Total"
-              value={hexTransactionTotal}
-              primaryText={primaryTotalTextOverride}
-              secondaryText={
-                hideFiatConversion
-                  ? this.context.t('noConversionRateAvailable')
-                  : secondaryTotalTextOverride
+            onHeaderClick={notMainnetOrTest ? null : () => this.handleEditGas()}
+            secondaryText={
+              hideFiatConversion
+                ? this.context.t('noConversionRateAvailable')
+                : ''
+            }
+          />
+          {advancedInlineGasShown || notMainnetOrTest ? (
+            <AdvancedGasInputs
+              updateCustomGasPrice={(newGasPrice) =>
+                updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })
               }
-              headerText="Amount + Gas Fee"
-              headerTextClassName="confirm-detail-row__header-text--total"
-              primaryValueTextColor="#2f9ae0"
+              updateCustomGasLimit={(newGasLimit) =>
+                updateGasAndCalculate({ ...customGas, gasLimit: newGasLimit })
+              }
+              customGasPrice={customGas.gasPrice}
+              customGasLimit={customGas.gasLimit}
+              insufficientBalance={insufficientBalance}
+              customPriceIsSafe
+              isSpeedUp={false}
             />
-          </div>
-          {useNonceField ? (
-            <div>
-              <div className="confirm-detail-row">
-                <div className="confirm-detail-row__label">
-                  {this.context.t('nonceFieldHeading')}
-                </div>
-                <div className="custom-nonce-input">
-                  <TextField
-                    type="number"
-                    min="0"
-                    placeholder={
-                      typeof nextNonce === 'number'
-                        ? nextNonce.toString()
-                        : null
-                    }
-                    onChange={({ target: { value } }) => {
-                      if (!value.length || Number(value) < 0) {
-                        updateCustomNonce('')
-                      } else {
-                        updateCustomNonce(String(Math.floor(value)))
-                      }
-                      getNextNonce()
-                    }}
-                    fullWidth
-                    margin="dense"
-                    value={customNonceValue || ''}
-                  />
-                </div>
-              </div>
-            </div>
           ) : null}
         </div>
-      )
+        <div
+          className={
+            useNonceField ? 'confirm-page-container-content__gas-fee' : null
+          }
+        >
+          <ConfirmDetailRow
+            label="Total"
+            value={hexTransactionTotal}
+            primaryText={primaryTotalTextOverride}
+            secondaryText={
+              hideFiatConversion
+                ? this.context.t('noConversionRateAvailable')
+                : secondaryTotalTextOverride
+            }
+            headerText="Amount + Gas Fee"
+            headerTextClassName="confirm-detail-row__header-text--total"
+            primaryValueTextColor="#2f9ae0"
+          />
+        </div>
+        {useNonceField ? (
+          <div>
+            <div className="confirm-detail-row">
+              <div className="confirm-detail-row__label">
+                {this.context.t('nonceFieldHeading')}
+              </div>
+              <div className="custom-nonce-input">
+                <TextField
+                  type="number"
+                  min="0"
+                  placeholder={
+                    typeof nextNonce === 'number' ? nextNonce.toString() : null
+                  }
+                  onChange={({ target: { value } }) => {
+                    if (!value.length || Number(value) < 0) {
+                      updateCustomNonce('')
+                    } else {
+                      updateCustomNonce(String(Math.floor(value)))
+                    }
+                    getNextNonce()
+                  }}
+                  fullWidth
+                  margin="dense"
+                  value={customNonceValue || ''}
+                />
+              </div>
+            </div>
+          </div>
+        ) : null}
+      </div>
     )
   }
 
@@ -455,7 +426,6 @@ export default class ConfirmTransactionBase extends Component {
   handleCancel() {
     const { metricsEvent } = this.context
     const {
-      onCancel,
       txData,
       cancelTransaction,
       history,
@@ -484,14 +454,10 @@ export default class ConfirmTransactionBase extends Component {
       },
     })
     updateCustomNonce('')
-    if (onCancel) {
-      onCancel(txData)
-    } else {
-      cancelTransaction(txData).then(() => {
-        clearConfirmTransaction()
-        history.push(mostRecentOverviewPage)
-      })
-    }
+    cancelTransaction(txData).then(() => {
+      clearConfirmTransaction()
+      history.push(mostRecentOverviewPage)
+    })
   }
 
   handleSubmit() {
@@ -502,7 +468,6 @@ export default class ConfirmTransactionBase extends Component {
       clearConfirmTransaction,
       txData,
       history,
-      onSubmit,
       actionKey,
       mostRecentOverviewPage,
       metaMetricsSendCount = 0,
@@ -540,42 +505,33 @@ export default class ConfirmTransactionBase extends Component {
         })
 
         setMetaMetricsSendCount(metaMetricsSendCount + 1).then(() => {
-          if (onSubmit) {
-            Promise.resolve(onSubmit(txData)).then(() => {
+          sendTransaction(txData)
+            .then(() => {
+              clearConfirmTransaction()
+              this.setState(
+                {
+                  submitting: false,
+                },
+                () => {
+                  history.push(mostRecentOverviewPage)
+                  updateCustomNonce('')
+                },
+              )
+            })
+            .catch((error) => {
               this.setState({
                 submitting: false,
+                submitError: error.message,
               })
               updateCustomNonce('')
             })
-          } else {
-            sendTransaction(txData)
-              .then(() => {
-                clearConfirmTransaction()
-                this.setState(
-                  {
-                    submitting: false,
-                  },
-                  () => {
-                    history.push(mostRecentOverviewPage)
-                    updateCustomNonce('')
-                  },
-                )
-              })
-              .catch((error) => {
-                this.setState({
-                  submitting: false,
-                  submitError: error.message,
-                })
-                updateCustomNonce('')
-              })
-          }
         })
       },
     )
   }
 
   renderTitleComponent() {
-    const { title, titleComponent, hexTransactionAmount } = this.props
+    const { title, hexTransactionAmount } = this.props
 
     // Title string passed in by props takes priority
     if (title) {
@@ -583,25 +539,18 @@ export default class ConfirmTransactionBase extends Component {
     }
 
     return (
-      titleComponent || (
-        <UserPreferencedCurrencyDisplay
-          value={hexTransactionAmount}
-          type={PRIMARY}
-          showEthLogo
-          ethLogoHeight="26"
-          hideLabel
-        />
-      )
+      <UserPreferencedCurrencyDisplay
+        value={hexTransactionAmount}
+        type={PRIMARY}
+        showEthLogo
+        ethLogoHeight="26"
+        hideLabel
+      />
     )
   }
 
   renderSubtitleComponent() {
-    const { subtitle, subtitleComponent, hexTransactionAmount } = this.props
-
-    // Subtitle string passed in by props takes priority
-    if (subtitle) {
-      return null
-    }
+    const { subtitleComponent, hexTransactionAmount } = this.props
 
     return (
       subtitleComponent || (
@@ -708,20 +657,14 @@ export default class ConfirmTransactionBase extends Component {
       toEns,
       toNickname,
       methodData,
-      valid: propsValid = true,
-      errorMessage,
-      errorKey: propsErrorKey,
       title,
-      subtitle,
       hideSubtitle,
       identiconAddress,
-      summaryComponent,
       contentComponent,
       onEdit,
       nonce,
       customNonceValue,
       assetImage,
-      warning,
       unapprovedTxCount,
       transactionCategory,
       hideSenderToRecipient,
@@ -765,10 +708,8 @@ export default class ConfirmTransactionBase extends Component {
         action={functionType}
         title={title}
         titleComponent={this.renderTitleComponent()}
-        subtitle={subtitle}
         subtitleComponent={this.renderSubtitleComponent()}
         hideSubtitle={hideSubtitle}
-        summaryComponent={summaryComponent}
         detailsComponent={this.renderDetails()}
         dataComponent={this.renderData(functionType)}
         contentComponent={contentComponent}
@@ -776,9 +717,9 @@ export default class ConfirmTransactionBase extends Component {
         unapprovedTxCount={unapprovedTxCount}
         assetImage={assetImage}
         identiconAddress={identiconAddress}
-        errorMessage={errorMessage || submitError}
-        errorKey={propsErrorKey || errorKey}
-        warning={warning || submitWarning}
+        errorMessage={submitError}
+        errorKey={errorKey}
+        warning={submitWarning}
         totalTx={totalTx}
         positionOfCurrentTx={positionOfCurrentTx}
         nextTxId={nextTxId}
@@ -789,7 +730,7 @@ export default class ConfirmTransactionBase extends Component {
         lastTx={lastTx}
         ofText={ofText}
         requestsWaitingText={requestsWaitingText}
-        disabled={!propsValid || !valid || submitting}
+        disabled={!valid || submitting}
         onEdit={() => this.handleEdit()}
         onCancelAll={() => this.handleCancelAll()}
         onCancel={() => this.handleCancel()}
