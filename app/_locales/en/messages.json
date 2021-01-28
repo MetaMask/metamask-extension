@@ -896,12 +896,6 @@
   "currentNetwork": {
     "message": "Current Network"
   },
-  "mainnetCurrent": {
-    "message": "Conflux Tethys (Current)"
-  },
-  "testnetCurrent": {
-    "message": "Conflux Test Network (Current)"
-  },
   "memorizePhrase": {
     "message": "Memorize this phrase."
   },

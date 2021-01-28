@@ -766,9 +766,6 @@
   "currentNetwork": {
     "message": "当前网络"
   },
-  "mainnetCurrent": {
-    "message": "Conflux Tethys (当前网络)"
-  },
   "memorizePhrase": {
     "message": "记住该密语。"
   },
@@ -1294,9 +1291,6 @@
   },
   "testnet": {
     "message": "Conflux 测试网"
-  },
-  "testnetCurrent": {
-    "message": "Conflux 测试网 (当前网络)"
   },
   "testFaucet": {
     "message": "测试水龙头"

@@ -27,9 +27,7 @@ class QrCodeView extends React.Component {
     ]
 
     const currentTagName =
-      (isMainnet && 'mainnetCurrent') ||
-      (isTestnet && 'testnetCurrent') ||
-      'currentNetwork'
+      (isMainnet && 'mainnet') || (isTestnet && 'testnet') || 'currentNetwork'
 
     const currentTagClass =
       (isMainnet && 'mainnet') || (isTestnet && 'testnet') || 'current'
