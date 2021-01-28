@@ -152,6 +152,7 @@ export default class SignatureRequestOriginal extends Component {
 
   renderOriginInfo = () => {
     const { txData, domainMetadata } = this.props
+    const { t } = this.context
 
     const originMetadata = txData.msgParams.origin
       ? domainMetadata?.[txData.msgParams.origin]
@@ -159,7 +160,9 @@ export default class SignatureRequestOriginal extends Component {
 
     return (
       <div className="request-signature__origin-row">
-        <div className="request-signature__origin-label">Origin:</div>
+        <div className="request-signature__origin-label">
+          {`${t('origin')}:`}
+        </div>
         {originMetadata?.icon ? (
           <SiteIcon
             icon={originMetadata.icon}
