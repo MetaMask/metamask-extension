@@ -108,8 +108,8 @@ export function getSelectedBase32Address(state) {
   const selectedAddress =
     state.metamask.selectedAddress || Object.keys(getMetaMaskAccounts(state))[0]
   if (!selectedAddress) {
- return selectedAddress
-}
+    return selectedAddress
+  }
   const network = parseInt(getCurrentNetworkId(state), 10)
 
   return hexToBase32(selectedAddress, network)
@@ -136,8 +136,8 @@ export function getSelectedIdentity(state) {
   const identities = state.metamask.identities
   const identity = identities[selectedAddress]
   if (!identity) {
- return identity
-}
+    return identity
+  }
   identity.base32Address = selectedBase32Address
 
   return identity
@@ -300,14 +300,18 @@ export function accountsWithSendEtherInfoSelector(state) {
 }
 
 export function getAccountsWithLabels(state) {
+  const network = parseInt(getCurrentNetworkId(state), 10)
   const accountsWithoutLabel = accountsWithSendEtherInfoSelector(state)
   const accountsWithLabels = accountsWithoutLabel.reduce((acc, account) => {
     const { address, name, balance } = account
+    const base32Address = hexToBase32(address, network)
     if (name !== undefined) {
       acc.push({
         address,
+        base32Address,
         truncatedAddress: `${address.slice(0, 6)}...${address.slice(-4)}`,
         addressLabel: `${name} (...${address.slice(address.length - 4)})`,
+        base32AddressLabel: `${name} (${base32AddressSlicer(base32Address)})`,
         label: name,
         balance,
       })

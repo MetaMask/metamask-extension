@@ -10,6 +10,7 @@ export default class ChooseAccount extends Component {
       PropTypes.shape({
         address: PropTypes.string,
         addressLabel: PropTypes.string,
+        base32AddressLabel: PropTypes.string,
         lastConnectedDate: PropTypes.string,
         balance: PropTypes.string,
       })
@@ -41,7 +42,7 @@ export default class ChooseAccount extends Component {
     return (
       <div className="permissions-connect-choose-account__accounts-list">
         {accounts.map((account, index) => {
-          const { address, addressLabel, balance } = account
+          const { address, base32AddressLabel, balance } = account
           return (
             <div
               key={`permissions-connect-choose-account-${index}`}
@@ -52,7 +53,7 @@ export default class ChooseAccount extends Component {
                 <Identicon diameter={34} address={address} />
                 <div className="permissions-connect-choose-account__account__info">
                   <div className="permissions-connect-choose-account__account__label">
-                    {addressLabel}
+                    {base32AddressLabel}
                   </div>
                   <UserPreferencedCurrencyDisplay
                     className="permissions-connect-choose-account__account__balance"
@@ -77,7 +78,7 @@ export default class ChooseAccount extends Component {
     )
   }
 
-  render () {
+  render() {
     const {
       originName,
       selectNewAccountViaModal,
