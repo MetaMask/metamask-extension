@@ -72,7 +72,9 @@ export default function DefinitionList({
 
 DefinitionList.propTypes = {
   gapSize: PropTypes.oneOf(Object.values(SIZES)),
-  dictionary: PropTypes.objectOf(PropTypes.string),
+  dictionary: PropTypes.objectOf(
+    PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  ),
   tooltips: PropTypes.objectOf(PropTypes.string),
   termTypography: PropTypes.shape({
     ...omit(Typography.propTypes, ['tag', 'className', 'boxProps']),

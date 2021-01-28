@@ -9,7 +9,7 @@ import {
   NETWORKS_FORM_ROUTE,
 } from '../../../helpers/constants/routes'
 import ColorIndicator from '../../../components/ui/color-indicator'
-import { COLORS } from '../../../helpers/constants/design-system'
+import { COLORS, SIZES } from '../../../helpers/constants/design-system'
 import NetworkForm from './network-form'
 
 export default class NetworksTab extends PureComponent {
@@ -113,7 +113,7 @@ export default class NetworksTab extends PureComponent {
         <ColorIndicator
           color={labelKey}
           type={ColorIndicator.TYPES.FILLED}
-          size={ColorIndicator.SIZES.LARGE}
+          size={SIZES.LG}
         />
         <div
           className={classnames('networks-tab__networks-list-name', {
@@ -159,7 +159,7 @@ export default class NetworksTab extends PureComponent {
               type={ColorIndicator.TYPES.FILLED}
               color={COLORS.WHITE}
               borderColor={COLORS.UI4}
-              size={ColorIndicator.SIZES.LARGE}
+              size={SIZES.LG}
             />
             <div className="networks-tab__networks-list-name networks-tab__networks-list-name--selected">
               {this.context.t('newNetwork')}
