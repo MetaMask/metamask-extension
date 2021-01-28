@@ -37,6 +37,7 @@ export default class MenuDroppoComponent extends Component {
     const container = findDOMNode(this)
 
     if (
+      this.props.isOpen &&
       target !== container &&
       !isDescendant(this.container, event.target) &&
       this.props.onClickOutside

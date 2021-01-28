@@ -255,6 +255,7 @@ class NetworkDropdown extends Component {
           )
 
           if (notToggleElementIndex === -1) {
+            event.stopPropagation()
             this.props.hideNetworkDropdown()
           }
         }}
