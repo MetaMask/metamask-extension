@@ -1108,7 +1108,7 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@cfxjs/abi@>=0.0.1":
+"@cfxjs/abi@>=0.0.1", "@cfxjs/abi@^0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@cfxjs/abi/-/abi-0.0.1.tgz#46cc1a61bf4c060e3f21bbb0c0a549062b7d5609"
   integrity sha512-sKOIrPTIOwzALy7Fi5NBTHqITvJwxGQF7skojtf7/fdagwPlQGoWqaDAF7lxbKXj5I6uKU8AXZpQ2Qo5DRjnjg==

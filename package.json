@@ -69,7 +69,10 @@
     "./node-modules/js-conflux-sdk/src/util/jsbi": "jsbi"
   },
   "lint-staged": {
-    "*.{js,json}": ["prettier-eslint --write", "eslint --fix"]
+    "*.{js,json}": [
+      "prettier-eslint --write",
+      "eslint --fix"
+    ]
   },
   "prettier": {
     "semi": false,
@@ -89,6 +92,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.5.5",
+    "@cfxjs/abi": "^0.0.1",
     "@download/blockies": "^1.0.3",
     "@material-ui/core": "1.0.0",
     "@metamask/eth-ledger-bridge-keyring": "^0.2.6",

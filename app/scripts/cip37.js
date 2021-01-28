@@ -1,15 +1,5 @@
-const { encode, decode } = require('conflux-address-js')
-const { stripHexPrefix, bufferToHex } = require('cfx-util')
+const { decode } = require('conflux-address-js')
 const { format } = require('js-conflux-sdk/src/index')
-
-function hexStrToByte(hex) {
-  const bytes = new Uint8Array(hex.length / 2)
-  for (let c = 0; c < hex.length; c += 2) {
-    bytes[c / 2] = parseInt(hex.substr(c, 2), 16)
-  }
-
-  return bytes
-}
 
 function isHexString(hex) {
   return typeof hex === 'string' && /^(-)?0x[0-9a-f]*$/i.test(hex)
