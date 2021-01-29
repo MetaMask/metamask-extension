@@ -809,6 +809,9 @@
     "message": "必须选择导入一个文件。",
     "description": "User is important an account and needs to add a file to continue"
   },
+  "negativeETH": {
+    "message": "输入的数量需要大于 0"
+  },
   "networkName": {
     "message": "网络名称"
   },
