@@ -55,7 +55,7 @@ Chip.propTypes = {
   label: PropTypes.string,
   children: PropTypes.node,
   labelProps: PropTypes.shape({
-    ...omit(Typography.propTypes, ['className']),
+    ...omit(Typography.propTypes, ['children', 'className']),
   }),
   leftIcon: PropTypes.node,
   rightIcon: PropTypes.node,
