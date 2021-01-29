@@ -305,16 +305,16 @@ export function addressSlicer(address = '') {
   return `${address.slice(0, 6)}...${address.slice(-4)}`
 }
 
-export function base32AddressSlicer(address = '') {
+export function base32AddressSlicer(address = '', preserv = 8) {
   if (!address.includes(':')) {
     return addressSlicer(address)
   }
   const [prefix, ...rest] = address.split(':')
 
   if (rest.length === 2) {
-    return `${prefix}:${rest[0]}:${rest[1].slice(0, 8)}...`
+    return `${prefix}:${rest[0]}:${rest[1].slice(0, preserv)}...`
   } else {
-    return `${prefix}:${rest[0].slice(0, 8)}...`
+    return `${prefix}:${rest[0].slice(0, preserv)}...`
   }
 }
 

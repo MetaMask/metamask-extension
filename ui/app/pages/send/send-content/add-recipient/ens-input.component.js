@@ -248,7 +248,9 @@ export default class EnsInput extends Component {
             </div>
             {name && (
               <div className="ens-input__selected-input__subtitle">
-                {inputIsBase32 ? selectedBase32Address : selectedAddress}
+                {inputIsBase32
+                  ? base32AddressSlicer(selectedBase32Address, 38)
+                  : selectedAddress}
               </div>
             )}
           </div>
