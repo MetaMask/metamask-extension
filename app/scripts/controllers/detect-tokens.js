@@ -20,6 +20,13 @@ const ERC20_ABI = [
 ]
 import SINGLE_CALL_BALANCES_ABI from './cfx-single-call-balance-checker-abi'
 import { SINGLE_CALL_BALANCES_ADDRESS } from './network/contract-addresses.js'
+import {
+  hexToBase32,
+  base32ToHex,
+  isLikeBase32Address,
+  isValidHexAddress,
+  isValidBase32Address,
+} from '../cip37'
 
 const CONFLUX_SCAN_CONTRACT_MANAGER_LIST_API = '/v1/token'
 
@@ -85,10 +92,26 @@ class DetectTokensController {
     )
 
     const contractMap = {}
+    const network = parseInt(this.network, 10)
     validTokens.forEach(token => {
-      const { address, name, icon, symbol, decimals, isERC721 } = token
+      let { address } = token
+      const { name, icon, symbol, decimals, isERC721 } = token
+      let base32Address
+      if (
+        isLikeBase32Address(address) &&
+        isValidBase32Address(address, network, 'contract')
+      ) {
+        base32Address = address
+        address = base32ToHex(base32Address)
+      } else if (isValidHexAddress(address)) {
+        base32Address = hexToBase32(address, network)
+      } else {
+        return
+      }
+
       const checkSumedAddress = toChecksumAddress(address)
       contractMap[checkSumedAddress] = {
+        base32Address,
         address: checkSumedAddress,
         name: name,
         symbol,
