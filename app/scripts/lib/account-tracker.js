@@ -11,7 +11,7 @@ import EthQuery from '../eth-query'
 import ObservableStore from 'obs-store'
 import log from 'loglevel'
 import pify from 'pify'
-import { Conflux } from 'js-conflux-sdk/src/index'
+import Conflux from 'js-conflux-sdk/src/Conflux'
 import SINGLE_CALL_BALANCES_ABI from '../controllers/cfx-single-call-balance-checker-abi.js'
 
 import { bnToHex } from './util'

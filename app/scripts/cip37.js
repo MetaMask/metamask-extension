@@ -1,5 +1,5 @@
 const { decode } = require('conflux-address-js')
-const { format } = require('js-conflux-sdk/src/index')
+const format = require('js-conflux-sdk/src/util/format')
 
 function isHexString(hex) {
   return typeof hex === 'string' && /^(-)?0x[0-9a-f]*$/i.test(hex)

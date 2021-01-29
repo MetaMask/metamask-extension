@@ -12,7 +12,7 @@ export default class BasicTabContent extends Component {
     gasPriceButtonGroupProps: PropTypes.object,
   }
 
-  render () {
+  render() {
     const { t } = this.context
     const { gasPriceButtonGroupProps } = this.props
 
