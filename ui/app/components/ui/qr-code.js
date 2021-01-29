@@ -72,7 +72,10 @@ class QrCodeView extends React.Component {
         </div>
         {!isMainnet && (
           <div className="address-wrapper flex-row flex-center">
-            <NetworkTag wrapperClass="mainnet" name="Mainnet" />
+            <NetworkTag
+              wrapperClass="mainnet"
+              name={this.context.t('mainnet')}
+            />
             <ReadOnlyInput
               wrapperClass="ellip-address-wrapper"
               inputClass="qr-ellip-address"
@@ -82,7 +85,10 @@ class QrCodeView extends React.Component {
         )}
         {!isTestnet && (
           <div className="address-wrapper flex-row flex-center">
-            <NetworkTag wrapperClass="testnet" name="Testnet" />
+            <NetworkTag
+              wrapperClass="testnet"
+              name={this.context.t('testnet')}
+            />
             <ReadOnlyInput
               wrapperClass="ellip-address-wrapper"
               inputClass="qr-ellip-address"
