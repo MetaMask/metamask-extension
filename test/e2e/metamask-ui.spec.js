@@ -1798,6 +1798,11 @@ describe('MetaMask', function () {
         By.xpath(`//span[contains(text(), 'http://127.0.0.1:8545/')]`),
       )
 
+      // click Mainnet to dismiss network dropdown
+      await driver.clickElement(
+        By.xpath(`//span[contains(text(), 'Ethereum Mainnet')]`),
+      )
+
       assert.equal(customRpcs.length, 2)
     })
 
