@@ -15,7 +15,7 @@
     "message": "$1 可以访问并使用此最大数额"
   },
   "accessingYourCamera": {
-    "message": "正在访问相机..."
+    "message": "正在获取您的相机……"
   },
   "account": {
     "message": "账户"
@@ -30,7 +30,7 @@
     "message": "账户选项"
   },
   "accountSelectionRequired": {
-    "message": "需要选择一个账户 ！"
+    "message": "您需要选择一个账户 ！"
   },
   "active": {
     "message": "当前"
@@ -93,13 +93,13 @@
     "message": "选择了未连接的账户时浏览网站"
   },
   "alertSettingsUnconnectedAccountDescription": {
-    "message": "当你在浏览已连接的 Web3 网站，但当前选择的账户没有连接时，该提醒会在弹出的窗口中显示。"
+    "message": "当您在浏览已连接的 Web3 网站，但当前选择的账户没有连接时，该提醒会在弹出的窗口中显示。"
   },
   "alertSettingsWeb3ShimUsage": {
     "message": "当网站尝试使用已经删除的 window.web3 API"
   },
   "alertSettingsWeb3ShimUsageDescription": {
-    "message": "当你在浏览的网站尝试使用已经删除的 window.web3 API 时，该提醒会在弹出的窗口中显示。"
+    "message": "当您在浏览的网站尝试使用已经删除的 window.web3 API 时，该提醒会在弹出的窗口中显示。"
   },
   "alerts": {
     "message": "提醒"
@@ -111,7 +111,7 @@
     "message": "允许这个外部扩展到："
   },
   "allowOriginSpendToken": {
-    "message": "允许 $1 使用你的 $2?"
+    "message": "允许 $1 使用您的 $2?"
   },
   "allowThisSiteTo": {
     "message": "允许本网站："
@@ -156,10 +156,10 @@
     "message": "资产"
   },
   "attemptToCancel": {
-    "message": "尝试取消？"
+    "message": "想要取消吗？"
   },
   "attemptToCancelDescription": {
-    "message": "确认提交该操作无法保证能够成功取消你的原始交易。如取消成功，你将被收取上述交易费。"
+    "message": "确认提交该操作无法保证能够成功取消您的原始交易。如取消成功，您将被收取上述交易费。"
   },
   "attemptingConnect": {
     "message": "正在尝试连接到区块链。"
@@ -168,7 +168,7 @@
     "message": "来源"
   },
   "authorizedPermissions": {
-    "message": "你已授权以下权限"
+    "message": "您已授权以下权限"
   },
   "autoLockTimeLimit": {
     "message": "自动锁定定时（分钟）"
@@ -189,7 +189,7 @@
     "message": "如果不慎丢失个人设备，忘记密码，或者需要重新安装 MetaMask，亦或是需在另一台设备上打开钱包，请使用该保密码恢复个人钱包数据。"
   },
   "backupApprovalNotice": {
-    "message": "请备份你的账户助记词，保证你的钱包和资金安全。"
+    "message": "请备份您的账户助记词，保证您的钱包和资金安全。"
   },
   "backupNow": {
     "message": "立即备份"
@@ -213,7 +213,7 @@
     "message": "使用 Blockies Identicon 图标头像"
   },
   "browserNotSupported": {
-    "message": "你的浏览器不支持该功能…"
+    "message": "您的浏览器不支持该功能……"
   },
   "builtInCalifornia": {
     "message": "MetaMask在加利福尼亚设计和制造。"
@@ -225,13 +225,13 @@
     "message": "使用 Wyre 购买 ETH"
   },
   "buyWithWyreDescription": {
-    "message": "你可以通过 Wyre 使用信用卡将 ETH 存入你的 MetaMask 账户。"
+    "message": "您可以通过 Wyre 使用信用卡将 ETH 存入您的 MetaMask 账户。"
   },
   "bytes": {
     "message": "字节"
   },
   "canToggleInSettings": {
-    "message": "你可以在 设置 -> 提醒 中重新启用该提醒通知。"
+    "message": "您可以在 设置 -> 提醒 中重新启用该提醒通知。"
   },
   "cancel": {
     "message": "取消"
@@ -246,7 +246,7 @@
     "message": "链 ID"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "你需要在谷歌浏览器（Google Chrome）上使用 MetaMask 才能连接到你的硬件钱包。"
+    "message": "您需要在谷歌浏览器（Google Chrome）上使用 MetaMask 才能连接到您的硬件钱包。"
   },
   "clickToRevealSeed": {
     "message": "点击此处显示密语"
@@ -261,7 +261,7 @@
     "message": "确认密码"
   },
   "confirmSecretBackupPhrase": {
-    "message": "请确认你的账户助记词"
+    "message": "请确认您的账户助记词"
   },
   "confirmed": {
     "message": "确认"
@@ -285,7 +285,7 @@
     "message": "连接到 $1"
   },
   "connectToAll": {
-    "message": "连接到你的全部$1"
+    "message": "连接到您的全部$1"
   },
   "connectToAllAccounts": {
     "message": "账户"
@@ -300,10 +300,10 @@
     "message": "使用 MetaMask 连接"
   },
   "connectedAccountsDescriptionPlural": {
-    "message": "你有 $1 个账户连接到了该网站。"
+    "message": "您有 $1 个账户连接到了该网站。"
   },
   "connectedAccountsDescriptionSingular": {
-    "message": "你有 1 个账户连接到了该网站。"
+    "message": "您有 1 个账户连接到了该网站。"
   },
   "connectedAccountsEmptyDescription": {
     "message": "MetaMask 没有连接这个网站。要连接到 web3 网站，请在他们的网站上找到连接按钮。"
@@ -312,7 +312,7 @@
     "message": "已连接的网站"
   },
   "connectedSitesDescription": {
-    "message": "$1 已连接到这些网站。他们可以查看你的账户地址。"
+    "message": "$1 已连接到这些网站。他们可以查看您的账户地址。"
   },
   "connectedSitesEmptyDescription": {
     "message": "$1 还没连接任何网站。"
@@ -345,7 +345,7 @@
     "message": "联系人"
   },
   "contactsSettingsDescription": {
-    "message": "添加、编辑、删除和管理你的联系人。"
+    "message": "添加、编辑、删除和管理您的联系人。"
   },
   "continueToWyre": {
     "message": "继续前往 Wyre"
@@ -366,7 +366,7 @@
     "message": "复制地址到剪贴板"
   },
   "copyPrivateKey": {
-    "message": "这是你的私钥（点击复制）"
+    "message": "这是您的私钥（点击复制）"
   },
   "copyToClipboard": {
     "message": "复制到剪贴板"
@@ -390,7 +390,7 @@
     "message": "货币转换"
   },
   "currentAccountNotConnected": {
-    "message": "你的当前账户没有连接"
+    "message": "您的当前账户没有连接"
   },
   "currentExtension": {
     "message": "当前扩展页"
@@ -414,7 +414,7 @@
     "message": "自定义代币"
   },
   "dataBackupFoundInfo": {
-    "message": "你的部分账户数据已在之前安装的 MetaMask 时备份。其中可能包括你的设置、联系人和代币。你现在想恢复这些数据吗？"
+    "message": "您的部分账户数据已在之前安装的 MetaMask 时备份。其中可能包括您的设置、联系人和代币。您现在想恢复这些数据吗？"
   },
   "decimal": {
     "message": "小数精度"
@@ -432,7 +432,7 @@
     "message": "无法解密此消息，错误：$1"
   },
   "decryptMessageNotice": {
-    "message": "$1 希望阅读此信息来完成你的操作。"
+    "message": "$1 希望阅读此信息来完成您的操作。"
   },
   "decryptMetamask": {
     "message": "解密信息"
@@ -465,7 +465,7 @@
     "message": "直接存入 Ether"
   },
   "directDepositEtherExplainer": {
-    "message": "如果你已经有了一些 Ether，最快捷的方法就是直接向新钱包存入 Ether。"
+    "message": "如果您已经有了一些 Ether，最快捷的方法就是直接向新钱包存入 Ether。"
   },
   "disconnect": {
     "message": "断开"
@@ -474,7 +474,7 @@
     "message": "断开所有账户"
   },
   "disconnectAllAccountsConfirmationDescription": {
-    "message": "你确定要断开连接吗？你可能会失去网站功能。"
+    "message": "您确定要断开连接吗？您可能会失去网站功能。"
   },
   "disconnectPrompt": {
     "message": "断开 $1"
@@ -516,13 +516,13 @@
     "message": "编辑权限"
   },
   "encryptionPublicKeyNotice": {
-    "message": "$1 希望得到你的加密公钥。同意后该网站将可以想你发送加密信息。"
+    "message": "$1 希望得到您的加密公钥。同意后该网站将可以想您发送加密信息。"
   },
   "encryptionPublicKeyRequest": {
     "message": "申请加密公钥"
   },
   "endOfFlowMessage1": {
-    "message": "你通过了测试—— 保管好你的账户助记词，这是你的责任!"
+    "message": "您通过了测试—— 保管好您的账户助记词，这是您的责任!"
   },
   "endOfFlowMessage10": {
     "message": "全部完成"
@@ -537,16 +537,16 @@
     "message": "不向任何任何人分享该账户助记词。"
   },
   "endOfFlowMessage5": {
-    "message": "谨防网络钓鱼！MetaMask 绝不会主动要求你提供个人账户助记词。"
+    "message": "谨防网络钓鱼！MetaMask 绝不会主动要求您提供个人账户助记词。"
   },
   "endOfFlowMessage6": {
-    "message": "如果你需要再次备份账户助记词，请通过设置 -> 安全选项完成该操作。"
+    "message": "如果您需要再次备份账户助记词，请通过设置 -> 安全选项完成该操作。"
   },
   "endOfFlowMessage7": {
-    "message": "如果你仍存有疑问或发现任何可疑的地方，请发送电子邮件至 support@metamask.io 进行咨询。"
+    "message": "如果您仍存有疑问或发现任何可疑的地方，请发送电子邮件至 support@metamask.io 进行咨询。"
   },
   "endOfFlowMessage8": {
-    "message": "MetaMask 无法恢复你的账户助记词。"
+    "message": "MetaMask 无法恢复您的账户助记词。"
   },
   "endOfFlowMessage9": {
     "message": "了解详情。"
@@ -600,7 +600,7 @@
     "message": "预计处理时间"
   },
   "eth_accounts": {
-    "message": "查看你允许的账户的地址（必填）"
+    "message": "查看您允许的账户的地址（必填）"
   },
   "ethereumPublicAddress": {
     "message": "以太坊 Ethereum 公开地址"
@@ -627,7 +627,7 @@
     "message": "失败"
   },
   "failedToFetchChainId": {
-    "message": "无法获取链 IC，你的 RPC URL 地址是正确的么？"
+    "message": "无法获取链 IC，您的 RPC URL 地址是正确的么？"
   },
   "failureMessage": {
     "message": "出了点问题，我们无法完成这个操作。"
@@ -669,7 +669,7 @@
     "message": "燃料限制"
   },
   "gasLimitInfoTooltipContent": {
-    "message": "燃料限制是指你愿意花费的最燃料量单位。"
+    "message": "燃料限制是指您愿意花费的最燃料量单位。"
   },
   "gasLimitTooLow": {
     "message": "燃料限制至少要 21000"
@@ -684,7 +684,7 @@
     "message": "燃料价格极低"
   },
   "gasPriceInfoTooltipContent": {
-    "message": "燃料价格规定了你愿意为每单位燃料支付的 Ether 数量。"
+    "message": "燃料价格规定了您愿意为每单位燃料支付的 Ether 数量。"
   },
   "gasUsed": {
     "message": "燃料使用"
@@ -717,7 +717,7 @@
     "message": "Goerli 测试网络"
   },
   "happyToSeeYou": {
-    "message": "我们很高兴见到你。"
+    "message": "我们很高兴见到您。"
   },
   "hardware": {
     "message": "硬件"
@@ -771,7 +771,7 @@
     "message": "导入钱包"
   },
   "importYourExisting": {
-    "message": "使用 12 个单词的账户助记词导入你现有的钱包账户。"
+    "message": "使用 12 个单词的账户助记词导入您现有的钱包账户。"
   },
   "imported": {
     "message": "已导入"
@@ -780,7 +780,7 @@
     "message": "信息 & 帮助"
   },
   "initialTransactionConfirmed": {
-    "message": "你的初始交易已通过网络确认。请点击“确定”返回。"
+    "message": "您的初始交易已通过网络确认。请点击“确定”返回。"
   },
   "insufficientBalance": {
     "message": "余额不足。"
@@ -810,10 +810,10 @@
     "message": "需要重新输入自定义网络'$1'的链 ID。"
   },
   "invalidCustomNetworkAlertContent2": {
-    "message": "为了保护你免受恶意或有问题的网络提供商的侵害，现在所有的自定义网络都需要提供链 ID。"
+    "message": "为了保护您免受恶意或有问题的网络提供商的侵害，现在所有的自定义网络都需要提供链 ID。"
   },
   "invalidCustomNetworkAlertContent3": {
-    "message": "进入设置 > 网络并输入链 ID。你可以通过 $1 查找常用的链 ID。"
+    "message": "进入设置 > 网络并输入链 ID。您可以通过 $1 查找常用的链 ID。"
   },
   "invalidCustomNetworkAlertTitle": {
     "message": "无效的自定义网络"
@@ -852,7 +852,7 @@
     "message": "已知接收方地址。"
   },
   "knownTokenWarning": {
-    "message": "此操作将编辑已经在你的钱包中列出的代币，有肯能被用来欺骗你。只有确定要更改这些代币的内容时，才通过此操作。"
+    "message": "此操作将编辑已经在您的钱包中列出的代币，有肯能被用来欺骗您。只有确定要更改这些代币的内容时，才通过此操作。"
   },
   "kovan": {
     "message": "Kovan 测试网络"
@@ -864,13 +864,13 @@
     "message": "查看更多"
   },
   "ledgerAccountRestriction": {
-    "message": "在添加新的账户之前，需要使用你的最后一个账户。"
+    "message": "在添加新的账户之前，需要使用您的最后一个账户。"
   },
   "letsGoSetUp": {
     "message": "第一次，立即开始设置！"
   },
   "likeToAddTokens": {
-    "message": "你想添加这些代币吗？"
+    "message": "您想添加这些代币吗？"
   },
   "links": {
     "message": "链接"
@@ -879,10 +879,10 @@
     "message": "加载更多"
   },
   "loading": {
-    "message": "加载中..."
+    "message": "加载中……"
   },
   "loadingTokens": {
-    "message": "加载代币中..."
+    "message": "加载代币中……"
   },
   "localhost": {
     "message": "Localhost 8545"
@@ -909,16 +909,16 @@
     "message": "消息"
   },
   "metaMaskConnectStatusParagraphOne": {
-    "message": "现在你可在 MetaMask 中对账户连接进行更多的控制。"
+    "message": "现在您可在 MetaMask 中对账户连接进行更多的控制。"
   },
   "metaMaskConnectStatusParagraphThree": {
     "message": "点击管理连接的账户。"
   },
   "metaMaskConnectStatusParagraphTwo": {
-    "message": "连接状态按钮显示所访问的网站是否与你当前选择的账户连接。"
+    "message": "连接状态按钮显示所访问的网站是否与您当前选择的账户连接。"
   },
   "metamaskDescription": {
-    "message": "将你与 Ethereum 和去中心化网络连接起来。"
+    "message": "将您与 Ethereum 和去中心化网络连接起来。"
   },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swaps 正在进行维护。请稍后访问。"
@@ -927,22 +927,22 @@
     "message": "MetaMask 版本"
   },
   "metametricsCommitmentsAllowOptOut": {
-    "message": "始终允许你通过设置选择退出"
+    "message": "始终允许您通过设置选择退出"
   },
   "metametricsCommitmentsBoldNever": {
     "message": "从不"
   },
   "metametricsCommitmentsIntro": {
-    "message": "MetaMask..."
+    "message": "MetaMask……"
   },
   "metametricsCommitmentsNeverCollectIP": {
-    "message": "$1收集你的完整IP地址"
+    "message": "$1收集您的完整IP地址"
   },
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$1收集密钥、地址、交易记录、余额、哈希或任何个人信息"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "$1为利益而出售你的数据，永远不会！"
+    "message": "$1为利益而出售您的数据，永远不会！"
   },
   "metametricsCommitmentsSendAnonymizedEvents": {
     "message": "发送匿名的点击和页面浏览事件信息"
@@ -969,7 +969,7 @@
     "message": "所有创建的 MetaMask 账户将自动添加到此部分。"
   },
   "needEtherInWallet": {
-    "message": "使用 MetaMask 与分布式应用交互，需要你的钱包里需要有 Ether。"
+    "message": "使用 MetaMask 与分布式应用交互，需要您的钱包里需要有 Ether。"
   },
   "needImportFile": {
     "message": "必须选择一个文件来导入。"
@@ -981,7 +981,7 @@
     "message": "网络名称"
   },
   "networkSettingsChainIdDescription": {
-    "message": "链 ID 用于签署交易。它必须与网络返回的链 ID 相匹配。你可以输入十进制或'0x'前缀的十六进制数字，但我们将以十进制显示。"
+    "message": "链 ID 用于签署交易。它必须与网络返回的链 ID 相匹配。您可以输入十进制或'0x'前缀的十六进制数字，但我们将以十进制显示。"
   },
   "networkSettingsDescription": {
     "message": "添加和编辑自定义 RPC 网络"
@@ -1047,7 +1047,7 @@
     "message": "没有交易"
   },
   "noWebcamFound": {
-    "message": "未找到你的电脑摄像头。请重试。"
+    "message": "未找到您的电脑摄像头。请重试。"
   },
   "noWebcamFoundTitle": {
     "message": "未找到摄像头"
@@ -1062,7 +1062,7 @@
     "message": "自定义 Nonce"
   },
   "notCurrentAccount": {
-    "message": "这是正确的账户吗？这与你钱包中当前选择的账户不同。"
+    "message": "这是正确的账户吗？这与您钱包中当前选择的账户不同。"
   },
   "notEnoughGas": {
     "message": "燃料不足"
@@ -1086,13 +1086,13 @@
     "message": "“$1”会关闭此标签，直接回到 $2"
   },
   "onlyAddTrustedNetworks": {
-    "message": "恶意的 Ethereum 以太坊网络提供商可以伪造区块链状态，并记录你的网络活动。只添加你信任的自定义网络。"
+    "message": "恶意的 Ethereum 以太坊网络提供商可以伪造区块链状态，并记录您的网络活动。只添加您信任的自定义网络。"
   },
   "onlyAvailableOnMainnet": {
     "message": "仅在主网（mainnet）上提供"
   },
   "onlyConnectTrust": {
-    "message": "只连接你信任的网站。"
+    "message": "只连接您信任的网站。"
   },
   "optionalBlockExplorerUrl": {
     "message": "区块浏览器 URL（选填）"
@@ -1125,16 +1125,16 @@
     "message": "密码不匹配"
   },
   "pastePrivateKey": {
-    "message": "请粘贴你的私钥:"
+    "message": "请粘贴您的私钥:"
   },
   "pending": {
     "message": "待处理"
   },
   "permissionCheckedIconDescription": {
-    "message": "你已同意该权限"
+    "message": "您已同意该权限"
   },
   "permissionUncheckedIconDescription": {
-    "message": "你还未同意该权限"
+    "message": "您还未同意该权限"
   },
   "permissions": {
     "message": "权限"
@@ -1161,7 +1161,7 @@
     "message": "私钥"
   },
   "privateKeyWarning": {
-    "message": "注意：永远不要公开这个私钥。任何拥有你的私钥的人都可以窃取你帐户中的任何资产。"
+    "message": "注意：永远不要公开这个私钥。任何拥有您的私钥的人都可以窃取您帐户中的任何资产。"
   },
   "privateNetwork": {
     "message": "私有网络"
@@ -1170,13 +1170,13 @@
     "message": "拟议的审批上限"
   },
   "protectYourKeys": {
-    "message": "妥善保管你的密钥！"
+    "message": "妥善保管您的密钥！"
   },
   "protectYourKeysMessage1": {
-    "message": "请注意个人账户助记词的安全。报告显示有多个网站企图伪造 MetaMask。MetaMask 绝不会要求你提供个人账户助记词！"
+    "message": "请注意个人账户助记词的安全。报告显示有多个网站企图伪造 MetaMask。MetaMask 绝不会要求您提供个人账户助记词！"
   },
   "protectYourKeysMessage2": {
-    "message": "请妥善保管你的账户助记词。如果你发现任何可疑的地方，或无法确认网络安全性，请发送电子邮件至 support@metamask.io 进行咨询"
+    "message": "请妥善保管您的账户助记词。如果您发现任何可疑的地方，或无法确认网络安全性，请发送电子邮件至 support@metamask.io 进行咨询"
   },
   "provide": {
     "message": "提供"
@@ -1188,7 +1188,7 @@
     "message": "队列中"
   },
   "readdToken": {
-    "message": "之后你还可以通过帐户选项菜单中的“添加代币”来添加此代币。"
+    "message": "之后您还可以通过帐户选项菜单中的“添加代币”来添加此代币。"
   },
   "readyToConnect": {
     "message": "是否准备连接？"
@@ -1212,7 +1212,7 @@
     "message": "拒绝全部"
   },
   "rejectTxsDescription": {
-    "message": "你将批量拒绝 $1 笔交易。"
+    "message": "您将批量拒绝 $1 笔交易。"
   },
   "rejectTxsN": {
     "message": "拒绝 $1 笔交易"
@@ -1230,7 +1230,7 @@
     "message": "删除账户"
   },
   "removeAccountDescription": {
-    "message": "该账户已从你的钱包中删除。请在继续后续操作前，确认你是否已拥有该导入账户的原始账户助记词或账户密钥。你可以通过账户下拉菜单再次导入或创建账户。"
+    "message": "该账户已从您的钱包中删除。请在继续后续操作前，确认您是否已拥有该导入账户的原始账户助记词或账户密钥。您可以通过账户下拉菜单再次导入或创建账户。"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "待确认的请求"
@@ -1245,37 +1245,37 @@
     "message": "重设账户"
   },
   "resetAccountDescription": {
-    "message": "重置账户将清除你的交易历史记录。这不会改变你账户中的余额，也不会要求你重新输入账户助记词。"
+    "message": "重置账户将清除您的交易历史记录。这不会改变您账户中的余额，也不会要求您重新输入账户助记词。"
   },
   "restore": {
     "message": "恢复"
   },
   "restoreAccountWithSeed": {
-    "message": "使用账户助记词恢复你的账户"
+    "message": "使用账户助记词恢复您的账户"
   },
   "restoreFromSeed": {
     "message": "从助记词还原"
   },
   "restoreWalletPreferences": {
-    "message": "已找到于 $1 的数据备份。你想恢复你的钱包设置吗？"
+    "message": "已找到于 $1 的数据备份。您想恢复您的钱包设置吗？"
   },
   "retryTransaction": {
     "message": "重试交易"
   },
   "reusedTokenNameWarning": {
-    "message": "此处的一个代币使用了与你关注的另一个代币的相同符号，这可能会让人感到困惑或欺骗。"
+    "message": "此处的一个代币使用了与您关注的另一个代币的相同符号，这可能会让人感到困惑或欺骗。"
   },
   "revealSeedWords": {
     "message": "显示账户助记词"
   },
   "revealSeedWordsDescription": {
-    "message": "如果你更换浏览器或计算机，则需要使用此账户助记词访问你的帐户。请将它们保存在安全秘密的地方。"
+    "message": "如果您更换浏览器或计算机，则需要使用此账户助记词访问您的帐户。请将它们保存在安全秘密的地方。"
   },
   "revealSeedWordsTitle": {
     "message": "账户助记词"
   },
   "revealSeedWordsWarning": {
-    "message": "该账户助记词可以用来窃取你的所有帐户"
+    "message": "该账户助记词可以用来窃取您的所有帐户"
   },
   "revealSeedWordsWarningTitle": {
     "message": "不要对任何人展示此账户助记词！"
@@ -1320,13 +1320,13 @@
     "message": "账户助记词"
   },
   "secretBackupPhraseDescription": {
-    "message": "你的账户助记词可以帮助你轻松备份和恢复个人账户。"
+    "message": "您的账户助记词可以帮助您轻松备份和恢复个人账户。"
   },
   "secretBackupPhraseWarning": {
-    "message": "警告：切勿向他人透露你的账户助记词。任何人一旦持有该账户助记词，即可控制你的 Ether。"
+    "message": "警告：切勿向他人透露您的账户助记词。任何人一旦持有该账户助记词，即可控制您的 Ether。"
   },
   "secretPhrase": {
-    "message": "输入 12 个单词组成的账户助记词恢复你的账户。"
+    "message": "输入 12 个单词组成的账户助记词恢复您的账户。"
   },
   "securityAndPrivacy": {
     "message": "安全与隐私"
@@ -1371,13 +1371,13 @@
     "message": "选择语言区域"
   },
   "selectPathHelp": {
-    "message": "如果下列账户中没有你当前所持有的 Ledger 账户，请将路径切换至“Legacy (MEW / MyCrypto)”"
+    "message": "如果下列账户中没有您当前所持有的 Ledger 账户，请将路径切换至“Legacy (MEW / MyCrypto)”"
   },
   "selectType": {
     "message": "选择类型"
   },
   "selectingAllWillAllow": {
-    "message": "选择全部将允许本网站查看你当前的所有账户。确保你信任这个网站。"
+    "message": "选择全部将允许本网站查看您当前的所有账户。确保您信任这个网站。"
   },
   "send": {
     "message": "发送"
@@ -1443,7 +1443,7 @@
     "message": "签名"
   },
   "signNotice": {
-    "message": "签署此消息可能会产生危险的副作用。 \n只从你完全信任的网站上签名。 未来的版本将移除这种危险的方法。"
+    "message": "签署此消息可能会产生危险的副作用。 \n只从您完全信任的网站上签名。 未来的版本将移除这种危险的方法。"
   },
   "signatureRequest": {
     "message": "请求签名"
@@ -1497,7 +1497,7 @@
     "message": "状态日志"
   },
   "stateLogsDescription": {
-    "message": "状态日志包含你的账户地址和已发送的交易。"
+    "message": "状态日志包含您的账户地址和已发送的交易。"
   },
   "statusConnected": {
     "message": "已连接"
@@ -1509,19 +1509,19 @@
     "message": "1. 连接硬件钱包"
   },
   "step1HardwareWalletMsg": {
-    "message": "将你的硬件钱包直接连接到电脑上。"
+    "message": "将您的硬件钱包直接连接到电脑上。"
   },
   "step2HardwareWallet": {
     "message": "2. 选择账户"
   },
   "step2HardwareWalletMsg": {
-    "message": "请选择你想查看的账户。每次只能选择一个账户。"
+    "message": "请选择您想查看的账户。每次只能选择一个账户。"
   },
   "step3HardwareWallet": {
     "message": "3. 开始使用 web3 站点和更多功能！"
   },
   "step3HardwareWalletMsg": {
-    "message": "使用你的硬件钱包，操作与以太坊账户制作相同。登录 dApps，发送 ETH ，购买和保存 ERC20 代币和诸如 CryptoKitties 等不可替代代币。"
+    "message": "使用您的硬件钱包，操作与以太坊账户制作相同。登录 dApps，发送 ETH ，购买和保存 ERC20 代币和诸如 CryptoKitties 等不可替代代币。"
   },
   "storePhrase": {
     "message": "通过如 1Password 等密码管理工具保存该账户助记词。"
@@ -1539,7 +1539,7 @@
     "message": "兑换 Swap"
   },
   "swapAdvancedSlippageInfo": {
-    "message": "如果价格在你下单和确认之间发生变化，这就叫做“滑点”。如果滑点超过你的“最大滑点”设置，你的的兑换将自动取消。"
+    "message": "如果价格在您下单和确认之间发生变化，这就叫做“滑点”。如果滑点超过您的“最大滑点”设置，您的的兑换将自动取消。"
   },
   "swapAggregator": {
     "message": "聚合商"
@@ -1548,16 +1548,16 @@
     "message": "保证数额"
   },
   "swapAmountReceivedInfo": {
-    "message": "这是你将收到的最低数额。你也可能会收到更多，这取决于滑点。"
+    "message": "这是您将收到的最低数额。根据滑点值， 您可能会收到更多。"
   },
   "swapApproval": {
     "message": "批准 $1 的兑换 "
   },
   "swapApproveNeedMoreTokens": {
-    "message": "你还需 $1 $2 来完成这笔兑换"
+    "message": "您还需 $1 $2 来完成这笔兑换"
   },
   "swapBetterQuoteAvailable": {
-    "message": "有一个更好的报价可用"
+    "message": "有一个可用的更优报价"
   },
   "swapBuildQuotePlaceHolderText": {
     "message": "没有匹配的代币符合 $1"
@@ -1575,7 +1575,7 @@
     "message": "修改限制"
   },
   "swapEnableDescription": {
-    "message": "这是必须的，并且允许 MetaMask 兑换你的 $1。"
+    "message": "这是必须的，并且允许 MetaMask 兑换您的 $1。"
   },
   "swapEstimatedNetworkFee": {
     "message": "预计网络手续费"
@@ -1587,31 +1587,31 @@
     "message": "预计网络手续费"
   },
   "swapEstimatedNetworkFeesInfo": {
-    "message": "这是预估的用于完成你的兑换所使用的网络手续费。实际数额可能会根据网络条件而变化。"
+    "message": "这是预估的用于完成您的兑换所使用的网络手续费。实际数额可能会根据网络条件而变化。"
   },
   "swapFailedErrorDescription": {
-    "message": "你的资金是安全的，仍然可以在你的钱包中使用。"
+    "message": "您的资金是安全的，仍然可以在您的钱包中使用。"
   },
   "swapFailedErrorTitle": {
     "message": "兑换失败"
   },
   "swapFetchingQuotesErrorDescription": {
-    "message": "呃...出错了。再试一次，如果错误仍存在，请联系客户支持。"
+    "message": "呃……出错了。再试一次，如果错误仍存在，请联系客户支持。"
   },
   "swapFetchingQuotesErrorTitle": {
     "message": "获取报价出错"
   },
   "swapFetchingTokens": {
-    "message": "获取代币中..."
+    "message": "获取代币中……"
   },
   "swapFinalizing": {
-    "message": "确定中..."
+    "message": "确定中……"
   },
   "swapGetQuotes": {
     "message": "获取报价"
   },
   "swapHighSlippageWarning": {
-    "message": "滑点数量非常大。确保你知道你的操作！"
+    "message": "滑点数量非常大。确保您知道您的操作！"
   },
   "swapIntroLearnMoreHeader": {
     "message": "想了解更多信息？"
@@ -1623,7 +1623,7 @@
     "message": "流动资金来源包括："
   },
   "swapIntroPopupSubTitle": {
-    "message": "现在你可以直接在 MetaMask 钱包中兑换代币。MetaMask Swaps（兑换）结合了多个去中心化交易所聚合商、专业做市商和个人 DEX，确保 MetaMask 用户始终以最低的网络费用获得最佳价格。"
+    "message": "现在您可以直接在 MetaMask 钱包中兑换代币。MetaMask Swaps（兑换）结合了多个去中心化交易所聚合商、专业做市商和个人 DEX，确保 MetaMask 用户始终以最低的网络费用获得最佳价格。"
   },
   "swapIntroPopupTitle": {
     "message": "代币兑换来了！"
@@ -1635,7 +1635,7 @@
     "message": "交易可能失败，最大滑点过低。"
   },
   "swapMaxNetworkFeeInfo": {
-    "message": "“$1”是你最多所话费的数量，当网络不稳定时，这可能是一个大的数额。"
+    "message": "“$1”是您最多所话费的数量，当网络不稳定时，这可能是一个大的数额。"
   },
   "swapMaxNetworkFees": {
     "message": "最大网络手续费"
@@ -1653,16 +1653,16 @@
     "message": "$1 个报价"
   },
   "swapNetworkFeeSummary": {
-    "message": "网络手续费包括处理你的兑换和在以太坊（Ethereum）网络上存储的成本。MetaMask 不从这笔费用中获利。"
+    "message": "网络手续费包括处理您的兑换和在以太坊（Ethereum）网络上存储的成本。MetaMask 不从这笔费用中获利。"
   },
   "swapNewQuoteIn": {
     "message": "$1 后更新报价"
   },
   "swapOnceTransactionHasProcess": {
-    "message": "一旦交易完成，你的 $1 将被添加到你的账户中。"
+    "message": "一旦交易完成，您的 $1 将被添加到您的账户中。"
   },
   "swapPriceDifference": {
-    "message": "你将兑换 $1 $2（~$3）为 $4 $5（~$6）。"
+    "message": "您将兑换 $1 $2（~$3）为 $4 $5（~$6）。"
   },
   "swapPriceDifferenceTitle": {
     "message": "价格差异 ~$1%"
@@ -1671,7 +1671,7 @@
     "message": "市场价格的差异可能受到中介机构收取的费用、市场规模、交易规模或市场效率低下的影响。"
   },
   "swapPriceDifferenceUnavailable": {
-    "message": "市场价格不可用。 请确认你对退回的数额感到满意后再继续。"
+    "message": "市场价格不可用。 请确认您对退回的数额感到满意后再继续。"
   },
   "swapProcessing": {
     "message": "处理中"
@@ -1680,7 +1680,7 @@
     "message": "报价详情"
   },
   "swapQuoteDetailsSlippageInfo": {
-    "message": "如果在你下订单和确认订单之间的价格发生了变化，这就叫做\"滑点\"。如果滑点超过你的\"最大滑点\"设置，你的兑换将自动取消。"
+    "message": "如果在您下订单和确认订单之间的价格发生了变化，这就叫做\"滑点\"。如果滑点超过您的\"最大滑点\"设置，您的兑换将自动取消。"
   },
   "swapQuoteIncludesRate": {
     "message": "报价包含 $1% MetaMask 手续费"
@@ -1758,7 +1758,7 @@
     "message": "这样将允许 $1 用于兑换。"
   },
   "swapTokenAvailable": {
-    "message": "你的 $1 已添加到你的账户。"
+    "message": "您的 $1 已添加到您的账户。"
   },
   "swapTokenToToken": {
     "message": "兑换 $1 到 $2"
@@ -1815,16 +1815,16 @@
     "message": "使用移动设备同步"
   },
   "syncWithMobileBeCareful": {
-    "message": "扫描这个代码时，请确保附近没有其他人在看你的屏幕。"
+    "message": "扫描这个代码时，请确保附近没有其他人在看您的屏幕。"
   },
   "syncWithMobileComplete": {
-    "message": "你的数据已同步成功。尽情体验 MetaMask 应用程序！"
+    "message": "您的数据已同步成功。尽情体验 MetaMask 应用程序！"
   },
   "syncWithMobileDesc": {
-    "message": "你可以使用个人移动设备同步个人账户与信息。打开 MetaMask 移动应用程序，进入“设置”选项，点击“通过浏览器扩展程序同步”"
+    "message": "您可以使用个人移动设备同步个人账户与信息。打开 MetaMask 移动应用程序，进入“设置”选项，点击“通过浏览器扩展程序同步”"
   },
   "syncWithMobileDescNewUsers": {
-    "message": "如果你是首次启用 MetaMask 移动应用程序，请通过个人手机完成如下操作。"
+    "message": "如果您是首次启用 MetaMask 移动应用程序，请通过个人手机完成如下操作。"
   },
   "syncWithMobileScanThisCode": {
     "message": "使用 MetaMask 应用程序扫描代码"
@@ -1836,7 +1836,7 @@
     "message": "使用 3Box 同步数据（实验功能）"
   },
   "syncWithThreeBoxDescription": {
-    "message": "开启后可以用 3Box 备份你的设置。此功能目前是实验功能，使用时风险自负。"
+    "message": "开启后可以用 3Box 备份您的设置。此功能目前是实验功能，使用时风险自负。"
   },
   "syncWithThreeBoxDisabled": {
     "message": "由于初始同步过程中出现错误，3Box 已被禁用。"
@@ -1851,7 +1851,7 @@
     "message": "测试水管"
   },
   "thisWillCreate": {
-    "message": "将为你创建新的钱包账户和账户助记词"
+    "message": "将为您创建新的钱包账户和账户助记词"
   },
   "tips": {
     "message": "小贴士"
@@ -1932,19 +1932,19 @@
     "message": "转自"
   },
   "troubleConnectingToWallet": {
-    "message": "我们在连接你的  $1 遇到问题，尝试检查 $2 并重试。"
+    "message": "我们在连接您的  $1 遇到问题，尝试检查 $2 并重试。"
   },
   "troubleTokenBalances": {
-    "message": "我们无法加载你的代币余额。你可以查看它们"
+    "message": "我们无法加载您的代币余额。您可以查看它们"
   },
   "trustSiteApprovePermission": {
-    "message": "你信任这个网站吗？授权即表示你允许 $1 提取你的 $2，并为你自动进行交易。"
+    "message": "您信任这个网站吗？授权即表示您允许 $1 提取您的 $2，并为您自动进行交易。"
   },
   "tryAgain": {
     "message": "重试"
   },
   "typePassword": {
-    "message": "输入你的 MetaMask 密码"
+    "message": "输入您的 MetaMask 密码"
   },
   "unapproved": {
     "message": "未批准"
@@ -1956,10 +1956,10 @@
     "message": "未知"
   },
   "unknownCameraError": {
-    "message": "尝试获取相机使用权限时报错。请重试…"
+    "message": "尝试获取相机使用权限时报错。请重试……"
   },
   "unknownCameraErrorTitle": {
-    "message": "哎呀！出问题了…"
+    "message": "哎呀！出问题了……"
   },
   "unknownNetwork": {
     "message": "未知的私有网络"
@@ -2052,10 +2052,10 @@
     "message": "正在签名"
   },
   "yourPrivateSeedPhrase": {
-    "message": "你的账户助记词"
+    "message": "您的账户助记词"
   },
   "yourSigRequested": {
-    "message": "正在请求你的签名"
+    "message": "正在请求您的签名"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "加速时无燃料价格"
