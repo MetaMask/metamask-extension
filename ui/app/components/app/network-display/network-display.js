@@ -77,7 +77,7 @@ NetworkDisplay.propTypes = {
   colored: PropTypes.bool,
   indicatorSize: PropTypes.oneOf(Object.values(SIZES)),
   labelProps: PropTypes.shape({
-    ...Typography.propTypes,
+    ...Chip.propTypes.labelProps,
   }),
   outline: PropTypes.bool,
   disabled: PropTypes.bool,
