@@ -1256,9 +1256,6 @@
   "yourPrivateSeedPhrase": {
     "message": "আপনার ব্যক্তিগত সীড ফ্রেজ"
   },
-  "yourSigRequested": {
-    "message": "আপনার স্বাক্ষরের অনুরোধ জানানো হয়েছে"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "স্পীড আপ এ শূণ্য গ্যাসের মূল্য"
   }

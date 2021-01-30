@@ -142,8 +142,9 @@
     display: flex;
     padding: 13px 0 13px 17px;
     position: relative;
+    align-items: center;
 
-    .menu-icon-circle {
+    .color-indicator {
       &:hover {
         cursor: pointer;
       }

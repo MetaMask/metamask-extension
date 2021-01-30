@@ -1256,9 +1256,6 @@
   "yourPrivateSeedPhrase": {
     "message": "ನಿಮ್ಮ ಖಾಸಗಿ ಸೀಡ್ ಫ್ರೇಸ್"
   },
-  "yourSigRequested": {
-    "message": "ನಿಮ್ಮ ಸಹಿಯನ್ನು ವಿನಂತಿಸಲಾಗಿದೆ"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "ವೇಗ ಹೆಚ್ಚಿಸುವುದಕ್ಕೆ ಶೂನ್ಯ ಗ್ಯಾಸ್ ಬೆಲೆ"
   }

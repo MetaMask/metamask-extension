@@ -1247,9 +1247,6 @@
   "yourPrivateSeedPhrase": {
     "message": "개인 시드 구문"
   },
-  "yourSigRequested": {
-    "message": "서명을 요청 중입니다."
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "가속 시 가스 비용 없음"
   }

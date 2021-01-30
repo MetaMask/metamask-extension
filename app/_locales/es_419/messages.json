@@ -1235,9 +1235,6 @@
   "yourPrivateSeedPhrase": {
     "message": "Tu frase de inicialización privada"
   },
-  "yourSigRequested": {
-    "message": "Su firma se está procesando"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "El precio del gas es cero en aceleración"
   }

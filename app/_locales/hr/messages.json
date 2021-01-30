@@ -1246,9 +1246,6 @@
   "yourPrivateSeedPhrase": {
     "message": "Vaša privatna početna rečenica"
   },
-  "yourSigRequested": {
-    "message": "Vaš se potpis zahtijeva"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Nulta cijena goriva kod ubrzavanja"
   }

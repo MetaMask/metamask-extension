@@ -1228,9 +1228,6 @@
   "yourPrivateSeedPhrase": {
     "message": "Din private frøfrase"
   },
-  "yourSigRequested": {
-    "message": "Det bes om signaturen din "
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Null bensinpris for fremskynding"
   }

@@ -1253,9 +1253,6 @@
   "yourPrivateSeedPhrase": {
     "message": "Sinun yksityinen siemenlauseesi"
   },
-  "yourSigRequested": {
-    "message": "Allekirjoitustasi pyydetään"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Polttoaine ei maksa kiihdytyksen yhteydessä"
   }

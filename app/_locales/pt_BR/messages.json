@@ -1238,9 +1238,6 @@
   "yourPrivateSeedPhrase": {
     "message": "Sua frase-semente particular"
   },
-  "yourSigRequested": {
-    "message": "Sua assinatura está sendo solicitada"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Preço de Gas zero na agilização"
   }

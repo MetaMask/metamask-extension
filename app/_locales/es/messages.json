@@ -985,9 +985,6 @@
   "yourPrivateSeedPhrase": {
     "message": "Tu frase semilla privada"
   },
-  "yourSigRequested": {
-    "message": "Tu firma ya fue solicitada"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "No hubo precio de gas al agilizar"
   }

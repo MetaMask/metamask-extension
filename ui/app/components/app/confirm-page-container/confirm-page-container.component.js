@@ -19,7 +19,6 @@ export default class ConfirmPageContainer extends Component {
     hideSubtitle: PropTypes.bool,
     onEdit: PropTypes.func,
     showEdit: PropTypes.bool,
-    subtitle: PropTypes.string,
     subtitleComponent: PropTypes.node,
     title: PropTypes.string,
     titleComponent: PropTypes.node,
@@ -41,9 +40,9 @@ export default class ConfirmPageContainer extends Component {
     identiconAddress: PropTypes.string,
     nonce: PropTypes.string,
     assetImage: PropTypes.string,
-    summaryComponent: PropTypes.node,
     warning: PropTypes.string,
     unapprovedTxCount: PropTypes.number,
+    origin: PropTypes.string.isRequired,
     // Navigation
     totalTx: PropTypes.number,
     positionOfCurrentTx: PropTypes.number,
@@ -79,10 +78,8 @@ export default class ConfirmPageContainer extends Component {
       action,
       title,
       titleComponent,
-      subtitle,
       subtitleComponent,
       hideSubtitle,
-      summaryComponent,
       detailsComponent,
       dataComponent,
       onCancelAll,
@@ -105,6 +102,7 @@ export default class ConfirmPageContainer extends Component {
       requestsWaitingText,
       hideSenderToRecipient,
       showAccountInHeader,
+      origin,
     } = this.props
     const renderAssetImage =
       contentComponent || (!contentComponent && !identiconAddress)
@@ -146,10 +144,8 @@ export default class ConfirmPageContainer extends Component {
             action={action}
             title={title}
             titleComponent={titleComponent}
-            subtitle={subtitle}
             subtitleComponent={subtitleComponent}
             hideSubtitle={hideSubtitle}
-            summaryComponent={summaryComponent}
             detailsComponent={detailsComponent}
             dataComponent={dataComponent}
             errorMessage={errorMessage}
@@ -166,6 +162,7 @@ export default class ConfirmPageContainer extends Component {
             disabled={disabled}
             unapprovedTxCount={unapprovedTxCount}
             rejectNText={this.context.t('rejectTxsN', [unapprovedTxCount])}
+            origin={origin}
           />
         )}
         {contentComponent && (

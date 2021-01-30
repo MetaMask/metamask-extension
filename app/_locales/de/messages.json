@@ -1213,9 +1213,6 @@
   "yourPrivateSeedPhrase": {
     "message": "Ihr privater Seed-Schlüssel"
   },
-  "yourSigRequested": {
-    "message": "Deine Unterschrift wird angefordert"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Keine Gaskosten bei Beschleunigung"
   }

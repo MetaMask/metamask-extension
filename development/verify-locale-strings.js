@@ -10,13 +10,12 @@
 // the English locale against string literals found under `ui/`, and it will check
 // other locales by comparing them to the English locale.
 //
-// A report will be printed to the console detailing any unused locales, and also
-// any missing messages in the non-English locales.
+// A report will be printed to the console detailing any unused messages.
 //
-// The if the optional '--fix' parameter is given, locales will be automatically
+// The if the optional '--fix' argument is given, locales will be automatically
 // updated to remove any unused messages.
 //
-// The optional '--quiet' parameter reduces the verbosity of the output, printing
+// The optional '--quiet' argument reduces the verbosity of the output, printing
 // just a single summary of results for each locale verified
 //
 // //////////////////////////////////////////////////////////////////////////////
@@ -27,6 +26,11 @@ const { promisify } = require('util')
 const log = require('loglevel')
 const matchAll = require('string.prototype.matchall').getPolyfill()
 const localeIndex = require('../app/_locales/index.json')
+const {
+  compareLocalesForMissingItems,
+  getLocale,
+  getLocalePath,
+} = require('./lib/locales')
 
 const readdir = promisify(fs.readdir)
 const readFile = promisify(fs.readFile)
@@ -54,15 +58,21 @@ main().catch((error) => {
 async function main() {
   if (specifiedLocale) {
     log.info(`Verifying selected locale "${specifiedLocale}":\n`)
-    const locale = localeIndex.find(
+    const localeEntry = localeIndex.find(
       (localeMeta) => localeMeta.code === specifiedLocale,
     )
+    if (!localeEntry) {
+      throw new Error(`No localize entry found for ${specifiedLocale}`)
+    }
+
     const failed =
-      locale.code === 'en'
+      specifiedLocale === 'en'
         ? await verifyEnglishLocale()
-        : await verifyLocale(locale)
+        : await verifyLocale(specifiedLocale)
     if (failed) {
       process.exit(1)
+    } else {
+      console.log('No invalid entries!')
     }
   } else {
     log.info('Verifying all locales:\n')
@@ -72,33 +82,15 @@ async function main() {
       .map((localeMeta) => localeMeta.code)
 
     for (const code of localeCodes) {
-      log.info() // Separate each locale report by a newline when not in '--quiet' mode
       const localeFailed = await verifyLocale(code, fix)
       failed = failed || localeFailed
     }
 
     if (failed) {
       process.exit(1)
-    }
-  }
-}
-
-function getLocalePath(code) {
-  return path.resolve(__dirname, '..', 'app', '_locales', code, 'messages.json')
-}
-
-async function getLocale(code) {
-  try {
-    const localeFilePath = getLocalePath(code)
-    const fileContents = await readFile(localeFilePath, 'utf8')
-    return JSON.parse(fileContents)
-  } catch (e) {
-    if (e.code === 'ENOENT') {
-      log.error('Locale file not found')
     } else {
-      log.error(`Error opening your locale ("${code}") file: `, e)
+      console.log('No invalid entries!')
     }
-    process.exit(1)
   }
 }
 
@@ -128,14 +120,6 @@ async function verifyLocale(code) {
     base: targetLocale,
     subject: englishLocale,
   })
-  const missingItems = compareLocalesForMissingItems({
-    base: englishLocale,
-    subject: targetLocale,
-  })
-
-  const englishEntryCount = Object.keys(englishLocale).length
-  const coveragePercent =
-    (100 * (englishEntryCount - missingItems.length)) / englishEntryCount
 
   if (extraItems.length) {
     console.log(`**${code}**: ${extraItems.length} unused messages`)
@@ -143,20 +127,6 @@ async function verifyLocale(code) {
     extraItems.forEach(function (key) {
       log.info(`  - [ ] ${key}`)
     })
-  } else {
-    log.info(`**${code}**: ${extraItems.length} unused messages`)
-  }
-
-  log.info(`${coveragePercent.toFixed(2)}% coverage`)
-  if (missingItems.length) {
-    log.info(`Missing items not present in localized file:`)
-    missingItems.forEach(function (key) {
-      log.info(`  - [ ] ${key}`)
-    })
-  }
-
-  if (!extraItems.length && !missingItems.length) {
-    log.info('Full coverage  : )')
   }
 
   if (extraItems.length > 0) {
@@ -230,7 +200,6 @@ async function verifyEnglishLocale() {
   }
 
   if (!unusedMessages.length && !templateUsage.length) {
-    log.info('Full coverage  : )')
     return false // failed === false
   }
 
@@ -264,8 +233,4 @@ async function* getFileContents(filenames) {
   for (const filename of filenames) {
     yield readFile(filename, 'utf8')
   }
-}
-
-function compareLocalesForMissingItems({ base, subject }) {
-  return Object.keys(base).filter((key) => !subject[key])
 }

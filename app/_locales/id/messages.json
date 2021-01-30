@@ -1231,9 +1231,6 @@
   "yourPrivateSeedPhrase": {
     "message": "Frase benih pribadi Anda"
   },
-  "yourSigRequested": {
-    "message": "Tanda tangan Anda sedang diminta"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Harga gas nol saat mempercepat"
   }

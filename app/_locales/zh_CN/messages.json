@@ -2054,9 +2054,6 @@
   "yourPrivateSeedPhrase": {
     "message": "您的账户助记词"
   },
-  "yourSigRequested": {
-    "message": "正在请求您的签名"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "加速时无燃料价格"
   }

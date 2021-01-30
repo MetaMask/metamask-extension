@@ -1232,9 +1232,6 @@
   "yourPrivateSeedPhrase": {
     "message": "Votre phrase Seed privée"
   },
-  "yourSigRequested": {
-    "message": "Votre signature est demandée"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Prix de l'essence zéro sur l'accélération"
   }

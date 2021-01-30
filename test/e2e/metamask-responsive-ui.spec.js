@@ -205,11 +205,13 @@ describe('MetaMask', function () {
     })
 
     it('switches to localhost', async function () {
-      await driver.clickElement(By.css('.network-name'))
+      await driver.clickElement(By.css('.network-display'))
       await driver.delay(regularDelayMs)
 
       await driver.clickElement(
-        By.xpath(`//span[contains(text(), 'Localhost')]`),
+        By.xpath(
+          `//span[contains(@class, 'network-name-item') and contains(text(), 'Localhost 8545')]`,
+        ),
       )
       await driver.delay(largeDelayMs * 2)
     })
