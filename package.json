@@ -142,6 +142,7 @@
     "nanoid": "^2.1.6",
     "nonce-tracker": "^1.0.0",
     "obj-multiplex": "^1.0.0",
+    "object-hash": "^2.1.1",
     "pify": "^5.0.0",
     "post-message-stream": "^3.0.0",
     "promise-to-callback": "^1.0.0",
