@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { useSelector } from 'react-redux'
-import { Typography } from '@material-ui/core'
 import { NETWORK_TYPE_RPC } from '../../../../../shared/constants/network'
 
 import LoadingIndicator from '../../ui/loading-indicator'
