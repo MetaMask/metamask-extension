@@ -1643,6 +1643,13 @@ export default class MetamaskController extends EventEmitter {
    * Passed back to the requesting Dapp.
    */
   async newRequestEncryptionPublicKey(msgParams, req) {
+    const address = msgParams
+    const keyring = await this.keyringController.getKeyringForAccount(address)
+    if (keyring.type === 'Ledger Hardware') {
+      return new Promise((_, reject) => {
+        reject(new Error('Ledger does not support eth_getEncryptionPublicKey.'))
+      })
+    }
     const promise = this.encryptionPublicKeyManager.addUnapprovedMessageAsync(
       msgParams,
       req,
