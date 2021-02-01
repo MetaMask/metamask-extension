@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react'
 import Identicon from '../../../ui/identicon'
 import IconWithFallBack from '../../../ui/icon-with-fallback'
 import classnames from 'classnames'
+import { base32AddressSlicer } from '../../../../helpers/utils/util'
 
 export default class PermissionPageContainerContent extends PureComponent {
   static propTypes = {
@@ -26,14 +27,14 @@ export default class PermissionPageContainerContent extends PureComponent {
     t: PropTypes.func,
   }
 
-  renderAccountInfo = (account) => {
+  renderAccountInfo = account => {
     return (
       <div className="permission-approval-visual__account-info">
         <div className="permission-approval-visual__account-info__label">
           {account.label}
         </div>
         <div className="permission-approval-visual__account-info__address">
-          {account.truncatedAddress}
+          {base32AddressSlicer(account.base32Address)}
         </div>
       </div>
     )
@@ -84,7 +85,7 @@ export default class PermissionPageContainerContent extends PureComponent {
     )
   }
 
-  renderRequestedPermissions () {
+  renderRequestedPermissions() {
     const {
       selectedPermissions,
       permissionsDescriptions,
@@ -92,7 +93,7 @@ export default class PermissionPageContainerContent extends PureComponent {
     } = this.props
     const { t } = this.context
 
-    const items = Object.keys(selectedPermissions).map((methodName) => {
+    const items = Object.keys(selectedPermissions).map(methodName => {
       // the request will almost certainly be reject by rpc-cap if this happens
       if (!permissionsDescriptions[methodName]) {
         console.warn(`Unknown permission requested: ${methodName}`)
@@ -131,7 +132,7 @@ export default class PermissionPageContainerContent extends PureComponent {
     )
   }
 
-  render () {
+  render() {
     const { domainMetadata, redirect, permissionRejected } = this.props
     const { t } = this.context
 
@@ -161,8 +162,8 @@ export default class PermissionPageContainerContent extends PureComponent {
             <div className="permission-approval-container__permissions-header">
               {domainMetadata.extensionId
                 ? t('thisWillAllowExternalExtension', [
-                  domainMetadata.extensionId,
-                ])
+                    domainMetadata.extensionId,
+                  ])
                 : t('thisWillAllow', [domainMetadata.name])}
             </div>
             {this.renderRequestedPermissions()}
