@@ -24,5 +24,5 @@ export default function InfoIcon({ severity }) {
 }
 
 InfoIcon.propTypes = {
-  severity: PropTypes.oneOf(Object.keys(SEVERITIES)),
+  severity: PropTypes.oneOf(Object.values(SEVERITIES)),
 }

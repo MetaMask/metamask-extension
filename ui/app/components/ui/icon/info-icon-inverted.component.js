@@ -25,5 +25,5 @@ export default function InfoIconInverted({ severity }) {
 }
 
 InfoIconInverted.propTypes = {
-  severity: PropTypes.oneOf(Object.keys(SEVERITIES)),
+  severity: PropTypes.oneOf(Object.values(SEVERITIES)),
 }
