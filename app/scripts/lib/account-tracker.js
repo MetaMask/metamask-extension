@@ -56,6 +56,7 @@ class AccountTracker {
     this.network = opts.network
 
     this.cfx = new Conflux({ url: this._provider._confluxWebProvider.url })
+    this.cfx.networkId = parseInt(this.network.getNetworkConfig().network, 10)
   }
 
   start() {
@@ -217,6 +218,7 @@ class AccountTracker {
   async _updateAccountsViaBalanceChecker(addresses, deployedContractAddress) {
     const accounts = this.store.getState().accounts
     this.cfx.provider.url = this._provider._confluxWebProvider.url
+    this.cfx.networkId = parseInt(this.network.getNetworkConfig().network, 10)
     const ethContract = this.cfx.Contract({
       abi: SINGLE_CALL_BALANCES_ABI,
       address: deployedContractAddress,
