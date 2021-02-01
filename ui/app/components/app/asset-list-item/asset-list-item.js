@@ -12,6 +12,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext'
 import { useMetricEvent } from '../../../hooks/useMetricEvent'
 import { updateSendToken } from '../../../store/actions'
 import { SEND_ROUTE } from '../../../helpers/constants/routes'
+import { SEVERITIES } from '../../../helpers/constants/design-system'
 
 const AssetListItem = ({
   className,
@@ -43,13 +44,13 @@ const AssetListItem = ({
       position="bottom"
       html={warning}
     >
-      <InfoIcon severity="warning" />
+      <InfoIcon severity={SEVERITIES.WARNING} />
     </Tooltip>
   ) : null
 
   const midContent = warning ? (
     <>
-      <InfoIcon severity="warning" />
+      <InfoIcon severity={SEVERITIES.WARNING} />
       <div className="asset-list-item__warning">{warning}</div>
     </>
   ) : null

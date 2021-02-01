@@ -1,13 +1,14 @@
 import React from 'react'
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
+import { SEVERITIES } from '../../../helpers/constants/design-system'
 
 export default function InfoIcon({ severity }) {
   const className = classnames('info-icon', {
-    'info-icon--success': severity === 'success',
-    'info-icon--warning': severity === 'warning',
-    'info-icon--danger': severity === 'danger',
-    'info-icon--info': severity === 'info',
+    'info-icon--success': severity === SEVERITIES.SUCCESS,
+    'info-icon--warning': severity === SEVERITIES.WARNING,
+    'info-icon--danger': severity === SEVERITIES.DANGER,
+    'info-icon--info': severity === SEVERITIES.INFO,
   })
   return (
     <svg
@@ -23,5 +24,5 @@ export default function InfoIcon({ severity }) {
 }
 
 InfoIcon.propTypes = {
-  severity: PropTypes.oneOf(['success', 'info', 'warning', 'danger']),
+  severity: PropTypes.oneOf(Object.values(SEVERITIES)),
 }

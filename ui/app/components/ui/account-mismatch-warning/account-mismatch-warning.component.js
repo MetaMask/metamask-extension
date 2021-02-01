@@ -5,6 +5,7 @@ import Tooltip from '../tooltip'
 import { getSelectedAccount } from '../../../selectors'
 import InfoIcon from '../icon/info-icon.component'
 import { useI18nContext } from '../../../hooks/useI18nContext'
+import { SEVERITIES } from '../../../helpers/constants/design-system'
 
 export default function AccountMismatchWarning({ address }) {
   const selectedAccount = useSelector(getSelectedAccount)
@@ -21,7 +22,7 @@ export default function AccountMismatchWarning({ address }) {
       containerClassName="account-mismatch-warning__tooltip-container"
     >
       <div className="account-mismatch-warning__tooltip-container-icon">
-        <InfoIcon severity="warning" />
+        <InfoIcon severity={SEVERITIES.WARNING} />
       </div>
     </Tooltip>
   )
