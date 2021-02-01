@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash'
+import { CAVEAT_NAMES } from '../../../../shared/constants/permissions'
 import {
-  CAVEAT_NAMES,
   HISTORY_STORE_KEY,
   LOG_IGNORE_METHODS,
   LOG_LIMIT,
@@ -58,6 +58,7 @@ export default class PermissionsLogController {
   /**
    * Updates the exposed account history for the given origin.
    * Sets the 'last seen' time to Date.now() for the given accounts.
+   * Returns if the accounts array is empty.
    *
    * @param {string} origin - The origin that the accounts are exposed to.
    * @param {Array<string>} accounts - The accounts.

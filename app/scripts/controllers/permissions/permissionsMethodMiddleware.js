@@ -1,5 +1,5 @@
 import { createAsyncMiddleware } from 'json-rpc-engine'
-import { ethErrors } from 'eth-json-rpc-errors'
+import { ethErrors } from 'eth-rpc-errors'
 
 /**
  * Create middleware for handling certain methods and preprocessing permissions requests.
@@ -73,9 +73,9 @@ export default function createPermissionsMethodMiddleware({
 
       // custom method for getting metadata from the requesting domain,
       // sent automatically by the inpage provider when it's initialized
-      case 'wallet_sendDomainMetadata': {
-        if (typeof req.domainMetadata?.name === 'string') {
-          addDomainMetadata(req.origin, req.domainMetadata)
+      case 'metamask_sendDomainMetadata': {
+        if (typeof req.params?.name === 'string') {
+          addDomainMetadata(req.origin, req.params)
         }
         res.result = true
         return

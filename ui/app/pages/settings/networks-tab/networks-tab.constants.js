@@ -9,7 +9,7 @@ import {
   RINKEBY_CHAIN_ID,
   ROPSTEN,
   ROPSTEN_CHAIN_ID,
-} from '../../../../../app/scripts/controllers/network/enums'
+} from '../../../../../shared/constants/network'
 
 const defaultNetworksData = [
   {
@@ -55,7 +55,7 @@ const defaultNetworksData = [
     rpcUrl: `https://kovan.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
     chainId: KOVAN_CHAIN_ID,
     ticker: 'ETH',
-    blockExplorerUrl: 'https://etherscan.io',
+    blockExplorerUrl: 'https://kovan.etherscan.io',
   },
 ]
 

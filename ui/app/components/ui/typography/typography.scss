@@ -1,0 +1,40 @@
+@use "design-system";
+@use "sass:map";
+
+.typography {
+  @include design-system.Paragraph;
+
+  & b {
+    font-weight: 700;
+  }
+
+  @each $variant in map.keys(design-system.$typography-variants) {
+    &--#{$variant} {
+      @include design-system.typography($variant);
+    }
+  }
+
+  @each $variant, $color in design-system.$color-map {
+    &--color-#{$variant} {
+      color: $color;
+    }
+  }
+
+  @each $weight in design-system.$font-weight {
+    &--weight-#{$weight} {
+      font-weight: $weight;
+    }
+  }
+
+  @each $alignment in design-system.$text-align {
+    &--align-#{$alignment} {
+      text-align: $alignment;
+    }
+  }
+
+  @for $i from 1 through 8 {
+    &--spacing-#{$i} {
+      margin: #{$i * 4}px auto;
+    }
+  }
+}

@@ -10,7 +10,7 @@ import SignatureRequest from '../../components/app/signature-request'
 import SignatureRequestOriginal from '../../components/app/signature-request-original'
 import Loading from '../../components/ui/loading-screen'
 import { getMostRecentOverviewPage } from '../../ducks/history/history'
-import { MESSAGE_TYPE } from '../../../../app/scripts/lib/enums'
+import { MESSAGE_TYPE } from '../../../../shared/constants/app'
 import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction'
 
 function mapStateToProps(state) {

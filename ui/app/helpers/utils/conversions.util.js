@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { ETH, GWEI, WEI } from '../constants/common'
 import { addHexPrefix } from '../../../../app/scripts/lib/util'
 import {
@@ -163,16 +162,6 @@ export function hexWEIToDecETH(hexWEI) {
   })
 }
 
-export function hexMax(...hexNumbers) {
-  let max = hexNumbers[0]
-  hexNumbers.slice(1).forEach((hexNumber) => {
-    if (new BigNumber(hexNumber, 16).gt(max, 16)) {
-      max = hexNumber
-    }
-  })
-  return max
-}
-
 export function addHexes(aHexWEI, bHexWEI) {
   return addCurrencies(aHexWEI, bHexWEI, {
     aBase: 16,
@@ -183,7 +172,7 @@ export function addHexes(aHexWEI, bHexWEI) {
 }
 
 export function sumHexWEIs(hexWEIs) {
-  return hexWEIs.filter((n) => n).reduce(addHexes)
+  return hexWEIs.filter(Boolean).reduce(addHexes)
 }
 
 export function sumHexWEIsToUnformattedFiat(

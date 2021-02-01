@@ -1,8 +1,11 @@
 // cross-browser connection to extension i18n API
 import React from 'react'
 import log from 'loglevel'
-
 import * as Sentry from '@sentry/browser'
+
+import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout'
+
+const fetchWithTimeout = getFetchWithTimeout(30000)
 
 const warned = {}
 const missingMessageErrors = {}
@@ -95,7 +98,7 @@ export const getMessage = (localeCode, localeMessages, key, substitutions) => {
 
 export async function fetchLocale(localeCode) {
   try {
-    const response = await window.fetch(
+    const response = await fetchWithTimeout(
       `./_locales/${localeCode}/messages.json`,
     )
     return await response.json()
@@ -120,7 +123,7 @@ export async function loadRelativeTimeFormatLocaleData(localeCode) {
 }
 
 async function fetchRelativeTimeFormatData(languageTag) {
-  const response = await window.fetch(
+  const response = await fetchWithTimeout(
     `./intl/${languageTag}/relative-time-format-data.json`,
   )
   return await response.json()

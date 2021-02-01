@@ -525,7 +525,7 @@
     "message": "Pas de réseau ETH, régler en minuscules"
   },
   "invalidBlockExplorerURL": {
-    "message": "URL Block Explorer invalide"
+    "message": "URL de l'explorateur de blocs invalide"
   },
   "invalidIpfsGateway": {
     "message": "IPFS Gateway Invalide: la valeur doit être une URL valide"
@@ -696,7 +696,7 @@
     "message": "Activé"
   },
   "optionalBlockExplorerUrl": {
-    "message": "Bloquer l'URL de l'explorateur (facultatif)"
+    "message": "URL de l'explorateur de blocs (facultatif)"
   },
   "optionalCurrencySymbol": {
     "message": "Symbole (facultatif)"
@@ -1231,9 +1231,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Votre phrase Seed privée"
-  },
-  "yourSigRequested": {
-    "message": "Votre signature est demandée"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Prix de l'essence zéro sur l'accélération"

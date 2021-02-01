@@ -1,5 +1,5 @@
 import { getStorageItem, setStorageItem } from '../../../lib/storage-helpers'
-import fetchWithTimeout from '../../../../app/scripts/lib/fetch-with-timeout'
+import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout'
 
 const fetchWithCache = async (
   url,
@@ -16,7 +16,6 @@ const fetchWithCache = async (
     fetchOptions.headers = new window.Headers(fetchOptions.headers)
   }
   if (
-    fetchOptions.headers &&
     fetchOptions.headers.has('Content-Type') &&
     fetchOptions.headers.get('Content-Type') !== 'application/json'
   ) {
@@ -24,14 +23,14 @@ const fetchWithCache = async (
   }
 
   const currentTime = Date.now()
-  const cachedFetch = (await getStorageItem('cachedFetch')) || {}
-  const { cachedResponse, cachedTime } = cachedFetch[url] || {}
+  const cacheKey = `cachedFetch:${url}`
+  const { cachedResponse, cachedTime } = (await getStorageItem(cacheKey)) || {}
   if (cachedResponse && currentTime - cachedTime < cacheRefreshTime) {
     return cachedResponse
   }
   fetchOptions.headers.set('Content-Type', 'application/json')
-  const _fetch = timeout ? fetchWithTimeout({ timeout }) : window.fetch
-  const response = await _fetch(url, {
+  const fetchWithTimeout = getFetchWithTimeout(timeout)
+  const response = await fetchWithTimeout(url, {
     referrerPolicy: 'no-referrer-when-downgrade',
     body: null,
     method: 'GET',
@@ -48,8 +47,8 @@ const fetchWithCache = async (
     cachedResponse: responseJson,
     cachedTime: currentTime,
   }
-  cachedFetch[url] = cacheEntry
-  await setStorageItem('cachedFetch', cachedFetch)
+
+  await setStorageItem(cacheKey, cacheEntry)
   return responseJson
 }
 

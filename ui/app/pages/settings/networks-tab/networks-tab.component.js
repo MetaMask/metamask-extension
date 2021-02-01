@@ -1,13 +1,15 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import { NETWORK_TYPE_RPC } from '../../../../../shared/constants/network'
 import Button from '../../../components/ui/button'
 import LockIcon from '../../../components/ui/lock-icon'
 import {
   NETWORKS_ROUTE,
   NETWORKS_FORM_ROUTE,
 } from '../../../helpers/constants/routes'
-import NetworkDropdownIcon from '../../../components/app/dropdowns/components/network-dropdown-icon'
+import ColorIndicator from '../../../components/ui/color-indicator'
+import { COLORS } from '../../../helpers/constants/design-system'
 import NetworkForm from './network-form'
 
 export default class NetworksTab extends PureComponent {
@@ -79,8 +81,6 @@ export default class NetworksTab extends PureComponent {
       isFullScreen,
     } = this.props
     const {
-      border,
-      iconColor,
       label,
       labelKey,
       rpcUrl,
@@ -90,7 +90,7 @@ export default class NetworksTab extends PureComponent {
     const listItemNetworkIsSelected = selectRpcUrl && selectRpcUrl === rpcUrl
     const listItemUrlIsProviderUrl = rpcUrl === providerUrl
     const listItemTypeIsProviderNonRpcType =
-      providerType !== 'rpc' && currentProviderType === providerType
+      providerType !== NETWORK_TYPE_RPC && currentProviderType === providerType
     const listItemNetworkIsCurrentProvider =
       !networkIsSelected &&
       !networksTabIsInAddMode &&
@@ -110,20 +110,21 @@ export default class NetworksTab extends PureComponent {
           }
         }}
       >
-        <NetworkDropdownIcon
-          backgroundColor={iconColor || 'white'}
-          innerBorder={border}
+        <ColorIndicator
+          color={labelKey}
+          type={ColorIndicator.TYPES.FILLED}
+          size={ColorIndicator.SIZES.LARGE}
         />
         <div
           className={classnames('networks-tab__networks-list-name', {
             'networks-tab__networks-list-name--selected': displayNetworkListItemAsSelected,
             'networks-tab__networks-list-name--disabled':
-              currentProviderType !== 'rpc' &&
+              currentProviderType !== NETWORK_TYPE_RPC &&
               !displayNetworkListItemAsSelected,
           })}
         >
           {label || this.context.t(labelKey)}
-          {currentProviderType !== 'rpc' && (
+          {currentProviderType !== NETWORK_TYPE_RPC && (
             <LockIcon width="14px" height="17px" fill="#cdcdcd" />
           )}
         </div>
@@ -154,9 +155,11 @@ export default class NetworksTab extends PureComponent {
         )}
         {networksTabIsInAddMode && (
           <div className="networks-tab__networks-list-item">
-            <NetworkDropdownIcon
-              backgroundColor="white"
-              innerBorder="1px solid rgb(106, 115, 125)"
+            <ColorIndicator
+              type={ColorIndicator.TYPES.FILLED}
+              color={COLORS.WHITE}
+              borderColor={COLORS.UI4}
+              size={ColorIndicator.SIZES.LARGE}
             />
             <div className="networks-tab__networks-list-name networks-tab__networks-list-name--selected">
               {this.context.t('newNetwork')}

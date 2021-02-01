@@ -177,7 +177,7 @@ describe('Using MetaMask with an existing account', function () {
 
   describe('Add an account', function () {
     it('switches to localhost', async function () {
-      await driver.clickElement(By.css('.network-name'))
+      await driver.clickElement(By.css('.network-display'))
       await driver.delay(regularDelayMs)
 
       await driver.clickElement(

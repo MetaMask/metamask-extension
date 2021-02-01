@@ -16,16 +16,10 @@
 .signature-request-header {
   flex: 1;
 
-  .network-display__container {
+  .network-display {
     padding: 0;
     justify-content: flex-end;
-  }
-
-  .network-display__name {
-    @include H7;
-
-    white-space: nowrap;
-    font-weight: 500;
+    margin-left: auto;
   }
 }
 

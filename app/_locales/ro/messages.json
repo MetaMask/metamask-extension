@@ -1237,9 +1237,6 @@
   "yourPrivateSeedPhrase": {
     "message": "Expresia dvs. seed privată"
   },
-  "yourSigRequested": {
-    "message": "Semnătura dvs. este solicitată"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Preț gas zero la accelerare"
   }

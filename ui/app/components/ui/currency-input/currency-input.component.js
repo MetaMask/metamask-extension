@@ -21,7 +21,6 @@ export default class CurrencyInput extends PureComponent {
   static propTypes = {
     conversionRate: PropTypes.number,
     currentCurrency: PropTypes.string,
-    maxModeOn: PropTypes.bool,
     nativeCurrency: PropTypes.string,
     onChange: PropTypes.func,
     useFiat: PropTypes.bool,
@@ -153,7 +152,7 @@ export default class CurrencyInput extends PureComponent {
   }
 
   render() {
-    const { fiatSuffix, nativeSuffix, maxModeOn, ...restProps } = this.props
+    const { fiatSuffix, nativeSuffix, ...restProps } = this.props
     const { decimalValue } = this.state
 
     return (
@@ -162,7 +161,6 @@ export default class CurrencyInput extends PureComponent {
         suffix={this.shouldUseFiat() ? fiatSuffix : nativeSuffix}
         onChange={this.handleChange}
         value={decimalValue}
-        maxModeOn={maxModeOn}
         actionComponent={
           <div className="currency-input__swap-component" onClick={this.swap} />
         }

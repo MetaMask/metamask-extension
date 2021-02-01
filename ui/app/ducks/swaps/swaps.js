@@ -23,6 +23,7 @@ import {
   setSwapsLiveness,
   setSelectedQuoteAggId,
   setSwapsTxGasLimit,
+  cancelTx,
 } from '../../store/actions'
 import {
   AWAITING_SWAP_ROUTE,
@@ -39,7 +40,6 @@ import { calcGasTotal } from '../../pages/send/send.utils'
 import {
   decimalToHex,
   getValueFromWeiHex,
-  hexMax,
   decGWEIToHexWEI,
   hexToDecimal,
   hexWEIToDecGWEI,
@@ -66,6 +66,8 @@ const GAS_PRICES_LOADING_STATES = {
   FAILED: 'FAILED',
   COMPLETED: 'COMPLETED',
 }
+
+export const FALLBACK_GAS_MULTIPLIER = 1.5
 
 const initialState = {
   aggregatorMetadata: null,
@@ -223,6 +225,9 @@ const getSwapsState = (state) => state.metamask.swapsState
 export const getSwapsFeatureLiveness = (state) =>
   state.metamask.swapsState.swapsFeatureIsLive
 
+export const getSwapsQuoteRefreshTime = (state) =>
+  state.metamask.swapsState.swapsQuoteRefreshTime
+
 export const getBackgroundSwapRouteState = (state) =>
   state.metamask.swapsState.routeState
 
@@ -325,9 +330,8 @@ export {
 export const navigateBackToBuildQuote = (history) => {
   return async (dispatch) => {
     // TODO: Ensure any fetch in progress is cancelled
-    await dispatch(resetSwapsPostFetchState())
+    await dispatch(setBackgroundSwapRouteState(''))
     dispatch(navigatedBackToBuildQuote())
-
     history.push(BUILD_QUOTE_ROUTE)
   }
 }
@@ -594,20 +598,16 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     const usedQuote = getUsedQuote(state)
     const usedTradeTxParams = usedQuote.trade
 
-    const estimatedGasLimit = new BigNumber(
-      usedQuote?.gasEstimate || decimalToHex(usedQuote?.averageGas || 0),
-      16,
-    )
+    const estimatedGasLimit = new BigNumber(usedQuote?.gasEstimate || `0x0`, 16)
     const estimatedGasLimitWithMultiplier = estimatedGasLimit
-      .times(1.4, 10)
+      .times(usedQuote?.gasMultiplier || FALLBACK_GAS_MULTIPLIER, 10)
       .round(0)
       .toString(16)
     const maxGasLimit =
       customSwapsGas ||
-      hexMax(
-        `0x${decimalToHex(usedQuote?.maxGas || 0)}`,
-        estimatedGasLimitWithMultiplier,
-      )
+      (usedQuote?.gasEstimate
+        ? estimatedGasLimitWithMultiplier
+        : `0x${decimalToHex(usedQuote?.maxGas || 0)}`)
 
     const usedGasPrice = getUsedSwapsGasPrice(state)
     usedTradeTxParams.gas = maxGasLimit
@@ -695,6 +695,22 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       addUnapprovedTransaction(usedTradeTxParams, 'metamask'),
     )
     dispatch(setTradeTxId(tradeTxMeta.id))
+
+    // The simulationFails property is added during the transaction controllers
+    // addUnapprovedTransaction call if the estimateGas call fails. In cases
+    // when no approval is required, this indicates that the swap will likely
+    // fail. There was an earlier estimateGas call made by the swaps controller,
+    // but it is possible that external conditions have change since then, and
+    // a previously succeeding estimate gas call could now fail. By checking for
+    // the `simulationFails` property here, we can reduce the number of swap
+    // transactions that get published to the blockchain only to fail and thereby
+    // waste the user's funds on gas.
+    if (!approveTxParams && tradeTxMeta.simulationFails) {
+      await dispatch(cancelTx(tradeTxMeta, false))
+      await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR))
+      history.push(SWAPS_ERROR_ROUTE)
+      return
+    }
     const finalTradeTxMeta = await dispatch(
       updateTransaction(
         {

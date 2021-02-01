@@ -2,11 +2,12 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 
-import { MESSAGE_TYPE } from '../../../../../app/scripts/lib/enums'
+import { MESSAGE_TYPE } from '../../../../../shared/constants/app'
 import { goHome } from '../../../store/actions'
 import {
   accountsWithSendEtherInfoSelector,
   conversionRateSelector,
+  getDomainMetadata,
 } from '../../../selectors'
 import { getAccountByAddress } from '../../../helpers/utils/util'
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck'
@@ -21,6 +22,7 @@ function mapStateToProps(state) {
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     // not passed to component
     allAccounts: accountsWithSendEtherInfoSelector(state),
+    domainMetadata: getDomainMetadata(state),
   }
 }
 

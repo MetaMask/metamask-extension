@@ -152,19 +152,22 @@
     height: 0;
   }
 
-  &__request-info {
+  &__origin-row {
+    @include Paragraph;
+
     display: flex;
-    justify-content: center;
+    margin: 0 15px;
   }
 
-  &__headline {
-    @include H4;
+  &__origin-label {
+    flex-grow: 1;
+    margin-right: 5px;
+  }
 
-    height: 48px;
-    width: 240px;
-    color: $tundora;
-    text-align: center;
-    margin-top: 20px;
+  &__origin {
+    margin-left: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__notice,

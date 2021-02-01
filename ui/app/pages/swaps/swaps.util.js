@@ -24,20 +24,24 @@ const TOKEN_TRANSFER_LOG_TOPIC_HASH =
 
 const CACHE_REFRESH_ONE_HOUR = 3600000
 
+const METASWAP_API_HOST = 'https://api.metaswap.codefi.network'
+
 const getBaseApi = function (type) {
   switch (type) {
     case 'trade':
-      return `https://api.metaswap.codefi.network/trades?`
+      return `${METASWAP_API_HOST}/trades?`
     case 'tokens':
-      return `https://api.metaswap.codefi.network/tokens`
+      return `${METASWAP_API_HOST}/tokens`
     case 'topAssets':
-      return `https://api.metaswap.codefi.network/topAssets`
+      return `${METASWAP_API_HOST}/topAssets`
     case 'featureFlag':
-      return `https://api.metaswap.codefi.network/featureFlag`
+      return `${METASWAP_API_HOST}/featureFlag`
     case 'aggregatorMetadata':
-      return `https://api.metaswap.codefi.network/aggregatorMetadata`
+      return `${METASWAP_API_HOST}/aggregatorMetadata`
     case 'gasPrices':
-      return `https://api.metaswap.codefi.network/gasPrices`
+      return `${METASWAP_API_HOST}/gasPrices`
+    case 'refreshTime':
+      return `${METASWAP_API_HOST}/quoteRefreshRate`
     default:
       throw new Error('getBaseApi requires an api call type')
   }
@@ -111,6 +115,11 @@ const QUOTE_VALIDATORS = [
   {
     property: 'maxGas',
     type: 'number',
+  },
+  {
+    property: 'gasEstimate',
+    type: 'number|undefined',
+    validator: (gasEstimate) => gasEstimate === undefined || gasEstimate > 0,
   },
 ]
 
@@ -323,6 +332,23 @@ export async function fetchSwapsFeatureLiveness() {
   return status?.active
 }
 
+export async function fetchSwapsQuoteRefreshTime() {
+  const response = await fetchWithCache(
+    getBaseApi('refreshTime'),
+    { method: 'GET' },
+    { cacheRefreshTime: 600000 },
+  )
+
+  // We presently use milliseconds in the UI
+  if (typeof response?.seconds === 'number' && response.seconds > 0) {
+    return response.seconds * 1000
+  }
+
+  throw new Error(
+    `MetaMask - refreshTime provided invalid response: ${response}`,
+  )
+}
+
 export async function fetchTokenPrice(address) {
   const query = `contract_addresses=${address}&vs_currencies=eth`
 
@@ -441,11 +467,11 @@ export function quotesToRenderableData(
     } = quote
     const sourceValue = calcTokenAmount(
       sourceAmount,
-      sourceTokenInfo.decimals || 18,
+      sourceTokenInfo.decimals,
     ).toString(10)
     const destinationValue = calcTokenAmount(
       destinationAmount,
-      destinationTokenInfo.decimals || 18,
+      destinationTokenInfo.decimals,
     ).toPrecision(8)
 
     const {
@@ -475,14 +501,11 @@ export function quotesToRenderableData(
       destinationTokenInfo.symbol === 'ETH'
         ? calcTokenAmount(
             destinationAmount,
-            destinationTokenInfo.decimals || 18,
+            destinationTokenInfo.decimals,
           ).minus(rawEthFee, 10)
         : new BigNumber(tokenConversionRate || 0, 10)
             .times(
-              calcTokenAmount(
-                destinationAmount,
-                destinationTokenInfo.decimals || 18,
-              ),
+              calcTokenAmount(destinationAmount, destinationTokenInfo.decimals),
               10,
             )
             .minus(rawEthFee, 10)
@@ -507,6 +530,7 @@ export function quotesToRenderableData(
       destinationTokenDecimals: destinationTokenInfo.decimals,
       destinationTokenSymbol: destinationTokenInfo.symbol,
       destinationTokenValue: formatSwapsValueForDisplay(destinationValue),
+      destinationIconUrl: destinationTokenInfo.iconUrl,
       isBestQuote: quote.isBestQuote,
       liquiditySourceKey,
       feeInEth,
@@ -518,6 +542,7 @@ export function quotesToRenderableData(
       sourceTokenDecimals: sourceTokenInfo.decimals,
       sourceTokenSymbol: sourceTokenInfo.symbol,
       sourceTokenValue: sourceValue,
+      sourceTokenIconUrl: sourceTokenInfo.iconUrl,
       ethValueOfTrade,
       minimumAmountReceived,
       metaMaskFee: fee,

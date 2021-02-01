@@ -58,7 +58,7 @@ import {
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
-} from '../../../../app/scripts/lib/enums'
+} from '../../../../shared/constants/app'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction'
 

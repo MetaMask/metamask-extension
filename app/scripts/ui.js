@@ -12,12 +12,12 @@ import EthQuery from 'eth-query'
 import StreamProvider from 'web3-stream-provider'
 import log from 'loglevel'
 import launchMetaMaskUi from '../../ui'
-import ExtensionPlatform from './platforms/extension'
-import { setupMultiplex } from './lib/stream-utils'
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
-} from './lib/enums'
+} from '../../shared/constants/app'
+import ExtensionPlatform from './platforms/extension'
+import { setupMultiplex } from './lib/stream-utils'
 import { getEnvironmentType } from './lib/util'
 
 start().catch(log.error)

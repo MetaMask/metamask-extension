@@ -3,5 +3,5 @@
     "matches": ["https://metamask.io/*"],
     "ids": ["*"]
   },
-  "minimum_chrome_version": "58"
+  "minimum_chrome_version": "63"
 }

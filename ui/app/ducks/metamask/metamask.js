@@ -1,5 +1,6 @@
 import * as actionConstants from '../../store/actionConstants'
-import { ALERT_TYPES } from '../../../../app/scripts/controllers/alert'
+import { ALERT_TYPES } from '../../../../shared/constants/alerts'
+import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network'
 
 export default function reduceMetamask(state = {}, action) {
   const metamaskState = {
@@ -63,7 +64,7 @@ export default function reduceMetamask(state = {}, action) {
       return {
         ...metamaskState,
         provider: {
-          type: 'rpc',
+          type: NETWORK_TYPE_RPC,
           rpcUrl: action.value,
         },
       }
@@ -375,11 +376,11 @@ export const getCurrentLocale = (state) => state.metamask.currentLocale
 
 export const getAlertEnabledness = (state) => state.metamask.alertEnabledness
 
-export const getInvalidCustomNetworkAlertEnabledness = (state) =>
-  getAlertEnabledness(state)[ALERT_TYPES.invalidCustomNetwork]
-
 export const getUnconnectedAccountAlertEnabledness = (state) =>
   getAlertEnabledness(state)[ALERT_TYPES.unconnectedAccount]
+
+export const getWeb3ShimUsageAlertEnabledness = (state) =>
+  getAlertEnabledness(state)[ALERT_TYPES.web3ShimUsage]
 
 export const getUnconnectedAccountAlertShown = (state) =>
   state.metamask.unconnectedAccountAlertShownOrigins

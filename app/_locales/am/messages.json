@@ -1253,9 +1253,6 @@
   "yourPrivateSeedPhrase": {
     "message": "የግል ዘር ሐረግዎ"
   },
-  "yourSigRequested": {
-    "message": "ፊርማዎ እየተጠየቀ ነው"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "በስፒድ አፕ ላይ ዜሮ የነዳጅ ዋጋ"
   }

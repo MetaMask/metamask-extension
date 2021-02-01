@@ -1,9 +1,9 @@
 import EventEmitter from 'safe-event-emitter'
-import ObservableStore from 'obs-store'
+import { ObservableStore } from '@metamask/obs-store'
 import ethUtil from 'ethereumjs-util'
 import Transaction from 'ethereumjs-tx'
 import EthQuery from 'ethjs-query'
-import { ethErrors } from 'eth-json-rpc-errors'
+import { ethErrors } from 'eth-rpc-errors'
 import abi from 'human-standard-token-abi'
 import { ethers } from 'ethers'
 import NonceTracker from 'nonce-tracker'
@@ -827,9 +827,9 @@ export default class TransactionController extends EventEmitter {
     ].find((methodName) => methodName === name && name.toLowerCase())
 
     let result
-    if (txParams.data && tokenMethodName) {
+    if (data && tokenMethodName) {
       result = tokenMethodName
-    } else if (txParams.data && !to) {
+    } else if (data && !to) {
       result = TRANSACTION_CATEGORIES.DEPLOY_CONTRACT
     }
 

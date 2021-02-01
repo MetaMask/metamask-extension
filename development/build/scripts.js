@@ -115,11 +115,18 @@ function createScriptTasks({ browserPlatforms, livereload }) {
         }),
       )
     })
+
     // inpage must be built before contentscript
     // because inpage bundle result is included inside contentscript
     const contentscriptSubtask = createTask(
       `${taskPrefix}:contentscript`,
       createTaskForBuildJsExtensionContentscript({ devMode, testing }),
+    )
+
+    // this can run whenever
+    const disableConsoleSubtask = createTask(
+      `${taskPrefix}:disable-console`,
+      createTaskForBuildJsExtensionDisableConsole({ devMode }),
     )
 
     // task for initiating livereload
@@ -142,6 +149,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
     const allSubtasks = [
       ...standardSubtasks,
       contentscriptSubtask,
+      disableConsoleSubtask,
     ].map((subtask) => runInChildProcess(subtask))
     // const allSubtasks = [...standardSubtasks, contentscriptSubtask].map(subtask => (subtask))
     // make a parent task that runs each task in a child thread
@@ -162,6 +170,16 @@ function createScriptTasks({ browserPlatforms, livereload }) {
         : externalDependenciesMap[filename],
       devMode,
       testing,
+    })
+  }
+
+  function createTaskForBuildJsExtensionDisableConsole({ devMode }) {
+    const filename = 'disable-console'
+    return bundleTask({
+      label: filename,
+      filename: `${filename}.js`,
+      filepath: `./app/scripts/${filename}.js`,
+      devMode,
     })
   }
 
@@ -357,12 +375,10 @@ function createScriptTasks({ browserPlatforms, livereload }) {
         METAMASK_DEBUG: opts.devMode,
         METAMASK_ENVIRONMENT: environment,
         METAMASK_VERSION: baseManifest.version,
-        METAMETRICS_PROJECT_ID: process.env.METAMETRICS_PROJECT_ID,
         NODE_ENV: opts.devMode ? 'development' : 'production',
         IN_TEST: opts.testing ? 'true' : false,
         PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
         PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
-        ETH_GAS_STATION_API_KEY: process.env.ETH_GAS_STATION_API_KEY || '',
         CONF: opts.devMode ? conf : {},
         SENTRY_DSN: process.env.SENTRY_DSN,
         INFURA_PROJECT_ID: opts.testing

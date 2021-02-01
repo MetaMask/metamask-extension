@@ -1231,9 +1231,6 @@
   "yourPrivateSeedPhrase": {
     "message": "Din privata seedphrase"
   },
-  "yourSigRequested": {
-    "message": "En begäran om din signatur har skickats"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Inget gaspris vid uppsnabbning"
   }

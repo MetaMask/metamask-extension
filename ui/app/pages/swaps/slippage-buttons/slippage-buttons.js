@@ -6,7 +6,7 @@ import ButtonGroup from '../../../components/ui/button-group'
 import Button from '../../../components/ui/button'
 import InfoTooltip from '../../../components/ui/info-tooltip'
 
-export default function SlippageButtons({ onSelect }) {
+export default function SlippageButtons({ onSelect, maxAllowedSlippage }) {
   const t = useContext(I18nContext)
   const [open, setOpen] = useState(false)
   const [customValue, setCustomValue] = useState('')
@@ -15,12 +15,19 @@ export default function SlippageButtons({ onSelect }) {
   const [inputRef, setInputRef] = useState(null)
 
   let errorText = ''
-  if (customValue && Number(customValue) <= 0) {
-    errorText = t('swapSlippageTooLow')
-  } else if (customValue && Number(customValue) < 0.5) {
-    errorText = t('swapLowSlippageError')
-  } else if (customValue && Number(customValue) > 5) {
-    errorText = t('swapHighSlippageWarning')
+  if (customValue) {
+    if (Number(customValue) <= 0) {
+      errorText = t('swapSlippageTooLow')
+    } else if (Number(customValue) < 0.5) {
+      errorText = t('swapLowSlippageError')
+    } else if (
+      Number(customValue) >= 5 &&
+      Number(customValue) <= maxAllowedSlippage
+    ) {
+      errorText = t('swapHighSlippageWarning')
+    } else if (Number(customValue) > maxAllowedSlippage) {
+      errorText = t('swapsExcessiveSlippageWarning')
+    }
   }
 
   const customValueText = customValue || t('swapCustom')
@@ -151,4 +158,5 @@ export default function SlippageButtons({ onSelect }) {
 
 SlippageButtons.propTypes = {
   onSelect: PropTypes.func.isRequired,
+  maxAllowedSlippage: PropTypes.number.isRequired,
 }
