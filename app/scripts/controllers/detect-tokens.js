@@ -34,7 +34,7 @@ function getScanUrl(network) {
   if (network.store.getState().provider.type === MAINNET) {
     return 'https://confluxscan.io'
   } else if (network.store.getState().provider.type === TESTNET) {
-    return 'http://testnet.confluxscan.io'
+    return 'https://testnet.confluxscan.io'
   }
 }
 
