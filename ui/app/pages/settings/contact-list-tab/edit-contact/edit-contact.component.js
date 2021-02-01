@@ -158,7 +158,7 @@ export default class EditContact extends PureComponent {
                 isValidBase32Address(this.state.newBase32OrHexAddress, network)
               ) {
                 const hexAddress = base32ToHex(this.state.newBase32OrHexAddress)
-                removeFromAddressBook(chainId, hexAddress)
+                removeFromAddressBook(chainId, address)
                 addToAddressBook(
                   hexAddress,
                   this.state.newName || name,
@@ -171,7 +171,7 @@ export default class EditContact extends PureComponent {
                 isValidAccountAddress(this.state.newBase32OrHexAddress) &&
                 isValidContractAddress(this.state.newBase32OrHexAddress)
               ) {
-                removeFromAddressBook(chainId, this.state.newBase32OrHexAddress)
+                removeFromAddressBook(chainId, address)
                 addToAddressBook(
                   this.state.newBase32OrHexAddress,
                   this.state.newName || name,
