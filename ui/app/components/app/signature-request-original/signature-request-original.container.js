@@ -44,8 +44,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     txData,
   } = ownProps
 
-  const { allAccounts } = stateProps
-  delete stateProps.allAccounts
+  const { allAccounts, ...otherStateProps } = stateProps
 
   const {
     type,
@@ -69,7 +68,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
 
   return {
     ...ownProps,
-    ...stateProps,
+    ...otherStateProps,
     ...dispatchProps,
     fromAccount,
     txData,
