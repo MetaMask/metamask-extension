@@ -15,11 +15,6 @@ then
   mv ./*.har build-artifacts/yarn-install-har/
 fi
 
-# run each in subshell so directory change does not persist
-# scripts can be any of:
-#   preinstall
-#   install
-#   postinstall
-
 # use allow-scripts instead of manually running install scripts so directory change does not persist
+
 yarn allow-scripts
