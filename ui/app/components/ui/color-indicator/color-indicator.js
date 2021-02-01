@@ -1,7 +1,7 @@
 import React from 'react'
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
-import { COLORS } from '../../../helpers/constants/design-system'
+import { COLORS, SIZES } from '../../../helpers/constants/design-system'
 
 export default function ColorIndicator({
   size = 'small',
@@ -29,12 +29,6 @@ export default function ColorIndicator({
   )
 }
 
-ColorIndicator.SIZES = {
-  LARGE: 'large',
-  MEDIUM: 'medium',
-  SMALL: 'small,',
-}
-
 ColorIndicator.TYPES = {
   FILLED: 'filled',
   PARTIAL: 'partial-filled',
@@ -44,7 +38,7 @@ ColorIndicator.TYPES = {
 ColorIndicator.propTypes = {
   color: PropTypes.oneOf(Object.values(COLORS)),
   borderColor: PropTypes.oneOf(Object.values(COLORS)),
-  size: PropTypes.oneOf(Object.values(ColorIndicator.SIZES)),
+  size: PropTypes.oneOf(Object.values(SIZES)),
   iconClassName: PropTypes.string,
   type: PropTypes.oneOf(Object.values(ColorIndicator.TYPES)),
 }

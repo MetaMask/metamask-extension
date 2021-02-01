@@ -15,7 +15,7 @@ import { isPrefixedFormattedHexString } from '../../../../../shared/modules/util
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 
 import ColorIndicator from '../../ui/color-indicator'
-import { COLORS } from '../../../helpers/constants/design-system'
+import { COLORS, SIZES } from '../../../helpers/constants/design-system'
 import { Dropdown, DropdownMenuItem } from './components/dropdown'
 
 // classes from nodes of the toggle element.
@@ -149,7 +149,7 @@ class NetworkDropdown extends Component {
           )}
           <ColorIndicator
             color={COLORS.UI2}
-            size={ColorIndicator.SIZES.LARGE}
+            size={SIZES.LG}
             type={ColorIndicator.TYPES.FILLED}
             borderColor={isCurrentRpcTarget ? COLORS.WHITE : COLORS.UI2}
           />
@@ -219,7 +219,7 @@ class NetworkDropdown extends Component {
         )}
         <ColorIndicator
           color={network}
-          size={ColorIndicator.SIZES.LARGE}
+          size={SIZES.LG}
           type={ColorIndicator.TYPES.FILLED}
           borderColor={providerType === network ? COLORS.WHITE : network}
         />
@@ -309,7 +309,7 @@ class NetworkDropdown extends Component {
             type={ColorIndicator.TYPES.FILLED}
             color={COLORS.TRANSPARENT}
             borderColor={COLORS.UI2}
-            size={ColorIndicator.SIZES.LARGE}
+            size={SIZES.LG}
           />
           <span
             className="network-name-item"

@@ -6,7 +6,11 @@ import { NETWORK_TYPE_RPC } from '../../../../../shared/constants/network'
 
 import LoadingIndicator from '../../ui/loading-indicator'
 import ColorIndicator from '../../ui/color-indicator'
-import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system'
+import {
+  COLORS,
+  SIZES,
+  TYPOGRAPHY,
+} from '../../../helpers/constants/design-system'
 import Chip from '../../ui/chip/chip'
 import { useI18nContext } from '../../../hooks/useI18nContext'
 
@@ -14,7 +18,9 @@ export default function NetworkDisplay({
   colored,
   outline,
   iconClassName,
+  indicatorSize,
   disabled,
+  labelProps,
   onClick,
 }) {
   const { network, networkNickname, networkType } = useSelector((state) => ({
@@ -36,7 +42,7 @@ export default function NetworkDisplay({
         >
           <ColorIndicator
             color={networkType === NETWORK_TYPE_RPC ? COLORS.UI4 : networkType}
-            size={ColorIndicator.SIZES.LARGE}
+            size={indicatorSize}
             type={ColorIndicator.TYPES.FILLED}
             iconClassName={
               networkType === NETWORK_TYPE_RPC ? 'fa fa-question' : undefined
@@ -61,12 +67,17 @@ export default function NetworkDisplay({
       })}
       labelProps={{
         variant: TYPOGRAPHY.H7,
+        ...labelProps,
       }}
     />
   )
 }
 NetworkDisplay.propTypes = {
   colored: PropTypes.bool,
+  indicatorSize: PropTypes.oneOf(Object.values(SIZES)),
+  labelProps: PropTypes.shape({
+    ...Chip.propTypes.labelProps,
+  }),
   outline: PropTypes.bool,
   disabled: PropTypes.bool,
   iconClassName: PropTypes.string,
@@ -75,4 +86,5 @@ NetworkDisplay.propTypes = {
 
 NetworkDisplay.defaultProps = {
   colored: true,
+  indicatorSize: SIZES.LG,
 }

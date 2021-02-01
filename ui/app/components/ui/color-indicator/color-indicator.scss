@@ -2,9 +2,11 @@
 @use "design-system";
 
 $sizes: (
-  'large': 6,
-  'medium': 5,
-  'small': 4,
+  'xl': 8,
+  'lg': 6,
+  'md': 5,
+  'sm': 4,
+  'xs': 2.5,
 );
 
 .color-indicator {
