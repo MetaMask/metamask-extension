@@ -190,6 +190,7 @@
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
     "@babel/register": "^7.5.5",
+    "@lavamoat/allow-scripts": "^1.0.0",
     "@metamask/eslint-config": "^4.1.0",
     "@metamask/forwarder": "^1.1.0",
     "@metamask/test-dapp": "^4.0.1",
@@ -297,5 +298,34 @@
   "engines": {
     "node": "^10.18.1",
     "yarn": "^1.16.0"
+  },
+  "lavamoat": {
+    "allowScripts": {
+      "node-sass": true,
+      "optipng-bin": true,
+      "gifsicle": true,
+      "jpegtran-bin": true,
+      "scrypt": true,
+      "chromedriver": true,
+      "geckodriver": true,
+      "@sentry/cli": true,
+      "core-js": false,
+      "core-js-pure": false,
+      "keccak": false,
+      "secp256k1": false,
+      "web3": false,
+      "sha3": false,
+      "bufferutil": false,
+      "utf-8-validate": false,
+      "electron": false,
+      "ejs": false,
+      "sc-uws": false,
+      "sqlite3": false,
+      "leveldown": false,
+      "ursa-optional": false,
+      "gc-stats": false,
+      "github:assemblyscript/assemblyscript": false,
+      "tiny-secp256k1": false
+    }
   }
 }

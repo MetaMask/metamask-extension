@@ -139,11 +139,16 @@ function setupWeb3Connection(connectionStream) {
  */
 function setupControllerConnection(connectionStream, cb) {
   const eventEmitter = new EventEmitter()
-  const backgroundDnode = Dnode({
-    sendUpdate(state) {
-      eventEmitter.emit('update', state)
+  // the "weak: false" option is for nodejs only (eg unit tests)
+  // it is a workaround for node v12 support
+  const backgroundDnode = Dnode(
+    {
+      sendUpdate(state) {
+        eventEmitter.emit('update', state)
+      },
     },
-  })
+    { weak: false },
+  )
   connectionStream.pipe(backgroundDnode).pipe(connectionStream)
   backgroundDnode.once('remote', function (backgroundConnection) {
     backgroundConnection.on = eventEmitter.on.bind(eventEmitter)

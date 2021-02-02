@@ -1919,7 +1919,9 @@ export default class MetamaskController extends EventEmitter {
    */
   setupControllerConnection(outStream) {
     const api = this.getApi()
-    const dnode = Dnode(api)
+    // the "weak: false" option is for nodejs only (eg unit tests)
+    // it is a workaround for node v12 support
+    const dnode = Dnode(api, { weak: false })
     // report new active controller connection
     this.activeControllerConnections += 1
     this.emit('controllerConnectionChanged', this.activeControllerConnections)
