@@ -6,6 +6,7 @@ import { isEqual } from 'lodash'
 import classnames from 'classnames'
 import { I18nContext } from '../../../contexts/i18n'
 import SelectQuotePopover from '../select-quote-popover'
+import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount'
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck'
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent'
 import { useSwapsEthToken } from '../../../hooks/useSwapsEthToken'
@@ -87,6 +88,11 @@ export default function ViewQuote() {
   const [selectQuotePopoverShown, setSelectQuotePopoverShown] = useState(false)
   const [warningHidden, setWarningHidden] = useState(false)
   const [originalApproveAmount, setOriginalApproveAmount] = useState(null)
+
+  const [
+    acknowledgedPriceDifference,
+    setAcknowledgedPriceDifference,
+  ] = useState(false)
 
   const routeState = useSelector(getBackgroundSwapRouteState)
   const quotes = useSelector(getQuotes, isEqual)
@@ -474,20 +480,70 @@ export default function ViewQuote() {
       : 'ETH',
   ])
 
-  const viewQuotePriceDifferenceComponent = (
-    <ViewQuotePriceDifference
-      usedQuote={usedQuote}
-      sourceTokenValue={sourceTokenValue}
-      destinationTokenValue={destinationTokenValue}
-    />
+  // Price difference warning
+  let viewQuotePriceDifferenceComponent = null
+  const priceSlippageFromSource = useEthFiatAmount(
+    usedQuote?.priceSlippage?.sourceAmountInETH || 0,
+  )
+  const priceSlippageFromDestination = useEthFiatAmount(
+    usedQuote?.priceSlippage?.destinationAmountInEth || 0,
   )
 
+  // We cannot present fiat value if there is a calculation error or no slippage
+  // from source or destination
+  const priceSlippageUnknownFiatValue =
+    !priceSlippageFromSource ||
+    !priceSlippageFromDestination ||
+    usedQuote?.priceSlippage?.calculationError
+
+  let priceDifferencePercentage = 0
+  if (usedQuote?.priceSlippage?.ratio) {
+    priceDifferencePercentage = parseFloat(
+      new BigNumber(usedQuote.priceSlippage.ratio, 10)
+        .minus(1, 10)
+        .times(100, 10)
+        .toFixed(2),
+      10,
+    )
+  }
+
+  const shouldShowPriceDifferenceWarning =
+    !showInsufficientWarning &&
+    usedQuote &&
+    (['high', 'medium'].includes(usedQuote.priceSlippage.bucket) ||
+      priceSlippageUnknownFiatValue)
+
+  if (shouldShowPriceDifferenceWarning) {
+    viewQuotePriceDifferenceComponent = (
+      <ViewQuotePriceDifference
+        usedQuote={usedQuote}
+        sourceTokenValue={sourceTokenValue}
+        destinationTokenValue={destinationTokenValue}
+        priceSlippageFromSource={priceSlippageFromSource}
+        priceSlippageFromDestination={priceSlippageFromDestination}
+        priceDifferencePercentage={priceDifferencePercentage}
+        priceSlippageUnknownFiatValue={priceSlippageUnknownFiatValue}
+        onAcknowledgementClick={() => {
+          setAcknowledgedPriceDifference(true)
+        }}
+        acknowledged={acknowledgedPriceDifference}
+      />
+    )
+  }
+
+  const disableSubmissionDueToPriceWarning =
+    shouldShowPriceDifferenceWarning && !acknowledgedPriceDifference
+
   const isShowingWarning =
-    showInsufficientWarning || viewQuotePriceDifferenceComponent !== null
+    showInsufficientWarning || shouldShowPriceDifferenceWarning
 
   return (
     <div className="view-quote">
-      <div className="view-quote__content">
+      <div
+        className={classnames('view-quote__content', {
+          'view-quote__content_modal': disableSubmissionDueToPriceWarning,
+        })}
+      >
         {selectQuotePopoverShown && (
           <SelectQuotePopover
             quoteDataRows={renderablePopoverData}
@@ -503,7 +559,7 @@ export default function ViewQuote() {
             'view-quote__warning-wrapper--thin': !isShowingWarning,
           })}
         >
-          {!showInsufficientWarning && viewQuotePriceDifferenceComponent}
+          {viewQuotePriceDifferenceComponent}
           {showInsufficientWarning && (
             <ActionableMessage
               message={actionableInsufficientMessage}
@@ -585,6 +641,7 @@ export default function ViewQuote() {
         disabled={
           submitClicked ||
           balanceError ||
+          disableSubmissionDueToPriceWarning ||
           gasPrice === null ||
           gasPrice === undefined
         }
