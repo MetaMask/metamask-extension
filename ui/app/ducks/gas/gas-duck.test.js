@@ -194,6 +194,9 @@ describe('Gas Duck', function () {
 
     it('should fetch recently retrieved estimates from storage', async function () {
       const mockDistpatch = sinon.spy()
+
+      const windowFetchSpy = sinon.spy(window, 'fetch')
+
       fakeStorage.getStorageItem
         .withArgs('BASIC_PRICE_ESTIMATES_LAST_RETRIEVED')
         .returns(2000000 - 1) // one second ago from "now"
@@ -209,7 +212,7 @@ describe('Gas Duck', function () {
       assert.deepStrictEqual(mockDistpatch.getCall(0).args, [
         { type: BASIC_GAS_ESTIMATE_LOADING_STARTED },
       ])
-      // assert.ok(window.fetch.notCalled)
+      assert.ok(windowFetchSpy.notCalled)
       assert.deepStrictEqual(mockDistpatch.getCall(1).args, [
         {
           type: SET_BASIC_GAS_ESTIMATE_DATA,
