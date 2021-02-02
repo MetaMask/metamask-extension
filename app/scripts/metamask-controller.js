@@ -1645,18 +1645,34 @@ export default class MetamaskController extends EventEmitter {
   async newRequestEncryptionPublicKey(msgParams, req) {
     const address = msgParams
     const keyring = await this.keyringController.getKeyringForAccount(address)
-    if (keyring.type === 'Ledger Hardware') {
-      return new Promise((_, reject) => {
-        reject(new Error('Ledger does not support eth_getEncryptionPublicKey.'))
-      })
+
+    switch (keyring.type) {
+      case 'Ledger Hardware': {
+        return new Promise((_, reject) => {
+          reject(
+            new Error('Ledger does not support eth_getEncryptionPublicKey.'),
+          )
+        })
+      }
+
+      case 'Trezor Hardware': {
+        return new Promise((_, reject) => {
+          reject(
+            new Error('Trezor does not support eth_getEncryptionPublicKey.'),
+          )
+        })
+      }
+
+      default: {
+        const promise = this.encryptionPublicKeyManager.addUnapprovedMessageAsync(
+          msgParams,
+          req,
+        )
+        this.sendUpdate()
+        this.opts.showUserConfirmation()
+        return promise
+      }
     }
-    const promise = this.encryptionPublicKeyManager.addUnapprovedMessageAsync(
-      msgParams,
-      req,
-    )
-    this.sendUpdate()
-    this.opts.showUserConfirmation()
-    return promise
   }
 
   /**
