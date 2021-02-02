@@ -1,18 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import InfoTooltip from '../../../components/ui/info-tooltip';
 
 export default function ActionableMessage({
   message = '',
   primaryAction = null,
   secondaryAction = null,
   className = '',
+  infoTooltipText = '',
 }) {
   return (
     <div className={classnames('actionable-message', className)}>
+      {infoTooltipText && (
+        <div className="actionable-message__info-tooltip-wrapper">
+          <InfoTooltip position="left" contentText={infoTooltipText} />
+        </div>
+      )}
       <div className="actionable-message__message">{message}</div>
       {(primaryAction || secondaryAction) && (
-        <div className="actionable-message__actions">
+        <div className={classnames('actionable-message__actions')}>
           {primaryAction && (
             <div
               className={classnames(
@@ -52,4 +59,5 @@ ActionableMessage.propTypes = {
     onClick: PropTypes.func,
   }),
   className: PropTypes.string,
+  infoTooltipText: PropTypes.string,
 };

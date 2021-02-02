@@ -364,6 +364,9 @@
   "contactsSettingsDescription": {
     "message": "Add, edit, remove, and manage your contacts"
   },
+  "continue": {
+    "message": "Continue"
+  },
   "continueToWyre": {
     "message": "Continue to Wyre"
   },
@@ -1847,7 +1850,10 @@
   },
   "swapTokenVerificationMessage": {
     "message": "$1 Always confirm the token address on $2. $3",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"swapTokenVerificationSources\" and $2 with the translation for \"etherscan\""
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"swapTokenVerificationSources\" and $2 with the translation for \"etherscan\". $3 will be replaced by an info icon that shows more info on hover."
+  },
+  "swapTokenVerificationOnlyOneSource": {
+    "message": "Only verified on 1 source."
   },
   "swapTokenVerificationSources": {
     "message": "Verified on $1 sources.",
@@ -1877,6 +1883,10 @@
   },
   "swapsAdvancedOptions": {
     "message": "Advanced Options"
+  },
+  "swapsConfirmTokenAddressOnEtherScan": {
+    "message": "Confirm token address on $1.",
+    "description": "Asks the user to verify information about a token on etherscan. $1 will be replaced by the translation for \"etherscan\""
   },
   "swapsExcessiveSlippageWarning": {
     "message": "Slippage amount is too high and will result in a bad rate. Please reduce your slippage tolerance to a value below 15%."

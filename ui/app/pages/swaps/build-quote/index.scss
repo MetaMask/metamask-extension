@@ -144,6 +144,10 @@
     font-weight: bold;
   }
 
+  &__underline {
+    text-decoration: underline;
+  }
+
   /* Prevents the swaps "Swap to" field from overflowing */
   .dropdown-input-pair__to .dropdown-search-list {
     width: 100%;
