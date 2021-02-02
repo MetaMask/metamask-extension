@@ -2104,20 +2104,34 @@ export default class MetamaskController extends EventEmitter {
         setWeb3ShimUsageRecorded: this.alertController.setWeb3ShimUsageRecorded.bind(
           this.alertController,
         ),
-        customRpcExistsWith: this.customRpcExistsWith.bind(this),
+        findCustomRpcBy: this.findCustomRpcBy.bind(this),
         requestUserApproval: this.approvalController.addAndShowApprovalRequest.bind(
           this.approvalController,
         ),
-        addCustomRpc: ({
+        updateRpcTarget: ({ rpcUrl, chainId, ticker, nickname }) => {
+          this.networkController.setRpcTarget(
+            rpcUrl,
+            chainId,
+            ticker,
+            nickname,
+          );
+        },
+        addCustomRpc: async ({
           chainId,
           blockExplorerUrl,
           ticker,
           chainName,
           rpcUrl,
         } = {}) => {
-          this.updateAndSetCustomRpc(rpcUrl, chainId, ticker, chainName, {
-            blockExplorerUrl,
-          });
+          await this.preferencesController.addToFrequentRpcList(
+            rpcUrl,
+            chainId,
+            ticker,
+            chainName,
+            {
+              blockExplorerUrl,
+            },
+          );
         },
       }),
     );
@@ -2557,23 +2571,22 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Checks whether the given RPC info object matches at least one field of any
-   * existing frequent RPC list object.
+   * Returns the first RPC info object that matches at least one field of the
+   * provided search criteria. Returns null if no match is found
    *
    * @param {Object} rpcInfo - The RPC endpoint properties and values to check.
-   * @returns {boolean} true if there exists an RPC list entry with any of the
-   * given propertiers, false otherwise.
+   * @returns {Object} rpcInfo found in the frequentRpcList
    */
-  customRpcExistsWith(rpcInfo) {
+  findCustomRpcBy(rpcInfo) {
     const frequentRpcListDetail = this.preferencesController.getFrequentRpcListDetail();
     for (const existingRpcInfo of frequentRpcListDetail) {
       for (const key of Object.keys(rpcInfo)) {
         if (existingRpcInfo[key] === rpcInfo[key]) {
-          return true;
+          return existingRpcInfo;
         }
       }
     }
-    return false;
+    return null;
   }
 
   async initializeThreeBox() {
