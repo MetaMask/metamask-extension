@@ -2,6 +2,42 @@
 
 ## Current Develop Branch
 
+## 0.5.10 Tue Feb 02 2021
+
+- chore: format
+- feat: set default idle lock timer to 5min, #5xpw3d PORTAL-256
+- feat: ui level new base32 address, WIP
+- ci: run unit-test on gh
+- feat: new @cfx/fullnode version
+- test: fix unit/e2e test
+- feat: add multiple addr to account detail modal
+- feat: use base32 addr for account link to scan
+- feat: support base32 in add token and approve
+- feat: support base32 address in address book
+- fix: \$0.00 currency display bug
+- feat: hex addr warning in address book
+- feat: alter docs about address
+- fix: add-recipient unit tests
+- fix: use new cip37 charset
+- fix: remove current network
+- feat: new address slicer
+- fix: remove qrcode
+- test: address slicer unit test
+- feat: support hex address when add token
+- test: remove qrcode e2e test
+- feat: scan address converter url
+- feat: base32 addr in choose account
+- fix: base32 addr notice wording
+- fix: missing i18n PORTAL-428
+- feat: support scan's new token list api
+- fix: network name tag PORTAL-369
+- fix: base32 address out of ui PORTAL-426
+- fix: i18n PORTAL-442
+- fix: PORTAL-444 edit contact, remove the right address from addr book
+- fix: wallet seed, < back i18n
+- fix: use https for scantest.confluxscan.io
+- fix: base32 address in permission confirm page
+
 ## 0.5.9 Thu Dec 31 2020
 
 - fix: cfx_requestAccounts CU-ggztjn CU-59v4cv

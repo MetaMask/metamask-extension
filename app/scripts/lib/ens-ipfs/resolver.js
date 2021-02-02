@@ -7,7 +7,7 @@ import contentHash from 'content-hash'
 
 export default resolveEnsToIpfsContentId
 
-async function resolveEnsToIpfsContentId ({ provider, name }) {
+async function resolveEnsToIpfsContentId({ provider, name }) {
   const eth = new Eth(provider)
   const hash = namehash.hash(name)
   const contract = new EthContract(eth)
@@ -60,7 +60,7 @@ async function resolveEnsToIpfsContentId ({ provider, name }) {
   )
 }
 
-function hexValueIsEmpty (value) {
+function hexValueIsEmpty(value) {
   return [
     undefined,
     null,
@@ -75,7 +75,7 @@ function hexValueIsEmpty (value) {
  * @param {number} chainId the chain ID
  * @returns {string|null} the registry address if known, null otherwise
  */
-function getRegistryForChainId (chainId) {
+function getRegistryForChainId(chainId) {
   switch (chainId) {
     case 1:
     // falls through

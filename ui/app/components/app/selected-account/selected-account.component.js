@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import copyToClipboard from 'copy-to-clipboard'
-import { addressSlicer, checksumAddress } from '../../../helpers/utils/util'
+import { base32AddressSlicer } from '../../../helpers/utils/util'
 import AddressWarning from '../../ui/address-warning'
 
 import Tooltip from '../../ui/tooltip-v2.js'
@@ -16,15 +16,13 @@ class SelectedAccount extends Component {
   }
 
   static propTypes = {
-    selectedAddress: PropTypes.string,
+    selectedBase32Address: PropTypes.string,
     selectedIdentity: PropTypes.object,
-    network: PropTypes.string,
   }
 
-  render () {
+  render() {
     const { t } = this.context
-    const { selectedAddress, selectedIdentity, network } = this.props
-    const checksummedAddress = checksumAddress(selectedAddress, network)
+    const { selectedBase32Address, selectedIdentity } = this.props
 
     return (
       <div className="selected-account">
@@ -32,12 +30,12 @@ class SelectedAccount extends Component {
           position="bottom"
           html={
             (
-              <AddressWarning warning={' ' + t('confluxAddressWarningClip')}>
-                {this.state.copied
-                  ? t('copiedExclamation')
-                  : t('copyToClipboard')}
-              </AddressWarning>
-            )
+<AddressWarning warning={' ' + t('base32AddressNoticeShort')}>
+              {this.state.copied
+                ? t('copiedExclamation')
+                : t('copyToClipboard')}
+</AddressWarning>
+)
           }
         >
           <div
@@ -45,14 +43,14 @@ class SelectedAccount extends Component {
             onClick={() => {
               this.setState({ copied: true })
               setTimeout(() => this.setState({ copied: false }), 3000)
-              copyToClipboard(checksummedAddress)
+              copyToClipboard(selectedBase32Address)
             }}
           >
             <div className="selected-account__name">
               {selectedIdentity.name}
             </div>
             <div className="selected-account__address">
-              {addressSlicer(checksummedAddress)}
+              {base32AddressSlicer(selectedBase32Address)}
             </div>
           </div>
         </Tooltip>

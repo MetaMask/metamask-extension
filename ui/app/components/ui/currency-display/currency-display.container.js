@@ -7,7 +7,7 @@ import {
 } from '../../../helpers/utils/confirm-tx.util'
 import { WEI } from '../../../helpers/constants/common'
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   const {
     metamask: { nativeCurrency, currentCurrency, conversionRate },
   } = state
@@ -34,7 +34,7 @@ const mergeProps = (stateProps, _, ownProps) => {
 
   const toCurrency = currency || currentCurrency
 
-  const displayValue =
+  let displayValue =
     propsDisplayValue ||
     formatCurrency(
       getValueFromWeiHex({
@@ -47,6 +47,9 @@ const mergeProps = (stateProps, _, ownProps) => {
       }),
       toCurrency
     )
+  if (displayValue === '$0.00') {
+ displayValue = '0'
+}
   const suffix =
     propsSuffix || (hideLabel ? undefined : toCurrency.toUpperCase())
 

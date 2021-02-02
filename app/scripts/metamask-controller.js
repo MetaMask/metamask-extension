@@ -63,11 +63,11 @@ import { getStatus } from './controllers/network/util'
 
 import nanoid from 'nanoid'
 import {
-  AddressBookController,
   CurrencyRateController,
   ShapeShiftController,
   PhishingController,
 } from 'gaba'
+import { AddressBookControllerWithBase32Address } from './addressbook-cip37'
 
 import backEndMetaMetricsEvent from './lib/backend-metametrics'
 
@@ -231,7 +231,7 @@ export default class MetamaskController extends EventEmitter {
       initState: initState.ABTestController,
     })
 
-    this.addressBookController = new AddressBookController(
+    this.addressBookController = new AddressBookControllerWithBase32Address(
       undefined,
       initState.AddressBookController
     )

@@ -5,16 +5,6 @@ import Identicon from '../../../../components/ui/identicon'
 import Button from '../../../../components/ui/button/button.component'
 import copyToClipboard from 'copy-to-clipboard'
 
-function quadSplit (address) {
-  return (
-    '0x ' +
-    address
-      .slice(2)
-      .match(/.{1,4}/g)
-      .join(' ')
-  )
-}
-
 export default class ViewContact extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
@@ -23,19 +13,19 @@ export default class ViewContact extends PureComponent {
   static propTypes = {
     name: PropTypes.string,
     address: PropTypes.string,
+    base32Address: PropTypes.string,
     history: PropTypes.object,
-    checkSummedAddress: PropTypes.string,
     memo: PropTypes.string,
     editRoute: PropTypes.string,
   }
 
-  render () {
+  render() {
     const { t } = this.context
     const {
       history,
       name,
       address,
-      checkSummedAddress,
+      base32Address,
       memo,
       editRoute,
     } = this.props
@@ -63,11 +53,11 @@ export default class ViewContact extends PureComponent {
             </div>
             <div className="address-book__view-contact__group__value">
               <div className="address-book__view-contact__group__static-address">
-                {quadSplit(checkSummedAddress)}
+                {base32Address}
               </div>
               <img
                 className="address-book__view-contact__group__static-address--copy-icon"
-                onClick={() => copyToClipboard(checkSummedAddress)}
+                onClick={() => copyToClipboard(base32Address)}
                 src="/images/copy-to-clipboard.svg"
               />
             </div>

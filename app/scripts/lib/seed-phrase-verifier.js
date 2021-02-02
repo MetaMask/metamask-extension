@@ -15,7 +15,7 @@ const seedPhraseVerifier = {
    * @returns {Promise<void>} - Promises undefined
    *
    */
-  verifyAccounts (createdAccounts, seedWords) {
+  verifyAccounts(createdAccounts, seedWords) {
     return new Promise((resolve, reject) => {
       if (!createdAccounts || createdAccounts.length < 1) {
         return reject(new Error('No created accounts defined.'))
@@ -29,7 +29,7 @@ const seedPhraseVerifier = {
       }
 
       const keyring = new Keyring(opts)
-      keyring.getAccounts().then((restoredAccounts) => {
+      keyring.getAccounts().then(restoredAccounts => {
         log.debug('Created accounts: ' + JSON.stringify(createdAccounts))
         log.debug('Restored accounts: ' + JSON.stringify(restoredAccounts))
 

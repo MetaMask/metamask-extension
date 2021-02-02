@@ -15,6 +15,7 @@ import {
   getTokenValue,
 } from '../../helpers/utils/token-util'
 import ConfirmApprove from './confirm-approve.component'
+import { hexToBase32 } from '../../../../app/scripts/cip37'
 
 const mapStateToProps = (state, ownProps) => {
   const {
@@ -24,6 +25,7 @@ const mapStateToProps = (state, ownProps) => {
   const {
     confirmTransaction,
     metamask: {
+      network,
       currentCurrency,
       conversionRate,
       selectedAddressTxList,
@@ -56,6 +58,7 @@ const mapStateToProps = (state, ownProps) => {
   const tokenData = getTokenData(data)
   const tokenValue = tokenData && getTokenValue(tokenData.params)
   const toAddress = tokenData && getTokenToAddress(tokenData.params)
+  const toBase32Address = hexToBase32(toAddress, parseInt(network, 10))
   const tokenAmount =
     tokenData && calcTokenAmount(tokenValue, decimals).toString(10)
   const contractExchangeRate = contractExchangeRateSelector(state)
@@ -68,6 +71,7 @@ const mapStateToProps = (state, ownProps) => {
   const { icon: siteImage = '' } = domainMetadata[origin] || {}
   return {
     toAddress,
+    toBase32Address,
     tokenAddress,
     tokenAmount,
     currentCurrency,
@@ -86,9 +90,9 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
-    showCustomizeGasModal: (txData) =>
+    showCustomizeGasModal: txData =>
       dispatch(showModal({ name: 'CUSTOMIZE_GAS', txData })),
     showEditApprovalPermissionModal: ({
       customTokenAmount,

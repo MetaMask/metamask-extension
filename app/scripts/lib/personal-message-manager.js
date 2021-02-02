@@ -38,7 +38,7 @@ export default class PersonalMessageManager extends EventEmitter {
    * @property {array} messages Holds all messages that have been created by this PersonalMessageManager
    *
    */
-  constructor () {
+  constructor() {
     super()
     this.memStore = new ObservableStore({
       unapprovedPersonalMsgs: {},
@@ -53,7 +53,7 @@ export default class PersonalMessageManager extends EventEmitter {
    * @returns {number} - The number of 'unapproved' PersonalMessages in this.messages
    *
    */
-  get unapprovedPersonalMsgCount () {
+  get unapprovedPersonalMsgCount() {
     return Object.keys(this.getUnapprovedMsgs()).length
   }
 
@@ -64,9 +64,9 @@ export default class PersonalMessageManager extends EventEmitter {
    * this.messages
    *
    */
-  getUnapprovedMsgs () {
+  getUnapprovedMsgs() {
     return this.messages
-      .filter((msg) => msg.status === 'unapproved')
+      .filter(msg => msg.status === 'unapproved')
       .reduce((result, msg) => {
         result[msg.id] = msg
         return result
@@ -83,13 +83,13 @@ export default class PersonalMessageManager extends EventEmitter {
    * @returns {promise} - When the message has been signed or rejected
    *
    */
-  addUnapprovedMessageAsync (msgParams, req) {
+  addUnapprovedMessageAsync(msgParams, req) {
     return new Promise((resolve, reject) => {
       if (!msgParams.from) {
         reject(new Error('MetaMask Message Signature: from field is required.'))
       }
       const msgId = this.addUnapprovedMessage(msgParams, req)
-      this.once(`${msgId}:finished`, (data) => {
+      this.once(`${msgId}:finished`, data => {
         switch (data.status) {
           case 'signed':
             return resolve(data.rawSig)
@@ -122,7 +122,7 @@ export default class PersonalMessageManager extends EventEmitter {
    * @returns {number} - The id of the newly created PersonalMessage.
    *
    */
-  addUnapprovedMessage (msgParams, req) {
+  addUnapprovedMessage(msgParams, req) {
     log.debug(
       `PersonalMessageManager addUnapprovedMessage: ${JSON.stringify(
         msgParams
@@ -157,7 +157,7 @@ export default class PersonalMessageManager extends EventEmitter {
    * @param {Message} msg - The PersonalMessage to add to this.messages
    *
    */
-  addMsg (msg) {
+  addMsg(msg) {
     this.messages.push(msg)
     this._saveMsgList()
   }
@@ -170,8 +170,8 @@ export default class PersonalMessageManager extends EventEmitter {
    * if no PersonalMessage has that id.
    *
    */
-  getMsg (msgId) {
-    return this.messages.find((msg) => msg.id === msgId)
+  getMsg(msgId) {
+    return this.messages.find(msg => msg.id === msgId)
   }
 
   /**
@@ -183,7 +183,7 @@ export default class PersonalMessageManager extends EventEmitter {
    * @returns {Promise<object>} - Promises the msgParams object with metamaskId removed.
    *
    */
-  approveMessage (msgParams) {
+  approveMessage(msgParams) {
     this.setMsgStatusApproved(msgParams.metamaskId)
     return this.prepMsgForSigning(msgParams)
   }
@@ -194,7 +194,7 @@ export default class PersonalMessageManager extends EventEmitter {
    * @param {number} msgId - The id of the PersonalMessage to approve.
    *
    */
-  setMsgStatusApproved (msgId) {
+  setMsgStatusApproved(msgId) {
     this._setMsgStatus(msgId, 'approved')
   }
 
@@ -206,7 +206,7 @@ export default class PersonalMessageManager extends EventEmitter {
    * @param {buffer} rawSig - The raw data of the signature request
    *
    */
-  setMsgStatusSigned (msgId, rawSig) {
+  setMsgStatusSigned(msgId, rawSig) {
     const msg = this.getMsg(msgId)
     msg.rawSig = rawSig
     this._updateMsg(msg)
@@ -220,7 +220,7 @@ export default class PersonalMessageManager extends EventEmitter {
    * @returns {Promise<object>} - Promises the msgParams with the metamaskId property removed
    *
    */
-  prepMsgForSigning (msgParams) {
+  prepMsgForSigning(msgParams) {
     delete msgParams.metamaskId
     return Promise.resolve(msgParams)
   }
@@ -231,7 +231,7 @@ export default class PersonalMessageManager extends EventEmitter {
    * @param {number} msgId - The id of the PersonalMessage to reject.
    *
    */
-  rejectMsg (msgId) {
+  rejectMsg(msgId) {
     this._setMsgStatus(msgId, 'rejected')
   }
 
@@ -248,7 +248,7 @@ export default class PersonalMessageManager extends EventEmitter {
    * with the PersonalMessage
    *
    */
-  _setMsgStatus (msgId, status) {
+  _setMsgStatus(msgId, status) {
     const msg = this.getMsg(msgId)
     if (!msg) {
       throw new Error(
@@ -272,8 +272,8 @@ export default class PersonalMessageManager extends EventEmitter {
    * id) in this.messages
    *
    */
-  _updateMsg (msg) {
-    const index = this.messages.findIndex((message) => message.id === msg.id)
+  _updateMsg(msg) {
+    const index = this.messages.findIndex(message => message.id === msg.id)
     if (index !== -1) {
       this.messages[index] = msg
     }
@@ -287,7 +287,7 @@ export default class PersonalMessageManager extends EventEmitter {
    * @fires 'updateBadge'
    *
    */
-  _saveMsgList () {
+  _saveMsgList() {
     const unapprovedPersonalMsgs = this.getUnapprovedMsgs()
     const unapprovedPersonalMsgCount = Object.keys(unapprovedPersonalMsgs)
       .length
@@ -305,7 +305,7 @@ export default class PersonalMessageManager extends EventEmitter {
    * @returns {string} - A hex string conversion of the buffer data
    *
    */
-  normalizeMsgData (data) {
+  normalizeMsgData(data) {
     try {
       const stripped = ethUtil.stripHexPrefix(data)
       if (stripped.match(hexRe)) {

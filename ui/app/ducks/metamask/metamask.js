@@ -2,7 +2,7 @@ import { actionConstants as actions } from '../../store/actions'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
 
-export default function reduceMetamask (state = {}, action) {
+export default function reduceMetamask(state = {}, action) {
   const metamaskState = Object.assign(
     {
       isInitialized: false,
@@ -258,7 +258,13 @@ export default function reduceMetamask (state = {}, action) {
         send: {
           ...metamaskState.send,
           to: action.value.to,
+          address: action.value.address,
+          base32Address: action.value.base32Address,
+          inputIsBase32: action.value.inputIsBase32,
           toNickname: action.value.nickname,
+          fromRecent: action.value.fromRecent,
+          fromMyAccounts: action.value.fromMyAccounts,
+          fromAddressBook: action.value.fromAddressBook,
         },
       }
 
@@ -331,7 +337,7 @@ export default function reduceMetamask (state = {}, action) {
     case actions.UPDATE_TRANSACTION_PARAMS:
       const { id: txId, value } = action
       let { selectedAddressTxList } = metamaskState
-      selectedAddressTxList = selectedAddressTxList.map((tx) => {
+      selectedAddressTxList = selectedAddressTxList.map(tx => {
         if (tx.id === txId) {
           const newTx = Object.assign({}, tx)
           newTx.txParams = value

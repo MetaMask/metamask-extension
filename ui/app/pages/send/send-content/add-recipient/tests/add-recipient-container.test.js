@@ -18,22 +18,24 @@ proxyquire('../add-recipient.container.js', {
     },
   },
   '../../send.selectors.js': {
-    getSendEnsResolution: (s) => `mockSendEnsResolution:${s}`,
-    getSendEnsResolutionError: (s) => `mockSendEnsResolutionError:${s}`,
-    accountsWithSendEtherInfoSelector: (s) =>
+    getCurrentNetwork: () => '2999',
+    getSendEnsResolution: s => `mockSendEnsResolution:${s}`,
+    getSendEnsResolutionError: s => `mockSendEnsResolutionError:${s}`,
+    accountsWithSendEtherInfoSelector: s =>
       `mockAccountsWithSendEtherInfoSelector:${s}`,
   },
   '../../../../selectors/selectors': {
-    getAddressBook: (s) => [{ name: `mockAddressBook:${s}` }],
-    getAddressBookEntry: (s) => `mockAddressBookEntry:${s}`,
+    getAddressBook: s => [{ name: `mockAddressBook:${s}` }],
+    getAddressBookEntry: s => `mockAddressBookEntry:${s}`,
   },
   '../../../../store/actions': actionSpies,
 })
 
-describe('add-recipient container', function () {
-  describe('mapStateToProps()', function () {
-    it('should map the correct properties to props', function () {
+describe('add-recipient container', function() {
+  describe('mapStateToProps()', function() {
+    it('should map the correct properties to props', function() {
       assert.deepEqual(mapStateToProps('mockState'), {
+        network: 2999,
         addressBook: [{ name: 'mockAddressBook:mockState' }],
         contacts: [{ name: 'mockAddressBook:mockState' }],
         ensResolution: 'mockSendEnsResolution:mockState',
@@ -45,18 +47,23 @@ describe('add-recipient container', function () {
     })
   })
 
-  describe('mapDispatchToProps()', function () {
-    describe('updateSendTo()', function () {
+  describe('mapDispatchToProps()', function() {
+    describe('updateSendTo()', function() {
       const dispatchSpy = sinon.spy()
       const mapDispatchToPropsObject = mapDispatchToProps(dispatchSpy)
 
-      it('should dispatch an action', function () {
-        mapDispatchToPropsObject.updateSendTo('mockTo', 'mockNickname')
+      it('should dispatch an action', function() {
+        mapDispatchToPropsObject.updateSendTo(
+          'mockTo',
+          'mockNickname',
+          'mockOpt'
+        )
         assert(dispatchSpy.calledOnce)
         assert(actionSpies.updateSendTo.calledOnce)
         assert.deepEqual(actionSpies.updateSendTo.getCall(0).args, [
           'mockTo',
           'mockNickname',
+          'mockOpt',
         ])
       })
     })

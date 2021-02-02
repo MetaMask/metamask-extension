@@ -6,7 +6,7 @@ import {
 } from '../../../../../../app/scripts/lib/enums'
 import NetworkDisplay from '../../network-display'
 import Identicon from '../../../ui/identicon'
-import { addressSlicer } from '../../../../helpers/utils/util'
+import { base32AddressSlicer } from '../../../../helpers/utils/util'
 
 export default class ConfirmPageContainerHeader extends Component {
   static contextTypes = {
@@ -15,14 +15,21 @@ export default class ConfirmPageContainerHeader extends Component {
 
   static propTypes = {
     accountAddress: PropTypes.string,
+    base32AccountAddress: PropTypes.string,
     showAccountInHeader: PropTypes.bool,
     showEdit: PropTypes.bool,
     onEdit: PropTypes.func,
     children: PropTypes.node,
   }
 
-  renderTop () {
-    const { onEdit, showEdit, accountAddress, showAccountInHeader } = this.props
+  renderTop() {
+    const {
+      onEdit,
+      showEdit,
+      accountAddress,
+      base32AccountAddress,
+      showAccountInHeader,
+    } = this.props
     const windowType = window.METAMASK_UI_TYPE
     const isFullScreen =
       windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
@@ -56,7 +63,7 @@ export default class ConfirmPageContainerHeader extends Component {
               <Identicon address={accountAddress} diameter={24} />
             </div>
             <div className="confirm-page-container-header__address">
-              {addressSlicer(accountAddress)}
+              {base32AddressSlicer(base32AccountAddress)}
             </div>
           </div>
         ) : null}
@@ -65,7 +72,7 @@ export default class ConfirmPageContainerHeader extends Component {
     )
   }
 
-  render () {
+  render() {
     const { children } = this.props
 
     return (

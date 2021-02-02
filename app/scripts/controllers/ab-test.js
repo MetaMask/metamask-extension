@@ -18,7 +18,7 @@ class ABTestController {
    * @constructor
    * @param opts
    */
-  constructor (opts = {}) {
+  constructor(opts = {}) {
     const { initState } = opts
     this.store = new ObservableStore(
       Object.assign(
@@ -39,7 +39,7 @@ class ABTestController {
    * @param {string} abTestKey - the key of the a/b test
    * @returns {string} - the name of the assigned test group
    */
-  getAssignedABTestGroupName (abTestKey) {
+  getAssignedABTestGroupName(abTestKey) {
     return this.store.getState().abTests[abTestKey]
   }
 
@@ -49,7 +49,7 @@ class ABTestController {
    * @returns {string} - the name of the randomly selected test group
    * @private
    */
-  _getRandomizedTestGroupName (abTestKey) {
+  _getRandomizedTestGroupName(abTestKey) {
     const nameArray = ABTestController.abTestGroupNames[abTestKey]
     return getRandomArrayItem(nameArray)
   }

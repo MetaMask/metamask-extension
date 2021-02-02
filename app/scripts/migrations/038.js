@@ -8,7 +8,7 @@ import { getRandomArrayItem } from '../lib/util'
  */
 export default {
   version,
-  migrate: async function (originalVersionedData) {
+  migrate: async function(originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     const state = versionedData.data
@@ -17,7 +17,7 @@ export default {
   },
 }
 
-function transformState (state) {
+function transformState(state) {
   const { ABTestController: ABTestControllerState = {} } = state
   const { abTests = {} } = ABTestControllerState
 

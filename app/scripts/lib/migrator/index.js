@@ -17,7 +17,7 @@ class Migrator extends EventEmitter {
    * @constructor
    * @param {MigratorOptions} opts
    */
-  constructor (opts = {}) {
+  constructor(opts = {}) {
     super()
     const migrations = opts.migrations || []
     // sort migrations by version
@@ -30,7 +30,7 @@ class Migrator extends EventEmitter {
   }
 
   // run all pending migrations on meta in place
-  async migrateData (versionedData = this.generateInitialState()) {
+  async migrateData(versionedData = this.generateInitialState()) {
     // get all migrations that have not yet been run
     const pendingMigrations = this.migrations.filter(migrationIsPending)
 
@@ -74,7 +74,7 @@ class Migrator extends EventEmitter {
      * @param {Migration} migration
      * @returns {boolean}
      */
-    function migrationIsPending (migration) {
+    function migrationIsPending(migration) {
       return migration.version > versionedData.meta.version
     }
   }
@@ -84,7 +84,7 @@ class Migrator extends EventEmitter {
    * @param {Object} [data] - The data for the initial state
    * @returns {{meta: {version: number}, data: any}}
    */
-  generateInitialState (data) {
+  generateInitialState(data) {
     return {
       meta: {
         version: this.defaultVersion,

@@ -12,7 +12,7 @@ import { cloneDeep } from 'lodash'
 export default {
   version,
 
-  migrate: function (originalVersionedData) {
+  migrate: function(originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     try {
@@ -26,7 +26,7 @@ export default {
   },
 }
 
-function transformState (state) {
+function transformState(state) {
   const newState = state
   const { TransactionController } = newState
   if (TransactionController && TransactionController.transactions) {
@@ -39,18 +39,18 @@ function transformState (state) {
         }
 
         const confirmedTxs = txList
-          .filter((tx) => tx.status === 'confirmed')
-          .filter((tx) => tx.txParams.from === txMeta.txParams.from)
+          .filter(tx => tx.status === 'confirmed')
+          .filter(tx => tx.txParams.from === txMeta.txParams.from)
           .filter(
-            (tx) => tx.metamaskNetworkId.from === txMeta.metamaskNetworkId.from
+            tx => tx.metamaskNetworkId.from === txMeta.metamaskNetworkId.from
           )
         const highestConfirmedNonce = getHighestNonce(confirmedTxs)
 
         const pendingTxs = txList
-          .filter((tx) => tx.status === 'submitted')
-          .filter((tx) => tx.txParams.from === txMeta.txParams.from)
+          .filter(tx => tx.status === 'submitted')
+          .filter(tx => tx.txParams.from === txMeta.txParams.from)
           .filter(
-            (tx) => tx.metamaskNetworkId.from === txMeta.metamaskNetworkId.from
+            tx => tx.metamaskNetworkId.from === txMeta.metamaskNetworkId.from
           )
         const highestContinuousNonce = getHighestContinuousFrom(
           pendingTxs,
@@ -73,8 +73,8 @@ function transformState (state) {
   return newState
 }
 
-function getHighestContinuousFrom (txList, startPoint) {
-  const nonces = txList.map((txMeta) => {
+function getHighestContinuousFrom(txList, startPoint) {
+  const nonces = txList.map(txMeta => {
     const nonce = txMeta.txParams.nonce
     return parseInt(nonce, 16)
   })
@@ -87,8 +87,8 @@ function getHighestContinuousFrom (txList, startPoint) {
   return highest
 }
 
-function getHighestNonce (txList) {
-  const nonces = txList.map((txMeta) => {
+function getHighestNonce(txList) {
+  const nonces = txList.map(txMeta => {
     const nonce = txMeta.txParams.nonce
     return parseInt(nonce || '0x0', 16)
   })

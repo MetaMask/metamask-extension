@@ -5,12 +5,12 @@
     },
     "network": "4",
     "identities": {
-      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
-        "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+      "0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+        "address": "0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc",
         "name": "Test Account"
       },
-      "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
-        "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+      "0x142edfcc21ed14dda456aa0756c153f7985d8813": {
+        "address": "0x142edfcc21ed14dda456aa0756c153f7985d8813",
         "name": "Test Account 2"
       }
     },
@@ -24,8 +24,8 @@
         "metamaskNetworkId": "4",
         "loadingDefaults": false,
         "txParams": {
-          "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
-          "to": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+          "from": "0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+          "to": "0x142edfcc21ed14dda456aa0756c153f7985d8813",
           "value": "0x0",
           "gas": "0x5208",
           "gasPrice": "0x3b9aca00"
@@ -38,8 +38,8 @@
             "metamaskNetworkId": "4",
             "loadingDefaults": true,
             "txParams": {
-              "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
-              "to": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+              "from": "0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+              "to": "0x142edfcc21ed14dda456aa0756c153f7985d8813",
               "value": "0x0",
               "gas": "0x5208",
               "gasPrice": "0x3b9aca00"
@@ -84,14 +84,14 @@
         "origin": "MetaMask"
       }
     },
-    "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+    "selectedAddress": "0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc",
     "accounts": {
-      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+      "0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
         "balance": "0x0",
-        "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
+        "address": "0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc"
       },
-      "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
-        "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+      "0x142edfcc21ed14dda456aa0756c153f7985d8813": {
+        "address": "0x142edfcc21ed14dda456aa0756c153f7985d8813",
         "balance": "0x0"
       }
     },
@@ -122,8 +122,8 @@
     "conversionRate": 556.12,
     "addressBook": {
       "4": {
-        "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
-          "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+        "0x142edfcc21ed14dda456aa0756c153f7985d8813": {
+          "address": "0x142edfcc21ed14dda456aa0756c153f7985d8813",
           "chainId": "4",
           "isEns": false,
           "memo": "",
@@ -147,7 +147,7 @@
       "gasPrice": "0xee6b2800",
       "gasTotal": "0x4c65c6294000",
       "tokenBalance": null,
-      "from": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+      "from": "0x142edfcc21ed14dda456aa0756c153f7985d8813",
       "to": "",
       "amount": "1bc16d674ec80000",
       "memo": "",
@@ -1263,7 +1263,7 @@
     "currentView": {
       "name": "accountDetail",
       "detailView": null,
-      "context": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
+      "context": "0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc"
     }
   }
 }

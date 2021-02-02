@@ -23,8 +23,8 @@ export default function txHelper(
 
   const txValues = network
     ? valuesFor(unapprovedTxs).filter(
-      txMeta => txMeta.metamaskNetworkId === network
-    )
+        txMeta => txMeta.metamaskNetworkId === network
+      )
     : valuesFor(unapprovedTxs)
   log.debug(`tx helper found ${txValues.length} unapproved txs`)
 

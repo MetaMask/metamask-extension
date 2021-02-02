@@ -11,14 +11,14 @@
   "chartOnlyAvailableEth": {
     "message": "Chart only available on Conflux networks."
   },
-  "confluxAddressWarningClip": {
-    "message": "DO NOT transfer non-Conflux assets to this address to avoid permanent asset loss."
-  },
-  "confluxAddressWarningModal": {
-    "message": "DO NOT transfer non-Conflux assets to this address to avoid permanent asset loss."
-  },
   "confluxAddressWarningSend": {
     "message": "DO NOT transfer to non-ConfluxNetwork address to avoid permanent asset loss."
+  },
+  "confluxNewAddressWarning": {
+    "message": "It is recommended to use the new address format"
+  },
+  "goConvert": {
+    "message": "Convert"
   },
   "confluxContractAddressWarningSend": {
     "message": "ConfluxNetwork smart contract address, NOT user address"
@@ -774,8 +774,20 @@
   "insufficientTokens": {
     "message": "Insufficient tokens."
   },
+  "base32AddressNotice": {
+    "message": "Conflux address rules have been updated to automatically convert old addresses to new addresses. After that, the 0x prefixed addresses will be abandoned, and will gradually switch to the new address. Under new address rules, different addresses correspond to different networks. In special cases if you need, you can get the old address through the conversion tool."
+  },
+  "base32AddressNoticeShort": {
+    "message": "Conflux address rules have been updated to automatically convert old addresses to new addresses"
+  },
+  "base32AddressNoticeMedium": {
+    "message": "Conflux address rules have been updated to automatically convert old addresses to new addresses. After that, the 0x prefixed addresses will be abandoned"
+  },
   "invalidAddress": {
     "message": "Invalid address"
+  },
+  "invalidAddressNetId": {
+    "message": "Need to use the address beginning with $1 or switch network"
   },
   "invalidAddressRecipient": {
     "message": "Recipient address is invalid"
@@ -829,9 +841,6 @@
     "message": "JSON File",
     "description": "format for importing an account"
   },
-  "kovan": {
-    "message": "Kovan Test Network"
-  },
   "max": {
     "message": "Max"
   },
@@ -883,6 +892,9 @@
   },
   "mainnet": {
     "message": "Conflux Tethys"
+  },
+  "currentNetwork": {
+    "message": "Current Network"
   },
   "memorizePhrase": {
     "message": "Memorize this phrase."
@@ -1106,7 +1118,7 @@
     "message": "Recipient Address"
   },
   "recipientAddressPlaceholder": {
-    "message": "Search, public address (0x1 or 0x8)"
+    "message": "Search Conflux Address"
   },
   "rejectAll": {
     "message": "Reject All"
@@ -1192,9 +1204,6 @@
   },
   "ropsten": {
     "message": "Ropsten Test Network"
-  },
-  "goerli": {
-    "message": "Goerli Test Network"
   },
   "save": {
     "message": "Save"

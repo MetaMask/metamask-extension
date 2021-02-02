@@ -7,9 +7,11 @@ import Dialog from '../../../../components/ui/dialog'
 import ContactList from '../../../../components/app/contact-list'
 import RecipientGroup from '../../../../components/app/contact-list/recipient-group/recipient-group.component'
 import { ellipsify } from '../../send.utils'
+import { encodeNetId } from 'conflux-address-js'
 
 export default class AddRecipient extends Component {
   static propTypes = {
+    network: PropTypes.number,
     query: PropTypes.string,
     ownedAccounts: PropTypes.array,
     addressBook: PropTypes.array,
@@ -24,7 +26,7 @@ export default class AddRecipient extends Component {
     nonContacts: PropTypes.array,
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.recentFuse = new Fuse(props.nonContacts, {
       shouldSort: true,
@@ -59,10 +61,10 @@ export default class AddRecipient extends Component {
     isShowingTransfer: false,
   }
 
-  selectRecipient = (to, nickname = '') => {
+  selectRecipient = (to, nickname = '', opt = {}) => {
     const { updateSendTo, updateGas } = this.props
 
-    updateSendTo(to, nickname)
+    updateSendTo(to, nickname, opt)
     updateGas({ to })
   }
 
@@ -92,7 +94,7 @@ export default class AddRecipient extends Component {
     return _nonContacts
   }
 
-  render () {
+  render() {
     const { ensResolution, query, addressBookEntryName } = this.props
     const { isShowingTransfer } = this.state
 
@@ -111,13 +113,22 @@ export default class AddRecipient extends Component {
 
     return (
       <div className="send__select-recipient-wrapper">
+        {this.renderBase32AddressNotice()}
         {this.renderDialogs()}
         {content || this.renderMain()}
       </div>
     )
   }
 
-  renderExplicitAddress (address, name) {
+  renderBase32AddressNotice() {
+    return (
+      <Dialog type="message" className="send__error-dialog">
+        {this.context.t('base32AddressNoticeMedium')}
+      </Dialog>
+    )
+  }
+
+  renderExplicitAddress(address, name) {
     return (
       <div
         key={address}
@@ -139,7 +150,7 @@ export default class AddRecipient extends Component {
     )
   }
 
-  renderTransfer () {
+  renderTransfer() {
     const { ownedAccounts } = this.props
     const { t } = this.context
 
@@ -155,13 +166,15 @@ export default class AddRecipient extends Component {
         <RecipientGroup
           label={t('myAccounts')}
           items={ownedAccounts}
-          onSelect={this.selectRecipient}
+          onSelect={(addr, nickname) =>
+            this.selectRecipient(addr, nickname, { fromMyAccounts: true })
+          }
         />
       </div>
     )
   }
 
-  renderMain () {
+  renderMain() {
     const { t } = this.context
     const { query, ownedAccounts = [], addressBook } = this.props
 
@@ -186,15 +199,21 @@ export default class AddRecipient extends Component {
     )
   }
 
-  renderDialogs () {
-    const { toError, toWarning, ensResolutionError, ensResolution } = this.props
+  renderDialogs() {
+    const {
+      network,
+      toError,
+      toWarning,
+      ensResolutionError,
+      ensResolution,
+    } = this.props
     const { t } = this.context
-    const contacts = this.searchForContacts()
+    // const contacts = this.searchForContacts()
     const recents = this.searchForRecents()
 
-    if (contacts.length) {
-      return null
-    }
+    // if (contacts.length) {
+    //   return null
+    // }
 
     if (ensResolutionError) {
       return (
@@ -207,7 +226,7 @@ export default class AddRecipient extends Component {
     if (toError && toError !== 'required' && !ensResolution) {
       return (
         <Dialog type="error" className="send__error-dialog">
-          {t(toError)}
+          {t(toError, [encodeNetId(network)])}
         </Dialog>
       )
     }

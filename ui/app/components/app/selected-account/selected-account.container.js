@@ -2,15 +2,14 @@ import { connect } from 'react-redux'
 import SelectedAccount from './selected-account.component'
 
 import {
-  getSelectedAddress,
+  getSelectedBase32Address,
   getSelectedIdentity,
 } from '../../../selectors/selectors'
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    selectedAddress: getSelectedAddress(state),
+    selectedBase32Address: getSelectedBase32Address(state),
     selectedIdentity: getSelectedIdentity(state),
-    network: state.metamask.network,
   }
 }
 

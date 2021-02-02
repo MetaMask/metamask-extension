@@ -12,14 +12,14 @@ const {
 
 const provider = createTestProviderTools({ scaffold: {} }).provider
 
-describe('WithTokenTracker HOC', function () {
+describe('WithTokenTracker HOC', function() {
   let wrapper
 
-  beforeEach(function () {
+  beforeEach(function() {
     const TokenTracker = withTokenTracker(TokenBalance)
     wrapper = shallow(
       <TokenTracker
-        userAddress="0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
+        userAddress="0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc"
         token={{
           address: 'test',
         }}
@@ -27,12 +27,12 @@ describe('WithTokenTracker HOC', function () {
     )
   })
 
-  it('#setError', function () {
+  it('#setError', function() {
     wrapper.instance().setError('test')
     assert.equal(wrapper.props().error, 'test')
   })
 
-  it('#updateBalance', function () {
+  it('#updateBalance', function() {
     wrapper.instance().tracker = new TokenTracker({
       provider,
     })

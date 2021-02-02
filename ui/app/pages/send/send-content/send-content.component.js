@@ -19,19 +19,21 @@ export default class SendContent extends Component {
     showHexData: PropTypes.bool,
     contact: PropTypes.object,
     isOwnedAccount: PropTypes.bool,
+    inputIsBase32: PropTypes.bool,
     fetchAddressTransactionCount: PropTypes.func,
   }
 
-  updateGas = (updateData) => this.props.updateGas(updateData)
+  updateGas = updateData => this.props.updateGas(updateData)
 
-  componentWillMount () {
+  componentWillMount() {
     this.props.fetchAddressTransactionCount()
   }
 
-  render () {
+  render() {
     return (
       <PageContainerContent>
         <div className="send-v2__form">
+          {this.maybeRenderHexAddressWarning()}
           {this.maybeRenderAddressNoTxWarning()}
           {this.maybeRenderAddContact()}
           <SendAssetRow />
@@ -45,14 +47,18 @@ export default class SendContent extends Component {
     )
   }
 
-  maybeRenderAddContact () {
+  maybeRenderAddContact() {
     const { t } = this.context
     const {
+      inputIsBase32,
       isOwnedAccount,
       showAddToAddressBookModal,
       contact = {},
     } = this.props
 
+    if (!inputIsBase32) {
+      return
+    }
     if (isOwnedAccount || contact.name) {
       return
     }
@@ -68,8 +74,31 @@ export default class SendContent extends Component {
     )
   }
 
+  maybeRenderHexAddressWarning() {
+    const { t } = this.context
+    const { inputIsBase32 } = this.props
+    if (inputIsBase32) {
+      return
+    }
+
+    return (
+      <Dialog type="warning" className="send__dialog">
+        {t('confluxNewAddressWarning')}
+        <a
+          className="go-convert"
+          href="https://confluxscan.io/address-converter"
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          {t('goConvert')}
+          <span className="link-button" />
+        </a>
+      </Dialog>
+    )
+  }
+
   // TODO: add test for this
-  maybeRenderAddressNoTxWarning () {
+  maybeRenderAddressNoTxWarning() {
     const { toTransactionCount } = this.props
     const { t } = this.context
     if (toTransactionCount !== 0) {

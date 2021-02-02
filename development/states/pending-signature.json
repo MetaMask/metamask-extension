@@ -5,19 +5,19 @@
     "currentDomain": "example.com",
     "rpcTarget": "https://rawtestrpc.metamask.io/",
     "identities": {
-      "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825": {
+      "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825": {
         "name": "Wallet 1",
-        "address": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+        "address": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
         "mayBeFauceting": false
       },
-      "0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb": {
+      "0x15b8dbac4c1d3f152cdeb400e2313f309c410acb": {
         "name": "Wallet 2",
-        "address": "0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb",
+        "address": "0x15b8dbac4c1d3f152cdeb400e2313f309c410acb",
         "mayBeFauceting": false
       },
-      "0x2f8d4a878cfa04a6e60d46362f5644deab66572d": {
+      "0x1f8d4a878cfa04a6e60d46362f5644deab66572d": {
         "name": "Wallet 3",
-        "address": "0x2f8d4a878cfa04a6e60d46362f5644deab66572d",
+        "address": "0x1f8d4a878cfa04a6e60d46362f5644deab66572d",
         "mayBeFauceting": false
       }
     },
@@ -26,30 +26,30 @@
     "conversionRate": 11.02269525,
     "conversionDate": 1472076963,
     "accounts": {
-      "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825": {
+      "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825": {
         "balance": "0x056ace16d84b1c7e78",
         "nonce": "0x17",
         "code": "0x0",
-        "address": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825"
+        "address": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825"
       },
-      "0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb": {
+      "0x15b8dbac4c1d3f152cdeb400e2313f309c410acb": {
         "balance": "0x00000000000000056bc75e2d63100000",
         "nonce": "0x0",
         "code": "0x0",
-        "address": "0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb"
+        "address": "0x15b8dbac4c1d3f152cdeb400e2313f309c410acb"
       },
-      "0x2f8d4a878cfa04a6e60d46362f5644deab66572d": {
+      "0x1f8d4a878cfa04a6e60d46362f5644deab66572d": {
         "balance": "0x00000000000000056bc75e2d63100000",
         "nonce": "0x0",
         "code": "0x0",
-        "address": "0x2f8d4a878cfa04a6e60d46362f5644deab66572d"
+        "address": "0x1f8d4a878cfa04a6e60d46362f5644deab66572d"
       }
     },
     "transactions": [
       {
         "id": 1471975421223082,
         "txParams": {
-          "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
           "to": "0x48ff0cbac0acefedf152281ee80e9a0a01d5da63",
           "data": "0x90b98a11000000000000000000000000c5b8dbac4c1d3f152cdeb400e2313f309c410acb000000000000000000000000000000000000000000000000000000000000000a",
           "origin": "localhost",
@@ -65,7 +65,7 @@
       {
         "id": 1471975427199819,
         "txParams": {
-          "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
           "to": "0x48ff0cbac0acefedf152281ee80e9a0a01d5da63",
           "data": "0x90b98a11000000000000000000000000c5b8dbac4c1d3f152cdeb400e2313f309c410acb000000000000000000000000000000000000000000000000000000000000000a",
           "origin": "localhost",
@@ -81,7 +81,7 @@
       {
         "id": 1471975806981442,
         "txParams": {
-          "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
           "to": "0x48ff0cbac0acefedf152281ee80e9a0a01d5da63",
           "data": "0x90b98a11000000000000000000000000c5b8dbac4c1d3f152cdeb400e2313f309c410acb000000000000000000000000000000000000000000000000000000000000000a",
           "origin": "localhost",
@@ -97,7 +97,7 @@
       {
         "id": 1471975810133789,
         "txParams": {
-          "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
           "to": "0x48ff0cbac0acefedf152281ee80e9a0a01d5da63",
           "data": "0x90b98a11000000000000000000000000c5b8dbac4c1d3f152cdeb400e2313f309c410acb000000000000000000000000000000000000000000000000000000000000000a",
           "origin": "localhost",
@@ -113,7 +113,7 @@
       {
         "id": 1471976546865348,
         "txParams": {
-          "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
           "to": "0x48ff0cbac0acefedf152281ee80e9a0a01d5da63",
           "data": "0x90b98a11000000000000000000000000c5b8dbac4c1d3f152cdeb400e2313f309c410acb000000000000000000000000000000000000000000000000000000000000000a",
           "origin": "localhost",
@@ -129,7 +129,7 @@
       {
         "id": 1471976930101889,
         "txParams": {
-          "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
           "to": "0x48ff0cbac0acefedf152281ee80e9a0a01d5da63",
           "data": "0x90b98a11000000000000000000000000c5b8dbac4c1d3f152cdeb400e2313f309c410acb0000000000000000000000000000000000000000000000000000000000000005",
           "origin": "localhost",
@@ -145,7 +145,7 @@
       {
         "id": 1471977268048169,
         "txParams": {
-          "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
           "to": "0x48ff0cbac0acefedf152281ee80e9a0a01d5da63",
           "data": "0x90b98a11000000000000000000000000c5b8dbac4c1d3f152cdeb400e2313f309c410acb0000000000000000000000000000000000000000000000000000000000000002",
           "origin": "localhost",
@@ -161,7 +161,7 @@
       {
         "id": 1471977310778630,
         "txParams": {
-          "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
           "to": "0x48ff0cbac0acefedf152281ee80e9a0a01d5da63",
           "data": "0x90b98a11000000000000000000000000c5b8dbac4c1d3f152cdeb400e2313f309c410acb0000000000000000000000000000000000000000000000000000000000000005",
           "origin": "localhost",
@@ -176,7 +176,7 @@
       {
         "id": 1471977316241561,
         "txParams": {
-          "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
           "to": "0x48ff0cbac0acefedf152281ee80e9a0a01d5da63",
           "data": "0x90b98a11000000000000000000000000c5b8dbac4c1d3f152cdeb400e2313f309c410acb0000000000000000000000000000000000000000000000000000000000000005",
           "origin": "localhost",
@@ -192,7 +192,7 @@
       {
         "id": 1471977344018510,
         "txParams": {
-          "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
           "to": "0x48ff0cbac0acefedf152281ee80e9a0a01d5da63",
           "data": "0x90b98a11000000000000000000000000c5b8dbac4c1d3f152cdeb400e2313f309c410acb0000000000000000000000000000000000000000000000000000000000000004",
           "origin": "localhost",
@@ -208,7 +208,7 @@
       {
         "id": 1471977403830380,
         "txParams": {
-          "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
           "to": "0x48ff0cbac0acefedf152281ee80e9a0a01d5da63",
           "data": "0x90b98a11000000000000000000000000c5b8dbac4c1d3f152cdeb400e2313f309c410acb0000000000000000000000000000000000000000000000000000000000000001",
           "origin": "localhost",
@@ -224,7 +224,7 @@
       {
         "id": 1471977431563703,
         "txParams": {
-          "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
           "to": "0x48ff0cbac0acefedf152281ee80e9a0a01d5da63",
           "data": "0x90b98a11000000000000000000000000c5b8dbac4c1d3f152cdeb400e2313f309c410acb0000000000000000000000000000000000000000000000000000000000000001",
           "origin": "localhost",
@@ -239,7 +239,7 @@
       {
         "id": 1471977436074587,
         "txParams": {
-          "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
           "to": "0x48ff0cbac0acefedf152281ee80e9a0a01d5da63",
           "data": "0x90b98a11000000000000000000000000c5b8dbac4c1d3f152cdeb400e2313f309c410acb0000000000000000000000000000000000000000000000000000000000000001",
           "origin": "localhost",
@@ -255,7 +255,7 @@
       {
         "id": 1471991826717707,
         "txParams": {
-          "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
           "to": "0x48ff0cbac0acefedf152281ee80e9a0a01d5da63",
           "data": "0x90b98a11000000000000000000000000c5b8dbac4c1d3f152cdeb400e2313f309c410acb0000000000000000000000000000000000000000000000000000000000000004",
           "origin": "localhost",
@@ -271,7 +271,7 @@
       {
         "id": 1471991851917592,
         "txParams": {
-          "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
           "to": "0x48ff0cbac0acefedf152281ee80e9a0a01d5da63",
           "data": "0x90b98a11000000000000000000000000c5b8dbac4c1d3f152cdeb400e2313f309c410acb0000000000000000000000000000000000000000000000000000000000000004",
           "origin": "localhost",
@@ -287,7 +287,7 @@
       {
         "id": 1471992032999543,
         "txParams": {
-          "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
           "to": "0x48ff0cbac0acefedf152281ee80e9a0a01d5da63",
           "data": "0x90b98a11000000000000000000000000c5b8dbac4c1d3f152cdeb400e2313f309c410acb0000000000000000000000000000000000000000000000000000000000000005",
           "origin": "localhost",
@@ -303,7 +303,7 @@
       {
         "id": 1471992043490878,
         "txParams": {
-          "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
           "to": "0x48ff0cbac0acefedf152281ee80e9a0a01d5da63",
           "data": "0x90b98a11000000000000000000000000c5b8dbac4c1d3f152cdeb400e2313f309c410acb0000000000000000000000000000000000000000000000000000000000000005",
           "origin": "localhost",
@@ -318,7 +318,7 @@
       {
         "id": 1472068030402279,
         "txParams": {
-          "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
           "value": "0x3782dace9d90000",
           "gas": "0x493e0",
           "to": "0x18a672e11d637fffadccc99b152f4895da069601",
@@ -335,7 +335,7 @@
       {
         "id": 1472068061833258,
         "txParams": {
-          "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
           "value": "0x16345785d8a0000",
           "gas": "0x493e0",
           "to": "0x18a672e11d637fffadccc99b152f4895da069601",
@@ -358,7 +358,7 @@
         "id": 1472076978535283,
         "msgParams": {
           "origin": "localhost",
-          "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
           "data": "hello"
         },
         "time": 1472076978535,
@@ -370,7 +370,7 @@
         "id": 1472076978535283,
         "msgParams": {
           "origin": "localhost",
-          "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
           "data": "hello"
         },
         "time": 1472076978535,
@@ -382,14 +382,14 @@
       "type": "rpc",
       "rpcTarget": "http://localhost:8545"
     },
-    "selectedAddress": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825"
+    "selectedAddress": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825"
   },
   "appState": {
     "menuOpen": false,
     "currentView": {
       "name": "confTx",
       "detailView": null,
-      "context": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825"
+      "context": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825"
     },
     "accountDetail": {
       "subview": "transactions"

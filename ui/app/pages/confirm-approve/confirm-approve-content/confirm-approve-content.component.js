@@ -2,7 +2,10 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import Identicon from '../../../components/ui/identicon'
-import { addressSummary } from '../../../helpers/utils/util'
+import {
+  addressSummary,
+  base32AddressSlicer,
+} from '../../../helpers/utils/util'
 // import { formatCurrency } from '../../../helpers/utils/confirm-tx.util'
 
 export default class ConfirmApproveContent extends Component {
@@ -23,6 +26,7 @@ export default class ConfirmApproveContent extends Component {
     tokenBalance: PropTypes.string,
     data: PropTypes.string,
     toAddress: PropTypes.string,
+    toBase32Address: PropTypes.string,
     // currentCurrency: PropTypes.string,
     // fiatTransactionTotal: PropTypes.string,
     ethTransactionTotal: PropTypes.string,
@@ -30,9 +34,10 @@ export default class ConfirmApproveContent extends Component {
 
   state = {
     showFullTxDetails: false,
+    toAddressOnHover: false,
   }
 
-  renderApproveContentCard ({
+  renderApproveContentCard({
     symbol,
     title,
     showEdit,
@@ -71,7 +76,7 @@ export default class ConfirmApproveContent extends Component {
   }
 
   // TODO: Add "Learn Why" with link to the feeAssociatedRequest text
-  renderTransactionDetailsContent () {
+  renderTransactionDetailsContent() {
     const { t } = this.context
     const {
       // currentCurrency,
@@ -95,14 +100,16 @@ export default class ConfirmApproveContent extends Component {
     )
   }
 
-  renderPermissionContent () {
+  renderPermissionContent() {
     const { t } = this.context
+    const { toAddressOnHover } = this.state
     const {
       customTokenAmount,
       tokenAmount,
       tokenSymbol,
       origin,
       toAddress,
+      toBase32Address,
     } = this.props
 
     return (
@@ -122,15 +129,21 @@ export default class ConfirmApproveContent extends Component {
           <div className="confirm-approve-content__label">
             {t('toWithColon')}
           </div>
-          <div className="confirm-approve-content__medium-text">
-            {addressSummary(toAddress)}
+          <div
+            className="confirm-approve-content__medium-text is-address"
+            onMouseOver={() => this.setState({ toAddressOnHover: true })}
+            onMouseLeave={() => this.setState({ toAddressOnHover: false })}
+          >
+            {toAddressOnHover
+              ? base32AddressSlicer(toBase32Address)
+              : addressSummary(toAddress)}
           </div>
         </div>
       </div>
     )
   }
 
-  renderDataContent () {
+  renderDataContent() {
     const { t } = this.context
     const { data } = this.props
     return (
@@ -145,7 +158,7 @@ export default class ConfirmApproveContent extends Component {
     )
   }
 
-  render () {
+  render() {
     const { t } = this.context
     const {
       decimals,

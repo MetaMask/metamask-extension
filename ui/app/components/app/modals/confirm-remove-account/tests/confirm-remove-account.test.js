@@ -7,7 +7,7 @@ import configureStore from 'redux-mock-store'
 import { mount } from 'enzyme'
 import ConfirmRemoveAccount from '../index'
 
-describe('Confirm Remove Account', function () {
+describe('Confirm Remove Account', function() {
   let wrapper
 
   const state = {
@@ -20,7 +20,8 @@ describe('Confirm Remove Account', function () {
     network: '101',
     trustedTokenMap: {},
     identity: {
-      address: '0xAddress',
+      address: '0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      base32Address: 'net4:aas641pjpz57mca5bvkseu1tfhxu129h1unm3yy54t',
       name: 'Account 1',
     },
   }
@@ -28,14 +29,14 @@ describe('Confirm Remove Account', function () {
   const mockStore = configureStore()
   const store = mockStore(state)
 
-  beforeEach(function () {
+  beforeEach(function() {
     wrapper = mount(
       <Provider store={store}>
         <ConfirmRemoveAccount.WrappedComponent {...props} />
       </Provider>,
       {
         context: {
-          t: (str) => str,
+          t: str => str,
           store,
         },
         childContextTypes: {
@@ -46,18 +47,18 @@ describe('Confirm Remove Account', function () {
     )
   })
 
-  afterEach(function () {
+  afterEach(function() {
     props.hideModal.resetHistory()
   })
 
-  it('nevermind', function () {
+  it('nevermind', function() {
     const nevermind = wrapper.find({ type: 'default' })
     nevermind.simulate('click')
 
     assert(props.hideModal.calledOnce)
   })
 
-  it('remove', function (done) {
+  it('remove', function(done) {
     const remove = wrapper.find({ type: 'secondary' })
     remove.simulate('click')
 
@@ -70,7 +71,7 @@ describe('Confirm Remove Account', function () {
     })
   })
 
-  it('closes', function () {
+  it('closes', function() {
     const close = wrapper.find('.modal-container__header-close')
     close.simulate('click')
 

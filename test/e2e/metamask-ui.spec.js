@@ -1,5 +1,6 @@
 const assert = require('assert')
 const webdriver = require('selenium-webdriver')
+const { hexToBase32 } = require('../../app/scripts/cip37')
 
 const { By, Key, until } = webdriver
 const {
@@ -165,7 +166,7 @@ describe('MetaMask', function() {
   describe('Show account information', function() {
     it('shows the QR code for the account', async function() {
       await driver.clickElement(By.css('.account-details__details-button'))
-      await driver.findVisibleElement(By.css('.qr-wrapper'))
+      await driver.findVisibleElement(By.css('.account-modal__button'))
       await driver.delay(regularDelayMs)
 
       const accountModal = await driver.findElement(By.css('span .modal'))
@@ -286,7 +287,7 @@ describe('MetaMask', function() {
       await driver.delay(regularDelayMs)
 
       const inputAddress = await driver.findElement(
-        By.css('input[placeholder="Search, public address (0x1 or 0x8)"]')
+        By.css('input[placeholder="Search Conflux Address"]')
       )
       await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
 
@@ -364,7 +365,7 @@ describe('MetaMask', function() {
       await driver.delay(regularDelayMs)
 
       const inputAddress = await driver.findElement(
-        By.css('input[placeholder="Search, public address (0x1 or 0x8)"]')
+        By.css('input[placeholder="Search Conflux Address"]')
       )
       await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
 
@@ -416,7 +417,7 @@ describe('MetaMask', function() {
       await driver.delay(regularDelayMs)
 
       const inputAddress = await driver.findElement(
-        By.css('input[placeholder="Search, public address (0x1 or 0x8)"]')
+        By.css('input[placeholder="Search Conflux Address"]')
       )
       await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
 
@@ -925,6 +926,7 @@ describe('MetaMask', function() {
         15000
       )
 
+      await driver.delay(regularDelayMs)
       await driver.clickElement(By.css('#depositButton'))
       await driver.delay(largeDelayMs)
 
@@ -1128,10 +1130,11 @@ describe('MetaMask', function() {
       const newTokenAddress = await driver.findElement(
         By.css('#custom-address')
       )
-      await newTokenAddress.sendKeys(tokenAddress)
+      await newTokenAddress.sendKeys(hexToBase32(tokenAddress, 2999))
       await driver.delay(regularDelayMs)
 
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Next')]`))
+      await driver.delay(regularDelayMs)
       await driver.delay(regularDelayMs)
 
       await driver.clickElement(
@@ -1160,7 +1163,7 @@ describe('MetaMask', function() {
       await driver.delay(1000)
 
       const inputAddress = await driver.findElement(
-        By.css('input[placeholder="Search, public address (0x1 or 0x8)"]')
+        By.css('input[placeholder="Search Conflux Address"]')
       )
       await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
 
@@ -1340,6 +1343,7 @@ describe('MetaMask', function() {
       const gasAndCollateralFeeInputs = await driver.findElements(
         By.css('.confirm-detail-row__primary')
       )
+      await driver.delay(regularDelayMs)
       const renderedGasFee = await gasAndCollateralFeeInputs[0].getText()
       assert.equal(renderedGasFee, '0.0006')
     })

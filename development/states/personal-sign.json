@@ -4,16 +4,16 @@
     "isUnlocked": true,
     "rpcTarget": "https://rawtestrpc.metamask.io/",
     "identities": {
-      "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825": {
-        "address": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+      "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825": {
+        "address": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
         "name": "Account 1"
       },
-      "0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb": {
-        "address": "0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb",
+      "0x15b8dbac4c1d3f152cdeb400e2313f309c410acb": {
+        "address": "0x15b8dbac4c1d3f152cdeb400e2313f309c410acb",
         "name": "Account 2"
       },
-      "0x2f8d4a878cfa04a6e60d46362f5644deab66572d": {
-        "address": "0x2f8d4a878cfa04a6e60d46362f5644deab66572d",
+      "0x1f8d4a878cfa04a6e60d46362f5644deab66572d": {
+        "address": "0x1f8d4a878cfa04a6e60d46362f5644deab66572d",
         "name": "Account 3"
       }
     },
@@ -23,23 +23,23 @@
     "noActiveNotices": true,
     "network": "3",
     "accounts": {
-      "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825": {
+      "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825": {
         "balance": "0x6ae7c45a61c0e8d2",
         "nonce": "0x12",
         "code": "0x",
-        "address": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825"
+        "address": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825"
       },
-      "0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb": {
+      "0x15b8dbac4c1d3f152cdeb400e2313f309c410acb": {
         "balance": "0x2892a7aece555480",
         "nonce": "0x7",
         "code": "0x",
-        "address": "0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb"
+        "address": "0x15b8dbac4c1d3f152cdeb400e2313f309c410acb"
       },
-      "0x2f8d4a878cfa04a6e60d46362f5644deab66572d": {
+      "0x1f8d4a878cfa04a6e60d46362f5644deab66572d": {
         "balance": "0x0",
         "nonce": "0x0",
         "code": "0x",
-        "address": "0x2f8d4a878cfa04a6e60d46362f5644deab66572d"
+        "address": "0x1f8d4a878cfa04a6e60d46362f5644deab66572d"
       }
     },
     "transactions": {},
@@ -50,7 +50,7 @@
       "2971973686529444": {
         "id": 2971973686529444,
         "msgParams": {
-          "from": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "from": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
           "data": "0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e01"
         },
         "time": 1487888668426,
@@ -70,7 +70,7 @@
         ]
       }
     ],
-    "selectedAddress": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+    "selectedAddress": "0x1dea65c8e26263f6d9a1b5de9555d2931a33b825",
     "currentCurrency": "USD",
     "provider": {
       "type": "testnet"

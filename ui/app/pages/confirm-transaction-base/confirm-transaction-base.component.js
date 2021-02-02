@@ -45,6 +45,7 @@ export default class ConfirmTransactionBase extends Component {
     clearConfirmTransaction: PropTypes.func,
     conversionRate: PropTypes.number,
     fromAddress: PropTypes.string,
+    base32FromAddress: PropTypes.string,
     fromName: PropTypes.string,
     hexTransactionAmount: PropTypes.string,
     hexTransactionFee: PropTypes.string,
@@ -61,6 +62,7 @@ export default class ConfirmTransactionBase extends Component {
     showTransactionConfirmedModal: PropTypes.func,
     showRejectTransactionsConfirmationModal: PropTypes.func,
     toAddress: PropTypes.string,
+    base32ToAddress: PropTypes.string,
     tokenData: PropTypes.object,
     tokenProps: PropTypes.object,
     toName: PropTypes.string,
@@ -834,8 +836,10 @@ export default class ConfirmTransactionBase extends Component {
       isTxReprice,
       fromName,
       fromAddress,
+      base32FromAddress,
       toName,
       toAddress,
+      base32ToAddress,
       toNickname,
       methodData,
       valid: propsValid = true,
@@ -876,9 +880,11 @@ export default class ConfirmTransactionBase extends Component {
       <ConfirmPageContainer
         fromName={fromName}
         fromAddress={fromAddress}
+        base32FromAddress={base32FromAddress}
         showAccountInHeader={showAccountInHeader}
         toName={toName}
         toAddress={toAddress}
+        base32ToAddress={base32ToAddress}
         toNickname={toNickname}
         showEdit={onEdit && !isTxReprice}
         // In the event that the key is falsy (and inherently invalid), use a fallback string

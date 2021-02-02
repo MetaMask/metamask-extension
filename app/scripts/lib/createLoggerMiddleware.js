@@ -7,8 +7,8 @@ export default createLoggerMiddleware
  * @param {{ origin: string }} opts - The middleware options
  * @returns {Function}
  */
-function createLoggerMiddleware (opts) {
-  return function loggerMiddleware (
+function createLoggerMiddleware(opts) {
+  return function loggerMiddleware(
     /** @type {any} */ req,
     /** @type {any} */ res,
     /** @type {Function} */ next

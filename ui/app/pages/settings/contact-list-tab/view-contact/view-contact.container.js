@@ -9,6 +9,7 @@ import {
   CONTACT_MY_ACCOUNTS_EDIT_ROUTE,
   CONTACT_MY_ACCOUNTS_VIEW_ROUTE,
 } from '../../../../helpers/constants/routes'
+import { hexToBase32 } from '../../../../../../app/scripts/cip37.js'
 
 const mapStateToProps = (state, ownProps) => {
   const { location } = ownProps
@@ -19,7 +20,8 @@ const mapStateToProps = (state, ownProps) => {
     ? pathNameTail.toLowerCase()
     : ownProps.match.params.id
 
-  const { memo, name } =
+  const { network } = state.metamask
+  const { memo, name, base32Address } =
     getAddressBookEntry(state, address) || state.metamask.identities[address]
 
   const showingMyAccounts = Boolean(
@@ -29,6 +31,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     name,
     address,
+    base32Address: base32Address || hexToBase32(address, parseInt(network, 10)),
     checkSummedAddress: checksumAddress(address),
     memo,
     editRoute: showingMyAccounts

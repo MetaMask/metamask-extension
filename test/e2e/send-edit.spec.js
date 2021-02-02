@@ -122,7 +122,7 @@ describe('Using MetaMask with an existing account', function() {
       await driver.delay(regularDelayMs)
 
       const inputAddress = await driver.findElement(
-        By.css('input[placeholder="Search, public address (0x1 or 0x8)"]')
+        By.css('input[placeholder="Search Conflux Address"]')
       )
       await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
 
