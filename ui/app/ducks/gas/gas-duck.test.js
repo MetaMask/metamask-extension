@@ -1,4 +1,5 @@
 import assert from 'assert'
+import nock from 'nock'
 import sinon from 'sinon'
 import proxyquire from 'proxyquire'
 
@@ -20,35 +21,24 @@ const {
 const GasReducer = GasDuck.default
 
 describe('Gas Duck', function () {
-  let tempFetch
   let tempDateNow
   const mockGasPriceApiResponse = {
     SafeGasPrice: 10,
     ProposeGasPrice: 20,
     FastGasPrice: 30,
   }
-  const fakeFetch = () =>
-    new Promise((resolve) => {
-      const dataToResolve = mockGasPriceApiResponse
-      resolve({
-        json: () => Promise.resolve(dataToResolve),
-      })
-    })
 
   beforeEach(function () {
-    tempFetch = window.fetch
     tempDateNow = global.Date.now
 
     fakeStorage.getStorageItem = sinon.stub()
     fakeStorage.setStorageItem = sinon.spy()
-    window.fetch = sinon.stub().callsFake(fakeFetch)
     global.Date.now = () => 2000000
   })
 
   afterEach(function () {
     sinon.restore()
 
-    window.fetch = tempFetch
     global.Date.now = tempDateNow
   })
 
@@ -166,6 +156,12 @@ describe('Gas Duck', function () {
     it('should call fetch with the expected params', async function () {
       const mockDistpatch = sinon.spy()
 
+      const windowFetchSpy = sinon.spy(window, 'fetch')
+
+      nock('https://api.metaswap.codefi.network')
+        .get('/gasPrices')
+        .reply(200, mockGasPriceApiResponse)
+
       await fetchBasicGasEstimates()(mockDistpatch, () => ({
         gas: { ...initState, basicPriceAEstimatesLastRetrieved: 1000000 },
       }))
@@ -173,7 +169,7 @@ describe('Gas Duck', function () {
         { type: BASIC_GAS_ESTIMATE_LOADING_STARTED },
       ])
       assert.ok(
-        window.fetch
+        windowFetchSpy
           .getCall(0)
           .args[0].startsWith('https://api.metaswap.codefi.network/gasPrices'),
         'should fetch metaswap /gasPrices',
@@ -198,6 +194,9 @@ describe('Gas Duck', function () {
 
     it('should fetch recently retrieved estimates from storage', async function () {
       const mockDistpatch = sinon.spy()
+
+      const windowFetchSpy = sinon.spy(window, 'fetch')
+
       fakeStorage.getStorageItem
         .withArgs('BASIC_PRICE_ESTIMATES_LAST_RETRIEVED')
         .returns(2000000 - 1) // one second ago from "now"
@@ -213,7 +212,7 @@ describe('Gas Duck', function () {
       assert.deepStrictEqual(mockDistpatch.getCall(0).args, [
         { type: BASIC_GAS_ESTIMATE_LOADING_STARTED },
       ])
-      assert.ok(window.fetch.notCalled)
+      assert.ok(windowFetchSpy.notCalled)
       assert.deepStrictEqual(mockDistpatch.getCall(1).args, [
         {
           type: SET_BASIC_GAS_ESTIMATE_DATA,
@@ -231,6 +230,13 @@ describe('Gas Duck', function () {
 
     it('should fallback to network if retrieving estimates from storage fails', async function () {
       const mockDistpatch = sinon.spy()
+
+      const windowFetchSpy = sinon.spy(window, 'fetch')
+
+      nock('https://api.metaswap.codefi.network')
+        .get('/gasPrices')
+        .reply(200, mockGasPriceApiResponse)
+
       fakeStorage.getStorageItem
         .withArgs('BASIC_PRICE_ESTIMATES_LAST_RETRIEVED')
         .returns(2000000 - 1) // one second ago from "now"
@@ -242,11 +248,12 @@ describe('Gas Duck', function () {
         { type: BASIC_GAS_ESTIMATE_LOADING_STARTED },
       ])
       assert.ok(
-        window.fetch
+        windowFetchSpy
           .getCall(0)
           .args[0].startsWith('https://api.metaswap.codefi.network/gasPrices'),
         'should fetch metaswap /gasPrices',
       )
+
       assert.deepStrictEqual(mockDistpatch.getCall(1).args, [
         { type: SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED, value: 2000000 },
       ])
