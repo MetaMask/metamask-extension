@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 0.5.10 Tue Feb 02 2021
+
 - chore: format
 - feat: set default idle lock timer to 5min, #5xpw3d PORTAL-256
 - feat: ui level new base32 address, WIP
