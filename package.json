@@ -221,7 +221,7 @@
     "browserify-transform-tools": "^1.7.0",
     "chai": "^4.1.0",
     "chalk": "^2.4.2",
-    "chromedriver": "86.0.0",
+    "chromedriver": "88.0.0",
     "concurrently": "^4.1.1",
     "coveralls": "^3.0.0",
     "css-loader": "^2.1.1",
