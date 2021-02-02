@@ -15,6 +15,6 @@ then
   mv ./*.har build-artifacts/yarn-install-har/
 fi
 
-# use allow-scripts instead of manually running install scripts so directory change does not persist
+# use @lavamoat/allow-scripts instead of manually running install scripts so directory change does not persist
 
 yarn allow-scripts
