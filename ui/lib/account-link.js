@@ -1,4 +1,9 @@
+import { hexToBase32 } from '../../app/scripts/cip37'
+
 export default function getAccountLink(address, network, rpcPrefs) {
+  if (network) {
+    address = hexToBase32(address, parseInt(network, 10))
+  }
   if (rpcPrefs && rpcPrefs.blockExplorerUrl) {
     return `${rpcPrefs.blockExplorerUrl}/address/${address}`
   }

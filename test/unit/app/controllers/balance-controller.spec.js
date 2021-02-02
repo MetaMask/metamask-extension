@@ -10,10 +10,10 @@ import { createTestProviderTools } from '../../../stub/provider'
 const provider = createTestProviderTools({ scaffold: {} }).provider
 provider._confluxWebProvider = 'http://localhost:12537'
 
-const TEST_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
+const TEST_ADDRESS = '0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc'
 
 const accounts = {
-  '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+  '0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
     balance: '0x5e942b06dc24c4d50',
     address: TEST_ADDRESS,
   },

@@ -51,7 +51,7 @@ import { fetchBasicGasEstimates } from '../../ducks/gas/gas.duck'
 import { calcGasTotal, calcStorageTotal } from './send.utils.js'
 import { isValidDomainName } from '../../helpers/utils/util'
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   const selectedToken = getSelectedToken(state)
 
   const sponsorshipInfo = getSponsorshipInfo(state) || {
@@ -93,7 +93,7 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     updateAndSetGasAndStorageLimit: ({
       blockGasLimit,
@@ -136,15 +136,15 @@ function mapDispatchToProps (dispatch) {
         })
       )
     },
-    updateSendErrors: (newError) => dispatch(updateSendErrors(newError)),
+    updateSendErrors: newError => dispatch(updateSendErrors(newError)),
     resetSendState: () => dispatch(resetSendState()),
     scanQrCode: () => dispatch(showQrScanner()),
-    qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),
+    qrCodeDetected: data => dispatch(qrCodeDetected(data)),
     updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
     fetchBasicGasEstimates: () => dispatch(fetchBasicGasEstimates()),
-    updateSendEnsResolution: (ensResolution) =>
+    updateSendEnsResolution: ensResolution =>
       dispatch(updateSendEnsResolution(ensResolution)),
-    updateSendEnsResolutionError: (message) =>
+    updateSendEnsResolutionError: message =>
       dispatch(updateSendEnsResolutionError(message)),
     updateToNicknameIfNecessary: (to, toNickname, addressBook) => {
       if (isValidDomainName(toNickname)) {

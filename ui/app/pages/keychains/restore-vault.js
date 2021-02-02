@@ -33,11 +33,11 @@ class RestoreVaultPage extends Component {
     confirmPasswordError: null,
   }
 
-  parseSeedPhrase = (seedPhrase) => {
+  parseSeedPhrase = seedPhrase => {
     return seedPhrase.match(/\w+/g).join(' ')
   }
 
-  handleSeedPhraseChange (seedPhrase) {
+  handleSeedPhraseChange(seedPhrase) {
     let seedPhraseError = null
 
     const wordCount = this.parseSeedPhrase(seedPhrase).split(new RegExp('\\s'))
@@ -52,7 +52,7 @@ class RestoreVaultPage extends Component {
     this.setState({ seedPhrase, seedPhraseError })
   }
 
-  handlePasswordChange (password) {
+  handlePasswordChange(password) {
     const { confirmPassword } = this.state
     let confirmPasswordError = null
     let passwordError = null
@@ -68,7 +68,7 @@ class RestoreVaultPage extends Component {
     this.setState({ password, passwordError, confirmPasswordError })
   }
 
-  handleConfirmPasswordChange (confirmPassword) {
+  handleConfirmPasswordChange(confirmPassword) {
     const { password } = this.state
     let confirmPasswordError = null
 
@@ -104,12 +104,12 @@ class RestoreVaultPage extends Component {
     )
   }
 
-  hasError () {
+  hasError() {
     const { passwordError, confirmPasswordError, seedPhraseError } = this.state
     return passwordError || confirmPasswordError || seedPhraseError
   }
 
-  render () {
+  render() {
     const {
       seedPhrase,
       password,
@@ -133,14 +133,14 @@ class RestoreVaultPage extends Component {
           <div className="import-account">
             <a
               className="import-account__back-button"
-              onClick={(e) => {
+              onClick={e => {
                 e.preventDefault()
                 this.props.leaveImportSeedScreenState()
                 this.props.history.goBack()
               }}
               href="#"
             >
-              {`< Back`}
+              {`< ${t('back')}`}
             </a>
             <div className="import-account__title">
               {this.context.t('restoreAccountWithSeed')}
@@ -149,10 +149,12 @@ class RestoreVaultPage extends Component {
               {this.context.t('secretPhrase')}
             </div>
             <div className="import-account__input-wrapper">
-              <label className="import-account__input-label">Wallet Seed</label>
+              <label className="import-account__input-label">
+                {t('walletSeed')}
+              </label>
               <textarea
                 className="import-account__secret-phrase"
-                onChange={(e) => this.handleSeedPhraseChange(e.target.value)}
+                onChange={e => this.handleSeedPhraseChange(e.target.value)}
                 value={this.state.seedPhrase}
                 placeholder={this.context.t('separateEachWord')}
               />
@@ -164,7 +166,7 @@ class RestoreVaultPage extends Component {
               type="password"
               className="first-time-flow__input"
               value={this.state.password}
-              onChange={(event) => this.handlePasswordChange(event.target.value)}
+              onChange={event => this.handlePasswordChange(event.target.value)}
               error={passwordError}
               autoComplete="new-password"
               margin="normal"
@@ -176,7 +178,7 @@ class RestoreVaultPage extends Component {
               type="password"
               className="first-time-flow__input"
               value={this.state.confirmPassword}
-              onChange={(event) =>
+              onChange={event =>
                 this.handleConfirmPasswordChange(event.target.value)
               }
               error={confirmPasswordError}
@@ -201,7 +203,7 @@ class RestoreVaultPage extends Component {
 
 export default connect(
   ({ appState: { isLoading } }) => ({ isLoading }),
-  (dispatch) => ({
+  dispatch => ({
     leaveImportSeedScreenState: () => {
       dispatch(unMarkPasswordForgotten())
     },

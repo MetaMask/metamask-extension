@@ -5,20 +5,20 @@ export default {
     featureFlags: { sendHexData: true },
     rpcTarget: 'https://rawtestrpc.metamask.io/',
     identities: {
-      '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
-        address: '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825',
+      '0x1dea65c8e26263f6d9a1b5de9555d2931a33b825': {
+        address: '0x1dea65c8e26263f6d9a1b5de9555d2931a33b825',
         name: 'Send Account 1',
       },
-      '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb': {
-        address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
+      '0x15b8dbac4c1d3f152cdeb400e2313f309c410acb': {
+        address: '0x15b8dbac4c1d3f152cdeb400e2313f309c410acb',
         name: 'Send Account 2',
       },
-      '0x2f8d4a878cfa04a6e60d46362f5644deab66572d': {
-        address: '0x2f8d4a878cfa04a6e60d46362f5644deab66572d',
+      '0x1f8d4a878cfa04a6e60d46362f5644deab66572d': {
+        address: '0x1f8d4a878cfa04a6e60d46362f5644deab66572d',
         name: 'Send Account 3',
       },
-      '0xd85a4b6a394794842887b8284293d69163007bbb': {
-        address: '0xd85a4b6a394794842887b8284293d69163007bbb',
+      '0x185a4b6a394794842887b8284293d69163007bbb': {
+        address: '0x185a4b6a394794842887b8284293d69163007bbb',
         name: 'Send Account 4',
       },
     },
@@ -31,29 +31,29 @@ export default {
     frequentRpcList: [],
     network: '3',
     accounts: {
-      '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
+      '0x1dea65c8e26263f6d9a1b5de9555d2931a33b825': {
         code: '0x',
         balance: '0x47c9d71831c76efe',
         nonce: '0x1b',
-        address: '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825',
+        address: '0x1dea65c8e26263f6d9a1b5de9555d2931a33b825',
       },
-      '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb': {
+      '0x15b8dbac4c1d3f152cdeb400e2313f309c410acb': {
         code: '0x',
         balance: '0x37452b1315889f80',
         nonce: '0xa',
-        address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
+        address: '0x15b8dbac4c1d3f152cdeb400e2313f309c410acb',
       },
-      '0x2f8d4a878cfa04a6e60d46362f5644deab66572d': {
+      '0x1f8d4a878cfa04a6e60d46362f5644deab66572d': {
         code: '0x',
         balance: '0x30c9d71831c76efe',
         nonce: '0x1c',
-        address: '0x2f8d4a878cfa04a6e60d46362f5644deab66572d',
+        address: '0x1f8d4a878cfa04a6e60d46362f5644deab66572d',
       },
-      '0xd85a4b6a394794842887b8284293d69163007bbb': {
+      '0x185a4b6a394794842887b8284293d69163007bbb': {
         code: '0x',
         balance: '0x0',
         nonce: '0x0',
-        address: '0xd85a4b6a394794842887b8284293d69163007bbb',
+        address: '0x185a4b6a394794842887b8284293d69163007bbb',
       },
     },
     addressBook: {
@@ -116,7 +116,7 @@ export default {
       {
         id: 'mockEthTx1',
         txParams: {
-          to: '0xd85a4b6a394794842887b8284293d69163007bbb',
+          to: '0x185a4b6a394794842887b8284293d69163007bbb',
         },
         time: 1400000000000,
       },
@@ -146,10 +146,10 @@ export default {
       },
       {
         type: 'Simple Key Pair',
-        accounts: ['0xd85a4b6a394794842887b8284293d69163007bbb'],
+        accounts: ['0x185a4b6a394794842887b8284293d69163007bbb'],
       },
     ],
-    selectedAddress: '0xd85a4b6a394794842887b8284293d69163007bbb',
+    selectedAddress: '0x185a4b6a394794842887b8284293d69163007bbb',
     provider: {
       type: 'testnet',
     },
@@ -185,7 +185,7 @@ export default {
         gasMultiplier: 1,
         metamaskNetworkId: '3',
         txParams: {
-          from: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
+          from: '0x15b8dbac4c1d3f152cdeb400e2313f309c410acb',
           to: '0x18a3462427bcc9133bb46e88bcbe39cd7ef0e761',
           value: '0xde0b6b3a7640000',
           metamaskId: 4768706228115573,
@@ -208,7 +208,7 @@ export default {
     currentView: {
       name: 'accountDetail',
       detailView: null,
-      context: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      context: '0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     },
     accountDetail: {
       subview: 'transactions',

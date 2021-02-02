@@ -16,7 +16,7 @@ class NotificationManager {
    * notification windows are given a 'popup' type.
    *
    */
-  showPopup () {
+  showPopup() {
     this._getPopup((err, popup) => {
       if (err) {
         throw err
@@ -29,12 +29,12 @@ class NotificationManager {
       } else {
         const { screenX, screenY, outerWidth, outerHeight } = window
         const notificationTop = Math.round(
-          screenY + (outerHeight / 2) - (NOTIFICATION_HEIGHT / 2)
+          screenY + outerHeight / 2 - NOTIFICATION_HEIGHT / 2
         )
         const notificationLeft = Math.round(
-          screenX + (outerWidth / 2) - (NOTIFICATION_WIDTH / 2)
+          screenX + outerWidth / 2 - NOTIFICATION_WIDTH / 2
         )
-        const cb = (currentPopup) => {
+        const cb = currentPopup => {
           this._popupId = currentPopup.id
         }
         // create new notification popup
@@ -58,7 +58,7 @@ class NotificationManager {
    * Closes a MetaMask notification if it window exists.
    *
    */
-  closePopup () {
+  closePopup() {
     // closes notification popup
     this._getPopup((err, popup) => {
       if (err) {
@@ -79,7 +79,7 @@ class NotificationManager {
    * @param {Function} cb - A node style callback that to whcih the found notification window will be passed.
    *
    */
-  _getPopup (cb) {
+  _getPopup(cb) {
     this._getWindows((err, windows) => {
       if (err) {
         throw err
@@ -95,13 +95,13 @@ class NotificationManager {
    * @param {Function} cb - A node style callback that to which the windows will be passed.
    *
    */
-  _getWindows (cb) {
+  _getWindows(cb) {
     // Ignore in test environment
     if (!extension.windows) {
       return cb()
     }
 
-    extension.windows.getAll({}, (windows) => {
+    extension.windows.getAll({}, windows => {
       cb(null, windows)
     })
   }
@@ -113,12 +113,12 @@ class NotificationManager {
    * @param {array} windows - An array of objects containing data about the open MetaMask extension windows.
    *
    */
-  _getPopupIn (windows) {
+  _getPopupIn(windows) {
     return windows
-      ? windows.find((win) => {
-        // Returns notification popup
-        return win && win.type === 'popup' && win.id === this._popupId
-      })
+      ? windows.find(win => {
+          // Returns notification popup
+          return win && win.type === 'popup' && win.id === this._popupId
+        })
       : null
   }
 }

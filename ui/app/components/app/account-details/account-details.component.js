@@ -5,6 +5,7 @@ import Identicon from '../../ui/identicon'
 import Tooltip from '../../ui/tooltip-v2'
 import copyToClipboard from 'copy-to-clipboard'
 import AddressWarning from '../../ui/address-warning'
+import { base32AddressSlicer } from '../../../helpers/utils/util'
 
 export default class AccountDetails extends Component {
   static contextTypes = {
@@ -22,6 +23,7 @@ export default class AccountDetails extends Component {
     showAccountDetailModal: PropTypes.func,
     showConnectedSites: PropTypes.func.isRequired,
     label: PropTypes.string.isRequired,
+    selectedBase32Address: PropTypes.string.isRequired,
     checksummedAddress: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
   }
@@ -31,8 +33,8 @@ export default class AccountDetails extends Component {
     copyToClipboardPressed: false,
   }
 
-  copyAddress () {
-    copyToClipboard(this.props.checksummedAddress)
+  copyAddress() {
+    copyToClipboard(this.props.selectedBase32Address)
     this.context.metricsEvent({
       eventOpts: {
         category: 'Navigation',
@@ -44,7 +46,7 @@ export default class AccountDetails extends Component {
     setTimeout(() => this.setState({ hasCopied: false }), 3000)
   }
 
-  render () {
+  render() {
     const { t } = this.context
 
     const {
@@ -53,6 +55,7 @@ export default class AccountDetails extends Component {
       showConnectedSites,
       label,
       checksummedAddress,
+      selectedBase32Address,
       name,
     } = this.props
 
@@ -93,12 +96,12 @@ export default class AccountDetails extends Component {
           position="bottom"
           html={
             (
-              <AddressWarning warning={' ' + t('confluxAddressWarningClip')}>
-                {hasCopied ? t('copiedExclamation') : t('copyToClipboard')}
-              </AddressWarning>
-            )
+<AddressWarning warning={' ' + t('base32AddressNoticeShort')}>
+              {hasCopied ? t('copiedExclamation') : t('copyToClipboard')}
+</AddressWarning>
+)
           }
-          wrapperClassName="account-details__tooltip"
+          wrapperClassName="account-details__tooltip is-warning"
         >
           <button
             className={classnames({
@@ -109,7 +112,7 @@ export default class AccountDetails extends Component {
             onMouseDown={() => this.setState({ copyToClipboardPressed: true })}
             onMouseUp={() => this.setState({ copyToClipboardPressed: false })}
           >
-            {checksummedAddress.slice(0, 6)}...{checksummedAddress.slice(-4)}
+            {base32AddressSlicer(selectedBase32Address)}
             <i className="fa fa-clipboard" style={{ marginLeft: '8px' }} />
           </button>
         </Tooltip>

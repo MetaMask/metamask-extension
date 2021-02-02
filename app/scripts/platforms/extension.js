@@ -7,25 +7,25 @@ class ExtensionPlatform {
   //
   // Public
   //
-  reload () {
+  reload() {
     extension.runtime.reload()
   }
 
-  openWindow ({ url }) {
+  openWindow({ url }) {
     extension.tabs.create({ url })
   }
 
-  closeCurrentWindow () {
-    return extension.windows.getCurrent((windowDetails) => {
+  closeCurrentWindow() {
+    return extension.windows.getCurrent(windowDetails => {
       return extension.windows.remove(windowDetails.id)
     })
   }
 
-  getVersion () {
+  getVersion() {
     return extension.runtime.getManifest().version
   }
 
-  openExtensionInBrowser (route = null, queryString = null) {
+  openExtensionInBrowser(route = null, queryString = null) {
     let extensionURL = extension.runtime.getURL('home.html')
 
     if (queryString) {
@@ -41,9 +41,9 @@ class ExtensionPlatform {
     }
   }
 
-  getPlatformInfo (cb) {
+  getPlatformInfo(cb) {
     try {
-      extension.runtime.getPlatformInfo((platform) => {
+      extension.runtime.getPlatformInfo(platform => {
         cb(null, platform)
       })
     } catch (e) {
@@ -51,25 +51,25 @@ class ExtensionPlatform {
     }
   }
 
-  showTransactionNotification (txMeta) {
+  showTransactionNotification(txMeta) {
     const { status, txReceipt: { status: receiptStatus } = {} } = txMeta
 
     if (status === 'confirmed') {
       // There was an on-chain failure
       receiptStatus === '0x0'
         ? this._showFailedTransaction(
-          txMeta,
-          'Transaction encountered an error.'
-        )
+            txMeta,
+            'Transaction encountered an error.'
+          )
         : this._showConfirmedTransaction(txMeta)
     } else if (status === 'failed') {
       this._showFailedTransaction(txMeta)
     }
   }
 
-  currentTab () {
+  currentTab() {
     return new Promise((resolve, reject) => {
-      extension.tabs.getCurrent((tab) => {
+      extension.tabs.getCurrent(tab => {
         const err = checkForError()
         if (err) {
           reject(err)
@@ -80,9 +80,9 @@ class ExtensionPlatform {
     })
   }
 
-  switchToTab (tabId) {
+  switchToTab(tabId) {
     return new Promise((resolve, reject) => {
-      extension.tabs.update(tabId, { highlighted: true }, (tab) => {
+      extension.tabs.update(tabId, { highlighted: true }, tab => {
         const err = checkForError()
         if (err) {
           reject(err)
@@ -93,7 +93,7 @@ class ExtensionPlatform {
     })
   }
 
-  closeTab (tabId) {
+  closeTab(tabId) {
     return new Promise((resolve, reject) => {
       extension.tabs.remove(tabId, () => {
         const err = checkForError()
@@ -106,7 +106,7 @@ class ExtensionPlatform {
     })
   }
 
-  _showConfirmedTransaction (txMeta) {
+  _showConfirmedTransaction(txMeta) {
     this._subscribeToNotificationClicked()
 
     const url = explorerLink(txMeta.hash, parseInt(txMeta.metamaskNetworkId))
@@ -117,7 +117,7 @@ class ExtensionPlatform {
     this._showNotification(title, message, url)
   }
 
-  _showFailedTransaction (txMeta, errorMessage) {
+  _showFailedTransaction(txMeta, errorMessage) {
     const nonce = parseInt(txMeta.txParams.nonce, 16)
     const title = 'Failed transaction'
     const message = `Transaction ${nonce} failed! ${errorMessage ||
@@ -125,7 +125,7 @@ class ExtensionPlatform {
     this._showNotification(title, message)
   }
 
-  _showNotification (title, message, url) {
+  _showNotification(title, message, url) {
     extension.notifications.create(url, {
       type: 'basic',
       title: title,
@@ -134,13 +134,13 @@ class ExtensionPlatform {
     })
   }
 
-  _subscribeToNotificationClicked () {
+  _subscribeToNotificationClicked() {
     if (!extension.notifications.onClicked.hasListener(this._viewOnEtherscan)) {
       extension.notifications.onClicked.addListener(this._viewOnEtherscan)
     }
   }
 
-  _viewOnEtherscan (txId) {
+  _viewOnEtherscan(txId) {
     if (txId.startsWith('http://')) {
       extension.tabs.create({ url: txId })
     }

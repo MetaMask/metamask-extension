@@ -17,6 +17,7 @@ import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 import { getStatusKey } from '../../../helpers/utils/transactions.util'
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
+import { hexToBase32 } from '../../../../../app/scripts/cip37'
 
 export default class TransactionListItem extends PureComponent {
   static propTypes = {
@@ -38,6 +39,7 @@ export default class TransactionListItem extends PureComponent {
     transaction: PropTypes.object,
     transactionGroup: PropTypes.object,
     value: PropTypes.string,
+    networkId: PropTypes.number.isRequired,
     // fetchBasicGasAndTimeEstimates: PropTypes.func,
     // fetchGasEstimates: PropTypes.func,
     rpcPrefs: PropTypes.object,
@@ -192,16 +194,20 @@ export default class TransactionListItem extends PureComponent {
       isEarliestNonce,
       firstPendingTransactionId,
       transactionTimeFeatureActive,
+      networkId,
     } = this.props
     const { txParams = {} } = transaction
     const { showTransactionDetails } = this.state
     const fromAddress = txParams.from
+    const base32FromAddress = hexToBase32(fromAddress, networkId)
     const toAddress = tokenData
       ? (tokenData.params &&
           tokenData.params[0] &&
           tokenData.params[0].value) ||
         txParams.to
       : txParams.to
+
+    const base32ToAddress = hexToBase32(toAddress, networkId)
 
     const isFullScreen = getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN
     const showEstimatedTime =
@@ -262,7 +268,9 @@ export default class TransactionListItem extends PureComponent {
                 cancelDisabled={!hasEnoughCancelGasAndCollateral}
                 rpcPrefs={rpcPrefs}
                 senderAddress={fromAddress}
+                base32SenderAddress={base32FromAddress}
                 recipientAddress={toAddress}
+                base32RecipientAddress={base32ToAddress}
               />
             </div>
           )}

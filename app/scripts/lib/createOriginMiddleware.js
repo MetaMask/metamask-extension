@@ -5,8 +5,8 @@ export default createOriginMiddleware
  * @param {{ origin: string }} opts - The middleware options
  * @returns {Function}
  */
-function createOriginMiddleware (opts) {
-  return function originMiddleware (
+function createOriginMiddleware(opts) {
+  return function originMiddleware(
     /** @type {any} */ req,
     /** @type {any} */ _,
     /** @type {Function} */ next

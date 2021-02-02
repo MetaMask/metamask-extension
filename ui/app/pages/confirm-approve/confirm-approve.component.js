@@ -13,6 +13,7 @@ export default class ConfirmApprove extends Component {
   static propTypes = {
     tokenAddress: PropTypes.string,
     toAddress: PropTypes.string,
+    toBase32Address: PropTypes.string,
     tokenAmount: PropTypes.string,
     tokenSymbol: PropTypes.string,
     fiatTransactionTotal: PropTypes.string,
@@ -38,7 +39,7 @@ export default class ConfirmApprove extends Component {
     customPermissionAmount: '',
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     const { tokenAmount } = this.props
 
     if (tokenAmount !== prevProps.tokenAmount) {
@@ -46,9 +47,10 @@ export default class ConfirmApprove extends Component {
     }
   }
 
-  render () {
+  render() {
     const {
       toAddress,
+      toBase32Address,
       tokenAddress,
       tokenSymbol,
       tokenAmount,
@@ -82,31 +84,33 @@ export default class ConfirmApprove extends Component {
     return (
       <ConfirmTransactionBase
         toAddress={toAddress}
+        toBase32Address={toBase32Address}
         identiconAddress={tokenAddress}
         showAccountInHeader
         title={tokensText}
         contentComponent={
           (
-            <ConfirmApproveContent
-              decimals={decimals}
-              siteImage={siteImage}
-              setCustomAmount={(newAmount) => {
-                this.setState({ customPermissionAmount: newAmount })
-              }}
-              customTokenAmount={String(customPermissionAmount)}
-              tokenAmount={tokenAmount}
-              origin={origin}
-              tokenSymbol={tokenSymbol}
-              tokenBalance={tokenBalance}
-              showCustomizeGasModal={() => showCustomizeGasModal(txData)}
-              showEditApprovalPermissionModal={showEditApprovalPermissionModal}
-              data={customData || data}
-              toAddress={toAddress}
-              currentCurrency={currentCurrency}
-              ethTransactionTotal={ethTransactionTotal}
-              fiatTransactionTotal={fiatTransactionTotal}
-            />
-          )
+<ConfirmApproveContent
+            decimals={decimals}
+            siteImage={siteImage}
+            setCustomAmount={newAmount => {
+              this.setState({ customPermissionAmount: newAmount })
+            }}
+            customTokenAmount={String(customPermissionAmount)}
+            tokenAmount={tokenAmount}
+            origin={origin}
+            tokenSymbol={tokenSymbol}
+            tokenBalance={tokenBalance}
+            showCustomizeGasModal={() => showCustomizeGasModal(txData)}
+            showEditApprovalPermissionModal={showEditApprovalPermissionModal}
+            data={customData || data}
+            toAddress={toAddress}
+            toBase32Address={toBase32Address}
+            currentCurrency={currentCurrency}
+            ethTransactionTotal={ethTransactionTotal}
+            fiatTransactionTotal={fiatTransactionTotal}
+/>
+)
         }
         hideSenderToRecipient
         customTxParamsData={customData}

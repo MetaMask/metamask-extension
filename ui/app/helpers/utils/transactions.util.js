@@ -28,10 +28,14 @@ import {
 
 // import log from 'loglevel'
 import { addCurrencies } from './conversion-util'
+import {
+  isValidBase32Address,
+  base32ToHex,
+} from '../../../../app/scripts/cip37'
 
 abiDecoder.addABI(abi)
 
-export function getTokenData (data = '') {
+export function getTokenData(data = '') {
   return abiDecoder.decodeMethod(data)
 }
 
@@ -60,7 +64,7 @@ export function getTokenData (data = '') {
  * @param {string} fourBytePrefix - The prefix from the method code associated with the data
  * @returns {Object}
  */
-export async function getMethodDataAsync (/* fourBytePrefix */) {
+export async function getMethodDataAsync(/* fourBytePrefix */) {
   return {}
   // try {
   //   const fourByteSig = getMethodFrom4Byte(fourBytePrefix).catch((e) => {
@@ -90,7 +94,7 @@ export async function getMethodDataAsync (/* fourBytePrefix */) {
   // }
 }
 
-export function isConfirmDeployContract (txData = {}) {
+export function isConfirmDeployContract(txData = {}) {
   const { txParams = {} } = txData
   return !txParams.to
 }
@@ -101,7 +105,7 @@ export function isConfirmDeployContract (txData = {}) {
  * @param {string} data - The hex data (@code txParams.data) of a transaction
  * @returns {string} - The four-byte method signature
  */
-export function getFourBytePrefix (data = '') {
+export function getFourBytePrefix(data = '') {
   const prefixedData = ethUtil.addHexPrefix(data)
   const fourBytePrefix = prefixedData.slice(0, 10)
   return fourBytePrefix
@@ -113,7 +117,7 @@ export function getFourBytePrefix (data = '') {
  * @param {string} transactionCategory - The category of transaction being evaluated
  * @returns {boolean} - whether the transaction is calling an erc20 token method
  */
-export function isTokenMethodAction (transactionCategory) {
+export function isTokenMethodAction(transactionCategory) {
   return [
     TOKEN_METHOD_TRANSFER,
     TOKEN_METHOD_APPROVE,
@@ -126,7 +130,7 @@ export function isTokenMethodAction (transactionCategory) {
  * @param {Object} transaction - txData object
  * @returns {string|undefined}
  */
-export function getTransactionActionKey (transaction) {
+export function getTransactionActionKey(transaction) {
   const { msgParams, type, transactionCategory } = transaction
 
   if (transactionCategory === 'incoming') {
@@ -173,7 +177,7 @@ export function getTransactionActionKey (transaction) {
   }
 }
 
-export function getLatestSubmittedTxWithNonce (
+export function getLatestSubmittedTxWithNonce(
   transactions = [],
   nonce = '0x0'
 ) {
@@ -196,11 +200,17 @@ export function getLatestSubmittedTxWithNonce (
   }, {})
 }
 
-export async function isSmartContractAddress (address) {
-  if (!ethUtil.isValidContractAddress(address)) {
+export async function isSmartContractAddress(address, netId) {
+  if (
+    !ethUtil.isValidContractAddress(address) &&
+    !isValidBase32Address(address, netId, 'contract')
+  ) {
     return false
   }
   let code
+  if (isValidBase32Address(address, netId, 'contract')) {
+    address = base32ToHex(address, netId)
+  }
 
   try {
     code = await global.eth.getCode(address)
@@ -216,7 +226,7 @@ export async function isSmartContractAddress (address) {
   return !codeIsEmpty
 }
 
-export function sumHexes (...args) {
+export function sumHexes(...args) {
   const total = args.reduce((acc, base) => {
     return addCurrencies(ethUtil.addHexPrefix(acc), base, {
       toNumericBase: 'hex',
@@ -233,7 +243,7 @@ export function sumHexes (...args) {
  * @param {Object} transaction.txReceipt - The transaction receipt.
  * @returns {string}
  */
-export function getStatusKey (transaction) {
+export function getStatusKey(transaction) {
   const {
     txReceipt: { outcomeStatus: outcomeStatus } = {},
     type,
@@ -261,7 +271,7 @@ export function getStatusKey (transaction) {
  * @param {string} hash
  * @param {Object} rpcPrefs
  */
-export function getBlockExplorerUrlForTx (networkId, hash, rpcPrefs = {}) {
+export function getBlockExplorerUrlForTx(networkId, hash, rpcPrefs = {}) {
   if (rpcPrefs.blockExplorerUrl) {
     return `${rpcPrefs.blockExplorerUrl}/transaction/${hash}`
   }

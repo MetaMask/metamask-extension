@@ -14,7 +14,8 @@ describe('Using MetaMask with an existing account', function() {
 
   const testSeedPhrase =
     'forum vessel pink push lonely enact gentle tail admit parrot grunt dress'
-  const testAddress = '0x1B5367BB0215070aD6EEF31576bbbB58B024A65c'
+  // const testAddress = '0x1B5367BB0215070aD6EEF31576bbbB58B024A65c'
+  const testBase32Address = 'net2999:aarzg375ajmusc00753vm7z51rpnakfgnuy9c7vvt5'
   const testPrivateKey2 =
     '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6'
   const testPrivateKey3 =
@@ -119,19 +120,19 @@ describe('Using MetaMask with an existing account', function() {
   describe('Show account information', function() {
     it('shows the correct account address', async function() {
       await driver.clickElement(By.css('.account-details__details-button'))
-      await driver.findVisibleElement(By.css('.qr-wrapper'))
+      await driver.findVisibleElement(By.css('.account-modal__button'))
       await driver.delay(regularDelayMs)
 
       const [address] = await driver.findElements(
         By.css('input.qr-ellip-address')
       )
-      assert.equal(await address.getAttribute('value'), testAddress)
+      assert.equal(await address.getAttribute('value'), testBase32Address)
 
       await driver.clickElement(By.css('.account-modal-close'))
       await driver.delay(largeDelayMs)
     })
 
-    it('shows a QR code for the account', async function() {
+    it.skip('shows a QR code for the account', async function() {
       await driver.clickElement(By.css('.account-details__details-button'))
       await driver.findVisibleElement(By.css('.qr-wrapper'))
       const detailModal = await driver.findElement(By.css('span .modal'))
@@ -223,7 +224,7 @@ describe('Using MetaMask with an existing account', function() {
       await driver.delay(regularDelayMs)
 
       const inputAddress = await driver.findElement(
-        By.css('input[placeholder="Search, public address (0x1 or 0x8)"]')
+        By.css('input[placeholder="Search Conflux Address"]')
       )
       await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
 

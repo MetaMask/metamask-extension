@@ -30,6 +30,7 @@ import {
 } from '../ducks/storageLimit/storageLimit.duck'
 import { resetCustomGasAndCollateralData } from '../ducks/gasAndCollateral/gasAndCollateral.duck'
 import txHelper from '../../lib/tx-helper'
+import { isLikeBase32Address, base32ToHex } from '../../../app/scripts/cip37'
 
 export const actionConstants = {
   SET_ADDRESS_TRANSACTION_COUNT: 'SET_ADDRESS_TRANSACTION_COUNT',
@@ -1042,10 +1043,21 @@ export function updateSendHexData(value) {
   }
 }
 
-export function updateSendTo(to, nickname = '') {
+export function updateSendTo(to, nickname = '', opt = {}) {
+  let base32Address
+  let address
+  let inputIsBase32 = false
+  if (isLikeBase32Address(to)) {
+    base32Address = to
+    address = base32ToHex(base32Address)
+    inputIsBase32 = true
+  } else {
+    address = to
+  }
+  to = address
   return {
     type: actionConstants.UPDATE_SEND_TO,
-    value: { to, nickname },
+    value: { to, nickname, address, base32Address, inputIsBase32, ...opt },
   }
 }
 

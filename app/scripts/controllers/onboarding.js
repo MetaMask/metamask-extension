@@ -22,7 +22,7 @@ class OnboardingController {
    *
    * @param {OnboardingOptions} [opts] Controller configuration parameters
    */
-  constructor (opts = {}) {
+  constructor(opts = {}) {
     const initialTransientState = {
       onboardingTabs: {},
     }
@@ -47,7 +47,7 @@ class OnboardingController {
     })
   }
 
-  setSeedPhraseBackedUp (newSeedPhraseBackUpState) {
+  setSeedPhraseBackedUp(newSeedPhraseBackUpState) {
     this.store.updateState({
       seedPhraseBackedUp: newSeedPhraseBackUpState,
     })

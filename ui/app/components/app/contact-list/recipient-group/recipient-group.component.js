@@ -2,13 +2,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Identicon from '../../../ui/identicon'
 import classnames from 'classnames'
-import { ellipsify } from '../../../../pages/send/send.utils'
+import { base32AddressSlicer } from '../../../../helpers/utils/util'
 
-function addressesEqual (address1, address2) {
+function addressesEqual(address1, address2) {
   return String(address1).toLowerCase() === String(address2).toLowerCase()
 }
 
-export default function RecipientGroup ({
+export default function RecipientGroup({
   label,
   items,
   onSelect,
@@ -25,7 +25,7 @@ export default function RecipientGroup ({
           {label}
         </div>
       )}
-      {items.map(({ address, name }) => (
+      {items.map(({ address, name, base32Address }) => (
         <div
           key={address}
           onClick={() => onSelect(address, name)}
@@ -43,11 +43,11 @@ export default function RecipientGroup ({
           <Identicon address={address} diameter={28} />
           <div className="send__select-recipient-wrapper__group-item__content">
             <div className="send__select-recipient-wrapper__group-item__title">
-              {name || ellipsify(address)}
+              {name || base32AddressSlicer(base32Address)}
             </div>
             {name && (
               <div className="send__select-recipient-wrapper__group-item__subtitle">
-                {ellipsify(address)}
+                {base32AddressSlicer(base32Address)}
               </div>
             )}
           </div>

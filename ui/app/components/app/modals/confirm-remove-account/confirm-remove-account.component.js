@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Modal from '../../modal'
-import { addressSummary } from '../../../../helpers/utils/util'
+import { base32AddressSlicer } from '../../../../helpers/utils/util'
 import Identicon from '../../../ui/identicon'
 import genAccountLink from '../../../../../lib/account-link'
 
@@ -27,7 +27,7 @@ export default class ConfirmRemoveAccount extends Component {
     this.props.hideModal()
   }
 
-  renderSelectedAccount () {
+  renderSelectedAccount() {
     const { identity } = this.props
     return (
       <div className="confirm-remove-account__account">
@@ -43,7 +43,7 @@ export default class ConfirmRemoveAccount extends Component {
             Public Address
           </span>
           <span className="account_value">
-            {addressSummary(identity.address, 4, 4)}
+            {base32AddressSlicer(identity.base32Address)}
           </span>
         </div>
         <div className="confirm-remove-account__account__link">
@@ -60,7 +60,7 @@ export default class ConfirmRemoveAccount extends Component {
     )
   }
 
-  render () {
+  render() {
     const { t } = this.context
 
     return (

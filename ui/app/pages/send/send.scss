@@ -177,6 +177,10 @@
       &--error {
       }
 
+      &--warning {
+        // used to warn when input hex address
+        background-image: url('/images/exclamation-yellow-solid.svg');
+      }
       &--valid {
         background-image: url('/images/check-green-solid.svg');
       }
@@ -217,10 +221,6 @@
       border-color: $Blue-500;
 
       .ens-input__wrapper {
-        &__status-icon {
-          background-image: url('/images/check-green-solid.svg');
-        }
-
         &__input {
           @extend %col-nowrap;
           font-size: 0.75rem;

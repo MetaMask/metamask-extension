@@ -25,7 +25,7 @@ class PreferencesController {
    * @property {string} store.selectedAddress A hex string that matches the currently selected address in the app
    *
    */
-  constructor (opts = {}) {
+  constructor(opts = {}) {
     const initState = Object.assign(
       {
         frequentRpcListDetail: [],
@@ -55,6 +55,7 @@ class PreferencesController {
         forgottenPassword: false,
         preferences: {
           useNativeCurrencyAsPrimaryCurrency: false,
+          autoLockTimeLimit: 5,
         },
         trustedTokenMap: {},
         completedOnboarding: false,
@@ -85,7 +86,7 @@ class PreferencesController {
    * Sets the {@code forgottenPassword} state property
    * @param {boolean} forgottenPassword - whether or not the user has forgotten their password
    */
-  setPasswordForgotten (forgottenPassword) {
+  setPasswordForgotten(forgottenPassword) {
     this.store.updateState({ forgottenPassword })
   }
 
@@ -95,7 +96,7 @@ class PreferencesController {
    * @param {boolean} val - Whether or not the user prefers blockie indicators
    *
    */
-  setUseBlockie (val) {
+  setUseBlockie(val) {
     this.store.updateState({ useBlockie: val })
   }
 
@@ -105,7 +106,7 @@ class PreferencesController {
    * @param {boolean} val - Whether or not the user prefers to set nonce
    *
    */
-  setUseNonceField (val) {
+  setUseNonceField(val) {
     this.store.updateState({ useNonceField: val })
   }
 
@@ -116,7 +117,7 @@ class PreferencesController {
    * @returns {string|null} - the string of the new metametrics id, or null if not set
    *
    */
-  setParticipateInMetaMetrics (bool) {
+  setParticipateInMetaMetrics(bool) {
     bool = false
     this.store.updateState({ participateInMetaMetrics: bool })
     let metaMetricsId = null
@@ -134,12 +135,12 @@ class PreferencesController {
     return metaMetricsId
   }
 
-  getParticipateInMetaMetrics () {
+  getParticipateInMetaMetrics() {
     return false
     // return this.store.getState().participateInMetaMetrics
   }
 
-  setMetaMetricsSendCount (val) {
+  setMetaMetricsSendCount(val) {
     this.store.updateState({ metaMetricsSendCount: val })
   }
 
@@ -149,19 +150,19 @@ class PreferencesController {
    * @param {string} type - Indicates the type of first time flow - create or import - the user wishes to follow
    *
    */
-  setFirstTimeFlowType (type) {
+  setFirstTimeFlowType(type) {
     this.store.updateState({ firstTimeFlowType: type })
   }
 
-  getSuggestedTokens () {
+  getSuggestedTokens() {
     return this.store.getState().suggestedTokens
   }
 
-  getAssetImages () {
+  getAssetImages() {
     return this.store.getState().assetImages
   }
 
-  addSuggestedERC20Asset (tokenOpts) {
+  addSuggestedERC20Asset(tokenOpts) {
     this._validateERC20AssetParams(tokenOpts)
     const suggested = this.getSuggestedTokens()
     const { rawAddress, symbol, decimals, image } = tokenOpts
@@ -177,7 +178,7 @@ class PreferencesController {
    * @param {string} fourBytePrefix - Four-byte method signature
    * @param {string} methodData - Corresponding data method
    */
-  addKnownMethodData (fourBytePrefix, methodData) {
+  addKnownMethodData(fourBytePrefix, methodData) {
     const knownMethodData = this.store.getState().knownMethodData
     knownMethodData[fourBytePrefix] = methodData
     this.store.updateState({ knownMethodData })
@@ -191,7 +192,7 @@ class PreferencesController {
    * @param {Function} - next
    * @param {Function} - end
    */
-  async requestWatchAsset (req, res, next, end) {
+  async requestWatchAsset(req, res, next, end) {
     if (
       req.method === 'metamask_watchAsset' ||
       req.method === addInternalMethodPrefix('watchAsset')
@@ -221,7 +222,7 @@ class PreferencesController {
    * @param {string} key - he preferred language locale key
    *
    */
-  setCurrentLocale (key) {
+  setCurrentLocale(key) {
     const textDirection = ['ar', 'dv', 'fa', 'he', 'ku'].includes(key)
       ? 'rtl'
       : 'auto'
@@ -239,7 +240,7 @@ class PreferencesController {
    * @param {string[]} addresses - An array of hex addresses
    *
    */
-  setAddresses (addresses) {
+  setAddresses(addresses) {
     const oldIdentities = this.store.getState().identities
     const oldAccountTokens = this.store.getState().accountTokens
 
@@ -262,7 +263,7 @@ class PreferencesController {
    * @param {string} address - A hex address
    * @returns {string} - the address that was removed
    */
-  removeAddress (address) {
+  removeAddress(address) {
     const identities = this.store.getState().identities
     const accountTokens = this.store.getState().accountTokens
     if (!identities[address]) {
@@ -287,10 +288,10 @@ class PreferencesController {
    * @param {string[]} addresses - An array of hex addresses
    *
    */
-  addAddresses (addresses) {
+  addAddresses(addresses) {
     const identities = this.store.getState().identities
     const accountTokens = this.store.getState().accountTokens
-    addresses.forEach((address) => {
+    addresses.forEach(address => {
       // skip if already exists
       if (identities[address]) {
         return
@@ -311,11 +312,11 @@ class PreferencesController {
    * @param {Array<string>} addresses - known to the vault.
    * @returns {Promise<string>} - selectedAddress the selected address.
    */
-  syncAddresses (addresses) {
+  syncAddresses(addresses) {
     const { identities, lostIdentities } = this.store.getState()
 
     const newlyLost = {}
-    Object.keys(identities).forEach((identity) => {
+    Object.keys(identities).forEach(identity => {
       if (!addresses.includes(identity)) {
         newlyLost[identity] = identities[identity]
         delete identities[identity]
@@ -349,8 +350,8 @@ class PreferencesController {
     return selected
   }
 
-  removeSuggestedTokens () {
-    return new Promise((resolve) => {
+  removeSuggestedTokens() {
+    return new Promise(resolve => {
       this.store.updateState({ suggestedTokens: {} })
       resolve({})
     })
@@ -363,7 +364,7 @@ class PreferencesController {
    * @returns {Promise<void>} - Promise resolves with tokens
    *
    */
-  setSelectedAddress (_address) {
+  setSelectedAddress(_address) {
     const address = normalizeAddress(_address)
     this._updateTokens(address)
     this.store.updateState({ selectedAddress: address })
@@ -377,7 +378,7 @@ class PreferencesController {
    * @returns {string} - The hex address for the currently selected account
    *
    */
-  getSelectedAddress () {
+  getSelectedAddress() {
     return this.store.getState().selectedAddress
   }
 
@@ -387,7 +388,7 @@ class PreferencesController {
    * @param {string} origin - The origin for which the address was selected.
    * @param {string} address - The new selected address.
    */
-  setLastSelectedAddress (origin, address) {
+  setLastSelectedAddress(origin, address) {
     const { lastSelectedAddressByOrigin } = this.store.getState()
 
     // only update state if it's necessary
@@ -402,7 +403,7 @@ class PreferencesController {
    *
    * @param {Array<string>} origins - The origin to remove the last selected address for.
    */
-  removeLastSelectedAddressesFor (origins) {
+  removeLastSelectedAddressesFor(origins) {
     if (
       !Array.isArray(origins) ||
       (origins.length > 0 && typeof origins[0] !== 'string')
@@ -416,7 +417,7 @@ class PreferencesController {
 
     const { lastSelectedAddressByOrigin } = this.store.getState()
 
-    origins.forEach((origin) => {
+    origins.forEach(origin => {
       delete lastSelectedAddressByOrigin[origin]
     })
     this.store.updateState({ lastSelectedAddressByOrigin })
@@ -425,7 +426,7 @@ class PreferencesController {
   /**
    * Clears the selected address history.
    */
-  clearLastSelectedAddressHistory () {
+  clearLastSelectedAddressHistory() {
     this.store.updateState({ lastSelectedAddressByOrigin: {} })
   }
 
@@ -450,12 +451,12 @@ class PreferencesController {
    * @returns {Promise<array>} - Promises the new array of AddedToken objects.
    *
    */
-  async addToken (rawAddress, symbol, decimals, image) {
+  async addToken(rawAddress, symbol, decimals, image) {
     const address = normalizeAddress(rawAddress)
     const newEntry = { address, symbol, decimals }
     const tokens = this.store.getState().tokens
     const assetImages = this.getAssetImages()
-    const previousEntry = tokens.find((token) => {
+    const previousEntry = tokens.find(token => {
       return token.address === address
     })
     const previousIndex = tokens.indexOf(previousEntry)
@@ -477,10 +478,10 @@ class PreferencesController {
    * @returns {Promise<array>} - The new array of AddedToken objects
    *
    */
-  removeToken (rawAddress) {
+  removeToken(rawAddress) {
     const tokens = this.store.getState().tokens
     const assetImages = this.getAssetImages()
-    const updatedTokens = tokens.filter((token) => token.address !== rawAddress)
+    const updatedTokens = tokens.filter(token => token.address !== rawAddress)
     delete assetImages[rawAddress]
     this._updateAccountTokens(updatedTokens, assetImages)
     return Promise.resolve(updatedTokens)
@@ -492,7 +493,7 @@ class PreferencesController {
    * @returns {array} - The current array of AddedToken objects
    *
    */
-  getTokens () {
+  getTokens() {
     return this.store.getState().tokens
   }
 
@@ -502,7 +503,7 @@ class PreferencesController {
    * @param {string} label - the custom label for the account
    * @returns {Promise<string>}
    */
-  setAccountLabel (account, label) {
+  setAccountLabel(account, label) {
     if (!account) {
       throw new Error(
         'setAccountLabel requires a valid address, got ' + String(account)
@@ -523,8 +524,8 @@ class PreferencesController {
    * @returns {Promise<void>} - Promise resolves with undefined
    *
    */
-  setCurrentAccountTab (currentAccountTab) {
-    return new Promise((resolve) => {
+  setCurrentAccountTab(currentAccountTab) {
+    return new Promise(resolve => {
       this.store.updateState({ currentAccountTab })
       resolve()
     })
@@ -541,9 +542,9 @@ class PreferencesController {
    *
    */
 
-  updateRpc (newRpcDetails) {
+  updateRpc(newRpcDetails) {
     const rpcList = this.getFrequentRpcListDetail()
-    const index = rpcList.findIndex((element) => {
+    const index = rpcList.findIndex(element => {
       return element.rpcUrl === newRpcDetails.rpcUrl
     })
     if (index > -1) {
@@ -573,7 +574,7 @@ class PreferencesController {
    * @returns {Promise<array>} - Promise resolving to updated frequentRpcList.
    *
    */
-  addToFrequentRpcList (
+  addToFrequentRpcList(
     url,
     chainId,
     ticker = 'CFX',
@@ -581,7 +582,7 @@ class PreferencesController {
     rpcPrefs = {}
   ) {
     const rpcList = this.getFrequentRpcListDetail()
-    const index = rpcList.findIndex((element) => {
+    const index = rpcList.findIndex(element => {
       return element.rpcUrl === url
     })
     if (index !== -1) {
@@ -611,9 +612,9 @@ class PreferencesController {
    * @returns {Promise<array>} - Promise resolving to updated frequentRpcList.
    *
    */
-  removeFromFrequentRpcList (url) {
+  removeFromFrequentRpcList(url) {
     const rpcList = this.getFrequentRpcListDetail()
-    const index = rpcList.findIndex((element) => {
+    const index = rpcList.findIndex(element => {
       return element.rpcUrl === url
     })
     if (index !== -1) {
@@ -629,7 +630,7 @@ class PreferencesController {
    * @returns {array<array>} - An array of rpc urls.
    *
    */
-  getFrequentRpcListDetail () {
+  getFrequentRpcListDetail() {
     return this.store.getState().frequentRpcListDetail
   }
 
@@ -641,7 +642,7 @@ class PreferencesController {
    * @returns {Promise<object>} - Promises a new object; the updated featureFlags object.
    *
    */
-  setFeatureFlag (feature, activated) {
+  setFeatureFlag(feature, activated) {
     const currentFeatureFlags = this.store.getState().featureFlags
     const updatedFeatureFlags = {
       ...currentFeatureFlags,
@@ -660,7 +661,7 @@ class PreferencesController {
    * @param {boolean} value - Indicates whether or not the preference should be enabled or disabled.
    * @returns {Promise<object>} - Promises a new object; the updated preferences object.
    */
-  setPreference (preference, value) {
+  setPreference(preference, value) {
     const currentPreferences = this.getPreferences()
     const updatedPreferences = {
       ...currentPreferences,
@@ -680,7 +681,7 @@ class PreferencesController {
    * A getter for the `preferences` property
    * @returns {Object} - A key-boolean map of user-selected preferences.
    */
-  getPreferences () {
+  getPreferences() {
     return this.store.getState().preferences
   }
 
@@ -688,7 +689,7 @@ class PreferencesController {
    * Sets the completedOnboarding state to true, indicating that the user has completed the
    * onboarding process.
    */
-  completeOnboarding () {
+  completeOnboarding() {
     this.store.updateState({ completedOnboarding: true })
     return Promise.resolve(true)
   }
@@ -697,7 +698,7 @@ class PreferencesController {
    * A getter for the `ipfsGateway` property
    * @returns {string} - The current IPFS gateway domain
    */
-  getIpfsGateway () {
+  getIpfsGateway() {
     return this.store.getState().ipfsGateway
   }
 
@@ -706,7 +707,7 @@ class PreferencesController {
    * @param {string} domain - The new IPFS gateway domain
    * @returns {Promise<string>} - A promise of the update IPFS gateway domain
    */
-  setIpfsGateway (domain) {
+  setIpfsGateway(domain) {
     this.store.updateState({ ipfsGateway: domain })
     return Promise.resolve(domain)
   }
@@ -720,7 +721,7 @@ class PreferencesController {
    *
    *
    */
-  _subscribeProviderType () {
+  _subscribeProviderType() {
     this.network.providerStore.subscribe(() => {
       const { tokens } = this._getTokenRelatedStates()
       this.store.updateState({ tokens })
@@ -733,7 +734,7 @@ class PreferencesController {
    * @param {array} tokens - Array of tokens to be updated.
    *
    */
-  _updateAccountTokens (tokens, assetImages) {
+  _updateAccountTokens(tokens, assetImages) {
     const {
       accountTokens,
       providerType,
@@ -749,7 +750,7 @@ class PreferencesController {
    * @param {string} selectedAddress - Account address to be updated with.
    *
    */
-  _updateTokens (selectedAddress) {
+  _updateTokens(selectedAddress) {
     const { tokens } = this._getTokenRelatedStates(selectedAddress)
     this.store.updateState({ tokens })
   }
@@ -761,7 +762,7 @@ class PreferencesController {
    * @returns {Object.<array, object, string, string>} - States to interact with tokens in `accountTokens`
    *
    */
-  _getTokenRelatedStates (selectedAddress) {
+  _getTokenRelatedStates(selectedAddress) {
     const accountTokens = this.store.getState().accountTokens
     if (!selectedAddress) {
       selectedAddress = this.store.getState().selectedAddress
@@ -783,7 +784,7 @@ class PreferencesController {
    * @param {Promise} promise - Promise according to addition of ERC20 token
    *
    */
-  async _handleWatchAssetERC20 (options) {
+  async _handleWatchAssetERC20(options) {
     const { address, symbol, decimals, image } = options
     const rawAddress = address
     try {
@@ -795,7 +796,7 @@ class PreferencesController {
     this.addSuggestedERC20Asset(tokenOpts)
     return this.openPopup().then(() => {
       const tokenAddresses = this.getTokens().filter(
-        (token) => token.address === normalizeAddress(rawAddress)
+        token => token.address === normalizeAddress(rawAddress)
       )
       return tokenAddresses.length > 0
     })
@@ -809,7 +810,7 @@ class PreferencesController {
    * doesn't fulfill requirements
    *
    */
-  _validateERC20AssetParams (opts) {
+  _validateERC20AssetParams(opts) {
     const { rawAddress, symbol, decimals } = opts
     if (!rawAddress || !symbol || typeof decimals === 'undefined') {
       throw new Error(

@@ -25,6 +25,7 @@ export default class WalletView extends Component {
   }
 
   static propTypes = {
+    selectedBase32Address: PropTypes.string,
     selectedTokenAddress: PropTypes.string,
     selectedAccount: PropTypes.object,
     selectedAddress: PropTypes.string.isRequired,
@@ -37,7 +38,7 @@ export default class WalletView extends Component {
     hideSidebar: PropTypes.func.isRequired,
   }
 
-  renderWalletBalance () {
+  renderWalletBalance() {
     const {
       selectedTokenAddress,
       selectedAccount,
@@ -67,7 +68,7 @@ export default class WalletView extends Component {
     )
   }
 
-  renderAddToken () {
+  renderAddToken() {
     const { sidebarOpen, hideSidebar, history } = this.props
     const { metricsEvent } = this.context
 
@@ -98,17 +99,18 @@ export default class WalletView extends Component {
     }
   }
 
-  render () {
+  render() {
     const {
       responsiveDisplayClassname,
-      selectedAddress,
       keyrings,
       identities,
+      selectedAddress,
+      selectedBase32Address,
     } = this.props
 
     const checksummedAddress = checksumAddress(selectedAddress)
 
-    const keyring = keyrings.find((kr) => {
+    const keyring = keyrings.find(kr => {
       return kr.accounts.includes(selectedAddress)
     })
 
@@ -136,6 +138,7 @@ export default class WalletView extends Component {
         <AccountDetails
           label={label}
           checksummedAddress={checksummedAddress}
+          selectedBase32Address={selectedBase32Address}
           name={identities[selectedAddress].name}
           showConnectedSites={this.showConnectedSites}
         />

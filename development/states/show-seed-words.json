@@ -5,9 +5,9 @@
     "currentDomain": "example.com",
     "rpcTarget": "https://rawtestrpc.metamask.io/",
     "identities": {
-      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+      "0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
         "name": "Wallet 1",
-        "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+        "address": "0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc",
         "mayBeFauceting": false
       },
       "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b": {
@@ -23,11 +23,11 @@
     },
     "unconfTxs": {},
     "accounts": {
-      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+      "0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
         "balance": "0x0",
         "nonce": "0x0",
         "code": "0x",
-        "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
+        "address": "0x1dcd5d886577d5081b0c52e242ef29e70be3e7bc"
       },
       "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b": {
         "balance": "0x0",

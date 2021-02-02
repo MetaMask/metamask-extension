@@ -51,7 +51,7 @@
     line-height: 20px;
     margin-top: 16px;
     margin-bottom: 16px;
-    color: #6A737D;
+    color: #6a737d;
     text-align: center;
     padding-left: 24px;
     padding-right: 24px;
@@ -61,7 +61,7 @@
   &__card--no-border {
     display: flex;
     flex-flow: column;
-    border-bottom: 1px solid #D2D8DD;
+    border-bottom: 1px solid #d2d8dd;
     position: relative;
     padding-left: 24px;
     padding-right: 24px;
@@ -76,9 +76,9 @@
       font-weight: normal;
       font-size: 12px;
       line-height: 17px;
-      color: #6A737D;
+      color: #6a737d;
     }
-   }
+  }
 
   &__card--no-border {
     border-bottom: none;
@@ -99,7 +99,8 @@
       width: 100%;
     }
 
-    &__title, &__title-value {
+    &__title,
+    &__title-value {
       font-weight: bold;
       font-size: 14px;
       line-height: 20px;
@@ -141,7 +142,7 @@
       div {
         width: 22px;
         height: 2px;
-        background: #037DD6;
+        background: #037dd6;
         position: absolute;
       }
 
@@ -157,7 +158,7 @@
     &__circle {
       width: 14px;
       height: 14px;
-      border: 2px solid #037DD6;
+      border: 2px solid #037dd6;
       border-radius: 50%;
       background: white;
       position: absolute;
@@ -191,7 +192,7 @@
       font-weight: normal;
       font-size: 14px;
       line-height: 20px;
-      color: #8C8E94;
+      color: #8c8e94;
     }
   }
 
@@ -219,7 +220,7 @@
     flex-flow: row;
     padding-top: 15px;
     padding-bottom: 30px;
-    border-bottom: 1px solid #D2D8DD;
+    border-bottom: 1px solid #d2d8dd;
     width: 100%;
     justify-content: center;
     padding-left: 24px;
@@ -229,14 +230,14 @@
   &__large-text {
     font-size: 18px;
     line-height: 25px;
-    color: #24292E;
+    color: #24292e;
   }
 
   &__medium-link-text {
     font-size: 14px;
     line-height: 20px;
     font-weight: 500;
-    color: #037DD6;
+    color: #037dd6;
   }
 
   &__medium-text,
@@ -244,7 +245,7 @@
     font-weight: normal;
     font-size: 14px;
     line-height: 20px;
-    color: #24292E;
+    color: #24292e;
   }
 
   &__label {
@@ -252,15 +253,21 @@
     margin-right: 4px;
   }
 
-  &__small-text, &__small-blue-text, &__info-row {
+  &__medium-text.is-address {
+    text-decoration: underline;
+  }
+
+  &__small-text,
+  &__small-blue-text,
+  &__info-row {
     font-weight: normal;
     font-size: 12px;
     line-height: 17px;
-    color: #6A737D;
+    color: #6a737d;
   }
 
   &__small-blue-text {
-    color: #037DD6;
+    color: #037dd6;
   }
 
   &__info-row {

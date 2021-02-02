@@ -44,8 +44,8 @@ class CachedBalancesController {
   async updateCachedBalances({ accounts }) {
     const network = await this.getNetwork()
     if (network === 'loading') {
- return
-}
+      return
+    }
     const balancesToCache = await this._generateBalancesToCache(
       accounts,
       network

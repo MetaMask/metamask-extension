@@ -227,14 +227,14 @@
   "chromeRequiredForHardwareWallets": {
     "message": "您需要通过 Google Chrome 浏览器使用 ConfluxPortal ，连接个人硬件钱包。(硬件钱包没有经过充分测试, 使用中可能会遇到问题)"
   },
-  "confluxAddressWarningClip": {
-    "message": "请勿转账任何非 Conflux 网络资产至该地址，否则资产可能丢失。"
-  },
-  "confluxAddressWarningModal": {
-    "message": "请勿转账任何非 Conflux 网络资产至该地址，否则资产可能丢失。"
-  },
   "confluxAddressWarningSend": {
     "message": "请不要向非 Conflux 网络地址转账，否则资产可能丢失。"
+  },
+  "confluxNewAddressWarning": {
+    "message": "建议使用新地址格式进行交易"
+  },
+  "goConvert": {
+    "message": "去转换"
   },
   "confluxContractAddressWarningSend": {
     "message": "该地址为 Conflux 网络合约地址，非个人用户"
@@ -675,8 +675,20 @@
   "insufficientTokens": {
     "message": "代币余额不足."
   },
+  "base32AddressNotice": {
+    "message": "Conflux地址规则已更新，可以自动将旧地址转换为新地址；之后，以0x开头的地址将停止使用，并逐渐切换到新地址；新的地址规则，不同的网络，不同的地址；如果有特殊需要，可以通过转换工具获取旧地址。"
+  },
+  "base32AddressNoticeShort": {
+    "message": "Conflux 地址规则已升级，已自动将旧地址转换为新地址"
+  },
+  "base32AddressNoticeMedium": {
+    "message": "Conflux 地址规则已升级, 建议使用新地址进行交易, 后续 0x 开头的地址将停止使用"
+  },
   "invalidAddress": {
     "message": "无效地址"
+  },
+  "invalidAddressNetId": {
+    "message": "需要使用以 $1 开头的地址或交换网络"
   },
   "invalidAddressRecipient": {
     "message": "收款地址不合法"
@@ -711,9 +723,6 @@
   "jsonFile": {
     "message": "JSON 文件",
     "description": "format for importing an account"
-  },
-  "kovan": {
-    "message": "Kovan 测试网络"
   },
   "max": {
     "message": "最大"
@@ -753,6 +762,9 @@
   },
   "mainnet": {
     "message": "Conflux Tethys"
+  },
+  "currentNetwork": {
+    "message": "当前网络"
   },
   "memorizePhrase": {
     "message": "记住该密语。"
@@ -796,6 +808,9 @@
   "needImportFile": {
     "message": "必须选择导入一个文件。",
     "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "输入的数量需要大于 0"
   },
   "networkName": {
     "message": "网络名称"
@@ -963,7 +978,7 @@
     "message": "接收地址"
   },
   "recipientAddressPlaceholder": {
-    "message": "查找、公用地址 (0x1 或 0x8)"
+    "message": "输入 Conflux 地址"
   },
   "rejectAll": {
     "message": "拒绝所有"
@@ -1045,9 +1060,6 @@
   },
   "ropsten": {
     "message": "Ropsten 测试网络"
-  },
-  "goerli": {
-    "message": "Goerli 测试网络"
   },
   "save": {
     "message": "保存"

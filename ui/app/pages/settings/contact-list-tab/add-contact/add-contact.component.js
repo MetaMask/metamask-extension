@@ -3,13 +3,17 @@ import PropTypes from 'prop-types'
 import Identicon from '../../../../components/ui/identicon'
 import TextField from '../../../../components/ui/text-field'
 import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes'
-import {
-  isValidAddress,
-  isValidDomainName,
-} from '../../../../helpers/utils/util'
+import { isValidDomainName } from '../../../../helpers/utils/util'
+import { isValidAccountAddress, isValidContractAddress } from 'cfx-util'
+
 import EnsInput from '../../../send/send-content/add-recipient/ens-input'
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer'
 import { debounce } from 'lodash'
+import {
+  isValidBase32Address,
+  base32ToHex,
+} from '../../../../../../app/scripts/cip37.js'
+import classnames from 'classnames'
 
 export default class AddContact extends PureComponent {
   static contextTypes = {
@@ -23,6 +27,7 @@ export default class AddContact extends PureComponent {
     qrCodeData:
       PropTypes.object /* eslint-disable-line react/no-unused-prop-types */,
     qrCodeDetected: PropTypes.func,
+    network: PropTypes.number.isRequired,
   }
 
   state = {
@@ -33,12 +38,12 @@ export default class AddContact extends PureComponent {
     ensError: '',
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.dValidate = debounce(this.validate, 1000)
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.qrCodeData) {
       if (nextProps.qrCodeData.type === 'address') {
         const scannedAddress = nextProps.qrCodeData.values.address.toLowerCase()
@@ -52,37 +57,58 @@ export default class AddContact extends PureComponent {
     }
   }
 
-  validate = (address) => {
-    const valid = isValidAddress(address)
+  validate = address => {
+    const { network } = this.props
+    const validHex =
+      isValidAccountAddress(address) || isValidContractAddress(address)
+    const validBase32 = !validHex && isValidBase32Address(address, network)
+    const hexAddress = validBase32 && base32ToHex(address)
     const validEnsAddress = isValidDomainName(address)
-    if (valid || validEnsAddress || address === '') {
-      this.setState({ error: '', ethAddress: address })
+    if (validBase32 || validEnsAddress || address === '') {
+      this.setState({
+        error: '',
+        ethAddress: hexAddress,
+        errorIsWarning: false,
+      })
+    } else if (validHex) {
+      this.setState({
+        error: this.context.t('confluxNewAddressWarning'),
+        errorIsWarning: true,
+      })
     } else {
-      this.setState({ error: 'Invalid Address' })
+      this.setState({
+        error: this.context.t('invalidAddress'),
+        errorIsWarning: false,
+      })
     }
   }
 
-  renderInput () {
+  renderInput() {
     return (
       <EnsInput
         className="send__to-row"
-        scanQrCode={(_) => {
+        scanQrCode={_ => {
           this.props.scanQrCode()
         }}
         onChange={this.dValidate}
-        onPaste={(text) => this.setState({ ethAddress: text })}
+        onPaste={text => this.setState({ ethAddress: text })}
         onReset={() => this.setState({ ethAddress: '', ensAddress: '' })}
-        updateEnsResolution={(address) => {
-          this.setState({ ensAddress: address, error: '', ensError: '' })
+        updateEnsResolution={address => {
+          this.setState({
+            ensAddress: address,
+            error: '',
+            ensError: '',
+            errorIsWarning: false,
+          })
         }}
-        updateEnsResolutionError={(message) =>
+        updateEnsResolutionError={message =>
           this.setState({ ensError: message })
         }
       />
     )
   }
 
-  render () {
+  render() {
     const { t } = this.context
     const { history, addToAddressBook } = this.props
 
@@ -107,7 +133,7 @@ export default class AddContact extends PureComponent {
               type="text"
               id="nickname"
               value={this.state.newName}
-              onChange={(e) => this.setState({ newName: e.target.value })}
+              onChange={e => this.setState({ newName: e.target.value })}
               fullWidth
               margin="dense"
             />
@@ -119,7 +145,11 @@ export default class AddContact extends PureComponent {
             </div>
             {this.renderInput()}
             {errorToRender && (
-              <div className="address-book__add-contact__error">
+              <div
+                className={classnames('address-book__add-contact__error', {
+                  'is-warning': this.state.errorIsWarning,
+                })}
+              >
                 {errorToRender}
               </div>
             )}
@@ -127,7 +157,7 @@ export default class AddContact extends PureComponent {
         </div>
         <PageContainerFooter
           cancelText={this.context.t('cancel')}
-          disabled={Boolean(this.state.error)}
+          disabled={Boolean(this.state.error && !this.state.errorIsWarning)}
           onSubmit={() => {
             addToAddressBook(
               this.state.ensAddress || this.state.ethAddress,

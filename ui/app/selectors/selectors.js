@@ -2,17 +2,16 @@ import { NETWORK_TYPES } from '../helpers/constants/common'
 import { mapObjectValues } from '../../../app/scripts/lib/util'
 import { stripHexPrefix, addHexPrefix } from 'cfx-util'
 import { createSelector } from 'reselect'
+import { hexToBase32 } from '../../../app/scripts/cip37'
 
 import abi from 'human-standard-token-abi'
 import { multiplyCurrencies } from '../helpers/utils/conversion-util'
 import {
-  addressSlicer,
+  base32AddressSlicer,
   checksumAddress,
   formatDate,
   getOriginFromUrl,
 } from '../helpers/utils/util'
-
-import { getPermittedAccounts } from './permissions'
 
 export { getPermittedAccounts } from './permissions'
 
@@ -66,7 +65,11 @@ export function getSelectedAsset(state) {
 }
 
 export function getCurrentNetworkId(state) {
-  return state.metamask.network
+  const { network } = state.metamask
+  if (Number.isNaN(parseInt(network, 10)) && getIsMainnet(state)) {
+    return '1029'
+  }
+  return network.toString(10)
 }
 
 export const getMetaMaskAccounts = createSelector(
@@ -101,26 +104,43 @@ export function getSelectedAddress(state) {
   return selectedAddress
 }
 
-function lastSelectedAddressSelector(state, origin) {
-  return state.metamask.lastSelectedAddressByOrigin[origin] || null
+export function getSelectedBase32Address(state) {
+  const selectedAddress =
+    state.metamask.selectedAddress || Object.keys(getMetaMaskAccounts(state))[0]
+  if (!selectedAddress) {
+    return selectedAddress
+  }
+  const network = parseInt(getCurrentNetworkId(state), 10)
+
+  return hexToBase32(selectedAddress, network)
 }
+
+// function lastSelectedAddressSelector(state, origin) {
+//   return state.metamask.lastSelectedAddressByOrigin[origin] || null
+// }
 
 // not using reselect here since the returns are contingent;
 // we have no reasons to recompute the permitted accounts if there
 // exists a lastSelectedAddress
-export function getLastSelectedAddress(state, origin) {
-  return (
-    lastSelectedAddressSelector(state, origin) ||
-    getPermittedAccounts(state, origin)[0] || // always returns array
-    getSelectedAddress(state)
-  )
-}
+// export function getLastSelectedAddress(state, origin) {
+//   return (
+//     lastSelectedAddressSelector(state, origin) ||
+//     getPermittedAccounts(state, origin)[0] || // always returns array
+//     getSelectedAddress(state)
+//   )
+// }
 
 export function getSelectedIdentity(state) {
   const selectedAddress = getSelectedAddress(state)
+  const selectedBase32Address = getSelectedBase32Address(state)
   const identities = state.metamask.identities
+  const identity = identities[selectedAddress]
+  if (!identity) {
+    return identity
+  }
+  identity.base32Address = selectedBase32Address
 
-  return identities[selectedAddress]
+  return identity
 }
 
 export function getNumberOfAccounts(state) {
@@ -141,7 +161,16 @@ export function getMetaMaskIdentities(state) {
 }
 
 export function getMetaMaskAccountsRaw(state) {
-  return state.metamask.accounts
+  const network = getCurrentNetworkId(state)
+  const accounts = state.metamask.accounts
+  const newAccounts = {}
+  Object.keys(accounts).forEach(hexAddr => {
+    newAccounts[hexAddr] = {
+      ...accounts[hexAddr],
+      base32Address: hexToBase32(hexAddr, parseInt(network, 10)),
+    }
+  })
+  return newAccounts
 }
 
 export function getMetaMaskCachedBalances(state) {
@@ -226,11 +255,14 @@ export function conversionRateSelector(state) {
 }
 
 export function getAddressBook(state) {
-  const network = state.metamask.network
+  const network = getCurrentNetworkId(state)
   if (!state.metamask.addressBook[network]) {
     return []
   }
-  return Object.values(state.metamask.addressBook[network])
+  const addrBook = Object.values(state.metamask.addressBook[network])
+  return addrBook.filter(v =>
+    Boolean(v && v.address && v.address.toLowerCase())
+  )
 }
 
 export function getAddressBookEntry(state, address) {
@@ -242,9 +274,16 @@ export function getAddressBookEntry(state, address) {
 }
 
 export function getAddressBookEntryName(state, address) {
+  const network = parseInt(getCurrentNetworkId(state), 10)
   const entry =
     getAddressBookEntry(state, address) || state.metamask.identities[address]
-  return entry && entry.name !== '' ? entry.name : addressSlicer(address)
+  let base32Address = ''
+  try {
+    base32Address = hexToBase32(address, network)
+  } catch (err) {}
+  return entry && entry.name !== ''
+    ? entry.name
+    : base32AddressSlicer(base32Address)
 }
 
 export function accountsWithSendEtherInfoSelector(state) {
@@ -261,14 +300,18 @@ export function accountsWithSendEtherInfoSelector(state) {
 }
 
 export function getAccountsWithLabels(state) {
+  const network = parseInt(getCurrentNetworkId(state), 10)
   const accountsWithoutLabel = accountsWithSendEtherInfoSelector(state)
   const accountsWithLabels = accountsWithoutLabel.reduce((acc, account) => {
     const { address, name, balance } = account
+    const base32Address = hexToBase32(address, network)
     if (name !== undefined) {
       acc.push({
         address,
+        base32Address,
         truncatedAddress: `${address.slice(0, 6)}...${address.slice(-4)}`,
         addressLabel: `${name} (...${address.slice(address.length - 4)})`,
+        base32AddressLabel: `${name} (${base32AddressSlicer(base32Address)})`,
         label: name,
         balance,
       })

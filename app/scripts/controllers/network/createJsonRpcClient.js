@@ -10,11 +10,10 @@ import { createCfxRewriteRequestMiddleware } from './createCfxMiddleware'
 
 export default createJsonRpcClient
 
-function createJsonRpcClient ({ rpcUrl }) {
+function createJsonRpcClient({ rpcUrl }) {
   const fetchMiddleware = createFetchMiddleware({
     rpcUrl,
     appendMethod: true,
-    appendOtherInfo: process.env.METAMASK_ENVIRONMENT === 'development',
   })
   const blockProvider = providerFromMiddleware(fetchMiddleware)
   const blockTracker = new BlockTracker({ provider: blockProvider })

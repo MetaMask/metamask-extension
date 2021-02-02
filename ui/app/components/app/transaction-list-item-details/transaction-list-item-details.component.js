@@ -25,9 +25,10 @@ export default class TransactionListItemDetails extends PureComponent {
     cancelDisabled: PropTypes.bool,
     transactionGroup: PropTypes.object,
     recipientAddress: PropTypes.string, // skipped tx don't have recipient address
+    base32RecipientAddress: PropTypes.string,
     rpcPrefs: PropTypes.object,
     senderAddress: PropTypes.string.isRequired,
-    tryReverseResolveAddress: PropTypes.func.isRequired,
+    base32SenderAddress: PropTypes.string.isRequired,
     senderNickname: PropTypes.string.isRequired,
     recipientNickname: PropTypes.string.isRequired,
   }
@@ -56,7 +57,7 @@ export default class TransactionListItemDetails extends PureComponent {
     })
   }
 
-  handleCancel = (event) => {
+  handleCancel = event => {
     const {
       transactionGroup: { initialTransaction: { id } = {} } = {},
       onCancel,
@@ -66,7 +67,7 @@ export default class TransactionListItemDetails extends PureComponent {
     onCancel(id)
   }
 
-  handleRetry = (event) => {
+  handleRetry = event => {
     const {
       transactionGroup: { initialTransaction: { id } = {} } = {},
       onRetry,
@@ -95,15 +96,7 @@ export default class TransactionListItemDetails extends PureComponent {
     })
   }
 
-  async componentDidMount () {
-    const { recipientAddress, tryReverseResolveAddress } = this.props
-
-    if (recipientAddress) {
-      tryReverseResolveAddress(recipientAddress)
-    }
-  }
-
-  renderCancel () {
+  renderCancel() {
     const { t } = this.context
     const { showCancel, cancelDisabled } = this.props
 
@@ -135,7 +128,7 @@ export default class TransactionListItemDetails extends PureComponent {
     )
   }
 
-  render () {
+  render() {
     const { t } = this.context
     const { justCopied } = this.state
     const {
@@ -145,8 +138,10 @@ export default class TransactionListItemDetails extends PureComponent {
       onCancel,
       onRetry,
       recipientAddress,
+      base32RecipientAddress,
       rpcPrefs: { blockExplorerUrl } = {},
       senderAddress,
+      base32SenderAddress,
       isEarliestNonce,
       senderNickname,
       recipientNickname,
@@ -227,9 +222,11 @@ export default class TransactionListItemDetails extends PureComponent {
               variant={FLAT_VARIANT}
               addressOnly
               recipientAddress={recipientAddress}
+              base32RecipientAddress={base32RecipientAddress}
               recipientNickname={recipientNickname}
               senderName={senderNickname}
               senderAddress={senderAddress}
+              base32SenderAddress={base32SenderAddress}
               onRecipientClick={() => {
                 this.context.metricsEvent({
                   eventOpts: {

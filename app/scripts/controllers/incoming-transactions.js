@@ -16,14 +16,14 @@ const networkTypeToIdMap = {
 // })
 
 class IncomingTransactionsController {
-  constructor (opts = {}) {
+  constructor(opts = {}) {
     const { blockTracker, networkController, preferencesController } = opts
     this.blockTracker = blockTracker
     this.networkController = networkController
     this.preferencesController = preferencesController
     this.getCurrentNetwork = () => networkController.getProviderConfig().type
 
-    this._onLatestBlock = async (newBlockNumberHex) => {
+    this._onLatestBlock = async newBlockNumberHex => {
       const selectedAddress = this.preferencesController.getSelectedAddress()
       const newBlockNumberDec = parseInt(newBlockNumberHex, 16)
       await this._update({
@@ -85,7 +85,7 @@ class IncomingTransactionsController {
       })
     )
 
-    this.networkController.on('networkDidChange', async (newType) => {
+    this.networkController.on('networkDidChange', async newType => {
       const address = this.preferencesController.getSelectedAddress()
       await this._update({
         address,
@@ -94,7 +94,7 @@ class IncomingTransactionsController {
     })
   }
 
-  start () {
+  start() {
     const { featureFlags = {} } = this.preferencesController.store.getState()
     const { showIncomingTransactions } = featureFlags
 
@@ -106,11 +106,11 @@ class IncomingTransactionsController {
     this.blockTracker.addListener('latest', this._onLatestBlock)
   }
 
-  stop () {
+  stop() {
     this.blockTracker.removeListener('latest', this._onLatestBlock)
   }
 
-  async _update ({ address, newBlockNumberDec, networkType } = {}) {
+  async _update({ address, newBlockNumberDec, networkType } = {}) {
     try {
       const dataForUpdate = await this._getDataForUpdate({
         address,
@@ -123,7 +123,7 @@ class IncomingTransactionsController {
     }
   }
 
-  async _getDataForUpdate ({ address, newBlockNumberDec, networkType } = {}) {
+  async _getDataForUpdate({ address, newBlockNumberDec, networkType } = {}) {
     const {
       incomingTransactions: currentIncomingTxs,
       incomingTxLastFetchedBlocksByNetwork: currentBlocksByNetwork,
@@ -152,7 +152,7 @@ class IncomingTransactionsController {
     }
   }
 
-  async _updateStateWithNewTxData ({
+  async _updateStateWithNewTxData({
     latestIncomingTxBlockNumber,
     newTxs,
     currentIncomingTxs,
@@ -166,7 +166,7 @@ class IncomingTransactionsController {
     const newIncomingTransactions = {
       ...currentIncomingTxs,
     }
-    newTxs.forEach((tx) => {
+    newTxs.forEach(tx => {
       newIncomingTransactions[tx.hash] = tx
     })
 
@@ -179,7 +179,7 @@ class IncomingTransactionsController {
     })
   }
 
-  async _fetchAll (address, fromBlock, networkType) {
+  async _fetchAll(address, fromBlock, networkType) {
     const fetchedTxResponse = await this._fetchTxs(
       address,
       fromBlock,
@@ -188,7 +188,7 @@ class IncomingTransactionsController {
     return this._processTxFetchResponse(fetchedTxResponse)
   }
 
-  async _fetchTxs (address, fromBlock, networkType) {
+  async _fetchTxs(address, fromBlock, networkType) {
     // const confluxscanSubdomain = 'v1'
     const currentNetworkID = networkTypeToIdMap[networkType]
     // TODO: use confluxscan api
@@ -222,11 +222,11 @@ class IncomingTransactionsController {
     }
   }
 
-  _processTxFetchResponse ({ status, result = [], address, currentNetworkID }) {
+  _processTxFetchResponse({ status, result = [], address, currentNetworkID }) {
     if (status === '1' && Array.isArray(result) && result.length > 0) {
       const remoteTxList = {}
       const remoteTxs = []
-      result.forEach((tx) => {
+      result.forEach(tx => {
         if (!remoteTxList[tx.hash]) {
           remoteTxs.push(this._normalizeTxFromEtherscan(tx, currentNetworkID))
           remoteTxList[tx.hash] = 1
@@ -234,14 +234,14 @@ class IncomingTransactionsController {
       })
 
       const incomingTxs = remoteTxs.filter(
-        (tx) =>
+        tx =>
           tx.txParams.to &&
           tx.txParams.to.toLowerCase() === address.toLowerCase()
       )
       incomingTxs.sort((a, b) => (a.time < b.time ? -1 : 1))
 
       let latestIncomingTxBlockNumber = null
-      incomingTxs.forEach((tx) => {
+      incomingTxs.forEach(tx => {
         if (
           tx.blockNumber &&
           (!latestIncomingTxBlockNumber ||
@@ -262,7 +262,7 @@ class IncomingTransactionsController {
     }
   }
 
-  _normalizeTxFromEtherscan (txMeta, currentNetworkID) {
+  _normalizeTxFromEtherscan(txMeta, currentNetworkID) {
     const time = parseInt(txMeta.timeStamp, 10) * 1000
     const status = txMeta.isError === '0' ? 'confirmed' : 'failed'
     return {
@@ -287,10 +287,10 @@ class IncomingTransactionsController {
 
 export default IncomingTransactionsController
 
-function pairwise (fn) {
+function pairwise(fn) {
   let first = true
   let cache
-  return (value) => {
+  return value => {
     try {
       if (first) {
         first = false
