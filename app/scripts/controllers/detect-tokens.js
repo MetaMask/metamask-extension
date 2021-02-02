@@ -1,4 +1,4 @@
-import { Conflux } from 'js-conflux-sdk/src/index'
+import Conflux from 'js-conflux-sdk/src/Conflux'
 import { MAINNET, TESTNET } from './network/enums'
 import { toChecksumAddress } from 'cfx-util'
 import { fakeContractMapForTest } from './fakeContractMapForTest'
@@ -92,7 +92,7 @@ class DetectTokensController {
     )
 
     const contractMap = {}
-    const network = parseInt(this.network, 10)
+    const network = parseInt(this._network.getNetworkConfig().network, 10)
     validTokens.forEach(token => {
       let { address } = token
       const { name, icon, symbol, decimals, isERC721 } = token
@@ -279,6 +279,7 @@ class DetectTokensController {
       this.restartTokenDetection()
     })
     this.cfx = new Conflux(network._provider._confluxWebProvider)
+    this.cfx.networkId = parseInt(network.getNetworkConfig().network, 10)
   }
 
   /**
