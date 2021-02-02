@@ -43,6 +43,7 @@ jobs:
     needs: build
     strategy:
       matrix:
+        test-job: [0, 1, 2, 3, 4, 5, 6, 7, 8]
         node-version: [10.18]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
@@ -70,14 +71,17 @@ jobs:
       - run: yarn test:prepare-conflux-local
       - name: Run headless test
         uses: GabrielBB/xvfb-action@v1
+        env:
+          BUILDKITE_PARALLEL_JOB: ${{matrix.test-job}}
         with:
-          run: yarn test:e2e:chrome
+          run: yarn test:e2e:chrome:parallel
 
   firefox:
     runs-on: ubuntu-20.04
     needs: build
     strategy:
       matrix:
+        test-job: [0, 1, 2, 3, 4, 5, 6, 7, 8]
         node-version: [10.18]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
@@ -105,5 +109,7 @@ jobs:
       - run: yarn test:prepare-conflux-local
       - name: Run headless test
         uses: GabrielBB/xvfb-action@v1
+        env:
+          BUILDKITE_PARALLEL_JOB: ${{matrix.test-job}}
         with:
-          run: yarn test:e2e:firefox
+          run: yarn test:e2e:firefox:parallel
