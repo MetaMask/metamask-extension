@@ -10,6 +10,7 @@ import {
 } from '../../store/actions';
 import {
   getTargetAccountWithSendEtherInfo,
+  unconfirmedTransactionsListSelector,
   conversionRateSelector,
 } from '../../selectors';
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
@@ -18,11 +19,12 @@ import ConfirmDecryptMessage from './confirm-decrypt-message.component';
 
 function mapStateToProps(state) {
   const {
-    confirmTransaction,
     metamask: { domainMetadata = {} },
   } = state;
 
-  const { txData = {} } = confirmTransaction;
+  const unconfirmedTransactions = unconfirmedTransactionsListSelector(state);
+
+  const txData = unconfirmedTransactions[0];
 
   const {
     msgParams: { from },

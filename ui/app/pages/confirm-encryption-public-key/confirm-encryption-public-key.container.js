@@ -10,6 +10,7 @@ import {
 
 import {
   conversionRateSelector,
+  unconfirmedTransactionsListSelector,
   getTargetAccountWithSendEtherInfo,
 } from '../../selectors';
 
@@ -19,11 +20,12 @@ import ConfirmEncryptionPublicKey from './confirm-encryption-public-key.componen
 
 function mapStateToProps(state) {
   const {
-    confirmTransaction,
     metamask: { domainMetadata = {} },
   } = state;
 
-  const { txData = {} } = confirmTransaction;
+  const unconfirmedTransactions = unconfirmedTransactionsListSelector(state);
+
+  const txData = unconfirmedTransactions[0];
 
   const { msgParams: from } = txData;
 
