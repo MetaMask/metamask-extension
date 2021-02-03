@@ -1,18 +1,18 @@
-import React, { useMemo, useState, useCallback } from 'react'
-import PropTypes from 'prop-types'
-import { useSelector } from 'react-redux'
+import React, { useMemo, useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import {
   nonceSortedCompletedTransactionsSelector,
   nonceSortedPendingTransactionsSelector,
-} from '../../../selectors/transactions'
-import { useI18nContext } from '../../../hooks/useI18nContext'
-import TransactionListItem from '../transaction-list-item'
-import Button from '../../ui/button'
-import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions'
-import { SWAPS_CONTRACT_ADDRESS } from '../../../helpers/constants/swaps'
-import { TRANSACTION_CATEGORIES } from '../../../../../shared/constants/transaction'
+} from '../../../selectors/transactions';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import TransactionListItem from '../transaction-list-item';
+import Button from '../../ui/button';
+import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
+import { SWAPS_CONTRACT_ADDRESS } from '../../../helpers/constants/swaps';
+import { TRANSACTION_CATEGORIES } from '../../../../../shared/constants/transaction';
 
-const PAGE_INCREMENT = 10
+const PAGE_INCREMENT = 10;
 
 const getTransactionGroupRecipientAddressFilter = (recipientAddress) => {
   return ({ initialTransaction: { txParams } }) => {
@@ -20,9 +20,9 @@ const getTransactionGroupRecipientAddressFilter = (recipientAddress) => {
       txParams?.to === recipientAddress ||
       (txParams?.to === SWAPS_CONTRACT_ADDRESS &&
         txParams.data.match(recipientAddress.slice(2)))
-    )
-  }
-}
+    );
+  };
+};
 
 const tokenTransactionFilter = ({
   initialTransaction: {
@@ -32,12 +32,12 @@ const tokenTransactionFilter = ({
   },
 }) => {
   if (TOKEN_CATEGORY_HASH[transactionCategory]) {
-    return false
+    return false;
   } else if (transactionCategory === TRANSACTION_CATEGORIES.SWAP) {
-    return destinationTokenSymbol === 'ETH' || sourceTokenSymbol === 'ETH'
+    return destinationTokenSymbol === 'ETH' || sourceTokenSymbol === 'ETH';
   }
-  return true
-}
+  return true;
+};
 
 const getFilteredTransactionGroups = (
   transactionGroups,
@@ -45,28 +45,28 @@ const getFilteredTransactionGroups = (
   tokenAddress,
 ) => {
   if (hideTokenTransactions) {
-    return transactionGroups.filter(tokenTransactionFilter)
+    return transactionGroups.filter(tokenTransactionFilter);
   } else if (tokenAddress) {
     return transactionGroups.filter(
       getTransactionGroupRecipientAddressFilter(tokenAddress),
-    )
+    );
   }
-  return transactionGroups
-}
+  return transactionGroups;
+};
 
 export default function TransactionList({
   hideTokenTransactions,
   tokenAddress,
 }) {
-  const [limit, setLimit] = useState(PAGE_INCREMENT)
-  const t = useI18nContext()
+  const [limit, setLimit] = useState(PAGE_INCREMENT);
+  const t = useI18nContext();
 
   const unfilteredPendingTransactions = useSelector(
     nonceSortedPendingTransactionsSelector,
-  )
+  );
   const unfilteredCompletedTransactions = useSelector(
     nonceSortedCompletedTransactionsSelector,
-  )
+  );
 
   const pendingTransactions = useMemo(
     () =>
@@ -76,7 +76,7 @@ export default function TransactionList({
         tokenAddress,
       ),
     [hideTokenTransactions, tokenAddress, unfilteredPendingTransactions],
-  )
+  );
   const completedTransactions = useMemo(
     () =>
       getFilteredTransactionGroups(
@@ -85,14 +85,14 @@ export default function TransactionList({
         tokenAddress,
       ),
     [hideTokenTransactions, tokenAddress, unfilteredCompletedTransactions],
-  )
+  );
 
   const viewMore = useCallback(
     () => setLimit((prev) => prev + PAGE_INCREMENT),
     [],
-  )
+  );
 
-  const pendingLength = pendingTransactions.length
+  const pendingLength = pendingTransactions.length;
 
   return (
     <div className="transaction-list">
@@ -144,15 +144,15 @@ export default function TransactionList({
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 TransactionList.propTypes = {
   hideTokenTransactions: PropTypes.bool,
   tokenAddress: PropTypes.string,
-}
+};
 
 TransactionList.defaultProps = {
   hideTokenTransactions: false,
   tokenAddress: undefined,
-}
+};

@@ -1,16 +1,16 @@
-import classnames from 'classnames'
-import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
-import CheckBox from '../../ui/check-box'
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
+import CheckBox from '../../ui/check-box';
 
 export default class ConnectedAccountsPermissions extends PureComponent {
   static contextTypes = {
     t: PropTypes.func.isRequired,
-  }
+  };
 
   static defaultProps = {
     permissions: [],
-  }
+  };
 
   static propTypes = {
     permissions: PropTypes.arrayOf(
@@ -18,25 +18,25 @@ export default class ConnectedAccountsPermissions extends PureComponent {
         key: PropTypes.string.isRequired,
       }),
     ),
-  }
+  };
 
   state = {
     expanded: false,
-  }
+  };
 
   toggleExpanded = () => {
     this.setState((prevState) => ({
       expanded: !prevState.expanded,
-    }))
-  }
+    }));
+  };
 
   render() {
-    const { permissions } = this.props
-    const { t } = this.context
-    const { expanded } = this.state
+    const { permissions } = this.props;
+    const { t } = this.context;
+    const { expanded } = this.state;
 
     if (permissions.length === 0) {
-      return null
+      return null;
     }
 
     return (
@@ -81,6 +81,6 @@ export default class ConnectedAccountsPermissions extends PureComponent {
           </ul>
         </div>
       </div>
-    )
+    );
   }
 }

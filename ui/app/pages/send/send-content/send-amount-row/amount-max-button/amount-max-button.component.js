@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 export default class AmountMaxButton extends Component {
   static propTypes = {
@@ -14,12 +14,12 @@ export default class AmountMaxButton extends Component {
     setAmountToMax: PropTypes.func,
     setMaxModeTo: PropTypes.func,
     tokenBalance: PropTypes.string,
-  }
+  };
 
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
-  }
+  };
 
   setMaxAmount() {
     const {
@@ -28,19 +28,19 @@ export default class AmountMaxButton extends Component {
       sendToken,
       setAmountToMax,
       tokenBalance,
-    } = this.props
+    } = this.props;
 
     setAmountToMax({
       balance,
       gasTotal,
       sendToken,
       tokenBalance,
-    })
+    });
   }
 
   onMaxClick = () => {
-    const { setMaxModeTo, clearMaxAmount, maxModeOn } = this.props
-    const { metricsEvent } = this.context
+    const { setMaxModeTo, clearMaxAmount, maxModeOn } = this.props;
+    const { metricsEvent } = this.context;
 
     metricsEvent({
       eventOpts: {
@@ -48,18 +48,18 @@ export default class AmountMaxButton extends Component {
         action: 'Edit Screen',
         name: 'Clicked "Amount Max"',
       },
-    })
+    });
     if (maxModeOn) {
-      setMaxModeTo(false)
-      clearMaxAmount()
+      setMaxModeTo(false);
+      clearMaxAmount();
     } else {
-      setMaxModeTo(true)
-      this.setMaxAmount()
+      setMaxModeTo(true);
+      this.setMaxAmount();
     }
-  }
+  };
 
   render() {
-    const { maxModeOn, buttonDataLoading, inError } = this.props
+    const { maxModeOn, buttonDataLoading, inError } = this.props;
 
     return (
       <div
@@ -76,6 +76,6 @@ export default class AmountMaxButton extends Component {
           {this.context.t('max')}
         </div>
       </div>
-    )
+    );
   }
 }

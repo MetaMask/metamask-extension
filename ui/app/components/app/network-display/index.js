@@ -1,1 +1,1 @@
-export { default } from './network-display'
+export { default } from './network-display';

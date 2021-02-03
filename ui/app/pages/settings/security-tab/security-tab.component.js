@@ -1,14 +1,14 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import ToggleButton from '../../../components/ui/toggle-button'
-import { REVEAL_SEED_ROUTE } from '../../../helpers/constants/routes'
-import Button from '../../../components/ui/button'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import ToggleButton from '../../../components/ui/toggle-button';
+import { REVEAL_SEED_ROUTE } from '../../../helpers/constants/routes';
+import Button from '../../../components/ui/button';
 
 export default class SecurityTab extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     warning: PropTypes.string,
@@ -19,11 +19,11 @@ export default class SecurityTab extends PureComponent {
     setShowIncomingTransactionsFeatureFlag: PropTypes.func.isRequired,
     setUsePhishDetect: PropTypes.func.isRequired,
     usePhishDetect: PropTypes.bool.isRequired,
-  }
+  };
 
   renderSeedWords() {
-    const { t } = this.context
-    const { history } = this.props
+    const { t } = this.context;
+    const { history } = this.props;
 
     return (
       <div className="settings-page__content-row">
@@ -36,15 +36,15 @@ export default class SecurityTab extends PureComponent {
               type="danger"
               large
               onClick={(event) => {
-                event.preventDefault()
+                event.preventDefault();
                 this.context.metricsEvent({
                   eventOpts: {
                     category: 'Settings',
                     action: 'Reveal Seed Phrase',
                     name: 'Reveal Seed Phrase',
                   },
-                })
-                history.push(REVEAL_SEED_ROUTE)
+                });
+                history.push(REVEAL_SEED_ROUTE);
               }}
             >
               {t('revealSeedWords')}
@@ -52,12 +52,15 @@ export default class SecurityTab extends PureComponent {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   renderMetaMetricsOptIn() {
-    const { t } = this.context
-    const { participateInMetaMetrics, setParticipateInMetaMetrics } = this.props
+    const { t } = this.context;
+    const {
+      participateInMetaMetrics,
+      setParticipateInMetaMetrics,
+    } = this.props;
 
     return (
       <div className="settings-page__content-row">
@@ -78,15 +81,15 @@ export default class SecurityTab extends PureComponent {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   renderIncomingTransactionsOptIn() {
-    const { t } = this.context
+    const { t } = this.context;
     const {
       showIncomingTransactions,
       setShowIncomingTransactionsFeatureFlag,
-    } = this.props
+    } = this.props;
 
     return (
       <div className="settings-page__content-row">
@@ -109,12 +112,12 @@ export default class SecurityTab extends PureComponent {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   renderPhishingDetectionToggle() {
-    const { t } = this.context
-    const { usePhishDetect, setUsePhishDetect } = this.props
+    const { t } = this.context;
+    const { usePhishDetect, setUsePhishDetect } = this.props;
 
     return (
       <div className="settings-page__content-row">
@@ -135,11 +138,11 @@ export default class SecurityTab extends PureComponent {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   render() {
-    const { warning } = this.props
+    const { warning } = this.props;
 
     return (
       <div className="settings-page__body">
@@ -149,6 +152,6 @@ export default class SecurityTab extends PureComponent {
         {this.renderPhishingDetectionToggle()}
         {this.renderMetaMetricsOptIn()}
       </div>
-    )
+    );
   }
 }

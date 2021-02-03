@@ -1,8 +1,8 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display'
-import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common'
+import React from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display';
+import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
 
 const ConfirmDetailRow = (props) => {
   const {
@@ -14,7 +14,7 @@ const ConfirmDetailRow = (props) => {
     headerText,
     headerTextClassName,
     value,
-  } = props
+  } = props;
 
   return (
     <div className="confirm-detail-row">
@@ -62,8 +62,8 @@ const ConfirmDetailRow = (props) => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
 ConfirmDetailRow.propTypes = {
   headerText: PropTypes.string,
@@ -74,6 +74,6 @@ ConfirmDetailRow.propTypes = {
   primaryText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   secondaryText: PropTypes.string,
   value: PropTypes.string,
-}
+};
 
-export default ConfirmDetailRow
+export default ConfirmDetailRow;

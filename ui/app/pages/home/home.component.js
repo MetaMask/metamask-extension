@@ -1,19 +1,19 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import { Redirect, Route } from 'react-router-dom'
-import { formatDate } from '../../helpers/utils/util'
-import AssetList from '../../components/app/asset-list'
-import HomeNotification from '../../components/app/home-notification'
-import MultipleNotifications from '../../components/app/multiple-notifications'
-import TransactionList from '../../components/app/transaction-list'
-import MenuBar from '../../components/app/menu-bar'
-import Popover from '../../components/ui/popover'
-import Button from '../../components/ui/button'
-import ConnectedSites from '../connected-sites'
-import ConnectedAccounts from '../connected-accounts'
-import { Tabs, Tab } from '../../components/ui/tabs'
-import { EthOverview } from '../../components/app/wallet-overview'
-import SwapsIntroPopup from '../swaps/intro-popup'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import { Redirect, Route } from 'react-router-dom';
+import { formatDate } from '../../helpers/utils/util';
+import AssetList from '../../components/app/asset-list';
+import HomeNotification from '../../components/app/home-notification';
+import MultipleNotifications from '../../components/app/multiple-notifications';
+import TransactionList from '../../components/app/transaction-list';
+import MenuBar from '../../components/app/menu-bar';
+import Popover from '../../components/ui/popover';
+import Button from '../../components/ui/button';
+import ConnectedSites from '../connected-sites';
+import ConnectedAccounts from '../connected-accounts';
+import { Tabs, Tab } from '../../components/ui/tabs';
+import { EthOverview } from '../../components/app/wallet-overview';
+import SwapsIntroPopup from '../swaps/intro-popup';
 
 import {
   ASSET_ROUTE,
@@ -27,17 +27,17 @@ import {
   AWAITING_SWAP_ROUTE,
   BUILD_QUOTE_ROUTE,
   VIEW_QUOTE_ROUTE,
-} from '../../helpers/constants/routes'
+} from '../../helpers/constants/routes';
 
 const LEARN_MORE_URL =
-  'https://metamask.zendesk.com/hc/en-us/articles/360045129011-Intro-to-MetaMask-v8-extension'
+  'https://metamask.zendesk.com/hc/en-us/articles/360045129011-Intro-to-MetaMask-v8-extension';
 const LEGACY_WEB3_URL =
-  'https://metamask.zendesk.com/hc/en-us/articles/360053147012'
+  'https://metamask.zendesk.com/hc/en-us/articles/360053147012';
 
 export default class Home extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     history: PropTypes.object,
@@ -72,11 +72,11 @@ export default class Home extends PureComponent {
     setWeb3ShimUsageAlertDismissed: PropTypes.func.isRequired,
     originOfCurrentTab: PropTypes.string,
     disableWeb3ShimUsageAlert: PropTypes.func.isRequired,
-  }
+  };
 
   state = {
     mounted: false,
-  }
+  };
 
   componentDidMount() {
     const {
@@ -89,23 +89,23 @@ export default class Home extends PureComponent {
       haveSwapsQuotes,
       showAwaitingSwapScreen,
       swapsFetchParams,
-    } = this.props
+    } = this.props;
 
-    this.setState({ mounted: true })
+    this.setState({ mounted: true });
     if (isNotification && totalUnapprovedCount === 0) {
-      global.platform.closeCurrentWindow()
+      global.platform.closeCurrentWindow();
     } else if (!isNotification && showAwaitingSwapScreen) {
-      history.push(AWAITING_SWAP_ROUTE)
+      history.push(AWAITING_SWAP_ROUTE);
     } else if (!isNotification && haveSwapsQuotes) {
-      history.push(VIEW_QUOTE_ROUTE)
+      history.push(VIEW_QUOTE_ROUTE);
     } else if (!isNotification && swapsFetchParams) {
-      history.push(BUILD_QUOTE_ROUTE)
+      history.push(BUILD_QUOTE_ROUTE);
     } else if (firstPermissionsRequestId) {
-      history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`)
+      history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`);
     } else if (unconfirmedTransactionsCount > 0) {
-      history.push(CONFIRM_TRANSACTION_ROUTE)
+      history.push(CONFIRM_TRANSACTION_ROUTE);
     } else if (Object.keys(suggestedTokens).length > 0) {
-      history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE)
+      history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE);
     }
   }
 
@@ -124,7 +124,7 @@ export default class Home extends PureComponent {
   ) {
     if (!mounted) {
       if (isNotification && totalUnapprovedCount === 0) {
-        return { closing: true }
+        return { closing: true };
       } else if (
         firstPermissionsRequestId ||
         unconfirmedTransactionsCount > 0 ||
@@ -132,10 +132,10 @@ export default class Home extends PureComponent {
         (!isNotification &&
           (showAwaitingSwapScreen || haveSwapsQuotes || swapsFetchParams))
       ) {
-        return { redirecting: true }
+        return { redirecting: true };
       }
     }
-    return null
+    return null;
   }
 
   componentDidUpdate(_, prevState) {
@@ -144,19 +144,19 @@ export default class Home extends PureComponent {
       showRestorePrompt,
       threeBoxLastUpdated,
       threeBoxSynced,
-    } = this.props
+    } = this.props;
 
     if (!prevState.closing && this.state.closing) {
-      global.platform.closeCurrentWindow()
+      global.platform.closeCurrentWindow();
     }
 
     if (threeBoxSynced && showRestorePrompt && threeBoxLastUpdated === null) {
-      setupThreeBox()
+      setupThreeBox();
     }
   }
 
   renderNotifications() {
-    const { t } = this.context
+    const { t } = this.context;
     const {
       history,
       shouldShowSeedPhraseReminder,
@@ -171,7 +171,7 @@ export default class Home extends PureComponent {
       setWeb3ShimUsageAlertDismissed,
       originOfCurrentTab,
       disableWeb3ShimUsageAlert,
-    } = this.props
+    } = this.props;
 
     return (
       <MultipleNotifications>
@@ -190,9 +190,9 @@ export default class Home extends PureComponent {
             ])}
             ignoreText={t('dismiss')}
             onIgnore={(disable) => {
-              setWeb3ShimUsageAlertDismissed(originOfCurrentTab)
+              setWeb3ShimUsageAlertDismissed(originOfCurrentTab);
               if (disable) {
-                disableWeb3ShimUsageAlert()
+                disableWeb3ShimUsageAlert();
               }
             }}
             checkboxText={t('dontShowThisAgain')}
@@ -208,9 +208,9 @@ export default class Home extends PureComponent {
               if (isPopup) {
                 global.platform.openExtensionInBrowser(
                   INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
-                )
+                );
               } else {
-                history.push(INITIALIZE_BACKUP_SEED_PHRASE_ROUTE)
+                history.push(INITIALIZE_BACKUP_SEED_PHRASE_ROUTE);
               }
             }}
             infoText={t('backupApprovalInfo')}
@@ -227,22 +227,22 @@ export default class Home extends PureComponent {
             infoText={t('dataBackupFoundInfo')}
             onAccept={() => {
               restoreFromThreeBox(selectedAddress).then(() => {
-                turnThreeBoxSyncingOn()
-              })
+                turnThreeBoxSyncingOn();
+              });
             }}
             onIgnore={() => {
-              setShowRestorePromptToFalse()
+              setShowRestorePromptToFalse();
             }}
             key="home-privacyModeDefault"
           />
         ) : null}
       </MultipleNotifications>
-    )
+    );
   }
 
   renderPopover = () => {
-    const { setConnectedStatusPopoverHasBeenShown } = this.props
-    const { t } = this.context
+    const { setConnectedStatusPopoverHasBeenShown } = this.props;
+    const { t } = this.context;
     return (
       <Popover
         title={t('whatsThis')}
@@ -257,7 +257,7 @@ export default class Home extends PureComponent {
             >
               <div className="home__connected-status-popover-bg" />
             </div>
-          )
+          );
         }}
         footer={
           <>
@@ -279,11 +279,11 @@ export default class Home extends PureComponent {
           <div>{t('metaMaskConnectStatusParagraphThree')}</div>
         </main>
       </Popover>
-    )
-  }
+    );
+  };
 
   render() {
-    const { t } = this.context
+    const { t } = this.context;
     const {
       defaultHomeActiveTabName,
       onTabClick,
@@ -295,12 +295,12 @@ export default class Home extends PureComponent {
       setSwapsWelcomeMessageHasBeenShown,
       swapsEnabled,
       isMainnet,
-    } = this.props
+    } = this.props;
 
     if (forgottenPassword) {
-      return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />
+      return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />;
     } else if (this.state.closing || this.state.redirecting) {
-      return null
+      return null;
     }
 
     return (
@@ -353,6 +353,6 @@ export default class Home extends PureComponent {
           {this.renderNotifications()}
         </div>
       </div>
-    )
+    );
   }
 }

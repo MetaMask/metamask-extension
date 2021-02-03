@@ -1,1 +1,1 @@
-export { default } from './search-icon.component'
+export { default } from './search-icon.component';

@@ -1,18 +1,18 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import classnames from 'classnames'
-import Identicon from '../../../components/ui/identicon'
-import Button from '../../../components/ui/button'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import classnames from 'classnames';
+import Identicon from '../../../components/ui/identicon';
+import Button from '../../../components/ui/button';
 import CheckBox, {
   CHECKED,
   INDETERMINATE,
   UNCHECKED,
-} from '../../../components/ui/check-box'
-import Tooltip from '../../../components/ui/tooltip'
-import { PRIMARY } from '../../../helpers/constants/common'
-import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display'
-import PermissionsConnectHeader from '../../../components/app/permissions-connect-header'
-import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer'
+} from '../../../components/ui/check-box';
+import Tooltip from '../../../components/ui/tooltip';
+import { PRIMARY } from '../../../helpers/constants/common';
+import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
+import PermissionsConnectHeader from '../../../components/app/permissions-connect-header';
+import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
 
 export default class ChooseAccount extends Component {
   static propTypes = {
@@ -38,62 +38,62 @@ export default class ChooseAccount extends Component {
       name: PropTypes.string.isRequired,
       origin: PropTypes.string.isRequired,
     }),
-  }
+  };
 
   state = {
     selectedAccounts: this.props.selectedAccountAddresses,
-  }
+  };
 
   static defaultProps = {
     addressLastConnectedMap: {},
-  }
+  };
 
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   handleAccountClick(address) {
-    const { selectedAccounts } = this.state
+    const { selectedAccounts } = this.state;
 
-    const newSelectedAccounts = new Set(selectedAccounts)
+    const newSelectedAccounts = new Set(selectedAccounts);
 
     if (newSelectedAccounts.has(address)) {
-      newSelectedAccounts.delete(address)
+      newSelectedAccounts.delete(address);
     } else {
-      newSelectedAccounts.add(address)
+      newSelectedAccounts.add(address);
     }
 
-    this.setState({ selectedAccounts: newSelectedAccounts })
+    this.setState({ selectedAccounts: newSelectedAccounts });
   }
 
   selectAll() {
-    const { accounts } = this.props
+    const { accounts } = this.props;
 
     const newSelectedAccounts = new Set(
       accounts.map((account) => account.address),
-    )
+    );
 
-    this.setState({ selectedAccounts: newSelectedAccounts })
+    this.setState({ selectedAccounts: newSelectedAccounts });
   }
 
   deselectAll() {
-    this.setState({ selectedAccounts: new Set() })
+    this.setState({ selectedAccounts: new Set() });
   }
 
   allAreSelected() {
-    const { accounts } = this.props
-    const { selectedAccounts } = this.state
+    const { accounts } = this.props;
+    const { selectedAccounts } = this.state;
 
-    return accounts.every(({ address }) => selectedAccounts.has(address))
+    return accounts.every(({ address }) => selectedAccounts.has(address));
   }
 
   renderAccountsList = () => {
-    const { accounts, nativeCurrency, addressLastConnectedMap } = this.props
-    const { selectedAccounts } = this.state
+    const { accounts, nativeCurrency, addressLastConnectedMap } = this.props;
+    const { selectedAccounts } = this.state;
     return (
       <div className="permissions-connect-choose-account__accounts-list">
         {accounts.map((account, index) => {
-          const { address, addressLabel, balance } = account
+          const { address, addressLabel, balance } = account;
           return (
             <div
               key={`permissions-connect-choose-account-${index}`}
@@ -129,24 +129,24 @@ export default class ChooseAccount extends Component {
                 </Tooltip>
               ) : null}
             </div>
-          )
+          );
         })}
       </div>
-    )
-  }
+    );
+  };
 
   renderAccountsListHeader() {
-    const { t } = this.context
-    const { selectNewAccountViaModal, accounts } = this.props
-    const { selectedAccounts } = this.state
+    const { t } = this.context;
+    const { selectNewAccountViaModal, accounts } = this.props;
+    const { selectedAccounts } = this.state;
 
-    let checked
+    let checked;
     if (this.allAreSelected()) {
-      checked = CHECKED
+      checked = CHECKED;
     } else if (selectedAccounts.size === 0) {
-      checked = UNCHECKED
+      checked = UNCHECKED;
     } else {
-      checked = INDETERMINATE
+      checked = INDETERMINATE;
     }
 
     return (
@@ -191,7 +191,7 @@ export default class ChooseAccount extends Component {
           {this.context.t('newAccount')}
         </div>
       </div>
-    )
+    );
   }
 
   render() {
@@ -201,9 +201,9 @@ export default class ChooseAccount extends Component {
       cancelPermissionsRequest,
       targetDomainMetadata,
       accounts,
-    } = this.props
-    const { selectedAccounts } = this.state
-    const { t } = this.context
+    } = this.props;
+    const { selectedAccounts } = this.state;
+    const { t } = this.context;
     return (
       <div className="permissions-connect-choose-account">
         <PermissionsConnectHeader
@@ -238,6 +238,6 @@ export default class ChooseAccount extends Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 }

@@ -1,19 +1,19 @@
-import React, { useState, useEffect, useRef, useContext } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Switch,
   Route,
   useLocation,
   useHistory,
   Redirect,
-} from 'react-router-dom'
-import BigNumber from 'bignumber.js'
-import { I18nContext } from '../../contexts/i18n'
+} from 'react-router-dom';
+import BigNumber from 'bignumber.js';
+import { I18nContext } from '../../contexts/i18n';
 import {
   getSelectedAccount,
   getCurrentNetworkId,
   getCurrentChainId,
-} from '../../selectors/selectors'
+} from '../../selectors/selectors';
 import {
   getFromToken,
   getQuotes,
@@ -31,7 +31,7 @@ import {
   getSwapsFeatureLiveness,
   prepareToLeaveSwaps,
   fetchAndSetSwapsGasPriceInfo,
-} from '../../ducks/swaps/swaps'
+} from '../../ducks/swaps/swaps';
 import {
   AWAITING_SWAP_ROUTE,
   BUILD_QUOTE_ROUTE,
@@ -40,15 +40,15 @@ import {
   SWAPS_ERROR_ROUTE,
   DEFAULT_ROUTE,
   SWAPS_MAINTENANCE_ROUTE,
-} from '../../helpers/constants/routes'
+} from '../../helpers/constants/routes';
 import {
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
   ETH_SWAPS_TOKEN_OBJECT,
   SWAP_FAILED_ERROR,
   OFFLINE_FOR_MAINTENANCE,
-} from '../../helpers/constants/swaps'
-import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network'
+} from '../../helpers/constants/swaps';
+import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
 
 import {
   resetBackgroundSwapsState,
@@ -56,61 +56,61 @@ import {
   removeToken,
   setBackgroundSwapRouteState,
   setSwapsErrorKey,
-} from '../../store/actions'
+} from '../../store/actions';
 import {
   currentNetworkTxListSelector,
   getRpcPrefsForCurrentProvider,
-} from '../../selectors'
-import { useNewMetricEvent } from '../../hooks/useMetricEvent'
-import { getValueFromWeiHex } from '../../helpers/utils/conversions.util'
+} from '../../selectors';
+import { useNewMetricEvent } from '../../hooks/useMetricEvent';
+import { getValueFromWeiHex } from '../../helpers/utils/conversions.util';
 
-import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route'
-import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction'
+import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
+import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
 import {
   fetchTokens,
   fetchTopAssets,
   getSwapsTokensReceivedFromTxMeta,
   fetchAggregatorMetadata,
-} from './swaps.util'
-import AwaitingSwap from './awaiting-swap'
-import LoadingQuote from './loading-swaps-quotes'
-import BuildQuote from './build-quote'
-import ViewQuote from './view-quote'
+} from './swaps.util';
+import AwaitingSwap from './awaiting-swap';
+import LoadingQuote from './loading-swaps-quotes';
+import BuildQuote from './build-quote';
+import ViewQuote from './view-quote';
 
 export default function Swap() {
-  const t = useContext(I18nContext)
-  const history = useHistory()
-  const dispatch = useDispatch()
+  const t = useContext(I18nContext);
+  const history = useHistory();
+  const dispatch = useDispatch();
 
-  const { pathname } = useLocation()
-  const isAwaitingSwapRoute = pathname === AWAITING_SWAP_ROUTE
-  const isSwapsErrorRoute = pathname === SWAPS_ERROR_ROUTE
-  const isLoadingQuotesRoute = pathname === LOADING_QUOTES_ROUTE
+  const { pathname } = useLocation();
+  const isAwaitingSwapRoute = pathname === AWAITING_SWAP_ROUTE;
+  const isSwapsErrorRoute = pathname === SWAPS_ERROR_ROUTE;
+  const isLoadingQuotesRoute = pathname === LOADING_QUOTES_ROUTE;
 
-  const fetchParams = useSelector(getFetchParams)
+  const fetchParams = useSelector(getFetchParams);
   const { sourceTokenInfo = {}, destinationTokenInfo = {} } =
-    fetchParams?.metaData || {}
+    fetchParams?.metaData || {};
 
-  const [inputValue, setInputValue] = useState(fetchParams?.value || '')
-  const [maxSlippage, setMaxSlippage] = useState(fetchParams?.slippage || 2)
+  const [inputValue, setInputValue] = useState(fetchParams?.value || '');
+  const [maxSlippage, setMaxSlippage] = useState(fetchParams?.slippage || 2);
 
-  const routeState = useSelector(getBackgroundSwapRouteState)
-  const selectedAccount = useSelector(getSelectedAccount)
-  const quotes = useSelector(getQuotes)
-  const txList = useSelector(currentNetworkTxListSelector)
-  const tradeTxId = useSelector(getTradeTxId)
-  const approveTxId = useSelector(getApproveTxId)
-  const aggregatorMetadata = useSelector(getAggregatorMetadata)
-  const networkId = useSelector(getCurrentNetworkId)
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider)
-  const fetchingQuotes = useSelector(getFetchingQuotes)
-  let swapsErrorKey = useSelector(getSwapsErrorKey)
-  const swapsEnabled = useSelector(getSwapsFeatureLiveness)
+  const routeState = useSelector(getBackgroundSwapRouteState);
+  const selectedAccount = useSelector(getSelectedAccount);
+  const quotes = useSelector(getQuotes);
+  const txList = useSelector(currentNetworkTxListSelector);
+  const tradeTxId = useSelector(getTradeTxId);
+  const approveTxId = useSelector(getApproveTxId);
+  const aggregatorMetadata = useSelector(getAggregatorMetadata);
+  const networkId = useSelector(getCurrentNetworkId);
+  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const fetchingQuotes = useSelector(getFetchingQuotes);
+  let swapsErrorKey = useSelector(getSwapsErrorKey);
+  const swapsEnabled = useSelector(getSwapsFeatureLiveness);
 
   const {
     balance: ethBalance,
     address: selectedAccountAddress,
-  } = selectedAccount
+  } = selectedAccount;
   const fetchParamsFromToken =
     sourceTokenInfo?.symbol === 'ETH'
       ? {
@@ -122,14 +122,14 @@ export default function Swap() {
           }),
           balance: ethBalance,
         }
-      : sourceTokenInfo
+      : sourceTokenInfo;
   const selectedFromToken =
-    useSelector(getFromToken) || fetchParamsFromToken || {}
-  const { destinationTokenAddedForSwap } = fetchParams || {}
+    useSelector(getFromToken) || fetchParamsFromToken || {};
+  const { destinationTokenAddedForSwap } = fetchParams || {};
 
   const approveTxData =
-    approveTxId && txList.find(({ id }) => approveTxId === id)
-  const tradeTxData = tradeTxId && txList.find(({ id }) => tradeTxId === id)
+    approveTxId && txList.find(({ id }) => approveTxId === id);
+  const tradeTxData = tradeTxId && txList.find(({ id }) => tradeTxId === id);
   const tokensReceived =
     tradeTxData?.txReceipt &&
     getSwapsTokensReceivedFromTxMeta(
@@ -139,30 +139,30 @@ export default function Swap() {
       selectedAccountAddress,
       destinationTokenInfo?.decimals,
       approveTxData,
-    )
-  const tradeConfirmed = tradeTxData?.status === TRANSACTION_STATUSES.CONFIRMED
+    );
+  const tradeConfirmed = tradeTxData?.status === TRANSACTION_STATUSES.CONFIRMED;
   const approveError =
     approveTxData?.status === TRANSACTION_STATUSES.FAILED ||
-    approveTxData?.txReceipt?.status === '0x0'
+    approveTxData?.txReceipt?.status === '0x0';
   const tradeError =
     tradeTxData?.status === TRANSACTION_STATUSES.FAILED ||
-    tradeTxData?.txReceipt?.status === '0x0'
-  const conversionError = approveError || tradeError
+    tradeTxData?.txReceipt?.status === '0x0';
+  const conversionError = approveError || tradeError;
 
   if (conversionError) {
-    swapsErrorKey = SWAP_FAILED_ERROR
+    swapsErrorKey = SWAP_FAILED_ERROR;
   }
 
-  const clearTemporaryTokenRef = useRef()
+  const clearTemporaryTokenRef = useRef();
   useEffect(() => {
     clearTemporaryTokenRef.current = () => {
       if (
         destinationTokenAddedForSwap &&
         (!isAwaitingSwapRoute || conversionError)
       ) {
-        dispatch(removeToken(destinationTokenInfo?.address))
+        dispatch(removeToken(destinationTokenInfo?.address));
       }
-    }
+    };
   }, [
     conversionError,
     dispatch,
@@ -170,34 +170,34 @@ export default function Swap() {
     destinationTokenInfo,
     fetchParams,
     isAwaitingSwapRoute,
-  ])
+  ]);
   useEffect(() => {
     return () => {
-      clearTemporaryTokenRef.current()
-    }
-  }, [])
+      clearTemporaryTokenRef.current();
+    };
+  }, []);
 
   useEffect(() => {
     fetchTokens()
       .then((tokens) => {
-        dispatch(setSwapsTokens(tokens))
+        dispatch(setSwapsTokens(tokens));
       })
-      .catch((error) => console.error(error))
+      .catch((error) => console.error(error));
 
     fetchTopAssets().then((topAssets) => {
-      dispatch(setTopAssets(topAssets))
-    })
+      dispatch(setTopAssets(topAssets));
+    });
 
     fetchAggregatorMetadata().then((newAggregatorMetadata) => {
-      dispatch(setAggregatorMetadata(newAggregatorMetadata))
-    })
+      dispatch(setAggregatorMetadata(newAggregatorMetadata));
+    });
 
-    dispatch(fetchAndSetSwapsGasPriceInfo())
+    dispatch(fetchAndSetSwapsGasPriceInfo());
 
     return () => {
-      dispatch(prepareToLeaveSwaps())
-    }
-  }, [dispatch])
+      dispatch(prepareToLeaveSwaps());
+    };
+  }, [dispatch]);
 
   const exitedSwapsEvent = useNewMetricEvent({
     event: 'Exited Swaps',
@@ -211,45 +211,45 @@ export default function Swap() {
       custom_slippage: fetchParams?.slippage !== 2,
       current_screen: pathname.match(/\/swaps\/(.+)/u)[1],
     },
-  })
-  const exitEventRef = useRef()
+  });
+  const exitEventRef = useRef();
   useEffect(() => {
     exitEventRef.current = () => {
-      exitedSwapsEvent()
-    }
-  })
+      exitedSwapsEvent();
+    };
+  });
 
   useEffect(() => {
     return () => {
-      exitEventRef.current()
-    }
-  }, [])
+      exitEventRef.current();
+    };
+  }, []);
 
   useEffect(() => {
     if (swapsErrorKey && !isSwapsErrorRoute) {
-      history.push(SWAPS_ERROR_ROUTE)
+      history.push(SWAPS_ERROR_ROUTE);
     }
-  }, [history, swapsErrorKey, isSwapsErrorRoute])
+  }, [history, swapsErrorKey, isSwapsErrorRoute]);
 
-  const beforeUnloadEventAddedRef = useRef()
+  const beforeUnloadEventAddedRef = useRef();
   useEffect(() => {
     const fn = () => {
-      clearTemporaryTokenRef.current()
+      clearTemporaryTokenRef.current();
       if (isLoadingQuotesRoute) {
-        dispatch(prepareToLeaveSwaps())
+        dispatch(prepareToLeaveSwaps());
       }
-      return null
-    }
+      return null;
+    };
     if (isLoadingQuotesRoute && !beforeUnloadEventAddedRef.current) {
-      beforeUnloadEventAddedRef.current = true
-      window.addEventListener('beforeunload', fn)
+      beforeUnloadEventAddedRef.current = true;
+      window.addEventListener('beforeunload', fn);
     }
-    return () => window.removeEventListener('beforeunload', fn)
-  }, [dispatch, isLoadingQuotesRoute])
+    return () => window.removeEventListener('beforeunload', fn);
+  }, [dispatch, isLoadingQuotesRoute]);
 
-  const chainId = useSelector(getCurrentChainId)
+  const chainId = useSelector(getCurrentChainId);
   if (chainId !== MAINNET_CHAIN_ID) {
-    return <Redirect to={{ pathname: DEFAULT_ROUTE }} />
+    return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
   }
 
   return (
@@ -261,10 +261,10 @@ export default function Swap() {
             <div
               className="swaps__header-cancel"
               onClick={async () => {
-                clearTemporaryTokenRef.current()
-                dispatch(clearSwapsState())
-                await dispatch(resetBackgroundSwapsState())
-                history.push(DEFAULT_ROUTE)
+                clearTemporaryTokenRef.current();
+                dispatch(clearSwapsState());
+                await dispatch(resetBackgroundSwapsState());
+                history.push(DEFAULT_ROUTE);
               }}
             >
               {t('cancel')}
@@ -280,21 +280,21 @@ export default function Swap() {
               exact
               render={() => {
                 if (tradeTxData && !conversionError) {
-                  return <Redirect to={{ pathname: AWAITING_SWAP_ROUTE }} />
+                  return <Redirect to={{ pathname: AWAITING_SWAP_ROUTE }} />;
                 } else if (tradeTxData) {
-                  return <Redirect to={{ pathname: SWAPS_ERROR_ROUTE }} />
+                  return <Redirect to={{ pathname: SWAPS_ERROR_ROUTE }} />;
                 } else if (routeState === 'loading' && aggregatorMetadata) {
-                  return <Redirect to={{ pathname: LOADING_QUOTES_ROUTE }} />
+                  return <Redirect to={{ pathname: LOADING_QUOTES_ROUTE }} />;
                 }
 
                 const onInputChange = (newInputValue, balance) => {
-                  setInputValue(newInputValue)
+                  setInputValue(newInputValue);
                   dispatch(
                     setBalanceError(
                       new BigNumber(newInputValue || 0).gt(balance || 0),
                     ),
-                  )
-                }
+                  );
+                };
 
                 return (
                   <BuildQuote
@@ -306,7 +306,7 @@ export default function Swap() {
                     selectedAccountAddress={selectedAccountAddress}
                     maxSlippage={maxSlippage}
                   />
-                )
+                );
               }}
             />
             <FeatureToggledRoute
@@ -318,11 +318,11 @@ export default function Swap() {
                 if (Object.values(quotes).length) {
                   return (
                     <ViewQuote numberOfQuotes={Object.values(quotes).length} />
-                  )
+                  );
                 } else if (fetchParams) {
-                  return <Redirect to={{ pathname: SWAPS_ERROR_ROUTE }} />
+                  return <Redirect to={{ pathname: SWAPS_ERROR_ROUTE }} />;
                 }
-                return <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />
+                return <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />;
               }}
             />
             <Route
@@ -341,9 +341,9 @@ export default function Swap() {
                       maxSlippage={maxSlippage}
                       submittedTime={tradeTxData?.submittedTime}
                     />
-                  )
+                  );
                 }
-                return <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />
+                return <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />;
               }}
             />
             <FeatureToggledRoute
@@ -358,23 +358,23 @@ export default function Swap() {
                       !fetchingQuotes && Boolean(Object.values(quotes).length)
                     }
                     onDone={async () => {
-                      await dispatch(setBackgroundSwapRouteState(''))
+                      await dispatch(setBackgroundSwapRouteState(''));
 
                       if (
                         swapsErrorKey === ERROR_FETCHING_QUOTES ||
                         swapsErrorKey === QUOTES_NOT_AVAILABLE_ERROR
                       ) {
-                        dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR))
-                        history.push(SWAPS_ERROR_ROUTE)
+                        dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR));
+                        history.push(SWAPS_ERROR_ROUTE);
                       } else {
-                        history.push(VIEW_QUOTE_ROUTE)
+                        history.push(VIEW_QUOTE_ROUTE);
                       }
                     }}
                     aggregatorMetadata={aggregatorMetadata}
                   />
                 ) : (
                   <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />
-                )
+                );
               }}
             />
             <Route
@@ -389,7 +389,7 @@ export default function Swap() {
                   />
                 ) : (
                   <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />
-                )
+                );
               }}
             />
             <Route
@@ -411,12 +411,12 @@ export default function Swap() {
                   />
                 ) : (
                   <Redirect to={{ pathname: DEFAULT_ROUTE }} />
-                )
+                );
               }}
             />
           </Switch>
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,32 +1,32 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import Button from '../../../../components/ui/button'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import Button from '../../../../components/ui/button';
 import {
   INITIALIZE_END_OF_FLOW_ROUTE,
   INITIALIZE_SEED_PHRASE_ROUTE,
-} from '../../../../helpers/constants/routes'
-import { exportAsFile } from '../../../../helpers/utils/util'
-import DraggableSeed from './draggable-seed.component'
+} from '../../../../helpers/constants/routes';
+import { exportAsFile } from '../../../../helpers/utils/util';
+import DraggableSeed from './draggable-seed.component';
 
-const EMPTY_SEEDS = Array(12).fill(null)
+const EMPTY_SEEDS = Array(12).fill(null);
 
 export default class ConfirmSeedPhrase extends PureComponent {
   static contextTypes = {
     metricsEvent: PropTypes.func,
     t: PropTypes.func,
-  }
+  };
 
   static defaultProps = {
     seedPhrase: '',
-  }
+  };
 
   static propTypes = {
     history: PropTypes.object,
     seedPhrase: PropTypes.string,
     initializeThreeBox: PropTypes.func,
     setSeedPhraseBackedUp: PropTypes.func,
-  }
+  };
 
   state = {
     selectedSeedIndices: [],
@@ -34,46 +34,46 @@ export default class ConfirmSeedPhrase extends PureComponent {
     pendingSeedIndices: [],
     draggingSeedIndex: -1,
     hoveringIndex: -1,
-  }
+  };
 
   componentDidMount() {
-    const { seedPhrase = '' } = this.props
-    const sortedSeedWords = (seedPhrase.split(' ') || []).sort()
-    this.setState({ sortedSeedWords })
+    const { seedPhrase = '' } = this.props;
+    const sortedSeedWords = (seedPhrase.split(' ') || []).sort();
+    this.setState({ sortedSeedWords });
   }
 
   setDraggingSeedIndex = (draggingSeedIndex) =>
-    this.setState({ draggingSeedIndex })
+    this.setState({ draggingSeedIndex });
 
-  setHoveringIndex = (hoveringIndex) => this.setState({ hoveringIndex })
+  setHoveringIndex = (hoveringIndex) => this.setState({ hoveringIndex });
 
   onDrop = (targetIndex) => {
-    const { selectedSeedIndices, draggingSeedIndex } = this.state
+    const { selectedSeedIndices, draggingSeedIndex } = this.state;
 
     const indices = insert(
       selectedSeedIndices,
       draggingSeedIndex,
       targetIndex,
       true,
-    )
+    );
 
     this.setState({
       selectedSeedIndices: indices,
       pendingSeedIndices: indices,
       draggingSeedIndex: -1,
       hoveringIndex: -1,
-    })
-  }
+    });
+  };
 
   handleExport = () => {
-    exportAsFile('', this.props.seedPhrase, 'text/plain')
-  }
+    exportAsFile('', this.props.seedPhrase, 'text/plain');
+  };
 
   handleSubmit = async () => {
-    const { history, setSeedPhraseBackedUp, initializeThreeBox } = this.props
+    const { history, setSeedPhraseBackedUp, initializeThreeBox } = this.props;
 
     if (!this.isValid()) {
-      return
+      return;
     }
 
     try {
@@ -83,23 +83,23 @@ export default class ConfirmSeedPhrase extends PureComponent {
           action: 'Seed Phrase Setup',
           name: 'Verify Complete',
         },
-      })
+      });
 
       setSeedPhraseBackedUp(true).then(async () => {
-        initializeThreeBox()
-        history.push(INITIALIZE_END_OF_FLOW_ROUTE)
-      })
+        initializeThreeBox();
+        history.push(INITIALIZE_END_OF_FLOW_ROUTE);
+      });
     } catch (error) {
-      console.error(error.message)
+      console.error(error.message);
     }
-  }
+  };
 
   handleSelectSeedWord = (index) => {
     this.setState({
       selectedSeedIndices: [...this.state.selectedSeedIndices, index],
       pendingSeedIndices: [...this.state.pendingSeedIndices, index],
-    })
-  }
+    });
+  };
 
   handleDeselectSeedWord = (index) => {
     this.setState({
@@ -109,32 +109,34 @@ export default class ConfirmSeedPhrase extends PureComponent {
       pendingSeedIndices: this.state.pendingSeedIndices.filter(
         (i) => index !== i,
       ),
-    })
-  }
+    });
+  };
 
   isValid() {
-    const { seedPhrase } = this.props
-    const { selectedSeedIndices, sortedSeedWords } = this.state
-    const selectedSeedWords = selectedSeedIndices.map((i) => sortedSeedWords[i])
-    return seedPhrase === selectedSeedWords.join(' ')
+    const { seedPhrase } = this.props;
+    const { selectedSeedIndices, sortedSeedWords } = this.state;
+    const selectedSeedWords = selectedSeedIndices.map(
+      (i) => sortedSeedWords[i],
+    );
+    return seedPhrase === selectedSeedWords.join(' ');
   }
 
   render() {
-    const { t } = this.context
-    const { history } = this.props
+    const { t } = this.context;
+    const { history } = this.props;
     const {
       selectedSeedIndices,
       sortedSeedWords,
       draggingSeedIndex,
-    } = this.state
+    } = this.state;
 
     return (
       <div className="confirm-seed-phrase">
         <div className="confirm-seed-phrase__back-button">
           <a
             onClick={(e) => {
-              e.preventDefault()
-              history.push(INITIALIZE_SEED_PHRASE_ROUTE)
+              e.preventDefault();
+              history.push(INITIALIZE_SEED_PHRASE_ROUTE);
             }}
             href="#"
           >
@@ -161,7 +163,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
           data-testid="seed-phrase-sorted"
         >
           {sortedSeedWords.map((word, index) => {
-            const isSelected = selectedSeedIndices.includes(index)
+            const isSelected = selectedSeedIndices.includes(index);
 
             return (
               <DraggableSeed
@@ -174,14 +176,14 @@ export default class ConfirmSeedPhrase extends PureComponent {
                 selected={isSelected}
                 onClick={() => {
                   if (isSelected) {
-                    this.handleDeselectSeedWord(index)
+                    this.handleDeselectSeedWord(index);
                   } else {
-                    this.handleSelectSeedWord(index)
+                    this.handleSelectSeedWord(index);
                   }
                 }}
                 word={word}
               />
-            )
+            );
           })}
         </div>
         <Button
@@ -193,7 +195,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
           {t('confirm')}
         </Button>
       </div>
-    )
+    );
   }
 
   renderSelectedSeeds() {
@@ -201,10 +203,10 @@ export default class ConfirmSeedPhrase extends PureComponent {
       sortedSeedWords,
       selectedSeedIndices,
       draggingSeedIndex,
-    } = this.state
+    } = this.state;
     return EMPTY_SEEDS.map((_, index) => {
-      const seedIndex = selectedSeedIndices[index]
-      const word = sortedSeedWords[seedIndex]
+      const seedIndex = selectedSeedIndices[index];
+      const word = sortedSeedWords[seedIndex];
 
       return (
         <DraggableSeed
@@ -219,8 +221,8 @@ export default class ConfirmSeedPhrase extends PureComponent {
           onDrop={this.onDrop}
           draggable
         />
-      )
-    })
+      );
+    });
   }
 
   renderPendingSeeds() {
@@ -229,13 +231,17 @@ export default class ConfirmSeedPhrase extends PureComponent {
       sortedSeedWords,
       draggingSeedIndex,
       hoveringIndex,
-    } = this.state
+    } = this.state;
 
-    const indices = insert(pendingSeedIndices, draggingSeedIndex, hoveringIndex)
+    const indices = insert(
+      pendingSeedIndices,
+      draggingSeedIndex,
+      hoveringIndex,
+    );
 
     return EMPTY_SEEDS.map((_, index) => {
-      const seedIndex = indices[index]
-      const word = sortedSeedWords[seedIndex]
+      const seedIndex = indices[index];
+      const word = sortedSeedWords[seedIndex];
 
       return (
         <DraggableSeed
@@ -256,23 +262,23 @@ export default class ConfirmSeedPhrase extends PureComponent {
           onDrop={this.onDrop}
           droppable={Boolean(word)}
         />
-      )
-    })
+      );
+    });
   }
 }
 
 function insert(list, value, target, removeOld) {
-  let nextList = [...list]
+  let nextList = [...list];
 
   if (typeof list[target] === 'number') {
-    nextList = [...list.slice(0, target), value, ...list.slice(target)]
+    nextList = [...list.slice(0, target), value, ...list.slice(target)];
   }
 
   if (removeOld) {
     nextList = nextList.filter((seed, i) => {
-      return seed !== value || i === target
-    })
+      return seed !== value || i === target;
+    });
   }
 
-  return nextList
+  return nextList;
 }

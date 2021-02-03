@@ -1,1 +1,1 @@
-export { default } from './mascot.component'
+export { default } from './mascot.component';

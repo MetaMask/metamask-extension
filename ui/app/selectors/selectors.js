@@ -1,70 +1,70 @@
-import { stripHexPrefix } from 'ethereumjs-util'
-import { createSelector } from 'reselect'
-import { addHexPrefix } from '../../../app/scripts/lib/util'
-import { MAINNET, NETWORK_TYPE_RPC } from '../../../shared/constants/network'
+import { stripHexPrefix } from 'ethereumjs-util';
+import { createSelector } from 'reselect';
+import { addHexPrefix } from '../../../app/scripts/lib/util';
+import { MAINNET, NETWORK_TYPE_RPC } from '../../../shared/constants/network';
 import {
   shortenAddress,
   checksumAddress,
   getAccountByAddress,
-} from '../helpers/utils/util'
-import { getPermissionsRequestCount } from './permissions'
+} from '../helpers/utils/util';
+import { getPermissionsRequestCount } from './permissions';
 
 export function getNetworkIdentifier(state) {
   const {
     metamask: {
       provider: { type, nickname, rpcUrl },
     },
-  } = state
+  } = state;
 
-  return nickname || rpcUrl || type
+  return nickname || rpcUrl || type;
 }
 
 export function getMetricsNetworkIdentifier(state) {
-  const { provider } = state.metamask
-  return provider.type === NETWORK_TYPE_RPC ? provider.rpcUrl : provider.type
+  const { provider } = state.metamask;
+  return provider.type === NETWORK_TYPE_RPC ? provider.rpcUrl : provider.type;
 }
 
 export function getCurrentChainId(state) {
-  const { chainId } = state.metamask.provider
-  return chainId
+  const { chainId } = state.metamask.provider;
+  return chainId;
 }
 
 export function getCurrentKeyring(state) {
-  const identity = getSelectedIdentity(state)
+  const identity = getSelectedIdentity(state);
 
   if (!identity) {
-    return null
+    return null;
   }
 
-  const simpleAddress = stripHexPrefix(identity.address).toLowerCase()
+  const simpleAddress = stripHexPrefix(identity.address).toLowerCase();
 
   const keyring = state.metamask.keyrings.find((kr) => {
     return (
       kr.accounts.includes(simpleAddress) ||
       kr.accounts.includes(identity.address)
-    )
-  })
+    );
+  });
 
-  return keyring
+  return keyring;
 }
 
 export function getAccountType(state) {
-  const currentKeyring = getCurrentKeyring(state)
-  const type = currentKeyring && currentKeyring.type
+  const currentKeyring = getCurrentKeyring(state);
+  const type = currentKeyring && currentKeyring.type;
 
   switch (type) {
     case 'Trezor Hardware':
     case 'Ledger Hardware':
-      return 'hardware'
+      return 'hardware';
     case 'Simple Key Pair':
-      return 'imported'
+      return 'imported';
     default:
-      return 'default'
+      return 'default';
   }
 }
 
 export function getCurrentNetworkId(state) {
-  return state.metamask.network
+  return state.metamask.network;
 }
 
 export const getMetaMaskAccounts = createSelector(
@@ -80,53 +80,53 @@ export const getMetaMaskAccounts = createSelector(
               ...account,
               balance: cachedBalances && cachedBalances[accountID],
             },
-          }
+          };
         }
         return {
           ...selectedAccounts,
           [accountID]: account,
-        }
+        };
       },
       {},
     ),
-)
+);
 
 export function getSelectedAddress(state) {
-  return state.metamask.selectedAddress
+  return state.metamask.selectedAddress;
 }
 
 export function getSelectedIdentity(state) {
-  const selectedAddress = getSelectedAddress(state)
-  const { identities } = state.metamask
+  const selectedAddress = getSelectedAddress(state);
+  const { identities } = state.metamask;
 
-  return identities[selectedAddress]
+  return identities[selectedAddress];
 }
 
 export function getNumberOfAccounts(state) {
-  return Object.keys(state.metamask.accounts).length
+  return Object.keys(state.metamask.accounts).length;
 }
 
 export function getNumberOfTokens(state) {
-  const { tokens } = state.metamask
-  return tokens ? tokens.length : 0
+  const { tokens } = state.metamask;
+  return tokens ? tokens.length : 0;
 }
 
 export function getMetaMaskKeyrings(state) {
-  return state.metamask.keyrings
+  return state.metamask.keyrings;
 }
 
 export function getMetaMaskIdentities(state) {
-  return state.metamask.identities
+  return state.metamask.identities;
 }
 
 export function getMetaMaskAccountsRaw(state) {
-  return state.metamask.accounts
+  return state.metamask.accounts;
 }
 
 export function getMetaMaskCachedBalances(state) {
-  const network = getCurrentNetworkId(state)
+  const network = getCurrentNetworkId(state);
 
-  return state.metamask.cachedBalances[network]
+  return state.metamask.cachedBalances[network];
 }
 
 /**
@@ -141,76 +141,76 @@ export const getMetaMaskAccountsOrdered = createSelector(
       .reduce((list, keyring) => list.concat(keyring.accounts), [])
       .filter((address) => Boolean(identities[address]))
       .map((address) => ({ ...identities[address], ...accounts[address] })),
-)
+);
 
 export function isBalanceCached(state) {
   const selectedAccountBalance =
-    state.metamask.accounts[getSelectedAddress(state)].balance
-  const cachedBalance = getSelectedAccountCachedBalance(state)
+    state.metamask.accounts[getSelectedAddress(state)].balance;
+  const cachedBalance = getSelectedAccountCachedBalance(state);
 
-  return Boolean(!selectedAccountBalance && cachedBalance)
+  return Boolean(!selectedAccountBalance && cachedBalance);
 }
 
 export function getSelectedAccountCachedBalance(state) {
-  const cachedBalances = state.metamask.cachedBalances[state.metamask.network]
-  const selectedAddress = getSelectedAddress(state)
+  const cachedBalances = state.metamask.cachedBalances[state.metamask.network];
+  const selectedAddress = getSelectedAddress(state);
 
-  return cachedBalances && cachedBalances[selectedAddress]
+  return cachedBalances && cachedBalances[selectedAddress];
 }
 
 export function getSelectedAccount(state) {
-  const accounts = getMetaMaskAccounts(state)
-  const selectedAddress = getSelectedAddress(state)
+  const accounts = getMetaMaskAccounts(state);
+  const selectedAddress = getSelectedAddress(state);
 
-  return accounts[selectedAddress]
+  return accounts[selectedAddress];
 }
 
 export function getTargetAccount(state, targetAddress) {
-  const accounts = getMetaMaskAccounts(state)
-  return accounts[targetAddress]
+  const accounts = getMetaMaskAccounts(state);
+  return accounts[targetAddress];
 }
 
 export const getTokenExchangeRates = (state) =>
-  state.metamask.contractExchangeRates
+  state.metamask.contractExchangeRates;
 
 export function getAssetImages(state) {
-  const assetImages = state.metamask.assetImages || {}
-  return assetImages
+  const assetImages = state.metamask.assetImages || {};
+  return assetImages;
 }
 
 export function getAddressBook(state) {
-  const chainId = getCurrentChainId(state)
+  const chainId = getCurrentChainId(state);
   if (!state.metamask.addressBook[chainId]) {
-    return []
+    return [];
   }
-  return Object.values(state.metamask.addressBook[chainId])
+  return Object.values(state.metamask.addressBook[chainId]);
 }
 
 export function getAddressBookEntry(state, address) {
-  const addressBook = getAddressBook(state)
+  const addressBook = getAddressBook(state);
   const entry = addressBook.find(
     (contact) => contact.address === checksumAddress(address),
-  )
-  return entry
+  );
+  return entry;
 }
 
 export function getAddressBookEntryName(state, address) {
   const entry =
-    getAddressBookEntry(state, address) || state.metamask.identities[address]
-  return entry && entry.name !== '' ? entry.name : shortenAddress(address)
+    getAddressBookEntry(state, address) || state.metamask.identities[address];
+  return entry && entry.name !== '' ? entry.name : shortenAddress(address);
 }
 
 export function accountsWithSendEtherInfoSelector(state) {
-  const accounts = getMetaMaskAccounts(state)
-  const identities = getMetaMaskIdentities(state)
+  const accounts = getMetaMaskAccounts(state);
+  const identities = getMetaMaskIdentities(state);
 
   const accountsWithSendEtherInfo = Object.entries(identities).map(
     ([key, identity]) => {
-      return { ...identity, ...accounts[key] }
+      return { ...identity, ...accounts[key] };
     },
-  )
+  );
 
-  return accountsWithSendEtherInfo
+  return accountsWithSendEtherInfo;
 }
 
 export function getAccountsWithLabels(state) {
@@ -221,31 +221,31 @@ export function getAccountsWithLabels(state) {
       label: name,
       balance,
     }),
-  )
+  );
 }
 
 export function getCurrentAccountWithSendEtherInfo(state) {
-  const currentAddress = getSelectedAddress(state)
-  const accounts = accountsWithSendEtherInfoSelector(state)
+  const currentAddress = getSelectedAddress(state);
+  const accounts = accountsWithSendEtherInfoSelector(state);
 
-  return getAccountByAddress(accounts, currentAddress)
+  return getAccountByAddress(accounts, currentAddress);
 }
 
 export function getTargetAccountWithSendEtherInfo(state, targetAddress) {
-  const accounts = accountsWithSendEtherInfoSelector(state)
-  return getAccountByAddress(accounts, targetAddress)
+  const accounts = accountsWithSendEtherInfoSelector(state);
+  return getAccountByAddress(accounts, targetAddress);
 }
 
 export function getCurrentEthBalance(state) {
-  return getCurrentAccountWithSendEtherInfo(state).balance
+  return getCurrentAccountWithSendEtherInfo(state).balance;
 }
 
 export function getGasIsLoading(state) {
-  return state.appState.gasIsLoading
+  return state.appState.gasIsLoading;
 }
 
 export function getCurrentCurrency(state) {
-  return state.metamask.currentCurrency
+  return state.metamask.currentCurrency;
 }
 
 export function getTotalUnapprovedCount(state) {
@@ -255,7 +255,7 @@ export function getTotalUnapprovedCount(state) {
     unapprovedDecryptMsgCount = 0,
     unapprovedEncryptionPublicKeyMsgCount = 0,
     unapprovedTypedMessagesCount = 0,
-  } = state.metamask
+  } = state.metamask;
 
   return (
     unapprovedMsgCount +
@@ -266,48 +266,48 @@ export function getTotalUnapprovedCount(state) {
     getUnapprovedTxCount(state) +
     getPermissionsRequestCount(state) +
     getSuggestedTokenCount(state)
-  )
+  );
 }
 
 function getUnapprovedTxCount(state) {
-  const { unapprovedTxs = {} } = state.metamask
-  return Object.keys(unapprovedTxs).length
+  const { unapprovedTxs = {} } = state.metamask;
+  return Object.keys(unapprovedTxs).length;
 }
 
 function getSuggestedTokenCount(state) {
-  const { suggestedTokens = {} } = state.metamask
-  return Object.keys(suggestedTokens).length
+  const { suggestedTokens = {} } = state.metamask;
+  return Object.keys(suggestedTokens).length;
 }
 
 export function getIsMainnet(state) {
-  const networkType = getNetworkIdentifier(state)
-  return networkType === MAINNET
+  const networkType = getNetworkIdentifier(state);
+  return networkType === MAINNET;
 }
 
 export function getPreferences({ metamask }) {
-  return metamask.preferences
+  return metamask.preferences;
 }
 
 export function getShouldShowFiat(state) {
-  const isMainNet = getIsMainnet(state)
-  const { showFiatInTestnets } = getPreferences(state)
-  return Boolean(isMainNet || showFiatInTestnets)
+  const isMainNet = getIsMainnet(state);
+  const { showFiatInTestnets } = getPreferences(state);
+  return Boolean(isMainNet || showFiatInTestnets);
 }
 
 export function getAdvancedInlineGasShown(state) {
-  return Boolean(state.metamask.featureFlags.advancedInlineGas)
+  return Boolean(state.metamask.featureFlags.advancedInlineGas);
 }
 
 export function getUseNonceField(state) {
-  return Boolean(state.metamask.useNonceField)
+  return Boolean(state.metamask.useNonceField);
 }
 
 export function getCustomNonceValue(state) {
-  return String(state.metamask.customNonceValue)
+  return String(state.metamask.customNonceValue);
 }
 
 export function getDomainMetadata(state) {
-  return state.metamask.domainMetadata
+  return state.metamask.domainMetadata;
 }
 
 export const getBackgroundMetaMetricState = (state) => {
@@ -318,45 +318,45 @@ export const getBackgroundMetaMetricState = (state) => {
     numberOfTokens: getNumberOfTokens(state),
     numberOfAccounts: getNumberOfAccounts(state),
     participateInMetaMetrics: state.metamask.participateInMetaMetrics,
-  }
-}
+  };
+};
 
 export function getRpcPrefsForCurrentProvider(state) {
-  const { frequentRpcListDetail, provider } = state.metamask
+  const { frequentRpcListDetail, provider } = state.metamask;
   const selectRpcInfo = frequentRpcListDetail.find(
     (rpcInfo) => rpcInfo.rpcUrl === provider.rpcUrl,
-  )
-  const { rpcPrefs = {} } = selectRpcInfo || {}
-  return rpcPrefs
+  );
+  const { rpcPrefs = {} } = selectRpcInfo || {};
+  return rpcPrefs;
 }
 
 export function getKnownMethodData(state, data) {
   if (!data) {
-    return null
+    return null;
   }
-  const prefixedData = addHexPrefix(data)
-  const fourBytePrefix = prefixedData.slice(0, 10)
-  const { knownMethodData } = state.metamask
+  const prefixedData = addHexPrefix(data);
+  const fourBytePrefix = prefixedData.slice(0, 10);
+  const { knownMethodData } = state.metamask;
 
-  return knownMethodData && knownMethodData[fourBytePrefix]
+  return knownMethodData && knownMethodData[fourBytePrefix];
 }
 
 export function getFeatureFlags(state) {
-  return state.metamask.featureFlags
+  return state.metamask.featureFlags;
 }
 
 export function getOriginOfCurrentTab(state) {
-  return state.activeTab.origin
+  return state.activeTab.origin;
 }
 
 export function getIpfsGateway(state) {
-  return state.metamask.ipfsGateway
+  return state.metamask.ipfsGateway;
 }
 
 export function getUSDConversionRate(state) {
-  return state.metamask.usdConversionRate
+  return state.metamask.usdConversionRate;
 }
 
 export function getWeb3ShimUsageStateForOrigin(state, origin) {
-  return state.metamask.web3ShimUsageOrigins[origin]
+  return state.metamask.web3ShimUsageOrigins[origin];
 }

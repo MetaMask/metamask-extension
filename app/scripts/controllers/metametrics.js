@@ -1,11 +1,11 @@
-import { merge, omit } from 'lodash'
-import { ObservableStore } from '@metamask/obs-store'
-import { bufferToHex, sha3 } from 'ethereumjs-util'
-import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app'
+import { merge, omit } from 'lodash';
+import { ObservableStore } from '@metamask/obs-store';
+import { bufferToHex, sha3 } from 'ethereumjs-util';
+import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
-} from '../../../shared/constants/metametrics'
+} from '../../../shared/constants/metametrics';
 
 /**
  * Used to determine whether or not to attach a user's metametrics id
@@ -25,10 +25,10 @@ const trackableSendCounts = {
   5000: true,
   10000: true,
   25000: true,
-}
+};
 
 export function sendCountIsTrackable(sendCount) {
-  return Boolean(trackableSendCounts[sendCount])
+  return Boolean(trackableSendCounts[sendCount]);
 }
 
 /**
@@ -82,30 +82,30 @@ export default class MetaMetricsController {
     environment,
     initState,
   }) {
-    const prefState = preferencesStore.getState()
-    this.chainId = getCurrentChainId()
-    this.network = getNetworkIdentifier()
-    this.locale = prefState.currentLocale.replace('_', '-')
+    const prefState = preferencesStore.getState();
+    this.chainId = getCurrentChainId();
+    this.network = getNetworkIdentifier();
+    this.locale = prefState.currentLocale.replace('_', '-');
     this.version =
-      environment === 'production' ? version : `${version}-${environment}`
+      environment === 'production' ? version : `${version}-${environment}`;
 
     this.store = new ObservableStore({
       participateInMetaMetrics: null,
       metaMetricsId: null,
       metaMetricsSendCount: 0,
       ...initState,
-    })
+    });
 
     preferencesStore.subscribe(({ currentLocale }) => {
-      this.locale = currentLocale.replace('_', '-')
-    })
+      this.locale = currentLocale.replace('_', '-');
+    });
 
     onNetworkDidChange(() => {
-      this.chainId = getCurrentChainId()
-      this.network = getNetworkIdentifier()
-    })
-    this.segment = segment
-    this.segmentLegacy = segmentLegacy
+      this.chainId = getCurrentChainId();
+      this.network = getNetworkIdentifier();
+    });
+    this.segment = segment;
+    this.segmentLegacy = segmentLegacy;
   }
 
   generateMetaMetricsId() {
@@ -114,7 +114,7 @@ export default class MetaMetricsController {
         String(Date.now()) +
           String(Math.round(Math.random() * Number.MAX_SAFE_INTEGER)),
       ),
-    )
+    );
   }
 
   /**
@@ -126,22 +126,22 @@ export default class MetaMetricsController {
    *  if not set
    */
   setParticipateInMetaMetrics(participateInMetaMetrics) {
-    let { metaMetricsId } = this.state
+    let { metaMetricsId } = this.state;
     if (participateInMetaMetrics && !metaMetricsId) {
-      metaMetricsId = this.generateMetaMetricsId()
+      metaMetricsId = this.generateMetaMetricsId();
     } else if (participateInMetaMetrics === false) {
-      metaMetricsId = null
+      metaMetricsId = null;
     }
-    this.store.updateState({ participateInMetaMetrics, metaMetricsId })
-    return metaMetricsId
+    this.store.updateState({ participateInMetaMetrics, metaMetricsId });
+    return metaMetricsId;
   }
 
   get state() {
-    return this.store.getState()
+    return this.store.getState();
   }
 
   setMetaMetricsSendCount(val) {
-    this.store.updateState({ metaMetricsSendCount: val })
+    this.store.updateState({ metaMetricsSendCount: val });
   }
 
   /**
@@ -162,7 +162,7 @@ export default class MetaMetricsController {
       userAgent: window.navigator.userAgent,
       page,
       referrer,
-    }
+    };
   }
 
   /**
@@ -185,7 +185,7 @@ export default class MetaMetricsController {
       page,
       referrer,
       environmentType = ENVIRONMENT_TYPE_BACKGROUND,
-    } = rawPayload
+    } = rawPayload;
     return {
       event,
       properties: {
@@ -206,7 +206,7 @@ export default class MetaMetricsController {
         environment_type: environmentType,
       },
       context: this._buildContext(referrer, page),
-    }
+    };
   }
 
   /**
@@ -225,20 +225,20 @@ export default class MetaMetricsController {
       metaMetricsId: metaMetricsIdOverride,
       matomoEvent,
       flushImmediately,
-    } = options || {}
-    let idType = 'userId'
-    let idValue = this.state.metaMetricsId
-    let excludeMetaMetricsId = options?.excludeMetaMetricsId ?? false
+    } = options || {};
+    let idType = 'userId';
+    let idValue = this.state.metaMetricsId;
+    let excludeMetaMetricsId = options?.excludeMetaMetricsId ?? false;
     // This is carried over from the old implementation, and will likely need
     // to be updated to work with the new tracking plan. I think we should use
     // a config setting for this instead of trying to match the event name
-    const isSendFlow = Boolean(payload.event.match(/^send|^confirm/iu))
+    const isSendFlow = Boolean(payload.event.match(/^send|^confirm/iu));
     if (
       isSendFlow &&
       this.state.metaMetricsSendCount &&
       !sendCountIsTrackable(this.state.metaMetricsSendCount + 1)
     ) {
-      excludeMetaMetricsId = true
+      excludeMetaMetricsId = true;
     }
     // If we are tracking sensitive data we will always use the anonymousId
     // property as well as our METAMETRICS_ANONYMOUS_ID. This prevents us from
@@ -251,12 +251,12 @@ export default class MetaMetricsController {
     // case we will track the opt in event to the user's id. In all other cases
     // we use the metaMetricsId from state.
     if (excludeMetaMetricsId || (isOptIn && !metaMetricsIdOverride)) {
-      idType = 'anonymousId'
-      idValue = METAMETRICS_ANONYMOUS_ID
+      idType = 'anonymousId';
+      idValue = METAMETRICS_ANONYMOUS_ID;
     } else if (isOptIn && metaMetricsIdOverride) {
-      idValue = metaMetricsIdOverride
+      idValue = metaMetricsIdOverride;
     }
-    payload[idType] = idValue
+    payload[idType] = idValue;
 
     // Promises will only resolve when the event is sent to segment. For any
     // event that relies on this promise being fulfilled before performing UI
@@ -269,20 +269,20 @@ export default class MetaMetricsController {
           // that seemingly breaks with lockdown enabled. Creating a new error
           // here prevents the system from freezing when the network request to
           // segment fails for any reason.
-          const safeError = new Error(err.message)
-          safeError.stack = err.stack
-          return reject(safeError)
+          const safeError = new Error(err.message);
+          safeError.stack = err.stack;
+          return reject(safeError);
         }
-        return resolve()
-      }
+        return resolve();
+      };
 
-      const target = matomoEvent === true ? this.segmentLegacy : this.segment
+      const target = matomoEvent === true ? this.segmentLegacy : this.segment;
 
-      target.track(payload, callback)
+      target.track(payload, callback);
       if (flushImmediately) {
-        target.flush()
+        target.flush();
       }
-    })
+    });
   }
 
   /**
@@ -293,15 +293,15 @@ export default class MetaMetricsController {
    */
   trackPage({ name, params, environmentType, page, referrer }, options) {
     if (this.state.participateInMetaMetrics === false) {
-      return
+      return;
     }
 
     if (this.state.participateInMetaMetrics === null && !options?.isOptInPath) {
-      return
+      return;
     }
-    const { metaMetricsId } = this.state
-    const idTrait = metaMetricsId ? 'userId' : 'anonymousId'
-    const idValue = metaMetricsId ?? METAMETRICS_ANONYMOUS_ID
+    const { metaMetricsId } = this.state;
+    const idTrait = metaMetricsId ? 'userId' : 'anonymousId';
+    const idValue = metaMetricsId ?? METAMETRICS_ANONYMOUS_ID;
     this.segment.page({
       [idTrait]: idValue,
       name,
@@ -313,7 +313,7 @@ export default class MetaMetricsController {
         environment_type: environmentType,
       },
       context: this._buildContext(referrer, page),
-    })
+    });
   }
 
   /**
@@ -328,16 +328,16 @@ export default class MetaMetricsController {
   async trackEvent(payload, options) {
     // event and category are required fields for all payloads
     if (!payload.event || !payload.category) {
-      throw new Error('Must specify event and category.')
+      throw new Error('Must specify event and category.');
     }
 
     if (!this.state.participateInMetaMetrics && !options?.isOptIn) {
-      return
+      return;
     }
 
     // We might track multiple events if sensitiveProperties is included, this array will hold
     // the promises returned from this._track.
-    const events = []
+    const events = [];
 
     if (payload.sensitiveProperties) {
       // sensitiveProperties will only be tracked using the anonymousId property and generic id
@@ -346,13 +346,13 @@ export default class MetaMetricsController {
       if (options?.excludeMetaMetricsId === true) {
         throw new Error(
           'sensitiveProperties was specified in an event payload that also set the excludeMetaMetricsId flag',
-        )
+        );
       }
 
       const combinedProperties = merge(
         payload.sensitiveProperties,
         payload.properties,
-      )
+      );
 
       events.push(
         this._track(
@@ -362,11 +362,11 @@ export default class MetaMetricsController {
           }),
           { ...options, excludeMetaMetricsId: true },
         ),
-      )
+      );
     }
 
-    events.push(this._track(this._buildEventPayload(payload), options))
+    events.push(this._track(this._buildEventPayload(payload), options));
 
-    await Promise.all(events)
+    await Promise.all(events);
   }
 }

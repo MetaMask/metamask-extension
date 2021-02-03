@@ -1,1 +1,1 @@
-export { default } from './build-quote'
+export { default } from './build-quote';

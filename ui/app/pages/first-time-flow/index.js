@@ -1,1 +1,1 @@
-export { default } from './first-time-flow.container'
+export { default } from './first-time-flow.container';

@@ -1,17 +1,17 @@
-import assert from 'assert'
-import React from 'react'
-import thunk from 'redux-thunk'
-import { Provider } from 'react-redux'
-import configureMockStore from 'redux-mock-store'
-import { mount } from 'enzyme'
-import sinon from 'sinon'
-import { MemoryRouter } from 'react-router-dom'
+import assert from 'assert';
+import React from 'react';
+import thunk from 'redux-thunk';
+import { Provider } from 'react-redux';
+import configureMockStore from 'redux-mock-store';
+import { mount } from 'enzyme';
+import sinon from 'sinon';
+import { MemoryRouter } from 'react-router-dom';
 
-import Identicon from '../../ui/identicon'
-import TokenCell from '.'
+import Identicon from '../../ui/identicon';
+import TokenCell from '.';
 
 describe('Token Cell', function () {
-  let wrapper
+  let wrapper;
 
   const state = {
     metamask: {
@@ -33,16 +33,16 @@ describe('Token Cell', function () {
         isOpen: true,
       },
     },
-  }
+  };
 
-  const middlewares = [thunk]
-  const mockStore = configureMockStore(middlewares)
-  const store = mockStore(state)
+  const middlewares = [thunk];
+  const mockStore = configureMockStore(middlewares);
+  const store = mockStore(state);
 
-  let onClick
+  let onClick;
 
   beforeEach(function () {
-    onClick = sinon.stub()
+    onClick = sinon.stub();
     wrapper = mount(
       <Provider store={store}>
         <MemoryRouter>
@@ -56,45 +56,45 @@ describe('Token Cell', function () {
           />
         </MemoryRouter>
       </Provider>,
-    )
-  })
+    );
+  });
 
   afterEach(function () {
-    sinon.restore()
-  })
+    sinon.restore();
+  });
 
   it('renders Identicon with props from token cell', function () {
     assert.strictEqual(
       wrapper.find(Identicon).prop('address'),
       '0xAnotherToken',
-    )
-    assert.strictEqual(wrapper.find(Identicon).prop('image'), './test-image')
-  })
+    );
+    assert.strictEqual(wrapper.find(Identicon).prop('image'), './test-image');
+  });
 
   it('renders token balance', function () {
     assert.strictEqual(
       wrapper.find('.asset-list-item__token-value').text(),
       '5.000',
-    )
-  })
+    );
+  });
 
   it('renders token symbol', function () {
     assert.strictEqual(
       wrapper.find('.asset-list-item__token-symbol').text(),
       'TEST',
-    )
-  })
+    );
+  });
 
   it('renders converted fiat amount', function () {
     assert.strictEqual(
       wrapper.find('.list-item__subheading').text(),
       '$0.52 USD',
-    )
-  })
+    );
+  });
 
   it('calls onClick when clicked', function () {
-    assert.ok(!onClick.called)
-    wrapper.simulate('click')
-    assert.ok(onClick.called)
-  })
-})
+    assert.ok(!onClick.called);
+    wrapper.simulate('click');
+    assert.ok(onClick.called);
+  });
+});

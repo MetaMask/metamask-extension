@@ -1,13 +1,13 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { getNetworkDisplayName } from '../../../../../../app/scripts/controllers/network/util'
-import Button from '../../../ui/button'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { getNetworkDisplayName } from '../../../../../../app/scripts/controllers/network/util';
+import Button from '../../../ui/button';
 
 export default class DepositEtherModal extends Component {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func.isRequired,
-  }
+  };
 
   static propTypes = {
     network: PropTypes.string.isRequired,
@@ -17,17 +17,17 @@ export default class DepositEtherModal extends Component {
     hideWarning: PropTypes.func.isRequired,
     hideModal: PropTypes.func.isRequired,
     showAccountDetailModal: PropTypes.func.isRequired,
-  }
+  };
 
   faucetRowText = (networkName) => {
-    return this.context.t('getEtherFromFaucet', [networkName])
-  }
+    return this.context.t('getEtherFromFaucet', [networkName]);
+  };
 
   goToAccountDetailsModal = () => {
-    this.props.hideWarning()
-    this.props.hideModal()
-    this.props.showAccountDetailModal()
-  }
+    this.props.hideWarning();
+    this.props.hideModal();
+    this.props.showAccountDetailModal();
+  };
 
   renderRow({
     logo,
@@ -43,7 +43,7 @@ export default class DepositEtherModal extends Component {
     showBackButton,
   }) {
     if (hide) {
-      return null
+      return null;
     }
 
     return (
@@ -82,14 +82,14 @@ export default class DepositEtherModal extends Component {
           </div>
         )}
       </div>
-    )
+    );
   }
 
   render() {
-    const { network, toWyre, address, toFaucet } = this.props
+    const { network, toWyre, address, toFaucet } = this.props;
 
-    const isTestNetwork = ['3', '4', '5', '42'].find((n) => n === network)
-    const networkName = getNetworkDisplayName(network)
+    const isTestNetwork = ['3', '4', '5', '42'].find((n) => n === network);
+    const networkName = getNetworkDisplayName(network);
 
     return (
       <div className="page-container page-container--full-width page-container--full-height">
@@ -103,8 +103,8 @@ export default class DepositEtherModal extends Component {
           <div
             className="page-container__header-close"
             onClick={() => {
-              this.props.hideWarning()
-              this.props.hideModal()
+              this.props.hideWarning();
+              this.props.hideModal();
             }}
           />
         </div>
@@ -130,8 +130,8 @@ export default class DepositEtherModal extends Component {
                     action: 'Deposit Ether',
                     name: 'Click buy Ether via Wyre',
                   },
-                })
-                toWyre(address)
+                });
+                toWyre(address);
               },
               hide: isTestNetwork,
             })}
@@ -163,6 +163,6 @@ export default class DepositEtherModal extends Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 }

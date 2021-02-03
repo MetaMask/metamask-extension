@@ -1,5 +1,5 @@
-import assert from 'assert'
-import migration37 from '../../../app/scripts/migrations/037'
+import assert from 'assert';
+import migration37 from '../../../app/scripts/migrations/037';
 
 describe('migration #37', function () {
   it('should update the version metadata', function (done) {
@@ -8,18 +8,18 @@ describe('migration #37', function () {
         version: 36,
       },
       data: {},
-    }
+    };
 
     migration37
       .migrate(oldStorage)
       .then((newStorage) => {
         assert.deepEqual(newStorage.meta, {
           version: 37,
-        })
-        done()
+        });
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should transform old state to new format', function (done) {
     const oldStorage = {
@@ -49,7 +49,7 @@ describe('migration #37', function () {
           },
         },
       },
-    }
+    };
 
     migration37
       .migrate(oldStorage)
@@ -80,11 +80,11 @@ describe('migration #37', function () {
               name: 'account 2',
             },
           },
-        })
-        done()
+        });
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('ens validation test', function (done) {
     const oldStorage = {
@@ -101,7 +101,7 @@ describe('migration #37', function () {
           },
         },
       },
-    }
+    };
 
     migration37
       .migrate(oldStorage)
@@ -116,9 +116,9 @@ describe('migration #37', function () {
               name: 'metamask.eth',
             },
           },
-        })
-        done()
+        });
+        done();
       })
-      .catch(done)
-  })
-})
+      .catch(done);
+  });
+});

@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash'
+import { cloneDeep } from 'lodash';
 
 // This will create an object that represents the structure of the given object
 // it replaces all values with the result of their type
@@ -22,10 +22,10 @@ import { cloneDeep } from 'lodash'
  *
  */
 export default function getObjStructure(obj) {
-  const structure = cloneDeep(obj)
+  const structure = cloneDeep(obj);
   return deepMap(structure, (value) => {
-    return value === null ? 'null' : typeof value
-  })
+    return value === null ? 'null' : typeof value;
+  });
 }
 
 /**
@@ -39,10 +39,10 @@ export default function getObjStructure(obj) {
 function deepMap(target = {}, visit) {
   Object.entries(target).forEach(([key, value]) => {
     if (typeof value === 'object' && value !== null) {
-      target[key] = deepMap(value, visit)
+      target[key] = deepMap(value, visit);
     } else {
-      target[key] = visit(value)
+      target[key] = visit(value);
     }
-  })
-  return target
+  });
+  return target;
 }

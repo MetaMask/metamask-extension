@@ -1,1 +1,1 @@
-export { default } from './with-modal-props'
+export { default } from './with-modal-props';

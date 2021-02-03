@@ -1,1 +1,1 @@
-export { default } from './truncated-definition-list'
+export { default } from './truncated-definition-list';

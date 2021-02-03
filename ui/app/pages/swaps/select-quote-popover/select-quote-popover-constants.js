@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 
 export const QUOTE_DATA_ROWS_PROPTYPES_SHAPE = PropTypes.shape({
   aggId: PropTypes.string.isRequired,
@@ -14,4 +14,4 @@ export const QUOTE_DATA_ROWS_PROPTYPES_SHAPE = PropTypes.shape({
   sourceTokenDecimals: PropTypes.number.isRequired,
   sourceTokenSymbol: PropTypes.string.isRequired,
   sourceTokenValue: PropTypes.string.isRequired,
-})
+});

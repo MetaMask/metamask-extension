@@ -1,6 +1,6 @@
-import { cloneDeep } from 'lodash'
+import { cloneDeep } from 'lodash';
 
-const version = 49
+const version = 49;
 
 /**
  * Migrate metaMetrics state to the new MetaMetrics controller
@@ -8,13 +8,13 @@ const version = 49
 export default {
   version,
   async migrate(originalVersionedData) {
-    const versionedData = cloneDeep(originalVersionedData)
-    versionedData.meta.version = version
-    const state = versionedData.data
-    versionedData.data = transformState(state)
-    return versionedData
+    const versionedData = cloneDeep(originalVersionedData);
+    versionedData.meta.version = version;
+    const state = versionedData.data;
+    versionedData.data = transformState(state);
+    return versionedData;
   },
-}
+};
 
 function transformState(state = {}) {
   if (state.PreferencesController) {
@@ -22,23 +22,23 @@ function transformState(state = {}) {
       metaMetricsId,
       participateInMetaMetrics,
       metaMetricsSendCount,
-    } = state.PreferencesController
-    state.MetaMetricsController = state.MetaMetricsController ?? {}
+    } = state.PreferencesController;
+    state.MetaMetricsController = state.MetaMetricsController ?? {};
 
     if (metaMetricsId !== undefined) {
-      state.MetaMetricsController.metaMetricsId = metaMetricsId
-      delete state.PreferencesController.metaMetricsId
+      state.MetaMetricsController.metaMetricsId = metaMetricsId;
+      delete state.PreferencesController.metaMetricsId;
     }
 
     if (participateInMetaMetrics !== undefined) {
-      state.MetaMetricsController.participateInMetaMetrics = participateInMetaMetrics
-      delete state.PreferencesController.participateInMetaMetrics
+      state.MetaMetricsController.participateInMetaMetrics = participateInMetaMetrics;
+      delete state.PreferencesController.participateInMetaMetrics;
     }
 
     if (metaMetricsSendCount !== undefined) {
-      state.MetaMetricsController.metaMetricsSendCount = metaMetricsSendCount
-      delete state.PreferencesController.metaMetricsSendCount
+      state.MetaMetricsController.metaMetricsSendCount = metaMetricsSendCount;
+      delete state.PreferencesController.metaMetricsSendCount;
     }
   }
-  return state
+  return state;
 }

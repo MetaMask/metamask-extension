@@ -1,5 +1,5 @@
-import assert from 'assert'
-import migrationTemplate from '../../../app/scripts/migrations/030'
+import assert from 'assert';
+import migrationTemplate from '../../../app/scripts/migrations/030';
 
 const storage = {
   meta: {},
@@ -31,31 +31,31 @@ const storage = {
       ],
     },
   },
-}
+};
 
 describe('storage is migrated successfully', function () {
   it('should work', function (done) {
     migrationTemplate
       .migrate(storage)
       .then((migratedData) => {
-        assert.equal(migratedData.meta.version, 30)
+        assert.equal(migratedData.meta.version, 30);
         assert.equal(
           migratedData.data.PreferencesController.frequentRpcListDetail[0]
             .chainId,
           undefined,
-        )
+        );
         assert.equal(
           migratedData.data.PreferencesController.frequentRpcListDetail[1]
             .chainId,
           '1',
-        )
+        );
         assert.equal(
           migratedData.data.NetworkController.provider.chainId,
           undefined,
-        )
-        assert.equal(migratedData.data.NetworkController.network, undefined)
-        done()
+        );
+        assert.equal(migratedData.data.NetworkController.network, undefined);
+        done();
       })
-      .catch(done)
-  })
-})
+      .catch(done);
+  });
+});

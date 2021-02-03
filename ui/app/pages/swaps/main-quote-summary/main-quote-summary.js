@@ -1,21 +1,21 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import BigNumber from 'bignumber.js'
-import { calcTokenAmount } from '../../../helpers/utils/token-util'
-import { toPrecisionWithoutTrailingZeros } from '../../../helpers/utils/util'
-import Tooltip from '../../../components/ui/tooltip'
-import UrlIcon from '../../../components/ui/url-icon'
-import ExchangeRateDisplay from '../exchange-rate-display'
-import { formatSwapsValueForDisplay } from '../swaps.util'
+import React from 'react';
+import PropTypes from 'prop-types';
+import BigNumber from 'bignumber.js';
+import { calcTokenAmount } from '../../../helpers/utils/token-util';
+import { toPrecisionWithoutTrailingZeros } from '../../../helpers/utils/util';
+import Tooltip from '../../../components/ui/tooltip';
+import UrlIcon from '../../../components/ui/url-icon';
+import ExchangeRateDisplay from '../exchange-rate-display';
+import { formatSwapsValueForDisplay } from '../swaps.util';
 
 function getFontSizesAndLineHeights(fontSizeScore) {
   if (fontSizeScore <= 9) {
-    return [60, 48]
+    return [60, 48];
   }
   if (fontSizeScore <= 13) {
-    return [40, 32]
+    return [40, 32];
   }
-  return [26, 15]
+  return [26, 15];
 }
 
 export default function MainQuoteSummary({
@@ -31,21 +31,21 @@ export default function MainQuoteSummary({
   const sourceAmount = toPrecisionWithoutTrailingZeros(
     calcTokenAmount(sourceValue, sourceDecimals).toString(10),
     12,
-  )
+  );
   const destinationAmount = calcTokenAmount(
     destinationValue,
     destinationDecimals,
-  )
+  );
 
-  const amountToDisplay = formatSwapsValueForDisplay(destinationAmount)
-  const amountDigitLength = amountToDisplay.match(/\d+/gu).join('').length
+  const amountToDisplay = formatSwapsValueForDisplay(destinationAmount);
+  const amountDigitLength = amountToDisplay.match(/\d+/gu).join('').length;
   const [numberFontSize, lineHeight] = getFontSizesAndLineHeights(
     amountDigitLength,
-  )
-  let ellipsedAmountToDisplay = amountToDisplay
+  );
+  let ellipsedAmountToDisplay = amountToDisplay;
 
   if (amountDigitLength > 20) {
-    ellipsedAmountToDisplay = `${amountToDisplay.slice(0, 20)}...`
+    ellipsedAmountToDisplay = `${amountToDisplay.slice(0, 20)}...`;
   }
 
   return (
@@ -122,7 +122,7 @@ export default function MainQuoteSummary({
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 MainQuoteSummary.propTypes = {
@@ -143,4 +143,4 @@ MainQuoteSummary.propTypes = {
   destinationSymbol: PropTypes.string.isRequired,
   sourceIconUrl: PropTypes.string,
   destinationIconUrl: PropTypes.string,
-}
+};

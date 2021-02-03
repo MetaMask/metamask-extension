@@ -1,1 +1,1 @@
-export { default } from './metamask-template-renderer'
+export { default } from './metamask-template-renderer';

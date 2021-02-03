@@ -1,14 +1,14 @@
-import EventEmitter from 'safe-event-emitter'
-import { ObservableStore } from '@metamask/obs-store'
-import log from 'loglevel'
-import createId from '../../lib/random-id'
-import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction'
+import EventEmitter from 'safe-event-emitter';
+import { ObservableStore } from '@metamask/obs-store';
+import log from 'loglevel';
+import createId from '../../lib/random-id';
+import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
 import {
   generateHistoryEntry,
   replayHistory,
   snapshotFromTxMeta,
-} from './lib/tx-state-history-helpers'
-import { getFinalStates, normalizeTxParams } from './lib/util'
+} from './lib/tx-state-history-helpers';
+import { getFinalStates, normalizeTxParams } from './lib/util';
 
 /**
  * TransactionStatuses reimported from the shared transaction constants file
@@ -28,11 +28,11 @@ import { getFinalStates, normalizeTxParams } from './lib/util'
  */
 export default class TransactionStateManager extends EventEmitter {
   constructor({ initState, txHistoryLimit, getNetwork }) {
-    super()
+    super();
 
-    this.store = new ObservableStore({ transactions: [], ...initState })
-    this.txHistoryLimit = txHistoryLimit
-    this.getNetwork = getNetwork
+    this.store = new ObservableStore({ transactions: [], ...initState });
+    this.txHistoryLimit = txHistoryLimit;
+    this.getNetwork = getNetwork;
   }
 
   /**
@@ -40,9 +40,9 @@ export default class TransactionStateManager extends EventEmitter {
    * @returns {txMeta} the default txMeta object
    */
   generateTxMeta(opts) {
-    const netId = this.getNetwork()
+    const netId = this.getNetwork();
     if (netId === 'loading') {
-      throw new Error('MetaMask is having trouble connecting to the network')
+      throw new Error('MetaMask is having trouble connecting to the network');
     }
     return {
       id: createId(),
@@ -51,7 +51,7 @@ export default class TransactionStateManager extends EventEmitter {
       metamaskNetworkId: netId,
       loadingDefaults: true,
       ...opts,
-    }
+    };
   }
 
   /**
@@ -63,38 +63,38 @@ export default class TransactionStateManager extends EventEmitter {
    * @returns {Object[]} The {@code txMeta}s, filtered to the current network
    */
   getTxList(limit) {
-    const network = this.getNetwork()
-    const fullTxList = this.getFullTxList()
+    const network = this.getNetwork();
+    const fullTxList = this.getFullTxList();
 
-    const nonces = new Set()
-    const txs = []
+    const nonces = new Set();
+    const txs = [];
     for (let i = fullTxList.length - 1; i > -1; i--) {
-      const txMeta = fullTxList[i]
+      const txMeta = fullTxList[i];
       if (txMeta.metamaskNetworkId !== network) {
-        continue
+        continue;
       }
 
       if (limit !== undefined) {
-        const { nonce } = txMeta.txParams
+        const { nonce } = txMeta.txParams;
         if (!nonces.has(nonce)) {
           if (nonces.size < limit) {
-            nonces.add(nonce)
+            nonces.add(nonce);
           } else {
-            continue
+            continue;
           }
         }
       }
 
-      txs.unshift(txMeta)
+      txs.unshift(txMeta);
     }
-    return txs
+    return txs;
   }
 
   /**
    * @returns {Array} of all the txMetas in store
    */
   getFullTxList() {
-    return this.store.getState().transactions
+    return this.store.getState().transactions;
   }
 
   /**
@@ -104,11 +104,11 @@ export default class TransactionStateManager extends EventEmitter {
     const txList = this.getTxsByMetaData(
       'status',
       TRANSACTION_STATUSES.UNAPPROVED,
-    )
+    );
     return txList.reduce((result, tx) => {
-      result[tx.id] = tx
-      return result
-    }, {})
+      result[tx.id] = tx;
+      return result;
+    }, {});
   }
 
   /**
@@ -117,11 +117,11 @@ export default class TransactionStateManager extends EventEmitter {
    *  returns all txMetas with approved statuses for the current network
    */
   getApprovedTransactions(address) {
-    const opts = { status: TRANSACTION_STATUSES.APPROVED }
+    const opts = { status: TRANSACTION_STATUSES.APPROVED };
     if (address) {
-      opts.from = address
+      opts.from = address;
     }
-    return this.getFilteredTxList(opts)
+    return this.getFilteredTxList(opts);
   }
 
   /**
@@ -130,11 +130,11 @@ export default class TransactionStateManager extends EventEmitter {
    *  returns all txMetas with submitted statuses for the current network
    */
   getPendingTransactions(address) {
-    const opts = { status: TRANSACTION_STATUSES.SUBMITTED }
+    const opts = { status: TRANSACTION_STATUSES.SUBMITTED };
     if (address) {
-      opts.from = address
+      opts.from = address;
     }
-    return this.getFilteredTxList(opts)
+    return this.getFilteredTxList(opts);
   }
 
   /**
@@ -143,11 +143,11 @@ export default class TransactionStateManager extends EventEmitter {
     returns all txMetas who's status is confirmed for the current network
   */
   getConfirmedTransactions(address) {
-    const opts = { status: TRANSACTION_STATUSES.CONFIRMED }
+    const opts = { status: TRANSACTION_STATUSES.CONFIRMED };
     if (address) {
-      opts.from = address
+      opts.from = address;
     }
-    return this.getFilteredTxList(opts)
+    return this.getFilteredTxList(opts);
   }
 
   /**
@@ -162,24 +162,24 @@ export default class TransactionStateManager extends EventEmitter {
   addTx(txMeta) {
     // normalize and validate txParams if present
     if (txMeta.txParams) {
-      txMeta.txParams = this.normalizeAndValidateTxParams(txMeta.txParams)
+      txMeta.txParams = this.normalizeAndValidateTxParams(txMeta.txParams);
     }
 
     this.once(`${txMeta.id}:signed`, () => {
-      this.removeAllListeners(`${txMeta.id}:rejected`)
-    })
+      this.removeAllListeners(`${txMeta.id}:rejected`);
+    });
     this.once(`${txMeta.id}:rejected`, () => {
-      this.removeAllListeners(`${txMeta.id}:signed`)
-    })
+      this.removeAllListeners(`${txMeta.id}:signed`);
+    });
     // initialize history
-    txMeta.history = []
+    txMeta.history = [];
     // capture initial snapshot of txMeta for history
-    const snapshot = snapshotFromTxMeta(txMeta)
-    txMeta.history.push(snapshot)
+    const snapshot = snapshotFromTxMeta(txMeta);
+    txMeta.history.push(snapshot);
 
-    const transactions = this.getFullTxList()
-    const txCount = transactions.length
-    const { txHistoryLimit } = this
+    const transactions = this.getFullTxList();
+    const txCount = transactions.length;
+    const { txHistoryLimit } = this;
 
     // checks if the length of the tx history is
     // longer then desired persistence limit
@@ -188,21 +188,21 @@ export default class TransactionStateManager extends EventEmitter {
     // not tx's that are pending or unapproved
     if (txCount > txHistoryLimit - 1) {
       const index = transactions.findIndex((metaTx) => {
-        return getFinalStates().includes(metaTx.status)
-      })
+        return getFinalStates().includes(metaTx.status);
+      });
       if (index !== -1) {
-        transactions.splice(index, 1)
+        transactions.splice(index, 1);
       }
     }
     const newTxIndex = transactions.findIndex(
       (currentTxMeta) => currentTxMeta.time > txMeta.time,
-    )
+    );
 
     newTxIndex === -1
       ? transactions.push(txMeta)
-      : transactions.splice(newTxIndex, 0, txMeta)
-    this._saveTxList(transactions)
-    return txMeta
+      : transactions.splice(newTxIndex, 0, txMeta);
+    this._saveTxList(transactions);
+    return txMeta;
   }
 
   /**
@@ -211,8 +211,8 @@ export default class TransactionStateManager extends EventEmitter {
    * for the network returns undefined
    */
   getTx(txId) {
-    const txMeta = this.getTxsByMetaData('id', txId)[0]
-    return txMeta
+    const txMeta = this.getTxsByMetaData('id', txId)[0];
+    return txMeta;
   }
 
   /**
@@ -223,25 +223,25 @@ export default class TransactionStateManager extends EventEmitter {
   updateTx(txMeta, note) {
     // normalize and validate txParams if present
     if (txMeta.txParams) {
-      txMeta.txParams = this.normalizeAndValidateTxParams(txMeta.txParams)
+      txMeta.txParams = this.normalizeAndValidateTxParams(txMeta.txParams);
     }
 
     // create txMeta snapshot for history
-    const currentState = snapshotFromTxMeta(txMeta)
+    const currentState = snapshotFromTxMeta(txMeta);
     // recover previous tx state obj
-    const previousState = replayHistory(txMeta.history)
+    const previousState = replayHistory(txMeta.history);
     // generate history entry and add to history
-    const entry = generateHistoryEntry(previousState, currentState, note)
+    const entry = generateHistoryEntry(previousState, currentState, note);
     if (entry.length) {
-      txMeta.history.push(entry)
+      txMeta.history.push(entry);
     }
 
     // commit txMeta to state
-    const txId = txMeta.id
-    const txList = this.getFullTxList()
-    const index = txList.findIndex((txData) => txData.id === txId)
-    txList[index] = txMeta
-    this._saveTxList(txList)
+    const txId = txMeta.id;
+    const txList = this.getFullTxList();
+    const index = txList.findIndex((txData) => txData.id === txId);
+    txList[index] = txMeta;
+    this._saveTxList(txList);
   }
 
   /**
@@ -251,9 +251,9 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {Object} txParams - the updated txParams
    */
   updateTxParams(txId, txParams) {
-    const txMeta = this.getTx(txId)
-    txMeta.txParams = { ...txMeta.txParams, ...txParams }
-    this.updateTx(txMeta, `txStateManager#updateTxParams`)
+    const txMeta = this.getTx(txId);
+    txMeta.txParams = { ...txMeta.txParams, ...txParams };
+    this.updateTx(txMeta, `txStateManager#updateTxParams`);
   }
 
   /**
@@ -262,12 +262,12 @@ export default class TransactionStateManager extends EventEmitter {
    */
   normalizeAndValidateTxParams(txParams) {
     if (typeof txParams.data === 'undefined') {
-      delete txParams.data
+      delete txParams.data;
     }
     // eslint-disable-next-line no-param-reassign
-    txParams = normalizeTxParams(txParams, false)
-    this.validateTxParams(txParams)
-    return txParams
+    txParams = normalizeTxParams(txParams, false);
+    this.validateTxParams(txParams);
+    return txParams;
   }
 
   /**
@@ -276,25 +276,25 @@ export default class TransactionStateManager extends EventEmitter {
    */
   validateTxParams(txParams) {
     Object.keys(txParams).forEach((key) => {
-      const value = txParams[key]
+      const value = txParams[key];
       // validate types
       switch (key) {
         case 'chainId':
           if (typeof value !== 'number' && typeof value !== 'string') {
             throw new Error(
               `${key} in txParams is not a Number or hex string. got: (${value})`,
-            )
+            );
           }
-          break
+          break;
         default:
           if (typeof value !== 'string') {
             throw new Error(
               `${key} in txParams is not a string. got: (${value})`,
-            )
+            );
           }
-          break
+          break;
       }
-    })
+    });
   }
 
   /**
@@ -326,11 +326,11 @@ export default class TransactionStateManager extends EventEmitter {
   and that have been 'confirmed'
   */
   getFilteredTxList(opts, initialList) {
-    let filteredTxList = initialList
+    let filteredTxList = initialList;
     Object.keys(opts).forEach((key) => {
-      filteredTxList = this.getTxsByMetaData(key, opts[key], filteredTxList)
-    })
-    return filteredTxList
+      filteredTxList = this.getTxsByMetaData(key, opts[key], filteredTxList);
+    });
+    return filteredTxList;
   }
 
   /**
@@ -341,14 +341,14 @@ export default class TransactionStateManager extends EventEmitter {
    * @returns {Array} a list of txMetas who matches the search params
    */
   getTxsByMetaData(key, value, txList = this.getTxList()) {
-    const filter = typeof value === 'function' ? value : (v) => v === value
+    const filter = typeof value === 'function' ? value : (v) => v === value;
 
     return txList.filter((txMeta) => {
       if (key in txMeta.txParams) {
-        return filter(txMeta.txParams[key])
+        return filter(txMeta.txParams[key]);
       }
-      return filter(txMeta[key])
-    })
+      return filter(txMeta[key]);
+    });
   }
 
   // get::set status
@@ -358,8 +358,8 @@ export default class TransactionStateManager extends EventEmitter {
    * @returns {string} the status of the tx.
    */
   getTxStatus(txId) {
-    const txMeta = this.getTx(txId)
-    return txMeta.status
+    const txMeta = this.getTx(txId);
+    return txMeta.status;
   }
 
   /**
@@ -367,8 +367,8 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {number} txId - the txMeta Id
    */
   setTxStatusRejected(txId) {
-    this._setTxStatus(txId, 'rejected')
-    this._removeTx(txId)
+    this._setTxStatus(txId, 'rejected');
+    this._removeTx(txId);
   }
 
   /**
@@ -376,7 +376,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {number} txId - the txMeta Id
    */
   setTxStatusUnapproved(txId) {
-    this._setTxStatus(txId, TRANSACTION_STATUSES.UNAPPROVED)
+    this._setTxStatus(txId, TRANSACTION_STATUSES.UNAPPROVED);
   }
 
   /**
@@ -384,7 +384,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {number} txId - the txMeta Id
    */
   setTxStatusApproved(txId) {
-    this._setTxStatus(txId, TRANSACTION_STATUSES.APPROVED)
+    this._setTxStatus(txId, TRANSACTION_STATUSES.APPROVED);
   }
 
   /**
@@ -392,7 +392,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {number} txId - the txMeta Id
    */
   setTxStatusSigned(txId) {
-    this._setTxStatus(txId, TRANSACTION_STATUSES.SIGNED)
+    this._setTxStatus(txId, TRANSACTION_STATUSES.SIGNED);
   }
 
   /**
@@ -401,10 +401,10 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {number} txId - the txMeta Id
    */
   setTxStatusSubmitted(txId) {
-    const txMeta = this.getTx(txId)
-    txMeta.submittedTime = new Date().getTime()
-    this.updateTx(txMeta, 'txStateManager - add submitted time stamp')
-    this._setTxStatus(txId, TRANSACTION_STATUSES.SUBMITTED)
+    const txMeta = this.getTx(txId);
+    txMeta.submittedTime = new Date().getTime();
+    this.updateTx(txMeta, 'txStateManager - add submitted time stamp');
+    this._setTxStatus(txId, TRANSACTION_STATUSES.SUBMITTED);
   }
 
   /**
@@ -412,7 +412,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {number} txId - the txMeta Id
    */
   setTxStatusConfirmed(txId) {
-    this._setTxStatus(txId, TRANSACTION_STATUSES.CONFIRMED)
+    this._setTxStatus(txId, TRANSACTION_STATUSES.CONFIRMED);
   }
 
   /**
@@ -420,7 +420,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {number} txId - the txMeta Id
    */
   setTxStatusDropped(txId) {
-    this._setTxStatus(txId, TRANSACTION_STATUSES.DROPPED)
+    this._setTxStatus(txId, TRANSACTION_STATUSES.DROPPED);
   }
 
   /**
@@ -429,16 +429,16 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {erroObject} err - error object
    */
   setTxStatusFailed(txId, err) {
-    const error = err || new Error('Internal metamask failure')
+    const error = err || new Error('Internal metamask failure');
 
-    const txMeta = this.getTx(txId)
+    const txMeta = this.getTx(txId);
     txMeta.err = {
       message: error.toString(),
       rpc: error.value,
       stack: error.stack,
-    }
-    this.updateTx(txMeta, 'transactions:tx-state-manager#fail - add error')
-    this._setTxStatus(txId, TRANSACTION_STATUSES.FAILED)
+    };
+    this.updateTx(txMeta, 'transactions:tx-state-manager#fail - add error');
+    this._setTxStatus(txId, TRANSACTION_STATUSES.FAILED);
   }
 
   /**
@@ -449,8 +449,8 @@ export default class TransactionStateManager extends EventEmitter {
    */
   wipeTransactions(address) {
     // network only tx
-    const txs = this.getFullTxList()
-    const network = this.getNetwork()
+    const txs = this.getFullTxList();
+    const network = this.getNetwork();
 
     // Filter out the ones from the current account and network
     const otherAccountTxs = txs.filter(
@@ -459,10 +459,10 @@ export default class TransactionStateManager extends EventEmitter {
           txMeta.txParams.from === address &&
           txMeta.metamaskNetworkId === network
         ),
-    )
+    );
 
     // Update state
-    this._saveTxList(otherAccountTxs)
+    this._saveTxList(otherAccountTxs);
   }
 
   //
@@ -477,17 +477,17 @@ export default class TransactionStateManager extends EventEmitter {
    * @emits update:badge
    */
   _setTxStatus(txId, status) {
-    const txMeta = this.getTx(txId)
+    const txMeta = this.getTx(txId);
 
     if (!txMeta) {
-      return
+      return;
     }
 
-    txMeta.status = status
+    txMeta.status = status;
     try {
-      this.updateTx(txMeta, `txStateManager: setting status to ${status}`)
-      this.emit(`${txMeta.id}:${status}`, txId)
-      this.emit(`tx:status-update`, txId, status)
+      this.updateTx(txMeta, `txStateManager: setting status to ${status}`);
+      this.emit(`${txMeta.id}:${status}`, txId);
+      this.emit(`tx:status-update`, txId, status);
       if (
         [
           TRANSACTION_STATUSES.SUBMITTED,
@@ -495,11 +495,11 @@ export default class TransactionStateManager extends EventEmitter {
           TRANSACTION_STATUSES.FAILED,
         ].includes(status)
       ) {
-        this.emit(`${txMeta.id}:finished`, txMeta)
+        this.emit(`${txMeta.id}:finished`, txMeta);
       }
-      this.emit('update:badge')
+      this.emit('update:badge');
     } catch (error) {
-      log.error(error)
+      log.error(error);
     }
   }
 
@@ -508,22 +508,22 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {Array} transactions - the list of transactions to save
    */
   _saveTxList(transactions) {
-    this.store.updateState({ transactions })
+    this.store.updateState({ transactions });
   }
 
   _removeTx(txId) {
-    const transactionList = this.getFullTxList()
-    this._saveTxList(transactionList.filter((txMeta) => txMeta.id !== txId))
+    const transactionList = this.getFullTxList();
+    this._saveTxList(transactionList.filter((txMeta) => txMeta.id !== txId));
   }
 
   /**
    * Filters out the unapproved transactions
    */
   clearUnapprovedTxs() {
-    const transactions = this.getFullTxList()
+    const transactions = this.getFullTxList();
     const nonUnapprovedTxs = transactions.filter(
       (tx) => tx.status !== TRANSACTION_STATUSES.UNAPPROVED,
-    )
-    this._saveTxList(nonUnapprovedTxs)
+    );
+    this._saveTxList(nonUnapprovedTxs);
   }
 }

@@ -1,1 +1,1 @@
-export { default } from './info-tooltip'
+export { default } from './info-tooltip';

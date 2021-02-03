@@ -1,11 +1,11 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import Button from '../../../../components/ui/button'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import Button from '../../../../components/ui/button';
 
 export default class TokenListPlaceholder extends Component {
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   render() {
     return (
@@ -24,6 +24,6 @@ export default class TokenListPlaceholder extends Component {
           {this.context.t('learnMore')}
         </Button>
       </div>
-    )
+    );
   }
 }

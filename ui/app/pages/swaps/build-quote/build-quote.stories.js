@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
-import { action } from '@storybook/addon-actions'
-import { boolean } from '@storybook/addon-knobs'
-import DropdownInputPair from '../dropdown-input-pair'
-import DropdownSearchList from '../dropdown-search-list'
+import React, { useState } from 'react';
+import { action } from '@storybook/addon-actions';
+import { boolean } from '@storybook/addon-knobs';
+import DropdownInputPair from '../dropdown-input-pair';
+import DropdownSearchList from '../dropdown-search-list';
 
 const tokens = [
   {
@@ -113,7 +113,7 @@ const tokens = [
     decimals: 8,
     address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
   },
-]
+];
 
 const tokensToSearch = tokens.map((token) => ({
   ...token,
@@ -123,18 +123,18 @@ const tokensToSearch = tokens.map((token) => ({
     Math.floor(Math.random() * 6),
   )} ${token.symbol}`,
   rightSecondaryLabel: `$${(Math.random() * 1000).toFixed(2)}`,
-}))
+}));
 
 export default {
   title: 'BuildQuote',
-}
+};
 
 export const Default = () => {
-  const [inputValue, onInputChange] = useState(null)
-  const [selectedFromToken, setSelectedFromToken] = useState(null)
-  const formattedSwapFromFiatValue = `$${(Number(inputValue) * 4).toFixed(2)}`
-  const loading = boolean('loading', false)
-  const selectedFromTokenIsNull = boolean('selectedFromTokenIsNull', false)
+  const [inputValue, onInputChange] = useState(null);
+  const [selectedFromToken, setSelectedFromToken] = useState(null);
+  const formattedSwapFromFiatValue = `$${(Number(inputValue) * 4).toFixed(2)}`;
+  const loading = boolean('loading', false);
+  const selectedFromTokenIsNull = boolean('selectedFromTokenIsNull', false);
   return (
     <div
       style={{
@@ -192,5 +192,5 @@ export const Default = () => {
         />
       </div>
     </div>
-  )
-}
+  );
+};

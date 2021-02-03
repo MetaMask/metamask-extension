@@ -1,12 +1,12 @@
-import classnames from 'classnames'
-import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
-import Identicon from '../../../ui/identicon'
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
+import Identicon from '../../../ui/identicon';
 
 export default class ConnectedAccountsListItem extends PureComponent {
   static contextTypes = {
     t: PropTypes.func.isRequired,
-  }
+  };
 
   static propTypes = {
     address: PropTypes.string.isRequired,
@@ -15,16 +15,16 @@ export default class ConnectedAccountsListItem extends PureComponent {
     status: PropTypes.string,
     action: PropTypes.node,
     options: PropTypes.node,
-  }
+  };
 
   static defaultProps = {
     className: null,
     options: null,
     action: null,
-  }
+  };
 
   render() {
-    const { address, className, name, status, action, options } = this.props
+    const { address, className, name, status, action, options } = this.props;
 
     return (
       <div className={classnames('connected-accounts-list__row', className)}>
@@ -49,6 +49,6 @@ export default class ConnectedAccountsListItem extends PureComponent {
         </div>
         {options}
       </div>
-    )
+    );
   }
 }

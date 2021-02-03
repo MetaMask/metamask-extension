@@ -1,37 +1,37 @@
-import classnames from 'classnames'
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { matchPath, Route, Switch } from 'react-router-dom'
-import IdleTimer from 'react-idle-timer'
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { matchPath, Route, Switch } from 'react-router-dom';
+import IdleTimer from 'react-idle-timer';
 
-import FirstTimeFlow from '../first-time-flow'
-import SendTransactionScreen from '../send'
-import Swaps from '../swaps'
-import ConfirmTransaction from '../confirm-transaction'
-import Sidebar from '../../components/app/sidebars'
-import Home from '../home'
-import Settings from '../settings'
-import Authenticated from '../../helpers/higher-order-components/authenticated'
-import Initialized from '../../helpers/higher-order-components/initialized'
-import Lock from '../lock'
-import PermissionsConnect from '../permissions-connect'
-import RestoreVaultPage from '../keychains/restore-vault'
-import RevealSeedConfirmation from '../keychains/reveal-seed'
-import MobileSyncPage from '../mobile-sync'
-import AddTokenPage from '../add-token'
-import ConfirmAddTokenPage from '../confirm-add-token'
-import ConfirmAddSuggestedTokenPage from '../confirm-add-suggested-token'
-import CreateAccountPage from '../create-account'
-import Loading from '../../components/ui/loading-screen'
-import LoadingNetwork from '../../components/app/loading-network-screen'
-import NetworkDropdown from '../../components/app/dropdowns/network-dropdown'
-import AccountMenu from '../../components/app/account-menu'
-import { Modal } from '../../components/app/modals'
-import Alert from '../../components/ui/alert'
-import AppHeader from '../../components/app/app-header'
-import UnlockPage from '../unlock-page'
-import Alerts from '../../components/app/alerts'
-import Asset from '../asset'
+import FirstTimeFlow from '../first-time-flow';
+import SendTransactionScreen from '../send';
+import Swaps from '../swaps';
+import ConfirmTransaction from '../confirm-transaction';
+import Sidebar from '../../components/app/sidebars';
+import Home from '../home';
+import Settings from '../settings';
+import Authenticated from '../../helpers/higher-order-components/authenticated';
+import Initialized from '../../helpers/higher-order-components/initialized';
+import Lock from '../lock';
+import PermissionsConnect from '../permissions-connect';
+import RestoreVaultPage from '../keychains/restore-vault';
+import RevealSeedConfirmation from '../keychains/reveal-seed';
+import MobileSyncPage from '../mobile-sync';
+import AddTokenPage from '../add-token';
+import ConfirmAddTokenPage from '../confirm-add-token';
+import ConfirmAddSuggestedTokenPage from '../confirm-add-suggested-token';
+import CreateAccountPage from '../create-account';
+import Loading from '../../components/ui/loading-screen';
+import LoadingNetwork from '../../components/app/loading-network-screen';
+import NetworkDropdown from '../../components/app/dropdowns/network-dropdown';
+import AccountMenu from '../../components/app/account-menu';
+import { Modal } from '../../components/app/modals';
+import Alert from '../../components/ui/alert';
+import AppHeader from '../../components/app/app-header';
+import UnlockPage from '../unlock-page';
+import Alerts from '../../components/app/alerts';
+import Asset from '../asset';
 
 import {
   ADD_TOKEN_ROUTE,
@@ -53,14 +53,14 @@ import {
   SETTINGS_ROUTE,
   UNLOCK_ROUTE,
   BUILD_QUOTE_ROUTE,
-} from '../../helpers/constants/routes'
+} from '../../helpers/constants/routes';
 
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
-} from '../../../../shared/constants/app'
-import { getEnvironmentType } from '../../../../app/scripts/lib/util'
-import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction'
+} from '../../../../shared/constants/app';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -88,29 +88,33 @@ export default class Routes extends Component {
     autoLockTimeLimit: PropTypes.number,
     pageChanged: PropTypes.func.isRequired,
     prepareToLeaveSwaps: PropTypes.func,
-  }
+  };
 
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
-  }
+  };
 
   UNSAFE_componentWillMount() {
-    const { currentCurrency, pageChanged, setCurrentCurrencyToUSD } = this.props
+    const {
+      currentCurrency,
+      pageChanged,
+      setCurrentCurrencyToUSD,
+    } = this.props;
 
     if (!currentCurrency) {
-      setCurrentCurrencyToUSD()
+      setCurrentCurrencyToUSD();
     }
 
     this.props.history.listen((locationObj, action) => {
       if (action === 'PUSH') {
-        pageChanged(locationObj.pathname)
+        pageChanged(locationObj.pathname);
       }
-    })
+    });
   }
 
   renderRoutes() {
-    const { autoLockTimeLimit, setLastActiveTime } = this.props
+    const { autoLockTimeLimit, setLastActiveTime } = this.props;
 
     const routes = (
       <Switch>
@@ -162,75 +166,75 @@ export default class Routes extends Component {
         <Authenticated path={`${ASSET_ROUTE}/:asset`} component={Asset} />
         <Authenticated path={DEFAULT_ROUTE} component={Home} />
       </Switch>
-    )
+    );
 
     if (autoLockTimeLimit > 0) {
       return (
         <IdleTimer onAction={setLastActiveTime} throttle={1000}>
           {routes}
         </IdleTimer>
-      )
+      );
     }
 
-    return routes
+    return routes;
   }
 
   onInitializationUnlockPage() {
-    const { location } = this.props
+    const { location } = this.props;
     return Boolean(
       matchPath(location.pathname, {
         path: INITIALIZE_UNLOCK_ROUTE,
         exact: true,
       }),
-    )
+    );
   }
 
   onConfirmPage() {
-    const { location } = this.props
+    const { location } = this.props;
     return Boolean(
       matchPath(location.pathname, {
         path: CONFIRM_TRANSACTION_ROUTE,
         exact: false,
       }),
-    )
+    );
   }
 
   onSwapsPage() {
-    const { location } = this.props
+    const { location } = this.props;
     return Boolean(
       matchPath(location.pathname, { path: SWAPS_ROUTE, exact: false }),
-    )
+    );
   }
 
   onSwapsBuildQuotePage() {
-    const { location } = this.props
+    const { location } = this.props;
     return Boolean(
       matchPath(location.pathname, { path: BUILD_QUOTE_ROUTE, exact: false }),
-    )
+    );
   }
 
   hideAppHeader() {
-    const { location } = this.props
+    const { location } = this.props;
 
     const isInitializing = Boolean(
       matchPath(location.pathname, {
         path: INITIALIZE_ROUTE,
         exact: false,
       }),
-    )
+    );
 
     if (isInitializing && !this.onInitializationUnlockPage()) {
-      return true
+      return true;
     }
 
-    const windowType = getEnvironmentType()
+    const windowType = getEnvironmentType();
 
     if (windowType === ENVIRONMENT_TYPE_NOTIFICATION) {
-      return true
+      return true;
     }
 
     if (windowType === ENVIRONMENT_TYPE_POPUP && this.onConfirmPage()) {
-      return true
+      return true;
     }
 
     const isHandlingPermissionsRequest = Boolean(
@@ -238,9 +242,9 @@ export default class Routes extends Component {
         path: CONNECT_ROUTE,
         exact: false,
       }),
-    )
+    );
 
-    return isHandlingPermissionsRequest
+    return isHandlingPermissionsRequest;
   }
 
   render() {
@@ -258,27 +262,27 @@ export default class Routes extends Component {
       submittedPendingTransactions,
       isMouseUser,
       prepareToLeaveSwaps,
-    } = this.props
-    const isLoadingNetwork = network === 'loading'
+    } = this.props;
+    const isLoadingNetwork = network === 'loading';
     const loadMessage =
       loadingMessage || isLoadingNetwork
         ? this.getConnectingLabel(loadingMessage)
-        : null
+        : null;
 
     const {
       isOpen: sidebarIsOpen,
       transitionName: sidebarTransitionName,
       type: sidebarType,
       props,
-    } = sidebar
-    const { transaction: sidebarTransaction } = props || {}
+    } = sidebar;
+    const { transaction: sidebarTransaction } = props || {};
 
     const sidebarShouldClose =
       sidebarTransaction &&
       !sidebarTransaction.status === TRANSACTION_STATUSES.FAILED &&
       !submittedPendingTransactions.find(
         ({ id }) => id === sidebarTransaction.id,
-      )
+      );
 
     return (
       <div
@@ -287,7 +291,7 @@ export default class Routes extends Component {
         onClick={() => setMouseUserState(true)}
         onKeyDown={(e) => {
           if (e.keyCode === 9) {
-            setMouseUserState(false)
+            setMouseUserState(false);
           }
         }}
       >
@@ -299,7 +303,7 @@ export default class Routes extends Component {
             disableNetworkIndicator={this.onSwapsPage()}
             onClick={async () => {
               if (this.onSwapsPage()) {
-                await prepareToLeaveSwaps()
+                await prepareToLeaveSwaps();
               }
             }}
             disabled={
@@ -328,59 +332,59 @@ export default class Routes extends Component {
         </div>
         {isUnlocked ? <Alerts history={this.props.history} /> : null}
       </div>
-    )
+    );
   }
 
   toggleMetamaskActive() {
     if (this.props.isUnlocked) {
       // currently active: deactivate
-      this.props.lockMetaMask()
+      this.props.lockMetaMask();
     } else {
       // currently inactive: redirect to password box
-      const passwordBox = document.querySelector('input[type=password]')
+      const passwordBox = document.querySelector('input[type=password]');
       if (!passwordBox) {
-        return
+        return;
       }
-      passwordBox.focus()
+      passwordBox.focus();
     }
   }
 
   getConnectingLabel(loadingMessage) {
     if (loadingMessage) {
-      return loadingMessage
+      return loadingMessage;
     }
-    const { provider, providerId } = this.props
+    const { provider, providerId } = this.props;
 
     switch (provider.type) {
       case 'mainnet':
-        return this.context.t('connectingToMainnet')
+        return this.context.t('connectingToMainnet');
       case 'ropsten':
-        return this.context.t('connectingToRopsten')
+        return this.context.t('connectingToRopsten');
       case 'kovan':
-        return this.context.t('connectingToKovan')
+        return this.context.t('connectingToKovan');
       case 'rinkeby':
-        return this.context.t('connectingToRinkeby')
+        return this.context.t('connectingToRinkeby');
       case 'goerli':
-        return this.context.t('connectingToGoerli')
+        return this.context.t('connectingToGoerli');
       default:
-        return this.context.t('connectingTo', [providerId])
+        return this.context.t('connectingTo', [providerId]);
     }
   }
 
   getNetworkName() {
     switch (this.props.provider.type) {
       case 'mainnet':
-        return this.context.t('mainnet')
+        return this.context.t('mainnet');
       case 'ropsten':
-        return this.context.t('ropsten')
+        return this.context.t('ropsten');
       case 'kovan':
-        return this.context.t('kovan')
+        return this.context.t('kovan');
       case 'rinkeby':
-        return this.context.t('rinkeby')
+        return this.context.t('rinkeby');
       case 'goerli':
-        return this.context.t('goerli')
+        return this.context.t('goerli');
       default:
-        return this.context.t('unknownNetwork')
+        return this.context.t('unknownNetwork');
     }
   }
 }

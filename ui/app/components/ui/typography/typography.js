@@ -1,15 +1,15 @@
-import React from 'react'
-import classnames from 'classnames'
-import PropTypes from 'prop-types'
+import React from 'react';
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
 import {
   COLORS,
   FONT_WEIGHT,
   TEXT_ALIGN,
   TYPOGRAPHY,
-} from '../../../helpers/constants/design-system'
-import Box from '../box'
+} from '../../../helpers/constants/design-system';
+import Box from '../box';
 
-const { H6, H7, H8, H9 } = TYPOGRAPHY
+const { H6, H7, H8, H9 } = TYPOGRAPHY;
 
 export default function Typography({
   variant = TYPOGRAPHY.Paragraph,
@@ -28,14 +28,14 @@ export default function Typography({
     `typography--align-${align}`,
     `typography--color-${color}`,
     `typography--weight-${fontWeight}`,
-  )
+  );
 
-  let Tag = tag ?? variant
+  let Tag = tag ?? variant;
 
   if (Tag === TYPOGRAPHY.Paragraph) {
-    Tag = 'p'
+    Tag = 'p';
   } else if ([H7, H8, H9].includes(Tag)) {
-    Tag = H6
+    Tag = H6;
   }
 
   return (
@@ -46,7 +46,7 @@ export default function Typography({
         </Tag>
       )}
     </Box>
-  )
+  );
 }
 
 Typography.propTypes = {
@@ -72,4 +72,4 @@ Typography.propTypes = {
     'dt',
     'dd',
   ]),
-}
+};

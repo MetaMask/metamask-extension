@@ -1,6 +1,6 @@
-import { compose } from 'redux'
-import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import {
   setSelectedSettingsRpcUrl,
   updateAndSetCustomRpc,
@@ -8,31 +8,31 @@ import {
   setNetworksTabAddMode,
   editRpc,
   showModal,
-} from '../../../store/actions'
-import { NETWORKS_FORM_ROUTE } from '../../../helpers/constants/routes'
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app'
-import { NETWORK_TYPE_RPC } from '../../../../../shared/constants/network'
-import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
-import NetworksTab from './networks-tab.component'
-import { defaultNetworksData } from './networks-tab.constants'
+} from '../../../store/actions';
+import { NETWORKS_FORM_ROUTE } from '../../../helpers/constants/routes';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app';
+import { NETWORK_TYPE_RPC } from '../../../../../shared/constants/network';
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
+import NetworksTab from './networks-tab.component';
+import { defaultNetworksData } from './networks-tab.constants';
 
 const defaultNetworks = defaultNetworksData.map((network) => ({
   ...network,
   viewOnly: true,
-}))
+}));
 
 const mapStateToProps = (state, ownProps) => {
   const {
     location: { pathname },
-  } = ownProps
+  } = ownProps;
 
-  const environmentType = getEnvironmentType()
-  const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN
+  const environmentType = getEnvironmentType();
+  const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const shouldRenderNetworkForm =
-    isFullScreen || Boolean(pathname.match(NETWORKS_FORM_ROUTE))
+    isFullScreen || Boolean(pathname.match(NETWORKS_FORM_ROUTE));
 
-  const { frequentRpcListDetail, provider } = state.metamask
-  const { networksTabSelectedRpcUrl, networksTabIsInAddMode } = state.appState
+  const { frequentRpcListDetail, provider } = state.metamask;
+  const { networksTabSelectedRpcUrl, networksTabIsInAddMode } = state.appState;
 
   const frequentRpcNetworkListDetails = frequentRpcListDetail.map((rpc) => {
     return {
@@ -43,20 +43,20 @@ const mapStateToProps = (state, ownProps) => {
       chainId: rpc.chainId,
       ticker: rpc.ticker,
       blockExplorerUrl: rpc.rpcPrefs?.blockExplorerUrl || '',
-    }
-  })
+    };
+  });
 
   const networksToRender = [
     ...defaultNetworks,
     ...frequentRpcNetworkListDetails,
-  ]
+  ];
   let selectedNetwork =
     networksToRender.find(
       (network) => network.rpcUrl === networksTabSelectedRpcUrl,
-    ) || {}
-  const networkIsSelected = Boolean(selectedNetwork.rpcUrl)
+    ) || {};
+  const networkIsSelected = Boolean(selectedNetwork.rpcUrl);
 
-  let networkDefaultedToProvider = false
+  let networkDefaultedToProvider = false;
   if (!networkIsSelected && !networksTabIsInAddMode) {
     selectedNetwork =
       networksToRender.find((network) => {
@@ -64,9 +64,9 @@ const mapStateToProps = (state, ownProps) => {
           network.rpcUrl === provider.rpcUrl ||
           (network.providerType !== NETWORK_TYPE_RPC &&
             network.providerType === provider.type)
-        )
-      }) || {}
-    networkDefaultedToProvider = true
+        );
+      }) || {};
+    networkDefaultedToProvider = true;
   }
 
   return {
@@ -79,8 +79,8 @@ const mapStateToProps = (state, ownProps) => {
     networkDefaultedToProvider,
     isFullScreen,
     shouldRenderNetworkForm,
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -89,12 +89,12 @@ const mapDispatchToProps = (dispatch) => {
     setRpcTarget: (newRpc, chainId, ticker, nickname, rpcPrefs) => {
       return dispatch(
         updateAndSetCustomRpc(newRpc, chainId, ticker, nickname, rpcPrefs),
-      )
+      );
     },
     showConfirmDeleteNetworkModal: ({ target, onConfirm }) => {
       return dispatch(
         showModal({ name: 'CONFIRM_DELETE_NETWORK', target, onConfirm }),
-      )
+      );
     },
     displayWarning: (warning) => dispatch(displayWarning(warning)),
     setNetworksTabAddMode: (isInAddMode) =>
@@ -102,12 +102,12 @@ const mapDispatchToProps = (dispatch) => {
     editRpc: (oldRpc, newRpc, chainId, ticker, nickname, rpcPrefs) => {
       return dispatch(
         editRpc(oldRpc, newRpc, chainId, ticker, nickname, rpcPrefs),
-      )
+      );
     },
-  }
-}
+  };
+};
 
 export default compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps),
-)(NetworksTab)
+)(NetworksTab);

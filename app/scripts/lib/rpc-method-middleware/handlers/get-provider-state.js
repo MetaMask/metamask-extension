@@ -1,4 +1,4 @@
-import { MESSAGE_TYPE } from '../../../../../shared/constants/app'
+import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
 /**
  * This RPC method gets background state relevant to the provider.
@@ -9,8 +9,8 @@ import { MESSAGE_TYPE } from '../../../../../shared/constants/app'
 const getProviderState = {
   methodNames: [MESSAGE_TYPE.GET_PROVIDER_STATE],
   implementation: getProviderStateHandler,
-}
-export default getProviderState
+};
+export default getProviderState;
 
 /**
  * @typedef {Object} ProviderStateHandlerResult
@@ -41,6 +41,6 @@ async function getProviderStateHandler(
 ) {
   res.result = {
     ...(await _getProviderState(req.origin)),
-  }
-  return end()
+  };
+  return end();
 }

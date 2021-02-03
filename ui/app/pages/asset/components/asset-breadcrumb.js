@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 
 const AssetBreadcrumb = ({ accountName, assetName, onBack }) => {
   return (
@@ -12,13 +12,13 @@ const AssetBreadcrumb = ({ accountName, assetName, onBack }) => {
       &nbsp;/&nbsp;
       <span className="asset-breadcrumb__asset">{assetName}</span>
     </button>
-  )
-}
+  );
+};
 
 AssetBreadcrumb.propTypes = {
   accountName: PropTypes.string.isRequired,
   assetName: PropTypes.string.isRequired,
   onBack: PropTypes.func.isRequired,
-}
+};
 
-export default AssetBreadcrumb
+export default AssetBreadcrumb;

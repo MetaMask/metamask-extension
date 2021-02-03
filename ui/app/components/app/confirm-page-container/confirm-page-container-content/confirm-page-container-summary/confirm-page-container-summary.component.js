@@ -1,7 +1,7 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import Identicon from '../../../../ui/identicon'
+import React from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import Identicon from '../../../../ui/identicon';
 
 const ConfirmPageContainerSummary = (props) => {
   const {
@@ -15,7 +15,7 @@ const ConfirmPageContainerSummary = (props) => {
     nonce,
     assetImage,
     origin,
-  } = props
+  } = props;
 
   return (
     <div className={classnames('confirm-page-container-summary', className)}>
@@ -49,8 +49,8 @@ const ConfirmPageContainerSummary = (props) => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
 ConfirmPageContainerSummary.propTypes = {
   action: PropTypes.string,
@@ -63,6 +63,6 @@ ConfirmPageContainerSummary.propTypes = {
   nonce: PropTypes.string,
   assetImage: PropTypes.string,
   origin: PropTypes.string.isRequired,
-}
+};
 
-export default ConfirmPageContainerSummary
+export default ConfirmPageContainerSummary;

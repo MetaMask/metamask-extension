@@ -1,16 +1,16 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import Button from '../../components/ui/button'
-import Identicon from '../../components/ui/identicon'
-import TokenBalance from '../../components/ui/token-balance'
-import { getEnvironmentType } from '../../../../app/scripts/lib/util'
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import Button from '../../components/ui/button';
+import Identicon from '../../components/ui/identicon';
+import TokenBalance from '../../components/ui/token-balance';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
 
 export default class ConfirmAddSuggestedToken extends Component {
   static contextTypes = {
     t: PropTypes.func,
     trackEvent: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     history: PropTypes.object,
@@ -19,32 +19,32 @@ export default class ConfirmAddSuggestedToken extends Component {
     pendingTokens: PropTypes.object,
     removeSuggestedTokens: PropTypes.func,
     tokens: PropTypes.array,
-  }
+  };
 
   componentDidMount() {
-    this._checkPendingTokens()
+    this._checkPendingTokens();
   }
 
   componentDidUpdate() {
-    this._checkPendingTokens()
+    this._checkPendingTokens();
   }
 
   _checkPendingTokens() {
-    const { mostRecentOverviewPage, pendingTokens = {}, history } = this.props
+    const { mostRecentOverviewPage, pendingTokens = {}, history } = this.props;
 
     if (Object.keys(pendingTokens).length > 0) {
-      return
+      return;
     }
 
     if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-      global.platform.closeCurrentWindow()
+      global.platform.closeCurrentWindow();
     } else {
-      history.push(mostRecentOverviewPage)
+      history.push(mostRecentOverviewPage);
     }
   }
 
   getTokenName(name, symbol) {
-    return typeof name === 'undefined' ? symbol : `${name} (${symbol})`
+    return typeof name === 'undefined' ? symbol : `${name} (${symbol})`;
   }
 
   render() {
@@ -55,11 +55,11 @@ export default class ConfirmAddSuggestedToken extends Component {
       removeSuggestedTokens,
       history,
       mostRecentOverviewPage,
-    } = this.props
-    const pendingTokenKey = Object.keys(pendingTokens)[0]
-    const pendingToken = pendingTokens[pendingTokenKey]
-    const hasTokenDuplicates = this.checkTokenDuplicates(pendingTokens, tokens)
-    const reusesName = this.checkNameReuse(pendingTokens, tokens)
+    } = this.props;
+    const pendingTokenKey = Object.keys(pendingTokens)[0];
+    const pendingToken = pendingTokens[pendingTokenKey];
+    const hasTokenDuplicates = this.checkTokenDuplicates(pendingTokens, tokens);
+    const reusesName = this.checkNameReuse(pendingTokens, tokens);
 
     return (
       <div className="page-container">
@@ -91,7 +91,7 @@ export default class ConfirmAddSuggestedToken extends Component {
             </div>
             <div className="confirm-add-token__token-list">
               {Object.entries(pendingTokens).map(([address, token]) => {
-                const { name, symbol, image } = token
+                const { name, symbol, image } = token;
 
                 return (
                   <div
@@ -113,7 +113,7 @@ export default class ConfirmAddSuggestedToken extends Component {
                       <TokenBalance token={token} />
                     </div>
                   </div>
-                )
+                );
               })}
             </div>
           </div>
@@ -127,7 +127,7 @@ export default class ConfirmAddSuggestedToken extends Component {
               onClick={() => {
                 removeSuggestedTokens().then(() =>
                   history.push(mostRecentOverviewPage),
-                )
+                );
               }}
             >
               {this.context.t('cancel')}
@@ -151,9 +151,9 @@ export default class ConfirmAddSuggestedToken extends Component {
                         unlisted: pendingToken.unlisted,
                         source: 'dapp',
                       },
-                    })
+                    });
                   })
-                  .then(() => history.push(mostRecentOverviewPage))
+                  .then(() => history.push(mostRecentOverviewPage));
               }}
             >
               {this.context.t('addToken')}
@@ -161,17 +161,17 @@ export default class ConfirmAddSuggestedToken extends Component {
           </footer>
         </div>
       </div>
-    )
+    );
   }
 
   checkTokenDuplicates(pendingTokens, tokens) {
-    const pending = Object.keys(pendingTokens)
-    const existing = tokens.map((token) => token.address)
+    const pending = Object.keys(pendingTokens);
+    const existing = tokens.map((token) => token.address);
     const dupes = pending.filter((proposed) => {
-      return existing.includes(proposed)
-    })
+      return existing.includes(proposed);
+    });
 
-    return dupes.length > 0
+    return dupes.length > 0;
   }
 
   /**
@@ -186,9 +186,9 @@ export default class ConfirmAddSuggestedToken extends Component {
       .filter((token) => {
         const dupes = tokens
           .filter((old) => old.symbol === token.symbol)
-          .filter((old) => old.address !== token.address)
-        return dupes.length > 0
-      })
-    return duplicates.length > 0
+          .filter((old) => old.address !== token.address);
+        return dupes.length > 0;
+      });
+    return duplicates.length > 0;
   }
 }

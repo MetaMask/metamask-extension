@@ -9,7 +9,7 @@ export default function createOriginMiddleware(opts) {
     /** @type {any} */ _,
     /** @type {Function} */ next,
   ) {
-    req.origin = opts.origin
-    next()
-  }
+    req.origin = opts.origin;
+    next();
+  };
 }

@@ -1,40 +1,40 @@
-import React, { useContext } from 'react'
+import React, { useContext } from 'react';
 
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import BigNumber from 'bignumber.js'
-import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount'
-import { I18nContext } from '../../../contexts/i18n'
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import BigNumber from 'bignumber.js';
+import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
+import { I18nContext } from '../../../contexts/i18n';
 
-import ActionableMessage from '../actionable-message'
-import Tooltip from '../../../components/ui/tooltip'
+import ActionableMessage from '../actionable-message';
+import Tooltip from '../../../components/ui/tooltip';
 
 export default function ViewQuotePriceDifference(props) {
-  const { usedQuote, sourceTokenValue, destinationTokenValue } = props
+  const { usedQuote, sourceTokenValue, destinationTokenValue } = props;
 
-  const t = useContext(I18nContext)
+  const t = useContext(I18nContext);
 
   const priceSlippageFromSource = useEthFiatAmount(
     usedQuote?.priceSlippage?.sourceAmountInETH || 0,
-  )
+  );
   const priceSlippageFromDestination = useEthFiatAmount(
     usedQuote?.priceSlippage?.destinationAmountInEth || 0,
-  )
+  );
 
   if (!usedQuote || !usedQuote.priceSlippage) {
-    return null
+    return null;
   }
 
-  const { priceSlippage } = usedQuote
+  const { priceSlippage } = usedQuote;
 
   // We cannot present fiat value if there is a calculation error or no slippage
   // from source or destination
   const priceSlippageUnknownFiatValue =
     !priceSlippageFromSource ||
     !priceSlippageFromDestination ||
-    priceSlippage.calculationError
+    priceSlippage.calculationError;
 
-  let priceDifferencePercentage = 0
+  let priceDifferencePercentage = 0;
   if (priceSlippage.ratio) {
     priceDifferencePercentage = parseFloat(
       new BigNumber(priceSlippage.ratio, 10)
@@ -42,28 +42,28 @@ export default function ViewQuotePriceDifference(props) {
         .times(100, 10)
         .toFixed(2),
       10,
-    )
+    );
   }
 
   const shouldShowPriceDifferenceWarning =
     ['high', 'medium'].includes(priceSlippage.bucket) ||
-    priceSlippageUnknownFiatValue
+    priceSlippageUnknownFiatValue;
 
   if (!shouldShowPriceDifferenceWarning) {
-    return null
+    return null;
   }
 
-  let priceDifferenceTitle = ''
-  let priceDifferenceMessage = ''
-  let priceDifferenceClass = ''
+  let priceDifferenceTitle = '';
+  let priceDifferenceMessage = '';
+  let priceDifferenceClass = '';
   if (priceSlippageUnknownFiatValue) {
     // A calculation error signals we cannot determine dollar value
-    priceDifferenceMessage = t('swapPriceDifferenceUnavailable')
-    priceDifferenceClass = 'fiat-error'
+    priceDifferenceMessage = t('swapPriceDifferenceUnavailable');
+    priceDifferenceClass = 'fiat-error';
   } else {
     priceDifferenceTitle = t('swapPriceDifferenceTitle', [
       priceDifferencePercentage,
-    ])
+    ]);
     priceDifferenceMessage = t('swapPriceDifference', [
       sourceTokenValue, // Number of source token to swap
       usedQuote.sourceTokenInfo.symbol, // Source token symbol
@@ -71,8 +71,8 @@ export default function ViewQuotePriceDifference(props) {
       destinationTokenValue, // Number of destination tokens in return
       usedQuote.destinationTokenInfo.symbol, // Destination token symbol,
       priceSlippageFromDestination, // Destination tokens total value
-    ])
-    priceDifferenceClass = priceSlippage.bucket
+    ]);
+    priceDifferenceClass = priceSlippage.bucket;
   }
 
   return (
@@ -104,11 +104,11 @@ export default function ViewQuotePriceDifference(props) {
         }
       />
     </div>
-  )
+  );
 }
 
 ViewQuotePriceDifference.propTypes = {
   usedQuote: PropTypes.object,
   sourceTokenValue: PropTypes.string,
   destinationTokenValue: PropTypes.string,
-}
+};

@@ -1,11 +1,11 @@
-import React from 'react'
-import { select } from '@storybook/addon-knobs'
-import { COLORS, SIZES } from '../../../helpers/constants/design-system'
-import ColorIndicator from './color-indicator'
+import React from 'react';
+import { select } from '@storybook/addon-knobs';
+import { COLORS, SIZES } from '../../../helpers/constants/design-system';
+import ColorIndicator from './color-indicator';
 
 export default {
   title: 'ColorIndicator',
-}
+};
 
 export const colorIndicator = () => (
   <ColorIndicator
@@ -14,7 +14,7 @@ export const colorIndicator = () => (
     color={select('color', COLORS, COLORS.PRIMARY1)}
     borderColor={select('borderColor', { NONE: undefined, ...COLORS })}
   />
-)
+);
 
 export const withIcon = () => (
   <ColorIndicator
@@ -24,4 +24,4 @@ export const withIcon = () => (
     iconClassName="fa fa-question"
     borderColor={select('borderColor', { NONE: undefined, ...COLORS })}
   />
-)
+);

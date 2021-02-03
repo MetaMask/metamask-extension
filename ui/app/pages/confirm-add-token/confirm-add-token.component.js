@@ -1,15 +1,15 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { ASSET_ROUTE, ADD_TOKEN_ROUTE } from '../../helpers/constants/routes'
-import Button from '../../components/ui/button'
-import Identicon from '../../components/ui/identicon'
-import TokenBalance from '../../components/ui/token-balance'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { ASSET_ROUTE, ADD_TOKEN_ROUTE } from '../../helpers/constants/routes';
+import Button from '../../components/ui/button';
+import Identicon from '../../components/ui/identicon';
+import TokenBalance from '../../components/ui/token-balance';
 
 export default class ConfirmAddToken extends Component {
   static contextTypes = {
     t: PropTypes.func,
     trackEvent: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     history: PropTypes.object,
@@ -17,18 +17,18 @@ export default class ConfirmAddToken extends Component {
     addTokens: PropTypes.func,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     pendingTokens: PropTypes.object,
-  }
+  };
 
   componentDidMount() {
-    const { mostRecentOverviewPage, pendingTokens = {}, history } = this.props
+    const { mostRecentOverviewPage, pendingTokens = {}, history } = this.props;
 
     if (Object.keys(pendingTokens).length === 0) {
-      history.push(mostRecentOverviewPage)
+      history.push(mostRecentOverviewPage);
     }
   }
 
   getTokenName(name, symbol) {
-    return typeof name === 'undefined' ? symbol : `${name} (${symbol})`
+    return typeof name === 'undefined' ? symbol : `${name} (${symbol})`;
   }
 
   render() {
@@ -38,7 +38,7 @@ export default class ConfirmAddToken extends Component {
       clearPendingTokens,
       mostRecentOverviewPage,
       pendingTokens,
-    } = this.props
+    } = this.props;
 
     return (
       <div className="page-container">
@@ -62,7 +62,7 @@ export default class ConfirmAddToken extends Component {
             </div>
             <div className="confirm-add-token__token-list">
               {Object.entries(pendingTokens).map(([address, token]) => {
-                const { name, symbol } = token
+                const { name, symbol } = token;
 
                 return (
                   <div
@@ -83,7 +83,7 @@ export default class ConfirmAddToken extends Component {
                       <TokenBalance token={token} />
                     </div>
                   </div>
-                )
+                );
               })}
             </div>
           </div>
@@ -104,7 +104,7 @@ export default class ConfirmAddToken extends Component {
               className="page-container__footer-button"
               onClick={() => {
                 addTokens(pendingTokens).then(() => {
-                  const pendingTokenValues = Object.values(pendingTokens)
+                  const pendingTokenValues = Object.values(pendingTokens);
                   pendingTokenValues.forEach((pendingToken) => {
                     this.context.trackEvent({
                       event: 'Token Added',
@@ -116,16 +116,16 @@ export default class ConfirmAddToken extends Component {
                         unlisted: pendingToken.unlisted,
                         source: pendingToken.isCustom ? 'custom' : 'list',
                       },
-                    })
-                  })
-                  clearPendingTokens()
-                  const firstTokenAddress = pendingTokenValues?.[0].address?.toLowerCase()
+                    });
+                  });
+                  clearPendingTokens();
+                  const firstTokenAddress = pendingTokenValues?.[0].address?.toLowerCase();
                   if (firstTokenAddress) {
-                    history.push(`${ASSET_ROUTE}/${firstTokenAddress}`)
+                    history.push(`${ASSET_ROUTE}/${firstTokenAddress}`);
                   } else {
-                    history.push(mostRecentOverviewPage)
+                    history.push(mostRecentOverviewPage);
                   }
-                })
+                });
               }}
             >
               {this.context.t('addTokens')}
@@ -133,6 +133,6 @@ export default class ConfirmAddToken extends Component {
           </footer>
         </div>
       </div>
-    )
+    );
   }
 }

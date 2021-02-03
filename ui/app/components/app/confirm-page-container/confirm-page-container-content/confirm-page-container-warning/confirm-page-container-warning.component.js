@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 
 const ConfirmPageContainerWarning = (props) => {
   return (
@@ -13,11 +13,11 @@ const ConfirmPageContainerWarning = (props) => {
         {props.warning}
       </div>
     </div>
-  )
-}
+  );
+};
 
 ConfirmPageContainerWarning.propTypes = {
   warning: PropTypes.string,
-}
+};
 
-export default ConfirmPageContainerWarning
+export default ConfirmPageContainerWarning;

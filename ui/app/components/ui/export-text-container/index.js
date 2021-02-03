@@ -1,3 +1,3 @@
-import ExportTextContainer from './export-text-container.component'
+import ExportTextContainer from './export-text-container.component';
 
-export default ExportTextContainer
+export default ExportTextContainer;

@@ -1,5 +1,5 @@
-import { strict as assert } from 'assert'
-import migration46 from '../../../app/scripts/migrations/046'
+import { strict as assert } from 'assert';
+import migration46 from '../../../app/scripts/migrations/046';
 
 describe('migration #46', function () {
   it('should update the version metadata', async function () {
@@ -8,13 +8,13 @@ describe('migration #46', function () {
         version: 45,
       },
       data: {},
-    }
+    };
 
-    const newStorage = await migration46.migrate(oldStorage)
+    const newStorage = await migration46.migrate(oldStorage);
     assert.deepEqual(newStorage.meta, {
       version: 46,
-    })
-  })
+    });
+  });
 
   it('should delete ABTestController state', async function () {
     const oldStorage = {
@@ -27,13 +27,13 @@ describe('migration #46', function () {
         },
         foo: 'bar',
       },
-    }
+    };
 
-    const newStorage = await migration46.migrate(oldStorage)
+    const newStorage = await migration46.migrate(oldStorage);
     assert.deepEqual(newStorage.data, {
       foo: 'bar',
-    })
-  })
+    });
+  });
 
   it('should do nothing if ABTestController state does not exist', async function () {
     const oldStorage = {
@@ -44,9 +44,9 @@ describe('migration #46', function () {
         },
         foo: 'bar',
       },
-    }
+    };
 
-    const newStorage = await migration46.migrate(oldStorage)
-    assert.deepEqual(oldStorage.data, newStorage.data)
-  })
-})
+    const newStorage = await migration46.migrate(oldStorage);
+    assert.deepEqual(oldStorage.data, newStorage.data);
+  });
+});

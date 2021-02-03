@@ -1,1 +1,1 @@
-export { default } from './send-footer.container'
+export { default } from './send-footer.container';

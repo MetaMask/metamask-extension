@@ -1,19 +1,19 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
-import AccountListItem from '../../components/app/account-list-item'
-import Button from '../../components/ui/button'
-import Identicon from '../../components/ui/identicon'
+import AccountListItem from '../../components/app/account-list-item';
+import Button from '../../components/ui/button';
+import Identicon from '../../components/ui/identicon';
 
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app'
-import { getEnvironmentType } from '../../../../app/scripts/lib/util'
-import { conversionUtil } from '../../helpers/utils/conversion-util'
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { conversionUtil } from '../../helpers/utils/conversion-util';
 
 export default class ConfirmEncryptionPublicKey extends Component {
   static contextTypes = {
     t: PropTypes.func.isRequired,
     metricsEvent: PropTypes.func.isRequired,
-  }
+  };
 
   static propTypes = {
     fromAccount: PropTypes.shape({
@@ -30,49 +30,49 @@ export default class ConfirmEncryptionPublicKey extends Component {
     txData: PropTypes.object,
     domainMetadata: PropTypes.object,
     mostRecentOverviewPage: PropTypes.string.isRequired,
-  }
+  };
 
   state = {
     fromAccount: this.props.fromAccount,
-  }
+  };
 
   componentDidMount = () => {
     if (
       getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION
     ) {
-      window.addEventListener('beforeunload', this._beforeUnload)
+      window.addEventListener('beforeunload', this._beforeUnload);
     }
-  }
+  };
 
   componentWillUnmount = () => {
-    this._removeBeforeUnload()
-  }
+    this._removeBeforeUnload();
+  };
 
   _beforeUnload = async (event) => {
     const {
       clearConfirmTransaction,
       cancelEncryptionPublicKey,
       txData,
-    } = this.props
-    const { metricsEvent } = this.context
-    await cancelEncryptionPublicKey(txData, event)
+    } = this.props;
+    const { metricsEvent } = this.context;
+    await cancelEncryptionPublicKey(txData, event);
     metricsEvent({
       eventOpts: {
         category: 'Messages',
         action: 'Encryption public key Request',
         name: 'Cancel Via Notification Close',
       },
-    })
-    clearConfirmTransaction()
-  }
+    });
+    clearConfirmTransaction();
+  };
 
   _removeBeforeUnload = () => {
     if (
       getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION
     ) {
-      window.removeEventListener('beforeunload', this._beforeUnload)
+      window.removeEventListener('beforeunload', this._beforeUnload);
     }
-  }
+  };
 
   renderHeader = () => {
     return (
@@ -87,12 +87,12 @@ export default class ConfirmEncryptionPublicKey extends Component {
           <div className="request-encryption-public-key__header__tip" />
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   renderAccount = () => {
-    const { fromAccount } = this.state
-    const { t } = this.context
+    const { fromAccount } = this.state;
+    const { t } = this.context;
 
     return (
       <div className="request-encryption-public-key__account">
@@ -104,15 +104,15 @@ export default class ConfirmEncryptionPublicKey extends Component {
           <AccountListItem account={fromAccount} />
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   renderBalance = () => {
-    const { conversionRate } = this.props
-    const { t } = this.context
+    const { conversionRate } = this.props;
+    const { t } = this.context;
     const {
       fromAccount: { balance },
-    } = this.state
+    } = this.state;
 
     const balanceInEther = conversionUtil(balance, {
       fromNumericBase: 'hex',
@@ -120,7 +120,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
       fromDenomination: 'WEI',
       numberOfDecimals: 6,
       conversionRate,
-    })
+    });
 
     return (
       <div className="request-encryption-public-key__balance">
@@ -131,18 +131,18 @@ export default class ConfirmEncryptionPublicKey extends Component {
           {`${balanceInEther} ETH`}
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   renderRequestIcon = () => {
-    const { requesterAddress } = this.props
+    const { requesterAddress } = this.props;
 
     return (
       <div className="request-encryption-public-key__request-icon">
         <Identicon diameter={40} address={requesterAddress} />
       </div>
-    )
-  }
+    );
+  };
 
   renderAccountInfo = () => {
     return (
@@ -151,16 +151,16 @@ export default class ConfirmEncryptionPublicKey extends Component {
         {this.renderRequestIcon()}
         {this.renderBalance()}
       </div>
-    )
-  }
+    );
+  };
 
   renderBody = () => {
-    const { domainMetadata, txData } = this.props
-    const { t } = this.context
+    const { domainMetadata, txData } = this.props;
+    const { t } = this.context;
 
-    const originMetadata = domainMetadata[txData.origin]
-    const notice = t('encryptionPublicKeyNotice', [txData.origin])
-    const name = originMetadata?.name || txData.origin
+    const originMetadata = domainMetadata[txData.origin];
+    const notice = t('encryptionPublicKeyNotice', [txData.origin]);
+    const name = originMetadata?.name || txData.origin;
 
     return (
       <div className="request-encryption-public-key__body">
@@ -184,8 +184,8 @@ export default class ConfirmEncryptionPublicKey extends Component {
           </section>
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   renderFooter = () => {
     const {
@@ -195,8 +195,8 @@ export default class ConfirmEncryptionPublicKey extends Component {
       history,
       mostRecentOverviewPage,
       txData,
-    } = this.props
-    const { t, metricsEvent } = this.context
+    } = this.props;
+    const { t, metricsEvent } = this.context;
 
     return (
       <div className="request-encryption-public-key__footer">
@@ -205,17 +205,17 @@ export default class ConfirmEncryptionPublicKey extends Component {
           large
           className="request-encryption-public-key__footer__cancel-button"
           onClick={async (event) => {
-            this._removeBeforeUnload()
-            await cancelEncryptionPublicKey(txData, event)
+            this._removeBeforeUnload();
+            await cancelEncryptionPublicKey(txData, event);
             metricsEvent({
               eventOpts: {
                 category: 'Messages',
                 action: 'Encryption public key Request',
                 name: 'Cancel',
               },
-            })
-            clearConfirmTransaction()
-            history.push(mostRecentOverviewPage)
+            });
+            clearConfirmTransaction();
+            history.push(mostRecentOverviewPage);
           }}
         >
           {this.context.t('cancel')}
@@ -225,24 +225,24 @@ export default class ConfirmEncryptionPublicKey extends Component {
           large
           className="request-encryption-public-key__footer__sign-button"
           onClick={async (event) => {
-            this._removeBeforeUnload()
-            await encryptionPublicKey(txData, event)
+            this._removeBeforeUnload();
+            await encryptionPublicKey(txData, event);
             this.context.metricsEvent({
               eventOpts: {
                 category: 'Messages',
                 action: 'Encryption public key Request',
                 name: 'Confirm',
               },
-            })
-            clearConfirmTransaction()
-            history.push(mostRecentOverviewPage)
+            });
+            clearConfirmTransaction();
+            history.push(mostRecentOverviewPage);
           }}
         >
           {t('provide')}
         </Button>
       </div>
-    )
-  }
+    );
+  };
 
   render = () => {
     return (
@@ -251,6 +251,6 @@ export default class ConfirmEncryptionPublicKey extends Component {
         {this.renderBody()}
         {this.renderFooter()}
       </div>
-    )
-  }
+    );
+  };
 }

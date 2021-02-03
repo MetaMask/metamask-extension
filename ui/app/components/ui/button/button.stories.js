@@ -1,11 +1,11 @@
-import React from 'react'
-import { action } from '@storybook/addon-actions'
-import { text, boolean } from '@storybook/addon-knobs'
-import Button from '.'
+import React from 'react';
+import { action } from '@storybook/addon-actions';
+import { text, boolean } from '@storybook/addon-knobs';
+import Button from '.';
 
 export default {
   title: 'Button',
-}
+};
 
 export const primaryType = () => (
   <Button
@@ -15,7 +15,7 @@ export const primaryType = () => (
   >
     {text('text', 'Click me')}
   </Button>
-)
+);
 
 export const secondaryType = () => (
   <Button
@@ -25,7 +25,7 @@ export const secondaryType = () => (
   >
     {text('text', 'Click me')}
   </Button>
-)
+);
 
 export const defaultType = () => (
   <Button
@@ -35,7 +35,7 @@ export const defaultType = () => (
   >
     {text('text', 'Click me')}
   </Button>
-)
+);
 
 export const warningType = () => (
   <Button
@@ -45,7 +45,7 @@ export const warningType = () => (
   >
     {text('text', 'Click me')}
   </Button>
-)
+);
 
 export const dangerType = () => (
   <Button
@@ -55,7 +55,7 @@ export const dangerType = () => (
   >
     {text('text', 'Click me')}
   </Button>
-)
+);
 
 export const dangerPrimaryType = () => (
   <Button
@@ -65,4 +65,4 @@ export const dangerPrimaryType = () => (
   >
     {text('text', 'Click me')}
   </Button>
-)
+);

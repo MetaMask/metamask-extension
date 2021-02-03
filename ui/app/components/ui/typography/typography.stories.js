@@ -1,16 +1,16 @@
-import React from 'react'
-import { number, select, text } from '@storybook/addon-knobs'
+import React from 'react';
+import { number, select, text } from '@storybook/addon-knobs';
 import {
   COLORS,
   FONT_WEIGHT,
   TEXT_ALIGN,
   TYPOGRAPHY,
-} from '../../../helpers/constants/design-system'
-import Typography from '.'
+} from '../../../helpers/constants/design-system';
+import Typography from '.';
 
 export default {
   title: 'Typography',
-}
+};
 
 export const list = () => (
   <div style={{ width: '80%', flexDirection: 'column' }}>
@@ -32,7 +32,7 @@ export const list = () => (
       </div>
     ))}
   </div>
-)
+);
 
 export const TheQuickOrangeFox = () => (
   <div style={{ width: '80%', flexDirection: 'column' }}>
@@ -48,4 +48,4 @@ export const TheQuickOrangeFox = () => (
       </Typography>
     </div>
   </div>
-)
+);

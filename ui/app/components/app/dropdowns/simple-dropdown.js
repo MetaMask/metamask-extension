@@ -1,6 +1,6 @@
-import classnames from 'classnames'
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
 class SimpleDropdown extends Component {
   static propTypes = {
@@ -8,41 +8,41 @@ class SimpleDropdown extends Component {
     placeholder: PropTypes.string,
     onSelect: PropTypes.func,
     selectedOption: PropTypes.string,
-  }
+  };
 
   state = {
     isOpen: false,
-  }
+  };
 
   getDisplayValue() {
-    const { selectedOption, options } = this.props
-    const matchesOption = (option) => option.value === selectedOption
-    const matchingOption = options.find(matchesOption)
+    const { selectedOption, options } = this.props;
+    const matchesOption = (option) => option.value === selectedOption;
+    const matchingOption = options.find(matchesOption);
     return matchingOption
       ? matchingOption.displayValue || matchingOption.value
-      : selectedOption
+      : selectedOption;
   }
 
   handleClose() {
-    this.setState({ isOpen: false })
+    this.setState({ isOpen: false });
   }
 
   toggleOpen() {
     this.setState((prevState) => ({
       isOpen: !prevState.isOpen,
-    }))
+    }));
   }
 
   renderOptions() {
-    const { options, onSelect, selectedOption } = this.props
+    const { options, onSelect, selectedOption } = this.props;
 
     return (
       <div>
         <div
           className="simple-dropdown__close-area"
           onClick={(event) => {
-            event.stopPropagation()
-            this.handleClose()
+            event.stopPropagation();
+            this.handleClose();
           }}
         />
         <div className="simple-dropdown__options">
@@ -54,12 +54,12 @@ class SimpleDropdown extends Component {
               })}
               key={option.value}
               onClick={(event) => {
-                event.stopPropagation()
+                event.stopPropagation();
                 if (option.value !== selectedOption) {
-                  onSelect(option.value)
+                  onSelect(option.value);
                 }
 
-                this.handleClose()
+                this.handleClose();
               }}
             >
               {option.displayValue || option.value}
@@ -67,12 +67,12 @@ class SimpleDropdown extends Component {
           ))}
         </div>
       </div>
-    )
+    );
   }
 
   render() {
-    const { placeholder } = this.props
-    const { isOpen } = this.state
+    const { placeholder } = this.props;
+    const { isOpen } = this.state;
 
     return (
       <div className="simple-dropdown" onClick={() => this.toggleOpen()}>
@@ -82,8 +82,8 @@ class SimpleDropdown extends Component {
         <i className="fa fa-caret-down fa-lg simple-dropdown__caret" />
         {isOpen && this.renderOptions()}
       </div>
-    )
+    );
   }
 }
 
-export default SimpleDropdown
+export default SimpleDropdown;

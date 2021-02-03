@@ -1,4 +1,4 @@
-const http = require('http')
+const http = require('http');
 
 /**
  * This is the default error handler to be used by this mock segment server.
@@ -7,8 +7,8 @@ const http = require('http')
  * @param {Error} error - The server error
  */
 function defaultOnError(error) {
-  console.log(error)
-  process.exit(1)
+  console.log(error);
+  process.exit(1);
 }
 
 /**
@@ -32,62 +32,62 @@ function defaultOnError(error) {
  */
 function createSegmentServer(onRequest, onError = defaultOnError) {
   const server = http.createServer(async (request, response) => {
-    const chunks = []
+    const chunks = [];
 
     request.on('data', (chunk) => {
-      chunks.push(chunk)
-    })
+      chunks.push(chunk);
+    });
 
     await new Promise((resolve) => {
       request.on('end', () => {
-        resolve()
-      })
-    })
+        resolve();
+      });
+    });
 
     // respond to preflight request
     if (request.method === 'OPTIONS') {
-      response.setHeader('Access-Control-Allow-Origin', '*')
-      response.setHeader('Access-Control-Allow-Methods', '*')
-      response.setHeader('Access-Control-Allow-Headers', '*')
-      response.statusCode = 200
-      response.end()
-      return
+      response.setHeader('Access-Control-Allow-Origin', '*');
+      response.setHeader('Access-Control-Allow-Methods', '*');
+      response.setHeader('Access-Control-Allow-Headers', '*');
+      response.statusCode = 200;
+      response.end();
+      return;
     }
 
-    let metricEvents = []
+    let metricEvents = [];
     if (chunks.length) {
-      const body = Buffer.concat(chunks).toString()
-      const segmentPayload = JSON.parse(body)
-      metricEvents = segmentPayload.batch
+      const body = Buffer.concat(chunks).toString();
+      const segmentPayload = JSON.parse(body);
+      metricEvents = segmentPayload.batch;
     }
 
-    onRequest(request, response, metricEvents)
-  })
+    onRequest(request, response, metricEvents);
+  });
 
-  server.on('error', onError)
+  server.on('error', onError);
 
   return {
     start: async (port) => {
       await new Promise((resolve, reject) => {
         server.listen(port, (error) => {
           if (error) {
-            return reject(error)
+            return reject(error);
           }
-          return resolve()
-        })
-      })
+          return resolve();
+        });
+      });
     },
     stop: async () => {
       await new Promise((resolve, reject) => {
         server.close((error) => {
           if (error) {
-            return reject(error)
+            return reject(error);
           }
-          return resolve()
-        })
-      })
+          return resolve();
+        });
+      });
     },
-  }
+  };
 }
 
-module.exports = { createSegmentServer }
+module.exports = { createSegmentServer };

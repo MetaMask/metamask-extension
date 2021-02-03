@@ -1,18 +1,18 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import PageContainer from '../../../components/ui/page-container'
-import { Tabs, Tab } from '../../../components/ui/tabs'
-import { calcGasTotal } from '../../send/send.utils'
-import { sumHexWEIsToUnformattedFiat } from '../../../helpers/utils/conversions.util'
-import AdvancedGasInputs from '../../../components/app/gas-customization/advanced-gas-inputs'
-import BasicTabContent from '../../../components/app/gas-customization/gas-modal-page-container/basic-tab-content'
-import { GAS_ESTIMATE_TYPES } from '../../../helpers/constants/common'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import PageContainer from '../../../components/ui/page-container';
+import { Tabs, Tab } from '../../../components/ui/tabs';
+import { calcGasTotal } from '../../send/send.utils';
+import { sumHexWEIsToUnformattedFiat } from '../../../helpers/utils/conversions.util';
+import AdvancedGasInputs from '../../../components/app/gas-customization/advanced-gas-inputs';
+import BasicTabContent from '../../../components/app/gas-customization/gas-modal-page-container/basic-tab-content';
+import { GAS_ESTIMATE_TYPES } from '../../../helpers/constants/common';
 
 export default class GasModalPageContainer extends Component {
   static contextTypes = {
     t: PropTypes.func,
     trackEvent: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     insufficientBalance: PropTypes.bool,
@@ -42,17 +42,17 @@ export default class GasModalPageContainer extends Component {
     setSwapsCustomizationModalLimit: PropTypes.func,
     gasEstimateLoadingHasFailed: PropTypes.bool,
     minimumGasLimit: PropTypes.number.isRequired,
-  }
+  };
 
   state = {
     gasSpeedType: '',
-  }
+  };
 
   setGasSpeedType(gasEstimateType) {
     if (gasEstimateType === GAS_ESTIMATE_TYPES.AVERAGE) {
-      this.setState({ gasSpeedType: 'average' })
+      this.setState({ gasSpeedType: 'average' });
     } else {
-      this.setState({ gasSpeedType: 'fast' })
+      this.setState({ gasSpeedType: 'fast' });
     }
   }
 
@@ -62,12 +62,12 @@ export default class GasModalPageContainer extends Component {
         gasPriceButtonGroupProps={{
           ...gasPriceButtonGroupProps,
           handleGasPriceSelection: ({ gasPrice, gasEstimateType }) => {
-            this.setGasSpeedType(gasEstimateType)
-            this.props.setSwapsCustomizationModalPrice(gasPrice)
+            this.setGasSpeedType(gasEstimateType);
+            this.props.setSwapsCustomizationModalPrice(gasPrice);
           },
         }}
       />
-    )
+    );
   }
 
   renderAdvancedTabContent() {
@@ -81,7 +81,7 @@ export default class GasModalPageContainer extends Component {
       customGasPrice,
       customGasLimit,
       minimumGasLimit,
-    } = this.props
+    } = this.props;
 
     return (
       <div className="advanced-tab">
@@ -99,12 +99,12 @@ export default class GasModalPageContainer extends Component {
           <div className="advanced-tab__gas-inputs">
             <AdvancedGasInputs
               updateCustomGasPrice={(updatedPrice) => {
-                this.setState({ gasSpeedType: 'custom' })
-                setSwapsCustomizationModalPrice(updatedPrice)
+                this.setState({ gasSpeedType: 'custom' });
+                setSwapsCustomizationModalPrice(updatedPrice);
               }}
               updateCustomGasLimit={(updatedLimit) => {
-                this.setState({ gasSpeedType: 'custom' })
-                setSwapsCustomizationModalLimit(updatedLimit)
+                this.setState({ gasSpeedType: 'custom' });
+                setSwapsCustomizationModalLimit(updatedLimit);
               }}
               customGasPrice={customGasPrice}
               customGasLimit={customGasLimit}
@@ -116,7 +116,7 @@ export default class GasModalPageContainer extends Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   renderInfoRows(
@@ -170,7 +170,7 @@ export default class GasModalPageContainer extends Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   renderTabs() {
@@ -184,7 +184,7 @@ export default class GasModalPageContainer extends Component {
         extraInfoRow,
       },
       gasEstimateLoadingHasFailed,
-    } = this.props
+    } = this.props;
 
     const basicTabInfo = {
       name: this.context.t('basic'),
@@ -192,15 +192,15 @@ export default class GasModalPageContainer extends Component {
         ...gasPriceButtonGroupProps,
         handleGasPriceSelection: this.props.setSwapsCustomizationModalPrice,
       }),
-    }
+    };
     const advancedTabInfo = {
       name: this.context.t('advanced'),
       content: this.renderAdvancedTabContent(),
-    }
+    };
 
     const tabsToRender = gasEstimateLoadingHasFailed
       ? [advancedTabInfo]
-      : [basicTabInfo, advancedTabInfo]
+      : [basicTabInfo, advancedTabInfo];
 
     return (
       <Tabs>
@@ -219,7 +219,7 @@ export default class GasModalPageContainer extends Component {
           </Tab>
         ))}
       </Tabs>
-    )
+    );
   }
 
   render() {
@@ -229,7 +229,7 @@ export default class GasModalPageContainer extends Component {
       disableSave,
       customGasPrice,
       customGasLimit,
-    } = this.props
+    } = this.props;
 
     return (
       <div className="gas-modal-page-container">
@@ -241,7 +241,10 @@ export default class GasModalPageContainer extends Component {
           onCancel={() => cancelAndClose()}
           onClose={() => cancelAndClose()}
           onSubmit={() => {
-            const newSwapGasTotal = calcGasTotal(customGasLimit, customGasPrice)
+            const newSwapGasTotal = calcGasTotal(
+              customGasLimit,
+              customGasPrice,
+            );
 
             this.context.trackEvent({
               event: 'Gas Fees Changed',
@@ -254,14 +257,14 @@ export default class GasModalPageContainer extends Component {
                   this.props.usdConversionRate,
                 )?.slice(1),
               },
-            })
-            onSubmit(customGasLimit, customGasPrice)
+            });
+            onSubmit(customGasLimit, customGasPrice);
           }}
           submitText={this.context.t('save')}
           headerCloseText={this.context.t('close')}
           hideCancel
         />
       </div>
-    )
+    );
   }
 }

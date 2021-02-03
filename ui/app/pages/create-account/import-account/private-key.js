@@ -1,18 +1,18 @@
-import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
-import { compose } from 'redux'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import * as actions from '../../../store/actions'
-import { getMetaMaskAccounts } from '../../../selectors'
-import Button from '../../../components/ui/button'
-import { getMostRecentOverviewPage } from '../../../ducks/history/history'
+import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import * as actions from '../../../store/actions';
+import { getMetaMaskAccounts } from '../../../selectors';
+import Button from '../../../components/ui/button';
+import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 
 class PrivateKeyImportView extends Component {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     importNewAccount: PropTypes.func.isRequired,
@@ -22,14 +22,14 @@ class PrivateKeyImportView extends Component {
     firstAddress: PropTypes.string.isRequired,
     error: PropTypes.node,
     mostRecentOverviewPage: PropTypes.string.isRequired,
-  }
+  };
 
-  inputRef = React.createRef()
+  inputRef = React.createRef();
 
-  state = { isEmpty: true }
+  state = { isEmpty: true };
 
   createNewKeychain() {
-    const privateKey = this.inputRef.current.value
+    const privateKey = this.inputRef.current.value;
     const {
       importNewAccount,
       history,
@@ -37,7 +37,7 @@ class PrivateKeyImportView extends Component {
       mostRecentOverviewPage,
       setSelectedAddress,
       firstAddress,
-    } = this.props
+    } = this.props;
 
     importNewAccount('Private Key', [privateKey])
       .then(({ selectedAddress }) => {
@@ -48,42 +48,42 @@ class PrivateKeyImportView extends Component {
               action: 'Import Account',
               name: 'Imported Account with Private Key',
             },
-          })
-          history.push(mostRecentOverviewPage)
-          displayWarning(null)
+          });
+          history.push(mostRecentOverviewPage);
+          displayWarning(null);
         } else {
-          displayWarning('Error importing account.')
+          displayWarning('Error importing account.');
           this.context.metricsEvent({
             eventOpts: {
               category: 'Accounts',
               action: 'Import Account',
               name: 'Error importing with Private Key',
             },
-          })
-          setSelectedAddress(firstAddress)
+          });
+          setSelectedAddress(firstAddress);
         }
       })
-      .catch((err) => err && displayWarning(err.message || err))
+      .catch((err) => err && displayWarning(err.message || err));
   }
 
   createKeyringOnEnter = (event) => {
     if (event.key === 'Enter') {
-      event.preventDefault()
-      this.createNewKeychain()
+      event.preventDefault();
+      this.createNewKeychain();
     }
-  }
+  };
 
   checkInputEmpty() {
-    const privateKey = this.inputRef.current.value
-    let isEmpty = true
+    const privateKey = this.inputRef.current.value;
+    let isEmpty = true;
     if (privateKey !== '') {
-      isEmpty = false
+      isEmpty = false;
     }
-    this.setState({ isEmpty })
+    this.setState({ isEmpty });
   }
 
   render() {
-    const { error, displayWarning } = this.props
+    const { error, displayWarning } = this.props;
 
     return (
       <div className="new-account-import-form__private-key">
@@ -107,9 +107,9 @@ class PrivateKeyImportView extends Component {
             large
             className="new-account-create-form__button"
             onClick={() => {
-              const { history, mostRecentOverviewPage } = this.props
-              displayWarning(null)
-              history.push(mostRecentOverviewPage)
+              const { history, mostRecentOverviewPage } = this.props;
+              displayWarning(null);
+              history.push(mostRecentOverviewPage);
             }}
           >
             {this.context.t('cancel')}
@@ -126,31 +126,31 @@ class PrivateKeyImportView extends Component {
         </div>
         {error ? <span className="error">{error}</span> : null}
       </div>
-    )
+    );
   }
 }
 
 export default compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps),
-)(PrivateKeyImportView)
+)(PrivateKeyImportView);
 
 function mapStateToProps(state) {
   return {
     error: state.appState.warning,
     firstAddress: Object.keys(getMetaMaskAccounts(state))[0],
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
-  }
+  };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     importNewAccount: (strategy, [privateKey]) => {
-      return dispatch(actions.importNewAccount(strategy, [privateKey]))
+      return dispatch(actions.importNewAccount(strategy, [privateKey]));
     },
     displayWarning: (message) =>
       dispatch(actions.displayWarning(message || null)),
     setSelectedAddress: (address) =>
       dispatch(actions.setSelectedAddress(address)),
-  }
+  };
 }

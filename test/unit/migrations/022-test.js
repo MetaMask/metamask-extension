@@ -1,8 +1,8 @@
-import assert from 'assert'
-import migration22 from '../../../app/scripts/migrations/022'
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction'
+import assert from 'assert';
+import migration22 from '../../../app/scripts/migrations/022';
+import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 
-const properTime = new Date().getTime()
+const properTime = new Date().getTime();
 const storage = {
   meta: {},
   data: {
@@ -14,7 +14,7 @@ const storage = {
       ],
     },
   },
-}
+};
 
 describe('storage is migrated successfully where transactions that are submitted have submittedTimes', function () {
   it('should add submittedTime key on the txMeta if appropriate', function (done) {
@@ -25,16 +25,16 @@ describe('storage is migrated successfully where transactions that are submitted
           txMeta1,
           txMeta2,
           txMeta3,
-        ] = migratedData.data.TransactionController.transactions
-        assert.equal(migratedData.meta.version, 22)
+        ] = migratedData.data.TransactionController.transactions;
+        assert.equal(migratedData.meta.version, 22);
         // should have written a submitted time
-        assert(txMeta1.submittedTime)
+        assert(txMeta1.submittedTime);
         // should not have written a submitted time because it already has one
-        assert.equal(txMeta2.submittedTime, properTime)
+        assert.equal(txMeta2.submittedTime, properTime);
         // should not have written a submitted time
-        assert(!txMeta3.submittedTime)
-        done()
+        assert(!txMeta3.submittedTime);
+        done();
       })
-      .catch(done)
-  })
-})
+      .catch(done);
+  });
+});

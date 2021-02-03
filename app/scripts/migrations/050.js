@@ -1,6 +1,6 @@
-import { cloneDeep } from 'lodash'
+import { cloneDeep } from 'lodash';
 
-const version = 50
+const version = 50;
 
 const LEGACY_LOCAL_STORAGE_KEYS = [
   'METASWAP_GAS_PRICE_ESTIMATES_LAST_RETRIEVED',
@@ -12,7 +12,7 @@ const LEGACY_LOCAL_STORAGE_KEYS = [
   'BASIC_GAS_AND_TIME_API_ESTIMATES_LAST_RETRIEVED',
   'GAS_API_ESTIMATES_LAST_RETRIEVED',
   'GAS_API_ESTIMATES',
-]
+];
 
 /**
  * Migrate metaMetrics state to the new MetaMetrics controller
@@ -20,13 +20,13 @@ const LEGACY_LOCAL_STORAGE_KEYS = [
 export default {
   version,
   async migrate(originalVersionedData) {
-    const versionedData = cloneDeep(originalVersionedData)
-    versionedData.meta.version = version
+    const versionedData = cloneDeep(originalVersionedData);
+    versionedData.meta.version = version;
 
     LEGACY_LOCAL_STORAGE_KEYS.forEach((key) =>
       window.localStorage.removeItem(key),
-    )
+    );
 
-    return versionedData
+    return versionedData;
   },
-}
+};

@@ -1,22 +1,22 @@
-import React from 'react'
-import { text } from '@storybook/addon-knobs'
-import { action } from '@storybook/addon-actions'
-import Popover from './popover.component'
+import React from 'react';
+import { text } from '@storybook/addon-knobs';
+import { action } from '@storybook/addon-actions';
+import Popover from './popover.component';
 
 const containerStyle = {
   width: 800,
   height: 600,
   background: 'pink',
   position: 'relative',
-}
+};
 
 const mainWrapperStyle = {
   padding: '0 24px 24px',
-}
+};
 
 export default {
   title: 'Popover',
-}
+};
 
 export const approve = () => (
   <div style={containerStyle}>
@@ -61,4 +61,4 @@ export const approve = () => (
       </main>
     </Popover>
   </div>
-)
+);

@@ -1,4 +1,4 @@
-const DEFAULT_TIMEOUT = 10000
+const DEFAULT_TIMEOUT = 10000;
 
 /**
  * A function that wraps a sinon stub and returns an asynchronous function
@@ -25,42 +25,42 @@ function waitUntilCalled(
   wrappedThis = null,
   { callCount = 1, timeout = DEFAULT_TIMEOUT } = {},
 ) {
-  let numCalls = 0
-  let resolve
-  let timeoutHandle
+  let numCalls = 0;
+  let resolve;
+  let timeoutHandle;
   const stubHasBeenCalled = new Promise((_resolve) => {
-    resolve = _resolve
+    resolve = _resolve;
     if (timeout !== null) {
       timeoutHandle = setTimeout(
         () => resolve(new Error('Timeout exceeded')),
         timeout,
-      )
+      );
     }
-  })
+  });
   stub.callsFake((...args) => {
     try {
       if (stub.wrappedMethod) {
-        stub.wrappedMethod.call(wrappedThis, ...args)
+        stub.wrappedMethod.call(wrappedThis, ...args);
       }
     } finally {
       if (numCalls < callCount) {
-        numCalls += 1
+        numCalls += 1;
         if (numCalls === callCount) {
           if (timeoutHandle) {
-            clearTimeout(timeoutHandle)
+            clearTimeout(timeoutHandle);
           }
-          resolve()
+          resolve();
         }
       }
     }
-  })
+  });
 
   return async () => {
-    const error = await stubHasBeenCalled
+    const error = await stubHasBeenCalled;
     if (error) {
-      throw error
+      throw error;
     }
-  }
+  };
 }
 
-module.exports = waitUntilCalled
+module.exports = waitUntilCalled;

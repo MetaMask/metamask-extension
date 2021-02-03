@@ -1,16 +1,16 @@
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import {
   getSendTo,
   accountsWithSendEtherInfoSelector,
   getAddressBookEntry,
-} from '../../../selectors'
+} from '../../../selectors';
 
-import * as actions from '../../../store/actions'
-import SendContent from './send-content.component'
+import * as actions from '../../../store/actions';
+import SendContent from './send-content.component';
 
 function mapStateToProps(state) {
-  const ownedAccounts = accountsWithSendEtherInfoSelector(state)
-  const to = getSendTo(state)
+  const ownedAccounts = accountsWithSendEtherInfoSelector(state);
+  const to = getSendTo(state);
   return {
     isOwnedAccount: Boolean(
       ownedAccounts.find(
@@ -19,7 +19,7 @@ function mapStateToProps(state) {
     ),
     contact: getAddressBookEntry(state, to),
     to,
-  }
+  };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -31,21 +31,21 @@ function mapDispatchToProps(dispatch) {
           recipient,
         }),
       ),
-  }
+  };
 }
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
-  const { to, ...restStateProps } = stateProps
+  const { to, ...restStateProps } = stateProps;
   return {
     ...ownProps,
     ...restStateProps,
     showAddToAddressBookModal: () =>
       dispatchProps.showAddToAddressBookModal(to),
-  }
+  };
 }
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
   mergeProps,
-)(SendContent)
+)(SendContent);

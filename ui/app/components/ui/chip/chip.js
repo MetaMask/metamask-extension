@@ -1,9 +1,9 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import { omit } from 'lodash'
-import Typography from '../typography'
-import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system'
+import React from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import { omit } from 'lodash';
+import Typography from '../typography';
+import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
 export default function Chip({
   className,
@@ -17,9 +17,9 @@ export default function Chip({
 }) {
   const onKeyPress = (event) => {
     if (event.key === 'Enter' && onClick) {
-      onClick(event)
+      onClick(event);
     }
-  }
+  };
 
   return (
     <div
@@ -47,7 +47,7 @@ export default function Chip({
       )}
       {rightIcon && <div className="chip__right-icon">{rightIcon}</div>}
     </div>
-  )
+  );
 }
 
 Chip.propTypes = {
@@ -61,4 +61,4 @@ Chip.propTypes = {
   rightIcon: PropTypes.node,
   className: PropTypes.string,
   onClick: PropTypes.func,
-}
+};

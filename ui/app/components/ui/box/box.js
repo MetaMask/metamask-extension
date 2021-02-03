@@ -1,6 +1,6 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
+import React from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import {
   ALIGN_ITEMS,
   BLOCK_SIZES,
@@ -9,26 +9,26 @@ import {
   DISPLAY,
   JUSTIFY_CONTENT,
   SIZES,
-} from '../../../helpers/constants/design-system'
+} from '../../../helpers/constants/design-system';
 
-const ValidSize = PropTypes.oneOf([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
-const ArrayOfValidSizes = PropTypes.arrayOf(ValidSize)
-const MultipleSizes = PropTypes.oneOfType([ValidSize, ArrayOfValidSizes])
+const ValidSize = PropTypes.oneOf([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+const ArrayOfValidSizes = PropTypes.arrayOf(ValidSize);
+const MultipleSizes = PropTypes.oneOfType([ValidSize, ArrayOfValidSizes]);
 
 function generateSizeClasses(baseClass, type, main, top, right, bottom, left) {
-  const arr = Array.isArray(main) ? main : []
-  const singleDigit = Array.isArray(main) ? undefined : main
+  const arr = Array.isArray(main) ? main : [];
+  const singleDigit = Array.isArray(main) ? undefined : main;
   if (Array.isArray(main) && ![2, 3, 4].includes(main.length)) {
     throw new Error(
       `Expected prop ${type} to have length between 2 and 4, received ${main.length}`,
-    )
+    );
   }
 
-  const isHorizontalAndVertical = arr.length === 2
-  const isTopHorizontalAndBottom = arr.length === 3
-  const isAllFour = arr.length === 4
-  const hasAtLeastTwo = arr.length >= 2
-  const hasAtLeastThree = arr.length >= 3
+  const isHorizontalAndVertical = arr.length === 2;
+  const isTopHorizontalAndBottom = arr.length === 3;
+  const isAllFour = arr.length === 4;
+  const hasAtLeastTwo = arr.length >= 2;
+  const hasAtLeastThree = arr.length >= 3;
   return {
     [`${baseClass}--${type}-${singleDigit}`]: singleDigit !== undefined,
     [`${baseClass}--${type}-top-${top}`]: typeof top === 'number',
@@ -50,7 +50,7 @@ function generateSizeClasses(baseClass, type, main, top, right, bottom, left) {
       isHorizontalAndVertical || isTopHorizontalAndBottom,
     // If an array has 4 values, the fourth number is the left value
     [`${baseClass}--${type}-left-${arr?.[3]}`]: isAllFour,
-  }
+  };
 }
 
 export default function Box({
@@ -117,12 +117,12 @@ export default function Box({
     // width & height
     [`box--width-${width}`]: Boolean(width),
     [`box--height-${height}`]: Boolean(height),
-  })
+  });
   // Apply Box styles to any other component using function pattern
   if (typeof children === 'function') {
-    return children(boxClassName)
+    return children(boxClassName);
   }
-  return <div className={boxClassName}>{children}</div>
+  return <div className={boxClassName}>{children}</div>;
 }
 
 Box.propTypes = {
@@ -146,4 +146,4 @@ Box.propTypes = {
   display: PropTypes.oneOf(Object.values(DISPLAY)),
   width: PropTypes.oneOf(Object.values(BLOCK_SIZES)),
   height: PropTypes.oneOf(Object.values(BLOCK_SIZES)),
-}
+};

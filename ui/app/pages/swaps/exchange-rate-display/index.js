@@ -1,1 +1,1 @@
-export { default } from './exchange-rate-display'
+export { default } from './exchange-rate-display';

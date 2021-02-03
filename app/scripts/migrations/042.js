@@ -1,6 +1,6 @@
-import { cloneDeep } from 'lodash'
+import { cloneDeep } from 'lodash';
 
-const version = 42
+const version = 42;
 
 /**
  * Initialize `connectedStatusPopoverHasBeenShown` to `false` if it hasn't yet been set,
@@ -9,21 +9,21 @@ const version = 42
 export default {
   version,
   async migrate(originalVersionedData) {
-    const versionedData = cloneDeep(originalVersionedData)
-    versionedData.meta.version = version
-    const state = versionedData.data
-    versionedData.data = transformState(state)
-    return versionedData
+    const versionedData = cloneDeep(originalVersionedData);
+    versionedData.meta.version = version;
+    const state = versionedData.data;
+    versionedData.data = transformState(state);
+    return versionedData;
   },
-}
+};
 
 function transformState(state) {
   if (state.AppStateController) {
-    state.AppStateController.connectedStatusPopoverHasBeenShown = false
+    state.AppStateController.connectedStatusPopoverHasBeenShown = false;
   } else {
     state.AppStateController = {
       connectedStatusPopoverHasBeenShown: false,
-    }
+    };
   }
-  return state
+  return state;
 }

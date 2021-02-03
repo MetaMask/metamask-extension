@@ -15,64 +15,64 @@
 //
 // //////////////////////////////////////////////////////////////////////////////
 
-const log = require('loglevel')
-const localeIndex = require('../app/_locales/index.json')
-const { compareLocalesForMissingItems, getLocale } = require('./lib/locales')
+const log = require('loglevel');
+const localeIndex = require('../app/_locales/index.json');
+const { compareLocalesForMissingItems, getLocale } = require('./lib/locales');
 
-log.setDefaultLevel('info')
+log.setDefaultLevel('info');
 
-let verbose = false
-let specifiedLocale
+let verbose = false;
+let specifiedLocale;
 for (const arg of process.argv.slice(2)) {
   if (arg === '--verbose') {
-    verbose = true
+    verbose = true;
   } else {
-    specifiedLocale = arg
+    specifiedLocale = arg;
   }
 }
 
 main().catch((error) => {
-  log.error(error)
-  process.exit(1)
-})
+  log.error(error);
+  process.exit(1);
+});
 
 async function main() {
   if (specifiedLocale === 'en') {
     throw new Error(
       `Can't compare 'en' locale to itself to find missing messages`,
-    )
+    );
   } else if (specifiedLocale) {
-    await reportMissingMessages(specifiedLocale)
+    await reportMissingMessages(specifiedLocale);
   } else {
     const localeCodes = localeIndex
       .filter((localeMeta) => localeMeta.code !== 'en')
-      .map((localeMeta) => localeMeta.code)
+      .map((localeMeta) => localeMeta.code);
 
     for (const code of localeCodes) {
-      await reportMissingMessages(code)
+      await reportMissingMessages(code);
     }
   }
 }
 
 async function reportMissingMessages(code) {
-  const englishLocale = await getLocale('en')
-  const targetLocale = await getLocale(code)
+  const englishLocale = await getLocale('en');
+  const targetLocale = await getLocale(code);
 
   const missingItems = compareLocalesForMissingItems({
     base: englishLocale,
     subject: targetLocale,
-  })
+  });
 
-  const englishEntryCount = Object.keys(englishLocale).length
+  const englishEntryCount = Object.keys(englishLocale).length;
   const coveragePercent =
-    (100 * (englishEntryCount - missingItems.length)) / englishEntryCount
+    (100 * (englishEntryCount - missingItems.length)) / englishEntryCount;
 
-  log.info(`**${code}**: ${coveragePercent.toFixed(2)}% coverage`)
+  log.info(`**${code}**: ${coveragePercent.toFixed(2)}% coverage`);
   if (missingItems.length && verbose) {
-    console.log(`**${code}**: ${missingItems.length} missing messages`)
-    log.info('Extra items that should not be localized:')
+    console.log(`**${code}**: ${missingItems.length} missing messages`);
+    log.info('Extra items that should not be localized:');
     missingItems.forEach(function (key) {
-      log.info(`  - [ ] ${key}`)
-    })
+      log.info(`  - [ ] ${key}`);
+    });
   }
 }

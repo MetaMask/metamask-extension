@@ -1,20 +1,20 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 export default class MetaFoxLogo extends PureComponent {
   static propTypes = {
     onClick: PropTypes.func,
     unsetIconHeight: PropTypes.bool,
-  }
+  };
 
   static defaultProps = {
     onClick: undefined,
-  }
+  };
 
   render() {
-    const { onClick, unsetIconHeight } = this.props
-    const iconProps = unsetIconHeight ? {} : { height: 42, width: 42 }
+    const { onClick, unsetIconHeight } = this.props;
+    const iconProps = unsetIconHeight ? {} : { height: 42, width: 42 };
 
     return (
       <div
@@ -42,6 +42,6 @@ export default class MetaFoxLogo extends PureComponent {
           alt=""
         />
       </div>
-    )
+    );
   }
 }

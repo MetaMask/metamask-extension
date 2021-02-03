@@ -4,14 +4,14 @@ import React, {
   useEffect,
   useContext,
   useRef,
-} from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import { isEqual } from 'lodash'
-import { I18nContext } from '../../../contexts/i18n'
-import SearchableItemList from '../searchable-item-list'
-import PulseLoader from '../../../components/ui/pulse-loader'
-import UrlIcon from '../../../components/ui/url-icon'
+} from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import { isEqual } from 'lodash';
+import { I18nContext } from '../../../contexts/i18n';
+import SearchableItemList from '../searchable-item-list';
+import PulseLoader from '../../../components/ui/pulse-loader';
+import UrlIcon from '../../../components/ui/url-icon';
 
 export default function DropdownSearchList({
   searchListClassName,
@@ -32,54 +32,54 @@ export default function DropdownSearchList({
   hideItemIf,
   listContainerClassName,
 }) {
-  const t = useContext(I18nContext)
-  const [isOpen, setIsOpen] = useState(false)
-  const [selectedItem, setSelectedItem] = useState(startingItem)
+  const t = useContext(I18nContext);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(startingItem);
   const close = useCallback(() => {
-    setIsOpen(false)
-    onClose?.()
-  }, [onClose])
+    setIsOpen(false);
+    onClose?.();
+  }, [onClose]);
 
   const onClickItem = useCallback(
     (item) => {
-      onSelect?.(item)
-      setSelectedItem(item)
-      close()
+      onSelect?.(item);
+      setSelectedItem(item);
+      close();
     },
     [onSelect, close],
-  )
+  );
 
   const onClickSelector = useCallback(() => {
     if (!isOpen) {
-      setIsOpen(true)
-      onOpen?.()
+      setIsOpen(true);
+      onOpen?.();
     }
-  }, [isOpen, onOpen])
+  }, [isOpen, onOpen]);
 
-  const prevExternallySelectedItemRef = useRef()
+  const prevExternallySelectedItemRef = useRef();
   useEffect(() => {
-    prevExternallySelectedItemRef.current = externallySelectedItem
-  })
-  const prevExternallySelectedItem = prevExternallySelectedItemRef.current
+    prevExternallySelectedItemRef.current = externallySelectedItem;
+  });
+  const prevExternallySelectedItem = prevExternallySelectedItemRef.current;
 
   useEffect(() => {
     if (
       externallySelectedItem &&
       !isEqual(externallySelectedItem, selectedItem)
     ) {
-      setSelectedItem(externallySelectedItem)
+      setSelectedItem(externallySelectedItem);
     } else if (prevExternallySelectedItem && !externallySelectedItem) {
-      setSelectedItem(null)
+      setSelectedItem(null);
     }
-  }, [externallySelectedItem, selectedItem, prevExternallySelectedItem])
+  }, [externallySelectedItem, selectedItem, prevExternallySelectedItem]);
 
   const onKeyUp = (e) => {
     if (e.key === 'Escape') {
-      close()
+      close();
     } else if (e.key === 'Enter') {
-      onClickSelector(e)
+      onClickSelector(e);
     }
-  }
+  };
 
   return (
     <div
@@ -163,15 +163,15 @@ export default function DropdownSearchList({
           <div
             className="simple-dropdown__close-area"
             onClick={(event) => {
-              event.stopPropagation()
-              setIsOpen(false)
-              onClose?.()
+              event.stopPropagation();
+              setIsOpen(false);
+              onClose?.();
             }}
           />
         </>
       )}
     </div>
-  )
+  );
 }
 
 DropdownSearchList.propTypes = {
@@ -197,4 +197,4 @@ DropdownSearchList.propTypes = {
   hideRightLabels: PropTypes.bool,
   hideItemIf: PropTypes.func,
   listContainerClassName: PropTypes.string,
-}
+};

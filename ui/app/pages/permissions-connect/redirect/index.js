@@ -1,1 +1,1 @@
-export { default } from './permissions-redirect.component'
+export { default } from './permissions-redirect.component';

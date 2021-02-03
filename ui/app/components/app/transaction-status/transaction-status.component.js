@@ -1,15 +1,15 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import Tooltip from '../../ui/tooltip'
+import React from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import Tooltip from '../../ui/tooltip';
 
-import { useI18nContext } from '../../../hooks/useI18nContext'
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   TRANSACTION_GROUP_STATUSES,
   TRANSACTION_STATUSES,
-} from '../../../../../shared/constants/transaction'
+} from '../../../../../shared/constants/transaction';
 
-const QUEUED_PSEUDO_STATUS = 'queued'
+const QUEUED_PSEUDO_STATUS = 'queued';
 
 /**
  * A note about status logic for this component:
@@ -25,7 +25,7 @@ const pendingStatusHash = {
   [TRANSACTION_STATUSES.SUBMITTED]: TRANSACTION_GROUP_STATUSES.PENDING,
   [TRANSACTION_STATUSES.APPROVED]: TRANSACTION_GROUP_STATUSES.PENDING,
   [TRANSACTION_STATUSES.SIGNED]: TRANSACTION_GROUP_STATUSES.PENDING,
-}
+};
 
 const statusToClassNameHash = {
   [TRANSACTION_STATUSES.UNAPPROVED]: 'transaction-status--unapproved',
@@ -35,7 +35,7 @@ const statusToClassNameHash = {
   [TRANSACTION_GROUP_STATUSES.CANCELLED]: 'transaction-status--cancelled',
   [QUEUED_PSEUDO_STATUS]: 'transaction-status--queued',
   [TRANSACTION_GROUP_STATUSES.PENDING]: 'transaction-status--pending',
-}
+};
 
 export default function TransactionStatus({
   status,
@@ -44,17 +44,17 @@ export default function TransactionStatus({
   isEarliestNonce,
   className,
 }) {
-  const t = useI18nContext()
-  const tooltipText = error?.rpc?.message || error?.message
-  let statusKey = status
+  const t = useI18nContext();
+  const tooltipText = error?.rpc?.message || error?.message;
+  let statusKey = status;
   if (pendingStatusHash[status]) {
     statusKey = isEarliestNonce
       ? TRANSACTION_GROUP_STATUSES.PENDING
-      : QUEUED_PSEUDO_STATUS
+      : QUEUED_PSEUDO_STATUS;
   }
 
   const statusText =
-    statusKey === TRANSACTION_STATUSES.CONFIRMED ? date : t(statusKey)
+    statusKey === TRANSACTION_STATUSES.CONFIRMED ? date : t(statusKey);
 
   return (
     <Tooltip
@@ -68,7 +68,7 @@ export default function TransactionStatus({
     >
       {statusText}
     </Tooltip>
-  )
+  );
 }
 
 TransactionStatus.propTypes = {
@@ -77,4 +77,4 @@ TransactionStatus.propTypes = {
   date: PropTypes.string,
   error: PropTypes.object,
   isEarliestNonce: PropTypes.bool,
-}
+};

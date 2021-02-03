@@ -1,4 +1,4 @@
-import abi from 'ethereumjs-abi'
+import abi from 'ethereumjs-abi';
 import {
   addCurrencies,
   conversionUtil,
@@ -6,10 +6,10 @@ import {
   multiplyCurrencies,
   conversionGreaterThan,
   conversionLessThan,
-} from '../../helpers/utils/conversion-util'
+} from '../../helpers/utils/conversion-util';
 
-import { calcTokenAmount } from '../../helpers/utils/token-util'
-import { addHexPrefix } from '../../../../app/scripts/lib/util'
+import { calcTokenAmount } from '../../helpers/utils/token-util';
+import { addHexPrefix } from '../../../../app/scripts/lib/util';
 
 import {
   BASE_TOKEN_GAS_COST,
@@ -19,7 +19,7 @@ import {
   NEGATIVE_ETH_ERROR,
   SIMPLE_GAS_COST,
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
-} from './send.constants'
+} from './send.constants';
 
 export {
   addGasBuffer,
@@ -35,14 +35,14 @@ export {
   isTokenBalanceSufficient,
   removeLeadingZeroes,
   ellipsify,
-}
+};
 
 function calcGasTotal(gasLimit = '0', gasPrice = '0') {
   return multiplyCurrencies(gasLimit, gasPrice, {
     toNumericBase: 'hex',
     multiplicandBase: 16,
     multiplierBase: 16,
-  })
+  });
 }
 
 function isBalanceSufficient({
@@ -56,7 +56,7 @@ function isBalanceSufficient({
     aBase: 16,
     bBase: 16,
     toNumericBase: 'hex',
-  })
+  });
 
   const balanceIsSufficient = conversionGTE(
     {
@@ -71,15 +71,15 @@ function isBalanceSufficient({
       conversionRate,
       fromCurrency: primaryCurrency,
     },
-  )
+  );
 
-  return balanceIsSufficient
+  return balanceIsSufficient;
 }
 
 function isTokenBalanceSufficient({ amount = '0x0', tokenBalance, decimals }) {
   const amountInDec = conversionUtil(amount, {
     fromNumericBase: 'hex',
-  })
+  });
 
   const tokenBalanceIsSufficient = conversionGTE(
     {
@@ -89,9 +89,9 @@ function isTokenBalanceSufficient({ amount = '0x0', tokenBalance, decimals }) {
     {
       value: calcTokenAmount(amountInDec, decimals),
     },
-  )
+  );
 
-  return tokenBalanceIsSufficient
+  return tokenBalanceIsSufficient;
 }
 
 function getAmountErrorObject({
@@ -103,7 +103,7 @@ function getAmountErrorObject({
   sendToken,
   tokenBalance,
 }) {
-  let insufficientFunds = false
+  let insufficientFunds = false;
   if (gasTotal && conversionRate && !sendToken) {
     insufficientFunds = !isBalanceSufficient({
       amount,
@@ -111,35 +111,35 @@ function getAmountErrorObject({
       conversionRate,
       gasTotal,
       primaryCurrency,
-    })
+    });
   }
 
-  let inSufficientTokens = false
+  let inSufficientTokens = false;
   if (sendToken && tokenBalance !== null) {
-    const { decimals } = sendToken
+    const { decimals } = sendToken;
     inSufficientTokens = !isTokenBalanceSufficient({
       tokenBalance,
       amount,
       decimals,
-    })
+    });
   }
 
   const amountLessThanZero = conversionGreaterThan(
     { value: 0, fromNumericBase: 'dec' },
     { value: amount, fromNumericBase: 'hex' },
-  )
+  );
 
-  let amountError = null
+  let amountError = null;
 
   if (insufficientFunds) {
-    amountError = INSUFFICIENT_FUNDS_ERROR
+    amountError = INSUFFICIENT_FUNDS_ERROR;
   } else if (inSufficientTokens) {
-    amountError = INSUFFICIENT_TOKENS_ERROR
+    amountError = INSUFFICIENT_TOKENS_ERROR;
   } else if (amountLessThanZero) {
-    amountError = NEGATIVE_ETH_ERROR
+    amountError = NEGATIVE_ETH_ERROR;
   }
 
-  return { amount: amountError }
+  return { amount: amountError };
 }
 
 function getGasFeeErrorObject({
@@ -148,7 +148,7 @@ function getGasFeeErrorObject({
   gasTotal,
   primaryCurrency,
 }) {
-  let gasFeeError = null
+  let gasFeeError = null;
 
   if (gasTotal && conversionRate) {
     const insufficientFunds = !isBalanceSufficient({
@@ -157,19 +157,19 @@ function getGasFeeErrorObject({
       conversionRate,
       gasTotal,
       primaryCurrency,
-    })
+    });
 
     if (insufficientFunds) {
-      gasFeeError = INSUFFICIENT_FUNDS_ERROR
+      gasFeeError = INSUFFICIENT_FUNDS_ERROR;
     }
   }
 
-  return { gasFee: gasFeeError }
+  return { gasFee: gasFeeError };
 }
 
 function calcTokenBalance({ sendToken, usersToken }) {
-  const { decimals } = sendToken || {}
-  return calcTokenAmount(usersToken.balance.toString(), decimals).toString(16)
+  const { decimals } = sendToken || {};
+  return calcTokenAmount(usersToken.balance.toString(), decimals).toString(16);
 }
 
 function doesAmountErrorRequireUpdate({
@@ -181,13 +181,13 @@ function doesAmountErrorRequireUpdate({
   sendToken,
   tokenBalance,
 }) {
-  const balanceHasChanged = balance !== prevBalance
-  const gasTotalHasChange = gasTotal !== prevGasTotal
-  const tokenBalanceHasChanged = sendToken && tokenBalance !== prevTokenBalance
+  const balanceHasChanged = balance !== prevBalance;
+  const gasTotalHasChange = gasTotal !== prevGasTotal;
+  const tokenBalanceHasChanged = sendToken && tokenBalance !== prevTokenBalance;
   const amountErrorRequiresUpdate =
-    balanceHasChanged || gasTotalHasChange || tokenBalanceHasChanged
+    balanceHasChanged || gasTotalHasChange || tokenBalanceHasChanged;
 
-  return amountErrorRequiresUpdate
+  return amountErrorRequiresUpdate;
 }
 
 async function estimateGasForSend({
@@ -200,46 +200,46 @@ async function estimateGasForSend({
   gasPrice,
   estimateGasMethod,
 }) {
-  const paramsForGasEstimate = { from: selectedAddress, value, gasPrice }
+  const paramsForGasEstimate = { from: selectedAddress, value, gasPrice };
 
   // if recipient has no code, gas is 21k max:
   if (!sendToken && !data) {
-    const code = Boolean(to) && (await global.eth.getCode(to))
+    const code = Boolean(to) && (await global.eth.getCode(to));
     // Geth will return '0x', and ganache-core v2.2.1 will return '0x0'
-    const codeIsEmpty = !code || code === '0x' || code === '0x0'
+    const codeIsEmpty = !code || code === '0x' || code === '0x0';
     if (codeIsEmpty) {
-      return SIMPLE_GAS_COST
+      return SIMPLE_GAS_COST;
     }
   } else if (sendToken && !to) {
-    return BASE_TOKEN_GAS_COST
+    return BASE_TOKEN_GAS_COST;
   }
 
   if (sendToken) {
-    paramsForGasEstimate.value = '0x0'
+    paramsForGasEstimate.value = '0x0';
     paramsForGasEstimate.data = generateTokenTransferData({
       toAddress: to,
       amount: value,
       sendToken,
-    })
-    paramsForGasEstimate.to = sendToken.address
+    });
+    paramsForGasEstimate.to = sendToken.address;
   } else {
     if (data) {
-      paramsForGasEstimate.data = data
+      paramsForGasEstimate.data = data;
     }
 
     if (to) {
-      paramsForGasEstimate.to = to
+      paramsForGasEstimate.to = to;
     }
 
     if (!value || value === '0') {
-      paramsForGasEstimate.value = '0xff'
+      paramsForGasEstimate.value = '0xff';
     }
   }
 
   // if not, fall back to block gasLimit
   if (!blockGasLimit) {
     // eslint-disable-next-line no-param-reassign
-    blockGasLimit = MIN_GAS_LIMIT_HEX
+    blockGasLimit = MIN_GAS_LIMIT_HEX;
   }
 
   paramsForGasEstimate.gas = addHexPrefix(
@@ -249,32 +249,32 @@ async function estimateGasForSend({
       roundDown: '0',
       toNumericBase: 'hex',
     }),
-  )
+  );
 
   // run tx
   try {
-    const estimatedGas = await estimateGasMethod(paramsForGasEstimate)
+    const estimatedGas = await estimateGasMethod(paramsForGasEstimate);
     const estimateWithBuffer = addGasBuffer(
       estimatedGas.toString(16),
       blockGasLimit,
       1.5,
-    )
-    return addHexPrefix(estimateWithBuffer)
+    );
+    return addHexPrefix(estimateWithBuffer);
   } catch (error) {
     const simulationFailed =
       error.message.includes('Transaction execution error.') ||
       error.message.includes(
         'gas required exceeds allowance or always failing transaction',
-      )
+      );
     if (simulationFailed) {
       const estimateWithBuffer = addGasBuffer(
         paramsForGasEstimate.gas,
         blockGasLimit,
         1.5,
-      )
-      return addHexPrefix(estimateWithBuffer)
+      );
+      return addHexPrefix(estimateWithBuffer);
     }
-    throw error
+    throw error;
   }
 }
 
@@ -288,7 +288,7 @@ function addGasBuffer(
     multiplicandBase: 16,
     multiplierBase: 10,
     numberOfDecimals: '0',
-  })
+  });
   const bufferedGasLimit = multiplyCurrencies(
     initialGasLimitHex,
     bufferMultiplier,
@@ -298,7 +298,7 @@ function addGasBuffer(
       multiplierBase: 10,
       numberOfDecimals: '0',
     },
-  )
+  );
 
   // if initialGasLimit is above blockGasLimit, dont modify it
   if (
@@ -307,7 +307,7 @@ function addGasBuffer(
       { value: upperGasLimit, fromNumericBase: 'hex' },
     )
   ) {
-    return initialGasLimitHex
+    return initialGasLimitHex;
   }
   // if bufferedGasLimit is below blockGasLimit, use bufferedGasLimit
   if (
@@ -316,10 +316,10 @@ function addGasBuffer(
       { value: upperGasLimit, fromNumericBase: 'hex' },
     )
   ) {
-    return bufferedGasLimit
+    return bufferedGasLimit;
   }
   // otherwise use blockGasLimit
-  return upperGasLimit
+  return upperGasLimit;
 }
 
 function generateTokenTransferData({
@@ -328,7 +328,7 @@ function generateTokenTransferData({
   sendToken,
 }) {
   if (!sendToken) {
-    return undefined
+    return undefined;
   }
   return (
     TOKEN_TRANSFER_FUNCTION_SIGNATURE +
@@ -341,19 +341,19 @@ function generateTokenTransferData({
         (x) => `00${x.toString(16)}`.slice(-2),
       )
       .join('')
-  )
+  );
 }
 
 function getToAddressForGasUpdate(...addresses) {
   return [...addresses, '']
     .find((str) => str !== undefined && str !== null)
-    .toLowerCase()
+    .toLowerCase();
 }
 
 function removeLeadingZeroes(str) {
-  return str.replace(/^0*(?=\d)/u, '')
+  return str.replace(/^0*(?=\d)/u, '');
 }
 
 function ellipsify(text, first = 6, last = 4) {
-  return `${text.slice(0, first)}...${text.slice(-last)}`
+  return `${text.slice(0, first)}...${text.slice(-last)}`;
 }

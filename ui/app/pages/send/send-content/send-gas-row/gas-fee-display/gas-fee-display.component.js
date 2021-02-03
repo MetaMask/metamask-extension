@@ -1,21 +1,21 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import UserPreferencedCurrencyDisplay from '../../../../../components/app/user-preferenced-currency-display'
-import { PRIMARY, SECONDARY } from '../../../../../helpers/constants/common'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import UserPreferencedCurrencyDisplay from '../../../../../components/app/user-preferenced-currency-display';
+import { PRIMARY, SECONDARY } from '../../../../../helpers/constants/common';
 
 export default class GasFeeDisplay extends Component {
   static propTypes = {
     gasLoadingError: PropTypes.bool,
     gasTotal: PropTypes.string,
     onReset: PropTypes.func,
-  }
+  };
 
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   render() {
-    const { gasTotal, gasLoadingError, onReset } = this.props
+    const { gasTotal, gasLoadingError, onReset } = this.props;
 
     return (
       <div className="send-v2__gas-fee-display">
@@ -40,6 +40,6 @@ export default class GasFeeDisplay extends Component {
           {this.context.t('reset')}
         </button>
       </div>
-    )
+    );
   }
 }

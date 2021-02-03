@@ -1,1 +1,1 @@
-export { default } from './reveal-seed-phrase.container'
+export { default } from './reveal-seed-phrase.container';

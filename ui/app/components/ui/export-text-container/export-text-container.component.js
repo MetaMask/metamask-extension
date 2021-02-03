@@ -1,13 +1,13 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { exportAsFile } from '../../../helpers/utils/util'
-import Copy from '../icon/copy-icon.component'
-import { useI18nContext } from '../../../hooks/useI18nContext'
-import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { exportAsFile } from '../../../helpers/utils/util';
+import Copy from '../icon/copy-icon.component';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
 function ExportTextContainer({ text = '' }) {
-  const t = useI18nContext()
-  const [copied, handleCopy] = useCopyToClipboard()
+  const t = useI18nContext();
+  const [copied, handleCopy] = useCopyToClipboard();
 
   return (
     <div className="export-text-container">
@@ -18,7 +18,7 @@ function ExportTextContainer({ text = '' }) {
         <div
           className="export-text-container__button export-text-container__button--copy"
           onClick={() => {
-            handleCopy(text)
+            handleCopy(text);
           }}
         >
           <Copy size={17} color="#3098DC" />
@@ -37,11 +37,11 @@ function ExportTextContainer({ text = '' }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 ExportTextContainer.propTypes = {
   text: PropTypes.string,
-}
+};
 
-export default React.memo(ExportTextContainer)
+export default React.memo(ExportTextContainer);

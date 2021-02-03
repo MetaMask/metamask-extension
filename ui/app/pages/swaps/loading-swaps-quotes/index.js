@@ -1,1 +1,1 @@
-export { default } from './loading-swaps-quotes'
+export { default } from './loading-swaps-quotes';

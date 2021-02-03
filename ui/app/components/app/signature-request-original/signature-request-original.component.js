@@ -1,25 +1,25 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import ethUtil from 'ethereumjs-util'
-import classnames from 'classnames'
-import { ObjectInspector } from 'react-inspector'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import ethUtil from 'ethereumjs-util';
+import classnames from 'classnames';
+import { ObjectInspector } from 'react-inspector';
 
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   MESSAGE_TYPE,
-} from '../../../../../shared/constants/app'
-import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
-import Identicon from '../../ui/identicon'
-import AccountListItem from '../account-list-item'
-import { conversionUtil } from '../../../helpers/utils/conversion-util'
-import Button from '../../ui/button'
-import SiteIcon from '../../ui/site-icon'
+} from '../../../../../shared/constants/app';
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
+import Identicon from '../../ui/identicon';
+import AccountListItem from '../account-list-item';
+import { conversionUtil } from '../../../helpers/utils/conversion-util';
+import Button from '../../ui/button';
+import SiteIcon from '../../ui/site-icon';
 
 export default class SignatureRequestOriginal extends Component {
   static contextTypes = {
     t: PropTypes.func.isRequired,
     metricsEvent: PropTypes.func.isRequired,
-  }
+  };
 
   static propTypes = {
     fromAccount: PropTypes.shape({
@@ -36,41 +36,41 @@ export default class SignatureRequestOriginal extends Component {
     sign: PropTypes.func.isRequired,
     txData: PropTypes.object.isRequired,
     domainMetadata: PropTypes.object,
-  }
+  };
 
   state = {
     fromAccount: this.props.fromAccount,
-  }
+  };
 
   componentDidMount = () => {
     if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.addEventListener('beforeunload', this._beforeUnload)
+      window.addEventListener('beforeunload', this._beforeUnload);
     }
-  }
+  };
 
   componentWillUnmount = () => {
-    this._removeBeforeUnload()
-  }
+    this._removeBeforeUnload();
+  };
 
   _beforeUnload = (event) => {
-    const { clearConfirmTransaction, cancel } = this.props
-    const { metricsEvent } = this.context
+    const { clearConfirmTransaction, cancel } = this.props;
+    const { metricsEvent } = this.context;
     metricsEvent({
       eventOpts: {
         category: 'Transactions',
         action: 'Sign Request',
         name: 'Cancel Sig Request Via Notification Close',
       },
-    })
-    clearConfirmTransaction()
-    cancel(event)
-  }
+    });
+    clearConfirmTransaction();
+    cancel(event);
+  };
 
   _removeBeforeUnload = () => {
     if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.removeEventListener('beforeunload', this._beforeUnload)
+      window.removeEventListener('beforeunload', this._beforeUnload);
     }
-  }
+  };
 
   renderHeader = () => {
     return (
@@ -85,11 +85,11 @@ export default class SignatureRequestOriginal extends Component {
           <div className="request-signature__header__tip" />
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   renderAccount = () => {
-    const { fromAccount } = this.state
+    const { fromAccount } = this.state;
 
     return (
       <div className="request-signature__account">
@@ -101,14 +101,14 @@ export default class SignatureRequestOriginal extends Component {
           <AccountListItem account={fromAccount} />
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   renderBalance = () => {
-    const { conversionRate } = this.props
+    const { conversionRate } = this.props;
     const {
       fromAccount: { balance },
-    } = this.state
+    } = this.state;
 
     const balanceInEther = conversionUtil(balance, {
       fromNumericBase: 'hex',
@@ -116,7 +116,7 @@ export default class SignatureRequestOriginal extends Component {
       fromDenomination: 'WEI',
       numberOfDecimals: 6,
       conversionRate,
-    })
+    });
 
     return (
       <div className="request-signature__balance">
@@ -127,18 +127,18 @@ export default class SignatureRequestOriginal extends Component {
           {`${balanceInEther} ETH`}
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   renderRequestIcon = () => {
-    const { requesterAddress } = this.props
+    const { requesterAddress } = this.props;
 
     return (
       <div className="request-signature__request-icon">
         <Identicon diameter={40} address={requesterAddress} />
       </div>
-    )
-  }
+    );
+  };
 
   renderAccountInfo = () => {
     return (
@@ -147,16 +147,16 @@ export default class SignatureRequestOriginal extends Component {
         {this.renderRequestIcon()}
         {this.renderBalance()}
       </div>
-    )
-  }
+    );
+  };
 
   renderOriginInfo = () => {
-    const { txData, domainMetadata } = this.props
-    const { t } = this.context
+    const { txData, domainMetadata } = this.props;
+    const { t } = this.context;
 
     const originMetadata = txData.msgParams.origin
       ? domainMetadata?.[txData.msgParams.origin]
-      : null
+      : null;
 
     return (
       <div className="request-signature__origin-row">
@@ -174,21 +174,21 @@ export default class SignatureRequestOriginal extends Component {
           {txData.msgParams.origin}
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   msgHexToText = (hex) => {
     try {
-      const stripped = ethUtil.stripHexPrefix(hex)
-      const buff = Buffer.from(stripped, 'hex')
-      return buff.length === 32 ? hex : buff.toString('utf8')
+      const stripped = ethUtil.stripHexPrefix(hex);
+      const buff = Buffer.from(stripped, 'hex');
+      return buff.length === 32 ? hex : buff.toString('utf8');
     } catch (e) {
-      return hex
+      return hex;
     }
-  }
+  };
 
   renderTypedData = (data) => {
-    const { domain, message } = JSON.parse(data)
+    const { domain, message } = JSON.parse(data);
     return (
       <div className="request-signature__typed-container">
         {domain ? (
@@ -208,28 +208,28 @@ export default class SignatureRequestOriginal extends Component {
           ''
         )}
       </div>
-    )
-  }
+    );
+  };
 
   renderBody = () => {
-    let rows
-    let notice = `${this.context.t('youSign')}:`
+    let rows;
+    let notice = `${this.context.t('youSign')}:`;
 
-    const { txData } = this.props
+    const { txData } = this.props;
     const {
       type,
       msgParams: { data },
-    } = txData
+    } = txData;
 
     if (type === MESSAGE_TYPE.PERSONAL_SIGN) {
       rows = [
         { name: this.context.t('message'), value: this.msgHexToText(data) },
-      ]
+      ];
     } else if (type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
-      rows = data
+      rows = data;
     } else if (type === MESSAGE_TYPE.ETH_SIGN) {
-      rows = [{ name: this.context.t('message'), value: data }]
-      notice = this.context.t('signNotice')
+      rows = [{ name: this.context.t('message'), value: data }];
+      notice = this.context.t('signNotice');
     }
 
     return (
@@ -249,7 +249,7 @@ export default class SignatureRequestOriginal extends Component {
                 global.platform.openTab({
                   url:
                     'https://metamask.zendesk.com/hc/en-us/articles/360015488751',
-                })
+                });
               }}
             >
               {this.context.t('learnMore')}
@@ -260,7 +260,7 @@ export default class SignatureRequestOriginal extends Component {
           {rows.map(({ name, value }, index) => {
             if (typeof value === 'boolean') {
               // eslint-disable-next-line no-param-reassign
-              value = value.toString()
+              value = value.toString();
             }
             return (
               <div
@@ -270,12 +270,12 @@ export default class SignatureRequestOriginal extends Component {
                 <div className="request-signature__row-title">{`${name}:`}</div>
                 <div className="request-signature__row-value">{value}</div>
               </div>
-            )
+            );
           })}
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   renderFooter = () => {
     const {
@@ -284,7 +284,7 @@ export default class SignatureRequestOriginal extends Component {
       history,
       mostRecentOverviewPage,
       sign,
-    } = this.props
+    } = this.props;
 
     return (
       <div className="request-signature__footer">
@@ -293,17 +293,17 @@ export default class SignatureRequestOriginal extends Component {
           large
           className="request-signature__footer__cancel-button"
           onClick={async (event) => {
-            this._removeBeforeUnload()
-            await cancel(event)
+            this._removeBeforeUnload();
+            await cancel(event);
             this.context.metricsEvent({
               eventOpts: {
                 category: 'Transactions',
                 action: 'Sign Request',
                 name: 'Cancel',
               },
-            })
-            clearConfirmTransaction()
-            history.push(mostRecentOverviewPage)
+            });
+            clearConfirmTransaction();
+            history.push(mostRecentOverviewPage);
           }}
         >
           {this.context.t('cancel')}
@@ -314,24 +314,24 @@ export default class SignatureRequestOriginal extends Component {
           large
           className="request-signature__footer__sign-button"
           onClick={async (event) => {
-            this._removeBeforeUnload()
-            await sign(event)
+            this._removeBeforeUnload();
+            await sign(event);
             this.context.metricsEvent({
               eventOpts: {
                 category: 'Transactions',
                 action: 'Sign Request',
                 name: 'Confirm',
               },
-            })
-            clearConfirmTransaction()
-            history.push(mostRecentOverviewPage)
+            });
+            clearConfirmTransaction();
+            history.push(mostRecentOverviewPage);
           }}
         >
           {this.context.t('sign')}
         </Button>
       </div>
-    )
-  }
+    );
+  };
 
   render = () => {
     return (
@@ -340,6 +340,6 @@ export default class SignatureRequestOriginal extends Component {
         {this.renderBody()}
         {this.renderFooter()}
       </div>
-    )
-  }
+    );
+  };
 }

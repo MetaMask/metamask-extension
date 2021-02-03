@@ -1,1 +1,1 @@
-export { default } from './icon-with-fallback.component'
+export { default } from './icon-with-fallback.component';

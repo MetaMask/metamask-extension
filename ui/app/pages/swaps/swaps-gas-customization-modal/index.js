@@ -1,1 +1,1 @@
-export { default } from './swaps-gas-customization-modal.container'
+export { default } from './swaps-gas-customization-modal.container';

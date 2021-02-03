@@ -1,12 +1,12 @@
-import { useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import {
   getConversionRate,
   getCurrentCurrency,
   getShouldShowFiat,
-} from '../selectors'
-import { decEthToConvertedCurrency } from '../helpers/utils/conversions.util'
-import { formatCurrency } from '../helpers/utils/confirm-tx.util'
+} from '../selectors';
+import { decEthToConvertedCurrency } from '../helpers/utils/conversions.util';
+import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 
 /**
  * Get an Eth amount converted to fiat and formatted for display
@@ -23,14 +23,14 @@ export function useEthFiatAmount(
   overrides = {},
   hideCurrencySymbol,
 ) {
-  const conversionRate = useSelector(getConversionRate)
-  const currentCurrency = useSelector(getCurrentCurrency)
-  const userPrefersShownFiat = useSelector(getShouldShowFiat)
-  const showFiat = overrides.showFiat ?? userPrefersShownFiat
+  const conversionRate = useSelector(getConversionRate);
+  const currentCurrency = useSelector(getCurrentCurrency);
+  const userPrefersShownFiat = useSelector(getShouldShowFiat);
+  const showFiat = overrides.showFiat ?? userPrefersShownFiat;
   const formattedFiat = useMemo(
     () => decEthToConvertedCurrency(ethAmount, currentCurrency, conversionRate),
     [conversionRate, currentCurrency, ethAmount],
-  )
+  );
 
   if (
     !showFiat ||
@@ -38,7 +38,7 @@ export function useEthFiatAmount(
     conversionRate <= 0 ||
     ethAmount === undefined
   ) {
-    return undefined
+    return undefined;
   }
 
   return hideCurrencySymbol
@@ -46,5 +46,5 @@ export function useEthFiatAmount(
     : `${formatCurrency(
         formattedFiat,
         currentCurrency,
-      )} ${currentCurrency.toUpperCase()}`
+      )} ${currentCurrency.toUpperCase()}`;
 }

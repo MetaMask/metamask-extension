@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 
 export default function SwapIcon({
   width = '15',
@@ -19,11 +19,11 @@ export default function SwapIcon({
         fill={fill}
       />
     </svg>
-  )
+  );
 }
 
 SwapIcon.propTypes = {
   width: PropTypes.string,
   height: PropTypes.string,
   fill: PropTypes.string,
-}
+};

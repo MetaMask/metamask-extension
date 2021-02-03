@@ -1,1 +1,1 @@
-export { default } from './contact-list-tab.container'
+export { default } from './contact-list-tab.container';

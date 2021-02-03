@@ -1,1 +1,1 @@
-export { default } from './transaction-list-item-details.container'
+export { default } from './transaction-list-item-details.container';

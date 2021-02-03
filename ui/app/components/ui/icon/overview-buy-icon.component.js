@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 
 export default function BuyIcon({
   width = '17',
@@ -27,11 +27,11 @@ export default function BuyIcon({
         fill="white"
       />
     </svg>
-  )
+  );
 }
 
 BuyIcon.propTypes = {
   width: PropTypes.string,
   height: PropTypes.string,
   fill: PropTypes.string,
-}
+};

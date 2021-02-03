@@ -1,10 +1,10 @@
-import { MESSAGE_TYPE } from '../../../../../shared/constants/app'
+import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
 const watchAsset = {
   methodNames: [MESSAGE_TYPE.WATCH_ASSET, MESSAGE_TYPE.WATCH_ASSET_LEGACY],
   implementation: watchAssetHandler,
-}
-export default watchAsset
+};
+export default watchAsset;
 
 /**
  * @typedef {Object} WatchAssetOptions
@@ -32,9 +32,9 @@ async function watchAssetHandler(
   { handleWatchAssetRequest },
 ) {
   try {
-    res.result = await handleWatchAssetRequest(req)
-    return end()
+    res.result = await handleWatchAssetRequest(req);
+    return end();
   } catch (error) {
-    return end(error)
+    return end(error);
   }
 }

@@ -1,6 +1,6 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 import {
   TRANSACTION_CREATED_EVENT,
@@ -11,7 +11,7 @@ import {
   TRANSACTION_ERRORED_EVENT,
   TRANSACTION_CANCEL_ATTEMPTED_EVENT,
   TRANSACTION_CANCEL_SUCCESS_EVENT,
-} from '../transaction-activity-log.constants'
+} from '../transaction-activity-log.constants';
 
 const imageHash = {
   [TRANSACTION_CREATED_EVENT]: '/images/icons/new.svg',
@@ -22,26 +22,26 @@ const imageHash = {
   [TRANSACTION_ERRORED_EVENT]: '/images/icons/error.svg',
   [TRANSACTION_CANCEL_ATTEMPTED_EVENT]: '/images/icons/cancelled.svg',
   [TRANSACTION_CANCEL_SUCCESS_EVENT]: '/images/icons/cancelled.svg',
-}
+};
 
 export default class TransactionActivityLogIcon extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     className: PropTypes.string,
     eventKey: PropTypes.oneOf(Object.keys(imageHash)),
-  }
+  };
 
   render() {
-    const { className, eventKey } = this.props
-    const imagePath = imageHash[eventKey]
+    const { className, eventKey } = this.props;
+    const imagePath = imageHash[eventKey];
 
     return (
       <div className={classnames('transaction-activity-log-icon', className)}>
         {imagePath && <img src={imagePath} height="9" width="9" alt="" />}
       </div>
-    )
+    );
   }
 }

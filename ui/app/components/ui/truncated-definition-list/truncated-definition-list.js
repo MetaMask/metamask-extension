@@ -1,12 +1,12 @@
-import { pick } from 'lodash'
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
-import { COLORS, SIZES } from '../../../helpers/constants/design-system'
-import Box from '../box'
-import Button from '../button'
-import DefinitionList from '../definition-list/definition-list'
-import Popover from '../popover'
-import { useI18nContext } from '../../../hooks/useI18nContext'
+import { pick } from 'lodash';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import { COLORS, SIZES } from '../../../helpers/constants/design-system';
+import Box from '../box';
+import Button from '../button';
+import DefinitionList from '../definition-list/definition-list';
+import Popover from '../popover';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export default function TruncatedDefinitionList({
   dictionary,
@@ -14,8 +14,8 @@ export default function TruncatedDefinitionList({
   prefaceKeys,
   title,
 }) {
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false)
-  const t = useI18nContext()
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const t = useI18nContext();
 
   return (
     <>
@@ -67,7 +67,7 @@ export default function TruncatedDefinitionList({
         </Popover>
       )}
     </>
-  )
+  );
 }
 
 TruncatedDefinitionList.propTypes = {
@@ -75,4 +75,4 @@ TruncatedDefinitionList.propTypes = {
   tooltips: DefinitionList.propTypes.dictionary,
   title: PropTypes.string,
   prefaceKeys: PropTypes.arrayOf(PropTypes.string),
-}
+};

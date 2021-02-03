@@ -1,15 +1,15 @@
-import React from 'react'
-import { text, boolean, number } from '@storybook/addon-knobs'
-import Identicon from './identicon.component'
+import React from 'react';
+import { text, boolean, number } from '@storybook/addon-knobs';
+import Identicon from './identicon.component';
 
-export default { title: 'Identicon' }
+export default { title: 'Identicon' };
 
 const diameterOptions = {
   range: true,
   min: 10,
   max: 200,
   step: 1,
-}
+};
 export const standard = () => (
   <Identicon
     addBorder={boolean('Add Border', Identicon.defaultProps.addBorder)}
@@ -21,19 +21,19 @@ export const standard = () => (
     )}
     useBlockie={boolean('Use Blockie', Identicon.defaultProps.useBlockie)}
   />
-)
+);
 
-export const image = () => <Identicon image="./images/eth_logo.svg" />
+export const image = () => <Identicon image="./images/eth_logo.svg" />;
 
 export const blockie = () => (
   <Identicon
     address={text('Address', '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1')}
     useBlockie={boolean('Use Blockie', true)}
   />
-)
+);
 
 // The border size is hard-coded in CSS, and was designed with this size identicon in mind
-const withBorderDiameter = 32
+const withBorderDiameter = 32;
 
 export const withBorder = () => (
   <Identicon
@@ -41,4 +41,4 @@ export const withBorder = () => (
     address={text('Address', '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1')}
     diameter={number('Diameter', withBorderDiameter, diameterOptions)}
   />
-)
+);

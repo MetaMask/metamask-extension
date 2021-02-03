@@ -1,9 +1,9 @@
-const fs = require('fs')
-const path = require('path')
-const { SourceMapConsumer } = require('source-map')
-const pify = require('pify')
+const fs = require('fs');
+const path = require('path');
+const { SourceMapConsumer } = require('source-map');
+const pify = require('pify');
 
-const fsAsync = pify(fs)
+const fsAsync = pify(fs);
 
 //
 // Utility to help check if sourcemaps are working
@@ -14,9 +14,9 @@ const fsAsync = pify(fs)
 //
 
 start().catch((error) => {
-  console.error(error)
-  process.exit(1)
-})
+  console.error(error);
+  process.exit(1);
+});
 
 async function start() {
   const targetFiles = [
@@ -27,48 +27,48 @@ async function start() {
     'phishing-detect.js',
     `ui.js`,
     // `ui-libs.js`, skipped because source maps are invalid due to browserify bug: https://github.com/browserify/browserify/issues/1971
-  ]
-  let valid = true
+  ];
+  let valid = true;
 
   for (const buildName of targetFiles) {
-    const fileIsValid = await validateSourcemapForFile({ buildName })
-    valid = valid && fileIsValid
+    const fileIsValid = await validateSourcemapForFile({ buildName });
+    valid = valid && fileIsValid;
   }
 
   if (!valid) {
-    process.exit(1)
+    process.exit(1);
   }
 }
 
 async function validateSourcemapForFile({ buildName }) {
-  console.log(`build "${buildName}"`)
-  const platform = `chrome`
+  console.log(`build "${buildName}"`);
+  const platform = `chrome`;
   // load build and sourcemaps
-  let rawBuild
+  let rawBuild;
   try {
     const filePath = path.join(
       __dirname,
       `/../dist/${platform}/`,
       `${buildName}`,
-    )
-    rawBuild = await fsAsync.readFile(filePath, 'utf8')
+    );
+    rawBuild = await fsAsync.readFile(filePath, 'utf8');
   } catch (_) {
     // empty
   }
   if (!rawBuild) {
     throw new Error(
       `SourcemapValidator - failed to load source file for "${buildName}"`,
-    )
+    );
   }
   // attempt to load in dist mode
-  let rawSourceMap
+  let rawSourceMap;
   try {
     const filePath = path.join(
       __dirname,
       `/../dist/sourcemaps/`,
       `${buildName}.map`,
-    )
-    rawSourceMap = await fsAsync.readFile(filePath, 'utf8')
+    );
+    rawSourceMap = await fsAsync.readFile(filePath, 'utf8');
   } catch (_) {
     // empty
   }
@@ -78,94 +78,96 @@ async function validateSourcemapForFile({ buildName }) {
       __dirname,
       `/../dist/${platform}/`,
       `${buildName}.map`,
-    )
-    rawSourceMap = await fsAsync.readFile(filePath, 'utf8')
+    );
+    rawSourceMap = await fsAsync.readFile(filePath, 'utf8');
   } catch (_) {
     // empty
   }
   if (!rawSourceMap) {
     throw new Error(
       `SourcemapValidator - failed to load sourcemaps for "${buildName}"`,
-    )
+    );
   }
 
-  const consumer = await new SourceMapConsumer(rawSourceMap)
+  const consumer = await new SourceMapConsumer(rawSourceMap);
 
-  const hasContentsOfAllSources = consumer.hasContentsOfAllSources()
+  const hasContentsOfAllSources = consumer.hasContentsOfAllSources();
   if (!hasContentsOfAllSources) {
-    console.warn('SourcemapValidator - missing content of some sources...')
+    console.warn('SourcemapValidator - missing content of some sources...');
   }
 
-  console.log(`  sampling from ${consumer.sources.length} files`)
-  let sampleCount = 0
-  let valid = true
+  console.log(`  sampling from ${consumer.sources.length} files`);
+  let sampleCount = 0;
+  let valid = true;
 
-  const buildLines = rawBuild.split('\n')
-  const targetString = 'new Error'
+  const buildLines = rawBuild.split('\n');
+  const targetString = 'new Error';
   // const targetString = 'null'
-  const matchesPerLine = buildLines.map((line) => indicesOf(targetString, line))
+  const matchesPerLine = buildLines.map((line) =>
+    indicesOf(targetString, line),
+  );
   matchesPerLine.forEach((matchIndices, lineIndex) => {
     matchIndices.forEach((matchColumn) => {
-      sampleCount += 1
-      const position = { line: lineIndex + 1, column: matchColumn }
-      const result = consumer.originalPositionFor(position)
+      sampleCount += 1;
+      const position = { line: lineIndex + 1, column: matchColumn };
+      const result = consumer.originalPositionFor(position);
       // warn if source content is missing
       if (!result.source) {
-        valid = false
+        valid = false;
         console.warn(
           `!! missing source for position: ${JSON.stringify(position)}`,
-        )
+        );
         // const buildLine = buildLines[position.line - 1]
-        console.warn(`   origin in build:`)
-        console.warn(`   ${buildLines[position.line - 2]}`)
-        console.warn(`-> ${buildLines[position.line - 1]}`)
-        console.warn(`   ${buildLines[position.line - 0]}`)
-        return
+        console.warn(`   origin in build:`);
+        console.warn(`   ${buildLines[position.line - 2]}`);
+        console.warn(`-> ${buildLines[position.line - 1]}`);
+        console.warn(`   ${buildLines[position.line - 0]}`);
+        return;
       }
-      const sourceContent = consumer.sourceContentFor(result.source)
-      const sourceLines = sourceContent.split('\n')
-      const line = sourceLines[result.line - 1]
+      const sourceContent = consumer.sourceContentFor(result.source);
+      const sourceLines = sourceContent.split('\n');
+      const line = sourceLines[result.line - 1];
       // this sometimes includes the whole line though we tried to match somewhere in the middle
-      const portion = line.slice(result.column)
-      const isMaybeValid = portion.includes(targetString)
+      const portion = line.slice(result.column);
+      const isMaybeValid = portion.includes(targetString);
       if (!isMaybeValid) {
-        valid = false
+        valid = false;
         console.error(
           `Sourcemap seems invalid:\n${getFencedCode(result.source, line)}`,
-        )
+        );
       }
-    })
-  })
-  console.log(`  checked ${sampleCount} samples`)
-  return valid
+    });
+  });
+  console.log(`  checked ${sampleCount} samples`);
+  return valid;
 }
 
-const CODE_FENCE_LENGTH = 80
-const TITLE_PADDING_LENGTH = 1
+const CODE_FENCE_LENGTH = 80;
+const TITLE_PADDING_LENGTH = 1;
 
 function getFencedCode(filename, code) {
   const title = `${' '.repeat(TITLE_PADDING_LENGTH)}${filename}${' '.repeat(
     TITLE_PADDING_LENGTH,
-  )}`
+  )}`;
   const openingFenceLength = Math.max(
     CODE_FENCE_LENGTH - (filename.length + TITLE_PADDING_LENGTH * 2),
     0,
-  )
-  const startOpeningFenceLength = Math.floor(openingFenceLength / 2)
-  const endOpeningFenceLength = Math.ceil(openingFenceLength / 2)
+  );
+  const startOpeningFenceLength = Math.floor(openingFenceLength / 2);
+  const endOpeningFenceLength = Math.ceil(openingFenceLength / 2);
   const openingFence = `${'='.repeat(
     startOpeningFenceLength,
-  )}${title}${'='.repeat(endOpeningFenceLength)}`
-  const closingFence = '='.repeat(CODE_FENCE_LENGTH)
+  )}${title}${'='.repeat(endOpeningFenceLength)}`;
+  const closingFence = '='.repeat(CODE_FENCE_LENGTH);
 
-  return `${openingFence}\n${code}\n${closingFence}\n`
+  return `${openingFence}\n${code}\n${closingFence}\n`;
 }
 
 function indicesOf(substring, string) {
-  const a = []
-  let i = -1
+  const a = [];
+  let i = -1;
   while ((i = string.indexOf(substring, i + 1)) >= 0) {
-    a.push(i)
+    a.push(i);
   }
-  return a
+  return a;
 }

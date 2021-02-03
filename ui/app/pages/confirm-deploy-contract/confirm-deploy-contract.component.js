@@ -1,20 +1,20 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import ethUtil from 'ethereumjs-util'
-import ConfirmTransactionBase from '../confirm-transaction-base'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import ethUtil from 'ethereumjs-util';
+import ConfirmTransactionBase from '../confirm-transaction-base';
 
 export default class ConfirmDeployContract extends Component {
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     txData: PropTypes.object,
-  }
+  };
 
   renderData() {
-    const { t } = this.context
-    const { txData: { origin, txParams: { data } = {} } = {} } = this.props
+    const { t } = this.context;
+    const { txData: { origin, txParams: { data } = {} } = {} } = this.props;
 
     return (
       <div className="confirm-page-container-content__data">
@@ -37,7 +37,7 @@ export default class ConfirmDeployContract extends Component {
         </div>
         <div className="confirm-page-container-content__data-box">{data}</div>
       </div>
-    )
+    );
   }
 
   render() {
@@ -46,6 +46,6 @@ export default class ConfirmDeployContract extends Component {
         actionKey="contractDeployment"
         dataComponent={this.renderData()}
       />
-    )
+    );
   }
 }

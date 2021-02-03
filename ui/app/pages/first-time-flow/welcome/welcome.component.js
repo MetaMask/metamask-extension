@@ -1,46 +1,46 @@
-import EventEmitter from 'events'
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import Mascot from '../../../components/ui/mascot'
-import Button from '../../../components/ui/button'
+import EventEmitter from 'events';
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import Mascot from '../../../components/ui/mascot';
+import Button from '../../../components/ui/button';
 import {
   INITIALIZE_CREATE_PASSWORD_ROUTE,
   INITIALIZE_SELECT_ACTION_ROUTE,
-} from '../../../helpers/constants/routes'
+} from '../../../helpers/constants/routes';
 
 export default class Welcome extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
     participateInMetaMetrics: PropTypes.bool,
     welcomeScreenSeen: PropTypes.bool,
-  }
+  };
 
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   constructor(props) {
-    super(props)
+    super(props);
 
-    this.animationEventEmitter = new EventEmitter()
+    this.animationEventEmitter = new EventEmitter();
   }
 
   componentDidMount() {
-    const { history, participateInMetaMetrics, welcomeScreenSeen } = this.props
+    const { history, participateInMetaMetrics, welcomeScreenSeen } = this.props;
 
     if (welcomeScreenSeen && participateInMetaMetrics !== null) {
-      history.push(INITIALIZE_CREATE_PASSWORD_ROUTE)
+      history.push(INITIALIZE_CREATE_PASSWORD_ROUTE);
     } else if (welcomeScreenSeen) {
-      history.push(INITIALIZE_SELECT_ACTION_ROUTE)
+      history.push(INITIALIZE_SELECT_ACTION_ROUTE);
     }
   }
 
   handleContinue = () => {
-    this.props.history.push(INITIALIZE_SELECT_ACTION_ROUTE)
-  }
+    this.props.history.push(INITIALIZE_SELECT_ACTION_ROUTE);
+  };
 
   render() {
-    const { t } = this.context
+    const { t } = this.context;
 
     return (
       <div className="welcome-page__wrapper">
@@ -64,6 +64,6 @@ export default class Welcome extends PureComponent {
           </Button>
         </div>
       </div>
-    )
+    );
   }
 }

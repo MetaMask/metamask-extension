@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import DropdownInputPair from '.'
+import React, { useState } from 'react';
+import DropdownInputPair from '.';
 
 const tokens = [
   {
@@ -110,11 +110,11 @@ const tokens = [
     decimals: 8,
     address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
   },
-]
+];
 
 export default {
   title: 'DropdownInputPair',
-}
+};
 
 const tokensToSearch = tokens.map((token) => ({
   ...token,
@@ -124,10 +124,10 @@ const tokensToSearch = tokens.map((token) => ({
     Math.floor(Math.random() * 6),
   )} ${token.symbol}`,
   rightSecondaryLabel: `$${(Math.random() * 1000).toFixed(2)}`,
-}))
+}));
 
 export const Basic = () => {
-  const [inputValue, setInputValue] = useState()
+  const [inputValue, setInputValue] = useState();
 
   return (
     <div
@@ -148,5 +148,5 @@ export const Basic = () => {
         inputValue={inputValue}
       />
     </div>
-  )
-}
+  );
+};

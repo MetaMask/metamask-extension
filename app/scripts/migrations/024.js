@@ -5,30 +5,30 @@ all unapproved transactions
 
 */
 
-import { cloneDeep } from 'lodash'
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction'
+import { cloneDeep } from 'lodash';
+import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 
-const version = 24
+const version = 24;
 
 export default {
   version,
 
   async migrate(originalVersionedData) {
-    const versionedData = cloneDeep(originalVersionedData)
-    versionedData.meta.version = version
-    const state = versionedData.data
-    const newState = transformState(state)
-    versionedData.data = newState
-    return versionedData
+    const versionedData = cloneDeep(originalVersionedData);
+    versionedData.meta.version = version;
+    const state = versionedData.data;
+    const newState = transformState(state);
+    versionedData.data = newState;
+    return versionedData;
   },
-}
+};
 
 function transformState(state) {
-  const newState = state
+  const newState = state;
   if (!newState.TransactionController) {
-    return newState
+    return newState;
   }
-  const { transactions } = newState.TransactionController
+  const { transactions } = newState.TransactionController;
   newState.TransactionController.transactions = transactions.map(
     (txMeta, _) => {
       if (
@@ -36,10 +36,10 @@ function transformState(state) {
         txMeta.txParams &&
         txMeta.txParams.from
       ) {
-        txMeta.txParams.from = txMeta.txParams.from.toLowerCase()
+        txMeta.txParams.from = txMeta.txParams.from.toLowerCase();
       }
-      return txMeta
+      return txMeta;
     },
-  )
-  return newState
+  );
+  return newState;
 }

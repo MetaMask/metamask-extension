@@ -1,15 +1,15 @@
-import React from 'react'
-import { object, select } from '@storybook/addon-knobs'
+import React from 'react';
+import { object, select } from '@storybook/addon-knobs';
 import {
   COLORS,
   SIZES,
   TYPOGRAPHY,
-} from '../../../helpers/constants/design-system'
-import DefinitionList from './definition-list'
+} from '../../../helpers/constants/design-system';
+import DefinitionList from './definition-list';
 
 export default {
   title: 'Definition List',
-}
+};
 
 const basic = {
   term:
@@ -19,26 +19,26 @@ const basic = {
   dl: 'HTML tag denoting a definition list',
   dt: 'HTML tag denoting a definition list term',
   dd: 'HTML tag denoting a definition list definition',
-}
+};
 
 const advanced = {
   'Network Name': 'Ethereum Mainnet',
   'Chain ID': '1',
   Ticker: 'ETH',
-}
+};
 
 const tooltips = {
   'Network Name': 'The name that is associated with this network',
   'Chain ID': 'The numeric value representing the ID of this network',
   Ticker: 'The currency symbol of the primary currency for this network',
-}
+};
 
 export const definitionList = () => (
   <DefinitionList
     dictionary={object('dictionary', basic)}
     gapSize={select('gapSize', SIZES, SIZES.SM)}
   />
-)
+);
 
 export const withTooltips = () => (
   <DefinitionList
@@ -46,7 +46,7 @@ export const withTooltips = () => (
     tooltips={object('tooltips', tooltips)}
     gapSize={select('gapSize', SIZES, SIZES.SM)}
   />
-)
+);
 
 export const withTypographyControl = () => (
   <DefinitionList
@@ -66,4 +66,4 @@ export const withTypographyControl = () => (
       color: select('definitionTypography.color', COLORS, COLORS.BLACK),
     }}
   />
-)
+);

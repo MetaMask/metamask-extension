@@ -1,10 +1,10 @@
-import React from 'react'
-import { text } from '@storybook/addon-knobs'
-import InfoTooltip from './info-tooltip'
+import React from 'react';
+import { text } from '@storybook/addon-knobs';
+import InfoTooltip from './info-tooltip';
 
 export default {
   title: 'InfoTooltip',
-}
+};
 
 export const Top = () => (
   <InfoTooltip
@@ -14,7 +14,7 @@ export const Top = () => (
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut gravida dictum diam et sagittis. Sed lorem arcu, consectetur consectetur et, lacinia hendrerit sapien.',
     )}
   />
-)
+);
 
 export const Bottom = () => (
   <InfoTooltip
@@ -24,7 +24,7 @@ export const Bottom = () => (
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut gravida dictum diam et sagittis. Sed lorem arcu, consectetur consectetur et, lacinia hendrerit sapien.',
     )}
   />
-)
+);
 
 export const Left = () => (
   <InfoTooltip
@@ -34,7 +34,7 @@ export const Left = () => (
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut gravida dictum diam et sagittis. Sed lorem arcu, consectetur consectetur et, lacinia hendrerit sapien.',
     )}
   />
-)
+);
 
 export const Right = () => (
   <InfoTooltip
@@ -44,4 +44,4 @@ export const Right = () => (
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut gravida dictum diam et sagittis. Sed lorem arcu, consectetur consectetur et, lacinia hendrerit sapien.',
     )}
   />
-)
+);

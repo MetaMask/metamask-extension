@@ -1,29 +1,29 @@
-import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
-import { compose } from 'redux'
-import { getEnvironmentType } from '../../../../app/scripts/lib/util'
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app'
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import {
   DEFAULT_ROUTE,
   RESTORE_VAULT_ROUTE,
-} from '../../helpers/constants/routes'
+} from '../../helpers/constants/routes';
 import {
   tryUnlockMetamask,
   forgotPassword,
   markPasswordForgotten,
   forceUpdateMetamaskState,
   showModal,
-} from '../../store/actions'
-import UnlockPage from './unlock-page.component'
+} from '../../store/actions';
+import UnlockPage from './unlock-page.component';
 
 const mapStateToProps = (state) => {
   const {
     metamask: { isUnlocked },
-  } = state
+  } = state;
   return {
     isUnlocked,
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -33,8 +33,8 @@ const mapDispatchToProps = (dispatch) => {
     forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
     showOptInModal: () =>
       dispatch(showModal({ name: 'METAMETRICS_OPT_IN_MODAL' })),
-  }
-}
+  };
+};
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const {
@@ -43,22 +43,22 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     // eslint-disable-next-line no-shadow
     tryUnlockMetamask,
     ...restDispatchProps
-  } = dispatchProps
-  const { history, onSubmit: ownPropsSubmit, ...restOwnProps } = ownProps
+  } = dispatchProps;
+  const { history, onSubmit: ownPropsSubmit, ...restOwnProps } = ownProps;
 
   const onImport = async () => {
-    await markPasswordForgotten()
-    history.push(RESTORE_VAULT_ROUTE)
+    await markPasswordForgotten();
+    history.push(RESTORE_VAULT_ROUTE);
 
     if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-      global.platform.openExtensionInBrowser(RESTORE_VAULT_ROUTE)
+      global.platform.openExtensionInBrowser(RESTORE_VAULT_ROUTE);
     }
-  }
+  };
 
   const onSubmit = async (password) => {
-    await tryUnlockMetamask(password)
-    history.push(DEFAULT_ROUTE)
-  }
+    await tryUnlockMetamask(password);
+    history.push(DEFAULT_ROUTE);
+  };
 
   return {
     ...stateProps,
@@ -68,10 +68,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     onRestore: onImport,
     onSubmit: ownPropsSubmit || onSubmit,
     history,
-  }
-}
+  };
+};
 
 export default compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps, mergeProps),
-)(UnlockPage)
+)(UnlockPage);

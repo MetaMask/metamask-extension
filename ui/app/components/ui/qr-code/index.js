@@ -1,1 +1,1 @@
-export { default } from './qr-code'
+export { default } from './qr-code';

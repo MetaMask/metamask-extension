@@ -1,11 +1,11 @@
-import React, { useState, useCallback, useContext } from 'react'
-import PropTypes from 'prop-types'
-import { I18nContext } from '../../../contexts/i18n'
-import Popover from '../../../components/ui/popover'
-import Button from '../../../components/ui/button'
-import QuoteDetails from './quote-details'
-import SortList from './sort-list'
-import { QUOTE_DATA_ROWS_PROPTYPES_SHAPE } from './select-quote-popover-constants'
+import React, { useState, useCallback, useContext } from 'react';
+import PropTypes from 'prop-types';
+import { I18nContext } from '../../../contexts/i18n';
+import Popover from '../../../components/ui/popover';
+import Button from '../../../components/ui/button';
+import QuoteDetails from './quote-details';
+import SortList from './sort-list';
+import { QUOTE_DATA_ROWS_PROPTYPES_SHAPE } from './select-quote-popover-constants';
 
 const SelectQuotePopover = ({
   quoteDataRows = [],
@@ -15,45 +15,45 @@ const SelectQuotePopover = ({
   initialAggId,
   onQuoteDetailsIsOpened,
 }) => {
-  const t = useContext(I18nContext)
+  const t = useContext(I18nContext);
 
-  const [sortDirection, setSortDirection] = useState(1)
-  const [sortColumn, setSortColumn] = useState(null)
+  const [sortDirection, setSortDirection] = useState(1);
+  const [sortColumn, setSortColumn] = useState(null);
 
-  const [selectedAggId, setSelectedAggId] = useState(initialAggId)
-  const [contentView, setContentView] = useState('sortList')
-  const [viewingAgg, setViewingAgg] = useState(null)
+  const [selectedAggId, setSelectedAggId] = useState(initialAggId);
+  const [contentView, setContentView] = useState('sortList');
+  const [viewingAgg, setViewingAgg] = useState(null);
 
   const onSubmitClick = useCallback(() => {
-    onSubmit(selectedAggId)
-    onClose()
-  }, [selectedAggId, onClose, onSubmit])
+    onSubmit(selectedAggId);
+    onClose();
+  }, [selectedAggId, onClose, onSubmit]);
 
   const closeQuoteDetails = useCallback(() => {
-    setViewingAgg(null)
-    setContentView('sortList')
-  }, [])
+    setViewingAgg(null);
+    setContentView('sortList');
+  }, []);
 
   const onRowClick = useCallback((aggId) => setSelectedAggId(aggId), [
     setSelectedAggId,
-  ])
+  ]);
 
   const onCaretClick = useCallback(
     (aggId) => {
-      const agg = quoteDataRows.find((quote) => quote.aggId === aggId)
-      setContentView('quoteDetails')
-      onQuoteDetailsIsOpened()
-      setViewingAgg(agg)
+      const agg = quoteDataRows.find((quote) => quote.aggId === aggId);
+      setContentView('quoteDetails');
+      onQuoteDetailsIsOpened();
+      setViewingAgg(agg);
     },
     [quoteDataRows, onQuoteDetailsIsOpened],
-  )
+  );
 
   const CustomBackground = useCallback(
     () => (
       <div className="select-quote-popover__popover-bg" onClick={onClose} />
     ),
     [onClose],
-  )
+  );
   const footer = (
     <>
       <Button
@@ -72,7 +72,7 @@ const SelectQuotePopover = ({
         {t('swapSelect')}
       </Button>
     </>
-  )
+  );
 
   return (
     <div className="select-quote-popover">
@@ -112,8 +112,8 @@ const SelectQuotePopover = ({
         )}
       </Popover>
     </div>
-  )
-}
+  );
+};
 
 SelectQuotePopover.propTypes = {
   onClose: PropTypes.func,
@@ -123,6 +123,6 @@ SelectQuotePopover.propTypes = {
   quoteDataRows: PropTypes.arrayOf(QUOTE_DATA_ROWS_PROPTYPES_SHAPE),
   initialAggId: PropTypes.string,
   onQuoteDetailsIsOpened: PropTypes.func,
-}
+};
 
-export default SelectQuotePopover
+export default SelectQuotePopover;

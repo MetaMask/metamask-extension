@@ -1,12 +1,12 @@
-import { useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import {
   getTokenExchangeRates,
   getConversionRate,
   getCurrentCurrency,
   getShouldShowFiat,
-} from '../selectors'
-import { getTokenFiatAmount } from '../helpers/utils/token-util'
+} from '../selectors';
+import { getTokenFiatAmount } from '../helpers/utils/token-util';
 
 /**
  * Get the token balance converted to fiat and formatted for display
@@ -28,13 +28,13 @@ export function useTokenFiatAmount(
   overrides = {},
   hideCurrencySymbol,
 ) {
-  const contractExchangeRates = useSelector(getTokenExchangeRates)
-  const conversionRate = useSelector(getConversionRate)
-  const currentCurrency = useSelector(getCurrentCurrency)
-  const userPrefersShownFiat = useSelector(getShouldShowFiat)
-  const showFiat = overrides.showFiat ?? userPrefersShownFiat
+  const contractExchangeRates = useSelector(getTokenExchangeRates);
+  const conversionRate = useSelector(getConversionRate);
+  const currentCurrency = useSelector(getCurrentCurrency);
+  const userPrefersShownFiat = useSelector(getShouldShowFiat);
+  const showFiat = overrides.showFiat ?? userPrefersShownFiat;
   const tokenExchangeRate =
-    overrides.exchangeRate ?? contractExchangeRates[tokenAddress]
+    overrides.exchangeRate ?? contractExchangeRates[tokenAddress];
   const formattedFiat = useMemo(
     () =>
       getTokenFiatAmount(
@@ -54,11 +54,11 @@ export function useTokenFiatAmount(
       tokenSymbol,
       hideCurrencySymbol,
     ],
-  )
+  );
 
   if (!showFiat || currentCurrency.toUpperCase() === tokenSymbol) {
-    return undefined
+    return undefined;
   }
 
-  return formattedFiat
+  return formattedFiat;
 }

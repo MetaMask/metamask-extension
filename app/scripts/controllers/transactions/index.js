@@ -1,37 +1,37 @@
-import EventEmitter from 'safe-event-emitter'
-import { ObservableStore } from '@metamask/obs-store'
-import ethUtil from 'ethereumjs-util'
-import Transaction from 'ethereumjs-tx'
-import EthQuery from 'ethjs-query'
-import { ethErrors } from 'eth-rpc-errors'
-import abi from 'human-standard-token-abi'
-import { ethers } from 'ethers'
-import NonceTracker from 'nonce-tracker'
-import log from 'loglevel'
-import BigNumber from 'bignumber.js'
-import cleanErrorStack from '../../lib/cleanErrorStack'
+import EventEmitter from 'safe-event-emitter';
+import { ObservableStore } from '@metamask/obs-store';
+import ethUtil from 'ethereumjs-util';
+import Transaction from 'ethereumjs-tx';
+import EthQuery from 'ethjs-query';
+import { ethErrors } from 'eth-rpc-errors';
+import abi from 'human-standard-token-abi';
+import { ethers } from 'ethers';
+import NonceTracker from 'nonce-tracker';
+import log from 'loglevel';
+import BigNumber from 'bignumber.js';
+import cleanErrorStack from '../../lib/cleanErrorStack';
 import {
   hexToBn,
   bnToHex,
   BnMultiplyByFraction,
   addHexPrefix,
-} from '../../lib/util'
-import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/helpers/constants/error-keys'
-import { getSwapsTokensReceivedFromTxMeta } from '../../../../ui/app/pages/swaps/swaps.util'
+} from '../../lib/util';
+import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/helpers/constants/error-keys';
+import { getSwapsTokensReceivedFromTxMeta } from '../../../../ui/app/pages/swaps/swaps.util';
 import {
   TRANSACTION_CATEGORIES,
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
-} from '../../../../shared/constants/transaction'
-import TransactionStateManager from './tx-state-manager'
-import TxGasUtil from './tx-gas-utils'
-import PendingTransactionTracker from './pending-tx-tracker'
-import * as txUtils from './lib/util'
+} from '../../../../shared/constants/transaction';
+import TransactionStateManager from './tx-state-manager';
+import TxGasUtil from './tx-gas-utils';
+import PendingTransactionTracker from './pending-tx-tracker';
+import * as txUtils from './lib/util';
 
-const hstInterface = new ethers.utils.Interface(abi)
+const hstInterface = new ethers.utils.Interface(abi);
 
-const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
-const MAX_MEMSTORE_TX_LIST_SIZE = 100 // Number of transactions (by unique nonces) to keep in memory
+const SIMPLE_GAS_COST = '0x5208'; // Hex for 21000, cost of a simple send.
+const MAX_MEMSTORE_TX_LIST_SIZE = 100; // Number of transactions (by unique nonces) to keep in memory
 
 /**
   Transaction Controller is an aggregate of sub-controllers and trackers
@@ -62,31 +62,31 @@ const MAX_MEMSTORE_TX_LIST_SIZE = 100 // Number of transactions (by unique nonce
 
 export default class TransactionController extends EventEmitter {
   constructor(opts) {
-    super()
-    this.networkStore = opts.networkStore || new ObservableStore({})
-    this._getCurrentChainId = opts.getCurrentChainId
-    this.preferencesStore = opts.preferencesStore || new ObservableStore({})
-    this.provider = opts.provider
-    this.getPermittedAccounts = opts.getPermittedAccounts
-    this.blockTracker = opts.blockTracker
-    this.signEthTx = opts.signTransaction
-    this.inProcessOfSigning = new Set()
-    this._trackMetaMetricsEvent = opts.trackMetaMetricsEvent
-    this._getParticipateInMetrics = opts.getParticipateInMetrics
+    super();
+    this.networkStore = opts.networkStore || new ObservableStore({});
+    this._getCurrentChainId = opts.getCurrentChainId;
+    this.preferencesStore = opts.preferencesStore || new ObservableStore({});
+    this.provider = opts.provider;
+    this.getPermittedAccounts = opts.getPermittedAccounts;
+    this.blockTracker = opts.blockTracker;
+    this.signEthTx = opts.signTransaction;
+    this.inProcessOfSigning = new Set();
+    this._trackMetaMetricsEvent = opts.trackMetaMetricsEvent;
+    this._getParticipateInMetrics = opts.getParticipateInMetrics;
 
-    this.memStore = new ObservableStore({})
-    this.query = new EthQuery(this.provider)
+    this.memStore = new ObservableStore({});
+    this.query = new EthQuery(this.provider);
 
-    this.txGasUtil = new TxGasUtil(this.provider)
-    this._mapMethods()
+    this.txGasUtil = new TxGasUtil(this.provider);
+    this._mapMethods();
     this.txStateManager = new TransactionStateManager({
       initState: opts.initState,
       txHistoryLimit: opts.txHistoryLimit,
       getNetwork: this.getNetwork.bind(this),
-    })
-    this._onBootCleanUp()
+    });
+    this._onBootCleanUp();
 
-    this.store = this.txStateManager.store
+    this.store = this.txStateManager.store;
     this.nonceTracker = new NonceTracker({
       provider: this.provider,
       blockTracker: this.blockTracker,
@@ -96,35 +96,35 @@ export default class TransactionController extends EventEmitter {
       getConfirmedTransactions: this.txStateManager.getConfirmedTransactions.bind(
         this.txStateManager,
       ),
-    })
+    });
 
     this.pendingTxTracker = new PendingTransactionTracker({
       provider: this.provider,
       nonceTracker: this.nonceTracker,
       publishTransaction: (rawTx) => this.query.sendRawTransaction(rawTx),
       getPendingTransactions: () => {
-        const pending = this.txStateManager.getPendingTransactions()
-        const approved = this.txStateManager.getApprovedTransactions()
-        return [...pending, ...approved]
+        const pending = this.txStateManager.getPendingTransactions();
+        const approved = this.txStateManager.getApprovedTransactions();
+        return [...pending, ...approved];
       },
       approveTransaction: this.approveTransaction.bind(this),
       getCompletedTransactions: this.txStateManager.getConfirmedTransactions.bind(
         this.txStateManager,
       ),
-    })
+    });
 
-    this.txStateManager.store.subscribe(() => this.emit('update:badge'))
-    this._setupListeners()
+    this.txStateManager.store.subscribe(() => this.emit('update:badge'));
+    this._setupListeners();
     // memstore is computed from a few different stores
-    this._updateMemstore()
-    this.txStateManager.store.subscribe(() => this._updateMemstore())
+    this._updateMemstore();
+    this.txStateManager.store.subscribe(() => this._updateMemstore());
     this.networkStore.subscribe(() => {
-      this._onBootCleanUp()
-      this._updateMemstore()
-    })
+      this._onBootCleanUp();
+      this._updateMemstore();
+    });
 
     // request state update to finalize initialization
-    this._updatePendingTxsAfterFirstBlock()
+    this._updatePendingTxsAfterFirstBlock();
   }
 
   /**
@@ -134,13 +134,13 @@ export default class TransactionController extends EventEmitter {
    * @returns {number} The numerical chainId.
    */
   getChainId() {
-    const networkState = this.networkStore.getState()
-    const chainId = this._getCurrentChainId()
-    const integerChainId = parseInt(chainId, 16)
+    const networkState = this.networkStore.getState();
+    const chainId = this._getCurrentChainId();
+    const integerChainId = parseInt(chainId, 16);
     if (networkState === 'loading' || Number.isNaN(integerChainId)) {
-      return 0
+      return 0;
     }
-    return integerChainId
+    return integerChainId;
   }
 
   /**
@@ -148,8 +148,8 @@ export default class TransactionController extends EventEmitter {
   @emits ${txMeta.id}:unapproved
   */
   addTx(txMeta) {
-    this.txStateManager.addTx(txMeta)
-    this.emit(`${txMeta.id}:unapproved`, txMeta)
+    this.txStateManager.addTx(txMeta);
+    this.emit(`${txMeta.id}:unapproved`, txMeta);
   }
 
   /**
@@ -157,7 +157,7 @@ export default class TransactionController extends EventEmitter {
   @param {string} address - hex string of the from address for txs being removed
   */
   wipeTransactions(address) {
-    this.txStateManager.wipeTransactions(address)
+    this.txStateManager.wipeTransactions(address);
   }
 
   /**
@@ -170,12 +170,12 @@ export default class TransactionController extends EventEmitter {
   async newUnapprovedTransaction(txParams, opts = {}) {
     log.debug(
       `MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`,
-    )
+    );
 
     const initialTxMeta = await this.addUnapprovedTransaction(
       txParams,
       opts.origin,
-    )
+    );
 
     // listen for tx completion (success, fail)
     return new Promise((resolve, reject) => {
@@ -184,7 +184,7 @@ export default class TransactionController extends EventEmitter {
         (finishedTxMeta) => {
           switch (finishedTxMeta.status) {
             case TRANSACTION_STATUSES.SUBMITTED:
-              return resolve(finishedTxMeta.hash)
+              return resolve(finishedTxMeta.hash);
             case TRANSACTION_STATUSES.REJECTED:
               return reject(
                 cleanErrorStack(
@@ -192,13 +192,13 @@ export default class TransactionController extends EventEmitter {
                     'MetaMask Tx Signature: User denied transaction signature.',
                   ),
                 ),
-              )
+              );
             case TRANSACTION_STATUSES.FAILED:
               return reject(
                 cleanErrorStack(
                   ethErrors.rpc.internal(finishedTxMeta.err.message),
                 ),
-              )
+              );
             default:
               return reject(
                 cleanErrorStack(
@@ -208,11 +208,11 @@ export default class TransactionController extends EventEmitter {
                     )}`,
                   ),
                 ),
-              )
+              );
           }
         },
-      )
-    })
+      );
+    });
   }
 
   /**
@@ -223,9 +223,9 @@ export default class TransactionController extends EventEmitter {
    */
   async addUnapprovedTransaction(txParams, origin) {
     // validate
-    const normalizedTxParams = txUtils.normalizeTxParams(txParams)
+    const normalizedTxParams = txUtils.normalizeTxParams(txParams);
 
-    txUtils.validateTxParams(normalizedTxParams)
+    txUtils.validateTxParams(normalizedTxParams);
 
     /**
     `generateTxMeta` adds the default txMeta properties to the passed object.
@@ -236,7 +236,7 @@ export default class TransactionController extends EventEmitter {
     let txMeta = this.txStateManager.generateTxMeta({
       txParams: normalizedTxParams,
       type: TRANSACTION_TYPES.STANDARD,
-    })
+    });
 
     if (origin === 'metamask') {
       // Assert the from address is the selected address
@@ -248,48 +248,48 @@ export default class TransactionController extends EventEmitter {
             fromAddress: normalizedTxParams.from,
             selectedAddress: this.getSelectedAddress(),
           },
-        })
+        });
       }
     } else {
       // Assert that the origin has permissions to initiate transactions from
       // the specified address
-      const permittedAddresses = await this.getPermittedAccounts(origin)
+      const permittedAddresses = await this.getPermittedAccounts(origin);
       if (!permittedAddresses.includes(normalizedTxParams.from)) {
-        throw ethErrors.provider.unauthorized({ data: { origin } })
+        throw ethErrors.provider.unauthorized({ data: { origin } });
       }
     }
 
-    txMeta.origin = origin
+    txMeta.origin = origin;
 
     const {
       transactionCategory,
       getCodeResponse,
-    } = await this._determineTransactionCategory(txParams)
-    txMeta.transactionCategory = transactionCategory
+    } = await this._determineTransactionCategory(txParams);
+    txMeta.transactionCategory = transactionCategory;
 
     // ensure value
     txMeta.txParams.value = txMeta.txParams.value
       ? addHexPrefix(txMeta.txParams.value)
-      : '0x0'
+      : '0x0';
 
-    this.addTx(txMeta)
-    this.emit('newUnapprovedTx', txMeta)
+    this.addTx(txMeta);
+    this.emit('newUnapprovedTx', txMeta);
 
     try {
-      txMeta = await this.addTxGasDefaults(txMeta, getCodeResponse)
+      txMeta = await this.addTxGasDefaults(txMeta, getCodeResponse);
     } catch (error) {
-      log.warn(error)
-      txMeta = this.txStateManager.getTx(txMeta.id)
-      txMeta.loadingDefaults = false
-      this.txStateManager.updateTx(txMeta, 'Failed to calculate gas defaults.')
-      throw error
+      log.warn(error);
+      txMeta = this.txStateManager.getTx(txMeta.id);
+      txMeta.loadingDefaults = false;
+      this.txStateManager.updateTx(txMeta, 'Failed to calculate gas defaults.');
+      throw error;
     }
 
-    txMeta.loadingDefaults = false
+    txMeta.loadingDefaults = false;
     // save txMeta
-    this.txStateManager.updateTx(txMeta, 'Added new unapproved transaction.')
+    this.txStateManager.updateTx(txMeta, 'Added new unapproved transaction.');
 
-    return txMeta
+    return txMeta;
   }
 
   /**
@@ -298,24 +298,24 @@ export default class TransactionController extends EventEmitter {
    * @returns {Promise<object>} resolves with txMeta
    */
   async addTxGasDefaults(txMeta, getCodeResponse) {
-    const defaultGasPrice = await this._getDefaultGasPrice(txMeta)
+    const defaultGasPrice = await this._getDefaultGasPrice(txMeta);
     const {
       gasLimit: defaultGasLimit,
       simulationFails,
-    } = await this._getDefaultGasLimit(txMeta, getCodeResponse)
+    } = await this._getDefaultGasLimit(txMeta, getCodeResponse);
 
     // eslint-disable-next-line no-param-reassign
-    txMeta = this.txStateManager.getTx(txMeta.id)
+    txMeta = this.txStateManager.getTx(txMeta.id);
     if (simulationFails) {
-      txMeta.simulationFails = simulationFails
+      txMeta.simulationFails = simulationFails;
     }
     if (defaultGasPrice && !txMeta.txParams.gasPrice) {
-      txMeta.txParams.gasPrice = defaultGasPrice
+      txMeta.txParams.gasPrice = defaultGasPrice;
     }
     if (defaultGasLimit && !txMeta.txParams.gas) {
-      txMeta.txParams.gas = defaultGasLimit
+      txMeta.txParams.gas = defaultGasLimit;
     }
-    return txMeta
+    return txMeta;
   }
 
   /**
@@ -325,11 +325,11 @@ export default class TransactionController extends EventEmitter {
    */
   async _getDefaultGasPrice(txMeta) {
     if (txMeta.txParams.gasPrice) {
-      return undefined
+      return undefined;
     }
-    const gasPrice = await this.query.gasPrice()
+    const gasPrice = await this.query.gasPrice();
 
-    return addHexPrefix(gasPrice.toString(16))
+    return addHexPrefix(gasPrice.toString(16));
   }
 
   /**
@@ -340,7 +340,7 @@ export default class TransactionController extends EventEmitter {
    */
   async _getDefaultGasLimit(txMeta, getCodeResponse) {
     if (txMeta.txParams.gas) {
-      return {}
+      return {};
     } else if (
       txMeta.txParams.to &&
       txMeta.transactionCategory === TRANSACTION_CATEGORIES.SENT_ETHER
@@ -349,31 +349,31 @@ export default class TransactionController extends EventEmitter {
       if (txMeta.txParams.data) {
         const err = new Error(
           'TxGasUtil - Trying to call a function on a non-contract address',
-        )
+        );
         // set error key so ui can display localized error message
-        err.errorKey = TRANSACTION_NO_CONTRACT_ERROR_KEY
+        err.errorKey = TRANSACTION_NO_CONTRACT_ERROR_KEY;
 
         // set the response on the error so that we can see in logs what the actual response was
-        err.getCodeResponse = getCodeResponse
-        throw err
+        err.getCodeResponse = getCodeResponse;
+        throw err;
       }
 
       // This is a standard ether simple send, gas requirement is exactly 21k
-      return { gasLimit: SIMPLE_GAS_COST }
+      return { gasLimit: SIMPLE_GAS_COST };
     }
 
     const {
       blockGasLimit,
       estimatedGasHex,
       simulationFails,
-    } = await this.txGasUtil.analyzeGasUsage(txMeta)
+    } = await this.txGasUtil.analyzeGasUsage(txMeta);
 
     // add additional gas buffer to our estimation for safety
     const gasLimit = this.txGasUtil.addGasBuffer(
       addHexPrefix(estimatedGasHex),
       blockGasLimit,
-    )
-    return { gasLimit, simulationFails }
+    );
+    return { gasLimit, simulationFails };
   }
 
   /**
@@ -385,13 +385,13 @@ export default class TransactionController extends EventEmitter {
    * @returns {txMeta}
    */
   async createCancelTransaction(originalTxId, customGasPrice) {
-    const originalTxMeta = this.txStateManager.getTx(originalTxId)
-    const { txParams } = originalTxMeta
-    const { gasPrice: lastGasPrice, from, nonce } = txParams
+    const originalTxMeta = this.txStateManager.getTx(originalTxId);
+    const { txParams } = originalTxMeta;
+    const { gasPrice: lastGasPrice, from, nonce } = txParams;
 
     const newGasPrice =
       customGasPrice ||
-      bnToHex(BnMultiplyByFraction(hexToBn(lastGasPrice), 11, 10))
+      bnToHex(BnMultiplyByFraction(hexToBn(lastGasPrice), 11, 10));
     const newTxMeta = this.txStateManager.generateTxMeta({
       txParams: {
         from,
@@ -405,11 +405,11 @@ export default class TransactionController extends EventEmitter {
       loadingDefaults: false,
       status: TRANSACTION_STATUSES.APPROVED,
       type: TRANSACTION_TYPES.CANCEL,
-    })
+    });
 
-    this.addTx(newTxMeta)
-    await this.approveTransaction(newTxMeta.id)
-    return newTxMeta
+    this.addTx(newTxMeta);
+    await this.approveTransaction(newTxMeta.id);
+    return newTxMeta;
   }
 
   /**
@@ -423,13 +423,13 @@ export default class TransactionController extends EventEmitter {
    * @returns {txMeta}
    */
   async createSpeedUpTransaction(originalTxId, customGasPrice, customGasLimit) {
-    const originalTxMeta = this.txStateManager.getTx(originalTxId)
-    const { txParams } = originalTxMeta
-    const { gasPrice: lastGasPrice } = txParams
+    const originalTxMeta = this.txStateManager.getTx(originalTxId);
+    const { txParams } = originalTxMeta;
+    const { gasPrice: lastGasPrice } = txParams;
 
     const newGasPrice =
       customGasPrice ||
-      bnToHex(BnMultiplyByFraction(hexToBn(lastGasPrice), 11, 10))
+      bnToHex(BnMultiplyByFraction(hexToBn(lastGasPrice), 11, 10));
 
     const newTxMeta = this.txStateManager.generateTxMeta({
       txParams: {
@@ -440,15 +440,15 @@ export default class TransactionController extends EventEmitter {
       loadingDefaults: false,
       status: TRANSACTION_STATUSES.APPROVED,
       type: TRANSACTION_TYPES.RETRY,
-    })
+    });
 
     if (customGasLimit) {
-      newTxMeta.txParams.gas = customGasLimit
+      newTxMeta.txParams.gas = customGasLimit;
     }
 
-    this.addTx(newTxMeta)
-    await this.approveTransaction(newTxMeta.id)
-    return newTxMeta
+    this.addTx(newTxMeta);
+    await this.approveTransaction(newTxMeta.id);
+    return newTxMeta;
   }
 
   /**
@@ -456,7 +456,7 @@ export default class TransactionController extends EventEmitter {
   @param {Object} txMeta - the updated txMeta
   */
   async updateTransaction(txMeta) {
-    this.txStateManager.updateTx(txMeta, 'confTx: user updated transaction')
+    this.txStateManager.updateTx(txMeta, 'confTx: user updated transaction');
   }
 
   /**
@@ -464,8 +464,8 @@ export default class TransactionController extends EventEmitter {
   @param {Object} txMeta
   */
   async updateAndApproveTransaction(txMeta) {
-    this.txStateManager.updateTx(txMeta, 'confTx: user approved transaction')
-    await this.approveTransaction(txMeta.id)
+    this.txStateManager.updateTx(txMeta, 'confTx: user approved transaction');
+    await this.approveTransaction(txMeta.id);
   }
 
   /**
@@ -483,56 +483,56 @@ export default class TransactionController extends EventEmitter {
     // So that we do not increment nonce + resubmit something
     // that is already being incremented & signed.
     if (this.inProcessOfSigning.has(txId)) {
-      return
+      return;
     }
-    this.inProcessOfSigning.add(txId)
-    let nonceLock
+    this.inProcessOfSigning.add(txId);
+    let nonceLock;
     try {
       // approve
-      this.txStateManager.setTxStatusApproved(txId)
+      this.txStateManager.setTxStatusApproved(txId);
       // get next nonce
-      const txMeta = this.txStateManager.getTx(txId)
-      const fromAddress = txMeta.txParams.from
+      const txMeta = this.txStateManager.getTx(txId);
+      const fromAddress = txMeta.txParams.from;
       // wait for a nonce
-      let { customNonceValue } = txMeta
-      customNonceValue = Number(customNonceValue)
-      nonceLock = await this.nonceTracker.getNonceLock(fromAddress)
+      let { customNonceValue } = txMeta;
+      customNonceValue = Number(customNonceValue);
+      nonceLock = await this.nonceTracker.getNonceLock(fromAddress);
       // add nonce to txParams
       // if txMeta has lastGasPrice then it is a retry at same nonce with higher
       // gas price transaction and their for the nonce should not be calculated
       const nonce = txMeta.lastGasPrice
         ? txMeta.txParams.nonce
-        : nonceLock.nextNonce
+        : nonceLock.nextNonce;
       const customOrNonce =
-        customNonceValue === 0 ? customNonceValue : customNonceValue || nonce
+        customNonceValue === 0 ? customNonceValue : customNonceValue || nonce;
 
-      txMeta.txParams.nonce = addHexPrefix(customOrNonce.toString(16))
+      txMeta.txParams.nonce = addHexPrefix(customOrNonce.toString(16));
       // add nonce debugging information to txMeta
-      txMeta.nonceDetails = nonceLock.nonceDetails
+      txMeta.nonceDetails = nonceLock.nonceDetails;
       if (customNonceValue) {
-        txMeta.nonceDetails.customNonceValue = customNonceValue
+        txMeta.nonceDetails.customNonceValue = customNonceValue;
       }
-      this.txStateManager.updateTx(txMeta, 'transactions#approveTransaction')
+      this.txStateManager.updateTx(txMeta, 'transactions#approveTransaction');
       // sign transaction
-      const rawTx = await this.signTransaction(txId)
-      await this.publishTransaction(txId, rawTx)
+      const rawTx = await this.signTransaction(txId);
+      await this.publishTransaction(txId, rawTx);
       // must set transaction to submitted/failed before releasing lock
-      nonceLock.releaseLock()
+      nonceLock.releaseLock();
     } catch (err) {
       // this is try-catch wrapped so that we can guarantee that the nonceLock is released
       try {
-        this.txStateManager.setTxStatusFailed(txId, err)
+        this.txStateManager.setTxStatusFailed(txId, err);
       } catch (err2) {
-        log.error(err2)
+        log.error(err2);
       }
       // must set transaction to submitted/failed before releasing lock
       if (nonceLock) {
-        nonceLock.releaseLock()
+        nonceLock.releaseLock();
       }
       // continue with error chain
-      throw err
+      throw err;
     } finally {
-      this.inProcessOfSigning.delete(txId)
+      this.inProcessOfSigning.delete(txId);
     }
   }
 
@@ -542,30 +542,30 @@ export default class TransactionController extends EventEmitter {
     @returns {string} rawTx
   */
   async signTransaction(txId) {
-    const txMeta = this.txStateManager.getTx(txId)
+    const txMeta = this.txStateManager.getTx(txId);
     // add network/chain id
-    const chainId = this.getChainId()
-    const txParams = { ...txMeta.txParams, chainId }
+    const chainId = this.getChainId();
+    const txParams = { ...txMeta.txParams, chainId };
     // sign tx
-    const fromAddress = txParams.from
-    const ethTx = new Transaction(txParams)
-    await this.signEthTx(ethTx, fromAddress)
+    const fromAddress = txParams.from;
+    const ethTx = new Transaction(txParams);
+    await this.signEthTx(ethTx, fromAddress);
 
     // add r,s,v values for provider request purposes see createMetamaskMiddleware
     // and JSON rpc standard for further explanation
-    txMeta.r = ethUtil.bufferToHex(ethTx.r)
-    txMeta.s = ethUtil.bufferToHex(ethTx.s)
-    txMeta.v = ethUtil.bufferToHex(ethTx.v)
+    txMeta.r = ethUtil.bufferToHex(ethTx.r);
+    txMeta.s = ethUtil.bufferToHex(ethTx.s);
+    txMeta.v = ethUtil.bufferToHex(ethTx.v);
 
     this.txStateManager.updateTx(
       txMeta,
       'transactions#signTransaction: add r, s, v values',
-    )
+    );
 
     // set state to signed
-    this.txStateManager.setTxStatusSigned(txMeta.id)
-    const rawTx = ethUtil.bufferToHex(ethTx.serialize())
-    return rawTx
+    this.txStateManager.setTxStatusSigned(txMeta.id);
+    const rawTx = ethUtil.bufferToHex(ethTx.serialize());
+    return rawTx;
   }
 
   /**
@@ -575,27 +575,27 @@ export default class TransactionController extends EventEmitter {
     @returns {Promise<void>}
   */
   async publishTransaction(txId, rawTx) {
-    const txMeta = this.txStateManager.getTx(txId)
-    txMeta.rawTx = rawTx
+    const txMeta = this.txStateManager.getTx(txId);
+    txMeta.rawTx = rawTx;
     if (txMeta.transactionCategory === TRANSACTION_CATEGORIES.SWAP) {
-      const preTxBalance = await this.query.getBalance(txMeta.txParams.from)
-      txMeta.preTxBalance = preTxBalance.toString(16)
+      const preTxBalance = await this.query.getBalance(txMeta.txParams.from);
+      txMeta.preTxBalance = preTxBalance.toString(16);
     }
-    this.txStateManager.updateTx(txMeta, 'transactions#publishTransaction')
-    let txHash
+    this.txStateManager.updateTx(txMeta, 'transactions#publishTransaction');
+    let txHash;
     try {
-      txHash = await this.query.sendRawTransaction(rawTx)
+      txHash = await this.query.sendRawTransaction(rawTx);
     } catch (error) {
       if (error.message.toLowerCase().includes('known transaction')) {
-        txHash = ethUtil.sha3(addHexPrefix(rawTx)).toString('hex')
-        txHash = addHexPrefix(txHash)
+        txHash = ethUtil.sha3(addHexPrefix(rawTx)).toString('hex');
+        txHash = addHexPrefix(txHash);
       } else {
-        throw error
+        throw error;
       }
     }
-    this.setTxHash(txId, txHash)
+    this.setTxHash(txId, txHash);
 
-    this.txStateManager.setTxStatusSubmitted(txId)
+    this.txStateManager.setTxStatusSubmitted(txId);
   }
 
   /**
@@ -607,10 +607,10 @@ export default class TransactionController extends EventEmitter {
   async confirmTransaction(txId, txReceipt) {
     // get the txReceipt before marking the transaction confirmed
     // to ensure the receipt is gotten before the ui revives the tx
-    const txMeta = this.txStateManager.getTx(txId)
+    const txMeta = this.txStateManager.getTx(txId);
 
     if (!txMeta) {
-      return
+      return;
     }
 
     try {
@@ -619,39 +619,39 @@ export default class TransactionController extends EventEmitter {
       const gasUsed =
         typeof txReceipt.gasUsed === 'string'
           ? txReceipt.gasUsed
-          : txReceipt.gasUsed.toString(16)
+          : txReceipt.gasUsed.toString(16);
 
       txMeta.txReceipt = {
         ...txReceipt,
         gasUsed,
-      }
-      this.txStateManager.setTxStatusConfirmed(txId)
-      this._markNonceDuplicatesDropped(txId)
+      };
+      this.txStateManager.setTxStatusConfirmed(txId);
+      this._markNonceDuplicatesDropped(txId);
 
       this.txStateManager.updateTx(
         txMeta,
         'transactions#confirmTransaction - add txReceipt',
-      )
+      );
 
       if (txMeta.transactionCategory === TRANSACTION_CATEGORIES.SWAP) {
-        const postTxBalance = await this.query.getBalance(txMeta.txParams.from)
-        const latestTxMeta = this.txStateManager.getTx(txId)
+        const postTxBalance = await this.query.getBalance(txMeta.txParams.from);
+        const latestTxMeta = this.txStateManager.getTx(txId);
 
         const approvalTxMeta = latestTxMeta.approvalTxId
           ? this.txStateManager.getTx(latestTxMeta.approvalTxId)
-          : null
+          : null;
 
-        latestTxMeta.postTxBalance = postTxBalance.toString(16)
+        latestTxMeta.postTxBalance = postTxBalance.toString(16);
 
         this.txStateManager.updateTx(
           latestTxMeta,
           'transactions#confirmTransaction - add postTxBalance',
-        )
+        );
 
-        this._trackSwapsMetrics(latestTxMeta, approvalTxMeta)
+        this._trackSwapsMetrics(latestTxMeta, approvalTxMeta);
       }
     } catch (err) {
-      log.error(err)
+      log.error(err);
     }
   }
 
@@ -661,7 +661,7 @@ export default class TransactionController extends EventEmitter {
     @returns {Promise<void>}
   */
   async cancelTransaction(txId) {
-    this.txStateManager.setTxStatusRejected(txId)
+    this.txStateManager.setTxStatusRejected(txId);
   }
 
   /**
@@ -671,9 +671,9 @@ export default class TransactionController extends EventEmitter {
   */
   setTxHash(txId, txHash) {
     // Add the tx hash to the persisted meta-tx object
-    const txMeta = this.txStateManager.getTx(txId)
-    txMeta.hash = txHash
-    this.txStateManager.updateTx(txMeta, 'transactions#setTxHash')
+    const txMeta = this.txStateManager.getTx(txId);
+    txMeta.hash = txHash;
+    this.txStateManager.updateTx(txMeta, 'transactions#setTxHash');
   }
 
   //
@@ -682,37 +682,37 @@ export default class TransactionController extends EventEmitter {
   /** maps methods for convenience*/
   _mapMethods() {
     /** @returns {Object} the state in transaction controller */
-    this.getState = () => this.memStore.getState()
+    this.getState = () => this.memStore.getState();
 
     /** @returns {string|number} the network number stored in networkStore */
-    this.getNetwork = () => this.networkStore.getState()
+    this.getNetwork = () => this.networkStore.getState();
 
     /** @returns {string} the user selected address */
     this.getSelectedAddress = () =>
-      this.preferencesStore.getState().selectedAddress
+      this.preferencesStore.getState().selectedAddress;
 
     /** @returns {Array} transactions whos status is unapproved */
     this.getUnapprovedTxCount = () =>
-      Object.keys(this.txStateManager.getUnapprovedTxList()).length
+      Object.keys(this.txStateManager.getUnapprovedTxList()).length;
 
     /**
       @returns {number} number of transactions that have the status submitted
       @param {string} account - hex prefixed account
     */
     this.getPendingTxCount = (account) =>
-      this.txStateManager.getPendingTransactions(account).length
+      this.txStateManager.getPendingTransactions(account).length;
 
     /** see txStateManager */
     this.getFilteredTxList = (opts) =>
-      this.txStateManager.getFilteredTxList(opts)
+      this.txStateManager.getFilteredTxList(opts);
   }
 
   // called once on startup
   async _updatePendingTxsAfterFirstBlock() {
     // wait for first block so we know we're ready
-    await this.blockTracker.getLatestBlock()
+    await this.blockTracker.getLatestBlock();
     // get status update for all pending transactions (for the current network)
-    await this.pendingTxTracker.updatePendingTxs()
+    await this.pendingTxTracker.updatePendingTxs();
   }
 
   /**
@@ -730,22 +730,22 @@ export default class TransactionController extends EventEmitter {
       .forEach((tx) => {
         this.addTxGasDefaults(tx)
           .then((txMeta) => {
-            txMeta.loadingDefaults = false
+            txMeta.loadingDefaults = false;
             this.txStateManager.updateTx(
               txMeta,
               'transactions: gas estimation for tx on boot',
-            )
+            );
           })
           .catch((error) => {
-            const txMeta = this.txStateManager.getTx(tx.id)
-            txMeta.loadingDefaults = false
+            const txMeta = this.txStateManager.getTx(tx.id);
+            txMeta.loadingDefaults = false;
             this.txStateManager.updateTx(
               txMeta,
               'failed to estimate gas during boot cleanup.',
-            )
-            this.txStateManager.setTxStatusFailed(txMeta.id, error)
-          })
-      })
+            );
+            this.txStateManager.setTxStatusFailed(txMeta.id, error);
+          });
+      });
 
     this.txStateManager
       .getFilteredTxList({
@@ -754,9 +754,9 @@ export default class TransactionController extends EventEmitter {
       .forEach((txMeta) => {
         const txSignError = new Error(
           'Transaction found as "approved" during boot - possibly stuck during signing',
-        )
-        this.txStateManager.setTxStatusFailed(txMeta.id, txSignError)
-      })
+        );
+        this.txStateManager.setTxStatusFailed(txMeta.id, txSignError);
+      });
   }
 
   /**
@@ -767,44 +767,44 @@ export default class TransactionController extends EventEmitter {
     this.txStateManager.on(
       'tx:status-update',
       this.emit.bind(this, 'tx:status-update'),
-    )
-    this._setupBlockTrackerListener()
+    );
+    this._setupBlockTrackerListener();
     this.pendingTxTracker.on('tx:warning', (txMeta) => {
       this.txStateManager.updateTx(
         txMeta,
         'transactions/pending-tx-tracker#event: tx:warning',
-      )
-    })
+      );
+    });
     this.pendingTxTracker.on(
       'tx:failed',
       this.txStateManager.setTxStatusFailed.bind(this.txStateManager),
-    )
+    );
     this.pendingTxTracker.on('tx:confirmed', (txId, transactionReceipt) =>
       this.confirmTransaction(txId, transactionReceipt),
-    )
+    );
     this.pendingTxTracker.on(
       'tx:dropped',
       this.txStateManager.setTxStatusDropped.bind(this.txStateManager),
-    )
+    );
     this.pendingTxTracker.on('tx:block-update', (txMeta, latestBlockNumber) => {
       if (!txMeta.firstRetryBlockNumber) {
-        txMeta.firstRetryBlockNumber = latestBlockNumber
+        txMeta.firstRetryBlockNumber = latestBlockNumber;
         this.txStateManager.updateTx(
           txMeta,
           'transactions/pending-tx-tracker#event: tx:block-update',
-        )
+        );
       }
-    })
+    });
     this.pendingTxTracker.on('tx:retry', (txMeta) => {
       if (!('retryCount' in txMeta)) {
-        txMeta.retryCount = 0
+        txMeta.retryCount = 0;
       }
-      txMeta.retryCount += 1
+      txMeta.retryCount += 1;
       this.txStateManager.updateTx(
         txMeta,
         'transactions/pending-tx-tracker#event: tx:retry',
-      )
-    })
+      );
+    });
   }
 
   /**
@@ -812,44 +812,44 @@ export default class TransactionController extends EventEmitter {
     contractDeployment, contractMethodCall
   */
   async _determineTransactionCategory(txParams) {
-    const { data, to } = txParams
-    let name
+    const { data, to } = txParams;
+    let name;
     try {
-      name = data && hstInterface.parseTransaction({ data }).name
+      name = data && hstInterface.parseTransaction({ data }).name;
     } catch (error) {
-      log.debug('Failed to parse transaction data.', error, data)
+      log.debug('Failed to parse transaction data.', error, data);
     }
 
     const tokenMethodName = [
       TRANSACTION_CATEGORIES.TOKEN_METHOD_APPROVE,
       TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER,
       TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER_FROM,
-    ].find((methodName) => methodName === name && name.toLowerCase())
+    ].find((methodName) => methodName === name && name.toLowerCase());
 
-    let result
+    let result;
     if (data && tokenMethodName) {
-      result = tokenMethodName
+      result = tokenMethodName;
     } else if (data && !to) {
-      result = TRANSACTION_CATEGORIES.DEPLOY_CONTRACT
+      result = TRANSACTION_CATEGORIES.DEPLOY_CONTRACT;
     }
 
-    let code
+    let code;
     if (!result) {
       try {
-        code = await this.query.getCode(to)
+        code = await this.query.getCode(to);
       } catch (e) {
-        code = null
-        log.warn(e)
+        code = null;
+        log.warn(e);
       }
 
-      const codeIsEmpty = !code || code === '0x' || code === '0x0'
+      const codeIsEmpty = !code || code === '0x' || code === '0x0';
 
       result = codeIsEmpty
         ? TRANSACTION_CATEGORIES.SENT_ETHER
-        : TRANSACTION_CATEGORIES.CONTRACT_INTERACTION
+        : TRANSACTION_CATEGORIES.CONTRACT_INTERACTION;
     }
 
-    return { transactionCategory: result, getCodeResponse: code }
+    return { transactionCategory: result, getCodeResponse: code };
   }
 
   /**
@@ -860,56 +860,56 @@ export default class TransactionController extends EventEmitter {
   */
   _markNonceDuplicatesDropped(txId) {
     // get the confirmed transactions nonce and from address
-    const txMeta = this.txStateManager.getTx(txId)
-    const { nonce, from } = txMeta.txParams
-    const sameNonceTxs = this.txStateManager.getFilteredTxList({ nonce, from })
+    const txMeta = this.txStateManager.getTx(txId);
+    const { nonce, from } = txMeta.txParams;
+    const sameNonceTxs = this.txStateManager.getFilteredTxList({ nonce, from });
     if (!sameNonceTxs.length) {
-      return
+      return;
     }
     // mark all same nonce transactions as dropped and give i a replacedBy hash
     sameNonceTxs.forEach((otherTxMeta) => {
       if (otherTxMeta.id === txId) {
-        return
+        return;
       }
-      otherTxMeta.replacedBy = txMeta.hash
+      otherTxMeta.replacedBy = txMeta.hash;
       this.txStateManager.updateTx(
         txMeta,
         'transactions/pending-tx-tracker#event: tx:confirmed reference to confirmed txHash with same nonce',
-      )
-      this.txStateManager.setTxStatusDropped(otherTxMeta.id)
-    })
+      );
+      this.txStateManager.setTxStatusDropped(otherTxMeta.id);
+    });
   }
 
   _setupBlockTrackerListener() {
-    let listenersAreActive = false
-    const latestBlockHandler = this._onLatestBlock.bind(this)
-    const { blockTracker, txStateManager } = this
+    let listenersAreActive = false;
+    const latestBlockHandler = this._onLatestBlock.bind(this);
+    const { blockTracker, txStateManager } = this;
 
-    txStateManager.on('tx:status-update', updateSubscription)
-    updateSubscription()
+    txStateManager.on('tx:status-update', updateSubscription);
+    updateSubscription();
 
     function updateSubscription() {
-      const pendingTxs = txStateManager.getPendingTransactions()
+      const pendingTxs = txStateManager.getPendingTransactions();
       if (!listenersAreActive && pendingTxs.length > 0) {
-        blockTracker.on('latest', latestBlockHandler)
-        listenersAreActive = true
+        blockTracker.on('latest', latestBlockHandler);
+        listenersAreActive = true;
       } else if (listenersAreActive && !pendingTxs.length) {
-        blockTracker.removeListener('latest', latestBlockHandler)
-        listenersAreActive = false
+        blockTracker.removeListener('latest', latestBlockHandler);
+        listenersAreActive = false;
       }
     }
   }
 
   async _onLatestBlock(blockNumber) {
     try {
-      await this.pendingTxTracker.updatePendingTxs()
+      await this.pendingTxTracker.updatePendingTxs();
     } catch (err) {
-      log.error(err)
+      log.error(err);
     }
     try {
-      await this.pendingTxTracker.resubmitPendingTxs(blockNumber)
+      await this.pendingTxTracker.resubmitPendingTxs(blockNumber);
     } catch (err) {
-      log.error(err)
+      log.error(err);
     }
   }
 
@@ -917,11 +917,11 @@ export default class TransactionController extends EventEmitter {
     Updates the memStore in transaction controller
   */
   _updateMemstore() {
-    const unapprovedTxs = this.txStateManager.getUnapprovedTxList()
+    const unapprovedTxs = this.txStateManager.getUnapprovedTxList();
     const currentNetworkTxList = this.txStateManager.getTxList(
       MAX_MEMSTORE_TX_LIST_SIZE,
-    )
-    this.memStore.updateState({ unapprovedTxs, currentNetworkTxList })
+    );
+    this.memStore.updateState({ unapprovedTxs, currentNetworkTxList });
   }
 
   _trackSwapsMetrics(txMeta, approvalTxMeta) {
@@ -931,7 +931,7 @@ export default class TransactionController extends EventEmitter {
           event: 'Swap Failed',
           sensitiveProperties: { ...txMeta.swapMetaData },
           category: 'swaps',
-        })
+        });
       } else {
         const tokensReceived = getSwapsTokensReceivedFromTxMeta(
           txMeta.destinationTokenSymbol,
@@ -940,12 +940,12 @@ export default class TransactionController extends EventEmitter {
           txMeta.txParams.from,
           txMeta.destinationTokenDecimals,
           approvalTxMeta,
-        )
+        );
 
         const quoteVsExecutionRatio = `${new BigNumber(tokensReceived, 10)
           .div(txMeta.swapMetaData.token_to_amount, 10)
           .times(100)
-          .round(2)}%`
+          .round(2)}%`;
 
         const estimatedVsUsedGasRatio = `${new BigNumber(
           txMeta.txReceipt.gasUsed,
@@ -953,7 +953,7 @@ export default class TransactionController extends EventEmitter {
         )
           .div(txMeta.swapMetaData.estimated_gas, 10)
           .times(100)
-          .round(2)}%`
+          .round(2)}%`;
 
         this._trackMetaMetricsEvent({
           event: 'Swap Completed',
@@ -964,7 +964,7 @@ export default class TransactionController extends EventEmitter {
             quote_vs_executionRatio: quoteVsExecutionRatio,
             estimated_vs_used_gasRatio: estimatedVsUsedGasRatio,
           },
-        })
+        });
       }
     }
   }

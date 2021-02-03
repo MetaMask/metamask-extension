@@ -1,31 +1,31 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 export default class Tabs extends Component {
   static defaultProps = {
     defaultActiveTabName: null,
     onTabClick: null,
     tabsClassName: undefined,
-  }
+  };
 
   static propTypes = {
     defaultActiveTabName: PropTypes.string,
     onTabClick: PropTypes.func,
     children: PropTypes.node.isRequired,
     tabsClassName: PropTypes.string,
-  }
+  };
 
   state = {
     activeTabIndex: Math.max(
       this._findChildByName(this.props.defaultActiveTabName),
       0,
     ),
-  }
+  };
 
   handleTabClick(tabIndex, tabName) {
-    const { onTabClick } = this.props
-    const { activeTabIndex } = this.state
+    const { onTabClick } = this.props;
+    const { activeTabIndex } = this.state;
 
     if (tabIndex !== activeTabIndex) {
       this.setState(
@@ -34,18 +34,18 @@ export default class Tabs extends Component {
         },
         () => {
           if (onTabClick) {
-            onTabClick(tabName)
+            onTabClick(tabName);
           }
         },
-      )
+      );
     }
   }
 
   renderTabs() {
-    const numberOfTabs = React.Children.count(this.props.children)
+    const numberOfTabs = React.Children.count(this.props.children);
 
     return React.Children.map(this.props.children, (child, index) => {
-      const tabName = child?.props.name
+      const tabName = child?.props.name;
       return (
         child &&
         React.cloneElement(child, {
@@ -53,28 +53,28 @@ export default class Tabs extends Component {
           tabIndex: index,
           isActive: numberOfTabs > 1 && index === this.state.activeTabIndex,
         })
-      )
-    })
+      );
+    });
   }
 
   renderActiveTabContent() {
-    const { children } = this.props
-    const { activeTabIndex } = this.state
+    const { children } = this.props;
+    const { activeTabIndex } = this.state;
 
     if (
       (Array.isArray(children) && !children[activeTabIndex]) ||
       (!Array.isArray(children) && activeTabIndex !== 0)
     ) {
-      throw new Error(`Tab at index '${activeTabIndex}' does not exist`)
+      throw new Error(`Tab at index '${activeTabIndex}' does not exist`);
     }
 
     return children[activeTabIndex]
       ? children[activeTabIndex].props.children
-      : children.props.children
+      : children.props.children;
   }
 
   render() {
-    const { tabsClassName } = this.props
+    const { tabsClassName } = this.props;
     return (
       <div className="tabs">
         <ul className={classnames('tabs__list', tabsClassName)}>
@@ -82,7 +82,7 @@ export default class Tabs extends Component {
         </ul>
         <div className="tabs__content">{this.renderActiveTabContent()}</div>
       </div>
-    )
+    );
   }
 
   /**
@@ -94,6 +94,6 @@ export default class Tabs extends Component {
   _findChildByName(name) {
     return React.Children.toArray(this.props.children).findIndex(
       (c) => c?.props.name === name,
-    )
+    );
   }
 }

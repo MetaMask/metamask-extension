@@ -1,1 +1,1 @@
-export { default } from './hex-to-decimal.component'
+export { default } from './hex-to-decimal.component';

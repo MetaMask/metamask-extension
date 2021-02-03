@@ -1,13 +1,13 @@
-import assert from 'assert'
-import { renderHook } from '@testing-library/react-hooks'
-import * as reactRedux from 'react-redux'
-import sinon from 'sinon'
-import { useCurrencyDisplay } from '../useCurrencyDisplay'
+import assert from 'assert';
+import { renderHook } from '@testing-library/react-hooks';
+import * as reactRedux from 'react-redux';
+import sinon from 'sinon';
+import { useCurrencyDisplay } from '../useCurrencyDisplay';
 import {
   getCurrentCurrency,
   getNativeCurrency,
   getConversionRate,
-} from '../../selectors'
+} from '../../selectors';
 
 const tests = [
   {
@@ -97,34 +97,34 @@ const tests = [
       displayValue: '0.000000001',
     },
   },
-]
+];
 
 describe('useCurrencyDisplay', function () {
   tests.forEach(({ input: { value, ...restProps }, result }) => {
     describe(`when input is { value: ${value}, decimals: ${restProps.numberOfDecimals}, denomation: ${restProps.denomination} }`, function () {
-      const stub = sinon.stub(reactRedux, 'useSelector')
+      const stub = sinon.stub(reactRedux, 'useSelector');
       stub.callsFake((selector) => {
         if (selector === getCurrentCurrency) {
-          return 'usd'
+          return 'usd';
         } else if (selector === getNativeCurrency) {
-          return 'ETH'
+          return 'ETH';
         } else if (selector === getConversionRate) {
-          return 280.45
+          return 280.45;
         }
-        return undefined
-      })
-      const hookReturn = renderHook(() => useCurrencyDisplay(value, restProps))
-      const [displayValue, parts] = hookReturn.result.current
-      stub.restore()
+        return undefined;
+      });
+      const hookReturn = renderHook(() => useCurrencyDisplay(value, restProps));
+      const [displayValue, parts] = hookReturn.result.current;
+      stub.restore();
       it(`should return ${result.displayValue} as displayValue`, function () {
-        assert.strictEqual(displayValue, result.displayValue)
-      })
+        assert.strictEqual(displayValue, result.displayValue);
+      });
       it(`should return ${result.value} as value`, function () {
-        assert.strictEqual(parts.value, result.value)
-      })
+        assert.strictEqual(parts.value, result.value);
+      });
       it(`should return ${result.suffix} as suffix`, function () {
-        assert.strictEqual(parts.suffix, result.suffix)
-      })
-    })
-  })
-})
+        assert.strictEqual(parts.suffix, result.suffix);
+      });
+    });
+  });
+});

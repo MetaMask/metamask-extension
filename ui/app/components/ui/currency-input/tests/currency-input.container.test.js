@@ -1,17 +1,17 @@
-import assert from 'assert'
-import proxyquire from 'proxyquire'
+import assert from 'assert';
+import proxyquire from 'proxyquire';
 
-let mapStateToProps, mergeProps
+let mapStateToProps, mergeProps;
 
 proxyquire('../currency-input.container.js', {
   'react-redux': {
     connect: (ms, _, mp) => {
-      mapStateToProps = ms
-      mergeProps = mp
-      return () => ({})
+      mapStateToProps = ms;
+      mergeProps = mp;
+      return () => ({});
     },
   },
-})
+});
 
 describe('CurrencyInput container', function () {
   describe('mapStateToProps()', function () {
@@ -111,14 +111,14 @@ describe('CurrencyInput container', function () {
           hideFiat: false,
         },
       },
-    ]
+    ];
 
     tests.forEach(({ mockState, expected, comment }) => {
       it(comment, function () {
-        return assert.deepStrictEqual(mapStateToProps(mockState), expected)
-      })
-    })
-  })
+        return assert.deepStrictEqual(mapStateToProps(mockState), expected);
+      });
+    });
+  });
 
   describe('mergeProps()', function () {
     const tests = [
@@ -164,7 +164,7 @@ describe('CurrencyInput container', function () {
           fiatSuffix: 'USD',
         },
       },
-    ]
+    ];
 
     tests.forEach(
       ({
@@ -176,9 +176,9 @@ describe('CurrencyInput container', function () {
           assert.deepStrictEqual(
             mergeProps(stateProps, dispatchProps, ownProps),
             expected,
-          )
-        })
+          );
+        });
       },
-    )
-  })
-})
+    );
+  });
+});

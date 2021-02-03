@@ -1,18 +1,18 @@
-import { useMemo } from 'react'
-import { useSelector } from 'react-redux'
-import contractMap from '@metamask/contract-metadata'
-import BigNumber from 'bignumber.js'
-import { isEqual, shuffle } from 'lodash'
-import { checksumAddress } from '../helpers/utils/util'
-import { getTokenFiatAmount } from '../helpers/utils/token-util'
+import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import contractMap from '@metamask/contract-metadata';
+import BigNumber from 'bignumber.js';
+import { isEqual, shuffle } from 'lodash';
+import { checksumAddress } from '../helpers/utils/util';
+import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import {
   getTokenExchangeRates,
   getConversionRate,
   getCurrentCurrency,
-} from '../selectors'
-import { getSwapsTokens } from '../ducks/swaps/swaps'
-import { useSwapsEthToken } from './useSwapsEthToken'
-import { useEqualityCheck } from './useEqualityCheck'
+} from '../selectors';
+import { getSwapsTokens } from '../ducks/swaps/swaps';
+import { useSwapsEthToken } from './useSwapsEthToken';
+import { useEqualityCheck } from './useEqualityCheck';
 
 const tokenList = shuffle(
   Object.entries(contractMap)
@@ -21,7 +21,7 @@ const tokenList = shuffle(
       address: address.toLowerCase(),
     }))
     .filter((tokenData) => Boolean(tokenData.erc20)),
-)
+);
 
 export function getRenderableTokenData(
   token,
@@ -29,7 +29,7 @@ export function getRenderableTokenData(
   conversionRate,
   currentCurrency,
 ) {
-  const { symbol, name, address, iconUrl, string, balance, decimals } = token
+  const { symbol, name, address, iconUrl, string, balance, decimals } = token;
 
   const formattedFiat =
     getTokenFiatAmount(
@@ -39,7 +39,7 @@ export function getRenderableTokenData(
       string,
       symbol,
       true,
-    ) || ''
+    ) || '';
   const rawFiat =
     getTokenFiatAmount(
       symbol === 'ETH' ? 1 : contractExchangeRates[address],
@@ -48,11 +48,11 @@ export function getRenderableTokenData(
       string,
       symbol,
       false,
-    ) || ''
+    ) || '';
   const usedIconUrl =
     iconUrl ||
     (contractMap[checksumAddress(address)] &&
-      `images/contract/${contractMap[checksumAddress(address)].logo}`)
+      `images/contract/${contractMap[checksumAddress(address)].logo}`);
   return {
     ...token,
     primaryLabel: symbol,
@@ -66,7 +66,7 @@ export function getRenderableTokenData(
     decimals,
     name: name || contractMap[checksumAddress(address)]?.name,
     rawFiat,
-  }
+  };
 }
 
 export function useTokensToSearch({
@@ -76,47 +76,47 @@ export function useTokensToSearch({
   onlyEth,
   singleToken,
 }) {
-  const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual)
-  const conversionRate = useSelector(getConversionRate)
-  const currentCurrency = useSelector(getCurrentCurrency)
+  const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
+  const conversionRate = useSelector(getConversionRate);
+  const currentCurrency = useSelector(getCurrentCurrency);
 
-  const memoizedTopTokens = useEqualityCheck(topTokens)
-  const memoizedUsersToken = useEqualityCheck(usersTokens)
+  const memoizedTopTokens = useEqualityCheck(topTokens);
+  const memoizedUsersToken = useEqualityCheck(usersTokens);
 
-  const swapsEthToken = useSwapsEthToken()
+  const swapsEthToken = useSwapsEthToken();
   const ethToken = getRenderableTokenData(
     swapsEthToken,
     tokenConversionRates,
     conversionRate,
     currentCurrency,
-  )
-  const memoizedEthToken = useEqualityCheck(ethToken)
+  );
+  const memoizedEthToken = useEqualityCheck(ethToken);
 
-  const swapsTokens = useSelector(getSwapsTokens) || []
-  let tokensToSearch
+  const swapsTokens = useSelector(getSwapsTokens) || [];
+  let tokensToSearch;
   if (onlyEth) {
-    tokensToSearch = [memoizedEthToken]
+    tokensToSearch = [memoizedEthToken];
   } else if (singleToken) {
-    tokensToSearch = providedTokens
+    tokensToSearch = providedTokens;
   } else if (providedTokens) {
-    tokensToSearch = [memoizedEthToken, ...providedTokens]
+    tokensToSearch = [memoizedEthToken, ...providedTokens];
   } else if (swapsTokens.length) {
-    tokensToSearch = [memoizedEthToken, ...swapsTokens]
+    tokensToSearch = [memoizedEthToken, ...swapsTokens];
   } else {
-    tokensToSearch = [memoizedEthToken, ...tokenList]
+    tokensToSearch = [memoizedEthToken, ...tokenList];
   }
-  const memoizedTokensToSearch = useEqualityCheck(tokensToSearch)
+  const memoizedTokensToSearch = useEqualityCheck(tokensToSearch);
   return useMemo(() => {
     const usersTokensAddressMap = memoizedUsersToken.reduce(
       (acc, token) => ({ ...acc, [token.address]: token }),
       {},
-    )
+    );
 
     const tokensToSearchBuckets = {
       owned: singleToken ? [] : [memoizedEthToken],
       top: [],
       others: [],
-    }
+    };
 
     memoizedTokensToSearch.forEach((token) => {
       const renderableDataToken = getRenderableTokenData(
@@ -124,33 +124,33 @@ export function useTokensToSearch({
         tokenConversionRates,
         conversionRate,
         currentCurrency,
-      )
+      );
       if (
         usersTokensAddressMap[token.address] &&
         (renderableDataToken.symbol === 'ETH' ||
           Number(renderableDataToken.balance ?? 0) !== 0)
       ) {
-        tokensToSearchBuckets.owned.push(renderableDataToken)
+        tokensToSearchBuckets.owned.push(renderableDataToken);
       } else if (memoizedTopTokens[token.address]) {
         tokensToSearchBuckets.top[
           memoizedTopTokens[token.address].index
-        ] = renderableDataToken
+        ] = renderableDataToken;
       } else {
-        tokensToSearchBuckets.others.push(renderableDataToken)
+        tokensToSearchBuckets.others.push(renderableDataToken);
       }
-    })
+    });
 
     tokensToSearchBuckets.owned = tokensToSearchBuckets.owned.sort(
       ({ rawFiat }, { rawFiat: secondRawFiat }) => {
-        return new BigNumber(rawFiat || 0).gt(secondRawFiat || 0) ? -1 : 1
+        return new BigNumber(rawFiat || 0).gt(secondRawFiat || 0) ? -1 : 1;
       },
-    )
-    tokensToSearchBuckets.top = tokensToSearchBuckets.top.filter(Boolean)
+    );
+    tokensToSearchBuckets.top = tokensToSearchBuckets.top.filter(Boolean);
     return [
       ...tokensToSearchBuckets.owned,
       ...tokensToSearchBuckets.top,
       ...tokensToSearchBuckets.others,
-    ]
+    ];
   }, [
     memoizedTokensToSearch,
     memoizedUsersToken,
@@ -160,5 +160,5 @@ export function useTokensToSearch({
     memoizedTopTokens,
     memoizedEthToken,
     singleToken,
-  ])
+  ]);
 }

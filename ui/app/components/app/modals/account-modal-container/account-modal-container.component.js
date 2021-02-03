@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types'
-import React from 'react'
-import classnames from 'classnames'
-import Identicon from '../../../ui/identicon'
+import PropTypes from 'prop-types';
+import React from 'react';
+import classnames from 'classnames';
+import Identicon from '../../../ui/identicon';
 
 export default function AccountModalContainer(props, context) {
   const {
@@ -11,7 +11,7 @@ export default function AccountModalContainer(props, context) {
     backButtonAction,
     hideModal,
     children,
-  } = props
+  } = props;
 
   return (
     <div
@@ -34,18 +34,18 @@ export default function AccountModalContainer(props, context) {
         {children}
       </div>
     </div>
-  )
+  );
 }
 
 AccountModalContainer.contextTypes = {
   t: PropTypes.func,
-}
+};
 
 AccountModalContainer.defaultProps = {
   showBackButton: false,
   children: null,
   backButtonAction: undefined,
-}
+};
 
 AccountModalContainer.propTypes = {
   className: PropTypes.string,
@@ -54,4 +54,4 @@ AccountModalContainer.propTypes = {
   backButtonAction: PropTypes.func,
   hideModal: PropTypes.func.isRequired,
   children: PropTypes.node,
-}
+};

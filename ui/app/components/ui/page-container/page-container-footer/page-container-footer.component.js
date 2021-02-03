@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import Button from '../../button'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import Button from '../../button';
 
 export default class PageContainerFooter extends Component {
   static propTypes = {
@@ -17,11 +17,11 @@ export default class PageContainerFooter extends Component {
     buttonSizeLarge: PropTypes.bool,
     footerClassName: PropTypes.string,
     footerButtonClassName: PropTypes.string,
-  }
+  };
 
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   render() {
     const {
@@ -37,7 +37,7 @@ export default class PageContainerFooter extends Component {
       buttonSizeLarge = false,
       footerClassName,
       footerButtonClassName,
-    } = this.props
+    } = this.props;
 
     return (
       <div className={classnames('page-container__footer', footerClassName)}>
@@ -76,6 +76,6 @@ export default class PageContainerFooter extends Component {
           <div className="page-container__footer-secondary">{children}</div>
         )}
       </div>
-    )
+    );
   }
 }

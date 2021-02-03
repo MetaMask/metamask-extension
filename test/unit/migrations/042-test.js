@@ -1,5 +1,5 @@
-import assert from 'assert'
-import migration42 from '../../../app/scripts/migrations/042'
+import assert from 'assert';
+import migration42 from '../../../app/scripts/migrations/042';
 
 describe('migration #42', function () {
   it('should update the version metadata', function (done) {
@@ -8,18 +8,18 @@ describe('migration #42', function () {
         version: 41,
       },
       data: {},
-    }
+    };
 
     migration42
       .migrate(oldStorage)
       .then((newStorage) => {
         assert.deepEqual(newStorage.meta, {
           version: 42,
-        })
-        done()
+        });
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should set connectedStatusPopoverHasBeenShown to false', function (done) {
     const oldStorage = {
@@ -31,7 +31,7 @@ describe('migration #42', function () {
         },
         foo: 'bar',
       },
-    }
+    };
 
     migration42
       .migrate(oldStorage)
@@ -42,11 +42,11 @@ describe('migration #42', function () {
             bar: 'baz',
           },
           foo: 'bar',
-        })
-        done()
+        });
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should initialize AppStateController if it does not exist', function (done) {
     const oldStorage = {
@@ -54,7 +54,7 @@ describe('migration #42', function () {
       data: {
         foo: 'bar',
       },
-    }
+    };
 
     migration42
       .migrate(oldStorage)
@@ -64,9 +64,9 @@ describe('migration #42', function () {
           AppStateController: {
             connectedStatusPopoverHasBeenShown: false,
           },
-        })
-        done()
+        });
+        done();
       })
-      .catch(done)
-  })
-})
+      .catch(done);
+  });
+});

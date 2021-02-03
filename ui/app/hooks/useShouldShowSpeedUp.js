@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
 /**
  * Evaluates whether the transaction is eligible to be sped up, and registers
@@ -8,12 +8,12 @@ import { useEffect, useState } from 'react'
  * @param {boolean} isEarliestNonce - Whether this group is currently the earliest nonce
  */
 export function useShouldShowSpeedUp(transactionGroup, isEarliestNonce) {
-  const { transactions, hasRetried } = transactionGroup
-  const [earliestTransaction = {}] = transactions
-  const { submittedTime } = earliestTransaction
+  const { transactions, hasRetried } = transactionGroup;
+  const [earliestTransaction = {}] = transactions;
+  const { submittedTime } = earliestTransaction;
   const [speedUpEnabled, setSpeedUpEnabled] = useState(() => {
-    return Date.now() - submittedTime > 5000 && isEarliestNonce && !hasRetried
-  })
+    return Date.now() - submittedTime > 5000 && isEarliestNonce && !hasRetried;
+  });
   useEffect(() => {
     // because this hook is optimized to only run on changes we have to
     // key into the changing time delta between submittedTime and now()
@@ -22,25 +22,25 @@ export function useShouldShowSpeedUp(transactionGroup, isEarliestNonce) {
     // also immediately set retryEnabled and not create a timeout if the
     // condition is already met. This effect will run anytime the variables
     // for determining enabled status change
-    let timeoutId
+    let timeoutId;
     if (!hasRetried && isEarliestNonce && !speedUpEnabled) {
       if (Date.now() - submittedTime > 5000) {
-        setSpeedUpEnabled(true)
+        setSpeedUpEnabled(true);
       } else {
         timeoutId = setTimeout(() => {
-          setSpeedUpEnabled(true)
-          clearTimeout(timeoutId)
-        }, 5001 - (Date.now() - submittedTime))
+          setSpeedUpEnabled(true);
+          clearTimeout(timeoutId);
+        }, 5001 - (Date.now() - submittedTime));
       }
     }
     // Anytime the effect is re-ran, make sure to remove a previously set timeout
     // so as to avoid multiple timers potentially overlapping
     return () => {
       if (timeoutId) {
-        clearTimeout(timeoutId)
+        clearTimeout(timeoutId);
       }
-    }
-  }, [submittedTime, speedUpEnabled, hasRetried, isEarliestNonce])
+    };
+  }, [submittedTime, speedUpEnabled, hasRetried, isEarliestNonce]);
 
-  return speedUpEnabled
+  return speedUpEnabled;
 }

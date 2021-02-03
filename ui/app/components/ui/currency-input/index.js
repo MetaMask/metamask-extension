@@ -1,1 +1,1 @@
-export { default } from './currency-input.container'
+export { default } from './currency-input.container';

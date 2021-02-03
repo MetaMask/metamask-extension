@@ -1,17 +1,17 @@
-import React, { useContext, useMemo } from 'react'
-import PropTypes from 'prop-types'
-import BigNumber from 'bignumber.js'
-import { I18nContext } from '../../contexts/i18n'
-import ConfirmTransactionBase from '../confirm-transaction-base'
-import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display'
+import React, { useContext, useMemo } from 'react';
+import PropTypes from 'prop-types';
+import BigNumber from 'bignumber.js';
+import { I18nContext } from '../../contexts/i18n';
+import ConfirmTransactionBase from '../confirm-transaction-base';
+import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display';
 import {
   formatCurrency,
   convertTokenToFiat,
   addFiat,
   roundExponential,
-} from '../../helpers/utils/confirm-tx.util'
-import { getWeiHexFromDecimalValue } from '../../helpers/utils/conversions.util'
-import { ETH, PRIMARY } from '../../helpers/constants/common'
+} from '../../helpers/utils/confirm-tx.util';
+import { getWeiHexFromDecimalValue } from '../../helpers/utils/conversions.util';
+import { ETH, PRIMARY } from '../../helpers/constants/common';
 
 export default function ConfirmTokenTransactionBase({
   toAddress,
@@ -24,27 +24,27 @@ export default function ConfirmTokenTransactionBase({
   conversionRate,
   currentCurrency,
 }) {
-  const t = useContext(I18nContext)
+  const t = useContext(I18nContext);
 
   const hexWeiValue = useMemo(() => {
     if (tokenAmount === '0' || !contractExchangeRate) {
-      return '0'
+      return '0';
     }
 
     const decimalEthValue = new BigNumber(tokenAmount)
       .times(new BigNumber(contractExchangeRate))
-      .toFixed()
+      .toFixed();
 
     return getWeiHexFromDecimalValue({
       value: decimalEthValue,
       fromCurrency: ETH,
       fromDenomination: ETH,
-    })
-  }, [tokenAmount, contractExchangeRate])
+    });
+  }, [tokenAmount, contractExchangeRate]);
 
   const secondaryTotalTextOverride = useMemo(() => {
     if (typeof contractExchangeRate === 'undefined') {
-      return formatCurrency(fiatTransactionTotal, currentCurrency)
+      return formatCurrency(fiatTransactionTotal, currentCurrency);
     }
 
     const fiatTransactionAmount = convertTokenToFiat({
@@ -52,19 +52,19 @@ export default function ConfirmTokenTransactionBase({
       toCurrency: currentCurrency,
       conversionRate,
       contractExchangeRate,
-    })
-    const fiatTotal = addFiat(fiatTransactionAmount, fiatTransactionTotal)
-    const roundedFiatTotal = roundExponential(fiatTotal)
-    return formatCurrency(roundedFiatTotal, currentCurrency)
+    });
+    const fiatTotal = addFiat(fiatTransactionAmount, fiatTransactionTotal);
+    const roundedFiatTotal = roundExponential(fiatTotal);
+    return formatCurrency(roundedFiatTotal, currentCurrency);
   }, [
     currentCurrency,
     conversionRate,
     contractExchangeRate,
     fiatTransactionTotal,
     tokenAmount,
-  ])
+  ]);
 
-  const tokensText = `${tokenAmount} ${tokenSymbol}`
+  const tokensText = `${tokenAmount} ${tokenSymbol}`;
 
   return (
     <ConfirmTransactionBase
@@ -92,7 +92,7 @@ export default function ConfirmTokenTransactionBase({
       }
       secondaryTotalTextOverride={secondaryTotalTextOverride}
     />
-  )
+  );
 }
 
 ConfirmTokenTransactionBase.propTypes = {
@@ -105,4 +105,4 @@ ConfirmTokenTransactionBase.propTypes = {
   contractExchangeRate: PropTypes.number,
   conversionRate: PropTypes.number,
   currentCurrency: PropTypes.string,
-}
+};

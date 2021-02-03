@@ -5,33 +5,33 @@ This migration moves the identities stored in the KeyringController
 
 */
 
-import { cloneDeep } from 'lodash'
+import { cloneDeep } from 'lodash';
 
-const version = 26
+const version = 26;
 
 export default {
   version,
   migrate(originalVersionedData) {
-    const versionedData = cloneDeep(originalVersionedData)
-    versionedData.meta.version = version
+    const versionedData = cloneDeep(originalVersionedData);
+    versionedData.meta.version = version;
     try {
-      const state = versionedData.data
-      versionedData.data = transformState(state)
+      const state = versionedData.data;
+      versionedData.data = transformState(state);
     } catch (err) {
-      console.warn(`MetaMask Migration #${version}${err.stack}`)
-      return Promise.reject(err)
+      console.warn(`MetaMask Migration #${version}${err.stack}`);
+      return Promise.reject(err);
     }
-    return Promise.resolve(versionedData)
+    return Promise.resolve(versionedData);
   },
-}
+};
 
 function transformState(state) {
   if (!state.KeyringController || !state.PreferencesController) {
-    return state
+    return state;
   }
 
   if (!state.KeyringController.walletNicknames) {
-    return state
+    return state;
   }
 
   state.PreferencesController.identities = Object.keys(
@@ -40,9 +40,9 @@ function transformState(state) {
     identities[address] = {
       name: state.KeyringController.walletNicknames[address],
       address,
-    }
-    return identities
-  }, {})
-  delete state.KeyringController.walletNicknames
-  return state
+    };
+    return identities;
+  }, {});
+  delete state.KeyringController.walletNicknames;
+  return state;
 }

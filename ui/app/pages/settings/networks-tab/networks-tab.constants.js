@@ -9,7 +9,7 @@ import {
   RINKEBY_CHAIN_ID,
   ROPSTEN,
   ROPSTEN_CHAIN_ID,
-} from '../../../../../shared/constants/network'
+} from '../../../../../shared/constants/network';
 
 const defaultNetworksData = [
   {
@@ -57,6 +57,6 @@ const defaultNetworksData = [
     ticker: 'ETH',
     blockExplorerUrl: 'https://kovan.etherscan.io',
   },
-]
+];
 
-export { defaultNetworksData }
+export { defaultNetworksData };

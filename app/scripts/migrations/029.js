@@ -1,14 +1,14 @@
 // next version number
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction'
-import failTxsThat from './fail-tx'
+import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import failTxsThat from './fail-tx';
 
-const version = 29
+const version = 29;
 
 // time
-const seconds = 1000
-const minutes = 60 * seconds
-const hours = 60 * minutes
-const unacceptableDelay = 12 * hours
+const seconds = 1000;
+const minutes = 60 * seconds;
+const hours = 60 * minutes;
+const unacceptableDelay = 12 * hours;
 
 /*
 
@@ -23,10 +23,10 @@ export default {
     version,
     'Stuck in approved state for too long.',
     (txMeta) => {
-      const isApproved = txMeta.status === TRANSACTION_STATUSES.APPROVED
-      const createdTime = txMeta.submittedTime
-      const now = Date.now()
-      return isApproved && now - createdTime > unacceptableDelay
+      const isApproved = txMeta.status === TRANSACTION_STATUSES.APPROVED;
+      const createdTime = txMeta.submittedTime;
+      const now = Date.now();
+      return isApproved && now - createdTime > unacceptableDelay;
     },
   ),
-}
+};

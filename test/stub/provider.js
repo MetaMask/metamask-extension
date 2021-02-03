@@ -1,10 +1,10 @@
-import { JsonRpcEngine } from 'json-rpc-engine'
-import scaffoldMiddleware from 'eth-json-rpc-middleware/scaffold'
-import providerAsMiddleware from 'eth-json-rpc-middleware/providerAsMiddleware'
-import GanacheCore from 'ganache-core'
+import { JsonRpcEngine } from 'json-rpc-engine';
+import scaffoldMiddleware from 'eth-json-rpc-middleware/scaffold';
+import providerAsMiddleware from 'eth-json-rpc-middleware/providerAsMiddleware';
+import GanacheCore from 'ganache-core';
 
 export function getTestSeed() {
-  return 'people carpet cluster attract ankle motor ozone mass dove original primary mask'
+  return 'people carpet cluster attract ankle motor ozone mass dove original primary mask';
 }
 
 export function getTestAccounts() {
@@ -30,22 +30,22 @@ export function getTestAccounts() {
         'hex',
       ),
     },
-  ]
+  ];
 }
 
 export function createEngineForTestData() {
-  return new JsonRpcEngine()
+  return new JsonRpcEngine();
 }
 
 export function providerFromEngine(engine) {
-  const provider = { sendAsync: engine.handle.bind(engine) }
-  return provider
+  const provider = { sendAsync: engine.handle.bind(engine) };
+  return provider;
 }
 
 export function createTestProviderTools(opts = {}) {
-  const engine = createEngineForTestData()
+  const engine = createEngineForTestData();
   // handle provided hooks
-  engine.push(scaffoldMiddleware(opts.scaffold || {}))
+  engine.push(scaffoldMiddleware(opts.scaffold || {}));
   // handle block tracker methods
   engine.push(
     providerAsMiddleware(
@@ -56,8 +56,8 @@ export function createTestProviderTools(opts = {}) {
         _chainIdRpc: opts.chainId,
       }),
     ),
-  )
+  );
   // wrap in standard provider interface
-  const provider = providerFromEngine(engine)
-  return { provider, engine }
+  const provider = providerFromEngine(engine);
+  return { provider, engine };
 }

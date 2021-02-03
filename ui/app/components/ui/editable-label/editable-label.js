@@ -1,33 +1,33 @@
-import classnames from 'classnames'
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
 class EditableLabel extends Component {
   static propTypes = {
     onSubmit: PropTypes.func.isRequired,
     defaultValue: PropTypes.string,
     className: PropTypes.string,
-  }
+  };
 
   state = {
     isEditing: false,
     value: this.props.defaultValue || '',
-  }
+  };
 
   handleSubmit() {
-    const { value } = this.state
+    const { value } = this.state;
 
     if (value === '') {
-      return
+      return;
     }
 
     Promise.resolve(this.props.onSubmit(value)).then(() =>
       this.setState({ isEditing: false }),
-    )
+    );
   }
 
   renderEditing() {
-    const { value } = this.state
+    const { value } = this.state;
 
     return [
       <input
@@ -38,7 +38,7 @@ class EditableLabel extends Component {
         value={this.state.value}
         onKeyPress={(event) => {
           if (event.key === 'Enter') {
-            this.handleSubmit()
+            this.handleSubmit();
           }
         }}
         onChange={(event) => this.setState({ value: event.target.value })}
@@ -54,7 +54,7 @@ class EditableLabel extends Component {
       >
         <i className="fa fa-check editable-label__icon" />
       </button>,
-    ]
+    ];
   }
 
   renderReadonly() {
@@ -69,19 +69,19 @@ class EditableLabel extends Component {
       >
         <i className="fas fa-pencil-alt editable-label__icon" />
       </button>,
-    ]
+    ];
   }
 
   render() {
-    const { isEditing } = this.state
-    const { className } = this.props
+    const { isEditing } = this.state;
+    const { className } = this.props;
 
     return (
       <div className={classnames('editable-label', className)}>
         {isEditing ? this.renderEditing() : this.renderReadonly()}
       </div>
-    )
+    );
   }
 }
 
-export default EditableLabel
+export default EditableLabel;

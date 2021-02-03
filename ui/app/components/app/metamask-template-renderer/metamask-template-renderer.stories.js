@@ -1,11 +1,11 @@
-import React from 'react'
-import { object } from '@storybook/addon-knobs'
-import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system'
-import MetaMaskTemplateRenderer from '.'
+import React from 'react';
+import { object } from '@storybook/addon-knobs';
+import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
+import MetaMaskTemplateRenderer from '.';
 
 export default {
   title: 'MetaMask Template Renderer',
-}
+};
 
 const SECTIONS = {
   element: 'Box',
@@ -83,10 +83,10 @@ const SECTIONS = {
       props: { justifyContent: 'space-between', padding: [0, 4] },
     },
   ],
-}
+};
 export const metaMaskTemplateRenderer = () => (
   <MetaMaskTemplateRenderer sections={object('sections', SECTIONS)} />
-)
+);
 
 export const withInvalidElement = () => (
   <MetaMaskTemplateRenderer
@@ -103,4 +103,4 @@ export const withInvalidElement = () => (
       },
     ])}
   />
-)
+);

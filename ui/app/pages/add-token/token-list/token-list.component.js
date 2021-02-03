@@ -1,20 +1,20 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import { checkExistingAddresses } from '../../../helpers/utils/util'
-import TokenListPlaceholder from './token-list-placeholder'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import { checkExistingAddresses } from '../../../helpers/utils/util';
+import TokenListPlaceholder from './token-list-placeholder';
 
 export default class TokenList extends Component {
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     tokens: PropTypes.array,
     results: PropTypes.array,
     selectedTokens: PropTypes.object,
     onToggleToken: PropTypes.func,
-  }
+  };
 
   render() {
     const {
@@ -22,7 +22,7 @@ export default class TokenList extends Component {
       selectedTokens = {},
       onToggleToken,
       tokens = [],
-    } = this.props
+    } = this.props;
 
     return results.length === 0 ? (
       <TokenListPlaceholder />
@@ -35,10 +35,10 @@ export default class TokenList extends Component {
           {Array(6)
             .fill(undefined)
             .map((_, i) => {
-              const { logo, symbol, name, address } = results[i] || {}
-              const tokenAlreadyAdded = checkExistingAddresses(address, tokens)
+              const { logo, symbol, name, address } = results[i] || {};
+              const tokenAlreadyAdded = checkExistingAddresses(address, tokens);
               const onClick = () =>
-                !tokenAlreadyAdded && onToggleToken(results[i])
+                !tokenAlreadyAdded && onToggleToken(results[i]);
 
               return (
                 Boolean(logo || symbol || name) && (
@@ -63,10 +63,10 @@ export default class TokenList extends Component {
                     </div>
                   </div>
                 )
-              )
+              );
             })}
         </div>
       </div>
-    )
+    );
   }
 }

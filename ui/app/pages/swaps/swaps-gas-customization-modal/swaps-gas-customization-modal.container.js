@@ -1,6 +1,6 @@
-import { connect } from 'react-redux'
-import BigNumber from 'bignumber.js'
-import { hideModal, customSwapsGasParamsUpdated } from '../../../store/actions'
+import { connect } from 'react-redux';
+import BigNumber from 'bignumber.js';
+import { hideModal, customSwapsGasParamsUpdated } from '../../../store/actions';
 import {
   conversionRateSelector as getConversionRate,
   getCurrentCurrency,
@@ -8,7 +8,7 @@ import {
   getDefaultActiveButtonIndex,
   getRenderableGasButtonData,
   getUSDConversionRate,
-} from '../../../selectors'
+} from '../../../selectors';
 
 import {
   getSwapsCustomizationModalPrice,
@@ -20,22 +20,22 @@ import {
   swapCustomGasModalLimitEdited,
   shouldShowCustomPriceTooLowWarning,
   swapCustomGasModalClosed,
-} from '../../../ducks/swaps/swaps'
+} from '../../../ducks/swaps/swaps';
 
 import {
   addHexes,
   getValueFromWeiHex,
   sumHexWEIsToRenderableFiat,
-} from '../../../helpers/utils/conversions.util'
-import { formatETHFee } from '../../../helpers/utils/formatters'
-import { calcGasTotal, isBalanceSufficient } from '../../send/send.utils'
-import SwapsGasCustomizationModalComponent from './swaps-gas-customization-modal.component'
+} from '../../../helpers/utils/conversions.util';
+import { formatETHFee } from '../../../helpers/utils/formatters';
+import { calcGasTotal, isBalanceSufficient } from '../../send/send.utils';
+import SwapsGasCustomizationModalComponent from './swaps-gas-customization-modal.component';
 
 const mapStateToProps = (state) => {
-  const currentCurrency = getCurrentCurrency(state)
-  const conversionRate = getConversionRate(state)
+  const currentCurrency = getCurrentCurrency(state);
+  const conversionRate = getConversionRate(state);
 
-  const { modalState: { props: modalProps } = {} } = state.appState.modal || {}
+  const { modalState: { props: modalProps } = {} } = state.appState.modal || {};
   const {
     value,
     customGasLimitMessage = '',
@@ -44,18 +44,18 @@ const mapStateToProps = (state) => {
     initialGasPrice,
     initialGasLimit,
     minimumGasLimit,
-  } = modalProps
-  const buttonDataLoading = swapGasPriceEstimateIsLoading(state)
+  } = modalProps;
+  const buttonDataLoading = swapGasPriceEstimateIsLoading(state);
 
-  const swapsCustomizationModalPrice = getSwapsCustomizationModalPrice(state)
-  const swapsCustomizationModalLimit = getSwapsCustomizationModalLimit(state)
+  const swapsCustomizationModalPrice = getSwapsCustomizationModalPrice(state);
+  const swapsCustomizationModalLimit = getSwapsCustomizationModalLimit(state);
 
-  const customGasPrice = swapsCustomizationModalPrice || initialGasPrice
-  const customGasLimit = swapsCustomizationModalLimit || initialGasLimit
+  const customGasPrice = swapsCustomizationModalPrice || initialGasPrice;
+  const customGasLimit = swapsCustomizationModalLimit || initialGasLimit;
 
-  const customGasTotal = calcGasTotal(customGasLimit, customGasPrice)
+  const customGasTotal = calcGasTotal(customGasLimit, customGasPrice);
 
-  const swapsGasPriceEstimates = getSwapGasPriceEstimateData(state)
+  const swapsGasPriceEstimates = getSwapGasPriceEstimateData(state);
 
   const { averageEstimateData, fastEstimateData } = getRenderableGasButtonData(
     swapsGasPriceEstimates,
@@ -63,36 +63,36 @@ const mapStateToProps = (state) => {
     true,
     conversionRate,
     currentCurrency,
-  )
-  const gasButtonInfo = [averageEstimateData, fastEstimateData]
+  );
+  const gasButtonInfo = [averageEstimateData, fastEstimateData];
 
   const newTotalFiat = sumHexWEIsToRenderableFiat(
     [value, customGasTotal, customTotalSupplement],
     currentCurrency,
     conversionRate,
-  )
+  );
 
-  const balance = getCurrentEthBalance(state)
+  const balance = getCurrentEthBalance(state);
 
   const newTotalEth = sumHexWEIsToRenderableEth([
     value,
     customGasTotal,
     customTotalSupplement,
-  ])
+  ]);
 
-  const sendAmount = sumHexWEIsToRenderableEth([value, '0x0'])
+  const sendAmount = sumHexWEIsToRenderableEth([value, '0x0']);
 
   const insufficientBalance = !isBalanceSufficient({
     amount: value,
     gasTotal: customGasTotal,
     balance,
     conversionRate,
-  })
+  });
 
   const customGasLimitTooLow = new BigNumber(customGasLimit, 16).lt(
     minimumGasLimit,
     10,
-  )
+  );
 
   return {
     customGasPrice,
@@ -130,41 +130,41 @@ const mapStateToProps = (state) => {
     usdConversionRate: getUSDConversionRate(state),
     disableSave: insufficientBalance || customGasLimitTooLow,
     minimumGasLimit,
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
     cancelAndClose: () => {
-      dispatch(swapCustomGasModalClosed())
-      dispatch(hideModal())
+      dispatch(swapCustomGasModalClosed());
+      dispatch(hideModal());
     },
     onSubmit: async (gasLimit, gasPrice) => {
-      await dispatch(customSwapsGasParamsUpdated(gasLimit, gasPrice))
-      dispatch(swapCustomGasModalClosed())
-      dispatch(hideModal())
+      await dispatch(customSwapsGasParamsUpdated(gasLimit, gasPrice));
+      dispatch(swapCustomGasModalClosed());
+      dispatch(hideModal());
     },
     setSwapsCustomizationModalPrice: (newPrice) => {
-      dispatch(swapCustomGasModalPriceEdited(newPrice))
+      dispatch(swapCustomGasModalPriceEdited(newPrice));
     },
     setSwapsCustomizationModalLimit: (newLimit) => {
-      dispatch(swapCustomGasModalLimitEdited(newLimit))
+      dispatch(swapCustomGasModalLimitEdited(newLimit));
     },
-  }
-}
+  };
+};
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(SwapsGasCustomizationModalComponent)
+)(SwapsGasCustomizationModalComponent);
 
 function sumHexWEIsToRenderableEth(hexWEIs) {
-  const hexWEIsSum = hexWEIs.filter(Boolean).reduce(addHexes)
+  const hexWEIsSum = hexWEIs.filter(Boolean).reduce(addHexes);
   return formatETHFee(
     getValueFromWeiHex({
       value: hexWEIsSum,
       toCurrency: 'ETH',
       numberOfDecimals: 6,
     }),
-  )
+  );
 }

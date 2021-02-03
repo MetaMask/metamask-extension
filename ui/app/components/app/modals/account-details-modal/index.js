@@ -1,1 +1,1 @@
-export { default } from './account-details-modal.container'
+export { default } from './account-details-modal.container';

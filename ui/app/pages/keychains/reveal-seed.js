@@ -1,15 +1,15 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import { requestRevealSeedWords } from '../../store/actions'
-import ExportTextContainer from '../../components/ui/export-text-container'
-import { getMostRecentOverviewPage } from '../../ducks/history/history'
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import { requestRevealSeedWords } from '../../store/actions';
+import ExportTextContainer from '../../components/ui/export-text-container';
+import { getMostRecentOverviewPage } from '../../ducks/history/history';
 
-import Button from '../../components/ui/button'
+import Button from '../../components/ui/button';
 
-const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN'
-const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN'
+const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN';
+const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN';
 
 class RevealSeedPage extends Component {
   state = {
@@ -17,24 +17,24 @@ class RevealSeedPage extends Component {
     password: '',
     seedWords: null,
     error: null,
-  }
+  };
 
   componentDidMount() {
-    const passwordBox = document.getElementById('password-box')
+    const passwordBox = document.getElementById('password-box');
     if (passwordBox) {
-      passwordBox.focus()
+      passwordBox.focus();
     }
   }
 
   handleSubmit(event) {
-    event.preventDefault()
-    this.setState({ seedWords: null, error: null })
+    event.preventDefault();
+    this.setState({ seedWords: null, error: null });
     this.props
       .requestRevealSeedWords(this.state.password)
       .then((seedWords) =>
         this.setState({ seedWords, screen: REVEAL_SEED_SCREEN }),
       )
-      .catch((error) => this.setState({ error: error.message }))
+      .catch((error) => this.setState({ error: error.message }));
   }
 
   renderWarning() {
@@ -52,17 +52,17 @@ class RevealSeedPage extends Component {
           <div>{this.context.t('revealSeedWordsWarning')}</div>
         </div>
       </div>
-    )
+    );
   }
 
   renderContent() {
     return this.state.screen === PASSWORD_PROMPT_SCREEN
       ? this.renderPasswordPromptContent()
-      : this.renderRevealSeedContent()
+      : this.renderRevealSeedContent();
   }
 
   renderPasswordPromptContent() {
-    const { t } = this.context
+    const { t } = this.context;
 
     return (
       <form onSubmit={(event) => this.handleSubmit(event)}>
@@ -87,11 +87,11 @@ class RevealSeedPage extends Component {
           <div className="reveal-seed__error">{this.state.error}</div>
         )}
       </form>
-    )
+    );
   }
 
   renderRevealSeedContent() {
-    const { t } = this.context
+    const { t } = this.context;
 
     return (
       <div>
@@ -100,13 +100,13 @@ class RevealSeedPage extends Component {
         </label>
         <ExportTextContainer text={this.state.seedWords} />
       </div>
-    )
+    );
   }
 
   renderFooter() {
     return this.state.screen === PASSWORD_PROMPT_SCREEN
       ? this.renderPasswordPromptFooter()
-      : this.renderRevealSeedFooter()
+      : this.renderRevealSeedFooter();
   }
 
   renderPasswordPromptFooter() {
@@ -134,7 +134,7 @@ class RevealSeedPage extends Component {
           </Button>
         </footer>
       </div>
-    )
+    );
   }
 
   renderRevealSeedFooter() {
@@ -151,7 +151,7 @@ class RevealSeedPage extends Component {
           {this.context.t('close')}
         </Button>
       </div>
-    )
+    );
   }
 
   render() {
@@ -171,7 +171,7 @@ class RevealSeedPage extends Component {
         </div>
         {this.renderFooter()}
       </div>
-    )
+    );
   }
 }
 
@@ -179,23 +179,23 @@ RevealSeedPage.propTypes = {
   requestRevealSeedWords: PropTypes.func,
   history: PropTypes.object,
   mostRecentOverviewPage: PropTypes.string.isRequired,
-}
+};
 
 RevealSeedPage.contextTypes = {
   t: PropTypes.func,
-}
+};
 
 const mapStateToProps = (state) => {
   return {
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
     requestRevealSeedWords: (password) =>
       dispatch(requestRevealSeedWords(password)),
-  }
-}
+  };
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(RevealSeedPage)
+export default connect(mapStateToProps, mapDispatchToProps)(RevealSeedPage);

@@ -1,23 +1,23 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import { getEnvironmentType } from '../../../../app/scripts/lib/util'
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 
 class ErrorPage extends PureComponent {
   static contextTypes = {
     t: PropTypes.func.isRequired,
-  }
+  };
 
   static propTypes = {
     error: PropTypes.object.isRequired,
-  }
+  };
 
   renderErrorDetail(content) {
     return (
       <li>
         <p>{content}</p>
       </li>
-    )
+    );
   }
 
   renderErrorStack(title, stack) {
@@ -26,14 +26,14 @@ class ErrorPage extends PureComponent {
         <span>{title}</span>
         <pre className="error-page__stack">{stack}</pre>
       </li>
-    )
+    );
   }
 
   render() {
-    const { error } = this.props
-    const { t } = this.context
+    const { error } = this.props;
+    const { t } = this.context;
 
-    const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+    const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
     return (
       <section className="error-page">
@@ -61,8 +61,8 @@ class ErrorPage extends PureComponent {
           </details>
         </section>
       </section>
-    )
+    );
   }
 }
 
-export default ErrorPage
+export default ErrorPage;

@@ -1,12 +1,12 @@
-import assert from 'assert'
-import React from 'react'
-import { shallow } from 'enzyme'
-import TransactionListItemDetails from '../transaction-list-item-details.component'
-import Button from '../../../ui/button'
-import SenderToRecipient from '../../../ui/sender-to-recipient'
-import TransactionBreakdown from '../../transaction-breakdown'
-import TransactionActivityLog from '../../transaction-activity-log'
-import { TRANSACTION_STATUSES } from '../../../../../../shared/constants/transaction'
+import assert from 'assert';
+import React from 'react';
+import { shallow } from 'enzyme';
+import TransactionListItemDetails from '../transaction-list-item-details.component';
+import Button from '../../../ui/button';
+import SenderToRecipient from '../../../ui/sender-to-recipient';
+import TransactionBreakdown from '../../transaction-breakdown';
+import TransactionActivityLog from '../../transaction-activity-log';
+import { TRANSACTION_STATUSES } from '../../../../../../shared/constants/transaction';
 
 describe('TransactionListItemDetails Component', function () {
   it('should render properly', function () {
@@ -22,13 +22,13 @@ describe('TransactionListItemDetails Component', function () {
         to: '0x2',
         value: '0x2386f26fc10000',
       },
-    }
+    };
 
     const transactionGroup = {
       transactions: [transaction],
       primaryTransaction: transaction,
       initialTransaction: transaction,
-    }
+    };
 
     const wrapper = shallow(
       <TransactionListItemDetails
@@ -41,14 +41,14 @@ describe('TransactionListItemDetails Component', function () {
         recipientNickname="recipient-nickname"
       />,
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
-    )
-    const child = wrapper.childAt(0)
-    assert.ok(child.hasClass('transaction-list-item-details'))
-    assert.strictEqual(child.find(Button).length, 2)
-    assert.strictEqual(child.find(SenderToRecipient).length, 1)
-    assert.strictEqual(child.find(TransactionBreakdown).length, 1)
-    assert.strictEqual(child.find(TransactionActivityLog).length, 1)
-  })
+    );
+    const child = wrapper.childAt(0);
+    assert.ok(child.hasClass('transaction-list-item-details'));
+    assert.strictEqual(child.find(Button).length, 2);
+    assert.strictEqual(child.find(SenderToRecipient).length, 1);
+    assert.strictEqual(child.find(TransactionBreakdown).length, 1);
+    assert.strictEqual(child.find(TransactionActivityLog).length, 1);
+  });
 
   it('should render a retry button', function () {
     const transaction = {
@@ -63,7 +63,7 @@ describe('TransactionListItemDetails Component', function () {
         to: '0x2',
         value: '0x2386f26fc10000',
       },
-    }
+    };
 
     const transactionGroup = {
       transactions: [transaction],
@@ -72,7 +72,7 @@ describe('TransactionListItemDetails Component', function () {
       nonce: '0xa4',
       hasRetried: false,
       hasCancelled: false,
-    }
+    };
 
     const wrapper = shallow(
       <TransactionListItemDetails
@@ -85,13 +85,13 @@ describe('TransactionListItemDetails Component', function () {
         recipientNickname="recipient-nickname"
       />,
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
-    )
+    );
 
-    const child = wrapper.childAt(0)
+    const child = wrapper.childAt(0);
 
-    assert.ok(child.hasClass('transaction-list-item-details'))
-    assert.strictEqual(child.find(Button).length, 3)
-  })
+    assert.ok(child.hasClass('transaction-list-item-details'));
+    assert.strictEqual(child.find(Button).length, 3);
+  });
 
   it('should disable the Copy Tx ID and View In Etherscan buttons when tx hash is missing', function () {
     const transaction = {
@@ -106,13 +106,13 @@ describe('TransactionListItemDetails Component', function () {
         to: '0x2',
         value: '0x2386f26fc10000',
       },
-    }
+    };
 
     const transactionGroup = {
       transactions: [transaction],
       primaryTransaction: transaction,
       initialTransaction: transaction,
-    }
+    };
 
     const wrapper = shallow(
       <TransactionListItemDetails
@@ -124,15 +124,15 @@ describe('TransactionListItemDetails Component', function () {
         recipientNickname="recipient-nickname"
       />,
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
-    )
+    );
 
-    const child = wrapper.childAt(0)
+    const child = wrapper.childAt(0);
 
-    assert.ok(child.hasClass('transaction-list-item-details'))
-    const buttons = child.find(Button)
-    assert.strictEqual(buttons.at(0).prop('disabled'), true)
-    assert.strictEqual(buttons.at(1).prop('disabled'), true)
-  })
+    assert.ok(child.hasClass('transaction-list-item-details'));
+    const buttons = child.find(Button);
+    assert.strictEqual(buttons.at(0).prop('disabled'), true);
+    assert.strictEqual(buttons.at(1).prop('disabled'), true);
+  });
 
   it('should render functional Copy Tx ID and View In Etherscan buttons when tx hash exists', function () {
     const transaction = {
@@ -148,13 +148,13 @@ describe('TransactionListItemDetails Component', function () {
         to: '0x2',
         value: '0x2386f26fc10000',
       },
-    }
+    };
 
     const transactionGroup = {
       transactions: [transaction],
       primaryTransaction: transaction,
       initialTransaction: transaction,
-    }
+    };
 
     const wrapper = shallow(
       <TransactionListItemDetails
@@ -166,13 +166,13 @@ describe('TransactionListItemDetails Component', function () {
         recipientNickname="recipient-nickname"
       />,
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
-    )
+    );
 
-    const child = wrapper.childAt(0)
+    const child = wrapper.childAt(0);
 
-    assert.ok(child.hasClass('transaction-list-item-details'))
-    const buttons = child.find(Button)
-    assert.strictEqual(buttons.at(0).prop('disabled'), false)
-    assert.strictEqual(buttons.at(1).prop('disabled'), false)
-  })
-})
+    assert.ok(child.hasClass('transaction-list-item-details'));
+    const buttons = child.find(Button);
+    assert.strictEqual(buttons.at(0).prop('disabled'), false);
+    assert.strictEqual(buttons.at(1).prop('disabled'), false);
+  });
+});

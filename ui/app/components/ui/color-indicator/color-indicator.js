@@ -1,7 +1,7 @@
-import React from 'react'
-import classnames from 'classnames'
-import PropTypes from 'prop-types'
-import { COLORS, SIZES } from '../../../helpers/constants/design-system'
+import React from 'react';
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import { COLORS, SIZES } from '../../../helpers/constants/design-system';
 
 export default function ColorIndicator({
   size = 'small',
@@ -16,7 +16,7 @@ export default function ColorIndicator({
     [`color-indicator--border-color-${borderColor}`]: Boolean(borderColor),
     [`color-indicator--color-${color}`]: true,
     [`color-indicator--size-${size}`]: true,
-  })
+  });
 
   return (
     <div className={colorIndicatorClassName}>
@@ -26,14 +26,14 @@ export default function ColorIndicator({
         <span className="color-indicator__inner-circle" />
       )}
     </div>
-  )
+  );
 }
 
 ColorIndicator.TYPES = {
   FILLED: 'filled',
   PARTIAL: 'partial-filled',
   OUTLINE: 'outline',
-}
+};
 
 ColorIndicator.propTypes = {
   color: PropTypes.oneOf(Object.values(COLORS)),
@@ -41,4 +41,4 @@ ColorIndicator.propTypes = {
   size: PropTypes.oneOf(Object.values(SIZES)),
   iconClassName: PropTypes.string,
   type: PropTypes.oneOf(Object.values(ColorIndicator.TYPES)),
-}
+};

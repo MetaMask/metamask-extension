@@ -105,5 +105,5 @@ const abi = [
     name: 'NewTTL',
     type: 'event',
   },
-]
-export default abi
+];
+export default abi;

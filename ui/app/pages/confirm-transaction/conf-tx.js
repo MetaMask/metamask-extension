@@ -1,26 +1,26 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
-import { compose } from 'redux'
-import log from 'loglevel'
-import * as actions from '../../store/actions'
-import txHelper from '../../../lib/tx-helper'
-import SignatureRequest from '../../components/app/signature-request'
-import SignatureRequestOriginal from '../../components/app/signature-request-original'
-import Loading from '../../components/ui/loading-screen'
-import { getMostRecentOverviewPage } from '../../ducks/history/history'
-import { MESSAGE_TYPE } from '../../../../shared/constants/app'
-import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
+import log from 'loglevel';
+import * as actions from '../../store/actions';
+import txHelper from '../../../lib/tx-helper';
+import SignatureRequest from '../../components/app/signature-request';
+import SignatureRequestOriginal from '../../components/app/signature-request-original';
+import Loading from '../../components/ui/loading-screen';
+import { getMostRecentOverviewPage } from '../../ducks/history/history';
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
 
 function mapStateToProps(state) {
-  const { metamask, appState } = state
+  const { metamask, appState } = state;
   const {
     unapprovedMsgCount,
     unapprovedPersonalMsgCount,
     unapprovedTypedMessagesCount,
-  } = metamask
-  const { txId } = appState
+  } = metamask;
+  const { txId } = appState;
 
   return {
     identities: state.metamask.identities,
@@ -39,7 +39,7 @@ function mapStateToProps(state) {
     unapprovedTypedMessagesCount,
     send: state.metamask.send,
     currentNetworkTxList: state.metamask.currentNetworkTxList,
-  }
+  };
 }
 
 class ConfirmTxScreen extends Component {
@@ -69,20 +69,20 @@ class ConfirmTxScreen extends Component {
     send: PropTypes.shape({
       to: PropTypes.string,
     }).isRequired,
-  }
+  };
 
   getUnapprovedMessagesTotal() {
     const {
       unapprovedMsgCount = 0,
       unapprovedPersonalMsgCount = 0,
       unapprovedTypedMessagesCount = 0,
-    } = this.props
+    } = this.props;
 
     return (
       unapprovedTypedMessagesCount +
       unapprovedMsgCount +
       unapprovedPersonalMsgCount
-    )
+    );
   }
 
   getTxData() {
@@ -94,7 +94,7 @@ class ConfirmTxScreen extends Component {
       unapprovedPersonalMsgs,
       unapprovedTypedMessages,
       match: { params: { id: transactionId } = {} },
-    } = this.props
+    } = this.props;
 
     const unconfTxList = txHelper(
       unapprovedTxs,
@@ -102,13 +102,13 @@ class ConfirmTxScreen extends Component {
       unapprovedPersonalMsgs,
       unapprovedTypedMessages,
       network,
-    )
+    );
 
-    log.info(`rendering a combined ${unconfTxList.length} unconf msgs & txs`)
+    log.info(`rendering a combined ${unconfTxList.length} unconf msgs & txs`);
 
     return transactionId
       ? unconfTxList.find(({ id }) => `${id}` === transactionId)
-      : unconfTxList[index]
+      : unconfTxList[index];
   }
 
   signatureSelect(type, version) {
@@ -117,58 +117,58 @@ class ConfirmTxScreen extends Component {
       type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA &&
       (version === 'V3' || version === 'V4')
     ) {
-      return SignatureRequest
+      return SignatureRequest;
     }
 
-    return SignatureRequestOriginal
+    return SignatureRequestOriginal;
   }
 
   signMessage(msgData, event) {
-    log.info('conf-tx.js: signing message')
-    const params = msgData.msgParams
-    params.metamaskId = msgData.id
-    this.stopPropagation(event)
-    return this.props.dispatch(actions.signMsg(params))
+    log.info('conf-tx.js: signing message');
+    const params = msgData.msgParams;
+    params.metamaskId = msgData.id;
+    this.stopPropagation(event);
+    return this.props.dispatch(actions.signMsg(params));
   }
 
   stopPropagation(event) {
     if (event.stopPropagation) {
-      event.stopPropagation()
+      event.stopPropagation();
     }
   }
 
   signPersonalMessage(msgData, event) {
-    log.info('conf-tx.js: signing personal message')
-    const params = msgData.msgParams
-    params.metamaskId = msgData.id
-    this.stopPropagation(event)
-    return this.props.dispatch(actions.signPersonalMsg(params))
+    log.info('conf-tx.js: signing personal message');
+    const params = msgData.msgParams;
+    params.metamaskId = msgData.id;
+    this.stopPropagation(event);
+    return this.props.dispatch(actions.signPersonalMsg(params));
   }
 
   signTypedMessage(msgData, event) {
-    log.info('conf-tx.js: signing typed message')
-    const params = msgData.msgParams
-    params.metamaskId = msgData.id
-    this.stopPropagation(event)
-    return this.props.dispatch(actions.signTypedMsg(params))
+    log.info('conf-tx.js: signing typed message');
+    const params = msgData.msgParams;
+    params.metamaskId = msgData.id;
+    this.stopPropagation(event);
+    return this.props.dispatch(actions.signTypedMsg(params));
   }
 
   cancelMessage(msgData, event) {
-    log.info('canceling message')
-    this.stopPropagation(event)
-    return this.props.dispatch(actions.cancelMsg(msgData))
+    log.info('canceling message');
+    this.stopPropagation(event);
+    return this.props.dispatch(actions.cancelMsg(msgData));
   }
 
   cancelPersonalMessage(msgData, event) {
-    log.info('canceling personal message')
-    this.stopPropagation(event)
-    return this.props.dispatch(actions.cancelPersonalMsg(msgData))
+    log.info('canceling personal message');
+    this.stopPropagation(event);
+    return this.props.dispatch(actions.cancelPersonalMsg(msgData));
   }
 
   cancelTypedMessage(msgData, event) {
-    log.info('canceling typed message')
-    this.stopPropagation(event)
-    return this.props.dispatch(actions.cancelTypedMsg(msgData))
+    log.info('canceling typed message');
+    this.stopPropagation(event);
+    return this.props.dispatch(actions.cancelTypedMsg(msgData));
   }
 
   componentDidMount() {
@@ -178,15 +178,15 @@ class ConfirmTxScreen extends Component {
       mostRecentOverviewPage,
       network,
       send,
-    } = this.props
-    const unconfTxList = txHelper(unapprovedTxs, {}, {}, {}, network)
+    } = this.props;
+    const unconfTxList = txHelper(unapprovedTxs, {}, {}, {}, network);
 
     if (
       unconfTxList.length === 0 &&
       !send.to &&
       this.getUnapprovedMessagesTotal() === 0
     ) {
-      history.push(mostRecentOverviewPage)
+      history.push(mostRecentOverviewPage);
     }
   }
 
@@ -199,20 +199,21 @@ class ConfirmTxScreen extends Component {
       history,
       match: { params: { id: transactionId } = {} },
       mostRecentOverviewPage,
-    } = this.props
+    } = this.props;
 
-    let prevTx
+    let prevTx;
 
     if (transactionId) {
-      prevTx = currentNetworkTxList.find(({ id }) => `${id}` === transactionId)
+      prevTx = currentNetworkTxList.find(({ id }) => `${id}` === transactionId);
     } else {
-      const { index: prevIndex, unapprovedTxs: prevUnapprovedTxs } = prevProps
-      const prevUnconfTxList = txHelper(prevUnapprovedTxs, {}, {}, {}, network)
-      const prevTxData = prevUnconfTxList[prevIndex] || {}
-      prevTx = currentNetworkTxList.find(({ id }) => id === prevTxData.id) || {}
+      const { index: prevIndex, unapprovedTxs: prevUnapprovedTxs } = prevProps;
+      const prevUnconfTxList = txHelper(prevUnapprovedTxs, {}, {}, {}, network);
+      const prevTxData = prevUnconfTxList[prevIndex] || {};
+      prevTx =
+        currentNetworkTxList.find(({ id }) => id === prevTxData.id) || {};
     }
 
-    const unconfTxList = txHelper(unapprovedTxs, {}, {}, {}, network)
+    const unconfTxList = txHelper(unapprovedTxs, {}, {}, {}, network);
 
     if (prevTx && prevTx.status === TRANSACTION_STATUSES.DROPPED) {
       this.props.dispatch(
@@ -220,9 +221,9 @@ class ConfirmTxScreen extends Component {
           name: 'TRANSACTION_CONFIRMED',
           onSubmit: () => history.push(mostRecentOverviewPage),
         }),
-      )
+      );
 
-      return
+      return;
     }
 
     if (
@@ -230,26 +231,26 @@ class ConfirmTxScreen extends Component {
       !send.to &&
       this.getUnapprovedMessagesTotal() === 0
     ) {
-      this.props.history.push(mostRecentOverviewPage)
+      this.props.history.push(mostRecentOverviewPage);
     }
   }
 
   render() {
-    const { currentCurrency, blockGasLimit } = this.props
+    const { currentCurrency, blockGasLimit } = this.props;
 
-    const txData = this.getTxData() || {}
+    const txData = this.getTxData() || {};
     const {
       msgParams,
       type,
       msgParams: { version },
-    } = txData
-    log.debug('msgParams detected, rendering pending msg')
+    } = txData;
+    log.debug('msgParams detected, rendering pending msg');
 
     if (!msgParams) {
-      return <Loading />
+      return <Loading />;
     }
 
-    const SigComponent = this.signatureSelect(type, version)
+    const SigComponent = this.signatureSelect(type, version);
     return (
       <SigComponent
         txData={txData}
@@ -264,8 +265,8 @@ class ConfirmTxScreen extends Component {
         cancelPersonalMessage={this.cancelPersonalMessage.bind(this, txData)}
         cancelTypedMessage={this.cancelTypedMessage.bind(this, txData)}
       />
-    )
+    );
   }
 }
 
-export default compose(withRouter, connect(mapStateToProps))(ConfirmTxScreen)
+export default compose(withRouter, connect(mapStateToProps))(ConfirmTxScreen);

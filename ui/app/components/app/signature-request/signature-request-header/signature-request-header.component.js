@@ -1,15 +1,15 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import AccountListItem from '../../account-list-item'
-import NetworkDisplay from '../../network-display'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import AccountListItem from '../../account-list-item';
+import NetworkDisplay from '../../network-display';
 
 export default class SignatureRequestHeader extends PureComponent {
   static propTypes = {
     fromAccount: PropTypes.object,
-  }
+  };
 
   render() {
-    const { fromAccount } = this.props
+    const { fromAccount } = this.props;
 
     return (
       <div className="signature-request-header">
@@ -20,6 +20,6 @@ export default class SignatureRequestHeader extends PureComponent {
           <NetworkDisplay colored={false} />
         </div>
       </div>
-    )
+    );
   }
 }

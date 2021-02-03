@@ -1,1 +1,1 @@
-export { default } from './editable-label'
+export { default } from './editable-label';

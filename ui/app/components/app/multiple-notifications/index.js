@@ -1,1 +1,1 @@
-export { default } from './multiple-notifications.component'
+export { default } from './multiple-notifications.component';

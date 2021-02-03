@@ -1,41 +1,41 @@
-import ethUtil from 'ethereumjs-util'
-import contractMap from '@metamask/contract-metadata'
+import ethUtil from 'ethereumjs-util';
+import contractMap from '@metamask/contract-metadata';
 import {
   REQUIRED_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
   KNOWN_RECIPIENT_ADDRESS_ERROR,
   INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
-} from '../../send.constants'
+} from '../../send.constants';
 
 import {
   isValidAddress,
   isEthNetwork,
   checkExistingAddresses,
-} from '../../../../helpers/utils/util'
+} from '../../../../helpers/utils/util';
 
 export function getToErrorObject(to, hasHexData = false, network) {
-  let toError = null
+  let toError = null;
   if (!to) {
     if (!hasHexData) {
-      toError = REQUIRED_ERROR
+      toError = REQUIRED_ERROR;
     }
   } else if (!isValidAddress(to) && !toError) {
     toError = isEthNetwork(network)
       ? INVALID_RECIPIENT_ADDRESS_ERROR
-      : INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR
+      : INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR;
   }
 
-  return { to: toError }
+  return { to: toError };
 }
 
 export function getToWarningObject(to, tokens = [], sendToken = null) {
-  let toWarning = null
+  let toWarning = null;
   if (
     sendToken &&
     (ethUtil.toChecksumAddress(to) in contractMap ||
       checkExistingAddresses(to, tokens))
   ) {
-    toWarning = KNOWN_RECIPIENT_ADDRESS_ERROR
+    toWarning = KNOWN_RECIPIENT_ADDRESS_ERROR;
   }
-  return { to: toWarning }
+  return { to: toWarning };
 }

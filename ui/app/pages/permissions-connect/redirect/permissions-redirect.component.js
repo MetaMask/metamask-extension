@@ -1,10 +1,10 @@
-import React, { useContext } from 'react'
-import PropTypes from 'prop-types'
-import SiteIcon from '../../../components/ui/site-icon'
-import { I18nContext } from '../../../contexts/i18n'
+import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
+import SiteIcon from '../../../components/ui/site-icon';
+import { I18nContext } from '../../../contexts/i18n';
 
 export default function PermissionsRedirect({ domainMetadata }) {
-  const t = useContext(I18nContext)
+  const t = useContext(I18nContext);
 
   return (
     <div className="permissions-redirect">
@@ -24,7 +24,7 @@ export default function PermissionsRedirect({ domainMetadata }) {
         </div>
       </div>
     </div>
-  )
+  );
 
   function renderBrokenLine() {
     return (
@@ -42,7 +42,7 @@ export default function PermissionsRedirect({ domainMetadata }) {
           strokeDasharray="8 7"
         />
       </svg>
-    )
+    );
   }
 }
 
@@ -54,4 +54,4 @@ PermissionsRedirect.propTypes = {
     name: PropTypes.string.isRequired,
     origin: PropTypes.string.isRequired,
   }),
-}
+};

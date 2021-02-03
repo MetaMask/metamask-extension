@@ -1,12 +1,12 @@
-import { useDispatch, useSelector } from 'react-redux'
-import { useCallback } from 'react'
-import { showModal } from '../store/actions'
-import { isBalanceSufficient } from '../pages/send/send.utils'
+import { useDispatch, useSelector } from 'react-redux';
+import { useCallback } from 'react';
+import { showModal } from '../store/actions';
+import { isBalanceSufficient } from '../pages/send/send.utils';
 import {
   getHexGasTotal,
   increaseLastGasPrice,
-} from '../helpers/utils/confirm-tx.util'
-import { getConversionRate, getSelectedAccount } from '../selectors'
+} from '../helpers/utils/confirm-tx.util';
+import { getConversionRate, getSelectedAccount } from '../selectors';
 
 /**
  * Determine whether a transaction can be cancelled and provide a method to
@@ -19,17 +19,17 @@ import { getConversionRate, getSelectedAccount } from '../selectors'
  * @return {[boolean, Function]}
  */
 export function useCancelTransaction(transactionGroup) {
-  const { primaryTransaction, initialTransaction } = transactionGroup
+  const { primaryTransaction, initialTransaction } = transactionGroup;
   const gasPrice = primaryTransaction.txParams?.gasPrice?.startsWith('-')
     ? '0x0'
-    : primaryTransaction.txParams?.gasPrice
-  const { id } = initialTransaction
-  const dispatch = useDispatch()
-  const selectedAccount = useSelector(getSelectedAccount)
-  const conversionRate = useSelector(getConversionRate)
+    : primaryTransaction.txParams?.gasPrice;
+  const { id } = initialTransaction;
+  const dispatch = useDispatch();
+  const selectedAccount = useSelector(getSelectedAccount);
+  const conversionRate = useSelector(getConversionRate);
   const cancelTransaction = useCallback(
     (event) => {
-      event.stopPropagation()
+      event.stopPropagation();
 
       return dispatch(
         showModal({
@@ -37,10 +37,10 @@ export function useCancelTransaction(transactionGroup) {
           transactionId: id,
           originalGasPrice: gasPrice,
         }),
-      )
+      );
     },
     [dispatch, id, gasPrice],
-  )
+  );
 
   const hasEnoughCancelGas =
     primaryTransaction.txParams &&
@@ -52,7 +52,7 @@ export function useCancelTransaction(transactionGroup) {
       }),
       balance: selectedAccount.balance,
       conversionRate,
-    })
+    });
 
-  return [hasEnoughCancelGas, cancelTransaction]
+  return [hasEnoughCancelGas, cancelTransaction];
 }

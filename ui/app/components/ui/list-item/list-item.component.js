@@ -1,6 +1,6 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
+import React from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 export default function ListItem({
   title,
@@ -14,7 +14,7 @@ export default function ListItem({
   className,
   'data-testid': dataTestId,
 }) {
-  const primaryClassName = classnames('list-item', className)
+  const primaryClassName = classnames('list-item', className);
 
   return (
     <div
@@ -42,7 +42,7 @@ export default function ListItem({
         <div className="list-item__right-content">{rightContent}</div>
       )}
     </div>
-  )
+  );
 }
 
 ListItem.propTypes = {
@@ -56,4 +56,4 @@ ListItem.propTypes = {
   className: PropTypes.string,
   onClick: PropTypes.func,
   'data-testid': PropTypes.string,
-}
+};

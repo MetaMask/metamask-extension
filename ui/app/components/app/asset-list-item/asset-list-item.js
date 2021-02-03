@@ -1,18 +1,18 @@
-import React, { useMemo } from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import { useDispatch } from 'react-redux'
-import { useHistory } from 'react-router-dom'
-import Identicon from '../../ui/identicon'
-import ListItem from '../../ui/list-item'
-import Tooltip from '../../ui/tooltip'
-import InfoIcon from '../../ui/icon/info-icon.component'
-import Button from '../../ui/button'
-import { useI18nContext } from '../../../hooks/useI18nContext'
-import { useMetricEvent } from '../../../hooks/useMetricEvent'
-import { updateSendToken } from '../../../store/actions'
-import { SEND_ROUTE } from '../../../helpers/constants/routes'
-import { SEVERITIES } from '../../../helpers/constants/design-system'
+import React, { useMemo } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import Identicon from '../../ui/identicon';
+import ListItem from '../../ui/list-item';
+import Tooltip from '../../ui/tooltip';
+import InfoIcon from '../../ui/icon/info-icon.component';
+import Button from '../../ui/button';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useMetricEvent } from '../../../hooks/useMetricEvent';
+import { updateSendToken } from '../../../store/actions';
+import { SEND_ROUTE } from '../../../helpers/constants/routes';
+import { SEVERITIES } from '../../../helpers/constants/design-system';
 
 const AssetListItem = ({
   className,
@@ -27,16 +27,16 @@ const AssetListItem = ({
   primary,
   secondary,
 }) => {
-  const t = useI18nContext()
-  const dispatch = useDispatch()
-  const history = useHistory()
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+  const history = useHistory();
   const sendTokenEvent = useMetricEvent({
     eventOpts: {
       category: 'Navigation',
       action: 'Home',
       name: 'Clicked Send: Token',
     },
-  })
+  });
   const titleIcon = warning ? (
     <Tooltip
       wrapperClassName="asset-list-item__warning-tooltip"
@@ -46,39 +46,39 @@ const AssetListItem = ({
     >
       <InfoIcon severity={SEVERITIES.WARNING} />
     </Tooltip>
-  ) : null
+  ) : null;
 
   const midContent = warning ? (
     <>
       <InfoIcon severity={SEVERITIES.WARNING} />
       <div className="asset-list-item__warning">{warning}</div>
     </>
-  ) : null
+  ) : null;
 
   const sendTokenButton = useMemo(() => {
     if (tokenAddress === null || tokenAddress === undefined) {
-      return null
+      return null;
     }
     return (
       <Button
         type="link"
         className="asset-list-item__send-token-button"
         onClick={(e) => {
-          e.stopPropagation()
-          sendTokenEvent()
+          e.stopPropagation();
+          sendTokenEvent();
           dispatch(
             updateSendToken({
               address: tokenAddress,
               decimals: tokenDecimals,
               symbol: tokenSymbol,
             }),
-          )
-          history.push(SEND_ROUTE)
+          );
+          history.push(SEND_ROUTE);
         }}
       >
         {t('sendSpecifiedTokens', [tokenSymbol])}
       </Button>
-    )
+    );
   }, [
     tokenSymbol,
     sendTokenEvent,
@@ -87,7 +87,7 @@ const AssetListItem = ({
     history,
     t,
     dispatch,
-  ])
+  ]);
 
   return (
     <ListItem
@@ -125,8 +125,8 @@ const AssetListItem = ({
         </>
       }
     />
-  )
-}
+  );
+};
 
 AssetListItem.propTypes = {
   className: PropTypes.string,
@@ -140,7 +140,7 @@ AssetListItem.propTypes = {
   warning: PropTypes.node,
   primary: PropTypes.string,
   secondary: PropTypes.string,
-}
+};
 
 AssetListItem.defaultProps = {
   className: undefined,
@@ -149,6 +149,6 @@ AssetListItem.defaultProps = {
   tokenAddress: undefined,
   tokenImage: undefined,
   warning: undefined,
-}
+};
 
-export default AssetListItem
+export default AssetListItem;

@@ -1,22 +1,22 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import MetaFoxLogo from '../../../ui/metafox-logo'
-import PageContainerFooter from '../../../ui/page-container/page-container-footer'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import MetaFoxLogo from '../../../ui/metafox-logo';
+import PageContainerFooter from '../../../ui/page-container/page-container-footer';
 
 export default class MetaMetricsOptInModal extends Component {
   static propTypes = {
     setParticipateInMetaMetrics: PropTypes.func,
     hideModal: PropTypes.func,
-  }
+  };
 
   static contextTypes = {
     metricsEvent: PropTypes.func,
     t: PropTypes.func,
-  }
+  };
 
   render() {
-    const { metricsEvent, t } = this.context
-    const { setParticipateInMetaMetrics, hideModal } = this.props
+    const { metricsEvent, t } = this.context;
+    const { setParticipateInMetaMetrics, hideModal } = this.props;
 
     return (
       <div className="metametrics-opt-in metametrics-opt-in-modal">
@@ -115,9 +115,9 @@ export default class MetaMetricsOptInModal extends Component {
                     {
                       excludeMetaMetricsId: true,
                     },
-                  )
-                  hideModal()
-                })
+                  );
+                  hideModal();
+                });
               }}
               cancelText={t('noThanks')}
               hideCancel={false}
@@ -130,9 +130,9 @@ export default class MetaMetricsOptInModal extends Component {
                       name: 'Metrics Opt In',
                     },
                     isOptIn: true,
-                  })
-                  hideModal()
-                })
+                  });
+                  hideModal();
+                });
               }}
               submitText={t('affirmAgree')}
               submitButtonType="confirm"
@@ -141,6 +141,6 @@ export default class MetaMetricsOptInModal extends Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 }

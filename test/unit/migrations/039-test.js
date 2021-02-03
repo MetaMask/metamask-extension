@@ -1,5 +1,5 @@
-import assert from 'assert'
-import migration39 from '../../../app/scripts/migrations/039'
+import assert from 'assert';
+import migration39 from '../../../app/scripts/migrations/039';
 
 describe('migration #39', function () {
   it('should update the version metadata', function (done) {
@@ -8,18 +8,18 @@ describe('migration #39', function () {
         version: 38,
       },
       data: {},
-    }
+    };
 
     migration39
       .migrate(oldStorage)
       .then((newStorage) => {
         assert.deepEqual(newStorage.meta, {
           version: 39,
-        })
-        done()
+        });
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should update old DAI token symbol to SAI in tokens', function (done) {
     const oldStorage = {
@@ -45,7 +45,7 @@ describe('migration #39', function () {
           ],
         },
       },
-    }
+    };
 
     migration39
       .migrate(oldStorage)
@@ -68,11 +68,11 @@ describe('migration #39', function () {
               decimals: 18,
             },
           ],
-        })
-        done()
+        });
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should update old DAI token symbol to SAI in accountTokens', function (done) {
     const oldStorage = {
@@ -116,7 +116,7 @@ describe('migration #39', function () {
           },
         },
       },
-    }
+    };
 
     migration39
       .migrate(oldStorage)
@@ -157,11 +157,11 @@ describe('migration #39', function () {
               ],
             },
           },
-        })
-        done()
+        });
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should NOT change any state if accountTokens is not an object', function (done) {
     const oldStorage = {
@@ -171,16 +171,16 @@ describe('migration #39', function () {
           accountTokens: [],
         },
       },
-    }
+    };
 
     migration39
       .migrate(oldStorage)
       .then((newStorage) => {
-        assert.deepEqual(newStorage.data, oldStorage.data)
-        done()
+        assert.deepEqual(newStorage.data, oldStorage.data);
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should NOT change any state if accountTokens is an object with invalid values', function (done) {
     const oldStorage = {
@@ -203,16 +203,16 @@ describe('migration #39', function () {
           },
         },
       },
-    }
+    };
 
     migration39
       .migrate(oldStorage)
       .then((newStorage) => {
-        assert.deepEqual(newStorage.data, oldStorage.data)
-        done()
+        assert.deepEqual(newStorage.data, oldStorage.data);
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should NOT change any state if accountTokens includes the new DAI token', function (done) {
     const oldStorage = {
@@ -256,16 +256,16 @@ describe('migration #39', function () {
           },
         },
       },
-    }
+    };
 
     migration39
       .migrate(oldStorage)
       .then((newStorage) => {
-        assert.deepEqual(newStorage.data, oldStorage.data)
-        done()
+        assert.deepEqual(newStorage.data, oldStorage.data);
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should NOT change any state if tokens includes the new DAI token', function (done) {
     const oldStorage = {
@@ -286,16 +286,16 @@ describe('migration #39', function () {
           ],
         },
       },
-    }
+    };
 
     migration39
       .migrate(oldStorage)
       .then((newStorage) => {
-        assert.deepEqual(newStorage.data, oldStorage.data)
-        done()
+        assert.deepEqual(newStorage.data, oldStorage.data);
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should NOT change any state if tokens does not include DAI', function (done) {
     const oldStorage = {
@@ -316,16 +316,16 @@ describe('migration #39', function () {
           ],
         },
       },
-    }
+    };
 
     migration39
       .migrate(oldStorage)
       .then((newStorage) => {
-        assert.deepEqual(newStorage.data, oldStorage.data)
-        done()
+        assert.deepEqual(newStorage.data, oldStorage.data);
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should NOT change any state if a tokens property has invalid entries', function (done) {
     const oldStorage = {
@@ -335,16 +335,16 @@ describe('migration #39', function () {
           tokens: [null, [], undefined, 42],
         },
       },
-    }
+    };
 
     migration39
       .migrate(oldStorage)
       .then((newStorage) => {
-        assert.deepEqual(newStorage.data, oldStorage.data)
-        done()
+        assert.deepEqual(newStorage.data, oldStorage.data);
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should NOT change any state if a tokens property is not an array', function (done) {
     const oldStorage = {
@@ -354,16 +354,16 @@ describe('migration #39', function () {
           tokens: {},
         },
       },
-    }
+    };
 
     migration39
       .migrate(oldStorage)
       .then((newStorage) => {
-        assert.deepEqual(newStorage.data, oldStorage.data)
-        done()
+        assert.deepEqual(newStorage.data, oldStorage.data);
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should NOT change any state if a tokens property is null', function (done) {
     const oldStorage = {
@@ -373,16 +373,16 @@ describe('migration #39', function () {
           tokens: null,
         },
       },
-    }
+    };
 
     migration39
       .migrate(oldStorage)
       .then((newStorage) => {
-        assert.deepEqual(newStorage.data, oldStorage.data)
-        done()
+        assert.deepEqual(newStorage.data, oldStorage.data);
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should NOT change any state if a tokens property is missing', function (done) {
     const oldStorage = {
@@ -390,16 +390,16 @@ describe('migration #39', function () {
       data: {
         PreferencesController: {},
       },
-    }
+    };
 
     migration39
       .migrate(oldStorage)
       .then((newStorage) => {
-        assert.deepEqual(newStorage.data, oldStorage.data)
-        done()
+        assert.deepEqual(newStorage.data, oldStorage.data);
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should NOT change any state if a accountTokens property is missing', function (done) {
     const oldStorage = {
@@ -407,29 +407,29 @@ describe('migration #39', function () {
       data: {
         PreferencesController: {},
       },
-    }
+    };
 
     migration39
       .migrate(oldStorage)
       .then((newStorage) => {
-        assert.deepEqual(newStorage.data, oldStorage.data)
-        done()
+        assert.deepEqual(newStorage.data, oldStorage.data);
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should NOT change any state if PreferencesController is missing', function (done) {
     const oldStorage = {
       meta: {},
       data: {},
-    }
+    };
 
     migration39
       .migrate(oldStorage)
       .then((newStorage) => {
-        assert.deepEqual(newStorage.data, oldStorage.data)
-        done()
+        assert.deepEqual(newStorage.data, oldStorage.data);
+        done();
       })
-      .catch(done)
-  })
-})
+      .catch(done);
+  });
+});

@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 
 export default function LoadingIndicator({
   alt,
@@ -18,7 +18,7 @@ export default function LoadingIndicator({
     </span>
   ) : (
     children
-  )
+  );
 }
 
 LoadingIndicator.propTypes = {
@@ -26,4 +26,4 @@ LoadingIndicator.propTypes = {
   alt: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   children: PropTypes.node,
-}
+};

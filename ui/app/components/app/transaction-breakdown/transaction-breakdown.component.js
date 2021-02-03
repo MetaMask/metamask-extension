@@ -1,16 +1,16 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import CurrencyDisplay from '../../ui/currency-display'
-import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
-import HexToDecimal from '../../ui/hex-to-decimal'
-import { GWEI, PRIMARY, SECONDARY } from '../../../helpers/constants/common'
-import TransactionBreakdownRow from './transaction-breakdown-row'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import CurrencyDisplay from '../../ui/currency-display';
+import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
+import HexToDecimal from '../../ui/hex-to-decimal';
+import { GWEI, PRIMARY, SECONDARY } from '../../../helpers/constants/common';
+import TransactionBreakdownRow from './transaction-breakdown-row';
 
 export default class TransactionBreakdown extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     className: PropTypes.string,
@@ -23,14 +23,14 @@ export default class TransactionBreakdown extends PureComponent {
     gasPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     gasUsed: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     totalInHex: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  }
+  };
 
   static defaultProps = {
     showFiat: true,
-  }
+  };
 
   render() {
-    const { t } = this.context
+    const { t } = this.context;
     const {
       gas,
       gasPrice,
@@ -42,7 +42,7 @@ export default class TransactionBreakdown extends PureComponent {
       totalInHex,
       gasUsed,
       isTokenApprove,
-    } = this.props
+    } = this.props;
     return (
       <div className={classnames('transaction-breakdown', className)}>
         <div className="transaction-breakdown__title">{t('transaction')}</div>
@@ -116,6 +116,6 @@ export default class TransactionBreakdown extends PureComponent {
           </div>
         </TransactionBreakdownRow>
       </div>
-    )
+    );
   }
 }

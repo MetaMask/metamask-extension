@@ -1,6 +1,6 @@
-import { compose } from 'redux'
-import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import {
   activeTabHasPermissions,
   getCurrentEthBalance,
@@ -10,7 +10,7 @@ import {
   getTotalUnapprovedCount,
   getWeb3ShimUsageStateForOrigin,
   unconfirmedTransactionsCountSelector,
-} from '../../selectors'
+} from '../../selectors';
 
 import {
   restoreFromThreeBox,
@@ -22,26 +22,26 @@ import {
   setSwapsWelcomeMessageHasBeenShown,
   setWeb3ShimUsageAlertDismissed,
   setAlertEnabledness,
-} from '../../store/actions'
-import { setThreeBoxLastUpdated } from '../../ducks/app/app'
-import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask'
+} from '../../store/actions';
+import { setThreeBoxLastUpdated } from '../../ducks/app/app';
+import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
 import {
   getSwapsWelcomeMessageSeenStatus,
   getSwapsFeatureLiveness,
-} from '../../ducks/swaps/swaps'
-import { getEnvironmentType } from '../../../../app/scripts/lib/util'
+} from '../../ducks/swaps/swaps';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
-} from '../../../../shared/constants/app'
+} from '../../../../shared/constants/app';
 import {
   ALERT_TYPES,
   WEB3_SHIM_USAGE_ALERT_STATES,
-} from '../../../../shared/constants/alerts'
-import Home from './home.component'
+} from '../../../../shared/constants/alerts';
+import Home from './home.component';
 
 const mapStateToProps = (state) => {
-  const { metamask, appState } = state
+  const { metamask, appState } = state;
   const {
     suggestedTokens,
     seedPhraseBackedUp,
@@ -52,29 +52,29 @@ const mapStateToProps = (state) => {
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
     swapsState,
-  } = metamask
-  const accountBalance = getCurrentEthBalance(state)
-  const { forgottenPassword, threeBoxLastUpdated } = appState
-  const totalUnapprovedCount = getTotalUnapprovedCount(state)
-  const swapsEnabled = getSwapsFeatureLiveness(state)
+  } = metamask;
+  const accountBalance = getCurrentEthBalance(state);
+  const { forgottenPassword, threeBoxLastUpdated } = appState;
+  const totalUnapprovedCount = getTotalUnapprovedCount(state);
+  const swapsEnabled = getSwapsFeatureLiveness(state);
 
-  const envType = getEnvironmentType()
-  const isPopup = envType === ENVIRONMENT_TYPE_POPUP
-  const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION
+  const envType = getEnvironmentType();
+  const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
+  const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
 
-  const firstPermissionsRequest = getFirstPermissionRequest(state)
+  const firstPermissionsRequest = getFirstPermissionRequest(state);
   const firstPermissionsRequestId =
     firstPermissionsRequest && firstPermissionsRequest.metadata
       ? firstPermissionsRequest.metadata.id
-      : null
+      : null;
 
-  const originOfCurrentTab = getOriginOfCurrentTab(state)
+  const originOfCurrentTab = getOriginOfCurrentTab(state);
   const shouldShowWeb3ShimUsageNotification =
     isPopup &&
     getWeb3ShimUsageAlertEnabledness(state) &&
     activeTabHasPermissions(state) &&
     getWeb3ShimUsageStateForOrigin(state, originOfCurrentTab) ===
-      WEB3_SHIM_USAGE_ALERT_STATES.RECORDED
+      WEB3_SHIM_USAGE_ALERT_STATES.RECORDED;
 
   return {
     forgottenPassword,
@@ -101,20 +101,20 @@ const mapStateToProps = (state) => {
     isMainnet: getIsMainnet(state),
     originOfCurrentTab,
     shouldShowWeb3ShimUsageNotification,
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch) => ({
   turnThreeBoxSyncingOn: () => dispatch(turnThreeBoxSyncingOn()),
   setupThreeBox: () => {
     dispatch(getThreeBoxLastUpdated()).then((lastUpdated) => {
       if (lastUpdated) {
-        dispatch(setThreeBoxLastUpdated(lastUpdated))
+        dispatch(setThreeBoxLastUpdated(lastUpdated));
       } else {
-        dispatch(setShowRestorePromptToFalse())
-        dispatch(turnThreeBoxSyncingOn())
+        dispatch(setShowRestorePromptToFalse());
+        dispatch(turnThreeBoxSyncingOn());
       }
-    })
+    });
   },
   restoreFromThreeBox: (address) => dispatch(restoreFromThreeBox(address)),
   setShowRestorePromptToFalse: () => dispatch(setShowRestorePromptToFalse()),
@@ -127,9 +127,9 @@ const mapDispatchToProps = (dispatch) => ({
     setWeb3ShimUsageAlertDismissed(origin),
   disableWeb3ShimUsageAlert: () =>
     setAlertEnabledness(ALERT_TYPES.web3ShimUsage, false),
-})
+});
 
 export default compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps),
-)(Home)
+)(Home);

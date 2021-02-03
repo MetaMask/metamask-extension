@@ -1,9 +1,9 @@
-import assert from 'assert'
-import { renderHook } from '@testing-library/react-hooks'
-import sinon from 'sinon'
-import * as tokenUtil from '../../helpers/utils/token-util'
-import * as txUtil from '../../helpers/utils/transactions.util'
-import { useTokenDisplayValue } from '../useTokenDisplayValue'
+import assert from 'assert';
+import { renderHook } from '@testing-library/react-hooks';
+import sinon from 'sinon';
+import * as tokenUtil from '../../helpers/utils/token-util';
+import * as txUtil from '../../helpers/utils/transactions.util';
+import { useTokenDisplayValue } from '../useTokenDisplayValue';
 
 const tests = [
   {
@@ -116,22 +116,22 @@ const tests = [
     tokenValue: '25500000',
     displayValue: '25.5',
   },
-]
+];
 
 describe('useTokenDisplayValue', function () {
   tests.forEach((test, idx) => {
     describe(`when input is decimals: ${test.token.decimals} and value: ${test.tokenValue}`, function () {
       it(`should return ${test.displayValue} as displayValue`, function () {
-        const getTokenValueStub = sinon.stub(tokenUtil, 'getTokenValueParam')
-        const getTokenDataStub = sinon.stub(txUtil, 'getTokenData')
-        getTokenDataStub.callsFake(() => test.tokenData)
-        getTokenValueStub.callsFake(() => test.tokenValue)
+        const getTokenValueStub = sinon.stub(tokenUtil, 'getTokenValueParam');
+        const getTokenDataStub = sinon.stub(txUtil, 'getTokenData');
+        getTokenDataStub.callsFake(() => test.tokenData);
+        getTokenValueStub.callsFake(() => test.tokenValue);
         const { result } = renderHook(() =>
           useTokenDisplayValue(`${idx}-fakestring`, test.token),
-        )
-        sinon.restore()
-        assert.strictEqual(result.current, test.displayValue)
-      })
-    })
-  })
-})
+        );
+        sinon.restore();
+        assert.strictEqual(result.current, test.displayValue);
+      });
+    });
+  });
+});

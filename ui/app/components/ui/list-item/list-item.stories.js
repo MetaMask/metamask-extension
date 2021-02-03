@@ -1,17 +1,17 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { text } from '@storybook/addon-knobs'
-import Send from '../icon/send-icon.component'
-import Interaction from '../icon/interaction-icon.component'
-import Approve from '../icon/approve-icon.component'
-import Receive from '../icon/receive-icon.component'
-import Preloader from '../icon/preloader'
-import Button from '../button'
-import ListItem from './list-item.component'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { text } from '@storybook/addon-knobs';
+import Send from '../icon/send-icon.component';
+import Interaction from '../icon/interaction-icon.component';
+import Approve from '../icon/approve-icon.component';
+import Receive from '../icon/receive-icon.component';
+import Preloader from '../icon/preloader';
+import Button from '../button';
+import ListItem from './list-item.component';
 
 export default {
   title: 'ListItem',
-}
+};
 
 function Currencies({ primary, secondary }) {
   return (
@@ -19,16 +19,16 @@ function Currencies({ primary, secondary }) {
       <div>{primary}</div>
       <div>{secondary}</div>
     </div>
-  )
+  );
 }
 
 Currencies.propTypes = {
   primary: PropTypes.string,
   secondary: PropTypes.string,
-}
+};
 
-const okColor = '#2F80ED'
-const failColor = '#D73A49'
+const okColor = '#2F80ED';
+const failColor = '#D73A49';
 
 export const send = () => (
   <ListItem
@@ -51,7 +51,7 @@ export const send = () => (
       <Button style={{ maxWidth: 150 }}>{text('button2', 'Cancel')}</Button>
     </div>
   </ListItem>
-)
+);
 
 export const pending = () => (
   <ListItem
@@ -71,7 +71,7 @@ export const pending = () => (
       />
     }
   />
-)
+);
 
 export const approve = () => (
   <ListItem
@@ -86,7 +86,7 @@ export const approve = () => (
       />
     }
   />
-)
+);
 
 export const receive = () => (
   <ListItem
@@ -101,4 +101,4 @@ export const receive = () => (
       />
     }
   />
-)
+);

@@ -1,28 +1,28 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
-import { debounce } from 'lodash'
-import copyToClipboard from 'copy-to-clipboard/index'
-import ENS from 'ethjs-ens'
-import networkMap from 'ethereum-ens-network-map'
-import log from 'loglevel'
-import { ellipsify } from '../../send.utils'
+import { debounce } from 'lodash';
+import copyToClipboard from 'copy-to-clipboard/index';
+import ENS from 'ethjs-ens';
+import networkMap from 'ethereum-ens-network-map';
+import log from 'loglevel';
+import { ellipsify } from '../../send.utils';
 import {
   isValidDomainName,
   isValidAddress,
   isValidAddressHead,
-} from '../../../../helpers/utils/util'
-import { MAINNET_NETWORK_ID } from '../../../../../../shared/constants/network'
+} from '../../../../helpers/utils/util';
+import { MAINNET_NETWORK_ID } from '../../../../../../shared/constants/network';
 
 // Local Constants
-const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
-const ZERO_X_ERROR_ADDRESS = '0x'
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+const ZERO_X_ERROR_ADDRESS = '0x';
 
 export default class EnsInput extends Component {
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     className: PropTypes.string,
@@ -39,51 +39,51 @@ export default class EnsInput extends Component {
     contact: PropTypes.object,
     value: PropTypes.string,
     internalSearch: PropTypes.bool,
-  }
+  };
 
   state = {
     input: '',
     toError: null,
     ensResolution: undefined,
-  }
+  };
 
   componentDidMount() {
-    const { network, internalSearch } = this.props
-    const networkHasEnsSupport = getNetworkEnsSupport(network)
-    this.setState({ ensResolution: ZERO_ADDRESS })
+    const { network, internalSearch } = this.props;
+    const networkHasEnsSupport = getNetworkEnsSupport(network);
+    this.setState({ ensResolution: ZERO_ADDRESS });
 
     if (networkHasEnsSupport && !internalSearch) {
-      const provider = global.ethereumProvider
-      this.ens = new ENS({ provider, network })
-      this.checkName = debounce(this.lookupEnsName, 200)
+      const provider = global.ethereumProvider;
+      this.ens = new ENS({ provider, network });
+      this.checkName = debounce(this.lookupEnsName, 200);
     }
   }
 
   componentDidUpdate(prevProps) {
-    const { input } = this.state
-    const { network, value, internalSearch } = this.props
+    const { input } = this.state;
+    const { network, value, internalSearch } = this.props;
 
-    let newValue
+    let newValue;
 
     // Set the value of our input based on QR code provided by parent
-    const newProvidedValue = input !== value && prevProps.value !== value
+    const newProvidedValue = input !== value && prevProps.value !== value;
     if (newProvidedValue) {
-      newValue = value
+      newValue = value;
     }
 
     if (prevProps.network !== network) {
-      const provider = global.ethereumProvider
-      this.ens = new ENS({ provider, network })
+      const provider = global.ethereumProvider;
+      this.ens = new ENS({ provider, network });
       if (!newProvidedValue) {
-        newValue = input
+        newValue = input;
       }
     }
 
     if (newValue !== undefined) {
-      this.onChange({ target: { value: newValue } })
+      this.onChange({ target: { value: newValue } });
     }
     if (!internalSearch && prevProps.internalSearch) {
-      this.resetInput()
+      this.resetInput();
     }
   }
 
@@ -92,28 +92,28 @@ export default class EnsInput extends Component {
       updateEnsResolution,
       updateEnsResolutionError,
       onReset,
-    } = this.props
-    this.onChange({ target: { value: '' } })
-    onReset()
-    updateEnsResolution('')
-    updateEnsResolutionError('')
-  }
+    } = this.props;
+    this.onChange({ target: { value: '' } });
+    onReset();
+    updateEnsResolution('');
+    updateEnsResolutionError('');
+  };
 
   lookupEnsName = (ensName) => {
-    const { network } = this.props
-    const recipient = ensName.trim()
+    const { network } = this.props;
+    const recipient = ensName.trim();
 
-    log.info(`ENS attempting to resolve name: ${recipient}`)
+    log.info(`ENS attempting to resolve name: ${recipient}`);
     this.ens
       .lookup(recipient)
       .then((address) => {
         if (address === ZERO_ADDRESS) {
-          throw new Error(this.context.t('noAddressForName'))
+          throw new Error(this.context.t('noAddressForName'));
         }
         if (address === ZERO_X_ERROR_ADDRESS) {
-          throw new Error(this.context.t('ensRegistrationError'))
+          throw new Error(this.context.t('ensRegistrationError'));
         }
-        this.props.updateEnsResolution(address)
+        this.props.updateEnsResolution(address);
       })
       .catch((reason) => {
         if (
@@ -124,21 +124,21 @@ export default class EnsInput extends Component {
             network === MAINNET_NETWORK_ID
               ? this.context.t('noAddressForName')
               : this.context.t('ensNotFoundOnCurrentNetwork'),
-          )
+          );
         } else {
-          log.error(reason)
-          this.props.updateEnsResolutionError(reason.message)
+          log.error(reason);
+          this.props.updateEnsResolutionError(reason.message);
         }
-      })
-  }
+      });
+  };
 
   onPaste = (event) => {
     event.clipboardData.items[0].getAsString((text) => {
       if (isValidAddress(text)) {
-        this.props.onPaste(text)
+        this.props.onPaste(text);
       }
-    })
-  }
+    });
+  };
 
   onChange = (e) => {
     const {
@@ -148,13 +148,13 @@ export default class EnsInput extends Component {
       updateEnsResolutionError,
       onValidAddressTyped,
       internalSearch,
-    } = this.props
-    const input = e.target.value
-    const networkHasEnsSupport = getNetworkEnsSupport(network)
+    } = this.props;
+    const input = e.target.value;
+    const networkHasEnsSupport = getNetworkEnsSupport(network);
 
-    this.setState({ input }, () => onChange(input))
+    this.setState({ input }, () => onChange(input));
     if (internalSearch) {
-      return null
+      return null;
     }
     // Empty ENS state if input is empty
     // maybe scan ENS
@@ -164,31 +164,31 @@ export default class EnsInput extends Component {
       !isValidAddress(input) &&
       !isValidAddressHead(input)
     ) {
-      updateEnsResolution('')
+      updateEnsResolution('');
       updateEnsResolutionError(
         networkHasEnsSupport ? '' : 'Network does not support ENS',
-      )
-      return null
+      );
+      return null;
     }
 
     if (isValidDomainName(input)) {
-      this.lookupEnsName(input)
+      this.lookupEnsName(input);
     } else if (onValidAddressTyped && isValidAddress(input)) {
-      onValidAddressTyped(input)
+      onValidAddressTyped(input);
     } else {
-      updateEnsResolution('')
-      updateEnsResolutionError('')
+      updateEnsResolution('');
+      updateEnsResolutionError('');
     }
-    return null
-  }
+    return null;
+  };
 
   render() {
-    const { t } = this.context
-    const { className, selectedAddress } = this.props
-    const { input } = this.state
+    const { t } = this.context;
+    const { className, selectedAddress } = this.props;
+    const { input } = this.state;
 
     if (selectedAddress) {
-      return this.renderSelected()
+      return this.renderSelected();
     }
 
     return (
@@ -218,26 +218,26 @@ export default class EnsInput extends Component {
             })}
             onClick={() => {
               if (input) {
-                this.resetInput()
+                this.resetInput();
               } else {
-                this.props.scanQrCode()
+                this.props.scanQrCode();
               }
             }}
           />
         </div>
       </div>
-    )
+    );
   }
 
   renderSelected() {
-    const { t } = this.context
+    const { t } = this.context;
     const {
       className,
       selectedAddress,
       selectedName,
       contact = {},
-    } = this.props
-    const name = contact.name || selectedName
+    } = this.props;
+    const name = contact.name || selectedName;
 
     return (
       <div className={classnames('ens-input', className)}>
@@ -263,11 +263,11 @@ export default class EnsInput extends Component {
           />
         </div>
       </div>
-    )
+    );
   }
 
   ensIcon(recipient) {
-    const { hoverText } = this.state
+    const { hoverText } = this.state;
 
     return (
       <span
@@ -281,14 +281,14 @@ export default class EnsInput extends Component {
       >
         {this.ensIconContents(recipient)}
       </span>
-    )
+    );
   }
 
   ensIconContents() {
-    const { loadingEns, ensFailure, ensResolution, toError } = this.state
+    const { loadingEns, ensFailure, ensResolution, toError } = this.state;
 
     if (toError) {
-      return null
+      return null;
     }
 
     if (loadingEns) {
@@ -301,11 +301,11 @@ export default class EnsInput extends Component {
             transform: 'translateY(-6px)',
           }}
         />
-      )
+      );
     }
 
     if (ensFailure) {
-      return <i className="fa fa-warning fa-lg warning'" />
+      return <i className="fa fa-warning fa-lg warning'" />;
     }
 
     if (ensResolution && ensResolution !== ZERO_ADDRESS) {
@@ -314,18 +314,18 @@ export default class EnsInput extends Component {
           className="fa fa-check-circle fa-lg cursor-pointer"
           style={{ color: 'green' }}
           onClick={(event) => {
-            event.preventDefault()
-            event.stopPropagation()
-            copyToClipboard(ensResolution)
+            event.preventDefault();
+            event.stopPropagation();
+            copyToClipboard(ensResolution);
           }}
         />
-      )
+      );
     }
 
-    return null
+    return null;
   }
 }
 
 function getNetworkEnsSupport(network) {
-  return Boolean(networkMap[network])
+  return Boolean(networkMap[network]);
 }
