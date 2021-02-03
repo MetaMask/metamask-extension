@@ -16,18 +16,17 @@ export default {
 }
 
 function transformState(state) {
-  if (state.PreferencesController) {
-    if (!state.PreferencesController.preferences) {
- state.PreferencesController.preferences = {}
-}
+  const { PreferencesController } = state
+  if (PreferencesController && !PreferencesController.autoLockTimerMigrated) {
+    const preferences = PreferencesController.preferences || {}
 
-    if (
-      parseInt(state.PreferencesController.preferences.autoLockTimeLimit) > 0
-    ) {
+    if (parseInt(preferences.autoLockTimeLimit) > 0) {
+      state.PreferencesController.autoLockTimerMigrated = true
       return state
     }
 
-    state.PreferencesController.preferences.autoLockTimeLimit = 5
+    preferences.autoLockTimeLimit = 5
+    state.PreferencesController.autoLockTimerMigrated = true
     return state
   }
   return state
