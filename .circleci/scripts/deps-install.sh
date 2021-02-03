@@ -16,5 +16,4 @@ then
 fi
 
 # use @lavamoat/allow-scripts instead of manually running install scripts so directory change does not persist
-
 yarn allow-scripts
