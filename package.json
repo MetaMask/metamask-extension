@@ -119,7 +119,7 @@
     "ethereumjs-abi": "^0.6.4",
     "ethereumjs-tx": "1.3.7",
     "ethereumjs-util": "5.1.0",
-    "ethereumjs-wallet": "^0.6.0",
+    "ethereumjs-wallet": "^0.6.4",
     "ethers": "^5.0.8",
     "ethjs": "^0.4.0",
     "ethjs-contract": "^0.2.3",
@@ -168,7 +168,7 @@
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "reselect": "^3.0.1",
-    "rpc-cap": "^3.2.0",
+    "rpc-cap": "^3.2.1",
     "safe-event-emitter": "^1.0.1",
     "safe-json-stringify": "^1.2.0",
     "single-call-balance-checker-abi": "^1.0.0",
@@ -210,7 +210,6 @@
     "brfs": "^2.0.2",
     "browserify": "^16.5.1",
     "browserify-derequire": "^1.0.1",
-    "browserify-transform-tools": "^1.7.0",
     "chai": "^4.1.0",
     "chalk": "^3.0.0",
     "chromedriver": "^79.0.0",
@@ -280,8 +279,6 @@
     "selenium-webdriver": "4.0.0-alpha.7",
     "serve-handler": "^6.1.2",
     "ses": "0.11.0",
-    "sesify": "^4.2.1",
-    "sesify-viz": "^3.0.10",
     "sinon": "^9.0.0",
     "source-map": "^0.7.2",
     "source-map-explorer": "^2.4.2",
@@ -296,7 +293,7 @@
     "webpack": "^4.41.6"
   },
   "engines": {
-    "node": "^10.18.1",
+    "node": "^14.15.1",
     "yarn": "^1.16.0"
   },
   "lavamoat": {

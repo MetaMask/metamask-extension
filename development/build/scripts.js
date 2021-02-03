@@ -1,4 +1,3 @@
-const fs = require('fs')
 const gulp = require('gulp')
 const watch = require('gulp-watch')
 const pify = require('pify')
@@ -11,9 +10,7 @@ const watchify = require('watchify')
 const browserify = require('browserify')
 const envify = require('loose-envify/custom')
 const sourcemaps = require('gulp-sourcemaps')
-const sesify = require('sesify')
 const terser = require('gulp-terser-js')
-const { makeStringTransform } = require('browserify-transform-tools')
 
 const conf = require('rc')('metamask', {
   INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
@@ -277,44 +274,6 @@ function createScriptTasks({ browserPlatforms, livereload }) {
     }
   }
 
-  function configureBundleForSesify({ browserifyOpts, bundleName }) {
-    // add in sesify args for better globalRef usage detection
-    Object.assign(browserifyOpts, sesify.args)
-
-    // ensure browserify uses full paths
-    browserifyOpts.fullPaths = true
-
-    // record dependencies used in bundle
-    fs.mkdirSync('./sesify', { recursive: true })
-    browserifyOpts.plugin.push([
-      'deps-dump',
-      {
-        filename: `./sesify/deps-${bundleName}.json`,
-      },
-    ])
-
-    const sesifyConfigPath = `./sesify/${bundleName}.json`
-
-    // add sesify plugin
-    browserifyOpts.plugin.push([
-      sesify,
-      {
-        writeAutoConfig: sesifyConfigPath,
-      },
-    ])
-
-    // remove html comments that SES is alergic to
-    const removeHtmlComment = makeStringTransform(
-      'remove-html-comment',
-      { excludeExtension: ['.json'] },
-      (content, _, cb) => {
-        const result = content.split('-->').join('-- >')
-        cb(null, result)
-      },
-    )
-    browserifyOpts.transform.push([removeHtmlComment, { global: true }])
-  }
-
   function generateBundler(opts, performBundle) {
     const browserifyOpts = assign({}, watchify.args, {
       plugin: [],
@@ -322,21 +281,6 @@ function createScriptTasks({ browserPlatforms, livereload }) {
       debug: true,
       fullPaths: opts.devMode,
     })
-
-    const bundleName = opts.filename.split('.')[0]
-
-    // activate sesify
-    const activateAutoConfig = Boolean(process.env.SESIFY_AUTOGEN)
-    // const activateSesify = activateAutoConfig
-    const activateSesify =
-      activateAutoConfig && ['background'].includes(bundleName)
-    if (activateSesify) {
-      configureBundleForSesify({ browserifyOpts, bundleName })
-    }
-
-    if (!activateSesify) {
-      browserifyOpts.plugin.push('browserify-derequire')
-    }
 
     if (!opts.buildLib) {
       if (opts.devMode && opts.filename === 'ui.js') {

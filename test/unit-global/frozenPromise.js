@@ -1,6 +1,6 @@
 // Should occur before anything else
 import './globalPatch'
-import 'ses/dist/lockdown.cjs'
+import 'ses/lockdown'
 import '../../app/scripts/runLockdown'
 import assert from 'assert' /* eslint-disable-line import/first,import/order */
 

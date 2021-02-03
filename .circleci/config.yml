@@ -3,10 +3,10 @@ version: 2.1
 executors:
   node-browsers:
     docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+      - image: circleci/node:14-browsers
   node-browsers-medium-plus:
     docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+      - image: circleci/node:14-browsers
     resource_class: medium+
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
@@ -262,6 +262,9 @@ jobs:
     executor: node-browsers
     steps:
       - checkout
+      - run:
+          name: Re-Install Chrome
+          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -286,6 +289,9 @@ jobs:
     executor: node-browsers
     steps:
       - checkout
+      - run:
+          name: Re-Install Chrome
+          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -364,6 +370,9 @@ jobs:
     executor: node-browsers
     steps:
       - checkout
+      - run:
+          name: Re-Install Chrome
+          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -404,12 +413,6 @@ jobs:
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
-      # important: generate sesify viz AFTER uploading builds as artifacts
-      # Temporarily disabled until we can update to a version of `sesify` with
-      # this fix included: https://github.com/LavaMoat/LavaMoat/pull/121
-      # - run:
-      #     name: build:sesify-viz
-      #     command: ./.circleci/scripts/create-sesify-viz
       - store_artifacts:
           path: build-artifacts
           destination: build-artifacts
