@@ -196,7 +196,7 @@ describe('Using MetaMask with an existing account', function() {
       await driver.clickElement(
         By.xpath(`//button[contains(text(), 'Submit')]`)
       )
-      await driver.delay(regularDelayMs)
+      await driver.delay(regularDelayMs * 2)
     })
 
     it('should show the correct account name', async function() {
