@@ -1,4 +1,3 @@
-import Ganache from 'ganache-core';
 import nock from 'nock';
 import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
@@ -30,13 +29,6 @@ process.on('exit', () => {
 });
 
 Enzyme.configure({ adapter: new Adapter() });
-
-// ganache server
-const server = Ganache.server();
-server.listen(8545);
-
-server.on('error', console.error);
-server.on('clientError', console.error);
 
 log.setDefaultLevel(5);
 global.log = log;
