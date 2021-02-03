@@ -8,7 +8,8 @@
 //
 // This script will validate that locales have no unused messages. It will check
 // the English locale against string literals found under `ui/`, and it will check
-// other locales by comparing them to the English locale.
+// other locales by comparing them to the English locale. It will also validate
+// that non-English locales have all descriptions present in the English locale.
 //
 // A report will be printed to the console detailing any unused messages.
 //
@@ -27,6 +28,7 @@ const log = require('loglevel')
 const matchAll = require('string.prototype.matchall').getPolyfill()
 const localeIndex = require('../app/_locales/index.json')
 const {
+  compareLocalesForMissingDescriptions,
   compareLocalesForMissingItems,
   getLocale,
   getLocalePath,
@@ -129,11 +131,31 @@ async function verifyLocale(code) {
     })
   }
 
-  if (extraItems.length > 0) {
+  const missingDescriptions = compareLocalesForMissingDescriptions({
+    englishLocale,
+    targetLocale,
+  })
+
+  if (missingDescriptions.length) {
+    console.log(
+      `**${code}**: ${missingDescriptions.length} missing descriptions`,
+    )
+    log.info('Messages with missing descriptions:')
+    missingDescriptions.forEach(function (key) {
+      log.info(`  - [ ] ${key}`)
+    })
+  }
+
+  if (extraItems.length > 0 || missingDescriptions.length > 0) {
     if (fix) {
       const newLocale = { ...targetLocale }
       for (const item of extraItems) {
         delete newLocale[item]
+      }
+      for (const message of Object.keys(englishLocale)) {
+        if (englishLocale[message].description && targetLocale[message]) {
+          targetLocale[message].description = englishLocale[message].description
+        }
       }
       await writeLocale(code, newLocale)
     }

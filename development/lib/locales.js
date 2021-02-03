@@ -37,7 +37,17 @@ function compareLocalesForMissingItems({ base, subject }) {
   return Object.keys(base).filter((key) => !subject[key])
 }
 
+function compareLocalesForMissingDescriptions({ englishLocale, targetLocale }) {
+  return Object.keys(englishLocale).filter(
+    (key) =>
+      targetLocale[key] !== undefined &&
+      englishLocale[key].description !== undefined &&
+      englishLocale[key].description !== targetLocale[key].description,
+  )
+}
+
 module.exports = {
+  compareLocalesForMissingDescriptions,
   compareLocalesForMissingItems,
   getLocale,
   getLocalePath,
