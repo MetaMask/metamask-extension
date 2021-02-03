@@ -1343,7 +1343,7 @@ describe('MetaMask', function() {
       const gasAndCollateralFeeInputs = await driver.findElements(
         By.css('.confirm-detail-row__primary')
       )
-      await driver.delay(regularDelayMs)
+      await driver.delay(regularDelayMs * 5)
       const renderedGasFee = await gasAndCollateralFeeInputs[0].getText()
       assert.equal(renderedGasFee, '0.0006')
     })
