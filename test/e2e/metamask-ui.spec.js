@@ -1349,10 +1349,12 @@ describe('MetaMask', function() {
       // await driver.clickElement(By.css('.page-container__footer-button'))
       // await driver.wait(until.stalenessOf(gasModal))
 
-      const gasAndCollateralFeeInputs = await driver.findElements(
-        By.css('.confirm-detail-row__primary')
-      )
       await driver.delay(regularDelayMs * 5)
+      const gasAndCollateralFeeInputs = await driver.findElements(
+        By.css(
+          '.currency-display-component.confirm-detail-row__primary .currency-display-component__text'
+        )
+      )
       const renderedGasFee = await gasAndCollateralFeeInputs[0].getText()
       assert.equal(renderedGasFee, '0.0006')
     })
