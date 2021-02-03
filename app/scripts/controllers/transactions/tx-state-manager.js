@@ -3,6 +3,7 @@ import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
 import createId from '../../lib/random-id';
 import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
+import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import {
   generateHistoryEntry,
   replayHistory,
@@ -474,7 +475,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {TransactionStatuses[keyof TransactionStatuses]} status - the status to set on the txMeta
    * @emits tx:status-update - passes txId and status
    * @emits ${txMeta.id}:finished - if it is a finished state. Passes the txMeta
-   * @emits update:badge
+   * @emits 'updateBadge'
    */
   _setTxStatus(txId, status) {
     const txMeta = this.getTx(txId);
@@ -497,7 +498,7 @@ export default class TransactionStateManager extends EventEmitter {
       ) {
         this.emit(`${txMeta.id}:finished`, txMeta);
       }
-      this.emit('update:badge');
+      this.emit(METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE);
     } catch (error) {
       log.error(error);
     }

@@ -23,6 +23,7 @@ import {
   ROPSTEN,
   ROPSTEN_CHAIN_ID,
 } from '../../../shared/constants/network';
+import { NETWORK_EVENTS } from './network';
 
 const fetchWithTimeout = getFetchWithTimeout(30000);
 
@@ -111,7 +112,7 @@ export default class IncomingTransactionsController {
       }),
     );
 
-    this.networkController.on('networkDidChange', async () => {
+    this.networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, async () => {
       const address = this.preferencesController.getSelectedAddress();
       await this._update({
         address,

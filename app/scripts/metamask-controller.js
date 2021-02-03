@@ -35,7 +35,7 @@ import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { setupMultiplex } from './lib/stream-utils';
 import EnsController from './controllers/ens';
-import NetworkController from './controllers/network';
+import NetworkController, { NETWORK_EVENTS } from './controllers/network';
 import PreferencesController from './controllers/preferences';
 import AppStateController from './controllers/app-state';
 import CachedBalancesController from './controllers/cached-balances';
@@ -60,6 +60,12 @@ import accountImporter from './account-import-strategies';
 import seedPhraseVerifier from './lib/seed-phrase-verifier';
 import MetaMetricsController from './controllers/metametrics';
 import { segment, segmentLegacy } from './lib/segment';
+
+export const METAMASK_CONTROLLER_EVENTS = {
+  // Fired after state changes that impact the extension badge (unapproved msg count)
+  // The process of updating the badge happens in app/scripts/background.js.
+  UPDATE_BADGE: 'updateBadge',
+};
 
 export default class MetamaskController extends EventEmitter {
   /**
@@ -127,7 +133,7 @@ export default class MetamaskController extends EventEmitter {
       preferencesStore: this.preferencesController.store,
       onNetworkDidChange: this.networkController.on.bind(
         this.networkController,
-        'networkDidChange',
+        NETWORK_EVENTS.NETWORK_DID_CHANGE,
       ),
       getNetworkIdentifier: this.networkController.getNetworkIdentifier.bind(
         this.networkController,
@@ -212,11 +218,6 @@ export default class MetamaskController extends EventEmitter {
     this.onboardingController = new OnboardingController({
       initState: initState.OnboardingController,
       preferencesController: this.preferencesController,
-    });
-
-    // ensure accountTracker updates balances after network change
-    this.networkController.on('networkDidChange', () => {
-      this.accountTracker._updateAccounts();
     });
 
     const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring];
@@ -323,7 +324,7 @@ export default class MetamaskController extends EventEmitter {
       }
     });
 
-    this.networkController.on('networkDidChange', () => {
+    this.networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
       this.setCurrentCurrency(
         this.currencyRateController.state.currentCurrency,
         (error) => {
@@ -355,6 +356,21 @@ export default class MetamaskController extends EventEmitter {
         this.networkController,
       ),
       tokenRatesStore: this.tokenRatesController.store,
+    });
+
+    // ensure accountTracker updates balances after network change
+    this.networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
+      this.accountTracker._updateAccounts();
+    });
+
+    // clear unapproved transactions and messages when the network will change
+    this.networkController.on(NETWORK_EVENTS.NETWORK_WILL_CHANGE, () => {
+      this.txController.txStateManager.clearUnapprovedTxs();
+      this.encryptionPublicKeyManager.clearUnapproved();
+      this.personalMessageManager.clearUnapproved();
+      this.typedMessageManager.clearUnapproved();
+      this.decryptMessageManager.clearUnapproved();
+      this.messageManager.clearUnapproved();
     });
 
     // ensure isClientOpenAndUnlocked is updated when memState updates
