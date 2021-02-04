@@ -90,6 +90,7 @@ workflows:
           requires:
             - prep-deps
             - prep-build
+            - prep-build-storybook
             - benchmark
             - all-tests-pass
       - job-publish-release:
@@ -215,6 +216,9 @@ jobs:
           root: .
           paths:
             - .out
+      - store_artifacts:
+          path: .out
+          destination: storybook
 
   test-lint:
     executor: node-browsers
