@@ -11,6 +11,10 @@ import createTxMeta from '../../../lib/createTxMeta';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
 
+const Ganache = require('../../../e2e/ganache');
+
+const ganacheServer = new Ganache();
+
 const threeBoxSpies = {
   init: sinon.stub(),
   getThreeBoxSyncingState: sinon.stub().returns(true),
@@ -90,6 +94,10 @@ describe('MetaMaskController', function () {
   const sandbox = sinon.createSandbox();
   const noop = () => undefined;
 
+  before(async function () {
+    await ganacheServer.start();
+  });
+
   beforeEach(function () {
     nock('https://min-api.cryptocompare.com')
       .persist()
@@ -131,6 +139,10 @@ describe('MetaMaskController', function () {
   afterEach(function () {
     nock.cleanAll();
     sandbox.restore();
+  });
+
+  after(async function () {
+    await ganacheServer.quit();
   });
 
   describe('#getAccounts', function () {
