@@ -140,8 +140,9 @@ module.exports = {
     'no-invalid-this': 'off',
     '@babel/no-invalid-this': 'error',
 
+    // prettier handles these
     semi: 'off',
-    '@babel/semi': 'error',
+    '@babel/semi': 'off',
 
     'mocha/no-setup-in-describe': 'off',
     'node/no-process-env': 'off',
