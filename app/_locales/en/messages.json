@@ -1943,11 +1943,23 @@
   "swapsViewInActivity": {
     "message": "View in activity"
   },
+  "switchEthereumChainConfirmationDescription": {
+    "message": "This will will switch the selected network within MetaMask to a previously added network:"
+  },
+  "switchEthereumChainConfirmationTitle": {
+    "message": "Allow this site to switch the network?"
+  },
+  "switchNetwork": {
+    "message": "Switch network"
+  },
   "switchNetworks": {
     "message": "Switch Networks"
   },
   "switchToThisAccount": {
     "message": "Switch to this account"
+  },
+  "switchingNetworksCancelsPendingConfirmations": {
+    "message": "Switching networks will cancel all pending confirmations"
   },
   "symbol": {
     "message": "Symbol"

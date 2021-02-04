@@ -5,9 +5,11 @@ import {
   resolvePendingApproval,
 } from '../../../store/actions';
 import addEthereumChain from './add-ethereum-chain';
+import switchEthereumChain from './switch-ethereum-chain';
 
 const APPROVAL_TEMPLATES = {
   [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN]: addEthereumChain,
+  [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN]: switchEthereumChain,
 };
 
 const ALLOWED_TEMPLATE_KEYS = [
