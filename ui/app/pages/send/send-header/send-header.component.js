@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import PageContainerHeader from '../../../components/ui/page-container/page-container-header'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import PageContainerHeader from '../../../components/ui/page-container/page-container-header';
 
 export default class SendHeader extends Component {
   static propTypes = {
@@ -8,16 +8,16 @@ export default class SendHeader extends Component {
     history: PropTypes.object,
     mostRecentOverviewPage: PropTypes.string,
     titleKey: PropTypes.string,
-  }
+  };
 
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   onClose() {
-    const { clearSend, history, mostRecentOverviewPage } = this.props
-    clearSend()
-    history.push(mostRecentOverviewPage)
+    const { clearSend, history, mostRecentOverviewPage } = this.props;
+    clearSend();
+    history.push(mostRecentOverviewPage);
   }
 
   render() {
@@ -28,6 +28,6 @@ export default class SendHeader extends Component {
         title={this.context.t(this.props.titleKey)}
         headerCloseText={this.context.t('cancel')}
       />
-    )
+    );
   }
 }

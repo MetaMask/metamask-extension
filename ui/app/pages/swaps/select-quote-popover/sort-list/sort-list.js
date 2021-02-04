@@ -1,11 +1,11 @@
-import React, { useState, useContext, useMemo } from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import BigNumber from 'bignumber.js'
-import SunCheckIcon from '../../../../components/ui/icon/sun-check-icon.component'
-import { I18nContext } from '../../../../contexts/i18n'
-import { QUOTE_DATA_ROWS_PROPTYPES_SHAPE } from '../select-quote-popover-constants'
-import InfoTooltip from '../../../../components/ui/info-tooltip'
+import React, { useState, useContext, useMemo } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import BigNumber from 'bignumber.js';
+import SunCheckIcon from '../../../../components/ui/icon/sun-check-icon.component';
+import { I18nContext } from '../../../../contexts/i18n';
+import { QUOTE_DATA_ROWS_PROPTYPES_SHAPE } from '../select-quote-popover-constants';
+import InfoTooltip from '../../../../components/ui/info-tooltip';
 
 const ToggleArrows = () => (
   <svg
@@ -20,7 +20,7 @@ const ToggleArrows = () => (
       fill="#037DD6"
     />
   </svg>
-)
+);
 
 export default function SortList({
   quoteDataRows,
@@ -33,16 +33,16 @@ export default function SortList({
   sortColumn = null,
   setSortColumn,
 }) {
-  const t = useContext(I18nContext)
-  const [noRowHover, setRowNowHover] = useState(false)
+  const t = useContext(I18nContext);
+  const [noRowHover, setRowNowHover] = useState(false);
 
   const onColumnHeaderClick = (nextSortColumn) => {
     if (nextSortColumn === sortColumn) {
-      setSortDirection(sortDirection * -1)
+      setSortDirection(sortDirection * -1);
     } else {
-      setSortColumn(nextSortColumn)
+      setSortColumn(nextSortColumn);
     }
-  }
+  };
 
   // This sort aims to do the following:
   // If there is no selected sort column, then the best quotes should be first in the list
@@ -52,27 +52,27 @@ export default function SortList({
   const sortedRows = useMemo(() => {
     return [...quoteDataRows].sort((rowDataA, rowDataB) => {
       if (sortColumn === null && rowDataA.isBestQuote) {
-        return -1
+        return -1;
       } else if (sortColumn === null && rowDataB.isBestQuote) {
-        return 1
+        return 1;
       } else if (sortColumn === null) {
         // Here, the last character in the destinationTokenValue is used as a source of randomness for sorting
-        const aHex = new BigNumber(rowDataA.destinationTokenValue).toString(16)
-        const bHex = new BigNumber(rowDataB.destinationTokenValue).toString(16)
-        return aHex[aHex.length - 1] < bHex[bHex.length - 1] ? -1 : 1
+        const aHex = new BigNumber(rowDataA.destinationTokenValue).toString(16);
+        const bHex = new BigNumber(rowDataB.destinationTokenValue).toString(16);
+        return aHex[aHex.length - 1] < bHex[bHex.length - 1] ? -1 : 1;
       } else if (sortColumn === 'quoteSource') {
         return rowDataA[sortColumn] > rowDataB[sortColumn]
           ? sortDirection * -1
-          : sortDirection
+          : sortDirection;
       }
       return new BigNumber(rowDataA[sortColumn]).gt(rowDataB[sortColumn])
         ? sortDirection * -1
-        : sortDirection
-    })
-  }, [quoteDataRows, sortColumn, sortDirection])
+        : sortDirection;
+    });
+  }, [quoteDataRows, sortColumn, sortDirection]);
   const selectedRow = sortedRows.findIndex(
     ({ aggId }) => selectedAggId === aggId,
-  )
+  );
 
   return (
     <div className="select-quote-popover__sort-list">
@@ -174,8 +174,8 @@ export default function SortList({
             <div
               className="select-quote-popover__caret-right"
               onClick={(event) => {
-                event.stopPropagation()
-                onCaretClick(aggId)
+                event.stopPropagation();
+                onCaretClick(aggId);
               }}
               onMouseEnter={() => setRowNowHover(true)}
               onMouseLeave={() => setRowNowHover(false)}
@@ -186,7 +186,7 @@ export default function SortList({
         ),
       )}
     </div>
-  )
+  );
 }
 
 SortList.propTypes = {
@@ -199,4 +199,4 @@ SortList.propTypes = {
   setSortDirection: PropTypes.func.isRequired,
   sortColumn: PropTypes.string,
   setSortColumn: PropTypes.func.isRequired,
-}
+};

@@ -1,5 +1,5 @@
-import { cloneDeep } from 'lodash'
-import { CAVEAT_NAMES } from '../../../../shared/constants/permissions'
+import { cloneDeep } from 'lodash';
+import { CAVEAT_NAMES } from '../../../../shared/constants/permissions';
 import {
   HISTORY_STORE_KEY,
   LOG_IGNORE_METHODS,
@@ -7,7 +7,7 @@ import {
   LOG_METHOD_TYPES,
   LOG_STORE_KEY,
   WALLET_PREFIX,
-} from './enums'
+} from './enums';
 
 /**
  * Controller with middleware for logging requests and responses to restricted
@@ -15,8 +15,8 @@ import {
  */
 export default class PermissionsLogController {
   constructor({ restrictedMethods, store }) {
-    this.restrictedMethods = restrictedMethods
-    this.store = store
+    this.restrictedMethods = restrictedMethods;
+    this.store = store;
   }
 
   /**
@@ -25,7 +25,7 @@ export default class PermissionsLogController {
    * @returns {Array<Object>} The activity log.
    */
   getActivityLog() {
-    return this.store.getState()[LOG_STORE_KEY] || []
+    return this.store.getState()[LOG_STORE_KEY] || [];
   }
 
   /**
@@ -34,7 +34,7 @@ export default class PermissionsLogController {
    * @param {Array<Object>} logs - The new activity log array.
    */
   updateActivityLog(logs) {
-    this.store.updateState({ [LOG_STORE_KEY]: logs })
+    this.store.updateState({ [LOG_STORE_KEY]: logs });
   }
 
   /**
@@ -43,7 +43,7 @@ export default class PermissionsLogController {
    * @returns {Object} The permissions history log.
    */
   getHistory() {
-    return this.store.getState()[HISTORY_STORE_KEY] || {}
+    return this.store.getState()[HISTORY_STORE_KEY] || {};
   }
 
   /**
@@ -52,7 +52,7 @@ export default class PermissionsLogController {
    * @param {Object} history - The new permissions history log object.
    */
   updateHistory(history) {
-    this.store.updateState({ [HISTORY_STORE_KEY]: history })
+    this.store.updateState({ [HISTORY_STORE_KEY]: history });
   }
 
   /**
@@ -65,16 +65,16 @@ export default class PermissionsLogController {
    */
   updateAccountsHistory(origin, accounts) {
     if (accounts.length === 0) {
-      return
+      return;
     }
 
-    const accountToTimeMap = getAccountToTimeMap(accounts, Date.now())
+    const accountToTimeMap = getAccountToTimeMap(accounts, Date.now());
 
     this.commitNewHistory(origin, {
       eth_accounts: {
         accounts: accountToTimeMap,
       },
-    })
+    });
   }
 
   /**
@@ -89,37 +89,37 @@ export default class PermissionsLogController {
    */
   createMiddleware() {
     return (req, res, next, _end) => {
-      let activityEntry, requestedMethods
-      const { origin, method } = req
-      const isInternal = method.startsWith(WALLET_PREFIX)
+      let activityEntry, requestedMethods;
+      const { origin, method } = req;
+      const isInternal = method.startsWith(WALLET_PREFIX);
 
       // we only log certain methods
       if (
         !LOG_IGNORE_METHODS.includes(method) &&
         (isInternal || this.restrictedMethods.includes(method))
       ) {
-        activityEntry = this.logRequest(req, isInternal)
+        activityEntry = this.logRequest(req, isInternal);
 
         if (method === `${WALLET_PREFIX}requestPermissions`) {
           // get the corresponding methods from the requested permissions so
           // that we can record permissions history
-          requestedMethods = this.getRequestedMethods(req)
+          requestedMethods = this.getRequestedMethods(req);
         }
       } else if (method === 'eth_requestAccounts') {
         // eth_requestAccounts is a special case; we need to extract the accounts
         // from it
-        activityEntry = this.logRequest(req, isInternal)
-        requestedMethods = ['eth_accounts']
+        activityEntry = this.logRequest(req, isInternal);
+        requestedMethods = ['eth_accounts'];
       } else {
         // no-op
-        next()
-        return
+        next();
+        return;
       }
 
       // call next with a return handler for capturing the response
       next((cb) => {
-        const time = Date.now()
-        this.logResponse(activityEntry, res, time)
+        const time = Date.now();
+        this.logResponse(activityEntry, res, time);
 
         if (requestedMethods && !res.error && res.result) {
           // any permissions or accounts changes will be recorded on the response,
@@ -130,11 +130,11 @@ export default class PermissionsLogController {
             res.result,
             time,
             method === 'eth_requestAccounts',
-          )
+          );
         }
-        cb()
-      })
-    }
+        cb();
+      });
+    };
   }
 
   /**
@@ -156,9 +156,9 @@ export default class PermissionsLogController {
       response: null,
       responseTime: null,
       success: null,
-    }
-    this.commitNewActivity(activityEntry)
-    return activityEntry
+    };
+    this.commitNewActivity(activityEntry);
+    return activityEntry;
   }
 
   /**
@@ -171,12 +171,12 @@ export default class PermissionsLogController {
    */
   logResponse(entry, response, time) {
     if (!entry || !response) {
-      return
+      return;
     }
 
-    entry.response = cloneDeep(response)
-    entry.responseTime = time
-    entry.success = !response.error
+    entry.response = cloneDeep(response);
+    entry.responseTime = time;
+    entry.success = !response.error;
   }
 
   /**
@@ -186,17 +186,17 @@ export default class PermissionsLogController {
    * @param {Object} entry - The activity log entry.
    */
   commitNewActivity(entry) {
-    const logs = this.getActivityLog()
+    const logs = this.getActivityLog();
 
     // add new entry to end of log
-    logs.push(entry)
+    logs.push(entry);
 
     // remove oldest log if exceeding size limit
     if (logs.length > LOG_LIMIT) {
-      logs.shift()
+      logs.shift();
     }
 
-    this.updateActivityLog(logs)
+    this.updateActivityLog(logs);
   }
 
   /**
@@ -215,18 +215,18 @@ export default class PermissionsLogController {
     time,
     isEthRequestAccounts,
   ) {
-    let accounts, newEntries
+    let accounts, newEntries;
 
     if (isEthRequestAccounts) {
-      accounts = result
-      const accountToTimeMap = getAccountToTimeMap(accounts, time)
+      accounts = result;
+      const accountToTimeMap = getAccountToTimeMap(accounts, time);
 
       newEntries = {
         eth_accounts: {
           accounts: accountToTimeMap,
           lastApproved: time,
         },
-      }
+      };
     } else {
       // Records new "lastApproved" times for the granted permissions, if any.
       // Special handling for eth_accounts, in order to record the time the
@@ -234,33 +234,33 @@ export default class PermissionsLogController {
       newEntries = result
         .map((perm) => {
           if (perm.parentCapability === 'eth_accounts') {
-            accounts = this.getAccountsFromPermission(perm)
+            accounts = this.getAccountsFromPermission(perm);
           }
 
-          return perm.parentCapability
+          return perm.parentCapability;
         })
         .reduce((acc, method) => {
           // all approved permissions will be included in the response,
           // not just the newly requested ones
           if (requestedMethods.includes(method)) {
             if (method === 'eth_accounts') {
-              const accountToTimeMap = getAccountToTimeMap(accounts, time)
+              const accountToTimeMap = getAccountToTimeMap(accounts, time);
 
               acc[method] = {
                 lastApproved: time,
                 accounts: accountToTimeMap,
-              }
+              };
             } else {
-              acc[method] = { lastApproved: time }
+              acc[method] = { lastApproved: time };
             }
           }
 
-          return acc
-        }, {})
+          return acc;
+        }, {});
     }
 
     if (Object.keys(newEntries).length > 0) {
-      this.commitNewHistory(origin, newEntries)
+      this.commitNewHistory(origin, newEntries);
     }
   }
 
@@ -274,24 +274,24 @@ export default class PermissionsLogController {
    */
   commitNewHistory(origin, newEntries) {
     // a simple merge updates most permissions
-    const history = this.getHistory()
+    const history = this.getHistory();
     const newOriginHistory = {
       ...history[origin],
       ...newEntries,
-    }
+    };
 
     // eth_accounts requires special handling, because of information
     // we store about the accounts
     const existingEthAccountsEntry =
-      history[origin] && history[origin].eth_accounts
-    const newEthAccountsEntry = newEntries.eth_accounts
+      history[origin] && history[origin].eth_accounts;
+    const newEthAccountsEntry = newEntries.eth_accounts;
 
     if (existingEthAccountsEntry && newEthAccountsEntry) {
       // we may intend to update just the accounts, not the permission
       // itself
       const lastApproved =
         newEthAccountsEntry.lastApproved ||
-        existingEthAccountsEntry.lastApproved
+        existingEthAccountsEntry.lastApproved;
 
       // merge old and new eth_accounts history entries
       newOriginHistory.eth_accounts = {
@@ -300,12 +300,12 @@ export default class PermissionsLogController {
           ...existingEthAccountsEntry.accounts,
           ...newEthAccountsEntry.accounts,
         },
-      }
+      };
     }
 
-    history[origin] = newOriginHistory
+    history[origin] = newOriginHistory;
 
-    this.updateHistory(history)
+    this.updateHistory(history);
   }
 
   /**
@@ -321,9 +321,9 @@ export default class PermissionsLogController {
       typeof request.params[0] !== 'object' ||
       Array.isArray(request.params[0])
     ) {
-      return null
+      return null;
     }
-    return Object.keys(request.params[0])
+    return Object.keys(request.params[0]);
   }
 
   /**
@@ -335,21 +335,21 @@ export default class PermissionsLogController {
    */
   getAccountsFromPermission(perm) {
     if (perm.parentCapability !== 'eth_accounts' || !perm.caveats) {
-      return []
+      return [];
     }
 
-    const accounts = new Set()
+    const accounts = new Set();
     for (const caveat of perm.caveats) {
       if (
         caveat.name === CAVEAT_NAMES.exposedAccounts &&
         Array.isArray(caveat.value)
       ) {
         for (const value of caveat.value) {
-          accounts.add(value)
+          accounts.add(value);
         }
       }
     }
-    return [...accounts]
+    return [...accounts];
   }
 }
 
@@ -363,5 +363,5 @@ export default class PermissionsLogController {
  * @returns {Object} A string:number map of addresses to time.
  */
 function getAccountToTimeMap(accounts, time) {
-  return accounts.reduce((acc, account) => ({ ...acc, [account]: time }), {})
+  return accounts.reduce((acc, account) => ({ ...acc, [account]: time }), {});
 }

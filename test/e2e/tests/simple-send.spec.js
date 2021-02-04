@@ -1,5 +1,5 @@
-const { By, Key } = require('selenium-webdriver')
-const { withFixtures } = require('../helpers')
+const { By, Key } = require('selenium-webdriver');
+const { withFixtures } = require('../helpers');
 
 describe('Simple send', function () {
   it('can send a simple transaction from one account to another', async function () {
@@ -11,34 +11,34 @@ describe('Simple send', function () {
           balance: 25000000000000000000,
         },
       ],
-    }
+    };
     await withFixtures(
       { fixtures: 'imported-account', ganacheOptions, title: this.test.title },
       async ({ driver }) => {
-        await driver.navigate()
-        const passwordField = await driver.findElement(By.css('#password'))
-        await passwordField.sendKeys('correct horse battery staple')
-        await passwordField.sendKeys(Key.ENTER)
-        await driver.clickElement(By.css('[data-testid="eth-overview-send"]'))
+        await driver.navigate();
+        const passwordField = await driver.findElement(By.css('#password'));
+        await passwordField.sendKeys('correct horse battery staple');
+        await passwordField.sendKeys(Key.ENTER);
+        await driver.clickElement(By.css('[data-testid="eth-overview-send"]'));
         const recipientAddressField = await driver.findElement(
           By.css('[data-testid="ens-input"]'),
-        )
+        );
         await recipientAddressField.sendKeys(
           '0x985c30949c92df7a0bd42e0f3e3d539ece98db24',
-        )
+        );
         const amountField = await driver.findElement(
           By.css('.unit-input__input'),
-        )
-        await amountField.sendKeys('1')
+        );
+        await amountField.sendKeys('1');
         await driver.clickElement(
           By.css('[data-testid="page-container-footer-next"]'),
-        )
+        );
         await driver.clickElement(
           By.css('[data-testid="page-container-footer-next"]'),
-        )
-        await driver.clickElement(By.css('[data-testid="home__activity-tab"]'))
-        await driver.findElement(By.css('.transaction-list-item'))
+        );
+        await driver.clickElement(By.css('[data-testid="home__activity-tab"]'));
+        await driver.findElement(By.css('.transaction-list-item'));
       },
-    )
-  })
-})
+    );
+  });
+});

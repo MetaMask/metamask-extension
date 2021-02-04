@@ -1,15 +1,15 @@
-import { ethErrors, errorCodes } from 'eth-rpc-errors'
-import deepFreeze from 'deep-freeze-strict'
+import { ethErrors, errorCodes } from 'eth-rpc-errors';
+import deepFreeze from 'deep-freeze-strict';
 
-import { ApprovalController } from '@metamask/controllers'
+import { ApprovalController } from '@metamask/controllers';
 
-import _getRestrictedMethods from '../../../../../app/scripts/controllers/permissions/restrictedMethods'
+import _getRestrictedMethods from '../../../../../app/scripts/controllers/permissions/restrictedMethods';
 
-import { CAVEAT_NAMES } from '../../../../../shared/constants/permissions'
+import { CAVEAT_NAMES } from '../../../../../shared/constants/permissions';
 import {
   CAVEAT_TYPES,
   NOTIFICATION_NAMES,
-} from '../../../../../app/scripts/controllers/permissions/enums'
+} from '../../../../../app/scripts/controllers/permissions/enums';
 
 /**
  * README
@@ -21,7 +21,7 @@ import {
  * - Immutable mock values like Ethereum accounts and expected states
  */
 
-export const noop = () => undefined
+export const noop = () => undefined;
 
 /**
  * Mock Permissions Controller and Middleware
@@ -32,14 +32,14 @@ const keyringAccounts = deepFreeze([
   '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
   '0x7ae1cdd37bcbdb0e1f491974da8022bfdbf9c2bf',
   '0xcc74c7a59194e5d9268476955650d1e285be703c',
-])
+]);
 
 const getIdentities = () => {
   return keyringAccounts.reduce((identities, address, index) => {
-    identities[address] = { address, name: `Account ${index}` }
-    return identities
-  }, {})
-}
+    identities[address] = { address, name: `Account ${index}` };
+    return identities;
+  }, {});
+};
 
 // perm controller initialization helper
 const getRestrictedMethods = (permController) => {
@@ -52,15 +52,15 @@ const getRestrictedMethods = (permController) => {
       description: `This method is only for testing.`,
       method: (req, res, __, end) => {
         if (req.params[0]) {
-          res.result = 1
+          res.result = 1;
         } else {
-          res.result = 0
+          res.result = 0;
         }
-        end()
+        end();
       },
     },
-  }
-}
+  };
+};
 
 /**
  * Gets default mock constructor options for a permissions controller.
@@ -84,12 +84,12 @@ export function getPermControllerOpts() {
         return {
           identities: getIdentities(),
           selectedAddress: keyringAccounts[0],
-        }
+        };
       },
       subscribe: noop,
     },
     showPermissionRequest: noop,
-  }
+  };
 }
 
 /**
@@ -102,24 +102,24 @@ export function getPermControllerOpts() {
  * @returns {Function} A Promise-wrapped middleware function with convenient default args.
  */
 export function getPermissionsMiddleware(permController, origin, extensionId) {
-  const middleware = permController.createMiddleware({ origin, extensionId })
+  const middleware = permController.createMiddleware({ origin, extensionId });
   return (req, res = {}, next = noop, end) => {
     return new Promise((resolve, reject) => {
       // eslint-disable-next-line no-param-reassign
-      end = end || _end
+      end = end || _end;
 
-      middleware(req, res, next, end)
+      middleware(req, res, next, end);
 
       // emulates json-rpc-engine error handling
       function _end(err) {
         if (err || res.error) {
-          reject(err || res.error)
+          reject(err || res.error);
         } else {
-          resolve(res)
+          resolve(res);
         }
       }
-    })
-  }
+    });
+  };
 }
 
 /**
@@ -132,8 +132,8 @@ export const getNotifyDomain = (notifications = {}) => (
   origin,
   notification,
 ) => {
-  notifications[origin].push(notification)
-}
+  notifications[origin].push(notification);
+};
 
 /**
  * @param {Object} notifications - An object that will store notifications produced
@@ -143,9 +143,9 @@ export const getNotifyDomain = (notifications = {}) => (
  */
 export const getNotifyAllDomains = (notifications = {}) => (notification) => {
   Object.keys(notifications).forEach((origin) => {
-    notifications[origin].push(notification)
-  })
-}
+    notifications[origin].push(notification);
+  });
+};
 
 /**
  * Constants and Mock Objects
@@ -156,13 +156,13 @@ const DOMAINS = {
   a: { origin: 'https://foo.xyz', host: 'foo.xyz' },
   b: { origin: 'https://bar.abc', host: 'bar.abc' },
   c: { origin: 'https://baz.def', host: 'baz.def' },
-}
+};
 
 const PERM_NAMES = {
   eth_accounts: 'eth_accounts',
   test_method: 'test_method',
   does_not_exist: 'does_not_exist',
-}
+};
 
 const ACCOUNTS = {
   a: {
@@ -177,7 +177,7 @@ const ACCOUNTS = {
     permitted: [keyringAccounts[1]],
     primary: keyringAccounts[1],
   },
-}
+};
 
 /**
  * Helpers for getting mock caveats.
@@ -201,9 +201,9 @@ const CAVEATS = {
         value: accounts,
         name: CAVEAT_NAMES.exposedAccounts,
       },
-    ]
+    ];
   },
-}
+};
 
 /**
  * Each function here corresponds to what would be a type or interface consumed
@@ -219,7 +219,7 @@ const PERMS = {
     return {
       permissions: { ...permissions },
       metadata: { id },
-    }
+    };
   },
 
   /**
@@ -230,21 +230,21 @@ const PERMS = {
      * @returns {Object} A permissions request object with eth_accounts
      */
     eth_accounts: () => {
-      return { eth_accounts: {} }
+      return { eth_accounts: {} };
     },
 
     /**
      * @returns {Object} A permissions request object with test_method
      */
     test_method: () => {
-      return { test_method: {} }
+      return { test_method: {} };
     },
 
     /**
      * @returns {Object} A permissions request object with does_not_exist
      */
     does_not_exist: () => {
-      return { does_not_exist: {} }
+      return { does_not_exist: {} };
     },
   },
 
@@ -261,7 +261,7 @@ const PERMS = {
         eth_accounts: {
           caveats: CAVEATS.eth_accounts(accounts),
         },
-      }
+      };
     },
 
     /**
@@ -270,7 +270,7 @@ const PERMS = {
     test_method: () => {
       return {
         test_method: {},
-      }
+      };
     },
   },
 
@@ -288,7 +288,7 @@ const PERMS = {
       return {
         parentCapability: PERM_NAMES.eth_accounts,
         caveats: CAVEATS.eth_accounts(accounts),
-      }
+      };
     },
 
     /**
@@ -297,10 +297,10 @@ const PERMS = {
     test_method: () => {
       return {
         parentCapability: PERM_NAMES.test_method,
-      }
+      };
     },
   },
-}
+};
 
 /**
  * Objects with function values for getting correctly formatted permissions,
@@ -320,14 +320,14 @@ export const getters = deepFreeze({
         return {
           name: 'Error',
           message: 'Must provide non-empty array of account(s).',
-        }
+        };
       },
 
       nonKeyringAccount: (account) => {
         return {
           name: 'Error',
           message: `Unknown account: ${account}`,
-        }
+        };
       },
     },
 
@@ -337,7 +337,7 @@ export const getters = deepFreeze({
           // name: 'EthereumRpcError',
           message: `Failed to add 'eth_accounts' to '${origin}'.`,
           code: errorCodes.rpc.internal,
-        }
+        };
       },
     },
 
@@ -345,17 +345,17 @@ export const getters = deepFreeze({
       alreadyPermitted: () => {
         return {
           message: 'Account is already permitted for origin',
-        }
+        };
       },
       invalidOrigin: () => {
         return {
           message: 'Unrecognized domain',
-        }
+        };
       },
       noEthAccountsPermission: () => {
         return {
           message: `Origin does not have 'eth_accounts' permission`,
-        }
+        };
       },
     },
 
@@ -363,17 +363,17 @@ export const getters = deepFreeze({
       notPermitted: () => {
         return {
           message: 'Account is not permitted for origin',
-        }
+        };
       },
       invalidOrigin: () => {
         return {
           message: 'Unrecognized domain',
-        }
+        };
       },
       noEthAccountsPermission: () => {
         return {
           message: `Origin does not have 'eth_accounts' permission`,
-        }
+        };
       },
     },
 
@@ -382,7 +382,7 @@ export const getters = deepFreeze({
         return {
           name: 'Error',
           message: 'Selected account should be a non-empty string.',
-        }
+        };
       },
     },
 
@@ -390,7 +390,7 @@ export const getters = deepFreeze({
       noPermsRequested: () => {
         return {
           message: 'Must request at least one permission.',
-        }
+        };
       },
     },
 
@@ -398,12 +398,12 @@ export const getters = deepFreeze({
       rejection: () => {
         return {
           message: ethErrors.provider.userRejectedRequest().message,
-        }
+        };
       },
       methodNotFound: (methodName) => {
         return {
           message: `The method '${methodName}' does not exist / is not available.`,
-        }
+        };
       },
     },
 
@@ -411,7 +411,7 @@ export const getters = deepFreeze({
       badOrigin: () => {
         return {
           message: 'Must provide non-empty string origin.',
-        }
+        };
       },
     },
 
@@ -419,7 +419,7 @@ export const getters = deepFreeze({
       unauthorized: () => {
         return {
           code: 4100,
-        }
+        };
       },
     },
 
@@ -427,12 +427,12 @@ export const getters = deepFreeze({
       duplicateOriginOrId: (id, origin) => {
         return {
           message: `Pending approval with id '${id}' or origin '${origin}' already exists.`,
-        }
+        };
       },
       requestAlreadyPending: (origin) => {
         return {
           message: `Request of type 'wallet_requestPermissions' already pending for origin ${origin}. Please wait.`,
-        }
+        };
       },
     },
 
@@ -440,7 +440,7 @@ export const getters = deepFreeze({
       requestAlreadyPending: () => {
         return {
           message: 'Already processing eth_requestAccounts. Please wait.',
-        }
+        };
       },
     },
 
@@ -448,12 +448,12 @@ export const getters = deepFreeze({
       invalidOrigin: (origin) => {
         return {
           message: `Invalid origin: '${origin}'`,
-        }
+        };
       },
       invalidAccounts: () => {
         return {
           message: 'Invalid accounts',
-        }
+        };
       },
     },
   },
@@ -471,7 +471,7 @@ export const getters = deepFreeze({
       return {
         method: NOTIFICATION_NAMES.accountsChanged,
         params: [],
-      }
+      };
     },
 
     /**
@@ -484,7 +484,7 @@ export const getters = deepFreeze({
       return {
         method: NOTIFICATION_NAMES.accountsChanged,
         params: accounts,
-      }
+      };
     },
   },
 
@@ -506,11 +506,11 @@ export const getters = deepFreeze({
         origin,
         method,
         params,
-      }
+      };
       if (id !== undefined) {
-        req.id = id
+        req.id = id;
       }
-      return req
+      return req;
     },
 
     /**
@@ -524,7 +524,7 @@ export const getters = deepFreeze({
         origin,
         method: 'eth_accounts',
         params: [],
-      }
+      };
     },
 
     /**
@@ -539,7 +539,7 @@ export const getters = deepFreeze({
         origin,
         method: 'test_method',
         params: [param],
-      }
+      };
     },
 
     /**
@@ -553,7 +553,7 @@ export const getters = deepFreeze({
         origin,
         method: 'eth_requestAccounts',
         params: [],
-      }
+      };
     },
 
     /**
@@ -569,7 +569,7 @@ export const getters = deepFreeze({
         origin,
         method: 'wallet_requestPermissions',
         params: [PERMS.requests[permissionName]()],
-      }
+      };
     },
 
     /**
@@ -585,7 +585,7 @@ export const getters = deepFreeze({
         origin,
         method: 'wallet_requestPermissions',
         params: [permissions],
-      }
+      };
     },
 
     /**
@@ -604,10 +604,10 @@ export const getters = deepFreeze({
           ...args,
           name,
         },
-      }
+      };
     },
   },
-})
+});
 
 /**
  * Objects with immutable mock values.
@@ -733,4 +733,4 @@ export const constants = deepFreeze({
       },
     ],
   },
-})
+});

@@ -1,8 +1,8 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { checksumAddress } from '../../../helpers/utils/util'
-import Identicon from '../../ui/identicon'
-import AccountMismatchWarning from '../../ui/account-mismatch-warning/account-mismatch-warning.component'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { checksumAddress } from '../../../helpers/utils/util';
+import Identicon from '../../ui/identicon';
+import AccountMismatchWarning from '../../ui/account-mismatch-warning/account-mismatch-warning.component';
 
 export default function AccountListItem({
   account,
@@ -11,7 +11,7 @@ export default function AccountListItem({
   handleClick,
   icon = null,
 }) {
-  const { name, address, balance } = account || {}
+  const { name, address, balance } = account || {};
 
   return (
     <div
@@ -38,7 +38,7 @@ export default function AccountListItem({
         </div>
       )}
     </div>
-  )
+  );
 }
 
 AccountListItem.propTypes = {
@@ -47,4 +47,4 @@ AccountListItem.propTypes = {
   displayAddress: PropTypes.bool,
   handleClick: PropTypes.func,
   icon: PropTypes.node,
-}
+};

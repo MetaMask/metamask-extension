@@ -1,7 +1,7 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import Button from '../../ui/button'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import Button from '../../ui/button';
 
 export default class Modal extends PureComponent {
   static propTypes = {
@@ -21,12 +21,12 @@ export default class Modal extends PureComponent {
     onCancel: PropTypes.func,
     cancelType: PropTypes.string,
     cancelText: PropTypes.string,
-  }
+  };
 
   static defaultProps = {
     submitType: 'secondary',
     cancelType: 'default',
-  }
+  };
 
   render() {
     const {
@@ -43,7 +43,7 @@ export default class Modal extends PureComponent {
       contentClass,
       containerClass,
       hideFooter,
-    } = this.props
+    } = this.props;
 
     return (
       <div className={classnames('modal-container', containerClass)}>
@@ -78,6 +78,6 @@ export default class Modal extends PureComponent {
           </div>
         )}
       </div>
-    )
+    );
   }
 }

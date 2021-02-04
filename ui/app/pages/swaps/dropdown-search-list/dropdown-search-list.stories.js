@@ -1,5 +1,5 @@
-import React from 'react'
-import DropdownSearchList from '.'
+import React from 'react';
+import DropdownSearchList from '.';
 
 const tokens = [
   {
@@ -110,11 +110,11 @@ const tokens = [
     decimals: 8,
     address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
   },
-]
+];
 
 export default {
   title: 'DropdownSearchList',
-}
+};
 
 const tokensToSearch = tokens.map((token) => ({
   ...token,
@@ -124,7 +124,7 @@ const tokensToSearch = tokens.map((token) => ({
     Math.floor(Math.random() * 6),
   )} ${token.symbol}`,
   rightSecondaryLabel: `$${(Math.random() * 1000).toFixed(2)}`,
-}))
+}));
 
 export const TokenSearchDropdown = () => {
   return (
@@ -141,5 +141,5 @@ export const TokenSearchDropdown = () => {
         defaultToAll
       />
     </div>
-  )
-}
+  );
+};

@@ -1,15 +1,15 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 export default class SignatureRequestMessage extends PureComponent {
   static propTypes = {
     data: PropTypes.object.isRequired,
-  }
+  };
 
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   renderNode(data) {
     return (
@@ -35,11 +35,11 @@ export default class SignatureRequestMessage extends PureComponent {
           </div>
         ))}
       </div>
-    )
+    );
   }
 
   render() {
-    const { data } = this.props
+    const { data } = this.props;
 
     return (
       <div className="signature-request-message">
@@ -53,6 +53,6 @@ export default class SignatureRequestMessage extends PureComponent {
           {this.renderNode(data)}
         </div>
       </div>
-    )
+    );
   }
 }

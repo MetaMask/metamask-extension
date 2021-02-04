@@ -4,52 +4,52 @@ This migration updates "transaction state history" to diffs style
 
 */
 
-import { cloneDeep } from 'lodash'
+import { cloneDeep } from 'lodash';
 import {
   snapshotFromTxMeta,
   migrateFromSnapshotsToDiffs,
-} from '../controllers/transactions/lib/tx-state-history-helpers'
+} from '../controllers/transactions/lib/tx-state-history-helpers';
 
-const version = 18
+const version = 18;
 
 export default {
   version,
 
   migrate(originalVersionedData) {
-    const versionedData = cloneDeep(originalVersionedData)
-    versionedData.meta.version = version
+    const versionedData = cloneDeep(originalVersionedData);
+    versionedData.meta.version = version;
     try {
-      const state = versionedData.data
-      const newState = transformState(state)
-      versionedData.data = newState
+      const state = versionedData.data;
+      const newState = transformState(state);
+      versionedData.data = newState;
     } catch (err) {
-      console.warn(`MetaMask Migration #${version}${err.stack}`)
+      console.warn(`MetaMask Migration #${version}${err.stack}`);
     }
-    return Promise.resolve(versionedData)
+    return Promise.resolve(versionedData);
   },
-}
+};
 
 function transformState(state) {
-  const newState = state
-  const { TransactionController } = newState
+  const newState = state;
+  const { TransactionController } = newState;
   if (TransactionController && TransactionController.transactions) {
-    const { transactions } = newState.TransactionController
+    const { transactions } = newState.TransactionController;
     newState.TransactionController.transactions = transactions.map((txMeta) => {
       // no history: initialize
       if (!txMeta.history || txMeta.history.length === 0) {
-        const snapshot = snapshotFromTxMeta(txMeta)
-        txMeta.history = [snapshot]
-        return txMeta
+        const snapshot = snapshotFromTxMeta(txMeta);
+        txMeta.history = [snapshot];
+        return txMeta;
       }
       // has history: migrate
       const newHistory = migrateFromSnapshotsToDiffs(txMeta.history)
         // remove empty diffs
         .filter((entry) => {
-          return !Array.isArray(entry) || entry.length > 0
-        })
-      txMeta.history = newHistory
-      return txMeta
-    })
+          return !Array.isArray(entry) || entry.length > 0;
+        });
+      txMeta.history = newHistory;
+      return txMeta;
+    });
   }
-  return newState
+  return newState;
 }

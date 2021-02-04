@@ -2,7 +2,7 @@ import {
   TRANSACTION_CATEGORIES,
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
-} from '../../../../../shared/constants/transaction'
+} from '../../../../../shared/constants/transaction';
 
 export const txMetaStub = {
   firstRetryBlockNumber: '0x51a402',
@@ -207,4 +207,4 @@ export const txMetaStub = {
   },
   type: TRANSACTION_TYPES.STANDARD,
   v: '0x2c',
-}
+};

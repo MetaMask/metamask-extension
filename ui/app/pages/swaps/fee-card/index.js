@@ -1,1 +1,1 @@
-export { default } from './fee-card'
+export { default } from './fee-card';

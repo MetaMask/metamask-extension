@@ -1,10 +1,10 @@
-import React from 'react'
-import { text, number } from '@storybook/addon-knobs'
-import MainQuoteSummary from './main-quote-summary'
+import React from 'react';
+import { text, number } from '@storybook/addon-knobs';
+import MainQuoteSummary from './main-quote-summary';
 
 export default {
   title: 'MainQuoteSummary',
-}
+};
 
 export const BestQuote = () => {
   return (
@@ -27,5 +27,5 @@ export const BestQuote = () => {
         destinationIconUrl=".storybook/images/sai.svg"
       />
     </div>
-  )
-}
+  );
+};

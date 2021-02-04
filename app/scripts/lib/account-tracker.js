@@ -7,27 +7,27 @@
  * on each new block.
  */
 
-import EthQuery from 'eth-query'
+import EthQuery from 'eth-query';
 
-import { ObservableStore } from '@metamask/obs-store'
-import log from 'loglevel'
-import pify from 'pify'
-import Web3 from 'web3'
-import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi'
+import { ObservableStore } from '@metamask/obs-store';
+import log from 'loglevel';
+import pify from 'pify';
+import Web3 from 'web3';
+import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi';
 import {
   MAINNET_CHAIN_ID,
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
   KOVAN_CHAIN_ID,
-} from '../../../shared/constants/network'
+} from '../../../shared/constants/network';
 
 import {
   SINGLE_CALL_BALANCES_ADDRESS,
   SINGLE_CALL_BALANCES_ADDRESS_RINKEBY,
   SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN,
   SINGLE_CALL_BALANCES_ADDRESS_KOVAN,
-} from '../constants/contracts'
-import { bnToHex } from './util'
+} from '../constants/contracts';
+import { bnToHex } from './util';
 
 /**
  * This module is responsible for tracking any number of accounts and caching their current balances & transaction
@@ -57,36 +57,36 @@ export default class AccountTracker {
     const initState = {
       accounts: {},
       currentBlockGasLimit: '',
-    }
-    this.store = new ObservableStore(initState)
+    };
+    this.store = new ObservableStore(initState);
 
-    this._provider = opts.provider
-    this._query = pify(new EthQuery(this._provider))
-    this._blockTracker = opts.blockTracker
+    this._provider = opts.provider;
+    this._query = pify(new EthQuery(this._provider));
+    this._blockTracker = opts.blockTracker;
     // blockTracker.currentBlock may be null
-    this._currentBlockNumber = this._blockTracker.getCurrentBlock()
+    this._currentBlockNumber = this._blockTracker.getCurrentBlock();
     this._blockTracker.once('latest', (blockNumber) => {
-      this._currentBlockNumber = blockNumber
-    })
+      this._currentBlockNumber = blockNumber;
+    });
     // bind function for easier listener syntax
-    this._updateForBlock = this._updateForBlock.bind(this)
-    this.getCurrentChainId = opts.getCurrentChainId
+    this._updateForBlock = this._updateForBlock.bind(this);
+    this.getCurrentChainId = opts.getCurrentChainId;
 
-    this.web3 = new Web3(this._provider)
+    this.web3 = new Web3(this._provider);
   }
 
   start() {
     // remove first to avoid double add
-    this._blockTracker.removeListener('latest', this._updateForBlock)
+    this._blockTracker.removeListener('latest', this._updateForBlock);
     // add listener
-    this._blockTracker.addListener('latest', this._updateForBlock)
+    this._blockTracker.addListener('latest', this._updateForBlock);
     // fetch account balances
-    this._updateAccounts()
+    this._updateAccounts();
   }
 
   stop() {
     // remove listener
-    this._blockTracker.removeListener('latest', this._updateForBlock)
+    this._blockTracker.removeListener('latest', this._updateForBlock);
   }
 
   /**
@@ -101,25 +101,25 @@ export default class AccountTracker {
    *
    */
   syncWithAddresses(addresses) {
-    const { accounts } = this.store.getState()
-    const locals = Object.keys(accounts)
+    const { accounts } = this.store.getState();
+    const locals = Object.keys(accounts);
 
-    const accountsToAdd = []
+    const accountsToAdd = [];
     addresses.forEach((upstream) => {
       if (!locals.includes(upstream)) {
-        accountsToAdd.push(upstream)
+        accountsToAdd.push(upstream);
       }
-    })
+    });
 
-    const accountsToRemove = []
+    const accountsToRemove = [];
     locals.forEach((local) => {
       if (!addresses.includes(local)) {
-        accountsToRemove.push(local)
+        accountsToRemove.push(local);
       }
-    })
+    });
 
-    this.addAccounts(accountsToAdd)
-    this.removeAccount(accountsToRemove)
+    this.addAccounts(accountsToAdd);
+    this.removeAccount(accountsToRemove);
   }
 
   /**
@@ -130,18 +130,18 @@ export default class AccountTracker {
    *
    */
   addAccounts(addresses) {
-    const { accounts } = this.store.getState()
+    const { accounts } = this.store.getState();
     // add initial state for addresses
     addresses.forEach((address) => {
-      accounts[address] = {}
-    })
+      accounts[address] = {};
+    });
     // save accounts state
-    this.store.updateState({ accounts })
+    this.store.updateState({ accounts });
     // fetch balances for the accounts if there is block number ready
     if (!this._currentBlockNumber) {
-      return
+      return;
     }
-    this._updateAccounts()
+    this._updateAccounts();
   }
 
   /**
@@ -151,13 +151,13 @@ export default class AccountTracker {
    *
    */
   removeAccount(addresses) {
-    const { accounts } = this.store.getState()
+    const { accounts } = this.store.getState();
     // remove each state object
     addresses.forEach((address) => {
-      delete accounts[address]
-    })
+      delete accounts[address];
+    });
     // save accounts state
-    this.store.updateState({ accounts })
+    this.store.updateState({ accounts });
   }
 
   /**
@@ -165,7 +165,7 @@ export default class AccountTracker {
    */
 
   clearAccounts() {
-    this.store.updateState({ accounts: {} })
+    this.store.updateState({ accounts: {} });
   }
 
   /**
@@ -178,20 +178,20 @@ export default class AccountTracker {
    *
    */
   async _updateForBlock(blockNumber) {
-    this._currentBlockNumber = blockNumber
+    this._currentBlockNumber = blockNumber;
 
     // block gasLimit polling shouldn't be in account-tracker shouldn't be here...
-    const currentBlock = await this._query.getBlockByNumber(blockNumber, false)
+    const currentBlock = await this._query.getBlockByNumber(blockNumber, false);
     if (!currentBlock) {
-      return
+      return;
     }
-    const currentBlockGasLimit = currentBlock.gasLimit
-    this.store.updateState({ currentBlockGasLimit })
+    const currentBlockGasLimit = currentBlock.gasLimit;
+    this.store.updateState({ currentBlockGasLimit });
 
     try {
-      await this._updateAccounts()
+      await this._updateAccounts();
     } catch (err) {
-      log.error(err)
+      log.error(err);
     }
   }
 
@@ -203,41 +203,41 @@ export default class AccountTracker {
    *
    */
   async _updateAccounts() {
-    const { accounts } = this.store.getState()
-    const addresses = Object.keys(accounts)
-    const chainId = this.getCurrentChainId()
+    const { accounts } = this.store.getState();
+    const addresses = Object.keys(accounts);
+    const chainId = this.getCurrentChainId();
 
     switch (chainId) {
       case MAINNET_CHAIN_ID:
         await this._updateAccountsViaBalanceChecker(
           addresses,
           SINGLE_CALL_BALANCES_ADDRESS,
-        )
-        break
+        );
+        break;
 
       case RINKEBY_CHAIN_ID:
         await this._updateAccountsViaBalanceChecker(
           addresses,
           SINGLE_CALL_BALANCES_ADDRESS_RINKEBY,
-        )
-        break
+        );
+        break;
 
       case ROPSTEN_CHAIN_ID:
         await this._updateAccountsViaBalanceChecker(
           addresses,
           SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN,
-        )
-        break
+        );
+        break;
 
       case KOVAN_CHAIN_ID:
         await this._updateAccountsViaBalanceChecker(
           addresses,
           SINGLE_CALL_BALANCES_ADDRESS_KOVAN,
-        )
-        break
+        );
+        break;
 
       default:
-        await Promise.all(addresses.map(this._updateAccount.bind(this)))
+        await Promise.all(addresses.map(this._updateAccount.bind(this)));
     }
   }
 
@@ -251,16 +251,16 @@ export default class AccountTracker {
    */
   async _updateAccount(address) {
     // query balance
-    const balance = await this._query.getBalance(address)
-    const result = { address, balance }
+    const balance = await this._query.getBalance(address);
+    const result = { address, balance };
     // update accounts state
-    const { accounts } = this.store.getState()
+    const { accounts } = this.store.getState();
     // only populate if the entry is still present
     if (!accounts[address]) {
-      return
+      return;
     }
-    accounts[address] = result
-    this.store.updateState({ accounts })
+    accounts[address] = result;
+    this.store.updateState({ accounts });
   }
 
   /**
@@ -269,27 +269,27 @@ export default class AccountTracker {
    * @param {*} deployedContractAddress
    */
   async _updateAccountsViaBalanceChecker(addresses, deployedContractAddress) {
-    const { accounts } = this.store.getState()
-    this.web3.setProvider(this._provider)
+    const { accounts } = this.store.getState();
+    this.web3.setProvider(this._provider);
     const ethContract = this.web3.eth
       .contract(SINGLE_CALL_BALANCES_ABI)
-      .at(deployedContractAddress)
-    const ethBalance = ['0x0']
+      .at(deployedContractAddress);
+    const ethBalance = ['0x0'];
 
     ethContract.balances(addresses, ethBalance, (error, result) => {
       if (error) {
         log.warn(
           `MetaMask - Account Tracker single call balance fetch failed`,
           error,
-        )
-        Promise.all(addresses.map(this._updateAccount.bind(this)))
-        return
+        );
+        Promise.all(addresses.map(this._updateAccount.bind(this)));
+        return;
       }
       addresses.forEach((address, index) => {
-        const balance = bnToHex(result[index])
-        accounts[address] = { address, balance }
-      })
-      this.store.updateState({ accounts })
-    })
+        const balance = bnToHex(result[index]);
+        accounts[address] = { address, balance };
+      });
+      this.store.updateState({ accounts });
+    });
   }
 }

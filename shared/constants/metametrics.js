@@ -110,7 +110,7 @@
  *  the page view
  */
 
-export const METAMETRICS_ANONYMOUS_ID = '0x0000000000000000'
+export const METAMETRICS_ANONYMOUS_ID = '0x0000000000000000';
 
 /**
  * This object is used to identify events that are triggered by the background
@@ -121,7 +121,7 @@ export const METAMETRICS_BACKGROUND_PAGE_OBJECT = {
   path: '/background-process',
   title: 'Background Process',
   url: '/background-process',
-}
+};
 
 /**
  * @typedef {Object} SegmentInterface

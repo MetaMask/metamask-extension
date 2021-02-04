@@ -1,1 +1,1 @@
-export { default } from './invalid-custom-network-alert'
+export { default } from './invalid-custom-network-alert';

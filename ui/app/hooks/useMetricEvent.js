@@ -1,7 +1,7 @@
-import { useContext, useCallback } from 'react'
-import { MetaMetricsContext } from '../contexts/metametrics'
-import { MetaMetricsContext as NewMetaMetricsContext } from '../contexts/metametrics.new'
-import { useEqualityCheck } from './useEqualityCheck'
+import { useContext, useCallback } from 'react';
+import { MetaMetricsContext } from '../contexts/metametrics';
+import { MetaMetricsContext as NewMetaMetricsContext } from '../contexts/metametrics.new';
+import { useEqualityCheck } from './useEqualityCheck';
 
 // Type imports
 /**
@@ -10,13 +10,13 @@ import { useEqualityCheck } from './useEqualityCheck'
  */
 
 export function useMetricEvent(config = {}, overrides = {}) {
-  const metricsEvent = useContext(MetaMetricsContext)
+  const metricsEvent = useContext(MetaMetricsContext);
   const trackEvent = useCallback(() => metricsEvent(config, overrides), [
     config,
     metricsEvent,
     overrides,
-  ])
-  return trackEvent
+  ]);
+  return trackEvent;
 }
 
 /**
@@ -28,13 +28,13 @@ export function useMetricEvent(config = {}, overrides = {}) {
  * @return {() => Promise<void>} function to execute the tracking event
  */
 export function useNewMetricEvent(payload, options) {
-  const memoizedPayload = useEqualityCheck(payload)
-  const memoizedOptions = useEqualityCheck(options)
-  const metricsEvent = useContext(NewMetaMetricsContext)
+  const memoizedPayload = useEqualityCheck(payload);
+  const memoizedOptions = useEqualityCheck(options);
+  const metricsEvent = useContext(NewMetaMetricsContext);
 
   return useCallback(() => metricsEvent(memoizedPayload, memoizedOptions), [
     metricsEvent,
     memoizedPayload,
     memoizedOptions,
-  ])
+  ]);
 }

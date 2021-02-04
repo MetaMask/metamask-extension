@@ -1,23 +1,23 @@
-import log from 'loglevel'
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import log from 'loglevel';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
-import { stripHexPrefix } from 'ethereumjs-util'
-import copyToClipboard from 'copy-to-clipboard'
-import { checksumAddress } from '../../../../helpers/utils/util'
-import ReadOnlyInput from '../../../ui/readonly-input'
-import Button from '../../../ui/button'
-import AccountModalContainer from '../account-modal-container'
+import { stripHexPrefix } from 'ethereumjs-util';
+import copyToClipboard from 'copy-to-clipboard';
+import { checksumAddress } from '../../../../helpers/utils/util';
+import ReadOnlyInput from '../../../ui/readonly-input';
+import Button from '../../../ui/button';
+import AccountModalContainer from '../account-modal-container';
 
 export default class ExportPrivateKeyModal extends Component {
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   static defaultProps = {
     warning: null,
     previousModalState: null,
-  }
+  };
 
   static propTypes = {
     exportAccount: PropTypes.func.isRequired,
@@ -28,21 +28,21 @@ export default class ExportPrivateKeyModal extends Component {
     hideWarning: PropTypes.func.isRequired,
     clearAccountDetails: PropTypes.func.isRequired,
     previousModalState: PropTypes.string,
-  }
+  };
 
   state = {
     password: '',
     privateKey: null,
     showWarning: true,
-  }
+  };
 
   componentWillUnmount() {
-    this.props.clearAccountDetails()
-    this.props.hideWarning()
+    this.props.clearAccountDetails();
+    this.props.hideWarning();
   }
 
   exportAccountAndGetPrivateKey = (password, address) => {
-    const { exportAccount } = this.props
+    const { exportAccount } = this.props;
 
     exportAccount(password, address)
       .then((privateKey) =>
@@ -51,8 +51,8 @@ export default class ExportPrivateKeyModal extends Component {
           showWarning: false,
         }),
       )
-      .catch((e) => log.error(e))
-  }
+      .catch((e) => log.error(e));
+  };
 
   renderPasswordLabel(privateKey) {
     return (
@@ -61,11 +61,11 @@ export default class ExportPrivateKeyModal extends Component {
           ? this.context.t('copyPrivateKey')
           : this.context.t('typePassword')}
       </span>
-    )
+    );
   }
 
   renderPasswordInput(privateKey) {
-    const plainKey = privateKey && stripHexPrefix(privateKey)
+    const plainKey = privateKey && stripHexPrefix(privateKey);
 
     if (!privateKey) {
       return (
@@ -74,7 +74,7 @@ export default class ExportPrivateKeyModal extends Component {
           className="export-private-key-modal__password-input"
           onChange={(event) => this.setState({ password: event.target.value })}
         />
-      )
+      );
     }
 
     return (
@@ -85,7 +85,7 @@ export default class ExportPrivateKeyModal extends Component {
         value={plainKey}
         onClick={() => copyToClipboard(plainKey)}
       />
-    )
+    );
   }
 
   renderButtons(privateKey, address, hideModal) {
@@ -124,7 +124,7 @@ export default class ExportPrivateKeyModal extends Component {
           </Button>
         )}
       </div>
-    )
+    );
   }
 
   render() {
@@ -134,10 +134,10 @@ export default class ExportPrivateKeyModal extends Component {
       showAccountDetailModal,
       hideModal,
       previousModalState,
-    } = this.props
-    const { name, address } = selectedIdentity
+    } = this.props;
+    const { name, address } = selectedIdentity;
 
-    const { privateKey, showWarning } = this.state
+    const { privateKey, showWarning } = this.state;
 
     return (
       <AccountModalContainer
@@ -169,6 +169,6 @@ export default class ExportPrivateKeyModal extends Component {
         </div>
         {this.renderButtons(privateKey, address, hideModal)}
       </AccountModalContainer>
-    )
+    );
   }
 }

@@ -1,12 +1,12 @@
-import EventEmitter from 'events'
-import React, { useContext, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import PropTypes from 'prop-types'
-import { useHistory } from 'react-router-dom'
-import { I18nContext } from '../../../contexts/i18n'
-import { useNewMetricEvent } from '../../../hooks/useMetricEvent'
-import { MetaMetricsContext } from '../../../contexts/metametrics.new'
-import { getCurrentCurrency, getUSDConversionRate } from '../../../selectors'
+import EventEmitter from 'events';
+import React, { useContext, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+import { useHistory } from 'react-router-dom';
+import { I18nContext } from '../../../contexts/i18n';
+import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
+import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import { getCurrentCurrency, getUSDConversionRate } from '../../../selectors';
 import {
   getUsedQuote,
   getFetchParams,
@@ -16,25 +16,25 @@ import {
   navigateBackToBuildQuote,
   prepareForRetryGetQuotes,
   prepareToLeaveSwaps,
-} from '../../../ducks/swaps/swaps'
-import Mascot from '../../../components/ui/mascot'
-import PulseLoader from '../../../components/ui/pulse-loader'
-import { getBlockExplorerUrlForTx } from '../../../helpers/utils/transactions.util'
+} from '../../../ducks/swaps/swaps';
+import Mascot from '../../../components/ui/mascot';
+import PulseLoader from '../../../components/ui/pulse-loader';
+import { getBlockExplorerUrlForTx } from '../../../helpers/utils/transactions.util';
 import {
   QUOTES_EXPIRED_ERROR,
   SWAP_FAILED_ERROR,
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
   OFFLINE_FOR_MAINTENANCE,
-} from '../../../helpers/constants/swaps'
-import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes'
+} from '../../../helpers/constants/swaps';
+import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
-import { getRenderableNetworkFeesForQuote } from '../swaps.util'
-import SwapsFooter from '../swaps-footer'
-import SwapFailureIcon from './swap-failure-icon'
-import SwapSuccessIcon from './swap-success-icon'
-import QuotesTimeoutIcon from './quotes-timeout-icon'
-import ViewOnEtherScanLink from './view-on-ether-scan-link'
+import { getRenderableNetworkFeesForQuote } from '../swaps.util';
+import SwapsFooter from '../swaps-footer';
+import SwapFailureIcon from './swap-failure-icon';
+import SwapSuccessIcon from './swap-success-icon';
+import QuotesTimeoutIcon from './quotes-timeout-icon';
+import ViewOnEtherScanLink from './view-on-ether-scan-link';
 
 export default function AwaitingSwap({
   swapComplete,
@@ -47,25 +47,25 @@ export default function AwaitingSwap({
   inputValue,
   maxSlippage,
 }) {
-  const t = useContext(I18nContext)
-  const metaMetricsEvent = useContext(MetaMetricsContext)
-  const history = useHistory()
-  const dispatch = useDispatch()
-  const animationEventEmitter = useRef(new EventEmitter())
+  const t = useContext(I18nContext);
+  const metaMetricsEvent = useContext(MetaMetricsContext);
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const animationEventEmitter = useRef(new EventEmitter());
 
-  const fetchParams = useSelector(getFetchParams)
-  const { destinationTokenInfo, sourceTokenInfo } = fetchParams?.metaData || {}
-  const usedQuote = useSelector(getUsedQuote)
-  const approveTxParams = useSelector(getApproveTxParams)
-  const swapsGasPrice = useSelector(getUsedSwapsGasPrice)
-  const currentCurrency = useSelector(getCurrentCurrency)
-  const usdConversionRate = useSelector(getUSDConversionRate)
+  const fetchParams = useSelector(getFetchParams);
+  const { destinationTokenInfo, sourceTokenInfo } = fetchParams?.metaData || {};
+  const usedQuote = useSelector(getUsedQuote);
+  const approveTxParams = useSelector(getApproveTxParams);
+  const swapsGasPrice = useSelector(getUsedSwapsGasPrice);
+  const currentCurrency = useSelector(getCurrentCurrency);
+  const usdConversionRate = useSelector(getUSDConversionRate);
 
   const [trackedQuotesExpiredEvent, setTrackedQuotesExpiredEvent] = useState(
     false,
-  )
+  );
 
-  let feeinUnformattedFiat
+  let feeinUnformattedFiat;
 
   if (usedQuote && swapsGasPrice) {
     const renderableNetworkFees = getRenderableNetworkFeesForQuote(
@@ -77,8 +77,8 @@ export default function AwaitingSwap({
       usedQuote?.trade?.value,
       sourceTokenInfo?.symbol,
       usedQuote.sourceAmount,
-    )
-    feeinUnformattedFiat = renderableNetworkFees.rawNetworkFees
+    );
+    feeinUnformattedFiat = renderableNetworkFees.rawNetworkFees;
   }
 
   const quotesExpiredEvent = useNewMetricEvent({
@@ -93,58 +93,58 @@ export default function AwaitingSwap({
       gas_fees: feeinUnformattedFiat,
     },
     category: 'swaps',
-  })
+  });
 
   const blockExplorerUrl =
-    txHash && getBlockExplorerUrlForTx(networkId, txHash, rpcPrefs)
+    txHash && getBlockExplorerUrlForTx(networkId, txHash, rpcPrefs);
 
-  let headerText
-  let statusImage
-  let descriptionText
-  let submitText
-  let content
+  let headerText;
+  let statusImage;
+  let descriptionText;
+  let submitText;
+  let content;
 
   if (errorKey === OFFLINE_FOR_MAINTENANCE) {
-    headerText = t('offlineForMaintenance')
-    descriptionText = t('metamaskSwapsOfflineDescription')
-    submitText = t('close')
-    statusImage = <SwapFailureIcon />
+    headerText = t('offlineForMaintenance');
+    descriptionText = t('metamaskSwapsOfflineDescription');
+    submitText = t('close');
+    statusImage = <SwapFailureIcon />;
   } else if (errorKey === SWAP_FAILED_ERROR) {
-    headerText = t('swapFailedErrorTitle')
-    descriptionText = t('swapFailedErrorDescription')
-    submitText = t('tryAgain')
-    statusImage = <SwapFailureIcon />
+    headerText = t('swapFailedErrorTitle');
+    descriptionText = t('swapFailedErrorDescription');
+    submitText = t('tryAgain');
+    statusImage = <SwapFailureIcon />;
     content = blockExplorerUrl && (
       <ViewOnEtherScanLink
         txHash={txHash}
         blockExplorerUrl={blockExplorerUrl}
         isCustomBlockExplorerUrl={Boolean(rpcPrefs.blockExplorerUrl)}
       />
-    )
+    );
   } else if (errorKey === QUOTES_EXPIRED_ERROR) {
-    headerText = t('swapQuotesExpiredErrorTitle')
-    descriptionText = t('swapQuotesExpiredErrorDescription')
-    submitText = t('tryAgain')
-    statusImage = <QuotesTimeoutIcon />
+    headerText = t('swapQuotesExpiredErrorTitle');
+    descriptionText = t('swapQuotesExpiredErrorDescription');
+    submitText = t('tryAgain');
+    statusImage = <QuotesTimeoutIcon />;
 
     if (!trackedQuotesExpiredEvent) {
-      setTrackedQuotesExpiredEvent(true)
-      quotesExpiredEvent()
+      setTrackedQuotesExpiredEvent(true);
+      quotesExpiredEvent();
     }
   } else if (errorKey === ERROR_FETCHING_QUOTES) {
-    headerText = t('swapFetchingQuotesErrorTitle')
-    descriptionText = t('swapFetchingQuotesErrorDescription')
-    submitText = t('back')
-    statusImage = <SwapFailureIcon />
+    headerText = t('swapFetchingQuotesErrorTitle');
+    descriptionText = t('swapFetchingQuotesErrorDescription');
+    submitText = t('back');
+    statusImage = <SwapFailureIcon />;
   } else if (errorKey === QUOTES_NOT_AVAILABLE_ERROR) {
-    headerText = t('swapQuotesNotAvailableErrorTitle')
-    descriptionText = t('swapQuotesNotAvailableErrorDescription')
-    submitText = t('tryAgain')
-    statusImage = <SwapFailureIcon />
+    headerText = t('swapQuotesNotAvailableErrorTitle');
+    descriptionText = t('swapQuotesNotAvailableErrorDescription');
+    submitText = t('tryAgain');
+    statusImage = <SwapFailureIcon />;
   } else if (!errorKey && !swapComplete) {
-    headerText = t('swapProcessing')
-    statusImage = <PulseLoader />
-    submitText = t('swapsViewInActivity')
+    headerText = t('swapProcessing');
+    statusImage = <PulseLoader />;
+    submitText = t('swapsViewInActivity');
     descriptionText = t('swapOnceTransactionHasProcess', [
       <span
         key="swapOnceTransactionHasProcess-1"
@@ -152,18 +152,18 @@ export default function AwaitingSwap({
       >
         {destinationTokenInfo.symbol}
       </span>,
-    ])
+    ]);
     content = blockExplorerUrl && (
       <ViewOnEtherScanLink
         txHash={txHash}
         blockExplorerUrl={blockExplorerUrl}
         isCustomBlockExplorerUrl={Boolean(rpcPrefs.blockExplorerUrl)}
       />
-    )
+    );
   } else if (!errorKey && swapComplete) {
-    headerText = t('swapTransactionComplete')
-    statusImage = <SwapSuccessIcon />
-    submitText = t('swapViewToken', [destinationTokenInfo.symbol])
+    headerText = t('swapTransactionComplete');
+    statusImage = <SwapSuccessIcon />;
+    submitText = t('swapViewToken', [destinationTokenInfo.symbol]);
     descriptionText = t('swapTokenAvailable', [
       <span
         key="swapTokenAvailable-2"
@@ -171,14 +171,14 @@ export default function AwaitingSwap({
       >
         {`${tokensReceived || ''} ${destinationTokenInfo.symbol}`}
       </span>,
-    ])
+    ]);
     content = blockExplorerUrl && (
       <ViewOnEtherScanLink
         txHash={txHash}
         blockExplorerUrl={blockExplorerUrl}
         isCustomBlockExplorerUrl={Boolean(rpcPrefs.blockExplorerUrl)}
       />
-    )
+    );
   }
 
   return (
@@ -199,10 +199,10 @@ export default function AwaitingSwap({
       <SwapsFooter
         onSubmit={async () => {
           if (errorKey === OFFLINE_FOR_MAINTENANCE) {
-            await dispatch(prepareToLeaveSwaps())
-            history.push(DEFAULT_ROUTE)
+            await dispatch(prepareToLeaveSwaps());
+            history.push(DEFAULT_ROUTE);
           } else if (errorKey === QUOTES_EXPIRED_ERROR) {
-            dispatch(prepareForRetryGetQuotes())
+            dispatch(prepareForRetryGetQuotes());
             await dispatch(
               fetchQuotesAndSetQuoteState(
                 history,
@@ -210,13 +210,13 @@ export default function AwaitingSwap({
                 maxSlippage,
                 metaMetricsEvent,
               ),
-            )
+            );
           } else if (errorKey) {
-            await dispatch(navigateBackToBuildQuote(history))
+            await dispatch(navigateBackToBuildQuote(history));
           } else if (destinationTokenInfo?.symbol === 'ETH') {
-            history.push(DEFAULT_ROUTE)
+            history.push(DEFAULT_ROUTE);
           } else {
-            history.push(`${ASSET_ROUTE}/${destinationTokenInfo?.address}`)
+            history.push(`${ASSET_ROUTE}/${destinationTokenInfo?.address}`);
           }
         }}
         onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}
@@ -225,7 +225,7 @@ export default function AwaitingSwap({
         hideCancel={errorKey !== QUOTES_EXPIRED_ERROR}
       />
     </div>
-  )
+  );
 }
 
 AwaitingSwap.propTypes = {
@@ -244,4 +244,4 @@ AwaitingSwap.propTypes = {
   submittingSwap: PropTypes.bool,
   inputValue: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   maxSlippage: PropTypes.number,
-}
+};

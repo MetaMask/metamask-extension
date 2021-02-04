@@ -1,1 +1,1 @@
-export { default } from './permissions-connect-header.component'
+export { default } from './permissions-connect-header.component';

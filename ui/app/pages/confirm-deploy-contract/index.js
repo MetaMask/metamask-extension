@@ -1,1 +1,1 @@
-export { default } from './confirm-deploy-contract.container'
+export { default } from './confirm-deploy-contract.container';

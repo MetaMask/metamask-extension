@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 export default function QuotesTimeoutIcon() {
   return (
@@ -14,5 +14,5 @@ export default function QuotesTimeoutIcon() {
         fill="#037DD6"
       />
     </svg>
-  )
+  );
 }

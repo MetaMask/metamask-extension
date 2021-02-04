@@ -1,15 +1,15 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
-} from '../../../../../../shared/constants/app'
-import { getEnvironmentType } from '../../../../../../app/scripts/lib/util'
-import NetworkDisplay from '../../network-display'
-import Identicon from '../../../ui/identicon'
-import { shortenAddress } from '../../../../helpers/utils/util'
-import AccountMismatchWarning from '../../../ui/account-mismatch-warning/account-mismatch-warning.component'
-import { useI18nContext } from '../../../../hooks/useI18nContext'
+} from '../../../../../../shared/constants/app';
+import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
+import NetworkDisplay from '../../network-display';
+import Identicon from '../../../ui/identicon';
+import { shortenAddress } from '../../../../helpers/utils/util';
+import AccountMismatchWarning from '../../../ui/account-mismatch-warning/account-mismatch-warning.component';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export default function ConfirmPageContainerHeader({
   onEdit,
@@ -18,14 +18,14 @@ export default function ConfirmPageContainerHeader({
   showAccountInHeader,
   children,
 }) {
-  const t = useI18nContext()
-  const windowType = getEnvironmentType()
+  const t = useI18nContext();
+  const windowType = getEnvironmentType();
   const isFullScreen =
     windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
-    windowType !== ENVIRONMENT_TYPE_POPUP
+    windowType !== ENVIRONMENT_TYPE_POPUP;
 
   if (!showEdit && isFullScreen) {
-    return null
+    return null;
   }
   return (
     <div className="confirm-page-container-header">
@@ -60,7 +60,7 @@ export default function ConfirmPageContainerHeader({
       </div>
       {children}
     </div>
-  )
+  );
 }
 
 ConfirmPageContainerHeader.propTypes = {
@@ -69,4 +69,4 @@ ConfirmPageContainerHeader.propTypes = {
   showEdit: PropTypes.bool,
   onEdit: PropTypes.func,
   children: PropTypes.node,
-}
+};

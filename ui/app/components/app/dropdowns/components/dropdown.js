@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import MenuDroppo from '../../menu-droppo'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import MenuDroppo from '../../menu-droppo';
 
 export class Dropdown extends Component {
   render() {
@@ -12,7 +12,7 @@ export class Dropdown extends Component {
       innerStyle,
       children,
       useCssTransition,
-    } = this.props
+    } = this.props;
 
     const innerStyleDefaults = {
       borderRadius: '4px',
@@ -20,7 +20,7 @@ export class Dropdown extends Component {
       background: 'rgba(0, 0, 0, 0.8)',
       boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
       ...innerStyle,
-    }
+    };
 
     return (
       <MenuDroppo
@@ -44,13 +44,13 @@ export class Dropdown extends Component {
         </style>
         {children}
       </MenuDroppo>
-    )
+    );
   }
 }
 
 Dropdown.defaultProps = {
   useCssTransition: false,
-}
+};
 
 Dropdown.propTypes = {
   isOpen: PropTypes.bool.isRequired,
@@ -60,23 +60,23 @@ Dropdown.propTypes = {
   innerStyle: PropTypes.object,
   useCssTransition: PropTypes.bool,
   containerClassName: PropTypes.string,
-}
+};
 
 export class DropdownMenuItem extends Component {
   render() {
-    const { onClick, closeMenu, children, style } = this.props
+    const { onClick, closeMenu, children, style } = this.props;
 
     return (
       <li
         className="dropdown-menu-item"
         onClick={() => {
-          onClick()
-          closeMenu()
+          onClick();
+          closeMenu();
         }}
         onKeyPress={(event) => {
           if (event.key === 'Enter') {
-            onClick()
-            closeMenu()
+            onClick();
+            closeMenu();
           }
         }}
         style={{
@@ -95,7 +95,7 @@ export class DropdownMenuItem extends Component {
       >
         {children}
       </li>
-    )
+    );
   }
 }
 
@@ -104,4 +104,4 @@ DropdownMenuItem.propTypes = {
   onClick: PropTypes.func.isRequired,
   children: PropTypes.node,
   style: PropTypes.object,
-}
+};

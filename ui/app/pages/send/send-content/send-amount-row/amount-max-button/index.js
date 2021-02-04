@@ -1,1 +1,1 @@
-export { default } from './amount-max-button.container'
+export { default } from './amount-max-button.container';

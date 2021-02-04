@@ -1,14 +1,14 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { omit } from 'lodash'
-import Typography from '../typography'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { omit } from 'lodash';
+import Typography from '../typography';
 import {
   COLORS,
   SIZES,
   TYPOGRAPHY,
   FONT_WEIGHT,
-} from '../../../helpers/constants/design-system'
-import Tooltip from '../tooltip'
+} from '../../../helpers/constants/design-system';
+import Tooltip from '../tooltip';
 
 const MARGIN_MAP = {
   [SIZES.XS]: 0,
@@ -16,7 +16,7 @@ const MARGIN_MAP = {
   [SIZES.MD]: 4,
   [SIZES.LG]: 6,
   [SIZES.XL]: 8,
-}
+};
 
 export default function DefinitionList({
   dictionary,
@@ -67,7 +67,7 @@ export default function DefinitionList({
         </React.Fragment>
       ))}
     </dl>
-  )
+  );
 }
 
 DefinitionList.propTypes = {
@@ -82,4 +82,4 @@ DefinitionList.propTypes = {
   definitionTypography: PropTypes.shape({
     ...omit(Typography.propTypes, ['tag', 'className', 'boxProps']),
   }),
-}
+};

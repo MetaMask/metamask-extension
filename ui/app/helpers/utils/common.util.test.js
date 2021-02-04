@@ -1,5 +1,5 @@
-import assert from 'assert'
-import * as utils from './common.util'
+import assert from 'assert';
+import * as utils from './common.util';
 
 describe('Common utils', function () {
   describe('camelCaseToCapitalize', function () {
@@ -17,11 +17,11 @@ describe('Common utils', function () {
           test: 'thisIsATest',
           expected: 'This Is A Test',
         },
-      ]
+      ];
 
       tests.forEach(({ test, expected }) => {
-        assert.strictEqual(utils.camelCaseToCapitalize(test), expected)
-      })
-    })
-  })
-})
+        assert.strictEqual(utils.camelCaseToCapitalize(test), expected);
+      });
+    });
+  });
+});

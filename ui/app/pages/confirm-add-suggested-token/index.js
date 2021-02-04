@@ -1,3 +1,3 @@
-import ConfirmAddSuggestedToken from './confirm-add-suggested-token.container'
+import ConfirmAddSuggestedToken from './confirm-add-suggested-token.container';
 
-export default ConfirmAddSuggestedToken
+export default ConfirmAddSuggestedToken;

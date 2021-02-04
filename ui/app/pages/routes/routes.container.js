@@ -1,32 +1,32 @@
-import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
-import { compose } from 'redux'
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 import {
   getNetworkIdentifier,
   getPreferences,
   submittedPendingTransactionsSelector,
-} from '../../selectors'
+} from '../../selectors';
 import {
   hideSidebar,
   lockMetamask,
   setCurrentCurrency,
   setLastActiveTime,
   setMouseUserState,
-} from '../../store/actions'
-import { pageChanged } from '../../ducks/history/history'
-import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps'
-import Routes from './routes.component'
+} from '../../store/actions';
+import { pageChanged } from '../../ducks/history/history';
+import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
+import Routes from './routes.component';
 
 function mapStateToProps(state) {
-  const { appState } = state
+  const { appState } = state;
   const {
     sidebar,
     alertOpen,
     alertMessage,
     isLoading,
     loadingMessage,
-  } = appState
-  const { autoLockTimeLimit = 0 } = getPreferences(state)
+  } = appState;
+  const { autoLockTimeLimit = 0 } = getPreferences(state);
 
   return {
     sidebar,
@@ -44,7 +44,7 @@ function mapStateToProps(state) {
     isMouseUser: state.appState.isMouseUser,
     providerId: getNetworkIdentifier(state),
     autoLockTimeLimit,
-  }
+  };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -57,10 +57,10 @@ function mapDispatchToProps(dispatch) {
     setLastActiveTime: () => dispatch(setLastActiveTime()),
     pageChanged: (path) => dispatch(pageChanged(path)),
     prepareToLeaveSwaps: () => dispatch(prepareToLeaveSwaps()),
-  }
+  };
 }
 
 export default compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps),
-)(Routes)
+)(Routes);

@@ -1,1 +1,1 @@
-export { default } from './welcome.container'
+export { default } from './welcome.container';

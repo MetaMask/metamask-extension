@@ -1,14 +1,14 @@
-import { useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import {
   formatCurrency,
   getValueFromWeiHex,
-} from '../helpers/utils/confirm-tx.util'
+} from '../helpers/utils/confirm-tx.util';
 import {
   getCurrentCurrency,
   getConversionRate,
   getNativeCurrency,
-} from '../selectors'
+} from '../selectors';
 
 /**
  * Defines the shape of the options parameter for useCurrencyDisplay
@@ -42,15 +42,15 @@ export function useCurrencyDisplay(
   inputValue,
   { displayValue, prefix, numberOfDecimals, denomination, currency, ...opts },
 ) {
-  const currentCurrency = useSelector(getCurrentCurrency)
-  const nativeCurrency = useSelector(getNativeCurrency)
-  const conversionRate = useSelector(getConversionRate)
+  const currentCurrency = useSelector(getCurrentCurrency);
+  const nativeCurrency = useSelector(getNativeCurrency);
+  const conversionRate = useSelector(getConversionRate);
 
-  const toCurrency = currency || currentCurrency
+  const toCurrency = currency || currentCurrency;
 
   const value = useMemo(() => {
     if (displayValue) {
-      return displayValue
+      return displayValue;
     }
     return formatCurrency(
       getValueFromWeiHex({
@@ -62,7 +62,7 @@ export function useCurrencyDisplay(
         toDenomination: denomination,
       }),
       toCurrency,
-    )
+    );
   }, [
     inputValue,
     nativeCurrency,
@@ -71,16 +71,16 @@ export function useCurrencyDisplay(
     numberOfDecimals,
     denomination,
     toCurrency,
-  ])
+  ]);
 
-  let suffix
+  let suffix;
 
   if (!opts.hideLabel) {
-    suffix = opts.suffix || toCurrency.toUpperCase()
+    suffix = opts.suffix || toCurrency.toUpperCase();
   }
 
   return [
     `${prefix || ''}${value}${suffix ? ` ${suffix}` : ''}`,
     { prefix, value, suffix },
-  ]
+  ];
 }

@@ -1,1 +1,1 @@
-export { default } from './transaction-activity-log.container'
+export { default } from './transaction-activity-log.container';

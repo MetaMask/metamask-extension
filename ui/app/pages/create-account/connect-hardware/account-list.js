@@ -1,8 +1,8 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import Select from 'react-select'
-import getAccountLink from '../../../../lib/account-link'
-import Button from '../../../components/ui/button'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import Select from 'react-select';
+import getAccountLink from '../../../../lib/account-link';
+import Button from '../../../components/ui/button';
 
 class AccountList extends Component {
   getHdPaths() {
@@ -15,26 +15,26 @@ class AccountList extends Component {
         label: `Legacy (MEW / MyCrypto)`,
         value: `m/44'/60'/0'`,
       },
-    ]
+    ];
   }
 
   goToNextPage = () => {
     // If we have < 5 accounts, it's restricted by BIP-44
     if (this.props.accounts.length === 5) {
-      this.props.getPage(this.props.device, 1, this.props.selectedPath)
+      this.props.getPage(this.props.device, 1, this.props.selectedPath);
     } else {
-      this.props.onAccountRestriction()
+      this.props.onAccountRestriction();
     }
-  }
+  };
 
   goToPreviousPage = () => {
-    this.props.getPage(this.props.device, -1, this.props.selectedPath)
-  }
+    this.props.getPage(this.props.device, -1, this.props.selectedPath);
+  };
 
   renderHdPathSelector() {
-    const { onPathChange, selectedPath } = this.props
+    const { onPathChange, selectedPath } = this.props;
 
-    const options = this.getHdPaths()
+    const options = this.getHdPaths();
     return (
       <div>
         <h3 className="hw-connect__hdPath__title">
@@ -49,20 +49,20 @@ class AccountList extends Component {
             value={selectedPath}
             options={options}
             onChange={(opt) => {
-              onPathChange(opt.value)
+              onPathChange(opt.value);
             }}
           />
         </div>
       </div>
-    )
+    );
   }
 
   capitalizeDevice(device) {
-    return device.slice(0, 1).toUpperCase() + device.slice(1)
+    return device.slice(0, 1).toUpperCase() + device.slice(1);
   }
 
   renderHeader() {
-    const { device } = this.props
+    const { device } = this.props;
     return (
       <div className="hw-connect">
         <h3 className="hw-connect__unlock-title">
@@ -76,7 +76,7 @@ class AccountList extends Component {
           {this.context.t('selectAnAccountHelp')}
         </p>
       </div>
-    )
+    );
   }
 
   renderAccounts() {
@@ -120,7 +120,7 @@ class AccountList extends Component {
           </div>
         ))}
       </div>
-    )
+    );
   }
 
   renderPagination() {
@@ -139,14 +139,14 @@ class AccountList extends Component {
           {`${this.context.t('next')} >`}
         </button>
       </div>
-    )
+    );
   }
 
   renderButtons() {
-    const disabled = this.props.selectedAccount === null
-    const buttonProps = {}
+    const disabled = this.props.selectedAccount === null;
+    const buttonProps = {};
     if (disabled) {
-      buttonProps.disabled = true
+      buttonProps.disabled = true;
     }
 
     return (
@@ -169,7 +169,7 @@ class AccountList extends Component {
           {this.context.t('unlock')}
         </Button>
       </div>
-    )
+    );
   }
 
   renderForgetDevice() {
@@ -179,7 +179,7 @@ class AccountList extends Component {
           {this.context.t('forgetDevice')}
         </a>
       </div>
-    )
+    );
   }
 
   render() {
@@ -191,7 +191,7 @@ class AccountList extends Component {
         {this.renderButtons()}
         {this.renderForgetDevice()}
       </div>
-    )
+    );
   }
 }
 
@@ -208,10 +208,10 @@ AccountList.propTypes = {
   onUnlockAccount: PropTypes.func,
   onCancel: PropTypes.func,
   onAccountRestriction: PropTypes.func,
-}
+};
 
 AccountList.contextTypes = {
   t: PropTypes.func,
-}
+};
 
-export default AccountList
+export default AccountList;

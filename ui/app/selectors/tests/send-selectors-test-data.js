@@ -1,4 +1,4 @@
-import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction'
+import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
 
 const state = {
   metamask: {
@@ -214,6 +214,6 @@ const state = {
     toDropdownOpen: false,
     errors: { someError: null },
   },
-}
+};
 
-export default state
+export default state;

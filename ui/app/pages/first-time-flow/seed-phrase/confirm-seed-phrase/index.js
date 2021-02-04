@@ -1,1 +1,1 @@
-export { default } from './confirm-seed-phrase.container'
+export { default } from './confirm-seed-phrase.container';

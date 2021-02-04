@@ -1,13 +1,13 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import Fuse from 'fuse.js'
-import Identicon from '../../../../components/ui/identicon'
-import { isValidAddress } from '../../../../helpers/utils/util'
-import Dialog from '../../../../components/ui/dialog'
-import ContactList from '../../../../components/app/contact-list'
-import RecipientGroup from '../../../../components/app/contact-list/recipient-group/recipient-group.component'
-import { ellipsify } from '../../send.utils'
-import Button from '../../../../components/ui/button'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import Fuse from 'fuse.js';
+import Identicon from '../../../../components/ui/identicon';
+import { isValidAddress } from '../../../../helpers/utils/util';
+import Dialog from '../../../../components/ui/dialog';
+import ContactList from '../../../../components/app/contact-list';
+import RecipientGroup from '../../../../components/app/contact-list/recipient-group/recipient-group.component';
+import { ellipsify } from '../../send.utils';
+import Button from '../../../../components/ui/button';
 
 export default class AddRecipient extends Component {
   static propTypes = {
@@ -23,10 +23,10 @@ export default class AddRecipient extends Component {
     contacts: PropTypes.array,
     nonContacts: PropTypes.array,
     setInternalSearch: PropTypes.func,
-  }
+  };
 
   constructor(props) {
-    super(props)
+    super(props);
     this.recentFuse = new Fuse(props.nonContacts, {
       shouldSort: true,
       threshold: 0.45,
@@ -35,7 +35,7 @@ export default class AddRecipient extends Component {
       maxPatternLength: 32,
       minMatchCharLength: 1,
       keys: [{ name: 'address', weight: 0.5 }],
-    })
+    });
 
     this.contactFuse = new Fuse(props.contacts, {
       shouldSort: true,
@@ -48,66 +48,66 @@ export default class AddRecipient extends Component {
         { name: 'name', weight: 0.5 },
         { name: 'address', weight: 0.5 },
       ],
-    })
+    });
   }
 
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
-  }
+  };
 
   state = {
     isShowingTransfer: false,
-  }
+  };
 
   selectRecipient = (to, nickname = '') => {
-    const { updateSendTo, updateGas } = this.props
+    const { updateSendTo, updateGas } = this.props;
 
-    updateSendTo(to, nickname)
-    updateGas({ to })
-  }
+    updateSendTo(to, nickname);
+    updateGas({ to });
+  };
 
   searchForContacts = () => {
-    const { query, contacts } = this.props
+    const { query, contacts } = this.props;
 
-    let _contacts = contacts
+    let _contacts = contacts;
 
     if (query) {
-      this.contactFuse.setCollection(contacts)
-      _contacts = this.contactFuse.search(query)
+      this.contactFuse.setCollection(contacts);
+      _contacts = this.contactFuse.search(query);
     }
 
-    return _contacts
-  }
+    return _contacts;
+  };
 
   searchForRecents = () => {
-    const { query, nonContacts } = this.props
+    const { query, nonContacts } = this.props;
 
-    let _nonContacts = nonContacts
+    let _nonContacts = nonContacts;
 
     if (query) {
-      this.recentFuse.setCollection(nonContacts)
-      _nonContacts = this.recentFuse.search(query)
+      this.recentFuse.setCollection(nonContacts);
+      _nonContacts = this.recentFuse.search(query);
     }
 
-    return _nonContacts
-  }
+    return _nonContacts;
+  };
 
   render() {
-    const { ensResolution, query, addressBookEntryName } = this.props
-    const { isShowingTransfer } = this.state
+    const { ensResolution, query, addressBookEntryName } = this.props;
+    const { isShowingTransfer } = this.state;
 
-    let content
+    let content;
 
     if (isValidAddress(query)) {
-      content = this.renderExplicitAddress(query)
+      content = this.renderExplicitAddress(query);
     } else if (ensResolution) {
       content = this.renderExplicitAddress(
         ensResolution,
         addressBookEntryName || query,
-      )
+      );
     } else if (isShowingTransfer) {
-      content = this.renderTransfer()
+      content = this.renderTransfer();
     }
 
     return (
@@ -115,7 +115,7 @@ export default class AddRecipient extends Component {
         {this.renderDialogs()}
         {content || this.renderMain()}
       </div>
-    )
+    );
   }
 
   renderExplicitAddress(address, name) {
@@ -137,21 +137,21 @@ export default class AddRecipient extends Component {
           )}
         </div>
       </div>
-    )
+    );
   }
 
   renderTransfer() {
-    let { ownedAccounts } = this.props
-    const { query, setInternalSearch } = this.props
-    const { t } = this.context
-    const { isShowingTransfer } = this.state
+    let { ownedAccounts } = this.props;
+    const { query, setInternalSearch } = this.props;
+    const { t } = this.context;
+    const { isShowingTransfer } = this.state;
 
     if (isShowingTransfer && query) {
       ownedAccounts = ownedAccounts.filter(
         (item) =>
           item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 ||
           item.address.toLowerCase().indexOf(query.toLowerCase()) > -1,
-      )
+      );
     }
 
     return (
@@ -160,8 +160,8 @@ export default class AddRecipient extends Component {
           type="link"
           className="send__select-recipient-wrapper__list__link"
           onClick={() => {
-            setInternalSearch(false)
-            this.setState({ isShowingTransfer: false })
+            setInternalSearch(false);
+            this.setState({ isShowingTransfer: false });
           }}
         >
           <div className="send__select-recipient-wrapper__list__back-caret" />
@@ -173,17 +173,17 @@ export default class AddRecipient extends Component {
           onSelect={this.selectRecipient}
         />
       </div>
-    )
+    );
   }
 
   renderMain() {
-    const { t } = this.context
+    const { t } = this.context;
     const {
       query,
       ownedAccounts = [],
       addressBook,
       setInternalSearch,
-    } = this.props
+    } = this.props;
 
     return (
       <div className="send__select-recipient-wrapper__list">
@@ -198,8 +198,8 @@ export default class AddRecipient extends Component {
               type="link"
               className="send__select-recipient-wrapper__list__link"
               onClick={() => {
-                setInternalSearch(true)
-                this.setState({ isShowingTransfer: true })
+                setInternalSearch(true);
+                this.setState({ isShowingTransfer: true });
               }}
             >
               {t('transferBetweenAccounts')}
@@ -207,17 +207,17 @@ export default class AddRecipient extends Component {
           )}
         </ContactList>
       </div>
-    )
+    );
   }
 
   renderDialogs() {
-    const { toError, ensResolutionError, ensResolution } = this.props
-    const { t } = this.context
-    const contacts = this.searchForContacts()
-    const recents = this.searchForRecents()
+    const { toError, ensResolutionError, ensResolution } = this.props;
+    const { t } = this.context;
+    const contacts = this.searchForContacts();
+    const recents = this.searchForRecents();
 
     if (contacts.length || recents.length) {
-      return null
+      return null;
     }
 
     if (ensResolutionError) {
@@ -225,7 +225,7 @@ export default class AddRecipient extends Component {
         <Dialog type="error" className="send__error-dialog">
           {ensResolutionError}
         </Dialog>
-      )
+      );
     }
 
     if (toError && toError !== 'required' && !ensResolution) {
@@ -233,9 +233,9 @@ export default class AddRecipient extends Component {
         <Dialog type="error" className="send__error-dialog">
           {t(toError)}
         </Dialog>
-      )
+      );
     }
 
-    return null
+    return null;
   }
 }

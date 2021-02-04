@@ -1,11 +1,11 @@
-import React, { useContext } from 'react'
+import React, { useContext } from 'react';
 
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import { I18nContext } from '../../../contexts/i18n'
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import { I18nContext } from '../../../contexts/i18n';
 
-import ActionableMessage from '../actionable-message'
-import Tooltip from '../../../components/ui/tooltip'
+import ActionableMessage from '../actionable-message';
+import Tooltip from '../../../components/ui/tooltip';
 
 export default function ViewQuotePriceDifference(props) {
   const {
@@ -18,25 +18,25 @@ export default function ViewQuotePriceDifference(props) {
     priceSlippageFromDestination,
     priceDifferencePercentage,
     priceSlippageUnknownFiatValue,
-  } = props
+  } = props;
 
-  const t = useContext(I18nContext)
+  const t = useContext(I18nContext);
 
-  let priceDifferenceTitle = ''
-  let priceDifferenceMessage = ''
-  let priceDifferenceClass = ''
-  let priceDifferenceAcknowledgementText = ''
+  let priceDifferenceTitle = '';
+  let priceDifferenceMessage = '';
+  let priceDifferenceClass = '';
+  let priceDifferenceAcknowledgementText = '';
   if (priceSlippageUnknownFiatValue) {
     // A calculation error signals we cannot determine dollar value
-    priceDifferenceMessage = t('swapPriceDifferenceUnavailable')
-    priceDifferenceClass = 'fiat-error'
+    priceDifferenceMessage = t('swapPriceDifferenceUnavailable');
+    priceDifferenceClass = 'fiat-error';
     priceDifferenceAcknowledgementText = t(
       'swapPriceDifferenceAcknowledgementNoFiat',
-    )
+    );
   } else {
     priceDifferenceTitle = t('swapPriceDifferenceTitle', [
       priceDifferencePercentage,
-    ])
+    ]);
     priceDifferenceMessage = t('swapPriceDifference', [
       sourceTokenValue, // Number of source token to swap
       usedQuote.sourceTokenInfo.symbol, // Source token symbol
@@ -44,9 +44,11 @@ export default function ViewQuotePriceDifference(props) {
       destinationTokenValue, // Number of destination tokens in return
       usedQuote.destinationTokenInfo.symbol, // Destination token symbol,
       priceSlippageFromDestination, // Destination tokens total value
-    ])
-    priceDifferenceClass = usedQuote.priceSlippage.bucket
-    priceDifferenceAcknowledgementText = t('swapPriceDifferenceAcknowledgement')
+    ]);
+    priceDifferenceClass = usedQuote.priceSlippage.bucket;
+    priceDifferenceAcknowledgementText = t(
+      'swapPriceDifferenceAcknowledgement',
+    );
   }
 
   return (
@@ -70,7 +72,7 @@ export default function ViewQuotePriceDifference(props) {
                 <div className="view-quote__price-difference-warning-contents-actions">
                   <button
                     onClick={() => {
-                      onAcknowledgementClick()
+                      onAcknowledgementClick();
                     }}
                   >
                     {priceDifferenceAcknowledgementText}
@@ -89,7 +91,7 @@ export default function ViewQuotePriceDifference(props) {
         }
       />
     </div>
-  )
+  );
 }
 
 ViewQuotePriceDifference.propTypes = {
@@ -102,4 +104,4 @@ ViewQuotePriceDifference.propTypes = {
   priceSlippageFromDestination: PropTypes.string,
   priceDifferencePercentage: PropTypes.number,
   priceSlippageUnknownFiatValue: PropTypes.bool,
-}
+};

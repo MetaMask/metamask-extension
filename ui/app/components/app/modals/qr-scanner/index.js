@@ -1,3 +1,3 @@
-import QrScanner from './qr-scanner.container'
+import QrScanner from './qr-scanner.container';
 
-export default QrScanner
+export default QrScanner;

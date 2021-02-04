@@ -4,35 +4,35 @@
 normalizes txParams on unconfirmed txs
 
 */
-import { cloneDeep } from 'lodash'
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction'
+import { cloneDeep } from 'lodash';
+import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 
-const version = 27
+const version = 27;
 
 export default {
   version,
 
   async migrate(originalVersionedData) {
-    const versionedData = cloneDeep(originalVersionedData)
-    versionedData.meta.version = version
-    const state = versionedData.data
-    const newState = transformState(state)
-    versionedData.data = newState
-    return versionedData
+    const versionedData = cloneDeep(originalVersionedData);
+    versionedData.meta.version = version;
+    const state = versionedData.data;
+    const newState = transformState(state);
+    versionedData.data = newState;
+    return versionedData;
   },
-}
+};
 
 function transformState(state) {
-  const newState = state
+  const newState = state;
 
   if (newState.TransactionController) {
     if (newState.TransactionController.transactions) {
-      const { transactions } = newState.TransactionController
+      const { transactions } = newState.TransactionController;
       newState.TransactionController.transactions = transactions.filter(
         (txMeta) => txMeta.status !== TRANSACTION_STATUSES.REJECTED,
-      )
+      );
     }
   }
 
-  return newState
+  return newState;
 }

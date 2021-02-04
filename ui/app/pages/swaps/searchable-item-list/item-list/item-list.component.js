@@ -1,8 +1,8 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import Identicon from '../../../../components/ui/identicon'
-import UrlIcon from '../../../../components/ui/url-icon'
+import React from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import Identicon from '../../../../components/ui/identicon';
+import UrlIcon from '../../../../components/ui/url-icon';
 
 export default function ItemList({
   results = [],
@@ -32,10 +32,10 @@ export default function ItemList({
       >
         {results.slice(0, maxListItems).map((result, i) => {
           if (hideItemIf?.(result)) {
-            return null
+            return null;
           }
 
-          const onClick = () => onClickItem?.(result)
+          const onClick = () => onClickItem?.(result);
           const {
             iconUrl,
             identiconAddress,
@@ -46,7 +46,7 @@ export default function ItemList({
             rightPrimaryLabel,
             rightSecondaryLabel,
             IconComponent,
-          } = result
+          } = result;
           return (
             <div
               tabIndex="0"
@@ -97,11 +97,11 @@ export default function ItemList({
                   )}
               </div>
             </div>
-          )
+          );
         })}
       </div>
     </div>
-  )
+  );
 }
 
 ItemList.propTypes = {
@@ -127,4 +127,4 @@ ItemList.propTypes = {
   hideRightLabels: PropTypes.bool,
   hideItemIf: PropTypes.func,
   listContainerClassName: PropTypes.string,
-}
+};

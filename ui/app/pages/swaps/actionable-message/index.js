@@ -1,1 +1,1 @@
-export { default } from './actionable-message'
+export { default } from './actionable-message';

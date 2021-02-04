@@ -1,20 +1,20 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import {
   getEthConversionFromWeiHex,
   getValueFromWeiHex,
-} from '../../../helpers/utils/conversions.util'
-import { formatDate } from '../../../helpers/utils/util'
-import { getEtherscanNetworkPrefix } from '../../../../lib/etherscan-prefix-for-network'
-import TransactionActivityLogIcon from './transaction-activity-log-icon'
-import { CONFIRMED_STATUS } from './transaction-activity-log.constants'
+} from '../../../helpers/utils/conversions.util';
+import { formatDate } from '../../../helpers/utils/util';
+import { getEtherscanNetworkPrefix } from '../../../../lib/etherscan-prefix-for-network';
+import TransactionActivityLogIcon from './transaction-activity-log-icon';
+import { CONFIRMED_STATUS } from './transaction-activity-log.constants';
 
 export default class TransactionActivityLog extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
     metricEvent: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     activities: PropTypes.array,
@@ -27,27 +27,27 @@ export default class TransactionActivityLog extends PureComponent {
     onRetry: PropTypes.func,
     primaryTransaction: PropTypes.object,
     isEarliestNonce: PropTypes.bool,
-  }
+  };
 
   handleActivityClick = (hash) => {
-    const { primaryTransaction } = this.props
-    const { metamaskNetworkId } = primaryTransaction
+    const { primaryTransaction } = this.props;
+    const { metamaskNetworkId } = primaryTransaction;
 
-    const prefix = getEtherscanNetworkPrefix(metamaskNetworkId)
-    const etherscanUrl = `https://${prefix}etherscan.io/tx/${hash}`
+    const prefix = getEtherscanNetworkPrefix(metamaskNetworkId);
+    const etherscanUrl = `https://${prefix}etherscan.io/tx/${hash}`;
 
-    global.platform.openTab({ url: etherscanUrl })
-  }
+    global.platform.openTab({ url: etherscanUrl });
+  };
 
   renderInlineRetry(index) {
-    const { t } = this.context
+    const { t } = this.context;
     const {
       inlineRetryIndex,
       primaryTransaction = {},
       onRetry,
       isEarliestNonce,
-    } = this.props
-    const { status } = primaryTransaction
+    } = this.props;
+    const { status } = primaryTransaction;
 
     return isEarliestNonce &&
       status !== CONFIRMED_STATUS &&
@@ -55,18 +55,18 @@ export default class TransactionActivityLog extends PureComponent {
       <div className="transaction-activity-log__action-link" onClick={onRetry}>
         {t('speedUpTransaction')}
       </div>
-    ) : null
+    ) : null;
   }
 
   renderInlineCancel(index) {
-    const { t } = this.context
+    const { t } = this.context;
     const {
       inlineCancelIndex,
       primaryTransaction = {},
       onCancel,
       isEarliestNonce,
-    } = this.props
-    const { status } = primaryTransaction
+    } = this.props;
+    const { status } = primaryTransaction;
 
     return isEarliestNonce &&
       status !== CONFIRMED_STATUS &&
@@ -74,12 +74,12 @@ export default class TransactionActivityLog extends PureComponent {
       <div className="transaction-activity-log__action-link" onClick={onCancel}>
         {t('speedUpCancellation')}
       </div>
-    ) : null
+    ) : null;
   }
 
   renderActivity(activity, index) {
-    const { conversionRate, nativeCurrency } = this.props
-    const { eventKey, value, timestamp, hash } = activity
+    const { conversionRate, nativeCurrency } = this.props;
+    const { eventKey, value, timestamp, hash } = activity;
     const ethValue =
       index === 0
         ? `${getValueFromWeiHex({
@@ -94,12 +94,12 @@ export default class TransactionActivityLog extends PureComponent {
             fromCurrency: 'ETH',
             conversionRate,
             numberOfDecimals: 3,
-          })
-    const formattedTimestamp = formatDate(timestamp, "T 'on' M/d/y")
+          });
+    const formattedTimestamp = formatDate(timestamp, "T 'on' M/d/y");
     const activityText = this.context.t(eventKey, [
       ethValue,
       formattedTimestamp,
-    ])
+    ]);
 
     return (
       <div key={index} className="transaction-activity-log__activity">
@@ -119,15 +119,15 @@ export default class TransactionActivityLog extends PureComponent {
           {this.renderInlineCancel(index)}
         </div>
       </div>
-    )
+    );
   }
 
   render() {
-    const { t } = this.context
-    const { className, activities } = this.props
+    const { t } = this.context;
+    const { className, activities } = this.props;
 
     if (activities.length === 0) {
-      return null
+      return null;
     }
 
     return (
@@ -141,6 +141,6 @@ export default class TransactionActivityLog extends PureComponent {
           )}
         </div>
       </div>
-    )
+    );
   }
 }

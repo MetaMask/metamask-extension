@@ -1,1 +1,1 @@
-export { default } from './ens-input.container'
+export { default } from './ens-input.container';

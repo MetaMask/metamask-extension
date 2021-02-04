@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 export default function SwapSuccessIcon() {
   return (
@@ -14,5 +14,5 @@ export default function SwapSuccessIcon() {
         fill="#28A745"
       />
     </svg>
-  )
+  );
 }

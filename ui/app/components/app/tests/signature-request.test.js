@@ -1,13 +1,13 @@
-import assert from 'assert'
-import React from 'react'
-import { Provider } from 'react-redux'
-import sinon from 'sinon'
-import configureMockStore from 'redux-mock-store'
-import { mountWithRouter } from '../../../../../test/lib/render-helpers'
-import SignatureRequest from '../signature-request'
+import assert from 'assert';
+import React from 'react';
+import { Provider } from 'react-redux';
+import sinon from 'sinon';
+import configureMockStore from 'redux-mock-store';
+import { mountWithRouter } from '../../../../../test/lib/render-helpers';
+import SignatureRequest from '../signature-request';
 
 describe('Signature Request', function () {
-  let wrapper
+  let wrapper;
 
   const mockStore = {
     metamask: {
@@ -23,8 +23,8 @@ describe('Signature Request', function () {
       cachedBalances: {},
       selectedAddress: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
     },
-  }
-  const store = configureMockStore()(mockStore)
+  };
+  const store = configureMockStore()(mockStore);
 
   const props = {
     fromAccount: {
@@ -49,7 +49,7 @@ describe('Signature Request', function () {
       time: 1,
       type: 'eth_sign',
     },
-  }
+  };
 
   beforeEach(function () {
     wrapper = mountWithRouter(
@@ -57,24 +57,24 @@ describe('Signature Request', function () {
         <SignatureRequest.WrappedComponent {...props} />
       </Provider>,
       store,
-    )
-  })
+    );
+  });
 
   afterEach(function () {
-    props.clearConfirmTransaction.resetHistory()
-  })
+    props.clearConfirmTransaction.resetHistory();
+  });
 
   it('cancel', function () {
-    const cancelButton = wrapper.find('button.btn-default')
-    cancelButton.simulate('click')
+    const cancelButton = wrapper.find('button.btn-default');
+    cancelButton.simulate('click');
 
-    assert(props.cancel.calledOnce)
-  })
+    assert(props.cancel.calledOnce);
+  });
 
   it('sign', function () {
-    const signButton = wrapper.find('button.btn-primary')
-    signButton.simulate('click')
+    const signButton = wrapper.find('button.btn-primary');
+    signButton.simulate('click');
 
-    assert(props.sign.calledOnce)
-  })
-})
+    assert(props.sign.calledOnce);
+  });
+});

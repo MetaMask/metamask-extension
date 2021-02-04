@@ -1,30 +1,30 @@
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import {
   getIsMainnet,
   getNativeCurrency,
   getPreferences,
-} from '../../../selectors'
-import { getHexGasTotal } from '../../../helpers/utils/confirm-tx.util'
-import { sumHexes } from '../../../helpers/utils/transactions.util'
-import { TRANSACTION_CATEGORIES } from '../../../../../shared/constants/transaction'
-import TransactionBreakdown from './transaction-breakdown.component'
+} from '../../../selectors';
+import { getHexGasTotal } from '../../../helpers/utils/confirm-tx.util';
+import { sumHexes } from '../../../helpers/utils/transactions.util';
+import { TRANSACTION_CATEGORIES } from '../../../../../shared/constants/transaction';
+import TransactionBreakdown from './transaction-breakdown.component';
 
 const mapStateToProps = (state, ownProps) => {
-  const { transaction, transactionCategory } = ownProps
+  const { transaction, transactionCategory } = ownProps;
   const {
     txParams: { gas, gasPrice, value } = {},
     txReceipt: { gasUsed } = {},
-  } = transaction
-  const { showFiatInTestnets } = getPreferences(state)
-  const isMainnet = getIsMainnet(state)
+  } = transaction;
+  const { showFiatInTestnets } = getPreferences(state);
+  const isMainnet = getIsMainnet(state);
   const isTokenApprove =
-    transactionCategory === TRANSACTION_CATEGORIES.TOKEN_METHOD_APPROVE
+    transactionCategory === TRANSACTION_CATEGORIES.TOKEN_METHOD_APPROVE;
 
-  const gasLimit = typeof gasUsed === 'string' ? gasUsed : gas
+  const gasLimit = typeof gasUsed === 'string' ? gasUsed : gas;
 
   const hexGasTotal =
-    (gasLimit && gasPrice && getHexGasTotal({ gasLimit, gasPrice })) || '0x0'
-  const totalInHex = sumHexes(hexGasTotal, value)
+    (gasLimit && gasPrice && getHexGasTotal({ gasLimit, gasPrice })) || '0x0';
+  const totalInHex = sumHexes(hexGasTotal, value);
 
   return {
     nativeCurrency: getNativeCurrency(state),
@@ -34,7 +34,7 @@ const mapStateToProps = (state, ownProps) => {
     gasPrice,
     gasUsed,
     isTokenApprove,
-  }
-}
+  };
+};
 
-export default connect(mapStateToProps)(TransactionBreakdown)
+export default connect(mapStateToProps)(TransactionBreakdown);

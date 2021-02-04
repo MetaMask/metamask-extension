@@ -1,10 +1,10 @@
-import assert from 'assert'
-import React from 'react'
-import { shallow } from 'enzyme'
-import SendRowErrorMessage from '../send-row-error-message.component'
+import assert from 'assert';
+import React from 'react';
+import { shallow } from 'enzyme';
+import SendRowErrorMessage from '../send-row-error-message.component';
 
 describe('SendRowErrorMessage Component', function () {
-  let wrapper
+  let wrapper;
 
   describe('render', function () {
     beforeEach(function () {
@@ -14,20 +14,20 @@ describe('SendRowErrorMessage Component', function () {
           errorType="error3"
         />,
         { context: { t: (str) => `${str}_t` } },
-      )
-    })
+      );
+    });
 
     it('should render null if the passed errors do not contain an error of errorType', function () {
-      assert.strictEqual(wrapper.find('.send-v2__error').length, 0)
-      assert.strictEqual(wrapper.html(), null)
-    })
+      assert.strictEqual(wrapper.find('.send-v2__error').length, 0);
+      assert.strictEqual(wrapper.html(), null);
+    });
 
     it('should render an error message if the passed errors contain an error of errorType', function () {
       wrapper.setProps({
         errors: { error1: 'abc', error2: 'def', error3: 'xyz' },
-      })
-      assert.strictEqual(wrapper.find('.send-v2__error').length, 1)
-      assert.strictEqual(wrapper.find('.send-v2__error').text(), 'xyz_t')
-    })
-  })
-})
+      });
+      assert.strictEqual(wrapper.find('.send-v2__error').length, 1);
+      assert.strictEqual(wrapper.find('.send-v2__error').text(), 'xyz_t');
+    });
+  });
+});

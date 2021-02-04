@@ -1,1 +1,1 @@
-export { default } from './user-preferenced-token-input.container'
+export { default } from './user-preferenced-token-input.container';

@@ -1,3 +1,3 @@
-import UnlockPage from './unlock-page.container'
+import UnlockPage from './unlock-page.container';
 
-export default UnlockPage
+export default UnlockPage;

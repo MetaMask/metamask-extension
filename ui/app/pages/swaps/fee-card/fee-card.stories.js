@@ -1,21 +1,21 @@
-import React from 'react'
-import { action } from '@storybook/addon-actions'
-import { text, boolean, number, object } from '@storybook/addon-knobs'
-import FeeCard from './fee-card'
+import React from 'react';
+import { action } from '@storybook/addon-actions';
+import { text, boolean, number, object } from '@storybook/addon-knobs';
+import FeeCard from './fee-card';
 
 const tokenApprovalTextComponent = (
   <span key="swaps-view-quote-approve-symbol-1" className="view-quote__bold">
     ABC
   </span>
-)
+);
 
 const containerStyle = {
   width: '300px',
-}
+};
 
 export default {
   title: 'FeeCard',
-}
+};
 
 export const WithAllProps = () => {
   return (
@@ -44,8 +44,8 @@ export const WithAllProps = () => {
         currentCurrency="usd"
       />
     </div>
-  )
-}
+  );
+};
 
 export const WithoutThirdRow = () => {
   return (
@@ -69,8 +69,8 @@ export const WithoutThirdRow = () => {
         metaMaskFee="0.875"
       />
     </div>
-  )
-}
+  );
+};
 
 export const WithOnlyRequiredProps = () => {
   return (
@@ -87,5 +87,5 @@ export const WithOnlyRequiredProps = () => {
         numberOfQuotes={2}
       />
     </div>
-  )
-}
+  );
+};

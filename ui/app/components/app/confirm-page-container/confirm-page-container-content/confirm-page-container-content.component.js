@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import { Tabs, Tab } from '../../../ui/tabs'
-import ErrorMessage from '../../../ui/error-message'
-import { PageContainerFooter } from '../../../ui/page-container'
-import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import { Tabs, Tab } from '../../../ui/tabs';
+import ErrorMessage from '../../../ui/error-message';
+import { PageContainerFooter } from '../../../ui/page-container';
+import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
 export default class ConfirmPageContainerContent extends Component {
   static propTypes = {
@@ -31,19 +31,19 @@ export default class ConfirmPageContainerContent extends Component {
     disabled: PropTypes.bool,
     unapprovedTxCount: PropTypes.number,
     rejectNText: PropTypes.string,
-  }
+  };
 
   renderContent() {
-    const { detailsComponent, dataComponent } = this.props
+    const { detailsComponent, dataComponent } = this.props;
 
     if (detailsComponent && dataComponent) {
-      return this.renderTabs()
+      return this.renderTabs();
     }
-    return detailsComponent || dataComponent
+    return detailsComponent || dataComponent;
   }
 
   renderTabs() {
-    const { detailsComponent, dataComponent } = this.props
+    const { detailsComponent, dataComponent } = this.props;
 
     return (
       <Tabs>
@@ -54,7 +54,7 @@ export default class ConfirmPageContainerContent extends Component {
           {dataComponent}
         </Tab>
       </Tabs>
-    )
+    );
   }
 
   render() {
@@ -81,7 +81,7 @@ export default class ConfirmPageContainerContent extends Component {
       unapprovedTxCount,
       rejectNText,
       origin,
-    } = this.props
+    } = this.props;
 
     return (
       <div className="confirm-page-container-content">
@@ -118,6 +118,6 @@ export default class ConfirmPageContainerContent extends Component {
           {unapprovedTxCount > 1 && <a onClick={onCancelAll}>{rejectNText}</a>}
         </PageContainerFooter>
       </div>
-    )
+    );
   }
 }

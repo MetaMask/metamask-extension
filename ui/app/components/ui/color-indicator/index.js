@@ -1,1 +1,1 @@
-export { default } from './color-indicator'
+export { default } from './color-indicator';

@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
-import classnames from 'classnames'
-import PropTypes from 'prop-types'
-import Button from '../../ui/button'
-import Checkbox from '../../ui/check-box'
-import Tooltip from '../../ui/tooltip'
+import React, { useState } from 'react';
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import Button from '../../ui/button';
+import Checkbox from '../../ui/check-box';
+import Tooltip from '../../ui/tooltip';
 
 const HomeNotification = ({
   acceptText,
@@ -16,7 +16,7 @@ const HomeNotification = ({
   onAccept,
   onIgnore,
 }) => {
-  const [checkboxState, setCheckBoxState] = useState(false)
+  const [checkboxState, setCheckBoxState] = useState(false);
 
   const checkboxElement = checkboxText && (
     <Checkbox
@@ -25,7 +25,7 @@ const HomeNotification = ({
       className="home-notification__checkbox"
       onClick={() => setCheckBoxState((checked) => !checked)}
     />
-  )
+  );
 
   return (
     <div className={classnames('home-notification', ...classNames)}>
@@ -87,8 +87,8 @@ const HomeNotification = ({
         ) : null}
       </div>
     </div>
-  )
-}
+  );
+};
 
 HomeNotification.propTypes = {
   acceptText: PropTypes.node,
@@ -100,6 +100,6 @@ HomeNotification.propTypes = {
   infoText: PropTypes.node,
   onAccept: PropTypes.func,
   onIgnore: PropTypes.func,
-}
+};
 
-export default HomeNotification
+export default HomeNotification;

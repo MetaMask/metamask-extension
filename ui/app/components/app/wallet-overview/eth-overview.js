@@ -1,74 +1,74 @@
-import React, { useContext } from 'react'
-import PropTypes from 'prop-types'
-import { useDispatch, useSelector } from 'react-redux'
-import classnames from 'classnames'
-import { useHistory } from 'react-router-dom'
+import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import classnames from 'classnames';
+import { useHistory } from 'react-router-dom';
 
-import Identicon from '../../ui/identicon'
-import { I18nContext } from '../../../contexts/i18n'
+import Identicon from '../../ui/identicon';
+import { I18nContext } from '../../../contexts/i18n';
 import {
   SEND_ROUTE,
   BUILD_QUOTE_ROUTE,
-} from '../../../helpers/constants/routes'
+} from '../../../helpers/constants/routes';
 import {
   useMetricEvent,
   useNewMetricEvent,
-} from '../../../hooks/useMetricEvent'
-import { useSwapsEthToken } from '../../../hooks/useSwapsEthToken'
-import Tooltip from '../../ui/tooltip'
-import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
-import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
-import { showModal } from '../../../store/actions'
+} from '../../../hooks/useMetricEvent';
+import { useSwapsEthToken } from '../../../hooks/useSwapsEthToken';
+import Tooltip from '../../ui/tooltip';
+import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
+import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
+import { showModal } from '../../../store/actions';
 import {
   isBalanceCached,
   getSelectedAccount,
   getShouldShowFiat,
   getCurrentChainId,
   getCurrentKeyring,
-} from '../../../selectors/selectors'
-import SwapIcon from '../../ui/icon/swap-icon.component'
-import BuyIcon from '../../ui/icon/overview-buy-icon.component'
-import SendIcon from '../../ui/icon/overview-send-icon.component'
+} from '../../../selectors/selectors';
+import SwapIcon from '../../ui/icon/swap-icon.component';
+import BuyIcon from '../../ui/icon/overview-buy-icon.component';
+import SendIcon from '../../ui/icon/overview-send-icon.component';
 import {
   getSwapsFeatureLiveness,
   setSwapsFromToken,
-} from '../../../ducks/swaps/swaps'
-import IconButton from '../../ui/icon-button'
-import { MAINNET_CHAIN_ID } from '../../../../../shared/constants/network'
-import WalletOverview from './wallet-overview'
+} from '../../../ducks/swaps/swaps';
+import IconButton from '../../ui/icon-button';
+import { MAINNET_CHAIN_ID } from '../../../../../shared/constants/network';
+import WalletOverview from './wallet-overview';
 
 const EthOverview = ({ className }) => {
-  const dispatch = useDispatch()
-  const t = useContext(I18nContext)
+  const dispatch = useDispatch();
+  const t = useContext(I18nContext);
   const sendEvent = useMetricEvent({
     eventOpts: {
       category: 'Navigation',
       action: 'Home',
       name: 'Clicked Send: Eth',
     },
-  })
+  });
   const depositEvent = useMetricEvent({
     eventOpts: {
       category: 'Navigation',
       action: 'Home',
       name: 'Clicked Deposit',
     },
-  })
-  const history = useHistory()
-  const keyring = useSelector(getCurrentKeyring)
-  const usingHardwareWallet = keyring.type.search('Hardware') !== -1
-  const balanceIsCached = useSelector(isBalanceCached)
-  const showFiat = useSelector(getShouldShowFiat)
-  const selectedAccount = useSelector(getSelectedAccount)
-  const { balance } = selectedAccount
-  const chainId = useSelector(getCurrentChainId)
+  });
+  const history = useHistory();
+  const keyring = useSelector(getCurrentKeyring);
+  const usingHardwareWallet = keyring.type.search('Hardware') !== -1;
+  const balanceIsCached = useSelector(isBalanceCached);
+  const showFiat = useSelector(getShouldShowFiat);
+  const selectedAccount = useSelector(getSelectedAccount);
+  const { balance } = selectedAccount;
+  const chainId = useSelector(getCurrentChainId);
   const enteredSwapsEvent = useNewMetricEvent({
     event: 'Swaps Opened',
     properties: { source: 'Main View', active_currency: 'ETH' },
     category: 'swaps',
-  })
-  const swapsEnabled = useSelector(getSwapsFeatureLiveness)
-  const swapsEthToken = useSwapsEthToken()
+  });
+  const swapsEnabled = useSelector(getSwapsFeatureLiveness);
+  const swapsEthToken = useSwapsEthToken();
 
   return (
     <WalletOverview
@@ -117,8 +117,8 @@ const EthOverview = ({ className }) => {
             Icon={BuyIcon}
             label={t('buy')}
             onClick={() => {
-              depositEvent()
-              dispatch(showModal({ name: 'DEPOSIT_ETHER' }))
+              depositEvent();
+              dispatch(showModal({ name: 'DEPOSIT_ETHER' }));
             }}
           />
           <IconButton
@@ -127,8 +127,8 @@ const EthOverview = ({ className }) => {
             Icon={SendIcon}
             label={t('send')}
             onClick={() => {
-              sendEvent()
-              history.push(SEND_ROUTE)
+              sendEvent();
+              history.push(SEND_ROUTE);
             }}
           />
           {swapsEnabled ? (
@@ -138,12 +138,12 @@ const EthOverview = ({ className }) => {
               Icon={SwapIcon}
               onClick={() => {
                 if (chainId === MAINNET_CHAIN_ID) {
-                  enteredSwapsEvent()
-                  dispatch(setSwapsFromToken(swapsEthToken))
+                  enteredSwapsEvent();
+                  dispatch(setSwapsFromToken(swapsEthToken));
                   if (usingHardwareWallet) {
-                    global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE)
+                    global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
                   } else {
-                    history.push(BUILD_QUOTE_ROUTE)
+                    history.push(BUILD_QUOTE_ROUTE);
                   }
                 }
               }}
@@ -164,15 +164,15 @@ const EthOverview = ({ className }) => {
       className={className}
       icon={<Identicon diameter={32} />}
     />
-  )
-}
+  );
+};
 
 EthOverview.propTypes = {
   className: PropTypes.string,
-}
+};
 
 EthOverview.defaultProps = {
   className: undefined,
-}
+};
 
-export default EthOverview
+export default EthOverview;

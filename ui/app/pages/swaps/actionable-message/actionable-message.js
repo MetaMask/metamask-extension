@@ -1,6 +1,6 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
+import React from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 export default function ActionableMessage({
   message = '',
@@ -38,7 +38,7 @@ export default function ActionableMessage({
         </div>
       )}
     </div>
-  )
+  );
 }
 
 ActionableMessage.propTypes = {
@@ -52,4 +52,4 @@ ActionableMessage.propTypes = {
     onClick: PropTypes.func,
   }),
   className: PropTypes.string,
-}
+};

@@ -1,28 +1,28 @@
-import classnames from 'classnames'
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import Button from '../../../components/ui/button'
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import Button from '../../../components/ui/button';
 
 export default class SelectHardware extends Component {
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     connectToHardwareWallet: PropTypes.func.isRequired,
     browserSupported: PropTypes.bool.isRequired,
-  }
+  };
 
   state = {
     selectedDevice: null,
-  }
+  };
 
   connect = () => {
     if (this.state.selectedDevice) {
-      this.props.connectToHardwareWallet(this.state.selectedDevice)
+      this.props.connectToHardwareWallet(this.state.selectedDevice);
     }
-    return null
-  }
+    return null;
+  };
 
   renderConnectToTrezorButton() {
     return (
@@ -38,7 +38,7 @@ export default class SelectHardware extends Component {
           alt="Trezor"
         />
       </button>
-    )
+    );
   }
 
   renderConnectToLedgerButton() {
@@ -55,7 +55,7 @@ export default class SelectHardware extends Component {
           alt="Ledger"
         />
       </button>
-    )
+    );
   }
 
   renderButtons() {
@@ -75,7 +75,7 @@ export default class SelectHardware extends Component {
           {this.context.t('connect')}
         </Button>
       </>
-    )
+    );
   }
 
   renderUnsupportedBrowser() {
@@ -101,7 +101,7 @@ export default class SelectHardware extends Component {
           {this.context.t('downloadGoogleChrome')}
         </Button>
       </div>
-    )
+    );
   }
 
   renderHeader() {
@@ -114,26 +114,26 @@ export default class SelectHardware extends Component {
           {this.context.t('hardwareWalletsMsg')}
         </p>
       </div>
-    )
+    );
   }
 
   getAffiliateLinks() {
     const links = {
       trezor: `<a class='hw-connect__get-hw__link' href='https://shop.trezor.io/?a=metamask' target='_blank'>Trezor</a>`,
       ledger: `<a class='hw-connect__get-hw__link' href='https://www.ledger.com/products/ledger-nano-s?r=17c4991a03fa&tracker=MY_TRACKER' target='_blank'>Ledger</a>`,
-    }
+    };
 
-    const text = this.context.t('orderOneHere')
+    const text = this.context.t('orderOneHere');
     const response = text
       .replace('Trezor', links.trezor)
-      .replace('Ledger', links.ledger)
+      .replace('Ledger', links.ledger);
 
     return (
       <div
         className="hw-connect__get-hw__msg"
         dangerouslySetInnerHTML={{ __html: response }}
       />
-    )
+    );
   }
 
   renderTrezorAffiliateLink() {
@@ -144,14 +144,14 @@ export default class SelectHardware extends Component {
         </p>
         {this.getAffiliateLinks()}
       </div>
-    )
+    );
   }
 
   scrollToTutorial = () => {
     if (this.referenceNode) {
-      this.referenceNode.scrollIntoView({ behavior: 'smooth' })
+      this.referenceNode.scrollIntoView({ behavior: 'smooth' });
     }
-  }
+  };
 
   renderLearnMore() {
     return (
@@ -163,7 +163,7 @@ export default class SelectHardware extends Component {
           alt=""
         />
       </p>
-    )
+    );
   }
 
   renderTutorialSteps() {
@@ -186,13 +186,13 @@ export default class SelectHardware extends Component {
         title: this.context.t('step3HardwareWallet'),
         message: this.context.t('step3HardwareWalletMsg'),
       },
-    ]
+    ];
 
     return (
       <div
         className="hw-tutorial"
         ref={(node) => {
-          this.referenceNode = node
+          this.referenceNode = node;
         }}
       >
         {steps.map((step, index) => (
@@ -208,7 +208,7 @@ export default class SelectHardware extends Component {
           </div>
         ))}
       </div>
-    )
+    );
   }
 
   renderFooter() {
@@ -230,7 +230,7 @@ export default class SelectHardware extends Component {
           </a>
         </p>
       </div>
-    )
+    );
   }
 
   renderConnectScreen() {
@@ -243,13 +243,13 @@ export default class SelectHardware extends Component {
         {this.renderTutorialSteps()}
         {this.renderFooter()}
       </div>
-    )
+    );
   }
 
   render() {
     if (this.props.browserSupported) {
-      return this.renderConnectScreen()
+      return this.renderConnectScreen();
     }
-    return this.renderUnsupportedBrowser()
+    return this.renderUnsupportedBrowser();
   }
 }

@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 export default class GasSlider extends Component {
   static propTypes = {
@@ -10,10 +10,10 @@ export default class GasSlider extends Component {
     step: PropTypes.number,
     max: PropTypes.number,
     min: PropTypes.number,
-  }
+  };
 
   render() {
-    const { onChange, lowLabel, highLabel, value, step, max, min } = this.props
+    const { onChange, lowLabel, highLabel, value, step, max, min } = this.props;
 
     return (
       <div className="gas-slider">
@@ -35,6 +35,6 @@ export default class GasSlider extends Component {
           <span>{highLabel}</span>
         </div>
       </div>
-    )
+    );
   }
 }

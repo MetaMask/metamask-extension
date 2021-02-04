@@ -1,3 +1,3 @@
-import ConfirmTransaction from './confirm-transaction.container'
+import ConfirmTransaction from './confirm-transaction.container';
 
-export default ConfirmTransaction
+export default ConfirmTransaction;

@@ -1,1 +1,1 @@
-export { default } from './select-quote-popover'
+export { default } from './select-quote-popover';

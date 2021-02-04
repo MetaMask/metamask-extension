@@ -1,1 +1,1 @@
-export { default } from './site-icon'
+export { default } from './site-icon';

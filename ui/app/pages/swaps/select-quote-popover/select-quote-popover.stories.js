@@ -1,16 +1,16 @@
-import React, { useState } from 'react'
-import { action } from '@storybook/addon-actions'
-import { object } from '@storybook/addon-knobs'
-import Button from '../../../components/ui/button'
-import mockQuoteData from './mock-quote-data'
-import SelectQuotePopover from '.'
+import React, { useState } from 'react';
+import { action } from '@storybook/addon-actions';
+import { object } from '@storybook/addon-knobs';
+import Button from '../../../components/ui/button';
+import mockQuoteData from './mock-quote-data';
+import SelectQuotePopover from '.';
 
 export default {
   title: 'SelectQuotePopover',
-}
+};
 
 export const Default = () => {
-  const [showPopover, setShowPopover] = useState(false)
+  const [showPopover, setShowPopover] = useState(false);
 
   return (
     <div>
@@ -25,5 +25,5 @@ export const Default = () => {
         />
       )}
     </div>
-  )
-}
+  );
+};

@@ -1,5 +1,5 @@
-import assert from 'assert'
-import migration41 from '../../../app/scripts/migrations/041'
+import assert from 'assert';
+import migration41 from '../../../app/scripts/migrations/041';
 
 describe('migration #41', function () {
   it('should update the version metadata', function (done) {
@@ -8,18 +8,18 @@ describe('migration #41', function () {
         version: 40,
       },
       data: {},
-    }
+    };
 
     migration41
       .migrate(oldStorage)
       .then((newStorage) => {
         assert.deepEqual(newStorage.meta, {
           version: 41,
-        })
-        done()
+        });
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should rename autoLogoutTimeLimit storage key', function (done) {
     const oldStorage = {
@@ -34,7 +34,7 @@ describe('migration #41', function () {
         },
         foo: 'bar',
       },
-    }
+    };
 
     migration41
       .migrate(oldStorage)
@@ -48,11 +48,11 @@ describe('migration #41', function () {
             bar: 'baz',
           },
           foo: 'bar',
-        })
-        done()
+        });
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should do nothing if no PreferencesController key', function (done) {
     const oldStorage = {
@@ -60,18 +60,18 @@ describe('migration #41', function () {
       data: {
         foo: 'bar',
       },
-    }
+    };
 
     migration41
       .migrate(oldStorage)
       .then((newStorage) => {
         assert.deepEqual(newStorage.data, {
           foo: 'bar',
-        })
-        done()
+        });
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should do nothing if no preferences key', function (done) {
     const oldStorage = {
@@ -82,7 +82,7 @@ describe('migration #41', function () {
         },
         foo: 'bar',
       },
-    }
+    };
 
     migration41
       .migrate(oldStorage)
@@ -92,9 +92,9 @@ describe('migration #41', function () {
             bar: 'baz',
           },
           foo: 'bar',
-        })
-        done()
+        });
+        done();
       })
-      .catch(done)
-  })
-})
+      .catch(done);
+  });
+});

@@ -1,1 +1,1 @@
-export { default } from './connected-status-indicator'
+export { default } from './connected-status-indicator';

@@ -1,11 +1,11 @@
-import assert from 'assert'
-import React from 'react'
-import shallow from '../../../../../lib/shallow-with-context'
-import SignatureRequest from '../signature-request.component'
+import assert from 'assert';
+import React from 'react';
+import shallow from '../../../../../lib/shallow-with-context';
+import SignatureRequest from '../signature-request.component';
 
 describe('Signature Request Component', function () {
   describe('render', function () {
-    const fromAddress = '0x123456789abcdef'
+    const fromAddress = '0x123456789abcdef';
     it('should render a div with one child', function () {
       const wrapper = shallow(
         <SignatureRequest
@@ -20,11 +20,11 @@ describe('Signature Request Component', function () {
           }}
           fromAccount={{ address: fromAddress }}
         />,
-      )
+      );
 
-      assert(wrapper.is('div'))
-      assert.strictEqual(wrapper.length, 1)
-      assert(wrapper.hasClass('signature-request'))
-    })
-  })
-})
+      assert(wrapper.is('div'));
+      assert.strictEqual(wrapper.length, 1);
+      assert(wrapper.hasClass('signature-request'));
+    });
+  });
+});

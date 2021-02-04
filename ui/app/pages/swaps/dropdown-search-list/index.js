@@ -1,1 +1,1 @@
-export { default } from './dropdown-search-list'
+export { default } from './dropdown-search-list';

@@ -1,7 +1,7 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import { removeLeadingZeroes } from '../../../pages/send/send.utils'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import { removeLeadingZeroes } from '../../../pages/send/send.utils';
 
 /**
  * Component that attaches a suffix or unit of measurement trailing user input, ex. 'ETH'. Also
@@ -17,53 +17,59 @@ export default class UnitInput extends PureComponent {
     placeholder: PropTypes.string,
     suffix: PropTypes.string,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  }
+  };
 
   static defaultProps = {
     value: '',
     placeholder: '0',
-  }
+  };
 
   state = {
     value: this.props.value,
-  }
+  };
 
   componentDidUpdate(prevProps) {
-    const { value: prevPropsValue } = prevProps
-    const { value: propsValue } = this.props
-    const { value: stateValue } = this.state
+    const { value: prevPropsValue } = prevProps;
+    const { value: propsValue } = this.props;
+    const { value: stateValue } = this.state;
 
     if (prevPropsValue !== propsValue && propsValue !== stateValue) {
-      this.setState({ value: propsValue })
+      this.setState({ value: propsValue });
     }
   }
 
   handleFocus = () => {
-    this.unitInput.focus()
-  }
+    this.unitInput.focus();
+  };
 
   handleChange = (event) => {
-    const { value: userInput } = event.target
-    let value = userInput
+    const { value: userInput } = event.target;
+    let value = userInput;
 
     if (userInput.length && userInput.length > 1) {
-      value = removeLeadingZeroes(userInput)
+      value = removeLeadingZeroes(userInput);
     }
 
-    this.setState({ value })
-    this.props.onChange(value)
-  }
+    this.setState({ value });
+    this.props.onChange(value);
+  };
 
   getInputWidth(value) {
-    const valueString = String(value)
-    const valueLength = valueString.length || 1
-    const decimalPointDeficit = valueString.match(/\./u) ? -0.5 : 0
-    return `${valueLength + decimalPointDeficit + 0.5}ch`
+    const valueString = String(value);
+    const valueLength = valueString.length || 1;
+    const decimalPointDeficit = valueString.match(/\./u) ? -0.5 : 0;
+    return `${valueLength + decimalPointDeficit + 0.5}ch`;
   }
 
   render() {
-    const { error, placeholder, suffix, actionComponent, children } = this.props
-    const { value } = this.state
+    const {
+      error,
+      placeholder,
+      suffix,
+      actionComponent,
+      children,
+    } = this.props;
+    const { value } = this.state;
 
     return (
       <div
@@ -81,7 +87,7 @@ export default class UnitInput extends PureComponent {
               onChange={this.handleChange}
               style={{ width: this.getInputWidth(value) }}
               ref={(ref) => {
-                this.unitInput = ref
+                this.unitInput = ref;
               }}
             />
             {suffix && <div className="unit-input__suffix">{suffix}</div>}
@@ -90,6 +96,6 @@ export default class UnitInput extends PureComponent {
         </div>
         {actionComponent}
       </div>
-    )
+    );
   }
 }

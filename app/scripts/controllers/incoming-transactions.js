@@ -1,14 +1,14 @@
-import { ObservableStore } from '@metamask/obs-store'
-import log from 'loglevel'
-import BN from 'bn.js'
-import createId from '../lib/random-id'
-import { bnToHex } from '../lib/util'
-import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout'
+import { ObservableStore } from '@metamask/obs-store';
+import log from 'loglevel';
+import BN from 'bn.js';
+import createId from '../lib/random-id';
+import { bnToHex } from '../lib/util';
+import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 
 import {
   TRANSACTION_CATEGORIES,
   TRANSACTION_STATUSES,
-} from '../../../shared/constants/transaction'
+} from '../../../shared/constants/transaction';
 import {
   CHAIN_ID_TO_NETWORK_ID_MAP,
   CHAIN_ID_TO_TYPE_MAP,
@@ -22,9 +22,9 @@ import {
   RINKEBY_CHAIN_ID,
   ROPSTEN,
   ROPSTEN_CHAIN_ID,
-} from '../../../shared/constants/network'
+} from '../../../shared/constants/network';
 
-const fetchWithTimeout = getFetchWithTimeout(30000)
+const fetchWithTimeout = getFetchWithTimeout(30000);
 
 /**
  * This controller is responsible for retrieving incoming transactions. Etherscan is polled once every block to check
@@ -39,23 +39,23 @@ const etherscanSupportedNetworks = [
   MAINNET_CHAIN_ID,
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
-]
+];
 
 export default class IncomingTransactionsController {
   constructor(opts = {}) {
-    const { blockTracker, networkController, preferencesController } = opts
-    this.blockTracker = blockTracker
-    this.networkController = networkController
-    this.preferencesController = preferencesController
+    const { blockTracker, networkController, preferencesController } = opts;
+    this.blockTracker = blockTracker;
+    this.networkController = networkController;
+    this.preferencesController = preferencesController;
 
     this._onLatestBlock = async (newBlockNumberHex) => {
-      const selectedAddress = this.preferencesController.getSelectedAddress()
-      const newBlockNumberDec = parseInt(newBlockNumberHex, 16)
+      const selectedAddress = this.preferencesController.getSelectedAddress();
+      const newBlockNumberDec = parseInt(newBlockNumberHex, 16);
       await this._update({
         address: selectedAddress,
         newBlockNumberDec,
-      })
-    }
+      });
+    };
 
     const initState = {
       incomingTransactions: {},
@@ -67,8 +67,8 @@ export default class IncomingTransactionsController {
         [ROPSTEN]: null,
       },
       ...opts.initState,
-    }
-    this.store = new ObservableStore(initState)
+    };
+    this.store = new ObservableStore(initState);
 
     this.preferencesController.store.subscribe(
       pairwise((prevState, currState) => {
@@ -76,79 +76,79 @@ export default class IncomingTransactionsController {
           featureFlags: {
             showIncomingTransactions: prevShowIncomingTransactions,
           } = {},
-        } = prevState
+        } = prevState;
         const {
           featureFlags: {
             showIncomingTransactions: currShowIncomingTransactions,
           } = {},
-        } = currState
+        } = currState;
 
         if (currShowIncomingTransactions === prevShowIncomingTransactions) {
-          return
+          return;
         }
 
         if (prevShowIncomingTransactions && !currShowIncomingTransactions) {
-          this.stop()
-          return
+          this.stop();
+          return;
         }
 
-        this.start()
+        this.start();
       }),
-    )
+    );
 
     this.preferencesController.store.subscribe(
       pairwise(async (prevState, currState) => {
-        const { selectedAddress: prevSelectedAddress } = prevState
-        const { selectedAddress: currSelectedAddress } = currState
+        const { selectedAddress: prevSelectedAddress } = prevState;
+        const { selectedAddress: currSelectedAddress } = currState;
 
         if (currSelectedAddress === prevSelectedAddress) {
-          return
+          return;
         }
 
         await this._update({
           address: currSelectedAddress,
-        })
+        });
       }),
-    )
+    );
 
     this.networkController.on('networkDidChange', async () => {
-      const address = this.preferencesController.getSelectedAddress()
+      const address = this.preferencesController.getSelectedAddress();
       await this._update({
         address,
-      })
-    })
+      });
+    });
   }
 
   start() {
-    const { featureFlags = {} } = this.preferencesController.store.getState()
-    const { showIncomingTransactions } = featureFlags
+    const { featureFlags = {} } = this.preferencesController.store.getState();
+    const { showIncomingTransactions } = featureFlags;
 
     if (!showIncomingTransactions) {
-      return
+      return;
     }
 
-    this.blockTracker.removeListener('latest', this._onLatestBlock)
-    this.blockTracker.addListener('latest', this._onLatestBlock)
+    this.blockTracker.removeListener('latest', this._onLatestBlock);
+    this.blockTracker.addListener('latest', this._onLatestBlock);
   }
 
   stop() {
-    this.blockTracker.removeListener('latest', this._onLatestBlock)
+    this.blockTracker.removeListener('latest', this._onLatestBlock);
   }
 
   async _update({ address, newBlockNumberDec } = {}) {
-    const chainId = this.networkController.getCurrentChainId()
+    const chainId = this.networkController.getCurrentChainId();
     if (!etherscanSupportedNetworks.includes(chainId)) {
-      return
+      return;
     }
     try {
       const dataForUpdate = await this._getDataForUpdate({
         address,
         chainId,
         newBlockNumberDec,
-      })
-      this._updateStateWithNewTxData(dataForUpdate)
+      });
+      this._updateStateWithNewTxData(dataForUpdate);
     } catch (err) {
-      log.error(err)
+      log.error(err);
     }
   }
 
@@ -156,20 +156,20 @@ export default class IncomingTransactionsController {
     const {
       incomingTransactions: currentIncomingTxs,
       incomingTxLastFetchedBlocksByNetwork: currentBlocksByNetwork,
-    } = this.store.getState()
+    } = this.store.getState();
 
     const lastFetchBlockByCurrentNetwork =
-      currentBlocksByNetwork[CHAIN_ID_TO_TYPE_MAP[chainId]]
-    let blockToFetchFrom = lastFetchBlockByCurrentNetwork || newBlockNumberDec
+      currentBlocksByNetwork[CHAIN_ID_TO_TYPE_MAP[chainId]];
+    let blockToFetchFrom = lastFetchBlockByCurrentNetwork || newBlockNumberDec;
     if (blockToFetchFrom === undefined) {
-      blockToFetchFrom = parseInt(this.blockTracker.getCurrentBlock(), 16)
+      blockToFetchFrom = parseInt(this.blockTracker.getCurrentBlock(), 16);
     }
 
     const { latestIncomingTxBlockNumber, txs: newTxs } = await this._fetchAll(
       address,
       blockToFetchFrom,
       chainId,
-    )
+    );
 
     return {
       latestIncomingTxBlockNumber,
@@ -178,7 +178,7 @@ export default class IncomingTransactionsController {
       currentBlocksByNetwork,
       fetchedBlockNumber: blockToFetchFrom,
       chainId,
-    }
+    };
   }
 
   _updateStateWithNewTxData({
@@ -191,13 +191,13 @@ export default class IncomingTransactionsController {
   }) {
     const newLatestBlockHashByNetwork = latestIncomingTxBlockNumber
       ? parseInt(latestIncomingTxBlockNumber, 10) + 1
-      : fetchedBlockNumber + 1
+      : fetchedBlockNumber + 1;
     const newIncomingTransactions = {
       ...currentIncomingTxs,
-    }
+    };
     newTxs.forEach((tx) => {
-      newIncomingTransactions[tx.hash] = tx
-    })
+      newIncomingTransactions[tx.hash] = tx;
+    });
 
     this.store.updateState({
       incomingTxLastFetchedBlocksByNetwork: {
@@ -205,53 +205,53 @@ export default class IncomingTransactionsController {
         [CHAIN_ID_TO_TYPE_MAP[chainId]]: newLatestBlockHashByNetwork,
       },
       incomingTransactions: newIncomingTransactions,
-    })
+    });
   }
 
   async _fetchAll(address, fromBlock, chainId) {
-    const fetchedTxResponse = await this._fetchTxs(address, fromBlock, chainId)
-    return this._processTxFetchResponse(fetchedTxResponse)
+    const fetchedTxResponse = await this._fetchTxs(address, fromBlock, chainId);
+    return this._processTxFetchResponse(fetchedTxResponse);
   }
 
   async _fetchTxs(address, fromBlock, chainId) {
     const etherscanSubdomain =
       chainId === MAINNET_CHAIN_ID
         ? 'api'
-        : `api-${CHAIN_ID_TO_TYPE_MAP[chainId]}`
+        : `api-${CHAIN_ID_TO_TYPE_MAP[chainId]}`;
 
-    const apiUrl = `https://${etherscanSubdomain}.etherscan.io`
-    let url = `${apiUrl}/api?module=account&action=txlist&address=${address}&tag=latest&page=1`
+    const apiUrl = `https://${etherscanSubdomain}.etherscan.io`;
+    let url = `${apiUrl}/api?module=account&action=txlist&address=${address}&tag=latest&page=1`;
 
     if (fromBlock) {
-      url += `&startBlock=${parseInt(fromBlock, 10)}`
+      url += `&startBlock=${parseInt(fromBlock, 10)}`;
     }
-    const response = await fetchWithTimeout(url)
-    const parsedResponse = await response.json()
+    const response = await fetchWithTimeout(url);
+    const parsedResponse = await response.json();
 
     return {
       ...parsedResponse,
       address,
       chainId,
-    }
+    };
   }
 
   _processTxFetchResponse({ status, result = [], address, chainId }) {
     if (status === '1' && Array.isArray(result) && result.length > 0) {
-      const remoteTxList = {}
-      const remoteTxs = []
+      const remoteTxList = {};
+      const remoteTxs = [];
       result.forEach((tx) => {
         if (!remoteTxList[tx.hash]) {
-          remoteTxs.push(this._normalizeTxFromEtherscan(tx, chainId))
-          remoteTxList[tx.hash] = 1
+          remoteTxs.push(this._normalizeTxFromEtherscan(tx, chainId));
+          remoteTxList[tx.hash] = 1;
         }
-      })
+      });
 
       const incomingTxs = remoteTxs.filter(
         (tx) => tx.txParams?.to?.toLowerCase() === address.toLowerCase(),
-      )
-      incomingTxs.sort((a, b) => (a.time < b.time ? -1 : 1))
+      );
+      incomingTxs.sort((a, b) => (a.time < b.time ? -1 : 1));
 
-      let latestIncomingTxBlockNumber = null
+      let latestIncomingTxBlockNumber = null;
       incomingTxs.forEach((tx) => {
         if (
           tx.blockNumber &&
@@ -259,26 +259,26 @@ export default class IncomingTransactionsController {
             parseInt(latestIncomingTxBlockNumber, 10) <
               parseInt(tx.blockNumber, 10))
         ) {
-          latestIncomingTxBlockNumber = tx.blockNumber
+          latestIncomingTxBlockNumber = tx.blockNumber;
         }
-      })
+      });
       return {
         latestIncomingTxBlockNumber,
         txs: incomingTxs,
-      }
+      };
     }
     return {
       latestIncomingTxBlockNumber: null,
       txs: [],
-    }
+    };
   }
 
   _normalizeTxFromEtherscan(txMeta, chainId) {
-    const time = parseInt(txMeta.timeStamp, 10) * 1000
+    const time = parseInt(txMeta.timeStamp, 10) * 1000;
     const status =
       txMeta.isError === '0'
         ? TRANSACTION_STATUSES.CONFIRMED
-        : TRANSACTION_STATUSES.FAILED
+        : TRANSACTION_STATUSES.FAILED;
     return {
       blockNumber: txMeta.blockNumber,
       id: createId(),
@@ -295,22 +295,22 @@ export default class IncomingTransactionsController {
       },
       hash: txMeta.hash,
       transactionCategory: TRANSACTION_CATEGORIES.INCOMING,
-    }
+    };
   }
 }
 
 function pairwise(fn) {
-  let first = true
-  let cache
+  let first = true;
+  let cache;
   return (value) => {
     try {
       if (first) {
-        first = false
-        return fn(value, value)
+        first = false;
+        return fn(value, value);
       }
-      return fn(cache, value)
+      return fn(cache, value);
     } finally {
-      cache = value
+      cache = value;
     }
-  }
+  };
 }

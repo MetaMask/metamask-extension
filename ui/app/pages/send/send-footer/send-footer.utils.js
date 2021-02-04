@@ -1,7 +1,7 @@
-import ethAbi from 'ethereumjs-abi'
-import { TOKEN_TRANSFER_FUNCTION_SIGNATURE } from '../send.constants'
-import { addHexPrefix } from '../../../../../app/scripts/lib/util'
-import { addHexPrefixToObjectValues } from '../../../helpers/utils/util'
+import ethAbi from 'ethereumjs-abi';
+import { TOKEN_TRANSFER_FUNCTION_SIGNATURE } from '../send.constants';
+import { addHexPrefix } from '../../../../../app/scripts/lib/util';
+import { addHexPrefixToObjectValues } from '../../../helpers/utils/util';
 
 export function constructTxParams({
   sendToken,
@@ -18,14 +18,14 @@ export function constructTxParams({
     value: '0',
     gas,
     gasPrice,
-  }
+  };
 
   if (!sendToken) {
-    txParams.value = amount
-    txParams.to = to
+    txParams.value = amount;
+    txParams.to = to;
   }
 
-  return addHexPrefixToObjectValues(txParams)
+  return addHexPrefixToObjectValues(txParams);
 }
 
 export function constructUpdatedTx({
@@ -39,10 +39,10 @@ export function constructUpdatedTx({
   to,
   unapprovedTxs,
 }) {
-  const unapprovedTx = unapprovedTxs[editingTransactionId]
+  const unapprovedTx = unapprovedTxs[editingTransactionId];
   const txParamsData = unapprovedTx.txParams.data
     ? unapprovedTx.txParams.data
-    : data
+    : data;
 
   const editingTx = {
     ...unapprovedTx,
@@ -57,7 +57,7 @@ export function constructUpdatedTx({
         value: amount,
       }),
     ),
-  }
+  };
 
   if (sendToken) {
     Object.assign(
@@ -77,20 +77,20 @@ export function constructUpdatedTx({
             )
             .join(''),
       }),
-    )
+    );
   }
 
   if (typeof editingTx.txParams.data === 'undefined') {
-    delete editingTx.txParams.data
+    delete editingTx.txParams.data;
   }
 
-  return editingTx
+  return editingTx;
 }
 
 export function addressIsNew(toAccounts, newAddress) {
-  const newAddressNormalized = newAddress.toLowerCase()
+  const newAddressNormalized = newAddress.toLowerCase();
   const foundMatching = toAccounts.some(
     ({ address }) => address.toLowerCase() === newAddressNormalized,
-  )
-  return !foundMatching
+  );
+  return !foundMatching;
 }

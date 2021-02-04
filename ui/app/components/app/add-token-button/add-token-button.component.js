@@ -1,9 +1,9 @@
-import React from 'react'
-import { useHistory } from 'react-router-dom'
-import { useMetricEvent } from '../../../hooks/useMetricEvent'
-import { useI18nContext } from '../../../hooks/useI18nContext'
-import { ADD_TOKEN_ROUTE } from '../../../helpers/constants/routes'
-import Button from '../../ui/button'
+import React from 'react';
+import { useHistory } from 'react-router-dom';
+import { useMetricEvent } from '../../../hooks/useMetricEvent';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { ADD_TOKEN_ROUTE } from '../../../helpers/constants/routes';
+import Button from '../../ui/button';
 
 export default function AddTokenButton() {
   const addTokenEvent = useMetricEvent({
@@ -12,9 +12,9 @@ export default function AddTokenButton() {
       action: 'Token Menu',
       name: 'Clicked "Add Token"',
     },
-  })
-  const t = useI18nContext()
-  const history = useHistory()
+  });
+  const t = useI18nContext();
+  const history = useHistory();
 
   return (
     <div className="add-token-button">
@@ -23,12 +23,12 @@ export default function AddTokenButton() {
         type="secondary"
         rounded
         onClick={() => {
-          history.push(ADD_TOKEN_ROUTE)
-          addTokenEvent()
+          history.push(ADD_TOKEN_ROUTE);
+          addTokenEvent();
         }}
       >
         {t('addToken')}
       </Button>
     </div>
-  )
+  );
 }

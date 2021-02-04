@@ -19,7 +19,7 @@ export const TRANSACTION_TYPES = {
   STANDARD: 'standard',
   CANCEL: 'cancel',
   RETRY: 'retry',
-}
+};
 
 /**
  * Transaction Status is a mix of Ethereum and MetaMask terminology, used internally
@@ -51,7 +51,7 @@ export const TRANSACTION_STATUSES = {
   FAILED: 'failed',
   DROPPED: 'dropped',
   CONFIRMED: 'confirmed',
-}
+};
 
 /**
  * @typedef {Object} TransactionCategories
@@ -90,7 +90,7 @@ export const TRANSACTION_CATEGORIES = {
   DEPLOY_CONTRACT: 'contractDeployment',
   SWAP: 'swap',
   SWAP_APPROVAL: 'swapApproval',
-}
+};
 
 /**
  * Transaction Group Status is a MetaMask construct to track the status of groups
@@ -109,7 +109,7 @@ export const TRANSACTION_CATEGORIES = {
 export const TRANSACTION_GROUP_STATUSES = {
   CANCELLED: 'cancelled',
   PENDING: 'pending',
-}
+};
 
 /**
  * Transaction Group Category is a MetaMask construct to categorize the intent
@@ -144,4 +144,4 @@ export const TRANSACTION_GROUP_CATEGORIES = {
   APPROVAL: 'approval',
   SIGNATURE_REQUEST: 'signature-request',
   SWAP: 'swap',
-}
+};

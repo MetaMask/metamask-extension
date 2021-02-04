@@ -1,15 +1,15 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import * as actions from '../../../../store/actions'
-import Identicon from '../../../ui/identicon'
-import Button from '../../../ui/button'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import * as actions from '../../../../store/actions';
+import Identicon from '../../../ui/identicon';
+import Button from '../../../ui/button';
 
 function mapStateToProps(state) {
   return {
     token: state.appState.modal.modalState.props.token,
     assetImages: state.metamask.assetImages,
-  }
+  };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -17,16 +17,16 @@ function mapDispatchToProps(dispatch) {
     hideModal: () => dispatch(actions.hideModal()),
     hideToken: (address) => {
       dispatch(actions.removeToken(address)).then(() => {
-        dispatch(actions.hideModal())
-      })
+        dispatch(actions.hideModal());
+      });
     },
-  }
+  };
 }
 
 class HideTokenConfirmationModal extends Component {
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     hideToken: PropTypes.func.isRequired,
@@ -36,14 +36,14 @@ class HideTokenConfirmationModal extends Component {
       symbol: PropTypes.string,
       address: PropTypes.string,
     }),
-  }
+  };
 
-  state = {}
+  state = {};
 
   render() {
-    const { token, hideToken, hideModal, assetImages } = this.props
-    const { symbol, address } = token
-    const image = assetImages[address]
+    const { token, hideToken, hideModal, assetImages } = this.props;
+    const { symbol, address } = token;
+    const image = assetImages[address];
 
     return (
       <div className="hide-token-confirmation">
@@ -81,11 +81,11 @@ class HideTokenConfirmationModal extends Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(HideTokenConfirmationModal)
+)(HideTokenConfirmationModal);

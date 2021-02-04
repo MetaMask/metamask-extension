@@ -1,11 +1,11 @@
-import assert from 'assert'
-import React from 'react'
-import sinon from 'sinon'
-import { mount } from 'enzyme'
-import SettingsTab from '..'
+import assert from 'assert';
+import React from 'react';
+import sinon from 'sinon';
+import { mount } from 'enzyme';
+import SettingsTab from '..';
 
 describe('Settings Tab', function () {
-  let wrapper
+  let wrapper;
 
   const props = {
     setCurrentCurrency: sinon.spy(),
@@ -20,40 +20,40 @@ describe('Settings Tab', function () {
     conversionDate: 1,
     nativeCurrency: 'eth',
     useNativeCurrencyAsPrimaryCurrency: true,
-  }
+  };
   beforeEach(function () {
     wrapper = mount(<SettingsTab.WrappedComponent {...props} />, {
       context: {
         t: (str) => str,
       },
-    })
-  })
+    });
+  });
 
   it('selects currency', async function () {
-    const selectCurrency = wrapper.find({ placeholder: 'selectCurrency' })
+    const selectCurrency = wrapper.find({ placeholder: 'selectCurrency' });
 
-    selectCurrency.props().onSelect('eur')
-    assert(props.setCurrentCurrency.calledOnce)
-  })
+    selectCurrency.props().onSelect('eur');
+    assert(props.setCurrentCurrency.calledOnce);
+  });
 
   it('selects locale', async function () {
-    const selectLocale = wrapper.find({ placeholder: 'selectLocale' })
+    const selectLocale = wrapper.find({ placeholder: 'selectLocale' });
 
-    await selectLocale.props().onSelect('ja')
-    assert(props.updateCurrentLocale.calledOnce)
-  })
+    await selectLocale.props().onSelect('ja');
+    assert(props.updateCurrentLocale.calledOnce);
+  });
 
   it('sets fiat primary currency', function () {
-    const selectFiat = wrapper.find('#fiat-primary-currency')
+    const selectFiat = wrapper.find('#fiat-primary-currency');
 
-    selectFiat.simulate('change')
-    assert(props.setUseNativeCurrencyAsPrimaryCurrencyPreference.calledOnce)
-  })
+    selectFiat.simulate('change');
+    assert(props.setUseNativeCurrencyAsPrimaryCurrencyPreference.calledOnce);
+  });
 
   it('toggles blockies', function () {
-    const toggleBlockies = wrapper.find({ type: 'checkbox' })
+    const toggleBlockies = wrapper.find({ type: 'checkbox' });
 
-    toggleBlockies.simulate('click')
-    assert(props.setUseBlockie.calledOnce)
-  })
-})
+    toggleBlockies.simulate('click');
+    assert(props.setUseBlockie.calledOnce);
+  });
+});

@@ -1,28 +1,28 @@
-import { ETH, GWEI, WEI } from '../constants/common'
-import { addHexPrefix } from '../../../../app/scripts/lib/util'
+import { ETH, GWEI, WEI } from '../constants/common';
+import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import {
   conversionUtil,
   addCurrencies,
   subtractCurrencies,
-} from './conversion-util'
-import { formatCurrency } from './confirm-tx.util'
+} from './conversion-util';
+import { formatCurrency } from './confirm-tx.util';
 
 export function bnToHex(inputBn) {
-  return addHexPrefix(inputBn.toString(16))
+  return addHexPrefix(inputBn.toString(16));
 }
 
 export function hexToDecimal(hexValue) {
   return conversionUtil(hexValue, {
     fromNumericBase: 'hex',
     toNumericBase: 'dec',
-  })
+  });
 }
 
 export function decimalToHex(decimal) {
   return conversionUtil(decimal, {
     fromNumericBase: 'dec',
     toNumericBase: 'hex',
-  })
+  });
 }
 
 export function getEthConversionFromWeiHex({
@@ -31,9 +31,9 @@ export function getEthConversionFromWeiHex({
   conversionRate,
   numberOfDecimals = 6,
 }) {
-  const denominations = [fromCurrency, GWEI, WEI]
+  const denominations = [fromCurrency, GWEI, WEI];
 
-  let nonZeroDenomination
+  let nonZeroDenomination;
 
   for (let i = 0; i < denominations.length; i++) {
     const convertedValue = getValueFromWeiHex({
@@ -43,15 +43,15 @@ export function getEthConversionFromWeiHex({
       toCurrency: fromCurrency,
       numberOfDecimals,
       toDenomination: denominations[i],
-    })
+    });
 
     if (convertedValue !== '0' || i === denominations.length - 1) {
-      nonZeroDenomination = `${convertedValue} ${denominations[i]}`
-      break
+      nonZeroDenomination = `${convertedValue} ${denominations[i]}`;
+      break;
     }
   }
 
-  return nonZeroDenomination
+  return nonZeroDenomination;
 }
 
 export function getValueFromWeiHex({
@@ -71,7 +71,7 @@ export function getValueFromWeiHex({
     fromDenomination: WEI,
     toDenomination,
     conversionRate,
-  })
+  });
 }
 
 export function getWeiHexFromDecimalValue({
@@ -90,7 +90,7 @@ export function getWeiHexFromDecimalValue({
     invertConversionRate,
     fromDenomination,
     toDenomination: WEI,
-  })
+  });
 }
 
 export function addHexWEIsToDec(aHexWEI, bHexWEI) {
@@ -99,7 +99,7 @@ export function addHexWEIsToDec(aHexWEI, bHexWEI) {
     bBase: 16,
     fromDenomination: 'WEI',
     numberOfDecimals: 6,
-  })
+  });
 }
 
 export function subtractHexWEIsToDec(aHexWEI, bHexWEI) {
@@ -108,7 +108,7 @@ export function subtractHexWEIsToDec(aHexWEI, bHexWEI) {
     bBase: 16,
     fromDenomination: 'WEI',
     numberOfDecimals: 6,
-  })
+  });
 }
 
 export function decEthToConvertedCurrency(
@@ -123,7 +123,7 @@ export function decEthToConvertedCurrency(
     toCurrency: convertedCurrency,
     numberOfDecimals: 2,
     conversionRate,
-  })
+  });
 }
 
 export function decGWEIToHexWEI(decGWEI) {
@@ -132,7 +132,7 @@ export function decGWEIToHexWEI(decGWEI) {
     toNumericBase: 'hex',
     fromDenomination: 'GWEI',
     toDenomination: 'WEI',
-  })
+  });
 }
 
 export function hexWEIToDecGWEI(decGWEI) {
@@ -141,7 +141,7 @@ export function hexWEIToDecGWEI(decGWEI) {
     toNumericBase: 'dec',
     fromDenomination: 'WEI',
     toDenomination: 'GWEI',
-  })
+  });
 }
 
 export function decETHToDecWEI(decEth) {
@@ -150,7 +150,7 @@ export function decETHToDecWEI(decEth) {
     toNumericBase: 'dec',
     fromDenomination: 'ETH',
     toDenomination: 'WEI',
-  })
+  });
 }
 
 export function hexWEIToDecETH(hexWEI) {
@@ -159,7 +159,7 @@ export function hexWEIToDecETH(hexWEI) {
     toNumericBase: 'dec',
     fromDenomination: 'WEI',
     toDenomination: 'ETH',
-  })
+  });
 }
 
 export function addHexes(aHexWEI, bHexWEI) {
@@ -168,11 +168,11 @@ export function addHexes(aHexWEI, bHexWEI) {
     bBase: 16,
     toNumericBase: 'hex',
     numberOfDecimals: 6,
-  })
+  });
 }
 
 export function sumHexWEIs(hexWEIs) {
-  return hexWEIs.filter(Boolean).reduce(addHexes)
+  return hexWEIs.filter(Boolean).reduce(addHexes);
 }
 
 export function sumHexWEIsToUnformattedFiat(
@@ -180,7 +180,7 @@ export function sumHexWEIsToUnformattedFiat(
   convertedCurrency,
   conversionRate,
 ) {
-  const hexWEIsSum = sumHexWEIs(hexWEIs)
+  const hexWEIsSum = sumHexWEIs(hexWEIs);
   const convertedTotal = decEthToConvertedCurrency(
     getValueFromWeiHex({
       value: hexWEIsSum,
@@ -189,8 +189,8 @@ export function sumHexWEIsToUnformattedFiat(
     }),
     convertedCurrency,
     conversionRate,
-  )
-  return convertedTotal
+  );
+  return convertedTotal;
 }
 
 export function sumHexWEIsToRenderableFiat(
@@ -202,6 +202,6 @@ export function sumHexWEIsToRenderableFiat(
     hexWEIs,
     convertedCurrency,
     conversionRate,
-  )
-  return formatCurrency(convertedTotal, convertedCurrency)
+  );
+  return formatCurrency(convertedTotal, convertedCurrency);
 }

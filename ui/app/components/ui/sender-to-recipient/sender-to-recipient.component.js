@@ -1,23 +1,23 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import copyToClipboard from 'copy-to-clipboard'
-import Tooltip from '../tooltip'
-import Identicon from '../identicon'
-import { checksumAddress, shortenAddress } from '../../../helpers/utils/util'
-import AccountMismatchWarning from '../account-mismatch-warning/account-mismatch-warning.component'
-import { useI18nContext } from '../../../hooks/useI18nContext'
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import copyToClipboard from 'copy-to-clipboard';
+import Tooltip from '../tooltip';
+import Identicon from '../identicon';
+import { checksumAddress, shortenAddress } from '../../../helpers/utils/util';
+import AccountMismatchWarning from '../account-mismatch-warning/account-mismatch-warning.component';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   DEFAULT_VARIANT,
   CARDS_VARIANT,
   FLAT_VARIANT,
-} from './sender-to-recipient.constants'
+} from './sender-to-recipient.constants';
 
 const variantHash = {
   [DEFAULT_VARIANT]: 'sender-to-recipient--default',
   [CARDS_VARIANT]: 'sender-to-recipient--cards',
   [FLAT_VARIANT]: 'sender-to-recipient--flat',
-}
+};
 
 function SenderAddress({
   addressOnly,
@@ -27,9 +27,9 @@ function SenderAddress({
   senderAddress,
   warnUserOnAccountMismatch,
 }) {
-  const t = useI18nContext()
-  const [addressCopied, setAddressCopied] = useState(false)
-  let tooltipHtml = <p>{t('copiedExclamation')}</p>
+  const t = useI18nContext();
+  const [addressCopied, setAddressCopied] = useState(false);
+  let tooltipHtml = <p>{t('copiedExclamation')}</p>;
   if (!addressCopied) {
     tooltipHtml = addressOnly ? (
       <p>{t('copyAddress')}</p>
@@ -39,7 +39,7 @@ function SenderAddress({
         <br />
         {t('copyAddress')}
       </p>
-    )
+    );
   }
   return (
     <div
@@ -47,10 +47,10 @@ function SenderAddress({
         'sender-to-recipient__party sender-to-recipient__party--sender',
       )}
       onClick={() => {
-        setAddressCopied(true)
-        copyToClipboard(checksummedSenderAddress)
+        setAddressCopied(true);
+        copyToClipboard(checksummedSenderAddress);
         if (onSenderClick) {
-          onSenderClick()
+          onSenderClick();
         }
       }}
     >
@@ -80,7 +80,7 @@ function SenderAddress({
         <AccountMismatchWarning address={senderAddress} />
       )}
     </div>
-  )
+  );
 }
 
 SenderAddress.propTypes = {
@@ -90,7 +90,7 @@ SenderAddress.propTypes = {
   senderAddress: PropTypes.string,
   onSenderClick: PropTypes.func,
   warnUserOnAccountMismatch: PropTypes.bool,
-}
+};
 
 function RecipientWithAddress({
   checksummedRecipientAddress,
@@ -101,13 +101,13 @@ function RecipientWithAddress({
   recipientEns,
   recipientName,
 }) {
-  const t = useI18nContext()
-  const [addressCopied, setAddressCopied] = useState(false)
+  const t = useI18nContext();
+  const [addressCopied, setAddressCopied] = useState(false);
 
-  let tooltipHtml = <p>{t('copiedExclamation')}</p>
+  let tooltipHtml = <p>{t('copiedExclamation')}</p>;
   if (!addressCopied) {
     if (addressOnly && !recipientNickname && !recipientEns) {
-      tooltipHtml = <p>{t('copyAddress')}</p>
+      tooltipHtml = <p>{t('copyAddress')}</p>;
     } else {
       tooltipHtml = (
         <p>
@@ -115,17 +115,17 @@ function RecipientWithAddress({
           <br />
           {t('copyAddress')}
         </p>
-      )
+      );
     }
   }
   return (
     <div
       className="sender-to-recipient__party sender-to-recipient__party--recipient sender-to-recipient__party--recipient-with-address"
       onClick={() => {
-        setAddressCopied(true)
-        copyToClipboard(checksummedRecipientAddress)
+        setAddressCopied(true);
+        copyToClipboard(checksummedRecipientAddress);
         if (onRecipientClick) {
-          onRecipientClick()
+          onRecipientClick();
         }
       }}
     >
@@ -157,7 +157,7 @@ function RecipientWithAddress({
         </div>
       </Tooltip>
     </div>
-  )
+  );
 }
 
 RecipientWithAddress.propTypes = {
@@ -168,7 +168,7 @@ RecipientWithAddress.propTypes = {
   addressOnly: PropTypes.bool,
   assetImage: PropTypes.string,
   onRecipientClick: PropTypes.func,
-}
+};
 
 function Arrow({ variant }) {
   return variant === DEFAULT_VARIANT ? (
@@ -181,12 +181,12 @@ function Arrow({ variant }) {
     <div className="sender-to-recipient__arrow-container">
       <img height="20" src="./images/caret-right.svg" alt="" />
     </div>
-  )
+  );
 }
 
 Arrow.propTypes = {
   variant: PropTypes.oneOf([DEFAULT_VARIANT, CARDS_VARIANT, FLAT_VARIANT]),
-}
+};
 
 export default function SenderToRecipient({
   senderAddress,
@@ -202,9 +202,9 @@ export default function SenderToRecipient({
   variant,
   warnUserOnAccountMismatch,
 }) {
-  const t = useI18nContext()
-  const checksummedSenderAddress = checksumAddress(senderAddress)
-  const checksummedRecipientAddress = checksumAddress(recipientAddress)
+  const t = useI18nContext();
+  const checksummedSenderAddress = checksumAddress(senderAddress);
+  const checksummedRecipientAddress = checksumAddress(recipientAddress);
 
   return (
     <div className={classnames('sender-to-recipient', variantHash[variant])}>
@@ -234,13 +234,13 @@ export default function SenderToRecipient({
         </div>
       )}
     </div>
-  )
+  );
 }
 
 SenderToRecipient.defaultProps = {
   variant: DEFAULT_VARIANT,
   warnUserOnAccountMismatch: true,
-}
+};
 
 SenderToRecipient.propTypes = {
   senderName: PropTypes.string,
@@ -255,4 +255,4 @@ SenderToRecipient.propTypes = {
   onRecipientClick: PropTypes.func,
   onSenderClick: PropTypes.func,
   warnUserOnAccountMismatch: PropTypes.bool,
-}
+};

@@ -1,154 +1,154 @@
-import log from 'loglevel'
-import BigNumber from 'bignumber.js'
-import contractMap from '@metamask/contract-metadata'
-import * as util from './util'
-import { conversionUtil, multiplyCurrencies } from './conversion-util'
-import { formatCurrency } from './confirm-tx.util'
+import log from 'loglevel';
+import BigNumber from 'bignumber.js';
+import contractMap from '@metamask/contract-metadata';
+import * as util from './util';
+import { conversionUtil, multiplyCurrencies } from './conversion-util';
+import { formatCurrency } from './confirm-tx.util';
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
   return {
     ...acc,
     [base.toLowerCase()]: contractMap[base],
-  }
-}, {})
+  };
+}, {});
 
-const DEFAULT_SYMBOL = ''
-const DEFAULT_DECIMALS = '0'
+const DEFAULT_SYMBOL = '';
+const DEFAULT_DECIMALS = '0';
 
 async function getSymbolFromContract(tokenAddress) {
-  const token = util.getContractAtAddress(tokenAddress)
+  const token = util.getContractAtAddress(tokenAddress);
 
   try {
-    const result = await token.symbol()
-    return result[0]
+    const result = await token.symbol();
+    return result[0];
   } catch (error) {
     log.warn(
       `symbol() call for token at address ${tokenAddress} resulted in error:`,
       error,
-    )
-    return undefined
+    );
+    return undefined;
   }
 }
 
 async function getDecimalsFromContract(tokenAddress) {
-  const token = util.getContractAtAddress(tokenAddress)
+  const token = util.getContractAtAddress(tokenAddress);
 
   try {
-    const result = await token.decimals()
-    const decimalsBN = result[0]
-    return decimalsBN?.toString()
+    const result = await token.decimals();
+    const decimalsBN = result[0];
+    return decimalsBN?.toString();
   } catch (error) {
     log.warn(
       `decimals() call for token at address ${tokenAddress} resulted in error:`,
       error,
-    )
-    return undefined
+    );
+    return undefined;
   }
 }
 
 function getContractMetadata(tokenAddress) {
-  return tokenAddress && casedContractMap[tokenAddress.toLowerCase()]
+  return tokenAddress && casedContractMap[tokenAddress.toLowerCase()];
 }
 
 async function getSymbol(tokenAddress) {
-  let symbol = await getSymbolFromContract(tokenAddress)
+  let symbol = await getSymbolFromContract(tokenAddress);
 
   if (!symbol) {
-    const contractMetadataInfo = getContractMetadata(tokenAddress)
+    const contractMetadataInfo = getContractMetadata(tokenAddress);
 
     if (contractMetadataInfo) {
-      symbol = contractMetadataInfo.symbol
+      symbol = contractMetadataInfo.symbol;
     }
   }
 
-  return symbol
+  return symbol;
 }
 
 async function getDecimals(tokenAddress) {
-  let decimals = await getDecimalsFromContract(tokenAddress)
+  let decimals = await getDecimalsFromContract(tokenAddress);
 
   if (!decimals || decimals === '0') {
-    const contractMetadataInfo = getContractMetadata(tokenAddress)
+    const contractMetadataInfo = getContractMetadata(tokenAddress);
 
     if (contractMetadataInfo) {
-      decimals = contractMetadataInfo.decimals
+      decimals = contractMetadataInfo.decimals;
     }
   }
 
-  return decimals
+  return decimals;
 }
 
 export async function fetchSymbolAndDecimals(tokenAddress) {
-  let symbol, decimals
+  let symbol, decimals;
 
   try {
-    symbol = await getSymbol(tokenAddress)
-    decimals = await getDecimals(tokenAddress)
+    symbol = await getSymbol(tokenAddress);
+    decimals = await getDecimals(tokenAddress);
   } catch (error) {
     log.warn(
       `symbol() and decimal() calls for token at address ${tokenAddress} resulted in error:`,
       error,
-    )
+    );
   }
 
   return {
     symbol: symbol || DEFAULT_SYMBOL,
     decimals: decimals || DEFAULT_DECIMALS,
-  }
+  };
 }
 
 export async function getSymbolAndDecimals(tokenAddress, existingTokens = []) {
   const existingToken = existingTokens.find(
     ({ address }) => tokenAddress === address,
-  )
+  );
 
   if (existingToken) {
     return {
       symbol: existingToken.symbol,
       decimals: existingToken.decimals,
-    }
+    };
   }
 
-  let symbol, decimals
+  let symbol, decimals;
 
   try {
-    symbol = await getSymbol(tokenAddress)
-    decimals = await getDecimals(tokenAddress)
+    symbol = await getSymbol(tokenAddress);
+    decimals = await getDecimals(tokenAddress);
   } catch (error) {
     log.warn(
       `symbol() and decimal() calls for token at address ${tokenAddress} resulted in error:`,
       error,
-    )
+    );
   }
 
   return {
     symbol: symbol || DEFAULT_SYMBOL,
     decimals: decimals || DEFAULT_DECIMALS,
-  }
+  };
 }
 
 export function tokenInfoGetter() {
-  const tokens = {}
+  const tokens = {};
 
   return async (address) => {
     if (tokens[address]) {
-      return tokens[address]
+      return tokens[address];
     }
 
-    tokens[address] = await getSymbolAndDecimals(address)
+    tokens[address] = await getSymbolAndDecimals(address);
 
-    return tokens[address]
-  }
+    return tokens[address];
+  };
 }
 
 export function calcTokenAmount(value, decimals) {
-  const multiplier = Math.pow(10, Number(decimals || 0))
-  return new BigNumber(String(value)).div(multiplier)
+  const multiplier = Math.pow(10, Number(decimals || 0));
+  return new BigNumber(String(value)).div(multiplier);
 }
 
 export function calcTokenValue(value, decimals) {
-  const multiplier = Math.pow(10, Number(decimals || 0))
-  return new BigNumber(String(value)).times(multiplier)
+  const multiplier = Math.pow(10, Number(decimals || 0));
+  return new BigNumber(String(value)).times(multiplier);
 }
 
 /**
@@ -162,8 +162,8 @@ export function calcTokenValue(value, decimals) {
  * @returns {string | undefined} A lowercase address string.
  */
 export function getTokenAddressParam(tokenData = {}) {
-  const value = tokenData?.args?._to || tokenData?.args?.[0]
-  return value?.toString().toLowerCase()
+  const value = tokenData?.args?._to || tokenData?.args?.[0];
+  return value?.toString().toLowerCase();
 }
 
 /**
@@ -174,12 +174,12 @@ export function getTokenAddressParam(tokenData = {}) {
  * @returns {string | undefined} A decimal string value.
  */
 export function getTokenValueParam(tokenData = {}) {
-  return tokenData?.args?._value?.toString()
+  return tokenData?.args?._value?.toString();
 }
 
 export function getTokenValue(tokenParams = []) {
-  const valueData = tokenParams.find((param) => param.name === '_value')
-  return valueData && valueData.value
+  const valueData = tokenParams.find((param) => param.name === '_value');
+  return valueData && valueData.value;
 }
 
 /**
@@ -211,7 +211,7 @@ export function getTokenFiatAmount(
     !contractExchangeRate ||
     tokenAmount === undefined
   ) {
-    return undefined
+    return undefined;
   }
 
   const currentTokenToFiatRate = multiplyCurrencies(
@@ -221,24 +221,24 @@ export function getTokenFiatAmount(
       multiplicandBase: 10,
       multiplierBase: 10,
     },
-  )
+  );
   const currentTokenInFiat = conversionUtil(tokenAmount, {
     fromNumericBase: 'dec',
     fromCurrency: tokenSymbol,
     toCurrency: currentCurrency.toUpperCase(),
     numberOfDecimals: 2,
     conversionRate: currentTokenToFiatRate,
-  })
-  let result
+  });
+  let result;
   if (hideCurrencySymbol) {
-    result = formatCurrency(currentTokenInFiat, currentCurrency)
+    result = formatCurrency(currentTokenInFiat, currentCurrency);
   } else if (formatted) {
     result = `${formatCurrency(
       currentTokenInFiat,
       currentCurrency,
-    )} ${currentCurrency.toUpperCase()}`
+    )} ${currentCurrency.toUpperCase()}`;
   } else {
-    result = currentTokenInFiat
+    result = currentTokenInFiat;
   }
-  return result
+  return result;
 }

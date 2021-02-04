@@ -1,5 +1,5 @@
-import assert from 'assert'
-import { calcMaxAmount } from '../amount-max-button.utils'
+import assert from 'assert';
+import { calcMaxAmount } from '../amount-max-button.utils';
 
 describe('amount-max-button utils', function () {
   describe('calcMaxAmount()', function () {
@@ -11,8 +11,8 @@ describe('amount-max-button utils', function () {
           sendToken: false,
         }),
         'ffff00',
-      )
-    })
+      );
+    });
 
     it('should calculate the correct amount when a sendToken is defined', function () {
       assert.deepStrictEqual(
@@ -23,7 +23,7 @@ describe('amount-max-button utils', function () {
           tokenBalance: '64',
         }),
         'e8d4a51000',
-      )
-    })
-  })
-})
+      );
+    });
+  });
+});

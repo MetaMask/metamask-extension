@@ -3,68 +3,68 @@
  */
 // these need to run before anything else
 /* eslint-disable import/first,import/order */
-import setupFetchDebugging from './lib/setupFetchDebugging'
+import setupFetchDebugging from './lib/setupFetchDebugging';
 /* eslint-enable import/order */
 
-setupFetchDebugging()
+setupFetchDebugging();
 
 // polyfills
-import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
+import 'abortcontroller-polyfill/dist/polyfill-patch-fetch';
 
-import endOfStream from 'end-of-stream'
-import pump from 'pump'
-import debounce from 'debounce-stream'
-import log from 'loglevel'
-import extension from 'extensionizer'
-import { storeAsStream, storeTransformStream } from '@metamask/obs-store'
-import PortStream from 'extension-port-stream'
-import { captureException } from '@sentry/browser'
+import endOfStream from 'end-of-stream';
+import pump from 'pump';
+import debounce from 'debounce-stream';
+import log from 'loglevel';
+import extension from 'extensionizer';
+import { storeAsStream, storeTransformStream } from '@metamask/obs-store';
+import PortStream from 'extension-port-stream';
+import { captureException } from '@sentry/browser';
 
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
-} from '../../shared/constants/app'
-import migrations from './migrations'
-import Migrator from './lib/migrator'
-import ExtensionPlatform from './platforms/extension'
-import LocalStore from './lib/local-store'
-import ReadOnlyNetworkStore from './lib/network-store'
-import createStreamSink from './lib/createStreamSink'
-import NotificationManager from './lib/notification-manager'
-import MetamaskController from './metamask-controller'
-import rawFirstTimeState from './first-time-state'
-import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code'
-import getObjStructure from './lib/getObjStructure'
-import setupEnsIpfsResolver from './lib/ens-ipfs/setup'
+} from '../../shared/constants/app';
+import migrations from './migrations';
+import Migrator from './lib/migrator';
+import ExtensionPlatform from './platforms/extension';
+import LocalStore from './lib/local-store';
+import ReadOnlyNetworkStore from './lib/network-store';
+import createStreamSink from './lib/createStreamSink';
+import NotificationManager from './lib/notification-manager';
+import MetamaskController from './metamask-controller';
+import rawFirstTimeState from './first-time-state';
+import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
+import getObjStructure from './lib/getObjStructure';
+import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 /* eslint-enable import/first */
 
-const { sentry } = global
-const firstTimeState = { ...rawFirstTimeState }
+const { sentry } = global;
+const firstTimeState = { ...rawFirstTimeState };
 
-log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
+log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn');
 
-const platform = new ExtensionPlatform()
+const platform = new ExtensionPlatform();
 
-const notificationManager = new NotificationManager()
-global.METAMASK_NOTIFIER = notificationManager
+const notificationManager = new NotificationManager();
+global.METAMASK_NOTIFIER = notificationManager;
 
-let popupIsOpen = false
-let notificationIsOpen = false
-const openMetamaskTabsIDs = {}
-const requestAccountTabIds = {}
+let popupIsOpen = false;
+let notificationIsOpen = false;
+const openMetamaskTabsIDs = {};
+const requestAccountTabIds = {};
 
 // state persistence
-const inTest = process.env.IN_TEST === 'true'
-const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore()
-let versionedData
+const inTest = process.env.IN_TEST === 'true';
+const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
+let versionedData;
 
 if (inTest || process.env.METAMASK_DEBUG) {
-  global.metamaskGetState = localStore.get.bind(localStore)
+  global.metamaskGetState = localStore.get.bind(localStore);
 }
 
 // initialization flow
-initialize().catch(log.error)
+initialize().catch(log.error);
 
 /**
  * An object representing a transaction, in whatever state it is in.
@@ -139,10 +139,10 @@ initialize().catch(log.error)
  * @returns {Promise} Setup complete.
  */
 async function initialize() {
-  const initState = await loadStateFromPersistence()
-  const initLangCode = await getFirstPreferredLangCode()
-  await setupController(initState, initLangCode)
-  log.debug('MetaMask initialization complete.')
+  const initState = await loadStateFromPersistence();
+  const initLangCode = await getFirstPreferredLangCode();
+  await setupController(initState, initLangCode);
+  log.debug('MetaMask initialization complete.');
 }
 
 //
@@ -156,13 +156,13 @@ async function initialize() {
  */
 async function loadStateFromPersistence() {
   // migrations
-  const migrator = new Migrator({ migrations })
-  migrator.on('error', console.warn)
+  const migrator = new Migrator({ migrations });
+  migrator.on('error', console.warn);
 
   // read from disk
   // first from preferred, async API:
   versionedData =
-    (await localStore.get()) || migrator.generateInitialState(firstTimeState)
+    (await localStore.get()) || migrator.generateInitialState(firstTimeState);
 
   // check if somehow state is empty
   // this should never happen but new error reporting suggests that it has
@@ -170,38 +170,38 @@ async function loadStateFromPersistence() {
   // https://github.com/metamask/metamask-extension/issues/3919
   if (versionedData && !versionedData.data) {
     // unable to recover, clear state
-    versionedData = migrator.generateInitialState(firstTimeState)
-    sentry.captureMessage('MetaMask - Empty vault found - unable to recover')
+    versionedData = migrator.generateInitialState(firstTimeState);
+    sentry.captureMessage('MetaMask - Empty vault found - unable to recover');
   }
 
   // report migration errors to sentry
   migrator.on('error', (err) => {
     // get vault structure without secrets
-    const vaultStructure = getObjStructure(versionedData)
+    const vaultStructure = getObjStructure(versionedData);
     sentry.captureException(err, {
       // "extra" key is required by Sentry
       extra: { vaultStructure },
-    })
-  })
+    });
+  });
 
   // migrate data
-  versionedData = await migrator.migrateData(versionedData)
+  versionedData = await migrator.migrateData(versionedData);
   if (!versionedData) {
-    throw new Error('MetaMask - migrator returned undefined')
+    throw new Error('MetaMask - migrator returned undefined');
   }
 
   // write to disk
   if (localStore.isSupported) {
-    localStore.set(versionedData)
+    localStore.set(versionedData);
   } else {
     // throw in setTimeout so as to not block boot
     setTimeout(() => {
-      throw new Error('MetaMask - Localstore not supported')
-    })
+      throw new Error('MetaMask - Localstore not supported');
+    });
   }
 
   // return just the data
-  return versionedData.data
+  return versionedData.data;
 }
 
 /**
@@ -232,12 +232,12 @@ function setupController(initState, initLangCode) {
     platform,
     extension,
     getRequestAccountTabIds: () => {
-      return requestAccountTabIds
+      return requestAccountTabIds;
     },
     getOpenMetamaskTabsIds: () => {
-      return openMetamaskTabsIDs
+      return openMetamaskTabsIDs;
     },
-  })
+  });
 
   setupEnsIpfsResolver({
     getCurrentNetwork: controller.getCurrentNetwork,
@@ -245,7 +245,7 @@ function setupController(initState, initLangCode) {
       controller.preferencesController,
     ),
     provider: controller.provider,
-  })
+  });
 
   // setup state persistence
   pump(
@@ -254,9 +254,9 @@ function setupController(initState, initLangCode) {
     storeTransformStream(versionifyData),
     createStreamSink(persistData),
     (error) => {
-      log.error('MetaMask - Persistence pipeline failed', error)
+      log.error('MetaMask - Persistence pipeline failed', error);
     },
-  )
+  );
 
   /**
    * Assigns the given state to the versioned object (with metadata), and returns that.
@@ -264,32 +264,32 @@ function setupController(initState, initLangCode) {
    * @returns {VersionedData} The state object wrapped in an object that includes a metadata key.
    */
   function versionifyData(state) {
-    versionedData.data = state
-    return versionedData
+    versionedData.data = state;
+    return versionedData;
   }
 
-  let dataPersistenceFailing = false
+  let dataPersistenceFailing = false;
 
   async function persistData(state) {
     if (!state) {
-      throw new Error('MetaMask - updated state is missing')
+      throw new Error('MetaMask - updated state is missing');
     }
     if (!state.data) {
-      throw new Error('MetaMask - updated state does not have data')
+      throw new Error('MetaMask - updated state does not have data');
     }
     if (localStore.isSupported) {
       try {
-        await localStore.set(state)
+        await localStore.set(state);
         if (dataPersistenceFailing) {
-          dataPersistenceFailing = false
+          dataPersistenceFailing = false;
         }
       } catch (err) {
         // log error so we dont break the pipeline
         if (!dataPersistenceFailing) {
-          dataPersistenceFailing = true
-          captureException(err)
+          dataPersistenceFailing = true;
+          captureException(err);
         }
-        log.error('error setting state in local store:', err)
+        log.error('error setting state in local store:', err);
       }
     }
   }
@@ -297,24 +297,24 @@ function setupController(initState, initLangCode) {
   //
   // connect to other contexts
   //
-  extension.runtime.onConnect.addListener(connectRemote)
-  extension.runtime.onConnectExternal.addListener(connectExternal)
+  extension.runtime.onConnect.addListener(connectRemote);
+  extension.runtime.onConnectExternal.addListener(connectExternal);
 
   const metamaskInternalProcessHash = {
     [ENVIRONMENT_TYPE_POPUP]: true,
     [ENVIRONMENT_TYPE_NOTIFICATION]: true,
     [ENVIRONMENT_TYPE_FULLSCREEN]: true,
-  }
+  };
 
-  const metamaskBlockedPorts = ['trezor-connect']
+  const metamaskBlockedPorts = ['trezor-connect'];
 
   const isClientOpenStatus = () => {
     return (
       popupIsOpen ||
       Boolean(Object.keys(openMetamaskTabsIDs).length) ||
       notificationIsOpen
-    )
-  }
+    );
+  };
 
   /**
    * A runtime.Port object, as provided by the browser:
@@ -329,99 +329,99 @@ function setupController(initState, initLangCode) {
    * @param {Port} remotePort - The port provided by a new context.
    */
   function connectRemote(remotePort) {
-    const processName = remotePort.name
-    const isMetaMaskInternalProcess = metamaskInternalProcessHash[processName]
+    const processName = remotePort.name;
+    const isMetaMaskInternalProcess = metamaskInternalProcessHash[processName];
 
     if (metamaskBlockedPorts.includes(remotePort.name)) {
-      return
+      return;
     }
 
     if (isMetaMaskInternalProcess) {
-      const portStream = new PortStream(remotePort)
+      const portStream = new PortStream(remotePort);
       // communication with popup
-      controller.isClientOpen = true
-      controller.setupTrustedCommunication(portStream, remotePort.sender)
+      controller.isClientOpen = true;
+      controller.setupTrustedCommunication(portStream, remotePort.sender);
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
-        popupIsOpen = true
+        popupIsOpen = true;
 
         endOfStream(portStream, () => {
-          popupIsOpen = false
-          controller.isClientOpen = isClientOpenStatus()
-        })
+          popupIsOpen = false;
+          controller.isClientOpen = isClientOpenStatus();
+        });
       }
 
       if (processName === ENVIRONMENT_TYPE_NOTIFICATION) {
-        notificationIsOpen = true
+        notificationIsOpen = true;
 
         endOfStream(portStream, () => {
-          notificationIsOpen = false
-          controller.isClientOpen = isClientOpenStatus()
-        })
+          notificationIsOpen = false;
+          controller.isClientOpen = isClientOpenStatus();
+        });
       }
 
       if (processName === ENVIRONMENT_TYPE_FULLSCREEN) {
-        const tabId = remotePort.sender.tab.id
-        openMetamaskTabsIDs[tabId] = true
+        const tabId = remotePort.sender.tab.id;
+        openMetamaskTabsIDs[tabId] = true;
 
         endOfStream(portStream, () => {
-          delete openMetamaskTabsIDs[tabId]
-          controller.isClientOpen = isClientOpenStatus()
-        })
+          delete openMetamaskTabsIDs[tabId];
+          controller.isClientOpen = isClientOpenStatus();
+        });
       }
     } else {
       if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
-        const tabId = remotePort.sender.tab.id
-        const url = new URL(remotePort.sender.url)
-        const { origin } = url
+        const tabId = remotePort.sender.tab.id;
+        const url = new URL(remotePort.sender.url);
+        const { origin } = url;
 
         remotePort.onMessage.addListener((msg) => {
           if (msg.data && msg.data.method === 'eth_requestAccounts') {
-            requestAccountTabIds[origin] = tabId
+            requestAccountTabIds[origin] = tabId;
           }
-        })
+        });
       }
-      connectExternal(remotePort)
+      connectExternal(remotePort);
     }
   }
 
   // communication with page or other extension
   function connectExternal(remotePort) {
-    const portStream = new PortStream(remotePort)
-    controller.setupUntrustedCommunication(portStream, remotePort.sender)
+    const portStream = new PortStream(remotePort);
+    controller.setupUntrustedCommunication(portStream, remotePort.sender);
   }
 
   //
   // User Interface setup
   //
 
-  updateBadge()
-  controller.txController.on('update:badge', updateBadge)
-  controller.messageManager.on('updateBadge', updateBadge)
-  controller.personalMessageManager.on('updateBadge', updateBadge)
-  controller.decryptMessageManager.on('updateBadge', updateBadge)
-  controller.encryptionPublicKeyManager.on('updateBadge', updateBadge)
-  controller.typedMessageManager.on('updateBadge', updateBadge)
-  controller.approvalController.subscribe(updateBadge)
-  controller.appStateController.on('updateBadge', updateBadge)
+  updateBadge();
+  controller.txController.on('update:badge', updateBadge);
+  controller.messageManager.on('updateBadge', updateBadge);
+  controller.personalMessageManager.on('updateBadge', updateBadge);
+  controller.decryptMessageManager.on('updateBadge', updateBadge);
+  controller.encryptionPublicKeyManager.on('updateBadge', updateBadge);
+  controller.typedMessageManager.on('updateBadge', updateBadge);
+  controller.approvalController.subscribe(updateBadge);
+  controller.appStateController.on('updateBadge', updateBadge);
 
   /**
    * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
    * The number reflects the current number of pending transactions or message signatures needing user approval.
    */
   function updateBadge() {
-    let label = ''
-    const unapprovedTxCount = controller.txController.getUnapprovedTxCount()
-    const { unapprovedMsgCount } = controller.messageManager
-    const { unapprovedPersonalMsgCount } = controller.personalMessageManager
-    const { unapprovedDecryptMsgCount } = controller.decryptMessageManager
+    let label = '';
+    const unapprovedTxCount = controller.txController.getUnapprovedTxCount();
+    const { unapprovedMsgCount } = controller.messageManager;
+    const { unapprovedPersonalMsgCount } = controller.personalMessageManager;
+    const { unapprovedDecryptMsgCount } = controller.decryptMessageManager;
     const {
       unapprovedEncryptionPublicKeyMsgCount,
-    } = controller.encryptionPublicKeyManager
-    const { unapprovedTypedMessagesCount } = controller.typedMessageManager
-    const pendingApprovalCount = controller.approvalController.getTotalApprovalCount()
+    } = controller.encryptionPublicKeyManager;
+    const { unapprovedTypedMessagesCount } = controller.typedMessageManager;
+    const pendingApprovalCount = controller.approvalController.getTotalApprovalCount();
     const waitingForUnlockCount =
-      controller.appStateController.waitingForUnlock.length
+      controller.appStateController.waitingForUnlock.length;
     const count =
       unapprovedTxCount +
       unapprovedMsgCount +
@@ -430,15 +430,15 @@ function setupController(initState, initLangCode) {
       unapprovedEncryptionPublicKeyMsgCount +
       unapprovedTypedMessagesCount +
       pendingApprovalCount +
-      waitingForUnlockCount
+      waitingForUnlockCount;
     if (count) {
-      label = String(count)
+      label = String(count);
     }
-    extension.browserAction.setBadgeText({ text: label })
-    extension.browserAction.setBadgeBackgroundColor({ color: '#037DD6' })
+    extension.browserAction.setBadgeText({ text: label });
+    extension.browserAction.setBadgeBackgroundColor({ color: '#037DD6' });
   }
 
-  return Promise.resolve()
+  return Promise.resolve();
 }
 
 //
@@ -449,18 +449,18 @@ function setupController(initState, initLangCode) {
  * Opens the browser popup for user confirmation
  */
 async function triggerUi() {
-  const tabs = await platform.getActiveTabs()
+  const tabs = await platform.getActiveTabs();
   const currentlyActiveMetamaskTab = Boolean(
     tabs.find((tab) => openMetamaskTabsIDs[tab.id]),
-  )
+  );
   // Vivaldi is not closing port connection on popup close, so popupIsOpen does not work correctly
   // To be reviewed in the future if this behaviour is fixed - also the way we determine isVivaldi variable might change at some point
   const isVivaldi =
     tabs.length > 0 &&
     tabs[0].extData &&
-    tabs[0].extData.indexOf('vivaldi_tab') > -1
+    tabs[0].extData.indexOf('vivaldi_tab') > -1;
   if ((isVivaldi || !popupIsOpen) && !currentlyActiveMetamaskTab) {
-    await notificationManager.showPopup()
+    await notificationManager.showPopup();
   }
 }
 
@@ -469,15 +469,15 @@ async function triggerUi() {
  * then it waits until user interact with the UI
  */
 async function openPopup() {
-  await triggerUi()
+  await triggerUi();
   await new Promise((resolve) => {
     const interval = setInterval(() => {
       if (!notificationIsOpen) {
-        clearInterval(interval)
-        resolve()
+        clearInterval(interval);
+        resolve();
       }
-    }, 1000)
-  })
+    }, 1000);
+  });
 }
 
 // On first install, open a new tab with MetaMask
@@ -486,6 +486,6 @@ extension.runtime.onInstalled.addListener(({ reason }) => {
     reason === 'install' &&
     !(process.env.METAMASK_DEBUG || process.env.IN_TEST)
   ) {
-    platform.openExtensionInBrowser()
+    platform.openExtensionInBrowser();
   }
-})
+});

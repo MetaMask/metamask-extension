@@ -3,33 +3,33 @@
 //
 // run any task with "yarn build ${taskName}"
 //
-const livereload = require('gulp-livereload')
+const livereload = require('gulp-livereload');
 const {
   createTask,
   composeSeries,
   composeParallel,
   detectAndRunEntryTask,
-} = require('./task')
-const createManifestTasks = require('./manifest')
-const createScriptTasks = require('./scripts')
-const createStyleTasks = require('./styles')
-const createStaticAssetTasks = require('./static')
-const createEtcTasks = require('./etc')
+} = require('./task');
+const createManifestTasks = require('./manifest');
+const createScriptTasks = require('./scripts');
+const createStyleTasks = require('./styles');
+const createStaticAssetTasks = require('./static');
+const createEtcTasks = require('./etc');
 
-const browserPlatforms = ['firefox', 'chrome', 'brave', 'opera']
+const browserPlatforms = ['firefox', 'chrome', 'brave', 'opera'];
 
-defineAllTasks()
-detectAndRunEntryTask()
+defineAllTasks();
+detectAndRunEntryTask();
 
 function defineAllTasks() {
-  const staticTasks = createStaticAssetTasks({ livereload, browserPlatforms })
-  const manifestTasks = createManifestTasks({ browserPlatforms })
-  const styleTasks = createStyleTasks({ livereload })
-  const scriptTasks = createScriptTasks({ livereload, browserPlatforms })
+  const staticTasks = createStaticAssetTasks({ livereload, browserPlatforms });
+  const manifestTasks = createManifestTasks({ browserPlatforms });
+  const styleTasks = createStyleTasks({ livereload });
+  const scriptTasks = createScriptTasks({ livereload, browserPlatforms });
   const { clean, reload, zip } = createEtcTasks({
     livereload,
     browserPlatforms,
-  })
+  });
 
   // build for development (livereload)
   createTask(
@@ -44,7 +44,7 @@ function defineAllTasks() {
         reload,
       ),
     ),
-  )
+  );
 
   // build for test development (livereload)
   createTask(
@@ -59,7 +59,7 @@ function defineAllTasks() {
         reload,
       ),
     ),
-  )
+  );
 
   // build for prod release
   createTask(
@@ -70,7 +70,7 @@ function defineAllTasks() {
       composeParallel(scriptTasks.prod, staticTasks.prod, manifestTasks.prod),
       zip,
     ),
-  )
+  );
 
   // build for CI testing
   createTask(
@@ -81,8 +81,8 @@ function defineAllTasks() {
       composeParallel(scriptTasks.test, staticTasks.prod, manifestTasks.test),
       zip,
     ),
-  )
+  );
 
   // special build for minimal CI testing
-  createTask('styles', styleTasks.prod)
+  createTask('styles', styleTasks.prod);
 }

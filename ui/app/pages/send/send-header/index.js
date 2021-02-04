@@ -1,1 +1,1 @@
-export { default } from './send-header.container'
+export { default } from './send-header.container';

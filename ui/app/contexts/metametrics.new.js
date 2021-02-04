@@ -9,18 +9,18 @@ import React, {
   useEffect,
   useRef,
   useCallback,
-} from 'react'
-import { useSelector } from 'react-redux'
-import PropTypes from 'prop-types'
-import { matchPath, useLocation, useRouteMatch } from 'react-router-dom'
-import { captureException, captureMessage } from '@sentry/browser'
+} from 'react';
+import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+import { matchPath, useLocation, useRouteMatch } from 'react-router-dom';
+import { captureException, captureMessage } from '@sentry/browser';
 
-import { omit } from 'lodash'
-import { getEnvironmentType } from '../../../app/scripts/lib/util'
-import { PATH_NAME_MAP } from '../helpers/constants/routes'
-import { txDataSelector } from '../selectors'
+import { omit } from 'lodash';
+import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { PATH_NAME_MAP } from '../helpers/constants/routes';
+import { txDataSelector } from '../selectors';
 
-import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions'
+import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
 
 // type imports
 /**
@@ -49,10 +49,10 @@ export const MetaMetricsContext = createContext(() => {
     Error(
       `MetaMetrics context function was called from a react node that is not a descendant of a MetaMetrics context provider`,
     ),
-  )
-})
+  );
+});
 
-const PATHS_TO_CHECK = Object.keys(PATH_NAME_MAP)
+const PATHS_TO_CHECK = Object.keys(PATH_NAME_MAP);
 
 /**
  * Returns the current page if it matches out route map, as well as the origin
@@ -67,15 +67,15 @@ function useSegmentContext() {
     path: PATHS_TO_CHECK,
     exact: true,
     strict: true,
-  })
-  const txData = useSelector(txDataSelector) || {}
-  const confirmTransactionOrigin = txData.origin
+  });
+  const txData = useSelector(txDataSelector) || {};
+  const confirmTransactionOrigin = txData.origin;
 
   const referrer = confirmTransactionOrigin
     ? {
         url: confirmTransactionOrigin,
       }
-    : undefined
+    : undefined;
 
   const page = match
     ? {
@@ -83,17 +83,17 @@ function useSegmentContext() {
         title: PATH_NAME_MAP[match.path],
         url: match.path,
       }
-    : undefined
+    : undefined;
 
   return {
     page,
     referrer,
-  }
+  };
 }
 
 export function MetaMetricsProvider({ children }) {
-  const location = useLocation()
-  const context = useSegmentContext()
+  const location = useLocation();
+  const context = useSegmentContext();
 
   /**
    * @type {UITrackEventMethod}
@@ -107,13 +107,13 @@ export function MetaMetricsProvider({ children }) {
           ...context,
         },
         options,
-      )
+      );
     },
     [context],
-  )
+  );
 
   // Used to prevent double tracking page calls
-  const previousMatch = useRef()
+  const previousMatch = useRef();
 
   /**
    * Anytime the location changes, track a page change with segment.
@@ -122,12 +122,12 @@ export function MetaMetricsProvider({ children }) {
    * which page the user is on and their navigation path.
    */
   useEffect(() => {
-    const environmentType = getEnvironmentType()
+    const environmentType = getEnvironmentType();
     const match = matchPath(location.pathname, {
       path: PATHS_TO_CHECK,
       exact: true,
       strict: true,
-    })
+    });
     // Start by checking for a missing match route. If this falls through to
     // the else if, then we know we have a matched route for tracking.
     if (!match) {
@@ -136,7 +136,7 @@ export function MetaMetricsProvider({ children }) {
           previousMatch,
           currentPath: location.pathname,
         },
-      })
+      });
     } else if (
       previousMatch.current !== match.path &&
       !(
@@ -150,8 +150,8 @@ export function MetaMetricsProvider({ children }) {
       // this we keep track of the previousMatch, and we skip the event track
       // in the event that we are dealing with the initial load of the
       // homepage
-      const { path, params } = match
-      const name = PATH_NAME_MAP[path]
+      const { path, params } = match;
+      const name = PATH_NAME_MAP[path];
       trackMetaMetricsPage(
         {
           name,
@@ -165,45 +165,45 @@ export function MetaMetricsProvider({ children }) {
         {
           isOptInPath: location.pathname.startsWith('/initialize'),
         },
-      )
+      );
     }
-    previousMatch.current = match?.path
-  }, [location, context])
+    previousMatch.current = match?.path;
+  }, [location, context]);
 
   return (
     <MetaMetricsContext.Provider value={trackEvent}>
       {children}
     </MetaMetricsContext.Provider>
-  )
+  );
 }
 
-MetaMetricsProvider.propTypes = { children: PropTypes.node }
+MetaMetricsProvider.propTypes = { children: PropTypes.node };
 
 export class LegacyMetaMetricsProvider extends Component {
   static propTypes = {
     children: PropTypes.node,
-  }
+  };
 
   static defaultProps = {
     children: undefined,
-  }
+  };
 
-  static contextType = MetaMetricsContext
+  static contextType = MetaMetricsContext;
 
   static childContextTypes = {
     // This has to be different than the type name for the old metametrics file
     // using the same name would result in whichever was lower in the tree to be
     // used.
     trackEvent: PropTypes.func,
-  }
+  };
 
   getChildContext() {
     return {
       trackEvent: this.context,
-    }
+    };
   }
 
   render() {
-    return this.props.children
+    return this.props.children;
   }
 }

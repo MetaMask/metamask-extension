@@ -1,8 +1,8 @@
-import React, { PureComponent } from 'react'
-import ReactDOM from 'react-dom'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import { useI18nContext } from '../../../hooks/useI18nContext'
+import React, { PureComponent } from 'react';
+import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const Popover = ({
   title,
@@ -17,7 +17,7 @@ const Popover = ({
   showArrow,
   CustomBackground,
 }) => {
-  const t = useI18nContext()
+  const t = useI18nContext();
   return (
     <div className="popover-container">
       {CustomBackground ? (
@@ -61,8 +61,8 @@ const Popover = ({
         ) : null}
       </section>
     </div>
-  )
-}
+  );
+};
 
 Popover.propTypes = {
   title: PropTypes.string.isRequired,
@@ -76,35 +76,35 @@ Popover.propTypes = {
   contentClassName: PropTypes.string,
   className: PropTypes.string,
   showArrow: PropTypes.bool,
-}
+};
 
 export default class PopoverPortal extends PureComponent {
-  static propTypes = Popover.propTypes
+  static propTypes = Popover.propTypes;
 
-  rootNode = document.getElementById('popover-content')
+  rootNode = document.getElementById('popover-content');
 
-  instanceNode = document.createElement('div')
+  instanceNode = document.createElement('div');
 
   componentDidMount() {
     if (!this.rootNode) {
-      return
+      return;
     }
 
-    this.rootNode.appendChild(this.instanceNode)
+    this.rootNode.appendChild(this.instanceNode);
   }
 
   componentWillUnmount() {
     if (!this.rootNode) {
-      return
+      return;
     }
 
-    this.rootNode.removeChild(this.instanceNode)
+    this.rootNode.removeChild(this.instanceNode);
   }
 
   render() {
-    const children = <Popover {...this.props} />
+    const children = <Popover {...this.props} />;
     return this.rootNode
       ? ReactDOM.createPortal(children, this.instanceNode)
-      : children
+      : children;
   }
 }

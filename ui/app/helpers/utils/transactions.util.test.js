@@ -1,30 +1,30 @@
-import assert from 'assert'
+import assert from 'assert';
 import {
   TRANSACTION_CATEGORIES,
   TRANSACTION_GROUP_STATUSES,
   TRANSACTION_STATUSES,
-} from '../../../../shared/constants/transaction'
-import * as utils from './transactions.util'
+} from '../../../../shared/constants/transaction';
+import * as utils from './transactions.util';
 
 describe('Transactions utils', function () {
   describe('getTokenData', function () {
     it('should return token data', function () {
       const tokenData = utils.getTokenData(
         '0xa9059cbb00000000000000000000000050a9d56c2b8ba9a5c7f2c08c3d26e0499f23a7060000000000000000000000000000000000000000000000000000000000004e20',
-      )
-      assert.ok(tokenData)
-      const { name, args } = tokenData
-      assert.strictEqual(name, TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER)
-      const to = args._to
-      const value = args._value.toString()
-      assert.strictEqual(to, '0x50A9D56C2B8BA9A5c7f2C08C3d26E0499F23a706')
-      assert.strictEqual(value, '20000')
-    })
+      );
+      assert.ok(tokenData);
+      const { name, args } = tokenData;
+      assert.strictEqual(name, TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER);
+      const to = args._to;
+      const value = args._value.toString();
+      assert.strictEqual(to, '0x50A9D56C2B8BA9A5c7f2C08C3d26E0499F23a706');
+      assert.strictEqual(value, '20000');
+    });
 
     it('should not throw errors when called without arguments', function () {
-      assert.doesNotThrow(() => utils.getTokenData())
-    })
-  })
+      assert.doesNotThrow(() => utils.getTokenData());
+    });
+  });
 
   describe('getStatusKey', function () {
     it('should return the correct status', function () {
@@ -53,13 +53,13 @@ describe('Transactions utils', function () {
           },
           expected: TRANSACTION_GROUP_STATUSES.PENDING,
         },
-      ]
+      ];
 
       tests.forEach(({ transaction, expected }) => {
-        assert.strictEqual(utils.getStatusKey(transaction), expected)
-      })
-    })
-  })
+        assert.strictEqual(utils.getStatusKey(transaction), expected);
+      });
+    });
+  });
 
   describe('getBlockExplorerUrlForTx', function () {
     it('should return the correct block explorer url for a transaction', function () {
@@ -93,14 +93,14 @@ describe('Transactions utils', function () {
             blockExplorerUrl: 'https://another.block.explorer/',
           },
         },
-      ]
+      ];
 
       tests.forEach(({ expected, networkId, hash, rpcPrefs }) => {
         assert.strictEqual(
           utils.getBlockExplorerUrlForTx(networkId, hash, rpcPrefs),
           expected,
-        )
-      })
-    })
-  })
-})
+        );
+      });
+    });
+  });
+});

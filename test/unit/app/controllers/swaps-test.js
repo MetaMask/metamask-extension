@@ -1,19 +1,19 @@
-import assert from 'assert'
-import sinon from 'sinon'
+import assert from 'assert';
+import sinon from 'sinon';
 
-import { ethers } from 'ethers'
-import { mapValues } from 'lodash'
-import BigNumber from 'bignumber.js'
-import { ObservableStore } from '@metamask/obs-store'
+import { ethers } from 'ethers';
+import { mapValues } from 'lodash';
+import BigNumber from 'bignumber.js';
+import { ObservableStore } from '@metamask/obs-store';
 import {
   ROPSTEN_NETWORK_ID,
   MAINNET_NETWORK_ID,
-} from '../../../../shared/constants/network'
-import { ETH_SWAPS_TOKEN_ADDRESS } from '../../../../ui/app/helpers/constants/swaps'
-import { createTestProviderTools } from '../../../stub/provider'
+} from '../../../../shared/constants/network';
+import { ETH_SWAPS_TOKEN_ADDRESS } from '../../../../ui/app/helpers/constants/swaps';
+import { createTestProviderTools } from '../../../stub/provider';
 import SwapsController, {
   utils,
-} from '../../../../app/scripts/controllers/swaps'
+} from '../../../../app/scripts/controllers/swaps';
 
 const MOCK_FETCH_PARAMS = {
   slippage: 3,
@@ -23,16 +23,16 @@ const MOCK_FETCH_PARAMS = {
   value: '1000000000000000000',
   fromAddress: '0x7F18BB4Dd92CF2404C54CBa1A9BE4A1153bdb078',
   exchangeList: 'zeroExV1',
-}
+};
 
-const TEST_AGG_ID_1 = 'TEST_AGG_1'
-const TEST_AGG_ID_2 = 'TEST_AGG_2'
-const TEST_AGG_ID_3 = 'TEST_AGG_3'
-const TEST_AGG_ID_4 = 'TEST_AGG_4'
-const TEST_AGG_ID_5 = 'TEST_AGG_5'
-const TEST_AGG_ID_6 = 'TEST_AGG_6'
-const TEST_AGG_ID_BEST = 'TEST_AGG_BEST'
-const TEST_AGG_ID_APPROVAL = 'TEST_AGG_APPROVAL'
+const TEST_AGG_ID_1 = 'TEST_AGG_1';
+const TEST_AGG_ID_2 = 'TEST_AGG_2';
+const TEST_AGG_ID_3 = 'TEST_AGG_3';
+const TEST_AGG_ID_4 = 'TEST_AGG_4';
+const TEST_AGG_ID_5 = 'TEST_AGG_5';
+const TEST_AGG_ID_6 = 'TEST_AGG_6';
+const TEST_AGG_ID_BEST = 'TEST_AGG_BEST';
+const TEST_AGG_ID_APPROVAL = 'TEST_AGG_APPROVAL';
 
 const MOCK_APPROVAL_NEEDED = {
   data:
@@ -42,7 +42,7 @@ const MOCK_APPROVAL_NEEDED = {
   from: '0x2369267687A84ac7B494daE2f1542C40E37f4455',
   gas: '12',
   gasPrice: '34',
-}
+};
 
 const MOCK_QUOTES_APPROVAL_REQUIRED = {
   [TEST_AGG_ID_APPROVAL]: {
@@ -69,28 +69,28 @@ const MOCK_QUOTES_APPROVAL_REQUIRED = {
     approvalNeeded: MOCK_APPROVAL_NEEDED,
     fee: 1,
   },
-}
+};
 
 const MOCK_FETCH_METADATA = {
   destinationTokenInfo: {
     symbol: 'FOO',
     decimals: 18,
   },
-}
+};
 
 const MOCK_TOKEN_RATES_STORE = new ObservableStore({
   contractExchangeRates: {
     '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 2,
     '0x1111111111111111111111111111111111111111': 0.1,
   },
-})
+});
 
-const MOCK_GET_PROVIDER_CONFIG = () => ({ type: 'FAKE_NETWORK' })
+const MOCK_GET_PROVIDER_CONFIG = () => ({ type: 'FAKE_NETWORK' });
 
 const MOCK_GET_BUFFERED_GAS_LIMIT = async () => ({
   gasLimit: 2000000,
   simulationFails: undefined,
-})
+});
 
 function getMockNetworkController() {
   return {
@@ -98,11 +98,11 @@ function getMockNetworkController() {
       getState: () => {
         return {
           network: ROPSTEN_NETWORK_ID,
-        }
+        };
       },
     },
     on: sinon.stub().withArgs('networkDidChange').callsArgAsync(1),
-  }
+  };
 }
 
 const EMPTY_INIT_STATE = {
@@ -123,15 +123,15 @@ const EMPTY_INIT_STATE = {
     swapsFeatureIsLive: false,
     swapsQuoteRefreshTime: 60000,
   },
-}
+};
 
-const sandbox = sinon.createSandbox()
-const fetchTradesInfoStub = sandbox.stub()
-const fetchSwapsFeatureLivenessStub = sandbox.stub()
-const fetchSwapsQuoteRefreshTimeStub = sandbox.stub()
+const sandbox = sinon.createSandbox();
+const fetchTradesInfoStub = sandbox.stub();
+const fetchSwapsFeatureLivenessStub = sandbox.stub();
+const fetchSwapsQuoteRefreshTimeStub = sandbox.stub();
 
 describe('SwapsController', function () {
-  let provider
+  let provider;
 
   const getSwapsController = () => {
     return new SwapsController({
@@ -143,8 +143,8 @@ describe('SwapsController', function () {
       fetchTradesInfo: fetchTradesInfoStub,
       fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
       fetchSwapsQuoteRefreshTime: fetchSwapsQuoteRefreshTimeStub,
-    })
-  }
+    });
+  };
 
   before(function () {
     const providerResultStub = {
@@ -152,35 +152,38 @@ describe('SwapsController', function () {
       eth_gasPrice: '0x0de0b6b3a7640000',
       // by default, all accounts are external accounts (not contracts)
       eth_getCode: '0x',
-    }
+    };
     provider = createTestProviderTools({
       scaffold: providerResultStub,
       networkId: 1,
       chainId: 1,
-    }).provider
-  })
+    }).provider;
+  });
 
   afterEach(function () {
-    sandbox.restore()
-  })
+    sandbox.restore();
+  });
 
   describe('constructor', function () {
     it('should setup correctly', function () {
-      const swapsController = getSwapsController()
-      assert.deepStrictEqual(swapsController.store.getState(), EMPTY_INIT_STATE)
+      const swapsController = getSwapsController();
+      assert.deepStrictEqual(
+        swapsController.store.getState(),
+        EMPTY_INIT_STATE,
+      );
       assert.deepStrictEqual(
         swapsController.getBufferedGasLimit,
         MOCK_GET_BUFFERED_GAS_LIMIT,
-      )
-      assert.strictEqual(swapsController.pollCount, 0)
+      );
+      assert.strictEqual(swapsController.pollCount, 0);
       assert.deepStrictEqual(
         swapsController.getProviderConfig,
         MOCK_GET_PROVIDER_CONFIG,
-      )
-    })
+      );
+    });
 
     it('should replace ethers instance when network changes', function () {
-      const networkController = getMockNetworkController()
+      const networkController = getMockNetworkController();
       const swapsController = new SwapsController({
         getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
         networkController,
@@ -189,22 +192,22 @@ describe('SwapsController', function () {
         tokenRatesStore: MOCK_TOKEN_RATES_STORE,
         fetchTradesInfo: fetchTradesInfoStub,
         fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
-      })
-      const currentEthersInstance = swapsController.ethersProvider
-      const onNetworkDidChange = networkController.on.getCall(0).args[1]
+      });
+      const currentEthersInstance = swapsController.ethersProvider;
+      const onNetworkDidChange = networkController.on.getCall(0).args[1];
 
-      onNetworkDidChange(MAINNET_NETWORK_ID)
+      onNetworkDidChange(MAINNET_NETWORK_ID);
 
-      const newEthersInstance = swapsController.ethersProvider
+      const newEthersInstance = swapsController.ethersProvider;
       assert.notStrictEqual(
         currentEthersInstance,
         newEthersInstance,
         'Ethers provider should be replaced',
-      )
-    })
+      );
+    });
 
     it('should not replace ethers instance when network changes to loading', function () {
-      const networkController = getMockNetworkController()
+      const networkController = getMockNetworkController();
       const swapsController = new SwapsController({
         getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
         networkController,
@@ -213,22 +216,22 @@ describe('SwapsController', function () {
         tokenRatesStore: MOCK_TOKEN_RATES_STORE,
         fetchTradesInfo: fetchTradesInfoStub,
         fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
-      })
-      const currentEthersInstance = swapsController.ethersProvider
-      const onNetworkDidChange = networkController.on.getCall(0).args[1]
+      });
+      const currentEthersInstance = swapsController.ethersProvider;
+      const onNetworkDidChange = networkController.on.getCall(0).args[1];
 
-      onNetworkDidChange('loading')
+      onNetworkDidChange('loading');
 
-      const newEthersInstance = swapsController.ethersProvider
+      const newEthersInstance = swapsController.ethersProvider;
       assert.strictEqual(
         currentEthersInstance,
         newEthersInstance,
         'Ethers provider should not be replaced',
-      )
-    })
+      );
+    });
 
     it('should not replace ethers instance when network changes to the same network', function () {
-      const networkController = getMockNetworkController()
+      const networkController = getMockNetworkController();
       const swapsController = new SwapsController({
         getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
         networkController,
@@ -237,149 +240,149 @@ describe('SwapsController', function () {
         tokenRatesStore: MOCK_TOKEN_RATES_STORE,
         fetchTradesInfo: fetchTradesInfoStub,
         fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
-      })
-      const currentEthersInstance = swapsController.ethersProvider
-      const onNetworkDidChange = networkController.on.getCall(0).args[1]
+      });
+      const currentEthersInstance = swapsController.ethersProvider;
+      const onNetworkDidChange = networkController.on.getCall(0).args[1];
 
-      onNetworkDidChange(ROPSTEN_NETWORK_ID)
+      onNetworkDidChange(ROPSTEN_NETWORK_ID);
 
-      const newEthersInstance = swapsController.ethersProvider
+      const newEthersInstance = swapsController.ethersProvider;
       assert.strictEqual(
         currentEthersInstance,
         newEthersInstance,
         'Ethers provider should not be replaced',
-      )
-    })
-  })
+      );
+    });
+  });
 
   describe('API', function () {
-    let swapsController
+    let swapsController;
     beforeEach(function () {
-      swapsController = getSwapsController()
-    })
+      swapsController = getSwapsController();
+    });
 
     describe('setters', function () {
       it('should set selected quote agg id', function () {
-        const selectedAggId = 'test'
-        swapsController.setSelectedQuoteAggId(selectedAggId)
+        const selectedAggId = 'test';
+        swapsController.setSelectedQuoteAggId(selectedAggId);
         assert.deepStrictEqual(
           swapsController.store.getState().swapsState.selectedAggId,
           selectedAggId,
-        )
-      })
+        );
+      });
 
       it('should set swaps tokens', function () {
-        const tokens = []
-        swapsController.setSwapsTokens(tokens)
+        const tokens = [];
+        swapsController.setSwapsTokens(tokens);
         assert.deepStrictEqual(
           swapsController.store.getState().swapsState.tokens,
           tokens,
-        )
-      })
+        );
+      });
 
       it('should set trade tx id', function () {
-        const tradeTxId = 'test'
-        swapsController.setTradeTxId(tradeTxId)
+        const tradeTxId = 'test';
+        swapsController.setTradeTxId(tradeTxId);
         assert.strictEqual(
           swapsController.store.getState().swapsState.tradeTxId,
           tradeTxId,
-        )
-      })
+        );
+      });
 
       it('should set swaps tx gas price', function () {
-        const gasPrice = 1
-        swapsController.setSwapsTxGasPrice(gasPrice)
+        const gasPrice = 1;
+        swapsController.setSwapsTxGasPrice(gasPrice);
         assert.deepStrictEqual(
           swapsController.store.getState().swapsState.customGasPrice,
           gasPrice,
-        )
-      })
+        );
+      });
 
       it('should set swaps tx gas limit', function () {
-        const gasLimit = '1'
-        swapsController.setSwapsTxGasLimit(gasLimit)
+        const gasLimit = '1';
+        swapsController.setSwapsTxGasLimit(gasLimit);
         assert.deepStrictEqual(
           swapsController.store.getState().swapsState.customMaxGas,
           gasLimit,
-        )
-      })
+        );
+      });
 
       it('should set background swap route state', function () {
-        const routeState = 'test'
-        swapsController.setBackgroundSwapRouteState(routeState)
+        const routeState = 'test';
+        swapsController.setBackgroundSwapRouteState(routeState);
         assert.deepStrictEqual(
           swapsController.store.getState().swapsState.routeState,
           routeState,
-        )
-      })
+        );
+      });
 
       it('should set swaps error key', function () {
-        const errorKey = 'test'
-        swapsController.setSwapsErrorKey(errorKey)
+        const errorKey = 'test';
+        swapsController.setSwapsErrorKey(errorKey);
         assert.deepStrictEqual(
           swapsController.store.getState().swapsState.errorKey,
           errorKey,
-        )
-      })
+        );
+      });
 
       it('should set initial gas estimate', async function () {
-        const initialAggId = TEST_AGG_ID_1
-        const baseGasEstimate = 10
-        const { maxGas, estimatedRefund } = getMockQuotes()[TEST_AGG_ID_1]
+        const initialAggId = TEST_AGG_ID_1;
+        const baseGasEstimate = 10;
+        const { maxGas, estimatedRefund } = getMockQuotes()[TEST_AGG_ID_1];
 
-        const { swapsState } = swapsController.store.getState()
+        const { swapsState } = swapsController.store.getState();
         // Set mock quotes in order to have data for the test agg
         swapsController.store.updateState({
           swapsState: { ...swapsState, quotes: getMockQuotes() },
-        })
+        });
 
         await swapsController.setInitialGasEstimate(
           initialAggId,
           baseGasEstimate,
-        )
+        );
 
         const {
           gasLimit: bufferedGasLimit,
-        } = await swapsController.getBufferedGasLimit()
+        } = await swapsController.getBufferedGasLimit();
         const {
           gasEstimate,
           gasEstimateWithRefund,
-        } = swapsController.store.getState().swapsState.quotes[initialAggId]
-        assert.strictEqual(gasEstimate, bufferedGasLimit)
+        } = swapsController.store.getState().swapsState.quotes[initialAggId];
+        assert.strictEqual(gasEstimate, bufferedGasLimit);
         assert.strictEqual(
           gasEstimateWithRefund,
           new BigNumber(maxGas, 10).minus(estimatedRefund, 10).toString(16),
-        )
-      })
+        );
+      });
 
       it('should set custom approve tx data', function () {
-        const data = 'test'
-        swapsController.setCustomApproveTxData(data)
+        const data = 'test';
+        swapsController.setCustomApproveTxData(data);
         assert.deepStrictEqual(
           swapsController.store.getState().swapsState.customApproveTxData,
           data,
-        )
-      })
-    })
+        );
+      });
+    });
 
     describe('_findTopQuoteAndCalculateSavings', function () {
       beforeEach(function () {
-        const { swapsState } = swapsController.store.getState()
+        const { swapsState } = swapsController.store.getState();
         swapsController.store.updateState({
           swapsState: { ...swapsState, customGasPrice: '0x174876e800' },
-        })
-      })
+        });
+      });
 
       it('returns empty object if passed undefined or empty object', async function () {
         assert.deepStrictEqual(
           await swapsController._findTopQuoteAndCalculateSavings(),
           {},
-        )
+        );
         assert.deepStrictEqual(
           await swapsController._findTopQuoteAndCalculateSavings({}),
           {},
-        )
-      })
+        );
+      });
 
       it('returns the top aggId and quotes with savings and fee values if passed necessary data and an even number of quotes', async function () {
         const [
@@ -387,34 +390,34 @@ describe('SwapsController', function () {
           resultQuotes,
         ] = await swapsController._findTopQuoteAndCalculateSavings(
           getTopQuoteAndSavingsMockQuotes(),
-        )
-        assert.equal(topAggId, TEST_AGG_ID_1)
+        );
+        assert.equal(topAggId, TEST_AGG_ID_1);
         assert.deepStrictEqual(
           resultQuotes,
           getTopQuoteAndSavingsBaseExpectedResults(),
-        )
-      })
+        );
+      });
 
       it('returns the top aggId and quotes with savings and fee values if passed necessary data and an odd number of quotes', async function () {
-        const testInput = getTopQuoteAndSavingsMockQuotes()
-        delete testInput[TEST_AGG_ID_6]
-        const expectedResultQuotes = getTopQuoteAndSavingsBaseExpectedResults()
-        delete expectedResultQuotes[TEST_AGG_ID_6]
+        const testInput = getTopQuoteAndSavingsMockQuotes();
+        delete testInput[TEST_AGG_ID_6];
+        const expectedResultQuotes = getTopQuoteAndSavingsBaseExpectedResults();
+        delete expectedResultQuotes[TEST_AGG_ID_6];
         expectedResultQuotes[TEST_AGG_ID_1].savings = {
           total: '0.0292',
           performance: '0.0297',
           fee: '0.02',
           metaMaskFee: '0.0205',
           medianMetaMaskFee: '0.0202',
-        }
+        };
 
         const [
           topAggId,
           resultQuotes,
-        ] = await swapsController._findTopQuoteAndCalculateSavings(testInput)
-        assert.equal(topAggId, TEST_AGG_ID_1)
-        assert.deepStrictEqual(resultQuotes, expectedResultQuotes)
-      })
+        ] = await swapsController._findTopQuoteAndCalculateSavings(testInput);
+        assert.equal(topAggId, TEST_AGG_ID_1);
+        assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
+      });
 
       it('returns the top aggId, without best quote flagged, and quotes with fee values if passed necessary data but no custom convert rate exists', async function () {
         const testInput = mapValues(
@@ -423,7 +426,7 @@ describe('SwapsController', function () {
             ...quote,
             destinationToken: '0xnoConversionRateExists',
           }),
-        )
+        );
         const expectedResultQuotes = {
           [TEST_AGG_ID_1]: {
             ...testInput[TEST_AGG_ID_1],
@@ -449,15 +452,15 @@ describe('SwapsController', function () {
             ...testInput[TEST_AGG_ID_6],
             ethFee: '0.06',
           },
-        }
+        };
 
         const [
           topAggId,
           resultQuotes,
-        ] = await swapsController._findTopQuoteAndCalculateSavings(testInput)
-        assert.equal(topAggId, TEST_AGG_ID_1)
-        assert.deepStrictEqual(resultQuotes, expectedResultQuotes)
-      })
+        ] = await swapsController._findTopQuoteAndCalculateSavings(testInput);
+        assert.equal(topAggId, TEST_AGG_ID_1);
+        assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
+      });
 
       it('returns the top aggId and quotes with savings and fee values if passed necessary data and the source token is ETH', async function () {
         const testInput = mapValues(
@@ -468,8 +471,8 @@ describe('SwapsController', function () {
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
           }),
-        )
-        const baseExpectedResultQuotes = getTopQuoteAndSavingsBaseExpectedResults()
+        );
+        const baseExpectedResultQuotes = getTopQuoteAndSavingsBaseExpectedResults();
         const expectedResultQuotes = {
           [TEST_AGG_ID_1]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_1],
@@ -513,15 +516,15 @@ describe('SwapsController', function () {
             trade: { value: '0x8ac7230489e80000' },
             overallValueOfQuote: '1.8705',
           },
-        }
+        };
 
         const [
           topAggId,
           resultQuotes,
-        ] = await swapsController._findTopQuoteAndCalculateSavings(testInput)
-        assert.equal(topAggId, TEST_AGG_ID_1)
-        assert.deepStrictEqual(resultQuotes, expectedResultQuotes)
-      })
+        ] = await swapsController._findTopQuoteAndCalculateSavings(testInput);
+        assert.equal(topAggId, TEST_AGG_ID_1);
+        assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
+      });
 
       it('returns the top aggId and quotes with savings and fee values if passed necessary data and the source token is ETH and an ETH fee is included in the trade value of what would be the best quote', async function () {
         const testInput = mapValues(
@@ -532,10 +535,10 @@ describe('SwapsController', function () {
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
           }),
-        )
+        );
         // 0.04 ETH fee included in trade value
-        testInput[TEST_AGG_ID_1].trade.value = '0x8b553ece48ec0000'
-        const baseExpectedResultQuotes = getTopQuoteAndSavingsBaseExpectedResults()
+        testInput[TEST_AGG_ID_1].trade.value = '0x8b553ece48ec0000';
+        const baseExpectedResultQuotes = getTopQuoteAndSavingsBaseExpectedResults();
         const expectedResultQuotes = {
           [TEST_AGG_ID_1]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_1],
@@ -588,23 +591,23 @@ describe('SwapsController', function () {
             trade: { value: '0x8ac7230489e80000' },
             overallValueOfQuote: '1.8705',
           },
-        }
-        delete expectedResultQuotes[TEST_AGG_ID_1].isBestQuote
-        delete expectedResultQuotes[TEST_AGG_ID_1].savings
+        };
+        delete expectedResultQuotes[TEST_AGG_ID_1].isBestQuote;
+        delete expectedResultQuotes[TEST_AGG_ID_1].savings;
 
         const [
           topAggId,
           resultQuotes,
-        ] = await swapsController._findTopQuoteAndCalculateSavings(testInput)
-        assert.equal(topAggId, TEST_AGG_ID_2)
-        assert.deepStrictEqual(resultQuotes, expectedResultQuotes)
-      })
+        ] = await swapsController._findTopQuoteAndCalculateSavings(testInput);
+        assert.equal(topAggId, TEST_AGG_ID_2);
+        assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
+      });
 
       it('returns the top aggId and quotes with savings and fee values if passed necessary data and the source token is not ETH and an ETH fee is included in the trade value of what would be the best quote', async function () {
-        const testInput = getTopQuoteAndSavingsMockQuotes()
+        const testInput = getTopQuoteAndSavingsMockQuotes();
         // 0.04 ETH fee included in trade value
-        testInput[TEST_AGG_ID_1].trade.value = '0x8e1bc9bf040000'
-        const baseExpectedResultQuotes = getTopQuoteAndSavingsBaseExpectedResults()
+        testInput[TEST_AGG_ID_1].trade.value = '0x8e1bc9bf040000';
+        const baseExpectedResultQuotes = getTopQuoteAndSavingsBaseExpectedResults();
         const expectedResultQuotes = {
           ...baseExpectedResultQuotes,
           [TEST_AGG_ID_1]: {
@@ -624,37 +627,37 @@ describe('SwapsController', function () {
               medianMetaMaskFee: '0.0201',
             },
           },
-        }
-        delete expectedResultQuotes[TEST_AGG_ID_1].isBestQuote
-        delete expectedResultQuotes[TEST_AGG_ID_1].savings
+        };
+        delete expectedResultQuotes[TEST_AGG_ID_1].isBestQuote;
+        delete expectedResultQuotes[TEST_AGG_ID_1].savings;
 
         const [
           topAggId,
           resultQuotes,
-        ] = await swapsController._findTopQuoteAndCalculateSavings(testInput)
-        assert.equal(topAggId, [TEST_AGG_ID_2])
-        assert.deepStrictEqual(resultQuotes, expectedResultQuotes)
-      })
-    })
+        ] = await swapsController._findTopQuoteAndCalculateSavings(testInput);
+        assert.equal(topAggId, [TEST_AGG_ID_2]);
+        assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
+      });
+    });
 
     describe('fetchAndSetQuotes', function () {
       it('returns null if fetchParams is not provided', async function () {
-        const quotes = await swapsController.fetchAndSetQuotes(undefined)
-        assert.strictEqual(quotes, null)
-      })
+        const quotes = await swapsController.fetchAndSetQuotes(undefined);
+        assert.strictEqual(quotes, null);
+      });
       it('calls fetchTradesInfo with the given fetchParams and returns the correct quotes', async function () {
-        fetchTradesInfoStub.resolves(getMockQuotes())
-        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime())
+        fetchTradesInfoStub.resolves(getMockQuotes());
+        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime());
 
         // Make it so approval is not required
         sandbox
           .stub(swapsController, '_getERC20Allowance')
-          .resolves(ethers.BigNumber.from(1))
+          .resolves(ethers.BigNumber.from(1));
 
         const [newQuotes] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
           MOCK_FETCH_METADATA,
-        )
+        );
 
         assert.deepStrictEqual(newQuotes[TEST_AGG_ID_BEST], {
           ...getMockQuotes()[TEST_AGG_ID_BEST],
@@ -678,26 +681,26 @@ describe('SwapsController', function () {
           overallValueOfQuote: '-33554382',
           metaMaskFeeInEth: '0.5050505050505050505',
           ethValueOfTokens: '50',
-        })
+        });
 
         assert.strictEqual(
           fetchTradesInfoStub.calledOnceWithExactly(MOCK_FETCH_PARAMS),
           true,
-        )
-      })
+        );
+      });
       it('performs the allowance check', async function () {
-        fetchTradesInfoStub.resolves(getMockQuotes())
-        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime())
+        fetchTradesInfoStub.resolves(getMockQuotes());
+        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime());
 
         // Make it so approval is not required
         const allowanceStub = sandbox
           .stub(swapsController, '_getERC20Allowance')
-          .resolves(ethers.BigNumber.from(1))
+          .resolves(ethers.BigNumber.from(1));
 
         await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
           MOCK_FETCH_METADATA,
-        )
+        );
 
         assert.strictEqual(
           allowanceStub.calledOnceWithExactly(
@@ -705,55 +708,55 @@ describe('SwapsController', function () {
             MOCK_FETCH_PARAMS.fromAddress,
           ),
           true,
-        )
-      })
+        );
+      });
 
       it('gets the gas limit if approval is required', async function () {
-        fetchTradesInfoStub.resolves(MOCK_QUOTES_APPROVAL_REQUIRED)
-        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime())
+        fetchTradesInfoStub.resolves(MOCK_QUOTES_APPROVAL_REQUIRED);
+        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime());
 
         // Ensure approval is required
         sandbox
           .stub(swapsController, '_getERC20Allowance')
-          .resolves(ethers.BigNumber.from(0))
+          .resolves(ethers.BigNumber.from(0));
 
-        const timedoutGasReturnResult = { gasLimit: 1000000 }
+        const timedoutGasReturnResult = { gasLimit: 1000000 };
         const timedoutGasReturnStub = sandbox
           .stub(swapsController, 'timedoutGasReturn')
-          .resolves(timedoutGasReturnResult)
+          .resolves(timedoutGasReturnResult);
 
         await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
           MOCK_FETCH_METADATA,
-        )
+        );
 
         // Mocked quotes approvalNeeded is null, so it will only be called with the gas
         assert.strictEqual(
           timedoutGasReturnStub.calledOnceWithExactly(MOCK_APPROVAL_NEEDED),
           true,
-        )
-      })
+        );
+      });
 
       it('marks the best quote', async function () {
-        fetchTradesInfoStub.resolves(getMockQuotes())
-        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime())
+        fetchTradesInfoStub.resolves(getMockQuotes());
+        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime());
 
         // Make it so approval is not required
         sandbox
           .stub(swapsController, '_getERC20Allowance')
-          .resolves(ethers.BigNumber.from(1))
+          .resolves(ethers.BigNumber.from(1));
 
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
           MOCK_FETCH_METADATA,
-        )
+        );
 
-        assert.strictEqual(topAggId, TEST_AGG_ID_BEST)
-        assert.strictEqual(newQuotes[topAggId].isBestQuote, true)
-      })
+        assert.strictEqual(topAggId, TEST_AGG_ID_BEST);
+        assert.strictEqual(newQuotes[topAggId].isBestQuote, true);
+      });
 
       it('selects the best quote', async function () {
-        const bestAggId = 'bestAggId'
+        const bestAggId = 'bestAggId';
 
         // Clone the existing mock quote and increase destination amount
         const bestQuote = {
@@ -764,101 +767,101 @@ describe('SwapsController', function () {
           )
             .add((100e18).toString())
             .toString(),
-        }
-        const quotes = { ...getMockQuotes(), [bestAggId]: bestQuote }
-        fetchTradesInfoStub.resolves(quotes)
-        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime())
+        };
+        const quotes = { ...getMockQuotes(), [bestAggId]: bestQuote };
+        fetchTradesInfoStub.resolves(quotes);
+        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime());
 
         // Make it so approval is not required
         sandbox
           .stub(swapsController, '_getERC20Allowance')
-          .resolves(ethers.BigNumber.from(1))
+          .resolves(ethers.BigNumber.from(1));
 
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
           MOCK_FETCH_METADATA,
-        )
+        );
 
-        assert.strictEqual(topAggId, bestAggId)
-        assert.strictEqual(newQuotes[topAggId].isBestQuote, true)
-      })
+        assert.strictEqual(topAggId, bestAggId);
+        assert.strictEqual(newQuotes[topAggId].isBestQuote, true);
+      });
 
       it('does not mark as best quote if no conversion rate exists for destination token', async function () {
-        fetchTradesInfoStub.resolves(getMockQuotes())
-        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime())
+        fetchTradesInfoStub.resolves(getMockQuotes());
+        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime());
 
         // Make it so approval is not required
         sandbox
           .stub(swapsController, '_getERC20Allowance')
-          .resolves(ethers.BigNumber.from(1))
+          .resolves(ethers.BigNumber.from(1));
 
         swapsController.tokenRatesStore.updateState({
           contractExchangeRates: {},
-        })
+        });
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
           MOCK_FETCH_METADATA,
-        )
+        );
 
-        assert.strictEqual(newQuotes[topAggId].isBestQuote, undefined)
-      })
-    })
+        assert.strictEqual(newQuotes[topAggId].isBestQuote, undefined);
+      });
+    });
 
     describe('resetSwapsState', function () {
       it('resets the swaps state correctly', function () {
-        const { swapsState: old } = swapsController.store.getState()
-        swapsController.resetSwapsState()
-        const { swapsState } = swapsController.store.getState()
+        const { swapsState: old } = swapsController.store.getState();
+        swapsController.resetSwapsState();
+        const { swapsState } = swapsController.store.getState();
         assert.deepStrictEqual(swapsState, {
           ...EMPTY_INIT_STATE.swapsState,
           tokens: old.tokens,
           swapsQuoteRefreshTime: old.swapsQuoteRefreshTime,
-        })
-      })
+        });
+      });
 
       it('clears polling timeout', function () {
         swapsController.pollingTimeout = setTimeout(
           () => assert.fail(),
           1000000,
-        )
-        swapsController.resetSwapsState()
-        assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1)
-      })
-    })
+        );
+        swapsController.resetSwapsState();
+        assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1);
+      });
+    });
 
     describe('stopPollingForQuotes', function () {
       it('clears polling timeout', function () {
         swapsController.pollingTimeout = setTimeout(
           () => assert.fail(),
           1000000,
-        )
-        swapsController.stopPollingForQuotes()
-        assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1)
-      })
+        );
+        swapsController.stopPollingForQuotes();
+        assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1);
+      });
 
       it('resets quotes state correctly', function () {
-        swapsController.stopPollingForQuotes()
-        const { swapsState } = swapsController.store.getState()
-        assert.deepStrictEqual(swapsState.quotes, {})
-        assert.strictEqual(swapsState.quotesLastFetched, null)
-      })
-    })
+        swapsController.stopPollingForQuotes();
+        const { swapsState } = swapsController.store.getState();
+        assert.deepStrictEqual(swapsState.quotes, {});
+        assert.strictEqual(swapsState.quotesLastFetched, null);
+      });
+    });
 
     describe('resetPostFetchState', function () {
       it('clears polling timeout', function () {
         swapsController.pollingTimeout = setTimeout(
           () => assert.fail(),
           1000000,
-        )
-        swapsController.resetPostFetchState()
-        assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1)
-      })
+        );
+        swapsController.resetPostFetchState();
+        assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1);
+      });
 
       it('updates state correctly', function () {
-        const tokens = 'test'
-        const fetchParams = 'test'
-        const swapsFeatureIsLive = false
-        const swapsQuoteRefreshTime = 0
+        const tokens = 'test';
+        const fetchParams = 'test';
+        const swapsFeatureIsLive = false;
+        const swapsQuoteRefreshTime = 0;
         swapsController.store.updateState({
           swapsState: {
             tokens,
@@ -866,28 +869,28 @@ describe('SwapsController', function () {
             swapsFeatureIsLive,
             swapsQuoteRefreshTime,
           },
-        })
+        });
 
-        swapsController.resetPostFetchState()
+        swapsController.resetPostFetchState();
 
-        const { swapsState } = swapsController.store.getState()
+        const { swapsState } = swapsController.store.getState();
         assert.deepStrictEqual(swapsState, {
           ...EMPTY_INIT_STATE.swapsState,
           tokens,
           fetchParams,
           swapsFeatureIsLive,
           swapsQuoteRefreshTime,
-        })
-      })
-    })
+        });
+      });
+    });
 
     describe('_setupSwapsLivenessFetching ', function () {
-      let clock
-      const EXPECTED_TIME = 600000
+      let clock;
+      const EXPECTED_TIME = 600000;
 
       const getLivenessState = () => {
-        return swapsController.store.getState().swapsState.swapsFeatureIsLive
-      }
+        return swapsController.store.getState().swapsState.swapsFeatureIsLive;
+      };
 
       // We have to do this to overwrite window.navigator.onLine
       const stubWindow = () => {
@@ -896,104 +899,104 @@ describe('SwapsController', function () {
           navigator: { onLine: true },
           dispatchEvent: window.dispatchEvent,
           Event: window.Event,
-        })
-      }
+        });
+      };
 
       beforeEach(function () {
-        stubWindow()
-        clock = sandbox.useFakeTimers()
-        sandbox.spy(clock, 'setInterval')
+        stubWindow();
+        clock = sandbox.useFakeTimers();
+        sandbox.spy(clock, 'setInterval');
 
         sandbox
           .stub(SwapsController.prototype, '_fetchAndSetSwapsLiveness')
-          .resolves(undefined)
+          .resolves(undefined);
 
-        sandbox.spy(SwapsController.prototype, '_setupSwapsLivenessFetching')
+        sandbox.spy(SwapsController.prototype, '_setupSwapsLivenessFetching');
 
-        sandbox.spy(window, 'addEventListener')
-      })
+        sandbox.spy(window, 'addEventListener');
+      });
 
       afterEach(function () {
-        sandbox.restore()
-      })
+        sandbox.restore();
+      });
 
       it('calls _setupSwapsLivenessFetching in constructor', function () {
-        swapsController = getSwapsController()
+        swapsController = getSwapsController();
 
         assert.ok(
           swapsController._setupSwapsLivenessFetching.calledOnce,
           'should have called _setupSwapsLivenessFetching once',
-        )
-        assert.ok(window.addEventListener.calledWith('online'))
-        assert.ok(window.addEventListener.calledWith('offline'))
+        );
+        assert.ok(window.addEventListener.calledWith('online'));
+        assert.ok(window.addEventListener.calledWith('offline'));
         assert.ok(
           clock.setInterval.calledOnceWithExactly(
             sinon.match.func,
             EXPECTED_TIME,
           ),
           'should have set an interval',
-        )
-      })
+        );
+      });
 
       it('handles browser being offline on boot, then coming online', async function () {
-        window.navigator.onLine = false
+        window.navigator.onLine = false;
 
-        swapsController = getSwapsController()
+        swapsController = getSwapsController();
         assert.ok(
           swapsController._setupSwapsLivenessFetching.calledOnce,
           'should have called _setupSwapsLivenessFetching once',
-        )
+        );
         assert.ok(
           swapsController._fetchAndSetSwapsLiveness.notCalled,
           'should not have called _fetchAndSetSwapsLiveness',
-        )
+        );
         assert.ok(
           clock.setInterval.notCalled,
           'should not have set an interval',
-        )
+        );
         assert.strictEqual(
           getLivenessState(),
           false,
           'swaps feature should be disabled',
-        )
+        );
 
         const fetchPromise = new Promise((resolve) => {
-          const originalFunction = swapsController._fetchAndSetSwapsLiveness
+          const originalFunction = swapsController._fetchAndSetSwapsLiveness;
           swapsController._fetchAndSetSwapsLiveness = () => {
-            originalFunction()
-            resolve()
-            swapsController._fetchAndSetSwapsLiveness = originalFunction
-          }
-        })
+            originalFunction();
+            resolve();
+            swapsController._fetchAndSetSwapsLiveness = originalFunction;
+          };
+        });
 
         // browser comes online
-        window.navigator.onLine = true
-        window.dispatchEvent(new window.Event('online'))
-        await fetchPromise
+        window.navigator.onLine = true;
+        window.dispatchEvent(new window.Event('online'));
+        await fetchPromise;
 
         assert.ok(
           swapsController._fetchAndSetSwapsLiveness.calledOnce,
           'should have called _fetchAndSetSwapsLiveness once',
-        )
+        );
         assert.ok(
           clock.setInterval.calledOnceWithExactly(
             sinon.match.func,
             EXPECTED_TIME,
           ),
           'should have set an interval',
-        )
-      })
+        );
+      });
 
       it('clears interval if browser goes offline', async function () {
-        swapsController = getSwapsController()
+        swapsController = getSwapsController();
 
         // set feature to live
-        const { swapsState } = swapsController.store.getState()
+        const { swapsState } = swapsController.store.getState();
         swapsController.store.updateState({
           swapsState: { ...swapsState, swapsFeatureIsLive: true },
-        })
+        });
 
-        sandbox.spy(swapsController.store, 'updateState')
+        sandbox.spy(swapsController.store, 'updateState');
 
         assert.ok(
           clock.setInterval.calledOnceWithExactly(
@@ -1001,172 +1004,172 @@ describe('SwapsController', function () {
             EXPECTED_TIME,
           ),
           'should have set an interval',
-        )
+        );
 
         const clearIntervalPromise = new Promise((resolve) => {
-          const originalFunction = clock.clearInterval
+          const originalFunction = clock.clearInterval;
           clock.clearInterval = (intervalId) => {
-            originalFunction(intervalId)
-            clock.clearInterval = originalFunction
-            resolve()
-          }
-        })
+            originalFunction(intervalId);
+            clock.clearInterval = originalFunction;
+            resolve();
+          };
+        });
 
         // browser goes offline
-        window.navigator.onLine = false
-        window.dispatchEvent(new window.Event('offline'))
+        window.navigator.onLine = false;
+        window.dispatchEvent(new window.Event('offline'));
 
         // if this resolves, clearInterval was called
-        await clearIntervalPromise
+        await clearIntervalPromise;
 
         assert.ok(
           swapsController._fetchAndSetSwapsLiveness.calledOnce,
           'should have called _fetchAndSetSwapsLiveness once',
-        )
+        );
         assert.ok(
           swapsController.store.updateState.calledOnce,
           'should have called updateState once',
-        )
+        );
         assert.strictEqual(
           getLivenessState(),
           false,
           'swaps feature should be disabled',
-        )
-      })
-    })
+        );
+      });
+    });
 
     describe('_fetchAndSetSwapsLiveness', function () {
       const getLivenessState = () => {
-        return swapsController.store.getState().swapsState.swapsFeatureIsLive
-      }
+        return swapsController.store.getState().swapsState.swapsFeatureIsLive;
+      };
 
       beforeEach(function () {
-        fetchSwapsFeatureLivenessStub.reset()
-        sandbox.stub(SwapsController.prototype, '_setupSwapsLivenessFetching')
-        swapsController = getSwapsController()
-      })
+        fetchSwapsFeatureLivenessStub.reset();
+        sandbox.stub(SwapsController.prototype, '_setupSwapsLivenessFetching');
+        swapsController = getSwapsController();
+      });
 
       afterEach(function () {
-        sandbox.restore()
-      })
+        sandbox.restore();
+      });
 
       it('fetches feature liveness as expected when API is live', async function () {
-        fetchSwapsFeatureLivenessStub.resolves(true)
+        fetchSwapsFeatureLivenessStub.resolves(true);
 
         assert.strictEqual(
           getLivenessState(),
           false,
           'liveness should be false on boot',
-        )
+        );
 
-        await swapsController._fetchAndSetSwapsLiveness()
+        await swapsController._fetchAndSetSwapsLiveness();
 
         assert.ok(
           fetchSwapsFeatureLivenessStub.calledOnce,
           'should have called fetch function once',
-        )
+        );
         assert.strictEqual(
           getLivenessState(),
           true,
           'liveness should be true after call',
-        )
-      })
+        );
+      });
 
       it('does not update state if fetched value is same as state value', async function () {
-        fetchSwapsFeatureLivenessStub.resolves(false)
-        sandbox.spy(swapsController.store, 'updateState')
+        fetchSwapsFeatureLivenessStub.resolves(false);
+        sandbox.spy(swapsController.store, 'updateState');
 
         assert.strictEqual(
           getLivenessState(),
           false,
           'liveness should be false on boot',
-        )
+        );
 
-        await swapsController._fetchAndSetSwapsLiveness()
+        await swapsController._fetchAndSetSwapsLiveness();
 
         assert.ok(
           fetchSwapsFeatureLivenessStub.calledOnce,
           'should have called fetch function once',
-        )
+        );
         assert.ok(
           swapsController.store.updateState.notCalled,
           'should not have called store.updateState',
-        )
+        );
         assert.strictEqual(
           getLivenessState(),
           false,
           'liveness should remain false after call',
-        )
-      })
+        );
+      });
 
       it('tries three times before giving up if fetching fails', async function () {
-        const clock = sandbox.useFakeTimers()
-        fetchSwapsFeatureLivenessStub.rejects(new Error('foo'))
-        sandbox.spy(swapsController.store, 'updateState')
+        const clock = sandbox.useFakeTimers();
+        fetchSwapsFeatureLivenessStub.rejects(new Error('foo'));
+        sandbox.spy(swapsController.store, 'updateState');
 
         assert.strictEqual(
           getLivenessState(),
           false,
           'liveness should be false on boot',
-        )
+        );
 
-        swapsController._fetchAndSetSwapsLiveness()
-        await clock.runAllAsync()
+        swapsController._fetchAndSetSwapsLiveness();
+        await clock.runAllAsync();
 
         assert.ok(
           fetchSwapsFeatureLivenessStub.calledThrice,
           'should have called fetch function three times',
-        )
+        );
         assert.ok(
           swapsController.store.updateState.notCalled,
           'should not have called store.updateState',
-        )
+        );
         assert.strictEqual(
           getLivenessState(),
           false,
           'liveness should remain false after call',
-        )
-      })
+        );
+      });
 
       it('sets state after fetching on successful retry', async function () {
-        const clock = sandbox.useFakeTimers()
-        fetchSwapsFeatureLivenessStub.onCall(0).rejects(new Error('foo'))
-        fetchSwapsFeatureLivenessStub.onCall(1).rejects(new Error('foo'))
-        fetchSwapsFeatureLivenessStub.onCall(2).resolves(true)
+        const clock = sandbox.useFakeTimers();
+        fetchSwapsFeatureLivenessStub.onCall(0).rejects(new Error('foo'));
+        fetchSwapsFeatureLivenessStub.onCall(1).rejects(new Error('foo'));
+        fetchSwapsFeatureLivenessStub.onCall(2).resolves(true);
 
         assert.strictEqual(
           getLivenessState(),
           false,
           'liveness should be false on boot',
-        )
+        );
 
-        swapsController._fetchAndSetSwapsLiveness()
-        await clock.runAllAsync()
+        swapsController._fetchAndSetSwapsLiveness();
+        await clock.runAllAsync();
 
         assert.strictEqual(
           fetchSwapsFeatureLivenessStub.callCount,
           3,
           'should have called fetch function three times',
-        )
+        );
         assert.strictEqual(
           getLivenessState(),
           true,
           'liveness should be true after call',
-        )
-      })
-    })
-  })
+        );
+      });
+    });
+  });
 
   describe('utils', function () {
     describe('getMedianEthValueQuote', function () {
-      const { getMedianEthValueQuote } = utils
+      const { getMedianEthValueQuote } = utils;
 
       it('calculates median correctly with uneven sample', function () {
         const expectedResult = {
           ethFee: '10',
           metaMaskFeeInEth: '5',
           ethValueOfTokens: '0.3',
-        }
+        };
         const values = [
           {
             overallValueOfQuote: '3',
@@ -1186,23 +1189,23 @@ describe('SwapsController', function () {
             metaMaskFeeInEth: '6',
             ethValueOfTokens: '0.6',
           },
-        ]
+        ];
 
-        const median = getMedianEthValueQuote(values)
+        const median = getMedianEthValueQuote(values);
 
         assert.deepEqual(
           median,
           expectedResult,
           'should have returned correct median quote object',
-        )
-      })
+        );
+      });
 
       it('calculates median correctly with even sample', function () {
         const expectedResult = {
           ethFee: '20',
           metaMaskFeeInEth: '6.5',
           ethValueOfTokens: '0.25',
-        }
+        };
         const values = [
           {
             overallValueOfQuote: '3',
@@ -1228,22 +1231,22 @@ describe('SwapsController', function () {
             metaMaskFeeInEth: '6',
             ethValueOfTokens: '0.6',
           },
-        ]
-        const median = getMedianEthValueQuote(values)
+        ];
+        const median = getMedianEthValueQuote(values);
 
         assert.deepEqual(
           median,
           expectedResult,
           'should have returned correct median quote object',
-        )
-      })
+        );
+      });
 
       it('calculates median correctly with an uneven sample where multiple quotes have the median overall value', function () {
         const expectedResult = {
           ethFee: '2',
           metaMaskFeeInEth: '0.5',
           ethValueOfTokens: '5',
-        }
+        };
 
         const values = [
           {
@@ -1288,22 +1291,22 @@ describe('SwapsController', function () {
             ethFee: '2',
             metaMaskFeeInEth: '0.8',
           },
-        ]
-        const median = getMedianEthValueQuote(values)
+        ];
+        const median = getMedianEthValueQuote(values);
 
         assert.deepEqual(
           median,
           expectedResult,
           'should have returned correct median quote object',
-        )
-      })
+        );
+      });
 
       it('calculates median correctly with an even sample where multiple quotes have the same overall value as either of the two middle values', function () {
         const expectedResult = {
           ethFee: '2',
           metaMaskFeeInEth: '0.55',
           ethValueOfTokens: '5.5',
-        }
+        };
 
         const values = [
           {
@@ -1342,35 +1345,35 @@ describe('SwapsController', function () {
             ethFee: '2',
             metaMaskFeeInEth: '0.8',
           },
-        ]
-        const median = getMedianEthValueQuote(values)
+        ];
+        const median = getMedianEthValueQuote(values);
 
         assert.deepEqual(
           median,
           expectedResult,
           'should have returned correct median quote object',
-        )
-      })
+        );
+      });
 
       it('throws on empty or non-array sample', function () {
         assert.throws(
           () => getMedianEthValueQuote([]),
           'should throw on empty array',
-        )
+        );
 
         assert.throws(
           () => getMedianEthValueQuote(),
           'should throw on non-array param',
-        )
+        );
 
         assert.throws(
           () => getMedianEthValueQuote({}),
           'should throw on non-array param',
-        )
-      })
-    })
-  })
-})
+        );
+      });
+    });
+  });
+});
 
 function getMockQuotes() {
   return {
@@ -1475,7 +1478,7 @@ function getMockQuotes() {
       },
       fee: 1,
     },
-  }
+  };
 }
 
 function getTopQuoteAndSavingsMockQuotes() {
@@ -1572,11 +1575,11 @@ function getTopQuoteAndSavingsMockQuotes() {
       },
       fee: 1,
     },
-  }
+  };
 }
 
 function getTopQuoteAndSavingsBaseExpectedResults() {
-  const baseTestInput = getTopQuoteAndSavingsMockQuotes()
+  const baseTestInput = getTopQuoteAndSavingsMockQuotes();
   return {
     [TEST_AGG_ID_1]: {
       ...baseTestInput[TEST_AGG_ID_1],
@@ -1628,9 +1631,9 @@ function getTopQuoteAndSavingsBaseExpectedResults() {
       metaMaskFeeInEth: '0.0195',
       ethValueOfTokens: '1.9305',
     },
-  }
+  };
 }
 
 function getMockQuoteRefreshTime() {
-  return 45000
+  return 45000;
 }

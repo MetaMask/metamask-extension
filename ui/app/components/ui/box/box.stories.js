@@ -1,5 +1,5 @@
-import { number, select } from '@storybook/addon-knobs'
-import React from 'react'
+import { number, select } from '@storybook/addon-knobs';
+import React from 'react';
 import {
   ALIGN_ITEMS,
   BLOCK_SIZES,
@@ -7,25 +7,25 @@ import {
   COLORS,
   DISPLAY,
   JUSTIFY_CONTENT,
-} from '../../../helpers/constants/design-system'
-import Box from './box'
+} from '../../../helpers/constants/design-system';
+import Box from './box';
 
 export default {
   title: 'Box',
-}
+};
 
-const sizeKnobOptions = [undefined, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+const sizeKnobOptions = [undefined, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 export const box = () => {
-  const items = []
+  const items = [];
   const size = number(
     'size',
     100,
     { range: true, min: 50, max: 500, step: 10 },
     'children',
-  )
+  );
   for (let $i = 0; $i < number('items', 1, {}, 'children'); $i++) {
-    items.push(<img width={size} height={size} src="./images/eth_logo.svg" />)
+    items.push(<img width={size} height={size} src="./images/eth_logo.svg" />);
   }
   return (
     <Box
@@ -75,5 +75,5 @@ export const box = () => {
     >
       {items}
     </Box>
-  )
-}
+  );
+};

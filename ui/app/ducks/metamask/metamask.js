@@ -1,6 +1,6 @@
-import * as actionConstants from '../../store/actionConstants'
-import { ALERT_TYPES } from '../../../../shared/constants/alerts'
-import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network'
+import * as actionConstants from '../../store/actionConstants';
+import { ALERT_TYPES } from '../../../../shared/constants/alerts';
+import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
 
 export default function reduceMetamask(state = {}, action) {
   const metamaskState = {
@@ -48,17 +48,17 @@ export default function reduceMetamask(state = {}, action) {
     metaMetricsSendCount: 0,
     nextNonce: null,
     ...state,
-  }
+  };
 
   switch (action.type) {
     case actionConstants.UPDATE_METAMASK_STATE:
-      return { ...metamaskState, ...action.value }
+      return { ...metamaskState, ...action.value };
 
     case actionConstants.LOCK_METAMASK:
       return {
         ...metamaskState,
         isUnlocked: false,
-      }
+      };
 
     case actionConstants.SET_RPC_TARGET:
       return {
@@ -67,7 +67,7 @@ export default function reduceMetamask(state = {}, action) {
           type: NETWORK_TYPE_RPC,
           rpcUrl: action.value,
         },
-      }
+      };
 
     case actionConstants.SET_PROVIDER_TYPE:
       return {
@@ -75,7 +75,7 @@ export default function reduceMetamask(state = {}, action) {
         provider: {
           type: action.value,
         },
-      }
+      };
 
     case actionConstants.SHOW_ACCOUNT_DETAIL:
       return {
@@ -83,15 +83,15 @@ export default function reduceMetamask(state = {}, action) {
         isUnlocked: true,
         isInitialized: true,
         selectedAddress: action.value,
-      }
+      };
 
     case actionConstants.SET_ACCOUNT_LABEL: {
-      const { account } = action.value
-      const name = action.value.label
-      const id = {}
-      id[account] = { ...metamaskState.identities[account], name }
-      const identities = { ...metamaskState.identities, ...id }
-      return Object.assign(metamaskState, { identities })
+      const { account } = action.value;
+      const name = action.value.label;
+      const id = {};
+      id[account] = { ...metamaskState.identities[account], name };
+      const identities = { ...metamaskState.identities, ...id };
+      return Object.assign(metamaskState, { identities });
     }
 
     case actionConstants.SET_CURRENT_FIAT:
@@ -99,13 +99,13 @@ export default function reduceMetamask(state = {}, action) {
         currentCurrency: action.value.currentCurrency,
         conversionRate: action.value.conversionRate,
         conversionDate: action.value.conversionDate,
-      })
+      });
 
     case actionConstants.UPDATE_TOKENS:
       return {
         ...metamaskState,
         tokens: action.newTokens,
-      }
+      };
 
     // metamask.send
     case actionConstants.UPDATE_GAS_LIMIT:
@@ -115,12 +115,12 @@ export default function reduceMetamask(state = {}, action) {
           ...metamaskState.send,
           gasLimit: action.value,
         },
-      }
+      };
     case actionConstants.UPDATE_CUSTOM_NONCE:
       return {
         ...metamaskState,
         customNonceValue: action.value,
-      }
+      };
     case actionConstants.UPDATE_GAS_PRICE:
       return {
         ...metamaskState,
@@ -128,13 +128,13 @@ export default function reduceMetamask(state = {}, action) {
           ...metamaskState.send,
           gasPrice: action.value,
         },
-      }
+      };
 
     case actionConstants.TOGGLE_ACCOUNT_MENU:
       return {
         ...metamaskState,
         isAccountMenuOpen: !metamaskState.isAccountMenuOpen,
-      }
+      };
 
     case actionConstants.UPDATE_GAS_TOTAL:
       return {
@@ -143,7 +143,7 @@ export default function reduceMetamask(state = {}, action) {
           ...metamaskState.send,
           gasTotal: action.value,
         },
-      }
+      };
 
     case actionConstants.UPDATE_SEND_TOKEN_BALANCE:
       return {
@@ -152,7 +152,7 @@ export default function reduceMetamask(state = {}, action) {
           ...metamaskState.send,
           tokenBalance: action.value,
         },
-      }
+      };
 
     case actionConstants.UPDATE_SEND_HEX_DATA:
       return {
@@ -161,7 +161,7 @@ export default function reduceMetamask(state = {}, action) {
           ...metamaskState.send,
           data: action.value,
         },
-      }
+      };
 
     case actionConstants.UPDATE_SEND_TO:
       return {
@@ -171,7 +171,7 @@ export default function reduceMetamask(state = {}, action) {
           to: action.value.to,
           toNickname: action.value.nickname,
         },
-      }
+      };
 
     case actionConstants.UPDATE_SEND_AMOUNT:
       return {
@@ -180,7 +180,7 @@ export default function reduceMetamask(state = {}, action) {
           ...metamaskState.send,
           amount: action.value,
         },
-      }
+      };
 
     case actionConstants.UPDATE_MAX_MODE:
       return {
@@ -189,7 +189,7 @@ export default function reduceMetamask(state = {}, action) {
           ...metamaskState.send,
           maxModeOn: action.value,
         },
-      }
+      };
 
     case actionConstants.UPDATE_SEND:
       return Object.assign(metamaskState, {
@@ -197,18 +197,18 @@ export default function reduceMetamask(state = {}, action) {
           ...metamaskState.send,
           ...action.value,
         },
-      })
+      });
 
     case actionConstants.UPDATE_SEND_TOKEN: {
       const newSend = {
         ...metamaskState.send,
         token: action.value,
-      }
+      };
       // erase token-related state when switching back to native currency
       if (newSend.editingTransactionId && !newSend.token) {
         const unapprovedTx =
-          newSend?.unapprovedTxs?.[newSend.editingTransactionId] || {}
-        const txParams = unapprovedTx.txParams || {}
+          newSend?.unapprovedTxs?.[newSend.editingTransactionId] || {};
+        const txParams = unapprovedTx.txParams || {};
         Object.assign(newSend, {
           tokenBalance: null,
           balance: '0',
@@ -223,11 +223,11 @@ export default function reduceMetamask(state = {}, action) {
               },
             },
           },
-        })
+        });
       }
       return Object.assign(metamaskState, {
         send: newSend,
-      })
+      });
     }
 
     case actionConstants.UPDATE_SEND_ENS_RESOLUTION:
@@ -238,7 +238,7 @@ export default function reduceMetamask(state = {}, action) {
           ensResolution: action.payload,
           ensResolutionError: '',
         },
-      }
+      };
 
     case actionConstants.UPDATE_SEND_ENS_RESOLUTION_ERROR:
       return {
@@ -248,7 +248,7 @@ export default function reduceMetamask(state = {}, action) {
           ensResolution: null,
           ensResolutionError: action.payload,
         },
-      }
+      };
 
     case actionConstants.CLEAR_SEND:
       return {
@@ -267,73 +267,73 @@ export default function reduceMetamask(state = {}, action) {
           editingTransactionId: null,
           toNickname: '',
         },
-      }
+      };
 
     case actionConstants.UPDATE_TRANSACTION_PARAMS: {
-      const { id: txId, value } = action
-      let { currentNetworkTxList } = metamaskState
+      const { id: txId, value } = action;
+      let { currentNetworkTxList } = metamaskState;
       currentNetworkTxList = currentNetworkTxList.map((tx) => {
         if (tx.id === txId) {
-          const newTx = { ...tx }
-          newTx.txParams = value
-          return newTx
+          const newTx = { ...tx };
+          newTx.txParams = value;
+          return newTx;
         }
-        return tx
-      })
+        return tx;
+      });
 
       return {
         ...metamaskState,
         currentNetworkTxList,
-      }
+      };
     }
 
     case actionConstants.SET_PARTICIPATE_IN_METAMETRICS:
       return {
         ...metamaskState,
         participateInMetaMetrics: action.value,
-      }
+      };
 
     case actionConstants.SET_METAMETRICS_SEND_COUNT:
       return {
         ...metamaskState,
         metaMetricsSendCount: action.value,
-      }
+      };
 
     case actionConstants.SET_USE_BLOCKIE:
       return {
         ...metamaskState,
         useBlockie: action.value,
-      }
+      };
 
     case actionConstants.UPDATE_FEATURE_FLAGS:
       return {
         ...metamaskState,
         featureFlags: action.value,
-      }
+      };
 
     case actionConstants.CLOSE_WELCOME_SCREEN:
       return {
         ...metamaskState,
         welcomeScreenSeen: true,
-      }
+      };
 
     case actionConstants.SET_CURRENT_LOCALE:
       return {
         ...metamaskState,
         currentLocale: action.value.locale,
-      }
+      };
 
     case actionConstants.SET_PENDING_TOKENS:
       return {
         ...metamaskState,
         pendingTokens: { ...action.payload },
-      }
+      };
 
     case actionConstants.CLEAR_PENDING_TOKENS: {
       return {
         ...metamaskState,
         pendingTokens: {},
-      }
+      };
     }
 
     case actionConstants.UPDATE_PREFERENCES: {
@@ -343,46 +343,46 @@ export default function reduceMetamask(state = {}, action) {
           ...metamaskState.preferences,
           ...action.payload,
         },
-      }
+      };
     }
 
     case actionConstants.COMPLETE_ONBOARDING: {
       return {
         ...metamaskState,
         completedOnboarding: true,
-      }
+      };
     }
 
     case actionConstants.SET_FIRST_TIME_FLOW_TYPE: {
       return {
         ...metamaskState,
         firstTimeFlowType: action.value,
-      }
+      };
     }
 
     case actionConstants.SET_NEXT_NONCE: {
       return {
         ...metamaskState,
         nextNonce: action.value,
-      }
+      };
     }
 
     default:
-      return metamaskState
+      return metamaskState;
   }
 }
 
-export const getCurrentLocale = (state) => state.metamask.currentLocale
+export const getCurrentLocale = (state) => state.metamask.currentLocale;
 
-export const getAlertEnabledness = (state) => state.metamask.alertEnabledness
+export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
 
 export const getUnconnectedAccountAlertEnabledness = (state) =>
-  getAlertEnabledness(state)[ALERT_TYPES.unconnectedAccount]
+  getAlertEnabledness(state)[ALERT_TYPES.unconnectedAccount];
 
 export const getWeb3ShimUsageAlertEnabledness = (state) =>
-  getAlertEnabledness(state)[ALERT_TYPES.web3ShimUsage]
+  getAlertEnabledness(state)[ALERT_TYPES.web3ShimUsage];
 
 export const getUnconnectedAccountAlertShown = (state) =>
-  state.metamask.unconnectedAccountAlertShownOrigins
+  state.metamask.unconnectedAccountAlertShownOrigins;
 
-export const getTokens = (state) => state.metamask.tokens
+export const getTokens = (state) => state.metamask.tokens;

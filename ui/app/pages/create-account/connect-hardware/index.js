@@ -1,14 +1,14 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import * as actions from '../../../store/actions'
-import { getMetaMaskAccounts } from '../../../selectors'
-import { formatBalance } from '../../../helpers/utils/util'
-import { getMostRecentOverviewPage } from '../../../ducks/history/history'
-import SelectHardware from './select-hardware'
-import AccountList from './account-list'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import * as actions from '../../../store/actions';
+import { getMetaMaskAccounts } from '../../../selectors';
+import { formatBalance } from '../../../helpers/utils/util';
+import { getMostRecentOverviewPage } from '../../../ducks/history/history';
+import SelectHardware from './select-hardware';
+import AccountList from './account-list';
 
-const U2F_ERROR = 'U2F'
+const U2F_ERROR = 'U2F';
 
 class ConnectHardwareForm extends Component {
   state = {
@@ -18,23 +18,23 @@ class ConnectHardwareForm extends Component {
     browserSupported: true,
     unlocked: false,
     device: null,
-  }
+  };
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    const { accounts } = nextProps
+    const { accounts } = nextProps;
     const newAccounts = this.state.accounts.map((a) => {
-      const normalizedAddress = a.address.toLowerCase()
+      const normalizedAddress = a.address.toLowerCase();
       const balanceValue =
         (accounts[normalizedAddress] && accounts[normalizedAddress].balance) ||
-        null
-      a.balance = balanceValue ? formatBalance(balanceValue, 6) : '...'
-      return a
-    })
-    this.setState({ accounts: newAccounts })
+        null;
+      a.balance = balanceValue ? formatBalance(balanceValue, 6) : '...';
+      return a;
+    });
+    this.setState({ accounts: newAccounts });
   }
 
   componentDidMount() {
-    this.checkIfUnlocked()
+    this.checkIfUnlocked();
   }
 
   async checkIfUnlocked() {
@@ -42,46 +42,46 @@ class ConnectHardwareForm extends Component {
       const unlocked = await this.props.checkHardwareStatus(
         device,
         this.props.defaultHdPaths[device],
-      )
+      );
       if (unlocked) {
-        this.setState({ unlocked: true })
-        this.getPage(device, 0, this.props.defaultHdPaths[device])
+        this.setState({ unlocked: true });
+        this.getPage(device, 0, this.props.defaultHdPaths[device]);
       }
     }
   }
 
   connectToHardwareWallet = (device) => {
-    this.setState({ device })
+    this.setState({ device });
     if (this.state.accounts.length) {
-      return
+      return;
     }
 
     // Default values
-    this.getPage(device, 0, this.props.defaultHdPaths[device])
-  }
+    this.getPage(device, 0, this.props.defaultHdPaths[device]);
+  };
 
   onPathChange = (path) => {
     this.props.setHardwareWalletDefaultHdPath({
       device: this.state.device,
       path,
-    })
-    this.getPage(this.state.device, 0, path)
-  }
+    });
+    this.getPage(this.state.device, 0, path);
+  };
 
   onAccountChange = (account) => {
-    this.setState({ selectedAccount: account.toString(), error: null })
-  }
+    this.setState({ selectedAccount: account.toString(), error: null });
+  };
 
   onAccountRestriction = () => {
-    this.setState({ error: this.context.t('ledgerAccountRestriction') })
-  }
+    this.setState({ error: this.context.t('ledgerAccountRestriction') });
+  };
 
   showTemporaryAlert() {
-    this.props.showAlert(this.context.t('hardwareWalletConnected'))
+    this.props.showAlert(this.context.t('hardwareWalletConnected'));
     // Autohide the alert after 5 seconds
     setTimeout((_) => {
-      this.props.hideAlert()
-    }, 5000)
+      this.props.hideAlert();
+    }, 5000);
   }
 
   getPage = (device, page, hdPath) => {
@@ -92,56 +92,56 @@ class ConnectHardwareForm extends Component {
           // If we just loaded the accounts for the first time
           // (device previously locked) show the global alert
           if (this.state.accounts.length === 0 && !this.state.unlocked) {
-            this.showTemporaryAlert()
+            this.showTemporaryAlert();
           }
 
-          const newState = { unlocked: true, device, error: null }
+          const newState = { unlocked: true, device, error: null };
           // Default to the first account
           if (this.state.selectedAccount === null) {
             accounts.forEach((a) => {
               if (a.address.toLowerCase() === this.props.address) {
-                newState.selectedAccount = a.index.toString()
+                newState.selectedAccount = a.index.toString();
               }
-            })
+            });
             // If the page doesn't contain the selected account, let's deselect it
           } else if (
             !accounts.filter(
               (a) => a.index.toString() === this.state.selectedAccount,
             ).length
           ) {
-            newState.selectedAccount = null
+            newState.selectedAccount = null;
           }
 
           // Map accounts with balances
           newState.accounts = accounts.map((account) => {
-            const normalizedAddress = account.address.toLowerCase()
+            const normalizedAddress = account.address.toLowerCase();
             const balanceValue =
               (this.props.accounts[normalizedAddress] &&
                 this.props.accounts[normalizedAddress].balance) ||
-              null
+              null;
             account.balance = balanceValue
               ? formatBalance(balanceValue, 6)
-              : '...'
-            return account
-          })
+              : '...';
+            return account;
+          });
 
-          this.setState(newState)
+          this.setState(newState);
         }
       })
       .catch((e) => {
-        const errorMessage = typeof e === 'string' ? e : e.message
+        const errorMessage = typeof e === 'string' ? e : e.message;
         if (errorMessage === 'Window blocked') {
-          this.setState({ browserSupported: false, error: null })
+          this.setState({ browserSupported: false, error: null });
         } else if (errorMessage.includes(U2F_ERROR)) {
-          this.setState({ error: U2F_ERROR })
+          this.setState({ error: U2F_ERROR });
         } else if (
           errorMessage !== 'Window closed' &&
           errorMessage !== 'Popup closed'
         ) {
-          this.setState({ error: errorMessage })
+          this.setState({ error: errorMessage });
         }
-      })
-  }
+      });
+  };
 
   onForgetDevice = (device) => {
     this.props
@@ -152,22 +152,22 @@ class ConnectHardwareForm extends Component {
           selectedAccount: null,
           accounts: [],
           unlocked: false,
-        })
+        });
       })
       .catch((e) => {
-        this.setState({ error: e.message })
-      })
-  }
+        this.setState({ error: e.message });
+      });
+  };
 
   onUnlockAccount = (device) => {
     const {
       history,
       mostRecentOverviewPage,
       unlockHardwareWalletAccount,
-    } = this.props
+    } = this.props;
 
     if (this.state.selectedAccount === null) {
-      this.setState({ error: this.context.t('accountSelectionRequired') })
+      this.setState({ error: this.context.t('accountSelectionRequired') });
     }
 
     unlockHardwareWalletAccount(this.state.selectedAccount, device)
@@ -178,8 +178,8 @@ class ConnectHardwareForm extends Component {
             action: 'Connected Hardware Wallet',
             name: `Connected Account with: ${device}`,
           },
-        })
-        history.push(mostRecentOverviewPage)
+        });
+        history.push(mostRecentOverviewPage);
       })
       .catch((e) => {
         this.context.metricsEvent({
@@ -191,15 +191,15 @@ class ConnectHardwareForm extends Component {
           customVariables: {
             error: e.message,
           },
-        })
-        this.setState({ error: e.message })
-      })
-  }
+        });
+        this.setState({ error: e.message });
+      });
+  };
 
   onCancel = () => {
-    const { history, mostRecentOverviewPage } = this.props
-    history.push(mostRecentOverviewPage)
-  }
+    const { history, mostRecentOverviewPage } = this.props;
+    history.push(mostRecentOverviewPage);
+  };
 
   renderError() {
     if (this.state.error === U2F_ERROR) {
@@ -220,11 +220,11 @@ class ConnectHardwareForm extends Component {
             </a>,
           ])}
         </p>
-      )
+      );
     }
     return this.state.error ? (
       <span className="hw-connect__error">{this.state.error}</span>
-    ) : null
+    ) : null;
   }
 
   renderContent() {
@@ -234,7 +234,7 @@ class ConnectHardwareForm extends Component {
           connectToHardwareWallet={this.connectToHardwareWallet}
           browserSupported={this.state.browserSupported}
         />
-      )
+      );
     }
 
     return (
@@ -252,7 +252,7 @@ class ConnectHardwareForm extends Component {
         onCancel={this.onCancel}
         onAccountRestriction={this.onAccountRestriction}
       />
-    )
+    );
   }
 
   render() {
@@ -261,7 +261,7 @@ class ConnectHardwareForm extends Component {
         {this.renderError()}
         {this.renderContent()}
       </>
-    )
+    );
   }
 }
 
@@ -279,16 +279,16 @@ ConnectHardwareForm.propTypes = {
   address: PropTypes.string,
   defaultHdPaths: PropTypes.object,
   mostRecentOverviewPage: PropTypes.string.isRequired,
-}
+};
 
 const mapStateToProps = (state) => {
   const {
     metamask: { network, selectedAddress },
-  } = state
-  const accounts = getMetaMaskAccounts(state)
+  } = state;
+  const accounts = getMetaMaskAccounts(state);
   const {
     appState: { defaultHdPaths },
-  } = state
+  } = state;
 
   return {
     network,
@@ -296,36 +296,39 @@ const mapStateToProps = (state) => {
     address: selectedAddress,
     defaultHdPaths,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
     setHardwareWalletDefaultHdPath: ({ device, path }) => {
-      return dispatch(actions.setHardwareWalletDefaultHdPath({ device, path }))
+      return dispatch(actions.setHardwareWalletDefaultHdPath({ device, path }));
     },
     connectHardware: (deviceName, page, hdPath) => {
-      return dispatch(actions.connectHardware(deviceName, page, hdPath))
+      return dispatch(actions.connectHardware(deviceName, page, hdPath));
     },
     checkHardwareStatus: (deviceName, hdPath) => {
-      return dispatch(actions.checkHardwareStatus(deviceName, hdPath))
+      return dispatch(actions.checkHardwareStatus(deviceName, hdPath));
     },
     forgetDevice: (deviceName) => {
-      return dispatch(actions.forgetDevice(deviceName))
+      return dispatch(actions.forgetDevice(deviceName));
     },
     unlockHardwareWalletAccount: (index, deviceName, hdPath) => {
       return dispatch(
         actions.unlockHardwareWalletAccount(index, deviceName, hdPath),
-      )
+      );
     },
     showAlert: (msg) => dispatch(actions.showAlert(msg)),
     hideAlert: () => dispatch(actions.hideAlert()),
-  }
-}
+  };
+};
 
 ConnectHardwareForm.contextTypes = {
   t: PropTypes.func,
   metricsEvent: PropTypes.func,
-}
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(ConnectHardwareForm)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(ConnectHardwareForm);

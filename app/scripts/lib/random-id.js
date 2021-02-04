@@ -1,8 +1,8 @@
-const MAX = Number.MAX_SAFE_INTEGER
+const MAX = Number.MAX_SAFE_INTEGER;
 
-let idCounter = Math.round(Math.random() * MAX)
+let idCounter = Math.round(Math.random() * MAX);
 export default function createRandomId() {
-  idCounter %= MAX
+  idCounter %= MAX;
   // eslint-disable-next-line no-plusplus
-  return idCounter++
+  return idCounter++;
 }

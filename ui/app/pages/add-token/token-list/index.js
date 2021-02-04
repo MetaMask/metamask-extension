@@ -1,3 +1,3 @@
-import TokenList from './token-list.container'
+import TokenList from './token-list.container';
 
-export default TokenList
+export default TokenList;

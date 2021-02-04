@@ -1,1 +1,1 @@
-export { default } from './signature-request.container'
+export { default } from './signature-request.container';

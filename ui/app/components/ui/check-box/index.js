@@ -3,4 +3,4 @@ export {
   CHECKED,
   INDETERMINATE,
   UNCHECKED,
-} from './check-box.component'
+} from './check-box.component';

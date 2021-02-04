@@ -4,41 +4,41 @@ This migration removes transactions that are no longer usefull down to 40 total
 
 */
 
-import { cloneDeep } from 'lodash'
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction'
+import { cloneDeep } from 'lodash';
+import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 
-const version = 23
+const version = 23;
 
 export default {
   version,
 
   migrate(originalVersionedData) {
-    const versionedData = cloneDeep(originalVersionedData)
-    versionedData.meta.version = version
+    const versionedData = cloneDeep(originalVersionedData);
+    versionedData.meta.version = version;
     try {
-      const state = versionedData.data
-      const newState = transformState(state)
-      versionedData.data = newState
+      const state = versionedData.data;
+      const newState = transformState(state);
+      versionedData.data = newState;
     } catch (err) {
-      console.warn(`MetaMask Migration #${version}${err.stack}`)
+      console.warn(`MetaMask Migration #${version}${err.stack}`);
     }
-    return Promise.resolve(versionedData)
+    return Promise.resolve(versionedData);
   },
-}
+};
 
 function transformState(state) {
-  const newState = state
+  const newState = state;
 
-  const { TransactionController } = newState
+  const { TransactionController } = newState;
   if (TransactionController && TransactionController.transactions) {
-    const { transactions } = newState.TransactionController
+    const { transactions } = newState.TransactionController;
 
     if (transactions.length <= 40) {
-      return newState
+      return newState;
     }
 
-    const reverseTxList = transactions.reverse()
-    let stripping = true
+    const reverseTxList = transactions.reverse();
+    let stripping = true;
     while (reverseTxList.length > 40 && stripping) {
       const txIndex = reverseTxList.findIndex((txMeta) => {
         return (
@@ -46,16 +46,16 @@ function transformState(state) {
           txMeta.status === TRANSACTION_STATUSES.REJECTED ||
           txMeta.status === TRANSACTION_STATUSES.CONFIRMED ||
           txMeta.status === TRANSACTION_STATUSES.DROPPED
-        )
-      })
+        );
+      });
       if (txIndex < 0) {
-        stripping = false
+        stripping = false;
       } else {
-        reverseTxList.splice(txIndex, 1)
+        reverseTxList.splice(txIndex, 1);
       }
     }
 
-    newState.TransactionController.transactions = reverseTxList.reverse()
+    newState.TransactionController.transactions = reverseTxList.reverse();
   }
-  return newState
+  return newState;
 }

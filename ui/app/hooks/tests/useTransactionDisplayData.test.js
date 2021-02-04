@@ -1,28 +1,28 @@
-import assert from 'assert'
-import React from 'react'
-import * as reactRedux from 'react-redux'
-import { renderHook } from '@testing-library/react-hooks'
-import sinon from 'sinon'
-import { MemoryRouter } from 'react-router-dom'
-import transactions from '../../../../test/data/transaction-data.json'
-import { useTransactionDisplayData } from '../useTransactionDisplayData'
-import * as useTokenFiatAmountHooks from '../useTokenFiatAmount'
+import assert from 'assert';
+import React from 'react';
+import * as reactRedux from 'react-redux';
+import { renderHook } from '@testing-library/react-hooks';
+import sinon from 'sinon';
+import { MemoryRouter } from 'react-router-dom';
+import transactions from '../../../../test/data/transaction-data.json';
+import { useTransactionDisplayData } from '../useTransactionDisplayData';
+import * as useTokenFiatAmountHooks from '../useTokenFiatAmount';
 import {
   getPreferences,
   getShouldShowFiat,
   getNativeCurrency,
   getCurrentCurrency,
-} from '../../selectors'
-import { getTokens } from '../../ducks/metamask/metamask'
-import * as i18nhooks from '../useI18nContext'
-import { getMessage } from '../../helpers/utils/i18n-helper'
-import messages from '../../../../app/_locales/en/messages.json'
-import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../helpers/constants/routes'
+} from '../../selectors';
+import { getTokens } from '../../ducks/metamask/metamask';
+import * as i18nhooks from '../useI18nContext';
+import { getMessage } from '../../helpers/utils/i18n-helper';
+import messages from '../../../../app/_locales/en/messages.json';
+import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   TRANSACTION_CATEGORIES,
   TRANSACTION_GROUP_CATEGORIES,
   TRANSACTION_STATUSES,
-} from '../../../../shared/constants/transaction'
+} from '../../../../shared/constants/transaction';
 
 const expectedResults = [
   {
@@ -117,34 +117,34 @@ const expectedResults = [
     isPending: false,
     displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
   },
-]
+];
 
-let useSelector, useI18nContext, useTokenFiatAmount
+let useSelector, useI18nContext, useTokenFiatAmount;
 
 const renderHookWithRouter = (cb, tokenAddress) => {
   const initialEntries = [
     tokenAddress ? `${ASSET_ROUTE}/${tokenAddress}` : DEFAULT_ROUTE,
-  ]
+  ];
   const wrapper = ({ children }) => (
     <MemoryRouter initialEntries={initialEntries}>{children}</MemoryRouter>
-  )
-  return renderHook(cb, { wrapper })
-}
+  );
+  return renderHook(cb, { wrapper });
+};
 
 describe('useTransactionDisplayData', function () {
   before(function () {
-    useSelector = sinon.stub(reactRedux, 'useSelector')
+    useSelector = sinon.stub(reactRedux, 'useSelector');
     useTokenFiatAmount = sinon.stub(
       useTokenFiatAmountHooks,
       'useTokenFiatAmount',
-    )
+    );
     useTokenFiatAmount.returns((tokenAddress) => {
-      return tokenAddress ? '1 TST' : undefined
-    })
-    useI18nContext = sinon.stub(i18nhooks, 'useI18nContext')
+      return tokenAddress ? '1 TST' : undefined;
+    });
+    useI18nContext = sinon.stub(i18nhooks, 'useI18nContext');
     useI18nContext.returns((key, variables) =>
       getMessage('en', messages, key, variables),
-    )
+    );
     useSelector.callsFake((selector) => {
       if (selector === getTokens) {
         return [
@@ -153,104 +153,107 @@ describe('useTransactionDisplayData', function () {
             symbol: 'ABC',
             decimals: 18,
           },
-        ]
+        ];
       } else if (selector === getPreferences) {
         return {
           useNativeCurrencyAsPrimaryCurrency: true,
-        }
+        };
       } else if (selector === getShouldShowFiat) {
-        return false
+        return false;
       } else if (selector === getNativeCurrency) {
-        return 'ETH'
+        return 'ETH';
       } else if (selector === getCurrentCurrency) {
-        return 'ETH'
+        return 'ETH';
       }
-      return null
-    })
-  })
+      return null;
+    });
+  });
   transactions.forEach((transactionGroup, idx) => {
     describe(`when called with group containing primaryTransaction id ${transactionGroup.primaryTransaction.id}`, function () {
-      const expected = expectedResults[idx]
+      const expected = expectedResults[idx];
       const tokenAddress =
-        transactionGroup.primaryTransaction?.destinationTokenAddress
+        transactionGroup.primaryTransaction?.destinationTokenAddress;
       it(`should return a title of ${expected.title}`, function () {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
           tokenAddress,
-        )
-        assert.strictEqual(result.current.title, expected.title)
-      })
+        );
+        assert.strictEqual(result.current.title, expected.title);
+      });
       it(`should return a subtitle of ${expected.subtitle}`, function () {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
           tokenAddress,
-        )
-        assert.strictEqual(result.current.subtitle, expected.subtitle)
-      })
+        );
+        assert.strictEqual(result.current.subtitle, expected.subtitle);
+      });
       it(`should return a category of ${expected.category}`, function () {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
           tokenAddress,
-        )
-        assert.strictEqual(result.current.category, expected.category)
-      })
+        );
+        assert.strictEqual(result.current.category, expected.category);
+      });
       it(`should return a primaryCurrency of ${expected.primaryCurrency}`, function () {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
           tokenAddress,
-        )
+        );
         assert.strictEqual(
           result.current.primaryCurrency,
           expected.primaryCurrency,
-        )
-      })
+        );
+      });
       it(`should return a secondaryCurrency of ${expected.secondaryCurrency}`, function () {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
           tokenAddress,
-        )
+        );
         assert.strictEqual(
           result.current.secondaryCurrency,
           expected.secondaryCurrency,
-        )
-      })
+        );
+      });
       it(`should return a displayedStatusKey of ${expected.displayedStatusKey}`, function () {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
           tokenAddress,
-        )
+        );
         assert.strictEqual(
           result.current.displayedStatusKey,
           expected.displayedStatusKey,
-        )
-      })
+        );
+      });
       it(`should return a recipientAddress of ${expected.recipientAddress}`, function () {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
           tokenAddress,
-        )
+        );
         assert.strictEqual(
           result.current.recipientAddress,
           expected.recipientAddress,
-        )
-      })
+        );
+      });
       it(`should return a senderAddress of ${expected.senderAddress}`, function () {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
           tokenAddress,
-        )
-        assert.strictEqual(result.current.senderAddress, expected.senderAddress)
-      })
-    })
-  })
+        );
+        assert.strictEqual(
+          result.current.senderAddress,
+          expected.senderAddress,
+        );
+      });
+    });
+  });
   it('should return an appropriate object', function () {
     const { result } = renderHookWithRouter(() =>
       useTransactionDisplayData(transactions[0]),
-    )
-    assert.deepStrictEqual(result.current, expectedResults[0])
-  })
+    );
+    assert.deepStrictEqual(result.current, expectedResults[0]);
+  });
   after(function () {
-    useSelector.restore()
-    useI18nContext.restore()
-  })
-})
+    useSelector.restore();
+    useI18nContext.restore();
+  });
+});

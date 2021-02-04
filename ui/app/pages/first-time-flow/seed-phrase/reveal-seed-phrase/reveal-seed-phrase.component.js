@@ -1,21 +1,21 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import LockIcon from '../../../../components/ui/lock-icon'
-import Button from '../../../../components/ui/button'
-import Snackbar from '../../../../components/ui/snackbar'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import LockIcon from '../../../../components/ui/lock-icon';
+import Button from '../../../../components/ui/button';
+import Snackbar from '../../../../components/ui/snackbar';
 import {
   INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE,
   DEFAULT_ROUTE,
-} from '../../../../helpers/constants/routes'
-import { exportAsFile } from '../../../../helpers/utils/util'
-import { returnToOnboardingInitiator } from '../../onboarding-initiator-util'
+} from '../../../../helpers/constants/routes';
+import { exportAsFile } from '../../../../helpers/utils/util';
+import { returnToOnboardingInitiator } from '../../onboarding-initiator-util';
 
 export default class RevealSeedPhrase extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     history: PropTypes.object,
@@ -26,19 +26,19 @@ export default class RevealSeedPhrase extends PureComponent {
       location: PropTypes.string,
       tabId: PropTypes.number,
     }),
-  }
+  };
 
   state = {
     isShowingSeedPhrase: false,
-  }
+  };
 
   handleExport = () => {
-    exportAsFile('', this.props.seedPhrase, 'text/plain')
-  }
+    exportAsFile('', this.props.seedPhrase, 'text/plain');
+  };
 
   handleNext = () => {
-    const { isShowingSeedPhrase } = this.state
-    const { history } = this.props
+    const { isShowingSeedPhrase } = this.state;
+    const { history } = this.props;
 
     this.context.metricsEvent({
       eventOpts: {
@@ -46,14 +46,14 @@ export default class RevealSeedPhrase extends PureComponent {
         action: 'Seed Phrase Setup',
         name: 'Advance to Verify',
       },
-    })
+    });
 
     if (!isShowingSeedPhrase) {
-      return
+      return;
     }
 
-    history.push(INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE)
-  }
+    history.push(INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE);
+  };
 
   handleSkip = async () => {
     const {
@@ -61,7 +61,7 @@ export default class RevealSeedPhrase extends PureComponent {
       setSeedPhraseBackedUp,
       setCompletedOnboarding,
       onboardingInitiator,
-    } = this.props
+    } = this.props;
 
     this.context.metricsEvent({
       eventOpts: {
@@ -69,20 +69,20 @@ export default class RevealSeedPhrase extends PureComponent {
         action: 'Seed Phrase Setup',
         name: 'Remind me later',
       },
-    })
+    });
 
-    await Promise.all([setCompletedOnboarding(), setSeedPhraseBackedUp(false)])
+    await Promise.all([setCompletedOnboarding(), setSeedPhraseBackedUp(false)]);
 
     if (onboardingInitiator) {
-      await returnToOnboardingInitiator(onboardingInitiator)
+      await returnToOnboardingInitiator(onboardingInitiator);
     }
-    history.push(DEFAULT_ROUTE)
-  }
+    history.push(DEFAULT_ROUTE);
+  };
 
   renderSecretWordsContainer() {
-    const { t } = this.context
-    const { seedPhrase } = this.props
-    const { isShowingSeedPhrase } = this.state
+    const { t } = this.context;
+    const { seedPhrase } = this.props;
+    const { isShowingSeedPhrase } = this.state;
 
     return (
       <div className="reveal-seed-phrase__secret">
@@ -106,8 +106,8 @@ export default class RevealSeedPhrase extends PureComponent {
                   action: 'Seed Phrase Setup',
                   name: 'Revealed Words',
                 },
-              })
-              this.setState({ isShowingSeedPhrase: true })
+              });
+              this.setState({ isShowingSeedPhrase: true });
             }}
           >
             <LockIcon width="28px" height="35px" fill="#FFFFFF" />
@@ -117,13 +117,13 @@ export default class RevealSeedPhrase extends PureComponent {
           </div>
         )}
       </div>
-    )
+    );
   }
 
   render() {
-    const { t } = this.context
-    const { isShowingSeedPhrase } = this.state
-    const { onboardingInitiator } = this.props
+    const { t } = this.context;
+    const { isShowingSeedPhrase } = this.state;
+    const { onboardingInitiator } = this.props;
 
     return (
       <div className="reveal-seed-phrase">
@@ -187,6 +187,6 @@ export default class RevealSeedPhrase extends PureComponent {
           />
         ) : null}
       </div>
-    )
+    );
   }
 }

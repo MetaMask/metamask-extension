@@ -1,11 +1,11 @@
-import React from 'react'
-import { action } from '@storybook/addon-actions'
-import { text } from '@storybook/addon-knobs'
-import ActionableMessage from '.'
+import React from 'react';
+import { action } from '@storybook/addon-actions';
+import { text } from '@storybook/addon-knobs';
+import ActionableMessage from '.';
 
 export default {
   title: 'ActionableMessage',
-}
+};
 
 export const NoAction = () => (
   <div style={{ height: '200px', width: '200px' }}>
@@ -16,7 +16,7 @@ export const NoAction = () => (
       )}
     />
   </div>
-)
+);
 
 export const OneAction = () => (
   <div style={{ height: '200px', width: '250px' }}>
@@ -31,7 +31,7 @@ export const OneAction = () => (
       }}
     />
   </div>
-)
+);
 
 export const TwoActions = () => (
   <div style={{ height: '200px', width: '300px' }}>
@@ -51,7 +51,7 @@ export const TwoActions = () => (
       className="actionable-message--warning"
     />
   </div>
-)
+);
 
 export const LeftAligned = () => (
   <div style={{ height: '200px', width: '300px' }}>
@@ -67,4 +67,4 @@ export const LeftAligned = () => (
       className="actionable-message--left-aligned"
     />
   </div>
-)
+);

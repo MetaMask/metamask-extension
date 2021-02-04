@@ -1,18 +1,18 @@
-import assert from 'assert'
+import assert from 'assert';
 import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
-} from '../../../../../../shared/constants/transaction'
+} from '../../../../../../shared/constants/transaction';
 import {
   combineTransactionHistories,
   getActivities,
-} from '../transaction-activity-log.util'
+} from '../transaction-activity-log.util';
 
 describe('TransactionActivityLog utils', function () {
   describe('combineTransactionHistories', function () {
     it('should return no activities for an empty list of transactions', function () {
-      assert.deepStrictEqual(combineTransactionHistories([]), [])
-    })
+      assert.deepStrictEqual(combineTransactionHistories([]), []);
+    });
 
     it('should return activities for an array of transactions', function () {
       const transactions = [
@@ -180,7 +180,7 @@ describe('TransactionActivityLog utils', function () {
           },
           type: TRANSACTION_TYPES.RETRY,
         },
-      ]
+      ];
 
       const expected = [
         {
@@ -215,14 +215,14 @@ describe('TransactionActivityLog utils', function () {
           timestamp: 1543958897165,
           value: '0x171c3a061400',
         },
-      ]
+      ];
 
       assert.deepStrictEqual(
         combineTransactionHistories(transactions),
         expected,
-      )
-    })
-  })
+      );
+    });
+  });
 
   describe('getActivities', function () {
     it('should return no activities for an empty history', function () {
@@ -238,10 +238,10 @@ describe('TransactionActivityLog utils', function () {
           to: '0x2',
           value: '0x2386f26fc10000',
         },
-      }
+      };
 
-      assert.deepStrictEqual(getActivities(transaction), [])
-    })
+      assert.deepStrictEqual(getActivities(transaction), []);
+    });
 
     it("should return activities for a transaction's history", function () {
       const transaction = {
@@ -389,7 +389,7 @@ describe('TransactionActivityLog utils', function () {
           value: '0x2386f26fc10000',
         },
         hash: '0xabc',
-      }
+      };
 
       const expectedResult = [
         {
@@ -413,9 +413,9 @@ describe('TransactionActivityLog utils', function () {
           id: 1,
           hash: '0xabc',
         },
-      ]
+      ];
 
-      assert.deepStrictEqual(getActivities(transaction, true), expectedResult)
-    })
-  })
-})
+      assert.deepStrictEqual(getActivities(transaction, true), expectedResult);
+    });
+  });
+});

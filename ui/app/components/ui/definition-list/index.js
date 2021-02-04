@@ -1,1 +1,1 @@
-export { default } from './definition-list'
+export { default } from './definition-list';

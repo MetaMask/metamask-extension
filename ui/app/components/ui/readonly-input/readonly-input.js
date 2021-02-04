@@ -1,6 +1,6 @@
-import PropTypes from 'prop-types'
-import React from 'react'
-import classnames from 'classnames'
+import PropTypes from 'prop-types';
+import React from 'react';
+import classnames from 'classnames';
 
 export default function ReadOnlyInput(props) {
   const {
@@ -10,9 +10,9 @@ export default function ReadOnlyInput(props) {
     textarea,
     onClick,
     autoFocus = false,
-  } = props
+  } = props;
 
-  const InputType = textarea ? 'textarea' : 'input'
+  const InputType = textarea ? 'textarea' : 'input';
 
   return (
     <div className={classnames('readonly-input', wrapperClass)}>
@@ -25,7 +25,7 @@ export default function ReadOnlyInput(props) {
         autoFocus={autoFocus}
       />
     </div>
-  )
+  );
 }
 
 ReadOnlyInput.propTypes = {
@@ -35,4 +35,4 @@ ReadOnlyInput.propTypes = {
   textarea: PropTypes.bool,
   onClick: PropTypes.func,
   autoFocus: PropTypes.bool,
-}
+};

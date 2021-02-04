@@ -1,17 +1,17 @@
-import assert from 'assert'
-import proxyquire from 'proxyquire'
+import assert from 'assert';
+import proxyquire from 'proxyquire';
 
-let mapStateToProps
+let mapStateToProps;
 
 proxyquire('../send-row-error-message.container.js', {
   'react-redux': {
     connect: (ms) => {
-      mapStateToProps = ms
-      return () => ({})
+      mapStateToProps = ms;
+      return () => ({});
     },
   },
   '../../../../../selectors': { getSendErrors: (s) => `mockErrors:${s}` },
-})
+});
 
 describe('send-row-error-message container', function () {
   describe('mapStateToProps()', function () {
@@ -22,7 +22,7 @@ describe('send-row-error-message container', function () {
           errors: 'mockErrors:mockState',
           errorType: 'someType',
         },
-      )
-    })
-  })
-})
+      );
+    });
+  });
+});

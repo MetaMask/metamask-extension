@@ -1,9 +1,9 @@
-import assert from 'assert'
-import { renderHook } from '@testing-library/react-hooks'
-import * as reactRedux from 'react-redux'
-import sinon from 'sinon'
-import { useUserPreferencedCurrency } from '../useUserPreferencedCurrency'
-import { getPreferences, getShouldShowFiat } from '../../selectors'
+import assert from 'assert';
+import { renderHook } from '@testing-library/react-hooks';
+import * as reactRedux from 'react-redux';
+import sinon from 'sinon';
+import { useUserPreferencedCurrency } from '../useUserPreferencedCurrency';
+import { getPreferences, getShouldShowFiat } from '../../selectors';
 
 const tests = [
   {
@@ -109,42 +109,42 @@ const tests = [
       numberOfDecimals: 2,
     },
   },
-]
+];
 
 function getFakeUseSelector(state) {
   return (selector) => {
     if (selector === getPreferences) {
-      return state
+      return state;
     } else if (selector === getShouldShowFiat) {
-      return state.showFiat
+      return state.showFiat;
     }
-    return state.nativeCurrency
-  }
+    return state.nativeCurrency;
+  };
 }
 
 describe('useUserPreferencedCurrency', function () {
   tests.forEach(({ params: { type, ...otherParams }, state, result }) => {
     describe(`when showFiat is ${state.showFiat}, useNativeCurrencyAsPrimary is ${state.useNativeCurrencyAsPrimaryCurrency} and type is ${type}`, function () {
-      const stub = sinon.stub(reactRedux, 'useSelector')
-      stub.callsFake(getFakeUseSelector(state))
+      const stub = sinon.stub(reactRedux, 'useSelector');
+      stub.callsFake(getFakeUseSelector(state));
 
       const { result: hookResult } = renderHook(() =>
         useUserPreferencedCurrency(type, otherParams),
-      )
-      stub.restore()
+      );
+      stub.restore();
       it(`should return currency as ${
         result.currency || 'not modified by user preferences'
       }`, function () {
-        assert.strictEqual(hookResult.current.currency, result.currency)
-      })
+        assert.strictEqual(hookResult.current.currency, result.currency);
+      });
       it(`should return decimals as ${
         result.numberOfDecimals || 'not modified by user preferences'
       }`, function () {
         assert.strictEqual(
           hookResult.current.numberOfDecimals,
           result.numberOfDecimals,
-        )
-      })
-    })
-  })
-})
+        );
+      });
+    });
+  });
+});

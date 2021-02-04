@@ -1,19 +1,19 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import CurrencyDisplay from '../currency-display'
-import { useTokenTracker } from '../../../hooks/useTokenTracker'
+import React from 'react';
+import PropTypes from 'prop-types';
+import CurrencyDisplay from '../currency-display';
+import { useTokenTracker } from '../../../hooks/useTokenTracker';
 
 export default function TokenBalance({ className, token }) {
-  const { tokensWithBalances } = useTokenTracker([token])
+  const { tokensWithBalances } = useTokenTracker([token]);
 
-  const { string, symbol } = tokensWithBalances[0] || {}
+  const { string, symbol } = tokensWithBalances[0] || {};
   return (
     <CurrencyDisplay
       className={className}
       displayValue={string || ''}
       suffix={symbol || ''}
     />
-  )
+  );
 }
 
 TokenBalance.propTypes = {
@@ -23,8 +23,8 @@ TokenBalance.propTypes = {
     decimals: PropTypes.number,
     symbol: PropTypes.string,
   }).isRequired,
-}
+};
 
 TokenBalance.defaultProps = {
   className: undefined,
-}
+};

@@ -1,8 +1,8 @@
-import React, { useContext } from 'react'
-import PropTypes from 'prop-types'
-import { I18nContext } from '../../../../contexts/i18n'
-import InfoTooltip from '../../../../components/ui/info-tooltip'
-import ExchangeRateDisplay from '../../exchange-rate-display'
+import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
+import { I18nContext } from '../../../../contexts/i18n';
+import InfoTooltip from '../../../../components/ui/info-tooltip';
+import ExchangeRateDisplay from '../../exchange-rate-display';
 
 const QuoteDetails = ({
   slippage,
@@ -16,7 +16,7 @@ const QuoteDetails = ({
   networkFees,
   metaMaskFee,
 }) => {
-  const t = useContext(I18nContext)
+  const t = useContext(I18nContext);
   return (
     <div className="quote-details">
       <div className="quote-details__row">
@@ -91,8 +91,8 @@ const QuoteDetails = ({
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 QuoteDetails.propTypes = {
   slippage: PropTypes.number.isRequired,
@@ -105,6 +105,6 @@ QuoteDetails.propTypes = {
   feeInEth: PropTypes.string.isRequired,
   networkFees: PropTypes.string.isRequired,
   metaMaskFee: PropTypes.number.isRequired,
-}
+};
 
-export default QuoteDetails
+export default QuoteDetails;

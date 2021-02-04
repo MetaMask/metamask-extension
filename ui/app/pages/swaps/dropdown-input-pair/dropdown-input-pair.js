@@ -1,8 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import DropdownSearchList from '../dropdown-search-list'
-import TextField from '../../../components/ui/text-field'
+import React, { useState, useRef, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import DropdownSearchList from '../dropdown-search-list';
+import TextField from '../../../components/ui/text-field';
 
 const characterWidthMap = {
   1: 5.86,
@@ -16,16 +16,16 @@ const characterWidthMap = {
   9: 10.06,
   0: 11.22,
   '.': 4.55,
-}
+};
 
 const getInputWidth = (value) => {
-  const valueString = String(value)
-  const charArray = valueString.split('')
+  const valueString = String(value);
+  const charArray = valueString.split('');
   return charArray.reduce(
     (inputWidth, _char) => inputWidth + characterWidthMap[_char],
     12,
-  )
-}
+  );
+};
 export default function DropdownInputPair({
   itemsToSearch = [],
   onInputChange,
@@ -41,34 +41,34 @@ export default function DropdownInputPair({
   listContainerClassName,
   autoFocus,
 }) {
-  const [isOpen, setIsOpen] = useState(false)
-  const open = () => setIsOpen(true)
-  const close = () => setIsOpen(false)
-  const inputRef = useRef()
+  const [isOpen, setIsOpen] = useState(false);
+  const open = () => setIsOpen(true);
+  const close = () => setIsOpen(false);
+  const inputRef = useRef();
   const onTextFieldChange = (event) => {
-    event.stopPropagation()
+    event.stopPropagation();
     // Automatically prefix value with 0. if user begins typing .
-    const valueToUse = event.target.value === '.' ? '0.' : event.target.value
+    const valueToUse = event.target.value === '.' ? '0.' : event.target.value;
 
     // Regex that validates strings with only numbers, 'x.', '.x', and 'x.x'
-    const regexp = /^(\.\d+|\d+(\.\d+)?|\d+\.)$/u
+    const regexp = /^(\.\d+|\d+(\.\d+)?|\d+\.)$/u;
     // If the value is either empty or contains only numbers and '.' and only has one '.', update input to match
     if (valueToUse === '' || regexp.test(valueToUse)) {
-      onInputChange(valueToUse)
+      onInputChange(valueToUse);
     } else {
       // otherwise, use the previously set inputValue (effectively denying the user from inputting the last char)
       // or an empty string if we do not yet have an inputValue
-      onInputChange(inputValue || '')
+      onInputChange(inputValue || '');
     }
-  }
-  const [applyTwoLineStyle, setApplyTwoLineStyle] = useState(null)
+  };
+  const [applyTwoLineStyle, setApplyTwoLineStyle] = useState(null);
   useEffect(() => {
     setApplyTwoLineStyle(
       (inputRef?.current?.getBoundingClientRect()?.width || 0) +
         getInputWidth(inputValue || '') >
         137,
-    )
-  }, [inputValue, inputRef])
+    );
+  }, [inputValue, inputRef]);
 
   return (
     <div className="dropdown-input-pair">
@@ -118,7 +118,7 @@ export default function DropdownInputPair({
         </div>
       )}
     </div>
-  )
+  );
 }
 
 DropdownInputPair.propTypes = {
@@ -135,4 +135,4 @@ DropdownInputPair.propTypes = {
   hideItemIf: PropTypes.func,
   listContainerClassName: PropTypes.string,
   autoFocus: PropTypes.bool,
-}
+};

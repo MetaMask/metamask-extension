@@ -1,13 +1,13 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 
 // Inspired by https://stackoverflow.com/a/28056903/4727685
 function hexToRGB(hex, alpha) {
-  const r = parseInt(hex.slice(1, 3), 16)
-  const g = parseInt(hex.slice(3, 5), 16)
-  const b = parseInt(hex.slice(5, 7), 16)
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
 
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
 export default function AggregatorLogo({ icon, color }) {
@@ -22,10 +22,10 @@ export default function AggregatorLogo({ icon, color }) {
         <img src={icon} alt="" />
       </div>
     </div>
-  )
+  );
 }
 
 AggregatorLogo.propTypes = {
   icon: PropTypes.string.isRequired,
   color: PropTypes.string.isRequired,
-}
+};

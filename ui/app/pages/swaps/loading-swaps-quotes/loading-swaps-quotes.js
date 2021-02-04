@@ -1,21 +1,21 @@
-import EventEmitter from 'events'
-import React, { useState, useEffect, useRef, useContext } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import PropTypes from 'prop-types'
-import { shuffle } from 'lodash'
-import { useHistory } from 'react-router-dom'
-import classnames from 'classnames'
+import EventEmitter from 'events';
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+import { shuffle } from 'lodash';
+import { useHistory } from 'react-router-dom';
+import classnames from 'classnames';
 import {
   navigateBackToBuildQuote,
   getFetchParams,
   getQuotesFetchStartTime,
-} from '../../../ducks/swaps/swaps'
-import { I18nContext } from '../../../contexts/i18n'
-import { MetaMetricsContext } from '../../../contexts/metametrics.new'
-import Mascot from '../../../components/ui/mascot'
-import SwapsFooter from '../swaps-footer'
-import BackgroundAnimation from './background-animation'
-import AggregatorLogo from './aggregator-logo'
+} from '../../../ducks/swaps/swaps';
+import { I18nContext } from '../../../contexts/i18n';
+import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import Mascot from '../../../components/ui/mascot';
+import SwapsFooter from '../swaps-footer';
+import BackgroundAnimation from './background-animation';
+import AggregatorLogo from './aggregator-logo';
 
 // These locations reference where we want the top-left corner of the logo div to appear in relation to the
 // centre point of the fox
@@ -26,22 +26,23 @@ const AGGREGATOR_LOCATIONS = [
   { x: 50, y: 0 },
   { x: -135, y: 46 },
   { x: 40, y: 46 },
-]
+];
 
 function getRandomLocations(numberOfLocations) {
-  const randomLocations = shuffle(AGGREGATOR_LOCATIONS)
+  const randomLocations = shuffle(AGGREGATOR_LOCATIONS);
   if (numberOfLocations <= AGGREGATOR_LOCATIONS.length) {
-    return randomLocations.slice(0, numberOfLocations)
+    return randomLocations.slice(0, numberOfLocations);
   }
-  const numberOfExtraLocations = numberOfLocations - AGGREGATOR_LOCATIONS.length
-  return [...randomLocations, ...getRandomLocations(numberOfExtraLocations)]
+  const numberOfExtraLocations =
+    numberOfLocations - AGGREGATOR_LOCATIONS.length;
+  return [...randomLocations, ...getRandomLocations(numberOfExtraLocations)];
 }
 
 function getMascotTarget(aggregatorName, centerPoint, aggregatorLocationMap) {
-  const location = aggregatorLocationMap[aggregatorName]
+  const location = aggregatorLocationMap[aggregatorName];
 
   if (!location || !centerPoint) {
-    return centerPoint ?? {}
+    return centerPoint ?? {};
   }
 
   // The aggregator logos are 94px x 40px. For the fox to look at the center of each logo, the target needs to be
@@ -50,7 +51,7 @@ function getMascotTarget(aggregatorName, centerPoint, aggregatorLocationMap) {
   return {
     x: location.x + centerPoint.x + 47,
     y: location.y + centerPoint.y + 20,
-  }
+  };
 }
 
 export default function LoadingSwapsQuotes({
@@ -58,14 +59,14 @@ export default function LoadingSwapsQuotes({
   loadingComplete,
   onDone,
 }) {
-  const t = useContext(I18nContext)
-  const metaMetricsEvent = useContext(MetaMetricsContext)
-  const dispatch = useDispatch()
-  const history = useHistory()
-  const animationEventEmitter = useRef(new EventEmitter())
+  const t = useContext(I18nContext);
+  const metaMetricsEvent = useContext(MetaMetricsContext);
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const animationEventEmitter = useRef(new EventEmitter());
 
-  const fetchParams = useSelector(getFetchParams)
-  const quotesFetchStartTime = useSelector(getQuotesFetchStartTime)
+  const fetchParams = useSelector(getFetchParams);
+  const quotesFetchStartTime = useSelector(getQuotesFetchStartTime);
   const quotesRequestCancelledEventConfig = {
     event: 'Quotes Request Cancelled',
     category: 'swaps',
@@ -78,34 +79,34 @@ export default function LoadingSwapsQuotes({
       custom_slippage: fetchParams?.slippage !== 2,
       response_time: Date.now() - quotesFetchStartTime,
     },
-  }
+  };
 
   const [aggregatorNames] = useState(() =>
     shuffle(Object.keys(aggregatorMetadata)),
-  )
-  const numberOfQuotes = aggregatorNames.length
-  const mascotContainer = useRef()
-  const currentMascotContainer = mascotContainer.current
+  );
+  const numberOfQuotes = aggregatorNames.length;
+  const mascotContainer = useRef();
+  const currentMascotContainer = mascotContainer.current;
 
-  const [quoteCount, updateQuoteCount] = useState(0)
+  const [quoteCount, updateQuoteCount] = useState(0);
   // is an array of randomized items from AGGREGATOR_LOCATIONS, containing
   // numberOfQuotes number of items it is randomized so that the order in
   // which the fox looks at locations is random
   const [aggregatorLocations] = useState(() =>
     getRandomLocations(numberOfQuotes),
-  )
+  );
   const _aggregatorLocationMap = aggregatorNames.reduce(
     (nameLocationMap, name, index) => ({
       ...nameLocationMap,
       [name]: aggregatorLocations[index],
     }),
     {},
-  )
-  const [aggregatorLocationMap] = useState(_aggregatorLocationMap)
-  const [midPointTarget, setMidpointTarget] = useState(null)
+  );
+  const [aggregatorLocationMap] = useState(_aggregatorLocationMap);
+  const [midPointTarget, setMidpointTarget] = useState(null);
 
   useEffect(() => {
-    let timeoutLength
+    let timeoutLength;
 
     // The below logic simulates a sequential loading of the aggregator quotes, even though we are fetching them all with a single call.
     // This is to give the user a sense of progress. The callback passed to `setTimeout` updates the quoteCount and therefore causes
@@ -114,27 +115,27 @@ export default function LoadingSwapsQuotes({
     // If loading is complete and all logos + aggregator names have been shown, give the user 1.2 seconds to read the
     // "Finalizing message" and prepare for the screen change
     if (quoteCount === numberOfQuotes && loadingComplete) {
-      timeoutLength = 1200
+      timeoutLength = 1200;
     } else if (loadingComplete) {
       // If loading is complete, but the quoteCount is not, we quickly display the remaining logos/names/fox looks. 0.5s each
-      timeoutLength = 500
+      timeoutLength = 500;
     } else {
       // If loading is not complete, we display remaining logos/names/fox looks at random intervals between 0.5s and 2s, to simulate the
       // sort of loading a user would experience in most async scenarios
-      timeoutLength = 500 + Math.floor(Math.random() * 1500)
+      timeoutLength = 500 + Math.floor(Math.random() * 1500);
     }
     const quoteCountTimeout = setTimeout(() => {
       if (quoteCount < numberOfQuotes) {
-        updateQuoteCount(quoteCount + 1)
+        updateQuoteCount(quoteCount + 1);
       } else if (quoteCount === numberOfQuotes && loadingComplete) {
-        onDone()
+        onDone();
       }
-    }, timeoutLength)
+    }, timeoutLength);
 
     return function cleanup() {
-      clearTimeout(quoteCountTimeout)
-    }
-  }, [quoteCount, loadingComplete, onDone, numberOfQuotes])
+      clearTimeout(quoteCountTimeout);
+    };
+  }, [quoteCount, loadingComplete, onDone, numberOfQuotes]);
 
   useEffect(() => {
     if (currentMascotContainer) {
@@ -143,11 +144,11 @@ export default function LoadingSwapsQuotes({
         left,
         width,
         height,
-      } = currentMascotContainer.getBoundingClientRect()
-      const center = { x: left + width / 2, y: top + height / 2 }
-      setMidpointTarget(center)
+      } = currentMascotContainer.getBoundingClientRect();
+      const center = { x: left + width / 2, y: top + height / 2 };
+      setMidpointTarget(center);
     }
-  }, [currentMascotContainer])
+  }, [currentMascotContainer]);
 
   return (
     <div className="loading-swaps-quotes">
@@ -226,13 +227,13 @@ export default function LoadingSwapsQuotes({
       <SwapsFooter
         submitText={t('back')}
         onSubmit={async () => {
-          metaMetricsEvent(quotesRequestCancelledEventConfig)
-          await dispatch(navigateBackToBuildQuote(history))
+          metaMetricsEvent(quotesRequestCancelledEventConfig);
+          await dispatch(navigateBackToBuildQuote(history));
         }}
         hideCancel
       />
     </div>
-  )
+  );
 }
 
 LoadingSwapsQuotes.propTypes = {
@@ -244,4 +245,4 @@ LoadingSwapsQuotes.propTypes = {
       icon: PropTypes.string,
     }),
   ),
-}
+};

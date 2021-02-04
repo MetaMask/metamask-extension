@@ -1,13 +1,13 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import Modal from '../../modal'
-import { TRANSACTION_STATUSES } from '../../../../../../shared/constants/transaction'
-import CancelTransactionGasFee from './cancel-transaction-gas-fee'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import Modal from '../../modal';
+import { TRANSACTION_STATUSES } from '../../../../../../shared/constants/transaction';
+import CancelTransactionGasFee from './cancel-transaction-gas-fee';
 
 export default class CancelTransaction extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     createCancelTransaction: PropTypes.func,
@@ -15,37 +15,37 @@ export default class CancelTransaction extends PureComponent {
     showTransactionConfirmedModal: PropTypes.func,
     transactionStatus: PropTypes.string,
     newGasFee: PropTypes.string,
-  }
+  };
 
   state = {
     busy: false,
-  }
+  };
 
   componentDidUpdate() {
-    const { transactionStatus, showTransactionConfirmedModal } = this.props
+    const { transactionStatus, showTransactionConfirmedModal } = this.props;
 
     if (transactionStatus !== TRANSACTION_STATUSES.SUBMITTED) {
-      showTransactionConfirmedModal()
+      showTransactionConfirmedModal();
     }
   }
 
   handleSubmit = async () => {
-    const { createCancelTransaction, hideModal } = this.props
+    const { createCancelTransaction, hideModal } = this.props;
 
-    this.setState({ busy: true })
+    this.setState({ busy: true });
 
-    await createCancelTransaction()
-    this.setState({ busy: false }, () => hideModal())
-  }
+    await createCancelTransaction();
+    this.setState({ busy: false }, () => hideModal());
+  };
 
   handleCancel = () => {
-    this.props.hideModal()
-  }
+    this.props.hideModal();
+  };
 
   render() {
-    const { t } = this.context
-    const { newGasFee } = this.props
-    const { busy } = this.state
+    const { t } = this.context;
+    const { newGasFee } = this.props;
+    const { busy } = this.state;
 
     return (
       <Modal
@@ -70,6 +70,6 @@ export default class CancelTransaction extends PureComponent {
           </div>
         </div>
       </Modal>
-    )
+    );
   }
 }

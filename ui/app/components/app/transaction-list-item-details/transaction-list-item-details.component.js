@@ -1,25 +1,25 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import copyToClipboard from 'copy-to-clipboard'
-import { getBlockExplorerUrlForTx } from '../../../helpers/utils/transactions.util'
-import SenderToRecipient from '../../ui/sender-to-recipient'
-import { FLAT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants'
-import TransactionActivityLog from '../transaction-activity-log'
-import TransactionBreakdown from '../transaction-breakdown'
-import Button from '../../ui/button'
-import Tooltip from '../../ui/tooltip'
-import Copy from '../../ui/icon/copy-icon.component'
-import Popover from '../../ui/popover'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import copyToClipboard from 'copy-to-clipboard';
+import { getBlockExplorerUrlForTx } from '../../../helpers/utils/transactions.util';
+import SenderToRecipient from '../../ui/sender-to-recipient';
+import { FLAT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
+import TransactionActivityLog from '../transaction-activity-log';
+import TransactionBreakdown from '../transaction-breakdown';
+import Button from '../../ui/button';
+import Tooltip from '../../ui/tooltip';
+import Copy from '../../ui/icon/copy-icon.component';
+import Popover from '../../ui/popover';
 
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
-  }
+  };
 
   static defaultProps = {
     recipientEns: null,
-  }
+  };
 
   static propTypes = {
     onCancel: PropTypes.func,
@@ -40,18 +40,18 @@ export default class TransactionListItemDetails extends PureComponent {
     tryReverseResolveAddress: PropTypes.func.isRequired,
     senderNickname: PropTypes.string.isRequired,
     recipientNickname: PropTypes.string,
-  }
+  };
 
   state = {
     justCopied: false,
-  }
+  };
 
   handleEtherscanClick = () => {
     const {
       transactionGroup: { primaryTransaction },
       rpcPrefs,
-    } = this.props
-    const { hash, metamaskNetworkId } = primaryTransaction
+    } = this.props;
+    const { hash, metamaskNetworkId } = primaryTransaction;
 
     this.context.metricsEvent({
       eventOpts: {
@@ -59,29 +59,29 @@ export default class TransactionListItemDetails extends PureComponent {
         action: 'Activity Log',
         name: 'Clicked "View on Etherscan"',
       },
-    })
+    });
 
     global.platform.openTab({
       url: getBlockExplorerUrlForTx(metamaskNetworkId, hash, rpcPrefs),
-    })
-  }
+    });
+  };
 
   handleCancel = (event) => {
-    const { onCancel, onClose } = this.props
-    onCancel(event)
-    onClose()
-  }
+    const { onCancel, onClose } = this.props;
+    onCancel(event);
+    onClose();
+  };
 
   handleRetry = (event) => {
-    const { onClose, onRetry } = this.props
-    onRetry(event)
-    onClose()
-  }
+    const { onClose, onRetry } = this.props;
+    onRetry(event);
+    onClose();
+  };
 
   handleCopyTxId = () => {
-    const { transactionGroup } = this.props
-    const { primaryTransaction: transaction } = transactionGroup
-    const { hash } = transaction
+    const { transactionGroup } = this.props;
+    const { primaryTransaction: transaction } = transactionGroup;
+    const { hash } = transaction;
 
     this.context.metricsEvent({
       eventOpts: {
@@ -89,28 +89,28 @@ export default class TransactionListItemDetails extends PureComponent {
         action: 'Activity Log',
         name: 'Copied Transaction ID',
       },
-    })
+    });
 
     this.setState({ justCopied: true }, () => {
-      copyToClipboard(hash)
-      setTimeout(() => this.setState({ justCopied: false }), 1000)
-    })
-  }
+      copyToClipboard(hash);
+      setTimeout(() => this.setState({ justCopied: false }), 1000);
+    });
+  };
 
   componentDidMount() {
-    const { recipientAddress, tryReverseResolveAddress } = this.props
+    const { recipientAddress, tryReverseResolveAddress } = this.props;
 
     if (recipientAddress) {
-      tryReverseResolveAddress(recipientAddress)
+      tryReverseResolveAddress(recipientAddress);
     }
   }
 
   renderCancel() {
-    const { t } = this.context
-    const { showCancel, cancelDisabled } = this.props
+    const { t } = this.context;
+    const { showCancel, cancelDisabled } = this.props;
 
     if (!showCancel) {
-      return null
+      return null;
     }
 
     return cancelDisabled ? (
@@ -134,12 +134,12 @@ export default class TransactionListItemDetails extends PureComponent {
       >
         {t('cancel')}
       </Button>
-    )
+    );
   }
 
   render() {
-    const { t } = this.context
-    const { justCopied } = this.state
+    const { t } = this.context;
+    const { justCopied } = this.state;
     const {
       transactionGroup,
       primaryCurrency,
@@ -154,12 +154,12 @@ export default class TransactionListItemDetails extends PureComponent {
       title,
       onClose,
       recipientNickname,
-    } = this.props
+    } = this.props;
     const {
       primaryTransaction: transaction,
       initialTransaction: { transactionCategory },
-    } = transactionGroup
-    const { hash } = transaction
+    } = transactionGroup;
+    const { hash } = transaction;
 
     return (
       <Popover title={title} onClose={onClose}>
@@ -240,7 +240,7 @@ export default class TransactionListItemDetails extends PureComponent {
                       action: 'Activity Log',
                       name: 'Copied "To" Address',
                     },
-                  })
+                  });
                 }}
                 onSenderClick={() => {
                   this.context.metricsEvent({
@@ -249,7 +249,7 @@ export default class TransactionListItemDetails extends PureComponent {
                       action: 'Activity Log',
                       name: 'Copied "From" Address',
                     },
-                  })
+                  });
                 }}
               />
             </div>
@@ -272,6 +272,6 @@ export default class TransactionListItemDetails extends PureComponent {
           </div>
         </div>
       </Popover>
-    )
+    );
   }
 }

@@ -1,14 +1,14 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit';
 
-import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../helpers/constants/routes'
+import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../helpers/constants/routes';
 
 // Constants
 
 const initialState = {
   mostRecentOverviewPage: DEFAULT_ROUTE,
-}
+};
 
-const name = 'history'
+const name = 'history';
 
 // Slice (reducer plus auto-generated actions and action creators)
 
@@ -17,23 +17,23 @@ const slice = createSlice({
   initialState,
   reducers: {
     pageChanged: (state, action) => {
-      const path = action.payload
+      const path = action.payload;
       if (path === DEFAULT_ROUTE || path.startsWith(ASSET_ROUTE)) {
-        state.mostRecentOverviewPage = path
+        state.mostRecentOverviewPage = path;
       }
     },
   },
-})
+});
 
-const { actions, reducer } = slice
+const { actions, reducer } = slice;
 
-export default reducer
+export default reducer;
 
 // Selectors
 
 export const getMostRecentOverviewPage = (state) =>
-  state[name].mostRecentOverviewPage
+  state[name].mostRecentOverviewPage;
 
 // Actions / action-creators
 
-export const { pageChanged } = actions
+export const { pageChanged } = actions;

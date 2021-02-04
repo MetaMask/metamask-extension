@@ -1,16 +1,16 @@
-import assert from 'assert'
-import proxyquire from 'proxyquire'
+import assert from 'assert';
+import proxyquire from 'proxyquire';
 
-let mapStateToProps
+let mapStateToProps;
 
 proxyquire('../user-preferenced-currency-input.container.js', {
   'react-redux': {
     connect: (ms) => {
-      mapStateToProps = ms
-      return () => ({})
+      mapStateToProps = ms;
+      return () => ({});
     },
   },
-})
+});
 
 describe('UserPreferencedCurrencyInput container', function () {
   describe('mapStateToProps()', function () {
@@ -21,11 +21,11 @@ describe('UserPreferencedCurrencyInput container', function () {
             useNativeCurrencyAsPrimaryCurrency: true,
           },
         },
-      }
+      };
 
       assert.deepStrictEqual(mapStateToProps(mockState), {
         useNativeCurrencyAsPrimaryCurrency: true,
-      })
-    })
-  })
-})
+      });
+    });
+  });
+});

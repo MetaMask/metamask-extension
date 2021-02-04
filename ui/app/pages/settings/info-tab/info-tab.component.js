@@ -1,18 +1,18 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import Button from '../../../components/ui/button'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import Button from '../../../components/ui/button';
 
 export default class InfoTab extends PureComponent {
   state = {
     version: global.platform.getVersion(),
-  }
+  };
 
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   renderInfoLinks() {
-    const { t } = this.context
+    const { t } = this.context;
 
     return (
       <div className="settings-page__content-item settings-page__content-item--without-height">
@@ -85,11 +85,11 @@ export default class InfoTab extends PureComponent {
           </Button>
         </div>
       </div>
-    )
+    );
   }
 
   render() {
-    const { t } = this.context
+    const { t } = this.context;
 
     return (
       <div className="settings-page__body">
@@ -113,6 +113,6 @@ export default class InfoTab extends PureComponent {
           <img src="images/info-logo.png" className="info-tab__logo" alt="" />
         </div>
       </div>
-    )
+    );
   }
 }

@@ -1,10 +1,10 @@
-import React from 'react'
-import { Provider } from 'react-redux'
-import { render } from '@testing-library/react'
-import { mount } from 'enzyme'
-import { MemoryRouter } from 'react-router-dom'
-import PropTypes from 'prop-types'
-import { LegacyI18nProvider } from '../../ui/app/contexts/i18n'
+import React from 'react';
+import { Provider } from 'react-redux';
+import { render } from '@testing-library/react';
+import { mount } from 'enzyme';
+import { MemoryRouter } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { LegacyI18nProvider } from '../../ui/app/contexts/i18n';
 
 export function mountWithRouter(component, store = {}, pathname = '/') {
   // Instantiate router context
@@ -16,7 +16,7 @@ export function mountWithRouter(component, store = {}, pathname = '/') {
       },
       match: {},
     },
-  }
+  };
 
   const createContext = () => ({
     context: {
@@ -31,15 +31,15 @@ export function mountWithRouter(component, store = {}, pathname = '/') {
       metricsEvent: PropTypes.func,
       store: PropTypes.object,
     },
-  })
+  });
 
   const Wrapper = () => (
     <MemoryRouter initialEntries={[{ pathname }]} initialIndex={0}>
       {component}
     </MemoryRouter>
-  )
+  );
 
-  return mount(<Wrapper />, createContext())
+  return mount(<Wrapper />, createContext());
 }
 
 export function renderWithProvider(component, store) {
@@ -47,7 +47,7 @@ export function renderWithProvider(component, store) {
     <Provider store={store}>
       <LegacyI18nProvider>{component}</LegacyI18nProvider>
     </Provider>
-  )
+  );
 
-  return render(<Wrapper />)
+  return render(<Wrapper />);
 }

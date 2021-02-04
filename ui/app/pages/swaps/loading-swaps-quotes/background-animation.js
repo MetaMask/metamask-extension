@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 export default function BackgroundAnimation() {
   return (
@@ -203,5 +203,5 @@ export default function BackgroundAnimation() {
         </svg>
       </div>
     </>
-  )
+  );
 }

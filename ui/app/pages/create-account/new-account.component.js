@@ -1,22 +1,22 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import Button from '../../components/ui/button'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import Button from '../../components/ui/button';
 
 export default class NewAccountCreateForm extends Component {
   static defaultProps = {
     newAccountNumber: 0,
-  }
+  };
 
   state = {
     newAccountName: '',
     defaultAccountName: this.context.t('newAccountNumberName', [
       this.props.newAccountNumber,
     ]),
-  }
+  };
 
   render() {
-    const { newAccountName, defaultAccountName } = this.state
-    const { history, createAccount, mostRecentOverviewPage } = this.props
+    const { newAccountName, defaultAccountName } = this.state;
+    const { history, createAccount, mostRecentOverviewPage } = this.props;
     const createClick = (_) => {
       createAccount(newAccountName || defaultAccountName)
         .then(() => {
@@ -26,8 +26,8 @@ export default class NewAccountCreateForm extends Component {
               action: 'Add New Account',
               name: 'Added New Account',
             },
-          })
-          history.push(mostRecentOverviewPage)
+          });
+          history.push(mostRecentOverviewPage);
         })
         .catch((e) => {
           this.context.metricsEvent({
@@ -39,9 +39,9 @@ export default class NewAccountCreateForm extends Component {
             customVariables: {
               errorMessage: e.message,
             },
-          })
-        })
-    }
+          });
+        });
+    };
 
     return (
       <div className="new-account-create-form">
@@ -78,7 +78,7 @@ export default class NewAccountCreateForm extends Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 
@@ -87,9 +87,9 @@ NewAccountCreateForm.propTypes = {
   newAccountNumber: PropTypes.number,
   history: PropTypes.object,
   mostRecentOverviewPage: PropTypes.string.isRequired,
-}
+};
 
 NewAccountCreateForm.contextTypes = {
   t: PropTypes.func,
   metricsEvent: PropTypes.func,
-}
+};

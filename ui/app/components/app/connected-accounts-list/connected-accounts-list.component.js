@@ -1,17 +1,17 @@
-import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
-import { MenuItem } from '../../ui/menu'
-import ConnectedAccountsListItem from './connected-accounts-list-item'
-import ConnectedAccountsListOptions from './connected-accounts-list-options'
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
+import { MenuItem } from '../../ui/menu';
+import ConnectedAccountsListItem from './connected-accounts-list-item';
+import ConnectedAccountsListOptions from './connected-accounts-list-options';
 
 export default class ConnectedAccountsList extends PureComponent {
   static contextTypes = {
     t: PropTypes.func.isRequired,
-  }
+  };
 
   static defaultProps = {
     accountToConnect: null,
-  }
+  };
 
   static propTypes = {
     accountToConnect: PropTypes.shape({
@@ -35,47 +35,47 @@ export default class ConnectedAccountsList extends PureComponent {
           `Warning: Failed prop type: '${propName}' of component '${componentName}' must be a boolean. Received: ${typeof props[
             propName
           ]}`,
-        )
+        );
       } else if (props[propName] && !props.removePermittedAccount) {
         return new Error(
           `Warning: Failed prop type: '${propName}' of component '${componentName}' requires prop 'removePermittedAccount'.`,
-        )
+        );
       }
-      return undefined
+      return undefined;
     },
-  }
+  };
 
   state = {
     accountWithOptionsShown: null,
-  }
+  };
 
   disconnectAccount = () => {
-    this.hideAccountOptions()
-    this.props.removePermittedAccount(this.state.accountWithOptionsShown)
-  }
+    this.hideAccountOptions();
+    this.props.removePermittedAccount(this.state.accountWithOptionsShown);
+  };
 
   switchAccount = (address) => {
-    this.hideAccountOptions()
-    this.props.setSelectedAddress(address)
-  }
+    this.hideAccountOptions();
+    this.props.setSelectedAddress(address);
+  };
 
   hideAccountOptions = () => {
-    this.setState({ accountWithOptionsShown: null })
-  }
+    this.setState({ accountWithOptionsShown: null });
+  };
 
   showAccountOptions = (address) => {
-    this.setState({ accountWithOptionsShown: address })
-  }
+    this.setState({ accountWithOptionsShown: address });
+  };
 
   renderUnconnectedAccount() {
-    const { accountToConnect, connectAccount } = this.props
-    const { t } = this.context
+    const { accountToConnect, connectAccount } = this.props;
+    const { t } = this.context;
 
     if (!accountToConnect) {
-      return null
+      return null;
     }
 
-    const { address, name } = accountToConnect
+    const { address, name } = accountToConnect;
     return (
       <ConnectedAccountsListItem
         className="connected-accounts-list__row--highlight"
@@ -91,12 +91,12 @@ export default class ConnectedAccountsList extends PureComponent {
           </a>
         }
       />
-    )
+    );
   }
 
   renderListItemOptions(address) {
-    const { accountWithOptionsShown } = this.state
-    const { t } = this.context
+    const { accountWithOptionsShown } = this.state;
+    const { t } = this.context;
 
     return (
       <ConnectedAccountsListOptions
@@ -111,11 +111,11 @@ export default class ConnectedAccountsList extends PureComponent {
           {t('disconnectThisAccount')}
         </MenuItem>
       </ConnectedAccountsListOptions>
-    )
+    );
   }
 
   renderListItemAction(address) {
-    const { t } = this.context
+    const { t } = this.context;
 
     return (
       <a
@@ -124,7 +124,7 @@ export default class ConnectedAccountsList extends PureComponent {
       >
         {t('switchToThisAccount')}
       </a>
-    )
+    );
   }
 
   render() {
@@ -132,8 +132,8 @@ export default class ConnectedAccountsList extends PureComponent {
       connectedAccounts,
       selectedAddress,
       shouldRenderListOptions,
-    } = this.props
-    const { t } = this.context
+    } = this.props;
+    const { t } = this.context;
 
     return (
       <>
@@ -157,10 +157,10 @@ export default class ConnectedAccountsList extends PureComponent {
                     : this.renderListItemAction(address)
                 }
               />
-            )
+            );
           })}
         </main>
       </>
-    )
+    );
   }
 }

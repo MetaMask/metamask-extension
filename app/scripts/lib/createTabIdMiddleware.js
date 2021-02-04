@@ -9,7 +9,7 @@ export default function createTabIdMiddleware(opts) {
     /** @type {any} */ _,
     /** @type {Function} */ next,
   ) {
-    req.tabId = opts.tabId
-    next()
-  }
+    req.tabId = opts.tabId;
+    next();
+  };
 }

@@ -1,26 +1,26 @@
-import React from 'react'
-import { action } from '@storybook/addon-actions'
-import { boolean, select, text } from '@storybook/addon-knobs'
-import Dropdown from '.'
+import React from 'react';
+import { action } from '@storybook/addon-actions';
+import { boolean, select, text } from '@storybook/addon-knobs';
+import Dropdown from '.';
 
 export default {
   title: 'Dropdown',
-}
+};
 
 const unnamedOptions = [...Array(10).keys()].map((index) => {
-  return { value: `option${index}` }
-})
+  return { value: `option${index}` };
+});
 
 const namedOptions = unnamedOptions.map((option, index) => {
-  return { ...option, name: `Option ${index}` }
-})
+  return { ...option, name: `Option ${index}` };
+});
 
 const namedOptionsWithVeryLongNames = unnamedOptions.map((option, index) => {
   return {
     ...option,
     name: `Option ${index} with a very${', very'.repeat(index)} long name`,
-  }
-})
+  };
+});
 
 export const simple = () => (
   <Dropdown
@@ -35,7 +35,7 @@ export const simple = () => (
       namedOptions[0].value,
     )}
   />
-)
+);
 
 export const optionsWithoutNames = () => (
   <Dropdown
@@ -50,7 +50,7 @@ export const optionsWithoutNames = () => (
       unnamedOptions[0].value,
     )}
   />
-)
+);
 
 export const optionsWithLongNames = () => (
   <Dropdown
@@ -65,7 +65,7 @@ export const optionsWithLongNames = () => (
       namedOptionsWithVeryLongNames[0].value,
     )}
   />
-)
+);
 
 export const optionsWithLongNamesAndShortWidth = () => (
   <Dropdown
@@ -81,4 +81,4 @@ export const optionsWithLongNamesAndShortWidth = () => (
     )}
     style={{ width: '200px' }}
   />
-)
+);

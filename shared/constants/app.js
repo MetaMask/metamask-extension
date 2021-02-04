@@ -6,16 +6,16 @@
  * background - The background process that powers the extension
  * @typedef {'popup' | 'notification' | 'fullscreen' | 'background'} EnvironmentType
  */
-export const ENVIRONMENT_TYPE_POPUP = 'popup'
-export const ENVIRONMENT_TYPE_NOTIFICATION = 'notification'
-export const ENVIRONMENT_TYPE_FULLSCREEN = 'fullscreen'
-export const ENVIRONMENT_TYPE_BACKGROUND = 'background'
+export const ENVIRONMENT_TYPE_POPUP = 'popup';
+export const ENVIRONMENT_TYPE_NOTIFICATION = 'notification';
+export const ENVIRONMENT_TYPE_FULLSCREEN = 'fullscreen';
+export const ENVIRONMENT_TYPE_BACKGROUND = 'background';
 
-export const PLATFORM_BRAVE = 'Brave'
-export const PLATFORM_CHROME = 'Chrome'
-export const PLATFORM_EDGE = 'Edge'
-export const PLATFORM_FIREFOX = 'Firefox'
-export const PLATFORM_OPERA = 'Opera'
+export const PLATFORM_BRAVE = 'Brave';
+export const PLATFORM_CHROME = 'Chrome';
+export const PLATFORM_EDGE = 'Edge';
+export const PLATFORM_FIREFOX = 'Firefox';
+export const PLATFORM_OPERA = 'Opera';
 
 export const MESSAGE_TYPE = {
   ETH_DECRYPT: 'eth_decrypt',
@@ -27,4 +27,4 @@ export const MESSAGE_TYPE = {
   PERSONAL_SIGN: 'personal_sign',
   WATCH_ASSET: 'wallet_watchAsset',
   WATCH_ASSET_LEGACY: 'metamask_watchAsset',
-}
+};
