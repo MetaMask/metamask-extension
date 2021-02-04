@@ -2037,10 +2037,6 @@
   "userName": {
     "message": "Nama pengguna"
   },
-  "verifyThisTokenOn": {
-    "message": "Verifikasikan token ini di $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
   "viewAccount": {
     "message": "Lihat Akun"
   },

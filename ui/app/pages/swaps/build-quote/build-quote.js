@@ -384,7 +384,7 @@ export default function BuildQuote({
                     {t('swapTokenVerificationOnlyOneSource')}
                   </div>
                   <div>
-                    {t('swapsConfirmTokenAddressOnEtherScan', [
+                    {t('swapsConfirmTokenAddressOnEtherscan', [
                       <a
                         className="build-quote__token-etherscan-link build-quote__underline"
                         key="build-quote-etherscan-link"
@@ -411,15 +411,15 @@ export default function BuildQuote({
             />
           ) : (
             <div className="build-quote__token-message">
+              <span
+                className="build-quote__bold"
+                key="token-verification-bold-text"
+              >
+                {t('swapTokenVerificationSources', [
+                  selectedToToken.occurances,
+                ])}
+              </span>
               {t('swapTokenVerificationMessage', [
-                <span
-                  className="build-quote__bold"
-                  key="token-verification-bold-text"
-                >
-                  {t('swapTokenVerificationSources', [
-                    selectedToToken.occurances,
-                  ])}
-                </span>,
                 <a
                   className="build-quote__token-etherscan-link"
                   key="build-quote-etherscan-link"
@@ -429,13 +429,13 @@ export default function BuildQuote({
                 >
                   {t('etherscan')}
                 </a>,
-                <InfoTooltip
-                  position="top"
-                  contentText={t('swapVerifyTokenExplanation')}
-                  containerClassName="build-quote__token-tooltip-container"
-                  key="token-verification-info-tooltip"
-                />,
               ])}
+              <InfoTooltip
+                position="top"
+                contentText={t('swapVerifyTokenExplanation')}
+                containerClassName="build-quote__token-tooltip-container"
+                key="token-verification-info-tooltip"
+              />
             </div>
           ))}
         <div className="build-quote__slippage-buttons-container">

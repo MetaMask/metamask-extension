@@ -1849,15 +1849,15 @@
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
   "swapTokenVerificationMessage": {
-    "message": "$1 Always confirm the token address on $2. $3",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"swapTokenVerificationSources\" and $2 with the translation for \"etherscan\". $3 will be replaced by an info icon that shows more info on hover."
+    "message": "Always confirm the token address on $1.",
+    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
   },
   "swapTokenVerificationOnlyOneSource": {
     "message": "Only verified on 1 source."
   },
   "swapTokenVerificationSources": {
     "message": "Verified on $1 sources.",
-    "description": "This will replace $1 in the \"swapTokenVerificationMessage\" translation. Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
+    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
   },
   "swapTransactionComplete": {
     "message": "Transaction complete"
@@ -1884,9 +1884,9 @@
   "swapsAdvancedOptions": {
     "message": "Advanced Options"
   },
-  "swapsConfirmTokenAddressOnEtherScan": {
+  "swapsConfirmTokenAddressOnEtherscan": {
     "message": "Confirm token address on $1.",
-    "description": "Asks the user to verify information about a token on etherscan. $1 will be replaced by the translation for \"etherscan\""
+    "description": "Asks the user to verify information about a token on Etherscan. $1 will be replaced by the translation for \"Etherscan\""
   },
   "swapsExcessiveSlippageWarning": {
     "message": "Slippage amount is too high and will result in a bad rate. Please reduce your slippage tolerance to a value below 15%."
