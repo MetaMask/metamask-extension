@@ -25,7 +25,7 @@ export const box = () => {
     'children',
   )
   for (let $i = 0; $i < number('items', 1, {}, 'children'); $i++) {
-    items.push(<img width={size} height={size} src="/images/eth_logo.svg" />)
+    items.push(<img width={size} height={size} src="./images/eth_logo.svg" />)
   }
   return (
     <Box
