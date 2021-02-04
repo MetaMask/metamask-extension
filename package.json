@@ -48,8 +48,8 @@
     "start:dev": "concurrently -k -n build,react,redux yarn:start yarn:devtools:react yarn:devtools:redux",
     "announce": "node development/announcer.js",
     "storybook": "start-storybook -p 6006 -c .storybook --static-dir ./app ./storybook/images",
-    "storybook:build": "build-storybook -c .storybook -o .out --static-dir ./app ./storybook/images",
-    "storybook:deploy": "storybook-to-ghpages --existing-output-dir .out --remote storybook --branch master",
+    "storybook:build": "build-storybook -c .storybook -o storybook-build --static-dir ./app ./storybook/images",
+    "storybook:deploy": "storybook-to-ghpages --existing-output-dir storybook-build --remote storybook --branch master",
     "update-changelog": "./development/auto-changelog.sh",
     "generate:migration": "./development/generate-migration.sh"
   },
@@ -75,6 +75,7 @@
     "@download/blockies": "^1.0.3",
     "@formatjs/intl-relativetimeformat": "^5.2.6",
     "@fortawesome/fontawesome-free": "^5.13.0",
+    "@lavamoat/preinstall-always-fail": "^1.0.0",
     "@material-ui/core": "^4.11.0",
     "@metamask/contract-metadata": "^1.22.0",
     "@metamask/controllers": "^5.1.0",
@@ -190,7 +191,7 @@
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
     "@babel/register": "^7.5.5",
-    "@lavamoat/allow-scripts": "^1.0.0",
+    "@lavamoat/allow-scripts": "^1.0.3",
     "@metamask/eslint-config": "^5.0.0",
     "@metamask/forwarder": "^1.1.0",
     "@metamask/test-dapp": "^4.0.1",
@@ -322,7 +323,8 @@
       "ursa-optional": false,
       "gc-stats": false,
       "github:assemblyscript/assemblyscript": false,
-      "tiny-secp256k1": false
+      "tiny-secp256k1": false,
+      "@lavamoat/preinstall-always-fail": false
     }
   }
 }
