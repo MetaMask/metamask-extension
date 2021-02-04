@@ -26,7 +26,7 @@ temp
 .DS_Store
 app/.DS_Store
 
-.out/
+storybook-build/
 coverage/
 dist
 builds/

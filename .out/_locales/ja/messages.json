@@ -1,0 +1,478 @@
+{
+  "aboutSettingsDescription": {
+    "message": "バージョンやサポート、問合せ先など"
+  },
+  "acceleratingATransaction": {
+    "message": "*より高いガス価格を使用すると、ネットワークでより速く処理され、トランザクションを高速化できる可能性が高くなりますが、常に保証されるとは限りません。"
+  },
+  "accessingYourCamera": {
+    "message": "カメラにアクセスしています..."
+  },
+  "account": {
+    "message": "アカウント"
+  },
+  "accountDetails": {
+    "message": "アカウント詳細"
+  },
+  "accountName": {
+    "message": "アカウント名"
+  },
+  "accountOptions": {
+    "message": "アカウント設定"
+  },
+  "accountSelectionRequired": {
+    "message": "アカウントを選択してください。"
+  },
+  "activityLog": {
+    "message": "アクティビティログ"
+  },
+  "addAcquiredTokens": {
+    "message": "MetaMaskで獲得したトークンを追加する"
+  },
+  "addAlias": {
+    "message": "エイリアスを追加"
+  },
+  "addNetwork": {
+    "message": "ネットワーク追加"
+  },
+  "addRecipient": {
+    "message": "受取人追加"
+  },
+  "addSuggestedTokens": {
+    "message": "推奨トークンを追加"
+  },
+  "addToAddressBook": {
+    "message": "アドレス帳に追加"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "例: John D"
+  },
+  "addToken": {
+    "message": "トークンを追加"
+  },
+  "addTokens": {
+    "message": "トークンを追加"
+  },
+  "advanced": {
+    "message": "詳細"
+  },
+  "advancedOptions": {
+    "message": "詳細設定"
+  },
+  "advancedSettingsDescription": {
+    "message": "開発者向け機能では、状態ログのダウンロード、アカウントリセットし、テストネットやカスタムRPCの設定が可能です。"
+  },
+  "amount": {
+    "message": "金額"
+  },
+  "appDescription": {
+    "message": "Ethereumのブラウザ・エクステンション",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "承認する"
+  },
+  "approved": {
+    "message": "承認済み"
+  },
+  "asset": {
+    "message": "アセット"
+  },
+  "attemptToCancel": {
+    "message": "キャンセルを試みますか？"
+  },
+  "attemptToCancelDescription": {
+    "message": "このキャンセルを送信しても、元のトランザクションがキャンセルされることは保証されません。キャンセルが成功した場合、上記の取引手数料が請求されます。"
+  },
+  "attemptingConnect": {
+    "message": "ブロックチェーンに接続中"
+  },
+  "attributions": {
+    "message": "属性"
+  },
+  "autoLockTimeLimit": {
+    "message": "自動ログアウト(分)"
+  },
+  "autoLockTimeLimitDescription": {
+    "message": "MetaMaskが自動的にログアウトするまでのアイドル時間を分単位で設定します。"
+  },
+  "average": {
+    "message": "平均"
+  },
+  "back": {
+    "message": "戻る"
+  },
+  "balance": {
+    "message": "残高:"
+  },
+  "blockiesIdenticon": {
+    "message": "Blockies Identicon を使用"
+  },
+  "cancel": {
+    "message": "キャンセル"
+  },
+  "confirm": {
+    "message": "確認"
+  },
+  "confirmPassword": {
+    "message": "パスワードの確認"
+  },
+  "contractDeployment": {
+    "message": "コントラクトのデプロイ"
+  },
+  "contractInteraction": {
+    "message": "コントラクトへのアクセス"
+  },
+  "copiedExclamation": {
+    "message": "コピー完了!"
+  },
+  "copyPrivateKey": {
+    "message": "これはあなたの秘密鍵です(クリックでコピー)"
+  },
+  "copyToClipboard": {
+    "message": "クリップボードへコピー"
+  },
+  "create": {
+    "message": "作成"
+  },
+  "createAccount": {
+    "message": "アカウント作成"
+  },
+  "customGas": {
+    "message": "ガスのカスタマイズ"
+  },
+  "customRPC": {
+    "message": "カスタムRPC"
+  },
+  "customToken": {
+    "message": "カスタムトークン"
+  },
+  "decimal": {
+    "message": "小数点桁数"
+  },
+  "defaultNetwork": {
+    "message": "デフォルトのEther送受信ネットワークはメインネットです。"
+  },
+  "depositEther": {
+    "message": "Etherを振込"
+  },
+  "details": {
+    "message": "詳細"
+  },
+  "directDepositEther": {
+    "message": "Etherを直接入金"
+  },
+  "directDepositEtherExplainer": {
+    "message": "既にEtherをお持ちなら、MetaMaskの新しいウォレットにEtherを送信することができます。"
+  },
+  "done": {
+    "message": "完了"
+  },
+  "edit": {
+    "message": "編集"
+  },
+  "endOfFlowMessage10": {
+    "message": "全て完了"
+  },
+  "enterPassword": {
+    "message": "パスワードを入力"
+  },
+  "etherscanView": {
+    "message": "Etherscanでアカウントを確認"
+  },
+  "exportPrivateKey": {
+    "message": "秘密鍵のエクスポート"
+  },
+  "failed": {
+    "message": "失敗"
+  },
+  "fiat": {
+    "message": "法定通貨",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "ファイルがインポートされなければ、ここをクリック!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "from": {
+    "message": "送信元"
+  },
+  "gasLimit": {
+    "message": "ガスリミット"
+  },
+  "gasLimitTooLow": {
+    "message": "ガスリミットは最低21000です。"
+  },
+  "gasPrice": {
+    "message": "ガスプライス (GWEI)"
+  },
+  "getEther": {
+    "message": "Etherを取得する"
+  },
+  "getEtherFromFaucet": {
+    "message": "フォーセットで $1のEtherを得ることができます。",
+    "description": "Displays network name for Ether faucet"
+  },
+  "here": {
+    "message": "ここ",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hide": {
+    "message": "隠す"
+  },
+  "hideTokenPrompt": {
+    "message": "トークンを隠しますか?"
+  },
+  "import": {
+    "message": "追加",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "アカウントのインポート"
+  },
+  "importAccountMsg": {
+    "message": "追加したアカウントはMetaMaskのアカウントパスフレーズとは関連付けられません。インポートしたアカウントについての詳細は"
+  },
+  "imported": {
+    "message": "インポート完了",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "infoHelp": {
+    "message": "情報とヘルプ"
+  },
+  "insufficientFunds": {
+    "message": "残高不足"
+  },
+  "invalidAddress": {
+    "message": "アドレスが無効です。"
+  },
+  "jsonFile": {
+    "message": "JSONファイル",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Kovanテストネットワーク"
+  },
+  "learnMore": {
+    "message": "詳細"
+  },
+  "likeToAddTokens": {
+    "message": "トークンを追加しますか?"
+  },
+  "links": {
+    "message": "リンク"
+  },
+  "loading": {
+    "message": "ロード中..."
+  },
+  "loadingTokens": {
+    "message": "トークンをロード中..."
+  },
+  "lock": {
+    "message": "ログアウト"
+  },
+  "mainnet": {
+    "message": "Ethereumメインネットワーク"
+  },
+  "max": {
+    "message": "最大"
+  },
+  "message": {
+    "message": "メッセージ"
+  },
+  "mustSelectOne": {
+    "message": "一つ以上のトークンを選択してください。"
+  },
+  "myAccounts": {
+    "message": "マイアカウント"
+  },
+  "needEtherInWallet": {
+    "message": "MetaMaskで分散型アプリケーションを使用するためには、このウォレットにEtherが必要です。"
+  },
+  "needImportFile": {
+    "message": "インポートするファイルを選択してください。",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "networks": {
+    "message": "ネットワーク"
+  },
+  "newAccount": {
+    "message": "新規アカウント"
+  },
+  "newAccountNumberName": {
+    "message": "アカウント $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContract": {
+    "message": "新規コントラクト"
+  },
+  "newPassword": {
+    "message": "新規パスワード(最低8文字)"
+  },
+  "next": {
+    "message": "次へ"
+  },
+  "noAddressForName": {
+    "message": "この名前にはアドレスが設定されていません。"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "すでにシードを持っています"
+  },
+  "noTransactions": {
+    "message": "トランザクションがありません。"
+  },
+  "password": {
+    "message": "パスワード"
+  },
+  "pastePrivateKey": {
+    "message": "秘密鍵をここにペーストして下さい:",
+    "description": "For importing an account from a private key"
+  },
+  "privacyMsg": {
+    "message": "プライバシーポリシー"
+  },
+  "privateKey": {
+    "message": "秘密鍵",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "警告: この鍵は絶対に公開しないで下さい。公開すると、誰でもあなたのアカウント内の資産を盗むことができてしまいます。"
+  },
+  "privateNetwork": {
+    "message": "プライベート・ネットワーク"
+  },
+  "readdToken": {
+    "message": "アカウントのオプションメニューから「トークンを追加」すれば、将来このトークンを追加し直すことができます。"
+  },
+  "recipientAddress": {
+    "message": "受取人アドレス"
+  },
+  "reject": {
+    "message": "拒否"
+  },
+  "rejected": {
+    "message": "拒否されました"
+  },
+  "required": {
+    "message": "必要です。"
+  },
+  "resetAccount": {
+    "message": "アカウントをリセット"
+  },
+  "restoreFromSeed": {
+    "message": "パスフレーズから復元する"
+  },
+  "revealSeedWords": {
+    "message": "パスフレーズを表示"
+  },
+  "rinkeby": {
+    "message": "Rinkebyテストネットワーク"
+  },
+  "ropsten": {
+    "message": "Ropstenテストネットワーク"
+  },
+  "save": {
+    "message": "保存"
+  },
+  "search": {
+    "message": "検索"
+  },
+  "searchResults": {
+    "message": "検索結果"
+  },
+  "searchTokens": {
+    "message": "トークンの検索"
+  },
+  "selectCurrency": {
+    "message": "通貨を選択"
+  },
+  "selectType": {
+    "message": "キーの種類"
+  },
+  "send": {
+    "message": "送信"
+  },
+  "sendETH": {
+    "message": "ETHの送信"
+  },
+  "sendTokens": {
+    "message": "トークンを送信"
+  },
+  "settings": {
+    "message": "設定"
+  },
+  "showPrivateKeys": {
+    "message": "秘密鍵を表示"
+  },
+  "sigRequest": {
+    "message": "署名リクエスト"
+  },
+  "sign": {
+    "message": "署名"
+  },
+  "signNotice": {
+    "message": "このメッセージへの署名は危険となる可能性があります。\n完全に信頼するサイトからのメッセージのみ、\nあなたのアカウントで署名して下さい。今後のバージョンでは、\nこの危険なメソッドは削除される予定です。"
+  },
+  "signatureRequest": {
+    "message": "署名リクエスト"
+  },
+  "terms": {
+    "message": "利用規約"
+  },
+  "testFaucet": {
+    "message": "Faucetをテスト"
+  },
+  "to": {
+    "message": "送信先"
+  },
+  "token": {
+    "message": "トークン"
+  },
+  "tokenSymbol": {
+    "message": "トークンシンボル"
+  },
+  "total": {
+    "message": "合計"
+  },
+  "troubleTokenBalances": {
+    "message": "トークン残高を取得できません。こちらでご確認ください。",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "typePassword": {
+    "message": "パスワードの入力"
+  },
+  "unknown": {
+    "message": "不明"
+  },
+  "unknownNetwork": {
+    "message": "不明なプライベートネットワーク"
+  },
+  "unlock": {
+    "message": "ログイン"
+  },
+  "usedByClients": {
+    "message": "様々なクライアントによって使用されています。"
+  },
+  "viewAccount": {
+    "message": "アカウントを見る"
+  },
+  "viewOnEtherscan": {
+    "message": "Etherscan で見る"
+  },
+  "walletSeed": {
+    "message": "ウォレットのパスフレーズ"
+  },
+  "welcome": {
+    "message": "MetaMask ベータ版へようこそ!"
+  },
+  "welcomeBack": {
+    "message": "おかえりなさい!"
+  },
+  "youSign": {
+    "message": "署名しています。"
+  }
+}

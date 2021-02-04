@@ -1,0 +1,256 @@
+{
+  "accountDetails": {
+    "message": "Detalye ng Account"
+  },
+  "accountName": {
+    "message": "Pangalan ng Account"
+  },
+  "addToken": {
+    "message": "Magdagdag ng Token"
+  },
+  "amount": {
+    "message": "Halaga"
+  },
+  "appDescription": {
+    "message": "Ethereum Browser Extension",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Aprubahan"
+  },
+  "attemptingConnect": {
+    "message": "Sinusubukang kumonekta sa blockchain."
+  },
+  "back": {
+    "message": "Bumalik"
+  },
+  "balance": {
+    "message": "Balanse:"
+  },
+  "cancel": {
+    "message": "Kanselahin"
+  },
+  "confirm": {
+    "message": "Tiyakin"
+  },
+  "confirmPassword": {
+    "message": "Tiyakin ang Password"
+  },
+  "contractDeployment": {
+    "message": "Pag-deploy ng Contract"
+  },
+  "copiedExclamation": {
+    "message": "Kinopya!"
+  },
+  "copyPrivateKey": {
+    "message": "Ito ang iyong private key (i-click upang makopya)"
+  },
+  "copyToClipboard": {
+    "message": "Kinopya sa clipboard"
+  },
+  "create": {
+    "message": "Gumawa"
+  },
+  "createAccount": {
+    "message": "Gumawa ng Account"
+  },
+  "customGas": {
+    "message": "I-customize ang Gas"
+  },
+  "defaultNetwork": {
+    "message": "Ang default network para sa Ether transactions ay ang Main Net."
+  },
+  "depositEther": {
+    "message": "I-deposito ang Ether"
+  },
+  "details": {
+    "message": "Detalye"
+  },
+  "directDepositEther": {
+    "message": "Direktang I-deposito ang Ether"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Kung ika ay mayroon nang Ether, ang pinakamabilis na paraan upang makuha ang Ether sa iyong bagong wallet ay sa pamamagitan ng direktang deposito."
+  },
+  "done": {
+    "message": "Tapos na"
+  },
+  "edit": {
+    "message": "I-edit"
+  },
+  "enterPassword": {
+    "message": "I-enter ang password"
+  },
+  "etherscanView": {
+    "message": "Tingnan ang account sa Etherscan"
+  },
+  "exportPrivateKey": {
+    "message": "I-export ang Private Key"
+  },
+  "failed": {
+    "message": "Nabigo"
+  },
+  "fiat": {
+    "message": "FIAT",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "Hindi gumagana ang file import? I-click ito!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "from": {
+    "message": "Mula sa"
+  },
+  "gasLimitTooLow": {
+    "message": "Ang gas limit ay hindi dabat bababa sa 21000"
+  },
+  "getEther": {
+    "message": "Kumuha ng Ether"
+  },
+  "getEtherFromFaucet": {
+    "message": "Kumuha ng Ether mula sa faucet para sa $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "here": {
+    "message": "i-click ito",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hide": {
+    "message": "Itago"
+  },
+  "hideTokenPrompt": {
+    "message": "Itago ang Token?"
+  },
+  "import": {
+    "message": "I-import",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "I-import ang Account"
+  },
+  "imported": {
+    "message": "Na-import na",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "infoHelp": {
+    "message": "Impormasyon at Tulong"
+  },
+  "invalidAddress": {
+    "message": "Invalid ang address"
+  },
+  "loading": {
+    "message": "Naglo-load..."
+  },
+  "loadingTokens": {
+    "message": "Naglo-load ang Tokens..."
+  },
+  "message": {
+    "message": "Mensahe"
+  },
+  "myAccounts": {
+    "message": "Aking mga Account"
+  },
+  "needEtherInWallet": {
+    "message": "Upang makipag-ugnayan sa decentralized applications gamit ang MetaMask, kakailanganin mo ng Ether sa iyong wallet."
+  },
+  "needImportFile": {
+    "message": "Dapat kang pumili ng file para i-import.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "newAccount": {
+    "message": "Bagong Account"
+  },
+  "newContract": {
+    "message": "Bagong Contract"
+  },
+  "newPassword": {
+    "message": "Bagong Password (min 8 chars)"
+  },
+  "next": {
+    "message": "Sunod"
+  },
+  "noAddressForName": {
+    "message": "Walang naka-set na address para sa pangalang ito."
+  },
+  "noTransactions": {
+    "message": "Walang mga Transaksyon"
+  },
+  "pastePrivateKey": {
+    "message": "I-paste dito ang iyong private key string:",
+    "description": "For importing an account from a private key"
+  },
+  "privateKeyWarning": {
+    "message": "Babala: Huwag sabihin sa kahit na sino ang key na ito. Maaring makuha at manakaw ng sinumang nakakaalam ng iyong private key ang mga assets sa iyong account."
+  },
+  "privateNetwork": {
+    "message": "Pribadong Network"
+  },
+  "readdToken": {
+    "message": "Upang muling idagdag ang token na ito, pumunta sa “Magdagdag ng Token” sa options menu ng iyong account."
+  },
+  "recipientAddress": {
+    "message": "Address ng Tatanggap"
+  },
+  "reject": {
+    "message": "Tanggihan"
+  },
+  "rejected": {
+    "message": "Tinanggihan"
+  },
+  "required": {
+    "message": "Kailangan"
+  },
+  "save": {
+    "message": "I-save"
+  },
+  "send": {
+    "message": "Magpadala"
+  },
+  "sendTokens": {
+    "message": "Magpadala ng Tokens"
+  },
+  "settings": {
+    "message": "Mga Setting"
+  },
+  "showPrivateKeys": {
+    "message": "Ipakita ang Private Keys"
+  },
+  "sigRequest": {
+    "message": "Hiling na Signature"
+  },
+  "sign": {
+    "message": "I-sign"
+  },
+  "signNotice": {
+    "message": "Ang pag-sign ng mensaheng ito ay maaring magdulot ng mapanganib na epekto. I-sign lamang ang mga mensahe mula sa mga site na pinagkakatiwalaan mo ng iyong account. Ang mapanganib na paraang ito ay aalisin sa isa sa mga susunod na bersyon. "
+  },
+  "total": {
+    "message": "Kabuuan"
+  },
+  "troubleTokenBalances": {
+    "message": "Nagkaroon kami ng problema sa paglo-load ng iyong mga balanseng token. Tingnan ito dito ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "typePassword": {
+    "message": "I-type ang iyong Password"
+  },
+  "unknown": {
+    "message": "Hindi Alam"
+  },
+  "unknownNetwork": {
+    "message": "Hindi Alam ang Pribadong Network"
+  },
+  "usedByClients": {
+    "message": "Ginagamit ng iba't ibang mga clients"
+  },
+  "viewAccount": {
+    "message": "Tingnan ang Account"
+  },
+  "youSign": {
+    "message": "Ikaw ay nagsa-sign"
+  }
+}

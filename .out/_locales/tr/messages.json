@@ -1,0 +1,490 @@
+{
+  "account": {
+    "message": "Hesap"
+  },
+  "accountDetails": {
+    "message": "Hesap Detayları"
+  },
+  "accountName": {
+    "message": "Hesap İsmi"
+  },
+  "addToken": {
+    "message": "Jeton ekle"
+  },
+  "addTokens": {
+    "message": "Jetonlar ekle"
+  },
+  "amount": {
+    "message": "Tutar"
+  },
+  "appDescription": {
+    "message": "Ethereum Tarayıcı Uzantısı",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Onaylamak"
+  },
+  "approved": {
+    "message": "Onaylandı"
+  },
+  "attemptingConnect": {
+    "message": "Blockchain'e bağlanmayı deniyor"
+  },
+  "attributions": {
+    "message": "Atıflar"
+  },
+  "back": {
+    "message": "Geri"
+  },
+  "balance": {
+    "message": "Bakiye:"
+  },
+  "blockiesIdenticon": {
+    "message": "Blockies Identicon kullan"
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask California'da tasarlandı ve yaratıldı"
+  },
+  "cancel": {
+    "message": "Vazgeç"
+  },
+  "confirm": {
+    "message": "Onayla"
+  },
+  "confirmPassword": {
+    "message": "Şifreyi onayla"
+  },
+  "confirmed": {
+    "message": "Onaylandı"
+  },
+  "connectingToKovan": {
+    "message": "Kovan Test Ağına bağlanıyor"
+  },
+  "connectingToMainnet": {
+    "message": "Main Ethereum Ağına bağlanıyor"
+  },
+  "connectingToRinkeby": {
+    "message": "Rinkeby Test Ağına bağlanıyor"
+  },
+  "connectingToRopsten": {
+    "message": "Ropsten Test Ağına bağlanıyor"
+  },
+  "contractDeployment": {
+    "message": "Sözleşme kurulumu"
+  },
+  "copiedExclamation": {
+    "message": "Kopyalandı!"
+  },
+  "copyPrivateKey": {
+    "message": "Bu sizin özel anahtarınız (kopyalamak için tıklayın)"
+  },
+  "copyToClipboard": {
+    "message": "Panoya kopyala"
+  },
+  "create": {
+    "message": "Yarat"
+  },
+  "createAccount": {
+    "message": "Hesap Oluştur"
+  },
+  "customGas": {
+    "message": "Gas'i özelleştir"
+  },
+  "customRPC": {
+    "message": "Özel RPC"
+  },
+  "customToken": {
+    "message": "Özel Jeton"
+  },
+  "decimal": {
+    "message": "Ondalık hassasiyeti"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Ondalıklar en azından 0 olmalı ve 36'dan büyük olmamalı."
+  },
+  "defaultNetwork": {
+    "message": "Ether işlemleri için varsayılan ağ Main Net."
+  },
+  "depositEther": {
+    "message": "Ether yatır"
+  },
+  "details": {
+    "message": "Ayrıntılar"
+  },
+  "directDepositEther": {
+    "message": "Direk Ether Yatırma"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Eğer çoktan Etheriniz varsa, yeni hesabınıza Ether aktarmanın en kolay yolu direk yatırmadır."
+  },
+  "done": {
+    "message": "Bitti"
+  },
+  "downloadStateLogs": {
+    "message": "Durum kayıtlarını indir"
+  },
+  "dropped": {
+    "message": "Bırakıldı"
+  },
+  "edit": {
+    "message": "Düzenle"
+  },
+  "enterPassword": {
+    "message": "Parolanızı girin"
+  },
+  "etherscanView": {
+    "message": "Hesabı Etherscan üzerinde izle"
+  },
+  "exportPrivateKey": {
+    "message": "Özel anahtarı ver"
+  },
+  "failed": {
+    "message": "Başarısız oldu"
+  },
+  "fiat": {
+    "message": "Para",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "Dosya alma çalışmıyor mu? Buraya tıklayın!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "from": {
+    "message": "Kimden"
+  },
+  "gasLimit": {
+    "message": "Gas Limiti"
+  },
+  "gasLimitTooLow": {
+    "message": "Gas limiti en az 21000 olmalıdır"
+  },
+  "gasPrice": {
+    "message": "Gas Fiyatı (GWEI)"
+  },
+  "getEther": {
+    "message": "Ether Al"
+  },
+  "getEtherFromFaucet": {
+    "message": "Musluktan $1 karşılığı Ether alın",
+    "description": "Displays network name for Ether faucet"
+  },
+  "here": {
+    "message": "burada",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hide": {
+    "message": "Gizle"
+  },
+  "hideTokenPrompt": {
+    "message": "Jetonu gizle?"
+  },
+  "import": {
+    "message": "Al",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Hesap Al"
+  },
+  "importAccountMsg": {
+    "message": " Alınan hesaplar orjinal kaynakifadenizle yarattığınız MetaMask hesabınızla ilişkilendirilmez. Alınan hesaplar ile ilgili daha fazla bilgi edinin "
+  },
+  "imported": {
+    "message": "Alındı",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "infoHelp": {
+    "message": "Bilgi ve yardım"
+  },
+  "insufficientFunds": {
+    "message": "Yetersiz kaynak."
+  },
+  "insufficientTokens": {
+    "message": "Yetersiz Jeton."
+  },
+  "invalidAddress": {
+    "message": "Geçersiz adres"
+  },
+  "invalidAddressRecipient": {
+    "message": "Alıcı adresi geçersiz"
+  },
+  "invalidBlockExplorerURL": {
+    "message": "Geçersiz Block Explorer URI"
+  },
+  "invalidRPC": {
+    "message": "Geçersiz RPC URI"
+  },
+  "jsonFile": {
+    "message": "JSON Dosyası",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Kovan Test Ağı"
+  },
+  "learnMore": {
+    "message": "Daha fazla bilgi."
+  },
+  "likeToAddTokens": {
+    "message": "Bu jetonlara adres eklemek ister misiniz?"
+  },
+  "links": {
+    "message": "Bağlantılar"
+  },
+  "loading": {
+    "message": "Yükleniyor..."
+  },
+  "loadingTokens": {
+    "message": "Jetonlar yükleniyor..."
+  },
+  "lock": {
+    "message": "Çıkış"
+  },
+  "mainnet": {
+    "message": "Main Ethereum Ağı"
+  },
+  "max": {
+    "message": "Maksimum"
+  },
+  "message": {
+    "message": "Mesaj"
+  },
+  "metamaskDescription": {
+    "message": "MetaMask Ethereum için güvenli bir kimlik kasasıdır."
+  },
+  "mustSelectOne": {
+    "message": "En az bir jeton seçilmeli"
+  },
+  "myAccounts": {
+    "message": "Hesaplarım"
+  },
+  "needEtherInWallet": {
+    "message": "MetaMask kullanarak merkezi olamayan uygulamalarla etkileşmek için cüzdanınızda Ether bulunmalıdır."
+  },
+  "needImportFile": {
+    "message": "Almak için bir dosya seçmelisiniz.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Negatif ETH miktarları gönderilemez."
+  },
+  "networks": {
+    "message": "Ağlar"
+  },
+  "newAccount": {
+    "message": "Yeni Hesap"
+  },
+  "newAccountNumberName": {
+    "message": "Hesap $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContract": {
+    "message": "Yeni Sözleşme"
+  },
+  "newPassword": {
+    "message": "Yeni Parola (min 8 karakter)"
+  },
+  "next": {
+    "message": "Sonraki"
+  },
+  "noAddressForName": {
+    "message": "Bu isim için bir adres tanımlanmamış."
+  },
+  "noTransactions": {
+    "message": "İşlem yok"
+  },
+  "ok": {
+    "message": "Tamam"
+  },
+  "passwordNotLongEnough": {
+    "message": "Parola yeterince uzun değil"
+  },
+  "passwordsDontMatch": {
+    "message": "Parolalar eşleşmiyor"
+  },
+  "pastePrivateKey": {
+    "message": "Özel anahtar dizinizi buraya yapıştırın:",
+    "description": "For importing an account from a private key"
+  },
+  "personalAddressDetected": {
+    "message": "Kişisel adres tespit edilidi. Jeton sözleşme adresini girin."
+  },
+  "privacyMsg": {
+    "message": "Gizlilik Şartları"
+  },
+  "privateKey": {
+    "message": "Özel Anahtar",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Uyarı: Bu anahtarı kimse ile paylaşmayın. Özel anahtarlarınıza sahip herkes hesaplarınızıdaki tüm varlığınızı çalabilir."
+  },
+  "privateNetwork": {
+    "message": "Özel Ağ"
+  },
+  "readdToken": {
+    "message": "Gelecekte Bu jetonu hesap seçenekleri menüsünde “Jeton ekle”'ye giderek geri ekleyebilirsiniz."
+  },
+  "recipientAddress": {
+    "message": "Alıcı adresi"
+  },
+  "reject": {
+    "message": "Reddetmek"
+  },
+  "rejected": {
+    "message": "Rededildi"
+  },
+  "required": {
+    "message": "Gerekli"
+  },
+  "resetAccount": {
+    "message": "Hesabı sıfıla"
+  },
+  "restoreFromSeed": {
+    "message": "Kaynak ifadeden geri getir. Restore from seed phrase"
+  },
+  "revealSeedWords": {
+    "message": "Kaynak kelimelerini göster"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Açık bir yerde kaynak kelimeliriniz geri getirmeyin! Bu kelimeler tüm hesaplarınızı çalmak için kullanılabilir."
+  },
+  "rinkeby": {
+    "message": "Rinkeby Test Ağı"
+  },
+  "ropsten": {
+    "message": "Ropsten Test Ağı"
+  },
+  "save": {
+    "message": "Kaydet"
+  },
+  "search": {
+    "message": "Ara"
+  },
+  "searchTokens": {
+    "message": "Jeton ara"
+  },
+  "secretPhrase": {
+    "message": "Kasanızı geri getirmek için gizli 12 kelimelik ifadenizi giriniz."
+  },
+  "seedPhraseReq": {
+    "message": "Kaynak ifadeleri 12 kelimedir."
+  },
+  "selectCurrency": {
+    "message": "Döviz Seç"
+  },
+  "selectType": {
+    "message": "Tip Seç"
+  },
+  "send": {
+    "message": "Gönder"
+  },
+  "sendETH": {
+    "message": "ETH Gönder"
+  },
+  "sendTokens": {
+    "message": "Jeton Gönder"
+  },
+  "settings": {
+    "message": "Ayarlar"
+  },
+  "showPrivateKeys": {
+    "message": "Özel anahtarları göster"
+  },
+  "sigRequest": {
+    "message": "İmza isteği"
+  },
+  "sign": {
+    "message": "İmza"
+  },
+  "signNotice": {
+    "message": "Bu mesajı imzalamanın tehlikeli \nyan etkileri olabilir. Tamamen güvendiğiniz sitelerden \ngelen mesajları hesabınızla imzalayınız.\n Bu tehlikeli metod gelecek versiyonlarda çıkarılacaktır. "
+  },
+  "signatureRequest": {
+    "message": "İmza isteği"
+  },
+  "signed": {
+    "message": "İmzalandı"
+  },
+  "stateLogError": {
+    "message": "Durum kayıtlarını alma hatası"
+  },
+  "stateLogs": {
+    "message": "Durum Kayıtları"
+  },
+  "stateLogsDescription": {
+    "message": "Durum kayıtları açık hesap adresinizi ve gönderilen işlemleri içerir."
+  },
+  "submitted": {
+    "message": "Gönderildi"
+  },
+  "supportCenter": {
+    "message": "Destek merkezimizi ziyaret edin"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Sembol 11 karakter veya daha az olmalıdır."
+  },
+  "terms": {
+    "message": "Kullanım şartları"
+  },
+  "testFaucet": {
+    "message": "Test Musluğu"
+  },
+  "to": {
+    "message": "Kime"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Jeton çoktan eklenmiş."
+  },
+  "tokenSymbol": {
+    "message": "Jeton Sembolü"
+  },
+  "total": {
+    "message": "Toplam"
+  },
+  "transactionError": {
+    "message": "İşlem Hatası. Sözleşme kodundan kural dışı durum fırlatıldı."
+  },
+  "troubleTokenBalances": {
+    "message": "Jeton bakiyelerinizi yüklerken sorun yaşadık. Buradan izleyebilirsiniz ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "typePassword": {
+    "message": "Parolanızı girin"
+  },
+  "unapproved": {
+    "message": "Onaylanmadı"
+  },
+  "unknown": {
+    "message": "Bilinmeyen"
+  },
+  "unknownNetwork": {
+    "message": "Bilinmeyen özel ağ"
+  },
+  "unlock": {
+    "message": "Giriş yap"
+  },
+  "urlErrorMsg": {
+    "message": "URIler için HTTP/HTTPS öneki gerekmektedir."
+  },
+  "usedByClients": {
+    "message": "Farklı istemciler tarafından kullanılmakta"
+  },
+  "viewAccount": {
+    "message": "Hesabı İncele"
+  },
+  "visitWebSite": {
+    "message": "Web sitemizi ziyaret edin"
+  },
+  "walletSeed": {
+    "message": "Cüzdan Kaynağı"
+  },
+  "welcome": {
+    "message": "MetaMask'ya Hoşgeldiniz"
+  },
+  "youSign": {
+    "message": "İmzalıyorsunuz"
+  }
+}

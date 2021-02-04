@@ -1,0 +1,577 @@
+{
+  "about": {
+    "message": "เกี่ยวกับ"
+  },
+  "account": {
+    "message": "บัญชี"
+  },
+  "accountDetails": {
+    "message": "รายละเอียดบัญชี"
+  },
+  "accountName": {
+    "message": "ชื่อบัญชี"
+  },
+  "addToken": {
+    "message": "เพิ่มโทเค็น"
+  },
+  "addTokens": {
+    "message": "เพิ่มหลายโทเค็น"
+  },
+  "amount": {
+    "message": "จำนวน"
+  },
+  "appDescription": {
+    "message": "ส่วนขยายเบราว์เซอร์สำหรับอีเธอเรียม",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "อนุมัติ"
+  },
+  "attemptingConnect": {
+    "message": "กำลังเชื่อมต่อกับบล็อกเชน"
+  },
+  "attributions": {
+    "message": "อ้างถึง"
+  },
+  "back": {
+    "message": "กลับ"
+  },
+  "backupApprovalNotice": {
+    "message": "แบ็คอัพโค้ดกู้คืนลับของคุณเพื่อรักษา Wallet และเงินให้ปลอดภัย"
+  },
+  "balance": {
+    "message": "ยอดคงเหลือ:"
+  },
+  "blockiesIdenticon": {
+    "message": "ใช้งาน Blockies Identicon"
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask ออกแบบและพัฒนาที่แคลิฟอร์เนีย"
+  },
+  "cancel": {
+    "message": "ยกเลิก"
+  },
+  "cancellationGasFee": {
+    "message": "ค่าธรรมเนียม Gas การยกเลิก"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "คุณต้องใช้ MetaMask บน Google Chrome เพื่อเชื่อมต่อกับ Hardware Wallet ของคุณ"
+  },
+  "confirm": {
+    "message": "ยืนยัน"
+  },
+  "confirmPassword": {
+    "message": "ยืนยันรหัสผ่าน"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "ยืนยัน Phrase แบ็คอัพลับของคุณ"
+  },
+  "congratulations": {
+    "message": "ยินดีด้วย"
+  },
+  "connectingTo": {
+    "message": "เชื่อมต่อกับ $1"
+  },
+  "connectingToMainnet": {
+    "message": "เชื่อมต่อกับเครือข่าย Ethereum หลัก"
+  },
+  "connectingToRopsten": {
+    "message": "เชื่อมต่อกับเครือข่ายทดสอบ Ropsten"
+  },
+  "continueToWyre": {
+    "message": "ไปที่ Wyre"
+  },
+  "contractDeployment": {
+    "message": "การติดตั้งสัญญา"
+  },
+  "copiedExclamation": {
+    "message": "คัดลอกแล้ว!"
+  },
+  "copyPrivateKey": {
+    "message": "นี่คือคีย์ส่วนตัวของคุณ(กดเพื่อคัดลอก)"
+  },
+  "copyToClipboard": {
+    "message": "คัดลอกไปคลิปบอร์ด"
+  },
+  "create": {
+    "message": "สร้าง"
+  },
+  "createAWallet": {
+    "message": "สร้าง Wallet"
+  },
+  "createAccount": {
+    "message": "สร้างบัญชี"
+  },
+  "currencyConversion": {
+    "message": "การแปลงสกุลเงิน"
+  },
+  "customGas": {
+    "message": "กำหนดค่าแก็สเอง"
+  },
+  "customGasSubTitle": {
+    "message": "การเพิ่มค่าธรรมเนียมอาจลดเวลาดำเนินการ แต่ก็ไม่แน่เสมอไป"
+  },
+  "customRPC": {
+    "message": "กำหนดค่า RPC เอง"
+  },
+  "decimal": {
+    "message": "ตำแหน่งของทศนิยม"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "จำนวนต้องมากกว่า 0 และไม่เกิน 36"
+  },
+  "defaultNetwork": {
+    "message": "ค่าเริ่มต้นของเครือข่ายสำหรับทำรายการธุรกรรมอีเธอร์คือ Main Net"
+  },
+  "delete": {
+    "message": "ลบ"
+  },
+  "deleteNetwork": {
+    "message": "ลบเครือข่าย?"
+  },
+  "depositEther": {
+    "message": "การฝากอีเธอร์"
+  },
+  "details": {
+    "message": "รายละเอียด"
+  },
+  "directDepositEther": {
+    "message": "ฝากอีเธอร์โดยตรง"
+  },
+  "directDepositEtherExplainer": {
+    "message": "ถ้าคุณมีอีเธอร์อยู่แล้ววิธีการที่เร็วที่สุดในการเอาเงินเข้ากระเป๋าใหม่ก็คือการโอนตรงๆ"
+  },
+  "done": {
+    "message": "เสร็จสิ้น"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "ไม่มี Hardware Wallet ใช่ไหม"
+  },
+  "downloadSecretBackup": {
+    "message": "ดาวน์โหลด Phrase แบ็คอัพลับนี้และเก็บรักษาไว้ให้ปลอดภัยในฮาร์ดดิสก์หรืออุปกรณ์เก็บข้อมูลภายนอกที่มีการเข้ารหัส"
+  },
+  "downloadStateLogs": {
+    "message": "ดาวน์โหลดล็อกสถานะ"
+  },
+  "edit": {
+    "message": "แก้ไข"
+  },
+  "editContact": {
+    "message": "แก้ไขผู้ติดต่อ"
+  },
+  "endOfFlowMessage1": {
+    "message": "คุณผ่านการทดสอบแล้ว กรุณารับผิดชอบในการรักษา Seed Phrase ให้ปลอดภัย"
+  },
+  "endOfFlowMessage5": {
+    "message": "โปรดระวังฟิชชิ่ง MetaMask จะไม่ขอ Seed Phrase ของคุณโดยไม่มีการแจ้งล่วงหน้าเลย"
+  },
+  "endOfFlowMessage9": {
+    "message": "เรียนรู้เพิ่มเติม"
+  },
+  "enterPassword": {
+    "message": "ใส่รหัสผ่าน"
+  },
+  "etherscanView": {
+    "message": "ดูบัญชีบน Etherscan"
+  },
+  "expandView": {
+    "message": "ขยายมุมมอง"
+  },
+  "exportPrivateKey": {
+    "message": "ส่งออกคีย์ส่วนตัว"
+  },
+  "failed": {
+    "message": "ล้มเหลว"
+  },
+  "fast": {
+    "message": "เร็ว"
+  },
+  "fiat": {
+    "message": "เงินตรา",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "นำเข้าไฟล์ไม่สำเหร็จ กดที่นี่!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "from": {
+    "message": "จาก"
+  },
+  "gasLimit": {
+    "message": "วงเงินแก็ส"
+  },
+  "gasLimitTooLow": {
+    "message": "วงเงินแก็สต้องอย่างน้อย 21000"
+  },
+  "gasPrice": {
+    "message": "ราคาแก๊ส (GWEI)"
+  },
+  "general": {
+    "message": "ทั่วไป"
+  },
+  "getEther": {
+    "message": "รับอีเธอร์"
+  },
+  "getEtherFromFaucet": {
+    "message": "รับอีเธอร์ที่ปล่อยจาก $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "here": {
+    "message": "ที่นี่",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hide": {
+    "message": "ซ่อน"
+  },
+  "hideTokenPrompt": {
+    "message": "ซ่อนโทเค็นหรือไม่?"
+  },
+  "import": {
+    "message": "นำเข้า",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "นำเข้าบัญชี"
+  },
+  "importAccountMsg": {
+    "message": "บัญชีที่นำเข้าจะไม่ถูกรวมกับบัญชีที่สร้างด้วยคำเเริ่มต้นบนเมต้ามาร์สในตอนแรก เรียนรู้เพิ่มเติมเกี่ยวกับบัญชีที่นำเข้า"
+  },
+  "imported": {
+    "message": "นำเข้าเรียบร้อย",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "infoHelp": {
+    "message": "ข้อมูลและความช่วยเหลือ"
+  },
+  "insufficientFunds": {
+    "message": "เงินทุนไม่เพียงพอ"
+  },
+  "insufficientTokens": {
+    "message": "โทเค็นไม่เพียงพอ"
+  },
+  "invalidAddress": {
+    "message": "แอดแดรสไม่ถูกต้อง"
+  },
+  "invalidAddressRecipient": {
+    "message": "แอดแดรสผู้รับไม่ถูกต้อง"
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "ไม่ใช่เครือข่าย ETH ตั้งเป็นตัวพิมพ์เล็ก"
+  },
+  "invalidBlockExplorerURL": {
+    "message": "Block Explorer URI ไม่ถูกต้อง"
+  },
+  "invalidRPC": {
+    "message": "RPC URI ไม่ถูกต้อง"
+  },
+  "jsonFile": {
+    "message": "ไฟล์ JSON",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "เครือข่ายทดสอบ Kovan"
+  },
+  "learnMore": {
+    "message": "เรียนรู้เพิ่มเติม"
+  },
+  "likeToAddTokens": {
+    "message": "คุณต้องการเพิ่มโทเค็นเหล่านี้หรือไม่?"
+  },
+  "loading": {
+    "message": "กำลังโหลด..."
+  },
+  "loadingTokens": {
+    "message": "กำลังโหลดโทเค็น..."
+  },
+  "lock": {
+    "message": "ออกจากระบบ"
+  },
+  "mainnet": {
+    "message": "เครือข่าย Main Net"
+  },
+  "message": {
+    "message": "ข้อความ"
+  },
+  "metamaskDescription": {
+    "message": "MetaMask คือที่เก็บตัวตนนิรภัยสำหรับอีเธอเรียม"
+  },
+  "mustSelectOne": {
+    "message": "ต้องเลือกอย่างน้อย 1 โทเค็น"
+  },
+  "myAccounts": {
+    "message": "บัญชีของฉัน"
+  },
+  "needEtherInWallet": {
+    "message": "คุณจะต้องมีอีเธอร์ในกระเป๋าเงินของคุณในการใช้งานกับแอพพลิเคชันแบบกระจายด้วย MetaMask"
+  },
+  "needImportFile": {
+    "message": "คุณต้องเลือกไฟล์ที่จะนำเข้า",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "ไม่สามารถส่งอีเธอร์เป็นจำนวนติดลบได้"
+  },
+  "networkSettingsDescription": {
+    "message": "เพิ่มและแก้ไขเครือข่าย RPC แบบกำหนดเอง"
+  },
+  "networks": {
+    "message": "เครือข่าย"
+  },
+  "newAccount": {
+    "message": "บัญชีใหม่"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "ตรวจพบที่อยู่ใหม่! คลิกที่นี่เพื่อเพิ่มลงในสมุดที่อยู่ของคุณ"
+  },
+  "newAccountNumberName": {
+    "message": "บัญชี $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContract": {
+    "message": "สร้างสัญญาใหม่"
+  },
+  "newPassword": {
+    "message": "รหัสผ่านใหม่(ขั้นต่ำ 8 ตัวอักษร)"
+  },
+  "newToMetaMask": {
+    "message": "เพิ่งเริ่มใช้ MetaMask?"
+  },
+  "newTransactionFee": {
+    "message": "ค่าธรรมเนียมธุรกรรมใหม่"
+  },
+  "next": {
+    "message": "ถัดไป"
+  },
+  "noAddressForName": {
+    "message": "ยังไม่มีแอดแดรสไหนตั้งในชื่อนี้"
+  },
+  "noTransactions": {
+    "message": "ยังไม่มีรายการธุรกรรม"
+  },
+  "on": {
+    "message": "เปิด"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "เข้าร่วมใน MetaMetrics เพื่อช่วยเราในการพัฒนา MetaMask"
+  },
+  "pastePrivateKey": {
+    "message": "วางคีย์ส่วนตัวของคุณที่นี่:",
+    "description": "For importing an account from a private key"
+  },
+  "personalAddressDetected": {
+    "message": "ตรวจพบแอดแดรสส่วนตัวแล้ว ใส่แอดแดรสสัญญาโทเค็น"
+  },
+  "privacyMsg": {
+    "message": "นโยบายสความเป็นส่วนตัว"
+  },
+  "privateKey": {
+    "message": "คีย์ส่วนตัว",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "คำเตือน: ห้ามเปิดเผยคีย์นี้ ทุกคนที่มีคีย์ส่วนตัวสามารถขโมยข้อมูลใด ๆ ที่เก็บไว้ในบัญชีของคุณได้"
+  },
+  "privateNetwork": {
+    "message": "เครือข่ายส่วนตัว"
+  },
+  "readdToken": {
+    "message": "คุณสามารถเพิ่มโทเค็นนี้ในอนาคตได้โดยไปที่ “เพิ่มโทเค็น” ในเมนูตัวเลือกบัญชีของคุณ"
+  },
+  "recipientAddress": {
+    "message": "แอดแดรสผู้รับ"
+  },
+  "reject": {
+    "message": "ปฏิเสธ"
+  },
+  "rejected": {
+    "message": "ถูกปฏิเสธ"
+  },
+  "remindMeLater": {
+    "message": "เตือนฉันภายหลัง"
+  },
+  "required": {
+    "message": "จำเป็น"
+  },
+  "resetAccount": {
+    "message": "รีเซ็ตบัญชี"
+  },
+  "restoreFromSeed": {
+    "message": "กู้คืนจากกลุ่มคำชีด"
+  },
+  "revealSeedWords": {
+    "message": "เปิดเผยกลุ่มคำชีด"
+  },
+  "revealSeedWordsWarning": {
+    "message": "อย่าเปิดเผยคำกลุ่มคำชีดของคุณในที่สาธารณะ! คำเหล่านี้สามารถใช้เพื่อขโมยบัญชีทั้งหมดของคุณ"
+  },
+  "rinkeby": {
+    "message": "เครือข่ายทดสอบ Rinkeby"
+  },
+  "ropsten": {
+    "message": "เครือข่ายทดสอบ Ropsten"
+  },
+  "save": {
+    "message": "บันทึก"
+  },
+  "search": {
+    "message": "ค้นหา"
+  },
+  "secretPhrase": {
+    "message": "ป้อนกลุ่มคำสิบสองคำเพื่อกู้คืนตู้เซฟของคุณ"
+  },
+  "seedPhraseReq": {
+    "message": "กลุ่มคำชีดมีความยาว 12 คำ"
+  },
+  "selectAnAccount": {
+    "message": "เลือกบัญชี"
+  },
+  "selectCurrency": {
+    "message": "เลือกสกุลเงิน"
+  },
+  "selectHdPath": {
+    "message": "เลือกเส้นทาง HD"
+  },
+  "selectType": {
+    "message": "เลือกประเภท"
+  },
+  "send": {
+    "message": "ส่ง"
+  },
+  "sendAmount": {
+    "message": "ส่งจำนวนเงินนี้"
+  },
+  "sendETH": {
+    "message": "ส่งอีเธอร์"
+  },
+  "sendTokens": {
+    "message": "ส่งโทเค็น"
+  },
+  "settings": {
+    "message": "การตั้งค่า"
+  },
+  "showAdvancedGasInline": {
+    "message": "การควบคุม Gas ขั้นสูง"
+  },
+  "showPrivateKeys": {
+    "message": "แสดงคีย์ส่วนตัว"
+  },
+  "sigRequest": {
+    "message": "ขอลายเซ็น"
+  },
+  "sign": {
+    "message": "เซ็นชื่อ"
+  },
+  "signNotice": {
+    "message": "การเซ็นชื่อในข้อความนี้อาจจะเป็นอันตรายได้ \nเซ็นชื่อเฉพาะข้อความจากแหล่งที่คุณไว้วางใจได้จริง ๆ เท่านั้น \nวิธีที่อันตรายนี้จะถูกลบออกในอนาคต"
+  },
+  "signatureRequest": {
+    "message": "ขอลายเซ็น"
+  },
+  "signed": {
+    "message": "ลงชื่อแล้ว"
+  },
+  "stateLogs": {
+    "message": "บันทึกของสถานะ"
+  },
+  "stateLogsDescription": {
+    "message": "บันทึกของสถานะประกอบด้วยแอดแดรสสาธารณะและธุรกรรมที่ส่ง"
+  },
+  "step1HardwareWallet": {
+    "message": "1. เชื่อมต่อ Hardware Wallet"
+  },
+  "step2HardwareWallet": {
+    "message": "2. เลือกบัญชี"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "ใช้บัญชีฮาร์ดแวร์ของคุณเช่นเดียวกับการใช้กับบัญชี Ethereum ล็อกอินเข้าสู่ dApp ส่ง Eth ซื้อและเก็บโทเคน ERC20 และโทเคนแบบ Non-Fungible เช่น CryptoKitties"
+  },
+  "storePhrase": {
+    "message": "เก็บ Phrase นี้ในตัวจัดการรหัสผ่าน เช่น 1Password"
+  },
+  "supportCenter": {
+    "message": "ไปที่ศูนย์สนับสนุนของเรา"
+  },
+  "switchNetworks": {
+    "message": "เปลี่ยนเครือข่าย"
+  },
+  "symbol": {
+    "message": "เครื่องหมาย"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "สัญลักษณ์จะต้องมีความยาว 11 ตัวอักษร"
+  },
+  "syncWithMobileComplete": {
+    "message": "ซิงค์ข้อมูลของคุณเรียบร้อยแล้ว ใช้แอพ MetaMask ให้สนุกนะ!"
+  },
+  "terms": {
+    "message": "ข้อตกลงในการใช้งาน"
+  },
+  "testFaucet": {
+    "message": "ตัวแจกจ่ายเพื่อการทดสอบ"
+  },
+  "thisWillCreate": {
+    "message": "สิ่งนี้จะสร้าง Wallet และ Seed Phrase ใหม่"
+  },
+  "to": {
+    "message": "ถึง"
+  },
+  "tokenAlreadyAdded": {
+    "message": "โทเคนได้ถูกเพิ่มไปแล้ว"
+  },
+  "tokenSymbol": {
+    "message": "สัญลักษณ์ประจำตัว"
+  },
+  "total": {
+    "message": "รวม"
+  },
+  "transactionCancelSuccess": {
+    "message": "ยกเลิกธุรกรรมเรียบร้อยแล้วเมื่อ $2"
+  },
+  "transactionDropped": {
+    "message": "ธุรกรรมถูกยกเลิกเมื่อ $2"
+  },
+  "transferBetweenAccounts": {
+    "message": "โอนระหว่างบัญชีของฉัน"
+  },
+  "troubleTokenBalances": {
+    "message": "เรามีปัญหาในการโหลดยอดโทเค็นคงเหลือของคุณ คุณสามารถดูได้ที่นี่",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "typePassword": {
+    "message": "พิมพ์รหัสผ่านของคุณ"
+  },
+  "unknown": {
+    "message": "ไม่รู้จัก"
+  },
+  "unknownNetwork": {
+    "message": "ไม่รู้จักเครือข่ายส่วนตัว"
+  },
+  "unlock": {
+    "message": "ปลดล็อก"
+  },
+  "updatedWithDate": {
+    "message": "อัปเดต $1 แล้ว"
+  },
+  "urlErrorMsg": {
+    "message": "URI ต้องมีคำนำหน้าเป็น HTTP หรือ HTTPS"
+  },
+  "usedByClients": {
+    "message": "ถูกใช้งานโดยหลายไคลเอนท์"
+  },
+  "viewAccount": {
+    "message": "ดูบัญชี"
+  },
+  "visitWebSite": {
+    "message": "เยี่ยมชมเว็บไซต์ของเรา"
+  },
+  "welcome": {
+    "message": "ยินดีต้อนรับสู่ MetaMask เบต้า"
+  },
+  "youSign": {
+    "message": "คุณกำลังเซ็นชื่อ"
+  }
+}

@@ -1,0 +1,168 @@
+{
+  "about": {
+    "message": "Acerca de"
+  },
+  "account": {
+    "message": "Conta"
+  },
+  "advanced": {
+    "message": "Avançadas"
+  },
+  "amount": {
+    "message": "Quantia"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "back": {
+    "message": "Anterior"
+  },
+  "basic": {
+    "message": "Básico"
+  },
+  "cancel": {
+    "message": "Cancelar"
+  },
+  "close": {
+    "message": "Fechar"
+  },
+  "confirm": {
+    "message": "Confirmar"
+  },
+  "connect": {
+    "message": "Ligar"
+  },
+  "copiedExclamation": {
+    "message": "Copiado!"
+  },
+  "copyToClipboard": {
+    "message": "Copiar para a área de transferência"
+  },
+  "create": {
+    "message": "Criar"
+  },
+  "delete": {
+    "message": "Eliminar"
+  },
+  "details": {
+    "message": "Detalhes"
+  },
+  "done": {
+    "message": "Concluído"
+  },
+  "edit": {
+    "message": "Editar"
+  },
+  "endOfFlowMessage9": {
+    "message": "Obtenha mais informações."
+  },
+  "fast": {
+    "message": "Rápido"
+  },
+  "forgetDevice": {
+    "message": "Esquecer este dispositivo"
+  },
+  "getStarted": {
+    "message": "Começar"
+  },
+  "here": {
+    "message": "aqui",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hide": {
+    "message": "Ocultar"
+  },
+  "history": {
+    "message": "Histórico"
+  },
+  "import": {
+    "message": "Importar",
+    "description": "Button to import an account from a selected file"
+  },
+  "imported": {
+    "message": "Importado",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "learnMore": {
+    "message": "Aprenda mais"
+  },
+  "loading": {
+    "message": "A carregar..."
+  },
+  "next": {
+    "message": "Seguinte"
+  },
+  "off": {
+    "message": "Desativado"
+  },
+  "ok": {
+    "message": "OK"
+  },
+  "on": {
+    "message": "Ativado"
+  },
+  "origin": {
+    "message": "Origem"
+  },
+  "password": {
+    "message": "Palavra-passe"
+  },
+  "privacyMsg": {
+    "message": "Política de Privacidade"
+  },
+  "queue": {
+    "message": "Fila"
+  },
+  "reject": {
+    "message": "Rejeitar"
+  },
+  "remove": {
+    "message": "Remover"
+  },
+  "removeAccount": {
+    "message": "Remover conta"
+  },
+  "reset": {
+    "message": "Repor"
+  },
+  "restore": {
+    "message": "Restaurar"
+  },
+  "save": {
+    "message": "Guardar"
+  },
+  "search": {
+    "message": "Pesquisar"
+  },
+  "send": {
+    "message": "Enviar"
+  },
+  "settings": {
+    "message": "Definições"
+  },
+  "slow": {
+    "message": "Lento"
+  },
+  "tips": {
+    "message": "Doações"
+  },
+  "tryAgain": {
+    "message": "Tentar novamente"
+  },
+  "unknown": {
+    "message": "Desconhecido"
+  },
+  "unlock": {
+    "message": "Desbloquear"
+  },
+  "userName": {
+    "message": "Nome de utilizador"
+  },
+  "viewAccount": {
+    "message": "Ver Conta"
+  },
+  "welcomeBack": {
+    "message": "Bem-vindo de volta!"
+  }
+}

@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <title>MetaMask Notification</title>
+    <style>
+      #app-content {
+        display: flex;
+        flex-flow: column;
+      }
+
+      #loading__logo {
+        width: 10rem;
+        height: 10rem;
+        align-self: center;
+        margin: 10rem 0 0 0;
+      }
+
+      #loading__spinner {
+        width: 2rem;
+        height: 2rem;
+        align-self: center;
+        margin-top: 1rem;
+      }
+    </style>
+    <link rel="stylesheet" type="text/css" href="./index.css" title="ltr">
+    <link rel="stylesheet" type="text/css" href="./index-rtl.css" title="rtl" disabled>
+  </head>
+  <body class="notification">
+    <div id="app-content">
+      <img id="loading__logo" src="./images/logo/metamask-fox.svg" alt="" />
+      <img id="loading__spinner" src="./images/spinner.gif" alt="" />
+    </div>
+    <div id="popover-content"></div>
+    <script src="./globalthis.js" type="text/javascript" charset="utf-8"></script>
+    <script src="./initSentry.js" type="text/javascript" charset="utf-8"></script>
+    <script src="./lockdown.js" type="text/javascript" charset="utf-8"></script>
+    <script src="./runLockdown.js" type="text/javascript" charset="utf-8"></script>
+    <script src="./ui-libs.js" type="text/javascript" charset="utf-8"></script>
+    <script src="./ui.js" type="text/javascript" charset="utf-8"></script>
+  </body>
+</html>

@@ -1,0 +1,143 @@
+{
+  "about": {
+    "message": "గురించి"
+  },
+  "account": {
+    "message": "ఖాతా"
+  },
+  "advanced": {
+    "message": "ఆధునిక"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "back": {
+    "message": "వెనుకకు"
+  },
+  "basic": {
+    "message": "ప్రాథమికం"
+  },
+  "cancel": {
+    "message": "రద్దు చెయ్యి"
+  },
+  "close": {
+    "message": "మూసివేయి"
+  },
+  "confirm": {
+    "message": "నిర్ధారించు"
+  },
+  "connect": {
+    "message": "కనెక్ట్ చేయండి"
+  },
+  "copyToClipboard": {
+    "message": "క్లిప్‌బోర్డ్‌కు కాపీ చేయి"
+  },
+  "create": {
+    "message": "సృష్టించు"
+  },
+  "delete": {
+    "message": "తొలగించు"
+  },
+  "details": {
+    "message": "వివరాలు"
+  },
+  "done": {
+    "message": "పూర్తయింది"
+  },
+  "edit": {
+    "message": "సవరించు"
+  },
+  "fast": {
+    "message": "వేగంగా"
+  },
+  "forgetDevice": {
+    "message": "ఈ పరికరాన్ని విస్మరించు"
+  },
+  "getStarted": {
+    "message": "ప్రారంభించండి"
+  },
+  "hide": {
+    "message": "దాచిపెట్టు"
+  },
+  "history": {
+    "message": "చరిత్ర"
+  },
+  "import": {
+    "message": "దిగుమతి చెయ్యి",
+    "description": "Button to import an account from a selected file"
+  },
+  "imported": {
+    "message": "దిగుమతి అయ్యింది",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "loading": {
+    "message": "లోడ్ అవుతోంది..."
+  },
+  "next": {
+    "message": "తదుపరి"
+  },
+  "off": {
+    "message": "ఆఫ్ అయ్యింది"
+  },
+  "ok": {
+    "message": "సరే"
+  },
+  "on": {
+    "message": "ఆన్ చేయి"
+  },
+  "origin": {
+    "message": "మూలం"
+  },
+  "password": {
+    "message": "పాస్‌వర్డ్"
+  },
+  "queue": {
+    "message": "క్రమ వరుస"
+  },
+  "reject": {
+    "message": "తిరస్కరించు"
+  },
+  "remove": {
+    "message": "తీసివేయి"
+  },
+  "removeAccount": {
+    "message": "ఖాతాను తీసివేయి"
+  },
+  "reset": {
+    "message": "రీసెట్ చేయి"
+  },
+  "restore": {
+    "message": "పునరుద్ధరించు"
+  },
+  "save": {
+    "message": "సేవ్ చేయి"
+  },
+  "search": {
+    "message": "శోధించు"
+  },
+  "send": {
+    "message": "పంపు"
+  },
+  "settings": {
+    "message": "సెట్టింగ్‌లు"
+  },
+  "slow": {
+    "message": "నెమ్మదిగా"
+  },
+  "tryAgain": {
+    "message": "మళ్లీ ప్రయత్నించు"
+  },
+  "unknown": {
+    "message": "తెలియదు"
+  },
+  "unlock": {
+    "message": "అన్‌లాక్ చెయ్యి"
+  },
+  "userName": {
+    "message": "యూజర్‌పేరు"
+  },
+  "viewAccount": {
+    "message": "ఖాతాను వీక్షించండి"
+  }
+}

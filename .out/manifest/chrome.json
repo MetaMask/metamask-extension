@@ -1,0 +1,7 @@
+{
+  "externally_connectable": {
+    "matches": ["https://metamask.io/*"],
+    "ids": ["*"]
+  },
+  "minimum_chrome_version": "63"
+}

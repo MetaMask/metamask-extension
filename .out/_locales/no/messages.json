@@ -1,0 +1,1234 @@
+{
+  "about": {
+    "message": "Info"
+  },
+  "aboutSettingsDescription": {
+    "message": "Versjon, brukerstøtte og kontaktinformasjon"
+  },
+  "acceleratingATransaction": {
+    "message": "* Akselerering av en transaksjon ved å bruke en høyere datakraftspris øker sjansene for å bli behandlet av nettverket raskere, men det er ikke alltid garantert."
+  },
+  "accessingYourCamera": {
+    "message": "Oppretter tilgang til kameraet ditt..."
+  },
+  "account": {
+    "message": "Konto"
+  },
+  "accountDetails": {
+    "message": "Kontodetaljer"
+  },
+  "accountName": {
+    "message": "Kontonavn"
+  },
+  "accountOptions": {
+    "message": "Kontovalg"
+  },
+  "accountSelectionRequired": {
+    "message": "Du må velge en konto!"
+  },
+  "activityLog": {
+    "message": "aktivitetshistorikk"
+  },
+  "addAcquiredTokens": {
+    "message": "Legg til sjetongene du har kjøpt med MetaMask"
+  },
+  "addAlias": {
+    "message": "Legg til alias "
+  },
+  "addNetwork": {
+    "message": "Legg til nettverk"
+  },
+  "addRecipient": {
+    "message": "Legg til mottaker "
+  },
+  "addSuggestedTokens": {
+    "message": "Legg til foreslåtte tokener "
+  },
+  "addToAddressBook": {
+    "message": "Legg til adressebok "
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "dvs. John D. "
+  },
+  "addToken": {
+    "message": "Legg til token "
+  },
+  "addTokens": {
+    "message": "Legg til sjetonger"
+  },
+  "advanced": {
+    "message": "Avansert"
+  },
+  "advancedOptions": {
+    "message": "Avanserte valg"
+  },
+  "advancedSettingsDescription": {
+    "message": "Få tilgang til utviklerfunksjoner, last ned tilstandslogger, tilbakestill konto, installer testnett og tilpasset RPC"
+  },
+  "amount": {
+    "message": "Sum"
+  },
+  "appDescription": {
+    "message": "En Ethereum-lommebok i nettleseren din",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Godkjenn"
+  },
+  "approved": {
+    "message": "Godkjent"
+  },
+  "asset": {
+    "message": "Ressurs"
+  },
+  "attemptToCancel": {
+    "message": "Forsøk å avbryte"
+  },
+  "attemptToCancelDescription": {
+    "message": "Å sende inn dette forsøket garanterer ikke at den opprinnelige transaksjonen blir kansellert. Hvis kanselleringsforsøket lykkes, vil du bli belastet transaksjonsgebyret ovenfor."
+  },
+  "attemptingConnect": {
+    "message": "Prøver å opprette forbindelse med blokkjede"
+  },
+  "attributions": {
+    "message": "Henvisninger"
+  },
+  "autoLockTimeLimit": {
+    "message": "Timer for automatisk utlogging (minutter) "
+  },
+  "autoLockTimeLimitDescription": {
+    "message": "Innstill hviletiden i minutter før MetaMask automatisk logger ut"
+  },
+  "average": {
+    "message": "Gjennomsnitt"
+  },
+  "back": {
+    "message": "Tilbake"
+  },
+  "backToAll": {
+    "message": "Tilbake til alt"
+  },
+  "backupApprovalInfo": {
+    "message": "Denne hemmelige koden behøves for å gjenopprette lommeboken din i tilfelle du mister enheten din, glemmer passordet ditt, trenger å re-installere MetaMask, eller ønsker å få tilgang til lommeboken din på en annen enhet."
+  },
+  "backupApprovalNotice": {
+    "message": "Sikkerhetskopier den hemmelige gjenopprettingskoden for å sikre lommeboken og midlene."
+  },
+  "backupNow": {
+    "message": "Sikkerhetskopier nå"
+  },
+  "balance": {
+    "message": "Saldo "
+  },
+  "balanceOutdated": {
+    "message": "Saldoen kan utløpe"
+  },
+  "basic": {
+    "message": "Enkle"
+  },
+  "blockExplorerUrl": {
+    "message": "Blokkér Explorer"
+  },
+  "blockExplorerView": {
+    "message": "Se konto på $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "Bruk Blockies Identicon"
+  },
+  "browserNotSupported": {
+    "message": "Nettleseren din støttes ikke ..."
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask ble bygget og designet i California."
+  },
+  "buyWithWyre": {
+    "message": "Kjøp ETH med Wyre"
+  },
+  "buyWithWyreDescription": {
+    "message": "Wyre lar deg bruke et kredittkort for å sette inn ETH rett på MetaMask-kontoen din."
+  },
+  "cancel": {
+    "message": "Avbryt"
+  },
+  "cancellationGasFee": {
+    "message": "Kansellering gassavgift"
+  },
+  "cancelled": {
+    "message": "Avbrutt"
+  },
+  "chainId": {
+    "message": "Blokkjede "
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Du må bruke MetaMask på Google Chrome for å koble deg til maskinvare-lommeboken."
+  },
+  "clickToRevealSeed": {
+    "message": "Klikk her for å vise hemmelige ord "
+  },
+  "close": {
+    "message": "Lukk"
+  },
+  "confirm": {
+    "message": "Bekreft"
+  },
+  "confirmPassword": {
+    "message": "Bekreft passord"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "Bekreft din hemmelige gjennopprettingsfrase"
+  },
+  "confirmed": {
+    "message": "Bekreftet"
+  },
+  "congratulations": {
+    "message": "Gratulerer "
+  },
+  "connect": {
+    "message": "Koble til"
+  },
+  "connectHardwareWallet": {
+    "message": "Koble til maskinvarelommebok"
+  },
+  "connectingTo": {
+    "message": "Forbinder til $1 "
+  },
+  "connectingToGoerli": {
+    "message": "Oppretter forbindelse med Goerli Test Network"
+  },
+  "connectingToKovan": {
+    "message": "Kobler til Kovan testnettverk"
+  },
+  "connectingToMainnet": {
+    "message": "Forbinder med hoved-Ethereumnettverk "
+  },
+  "connectingToRinkeby": {
+    "message": "Kobler til Rinkeby Test Network "
+  },
+  "connectingToRopsten": {
+    "message": "Kobler til Ropsten testnettverk"
+  },
+  "continueToWyre": {
+    "message": "Fortsett til Wyre "
+  },
+  "contractDeployment": {
+    "message": "Distribusjon av kontrakten"
+  },
+  "contractInteraction": {
+    "message": "Kontraktssamhandling"
+  },
+  "copiedExclamation": {
+    "message": "Kopiert!"
+  },
+  "copiedTransactionId": {
+    "message": "Kopiert transaksjonsidentifikasjon"
+  },
+  "copyAddress": {
+    "message": "Kopier adresse til  utklippstavlen "
+  },
+  "copyPrivateKey": {
+    "message": "Dette er din private nøkkel (klikk for å kopiere)"
+  },
+  "copyToClipboard": {
+    "message": "Kopiér til utklippstavlen"
+  },
+  "copyTransactionId": {
+    "message": "Kopier transaksjons-ID "
+  },
+  "create": {
+    "message": "Opprett"
+  },
+  "createAWallet": {
+    "message": "Opprett en lommebok"
+  },
+  "createAccount": {
+    "message": "Opprett konto"
+  },
+  "createPassword": {
+    "message": "Opprett passord "
+  },
+  "currencyConversion": {
+    "message": "Valutakonvertering "
+  },
+  "currentLanguage": {
+    "message": "Nåværende språk "
+  },
+  "customGas": {
+    "message": "Tilpass Gass"
+  },
+  "customGasSubTitle": {
+    "message": "Økt gebyr kan redusere behandlingstiden, men det er ikke garantert."
+  },
+  "customRPC": {
+    "message": "Tilpasset RPC"
+  },
+  "customToken": {
+    "message": "Egendefinert token "
+  },
+  "decimal": {
+    "message": "Presisjonsdesimaler"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Desimaler må være minst 0, og ikke flere enn 36."
+  },
+  "defaultNetwork": {
+    "message": "Standardnettverket for Ether-transaksjoner er Main Net."
+  },
+  "delete": {
+    "message": "Slett"
+  },
+  "deleteAccount": {
+    "message": "Slett konto "
+  },
+  "deleteNetwork": {
+    "message": "Slette nettverk? "
+  },
+  "deleteNetworkDescription": {
+    "message": "Er du sikker på at du vil slette dette nettverket?"
+  },
+  "depositEther": {
+    "message": "Sett inn Ether "
+  },
+  "details": {
+    "message": "Detaljer"
+  },
+  "directDepositEther": {
+    "message": "Sett Ether direkte inn"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Hvis du allerede har noe Ether, er den raskeste måten å få Ether i den nye lommeboken din på ved hjelp av direkte innskudd."
+  },
+  "done": {
+    "message": "Ferdig"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Har du ikke en hardware-lommebok?"
+  },
+  "downloadGoogleChrome": {
+    "message": "Last ned Google Chrome "
+  },
+  "downloadSecretBackup": {
+    "message": "Last ned denne hemmelige gjenopprettingsfrasen og lagre den trygt på ekstern, kryptert harddisk eller lagringsmedium."
+  },
+  "downloadStateLogs": {
+    "message": "Last ned tilstandslogg"
+  },
+  "dropped": {
+    "message": "Droppet"
+  },
+  "edit": {
+    "message": "Endre"
+  },
+  "editContact": {
+    "message": "Rediger kontakt"
+  },
+  "endOfFlowMessage1": {
+    "message": "Du besto prøven - oppbevar den mnemoniske gjenopprettingsfrasen din på et sikkert sted, det er ditt ansvar! "
+  },
+  "endOfFlowMessage10": {
+    "message": "Ferdig"
+  },
+  "endOfFlowMessage2": {
+    "message": "Tips om sikker lagring "
+  },
+  "endOfFlowMessage3": {
+    "message": "Lagre en sikkerhetskopi på flere steder. "
+  },
+  "endOfFlowMessage4": {
+    "message": "Aldri del frasen med noen."
+  },
+  "endOfFlowMessage5": {
+    "message": "Vær forsiktig med phishing! MetaMask vil aldri be om den mnemoniske gjenopprettingsfrasen din spontant."
+  },
+  "endOfFlowMessage6": {
+    "message": "Hvis du trenger å sikkerhetskopiere seed-frasen din igjen kan du finne den i Innstillinger -> Sikkerhet."
+  },
+  "endOfFlowMessage7": {
+    "message": "Hvis du noen gang har spørsmål eller ser noe mistenksomt, send e-post til support@metamask.io"
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask klarer ikke å gjenopprette den mnemoniske gjenopprettingsfrasen din. Finn ut mer. "
+  },
+  "endOfFlowMessage9": {
+    "message": "Finn ut mer."
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ENS-navn ikke funnet i det gjeldende nettverket. Prøv å bytte til hovednettverket for Ethereum."
+  },
+  "ensRegistrationError": {
+    "message": "Feil i ENS-navneregistrering"
+  },
+  "enterAnAlias": {
+    "message": "Oppgi et alias"
+  },
+  "enterPassword": {
+    "message": "Skriv inn passord "
+  },
+  "enterPasswordContinue": {
+    "message": "Skriv inn passord for å fortsette"
+  },
+  "estimatedProcessingTimes": {
+    "message": "Anslått behandlingstid"
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereum offentlig adresse"
+  },
+  "etherscanView": {
+    "message": "Vis konto på Etherscan "
+  },
+  "expandView": {
+    "message": "Utvid visning"
+  },
+  "exportPrivateKey": {
+    "message": "Eksporter privat nøkkel"
+  },
+  "failed": {
+    "message": "Mislyktes"
+  },
+  "fast": {
+    "message": "Høy"
+  },
+  "fileImportFail": {
+    "message": "Virker ikke filimporteringen? Trykk her!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Glem denne enheten"
+  },
+  "from": {
+    "message": "Fra "
+  },
+  "functionType": {
+    "message": "Funksjonstype "
+  },
+  "gasLimit": {
+    "message": "Datakraftsgrense "
+  },
+  "gasLimitInfoTooltipContent": {
+    "message": "Datakraftgrense er det maksimale antall datakraft du er vilig til å benytte. "
+  },
+  "gasLimitTooLow": {
+    "message": "Datakraftsgrense må være minst 21000"
+  },
+  "gasPrice": {
+    "message": "Bensinpris (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Datakraftspris ekstremt lav "
+  },
+  "gasPriceInfoTooltipContent": {
+    "message": "Datakraftpris angir mengden Ether du er villig til å betale for hver datakraftenhet."
+  },
+  "gasUsed": {
+    "message": "Brukt datakraft "
+  },
+  "general": {
+    "message": "Generell"
+  },
+  "generalSettingsDescription": {
+    "message": "Valutakonvertering, primærvaluta, språk, identifikasjonsblokkering"
+  },
+  "getEther": {
+    "message": "Skaff Ether "
+  },
+  "getEtherFromFaucet": {
+    "message": "Få Ether fra en kran for $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "Få hjelp."
+  },
+  "getStarted": {
+    "message": "Kom i gang"
+  },
+  "happyToSeeYou": {
+    "message": "Vi er glade for å se deg "
+  },
+  "hardware": {
+    "message": "Maskinvare"
+  },
+  "hardwareWalletConnected": {
+    "message": "Hardware-lommebok tilkoblet"
+  },
+  "hardwareWallets": {
+    "message": "Koble til en hardware-lommebok"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Velg maskinvarelommeboken som du vil bruke med MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Har du problemer med å koble til?"
+  },
+  "here": {
+    "message": "her",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hide": {
+    "message": "Skjul"
+  },
+  "hideTokenPrompt": {
+    "message": "Skjul sjetonger?"
+  },
+  "history": {
+    "message": "Logg"
+  },
+  "import": {
+    "message": "Importer",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Importér konto"
+  },
+  "importAccountMsg": {
+    "message": "Importerte kontoer blir ikke tilknyttet den opprinnelig opprettede mnemoniske gjenopprettingsfrasen for MetaMask-kontoen din. Finn ut mer om importerte kontoer"
+  },
+  "importAccountSeedPhrase": {
+    "message": "Importer en konto med den mnemoniske gjenopprettingsfrasen "
+  },
+  "importUsingSeed": {
+    "message": "Importer ved hjelp av kontoens mnemoniske gjenopprettingsfrase"
+  },
+  "importWallet": {
+    "message": "Importér lommebok "
+  },
+  "importYourExisting": {
+    "message": "Importer din eksisterende lommebok ved å bruk en tolvords seed-frase."
+  },
+  "imported": {
+    "message": "Importert",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "infoHelp": {
+    "message": "Informasjon og hjelp"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Din opprinnelige transaksjon ble bekreftet av nettverket. Klikk OK for å gå tilbake."
+  },
+  "insufficientBalance": {
+    "message": "Utilstrekkelig saldo."
+  },
+  "insufficientFunds": {
+    "message": "Utilstrekkelig med midler."
+  },
+  "insufficientTokens": {
+    "message": "Utilstrekkelige tokener "
+  },
+  "invalidAddress": {
+    "message": "Ugyldig adresse"
+  },
+  "invalidAddressRecipient": {
+    "message": "Mottaksadresse er ugyldig "
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "Ikke ETH-nettverk, bruk små bokstaver"
+  },
+  "invalidBlockExplorerURL": {
+    "message": "Ugyldig Block Explorer URL"
+  },
+  "invalidRPC": {
+    "message": "Ugyldig RPC URL"
+  },
+  "invalidSeedPhrase": {
+    "message": "Ugyldig mnemonisk gjenopprettingsfrase"
+  },
+  "jsonFile": {
+    "message": "JSON-fil",
+    "description": "format for importing an account"
+  },
+  "knownAddressRecipient": {
+    "message": "Kjent kontaktadresse"
+  },
+  "kovan": {
+    "message": "Kovan testnettverk"
+  },
+  "learnMore": {
+    "message": "Lær mer"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Du må bruke den siste kontoen din før du kan legge til en ny."
+  },
+  "letsGoSetUp": {
+    "message": "Ja, la oss komme i gang!"
+  },
+  "likeToAddTokens": {
+    "message": "Ønsker du å legge til disse tokenene"
+  },
+  "links": {
+    "message": "Lenker "
+  },
+  "loadMore": {
+    "message": "Last mer "
+  },
+  "loading": {
+    "message": "Laster inn ..."
+  },
+  "loadingTokens": {
+    "message": "Laster tokener ..."
+  },
+  "localhost": {
+    "message": "Lokalvert 8545"
+  },
+  "lock": {
+    "message": "Logg ut "
+  },
+  "mainnet": {
+    "message": "Ethereum hovednettverk"
+  },
+  "max": {
+    "message": "Maks"
+  },
+  "memo": {
+    "message": "beskjed"
+  },
+  "memorizePhrase": {
+    "message": "Memorer denne frasen. "
+  },
+  "message": {
+    "message": "Melding "
+  },
+  "metamaskDescription": {
+    "message": "Kobler deg til Ethereum og det desentraliserte nettet."
+  },
+  "metamaskVersion": {
+    "message": "MetaMask-versjon "
+  },
+  "mobileSyncText": {
+    "message": "Vennligst skriv inn passordet ditt for å bekrefte at det er deg!"
+  },
+  "mustSelectOne": {
+    "message": "Må velge minst 1 token. "
+  },
+  "myAccounts": {
+    "message": "Mine kontoer "
+  },
+  "myWalletAccounts": {
+    "message": "mine lommebokkontoer"
+  },
+  "myWalletAccountsDescription": {
+    "message": "Alle dine opprettede MetaMask-kontoer vil automatisk bli lagt til denne seksjonen.  "
+  },
+  "needEtherInWallet": {
+    "message": "Du må ha Ether i lommeboken din for å samhandle med desentraliserte applikasjoner gjennom MateMask."
+  },
+  "needImportFile": {
+    "message": "Du må velge en fil å importere.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Kan ikke sende negative beløp av ETH. "
+  },
+  "networkName": {
+    "message": "Nettverksnavn "
+  },
+  "networkSettingsDescription": {
+    "message": "Legg til og rediger tilpassede RPC-nettverk"
+  },
+  "networks": {
+    "message": "Nettverk"
+  },
+  "nevermind": {
+    "message": "Bare glem det"
+  },
+  "newAccount": {
+    "message": "Ny konto "
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "Ny adresse oppdaget! Klikk her for å legge til adresseboken din."
+  },
+  "newAccountNumberName": {
+    "message": "Konto $1 ",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Ny kontaktperson"
+  },
+  "newContract": {
+    "message": "Ny kontaktperson"
+  },
+  "newNetwork": {
+    "message": "Nytt nettverk "
+  },
+  "newPassword": {
+    "message": "Nytt passord (minimum 8 tegn)"
+  },
+  "newToMetaMask": {
+    "message": "Ny på MetaMask? "
+  },
+  "newTotal": {
+    "message": "Ny total"
+  },
+  "newTransactionFee": {
+    "message": "Ny transaksjonsavgift"
+  },
+  "next": {
+    "message": "Neste"
+  },
+  "noAddressForName": {
+    "message": "Ingen adresse har blitt angitt for dette navnet. "
+  },
+  "noAlreadyHaveSeed": {
+    "message": "Nei, jeg har allerede en mnemonisk gjenopprettingsfrase"
+  },
+  "noConversionRateAvailable": {
+    "message": "Ingen konverteringsrate tilgjengelig "
+  },
+  "noTransactions": {
+    "message": "Du har ingen transaksjoner"
+  },
+  "noWebcamFound": {
+    "message": "Datamaskinens webkamera ble ikke funnet. Vennligst prøv igjen."
+  },
+  "noWebcamFoundTitle": {
+    "message": "Webkamera ikke funnet"
+  },
+  "notEnoughGas": {
+    "message": "Ikke nok bensin"
+  },
+  "ofTextNofM": {
+    "message": "av"
+  },
+  "off": {
+    "message": "Av"
+  },
+  "ok": {
+    "message": "OK"
+  },
+  "on": {
+    "message": "På"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Blokker Explorer URL (valgfritt)"
+  },
+  "optionalCurrencySymbol": {
+    "message": "Symbol (valgfritt)"
+  },
+  "orderOneHere": {
+    "message": "Bestill en Trezor eller Ledger og oppbevar midlene dine i kjølerom"
+  },
+  "origin": {
+    "message": "Opprinnelse"
+  },
+  "parameters": {
+    "message": "Parametre"
+  },
+  "participateInMetaMetrics": {
+    "message": "Delta i MetaMetrics "
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Delta i MetaMetrics for å hjelpe oss med å gjøre MetaMask bedre"
+  },
+  "password": {
+    "message": "Passord"
+  },
+  "passwordNotLongEnough": {
+    "message": "Passordet er ikke langt nok"
+  },
+  "passwordsDontMatch": {
+    "message": "Passordene er ikke like"
+  },
+  "pastePrivateKey": {
+    "message": "Lim inn din private nøkkelstreng her:",
+    "description": "For importing an account from a private key"
+  },
+  "pending": {
+    "message": "i påvente "
+  },
+  "personalAddressDetected": {
+    "message": "Personlig adresse oppdaget. Skriv inn token-kontraktadressen."
+  },
+  "prev": {
+    "message": "Tidligere"
+  },
+  "primaryCurrencySetting": {
+    "message": "Hovedvaluta "
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Velg nasjonal for å prioritere å vise verdier i nasjonal valuta i kjeden (f.eks. ETH). Velg Fiat for å prioritere visning av verdier i den valgte fiat-valutaen."
+  },
+  "privacyMsg": {
+    "message": "Personvernerklæring"
+  },
+  "privateKey": {
+    "message": "Privat nøkkel",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Advarsel: aldri gjør kjent denne nøkkelen. Alle som har tilgang til dine private nøkler kan stjele midlene dine som er på konto."
+  },
+  "privateNetwork": {
+    "message": "Privat nettverk "
+  },
+  "protectYourKeys": {
+    "message": "Beskytt nøklene dine! "
+  },
+  "protectYourKeysMessage1": {
+    "message": "Vær forsiktig med den mnemoniske gjenopprettingsfrasen din - det rapporteres om nettsteder som prøver å etterligne MetaMask. MetaMask vil aldri be om den mnemoniske gjenopprettingsfrasen din!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Oppbevar setningen din trygt. Hvis du ser noe mistenksomt, eller du er usikker på et nettsted, kan du sende en e-post til support@metamask.io"
+  },
+  "queue": {
+    "message": "Kø"
+  },
+  "readdToken": {
+    "message": "Du kan legge til dette tokenet igjen i fremtiden ved å gå til \"Legg til token\" i menyen for kontoalternativer."
+  },
+  "readyToConnect": {
+    "message": "Klar til å koble til?"
+  },
+  "recents": {
+    "message": "Nylige"
+  },
+  "recipientAddress": {
+    "message": "Mottakeradresse"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Søk, offentlig adresse (0x) eller ENS"
+  },
+  "reject": {
+    "message": "Avslå"
+  },
+  "rejectAll": {
+    "message": "Avvis alle"
+  },
+  "rejectTxsDescription": {
+    "message": "Du er i ferd med å gruppevis avslå transaksjoner på $1."
+  },
+  "rejectTxsN": {
+    "message": "Avslå transaksjoner på $1."
+  },
+  "rejected": {
+    "message": "Avvist"
+  },
+  "remindMeLater": {
+    "message": "Minn meg på dette senere"
+  },
+  "remove": {
+    "message": "Fjern"
+  },
+  "removeAccount": {
+    "message": "Fjern konto"
+  },
+  "removeAccountDescription": {
+    "message": "Denne kontoen blir fjernet fra lommeboken din. Forsikre deg om at du har den originale mnemoniske gjenopprettingsfrasen eller den private nøkkelen for denne importerte kontoen før du fortsetter. Du kan importere eller opprette kontoer igjen fra nedtrekksmenyen."
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "forespørsler venter på godkjenning"
+  },
+  "required": {
+    "message": "Påkrevd "
+  },
+  "reset": {
+    "message": "Tilbakestill"
+  },
+  "resetAccount": {
+    "message": "Tilbakestill konto"
+  },
+  "resetAccountDescription": {
+    "message": "Hvis du tilbakestiller kontoen din vil transaksjonshistorien din slettes. "
+  },
+  "restore": {
+    "message": "Gjenopprett"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Gjenopprett konto med frøfrase"
+  },
+  "restoreFromSeed": {
+    "message": "Gjennopprett konto? "
+  },
+  "revealSeedWords": {
+    "message": "Vis frøord"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Hvis du noen gang bytter nettlesere eller flytter datamaskiner, trenger du denne mnemoniske gjenopprettingsfrasen for å få tilgang til kontoene dine. Lagre dem på et trygt og hemmelig sted."
+  },
+  "revealSeedWordsTitle": {
+    "message": "Mnemonisk gjenopprettingsfrase"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Disse ordene kan brukes for å stjele alle kontoene dine. "
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "IKKE del denne frasen med noen! "
+  },
+  "rinkeby": {
+    "message": "Rinkeby testnettverk"
+  },
+  "rpcUrl": {
+    "message": "NY RPC-URL "
+  },
+  "save": {
+    "message": "Lagre"
+  },
+  "saveAsCsvFile": {
+    "message": "Lagre som CSV-fil "
+  },
+  "scanInstructions": {
+    "message": "Plasser QR-koden foran kameraet ditt"
+  },
+  "scanQrCode": {
+    "message": "Skann QR-kode"
+  },
+  "search": {
+    "message": "Søk"
+  },
+  "searchResults": {
+    "message": "Søkeresultater"
+  },
+  "searchTokens": {
+    "message": "Søk i sjetonger"
+  },
+  "secretBackupPhrase": {
+    "message": "Hemmelig sikkerhetskopifrase "
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Den hemmelige gjenopprettingsfrasen din gjør det enkelt å sikkerhetskopiere og gjenopprette kontoen din."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "ADVARSEL: Du må aldri avsløre gjenopprettingsfrasen din. Alle som har denne frasen kan ta fra deg Etheren din for alltid."
+  },
+  "secretPhrase": {
+    "message": "Skriv inn den tolv ord lange frasen her for å gjenopprette hvelvet ditt. "
+  },
+  "securityAndPrivacy": {
+    "message": "Sikkerhet og personvern"
+  },
+  "securitySettingsDescription": {
+    "message": "Personverninnstillinger og lommebokens mnemoniske gjenopprettingsfrase"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Skill hvert ord med ett enkelt mellomrom"
+  },
+  "seedPhraseReq": {
+    "message": "Mnemoniske gjenopprettingsfraser består av 12 ord "
+  },
+  "selectAHigherGasFee": {
+    "message": "Velg en høyere gassavgift for å fremskynde transaksjonsbehandlingen.*"
+  },
+  "selectAnAccount": {
+    "message": "Velg en konto"
+  },
+  "selectAnAccountHelp": {
+    "message": "Velg konto for å vise i MetaMask"
+  },
+  "selectCurrency": {
+    "message": "Velg valuta"
+  },
+  "selectEachPhrase": {
+    "message": "Velg hver frase for å kontrollere at den er riktig."
+  },
+  "selectHdPath": {
+    "message": "Velg HD-bane"
+  },
+  "selectLocale": {
+    "message": "Velg plassering"
+  },
+  "selectPathHelp": {
+    "message": "Hvis du ikke ser de eksisterende Ledger-kontoene nedenfor, kan du prøve å bytte baner til «Legacy (MEW/MyCrypto)»"
+  },
+  "selectType": {
+    "message": "Velg type "
+  },
+  "sendAmount": {
+    "message": "Send beløp"
+  },
+  "sendTokens": {
+    "message": "Send tokener"
+  },
+  "sentEther": {
+    "message": "sendt ether"
+  },
+  "separateEachWord": {
+    "message": "Del hvert ord med et enkelt mellomrom "
+  },
+  "settings": {
+    "message": "Innstillinger"
+  },
+  "showAdvancedGasInline": {
+    "message": "Avanserte datakraftskontroller"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Velg dette for å vise bensinpris og begrensningskontroller direkte på send- og bekreftskjermbildene."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Vis konvertering på Testnets "
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Velg dette for å vise fiat-konvertering på Testnets"
+  },
+  "showHexData": {
+    "message": "Vis hex data "
+  },
+  "showHexDataDescription": {
+    "message": "Velg dette for å vise hex-datafeltet på sendskjermen"
+  },
+  "showPrivateKeys": {
+    "message": "Vis private nøkler"
+  },
+  "sigRequest": {
+    "message": "Signaturforespørsel "
+  },
+  "sign": {
+    "message": "Undertegn"
+  },
+  "signNotice": {
+    "message": "Signering av denne meldingen kan ha\nfarlige konsekvenser. Signér kun meldinger fra\nnettsteder du stoler fullt og helt på med hele kontoen din. Denne farlige metoden vil bli fjernet i en fremtidig versjon."
+  },
+  "signatureRequest": {
+    "message": "Signaturforespørsel"
+  },
+  "signed": {
+    "message": "Signert"
+  },
+  "slow": {
+    "message": "Lav"
+  },
+  "somethingWentWrong": {
+    "message": "Oisann! Noe gikk galt. "
+  },
+  "speedUp": {
+    "message": "Øk hastigheten "
+  },
+  "speedUpCancellation": {
+    "message": "Fremskynd denne kanselleringen"
+  },
+  "speedUpTransaction": {
+    "message": "Utfør denne transaksjonen hurtigere"
+  },
+  "stateLogError": {
+    "message": "Feil ved henting av tilstandslogger."
+  },
+  "stateLogs": {
+    "message": "Tilstandslogg"
+  },
+  "stateLogsDescription": {
+    "message": "Tilstandslogger inneholder de offentlige kontoadressene og sendte transaksjoner."
+  },
+  "step1HardwareWallet": {
+    "message": "1. Koble til maskinvarelommebok"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Koble hardware-lommebok din direkte til datamaskinen din."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Velg en konto"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Velg den kontoen du ønsker å se. Du kan bare velge en av gangen."
+  },
+  "step3HardwareWallet": {
+    "message": "3. Begynn å bruke dApps mer! "
+  },
+  "step3HardwareWalletMsg": {
+    "message": "Bruk hardware-kontoen din slik du ville gjort med enhver Ethereumkonto. Logg på dApps, send Eth, kjøp og lagre ERC20-tokener og ikke-fungible tokener som CryptoKitties."
+  },
+  "storePhrase": {
+    "message": "Lagre denne frasen i en passordbehandler slik som 1Password."
+  },
+  "submitted": {
+    "message": "Sendt inn"
+  },
+  "supportCenter": {
+    "message": "Besøk brukerstøtte"
+  },
+  "switchNetworks": {
+    "message": "Bytt nettverk "
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Symbolet må være 11 tegn eller færre."
+  },
+  "syncWithMobile": {
+    "message": "Synkroniser med mobil "
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Pass på at ingen andre ser på skjermen din mens du skanner denne koden "
+  },
+  "syncWithMobileComplete": {
+    "message": "Dataene dine er blitt synkronisert med suksess. Kos deg med mobilappen for MetaMask!"
+  },
+  "syncWithMobileDesc": {
+    "message": "Du kan synkronisere kontoene og informasjonen din med den mobile enheten din. Åpne mobilappen for MetaMask, gå til \"Innstillinger\" og trykk på \"Synkronisering fra nettleserutvidelse\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "Hvis du åpner mobilappen for MetaMask for første gang, følger du bare trinnene på telefonen."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "Skann denne koden med din mobilapp for MetaMask"
+  },
+  "syncWithMobileTitle": {
+    "message": "Synkronisér med mobil"
+  },
+  "terms": {
+    "message": "Brukervilkår"
+  },
+  "testFaucet": {
+    "message": "Testkran"
+  },
+  "thisWillCreate": {
+    "message": "Dette vil opprette en ny lommebok og mnemonisk gjenopprettingsfrase"
+  },
+  "to": {
+    "message": "Til "
+  },
+  "token": {
+    "message": "Token "
+  },
+  "tokenAlreadyAdded": {
+    "message": "Tokenet har allerede blitt lagt til."
+  },
+  "tokenContractAddress": {
+    "message": "Token-kontraktadresse "
+  },
+  "tokenSymbol": {
+    "message": "Token-symbol"
+  },
+  "total": {
+    "message": "Totalt"
+  },
+  "transaction": {
+    "message": "transaksjon"
+  },
+  "transactionCancelAttempted": {
+    "message": "Kansellering av transaksjon forsøkt med en $1 gassavgift på $2."
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaksjon vellykket avbrutt på $2 "
+  },
+  "transactionConfirmed": {
+    "message": "Transaksjon bekreftet på $2."
+  },
+  "transactionCreated": {
+    "message": "Transaksjon opprettet med en verdi på $1 og $2. "
+  },
+  "transactionDropped": {
+    "message": "Transaksjonen falt på $2."
+  },
+  "transactionError": {
+    "message": "Transaksjonsfeil. Unntak kastet i kontraktskode."
+  },
+  "transactionErrorNoContract": {
+    "message": "Prøver å kontakte en funksjon på en adresse uten kontrakt."
+  },
+  "transactionErrored": {
+    "message": "Det oppsto en feil under transaksjonen."
+  },
+  "transactionFee": {
+    "message": "Transaksjonsavgift"
+  },
+  "transactionResubmitted": {
+    "message": "Transaksjonen som ble sendt inn igjen med bensinavgift økte til $1 på $2"
+  },
+  "transactionSubmitted": {
+    "message": "Transaksjon sendt med datakraftavgift på $1 til $2."
+  },
+  "transactionUpdated": {
+    "message": "Transaksjonen oppdatert på $2."
+  },
+  "transfer": {
+    "message": "Overfør"
+  },
+  "transferBetweenAccounts": {
+    "message": "Overfør mellom kontoene mine"
+  },
+  "transferFrom": {
+    "message": "Overfør fra"
+  },
+  "troubleTokenBalances": {
+    "message": "Vi hadde problemer med å laste inn sjetongsaldoen din. Du kan se dem",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "Prøv igjen"
+  },
+  "typePassword": {
+    "message": "Skriv inn MetaMask-passordet"
+  },
+  "unapproved": {
+    "message": "Ikke godkjent "
+  },
+  "units": {
+    "message": "enheter "
+  },
+  "unknown": {
+    "message": "Ukjent"
+  },
+  "unknownCameraError": {
+    "message": "Det oppsto en feil under forsøket på å få tilgang til kameraet ditt. Vær så snill og prøv på nytt..."
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Oisann! Noe gikk galt.... "
+  },
+  "unknownNetwork": {
+    "message": "Ukjent privat nettverk"
+  },
+  "unknownQrCode": {
+    "message": "Feil: Vi kunne ikke gjenkjenne denne QR-koden"
+  },
+  "unlock": {
+    "message": "Lås opp"
+  },
+  "unlockMessage": {
+    "message": "Det desentraliserte internett venter deg"
+  },
+  "updatedWithDate": {
+    "message": "Oppdatert $1"
+  },
+  "urlErrorMsg": {
+    "message": "URI-er krever det aktuelle HTTP/HTTPS-prefikset."
+  },
+  "usedByClients": {
+    "message": "Brukt av en rekke forskjellige klienter"
+  },
+  "userName": {
+    "message": "Brukernavn"
+  },
+  "viewAccount": {
+    "message": "Se konto"
+  },
+  "viewContact": {
+    "message": "Se kontrakt"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "Vis ved $1 "
+  },
+  "viewOnEtherscan": {
+    "message": "Vis på Etherscan "
+  },
+  "viewinExplorer": {
+    "message": "Se i Explorer"
+  },
+  "visitWebSite": {
+    "message": "Besøk nettsiden vår "
+  },
+  "walletSeed": {
+    "message": "Lommebok med mnemonisk gjenopprettingsfrase"
+  },
+  "welcome": {
+    "message": "Velkommen til MetaMask"
+  },
+  "welcomeBack": {
+    "message": "Velkommen tilbake!"
+  },
+  "writePhrase": {
+    "message": "Skriv denne frasen på et papir og oppbevar på et sikkert sted. Hvis du vil ha enda mer sikkerhet, kan du skrive det ned på flere papirbiter og oppbevare hver på 2 - 3 forskjellige steder."
+  },
+  "yesLetsTry": {
+    "message": "Ja, la oss prøve"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Du må gi kameratilgang for å bruke denne funksjonen."
+  },
+  "youSign": {
+    "message": "Du signerer"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Din private frøfrase"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Null bensinpris for fremskynding"
+  }
+}

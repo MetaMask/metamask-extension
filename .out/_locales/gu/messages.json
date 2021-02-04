@@ -1,0 +1,143 @@
+{
+  "about": {
+    "message": "વિશે"
+  },
+  "account": {
+    "message": "એકાઉન્ટ"
+  },
+  "advanced": {
+    "message": "વિગતવાર"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "back": {
+    "message": "પાછળ"
+  },
+  "basic": {
+    "message": "મૂળભૂત"
+  },
+  "cancel": {
+    "message": "રદ કરો"
+  },
+  "close": {
+    "message": "બંધ કરો"
+  },
+  "confirm": {
+    "message": "પુષ્ટિ કરો"
+  },
+  "connect": {
+    "message": "કનેક્ટ કરો"
+  },
+  "copyToClipboard": {
+    "message": "ક્લિપબોર્ડ પર કૉપિ કરો"
+  },
+  "create": {
+    "message": "બનાવો"
+  },
+  "delete": {
+    "message": "કાઢી નાખો"
+  },
+  "details": {
+    "message": "વિગતો"
+  },
+  "done": {
+    "message": "થઈ ગયું"
+  },
+  "edit": {
+    "message": "સંપાદન"
+  },
+  "fast": {
+    "message": "ઝડપી"
+  },
+  "forgetDevice": {
+    "message": "આ ઉપકરણને ભૂલી જાઓ"
+  },
+  "getStarted": {
+    "message": "પ્રારંભ કરો"
+  },
+  "hide": {
+    "message": "છુપાવો"
+  },
+  "history": {
+    "message": "ઇતિહાસ"
+  },
+  "import": {
+    "message": "આયાત કરો",
+    "description": "Button to import an account from a selected file"
+  },
+  "imported": {
+    "message": "આયાત કરેલા",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "loading": {
+    "message": "લોડ કરી રહ્યું છે..."
+  },
+  "next": {
+    "message": "આગલું"
+  },
+  "off": {
+    "message": "બંધ"
+  },
+  "ok": {
+    "message": "બરાબર, સમજાઇ ગયું"
+  },
+  "on": {
+    "message": "ચાલુ"
+  },
+  "origin": {
+    "message": "મૂળ"
+  },
+  "password": {
+    "message": "પાસવર્ડ"
+  },
+  "queue": {
+    "message": "કતારમાં"
+  },
+  "reject": {
+    "message": "નકારો"
+  },
+  "remove": {
+    "message": "દૂર કરો"
+  },
+  "removeAccount": {
+    "message": "એકાઉન્ટ દૂર કરો"
+  },
+  "reset": {
+    "message": "રીસેટ કરો"
+  },
+  "restore": {
+    "message": "પુનઃસ્થાપિત કરો"
+  },
+  "save": {
+    "message": "સાચવો"
+  },
+  "search": {
+    "message": "શોધો"
+  },
+  "send": {
+    "message": "મોકલો"
+  },
+  "settings": {
+    "message": "સેટિંગ્સ"
+  },
+  "slow": {
+    "message": "ધીમું"
+  },
+  "tryAgain": {
+    "message": "ફરી પ્રયાસ કરો"
+  },
+  "unknown": {
+    "message": "અજાણ"
+  },
+  "unlock": {
+    "message": "અનલોક કરો"
+  },
+  "userName": {
+    "message": "વપરાશકર્તાનામ"
+  },
+  "viewAccount": {
+    "message": "એકાઉન્ટ જુઓ"
+  }
+}

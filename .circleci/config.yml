@@ -215,10 +215,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - .out
-      - store_artifacts:
-          path: .out
-          destination: storybook
+            - storybook-build
 
   test-lint:
     executor: node-browsers
@@ -420,6 +417,9 @@ jobs:
       - store_artifacts:
           path: build-artifacts
           destination: build-artifacts
+      - store_artifacts:
+          path: storybook-build
+          destination: storybook
       - run:
           name: build:announce
           command: ./development/metamaskbot-build-announce.js
