@@ -58,6 +58,9 @@ async function start() {
   const coverageUrl = `${BUILD_LINK_BASE}/coverage/index.html`
   const coverageLink = `<a href="${coverageUrl}">Report</a>`
 
+  const storybookUrl = `${BUILD_LINK_BASE}/storybook/index.html`
+  const storybookLink = `<a href="${storybookUrl}">Storybook</a>`
+
   // link to artifacts
   const allArtifactsUrl = `https://circleci.com/gh/MetaMask/metamask-extension/${CIRCLE_BUILD_NUM}#artifacts/containers/0`
 
@@ -65,6 +68,7 @@ async function start() {
     `builds: ${buildLinks}`,
     `bundle viz: ${bundleLinks}`,
     `code coverage: ${coverageLink}`,
+    `storybook: ${storybookLink}`,
     `<a href="${allArtifactsUrl}">all artifacts</a>`,
   ]
   const hiddenContent = `<ul>${contentRows
