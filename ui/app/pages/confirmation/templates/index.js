@@ -4,8 +4,10 @@ import {
   rejectPendingApproval,
   resolvePendingApproval,
 } from '../../../store/actions';
+import addEthereumChain from './add-ethereum-chain';
 
 const APPROVAL_TEMPLATES = {
+  [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN]: addEthereumChain,
 };
 
 const ALLOWED_TEMPLATE_KEYS = [

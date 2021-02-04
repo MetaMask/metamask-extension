@@ -9,6 +9,7 @@ import MetaMaskTranslation from '../metamask-translation';
 
 export const safeComponentList = {
   MetaMaskTranslation,
+  a: 'a',
   b: 'b',
   p: 'p',
   div: 'div',
