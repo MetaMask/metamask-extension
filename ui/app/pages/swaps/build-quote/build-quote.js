@@ -384,7 +384,7 @@ export default function BuildQuote({
                     {t('swapTokenVerificationOnlyOneSource')}
                   </div>
                   <div>
-                    {t('swapsConfirmTokenAddressOnEtherscan', [
+                    {t('verifyThisTokenOn', [
                       <a
                         className="build-quote__token-etherscan-link build-quote__underline"
                         key="build-quote-etherscan-link"

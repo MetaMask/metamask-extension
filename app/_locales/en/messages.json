@@ -1884,10 +1884,6 @@
   "swapsAdvancedOptions": {
     "message": "Advanced Options"
   },
-  "swapsConfirmTokenAddressOnEtherscan": {
-    "message": "Confirm token address on $1.",
-    "description": "Asks the user to verify information about a token on Etherscan. $1 will be replaced by the translation for \"Etherscan\""
-  },
   "swapsExcessiveSlippageWarning": {
     "message": "Slippage amount is too high and will result in a bad rate. Please reduce your slippage tolerance to a value below 15%."
   },
@@ -2102,6 +2098,10 @@
   },
   "userName": {
     "message": "Username"
+  },
+  "verifyThisTokenOn": {
+    "message": "Verify this token on $1",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "viewAccount": {
     "message": "View Account"

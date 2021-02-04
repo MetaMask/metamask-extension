@@ -2037,6 +2037,10 @@
   "userName": {
     "message": "사용자 이름"
   },
+  "verifyThisTokenOn": {
+    "message": "$1에서 이 토큰 확인",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
   "viewAccount": {
     "message": "계정 보기"
   },
