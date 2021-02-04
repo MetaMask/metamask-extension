@@ -1951,10 +1951,10 @@
     "@types/yargs" "^15.0.0"
     chalk "^3.0.0"
 
-"@lavamoat/allow-scripts@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@lavamoat/allow-scripts/-/allow-scripts-1.0.0.tgz#b24de0b179f1b16aae7bc15d21948bd774fb05e9"
-  integrity sha512-xY98CJu2BAFirfZ+w4wRQxAMlolfFj7L5sIkUdZPlhFYIZjNis8kGKxvxN4uscbIOILS14nSIbGqrUwEddPGrA==
+"@lavamoat/allow-scripts@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@lavamoat/allow-scripts/-/allow-scripts-1.0.3.tgz#8fa54a3f250977fdc85484d0870ae65c4e50a0c8"
+  integrity sha512-bzRYwOqjx5UU2vQYIV/QZYQGDA1Nm4lXipTUCK4UNBwGSwYlK8A1SUrQdX+Rp0ASbr/mb8IH6rPIjz1LgsDbDA==
   dependencies:
     "@npmcli/run-script" "^1.8.1"
     "@yarnpkg/lockfile" "^1.1.0"
