@@ -1735,6 +1735,12 @@
     "message": "You are about to swap $1 $2 (~$3) for $4 $5 (~$6).",
     "description": "This message represents the price slippage for the swap.  $1 and $4 are a number (ex: 2.89), $2 and $5 are symbols (ex: ETH), and $3 and $6 are fiat currency amounts."
   },
+  "swapPriceDifferenceAcknowledgement": {
+    "message": "I'm aware"
+  },
+  "swapPriceDifferenceAcknowledgementNoFiat": {
+    "message": "Continue"
+  },
   "swapPriceDifferenceTitle": {
     "message": "Price difference of ~$1%",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."

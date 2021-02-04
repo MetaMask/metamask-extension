@@ -140,7 +140,7 @@ describe('View Price Quote Difference', function () {
   })
 
   it('displays a fiat error when calculationError is present', function () {
-    const props = { ...DEFAULT_PROPS }
+    const props = { ...DEFAULT_PROPS, priceSlippageUnknownFiatValue: true }
     props.usedQuote.priceSlippage.calculationError =
       'Could not determine price.'
 

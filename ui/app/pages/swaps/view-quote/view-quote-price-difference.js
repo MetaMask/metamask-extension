@@ -2,64 +2,37 @@ import React, { useContext } from 'react'
 
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import BigNumber from 'bignumber.js'
-import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount'
 import { I18nContext } from '../../../contexts/i18n'
 
 import ActionableMessage from '../actionable-message'
 import Tooltip from '../../../components/ui/tooltip'
 
 export default function ViewQuotePriceDifference(props) {
-  const { usedQuote, sourceTokenValue, destinationTokenValue } = props
+  const {
+    usedQuote,
+    sourceTokenValue,
+    destinationTokenValue,
+    onAcknowledgementClick,
+    acknowledged,
+    priceSlippageFromSource,
+    priceSlippageFromDestination,
+    priceDifferencePercentage,
+    priceSlippageUnknownFiatValue,
+  } = props
 
   const t = useContext(I18nContext)
-
-  const priceSlippageFromSource = useEthFiatAmount(
-    usedQuote?.priceSlippage?.sourceAmountInETH || 0,
-  )
-  const priceSlippageFromDestination = useEthFiatAmount(
-    usedQuote?.priceSlippage?.destinationAmountInEth || 0,
-  )
-
-  if (!usedQuote || !usedQuote.priceSlippage) {
-    return null
-  }
-
-  const { priceSlippage } = usedQuote
-
-  // We cannot present fiat value if there is a calculation error or no slippage
-  // from source or destination
-  const priceSlippageUnknownFiatValue =
-    !priceSlippageFromSource ||
-    !priceSlippageFromDestination ||
-    priceSlippage.calculationError
-
-  let priceDifferencePercentage = 0
-  if (priceSlippage.ratio) {
-    priceDifferencePercentage = parseFloat(
-      new BigNumber(priceSlippage.ratio, 10)
-        .minus(1, 10)
-        .times(100, 10)
-        .toFixed(2),
-      10,
-    )
-  }
-
-  const shouldShowPriceDifferenceWarning =
-    ['high', 'medium'].includes(priceSlippage.bucket) ||
-    priceSlippageUnknownFiatValue
-
-  if (!shouldShowPriceDifferenceWarning) {
-    return null
-  }
 
   let priceDifferenceTitle = ''
   let priceDifferenceMessage = ''
   let priceDifferenceClass = ''
+  let priceDifferenceAcknowledgementText = ''
   if (priceSlippageUnknownFiatValue) {
     // A calculation error signals we cannot determine dollar value
     priceDifferenceMessage = t('swapPriceDifferenceUnavailable')
     priceDifferenceClass = 'fiat-error'
+    priceDifferenceAcknowledgementText = t(
+      'swapPriceDifferenceAcknowledgementNoFiat',
+    )
   } else {
     priceDifferenceTitle = t('swapPriceDifferenceTitle', [
       priceDifferencePercentage,
@@ -72,7 +45,8 @@ export default function ViewQuotePriceDifference(props) {
       usedQuote.destinationTokenInfo.symbol, // Destination token symbol,
       priceSlippageFromDestination, // Destination tokens total value
     ])
-    priceDifferenceClass = priceSlippage.bucket
+    priceDifferenceClass = usedQuote.priceSlippage.bucket
+    priceDifferenceAcknowledgementText = t('swapPriceDifferenceAcknowledgement')
   }
 
   return (
@@ -92,6 +66,17 @@ export default function ViewQuotePriceDifference(props) {
                 </div>
               )}
               {priceDifferenceMessage}
+              {!acknowledged && (
+                <div className="view-quote__price-difference-warning-contents-actions">
+                  <button
+                    onClick={() => {
+                      onAcknowledgementClick()
+                    }}
+                  >
+                    {priceDifferenceAcknowledgementText}
+                  </button>
+                </div>
+              )}
             </div>
             <Tooltip
               position="bottom"
@@ -111,4 +96,10 @@ ViewQuotePriceDifference.propTypes = {
   usedQuote: PropTypes.object,
   sourceTokenValue: PropTypes.string,
   destinationTokenValue: PropTypes.string,
+  onAcknowledgementClick: PropTypes.func,
+  acknowledged: PropTypes.bool,
+  priceSlippageFromSource: PropTypes.string,
+  priceSlippageFromDestination: PropTypes.string,
+  priceDifferencePercentage: PropTypes.number,
+  priceSlippageUnknownFiatValue: PropTypes.bool,
 }
