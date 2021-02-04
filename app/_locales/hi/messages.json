@@ -2037,6 +2037,10 @@
   "userName": {
     "message": "उपयोगकर्ता"
   },
+  "verifyThisTokenOn": {
+    "message": "इस टोकन को $1 पर सत्यापित करें",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
   "viewAccount": {
     "message": "खाता देखें"
   },
