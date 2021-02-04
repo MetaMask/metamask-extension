@@ -1672,9 +1672,6 @@
   "swapFinalizing": {
     "message": "Finalizing..."
   },
-  "swapGetQuotes": {
-    "message": "Get quotes"
-  },
   "swapHighSlippageWarning": {
     "message": "Slippage amount is very high. Make sure you know what you are doing!"
   },
@@ -1797,6 +1794,9 @@
   },
   "swapRequestForQuotation": {
     "message": "Request for quotation"
+  },
+  "swapReviewSwap": {
+    "message": "Review Swap"
   },
   "swapSearchForAToken": {
     "message": "Search for a token"

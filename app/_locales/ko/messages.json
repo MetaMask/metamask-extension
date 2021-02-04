@@ -1657,9 +1657,6 @@
   "swapFinalizing": {
     "message": "마무리 중..."
   },
-  "swapGetQuotes": {
-    "message": "견적 가져오기"
-  },
   "swapHighSlippageWarning": {
     "message": "슬리패지 금액이 아주 큽니다. 현재 어떤 작업을 하고 있는지 확인하세요!"
   },
