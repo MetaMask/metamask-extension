@@ -1657,9 +1657,6 @@
   "swapFinalizing": {
     "message": "Menyelesaikan..."
   },
-  "swapGetQuotes": {
-    "message": "Dapatkan kuota"
-  },
   "swapHighSlippageWarning": {
     "message": "Jumlah slippage sangat tinggi. Pastikan Anda mengetahui yang Anda kerjakan!"
   },

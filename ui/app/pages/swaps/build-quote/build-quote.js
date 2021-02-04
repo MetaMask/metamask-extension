@@ -410,7 +410,7 @@ export default function BuildQuote({
             ),
           )
         }}
-        submitText={t('swapGetQuotes')}
+        submitText={t('swapReviewSwap')}
         disabled={
           !Number(inputValue) ||
           !selectedToToken?.address ||
