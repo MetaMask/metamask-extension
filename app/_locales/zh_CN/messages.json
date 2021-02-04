@@ -609,12 +609,6 @@
   "mustSelectOne": {
     "message": "至少选择一种代币."
   },
-  "myWalletAccounts": {
-    "message": "我的钱包账户"
-  },
-  "myWalletAccountsDescription": {
-    "message": "所有已创建的 MetaMask 账户将自动添加到该部分。"
-  },
   "needEtherInWallet": {
     "message": "使用 MetaMask 与 DAPP 交互，需要你的钱包里有 Ether。"
   },

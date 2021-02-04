@@ -645,12 +645,6 @@
   "myAccounts": {
     "message": "Мои счета"
   },
-  "myWalletAccounts": {
-    "message": "Мои кошельки"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Все ваши учетные записи, созданные в MetaMask, будут автоматически добавлены в этот раздел."
-  },
   "needEtherInWallet": {
     "message": "Для взаимодействия с децентрализованными приложениями с помощью MetaMask нужен Ether в вашем кошельке."
   },
