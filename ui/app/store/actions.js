@@ -2463,6 +2463,40 @@ export function clearPermissions() {
   };
 }
 
+// Pending Approvals
+
+/**
+ * @param {string} id
+ * @param {any} [value]
+ */
+export function resolvePendingApproval(id, value) {
+  return async (dispatch) => {
+    await promisifiedBackground.resolvePendingApproval(id, value);
+    // Before closing the current window, check if any additional confirmations
+    // are added as a result of this confirmation being accepted
+    const { pendingApprovals } = await promisifiedBackground.getState();
+    if (Object.values(pendingApprovals).length === 0) {
+      dispatch(closeCurrentNotificationWindow());
+    }
+  };
+}
+
+/**
+ * @param {string} id
+ * @param {Error} [error]
+ */
+export function rejectPendingApproval(id, error) {
+  return async (dispatch) => {
+    await promisifiedBackground.rejectPendingApproval(id, error);
+    // Before closing the current window, check if any additional confirmations
+    // are added as a result of this confirmation being rejected
+    const { pendingApprovals } = await promisifiedBackground.getState();
+    if (Object.values(pendingApprovals).length === 0) {
+      dispatch(closeCurrentNotificationWindow());
+    }
+  };
+}
+
 export function setFirstTimeFlowType(type) {
   return (dispatch) => {
     log.debug(`background.setFirstTimeFlowType`);

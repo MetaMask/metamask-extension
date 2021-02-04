@@ -52,6 +52,7 @@ const mapStateToProps = (state) => {
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
     swapsState,
+    pendingApprovals = {},
   } = metamask;
   const accountBalance = getCurrentEthBalance(state);
   const { forgottenPassword, threeBoxLastUpdated } = appState;
@@ -101,6 +102,7 @@ const mapStateToProps = (state) => {
     isMainnet: getIsMainnet(state),
     originOfCurrentTab,
     shouldShowWeb3ShimUsageNotification,
+    pendingApprovals: Object.values(pendingApprovals),
   };
 };
 
