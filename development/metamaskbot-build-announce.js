@@ -59,7 +59,7 @@ async function start() {
   const coverageLink = `<a href="${coverageUrl}">Report</a>`
 
   const storybookUrl = `${BUILD_LINK_BASE}/storybook/index.html`
-  const storybookLink = `<a href="${storybookUrl}">Report</a>`
+  const storybookLink = `<a href="${storybookUrl}">Storybook</a>`
 
   // link to artifacts
   const allArtifactsUrl = `https://circleci.com/gh/MetaMask/metamask-extension/${CIRCLE_BUILD_NUM}#artifacts/containers/0`
