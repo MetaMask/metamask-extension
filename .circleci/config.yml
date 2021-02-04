@@ -367,7 +367,7 @@ jobs:
           destination: test-artifacts
 
   benchmark:
-    executor: node-browsers
+    executor: node-browsers-medium-plus
     steps:
       - checkout
       - run:
