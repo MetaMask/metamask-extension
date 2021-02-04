@@ -4,12 +4,10 @@ import ContactList from '../../../components/app/contact-list'
 import {
   CONTACT_ADD_ROUTE,
   CONTACT_VIEW_ROUTE,
-  CONTACT_MY_ACCOUNTS_ROUTE,
 } from '../../../helpers/constants/routes'
 import EditContact from './edit-contact'
 import AddContact from './add-contact'
 import ViewContact from './view-contact'
-import MyAccounts from './my-accounts'
 
 export default class ContactListTab extends Component {
   static contextTypes = {
@@ -25,7 +23,6 @@ export default class ContactListTab extends Component {
     addingContact: PropTypes.bool,
     showContactContent: PropTypes.bool,
     hideAddressBook: PropTypes.bool,
-    showingMyAccounts: PropTypes.bool,
   }
 
   renderAddresses() {
@@ -66,29 +63,6 @@ export default class ContactListTab extends Component {
     )
   }
 
-  renderMyAccountsButton() {
-    const { history } = this.props
-    const { t } = this.context
-    return (
-      <div
-        className="address-book__my-accounts-button"
-        onClick={() => {
-          history.push(CONTACT_MY_ACCOUNTS_ROUTE)
-        }}
-      >
-        <div className="address-book__my-accounts-button__header">
-          {t('myWalletAccounts')}
-        </div>
-        <div className="address-book__my-accounts-button__content">
-          <div className="address-book__my-accounts-button__text">
-            {t('myWalletAccountsDescription')}
-          </div>
-          <div className="address-book__my-accounts-button__caret" />
-        </div>
-      </div>
-    )
-  }
-
   renderContactContent() {
     const {
       viewingContact,
@@ -120,17 +94,10 @@ export default class ContactListTab extends Component {
   }
 
   renderAddressBookContent() {
-    const { hideAddressBook, showingMyAccounts } = this.props
+    const { hideAddressBook } = this.props
 
-    if (!hideAddressBook && !showingMyAccounts) {
-      return (
-        <div className="address-book">
-          {this.renderMyAccountsButton()}
-          {this.renderAddresses()}
-        </div>
-      )
-    } else if (!hideAddressBook && showingMyAccounts) {
-      return <MyAccounts />
+    if (!hideAddressBook) {
+      return <div className="address-book">{this.renderAddresses()}</div>
     }
     return null
   }

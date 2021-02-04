@@ -22,8 +22,6 @@ export default class EditContact extends PureComponent {
     memo: PropTypes.string,
     viewRoute: PropTypes.string,
     listRoute: PropTypes.string,
-    setAccountLabel: PropTypes.func,
-    showingMyAccounts: PropTypes.bool.isRequired,
   }
 
   static defaultProps = {
@@ -49,8 +47,6 @@ export default class EditContact extends PureComponent {
       memo,
       name,
       removeFromAddressBook,
-      setAccountLabel,
-      showingMyAccounts,
       viewRoute,
     } = this.props
 
@@ -62,17 +58,15 @@ export default class EditContact extends PureComponent {
       <div className="settings-page__content-row address-book__edit-contact">
         <div className="settings-page__header address-book__header--edit">
           <Identicon address={address} diameter={60} />
-          {showingMyAccounts ? null : (
-            <Button
-              type="link"
-              className="settings-page__address-book-button"
-              onClick={async () => {
-                await removeFromAddressBook(chainId, address)
-              }}
-            >
-              {t('deleteAccount')}
-            </Button>
-          )}
+          <Button
+            type="link"
+            className="settings-page__address-book-button"
+            onClick={async () => {
+              await removeFromAddressBook(chainId, address)
+            }}
+          >
+            {t('deleteAccount')}
+          </Button>
         </div>
         <div className="address-book__edit-contact__content">
           <div className="address-book__view-contact__group">
@@ -141,12 +135,6 @@ export default class EditContact extends PureComponent {
                   this.state.newName || name,
                   this.state.newMemo || memo,
                 )
-                if (showingMyAccounts) {
-                  setAccountLabel(
-                    this.state.newAddress,
-                    this.state.newName || name,
-                  )
-                }
                 history.push(listRoute)
               } else {
                 this.setState({ error: this.context.t('invalidAddress') })
@@ -158,9 +146,6 @@ export default class EditContact extends PureComponent {
                 this.state.newName || name,
                 this.state.newMemo || memo,
               )
-              if (showingMyAccounts) {
-                setAccountLabel(address, this.state.newName || name)
-              }
               history.push(listRoute)
             }
           }}
