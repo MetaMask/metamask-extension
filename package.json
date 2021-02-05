@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "setup": "yarn install && yarn allow-scripts",
     "start": "yarn build dev",
     "dist": "yarn build prod",
     "build": "node development/build/index.js",
