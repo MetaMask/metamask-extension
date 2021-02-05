@@ -31,7 +31,7 @@ export default function ViewQuotePriceDifference(props) {
     priceDifferenceMessage = t('swapPriceDifferenceUnavailable');
     priceDifferenceClass = 'fiat-error';
     priceDifferenceAcknowledgementText = t(
-      'swapPriceDifferenceAcknowledgementNoFiat',
+      'continue',
     );
   } else {
     priceDifferenceTitle = t('swapPriceDifferenceTitle', [

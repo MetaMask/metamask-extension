@@ -1738,9 +1738,6 @@
   "swapPriceDifferenceAcknowledgement": {
     "message": "I'm aware"
   },
-  "swapPriceDifferenceAcknowledgementNoFiat": {
-    "message": "Continue"
-  },
   "swapPriceDifferenceTitle": {
     "message": "Price difference of ~$1%",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
