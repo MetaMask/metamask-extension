@@ -19,10 +19,6 @@ const gasActionSpies = {
   resetCustomData: sinon.spy(),
 };
 
-const confirmTransactionActionSpies = {
-  updateGasAndCalculate: sinon.spy(),
-};
-
 const sendActionSpies = {
   hideGasButtonGroup: sinon.spy(),
 };
@@ -48,7 +44,6 @@ proxyquire('../gas-modal-page-container.container.js', {
   },
   '../../../../store/actions': actionSpies,
   '../../../../ducks/gas/gas.duck': gasActionSpies,
-  '../../../../ducks/confirm-transaction/confirm-transaction.duck': confirmTransactionActionSpies,
   '../../../../ducks/send/send.duck': sendActionSpies,
 });
 
