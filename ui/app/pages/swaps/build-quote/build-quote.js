@@ -406,7 +406,8 @@ export default function BuildQuote({
                       onClick: () => setVerificationClicked(true),
                     }
               }
-              className="actionable-message--warning actionable-message--with-right-button"
+              type="warning"
+              withRightButton
               infoTooltipText={t('swapVerifyTokenExplanation')}
             />
           ) : (
