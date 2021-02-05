@@ -364,6 +364,9 @@
   "contactsSettingsDescription": {
     "message": "Add, edit, remove, and manage your contacts"
   },
+  "continue": {
+    "message": "Continue"
+  },
   "continueToWyre": {
     "message": "Continue to Wyre"
   },
@@ -1735,9 +1738,6 @@
   "swapPriceDifferenceAcknowledgement": {
     "message": "I'm aware"
   },
-  "swapPriceDifferenceAcknowledgementNoFiat": {
-    "message": "Continue"
-  },
   "swapPriceDifferenceTitle": {
     "message": "Price difference of ~$1%",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
@@ -1844,6 +1844,17 @@
   "swapTokenToToken": {
     "message": "Swap $1 to $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
+  },
+  "swapTokenVerificationMessage": {
+    "message": "Always confirm the token address on $1.",
+    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
+  },
+  "swapTokenVerificationOnlyOneSource": {
+    "message": "Only verified on 1 source."
+  },
+  "swapTokenVerificationSources": {
+    "message": "Verified on $1 sources.",
+    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
   },
   "swapTransactionComplete": {
     "message": "Transaction complete"

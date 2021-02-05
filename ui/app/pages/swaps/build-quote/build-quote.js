@@ -14,6 +14,7 @@ import DropdownSearchList from '../dropdown-search-list';
 import SlippageButtons from '../slippage-buttons';
 import { getTokens } from '../../../ducks/metamask/metamask';
 import InfoTooltip from '../../../components/ui/info-tooltip';
+import ActionableMessage from '../actionable-message';
 
 import {
   fetchQuotesAndSetQuoteState,
@@ -65,6 +66,7 @@ export default function BuildQuote({
   const [fetchedTokenExchangeRate, setFetchedTokenExchangeRate] = useState(
     undefined,
   );
+  const [verificationClicked, setVerificationClicked] = useState(false);
 
   const balanceError = useSelector(getBalanceError);
   const fetchParams = useSelector(getFetchParams);
@@ -108,6 +110,9 @@ export default function BuildQuote({
   const selectedToToken =
     tokensToSearch.find(({ address }) => address === toToken?.address) ||
     toToken;
+  const toTokenIsNotEth =
+    selectedToToken?.address &&
+    selectedToToken?.address !== ETH_SWAPS_TOKEN_OBJECT.address;
 
   const {
     address: fromTokenAddress,
@@ -195,6 +200,7 @@ export default function BuildQuote({
         dispatch(removeToken(toAddress));
       }
       dispatch(setSwapToToken(token));
+      setVerificationClicked(false);
     },
     [dispatch, destinationTokenAddedForSwap, toAddress],
   );
@@ -369,10 +375,52 @@ export default function BuildQuote({
             defaultToAll
           />
         </div>
-        {selectedToToken?.address &&
-          selectedToToken?.address !== ETH_SWAPS_TOKEN_OBJECT.address && (
+        {toTokenIsNotEth &&
+          (selectedToToken.occurances === 1 ? (
+            <ActionableMessage
+              message={
+                <div className="build-quote__token-verification-warning-message">
+                  <div className="build-quote__bold">
+                    {t('swapTokenVerificationOnlyOneSource')}
+                  </div>
+                  <div>
+                    {t('verifyThisTokenOn', [
+                      <a
+                        className="build-quote__token-etherscan-link build-quote__underline"
+                        key="build-quote-etherscan-link"
+                        href={`https://etherscan.io/token/${selectedToToken.address}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {t('etherscan')}
+                      </a>,
+                    ])}
+                  </div>
+                </div>
+              }
+              primaryAction={
+                verificationClicked
+                  ? null
+                  : {
+                      label: t('continue'),
+                      onClick: () => setVerificationClicked(true),
+                    }
+              }
+              type="warning"
+              withRightButton
+              infoTooltipText={t('swapVerifyTokenExplanation')}
+            />
+          ) : (
             <div className="build-quote__token-message">
-              {t('verifyThisTokenOn', [
+              <span
+                className="build-quote__bold"
+                key="token-verification-bold-text"
+              >
+                {t('swapTokenVerificationSources', [
+                  selectedToToken.occurances,
+                ])}
+              </span>
+              {t('swapTokenVerificationMessage', [
                 <a
                   className="build-quote__token-etherscan-link"
                   key="build-quote-etherscan-link"
@@ -387,9 +435,10 @@ export default function BuildQuote({
                 position="top"
                 contentText={t('swapVerifyTokenExplanation')}
                 containerClassName="build-quote__token-tooltip-container"
+                key="token-verification-info-tooltip"
               />
             </div>
-          )}
+          ))}
         <div className="build-quote__slippage-buttons-container">
           <SlippageButtons
             onSelect={(newSlippage) => {
@@ -415,7 +464,10 @@ export default function BuildQuote({
           !Number(inputValue) ||
           !selectedToToken?.address ||
           Number(maxSlippage) === 0 ||
-          Number(maxSlippage) > MAX_ALLOWED_SLIPPAGE
+          Number(maxSlippage) > MAX_ALLOWED_SLIPPAGE ||
+          (toTokenIsNotEth &&
+            selectedToToken.occurances === 1 &&
+            !verificationClicked)
         }
         hideCancel
         showTermsOfService

@@ -30,9 +30,7 @@ export default function ViewQuotePriceDifference(props) {
     // A calculation error signals we cannot determine dollar value
     priceDifferenceMessage = t('swapPriceDifferenceUnavailable');
     priceDifferenceClass = 'fiat-error';
-    priceDifferenceAcknowledgementText = t(
-      'swapPriceDifferenceAcknowledgementNoFiat',
-    );
+    priceDifferenceAcknowledgementText = t('continue');
   } else {
     priceDifferenceTitle = t('swapPriceDifferenceTitle', [
       priceDifferencePercentage,
