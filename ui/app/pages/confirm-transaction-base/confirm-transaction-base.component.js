@@ -22,6 +22,7 @@ import {
   TRANSACTION_CATEGORIES,
   TRANSACTION_STATUSES,
 } from '../../../../shared/constants/transaction';
+import { getTransactionCategoryTitle } from '../../helpers/utils/transactions.util';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -689,11 +690,11 @@ export default class ConfirmTransactionBase extends Component {
 
     let functionType = getMethodName(name);
     if (!functionType) {
-      if (transactionCategory) {
-        functionType = t(transactionCategory) || transactionCategory;
-      } else {
-        functionType = t('contractInteraction');
-      }
+      functionType = getTransactionCategoryTitle(
+        t,
+        transactionCategory,
+        transactionCategory || t('contractInteraction'),
+      );
     }
 
     return (

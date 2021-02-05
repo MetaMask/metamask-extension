@@ -1,6 +1,9 @@
 import { useSelector } from 'react-redux';
 import { getKnownMethodData } from '../selectors/selectors';
-import { getStatusKey } from '../helpers/utils/transactions.util';
+import {
+  getStatusKey,
+  getTransactionCategoryTitle,
+} from '../helpers/utils/transactions.util';
 import { camelCaseToCapitalize } from '../helpers/utils/common.util';
 import { PRIMARY, SECONDARY } from '../helpers/constants/common';
 import { getTokenAddressParam } from '../helpers/utils/token-util';
@@ -186,9 +189,13 @@ export function useTransactionDisplayData(transactionGroup) {
     transactionCategory === TRANSACTION_CATEGORIES.CONTRACT_INTERACTION
   ) {
     category = TRANSACTION_GROUP_CATEGORIES.INTERACTION;
+    const transactionCategoryTitle = getTransactionCategoryTitle(
+      t,
+      transactionCategory,
+    );
     title =
       (methodData?.name && camelCaseToCapitalize(methodData.name)) ||
-      t(transactionCategory);
+      transactionCategoryTitle;
     subtitle = origin;
     subtitleContainsOrigin = true;
   } else if (transactionCategory === TRANSACTION_CATEGORIES.INCOMING) {
