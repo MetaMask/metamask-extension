@@ -31,9 +31,11 @@ export default function ActionableMessage({
   return (
     <div className={actionableMessageClassName}>
       {infoTooltipText && (
-        <div className="actionable-message__info-tooltip-wrapper">
-          <InfoTooltip position="left" contentText={infoTooltipText} />
-        </div>
+        <InfoTooltip
+          position="left"
+          contentText={infoTooltipText}
+          wrapperClassName="actionable-message__info-tooltip-wrapper"
+        />
       )}
       <div className="actionable-message__message">{message}</div>
       {(primaryAction || secondaryAction) && (
