@@ -2109,9 +2109,9 @@
   integrity sha512-Hggj4y0QIjDzKGTXzarhEPIQyFSB2bi2y6YLJNwaT4JmP30UB5Cj6gqoY0M4pj3QT57fzp0BUuGp7F/AUe28tw==
 
 "@metamask/inpage-provider@^8.0.3":
-  version "8.0.3"
-  resolved "https://registry.yarnpkg.com/@metamask/inpage-provider/-/inpage-provider-8.0.3.tgz#65f636233a13a00e1f199a421bdfa8099ed28ea4"
-  integrity sha512-pj9tGNoS1edohuRJzxOuILRqRrQTdgu5mJwMwa9wuOZIMQLFZtr3g2T6vayPBwoNkE1FzLhs/osUqaVQDRfDvQ==
+  version "8.0.4"
+  resolved "https://registry.yarnpkg.com/@metamask/inpage-provider/-/inpage-provider-8.0.4.tgz#6534fbdba4445a3aff639e32db66bb0ab5f0cd79"
+  integrity sha512-jdI0gVWW/0wQvKZe6shXl70cU+vIb8GpAimKFU4udc/HKtgp8tLd21ezq74RaMP/lHR+qq0coOQ2KnOnl8iNNg==
   dependencies:
     "@metamask/object-multiplex" "^1.1.0"
     "@metamask/safe-event-emitter" "^2.0.0"
@@ -10063,14 +10063,7 @@ eth-rpc-errors@^3.0.0:
   dependencies:
     fast-safe-stringify "^2.0.6"
 
-eth-rpc-errors@^4.0.0:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/eth-rpc-errors/-/eth-rpc-errors-4.0.1.tgz#bb95cc6de85b59dcbd5453b661a9e99545eff550"
-  integrity sha512-BCx0QBS6eVM+KWleeChtYOUIKBbnUvM9amzMlenvJfMK4KA7gBA1zRpQsLf8e98VziuHcnqdCIX7YVw3DbbKkw==
-  dependencies:
-    fast-safe-stringify "^2.0.6"
-
-eth-rpc-errors@^4.0.2:
+eth-rpc-errors@^4.0.0, eth-rpc-errors@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/eth-rpc-errors/-/eth-rpc-errors-4.0.2.tgz#11bc164e25237a679061ac05b7da7537b673d3b7"
   integrity sha512-n+Re6Gu8XGyfFy1it0AwbD1x0MUzspQs0D5UiPs1fFPCr6WAwZM+vbIhXheBFrpgosqN9bs5PqlB4Q61U/QytQ==
