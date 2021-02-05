@@ -9,6 +9,7 @@ import SelectQuotePopover from '../select-quote-popover';
 import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
+import { usePrevious } from '../../../hooks/usePrevious';
 import { useSwapsEthToken } from '../../../hooks/useSwapsEthToken';
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 import FeeCard from '../fee-card';
@@ -93,6 +94,7 @@ export default function ViewQuote() {
     acknowledgedPriceDifference,
     setAcknowledgedPriceDifference,
   ] = useState(false);
+  const priceDifferenceRiskyBuckets = ['high', 'medium'];
 
   const routeState = useSelector(getBackgroundSwapRouteState);
   const quotes = useSelector(getQuotes, isEqual);
@@ -481,6 +483,24 @@ export default function ViewQuote() {
   ]);
 
   // Price difference warning
+  const priceSlippageBucket = usedQuote?.priceSlippage?.bucket;
+  const lastPriceDifferenceBucket = usePrevious(priceSlippageBucket);
+
+  // If the user agreed to a different bucket of risk, make them agree again
+  useEffect(() => {
+    if (
+      acknowledgedPriceDifference &&
+      lastPriceDifferenceBucket === 'medium' &&
+      priceSlippageBucket === 'high'
+    ) {
+      setAcknowledgedPriceDifference(false);
+    }
+  }, [
+    priceSlippageBucket,
+    acknowledgedPriceDifference,
+    lastPriceDifferenceBucket,
+  ]);
+
   let viewQuotePriceDifferenceComponent = null;
   const priceSlippageFromSource = useEthFiatAmount(
     usedQuote?.priceSlippage?.sourceAmountInETH || 0,
@@ -510,7 +530,7 @@ export default function ViewQuote() {
   const shouldShowPriceDifferenceWarning =
     !showInsufficientWarning &&
     usedQuote &&
-    (['high', 'medium'].includes(usedQuote.priceSlippage.bucket) ||
+    (priceDifferenceRiskyBuckets.includes(priceSlippageBucket) ||
       priceSlippageUnknownFiatValue);
 
   if (shouldShowPriceDifferenceWarning) {
