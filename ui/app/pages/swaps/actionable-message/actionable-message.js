@@ -41,7 +41,7 @@ export default function ActionableMessage({
       {(primaryAction || secondaryAction) && (
         <div className="actionable-message__actions">
           {primaryAction && (
-            <div
+            <button
               className={classnames(
                 'actionable-message__action',
                 'actionable-message__action--primary',
@@ -49,10 +49,10 @@ export default function ActionableMessage({
               onClick={primaryAction.onClick}
             >
               {primaryAction.label}
-            </div>
+            </button>
           )}
           {secondaryAction && (
-            <div
+            <button
               className={classnames(
                 'actionable-message__action',
                 'actionable-message__action--secondary',
@@ -60,7 +60,7 @@ export default function ActionableMessage({
               onClick={secondaryAction.onClick}
             >
               {secondaryAction.label}
-            </div>
+            </button>
           )}
         </div>
       )}
