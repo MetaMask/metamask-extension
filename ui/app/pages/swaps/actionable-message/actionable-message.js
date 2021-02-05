@@ -39,7 +39,7 @@ export default function ActionableMessage({
       )}
       <div className="actionable-message__message">{message}</div>
       {(primaryAction || secondaryAction) && (
-        <div className={classnames('actionable-message__actions')}>
+        <div className="actionable-message__actions">
           {primaryAction && (
             <div
               className={classnames(
