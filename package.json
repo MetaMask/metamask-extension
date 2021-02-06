@@ -200,6 +200,7 @@
     "@storybook/addon-actions": "^6.1.9",
     "@storybook/addon-backgrounds": "^6.1.9",
     "@storybook/addon-knobs": "^6.1.9",
+    "@storybook/addon-toolbars": "^6.1.17",
     "@storybook/core": "^6.1.9",
     "@storybook/react": "^6.1.9",
     "@storybook/storybook-deployer": "^2.8.6",

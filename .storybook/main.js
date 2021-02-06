@@ -8,6 +8,7 @@ module.exports = {
     '@storybook/addon-knobs',
     '@storybook/addon-actions',
     '@storybook/addon-backgrounds',
+    '@storybook/addon-toolbars',
   ],
   webpackFinal: async (config) => {
     config.module.strictExportPresence = true
