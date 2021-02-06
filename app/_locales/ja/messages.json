@@ -1672,9 +1672,6 @@
   "swapFinalizing": {
     "message": "終了中..."
   },
-  "swapGetQuotes": {
-    "message": "見積の取得"
-  },
   "swapHighSlippageWarning": {
     "message": "非常に大きいスリッページ額です。本当に実行するか確認してください。"
   },
