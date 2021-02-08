@@ -37,6 +37,7 @@ export default class PermissionConnect extends Component {
       name: PropTypes.string.isRequired,
       origin: PropTypes.string.isRequired,
     }),
+    isRequestingAccounts: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -76,10 +77,13 @@ export default class PermissionConnect extends Component {
 
   componentDidMount() {
     const {
+      confirmPermissionPath,
       getCurrentWindowTab,
       getRequestAccountTabIds,
       permissionsRequest,
+      page,
       history,
+      isRequestingAccounts,
     } = this.props;
     getCurrentWindowTab();
     getRequestAccountTabIds();
@@ -92,6 +96,10 @@ export default class PermissionConnect extends Component {
     const environmentType = getEnvironmentType();
     if (environmentType === ENVIRONMENT_TYPE_NOTIFICATION) {
       window.addEventListener('beforeunload', this.beforeUnload);
+    }
+
+    if (page === '1' && !isRequestingAccounts) {
+      history.push(confirmPermissionPath);
     }
   }
 
@@ -164,11 +172,11 @@ export default class PermissionConnect extends Component {
 
   renderTopBar() {
     const { redirecting } = this.state;
-    const { page } = this.props;
+    const { page, isRequestingAccounts } = this.props;
     const { t } = this.context;
     return redirecting ? null : (
       <div className="permissions-connect__top-bar">
-        {page === '2' ? (
+        {page === '2' && isRequestingAccounts ? (
           <div
             className="permissions-connect__back"
             onClick={() => this.goBack()}
@@ -177,9 +185,11 @@ export default class PermissionConnect extends Component {
             {t('back')}
           </div>
         ) : null}
-        <div className="permissions-connect__page-count">
-          {t('xOfY', [page, '2'])}
-        </div>
+        {isRequestingAccounts ? (
+          <div className="permissions-connect__page-count">
+            {t('xOfY', [page, '2'])}
+          </div>
+        ) : null}
       </div>
     );
   }

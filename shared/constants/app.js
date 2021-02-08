@@ -53,6 +53,9 @@ export const SUBJECT_TYPES = {
   WEBSITE: 'website',
   EXTENSION: 'extension',
   INTERNAL: 'internal',
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  SNAP: 'snap',
+  ///: END:ONLY_INCLUDE_IN
 };
 
 export const POLLING_TOKEN_ENVIRONMENT_TYPES = {

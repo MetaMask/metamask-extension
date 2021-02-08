@@ -162,7 +162,7 @@ module.exports = {
         'app/scripts/migrations/*.test.js',
         'app/scripts/platforms/*.test.js',
         'app/scripts/controllers/network/**/*.test.js',
-        'app/scripts/controllers/permissions/*.test.js',
+        'app/scripts/controllers/permissions/**/*.test.js',
       ],
       extends: ['@metamask/eslint-config-mocha'],
       rules: {
@@ -189,7 +189,7 @@ module.exports = {
         'app/scripts/migrations/*.test.js',
         'app/scripts/platforms/*.test.js',
         'app/scripts/controllers/network/**/*.test.js',
-        'app/scripts/controllers/permissions/*.test.js',
+        'app/scripts/controllers/permissions/**/*.test.js',
       ],
       extends: ['@metamask/eslint-config-jest'],
       rules: {
