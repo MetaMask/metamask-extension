@@ -9,6 +9,7 @@ module.exports = {
     '@storybook/addon-actions',
     '@storybook/addon-backgrounds',
     '@storybook/addon-toolbars',
+    './i18n-party-addon/register.js',
   ],
   webpackFinal: async (config) => {
     config.module.strictExportPresence = true
