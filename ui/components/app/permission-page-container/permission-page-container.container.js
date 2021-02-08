@@ -1,5 +1,8 @@
 import { connect } from 'react-redux';
-import { getMetaMaskIdentities } from '../../../selectors';
+import {
+  getMetaMaskIdentities,
+  getPermissionsDescriptions,
+} from '../../../selectors';
 import PermissionPageContainer from './permission-page-container.component';
 
 const mapStateToProps = (state, ownProps) => {
@@ -10,8 +13,11 @@ const mapStateToProps = (state, ownProps) => {
     Object.keys(selectedIdentities).length ===
       Object.keys(allIdentities).length && selectedIdentities.length > 1;
 
+  const permissionsDescriptions = getPermissionsDescriptions(state);
+
   return {
     allIdentitiesSelected,
+    permissionsDescriptions,
   };
 };
 

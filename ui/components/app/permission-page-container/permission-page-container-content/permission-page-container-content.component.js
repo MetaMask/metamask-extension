@@ -1,11 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { PLUGIN_PREFIX } from '@mm-snap/controllers';
 import PermissionsConnectHeader from '../../permissions-connect-header';
 import Tooltip from '../../../ui/tooltip';
 import PermissionsConnectPermissionList from '../../permissions-connect-permission-list';
 
 export default class PermissionPageContainerContent extends PureComponent {
   static propTypes = {
+    permissionsDescriptions: PropTypes.object.isRequired,
     domainMetadata: PropTypes.shape({
       extensionId: PropTypes.string,
       icon: PropTypes.string,
@@ -28,7 +30,60 @@ export default class PermissionPageContainerContent extends PureComponent {
   };
 
   renderRequestedPermissions() {
-    const { selectedPermissions } = this.props;
+    const {
+      selectedPermissions,
+      onPermissionToggle,
+      permissionsDescriptions,
+    } = this.props;
+    const { t } = this.context;
+
+    const items = Object.keys(selectedPermissions).map((permissionName) => {
+      const isPluginPermission = permissionName.startsWith(PLUGIN_PREFIX);
+      const keyablePermissionName = isPluginPermission
+        ? `${PLUGIN_PREFIX}*`
+        : permissionName;
+      const isEthAccounts = permissionName === 'eth_accounts';
+
+      let description;
+      if (isEthAccounts) {
+        description = t(permissionName);
+      } else if (isPluginPermission) {
+        description = permissionsDescriptions[keyablePermissionName].replace(
+          '$1',
+          permissionName.replace(PLUGIN_PREFIX, ''),
+        );
+      } else {
+        description = permissionsDescriptions[keyablePermissionName];
+      }
+
+      // don't allow deselecting eth_accounts
+      const isDisabled = isEthAccounts;
+      const isChecked = Boolean(selectedPermissions[permissionName]);
+      const title = isChecked
+        ? t('permissionCheckedIconDescription')
+        : t('permissionUncheckedIconDescription');
+
+      return (
+        <div
+          className="permission-approval-container__content__permission"
+          key={permissionName}
+          onClick={() => {
+            if (!isDisabled) {
+              onPermissionToggle(permissionName);
+            }
+          }}
+        >
+          <CheckBox
+            disabled={isDisabled}
+            id={permissionName}
+            className="permission-approval-container__checkbox"
+            checked={isChecked}
+            title={title}
+          />
+          <label htmlFor={permissionName}>{description}</label>
+        </div>
+      );
+    });
 
     return (
       <div className="permission-approval-container__content__requested">
