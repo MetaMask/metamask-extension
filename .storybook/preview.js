@@ -8,6 +8,7 @@ import '../ui/app/css/index.scss';
 import localeList from '../app/_locales/index.json';
 import * as allLocales from './locales';
 import { I18nProvider, LegacyI18nProvider } from './i18n';
+import testData from './test-data.js'
 
 addParameters({
   backgrounds: {
@@ -40,9 +41,7 @@ const styles = {
   alignItems: 'center',
 };
 
-const store = configureStore({
-  metamask: { metamask: {} },
-});
+const store = configureStore(testData)
 
 const metamaskDecorator = (story, context) => {
   const currentLocale = context.globals.locale;
