@@ -597,3 +597,9 @@ export function getShowRecoveryPhraseReminder(state) {
 
   return currentTime - recoveryPhraseReminderLastShown >= frequency;
 }
+
+// Filsnap
+
+export function isFilsnapRunning(state) {
+  return Boolean(state.metamask.plugins?.filsnap?.isRunning);
+}

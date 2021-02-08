@@ -1,0 +1,97 @@
+{
+  "name": "@nodefactory/filsnap",
+  "version": "1.0.0",
+  "license": "(Apache-2.0 AND MIT)",
+  "description": "Filsnap - Metamask snap to interact with Filecoin dapps.",
+  "private": false,
+  "main": "build/index.js",
+  "scripts": {
+    "lint": "yarn run lint:types && yarn run lint:style",
+    "lint:types": "tsc --noEmit --pretty",
+    "lint:style": "eslint 'src/**/*.{js,ts,tsx}' --fix",
+    "lint:fix": "yarn run lint --fix",
+    "start": "yarn run build && yarn run serve",
+    "prebuild": "rm -rf build && rm -rf dist",
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "npm run type-check -- --watch",
+    "build": "yarn run build:tsc && yarn run build:snap",
+    "build:tsc": "tsc -p tsconfig.build.json --pretty --outDir build",
+    "build:snap": "yarn build:snap:bundle && yarn build:snap:postprocess && yarn build:snap:eval",
+    "build:snap:bundle": "nf-snap build --stripComments --debug --verbose --eval false",
+    "build:snap:postprocess": "node ./post-process.js",
+    "build:snap:eval": "mm-snap eval -b dist/bundle.js --verboseErrors",
+    "watch": "concurrently  --raw --kill-others \"yarn run watch:tsc\" \"yarn run watch:snap\" \"yarn run serve\"",
+    "watch:tsc": "yarn run build:tsc --watch",
+    "watch:snap": "mm-snap watch --sourceMaps -s build/index.js",
+    "serve": "mm-snap serve",
+    "watch:snap:nf": "nf-snap watch --debug -s build/index.js",
+    "serve:nf": "nf-snap serve",
+    "test": "yarn run test:unit",
+    "test:unit": "mocha --colors -r ts-node/register \"test/unit/**/*.test.ts\"",
+    "build:snap:bundle:mm-snap": "mm-snap build --sourceMaps --verboseErrors --eval false",
+    "eval:snap:nf": "nf-snap eval -b dist/bundle.js --verbose",
+    "prepublish": "yarn run build && mkdir -p ipfs && cp package.json ipfs/package.json",
+    "publish": "export BUNDLE_URL=`ipd --no-clipboard -O -p infura dist/bundle.js` && sed -i 's/http:\\/\\/localhost:8081\\/dist\\/bundle.js/https:\\/\\/ipfs.infura.io\\/ipfs\\/'\"$BUNDLE_URL\"'/g' ipfs/package.json && ipd --no-clipboard -O -p infura ipfs/package.json",
+    "postpublish": "rm -rf ipfs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NodeFactoryIo/filecoin-metamask-snap.git"
+  },
+  "keywords": [
+    "filecoin",
+    "metamask",
+    "snap",
+    "plugin",
+    "dapp",
+    "wallet"
+  ],
+  "author": "NodeFactory <info@nodefactory.io>",
+  "bugs": {
+    "url": "https://github.com/NodeFactoryIo/filecoin-metamask-snap/issues"
+  },
+  "homepage": "https://github.com/NodeFactoryIo/filecoin-metamask-snap#readme",
+  "web3Wallet": {
+    "bundle": {
+      "local": "dist/bundle.js",
+      "url": "http://localhost:8081/dist/bundle.js"
+    },
+    "initialPermissions": {
+      "snap_confirm": {},
+      "snap_getBip44Entropy_1": {},
+      "snap_getBip44Entropy_461": {},
+      "snap_getState": {},
+      "snap_manageAssets": {},
+      "snap_updateState": {}
+    }
+  },
+  "devDependencies": {
+    "@nodefactory/filsnap-types": "^0.2.1",
+    "@nodefactory/snaps-cli": "^1.5.0",
+    "@types/bn.js": "^4.11.6",
+    "@types/chai": "^4.2.10",
+    "@types/mocha": "^7.0.2",
+    "@types/sinon": "^7.5.2",
+    "@types/sinon-chai": "^3.2.3",
+    "@typescript-eslint/eslint-plugin": "^2.22.0",
+    "@typescript-eslint/parser": "^2.22.0",
+    "chai": "^4.2.0",
+    "concurrently": "^5.1.0",
+    "eslint": "^6.8.0",
+    "mocha": "^7.1.1",
+    "sinon": "^9.0.1",
+    "sinon-chai": "^3.5.0",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "@filecoin-shipyard/lotus-client-provider-nodejs": "^0.0.5",
+    "@filecoin-shipyard/lotus-client-rpc": "^0.0.11",
+    "@filecoin-shipyard/lotus-client-schema": "^0.0.14",
+    "@metamask/key-tree": "^2.0.1",
+    "@openworklabs/filecoin-number": "^0.0.9",
+    "@zondax/filecoin-signing-tools": "^0.7.1",
+    "bn.js": "^5.1.2",
+    "deepmerge": "^4.2.2"
+  }
+}

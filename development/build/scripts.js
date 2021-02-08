@@ -539,14 +539,12 @@ function getEnvironmentVariables({ devMode, testing }) {
     // the value of SEGMENT_WRITE_KEY that we envify is undefined then no events will be tracked
     // in the build. This is intentional so that developers can contribute to MetaMask without
     // inflating event volume.
-    SEGMENT_WRITE_KEY:
-      environment === 'production'
-        ? process.env.SEGMENT_PROD_WRITE_KEY
-        : metamaskrc.SEGMENT_WRITE_KEY,
-    SEGMENT_LEGACY_WRITE_KEY:
-      environment === 'production'
-        ? process.env.SEGMENT_PROD_LEGACY_WRITE_KEY
-        : metamaskrc.SEGMENT_LEGACY_WRITE_KEY,
+    SEGMENT_WRITE_KEY: environment.includes('production')
+      ? process.env.SEGMENT_PROD_WRITE_KEY
+      : metamaskrc.SEGMENT_WRITE_KEY,
+    SEGMENT_LEGACY_WRITE_KEY: environment.includes('production')
+      ? process.env.SEGMENT_PROD_LEGACY_WRITE_KEY
+      : metamaskrc.SEGMENT_LEGACY_WRITE_KEY,
   };
 }
 
