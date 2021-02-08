@@ -20,23 +20,36 @@ import { SUBJECT_TYPES } from '../../shared/constants/app';
  */
 export function useOriginMetadata(origin) {
   const subjectMetadata = useSelector(getSubjectMetadata);
+  const targetSubjectMetadata = subjectMetadata?.[origin];
+
   if (!origin) {
     return null;
   }
 
-  const url = new URL(origin);
-  const minimumOriginMetadata = {
-    host: url.host,
-    hostname: url.hostname,
-    origin,
-    subjectType: SUBJECT_TYPES.UNKNOWN,
-  };
+  let minimumOriginMetadata;
+  try {
+    const url = new URL(origin);
+    minimumOriginMetadata = {
+      host: url.host,
+      hostname: url.hostname,
+      origin,
+    };
+  } catch (_) {
+    // do nothing
+  }
 
-  if (subjectMetadata?.[origin]) {
+  if (targetSubjectMetadata && minimumOriginMetadata) {
     return {
       ...minimumOriginMetadata,
       ...subjectMetadata[origin],
     };
+  } else if (targetSubjectMetadata) {
+    return targetSubjectMetadata;
+  } else if (minimumOriginMetadata) {
+    return {
+      ...minimumOriginMetadata,
+      subjectType: SUBJECT_TYPES.UNKNOWN,
+    };
   }
-  return minimumOriginMetadata;
+  return null;
 }

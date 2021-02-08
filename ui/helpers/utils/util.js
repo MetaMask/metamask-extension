@@ -577,3 +577,39 @@ export function roundToDecimalPlacesRemovingExtraZeroes(
     toBigNumber.dec(numberish).toFixed(numberOfDecimalPlaces),
   );
 }
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+const SNAP_PERMISSION_MESSAGES = {
+  snap_clearState: (t) => t('snap_clearState'),
+  snap_confirm: (t) => t('snap_confirm'),
+  snap_getState: (t) => t('snap_getState'),
+  snap_updateState: (t) => t('snap_updateState'),
+};
+
+/**
+ * A utility function for retrieving Snap-related permission locale messages.
+ * Mainly exists so that our locale message verification script does
+ * not misclassify the related messages as unused.
+ *
+ * @param {Function} t - The translation function.
+ * @param {string} permissionName - The name of the permission to get the locale
+ * message key for.
+ * @returns {string} The locale message for the given permission name, or
+ * the message for unrecognized permissions if the permission name is not
+ * recognized.
+ */
+export function getPermissionLocaleMessage(t, permissionName) {
+  if (permissionName.startsWith('wallet_snap_')) {
+    return t('wallet_snap_', [permissionName.replace('wallet_snap_', '')]);
+  } else if (permissionName.startsWith('snap_getBip44Entropy_')) {
+    // TODO:flask Establish coin_type to protocol name enum per SLIP-44
+    return t('snap_getBip44Entropy_', [
+      permissionName.replace('snap_getBip44Entropy_', ''),
+    ]);
+  } else if (SNAP_PERMISSION_MESSAGES[permissionName]) {
+    return SNAP_PERMISSION_MESSAGES[permissionName](t);
+  }
+
+  return t('unknownPermission', [permissionName]);
+}
+///: END:ONLY_INCLUDE_IN
