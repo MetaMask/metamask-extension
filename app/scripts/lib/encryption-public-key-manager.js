@@ -247,7 +247,7 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * Clears all unapproved messages from memory.
    */
   clearUnapproved() {
-    this.messages = [];
+    this.messages = this.messages.filter((msg) => msg.status !== 'unapproved');
     this._saveMsgList();
   }
 
