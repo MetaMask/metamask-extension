@@ -1,15 +1,25 @@
 .menu-bar {
   display: grid;
-  grid-template-columns: 30% minmax(30%, 1fr) 30%;
+  grid-template-columns: 30% minmax(30%, 1fr) 15% 15%;
   column-gap: 5px;
   padding: 0 8px;
   border-bottom: 1px solid $Grey-100;
   height: 64px;
 
-  .menu-bar__account-options {
+  &__account-options {
     background: none;
     font-size: inherit;
     padding: 0 8px 0 5px;
+    place-self: center end;
+  }
+
+  &__filsnap-menu-button {
+    height: 20px;
+    width: 20px;
+    background: none;
+    font-size: inherit;
+    padding: 0;
+    background-color: #fff;
     place-self: center end;
   }
 

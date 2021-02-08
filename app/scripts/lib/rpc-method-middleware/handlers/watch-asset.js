@@ -3,6 +3,9 @@ import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 const watchAsset = {
   methodNames: [MESSAGE_TYPE.WATCH_ASSET, MESSAGE_TYPE.WATCH_ASSET_LEGACY],
   implementation: watchAssetHandler,
+  hookNames: {
+    handleWatchAssetRequest: true,
+  },
 };
 export default watchAsset;
 

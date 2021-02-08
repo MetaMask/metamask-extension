@@ -2861,3 +2861,13 @@ export async function setWeb3ShimUsageAlertDismissed(origin) {
 export async function detectNewTokens() {
   return promisifiedBackground.detectNewTokens();
 }
+
+// Plugins
+
+export function reinstallFilsnap() {
+  return promisifiedBackground.reinstallFilsnap();
+}
+
+export function toggleFilsnap() {
+  return promisifiedBackground.toggleFilsnap();
+}

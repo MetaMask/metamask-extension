@@ -12,6 +12,14 @@ import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../../../../shared/constants/netw
 const addEthereumChain = {
   methodNames: [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN],
   implementation: addEthereumChainHandler,
+  hookNames: {
+    addCustomRpc: true,
+    getCurrentChainId: true,
+    findCustomRpcBy: true,
+    updateRpcTarget: true,
+    requestUserApproval: true,
+    sendMetrics: true,
+  },
 };
 export default addEthereumChain;
 
