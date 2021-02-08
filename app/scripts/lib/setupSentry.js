@@ -72,7 +72,7 @@ export default function setupSentry({ release, getState }) {
 
   if (METAMASK_DEBUG) {
     return undefined;
-  } else if (METAMASK_ENVIRONMENT === 'production') {
+  } else if (METAMASK_ENVIRONMENT?.includes('production')) {
     if (!process.env.SENTRY_DSN) {
       throw new Error(
         `Missing SENTRY_DSN environment variable in production environment`,
