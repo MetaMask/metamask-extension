@@ -1,8 +1,16 @@
+import { permittedMethods, selectHooks } from '@mm-snap/rpc-methods';
 import { ethErrors } from 'eth-rpc-errors';
 import { UNSUPPORTED_RPC_METHODS } from '../../../../shared/constants/network';
 import handlers from './handlers';
 
 const handlerMap = handlers.reduce((map, handler) => {
+  for (const methodName of handler.methodNames) {
+    map.set(methodName, handler);
+  }
+  return map;
+}, new Map());
+
+const pluginHandlerMap = permittedMethods.reduce((map, handler) => {
   for (const methodName of handler.methodNames) {
     map.set(methodName, handler);
   }
@@ -22,10 +30,10 @@ const handlerMap = handlers.reduce((map, handler) => {
  *
  * Eventually, we'll want to extract this middleware into its own package.
  *
- * @param {Object} opts - The middleware options
+ * @param {Object} hooks - The middleware options
  * @returns {(req: Object, res: Object, next: Function, end: Function) => void}
  */
-export default function createMethodMiddleware(opts) {
+export function createMethodMiddleware(hooks) {
   return function methodMiddleware(req, res, next, end) {
     // Reject unsupported methods.
     if (UNSUPPORTED_RPC_METHODS.has(req.method)) {
@@ -35,29 +43,25 @@ export default function createMethodMiddleware(opts) {
     const handler = handlerMap.get(req.method);
     if (handler) {
       const { implementation, hookNames } = handler;
-      return implementation(req, res, next, end, selectHooks(opts, hookNames));
+      return implementation(req, res, next, end, selectHooks(hooks, hookNames));
     }
 
     return next();
   };
 }
 
-/**
- * Returns the subset of the specified `hooks` that are included in the
- * `hookNames` object. This is a Principle of Least Authority (POLA) measure
- * to ensure that each RPC method implementation only has access to the
- * API "hooks" it needs to do its job.
- *
- * @param {Record<string, unknown>} hooks - The hooks to select from.
- * @param {Record<string, true>} hookNames - The names of the hooks to select.
- * @returns {Record<string, unknown> | undefined} The selected hooks.
- */
-function selectHooks(hooks, hookNames) {
-  if (hookNames) {
-    return Object.keys(hookNames).reduce((hookSubset, hookName) => {
-      hookSubset[hookName] = hooks[hookName];
-      return hookSubset;
-    }, {});
-  }
-  return undefined;
+export function createPluginMethodMiddleware(isPlugin, hooks) {
+  return function methodMiddleware(req, res, next, end) {
+    const handler = pluginHandlerMap.get(req.method);
+    if (handler) {
+      if (/^snap_/iu.test(req.method) && !isPlugin) {
+        return end(ethErrors.rpc.methodNotFound());
+      }
+
+      const { implementation, hookNames } = handler;
+      return implementation(req, res, next, end, selectHooks(hooks, hookNames));
+    }
+
+    return next();
+  };
 }

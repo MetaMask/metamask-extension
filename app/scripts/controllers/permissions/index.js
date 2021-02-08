@@ -37,7 +37,6 @@ export class PermissionsController {
       notifyAllDomains,
       preferences,
     } = {},
-    restoredPermissions = {},
     restoredState = {},
   ) {
     // additional top-level store key set in _initializeMetadataStore
@@ -52,25 +51,13 @@ export class PermissionsController {
     this._notifyAllDomains = notifyAllDomains;
     this._isUnlocked = isUnlocked;
 
-    this._restrictedMethods = getRestrictedMethods({
-      getKeyringAccounts: this.getKeyringAccounts.bind(this),
-      getIdentities: this._getIdentities.bind(this),
-    });
-    this.permissionsLog = new PermissionsLogController({
-      restrictedMethods: Object.keys(this._restrictedMethods),
-      store: this.store,
-    });
-
     /**
      * @type {import('@metamask/controllers').ApprovalController}
      * @public
      */
     this.approvals = approvals;
-    this._initializePermissions(restoredPermissions);
     this._lastSelectedAddress = preferences.getState().selectedAddress;
     this.preferences = preferences;
-
-    this._initializeMetadataStore(restoredState);
 
     preferences.subscribe(async ({ selectedAddress }) => {
       if (selectedAddress && selectedAddress !== this._lastSelectedAddress) {
@@ -78,6 +65,11 @@ export class PermissionsController {
         await this._handleAccountSelected(selectedAddress);
       }
     });
+
+    // TODO:temp Just to keep unit tests working for now
+    if (process.env.METAMASK_ENV === 'test' && getRestrictedMethods) {
+      this.initializePermissions({}, getRestrictedMethods);
+    }
   }
 
   createMiddleware({ origin, extensionId }) {
@@ -165,6 +157,16 @@ export class PermissionsController {
   }
 
   /**
+   * Returns the permissions for the given origin.
+   *
+   * @param {string} origin - The origin whose permissions to retrieve.
+   * @returns {IOcapLdCapability[]} The permissions for the given origin.
+   */
+  getPermissions(origin) {
+    return this.permissions.getPermissionsForDomain(origin);
+  }
+
+  /**
    * Returns whether the given origin has the given permission.
    *
    * @param {string} origin - The origin to check.
@@ -182,6 +184,18 @@ export class PermissionsController {
    */
   _getIdentities() {
     return this.preferences.getState().identities;
+  }
+
+  /**
+   * Initiates a permissions request with the given permissions for for the
+   * given origin.
+   *
+   * @param {string} origin - The origin.
+   * @param {IRequestedPermissions} - The requested permissions.
+   * @returns {Promise<IOcapLdCapability[]>} The approved permissions, if any.
+   */
+  requestPermissions(origin, permissions) {
+    return this._requestPermissions({ origin }, permissions);
   }
 
   /**
@@ -506,10 +520,25 @@ export class PermissionsController {
   }
 
   /**
+   * Removes all permissions for the given domains.
+   *
+   * @param {string[]} domainsToDelete - The domains to remove all permissions for.
+   */
+  removeAllPermissionsFor(domainsToDelete) {
+    const domains = this.permissions.getDomains();
+    domainsToDelete.forEach((domain) => {
+      delete domains[domain];
+      this.notifyAccountsChanged(domain, []);
+    });
+    this.permissions.setDomains(domains);
+  }
+
+  /**
    * Removes all known domains and their related permissions.
    */
   clearPermissions() {
     this.permissions.clearDomains();
+    this.permissionsLog.clear();
     // It's safe to notify that no accounts are available, regardless of
     // extension lock state
     this._notifyAllDomains({
@@ -566,12 +595,10 @@ export class PermissionsController {
    * Removes all domains without permissions from the restored metadata state,
    * and rehydrates the metadata store.
    *
-   * Requires PermissionsController._initializePermissions to have been called first.
-   *
-   * @param {Object} restoredState - The restored permissions controller state.
+   * Must be called at the end of PermissionsController.initializePermissions.
    */
-  _initializeMetadataStore(restoredState) {
-    const metadataState = restoredState[METADATA_STORE_KEY] || {};
+  _initializeMetadataStore() {
+    const metadataState = this.store.getState()[METADATA_STORE_KEY] || {};
     const newMetadataState = this._trimDomainMetadata(metadataState);
 
     this._pendingSiteMetadata = new Set();
@@ -677,9 +704,25 @@ export class PermissionsController {
    *
    * @param {string} origin - The origin string representing the domain.
    */
-  _initializePermissions(restoredState) {
+  initializePermissions(restoredPermissions, getRestrictedMethods, hooks = {}) {
+    if (this.permissions || this.permissionsLog) {
+      throw new Error('Permissions already initialized.');
+    }
+
+    const restrictedMethods = getRestrictedMethods({
+      ...hooks,
+      getIdentities: this._getIdentities.bind(this),
+      getKeyringAccounts: this.getKeyringAccounts.bind(this),
+    });
+
+    this.permissionsLog = new PermissionsLogController({
+      restrictedMethods: Object.keys(restrictedMethods),
+      store: this.store,
+    });
+
     // these permission requests are almost certainly stale
-    const initState = { ...restoredState, permissionsRequests: [] };
+    const initState = { ...restoredPermissions, permissionsRequests: [] };
+    delete initState.permissionsDescriptions;
 
     this.permissions = new RpcCap(
       {
@@ -689,7 +732,7 @@ export class PermissionsController {
         // optional prefix for internal methods
         methodPrefix: WALLET_PREFIX,
 
-        restrictedMethods: this._restrictedMethods,
+        restrictedMethods,
 
         /**
          * A promise-returning callback used to determine whether to approve
@@ -714,5 +757,7 @@ export class PermissionsController {
       },
       initState,
     );
+
+    this._initializeMetadataStore();
   }
 }

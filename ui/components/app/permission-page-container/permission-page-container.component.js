@@ -7,6 +7,7 @@ import { PermissionPageContainerContent } from '.';
 
 export default class PermissionPageContainer extends Component {
   static propTypes = {
+    permissionsDescriptions: PropTypes.object.isRequired,
     approvePermissionsRequest: PropTypes.func.isRequired,
     rejectPermissionsRequest: PropTypes.func.isRequired,
     selectedIdentities: PropTypes.array,
@@ -121,11 +122,13 @@ export default class PermissionPageContainer extends Component {
       targetDomainMetadata,
       selectedIdentities,
       allIdentitiesSelected,
+      permissionsDescriptions,
     } = this.props;
 
     return (
       <div className="page-container permission-approval-container">
         <PermissionPageContainerContent
+          permissionsDescriptions={permissionsDescriptions}
           requestMetadata={requestMetadata}
           domainMetadata={targetDomainMetadata}
           selectedPermissions={this.state.selectedPermissions}
