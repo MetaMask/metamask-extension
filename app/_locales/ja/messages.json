@@ -457,7 +457,7 @@
     "message": "メッセージを復号"
   },
   "decryptRequest": {
-    "message": "復号のリクエスト
+    "message": "復号のリクエスト"
   },
   "defaultNetwork": {
     "message": "デフォルトのEther取引ネットワークはメインネットです。"
