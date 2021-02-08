@@ -1,13 +1,11 @@
 import React from 'react';
-import { action } from '@storybook/addon-actions';
-import { text, boolean, number, object } from '@storybook/addon-knobs';
+import testData from '../../../../../.storybook/test-data';
 import SignatureRequest from './signature-request.component';
-import testData from '../../../../../.storybook/test-data.js'
 
-const primaryAccount = Object.values(testData.metamask.accounts)[0]
+const primaryIdentity = Object.values(testData.metamask.identities)[0];
 
 const containerStyle = {
-  width: '300px',
+  width: '357px',
 };
 
 export default {
@@ -32,10 +30,7 @@ export const FirstLook = () => {
             origin: 'https://happydapp.website/governance?futarchy=true',
           },
         }}
-        fromAccount={primaryAccount}
-        clearConfirmTransaction={() => {}}
-        cancel={() => {}}
-        sign={() => {}}
+        fromAccount={primaryIdentity}
       />
     </div>
   );
