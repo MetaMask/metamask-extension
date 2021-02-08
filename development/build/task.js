@@ -23,7 +23,7 @@ function detectAndRunEntryTask() {
   if (!taskName) {
     throw new Error(`MetaMask build: No task name specified`);
   }
-  const skipStats = process.argv[3] === '--skip-stats';
+  const skipStats = process.argv.includes('--skip-stats');
 
   runTask(taskName, { skipStats });
 }

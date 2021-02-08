@@ -1,7 +1,6 @@
 const pify = require('pify');
 const gulp = require('gulp');
 const sass = require('gulp-sass');
-sass.compiler = require('sass');
 const autoprefixer = require('gulp-autoprefixer');
 const gulpStylelint = require('gulp-stylelint');
 const watch = require('gulp-watch');
@@ -10,6 +9,10 @@ const rtlcss = require('gulp-rtlcss');
 const rename = require('gulp-rename');
 const pump = pify(require('pump'));
 const { createTask } = require('./task');
+
+// use our own compiler which runs sass in its own process
+// in order to not pollute the intrinsics
+sass.compiler = require('./sass-compiler.js');
 
 // scss compilation and autoprefixing tasks
 module.exports = createStyleTasks;
