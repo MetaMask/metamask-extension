@@ -27,6 +27,10 @@ import {
   GasFeeController,
   TokenListController,
 } from '@metamask/controllers';
+import {
+  PluginController,
+  ExternalResourceController,
+} from '@mm-snap/controllers';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
@@ -38,7 +42,10 @@ import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
-import createMethodMiddleware from './lib/rpc-method-middleware';
+import {
+  createMethodMiddleware,
+  createPluginMethodMiddleware,
+} from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
@@ -70,6 +77,8 @@ import seedPhraseVerifier from './lib/seed-phrase-verifier';
 import MetaMetricsController from './controllers/metametrics';
 import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
+import { WORKER_BLOB_URL } from './lib/worker-blob';
+import { FILSNAP_NAME, setupFilsnap } from './lib/filsnap';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -87,6 +96,10 @@ export const METAMASK_CONTROLLER_EVENTS = {
 const KEYRING_TYPES = {
   LEDGER: 'Ledger Hardware',
   TREZOR: 'Trezor Hardware',
+}
+
+const RESOURCE_KEYS = {
+  ASSETS: 'snaps:resources:assets',
 };
 
 export default class MetamaskController extends EventEmitter {
@@ -109,6 +122,7 @@ export default class MetamaskController extends EventEmitter {
     const initState = opts.initState || {};
     const version = this.platform.getVersion();
     this.recordFirstTimeInfo(initState);
+    this.setupFilsnap = opts.setupFilsnap || setupFilsnap;
 
     // this keeps track of how many "controllerStream" connections are open
     // the only thing that uses controller connections are open metamask UI instances
@@ -163,6 +177,12 @@ export default class MetamaskController extends EventEmitter {
       network: this.networkController,
       provider: this.provider,
       migrateAddressBookState: this.migrateAddressBookState.bind(this),
+    });
+
+    this.assetsController = new ExternalResourceController({
+      requiredFields: ['symbol', 'balance', 'identifier', 'decimals'],
+      storageKey: RESOURCE_KEYS.ASSETS,
+      initialResources: initState.AssetsController,
     });
 
     this.metaMetricsController = new MetaMetricsController({
@@ -355,7 +375,6 @@ export default class MetamaskController extends EventEmitter {
         getKeyringAccounts: this.keyringController.getAccounts.bind(
           this.keyringController,
         ),
-        getRestrictedMethods,
         getUnlockPromise: this.appStateController.getUnlockPromise.bind(
           this.appStateController,
         ),
@@ -364,8 +383,54 @@ export default class MetamaskController extends EventEmitter {
         notifyAllDomains: this.notifyAllConnections.bind(this),
         preferences: this.preferencesController.store,
       },
-      initState.PermissionsController,
       initState.PermissionsMetadata,
+    );
+
+    this.pluginController = new PluginController({
+      setupWorkerPluginProvider: this.setupWorkerPluginProvider.bind(this),
+      closeAllConnections: this.removeAllConnections.bind(this),
+      getPermissions: this.permissionsController.getPermissions.bind(
+        this.permissionsController,
+      ),
+      hasPermission: this.permissionsController.hasPermission.bind(
+        this.permissionsController,
+      ),
+      requestPermissions: this.permissionsController.requestPermissions.bind(
+        this.permissionsController,
+      ),
+      removeAllPermissionsFor: this.permissionsController.removeAllPermissionsFor.bind(
+        this.permissionsController,
+      ),
+      getAppKeyForDomain: this.keyringController.exportAppKeyForAddress.bind(
+        this.keyringController,
+      ),
+      workerUrl: WORKER_BLOB_URL,
+      initState: initState.PluginController,
+    });
+
+    this.permissionsController.initializePermissions(
+      initState.PermissionsController,
+      getRestrictedMethods,
+      {
+        addPlugin: this.pluginController.add.bind(this.pluginController),
+        clearSnapState: (fromDomain) =>
+          this.pluginController.updatePluginState(fromDomain, {}),
+        getMnemonic: this.getPrimaryKeyringMnemonic.bind(this),
+        getPlugin: this.pluginController.get.bind(this.pluginController),
+        getPluginRpcHandler: this.pluginController.getRpcMessageHandler.bind(
+          this.pluginController,
+        ),
+        getSnapState: this.pluginController.getPluginState.bind(
+          this.pluginController,
+        ),
+        handleAssetRequest: this.assetsController.handleRpcRequest.bind(
+          this.assetsController,
+        ),
+        showConfirmation: window.confirm, // Eventually, a template confirmation.
+        updateSnapState: this.pluginController.updatePluginState.bind(
+          this.pluginController,
+        ),
+      },
     );
 
     this.detectTokensController = new DetectTokensController({
@@ -549,6 +614,9 @@ export default class MetamaskController extends EventEmitter {
       NotificationController: this.notificationController,
       GasFeeController: this.gasFeeController,
       TokenListController: this.tokenListController,
+      // snaps
+      PluginController: this.pluginController.store,
+      AssetsController: this.assetsController.store,
     });
 
     this.memStore = new ComposableObservableStore({
@@ -582,6 +650,9 @@ export default class MetamaskController extends EventEmitter {
         NotificationController: this.notificationController,
         GasFeeController: this.gasFeeController,
         TokenListController: this.tokenListController,
+        // snaps
+        AssetsController: this.assetsController.store,
+        PluginController: this.pluginController.memStore,
       },
       controllerMessenger: this.controllerMessenger,
     });
@@ -609,6 +680,21 @@ export default class MetamaskController extends EventEmitter {
 
     // TODO:LegacyProvider: Delete
     this.publicConfigStore = this.createPublicConfigStore();
+
+    // Run filsnap
+    this.setupFilsnap(this.permissionsController, this.pluginController);
+
+    // Setup some background hooks
+    global.clearPermissions = () =>
+      this.permissionsController.clearPermissions();
+    global.clearPlugins = () => {
+      this.pluginController.clearState();
+      this.assetsController.clearResources();
+    };
+    global.clearPermsAndPlugins = () => {
+      global.clearPermissions();
+      global.clearPlugins();
+    };
   }
 
   /**
@@ -690,6 +776,15 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Reinstalls filsnap.
+   */
+  async reinstallFilsnap() {
+    this.pluginController.removePlugin(FILSNAP_NAME);
+    this.assetsController.deleteResourcesFor(FILSNAP_NAME);
+    await this.setupFilsnap(this.permissionsController, this.pluginController);
+  }
+
+  /**
    * Gets relevant state for the provider of an external origin.
    *
    * @param {string} origin - The origin to get the provider state for.
@@ -758,6 +853,7 @@ export default class MetamaskController extends EventEmitter {
       networkController,
       onboardingController,
       permissionsController,
+      pluginController,
       preferencesController,
       swapsController,
       threeBoxController,
@@ -1150,6 +1246,17 @@ export default class MetamaskController extends EventEmitter {
         this.appStateController.removePollingToken,
         this.appStateController,
       ),
+
+      // Plugins
+      reinstallFilsnap: nodeify(this.reinstallFilsnap, this),
+
+      toggleFilsnap: nodeify(async () => {
+        if (pluginController.isRunning(FILSNAP_NAME)) {
+          pluginController.stopPlugin(FILSNAP_NAME);
+        } else {
+          await pluginController.startPlugin(FILSNAP_NAME);
+        }
+      }),
     };
   }
 
@@ -1184,6 +1291,7 @@ export default class MetamaskController extends EventEmitter {
         const addresses = await this.keyringController.getAccounts();
         this.preferencesController.setAddresses(addresses);
         this.selectFirstIdentity();
+        await this.reinstallFilsnap();
       }
       return vault;
     } finally {
@@ -1217,6 +1325,9 @@ export default class MetamaskController extends EventEmitter {
 
       // clear unapproved transactions
       this.txController.txStateManager.clearUnapprovedTxs();
+
+      // reinstall filsnap
+      await this.reinstallFilsnap();
 
       // create new vault
       const vault = await keyringController.createNewVaultAndRestore(
@@ -1434,6 +1545,17 @@ export default class MetamaskController extends EventEmitter {
     const { identities } = this.preferencesController.store.getState();
     const address = Object.keys(identities)[0];
     this.preferencesController.setSelectedAddress(address);
+  }
+
+  /**
+   * Gets the mnemonic of the user's primary keyring.
+   */
+  getPrimaryKeyringMnemonic() {
+    const keyring = this.keyringController.getKeyringsByType('HD Key Tree')[0];
+    if (!keyring.mnemonic) {
+      throw new Error('Primary keyring mnemonic unavailable.');
+    }
+    return keyring.mnemonic;
   }
 
   //
@@ -1714,6 +1836,21 @@ export default class MetamaskController extends EventEmitter {
     this.sendUpdate();
     this.opts.showUserConfirmation();
     return promise;
+  }
+
+  /**
+   * TODO:snaps verify safety of using keyringController.getAccounts
+   */
+  async getAppKeyForDomain(domain, requestedAccount) {
+    let account;
+
+    if (requestedAccount) {
+      account = requestedAccount;
+    } else {
+      account = (await this.keyringController.getAccounts())[0];
+    }
+
+    return this.keyringController.exportAppKeyForAddress(account, domain);
   }
 
   /**
@@ -2198,25 +2335,35 @@ export default class MetamaskController extends EventEmitter {
    * @param {*} connectionStream - The Duplex stream to connect to.
    * @param {MessageSender} sender - The sender of the messages on this stream
    */
-  setupUntrustedCommunication(connectionStream, sender) {
+  setupUntrustedCommunication(connectionStream, sender, isPlugin = false) {
     const { usePhishDetect } = this.preferencesController.store.getState();
-    const { hostname } = new URL(sender.url);
-    // Check if new connection is blocked if phishing detection is on
-    if (usePhishDetect && this.phishingController.test(hostname)) {
-      log.debug('MetaMask - sending phishing warning for', hostname);
-      this.sendPhishingWarning(connectionStream, hostname);
-      return;
+
+    if (!isPlugin) {
+      const { hostname } = new URL(sender.url);
+      // Check if new connection is blocked if phishing detection is on
+      if (usePhishDetect && this.phishingController.test(hostname)) {
+        log.debug('MetaMask - sending phishing warning for', hostname);
+        this.sendPhishingWarning(connectionStream, hostname);
+        return;
+      }
     }
 
     // setup multiplexing
     const mux = setupMultiplex(connectionStream);
 
     // messages between inpage and background
-    this.setupProviderConnection(mux.createStream('metamask-provider'), sender);
+    this.setupProviderConnection(
+      mux.createStream('metamask-provider'),
+      sender,
+      false,
+      isPlugin,
+    );
 
     // TODO:LegacyProvider: Delete
-    // legacy streams
-    this.setupPublicConfig(mux.createStream('publicConfig'));
+    if (!isPlugin) {
+      // legacy streams
+      this.setupPublicConfig(mux.createStream('publicConfig'));
+    }
   }
 
   /**
@@ -2292,10 +2439,29 @@ export default class MetamaskController extends EventEmitter {
    * @param {MessageSender} sender - The sender of the messages on this stream
    * @param {boolean} isInternal - True if this is a connection with an internal process
    */
-  setupProviderConnection(outStream, sender, isInternal) {
-    const origin = isInternal ? 'metamask' : new URL(sender.url).origin;
+  setupProviderConnection(
+    outStream,
+    sender,
+    isInternal = false,
+    isPlugin = false,
+  ) {
+    let origin;
+    if (isInternal) {
+      origin = 'metamask';
+    } else if (isPlugin) {
+      try {
+        origin = new URL(sender.url).toString();
+      } catch (_) {
+        // TODO: Sometimes the origin isn't an URL, and we should probably
+        // handle it better than by means of this hack.
+        origin = sender.url;
+      }
+    } else {
+      origin = new URL(sender.url).origin;
+    }
+
     let extensionId;
-    if (sender.id !== this.extension.runtime.id) {
+    if (!isPlugin && sender.id !== this.extension.runtime.id) {
       extensionId = sender.id;
     }
     let tabId;
@@ -2309,6 +2475,7 @@ export default class MetamaskController extends EventEmitter {
       extensionId,
       tabId,
       isInternal,
+      isPlugin,
     });
 
     // setup connection
@@ -2331,6 +2498,17 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * For plugins running in workers.
+   */
+  setupWorkerPluginProvider(senderUrl, connectionStream, _workerId) {
+    const sender = {
+      hostname: senderUrl.hostname,
+      url: senderUrl.url || senderUrl.hostname,
+    };
+    this.setupUntrustedCommunication(connectionStream, sender, true);
+  }
+
+  /**
    * A method for creating a provider that is safely restricted for the requesting domain.
    * @param {Object} options - Provider engine options
    * @param {string} options.origin - The origin of the sender
@@ -2345,10 +2523,16 @@ export default class MetamaskController extends EventEmitter {
     extensionId,
     tabId,
     isInternal = false,
+    isPlugin = false,
   }) {
     // setup json rpc engine stack
     const engine = new JsonRpcEngine();
-    const { provider, blockTracker } = this;
+    const {
+      blockTracker,
+      permissionsController,
+      pluginController,
+      provider,
+    } = this;
 
     // create filter polyfill middleware
     const filterMiddleware = createFilterMiddleware({ provider, blockTracker });
@@ -2364,18 +2548,24 @@ export default class MetamaskController extends EventEmitter {
 
     // append origin to each request
     engine.push(createOriginMiddleware({ origin }));
+
     // append tabId to each request if it exists
     if (tabId) {
       engine.push(createTabIdMiddleware({ tabId }));
     }
+
     // logging
     engine.push(createLoggerMiddleware({ origin }));
-    engine.push(
-      createOnboardingMiddleware({
-        location,
-        registerOnboarding: this.onboardingController.registerOnboarding,
-      }),
-    );
+    if (!isPlugin) {
+      engine.push(
+        createOnboardingMiddleware({
+          location,
+          registerOnboarding: this.onboardingController.registerOnboarding,
+        }),
+      );
+    }
+
+    // Unrestricted/permissionless RPC method implementations
     engine.push(
       createMethodMiddleware({
         origin,
@@ -2429,6 +2619,29 @@ export default class MetamaskController extends EventEmitter {
         },
       }),
     );
+
+    engine.push(
+      createPluginMethodMiddleware(isPlugin, {
+        getAppKey: this.getAppKeyForDomain.bind(this, origin),
+        getPlugins: pluginController.getPermittedPlugins.bind(
+          pluginController,
+          origin,
+        ),
+        requestPermissions: permissionsController.requestPermissions.bind(
+          permissionsController,
+          origin,
+        ),
+        getAccounts: permissionsController._getPermittedAccounts.bind(
+          permissionsController,
+          origin,
+        ),
+        installPlugins: pluginController.installPlugins.bind(
+          pluginController,
+          origin,
+        ),
+      }),
+    );
+
     // filter and subscription polyfills
     engine.push(filterMiddleware);
     engine.push(subscriptionManager.middleware);
@@ -2438,6 +2651,7 @@ export default class MetamaskController extends EventEmitter {
         this.permissionsController.createMiddleware({ origin, extensionId }),
       );
     }
+
     // forward to metamask primary provider
     engine.push(providerAsMiddleware(provider));
     return engine;
@@ -2510,6 +2724,24 @@ export default class MetamaskController extends EventEmitter {
     if (Object.keys(connections).length === 0) {
       delete this.connections[origin];
     }
+  }
+
+  /**
+   * Closes all connections for the given origin, and removes the references
+   * to them.
+   * Ignores unknown origins.
+   *
+   * @param {string} origin - The origin string.
+   */
+  removeAllConnections(origin) {
+    const connections = this.connections[origin];
+    if (!connections) {
+      return;
+    }
+
+    Object.keys(connections).forEach((id) => {
+      this.removeConnection(origin, id);
+    });
   }
 
   /**
