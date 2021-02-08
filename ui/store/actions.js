@@ -656,6 +656,20 @@ export function updateCustomNonce(value) {
   };
 }
 
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+export function showSnapInstallWarning(snapName, onSubmit) {
+  return (dispatch) => {
+    dispatch(
+      showModal({
+        name: 'SNAP_INSTALL',
+        onSubmit,
+        snapName,
+      }),
+    );
+  };
+}
+///: END:ONLY_INCLUDE_IN
+
 const updateMetamaskStateFromBackground = () => {
   log.debug(`background.getState`);
 
@@ -797,6 +811,33 @@ export function txError(err) {
     message: err.message,
   };
 }
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+export function disableSnap(snapId) {
+  return async (dispatch) => {
+    await promisifiedBackground.disableSnap(snapId);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function enableSnap(snapId) {
+  return async (dispatch) => {
+    await promisifiedBackground.enableSnap(snapId);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function removeSnap(snap) {
+  return async (dispatch) => {
+    await promisifiedBackground.removeSnap(snap);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export async function removeSnapError(msgData) {
+  return promisifiedBackground.removeSnapError(msgData);
+}
+///: END:ONLY_INCLUDE_IN
 
 export function cancelMsg(msgData) {
   return async (dispatch) => {
