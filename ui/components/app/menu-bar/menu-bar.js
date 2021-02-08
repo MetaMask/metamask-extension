@@ -11,6 +11,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMetricEvent } from '../../../hooks/useMetricEvent';
 import { getOriginOfCurrentTab } from '../../../selectors';
 import AccountOptionsMenu from './account-options-menu';
+import FilsnapMenu from './filsnap-menu';
 
 export default function MenuBar() {
   const t = useI18nContext();
@@ -22,12 +23,18 @@ export default function MenuBar() {
     },
   });
   const history = useHistory();
+  const origin = useSelector(getOriginOfCurrentTab);
+
   const [
     accountOptionsButtonElement,
     setAccountOptionsButtonElement,
   ] = useState(null);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
-  const origin = useSelector(getOriginOfCurrentTab);
+
+  const [filsnapMenuButtonElement, setFilsnapMenuButtonElement] = useState(
+    null,
+  );
+  const [filsnapMenuOpen, setFilsnapMenuOpen] = useState(false);
 
   const showStatus =
     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
@@ -43,6 +50,25 @@ export default function MenuBar() {
       ) : null}
 
       <SelectedAccount />
+
+      <button
+        className="menu-bar__filsnap-menu-button"
+        data-testid="filsnap-menu-button"
+        ref={setFilsnapMenuButtonElement}
+        title="Filsnap Menu"
+        onClick={() => {
+          setFilsnapMenuOpen(true);
+        }}
+      >
+        <img src="images/filecoin-logo.svg" />
+      </button>
+
+      {filsnapMenuOpen && (
+        <FilsnapMenu
+          anchorElement={filsnapMenuButtonElement}
+          onClose={() => setFilsnapMenuOpen(false)}
+        />
+      )}
 
       <button
         className="fas fa-ellipsis-v menu-bar__account-options"
