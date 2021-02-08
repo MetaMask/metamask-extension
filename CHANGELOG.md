@@ -8,7 +8,6 @@
 - [#10298](https://github.com/MetaMask/metamask-extension/pull/10298): Use network primary currency instead of always defaulting to ETH in the confirm approve screen
 - [#10300](https://github.com/MetaMask/metamask-extension/pull/10300): Add origin to signature request confirmation page
 - [#10296](https://github.com/MetaMask/metamask-extension/pull/10296): Add origin to transaction confirmation
-- [#10312](https://github.com/MetaMask/metamask-extension/pull/10312): Ensure second click of network menu button closes network menu
 - [#10266](https://github.com/MetaMask/metamask-extension/pull/10266): Update `ko` localized messages
 - [#10263](https://github.com/MetaMask/metamask-extension/pull/10263): Update `id` localized messages
 - [#10347](https://github.com/MetaMask/metamask-extension/pull/10347): Require click of "Continue" button to interact with swap screen if there is a price impact warning for present swap
