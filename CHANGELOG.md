@@ -14,6 +14,8 @@
 - [#10373](https://github.com/MetaMask/metamask-extension/pull/10373): Change copy of submit button on swaps screen
 - [#10346](https://github.com/MetaMask/metamask-extension/pull/10346): Swaps token sources/verification messaging update
 - [#10378](https://github.com/MetaMask/metamask-extension/pull/10378): Stop showing the window.web3 in-app popup if the dapp is just using web3.currentProvider
+- [#10326](https://github.com/MetaMask/metamask-extension/pull/10326): Throw error when attempting to get an encryption key via eth_getEncryptionPublicKey when connected to Ledger HW
+- [#10386](https://github.com/MetaMask/metamask-extension/pull/10386): Make action buttons on message components in swaps flow accessible
 
 ## 9.0.4 Fri Jan 22 2021
 - [#10285](https://github.com/MetaMask/metamask-extension/pull/10285): Update @metamask/contract-metadata from v1.21.0 to 1.22.0
