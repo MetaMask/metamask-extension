@@ -38,6 +38,10 @@ const mapStateToProps = (state, ownProps) => {
     (req) => req.metadata.id === permissionsRequestId,
   );
 
+  const isRequestingAccounts = Boolean(
+    permissionsRequest?.permissions.eth_accounts,
+  );
+
   const { metadata = {} } = permissionsRequest || {};
   const { origin } = metadata;
   const nativeCurrency = getNativeCurrency(state);
@@ -85,6 +89,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   return {
+    isRequestingAccounts,
     permissionsRequest,
     permissionsRequestId,
     accounts: accountsWithLabels,
