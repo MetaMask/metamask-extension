@@ -10,6 +10,11 @@
         "@babel/runtime": true
       }
     },
+    "keccak": {
+      "packages": {
+        "readable-stream": true
+      }
+    },
     "node-fetch": {
       "globals": {
         "fetch": true
