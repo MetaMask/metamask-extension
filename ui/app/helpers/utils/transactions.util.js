@@ -212,14 +212,9 @@ export function getBlockExplorerUrlForTx(networkId, hash, rpcPrefs = {}) {
  * This will throw an error if the transaction category is unrecognized and no default is provided.
  * @param {function} t - The translation function
  * @param {TRANSACTION_CATEGORIES[keyof TRANSACTION_CATEGORIES]} transactionCategory - The transaction category constant
- * @param {string} [defaultTitle] - The default title to return if the transaction cateogory is not recognized.
  * @returns {string} The transaction category title
  */
-export function getTransactionCategoryTitle(
-  t,
-  transactionCategory,
-  defaultTitle,
-) {
+export function getTransactionCategoryTitle(t, transactionCategory) {
   switch (transactionCategory) {
     case TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER: {
       return t('transfer');
@@ -246,9 +241,6 @@ export function getTransactionCategoryTitle(
       return t('swapApproval');
     }
     default: {
-      if (defaultTitle) {
-        return defaultTitle;
-      }
       throw new Error(
         `Unrecognized transaction category: ${transactionCategory}`,
       );
