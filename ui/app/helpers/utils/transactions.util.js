@@ -220,7 +220,7 @@ export function getTransactionCategoryTitle(t, transactionCategory) {
       return t('transfer');
     }
     case TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER_FROM: {
-      return t('transferfrom');
+      return t('transferFrom');
     }
     case TRANSACTION_CATEGORIES.TOKEN_METHOD_APPROVE: {
       return t('approve');
