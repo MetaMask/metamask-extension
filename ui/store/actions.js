@@ -798,6 +798,17 @@ export function txError(err) {
   };
 }
 
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+export function removeSnapError(msgData) {
+  return (dispatch) => {
+    return promisifiedBackground
+      .removeSnapError(msgData)
+      .then(() => updateMetamaskStateFromBackground())
+      .then((newState) => dispatch(updateMetamaskState(newState)));
+  };
+}
+///: END:ONLY_INCLUDE_IN
+
 export function cancelMsg(msgData) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
