@@ -9,6 +9,11 @@ import {
   WALLET_PREFIX,
 } from './enums';
 
+const DEFAULT_STATE = {
+  [HISTORY_STORE_KEY]: {},
+  [LOG_STORE_KEY]: [],
+};
+
 /**
  * Controller with middleware for logging requests and responses to restricted
  * and permissions-related methods.
@@ -17,6 +22,13 @@ export default class PermissionsLogController {
   constructor({ restrictedMethods, store }) {
     this.restrictedMethods = restrictedMethods;
     this.store = store;
+  }
+
+  /**
+   * Clears all permissions logs.
+   */
+  clear() {
+    this.store.updateState({ ...DEFAULT_STATE });
   }
 
   /**
