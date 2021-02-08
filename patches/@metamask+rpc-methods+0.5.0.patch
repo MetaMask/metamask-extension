@@ -1,0 +1,31 @@
+diff --git a/node_modules/@metamask/rpc-methods/dist/restricted/manageState.js b/node_modules/@metamask/rpc-methods/dist/restricted/manageState.js
+index 535168d..c22424f 100644
+--- a/node_modules/@metamask/rpc-methods/dist/restricted/manageState.js
++++ b/node_modules/@metamask/rpc-methods/dist/restricted/manageState.js
+@@ -32,14 +32,14 @@ var ManageStateOperation;
+ })(ManageStateOperation = exports.ManageStateOperation || (exports.ManageStateOperation = {}));
+ function getManageStateImplementation({ clearSnapState, getSnapState, updateSnapState, }) {
+     return async function manageState(options) {
+-        const { params = [], method } = options;
++        const { params = [], method, context } = options;
+         const [operation, newState] = params;
+         switch (operation) {
+             case ManageStateOperation.clearState:
+-                await clearSnapState();
++                await clearSnapState(context.origin);
+                 return null;
+             case ManageStateOperation.getState:
+-                return await getSnapState();
++                return await getSnapState(context.origin);
+             case ManageStateOperation.updateState:
+                 if (!utils_1.isPlainObject(newState)) {
+                     throw eth_rpc_errors_1.ethErrors.rpc.invalidParams({
+@@ -49,7 +49,7 @@ function getManageStateImplementation({ clearSnapState, getSnapState, updateSnap
+                         },
+                     });
+                 }
+-                await updateSnapState(newState);
++                await updateSnapState(context.origin, newState);
+                 return null;
+             default:
+                 throw eth_rpc_errors_1.ethErrors.rpc.invalidParams(`Invalid ${method} operation: "${operation}"`);
