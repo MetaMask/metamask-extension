@@ -1,1 +1,1 @@
-export { default } from './network';
+export { default, NETWORK_EVENTS } from './network';

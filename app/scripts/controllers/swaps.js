@@ -19,6 +19,7 @@ import {
   fetchSwapsFeatureLiveness as defaultFetchSwapsFeatureLiveness,
   fetchSwapsQuoteRefreshTime as defaultFetchSwapsQuoteRefreshTime,
 } from '../../../ui/app/pages/swaps/swaps.util';
+import { NETWORK_EVENTS } from './network';
 
 const METASWAP_ADDRESS = '0x881d40237659c251811cec9c364ef91dc08d300c';
 
@@ -103,7 +104,7 @@ export default class SwapsController {
 
     this.ethersProvider = new ethers.providers.Web3Provider(provider);
     this._currentNetwork = networkController.store.getState().network;
-    networkController.on('networkDidChange', (network) => {
+    networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, (network) => {
       if (network !== 'loading' && network !== this._currentNetwork) {
         this._currentNetwork = network;
         this.ethersProvider = new ethers.providers.Web3Provider(provider);

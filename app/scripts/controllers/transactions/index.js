@@ -23,6 +23,7 @@ import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
 } from '../../../../shared/constants/transaction';
+import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
@@ -113,7 +114,9 @@ export default class TransactionController extends EventEmitter {
       ),
     });
 
-    this.txStateManager.store.subscribe(() => this.emit('update:badge'));
+    this.txStateManager.store.subscribe(() =>
+      this.emit(METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE),
+    );
     this._setupListeners();
     // memstore is computed from a few different stores
     this._updateMemstore();
