@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 9.0.5 Mon Feb 08 2021
+
 ## 9.0.4 Fri Jan 22 2021
 - [#10285](https://github.com/MetaMask/metamask-extension/pull/10285): Update @metamask/contract-metadata from v1.21.0 to 1.22.0
 - [#10174](https://github.com/MetaMask/metamask-extension/pull/10174): Move fox to bottom of 'About' page
