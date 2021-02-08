@@ -205,3 +205,45 @@ export function getBlockExplorerUrlForTx(networkId, hash, rpcPrefs = {}) {
   const prefix = getEtherscanNetworkPrefix(networkId);
   return `https://${prefix}etherscan.io/tx/${hash}`;
 }
+
+/**
+ * Returns a title for the given transaction category.
+ *
+ * This will throw an error if the transaction category is unrecognized and no default is provided.
+ * @param {function} t - The translation function
+ * @param {TRANSACTION_CATEGORIES[keyof TRANSACTION_CATEGORIES]} transactionCategory - The transaction category constant
+ * @returns {string} The transaction category title
+ */
+export function getTransactionCategoryTitle(t, transactionCategory) {
+  switch (transactionCategory) {
+    case TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER: {
+      return t('transfer');
+    }
+    case TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER_FROM: {
+      return t('transferfrom');
+    }
+    case TRANSACTION_CATEGORIES.TOKEN_METHOD_APPROVE: {
+      return t('approve');
+    }
+    case TRANSACTION_CATEGORIES.SENT_ETHER: {
+      return t('sentEther');
+    }
+    case TRANSACTION_CATEGORIES.CONTRACT_INTERACTION: {
+      return t('contractInteraction');
+    }
+    case TRANSACTION_CATEGORIES.DEPLOY_CONTRACT: {
+      return t('contractDeployment');
+    }
+    case TRANSACTION_CATEGORIES.SWAP: {
+      return t('swap');
+    }
+    case TRANSACTION_CATEGORIES.SWAP_APPROVAL: {
+      return t('swapApproval');
+    }
+    default: {
+      throw new Error(
+        `Unrecognized transaction category: ${transactionCategory}`,
+      );
+    }
+  }
+}
