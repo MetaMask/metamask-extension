@@ -3,6 +3,18 @@
 ## Current Develop Branch
 
 ## 9.0.5 Mon Feb 08 2021
+- [#10278](https://github.com/MetaMask/metamask-extension/pull/10278): Allow editing transaction amount after clicking max
+- [#10214](https://github.com/MetaMask/metamask-extension/pull/10214): Standardize size, shape and color of network color indicators
+- [#10298](https://github.com/MetaMask/metamask-extension/pull/10298): Use network primary currency instead of always defaulting to ETH in the confirm approve screen
+- [#10300](https://github.com/MetaMask/metamask-extension/pull/10300): Add origin to signature request confirmation page
+- [#10296](https://github.com/MetaMask/metamask-extension/pull/10296): Add origin to transaction confirmation
+- [#10312](https://github.com/MetaMask/metamask-extension/pull/10312): Ensure second click of network menu button closes network menu
+- [#10266](https://github.com/MetaMask/metamask-extension/pull/10266): Update `ko` localized messages
+- [#10263](https://github.com/MetaMask/metamask-extension/pull/10263): Update `id` localized messages
+- [#10347](https://github.com/MetaMask/metamask-extension/pull/10347): Require click of "Continue" button to interact with swap screen if there is a price impact warning for present swap
+- [#10373](https://github.com/MetaMask/metamask-extension/pull/10373): Change copy of submit button on swaps screen
+- [#10346](https://github.com/MetaMask/metamask-extension/pull/10346): Swaps token sources/verification messaging update
+- [#10378](https://github.com/MetaMask/metamask-extension/pull/10378): Stop showing the window.web3 in-appi popup if the dapp is just using web3.currentProvider
 
 ## 9.0.4 Fri Jan 22 2021
 - [#10285](https://github.com/MetaMask/metamask-extension/pull/10285): Update @metamask/contract-metadata from v1.21.0 to 1.22.0
