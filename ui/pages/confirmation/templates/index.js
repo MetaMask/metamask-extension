@@ -6,10 +6,16 @@ import {
 } from '../../../store/actions';
 import addEthereumChain from './add-ethereum-chain';
 import switchEthereumChain from './switch-ethereum-chain';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import snapConfirm from './flask/snap-confirm/snap-confirm';
+///: END:ONLY_INCLUDE_IN
 
 const APPROVAL_TEMPLATES = {
   [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN]: addEthereumChain,
   [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN]: switchEthereumChain,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  [MESSAGE_TYPE.SNAP_CONFIRM]: snapConfirm,
+  ///: END:ONLY_INCLUDE_IN
 };
 
 export const TEMPLATED_CONFIRMATION_MESSAGE_TYPES = Object.keys(
@@ -22,6 +28,7 @@ const ALLOWED_TEMPLATE_KEYS = [
   'cancelText',
   'onApprove',
   'onCancel',
+  'networkDisplay',
 ];
 
 /**
