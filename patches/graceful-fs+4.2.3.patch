@@ -1,0 +1,47 @@
+diff --git a/node_modules/graceful-fs/graceful-fs.js b/node_modules/graceful-fs/graceful-fs.js
+index 8c75ee2..df8ff2e 100644
+--- a/node_modules/graceful-fs/graceful-fs.js
++++ b/node_modules/graceful-fs/graceful-fs.js
+@@ -41,42 +41,6 @@ if (!global[gracefulQueue]) {
+     }
+   })
+ 
+-  // Patch fs.close/closeSync to shared queue version, because we need
+-  // to retry() whenever a close happens *anywhere* in the program.
+-  // This is essential when multiple graceful-fs instances are
+-  // in play at the same time.
+-  fs.close = (function (fs$close) {
+-    function close (fd, cb) {
+-      return fs$close.call(fs, fd, function (err) {
+-        // This function uses the graceful-fs shared queue
+-        if (!err) {
+-          retry()
+-        }
+-
+-        if (typeof cb === 'function')
+-          cb.apply(this, arguments)
+-      })
+-    }
+-
+-    Object.defineProperty(close, previousSymbol, {
+-      value: fs$close
+-    })
+-    return close
+-  })(fs.close)
+-
+-  fs.closeSync = (function (fs$closeSync) {
+-    function closeSync (fd) {
+-      // This function uses the graceful-fs shared queue
+-      fs$closeSync.apply(fs, arguments)
+-      retry()
+-    }
+-
+-    Object.defineProperty(closeSync, previousSymbol, {
+-      value: fs$closeSync
+-    })
+-    return closeSync
+-  })(fs.closeSync)
+-
+   if (/\bgfs4\b/i.test(process.env.NODE_DEBUG || '')) {
+     process.on('exit', function() {
+       debug(global[gracefulQueue])

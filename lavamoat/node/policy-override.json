@@ -1,0 +1,112 @@
+{
+  "resources": {
+    "memoizee": {
+      "globals": {
+        "hasOwnProperty": true
+      }
+    },
+    "vinyl": {
+      "builtin": {
+        "util": true
+      }
+    },
+    "graceful-fs": {
+      "builtin": {
+        "stream.Stream": true
+      }
+    },
+    "node-sass": {
+      "native": true
+    },
+    "colorette": {
+      "globals": {
+        "process": true
+      }
+    },
+    "@stylelint/postcss-css-in-js": {
+      "packages": {
+        "postcss-syntax": true,
+        "@babel/core": true
+      }
+    },
+    "stylelint": {
+      "packages": {
+        "@stylelint/postcss-css-in-js": true,
+        "postcss-html": true,
+        "postcss-scss": true,
+        "postcss-less": true,
+        "postcss-sass": true,
+        "sugarss": true
+      }
+    },
+    "htmlparser2": {
+      "builtin": {
+        "events": true
+      },
+      "packages": {
+        "entities": true,
+        "inherits": true,
+        "domhandler": true,
+        "domelementtype": true
+      }
+    },
+    "domhandler": {
+      "packages": {
+        "domelementtype": true
+      }
+    },
+    "postcss-html": {
+      "packages": {
+        "htmlparser2": true,
+        "postcss-syntax": true
+      }
+    },
+    "postcss-scss": {
+      "packages": {
+        "postcss": true
+      }
+    },
+    "postcss-sass": {
+      "packages": {
+        "postcss": true,
+        "gonzales-pe": true
+      }
+    },
+    "postcss-less": {
+      "packages": {
+        "postcss": true
+      }
+    },
+    "module-deps": {
+      "packages": {
+        "loose-envify": true
+      }
+    },
+    "@babel/core": {
+      "packages": {
+        "<root>": true,
+        "@babel/preset-env": true,
+        "@babel/preset-react": true,
+        "@babel/plugin-transform-runtime": true,
+        "@babel/plugin-proposal-class-properties": true,
+        "@babel/plugin-proposal-object-rest-spread": true,
+        "@babel/plugin-proposal-optional-chaining": true,
+        "@babel/plugin-proposal-nullish-coalescing-operator": true
+      }
+    },
+    "sugarss": {
+      "packages": {
+        "postcss": true
+      }
+    },
+    "sass": {
+      "env": "unfrozen",
+      "builtin": {
+        "url": true
+      },
+      "globals": {
+        "Buffer": true
+      }
+    }
+  }
+}
