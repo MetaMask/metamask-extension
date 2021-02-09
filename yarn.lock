@@ -16166,17 +16166,6 @@ latest-version@^5.0.0:
   dependencies:
     package-json "^6.3.0"
 
-lavamoat-core@^8.1.2:
-  version "8.1.2"
-  resolved "https://registry.yarnpkg.com/lavamoat-core/-/lavamoat-core-8.1.2.tgz#f00cc9c224c80cf6444dd00b97bd3e6533ea4580"
-  integrity sha512-lupLBJ5kiZO7I3faMXKCrLDpqUB6ZMwom0r/iAMpSGxgq7/jje4osKFUYb2QHM6B4OYtwvPRfOK591aAKQNJ8Q==
-  dependencies:
-    fromentries "^1.2.0"
-    json-stable-stringify "^1.0.1"
-    lavamoat-tofu "^5.1.1"
-    merge-deep "^3.0.2"
-    resolve "^1.15.1"
-
 lavamoat-core@^9.0.0:
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/lavamoat-core/-/lavamoat-core-9.0.0.tgz#8e1af648df11d2e2393e848b5aeefa4fd4fafc42"
@@ -16196,12 +16185,11 @@ lavamoat-tofu@^5.1.1:
     "@babel/parser" "^7.10.1"
     "@babel/traverse" "^7.10.1"
 
-lavamoat-viz@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/lavamoat-viz/-/lavamoat-viz-6.0.1.tgz#89098665f2034c438e83cbe8034caca129c0f3b9"
-  integrity sha512-R4FTmNdXgbQ80JWJuHnRor3xzO/RZqIqscR2Ayrmqvj0wkl0sdfgPwpwXLNL6bfk9zLZiUKrj7TG7Mky6stc0w==
+"lavamoat-viz@https://github.com/lavamoat/lavamoat/raw/imports/packages/viz/lavamoat-viz-6.0.2.tgz":
+  version "6.0.2"
+  resolved "https://github.com/lavamoat/lavamoat/raw/imports/packages/viz/lavamoat-viz-6.0.2.tgz#47749b32eb49d6d699f4e412a813a2d3d4c1e769"
   dependencies:
-    lavamoat-core "^8.1.2"
+    lavamoat-core "^9.0.0"
     ncp "^2.0.0"
     open "^7.0.3"
     pify "^4.0.1"
