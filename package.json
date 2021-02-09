@@ -261,7 +261,7 @@
     "jsdom": "^11.2.0",
     "koa": "^2.7.0",
     "lavamoat": "^5.1.3",
-    "lavamoat-viz": "https://github.com/lavamoat/lavamoat/raw/99a22847c97b46b7be1bfdd9852ac1e389807c78/packages/viz/lavamoat-viz-6.0.2.tgz",
+    "lavamoat-viz": "https://github.com/lavamoat/lavamoat/raw/8c0ce306dafc0c615d68d1be93c61e4ec50026ad/packages/viz/lavamoat-viz-6.0.2.tgz",
     "lockfile-lint": "^4.0.0",
     "loose-envify": "^1.4.0",
     "mocha": "^7.2.0",

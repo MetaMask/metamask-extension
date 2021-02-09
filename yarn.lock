@@ -16185,9 +16185,9 @@ lavamoat-tofu@^5.1.1:
     "@babel/parser" "^7.10.1"
     "@babel/traverse" "^7.10.1"
 
-"lavamoat-viz@https://github.com/lavamoat/lavamoat/raw/99a22847c97b46b7be1bfdd9852ac1e389807c78/packages/viz/lavamoat-viz-6.0.2.tgz":
+"lavamoat-viz@https://github.com/lavamoat/lavamoat/raw/8c0ce306dafc0c615d68d1be93c61e4ec50026ad/packages/viz/lavamoat-viz-6.0.2.tgz":
   version "6.0.2"
-  resolved "https://github.com/lavamoat/lavamoat/raw/99a22847c97b46b7be1bfdd9852ac1e389807c78/packages/viz/lavamoat-viz-6.0.2.tgz#986f10a0d44edfc63c5659018b16311ea329d1cb"
+  resolved "https://github.com/lavamoat/lavamoat/raw/8c0ce306dafc0c615d68d1be93c61e4ec50026ad/packages/viz/lavamoat-viz-6.0.2.tgz#32e9db3aecb784f15561b732afa3c624ebf62c53"
   dependencies:
     lavamoat-core "^9.0.0"
     ncp "^2.0.0"
