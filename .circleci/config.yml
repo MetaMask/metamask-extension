@@ -24,20 +24,20 @@ workflows:
       #       branches:
       #         only:
       #           - /^Version-v(\d+)[.](\d+)[.](\d+)/
-      # - prep-deps
-      # - test-deps
-      # - prep-build:
-      #     requires:
-      #       - prep-deps
-      # - prep-build-test:
-      #     requires:
-      #       - prep-deps
+      - prep-deps
+      - test-deps
+      - prep-build:
+          requires:
+            - prep-deps
+      - prep-build-test:
+          requires:
+            - prep-deps
       # - prep-build-test-metrics:
       #     requires:
       #       - prep-deps
-      # - prep-build-storybook:
-      #     requires:
-      #       - prep-deps
+      - prep-build-storybook:
+          requires:
+            - prep-deps
       # - test-lint:
       #     requires:
       #       - prep-deps
@@ -83,9 +83,9 @@ workflows:
       #       - test-e2e-firefox
       #       - test-e2e-chrome-metrics
       #       - test-e2e-firefox-metrics
-      # - benchmark:
-      #     requires:
-      #       - prep-build-test
+      - benchmark:
+          requires:
+            - prep-build-test
       - job-publish-prerelease:
           requires:
             - prep-deps
