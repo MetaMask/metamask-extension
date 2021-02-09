@@ -19,6 +19,7 @@ import {
   TRANSACTION_CATEGORIES,
   TRANSACTION_STATUSES,
 } from '../../../../shared/constants/transaction';
+import { NETWORK_EVENTS } from '../../../../app/scripts/controllers/network';
 
 const IncomingTransactionsController = proxyquire(
   '../../../../app/scripts/controllers/incoming-transactions',
@@ -161,7 +162,7 @@ describe('IncomingTransactionsController', function () {
       assert(incomingTransactionsController.networkController.on.calledOnce);
       assert.equal(
         incomingTransactionsController.networkController.on.getCall(0).args[0],
-        'networkDidChange',
+        NETWORK_EVENTS.NETWORK_DID_CHANGE,
       );
       const networkControllerListenerCallback = incomingTransactionsController.networkController.on.getCall(
         0,

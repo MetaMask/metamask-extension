@@ -9,12 +9,11 @@
   &--account,
   &--network {
     flex: 1;
+    display: flex;
+    align-items: center;
   }
 
   &--account {
-    display: flex;
-    align-items: center;
-
     .account-list-item {
       &__top-row {
         display: flex;

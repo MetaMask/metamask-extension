@@ -8,6 +8,7 @@ import {
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
 } from '../../../../shared/constants/metametrics';
 import waitUntilCalled from '../../../lib/wait-until-called';
+import { NETWORK_EVENTS } from '../../../../app/scripts/controllers/network';
 
 const segment = createSegmentMock(2, 10000);
 const segmentLegacy = createSegmentMock(2, 10000);
@@ -49,7 +50,7 @@ function getMockNetworkController(
   provider = { type: NETWORK },
 ) {
   let networkStore = { chainId, provider };
-  const on = sinon.stub().withArgs('networkDidChange');
+  const on = sinon.stub().withArgs(NETWORK_EVENTS.NETWORK_DID_CHANGE);
   const updateState = (newState) => {
     networkStore = { ...networkStore, ...newState };
     on.getCall(0).args[1]();
@@ -99,7 +100,7 @@ function getMetaMetricsController({
     ),
     onNetworkDidChange: networkController.on.bind(
       networkController,
-      'networkDidChange',
+      NETWORK_EVENTS.NETWORK_DID_CHANGE,
     ),
     preferencesStore,
     version: '0.0.1',

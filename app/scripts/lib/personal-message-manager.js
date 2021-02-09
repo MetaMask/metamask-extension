@@ -4,6 +4,7 @@ import ethUtil from 'ethereumjs-util';
 import { ethErrors } from 'eth-rpc-errors';
 import log from 'loglevel';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
+import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import { addHexPrefix } from './util';
 import createId from './random-id';
 
@@ -242,6 +243,14 @@ export default class PersonalMessageManager extends EventEmitter {
   }
 
   /**
+   * Clears all unapproved messages from memory.
+   */
+  clearUnapproved() {
+    this.messages = this.messages.filter((msg) => msg.status !== 'unapproved');
+    this._saveMsgList();
+  }
+
+  /**
    * Updates the status of a PersonalMessage in this.messages via a call to this._updateMsg
    *
    * @private
@@ -301,7 +310,7 @@ export default class PersonalMessageManager extends EventEmitter {
       unapprovedPersonalMsgs,
       unapprovedPersonalMsgCount,
     });
-    this.emit('updateBadge');
+    this.emit(METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE);
   }
 
   /**

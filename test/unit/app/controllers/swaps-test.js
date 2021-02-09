@@ -14,6 +14,7 @@ import { createTestProviderTools } from '../../../stub/provider';
 import SwapsController, {
   utils,
 } from '../../../../app/scripts/controllers/swaps';
+import { NETWORK_EVENTS } from '../../../../app/scripts/controllers/network';
 
 const MOCK_FETCH_PARAMS = {
   slippage: 3,
@@ -101,7 +102,10 @@ function getMockNetworkController() {
         };
       },
     },
-    on: sinon.stub().withArgs('networkDidChange').callsArgAsync(1),
+    on: sinon
+      .stub()
+      .withArgs(NETWORK_EVENTS.NETWORK_DID_CHANGE)
+      .callsArgAsync(1),
   };
 }
 
