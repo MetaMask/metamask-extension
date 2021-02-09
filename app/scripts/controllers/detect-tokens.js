@@ -1,12 +1,12 @@
-import Web3 from 'web3'
-import contracts from '@metamask/contract-metadata'
-import { warn } from 'loglevel'
-import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi'
-import { MAINNET_CHAIN_ID } from '../../../shared/constants/network'
-import { SINGLE_CALL_BALANCES_ADDRESS } from '../constants/contracts'
+import Web3 from 'web3';
+import contracts from '@metamask/contract-metadata';
+import { warn } from 'loglevel';
+import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi';
+import { MAINNET_CHAIN_ID } from '../../../shared/constants/network';
+import { SINGLE_CALL_BALANCES_ADDRESS } from '../constants/contracts';
 
 // By default, poll every 3 minutes
-const DEFAULT_INTERVAL = 180 * 1000
+const DEFAULT_INTERVAL = 180 * 1000;
 
 /**
  * A controller that polls for token exchange
@@ -24,10 +24,10 @@ export default class DetectTokensController {
     network,
     keyringMemStore,
   } = {}) {
-    this.preferences = preferences
-    this.interval = interval
-    this.network = network
-    this.keyringMemStore = keyringMemStore
+    this.preferences = preferences;
+    this.interval = interval;
+    this.network = network;
+    this.keyringMemStore = keyringMemStore;
   }
 
   /**
@@ -35,59 +35,59 @@ export default class DetectTokensController {
    */
   async detectNewTokens() {
     if (!this.isActive) {
-      return
+      return;
     }
     if (this._network.store.getState().provider.chainId !== MAINNET_CHAIN_ID) {
-      return
+      return;
     }
 
-    const tokensToDetect = []
-    this.web3.setProvider(this._network._provider)
+    const tokensToDetect = [];
+    this.web3.setProvider(this._network._provider);
     for (const contractAddress in contracts) {
       if (
         contracts[contractAddress].erc20 &&
         !this.tokenAddresses.includes(contractAddress.toLowerCase()) &&
         !this.hiddenTokens.includes(contractAddress.toLowerCase())
       ) {
-        tokensToDetect.push(contractAddress)
+        tokensToDetect.push(contractAddress);
       }
     }
 
-    let result
+    let result;
     try {
-      result = await this._getTokenBalances(tokensToDetect)
+      result = await this._getTokenBalances(tokensToDetect);
     } catch (error) {
       warn(
         `MetaMask - DetectTokensController single call balance fetch failed`,
         error,
-      )
-      return
+      );
+      return;
     }
 
     tokensToDetect.forEach((tokenAddress, index) => {
-      const balance = result[index]
+      const balance = result[index];
       if (balance && !balance.isZero()) {
         this._preferences.addToken(
           tokenAddress,
           contracts[tokenAddress].symbol,
           contracts[tokenAddress].decimals,
-        )
+        );
       }
-    })
+    });
   }
 
   async _getTokenBalances(tokens) {
     const ethContract = this.web3.eth
       .contract(SINGLE_CALL_BALANCES_ABI)
-      .at(SINGLE_CALL_BALANCES_ADDRESS)
+      .at(SINGLE_CALL_BALANCES_ADDRESS);
     return new Promise((resolve, reject) => {
       ethContract.balances([this.selectedAddress], tokens, (error, result) => {
         if (error) {
-          return reject(error)
+          return reject(error);
         }
-        return resolve(result)
-      })
-    })
+        return resolve(result);
+      });
+    });
   }
 
   /**
@@ -97,10 +97,10 @@ export default class DetectTokensController {
    */
   restartTokenDetection() {
     if (!(this.isActive && this.selectedAddress)) {
-      return
+      return;
     }
-    this.detectNewTokens()
-    this.interval = DEFAULT_INTERVAL
+    this.detectNewTokens();
+    this.interval = DEFAULT_INTERVAL;
   }
 
   /* eslint-disable accessor-pairs */
@@ -108,13 +108,13 @@ export default class DetectTokensController {
    * @type {Number}
    */
   set interval(interval) {
-    this._handle && clearInterval(this._handle)
+    this._handle && clearInterval(this._handle);
     if (!interval) {
-      return
+      return;
     }
     this._handle = setInterval(() => {
-      this.detectNewTokens()
-    }, interval)
+      this.detectNewTokens();
+    }, interval);
   }
 
   /**
@@ -123,26 +123,26 @@ export default class DetectTokensController {
    */
   set preferences(preferences) {
     if (!preferences) {
-      return
+      return;
     }
-    this._preferences = preferences
-    const currentTokens = preferences.store.getState().tokens
+    this._preferences = preferences;
+    const currentTokens = preferences.store.getState().tokens;
     this.tokenAddresses = currentTokens
       ? currentTokens.map((token) => token.address)
-      : []
-    this.hiddenTokens = preferences.store.getState().hiddenTokens
+      : [];
+    this.hiddenTokens = preferences.store.getState().hiddenTokens;
     preferences.store.subscribe(({ tokens = [], hiddenTokens = [] }) => {
       this.tokenAddresses = tokens.map((token) => {
-        return token.address
-      })
-      this.hiddenTokens = hiddenTokens
-    })
+        return token.address;
+      });
+      this.hiddenTokens = hiddenTokens;
+    });
     preferences.store.subscribe(({ selectedAddress }) => {
       if (this.selectedAddress !== selectedAddress) {
-        this.selectedAddress = selectedAddress
-        this.restartTokenDetection()
+        this.selectedAddress = selectedAddress;
+        this.restartTokenDetection();
       }
-    })
+    });
   }
 
   /**
@@ -150,10 +150,10 @@ export default class DetectTokensController {
    */
   set network(network) {
     if (!network) {
-      return
+      return;
     }
-    this._network = network
-    this.web3 = new Web3(network._provider)
+    this._network = network;
+    this.web3 = new Web3(network._provider);
   }
 
   /**
@@ -162,17 +162,17 @@ export default class DetectTokensController {
    */
   set keyringMemStore(keyringMemStore) {
     if (!keyringMemStore) {
-      return
+      return;
     }
-    this._keyringMemStore = keyringMemStore
+    this._keyringMemStore = keyringMemStore;
     this._keyringMemStore.subscribe(({ isUnlocked }) => {
       if (this.isUnlocked !== isUnlocked) {
-        this.isUnlocked = isUnlocked
+        this.isUnlocked = isUnlocked;
         if (isUnlocked) {
-          this.restartTokenDetection()
+          this.restartTokenDetection();
         }
       }
-    })
+    });
   }
 
   /**
@@ -180,7 +180,7 @@ export default class DetectTokensController {
    * @type {Object}
    */
   get isActive() {
-    return this.isOpen && this.isUnlocked
+    return this.isOpen && this.isUnlocked;
   }
   /* eslint-enable accessor-pairs */
 }

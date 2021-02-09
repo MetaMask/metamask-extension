@@ -1,6 +1,6 @@
-import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
-import { compose } from 'redux'
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 
 import {
   getBlockGasLimit,
@@ -22,7 +22,7 @@ import {
   getQrCodeData,
   getSelectedAddress,
   getAddressBook,
-} from '../../selectors'
+} from '../../selectors';
 
 import {
   updateSendTo,
@@ -33,16 +33,16 @@ import {
   qrCodeDetected,
   updateSendEnsResolution,
   updateSendEnsResolutionError,
-} from '../../store/actions'
-import { resetSendState, updateSendErrors } from '../../ducks/send/send.duck'
-import { fetchBasicGasEstimates } from '../../ducks/gas/gas.duck'
-import { getTokens } from '../../ducks/metamask/metamask'
-import { isValidDomainName } from '../../helpers/utils/util'
-import { calcGasTotal } from './send.utils'
-import SendEther from './send.component'
+} from '../../store/actions';
+import { resetSendState, updateSendErrors } from '../../ducks/send/send.duck';
+import { fetchBasicGasEstimates } from '../../ducks/gas/gas.duck';
+import { getTokens } from '../../ducks/metamask/metamask';
+import { isValidDomainName } from '../../helpers/utils/util';
+import { calcGasTotal } from './send.utils';
+import SendEther from './send.component';
 
 function mapStateToProps(state) {
-  const editingTransactionId = getSendEditingTransactionId(state)
+  const editingTransactionId = getSendEditingTransactionId(state);
 
   return {
     addressBook: getAddressBook(state),
@@ -65,7 +65,7 @@ function mapStateToProps(state) {
     tokens: getTokens(state),
     tokenBalance: getTokenBalance(state),
     tokenContract: getSendTokenContract(state),
-  }
+  };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -93,7 +93,7 @@ function mapDispatchToProps(dispatch) {
               value,
               data,
             }),
-          )
+          );
     },
     updateSendTokenBalance: ({ sendToken, tokenContract, address }) => {
       dispatch(
@@ -102,7 +102,7 @@ function mapDispatchToProps(dispatch) {
           tokenContract,
           address,
         }),
-      )
+      );
     },
     updateSendErrors: (newError) => dispatch(updateSendErrors(newError)),
     resetSendState: () => dispatch(resetSendState()),
@@ -117,16 +117,16 @@ function mapDispatchToProps(dispatch) {
     updateToNicknameIfNecessary: (to, toNickname, addressBook) => {
       if (isValidDomainName(toNickname)) {
         const addressBookEntry =
-          addressBook.find(({ address }) => to === address) || {}
+          addressBook.find(({ address }) => to === address) || {};
         if (!addressBookEntry.name !== toNickname) {
-          dispatch(updateSendTo(to, addressBookEntry.name || ''))
+          dispatch(updateSendTo(to, addressBookEntry.name || ''));
         }
       }
     },
-  }
+  };
 }
 
 export default compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps),
-)(SendEther)
+)(SendEther);

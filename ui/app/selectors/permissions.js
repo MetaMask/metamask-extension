@@ -1,10 +1,10 @@
-import { forOwn } from 'lodash'
-import { CAVEAT_NAMES } from '../../../shared/constants/permissions'
+import { forOwn } from 'lodash';
+import { CAVEAT_NAMES } from '../../../shared/constants/permissions';
 import {
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
   getSelectedAddress,
-} from '.'
+} from '.';
 
 // selectors
 
@@ -15,7 +15,7 @@ import {
  * @returns {Object} The permissions domains object.
  */
 export function getPermissionDomains(state) {
-  return state.metamask.domains || {}
+  return state.metamask.domains || {};
 }
 
 /**
@@ -25,7 +25,7 @@ export function getPermissionDomains(state) {
  * @returns {Object} The permission domains metadata object.
  */
 export function getPermissionDomainsMetadata(state) {
-  return state.metamask.domainMetadata || {}
+  return state.metamask.domainMetadata || {};
 }
 
 /**
@@ -39,7 +39,7 @@ export function getPermissionDomainsMetadata(state) {
 export function getPermittedAccounts(state, origin) {
   return getAccountsFromPermission(
     getAccountsPermissionFromDomain(domainSelector(state, origin)),
-  )
+  );
 }
 
 /**
@@ -50,7 +50,7 @@ export function getPermittedAccounts(state, origin) {
  * @returns {Array<string>} An empty array or an array of accounts.
  */
 export function getPermittedAccountsForCurrentTab(state) {
-  return getPermittedAccounts(state, getOriginOfCurrentTab(state))
+  return getPermittedAccounts(state, getOriginOfCurrentTab(state));
 }
 
 /**
@@ -60,16 +60,16 @@ export function getPermittedAccountsForCurrentTab(state) {
  * @returns {Object} Permitted accounts by origin.
  */
 export function getPermittedAccountsByOrigin(state) {
-  const domains = getPermissionDomains(state)
+  const domains = getPermissionDomains(state);
   return Object.keys(domains).reduce((acc, domainKey) => {
     const accounts = getAccountsFromPermission(
       getAccountsPermissionFromDomain(domains[domainKey]),
-    )
+    );
     if (accounts.length > 0) {
-      acc[domainKey] = accounts
+      acc[domainKey] = accounts;
     }
-    return acc
-  }, {})
+    return acc;
+  }, {});
 }
 
 /**
@@ -83,19 +83,19 @@ export function getPermittedAccountsByOrigin(state) {
  * @returns {Array<Object>} An array of connected domain objects.
  */
 export function getConnectedDomainsForSelectedAddress(state) {
-  const { selectedAddress } = state.metamask
-  const domains = getPermissionDomains(state)
-  const domainMetadata = getPermissionDomainsMetadata(state)
+  const { selectedAddress } = state.metamask;
+  const domains = getPermissionDomains(state);
+  const domainMetadata = getPermissionDomainsMetadata(state);
 
-  const connectedDomains = []
+  const connectedDomains = [];
 
   forOwn(domains, (domainValue, domainKey) => {
-    const exposedAccounts = getAccountsFromDomain(domainValue)
+    const exposedAccounts = getAccountsFromDomain(domainValue);
     if (!exposedAccounts.includes(selectedAddress)) {
-      return
+      return;
     }
 
-    const { extensionId, name, icon, host } = domainMetadata[domainKey] || {}
+    const { extensionId, name, icon, host } = domainMetadata[domainKey] || {};
 
     connectedDomains.push({
       extensionId,
@@ -103,10 +103,10 @@ export function getConnectedDomainsForSelectedAddress(state) {
       name,
       icon,
       host,
-    })
-  })
+    });
+  });
 
-  return connectedDomains
+  return connectedDomains;
 }
 
 /**
@@ -120,32 +120,32 @@ export function getConnectedDomainsForSelectedAddress(state) {
  * connected domain info.
  */
 export function getAddressConnectedDomainMap(state) {
-  const domainMetadata = getPermissionDomainsMetadata(state)
-  const accountsMap = getPermittedAccountsByOrigin(state)
-  const addressConnectedIconMap = {}
+  const domainMetadata = getPermissionDomainsMetadata(state);
+  const accountsMap = getPermittedAccountsByOrigin(state);
+  const addressConnectedIconMap = {};
 
   Object.keys(accountsMap).forEach((domainKey) => {
-    const { icon, name } = domainMetadata[domainKey] || {}
+    const { icon, name } = domainMetadata[domainKey] || {};
 
     accountsMap[domainKey].forEach((address) => {
-      const nameToRender = name || domainKey
+      const nameToRender = name || domainKey;
 
       addressConnectedIconMap[address] = addressConnectedIconMap[address]
         ? {
             ...addressConnectedIconMap[address],
             [domainKey]: { icon, name: nameToRender },
           }
-        : { [domainKey]: { icon, name: nameToRender } }
-    })
-  })
+        : { [domainKey]: { icon, name: nameToRender } };
+    });
+  });
 
-  return addressConnectedIconMap
+  return addressConnectedIconMap;
 }
 
 // selector helpers
 
 function getAccountsFromDomain(domain) {
-  return getAccountsFromPermission(getAccountsPermissionFromDomain(domain))
+  return getAccountsFromPermission(getAccountsPermissionFromDomain(domain));
 }
 
 function getAccountsPermissionFromDomain(domain = {}) {
@@ -153,14 +153,14 @@ function getAccountsPermissionFromDomain(domain = {}) {
     ? domain.permissions.find(
         (perm) => perm.parentCapability === 'eth_accounts',
       )
-    : {}
+    : {};
 }
 
 function getAccountsFromPermission(accountsPermission) {
-  const accountsCaveat = getAccountsCaveatFromPermission(accountsPermission)
+  const accountsCaveat = getAccountsCaveatFromPermission(accountsPermission);
   return accountsCaveat && Array.isArray(accountsCaveat.value)
     ? accountsCaveat.value
-    : []
+    : [];
 }
 
 function getAccountsCaveatFromPermission(accountsPermission = {}) {
@@ -169,21 +169,21 @@ function getAccountsCaveatFromPermission(accountsPermission = {}) {
     accountsPermission.caveats.find(
       (c) => c.name === CAVEAT_NAMES.exposedAccounts,
     )
-  )
+  );
 }
 
 function domainSelector(state, origin) {
-  return origin && state.metamask.domains?.[origin]
+  return origin && state.metamask.domains?.[origin];
 }
 
 export function getAccountToConnectToActiveTab(state) {
-  const selectedAddress = getSelectedAddress(state)
-  const connectedAccounts = getPermittedAccountsForCurrentTab(state)
+  const selectedAddress = getSelectedAddress(state);
+  const connectedAccounts = getPermittedAccountsForCurrentTab(state);
 
   const {
     metamask: { identities },
-  } = state
-  const numberOfAccounts = Object.keys(identities).length
+  } = state;
+  const numberOfAccounts = Object.keys(identities).length;
 
   if (
     connectedAccounts.length &&
@@ -193,24 +193,24 @@ export function getAccountToConnectToActiveTab(state) {
       connectedAccounts.findIndex((address) => address === selectedAddress) ===
       -1
     ) {
-      return identities[selectedAddress]
+      return identities[selectedAddress];
     }
   }
 
-  return undefined
+  return undefined;
 }
 
 export function getOrderedConnectedAccountsForActiveTab(state) {
   const {
     activeTab,
     metamask: { permissionsHistory },
-  } = state
+  } = state;
 
   const permissionsHistoryByAccount =
     // eslint-disable-next-line camelcase
-    permissionsHistory[activeTab.origin]?.eth_accounts?.accounts
-  const orderedAccounts = getMetaMaskAccountsOrdered(state)
-  const connectedAccounts = getPermittedAccountsForCurrentTab(state)
+    permissionsHistory[activeTab.origin]?.eth_accounts?.accounts;
+  const orderedAccounts = getMetaMaskAccountsOrdered(state);
+  const connectedAccounts = getPermittedAccountsForCurrentTab(state);
 
   return orderedAccounts
     .filter((account) => connectedAccounts.includes(account.address))
@@ -221,73 +221,73 @@ export function getOrderedConnectedAccountsForActiveTab(state) {
     .sort(
       ({ lastSelected: lastSelectedA }, { lastSelected: lastSelectedB }) => {
         if (lastSelectedA === lastSelectedB) {
-          return 0
+          return 0;
         } else if (lastSelectedA === undefined) {
-          return 1
+          return 1;
         } else if (lastSelectedB === undefined) {
-          return -1
+          return -1;
         }
 
-        return lastSelectedB - lastSelectedA
+        return lastSelectedB - lastSelectedA;
       },
-    )
+    );
 }
 
 export function getPermissionsForActiveTab(state) {
-  const { activeTab, metamask } = state
-  const { domains = {} } = metamask
+  const { activeTab, metamask } = state;
+  const { domains = {} } = metamask;
 
   return domains[activeTab.origin]?.permissions?.map(({ parentCapability }) => {
     return {
       key: parentCapability,
-    }
-  })
+    };
+  });
 }
 
 export function activeTabHasPermissions(state) {
-  const { activeTab, metamask } = state
-  const { domains = {} } = metamask
+  const { activeTab, metamask } = state;
+  const { domains = {} } = metamask;
 
-  return Boolean(domains[activeTab.origin]?.permissions?.length > 0)
+  return Boolean(domains[activeTab.origin]?.permissions?.length > 0);
 }
 
 export function getLastConnectedInfo(state) {
-  const { permissionsHistory = {} } = state.metamask
+  const { permissionsHistory = {} } = state.metamask;
   return Object.keys(permissionsHistory).reduce((acc, origin) => {
     const ethAccountsHistory = JSON.parse(
       JSON.stringify(permissionsHistory[origin].eth_accounts),
-    )
+    );
     return {
       ...acc,
       [origin]: ethAccountsHistory,
-    }
-  }, {})
+    };
+  }, {});
 }
 
 export function getPermissionsMetadataHostCounts(state) {
-  const metadata = getPermissionDomainsMetadata(state)
+  const metadata = getPermissionDomainsMetadata(state);
   return Object.values(metadata).reduce((counts, { host }) => {
     if (host) {
       if (counts[host]) {
-        counts[host] += 1
+        counts[host] += 1;
       } else {
-        counts[host] = 1
+        counts[host] = 1;
       }
     }
-    return counts
-  }, {})
+    return counts;
+  }, {});
 }
 
 export function getPermissionsRequests(state) {
-  return state.metamask.permissionsRequests || []
+  return state.metamask.permissionsRequests || [];
 }
 
 export function getPermissionsRequestCount(state) {
-  const permissionsRequests = getPermissionsRequests(state)
-  return permissionsRequests.length
+  const permissionsRequests = getPermissionsRequests(state);
+  return permissionsRequests.length;
 }
 
 export function getFirstPermissionRequest(state) {
-  const requests = getPermissionsRequests(state)
-  return requests && requests[0] ? requests[0] : null
+  const requests = getPermissionsRequests(state);
+  return requests && requests[0] ? requests[0] : null;
 }

@@ -1,23 +1,23 @@
-import localforage from 'localforage'
+import localforage from 'localforage';
 
 export async function getStorageItem(key) {
   try {
-    const serializedData = await localforage.getItem(key)
+    const serializedData = await localforage.getItem(key);
     if (serializedData === null) {
-      return undefined
+      return undefined;
     }
 
-    return JSON.parse(serializedData)
+    return JSON.parse(serializedData);
   } catch (err) {
-    return undefined
+    return undefined;
   }
 }
 
 export async function setStorageItem(key, value) {
   try {
-    const serializedData = JSON.stringify(value)
-    await localforage.setItem(key, serializedData)
+    const serializedData = JSON.stringify(value);
+    await localforage.setItem(key, serializedData);
   } catch (err) {
-    console.warn(err)
+    console.warn(err);
   }
 }

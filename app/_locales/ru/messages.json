@@ -1292,8 +1292,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Ваша сид-фраза"
-  },
-  "yourSigRequested": {
-    "message": "Запрашивается ваша подпись"
   }
 }

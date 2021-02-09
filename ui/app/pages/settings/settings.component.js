@@ -1,8 +1,8 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import { Switch, Route, matchPath } from 'react-router-dom'
-import classnames from 'classnames'
-import TabBar from '../../components/app/tab-bar'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import { Switch, Route, matchPath } from 'react-router-dom';
+import classnames from 'classnames';
+import TabBar from '../../components/app/tab-bar';
 import {
   ALERTS_ROUTE,
   ADVANCED_ROUTE,
@@ -18,14 +18,14 @@ import {
   CONTACT_MY_ACCOUNTS_ROUTE,
   CONTACT_MY_ACCOUNTS_VIEW_ROUTE,
   CONTACT_MY_ACCOUNTS_EDIT_ROUTE,
-} from '../../helpers/constants/routes'
-import SettingsTab from './settings-tab'
-import AlertsTab from './alerts-tab'
-import NetworksTab from './networks-tab'
-import AdvancedTab from './advanced-tab'
-import InfoTab from './info-tab'
-import SecurityTab from './security-tab'
-import ContactListTab from './contact-list-tab'
+} from '../../helpers/constants/routes';
+import SettingsTab from './settings-tab';
+import AlertsTab from './alerts-tab';
+import NetworksTab from './networks-tab';
+import AdvancedTab from './advanced-tab';
+import InfoTab from './info-tab';
+import SecurityTab from './security-tab';
+import ContactListTab from './contact-list-tab';
 
 class SettingsPage extends PureComponent {
   static propTypes = {
@@ -40,11 +40,11 @@ class SettingsPage extends PureComponent {
     breadCrumbTextKey: PropTypes.string,
     initialBreadCrumbKey: PropTypes.string,
     mostRecentOverviewPage: PropTypes.string.isRequired,
-  }
+  };
 
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   render() {
     const {
@@ -52,7 +52,7 @@ class SettingsPage extends PureComponent {
       backRoute,
       currentPath,
       mostRecentOverviewPage,
-    } = this.props
+    } = this.props;
 
     return (
       <div
@@ -83,28 +83,28 @@ class SettingsPage extends PureComponent {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   renderTitle() {
-    const { t } = this.context
-    const { isPopup, pathnameI18nKey, addressName } = this.props
+    const { t } = this.context;
+    const { isPopup, pathnameI18nKey, addressName } = this.props;
 
-    let titleText
+    let titleText;
 
     if (isPopup && addressName) {
-      titleText = addressName
+      titleText = addressName;
     } else if (pathnameI18nKey && isPopup) {
-      titleText = t(pathnameI18nKey)
+      titleText = t(pathnameI18nKey);
     } else {
-      titleText = t('settings')
+      titleText = t('settings');
     }
 
-    return <div className="settings-page__header__title">{titleText}</div>
+    return <div className="settings-page__header__title">{titleText}</div>;
   }
 
   renderSubHeader() {
-    const { t } = this.context
+    const { t } = this.context;
     const {
       currentPath,
       isPopup,
@@ -115,16 +115,16 @@ class SettingsPage extends PureComponent {
       breadCrumbTextKey,
       history,
       initialBreadCrumbKey,
-    } = this.props
+    } = this.props;
 
-    let subheaderText
+    let subheaderText;
 
     if (isPopup && isAddressEntryPage) {
-      subheaderText = t('settings')
+      subheaderText = t('settings');
     } else if (initialBreadCrumbKey) {
-      subheaderText = t(initialBreadCrumbKey)
+      subheaderText = t(initialBreadCrumbKey);
     } else {
-      subheaderText = t(pathnameI18nKey || 'general')
+      subheaderText = t(pathnameI18nKey || 'general');
     }
 
     return (
@@ -154,12 +154,12 @@ class SettingsPage extends PureComponent {
           )}
         </div>
       )
-    )
+    );
   }
 
   renderTabs() {
-    const { history, currentPath } = this.props
-    const { t } = this.context
+    const { history, currentPath } = this.props;
+    const { t } = this.context;
 
     return (
       <TabBar
@@ -202,13 +202,13 @@ class SettingsPage extends PureComponent {
         ]}
         isActive={(key) => {
           if (key === GENERAL_ROUTE && currentPath === SETTINGS_ROUTE) {
-            return true
+            return true;
           }
-          return matchPath(currentPath, { path: key, exact: true })
+          return matchPath(currentPath, { path: key, exact: true });
         }}
         onSelect={(key) => history.push(key)}
       />
-    )
+    );
   }
 
   renderContent() {
@@ -249,8 +249,8 @@ class SettingsPage extends PureComponent {
         />
         <Route component={SettingsTab} />
       </Switch>
-    )
+    );
   }
 }
 
-export default SettingsPage
+export default SettingsPage;

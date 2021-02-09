@@ -1,11 +1,11 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import Identicon from '../../../ui/identicon'
-import { ellipsify } from '../../../../pages/send/send.utils'
+import React from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import Identicon from '../../../ui/identicon';
+import { ellipsify } from '../../../../pages/send/send.utils';
 
 function addressesEqual(address1, address2) {
-  return String(address1).toLowerCase() === String(address2).toLowerCase()
+  return String(address1).toLowerCase() === String(address2).toLowerCase();
 }
 
 export default function RecipientGroup({
@@ -15,7 +15,7 @@ export default function RecipientGroup({
   selectedAddress,
 }) {
   if (!items || !items.length) {
-    return null
+    return null;
   }
 
   return (
@@ -54,7 +54,7 @@ export default function RecipientGroup({
         </div>
       ))}
     </div>
-  )
+  );
 }
 
 RecipientGroup.propTypes = {
@@ -67,4 +67,4 @@ RecipientGroup.propTypes = {
   ),
   onSelect: PropTypes.func.isRequired,
   selectedAddress: PropTypes.string,
-}
+};

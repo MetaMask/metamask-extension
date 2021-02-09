@@ -1241,9 +1241,6 @@
   "yourPrivateSeedPhrase": {
     "message": "你的私有助记词"
   },
-  "yourSigRequested": {
-    "message": "正在请求你的签名"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Gas 价格加速上涨"
   }

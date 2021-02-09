@@ -1,9 +1,9 @@
-import { strict as assert } from 'assert'
-import migration51 from '../../../app/scripts/migrations/051'
+import { strict as assert } from 'assert';
+import migration51 from '../../../app/scripts/migrations/051';
 import {
   INFURA_PROVIDER_TYPES,
   NETWORK_TYPE_TO_ID_MAP,
-} from '../../../shared/constants/network'
+} from '../../../shared/constants/network';
 
 describe('migration #51', function () {
   it('should update the version metadata', async function () {
@@ -12,13 +12,13 @@ describe('migration #51', function () {
         version: 50,
       },
       data: {},
-    }
+    };
 
-    const newStorage = await migration51.migrate(oldStorage)
+    const newStorage = await migration51.migrate(oldStorage);
     assert.deepEqual(newStorage.meta, {
       version: 51,
-    })
-  })
+    });
+  });
 
   describe('setting chainId', function () {
     INFURA_PROVIDER_TYPES.forEach(function (type) {
@@ -36,8 +36,8 @@ describe('migration #51', function () {
             },
             foo: 'bar',
           },
-        }
-        const newStorage = await migration51.migrate(oldStorage)
+        };
+        const newStorage = await migration51.migrate(oldStorage);
         assert.deepEqual(newStorage.data, {
           NetworkController: {
             settings: {
@@ -49,8 +49,8 @@ describe('migration #51', function () {
             },
           },
           foo: 'bar',
-        })
-      })
+        });
+      });
 
       it(`should correctly set the chainId for the Infura network "${type}", if an incorrect chainId is set`, async function () {
         const oldStorage = {
@@ -67,8 +67,8 @@ describe('migration #51', function () {
             },
             foo: 'bar',
           },
-        }
-        const newStorage = await migration51.migrate(oldStorage)
+        };
+        const newStorage = await migration51.migrate(oldStorage);
         assert.deepEqual(newStorage.data, {
           NetworkController: {
             settings: {
@@ -80,9 +80,9 @@ describe('migration #51', function () {
             },
           },
           foo: 'bar',
-        })
-      })
-    })
+        });
+      });
+    });
 
     it('should not set the chainId for a non-Infura network that does not have chainId set', async function () {
       const oldStorage = {
@@ -97,10 +97,10 @@ describe('migration #51', function () {
             },
           },
         },
-      }
-      const newStorage = await migration51.migrate(oldStorage)
-      assert.deepEqual(newStorage.data, oldStorage.data)
-    })
+      };
+      const newStorage = await migration51.migrate(oldStorage);
+      assert.deepEqual(newStorage.data, oldStorage.data);
+    });
 
     it('should not set the chainId for a non-Infura network that does have chainId set', async function () {
       const oldStorage = {
@@ -116,9 +116,9 @@ describe('migration #51', function () {
             },
           },
         },
-      }
-      const newStorage = await migration51.migrate(oldStorage)
-      assert.deepEqual(newStorage.data, oldStorage.data)
-    })
-  })
-})
+      };
+      const newStorage = await migration51.migrate(oldStorage);
+      assert.deepEqual(newStorage.data, oldStorage.data);
+    });
+  });
+});

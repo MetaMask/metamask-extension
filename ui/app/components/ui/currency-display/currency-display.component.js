@@ -1,8 +1,8 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import { GWEI } from '../../../helpers/constants/common'
-import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay'
+import React from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import { GWEI } from '../../../helpers/constants/common';
+import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 
 export default function CurrencyDisplay({
   value,
@@ -27,7 +27,7 @@ export default function CurrencyDisplay({
     denomination,
     currency,
     suffix,
-  })
+  });
   return (
     <div
       className={classnames('currency-display-component', className)}
@@ -46,7 +46,7 @@ export default function CurrencyDisplay({
         </span>
       )}
     </div>
-  )
+  );
 }
 
 CurrencyDisplay.propTypes = {
@@ -63,4 +63,4 @@ CurrencyDisplay.propTypes = {
   style: PropTypes.object,
   suffix: PropTypes.string,
   value: PropTypes.string,
-}
+};

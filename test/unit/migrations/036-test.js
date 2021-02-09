@@ -1,5 +1,5 @@
-import assert from 'assert'
-import migration36 from '../../../app/scripts/migrations/036'
+import assert from 'assert';
+import migration36 from '../../../app/scripts/migrations/036';
 
 describe('migration #36', function () {
   it('should update the version metadata', function (done) {
@@ -8,18 +8,18 @@ describe('migration #36', function () {
         version: 35,
       },
       data: {},
-    }
+    };
 
     migration36
       .migrate(oldStorage)
       .then((newStorage) => {
         assert.deepEqual(newStorage.meta, {
           version: 36,
-        })
-        done()
+        });
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should remove privacyMode if featureFlags.privacyMode was false', function (done) {
     const oldStorage = {
@@ -31,18 +31,18 @@ describe('migration #36', function () {
           },
         },
       },
-    }
+    };
 
     migration36
       .migrate(oldStorage)
       .then((newStorage) => {
         assert.deepEqual(newStorage.data.PreferencesController, {
           featureFlags: {},
-        })
-        done()
+        });
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should remove privacyMode if featureFlags.privacyMode was true', function (done) {
     const oldStorage = {
@@ -54,18 +54,18 @@ describe('migration #36', function () {
           },
         },
       },
-    }
+    };
 
     migration36
       .migrate(oldStorage)
       .then((newStorage) => {
         assert.deepEqual(newStorage.data.PreferencesController, {
           featureFlags: {},
-        })
-        done()
+        });
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should NOT change any state if privacyMode does not exist', function (done) {
     const oldStorage = {
@@ -76,31 +76,31 @@ describe('migration #36', function () {
           featureFlags: {},
         },
       },
-    }
+    };
 
     migration36
       .migrate(oldStorage)
       .then((newStorage) => {
-        assert.deepEqual(newStorage.data, oldStorage.data)
-        done()
+        assert.deepEqual(newStorage.data, oldStorage.data);
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should NOT change any state if PreferencesController is missing', function (done) {
     const oldStorage = {
       meta: {},
       data: {},
-    }
+    };
 
     migration36
       .migrate(oldStorage)
       .then((newStorage) => {
-        assert.deepEqual(newStorage.data, oldStorage.data)
-        done()
+        assert.deepEqual(newStorage.data, oldStorage.data);
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should NOT change any state if featureFlags is missing', function (done) {
     const oldStorage = {
@@ -108,14 +108,14 @@ describe('migration #36', function () {
       data: {
         PreferencesController: {},
       },
-    }
+    };
 
     migration36
       .migrate(oldStorage)
       .then((newStorage) => {
-        assert.deepEqual(newStorage.data, oldStorage.data)
-        done()
+        assert.deepEqual(newStorage.data, oldStorage.data);
+        done();
       })
-      .catch(done)
-  })
-})
+      .catch(done);
+  });
+});

@@ -1,11 +1,11 @@
-import { connect } from 'react-redux'
-import * as actions from '../../../../store/actions'
-import NewAccountModal from './new-account-modal.component'
+import { connect } from 'react-redux';
+import * as actions from '../../../../store/actions';
+import NewAccountModal from './new-account-modal.component';
 
 function mapStateToProps(state) {
   return {
     ...(state.appState.modal.modalState.props || {}),
-  }
+  };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -14,17 +14,17 @@ function mapDispatchToProps(dispatch) {
     createAccount: (newAccountName) => {
       return dispatch(actions.addNewAccount()).then((newAccountAddress) => {
         if (newAccountName) {
-          dispatch(actions.setAccountLabel(newAccountAddress, newAccountName))
+          dispatch(actions.setAccountLabel(newAccountAddress, newAccountName));
         }
-        return newAccountAddress
-      })
+        return newAccountAddress;
+      });
     },
-  }
+  };
 }
 
 function mergeProps(stateProps, dispatchProps) {
-  const { onCreateNewAccount } = stateProps
-  const { createAccount } = dispatchProps
+  const { onCreateNewAccount } = stateProps;
+  const { createAccount } = dispatchProps;
 
   return {
     ...stateProps,
@@ -32,13 +32,13 @@ function mergeProps(stateProps, dispatchProps) {
     onSave: (newAccountName) => {
       return createAccount(newAccountName).then((newAccountAddress) =>
         onCreateNewAccount(newAccountAddress),
-      )
+      );
     },
-  }
+  };
 }
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
   mergeProps,
-)(NewAccountModal)
+)(NewAccountModal);

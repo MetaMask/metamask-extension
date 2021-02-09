@@ -1,10 +1,10 @@
-import React from 'react'
-import { text, number } from '@storybook/addon-knobs'
-import ExchangeRateDisplay from './exchange-rate-display'
+import React from 'react';
+import { text, number } from '@storybook/addon-knobs';
+import ExchangeRateDisplay from './exchange-rate-display';
 
 export default {
   title: 'ExchangeRateDisplay',
-}
+};
 
 export const Default = () => {
   return (
@@ -16,8 +16,8 @@ export const Default = () => {
       secondaryTokenDecimals={number('secondaryTokenDecimals', 18)}
       secondaryTokenSymbol={text('secondaryTokenSymbol', 'ABC')}
     />
-  )
-}
+  );
+};
 
 export const WhiteOnBlue = () => {
   return (
@@ -43,5 +43,5 @@ export const WhiteOnBlue = () => {
         arrowColor="white"
       />
     </div>
-  )
-}
+  );
+};

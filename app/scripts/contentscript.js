@@ -1,35 +1,35 @@
-import querystring from 'querystring'
-import pump from 'pump'
-import LocalMessageDuplexStream from 'post-message-stream'
-import ObjectMultiplex from 'obj-multiplex'
-import extension from 'extensionizer'
-import PortStream from 'extension-port-stream'
-import { obj as createThoughStream } from 'through2'
+import querystring from 'querystring';
+import pump from 'pump';
+import LocalMessageDuplexStream from 'post-message-stream';
+import ObjectMultiplex from 'obj-multiplex';
+import extension from 'extensionizer';
+import PortStream from 'extension-port-stream';
+import { obj as createThoughStream } from 'through2';
 
 // These require calls need to use require to be statically recognized by browserify
-const fs = require('fs')
-const path = require('path')
+const fs = require('fs');
+const path = require('path');
 
 const inpageContent = fs.readFileSync(
   path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js'),
   'utf8',
-)
-const inpageSuffix = `//# sourceURL=${extension.runtime.getURL('inpage.js')}\n`
-const inpageBundle = inpageContent + inpageSuffix
+);
+const inpageSuffix = `//# sourceURL=${extension.runtime.getURL('inpage.js')}\n`;
+const inpageBundle = inpageContent + inpageSuffix;
 
-const CONTENT_SCRIPT = 'metamask-contentscript'
-const INPAGE = 'metamask-inpage'
-const PROVIDER = 'metamask-provider'
+const CONTENT_SCRIPT = 'metamask-contentscript';
+const INPAGE = 'metamask-inpage';
+const PROVIDER = 'metamask-provider';
 
 // TODO:LegacyProvider: Delete
-const LEGACY_CONTENT_SCRIPT = 'contentscript'
-const LEGACY_INPAGE = 'inpage'
-const LEGACY_PROVIDER = 'provider'
-const LEGACY_PUBLIC_CONFIG = 'publicConfig'
+const LEGACY_CONTENT_SCRIPT = 'contentscript';
+const LEGACY_INPAGE = 'inpage';
+const LEGACY_PROVIDER = 'provider';
+const LEGACY_PUBLIC_CONFIG = 'publicConfig';
 
 if (shouldInjectProvider()) {
-  injectScript(inpageBundle)
-  setupStreams()
+  injectScript(inpageBundle);
+  setupStreams();
 }
 
 /**
@@ -39,14 +39,14 @@ if (shouldInjectProvider()) {
  */
 function injectScript(content) {
   try {
-    const container = document.head || document.documentElement
-    const scriptTag = document.createElement('script')
-    scriptTag.setAttribute('async', 'false')
-    scriptTag.textContent = content
-    container.insertBefore(scriptTag, container.children[0])
-    container.removeChild(scriptTag)
+    const container = document.head || document.documentElement;
+    const scriptTag = document.createElement('script');
+    scriptTag.setAttribute('async', 'false');
+    scriptTag.textContent = content;
+    container.insertBefore(scriptTag, container.children[0]);
+    container.removeChild(scriptTag);
   } catch (error) {
-    console.error('MetaMask: Provider injection failed.', error)
+    console.error('MetaMask: Provider injection failed.', error);
   }
 }
 
@@ -60,81 +60,81 @@ async function setupStreams() {
   const pageStream = new LocalMessageDuplexStream({
     name: CONTENT_SCRIPT,
     target: INPAGE,
-  })
-  const extensionPort = extension.runtime.connect({ name: CONTENT_SCRIPT })
-  const extensionStream = new PortStream(extensionPort)
+  });
+  const extensionPort = extension.runtime.connect({ name: CONTENT_SCRIPT });
+  const extensionStream = new PortStream(extensionPort);
 
   // create and connect channel muxers
   // so we can handle the channels individually
-  const pageMux = new ObjectMultiplex()
-  pageMux.setMaxListeners(25)
-  const extensionMux = new ObjectMultiplex()
-  extensionMux.setMaxListeners(25)
-  extensionMux.ignoreStream(LEGACY_PUBLIC_CONFIG) // TODO:LegacyProvider: Delete
+  const pageMux = new ObjectMultiplex();
+  pageMux.setMaxListeners(25);
+  const extensionMux = new ObjectMultiplex();
+  extensionMux.setMaxListeners(25);
+  extensionMux.ignoreStream(LEGACY_PUBLIC_CONFIG); // TODO:LegacyProvider: Delete
 
   pump(pageMux, pageStream, pageMux, (err) =>
     logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
-  )
+  );
   pump(extensionMux, extensionStream, extensionMux, (err) => {
-    logStreamDisconnectWarning('MetaMask Background Multiplex', err)
-    notifyInpageOfStreamFailure()
-  })
+    logStreamDisconnectWarning('MetaMask Background Multiplex', err);
+    notifyInpageOfStreamFailure();
+  });
 
   // forward communication across inpage-background for these channels only
-  forwardTrafficBetweenMuxes(PROVIDER, pageMux, extensionMux)
+  forwardTrafficBetweenMuxes(PROVIDER, pageMux, extensionMux);
 
   // connect "phishing" channel to warning system
-  const phishingStream = extensionMux.createStream('phishing')
-  phishingStream.once('data', redirectToPhishingWarning)
+  const phishingStream = extensionMux.createStream('phishing');
+  phishingStream.once('data', redirectToPhishingWarning);
 
   // TODO:LegacyProvider: Delete
   // handle legacy provider
   const legacyPageStream = new LocalMessageDuplexStream({
     name: LEGACY_CONTENT_SCRIPT,
     target: LEGACY_INPAGE,
-  })
+  });
 
-  const legacyPageMux = new ObjectMultiplex()
-  legacyPageMux.setMaxListeners(25)
-  const legacyExtensionMux = new ObjectMultiplex()
-  legacyExtensionMux.setMaxListeners(25)
+  const legacyPageMux = new ObjectMultiplex();
+  legacyPageMux.setMaxListeners(25);
+  const legacyExtensionMux = new ObjectMultiplex();
+  legacyExtensionMux.setMaxListeners(25);
 
   pump(legacyPageMux, legacyPageStream, legacyPageMux, (err) =>
     logStreamDisconnectWarning('MetaMask Legacy Inpage Multiplex', err),
-  )
+  );
   pump(
     legacyExtensionMux,
     extensionStream,
     getNotificationTransformStream(),
     legacyExtensionMux,
     (err) => {
-      logStreamDisconnectWarning('MetaMask Background Legacy Multiplex', err)
-      notifyInpageOfStreamFailure()
+      logStreamDisconnectWarning('MetaMask Background Legacy Multiplex', err);
+      notifyInpageOfStreamFailure();
     },
-  )
+  );
 
   forwardNamedTrafficBetweenMuxes(
     LEGACY_PROVIDER,
     PROVIDER,
     legacyPageMux,
     legacyExtensionMux,
-  )
+  );
   forwardTrafficBetweenMuxes(
     LEGACY_PUBLIC_CONFIG,
     legacyPageMux,
     legacyExtensionMux,
-  )
+  );
 }
 
 function forwardTrafficBetweenMuxes(channelName, muxA, muxB) {
-  const channelA = muxA.createStream(channelName)
-  const channelB = muxB.createStream(channelName)
+  const channelA = muxA.createStream(channelName);
+  const channelB = muxB.createStream(channelName);
   pump(channelA, channelB, channelA, (error) =>
     console.debug(
       `MetaMask: Muxed traffic for channel "${channelName}" failed.`,
       error,
     ),
-  )
+  );
 }
 
 // TODO:LegacyProvider: Delete
@@ -144,14 +144,14 @@ function forwardNamedTrafficBetweenMuxes(
   muxA,
   muxB,
 ) {
-  const channelA = muxA.createStream(channelAName)
-  const channelB = muxB.createStream(channelBName)
+  const channelA = muxA.createStream(channelAName);
+  const channelB = muxB.createStream(channelBName);
   pump(channelA, channelB, channelA, (error) =>
     console.debug(
       `MetaMask: Muxed traffic between channels "${channelAName}" and "${channelBName}" failed.`,
       error,
     ),
-  )
+  );
 }
 
 // TODO:LegacyProvider: Delete
@@ -159,13 +159,13 @@ function getNotificationTransformStream() {
   return createThoughStream((chunk, _, cb) => {
     if (chunk?.name === PROVIDER) {
       if (chunk.data?.method === 'metamask_accountsChanged') {
-        chunk.data.method = 'wallet_accountsChanged'
-        chunk.data.result = chunk.data.params
-        delete chunk.data.params
+        chunk.data.method = 'wallet_accountsChanged';
+        chunk.data.result = chunk.data.params;
+        delete chunk.data.params;
       }
     }
-    cb(null, chunk)
-  })
+    cb(null, chunk);
+  });
 }
 
 /**
@@ -178,7 +178,7 @@ function logStreamDisconnectWarning(remoteLabel, error) {
   console.debug(
     `MetaMask: Content script lost connection to "${remoteLabel}".`,
     error,
-  )
+  );
 }
 
 /**
@@ -200,7 +200,7 @@ function notifyInpageOfStreamFailure() {
       },
     },
     window.location.origin,
-  )
+  );
 }
 
 /**
@@ -214,7 +214,7 @@ function shouldInjectProvider() {
     suffixCheck() &&
     documentElementCheck() &&
     !blockedDomainCheck()
-  )
+  );
 }
 
 /**
@@ -223,11 +223,11 @@ function shouldInjectProvider() {
  * @returns {boolean} {@code true} if the doctype is html or if none exists
  */
 function doctypeCheck() {
-  const { doctype } = window.document
+  const { doctype } = window.document;
   if (doctype) {
-    return doctype.name === 'html'
+    return doctype.name === 'html';
   }
-  return true
+  return true;
 }
 
 /**
@@ -240,14 +240,14 @@ function doctypeCheck() {
  * @returns {boolean} whether or not the extension of the current document is prohibited
  */
 function suffixCheck() {
-  const prohibitedTypes = [/\.xml$/u, /\.pdf$/u]
-  const currentUrl = window.location.pathname
+  const prohibitedTypes = [/\.xml$/u, /\.pdf$/u];
+  const currentUrl = window.location.pathname;
   for (let i = 0; i < prohibitedTypes.length; i++) {
     if (prohibitedTypes[i].test(currentUrl)) {
-      return false
+      return false;
     }
   }
-  return true
+  return true;
 }
 
 /**
@@ -256,11 +256,11 @@ function suffixCheck() {
  * @returns {boolean} {@code true} if the documentElement is an html node or if none exists
  */
 function documentElementCheck() {
-  const documentElement = document.documentElement.nodeName
+  const documentElement = document.documentElement.nodeName;
   if (documentElement) {
-    return documentElement.toLowerCase() === 'html'
+    return documentElement.toLowerCase() === 'html';
   }
-  return true
+  return true;
 }
 
 /**
@@ -280,30 +280,30 @@ function blockedDomainCheck() {
     'ani.gamer.com.tw',
     'blueskybooking.com',
     'sharefile.com',
-  ]
-  const currentUrl = window.location.href
-  let currentRegex
+  ];
+  const currentUrl = window.location.href;
+  let currentRegex;
   for (let i = 0; i < blockedDomains.length; i++) {
-    const blockedDomain = blockedDomains[i].replace('.', '\\.')
+    const blockedDomain = blockedDomains[i].replace('.', '\\.');
     currentRegex = new RegExp(
       `(?:https?:\\/\\/)(?:(?!${blockedDomain}).)*$`,
       'u',
-    )
+    );
     if (!currentRegex.test(currentUrl)) {
-      return true
+      return true;
     }
   }
-  return false
+  return false;
 }
 
 /**
  * Redirects the current page to a phishing information page
  */
 function redirectToPhishingWarning() {
-  console.debug('MetaMask: Routing to Phishing Warning component.')
-  const extensionURL = extension.runtime.getURL('phishing.html')
+  console.debug('MetaMask: Routing to Phishing Warning component.');
+  const extensionURL = extension.runtime.getURL('phishing.html');
   window.location.href = `${extensionURL}#${querystring.stringify({
     hostname: window.location.hostname,
     href: window.location.href,
-  })}`
+  })}`;
 }

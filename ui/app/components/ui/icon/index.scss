@@ -2,18 +2,18 @@
   margin: 0 4px;
 
   &--success {
-    fill: $accent-green;
+    fill: $success-1;
   }
 
   &--info {
-    fill: $primary-blue;
+    fill: $primary-1;
   }
 
   &--warning {
-    fill: $accent-yellow;
+    fill: $alert-3;
   }
 
   &--danger {
-    fill: $accent-red;
+    fill: $error-1;
   }
 }

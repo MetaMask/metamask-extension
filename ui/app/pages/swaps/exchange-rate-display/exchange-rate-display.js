@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
-import BigNumber from 'bignumber.js'
-import classnames from 'classnames'
-import { calcTokenAmount } from '../../../helpers/utils/token-util'
-import { formatSwapsValueForDisplay } from '../swaps.util'
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import BigNumber from 'bignumber.js';
+import classnames from 'classnames';
+import { calcTokenAmount } from '../../../helpers/utils/token-util';
+import { formatSwapsValueForDisplay } from '../swaps.util';
 
 export default function ExchangeRateDisplay({
   primaryTokenValue,
@@ -16,49 +16,49 @@ export default function ExchangeRateDisplay({
   boldSymbols = true,
   className,
 }) {
-  const [showPrimaryToSecondary, setShowPrimaryToSecondary] = useState(true)
-  const [rotating, setRotating] = useState(false)
+  const [showPrimaryToSecondary, setShowPrimaryToSecondary] = useState(true);
+  const [rotating, setRotating] = useState(false);
 
   const primaryTokenAmount = calcTokenAmount(
     primaryTokenValue,
     primaryTokenDecimals,
-  )
+  );
   const secondaryTokenAmount = calcTokenAmount(
     secondaryTokenValue,
     secondaryTokenDecimals,
-  )
+  );
 
   const conversionRateFromPrimaryToSecondary = new BigNumber(
     secondaryTokenAmount,
   )
     .div(primaryTokenAmount)
     .round(9)
-    .toString(10)
+    .toString(10);
   const conversionRateFromSecondaryToPrimary = new BigNumber(primaryTokenAmount)
     .div(secondaryTokenAmount)
     .round(9)
-    .toString(10)
+    .toString(10);
 
   const baseSymbol = showPrimaryToSecondary
     ? primaryTokenSymbol
-    : secondaryTokenSymbol
+    : secondaryTokenSymbol;
   const ratiodSymbol = showPrimaryToSecondary
     ? secondaryTokenSymbol
-    : primaryTokenSymbol
+    : primaryTokenSymbol;
 
   const rate = showPrimaryToSecondary
     ? conversionRateFromPrimaryToSecondary
-    : conversionRateFromSecondaryToPrimary
-  let rateToDisplay
-  let comparisonSymbol = '='
+    : conversionRateFromSecondaryToPrimary;
+  let rateToDisplay;
+  let comparisonSymbol = '=';
 
   if (new BigNumber(rate, 10).lt('0.00000001', 10)) {
-    rateToDisplay = '0.000000001'
-    comparisonSymbol = '<'
+    rateToDisplay = '0.000000001';
+    comparisonSymbol = '<';
   } else if (new BigNumber(rate, 10).lt('0.000001', 10)) {
-    rateToDisplay = rate
+    rateToDisplay = rate;
   } else {
-    rateToDisplay = formatSwapsValueForDisplay(rate)
+    rateToDisplay = formatSwapsValueForDisplay(rate);
   }
 
   return (
@@ -81,8 +81,8 @@ export default function ExchangeRateDisplay({
           'exchange-rate-display__switch-arrows-rotate': rotating,
         })}
         onClick={() => {
-          setShowPrimaryToSecondary(!showPrimaryToSecondary)
-          setRotating(true)
+          setShowPrimaryToSecondary(!showPrimaryToSecondary);
+          setRotating(true);
         }}
         onAnimationEnd={() => setRotating(false)}
       >
@@ -100,7 +100,7 @@ export default function ExchangeRateDisplay({
         </svg>
       </div>
     </div>
-  )
+  );
 }
 
 ExchangeRateDisplay.propTypes = {
@@ -125,4 +125,4 @@ ExchangeRateDisplay.propTypes = {
   className: PropTypes.string,
   arrowColor: PropTypes.string,
   boldSymbols: PropTypes.bool,
-}
+};

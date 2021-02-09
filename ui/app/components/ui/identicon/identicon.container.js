@@ -1,14 +1,14 @@
-import { connect } from 'react-redux'
-import Identicon from './identicon.component'
+import { connect } from 'react-redux';
+import Identicon from './identicon.component';
 
 const mapStateToProps = (state) => {
   const {
     metamask: { useBlockie },
-  } = state
+  } = state;
 
   return {
     useBlockie,
-  }
-}
+  };
+};
 
-export default connect(mapStateToProps)(Identicon)
+export default connect(mapStateToProps)(Identicon);

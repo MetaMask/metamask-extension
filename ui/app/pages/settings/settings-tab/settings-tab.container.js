@@ -1,27 +1,27 @@
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import {
   setCurrentCurrency,
   setUseBlockie,
   updateCurrentLocale,
   setUseNativeCurrencyAsPrimaryCurrencyPreference,
   setParticipateInMetaMetrics,
-} from '../../../store/actions'
-import { getPreferences } from '../../../selectors'
-import SettingsTab from './settings-tab.component'
+} from '../../../store/actions';
+import { getPreferences } from '../../../selectors';
+import SettingsTab from './settings-tab.component';
 
 const mapStateToProps = (state) => {
   const {
     appState: { warning },
     metamask,
-  } = state
+  } = state;
   const {
     currentCurrency,
     conversionDate,
     nativeCurrency,
     useBlockie,
     currentLocale,
-  } = metamask
-  const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state)
+  } = metamask;
+  const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
 
   return {
     warning,
@@ -31,8 +31,8 @@ const mapStateToProps = (state) => {
     nativeCurrency,
     useBlockie,
     useNativeCurrencyAsPrimaryCurrency,
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -40,11 +40,11 @@ const mapDispatchToProps = (dispatch) => {
     setUseBlockie: (value) => dispatch(setUseBlockie(value)),
     updateCurrentLocale: (key) => dispatch(updateCurrentLocale(key)),
     setUseNativeCurrencyAsPrimaryCurrencyPreference: (value) => {
-      return dispatch(setUseNativeCurrencyAsPrimaryCurrencyPreference(value))
+      return dispatch(setUseNativeCurrencyAsPrimaryCurrencyPreference(value));
     },
     setParticipateInMetaMetrics: (val) =>
       dispatch(setParticipateInMetaMetrics(val)),
-  }
-}
+  };
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(SettingsTab)
+export default connect(mapStateToProps, mapDispatchToProps)(SettingsTab);

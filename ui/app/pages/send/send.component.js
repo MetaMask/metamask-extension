@@ -1,23 +1,23 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import ethUtil from 'ethereumjs-util'
-import { debounce } from 'lodash'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import ethUtil from 'ethereumjs-util';
+import { debounce } from 'lodash';
 import {
   getAmountErrorObject,
   getGasFeeErrorObject,
   getToAddressForGasUpdate,
   doesAmountErrorRequireUpdate,
-} from './send.utils'
+} from './send.utils';
 import {
   getToWarningObject,
   getToErrorObject,
-} from './send-content/add-recipient/add-recipient'
-import SendHeader from './send-header'
-import AddRecipient from './send-content/add-recipient'
-import SendContent from './send-content'
-import SendFooter from './send-footer'
-import EnsInput from './send-content/add-recipient/ens-input'
-import { INVALID_RECIPIENT_ADDRESS_ERROR } from './send.constants'
+} from './send-content/add-recipient/add-recipient';
+import SendHeader from './send-header';
+import AddRecipient from './send-content/add-recipient';
+import SendContent from './send-content';
+import SendFooter from './send-footer';
+import EnsInput from './send-content/add-recipient/ens-input';
+import { INVALID_RECIPIENT_ADDRESS_ERROR } from './send.constants';
 
 export default class SendTransactionScreen extends Component {
   static propTypes = {
@@ -54,23 +54,23 @@ export default class SendTransactionScreen extends Component {
     scanQrCode: PropTypes.func.isRequired,
     qrCodeDetected: PropTypes.func.isRequired,
     qrCodeData: PropTypes.object,
-  }
+  };
 
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
-  }
+  };
 
   state = {
     query: '',
     toError: null,
     toWarning: null,
     internalSearch: false,
-  }
+  };
 
   constructor(props) {
-    super(props)
-    this.dValidate = debounce(this.validate, 1000)
+    super(props);
+    this.dValidate = debounce(this.validate, 1000);
   }
 
   componentDidUpdate(prevProps) {
@@ -93,9 +93,9 @@ export default class SendTransactionScreen extends Component {
       updateToNicknameIfNecessary,
       qrCodeData,
       qrCodeDetected,
-    } = this.props
+    } = this.props;
 
-    let updateGas = false
+    let updateGas = false;
     const {
       from: { balance: prevBalance },
       gasTotal: prevGasTotal,
@@ -103,9 +103,9 @@ export default class SendTransactionScreen extends Component {
       network: prevNetwork,
       sendToken: prevSendToken,
       to: prevTo,
-    } = prevProps
+    } = prevProps;
 
-    const uninitialized = [prevBalance, prevGasTotal].every((n) => n === null)
+    const uninitialized = [prevBalance, prevGasTotal].every((n) => n === null);
 
     const amountErrorRequiresUpdate = doesAmountErrorRequireUpdate({
       balance,
@@ -115,7 +115,7 @@ export default class SendTransactionScreen extends Component {
       prevTokenBalance,
       sendToken,
       tokenBalance,
-    })
+    });
 
     if (amountErrorRequiresUpdate) {
       const amountErrorObject = getAmountErrorObject({
@@ -126,7 +126,7 @@ export default class SendTransactionScreen extends Component {
         primaryCurrency,
         sendToken,
         tokenBalance,
-      })
+      });
       const gasFeeErrorObject = sendToken
         ? getGasFeeErrorObject({
             balance,
@@ -135,8 +135,8 @@ export default class SendTransactionScreen extends Component {
             primaryCurrency,
             sendToken,
           })
-        : { gasFee: null }
-      updateSendErrors(Object.assign(amountErrorObject, gasFeeErrorObject))
+        : { gasFee: null };
+      updateSendErrors(Object.assign(amountErrorObject, gasFeeErrorObject));
     }
 
     if (!uninitialized) {
@@ -145,110 +145,110 @@ export default class SendTransactionScreen extends Component {
           sendToken,
           tokenContract,
           address,
-        })
-        updateToNicknameIfNecessary(to, toNickname, addressBook)
-        updateGas = true
+        });
+        updateToNicknameIfNecessary(to, toNickname, addressBook);
+        updateGas = true;
       }
     }
 
-    const prevTokenAddress = prevSendToken && prevSendToken.address
-    const sendTokenAddress = sendToken && sendToken.address
+    const prevTokenAddress = prevSendToken && prevSendToken.address;
+    const sendTokenAddress = sendToken && sendToken.address;
 
     if (sendTokenAddress && prevTokenAddress !== sendTokenAddress) {
-      this.updateSendToken()
-      this.validate(this.state.query)
-      updateGas = true
+      this.updateSendToken();
+      this.validate(this.state.query);
+      updateGas = true;
     }
 
-    let scannedAddress
+    let scannedAddress;
     if (qrCodeData) {
       if (qrCodeData.type === 'address') {
-        scannedAddress = qrCodeData.values.address.toLowerCase()
+        scannedAddress = qrCodeData.values.address.toLowerCase();
         if (ethUtil.isValidAddress(scannedAddress)) {
-          const currentAddress = prevTo?.toLowerCase()
+          const currentAddress = prevTo?.toLowerCase();
           if (currentAddress !== scannedAddress) {
-            updateSendTo(scannedAddress)
-            updateGas = true
+            updateSendTo(scannedAddress);
+            updateGas = true;
             // Clean up QR code data after handling
-            qrCodeDetected(null)
+            qrCodeDetected(null);
           }
         } else {
-          scannedAddress = null
-          qrCodeDetected(null)
-          this.setState({ toError: INVALID_RECIPIENT_ADDRESS_ERROR })
+          scannedAddress = null;
+          qrCodeDetected(null);
+          this.setState({ toError: INVALID_RECIPIENT_ADDRESS_ERROR });
         }
       }
     }
 
     if (updateGas) {
       if (scannedAddress) {
-        this.updateGas({ to: scannedAddress })
+        this.updateGas({ to: scannedAddress });
       } else {
-        this.updateGas()
+        this.updateGas();
       }
     }
   }
 
   componentDidMount() {
     this.props.fetchBasicGasEstimates().then(() => {
-      this.updateGas()
-    })
+      this.updateGas();
+    });
   }
 
   UNSAFE_componentWillMount() {
-    this.updateSendToken()
+    this.updateSendToken();
 
     // Show QR Scanner modal  if ?scan=true
     if (window.location.search === '?scan=true') {
-      this.props.scanQrCode()
+      this.props.scanQrCode();
 
       // Clear the queryString param after showing the modal
-      const cleanUrl = window.location.href.split('?')[0]
-      window.history.pushState({}, null, `${cleanUrl}`)
-      window.location.hash = '#send'
+      const cleanUrl = window.location.href.split('?')[0];
+      window.history.pushState({}, null, `${cleanUrl}`);
+      window.location.hash = '#send';
     }
   }
 
   componentWillUnmount() {
-    this.props.resetSendState()
+    this.props.resetSendState();
   }
 
   onRecipientInputChange = (query) => {
-    const { internalSearch } = this.state
+    const { internalSearch } = this.state;
 
     if (!internalSearch) {
       if (query) {
-        this.dValidate(query)
+        this.dValidate(query);
       } else {
-        this.dValidate.cancel()
-        this.validate(query)
+        this.dValidate.cancel();
+        this.validate(query);
       }
     }
 
-    this.setState({ query })
-  }
+    this.setState({ query });
+  };
 
   setInternalSearch(internalSearch) {
-    this.setState({ query: '', internalSearch })
+    this.setState({ query: '', internalSearch });
   }
 
   validate(query) {
-    const { hasHexData, tokens, sendToken, network } = this.props
+    const { hasHexData, tokens, sendToken, network } = this.props;
 
-    const { internalSearch } = this.state
+    const { internalSearch } = this.state;
 
     if (!query || internalSearch) {
-      this.setState({ toError: '', toWarning: '' })
-      return
+      this.setState({ toError: '', toWarning: '' });
+      return;
     }
 
-    const toErrorObject = getToErrorObject(query, hasHexData, network)
-    const toWarningObject = getToWarningObject(query, tokens, sendToken)
+    const toErrorObject = getToErrorObject(query, hasHexData, network);
+    const toWarningObject = getToWarningObject(query, tokens, sendToken);
 
     this.setState({
       toError: toErrorObject.to,
       toWarning: toWarningObject.to,
-    })
+    });
   }
 
   updateSendToken() {
@@ -257,13 +257,13 @@ export default class SendTransactionScreen extends Component {
       sendToken,
       tokenContract,
       updateSendTokenBalance,
-    } = this.props
+    } = this.props;
 
     updateSendTokenBalance({
       sendToken,
       tokenContract,
       address,
-    })
+    });
   }
 
   updateGas({ to: updatedToAddress, amount: value, data } = {}) {
@@ -277,7 +277,7 @@ export default class SendTransactionScreen extends Component {
       sendToken,
       to: currentToAddress,
       updateAndSetGasLimit,
-    } = this.props
+    } = this.props;
 
     updateAndSetGasLimit({
       blockGasLimit,
@@ -289,17 +289,17 @@ export default class SendTransactionScreen extends Component {
       to: getToAddressForGasUpdate(updatedToAddress, currentToAddress),
       value: value || amount,
       data,
-    })
+    });
   }
 
   render() {
-    const { history, to } = this.props
-    let content
+    const { history, to } = this.props;
+    let content;
 
     if (to) {
-      content = this.renderSendContent()
+      content = this.renderSendContent();
     } else {
-      content = this.renderAddRecipient()
+      content = this.renderAddRecipient();
     }
 
     return (
@@ -308,11 +308,11 @@ export default class SendTransactionScreen extends Component {
         {this.renderInput()}
         {content}
       </div>
-    )
+    );
   }
 
   renderInput() {
-    const { internalSearch } = this.state
+    const { internalSearch } = this.state;
     return (
       <EnsInput
         className="send__to-row"
@@ -323,24 +323,24 @@ export default class SendTransactionScreen extends Component {
               action: 'Edit Screen',
               name: 'Used QR scanner',
             },
-          })
-          this.props.scanQrCode()
+          });
+          this.props.scanQrCode();
         }}
         onChange={this.onRecipientInputChange}
         onValidAddressTyped={(address) => this.props.updateSendTo(address, '')}
         onPaste={(text) => {
-          this.props.updateSendTo(text) && this.updateGas()
+          this.props.updateSendTo(text) && this.updateGas();
         }}
         onReset={() => this.props.updateSendTo('', '')}
         updateEnsResolution={this.props.updateSendEnsResolution}
         updateEnsResolutionError={this.props.updateSendEnsResolutionError}
         internalSearch={internalSearch}
       />
-    )
+    );
   }
 
   renderAddRecipient() {
-    const { toError } = this.state
+    const { toError } = this.state;
     return (
       <AddRecipient
         updateGas={({ to, amount, data } = {}) =>
@@ -352,12 +352,12 @@ export default class SendTransactionScreen extends Component {
           this.setInternalSearch(internalSearch)
         }
       />
-    )
+    );
   }
 
   renderSendContent() {
-    const { history, showHexData } = this.props
-    const { toWarning } = this.state
+    const { history, showHexData } = this.props;
+    const { toWarning } = this.state;
 
     return [
       <SendContent
@@ -369,6 +369,6 @@ export default class SendTransactionScreen extends Component {
         warning={toWarning}
       />,
       <SendFooter key="send-footer" history={history} />,
-    ]
+    ];
   }
 }

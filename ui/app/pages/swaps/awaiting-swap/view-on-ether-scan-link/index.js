@@ -1,1 +1,1 @@
-export { default } from './view-on-ether-scan-link'
+export { default } from './view-on-ether-scan-link';

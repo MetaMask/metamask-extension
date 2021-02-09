@@ -1,14 +1,14 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import log from 'loglevel'
-import classnames from 'classnames'
-import BigNumber from 'bignumber.js'
-import Modal from '../../modal'
-import Identicon from '../../../ui/identicon'
-import TextField from '../../../ui/text-field'
-import { calcTokenAmount } from '../../../../helpers/utils/token-util'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import log from 'loglevel';
+import classnames from 'classnames';
+import BigNumber from 'bignumber.js';
+import Modal from '../../modal';
+import Identicon from '../../../ui/identicon';
+import TextField from '../../../ui/text-field';
+import { calcTokenAmount } from '../../../../helpers/utils/token-util';
 
-const MAX_UNSIGNED_256_INT = new BigNumber(2).pow(256).minus(1).toString(10)
+const MAX_UNSIGNED_256_INT = new BigNumber(2).pow(256).minus(1).toString(10);
 
 export default class EditApprovalPermission extends PureComponent {
   static propTypes = {
@@ -22,20 +22,20 @@ export default class EditApprovalPermission extends PureComponent {
     setCustomAmount: PropTypes.func,
     origin: PropTypes.string.isRequired,
     requiredMinimum: PropTypes.instanceOf(BigNumber),
-  }
+  };
 
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   state = {
     // This is used as a TextField value, which should be a string.
     customSpendLimit: this.props.customTokenAmount || '',
     selectedOptionIsUnlimited: !this.props.customTokenAmount,
-  }
+  };
 
   renderModalContent(error) {
-    const { t } = this.context
+    const { t } = this.context;
     const {
       hideModal,
       selectedIdentity,
@@ -44,9 +44,9 @@ export default class EditApprovalPermission extends PureComponent {
       tokenBalance,
       customTokenAmount,
       origin,
-    } = this.props
-    const { name, address } = selectedIdentity || {}
-    const { selectedOptionIsUnlimited } = this.state
+    } = this.props;
+    const { name, address } = selectedIdentity || {};
+    const { selectedOptionIsUnlimited } = this.state;
 
     return (
       <div className="edit-approval-permission">
@@ -154,9 +154,9 @@ export default class EditApprovalPermission extends PureComponent {
                     customTokenAmount || tokenAmount,
                   )} ${tokenSymbol}`}
                   onChange={(event) => {
-                    this.setState({ customSpendLimit: event.target.value })
+                    this.setState({ customSpendLimit: event.target.value });
                     if (selectedOptionIsUnlimited) {
-                      this.setState({ selectedOptionIsUnlimited: false })
+                      this.setState({ selectedOptionIsUnlimited: false });
                     }
                   }}
                   fullWidth
@@ -169,61 +169,61 @@ export default class EditApprovalPermission extends PureComponent {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   validateSpendLimit() {
-    const { t } = this.context
-    const { decimals, requiredMinimum } = this.props
-    const { selectedOptionIsUnlimited, customSpendLimit } = this.state
+    const { t } = this.context;
+    const { decimals, requiredMinimum } = this.props;
+    const { selectedOptionIsUnlimited, customSpendLimit } = this.state;
 
     if (selectedOptionIsUnlimited || !customSpendLimit) {
-      return undefined
+      return undefined;
     }
 
-    let customSpendLimitNumber
+    let customSpendLimitNumber;
     try {
-      customSpendLimitNumber = new BigNumber(customSpendLimit)
+      customSpendLimitNumber = new BigNumber(customSpendLimit);
     } catch (error) {
-      log.debug(`Error converting '${customSpendLimit}' to BigNumber:`, error)
-      return t('spendLimitInvalid')
+      log.debug(`Error converting '${customSpendLimit}' to BigNumber:`, error);
+      return t('spendLimitInvalid');
     }
 
     if (customSpendLimitNumber.isNegative()) {
-      return t('spendLimitInvalid')
+      return t('spendLimitInvalid');
     }
 
-    const maxTokenAmount = calcTokenAmount(MAX_UNSIGNED_256_INT, decimals)
+    const maxTokenAmount = calcTokenAmount(MAX_UNSIGNED_256_INT, decimals);
     if (customSpendLimitNumber.greaterThan(maxTokenAmount)) {
-      return t('spendLimitTooLarge')
+      return t('spendLimitTooLarge');
     }
 
     if (
       requiredMinimum !== undefined &&
       customSpendLimitNumber.lessThan(requiredMinimum)
     ) {
-      return t('spendLimitInsufficient')
+      return t('spendLimitInsufficient');
     }
 
-    return undefined
+    return undefined;
   }
 
   render() {
-    const { t } = this.context
-    const { setCustomAmount, hideModal, customTokenAmount } = this.props
-    const { selectedOptionIsUnlimited, customSpendLimit } = this.state
+    const { t } = this.context;
+    const { setCustomAmount, hideModal, customTokenAmount } = this.props;
+    const { selectedOptionIsUnlimited, customSpendLimit } = this.state;
 
-    const error = this.validateSpendLimit()
+    const error = this.validateSpendLimit();
     const disabled = Boolean(
       (customSpendLimit === customTokenAmount && !selectedOptionIsUnlimited) ||
         error,
-    )
+    );
 
     return (
       <Modal
         onSubmit={() => {
-          setCustomAmount(selectedOptionIsUnlimited ? '' : customSpendLimit)
-          hideModal()
+          setCustomAmount(selectedOptionIsUnlimited ? '' : customSpendLimit);
+          hideModal();
         }}
         submitText={t('save')}
         submitType="primary"
@@ -233,6 +233,6 @@ export default class EditApprovalPermission extends PureComponent {
       >
         {this.renderModalContent(error)}
       </Modal>
-    )
+    );
   }
 }

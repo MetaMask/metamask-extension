@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import { Tabs, Tab } from '../../../ui/tabs'
-import ErrorMessage from '../../../ui/error-message'
-import { PageContainerFooter } from '../../../ui/page-container'
-import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import { Tabs, Tab } from '../../../ui/tabs';
+import ErrorMessage from '../../../ui/error-message';
+import { PageContainerFooter } from '../../../ui/page-container';
+import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
 export default class ConfirmPageContainerContent extends Component {
   static propTypes = {
@@ -17,12 +17,11 @@ export default class ConfirmPageContainerContent extends Component {
     identiconAddress: PropTypes.string,
     nonce: PropTypes.string,
     assetImage: PropTypes.string,
-    subtitle: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     subtitleComponent: PropTypes.node,
-    summaryComponent: PropTypes.node,
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     titleComponent: PropTypes.node,
     warning: PropTypes.string,
+    origin: PropTypes.string.isRequired,
     // Footer
     onCancelAll: PropTypes.func,
     onCancel: PropTypes.func,
@@ -32,19 +31,19 @@ export default class ConfirmPageContainerContent extends Component {
     disabled: PropTypes.bool,
     unapprovedTxCount: PropTypes.number,
     rejectNText: PropTypes.string,
-  }
+  };
 
   renderContent() {
-    const { detailsComponent, dataComponent } = this.props
+    const { detailsComponent, dataComponent } = this.props;
 
     if (detailsComponent && dataComponent) {
-      return this.renderTabs()
+      return this.renderTabs();
     }
-    return detailsComponent || dataComponent
+    return detailsComponent || dataComponent;
   }
 
   renderTabs() {
-    const { detailsComponent, dataComponent } = this.props
+    const { detailsComponent, dataComponent } = this.props;
 
     return (
       <Tabs>
@@ -55,7 +54,7 @@ export default class ConfirmPageContainerContent extends Component {
           {dataComponent}
         </Tab>
       </Tabs>
-    )
+    );
   }
 
   render() {
@@ -65,13 +64,11 @@ export default class ConfirmPageContainerContent extends Component {
       errorMessage,
       title,
       titleComponent,
-      subtitle,
       subtitleComponent,
       hideSubtitle,
       identiconAddress,
       nonce,
       assetImage,
-      summaryComponent,
       detailsComponent,
       dataComponent,
       warning,
@@ -83,28 +80,27 @@ export default class ConfirmPageContainerContent extends Component {
       disabled,
       unapprovedTxCount,
       rejectNText,
-    } = this.props
+      origin,
+    } = this.props;
 
     return (
       <div className="confirm-page-container-content">
         {warning && <ConfirmPageContainerWarning warning={warning} />}
-        {summaryComponent || (
-          <ConfirmPageContainerSummary
-            className={classnames({
-              'confirm-page-container-summary--border':
-                !detailsComponent || !dataComponent,
-            })}
-            action={action}
-            title={title}
-            titleComponent={titleComponent}
-            subtitle={subtitle}
-            subtitleComponent={subtitleComponent}
-            hideSubtitle={hideSubtitle}
-            identiconAddress={identiconAddress}
-            nonce={nonce}
-            assetImage={assetImage}
-          />
-        )}
+        <ConfirmPageContainerSummary
+          className={classnames({
+            'confirm-page-container-summary--border':
+              !detailsComponent || !dataComponent,
+          })}
+          action={action}
+          title={title}
+          titleComponent={titleComponent}
+          subtitleComponent={subtitleComponent}
+          hideSubtitle={hideSubtitle}
+          identiconAddress={identiconAddress}
+          nonce={nonce}
+          assetImage={assetImage}
+          origin={origin}
+        />
         {this.renderContent()}
         {(errorKey || errorMessage) && (
           <div className="confirm-page-container-content__error-container">
@@ -122,6 +118,6 @@ export default class ConfirmPageContainerContent extends Component {
           {unapprovedTxCount > 1 && <a onClick={onCancelAll}>{rejectNText}</a>}
         </PageContainerFooter>
       </div>
-    )
+    );
   }
 }

@@ -1,40 +1,40 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import Select from 'react-select'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import Select from 'react-select';
 
 // Subviews
-import JsonImportView from './json'
-import PrivateKeyImportView from './private-key'
+import JsonImportView from './json';
+import PrivateKeyImportView from './private-key';
 
 export default class AccountImportSubview extends Component {
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
-  state = {}
+  state = {};
 
   getMenuItemTexts() {
-    return [this.context.t('privateKey'), this.context.t('jsonFile')]
+    return [this.context.t('privateKey'), this.context.t('jsonFile')];
   }
 
   renderImportView() {
-    const { type } = this.state
-    const menuItems = this.getMenuItemTexts()
-    const current = type || menuItems[0]
+    const { type } = this.state;
+    const menuItems = this.getMenuItemTexts();
+    const current = type || menuItems[0];
 
     switch (current) {
       case this.context.t('privateKey'):
-        return <PrivateKeyImportView />
+        return <PrivateKeyImportView />;
       case this.context.t('jsonFile'):
-        return <JsonImportView />
+        return <JsonImportView />;
       default:
-        return <JsonImportView />
+        return <JsonImportView />;
     }
   }
 
   render() {
-    const menuItems = this.getMenuItemTexts()
-    const { type } = this.state
+    const menuItems = this.getMenuItemTexts();
+    const { type } = this.state;
 
     return (
       <div className="new-account-import-form">
@@ -49,7 +49,7 @@ export default class AccountImportSubview extends Component {
               global.platform.openTab({
                 url:
                   'https://metamask.zendesk.com/hc/en-us/articles/360015289932',
-              })
+              });
             }}
           >
             {this.context.t('here')}
@@ -68,15 +68,15 @@ export default class AccountImportSubview extends Component {
               return {
                 value: text,
                 label: text,
-              }
+              };
             })}
             onChange={(opt) => {
-              this.setState({ type: opt.value })
+              this.setState({ type: opt.value });
             }}
           />
         </div>
         {this.renderImportView()}
       </div>
-    )
+    );
   }
 }

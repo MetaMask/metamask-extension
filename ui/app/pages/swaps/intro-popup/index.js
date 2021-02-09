@@ -1,1 +1,1 @@
-export { default } from './intro-popup'
+export { default } from './intro-popup';

@@ -1,15 +1,15 @@
 /* eslint-disable react/prop-types */
 
-import React from 'react'
-import { select, text } from '@storybook/addon-knobs'
-import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system'
-import ApproveIcon from '../icon/approve-icon.component'
-import Identicon from '../identicon/identicon.component'
-import Chip from '.'
+import React from 'react';
+import { select, text } from '@storybook/addon-knobs';
+import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
+import ApproveIcon from '../icon/approve-icon.component';
+import Identicon from '../identicon/identicon.component';
+import Chip from '.';
 
 export default {
   title: 'Chip',
-}
+};
 
 export const Plain = ({
   leftIcon,
@@ -28,7 +28,7 @@ export const Plain = ({
     }}
     borderColor={select('borderColor', COLORS, borderColor)}
   />
-)
+);
 
 export const WithLeftIcon = () => (
   <Plain
@@ -37,7 +37,7 @@ export const WithLeftIcon = () => (
     fontColor={COLORS.SUCCESS3}
     leftIcon={<ApproveIcon size={24} color="#4cd964" />}
   />
-)
+);
 
 export const WithRightIcon = () => (
   <Plain
@@ -51,7 +51,7 @@ export const WithRightIcon = () => (
       />
     }
   />
-)
+);
 
 export const WithBothIcons = () => (
   <Plain
@@ -79,4 +79,4 @@ export const WithBothIcons = () => (
       />
     }
   />
-)
+);

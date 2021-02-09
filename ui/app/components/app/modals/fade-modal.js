@@ -1,46 +1,46 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
-let index = 0
-let extraSheet
+let index = 0;
+let extraSheet;
 
 const insertRule = (css) => {
   if (!extraSheet) {
     // First time, create an extra stylesheet for adding rules
-    extraSheet = document.createElement('style')
-    document.getElementsByTagName('head')[0].appendChild(extraSheet)
+    extraSheet = document.createElement('style');
+    document.getElementsByTagName('head')[0].appendChild(extraSheet);
     // Keep reference to actual StyleSheet object (`styleSheet` for IE < 9)
-    extraSheet = extraSheet.sheet || extraSheet.styleSheet
+    extraSheet = extraSheet.sheet || extraSheet.styleSheet;
   }
 
-  extraSheet.insertRule(css, (extraSheet.cssRules || extraSheet.rules).length)
+  extraSheet.insertRule(css, (extraSheet.cssRules || extraSheet.rules).length);
 
-  return extraSheet
-}
+  return extraSheet;
+};
 
 const insertKeyframesRule = (keyframes) => {
   // random name
   // eslint-disable-next-line no-plusplus
-  const name = `anim_${++index}${Number(new Date())}`
-  let css = `@keyframes ${name} {`
+  const name = `anim_${++index}${Number(new Date())}`;
+  let css = `@keyframes ${name} {`;
 
   Object.keys(keyframes).forEach((key) => {
-    css += `${key} {`
+    css += `${key} {`;
 
     Object.keys(keyframes[key]).forEach((property) => {
-      const part = `:${keyframes[key][property]};`
-      css += property + part
-    })
+      const part = `:${keyframes[key][property]};`;
+      css += property + part;
+    });
 
-    css += '}'
-  })
+    css += '}';
+  });
 
-  css += '}'
+  css += '}';
 
-  insertRule(css)
+  insertRule(css);
 
-  return name
-}
+  return name;
+};
 
 const animation = {
   show: {
@@ -83,41 +83,41 @@ const animation = {
       opacity: 0,
     },
   }),
-}
+};
 
-const endEvents = ['transitionend', 'animationend']
+const endEvents = ['transitionend', 'animationend'];
 
 function addEventListener(node, eventName, eventListener) {
-  node.addEventListener(eventName, eventListener, false)
+  node.addEventListener(eventName, eventListener, false);
 }
 
 function removeEventListener(node, eventName, eventListener) {
-  node.removeEventListener(eventName, eventListener, false)
+  node.removeEventListener(eventName, eventListener, false);
 }
 
 const removeEndEventListener = (node, eventListener) => {
   if (endEvents.length === 0) {
-    return
+    return;
   }
   endEvents.forEach(function (endEvent) {
-    removeEventListener(node, endEvent, eventListener)
-  })
-}
+    removeEventListener(node, endEvent, eventListener);
+  });
+};
 
 const addEndEventListener = (node, eventListener) => {
   if (endEvents.length === 0) {
     // If CSS transitions are not supported, trigger an "end animation"
     // event immediately.
-    window.setTimeout(eventListener, 0)
-    return
+    window.setTimeout(eventListener, 0);
+    return;
   }
   endEvents.forEach(function (endEvent) {
-    addEventListener(node, endEvent, eventListener)
-  })
-}
+    addEventListener(node, endEvent, eventListener);
+  });
+};
 
 class FadeModal extends Component {
-  content = null
+  content = null;
 
   static propTypes = {
     backdrop: PropTypes.bool,
@@ -129,7 +129,7 @@ class FadeModal extends Component {
     onShow: PropTypes.func,
     onHide: PropTypes.func,
     children: PropTypes.node,
-  }
+  };
 
   static defaultProps = {
     onShow: () => undefined,
@@ -141,43 +141,43 @@ class FadeModal extends Component {
     backdropStyle: {},
     contentStyle: {},
     children: [],
-  }
+  };
 
   state = {
     willHide: true,
     hidden: true,
-  }
+  };
 
   addTransitionListener = (node, handle) => {
     if (node) {
       const endListener = function (e) {
         if (e && e.target !== node) {
-          return
+          return;
         }
-        removeEndEventListener(node, endListener)
-        handle()
-      }
-      addEndEventListener(node, endListener)
+        removeEndEventListener(node, endListener);
+        handle();
+      };
+      addEndEventListener(node, endListener);
     }
-  }
+  };
 
   handleBackdropClick = () => {
     if (this.props.closeOnClick) {
-      this.hide()
+      this.hide();
     }
-  }
+  };
 
   hasHidden = () => {
-    return this.state.hidden
-  }
+    return this.state.hidden;
+  };
 
   render() {
     if (this.state.hidden) {
-      return null
+      return null;
     }
 
-    const { willHide } = this.state
-    const { modalStyle } = this.props
+    const { willHide } = this.state;
+    const { modalStyle } = this.props;
     const backdropStyle = {
       animationName: willHide
         ? animation.hideBackdropAnimation
@@ -185,7 +185,7 @@ class FadeModal extends Component {
       animationTimingFunction: (willHide ? animation.hide : animation.show)
         .animationTimingFunction,
       ...this.props.backdropStyle,
-    }
+    };
     const contentStyle = {
       animationDuration: (willHide ? animation.hide : animation.show)
         .animationDuration,
@@ -195,7 +195,7 @@ class FadeModal extends Component {
       animationTimingFunction: (willHide ? animation.hide : animation.show)
         .animationTimingFunction,
       ...this.props.contentStyle,
-    }
+    };
 
     const backdrop = this.props.backdrop ? (
       <div
@@ -203,10 +203,10 @@ class FadeModal extends Component {
         style={backdropStyle}
         onClick={this.props.closeOnClick ? this.handleBackdropClick : null}
       />
-    ) : undefined
+    ) : undefined;
 
     if (willHide) {
-      this.addTransitionListener(this.content, this.leave)
+      this.addTransitionListener(this.content, this.leave);
     }
 
     return (
@@ -223,72 +223,72 @@ class FadeModal extends Component {
         </div>
         {backdrop}
       </span>
-    )
+    );
   }
 
   leave = () => {
     this.setState({
       hidden: true,
-    })
-    this.props.onHide(this.state.hideSource)
-  }
+    });
+    this.props.onHide(this.state.hideSource);
+  };
 
   enter = () => {
-    this.props.onShow()
-  }
+    this.props.onShow();
+  };
 
   show = () => {
     if (!this.state.hidden) {
-      return
+      return;
     }
 
     this.setState({
       willHide: false,
       hidden: false,
-    })
+    });
 
     setTimeout(
       function () {
-        this.addTransitionListener(this.content, this.enter)
+        this.addTransitionListener(this.content, this.enter);
       }.bind(this),
       0,
-    )
-  }
+    );
+  };
 
   hide = () => {
     if (this.hasHidden()) {
-      return
+      return;
     }
 
     this.setState({
       willHide: true,
-    })
-  }
+    });
+  };
 
   listenKeyboard = (event) => {
     if (typeof this.props.keyboard === 'function') {
-      this.props.keyboard(event)
+      this.props.keyboard(event);
     } else {
-      this.closeOnEsc(event)
+      this.closeOnEsc(event);
     }
-  }
+  };
 
   closeOnEsc = (event) => {
     if (
       this.props.keyboard &&
       (event.key === 'Escape' || event.keyCode === 27)
     ) {
-      this.hide()
+      this.hide();
     }
-  }
+  };
 
   UNSAFE_componentDidMount = () => {
-    window.addEventListener('keydown', this.listenKeyboard, true)
-  }
+    window.addEventListener('keydown', this.listenKeyboard, true);
+  };
 
   UNSAFE_componentWillUnmount = () => {
-    window.removeEventListener('keydown', this.listenKeyboard, true)
-  }
+    window.removeEventListener('keydown', this.listenKeyboard, true);
+  };
 }
 
-export default FadeModal
+export default FadeModal;

@@ -1,15 +1,15 @@
-import React, { useContext, useState } from 'react'
-import PropTypes from 'prop-types'
+import React, { useContext, useState } from 'react';
+import PropTypes from 'prop-types';
 
-import { I18nContext } from '../../../contexts/i18n'
-import { Menu, MenuItem } from '../../../components/ui/menu'
+import { I18nContext } from '../../../contexts/i18n';
+import { Menu, MenuItem } from '../../../components/ui/menu';
 
 const TokenOptions = ({ onRemove, onViewEtherscan, tokenSymbol }) => {
-  const t = useContext(I18nContext)
+  const t = useContext(I18nContext);
   const [tokenOptionsButtonElement, setTokenOptionsButtonElement] = useState(
     null,
-  )
-  const [tokenOptionsOpen, setTokenOptionsOpen] = useState(false)
+  );
+  const [tokenOptionsOpen, setTokenOptionsOpen] = useState(false);
 
   return (
     <>
@@ -29,8 +29,8 @@ const TokenOptions = ({ onRemove, onViewEtherscan, tokenSymbol }) => {
             iconClassName="fas fa-external-link-alt token-options__icon"
             data-testid="token-options__etherscan"
             onClick={() => {
-              setTokenOptionsOpen(false)
-              onViewEtherscan()
+              setTokenOptionsOpen(false);
+              onViewEtherscan();
             }}
           >
             {t('viewOnEtherscan')}
@@ -39,8 +39,8 @@ const TokenOptions = ({ onRemove, onViewEtherscan, tokenSymbol }) => {
             iconClassName="fas fa-trash-alt token-options__icon"
             data-testid="token-options__hide"
             onClick={() => {
-              setTokenOptionsOpen(false)
-              onRemove()
+              setTokenOptionsOpen(false);
+              onRemove();
             }}
           >
             {t('hideTokenSymbol', [tokenSymbol])}
@@ -48,13 +48,13 @@ const TokenOptions = ({ onRemove, onViewEtherscan, tokenSymbol }) => {
         </Menu>
       ) : null}
     </>
-  )
-}
+  );
+};
 
 TokenOptions.propTypes = {
   onRemove: PropTypes.func.isRequired,
   onViewEtherscan: PropTypes.func.isRequired,
   tokenSymbol: PropTypes.string.isRequired,
-}
+};
 
-export default TokenOptions
+export default TokenOptions;

@@ -1,5 +1,5 @@
-import assert from 'assert'
-import getAccountLink from '../../../ui/lib/account-link'
+import assert from 'assert';
+import getAccountLink from '../../../ui/lib/account-link';
 
 describe('Account link', function () {
   describe('getAccountLink', function () {
@@ -34,11 +34,11 @@ describe('Account link', function () {
             blockExplorerUrl: 'https://another.block.explorer/',
           },
         },
-      ]
+      ];
 
       tests.forEach(({ expected, address, network, rpcPrefs }) => {
-        assert.equal(getAccountLink(address, network, rpcPrefs), expected)
-      })
-    })
-  })
-})
+        assert.equal(getAccountLink(address, network, rpcPrefs), expected);
+      });
+    });
+  });
+});

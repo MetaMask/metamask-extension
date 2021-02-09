@@ -1,13 +1,13 @@
-import React from 'react'
-import { action } from '@storybook/addon-actions'
-import classnames from 'classnames'
-import { text, boolean } from '@storybook/addon-knobs'
-import Button from '../button'
-import ButtonGroup from '.'
+import React from 'react';
+import { action } from '@storybook/addon-actions';
+import classnames from 'classnames';
+import { text, boolean } from '@storybook/addon-knobs';
+import Button from '../button';
+import ButtonGroup from '.';
 
 export default {
   title: 'ButtonGroup',
-}
+};
 
 export const withButtons = () => (
   <ButtonGroup
@@ -19,7 +19,7 @@ export const withButtons = () => (
     <Button onClick={action('average')}>{text('Button2', 'Average')}</Button>
     <Button onClick={action('fast')}>{text('Button3', 'Fast')}</Button>
   </ButtonGroup>
-)
+);
 
 export const withDisabledButton = () => (
   <ButtonGroup style={{ width: '300px' }} disabled={boolean('Disabled', false)}>
@@ -28,7 +28,7 @@ export const withDisabledButton = () => (
       {text('Button2', 'Disabled')}
     </Button>
   </ButtonGroup>
-)
+);
 
 export const radioButtons = () => (
   <ButtonGroup
@@ -47,4 +47,4 @@ export const radioButtons = () => (
       {text('Button3', '5%')}
     </Button>
   </ButtonGroup>
-)
+);

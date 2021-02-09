@@ -4,10 +4,10 @@ if (
   !(typeof process !== 'undefined' && process.env.METAMASK_DEBUG) &&
   typeof console !== undefined
 ) {
-  console.log = noop
-  console.info = noop
+  console.log = noop;
+  console.info = noop;
 }
 
 function noop() {
-  return undefined
+  return undefined;
 }

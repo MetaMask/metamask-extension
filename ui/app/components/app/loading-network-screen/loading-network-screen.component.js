@@ -1,16 +1,16 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import Button from '../../ui/button'
-import LoadingScreen from '../../ui/loading-screen'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import Button from '../../ui/button';
+import LoadingScreen from '../../ui/loading-screen';
 
 export default class LoadingNetworkScreen extends PureComponent {
   state = {
     showErrorScreen: false,
-  }
+  };
 
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     loadingMessage: PropTypes.string,
@@ -22,43 +22,47 @@ export default class LoadingNetworkScreen extends PureComponent {
     setProviderType: PropTypes.func,
     rollbackToPreviousProvider: PropTypes.func,
     isLoadingNetwork: PropTypes.bool,
-  }
+  };
 
   componentDidMount = () => {
     this.cancelCallTimeout = setTimeout(
       this.cancelCall,
       this.props.cancelTime || 15000,
-    )
-  }
+    );
+  };
 
   getConnectingLabel = function (loadingMessage) {
     if (loadingMessage) {
-      return loadingMessage
+      return loadingMessage;
     }
-    const { provider, providerId } = this.props
-    const providerName = provider.type
+    const { provider, providerId } = this.props;
+    const providerName = provider.type;
 
-    let name
+    let name;
 
     if (providerName === 'mainnet') {
-      name = this.context.t('connectingToMainnet')
+      name = this.context.t('connectingToMainnet');
     } else if (providerName === 'ropsten') {
-      name = this.context.t('connectingToRopsten')
+      name = this.context.t('connectingToRopsten');
     } else if (providerName === 'kovan') {
-      name = this.context.t('connectingToKovan')
+      name = this.context.t('connectingToKovan');
     } else if (providerName === 'rinkeby') {
-      name = this.context.t('connectingToRinkeby')
+      name = this.context.t('connectingToRinkeby');
     } else if (providerName === 'goerli') {
-      name = this.context.t('connectingToGoerli')
+      name = this.context.t('connectingToGoerli');
     } else {
-      name = this.context.t('connectingTo', [providerId])
+      name = this.context.t('connectingTo', [providerId]);
     }
 
-    return name
-  }
+    return name;
+  };
 
   renderErrorScreenContent = () => {
-    const { showNetworkDropdown, setProviderArgs, setProviderType } = this.props
+    const {
+      showNetworkDropdown,
+      setProviderArgs,
+      setProviderType,
+    } = this.props;
 
     return (
       <div className="loading-overlay__error-screen">
@@ -68,8 +72,8 @@ export default class LoadingNetworkScreen extends PureComponent {
           <Button
             type="default"
             onClick={() => {
-              window.clearTimeout(this.cancelCallTimeout)
-              showNetworkDropdown()
+              window.clearTimeout(this.cancelCallTimeout);
+              showNetworkDropdown();
             }}
           >
             {this.context.t('switchNetworks')}
@@ -78,49 +82,49 @@ export default class LoadingNetworkScreen extends PureComponent {
           <Button
             type="primary"
             onClick={() => {
-              this.setState({ showErrorScreen: false })
-              setProviderType(...setProviderArgs)
-              window.clearTimeout(this.cancelCallTimeout)
+              this.setState({ showErrorScreen: false });
+              setProviderType(...setProviderArgs);
+              window.clearTimeout(this.cancelCallTimeout);
               this.cancelCallTimeout = setTimeout(
                 this.cancelCall,
                 this.props.cancelTime || 15000,
-              )
+              );
             }}
           >
             {this.context.t('tryAgain')}
           </Button>
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   cancelCall = () => {
-    const { isLoadingNetwork } = this.props
+    const { isLoadingNetwork } = this.props;
 
     if (isLoadingNetwork) {
-      this.setState({ showErrorScreen: true })
+      this.setState({ showErrorScreen: true });
     }
-  }
+  };
 
   componentDidUpdate = (prevProps) => {
-    const { provider } = this.props
-    const { provider: prevProvider } = prevProps
+    const { provider } = this.props;
+    const { provider: prevProvider } = prevProps;
     if (provider.type !== prevProvider.type) {
-      window.clearTimeout(this.cancelCallTimeout)
-      this.setState({ showErrorScreen: false })
+      window.clearTimeout(this.cancelCallTimeout);
+      this.setState({ showErrorScreen: false });
       this.cancelCallTimeout = setTimeout(
         this.cancelCall,
         this.props.cancelTime || 15000,
-      )
+      );
     }
-  }
+  };
 
   componentWillUnmount = () => {
-    window.clearTimeout(this.cancelCallTimeout)
-  }
+    window.clearTimeout(this.cancelCallTimeout);
+  };
 
   render() {
-    const { rollbackToPreviousProvider } = this.props
+    const { rollbackToPreviousProvider } = this.props;
 
     return (
       <LoadingScreen
@@ -137,6 +141,6 @@ export default class LoadingNetworkScreen extends PureComponent {
             : this.getConnectingLabel(this.props.loadingMessage)
         }
       />
-    )
+    );
   }
 }

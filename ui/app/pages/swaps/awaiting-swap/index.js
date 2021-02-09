@@ -1,1 +1,1 @@
-export { default } from './awaiting-swap'
+export { default } from './awaiting-swap';

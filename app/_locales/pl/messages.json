@@ -1244,9 +1244,6 @@
   "yourPrivateSeedPhrase": {
     "message": "Twoja prywatna fraza seed"
   },
-  "yourSigRequested": {
-    "message": "Twój podpis jest wymagany"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Przyspieszenie z zerową ceną gazu"
   }

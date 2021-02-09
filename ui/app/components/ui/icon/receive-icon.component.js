@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 
 const Receive = ({ className, size, color }) => (
   <svg
@@ -24,16 +24,16 @@ const Receive = ({ className, size, color }) => (
       fill={color}
     />
   </svg>
-)
+);
 
 Receive.defaultProps = {
   className: undefined,
-}
+};
 
 Receive.propTypes = {
   className: PropTypes.string,
   size: PropTypes.number.isRequired,
   color: PropTypes.string.isRequired,
-}
+};
 
-export default Receive
+export default Receive;

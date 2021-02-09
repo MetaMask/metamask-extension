@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 
 const ConfirmPageContainerNavigation = (props) => {
   const {
@@ -13,7 +13,7 @@ const ConfirmPageContainerNavigation = (props) => {
     lastTx,
     ofText,
     requestsWaitingText,
-  } = props
+  } = props;
 
   return (
     <div
@@ -81,8 +81,8 @@ const ConfirmPageContainerNavigation = (props) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 ConfirmPageContainerNavigation.propTypes = {
   totalTx: PropTypes.number,
@@ -95,6 +95,6 @@ ConfirmPageContainerNavigation.propTypes = {
   lastTx: PropTypes.string,
   ofText: PropTypes.string,
   requestsWaitingText: PropTypes.string,
-}
+};
 
-export default ConfirmPageContainerNavigation
+export default ConfirmPageContainerNavigation;

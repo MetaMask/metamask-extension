@@ -1,1 +1,1 @@
-export { default } from './create-account.component'
+export { default } from './create-account.component';

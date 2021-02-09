@@ -1,27 +1,27 @@
-import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import PropTypes from 'prop-types'
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 
-import { ALERT_STATE } from '../../../../ducks/alerts'
+import { ALERT_STATE } from '../../../../ducks/alerts';
 import {
   dismissAlert,
   getAlertState,
   getNetworkName,
-} from '../../../../ducks/alerts/invalid-custom-network'
-import Popover from '../../../ui/popover'
-import Button from '../../../ui/button'
-import { useI18nContext } from '../../../../hooks/useI18nContext'
-import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes'
+} from '../../../../ducks/alerts/invalid-custom-network';
+import Popover from '../../../ui/popover';
+import Button from '../../../ui/button';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 
-const { ERROR, LOADING } = ALERT_STATE
+const { ERROR, LOADING } = ALERT_STATE;
 
 const InvalidCustomNetworkAlert = ({ history }) => {
-  const t = useI18nContext()
-  const dispatch = useDispatch()
-  const alertState = useSelector(getAlertState)
-  const networkName = useSelector(getNetworkName)
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+  const alertState = useSelector(getAlertState);
+  const networkName = useSelector(getNetworkName);
 
-  const onClose = () => dispatch(dismissAlert())
+  const onClose = () => dispatch(dismissAlert());
 
   const footer = (
     <>
@@ -42,8 +42,8 @@ const InvalidCustomNetworkAlert = ({ history }) => {
         <Button
           disabled={alertState === LOADING}
           onClick={async () => {
-            await onClose()
-            history.push(NETWORKS_ROUTE)
+            await onClose();
+            history.push(NETWORKS_ROUTE);
           }}
           type="primary"
           className="invalid-custom-network-alert__footer-row-button"
@@ -52,7 +52,7 @@ const InvalidCustomNetworkAlert = ({ history }) => {
         </Button>
       </div>
     </>
-  )
+  );
 
   return (
     <Popover
@@ -78,11 +78,11 @@ const InvalidCustomNetworkAlert = ({ history }) => {
         ])}
       </p>
     </Popover>
-  )
-}
+  );
+};
 
 InvalidCustomNetworkAlert.propTypes = {
   history: PropTypes.object.isRequired,
-}
+};
 
-export default InvalidCustomNetworkAlert
+export default InvalidCustomNetworkAlert;

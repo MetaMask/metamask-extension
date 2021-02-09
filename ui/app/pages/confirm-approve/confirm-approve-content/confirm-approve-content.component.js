@@ -1,14 +1,14 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import Identicon from '../../../components/ui/identicon'
-import { addressSummary } from '../../../helpers/utils/util'
-import { formatCurrency } from '../../../helpers/utils/confirm-tx.util'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import Identicon from '../../../components/ui/identicon';
+import { addressSummary } from '../../../helpers/utils/util';
+import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     decimals: PropTypes.number,
@@ -24,13 +24,14 @@ export default class ConfirmApproveContent extends Component {
     data: PropTypes.string,
     toAddress: PropTypes.string,
     currentCurrency: PropTypes.string,
+    nativeCurrency: PropTypes.string,
     fiatTransactionTotal: PropTypes.string,
     ethTransactionTotal: PropTypes.string,
-  }
+  };
 
   state = {
     showFullTxDetails: false,
-  }
+  };
 
   renderApproveContentCard({
     symbol,
@@ -67,17 +68,18 @@ export default class ConfirmApproveContent extends Component {
         <div className="confirm-approve-content__card-content">{content}</div>
         {footer}
       </div>
-    )
+    );
   }
 
   // TODO: Add "Learn Why" with link to the feeAssociatedRequest text
   renderTransactionDetailsContent() {
-    const { t } = this.context
+    const { t } = this.context;
     const {
       currentCurrency,
+      nativeCurrency,
       ethTransactionTotal,
       fiatTransactionTotal,
-    } = this.props
+    } = this.props;
     return (
       <div className="confirm-approve-content__transaction-details-content">
         <div className="confirm-approve-content__small-text">
@@ -88,22 +90,22 @@ export default class ConfirmApproveContent extends Component {
             {formatCurrency(fiatTransactionTotal, currentCurrency)}
           </div>
           <div className="confirm-approve-content__transaction-details-content__secondary-fee">
-            {`${ethTransactionTotal} ETH`}
+            {`${ethTransactionTotal} ${nativeCurrency}`}
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   renderPermissionContent() {
-    const { t } = this.context
+    const { t } = this.context;
     const {
       customTokenAmount,
       tokenAmount,
       tokenSymbol,
       origin,
       toAddress,
-    } = this.props
+    } = this.props;
 
     return (
       <div className="flex-column">
@@ -127,12 +129,12 @@ export default class ConfirmApproveContent extends Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   renderDataContent() {
-    const { t } = this.context
-    const { data } = this.props
+    const { t } = this.context;
+    const { data } = this.props;
     return (
       <div className="flex-column">
         <div className="confirm-approve-content__small-text">
@@ -142,11 +144,11 @@ export default class ConfirmApproveContent extends Component {
           {data}
         </div>
       </div>
-    )
+    );
   }
 
   render() {
-    const { t } = this.context
+    const { t } = this.context;
     const {
       decimals,
       siteImage,
@@ -158,8 +160,8 @@ export default class ConfirmApproveContent extends Component {
       showEditApprovalPermissionModal,
       setCustomAmount,
       tokenBalance,
-    } = this.props
-    const { showFullTxDetails } = this.state
+    } = this.props;
+    const { showFullTxDetails } = this.state;
 
     return (
       <div
@@ -263,6 +265,6 @@ export default class ConfirmApproveContent extends Component {
           </div>
         ) : null}
       </div>
-    )
+    );
   }
 }

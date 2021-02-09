@@ -1,9 +1,9 @@
-import React, { useContext } from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import { I18nContext } from '../../../contexts/i18n'
+import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import { I18nContext } from '../../../contexts/i18n';
 
-import PageContainerFooter from '../../../components/ui/page-container/page-container-footer'
+import PageContainerFooter from '../../../components/ui/page-container/page-container-footer';
 
 export default function SwapsFooter({
   onCancel,
@@ -15,7 +15,7 @@ export default function SwapsFooter({
   showTopBorder,
   className = '',
 }) {
-  const t = useContext(I18nContext)
+  const t = useContext(I18nContext);
 
   return (
     <div className="swaps-footer">
@@ -55,7 +55,7 @@ export default function SwapsFooter({
         </div>
       )}
     </div>
-  )
+  );
 }
 
 SwapsFooter.propTypes = {
@@ -67,4 +67,4 @@ SwapsFooter.propTypes = {
   showTermsOfService: PropTypes.bool,
   showTopBorder: PropTypes.bool,
   className: PropTypes.string,
-}
+};

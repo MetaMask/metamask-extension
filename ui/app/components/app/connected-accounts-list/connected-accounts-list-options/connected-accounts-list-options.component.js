@@ -1,6 +1,6 @@
-import PropTypes from 'prop-types'
-import React, { useState } from 'react'
-import { Menu } from '../../../ui/menu'
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+import { Menu } from '../../../ui/menu';
 
 const ConnectedAccountsListOptions = ({
   children,
@@ -8,7 +8,7 @@ const ConnectedAccountsListOptions = ({
   onHideOptions,
   show,
 }) => {
-  const [optionsButtonElement, setOptionsButtonElement] = useState(null)
+  const [optionsButtonElement, setOptionsButtonElement] = useState(null);
 
   return (
     <>
@@ -31,14 +31,14 @@ const ConnectedAccountsListOptions = ({
         </Menu>
       ) : null}
     </>
-  )
-}
+  );
+};
 
 ConnectedAccountsListOptions.propTypes = {
   children: PropTypes.node.isRequired,
   onHideOptions: PropTypes.func.isRequired,
   onShowOptions: PropTypes.func.isRequired,
   show: PropTypes.bool.isRequired,
-}
+};
 
-export default ConnectedAccountsListOptions
+export default ConnectedAccountsListOptions;

@@ -1,24 +1,24 @@
-import assert from 'assert'
-import proxyquire from 'proxyquire'
-import sinon from 'sinon'
+import assert from 'assert';
+import proxyquire from 'proxyquire';
+import sinon from 'sinon';
 
-let mapDispatchToProps
+let mapDispatchToProps;
 
 const actionSpies = {
   updateSendTokenBalance: sinon.spy(),
   updateGasData: sinon.spy(),
   setGasTotal: sinon.spy(),
-}
+};
 const duckActionSpies = {
   updateSendErrors: sinon.spy(),
   resetSendState: sinon.spy(),
-}
+};
 
 proxyquire('../send.container.js', {
   'react-redux': {
     connect: (_, md) => {
-      mapDispatchToProps = md
-      return () => ({})
+      mapDispatchToProps = md;
+      return () => ({});
     },
   },
   'react-router-dom': { withRouter: () => undefined },
@@ -28,17 +28,17 @@ proxyquire('../send.container.js', {
   './send.utils.js': {
     calcGasTotal: (gasLimit, gasPrice) => gasLimit + gasPrice,
   },
-})
+});
 
 describe('send container', function () {
   describe('mapDispatchToProps()', function () {
-    let dispatchSpy
-    let mapDispatchToPropsObject
+    let dispatchSpy;
+    let mapDispatchToPropsObject;
 
     beforeEach(function () {
-      dispatchSpy = sinon.spy()
-      mapDispatchToPropsObject = mapDispatchToProps(dispatchSpy)
-    })
+      dispatchSpy = sinon.spy();
+      mapDispatchToPropsObject = mapDispatchToProps(dispatchSpy);
+    });
 
     describe('updateAndSetGasLimit()', function () {
       const mockProps = {
@@ -51,13 +51,16 @@ describe('send container', function () {
         to: 'mockTo',
         value: 'mockValue',
         data: undefined,
-      }
+      };
 
       it('should dispatch a setGasTotal action when editingTransactionId is truthy', function () {
-        mapDispatchToPropsObject.updateAndSetGasLimit(mockProps)
-        assert(dispatchSpy.calledOnce)
-        assert.strictEqual(actionSpies.setGasTotal.getCall(0).args[0], '0x30x4')
-      })
+        mapDispatchToPropsObject.updateAndSetGasLimit(mockProps);
+        assert(dispatchSpy.calledOnce);
+        assert.strictEqual(
+          actionSpies.setGasTotal.getCall(0).args[0],
+          '0x30x4',
+        );
+      });
 
       it('should dispatch an updateGasData action when editingTransactionId is falsy', function () {
         const {
@@ -68,12 +71,12 @@ describe('send container', function () {
           to,
           value,
           data,
-        } = mockProps
+        } = mockProps;
         mapDispatchToPropsObject.updateAndSetGasLimit({
           ...mockProps,
           editingTransactionId: false,
-        })
-        assert(dispatchSpy.calledOnce)
+        });
+        assert(dispatchSpy.calledOnce);
         assert.deepStrictEqual(actionSpies.updateGasData.getCall(0).args[0], {
           gasPrice,
           selectedAddress,
@@ -82,47 +85,47 @@ describe('send container', function () {
           to,
           value,
           data,
-        })
-      })
-    })
+        });
+      });
+    });
 
     describe('updateSendTokenBalance()', function () {
       const mockProps = {
         address: '0x10',
         tokenContract: '0x00a',
         sendToken: { address: '0x1' },
-      }
+      };
 
       it('should dispatch an action', function () {
-        mapDispatchToPropsObject.updateSendTokenBalance({ ...mockProps })
-        assert(dispatchSpy.calledOnce)
+        mapDispatchToPropsObject.updateSendTokenBalance({ ...mockProps });
+        assert(dispatchSpy.calledOnce);
         assert.deepStrictEqual(
           actionSpies.updateSendTokenBalance.getCall(0).args[0],
           mockProps,
-        )
-      })
-    })
+        );
+      });
+    });
 
     describe('updateSendErrors()', function () {
       it('should dispatch an action', function () {
-        mapDispatchToPropsObject.updateSendErrors('mockError')
-        assert(dispatchSpy.calledOnce)
+        mapDispatchToPropsObject.updateSendErrors('mockError');
+        assert(dispatchSpy.calledOnce);
         assert.strictEqual(
           duckActionSpies.updateSendErrors.getCall(0).args[0],
           'mockError',
-        )
-      })
-    })
+        );
+      });
+    });
 
     describe('resetSendState()', function () {
       it('should dispatch an action', function () {
-        mapDispatchToPropsObject.resetSendState()
-        assert(dispatchSpy.calledOnce)
+        mapDispatchToPropsObject.resetSendState();
+        assert(dispatchSpy.calledOnce);
         assert.strictEqual(
           duckActionSpies.resetSendState.getCall(0).args.length,
           0,
-        )
-      })
-    })
-  })
-})
+        );
+      });
+    });
+  });
+});

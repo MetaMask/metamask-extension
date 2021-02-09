@@ -1,1 +1,1 @@
-export { default } from './dropdown-input-pair'
+export { default } from './dropdown-input-pair';

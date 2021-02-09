@@ -1,1 +1,1 @@
-export { default } from './list-item-search.component'
+export { default } from './list-item-search.component';

@@ -1,5 +1,5 @@
-import assert from 'assert'
-import migration35 from '../../../app/scripts/migrations/035'
+import assert from 'assert';
+import migration35 from '../../../app/scripts/migrations/035';
 
 describe('migration #35', function () {
   it('should update the version metadata', function (done) {
@@ -8,18 +8,18 @@ describe('migration #35', function () {
         version: 34,
       },
       data: {},
-    }
+    };
 
     migration35
       .migrate(oldStorage)
       .then((newStorage) => {
         assert.deepEqual(newStorage.meta, {
           version: 35,
-        })
-        done()
+        });
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should delete seedWords', function (done) {
     const oldStorage = {
@@ -29,16 +29,16 @@ describe('migration #35', function () {
           seedWords: 'seed words',
         },
       },
-    }
+    };
 
     migration35
       .migrate(oldStorage)
       .then((newStorage) => {
-        assert.deepEqual(newStorage.data.PreferencesController, {})
-        done()
+        assert.deepEqual(newStorage.data.PreferencesController, {});
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should delete falsy seedWords', function (done) {
     const oldStorage = {
@@ -48,16 +48,16 @@ describe('migration #35', function () {
           seedWords: '',
         },
       },
-    }
+    };
 
     migration35
       .migrate(oldStorage)
       .then((newStorage) => {
-        assert.deepEqual(newStorage.data.PreferencesController, {})
-        done()
+        assert.deepEqual(newStorage.data.PreferencesController, {});
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should leave state without seedWords unchanged', function (done) {
     const oldStorage = {
@@ -86,14 +86,14 @@ describe('migration #35', function () {
           metaMetricsSendCount: 0,
         },
       },
-    }
+    };
 
     migration35
       .migrate(oldStorage)
       .then((newStorage) => {
-        assert.deepEqual(newStorage.data, oldStorage.data)
-        done()
+        assert.deepEqual(newStorage.data, oldStorage.data);
+        done();
       })
-      .catch(done)
-  })
-})
+      .catch(done);
+  });
+});

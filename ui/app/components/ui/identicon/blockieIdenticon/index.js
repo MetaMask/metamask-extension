@@ -1,1 +1,1 @@
-export { default } from './blockieIdenticon.component'
+export { default } from './blockieIdenticon.component';

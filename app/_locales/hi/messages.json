@@ -1657,9 +1657,6 @@
   "swapFinalizing": {
     "message": "अंतिम रूप दिया जा रहा है..."
   },
-  "swapGetQuotes": {
-    "message": "उद्धरण प्राप्त करें"
-  },
   "swapHighSlippageWarning": {
     "message": "स्लिपेज राशि बहुत अधिक है। सुनिश्चित करें कि आप जानते हैं कि आप क्या कर रहे हैं!"
   },
@@ -2095,9 +2092,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "आपका निजी सीड फ्रेज़"
-  },
-  "yourSigRequested": {
-    "message": "आपके हस्ताक्षर का अनुरोध किया जा रहा है"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "ज़ीरो गैस मूल्य में तेज़ी"

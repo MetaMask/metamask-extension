@@ -1,9 +1,9 @@
-import assert from 'assert'
+import assert from 'assert';
 import {
   getConnectedDomainsForSelectedAddress,
   getOrderedConnectedAccountsForActiveTab,
   getPermissionsForActiveTab,
-} from '../permissions'
+} from '../permissions';
 
 describe('selectors', function () {
   describe('getConnectedDomainsForSelectedAddress', function () {
@@ -62,8 +62,8 @@ describe('selectors', function () {
             },
           },
         },
-      }
-      const extensionId = undefined
+      };
+      const extensionId = undefined;
       assert.deepStrictEqual(getConnectedDomainsForSelectedAddress(mockState), [
         {
           extensionId,
@@ -79,8 +79,8 @@ describe('selectors', function () {
           origin: 'https://remix.ethereum.org',
           host: 'remix.ethereum.org',
         },
-      ])
-    })
+      ]);
+    });
 
     it('should return the list of connected domains when there are 2 connected accounts', function () {
       const mockState = {
@@ -140,8 +140,8 @@ describe('selectors', function () {
             },
           },
         },
-      }
-      const extensionId = undefined
+      };
+      const extensionId = undefined;
       assert.deepStrictEqual(getConnectedDomainsForSelectedAddress(mockState), [
         {
           extensionId,
@@ -150,9 +150,9 @@ describe('selectors', function () {
           origin: 'https://remix.ethereum.org',
           host: 'remix.ethereum.com',
         },
-      ])
-    })
-  })
+      ]);
+    });
+  });
 
   describe('getConnectedAccountsForActiveTab', function () {
     const mockState = {
@@ -276,7 +276,7 @@ describe('selectors', function () {
           },
         },
       },
-    }
+    };
 
     it('should return connected accounts sorted by last selected, then by keyring controller order', function () {
       assert.deepStrictEqual(
@@ -311,9 +311,9 @@ describe('selectors', function () {
             lastActive: 1586359844192,
           },
         ],
-      )
-    })
-  })
+      );
+    });
+  });
 
   describe('getPermissionsForActiveTab', function () {
     const mockState = {
@@ -415,14 +415,14 @@ describe('selectors', function () {
           },
         },
       },
-    }
+    };
 
     it('should return a list of permissions strings', function () {
       assert.deepStrictEqual(getPermissionsForActiveTab(mockState), [
         {
           key: 'eth_accounts',
         },
-      ])
-    })
-  })
-})
+      ]);
+    });
+  });
+});

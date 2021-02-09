@@ -1,16 +1,16 @@
-import assert from 'assert'
-import proxyquire from 'proxyquire'
+import assert from 'assert';
+import proxyquire from 'proxyquire';
 
-let mapStateToProps
+let mapStateToProps;
 
 proxyquire('../user-preferenced-token-input.container.js', {
   'react-redux': {
     connect: (ms) => {
-      mapStateToProps = ms
-      return () => ({})
+      mapStateToProps = ms;
+      return () => ({});
     },
   },
-})
+});
 
 describe('UserPreferencedTokenInput container', function () {
   describe('mapStateToProps()', function () {
@@ -21,11 +21,11 @@ describe('UserPreferencedTokenInput container', function () {
             useNativeCurrencyAsPrimaryCurrency: true,
           },
         },
-      }
+      };
 
       assert.deepStrictEqual(mapStateToProps(mockState), {
         useNativeCurrencyAsPrimaryCurrency: true,
-      })
-    })
-  })
-})
+      });
+    });
+  });
+});

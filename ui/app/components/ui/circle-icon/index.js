@@ -1,1 +1,1 @@
-export { default } from './circle-icon.component'
+export { default } from './circle-icon.component';

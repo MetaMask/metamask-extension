@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import { DragSource, DropTarget } from 'react-dnd'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import { DragSource, DropTarget } from 'react-dnd';
 
 class DraggableSeed extends Component {
   static propTypes = {
@@ -18,17 +18,17 @@ class DraggableSeed extends Component {
     word: PropTypes.string,
     className: PropTypes.string,
     selected: PropTypes.bool,
-  }
+  };
 
   static defaultProps = {
     className: '',
     onClick: undefined,
-  }
+  };
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    const { isOver, setHoveringIndex } = this.props
+    const { isOver, setHoveringIndex } = this.props;
     if (isOver && !nextProps.isOver) {
-      setHoveringIndex(-1)
+      setHoveringIndex(-1);
     }
   }
 
@@ -44,7 +44,7 @@ class DraggableSeed extends Component {
       onClick,
       isOver,
       canDrop,
-    } = this.props
+    } = this.props;
 
     return connectDropTarget(
       connectDragSource(
@@ -67,66 +67,66 @@ class DraggableSeed extends Component {
           {word}
         </div>,
       ),
-    )
+    );
   }
 }
 
-const SEEDWORD = 'SEEDWORD'
+const SEEDWORD = 'SEEDWORD';
 
 const seedSource = {
   beginDrag(props) {
-    setTimeout(() => props.setDraggingSeedIndex(props.seedIndex), 0)
+    setTimeout(() => props.setDraggingSeedIndex(props.seedIndex), 0);
     return {
       seedIndex: props.seedIndex,
       word: props.word,
-    }
+    };
   },
   canDrag(props) {
-    return props.draggable
+    return props.draggable;
   },
   endDrag(props, monitor) {
-    const dropTarget = monitor.getDropResult()
+    const dropTarget = monitor.getDropResult();
 
     if (!dropTarget) {
-      setTimeout(() => props.setDraggingSeedIndex(-1), 0)
-      return
+      setTimeout(() => props.setDraggingSeedIndex(-1), 0);
+      return;
     }
 
-    props.onDrop(dropTarget.targetIndex)
+    props.onDrop(dropTarget.targetIndex);
   },
-}
+};
 
 const seedTarget = {
   drop(props) {
     return {
       targetIndex: props.index,
-    }
+    };
   },
   canDrop(props) {
-    return props.droppable
+    return props.droppable;
   },
   hover(props) {
-    props.setHoveringIndex(props.index)
+    props.setHoveringIndex(props.index);
   },
-}
+};
 
 const collectDrag = (connect, monitor) => {
   return {
     connectDragSource: connect.dragSource(),
     isDragging: monitor.isDragging(),
-  }
-}
+  };
+};
 
 const collectDrop = (connect, monitor) => {
   return {
     connectDropTarget: connect.dropTarget(),
     isOver: monitor.isOver(),
     canDrop: monitor.canDrop(),
-  }
-}
+  };
+};
 
 export default DropTarget(
   SEEDWORD,
   seedTarget,
   collectDrop,
-)(DragSource(SEEDWORD, seedSource, collectDrag)(DraggableSeed))
+)(DragSource(SEEDWORD, seedSource, collectDrag)(DraggableSeed));

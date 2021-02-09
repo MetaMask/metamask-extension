@@ -1,1 +1,1 @@
-export { default } from './searchable-item-list'
+export { default } from './searchable-item-list';

@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 
 export default function Sign({ className, size, color }) {
   return (
@@ -24,11 +24,11 @@ export default function Sign({ className, size, color }) {
         fill={color}
       />
     </svg>
-  )
+  );
 }
 
 Sign.propTypes = {
   className: PropTypes.string,
   size: PropTypes.number.isRequired,
   color: PropTypes.string.isRequired,
-}
+};

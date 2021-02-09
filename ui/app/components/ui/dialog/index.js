@@ -1,9 +1,9 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
+import React from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 export default function Dialog(props) {
-  const { children, type, className, onClick } = props
+  const { children, type, className, onClick } = props;
   return (
     <div
       className={classnames('dialog', className, {
@@ -15,7 +15,7 @@ export default function Dialog(props) {
     >
       {children}
     </div>
-  )
+  );
 }
 
 Dialog.propTypes = {
@@ -23,4 +23,4 @@ Dialog.propTypes = {
   children: PropTypes.node,
   type: PropTypes.oneOf(['message', 'error', 'warning']),
   onClick: PropTypes.func,
-}
+};

@@ -1,5 +1,5 @@
-import KeyringController from 'eth-keyring-controller'
-import log from 'loglevel'
+import KeyringController from 'eth-keyring-controller';
+import log from 'loglevel';
 
 const seedPhraseVerifier = {
   /**
@@ -17,24 +17,24 @@ const seedPhraseVerifier = {
    */
   async verifyAccounts(createdAccounts, seedWords) {
     if (!createdAccounts || createdAccounts.length < 1) {
-      throw new Error('No created accounts defined.')
+      throw new Error('No created accounts defined.');
     }
 
-    const keyringController = new KeyringController({})
-    const Keyring = keyringController.getKeyringClassForType('HD Key Tree')
+    const keyringController = new KeyringController({});
+    const Keyring = keyringController.getKeyringClassForType('HD Key Tree');
     const opts = {
       mnemonic: seedWords,
       numberOfAccounts: createdAccounts.length,
-    }
+    };
 
-    const keyring = new Keyring(opts)
-    const restoredAccounts = await keyring.getAccounts()
-    log.debug(`Created accounts: ${JSON.stringify(createdAccounts)}`)
-    log.debug(`Restored accounts: ${JSON.stringify(restoredAccounts)}`)
+    const keyring = new Keyring(opts);
+    const restoredAccounts = await keyring.getAccounts();
+    log.debug(`Created accounts: ${JSON.stringify(createdAccounts)}`);
+    log.debug(`Restored accounts: ${JSON.stringify(restoredAccounts)}`);
 
     if (restoredAccounts.length !== createdAccounts.length) {
       // this should not happen...
-      throw new Error('Wrong number of accounts')
+      throw new Error('Wrong number of accounts');
     }
 
     for (let i = 0; i < restoredAccounts.length; i++) {
@@ -43,10 +43,10 @@ const seedPhraseVerifier = {
       ) {
         throw new Error(
           `Not identical accounts! Original: ${createdAccounts[i]}, Restored: ${restoredAccounts[i]}`,
-        )
+        );
       }
     }
   },
-}
+};
 
-export default seedPhraseVerifier
+export default seedPhraseVerifier;

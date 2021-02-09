@@ -1,1 +1,1 @@
-export { default } from './select-action.container'
+export { default } from './select-action.container';

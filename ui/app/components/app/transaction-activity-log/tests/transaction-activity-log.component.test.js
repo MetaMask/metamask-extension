@@ -1,7 +1,7 @@
-import assert from 'assert'
-import React from 'react'
-import { shallow } from 'enzyme'
-import TransactionActivityLog from '../transaction-activity-log.component'
+import assert from 'assert';
+import React from 'react';
+import { shallow } from 'enzyme';
+import TransactionActivityLog from '../transaction-activity-log.component';
 
 describe('TransactionActivityLog Component', function () {
   it('should render properly', function () {
@@ -38,7 +38,7 @@ describe('TransactionActivityLog Component', function () {
         timestamp: 1543958029960,
         value: '0x1502634b5800',
       },
-    ]
+    ];
 
     const wrapper = shallow(
       <TransactionActivityLog
@@ -52,11 +52,11 @@ describe('TransactionActivityLog Component', function () {
         primaryTransactionStatus="confirmed"
       />,
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
-    )
+    );
 
-    assert.ok(wrapper.hasClass('transaction-activity-log'))
-    assert.ok(wrapper.hasClass('test-class'))
-  })
+    assert.ok(wrapper.hasClass('transaction-activity-log'));
+    assert.ok(wrapper.hasClass('test-class'));
+  });
 
   it('should render inline retry and cancel buttons for earliest pending transaction', function () {
     const activities = [
@@ -90,7 +90,7 @@ describe('TransactionActivityLog Component', function () {
         timestamp: 4,
         value: '0x1',
       },
-    ]
+    ];
 
     const wrapper = shallow(
       <TransactionActivityLog
@@ -105,15 +105,15 @@ describe('TransactionActivityLog Component', function () {
         isEarliestNonce
       />,
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
-    )
+    );
 
-    assert.ok(wrapper.hasClass('transaction-activity-log'))
-    assert.ok(wrapper.hasClass('test-class'))
+    assert.ok(wrapper.hasClass('transaction-activity-log'));
+    assert.ok(wrapper.hasClass('test-class'));
     assert.strictEqual(
       wrapper.find('.transaction-activity-log__action-link').length,
       2,
-    )
-  })
+    );
+  });
 
   it('should not render inline retry and cancel buttons for newer pending transactions', function () {
     const activities = [
@@ -147,7 +147,7 @@ describe('TransactionActivityLog Component', function () {
         timestamp: 4,
         value: '0x1',
       },
-    ]
+    ];
 
     const wrapper = shallow(
       <TransactionActivityLog
@@ -162,13 +162,13 @@ describe('TransactionActivityLog Component', function () {
         isEarliestNonce={false}
       />,
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
-    )
+    );
 
-    assert.ok(wrapper.hasClass('transaction-activity-log'))
-    assert.ok(wrapper.hasClass('test-class'))
+    assert.ok(wrapper.hasClass('transaction-activity-log'));
+    assert.ok(wrapper.hasClass('test-class'));
     assert.strictEqual(
       wrapper.find('.transaction-activity-log__action-link').length,
       0,
-    )
-  })
-})
+    );
+  });
+});

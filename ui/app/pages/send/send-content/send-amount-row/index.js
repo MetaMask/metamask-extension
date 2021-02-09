@@ -1,1 +1,1 @@
-export { default } from './send-amount-row.container'
+export { default } from './send-amount-row.container';

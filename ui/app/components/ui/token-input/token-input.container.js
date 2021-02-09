@@ -1,27 +1,27 @@
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import {
   getIsMainnet,
   getTokenExchangeRates,
   getPreferences,
-} from '../../../selectors'
-import TokenInput from './token-input.component'
+} from '../../../selectors';
+import TokenInput from './token-input.component';
 
 const mapStateToProps = (state) => {
   const {
     metamask: { currentCurrency },
-  } = state
-  const { showFiatInTestnets } = getPreferences(state)
-  const isMainnet = getIsMainnet(state)
+  } = state;
+  const { showFiatInTestnets } = getPreferences(state);
+  const isMainnet = getIsMainnet(state);
 
   return {
     currentCurrency,
     tokenExchangeRates: getTokenExchangeRates(state),
     hideConversion: !isMainnet && !showFiatInTestnets,
-  }
-}
+  };
+};
 
-const TokenInputContainer = connect(mapStateToProps)(TokenInput)
+const TokenInputContainer = connect(mapStateToProps)(TokenInput);
 
 TokenInputContainer.propTypes = {
   token: PropTypes.shape({
@@ -29,6 +29,6 @@ TokenInputContainer.propTypes = {
     decimals: PropTypes.number,
     symbol: PropTypes.string,
   }).isRequired,
-}
+};
 
-export default TokenInputContainer
+export default TokenInputContainer;

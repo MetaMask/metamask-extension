@@ -1,1 +1,1 @@
-export { default } from './tab-bar'
+export { default } from './tab-bar';

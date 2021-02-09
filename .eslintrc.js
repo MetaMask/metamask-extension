@@ -53,13 +53,6 @@ module.exports = {
 
     'prettier/prettier': 'error',
 
-    // Our usage of spaces before *named* function parens is unusual, and
-    // doesn't match the prettier spec. prettier does not offer an option
-    // to configure this
-    'space-before-function-paren': [
-      'error',
-      { anonymous: 'always', named: 'never' },
-    ],
     // Our eslint config has the default setting for this as error. This
     // include beforeBlockComment: true, but in order to match the prettier
     // spec you have to enable before and after blocks, objects and arrays
@@ -147,7 +140,10 @@ module.exports = {
     'no-invalid-this': 'off',
     '@babel/no-invalid-this': 'error',
 
-    '@babel/semi': ['error', 'never'],
+    // prettier handles these
+    semi: 'off',
+    '@babel/semi': 'off',
+
     'mocha/no-setup-in-describe': 'off',
     'node/no-process-env': 'off',
 
@@ -213,4 +209,4 @@ module.exports = {
       version: 'detect',
     },
   },
-}
+};

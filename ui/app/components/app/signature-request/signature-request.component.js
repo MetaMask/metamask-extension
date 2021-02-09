@@ -1,11 +1,11 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
-import Identicon from '../../ui/identicon'
-import Header from './signature-request-header'
-import Footer from './signature-request-footer'
-import Message from './signature-request-message'
-import { ENVIRONMENT_TYPE_NOTIFICATION } from './signature-request.constants'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
+import Identicon from '../../ui/identicon';
+import Header from './signature-request-header';
+import Footer from './signature-request-footer';
+import Message from './signature-request-message';
+import { ENVIRONMENT_TYPE_NOTIFICATION } from './signature-request.constants';
 
 export default class SignatureRequest extends PureComponent {
   static propTypes = {
@@ -19,16 +19,16 @@ export default class SignatureRequest extends PureComponent {
     clearConfirmTransaction: PropTypes.func.isRequired,
     cancel: PropTypes.func.isRequired,
     sign: PropTypes.func.isRequired,
-  }
+  };
 
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
-  }
+  };
 
   componentDidMount() {
-    const { clearConfirmTransaction, cancel } = this.props
-    const { metricsEvent } = this.context
+    const { clearConfirmTransaction, cancel } = this.props;
+    const { metricsEvent } = this.context;
     if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
       window.addEventListener('beforeunload', (event) => {
         metricsEvent({
@@ -37,10 +37,10 @@ export default class SignatureRequest extends PureComponent {
             action: 'Sign Request',
             name: 'Cancel Sig Request Via Notification Close',
           },
-        })
-        clearConfirmTransaction()
-        cancel(event)
-      })
+        });
+        clearConfirmTransaction();
+        cancel(event);
+      });
     }
   }
 
@@ -48,7 +48,7 @@ export default class SignatureRequest extends PureComponent {
     return `${wallet.slice(0, 8)}...${wallet.slice(
       wallet.length - 8,
       wallet.length,
-    )}`
+    )}`;
   }
 
   render() {
@@ -59,9 +59,9 @@ export default class SignatureRequest extends PureComponent {
       },
       cancel,
       sign,
-    } = this.props
-    const { address: fromAddress } = fromAccount
-    const { message, domain = {} } = JSON.parse(data)
+    } = this.props;
+    const { address: fromAddress } = fromAccount;
+    const { message, domain = {} } = JSON.parse(data);
 
     return (
       <div className="signature-request page-container">
@@ -88,6 +88,6 @@ export default class SignatureRequest extends PureComponent {
         <Message data={message} />
         <Footer cancelAction={cancel} signAction={sign} />
       </div>
-    )
+    );
   }
 }

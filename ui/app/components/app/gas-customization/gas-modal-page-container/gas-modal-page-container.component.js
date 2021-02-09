@@ -1,16 +1,16 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import PageContainer from '../../../ui/page-container'
-import { Tabs, Tab } from '../../../ui/tabs'
-import AdvancedTabContent from './advanced-tab-content'
-import BasicTabContent from './basic-tab-content'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import PageContainer from '../../../ui/page-container';
+import { Tabs, Tab } from '../../../ui/tabs';
+import AdvancedTabContent from './advanced-tab-content';
+import BasicTabContent from './basic-tab-content';
 
 export default class GasModalPageContainer extends Component {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
     trackEvent: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     hideBasic: PropTypes.bool,
@@ -35,16 +35,16 @@ export default class GasModalPageContainer extends Component {
     isSpeedUp: PropTypes.bool,
     isRetry: PropTypes.bool,
     disableSave: PropTypes.bool,
-  }
+  };
 
   componentDidMount() {
-    this.props.fetchBasicGasEstimates()
+    this.props.fetchBasicGasEstimates();
   }
 
   renderBasicTabContent(gasPriceButtonGroupProps) {
     return (
       <BasicTabContent gasPriceButtonGroupProps={gasPriceButtonGroupProps} />
-    )
+    );
   }
 
   renderAdvancedTabContent() {
@@ -58,7 +58,7 @@ export default class GasModalPageContainer extends Component {
       isSpeedUp,
       isRetry,
       infoRowProps: { transactionFee },
-    } = this.props
+    } = this.props;
 
     return (
       <AdvancedTabContent
@@ -72,7 +72,7 @@ export default class GasModalPageContainer extends Component {
         isSpeedUp={isSpeedUp}
         isRetry={isRetry}
       />
-    )
+    );
   }
 
   renderInfoRows(newTotalFiat, newTotalEth, sendAmount, transactionFee) {
@@ -110,7 +110,7 @@ export default class GasModalPageContainer extends Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   renderTabs() {
@@ -118,7 +118,7 @@ export default class GasModalPageContainer extends Component {
       gasPriceButtonGroupProps,
       hideBasic,
       infoRowProps: { newTotalFiat, newTotalEth, sendAmount, transactionFee },
-    } = this.props
+    } = this.props;
 
     let tabsToRender = [
       {
@@ -129,10 +129,10 @@ export default class GasModalPageContainer extends Component {
         name: this.context.t('advanced'),
         content: this.renderAdvancedTabContent(),
       },
-    ]
+    ];
 
     if (hideBasic) {
-      tabsToRender = tabsToRender.slice(1)
+      tabsToRender = tabsToRender.slice(1);
     }
 
     return (
@@ -151,7 +151,7 @@ export default class GasModalPageContainer extends Component {
           </Tab>
         ))}
       </Tabs>
-    )
+    );
   }
 
   render() {
@@ -162,7 +162,7 @@ export default class GasModalPageContainer extends Component {
       customModalGasLimitInHex,
       disableSave,
       isSpeedUp,
-    } = this.props
+    } = this.props;
 
     return (
       <div className="gas-modal-page-container">
@@ -181,15 +181,15 @@ export default class GasModalPageContainer extends Component {
                   action: 'Activity Log',
                   name: 'Saved "Speed Up"',
                 },
-              })
+              });
             }
-            onSubmit(customModalGasLimitInHex, customModalGasPriceInHex)
+            onSubmit(customModalGasLimitInHex, customModalGasPriceInHex);
           }}
           submitText={this.context.t('save')}
           headerCloseText={this.context.t('close')}
           hideCancel
         />
       </div>
-    )
+    );
   }
 }

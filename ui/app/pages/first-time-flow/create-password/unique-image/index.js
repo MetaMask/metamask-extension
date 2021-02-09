@@ -1,1 +1,1 @@
-export { default } from './unique-image.container'
+export { default } from './unique-image.container';

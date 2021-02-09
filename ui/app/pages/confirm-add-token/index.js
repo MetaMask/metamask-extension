@@ -1,3 +1,3 @@
-import ConfirmAddToken from './confirm-add-token.container'
+import ConfirmAddToken from './confirm-add-token.container';
 
-export default ConfirmAddToken
+export default ConfirmAddToken;

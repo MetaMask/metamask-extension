@@ -1,17 +1,17 @@
-import { EventEmitter } from 'events'
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import Button from '@material-ui/core/Button'
-import getCaretCoordinates from 'textarea-caret'
-import TextField from '../../components/ui/text-field'
-import Mascot from '../../components/ui/mascot'
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
+import { EventEmitter } from 'events';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import Button from '@material-ui/core/Button';
+import getCaretCoordinates from 'textarea-caret';
+import TextField from '../../components/ui/text-field';
+import Mascot from '../../components/ui/mascot';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 
 export default class UnlockPage extends Component {
   static contextTypes = {
     metricsEvent: PropTypes.func,
     t: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     history: PropTypes.object.isRequired,
@@ -21,42 +21,42 @@ export default class UnlockPage extends Component {
     onSubmit: PropTypes.func,
     forceUpdateMetamaskState: PropTypes.func,
     showOptInModal: PropTypes.func,
-  }
+  };
 
   state = {
     password: '',
     error: null,
-  }
+  };
 
-  submitting = false
+  submitting = false;
 
-  animationEventEmitter = new EventEmitter()
+  animationEventEmitter = new EventEmitter();
 
   UNSAFE_componentWillMount() {
-    const { isUnlocked, history } = this.props
+    const { isUnlocked, history } = this.props;
 
     if (isUnlocked) {
-      history.push(DEFAULT_ROUTE)
+      history.push(DEFAULT_ROUTE);
     }
   }
 
   handleSubmit = async (event) => {
-    event.preventDefault()
-    event.stopPropagation()
+    event.preventDefault();
+    event.stopPropagation();
 
-    const { password } = this.state
-    const { onSubmit, forceUpdateMetamaskState, showOptInModal } = this.props
+    const { password } = this.state;
+    const { onSubmit, forceUpdateMetamaskState, showOptInModal } = this.props;
 
     if (password === '' || this.submitting) {
-      return
+      return;
     }
 
-    this.setState({ error: null })
-    this.submitting = true
+    this.setState({ error: null });
+    this.submitting = true;
 
     try {
-      await onSubmit(password)
-      const newState = await forceUpdateMetamaskState()
+      await onSubmit(password);
+      const newState = await forceUpdateMetamaskState();
       this.context.metricsEvent({
         eventOpts: {
           category: 'Navigation',
@@ -64,17 +64,17 @@ export default class UnlockPage extends Component {
           name: 'Success',
         },
         isNewVisit: true,
-      })
+      });
 
       if (
         newState.participateInMetaMetrics === null ||
         newState.participateInMetaMetrics === undefined
       ) {
-        showOptInModal()
+        showOptInModal();
       }
     } catch ({ message }) {
       if (message === 'Incorrect password') {
-        const newState = await forceUpdateMetamaskState()
+        const newState = await forceUpdateMetamaskState();
         this.context.metricsEvent({
           eventOpts: {
             category: 'Navigation',
@@ -85,26 +85,26 @@ export default class UnlockPage extends Component {
             numberOfTokens: newState.tokens.length,
             numberOfAccounts: Object.keys(newState.accounts).length,
           },
-        })
+        });
       }
 
-      this.setState({ error: message })
-      this.submitting = false
+      this.setState({ error: message });
+      this.submitting = false;
     }
-  }
+  };
 
   handleInputChange({ target }) {
-    this.setState({ password: target.value, error: null })
+    this.setState({ password: target.value, error: null });
 
     // tell mascot to look at page action
     if (target.getBoundingClientRect) {
-      const element = target
-      const boundingRect = element.getBoundingClientRect()
-      const coordinates = getCaretCoordinates(element, element.selectionEnd)
+      const element = target;
+      const boundingRect = element.getBoundingClientRect();
+      const coordinates = getCaretCoordinates(element, element.selectionEnd);
       this.animationEventEmitter.emit('point', {
         x: boundingRect.left + coordinates.left - element.scrollLeft,
         y: boundingRect.top + coordinates.top - element.scrollTop,
-      })
+      });
     }
   }
 
@@ -117,7 +117,7 @@ export default class UnlockPage extends Component {
       fontWeight: '400',
       boxShadow: 'none',
       borderRadius: '4px',
-    }
+    };
 
     return (
       <Button
@@ -132,13 +132,13 @@ export default class UnlockPage extends Component {
       >
         {this.context.t('unlock')}
       </Button>
-    )
+    );
   }
 
   render() {
-    const { password, error } = this.state
-    const { t } = this.context
-    const { onImport, onRestore } = this.props
+    const { password, error } = this.state;
+    const { t } = this.context;
+    const { onImport, onRestore } = this.props;
 
     return (
       <div className="unlock-page__container">
@@ -180,6 +180,6 @@ export default class UnlockPage extends Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 }

@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 
 export default function QuotesBackdrop({ withTopTab }) {
   return (
@@ -80,9 +80,9 @@ export default function QuotesBackdrop({ withTopTab }) {
         </linearGradient>
       </defs>
     </svg>
-  )
+  );
 }
 
 QuotesBackdrop.propTypes = {
   withTopTab: PropTypes.bool,
-}
+};

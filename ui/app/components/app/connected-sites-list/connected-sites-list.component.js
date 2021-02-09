@@ -1,12 +1,12 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import SiteIcon from '../../ui/site-icon'
-import { stripHttpSchemes } from '../../../helpers/utils/util'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import SiteIcon from '../../ui/site-icon';
+import { stripHttpSchemes } from '../../../helpers/utils/util';
 
 export default class ConnectedSitesList extends Component {
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     connectedDomains: PropTypes.arrayOf(
@@ -19,11 +19,11 @@ export default class ConnectedSitesList extends Component {
     ).isRequired,
     onDisconnect: PropTypes.func.isRequired,
     domainHostCount: PropTypes.objectOf(PropTypes.number).isRequired,
-  }
+  };
 
   render() {
-    const { connectedDomains, onDisconnect } = this.props
-    const { t } = this.context
+    const { connectedDomains, onDisconnect } = this.props;
+    const { t } = this.context;
 
     return (
       <main className="connected-sites-list__content-rows">
@@ -49,16 +49,16 @@ export default class ConnectedSitesList extends Component {
           </div>
         ))}
       </main>
-    )
+    );
   }
 
   getDomainDisplayName(domain) {
     if (domain.extensionId) {
-      return this.context.t('externalExtension')
+      return this.context.t('externalExtension');
     }
 
     return this.props.domainHostCount[domain.host] > 1
       ? domain.origin
-      : stripHttpSchemes(domain.origin)
+      : stripHttpSchemes(domain.origin);
   }
 }

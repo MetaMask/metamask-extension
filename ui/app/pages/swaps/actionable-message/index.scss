@@ -7,6 +7,7 @@
   display: flex;
   flex-flow: column;
   align-items: center;
+  position: relative;
 
   @include H7;
 
@@ -26,7 +27,12 @@
 
   &__action {
     font-weight: bold;
-    cursor: pointer;
+  }
+
+  &__info-tooltip-wrapper {
+    position: absolute;
+    right: 4px;
+    top: 8px;
   }
 
   &--warning {
@@ -57,9 +63,39 @@
   &--left-aligned {
     .actionable-message__message,
     .actionable-message__actions {
+    }
+  }
+
+  &--with-right-button {
+    padding: 12px;
+
+    .actionable-message__message {
       justify-content: flex-start;
       text-align: left;
       width: 100%;
     }
+
+    .actionable-message__actions {
+      justify-content: flex-end;
+      width: 100%;
+    }
+
+    .actionable-message__action {
+      font-weight: normal;
+      border-radius: 42px;
+      min-width: 72px;
+      height: 18px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      @include H8;
+    }
+  }
+}
+
+.actionable-message--warning.actionable-message--with-right-button {
+  .actionable-message__action {
+    background: $Yellow-500;
   }
 }

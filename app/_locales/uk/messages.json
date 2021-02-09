@@ -1256,9 +1256,6 @@
   "yourPrivateSeedPhrase": {
     "message": "Ваша секретна seed-фраза"
   },
-  "yourSigRequested": {
-    "message": "Надійшов запит вашого підпису"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Ціна пального на прискорення - нуль"
   }

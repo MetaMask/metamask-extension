@@ -1,1 +1,1 @@
-export { default } from './pulse-loader'
+export { default } from './pulse-loader';

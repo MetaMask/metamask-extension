@@ -1,21 +1,21 @@
-import assert from 'assert'
-import React from 'react'
+import assert from 'assert';
+import React from 'react';
 
-import sinon from 'sinon'
-import thunk from 'redux-thunk'
+import sinon from 'sinon';
+import thunk from 'redux-thunk';
 
-import { fireEvent } from '@testing-library/react'
-import configureMockStore from 'redux-mock-store'
+import { fireEvent } from '@testing-library/react';
+import configureMockStore from 'redux-mock-store';
 
-import { renderWithProvider } from '../../../../../../../test/lib/render-helpers'
+import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
 
-import * as actions from '../../../../../store/actions'
-import UnconnectedAccountAlert from '..'
+import * as actions from '../../../../../store/actions';
+import UnconnectedAccountAlert from '..';
 
 describe('Unconnected Account Alert', function () {
-  const network = '123'
+  const network = '123';
 
-  const selectedAddress = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b'
+  const selectedAddress = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
 
   const identities = {
     '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
@@ -26,7 +26,7 @@ describe('Unconnected Account Alert', function () {
       address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
       name: 'Account 2',
     },
-  }
+  };
 
   const accounts = {
     '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
@@ -37,14 +37,14 @@ describe('Unconnected Account Alert', function () {
       address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
       balance: '0x0',
     },
-  }
+  };
 
   const cachedBalances = {
     123: {
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': '0x0',
       '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': '0x0',
     },
-  }
+  };
 
   const keyrings = [
     {
@@ -54,7 +54,7 @@ describe('Unconnected Account Alert', function () {
         '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
       ],
     },
-  ]
+  ];
 
   const mockState = {
     metamask: {
@@ -102,63 +102,69 @@ describe('Unconnected Account Alert', function () {
     unconnectedAccount: {
       state: 'OPEN',
     },
-  }
+  };
 
   afterEach(function () {
-    sinon.restore()
-  })
+    sinon.restore();
+  });
 
   it('checks that checkbox is checked', function () {
-    const store = configureMockStore()(mockState)
+    const store = configureMockStore()(mockState);
 
-    const { getByRole } = renderWithProvider(<UnconnectedAccountAlert />, store)
+    const { getByRole } = renderWithProvider(
+      <UnconnectedAccountAlert />,
+      store,
+    );
 
-    const dontShowCheckbox = getByRole('checkbox')
+    const dontShowCheckbox = getByRole('checkbox');
 
-    assert.strictEqual(dontShowCheckbox.checked, false)
-    fireEvent.click(dontShowCheckbox)
-    assert.strictEqual(dontShowCheckbox.checked, true)
-  })
+    assert.strictEqual(dontShowCheckbox.checked, false);
+    fireEvent.click(dontShowCheckbox);
+    assert.strictEqual(dontShowCheckbox.checked, true);
+  });
 
   it('clicks dismiss button and calls dismissAlert action', function () {
-    const store = configureMockStore()(mockState)
+    const store = configureMockStore()(mockState);
 
-    const { getByText } = renderWithProvider(<UnconnectedAccountAlert />, store)
+    const { getByText } = renderWithProvider(
+      <UnconnectedAccountAlert />,
+      store,
+    );
 
-    const dismissButton = getByText(/dismiss/u)
-    fireEvent.click(dismissButton)
+    const dismissButton = getByText(/dismiss/u);
+    fireEvent.click(dismissButton);
 
     assert.strictEqual(
       store.getActions()[0].type,
       'unconnectedAccount/dismissAlert',
-    )
-  })
+    );
+  });
 
   it('clicks Dont Show checkbox and dismiss to call disable alert request action', async function () {
-    sinon.stub(actions, 'setAlertEnabledness').returns(() => Promise.resolve())
+    sinon.stub(actions, 'setAlertEnabledness').returns(() => Promise.resolve());
 
-    const store = configureMockStore([thunk])(mockState)
+    const store = configureMockStore([thunk])(mockState);
 
     const { getByText, getByRole } = renderWithProvider(
       <UnconnectedAccountAlert />,
       store,
-    )
+    );
 
-    const dismissButton = getByText(/dismiss/u)
-    const dontShowCheckbox = getByRole('checkbox')
+    const dismissButton = getByText(/dismiss/u);
+    const dontShowCheckbox = getByRole('checkbox');
 
-    fireEvent.click(dontShowCheckbox)
-    fireEvent.click(dismissButton)
+    fireEvent.click(dontShowCheckbox);
+    fireEvent.click(dismissButton);
 
     setImmediate(() => {
       assert.strictEqual(
         store.getActions()[0].type,
         'unconnectedAccount/disableAlertRequested',
-      )
+      );
       assert.strictEqual(
         store.getActions()[1].type,
         'unconnectedAccount/disableAlertSucceeded',
-      )
-    })
-  })
-})
+      );
+    });
+  });
+});

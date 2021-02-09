@@ -1241,9 +1241,6 @@
   "yourPrivateSeedPhrase": {
     "message": "Vaša privatna šifra za oporavak naloga (seed phrase)"
   },
-  "yourSigRequested": {
-    "message": "Zahteva se vaš potpis"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Nulta cena gasa ubrzava"
   }

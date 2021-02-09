@@ -1,1 +1,1 @@
-export { default } from './breadcrumbs.component'
+export { default } from './breadcrumbs.component';

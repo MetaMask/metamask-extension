@@ -1,11 +1,11 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import AdvancedGasInputs from '../../advanced-gas-inputs'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import AdvancedGasInputs from '../../advanced-gas-inputs';
 
 export default class AdvancedTabContent extends Component {
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     updateCustomGasPrice: PropTypes.func,
@@ -18,7 +18,7 @@ export default class AdvancedTabContent extends Component {
     isSpeedUp: PropTypes.bool,
     customGasLimitMessage: PropTypes.string,
     minimumGasLimit: PropTypes.number,
-  }
+  };
 
   renderDataSummary(transactionFee) {
     return (
@@ -32,7 +32,7 @@ export default class AdvancedTabContent extends Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   render() {
@@ -47,7 +47,7 @@ export default class AdvancedTabContent extends Component {
       transactionFee,
       customGasLimitMessage,
       minimumGasLimit,
-    } = this.props
+    } = this.props;
 
     return (
       <div className="advanced-tab">
@@ -68,6 +68,6 @@ export default class AdvancedTabContent extends Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 }

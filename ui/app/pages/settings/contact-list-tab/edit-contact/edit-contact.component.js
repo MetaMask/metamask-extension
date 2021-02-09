@@ -1,16 +1,16 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import { Redirect } from 'react-router-dom'
-import Identicon from '../../../../components/ui/identicon'
-import Button from '../../../../components/ui/button/button.component'
-import TextField from '../../../../components/ui/text-field'
-import { isValidAddress } from '../../../../helpers/utils/util'
-import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import { Redirect } from 'react-router-dom';
+import Identicon from '../../../../components/ui/identicon';
+import Button from '../../../../components/ui/button/button.component';
+import TextField from '../../../../components/ui/text-field';
+import { isValidAddress } from '../../../../helpers/utils/util';
+import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer';
 
 export default class EditContact extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     addToAddressBook: PropTypes.func,
@@ -24,22 +24,22 @@ export default class EditContact extends PureComponent {
     listRoute: PropTypes.string,
     setAccountLabel: PropTypes.func,
     showingMyAccounts: PropTypes.bool.isRequired,
-  }
+  };
 
   static defaultProps = {
     name: '',
     memo: '',
-  }
+  };
 
   state = {
     newName: this.props.name,
     newAddress: this.props.address,
     newMemo: this.props.memo,
     error: '',
-  }
+  };
 
   render() {
-    const { t } = this.context
+    const { t } = this.context;
     const {
       address,
       addToAddressBook,
@@ -52,10 +52,10 @@ export default class EditContact extends PureComponent {
       setAccountLabel,
       showingMyAccounts,
       viewRoute,
-    } = this.props
+    } = this.props;
 
     if (!address) {
-      return <Redirect to={{ pathname: listRoute }} />
+      return <Redirect to={{ pathname: listRoute }} />;
     }
 
     return (
@@ -67,7 +67,7 @@ export default class EditContact extends PureComponent {
               type="link"
               className="settings-page__address-book-button"
               onClick={async () => {
-                await removeFromAddressBook(chainId, address)
+                await removeFromAddressBook(chainId, address);
               }}
             >
               {t('deleteAccount')}
@@ -135,21 +135,21 @@ export default class EditContact extends PureComponent {
             ) {
               // if the user makes a valid change to the address field, remove the original address
               if (isValidAddress(this.state.newAddress)) {
-                await removeFromAddressBook(chainId, address)
+                await removeFromAddressBook(chainId, address);
                 await addToAddressBook(
                   this.state.newAddress,
                   this.state.newName || name,
                   this.state.newMemo || memo,
-                )
+                );
                 if (showingMyAccounts) {
                   setAccountLabel(
                     this.state.newAddress,
                     this.state.newName || name,
-                  )
+                  );
                 }
-                history.push(listRoute)
+                history.push(listRoute);
               } else {
-                this.setState({ error: this.context.t('invalidAddress') })
+                this.setState({ error: this.context.t('invalidAddress') });
               }
             } else {
               // update name
@@ -157,20 +157,20 @@ export default class EditContact extends PureComponent {
                 address,
                 this.state.newName || name,
                 this.state.newMemo || memo,
-              )
+              );
               if (showingMyAccounts) {
-                setAccountLabel(address, this.state.newName || name)
+                setAccountLabel(address, this.state.newName || name);
               }
-              history.push(listRoute)
+              history.push(listRoute);
             }
           }}
           onCancel={() => {
-            history.push(`${viewRoute}/${address}`)
+            history.push(`${viewRoute}/${address}`);
           }}
           submitText={this.context.t('save')}
           submitButtonType="confirm"
         />
       </div>
-    )
+    );
   }
 }

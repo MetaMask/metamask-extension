@@ -1,1 +1,1 @@
-export { default } from './swaps-footer'
+export { default } from './swaps-footer';

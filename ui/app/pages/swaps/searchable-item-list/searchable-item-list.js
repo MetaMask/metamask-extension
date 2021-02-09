@@ -1,7 +1,7 @@
-import React, { useState, useRef } from 'react'
-import PropTypes from 'prop-types'
-import ItemList from './item-list'
-import ListItemSearch from './list-item-search'
+import React, { useState, useRef } from 'react';
+import PropTypes from 'prop-types';
+import ItemList from './item-list';
+import ListItemSearch from './list-item-search';
 
 export default function SearchableItemList({
   className,
@@ -18,10 +18,10 @@ export default function SearchableItemList({
   hideItemIf,
   listContainerClassName,
 }) {
-  const itemListRef = useRef()
+  const itemListRef = useRef();
 
-  const [results, setResults] = useState(defaultToAll ? itemsToSearch : [])
-  const [searchQuery, setSearchQuery] = useState('')
+  const [results, setResults] = useState(defaultToAll ? itemsToSearch : []);
+  const [searchQuery, setSearchQuery] = useState('');
 
   return (
     <div className={className}>
@@ -32,8 +32,8 @@ export default function SearchableItemList({
           searchQuery: newSearchQuery = '',
           results: newResults = [],
         }) => {
-          setSearchQuery(newSearchQuery)
-          setResults(newResults)
+          setSearchQuery(newSearchQuery);
+          setResults(newResults);
         }}
         error={itemSelectorError}
         searchPlaceholderText={searchPlaceholderText}
@@ -52,7 +52,7 @@ export default function SearchableItemList({
         listContainerClassName={listContainerClassName}
       />
     </div>
-  )
+  );
 }
 
 SearchableItemList.propTypes = {
@@ -74,4 +74,4 @@ SearchableItemList.propTypes = {
   hideRightLabels: PropTypes.bool,
   hideItemIf: PropTypes.func,
   listContainerClassName: PropTypes.string,
-}
+};

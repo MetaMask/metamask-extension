@@ -1,19 +1,19 @@
-import React from 'react'
-import { number } from '@storybook/addon-knobs'
-import CountdownTimer from './countdown-timer'
+import React from 'react';
+import { number } from '@storybook/addon-knobs';
+import CountdownTimer from './countdown-timer';
 
 export default {
   title: 'CountdownTimer',
-}
+};
 
 const getTimeStartedFromDecrimentSeconds = (seconds) =>
-  Date.now() - seconds * 1000
+  Date.now() - seconds * 1000;
 
 export const Default = () => {
   const timeStartedSecondDecriment = number(
     'Set timeStarted to curren time minus X seconds',
     10,
-  )
+  );
 
   return (
     <CountdownTimer
@@ -22,14 +22,14 @@ export const Default = () => {
       )}
       timeOnly
     />
-  )
-}
+  );
+};
 
 export const CustomTimerBase = () => {
   const timeStartedSecondDecriment = number(
     'Set timeStarted to curren time minus X seconds',
     10,
-  )
+  );
 
   return (
     <CountdownTimer
@@ -39,15 +39,15 @@ export const CustomTimerBase = () => {
       timerBase={150000}
       timeOnly
     />
-  )
-}
+  );
+};
 
 // Label keys used in below stories are just for demonstration purposes
 export const WithLabelInfoTooltipAndWarning = () => {
   const timeStartedSecondDecriment = number(
     'Set timeStarted to curren time minus X seconds',
     0,
-  )
+  );
 
   return (
     <CountdownTimer
@@ -59,5 +59,5 @@ export const WithLabelInfoTooltipAndWarning = () => {
       infoTooltipLabelKey="disconnectAllAccountsConfirmationDescription"
       warningTime="0:15"
     />
-  )
-}
+  );
+};

@@ -1,7 +1,7 @@
-import React, { useContext } from 'react'
-import PropTypes from 'prop-types'
-import { I18nContext } from '../../../contexts/i18n'
-import InfoTooltip from '../../../components/ui/info-tooltip'
+import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
+import { I18nContext } from '../../../contexts/i18n';
+import InfoTooltip from '../../../components/ui/info-tooltip';
 
 export default function FeeCard({
   primaryFee,
@@ -17,13 +17,13 @@ export default function FeeCard({
   onQuotesClick,
   tokenConversionRate,
 }) {
-  const t = useContext(I18nContext)
+  const t = useContext(I18nContext);
 
-  let bestQuoteText = ''
+  let bestQuoteText = '';
   if (isBestQuote && tokenConversionRate) {
-    bestQuoteText = t('swapUsingBestQuote')
+    bestQuoteText = t('swapUsingBestQuote');
   } else if (tokenConversionRate) {
-    bestQuoteText = t('swapBetterQuoteAvailable')
+    bestQuoteText = t('swapBetterQuoteAvailable');
   }
 
   return (
@@ -148,7 +148,7 @@ export default function FeeCard({
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 FeeCard.propTypes = {
@@ -170,4 +170,4 @@ FeeCard.propTypes = {
   onQuotesClick: PropTypes.func.isRequired,
   numberOfQuotes: PropTypes.number.isRequired,
   tokenConversionRate: PropTypes.number,
-}
+};

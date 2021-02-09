@@ -1,7 +1,7 @@
-import { cloneDeep } from 'lodash'
-import { util } from '@metamask/controllers'
+import { cloneDeep } from 'lodash';
+import { util } from '@metamask/controllers';
 
-const version = 37
+const version = 37;
 
 /**
  * The purpose of this migration is to update the address book state
@@ -11,43 +11,43 @@ const version = 37
 export default {
   version,
   async migrate(originalVersionedData) {
-    const versionedData = cloneDeep(originalVersionedData)
-    versionedData.meta.version = version
-    const state = versionedData.data
-    versionedData.data = transformState(state)
-    return versionedData
+    const versionedData = cloneDeep(originalVersionedData);
+    versionedData.meta.version = version;
+    const state = versionedData.data;
+    versionedData.data = transformState(state);
+    return versionedData;
   },
-}
+};
 
 function transformState(state) {
   if (state.AddressBookController) {
-    const ab = state.AddressBookController.addressBook
+    const ab = state.AddressBookController.addressBook;
 
-    const chainIds = new Set()
-    const newAddressBook = {}
+    const chainIds = new Set();
+    const newAddressBook = {};
 
     // add all of the chainIds to a set
     Object.values(ab).forEach((v) => {
-      chainIds.add(v.chainId)
-    })
+      chainIds.add(v.chainId);
+    });
 
     // fill the chainId object with the entries with the matching chainId
     for (const id of chainIds.values()) {
       // make an empty object entry for each chainId
-      newAddressBook[id] = {}
+      newAddressBook[id] = {};
       for (const address in ab) {
         if (ab[address].chainId === id) {
-          ab[address].isEns = false
+          ab[address].isEns = false;
           if (util.normalizeEnsName(ab[address].name)) {
-            ab[address].isEns = true
+            ab[address].isEns = true;
           }
-          newAddressBook[id][address] = ab[address]
+          newAddressBook[id][address] = ab[address];
         }
       }
     }
 
-    state.AddressBookController.addressBook = newAddressBook
+    state.AddressBookController.addressBook = newAddressBook;
   }
 
-  return state
+  return state;
 }

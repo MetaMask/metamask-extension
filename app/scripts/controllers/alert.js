@@ -1,8 +1,8 @@
-import { ObservableStore } from '@metamask/obs-store'
+import { ObservableStore } from '@metamask/obs-store';
 import {
   TOGGLEABLE_ALERT_TYPES,
   WEB3_SHIM_USAGE_ALERT_STATES,
-} from '../../../shared/constants/alerts'
+} from '../../../shared/constants/alerts';
 
 /**
  * @typedef {Object} AlertControllerInitState
@@ -21,14 +21,14 @@ import {
 const defaultState = {
   alertEnabledness: TOGGLEABLE_ALERT_TYPES.reduce(
     (alertEnabledness, alertType) => {
-      alertEnabledness[alertType] = true
-      return alertEnabledness
+      alertEnabledness[alertType] = true;
+      return alertEnabledness;
     },
     {},
   ),
   unconnectedAccountAlertShownOrigins: {},
   web3ShimUsageOrigins: {},
-}
+};
 
 /**
  * Controller responsible for maintaining alert-related state.
@@ -39,36 +39,36 @@ export default class AlertController {
    * @param {AlertControllerOptions} [opts] - Controller configuration parameters
    */
   constructor(opts = {}) {
-    const { initState = {}, preferencesStore } = opts
+    const { initState = {}, preferencesStore } = opts;
     const state = {
       ...defaultState,
       alertEnabledness: {
         ...defaultState.alertEnabledness,
         ...initState.alertEnabledness,
       },
-    }
+    };
 
-    this.store = new ObservableStore(state)
+    this.store = new ObservableStore(state);
 
-    this.selectedAddress = preferencesStore.getState().selectedAddress
+    this.selectedAddress = preferencesStore.getState().selectedAddress;
 
     preferencesStore.subscribe(({ selectedAddress }) => {
-      const currentState = this.store.getState()
+      const currentState = this.store.getState();
       if (
         currentState.unconnectedAccountAlertShownOrigins &&
         this.selectedAddress !== selectedAddress
       ) {
-        this.selectedAddress = selectedAddress
-        this.store.updateState({ unconnectedAccountAlertShownOrigins: {} })
+        this.selectedAddress = selectedAddress;
+        this.store.updateState({ unconnectedAccountAlertShownOrigins: {} });
       }
-    })
+    });
   }
 
   setAlertEnabledness(alertId, enabledness) {
-    let { alertEnabledness } = this.store.getState()
-    alertEnabledness = { ...alertEnabledness }
-    alertEnabledness[alertId] = enabledness
-    this.store.updateState({ alertEnabledness })
+    let { alertEnabledness } = this.store.getState();
+    alertEnabledness = { ...alertEnabledness };
+    alertEnabledness[alertId] = enabledness;
+    this.store.updateState({ alertEnabledness });
   }
 
   /**
@@ -76,12 +76,12 @@ export default class AlertController {
    * @param {string} origin - The origin the alert has been shown for
    */
   setUnconnectedAccountAlertShown(origin) {
-    let { unconnectedAccountAlertShownOrigins } = this.store.getState()
+    let { unconnectedAccountAlertShownOrigins } = this.store.getState();
     unconnectedAccountAlertShownOrigins = {
       ...unconnectedAccountAlertShownOrigins,
-    }
-    unconnectedAccountAlertShownOrigins[origin] = true
-    this.store.updateState({ unconnectedAccountAlertShownOrigins })
+    };
+    unconnectedAccountAlertShownOrigins[origin] = true;
+    this.store.updateState({ unconnectedAccountAlertShownOrigins });
   }
 
   /**
@@ -92,7 +92,7 @@ export default class AlertController {
    * origin, or undefined.
    */
   getWeb3ShimUsageState(origin) {
-    return this.store.getState().web3ShimUsageOrigins[origin]
+    return this.store.getState().web3ShimUsageOrigins[origin];
   }
 
   /**
@@ -101,7 +101,7 @@ export default class AlertController {
    * @param {string} origin - The origin the that used the web3 shim.
    */
   setWeb3ShimUsageRecorded(origin) {
-    this._setWeb3ShimUsageState(origin, WEB3_SHIM_USAGE_ALERT_STATES.RECORDED)
+    this._setWeb3ShimUsageState(origin, WEB3_SHIM_USAGE_ALERT_STATES.RECORDED);
   }
 
   /**
@@ -111,7 +111,7 @@ export default class AlertController {
    * dismissed for.
    */
   setWeb3ShimUsageAlertDismissed(origin) {
-    this._setWeb3ShimUsageState(origin, WEB3_SHIM_USAGE_ALERT_STATES.DISMISSED)
+    this._setWeb3ShimUsageState(origin, WEB3_SHIM_USAGE_ALERT_STATES.DISMISSED);
   }
 
   /**
@@ -120,11 +120,11 @@ export default class AlertController {
    * @param {number} value - The state value to set.
    */
   _setWeb3ShimUsageState(origin, value) {
-    let { web3ShimUsageOrigins } = this.store.getState()
+    let { web3ShimUsageOrigins } = this.store.getState();
     web3ShimUsageOrigins = {
       ...web3ShimUsageOrigins,
-    }
-    web3ShimUsageOrigins[origin] = value
-    this.store.updateState({ web3ShimUsageOrigins })
+    };
+    web3ShimUsageOrigins[origin] = value;
+    this.store.updateState({ web3ShimUsageOrigins });
   }
 }

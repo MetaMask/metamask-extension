@@ -1,10 +1,10 @@
-import promiseToCallback from 'promise-to-callback'
+import promiseToCallback from 'promise-to-callback';
 
 const callbackNoop = function (err) {
   if (err) {
-    throw err
+    throw err;
   }
-}
+};
 
 /**
  * A generator that returns a function which, when passed a promise, can treat that promise as a node style callback.
@@ -16,23 +16,23 @@ const callbackNoop = function (err) {
  */
 export default function nodeify(fn, context) {
   return function (...args) {
-    const lastArg = args[args.length - 1]
-    const lastArgIsCallback = typeof lastArg === 'function'
-    let callback
+    const lastArg = args[args.length - 1];
+    const lastArgIsCallback = typeof lastArg === 'function';
+    let callback;
     if (lastArgIsCallback) {
-      callback = lastArg
-      args.pop()
+      callback = lastArg;
+      args.pop();
     } else {
-      callback = callbackNoop
+      callback = callbackNoop;
     }
     // call the provided function and ensure result is a promise
-    let result
+    let result;
     try {
-      result = Promise.resolve(fn.apply(context, args))
+      result = Promise.resolve(fn.apply(context, args));
     } catch (err) {
-      result = Promise.reject(err)
+      result = Promise.reject(err);
     }
     // wire up promise resolution to callback
-    promiseToCallback(result)(callback)
-  }
+    promiseToCallback(result)(callback);
+  };
 }

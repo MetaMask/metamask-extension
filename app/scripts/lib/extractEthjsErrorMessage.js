@@ -1,5 +1,5 @@
-const ethJsRpcSlug = 'Error: [ethjs-rpc] rpc error with payload '
-const errorLabelPrefix = 'Error: '
+const ethJsRpcSlug = 'Error: [ethjs-rpc] rpc error with payload ';
+const errorLabelPrefix = 'Error: ';
 
 /**
  * Extracts the important part of an ethjs-rpc error message. If the passed error is not an isEthjsRpcError, the error
@@ -14,13 +14,13 @@ const errorLabelPrefix = 'Error: '
  *
  */
 export default function extractEthjsErrorMessage(errorMessage) {
-  const isEthjsRpcError = errorMessage.includes(ethJsRpcSlug)
+  const isEthjsRpcError = errorMessage.includes(ethJsRpcSlug);
   if (isEthjsRpcError) {
-    const payloadAndError = errorMessage.slice(ethJsRpcSlug.length)
+    const payloadAndError = errorMessage.slice(ethJsRpcSlug.length);
     const originalError = payloadAndError.slice(
       payloadAndError.indexOf(errorLabelPrefix) + errorLabelPrefix.length,
-    )
-    return originalError
+    );
+    return originalError;
   }
-  return errorMessage
+  return errorMessage;
 }

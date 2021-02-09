@@ -1,8 +1,8 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import classNames from 'classnames'
+import React from 'react';
+import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
-const defaultRender = (inner) => inner
+const defaultRender = (inner) => inner;
 
 export default function IconButton({
   onClick,
@@ -13,7 +13,7 @@ export default function IconButton({
   className,
   ...props
 }) {
-  const renderWrapper = tooltipRender ?? defaultRender
+  const renderWrapper = tooltipRender ?? defaultRender;
   return (
     <button
       className={classNames('icon-button', className, {
@@ -32,7 +32,7 @@ export default function IconButton({
         </>,
       )}
     </button>
-  )
+  );
 }
 
 IconButton.propTypes = {
@@ -43,4 +43,4 @@ IconButton.propTypes = {
   tooltipRender: PropTypes.func,
   className: PropTypes.string,
   'data-testid': PropTypes.string,
-}
+};

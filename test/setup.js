@@ -1,6 +1,6 @@
-require('@babel/register')
+require('@babel/register');
 
-require('./helper')
+require('./helper');
 
-window.SVGPathElement = window.SVGPathElement || { prototype: {} }
-global.indexedDB = {}
+window.SVGPathElement = window.SVGPathElement || { prototype: {} };
+global.indexedDB = {};

@@ -1,14 +1,14 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import Tooltip from '../tooltip'
+import React from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import Tooltip from '../tooltip';
 
 const positionArrowClassMap = {
   top: 'info-tooltip__top-tooltip-arrow',
   bottom: 'info-tooltip__bottom-tooltip-arrow',
   left: 'info-tooltip__left-tooltip-arrow',
   right: 'info-tooltip__right-tooltip-arrow',
-}
+};
 
 export default function InfoTooltip({
   contentText = '',
@@ -35,7 +35,7 @@ export default function InfoTooltip({
         <img src="images/mm-info-icon.svg" alt="" />
       </Tooltip>
     </div>
-  )
+  );
 }
 
 InfoTooltip.propTypes = {
@@ -44,4 +44,4 @@ InfoTooltip.propTypes = {
   wide: PropTypes.bool,
   containerClassName: PropTypes.string,
   wrapperClassName: PropTypes.string,
-}
+};

@@ -1,8 +1,8 @@
-import assert from 'assert'
-import { ethers } from 'ethers'
-import { renderHook } from '@testing-library/react-hooks'
-import { useTokenData } from '../useTokenData'
-import { TRANSACTION_CATEGORIES } from '../../../../shared/constants/transaction'
+import assert from 'assert';
+import { ethers } from 'ethers';
+import { renderHook } from '@testing-library/react-hooks';
+import { useTokenData } from '../useTokenData';
+import { TRANSACTION_CATEGORIES } from '../../../../shared/constants/transaction';
 
 const tests = [
   {
@@ -42,26 +42,26 @@ const tests = [
     data: undefined,
     tokenData: null,
   },
-]
+];
 
 describe('useTokenData', function () {
   tests.forEach((test) => {
     const testTitle =
       test.tokenData === null
         ? `should return null when no data provided`
-        : `should return properly decoded data with _value ${test.tokenData.args[1].value}`
+        : `should return properly decoded data with _value ${test.tokenData.args[1].value}`;
     it(testTitle, function () {
-      const { result } = renderHook(() => useTokenData(test.data))
+      const { result } = renderHook(() => useTokenData(test.data));
       if (test.tokenData) {
-        assert.strictEqual(result.current.name, test.tokenData.name)
+        assert.strictEqual(result.current.name, test.tokenData.name);
         assert.strictEqual(
           result.current.args[0].toLowerCase(),
           test.tokenData.args[0],
-        )
-        assert.ok(test.tokenData.args[1].eq(result.current.args[1]))
+        );
+        assert.ok(test.tokenData.args[1].eq(result.current.args[1]));
       } else {
-        assert.strictEqual(result.current, test.tokenData)
+        assert.strictEqual(result.current, test.tokenData);
       }
-    })
-  })
-})
+    });
+  });
+});

@@ -1,3 +1,3 @@
-import ToggleButton from './toggle-button.component'
+import ToggleButton from './toggle-button.component';
 
-export default ToggleButton
+export default ToggleButton;

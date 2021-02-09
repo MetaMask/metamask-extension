@@ -1,35 +1,35 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import availableCurrencies from '../../../helpers/constants/available-conversions.json'
-import SimpleDropdown from '../../../components/app/dropdowns/simple-dropdown'
-import ToggleButton from '../../../components/ui/toggle-button'
-import locales from '../../../../../app/_locales/index.json'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import availableCurrencies from '../../../helpers/constants/available-conversions.json';
+import SimpleDropdown from '../../../components/app/dropdowns/simple-dropdown';
+import ToggleButton from '../../../components/ui/toggle-button';
+import locales from '../../../../../app/_locales/index.json';
 
 const sortedCurrencies = availableCurrencies.sort((a, b) => {
-  return a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase())
-})
+  return a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase());
+});
 
 const currencyOptions = sortedCurrencies.map(({ code, name }) => {
   return {
     displayValue: `${code.toUpperCase()} - ${name}`,
     key: code,
     value: code,
-  }
-})
+  };
+});
 
 const localeOptions = locales.map((locale) => {
   return {
     displayValue: `${locale.name}`,
     key: locale.code,
     value: locale.code,
-  }
-})
+  };
+});
 
 export default class SettingsTab extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     setUseBlockie: PropTypes.func,
@@ -43,11 +43,11 @@ export default class SettingsTab extends PureComponent {
     nativeCurrency: PropTypes.string,
     useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
     setUseNativeCurrencyAsPrimaryCurrencyPreference: PropTypes.func,
-  }
+  };
 
   renderCurrentConversion() {
-    const { t } = this.context
-    const { currentCurrency, conversionDate, setCurrentCurrency } = this.props
+    const { t } = this.context;
+    const { currentCurrency, conversionDate, setCurrentCurrency } = this.props;
 
     return (
       <div className="settings-page__content-row">
@@ -68,16 +68,16 @@ export default class SettingsTab extends PureComponent {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   renderCurrentLocale() {
-    const { t } = this.context
-    const { updateCurrentLocale, currentLocale } = this.props
+    const { t } = this.context;
+    const { updateCurrentLocale, currentLocale } = this.props;
     const currentLocaleMeta = locales.find(
       (locale) => locale.code === currentLocale,
-    )
-    const currentLocaleName = currentLocaleMeta ? currentLocaleMeta.name : ''
+    );
+    const currentLocaleName = currentLocaleMeta ? currentLocaleMeta.name : '';
 
     return (
       <div className="settings-page__content-row">
@@ -100,12 +100,12 @@ export default class SettingsTab extends PureComponent {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   renderBlockieOptIn() {
-    const { t } = this.context
-    const { useBlockie, setUseBlockie } = this.props
+    const { t } = this.context;
+    const { useBlockie, setUseBlockie } = this.props;
 
     return (
       <div className="settings-page__content-row">
@@ -123,16 +123,16 @@ export default class SettingsTab extends PureComponent {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   renderUsePrimaryCurrencyOptions() {
-    const { t } = this.context
+    const { t } = this.context;
     const {
       nativeCurrency,
       setUseNativeCurrencyAsPrimaryCurrencyPreference,
       useNativeCurrencyAsPrimaryCurrency,
-    } = this.props
+    } = this.props;
 
     return (
       <div className="settings-page__content-row">
@@ -181,11 +181,11 @@ export default class SettingsTab extends PureComponent {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   render() {
-    const { warning } = this.props
+    const { warning } = this.props;
 
     return (
       <div className="settings-page__body">
@@ -195,6 +195,6 @@ export default class SettingsTab extends PureComponent {
         {this.renderCurrentLocale()}
         {this.renderBlockieOptIn()}
       </div>
-    )
+    );
   }
 }

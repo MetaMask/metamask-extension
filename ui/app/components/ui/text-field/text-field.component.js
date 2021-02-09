@@ -1,14 +1,14 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { withStyles } from '@material-ui/core/styles'
-import MaterialTextField from '@material-ui/core/TextField'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import MaterialTextField from '@material-ui/core/TextField';
 
 const inputLabelBase = {
   transform: 'none',
   transition: 'none',
   position: 'initial',
   color: '#5b5b5b',
-}
+};
 
 const styles = {
   materialLabel: {
@@ -82,7 +82,7 @@ const styles = {
   inputMultiline: {
     lineHeight: 'initial !important',
   },
-}
+};
 
 const getMaterialThemeInputProps = ({
   dir,
@@ -105,7 +105,7 @@ const getMaterialThemeInputProps = ({
       dir,
     },
   },
-})
+});
 
 const getMaterialWhitePaddedThemeInputProps = ({
   dir,
@@ -129,7 +129,7 @@ const getMaterialWhitePaddedThemeInputProps = ({
       dir,
     },
   },
-})
+});
 
 const getBorderedThemeInputProps = ({
   dir,
@@ -167,13 +167,13 @@ const getBorderedThemeInputProps = ({
       dir,
     },
   },
-})
+});
 
 const themeToInputProps = {
   material: getMaterialThemeInputProps,
   bordered: getBorderedThemeInputProps,
   'material-white-padded': getMaterialWhitePaddedThemeInputProps,
-}
+};
 
 const TextField = ({
   error,
@@ -189,7 +189,7 @@ const TextField = ({
     startAdornment,
     largeLabel,
     dir,
-  })
+  });
 
   return (
     <MaterialTextField
@@ -198,14 +198,14 @@ const TextField = ({
       {...inputProps}
       {...textFieldProps}
     />
-  )
-}
+  );
+};
 
 TextField.defaultProps = {
   error: null,
   dir: 'auto',
   theme: 'bordered',
-}
+};
 
 TextField.propTypes = {
   error: PropTypes.string,
@@ -214,6 +214,6 @@ TextField.propTypes = {
   theme: PropTypes.oneOf(['bordered', 'material', 'material-white-padded']),
   startAdornment: PropTypes.element,
   largeLabel: PropTypes.bool,
-}
+};
 
-export default withStyles(styles)(TextField)
+export default withStyles(styles)(TextField);

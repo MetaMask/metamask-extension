@@ -1,4 +1,4 @@
-import { ObservableStore } from '@metamask/obs-store'
+import { ObservableStore } from '@metamask/obs-store';
 
 /**
  * @typedef {Object} CachedBalancesOptions
@@ -18,15 +18,15 @@ export default class CachedBalancesController {
    * @param {CachedBalancesOptions} [opts] - Controller configuration parameters
    */
   constructor(opts = {}) {
-    const { accountTracker, getNetwork } = opts
+    const { accountTracker, getNetwork } = opts;
 
-    this.accountTracker = accountTracker
-    this.getNetwork = getNetwork
+    this.accountTracker = accountTracker;
+    this.getNetwork = getNetwork;
 
-    const initState = { cachedBalances: {}, ...opts.initState }
-    this.store = new ObservableStore(initState)
+    const initState = { cachedBalances: {}, ...opts.initState };
+    this.store = new ObservableStore(initState);
 
-    this._registerUpdates()
+    this._registerUpdates();
   }
 
   /**
@@ -37,33 +37,33 @@ export default class CachedBalancesController {
    * @returns {Promise<void>}
    */
   async updateCachedBalances({ accounts }) {
-    const network = await this.getNetwork()
+    const network = await this.getNetwork();
     const balancesToCache = await this._generateBalancesToCache(
       accounts,
       network,
-    )
+    );
     this.store.updateState({
       cachedBalances: balancesToCache,
-    })
+    });
   }
 
   _generateBalancesToCache(newAccounts, currentNetwork) {
-    const { cachedBalances } = this.store.getState()
-    const currentNetworkBalancesToCache = { ...cachedBalances[currentNetwork] }
+    const { cachedBalances } = this.store.getState();
+    const currentNetworkBalancesToCache = { ...cachedBalances[currentNetwork] };
 
     Object.keys(newAccounts).forEach((accountID) => {
-      const account = newAccounts[accountID]
+      const account = newAccounts[accountID];
 
       if (account.balance) {
-        currentNetworkBalancesToCache[accountID] = account.balance
+        currentNetworkBalancesToCache[accountID] = account.balance;
       }
-    })
+    });
     const balancesToCache = {
       ...cachedBalances,
       [currentNetwork]: currentNetworkBalancesToCache,
-    }
+    };
 
-    return balancesToCache
+    return balancesToCache;
   }
 
   /**
@@ -71,7 +71,7 @@ export default class CachedBalancesController {
    */
 
   clearCachedBalances() {
-    this.store.updateState({ cachedBalances: {} })
+    this.store.updateState({ cachedBalances: {} });
   }
 
   /**
@@ -83,7 +83,7 @@ export default class CachedBalancesController {
    *
    */
   _registerUpdates() {
-    const update = this.updateCachedBalances.bind(this)
-    this.accountTracker.store.subscribe(update)
+    const update = this.updateCachedBalances.bind(this);
+    this.accountTracker.store.subscribe(update);
   }
 }

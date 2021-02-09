@@ -1,1 +1,1 @@
-export { default } from './gas-modal-page-container.container'
+export { default } from './gas-modal-page-container.container';

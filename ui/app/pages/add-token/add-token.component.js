@@ -1,22 +1,22 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import ethUtil from 'ethereumjs-util'
-import { checkExistingAddresses } from '../../helpers/utils/util'
-import { tokenInfoGetter } from '../../helpers/utils/token-util'
-import { CONFIRM_ADD_TOKEN_ROUTE } from '../../helpers/constants/routes'
-import TextField from '../../components/ui/text-field'
-import PageContainer from '../../components/ui/page-container'
-import { Tabs, Tab } from '../../components/ui/tabs'
-import { addHexPrefix } from '../../../../app/scripts/lib/util'
-import TokenList from './token-list'
-import TokenSearch from './token-search'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import ethUtil from 'ethereumjs-util';
+import { checkExistingAddresses } from '../../helpers/utils/util';
+import { tokenInfoGetter } from '../../helpers/utils/token-util';
+import { CONFIRM_ADD_TOKEN_ROUTE } from '../../helpers/constants/routes';
+import TextField from '../../components/ui/text-field';
+import PageContainer from '../../components/ui/page-container';
+import { Tabs, Tab } from '../../components/ui/tabs';
+import { addHexPrefix } from '../../../../app/scripts/lib/util';
+import TokenList from './token-list';
+import TokenSearch from './token-search';
 
-const emptyAddr = '0x0000000000000000000000000000000000000000'
+const emptyAddr = '0x0000000000000000000000000000000000000000';
 
 class AddToken extends Component {
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     history: PropTypes.object,
@@ -26,7 +26,7 @@ class AddToken extends Component {
     tokens: PropTypes.array,
     identities: PropTypes.object,
     mostRecentOverviewPage: PropTypes.string.isRequired,
-  }
+  };
 
   state = {
     customAddress: '',
@@ -40,58 +40,58 @@ class AddToken extends Component {
     customDecimalsError: null,
     autoFilled: false,
     forceEditSymbol: false,
-  }
+  };
 
   componentDidMount() {
-    this.tokenInfoGetter = tokenInfoGetter()
-    const { pendingTokens = {} } = this.props
-    const pendingTokenKeys = Object.keys(pendingTokens)
+    this.tokenInfoGetter = tokenInfoGetter();
+    const { pendingTokens = {} } = this.props;
+    const pendingTokenKeys = Object.keys(pendingTokens);
 
     if (pendingTokenKeys.length > 0) {
-      let selectedTokens = {}
-      let customToken = {}
+      let selectedTokens = {};
+      let customToken = {};
 
       pendingTokenKeys.forEach((tokenAddress) => {
-        const token = pendingTokens[tokenAddress]
-        const { isCustom } = token
+        const token = pendingTokens[tokenAddress];
+        const { isCustom } = token;
 
         if (isCustom) {
-          customToken = { ...token }
+          customToken = { ...token };
         } else {
-          selectedTokens = { ...selectedTokens, [tokenAddress]: { ...token } }
+          selectedTokens = { ...selectedTokens, [tokenAddress]: { ...token } };
         }
-      })
+      });
 
       const {
         address: customAddress = '',
         symbol: customSymbol = '',
         decimals: customDecimals = 0,
-      } = customToken
+      } = customToken;
 
       this.setState({
         selectedTokens,
         customAddress,
         customSymbol,
         customDecimals,
-      })
+      });
     }
   }
 
   handleToggleToken(token) {
-    const { address } = token
-    const { selectedTokens = {} } = this.state
-    const selectedTokensCopy = { ...selectedTokens }
+    const { address } = token;
+    const { selectedTokens = {} } = this.state;
+    const selectedTokensCopy = { ...selectedTokens };
 
     if (address in selectedTokensCopy) {
-      delete selectedTokensCopy[address]
+      delete selectedTokensCopy[address];
     } else {
-      selectedTokensCopy[address] = token
+      selectedTokensCopy[address] = token;
     }
 
     this.setState({
       selectedTokens: selectedTokensCopy,
       tokenSelectorError: null,
-    })
+    });
   }
 
   hasError() {
@@ -100,69 +100,69 @@ class AddToken extends Component {
       customAddressError,
       customSymbolError,
       customDecimalsError,
-    } = this.state
+    } = this.state;
 
     return (
       tokenSelectorError ||
       customAddressError ||
       customSymbolError ||
       customDecimalsError
-    )
+    );
   }
 
   hasSelected() {
-    const { customAddress = '', selectedTokens = {} } = this.state
-    return customAddress || Object.keys(selectedTokens).length > 0
+    const { customAddress = '', selectedTokens = {} } = this.state;
+    return customAddress || Object.keys(selectedTokens).length > 0;
   }
 
   handleNext() {
     if (this.hasError()) {
-      return
+      return;
     }
 
     if (!this.hasSelected()) {
-      this.setState({ tokenSelectorError: this.context.t('mustSelectOne') })
-      return
+      this.setState({ tokenSelectorError: this.context.t('mustSelectOne') });
+      return;
     }
 
-    const { setPendingTokens, history } = this.props
+    const { setPendingTokens, history } = this.props;
     const {
       customAddress: address,
       customSymbol: symbol,
       customDecimals: decimals,
       selectedTokens,
-    } = this.state
+    } = this.state;
 
     const customToken = {
       address,
       symbol,
       decimals,
-    }
+    };
 
-    setPendingTokens({ customToken, selectedTokens })
-    history.push(CONFIRM_ADD_TOKEN_ROUTE)
+    setPendingTokens({ customToken, selectedTokens });
+    history.push(CONFIRM_ADD_TOKEN_ROUTE);
   }
 
   async attemptToAutoFillTokenParams(address) {
-    const { symbol = '', decimals = 0 } = await this.tokenInfoGetter(address)
+    const { symbol = '', decimals = 0 } = await this.tokenInfoGetter(address);
 
-    const autoFilled = Boolean(symbol && decimals)
-    this.setState({ autoFilled })
-    this.handleCustomSymbolChange(symbol || '')
-    this.handleCustomDecimalsChange(decimals)
+    const autoFilled = Boolean(symbol && decimals);
+    this.setState({ autoFilled });
+    this.handleCustomSymbolChange(symbol || '');
+    this.handleCustomDecimalsChange(decimals);
   }
 
   handleCustomAddressChange(value) {
-    const customAddress = value.trim()
+    const customAddress = value.trim();
     this.setState({
       customAddress,
       customAddressError: null,
       tokenSelectorError: null,
       autoFilled: false,
-    })
+    });
 
-    const isValidAddress = ethUtil.isValidAddress(customAddress)
-    const standardAddress = addHexPrefix(customAddress).toLowerCase()
+    const isValidAddress = ethUtil.isValidAddress(customAddress);
+    const standardAddress = addHexPrefix(customAddress).toLowerCase();
 
     switch (true) {
       case !isValidAddress:
@@ -172,54 +172,54 @@ class AddToken extends Component {
           customDecimals: 0,
           customSymbolError: null,
           customDecimalsError: null,
-        })
+        });
 
-        break
+        break;
       case Boolean(this.props.identities[standardAddress]):
         this.setState({
           customAddressError: this.context.t('personalAddressDetected'),
-        })
+        });
 
-        break
+        break;
       case checkExistingAddresses(customAddress, this.props.tokens):
         this.setState({
           customAddressError: this.context.t('tokenAlreadyAdded'),
-        })
+        });
 
-        break
+        break;
       default:
         if (customAddress !== emptyAddr) {
-          this.attemptToAutoFillTokenParams(customAddress)
+          this.attemptToAutoFillTokenParams(customAddress);
         }
     }
   }
 
   handleCustomSymbolChange(value) {
-    const customSymbol = value.trim()
-    const symbolLength = customSymbol.length
-    let customSymbolError = null
+    const customSymbol = value.trim();
+    const symbolLength = customSymbol.length;
+    let customSymbolError = null;
 
     if (symbolLength <= 0 || symbolLength >= 12) {
-      customSymbolError = this.context.t('symbolBetweenZeroTwelve')
+      customSymbolError = this.context.t('symbolBetweenZeroTwelve');
     }
 
-    this.setState({ customSymbol, customSymbolError })
+    this.setState({ customSymbol, customSymbolError });
   }
 
   handleCustomDecimalsChange(value) {
-    const customDecimals = value.trim()
+    const customDecimals = value.trim();
     const validDecimals =
       customDecimals !== null &&
       customDecimals !== '' &&
       customDecimals >= 0 &&
-      customDecimals <= 36
-    let customDecimalsError = null
+      customDecimals <= 36;
+    let customDecimalsError = null;
 
     if (!validDecimals) {
-      customDecimalsError = this.context.t('decimalsMustZerotoTen')
+      customDecimalsError = this.context.t('decimalsMustZerotoTen');
     }
 
-    this.setState({ customDecimals, customDecimalsError })
+    this.setState({ customDecimals, customDecimalsError });
   }
 
   renderCustomTokenForm() {
@@ -232,7 +232,7 @@ class AddToken extends Component {
       customDecimalsError,
       autoFilled,
       forceEditSymbol,
-    } = this.state
+    } = this.state;
 
     return (
       <div className="add-token__custom-token-form">
@@ -284,11 +284,11 @@ class AddToken extends Component {
           disabled={autoFilled}
         />
       </div>
-    )
+    );
   }
 
   renderSearchToken() {
-    const { tokenSelectorError, selectedTokens, searchResults } = this.state
+    const { tokenSelectorError, selectedTokens, searchResults } = this.state;
 
     return (
       <div className="add-token__search-token">
@@ -306,7 +306,7 @@ class AddToken extends Component {
           />
         </div>
       </div>
-    )
+    );
   }
 
   renderTabs() {
@@ -317,11 +317,11 @@ class AddToken extends Component {
           {this.renderCustomTokenForm()}
         </Tab>
       </Tabs>
-    )
+    );
   }
 
   render() {
-    const { history, clearPendingTokens, mostRecentOverviewPage } = this.props
+    const { history, clearPendingTokens, mostRecentOverviewPage } = this.props;
 
     return (
       <PageContainer
@@ -330,12 +330,12 @@ class AddToken extends Component {
         onSubmit={() => this.handleNext()}
         disabled={Boolean(this.hasError()) || !this.hasSelected()}
         onCancel={() => {
-          clearPendingTokens()
-          history.push(mostRecentOverviewPage)
+          clearPendingTokens();
+          history.push(mostRecentOverviewPage);
         }}
       />
-    )
+    );
   }
 }
 
-export default AddToken
+export default AddToken;

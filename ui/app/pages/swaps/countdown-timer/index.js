@@ -1,1 +1,1 @@
-export { default } from './countdown-timer'
+export { default } from './countdown-timer';

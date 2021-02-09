@@ -1,6 +1,6 @@
-import assert from 'assert'
-import BigNumber from 'bignumber.js'
-import { addCurrencies, conversionUtil } from './conversion-util'
+import assert from 'assert';
+import BigNumber from 'bignumber.js';
+import { addCurrencies, conversionUtil } from './conversion-util';
 
 describe('conversion utils', function () {
   describe('addCurrencies()', function () {
@@ -8,44 +8,44 @@ describe('conversion utils', function () {
       const result = addCurrencies(3, 9, {
         aBase: 10,
         bBase: 10,
-      })
-      assert.strictEqual(result.toNumber(), 12)
-    })
+      });
+      assert.strictEqual(result.toNumber(), 12);
+    });
 
     it('add decimals', function () {
       const result = addCurrencies(1.3, 1.9, {
         aBase: 10,
         bBase: 10,
-      })
-      assert.strictEqual(result.toNumber(), 3.2)
-    })
+      });
+      assert.strictEqual(result.toNumber(), 3.2);
+    });
 
     it('add repeating decimals', function () {
       const result = addCurrencies(1 / 3, 1 / 9, {
         aBase: 10,
         bBase: 10,
-      })
-      assert.strictEqual(result.toNumber(), 0.4444444444444444)
-    })
-  })
+      });
+      assert.strictEqual(result.toNumber(), 0.4444444444444444);
+    });
+  });
 
   describe('conversionUtil', function () {
     it('Returns expected types', function () {
       const conv1 = conversionUtil(1000000000000000000, {
         fromNumericBase: 'dec',
         toNumericBase: 'hex',
-      })
+      });
       const conv2 = conversionUtil(1, {
         fromNumericBase: 'dec',
         fromDenomination: 'ETH',
         toDenomination: 'WEI',
-      })
+      });
       assert(
         typeof conv1 === 'string',
         'conversion 1 should return type string',
-      )
-      assert(conv2 instanceof BigNumber, 'conversion 2 should be a BigNumber')
-    })
+      );
+      assert(conv2 instanceof BigNumber, 'conversion 2 should be a BigNumber');
+    });
     it('Converts from dec to hex', function () {
       assert.strictEqual(
         conversionUtil('1000000000000000000', {
@@ -53,15 +53,15 @@ describe('conversion utils', function () {
           toNumericBase: 'hex',
         }),
         'de0b6b3a7640000',
-      )
+      );
       assert.strictEqual(
         conversionUtil('1500000000000000000', {
           fromNumericBase: 'dec',
           toNumericBase: 'hex',
         }),
         '14d1120d7b160000',
-      )
-    })
+      );
+    });
     it('Converts hex formatted numbers to dec', function () {
       assert.strictEqual(
         conversionUtil('0xde0b6b3a7640000', {
@@ -69,15 +69,15 @@ describe('conversion utils', function () {
           toNumericBase: 'dec',
         }),
         '1000000000000000000',
-      )
+      );
       assert.strictEqual(
         conversionUtil('0x14d1120d7b160000', {
           fromNumericBase: 'hex',
           toNumericBase: 'dec',
         }),
         '1500000000000000000',
-      )
-    })
+      );
+    });
     it('Converts WEI to ETH', function () {
       assert.strictEqual(
         conversionUtil('0xde0b6b3a7640000', {
@@ -87,7 +87,7 @@ describe('conversion utils', function () {
           toDenomination: 'ETH',
         }),
         '1',
-      )
+      );
       assert.strictEqual(
         conversionUtil('0x14d1120d7b160000', {
           fromNumericBase: 'hex',
@@ -96,8 +96,8 @@ describe('conversion utils', function () {
           toDenomination: 'ETH',
         }),
         '1.5',
-      )
-    })
+      );
+    });
     it('Converts ETH to WEI', function () {
       assert.strictEqual(
         conversionUtil('1', {
@@ -106,7 +106,7 @@ describe('conversion utils', function () {
           toDenomination: 'WEI',
         }).toNumber(),
         1000000000000000000,
-      )
+      );
       assert.strictEqual(
         conversionUtil('1.5', {
           fromNumericBase: 'dec',
@@ -114,8 +114,8 @@ describe('conversion utils', function () {
           toDenomination: 'WEI',
         }).toNumber(),
         1500000000000000000,
-      )
-    })
+      );
+    });
     it('Converts ETH to GWEI', function () {
       assert.strictEqual(
         conversionUtil('1', {
@@ -124,7 +124,7 @@ describe('conversion utils', function () {
           toDenomination: 'GWEI',
         }).toNumber(),
         1000000000,
-      )
+      );
       assert.strictEqual(
         conversionUtil('1.5', {
           fromNumericBase: 'dec',
@@ -132,8 +132,8 @@ describe('conversion utils', function () {
           toDenomination: 'GWEI',
         }).toNumber(),
         1500000000,
-      )
-    })
+      );
+    });
     it('Converts ETH to USD', function () {
       assert.strictEqual(
         conversionUtil('1', {
@@ -144,7 +144,7 @@ describe('conversion utils', function () {
           numberOfDecimals: 2,
         }),
         '468.58',
-      )
+      );
       assert.strictEqual(
         conversionUtil('1.5', {
           fromNumericBase: 'dec',
@@ -154,8 +154,8 @@ describe('conversion utils', function () {
           numberOfDecimals: 2,
         }),
         '702.87',
-      )
-    })
+      );
+    });
     it('Converts USD to ETH', function () {
       assert.strictEqual(
         conversionUtil('468.58', {
@@ -167,7 +167,7 @@ describe('conversion utils', function () {
           invertConversionRate: true,
         }),
         '1',
-      )
+      );
       assert.strictEqual(
         conversionUtil('702.87', {
           fromNumericBase: 'dec',
@@ -178,7 +178,7 @@ describe('conversion utils', function () {
           invertConversionRate: true,
         }),
         '1.5',
-      )
-    })
-  })
-})
+      );
+    });
+  });
+});

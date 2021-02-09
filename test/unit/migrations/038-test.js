@@ -1,5 +1,5 @@
-import { strict as assert } from 'assert'
-import migration38 from '../../../app/scripts/migrations/038'
+import { strict as assert } from 'assert';
+import migration38 from '../../../app/scripts/migrations/038';
 
 describe('migration #38', function () {
   it('should update the version metadata', function (done) {
@@ -8,24 +8,24 @@ describe('migration #38', function () {
         version: 37,
       },
       data: {},
-    }
+    };
 
     migration38
       .migrate(oldStorage)
       .then((newStorage) => {
         assert.deepEqual(newStorage.meta, {
           version: 38,
-        })
-        done()
+        });
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should add a fullScreenVsPopup property set to either "control" or "fullScreen"', function (done) {
     const oldStorage = {
       meta: {},
       data: {},
-    }
+    };
 
     migration38
       .migrate(oldStorage)
@@ -33,11 +33,11 @@ describe('migration #38', function () {
         assert.equal(
           newStorage.data.ABTestController.abTests.fullScreenVsPopup,
           'control',
-        )
-        done()
+        );
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should leave the fullScreenVsPopup property unchanged if it exists', function (done) {
     const oldStorage = {
@@ -49,7 +49,7 @@ describe('migration #38', function () {
           },
         },
       },
-    }
+    };
 
     migration38
       .migrate(oldStorage)
@@ -58,9 +58,9 @@ describe('migration #38', function () {
           abTests: {
             fullScreenVsPopup: 'fullScreen',
           },
-        })
-        done()
+        });
+        done();
       })
-      .catch(done)
-  })
-})
+      .catch(done);
+  });
+});

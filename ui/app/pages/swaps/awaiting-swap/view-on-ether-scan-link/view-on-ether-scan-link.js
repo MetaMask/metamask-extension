@@ -1,14 +1,14 @@
-import React, { useContext } from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import { I18nContext } from '../../../../contexts/i18n'
+import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import { I18nContext } from '../../../../contexts/i18n';
 
 export default function ViewOnEtherScanLink({
   txHash,
   blockExplorerUrl,
   isCustomBlockExplorerUrl,
 }) {
-  const t = useContext(I18nContext)
+  const t = useContext(I18nContext);
   return (
     <div
       className={classnames('awaiting-swap__view-on-etherscan', {
@@ -21,11 +21,11 @@ export default function ViewOnEtherScanLink({
         ? t('viewOnCustomBlockExplorer', [blockExplorerUrl])
         : t('viewOnEtherscan')}
     </div>
-  )
+  );
 }
 
 ViewOnEtherScanLink.propTypes = {
   txHash: PropTypes.string,
   blockExplorerUrl: PropTypes.string,
   isCustomBlockExplorerUrl: PropTypes.bool,
-}
+};

@@ -1,52 +1,57 @@
-import querystring from 'querystring'
-import { EventEmitter } from 'events'
-import dnode from 'dnode'
-import PortStream from 'extension-port-stream'
-import extension from 'extensionizer'
-import { setupMultiplex } from './lib/stream-utils'
-import { getEnvironmentType } from './lib/util'
-import ExtensionPlatform from './platforms/extension'
+import querystring from 'querystring';
+import { EventEmitter } from 'events';
+import dnode from 'dnode';
+import PortStream from 'extension-port-stream';
+import extension from 'extensionizer';
+import { setupMultiplex } from './lib/stream-utils';
+import { getEnvironmentType } from './lib/util';
+import ExtensionPlatform from './platforms/extension';
 
-document.addEventListener('DOMContentLoaded', start)
+document.addEventListener('DOMContentLoaded', start);
 
 function start() {
-  const hash = window.location.hash.substring(1)
-  const suspect = querystring.parse(hash)
+  const hash = window.location.hash.substring(1);
+  const suspect = querystring.parse(hash);
 
-  document.getElementById('csdbLink').href = `https://cryptoscamdb.org/search`
+  document.getElementById('csdbLink').href = `https://cryptoscamdb.org/search`;
 
-  global.platform = new ExtensionPlatform()
+  global.platform = new ExtensionPlatform();
 
   const extensionPort = extension.runtime.connect({
     name: getEnvironmentType(),
-  })
-  const connectionStream = new PortStream(extensionPort)
-  const mx = setupMultiplex(connectionStream)
+  });
+  const connectionStream = new PortStream(extensionPort);
+  const mx = setupMultiplex(connectionStream);
   setupControllerConnection(
     mx.createStream('controller'),
     (err, metaMaskController) => {
       if (err) {
-        return
+        return;
       }
 
-      const continueLink = document.getElementById('unsafe-continue')
+      const continueLink = document.getElementById('unsafe-continue');
       continueLink.addEventListener('click', () => {
-        metaMaskController.safelistPhishingDomain(suspect.hostname)
-        window.location.href = suspect.href
-      })
+        metaMaskController.safelistPhishingDomain(suspect.hostname);
+        window.location.href = suspect.href;
+      });
     },
-  )
+  );
 }
 
 function setupControllerConnection(connectionStream, cb) {
-  const eventEmitter = new EventEmitter()
-  const metaMaskControllerDnode = dnode({
-    sendUpdate(state) {
-      eventEmitter.emit('update', state)
+  const eventEmitter = new EventEmitter();
+  // the "weak: false" option is for nodejs only (eg unit tests)
+  // it is a workaround for node v12 support
+  const metaMaskControllerDnode = dnode(
+    {
+      sendUpdate(state) {
+        eventEmitter.emit('update', state);
+      },
     },
-  })
-  connectionStream.pipe(metaMaskControllerDnode).pipe(connectionStream)
+    { weak: false },
+  );
+  connectionStream.pipe(metaMaskControllerDnode).pipe(connectionStream);
   metaMaskControllerDnode.once('remote', (backgroundConnection) =>
     cb(null, backgroundConnection),
-  )
+  );
 }

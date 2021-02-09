@@ -1,19 +1,19 @@
-import assert from 'assert'
-import React from 'react'
-import { shallow } from 'enzyme'
-import UserPreferencedTokenInput from '../user-preferenced-token-input.component'
-import TokenInput from '../../../ui/token-input'
+import assert from 'assert';
+import React from 'react';
+import { shallow } from 'enzyme';
+import UserPreferencedTokenInput from '../user-preferenced-token-input.component';
+import TokenInput from '../../../ui/token-input';
 
 describe('UserPreferencedCurrencyInput Component', function () {
   describe('rendering', function () {
     it('should render properly', function () {
       const wrapper = shallow(
         <UserPreferencedTokenInput token={{ address: '0x0' }} />,
-      )
+      );
 
-      assert.ok(wrapper)
-      assert.strictEqual(wrapper.find(TokenInput).length, 1)
-    })
+      assert.ok(wrapper);
+      assert.strictEqual(wrapper.find(TokenInput).length, 1);
+    });
 
     it('should render showFiat for TokenInput based on preferences.useNativeCurrencyAsPrimaryCurrency', function () {
       const wrapper = shallow(
@@ -21,13 +21,13 @@ describe('UserPreferencedCurrencyInput Component', function () {
           token={{ address: '0x0' }}
           useNativeCurrencyAsPrimaryCurrency
         />,
-      )
+      );
 
-      assert.ok(wrapper)
-      assert.strictEqual(wrapper.find(TokenInput).length, 1)
-      assert.strictEqual(wrapper.find(TokenInput).props().showFiat, false)
-      wrapper.setProps({ useNativeCurrencyAsPrimaryCurrency: false })
-      assert.strictEqual(wrapper.find(TokenInput).props().showFiat, true)
-    })
-  })
-})
+      assert.ok(wrapper);
+      assert.strictEqual(wrapper.find(TokenInput).length, 1);
+      assert.strictEqual(wrapper.find(TokenInput).props().showFiat, false);
+      wrapper.setProps({ useNativeCurrencyAsPrimaryCurrency: false });
+      assert.strictEqual(wrapper.find(TokenInput).props().showFiat, true);
+    });
+  });
+});

@@ -1,1 +1,1 @@
-export { default } from './sort-list'
+export { default } from './sort-list';

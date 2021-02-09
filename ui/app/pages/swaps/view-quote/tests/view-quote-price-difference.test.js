@@ -1,13 +1,13 @@
-import assert from 'assert'
-import React from 'react'
-import { shallow } from 'enzyme'
-import { Provider } from 'react-redux'
-import configureMockStore from 'redux-mock-store'
-import { NETWORK_TYPE_RPC } from '../../../../../../shared/constants/network'
-import ViewQuotePriceDifference from '../view-quote-price-difference'
+import assert from 'assert';
+import React from 'react';
+import { shallow } from 'enzyme';
+import { Provider } from 'react-redux';
+import configureMockStore from 'redux-mock-store';
+import { NETWORK_TYPE_RPC } from '../../../../../../shared/constants/network';
+import ViewQuotePriceDifference from '../view-quote-price-difference';
 
 describe('View Price Quote Difference', function () {
-  const t = (key) => `translate ${key}`
+  const t = (key) => `translate ${key}`;
 
   const state = {
     metamask: {
@@ -17,9 +17,9 @@ describe('View Price Quote Difference', function () {
       currentCurrency: 'usd',
       conversionRate: 600.0,
     },
-  }
+  };
 
-  const store = configureMockStore()(state)
+  const store = configureMockStore()(state);
 
   // Sample transaction is 1 $ETH to ~42.880915 $LINK
   const DEFAULT_PROPS = {
@@ -84,9 +84,9 @@ describe('View Price Quote Difference', function () {
     },
     sourceTokenValue: '1',
     destinationTokenValue: '42.947749',
-  }
+  };
 
-  let component
+  let component;
   function renderComponent(props) {
     component = shallow(
       <Provider store={store}>
@@ -95,56 +95,56 @@ describe('View Price Quote Difference', function () {
       {
         context: { t },
       },
-    )
+    );
   }
 
   afterEach(function () {
-    component.unmount()
-  })
+    component.unmount();
+  });
 
   it('does not render when there is no quote', function () {
-    const props = { ...DEFAULT_PROPS, usedQuote: null }
-    renderComponent(props)
+    const props = { ...DEFAULT_PROPS, usedQuote: null };
+    renderComponent(props);
 
     const wrappingDiv = component.find(
       '.view-quote__price-difference-warning-wrapper',
-    )
-    assert.strictEqual(wrappingDiv.length, 0)
-  })
+    );
+    assert.strictEqual(wrappingDiv.length, 0);
+  });
 
   it('does not render when the item is in the low bucket', function () {
-    const props = { ...DEFAULT_PROPS }
-    props.usedQuote.priceSlippage.bucket = 'low'
+    const props = { ...DEFAULT_PROPS };
+    props.usedQuote.priceSlippage.bucket = 'low';
 
-    renderComponent(props)
+    renderComponent(props);
     const wrappingDiv = component.find(
       '.view-quote__price-difference-warning-wrapper',
-    )
-    assert.strictEqual(wrappingDiv.length, 0)
-  })
+    );
+    assert.strictEqual(wrappingDiv.length, 0);
+  });
 
   it('displays an error when in medium bucket', function () {
-    const props = { ...DEFAULT_PROPS }
-    props.usedQuote.priceSlippage.bucket = 'medium'
+    const props = { ...DEFAULT_PROPS };
+    props.usedQuote.priceSlippage.bucket = 'medium';
 
-    renderComponent(props)
-    assert.strictEqual(component.html().includes('medium'), true)
-  })
+    renderComponent(props);
+    assert.strictEqual(component.html().includes('medium'), true);
+  });
 
   it('displays an error when in high bucket', function () {
-    const props = { ...DEFAULT_PROPS }
-    props.usedQuote.priceSlippage.bucket = 'high'
+    const props = { ...DEFAULT_PROPS };
+    props.usedQuote.priceSlippage.bucket = 'high';
 
-    renderComponent(props)
-    assert.strictEqual(component.html().includes('high'), true)
-  })
+    renderComponent(props);
+    assert.strictEqual(component.html().includes('high'), true);
+  });
 
   it('displays a fiat error when calculationError is present', function () {
-    const props = { ...DEFAULT_PROPS }
+    const props = { ...DEFAULT_PROPS, priceSlippageUnknownFiatValue: true };
     props.usedQuote.priceSlippage.calculationError =
-      'Could not determine price.'
+      'Could not determine price.';
 
-    renderComponent(props)
-    assert.strictEqual(component.html().includes('fiat-error'), true)
-  })
-})
+    renderComponent(props);
+    assert.strictEqual(component.html().includes('fiat-error'), true);
+  });
+});

@@ -1,6 +1,6 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
+import React from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 const MenuItem = ({
   children,
@@ -21,7 +21,7 @@ const MenuItem = ({
     <span>{children}</span>
     {subtitle}
   </button>
-)
+);
 
 MenuItem.propTypes = {
   children: PropTypes.node.isRequired,
@@ -30,7 +30,7 @@ MenuItem.propTypes = {
   iconClassName: PropTypes.string,
   onClick: PropTypes.func,
   subtitle: PropTypes.node,
-}
+};
 
 MenuItem.defaultProps = {
   className: undefined,
@@ -38,6 +38,6 @@ MenuItem.defaultProps = {
   iconClassName: undefined,
   onClick: undefined,
   subtitle: undefined,
-}
+};
 
-export default MenuItem
+export default MenuItem;

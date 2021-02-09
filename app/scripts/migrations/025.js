@@ -4,44 +4,44 @@
 normalizes txParams on unconfirmed txs
 
 */
-import { cloneDeep } from 'lodash'
-import { addHexPrefix } from '../lib/util'
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction'
+import { cloneDeep } from 'lodash';
+import { addHexPrefix } from '../lib/util';
+import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 
-const version = 25
+const version = 25;
 
 export default {
   version,
 
   async migrate(originalVersionedData) {
-    const versionedData = cloneDeep(originalVersionedData)
-    versionedData.meta.version = version
-    const state = versionedData.data
-    const newState = transformState(state)
-    versionedData.data = newState
-    return versionedData
+    const versionedData = cloneDeep(originalVersionedData);
+    versionedData.meta.version = version;
+    const state = versionedData.data;
+    const newState = transformState(state);
+    versionedData.data = newState;
+    return versionedData;
   },
-}
+};
 
 function transformState(state) {
-  const newState = state
+  const newState = state;
 
   if (newState.TransactionController) {
     if (newState.TransactionController.transactions) {
-      const { transactions } = newState.TransactionController
+      const { transactions } = newState.TransactionController;
       newState.TransactionController.transactions = transactions.map(
         (txMeta) => {
           if (txMeta.status !== TRANSACTION_STATUSES.UNAPPROVED) {
-            return txMeta
+            return txMeta;
           }
-          txMeta.txParams = normalizeTxParams(txMeta.txParams)
-          return txMeta
+          txMeta.txParams = normalizeTxParams(txMeta.txParams);
+          return txMeta;
         },
-      )
+      );
     }
   }
 
-  return newState
+  return newState;
 }
 
 function normalizeTxParams(txParams) {
@@ -54,15 +54,15 @@ function normalizeTxParams(txParams) {
     data: (data) => addHexPrefix(data),
     gas: (gas) => addHexPrefix(gas),
     gasPrice: (gasPrice) => addHexPrefix(gasPrice),
-  }
+  };
 
   // apply only keys in the whiteList
-  const normalizedTxParams = {}
+  const normalizedTxParams = {};
   Object.keys(whiteList).forEach((key) => {
     if (txParams[key]) {
-      normalizedTxParams[key] = whiteList[key](txParams[key])
+      normalizedTxParams[key] = whiteList[key](txParams[key]);
     }
-  })
+  });
 
-  return normalizedTxParams
+  return normalizedTxParams;
 }

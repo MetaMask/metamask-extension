@@ -1,11 +1,11 @@
-import handlers from './handlers'
+import handlers from './handlers';
 
 const handlerMap = handlers.reduce((map, handler) => {
   for (const methodName of handler.methodNames) {
-    map.set(methodName, handler.implementation)
+    map.set(methodName, handler.implementation);
   }
-  return map
-}, new Map())
+  return map;
+}, new Map());
 
 /**
  * Returns a middleware that implements the RPC methods defined in the handlers
@@ -27,8 +27,8 @@ const handlerMap = handlers.reduce((map, handler) => {
 export default function createMethodMiddleware(opts) {
   return function methodMiddleware(req, res, next, end) {
     if (handlerMap.has(req.method)) {
-      return handlerMap.get(req.method)(req, res, next, end, opts)
+      return handlerMap.get(req.method)(req, res, next, end, opts);
     }
-    return next()
-  }
+    return next();
+  };
 }

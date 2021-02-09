@@ -1,28 +1,28 @@
-import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
-import Modal from '../../modal'
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
+import Modal from '../../modal';
 
 export default class RejectTransactionsModal extends PureComponent {
   static contextTypes = {
     t: PropTypes.func.isRequired,
-  }
+  };
 
   static propTypes = {
     onSubmit: PropTypes.func.isRequired,
     hideModal: PropTypes.func.isRequired,
     unapprovedTxCount: PropTypes.number.isRequired,
-  }
+  };
 
   onSubmit = async () => {
-    const { onSubmit, hideModal } = this.props
+    const { onSubmit, hideModal } = this.props;
 
-    await onSubmit()
-    hideModal()
-  }
+    await onSubmit();
+    hideModal();
+  };
 
   render() {
-    const { t } = this.context
-    const { hideModal, unapprovedTxCount } = this.props
+    const { t } = this.context;
+    const { hideModal, unapprovedTxCount } = this.props;
 
     return (
       <Modal
@@ -40,6 +40,6 @@ export default class RejectTransactionsModal extends PureComponent {
           </div>
         </div>
       </Modal>
-    )
+    );
   }
 }

@@ -1,1 +1,1 @@
-export { default } from './quote-details'
+export { default } from './quote-details';

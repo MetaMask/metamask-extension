@@ -1,8 +1,8 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import ButtonGroup from '../../../ui/button-group'
-import Button from '../../../ui/button'
-import { GAS_ESTIMATE_TYPES } from '../../../../helpers/constants/common'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import ButtonGroup from '../../../ui/button-group';
+import Button from '../../../ui/button';
+import { GAS_ESTIMATE_TYPES } from '../../../../helpers/constants/common';
 
 const GAS_OBJECT_PROPTYPES_SHAPE = {
   gasEstimateType: PropTypes.oneOf(Object.values(GAS_ESTIMATE_TYPES))
@@ -11,12 +11,12 @@ const GAS_OBJECT_PROPTYPES_SHAPE = {
   feeInSecondaryCurrency: PropTypes.string,
   timeEstimate: PropTypes.string,
   priceInHexWei: PropTypes.string,
-}
+};
 
 export default class GasPriceButtonGroup extends Component {
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     buttonDataLoading: PropTypes.bool,
@@ -29,19 +29,19 @@ export default class GasPriceButtonGroup extends Component {
     newActiveButtonIndex: PropTypes.number,
     noButtonActiveByDefault: PropTypes.bool,
     showCheck: PropTypes.bool,
-  }
+  };
 
   gasEstimateTypeLabel(gasEstimateType) {
     if (gasEstimateType === GAS_ESTIMATE_TYPES.SLOW) {
-      return this.context.t('slow')
+      return this.context.t('slow');
     } else if (gasEstimateType === GAS_ESTIMATE_TYPES.AVERAGE) {
-      return this.context.t('average')
+      return this.context.t('average');
     } else if (gasEstimateType === GAS_ESTIMATE_TYPES.FAST) {
-      return this.context.t('fast')
+      return this.context.t('fast');
     } else if (gasEstimateType === GAS_ESTIMATE_TYPES.FASTEST) {
-      return this.context.t('fastest')
+      return this.context.t('fastest');
     }
-    throw new Error(`Unrecognized gas estimate type: ${gasEstimateType}`)
+    throw new Error(`Unrecognized gas estimate type: ${gasEstimateType}`);
   }
 
   renderButtonContent(
@@ -79,7 +79,7 @@ export default class GasPriceButtonGroup extends Component {
           </div>
         )}
       </div>
-    )
+    );
   }
 
   renderButton(
@@ -106,7 +106,7 @@ export default class GasPriceButtonGroup extends Component {
           buttonContentPropsAndFlags,
         )}
       </Button>
-    )
+    );
   }
 
   render() {
@@ -117,7 +117,7 @@ export default class GasPriceButtonGroup extends Component {
       noButtonActiveByDefault = false,
       buttonDataLoading,
       ...buttonPropsAndFlags
-    } = this.props
+    } = this.props;
 
     return buttonDataLoading ? (
       <div className={`${buttonPropsAndFlags.className}__loading-container`}>
@@ -134,6 +134,6 @@ export default class GasPriceButtonGroup extends Component {
           this.renderButton(obj, buttonPropsAndFlags, index),
         )}
       </ButtonGroup>
-    )
+    );
   }
 }

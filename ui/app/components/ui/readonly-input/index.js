@@ -1,1 +1,1 @@
-export { default } from './readonly-input'
+export { default } from './readonly-input';

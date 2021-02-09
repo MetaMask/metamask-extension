@@ -1,4 +1,4 @@
-import { MAX_SAFE_CHAIN_ID } from '../constants/network'
+import { MAX_SAFE_CHAIN_ID } from '../constants/network';
 
 /**
  * Checks whether the given number primitive chain ID is safe.
@@ -11,7 +11,7 @@ import { MAX_SAFE_CHAIN_ID } from '../constants/network'
 export function isSafeChainId(chainId) {
   return (
     Number.isSafeInteger(chainId) && chainId > 0 && chainId <= MAX_SAFE_CHAIN_ID
-  )
+  );
 }
 
 /**
@@ -24,7 +24,7 @@ export function isSafeChainId(chainId) {
  */
 export function isPrefixedFormattedHexString(value) {
   if (typeof value !== 'string') {
-    return false
+    return false;
   }
-  return /^0x[1-9a-f]+[0-9a-f]*$/iu.test(value)
+  return /^0x[1-9a-f]+[0-9a-f]*$/iu.test(value);
 }

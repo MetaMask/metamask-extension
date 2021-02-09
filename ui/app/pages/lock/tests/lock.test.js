@@ -1,8 +1,8 @@
-import assert from 'assert'
-import React from 'react'
-import sinon from 'sinon'
-import { mountWithRouter } from '../../../../../test/lib/render-helpers'
-import Lock from '..'
+import assert from 'assert';
+import React from 'react';
+import sinon from 'sinon';
+import { mountWithRouter } from '../../../../../test/lib/render-helpers';
+import Lock from '..';
 
 describe('Lock', function () {
   it('replaces history with default route when isUnlocked false', function () {
@@ -11,12 +11,12 @@ describe('Lock', function () {
       history: {
         replace: sinon.spy(),
       },
-    }
+    };
 
-    mountWithRouter(<Lock.WrappedComponent {...props} />)
+    mountWithRouter(<Lock.WrappedComponent {...props} />);
 
-    assert.strictEqual(props.history.replace.getCall(0).args[0], '/')
-  })
+    assert.strictEqual(props.history.replace.getCall(0).args[0], '/');
+  });
 
   it('locks and pushes history with default route when isUnlocked true', function (done) {
     const props = {
@@ -25,16 +25,16 @@ describe('Lock', function () {
       history: {
         push: sinon.spy(),
       },
-    }
+    };
 
-    props.lockMetamask.resolves()
+    props.lockMetamask.resolves();
 
-    mountWithRouter(<Lock.WrappedComponent {...props} />)
+    mountWithRouter(<Lock.WrappedComponent {...props} />);
 
-    assert(props.lockMetamask.calledOnce)
+    assert(props.lockMetamask.calledOnce);
     setImmediate(() => {
-      assert.strictEqual(props.history.push.getCall(0).args[0], '/')
-      done()
-    })
-  })
-})
+      assert.strictEqual(props.history.push.getCall(0).args[0], '/');
+      done();
+    });
+  });
+});

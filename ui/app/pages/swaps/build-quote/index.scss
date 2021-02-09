@@ -122,19 +122,28 @@
     width: 100%;
     color: $Grey-500;
     margin-top: 4px;
-    display: flex;
-    align-items: center;
+
+    .info-tooltip {
+      display: inline-block;
+    }
   }
 
   &__token-etherscan-link {
     color: $Blue-500;
     cursor: pointer;
-    margin-right: 4px;
   }
 
   &__token-tooltip-container {
     // Needed to override the style property added by the react-tippy library
     display: flex !important;
+  }
+
+  &__bold {
+    font-weight: bold;
+  }
+
+  &__underline {
+    text-decoration: underline;
   }
 
   /* Prevents the swaps "Swap to" field from overflowing */

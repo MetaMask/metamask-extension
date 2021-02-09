@@ -1,5 +1,5 @@
-import { strict as assert } from 'assert'
-import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction'
+import { strict as assert } from 'assert';
+import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
 import {
   unapprovedMessagesSelector,
   transactionsSelector,
@@ -7,7 +7,7 @@ import {
   nonceSortedPendingTransactionsSelector,
   nonceSortedCompletedTransactionsSelector,
   submittedPendingTransactionsSelector,
-} from '../transactions'
+} from '../transactions';
 
 describe('Transaction Selectors', function () {
   describe('unapprovedMessagesSelector', function () {
@@ -22,7 +22,7 @@ describe('Transaction Selectors', function () {
         time: 1,
         status: TRANSACTION_STATUSES.UNAPPROVED,
         type: 'eth_sign',
-      }
+      };
 
       const state = {
         metamask: {
@@ -30,13 +30,13 @@ describe('Transaction Selectors', function () {
             1: msg,
           },
         },
-      }
+      };
 
-      const msgSelector = unapprovedMessagesSelector(state)
+      const msgSelector = unapprovedMessagesSelector(state);
 
-      assert(Array.isArray(msgSelector))
-      assert.deepStrictEqual(msgSelector, [msg])
-    })
+      assert(Array.isArray(msgSelector));
+      assert.deepStrictEqual(msgSelector, [msg]);
+    });
 
     it('returns personal sign from unapprovedPersonalMsgsSelector', function () {
       const msg = {
@@ -49,7 +49,7 @@ describe('Transaction Selectors', function () {
         time: 1,
         status: TRANSACTION_STATUSES.UNAPPROVED,
         type: 'personal_sign',
-      }
+      };
 
       const state = {
         metamask: {
@@ -57,13 +57,13 @@ describe('Transaction Selectors', function () {
             1: msg,
           },
         },
-      }
+      };
 
-      const msgSelector = unapprovedMessagesSelector(state)
+      const msgSelector = unapprovedMessagesSelector(state);
 
-      assert(Array.isArray(msgSelector))
-      assert.deepStrictEqual(msgSelector, [msg])
-    })
+      assert(Array.isArray(msgSelector));
+      assert.deepStrictEqual(msgSelector, [msg]);
+    });
 
     it('returns typed message from unapprovedTypedMessagesSelector', function () {
       const msg = {
@@ -77,7 +77,7 @@ describe('Transaction Selectors', function () {
         time: 1,
         status: TRANSACTION_STATUSES.UNAPPROVED,
         type: 'eth_signTypedData',
-      }
+      };
 
       const state = {
         metamask: {
@@ -85,14 +85,14 @@ describe('Transaction Selectors', function () {
             1: msg,
           },
         },
-      }
+      };
 
-      const msgSelector = unapprovedMessagesSelector(state)
+      const msgSelector = unapprovedMessagesSelector(state);
 
-      assert(Array.isArray(msgSelector))
-      assert.deepStrictEqual(msgSelector, [msg])
-    })
-  })
+      assert(Array.isArray(msgSelector));
+      assert.deepStrictEqual(msgSelector, [msg]);
+    });
+  });
 
   describe('transactionsSelector', function () {
     it('selects the currentNetworkTxList', function () {
@@ -124,18 +124,18 @@ describe('Transaction Selectors', function () {
             },
           ],
         },
-      }
+      };
 
       const orderedTxList = state.metamask.currentNetworkTxList.sort(
         (a, b) => b.time - a.time,
-      )
+      );
 
-      const selectedTx = transactionsSelector(state)
+      const selectedTx = transactionsSelector(state);
 
-      assert(Array.isArray(selectedTx))
-      assert.deepStrictEqual(selectedTx, orderedTxList)
-    })
-  })
+      assert(Array.isArray(selectedTx));
+      assert.deepStrictEqual(selectedTx, orderedTxList);
+    });
+  });
 
   describe('nonceSortedTransactionsSelector', function () {
     it('returns transaction group nonce sorted tx from from selectedTxList wit', function () {
@@ -147,7 +147,7 @@ describe('Transaction Selectors', function () {
           to: '0xRecipient',
           nonce: '0x0',
         },
-      }
+      };
 
       const tx2 = {
         id: 1,
@@ -157,7 +157,7 @@ describe('Transaction Selectors', function () {
           to: '0xRecipient',
           nonce: '0x1',
         },
-      }
+      };
 
       const state = {
         metamask: {
@@ -170,7 +170,7 @@ describe('Transaction Selectors', function () {
           },
           currentNetworkTxList: [tx1, tx2],
         },
-      }
+      };
 
       const expectedResult = [
         {
@@ -189,14 +189,14 @@ describe('Transaction Selectors', function () {
           hasRetried: false,
           hasCancelled: false,
         },
-      ]
+      ];
 
       assert.deepStrictEqual(
         nonceSortedTransactionsSelector(state),
         expectedResult,
-      )
-    })
-  })
+      );
+    });
+  });
 
   describe('Sorting Transactions Selectors', function () {
     const submittedTx = {
@@ -208,7 +208,7 @@ describe('Transaction Selectors', function () {
         nonce: '0x0',
       },
       status: TRANSACTION_STATUSES.SUBMITTED,
-    }
+    };
 
     const unapprovedTx = {
       id: 1,
@@ -219,7 +219,7 @@ describe('Transaction Selectors', function () {
         nonce: '0x1',
       },
       status: TRANSACTION_STATUSES.UNAPPROVED,
-    }
+    };
 
     const approvedTx = {
       id: 2,
@@ -230,7 +230,7 @@ describe('Transaction Selectors', function () {
         nonce: '0x2',
       },
       status: TRANSACTION_STATUSES.APPROVED,
-    }
+    };
 
     const confirmedTx = {
       id: 3,
@@ -241,7 +241,7 @@ describe('Transaction Selectors', function () {
         nonce: '0x3',
       },
       status: TRANSACTION_STATUSES.CONFIRMED,
-    }
+    };
 
     const state = {
       metamask: {
@@ -259,7 +259,7 @@ describe('Transaction Selectors', function () {
           confirmedTx,
         ],
       },
-    }
+    };
 
     it('nonceSortedPendingTransactionsSelector', function () {
       const expectedResult = [
@@ -287,13 +287,13 @@ describe('Transaction Selectors', function () {
           hasRetried: false,
           hasCancelled: false,
         },
-      ]
+      ];
 
       assert.deepStrictEqual(
         nonceSortedPendingTransactionsSelector(state),
         expectedResult,
-      )
-    })
+      );
+    });
 
     it('nonceSortedCompletedTransactionsSelector', function () {
       const expectedResult = [
@@ -305,20 +305,20 @@ describe('Transaction Selectors', function () {
           hasRetried: false,
           hasCancelled: false,
         },
-      ]
+      ];
 
       assert.deepStrictEqual(
         nonceSortedCompletedTransactionsSelector(state),
         expectedResult,
-      )
-    })
+      );
+    });
 
     it('submittedPendingTransactionsSelector', function () {
-      const expectedResult = [submittedTx]
+      const expectedResult = [submittedTx];
       assert.deepStrictEqual(
         submittedPendingTransactionsSelector(state),
         expectedResult,
-      )
-    })
-  })
-})
+      );
+    });
+  });
+});

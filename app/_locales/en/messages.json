@@ -364,6 +364,9 @@
   "contactsSettingsDescription": {
     "message": "Add, edit, remove, and manage your contacts"
   },
+  "continue": {
+    "message": "Continue"
+  },
   "continueToWyre": {
     "message": "Continue to Wyre"
   },
@@ -1672,9 +1675,6 @@
   "swapFinalizing": {
     "message": "Finalizing..."
   },
-  "swapGetQuotes": {
-    "message": "Get quotes"
-  },
   "swapHighSlippageWarning": {
     "message": "Slippage amount is very high. Make sure you know what you are doing!"
   },
@@ -1713,7 +1713,7 @@
     "message": "MetaMask fee"
   },
   "swapMetaMaskFeeDescription": {
-    "message": "We find the best price from the top liquidity sources, every time. A fee of $1% is automatically factored into each quote, which supports ongoing development to make MetaMask even better.",
+    "message": "We find the best price from the top liquidity sources, every time. A fee of $1% is automatically factored into this quote.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapNQuotes": {
@@ -1734,6 +1734,9 @@
   "swapPriceDifference": {
     "message": "You are about to swap $1 $2 (~$3) for $4 $5 (~$6).",
     "description": "This message represents the price slippage for the swap.  $1 and $4 are a number (ex: 2.89), $2 and $5 are symbols (ex: ETH), and $3 and $6 are fiat currency amounts."
+  },
+  "swapPriceDifferenceAcknowledgement": {
+    "message": "I'm aware"
   },
   "swapPriceDifferenceTitle": {
     "message": "Price difference of ~$1%",
@@ -1792,6 +1795,9 @@
   "swapRequestForQuotation": {
     "message": "Request for quotation"
   },
+  "swapReviewSwap": {
+    "message": "Review Swap"
+  },
   "swapSearchForAToken": {
     "message": "Search for a token"
   },
@@ -1838,6 +1844,17 @@
   "swapTokenToToken": {
     "message": "Swap $1 to $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
+  },
+  "swapTokenVerificationMessage": {
+    "message": "Always confirm the token address on $1.",
+    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
+  },
+  "swapTokenVerificationOnlyOneSource": {
+    "message": "Only verified on 1 source."
+  },
+  "swapTokenVerificationSources": {
+    "message": "Verified on $1 sources.",
+    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
   },
   "swapTransactionComplete": {
     "message": "Transaction complete"
@@ -2086,6 +2103,9 @@
   "viewAccount": {
     "message": "View Account"
   },
+  "viewAllDetails": {
+    "message": "View all details"
+  },
   "viewContact": {
     "message": "View Contact"
   },
@@ -2138,9 +2158,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Your private seed phrase"
-  },
-  "yourSigRequested": {
-    "message": "Your signature is being requested"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"

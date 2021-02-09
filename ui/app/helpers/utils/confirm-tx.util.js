@@ -1,15 +1,15 @@
-import currencyFormatter from 'currency-formatter'
-import currencies from 'currency-formatter/currencies'
-import BigNumber from 'bignumber.js'
-import { addHexPrefix } from '../../../../app/scripts/lib/util'
+import currencyFormatter from 'currency-formatter';
+import currencies from 'currency-formatter/currencies';
+import BigNumber from 'bignumber.js';
+import { addHexPrefix } from '../../../../app/scripts/lib/util';
 
-import { unconfirmedTransactionsCountSelector } from '../../selectors'
+import { unconfirmedTransactionsCountSelector } from '../../selectors';
 import {
   conversionUtil,
   addCurrencies,
   multiplyCurrencies,
   conversionGreaterThan,
-} from './conversion-util'
+} from './conversion-util';
 
 export function increaseLastGasPrice(lastGasPrice) {
   return addHexPrefix(
@@ -18,14 +18,14 @@ export function increaseLastGasPrice(lastGasPrice) {
       multiplierBase: 10,
       toNumericBase: 'hex',
     }),
-  )
+  );
 }
 
 export function hexGreaterThan(a, b) {
   return conversionGreaterThan(
     { value: a, fromNumericBase: 'hex' },
     { value: b, fromNumericBase: 'hex' },
-  )
+  );
 }
 
 export function getHexGasTotal({ gasLimit, gasPrice }) {
@@ -35,7 +35,7 @@ export function getHexGasTotal({ gasLimit, gasPrice }) {
       multiplicandBase: 16,
       multiplierBase: 16,
     }),
-  )
+  );
 }
 
 export function addEth(...args) {
@@ -45,8 +45,8 @@ export function addEth(...args) {
       numberOfDecimals: 6,
       aBase: 10,
       bBase: 10,
-    })
-  })
+    });
+  });
 }
 
 export function addFiat(...args) {
@@ -56,8 +56,8 @@ export function addFiat(...args) {
       numberOfDecimals: 2,
       aBase: 10,
       bBase: 10,
-    })
-  })
+    });
+  });
 }
 
 export function getValueFromWeiHex({
@@ -77,7 +77,7 @@ export function getValueFromWeiHex({
     fromDenomination: 'WEI',
     toDenomination,
     conversionRate,
-  })
+  });
 }
 
 export function getTransactionFee({
@@ -95,18 +95,18 @@ export function getTransactionFee({
     toCurrency,
     numberOfDecimals,
     conversionRate,
-  })
+  });
 }
 
 export function formatCurrency(value, currencyCode) {
-  const upperCaseCurrencyCode = currencyCode.toUpperCase()
+  const upperCaseCurrencyCode = currencyCode.toUpperCase();
 
   return currencies.find((currency) => currency.code === upperCaseCurrencyCode)
     ? currencyFormatter.format(Number(value), {
         code: upperCaseCurrencyCode,
         style: 'currency',
       })
-    : value
+    : value;
 }
 
 export function convertTokenToFiat({
@@ -116,7 +116,7 @@ export function convertTokenToFiat({
   conversionRate,
   contractExchangeRate,
 }) {
-  const totalExchangeRate = conversionRate * contractExchangeRate
+  const totalExchangeRate = conversionRate * contractExchangeRate;
 
   return conversionUtil(value, {
     fromNumericBase: 'dec',
@@ -125,11 +125,11 @@ export function convertTokenToFiat({
     toCurrency,
     numberOfDecimals: 2,
     conversionRate: totalExchangeRate,
-  })
+  });
 }
 
 export function hasUnconfirmedTransactions(state) {
-  return unconfirmedTransactionsCountSelector(state) > 0
+  return unconfirmedTransactionsCountSelector(state) > 0;
 }
 
 /**
@@ -140,11 +140,11 @@ export function hasUnconfirmedTransactions(state) {
  * rounding was necessary.
  */
 export function roundExponential(decimalString) {
-  const PRECISION = 4
-  const bigNumberValue = new BigNumber(decimalString)
+  const PRECISION = 4;
+  const bigNumberValue = new BigNumber(decimalString);
 
   // In JS, numbers with exponentials greater than 20 get displayed as an exponential.
   return bigNumberValue.e > 20
     ? bigNumberValue.toPrecision(PRECISION)
-    : decimalString
+    : decimalString;
 }

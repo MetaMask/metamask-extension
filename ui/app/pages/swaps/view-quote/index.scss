@@ -15,6 +15,11 @@
     padding-right: 20px;
     justify-content: space-between;
 
+    &_modal > div:not(.view-quote__warning-wrapper) {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
     @media screen and (max-width: 576px) {
       overflow-y: auto;
       max-height: 428px;
@@ -98,14 +103,30 @@
         .actionable-message__message {
           color: inherit;
         }
+
+        button {
+          background: $Yellow-500;
+          border-radius: 42px;
+        }
       }
 
-      &.high .actionable-message {
-        border-color: $Red-500;
-        background: $Red-100;
+      &.high {
+        .actionable-message {
+          border-color: $Red-500;
+          background: $Red-100;
 
-        .actionable-message__message {
-          color: $Red-500;
+          .actionable-message__message {
+            color: $Red-500;
+          }
+        }
+
+        button {
+          background: $Red-500;
+          color: #fff;
+          border-radius: 42px;
+
+          /* Offsets the width of ActionableMessage icon */
+          margin-right: -22px;
         }
       }
 
@@ -118,9 +139,15 @@
 
     &-contents {
       display: flex;
+      text-align: left;
 
       &-title {
         font-weight: bold;
+      }
+
+      &-actions {
+        text-align: end;
+        padding-top: 10px;
       }
 
       i {

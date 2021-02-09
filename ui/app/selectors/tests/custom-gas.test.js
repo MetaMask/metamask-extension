@@ -1,27 +1,27 @@
-import assert from 'assert'
-import proxyquire from 'proxyquire'
+import assert from 'assert';
+import proxyquire from 'proxyquire';
 
 const {
   getCustomGasLimit,
   getCustomGasPrice,
   getRenderableBasicEstimateData,
   getRenderableEstimateDataForSmallButtonsFromGWEI,
-} = proxyquire('../custom-gas', {})
+} = proxyquire('../custom-gas', {});
 
 describe('custom-gas selectors', function () {
   describe('getCustomGasPrice()', function () {
     it('should return gas.customData.price', function () {
-      const mockState = { gas: { customData: { price: 'mockPrice' } } }
-      assert.strictEqual(getCustomGasPrice(mockState), 'mockPrice')
-    })
-  })
+      const mockState = { gas: { customData: { price: 'mockPrice' } } };
+      assert.strictEqual(getCustomGasPrice(mockState), 'mockPrice');
+    });
+  });
 
   describe('getCustomGasLimit()', function () {
     it('should return gas.customData.limit', function () {
-      const mockState = { gas: { customData: { limit: 'mockLimit' } } }
-      assert.strictEqual(getCustomGasLimit(mockState), 'mockLimit')
-    })
-  })
+      const mockState = { gas: { customData: { limit: 'mockLimit' } } };
+      assert.strictEqual(getCustomGasLimit(mockState), 'mockLimit');
+    });
+  });
 
   describe('getRenderableBasicEstimateData()', function () {
     const tests = [
@@ -260,7 +260,7 @@ describe('custom-gas selectors', function () {
           },
         },
       },
-    ]
+    ];
     it('should return renderable data about basic estimates', function () {
       tests.forEach((test) => {
         assert.deepStrictEqual(
@@ -270,10 +270,10 @@ describe('custom-gas selectors', function () {
             test.useFastestButtons,
           ),
           test.expectedResult,
-        )
-      })
-    })
-  })
+        );
+      });
+    });
+  });
 
   describe('getRenderableEstimateDataForSmallButtonsFromGWEI()', function () {
     const tests = [
@@ -509,14 +509,14 @@ describe('custom-gas selectors', function () {
           },
         },
       },
-    ]
+    ];
     it('should return renderable data about basic estimates appropriate for buttons with less info', function () {
       tests.forEach((test) => {
         assert.deepStrictEqual(
           getRenderableEstimateDataForSmallButtonsFromGWEI(test.mockState),
           test.expectedResult,
-        )
-      })
-    })
-  })
-})
+        );
+      });
+    });
+  });
+});

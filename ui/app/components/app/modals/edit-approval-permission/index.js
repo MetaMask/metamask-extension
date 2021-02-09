@@ -1,1 +1,1 @@
-export { default } from './edit-approval-permission.container'
+export { default } from './edit-approval-permission.container';

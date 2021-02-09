@@ -1,1 +1,1 @@
-export { default } from './slippage-buttons'
+export { default } from './slippage-buttons';

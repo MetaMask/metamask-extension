@@ -1225,9 +1225,6 @@
   "yourPrivateSeedPhrase": {
     "message": "Din private seed-sætning"
   },
-  "yourSigRequested": {
-    "message": "Din signatur er ønsket"
-  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Nul brændstofpris på fremskynding"
   }

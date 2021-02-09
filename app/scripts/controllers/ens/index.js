@@ -1,95 +1,95 @@
-import punycode from 'punycode/punycode'
-import ethUtil from 'ethereumjs-util'
-import { ObservableStore } from '@metamask/obs-store'
-import log from 'loglevel'
-import Ens from './ens'
+import punycode from 'punycode/punycode';
+import ethUtil from 'ethereumjs-util';
+import { ObservableStore } from '@metamask/obs-store';
+import log from 'loglevel';
+import Ens from './ens';
 
-const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
-const ZERO_X_ERROR_ADDRESS = '0x'
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+const ZERO_X_ERROR_ADDRESS = '0x';
 
 export default class EnsController {
   constructor({ ens, provider, networkStore } = {}) {
     const initState = {
       ensResolutionsByAddress: {},
-    }
+    };
 
-    this._ens = ens
+    this._ens = ens;
     if (!this._ens) {
-      const network = networkStore.getState()
+      const network = networkStore.getState();
       if (Ens.getNetworkEnsSupport(network)) {
         this._ens = new Ens({
           network,
           provider,
-        })
+        });
       }
     }
 
-    this.store = new ObservableStore(initState)
+    this.store = new ObservableStore(initState);
     networkStore.subscribe((network) => {
-      this.store.putState(initState)
+      this.store.putState(initState);
       if (Ens.getNetworkEnsSupport(network)) {
         this._ens = new Ens({
           network,
           provider,
-        })
+        });
       } else {
-        delete this._ens
+        delete this._ens;
       }
-    })
+    });
   }
 
   reverseResolveAddress(address) {
-    return this._reverseResolveAddress(ethUtil.toChecksumAddress(address))
+    return this._reverseResolveAddress(ethUtil.toChecksumAddress(address));
   }
 
   async _reverseResolveAddress(address) {
     if (!this._ens) {
-      return undefined
+      return undefined;
     }
 
-    const state = this.store.getState()
+    const state = this.store.getState();
     if (state.ensResolutionsByAddress[address]) {
-      return state.ensResolutionsByAddress[address]
+      return state.ensResolutionsByAddress[address];
     }
 
-    let domain
+    let domain;
     try {
-      domain = await this._ens.reverse(address)
+      domain = await this._ens.reverse(address);
     } catch (error) {
-      log.debug(error)
-      return undefined
+      log.debug(error);
+      return undefined;
     }
 
-    let registeredAddress
+    let registeredAddress;
     try {
-      registeredAddress = await this._ens.lookup(domain)
+      registeredAddress = await this._ens.lookup(domain);
     } catch (error) {
-      log.debug(error)
-      return undefined
+      log.debug(error);
+      return undefined;
     }
 
     if (
       registeredAddress === ZERO_ADDRESS ||
       registeredAddress === ZERO_X_ERROR_ADDRESS
     ) {
-      return undefined
+      return undefined;
     }
 
     if (ethUtil.toChecksumAddress(registeredAddress) !== address) {
-      return undefined
+      return undefined;
     }
 
-    this._updateResolutionsByAddress(address, punycode.toASCII(domain))
-    return domain
+    this._updateResolutionsByAddress(address, punycode.toASCII(domain));
+    return domain;
   }
 
   _updateResolutionsByAddress(address, domain) {
-    const oldState = this.store.getState()
+    const oldState = this.store.getState();
     this.store.putState({
       ensResolutionsByAddress: {
         ...oldState.ensResolutionsByAddress,
         [address]: domain,
       },
-    })
+    });
   }
 }

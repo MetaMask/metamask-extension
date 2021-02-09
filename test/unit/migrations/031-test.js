@@ -1,5 +1,5 @@
-import assert from 'assert'
-import migration31 from '../../../app/scripts/migrations/031'
+import assert from 'assert';
+import migration31 from '../../../app/scripts/migrations/031';
 
 describe('migration #31', function () {
   it('should set completedOnboarding to true if vault exists', function (done) {
@@ -24,7 +24,7 @@ describe('migration #31', function () {
           },
         },
       },
-    }
+    };
 
     migration31
       .migrate(oldStorage)
@@ -32,11 +32,11 @@ describe('migration #31', function () {
         assert.equal(
           newStorage.data.PreferencesController.completedOnboarding,
           true,
-        )
-        done()
+        );
+        done();
       })
-      .catch(done)
-  })
+      .catch(done);
+  });
 
   it('should set completedOnboarding to false if vault does not exist', function (done) {
     const oldStorage = {
@@ -54,7 +54,7 @@ describe('migration #31', function () {
         },
         KeyringController: {},
       },
-    }
+    };
 
     migration31
       .migrate(oldStorage)
@@ -62,9 +62,9 @@ describe('migration #31', function () {
         assert.equal(
           newStorage.data.PreferencesController.completedOnboarding,
           false,
-        )
-        done()
+        );
+        done();
       })
-      .catch(done)
-  })
-})
+      .catch(done);
+  });
+});

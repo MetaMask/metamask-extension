@@ -3,4 +3,4 @@ export const ALERT_STATE = {
   ERROR: 'ERROR',
   LOADING: 'LOADING',
   OPEN: 'OPEN',
-}
+};

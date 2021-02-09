@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
-import { action } from '@storybook/addon-actions'
-import { Menu, MenuItem } from '.'
+import React, { useState } from 'react';
+import { action } from '@storybook/addon-actions';
+import { Menu, MenuItem } from '.';
 
 export default {
   title: 'Menu',
-}
+};
 
 export const Basic = () => {
   return (
@@ -17,11 +17,11 @@ export const Basic = () => {
         Menu Item 3
       </MenuItem>
     </Menu>
-  )
-}
+  );
+};
 
 export const Anchored = () => {
-  const [anchorElement, setAnchorElement] = useState(null)
+  const [anchorElement, setAnchorElement] = useState(null);
   return (
     <>
       <button ref={setAnchorElement}>Menu</button>
@@ -38,5 +38,5 @@ export const Anchored = () => {
         </MenuItem>
       </Menu>
     </>
-  )
-}
+  );
+};

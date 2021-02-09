@@ -1,20 +1,20 @@
-import assert from 'assert'
-import proxyquire from 'proxyquire'
-import sinon from 'sinon'
+import assert from 'assert';
+import proxyquire from 'proxyquire';
+import sinon from 'sinon';
 
-let mapStateToProps
-let mapDispatchToProps
+let mapStateToProps;
+let mapDispatchToProps;
 
 const actionSpies = {
   updateSendTo: sinon.spy(),
-}
+};
 
 proxyquire('../add-recipient.container.js', {
   'react-redux': {
     connect: (ms, md) => {
-      mapStateToProps = ms
-      mapDispatchToProps = md
-      return () => ({})
+      mapStateToProps = ms;
+      mapDispatchToProps = md;
+      return () => ({});
     },
   },
   '../../../../selectors': {
@@ -28,7 +28,7 @@ proxyquire('../add-recipient.container.js', {
     ],
   },
   '../../../../store/actions': actionSpies,
-})
+});
 
 describe('add-recipient container', function () {
   describe('mapStateToProps()', function () {
@@ -44,24 +44,24 @@ describe('add-recipient container', function () {
         ],
         addressBookEntryName: undefined,
         nonContacts: [],
-      })
-    })
-  })
+      });
+    });
+  });
 
   describe('mapDispatchToProps()', function () {
     describe('updateSendTo()', function () {
-      const dispatchSpy = sinon.spy()
-      const mapDispatchToPropsObject = mapDispatchToProps(dispatchSpy)
+      const dispatchSpy = sinon.spy();
+      const mapDispatchToPropsObject = mapDispatchToProps(dispatchSpy);
 
       it('should dispatch an action', function () {
-        mapDispatchToPropsObject.updateSendTo('mockTo', 'mockNickname')
-        assert(dispatchSpy.calledOnce)
-        assert(actionSpies.updateSendTo.calledOnce)
+        mapDispatchToPropsObject.updateSendTo('mockTo', 'mockNickname');
+        assert(dispatchSpy.calledOnce);
+        assert(actionSpies.updateSendTo.calledOnce);
         assert.deepStrictEqual(actionSpies.updateSendTo.getCall(0).args, [
           'mockTo',
           'mockNickname',
-        ])
-      })
-    })
-  })
-})
+        ]);
+      });
+    });
+  });
+});

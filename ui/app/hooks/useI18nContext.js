@@ -1,5 +1,5 @@
-import { useContext } from 'react'
-import { I18nContext } from '../contexts/i18n'
+import { useContext } from 'react';
+import { I18nContext } from '../contexts/i18n';
 
 /**
  * useI18ncContext
@@ -9,5 +9,5 @@ import { I18nContext } from '../contexts/i18n'
  * @return {Function} I18n function from contexts/I18n.js
  */
 export function useI18nContext() {
-  return useContext(I18nContext)
+  return useContext(I18nContext);
 }

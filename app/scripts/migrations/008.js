@@ -4,26 +4,26 @@ This migration breaks out the NoticeController substate
 
 */
 
-import { cloneDeep } from 'lodash'
+import { cloneDeep } from 'lodash';
 
-const version = 8
+const version = 8;
 
 export default {
   version,
 
   migrate(originalVersionedData) {
-    const versionedData = cloneDeep(originalVersionedData)
-    versionedData.meta.version = version
+    const versionedData = cloneDeep(originalVersionedData);
+    versionedData.meta.version = version;
     try {
-      const state = versionedData.data
-      const newState = transformState(state)
-      versionedData.data = newState
+      const state = versionedData.data;
+      const newState = transformState(state);
+      versionedData.data = newState;
     } catch (err) {
-      console.warn(`MetaMask Migration #${version}${err.stack}`)
+      console.warn(`MetaMask Migration #${version}${err.stack}`);
     }
-    return Promise.resolve(versionedData)
+    return Promise.resolve(versionedData);
   },
-}
+};
 
 function transformState(state) {
   const newState = {
@@ -31,8 +31,8 @@ function transformState(state) {
     NoticeController: {
       noticesList: state.noticesList || [],
     },
-  }
-  delete newState.noticesList
+  };
+  delete newState.noticesList;
 
-  return newState
+  return newState;
 }

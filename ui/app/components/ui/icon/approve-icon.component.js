@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 
 const Approve = ({ className, size, color }) => (
   <svg
@@ -21,16 +21,16 @@ const Approve = ({ className, size, color }) => (
       fill={color}
     />
   </svg>
-)
+);
 
 Approve.defaultProps = {
   className: undefined,
-}
+};
 
 Approve.propTypes = {
   className: PropTypes.string,
   size: PropTypes.number.isRequired,
   color: PropTypes.string.isRequired,
-}
+};
 
-export default Approve
+export default Approve;
