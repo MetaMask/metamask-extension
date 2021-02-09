@@ -25,19 +25,19 @@ workflows:
       #         only:
       #           - /^Version-v(\d+)[.](\d+)[.](\d+)/
       - prep-deps
-      - test-deps
-      - prep-build:
-          requires:
-            - prep-deps
-      - prep-build-test:
-          requires:
-            - prep-deps
+      # - test-deps
+      # - prep-build:
+      #     requires:
+      #       - prep-deps
+      # - prep-build-test:
+      #     requires:
+      #       - prep-deps
       # - prep-build-test-metrics:
       #     requires:
       #       - prep-deps
-      - prep-build-storybook:
-          requires:
-            - prep-deps
+      # - prep-build-storybook:
+      #     requires:
+      #       - prep-deps
       # - test-lint:
       #     requires:
       #       - prep-deps
@@ -89,8 +89,8 @@ workflows:
       - job-publish-prerelease:
           requires:
             - prep-deps
-            - prep-build
-            - prep-build-storybook
+            # - prep-build
+            # - prep-build-storybook
             # - benchmark
             # - all-tests-pass
       # - job-publish-release:
@@ -399,21 +399,21 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - run:
-          name: build:source-map-explorer
-          command: ./development/source-map-explorer.sh
-      - store_artifacts:
-          path: dist/sourcemaps
-          destination: builds/sourcemaps
-      - store_artifacts:
-          path: builds
-          destination: builds
-      - store_artifacts:
-          path: coverage
-          destination: coverage
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
+      # - run:
+      #     name: build:source-map-explorer
+      #     command: ./development/source-map-explorer.sh
+      # - store_artifacts:
+      #     path: dist/sourcemaps
+      #     destination: builds/sourcemaps
+      # - store_artifacts:
+      #     path: builds
+      #     destination: builds
+      # - store_artifacts:
+      #     path: coverage
+      #     destination: coverage
+      # - store_artifacts:
+      #     path: test-artifacts
+      #     destination: test-artifacts
       # important: generate lavamoat viz AFTER uploading builds as artifacts
       # Temporarily disabled until we can update to a version of `sesify` with
       # this fix included: https://github.com/LavaMoat/LavaMoat/pull/121
@@ -423,9 +423,9 @@ jobs:
       - store_artifacts:
           path: build-artifacts
           destination: build-artifacts
-      - store_artifacts:
-          path: storybook-build
-          destination: storybook
+      # - store_artifacts:
+      #     path: storybook-build
+      #     destination: storybook
       - run:
           name: build:announce
           command: ./development/metamaskbot-build-announce.js
