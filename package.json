@@ -54,8 +54,7 @@
     "update-changelog": "./development/auto-changelog.sh",
     "generate:migration": "./development/generate-migration.sh",
     "lavamoat:auto": "lavamoat ./development/build/index.js --writeAutoPolicy",
-    "lavamoat:debug": "lavamoat ./development/build/index.js --writeAutoPolicyDebug",
-    "postinstall": "yarn patch-package"
+    "lavamoat:debug": "lavamoat ./development/build/index.js --writeAutoPolicyDebug"
   },
   "resolutions": {
     "**/configstore/dot-prop": "^5.1.1",
