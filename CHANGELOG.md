@@ -19,6 +19,7 @@
 
 ## 9.0.4 Fri Jan 22 2021
 - [#10285](https://github.com/MetaMask/metamask-extension/pull/10285): Update @metamask/contract-metadata from v1.21.0 to 1.22.0
+- [#10264](https://github.com/MetaMask/metamask-extension/pull/10264): Update `hi` localized messages
 - [#10174](https://github.com/MetaMask/metamask-extension/pull/10174): Move fox to bottom of 'About' page
 - [#10198](https://github.com/MetaMask/metamask-extension/pull/10198): Fix hardware account selection
 - [#10101](https://github.com/MetaMask/metamask-extension/pull/10101): Add a timeout to all network requests
