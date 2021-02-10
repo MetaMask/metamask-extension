@@ -141,7 +141,7 @@ async function addEthereumChainHandler(
       );
       res.result = null;
     } catch (error) {
-      res.result = null;
+      return end(error);
     }
     return end();
   }
