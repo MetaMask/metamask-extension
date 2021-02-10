@@ -63,7 +63,7 @@
     "message": "Agregar a la libreta de direcciones"
   },
   "addToAddressBookModalPlaceholder": {
-    "message": "p. ej., John D."
+    "message": "p. ej., Fulano de Tal."
   },
   "addToken": {
     "message": "Agregar token"
@@ -129,7 +129,7 @@
     "message": "Importe:"
   },
   "appDescription": {
-    "message": "Una cartera de Ethereum en el explorador"
+    "message": "Una cartera de Ethereum en el navegador"
   },
   "appName": {
     "message": "MetaMask"
@@ -213,7 +213,7 @@
     "message": "Usar Blockies Identicon"
   },
   "browserNotSupported": {
-    "message": "El explorador no es compatible…"
+    "message": "El navegador no es compatible…"
   },
   "builtInCalifornia": {
     "message": "MetaMask se diseñó y compiló en California."
@@ -675,7 +675,7 @@
     "message": "Precio de combustible extremadamente bajo"
   },
   "gasPriceInfoTooltipContent": {
-    "message": "El precio de combustible especifica la cantidad de ethers que está dispuesto a pagar por cada unidad de combustible."
+    "message": "El precio de combustible especifica la cantidad de ether que está dispuesto a pagar por cada unidad de combustible."
   },
   "gasUsed": {
     "message": "Combustible usado"
@@ -906,7 +906,7 @@
     "message": "El botón de estado de la conexión muestra si el sitio web que visita está conectado a la cuenta seleccionada actualmente."
   },
   "metamaskDescription": {
-    "message": "Conectándolo a Ethereum y a la Web descentralizada."
+    "message": "Conectándole a Ethereum y a la Web descentralizada."
   },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swaps está en mantenimiento. Vuelva a comprobarlo más tarde."
@@ -957,7 +957,7 @@
     "message": "Todas sus cuentas de MetaMask creadas se agregarán automáticamente a esta sección."
   },
   "needEtherInWallet": {
-    "message": "Para interactuar con aplicaciones descentralizadas mediante MetaMask, necesitará ethers en su cartera."
+    "message": "Para interactuar con aplicaciones descentralizadas mediante MetaMask, necesitará ether en su cartera."
   },
   "needImportFile": {
     "message": "Debe seleccionar un archivo para la importación."
@@ -1248,7 +1248,7 @@
     "message": "Revelar frase de recuperación"
   },
   "revealSeedWordsDescription": {
-    "message": "Si alguna vez cambia de explorador o de equipo, necesitará esta frase de recuperación para acceder a sus cuentas. Guárdela en un lugar seguro y secreto."
+    "message": "Si alguna vez cambia de navegador o de equipo, necesitará esta frase de recuperación para acceder a sus cuentas. Guárdela en un lugar seguro y secreto."
   },
   "revealSeedWordsTitle": {
     "message": "Frase de recuperación"
@@ -1368,7 +1368,7 @@
     "message": "Enviar tokens"
   },
   "sentEther": {
-    "message": "enviar ether"
+    "message": "Enviar ether"
   },
   "separateEachWord": {
     "message": "Separar cada palabra con un solo espacio"
@@ -1794,7 +1794,7 @@
     "message": "Los datos se sincronizaron correctamente. ¡Disfrute de la aplicación móvil de MetaMask!"
   },
   "syncWithMobileDesc": {
-    "message": "Puede sincronizar sus cuentas y su información con el dispositivo móvil. Abra la aplicación móvil de MetaMask, vaya a \"Configuración\" y presione \"Sincronizar desde la extensión del explorador\""
+    "message": "Puede sincronizar sus cuentas y su información con el dispositivo móvil. Abra la aplicación móvil de MetaMask, vaya a \"Configuración\" y presione \"Sincronizar desde la extensión del navegador\""
   },
   "syncWithMobileDescNewUsers": {
     "message": "Si acaba de abrir la aplicación móvil de MetaMask por primera vez, siga los pasos que aparecen en el teléfono."
@@ -1821,7 +1821,7 @@
     "message": "Términos de servicio"
   },
   "testFaucet": {
-    "message": "Probar faucet"
+    "message": "Grifo de prueba"
   },
   "thisWillCreate": {
     "message": "Esto creará una nueva cartera y frase de recuperación"
@@ -1863,10 +1863,10 @@
     "message": "Se intentó cancelar la transacción con una cuota de combustible de $1 en $2"
   },
   "transactionCancelSuccess": {
-    "message": "La transacción de canceló correctamente en $2"
+    "message": "La transacción se canceló correctamente en $2"
   },
   "transactionConfirmed": {
-    "message": "La transacción de confirmó en $2."
+    "message": "La transacción se confirmó en $2."
   },
   "transactionCreated": {
     "message": "La transacción se creó con un valor de $1 en $2."
