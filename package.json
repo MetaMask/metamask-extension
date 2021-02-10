@@ -314,8 +314,7 @@
       "github:assemblyscript/assemblyscript": false,
       "tiny-secp256k1": false,
       "@lavamoat/preinstall-always-fail": false,
-      "fsevents": false,
-      "metamask-crx": false
+      "fsevents": false
     }
   }
 }
