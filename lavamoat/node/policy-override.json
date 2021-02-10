@@ -1,73 +1,7 @@
 {
   "resources": {
-    "memoizee": {
-      "globals": {
-        "hasOwnProperty": true
-      }
-    },
-    "vinyl": {
-      "builtin": {
-        "util": true
-      }
-    },
-    "graceful-fs": {
-      "builtin": {
-        "stream.Stream": true
-      }
-    },
     "node-sass": {
       "native": true
-    },
-    "colorette": {
-      "globals": {
-        "process": true
-      }
-    },
-    "@stylelint/postcss-css-in-js": {
-      "packages": {
-        "postcss-syntax": true,
-        "@babel/core": true
-      }
-    },
-    "stylelint": {
-      "packages": {
-        "@stylelint/postcss-css-in-js": true,
-        "postcss-html": true,
-        "postcss-scss": true,
-        "postcss-less": true
-      }
-    },
-    "htmlparser2": {
-      "builtin": {
-        "events": true
-      },
-      "packages": {
-        "entities": true,
-        "inherits": true,
-        "domhandler": true,
-        "domelementtype": true
-      }
-    },
-    "domhandler": {
-      "packages": {
-        "domelementtype": true
-      }
-    },
-    "postcss-html": {
-      "packages": {
-        "htmlparser2": true,
-        "postcss-syntax": true
-      }
-    },
-    "postcss-scss": {
-      "packages": {
-        "postcss": true
-      }
-    },
-    "postcss-less": {
-      "packages": {
-        "postcss": true
-      }
     },
     "module-deps": {
       "packages": {
