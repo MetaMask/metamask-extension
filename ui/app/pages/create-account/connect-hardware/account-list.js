@@ -68,7 +68,6 @@ class AccountList extends Component {
         </h3>
         <p className="hw-connect__msg">
           {this.context.t('selectAnAccountHelp', [
-            // eslint-disable-next-line react/jsx-key
             <span
               className="hw-connect__msg__link"
               onClick={() => this.setState({ showPopover: true })}

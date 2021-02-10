@@ -393,9 +393,9 @@ export default class AdvancedTab extends PureComponent {
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>Use Ledger Live</span>
+          <span>{t('ledgerLiveAdvancedSetting')}</span>
           <div className="settings-page__content-description">
-            The new Ledger Live bridge allows you to more easily use your Ledger
+            {t('ledgerLiveAdvancedSettingDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">

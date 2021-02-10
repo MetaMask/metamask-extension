@@ -985,6 +985,15 @@
   "ledgerTimeout": {
     "message": "Ledger Live is taking too long to respond or connection timeout. Make sure Ledger Live app is opened and your device is unlocked."
   },
+  "ledgerLiveAdvancedSetting": {
+    "message": "Use Ledger Live"
+  },
+  "hardwareWalletSupportLinkConversion": {
+    "message": "click here"
+  },
+  "ledgerLiveAdvancedSettingDescription": {
+    "message": "The new Ledger Live bridge allows you to more easily use your Ledger."
+  },
   "letsGoSetUp": {
     "message": "Yes, let’s get set up!"
   },
