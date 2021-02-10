@@ -15207,10 +15207,10 @@ lavamoat-tofu@^5.1.1:
     "@babel/parser" "^7.10.1"
     "@babel/traverse" "^7.10.1"
 
-lavamoat-viz@^6.0.3:
-  version "6.0.3"
-  resolved "https://registry.yarnpkg.com/lavamoat-viz/-/lavamoat-viz-6.0.3.tgz#0dc0ebc1f1703fbd8bcaa9cc3a42340b28f32cc4"
-  integrity sha512-KQBur8XZ5CPUNrdVvlMQkNyNs/TiUXGlb4mym8R09ykZdakBQZpp2znZg969IQ+KbrxwMo3EkfLUPymVk3JooA==
+lavamoat-viz@^6.0.4:
+  version "6.0.4"
+  resolved "https://registry.yarnpkg.com/lavamoat-viz/-/lavamoat-viz-6.0.4.tgz#00b132cef06c24a6836044842548438e0c144059"
+  integrity sha512-LqSNLLTtodZUCxFihGCFrVVEBBICEs79hu2fSJGZFxe8I+R6FNcKmBMVAwpAuPj9dpKJmvckTi2sP8osZX8KCw==
   dependencies:
     lavamoat-core "^9.0.1"
     ncp "^2.0.0"
