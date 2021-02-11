@@ -483,7 +483,11 @@ async function triggerUi() {
     tabs.length > 0 &&
     tabs[0].extData &&
     tabs[0].extData.indexOf('vivaldi_tab') > -1;
-  if (!uiIsTriggering && (isVivaldi || !popupIsOpen) && !currentlyActiveMetamaskTab) {
+  if (
+    !uiIsTriggering &&
+    (isVivaldi || !popupIsOpen) &&
+    !currentlyActiveMetamaskTab
+  ) {
     uiIsTriggering = true;
     try {
       await notificationManager.showPopup();
