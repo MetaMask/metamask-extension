@@ -487,8 +487,6 @@ async function triggerUi() {
     uiIsTriggering = true;
     try {
       await notificationManager.showPopup();
-    } catch (err) {
-      log.error('Error triggering UI', err);
     } finally {
       uiIsTriggering = false;
     }
