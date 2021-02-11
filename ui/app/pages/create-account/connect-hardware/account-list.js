@@ -71,6 +71,7 @@ class AccountList extends Component {
             <span
               className="hw-connect__msg__link"
               onClick={() => this.setState({ showPopover: true })}
+              key="account-help"
             >
               Click here
             </span>,

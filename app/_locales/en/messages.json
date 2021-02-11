@@ -821,7 +821,10 @@
   },
   "hardwareWalletLegacyDescription": {
     "message": "(legacy)",
-    "description": "Text representing the MEW path"
+    "description": "Text representing the MEW path",
+  },
+  "hardwareWalletSupportLinkConversion": {
+    "message": "click here"
   },
   "hardwareWallets": {
     "message": "Connect a hardware wallet"
@@ -979,20 +982,17 @@
   "ledgerAccountRestriction": {
     "message": "You need to make use your last account before you can add a new one."
   },
+  "ledgerLiveAdvancedSetting": {
+    "message": "Use Ledger Live"
+  },
+  "ledgerLiveAdvancedSettingDescription": {
+    "message": "The new Ledger Live bridge allows you to more easily use your Ledger."
+  },
   "ledgerLocked": {
     "message": "Cannot connect to Ledger device. Please make sure your device is unlocked and Ethereum app is opened."
   },
   "ledgerTimeout": {
     "message": "Ledger Live is taking too long to respond or connection timeout. Make sure Ledger Live app is opened and your device is unlocked."
-  },
-  "ledgerLiveAdvancedSetting": {
-    "message": "Use Ledger Live"
-  },
-  "hardwareWalletSupportLinkConversion": {
-    "message": "click here"
-  },
-  "ledgerLiveAdvancedSettingDescription": {
-    "message": "The new Ledger Live bridge allows you to more easily use your Ledger."
   },
   "letsGoSetUp": {
     "message": "Yes, let’s get set up!"

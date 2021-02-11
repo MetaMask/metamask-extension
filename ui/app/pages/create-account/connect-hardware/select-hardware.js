@@ -161,7 +161,7 @@ export default class SelectHardware extends Component {
             rel="noopener noreferrer"
             target="_blank"
           >
-            {t('hardwareWalletSupportLinkConversion')}
+            {this.context.t('hardwareWalletSupportLinkConversion')}
           </a>,
         ]),
       },
@@ -206,7 +206,7 @@ export default class SelectHardware extends Component {
             rel="noopener noreferrer"
             target="_blank"
           >
-            {t('hardwareWalletSupportLinkConversion')}
+            {this.context.t('hardwareWalletSupportLinkConversion')}
           </a>,
         ]),
       },

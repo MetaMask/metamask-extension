@@ -1231,12 +1231,16 @@ export default class MetamaskController extends EventEmitter {
 
   async getKeyringForDevice(deviceName, hdPath = null) {
     let keyringName = null;
+    let keyringOptions = {};
     switch (deviceName) {
       case 'trezor':
         keyringName = TrezorKeyring.type;
         break;
       case 'ledger':
         keyringName = LedgerBridgeKeyring.type;
+        keyringOptions = {
+          useLedgerLive: this.preferencesController.getLedgerLivePreference(),
+        };
         break;
       default:
         throw new Error(
@@ -1247,7 +1251,10 @@ export default class MetamaskController extends EventEmitter {
       keyringName,
     )[0];
     if (!keyring) {
-      keyring = await this.keyringController.addNewKeyring(keyringName);
+      keyring = await this.keyringController.addNewKeyring(
+        keyringName,
+        keyringOptions,
+      );
     }
     if (hdPath && keyring.setHdPath) {
       keyring.setHdPath(hdPath);
