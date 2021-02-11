@@ -129,56 +129,6 @@ export default class DepositEtherModal extends Component {
               onButtonClick: () => toFaucet(network),
               hide: !isTestNetwork,
             })}
-            {this.renderRow({
-              logo: (
-                <div
-                  className="deposit-ether-modal__logo"
-                  style={{
-                    backgroundImage: "url('./images/wyre.svg')",
-                    height: '40px',
-                  }}
-                />
-              ),
-              title: this.context.t('buyWithWyre'),
-              text: this.context.t('buyWithWyreDescription'),
-              buttonLabel: this.context.t('continueToWyre'),
-              onButtonClick: () => {
-                this.context.metricsEvent({
-                  eventOpts: {
-                    category: 'Accounts',
-                    action: 'Deposit Ether',
-                    name: 'Click buy Ether via Wyre',
-                  },
-                })
-                toWyre(address)
-              },
-              hide: isTestNetwork,
-            })}
-            {this.renderRow({
-              logo: (
-                <div
-                  className="deposit-ether-modal__logo"
-                  style={{
-                    backgroundImage: "url('./images/coinswitch_logo.png')",
-                    height: '40px',
-                  }}
-                />
-              ),
-              title: this.context.t('buyCoinSwitch'),
-              text: this.context.t('buyCoinSwitchExplainer'),
-              buttonLabel: this.context.t('continueToCoinSwitch'),
-              onButtonClick: () => {
-                this.context.metricsEvent({
-                  eventOpts: {
-                    category: 'Accounts',
-                    action: 'Deposit Ether',
-                    name: 'Click buy Ether via CoinSwitch',
-                  },
-                })
-                toCoinSwitch(address)
-              },
-              hide: isTestNetwork,
-            })}
           </div>
         </div>
       </div>
