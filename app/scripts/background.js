@@ -53,6 +53,7 @@ global.METAMASK_NOTIFIER = notificationManager;
 
 let popupIsOpen = false;
 let notificationIsOpen = false;
+let uiIsTriggering = false;
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 
@@ -482,8 +483,15 @@ async function triggerUi() {
     tabs.length > 0 &&
     tabs[0].extData &&
     tabs[0].extData.indexOf('vivaldi_tab') > -1;
-  if ((isVivaldi || !popupIsOpen) && !currentlyActiveMetamaskTab) {
-    await notificationManager.showPopup();
+  if (!uiIsTriggering && (isVivaldi || !popupIsOpen) && !currentlyActiveMetamaskTab) {
+    uiIsTriggering = true;
+    try {
+      await notificationManager.showPopup();
+    } catch (err) {
+      log.error('Error triggering UI', err);
+    } finally {
+      uiIsTriggering = false;
+    }
   }
 }
 
