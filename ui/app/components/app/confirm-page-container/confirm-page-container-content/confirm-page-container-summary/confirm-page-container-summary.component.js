@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import Identicon from '../../../../ui/identicon'
 
-const ConfirmPageContainerSummary = props => {
+const ConfirmPageContainerSummary = (props) => {
   const {
     action,
     title,
@@ -47,9 +47,11 @@ const ConfirmPageContainerSummary = props => {
         </div>
       </div>
       {
-        hideSubtitle || <div className="confirm-page-container-summary__subtitle">
-          { subtitleComponent || subtitle }
-        </div>
+        hideSubtitle || (
+          <div className="confirm-page-container-summary__subtitle">
+            { subtitleComponent || subtitle }
+          </div>
+        )
       }
     </div>
   )

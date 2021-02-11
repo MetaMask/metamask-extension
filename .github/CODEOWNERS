@@ -1,8 +1,6 @@
 # Lines starting with '#' are comments.
 # Each line is a file pattern followed by one or more owners.
 
-package.json                         @danjm @whymarrh @Gudahtt
-yarn.lock                            @danjm @whymarrh @Gudahtt
-ui/                                  @danjm @whymarrh @Gudahtt
-app/scripts/controllers/transactions @frankiebee
-.circleci/scripts/deps-install.sh    @kumavis @Gudahtt
+*                                    @MetaMask/extension-devs
+.circleci/                           @MetaMask/extension-devs @kumavis
+development/                         @MetaMask/extension-devs @kumavis

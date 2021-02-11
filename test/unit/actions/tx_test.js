@@ -1,10 +1,8 @@
-var assert = require('assert')
-var path = require('path')
-
+import assert from 'assert'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
-
-const actions = require(path.join(__dirname, '../../../ui/app/store/actions.js'))
+import * as actions from '../../../ui/app/store/actions'
+import * as actionConstants from '../../../ui/app/store/actionConstants'
 
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
@@ -13,9 +11,6 @@ describe('tx confirmation screen', function () {
   const txId = 1457634084250832
   const initialState = {
     appState: {
-      currentView: {
-        name: 'confTx',
-      },
     },
     metamask: {
       unapprovedTxs: {
@@ -31,23 +26,24 @@ describe('tx confirmation screen', function () {
   const store = mockStore(initialState)
 
   describe('cancelTx', function () {
-    before(function (done) {
+    it('creates COMPLETED_TX with the cancelled transaction ID', async function () {
       actions._setBackgroundConnection({
-        approveTransaction (_, cb) { cb('An error!') },
-        cancelTransaction (_, cb) { cb() },
-        getState (cb) { cb() },
+        approveTransaction (_, cb) {
+          cb('An error!')
+        },
+        cancelTransaction (_, cb) {
+          cb()
+        },
+        getState (cb) {
+          cb(null, {})
+        },
       })
-      done()
-    })
 
-    it('creates COMPLETED_TX with the cancelled transaction ID', function (done) {
-      store.dispatch(actions.cancelTx({ id: txId }))
-        .then(() => {
-          const storeActions = store.getActions()
-          const completedTxAction = storeActions.find(({ type }) => type === actions.COMPLETED_TX)
-          assert.equal(completedTxAction.value, txId)
-          done()
-        })
+      await store.dispatch(actions.cancelTx({ id: txId }))
+      const storeActions = store.getActions()
+      const completedTxAction = storeActions.find(({ type }) => type === actionConstants.COMPLETED_TX)
+      const { id } = completedTxAction.value
+      assert.equal(id, txId)
     })
   })
 })

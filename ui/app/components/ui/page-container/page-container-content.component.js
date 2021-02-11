@@ -5,7 +5,7 @@ export default class PageContainerContent extends Component {
 
   static propTypes = {
     children: PropTypes.node.isRequired,
-  };
+  }
 
   render () {
     return (

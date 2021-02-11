@@ -1,21 +1,17 @@
-const mergeMiddleware = require('json-rpc-engine/src/mergeMiddleware')
-const createScaffoldMiddleware = require('json-rpc-engine/src/createScaffoldMiddleware')
-const createBlockReRefMiddleware = require('eth-json-rpc-middleware/block-ref')
-const createRetryOnEmptyMiddleware = require('eth-json-rpc-middleware/retryOnEmpty')
-const createBlockCacheMiddleware = require('eth-json-rpc-middleware/block-cache')
-const createInflightMiddleware = require('eth-json-rpc-middleware/inflight-cache')
-const createBlockTrackerInspectorMiddleware = require('eth-json-rpc-middleware/block-tracker-inspector')
-const providerFromMiddleware = require('eth-json-rpc-middleware/providerFromMiddleware')
-const createInfuraMiddleware = require('eth-json-rpc-infura')
-const BlockTracker = require('eth-block-tracker')
+import mergeMiddleware from 'json-rpc-engine/src/mergeMiddleware'
+import createScaffoldMiddleware from 'json-rpc-engine/src/createScaffoldMiddleware'
+import createBlockReRefMiddleware from 'eth-json-rpc-middleware/block-ref'
+import createRetryOnEmptyMiddleware from 'eth-json-rpc-middleware/retryOnEmpty'
+import createBlockCacheMiddleware from 'eth-json-rpc-middleware/block-cache'
+import createInflightMiddleware from 'eth-json-rpc-middleware/inflight-cache'
+import createBlockTrackerInspectorMiddleware from 'eth-json-rpc-middleware/block-tracker-inspector'
+import providerFromMiddleware from 'eth-json-rpc-middleware/providerFromMiddleware'
+import createInfuraMiddleware from 'eth-json-rpc-infura'
+import BlockTracker from 'eth-block-tracker'
+import * as networkEnums from './enums'
 
-module.exports = createInfuraClient
-
-function createInfuraClient ({ network, onRequest }) {
-  const infuraMiddleware = mergeMiddleware([
-    createRequestHookMiddleware(onRequest),
-    createInfuraMiddleware({ network, maxAttempts: 5, source: 'metamask' }),
-  ])
+export default function createInfuraClient ({ network }) {
+  const infuraMiddleware = createInfuraMiddleware({ network, maxAttempts: 5, source: 'metamask' })
   const infuraProvider = providerFromMiddleware(infuraMiddleware)
   const blockTracker = new BlockTracker({ provider: infuraProvider })
 
@@ -37,23 +33,23 @@ function createNetworkAndChainIdMiddleware ({ network }) {
 
   switch (network) {
     case 'mainnet':
-      netId = '1'
+      netId = networkEnums.MAINNET_NETWORK_ID
       chainId = '0x01'
       break
     case 'ropsten':
-      netId = '3'
+      netId = networkEnums.ROPSTEN_NETWORK_ID
       chainId = '0x03'
       break
     case 'rinkeby':
-      netId = '4'
+      netId = networkEnums.RINKEBY_NETWORK_ID
       chainId = '0x04'
       break
     case 'kovan':
-      netId = '42'
-      chainId = '0x2a'
+      netId = networkEnums.KOVAN_NETWORK_ID
+      chainId = networkEnums.KOVAN_CHAIN_ID
       break
     case 'goerli':
-      netId = '5'
+      netId = networkEnums.GOERLI_NETWORK_ID
       chainId = '0x05'
       break
     default:
@@ -64,11 +60,4 @@ function createNetworkAndChainIdMiddleware ({ network }) {
     eth_chainId: chainId,
     net_version: netId,
   })
-}
-
-function createRequestHookMiddleware (onRequest) {
-  return (req, _, next) => {
-    onRequest(req)
-    next()
-  }
 }

@@ -27,11 +27,7 @@ async function start () {
   const versionHasArtifacts = versionAlreadyExists && await checkIfVersionHasArtifacts()
   if (!versionHasArtifacts) {
     // upload sentry source and sourcemaps
-    console.log(`uploading source files Sentry release "${VERSION}"...`)
-    await exec(`for FILEPATH in ./dist/chrome/*.js; do [ -e $FILEPATH ] || continue; export FILE=\`basename $FILEPATH\` && echo uploading $FILE && sentry-cli releases --org 'metamask' --project 'metamask' files ${VERSION} upload $FILEPATH metamask/$FILE; done;`)
-    console.log(`uploading sourcemaps Sentry release "${VERSION}"...`)
-    await exec(`sentry-cli releases --org 'metamask' --project 'metamask' files ${VERSION} upload-sourcemaps ./dist/sourcemaps/ --url-prefix 'sourcemaps'`)
-    console.log('all done!')
+    await exec(`./development/sentry-upload-artifacts.sh --release ${VERSION}`)
   } else {
     console.log(`Version "${VERSION}" already has artifacts on Sentry, skipping sourcemap upload`)
   }

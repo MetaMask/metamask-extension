@@ -1,13 +1,12 @@
 import { connect } from 'react-redux'
 import SendContent from './send-content.component'
 import {
-  accountsWithSendEtherInfoSelector,
   getSendTo,
-} from '../send.selectors'
-import {
+  accountsWithSendEtherInfoSelector,
   getAddressBookEntry,
-} from '../../../selectors/selectors'
-import actions from '../../../store/actions'
+} from '../../../selectors'
+
+import * as actions from '../../../store/actions'
 
 function mapStateToProps (state) {
   const ownedAccounts = accountsWithSendEtherInfoSelector(state)
@@ -29,11 +28,11 @@ function mapDispatchToProps (dispatch) {
 }
 
 function mergeProps (stateProps, dispatchProps, ownProps) {
+  const { to, ...restStateProps } = stateProps
   return {
     ...ownProps,
-    ...stateProps,
-    ...dispatchProps,
-    showAddToAddressBookModal: () => dispatchProps.showAddToAddressBookModal(stateProps.to),
+    ...restStateProps,
+    showAddToAddressBookModal: () => dispatchProps.showAddToAddressBookModal(to),
   }
 }
 

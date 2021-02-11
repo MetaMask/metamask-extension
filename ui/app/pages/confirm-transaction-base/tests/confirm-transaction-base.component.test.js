@@ -1,9 +1,9 @@
 import assert from 'assert'
 import { getMethodName } from '../confirm-transaction-base.component'
 
-describe('ConfirmTransactionBase Component', () => {
-  describe('getMethodName', () => {
-    it('should get correct method names', () => {
+describe('ConfirmTransactionBase Component', function () {
+  describe('getMethodName', function () {
+    it('should get correct method names', function () {
       assert.equal(getMethodName(undefined), '')
       assert.equal(getMethodName({}), '')
       assert.equal(getMethodName('confirm'), 'confirm')

@@ -1,3 +1,30 @@
+.modal {
+  z-index: 1050;
+  position: fixed;
+  width: 500px;
+  transform: translate3d(-50%, -50%, 0);
+  top: 50%;
+  left: 50%;
+
+  .content {
+    margin: 0;
+    background-color: white;
+    animation-fill-mode: forwards;
+  }
+}
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1040;
+  background-color: #373a47;
+  animation-fill-mode: forwards;
+  animation-duration: 0.3s;
+}
+
 .modal > div:focus {
   outline: none !important;
 }
@@ -34,14 +61,17 @@
   }
 }
 
-.account-modal-close::after {
-  content: '\00D7';
+.account-modal-close {
   font-size: 40px;
+  background-color: transparent;
   color: $dusty-gray;
   position: absolute;
   top: 10px;
   right: 12px;
-  cursor: pointer;
+}
+
+.account-modal-close::after {
+  content: '\00D7';
 }
 
 .account-modal-container .identicon {
@@ -57,7 +87,6 @@
 // Account Details Modal
 
 .account-modal-container {
-
   .qr-header {
     margin-top: 9px;
     font-size: 20px;
@@ -114,7 +143,8 @@
   flex-direction: column;
 }
 
-.private-key-password-label, .private-key-password-error {
+.private-key-password-label,
+.private-key-password-error {
   color: $scorpion;
   font-size: 14px;
   line-height: 18px;
@@ -141,7 +171,7 @@
 
 .private-key-password-warning {
   border-radius: 8px;
-  background-color: #FFF6F6;
+  background-color: #fff6f6;
   font-size: 12px;
   font-weight: 500;
   line-height: 15px;
@@ -186,7 +216,6 @@
   overflow: hidden;
   resize: none;
   padding: 9px 13px 8px;
-  text-transform: uppercase;
 }
 
 .modal-close-x::after {
@@ -206,7 +235,7 @@
   min-height: 250.72px;
   border-radius: 4px;
   background-color: $white;
-  box-shadow: 0 1px 7px 0 rgba(0, 0, 0, .5);
+  box-shadow: 0 1px 7px 0 rgba(0, 0, 0, 0.5);
 
   &__container {
     padding: 24px 27px 21px;
@@ -259,7 +288,9 @@
 
   &__button {
     @include paragraph;
+
     @extend %button;
+
     width: 141px;
     margin: 0 5px;
   }
@@ -268,7 +299,6 @@
 //Notification Modal
 
 .notification-modal {
-
   &__wrapper {
     display: flex;
     flex-direction: column;
@@ -304,7 +334,7 @@
     justify-content: space-evenly;
     width: 100%;
     margin-bottom: 24px;
-    padding: 0px 42px;
+    padding: 0 42px;
 
     &__btn {
       cursor: pointer;
@@ -312,7 +342,7 @@
   }
 
   &__link {
-    color: $curious-blue;
+    color: $primary-blue;
   }
 }
 
@@ -369,26 +399,6 @@
     @media screen and (max-width: 575px) {
       height: 0;
     }
-
-    .shapeshift-form-wrapper {
-      display: flex;
-      flex-flow: column;
-      justify-content: center;
-      align-items: center;
-      flex: 1 0 auto;
-
-      .shapeshift-form, .modal-shapeshift-form {
-        border-radius: 8px;
-        background-color: rgba(0, 0, 0, .05);
-        padding: 17px 15px;
-        margin-bottom: 10px;
-
-        &__caret {
-          width: auto;
-          flex: 1;
-        }
-      }
-    }
   }
 
   &__logo {
@@ -420,24 +430,7 @@
     &__back {
       position: absolute;
       top: 10px;
-      left: 0px;
-    }
-
-    &__shapeshift-buy {
-      padding-top: 25px;
-      position: relative;
-      @media screen and (max-width: 575px) {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex: 1;
-        padding-bottom: 25px;
-        flex-flow: column;
-        justify-content: center;
-        padding-top: 20px;
-        min-height: 240px;
-        border: none;
-      }
+      left: 0;
     }
 
     &__logo-container {
@@ -455,14 +448,6 @@
         max-height: 6rem;
         padding-bottom: 20px;
       }
-    }
-
-    &__coinbase-logo {
-      height: 40px;
-    }
-
-    &__shapeshift-logo {
-      height: 60px;
     }
 
     &__right {
@@ -501,48 +486,25 @@
   }
 
   &__buy-row:last-of-type {
-    border-bottom: 0px;
+    border-bottom: 0;
   }
 
-  &__deposit-button, .shapeshift-form__shapeshift-buy-btn {
+  &__deposit-button {
     width: 257px;
   }
 
-  .shapeshift-form-wrapper {
-    display: flex;
-    flex-flow: column;
-    justify-content: center;
-    align-items: center;
-    margin-top: 28px;
-    flex: 1 0 auto;
-
-    .shapeshift-form, .modal-shapeshift-form {
-      border-radius: 8px;
-      background-color: rgba(0, 0, 0, .05);
-      padding: 17px 15px;
-
-      &__caret {
-        width: auto;
-        flex: 1;
-      }
-    }
-  }
-
-  .shapeshift-form__shapeshift-buy-btn {
-    margin-top: 10px;
-  }
-
   .simple-dropdown {
-    color: #5B5D67;
+    color: #5b5d67;
     font-size: 16px;
     line-height: 21px;
-    border: 1px solid #D8D8D8;
-    background-color: #FFFFFF;
+    border: 1px solid #d8d8d8;
+    background-color: #fff;
     text-align: center;
     width: 100%;
     height: 45px;
     line-height: 44px;
-    font-family: Montserrat Light;
+    font-family: Roboto;
+    font-weight: 300;
   }
 
   .simple-dropdown__selected {

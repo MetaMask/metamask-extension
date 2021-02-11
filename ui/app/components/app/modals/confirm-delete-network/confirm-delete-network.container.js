@@ -1,10 +1,10 @@
 import { connect } from 'react-redux'
-import { compose } from 'recompose'
+import { compose } from 'redux'
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props'
 import ConfirmDeleteNetwork from './confirm-delete-network.component'
 import { delRpcTarget } from '../../../../store/actions'
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     delRpcTarget: (target) => dispatch(delRpcTarget(target)),
   }
@@ -12,5 +12,5 @@ const mapDispatchToProps = dispatch => {
 
 export default compose(
   withModalProps,
-  connect(null, mapDispatchToProps)
+  connect(null, mapDispatchToProps),
 )(ConfirmDeleteNetwork)

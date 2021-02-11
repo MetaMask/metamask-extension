@@ -1,0 +1,38 @@
+.connected-sites-list {
+  &__content-rows {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__content-row {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #d2d8dd;
+    padding: 16px 24px;
+  }
+
+  &__domain-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    min-width: 0;
+    font-size: 12px;
+  }
+
+  &__domain-name {
+    max-width: 215px;
+    white-space: nowrap;
+    overflow: hidden;
+    direction: rtl;
+    text-overflow: ellipsis;
+    margin-left: 6px;
+  }
+
+  &__trash {
+    cursor: pointer;
+  }
+}

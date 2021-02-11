@@ -7,13 +7,13 @@ This migration adds submittedTime to the txMeta if it is not their
 
 */
 
-const clone = require('clone')
+import { cloneDeep } from 'lodash'
 
-module.exports = {
+export default {
   version,
 
   migrate: function (originalVersionedData) {
-    const versionedData = clone(originalVersionedData)
+    const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     try {
       const state = versionedData.data
@@ -33,7 +33,9 @@ function transformState (state) {
     const transactions = newState.TransactionController.transactions
 
     newState.TransactionController.transactions = transactions.map((txMeta) => {
-      if (txMeta.status !== 'submitted' || txMeta.submittedTime) return txMeta
+      if (txMeta.status !== 'submitted' || txMeta.submittedTime) {
+        return txMeta
+      }
       txMeta.submittedTime = (new Date()).getTime()
       return txMeta
     })

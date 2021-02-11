@@ -1,5 +1,6 @@
-const assert = require('assert')
-const migration29 = require('../../../app/scripts/migrations/029')
+import assert from 'assert'
+import migration29 from '../../../app/scripts/migrations/029'
+
 const properTime = (new Date()).getTime()
 const storage = {
   'meta': {},
@@ -16,8 +17,8 @@ const storage = {
   },
 }
 
-describe('storage is migrated successfully where transactions that are submitted have submittedTimes', () => {
-  it('should auto fail transactions more than 12 hours old', (done) => {
+describe('storage is migrated successfully where transactions that are submitted have submittedTimes', function () {
+  it('should auto fail transactions more than 12 hours old', function (done) {
     migration29.migrate(storage)
       .then((migratedData) => {
         const txs = migratedData.data.TransactionController.transactions
@@ -28,7 +29,9 @@ describe('storage is migrated successfully where transactions that are submitted
         assert(txMeta1.err.message.includes('too long'), 'error message assigned')
 
         txs.forEach((tx) => {
-          if (tx.id === 1) return
+          if (tx.id === 1) {
+            return
+          }
           assert.notEqual(tx.status, 'failed', 'other tx is not auto failed')
         })
 

@@ -31,7 +31,7 @@ export default class NetworksTab extends PureComponent {
     networkDefaultedToProvider: PropTypes.bool,
   }
 
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     this.props.setSelectedSettingsRpcUrl(null)
   }
 
@@ -64,7 +64,7 @@ export default class NetworksTab extends PureComponent {
         <div className="networks-tab__add-network-header-button-wrapper">
           <Button
             type="secondary"
-            onClick={event => {
+            onClick={(event) => {
               event.preventDefault()
               setSelectedSettingsRpcUrl(null)
               setNetworksTabAddMode(true)
@@ -114,9 +114,11 @@ export default class NetworksTab extends PureComponent {
           backgroundColor={iconColor || 'white'}
           innerBorder={border}
         />
-        <div className={ classnames('networks-tab__networks-list-name', {
-          'networks-tab__networks-list-name--selected': displayNetworkListItemAsSelected,
-        }) }>
+        <div
+          className={classnames('networks-tab__networks-list-name', {
+            'networks-tab__networks-list-name--selected': displayNetworkListItemAsSelected,
+          })}
+        >
           { label || this.context.t(labelKey) }
         </div>
         <div className="networks-tab__networks-list-arrow" />
@@ -133,7 +135,7 @@ export default class NetworksTab extends PureComponent {
           'networks-tab__networks-list--selection': (networkIsSelected && !networkDefaultedToProvider) || networksTabIsInAddMode,
         })}
       >
-        { networksToRender.map(network => this.renderNetworkListItem(network, selectedNetwork.rpcUrl)) }
+        { networksToRender.map((network) => this.renderNetworkListItem(network, selectedNetwork.rpcUrl)) }
         {
           networksTabIsInAddMode && (
             <div
@@ -190,10 +192,10 @@ export default class NetworksTab extends PureComponent {
           shouldRenderNetworkForm
             ? (
               <NetworkForm
-                rpcUrls={networksToRender.map(network => network.rpcUrl)}
+                rpcUrls={networksToRender.map((network) => network.rpcUrl)}
                 setRpcTarget={setRpcTarget}
                 editRpc={editRpc}
-                networkName={label || labelKey && t(labelKey) || ''}
+                networkName={label || (labelKey && t(labelKey)) || ''}
                 rpcUrl={rpcUrl}
                 chainId={chainId}
                 ticker={ticker}
@@ -216,7 +218,7 @@ export default class NetworksTab extends PureComponent {
     )
   }
 
-  renderContent () {
+  render () {
     const { setNetworksTabAddMode, setSelectedSettingsRpcUrl, networkIsSelected, networksTabIsInAddMode } = this.props
 
     return (
@@ -224,25 +226,23 @@ export default class NetworksTab extends PureComponent {
         {this.renderSubHeader()}
         {this.renderNetworksTabContent()}
         {!networkIsSelected && !networksTabIsInAddMode
-          ? <div className="networks-tab__add-network-button-wrapper">
-            <Button
-              type="primary"
-              onClick={event => {
-                event.preventDefault()
-                setSelectedSettingsRpcUrl(null)
-                setNetworksTabAddMode(true)
-              }}
-            >
-              { this.context.t('addNetwork') }
-            </Button>
-          </div>
+          ? (
+            <div className="networks-tab__add-network-button-wrapper">
+              <Button
+                type="primary"
+                onClick={(event) => {
+                  event.preventDefault()
+                  setSelectedSettingsRpcUrl(null)
+                  setNetworksTabAddMode(true)
+                }}
+              >
+                { this.context.t('addNetwork') }
+              </Button>
+            </div>
+          )
           : null
         }
       </div>
     )
-  }
-
-  render () {
-    return this.renderContent()
   }
 }

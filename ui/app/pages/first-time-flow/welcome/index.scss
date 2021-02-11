@@ -20,6 +20,7 @@
     font-size: 28px;
     margin-bottom: 22px;
     margin-top: 50px;
+    text-align: center;
   }
 
   &__description {
@@ -30,7 +31,7 @@
     }
 
     @media screen and (max-width: 575px) {
-      font-size: .9rem;
+      font-size: 0.9rem;
     }
   }
 

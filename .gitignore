@@ -26,21 +26,15 @@ temp
 .DS_Store
 app/.DS_Store
 
+.out/
 coverage/
 dist
 builds/
 builds.zip
-docs/jsdocs
-
-development/bundle.js
-development/states.js
-test/integration/bundle.js
-test/background.js
-test/bundle.js
-test/test-bundle.js
 
 test-artifacts
 test-builds
+build-artifacts
 
 #ignore css output and sourcemaps
 ui/app/css/output/
@@ -49,3 +43,5 @@ notes.txt
 
 .coveralls.yml
 .nyc_output
+
+.metamaskrc

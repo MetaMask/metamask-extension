@@ -1,13 +1,13 @@
 /**
  * Returns error without stack trace for better UI display
  * @param {Error} err - error
- * @returns {Error} Error with clean stack trace.
+ * @returns {Error} - Error with clean stack trace.
  */
-function cleanErrorStack (err) {
-  var name = err.name
+export default function cleanErrorStack (err) {
+  let name = err.name
   name = (name === undefined) ? 'Error' : String(name)
 
-  var msg = err.message
+  let msg = err.message
   msg = (msg === undefined) ? '' : String(msg)
 
   if (name === '') {
@@ -20,5 +20,3 @@ function cleanErrorStack (err) {
 
   return err
 }
-
-module.exports = cleanErrorStack

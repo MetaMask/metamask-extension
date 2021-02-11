@@ -8,8 +8,8 @@ const fetchWithCache = async (url, fetchOptions = {}, { cacheRefreshTime = 36000
   if (fetchOptions.body || (fetchOptions.method && fetchOptions.method !== 'GET')) {
     throw new Error('fetchWithCache only supports GET requests')
   }
-  if (!(fetchOptions.headers instanceof Headers)) {
-    fetchOptions.headers = new Headers(fetchOptions.headers)
+  if (!(fetchOptions.headers instanceof window.Headers)) {
+    fetchOptions.headers = new window.Headers(fetchOptions.headers)
   }
   if (
     fetchOptions.headers &&
@@ -28,7 +28,7 @@ const fetchWithCache = async (url, fetchOptions = {}, { cacheRefreshTime = 36000
     fetchOptions.headers.set('Content-Type', 'application/json')
     const _fetch = timeout ?
       fetchWithTimeout({ timeout }) :
-      fetch
+      window.fetch
     const response = await _fetch(url, {
       referrerPolicy: 'no-referrer-when-downgrade',
       body: null,

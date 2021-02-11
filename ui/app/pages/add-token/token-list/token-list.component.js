@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import { checkExistingAddresses } from '../util'
+import { checkExistingAddresses } from '../../../helpers/utils/util'
 import TokenListPlaceholder from './token-list-placeholder'
 
 export default class InfoBox extends Component {
@@ -44,7 +44,8 @@ export default class InfoBox extends Component {
                     >
                       <div
                         className="token-list__token-icon"
-                        style={{ backgroundImage: logo && `url(images/contract/${logo})` }}>
+                        style={{ backgroundImage: logo && `url(images/contract/${logo})` }}
+                      >
                       </div>
                       <div className="token-list__token-data">
                         <span className="token-list__token-name">{ `${name} (${symbol})` }</span>

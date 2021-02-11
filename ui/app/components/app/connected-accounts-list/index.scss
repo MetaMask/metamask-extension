@@ -1,0 +1,79 @@
+.connected-accounts-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__identicon {
+    margin-right: 8px;
+  }
+
+  &__account-name {
+    display: inline;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  %account-status-typography {
+    font-size: 12px;
+    line-height: 17px;
+    padding-top: 4px;
+  }
+
+  &__account-status {
+    @extend %account-status-typography;
+
+    display: inline;
+    color: $Grey-500;
+  }
+
+  &__account-status-link {
+    @extend %account-status-typography;
+
+    display: block;
+
+    &,
+    &:hover {
+      color: $primary-blue;
+      cursor: pointer;
+    }
+  }
+
+  &__row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 16px 24px;
+    border-top: 1px solid $geyser;
+
+    &--highlight {
+      background-color: $Yellow-000;
+      border: 1px solid $accent-yellow;
+      box-sizing: border-box;
+      padding: 16px;
+      margin-bottom: 16px;
+      width: calc(100% - 16px);
+    }
+  }
+
+  &__row-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.connected-accounts-options {
+  &__button {
+    background: inherit;
+    color: $Grey-500;
+    font-size: 22px;
+  }
+}
+
+.tippy-tooltip.none-theme {
+  background: none;
+  padding: 0;
+}

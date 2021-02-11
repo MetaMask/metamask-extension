@@ -19,7 +19,7 @@ export default class Breadcrumbs extends PureComponent {
             <div
               key={i}
               className="breadcrumb"
-              style={{backgroundColor: i === currentIndex ? '#D8D8D8' : '#FFFFFF'}}
+              style={{ backgroundColor: i === currentIndex ? '#D8D8D8' : '#FFFFFF' }}
             />
           ))
         }

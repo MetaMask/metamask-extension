@@ -1,3 +1,4 @@
+* text=auto
 CHANGELOG.md merge=union
 
 # Reviewing the lockfile contents is an important step in verifying that
@@ -5,4 +6,5 @@ CHANGELOG.md merge=union
 package-lock.json linguist-generated=false
 yarn.lock linguist-generated=false
 
-test/e2e/send-eth-with-private-key-test/ethereumjs-tx.js linguist-vendored linguist-generated
+test/e2e/send-eth-with-private-key-test/ethereumjs-tx.js linguist-vendored linguist-generated -diff
+test/e2e/send-eth-with-private-key-test/web3js.js linguist-vendored linguist-generated -diff

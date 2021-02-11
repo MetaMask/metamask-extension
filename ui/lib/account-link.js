@@ -1,6 +1,6 @@
-module.exports = function (address, network, rpcPrefs) {
+export default function getAccountLink (address, network, rpcPrefs) {
   if (rpcPrefs && rpcPrefs.blockExplorerUrl) {
-    return `${rpcPrefs.blockExplorerUrl}/address/${address}`
+    return `${rpcPrefs.blockExplorerUrl.replace(/\/+$/, '')}/address/${address}`
   }
 
   const net = parseInt(network)

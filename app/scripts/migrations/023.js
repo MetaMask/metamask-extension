@@ -7,13 +7,13 @@ This migration removes transactions that are no longer usefull down to 40 total
 
 */
 
-const clone = require('clone')
+import { cloneDeep } from 'lodash'
 
-module.exports = {
+export default {
   version,
 
   migrate: function (originalVersionedData) {
-    const versionedData = clone(originalVersionedData)
+    const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     try {
       const state = versionedData.data
@@ -33,7 +33,9 @@ function transformState (state) {
   if (TransactionController && TransactionController.transactions) {
     const transactions = newState.TransactionController.transactions
 
-    if (transactions.length <= 40) return newState
+    if (transactions.length <= 40) {
+      return newState
+    }
 
     const reverseTxList = transactions.reverse()
     let stripping = true
@@ -44,8 +46,11 @@ function transformState (state) {
         txMeta.status === 'confirmed' ||
         txMeta.status === 'dropped')
       })
-      if (txIndex < 0) stripping = false
-      else reverseTxList.splice(txIndex, 1)
+      if (txIndex < 0) {
+        stripping = false
+      } else {
+        reverseTxList.splice(txIndex, 1)
+      }
     }
 
     newState.TransactionController.transactions = reverseTxList.reverse()

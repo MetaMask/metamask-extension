@@ -4,12 +4,19 @@ import {
   setCompletedOnboarding,
   setSeedPhraseBackedUp,
 } from '../../../../store/actions'
+import { getOnboardingInitiator } from '../../../../selectors'
 
-const mapDispatchToProps = dispatch => {
+const mapStateToProps = (state) => {
+  return {
+    onboardingInitiator: getOnboardingInitiator(state),
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
   return {
     setSeedPhraseBackedUp: (seedPhraseBackupState) => dispatch(setSeedPhraseBackedUp(seedPhraseBackupState)),
     setCompletedOnboarding: () => dispatch(setCompletedOnboarding()),
   }
 }
 
-export default connect(null, mapDispatchToProps)(RevealSeedPhrase)
+export default connect(mapStateToProps, mapDispatchToProps)(RevealSeedPhrase)

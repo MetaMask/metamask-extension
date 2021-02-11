@@ -1,23 +1,6 @@
 .add-token-button {
-  display: flex;
-  flex-direction: column;
-  color: lighten($scorpion, 25%);
-  width: 185px;
-  margin: 36px auto;
-  text-align: center;
-
-  &__help-header {
-    font-weight: bold;
-    font-size: 1rem;
-  }
-
-  &__help-desc {
-    font-size: 0.75rem;
-    margin-top: 1rem;
-  }
-
   &__button {
-    @extend %small-link;
-    margin: 1rem;
+    max-width: 200px;
+    margin: 16px auto;
   }
 }

@@ -1,0 +1,13 @@
+.alert-circle-icon {
+  &--danger {
+    border-color: $accent-red;
+    color: $accent-red;
+    background: $Red-000;
+  }
+
+  &--warning {
+    border-color: $accent-yellow;
+    color: $accent-yellow;
+    background: $Yellow-000;
+  }
+}

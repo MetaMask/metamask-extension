@@ -1,16 +1,5 @@
-/*
-  this file is for all my big stubs because i don't want to
-  to mingle with my tests
-*/
-
-module.exports = {}
-
-// for pending middlewares test
-module.exports.txMetaStub = {
-  'estimatedGas': '0x5208',
+export const txMetaStub = {
   'firstRetryBlockNumber': '0x51a402',
-  'gasLimitSpecified': true,
-  'gasPriceSpecified': true,
   'hash': '0x2cc5a25744486f7383edebbf32003e5a66e18135799593d6b5cdd2bb43674f09',
   'history': [
     {
@@ -35,21 +24,6 @@ module.exports.txMetaStub = {
         'path': '/loadingDefaults',
         'timestamp': 1572395156645,
         'value': false,
-      },
-      {
-        'op': 'add',
-        'path': '/gasPriceSpecified',
-        'value': true,
-      },
-      {
-        'op': 'add',
-        'path': '/gasLimitSpecified',
-        'value': true,
-      },
-      {
-        'op': 'add',
-        'path': '/estimatedGas',
-        'value': '0x5208',
       },
     ],
     [

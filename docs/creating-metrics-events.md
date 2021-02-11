@@ -39,6 +39,7 @@ All metrics events send the following data when called:
 - accountType
 - numberOfTokens
 - numberOfAccounts
+- version
 
 These are added to the metrics event via the metametrics provider.
 

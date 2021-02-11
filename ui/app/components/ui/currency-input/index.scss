@@ -13,14 +13,14 @@
     background-size: contain;
     background-repeat: no-repeat;
     cursor: pointer;
-    opacity: .4;
+    opacity: 0.4;
 
     &:hover {
-      opacity: .3;
+      opacity: 0.3;
     }
 
     &:active {
-      opacity: .5;
+      opacity: 0.5;
     }
   }
 }

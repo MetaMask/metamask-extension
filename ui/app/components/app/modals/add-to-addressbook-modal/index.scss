@@ -4,6 +4,7 @@
 
   &__content {
     @extend %col-nowrap;
+
     padding: 1.5rem;
     border-bottom: 1px solid $Grey-100;
 
@@ -19,6 +20,7 @@
 
   &__input {
     @extend %input;
+
     margin-top: 0.75rem;
 
     &::placeholder {
@@ -28,6 +30,7 @@
 
   &__footer {
     @extend %row-nowrap;
+
     padding: 1rem;
 
     button + button {

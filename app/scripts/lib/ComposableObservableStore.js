@@ -1,10 +1,10 @@
-const ObservableStore = require('obs-store')
+import ObservableStore from 'obs-store'
 
 /**
  * An ObservableStore that can composes a flat
  * structure of child stores based on configuration
  */
-class ComposableObservableStore extends ObservableStore {
+export default class ComposableObservableStore extends ObservableStore {
   /**
    * Create a new store
    *
@@ -25,9 +25,11 @@ class ComposableObservableStore extends ObservableStore {
     this.config = config
     this.removeAllListeners()
     for (const key in config) {
-      config[key].subscribe((state) => {
-        this.updateState({ [key]: state })
-      })
+      if (config.hasOwnProperty(key)) {
+        config[key].subscribe((state) => {
+          this.updateState({ [key]: state })
+        })
+      }
     }
   }
 
@@ -40,12 +42,12 @@ class ComposableObservableStore extends ObservableStore {
   getFlatState () {
     let flatState = {}
     for (const key in this.config) {
-      const controller = this.config[key]
-      const state = controller.getState ? controller.getState() : controller.state
-      flatState = { ...flatState, ...state }
+      if (this.config.hasOwnProperty(key)) {
+        const controller = this.config[key]
+        const state = controller.getState ? controller.getState() : controller.state
+        flatState = { ...flatState, ...state }
+      }
     }
     return flatState
   }
 }
-
-module.exports = ComposableObservableStore

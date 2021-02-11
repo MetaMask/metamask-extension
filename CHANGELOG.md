@@ -2,6 +2,170 @@
 
 ## Current Develop Branch
 
+## 8.0.9 Wed Aug 19 2020
+- [#9228](https://github.com/MetaMask/metamask-extension/pull/9228): Move transaction confirmation footer buttons to scrollable area
+- [#9256](https://github.com/MetaMask/metamask-extension/pull/9256): Handle non-String web3 property access
+- [#9266](https://github.com/MetaMask/metamask-extension/pull/9266): Use @metamask/controllers@2.0.5
+- [#9189](https://github.com/MetaMask/metamask-extension/pull/9189): Hide ETH Gas Station estimates on non-main network
+
+## 8.0.8 Fri Aug 14 2020
+- [#9211](https://github.com/MetaMask/metamask-extension/pull/9211): Fix Etherscan redirect on notification click
+- [#9237](https://github.com/MetaMask/metamask-extension/pull/9237): Reduce volume of web3 usage metrics
+- [#9227](https://github.com/MetaMask/metamask-extension/pull/9227): Permit all-caps addresses
+
+## 8.0.7 Fri Aug 07 2020
+- [#9065](https://github.com/MetaMask/metamask-extension/pull/9065): Change title of "Reveal Seed Words" page to "Reveal Seed Phrase"
+- [#8974](https://github.com/MetaMask/metamask-extension/pull/8974): Add tooltip to copy button for contacts and seed phrase
+- [#9063](https://github.com/MetaMask/metamask-extension/pull/9063): Fix broken UI upon failed password validation
+- [#9075](https://github.com/MetaMask/metamask-extension/pull/9075): Fix shifted popup notification when browser is in fullscreen on macOS
+- [#9085](https://github.com/MetaMask/metamask-extension/pull/9085): Support longer text in network dropdown
+- [#8873](https://github.com/MetaMask/metamask-extension/pull/8873): Fix onboarding bug where user can be asked to verify seed phrase twice
+- [#9104](https://github.com/MetaMask/metamask-extension/pull/9104): Replace "Email us" button with "Contact us" button
+- [#9137](https://github.com/MetaMask/metamask-extension/pull/9137): Fix bug where `accountsChanged` events stop after a dapp connection is closed.
+- [#9152](https://github.com/MetaMask/metamask-extension/pull/9152): Fix network name alignment
+- [#9144](https://github.com/MetaMask/metamask-extension/pull/9144): Add web3 usage metrics and prepare for web3 removal
+
+## 8.0.6 Wed Jul 22 2020
+- [#9030](https://github.com/MetaMask/metamask-extension/pull/9030): Hide "delete" button when editing contact of wallet account
+- [#9031](https://github.com/MetaMask/metamask-extension/pull/9031): Fix crash upon removing contact
+- [#9032](https://github.com/MetaMask/metamask-extension/pull/9032): Do not show spend limit for approvals
+- [#9046](https://github.com/MetaMask/metamask-extension/pull/9046): Update @metamask/inpage-provider@6.1.0
+- [#9048](https://github.com/MetaMask/metamask-extension/pull/9048): Skip attempts to resolve 0x contract prefix
+- [#9051](https://github.com/MetaMask/metamask-extension/pull/9051): Use content-hash@2.5.2
+- [#9056](https://github.com/MetaMask/metamask-extension/pull/9056): Display at least one significant digit of small non-zero token balances
+
+## 8.0.5 Thu Jul 16 2020
+- [#8942](https://github.com/MetaMask/metamask-extension/pull/8942): Fix display of incoming transactions (#8942)
+- [#8998](https://github.com/MetaMask/metamask-extension/pull/8998): Fix `web3_clientVersion` method (#8998)
+- [#9003](https://github.com/MetaMask/metamask-extension/pull/9003): @metamask/inpage-provider@6.0.1 (#9003)
+- [#9006](https://github.com/MetaMask/metamask-extension/pull/9006): Hide loading indication after `personal_sign` (#9006)
+- [#9011](https://github.com/MetaMask/metamask-extension/pull/9011): Display pending notifications after connect flow (#9011)
+- [#9012](https://github.com/MetaMask/metamask-extension/pull/9012): Skip render when home page is closing or redirecting (#9012)
+- [#9010](https://github.com/MetaMask/metamask-extension/pull/9010): Limit number of transactions passed outside of TransactionController (#9010)
+- [#9023](https://github.com/MetaMask/metamask-extension/pull/9023): Clear AccountTracker accounts and CachedBalances on createNewVaultAndRestore (#9023)
+- [#9025](https://github.com/MetaMask/metamask-extension/pull/9025): Catch gas estimate errors (#9025)
+- [#9026](https://github.com/MetaMask/metamask-extension/pull/9026): Clear transactions on createNewVaultAndRestore (#9026)
+
+## 8.0.4 Tue Jul 07 2020
+- [#8934](https://github.com/MetaMask/metamask-extension/pull/8934): Fix transaction activity on custom networks
+- [#8936](https://github.com/MetaMask/metamask-extension/pull/8936): Fix account tracker optimization
+
+## 8.0.3 Mon Jul 06 2020
+- [#8921](https://github.com/MetaMask/metamask-extension/pull/8921): Restore missing 'data' provider event, and fix 'notification' event
+- [#8923](https://github.com/MetaMask/metamask-extension/pull/8923): Normalize the 'from' parameter for `eth_sendTransaction`
+- [#8924](https://github.com/MetaMask/metamask-extension/pull/8924): Fix handling of multiple `eth_requestAccount` messages from the same domain
+- [#8917](https://github.com/MetaMask/metamask-extension/pull/8917): Update Italian translations
+
+## 8.0.2 Fri Jul 03 2020
+- [#8907](https://github.com/MetaMask/metamask-extension/pull/8907): Tolerate missing or falsey substitutions
+- [#8908](https://github.com/MetaMask/metamask-extension/pull/8908): Fix activity log inline buttons
+- [#8909](https://github.com/MetaMask/metamask-extension/pull/8909): Prevent confirming blank suggested token
+- [#8910](https://github.com/MetaMask/metamask-extension/pull/8910): Handle suggested token resolved elsewhere
+- [#8913](https://github.com/MetaMask/metamask-extension/pull/8913): Fix Kovan chain ID constant
+
+## 8.0.1 Thu Jul 02 2020
+- [#8874](https://github.com/MetaMask/metamask-extension/pull/8874): Fx overflow behaviour of add token list
+- [#8885](https://github.com/MetaMask/metamask-extension/pull/8885): Show `origin` in connect flow rather than site name
+- [#8883](https://github.com/MetaMask/metamask-extension/pull/8883): Allow setting a custom nonce of zero
+- [#8889](https://github.com/MetaMask/metamask-extension/pull/8889): Fix language code format mismatch
+- [#8891](https://github.com/MetaMask/metamask-extension/pull/8891): Prevent showing connected accounts without origin
+- [#8893](https://github.com/MetaMask/metamask-extension/pull/8893): Prevent manually connecting to extension UI
+- [#8895](https://github.com/MetaMask/metamask-extension/pull/8895): Allow localized messages to not use substitutions
+- [#8897](https://github.com/MetaMask/metamask-extension/pull/8897): Update eth-keyring-controller to fix erasure of imported/hardware account names
+- [#8896](https://github.com/MetaMask/metamask-extension/pull/8896): Include relative time polyfill locale data
+- [#8898](https://github.com/MetaMask/metamask-extension/pull/8898): Replace percentage opacity value
+
+## 8.0.0 Mon Jun 23 2020
+- [#7004](https://github.com/MetaMask/metamask-extension/pull/7004): Add permission system
+- [#7261](https://github.com/MetaMask/metamask-extension/pull/7261): Search accounts by name
+- [#7483](https://github.com/MetaMask/metamask-extension/pull/7483): Buffer 3 blocks before dropping a transaction
+- [#7620](https://github.com/MetaMask/metamask-extension/pull/7620): Handle one specific permissions request per tab
+- [#7686](https://github.com/MetaMask/metamask-extension/pull/7686): Add description to Reset Account in settings
+- [#7362](https://github.com/MetaMask/metamask-extension/pull/7362): Allow custom IPFS gateway and use more secure default gateway
+- [#7696](https://github.com/MetaMask/metamask-extension/pull/7696): Adjust colour of Reset Account button to reflect danger
+- [#7602](https://github.com/MetaMask/metamask-extension/pull/7602): Support new onboarding library
+- [#7672](https://github.com/MetaMask/metamask-extension/pull/7672): Update custom token symbol length restriction message
+- [#7747](https://github.com/MetaMask/metamask-extension/pull/7747): Handle 'Enter' keypress on restore from seed screen
+- [#7810](https://github.com/MetaMask/metamask-extension/pull/7810): Remove padding around advanced gas info icon
+- [#7840](https://github.com/MetaMask/metamask-extension/pull/7840): Force background state update after removing an account
+- [#7853](https://github.com/MetaMask/metamask-extension/pull/7853): Change "Log In/Out" terminology to "Unlock/Lock"
+- [#7863](https://github.com/MetaMask/metamask-extension/pull/7863): Add mechanism to randomize seed phrase filename
+- [#7933](https://github.com/MetaMask/metamask-extension/pull/7933): Sort seed phrase confirmation buttons alphabetically
+- [#7987](https://github.com/MetaMask/metamask-extension/pull/7987): Add support for 24 word seed phrases
+- [#7971](https://github.com/MetaMask/metamask-extension/pull/7971): Use contact name instead of address during send flow
+- [#8050](https://github.com/MetaMask/metamask-extension/pull/8050): Add title attribute to transaction title
+- [#7831](https://github.com/MetaMask/metamask-extension/pull/7831): Implement encrypt/decrypt feature
+- [#8125](https://github.com/MetaMask/metamask-extension/pull/8125): Add setting for disabling Eth Phishing Detection
+- [#8148](https://github.com/MetaMask/metamask-extension/pull/8148): Prevent external domains from submitting more than one perm request at a time
+- [#8149](https://github.com/MetaMask/metamask-extension/pull/8149): Wait for extension unlock before processing eth_requestAccounts
+- [#8201](https://github.com/MetaMask/metamask-extension/pull/8201): Add Idle Timeout for Sync with mobile
+- [#8247](https://github.com/MetaMask/metamask-extension/pull/8247): Update Italian translation
+- [#8246](https://github.com/MetaMask/metamask-extension/pull/8246): Make seed phrase import case-insensitive
+- [#8254](https://github.com/MetaMask/metamask-extension/pull/8254): Convert Connected Sites page to modal
+- [#8259](https://github.com/MetaMask/metamask-extension/pull/8259): Update token cell to show inline stale balance warning
+- [#8264](https://github.com/MetaMask/metamask-extension/pull/8264): Move asset list to home tab on small screens
+- [#8270](https://github.com/MetaMask/metamask-extension/pull/8270): Connected status indicator
+- [#8078](https://github.com/MetaMask/metamask-extension/pull/8078): Allow selecting multiple accounts during connect flow
+- [#8318](https://github.com/MetaMask/metamask-extension/pull/8318): Focus the notification popup if it's already open
+- [#8356](https://github.com/MetaMask/metamask-extension/pull/8356): Position notification relative to last focused window
+- [#8358](https://github.com/MetaMask/metamask-extension/pull/8358): Close notification UI if no unapproved confirmations
+- [#8293](https://github.com/MetaMask/metamask-extension/pull/8293): Add popup explaining connection indicator to existing users
+- [#8435](https://github.com/MetaMask/metamask-extension/pull/8435): Correctly detect changes to background state
+- [#7912](https://github.com/MetaMask/metamask-extension/pull/7912): Disable import button for empty string/file
+- [#8246](https://github.com/MetaMask/metamask-extension/pull/8246): Make seed phrase import case-insensitive
+- [#8312](https://github.com/MetaMask/metamask-extension/pull/8312): Alert user upon switching to unconnected account
+- [#8445](https://github.com/MetaMask/metamask-extension/pull/8445): Only updating pending transactions upon block update
+- [#8467](https://github.com/MetaMask/metamask-extension/pull/8467): Fix firefox popup location
+- [#8486](https://github.com/MetaMask/metamask-extension/pull/8486): Prevent race condition where transaction value set in UI is overwritten
+- [#8490](https://github.com/MetaMask/metamask-extension/pull/8490): Fix default gas race condition
+- [#8491](https://github.com/MetaMask/metamask-extension/pull/8491): Update tokens after importing account
+- [#8496](https://github.com/MetaMask/metamask-extension/pull/8496): Enable disconnecting a single account or all accounts
+- [#8502](https://github.com/MetaMask/metamask-extension/pull/8502): Add support for IPFS address resolution
+- [#8419](https://github.com/MetaMask/metamask-extension/pull/8419): Add version dimension to metrics event
+- [#8508](https://github.com/MetaMask/metamask-extension/pull/8508): Open notification UI when eth_requestAccounts waits for unlock
+- [#8533](https://github.com/MetaMask/metamask-extension/pull/8533): Prevent negative values on gas inputs
+- [#8550](https://github.com/MetaMask/metamask-extension/pull/8550): Allow disabling alerts
+- [#8563](https://github.com/MetaMask/metamask-extension/pull/8563): Synchronously update transaction status
+- [#8567](https://github.com/MetaMask/metamask-extension/pull/8567): Improve Spanish localized message
+- [#8532](https://github.com/MetaMask/metamask-extension/pull/8532): Add switch to connected account alert
+- [#8575](https://github.com/MetaMask/metamask-extension/pull/8575): Stop polling for recent blocks on custom networks when UI is closed
+- [#8579](https://github.com/MetaMask/metamask-extension/pull/8579): Fix Matomo dimension IDs
+- [#8592](https://github.com/MetaMask/metamask-extension/pull/8592): Handle trailing / in block explorer URLs
+- [#8313](https://github.com/MetaMask/metamask-extension/pull/8313): Add Connected Accounts modal
+- [#8609](https://github.com/MetaMask/metamask-extension/pull/8609): Sticky position the tabs at the top
+- [#8634](https://github.com/MetaMask/metamask-extension/pull/8634): Define global `web3` as non-enumerable
+- [#8601](https://github.com/MetaMask/metamask-extension/pull/8601): warn user when sending from different account
+- [#8612](https://github.com/MetaMask/metamask-extension/pull/8612): Persist home tab state
+- [#8564](https://github.com/MetaMask/metamask-extension/pull/8564): Implement new transaction list design
+- [#8596](https://github.com/MetaMask/metamask-extension/pull/8596): Restrict the size of the permissions metadata store
+- [#8654](https://github.com/MetaMask/metamask-extension/pull/8654): Update account options menu design
+- [#8657](https://github.com/MetaMask/metamask-extension/pull/8657): Implement new fullscreen design
+- [#8663](https://github.com/MetaMask/metamask-extension/pull/8663): Show hostname in the disconnect confirmation
+- [#8665](https://github.com/MetaMask/metamask-extension/pull/8665): Make address display wider in Account Details
+- [#8670](https://github.com/MetaMask/metamask-extension/pull/8670): Fix token `decimal` type
+- [#8653](https://github.com/MetaMask/metamask-extension/pull/8653): Limit Dapp permissions to primary account
+- [#8666](https://github.com/MetaMask/metamask-extension/pull/8666): Manually connect via the full connect flow
+- [#8677](https://github.com/MetaMask/metamask-extension/pull/8677): Add metrics events for Wyre and CoinSwitch
+- [#8680](https://github.com/MetaMask/metamask-extension/pull/8680): Fix connect hardware styling
+- [#8689](https://github.com/MetaMask/metamask-extension/pull/8689): Fix create account form styling
+- [#8702](https://github.com/MetaMask/metamask-extension/pull/8702): Fix tab content disappearing during scrolling on macOS Firefox
+- [#8696](https://github.com/MetaMask/metamask-extension/pull/8696): Implement asset page
+- [#8716](https://github.com/MetaMask/metamask-extension/pull/8716): Add nonce to transaction details
+- [#8717](https://github.com/MetaMask/metamask-extension/pull/8717): Use URL origin instead of hostname for permission domains
+- [#8747](https://github.com/MetaMask/metamask-extension/pull/8747): Fix account menu entry for imported accounts
+- [#8768](https://github.com/MetaMask/metamask-extension/pull/8768): Permissions: Do not display HTTP/HTTPS URL schemes for unique hosts
+- [#8730](https://github.com/MetaMask/metamask-extension/pull/8730): Hide seed phrase during Account Import
+- [#8785](https://github.com/MetaMask/metamask-extension/pull/8785): Rename 'History' tab to 'Activity'
+- [#8781](https://github.com/MetaMask/metamask-extension/pull/8781): use UI button for add token functionality
+- [#8786](https://github.com/MetaMask/metamask-extension/pull/8786): Show fiat amounts inline on token transfers
+- [#8789](https://github.com/MetaMask/metamask-extension/pull/8789): Warn users to only add custom networks that they trust
+- [#8802](https://github.com/MetaMask/metamask-extension/pull/8802): Consolidate connected account alerts
+- [#8810](https://github.com/MetaMask/metamask-extension/pull/8810): Remove all user- and translator-facing instances of 'dapp'
+- [#8836](https://github.com/MetaMask/metamask-extension/pull/8836): Update method data when cached method data is empty
+- [#8833](https://github.com/MetaMask/metamask-extension/pull/8833): Improve error handling when signature requested without a keyholder address
+- [#8850](https://github.com/MetaMask/metamask-extension/pull/8850): Stop upper-casing exported private key
+- [#8631](https://github.com/MetaMask/metamask-extension/pull/8631): Include imported accounts in mobile sync
+
 ## 7.7.9 Tue Apr 28 2020
 - [#8446](https://github.com/MetaMask/metamask-extension/pull/8446): Fix popup not opening
 - [#8449](https://github.com/MetaMask/metamask-extension/pull/8449): Skip adding history entry for empty txMeta diffs

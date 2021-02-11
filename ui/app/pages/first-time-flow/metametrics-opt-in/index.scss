@@ -27,7 +27,6 @@
   &__title {
     position: relative;
     margin-top: 20px;
-
     font-family: Roboto;
     font-style: normal;
     font-weight: normal;
@@ -39,7 +38,7 @@
     margin-top: 25px;
 
     .fa-bar-chart {
-      color: #C4C4C4;
+      color: #c4c4c4;
     }
   }
 
@@ -49,7 +48,7 @@
     font-weight: normal;
     line-height: 21px;
     font-size: 16px;
-    margin-top: 12px; 
+    margin-top: 12px;
   }
 
   &__committments {
@@ -68,12 +67,12 @@
 
     .fa-check {
       margin-right: 12px;
-      color: #1ACC56;
+      color: #1acc56;
     }
 
     .fa-times {
       margin-right: 12px;
-      color: #D0021B;
+      color: #d0021b;
     }
   }
 
@@ -128,8 +127,8 @@
         margin-right: 16px;
       }
 
-      header {
-        padding: 0px;
+      footer {
+        padding: 0;
       }
     }
   }

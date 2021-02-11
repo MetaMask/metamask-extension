@@ -1,0 +1,45 @@
+.asset {
+  &__container {
+    background-color: white;
+  }
+
+  &__overview {
+    box-shadow: 0 3px 4px rgba(135, 134, 134, 0.16);
+  }
+}
+
+.asset-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  height: 54px;
+}
+
+.asset-breadcrumb {
+  font-size: 14px;
+  color: $Black-100;
+  background-color: inherit;
+
+  &__chevron {
+    padding: 0 10px 0 2px;
+    font-size: 16px;
+  }
+
+  &__asset {
+    font-weight: bold;
+  }
+}
+
+.token-options {
+  &__button {
+    font-size: 20px;
+    color: $Black-100;
+    background-color: inherit;
+    padding: 2px 8px;
+  }
+
+  &__icon {
+    font-size: 16px;
+  }
+}

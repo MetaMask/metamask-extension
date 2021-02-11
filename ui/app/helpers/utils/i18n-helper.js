@@ -1,17 +1,20 @@
 // cross-browser connection to extension i18n API
-const log = require('loglevel')
-const Sentry = require('@sentry/browser')
+import React from 'react'
+import log from 'loglevel'
+
+import * as Sentry from '@sentry/browser'
 
 const warned = {}
 const missingMessageErrors = {}
+const missingSubstitutionErrors = {}
 
 /**
  * Returns a localized message for the given key
- * @param {string} localeCode The code for the current locale
- * @param {object} localeMessages The map of messages for the current locale
- * @param {string} key The message key
- * @param {string[]} substitutions A list of message substitution replacements
- * @return {null|string} The localized message
+ * @param {string} localeCode - The code for the current locale
+ * @param {Object} localeMessages - The map of messages for the current locale
+ * @param {string} key - The message key
+ * @param {string[]} substitutions - A list of message substitution replacements
+ * @returns {null|string} - The localized message
  */
 export const getMessage = (localeCode, localeMessages, key, substitutions) => {
   if (!localeMessages) {
@@ -38,19 +41,44 @@ export const getMessage = (localeCode, localeMessages, key, substitutions) => {
   }
   const entry = localeMessages[key]
   let phrase = entry.message
+
+  const hasSubstitutions = Boolean(substitutions && substitutions.length)
+  const hasReactSubstitutions = hasSubstitutions &&
+    substitutions.some((element) => element !== null && (typeof element === 'function' || typeof element === 'object'))
+
   // perform substitutions
-  if (substitutions && substitutions.length) {
-    substitutions.forEach((substitution, index) => {
-      const regex = new RegExp(`\\$${index + 1}`, 'g')
-      phrase = phrase.replace(regex, substitution)
+  if (hasSubstitutions) {
+    const parts = phrase.split(/(\$\d)/g)
+
+    const substitutedParts = parts.map((part) => {
+      const subMatch = part.match(/\$(\d)/)
+      if (!subMatch) {
+        return part
+      }
+      const substituteIndex = Number(subMatch[1]) - 1
+      if (substitutions[substituteIndex] == null && !missingSubstitutionErrors[localeCode]?.[key]) {
+        if (!missingSubstitutionErrors[localeCode]) {
+          missingSubstitutionErrors[localeCode] = {}
+        }
+        missingSubstitutionErrors[localeCode][key] = true
+        const error = new Error(`Insufficient number of substitutions for message: '${phrase}'`)
+        log.error(error)
+        Sentry.captureException(error)
+      }
+      return substitutions[substituteIndex]
     })
+
+    phrase = hasReactSubstitutions
+      ? <span> { substitutedParts } </span>
+      : substitutedParts.join('')
   }
+
   return phrase
 }
 
 export async function fetchLocale (localeCode) {
   try {
-    const response = await fetch(`./_locales/${localeCode}/messages.json`)
+    const response = await window.fetch(`./_locales/${localeCode}/messages.json`)
     return await response.json()
   } catch (error) {
     log.error(`failed to fetch ${localeCode} locale because of ${error}`)
@@ -58,3 +86,21 @@ export async function fetchLocale (localeCode) {
   }
 }
 
+const relativeTimeFormatLocaleData = new Set()
+
+export async function loadRelativeTimeFormatLocaleData (localeCode) {
+  const languageTag = localeCode.split('_')[0]
+  if (
+    Intl.RelativeTimeFormat &&
+    typeof Intl.RelativeTimeFormat.__addLocaleData === 'function' &&
+    !relativeTimeFormatLocaleData.has(languageTag)
+  ) {
+    const localeData = await fetchRelativeTimeFormatData(languageTag)
+    Intl.RelativeTimeFormat.__addLocaleData(localeData)
+  }
+}
+
+async function fetchRelativeTimeFormatData (languageTag) {
+  const response = await window.fetch(`./intl/${languageTag}/relative-time-format-data.json`)
+  return await response.json()
+}

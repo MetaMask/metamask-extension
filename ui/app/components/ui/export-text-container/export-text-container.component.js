@@ -1,45 +1,47 @@
-const { Component } = require('react')
-const PropTypes = require('prop-types')
-const h = require('react-hyperscript')
-const copyToClipboard = require('copy-to-clipboard')
-const { exportAsFile } = require('../../../helpers/utils/util')
+import React from 'react'
+import PropTypes from 'prop-types'
+import { exportAsFile } from '../../../helpers/utils/util'
+import Copy from '../icon/copy-icon.component'
+import { useI18nContext } from '../../../hooks/useI18nContext'
+import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard'
 
-class ExportTextContainer extends Component {
-  render () {
-    const { text = '', filename = '' } = this.props
-    const { t } = this.context
+function ExportTextContainer ({ text = '' }) {
+  const t = useI18nContext()
+  const [copied, handleCopy] = useCopyToClipboard()
 
-    return (
-      h('.export-text-container', [
-        h('.export-text-container__text-container', [
-          h('.export-text-container__text.notranslate', text),
-        ]),
-        h('.export-text-container__buttons-container', [
-          h('.export-text-container__button.export-text-container__button--copy', {
-            onClick: () => copyToClipboard(text),
-          }, [
-            h('img', { src: 'images/copy-to-clipboard.svg' }),
-            h('.export-text-container__button-text', t('copyToClipboard')),
-          ]),
-          h('.export-text-container__button', {
-            onClick: () => exportAsFile(filename, text),
-          }, [
-            h('img', { src: 'images/download.svg' }),
-            h('.export-text-container__button-text', t('saveAsCsvFile')),
-          ]),
-        ]),
-      ])
-    )
-  }
+  return (
+    <div className="export-text-container">
+      <div className="export-text-container__text-container">
+        <div className="export-text-container__text notranslate">{text}</div>
+      </div>
+      <div className="export-text-container__buttons-container">
+        <div
+          className="export-text-container__button export-text-container__button--copy"
+          onClick={() => {
+            handleCopy(text)
+          }}
+        >
+          <Copy size={17} color="#3098DC" />
+          <div className="export-text-container__button-text">
+            {copied ? t('copiedExclamation') : t('copyToClipboard')}
+          </div>
+        </div>
+        <div
+          className="export-text-container__button"
+          onClick={() => exportAsFile('', text)}
+        >
+          <img src="images/download.svg" alt="" />
+          <div className="export-text-container__button-text">
+            {t('saveAsCsvFile')}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 ExportTextContainer.propTypes = {
   text: PropTypes.string,
-  filename: PropTypes.string,
 }
 
-ExportTextContainer.contextTypes = {
-  t: PropTypes.func,
-}
-
-module.exports = ExportTextContainer
+export default React.memo(ExportTextContainer)

@@ -1,72 +1,58 @@
-const inherits = require('util').inherits
-const Component = require('react').Component
-const h = require('react-hyperscript')
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import Identicon from '../ui/identicon'
-const formatBalance = require('../../helpers/utils/util').formatBalance
-const addressSummary = require('../../helpers/utils/util').addressSummary
+import { addressSummary, formatBalance } from '../../helpers/utils/util'
 
-module.exports = AccountPanel
-
-
-inherits(AccountPanel, Component)
-function AccountPanel () {
-  Component.call(this)
-}
-
-AccountPanel.prototype.render = function () {
-  var state = this.props
-  var identity = state.identity || {}
-  var account = state.account || {}
-  var isFauceting = state.isFauceting
-
-  var panelState = {
-    key: `accountPanel${identity.address}`,
-    identiconKey: identity.address,
-    identiconLabel: identity.name || '',
-    attributes: [
-      {
-        key: 'ADDRESS',
-        value: addressSummary(identity.address),
-      },
-      balanceOrFaucetingIndication(account, isFauceting),
-    ],
+export default class AccountPanel extends Component {
+  static propTypes = {
+    identity: PropTypes.object,
+    account: PropTypes.object,
+    isFauceting: PropTypes.bool,
   }
 
-  return (
+  static defaultProps = {
+    identity: {},
+    account: {},
+    isFauceting: false,
+  }
 
-    h('.identity-panel.flex-row.flex-space-between', {
-      style: {
-        flex: '1 0 auto',
-        cursor: panelState.onClick ? 'pointer' : undefined,
-      },
-      onClick: panelState.onClick,
-    }, [
+  render () {
+    const { identity, account, isFauceting } = this.props
 
-      // account identicon
-      h('.identicon-wrapper.flex-column.select-none', [
-        h(Identicon, {
-          address: panelState.identiconKey,
-          imageify: state.imageifyIdenticons,
-        }),
-        h('span.font-small', panelState.identiconLabel.substring(0, 7) + '...'),
-      ]),
+    const panelState = {
+      key: `accountPanel${identity.address}`,
+      identiconKey: identity.address,
+      identiconLabel: identity.name || '',
+      attributes: [
+        {
+          key: 'ADDRESS',
+          value: addressSummary(identity.address),
+        },
+        balanceOrFaucetingIndication(account, isFauceting),
+      ],
+    }
 
-      // account address, balance
-      h('.identity-data.flex-column.flex-justify-center.flex-grow.select-none', [
-
-        panelState.attributes.map((attr) => {
-          return h('.flex-row.flex-space-between', {
-            key: '' + Math.round(Math.random() * 1000000),
-          }, [
-            h('label.font-small.no-select', attr.key),
-            h('span.font-small', attr.value),
-          ])
-        }),
-      ]),
-
-    ])
-
-  )
+    return (
+      <div
+        className="identity-panel flex-row flex-space-between"
+        style={{ flex: '1 0 auto', cursor: panelState.onClick ? 'pointer' : undefined }}
+        onClick={panelState.onClick}
+      >
+        <div className="identicon-wrapper flex-column select-none">
+          <Identicon address={panelState.identiconKey} />
+          <span className="font-small">{panelState.identiconLabel.substring(0, 7) + '...'}</span>
+        </div>
+        <div className="identity-data flex-column flex-justify-center flex-grow select-none">
+          {panelState.attributes.map((attr, index) => (
+            <div className="flex-row flex-space-between" key={index}>
+              <label className="font-small no-select">{attr.key}</label>
+              <span className="font-small">{attr.value}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
 }
 
 function balanceOrFaucetingIndication (account) {

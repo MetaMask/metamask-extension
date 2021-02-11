@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import MetaMetricsOptIn from './metametrics-opt-in.component'
 import { setParticipateInMetaMetrics } from '../../../store/actions'
-import { getFirstTimeFlowTypeRoute } from '../first-time-flow.selectors'
+import { getFirstTimeFlowTypeRoute } from '../../../selectors'
 
 const firstTimeFlowTypeNameMap = {
   create: 'Selected Create New Wallet',
@@ -18,7 +18,7 @@ const mapStateToProps = (state) => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     setParticipateInMetaMetrics: (val) => dispatch(setParticipateInMetaMetrics(val)),
   }

@@ -15,9 +15,11 @@ export default function RecipientGroup ({ label, items, onSelect, selectedAddres
 
   return (
     <div className="send__select-recipient-wrapper__group">
-      {label && <div className="send__select-recipient-wrapper__group-label">
-        {label}
-      </div>}
+      {label && (
+        <div className="send__select-recipient-wrapper__group-label">
+          {label}
+        </div>
+      )}
       {
         items.map(({ address, name }) => (
           <div
@@ -51,7 +53,7 @@ export default function RecipientGroup ({ label, items, onSelect, selectedAddres
 RecipientGroup.propTypes = {
   label: PropTypes.string,
   items: PropTypes.arrayOf(PropTypes.shape({
-    address: PropTypes.string,
+    address: PropTypes.string.isRequired,
     name: PropTypes.string,
   })),
   onSelect: PropTypes.func.isRequired,

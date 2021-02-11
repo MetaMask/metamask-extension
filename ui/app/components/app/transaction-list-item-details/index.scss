@@ -17,15 +17,10 @@
   }
 
   &__header-button {
-    font-size: .625rem;
+    font-size: 0.625rem;
 
     &:not(:last-child) {
       margin-right: 8px;
-    }
-
-    &__copy-icon {
-      width: 10px;
-      height: 10px;
     }
   }
 
@@ -35,29 +30,19 @@
 
   &__cards-container {
     display: flex;
-    flex-direction: row;
-
-    @media screen and (max-width: $break-small) {
-      flex-direction: column;
-    }
+    flex-direction: column;
   }
 
   &__transaction-breakdown {
     flex: 1;
     margin-right: 8px;
     min-width: 0;
-
-    @media screen and (max-width: $break-small) {
-      margin: 0 0 8px 0;
-    }
+    margin: 0 0 8px 0;
   }
 
   &__transaction-activity-log {
     flex: 2;
     min-width: 0;
-
-    @media screen and (min-width: $break-large) {
-      padding-left: 12px;
-    }
+    padding-left: 12px;
   }
 }

@@ -1,16 +1,16 @@
 import { connect } from 'react-redux'
-import R from 'ramda'
+import { findLastIndex } from 'lodash'
 import TransactionActivityLog from './transaction-activity-log.component'
-import { conversionRateSelector, getNativeCurrency } from '../../../selectors/selectors'
+import { conversionRateSelector, getNativeCurrency } from '../../../selectors'
 import { combineTransactionHistories } from './transaction-activity-log.util'
 import {
   TRANSACTION_RESUBMITTED_EVENT,
   TRANSACTION_CANCEL_ATTEMPTED_EVENT,
 } from './transaction-activity-log.constants'
 
-const matchesEventKey = matchEventKey => ({ eventKey }) => eventKey === matchEventKey
+const matchesEventKey = (matchEventKey) => ({ eventKey }) => eventKey === matchEventKey
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     conversionRate: conversionRateSelector(state),
     nativeCurrency: getNativeCurrency(state),
@@ -27,8 +27,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   } = ownProps
 
   const activities = combineTransactionHistories(transactions)
-  const inlineRetryIndex = R.findLastIndex(matchesEventKey(TRANSACTION_RESUBMITTED_EVENT))(activities)
-  const inlineCancelIndex = R.findLastIndex(matchesEventKey(TRANSACTION_CANCEL_ATTEMPTED_EVENT))(activities)
+  const inlineRetryIndex = findLastIndex(activities, matchesEventKey(TRANSACTION_RESUBMITTED_EVENT))
+  const inlineCancelIndex = findLastIndex(activities, matchesEventKey(TRANSACTION_CANCEL_ATTEMPTED_EVENT))
 
   return {
     ...stateProps,

@@ -8,7 +8,6 @@ import { INITIALIZE_CREATE_PASSWORD_ROUTE, INITIALIZE_SELECT_ACTION_ROUTE } from
 export default class Welcome extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
-    isInitialized: PropTypes.bool,
     participateInMetaMetrics: PropTypes.bool,
     welcomeScreenSeen: PropTypes.bool,
   }
@@ -42,12 +41,12 @@ export default class Welcome extends PureComponent {
 
     return (
       <div className="welcome-page__wrapper">
-        <div className="welcome-page">
-          <Mascot
-            animationEventEmitter={this.animationEventEmitter}
-            width="125"
-            height="125"
-          />
+        <div className="welcome-page"
+			style={{
+                      backgroundImage: "url('./images/celo_logo.png')",
+                      height: '40px',
+                    }}
+         >
           <div className="welcome-page__header">
             { t('welcome') }
           </div>

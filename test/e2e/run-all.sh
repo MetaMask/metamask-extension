@@ -5,85 +5,94 @@ set -e
 set -u
 set -o pipefail
 
-# Set the environment variable 'GANACHE_ARGS' to change any optional ganache flags
-# By default, the flag `--quiet` is used. Setting 'GANACHE_ARGS' will override the default.
-OPTIONAL_GANACHE_ARGS="${GANACHE_ARGS---quiet}"
-BASE_GANACHE_ARGS="${OPTIONAL_GANACHE_ARGS} --blockTime 2"
+retry () {
+  retry=0
+  limit="${METAMASK_E2E_RETRY_LIMIT:-3}"
+  while [[ $retry -lt $limit ]]
+  do
+    "$@" && break
+    retry=$(( retry + 1 ))
+    sleep 1
+  done
+
+  if [[ $retry == "$limit" ]]
+  then
+    exit 1
+  fi
+}
 
 export PATH="$PATH:./node_modules/.bin"
-export GANACHE_ARGS="${BASE_GANACHE_ARGS}"
 
-concurrently --kill-others \
-  --names 'ganache,dapp,e2e' \
+for spec in test/e2e/tests/*.spec.js
+do
+  retry mocha --no-timeouts "${spec}"
+done
+
+retry concurrently --kill-others \
+  --names 'dapp,e2e' \
   --prefix '[{time}][{name}]' \
   --success first \
-  'yarn ganache:start' \
   'yarn dapp' \
-  'sleep 5 && mocha test/e2e/metamask-ui.spec'
+  'mocha test/e2e/metamask-ui.spec'
 
-concurrently --kill-others \
-  --names 'ganache,dapp,e2e' \
+retry concurrently --kill-others \
+  --names 'dapp,e2e' \
   --prefix '[{time}][{name}]' \
   --success first \
-  'yarn ganache:start' \
   'yarn dapp' \
-  'sleep 5 && mocha test/e2e/metamask-responsive-ui.spec'
+  'mocha test/e2e/metamask-responsive-ui.spec'
 
-concurrently --kill-others \
-  --names 'ganache,dapp,e2e' \
+retry concurrently --kill-others \
+  --names 'dapp,e2e' \
   --prefix '[{time}][{name}]' \
   --success first \
-  'yarn ganache:start' \
   'yarn dapp' \
-  'sleep 5 && mocha test/e2e/signature-request.spec'
+  'mocha test/e2e/signature-request.spec'
 
-export GANACHE_ARGS="${BASE_GANACHE_ARGS} --deterministic --account=0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9,25000000000000000000"
-concurrently --kill-others \
-  --names 'ganache,e2e' \
+retry concurrently --kill-others \
+  --names 'e2e' \
   --prefix '[{time}][{name}]' \
   --success first \
-  'yarn ganache:start' \
-  'sleep 5 && mocha test/e2e/from-import-ui.spec'
+  'mocha test/e2e/from-import-ui.spec'
 
-concurrently --kill-others \
-  --names 'ganache,e2e' \
+retry concurrently --kill-others \
+  --names 'e2e' \
   --prefix '[{time}][{name}]' \
   --success first \
-  'npm run ganache:start' \
-  'sleep 5 && mocha test/e2e/send-edit.spec'
+  'mocha test/e2e/send-edit.spec'
 
-concurrently --kill-others \
-  --names 'ganache,dapp,e2e' \
+retry concurrently --kill-others \
+  --names 'dapp,e2e' \
   --prefix '[{time}][{name}]' \
   --success first \
-  'yarn ganache:start' \
   'yarn dapp' \
-  'sleep 5 && mocha test/e2e/ethereum-on.spec'
+  'mocha test/e2e/ethereum-on.spec'
 
-export GANACHE_ARGS="${BASE_GANACHE_ARGS} --deterministic --account=0x250F458997A364988956409A164BA4E16F0F99F916ACDD73ADCD3A1DE30CF8D1,0  --account=0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9,25000000000000000000"
-concurrently --kill-others \
-  --names 'ganache,sendwithprivatedapp,e2e' \
+retry concurrently --kill-others \
+  --names 'dapp,e2e' \
   --prefix '[{time}][{name}]' \
   --success first \
-  'npm run ganache:start' \
-  'npm run sendwithprivatedapp' \
-  'sleep 5 && mocha test/e2e/incremental-security.spec'
-
-export GANACHE_ARGS="${BASE_GANACHE_ARGS} --deterministic --account=0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9,25000000000000000000"
-concurrently --kill-others \
-  --names 'ganache,dapp,e2e' \
-  --prefix '[{time}][{name}]' \
-  --success first \
-  'yarn ganache:start' \
   'yarn dapp' \
-  'sleep 5 && mocha test/e2e/address-book.spec'
+  'mocha test/e2e/permissions.spec'
 
-export GANACHE_ARGS="${BASE_GANACHE_ARGS} --deterministic --account=0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9,25000000000000000000"
-concurrently --kill-others \
-  --names 'ganache,dapp,e2e' \
+retry concurrently --kill-others \
+  --names 'sendwithprivatedapp,e2e' \
+  --prefix '[{time}][{name}]' \
+  --success first \
+  'yarn sendwithprivatedapp' \
+  'mocha test/e2e/incremental-security.spec'
+
+retry concurrently --kill-others \
+  --names 'dapp,e2e' \
+  --prefix '[{time}][{name}]' \
+  --success first \
+  'yarn dapp' \
+  'mocha test/e2e/address-book.spec'
+
+retry concurrently --kill-others \
+  --names '3box,dapp,e2e' \
   --prefix '[{time}][{name}]' \
   --success first \
   'node test/e2e/mock-3box/server.js' \
-  'yarn ganache:start' \
   'yarn dapp' \
-  'sleep 5 && mocha test/e2e/threebox.spec'
+  'mocha test/e2e/threebox.spec'

@@ -1,12 +1,11 @@
 import { connect } from 'react-redux'
 import LoadingNetworkScreen from './loading-network-screen.component'
-import actions from '../../../store/actions'
-import { getNetworkIdentifier } from '../../../selectors/selectors'
+import * as actions from '../../../store/actions'
+import { getNetworkIdentifier } from '../../../selectors'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
     loadingMessage,
-    currentView,
     lastSelectedProvider,
   } = state.appState
   const {
@@ -20,7 +19,7 @@ const mapStateToProps = state => {
     : [provider.type]
 
   return {
-    isLoadingNetwork: network === 'loading' && currentView.name !== 'config',
+    isLoadingNetwork: network === 'loading',
     loadingMessage,
     lastSelectedProvider,
     setProviderArgs,
@@ -29,7 +28,7 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     setProviderType: (type) => {
       dispatch(actions.setProviderType(type))

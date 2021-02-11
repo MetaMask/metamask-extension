@@ -1,2 +1,3 @@
 import ToggleButton from './toggle-button.component'
-module.exports = ToggleButton
+
+export default ToggleButton

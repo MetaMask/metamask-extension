@@ -19,15 +19,15 @@ const mockState = {
   },
 }
 
-describe('withModalProps', () => {
-  it('should return a component wrapped with modal state props', () => {
+describe('withModalProps', function () {
+  it('should return a component wrapped with modal state props', function () {
     const TestComponent = () => (
       <div className="test">Testing</div>
     )
     const WrappedComponent = withModalProps(TestComponent)
     const store = configureMockStore()(mockState)
     const wrapper = mount(
-      <WrappedComponent store={store} />
+      <WrappedComponent store={store} />,
     )
 
     assert.ok(wrapper)

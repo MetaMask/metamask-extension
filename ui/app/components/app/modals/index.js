@@ -1,5 +1,3 @@
-const Modal = require('./modal')
+import Modal from './modal'
 
-module.exports = {
-  Modal,
-}
+export { Modal }

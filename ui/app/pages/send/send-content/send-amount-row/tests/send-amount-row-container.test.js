@@ -19,7 +19,7 @@ proxyquire('../send-amount-row.container.js', {
       return () => ({})
     },
   },
-  './send-amount-row.selectors': { sendAmountIsInError: (s) => `mockInError:${s}` },
+  '../../../../selectors': { sendAmountIsInError: (s) => `mockInError:${s}` },
   '../../send.utils': {
     getAmountErrorObject: (mockDataObject) => ({ ...mockDataObject, mockChange: true }),
     getGasFeeErrorObject: (mockDataObject) => ({ ...mockDataObject, mockGasFeeErrorChange: true }),
@@ -28,62 +28,62 @@ proxyquire('../send-amount-row.container.js', {
   '../../../../ducks/send/send.duck': duckActionSpies,
 })
 
-describe('send-amount-row container', () => {
+describe('send-amount-row container', function () {
 
-  describe('mapDispatchToProps()', () => {
+  describe('mapDispatchToProps()', function () {
     let dispatchSpy
     let mapDispatchToPropsObject
 
-    beforeEach(() => {
+    beforeEach(function () {
       dispatchSpy = sinon.spy()
       mapDispatchToPropsObject = mapDispatchToProps(dispatchSpy)
       duckActionSpies.updateSendErrors.resetHistory()
     })
 
-    describe('setMaxModeTo()', () => {
-      it('should dispatch an action', () => {
+    describe('setMaxModeTo()', function () {
+      it('should dispatch an action', function () {
         mapDispatchToPropsObject.setMaxModeTo('mockBool')
         assert(dispatchSpy.calledOnce)
         assert(actionSpies.setMaxModeTo.calledOnce)
         assert.equal(
           actionSpies.setMaxModeTo.getCall(0).args[0],
-          'mockBool'
+          'mockBool',
         )
       })
     })
 
-    describe('updateSendAmount()', () => {
-      it('should dispatch an action', () => {
+    describe('updateSendAmount()', function () {
+      it('should dispatch an action', function () {
         mapDispatchToPropsObject.updateSendAmount('mockAmount')
         assert(dispatchSpy.calledOnce)
         assert(actionSpies.updateSendAmount.calledOnce)
         assert.equal(
           actionSpies.updateSendAmount.getCall(0).args[0],
-          'mockAmount'
+          'mockAmount',
         )
       })
     })
 
-    describe('updateGasFeeError()', () => {
-      it('should dispatch an action', () => {
+    describe('updateGasFeeError()', function () {
+      it('should dispatch an action', function () {
         mapDispatchToPropsObject.updateGasFeeError({ some: 'data' })
         assert(dispatchSpy.calledOnce)
         assert(duckActionSpies.updateSendErrors.calledOnce)
         assert.deepEqual(
           duckActionSpies.updateSendErrors.getCall(0).args[0],
-          { some: 'data', mockGasFeeErrorChange: true }
+          { some: 'data', mockGasFeeErrorChange: true },
         )
       })
     })
 
-    describe('updateSendAmountError()', () => {
-      it('should dispatch an action', () => {
+    describe('updateSendAmountError()', function () {
+      it('should dispatch an action', function () {
         mapDispatchToPropsObject.updateSendAmountError({ some: 'data' })
         assert(dispatchSpy.calledOnce)
         assert(duckActionSpies.updateSendErrors.calledOnce)
         assert.deepEqual(
           duckActionSpies.updateSendErrors.getCall(0).args[0],
-          { some: 'data', mockChange: true }
+          { some: 'data', mockChange: true },
         )
       })
     })

@@ -61,42 +61,46 @@ export default class LoadingNetworkScreen extends PureComponent {
   }
 
   renderLoadingScreenContent = () => {
-    return <div className="loading-overlay__screen-content">
-      <Spinner color="#F7C06C" />
-      {this.renderMessage()}
-    </div>
+    return (
+      <div className="loading-overlay__screen-content">
+        <Spinner color="#F7C06C" />
+        {this.renderMessage()}
+      </div>
+    )
   }
 
   renderErrorScreenContent = () => {
     const { showNetworkDropdown, setProviderArgs, setProviderType } = this.props
 
-    return <div className="loading-overlay__error-screen">
-      <span className="loading-overlay__emoji">&#128542;</span>
-      <span>{ this.context.t('somethingWentWrong') }</span>
-      <div className="loading-overlay__error-buttons">
-        <Button
-          type="default"
-          onClick={() => {
-            window.clearTimeout(this.cancelCallTimeout)
-            showNetworkDropdown()
-          }}
-        >
-          { this.context.t('switchNetworks') }
-        </Button>
+    return (
+      <div className="loading-overlay__error-screen">
+        <span className="loading-overlay__emoji">&#128542;</span>
+        <span>{ this.context.t('somethingWentWrong') }</span>
+        <div className="loading-overlay__error-buttons">
+          <Button
+            type="default"
+            onClick={() => {
+              window.clearTimeout(this.cancelCallTimeout)
+              showNetworkDropdown()
+            }}
+          >
+            { this.context.t('switchNetworks') }
+          </Button>
 
-        <Button
-          type="primary"
-          onClick={() => {
-            this.setState({ showErrorScreen: false })
-            setProviderType(...setProviderArgs)
-            window.clearTimeout(this.cancelCallTimeout)
-            this.cancelCallTimeout = setTimeout(this.cancelCall, this.props.cancelTime || 15000)
-          }}
-        >
-          { this.context.t('tryAgain') }
-        </Button>
+          <Button
+            type="primary"
+            onClick={() => {
+              this.setState({ showErrorScreen: false })
+              setProviderType(...setProviderArgs)
+              window.clearTimeout(this.cancelCallTimeout)
+              this.cancelCallTimeout = setTimeout(this.cancelCall, this.props.cancelTime || 15000)
+            }}
+          >
+            { this.context.t('tryAgain') }
+          </Button>
+        </div>
       </div>
-    </div>
+    )
   }
 
   cancelCall = () => {

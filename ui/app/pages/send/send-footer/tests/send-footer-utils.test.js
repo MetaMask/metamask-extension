@@ -1,7 +1,7 @@
 import assert from 'assert'
 import proxyquire from 'proxyquire'
 import sinon from 'sinon'
-const { TOKEN_TRANSFER_FUNCTION_SIGNATURE } = require('../../send.constants')
+import { TOKEN_TRANSFER_FUNCTION_SIGNATURE } from '../../send.constants'
 
 const stubs = {
   rawEncode: sinon.stub().callsFake((arr1, arr2) => {
@@ -21,10 +21,10 @@ const {
   addHexPrefixToObjectValues,
 } = sendUtils
 
-describe('send-footer utils', () => {
+describe('send-footer utils', function () {
 
-  describe('addHexPrefixToObjectValues()', () => {
-    it('should return a new object with the same properties with a 0x prefix', () => {
+  describe('addHexPrefixToObjectValues()', function () {
+    it('should return a new object with the same properties with a 0x prefix', function () {
       assert.deepEqual(
         addHexPrefixToObjectValues({
           prop1: '0x123',
@@ -35,41 +35,41 @@ describe('send-footer utils', () => {
           prop1: '0x123',
           prop2: '0x456',
           prop3: '0xx',
-        }
+        },
       )
     })
   })
 
-  describe('addressIsNew()', () => {
-    it('should return false if the address exists in toAccounts', () => {
+  describe('addressIsNew()', function () {
+    it('should return false if the address exists in toAccounts', function () {
       assert.equal(
         addressIsNew([
           { address: '0xabc' },
           { address: '0xdef' },
           { address: '0xghi' },
         ], '0xdef'),
-        false
+        false,
       )
     })
 
-    it('should return true if the address does not exists in toAccounts', () => {
+    it('should return true if the address does not exists in toAccounts', function () {
       assert.equal(
         addressIsNew([
           { address: '0xabc' },
           { address: '0xdef' },
           { address: '0xghi' },
         ], '0xxyz'),
-        true
+        true,
       )
     })
   })
 
-  describe('constructTxParams()', () => {
-    it('should return a new txParams object with data if there data is given', () => {
+  describe('constructTxParams()', function () {
+    it('should return a new txParams object with data if there data is given', function () {
       assert.deepEqual(
         constructTxParams({
           data: 'someData',
-          selectedToken: false,
+          sendToken: undefined,
           to: 'mockTo',
           amount: 'mockAmount',
           from: 'mockFrom',
@@ -83,14 +83,14 @@ describe('send-footer utils', () => {
           from: '0xmockFrom',
           gas: '0xmockGas',
           gasPrice: '0xmockGasPrice',
-        }
+        },
       )
     })
 
-    it('should return a new txParams object with value and to properties if there is no selectedToken', () => {
+    it('should return a new txParams object with value and to properties if there is no sendToken', function () {
       assert.deepEqual(
         constructTxParams({
-          selectedToken: false,
+          sendToken: undefined,
           to: 'mockTo',
           amount: 'mockAmount',
           from: 'mockFrom',
@@ -104,14 +104,14 @@ describe('send-footer utils', () => {
           from: '0xmockFrom',
           gas: '0xmockGas',
           gasPrice: '0xmockGasPrice',
-        }
+        },
       )
     })
 
-    it('should return a new txParams object without a to property and a 0 value if there is a selectedToken', () => {
+    it('should return a new txParams object without a to property and a 0 value if there is a sendToken', function () {
       assert.deepEqual(
         constructTxParams({
-          selectedToken: true,
+          sendToken: { address: '0x0' },
           to: 'mockTo',
           amount: 'mockAmount',
           from: 'mockFrom',
@@ -124,20 +124,20 @@ describe('send-footer utils', () => {
           from: '0xmockFrom',
           gas: '0xmockGas',
           gasPrice: '0xmockGasPrice',
-        }
+        },
       )
     })
   })
 
-  describe('constructUpdatedTx()', () => {
-    it('should return a new object with an updated txParams', () => {
+  describe('constructUpdatedTx()', function () {
+    it('should return a new object with an updated txParams', function () {
       const result = constructUpdatedTx({
         amount: 'mockAmount',
         editingTransactionId: '0x456',
         from: 'mockFrom',
         gas: 'mockGas',
         gasPrice: 'mockGasPrice',
-        selectedToken: false,
+        sendToken: false,
         to: 'mockTo',
         unapprovedTxs: {
           '0x123': {},
@@ -162,14 +162,14 @@ describe('send-footer utils', () => {
       })
     })
 
-    it('should not have data property if there is non in the original tx', () => {
+    it('should not have data property if there is non in the original tx', function () {
       const result = constructUpdatedTx({
         amount: 'mockAmount',
         editingTransactionId: '0x456',
         from: 'mockFrom',
         gas: 'mockGas',
         gasPrice: 'mockGasPrice',
-        selectedToken: false,
+        sendToken: false,
         to: 'mockTo',
         unapprovedTxs: {
           '0x123': {},
@@ -196,14 +196,14 @@ describe('send-footer utils', () => {
       })
     })
 
-    it('should have token property values if selectedToken is truthy', () => {
+    it('should have token property values if sendToken is truthy', function () {
       const result = constructUpdatedTx({
         amount: 'mockAmount',
         editingTransactionId: '0x456',
         from: 'mockFrom',
         gas: 'mockGas',
         gasPrice: 'mockGasPrice',
-        selectedToken: {
+        sendToken: {
           address: 'mockTokenAddress',
         },
         to: 'mockTo',

@@ -5,8 +5,8 @@ import sinon from 'sinon'
 import Modal from '../modal.component'
 import Button from '../../../ui/button'
 
-describe('Modal Component', () => {
-  it('should render a modal with a submit button', () => {
+describe('Modal Component', function () {
+  it('should render a modal with a submit button', function () {
     const wrapper = shallow(<Modal />)
 
     assert.equal(wrapper.find('.modal-container').length, 1)
@@ -15,7 +15,7 @@ describe('Modal Component', () => {
     assert.equal(buttons.at(0).props().type, 'secondary')
   })
 
-  it('should render a modal with a cancel and a submit button', () => {
+  it('should render a modal with a cancel and a submit button', function () {
     const handleCancel = sinon.spy()
     const handleSubmit = sinon.spy()
     const wrapper = shallow(
@@ -24,7 +24,7 @@ describe('Modal Component', () => {
         cancelText="Cancel"
         onSubmit={handleSubmit}
         submitText="Submit"
-      />
+      />,
     )
 
     const buttons = wrapper.find(Button)
@@ -45,7 +45,7 @@ describe('Modal Component', () => {
     assert.equal(handleSubmit.callCount, 1)
   })
 
-  it('should render a modal with different button types', () => {
+  it('should render a modal with different button types', function () {
     const wrapper = shallow(
       <Modal
         onCancel={() => {}}
@@ -54,7 +54,7 @@ describe('Modal Component', () => {
         onSubmit={() => {}}
         submitText="Submit"
         submitType="confirm"
-      />
+      />,
     )
 
     const buttons = wrapper.find(Button)
@@ -63,7 +63,7 @@ describe('Modal Component', () => {
     assert.equal(buttons.at(1).props().type, 'confirm')
   })
 
-  it('should render a modal with children', () => {
+  it('should render a modal with children', function () {
     const wrapper = shallow(
       <Modal
         onCancel={() => {}}
@@ -72,13 +72,13 @@ describe('Modal Component', () => {
         submitText="Submit"
       >
         <div className="test-child" />
-      </Modal>
+      </Modal>,
     )
 
     assert.ok(wrapper.find('.test-class'))
   })
 
-  it('should render a modal with a header', () => {
+  it('should render a modal with a header', function () {
     const handleCancel = sinon.spy()
     const handleSubmit = sinon.spy()
     const wrapper = shallow(
@@ -89,7 +89,7 @@ describe('Modal Component', () => {
         submitText="Submit"
         headerText="My Header"
         onClose={handleCancel}
-      />
+      />,
     )
 
     assert.ok(wrapper.find('.modal-container__header'))
@@ -101,7 +101,7 @@ describe('Modal Component', () => {
     assert.equal(handleSubmit.callCount, 0)
   })
 
-  it('should disable the submit button if submitDisabled is true', () => {
+  it('should disable the submit button if submitDisabled is true', function () {
     const handleCancel = sinon.spy()
     const handleSubmit = sinon.spy()
     const wrapper = mount(
@@ -113,7 +113,7 @@ describe('Modal Component', () => {
         submitDisabled
         headerText="My Header"
         onClose={handleCancel}
-      />
+      />,
     )
 
     const buttons = wrapper.find(Button)

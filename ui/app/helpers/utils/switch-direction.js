@@ -1,6 +1,6 @@
 /**
  * Switch the CSS stylesheet used between 'rtl' and 'ltr'
- * @param {('ltr' | 'rtl')} direction Text direction, either left-to-right (ltr) or right-to-left (rtl)
+ * @param {('ltr' | 'rtl')} direction - Text direction, either left-to-right (ltr) or right-to-left (rtl)
  */
 const switchDirection = async (direction) => {
   if (direction === 'auto') {
@@ -8,8 +8,8 @@ const switchDirection = async (direction) => {
   }
   let updatedLink
   Array.from(document.getElementsByTagName('link'))
-    .filter(link => link.rel === 'stylesheet')
-    .forEach(link => {
+    .filter((link) => link.rel === 'stylesheet')
+    .forEach((link) => {
       if (link.title === direction && link.disabled) {
         link.disabled = false
         updatedLink = link

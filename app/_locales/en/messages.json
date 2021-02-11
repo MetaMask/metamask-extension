@@ -6,7 +6,7 @@
     "message": "Select this to use Etherscan to show incoming transactions in the transactions list"
   },
   "chartOnlyAvailableEth": {
-    "message": "Chart only available on Ethereum networks."
+    "message": "Chart only available on Celo networks."
   },
   "confirmClear": {
     "message": "Are you sure you want to clear approved websites?"
@@ -115,7 +115,7 @@
     "message": "Add Suggested Tokens"
   },
   "addAcquiredTokens": {
-    "message": "Add the tokens you've acquired using MetaMask"
+    "message": "Add the tokens you've acquired using CeloExtentionWallet"
   },
   "allowOriginSpendToken": {
     "message": "Allow $1 to spend your $2?",
@@ -132,11 +132,11 @@
     "message": "Amount:"
   },
   "appDescription": {
-    "message": "An Ethereum Wallet in your Browser",
+    "message": "A Celo Wallet in your Browser",
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "CeloExtensionWallet",
     "description": "The name of the application"
   },
   "approve": {
@@ -164,7 +164,7 @@
     "message": "Auto-Logout Timer (minutes)"
   },
   "autoLogoutTimeLimitDescription": {
-    "message": "Set the idle time in minutes before MetaMask will automatically log out"
+    "message": "Set the idle time in minutes before CeloExtensionWallet will automatically log out"
   },
   "average": {
     "message": "Average"
@@ -179,7 +179,7 @@
     "message": "Backup your Secret Recovery code to keep your wallet and funds secure."
   },
   "backupApprovalInfo": {
-    "message": "This secret code is required to recover your wallet in case you lose your device, forget your password, have to re-install MetaMask, or want to access your wallet on another device."
+    "message": "This secret code is required to recover your wallet in case you lose your device, forget your password, have to re-install CeloExtensionWallet, or want to access your wallet on another device."
   },
   "backupNow": {
     "message": "Backup now"
@@ -223,13 +223,13 @@
     "message": "Your Browser is not supported..."
   },
   "builtInCalifornia": {
-    "message": "MetaMask is designed and built in California."
+    "message": "https://github.com/dsrvlabs/celo-desktopwallet-extension"
   },
   "buyWithWyre": {
     "message": "Buy ETH with Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre lets you use a debit card to deposit ETH right in to your MetaMask account."
+    "message": "Wyre lets you use a debit card to deposit ETH right in to your CeloExtensionWallet account."
   },
   "buyCoinSwitch": {
     "message": "Buy on CoinSwitch"
@@ -277,7 +277,7 @@
     "message": "Close"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
+    "message": "You need to use CeloExtensionWallet on Google Chrome in order to connect to your Hardware Wallet."
   },
   "confirm": {
     "message": "Confirm"
@@ -310,7 +310,7 @@
     "message": "Connecting to Kovan Test Network"
   },
   "connectingToMainnet": {
-    "message": "Connecting to Main Ethereum Network"
+    "message": "Connecting to Main Celo Network"
   },
   "connectingToRopsten": {
     "message": "Connecting to Ropsten Test Network"
@@ -403,7 +403,7 @@
     "message": "Custom Spend Limit"
   },
   "dataBackupFoundInfo": {
-    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+    "message": "Some of your account data was backed up during a previous installation of CeloExtensionWallet. This could include your settings, contacts and tokens. Would you like to restore this data now?"
   },
   "decimalsMustZerotoTen": {
     "message": "Decimals must be at least 0, and not over 36."
@@ -412,7 +412,7 @@
     "message": "Decimals of Precision"
   },
   "defaultNetwork": {
-    "message": "The default network for Ether transactions is Main Net."
+    "message": "The default network for Celo transactions is Main Net."
   },
   "delete": {
     "message": "Delete"
@@ -424,16 +424,16 @@
     "message": "Deposit"
   },
   "depositEther": {
-    "message": "Deposit Ether"
+    "message": "Deposit Celo"
   },
   "details": {
     "message": "Details"
   },
   "directDepositEther": {
-    "message": "Directly Deposit Ether"
+    "message": "Directly Deposit Celo"
   },
   "directDepositEtherExplainer": {
-    "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
+    "message": "If you already have some Celo, the quickest way to get Celo in your new wallet by direct deposit."
   },
   "dismiss": {
     "message": "Dismiss"
@@ -481,7 +481,7 @@
     "message": "Never share the phrase with anyone."
   },
   "endOfFlowMessage5": {
-    "message": "Be careful of phishing! MetaMask will never spontaneously ask for your seed phrase."
+    "message": "Be careful of phishing! CeloExtensionWallet will never spontaneously ask for your seed phrase."
   },
   "endOfFlowMessage6": {
     "message": "If you need to back up your seed phrase again, you can find it in Settings -> Security."
@@ -490,7 +490,7 @@
     "message": "If you ever have questions or see something fishy, email support@metamask.io."
   },
   "endOfFlowMessage8": {
-    "message": "MetaMask cannot recover your seedphrase."
+    "message": "CeloExtensionWallet cannot recover your seedphrase."
   },
   "endOfFlowMessage9": {
     "message": "Learn more."
@@ -502,7 +502,7 @@
     "message": "Error in ENS name registration"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS name not found on the current network. Try switching to Main Ethereum Network."
+    "message": "ENS name not found on the current network. Try switching to Main Celo Network."
   },
   "enterAnAlias": {
     "message": "Enter an alias"
@@ -517,7 +517,7 @@
     "message": "Enter password to continue"
   },
   "ethereumPublicAddress": {
-    "message": "Ethereum Public Address"
+    "message": "Celo Public Address"
   },
   "etherscanView": {
     "message": "View account on Etherscan"
@@ -588,7 +588,7 @@
     "message": "Gas Price Extremely Low"
   },
   "gasPriceInfoModalContent": {
-    "message": "Gas price specifies the amount of Ether you are willing to pay for each unit of gas."
+    "message": "Gas price specifies the amount  you are willing to pay for each unit of gas."
   },
   "gasPriceNoDenom": {
     "message": "Gas Price"
@@ -603,11 +603,11 @@
     "message": "Currency conversion, primary currency, language, blockies identicon"
   },
   "getEther": {
-    "message": "Get Ether"
+    "message": "Get Celo"
   },
   "getEtherFromFaucet": {
-    "message": "Get Ether from a faucet for the $1",
-    "description": "Displays network name for Ether faucet"
+    "message": "Get Celo from a faucet for the $1",
+    "description": "Displays network name for Celo faucet"
   },
   "getHelp": {
     "message": "Get Help."
@@ -632,7 +632,7 @@
     "message": "Connect a hardware wallet"
   },
   "hardwareWalletsMsg": {
-    "message": "Select a hardware wallet you'd like to use with MetaMask"
+    "message": "Select a hardware wallet you'd like to use with CeloExtensionWallet"
   },
   "havingTroubleConnecting": {
     "message": "Having trouble connecting?"
@@ -664,7 +664,7 @@
     "message": "Import Account"
   },
   "importAccountMsg": {
-    "message": " Imported accounts will not be associated with your originally created MetaMask account seedphrase. Learn more about imported accounts "
+    "message": " Imported accounts will not be associated with your originally created CeloExtensionWallet account seedphrase. Learn more about imported accounts "
   },
   "importAccountSeedPhrase": {
     "message": "Import an Account with Seed Phrase"
@@ -781,7 +781,7 @@
     "message": "Logout time is too great"
   },
   "mainnet": {
-    "message": "Main Ethereum Network"
+    "message": "Main Celo Network"
   },
   "memorizePhrase": {
     "message": "Memorize this phrase."
@@ -796,13 +796,13 @@
     "message": "Message"
   },
   "metamaskDescription": {
-    "message": "Connecting you to Ethereum and the Decentralized Web."
+    "message": "Connecting you to Celo and the Decentralized Web."
   },
   "metamaskSeedWords": {
-    "message": "MetaMask Seed Words"
+    "message": "CeloExtensionWallet Seed Words"
   },
   "metamaskVersion": {
-    "message": "MetaMask Version"
+    "message": "CeloExtensionWallet Version"
   },
   "missingYourTokens": {
     "message": "Don't see your tokens?"
@@ -817,13 +817,13 @@
     "message": "My Wallet Accounts"
   },
   "myWalletAccountsDescription": {
-    "message": "All of your MetaMask created accounts will automatically be added to this section."
+    "message": "All of your CeloExtensionWallet created accounts will automatically be added to this section."
   },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
   },
   "needEtherInWallet": {
-    "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."
+    "message": "To interact with decentralized applications using CeloExtensionWallet, you’ll need Celo in your wallet."
   },
   "needImportFile": {
     "message": "You must select a file to import.",
@@ -867,7 +867,7 @@
     "message": "New Network"
   },
   "newToMetaMask": {
-    "message": "New to MetaMask?"
+    "message": "New to Celo Extension Wallet?"
   },
   "noAlreadyHaveSeed": {
     "message": "No, I already have a seed phrase"
@@ -876,7 +876,7 @@
     "message": "Protect Your Keys!"
   },
   "protectYourKeysMessage1": {
-    "message": "Be careful with your seed phrase — there have been reports of websites that attempt to imitate MetaMask. MetaMask will never ask for your seed phrase!"
+    "message": "Be careful with your seed phrase — there have been reports of websites that attempt to imitate CeloExtensionWallet. CeloExtensionWallet will never ask for your seed phrase!"
   },
   "protectYourKeysMessage2": {
     "message": "Keep your phrase safe. If you see something fishy, or you’re uncertain about a website, email support@metamask.io"
@@ -901,7 +901,7 @@
   },
   "nextNonceWarning": {
     "message": "Nonce is higher than suggested nonce of $1",
-    "description": "The next nonce according to MetaMask's internal logic"
+    "description": "The next nonce according to CeloExtensionWallet's internal logic"
   },
   "noAddressForName": {
     "message": "No address has been set for this name."
@@ -943,7 +943,7 @@
     "message": "Participate in MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Participate in MetaMetrics to help us make MetaMask better"
+    "message": "Participate in MetaMetrics to help us make CeloExtensionWallet better"
   },
   "password": {
     "message": "Password"
@@ -974,7 +974,7 @@
     "message": "Primary Currency"
   },
   "primaryCurrencySettingDescription": {
-    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. CELO). Select Fiat to prioritize displaying values in your selected fiat currency."
   },
   "privacyMsg": {
     "message": "Privacy Policy"
@@ -1129,7 +1129,7 @@
     "message": "Your secret backup phrase makes it easy to back up and restore your account."
   },
   "secretBackupPhraseWarning": {
-    "message": "WARNING: Never disclose your backup phrase. Anyone with this phrase can take your Ether forever."
+    "message": "WARNING: Never disclose your backup phrase. Anyone with this phrase can take your Celo forever."
   },
   "secretPhrase": {
     "message": "Enter your secret twelve word phrase here to restore your vault."
@@ -1158,6 +1158,9 @@
   "selectType": {
     "message": "Select Type"
   },
+  "buy": {
+     "message": "Buy"
+  },
   "send": {
     "message": "Send"
   },
@@ -1165,13 +1168,13 @@
     "message": "Send Amount"
   },
   "sendETH": {
-    "message": "Send ETH"
+    "message": "Send CELO"
   },
   "sendTokens": {
     "message": "Send Tokens"
   },
   "sentEther": {
-    "message": "sent ether"
+    "message": "sent CELO"
   },
   "sentTokens": {
     "message": "sent tokens"
@@ -1186,7 +1189,7 @@
     "message": "Select an Account"
   },
   "selectAnAccountHelp": {
-    "message": "Select the account to view in MetaMask"
+    "message": "Select the account to view in CeloExtensionWallet"
   },
   "selectAHigherGasFee": {
     "message": "Select a higher gas fee to accelerate the processing of your transaction.*"
@@ -1268,7 +1271,7 @@
     "message": "Switch Networks"
   },
   "stateLogFileName": {
-    "message": "MetaMask State Logs"
+    "message": "CeloExtensionWallet State Logs"
   },
   "stateLogs": {
     "message": "State Logs"
@@ -1295,7 +1298,7 @@
     "message": "3. Start using dApps and more!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Use your hardware account like you would with any Ethereum account. Log in to dApps, send Eth, buy and store ERC20 tokens and Non-Fungible tokens like CryptoKitties."
+    "message": "Use your hardware account like you would with any Celo account. Log in to dApps, send Celo, buy and store tokens and Non-Fungible tokens like CryptoKitties."
   },
   "storePhrase": {
     "message": "Store this phrase in a password manager like 1Password."
@@ -1331,19 +1334,19 @@
     "message": "Sync with mobile"
   },
   "syncWithMobileDesc": {
-    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+    "message": "You can sync your accounts and information with your mobile device. Open the CeloExtensionWallet mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
   },
   "syncWithMobileDescNewUsers": {
-    "message": "If you just open the MetaMask Mobile app for the first time, just follow the steps in your phone."
+    "message": "If you just open the CeloExtensionWallet Mobile app for the first time, just follow the steps in your phone."
   },
   "syncWithMobileScanThisCode": {
-    "message": "Scan this code with your MetaMask mobile app"
+    "message": "Scan this code with your CeloExtensionWallet mobile app"
   },
   "syncWithMobileBeCareful": {
     "message": "Make sure nobody else is looking at your screen when you scan this code"
   },
   "syncWithMobileComplete": {
-    "message": "Your data has been synced succesfully. Enjoy the MetaMask mobile app!"
+    "message": "Your data has been synced succesfully. Enjoy the CeloExtensionWallet mobile app!"
   },
   "terms": {
     "message": "Terms of Use"
@@ -1445,7 +1448,7 @@
     "message": "Try again"
   },
   "typePassword": {
-    "message": "Type your MetaMask password"
+    "message": "Type your CeloExtensionWallet password"
   },
   "unapproved": {
     "message": "Unapproved"
@@ -1523,7 +1526,7 @@
     "message": "Welcome Back!"
   },
   "welcome": {
-    "message": "Welcome to MetaMask"
+    "message": "Welcome to CeloExtensionWallet"
   },
   "writePhrase": {
     "message": "Write this phrase on a piece of paper and store in a secure location. If you want even more security, write it down on multiple pieces of paper and store each in 2 - 3 different locations."

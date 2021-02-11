@@ -3,12 +3,12 @@ import assert from 'assert'
 import { shallow } from 'enzyme'
 import ModalContent from '../modal-content.component'
 
-describe('ModalContent Component', () => {
-  it('should render a title', () => {
+describe('ModalContent Component', function () {
+  it('should render a title', function () {
     const wrapper = shallow(
       <ModalContent
         title="Modal Title"
-      />
+      />,
     )
 
     assert.equal(wrapper.find('.modal-content__title').length, 1)
@@ -16,11 +16,11 @@ describe('ModalContent Component', () => {
     assert.equal(wrapper.find('.modal-content__description').length, 0)
   })
 
-  it('should render a description', () => {
+  it('should render a description', function () {
     const wrapper = shallow(
       <ModalContent
         description="Modal Description"
-      />
+      />,
     )
 
     assert.equal(wrapper.find('.modal-content__title').length, 0)
@@ -28,12 +28,12 @@ describe('ModalContent Component', () => {
     assert.equal(wrapper.find('.modal-content__description').text(), 'Modal Description')
   })
 
-  it('should render both a title and a description', () => {
+  it('should render both a title and a description', function () {
     const wrapper = shallow(
       <ModalContent
         title="Modal Title"
         description="Modal Description"
-      />
+      />,
     )
 
     assert.equal(wrapper.find('.modal-content__title').length, 1)

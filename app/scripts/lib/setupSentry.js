@@ -1,35 +1,99 @@
-const Sentry = require('@sentry/browser')
+import * as Sentry from '@sentry/browser'
+import { Dedupe, ExtraErrorData } from '@sentry/integrations'
+
+import extractEthjsErrorMessage from './extractEthjsErrorMessage'
+
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
-const extractEthjsErrorMessage = require('./extractEthjsErrorMessage')
-const SENTRY_DSN_PROD = 'https://3567c198f8a8412082d32655da2961d0@sentry.io/273505'
+const METAMASK_ENVIRONMENT = process.env.METAMASK_ENVIRONMENT
 const SENTRY_DSN_DEV = 'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496'
 
-module.exports = setupSentry
+// This describes the subset of Redux state attached to errors sent to Sentry
+// These properties have some potential to be useful for debugging, and they do
+// not contain any identifiable information.
+export const SENTRY_STATE = {
+  gas: true,
+  history: true,
+  metamask: {
+    alertEnabledness: true,
+    completedOnboarding: true,
+    connectedStatusPopoverHasBeenShown: true,
+    conversionDate: true,
+    conversionRate: true,
+    currentBlockGasLimit: true,
+    currentCurrency: true,
+    currentLocale: true,
+    customNonceValue: true,
+    defaultHomeActiveTabName: true,
+    featureFlags: true,
+    firstTimeFlowType: true,
+    forgottenPassword: true,
+    incomingTxLastFetchedBlocksByNetwork: true,
+    ipfsGateway: true,
+    isAccountMenuOpen: true,
+    isInitialized: true,
+    isUnlocked: true,
+    metaMetricsId: true,
+    metaMetricsSendCount: true,
+    nativeCurrency: true,
+    network: true,
+    nextNonce: true,
+    participateInMetaMetrics: true,
+    preferences: true,
+    provider: {
+      nickname: true,
+      ticker: true,
+      type: true,
+    },
+    seedPhraseBackedUp: true,
+    settings: {
+      chainId: true,
+      ticker: true,
+      nickname: true,
+    },
+    showRestorePrompt: true,
+    threeBoxDisabled: true,
+    threeBoxLastUpdated: true,
+    threeBoxSynced: true,
+    threeBoxSyncingAllowed: true,
+    unapprovedDecryptMsgCount: true,
+    unapprovedEncryptionPublicKeyMsgCount: true,
+    unapprovedMsgCount: true,
+    unapprovedPersonalMsgCount: true,
+    unapprovedTypedMessagesCount: true,
+    useBlockie: true,
+    useNonceField: true,
+    usePhishDetect: true,
+    welcomeScreenSeen: true,
+  },
+  unconnectedAccount: true,
+}
 
-// Setup sentry remote error reporting
-function setupSentry (opts) {
-  const { release, getState } = opts
+export default function setupSentry ({ release, getState }) {
   let sentryTarget
-  // detect brave
-  const isBrave = Boolean(window.chrome.ipcRenderer)
 
   if (METAMASK_DEBUG) {
-    console.log('Setting up Sentry Remote Error Reporting: SENTRY_DSN_DEV')
-    sentryTarget = SENTRY_DSN_DEV
+    return
+  } else if (METAMASK_ENVIRONMENT === 'production') {
+    if (!process.env.SENTRY_DSN) {
+      throw new Error(`Missing SENTRY_DSN environment variable in production environment`)
+    }
+    console.log(`Setting up Sentry Remote Error Reporting for '${METAMASK_ENVIRONMENT}': SENTRY_DSN`)
+    sentryTarget = process.env.SENTRY_DSN
   } else {
-    console.log('Setting up Sentry Remote Error Reporting: SENTRY_DSN_PROD')
-    sentryTarget = SENTRY_DSN_PROD
+    console.log(`Setting up Sentry Remote Error Reporting for '${METAMASK_ENVIRONMENT}': SENTRY_DSN_DEV`)
+    sentryTarget = SENTRY_DSN_DEV
   }
 
   Sentry.init({
     dsn: sentryTarget,
     debug: METAMASK_DEBUG,
+    environment: METAMASK_ENVIRONMENT,
+    integrations: [
+      new Dedupe(),
+      new ExtraErrorData(),
+    ],
     release,
     beforeSend: (report) => rewriteReport(report),
-  })
-
-  Sentry.configureScope(scope => {
-    scope.setExtra('isBrave', isBrave)
   })
 
   function rewriteReport (report) {
@@ -41,6 +105,9 @@ function setupSentry (opts) {
       // append app state
       if (getState) {
         const appState = getState()
+        if (!report.extra) {
+          report.extra = {}
+        }
         report.extra.appState = appState
       }
     } catch (err) {
@@ -67,11 +134,15 @@ function simplifyErrorMessages (report) {
 
 function rewriteErrorMessages (report, rewriteFn) {
   // rewrite top level message
-  if (typeof report.message === 'string') report.message = rewriteFn(report.message)
+  if (typeof report.message === 'string') {
+    report.message = rewriteFn(report.message)
+  }
   // rewrite each exception message
   if (report.exception && report.exception.values) {
-    report.exception.values.forEach(item => {
-      if (typeof item.value === 'string') item.value = rewriteFn(item.value)
+    report.exception.values.forEach((item) => {
+      if (typeof item.value === 'string') {
+        item.value = rewriteFn(item.value)
+      }
     })
   }
 }
@@ -81,17 +152,21 @@ function rewriteReportUrls (report) {
   report.request.url = toMetamaskUrl(report.request.url)
   // update exception stack trace
   if (report.exception && report.exception.values) {
-    report.exception.values.forEach(item => {
-      item.stacktrace.frames.forEach(frame => {
-        frame.filename = toMetamaskUrl(frame.filename)
-      })
+    report.exception.values.forEach((item) => {
+      if (item.stacktrace) {
+        item.stacktrace.frames.forEach((frame) => {
+          frame.filename = toMetamaskUrl(frame.filename)
+        })
+      }
     })
   }
 }
 
 function toMetamaskUrl (origUrl) {
-  const filePath = origUrl.split(location.origin)[1]
-  if (!filePath) return origUrl
+  const filePath = origUrl.split(window.location.origin)[1]
+  if (!filePath) {
+    return origUrl
+  }
   const metamaskUrl = `metamask${filePath}`
   return metamaskUrl
 }

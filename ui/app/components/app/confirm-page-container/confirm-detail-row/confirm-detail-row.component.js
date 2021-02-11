@@ -4,7 +4,7 @@ import classnames from 'classnames'
 import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common'
 
-const ConfirmDetailRow = props => {
+const ConfirmDetailRow = (props) => {
   const {
     label,
     primaryText,
@@ -22,12 +22,16 @@ const ConfirmDetailRow = props => {
         { label }
       </div>
       <div className="confirm-detail-row__details">
-        <div
-          className={classnames('confirm-detail-row__header-text', headerTextClassName)}
-          onClick={() => onHeaderClick && onHeaderClick()}
-        >
-          { headerText }
-        </div>
+        {
+          headerText && (
+            <div
+              className={classnames('confirm-detail-row__header-text', headerTextClassName)}
+              onClick={() => onHeaderClick && onHeaderClick()}
+            >
+              { headerText }
+            </div>
+          )
+        }
         {
           primaryText
             ? (

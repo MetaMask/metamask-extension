@@ -4,12 +4,12 @@ import { shallow } from 'enzyme'
 import CancelTransactionGasFee from '../cancel-transaction-gas-fee.component'
 import UserPreferencedCurrencyDisplay from '../../../../user-preferenced-currency-display'
 
-describe('CancelTransactionGasFee Component', () => {
-  it('should render', () => {
+describe('CancelTransactionGasFee Component', function () {
+  it('should render', function () {
     const wrapper = shallow(
       <CancelTransactionGasFee
         value="0x3b9aca00"
-      />
+      />,
     )
 
     assert.ok(wrapper)

@@ -2,6 +2,7 @@ const fs = require('fs')
 const { SourceMapConsumer } = require('source-map')
 const path = require('path')
 const pify = require('pify')
+
 const fsAsync = pify(fs)
 
 //
@@ -12,13 +13,31 @@ const fsAsync = pify(fs)
 // if not working it may error or print minified garbage
 //
 
-start().catch(console.error)
+start().catch((error) => {
+  console.error(error)
+  process.exit(1)
+})
 
 
 async function start () {
-  const targetFiles = [`inpage.js`, `contentscript.js`, `ui.js`, `background.js`]
+  const targetFiles = [
+    `background.js`,
+    // `bg-libs`, skipped because source maps are invalid due to browserify bug: https://github.com/browserify/browserify/issues/1971
+    // `contentscript.js`, skipped because the validator is erroneously sampling the inlined `inpage.js` script
+    `inpage.js`,
+    'phishing-detect.js',
+    `ui.js`,
+    // `ui-libs.js`, skipped because source maps are invalid due to browserify bug: https://github.com/browserify/browserify/issues/1971
+  ]
+  let valid = true
+
   for (const buildName of targetFiles) {
-    await validateSourcemapForFile({ buildName })
+    const fileIsValid = await validateSourcemapForFile({ buildName })
+    valid = valid && fileIsValid
+  }
+
+  if (!valid) {
+    process.exit(1)
   }
 }
 
@@ -52,15 +71,18 @@ async function validateSourcemapForFile ({ buildName }) {
   const consumer = await new SourceMapConsumer(rawSourceMap)
 
   const hasContentsOfAllSources = consumer.hasContentsOfAllSources()
-  if (!hasContentsOfAllSources) console.warn('SourcemapValidator - missing content of some sources...')
+  if (!hasContentsOfAllSources) {
+    console.warn('SourcemapValidator - missing content of some sources...')
+  }
 
   console.log(`  sampling from ${consumer.sources.length} files`)
   let sampleCount = 0
+  let valid = true
 
   const buildLines = rawBuild.split('\n')
   const targetString = 'new Error'
   // const targetString = 'null'
-  const matchesPerLine = buildLines.map(line => indicesOf(targetString, line))
+  const matchesPerLine = buildLines.map((line) => indicesOf(targetString, line))
   matchesPerLine.forEach((matchIndices, lineIndex) => {
     matchIndices.forEach((matchColumn) => {
       sampleCount++
@@ -68,6 +90,7 @@ async function validateSourcemapForFile ({ buildName }) {
       const result = consumer.originalPositionFor(position)
       // warn if source content is missing
       if (!result.source) {
+        valid = false
         console.warn(`!! missing source for position: ${JSON.stringify(position)}`)
         // const buildLine = buildLines[position.line - 1]
         console.warn(`   origin in build:`)
@@ -83,19 +106,34 @@ async function validateSourcemapForFile ({ buildName }) {
       const portion = line.slice(result.column)
       const isMaybeValid = portion.includes(targetString)
       if (!isMaybeValid) {
-        console.error('Sourcemap seems invalid:')
-        console.log(`\n========================== ${result.source} ====================================\n`)
-        console.log(line)
-        console.log(`\n==============================================================================\n`)
+        valid = false
+        console.error(`Sourcemap seems invalid:\n${getFencedCode(result.source, line)}`)
       }
     })
   })
   console.log(`  checked ${sampleCount} samples`)
+  return valid
+}
+
+const CODE_FENCE_LENGTH = 80
+const TITLE_PADDING_LENGTH = 1
+
+function getFencedCode (filename, code) {
+  const title = `${' '.repeat(TITLE_PADDING_LENGTH)}${filename}${' '.repeat(TITLE_PADDING_LENGTH)}`
+  const openingFenceLength = Math.max(CODE_FENCE_LENGTH - (filename.length + (TITLE_PADDING_LENGTH * 2)), 0)
+  const startOpeningFenceLength = Math.floor(openingFenceLength / 2)
+  const endOpeningFenceLength = Math.ceil(openingFenceLength / 2)
+  const openingFence = `${'='.repeat(startOpeningFenceLength)}${title}${'='.repeat(endOpeningFenceLength)}`
+  const closingFence = '='.repeat(CODE_FENCE_LENGTH)
+
+  return `${openingFence}\n${code}\n${closingFence}\n`
 }
 
 function indicesOf (substring, string) {
-  var a = []
-  var i = -1
-  while ((i = string.indexOf(substring, i + 1)) >= 0) a.push(i)
+  const a = []
+  let i = -1
+  while ((i = string.indexOf(substring, i + 1)) >= 0) {
+    a.push(i)
+  }
   return a
 }

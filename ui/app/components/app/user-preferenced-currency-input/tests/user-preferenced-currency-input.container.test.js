@@ -5,16 +5,16 @@ let mapStateToProps
 
 proxyquire('../user-preferenced-currency-input.container.js', {
   'react-redux': {
-    connect: ms => {
+    connect: (ms) => {
       mapStateToProps = ms
       return () => ({})
     },
   },
 })
 
-describe('UserPreferencedCurrencyInput container', () => {
-  describe('mapStateToProps()', () => {
-    it('should return the correct props', () => {
+describe('UserPreferencedCurrencyInput container', function () {
+  describe('mapStateToProps()', function () {
+    it('should return the correct props', function () {
       const mockState = {
         metamask: {
           preferences: {

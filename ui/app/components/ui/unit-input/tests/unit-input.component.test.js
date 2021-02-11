@@ -4,22 +4,22 @@ import { shallow, mount } from 'enzyme'
 import sinon from 'sinon'
 import UnitInput from '../unit-input.component'
 
-describe('UnitInput Component', () => {
-  describe('rendering', () => {
-    it('should render properly without a suffix', () => {
+describe('UnitInput Component', function () {
+  describe('rendering', function () {
+    it('should render properly without a suffix', function () {
       const wrapper = shallow(
-        <UnitInput />
+        <UnitInput />,
       )
 
       assert.ok(wrapper)
       assert.equal(wrapper.find('.unit-input__suffix').length, 0)
     })
 
-    it('should render properly with a suffix', () => {
+    it('should render properly with a suffix', function () {
       const wrapper = shallow(
         <UnitInput
           suffix="ETH"
-        />
+        />,
       )
 
       assert.ok(wrapper)
@@ -27,13 +27,13 @@ describe('UnitInput Component', () => {
       assert.equal(wrapper.find('.unit-input__suffix').text(), 'ETH')
     })
 
-    it('should render properly with a child omponent', () => {
+    it('should render properly with a child component', function () {
       const wrapper = shallow(
         <UnitInput>
           <div className="testing">
             TESTCOMPONENT
           </div>
-        </UnitInput>
+        </UnitInput>,
       )
 
       assert.ok(wrapper)
@@ -41,11 +41,11 @@ describe('UnitInput Component', () => {
       assert.equal(wrapper.find('.testing').text(), 'TESTCOMPONENT')
     })
 
-    it('should render with an error class when props.error === true', () => {
+    it('should render with an error class when props.error === true', function () {
       const wrapper = shallow(
         <UnitInput
           error
-        />
+        />,
       )
 
       assert.ok(wrapper)
@@ -53,18 +53,18 @@ describe('UnitInput Component', () => {
     })
   })
 
-  describe('handling actions', () => {
+  describe('handling actions', function () {
     const handleChangeSpy = sinon.spy()
     const handleBlurSpy = sinon.spy()
 
-    afterEach(() => {
+    afterEach(function () {
       handleChangeSpy.resetHistory()
       handleBlurSpy.resetHistory()
     })
 
-    it('should focus the input on component click', () => {
+    it('should focus the input on component click', function () {
       const wrapper = mount(
-        <UnitInput />
+        <UnitInput />,
       )
 
       assert.ok(wrapper)
@@ -76,11 +76,11 @@ describe('UnitInput Component', () => {
       assert.equal(handleFocusSpy.callCount, 1)
     })
 
-    it('should call onChange on input changes with the value', () => {
+    it('should call onChange on input changes with the value', function () {
       const wrapper = mount(
         <UnitInput
           onChange={handleChangeSpy}
-        />
+        />,
       )
 
       assert.ok(wrapper)
@@ -92,43 +92,22 @@ describe('UnitInput Component', () => {
       assert.equal(wrapper.state('value'), 123)
     })
 
-    it('should call onBlur on blur with the value', () => {
-      const wrapper = mount(
-        <UnitInput
-          onChange={handleChangeSpy}
-          onBlur={handleBlurSpy}
-        />
-      )
-
-      assert.ok(wrapper)
-      assert.equal(handleChangeSpy.callCount, 0)
-      assert.equal(handleBlurSpy.callCount, 0)
-      const input = wrapper.find('input')
-      input.simulate('change', { target: { value: 123 } })
-      assert.equal(handleChangeSpy.callCount, 1)
-      assert.ok(handleChangeSpy.calledWith(123))
-      assert.equal(wrapper.state('value'), 123)
-      input.simulate('blur')
-      assert.equal(handleBlurSpy.callCount, 1)
-      assert.ok(handleBlurSpy.calledWith(123))
-    })
-
-    it('should set the component state value with props.value', () => {
+    it('should set the component state value with props.value', function () {
       const wrapper = mount(
         <UnitInput
           value={123}
-        />
+        />,
       )
 
       assert.ok(wrapper)
       assert.equal(wrapper.state('value'), 123)
     })
 
-    it('should update the component state value with props.value', () => {
+    it('should update the component state value with props.value', function () {
       const wrapper = mount(
         <UnitInput
           onChange={handleChangeSpy}
-        />
+        />,
       )
 
       assert.ok(wrapper)

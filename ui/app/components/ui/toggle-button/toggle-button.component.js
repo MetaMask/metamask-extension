@@ -45,11 +45,13 @@ const colors = {
   },
 }
 
-const ToggleButton = props => {
+const ToggleButton = (props) => {
   const { value, onToggle, offLabel, onLabel } = props
 
+  const modifier = value ? 'on' : 'off'
+
   return (
-    <div className="toggle-button">
+    <div className={`toggle-button toggle-button--${modifier}`}>
       <ReactToggleButton
         value={value}
         onToggle={onToggle}
@@ -60,7 +62,10 @@ const ToggleButton = props => {
         thumbAnimateRange={[3, 18]}
         colors={colors}
       />
-      <div className="toggle-button__status-label">{ value ? onLabel : offLabel }</div>
+      <div className="toggle-button__status">
+        <span className="toggle-button__label-off">{offLabel}</span>
+        <span className="toggle-button__label-on">{onLabel}</span>
+      </div>
     </div>
   )
 }

@@ -2,7 +2,7 @@
 /**
  * Freezes the Promise global and prevents its reassignment.
  */
-const deepFreeze = require('deep-freeze-strict')
+import deepFreeze from 'deep-freeze-strict'
 
 if (
   process.env.IN_TEST !== 'true' &&
@@ -20,7 +20,7 @@ if (
  * value is completely immutable. It is, however, better than nothing.
  *
  * @param {Object} target - The target object to freeze a property on.
- * @param {String} key - The key to freeze.
+ * @param {string} key - The key to freeze.
  * @param {any} [value] - The value to freeze, if different from the existing value on the target.
  * @param {boolean} [enumerable=true] - If given a value, whether the property is enumerable.
  */

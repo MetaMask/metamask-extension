@@ -14,7 +14,7 @@ export default class UnlockPage extends Component {
   }
 
   static propTypes = {
-    history: PropTypes.object,
+    history: PropTypes.object.isRequired,
     isUnlocked: PropTypes.bool,
     onImport: PropTypes.func,
     onRestore: PropTypes.func,
@@ -23,19 +23,16 @@ export default class UnlockPage extends Component {
     showOptInModal: PropTypes.func,
   }
 
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      password: '',
-      error: null,
-    }
-
-    this.submitting = false
-    this.animationEventEmitter = new EventEmitter()
+  state = {
+    password: '',
+    error: null,
   }
 
-  componentWillMount () {
+  submitting = false
+
+  animationEventEmitter = new EventEmitter()
+
+  UNSAFE_componentWillMount () {
     const { isUnlocked, history } = this.props
 
     if (isUnlocked) {
@@ -43,7 +40,7 @@ export default class UnlockPage extends Component {
     }
   }
 
-  handleSubmit = async event => {
+  handleSubmit = async (event) => {
     event.preventDefault()
     event.stopPropagation()
 
@@ -79,7 +76,7 @@ export default class UnlockPage extends Component {
           eventOpts: {
             category: 'Navigation',
             action: 'Unlock',
-            name: 'Incorrect Passowrd',
+            name: 'Incorrect Password',
           },
           customVariables: {
             numberOfTokens: newState.tokens.length,
@@ -97,13 +94,15 @@ export default class UnlockPage extends Component {
     this.setState({ password: target.value, error: null })
 
     // tell mascot to look at page action
-    const element = target
-    const boundingRect = element.getBoundingClientRect()
-    const coordinates = getCaretCoordinates(element, element.selectionEnd)
-    this.animationEventEmitter.emit('point', {
-      x: boundingRect.left + coordinates.left - element.scrollLeft,
-      y: boundingRect.top + coordinates.top - element.scrollTop,
-    })
+    if (target.getBoundingClientRect) {
+      const element = target
+      const boundingRect = element.getBoundingClientRect()
+      const coordinates = getCaretCoordinates(element, element.selectionEnd)
+      this.animationEventEmitter.emit('point', {
+        x: boundingRect.left + coordinates.left - element.scrollLeft,
+        y: boundingRect.top + coordinates.top - element.scrollTop,
+      })
+    }
   }
 
   renderSubmitButton () {
@@ -128,7 +127,7 @@ export default class UnlockPage extends Component {
         onClick={this.handleSubmit}
         disableRipple
       >
-        { this.context.t('login') }
+        { this.context.t('unlock') }
       </Button>
     )
   }
@@ -141,13 +140,13 @@ export default class UnlockPage extends Component {
     return (
       <div className="unlock-page__container">
         <div className="unlock-page">
-          <div className="unlock-page__mascot-container">
-            <Mascot
-              animationEventEmitter={this.animationEventEmitter}
-              width="120"
-              height="120"
-            />
-          </div>
+          <div className="unlock-page__mascot-container"
+				style={{
+                     backgroundImage: "url('./images/celo_logo.png')",
+                     height: '40px',
+                   }}
+           >
+		 </div> 
           <h1 className="unlock-page__title">
             { t('welcomeBack') }
           </h1>
@@ -161,11 +160,11 @@ export default class UnlockPage extends Component {
               label={t('password')}
               type="password"
               value={password}
-              onChange={event => this.handleInputChange(event)}
+              onChange={(event) => this.handleInputChange(event)}
               error={error}
               autoFocus
               autoComplete="current-password"
-              material
+              theme="material"
               fullWidth
             />
           </form>
