@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { COLORS, SIZES } from '../../../helpers/constants/design-system';
 
 export default function ColorIndicator({
-  size = 'small',
+  size = SIZES.SM,
   type = 'outlined',
   color = COLORS.UI4,
   borderColor,
