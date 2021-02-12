@@ -7085,7 +7085,7 @@ clone@2.1.1:
   resolved "https://registry.yarnpkg.com/clone/-/clone-2.1.1.tgz#d217d1e961118e3ac9a4b8bba3285553bf647cdb"
   integrity sha1-0hfR6WERjjrJpLi7oyhVU79kfNs=
 
-clone@2.1.2, clone@^2.0.0, clone@^2.1.1, clone@^2.1.2:
+clone@2.1.2, clone@^2.0.0, clone@^2.1.1:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/clone/-/clone-2.1.2.tgz#1b7f4b9f591f1e8f83670401600345a02887435f"
   integrity sha1-G39Ln1kfHo+DZwQBYANFoCiHQ18=
@@ -8422,15 +8422,6 @@ deprecated-decorator@^0.1.6:
   version "0.1.6"
   resolved "https://registry.yarnpkg.com/deprecated-decorator/-/deprecated-decorator-0.1.6.tgz#00966317b7a12fe92f3cc831f7583af329b86c37"
   integrity sha1-AJZjF7ehL+kvPMgx91g68ym4bDc=
-
-deps-dump@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/deps-dump/-/deps-dump-1.1.0.tgz#13bcb20462b9e267adf4126e5b45d325f2408dd7"
-  integrity sha512-ZTUZxdYSMuZdQGhQFc2rTlpVGBBREH5XAGFpxtdgHCvNEw4KPr9nJu816HWdBMoBjS9m84/zytwys9i6uK41JQ==
-  dependencies:
-    clone "^2.1.2"
-    json-stable-stringify "^1.0.1"
-    through2 "^3.0.1"
 
 deps-sort@^2.0.0:
   version "2.0.0"
