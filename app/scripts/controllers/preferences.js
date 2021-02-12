@@ -7,7 +7,7 @@ import ethers from 'ethers';
 import log from 'loglevel';
 import { LISTED_CONTRACT_ADDRESSES } from '../../../shared/constants/tokens';
 import { NETWORK_TYPE_TO_ID_MAP } from '../../../shared/constants/network';
-import { isPrefixedFormattedHexString } from '../../../shared/modules/utils';
+import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
 
 export default class PreferencesController {
   /**

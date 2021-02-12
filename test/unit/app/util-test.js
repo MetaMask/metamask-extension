@@ -3,7 +3,7 @@ import {
   getEnvironmentType,
   sufficientBalance,
 } from '../../../app/scripts/lib/util';
-import { isPrefixedFormattedHexString } from '../../../shared/modules/utils';
+import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
 
 import {
   ENVIRONMENT_TYPE_POPUP,

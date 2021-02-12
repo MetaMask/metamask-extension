@@ -11,7 +11,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app';
 import { NETWORK_TYPE_RPC } from '../../../../../shared/constants/network';
-import { isPrefixedFormattedHexString } from '../../../../../shared/modules/utils';
+import { isPrefixedFormattedHexString } from '../../../../../shared/modules/network.utils';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 
 import ColorIndicator from '../../ui/color-indicator';
