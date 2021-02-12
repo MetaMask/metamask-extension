@@ -207,7 +207,6 @@
     "@testing-library/react-hooks": "^3.2.1",
     "@types/react": "^16.9.53",
     "addons-linter": "1.14.0",
-    "babel-loader": "^8.0.6",
     "babelify": "^10.0.0",
     "brfs": "^2.0.2",
     "browserify": "^16.5.1",
