@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactToggleButton from 'react-toggle-button';
+import classnames from 'classnames';
 
 const trackStyle = {
   width: '40px',
@@ -46,12 +47,16 @@ const colors = {
 };
 
 const ToggleButton = (props) => {
-  const { value, onToggle, offLabel, onLabel } = props;
+  const { value, onToggle, offLabel, onLabel, disabled } = props;
 
   const modifier = value ? 'on' : 'off';
 
   return (
-    <div className={`toggle-button toggle-button--${modifier}`}>
+    <div
+      className={classnames('toggle-button', `toggle-button--${modifier}`, {
+        'toggle-button--disabled': disabled,
+      })}
+    >
       <ReactToggleButton
         value={value}
         onToggle={onToggle}
@@ -75,6 +80,7 @@ ToggleButton.propTypes = {
   onToggle: PropTypes.func,
   offLabel: PropTypes.string,
   onLabel: PropTypes.string,
+  disabled: PropTypes.bool,
 };
 
 export default ToggleButton;

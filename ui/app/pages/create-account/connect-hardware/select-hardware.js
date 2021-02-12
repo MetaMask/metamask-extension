@@ -11,6 +11,7 @@ export default class SelectHardware extends Component {
   static propTypes = {
     connectToHardwareWallet: PropTypes.func.isRequired,
     browserSupported: PropTypes.bool.isRequired,
+    useLedgerLive: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -134,8 +135,9 @@ export default class SelectHardware extends Component {
   }
 
   renderLedgerTutorialSteps() {
-    const steps = [
-      {
+    const steps = [];
+    if (this.props.useLedgerLive) {
+      steps.push({
         title: this.context.t('step1LedgerWallet'),
         message: this.context.t('step1LedgerWalletMsg', [
           // eslint-disable-next-line react/jsx-key
@@ -148,24 +150,25 @@ export default class SelectHardware extends Component {
             Ledger Live App
           </a>,
         ]),
-      },
-      {
-        asset: 'plug-in-wallet',
-        dimensions: { width: '225px', height: '75px' },
-        title: this.context.t('step2LedgerWallet'),
-        message: this.context.t('step2LedgerWalletMsg', [
-          // eslint-disable-next-line react/jsx-key
-          <a
-            className="hw-connect__msg__link"
-            href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            {this.context.t('hardwareWalletSupportLinkConversion')}
-          </a>,
-        ]),
-      },
-    ];
+      });
+    }
+
+    steps.push({
+      asset: 'plug-in-wallet',
+      dimensions: { width: '225px', height: '75px' },
+      title: this.context.t('step2LedgerWallet'),
+      message: this.context.t('step2LedgerWalletMsg', [
+        // eslint-disable-next-line react/jsx-key
+        <a
+          className="hw-connect__msg__link"
+          href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          {this.context.t('hardwareWalletSupportLinkConversion')}
+        </a>,
+      ]),
+    });
 
     return (
       <div

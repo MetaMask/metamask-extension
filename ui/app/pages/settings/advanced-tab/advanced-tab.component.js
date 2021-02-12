@@ -405,6 +405,7 @@ export default class AdvancedTab extends PureComponent {
               onToggle={(value) => setLedgerLivePreference(!value)}
               offLabel={t('off')}
               onLabel={t('on')}
+              disabled={!('usb' in window.navigator)}
             />
           </div>
         </div>

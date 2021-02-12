@@ -830,7 +830,7 @@
     "message": "Connect a hardware wallet"
   },
   "hardwareWalletsMsg": {
-    "message": "Select a hardware wallet you'd like to use with MetaMask"
+    "message": "Select a hardware wallet you'd like to use with MetaMask."
   },
   "havingTroubleConnecting": {
     "message": "Having trouble connecting?"
@@ -986,7 +986,7 @@
     "message": "Use Ledger Live"
   },
   "ledgerLiveAdvancedSettingDescription": {
-    "message": "The new Ledger Live bridge allows you to more easily use your Ledger."
+    "message": "The new Ledger Live bridge allows you to more easily use your Ledger.  Only available in Chrome."
   },
   "ledgerLocked": {
     "message": "Cannot connect to Ledger device. Please make sure your device is unlocked and Ethereum app is opened."
@@ -1705,10 +1705,10 @@
     "message": "Not connected"
   },
   "step1LedgerWallet": {
-    "message": "1. Download Ledger app"
+    "message": "Download Ledger app"
   },
   "step1LedgerWalletMsg": {
-    "message": "Download and set up $1"
+    "message": "Download, set up, and enter your password to unlock $1."
   },
   "step1TrezorWallet": {
     "message": "Plug in Trezor wallet"
@@ -1717,10 +1717,10 @@
     "message": "Connect your wallet directly to your computer. For more on using your hardware wallet device, $1"
   },
   "step2LedgerWallet": {
-    "message": "2. Plug in Ledger wallet"
+    "message": "Plug in Ledger wallet"
   },
   "step2LedgerWalletMsg": {
-    "message": "Connect your wallet directly to your computer. For more on using your hardware wallet device, $1"
+    "message": "Connect your wallet directly to your computer.  Unlock your Ledger and open the Ethereum app. For more on using your hardware wallet device, $1."
   },
   "storePhrase": {
     "message": "Store this phrase in a password manager like 1Password."

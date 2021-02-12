@@ -2687,6 +2687,13 @@ export default class MetamaskController extends EventEmitter {
   setLedgerLivePreference(val, cb) {
     try {
       this.preferencesController.setLedgerLivePreference(val);
+
+      // TODO: Calling async functionality in a sync function isn't great
+      this.getKeyringForDevice('ledger').then(keyring => {
+        console.log("[MMExtensionController] Calling keyring.updateTransportMethod with value", val)
+        keyring.updateTransportMethod(val);
+      });
+
       cb(null);
       return;
     } catch (err) {

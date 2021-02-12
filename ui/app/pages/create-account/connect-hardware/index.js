@@ -139,7 +139,10 @@ class ConnectHardwareForm extends Component {
           this.setState({ browserSupported: false, error: null });
         } else if (errorMessage.includes(U2F_ERROR)) {
           this.setState({ error: U2F_ERROR });
-        } else if (errorMessage === 'LEDGER_LOCKED') {
+        } else if (
+          errorMessage === 'LEDGER_LOCKED' ||
+          errorMessage === 'LEDGER_WRONG_APP'
+        ) {
           this.setState({
             error: this.context.t('ledgerLocked'),
           });
@@ -258,6 +261,7 @@ class ConnectHardwareForm extends Component {
         <SelectHardware
           connectToHardwareWallet={this.connectToHardwareWallet}
           browserSupported={this.state.browserSupported}
+          useLedgerLive={this.props.useLedgerLive}
         />
       );
     }
@@ -308,6 +312,7 @@ ConnectHardwareForm.propTypes = {
   connectedAccounts: PropTypes.array.isRequired,
   defaultHdPaths: PropTypes.object,
   mostRecentOverviewPage: PropTypes.string.isRequired,
+  useLedgerLive: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -317,6 +322,8 @@ const mapStateToProps = (state) => ({
   connectedAccounts: getMetaMaskAccountsConnected(state),
   defaultHdPaths: state.appState.defaultHdPaths,
   mostRecentOverviewPage: getMostRecentOverviewPage(state),
+  useLedgerLive: state.metamask.useLedgerLive,
+  address: state.metamask.selectedAddress,
 });
 
 const mapDispatchToProps = (dispatch) => {
