@@ -1,8 +1,12 @@
 import { cloneDeep } from 'lodash';
 import BigNumber from 'bignumber.js';
 import { getStorageItem, setStorageItem } from '../../../lib/storage-helpers';
-import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
+import {
+  decGWEIToHexWEI,
+  hexWEIToDecGWEI,
+} from '../../helpers/utils/conversions.util';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
+import { getIsMainnet, getCurrentNetworkId } from '../../selectors';
 
 const fetchWithTimeout = getFetchWithTimeout(30000);
 
@@ -111,26 +115,36 @@ async function basicGasPriceQuery() {
 
 export function fetchBasicGasEstimates() {
   return async (dispatch, getState) => {
+    const isMainnet = getIsMainnet(getState());
+    const currentNetworkId = getCurrentNetworkId(getState());
     const { basicPriceEstimatesLastRetrieved } = getState().gas;
+
+    const previousNetworkID = await getStorageItem('NETWORK_ID');
     const timeLastRetrieved =
-      basicPriceEstimatesLastRetrieved ||
-      (await getStorageItem('BASIC_PRICE_ESTIMATES_LAST_RETRIEVED')) ||
-      0;
+      currentNetworkId === previousNetworkID
+        ? basicPriceEstimatesLastRetrieved ||
+          (await getStorageItem('BASIC_PRICE_ESTIMATES_LAST_RETRIEVED')) ||
+          0
+        : 0;
 
     dispatch(basicGasEstimatesLoadingStarted());
 
     let basicEstimates;
     if (Date.now() - timeLastRetrieved > 75000) {
-      basicEstimates = await fetchExternalBasicGasEstimates(dispatch);
+      basicEstimates = isMainnet
+        ? await fetchExternalBasicGasEstimates(dispatch)
+        : await fetchEthGasPriceEstimates(dispatch);
     } else {
       const cachedBasicEstimates = await getStorageItem(
         'BASIC_PRICE_ESTIMATES',
       );
       basicEstimates =
         cachedBasicEstimates ||
-        (await fetchExternalBasicGasEstimates(dispatch));
+        (isMainnet
+          ? await fetchExternalBasicGasEstimates(dispatch)
+          : await fetchEthGasPriceEstimates(dispatch));
     }
-
+    await setStorageItem('NETWORK_ID', currentNetworkId);
     dispatch(setBasicGasEstimateData(basicEstimates));
     dispatch(basicGasEstimatesLoadingFinished());
 
@@ -161,8 +175,28 @@ async function fetchExternalBasicGasEstimates(dispatch) {
     setStorageItem('BASIC_PRICE_ESTIMATES_LAST_RETRIEVED', timeRetrieved),
   ]);
   dispatch(setBasicPriceEstimatesLastRetrieved(timeRetrieved));
-
   return basicEstimates;
+}
+
+async function fetchEthGasPriceEstimates(dispatch) {
+  return global.ethQuery.gasPrice(async (err, response) => {
+    if (err) {
+      return err;
+    }
+    const averageGasPriceInDecGWEI = hexWEIToDecGWEI(response);
+
+    const basicEstimates = {
+      average: averageGasPriceInDecGWEI,
+    };
+    const timeRetrieved = Date.now();
+    await Promise.all([
+      setStorageItem('BASIC_PRICE_ESTIMATES', basicEstimates),
+      setStorageItem('BASIC_PRICE_ESTIMATES_LAST_RETRIEVED', timeRetrieved),
+    ]);
+    dispatch(setBasicPriceEstimatesLastRetrieved(timeRetrieved));
+
+    return basicEstimates;
+  });
 }
 
 export function setCustomGasPriceForRetry(newPrice) {
