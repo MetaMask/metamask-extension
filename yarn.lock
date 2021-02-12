@@ -3615,7 +3615,7 @@ acorn@^6.0.1, acorn@^6.0.2, acorn@^6.0.7, acorn@^6.4.1:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-6.4.2.tgz#35866fd710528e92de10cf06016498e47e39e1e6"
   integrity sha512-XtGIhXwF8YM8bJhGxG5kXgjkEuNGLTkoYqVE+KMR+aspr4KGYmKYg7yUe3KghyQ9yheNwLnjmzh/7+gfDBmHCQ==
 
-acorn@^7.0.0, acorn@^7.1.1, acorn@^7.4.0:
+acorn@^7.0.0, acorn@^7.4.0:
   version "7.4.1"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-7.4.1.tgz#feaed255973d2e77555b83dbc08851a6c63520fa"
   integrity sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A==
@@ -6037,14 +6037,6 @@ browserify-cipher@^1.0.0:
     browserify-des "^1.0.0"
     evp_bytestokey "^1.0.0"
 
-browserify-derequire@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/browserify-derequire/-/browserify-derequire-1.0.1.tgz#6c7cdb228ccf21226e9a1d203a16be9da5afd253"
-  integrity sha512-UYKzp7fjiwq2+zj4IgS9lLUhNIdO3I4k+xEAAs5a6i3aQC3E+3gMYq9bDfyckojxNKCPnWxFWjJS4gGcxTXhUw==
-  dependencies:
-    derequire "2.0.6"
-    through2 "3.0.1"
-
 browserify-des@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/browserify-des/-/browserify-des-1.0.0.tgz#daa277717470922ed2fe18594118a175439721dd"
@@ -7335,7 +7327,7 @@ concat-map@0.0.1:
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
   integrity sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=
 
-concat-stream@^1.4.6, concat-stream@^1.5.0, concat-stream@^1.5.1, concat-stream@^1.5.2, concat-stream@^1.6.0, concat-stream@^1.6.1, concat-stream@^1.6.2, concat-stream@~1.6.0:
+concat-stream@^1.5.0, concat-stream@^1.5.1, concat-stream@^1.5.2, concat-stream@^1.6.0, concat-stream@^1.6.1, concat-stream@^1.6.2, concat-stream@~1.6.0:
   version "1.6.2"
   resolved "https://registry.yarnpkg.com/concat-stream/-/concat-stream-1.6.2.tgz#904bdf194cd3122fc675c77fc4ac3d4ff0fd1a34"
   integrity sha512-27HBghJxjiZtIk3Ycvn/4kbJk/1uZuJFfuPEns6LaEvpvG1f0hTea8lilrouyo9mVc2GWdcEZ8OLoGmSADlrCw==
@@ -8449,17 +8441,6 @@ deps-sort@^2.0.0:
     shasum "^1.0.0"
     subarg "^1.0.0"
     through2 "^2.0.0"
-
-derequire@2.0.6, derequire@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/derequire/-/derequire-2.1.1.tgz#342527ff5a460d4dd6745085e4091a4697a6803c"
-  integrity sha512-5hGVgKAEGhSGZM02abtkwDzqEOXun1dP9Ocw0yh7Pz7j70k4SNk7WURm93YyHbs2PcieRyX8m4ta1glGakw84Q==
-  dependencies:
-    acorn "^7.1.1"
-    concat-stream "^1.4.6"
-    escope "^3.6.0"
-    through2 "^2.0.0"
-    yargs "^15.3.1"
 
 des.js@^1.0.0:
   version "1.0.0"
@@ -24699,7 +24680,7 @@ through2@2.X, through2@^2.0.0, through2@^2.0.1, through2@^2.0.3, through2@^2.0.5
     readable-stream "~2.3.6"
     xtend "~4.0.1"
 
-through2@3.0.1, through2@^3.0.0, through2@^3.0.1:
+through2@^3.0.0, through2@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/through2/-/through2-3.0.1.tgz#39276e713c3302edf9e388dd9c812dd3b825bd5a"
   integrity sha512-M96dvTalPT3YbYLaKaCuwu+j06D/8Jfib0o/PxbVt6Amhv3dUAtW6rTV1jPgJSBG83I/e04Y6xkVdVhSRhi0ww==
