@@ -5,8 +5,10 @@ import TruncatedDefinitionList from '../../ui/truncated-definition-list';
 import Popover from '../../ui/popover';
 import Typography from '../../ui/typography';
 import Box from '../../ui/box';
+import MetaMaskTranslation from '../metamask-translation';
 
 export const safeComponentList = {
+  MetaMaskTranslation,
   b: 'b',
   p: 'p',
   div: 'div',
