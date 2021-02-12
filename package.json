@@ -235,7 +235,6 @@
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^5.0.0",
     "gulp-babel": "^8.0.0",
-    "gulp-debug": "^3.2.0",
     "gulp-imagemin": "^6.1.0",
     "gulp-livereload": "4.0.0",
     "gulp-rename": "^2.0.0",
