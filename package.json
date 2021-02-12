@@ -209,7 +209,6 @@
     "babelify": "^10.0.0",
     "brfs": "^2.0.2",
     "browserify": "^16.5.1",
-    "chai": "^4.1.0",
     "chalk": "^3.0.0",
     "chromedriver": "^79.0.0",
     "concurrently": "^5.2.0",
