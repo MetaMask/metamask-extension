@@ -172,14 +172,13 @@ async function verifyEnglishLocale() {
   // and gradually phase out the key based search
   const globsToStrictSearch = [
     'ui/app/components/app/metamask-translation/*.js',
-    'ui/app/pages/confirmation/templates/*.js',
   ];
   const javascriptFiles = await glob(['ui/**/*.js', 'shared/**/*.js'], {
     ignore: globsToStrictSearch,
   });
   const javascriptFilesToStrictSearch = await glob(globsToStrictSearch);
 
-  const strictSearchRegex = /\bt\('(\w+)'\)|\bt\('(\W+)'\)|\btranslationKey:\s'(\w+)'|\btranslationKey:\s'(\W+)'/gu;
+  const strictSearchRegex = /\bt\(\s*'(\w+)'\s*\)|\btranslationKey:\s*'(\w+)'/gu;
   // match "t(`...`)" because constructing message keys from template strings
   // prevents this script from finding the messages, and then inappropriately
   // deletes them
@@ -195,7 +194,6 @@ async function verifyEnglishLocale() {
     }
     const templateMatches = fileContents.match(templateStringRegex);
     if (templateMatches) {
-      // concat doesn't work here for some reason
       templateMatches.forEach((match) => templateUsage.push(match));
     }
   }
@@ -209,7 +207,6 @@ async function verifyEnglishLocale() {
 
     const templateMatches = fileContents.match(templateStringRegex);
     if (templateMatches) {
-      // concat doesn't work here for some reason
       templateMatches.forEach((match) => templateUsage.push(match));
     }
   }
