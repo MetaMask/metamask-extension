@@ -19,10 +19,13 @@ export default class TokenRatesController {
    *
    * @param {Object} [config] - Options to configure controller
    */
-  constructor({ currency, preferences } = {}) {
+  constructor({ preferences, getNativeCurrency } = {}) {
     this.store = new ObservableStore();
-    this.currency = currency;
-    this.preferences = preferences;
+    this.getNativeCurrency = getNativeCurrency;
+    this.tokens = preferences.getState().tokens;
+    preferences.subscribe(({ tokens = [] }) => {
+      this.tokens = tokens;
+    });
   }
 
   /**
@@ -30,9 +33,7 @@ export default class TokenRatesController {
    */
   async updateExchangeRates() {
     const contractExchangeRates = {};
-    const nativeCurrency = this.currency
-      ? this.currency.state.nativeCurrency.toLowerCase()
-      : 'eth';
+    const nativeCurrency = this.getNativeCurrency().toLowerCase();
     const pairs = this._tokens.map((token) => token.address).join(',');
     const query = `contract_addresses=${pairs}&vs_currencies=${nativeCurrency}`;
     if (this._tokens.length > 0) {
@@ -60,21 +61,6 @@ export default class TokenRatesController {
   }
 
   /* eslint-disable accessor-pairs */
-  /**
-   * @type {Object}
-   */
-  set preferences(preferences) {
-    this._preferences && this._preferences.unsubscribe();
-    if (!preferences) {
-      return;
-    }
-    this._preferences = preferences;
-    this.tokens = preferences.getState().tokens;
-    preferences.subscribe(({ tokens = [] }) => {
-      this.tokens = tokens;
-    });
-  }
-
   /**
    * @type {Array}
    */

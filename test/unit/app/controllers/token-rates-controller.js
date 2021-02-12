@@ -4,10 +4,19 @@ import { ObservableStore } from '@metamask/obs-store';
 import TokenRatesController from '../../../../app/scripts/controllers/token-rates';
 
 describe('TokenRatesController', function () {
+  let nativeCurrency;
+  let getNativeCurrency;
+  beforeEach(function () {
+    nativeCurrency = 'ETH';
+    getNativeCurrency = () => nativeCurrency;
+  });
   it('should listen for preferences store updates', function () {
     const preferences = new ObservableStore({ tokens: [] });
     preferences.putState({ tokens: ['foo'] });
-    const controller = new TokenRatesController({ preferences });
+    const controller = new TokenRatesController({
+      preferences,
+      getNativeCurrency,
+    });
     assert.deepEqual(controller._tokens, ['foo']);
   });
 
@@ -15,7 +24,10 @@ describe('TokenRatesController', function () {
     const stub = sinon.stub(global, 'setInterval');
     const preferences = new ObservableStore({ tokens: [] });
     preferences.putState({ tokens: ['foo'] });
-    const controller = new TokenRatesController({ preferences });
+    const controller = new TokenRatesController({
+      preferences,
+      getNativeCurrency,
+    });
     controller.start(1337);
 
     assert.strictEqual(stub.getCall(0).args[1], 1337);
