@@ -123,7 +123,8 @@ initialize().catch(log.error);
  */
 async function initialize() {
   const initState = await loadStateFromPersistence();
-  const initLangCode = await getFirstPreferredLangCode();
+  // const initLangCode = await getFirstPreferredLangCode();
+  const initLangCode = 'en';
   await setupController(initState, initLangCode);
   log.debug('MetaMask initialization complete.');
 }
@@ -283,7 +284,7 @@ function setupController(initState, initLangCode) {
   // connect to other contexts
   //
   extension.runtime.onConnect.addListener(connectRemote);
-  extension.runtime.onConnectExternal.addListener(connectExternal);
+  // extension.runtime.onConnectExternal.addListener(connectExternal);
 
   const metamaskInternalProcessHash = {
     [ENVIRONMENT_TYPE_POPUP]: true,
