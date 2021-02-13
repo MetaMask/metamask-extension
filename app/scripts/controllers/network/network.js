@@ -19,6 +19,9 @@ import {
   MAINNET,
   LOCALHOST,
   INFURA_PROVIDER_TYPES,
+  CELO,
+  ALFA,
+  BAKL,
 } from './enums'
 
 const env = process.env.METAMASK_ENV
@@ -30,20 +33,21 @@ if (process.env.IN_TEST === 'true') {
 } else if (METAMASK_DEBUG || env === 'test') {
   defaultProviderConfigType = RINKEBY
 } else {
-  defaultProviderConfigType = 'rpc'
+  //defaultProviderConfigType = MAINNET
+  defaultProviderConfigType = CELO
 }
 
 const defaultProviderConfig = {
   type: defaultProviderConfigType,
-  //rpcTarget: 'https://baklava-forno.celo-testnet.org/',
-  //chainId: 62320,
-  //nickname:'Alfajores',
-  //rpcTarget: 'https://alfajores-forno.celo-testnet.org/',
-  //chainId: 44787,
-  //nickname:'Baklava',
-  rpcTarget: 'https://forno.celo.org/',
-  chainId: 42220,
-  nickname:'CELO Mainnet',
+  celoRpcTarget: 'https://forno.celo.org/',
+  celoChainId: 42220,
+  celoNickname:'celo',
+  alfaRpcTarget: 'https://alfajores-forno.celo-testnet.org/',
+  alfaChainId: 44787,
+  alfaNickname:'alfa',
+  baklRpcTarget: 'https://baklava-forno.celo-testnet.org/',
+  baklChainId: 62320,
+  baklNickname:'bakl',
 }
 
 const defaultNetworkConfig = {
@@ -56,7 +60,7 @@ export default class NetworkController extends EventEmitter {
     super()
 
     // parse options
-    const providerConfig = opts.provider || defaultProviderConfig
+    const providerConfig = opts.provider || defaultProviderConfig 
     // create stores
     this.providerStore = new ObservableStore(providerConfig)
     this.networkStore = new ObservableStore('loading')
@@ -73,7 +77,26 @@ export default class NetworkController extends EventEmitter {
 
   initializeProvider (providerParams) {
     this._baseProviderParams = providerParams
-    const { type, rpcTarget, chainId, ticker, nickname } = this.providerStore.getState()
+    //const { type, rpcTarget, chainId, ticker, nickname } = this.providerStore.getState()
+    let { type, rpcTarget, chainId, ticker, nickname } = this.providerStore.getState()
+    if(type === ALFA){
+        let { alfaRpcTarget, alfaChainId, alfaNickname } = this.providerStore.getState()
+        rpcTarget = alfaRpcTarget
+        chainId = alfaChainId
+        nickname = alfaNickname
+    } else if(type === BAKL){
+        let { baklRpcTarget, baklChainId, baklNickname } = this.providerStore.getState()
+        rpcTarget = baklRpcTarget
+        chainId = baklChainId
+        nickname = baklNickname
+    } else if(type === CELO){
+        let { celoRpcTarget, celoChainId, celoNickname } = this.providerStore.getState()
+        rpcTarget = celoRpcTarget
+        chainId = celoChainId
+        nickname = celoNickname
+    } else {
+      assert(true, `NetworkController - Unknown data"${type} "`)
+    }
     this._configureProvider({ type, rpcTarget, chainId, ticker, nickname })
     this.lookupNetwork()
   }
@@ -151,7 +174,7 @@ export default class NetworkController extends EventEmitter {
 
   async setProviderType (type, rpcTarget = '', ticker = 'CELO', nickname = '') {
     assert.notEqual(type, 'rpc', `NetworkController - cannot call "setProviderType" with type 'rpc'. use "setRpcTarget"`)
-    assert(INFURA_PROVIDER_TYPES.includes(type) || type === LOCALHOST, `NetworkController - Unknown rpc type "${type}"`)
+    assert(INFURA_PROVIDER_TYPES.includes(type) || type === LOCALHOST || type === CELO || type === ALFA || type === BAKL, `NetworkController - Unknown rpc type "${type}"`)
     const providerConfig = { type, rpcTarget, ticker, nickname }
     this.providerConfig = providerConfig
   }
@@ -180,7 +203,8 @@ export default class NetworkController extends EventEmitter {
   }
 
   _configureProvider (opts) {
-    const { type, rpcTarget, chainId, ticker, nickname } = opts
+    //const { type, rpcTarget, chainId, ticker, nickname } = opts
+    let { type, rpcTarget, chainId, ticker, nickname } = opts
     // infura type-based endpoints
     const isInfura = INFURA_PROVIDER_TYPES.includes(type)
     if (isInfura) {
@@ -191,6 +215,25 @@ export default class NetworkController extends EventEmitter {
     // url-based rpc endpoints
     } else if (type === 'rpc') {
       this._configureStandardProvider({ rpcUrl: rpcTarget, chainId, ticker, nickname })
+    } else if (type === CELO || type === ALFA || type === BAKL) {
+      if(type === ALFA){
+        let { alfaRpcTarget, alfaChainId, alfaNickname } = this.providerStore.getState()
+          rpcTarget = alfaRpcTarget
+          chainId = alfaChainId
+          nickname = alfaNickname
+      } else if(type === BAKL){
+        let { baklRpcTarget, baklChainId, baklNickname } = this.providerStore.getState()
+          rpcTarget = baklRpcTarget
+          chainId = baklChainId
+          nickname = baklNickname
+      } else if(type === CELO){
+        let { celoRpcTarget, celoChainId, celoNickname } = this.providerStore.getState()
+          rpcTarget = celoRpcTarget
+          chainId = celoChainId
+          nickname = celoNickname
+      } else {
+      }
+      this._configureCeloProvider({type, rpcUrl: rpcTarget, chainId, ticker, nickname })
     } else {
       throw new Error(`NetworkController - _configureProvider - unknown type "${type}"`)
     }
@@ -233,6 +276,25 @@ export default class NetworkController extends EventEmitter {
     this.networkConfig.putState(settings)
     this._setNetworkClient(networkClient)
   }
+
+  _configureCeloProvider ({ type, rpcUrl, chainId, ticker, nickname }) {
+    log.info('NetworkController - configureStandardProvider', rpcUrl)
+    const networkClient = createJsonRpcClient({ rpcUrl })
+    networks.networkList[type] = {
+      chainId,
+      rpcUrl,
+      ticker: ticker || 'CELO',
+      nickname,
+    }
+    // setup networkConfig
+    let settings = {
+      network: chainId,
+    }
+    settings = Object.assign(settings, networks.networkList[type])
+    this.networkConfig.putState(settings)
+    this._setNetworkClient(networkClient)
+  }
+
 
   _setNetworkClient ({ networkMiddleware, blockTracker }) {
     const metamaskMiddleware = createMetamaskMiddleware(this._baseProviderParams)

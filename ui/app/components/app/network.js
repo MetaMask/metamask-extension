@@ -68,6 +68,7 @@ export default class Network extends Component {
     }
 
     switch (providerName) {
+      /*
       case 'mainnet':
         return (
           <NetworkIndicator disabled={disabled} hoverText={t('mainnet')} onClick={onClick} providerName={providerName}>
@@ -79,7 +80,6 @@ export default class Network extends Component {
             <div className="network-name">{t('mainnet')}</div>
           </NetworkIndicator>
         )
-
       case 'ropsten':
         return (
           <NetworkIndicator disabled={disabled} hoverText={t('ropsten')} onClick={onClick} providerName={providerName}>
@@ -127,6 +127,42 @@ export default class Network extends Component {
             <div className="network-name">{t('goerli')}</div>
           </NetworkIndicator>
         )
+        */
+      case 'celo':
+        return (
+          <NetworkIndicator disabled={disabled} hoverText={t('celo')} onClick={onClick} providerName={providerName}>
+            <NetworkDropdownIcon
+              backgroundColor="#038789"
+              nonSelectBackgroundColor="#15afb2"
+              loading={networkNumber === 'loading'}
+            />
+            <div className="network-name">{t('celo')}</div>
+          </NetworkIndicator>
+        )
+      case 'alfa':
+        return (
+          <NetworkIndicator disabled={disabled} hoverText={t('alfa')} onClick={onClick} providerName={providerName}>
+            <NetworkDropdownIcon
+              backgroundColor="#e91550"
+              nonSelectBackgroundColor="#ec2c50"
+              loading={networkNumber === 'loading'}
+            />
+            <div className="network-name">{t('alfa')}</div>
+          </NetworkIndicator>
+        )
+
+      case 'bakl':
+        return (
+          <NetworkIndicator disabled={disabled} hoverText={t('bakl')} onClick={onClick} providerName={providerName}>
+            <NetworkDropdownIcon
+              backgroundColor="#690496"
+              nonSelectBackgroundColor="#b039f3"
+              loading={networkNumber === 'loading'}
+            />
+            <div className="network-name">{t('bakl')}</div>
+          </NetworkIndicator>
+        )
+
       default:
         return (
           <NetworkIndicator

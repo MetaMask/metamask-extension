@@ -127,11 +127,15 @@ export default class SettingsTab extends PureComponent {
 
   renderUsePrimaryCurrencyOptions () {
     const { t } = this.context
-    const {
+    let {
       nativeCurrency,
       setUseNativeCurrencyAsPrimaryCurrencyPreference,
       useNativeCurrencyAsPrimaryCurrency,
     } = this.props
+
+      if (nativeCurrency === "ETH"){
+        nativeCurrency = "CELO"
+      }
 
     return (
       <div className="settings-page__content-row">

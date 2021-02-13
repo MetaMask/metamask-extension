@@ -389,7 +389,7 @@
     "message": "Connecting to Kovan Test Network"
   },
   "connectingToMainnet": {
-    "message": "Connecting to Main CELO Network"
+    "message": "Connecting to Main Etherem Network"
   },
   "connectingToRopsten": {
     "message": "Connecting to Ropsten Test Network"
@@ -557,7 +557,7 @@
     "message": "If you need to back up your seed phrase again, you can find it in Settings -> Security."
   },
   "endOfFlowMessage7": {
-    "message": "If you ever have questions or see something fishy, email support@metamask.io."
+    "message": "If you ever have questions or see something fishy, email contact@dsrvlabs.com."
   },
   "endOfFlowMessage8": {
     "message": "CeloExtensionWallet cannot recover your seedphrase."
@@ -614,11 +614,11 @@
     "description": "Title of generic error page"
   },
   "errorPageMessage": {
-    "message": "Try again by reloading the page, or contact support at support@metamask.io",
+    "message": "Try again by reloading the page, or contact support at contact@dsrvlabs.com",
     "description": "Message displayed on generic error page in the fullscreen or notification UI"
   },
   "errorPagePopupMessage": {
-    "message": "Try again by closing and reopening the popup, or contact support at support@metamask.io",
+    "message": "Try again by closing and reopening the popup, or contact support at contact@dsrvlabs.com",
     "description": "Message displayed on generic error page in the popup UI"
   },
   "errorStack": {
@@ -999,7 +999,7 @@
     "message": "Be careful with your seed phrase — there have been reports of websites that attempt to imitate CeloExtensionWallet. CeloExtensionWallet will never ask for your seed phrase!"
   },
   "protectYourKeysMessage2": {
-    "message": "Keep your phrase safe. If you see something fishy, or you’re uncertain about a website, email support@metamask.io"
+    "message": "Keep your phrase safe. If you see something fishy, or you’re uncertain about a website, email contact@dsrvlabs.com"
   },
   "rpcUrl": {
     "message": "New RPC URL"
@@ -1230,6 +1230,15 @@
   },
   "goerli": {
     "message": "Goerli Test Network"
+  },
+  "celo": {
+    "message": "Celo Main Network"
+  },
+  "alfa": {
+    "message": "Alfajores Test Network"
+  },
+  "bakl": {
+    "message": "Baklava Test Network"
   },
   "save": {
     "message": "Save"
