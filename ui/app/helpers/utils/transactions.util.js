@@ -29,6 +29,7 @@ import {
 
 import log from 'loglevel'
 import { addCurrencies } from './conversion-util'
+import { ALFA_NETWORK_ID, BAKL_NETWORK_ID, CELO_NETWORK_ID } from '../../../../app/scripts/controllers/network/enums'
 
 abiDecoder.addABI(abi)
 
@@ -241,5 +242,13 @@ export function getBlockExplorerUrlForTx (networkId, hash, rpcPrefs = {}) {
   }
   const prefix = getEtherscanNetworkPrefix(networkId)
   //return `https://${prefix}etherscan.io/tx/${hash}`
-  return `https://explorer.celo.org/tx/${hash}`
+  let url = ""
+  if (networkId == ALFA_NETWORK_ID){
+    url = `https://alfajores-blockscout.celo-testnet.org/tx/${hash}` 
+  } else if (networkId == BAKL_NETWORK_ID){
+    url = `https://baklava-blockscout.celo-testnet.org/tx/${hash}` 
+  } else {
+    url = `https://explorer.celo.org/tx/${hash}`
+  }
+  return url 
 }
