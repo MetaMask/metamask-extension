@@ -30,7 +30,8 @@ const INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR = 'invalidAddressRecipient
 const REQUIRED_ERROR = 'required'
 const KNOWN_RECIPIENT_ADDRESS_ERROR = 'knownAddressRecipient'
 
-const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
+//const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
+const SIMPLE_GAS_COST = '0x7a120' // Hex for 21000, cost of a simple send.
 const BASE_TOKEN_GAS_COST = '0x186a0' // Hex for 100000, a base estimate for token transfers.
 
 export {

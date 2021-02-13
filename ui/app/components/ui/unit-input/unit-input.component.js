@@ -63,8 +63,13 @@ export default class UnitInput extends PureComponent {
   }
 
   render () {
-    const { error, placeholder, suffix, actionComponent, children, maxModeOn } = this.props
+    //const { error, placeholder, suffix, actionComponent, children, maxModeOn } = this.props
+    let { error, placeholder, suffix, actionComponent, children, maxModeOn } = this.props
     const { value } = this.state
+
+    if(suffix == "ETH") {
+      suffix = "CELO"
+    }
 
     return (
       <div

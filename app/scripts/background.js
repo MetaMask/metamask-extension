@@ -150,8 +150,8 @@ async function initialize () {
   const initState = await loadStateFromPersistence()
   const initLangCode = await getFirstPreferredLangCode()
   await setupController(initState, initLangCode)
-  log.debug('MetaMask initialization complete.')
-  await addToken('0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1', 'cUSD', 18, '')
+  log.debug('CeloExtensionWallet initialization complete.')
+  //await addToken('0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1', 'cUSD', 18, '')
 }
 
 //

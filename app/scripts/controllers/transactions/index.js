@@ -36,7 +36,7 @@ import {
 import { hexToBn, bnToHex, BnMultiplyByFraction } from '../../lib/util'
 import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/helpers/constants/error-keys'
 
-const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
+const SIMPLE_GAS_COST = '0x7a120' // Hex for 21000, cost of a simple send.
 const MAX_MEMSTORE_TX_LIST_SIZE = 100 // Number of transactions (by unique nonces) to keep in memory
 
 /**
@@ -352,7 +352,8 @@ export default class TransactionController extends EventEmitter {
         from,
         to: from,
         nonce,
-        gas: '0x5208',
+        //gas: '0x5208',
+        gas: '0x7a120',
         value: '0x0',
         gasPrice: newGasPrice,
       },

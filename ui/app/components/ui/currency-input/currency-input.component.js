@@ -144,8 +144,9 @@ export default class CurrencyInput extends PureComponent {
         maxModeOn={maxModeOn}
         actionComponent={(
           <div
-            className="currency-input__swap-component"
+            /*className="currency-input__swap-component"
             onClick={this.swap}
+            */
           />
         )}
       >

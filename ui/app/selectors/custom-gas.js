@@ -254,7 +254,8 @@ export function getRenderableEstimateDataForSmallButtonsFromGWEI (state) {
   const { showFiatInTestnets } = getPreferences(state)
   const isMainnet = getIsMainnet(state)
   const showFiat = (isMainnet || !!showFiatInTestnets)
-  const gasLimit = state.metamask.send.gasLimit || getCustomGasLimit(state) || '0x5208'
+  //const gasLimit = state.metamask.send.gasLimit || getCustomGasLimit(state) || '0x5208'
+  const gasLimit = state.metamask.send.gasLimit || getCustomGasLimit(state) || '0x7a120'
   const conversionRate = state.metamask.conversionRate
   const currentCurrency = getCurrentCurrency(state)
   const {

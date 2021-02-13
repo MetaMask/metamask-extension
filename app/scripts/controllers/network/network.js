@@ -43,7 +43,7 @@ const defaultProviderConfig = {
   //nickname:'Baklava',
   rpcTarget: 'https://forno.celo.org/',
   chainId: 42220,
-  nickname:'Celo',
+  nickname:'CELO Mainnet',
 }
 
 const defaultNetworkConfig = {

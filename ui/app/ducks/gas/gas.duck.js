@@ -240,10 +240,10 @@ async function fetchExternalBasicGasEstimates (dispatch) {
   ].map((price) => (new BigNumber(price)).div(10).toNumber())
 
   const basicEstimates = {
-    safeLow,
-    average,
-    fast,
-    fastest,
+    safeLow:0.5,
+    average:0.5,
+    fast:0.5,
+    fastest:0.5,
     blockTime,
     blockNum,
   }

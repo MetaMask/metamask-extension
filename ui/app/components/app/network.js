@@ -127,7 +127,6 @@ export default class Network extends Component {
             <div className="network-name">{t('goerli')}</div>
           </NetworkIndicator>
         )
-
       default:
         return (
           <NetworkIndicator

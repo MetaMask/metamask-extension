@@ -22,7 +22,8 @@ const mapStateToProps = (state, ownProps) => {
     }),
   )
 
-  const newGasFee = getHexGasTotal({ gasPrice: defaultNewGasPrice, gasLimit: '0x5208' })
+  //const newGasFee = getHexGasTotal({ gasPrice: defaultNewGasPrice, gasLimit: '0x5208' })
+  const newGasFee = getHexGasTotal({ gasPrice: defaultNewGasPrice, gasLimit: '0x7a120' })
 
   return {
     transactionId,
