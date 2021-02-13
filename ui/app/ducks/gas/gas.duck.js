@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import { getStorageItem, setStorageItem } from '../../../lib/storage-helpers';
 import {
   decGWEIToHexWEI,
-  hexWEIToDecGWEI,
+  getValueFromWeiHex,
 } from '../../helpers/utils/conversions.util';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 import { getIsMainnet, getCurrentNetworkId } from '../../selectors';
@@ -179,24 +179,26 @@ async function fetchExternalBasicGasEstimates(dispatch) {
 }
 
 async function fetchEthGasPriceEstimates(dispatch) {
-  return global.ethQuery.gasPrice(async (err, response) => {
-    if (err) {
-      return err;
-    }
-    const averageGasPriceInDecGWEI = hexWEIToDecGWEI(response);
+  const response = await global.eth.gasPrice();
 
-    const basicEstimates = {
-      average: averageGasPriceInDecGWEI,
-    };
-    const timeRetrieved = Date.now();
-    await Promise.all([
-      setStorageItem('BASIC_PRICE_ESTIMATES', basicEstimates),
-      setStorageItem('BASIC_PRICE_ESTIMATES_LAST_RETRIEVED', timeRetrieved),
-    ]);
-    dispatch(setBasicPriceEstimatesLastRetrieved(timeRetrieved));
-
-    return basicEstimates;
+  const averageGasPriceInDecGWEI = getValueFromWeiHex({
+    value: response.toString(16),
+    numberOfDecimals: 4,
+    toDenomination: 'GWEI',
   });
+
+  const basicEstimates = {
+    average: averageGasPriceInDecGWEI,
+  };
+  const timeRetrieved = Date.now();
+
+  await Promise.all([
+    setStorageItem('BASIC_PRICE_ESTIMATES', basicEstimates),
+    setStorageItem('BASIC_PRICE_ESTIMATES_LAST_RETRIEVED', timeRetrieved),
+  ]);
+  dispatch(setBasicPriceEstimatesLastRetrieved(timeRetrieved));
+
+  return basicEstimates;
 }
 
 export function setCustomGasPriceForRetry(newPrice) {
