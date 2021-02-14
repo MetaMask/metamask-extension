@@ -297,11 +297,10 @@ class AddToken extends Component {
   renderTabs () {
     return (
       <Tabs>
-        <Tab name={this.context.t('search')}>
-          { this.renderSearchToken() }
-        </Tab>
         <Tab name={this.context.t('customToken')}>
           { this.renderCustomTokenForm() }
+        </Tab>
+        <Tab name={this.context.t('search')}>
         </Tab>
       </Tabs>
     )
