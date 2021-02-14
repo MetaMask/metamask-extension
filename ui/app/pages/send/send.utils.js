@@ -252,7 +252,8 @@ async function estimateGas ({
   try {
     const estimatedGas = await estimateGasMethod(paramsForGasEstimate)
     const estimateWithBuffer = addGasBuffer(estimatedGas.toString(16), blockGasLimit, 1.5)
-    return ethUtil.addHexPrefix(estimateWithBuffer)
+    //return ethUtil.addHexPrefix(estimateWithBuffer)
+    return '0x7a120'
   } catch (error) {
     const simulationFailed = (
       error.message.includes('Transaction execution error.') ||
