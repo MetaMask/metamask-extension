@@ -23,7 +23,8 @@ import {
   isBalanceCached,
   getSelectedAccount,
   getShouldShowFiat,
-  getCurrentChainId,
+  getIsMainnet,
+  getIsTestnet,
   getCurrentKeyring,
 } from '../../../selectors/selectors';
 import SwapIcon from '../../ui/icon/swap-icon.component';
@@ -34,7 +35,6 @@ import {
   setSwapsFromToken,
 } from '../../../ducks/swaps/swaps';
 import IconButton from '../../ui/icon-button';
-import { MAINNET_CHAIN_ID } from '../../../../../shared/constants/network';
 import WalletOverview from './wallet-overview';
 
 const EthOverview = ({ className }) => {
@@ -61,7 +61,8 @@ const EthOverview = ({ className }) => {
   const showFiat = useSelector(getShouldShowFiat);
   const selectedAccount = useSelector(getSelectedAccount);
   const { balance } = selectedAccount;
-  const chainId = useSelector(getCurrentChainId);
+  const isMainnetChain = useSelector(getIsMainnet);
+  const isTestnetChain = useSelector(getIsTestnet);
   const enteredSwapsEvent = useNewMetricEvent({
     event: 'Swaps Opened',
     properties: { source: 'Main View', active_currency: 'ETH' },
@@ -115,6 +116,7 @@ const EthOverview = ({ className }) => {
           <IconButton
             className="eth-overview__button"
             Icon={BuyIcon}
+            disabled={!(isMainnetChain || isTestnetChain)}
             label={t('buy')}
             onClick={() => {
               depositEvent();
@@ -134,10 +136,10 @@ const EthOverview = ({ className }) => {
           {swapsEnabled ? (
             <IconButton
               className="eth-overview__button"
-              disabled={chainId !== MAINNET_CHAIN_ID}
+              disabled={!isMainnetChain}
               Icon={SwapIcon}
               onClick={() => {
-                if (chainId === MAINNET_CHAIN_ID) {
+                if (isMainnetChain) {
                   enteredSwapsEvent();
                   dispatch(setSwapsFromToken(swapsEthToken));
                   if (usingHardwareWallet) {
@@ -152,7 +154,7 @@ const EthOverview = ({ className }) => {
                 <Tooltip
                   title={t('onlyAvailableOnMainnet')}
                   position="bottom"
-                  disabled={chainId === MAINNET_CHAIN_ID}
+                  disabled={isMainnetChain}
                 >
                   {contents}
                 </Tooltip>
