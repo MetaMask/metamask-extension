@@ -60,13 +60,13 @@ describe('Gas Duck', function () {
   };
 
   const providerState = {
-    chainId: "0x1",
-    nickname: "",
+    chainId: '0x1',
+    nickname: '',
     rpcPrefs: {},
-    rpcUrl: "",
-    ticker: "ETH",
-    type: "mainnet",
-  }
+    rpcUrl: '',
+    ticker: 'ETH',
+    type: 'mainnet',
+  };
 
   const BASIC_GAS_ESTIMATE_LOADING_FINISHED =
     'metamask/gas/BASIC_GAS_ESTIMATE_LOADING_FINISHED';
