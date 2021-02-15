@@ -188,7 +188,7 @@ async function fetchEthGasPriceEstimates(dispatch) {
   });
 
   const basicEstimates = {
-    average: averageGasPriceInDecGWEI,
+    average: Number(averageGasPriceInDecGWEI),
   };
   const timeRetrieved = Date.now();
 
