@@ -62,10 +62,10 @@
     "message": "Adicionar tokens sugeridos"
   },
   "addToAddressBook": {
-    "message": "Adicionar ao catálogo de endereço"
+    "message": "Adicionar ao catálogo de endereços"
   },
   "addToAddressBookModalPlaceholder": {
-    "message": "por ex., John D."
+    "message": "p.ex.: John D."
   },
   "addToken": {
     "message": "Adicionar token"
@@ -80,7 +80,7 @@
     "message": "Opções avançadas"
   },
   "advancedSettingsDescription": {
-    "message": "Acessar recursos do desenvolvedor, baixar logs de estado, redefinir conta, configurar testnets e RPC personalizada"
+    "message": "Acessar recursos de desenvolvedor, baixar logs, redefinir conta, configurar testnets e RPC personalizadas"
   },
   "affirmAgree": {
     "message": "Concordo"
