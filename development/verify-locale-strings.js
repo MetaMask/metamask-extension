@@ -173,10 +173,13 @@ async function verifyEnglishLocale() {
   const globsToStrictSearch = [
     'ui/app/components/app/metamask-translation/*.js',
   ];
+  const testGlob = '**/*.test.js';
   const javascriptFiles = await glob(['ui/**/*.js', 'shared/**/*.js'], {
-    ignore: globsToStrictSearch,
+    ignore: [...globsToStrictSearch, testGlob],
   });
-  const javascriptFilesToStrictSearch = await glob(globsToStrictSearch);
+  const javascriptFilesToStrictSearch = await glob(globsToStrictSearch, {
+    ignore: [testGlob],
+  });
 
   const strictSearchRegex = /\bt\(\s*'(\w+)'\s*\)|\btranslationKey:\s*'(\w+)'/gu;
   // match "t(`...`)" because constructing message keys from template strings
