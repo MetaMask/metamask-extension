@@ -847,14 +847,14 @@
   },
   "invalidCustomNetworkAlertContent1": {
     "message": "El ID de la cadena para la red personalizada '$1' tiene que ser re-ingresada.",
-    "description": "$1 es el nombre/identificador de la red."
+    "description": "$1 is the name/identifier of the network."
   },
   "invalidCustomNetworkAlertContent2": {
     "message": "Para protegerlo de proveedores de red maliciosos o con fallas, los IDs de cadenas son ahora requeridos para todas las redes personalizadas."
   },
   "invalidCustomNetworkAlertContent3": {
     "message": "Vaya a Configuración > Redes e ingrese el ID de la cadena. Puede obtener los IDs de las cadens más populares en $1.",
-    "description": "$1 es un link a https://chainid.network"
+    "description": "$1 is a link to https://chainid.network"
   },
   "invalidCustomNetworkAlertTitle": {
     "message": "Red Personalizada Inválida"
@@ -1668,9 +1668,6 @@
   },
   "swapFinalizing": {
     "message": "Finalizando..."
-  },
-  "swapGetQuotes": {
-    "message": "Obtener cotizaciones"
   },
   "swapHighSlippageWarning": {
     "message": "La cantidad de deslizamiento es muy alta. ¡Asegúrate de saber lo que estás haciendo!"
