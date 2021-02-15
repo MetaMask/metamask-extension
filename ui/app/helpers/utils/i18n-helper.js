@@ -117,30 +117,10 @@ async function loadNumberFormatLocaleData(localeCode) {
     typeof Intl.NumberFormat.__addLocaleData === 'function' &&
     !numberFormatLocaleData.has(languageTag)
   ) {
-    const localeDataScript = await fetchNumberFormatLocaleData(languageTag);
-    if (!localeDataScript) {
-      return;
-    }
-    const localeDataRegex = `\\/\\* @generated \\*\\/
-\\/\\/ prettier-ignore
-if \\(Intl\\.NumberFormat && typeof Intl\\.NumberFormat\\.__addLocaleData === 'function'\\) {
-  Intl\\.NumberFormat\\.__addLocaleData\\((?<localeData>.*)
-\\)
-}$`;
-    const localeDataMatch = localeDataScript.match(localeDataRegex, 'm');
-    const localeData = localeDataMatch && JSON.parse(localeDataMatch[1]);
-    if (localeData) {
-      Intl.NumberFormat.__addLocaleData(localeData);
-      numberFormatLocaleData.add(languageTag);
-    }
+    // eslint-disable-next-line import/no-dynamic-require,node/global-require
+    require(`./intl/${languageTag}/number-format-data`);
+    numberFormatLocaleData.add(languageTag);
   }
-}
-
-async function fetchNumberFormatLocaleData(languageTag) {
-  const response = await window.fetch(
-    `./intl/${languageTag}/number-format-data.js`,
-  );
-  return await response.text();
 }
 
 const relativeTimeFormatLocaleData = new Set();
