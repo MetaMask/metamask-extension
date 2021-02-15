@@ -92,7 +92,7 @@
     "message": "Isso pode ser alterado em \"Configurações > Alertas\""
   },
   "alertSettingsUnconnectedAccount": {
-    "message": "Navegar por um website com uma conta não conectada selecionada"
+    "message": "Navegando por um website com uma conta não conectada selecionada"
   },
   "alertSettingsUnconnectedAccountDescription": {
     "message": "Este alerta é exibido no pop-up quando você estiver navegando por um site conectado da Web3, mas a conta selecionada no momento não estiver conectada."
@@ -114,7 +114,7 @@
     "message": "Permitir que este site:"
   },
   "allowWithdrawAndSpend": {
-    "message": "Permitir que $1 saque e gaste do seguinte valor:",
+    "message": "Permitir que $1 saque e gaste no máximo:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
   "amount": {
@@ -124,7 +124,7 @@
     "message": "Valor:"
   },
   "appDescription": {
-    "message": "Uma carteira do Ethereum no seu navegador",
+    "message": "Uma carteira Ethereum no seu navegador",
     "description": "The description of the application"
   },
   "appName": {
@@ -157,10 +157,10 @@
     "message": "Tentar cancelar?"
   },
   "attemptToCancelDescription": {
-    "message": "Enviar esta tentativa não garante que a transação original será cancelada. Se a tentativa de cancelamento tiver sucesso, será cobrada a taxa de transação acima."
+    "message": "Enviar esta tentativa não garante que a transação original será cancelada. Se a tentativa de cancelamento tiver sucesso, a taxa de transação acima será cobrada."
   },
   "attemptingConnect": {
-    "message": "Tentando conexão com o blockchain."
+    "message": "Tentando conexão com blockchain."
   },
   "attributions": {
     "message": "Atribuições"
@@ -172,7 +172,7 @@
     "message": "Temporizador com bloqueio automático (minutos)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "Defina o tempo ocioso, em minutos, antes de o MetaMask ser bloqueado."
+    "message": "Defina o tempo ocioso, em minutos, antes do MetaMask ser bloqueado."
   },
   "average": {
     "message": "Média"
@@ -215,7 +215,7 @@
     "message": "Seu navegador não é compatível..."
   },
   "builtInCalifornia": {
-    "message": "O MetaMask é projetado e construído na Califórnia."
+    "message": "O MetaMask é projetado e desenvolvido na Califórnia."
   },
   "buy": {
     "message": "Comprar"
@@ -233,7 +233,7 @@
     "message": "Cancelar"
   },
   "cancellationGasFee": {
-    "message": "Taxa em gas de cancelamento"
+    "message": "Taxa de cancelamento em gas"
   },
   "cancelled": {
     "message": "Cancelado"
