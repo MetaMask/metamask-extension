@@ -9,10 +9,12 @@
     "message": "* Usar un precio de combustible más alto para acelerar una transacción aumenta las posibilidades de un procesamiento más rápido en la red, pero esto no siempre se garantiza."
   },
   "acceptTermsOfUse": {
-    "message": "Leí y estoy de acuerdo con $1"
+    "message": "Leí y estoy de acuerdo con $1",
+    "description": "$1 is the `terms` message"
   },
   "accessAndSpendNotice": {
-    "message": "$1 puede acceder y gastar hasta este importe máximo"
+    "message": "$1 puede acceder y gastar hasta este importe máximo",
+    "description": "$1 is the url of the site requesting ability to spend"
   },
   "accessingYourCamera": {
     "message": "Accediendo a la cámara..."
@@ -111,28 +113,33 @@
     "message": "Permitir que esta extensión externa haga lo siguiente:"
   },
   "allowOriginSpendToken": {
-    "message": "¿Permitir que $1 gaste su $2?"
+    "message": "¿Permitir que $1 gaste su $2?",
+    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
   },
   "allowThisSiteTo": {
     "message": "Permitir que este sitio haga lo siguiente:"
   },
   "allowWithdrawAndSpend": {
-    "message": "Permitir que se retire $1 y gastar hasta el siguiente importe:"
+    "message": "Permitir que se retire $1 y gastar hasta el siguiente importe:",
+    "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
   "amount": {
     "message": "Importe"
   },
   "amountInEth": {
-    "message": "$1 ETH"
+    "message": "$1 ETH",
+    "description": "Displays an eth amount to the user. $1 is a decimal number"
   },
   "amountWithColon": {
     "message": "Importe:"
   },
   "appDescription": {
-    "message": "Una cartera de Ethereum en el navegador"
+    "message": "Una cartera de Ethereum en el navegador",
+    "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask"
+    "message": "MetaMask",
+    "description": "The name of the application"
   },
   "approvalAndAggregatorTxFeeCost": {
     "message": "Cuota de red de agregador y aprobación"
@@ -144,7 +151,8 @@
     "message": "Aprobar límite de gastos"
   },
   "approveSpendLimit": {
-    "message": "Aprobar límite de gastos de $1"
+    "message": "Aprobar límite de gastos de $1",
+    "description": "The token symbol that is being approved"
   },
   "approved": {
     "message": "Aprobado"
@@ -207,7 +215,8 @@
     "message": "Explorador de bloques"
   },
   "blockExplorerView": {
-    "message": "Ver cuenta en $1"
+    "message": "Ver cuenta en $1",
+    "description": "$1 replaced by URL for custom block explorer"
   },
   "blockiesIdenticon": {
     "message": "Usar Blockies Identicon"
@@ -282,25 +291,31 @@
     "message": "Conectarse manualmente al sitio actual"
   },
   "connectTo": {
-    "message": "Conectarse a $1"
+    "message": "Conectarse a $1",
+    "description": "$1 is the name/origin of a web3 site/application that the user can connect to metamask"
   },
   "connectToAll": {
-    "message": "Conectarse a todas sus $1"
+    "message": "Conectarse a todas sus $1",
+    "description": "$1 will be replaced by the translation of connectToAllAccounts"
   },
   "connectToAllAccounts": {
-    "message": "cuentas"
+    "message": "cuentas",
+    "description": "will replace $1 in connectToAll, completing the sentence 'connect to all of your accounts', will be text that shows list of accounts on hover"
   },
   "connectToMultiple": {
-    "message": "Conectarse a $1"
+    "message": "Conectarse a $1",
+    "description": "$1 will be replaced by the translation of connectToMultipleNumberOfAccounts"
   },
   "connectToMultipleNumberOfAccounts": {
-    "message": "$1 cuentas"
+    "message": "$1 cuentas",
+    "description": "$1 is the number of accounts to which the web3 site/application is asking to connect; this will substitute $1 in connectToMultiple"
   },
   "connectWithMetaMask": {
     "message": "Conectarse con MetaMask"
   },
   "connectedAccountsDescriptionPlural": {
-    "message": "Tiene $1 cuentas conectadas a este sitio."
+    "message": "Tiene $1 cuentas conectadas a este sitio.",
+    "description": "$1 is the number of accounts"
   },
   "connectedAccountsDescriptionSingular": {
     "message": "Tiene 1 cuenta conectada a este sitio."
@@ -312,10 +327,12 @@
     "message": "Sitios conectados"
   },
   "connectedSitesDescription": {
-    "message": "$1 está conectado a estos sitios. Pueden ver la dirección de su cuenta."
+    "message": "$1 está conectado a estos sitios. Pueden ver la dirección de su cuenta.",
+    "description": "$1 is the account name"
   },
   "connectedSitesEmptyDescription": {
-    "message": "$1 no está conectado a ningún sitio."
+    "message": "$1 no está conectado a ningún sitio.",
+    "description": "$1 is the account name"
   },
   "connecting": {
     "message": "Estableciendo conexión…"
@@ -429,10 +446,12 @@
     "message": "Copiar mensaje cifrado"
   },
   "decryptInlineError": {
-    "message": "Este mensaje no se puede descifrar debido al error: $1"
+    "message": "Este mensaje no se puede descifrar debido al error: $1",
+    "description": "$1 is error message"
   },
   "decryptMessageNotice": {
-    "message": "$1 quisiera leer este mensaje para completar la acción"
+    "message": "$1 quisiera leer este mensaje para completar la acción",
+    "description": "$1 is the web3 site name"
   },
   "decryptMetamask": {
     "message": "Descifrar mensaje"
@@ -516,7 +535,8 @@
     "message": "Editar permiso"
   },
   "encryptionPublicKeyNotice": {
-    "message": "$1 quisiera su clave pública de cifrado. Al aceptar, este sitio podrá redactar mensajes cifrados para usted."
+    "message": "$1 quisiera su clave pública de cifrado. Al aceptar, este sitio podrá redactar mensajes cifrados para usted.",
+    "description": "$1 is the web3 site name"
   },
   "encryptionPublicKeyRequest": {
     "message": "Solicitar clave pública de cifrado"
@@ -549,7 +569,8 @@
     "message": "Más información."
   },
   "endpointReturnedDifferentChainId": {
-    "message": "El punto de conexión devolvió un id. de cadena diferente: $1"
+    "message": "El punto de conexión devolvió un id. de cadena diferente: $1",
+    "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
   "ensNotFoundOnCurrentNetwork": {
     "message": "El nombre de ENS no se encuentra en la red actual. Intente cambiar a la red principal de Ethereum."
@@ -570,28 +591,35 @@
     "message": "Escribir contraseña para continuar"
   },
   "errorCode": {
-    "message": "Código: $1"
+    "message": "Código: $1",
+    "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
   "errorDetails": {
-    "message": "Detalles del error"
+    "message": "Detalles del error",
+    "description": "Title for collapsible section that displays error details for debugging purposes"
   },
   "errorMessage": {
-    "message": "Mensaje: $1"
+    "message": "Mensaje: $1",
+    "description": "Displayed error message for debugging purposes. $1 is the error message"
   },
   "errorName": {
-    "message": "Código: $1"
+    "message": "Código: $1",
+    "description": "Displayed error name for debugging purposes. $1 is the error name"
   },
   "errorPageTitle": {
-    "message": "MetaMask encontró un error"
+    "message": "MetaMask encontró un error",
+    "description": "Title of generic error page"
   },
   "errorStack": {
-    "message": "Pila:"
+    "message": "Pila:",
+    "description": "Title for error stack, which is displayed for debugging purposes"
   },
   "estimatedProcessingTimes": {
     "message": "Tiempos de procesamiento estimados"
   },
   "eth_accounts": {
-    "message": "Ver las direcciones de las cuentas permitidas (requerido)"
+    "message": "Ver las direcciones de las cuentas permitidas (requerido)",
+    "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
     "message": "Dirección Pública de Ethereum"
@@ -612,7 +640,8 @@
     "message": "Extensión externa"
   },
   "extraApprovalGas": {
-    "message": "+$1 combustible por aprobación"
+    "message": "+$1 combustible por aprobación",
+    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
   },
   "failed": {
     "message": "Con errores"
@@ -633,10 +662,12 @@
     "message": "Esta solicitud tiene asociada una cuota."
   },
   "fiat": {
-    "message": "Fiduciaria"
+    "message": "Fiduciaria",
+    "description": "Exchange type"
   },
   "fileImportFail": {
-    "message": "¿No funciona la importación del archivo? Haga clic aquí."
+    "message": "¿No funciona la importación del archivo? Haga clic aquí.",
+    "description": "Helps user import their account from a JSON file"
   },
   "forbiddenIpfsGateway": {
     "message": "Puerta de enlace de IPFS prohibida: especifique una puerta de enlace de CID"
@@ -648,7 +679,8 @@
     "message": "De:"
   },
   "fromAddress": {
-    "message": "De: $1"
+    "message": "De: $1",
+    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
   },
   "functionApprove": {
     "message": "Función: Aprobar"
@@ -666,7 +698,8 @@
     "message": "El límite de combustible debe ser al menos 21 000"
   },
   "gasLimitTooLowWithDynamicFee": {
-    "message": "El límite de combustible debe ser al menos $1"
+    "message": "El límite de combustible debe ser al menos $1",
+    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasPrice": {
     "message": "Precio de combustible (GWEI)"
@@ -681,10 +714,12 @@
     "message": "Combustible usado"
   },
   "gdprMessage": {
-    "message": "Estos datos son agregados y, por lo tanto, son anónimos para los fines del Reglamento General de Protección de Datos (UE) 2016/679. Para obtener más información relacionada con nuestras prácticas de seguridad, consulte $1."
+    "message": "Estos datos son agregados y, por lo tanto, son anónimos para los fines del Reglamento General de Protección de Datos (UE) 2016/679. Para obtener más información relacionada con nuestras prácticas de seguridad, consulte $1.",
+    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
   },
   "gdprMessagePrivacyPolicy": {
-    "message": "Política de privacidad aquí"
+    "message": "Política de privacidad aquí",
+    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
   },
   "general": {
     "message": "General"
@@ -696,7 +731,8 @@
     "message": "Obtener ether"
   },
   "getEtherFromFaucet": {
-    "message": "Obtener ether de un faucet para $1"
+    "message": "Obtener ether de un faucet para $1",
+    "description": "Displays network name for Ether faucet"
   },
   "getHelp": {
     "message": "Obtenga ayuda."
@@ -726,7 +762,8 @@
     "message": "¿Tiene problemas para conectarse?"
   },
   "here": {
-    "message": "aquí"
+    "message": "aquí",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
   },
   "hexData": {
     "message": "Datos hexadecimales"
@@ -738,13 +775,15 @@
     "message": "¿Ocultar token?"
   },
   "hideTokenSymbol": {
-    "message": "Ocultar $1"
+    "message": "Ocultar $1",
+    "description": "$1 is the symbol for a token (e.g. 'DAI')"
   },
   "history": {
     "message": "Historial"
   },
   "import": {
-    "message": "Importar"
+    "message": "Importar",
+    "description": "Button to import an account from a selected file"
   },
   "importAccount": {
     "message": "Importar cuenta"
@@ -765,7 +804,8 @@
     "message": "Importar la cartera existente con una frase de recuperación de 12 palabras"
   },
   "imported": {
-    "message": "Importado"
+    "message": "Importado",
+    "description": "status showing that an account has been fully loaded into the keyring"
   },
   "infoHelp": {
     "message": "Información y ayuda"
@@ -795,13 +835,15 @@
     "message": "Dirección URL del Explorador de bloques no válida"
   },
   "invalidCustomNetworkAlertContent1": {
-    "message": "Es necesario volver a especificar el id. de la cadena para la red virtual \"$1\"."
+    "message": "Es necesario volver a especificar el id. de la cadena para la red virtual \"$1\".",
+    "description": "$1 is the name/identifier of the network."
   },
   "invalidCustomNetworkAlertContent2": {
     "message": "Para protegerlo de proveedores de red malintencionados o defectuosos, ahora se requieren id. de cadena para todas las redes personalizadas."
   },
   "invalidCustomNetworkAlertContent3": {
-    "message": "Vaya a Configuración > Red y especifique el id. de cadena. Puede encontrar los id. de cadena de las redes más populares en $1."
+    "message": "Vaya a Configuración > Red y especifique el id. de cadena. Puede encontrar los id. de cadena de las redes más populares en $1.",
+    "description": "$1 is a link to https://chainid.network"
   },
   "invalidCustomNetworkAlertTitle": {
     "message": "Red personalizada no válida"
@@ -834,7 +876,8 @@
     "message": "Escriba la dirección URL de la puerta de enlace de IPFS CID para usar la resolución de contenido de ENS."
   },
   "jsonFile": {
-    "message": "Archivo JSON"
+    "message": "Archivo JSON",
+    "description": "format for importing an account"
   },
   "knownAddressRecipient": {
     "message": "Dirección de contrato conocida."
@@ -918,19 +961,23 @@
     "message": "Permitirle siempre optar por no participar a través de Configuración"
   },
   "metametricsCommitmentsBoldNever": {
-    "message": "Nunca"
+    "message": "Nunca",
+    "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask…"
   },
   "metametricsCommitmentsNeverCollectIP": {
-    "message": "$1 recopilará su dirección IP completa"
+    "message": "$1 recopilará su dirección IP completa",
+    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
   },
   "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "$1 recopilará claves, direcciones, transacciones, saldos, hashes o cualquier otra información personal"
+    "message": "$1 recopilará claves, direcciones, transacciones, saldos, hashes o cualquier otra información personal",
+    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "$1 venderá datos con afán de lucro. ¡Jamás!"
+    "message": "$1 venderá datos con afán de lucro. ¡Jamás!",
+    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
   },
   "metametricsCommitmentsSendAnonymizedEvents": {
     "message": "Enviar eventos de vistas de página y clics anónimos"
@@ -960,7 +1007,8 @@
     "message": "Para interactuar con aplicaciones descentralizadas mediante MetaMask, necesitará ether en su cartera."
   },
   "needImportFile": {
-    "message": "Debe seleccionar un archivo para la importación."
+    "message": "Debe seleccionar un archivo para la importación.",
+    "description": "User is important an account and needs to add a file to continue"
   },
   "negativeETH": {
     "message": "No se pueden enviar cantidades negativas de ETH."
@@ -987,7 +1035,8 @@
     "message": "Se detectó una dirección nueva. Haga clic aquí para agregarla a la libreta de direcciones."
   },
   "newAccountNumberName": {
-    "message": "Cuenta $1"
+    "message": "Cuenta $1",
+    "description": "Default name of next account to be created on create account screen"
   },
   "newContact": {
     "message": "Contacto nuevo"
@@ -1014,7 +1063,8 @@
     "message": "Siguiente"
   },
   "nextNonceWarning": {
-    "message": "El nonce es superior al nonce sugerido de $1"
+    "message": "El nonce es superior al nonce sugerido de $1",
+    "description": "The next nonce according to MetaMask's internal logic"
   },
   "noAccountsFound": {
     "message": "No se encuentran cuentas para la consulta de búsqueda determinada"
@@ -1071,7 +1121,8 @@
     "message": "Activado"
   },
   "onboardingReturnNotice": {
-    "message": "\"$1\" cerrará esta pestaña y volverá directamente a $2"
+    "message": "\"$1\" cerrará esta pestaña y volverá directamente a $2",
+    "description": "Return the user to the site that initiated onboarding"
   },
   "onlyAddTrustedNetworks": {
     "message": "Un proveedor de red de Ethereum malintencionado puede mentir sobre el estado de la cadena de bloques y registrar su actividad de red. Agregue solo redes personalizadas de confianza."
@@ -1113,7 +1164,8 @@
     "message": "Las contraseñas no coinciden"
   },
   "pastePrivateKey": {
-    "message": "Pegue aquí la cadena de clave privada:"
+    "message": "Pegue aquí la cadena de clave privada:",
+    "description": "For importing an account from a private key"
   },
   "pending": {
     "message": "Pendiente"
@@ -1131,7 +1183,8 @@
     "message": "Se detectó una dirección personal. Ingrese la dirección de contrato del token."
   },
   "plusXMore": {
-    "message": "+ $1 más"
+    "message": "+ $1 más",
+    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "prev": {
     "message": "Ant."
@@ -1146,7 +1199,8 @@
     "message": "Política de privacidad"
   },
   "privateKey": {
-    "message": "Clave privada"
+    "message": "Clave privada",
+    "description": "select this type of file to use to import an account"
   },
   "privateKeyWarning": {
     "message": "Advertencia: No revele esta clave. Cualquier persona que tenga sus claves privadas podría robar los activos de su cuenta."
@@ -1236,7 +1290,8 @@
     "message": "¿Restaurar cuenta?"
   },
   "restoreWalletPreferences": {
-    "message": "Se encontró una copia de seguridad de los datos de $1. ¿Le gustaría restaurar sus preferencias de cartera?"
+    "message": "Se encontró una copia de seguridad de los datos de $1. ¿Le gustaría restaurar sus preferencias de cartera?",
+    "description": "$1 is the date at which the data was backed up"
   },
   "retryTransaction": {
     "message": "Reintentar transacción"
@@ -1362,7 +1417,8 @@
     "message": "Enviar ETH"
   },
   "sendSpecifiedTokens": {
-    "message": "Enviar $1"
+    "message": "Enviar $1",
+    "description": "Symbol of the specified token"
   },
   "sendTokens": {
     "message": "Enviar tokens"
@@ -1455,7 +1511,8 @@
     "message": "Permiso de límite de gastos"
   },
   "spendLimitRequestedBy": {
-    "message": "Límite de gastos solicitado por $1"
+    "message": "Límite de gastos solicitado por $1",
+    "description": "Origin of the site requesting the spend limit"
   },
   "spendLimitTooLarge": {
     "message": "El límite de gastos es demasiado alto"
@@ -1524,19 +1581,23 @@
     "message": "Se refiere al monto mínimo que recibirá. Puede recibir más en función del desfase."
   },
   "swapApproval": {
-    "message": "Aprobar $1 para canjes"
+    "message": "Aprobar $1 para canjes",
+    "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
   },
   "swapApproveNeedMoreTokens": {
-    "message": "Necesita $1 más $2 para completar este canje"
+    "message": "Necesita $1 más $2 para completar este canje",
+    "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
   "swapBetterQuoteAvailable": {
     "message": "Hay una mejor cotización disponible"
   },
   "swapBuildQuotePlaceHolderText": {
-    "message": "No hay tokens disponibles que coincidan con $1"
+    "message": "No hay tokens disponibles que coincidan con $1",
+    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
   "swapCheckingQuote": {
-    "message": "Comprobando $1"
+    "message": "Comprobando $1",
+    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
   },
   "swapCustom": {
     "message": "personalizado"
@@ -1548,13 +1609,15 @@
     "message": "Editar límite"
   },
   "swapEnableDescription": {
-    "message": "Esta acción es obligatoria y le da permiso a MetaMask para canjear su $1."
+    "message": "Esta acción es obligatoria y le da permiso a MetaMask para canjear su $1.",
+    "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
   },
   "swapEstimatedNetworkFee": {
     "message": "Cuota de red estimada"
   },
   "swapEstimatedNetworkFeeSummary": {
-    "message": "\"$1\" es la cuota real que esperamos que sea. El monto exacto depende de las condiciones de la red."
+    "message": "\"$1\" es la cuota real que esperamos que sea. El monto exacto depende de las condiciones de la red.",
+    "description": "$1 will be the translation of swapEstimatedNetworkFee, with the font bolded"
   },
   "swapEstimatedNetworkFees": {
     "message": "Cuotas de red estimadas"
@@ -1576,9 +1639,6 @@
   },
   "swapFinalizing": {
     "message": "Finalizando…"
-  },
-  "swapGetQuotes": {
-    "message": "Obtener cotizaciones"
   },
   "swapHighSlippageWarning": {
     "message": "El monto del desfase es muy alto. Asegúrese de saber lo que está haciendo."
@@ -1605,7 +1665,8 @@
     "message": "Es posible que la transacción tenga errores, el desfase máximo es demasiado bajo."
   },
   "swapMaxNetworkFeeInfo": {
-    "message": "\"$1\" es el máximo que gastará. Cuando la red es volátil, puede ser un monto grande."
+    "message": "\"$1\" es el máximo que gastará. Cuando la red es volátil, puede ser un monto grande.",
+    "description": "$1 will be the translation of swapMaxNetworkFees, with the font bolded"
   },
   "swapMaxNetworkFees": {
     "message": "Cuota máxima de red"
@@ -1617,7 +1678,8 @@
     "message": "Cuota de MetaMask"
   },
   "swapMetaMaskFeeDescription": {
-    "message": "Buscamos el mejor precio en las fuentes de liquidez más importantes, todo el tiempo. Una cuota de $1 % se factoriza automáticamente en cada cotización, lo que permite un desarrollo continuo para hacer que MetaMask sea incluso mejor."
+    "message": "Buscamos el mejor precio en las fuentes de liquidez más importantes, todo el tiempo. Una cuota de $1 % se factoriza automáticamente en cada cotización, lo que permite un desarrollo continuo para hacer que MetaMask sea incluso mejor.",
+    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapNQuotes": {
     "message": "$1 cotizaciones",
@@ -1627,10 +1689,12 @@
     "message": "La cuota de red cubre el costo del procesamiento del canje y su almacenamiento en la red de Ethereum. MetaMask no se beneficia de esta cuota."
   },
   "swapNewQuoteIn": {
-    "message": "Cotizaciones nuevas en $1"
+    "message": "Cotizaciones nuevas en $1",
+    "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
   },
   "swapOnceTransactionHasProcess": {
-    "message": "Su $1 se agregará a la cuenta una vez que se procese esta transacción."
+    "message": "Su $1 se agregará a la cuenta una vez que se procese esta transacción.",
+    "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
   },
   "swapPriceDifference": {
     "message": "Está poor interccambiar $1 $2 (~$3) por $4 $5 (~$6).",
@@ -1656,10 +1720,12 @@
     "message": "Si el precio cambia entre el momento en que hace el pedido y cuando se confirma, se denomina \"desfase\". El canje se cancelará automáticamente si el desfase supera lo establecido en la configuración \"max slippage\" (desfase máximo)."
   },
   "swapQuoteIncludesRate": {
-    "message": "La cotización incluye una cuota de MetaMask de $1 %"
+    "message": "La cotización incluye una cuota de MetaMask de $1 %",
+    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapQuoteNofN": {
-    "message": "Cotización $1 de $2"
+    "message": "Cotización $1 de $2",
+    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "Fuente de la cotización"
@@ -1731,10 +1797,12 @@
     "message": "Esto permitirá canjear $1."
   },
   "swapTokenAvailable": {
-    "message": "Su $1 se agregó a la cuenta."
+    "message": "Su $1 se agregó a la cuenta.",
+    "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
   },
   "swapTokenToToken": {
-    "message": "Canjear $1 por $2"
+    "message": "Canjear $1 por $2",
+    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
   "swapTransactionComplete": {
     "message": "Transacción completa"
@@ -1752,7 +1820,8 @@
     "message": "Ver $1"
   },
   "swapYourTokenBalance": {
-    "message": "$1 $2 disponible para canje"
+    "message": "$1 $2 disponible para canje",
+    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
   },
   "swapZeroSlippage": {
     "message": "0 % de desfase"
@@ -1767,7 +1836,8 @@
     "message": "Desfase máximo"
   },
   "swapsNotEnoughForTx": {
-    "message": "No hay $1 suficientes para completar esta transacción"
+    "message": "No hay $1 suficientes para completar esta transacción",
+    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsViewInActivity": {
     "message": "Ver en actividad"
@@ -1833,7 +1903,8 @@
     "message": "Para"
   },
   "toAddress": {
-    "message": "Para: $1"
+    "message": "Para: $1",
+    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
   "toWithColon": {
     "message": "Para:"
@@ -1905,13 +1976,16 @@
     "message": "Transferir Desde"
   },
   "troubleConnectingToWallet": {
-    "message": "Tuvimos problemas al conectar su $1. Pruebe revisar $2 e inténtelo de nuevo."
+    "message": "Tuvimos problemas al conectar su $1. Pruebe revisar $2 e inténtelo de nuevo.",
+    "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
   "troubleTokenBalances": {
-    "message": "Tuvimos problemas al cargar los saldos de token. Puede verlos "
+    "message": "Tuvimos problemas al cargar los saldos de token. Puede verlos ",
+    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
-    "message": "¿Este sitio es de confianza? Al conceder este permiso, autoriza que $1 retire su $2 y automatice las transacciones por usted."
+    "message": "¿Este sitio es de confianza? Al conceder este permiso, autoriza que $1 retire su $2 y automatice las transacciones por usted.",
+    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
   },
   "tryAgain": {
     "message": "Vuelva a intentarlo"
@@ -1971,7 +2045,8 @@
     "message": "Nombre de usuario"
   },
   "verifyThisTokenOn": {
-    "message": "Comprobar este token en $1"
+    "message": "Comprobar este token en $1",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "viewAccount": {
     "message": "Ver cuenta"
@@ -2014,7 +2089,8 @@
     "message": "Anote esta frase en un papel y guárdelo en un lugar seguro. Si quiere aún más seguridad, anótela en varios papeles y guárdelos en dos o tres lugares distintos."
   },
   "xOfY": {
-    "message": "$1 de $2"
+    "message": "$1 de $2",
+    "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
   },
   "yesLetsTry": {
     "message": "Sí, intentémoslo"
