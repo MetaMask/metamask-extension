@@ -58,6 +58,16 @@ describe('Gas Duck', function () {
     basicEstimateIsLoading: true,
     basicPriceEstimatesLastRetrieved: 0,
   };
+
+  const providerState = {
+    chainId: "0x1",
+    nickname: "",
+    rpcPrefs: {},
+    rpcUrl: "",
+    ticker: "ETH",
+    type: "mainnet",
+  }
+
   const BASIC_GAS_ESTIMATE_LOADING_FINISHED =
     'metamask/gas/BASIC_GAS_ESTIMATE_LOADING_FINISHED';
   const BASIC_GAS_ESTIMATE_LOADING_STARTED =
@@ -165,6 +175,7 @@ describe('Gas Duck', function () {
 
       await fetchBasicGasEstimates()(mockDistpatch, () => ({
         gas: { ...initState, basicPriceAEstimatesLastRetrieved: 1000000 },
+        metamask: { provider: { ...providerState } },
       }));
       assert.deepStrictEqual(mockDistpatch.getCall(0).args, [
         { type: BASIC_GAS_ESTIMATE_LOADING_STARTED },
@@ -209,6 +220,7 @@ describe('Gas Duck', function () {
 
       await fetchBasicGasEstimates()(mockDistpatch, () => ({
         gas: { ...initState },
+        metamask: { provider: { ...providerState } },
       }));
       assert.deepStrictEqual(mockDistpatch.getCall(0).args, [
         { type: BASIC_GAS_ESTIMATE_LOADING_STARTED },
@@ -244,6 +256,7 @@ describe('Gas Duck', function () {
 
       await fetchBasicGasEstimates()(mockDistpatch, () => ({
         gas: { ...initState },
+        metamask: { provider: { ...providerState } },
       }));
       assert.deepStrictEqual(mockDistpatch.getCall(0).args, [
         { type: BASIC_GAS_ESTIMATE_LOADING_STARTED },
