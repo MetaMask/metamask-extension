@@ -5,11 +5,14 @@ import {
   showModal,
   hideWarning,
 } from '../../../../store/actions';
+import { getIsTestnet, getIsMainnet } from '../../../../selectors/selectors';
 import DepositEtherModal from './deposit-ether-modal.component';
 
 function mapStateToProps(state) {
   return {
     network: state.metamask.network,
+    isTestnet: getIsTestnet(state),
+    isMainnet: getIsMainnet(state),
     address: state.metamask.selectedAddress,
   };
 }
