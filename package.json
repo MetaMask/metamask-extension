@@ -5,6 +5,7 @@
   "scripts": {
     "setup": "yarn install && yarn allow-scripts",
     "start": "yarn build dev",
+    "start:perf": "PERF=1 yarn build dev",
     "dist": "yarn build prod",
     "build": "node development/build/index.js",
     "start:test": "yarn build testDev",
@@ -90,6 +91,7 @@
     "@reduxjs/toolkit": "^1.5.0",
     "@sentry/browser": "^5.26.0",
     "@sentry/integrations": "^5.26.0",
+    "@welldone-software/why-did-you-render": "^6.0.5",
     "@zxing/library": "^0.8.0",
     "abortcontroller-polyfill": "^1.4.0",
     "analytics-node": "^3.4.0-beta.3",
