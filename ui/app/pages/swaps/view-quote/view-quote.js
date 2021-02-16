@@ -148,7 +148,7 @@ export default function ViewQuote() {
 
   const gasTotalInWeiHex = calcGasTotal(maxGasLimit, gasPrice);
 
-  const { tokensWithBalances } = useTokenTracker(swapsTokens);
+  const { tokensWithBalances } = useTokenTracker(swapsTokens, true);
   const swapsEthToken = useSwapsEthToken();
   const balanceToken =
     fetchParamsSourceToken === swapsEthToken.address
