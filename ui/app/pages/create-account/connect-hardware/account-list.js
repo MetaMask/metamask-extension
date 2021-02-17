@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import getAccountLink from '../../../../lib/account-link';
 import Button from '../../../components/ui/button';
-import SimpleDropdown from '../../../components/app/dropdowns/simple-dropdown';
+import Dropdown from '../../../components/ui/dropdown';
 
 class AccountList extends Component {
   getHdPaths() {
@@ -11,13 +11,11 @@ class AccountList extends Component {
 
     return [
       {
-        displayValue: `Ledger Live`,
-        key: ledgerLiveKey,
+        name: `Ledger Live`,
         value: ledgerLiveKey,
       },
       {
-        displayValue: `Legacy (MEW / MyCrypto)`,
-        key: mewKey,
+        name: `Legacy (MEW / MyCrypto)`,
         value: mewKey,
       },
     ];
@@ -47,12 +45,11 @@ class AccountList extends Component {
         </h3>
         <p className="hw-connect__msg">{this.context.t('selectPathHelp')}</p>
         <div className="hw-connect__hdPath">
-          <SimpleDropdown
+          <Dropdown
             className="hw-connect__hdPath__select"
-            name="hd-path-select"
             options={options}
             selectedOption={selectedPath}
-            onSelect={(value) => {
+            onChange={(value) => {
               onPathChange(value);
             }}
           />

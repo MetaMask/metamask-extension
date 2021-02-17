@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import SimpleDropdown from '../../../components/app/dropdowns/simple-dropdown';
+import Dropdown from '../../../components/ui/dropdown';
 
 // Subviews
 import JsonImportView from './json';
@@ -60,18 +60,11 @@ export default class AccountImportSubview extends Component {
           <div className="new-account-import-form__select-label">
             {this.context.t('selectType')}
           </div>
-          <SimpleDropdown
+          <Dropdown
             className="new-account-import-form__select"
-            name="import-type-select"
-            options={menuItems.map((text) => {
-              return {
-                displayValue: text,
-                key: text,
-                value: text,
-              };
-            })}
+            options={menuItems.map((text) => ({ value: text }))}
             selectedOption={type || menuItems[0]}
-            onSelect={(value) => {
+            onChange={(value) => {
               this.setState({ type: value });
             }}
           />
