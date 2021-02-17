@@ -226,9 +226,6 @@ describe('Gas Duck', function () {
         { type: BASIC_GAS_ESTIMATE_LOADING_STARTED },
       ]);
       assert.deepStrictEqual(mockDistpatch.getCall(1).args, [
-        { type: SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED, value: 2000000 },
-      ]);
-      assert.deepStrictEqual(mockDistpatch.getCall(2).args, [
         {
           type: SET_BASIC_GAS_ESTIMATE_DATA,
           value: {
@@ -236,7 +233,7 @@ describe('Gas Duck', function () {
           },
         },
       ]);
-      assert.deepStrictEqual(mockDistpatch.getCall(3).args, [
+      assert.deepStrictEqual(mockDistpatch.getCall(2).args, [
         { type: BASIC_GAS_ESTIMATE_LOADING_FINISHED },
       ]);
     });
