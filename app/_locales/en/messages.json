@@ -1841,6 +1841,10 @@
     "message": "Your $1 has been added to your account.",
     "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
   },
+  "swapTokenBalanceUnavailable": {
+    "message": "We were unable to retrieve your $1 balance",
+    "description": "This message communicates to the user that their balance of a given token is currently unavailable. $1 will be replaced by a token symbol"
+  },
   "swapTokenToToken": {
     "message": "Swap $1 to $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
