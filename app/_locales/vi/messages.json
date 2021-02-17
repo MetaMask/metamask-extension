@@ -857,7 +857,7 @@
     "message": "Số thập lục phân không hợp lệ. Xóa mọi chữ số 0 ở đầu."
   },
   "invalidIpfsGateway": {
-    "message": "Cổng kết nối IPFS không hợp lệ Giá trị phải là URL hợp lệ"
+    "message": "Cổng kết nối IPFS không hợp lệ. Giá trị phải là URL hợp lệ"
   },
   "invalidNumber": {
     "message": "Số không hợp lệ. Hãy nhập một số thập phân hoặc số thập lục phân bắt đầu bằng “0x”."
@@ -933,7 +933,7 @@
     "message": "Tối đa"
   },
   "memo": {
-    "message": "thư báo"
+    "message": "memo"
   },
   "memorizePhrase": {
     "message": "Lưu cụm mật khẩu này."
