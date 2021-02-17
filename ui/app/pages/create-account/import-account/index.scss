@@ -29,23 +29,19 @@
   }
 
   &__select {
-    height: 54px;
     width: 210px;
-    border: 1px solid #d2d8dd;
-    border-radius: 4px;
-    background-color: #fff;
     display: flex;
     align-items: center;
 
-    .Select-control,
-    .Select-control:hover {
-      height: 100%;
-      border: none;
-      box-shadow: none;
+    > div {
+      width: 100%;
+    }
 
-      .Select-value {
-        display: flex;
-        align-items: center;
+    > div[class$="-menu"] {
+      margin-top: 0;
+
+      > div {
+        padding-top: 0;
       }
     }
   }
