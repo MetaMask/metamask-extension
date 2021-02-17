@@ -1,19 +1,24 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import Select from 'react-select';
 import getAccountLink from '../../../../lib/account-link';
 import Button from '../../../components/ui/button';
+import SimpleDropdown from '../../../components/app/dropdowns/simple-dropdown';
 
 class AccountList extends Component {
   getHdPaths() {
+    const ledgerLiveKey = `m/44'/60'/0'/0/0`;
+    const mewKey = `m/44'/60'/0'`;
+
     return [
       {
-        label: `Ledger Live`,
-        value: `m/44'/60'/0'/0/0`,
+        displayValue: `Ledger Live`,
+        key: ledgerLiveKey,
+        value: ledgerLiveKey,
       },
       {
-        label: `Legacy (MEW / MyCrypto)`,
-        value: `m/44'/60'/0'`,
+        displayValue: `Legacy (MEW / MyCrypto)`,
+        key: mewKey,
+        value: mewKey,
       },
     ];
   }
@@ -33,8 +38,8 @@ class AccountList extends Component {
 
   renderHdPathSelector() {
     const { onPathChange, selectedPath } = this.props;
-
     const options = this.getHdPaths();
+
     return (
       <div>
         <h3 className="hw-connect__hdPath__title">
@@ -42,14 +47,13 @@ class AccountList extends Component {
         </h3>
         <p className="hw-connect__msg">{this.context.t('selectPathHelp')}</p>
         <div className="hw-connect__hdPath">
-          <Select
+          <SimpleDropdown
             className="hw-connect__hdPath__select"
             name="hd-path-select"
-            clearable={false}
-            value={selectedPath}
             options={options}
-            onChange={(opt) => {
-              onPathChange(opt.value);
+            selectedOption={selectedPath}
+            onSelect={(value) => {
+              onPathChange(value);
             }}
           />
         </div>

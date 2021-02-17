@@ -28,22 +28,10 @@
     color: $scorpion;
   }
 
-  &__select {
+  .simple-dropdown {
     width: 210px;
     display: flex;
     align-items: center;
-
-    > div {
-      width: 100%;
-    }
-
-    > div[class$="-menu"] {
-      margin-top: 0;
-
-      > div {
-        padding-top: 0;
-      }
-    }
   }
 
   &__private-key-password-container {
