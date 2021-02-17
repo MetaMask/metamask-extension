@@ -58,6 +58,7 @@ export default class SettingsTab extends PureComponent {
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <Dropdown
+              title={t('selectCurrency')}
               options={currencyOptions}
               selectedOption={currentCurrency}
               onChange={(newCurrency) => setCurrentCurrency(newCurrency)}
@@ -90,6 +91,7 @@ export default class SettingsTab extends PureComponent {
           <div className="settings-page__content-item-col">
             <Dropdown
               options={localeOptions}
+              title={t('selectLocale')}
               selectedOption={currentLocale}
               onChange={async (newLocale) => updateCurrentLocale(newLocale)}
             />
