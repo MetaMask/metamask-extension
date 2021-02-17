@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import availableCurrencies from '../../../helpers/constants/available-conversions.json';
-import SimpleDropdown from '../../../components/app/dropdowns/simple-dropdown';
+import Dropdown from '../../../components/ui/dropdown';
 import ToggleButton from '../../../components/ui/toggle-button';
 import locales from '../../../../../app/_locales/index.json';
 
@@ -11,16 +11,14 @@ const sortedCurrencies = availableCurrencies.sort((a, b) => {
 
 const currencyOptions = sortedCurrencies.map(({ code, name }) => {
   return {
-    displayValue: `${code.toUpperCase()} - ${name}`,
-    key: code,
+    name: `${code.toUpperCase()} - ${name}`,
     value: code,
   };
 });
 
 const localeOptions = locales.map((locale) => {
   return {
-    displayValue: `${locale.name}`,
-    key: locale.code,
+    name: `${locale.name}`,
     value: locale.code,
   };
 });
@@ -59,11 +57,10 @@ export default class SettingsTab extends PureComponent {
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
-            <SimpleDropdown
-              placeholder={t('selectCurrency')}
+            <Dropdown
               options={currencyOptions}
               selectedOption={currentCurrency}
-              onSelect={(newCurrency) => setCurrentCurrency(newCurrency)}
+              onChange={(newCurrency) => setCurrentCurrency(newCurrency)}
             />
           </div>
         </div>
@@ -91,11 +88,10 @@ export default class SettingsTab extends PureComponent {
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
-            <SimpleDropdown
-              placeholder={t('selectLocale')}
+            <Dropdown
               options={localeOptions}
               selectedOption={currentLocale}
-              onSelect={async (newLocale) => updateCurrentLocale(newLocale)}
+              onChange={async (newLocale) => updateCurrentLocale(newLocale)}
             />
           </div>
         </div>
