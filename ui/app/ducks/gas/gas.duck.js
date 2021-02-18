@@ -176,25 +176,26 @@ async function fetchExternalBasicGasEstimates(dispatch) {
 
 async function fetchEthGasPriceEstimates(state) {
   const chainId = getCurrentChainId(state);
-  const timeLastRetrieved =
-    (await getStorageItem(`${chainId}_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED`)) ||
-    0;
-
-  const cachedBasicEstimates = await getStorageItem(
-    `${chainId}_BASIC_PRICE_ESTIMATES`,
-  );
-  let basicEstimates = cachedBasicEstimates;
-  if (Date.now() - timeLastRetrieved > 75000 || !cachedBasicEstimates) {
-    const gasPrice = await global.eth.gasPrice();
-    const averageGasPriceInDecGWEI = getValueFromWeiHex({
-      value: gasPrice.toString(16),
-      numberOfDecimals: 4,
-      toDenomination: 'GWEI',
-    });
-    basicEstimates = {
-      average: Number(averageGasPriceInDecGWEI),
-    };
+  let timeLastRetrieved, cachedBasicEstimates;
+  await Promise.all([
+    getStorageItem(`${chainId}_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED`),
+    getStorageItem(`${chainId}_BASIC_PRICE_ESTIMATES`),
+  ]).then((values) => {
+    timeLastRetrieved = values[0] ? values[0] : 0;
+    cachedBasicEstimates = values[1];
+  });
+  if (cachedBasicEstimates && Date.now() - timeLastRetrieved < 75000) {
+    return cachedBasicEstimates;
   }
+  const gasPrice = await global.eth.gasPrice();
+  const averageGasPriceInDecGWEI = getValueFromWeiHex({
+    value: gasPrice.toString(16),
+    numberOfDecimals: 4,
+    toDenomination: 'GWEI',
+  });
+  const basicEstimates = {
+    average: Number(averageGasPriceInDecGWEI),
+  };
   const timeRetrieved = Date.now();
 
   await Promise.all([
