@@ -30,14 +30,14 @@ describe('Settings Tab', function () {
   });
 
   it('selects currency', async function () {
-    const selectCurrency = wrapper.find({ title: 'selectCurrency' });
+    const selectCurrency = wrapper.find('#select-currency');
 
     selectCurrency.props().onChange('eur');
     assert(props.setCurrentCurrency.calledOnce);
   });
 
   it('selects locale', async function () {
-    const selectLocale = wrapper.find({ title: 'selectLocale' });
+    const selectLocale = wrapper.find('#select-locale');
 
     await selectLocale.props().onChange('ja');
     assert(props.updateCurrentLocale.calledOnce);

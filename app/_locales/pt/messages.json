@@ -327,9 +327,6 @@
   "seedPhraseReq": {
     "message": "seed phrases are 12 words long"
   },
-  "selectCurrency": {
-    "message": "Selecionar Moeda"
-  },
   "selectType": {
     "message": "Selecionar Tipo"
   },

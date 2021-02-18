@@ -924,17 +924,11 @@
   "selectAnAccountHelp": {
     "message": "Válássza ki a MetaMask-ban megtekinteni kívánt fiókot"
   },
-  "selectCurrency": {
-    "message": "Válasszon valutát"
-  },
   "selectEachPhrase": {
     "message": "Kérjük, válassza ki az egyes mondatokat, hogy meggyőződjön azok helyességéről. "
   },
   "selectHdPath": {
     "message": "Válassz HD elérési útvonalat"
-  },
-  "selectLocale": {
-    "message": "Válaszd ki a területi beállítást"
   },
   "selectPathHelp": {
     "message": "Ha nem láthatók alább Ledger számláid, próbáld kicserélni az elérési útvonalat: „Legacy (MEW / MyCypto)”"

@@ -919,17 +919,11 @@
   "selectAnAccountHelp": {
     "message": "Selecione a conta para ver no MetaMask"
   },
-  "selectCurrency": {
-    "message": "Selecione a Moeda"
-  },
   "selectEachPhrase": {
     "message": "Selecione cada frase para se certificar de que esteja correta."
   },
   "selectHdPath": {
     "message": "Selecione o caminho no HD"
-  },
-  "selectLocale": {
-    "message": "Selecionar Local"
   },
   "selectPathHelp": {
     "message": "Se não conseguir ver as contas da Ledger existentes abaixo, experimente alternar os caminhos para \"Legacy (MEW / MyCrypto)\""

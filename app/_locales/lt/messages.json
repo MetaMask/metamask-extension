@@ -931,17 +931,11 @@
   "selectAnAccountHelp": {
     "message": "Pasirinkite paskyrą peržiūrėti „MetaMask“"
   },
-  "selectCurrency": {
-    "message": "Pasirinkite valiutą"
-  },
   "selectEachPhrase": {
     "message": "Pasirinkite kiekvieną frazę, kad patikrintumėte, ar ji tinkama"
   },
   "selectHdPath": {
     "message": "Pasirinkite HD kelią"
-  },
-  "selectLocale": {
-    "message": "Pasirinkite lokalę"
   },
   "selectPathHelp": {
     "message": "Jeigu toliau nematote savo esamų operacijų sąskaitų, mėginkite pakeisti kelius į „Legacy (MEW / MyCrypto)“"

@@ -924,17 +924,11 @@
   "selectAnAccountHelp": {
     "message": "حدد الحساب لعرضه في MetaMask"
   },
-  "selectCurrency": {
-    "message": "تحديد العملة"
-  },
   "selectEachPhrase": {
     "message": "يُرجى تحديد كل عبارة للتأكد من صحتها."
   },
   "selectHdPath": {
     "message": "حدد مسار HD "
-  },
-  "selectLocale": {
-    "message": "تحديد الموقع المحلي"
   },
   "selectPathHelp": {
     "message": "إذا لم تشاهد حسابات Ledger الحالية الخاصة بك أدناه، فحاول تبديل المسارات \"Legacy (MEW / MyCrypto)\""

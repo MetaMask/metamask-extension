@@ -968,17 +968,11 @@
   "selectAnAccountHelp": {
     "message": "Выберите учетную запись для просмотра в MetaMask"
   },
-  "selectCurrency": {
-    "message": "Выберите валюту"
-  },
   "selectEachPhrase": {
     "message": "Пожалуйста, выберите каждую фразу, чтобы убедиться, что она правильная."
   },
   "selectHdPath": {
     "message": "Выберите HD путь"
-  },
-  "selectLocale": {
-    "message": "Выберите язык"
   },
   "selectPathHelp": {
     "message": "Если вы не видите свои существующие учетные записи Ledger ниже, попробуйте sw"

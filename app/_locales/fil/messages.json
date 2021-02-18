@@ -843,17 +843,11 @@
   "selectAnAccountHelp": {
     "message": "Piliin ang account na titingnan sa MetaMask"
   },
-  "selectCurrency": {
-    "message": "Pumili ng Currency"
-  },
   "selectEachPhrase": {
     "message": "Pakipili ang bawat parirala para tiyaking tama ito."
   },
   "selectHdPath": {
     "message": "Piliin ang HD Path"
-  },
-  "selectLocale": {
-    "message": "Pumili ng Locale"
   },
   "selectPathHelp": {
     "message": "Kung hindi mo makita ang kasalukuyan mong mga Ledger account sa ibaba, subukang ilipat ang mga path sa \"Legacy (MEW / MyCrypto)\""

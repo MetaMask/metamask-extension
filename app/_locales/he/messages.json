@@ -925,17 +925,11 @@
   "selectAnAccountHelp": {
     "message": "בחר את החשבון לצפייה ב- MetaMask"
   },
-  "selectCurrency": {
-    "message": "בחר מטבע"
-  },
   "selectEachPhrase": {
     "message": "נא לבחור כל צירוף מילים כדי להבטיח שהוא נכון."
   },
   "selectHdPath": {
     "message": "בחר/י נתיב HD"
-  },
-  "selectLocale": {
-    "message": "בחר/י מיקום"
   },
   "selectPathHelp": {
     "message": "אם אינך רואה את חשבונות ה-Ledger הקיימים שלך בהמשך, נסה/י להחליף נתיב ל-Legacy (MEW / MyCrypto)"

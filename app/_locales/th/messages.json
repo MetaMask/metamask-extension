@@ -429,9 +429,6 @@
   "selectAnAccount": {
     "message": "เลือกบัญชี"
   },
-  "selectCurrency": {
-    "message": "เลือกสกุลเงิน"
-  },
   "selectHdPath": {
     "message": "เลือกเส้นทาง HD"
   },

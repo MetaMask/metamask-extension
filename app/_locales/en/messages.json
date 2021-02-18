@@ -1418,17 +1418,11 @@
   "selectAnAccountHelp": {
     "message": "Select the account to view in MetaMask"
   },
-  "selectCurrency": {
-    "message": "Select Currency"
-  },
   "selectEachPhrase": {
     "message": "Please select each phrase in order to make sure it is correct."
   },
   "selectHdPath": {
     "message": "Select HD Path"
-  },
-  "selectLocale": {
-    "message": "Select Locale"
   },
   "selectPathHelp": {
     "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""

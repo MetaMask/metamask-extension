@@ -1294,17 +1294,11 @@
   "selectAnAccountHelp": {
     "message": "Selezione l'account da visualizzare in MetaMask"
   },
-  "selectCurrency": {
-    "message": "Seleziona Moneta"
-  },
   "selectEachPhrase": {
     "message": "Per favore seleziona ogni frase in ordine per assicurarti che sia corretta."
   },
   "selectHdPath": {
     "message": "Seleziona Percorso HD"
-  },
-  "selectLocale": {
-    "message": "Selezione Lingua"
   },
   "selectPathHelp": {
     "message": "Se non vedi il tuo account Ledger esistente di seguito, prova a cambiare il percorso in \"Legacy (MEW / MyCrypto)\""

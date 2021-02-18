@@ -912,17 +912,11 @@
   "selectAnAccountHelp": {
     "message": "Vælg kontoen der skal vises i MetaMask"
   },
-  "selectCurrency": {
-    "message": "Vælg valuta"
-  },
   "selectEachPhrase": {
     "message": "Vælg venligst hver sætning, for at sikre at de er korrekte."
   },
   "selectHdPath": {
     "message": "Vælg HD-Sti"
-  },
-  "selectLocale": {
-    "message": "Vælg Lokalitet"
   },
   "selectPathHelp": {
     "message": "Hvis du ikke ser dine eksisterende Ledger-konti nedenfor, kan du prøve at skifte til \"Legacy (MEW / MyCrypto)\""

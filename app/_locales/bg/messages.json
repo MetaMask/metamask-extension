@@ -927,17 +927,11 @@
   "selectAnAccountHelp": {
     "message": "Изберете акаунта за преглед в MetaMask"
   },
-  "selectCurrency": {
-    "message": "Изберете валута"
-  },
   "selectEachPhrase": {
     "message": "Моля, изберете всяка фраза, за да се уверите, че е правилна."
   },
   "selectHdPath": {
     "message": "Изберете HD Path"
-  },
-  "selectLocale": {
-    "message": "Изберете местоположение"
   },
   "selectPathHelp": {
     "message": "Ако не виждате съществуващите си акаунти в Ledger по-долу, опитайте да превключите пътеки към „Legacy (MEW / MyCrypto)“"

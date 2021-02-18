@@ -913,17 +913,11 @@
   "selectAnAccountHelp": {
     "message": "Selectionner le compte à afficher dans MetaMask"
   },
-  "selectCurrency": {
-    "message": "Selectionner Devise"
-  },
   "selectEachPhrase": {
     "message": "Veuillez sélectionner chaque phrase afin de vous assurer qu'elle est correcte."
   },
   "selectHdPath": {
     "message": "Selectioner le \"Path HD\""
-  },
-  "selectLocale": {
-    "message": "Selectionner la localisation"
   },
   "selectPathHelp": {
     "message": "Si vos comptes Ledger n'apparaissent pas ci-dessous, essayez de selectionner le path \"Legacy (MEW / MyCrypto)\""

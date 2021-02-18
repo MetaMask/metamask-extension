@@ -1415,17 +1415,11 @@
   "selectAnAccountHelp": {
     "message": "选择在 MetaMask 中查看的账户"
   },
-  "selectCurrency": {
-    "message": "选择货币"
-  },
   "selectEachPhrase": {
     "message": "请选择每个单词，以确保其正确性。"
   },
   "selectHdPath": {
     "message": "选择 HD 路径"
-  },
-  "selectLocale": {
-    "message": "选择语言区域"
   },
   "selectPathHelp": {
     "message": "如果下列账户中没有您当前所持有的 Ledger 账户，请将路径切换至“Legacy (MEW / MyCrypto)”"
