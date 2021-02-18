@@ -176,14 +176,11 @@ async function fetchExternalBasicGasEstimates(dispatch) {
 
 async function fetchEthGasPriceEstimates(state) {
   const chainId = getCurrentChainId(state);
-  let timeLastRetrieved, cachedBasicEstimates;
-  await Promise.all([
+  let [cachedTimeLastRetrieved, cachedBasicEstimates] = await Promise.all([
     getStorageItem(`${chainId}_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED`),
     getStorageItem(`${chainId}_BASIC_PRICE_ESTIMATES`),
-  ]).then((values) => {
-    timeLastRetrieved = values[0] ? values[0] : 0;
-    cachedBasicEstimates = values[1];
-  });
+  ]);
+  const timeLastRetrieved = cachedTimeLastRetrieved ? cachedTimeLastRetrieved || 0;
   if (cachedBasicEstimates && Date.now() - timeLastRetrieved < 75000) {
     return cachedBasicEstimates;
   }
