@@ -1759,10 +1759,9 @@
     human-standard-token-abi "^1.0.2"
     safe-event-emitter "^1.0.1"
 
-"@metamask/etherscan-link@^1.1.0":
+"@metamask/etherscan-link@git+https://github.com/dsrvlabs/etherscan-link-celo":
   version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@metamask/etherscan-link/-/etherscan-link-1.1.0.tgz#8c69f3659558074e48e85d52b3db36a3dd93e3e3"
-  integrity sha512-kdgz4OpAQM6kOSuXv8/yfW9kTKxPCFUxQGE4RKBzlpy9HkFcI6XWu3Uw3hOWPBFmI8uPwU8KxBIpdCts8jL7WA==
+  resolved "git+https://github.com/dsrvlabs/etherscan-link-celo#ff22125c03cd4d6962a96ee07c0e8667bc0f963e"
 
 "@metamask/forwarder@^1.1.0":
   version "1.1.0"
