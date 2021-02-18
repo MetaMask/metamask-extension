@@ -250,14 +250,15 @@ export default class NetworkForm extends PureComponent {
     );
   }
 
-  renderFormTextField(
+  renderFormTextField({
     fieldKey,
     textFieldId,
     onChange,
     value,
     optionalTextFieldKey,
     tooltipText,
-  ) {
+    autoFocus = false,
+  }) {
     const { errors } = this.state;
     const { viewOnly } = this.props;
 
@@ -286,6 +287,7 @@ export default class NetworkForm extends PureComponent {
           value={value}
           disabled={viewOnly}
           error={errors[fieldKey]}
+          autoFocus={autoFocus}
         />
       </div>
     );
@@ -456,43 +458,46 @@ export default class NetworkForm extends PureComponent {
     return (
       <div className="networks-tab__network-form">
         {viewOnly ? null : this.renderWarning()}
-        {this.renderFormTextField(
-          'networkName',
-          'network-name',
-          this.setStateWithValue('networkName'),
-          networkName,
-        )}
-        {this.renderFormTextField(
-          'rpcUrl',
-          'rpc-url',
-          this.setStateWithValue('rpcUrl', this.validateUrlRpcUrl),
-          rpcUrl,
-        )}
-        {this.renderFormTextField(
-          'chainId',
-          'chainId',
-          this.setStateWithValue('chainId', this.validateChainIdOnChange),
-          chainId,
-          null,
-          viewOnly ? null : t('networkSettingsChainIdDescription'),
-        )}
-        {this.renderFormTextField(
-          'symbol',
-          'network-ticker',
-          this.setStateWithValue('ticker'),
-          ticker,
-          'optionalCurrencySymbol',
-        )}
-        {this.renderFormTextField(
-          'blockExplorerUrl',
-          'block-explorer-url',
-          this.setStateWithValue(
+        {this.renderFormTextField({
+          fieldKey: 'networkName',
+          textFieldId: 'network-name',
+          onChange: this.setStateWithValue('networkName'),
+          value: networkName,
+          autoFocus: networksTabIsInAddMode,
+        })}
+        {this.renderFormTextField({
+          fieldKey: 'rpcUrl',
+          textFieldId: 'rpc-url',
+          onChange: this.setStateWithValue('rpcUrl', this.validateUrlRpcUrl),
+          value: rpcUrl,
+        })}
+        {this.renderFormTextField({
+          fieldKey: 'chainId',
+          textFieldId: 'chainId',
+          onChange: this.setStateWithValue(
+            'chainId',
+            this.validateChainIdOnChange,
+          ),
+          value: chainId,
+          tooltipText: viewOnly ? null : t('networkSettingsChainIdDescription'),
+        })}
+        {this.renderFormTextField({
+          fieldKey: 'symbol',
+          textFieldId: 'network-ticker',
+          onChange: this.setStateWithValue('ticker'),
+          value: ticker,
+          optionalTextFieldKey: 'optionalCurrencySymbol',
+        })}
+        {this.renderFormTextField({
+          fieldKey: 'blockExplorerUrl',
+          textFieldId: 'block-explorer-url',
+          onChange: this.setStateWithValue(
             'blockExplorerUrl',
             this.validateBlockExplorerURL,
           ),
-          blockExplorerUrl,
-          'optionalBlockExplorerUrl',
-        )}
+          value: blockExplorerUrl,
+          optionalTextFieldKey: 'optionalBlockExplorerUrl',
+        })}
         <div className="network-form__footer">
           {!viewOnly && (
             <>
