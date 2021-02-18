@@ -1,7 +1,6 @@
 import React from 'react';
-import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import Button from '../../ui/button';
+import Button from '../../../../components/ui/button';
 
 export default function ConfirmationFooter({
   onApprove,
@@ -10,14 +9,9 @@ export default function ConfirmationFooter({
   cancelText,
   alerts,
 }) {
-  const className = classnames('confirmation-footer', {
-    'confirmation-footer--with-alerts':
-      alerts && Object.keys(alerts).length > 0,
-  });
-
   return (
-    <div className={className}>
-      {alerts && alerts}
+    <div className="confirmation-footer">
+      {alerts}
       <div className="confirmation-footer__actions">
         <Button
           rounded

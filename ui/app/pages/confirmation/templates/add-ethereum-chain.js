@@ -190,7 +190,7 @@ function getValues(pendingApproval, t, actions) {
         },
       },
     ],
-    approvalText: t('approve'),
+    approvalText: t('approveButtonText'),
     cancelText: t('cancel'),
     onApprove: () =>
       actions.resolvePendingApproval(

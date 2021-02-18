@@ -165,6 +165,9 @@
     "message": "Approval Tx Gas Cost"
   },
   "approve": {
+    "message": "Approve spend limit"
+  },
+  "approveButtonText": {
     "message": "Approve"
   },
   "approveSpendLimit": {

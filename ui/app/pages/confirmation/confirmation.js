@@ -14,19 +14,19 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../../shared/constants/app';
-import ConfirmationFooter from '../../components/app/confirmation-footer';
 import Box from '../../components/ui/box';
 import Chip from '../../components/ui/chip';
 import MetaMaskTemplateRenderer from '../../components/app/metamask-template-renderer';
 import SiteIcon from '../../components/ui/site-icon';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import { stripHttpSchemes } from '../../helpers/utils/util';
+import { stripHttpsScheme } from '../../helpers/utils/util';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
 import { getUnapprovedConfirmations } from '../../selectors';
 import NetworkDisplay from '../../components/app/network-display/network-display';
 import { COLORS, SIZES } from '../../helpers/constants/design-system';
 import Callout from '../../components/ui/callout';
+import ConfirmationFooter from './components/confirmation-footer';
 import { getTemplateValues, getTemplateAlerts } from './templates';
 
 /**
@@ -80,15 +80,15 @@ function useAlertState(pendingConfirmation) {
    * Computation of the current alert state happens every time the current
    * pendingConfirmation changes. The async function getTemplateAlerts is
    * responsible for returning alert state. Setting state on unmounted
-   * components is an anti-pattern, so we use a signal variable to keep track
-   * of the current state of the component. Returning a function that sets
-   * signal to false when the component is unmounted.
+   * components is an anti-pattern, so we use a isMounted variable to keep
+   * track of the current state of the component. Returning a function that
+   * sets isMounted to false when the component is unmounted.
    */
   useEffect(() => {
-    let signal = true;
+    let isMounted = true;
     if (pendingConfirmation) {
       getTemplateAlerts(pendingConfirmation).then((alerts) => {
-        if (signal && alerts) {
+        if (isMounted && alerts) {
           dispatch({
             type: 'set',
             confirmationId: pendingConfirmation.id,
@@ -98,7 +98,7 @@ function useAlertState(pendingConfirmation) {
       });
     }
     return () => {
-      signal = false;
+      isMounted = false;
     };
   }, [pendingConfirmation]);
 
@@ -198,12 +198,12 @@ export default function ConfirmationPage() {
         </Box>
         <Box justifyContent="center" padding={[1, 4, 4]}>
           <Chip
-            label={stripHttpSchemes(originMetadata.origin)}
+            label={stripHttpsScheme(originMetadata.origin)}
             labelColor="gray"
             leftIcon={
               <SiteIcon
                 icon={originMetadata.icon}
-                iconName={originMetadata.name}
+                name={originMetadata.hostname}
                 size={32}
               />
             }
@@ -225,11 +225,7 @@ export default function ConfirmationPage() {
                 isLast={idx === filtered.length - 1}
                 isMultiple={filtered.length > 1}
               >
-                {React.isValidElement(alert.content) ? (
-                  alert.content
-                ) : (
-                  <MetaMaskTemplateRenderer sections={alert.content} />
-                )}
+                <MetaMaskTemplateRenderer sections={alert.content} />
               </Callout>
             ))
         }

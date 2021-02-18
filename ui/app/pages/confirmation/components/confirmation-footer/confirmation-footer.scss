@@ -1,15 +1,5 @@
 .confirmation-footer {
-  $self: &;
-
-  &--with-notice {
-    #{$self}__actions {
-      margin-top: 16px;
-    }
-  }
-
-  &--warning {
-    border-top-color: $alert-3;
-  }
+  grid-area: footer;
 
   &__actions {
     display: flex;

@@ -2466,8 +2466,10 @@ export function clearPermissions() {
 // Pending Approvals
 
 /**
- * @param {string} id
- * @param {any} [value]
+ * Resolves a pending approval and closes the current notification window if no
+ * further approvals are pending after the background state updates.
+ * @param {string} id - The pending approval id
+ * @param {any} [value] - The value required to confirm a pending approval
  */
 export function resolvePendingApproval(id, value) {
   return async (dispatch) => {
@@ -2482,8 +2484,10 @@ export function resolvePendingApproval(id, value) {
 }
 
 /**
- * @param {string} id
- * @param {Error} [error]
+ * Rejects a pending approval and closes the current notification window if no
+ * further approvals are pending after the background state updates.
+ * @param {string} id - The pending approval id
+ * @param {Error} [error] - The error to throw when rejecting the approval
  */
 export function rejectPendingApproval(id, error) {
   return async (dispatch) => {

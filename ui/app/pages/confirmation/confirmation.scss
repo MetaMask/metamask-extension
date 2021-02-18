@@ -1,3 +1,5 @@
+@import 'components/confirmation-footer/confirmation-footer';
+
 .confirmation-page {
   width: 100%;
   height: 100%;
@@ -14,12 +16,7 @@
 
   &__content {
     grid-area: content;
-    scrollbar-width: none;
     padding: 16px 16px 0;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
 
     & > :last-child {
       margin-bottom: 16px;
@@ -57,21 +54,5 @@
 
   &__navigation &__navigation-button:last-child {
     margin-left: 8px;
-  }
-
-  &__origin-chip {
-    margin: 0 auto 16px auto;
-  }
-
-  & .confirmation-footer {
-    grid-area: footer;
-  }
-
-  &__view-all-details {
-    @include H6;
-
-    display: inline-block;
-    padding: 0;
-    width: auto;
   }
 }

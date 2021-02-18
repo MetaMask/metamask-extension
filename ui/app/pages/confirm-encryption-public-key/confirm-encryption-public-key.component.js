@@ -160,7 +160,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
 
     const originMetadata = domainMetadata[txData.origin];
     const notice = t('encryptionPublicKeyNotice', [txData.origin]);
-    const name = originMetadata?.name || txData.origin;
+    const name = originMetadata?.hostname || txData.origin;
 
     return (
       <div className="request-encryption-public-key__body">
