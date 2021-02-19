@@ -2,6 +2,7 @@ import assert from 'assert';
 import nock from 'nock';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
+import BN from 'bn.js';
 
 const fakeStorage = {};
 
@@ -58,6 +59,16 @@ describe('Gas Duck', function () {
     basicEstimateIsLoading: true,
     basicPriceEstimatesLastRetrieved: 0,
   };
+
+  const providerState = {
+    chainId: '0x1',
+    nickname: '',
+    rpcPrefs: {},
+    rpcUrl: '',
+    ticker: 'ETH',
+    type: 'mainnet',
+  };
+
   const BASIC_GAS_ESTIMATE_LOADING_FINISHED =
     'metamask/gas/BASIC_GAS_ESTIMATE_LOADING_FINISHED';
   const BASIC_GAS_ESTIMATE_LOADING_STARTED =
@@ -165,6 +176,7 @@ describe('Gas Duck', function () {
 
       await fetchBasicGasEstimates()(mockDistpatch, () => ({
         gas: { ...initState, basicPriceAEstimatesLastRetrieved: 1000000 },
+        metamask: { provider: { ...providerState } },
       }));
       assert.deepStrictEqual(mockDistpatch.getCall(0).args, [
         { type: BASIC_GAS_ESTIMATE_LOADING_STARTED },
@@ -193,6 +205,39 @@ describe('Gas Duck', function () {
       ]);
     });
 
+    it('should call fetch with the expected params for test network', async function () {
+      global.eth = { gasPrice: sinon.fake.returns(new BN(48199313, 10)) };
+
+      const mockDistpatch = sinon.spy();
+      const providerStateForTestNetwrok = {
+        chainId: '0x5',
+        nickname: '',
+        rpcPrefs: {},
+        rpcUrl: '',
+        ticker: 'ETH',
+        type: 'goerli',
+      };
+
+      await fetchBasicGasEstimates()(mockDistpatch, () => ({
+        gas: { ...initState, basicPriceAEstimatesLastRetrieved: 1000000 },
+        metamask: { provider: { ...providerStateForTestNetwrok } },
+      }));
+      assert.deepStrictEqual(mockDistpatch.getCall(0).args, [
+        { type: BASIC_GAS_ESTIMATE_LOADING_STARTED },
+      ]);
+      assert.deepStrictEqual(mockDistpatch.getCall(1).args, [
+        {
+          type: SET_BASIC_GAS_ESTIMATE_DATA,
+          value: {
+            average: 0.0482,
+          },
+        },
+      ]);
+      assert.deepStrictEqual(mockDistpatch.getCall(2).args, [
+        { type: BASIC_GAS_ESTIMATE_LOADING_FINISHED },
+      ]);
+    });
+
     it('should fetch recently retrieved estimates from storage', async function () {
       const mockDistpatch = sinon.spy();
 
@@ -209,6 +254,7 @@ describe('Gas Duck', function () {
 
       await fetchBasicGasEstimates()(mockDistpatch, () => ({
         gas: { ...initState },
+        metamask: { provider: { ...providerState } },
       }));
       assert.deepStrictEqual(mockDistpatch.getCall(0).args, [
         { type: BASIC_GAS_ESTIMATE_LOADING_STARTED },
@@ -244,6 +290,7 @@ describe('Gas Duck', function () {
 
       await fetchBasicGasEstimates()(mockDistpatch, () => ({
         gas: { ...initState },
+        metamask: { provider: { ...providerState } },
       }));
       assert.deepStrictEqual(mockDistpatch.getCall(0).args, [
         { type: BASIC_GAS_ESTIMATE_LOADING_STARTED },

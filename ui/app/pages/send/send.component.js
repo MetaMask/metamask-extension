@@ -147,6 +147,7 @@ export default class SendTransactionScreen extends Component {
           address,
         });
         updateToNicknameIfNecessary(to, toNickname, addressBook);
+        this.props.fetchBasicGasEstimates();
         updateGas = true;
       }
     }

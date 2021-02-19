@@ -1,8 +1,12 @@
 import { cloneDeep } from 'lodash';
 import BigNumber from 'bignumber.js';
 import { getStorageItem, setStorageItem } from '../../../lib/storage-helpers';
-import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
+import {
+  decGWEIToHexWEI,
+  getValueFromWeiHex,
+} from '../../helpers/utils/conversions.util';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
+import { getIsMainnet, getCurrentChainId } from '../../selectors';
 
 const fetchWithTimeout = getFetchWithTimeout(30000);
 
@@ -111,7 +115,9 @@ async function basicGasPriceQuery() {
 
 export function fetchBasicGasEstimates() {
   return async (dispatch, getState) => {
+    const isMainnet = getIsMainnet(getState());
     const { basicPriceEstimatesLastRetrieved } = getState().gas;
+
     const timeLastRetrieved =
       basicPriceEstimatesLastRetrieved ||
       (await getStorageItem('BASIC_PRICE_ESTIMATES_LAST_RETRIEVED')) ||
@@ -120,15 +126,19 @@ export function fetchBasicGasEstimates() {
     dispatch(basicGasEstimatesLoadingStarted());
 
     let basicEstimates;
-    if (Date.now() - timeLastRetrieved > 75000) {
-      basicEstimates = await fetchExternalBasicGasEstimates(dispatch);
+    if (isMainnet || process.env.IN_TEST) {
+      if (Date.now() - timeLastRetrieved > 75000) {
+        basicEstimates = await fetchExternalBasicGasEstimates(dispatch);
+      } else {
+        const cachedBasicEstimates = await getStorageItem(
+          'BASIC_PRICE_ESTIMATES',
+        );
+        basicEstimates =
+          cachedBasicEstimates ||
+          (await fetchExternalBasicGasEstimates(dispatch));
+      }
     } else {
-      const cachedBasicEstimates = await getStorageItem(
-        'BASIC_PRICE_ESTIMATES',
-      );
-      basicEstimates =
-        cachedBasicEstimates ||
-        (await fetchExternalBasicGasEstimates(dispatch));
+      basicEstimates = await fetchEthGasPriceEstimates(getState());
     }
 
     dispatch(setBasicGasEstimateData(basicEstimates));
@@ -161,6 +171,37 @@ async function fetchExternalBasicGasEstimates(dispatch) {
     setStorageItem('BASIC_PRICE_ESTIMATES_LAST_RETRIEVED', timeRetrieved),
   ]);
   dispatch(setBasicPriceEstimatesLastRetrieved(timeRetrieved));
+  return basicEstimates;
+}
+
+async function fetchEthGasPriceEstimates(state) {
+  const chainId = getCurrentChainId(state);
+  const [cachedTimeLastRetrieved, cachedBasicEstimates] = await Promise.all([
+    getStorageItem(`${chainId}_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED`),
+    getStorageItem(`${chainId}_BASIC_PRICE_ESTIMATES`),
+  ]);
+  const timeLastRetrieved = cachedTimeLastRetrieved || 0;
+  if (cachedBasicEstimates && Date.now() - timeLastRetrieved < 75000) {
+    return cachedBasicEstimates;
+  }
+  const gasPrice = await global.eth.gasPrice();
+  const averageGasPriceInDecGWEI = getValueFromWeiHex({
+    value: gasPrice.toString(16),
+    numberOfDecimals: 4,
+    toDenomination: 'GWEI',
+  });
+  const basicEstimates = {
+    average: Number(averageGasPriceInDecGWEI),
+  };
+  const timeRetrieved = Date.now();
+
+  await Promise.all([
+    setStorageItem(`${chainId}_BASIC_PRICE_ESTIMATES`, basicEstimates),
+    setStorageItem(
+      `${chainId}_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED`,
+      timeRetrieved,
+    ),
+  ]);
 
   return basicEstimates;
 }
