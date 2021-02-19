@@ -126,7 +126,12 @@ export class PermissionsController {
    */
   async requestAccountsPermissionWithId(origin) {
     const id = nanoid();
-    this._requestPermissions({ origin }, { eth_accounts: {} }, id);
+    this._requestPermissions({ origin }, { eth_accounts: {} }, id).then(
+      async () => {
+        const permittedAccounts = await this.getAccounts(origin);
+        this.notifyAccountsChanged(origin, permittedAccounts);
+      },
+    );
     return id;
   }
 

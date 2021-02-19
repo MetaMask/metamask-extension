@@ -1519,20 +1519,46 @@ describe('permissions controller', function () {
   });
 
   describe('miscellanea and edge cases', function () {
-    it('requestAccountsPermissionWithId calls _requestAccountsPermission with an explicit request ID', async function () {
+    it('requestAccountsPermissionWithId calls _requestPermissions and notifyAccounts', function (done) {
+      const notifications = initNotifications();
+      const permController = initPermController(notifications);
+      const _requestPermissions = sinon
+        .stub(permController, '_requestPermissions')
+        .resolves();
+      const notifyAccountsChanged = sinon
+        .stub(permController, 'notifyAccountsChanged')
+        .callsFake(() => {
+          assert.ok(
+            notifyAccountsChanged.calledOnceWithExactly('example.com', []),
+          );
+          notifyAccountsChanged.restore();
+          _requestPermissions.restore();
+          done();
+        });
+      permController.requestAccountsPermissionWithId('example.com');
+    });
+    it('requestAccountsPermissionWithId calls _requestAccountsPermission with an explicit request ID', function (done) {
       const permController = initPermController();
       const _requestPermissions = sinon
         .stub(permController, '_requestPermissions')
         .resolves();
-      await permController.requestAccountsPermissionWithId('example.com');
-      assert.ok(
-        _requestPermissions.calledOnceWithExactly(
-          sinon.match.object.and(sinon.match.has('origin')),
-          { eth_accounts: {} },
-          sinon.match.string.and(sinon.match.truthy),
-        ),
-      );
-      _requestPermissions.restore();
+      const onResolved = async () => {
+        assert.ok(
+          _requestPermissions.calledOnceWithExactly(
+            sinon.match.object.and(sinon.match.has('origin')),
+            { eth_accounts: {} },
+            sinon.match.string.and(sinon.match.truthy),
+          ),
+        );
+        _requestPermissions.restore();
+        // eslint-disable-next-line no-use-before-define
+        notifyAccountsChanged.restore();
+        done();
+      };
+      const notifyAccountsChanged = sinon
+        .stub(permController, 'notifyAccountsChanged')
+        .callsFake(onResolved);
+      permController.requestAccountsPermissionWithId('example.com');
     });
   });
 });
