@@ -317,9 +317,6 @@
   "seedPhraseReq": {
     "message": "Back-up woorden zijn 12 woorden lang"
   },
-  "selectCurrency": {
-    "message": "selecteer valuta"
-  },
   "selectType": {
     "message": "Selecteer type"
   },

@@ -6780,7 +6780,7 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classnames@^2.2.4, classnames@^2.2.5, classnames@^2.2.6:
+classnames@^2.2.5, classnames@^2.2.6:
   version "2.2.6"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
   integrity sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==
@@ -20387,7 +20387,7 @@ react-idle-timer@^4.2.5:
   resolved "https://registry.yarnpkg.com/react-idle-timer/-/react-idle-timer-4.2.5.tgz#eb7d6e1b318f7755b5e0ee810254a8e95a2271b7"
   integrity sha512-8B/OwjG8E/DTx1fHYKTpZ4cnCbL9+LOc5I9t8SYe8tbEkP14KChiYg0xPIuyRpO33wUZHcgmQl93CVePaDhmRA==
 
-react-input-autosize@^2.1.0, react-input-autosize@^2.2.2:
+react-input-autosize@^2.2.2:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/react-input-autosize/-/react-input-autosize-2.2.2.tgz#fcaa7020568ec206bc04be36f4eb68e647c4d8c2"
   integrity sha512-jQJgYCA3S0j+cuOwzuCd1OjmBmnZLdqQdiLKRYrsMMzbjUrVDS5RvJUDwJqA7sKuksDuzFtm6hZGKFu7Mjk5aw==
@@ -20491,15 +20491,6 @@ react-router@5.1.2:
     react-is "^16.6.0"
     tiny-invariant "^1.0.2"
     tiny-warning "^1.0.0"
-
-react-select@^1.0.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/react-select/-/react-select-1.1.0.tgz#626a2de839fdea2ade74dd1b143a9bde34be6c82"
-  integrity sha512-c4CdxweEHN9ra85HGWjSjIMBlJ5c0fsIXOymLFZS5UbZEQCiJGHnZTVLTt6/wDh8RKQnxl85gHUwzhG5XZLcyw==
-  dependencies:
-    classnames "^2.2.4"
-    prop-types "^15.5.8"
-    react-input-autosize "^2.1.0"
 
 react-select@^3.0.8:
   version "3.0.8"

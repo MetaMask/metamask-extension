@@ -29,25 +29,9 @@
   }
 
   &__select {
-    height: 54px;
     width: 210px;
-    border: 1px solid #d2d8dd;
-    border-radius: 4px;
-    background-color: #fff;
     display: flex;
     align-items: center;
-
-    .Select-control,
-    .Select-control:hover {
-      height: 100%;
-      border: none;
-      box-shadow: none;
-
-      .Select-value {
-        display: flex;
-        align-items: center;
-      }
-    }
   }
 
   &__private-key-password-container {

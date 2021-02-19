@@ -139,7 +139,7 @@ export default class SendAssetRow extends Component {
           </div>
         </div>
         {!insideDropdown && this.props.tokens.length > 0 && (
-          <i className="fa fa-caret-down fa-lg simple-dropdown__caret" />
+          <i className="fa fa-caret-down fa-lg send-v2__asset-dropdown__caret" />
         )}
       </div>
     );
@@ -168,7 +168,7 @@ export default class SendAssetRow extends Component {
           </div>
         </div>
         {!insideDropdown && (
-          <i className="fa fa-caret-down fa-lg simple-dropdown__caret" />
+          <i className="fa fa-caret-down fa-lg send-v2__asset-dropdown__caret" />
         )}
       </div>
     );

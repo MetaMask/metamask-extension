@@ -931,17 +931,11 @@
   "selectAnAccountHelp": {
     "message": "برای مشاهده MetaMask حساب را انتخاب نمایید"
   },
-  "selectCurrency": {
-    "message": "واحد پول را انتخاب کنید"
-  },
   "selectEachPhrase": {
     "message": "لطفًا جهت اطمینان از درستی، هر عبارت را انتخاب کنید."
   },
   "selectHdPath": {
     "message": "انتخاب مسیر HD"
-  },
-  "selectLocale": {
-    "message": "محل را انتخاب کنید"
   },
   "selectPathHelp": {
     "message": "در صورتیکه شما حساب های موجود دفتر حساب را در ذیل نمیبینید، مسیر ها به \"Legacy (MEW / MyCrypto)\"  تغییر دهید"

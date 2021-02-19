@@ -1403,17 +1403,11 @@
   "selectAnAccountHelp": {
     "message": "MetaMask에서 확인할 계정 선택"
   },
-  "selectCurrency": {
-    "message": "통화 선택"
-  },
   "selectEachPhrase": {
     "message": "각 구문을 선택하여 구문이 올바른지 확인하세요."
   },
   "selectHdPath": {
     "message": "HD 경로 선택"
-  },
-  "selectLocale": {
-    "message": "로캘 선택"
   },
   "selectPathHelp": {
     "message": "아래에 기존 Ledger 계정이 표시되지 않는다면 경로를 \"Legacy(MEW / MyCrypto)\"로 변경해 보세요."

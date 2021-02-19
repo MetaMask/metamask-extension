@@ -1412,17 +1412,11 @@
   "selectAnAccountHelp": {
     "message": "Selecciona la cuenta que quiere ver en MetaMask"
   },
-  "selectCurrency": {
-    "message": "Selecciona Moneda"
-  },
   "selectEachPhrase": {
     "message": "Selecciona cada frase para asegurarse de que sea correcta."
   },
   "selectHdPath": {
     "message": "Selecciona la ruta HD (jerárquica determinista)"
-  },
-  "selectLocale": {
-    "message": "Selecciona configuración regional"
   },
   "selectPathHelp": {
     "message": "Si no ves tus cuentas actuales de Ledger abajo, prueba cambiando la ruta a \"Legacy (MEW / MyCrypto)\""

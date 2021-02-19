@@ -641,6 +641,7 @@
   &__asset-dropdown {
     height: 54px;
     border: none;
+    position: relative;
 
     &__single-asset {
       display: flex;
@@ -651,6 +652,11 @@
       &:hover {
         background-color: rgba($alto, 0.2);
       }
+    }
+
+    &__caret {
+      color: $silver;
+      padding: 0 10px;
     }
 
     &__asset {

@@ -909,17 +909,11 @@
   "selectAnAccountHelp": {
     "message": "Chagua akaunti kuangalia kwenye MetaMask"
   },
-  "selectCurrency": {
-    "message": "Chagua Sarafu"
-  },
   "selectEachPhrase": {
     "message": "Tafadhali chagua kila kirai ili kuhakikisha kuwa hii ni sahihi."
   },
   "selectHdPath": {
     "message": "Chagua Njia ya HD"
-  },
-  "selectLocale": {
-    "message": "Chagua Lugha"
   },
   "selectPathHelp": {
     "message": "Ikiwa huoni akaunti zako za Leja za sasa hapa chini, charibu kubadilisha njia kwenda \"Legacy (MEW / MyCrypto)\"  "

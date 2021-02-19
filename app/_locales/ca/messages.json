@@ -909,17 +909,11 @@
   "selectAnAccountHelp": {
     "message": "Selecciona el compte que vols veure a MetaMask"
   },
-  "selectCurrency": {
-    "message": "Selecciona divisa"
-  },
   "selectEachPhrase": {
     "message": "Si us plau selecciona cada frase per a assegurar-te que és correcta."
   },
   "selectHdPath": {
     "message": "Selecciona Ruta HD"
-  },
-  "selectLocale": {
-    "message": "Selecciona Configuració Regional"
   },
   "selectPathHelp": {
     "message": "Si no veus els teus comptes Ledger a sota, prova canviant la ruta a \"Legacy (MEW / MyCrypto)\""

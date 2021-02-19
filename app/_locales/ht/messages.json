@@ -573,14 +573,8 @@
   "selectAnAccountHelp": {
     "message": "Chwazi kont pou wè nan MetaMask"
   },
-  "selectCurrency": {
-    "message": "Chwazi Lajan"
-  },
   "selectHdPath": {
     "message": "Chwazi chemen HD"
-  },
-  "selectLocale": {
-    "message": "Chwazi Lokasyon"
   },
   "selectPathHelp": {
     "message": "Si ou pa wè kont Ledger ou te genyen an anba a, eseye chanje chemen an \"Eritaj (MEW / MyCrypto)\""

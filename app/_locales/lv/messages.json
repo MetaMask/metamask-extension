@@ -927,17 +927,11 @@
   "selectAnAccountHelp": {
     "message": "Atlasiet kontu, ko skatīt MetaMask"
   },
-  "selectCurrency": {
-    "message": "Atlasiet valūtu"
-  },
   "selectEachPhrase": {
     "message": "Lūdzu, atlasiet katru frāzi, lai pārliecinātos par tās pareizību."
   },
   "selectHdPath": {
     "message": "Atlasīt HD ceļu"
-  },
-  "selectLocale": {
-    "message": "Izvēlieties lokalizāciju"
   },
   "selectPathHelp": {
     "message": "Ja zemāk neredzat savus esošos žurnāla kontus, mēģiniet pārslēgt ceļus uz \"Legacy (MEW / MyCrypto)\""

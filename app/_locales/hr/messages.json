@@ -924,17 +924,11 @@
   "selectAnAccountHelp": {
     "message": "Odaberi račun za prikaz u usluzi MetaMask"
   },
-  "selectCurrency": {
-    "message": "Odaberite valutu"
-  },
   "selectEachPhrase": {
     "message": "Odaberite svaku rečenicu kako biste provjerili je li točna."
   },
   "selectHdPath": {
     "message": "Odaberi put HD-a"
-  },
-  "selectLocale": {
-    "message": "Odaberi lokalnu postavku"
   },
   "selectPathHelp": {
     "message": "Ako ne vidite u nastavku postojeće račune Ledger, pokušajte promijeniti puteve na „Nasljeđe (MEW / MyCrypto)”"

@@ -900,17 +900,11 @@
   "selectAnAccountHelp": {
     "message": "Wählen Sie das Konto aus, das in MetaMask angezeigt werden soll."
   },
-  "selectCurrency": {
-    "message": "Währung auswählen"
-  },
   "selectEachPhrase": {
     "message": "Bitte wählen Sie jede Phrase aus, um sicherzustellen, dass sie korrekt ist."
   },
   "selectHdPath": {
     "message": "HD-Pfad auswählen"
-  },
-  "selectLocale": {
-    "message": "Gebietsschema auswählen"
   },
   "selectPathHelp": {
     "message": "Wenn Sie Ihre bestehenden Ledger-Konten nachfolgend nicht sehen, versuchen Sie, die Pfade zu \"Legacy (MEW / MyCrypto)\" zu ändern"

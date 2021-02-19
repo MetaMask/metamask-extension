@@ -928,17 +928,11 @@
   "selectAnAccountHelp": {
     "message": "Επιλέξτε τον λογαριασμό για προβολή στο MetaMask"
   },
-  "selectCurrency": {
-    "message": "Επιλέξτε Νόμισμα"
-  },
   "selectEachPhrase": {
     "message": "Παρακαλούμε επιλέξτε κάθε φράση, για να βεβαιωθείτε ότι είναι σωστή."
   },
   "selectHdPath": {
     "message": "Επιλέξτε Διαδρομή HD"
-  },
-  "selectLocale": {
-    "message": "Επιλέξτε Τοπικές Ρυθμίσεις"
   },
   "selectPathHelp": {
     "message": "Εάν δεν βλέπετε τους υπάρχοντες λογαριασμούς σας Καθολικού παρακάτω, προσπαθήστε να αλλάξετε τις διαδρομές σε \"Legacy (MEW / MyCrypto)\""

@@ -1415,17 +1415,11 @@
   "selectAnAccountHelp": {
     "message": "MetaMaskで表示するアカウントを選択してください"
   },
-  "selectCurrency": {
-    "message": "通貨を選択"
-  },
   "selectEachPhrase": {
     "message": "単語を選択して、各フレーズが正しいことを確認してください。"
   },
   "selectHdPath": {
     "message": "HDパスの選択"
-  },
-  "selectLocale": {
-    "message": "言語の選択"
   },
   "selectPathHelp": {
     "message": "既存のLedgerのアカウントが以下に表示されない場合は、パスを \"Legacy (MEW / MyCrypto)\" に変えてください。"

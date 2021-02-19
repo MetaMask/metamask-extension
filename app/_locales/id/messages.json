@@ -1403,17 +1403,11 @@
   "selectAnAccountHelp": {
     "message": "Pilih akun untuk dilihat di MetaMask"
   },
-  "selectCurrency": {
-    "message": "Pilih Mata Uang"
-  },
   "selectEachPhrase": {
     "message": "Pilih masing-masing frasa untuk memastikan kebenarannya."
   },
   "selectHdPath": {
     "message": "Pilih Jalur HD"
-  },
-  "selectLocale": {
-    "message": "Pilih Lokal"
   },
   "selectPathHelp": {
     "message": "Jika Anda tidak melihat akun Ledger Anda yang ada di bawah, coba untuk beralih jalur ke \"Warisan (MEW / MyCrypto)\""

@@ -1403,17 +1403,11 @@
   "selectAnAccountHelp": {
     "message": "Chọn tài khoản để xem trong MetaMask"
   },
-  "selectCurrency": {
-    "message": "Chọn đơn vị tiền"
-  },
   "selectEachPhrase": {
     "message": "Vui lòng chọn từng cụm mật khẩu theo thứ tự để đảm bảo sự chính xác."
   },
   "selectHdPath": {
     "message": "Chọn đường dẫn phân cấp xác định"
-  },
-  "selectLocale": {
-    "message": "Chọn địa phương"
   },
   "selectPathHelp": {
     "message": "Nếu bạn không thấy các tài khoản Ledger hiện có của bạn dưới đây, hãy thử chuyển đường dẫn thành \"Legacy (MEW / MyCrypto)\""

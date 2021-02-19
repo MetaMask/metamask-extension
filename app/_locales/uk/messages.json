@@ -931,17 +931,11 @@
   "selectAnAccountHelp": {
     "message": "Оберіть обліковий запис для перегляду в MetaMask"
   },
-  "selectCurrency": {
-    "message": "Виберіть валюту"
-  },
   "selectEachPhrase": {
     "message": "Виберіть кожну фразу, щоб переконатися, що вона правильна."
   },
   "selectHdPath": {
     "message": "Виберіть шлях до HD-гаманця"
-  },
-  "selectLocale": {
-    "message": "Оберіть локаль"
   },
   "selectPathHelp": {
     "message": "Якщо ви не бачите ваш обліковий запис Ledger, який існує, спробуйте переключити шляхи на \"Legacy (MEW / MyCrypto)\""
