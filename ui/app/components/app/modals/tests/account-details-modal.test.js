@@ -70,11 +70,8 @@ describe('Account Details Modal', function () {
     wrapper.setProps({ rpcPrefs: { blockExplorerUrl } });
 
     const modalButton = wrapper.find('.account-details-modal__button');
-    const blockExplorerLink = modalButton.first();
+    const blockExplorerLink = modalButton.first().shallow();
 
-    assert.strictEqual(
-      blockExplorerLink.html(),
-      '<button class="button btn-secondary account-details-modal__button">blockExplorerView</button>',
-    );
+    assert.strictEqual(blockExplorerLink.text(), 'blockExplorerView');
   });
 });
