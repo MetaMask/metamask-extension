@@ -14,6 +14,10 @@
     'content'
     'footer';
 
+  a {
+    color: $primary-1;
+  }
+
   &__content {
     grid-area: content;
     padding: 16px 16px 0;

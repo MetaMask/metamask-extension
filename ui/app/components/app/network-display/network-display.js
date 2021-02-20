@@ -84,9 +84,7 @@ export default function NetworkDisplay({
 NetworkDisplay.propTypes = {
   colored: PropTypes.bool,
   indicatorSize: PropTypes.oneOf(Object.values(SIZES)),
-  labelProps: PropTypes.shape({
-    ...Chip.propTypes.labelProps,
-  }),
+  labelProps: Chip.propTypes.labelProps,
   targetNetwork: PropTypes.shape({
     type: PropTypes.oneOf([
       ...Object.values(NETWORK_TYPE_TO_ID_MAP),

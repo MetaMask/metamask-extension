@@ -45,6 +45,15 @@ const Button = ({
   } else if (submit) {
     buttonProps.type = 'submit';
   }
+  if (typeof buttonProps.onClick === 'function') {
+    buttonProps.onKeyUp ??= (event) => {
+      if (event.key === 'Enter') {
+        buttonProps.onClick();
+      }
+    };
+    buttonProps.role ??= 'button';
+    buttonProps.tabIndex ??= 0;
+  }
   return (
     <Tag
       className={classnames(

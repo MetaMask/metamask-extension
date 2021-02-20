@@ -162,8 +162,10 @@ export default function ConfirmationPage() {
       {pendingConfirmations.length > 1 && (
         <div className="confirmation-page__navigation">
           <p>
-            {currentPendingConfirmation + 1} of {pendingConfirmations.length}{' '}
-            pending
+            {t('xOfYPending', [
+              currentPendingConfirmation + 1,
+              pendingConfirmations.length,
+            ])}
           </p>
           {currentPendingConfirmation > 0 && (
             <button
@@ -199,7 +201,6 @@ export default function ConfirmationPage() {
         <Box justifyContent="center" padding={[1, 4, 4]}>
           <Chip
             label={stripHttpsScheme(originMetadata.origin)}
-            labelColor="gray"
             leftIcon={
               <SiteIcon
                 icon={originMetadata.icon}

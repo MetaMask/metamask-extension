@@ -19,8 +19,10 @@ const UNRECOGNIZED_CHAIN = {
             element: 'a',
             key: 'unrecognizedChainLink',
             props: {
-              href: '#',
+              href:
+                'https://metamask.zendesk.com/hc/en-us/articles/360056196151',
               target: '__blank',
+              tabIndex: 0,
             },
             children: {
               element: 'MetaMaskTranslation',
@@ -49,8 +51,10 @@ const INVALID_CHAIN = {
             element: 'a',
             key: 'mismatchedChainLink',
             props: {
-              href: '#',
+              href:
+                'https://metamask.zendesk.com/hc/en-us/articles/360056196151',
               target: '__blank',
+              tabIndex: 0,
             },
             children: {
               element: 'MetaMaskTranslation',
@@ -86,10 +90,8 @@ async function getAlerts(pendingApproval) {
       validated = false;
     }
 
-    const { hostname } = new URL(pendingApproval.requestData.rpcUrl);
-    if (
-      !matchedChain.rpc.map((rpc) => new URL(rpc).hostname).includes(hostname)
-    ) {
+    const { origin } = new URL(pendingApproval.requestData.rpcUrl);
+    if (!matchedChain.rpc.map((rpc) => new URL(rpc).origin).includes(origin)) {
       validated = false;
     }
   }

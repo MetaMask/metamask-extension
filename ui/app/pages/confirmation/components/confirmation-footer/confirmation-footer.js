@@ -13,28 +13,10 @@ export default function ConfirmationFooter({
     <div className="confirmation-footer">
       {alerts}
       <div className="confirmation-footer__actions">
-        <Button
-          rounded
-          type="secondary"
-          onClick={onCancel}
-          onKeyUp={(event) => {
-            if (event.key === 'Enter') {
-              onCancel();
-            }
-          }}
-        >
+        <Button rounded type="secondary" onClick={onCancel}>
           {cancelText}
         </Button>
-        <Button
-          rounded
-          type="primary"
-          onClick={onApprove}
-          onKeyUp={(event) => {
-            if (event.key === 'Enter') {
-              onApprove();
-            }
-          }}
-        >
+        <Button rounded type="primary" onClick={onApprove}>
           {approveText}
         </Button>
       </div>

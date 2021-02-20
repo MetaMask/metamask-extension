@@ -21,6 +21,15 @@ const ALLOWED_TEMPLATE_KEYS = [
 ];
 
 /**
+ * @typedef {Object} PendingApproval
+ * @property {string} id - The randomly generated id of the approval
+ * @property {string} origin - The origin of the site requesting this approval
+ * @property {number} time - The time the approval was requested
+ * @property {string} type - The type of approval being requested
+ * @property {Object} requestData - The data submitted with the request
+ */
+
+/**
  * getTemplateAlerts calls the getAlerts function exported by the template if
  * it exists, and then returns the result of that function. In the confirmation
  * page the alerts returned from the getAlerts method will be set into the
@@ -64,11 +73,7 @@ export async function getTemplateState(pendingApproval) {
   const result = await fn(pendingApproval);
   if (typeof result !== 'object' || Array.isArray(result)) {
     throw new Error(`Template state must be an object, received: ${result}`);
-    // I'm using == here to catch undefined and null because we'll want
-    // to enforce the object return shape in the event that one of these
-    // values is returned.
-    // eslint-disable-next-line no-eq-null
-  } else if (result == null) {
+  } else if (result === null || result === undefined) {
     return {};
   }
   return result;

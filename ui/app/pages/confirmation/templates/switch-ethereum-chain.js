@@ -88,9 +88,9 @@ function getValues(pendingApproval, t, actions) {
   };
 }
 
-const addEthereumChain = {
+const switchEthereumChain = {
   getAlerts,
   getValues,
 };
 
-export default addEthereumChain;
+export default switchEthereumChain;

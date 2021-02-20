@@ -21,6 +21,8 @@ export default function Chip({
     }
   };
 
+  const isInteractive = typeof onClick === 'function';
+
   return (
     <div
       onClick={onClick}
@@ -30,8 +32,8 @@ export default function Chip({
         'chip--with-right-icon': Boolean(rightIcon),
         [`chip--${borderColor}`]: true,
       })}
-      role="button"
-      tabIndex={0}
+      role={isInteractive ? 'button' : undefined}
+      tabIndex={isInteractive ? 0 : undefined}
     >
       {leftIcon && <div className="chip__left-icon">{leftIcon}</div>}
       {children ?? (
