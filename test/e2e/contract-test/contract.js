@@ -34,6 +34,26 @@ The `piggybankContract` is compiled from:
 
 const forwarderOrigin = 'http://localhost:9010'
 
+let USE_BASE32_ADDRESS = false
+
+function isLikeBase32Address(addr) {
+  // this won't return false when there's net1029, net1
+  return /^(cfx(test)?|net\d+):(type\.(null|user|contract|builtin):)?[0123456789abcdefghjkmnprstuvwxyz]{42}$/i.test(
+    addr
+  )
+}
+
+function setAddressType(addr) {
+  if (!addr) {
+ return
+}
+  if (isLikeBase32Address(addr)) {
+ USE_BASE32_ADDRESS = true
+} else {
+ USE_BASE32_ADDRESS = false
+}
+}
+
 const isConfluxPortalInstalled = () => {
   return Boolean(window.conflux && window.conflux.isConfluxPortal)
 }
@@ -529,7 +549,9 @@ const initialize = () => {
         console.log(`event`, event)
         const transferResult = humanstandardtokenContract
           .transfer(
-            'net2999:aatxddbxj8akph7vfhkmru2ra7v7xksksamx6rgwy2',
+            USE_BASE32_ADDRESS
+              ? 'cfxtest:aatxddbxj8akph7vfhkmru2ra7v7xksksah2teyjuc'
+              : '0x1f318c334780961Fb129d2A6c30D0763D9a5C970',
             '15000'
           )
           .sendTransaction({
@@ -544,7 +566,9 @@ const initialize = () => {
       approveTokens.onclick = async () => {
         const approveResult = await humanstandardtokenContract
           .approve(
-            'net2999:acf6ns12sxkrzdkbrny9cr6ajgcs60188ub3vfnwe1',
+            USE_BASE32_ADDRESS
+              ? 'cfxtest:acf6ns12sxkrzdkbrny9cr6ajgcs60188upwcp3jar'
+              : '0x8Bc5BaF874d2DA8D216ae9f137804184Ee5aFef4',
             '70000'
           )
           .sendTransaction({
@@ -560,7 +584,9 @@ const initialize = () => {
         console.log(`event`, event)
         const transferResult = await humanstandardtokenContract
           .transfer(
-            'net2999:aatxddbxj8akph7vfhkmru2ra7v7xksksamx6rgwy2',
+            USE_BASE32_ADDRESS
+              ? 'cfxtest:aatxddbxj8akph7vfhkmru2ra7v7xksksah2teyjuc'
+              : '0x1f318c334780961Fb129d2A6c30D0763D9a5C970',
             '15000'
           )
           .sendTransaction({
@@ -575,7 +601,9 @@ const initialize = () => {
       approveTokensWithoutGas.onclick = async () => {
         const approveResult = await humanstandardtokenContract
           .approve(
-            'net2999:aatxddbxj8akph7vfhkmru2ra7v7xksksamx6rgwy2',
+            USE_BASE32_ADDRESS
+              ? 'cfxtest:aatxddbxj8akph7vfhkmru2ra7v7xksksah2teyjuc'
+              : '0x1f318c334780961Fb129d2A6c30D0763D9a5C970',
             '70000'
           )
           .sendTransaction({
@@ -660,19 +688,24 @@ const initialize = () => {
           name: 'Ether Mail',
           version: '1',
           chainId,
-          verifyingContract:
-            'cfxtest:achs3nehae0j6ksvy1bhrffsh1rtfrw1f6w1kzv46t',
+          verifyingContract: USE_BASE32_ADDRESS
+            ? 'cfxtest:achs3nehae0j6ksvy1bhrffsh1rtfrw1f6w1kzv46t'
+            : '0x8EECAc87012C8e25d1A5c27694Ae3DdaF2B6572F',
         },
         message: {
           from: {
             happy: true,
             name: 'Cow',
-            wallet: 'cfxtest:aaj9xt6ngs0xr24ng2pe8wbp7d1tj71f5u7xzc28ws',
+            wallet: USE_BASE32_ADDRESS
+              ? 'cfxtest:aaj9xt6ngs0xr24ng2pe8wbp7d1tj71f5u7xzc28ws'
+              : '0x11F9bf8B33Ad36e34b36184f482Ce8eEF476E5dC',
           },
           to: {
             happy: false,
             name: 'Bob',
-            wallet: 'cfxtest:aaj9xt6ngs0xr24ng2pe8wbp7d1tj71f5u7xzc28ws',
+            wallet: USE_BASE32_ADDRESS
+              ? 'cfxtest:aaj9xt6ngs0xr24ng2pe8wbp7d1tj71f5u7xzc28ws'
+              : '0x11F9bf8B33Ad36e34b36184f482Ce8eEF476E5dC',
           },
           contents: 'Hello, Bob!',
         },
@@ -713,6 +746,7 @@ const initialize = () => {
     getAccountsButton.addEventListener('click', async () => {
       try {
         const accounts = await conflux.send({ method: 'cfx_accounts' })
+        setAddressType(accounts[0])
         getAccountsResults.innerHTML = accounts[0] || 'Not able to get accounts'
       } catch (error) {
         console.error(error)
@@ -736,6 +770,7 @@ const initialize = () => {
         (!accounts || !accounts.length) && newAccounts && newAccounts.length
       )
       accounts = newAccounts
+      setAddressType(accounts[0])
       accountsDiv.innerHTML = accounts
       if (connecting) {
         initializeAccountButtons()
