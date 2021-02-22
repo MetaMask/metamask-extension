@@ -108,7 +108,7 @@ export default class SettingsTab extends PureComponent {
     const { hideZeroBalanceTokens, setHideZeroBalanceTokens } = this.props;
 
     return (
-      <div className="settings-page__content-row">
+      <div className="settings-page__content-row" id="toggle-zero-balance">
         <div className="settings-page__content-item">
           <span>{t('hideZeroBalanceTokens')}</span>
         </div>
@@ -131,7 +131,7 @@ export default class SettingsTab extends PureComponent {
     const { useBlockie, setUseBlockie } = this.props;
 
     return (
-      <div className="settings-page__content-row">
+      <div className="settings-page__content-row" id="blockie-optin">
         <div className="settings-page__content-item">
           <span>{this.context.t('blockiesIdenticon')}</span>
         </div>
