@@ -27,6 +27,7 @@ import {
   AWAITING_SWAP_ROUTE,
   BUILD_QUOTE_ROUTE,
   VIEW_QUOTE_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
 } from '../../helpers/constants/routes';
 
 const LEARN_MORE_URL =
@@ -72,6 +73,7 @@ export default class Home extends PureComponent {
     setWeb3ShimUsageAlertDismissed: PropTypes.func.isRequired,
     originOfCurrentTab: PropTypes.string,
     disableWeb3ShimUsageAlert: PropTypes.func.isRequired,
+    pendingApprovals: PropTypes.arrayOf(PropTypes.object).isRequired,
   };
 
   state = {
@@ -89,6 +91,7 @@ export default class Home extends PureComponent {
       haveSwapsQuotes,
       showAwaitingSwapScreen,
       swapsFetchParams,
+      pendingApprovals,
     } = this.props;
 
     this.setState({ mounted: true });
@@ -106,6 +109,8 @@ export default class Home extends PureComponent {
       history.push(CONFIRM_TRANSACTION_ROUTE);
     } else if (Object.keys(suggestedTokens).length > 0) {
       history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE);
+    } else if (pendingApprovals.length > 0) {
+      history.push(CONFIRMATION_V_NEXT_ROUTE);
     }
   }
 

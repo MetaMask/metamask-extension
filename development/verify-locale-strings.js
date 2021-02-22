@@ -172,6 +172,7 @@ async function verifyEnglishLocale() {
   // and gradually phase out the key based search
   const globsToStrictSearch = [
     'ui/app/components/app/metamask-translation/*.js',
+    'ui/app/pages/confirmation/templates/*.js',
   ];
   const testGlob = '**/*.test.js';
   const javascriptFiles = await glob(['ui/**/*.js', 'shared/**/*.js'], {

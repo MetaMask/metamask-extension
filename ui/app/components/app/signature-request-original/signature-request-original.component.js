@@ -166,7 +166,7 @@ export default class SignatureRequestOriginal extends Component {
         {originMetadata?.icon ? (
           <SiteIcon
             icon={originMetadata.icon}
-            name={originMetadata.name}
+            name={originMetadata.hostname}
             size={24}
           />
         ) : null}

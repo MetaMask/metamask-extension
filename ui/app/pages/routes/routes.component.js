@@ -53,6 +53,7 @@ import {
   SETTINGS_ROUTE,
   UNLOCK_ROUTE,
   BUILD_QUOTE_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -61,6 +62,7 @@ import {
 } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
+import ConfirmationPage from '../confirmation';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -158,6 +160,10 @@ export default class Routes extends Component {
           component={ConfirmAddSuggestedTokenPage}
           exact
         />
+        <Authenticated
+          path={CONFIRMATION_V_NEXT_ROUTE}
+          component={ConfirmationPage}
+        />
         <Authenticated path={NEW_ACCOUNT_ROUTE} component={CreateAccountPage} />
         <Authenticated
           path={`${CONNECT_ROUTE}/:id`}
@@ -244,7 +250,14 @@ export default class Routes extends Component {
       }),
     );
 
-    return isHandlingPermissionsRequest;
+    const isHandlingAddEthereumChainRequest = Boolean(
+      matchPath(location.pathname, {
+        path: CONFIRMATION_V_NEXT_ROUTE,
+        exact: false,
+      }),
+    );
+
+    return isHandlingPermissionsRequest || isHandlingAddEthereumChainRequest;
   }
 
   render() {

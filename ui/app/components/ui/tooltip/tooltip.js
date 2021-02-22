@@ -14,7 +14,7 @@ export default class Tooltip extends PureComponent {
     offset: 0,
     size: 'small',
     title: null,
-    trigger: 'mouseenter',
+    trigger: 'mouseenter focus',
     wrapperClassName: undefined,
     theme: '',
   };
@@ -35,6 +35,7 @@ export default class Tooltip extends PureComponent {
     wrapperClassName: PropTypes.string,
     style: PropTypes.object,
     theme: PropTypes.string,
+    tabIndex: PropTypes.number,
   };
 
   render() {
@@ -54,6 +55,7 @@ export default class Tooltip extends PureComponent {
       wrapperClassName,
       style,
       theme,
+      tabIndex,
     } = this.props;
 
     if (!title && !html) {
@@ -77,6 +79,7 @@ export default class Tooltip extends PureComponent {
           title={title}
           trigger={trigger}
           theme={theme}
+          tabIndex={tabIndex || 0}
         >
           {children}
         </ReactTippy>

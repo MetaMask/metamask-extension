@@ -2463,6 +2463,44 @@ export function clearPermissions() {
   };
 }
 
+// Pending Approvals
+
+/**
+ * Resolves a pending approval and closes the current notification window if no
+ * further approvals are pending after the background state updates.
+ * @param {string} id - The pending approval id
+ * @param {any} [value] - The value required to confirm a pending approval
+ */
+export function resolvePendingApproval(id, value) {
+  return async (dispatch) => {
+    await promisifiedBackground.resolvePendingApproval(id, value);
+    // Before closing the current window, check if any additional confirmations
+    // are added as a result of this confirmation being accepted
+    const { pendingApprovals } = await promisifiedBackground.getState();
+    if (Object.values(pendingApprovals).length === 0) {
+      dispatch(closeCurrentNotificationWindow());
+    }
+  };
+}
+
+/**
+ * Rejects a pending approval and closes the current notification window if no
+ * further approvals are pending after the background state updates.
+ * @param {string} id - The pending approval id
+ * @param {Error} [error] - The error to throw when rejecting the approval
+ */
+export function rejectPendingApproval(id, error) {
+  return async (dispatch) => {
+    await promisifiedBackground.rejectPendingApproval(id, error);
+    // Before closing the current window, check if any additional confirmations
+    // are added as a result of this confirmation being rejected
+    const { pendingApprovals } = await promisifiedBackground.getState();
+    if (Object.values(pendingApprovals).length === 0) {
+      dispatch(closeCurrentNotificationWindow());
+    }
+  };
+}
+
 export function setFirstTimeFlowType(type) {
   return (dispatch) => {
     log.debug(`background.setFirstTimeFlowType`);
