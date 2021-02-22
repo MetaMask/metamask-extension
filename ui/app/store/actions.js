@@ -2052,6 +2052,10 @@ export function setUseNativeCurrencyAsPrimaryCurrencyPreference(value) {
   return setPreference('useNativeCurrencyAsPrimaryCurrency', value);
 }
 
+export function setHideZeroBalanceTokens(value) {
+  return setPreference('hideZeroBalanceTokens', value);
+}
+
 export function setShowFiatConversionOnTestnetsPreference(value) {
   return setPreference('showFiatInTestnets', value);
 }

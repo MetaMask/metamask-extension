@@ -386,3 +386,6 @@ export const getUnconnectedAccountAlertShown = (state) =>
   state.metamask.unconnectedAccountAlertShownOrigins;
 
 export const getTokens = (state) => state.metamask.tokens;
+
+export const getTokensWithBalance = (state) =>
+  state.metamask.tokens.filter((token) => Number(token.balance) > 0);

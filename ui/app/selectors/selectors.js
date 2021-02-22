@@ -303,6 +303,11 @@ export function getShouldShowFiat(state) {
   return Boolean(isMainNet || showFiatInTestnets);
 }
 
+export function getShouldHideZeroBalanceTokens(state) {
+  const { hideZeroBalanceTokens } = getPreferences(state);
+  return hideZeroBalanceTokens;
+}
+
 export function getAdvancedInlineGasShown(state) {
   return Boolean(state.metamask.featureFlags.advancedInlineGas);
 }

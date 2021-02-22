@@ -4,6 +4,7 @@ import {
   setUseBlockie,
   updateCurrentLocale,
   setUseNativeCurrencyAsPrimaryCurrencyPreference,
+  setHideZeroBalanceTokens,
   setParticipateInMetaMetrics,
 } from '../../../store/actions';
 import { getPreferences } from '../../../selectors';
@@ -21,7 +22,10 @@ const mapStateToProps = (state) => {
     useBlockie,
     currentLocale,
   } = metamask;
-  const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
+  const {
+    useNativeCurrencyAsPrimaryCurrency,
+    hideZeroBalanceTokens,
+  } = getPreferences(state);
 
   return {
     warning,
@@ -31,6 +35,7 @@ const mapStateToProps = (state) => {
     nativeCurrency,
     useBlockie,
     useNativeCurrencyAsPrimaryCurrency,
+    hideZeroBalanceTokens,
   };
 };
 
@@ -44,6 +49,8 @@ const mapDispatchToProps = (dispatch) => {
     },
     setParticipateInMetaMetrics: (val) =>
       dispatch(setParticipateInMetaMetrics(val)),
+    setHideZeroBalanceTokens: (value) =>
+      dispatch(setHideZeroBalanceTokens(value)),
   };
 };
 
