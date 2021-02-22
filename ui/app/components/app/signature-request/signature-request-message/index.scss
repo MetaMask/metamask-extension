@@ -55,8 +55,8 @@
     &-value {
       color: black;
       margin-left: 0.5rem;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      overflow-wrap: break-word;
+      white-space: pre-line;
       overflow: hidden;
     }
   }

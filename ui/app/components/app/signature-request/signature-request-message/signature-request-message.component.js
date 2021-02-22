@@ -43,9 +43,6 @@ export default class SignatureRequestMessage extends PureComponent {
 
     return (
       <div className="signature-request-message">
-        <div className="signature-request-message__title">
-          {this.context.t('signatureRequest1')}
-        </div>
         <div className="signature-request-message--root">
           <div className="signature-request-message__type-title">
             {this.context.t('signatureRequest1')}
