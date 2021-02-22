@@ -72,11 +72,11 @@ const initialize = () => {
   const transferTokensWithoutGas = document.getElementById(
     'transferTokensWithoutGas'
   )
-  transferTokensWithoutGas.style.display = 'none'
+  // transferTokensWithoutGas.style.display = 'none'
   const approveTokensWithoutGas = document.getElementById(
     'approveTokensWithoutGas'
   )
-  approveTokensWithoutGas.style.display = 'none'
+  // approveTokensWithoutGas.style.display = 'none'
   const personalSignData = document.getElementById('personalSignData')
   const personalSignDataResults = document.getElementById(
     'personalSignDataResult'

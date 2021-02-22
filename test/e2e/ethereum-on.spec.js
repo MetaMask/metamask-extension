@@ -165,6 +165,12 @@ describe('MetaMask', function() {
       assert.equal(await networkDiv.getText(), '2999')
     })
 
+    it('sets the account div within the dapp', async function() {
+      await driver.switchToWindow(dapp)
+      const accountsDiv = await driver.findElement(By.css('#accounts'))
+      assert.equal(await accountsDiv.getText(), publicBase32Address)
+    })
+
     it('changes the network', async function() {
       await driver.switchToWindow(extension)
 
@@ -193,10 +199,10 @@ describe('MetaMask', function() {
       assert.equal(await networkDiv.getText(), '0x1')
     })
 
-    it('sets the account div within the dapp', async function() {
-      await driver.switchToWindow(dapp)
-      const accountsDiv = await driver.findElement(By.css('#accounts'))
-      assert.equal(await accountsDiv.getText(), publicBase32Address)
-    })
+    // it('sets the account div within the dapp', async function() {
+    //   await driver.switchToWindow(dapp)
+    //   const accountsDiv = await driver.findElement(By.css('#accounts'))
+    //   assert.equal(await accountsDiv.getText(), publicBase32Address)
+    // })
   })
 })
