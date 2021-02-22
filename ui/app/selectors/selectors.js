@@ -2,7 +2,7 @@ import { stripHexPrefix } from 'ethereumjs-util';
 import { createSelector } from 'reselect';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 import {
-  MAINNET,
+  MAINNET_CHAIN_ID,
   TEST_CHAINS,
   NETWORK_TYPE_RPC,
 } from '../../../shared/constants/network';
@@ -289,8 +289,8 @@ function getSuggestedTokenCount(state) {
 }
 
 export function getIsMainnet(state) {
-  const networkType = getNetworkIdentifier(state);
-  return networkType === MAINNET;
+  const chainId = getCurrentChainId(state);
+  return chainId === MAINNET_CHAIN_ID;
 }
 
 export function getIsTestnet(state) {
