@@ -340,6 +340,9 @@
   "connectingTo": {
     "message": "Connecting to $1"
   },
+  "connectingToFantom": {
+    "message": "Connecting to Fantom Opera"
+  },
   "connectingToGoerli": {
     "message": "Connecting to Goerli Test Network"
   },
@@ -665,6 +668,9 @@
   },
   "failureMessage": {
     "message": "Something went wrong, and we were unable to complete the action"
+  },
+  "fantom": {
+    "message": "Fantom Opera"
   },
   "fast": {
     "message": "Fast"

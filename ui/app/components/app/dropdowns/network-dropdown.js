@@ -194,6 +194,8 @@ class NetworkDropdown extends Component {
       name = this.context.t('rinkeby');
     } else if (providerName === 'goerli') {
       name = this.context.t('goerli');
+    } else if (providerName === 'fantom') {
+      name = this.context.t('fantom');
     } else {
       name = provider.nickname || this.context.t('unknownNetwork');
     }
@@ -285,6 +287,7 @@ class NetworkDropdown extends Component {
         {this.renderNetworkEntry('kovan')}
         {this.renderNetworkEntry('rinkeby')}
         {this.renderNetworkEntry('goerli')}
+        {this.renderNetworkEntry('fantom')}
 
         {this.renderCustomRpcList(rpcListDetail, this.props.provider)}
         <DropdownMenuItem

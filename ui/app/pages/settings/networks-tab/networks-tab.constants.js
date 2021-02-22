@@ -9,6 +9,8 @@ import {
   RINKEBY_CHAIN_ID,
   ROPSTEN,
   ROPSTEN_CHAIN_ID,
+  FANTOM,
+  FANTOM_CHAIN_ID,
 } from '../../../../../shared/constants/network';
 
 const defaultNetworksData = [
@@ -56,6 +58,15 @@ const defaultNetworksData = [
     chainId: KOVAN_CHAIN_ID,
     ticker: 'ETH',
     blockExplorerUrl: 'https://kovan.etherscan.io',
+  },
+  {
+    labelKey: FANTOM,
+    iconColor: '#9064FF',
+    providerType: FANTOM,
+    rpcUrl: `https://rpcapi.fantom.network`,
+    chainId: FANTOM_CHAIN_ID,
+    ticker: 'FTM',
+    blockExplorerUrl: 'https://ftmscan.com',
   },
 ];
 

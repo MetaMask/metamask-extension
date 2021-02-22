@@ -12,11 +12,14 @@ import EthQuery from 'eth-query';
 import {
   RINKEBY,
   MAINNET,
+  FANTOM,
+  FANTOM_RPC,
   INFURA_PROVIDER_TYPES,
   NETWORK_TYPE_RPC,
   NETWORK_TYPE_TO_ID_MAP,
   MAINNET_CHAIN_ID,
   RINKEBY_CHAIN_ID,
+  FANTOM_CHAIN_ID,
 } from '../../../../shared/constants/network';
 import {
   isPrefixedFormattedHexString,
@@ -189,16 +192,17 @@ export default class NetworkController extends EventEmitter {
     });
   }
 
-  async setProviderType(type, rpcUrl = '', ticker = 'ETH', nickname = '') {
+  async setProviderType(type, rpcUrl = '', tickerParam = null, nickname = '') {
     assert.notStrictEqual(
       type,
       NETWORK_TYPE_RPC,
       `NetworkController - cannot call "setProviderType" with type "${NETWORK_TYPE_RPC}". Use "setRpcTarget"`,
     );
     assert.ok(
-      INFURA_PROVIDER_TYPES.includes(type),
-      `Unknown Infura provider type "${type}".`,
+      INFURA_PROVIDER_TYPES.includes(type) || type === FANTOM,
+      `Unknown built-in provider type "${type}".`,
     );
+    const ticker = tickerParam || (type === FANTOM ? 'FTM' : 'ETH');
     const { chainId } = NETWORK_TYPE_TO_ID_MAP[type];
     this.setProviderConfig({ type, rpcUrl, chainId, ticker, nickname });
   }
@@ -247,6 +251,8 @@ export default class NetworkController extends EventEmitter {
     const isInfura = INFURA_PROVIDER_TYPES.includes(type);
     if (isInfura) {
       this._configureInfuraProvider(type, this._infuraProjectId);
+    } else if (type === FANTOM) {
+      this._configureStandardProvider(FANTOM_RPC, FANTOM_CHAIN_ID);
       // url-based rpc endpoints
     } else if (type === NETWORK_TYPE_RPC) {
       this._configureStandardProvider(rpcUrl, chainId);

@@ -61,8 +61,8 @@ describe('Network Dropdown', function () {
       wrapper = mountWithRouter(<NetworkDropdown store={store} />);
     });
 
-    it('renders 8 DropDownMenuItems ', function () {
-      assert.strictEqual(wrapper.find(DropdownMenuItem).length, 8);
+    it('renders 9 DropDownMenuItems ', function () {
+      assert.strictEqual(wrapper.find(DropdownMenuItem).length, 9);
     });
 
     it('checks background color for first ColorIndicator', function () {
@@ -97,6 +97,12 @@ describe('Network Dropdown', function () {
 
     it('checks background color for sixth ColorIndicator', function () {
       const colorIndicator = wrapper.find(ColorIndicator).at(5);
+      assert.strictEqual(colorIndicator.prop('color'), 'fantom');
+      assert.strictEqual(colorIndicator.prop('borderColor'), 'fantom');
+    });
+
+    it('checks background color for seventh ColorIndicator', function () {
+      const colorIndicator = wrapper.find(ColorIndicator).at(6);
       const customNetworkGray = 'ui-2';
       assert.strictEqual(colorIndicator.prop('color'), customNetworkGray);
       assert.strictEqual(colorIndicator.prop('borderColor'), customNetworkGray);
@@ -104,7 +110,7 @@ describe('Network Dropdown', function () {
 
     it('checks dropdown for frequestRPCList from state', function () {
       assert.strictEqual(
-        wrapper.find(DropdownMenuItem).at(6).text(),
+        wrapper.find(DropdownMenuItem).at(7).text(),
         '✓http://localhost:7545',
       );
     });

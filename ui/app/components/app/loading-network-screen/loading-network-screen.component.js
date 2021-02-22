@@ -50,6 +50,8 @@ export default class LoadingNetworkScreen extends PureComponent {
       name = this.context.t('connectingToRinkeby');
     } else if (providerName === 'goerli') {
       name = this.context.t('connectingToGoerli');
+    } else if (providerName === 'fantom') {
+      name = this.context.t('connectingToFantom');
     } else {
       name = this.context.t('connectingTo', [providerId]);
     }

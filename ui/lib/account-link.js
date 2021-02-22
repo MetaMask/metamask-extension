@@ -21,6 +21,8 @@ export default function getAccountLink(address, network, rpcPrefs) {
       return `https://kovan.etherscan.io/address/${address}`;
     case 5: // goerli test net
       return `https://goerli.etherscan.io/address/${address}`;
+    case 250: // fantom net
+      return `https://ftmscan.com/address/${address}`;
     default:
       return '';
   }

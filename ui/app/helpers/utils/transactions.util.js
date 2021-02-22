@@ -4,6 +4,7 @@ import { ethers } from 'ethers';
 import log from 'loglevel';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { getEtherscanNetworkPrefix } from '../../../lib/etherscan-prefix-for-network';
+import { FANTOM_NETWORK_ID } from '../../../../shared/constants/network';
 import {
   TRANSACTION_CATEGORIES,
   TRANSACTION_GROUP_STATUSES,
@@ -201,6 +202,9 @@ export function getStatusKey(transaction) {
 export function getBlockExplorerUrlForTx(networkId, hash, rpcPrefs = {}) {
   if (rpcPrefs.blockExplorerUrl) {
     return `${rpcPrefs.blockExplorerUrl.replace(/\/+$/u, '')}/tx/${hash}`;
+  }
+  if (networkId === FANTOM_NETWORK_ID) {
+    return `https://ftmscan.com/tx/${hash}`;
   }
   const prefix = getEtherscanNetworkPrefix(networkId);
   return `https://${prefix}etherscan.io/tx/${hash}`;
