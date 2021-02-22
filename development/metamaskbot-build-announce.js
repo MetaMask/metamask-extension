@@ -61,12 +61,17 @@ async function start() {
   const storybookUrl = `${BUILD_LINK_BASE}/storybook/index.html`;
   const storybookLink = `<a href="${storybookUrl}">Storybook</a>`;
 
+  // links to bundle browser builds
+  const depVizUrl = `${BUILD_LINK_BASE}/build-artifacts/build-viz/index.html`;
+  const depVizLink = `<a href="${depVizUrl}">Build System</a>`;
+
   // link to artifacts
   const allArtifactsUrl = `https://circleci.com/gh/MetaMask/metamask-extension/${CIRCLE_BUILD_NUM}#artifacts/containers/0`;
 
   const contentRows = [
     `builds: ${buildLinks}`,
     `bundle viz: ${bundleLinks}`,
+    `build viz: ${depVizLink}`,
     `code coverage: ${coverageLink}`,
     `storybook: ${storybookLink}`,
     `<a href="${allArtifactsUrl}">all artifacts</a>`,
