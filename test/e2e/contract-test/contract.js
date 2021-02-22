@@ -45,13 +45,13 @@ function isLikeBase32Address(addr) {
 
 function setAddressType(addr) {
   if (!addr) {
- return
-}
+    return
+  }
   if (isLikeBase32Address(addr)) {
- USE_BASE32_ADDRESS = true
-} else {
- USE_BASE32_ADDRESS = false
-}
+    USE_BASE32_ADDRESS = true
+  } else {
+    USE_BASE32_ADDRESS = false
+  }
 }
 
 const isConfluxPortalInstalled = () => {
@@ -66,15 +66,17 @@ const initialize = () => {
   const sendButton = document.getElementById('sendButton')
   const createToken = document.getElementById('createToken')
   const createBalanceTracker = document.getElementById('createBalanceTracker')
-  // createBalanceTracker.style.display = 'none'
+  createBalanceTracker.style.display = 'none'
   const transferTokens = document.getElementById('transferTokens')
   const approveTokens = document.getElementById('approveTokens')
   const transferTokensWithoutGas = document.getElementById(
     'transferTokensWithoutGas'
   )
+  transferTokensWithoutGas.style.display = 'none'
   const approveTokensWithoutGas = document.getElementById(
     'approveTokensWithoutGas'
   )
+  approveTokensWithoutGas.style.display = 'none'
   const personalSignData = document.getElementById('personalSignData')
   const personalSignDataResults = document.getElementById(
     'personalSignDataResult'
@@ -550,7 +552,7 @@ const initialize = () => {
         const transferResult = humanstandardtokenContract
           .transfer(
             USE_BASE32_ADDRESS
-              ? 'cfxtest:aatxddbxj8akph7vfhkmru2ra7v7xksksah2teyjuc'
+              ? 'net2999:aatxddbxj8akph7vfhkmru2ra7v7xksksamx6rgwy2'
               : '0x1f318c334780961Fb129d2A6c30D0763D9a5C970',
             '15000'
           )
@@ -567,7 +569,7 @@ const initialize = () => {
         const approveResult = await humanstandardtokenContract
           .approve(
             USE_BASE32_ADDRESS
-              ? 'cfxtest:acf6ns12sxkrzdkbrny9cr6ajgcs60188upwcp3jar'
+              ? 'net2999:acf6ns12sxkrzdkbrny9cr6ajgcs60188ub3vfnwe1'
               : '0x8Bc5BaF874d2DA8D216ae9f137804184Ee5aFef4',
             '70000'
           )
@@ -585,7 +587,7 @@ const initialize = () => {
         const transferResult = await humanstandardtokenContract
           .transfer(
             USE_BASE32_ADDRESS
-              ? 'cfxtest:aatxddbxj8akph7vfhkmru2ra7v7xksksah2teyjuc'
+              ? 'net2999:aatxddbxj8akph7vfhkmru2ra7v7xksksamx6rgwy2'
               : '0x1f318c334780961Fb129d2A6c30D0763D9a5C970',
             '15000'
           )
@@ -602,7 +604,7 @@ const initialize = () => {
         const approveResult = await humanstandardtokenContract
           .approve(
             USE_BASE32_ADDRESS
-              ? 'cfxtest:aatxddbxj8akph7vfhkmru2ra7v7xksksah2teyjuc'
+              ? 'net2999:aatxddbxj8akph7vfhkmru2ra7v7xksksamx6rgwy2'
               : '0x1f318c334780961Fb129d2A6c30D0763D9a5C970',
             '70000'
           )

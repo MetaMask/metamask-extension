@@ -15114,6 +15114,21 @@ js-beautify@^1.10.2:
     mkdirp "~0.5.1"
     nopt "~4.0.1"
 
+js-conflux-sdk@^1.5.11:
+  version "1.5.11"
+  resolved "https://registry.yarnpkg.com/js-conflux-sdk/-/js-conflux-sdk-1.5.11.tgz#8c3bbc0b8e64739b3b076ba48005acb7d98b6358"
+  integrity sha512-eN8T12pOa1OAiaCzXhR+nq0dPLfYHq85wdTlg25H+xix3SXOJ+Xl46Ht/K5cpF3U4as2u9g3gYV5RRIsI/Bp/g==
+  dependencies:
+    "@babel/runtime" "^7.8.4"
+    big.js "^5.2.2"
+    conflux-address-js "^1.0.4"
+    keccak "^2.0.0"
+    lodash "^4.17.19"
+    scrypt-js "^3.0.1"
+    secp256k1 "^3.7.1"
+    superagent "^5.1.0"
+    websocket "^1.0.31"
+
 js-conflux-sdk@^1.5.8:
   version "1.5.8"
   resolved "https://registry.yarnpkg.com/js-conflux-sdk/-/js-conflux-sdk-1.5.8.tgz#8722fa992fa8fda2529fd0798ea2d86530af6b1f"
