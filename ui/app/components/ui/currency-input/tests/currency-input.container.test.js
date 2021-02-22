@@ -29,6 +29,7 @@ describe('CurrencyInput container', function () {
             },
             provider: {
               type: 'mainnet',
+              chainId: '0x1',
             },
           },
         },

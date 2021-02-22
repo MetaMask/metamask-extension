@@ -55,6 +55,7 @@ describe('custom-gas selectors', function () {
             },
             provider: {
               type: 'mainnet',
+              chainId: '0x1',
             },
           },
           gas: {
@@ -105,6 +106,7 @@ describe('custom-gas selectors', function () {
             },
             provider: {
               type: 'mainnet',
+              chainId: '0x1',
             },
           },
           gas: {
@@ -155,6 +157,7 @@ describe('custom-gas selectors', function () {
             },
             provider: {
               type: 'rinkeby',
+              chainId: '0x4',
             },
           },
           gas: {
@@ -205,6 +208,7 @@ describe('custom-gas selectors', function () {
             },
             provider: {
               type: 'rinkeby',
+              chainId: '0x4',
             },
           },
           gas: {
@@ -249,6 +253,7 @@ describe('custom-gas selectors', function () {
             },
             provider: {
               type: 'mainnet',
+              chainId: '0x1',
             },
           },
           gas: {
@@ -310,6 +315,7 @@ describe('custom-gas selectors', function () {
             },
             provider: {
               type: 'mainnet',
+              chainId: '0x1',
             },
           },
           gas: {
@@ -354,6 +360,7 @@ describe('custom-gas selectors', function () {
             },
             provider: {
               type: 'mainnet',
+              chainId: '0x1',
             },
           },
           gas: {
@@ -404,6 +411,7 @@ describe('custom-gas selectors', function () {
             },
             provider: {
               type: 'rinkeby',
+              chainId: '0x4',
             },
           },
           gas: {
@@ -454,6 +462,7 @@ describe('custom-gas selectors', function () {
             },
             provider: {
               type: 'rinkeby',
+              chainId: '0x4',
             },
           },
           gas: {
@@ -498,6 +507,7 @@ describe('custom-gas selectors', function () {
             },
             provider: {
               type: 'mainnet',
+              chainId: '0x1',
             },
           },
           gas: {
