@@ -336,17 +336,9 @@ export default class MetamaskController extends EventEmitter {
         },
       );
     });
-
-    // const { ticker } = this.networkController.getProviderConfig();
+    const { ticker } = this.networkController.getProviderConfig();
     // this.currencyRateController.update({ nativeCurrency: ticker ?? 'ETH' });
-    this.setCurrentCurrency(
-      this.currencyRateController.state.currentCurrency,
-      (error) => {
-        if (error) {
-          throw error;
-        }
-      },
-    );
+    this.currencyRateController.configure({ nativeCurrency: ticker ?? 'ETH' });
     this.networkController.lookupNetwork();
     this.messageManager = new MessageManager();
     this.personalMessageManager = new PersonalMessageManager();
