@@ -8,6 +8,7 @@ import log from 'loglevel';
 import { LISTED_CONTRACT_ADDRESSES } from '../../../shared/constants/tokens';
 import { NETWORK_TYPE_TO_ID_MAP } from '../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
+import { NETWORK_EVENTS } from './network';
 
 export default class PreferencesController {
   /**
@@ -72,7 +73,7 @@ export default class PreferencesController {
     this.store.setMaxListeners(12);
     this.openPopup = opts.openPopup;
     this.migrateAddressBookState = opts.migrateAddressBookState;
-    this._subscribeProviderType();
+    this._subscribeToNetworkDidChange();
 
     global.setPreference = (key, value) => {
       return this.setFeatureFlag(key, value);
@@ -667,12 +668,11 @@ export default class PreferencesController {
   //
 
   /**
-   * Subscription to network provider type.
-   *
-   *
+   * Handle updating token list to reflect current network by listening for the
+   * NETWORK_DID_CHANGE event.
    */
-  _subscribeProviderType() {
-    this.network.providerStore.subscribe(() => {
+  _subscribeToNetworkDidChange() {
+    this.network.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
       const { tokens, hiddenTokens } = this._getTokenRelatedStates();
       this._updateAccountTokens(tokens, this.getAssetImages(), hiddenTokens);
     });
@@ -689,12 +689,12 @@ export default class PreferencesController {
   _updateAccountTokens(tokens, assetImages, hiddenTokens) {
     const {
       accountTokens,
-      providerType,
+      chainId,
       selectedAddress,
       accountHiddenTokens,
     } = this._getTokenRelatedStates();
-    accountTokens[selectedAddress][providerType] = tokens;
-    accountHiddenTokens[selectedAddress][providerType] = hiddenTokens;
+    accountTokens[selectedAddress][chainId] = tokens;
+    accountHiddenTokens[selectedAddress][chainId] = hiddenTokens;
     this.store.updateState({
       accountTokens,
       tokens,
@@ -730,27 +730,27 @@ export default class PreferencesController {
       // eslint-disable-next-line no-param-reassign
       selectedAddress = this.store.getState().selectedAddress;
     }
-    const providerType = this.network.providerStore.getState().type;
+    const chainId = this.network.getCurrentChainId();
     if (!(selectedAddress in accountTokens)) {
       accountTokens[selectedAddress] = {};
     }
     if (!(selectedAddress in accountHiddenTokens)) {
       accountHiddenTokens[selectedAddress] = {};
     }
-    if (!(providerType in accountTokens[selectedAddress])) {
-      accountTokens[selectedAddress][providerType] = [];
+    if (!(chainId in accountTokens[selectedAddress])) {
+      accountTokens[selectedAddress][chainId] = [];
     }
-    if (!(providerType in accountHiddenTokens[selectedAddress])) {
-      accountHiddenTokens[selectedAddress][providerType] = [];
+    if (!(chainId in accountHiddenTokens[selectedAddress])) {
+      accountHiddenTokens[selectedAddress][chainId] = [];
     }
-    const tokens = accountTokens[selectedAddress][providerType];
-    const hiddenTokens = accountHiddenTokens[selectedAddress][providerType];
+    const tokens = accountTokens[selectedAddress][chainId];
+    const hiddenTokens = accountHiddenTokens[selectedAddress][chainId];
     return {
       tokens,
       accountTokens,
       hiddenTokens,
       accountHiddenTokens,
-      providerType,
+      chainId,
       selectedAddress,
     };
   }
