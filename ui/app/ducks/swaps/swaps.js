@@ -288,7 +288,7 @@ export const getApproveTxParams = (state) => {
   }
   const data = getSwapsState(state)?.customApproveTxData || approvalNeeded.data;
 
-  const gasPrice = getCustomSwapsGasPrice(state) || approvalNeeded.gasPrice;
+  const gasPrice = getUsedSwapsGasPrice(state);
   return { ...approvalNeeded, gasPrice, data };
 };
 
