@@ -1,6 +1,5 @@
 const pify = require('pify');
 const gulp = require('gulp');
-const sass = require('gulp-sass');
 const autoprefixer = require('gulp-autoprefixer');
 const gulpStylelint = require('gulp-stylelint');
 const watch = require('gulp-watch');
@@ -10,9 +9,7 @@ const rename = require('gulp-rename');
 const pump = pify(require('pump'));
 const { createTask } = require('./task');
 
-// use our own compiler which runs sass in its own process
-// in order to not pollute the intrinsics
-sass.compiler = require('./sass-compiler.js');
+let sass;
 
 // scss compilation and autoprefixing tasks
 module.exports = createStyleTasks;
@@ -69,6 +66,14 @@ function createStyleTasks({ livereload }) {
 }
 
 async function buildScssPipeline(src, dest, devMode, rtl) {
+  if (!sass) {
+    // eslint-disable-next-line node/global-require
+    sass = require('gulp-sass');
+    // use our own compiler which runs sass in its own process
+    // in order to not pollute the intrinsics
+    // eslint-disable-next-line node/global-require
+    sass.compiler = require('./sass-compiler.js');
+  }
   await pump(
     ...[
       // pre-process
