@@ -22,7 +22,7 @@ async function addEthereumChainHandler(
   end,
   {
     addCustomRpc,
-    getCurrentNetwork,
+    getCurrentChainId,
     findCustomRpcBy,
     updateRpcTarget,
     requestUserApproval,
@@ -122,8 +122,8 @@ async function addEthereumChainHandler(
   const existingNetwork = findCustomRpcBy({ chainId: _chainId });
 
   if (existingNetwork !== null) {
-    const currentNetwork = getCurrentNetwork();
-    if (currentNetwork.chainId === _chainId) {
+    const currentChainId = getCurrentChainId();
+    if (currentChainId === _chainId) {
       res.result = null;
       return end();
     }
