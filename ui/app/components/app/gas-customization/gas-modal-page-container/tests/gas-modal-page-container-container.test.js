@@ -78,6 +78,7 @@ describe('gas-modal-page-container container', function () {
           },
           provider: {
             type: 'mainnet',
+            chainId: '0x1',
           },
           currentNetworkTxList: [
             {
@@ -200,6 +201,7 @@ describe('gas-modal-page-container container', function () {
               provider: {
                 ...baseMockState.metamask.provider,
                 type: 'rinkeby',
+                chainId: '0x4',
               },
             },
           },
@@ -225,6 +227,7 @@ describe('gas-modal-page-container container', function () {
               provider: {
                 ...baseMockState.metamask.provider,
                 type: 'rinkeby',
+                chainId: '0x4',
               },
             },
           },
@@ -246,6 +249,7 @@ describe('gas-modal-page-container container', function () {
               provider: {
                 ...baseMockState.metamask.provider,
                 type: 'mainnet',
+                chainId: '0x1',
               },
             },
           },
