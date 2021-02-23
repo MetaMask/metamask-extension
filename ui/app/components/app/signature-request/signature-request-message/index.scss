@@ -29,7 +29,6 @@
     overflow: auto;
     padding-left: 12px;
     padding-right: 12px;
-    width: 360px;
 
     @media screen and (min-width: 576px) {
       width: auto;
@@ -55,9 +54,9 @@
     &-value {
       color: black;
       margin-left: 0.5rem;
-      overflow-wrap: break-word;
       white-space: pre-line;
       overflow: hidden;
+      word-wrap: break-word;
     }
   }
 
