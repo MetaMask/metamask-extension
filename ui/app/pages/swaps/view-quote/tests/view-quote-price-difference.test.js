@@ -51,7 +51,7 @@ describe('View Price Quote Difference', function () {
         calculationError: '',
         bucket: 'low',
         sourceAmountInETH: 1,
-        destinationAmountInEth: 0.9921849150875727,
+        destinationAmountInETH: 0.9921849150875727,
       },
       slippage: 2,
       sourceTokenInfo: {
