@@ -6,7 +6,7 @@ import Dropdown from '../../../components/ui/dropdown';
 
 class AccountList extends Component {
   state = {
-    selectedAccounts: [],
+    selectedAccountIndexes: [],
   };
 
   getHdPaths() {
@@ -97,21 +97,26 @@ class AccountList extends Component {
                 value={account.index}
                 onChange={(e) => {
                   const { value } = e.target;
-                  const { selectedAccounts } = this.state;
+                  const { selectedAccountIndexes } = this.state;
 
-                  let newSelectedAccounts;
-                  if (selectedAccounts.includes(value)) {
-                    newSelectedAccounts = selectedAccounts.filter(
-                      (acc) => acc !== value,
+                  let newSelectedAccountIndexes;
+                  if (selectedAccountIndexes.includes(value)) {
+                    newSelectedAccountIndexes = selectedAccountIndexes.filter(
+                      (index) => index !== value,
                     );
                   } else {
-                    newSelectedAccounts = [...selectedAccounts, value];
+                    newSelectedAccountIndexes = [
+                      ...selectedAccountIndexes,
+                      value,
+                    ];
                   }
 
-                  this.setState({ selectedAccounts: newSelectedAccounts });
-                  this.props.onAccountChange(newSelectedAccounts);
+                  this.setState({
+                    selectedAccountIndexes: newSelectedAccountIndexes,
+                  });
+                  this.props.onAccountChange(newSelectedAccountIndexes);
                 }}
-                checked={this.state.selectedAccounts.includes(
+                checked={this.state.selectedAccountIndexes.includes(
                   account.index.toString(),
                 )}
               />
