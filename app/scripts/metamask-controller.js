@@ -338,8 +338,15 @@ export default class MetamaskController extends EventEmitter {
     });
 
     const { ticker } = this.networkController.getProviderConfig();
-    this.currencyRateController.update({ nativeCurrency: ticker ?? 'ETH' });
-
+    // this.currencyRateController.update({ nativeCurrency: ticker ?? 'ETH' });
+    this.setCurrentCurrency(
+      this.currencyRateController.state.currentCurrency,
+      (error) => {
+        if (error) {
+          throw error;
+        }
+      },
+    );
     this.networkController.lookupNetwork();
     this.messageManager = new MessageManager();
     this.personalMessageManager = new PersonalMessageManager();
@@ -2471,6 +2478,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {Function} cb - A callback function returning currency info.
    */
   setCurrentCurrency(currencyCode, cb) {
+    console.log('in setCurrentCurrency')
     const { ticker } = this.networkController.getProviderConfig();
     try {
       const currencyState = {
