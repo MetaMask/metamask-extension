@@ -26,6 +26,7 @@ async function addEthereumChainHandler(
     findCustomRpcBy,
     updateRpcTarget,
     requestUserApproval,
+    sendMetrics,
   },
 ) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
@@ -226,6 +227,27 @@ async function addEthereumChainHandler(
         },
       }),
     );
+
+    sendMetrics({
+      event: 'Custom Network Added',
+      category: 'Network',
+      referrer: {
+        url: origin,
+      },
+      sensitiveProperties: {
+        chain_id: _chainId,
+        rpc_url: firstValidRPCUrl,
+        network_name: _chainName,
+        // Including network to override the default network
+        // property included in all events. For RPC type networks
+        // the MetaMetrics controller uses the rpcUrl for the network
+        // property.
+        network: firstValidRPCUrl,
+        symbol: ticker,
+        block_explorer_url: firstValidBlockExplorerUrl,
+        source: 'dapp',
+      },
+    });
 
     await updateRpcTarget(
       await requestUserApproval({
