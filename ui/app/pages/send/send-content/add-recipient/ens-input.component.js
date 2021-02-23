@@ -4,8 +4,6 @@ import c from 'classnames'
 import {
   // isValidDomainName,
   isValidAddress,
-  base32AddressSlicer,
-  addressSlicer,
   // isValidAddressHead,
 } from '../../../../helpers/utils/util'
 import { isSmartContractAddress } from '../../../../helpers/utils/transactions.util'
@@ -242,15 +240,11 @@ export default class EnsInput extends Component {
           >
             <div className="ens-input__selected-input__title">
               {name ||
-                (inputIsBase32
-                  ? base32AddressSlicer(selectedBase32Address)
-                  : addressSlicer(selectedAddress))}
+                (inputIsBase32 ? selectedBase32Address : selectedAddress)}
             </div>
             {name && (
               <div className="ens-input__selected-input__subtitle">
-                {inputIsBase32
-                  ? base32AddressSlicer(selectedBase32Address, 38)
-                  : selectedAddress}
+                {inputIsBase32 ? selectedBase32Address : selectedAddress}
               </div>
             )}
           </div>
