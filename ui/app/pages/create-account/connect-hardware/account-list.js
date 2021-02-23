@@ -5,6 +5,10 @@ import Button from '../../../components/ui/button';
 import Dropdown from '../../../components/ui/dropdown';
 
 class AccountList extends Component {
+  state = {
+    selectedAccounts: [],
+  };
+
   getHdPaths() {
     const ledgerLiveKey = `m/44'/60'/0'/0/0`;
     const mewKey = `m/44'/60'/0'`;
@@ -87,14 +91,29 @@ class AccountList extends Component {
           <div className="hw-account-list__item" key={account.address}>
             <div className="hw-account-list__item__radio">
               <input
-                type="radio"
+                type="checkbox"
                 name="selectedAccount"
                 id={`address-${idx}`}
                 value={account.index}
-                onClick={(e) => this.props.onAccountChange(e.target.value)}
-                checked={
-                  this.props.selectedAccount === account.index.toString()
-                }
+                onChange={(e) => {
+                  const { value } = e.target;
+                  const { selectedAccounts } = this.state;
+
+                  let newSelectedAccounts;
+                  if (selectedAccounts.includes(value)) {
+                    newSelectedAccounts = selectedAccounts.filter(
+                      (acc) => acc !== value,
+                    );
+                  } else {
+                    newSelectedAccounts = [...selectedAccounts, value];
+                  }
+
+                  this.setState({ selectedAccounts: newSelectedAccounts });
+                  this.props.onAccountChange(newSelectedAccounts);
+                }}
+                checked={this.state.selectedAccounts.includes(
+                  account.index.toString(),
+                )}
               />
               <label
                 className="hw-account-list__item__label"

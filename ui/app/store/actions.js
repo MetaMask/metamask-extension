@@ -432,22 +432,24 @@ export function unlockHardwareWalletAccount(index, deviceName, hdPath) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
     return new Promise((resolve, reject) => {
-      background.unlockHardwareWalletAccount(
-        index,
-        deviceName,
-        hdPath,
-        (err) => {
-          dispatch(hideLoadingIndication());
-          if (err) {
-            log.error(err);
-            dispatch(displayWarning(err.message));
-            reject(err);
-            return;
-          }
+      setTimeout(() => {
+        background.unlockHardwareWalletAccount(
+          index,
+          deviceName,
+          hdPath,
+          (err) => {
+            dispatch(hideLoadingIndication());
+            if (err) {
+              log.error(err);
+              dispatch(displayWarning(err.message));
+              reject(err);
+              return;
+            }
 
-          resolve();
-        },
-      );
+            resolve();
+          },
+        );
+      }, index * 1000);
     });
   };
 }

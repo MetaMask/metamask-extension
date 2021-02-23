@@ -1300,16 +1300,15 @@ export default class MetamaskController extends EventEmitter {
     const oldAccounts = await this.keyringController.getAccounts();
     const keyState = await this.keyringController.addNewAccount(keyring);
     const newAccounts = await this.keyringController.getAccounts();
+
     this.preferencesController.setAddresses(newAccounts);
     newAccounts.forEach((address) => {
       if (!oldAccounts.includes(address)) {
+        const label = `${deviceName[0].toUpperCase()}${deviceName.slice(1)} ${
+          parseInt(index, 10) + 1
+        }`;
         // Set the account label to Trezor 1 /  Ledger 1, etc
-        this.preferencesController.setAccountLabel(
-          address,
-          `${deviceName[0].toUpperCase()}${deviceName.slice(1)} ${
-            parseInt(index, 10) + 1
-          }`,
-        );
+        this.preferencesController.setAccountLabel(address, label);
         // Select the account
         this.preferencesController.setSelectedAddress(address);
       }

@@ -13,7 +13,7 @@ const U2F_ERROR = 'U2F';
 class ConnectHardwareForm extends Component {
   state = {
     error: null,
-    selectedAccount: null,
+    selectedAccounts: [],
     accounts: [],
     browserSupported: true,
     unlocked: false,
@@ -68,8 +68,9 @@ class ConnectHardwareForm extends Component {
     this.getPage(this.state.device, 0, path);
   };
 
-  onAccountChange = (account) => {
-    this.setState({ selectedAccount: account.toString(), error: null });
+  onAccountChange = (accounts) => {
+    const selectedAccounts = accounts.map((account) => account.toString());
+    this.setState({ selectedAccounts, error: null });
   };
 
   onAccountRestriction = () => {
@@ -97,7 +98,7 @@ class ConnectHardwareForm extends Component {
 
           const newState = { unlocked: true, device, error: null };
           // Default to the first account
-          if (this.state.selectedAccount === null) {
+          if (this.state.selectedAccounts.length === 0) {
             accounts.forEach((a) => {
               if (a.address.toLowerCase() === this.props.address) {
                 newState.selectedAccount = a.index.toString();
@@ -105,11 +106,11 @@ class ConnectHardwareForm extends Component {
             });
             // If the page doesn't contain the selected account, let's deselect it
           } else if (
-            !accounts.filter(
-              (a) => a.index.toString() === this.state.selectedAccount,
+            !accounts.filter((a) =>
+              this.state.selectedAccounts.includes(a.index.toString()),
             ).length
           ) {
-            newState.selectedAccount = null;
+            newState.selectedAccounts = [];
           }
 
           // Map accounts with balances
@@ -149,7 +150,7 @@ class ConnectHardwareForm extends Component {
       .then((_) => {
         this.setState({
           error: null,
-          selectedAccount: null,
+          selectedAccounts: [],
           accounts: [],
           unlocked: false,
         });
@@ -165,35 +166,37 @@ class ConnectHardwareForm extends Component {
       mostRecentOverviewPage,
       unlockHardwareWalletAccount,
     } = this.props;
-
-    if (this.state.selectedAccount === null) {
+    if (this.state.selectedAccounts.length === 0) {
       this.setState({ error: this.context.t('accountSelectionRequired') });
     }
 
-    unlockHardwareWalletAccount(this.state.selectedAccount, device)
-      .then((_) => {
-        this.context.metricsEvent({
-          eventOpts: {
-            category: 'Accounts',
-            action: 'Connected Hardware Wallet',
-            name: `Connected Account with: ${device}`,
-          },
+    const accountUnlocks = this.state.selectedAccounts.map((account) => {
+      return unlockHardwareWalletAccount(account, device)
+        .then((_) => {
+          this.context.metricsEvent({
+            eventOpts: {
+              category: 'Accounts',
+              action: 'Connected Hardware Wallet',
+              name: `Connected Account with: ${device}`,
+            },
+          });
+          history.push(mostRecentOverviewPage);
+        })
+        .catch((e) => {
+          this.context.metricsEvent({
+            eventOpts: {
+              category: 'Accounts',
+              action: 'Connected Hardware Wallet',
+              name: 'Error connecting hardware wallet',
+            },
+            customVariables: {
+              error: e.message,
+            },
+          });
+          this.setState({ error: e.message });
         });
-        history.push(mostRecentOverviewPage);
-      })
-      .catch((e) => {
-        this.context.metricsEvent({
-          eventOpts: {
-            category: 'Accounts',
-            action: 'Connected Hardware Wallet',
-            name: 'Error connecting hardware wallet',
-          },
-          customVariables: {
-            error: e.message,
-          },
-        });
-        this.setState({ error: e.message });
-      });
+    });
+    return Promise.all(accountUnlocks);
   };
 
   onCancel = () => {
@@ -243,7 +246,7 @@ class ConnectHardwareForm extends Component {
         selectedPath={this.props.defaultHdPaths[this.state.device]}
         device={this.state.device}
         accounts={this.state.accounts}
-        selectedAccount={this.state.selectedAccount}
+        selectedAccounts={this.state.selectedAccounts}
         onAccountChange={this.onAccountChange}
         network={this.props.network}
         getPage={this.getPage}
