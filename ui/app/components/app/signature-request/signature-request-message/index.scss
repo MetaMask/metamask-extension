@@ -35,20 +35,13 @@
     }
   }
 
-  &__type-title {
-    @include H6;
-
-    margin-left: 12px;
-    margin-top: 6px;
-    margin-bottom: 10px;
-  }
-
   &--node,
   &--node-leaf {
     padding-left: 0.8rem;
 
     &-label {
       color: #5b5d67;
+      margin-left: 0.5rem;
     }
 
     &-value {
