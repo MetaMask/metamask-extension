@@ -1289,7 +1289,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Imports an account from a trezor device.
+   * Imports an account from a Trezor or Ledger device.
    *
    * @returns {} keyState
    */
@@ -1300,7 +1300,6 @@ export default class MetamaskController extends EventEmitter {
     const oldAccounts = await this.keyringController.getAccounts();
     const keyState = await this.keyringController.addNewAccount(keyring);
     const newAccounts = await this.keyringController.getAccounts();
-
     this.preferencesController.setAddresses(newAccounts);
     newAccounts.forEach((address) => {
       if (!oldAccounts.includes(address)) {

@@ -160,43 +160,39 @@ class ConnectHardwareForm extends Component {
       });
   };
 
-  onUnlockAccount = (device) => {
+  onUnlockAccounts = (device) => {
     const {
       history,
       mostRecentOverviewPage,
-      unlockHardwareWalletAccount,
+      unlockHardwareWalletAccounts,
     } = this.props;
     if (this.state.selectedAccounts.length === 0) {
       this.setState({ error: this.context.t('accountSelectionRequired') });
     }
-
-    const accountUnlocks = this.state.selectedAccounts.map((account) => {
-      return unlockHardwareWalletAccount(account, device)
-        .then((_) => {
-          this.context.metricsEvent({
-            eventOpts: {
-              category: 'Accounts',
-              action: 'Connected Hardware Wallet',
-              name: `Connected Account with: ${device}`,
-            },
-          });
-          history.push(mostRecentOverviewPage);
-        })
-        .catch((e) => {
-          this.context.metricsEvent({
-            eventOpts: {
-              category: 'Accounts',
-              action: 'Connected Hardware Wallet',
-              name: 'Error connecting hardware wallet',
-            },
-            customVariables: {
-              error: e.message,
-            },
-          });
-          this.setState({ error: e.message });
+    return unlockHardwareWalletAccounts(this.state.selectedAccounts, device)
+      .then((_) => {
+        this.context.metricsEvent({
+          eventOpts: {
+            category: 'Accounts',
+            action: 'Connected Hardware Wallet',
+            name: `Connected Account with: ${device}`,
+          },
         });
-    });
-    return Promise.all(accountUnlocks);
+        history.push(mostRecentOverviewPage);
+      })
+      .catch((e) => {
+        this.context.metricsEvent({
+          eventOpts: {
+            category: 'Accounts',
+            action: 'Connected Hardware Wallet',
+            name: 'Error connecting hardware wallet',
+          },
+          customVariables: {
+            error: e.message,
+          },
+        });
+        this.setState({ error: e.message });
+      });
   };
 
   onCancel = () => {
@@ -250,7 +246,7 @@ class ConnectHardwareForm extends Component {
         onAccountChange={this.onAccountChange}
         network={this.props.network}
         getPage={this.getPage}
-        onUnlockAccount={this.onUnlockAccount}
+        onUnlockAccounts={this.onUnlockAccounts}
         onForgetDevice={this.onForgetDevice}
         onCancel={this.onCancel}
         onAccountRestriction={this.onAccountRestriction}
@@ -274,7 +270,7 @@ ConnectHardwareForm.propTypes = {
   forgetDevice: PropTypes.func,
   showAlert: PropTypes.func,
   hideAlert: PropTypes.func,
-  unlockHardwareWalletAccount: PropTypes.func,
+  unlockHardwareWalletAccounts: PropTypes.func,
   setHardwareWalletDefaultHdPath: PropTypes.func,
   history: PropTypes.object,
   network: PropTypes.string,
@@ -316,9 +312,9 @@ const mapDispatchToProps = (dispatch) => {
     forgetDevice: (deviceName) => {
       return dispatch(actions.forgetDevice(deviceName));
     },
-    unlockHardwareWalletAccount: (index, deviceName, hdPath) => {
+    unlockHardwareWalletAccounts: (indexes, deviceName, hdPath) => {
       return dispatch(
-        actions.unlockHardwareWalletAccount(index, deviceName, hdPath),
+        actions.unlockHardwareWalletAccounts(indexes, deviceName, hdPath),
       );
     },
     showAlert: (msg) => dispatch(actions.showAlert(msg)),

@@ -189,7 +189,7 @@ class AccountList extends Component {
           large
           className="new-external-account-form__button unlock"
           disabled={disabled}
-          onClick={this.props.onUnlockAccount.bind(this, this.props.device)}
+          onClick={this.props.onUnlockAccounts.bind(this, this.props.device)}
         >
           {this.context.t('unlock')}
         </Button>
@@ -230,7 +230,7 @@ AccountList.propTypes = {
   getPage: PropTypes.func.isRequired,
   network: PropTypes.string,
   selectedAccount: PropTypes.string,
-  onUnlockAccount: PropTypes.func,
+  onUnlockAccounts: PropTypes.func,
   onCancel: PropTypes.func,
   onAccountRestriction: PropTypes.func,
 };

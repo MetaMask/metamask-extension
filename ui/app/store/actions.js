@@ -422,35 +422,30 @@ export function connectHardware(deviceName, page, hdPath) {
   };
 }
 
-export function unlockHardwareWalletAccount(index, deviceName, hdPath) {
+export function unlockHardwareWalletAccounts(indexes, deviceName, hdPath) {
   log.debug(
     `background.unlockHardwareWalletAccount`,
-    index,
+    indexes,
     deviceName,
     hdPath,
   );
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        background.unlockHardwareWalletAccount(
+
+    for (const index of indexes) {
+      try {
+        await promisifiedBackground.unlockHardwareWalletAccount(
           index,
           deviceName,
           hdPath,
-          (err) => {
-            dispatch(hideLoadingIndication());
-            if (err) {
-              log.error(err);
-              dispatch(displayWarning(err.message));
-              reject(err);
-              return;
-            }
-
-            resolve();
-          },
         );
-      }, index * 1000);
-    });
+      } catch (e) {
+        log.error(e);
+        dispatch(displayWarning(e.message));
+      }
+    }
+
+    dispatch(hideLoadingIndication());
   };
 }
 
