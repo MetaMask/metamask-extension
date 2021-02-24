@@ -26,6 +26,13 @@ workflows:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
       - prep-deps
       - test-deps
+      - validate-lavamoat-config:
+          filters:
+            branches:
+              only:
+                - /^Version-v(\d+)[.](\d+)[.](\d+)|master/
+          requires:
+            - prep-deps
       - prep-build:
           requires:
             - prep-deps
@@ -72,6 +79,7 @@ workflows:
             - prep-build
       - all-tests-pass:
           requires:
+            - validate-lavamoat-config
             - test-lint
             - test-lint-shellcheck
             - test-lint-lockfile
@@ -142,6 +150,21 @@ jobs:
           paths:
           - node_modules
           - build-artifacts
+
+  validate-lavamoat-config:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Validate allow-scripts config
+          command: |
+            .circleci/scripts/validate-allow-scripts.sh
+      - run:
+          name: Validate LavaMoat policy
+          command: |
+            .circleci/scripts/validate-lavamoat-policy.sh
 
   prep-build:
     executor: node-browsers-medium-plus
