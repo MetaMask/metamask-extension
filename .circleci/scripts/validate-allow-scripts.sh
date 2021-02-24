@@ -6,7 +6,7 @@ set -o pipefail
 
 yarn allow-scripts auto
 
-if git diff-index --quiet HEAD
+if git diff --exit-code --quiet
 then
   echo "allow-scripts configuration is up-to-date"
 else
