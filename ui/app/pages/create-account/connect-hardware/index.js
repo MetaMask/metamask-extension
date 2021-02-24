@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as actions from '../../../store/actions';
-import { getMetaMaskAccounts } from '../../../selectors';
+import {
+  getMetaMaskAccounts,
+  getMetaMaskAccountsConnected,
+} from '../../../selectors';
 import { formatBalance } from '../../../helpers/utils/util';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import SelectHardware from './select-hardware';
@@ -242,6 +245,7 @@ class ConnectHardwareForm extends Component {
         selectedPath={this.props.defaultHdPaths[this.state.device]}
         device={this.state.device}
         accounts={this.state.accounts}
+        connectedAccounts={this.props.connectedAccounts}
         selectedAccounts={this.state.selectedAccounts}
         onAccountChange={this.onAccountChange}
         network={this.props.network}
@@ -275,6 +279,7 @@ ConnectHardwareForm.propTypes = {
   history: PropTypes.object,
   network: PropTypes.string,
   accounts: PropTypes.object,
+  connectedAccounts: PropTypes.object,
   address: PropTypes.string,
   defaultHdPaths: PropTypes.object,
   mostRecentOverviewPage: PropTypes.string.isRequired,
@@ -285,6 +290,7 @@ const mapStateToProps = (state) => {
     metamask: { network, selectedAddress },
   } = state;
   const accounts = getMetaMaskAccounts(state);
+  const connectedAccounts = getMetaMaskAccountsConnected(state);
   const {
     appState: { defaultHdPaths },
   } = state;
@@ -292,6 +298,7 @@ const mapStateToProps = (state) => {
   return {
     network,
     accounts,
+    connectedAccounts,
     address: selectedAddress,
     defaultHdPaths,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),

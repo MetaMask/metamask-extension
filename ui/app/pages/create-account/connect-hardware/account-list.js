@@ -85,65 +85,84 @@ class AccountList extends Component {
   }
 
   renderAccounts() {
+    const { accounts, connectedAccounts } = this.props;
+
     return (
       <div className="hw-account-list">
-        {this.props.accounts.map((account, idx) => (
-          <div className="hw-account-list__item" key={account.address}>
-            <div className="hw-account-list__item__radio">
-              <input
-                type="checkbox"
-                name="selectedAccount"
-                id={`address-${idx}`}
-                value={account.index}
-                onChange={(e) => {
-                  const { value } = e.target;
-                  const { selectedAccountIndexes } = this.state;
+        {accounts.map((account, idx) => {
+          const accountAlreadyConnected = connectedAccounts.includes(
+            account.address.toLowerCase(),
+          );
+          const checked =
+            this.state.selectedAccountIndexes.includes(
+              account.index.toString(),
+            ) || accountAlreadyConnected;
 
-                  let newSelectedAccountIndexes;
-                  if (selectedAccountIndexes.includes(value)) {
-                    newSelectedAccountIndexes = selectedAccountIndexes.filter(
-                      (index) => index !== value,
-                    );
-                  } else {
-                    newSelectedAccountIndexes = [
-                      ...selectedAccountIndexes,
-                      value,
-                    ];
-                  }
-
-                  this.setState({
-                    selectedAccountIndexes: newSelectedAccountIndexes,
-                  });
-                  this.props.onAccountChange(newSelectedAccountIndexes);
-                }}
-                checked={this.state.selectedAccountIndexes.includes(
-                  account.index.toString(),
-                )}
-              />
-              <label
-                className="hw-account-list__item__label"
-                htmlFor={`address-${idx}`}
-              >
-                <span className="hw-account-list__item__index">
-                  {account.index + 1}
-                </span>
-                {`${account.address.slice(0, 4)}...${account.address.slice(
-                  -4,
-                )}`}
-                <span className="hw-account-list__item__balance">{`${account.balance}`}</span>
-              </label>
-            </div>
-            <a
-              className="hw-account-list__item__link"
-              href={getAccountLink(account.address, this.props.network)}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={this.context.t('etherscanView')}
+          return (
+            <div
+              className="hw-account-list__item"
+              key={account.address}
+              title={
+                accountAlreadyConnected
+                  ? this.context.t('selectAnAccountAlreadyConnected')
+                  : ''
+              }
             >
-              <img src="images/popout.svg" alt="" />
-            </a>
-          </div>
-        ))}
+              <div className="hw-account-list__item__radio">
+                <input
+                  type="checkbox"
+                  name="selectedAccount"
+                  disabled={accountAlreadyConnected}
+                  id={`address-${idx}`}
+                  value={account.index}
+                  onChange={(e) => {
+                    const { value } = e.target;
+                    const { selectedAccountIndexes } = this.state;
+
+                    let newSelectedAccountIndexes;
+                    if (selectedAccountIndexes.includes(value)) {
+                      newSelectedAccountIndexes = selectedAccountIndexes.filter(
+                        (index) => index !== value,
+                      );
+                    } else {
+                      newSelectedAccountIndexes = [
+                        ...selectedAccountIndexes,
+                        value,
+                      ];
+                    }
+
+                    this.setState({
+                      selectedAccountIndexes: newSelectedAccountIndexes,
+                    });
+                    this.props.onAccountChange(newSelectedAccountIndexes);
+                  }}
+                  checked={checked}
+                />
+                <label
+                  className="hw-account-list__item__label"
+                  htmlFor={`address-${idx}`}
+                >
+                  <span className="hw-account-list__item__index">
+                    {account.index + 1}
+                  </span>
+                  {`${account.address.slice(0, 4)}...${account.address.slice(
+                    -4,
+                  )}`}
+                  <span className="hw-account-list__item__balance">{`${account.balance}`}</span>
+                </label>
+              </div>
+              <a
+                className="hw-account-list__item__link"
+                href={getAccountLink(account.address, this.props.network)}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={this.context.t('etherscanView')}
+              >
+                <img src="images/popout.svg" alt="" />
+              </a>
+            </div>
+          );
+        })}
       </div>
     );
   }
@@ -225,6 +244,7 @@ AccountList.propTypes = {
   selectedPath: PropTypes.string.isRequired,
   device: PropTypes.string.isRequired,
   accounts: PropTypes.array.isRequired,
+  connectedAccounts: PropTypes.array.isRequired,
   onAccountChange: PropTypes.func.isRequired,
   onForgetDevice: PropTypes.func.isRequired,
   getPage: PropTypes.func.isRequired,

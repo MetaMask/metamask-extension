@@ -1480,6 +1480,9 @@
   "selectAnAccount": {
     "message": "Select an Account"
   },
+  "selectAnAccountAlreadyConnected": {
+    "message": "This account has already been connected to MetaMask"
+  },
   "selectAnAccountHelp": {
     "message": "Select the account to view in MetaMask"
   },
