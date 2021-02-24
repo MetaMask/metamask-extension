@@ -31,7 +31,7 @@
     "test:coverage": "nyc --silent --check-coverage yarn test:unit:strict && nyc --silent --no-clean yarn test:unit:lax && nyc report --reporter=text --reporter=html",
     "test:coverage:strict": "nyc --check-coverage yarn test:unit:strict",
     "test:coverage:path": "nyc --check-coverage yarn test:unit:path",
-    "ganache:start": "./development/run-ganache",
+    "ganache:start": "./development/run-ganache.sh",
     "sentry:publish": "node ./development/sentry-publish.js",
     "lint": "prettier --check ./**/*.json && eslint . --ext js && yarn lint:styles",
     "lint:fix": "prettier --write ./**/*.json && eslint . --ext js --fix",
