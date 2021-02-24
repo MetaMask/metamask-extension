@@ -1,7 +1,7 @@
-import ObservableStore from "obs-store";
-import { addInternalMethodPrefix } from "./permissions";
-import { normalize as normalizeAddress } from "eth-sig-util";
-import { isValidAddress, sha3, bufferToHex } from "ethereumjs-util";
+import ObservableStore from 'obs-store'
+import { addInternalMethodPrefix } from './permissions'
+import { normalize as normalizeAddress } from 'eth-sig-util'
+import { isValidAddress, sha3, bufferToHex } from 'ethereumjs-util'
 
 export default class PreferencesController {
   /**
@@ -61,21 +61,21 @@ export default class PreferencesController {
         metaMetricsSendCount: 0,
 
         // ENS decentralized website resolution
-        ipfsGateway: "dweb.link",
+        ipfsGateway: 'dweb.link',
       },
-      opts.initState
-    );
+      opts.initState,
+    )
 
-    this.diagnostics = opts.diagnostics;
-    this.network = opts.network;
-    this.store = new ObservableStore(initState);
-    this.store.setMaxListeners(12);
-    this.openPopup = opts.openPopup;
-    this._subscribeProviderType();
+    this.diagnostics = opts.diagnostics
+    this.network = opts.network
+    this.store = new ObservableStore(initState)
+    this.store.setMaxListeners(12)
+    this.openPopup = opts.openPopup
+    this._subscribeProviderType()
 
     global.setPreference = (key, value) => {
-      return this.setFeatureFlag(key, value);
-    };
+      return this.setFeatureFlag(key, value)
+    }
   }
   // PUBLIC METHODS
 
@@ -84,7 +84,7 @@ export default class PreferencesController {
    * @param {boolean} forgottenPassword - whether or not the user has forgotten their password
    */
   setPasswordForgotten(forgottenPassword) {
-    this.store.updateState({ forgottenPassword });
+    this.store.updateState({ forgottenPassword })
   }
 
   /**
@@ -94,7 +94,7 @@ export default class PreferencesController {
    *
    */
   setUseBlockie(val) {
-    this.store.updateState({ useBlockie: val });
+    this.store.updateState({ useBlockie: val })
   }
 
   /**
@@ -104,7 +104,7 @@ export default class PreferencesController {
    *
    */
   setUseNonceField(val) {
-    this.store.updateState({ useNonceField: val });
+    this.store.updateState({ useNonceField: val })
   }
 
   /**
@@ -114,7 +114,7 @@ export default class PreferencesController {
    *
    */
   setUsePhishDetect(val) {
-    this.store.updateState({ usePhishDetect: val });
+    this.store.updateState({ usePhishDetect: val })
   }
 
   /**
@@ -125,28 +125,28 @@ export default class PreferencesController {
    *
    */
   setParticipateInMetaMetrics(bool) {
-    this.store.updateState({ participateInMetaMetrics: bool });
-    let metaMetricsId = null;
+    this.store.updateState({ participateInMetaMetrics: bool })
+    let metaMetricsId = null
     if (bool && !this.store.getState().metaMetricsId) {
       metaMetricsId = bufferToHex(
         sha3(
           String(Date.now()) +
-            String(Math.round(Math.random() * Number.MAX_SAFE_INTEGER))
-        )
-      );
-      this.store.updateState({ metaMetricsId });
+            String(Math.round(Math.random() * Number.MAX_SAFE_INTEGER)),
+        ),
+      )
+      this.store.updateState({ metaMetricsId })
     } else if (bool === false) {
-      this.store.updateState({ metaMetricsId });
+      this.store.updateState({ metaMetricsId })
     }
-    return metaMetricsId;
+    return metaMetricsId
   }
 
   getParticipateInMetaMetrics() {
-    return this.store.getState().participateInMetaMetrics;
+    return this.store.getState().participateInMetaMetrics
   }
 
   setMetaMetricsSendCount(val) {
-    this.store.updateState({ metaMetricsSendCount: val });
+    this.store.updateState({ metaMetricsSendCount: val })
   }
 
   /**
@@ -156,25 +156,25 @@ export default class PreferencesController {
    *
    */
   setFirstTimeFlowType(type) {
-    this.store.updateState({ firstTimeFlowType: type });
+    this.store.updateState({ firstTimeFlowType: type })
   }
 
   getSuggestedTokens() {
-    return this.store.getState().suggestedTokens;
+    return this.store.getState().suggestedTokens
   }
 
   getAssetImages() {
-    return this.store.getState().assetImages;
+    return this.store.getState().assetImages
   }
 
   addSuggestedERC20Asset(tokenOpts) {
-    this._validateERC20AssetParams(tokenOpts);
-    const suggested = this.getSuggestedTokens();
-    const { rawAddress, symbol, decimals, image } = tokenOpts;
-    const address = normalizeAddress(rawAddress);
-    const newEntry = { address, symbol, decimals, image };
-    suggested[address] = newEntry;
-    this.store.updateState({ suggestedTokens: suggested });
+    this._validateERC20AssetParams(tokenOpts)
+    const suggested = this.getSuggestedTokens()
+    const { rawAddress, symbol, decimals, image } = tokenOpts
+    const address = normalizeAddress(rawAddress)
+    const newEntry = { address, symbol, decimals, image }
+    suggested[address] = newEntry
+    this.store.updateState({ suggestedTokens: suggested })
   }
 
   /**
@@ -184,9 +184,9 @@ export default class PreferencesController {
    * @param {string} methodData - Corresponding data method
    */
   addKnownMethodData(fourBytePrefix, methodData) {
-    const knownMethodData = this.store.getState().knownMethodData;
-    knownMethodData[fourBytePrefix] = methodData;
-    this.store.updateState({ knownMethodData });
+    const knownMethodData = this.store.getState().knownMethodData
+    knownMethodData[fourBytePrefix] = methodData
+    this.store.updateState({ knownMethodData })
   }
 
   /**
@@ -197,30 +197,31 @@ export default class PreferencesController {
    * @param {Function} - next
    * @param {Function} - end
    */
+
   async requestWatchAsset(req, res, next, end) {
     if (
-      req.method === "metamask_watchAsset" ||
-      req.method === addInternalMethodPrefix("watchAsset")
+      req.method === 'metamask_watchAsset' ||
+      req.method === addInternalMethodPrefix('watchAsset')
     ) {
-      const { type, options } = req.params;
+      const { type, options } = req.params
       switch (type) {
-        case "ERC20":
-          const result = await this._handleWatchAssetERC20(options);
+        case 'ERC20':
+          const result = await this._handleWatchAssetERC20(options)
           if (result instanceof Error) {
-            end(result);
+            end(result)
           } else {
-            res.result = result;
-            end();
+            res.result = result
+            end()
           }
-          return;
+          return
         default:
-          end(new Error(`Asset of type ${type} not supported`));
-          return;
+          end(new Error(`Asset of type ${type} not supported`))
+          return
       }
     }
 
-    next();
-    return;
+    next()
+    return
   }
 
   /**
@@ -230,14 +231,14 @@ export default class PreferencesController {
    *
    */
   setCurrentLocale(key) {
-    const textDirection = ["ar", "dv", "fa", "he", "ku"].includes(key)
-      ? "rtl"
-      : "auto";
+    const textDirection = ['ar', 'dv', 'fa', 'he', 'ku'].includes(key)
+      ? 'rtl'
+      : 'auto'
     this.store.updateState({
       currentLocale: key,
       textDirection: textDirection,
-    });
-    return textDirection;
+    })
+    return textDirection
   }
 
   /**
@@ -248,42 +249,42 @@ export default class PreferencesController {
    *
    */
   setAddresses(addresses) {
-    const oldIdentities = this.store.getState().identities;
+    const oldIdentities = this.store.getState().identities
 
     const identities = addresses.reduce((ids, address, index) => {
-      const oldId = oldIdentities[address] || {};
-      ids[address] = { name: `Account ${index + 1}`, address, ...oldId };
-      return ids;
-    }, {});
+      const oldId = oldIdentities[address] || {}
+      ids[address] = { name: `Account ${index + 1}`, address, ...oldId }
+      return ids
+    }, {})
 
     const oldTokens = {
       celo: [
         {
-          address: "0x765DE816845861e75A25fCA122bb6898B8B1282a",
-          symbol: "cUSD",
-          decimals: "18",
+          address: '0x765DE816845861e75A25fCA122bb6898B8B1282a',
+          symbol: 'cUSD',
+          decimals: '18',
         },
       ],
       alfa: [
         {
-          address: "0x874069fa1eb16d44d622f2e0ca25eea172369bc1",
-          symbol: "cUSD",
-          decimals: "18",
+          address: '0x874069fa1eb16d44d622f2e0ca25eea172369bc1',
+          symbol: 'cUSD',
+          decimals: '18',
         },
       ],
       bakl: [
         {
-          address: "0x62492a644a588fd904270bed06ad52b9abfea1ae",
-          symbol: "cUSD",
-          decimals: "18",
+          address: '0x62492a644a588fd904270bed06ad52b9abfea1ae',
+          symbol: 'cUSD',
+          decimals: '18',
         },
       ],
-    };
+    }
     const accountTokens = addresses.reduce((tokens, address) => {
-      tokens[address] = oldTokens;
-      return tokens;
-    }, {});
-    this.store.updateState({ identities, accountTokens });
+      tokens[address] = oldTokens
+      return tokens
+    }, {})
+    this.store.updateState({ identities, accountTokens })
   }
 
   /**
@@ -293,22 +294,22 @@ export default class PreferencesController {
    * @returns {string} - the address that was removed
    */
   removeAddress(address) {
-    const identities = this.store.getState().identities;
-    const accountTokens = this.store.getState().accountTokens;
+    const identities = this.store.getState().identities
+    const accountTokens = this.store.getState().accountTokens
     if (!identities[address]) {
-      throw new Error(`${address} can't be deleted cause it was not found`);
+      throw new Error(`${address} can't be deleted cause it was not found`)
     }
-    delete identities[address];
-    delete accountTokens[address];
-    this.store.updateState({ identities, accountTokens });
+    delete identities[address]
+    delete accountTokens[address]
+    this.store.updateState({ identities, accountTokens })
 
     // If the selected account is no longer valid,
     // select an arbitrary other account:
     if (address === this.getSelectedAddress()) {
-      const selected = Object.keys(identities)[0];
-      this.setSelectedAddress(selected);
+      const selected = Object.keys(identities)[0]
+      this.setSelectedAddress(selected)
     }
-    return address;
+    return address
   }
 
   /**
@@ -318,20 +319,20 @@ export default class PreferencesController {
    *
    */
   addAddresses(addresses) {
-    const identities = this.store.getState().identities;
-    const accountTokens = this.store.getState().accountTokens;
+    const identities = this.store.getState().identities
+    const accountTokens = this.store.getState().accountTokens
     addresses.forEach((address) => {
       // skip if already exists
       if (identities[address]) {
-        return;
+        return
       }
       // add missing identity
-      const identityCount = Object.keys(identities).length;
+      const identityCount = Object.keys(identities).length
 
-      accountTokens[address] = {};
-      identities[address] = { name: `Account ${identityCount + 1}`, address };
-    });
-    this.store.updateState({ identities, accountTokens });
+      accountTokens[address] = {}
+      identities[address] = { name: `Account ${identityCount + 1}`, address }
+    })
+    this.store.updateState({ identities, accountTokens })
   }
 
   /**
@@ -343,51 +344,51 @@ export default class PreferencesController {
    */
   syncAddresses(addresses) {
     if (!Array.isArray(addresses) || addresses.length === 0) {
-      throw new Error("Expected non-empty array of addresses.");
+      throw new Error('Expected non-empty array of addresses.')
     }
 
-    const { identities, lostIdentities } = this.store.getState();
+    const { identities, lostIdentities } = this.store.getState()
 
-    const newlyLost = {};
+    const newlyLost = {}
     Object.keys(identities).forEach((identity) => {
       if (!addresses.includes(identity)) {
-        newlyLost[identity] = identities[identity];
-        delete identities[identity];
+        newlyLost[identity] = identities[identity]
+        delete identities[identity]
       }
-    });
+    })
 
     // Identities are no longer present.
     if (Object.keys(newlyLost).length > 0) {
       // Notify our servers:
       if (this.diagnostics) {
-        this.diagnostics.reportOrphans(newlyLost);
+        this.diagnostics.reportOrphans(newlyLost)
       }
 
       // store lost accounts
       Object.keys(newlyLost).forEach((key) => {
-        lostIdentities[key] = newlyLost[key];
-      });
+        lostIdentities[key] = newlyLost[key]
+      })
     }
 
-    this.store.updateState({ identities, lostIdentities });
-    this.addAddresses(addresses);
+    this.store.updateState({ identities, lostIdentities })
+    this.addAddresses(addresses)
 
     // If the selected account is no longer valid,
     // select an arbitrary other account:
-    let selected = this.getSelectedAddress();
+    let selected = this.getSelectedAddress()
     if (!addresses.includes(selected)) {
-      selected = addresses[0];
-      this.setSelectedAddress(selected);
+      selected = addresses[0]
+      this.setSelectedAddress(selected)
     }
 
-    return selected;
+    return selected
   }
 
   removeSuggestedTokens() {
     return new Promise((resolve) => {
-      this.store.updateState({ suggestedTokens: {} });
-      resolve({});
-    });
+      this.store.updateState({ suggestedTokens: {} })
+      resolve({})
+    })
   }
 
   /**
@@ -398,18 +399,18 @@ export default class PreferencesController {
    *
    */
   setSelectedAddress(_address) {
-    const address = normalizeAddress(_address);
-    this._updateTokens(address);
+    const address = normalizeAddress(_address)
+    this._updateTokens(address)
 
-    const { identities, tokens } = this.store.getState();
-    const selectedIdentity = identities[address];
+    const { identities, tokens } = this.store.getState()
+    const selectedIdentity = identities[address]
     if (!selectedIdentity) {
-      throw new Error(`Identity for '${address} not found`);
+      throw new Error(`Identity for '${address} not found`)
     }
 
-    selectedIdentity.lastSelected = Date.now();
-    this.store.updateState({ identities, selectedAddress: address });
-    return Promise.resolve(tokens);
+    selectedIdentity.lastSelected = Date.now()
+    this.store.updateState({ identities, selectedAddress: address })
+    return Promise.resolve(tokens)
   }
 
   /**
@@ -419,7 +420,7 @@ export default class PreferencesController {
    *
    */
   getSelectedAddress() {
-    return this.store.getState().selectedAddress;
+    return this.store.getState().selectedAddress
   }
 
   /**
@@ -444,23 +445,23 @@ export default class PreferencesController {
    *
    */
   async addToken(rawAddress, symbol, decimals, image) {
-    const address = normalizeAddress(rawAddress);
-    const newEntry = { address, symbol, decimals };
-    const tokens = this.store.getState().tokens;
-    const assetImages = this.getAssetImages();
+    const address = normalizeAddress(rawAddress)
+    const newEntry = { address, symbol, decimals }
+    const tokens = this.store.getState().tokens
+    const assetImages = this.getAssetImages()
     const previousEntry = tokens.find((token) => {
-      return token.address === address;
-    });
-    const previousIndex = tokens.indexOf(previousEntry);
+      return token.address === address
+    })
+    const previousIndex = tokens.indexOf(previousEntry)
 
     if (previousEntry) {
-      tokens[previousIndex] = newEntry;
+      tokens[previousIndex] = newEntry
     } else {
-      tokens.push(newEntry);
+      tokens.push(newEntry)
     }
-    assetImages[address] = image;
-    this._updateAccountTokens(tokens, assetImages);
-    return Promise.resolve(tokens);
+    assetImages[address] = image
+    this._updateAccountTokens(tokens, assetImages)
+    return Promise.resolve(tokens)
   }
 
   /**
@@ -471,14 +472,12 @@ export default class PreferencesController {
    *
    */
   removeToken(rawAddress) {
-    const tokens = this.store.getState().tokens;
-    const assetImages = this.getAssetImages();
-    const updatedTokens = tokens.filter(
-      (token) => token.address !== rawAddress
-    );
-    delete assetImages[rawAddress];
-    this._updateAccountTokens(updatedTokens, assetImages);
-    return Promise.resolve(updatedTokens);
+    const tokens = this.store.getState().tokens
+    const assetImages = this.getAssetImages()
+    const updatedTokens = tokens.filter((token) => token.address !== rawAddress)
+    delete assetImages[rawAddress]
+    this._updateAccountTokens(updatedTokens, assetImages)
+    return Promise.resolve(updatedTokens)
   }
 
   /**
@@ -488,7 +487,7 @@ export default class PreferencesController {
    *
    */
   getTokens() {
-    return this.store.getState().tokens;
+    return this.store.getState().tokens
   }
 
   /**
@@ -500,15 +499,15 @@ export default class PreferencesController {
   setAccountLabel(account, label) {
     if (!account) {
       throw new Error(
-        "setAccountLabel requires a valid address, got " + String(account)
-      );
+        'setAccountLabel requires a valid address, got ' + String(account),
+      )
     }
-    const address = normalizeAddress(account);
-    const { identities } = this.store.getState();
-    identities[address] = identities[address] || {};
-    identities[address].name = label;
-    this.store.updateState({ identities });
-    return Promise.resolve(label);
+    const address = normalizeAddress(account)
+    const { identities } = this.store.getState()
+    identities[address] = identities[address] || {}
+    identities[address].name = label
+    this.store.updateState({ identities })
+    return Promise.resolve(label)
   }
 
   /**
@@ -523,32 +522,26 @@ export default class PreferencesController {
    */
 
   updateRpc(newRpcDetails) {
-    const rpcList = this.getFrequentRpcListDetail();
+    const rpcList = this.getFrequentRpcListDetail()
     const index = rpcList.findIndex((element) => {
-      return element.rpcUrl === newRpcDetails.rpcUrl;
-    });
+      return element.rpcUrl === newRpcDetails.rpcUrl
+    })
     if (index > -1) {
-      const rpcDetail = rpcList[index];
-      const updatedRpc = { ...rpcDetail, ...newRpcDetails };
-      rpcList[index] = updatedRpc;
-      this.store.updateState({ frequentRpcListDetail: rpcList });
+      const rpcDetail = rpcList[index]
+      const updatedRpc = { ...rpcDetail, ...newRpcDetails }
+      rpcList[index] = updatedRpc
+      this.store.updateState({ frequentRpcListDetail: rpcList })
     } else {
-      const {
-        rpcUrl,
-        chainId,
-        ticker,
-        nickname,
-        rpcPrefs = {},
-      } = newRpcDetails;
+      const { rpcUrl, chainId, ticker, nickname, rpcPrefs = {} } = newRpcDetails
       return this.addToFrequentRpcList(
         rpcUrl,
         chainId,
         ticker,
         nickname,
-        rpcPrefs
-      );
+        rpcPrefs,
+      )
     }
-    return Promise.resolve(rpcList);
+    return Promise.resolve(rpcList)
   }
   /**
    * Adds custom RPC url to state.
@@ -563,21 +556,21 @@ export default class PreferencesController {
   addToFrequentRpcList(
     url,
     chainId,
-    ticker = "CELO",
-    nickname = "",
-    rpcPrefs = {}
+    ticker = 'CELO',
+    nickname = '',
+    rpcPrefs = {},
   ) {
-    const rpcList = this.getFrequentRpcListDetail();
+    const rpcList = this.getFrequentRpcListDetail()
     const index = rpcList.findIndex((element) => {
-      return element.rpcUrl === url;
-    });
+      return element.rpcUrl === url
+    })
     if (index !== -1) {
-      rpcList.splice(index, 1);
+      rpcList.splice(index, 1)
     }
-    if (url !== "http://localhost:8545") {
-      let checkedChainId;
+    if (url !== 'http://localhost:8545') {
+      let checkedChainId
       if (!!chainId && !Number.isNaN(parseInt(chainId))) {
-        checkedChainId = chainId;
+        checkedChainId = chainId
       }
       rpcList.push({
         rpcUrl: url,
@@ -585,10 +578,10 @@ export default class PreferencesController {
         ticker,
         nickname,
         rpcPrefs,
-      });
+      })
     }
-    this.store.updateState({ frequentRpcListDetail: rpcList });
-    return Promise.resolve(rpcList);
+    this.store.updateState({ frequentRpcListDetail: rpcList })
+    return Promise.resolve(rpcList)
   }
 
   /**
@@ -599,15 +592,15 @@ export default class PreferencesController {
    *
    */
   removeFromFrequentRpcList(url) {
-    const rpcList = this.getFrequentRpcListDetail();
+    const rpcList = this.getFrequentRpcListDetail()
     const index = rpcList.findIndex((element) => {
-      return element.rpcUrl === url;
-    });
+      return element.rpcUrl === url
+    })
     if (index !== -1) {
-      rpcList.splice(index, 1);
+      rpcList.splice(index, 1)
     }
-    this.store.updateState({ frequentRpcListDetail: rpcList });
-    return Promise.resolve(rpcList);
+    this.store.updateState({ frequentRpcListDetail: rpcList })
+    return Promise.resolve(rpcList)
   }
 
   /**
@@ -617,7 +610,7 @@ export default class PreferencesController {
    *
    */
   getFrequentRpcListDetail() {
-    return this.store.getState().frequentRpcListDetail;
+    return this.store.getState().frequentRpcListDetail
   }
 
   /**
@@ -629,15 +622,15 @@ export default class PreferencesController {
    *
    */
   setFeatureFlag(feature, activated) {
-    const currentFeatureFlags = this.store.getState().featureFlags;
+    const currentFeatureFlags = this.store.getState().featureFlags
     const updatedFeatureFlags = {
       ...currentFeatureFlags,
       [feature]: activated,
-    };
+    }
 
-    this.store.updateState({ featureFlags: updatedFeatureFlags });
+    this.store.updateState({ featureFlags: updatedFeatureFlags })
 
-    return Promise.resolve(updatedFeatureFlags);
+    return Promise.resolve(updatedFeatureFlags)
   }
 
   /**
@@ -648,14 +641,14 @@ export default class PreferencesController {
    * @returns {Promise<object>} - Promises a new object; the updated preferences object.
    */
   setPreference(preference, value) {
-    const currentPreferences = this.getPreferences();
+    const currentPreferences = this.getPreferences()
     const updatedPreferences = {
       ...currentPreferences,
       [preference]: value,
-    };
+    }
 
-    this.store.updateState({ preferences: updatedPreferences });
-    return Promise.resolve(updatedPreferences);
+    this.store.updateState({ preferences: updatedPreferences })
+    return Promise.resolve(updatedPreferences)
   }
 
   /**
@@ -663,7 +656,7 @@ export default class PreferencesController {
    * @returns {Object} - A key-boolean map of user-selected preferences.
    */
   getPreferences() {
-    return this.store.getState().preferences;
+    return this.store.getState().preferences
   }
 
   /**
@@ -671,8 +664,8 @@ export default class PreferencesController {
    * onboarding process.
    */
   completeOnboarding() {
-    this.store.updateState({ completedOnboarding: true });
-    return Promise.resolve(true);
+    this.store.updateState({ completedOnboarding: true })
+    return Promise.resolve(true)
   }
 
   /**
@@ -680,7 +673,7 @@ export default class PreferencesController {
    * @returns {string} - The current IPFS gateway domain
    */
   getIpfsGateway() {
-    return this.store.getState().ipfsGateway;
+    return this.store.getState().ipfsGateway
   }
 
   /**
@@ -689,8 +682,8 @@ export default class PreferencesController {
    * @returns {Promise<string>} - A promise of the update IPFS gateway domain
    */
   setIpfsGateway(domain) {
-    this.store.updateState({ ipfsGateway: domain });
-    return Promise.resolve(domain);
+    this.store.updateState({ ipfsGateway: domain })
+    return Promise.resolve(domain)
   }
 
   //
@@ -704,9 +697,9 @@ export default class PreferencesController {
    */
   _subscribeProviderType() {
     this.network.providerStore.subscribe(() => {
-      const { tokens } = this._getTokenRelatedStates();
-      this.store.updateState({ tokens });
-    });
+      const { tokens } = this._getTokenRelatedStates()
+      this.store.updateState({ tokens })
+    })
   }
 
   /**
@@ -720,9 +713,9 @@ export default class PreferencesController {
       accountTokens,
       providerType,
       selectedAddress,
-    } = this._getTokenRelatedStates();
-    accountTokens[selectedAddress][providerType] = tokens;
-    this.store.updateState({ accountTokens, tokens, assetImages });
+    } = this._getTokenRelatedStates()
+    accountTokens[selectedAddress][providerType] = tokens
+    this.store.updateState({ accountTokens, tokens, assetImages })
   }
 
   /**
@@ -732,8 +725,8 @@ export default class PreferencesController {
    *
    */
   _updateTokens(selectedAddress) {
-    const { tokens } = this._getTokenRelatedStates(selectedAddress);
-    this.store.updateState({ tokens });
+    const { tokens } = this._getTokenRelatedStates(selectedAddress)
+    this.store.updateState({ tokens })
   }
 
   /**
@@ -744,19 +737,19 @@ export default class PreferencesController {
    *
    */
   _getTokenRelatedStates(selectedAddress) {
-    const accountTokens = this.store.getState().accountTokens;
+    const accountTokens = this.store.getState().accountTokens
     if (!selectedAddress) {
-      selectedAddress = this.store.getState().selectedAddress;
+      selectedAddress = this.store.getState().selectedAddress
     }
-    const providerType = this.network.providerStore.getState().type;
+    const providerType = this.network.providerStore.getState().type
     if (!(selectedAddress in accountTokens)) {
-      accountTokens[selectedAddress] = {};
+      accountTokens[selectedAddress] = {}
     }
     if (!(providerType in accountTokens[selectedAddress])) {
-      accountTokens[selectedAddress][providerType] = [];
+      accountTokens[selectedAddress][providerType] = []
     }
-    const tokens = accountTokens[selectedAddress][providerType];
-    return { tokens, accountTokens, providerType, selectedAddress };
+    const tokens = accountTokens[selectedAddress][providerType]
+    return { tokens, accountTokens, providerType, selectedAddress }
   }
 
   /**
@@ -766,21 +759,21 @@ export default class PreferencesController {
    *
    */
   async _handleWatchAssetERC20(options) {
-    const { address, symbol, decimals, image } = options;
-    const rawAddress = address;
+    const { address, symbol, decimals, image } = options
+    const rawAddress = address
     try {
-      this._validateERC20AssetParams({ rawAddress, symbol, decimals });
+      this._validateERC20AssetParams({ rawAddress, symbol, decimals })
     } catch (err) {
-      return err;
+      return err
     }
-    const tokenOpts = { rawAddress, decimals, symbol, image };
-    this.addSuggestedERC20Asset(tokenOpts);
+    const tokenOpts = { rawAddress, decimals, symbol, image }
+    this.addSuggestedERC20Asset(tokenOpts)
     return this.openPopup().then(() => {
       const tokenAddresses = this.getTokens().filter(
-        (token) => token.address === normalizeAddress(rawAddress)
-      );
-      return tokenAddresses.length > 0;
-    });
+        (token) => token.address === normalizeAddress(rawAddress),
+      )
+      return tokenAddresses.length > 0
+    })
   }
 
   /**
@@ -792,23 +785,23 @@ export default class PreferencesController {
    *
    */
   _validateERC20AssetParams(opts) {
-    const { rawAddress, symbol, decimals } = opts;
-    if (!rawAddress || !symbol || typeof decimals === "undefined") {
+    const { rawAddress, symbol, decimals } = opts
+    if (!rawAddress || !symbol || typeof decimals === 'undefined') {
       throw new Error(
-        `Cannot suggest token without address, symbol, and decimals`
-      );
+        `Cannot suggest token without address, symbol, and decimals`,
+      )
     }
     if (!(symbol.length < 7)) {
-      throw new Error(`Invalid symbol ${symbol} more than six characters`);
+      throw new Error(`Invalid symbol ${symbol} more than six characters`)
     }
-    const numDecimals = parseInt(decimals, 10);
+    const numDecimals = parseInt(decimals, 10)
     if (isNaN(numDecimals) || numDecimals > 36 || numDecimals < 0) {
       throw new Error(
-        `Invalid decimals ${decimals} must be at least 0, and not over 36`
-      );
+        `Invalid decimals ${decimals} must be at least 0, and not over 36`,
+      )
     }
     if (!isValidAddress(rawAddress)) {
-      throw new Error(`Invalid address ${rawAddress}`);
+      throw new Error(`Invalid address ${rawAddress}`)
     }
   }
 }
