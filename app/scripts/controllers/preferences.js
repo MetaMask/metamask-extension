@@ -784,6 +784,7 @@ export default class PreferencesController {
    * doesn't fulfill requirements
    *
    */
+
   _validateERC20AssetParams(opts) {
     const { rawAddress, symbol, decimals } = opts
     if (!rawAddress || !symbol || typeof decimals === 'undefined') {
