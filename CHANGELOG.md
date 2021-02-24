@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 9.1.0 Wed Feb 24 2021
+
 ## 9.0.5 Mon Feb 08 2021
 - [#10278](https://github.com/MetaMask/metamask-extension/pull/10278): Allow editing transaction amount after clicking max
 - [#10214](https://github.com/MetaMask/metamask-extension/pull/10214): Standardize size, shape and color of network color indicators
