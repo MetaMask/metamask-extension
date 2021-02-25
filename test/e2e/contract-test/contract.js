@@ -1,4 +1,4 @@
-/*global confluxJS, conflux, ConfluxPortalOnboarding,
+/*global confluxJS, conflux
   HumanStandardTokenContractCode, PiggyBankContractCode, keccak256,
 cfxBalanceTrackerBytecode */
 
@@ -32,7 +32,7 @@ The `piggybankContract` is compiled from:
   }
 */
 
-const forwarderOrigin = 'http://localhost:9010'
+// const forwarderOrigin = 'http://localhost:9010'
 
 let USE_BASE32_ADDRESS = false
 
@@ -99,12 +99,12 @@ const initialize = () => {
   const accountsDiv = document.getElementById('accounts')
 
   let onboarding
-  try {
-    // https://github.com/yqrashawn/conflux-portal-onboarding/blob/master/src/index.js
-    onboarding = new ConfluxPortalOnboarding({ forwarderOrigin })
-  } catch (error) {
-    console.error(error)
-  }
+  // try {
+  //   // https://github.com/yqrashawn/conflux-portal-onboarding/blob/master/src/index.js
+  //   onboarding = new ConfluxPortalOnboarding({ forwarderOrigin })
+  // } catch (error) {
+  //   console.error(error)
+  // }
   let accounts
   let piggybankContract
 
@@ -129,7 +129,7 @@ const initialize = () => {
     onboardButton.innerText = 'Onboarding in progress'
     onboardButton.disabled = true
     // https://github.com/yqrashawn/conflux-portal-onboarding/blob/master/src/index.js#L109
-    onboarding.startOnboarding()
+    // onboarding.startOnboarding()
   }
 
   const onClickConnect = async () => {
@@ -550,12 +550,7 @@ const initialize = () => {
       transferTokens.onclick = async event => {
         console.log(`event`, event)
         const transferResult = humanstandardtokenContract
-          .transfer(
-            USE_BASE32_ADDRESS
-              ? 'net2999:aatxddbxj8akph7vfhkmru2ra7v7xksksamx6rgwy2'
-              : '0x1f318c334780961Fb129d2A6c30D0763D9a5C970',
-            '15000'
-          )
+          .transfer(accounts[0], '15000')
           .sendTransaction({
             from: accounts[0],
             to: humanstandardtokenContract.address,
@@ -567,12 +562,7 @@ const initialize = () => {
 
       approveTokens.onclick = async () => {
         const approveResult = await humanstandardtokenContract
-          .approve(
-            USE_BASE32_ADDRESS
-              ? 'net2999:acf6ns12sxkrzdkbrny9cr6ajgcs60188ub3vfnwe1'
-              : '0x8Bc5BaF874d2DA8D216ae9f137804184Ee5aFef4',
-            '70000'
-          )
+          .approve(accounts[0], '70000')
           .sendTransaction({
             from: accounts[0],
             to: humanstandardtokenContract.address,
@@ -585,12 +575,7 @@ const initialize = () => {
       transferTokensWithoutGas.onclick = async event => {
         console.log(`event`, event)
         const transferResult = await humanstandardtokenContract
-          .transfer(
-            USE_BASE32_ADDRESS
-              ? 'net2999:aatxddbxj8akph7vfhkmru2ra7v7xksksamx6rgwy2'
-              : '0x1f318c334780961Fb129d2A6c30D0763D9a5C970',
-            '15000'
-          )
+          .transfer(accounts[0], '15000')
           .sendTransaction({
             from: accounts[0],
             to: humanstandardtokenContract.address,
@@ -602,12 +587,7 @@ const initialize = () => {
 
       approveTokensWithoutGas.onclick = async () => {
         const approveResult = await humanstandardtokenContract
-          .approve(
-            USE_BASE32_ADDRESS
-              ? 'net2999:aatxddbxj8akph7vfhkmru2ra7v7xksksamx6rgwy2'
-              : '0x1f318c334780961Fb129d2A6c30D0763D9a5C970',
-            '70000'
-          )
+          .approve(accounts[0], '70000')
           .sendTransaction({
             from: accounts[0],
             to: humanstandardtokenContract.address,
