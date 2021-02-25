@@ -1945,7 +1945,7 @@
     "message": "View in activity"
   },
   "switchEthereumChainConfirmationDescription": {
-    "message": "This will will switch the selected network within MetaMask to a previously added network:"
+    "message": "This will switch the selected network within MetaMask to a previously added network:"
   },
   "switchEthereumChainConfirmationTitle": {
     "message": "Allow this site to switch the network?"

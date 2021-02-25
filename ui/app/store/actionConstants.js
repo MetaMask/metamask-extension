@@ -2,8 +2,6 @@ export const GO_HOME = 'GO_HOME';
 // modal state
 export const MODAL_OPEN = 'UI_MODAL_OPEN';
 export const MODAL_CLOSE = 'UI_MODAL_CLOSE';
-// notification state
-export const CLOSE_NOTIFICATION_WINDOW = 'CLOSE_NOTIFICATION_WINDOW';
 // sidebar state
 export const SIDEBAR_OPEN = 'UI_SIDEBAR_OPEN';
 export const SIDEBAR_CLOSE = 'UI_SIDEBAR_CLOSE';

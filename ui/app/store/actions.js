@@ -1772,21 +1772,13 @@ export function hideModal(payload) {
 }
 
 export function closeCurrentNotificationWindow() {
-  return (dispatch, getState) => {
+  return (_, getState) => {
     if (
       getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION &&
       !hasUnconfirmedTransactions(getState())
     ) {
       global.platform.closeCurrentWindow();
-
-      dispatch(closeNotificationWindow());
     }
-  };
-}
-
-export function closeNotificationWindow() {
-  return {
-    type: actionConstants.CLOSE_NOTIFICATION_WINDOW,
   };
 }
 
@@ -2476,7 +2468,7 @@ export function resolvePendingApproval(id, value) {
     await promisifiedBackground.resolvePendingApproval(id, value);
     // Before closing the current window, check if any additional confirmations
     // are added as a result of this confirmation being accepted
-    const { pendingApprovals } = await promisifiedBackground.getState();
+    const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
     if (Object.values(pendingApprovals).length === 0) {
       dispatch(closeCurrentNotificationWindow());
     }
@@ -2494,7 +2486,7 @@ export function rejectPendingApproval(id, error) {
     await promisifiedBackground.rejectPendingApproval(id, error);
     // Before closing the current window, check if any additional confirmations
     // are added as a result of this confirmation being rejected
-    const { pendingApprovals } = await promisifiedBackground.getState();
+    const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
     if (Object.values(pendingApprovals).length === 0) {
       dispatch(closeCurrentNotificationWindow());
     }

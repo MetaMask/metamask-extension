@@ -9,11 +9,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { produce } from 'immer';
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import {
-  ENVIRONMENT_TYPE_FULLSCREEN,
-  ENVIRONMENT_TYPE_POPUP,
-} from '../../../../shared/constants/app';
 import Box from '../../components/ui/box';
 import Chip from '../../components/ui/chip';
 import MetaMaskTemplateRenderer from '../../components/app/metamask-template-renderer';
@@ -138,16 +133,11 @@ export default function ConfirmationPage() {
   }, [pendingConfirmation, t, dispatch]);
 
   useEffect(() => {
-    const environmentType = getEnvironmentType();
     // If the number of pending confirmations reduces to zero when the user
-    // is in the fullscreen or popup UI, return them to the default route.
-    // Otherwise, if the number of pending confirmations reduces to a number
-    // that is less than the currently viewed index, reset the index.
-    if (
-      pendingConfirmations.length === 0 &&
-      (environmentType === ENVIRONMENT_TYPE_FULLSCREEN ||
-        environmentType === ENVIRONMENT_TYPE_POPUP)
-    ) {
+    // return them to the default route. Otherwise, if the number of pending
+    // confirmations reduces to a number that is less than the currently
+    // viewed index, reset the index.
+    if (pendingConfirmations.length === 0) {
       history.push(DEFAULT_ROUTE);
     } else if (pendingConfirmations.length <= currentPendingConfirmation) {
       setCurrentPendingConfirmation(pendingConfirmations.length - 1);
