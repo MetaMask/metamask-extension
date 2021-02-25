@@ -1772,21 +1772,13 @@ export function hideModal(payload) {
 }
 
 export function closeCurrentNotificationWindow() {
-  return (dispatch, getState) => {
+  return (_, getState) => {
     if (
       getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION &&
       !hasUnconfirmedTransactions(getState())
     ) {
       global.platform.closeCurrentWindow();
-
-      dispatch(closeNotificationWindow());
     }
-  };
-}
-
-export function closeNotificationWindow() {
-  return {
-    type: actionConstants.CLOSE_NOTIFICATION_WINDOW,
   };
 }
 
