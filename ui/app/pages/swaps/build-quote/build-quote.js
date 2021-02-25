@@ -113,7 +113,7 @@ export default function BuildQuote({
   const toTokenIsNotEth =
     selectedToToken?.address &&
     selectedToToken?.address !== ETH_SWAPS_TOKEN_OBJECT.address;
-  const occurances = Number(selectedToToken.occurances);
+  const occurances = Number(selectedToToken?.occurances || 0);
   const {
     address: fromTokenAddress,
     symbol: fromTokenSymbol,
