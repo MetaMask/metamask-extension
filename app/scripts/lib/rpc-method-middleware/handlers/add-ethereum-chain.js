@@ -32,7 +32,9 @@ async function addEthereumChainHandler(
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
     return end(
       ethErrors.rpc.invalidParams({
-        message: `Expected single, object parameter. Received:\n${req.params}`,
+        message: `Expected single, object parameter. Received:\n${JSON.stringify(
+          req.params,
+        )}`,
       }),
     );
   }
