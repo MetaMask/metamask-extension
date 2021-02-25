@@ -2,20 +2,22 @@ import punycode from 'punycode/punycode';
 import ethUtil from 'ethereumjs-util';
 import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
+import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../../../shared/constants/network';
 import Ens from './ens';
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ZERO_X_ERROR_ADDRESS = '0x';
 
 export default class EnsController {
-  constructor({ ens, provider, networkStore } = {}) {
+  constructor({ ens, provider, onNetworkDidChange, getCurrentChainId } = {}) {
     const initState = {
       ensResolutionsByAddress: {},
     };
 
     this._ens = ens;
     if (!this._ens) {
-      const network = networkStore.getState();
+      const chainId = getCurrentChainId();
+      const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
       if (Ens.getNetworkEnsSupport(network)) {
         this._ens = new Ens({
           network,
@@ -25,8 +27,10 @@ export default class EnsController {
     }
 
     this.store = new ObservableStore(initState);
-    networkStore.subscribe((network) => {
+    onNetworkDidChange(() => {
       this.store.putState(initState);
+      const chainId = getCurrentChainId();
+      const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
       if (Ens.getNetworkEnsSupport(network)) {
         this._ens = new Ens({
           network,
