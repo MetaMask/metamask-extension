@@ -73,10 +73,10 @@ const mapStateToProps = (state, ownProps) => {
     identities,
     addressBook,
     assetImages,
-    network,
     unapprovedTxs,
     metaMetricsSendCount,
     nextNonce,
+    provider: { chainId },
   } = metamask;
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
   const {
@@ -126,10 +126,10 @@ const mapStateToProps = (state, ownProps) => {
     txData.simulationFails = transaction.simulationFails;
   }
 
-  const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
-    .filter((key) => unapprovedTxs[key].metamaskNetworkId === network)
+  const currentChainUnapprovedTxs = Object.keys(unapprovedTxs)
+    .filter((key) => unapprovedTxs[key].chainId === chainId)
     .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {});
-  const unapprovedTxCount = valuesFor(currentNetworkUnapprovedTxs).length;
+  const unapprovedTxCount = valuesFor(currentChainUnapprovedTxs).length;
 
   const insufficientBalance = !isBalanceSufficient({
     amount,
@@ -173,7 +173,7 @@ const mapStateToProps = (state, ownProps) => {
     assetImage,
     unapprovedTxs,
     unapprovedTxCount,
-    currentNetworkUnapprovedTxs,
+    currentChainUnapprovedTxs,
     customGas: {
       gasLimit,
       gasPrice,

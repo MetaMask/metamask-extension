@@ -1,5 +1,9 @@
 import assert from 'assert';
 import {
+  MAINNET_CHAIN_ID,
+  ROPSTEN_CHAIN_ID,
+} from '../../../../shared/constants/network';
+import {
   TRANSACTION_CATEGORIES,
   TRANSACTION_GROUP_STATUSES,
   TRANSACTION_STATUSES,
@@ -66,19 +70,19 @@ describe('Transactions utils', function () {
       const tests = [
         {
           expected: 'https://etherscan.io/tx/0xabcd',
-          networkId: '1',
+          chainId: MAINNET_CHAIN_ID,
           hash: '0xabcd',
         },
         {
           expected: 'https://ropsten.etherscan.io/tx/0xdef0',
-          networkId: '3',
+          networkId: ROPSTEN_CHAIN_ID,
           hash: '0xdef0',
           rpcPrefs: {},
         },
         {
           // test handling of `blockExplorerUrl` for a custom RPC
           expected: 'https://block.explorer/tx/0xabcd',
-          networkId: '31',
+          chainId: '0x1f',
           hash: '0xabcd',
           rpcPrefs: {
             blockExplorerUrl: 'https://block.explorer',
@@ -87,7 +91,7 @@ describe('Transactions utils', function () {
         {
           // test handling of trailing `/` in `blockExplorerUrl` for a custom RPC
           expected: 'https://another.block.explorer/tx/0xdef0',
-          networkId: '33',
+          chainId: '0x21',
           hash: '0xdef0',
           rpcPrefs: {
             blockExplorerUrl: 'https://another.block.explorer/',

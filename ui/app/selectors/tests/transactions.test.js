@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { ROPSTEN_CHAIN_ID } from '../../../../shared/constants/network';
 import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
 import {
   unapprovedMessagesSelector,
@@ -29,6 +30,9 @@ describe('Transaction Selectors', function () {
           unapprovedMsgs: {
             1: msg,
           },
+          provider: {
+            chainId: ROPSTEN_CHAIN_ID,
+          },
         },
       };
 
@@ -55,6 +59,9 @@ describe('Transaction Selectors', function () {
         metamask: {
           unapprovedPersonalMsgs: {
             1: msg,
+          },
+          provider: {
+            chainId: ROPSTEN_CHAIN_ID,
           },
         },
       };
@@ -83,6 +90,9 @@ describe('Transaction Selectors', function () {
         metamask: {
           unapprovedTypedMessages: {
             1: msg,
+          },
+          provider: {
+            chainId: ROPSTEN_CHAIN_ID,
           },
         },
       };

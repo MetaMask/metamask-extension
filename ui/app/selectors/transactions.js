@@ -10,6 +10,7 @@ import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
 } from '../../../shared/constants/transaction';
+import { getCurrentChainId } from './selectors';
 import { getSelectedAddress } from '.';
 
 export const incomingTxListSelector = (state) => {
@@ -18,11 +19,11 @@ export const incomingTxListSelector = (state) => {
     return [];
   }
 
-  const { network } = state.metamask;
+  const chainId = getCurrentChainId(state);
   const selectedAddress = getSelectedAddress(state);
   return Object.values(state.metamask.incomingTransactions).filter(
-    ({ metamaskNetworkId, txParams }) =>
-      txParams.to === selectedAddress && metamaskNetworkId === network,
+    ({ chainId: txChainId, txParams }) =>
+      txParams.to === selectedAddress && txChainId === chainId,
   );
 };
 export const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
@@ -36,7 +37,6 @@ export const unapprovedEncryptionPublicKeyMsgsSelector = (state) =>
   state.metamask.unapprovedEncryptionPublicKeyMsgs;
 export const unapprovedTypedMessagesSelector = (state) =>
   state.metamask.unapprovedTypedMessages;
-export const networkSelector = (state) => state.metamask.network;
 
 export const selectedAddressTxListSelector = createSelector(
   getSelectedAddress,
@@ -54,14 +54,14 @@ export const unapprovedMessagesSelector = createSelector(
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
   unapprovedTypedMessagesSelector,
-  networkSelector,
+  getCurrentChainId,
   (
     unapprovedMsgs = {},
     unapprovedPersonalMsgs = {},
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
     unapprovedTypedMessages = {},
-    network,
+    chainId,
   ) =>
     txHelper(
       {},
@@ -70,7 +70,7 @@ export const unapprovedMessagesSelector = createSelector(
       unapprovedDecryptMsgs,
       unapprovedEncryptionPublicKeyMsgs,
       unapprovedTypedMessages,
-      network,
+      chainId,
     ) || [],
 );
 

@@ -194,15 +194,15 @@ export function getStatusKey(transaction) {
 
 /**
  * Returns an external block explorer URL at which a transaction can be viewed.
- * @param {number} networkId
+ * @param {string} chainId
  * @param {string} hash
  * @param {Object} rpcPrefs
  */
-export function getBlockExplorerUrlForTx(networkId, hash, rpcPrefs = {}) {
+export function getBlockExplorerUrlForTx(chainId, hash, rpcPrefs = {}) {
   if (rpcPrefs.blockExplorerUrl) {
     return `${rpcPrefs.blockExplorerUrl.replace(/\/+$/u, '')}/tx/${hash}`;
   }
-  const prefix = getEtherscanNetworkPrefix(networkId);
+  const prefix = getEtherscanNetworkPrefix(chainId);
   return `https://${prefix}etherscan.io/tx/${hash}`;
 }
 

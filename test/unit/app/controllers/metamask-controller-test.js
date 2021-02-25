@@ -727,13 +727,14 @@ describe('MetaMaskController', function () {
         metamaskController.preferencesController,
         'getSelectedAddress',
       );
-      const getNetworkstub = sinon.stub(
+
+      const getCurrentChainIdStub = sinon.stub(
         metamaskController.txController.txStateManager,
-        'getNetwork',
+        'getCurrentChainId',
       );
 
       selectedAddressStub.returns('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc');
-      getNetworkstub.returns(42);
+      getCurrentChainIdStub.returns('0x2a');
 
       metamaskController.txController.txStateManager._saveTxList([
         createTxMeta({

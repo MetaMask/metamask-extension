@@ -10,7 +10,6 @@ import {
   TRANSACTION_STATUSES,
 } from '../../../shared/constants/transaction';
 import {
-  CHAIN_ID_TO_NETWORK_ID_MAP,
   CHAIN_ID_TO_TYPE_MAP,
   GOERLI,
   GOERLI_CHAIN_ID,
@@ -283,7 +282,7 @@ export default class IncomingTransactionsController {
     return {
       blockNumber: txMeta.blockNumber,
       id: createId(),
-      metamaskNetworkId: CHAIN_ID_TO_NETWORK_ID_MAP[chainId],
+      chainId,
       status,
       time,
       txParams: {

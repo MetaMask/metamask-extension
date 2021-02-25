@@ -8,7 +8,7 @@ export default function txHelper(
   decryptMsgs,
   encryptionPublicKeyMsgs,
   typedMessages,
-  network,
+  chainId,
 ) {
   log.debug('tx-helper called with params:');
   log.debug({
@@ -18,13 +18,11 @@ export default function txHelper(
     decryptMsgs,
     encryptionPublicKeyMsgs,
     typedMessages,
-    network,
+    chainId,
   });
 
-  const txValues = network
-    ? valuesFor(unapprovedTxs).filter(
-        (txMeta) => txMeta.metamaskNetworkId === network,
-      )
+  const txValues = chainId
+    ? valuesFor(unapprovedTxs).filter((txMeta) => txMeta.chainId === chainId)
     : valuesFor(unapprovedTxs);
   log.debug(`tx helper found ${txValues.length} unapproved txs`);
 

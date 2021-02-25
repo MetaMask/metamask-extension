@@ -79,3 +79,10 @@ export const CHAIN_ID_TO_NETWORK_ID_MAP = Object.values(
   chainIdToNetworkIdMap[chainId] = networkId;
   return chainIdToNetworkIdMap;
 }, {});
+
+export const NETWORK_ID_TO_CHAIN_ID_MAP = Object.values(
+  NETWORK_TYPE_TO_ID_MAP,
+).reduce((networkIdToChainIdMap, { chainId, networkId }) => {
+  networkIdToChainIdMap[networkId] = chainId;
+  return networkIdToChainIdMap;
+}, {});

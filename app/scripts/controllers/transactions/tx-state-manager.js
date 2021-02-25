@@ -24,16 +24,15 @@ import { getFinalStates, normalizeTxParams } from './lib/util';
  * @param {Object} [opts.initState={ transactions: [] }] - initial transactions list with the key transaction {Array}
  * @param {number} [opts.txHistoryLimit] - limit for how many finished
  *  transactions can hang around in state
- * @param {Function} opts.getNetwork - return network number
  * @class
  */
 export default class TransactionStateManager extends EventEmitter {
-  constructor({ initState, txHistoryLimit, getNetwork }) {
+  constructor({ initState, txHistoryLimit, getCurrentChainId }) {
     super();
 
     this.store = new ObservableStore({ transactions: [], ...initState });
     this.txHistoryLimit = txHistoryLimit;
-    this.getNetwork = getNetwork;
+    this.getCurrentChainId = () => `${getCurrentChainId()}`;
   }
 
   /**
@@ -41,15 +40,12 @@ export default class TransactionStateManager extends EventEmitter {
    * @returns {txMeta} the default txMeta object
    */
   generateTxMeta(opts) {
-    const netId = this.getNetwork();
-    if (netId === 'loading') {
-      throw new Error('MetaMask is having trouble connecting to the network');
-    }
+    const chainId = this.getCurrentChainId();
     return {
       id: createId(),
       time: new Date().getTime(),
       status: TRANSACTION_STATUSES.UNAPPROVED,
-      metamaskNetworkId: netId,
+      chainId,
       loadingDefaults: true,
       ...opts,
     };
@@ -64,14 +60,14 @@ export default class TransactionStateManager extends EventEmitter {
    * @returns {Object[]} The {@code txMeta}s, filtered to the current network
    */
   getTxList(limit) {
-    const network = this.getNetwork();
+    const chainId = this.getCurrentChainId();
     const fullTxList = this.getFullTxList();
 
     const nonces = new Set();
     const txs = [];
     for (let i = fullTxList.length - 1; i > -1; i--) {
       const txMeta = fullTxList[i];
-      if (txMeta.metamaskNetworkId !== network) {
+      if (txMeta.chainId !== chainId) {
         continue;
       }
 
@@ -451,15 +447,12 @@ export default class TransactionStateManager extends EventEmitter {
   wipeTransactions(address) {
     // network only tx
     const txs = this.getFullTxList();
-    const network = this.getNetwork();
+    const chainId = this.getCurrentChainId();
 
     // Filter out the ones from the current account and network
     const otherAccountTxs = txs.filter(
       (txMeta) =>
-        !(
-          txMeta.txParams.from === address &&
-          txMeta.metamaskNetworkId === network
-        ),
+        !(txMeta.txParams.from === address && txMeta.chainId === chainId),
     );
 
     // Update state

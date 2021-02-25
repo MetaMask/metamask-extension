@@ -76,7 +76,7 @@ initialize().catch(log.error);
  * @property {number} id - An internally unique tx identifier.
  * @property {number} time - Time the tx was first suggested, in unix epoch time (ms).
  * @property {string} status - The current transaction status (unapproved, signed, submitted, dropped, failed, rejected), as defined in `tx-state-manager.js`.
- * @property {string} metamaskNetworkId - The transaction's network ID, used for EIP-155 compliance.
+ * @property {string} chainId - The transaction's network ID, used for EIP-155 compliance.
  * @property {boolean} loadingDefaults - TODO: Document
  * @property {Object} txParams - The tx params as passed to the network provider.
  * @property {Object[]} history - A history of mutations to this TransactionMeta object.

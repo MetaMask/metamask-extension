@@ -10,6 +10,7 @@ import {
   addEth,
 } from '../helpers/utils/confirm-tx.util';
 import { sumHexes } from '../helpers/utils/transactions.util';
+import { getCurrentChainId } from './selectors';
 import { getNativeCurrency } from '.';
 
 const unapprovedTxsSelector = (state) => state.metamask.unapprovedTxs;
@@ -59,7 +60,7 @@ export const unconfirmedTransactionsHashSelector = createSelector(
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
   unapprovedTypedMessagesSelector,
-  networkSelector,
+  getCurrentChainId,
   (
     unapprovedTxs = {},
     unapprovedMsgs = {},
@@ -67,14 +68,14 @@ export const unconfirmedTransactionsHashSelector = createSelector(
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
     unapprovedTypedMessages = {},
-    network,
+    chainId,
   ) => {
     const filteredUnapprovedTxs = Object.keys(unapprovedTxs).reduce(
       (acc, address) => {
-        const { metamaskNetworkId } = unapprovedTxs[address];
+        const { chainId: txChainId } = unapprovedTxs[address];
         const transactions = { ...acc };
 
-        if (metamaskNetworkId === network) {
+        if (txChainId === chainId) {
           transactions[address] = unapprovedTxs[address];
         }
 
@@ -111,7 +112,7 @@ export const unconfirmedTransactionsCountSelector = createSelector(
   unapprovedDecryptMsgCountSelector,
   unapprovedEncryptionPublicKeyMsgCountSelector,
   unapprovedTypedMessagesCountSelector,
-  networkSelector,
+  getCurrentChainId,
   (
     unapprovedTxs = {},
     unapprovedMsgCount = 0,
@@ -119,12 +120,12 @@ export const unconfirmedTransactionsCountSelector = createSelector(
     unapprovedDecryptMsgCount = 0,
     unapprovedEncryptionPublicKeyMsgCount = 0,
     unapprovedTypedMessagesCount = 0,
-    network,
+    chainId,
   ) => {
     const filteredUnapprovedTxIds = Object.keys(unapprovedTxs).filter(
       (txId) => {
-        const { metamaskNetworkId } = unapprovedTxs[txId];
-        return metamaskNetworkId === network;
+        const { chainId: txChainId } = unapprovedTxs[txId];
+        return txChainId === chainId;
       },
     );
 

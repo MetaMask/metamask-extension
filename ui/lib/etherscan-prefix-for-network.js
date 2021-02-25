@@ -3,18 +3,18 @@ import * as networkEnums from '../../shared/constants/network';
 /**
  * Gets the etherscan.io URL prefix for a given network ID.
  *
- * @param {string} networkId - The network ID to get the prefix for.
+ * @param {string} chainId - The chain ID to get the prefix for.
  * @returns {string} The etherscan.io URL prefix for the given network ID.
  */
-export function getEtherscanNetworkPrefix(networkId) {
-  switch (networkId) {
-    case networkEnums.ROPSTEN_NETWORK_ID:
+export function getEtherscanNetworkPrefix(chainId) {
+  switch (chainId) {
+    case networkEnums.ROPSTEN_CHAIN_ID:
       return 'ropsten.';
-    case networkEnums.RINKEBY_NETWORK_ID:
+    case networkEnums.RINKEBY_CHAIN_ID:
       return 'rinkeby.';
-    case networkEnums.KOVAN_NETWORK_ID:
+    case networkEnums.KOVAN_CHAIN_ID:
       return 'kovan.';
-    case networkEnums.GOERLI_NETWORK_ID:
+    case networkEnums.GOERLI_CHAIN_ID:
       return 'goerli.';
     default:
       // also covers mainnet
