@@ -3,6 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import * as actions from '../../../ui/app/store/actions';
 import * as actionConstants from '../../../ui/app/store/actionConstants';
+import { ROPSTEN_CHAIN_ID } from '../../../shared/constants/network';
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
@@ -18,6 +19,9 @@ describe('tx confirmation screen', function () {
           status: 'unconfirmed',
           time: 1457634084250,
         },
+      },
+      provider: {
+        chainId: ROPSTEN_CHAIN_ID,
       },
     },
   };
