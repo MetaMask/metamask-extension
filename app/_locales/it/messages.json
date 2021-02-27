@@ -252,7 +252,7 @@
     "message": "Annullata"
   },
   "chainId": {
-    "message": "Blockchain ID"
+    "message": "Chain ID"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Devi usare MetaMask con Google Chrome per connettere il tuo Portafoglio Hardware"
@@ -363,6 +363,9 @@
   },
   "contactsSettingsDescription": {
     "message": "Aggiungi, modifica, rimuovi e gestisci i tuoi contatti"
+  },
+  "continue": {
+    "message": "Continua"
   },
   "continueToWyre": {
     "message": "Continua su Wyre"
@@ -572,7 +575,7 @@
     "message": "Scopri di più."
   },
   "endpointReturnedDifferentChainId": {
-    "message": "L'endpoint ha restituito un blockchain ID diverso: $1",
+    "message": "L'endpoint ha restituito un chain ID diverso: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
   "ensNotFoundOnCurrentNetwork": {
@@ -658,7 +661,7 @@
     "message": "Fallita"
   },
   "failedToFetchChainId": {
-    "message": "Non è stato possibile ottenere il blockchain ID. L'URL RPC è corretto?"
+    "message": "Non è stato possibile ottenere il chain ID. L'URL RPC è corretto?"
   },
   "failureMessage": {
     "message": "Qualcosa è andato storto e non è possibile completare l'azione"
@@ -845,15 +848,18 @@
   "invalidBlockExplorerURL": {
     "message": "URI Block Explorer invalido"
   },
+  "invalidChainIdTooBig": {
+    "message": "Chain ID non valido. Il chain ID è troppo grande."
+  },
   "invalidCustomNetworkAlertContent1": {
-    "message": "Il blockchain ID per la rete personalizzata '$1' deve essere reinserito.",
+    "message": "Il chain ID per la rete personalizzata '$1' deve essere reinserito.",
     "description": "$1 is the name/identifier of the network."
   },
   "invalidCustomNetworkAlertContent2": {
-    "message": "Per proteggerti da fornitori di rete maligni o non funzionanti, i blockchain ID sono ora richiesti per tutte le reti personalizzate."
+    "message": "Per proteggerti da fornitori di rete maligni o non funzionanti, i chain ID sono ora richiesti per tutte le reti personalizzate."
   },
   "invalidCustomNetworkAlertContent3": {
-    "message": "Vai in Impostazioni > Reti e inserisci il blockchain ID. Puoi trovare i blockchain ID più popolari su $1.",
+    "message": "Vai in Impostazioni > Reti e inserisci il chain ID. Puoi trovare i chain ID più popolari su $1.",
     "description": "$1 is a link to https://chainid.network"
   },
   "invalidCustomNetworkAlertTitle": {
@@ -1028,7 +1034,7 @@
     "message": "Nome Rete"
   },
   "networkSettingsChainIdDescription": {
-    "message": "Il blockchain ID è usato per firmare le transazioni. Deve essere uguale al blockchain ID restituito dalla rete. Puoi inserire un numero intero o un numero esadecimale con prefisso '0x', ma mostreremo sempre un numero intero."
+    "message": "Il chain ID è usato per firmare le transazioni. Deve essere uguale al chain ID restituito dalla rete. Puoi inserire un numero intero o un numero esadecimale con prefisso '0x', ma mostreremo sempre un numero intero."
   },
   "networkSettingsDescription": {
     "message": "Aggiungi e modifica reti RPC personalizzate"
@@ -1698,7 +1704,7 @@
     "message": "Slippage massimo"
   },
   "swapMetaMaskFee": {
-    "message": "Tassk MetaMask"
+    "message": "Tassa MetaMask"
   },
   "swapMetaMaskFeeDescription": {
     "message": "Troviamo i migliori prezzi dalle sorgenti di liquidità migliori, sempre. Una tassa del $1% è automaticamente aggiunta ad ogni quotazione, ciò serve a supportare lo sviluppo in modo da rendere MetaMask sempre migliore.",
@@ -1722,6 +1728,9 @@
   "swapPriceDifference": {
     "message": "Stai per scambiare $1 $2 (~$3) per $4 $5 (~$6).",
     "description": "This message represents the price slippage for the swap.  $1 and $4 are a number (ex: 2.89), $2 and $5 are symbols (ex: ETH), and $3 and $6 are fiat currency amounts."
+  },
+  "swapPriceDifferenceAcknowledgement": {
+    "message": "Sono consapevole"
   },
   "swapPriceDifferenceTitle": {
     "message": "Differenza di prezzo di circa ~$1%",
@@ -1780,6 +1789,9 @@
   "swapRequestForQuotation": {
     "message": "Richiedi quotazione"
   },
+  "swapReviewSwap": {
+    "message": "Verifica Scambio"
+  },
   "swapSearchForAToken": {
     "message": "Cerca un token"
   },
@@ -1826,6 +1838,17 @@
   "swapTokenToToken": {
     "message": "Scambia da $1 a $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
+  },
+  "swapTokenVerificationMessage": {
+    "message": "Verifica sempre l'indirizzo del token su $1.",
+    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
+  },
+  "swapTokenVerificationOnlyOneSource": {
+    "message": "Verificato solo su una fonte."
+  },
+  "swapTokenVerificationSources": {
+    "message": "Verificato su $1 fonti.",
+    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
   },
   "swapTransactionComplete": {
     "message": "Transazione completata"
@@ -2073,6 +2096,9 @@
   },
   "viewAccount": {
     "message": "Vedi Account"
+  },
+  "viewAllDetails": {
+    "message": "Vedi tutti i dettagli"
   },
   "viewContact": {
     "message": "Visualizza contatto"
