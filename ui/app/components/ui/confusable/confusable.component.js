@@ -33,7 +33,7 @@ const Confusable = ({ input }) => {
 };
 
 Confusable.propTypes = {
-  input: PropTypes.string.required,
+  input: PropTypes.string.isRequired,
 };
 
 export default Confusable;
