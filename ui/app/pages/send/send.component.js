@@ -31,7 +31,6 @@ export default class SendTransactionScreen extends Component {
     gasLimit: PropTypes.string,
     gasPrice: PropTypes.string,
     gasTotal: PropTypes.string,
-    hasHexData: PropTypes.bool,
     history: PropTypes.object,
     network: PropTypes.string,
     primaryCurrency: PropTypes.string,
@@ -234,7 +233,7 @@ export default class SendTransactionScreen extends Component {
   }
 
   validate(query) {
-    const { hasHexData, tokens, sendToken, network } = this.props;
+    const { tokens, sendToken, network } = this.props;
 
     const { internalSearch } = this.state;
 
@@ -243,7 +242,7 @@ export default class SendTransactionScreen extends Component {
       return;
     }
 
-    const toErrorObject = getToErrorObject(query, hasHexData, network);
+    const toErrorObject = getToErrorObject(query, network);
     const toWarningObject = getToWarningObject(query, tokens, sendToken);
 
     this.setState({
