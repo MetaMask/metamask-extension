@@ -301,6 +301,15 @@
   "confirmed": {
     "message": "Confirmed"
   },
+  "confusableUnicode": {
+    "message": "'$1' is similar to '$2'."
+  },
+  "confusableZeroWidthUnicode": {
+    "message": "Zero-width character found."
+  },
+  "confusingEnsDomain": {
+    "message": "We have detected a confusable character in the ENS name. Check the ENS name to avoid a potential scam."
+  },
   "congratulations": {
     "message": "Congratulations"
   },

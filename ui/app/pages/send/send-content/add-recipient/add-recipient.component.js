@@ -8,6 +8,7 @@ import ContactList from '../../../../components/app/contact-list';
 import RecipientGroup from '../../../../components/app/contact-list/recipient-group/recipient-group.component';
 import { ellipsify } from '../../send.utils';
 import Button from '../../../../components/ui/button';
+import Confusable from '../../../../components/ui/confusable';
 
 export default class AddRecipient extends Component {
   static propTypes = {
@@ -128,7 +129,7 @@ export default class AddRecipient extends Component {
         <Identicon address={address} diameter={28} />
         <div className="send__select-recipient-wrapper__group-item__content">
           <div className="send__select-recipient-wrapper__group-item__title">
-            {name || ellipsify(address)}
+            {name ? <Confusable input={name} /> : ellipsify(address)}
           </div>
           {name && (
             <div className="send__select-recipient-wrapper__group-item__subtitle">

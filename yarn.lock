@@ -24436,6 +24436,11 @@ unicode-canonical-property-names-ecmascript@^1.0.4:
   resolved "https://registry.yarnpkg.com/unicode-canonical-property-names-ecmascript/-/unicode-canonical-property-names-ecmascript-1.0.4.tgz#2619800c4c825800efdd8343af7dd9933cbe2818"
   integrity sha512-jDrNnXWHd4oHiTZnx/ZG7gtUTVp+gCcTTKr8L0HjlwphROEW3+Him+IpvC+xcJEFegapiMZyZe02CyuOnRmbnQ==
 
+unicode-confusables@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/unicode-confusables/-/unicode-confusables-0.1.1.tgz#17f14e8dc53ff81c12e92fd86e836ebdf14ea0c2"
+  integrity sha512-XTPBWmT88BDpXz9NycWk4KxDn+/AJmJYYaYBwuIH9119sopwk2E9GxU9azc+JNbhEsfiPul78DGocEihCp6MFQ==
+
 unicode-match-property-ecmascript@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/unicode-match-property-ecmascript/-/unicode-match-property-ecmascript-1.0.4.tgz#8ed2a32569961bce9227d09cd3ffbb8fed5f020c"

@@ -177,6 +177,7 @@
     "single-call-balance-checker-abi": "^1.0.0",
     "swappable-obj-proxy": "^1.1.0",
     "textarea-caret": "^3.0.1",
+    "unicode-confusables": "^0.1.1",
     "valid-url": "^1.0.9",
     "web3": "^0.20.7",
     "web3-stream-provider": "^4.0.0"
