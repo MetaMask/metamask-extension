@@ -20,7 +20,7 @@ const UNRECOGNIZED_CHAIN = {
             key: 'unrecognizedChainLink',
             props: {
               href:
-                'https://metamask.zendesk.com/hc/en-us/articles/360056196151',
+                'https://metamask.zendesk.com/hc/en-us/articles/360057142392',
               target: '__blank',
               tabIndex: 0,
             },
@@ -52,7 +52,7 @@ const INVALID_CHAIN = {
             key: 'mismatchedChainLink',
             props: {
               href:
-                'https://metamask.zendesk.com/hc/en-us/articles/360056196151',
+                'https://metamask.zendesk.com/hc/en-us/articles/360057142392',
               target: '__blank',
               tabIndex: 0,
             },
@@ -152,7 +152,8 @@ function getValues(pendingApproval, t, actions) {
                   children: t('addEthereumChainConfirmationRisksLearnMoreLink'),
                   key: 'addEthereumChainConfirmationRisksLearnMoreLink',
                   props: {
-                    href: '#',
+                    href:
+                      'https://metamask.zendesk.com/hc/en-us/articles/360056196151',
                     target: '__blank',
                   },
                 },
