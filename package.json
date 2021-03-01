@@ -139,6 +139,7 @@
     "json-rpc-engine": "^6.1.0",
     "json-rpc-middleware-stream": "^2.1.1",
     "jsonschema": "^1.2.4",
+    "lavamoat-browserify": "^13.0.3",
     "localforage": "^1.9.0",
     "lodash": "^4.17.19",
     "loglevel": "^1.4.1",
@@ -315,7 +316,8 @@
       "gc-stats": false,
       "github:assemblyscript/assemblyscript": false,
       "tiny-secp256k1": false,
-      "@lavamoat/preinstall-always-fail": false
+      "@lavamoat/preinstall-always-fail": false,
+      "fsevents": false
     }
   }
 }
