@@ -341,7 +341,7 @@ export default class SendTransactionScreen extends Component {
   }
 
   renderAddRecipient() {
-    const { toError } = this.state;
+    const { toError, toWarning } = this.state;
     return (
       <AddRecipient
         updateGas={({ to, amount, data } = {}) =>
@@ -349,6 +349,7 @@ export default class SendTransactionScreen extends Component {
         }
         query={this.state.query}
         toError={toError}
+        toWarning={toWarning}
         setInternalSearch={(internalSearch) =>
           this.setInternalSearch(internalSearch)
         }
