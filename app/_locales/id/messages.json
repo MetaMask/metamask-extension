@@ -1633,9 +1633,6 @@
   "swapEstimatedNetworkFeesInfo": {
     "message": "Ini adalah perkiraan biaya jaringan yang akan digunakan untuk menyelesaikan penukaran Anda. Jumlah aktual dapat berubah sesuai dengan kondisi jaringan."
   },
-  "swapFailedErrorDescription": {
-    "message": "Dana Anda aman dan masih tersedia di dompet Anda."
-  },
   "swapFailedErrorTitle": {
     "message": "Penukaran gagal"
   },

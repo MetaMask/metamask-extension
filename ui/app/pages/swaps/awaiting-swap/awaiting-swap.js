@@ -111,7 +111,17 @@ export default function AwaitingSwap({
     statusImage = <SwapFailureIcon />;
   } else if (errorKey === SWAP_FAILED_ERROR) {
     headerText = t('swapFailedErrorTitle');
-    descriptionText = t('swapFailedErrorDescription');
+    descriptionText = t('swapFailedErrorDescriptionWithSupportLink', [
+      <a
+        className="awaiting-swap__support-link"
+        key="awaiting-swap-support-link"
+        href="https://support.metamask.io"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        support.metamask.io
+      </a>,
+    ]);
     submitText = t('tryAgain');
     statusImage = <SwapFailureIcon />;
     content = blockExplorerUrl && (

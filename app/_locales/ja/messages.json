@@ -1648,9 +1648,6 @@
   "swapEstimatedNetworkFeesInfo": {
     "message": "これは、スワップを完了するために使用されるネットワーク手数料の推定値です。実際の額はネットワークの状態によって変わる可能性があります。"
   },
-  "swapFailedErrorDescription": {
-    "message": "資金はウォレットに安全で利用可能な状態にあります。"
-  },
   "swapFailedErrorTitle": {
     "message": "スワップに失敗しました"
   },
