@@ -1633,9 +1633,6 @@
   "swapEstimatedNetworkFeesInfo": {
     "message": "Đây là giá trị ước tính của phí mạng sẽ dùng để hoàn thành giao dịch hoán đổi của bạn. Số tiền thực tế có thể thay đổi tùy theo tình trạng mạng."
   },
-  "swapFailedErrorDescription": {
-    "message": "Tiền của bạn an toàn và vẫn có trong ví của bạn."
-  },
   "swapFailedErrorTitle": {
     "message": "Hoán đổi không thành công"
   },

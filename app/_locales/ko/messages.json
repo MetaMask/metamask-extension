@@ -1633,9 +1633,6 @@
   "swapEstimatedNetworkFeesInfo": {
     "message": "스왑을 완료하는 데 사용할 네트워크 요금 예상치입니다. 실제 금액은 네트워크 조건에 따라 달라질 수 있습니다."
   },
-  "swapFailedErrorDescription": {
-    "message": "자금은 안전하며 지갑에서 계속 사용할 수 있습니다."
-  },
   "swapFailedErrorTitle": {
     "message": "스왑 실패"
   },

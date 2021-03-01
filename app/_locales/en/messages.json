@@ -1712,8 +1712,9 @@
   "swapEstimatedNetworkFeesInfo": {
     "message": "This is an estimate of the network fee that will be used to complete your swap. The actual amount may change according to network conditions."
   },
-  "swapFailedErrorDescription": {
-    "message": "Your funds are safe and still available in your wallet."
+  "swapFailedErrorDescriptionWithSupportLink": {
+    "message": "Transaction failures happen and we are here to help. If this issue persists, you can reach our customer support at $1 for further assistance.",
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
   "swapFailedErrorTitle": {
     "message": "Swap failed"

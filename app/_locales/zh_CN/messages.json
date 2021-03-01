@@ -1648,9 +1648,6 @@
   "swapEstimatedNetworkFeesInfo": {
     "message": "这是预估的用于完成您的兑换所使用的网络手续费。实际数额可能会根据网络条件而变化。"
   },
-  "swapFailedErrorDescription": {
-    "message": "您的资金是安全的，仍然可以在您的钱包中使用。"
-  },
   "swapFailedErrorTitle": {
     "message": "兑换失败"
   },

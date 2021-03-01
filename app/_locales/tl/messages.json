@@ -1633,9 +1633,6 @@
   "swapEstimatedNetworkFeesInfo": {
     "message": "Ito ay pagtatantya ng bayarin sa network na gagamitin para kumpletuhin ang iyong pag-swap. Maaaring magbago ang aktuwal na halaga ayon sa mga kundisyon ng network."
   },
-  "swapFailedErrorDescription": {
-    "message": "Ang iyong pondo ay ligtas at available pa rin sa iyong wallet."
-  },
   "swapFailedErrorTitle": {
     "message": "Hindi matagumpay ang pag-swap"
   },
