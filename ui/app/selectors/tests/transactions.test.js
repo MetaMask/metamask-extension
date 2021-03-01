@@ -1,4 +1,8 @@
 import { strict as assert } from 'assert';
+import {
+  KOVAN_CHAIN_ID,
+  MAINNET_CHAIN_ID,
+} from '../../../../shared/constants/network';
 import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
 import {
   unapprovedMessagesSelector,
@@ -29,6 +33,9 @@ describe('Transaction Selectors', function () {
           unapprovedMsgs: {
             1: msg,
           },
+          provider: {
+            chainId: KOVAN_CHAIN_ID,
+          },
         },
       };
 
@@ -55,6 +62,9 @@ describe('Transaction Selectors', function () {
         metamask: {
           unapprovedPersonalMsgs: {
             1: msg,
+          },
+          provider: {
+            chainId: KOVAN_CHAIN_ID,
           },
         },
       };
@@ -84,6 +94,9 @@ describe('Transaction Selectors', function () {
           unapprovedTypedMessages: {
             1: msg,
           },
+          provider: {
+            chainId: KOVAN_CHAIN_ID,
+          },
         },
       };
 
@@ -100,6 +113,7 @@ describe('Transaction Selectors', function () {
         metamask: {
           provider: {
             nickname: 'mainnet',
+            chainId: MAINNET_CHAIN_ID,
           },
           featureFlags: {
             showIncomingTransactions: false,
@@ -163,6 +177,7 @@ describe('Transaction Selectors', function () {
         metamask: {
           provider: {
             nickname: 'mainnet',
+            chainId: MAINNET_CHAIN_ID,
           },
           selectedAddress: '0xAddress',
           featureFlags: {
@@ -247,6 +262,7 @@ describe('Transaction Selectors', function () {
       metamask: {
         provider: {
           nickname: 'mainnet',
+          chainId: MAINNET_CHAIN_ID,
         },
         selectedAddress: '0xAddress',
         featureFlags: {

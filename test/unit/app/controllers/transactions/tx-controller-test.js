@@ -864,6 +864,7 @@ describe('Transaction Controller', function () {
           return '0xee6b2800';
         },
         networkStore: new ObservableStore(currentNetworkId),
+        getCurrentChainId: () => currentChainId,
         txHistoryLimit: 10,
         blockTracker: _blockTrackerStub,
         signTransaction: (ethTx) =>
@@ -903,6 +904,7 @@ describe('Transaction Controller', function () {
           return '0xee6b2800';
         },
         networkStore: new ObservableStore(currentNetworkId),
+        getCurrentChainId: () => currentChainId,
         txHistoryLimit: 10,
         blockTracker: _blockTrackerStub,
         signTransaction: (ethTx) =>

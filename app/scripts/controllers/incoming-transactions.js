@@ -283,6 +283,7 @@ export default class IncomingTransactionsController {
     return {
       blockNumber: txMeta.blockNumber,
       id: createId(),
+      chainId,
       metamaskNetworkId: CHAIN_ID_TO_NETWORK_ID_MAP[chainId],
       status,
       time,
