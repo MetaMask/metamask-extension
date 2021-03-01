@@ -1,4 +1,9 @@
 import assert from 'assert';
+import {
+  KOVAN_CHAIN_ID,
+  KOVAN_NETWORK_ID,
+  MAINNET_CHAIN_ID,
+} from '../../../../shared/constants/network';
 import { TRANSACTION_CATEGORIES } from '../../../../shared/constants/transaction';
 import {
   unconfirmedTransactionsCountSelector,
@@ -22,16 +27,19 @@ describe('Confirm Transaction Selector', function () {
       metamask: {
         unapprovedTxs: {
           1: {
-            metamaskNetworkId: 'test',
+            metamaskNetworkId: KOVAN_NETWORK_ID,
           },
           2: {
-            metmaskNetworkId: 'other network',
+            chainId: MAINNET_CHAIN_ID,
           },
         },
         unapprovedMsgCount: 1,
         unapprovedPersonalMsgCount: 1,
         unapprovedTypedMessagesCount: 1,
-        network: 'test',
+        network: KOVAN_NETWORK_ID,
+        provider: {
+          chainId: KOVAN_CHAIN_ID,
+        },
       },
     };
 

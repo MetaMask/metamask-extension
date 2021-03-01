@@ -148,7 +148,7 @@ export default function ViewQuote() {
 
   const gasTotalInWeiHex = calcGasTotal(maxGasLimit, gasPrice);
 
-  const { tokensWithBalances } = useTokenTracker(swapsTokens);
+  const { tokensWithBalances } = useTokenTracker(swapsTokens, true);
   const swapsEthToken = useSwapsEthToken();
   const balanceToken =
     fetchParamsSourceToken === swapsEthToken.address
@@ -164,6 +164,8 @@ export default function ViewQuote() {
       selectedFromToken.balance || '0x0',
       selectedFromToken.decimals,
     ).toFixed(9);
+  const tokenBalanceUnavailable =
+    tokensWithBalances && balanceToken === undefined;
 
   const approveData = getTokenData(approveTxParams?.data);
   const approveValue = approveData && getTokenValueParam(approveData);
@@ -473,14 +475,16 @@ export default function ViewQuote() {
     </span>
   );
 
-  const actionableInsufficientMessage = t('swapApproveNeedMoreTokens', [
-    <span key="swapApproveNeedMoreTokens-1" className="view-quote__bold">
-      {tokenBalanceNeeded || ethBalanceNeeded}
-    </span>,
-    tokenBalanceNeeded && !(sourceTokenSymbol === 'ETH')
-      ? sourceTokenSymbol
-      : 'ETH',
-  ]);
+  const actionableBalanceErrorMessage = tokenBalanceUnavailable
+    ? t('swapTokenBalanceUnavailable', [sourceTokenSymbol])
+    : t('swapApproveNeedMoreTokens', [
+        <span key="swapApproveNeedMoreTokens-1" className="view-quote__bold">
+          {tokenBalanceNeeded || ethBalanceNeeded}
+        </span>,
+        tokenBalanceNeeded && !(sourceTokenSymbol === 'ETH')
+          ? sourceTokenSymbol
+          : 'ETH',
+      ]);
 
   // Price difference warning
   const priceSlippageBucket = usedQuote?.priceSlippage?.bucket;
@@ -506,7 +510,7 @@ export default function ViewQuote() {
     usedQuote?.priceSlippage?.sourceAmountInETH || 0,
   );
   const priceSlippageFromDestination = useEthFiatAmount(
-    usedQuote?.priceSlippage?.destinationAmountInEth || 0,
+    usedQuote?.priceSlippage?.destinationAmountInETH || 0,
   );
 
   // We cannot present fiat value if there is a calculation error or no slippage
@@ -528,6 +532,7 @@ export default function ViewQuote() {
   }
 
   const shouldShowPriceDifferenceWarning =
+    !tokenBalanceUnavailable &&
     !showInsufficientWarning &&
     usedQuote &&
     (priceDifferenceRiskyBuckets.includes(priceSlippageBucket) ||
@@ -580,9 +585,9 @@ export default function ViewQuote() {
           })}
         >
           {viewQuotePriceDifferenceComponent}
-          {showInsufficientWarning && (
+          {(showInsufficientWarning || tokenBalanceUnavailable) && (
             <ActionableMessage
-              message={actionableInsufficientMessage}
+              message={actionableBalanceErrorMessage}
               onClose={() => setWarningHidden(true)}
             />
           )}
@@ -661,6 +666,7 @@ export default function ViewQuote() {
         disabled={
           submitClicked ||
           balanceError ||
+          tokenBalanceUnavailable ||
           disableSubmissionDueToPriceWarning ||
           gasPrice === null ||
           gasPrice === undefined

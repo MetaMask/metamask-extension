@@ -112,13 +112,9 @@ export default function LoadingSwapsQuotes({
     // This is to give the user a sense of progress. The callback passed to `setTimeout` updates the quoteCount and therefore causes
     // a new logo to be shown, the fox to look at that logo, the logo bar and aggregator name to update.
 
-    // If loading is complete and all logos + aggregator names have been shown, give the user 1.2 seconds to read the
-    // "Finalizing message" and prepare for the screen change
-    if (quoteCount === numberOfQuotes && loadingComplete) {
-      timeoutLength = 1200;
-    } else if (loadingComplete) {
-      // If loading is complete, but the quoteCount is not, we quickly display the remaining logos/names/fox looks. 0.5s each
-      timeoutLength = 500;
+    if (loadingComplete) {
+      // If loading is complete, but the quoteCount is not, we quickly display the remaining logos/names/fox looks. 0.2s each
+      timeoutLength = 200;
     } else {
       // If loading is not complete, we display remaining logos/names/fox looks at random intervals between 0.5s and 2s, to simulate the
       // sort of loading a user would experience in most async scenarios

@@ -14,9 +14,10 @@ export default class Tooltip extends PureComponent {
     offset: 0,
     size: 'small',
     title: null,
-    trigger: 'mouseenter',
+    trigger: 'mouseenter focus',
     wrapperClassName: undefined,
     theme: '',
+    tag: 'div',
   };
 
   static propTypes = {
@@ -35,6 +36,8 @@ export default class Tooltip extends PureComponent {
     wrapperClassName: PropTypes.string,
     style: PropTypes.object,
     theme: PropTypes.string,
+    tabIndex: PropTypes.number,
+    tag: PropTypes.string,
   };
 
   render() {
@@ -54,33 +57,37 @@ export default class Tooltip extends PureComponent {
       wrapperClassName,
       style,
       theme,
+      tabIndex,
+      tag,
     } = this.props;
 
     if (!title && !html) {
       return <div className={wrapperClassName}>{children}</div>;
     }
 
-    return (
-      <div className={wrapperClassName}>
-        <ReactTippy
-          arrow={arrow}
-          className={containerClassName}
-          disabled={disabled}
-          hideOnClick={false}
-          html={html}
-          interactive={interactive}
-          onHidden={onHidden}
-          position={position}
-          size={size}
-          offset={offset}
-          style={style}
-          title={title}
-          trigger={trigger}
-          theme={theme}
-        >
-          {children}
-        </ReactTippy>
-      </div>
+    return React.createElement(
+      tag,
+      { className: wrapperClassName },
+      <ReactTippy
+        arrow={arrow}
+        className={containerClassName}
+        disabled={disabled}
+        hideOnClick={false}
+        html={html}
+        interactive={interactive}
+        onHidden={onHidden}
+        position={position}
+        size={size}
+        offset={offset}
+        style={style}
+        title={title}
+        trigger={trigger}
+        theme={theme}
+        tabIndex={tabIndex || 0}
+        tag={tag}
+      >
+        {children}
+      </ReactTippy>,
     );
   }
 }

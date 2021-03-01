@@ -350,9 +350,6 @@
   "seedPhraseReq": {
     "message": "klíčové fráze mají 12 slov"
   },
-  "selectCurrency": {
-    "message": "Vybrat měnu"
-  },
   "selectType": {
     "message": "Vybrat typ"
   },

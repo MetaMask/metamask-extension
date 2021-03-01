@@ -29,35 +29,27 @@
     overflow: auto;
     padding-left: 12px;
     padding-right: 12px;
-    width: 360px;
 
     @media screen and (min-width: 576px) {
       width: auto;
     }
   }
 
-  &__type-title {
-    @include H6;
-
-    margin-left: 12px;
-    margin-top: 6px;
-    margin-bottom: 10px;
-  }
-
   &--node,
   &--node-leaf {
-    padding-left: 0.8rem;
+    padding-left: 0.3rem;
 
     &-label {
       color: #5b5d67;
+      margin-left: 0.5rem;
     }
 
     &-value {
       color: black;
       margin-left: 0.5rem;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      white-space: pre-line;
       overflow: hidden;
+      word-wrap: break-word;
     }
   }
 

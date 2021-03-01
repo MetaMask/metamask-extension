@@ -922,17 +922,11 @@
   "selectAnAccountHelp": {
     "message": "Izaberite nalog za prikaz u MetaMask-u"
   },
-  "selectCurrency": {
-    "message": "Izaberite valutu"
-  },
   "selectEachPhrase": {
     "message": "Molimo vas izaberite svaki izraz kako biste proverili da je tačan."
   },
   "selectHdPath": {
     "message": "Izaberite HD Path"
-  },
-  "selectLocale": {
-    "message": "Izaberite lokalni standard"
   },
   "selectPathHelp": {
     "message": "Ako ne vidite svoje postojeće Ledger naloge dole, pokušajte prebaciti putanje na „Legacy (MEW / MyCrypto)”"

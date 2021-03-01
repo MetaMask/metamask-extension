@@ -1,13 +1,16 @@
 import { stripHexPrefix } from 'ethereumjs-util';
 import { createSelector } from 'reselect';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
-import { MAINNET, NETWORK_TYPE_RPC } from '../../../shared/constants/network';
+import {
+  MAINNET_CHAIN_ID,
+  TEST_CHAINS,
+  NETWORK_TYPE_RPC,
+} from '../../../shared/constants/network';
 import {
   shortenAddress,
   checksumAddress,
   getAccountByAddress,
 } from '../helpers/utils/util';
-import { getPermissionsRequestCount } from './permissions';
 
 export function getNetworkIdentifier(state) {
   const {
@@ -255,6 +258,7 @@ export function getTotalUnapprovedCount(state) {
     unapprovedDecryptMsgCount = 0,
     unapprovedEncryptionPublicKeyMsgCount = 0,
     unapprovedTypedMessagesCount = 0,
+    pendingApprovalCount = 0,
   } = state.metamask;
 
   return (
@@ -264,7 +268,7 @@ export function getTotalUnapprovedCount(state) {
     unapprovedEncryptionPublicKeyMsgCount +
     unapprovedTypedMessagesCount +
     getUnapprovedTxCount(state) +
-    getPermissionsRequestCount(state) +
+    pendingApprovalCount +
     getSuggestedTokenCount(state)
   );
 }
@@ -274,14 +278,24 @@ function getUnapprovedTxCount(state) {
   return Object.keys(unapprovedTxs).length;
 }
 
+export function getUnapprovedConfirmations(state) {
+  const { pendingApprovals } = state.metamask;
+  return Object.values(pendingApprovals);
+}
+
 function getSuggestedTokenCount(state) {
   const { suggestedTokens = {} } = state.metamask;
   return Object.keys(suggestedTokens).length;
 }
 
 export function getIsMainnet(state) {
-  const networkType = getNetworkIdentifier(state);
-  return networkType === MAINNET;
+  const chainId = getCurrentChainId(state);
+  return chainId === MAINNET_CHAIN_ID;
+}
+
+export function getIsTestnet(state) {
+  const chainId = getCurrentChainId(state);
+  return TEST_CHAINS.includes(chainId);
 }
 
 export function getPreferences({ metamask }) {

@@ -918,17 +918,11 @@
   "selectAnAccountHelp": {
     "message": "Selectați contul de vizualizat în MetaMask"
   },
-  "selectCurrency": {
-    "message": "Selectați moneda"
-  },
   "selectEachPhrase": {
     "message": "Vă rugăm să selectați fiecare expresie pentru a vă asigura că este corectă."
   },
   "selectHdPath": {
     "message": "Selectare cale HD"
-  },
-  "selectLocale": {
-    "message": "Alegeți setările regionale"
   },
   "selectPathHelp": {
     "message": "Dacă nu vedeți mai jos conturile dvs. Ledger existente, încercați să comutați calea la „Legacy (MEW / MyCrypto)”"

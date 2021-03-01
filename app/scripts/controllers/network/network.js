@@ -21,7 +21,7 @@ import {
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
-} from '../../../../shared/modules/utils';
+} from '../../../../shared/modules/network.utils';
 import createMetamaskMiddleware from './createMetamaskMiddleware';
 import createInfuraClient from './createInfuraClient';
 import createJsonRpcClient from './createJsonRpcClient';
@@ -45,6 +45,13 @@ if (process.env.IN_TEST === 'true') {
 const defaultProviderConfig = {
   ticker: 'ETH',
   ...defaultProviderConfigOpts,
+};
+
+export const NETWORK_EVENTS = {
+  // Fired after the actively selected network is changed
+  NETWORK_DID_CHANGE: 'networkDidChange',
+  // Fired when the actively selected network *will* change
+  NETWORK_WILL_CHANGE: 'networkWillChange',
 };
 
 export default class NetworkController extends EventEmitter {
@@ -73,7 +80,7 @@ export default class NetworkController extends EventEmitter {
     this._providerProxy = null;
     this._blockTrackerProxy = null;
 
-    this.on('networkDidChange', this.lookupNetwork);
+    this.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, this.lookupNetwork);
   }
 
   /**
@@ -229,9 +236,10 @@ export default class NetworkController extends EventEmitter {
   //
 
   _switchNetwork(opts) {
+    this.emit(NETWORK_EVENTS.NETWORK_WILL_CHANGE);
     this.setNetworkState('loading');
     this._configureProvider(opts);
-    this.emit('networkDidChange', opts.type);
+    this.emit(NETWORK_EVENTS.NETWORK_DID_CHANGE, opts.type);
   }
 
   _configureProvider({ type, rpcUrl, chainId }) {

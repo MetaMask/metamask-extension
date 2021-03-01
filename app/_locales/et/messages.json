@@ -921,17 +921,11 @@
   "selectAnAccountHelp": {
     "message": "Valige konto, mida MetaMaskis vaadata"
   },
-  "selectCurrency": {
-    "message": "Valitud valuuta"
-  },
   "selectEachPhrase": {
     "message": "Valige iga fraas, veendumaks, et see on õige."
   },
   "selectHdPath": {
     "message": "Valige HD-teekond"
-  },
-  "selectLocale": {
-    "message": "Valige Lokaat"
   },
   "selectPathHelp": {
     "message": "Kui te ei näe allpool oma olemasolevaid pearaamatu kontosid, vahetage tee kohta \"Legacy (MEW/MyCrypto)\""

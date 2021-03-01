@@ -8,18 +8,10 @@ import AppHeader from './app-header.component';
 const mapStateToProps = (state) => {
   const { appState, metamask } = state;
   const { networkDropdownOpen } = appState;
-  const {
-    network,
-    provider,
-    selectedAddress,
-    isUnlocked,
-    isAccountMenuOpen,
-  } = metamask;
+  const { selectedAddress, isUnlocked, isAccountMenuOpen } = metamask;
 
   return {
     networkDropdownOpen,
-    network,
-    provider,
     selectedAddress,
     isUnlocked,
     isAccountMenuOpen,

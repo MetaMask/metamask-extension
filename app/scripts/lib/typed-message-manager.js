@@ -7,6 +7,7 @@ import { isValidAddress } from 'ethereumjs-util';
 import log from 'loglevel';
 import jsonschema from 'jsonschema';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
+import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import createId from './random-id';
 
 /**
@@ -313,6 +314,14 @@ export default class TypedMessageManager extends EventEmitter {
     this._setMsgStatus(msgId, 'errored');
   }
 
+  /**
+   * Clears all unapproved messages from memory.
+   */
+  clearUnapproved() {
+    this.messages = this.messages.filter((msg) => msg.status !== 'unapproved');
+    this._saveMsgList();
+  }
+
   //
   // PRIVATE METHODS
   //
@@ -377,6 +386,6 @@ export default class TypedMessageManager extends EventEmitter {
       unapprovedTypedMessages,
       unapprovedTypedMessagesCount,
     });
-    this.emit('updateBadge');
+    this.emit(METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE);
   }
 }

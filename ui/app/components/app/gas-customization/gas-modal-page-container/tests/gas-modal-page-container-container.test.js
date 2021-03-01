@@ -19,10 +19,6 @@ const gasActionSpies = {
   resetCustomData: sinon.spy(),
 };
 
-const confirmTransactionActionSpies = {
-  updateGasAndCalculate: sinon.spy(),
-};
-
 const sendActionSpies = {
   hideGasButtonGroup: sinon.spy(),
 };
@@ -48,7 +44,6 @@ proxyquire('../gas-modal-page-container.container.js', {
   },
   '../../../../store/actions': actionSpies,
   '../../../../ducks/gas/gas.duck': gasActionSpies,
-  '../../../../ducks/confirm-transaction/confirm-transaction.duck': confirmTransactionActionSpies,
   '../../../../ducks/send/send.duck': sendActionSpies,
 });
 
@@ -83,6 +78,7 @@ describe('gas-modal-page-container container', function () {
           },
           provider: {
             type: 'mainnet',
+            chainId: '0x1',
           },
           currentNetworkTxList: [
             {
@@ -205,6 +201,7 @@ describe('gas-modal-page-container container', function () {
               provider: {
                 ...baseMockState.metamask.provider,
                 type: 'rinkeby',
+                chainId: '0x4',
               },
             },
           },
@@ -230,6 +227,7 @@ describe('gas-modal-page-container container', function () {
               provider: {
                 ...baseMockState.metamask.provider,
                 type: 'rinkeby',
+                chainId: '0x4',
               },
             },
           },
@@ -251,6 +249,7 @@ describe('gas-modal-page-container container', function () {
               provider: {
                 ...baseMockState.metamask.provider,
                 type: 'mainnet',
+                chainId: '0x1',
               },
             },
           },

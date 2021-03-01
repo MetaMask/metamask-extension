@@ -894,17 +894,11 @@
   "selectAnAccountHelp": {
     "message": "Vyberte účet, ktorý chcete zobraziť v MetaMask"
   },
-  "selectCurrency": {
-    "message": "Vybrat měnu"
-  },
   "selectEachPhrase": {
     "message": "Vyberte každú frázu, aby ste sa uistili, že je správna."
   },
   "selectHdPath": {
     "message": "Vyberte cestu HD"
-  },
-  "selectLocale": {
-    "message": "Vybrať miestne nastavenia"
   },
   "selectPathHelp": {
     "message": "Ak nevidíte svoje existujúce účty v Hlavnej knihe dole, skúste prepnúť cesty na „Odkaz (MEW/MyCrypto)“"

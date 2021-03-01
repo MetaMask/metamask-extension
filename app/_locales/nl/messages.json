@@ -56,7 +56,7 @@
     "message": "Contractimplementatie"
   },
   "copiedExclamation": {
-    "message": "Gekopieerde!"
+    "message": "Gekopieerd!"
   },
   "copyPrivateKey": {
     "message": "Dit is uw privésleutel (klik om te kopiëren)"
@@ -163,7 +163,7 @@
     "message": " Geïmporteerde accounts worden niet gekoppeld aan de seedphrase van uw oorspronkelijk gemaakte MetaMask-account. Meer informatie over geïmporteerde accounts"
   },
   "imported": {
-    "message": "geïmporteerde",
+    "message": "geïmporteerd",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
   "infoHelp": {
@@ -316,9 +316,6 @@
   },
   "seedPhraseReq": {
     "message": "Back-up woorden zijn 12 woorden lang"
-  },
-  "selectCurrency": {
-    "message": "selecteer valuta"
   },
   "selectType": {
     "message": "Selecteer type"

@@ -13,7 +13,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px;
-  height: 54px;
+  height: 64px;
 }
 
 .asset-breadcrumb {
@@ -41,8 +41,6 @@
   }
 
   &__icon {
-    @include Paragraph;
-
     font-weight: 900;
   }
 }

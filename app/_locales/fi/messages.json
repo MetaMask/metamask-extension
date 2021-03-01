@@ -928,17 +928,11 @@
   "selectAnAccountHelp": {
     "message": "Valitse MetaMaskissa näytettävä tili"
   },
-  "selectCurrency": {
-    "message": "Valitse valuutta"
-  },
   "selectEachPhrase": {
     "message": "Ole hyvä ja valitse jokainen teksti järjestyksessä varmistaaksesi, että se on oikein."
   },
   "selectHdPath": {
     "message": "Valitse HD-polku"
-  },
-  "selectLocale": {
-    "message": "Valitse kielialue"
   },
   "selectPathHelp": {
     "message": "Jos et näe nykyisiä Ledger-tilejäsi tämän alla, koeta vaihtaa poluksi ”Vanha (MEW / MyCrypto)”"

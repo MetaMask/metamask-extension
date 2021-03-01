@@ -2,6 +2,41 @@
 
 ## Current Develop Branch
 
+## 9.1.0 Mon Mar 01 2021
+- [#10265](https://github.com/MetaMask/metamask-extension/pull/10265): Update Japanese translations.
+- [#9388](https://github.com/MetaMask/metamask-extension/pull/9388): Update Chinese(Simplified) translations.
+- [#10270](https://github.com/MetaMask/metamask-extension/pull/10270): Update Vietnamese translations.
+- [#10258](https://github.com/MetaMask/metamask-extension/pull/10258): Update Spanish and Spanish(Latin American and Carribean) translations.
+- [#10268](https://github.com/MetaMask/metamask-extension/pull/10268): Update Russian translations.
+- [#10269](https://github.com/MetaMask/metamask-extension/pull/10269): Update Tagalog localized messages.
+- [#10448](https://github.com/MetaMask/metamask-extension/pull/10448): Fix 'imported' translation use case for Dutch.
+- [#10391](https://github.com/MetaMask/metamask-extension/pull/10391): Use translated transaction category for confirmations.
+- [#10357](https://github.com/MetaMask/metamask-extension/pull/10357): Cancel unapproved confirmations on network change
+- [#10413](https://github.com/MetaMask/metamask-extension/pull/10413): Use native currency in asset row.
+- [#10421](https://github.com/MetaMask/metamask-extension/pull/10421): Fix color indicator size on connected site indicator.
+- [#10423](https://github.com/MetaMask/metamask-extension/pull/10423): Fix multiple notification window prompts.
+- [#10424](https://github.com/MetaMask/metamask-extension/pull/10424): Fix icons on token options menu.
+- [#10414](https://github.com/MetaMask/metamask-extension/pull/10414): Fix token fiat conversion rates when switching from certain custom networks.
+- [#10453](https://github.com/MetaMask/metamask-extension/pull/10453): Disable BUY button from home screen when not on Ethereum Mainnet.
+- [#10465](https://github.com/MetaMask/metamask-extension/pull/10465): Fixes gas selection check mark on the notification view.
+- [#10467](https://github.com/MetaMask/metamask-extension/pull/10467): Fix confirm page header with from/to addresses in fullscreen for tx confirmations.
+- [#10455](https://github.com/MetaMask/metamask-extension/pull/10455): Hide links to etherscan when no block explorer is specified for a custom network for notifications.
+- [#10456](https://github.com/MetaMask/metamask-extension/pull/10456): Fix swap insufficient balance error message.
+- [#10350](https://github.com/MetaMask/metamask-extension/pull/10350): Fix encypt/decrypt tx queueing.
+- [#10473](https://github.com/MetaMask/metamask-extension/pull/10473): Improve autofocus in the add network form.
+- [#10444](https://github.com/MetaMask/metamask-extension/pull/10444): Use eth_gasprice for tx gas price estimation on non-Mainnet networks.
+- [#10477](https://github.com/MetaMask/metamask-extension/pull/10477): Fix accountsChanged event not triggering when manually connecting.
+- [#10471](https://github.com/MetaMask/metamask-extension/pull/10471): Fix navigation from jumping vertically when clicking into token.
+- [#9724](https://github.com/MetaMask/metamask-extension/pull/9724): Add custom network RPC method.
+- [#10496](https://github.com/MetaMask/metamask-extension/pull/10496): Eliminate artificial delay in swaps loading screen after request loading is complete.
+- [#10501](https://github.com/MetaMask/metamask-extension/pull/10501): Ensure that swap approve tx and swap tx always have the same gas price.
+- [#10485](https://github.com/MetaMask/metamask-extension/pull/10485): Fixes signTypedData message overflow.
+- [#10525](https://github.com/MetaMask/metamask-extension/pull/10525): Update swaps failure message to include a support link.
+- [#10521](https://github.com/MetaMask/metamask-extension/pull/10521): Accommodate for 0 sources verifying swap token
+- [#10530](https://github.com/MetaMask/metamask-extension/pull/10530): Show warnings on Add Recipient page of Send flow
+- [#9187](https://github.com/MetaMask/metamask-extension/pull/9187): Warn users when an ENS name contains 'confusable' characters
+- [#10507](https://github.com/MetaMask/metamask-extension/pull/10507): Fixes ENS IPFS resolution on custom networks with the chainID of 1.
+
 ## 9.0.5 Mon Feb 08 2021
 - [#10278](https://github.com/MetaMask/metamask-extension/pull/10278): Allow editing transaction amount after clicking max
 - [#10214](https://github.com/MetaMask/metamask-extension/pull/10214): Standardize size, shape and color of network color indicators
@@ -19,6 +54,7 @@
 
 ## 9.0.4 Fri Jan 22 2021
 - [#10285](https://github.com/MetaMask/metamask-extension/pull/10285): Update @metamask/contract-metadata from v1.21.0 to 1.22.0
+- [#10264](https://github.com/MetaMask/metamask-extension/pull/10264): Update `hi` localized messages
 - [#10174](https://github.com/MetaMask/metamask-extension/pull/10174): Move fox to bottom of 'About' page
 - [#10198](https://github.com/MetaMask/metamask-extension/pull/10198): Fix hardware account selection
 - [#10101](https://github.com/MetaMask/metamask-extension/pull/10101): Add a timeout to all network requests

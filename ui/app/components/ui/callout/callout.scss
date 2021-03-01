@@ -9,6 +9,10 @@
   grid-template-rows: 1fr;
   transition: opacity 0.75s 0s;
 
+  a {
+    color: $primary-1;
+  }
+
   &--dismissible {
     &#{$self}--first {
       box-shadow: 0 -5px 5px -5px rgba(0, 0, 0, 0.18);

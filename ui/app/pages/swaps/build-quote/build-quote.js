@@ -113,7 +113,7 @@ export default function BuildQuote({
   const toTokenIsNotEth =
     selectedToToken?.address &&
     selectedToToken?.address !== ETH_SWAPS_TOKEN_OBJECT.address;
-
+  const occurances = Number(selectedToToken?.occurances || 0);
   const {
     address: fromTokenAddress,
     symbol: fromTokenSymbol,
@@ -376,12 +376,14 @@ export default function BuildQuote({
           />
         </div>
         {toTokenIsNotEth &&
-          (selectedToToken.occurances === 1 ? (
+          (occurances < 2 ? (
             <ActionableMessage
               message={
                 <div className="build-quote__token-verification-warning-message">
                   <div className="build-quote__bold">
-                    {t('swapTokenVerificationOnlyOneSource')}
+                    {occurances === 1
+                      ? t('swapTokenVerificationOnlyOneSource')
+                      : t('swapTokenVerificationNoSource')}
                   </div>
                   <div>
                     {t('verifyThisTokenOn', [
@@ -416,9 +418,7 @@ export default function BuildQuote({
                 className="build-quote__bold"
                 key="token-verification-bold-text"
               >
-                {t('swapTokenVerificationSources', [
-                  selectedToToken.occurances,
-                ])}
+                {t('swapTokenVerificationSources', [occurances])}
               </span>
               {t('swapTokenVerificationMessage', [
                 <a
@@ -465,9 +465,7 @@ export default function BuildQuote({
           !selectedToToken?.address ||
           Number(maxSlippage) === 0 ||
           Number(maxSlippage) > MAX_ALLOWED_SLIPPAGE ||
-          (toTokenIsNotEth &&
-            selectedToToken.occurances === 1 &&
-            !verificationClicked)
+          (toTokenIsNotEth && occurances < 2 && !verificationClicked)
         }
         hideCancel
         showTermsOfService

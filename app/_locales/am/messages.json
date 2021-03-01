@@ -928,17 +928,11 @@
   "selectAnAccountHelp": {
     "message": "መለያውን በ MetaMask ለማየት ይምረጡ"
   },
-  "selectCurrency": {
-    "message": "የገንዘብ ዓይነት ይምረጡ"
-  },
   "selectEachPhrase": {
     "message": "እባክዎ እያንዳንዱን ሐረግ በመምረጥ ትክክለኛነቱን ያረጋግጡ።"
   },
   "selectHdPath": {
     "message": "የ HD ዱካ ይምረጡ"
-  },
-  "selectLocale": {
-    "message": "አካባቢ ይምረጡ"
   },
   "selectPathHelp": {
     "message": "ነባር የሌጄር መለያዎችን ከታች ካላዩ፣ ዱካዎችን ወደ \"Legacy (MEW / MyCrypto)\" ለመቀየር ይሞክሩ"

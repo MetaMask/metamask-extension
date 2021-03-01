@@ -3,20 +3,16 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import sinon from 'sinon';
 import {
-  TRANSACTION_CATEGORIES,
-  TRANSACTION_STATUSES,
-} from '../../../../shared/constants/transaction';
+  ROPSTEN_CHAIN_ID,
+  ROPSTEN_NETWORK_ID,
+} from '../../../../shared/constants/network';
+import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
 
 import ConfirmTransactionReducer, * as actions from './confirm-transaction.duck';
 
 const initialState = {
   txData: {},
   tokenData: {},
-  methodData: {},
-  tokenProps: {
-    tokenDecimals: '',
-    tokenSymbol: '',
-  },
   fiatTransactionAmount: '',
   fiatTransactionFee: '',
   fiatTransactionTotal: '',
@@ -27,28 +23,17 @@ const initialState = {
   hexTransactionFee: '',
   hexTransactionTotal: '',
   nonce: '',
-  toSmartContract: false,
-  fetchingData: false,
 };
 
 const UPDATE_TX_DATA = 'metamask/confirm-transaction/UPDATE_TX_DATA';
-const CLEAR_TX_DATA = 'metamask/confirm-transaction/CLEAR_TX_DATA';
 const UPDATE_TOKEN_DATA = 'metamask/confirm-transaction/UPDATE_TOKEN_DATA';
-const CLEAR_TOKEN_DATA = 'metamask/confirm-transaction/CLEAR_TOKEN_DATA';
-const UPDATE_METHOD_DATA = 'metamask/confirm-transaction/UPDATE_METHOD_DATA';
-const CLEAR_METHOD_DATA = 'metamask/confirm-transaction/CLEAR_METHOD_DATA';
 const UPDATE_TRANSACTION_AMOUNTS =
   'metamask/confirm-transaction/UPDATE_TRANSACTION_AMOUNTS';
 const UPDATE_TRANSACTION_FEES =
   'metamask/confirm-transaction/UPDATE_TRANSACTION_FEES';
 const UPDATE_TRANSACTION_TOTALS =
   'metamask/confirm-transaction/UPDATE_TRANSACTION_TOTALS';
-const UPDATE_TOKEN_PROPS = 'metamask/confirm-transaction/UPDATE_TOKEN_PROPS';
 const UPDATE_NONCE = 'metamask/confirm-transaction/UPDATE_NONCE';
-const UPDATE_TO_SMART_CONTRACT =
-  'metamask/confirm-transaction/UPDATE_TO_SMART_CONTRACT';
-const FETCH_DATA_START = 'metamask/confirm-transaction/FETCH_DATA_START';
-const FETCH_DATA_END = 'metamask/confirm-transaction/FETCH_DATA_END';
 const CLEAR_CONFIRM_TRANSACTION =
   'metamask/confirm-transaction/CLEAR_CONFIRM_TRANSACTION';
 
@@ -61,13 +46,6 @@ describe('Confirm Transaction Duck', function () {
       tokenData: {
         name: 'abcToken',
       },
-      methodData: {
-        name: TRANSACTION_CATEGORIES.TOKEN_METHOD_APPROVE,
-      },
-      tokenProps: {
-        tokenDecimals: '3',
-        tokenSymbol: 'ABC',
-      },
       fiatTransactionAmount: '469.26',
       fiatTransactionFee: '0.01',
       fiatTransactionTotal: '1.000021',
@@ -78,8 +56,6 @@ describe('Confirm Transaction Duck', function () {
       hexTransactionFee: '0x1319718a5000',
       hexTransactionTotal: '',
       nonce: '0x0',
-      toSmartContract: false,
-      fetchingData: false,
     };
 
     it('should initialize state', function () {
@@ -117,18 +93,6 @@ describe('Confirm Transaction Duck', function () {
       );
     });
 
-    it('should clear txData when receiving a CLEAR_TX_DATA action', function () {
-      assert.deepStrictEqual(
-        ConfirmTransactionReducer(mockState, {
-          type: CLEAR_TX_DATA,
-        }),
-        {
-          ...mockState,
-          txData: {},
-        },
-      );
-    });
-
     it('should set tokenData when receiving a UPDATE_TOKEN_DATA action', function () {
       assert.deepStrictEqual(
         ConfirmTransactionReducer(mockState, {
@@ -143,48 +107,6 @@ describe('Confirm Transaction Duck', function () {
             ...mockState.tokenData,
             name: 'defToken',
           },
-        },
-      );
-    });
-
-    it('should clear tokenData when receiving a CLEAR_TOKEN_DATA action', function () {
-      assert.deepStrictEqual(
-        ConfirmTransactionReducer(mockState, {
-          type: CLEAR_TOKEN_DATA,
-        }),
-        {
-          ...mockState,
-          tokenData: {},
-        },
-      );
-    });
-
-    it('should set methodData when receiving a UPDATE_METHOD_DATA action', function () {
-      assert.deepStrictEqual(
-        ConfirmTransactionReducer(mockState, {
-          type: UPDATE_METHOD_DATA,
-          payload: {
-            name: 'transferFrom',
-          },
-        }),
-        {
-          ...mockState,
-          methodData: {
-            ...mockState.methodData,
-            name: 'transferFrom',
-          },
-        },
-      );
-    });
-
-    it('should clear methodData when receiving a CLEAR_METHOD_DATA action', function () {
-      assert.deepStrictEqual(
-        ConfirmTransactionReducer(mockState, {
-          type: CLEAR_METHOD_DATA,
-        }),
-        {
-          ...mockState,
-          methodData: {},
         },
       );
     });
@@ -246,25 +168,6 @@ describe('Confirm Transaction Duck', function () {
       );
     });
 
-    it('should update tokenProps when receiving an UPDATE_TOKEN_PROPS action', function () {
-      assert.deepStrictEqual(
-        ConfirmTransactionReducer(mockState, {
-          type: UPDATE_TOKEN_PROPS,
-          payload: {
-            tokenSymbol: 'DEF',
-            tokenDecimals: '1',
-          },
-        }),
-        {
-          ...mockState,
-          tokenProps: {
-            tokenSymbol: 'DEF',
-            tokenDecimals: '1',
-          },
-        },
-      );
-    });
-
     it('should update nonce when receiving an UPDATE_NONCE action', function () {
       assert.deepStrictEqual(
         ConfirmTransactionReducer(mockState, {
@@ -275,41 +178,6 @@ describe('Confirm Transaction Duck', function () {
           ...mockState,
           nonce: '0x1',
         },
-      );
-    });
-
-    it('should update nonce when receiving an UPDATE_TO_SMART_CONTRACT action', function () {
-      assert.deepStrictEqual(
-        ConfirmTransactionReducer(mockState, {
-          type: UPDATE_TO_SMART_CONTRACT,
-          payload: true,
-        }),
-        {
-          ...mockState,
-          toSmartContract: true,
-        },
-      );
-    });
-
-    it('should set fetchingData to true when receiving a FETCH_DATA_START action', function () {
-      assert.deepStrictEqual(
-        ConfirmTransactionReducer(mockState, {
-          type: FETCH_DATA_START,
-        }),
-        {
-          ...mockState,
-          fetchingData: true,
-        },
-      );
-    });
-
-    it('should set fetchingData to false when receiving a FETCH_DATA_END action', function () {
-      assert.deepStrictEqual(
-        ConfirmTransactionReducer(
-          { fetchingData: true },
-          { type: FETCH_DATA_END },
-        ),
-        { fetchingData: false },
       );
     });
 
@@ -334,14 +202,6 @@ describe('Confirm Transaction Duck', function () {
       assert.deepStrictEqual(actions.updateTxData(txData), expectedAction);
     });
 
-    it('should create an action to clear txData', function () {
-      const expectedAction = {
-        type: CLEAR_TX_DATA,
-      };
-
-      assert.deepStrictEqual(actions.clearTxData(), expectedAction);
-    });
-
     it('should create an action to update tokenData', function () {
       const tokenData = { test: 123 };
       const expectedAction = {
@@ -353,35 +213,6 @@ describe('Confirm Transaction Duck', function () {
         actions.updateTokenData(tokenData),
         expectedAction,
       );
-    });
-
-    it('should create an action to clear tokenData', function () {
-      const expectedAction = {
-        type: CLEAR_TOKEN_DATA,
-      };
-
-      assert.deepStrictEqual(actions.clearTokenData(), expectedAction);
-    });
-
-    it('should create an action to update methodData', function () {
-      const methodData = { test: 123 };
-      const expectedAction = {
-        type: UPDATE_METHOD_DATA,
-        payload: methodData,
-      };
-
-      assert.deepStrictEqual(
-        actions.updateMethodData(methodData),
-        expectedAction,
-      );
-    });
-
-    it('should create an action to clear methodData', function () {
-      const expectedAction = {
-        type: CLEAR_METHOD_DATA,
-      };
-
-      assert.deepStrictEqual(actions.clearMethodData(), expectedAction);
     });
 
     it('should create an action to update transaction amounts', function () {
@@ -423,22 +254,6 @@ describe('Confirm Transaction Duck', function () {
       );
     });
 
-    it('should create an action to update tokenProps', function () {
-      const tokenProps = {
-        tokenDecimals: '1',
-        tokenSymbol: 'abc',
-      };
-      const expectedAction = {
-        type: UPDATE_TOKEN_PROPS,
-        payload: tokenProps,
-      };
-
-      assert.deepStrictEqual(
-        actions.updateTokenProps(tokenProps),
-        expectedAction,
-      );
-    });
-
     it('should create an action to update nonce', function () {
       const nonce = '0x1';
       const expectedAction = {
@@ -447,22 +262,6 @@ describe('Confirm Transaction Duck', function () {
       };
 
       assert.deepStrictEqual(actions.updateNonce(nonce), expectedAction);
-    });
-
-    it('should create an action to set fetchingData to true', function () {
-      const expectedAction = {
-        type: FETCH_DATA_START,
-      };
-
-      assert.deepStrictEqual(actions.setFetchingData(true), expectedAction);
-    });
-
-    it('should create an action to set fetchingData to false', function () {
-      const expectedAction = {
-        type: FETCH_DATA_END,
-      };
-
-      assert.deepStrictEqual(actions.setFetchingData(false), expectedAction);
     });
 
     it('should create an action to clear confirmTransaction', function () {
@@ -489,67 +288,12 @@ describe('Confirm Transaction Duck', function () {
       global.eth.getCode.resetHistory();
     });
 
-    it('updates txData and gas on an existing transaction in confirmTransaction', function () {
-      const mockState = {
-        metamask: {
-          conversionRate: 468.58,
-          currentCurrency: 'usd',
-        },
-        confirmTransaction: {
-          ethTransactionAmount: '1',
-          ethTransactionFee: '0.000021',
-          ethTransactionTotal: '1.000021',
-          fetchingData: false,
-          fiatTransactionAmount: '469.26',
-          fiatTransactionFee: '0.01',
-          fiatTransactionTotal: '469.27',
-          hexGasTotal: '0x1319718a5000',
-          methodData: {},
-          nonce: '',
-          tokenData: {},
-          tokenProps: {
-            tokenDecimals: '',
-            tokenSymbol: '',
-          },
-          txData: {
-            history: [],
-            id: 2603411941761054,
-            loadingDefaults: false,
-            metamaskNetworkId: '3',
-            origin: 'faucet.metamask.io',
-            status: TRANSACTION_STATUSES.UNAPPROVED,
-            time: 1530838113716,
-          },
-        },
-      };
-
-      const middlewares = [thunk];
-      const mockStore = configureMockStore(middlewares);
-      const store = mockStore(mockState);
-      const expectedActions = [
-        'metamask/confirm-transaction/UPDATE_TX_DATA',
-        'metamask/confirm-transaction/UPDATE_TRANSACTION_AMOUNTS',
-        'metamask/confirm-transaction/UPDATE_TRANSACTION_FEES',
-        'metamask/confirm-transaction/UPDATE_TRANSACTION_TOTALS',
-      ];
-
-      store.dispatch(
-        actions.updateGasAndCalculate({ gasLimit: '0x2', gasPrice: '0x25' }),
-      );
-
-      const storeActions = store.getActions();
-      assert.strictEqual(storeActions.length, expectedActions.length);
-      storeActions.forEach((action, index) =>
-        assert.strictEqual(action.type, expectedActions[index]),
-      );
-    });
-
     it('updates txData and updates gas values in confirmTransaction', function () {
       const txData = {
         history: [],
         id: 2603411941761054,
         loadingDefaults: false,
-        metamaskNetworkId: '3',
+        metamaskNetworkId: ROPSTEN_NETWORK_ID,
         origin: 'faucet.metamask.io',
         status: TRANSACTION_STATUSES.UNAPPROVED,
         time: 1530838113716,
@@ -615,13 +359,16 @@ describe('Confirm Transaction Duck', function () {
         metamask: {
           conversionRate: 468.58,
           currentCurrency: 'usd',
-          network: '3',
+          network: ROPSTEN_NETWORK_ID,
+          provider: {
+            chainId: ROPSTEN_CHAIN_ID,
+          },
           unapprovedTxs: {
             2603411941761054: {
               history: [],
               id: 2603411941761054,
               loadingDefaults: false,
-              metamaskNetworkId: '3',
+              metamaskNetworkId: ROPSTEN_NETWORK_ID,
               origin: 'faucet.metamask.io',
               status: TRANSACTION_STATUSES.UNAPPROVED,
               time: 1530838113716,

@@ -913,17 +913,11 @@
   "selectAnAccountHelp": {
     "message": "Izberi račun za prikaz v MetaMask"
   },
-  "selectCurrency": {
-    "message": "Izberi valuto"
-  },
   "selectEachPhrase": {
     "message": "Izberite vsako geslo ter se prepričajte, da je pravilno."
   },
   "selectHdPath": {
     "message": "Izberi HD Path"
-  },
-  "selectLocale": {
-    "message": "Izberi jezik"
   },
   "selectPathHelp": {
     "message": "Če obstoječih Ledger ne vidite, poskusite izbrati \"Legacy (MEW / MyCrypto)\""

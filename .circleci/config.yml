@@ -26,6 +26,13 @@ workflows:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
       - prep-deps
       - test-deps
+      - validate-lavamoat-config:
+          filters:
+            branches:
+              only:
+                - /^Version-v(\d+)[.](\d+)[.](\d+)|master/
+          requires:
+            - prep-deps
       - prep-build:
           requires:
             - prep-deps
@@ -72,6 +79,7 @@ workflows:
             - prep-build
       - all-tests-pass:
           requires:
+            - validate-lavamoat-config
             - test-lint
             - test-lint-shellcheck
             - test-lint-lockfile
@@ -118,9 +126,9 @@ jobs:
       - run:
           name: Create GitHub Pull Request for version
           command: |
-            .circleci/scripts/release-bump-changelog-version
-            .circleci/scripts/release-bump-manifest-version
-            .circleci/scripts/release-create-release-pr
+            .circleci/scripts/release-bump-changelog-version.sh
+            .circleci/scripts/release-bump-manifest-version.sh
+            .circleci/scripts/release-create-release-pr.sh
 
   prep-deps:
     executor: node-browsers
@@ -142,6 +150,21 @@ jobs:
           paths:
           - node_modules
           - build-artifacts
+
+  validate-lavamoat-config:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Validate allow-scripts config
+          command: |
+            .circleci/scripts/validate-allow-scripts.sh
+      - run:
+          name: Validate LavaMoat policy
+          command: |
+            .circleci/scripts/validate-lavamoat-policy.sh
 
   prep-build:
     executor: node-browsers-medium-plus
@@ -257,7 +280,7 @@ jobs:
           at: .
       - run:
           name: yarn audit
-          command: .circleci/scripts/yarn-audit
+          command: .circleci/scripts/yarn-audit.sh
 
   test-e2e-chrome:
     executor: node-browsers
@@ -277,7 +300,7 @@ jobs:
       - run:
           name: test:e2e:chrome
           command: |
-            if .circleci/scripts/test-run-e2e
+            if .circleci/scripts/test-run-e2e.sh
             then
               yarn test:e2e:chrome
             fi
@@ -304,7 +327,7 @@ jobs:
       - run:
           name: test:e2e:chrome:metrics
           command: |
-            if .circleci/scripts/test-run-e2e
+            if .circleci/scripts/test-run-e2e.sh
             then
               yarn test:e2e:chrome:metrics
             fi
@@ -319,7 +342,7 @@ jobs:
       - checkout
       - run:
           name: Install Firefox
-          command: ./.circleci/scripts/firefox-install
+          command: ./.circleci/scripts/firefox-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -331,7 +354,7 @@ jobs:
       - run:
           name: test:e2e:firefox
           command: |
-            if .circleci/scripts/test-run-e2e
+            if .circleci/scripts/test-run-e2e.sh
             then
               yarn test:e2e:firefox
             fi
@@ -346,7 +369,7 @@ jobs:
       - checkout
       - run:
           name: Install Firefox
-          command: ./.circleci/scripts/firefox-install
+          command: ./.circleci/scripts/firefox-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -358,7 +381,7 @@ jobs:
       - run:
           name: test:e2e:firefox:metrics
           command: |
-            if .circleci/scripts/test-run-e2e
+            if .circleci/scripts/test-run-e2e.sh
             then
               yarn test:e2e:firefox:metrics
             fi
@@ -414,6 +437,12 @@ jobs:
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
+      # important: generate lavamoat viz AFTER uploading builds as artifacts
+      # Temporarily disabled until we can update to a version of `sesify` with
+      # this fix included: https://github.com/LavaMoat/LavaMoat/pull/121
+      - run:
+          name: build:lavamoat-viz
+          command: ./.circleci/scripts/create-lavamoat-viz.sh
       - store_artifacts:
           path: build-artifacts
           destination: build-artifacts
@@ -436,10 +465,10 @@ jobs:
       - run:
           name: Create GitHub release
           command: |
-            .circleci/scripts/release-create-gh-release
+            .circleci/scripts/release-create-gh-release.sh
       - run:
           name: Create GitHub Pull Request to sync master with develop
-          command: .circleci/scripts/release-create-master-pr
+          command: .circleci/scripts/release-create-master-pr.sh
 
   job-publish-storybook:
     executor: node-browsers

@@ -922,14 +922,8 @@
   "selectAnAccount": {
     "message": "選擇帳戶"
   },
-  "selectCurrency": {
-    "message": "選擇幣別"
-  },
   "selectEachPhrase": {
     "message": "請依照正確順序點選助憶詞"
-  },
-  "selectLocale": {
-    "message": "選擇地區"
   },
   "selectPathHelp": {
     "message": "若看不到您已經擁有的 Ledger 帳戶，請嘗試切換路徑為 \"Legacy (MEW / MyCrypto)\""

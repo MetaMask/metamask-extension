@@ -32,7 +32,9 @@ import LocalStore from './lib/local-store';
 import ReadOnlyNetworkStore from './lib/network-store';
 import createStreamSink from './lib/createStreamSink';
 import NotificationManager from './lib/notification-manager';
-import MetamaskController from './metamask-controller';
+import MetamaskController, {
+  METAMASK_CONTROLLER_EVENTS,
+} from './metamask-controller';
 import rawFirstTimeState from './first-time-state';
 import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
 import getObjStructure from './lib/getObjStructure';
@@ -51,6 +53,7 @@ global.METAMASK_NOTIFIER = notificationManager;
 
 let popupIsOpen = false;
 let notificationIsOpen = false;
+let uiIsTriggering = false;
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 
@@ -240,7 +243,9 @@ function setupController(initState, initLangCode) {
   });
 
   setupEnsIpfsResolver({
-    getCurrentNetwork: controller.getCurrentNetwork,
+    getCurrentChainId: controller.networkController.getCurrentChainId.bind(
+      controller.networkController,
+    ),
     getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(
       controller.preferencesController,
     ),
@@ -396,14 +401,35 @@ function setupController(initState, initLangCode) {
   //
 
   updateBadge();
-  controller.txController.on('update:badge', updateBadge);
-  controller.messageManager.on('updateBadge', updateBadge);
-  controller.personalMessageManager.on('updateBadge', updateBadge);
-  controller.decryptMessageManager.on('updateBadge', updateBadge);
-  controller.encryptionPublicKeyManager.on('updateBadge', updateBadge);
-  controller.typedMessageManager.on('updateBadge', updateBadge);
+  controller.txController.on(
+    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
+    updateBadge,
+  );
+  controller.messageManager.on(
+    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
+    updateBadge,
+  );
+  controller.personalMessageManager.on(
+    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
+    updateBadge,
+  );
+  controller.decryptMessageManager.on(
+    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
+    updateBadge,
+  );
+  controller.encryptionPublicKeyManager.on(
+    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
+    updateBadge,
+  );
+  controller.typedMessageManager.on(
+    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
+    updateBadge,
+  );
   controller.approvalController.subscribe(updateBadge);
-  controller.appStateController.on('updateBadge', updateBadge);
+  controller.appStateController.on(
+    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
+    updateBadge,
+  );
 
   /**
    * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
@@ -459,8 +485,17 @@ async function triggerUi() {
     tabs.length > 0 &&
     tabs[0].extData &&
     tabs[0].extData.indexOf('vivaldi_tab') > -1;
-  if ((isVivaldi || !popupIsOpen) && !currentlyActiveMetamaskTab) {
-    await notificationManager.showPopup();
+  if (
+    !uiIsTriggering &&
+    (isVivaldi || !popupIsOpen) &&
+    !currentlyActiveMetamaskTab
+  ) {
+    uiIsTriggering = true;
+    try {
+      await notificationManager.showPopup();
+    } finally {
+      uiIsTriggering = false;
+    }
   }
 }
 

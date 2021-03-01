@@ -22,9 +22,9 @@
 // //////////////////////////////////////////////////////////////////////////////
 
 const fs = require('fs');
-const path = require('path');
 const { promisify } = require('util');
 const log = require('loglevel');
+const glob = require('fast-glob');
 const matchAll = require('string.prototype.matchall').getPolyfill();
 const localeIndex = require('../app/_locales/index.json');
 const {
@@ -34,7 +34,6 @@ const {
   getLocalePath,
 } = require('./lib/locales');
 
-const readdir = promisify(fs.readdir);
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 
@@ -168,15 +167,22 @@ async function verifyLocale(code) {
 
 async function verifyEnglishLocale() {
   const englishLocale = await getLocale('en');
-  const uiJSFiles = await findJavascriptFiles(
-    path.resolve(__dirname, '..', 'ui'),
-  );
-  const sharedJSFiles = await findJavascriptFiles(
-    path.resolve(__dirname, '..', 'shared'),
-  );
+  // As time allows we'll switch to only performing the strict search.
+  // In the meantime we'll use glob to specify which paths can be strict searched
+  // and gradually phase out the key based search
+  const globsToStrictSearch = [
+    'ui/app/components/app/metamask-translation/*.js',
+    'ui/app/pages/confirmation/templates/*.js',
+  ];
+  const testGlob = '**/*.test.js';
+  const javascriptFiles = await glob(['ui/**/*.js', 'shared/**/*.js'], {
+    ignore: [...globsToStrictSearch, testGlob],
+  });
+  const javascriptFilesToStrictSearch = await glob(globsToStrictSearch, {
+    ignore: [testGlob],
+  });
 
-  const javascriptFiles = sharedJSFiles.concat(uiJSFiles);
-
+  const strictSearchRegex = /\bt\(\s*'(\w+)'\s*\)|\btranslationKey:\s*'(\w+)'/gu;
   // match "t(`...`)" because constructing message keys from template strings
   // prevents this script from finding the messages, and then inappropriately
   // deletes them
@@ -190,10 +196,21 @@ async function verifyEnglishLocale() {
     for (const match of matchAll.call(fileContents, keyRegex)) {
       usedMessages.add(match[1] || match[2]);
     }
+    const templateMatches = fileContents.match(templateStringRegex);
+    if (templateMatches) {
+      templateMatches.forEach((match) => templateUsage.push(match));
+    }
+  }
+
+  for await (const fileContents of getFileContents(
+    javascriptFilesToStrictSearch,
+  )) {
+    for (const match of matchAll.call(fileContents, strictSearchRegex)) {
+      usedMessages.add(match[1] || match[2] || match[3] || match[4]);
+    }
 
     const templateMatches = fileContents.match(templateStringRegex);
     if (templateMatches) {
-      // concat doesn't work here for some reason
       templateMatches.forEach((match) => templateUsage.push(match));
     }
   }
@@ -235,21 +252,6 @@ async function verifyEnglishLocale() {
   }
 
   return true; // failed === true
-}
-
-async function findJavascriptFiles(rootDir) {
-  const javascriptFiles = [];
-  const contents = await readdir(rootDir, { withFileTypes: true });
-  for (const file of contents) {
-    if (file.isDirectory()) {
-      javascriptFiles.push(
-        ...(await findJavascriptFiles(path.join(rootDir, file.name))),
-      );
-    } else if (file.isFile() && file.name.endsWith('.js')) {
-      javascriptFiles.push(path.join(rootDir, file.name));
-    }
-  }
-  return javascriptFiles;
 }
 
 async function* getFileContents(filenames) {

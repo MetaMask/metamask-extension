@@ -77,7 +77,7 @@ const MetaMaskTemplateRenderer = ({ sections }) => {
   );
 };
 
-const SectionShape = {
+export const SectionShape = {
   props: PropTypes.object,
   element: PropTypes.oneOf(Object.keys(safeComponentList)).isRequired,
   key: PropTypes.string,

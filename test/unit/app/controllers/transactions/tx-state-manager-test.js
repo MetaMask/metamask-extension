@@ -3,12 +3,17 @@ import sinon from 'sinon';
 import TxStateManager from '../../../../../app/scripts/controllers/transactions/tx-state-manager';
 import { snapshotFromTxMeta } from '../../../../../app/scripts/controllers/transactions/lib/tx-state-history-helpers';
 import { TRANSACTION_STATUSES } from '../../../../../shared/constants/transaction';
+import {
+  KOVAN_CHAIN_ID,
+  KOVAN_NETWORK_ID,
+} from '../../../../../shared/constants/network';
 
 const noop = () => true;
 
 describe('TransactionStateManager', function () {
   let txStateManager;
-  const currentNetworkId = '42';
+  const currentNetworkId = KOVAN_NETWORK_ID;
+  const currentChainId = KOVAN_CHAIN_ID;
   const otherNetworkId = '2';
 
   beforeEach(function () {
@@ -18,6 +23,7 @@ describe('TransactionStateManager', function () {
       },
       txHistoryLimit: 10,
       getNetwork: () => currentNetworkId,
+      getCurrentChainId: () => currentChainId,
     });
   });
 
@@ -137,6 +143,7 @@ describe('TransactionStateManager', function () {
           transactions: [submittedTx, confirmedTx],
         },
         getNetwork: () => currentNetworkId,
+        getCurrentChainId: () => currentChainId,
       });
 
       assert.deepEqual(txm.getTxList(), [submittedTx, confirmedTx]);
@@ -201,6 +208,7 @@ describe('TransactionStateManager', function () {
           ],
         },
         getNetwork: () => currentNetworkId,
+        getCurrentChainId: () => currentChainId,
       });
 
       assert.deepEqual(txm.getTxList(2), [approvedTx2, confirmedTx3]);
@@ -235,6 +243,7 @@ describe('TransactionStateManager', function () {
       const unapprovedTx1 = {
         id: 1,
         metamaskNetworkId: currentNetworkId,
+        chainId: currentChainId,
         time: 1,
         txParams: {
           from: '0xAddress',
@@ -259,6 +268,7 @@ describe('TransactionStateManager', function () {
         {
           id: 2,
           metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           time: 2,
           txParams: {
             from: '0xAddress',
@@ -284,6 +294,7 @@ describe('TransactionStateManager', function () {
         {
           id: 3,
           metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           time: 3,
           txParams: {
             from: '0xAddress',
@@ -304,6 +315,7 @@ describe('TransactionStateManager', function () {
           ],
         },
         getNetwork: () => currentNetworkId,
+        getCurrentChainId: () => currentChainId,
       });
 
       assert.deepEqual(txm.getTxList(2), [...approvedTx2s, ...failedTx3s]);

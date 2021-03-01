@@ -25,7 +25,7 @@ export default function ConfirmPageContainerHeader({
     windowType !== ENVIRONMENT_TYPE_POPUP;
 
   if (!showEdit && isFullScreen) {
-    return null;
+    return children;
   }
   return (
     <div className="confirm-page-container-header">

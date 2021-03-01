@@ -15,6 +15,7 @@ import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
 } from '../../../../../shared/constants/transaction';
+import { METAMASK_CONTROLLER_EVENTS } from '../../../../../app/scripts/metamask-controller';
 
 const noop = () => true;
 const currentNetworkId = '42';
@@ -395,7 +396,10 @@ describe('Transaction Controller', function () {
         txParams: {},
       };
 
-      const eventNames = ['update:badge', '1:unapproved'];
+      const eventNames = [
+        METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
+        '1:unapproved',
+      ];
       const listeners = [];
       eventNames.forEach((eventName) => {
         listeners.push(
@@ -860,6 +864,7 @@ describe('Transaction Controller', function () {
           return '0xee6b2800';
         },
         networkStore: new ObservableStore(currentNetworkId),
+        getCurrentChainId: () => currentChainId,
         txHistoryLimit: 10,
         blockTracker: _blockTrackerStub,
         signTransaction: (ethTx) =>
@@ -899,6 +904,7 @@ describe('Transaction Controller', function () {
           return '0xee6b2800';
         },
         networkStore: new ObservableStore(currentNetworkId),
+        getCurrentChainId: () => currentChainId,
         txHistoryLimit: 10,
         blockTracker: _blockTrackerStub,
         signTransaction: (ethTx) =>

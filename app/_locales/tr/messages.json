@@ -372,9 +372,6 @@
   "seedPhraseReq": {
     "message": "Kaynak ifadeleri 12 kelimedir."
   },
-  "selectCurrency": {
-    "message": "Döviz Seç"
-  },
   "selectType": {
     "message": "Tip Seç"
   },

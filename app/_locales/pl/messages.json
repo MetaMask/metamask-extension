@@ -925,17 +925,11 @@
   "selectAnAccountHelp": {
     "message": "Wybierz konto do przeglądania w MetaMask"
   },
-  "selectCurrency": {
-    "message": "Wybierz walutę"
-  },
   "selectEachPhrase": {
     "message": "Wybierz każdą frazę, aby upewnić się, że jest poprawna."
   },
   "selectHdPath": {
     "message": "Wybierz ścieżkę HD"
-  },
-  "selectLocale": {
-    "message": "Wybierz lokalizację"
   },
   "selectPathHelp": {
     "message": "Jeśli nie widzisz poniżej swoich kont Ledger, spróbuj przełączyć się na \"Legacy (MEW / MyCrypto)\""

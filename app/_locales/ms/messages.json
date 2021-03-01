@@ -908,17 +908,11 @@
   "selectAnAccountHelp": {
     "message": "Pilih akaun untuk dilihat dalam MetaMask"
   },
-  "selectCurrency": {
-    "message": "Pilih Mata Wang"
-  },
   "selectEachPhrase": {
     "message": "Sila pilih setiap ungkapan untuk memastikan ia betul."
   },
   "selectHdPath": {
     "message": "Pilih Laluan HD"
-  },
-  "selectLocale": {
-    "message": "Pilih Penempatan"
   },
   "selectPathHelp": {
     "message": "Jika anda tidak melihat akaun Ledger sedia ada anda di bawah, cuba tukar laluan kepada \"Legacy (MEW / MyCrypto)\""

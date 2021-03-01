@@ -6,6 +6,7 @@ import {
   REQUIRED_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
   KNOWN_RECIPIENT_ADDRESS_ERROR,
+  CONFUSING_ENS_ERROR,
 } from '../../../send.constants';
 
 const stubs = {
@@ -92,6 +93,18 @@ describe('add-recipient utils', function () {
           to: KNOWN_RECIPIENT_ADDRESS_ERROR,
         },
       );
+    });
+
+    it('should warn if name is a valid domain and confusable', function () {
+      assert.deepEqual(getToWarningObject('vita‍lik.eth'), {
+        to: CONFUSING_ENS_ERROR,
+      });
+    });
+
+    it('should not warn if name is a valid domain and not confusable', function () {
+      assert.deepEqual(getToWarningObject('vitalik.eth'), {
+        to: null,
+      });
     });
   });
 });

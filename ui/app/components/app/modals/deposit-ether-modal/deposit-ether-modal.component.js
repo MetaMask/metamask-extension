@@ -11,6 +11,8 @@ export default class DepositEtherModal extends Component {
 
   static propTypes = {
     network: PropTypes.string.isRequired,
+    isTestnet: PropTypes.bool.isRequired,
+    isMainnet: PropTypes.bool.isRequired,
     toWyre: PropTypes.func.isRequired,
     address: PropTypes.string.isRequired,
     toFaucet: PropTypes.func.isRequired,
@@ -86,9 +88,14 @@ export default class DepositEtherModal extends Component {
   }
 
   render() {
-    const { network, toWyre, address, toFaucet } = this.props;
-
-    const isTestNetwork = ['3', '4', '5', '42'].find((n) => n === network);
+    const {
+      network,
+      toWyre,
+      address,
+      toFaucet,
+      isTestnet,
+      isMainnet,
+    } = this.props;
     const networkName = getNetworkDisplayName(network);
 
     return (
@@ -133,7 +140,7 @@ export default class DepositEtherModal extends Component {
                 });
                 toWyre(address);
               },
-              hide: isTestNetwork,
+              hide: !isMainnet,
             })}
             {this.renderRow({
               logo: (
@@ -158,7 +165,7 @@ export default class DepositEtherModal extends Component {
               text: this.faucetRowText(networkName),
               buttonLabel: this.context.t('getEther'),
               onButtonClick: () => toFaucet(network),
-              hide: !isTestNetwork,
+              hide: !isTestnet,
             })}
           </div>
         </div>

@@ -60,12 +60,20 @@
     font-weight: bold;
   }
 
-  &__view-on-etherscan {
-    @include H7;
-
+  &__view-on-etherscan,
+  &__support-link {
     color: $Blue-500;
     margin-top: 24px;
     cursor: pointer;
+  }
+
+  &__support-link {
+    @include H6;
+  }
+
+  &__view-on-etherscan {
+    @include H7;
+
     transition: opacity 1s ease-in-out;
   }
 

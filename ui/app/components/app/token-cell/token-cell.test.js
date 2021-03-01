@@ -23,7 +23,7 @@ describe('Token Cell', function () {
       conversionRate: 7.0,
       preferences: {},
       provider: {
-        chainId: '1',
+        chainId: '0x1',
         ticker: 'ETH',
         type: 'mainnet',
       },

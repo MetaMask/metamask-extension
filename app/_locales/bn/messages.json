@@ -931,17 +931,11 @@
   "selectAnAccountHelp": {
     "message": "MetaMask এ দেখতে অ্যাকাউন্টটি নির্বাচন করুন"
   },
-  "selectCurrency": {
-    "message": "কারেন্সি নির্বাচন করুন"
-  },
   "selectEachPhrase": {
     "message": "ফ্রেজগুলি সঠিক তা নিশ্চিত করতে অনুগ্রহ করে প্রতিটি ফ্রেজ নির্বাচন করুন।"
   },
   "selectHdPath": {
     "message": "HD পাথ নির্বাচন করুন"
-  },
-  "selectLocale": {
-    "message": "স্থানীয় নির্বাচন করুন"
   },
   "selectPathHelp": {
     "message": "আপনি নিচে আপনার বিদ্যমান লেজার ব্যালেন্স না দেখলে, \"Legacy (MEW / MyCrypto)\" পাথগুলিতে সুইচ করার চেষ্টা করুন "

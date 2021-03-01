@@ -32,6 +32,7 @@ function mapStateToProps(state) {
     index: txId,
     warning: state.appState.warning,
     network: state.metamask.network,
+    chainId: state.metamask.provider.chainId,
     currentCurrency: state.metamask.currentCurrency,
     blockGasLimit: state.metamask.currentBlockGasLimit,
     unapprovedMsgCount,
@@ -49,6 +50,7 @@ class ConfirmTxScreen extends Component {
     unapprovedPersonalMsgCount: PropTypes.number,
     unapprovedTypedMessagesCount: PropTypes.number,
     network: PropTypes.string,
+    chainId: PropTypes.string,
     index: PropTypes.number,
     unapprovedTxs: PropTypes.object,
     unapprovedMsgs: PropTypes.object,
@@ -94,6 +96,7 @@ class ConfirmTxScreen extends Component {
       unapprovedPersonalMsgs,
       unapprovedTypedMessages,
       match: { params: { id: transactionId } = {} },
+      chainId,
     } = this.props;
 
     const unconfTxList = txHelper(
@@ -102,6 +105,7 @@ class ConfirmTxScreen extends Component {
       unapprovedPersonalMsgs,
       unapprovedTypedMessages,
       network,
+      chainId,
     );
 
     log.info(`rendering a combined ${unconfTxList.length} unconf msgs & txs`);
@@ -177,9 +181,10 @@ class ConfirmTxScreen extends Component {
       history,
       mostRecentOverviewPage,
       network,
+      chainId,
       send,
     } = this.props;
-    const unconfTxList = txHelper(unapprovedTxs, {}, {}, {}, network);
+    const unconfTxList = txHelper(unapprovedTxs, {}, {}, {}, network, chainId);
 
     if (
       unconfTxList.length === 0 &&
@@ -194,6 +199,7 @@ class ConfirmTxScreen extends Component {
     const {
       unapprovedTxs = {},
       network,
+      chainId,
       currentNetworkTxList,
       send,
       history,
@@ -207,13 +213,20 @@ class ConfirmTxScreen extends Component {
       prevTx = currentNetworkTxList.find(({ id }) => `${id}` === transactionId);
     } else {
       const { index: prevIndex, unapprovedTxs: prevUnapprovedTxs } = prevProps;
-      const prevUnconfTxList = txHelper(prevUnapprovedTxs, {}, {}, {}, network);
+      const prevUnconfTxList = txHelper(
+        prevUnapprovedTxs,
+        {},
+        {},
+        {},
+        network,
+        chainId,
+      );
       const prevTxData = prevUnconfTxList[prevIndex] || {};
       prevTx =
         currentNetworkTxList.find(({ id }) => id === prevTxData.id) || {};
     }
 
-    const unconfTxList = txHelper(unapprovedTxs, {}, {}, {}, network);
+    const unconfTxList = txHelper(unapprovedTxs, {}, {}, {}, network, chainId);
 
     if (prevTx && prevTx.status === TRANSACTION_STATUSES.DROPPED) {
       this.props.dispatch(

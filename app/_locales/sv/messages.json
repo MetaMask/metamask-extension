@@ -915,17 +915,11 @@
   "selectAnAccountHelp": {
     "message": "Välj konto att visa i MetaMask"
   },
-  "selectCurrency": {
-    "message": "Välj valuta"
-  },
   "selectEachPhrase": {
     "message": "Välj varje fras för att säkerställa att den är korrekt."
   },
   "selectHdPath": {
     "message": "Välj HD-sökväg"
-  },
-  "selectLocale": {
-    "message": "Välj plats"
   },
   "selectPathHelp": {
     "message": "Om du inte ser dina befintliga Ledger-konton nedan, prova att byta sökväg till \"Legacy (MEW / MyCrypto)\""

@@ -1403,17 +1403,11 @@
   "selectAnAccountHelp": {
     "message": "MetaMask में देखने के लिए खाते का चयन करें"
   },
-  "selectCurrency": {
-    "message": "मुद्रा का चयन करें"
-  },
   "selectEachPhrase": {
     "message": "कृपया प्रत्येक वाक्यांश का चयन करें, ताकि यह सुनिश्चित हो सके कि यह सही है।"
   },
   "selectHdPath": {
     "message": "HD पथ का चयन करें"
-  },
-  "selectLocale": {
-    "message": "लोकेल का चयन करें"
   },
   "selectPathHelp": {
     "message": "यदि आपको अपने मौजूदा लेजर खाते नीचे नहीं दिखाई देते हैं, तो पथ को \"Legacy (MEW / MyCrypto)\" पर स्विच करने का प्रयास करें"
@@ -1638,9 +1632,6 @@
   },
   "swapEstimatedNetworkFeesInfo": {
     "message": "यह नेटवर्क शुल्क का एक अनुमान है, जिसे आपके स्वैप को पूरा करने के लिए उपयोग किया जाएगा। नेटवर्क की स्थितियों के अनुसार वास्तविक राशि बदल सकती है।"
-  },
-  "swapFailedErrorDescription": {
-    "message": "आपका धन सुरक्षित है और अभी भी आपके वॉलेट में उपलब्ध है।"
   },
   "swapFailedErrorTitle": {
     "message": "स्वैप विफल रहा"

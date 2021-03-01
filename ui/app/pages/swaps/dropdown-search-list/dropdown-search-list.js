@@ -161,7 +161,7 @@ export default function DropdownSearchList({
             listContainerClassName={listContainerClassName}
           />
           <div
-            className="simple-dropdown__close-area"
+            className="dropdown-search-list__close-area"
             onClick={(event) => {
               event.stopPropagation();
               setIsOpen(false);
