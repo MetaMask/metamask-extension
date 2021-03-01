@@ -1908,6 +1908,9 @@
     "message": "Always confirm the token address on $1.",
     "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
   },
+  "swapTokenVerificationNoSource": {
+    "message": "This token has not been verified."
+  },
   "swapTokenVerificationOnlyOneSource": {
     "message": "Only verified on 1 source."
   },
