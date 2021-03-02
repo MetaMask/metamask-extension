@@ -55,6 +55,7 @@ class AccountList extends Component {
             selectedOption={selectedPath}
             onChange={(value) => {
               onPathChange(value);
+              this.setState({ selectedAccountIndexes: [] });
             }}
           />
         </div>
