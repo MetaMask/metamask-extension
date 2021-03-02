@@ -29,17 +29,32 @@ class ErrorPage extends PureComponent {
     );
   }
 
+  renderHelpLink() {
+    return (
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://metamask.zendesk.com/hc/en-us/requests/new"
+      >
+        <span className="error-page__link-text">
+          {this.context.t('here')}
+        </span>
+      </a>
+    );
+  }
+
   render() {
     const { error } = this.props;
     const { t } = this.context;
 
     const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+    const messageKey = isPopup ? 'errorPagePopupMessage' : 'errorPageMessage';
 
     return (
       <section className="error-page">
         <h1 className="error-page__header">{t('errorPageTitle')}</h1>
         <h2 className="error-page__subheader">
-          {isPopup ? t('errorPagePopupMessage') : t('errorPageMessage')}
+          {t(messageKey, [this.renderHelpLink()])}
         </h2>
         <section className="error-page__details">
           <details>

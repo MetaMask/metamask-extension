@@ -61,6 +61,20 @@ export default class EndOfFlowScreen extends PureComponent {
     this._removeBeforeUnload();
   };
 
+  renderHelpLink() {
+    return (
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://metamask.zendesk.com/hc/en-us/requests/new"
+      >
+        <span className="first-time-flow__link-text">
+          {this.context.t('here')}
+        </span>
+      </a>
+    );
+  }
+
   render() {
     const { t } = this.context;
     const { onboardingInitiator } = this.props;
@@ -89,7 +103,7 @@ export default class EndOfFlowScreen extends PureComponent {
           {`• ${t('endOfFlowMessage6')}`}
         </div>
         <div className="end-of-flow__text-3">
-          {`• ${t('endOfFlowMessage7')}`}
+          • {t('endOfFlowMessage7', [this.renderHelpLink()])}
         </div>
         <div className="first-time-flow__text-block end-of-flow__text-4">
           {`*${t('endOfFlowMessage8')}`}&nbsp;
