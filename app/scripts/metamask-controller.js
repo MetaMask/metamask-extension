@@ -2681,28 +2681,13 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * Sets the Ledger Live preference to use for hardware wallet support
-   * @param {bool} val - the value representing if they want Ledger Live support
-   * @param {Function} cb - A callback function called when complete.
+   * @param {bool} bool - the value representing if the users wants to use Ledger Live
    */
-  setLedgerLivePreference(val, cb) {
-    try {
-      this.preferencesController.setLedgerLivePreference(val);
-
-      // TODO: Calling async functionality in a sync function isn't great
-      this.getKeyringForDevice('ledger').then((keyring) => {
-        console.log(
-          '[MMExtensionController] Calling keyring.updateTransportMethod with value',
-          val,
-        );
-        keyring.updateTransportMethod(val);
-      });
-
-      cb(null);
-      return;
-    } catch (err) {
-      cb(err);
-      // eslint-disable-next-line no-useless-return
-      return;
+  async setLedgerLivePreference(bool) {
+    this.preferencesController.setLedgerLivePreference(bool);
+    const keyring = this.getKeyringForDevice('ledger');
+    if (keyring) {
+      keyring.updateTransportMethod(bool);
     }
   }
 
