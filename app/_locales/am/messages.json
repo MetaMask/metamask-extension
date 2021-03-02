@@ -769,12 +769,6 @@
   "privateNetwork": {
     "message": "የግል አውታረ መረብ"
   },
-  "protectYourKeys": {
-    "message": "ቁልፎችዎን ይጠብቁ!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "ስለ ዘር ሐረግዎ ይጠንቀቁ - ራሳቸውን ከ MetaMask ጋር ለማመሳሰል የሚሞከሩ ድረ ገጾች እናሉ ሰምተናል። MetaMask በጭራሽ የዘር ሐረግዎን አይጠይቅዎትም!"
-  },
   "queue": {
     "message": "ወረፋ"
   },

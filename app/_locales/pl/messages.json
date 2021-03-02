@@ -766,12 +766,6 @@
   "privateNetwork": {
     "message": "Sieć prywatna"
   },
-  "protectYourKeys": {
-    "message": "Chroń swoje klucze!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Traktuj swoją frazę seed z ostrożnością – zgłaszano nam przypadki stron internetowych, które podają się za MetaMask. MetaMask nigdy nie poprosi Cię o podanie frazy seed!"
-  },
   "queue": {
     "message": "Kolejka"
   },

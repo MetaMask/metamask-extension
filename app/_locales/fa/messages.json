@@ -772,12 +772,6 @@
   "privateNetwork": {
     "message": "شبکه شخصی"
   },
-  "protectYourKeys": {
-    "message": "کلید های خود را حفظ کنید!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "مراقب عبارت بازیاب تان باشید - گفته هایی وجود دارد که وبسایت ها تلاش میکنند تا از MetaMask نسخه برداری کنند. MetaMask هرگز از شما عبارت بازیاب را نمیپرسد!"
-  },
   "queue": {
     "message": "صف"
   },

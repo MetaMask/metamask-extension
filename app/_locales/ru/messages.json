@@ -1202,12 +1202,6 @@
   "proposedApprovalLimit": {
     "message": "Предлагаемый предел утверждения"
   },
-  "protectYourKeys": {
-    "message": "Защитите свои ключи!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Будьте осторожны с исходной фразой — были сообщения о веб-сайтах, которые пытались имитировать MetaMask. MetaMask никогда не запросит вашу исходную фразу!"
-  },
   "provide": {
     "message": "Предоставить"
   },

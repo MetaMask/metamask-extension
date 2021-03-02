@@ -765,12 +765,6 @@
   "privateNetwork": {
     "message": "Privatna mreža"
   },
-  "protectYourKeys": {
-    "message": "Zaštitite svoje ključeve!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Pazite na svoju početnu rečenicu jer smo zaprimili prijave o postojanju mrežnih mjesta koja oponašaju mrežno mjesto usluge MetaMask. Na mrežnom se mjestu MetaMask nikada ne traži vaša početna rečenica!"
-  },
   "queue": {
     "message": "Red čekanja"
   },

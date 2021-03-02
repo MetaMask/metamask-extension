@@ -757,12 +757,6 @@
   "privateNetwork": {
     "message": "Zasebno omrežje"
   },
-  "protectYourKeys": {
-    "message": "Varujte svoje ključe!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Bodite previdni  in svoj seed phrase skrbno varujte - obstajajo poročila o spletnih mestih, ki poskušajo posnemati MetaMask. MetaMask nikoli ne bo zahteval vašega gesla seed phrase!"
-  },
   "queue": {
     "message": "Čakalna vrsta"
   },

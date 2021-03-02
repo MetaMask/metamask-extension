@@ -753,12 +753,6 @@
   "privateNetwork": {
     "message": "Privat netværk"
   },
-  "protectYourKeys": {
-    "message": "Beskyt dine nøgler!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Vær forsigtig med din backupsætning - der har været rapporter om websteder, der forsøger at efterligne MetaMask. MetaMask vil aldrig bede om din backupsætning!"
-  },
   "queue": {
     "message": "Kø"
   },

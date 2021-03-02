@@ -741,12 +741,6 @@
   "privateNetwork": {
     "message": "Soukromá síť"
   },
-  "protectYourKeys": {
-    "message": "Chráňte si svoje kľúče!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Pri seed fráze buďte opatrní – vyskytli sa správy o webových stránkach, ktoré sa snažia napodobniť MetaMask. MetaMask nikdy nebude žiadať vašu seed frázu!"
-  },
   "queue": {
     "message": "Poradie"
   },

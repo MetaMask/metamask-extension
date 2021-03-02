@@ -741,12 +741,6 @@
   "privateNetwork": {
     "message": "Privates Netzwerk"
   },
-  "protectYourKeys": {
-    "message": "Schützen Sie Ihre Schlüssel!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Seien Sie mit Ihrer mnemonischen Phrase vorsichtig - es gab Berichte über Websites, die MetaMask zu imitieren versuchen. MetaMask fragt nie nach Ihrer mnemonischen Phrase!"
-  },
   "queue": {
     "message": "Warteschlange"
   },

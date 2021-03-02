@@ -763,12 +763,6 @@
   "privateNetwork": {
     "message": "Privatna mreža"
   },
-  "protectYourKeys": {
-    "message": "Zaštitite svoje ključeve!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Budite pažljivi sa vašom seed frazom - bilo je izveštaja o veb lokacijama koje pokušavaju da imitiraju MetaMask. MetaMask nikada neće tražiti vašu seed frazu!"
-  },
   "queue": {
     "message": "Ред"
   },

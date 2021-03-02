@@ -759,12 +759,6 @@
   "privateNetwork": {
     "message": "Rețea privată"
   },
-  "protectYourKeys": {
-    "message": "Protejați-vă cheile!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Aveți grijă cu expresia dvs. sursă – au existat raportări despre site-uri web care încearcă să imite MetaMask. MetaMask nu vă va cere niciodată expresia sursă!"
-  },
   "queue": {
     "message": "Coadă"
   },

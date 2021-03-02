@@ -608,7 +608,7 @@
   },
   "endOfFlowMessage7": {
     "message": "If you ever have questions or see something fishy, contact our support $1.",
-    "description": "$1 is a clickable link."
+    "description": "$1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "endOfFlowMessage8": {
     "message": "MetaMask cannot recover your seedphrase."
@@ -656,11 +656,11 @@
   },
   "errorPageMessage": {
     "message": "Try again by reloading the page, or contact support $1.",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link."
+    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPagePopupMessage": {
     "message": "Try again by closing and reopening the popup, or contact support $1.",
-    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link."
+    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "MetaMask encountered an error",
@@ -1289,12 +1289,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Proposed Approval Limit"
-  },
-  "protectYourKeys": {
-    "message": "Protect Your Keys!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Be careful with your seed phrase — there have been reports of websites that attempt to imitate MetaMask. MetaMask will never ask for your seed phrase!"
   },
   "provide": {
     "message": "Provide"

@@ -696,12 +696,6 @@
   "privateNetwork": {
     "message": "Pribadong Network"
   },
-  "protectYourKeys": {
-    "message": "Protektahan Ang Iyong Mga Key!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Mag-ingat sa iyong seed phrase — may mga ulat na may mga website na nagpapanggap bilang MetaMask. Hindi kailanman hihilingin ng MetaMask ang iyong seed phrase!"
-  },
   "queue": {
     "message": "I-queue"
   },

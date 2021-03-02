@@ -1202,12 +1202,6 @@
   "proposedApprovalLimit": {
     "message": "Iminumungkahing Limitasyon sa Pag-apruba"
   },
-  "protectYourKeys": {
-    "message": "Protektahan ang Iyong Mga Key!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Ingatan ang iyong seed phrase — may mga naiulat na website na sinusubukang gayahin ang MetaMask. Hindi kailanman hihingin ng MetaMask ang iyong seed phrase!"
-  },
   "provide": {
     "message": "Ibigay"
   },

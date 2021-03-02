@@ -1202,12 +1202,6 @@
   "proposedApprovalLimit": {
     "message": "Batas Persetujuan yang Diajukan"
   },
-  "protectYourKeys": {
-    "message": "Lindungi Kunci Anda!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Berhati-hatilah dengan frasa pemulihan Anda — ada laporan dari beberapa situs web yang mencoba membuat MetaMask imitasi. MetaMask tidak pernah meminta frasa pemulihan Anda!"
-  },
   "provide": {
     "message": "Berikan"
   },

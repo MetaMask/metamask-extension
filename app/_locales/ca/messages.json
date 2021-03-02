@@ -753,12 +753,6 @@
   "privateNetwork": {
     "message": "Xarxa privada"
   },
-  "protectYourKeys": {
-    "message": "Protegeix les Teves Claus!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Vigila amb la teva frase de recuperació  —s'han documentat casos de llocs web que intenten imitar MetaMask. MetaMask mai no et demanarà la frase de recuperació!"
-  },
   "queue": {
     "message": "Cua"
   },

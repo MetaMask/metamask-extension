@@ -769,12 +769,6 @@
   "privateNetwork": {
     "message": "私有網路"
   },
-  "protectYourKeys": {
-    "message": "保護你的鑰匙！"
-  },
-  "protectYourKeysMessage1": {
-    "message": "小心保管你的註記詞—我們接到報告有網站嘗試模仿 MetaMask。MetaMask 永遠不會詢問你的助記詞！"
-  },
   "queue": {
     "message": "佇列"
   },

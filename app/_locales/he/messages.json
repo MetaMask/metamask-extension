@@ -769,12 +769,6 @@
   "privateNetwork": {
     "message": "רשת פרטית"
   },
-  "protectYourKeys": {
-    "message": "הגנ/י על המפתחות שלך!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "יש לנקוט זהירות בנוגע לצירוף הגרעין שלך - היו דיווחים על אתרים שמנסים להתחזות ל-MetaMask .MetaMask לעולם לא תבקש את צירוף הגרעין שלך!"
-  },
   "queue": {
     "message": "תור"
   },

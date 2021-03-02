@@ -765,12 +765,6 @@
   "privateNetwork": {
     "message": "Magánhálózat"
   },
-  "protectYourKeys": {
-    "message": "Védje kulcsait!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Vigyázzod a gyarapítási fázissal - olyan oldalakat jelentettek, amelyek a MetaMask-ot utánozzák. A MetaMask soha nem kéri el a gyarapítási fázisát."
-  },
   "queue": {
     "message": "Nyomtatólista"
   },

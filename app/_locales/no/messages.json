@@ -759,12 +759,6 @@
   "privateNetwork": {
     "message": "Privat nettverk "
   },
-  "protectYourKeys": {
-    "message": "Beskytt nøklene dine! "
-  },
-  "protectYourKeysMessage1": {
-    "message": "Vær forsiktig med den mnemoniske gjenopprettingsfrasen din - det rapporteres om nettsteder som prøver å etterligne MetaMask. MetaMask vil aldri be om den mnemoniske gjenopprettingsfrasen din!"
-  },
   "queue": {
     "message": "Kø"
   },

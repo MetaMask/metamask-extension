@@ -768,12 +768,6 @@
   "privateNetwork": {
     "message": "Privātais tīkls"
   },
-  "protectYourKeys": {
-    "message": "Sargājiet savas atslēgas!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Rīkojieties uzmanīgi ar sēklas frāzi — saņemti ziņojumi par tīmekļa vietnēm, kas mēģina imitēt MetaMask. MetaMask nekad nelūgs norādīt sēklas frāzi."
-  },
   "queue": {
     "message": "Rinda"
   },

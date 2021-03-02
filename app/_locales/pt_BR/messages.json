@@ -760,12 +760,6 @@
   "privateNetwork": {
     "message": "Rede Particular"
   },
-  "protectYourKeys": {
-    "message": "Proteja as suas chaves!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Tome cuidado com sua frase semente — houve relatos de sites que tentam imitar o MetaMask. O MetaMask nunca pedirá sua frase semente!"
-  },
   "queue": {
     "message": "Fila"
   },

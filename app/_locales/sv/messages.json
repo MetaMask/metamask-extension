@@ -756,12 +756,6 @@
   "privateNetwork": {
     "message": "Privat nätverk"
   },
-  "protectYourKeys": {
-    "message": "Skydda dina nycklar!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Var försiktig med din seedfras — det har rapporterats om hemsidor som försöker imitera MetaMask. MetaMask kommer aldrig fråga efter din seedfras!"
-  },
   "queue": {
     "message": "Utskriftskö"
   },

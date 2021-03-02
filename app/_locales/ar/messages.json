@@ -765,12 +765,6 @@
   "privateNetwork": {
     "message": "شبكة خاصة"
   },
-  "protectYourKeys": {
-    "message": "احمِ مفاتيحك!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "كن حذراً بشأن عبارة الأمان الخاصة بك - فهناك بلاغات عن مواقع ويب تحاول تقليد MetaMask. لن تسأل MetaMask عن عبارة الأمان الخاصة بك أبداً!"
-  },
   "queue": {
     "message": "اللائحة"
   },

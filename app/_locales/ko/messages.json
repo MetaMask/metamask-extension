@@ -1202,12 +1202,6 @@
   "proposedApprovalLimit": {
     "message": "제안된 승인 한도"
   },
-  "protectYourKeys": {
-    "message": "키를 보호하세요!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "시드 구문을 조심하세요. MetaMask를 흉내 내는 웹사이트가 보고되고 있습니다. MetaMask에서는 시드 구문을 절대로 물어보지 않습니다!"
-  },
   "provide": {
     "message": "제공"
   },

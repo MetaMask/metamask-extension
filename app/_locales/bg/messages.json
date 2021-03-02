@@ -768,12 +768,6 @@
   "privateNetwork": {
     "message": "Частна мрежа"
   },
-  "protectYourKeys": {
-    "message": "Защитете ключовете си!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Внимавайте с вашата фраза - има съобщения за уебсайтове, които се опитват да имитират MetaMask. MetaMask никога няма да поиска вашата фраза-зародиш!"
-  },
   "queue": {
     "message": "Опашка"
   },

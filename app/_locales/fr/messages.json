@@ -754,12 +754,6 @@
   "privateNetwork": {
     "message": "Réseau privé"
   },
-  "protectYourKeys": {
-    "message": "Protégez vos clés !"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Soyez prudent avec votre phrase mnémotechnique — on nous a signalé des sites web qui tentaient d'imiter MetaMask. MetaMask ne vous demandera jamais votre phrase mnémotechnique !"
-  },
   "queue": {
     "message": "File d'attente"
   },

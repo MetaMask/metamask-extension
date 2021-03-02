@@ -1214,12 +1214,6 @@
   "proposedApprovalLimit": {
     "message": "承認限度額の提案"
   },
-  "protectYourKeys": {
-    "message": "キーを保護してください!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "シードフレーズは厳重に取り扱ってください。MetaMaskの偽物がWebサイトで報告されています。MetaMaskがシードフレーズを要求することは絶対にありえません!"
-  },
   "provide": {
     "message": "提供する"
   },

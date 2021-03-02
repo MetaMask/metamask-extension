@@ -772,12 +772,6 @@
   "privateNetwork": {
     "message": "Приватна мережа"
   },
-  "protectYourKeys": {
-    "message": "Захистіть свої ключі!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Будьте обережними з вашою початковою фразою - надходила інформація про сайти, які намагались імітувати MetaMask. MetaMask ніколи не запитує вашої початкової фрази!"
-  },
   "queue": {
     "message": "Черга"
   },

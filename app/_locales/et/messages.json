@@ -762,12 +762,6 @@
   "privateNetwork": {
     "message": "Privaatvõrk"
   },
-  "protectYourKeys": {
-    "message": "Kaitske oma võtmeid!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Kaitske oma seemnefraasi. Meid on teavitatud veebilehtedest, mis püüavad MetaMaski jäljendada. MetaMask ei küsi teilt kunagi teie seemnefraasi!"
-  },
   "queue": {
     "message": "Järjekord"
   },

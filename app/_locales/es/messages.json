@@ -1211,12 +1211,6 @@
   "proposedApprovalLimit": {
     "message": "Límite de aprobación propuesto"
   },
-  "protectYourKeys": {
-    "message": "¡Proteja sus llaves!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Tenga cuidado con su frase semilla — ha habido informes de sitios web que intentan imitar MetaMask. ¡MetaMask nunca le pedirá su frase semilla!"
-  },
   "provide": {
     "message": "Proveer"
   },

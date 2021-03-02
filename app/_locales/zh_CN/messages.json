@@ -1214,12 +1214,6 @@
   "proposedApprovalLimit": {
     "message": "拟议的审批上限"
   },
-  "protectYourKeys": {
-    "message": "妥善保管您的密钥！"
-  },
-  "protectYourKeysMessage1": {
-    "message": "请注意个人账户助记词的安全。报告显示有多个网站企图伪造 MetaMask。MetaMask 绝不会要求您提供个人账户助记词！"
-  },
   "provide": {
     "message": "提供"
   },

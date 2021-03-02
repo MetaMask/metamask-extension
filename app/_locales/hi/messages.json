@@ -1202,12 +1202,6 @@
   "proposedApprovalLimit": {
     "message": "प्रस्तावित अनुमोदन सीमा"
   },
-  "protectYourKeys": {
-    "message": "अपनी कुंजियों को सुरक्षित रखें!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "अपने सीडफ्रेज़ को लेकर सावधान रहें — ऐसी वेबसाइटों की रिपोर्टें आई हैं, जो MetaMask की नकल करने का प्रयास करती हैं। MetaMask कभी भी आपके सीड फ्रेज़ के बारे में नहीं पूछेगा!"
-  },
   "provide": {
     "message": "प्रदान करें"
   },

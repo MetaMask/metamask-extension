@@ -772,12 +772,6 @@
   "privateNetwork": {
     "message": "Privatus tinklas"
   },
-  "protectYourKeys": {
-    "message": "Apsaugokite savo raktus!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Saugokite savo atkūrimo frazę – gavome pranešimų apie interneto svetaines, kuriomis bandoma imituoti „MetaMask“. „MetaMask“ niekada neprašys jūsų pateikti savo atkūrimo frazę!"
-  },
   "queue": {
     "message": "Eilė"
   },
