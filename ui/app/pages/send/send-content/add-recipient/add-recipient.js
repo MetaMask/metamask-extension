@@ -16,13 +16,11 @@ import {
   isValidDomainName,
 } from '../../../../helpers/utils/util';
 
-export function getToErrorObject(to, hasHexData = false, network) {
+export function getToErrorObject(to, network) {
   let toError = null;
   if (!to) {
-    if (!hasHexData) {
-      toError = REQUIRED_ERROR;
-    }
-  } else if (!isValidAddress(to) && !toError) {
+    toError = REQUIRED_ERROR;
+  } else if (!isValidAddress(to)) {
     toError = isEthNetwork(network)
       ? INVALID_RECIPIENT_ADDRESS_ERROR
       : INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR;

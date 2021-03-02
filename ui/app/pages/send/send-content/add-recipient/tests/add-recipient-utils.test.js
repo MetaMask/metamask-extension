@@ -30,12 +30,6 @@ describe('add-recipient utils', function () {
       });
     });
 
-    it('should return null if "to" is falsy and hexData is truthy', function () {
-      assert.deepStrictEqual(getToErrorObject(null, true), {
-        to: null,
-      });
-    });
-
     it('should return an invalid recipient error if "to" is truthy but invalid', function () {
       assert.deepStrictEqual(getToErrorObject('mockInvalidTo'), {
         to: INVALID_RECIPIENT_ADDRESS_ERROR,
