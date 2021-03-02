@@ -494,9 +494,6 @@
   "done": {
     "message": "Tapos na"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Wala ka bang hardware wallet?"
-  },
   "dontShowThisAgain": {
     "message": "Huwag itong ipaklita ulit"
   },
@@ -721,9 +718,6 @@
     "message": "Kunin ang Ether mula sa isang faucet sa halagang $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Humingi ng Tulong."
-  },
   "getStarted": {
     "message": "Magsimula"
   },
@@ -744,9 +738,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Pumili ng hardware wallet na gusto mong gamitin kasama ng MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Nagkakaproblema ka ba sa pagkonekta?"
   },
   "here": {
     "message": "dito",
@@ -1114,9 +1105,6 @@
   "optionalCurrencySymbol": {
     "message": "Simbolo ng Currency (opsyonal)"
   },
-  "orderOneHere": {
-    "message": "Mag-order ng Trezor o Ledger at itabi ang mga pondo mo sa malamig na storage"
-  },
   "origin": {
     "message": "Pinagmulan"
   },
@@ -1197,9 +1185,6 @@
   },
   "readdToken": {
     "message": "Puwede mong ibalik ang token na ito sa hinaharap sa pamamagitan ng pagpunta sa “Magdagdag ng token” sa menu ng mga opsyon sa iyong account."
-  },
-  "readyToConnect": {
-    "message": "Handa ka na bang kumonekta?"
   },
   "receive": {
     "message": "Tumanggap"
@@ -1500,24 +1485,6 @@
   },
   "statusNotConnected": {
     "message": "Hindi nakakonekta"
-  },
-  "step1HardwareWallet": {
-    "message": "1. Ikonekta ang Hardware Wallet"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Direktang ikonekta ang wallet ng iyong hardware sa computer mo."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Pumili ng Account"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Piliin ang account na gusto mong tingnan. Puwede ka lang pumili ng isa sa isang pagkakataon."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Simulang gamitin ang mga web3 site at higit pa!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Gamitin ang account ng iyong hardware sa parehong paraan ng paggamit mo sa Ethereum account. Kumonekta sa mga web3 site, magpadala ng ETH, bumili at mag-store ng mga ERC20 token at non-fungible token gaya ng CryptoKitties."
   },
   "storePhrase": {
     "message": "I-store ang phrase na ito sa isang password manager gaya ng 1Password."

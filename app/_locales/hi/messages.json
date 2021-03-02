@@ -494,9 +494,6 @@
   "done": {
     "message": "संपन्न"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "हार्डवेयर वॉलेट नहीं है?"
-  },
   "dontShowThisAgain": {
     "message": "इसे दोबारा न दिखाएँ"
   },
@@ -721,9 +718,6 @@
     "message": "$1 के लिए एक फ़ॉसेट से Ether प्राप्त करें",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "मदद प्राप्त करें।"
-  },
   "getStarted": {
     "message": "प्रारंभ करें"
   },
@@ -744,9 +738,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "किसी हार्डवेयर वॉलेट का चयन करें, जिसे आप MetaMask के साथ उपयोग करना चाहते हैं"
-  },
-  "havingTroubleConnecting": {
-    "message": "कनेक्ट करने में समस्या हो रही है?"
   },
   "here": {
     "message": "यहाँ",
@@ -1117,9 +1108,6 @@
   "optionalCurrencySymbol": {
     "message": "मुद्रा प्रतीक (वैकल्पिक)"
   },
-  "orderOneHere": {
-    "message": "Trezor या लेजर ऑर्डर करें और अपने धन को कोल्ड स्टोरेज में रखें"
-  },
   "origin": {
     "message": "उत्पत्ति"
   },
@@ -1200,9 +1188,6 @@
   },
   "readdToken": {
     "message": "आप अपने खातों के विकल्प मेनू में \"टोकन जोड़ें\" पर जाकर भविष्य में इस टोकन को वापस जोड़ सकते हैं।"
-  },
-  "readyToConnect": {
-    "message": "कनेक्ट करने के लिए तैयार हैं?"
   },
   "receive": {
     "message": "प्राप्त करें"
@@ -1503,24 +1488,6 @@
   },
   "statusNotConnected": {
     "message": "कनेक्ट नहीं है"
-  },
-  "step1HardwareWallet": {
-    "message": "1. हार्डवेयर वॉलेट कनेक्ट करें"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "अपने हार्डवेयर वॉलेट को सीधे अपने कंप्यूटर से कनेक्ट करें।"
-  },
-  "step2HardwareWallet": {
-    "message": "2. किसी खाते का चयन करें"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "उस खाते का चयन करें, जिसे आप देखना चाहते हैं। आप एक समय में केवल एक ही चुन सकते हैं।"
-  },
-  "step3HardwareWallet": {
-    "message": "3. web3 साइटों और अधिक का उपयोग करना प्रारंभ करें!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "अपने हार्डवेयर खाते का उसी तरह से उपयोग करें, जैसे आप किसी भी Ethereum खाते को करेंगे। web3 साइटों से कनेक्ट करें, ETH भेजें, ERC20 और CryptoKitties जैसे गैर-प्रतिमोचन वाले टोकन जैसे टोकन खरीदें और संग्रहीत करें।"
   },
   "storePhrase": {
     "message": "इस वाक्यांश को 1Password जैसे किसी पासवर्ड मैनेजर में संग्रहीत करें।"

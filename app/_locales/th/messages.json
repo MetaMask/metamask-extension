@@ -148,9 +148,6 @@
   "done": {
     "message": "เสร็จสิ้น"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "ไม่มี Hardware Wallet ใช่ไหม"
-  },
   "downloadSecretBackup": {
     "message": "ดาวน์โหลด Phrase แบ็คอัพลับนี้และเก็บรักษาไว้ให้ปลอดภัยในฮาร์ดดิสก์หรืออุปกรณ์เก็บข้อมูลภายนอกที่มีการเข้ารหัส"
   },
@@ -464,15 +461,6 @@
   },
   "stateLogsDescription": {
     "message": "บันทึกของสถานะประกอบด้วยแอดแดรสสาธารณะและธุรกรรมที่ส่ง"
-  },
-  "step1HardwareWallet": {
-    "message": "1. เชื่อมต่อ Hardware Wallet"
-  },
-  "step2HardwareWallet": {
-    "message": "2. เลือกบัญชี"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "ใช้บัญชีฮาร์ดแวร์ของคุณเช่นเดียวกับการใช้กับบัญชี Ethereum ล็อกอินเข้าสู่ dApp ส่ง Eth ซื้อและเก็บโทเคน ERC20 และโทเคนแบบ Non-Fungible เช่น CryptoKitties"
   },
   "storePhrase": {
     "message": "เก็บ Phrase นี้ในตัวจัดการรหัสผ่าน เช่น 1Password"

@@ -550,9 +550,6 @@
   "done": {
     "message": "Done"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Don’t have a hardware wallet?"
-  },
   "dontShowThisAgain": {
     "message": "Don't show this again"
   },
@@ -801,9 +798,6 @@
     "message": "Get Ether from a faucet for the $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Get Help."
-  },
   "getStarted": {
     "message": "Get Started"
   },
@@ -831,9 +825,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Select a hardware wallet you'd like to use with MetaMask."
-  },
-  "havingTroubleConnecting": {
-    "message": "Having trouble connecting?"
   },
   "here": {
     "message": "here",
@@ -1275,9 +1266,6 @@
   "optionalCurrencySymbol": {
     "message": "Currency Symbol (optional)"
   },
-  "orderOneHere": {
-    "message": "Order a Trezor or Ledger and keep your funds in cold storage"
-  },
   "origin": {
     "message": "Origin"
   },
@@ -1358,9 +1346,6 @@
   },
   "readdToken": {
     "message": "You can add this token back in the future by going to “Add token” in your accounts options menu."
-  },
-  "readyToConnect": {
-    "message": "Ready to Connect?"
   },
   "receive": {
     "message": "Receive"
