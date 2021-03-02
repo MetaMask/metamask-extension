@@ -22,6 +22,7 @@ import {
   getQrCodeData,
   getSelectedAddress,
   getAddressBook,
+  getSendTokenAddress,
 } from '../../selectors';
 
 import {
@@ -65,6 +66,7 @@ function mapStateToProps(state) {
     tokens: getTokens(state),
     tokenBalance: getTokenBalance(state),
     tokenContract: getSendTokenContract(state),
+    sendTokenAddress: getSendTokenAddress(state),
   };
 }
 

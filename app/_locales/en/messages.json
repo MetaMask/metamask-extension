@@ -405,6 +405,9 @@
   "continueToWyre": {
     "message": "Continue to Wyre"
   },
+  "contractAddressError": {
+    "message": "You are sending tokens to the token's contract address. This may result in the loss of these tokens."
+  },
   "contractDeployment": {
     "message": "Contract Deployment"
   },
